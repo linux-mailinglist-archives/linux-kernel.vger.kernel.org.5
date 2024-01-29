@@ -1,202 +1,96 @@
-Return-Path: <linux-kernel+bounces-42979-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42982-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0ECBB840994
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:18:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF6AD8409A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:19:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E386B272CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:18:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F13EB274F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:19:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E74C153BD3;
-	Mon, 29 Jan 2024 15:16:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RVJ4Hzgp"
-Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D596155A4F;
-	Mon, 29 Jan 2024 15:16:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2383115530F;
+	Mon, 29 Jan 2024 15:17:46 +0000 (UTC)
+Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [20.231.56.155])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13974153BD9;
+	Mon, 29 Jan 2024 15:17:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=20.231.56.155
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706541418; cv=none; b=cMPGkCqRKKhhCpNpMqAyWSukKdOKcNGUn6wVYfteReBInm+UtZoexdFNMtZwmdPQIChX2VytGlQVnze0qZmUEKDMbBQg5Oh+md+uFzPfrdANBsenAvEFljw1eoAqiQ6UXpeyzt0+yIg/BhS1aoQ3kmdWm+y5BeA+zq75Kzw8KK0=
+	t=1706541465; cv=none; b=Kvh5439OV1CkxPO6rBmSb8mDrY+0vW6t3DfsbE2J+20GNAP7M5U65d458urUPCxYJ7kMMvlRs9RNobqdkbCs4HBh83QkeKtdeXtJg2t5OaXml0OW/T0I8FJLzPhzvUb/8L8D2veqJHjkOrtDa3eb1LQ9O7un1IpbcfnCXckuQnI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706541418; c=relaxed/simple;
-	bh=qlUFaMcwXWhmmEzdeZQB+wJ3uKRWS2OB5K9A9Gc8SA4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NHGuKL2SZC4ghOvJlta66VEPcewBqj9dftzAStqBMRdTjSWAhtP5lC+XrS/Olya+GVFHvsT/VK4ZaxmJU0UyDIlr5W9faE7YutEQVUo51Hwtkxj+Xaeb/SNxQKPsYOgnbV15QOge+5AoD6vXrRbTSfrjjufweigOQgvmLFoho5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RVJ4Hzgp; arc=none smtp.client-ip=209.85.161.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-59612e4a21eso965298eaf.3;
-        Mon, 29 Jan 2024 07:16:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706541415; x=1707146215; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=kB5Et7w3ZzgIpdxhAVYJONzfcR1otDulInd0ia/bfUc=;
-        b=RVJ4HzgpKLlw3to5qzET8XaLTK11k/zn/5h6gyEqc3ObHoPSBKX7R9eUBAQw6QRGK0
-         P8TLUofieO6Jh5OlCzMH5c13xgeRFKFtdHGANfBy4H9CFkoCUsDOvr1/FT/kY9j5em/3
-         wqsKEzvVq1WZ1Vl8SnfWbvsG6y8yHhL1xII81LvU6FeffsrPgOxUxduG4Mc/y9wMwbWb
-         kQHaBfH9LJlJXWtvsCAuZ0VG0deoABKiYahPwvuJUhv12QfSNXHtG5m2I4QlodyFZzVY
-         e7s8EomtSsd0R6IeFhnZa5l8AfjGKrHe8lGdJt9LKOHLyzZMUt33nDznlyH5qDuWSSxf
-         p1/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706541415; x=1707146215;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kB5Et7w3ZzgIpdxhAVYJONzfcR1otDulInd0ia/bfUc=;
-        b=s2OUhx8cih037Pg/c+85Kel9MG18BcIDKE5EIPv/N+SmJKRKREcyxOfnkk0hSG9Whm
-         iUsnmisxk1zJthZHSlDjf8foQ7WvcQ62deKov4UQZlTbGN0YV9G1FGdd9opbrvHOpBO2
-         Yh187l/MShBWC+nFrRoFi4iXg9Rt9KD3xI1RtN9mFr5ArPsd5q0FxUsnGogWt7k94ONZ
-         swQz6CVCl/zG4IlscGKE6GqIc/dQN4711QAsrfIkZWq765kaPm4JjF+35LY1DK010vRS
-         NdCxRnRO6rww/0AI+N3Z9A7MX3HHhbprm2GA6LBpY3JuwI2R7dm0eG0lN9voXrTdrirE
-         bWng==
-X-Gm-Message-State: AOJu0YzLTwUAkjM2VedFRPIZxS6hm9P/GSBAltS+TNYrVOa8JAeYtRva
-	cxaiQDa1/cUJRIR0h4zSOSOfv6AFcAMe3kaoqu3xUB1cuY/DjtbY
-X-Google-Smtp-Source: AGHT+IGr+MSeuJUTZb7DaKfa3gJXjjeWMmepVT9Lq6RXzavNVlN+XEq3wzubeKMDEFc70r3wv2bU8g==
-X-Received: by 2002:a05:6358:6a47:b0:176:cd90:6ff8 with SMTP id c7-20020a0563586a4700b00176cd906ff8mr2025908rwh.7.1706541415240;
-        Mon, 29 Jan 2024 07:16:55 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id i17-20020a63e451000000b005d8b8efac4csm4050657pgk.85.2024.01.29.07.16.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jan 2024 07:16:54 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <ee2f4758-0b50-449a-b74b-492814a9cc8a@roeck-us.net>
-Date: Mon, 29 Jan 2024 07:16:52 -0800
+	s=arc-20240116; t=1706541465; c=relaxed/simple;
+	bh=+e4MeMpVtatRr9w5a834UwxLCgYT7m+gxxbS5zk3y0M=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
+	 MIME-Version:Message-ID; b=gOZuWGajQBoNU1NNqU4+VAkbRgtJH9ZHV9f2mJtfTykAVsknkgXsOwcRB06JoOwuYGoq3F98/5eoh6S50bYaRbPqmfMS5zp4uDXfkcTumyepShphtkzPEE3EQLoP79nXRClYuDegY54Z3KjeRYsBMNhYr6vULQdtMiE1JIaVgzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=20.231.56.155
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from alexious$zju.edu.cn ( [10.190.77.58] ) by
+ ajax-webmail-mail-app4 (Coremail) ; Mon, 29 Jan 2024 23:17:28 +0800
+ (GMT+08:00)
+Date: Mon, 29 Jan 2024 23:17:28 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From: alexious@zju.edu.cn
+To: "Viacheslav Dubeyko" <slava@dubeyko.com>
+Cc: "Andrew Morton" <akpm@linux-foundation.org>,
+	"Desmond Cheong Zhi Xi" <desmondcheongzx@gmail.com>,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hfs: fix a memleak in hfs_find_init
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.4-cmXT5 build
+ 20231205(37e20f0e) Copyright (c) 2002-2024 www.mailtech.cn
+ mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
+In-Reply-To: <DCBF7671-E982-49F2-8687-DF030D2A99C7@dubeyko.com>
+References: <20240122172719.3843098-1-alexious@zju.edu.cn>
+ <F36C0C80-DAF3-4D8F-8EA3-5209E8FB5BE3@dubeyko.com>
+ <38fd9f3.214a.18d5548ac0c.Coremail.alexious@zju.edu.cn>
+ <DCBF7671-E982-49F2-8687-DF030D2A99C7@dubeyko.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] hwmon: Add driver for MPS MPQ8785 Synchronous
- Step-Down Converter
-Content-Language: en-US
-To: Charles Hsu <ythsu0511@gmail.com>, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, jdelvare@suse.com,
- corbet@lwn.net, Delphine_CC_Chiu@Wiwynn.com, naresh.solanki@9elements.com,
- peteryin.openbmc@gmail.com, patrick.rudolph@9elements.com,
- alexander.stein@ew.tq-group.com, lakshmiy@us.ibm.com, bhelgaas@google.com,
- michal.simek@amd.com, lukas@wunner.de, festevam@denx.de
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-i2c@vger.kernel.org, ytshu0511@gmail.com
-References: <20240129083115.2107466-1-ythsu0511@gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20240129083115.2107466-1-ythsu0511@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <44665a1c.22c9.18d55cbff19.Coremail.alexious@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:cS_KCgB3k4KJwbdl8s7EAA--.15305W
+X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/1tbiAg4PAGW2oGMdygABsF
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+	daVFxhVjvjDU=
 
-On 1/29/24 00:31, Charles Hsu wrote:
-> Add support for mpq8785 device from Monolithic Power Systems, Inc.
-> (MPS) vendor. This is synchronous step-down controller.
-> 
-> Signed-off-by: Charles Hsu <ythsu0511@gmail.com>
-> 
-> ---
-> Change in v1:
->      Initial patchset.
-> Change in v2:
->      1.Add pmbus support status registers.
->      2.Add mpq8785 in trivial-devices.yaml.
->      3.Remove format[PSC_VOLTAGE_OUT]
-
-This is insufficient, sorry. Problem is that pmbus_identify_common()
-compares the more reported by PMBUS_VOUT_MODE with the configured mode.
-Not setting format[PSC_VOLTAGE_OUT] means that the mode is the default (0),
-which is linear mode. If the chip is configured for direct or vid mode
-this again will result in probe failure.
-
-I can see two options:
-
-- Add a chip configuration flag such as PMBUS_DETECT_VOUT_MODE (for lack
-   of a better idea) and use it in pmbus_identify_common() to actually
-   _set_ the mode from the VOUT_MODE command instead of expecting it
-   to be already set. This would require providing the coefficients for
-   output voltage direct mode in mpq8785_info. This would be my preferred
-   solution (but require a separate patch to add the code to pmbus_core.c).
-- Select a fixed mode and write code to convert affected register readings
-   to that mode if needed. See mp5990.c for an example.
-
->      4.Fix MODULE_DESCRIPTION
-> ---
->   .../devicetree/bindings/trivial-devices.yaml  |  2 +
->   Documentation/hwmon/index.rst                 |  1 +
->   Documentation/hwmon/mpq8785.rst               | 94 +++++++++++++++++++
->   drivers/hwmon/pmbus/Kconfig                   |  9 ++
->   drivers/hwmon/pmbus/Makefile                  |  1 +
->   drivers/hwmon/pmbus/mpq8785.c                 | 62 ++++++++++++
->   6 files changed, 169 insertions(+)
->   create mode 100644 Documentation/hwmon/mpq8785.rst
->   create mode 100644 drivers/hwmon/pmbus/mpq8785.c
-> 
-> diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
-> index 79dcd92c4a43..088b23ed2ae6 100644
-> --- a/Documentation/devicetree/bindings/trivial-devices.yaml
-> +++ b/Documentation/devicetree/bindings/trivial-devices.yaml
-> @@ -129,6 +129,8 @@ properties:
->             - mps,mp2975
->               # Monolithic Power Systems Inc. multi-phase hot-swap controller mp5990
->             - mps,mp5990
-> +            # Monolithic Power Systems Inc. synchronous step-down converter mpq8785
-> +          - mps,mpq8785
->               # Honeywell Humidicon HIH-6130 humidity/temperature sensor
->             - honeywell,hi6130
->               # IBM Common Form Factor Power Supply Versions (all versions)
-
-Sorry, devicetree changes require a separate patch.
-
-Thanks,
-Guenter
-
+PiA+IE9uIDI5IEphbiAyMDI0LCBhdCAxNTo1NCwgYWxleGlvdXNAemp1LmVkdS5jbiB3cm90ZToK
+PiA+IAo+ID4+PiBPbiAyMiBKYW4gMjAyNCwgYXQgMjA6MjcsIFpoaXBlbmcgTHUgPGFsZXhpb3Vz
+QHpqdS5lZHUuY24+IHdyb3RlOgo+ID4+PiAKPiA+Pj4gV2hlbiB0aGUgc3dpdGNoIHN0YXRtZW50
+IGdvZXMgdG8gZGVmYXVsdCBhbmQgcmV0dXJuIGFuIGVycm9yLCBwdHIgc2hvdWxkCj4gPj4+IGJl
+IGZyZWVkIHNpbmNlIGl0IGlzIGFsbG9jYXRlZCBpbiBoZnNfZmluZF9pbml0Lgo+ID4+PiAKPiA+
+PiAKPiA+PiBEbyB5b3UgaGF2ZSBhbnkgbWVtb3J5IGxlYWtzIHJlcG9ydD8gQ291bGQgeW91IHNo
+YXJlIGl0IGluIHRoZSBjb21tZW50cz8KPiA+PiBXaGljaCB1c2UtY2FzZSByZXByb2R1Y2VzIHRo
+ZSBpc3N1ZT8gSXQgd2lsbCBiZSBlYXNpZXIgdG8gcmV2aWV3IHRoZSBmaXgKPiA+PiBJZiB5b3Ug
+Y2FuIHNoYXJlIHRoZSBwYXRoIG9mIHJlcHJvZHVjdGlvbi4KPiA+PiAKPiA+PiBUaGFua3MsCj4g
+Pj4gU2xhdmEuCj4gPiAKPiA+IFdlbGwsIHdlIGZvdW5kIHRoaXMgcG90ZW50aWFsIG1lbW9yeSBs
+ZWFrIGJ5IHN0YXRpYyBhbmFseXNpcy4KPiA+IAo+ID4gV2UgZm91bmQgdGhhdCBhbGwgb2YgaGZz
+X2ZpbmRfaW5pdCdzIGNhbGxlcnMgd29uJ3QgcmVsZWFzZSBgcHRyYCB3aGVuIAo+ID4gaGZzX2Zp
+bmRfaW5pdCBmYWlscywgd2hpbGUgdGhleSB3aWxsIGRvIHJlbGVhc2UgYHB0cmAgd2hlbiBmdW5j
+dGlvbnMgCj4gPiB0aGF0IGFmdGVyIGhmc19maW5kX2luaXQgZmFpbHMuIFRoaXMgdGFjdGljIG9i
+c2VydmF0aW9uIHN1Z2dlc3RzIHRoYXQKPiA+IGhmc19maW5kX2luaXQgcHJvYmVybHkgc2hvdWxk
+IHJlbGVhc2UgYHB0cmAgd2hlbiBpdCBmYWlscywgaS5lLiBpbiB0aGUKPiA+IGRlZmF1bHQgYnJh
+bmNoIG9mIHN3aXRjaCBpbiB0aGlzIHBhdGNoLgo+ID4gCj4gPiBCZXNpZGVzLCB3ZSBub3RpY2Vk
+IGFub3RoZXIgaW1wbGVtZW50YXRpb24gb2YgaGZzX2ZpbmRfaW5pdCBpbiAKPiA+IGZzL2hmc3Bs
+dXMvYmZpbmQuYywgd2hpY2ggaXMgZXNzZW50aWFsbHkgaWRlbnRpY2FsIHRvIHRoZSBvbmUgaW4g
+Cj4gPiB0aGlzIHBhdGNoIChpbiBmcy9oZnMvYmZpbmQuYykgYnV0IGNhbGxpbmcgYEJVRygpO2Ag
+aW4gZGVmYXVsdCBicmFuY2gKPiA+IHRvIHRyaWdnZXIgYW4gZXJyb3ItaGFuZGxpbmcuCj4gPiAK
+PiAKPiBJIHNlZS4gSSBiZWxpZXZlIGl0IG1ha2VzIHNlbnNlIHRvIGFkZCBhbGwgb2YgdGhpcyBl
+eHBsYW5hdGlvbgo+IGludG8gY29tbWVudCBzZWN0aW9uLiBNb2RpZmljYXRpb24gbG9va3MgZ29v
+ZC4gTW9zdGx5LCBoZnNfZmluZF9leGl0KCkKPiBkb2VzIGZyZWVpbmcgcmVzb3VyY2VzIGFuZCBp
+ZiBoZnNfZmluZF9pbml0KCkgZmFpbHMsIHRoZW4gaGZzX2ZpbmRfZXhpdCgpCj4gaXMgbmV2ZXIg
+Y2FsbGVkLiBNYXliZSwgaXQgbWFrZXMgc2Vuc2UgdG8gc2V0IGZkLT50cmVlID0gTlVMTCB0b28g
+YnV0Cj4gaXQgaXMgbm90IGNyaXRpY2FsLCBhcyBmYXIgYXMgSSBjYW4gc2VlLgo+IAo+IENvdWxk
+IHlvdSBwbGVhc2UgcmV3b3JrIHRoZSBjb21tZW50IHNlY3Rpb24gb2YgdGhlIHBhdGNoPyAKClN1
+cmUsIEknbGwgaW5jbHVkaW5nIHN1Y2ggaWRlYSBpbiB0aGlzIHBhdGNoIGFuZCBzZW5kIGEgdjIg
+dmVyc2lvbiBvZiAKdGhpcyBwYXRjaC4KClRoYW5rcywKWmhpcGVuZy4KCj4gVGhhbmtzLAo+IFNs
+YXZhLgo=
 
