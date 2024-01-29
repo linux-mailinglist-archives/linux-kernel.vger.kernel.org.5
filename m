@@ -1,231 +1,197 @@
-Return-Path: <linux-kernel+bounces-43059-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43110-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F36EA840ADD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:10:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2B21840BA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:36:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2419E1C23478
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:10:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 412422851C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:36:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6C59155A51;
-	Mon, 29 Jan 2024 16:09:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XEmM3qYl";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="pHOAXzVZ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="v0bghz1e";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="o2TK9+Jj"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED47015B10B;
+	Mon, 29 Jan 2024 16:32:10 +0000 (UTC)
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD764155A28;
-	Mon, 29 Jan 2024 16:09:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B289915AAC8;
+	Mon, 29 Jan 2024 16:32:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706544586; cv=none; b=ZQWSodWlVuwPIjs1DnpOoDuKdALpB09Y7bgGwhqpCEt5ErGb+eWL4u85ooZhIuImqDJMPIBXDrJ1vD9kfxIQp/vJP4Kj2aoRmo7jYlzV9K35ivJ7uzUzMuRy1qfq28iocVsoiRY07h0sxsz0PWEKRGsg95DpqBbFKFykdXSX1Sw=
+	t=1706545930; cv=none; b=HnFewaFzNwGHQOyY3ZTaG4pSWePHWkluznL5Q7D/M/agxSS2EaWYMoizalxOP2ffV08w7Ta32zOfFCM1pKqzT+m0ux+aLQw9VI0MpSdL8BBz/7YrDLOQ0hA15HKv3+TfNgmWZmLp5xRJtTb2XTpRh9dmJqM/q6Oj9MY+tx5glBg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706544586; c=relaxed/simple;
-	bh=hNsaj1rxxwQWYa7Z7f8gZ5X4GBVhrlEGD+oqwl6NJL8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NDDnbf61n0w46pMCWsNAhngSgrKuqoxhJtEEZXsS1hfL1dQlNrNZgOehLZsGP5NBc1Xytr0TnGYFV+XhsSnh8FmtoFTfx8LxAfFPpLaAtlwadR4ubQQLHXWEDVr3oyrWzVcNxaYTLg7Lj3nlx/HoGm96YyuoGkcKfWULgTHYgJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XEmM3qYl; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=pHOAXzVZ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=v0bghz1e; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=o2TK9+Jj; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	s=arc-20240116; t=1706545930; c=relaxed/simple;
+	bh=ppFSX4TLZPrmX+YrW4Nuj13W22ZH+a+hANAV5VqMZVY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=i3XeY2+BH96WGxGASBFctaFg5cVrgl8nIL9V4NjzMqRpjLnnZsrvJTb8TpYN3zyu62tQwxRBrRW4l1+K6JzB8HDlckLk1WHXRFzZbTkkllHyH9t11HyG01RlxnC+cdmenqjtab/DU8bRLbRbBSklnI4tOhdtfGnNWy3+mzyiDuQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id cb34933e457b824a; Mon, 29 Jan 2024 17:32:05 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BD34C1F7F6;
-	Mon, 29 Jan 2024 16:09:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706544582; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0q2MLUrv1k7d9D5+/BdCoPmlbiZZ17Ok8bpHpkSmRSY=;
-	b=XEmM3qYlI0CUrEqb7kPUhszOWOQHrlokbHhrZc7EGwa2SHsGXXDHs28Y1liMhb8eVSRDeO
-	zatQeIr5WQa7C018hiHg56nH3gGKBWdULRUkIytPR2X8MllN8+cuqIC1jlmM9H7jAE4AEK
-	FizcKVhqgW1iD6E/ABYBy/eaXsx6HxA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706544582;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0q2MLUrv1k7d9D5+/BdCoPmlbiZZ17Ok8bpHpkSmRSY=;
-	b=pHOAXzVZkyeIJmcfgNypcReo3Jf9iwdmiAJjbf9PZXcOsFH1rsl1yy9JI5Ch2qME7PBVfo
-	x7CM5qd5SElWPxDA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706544580; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0q2MLUrv1k7d9D5+/BdCoPmlbiZZ17Ok8bpHpkSmRSY=;
-	b=v0bghz1eqSg+/3eBpgiT5psyrda9f5aC+lV5JzdkYb2pQcpf8whF4MwtOFF1+nwpPoZfYI
-	KbB9mB8y4ZcLBV2pgYTRKbwoZe9O2ilikNY2Mtihm1Zz592TvhQ+xEEVq0S1ExdH7wUPkL
-	uuMBhbM3mblZ9tOrhFRxTnLP+JkzkKU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706544580;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0q2MLUrv1k7d9D5+/BdCoPmlbiZZ17Ok8bpHpkSmRSY=;
-	b=o2TK9+JjZ+NMF9RV1bTujh4tyCF2Ql59qLB7eN/Mzp3OOKiLYgY59GiPARiAgNiFdm1hIV
-	MtBKvHGUbHtJZeBA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id ACF4D132FA;
-	Mon, 29 Jan 2024 16:09:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id v5ItKsTNt2V/JAAAn2gu4w
-	(envelope-from <jack@suse.cz>); Mon, 29 Jan 2024 16:09:40 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 1B926A0807; Mon, 29 Jan 2024 17:09:39 +0100 (CET)
-Date: Mon, 29 Jan 2024 17:09:39 +0100
-From: Jan Kara <jack@suse.cz>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Jan Kara <jack@suse.cz>, Roman Smirnov <r.smirnov@omp.ru>,
-	stable@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Alexey Khoroshilov <khoroshilov@ispras.ru>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>,
-	Karina Yankevich <k.yankevich@omp.ru>, lvc-project@linuxtesting.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, linux-ext4@vger.kernel.org,
-	Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>
-Subject: Re: [PATCH 5.10/5.15 v2 0/1 RFC] mm/truncate: fix WARNING in
- ext4_set_page_dirty()
-Message-ID: <20240129160939.jgrhzrh5l2paezvp@quack3>
-References: <20240125130947.600632-1-r.smirnov@omp.ru>
- <ZbJrAvCIufx1K2PU@casper.infradead.org>
- <20240129091124.vbyohvklcfkrpbyp@quack3>
- <Zbe5NBKrugBpRpM-@casper.infradead.org>
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 2C96966975C;
+	Mon, 29 Jan 2024 17:32:05 +0100 (CET)
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Linux PM <linux-pm@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+Subject: [PATCH v2 01/10] PM: sleep: stats: Use array of suspend step names
+Date: Mon, 29 Jan 2024 17:09:44 +0100
+Message-ID: <4886186.GXAFRqVoOG@kreacher>
+In-Reply-To: <5770175.DvuYhMxLoT@kreacher>
+References: <5770175.DvuYhMxLoT@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zbe5NBKrugBpRpM-@casper.infradead.org>
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=v0bghz1e;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=o2TK9+Jj
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[17];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email,syzkaller.appspot.com:url,bootlin.com:url];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Score: -4.01
-X-Rspamd-Queue-Id: BD34C1F7F6
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtgedgjeekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepgedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehulhhfrdhhrghnshhsohhnsehlihhnrghrohdrohhrghdprhgtphhtthhopehsthgrnhhishhlrgifrdhgrhhushiikhgrsehlihhnuhigrdhinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
 
-On Mon 29-01-24 14:41:56, Matthew Wilcox wrote:
-> On Mon, Jan 29, 2024 at 10:11:24AM +0100, Jan Kara wrote:
-> > On Thu 25-01-24 14:06:58, Matthew Wilcox wrote:
-> > > On Thu, Jan 25, 2024 at 01:09:46PM +0000, Roman Smirnov wrote:
-> > > > Syzkaller reports warning in ext4_set_page_dirty() in 5.10 and 5.15
-> > > > stable releases. It happens because invalidate_inode_page() frees pages
-> > > > that are needed for the system. To fix this we need to add additional
-> > > > checks to the function. page_mapped() checks if a page exists in the 
-> > > > page tables, but this is not enough. The page can be used in other places:
-> > > > https://elixir.bootlin.com/linux/v6.8-rc1/source/include/linux/page_ref.h#L71
-> > > > 
-> > > > Kernel outputs an error line related to direct I/O:
-> > > > https://syzkaller.appspot.com/text?tag=CrashLog&x=14ab52dac80000
-> > > 
-> > > OK, this is making a lot more sense.
-> > > 
-> > > The invalidate_inode_page() path (after the page_mapped check) calls
-> > > try_to_release_page() which strips the buffers from the page.
-> > > __remove_mapping() tries to freeze the page and presuambly fails.
-> > 
-> > Yep, likely.
-> > 
-> > > ext4 is checking there are still buffer heads attached to the page.
-> > > I'm not sure why it's doing that; it's legitimate to strip the
-> > > bufferheads from a page and then reattach them later (if they're
-> > > attached to a dirty page, they are created dirty).
-> > 
-> > Well, we really need to track dirtiness on per fs-block basis in ext4
-> > (which makes a difference when blocksize < page size). For example for
-> > delayed block allocation we reserve exactly as many blocks as we need
-> > (which need not be all the blocks in the page e.g. when writing just one
-> > block in the middle of a large hole). So when all buffers would be marked
-> > as dirty we would overrun our reservation. Hence at the moment of dirtying
-> > we really need buffers to be attached to the page and stay there until the
-> > page is written back.
-> 
-> Thanks for the clear explanation!
-> 
-> Isn't the correct place to ensure that this is true in
-> ext4_release_folio()?  I think all paths to remove buffer_heads from a
-> folio go through ext4_release_folio() and so it can be prohibited here
-> if the folio is part of a delalloc extent?
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-OK, I tried to keep it simple but now I have to go into more intricate
-details of GUP and the IO path so please bear with me. Normally, how things
-happen on write or page_mkwrite time is:
+Replace suspend_step_name() in the suspend statistics code with an array
+of suspend step names which has fewer lines of code and less overhead.
 
-lock_page(page)
-check we have buffers, create if not
-do stuff with page
-mark appropriate buffers (and thus the page) dirty
-unlock_page(page)
+While at it, remove two unnecessary line breaks in suspend_stats_show()
+and adjust some white space in there to the kernel coding style for a
+more consistent code layout.
 
-Now the page and buffers are dirty so nothing can be freed as reclaim
-doesn't touch such pages (and neither does try_to_free_buffers()). So we
-are safe until page writeback time.
+No intentional functional impact.
 
-But GUP users such as direct IO are different. They do the page_mkwrite()
-dance at GUP time so we are fine at that moment. But on direct IO
-completion they recheck page dirty bits and call set_page_dirty() *again*
-if they find the page has been cleaned in the mean time. And this is where
-the problem really happens. If writeback of the pages serving as direct IO
-buffer happen while the IO is running, buffers get cleaned, and can be
-reclaimed, and we then hit the warning in ext4_set_page_dirty().
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+---
 
-So what we really need is "don't reclaim page buffers if the page is pinned
-by GUP". This is what MM checks in recent kernels (since d824ec2a15467 "mm:
-do not reclaim private data from pinned page") and the patch discussed here
-is effectively an equivalent of it for stable. So AFAICT it really closes
-all the problematic paths. Sure we could implement that check in
-ext4_release_folio() but I don't think there's a great reason for that.
+v1 -> v2: Added R-by from Stanislaw.
 
-And yes, technically I assume we could reconstruct the buffer state from
-other data structures if we find the buffers are missing. But in
-ext4_set_page_dirty() that is not easily possible as it may be called in
-softirq context. And elsewhere it is prone to hiding other bugs we may
-introduce. So just not stripping the buffer heads when the page is pinned
-is by far the easiest solution for ext4, in particular for stable...
+---
+ include/linux/suspend.h |    3 +-
+ kernel/power/main.c     |   50 +++++++++++++++++-------------------------------
+ 2 files changed, 20 insertions(+), 33 deletions(-)
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Index: linux-pm/include/linux/suspend.h
+===================================================================
+--- linux-pm.orig/include/linux/suspend.h
++++ linux-pm/include/linux/suspend.h
+@@ -41,7 +41,8 @@ typedef int __bitwise suspend_state_t;
+ #define PM_SUSPEND_MAX		((__force suspend_state_t) 4)
+ 
+ enum suspend_stat_step {
+-	SUSPEND_FREEZE = 1,
++	SUSPEND_NONE = 0,
++	SUSPEND_FREEZE,
+ 	SUSPEND_PREPARE,
+ 	SUSPEND_SUSPEND,
+ 	SUSPEND_SUSPEND_LATE,
+Index: linux-pm/kernel/power/main.c
+===================================================================
+--- linux-pm.orig/kernel/power/main.c
++++ linux-pm/kernel/power/main.c
+@@ -319,25 +319,17 @@ static ssize_t pm_test_store(struct kobj
+ power_attr(pm_test);
+ #endif /* CONFIG_PM_SLEEP_DEBUG */
+ 
+-static char *suspend_step_name(enum suspend_stat_step step)
+-{
+-	switch (step) {
+-	case SUSPEND_FREEZE:
+-		return "freeze";
+-	case SUSPEND_PREPARE:
+-		return "prepare";
+-	case SUSPEND_SUSPEND:
+-		return "suspend";
+-	case SUSPEND_SUSPEND_NOIRQ:
+-		return "suspend_noirq";
+-	case SUSPEND_RESUME_NOIRQ:
+-		return "resume_noirq";
+-	case SUSPEND_RESUME:
+-		return "resume";
+-	default:
+-		return "";
+-	}
+-}
++static const char * const suspend_step_names[] = {
++	[SUSPEND_NONE] = "",
++	[SUSPEND_FREEZE] = "freeze",
++	[SUSPEND_PREPARE] = "prepare",
++	[SUSPEND_SUSPEND] = "suspend",
++	[SUSPEND_SUSPEND_LATE] = "suspend_late",
++	[SUSPEND_SUSPEND_NOIRQ] = "suspend_noirq",
++	[SUSPEND_RESUME_NOIRQ] = "resume_noirq",
++	[SUSPEND_RESUME_EARLY] = "resume_early",
++	[SUSPEND_RESUME] = "resume",
++};
+ 
+ #define suspend_attr(_name, format_str)				\
+ static ssize_t _name##_show(struct kobject *kobj,		\
+@@ -392,16 +384,14 @@ static struct kobj_attribute last_failed
+ static ssize_t last_failed_step_show(struct kobject *kobj,
+ 		struct kobj_attribute *attr, char *buf)
+ {
+-	int index;
+ 	enum suspend_stat_step step;
+-	char *last_failed_step = NULL;
++	int index;
+ 
+ 	index = suspend_stats.last_failed_step + REC_FAILED_NUM - 1;
+ 	index %= REC_FAILED_NUM;
+ 	step = suspend_stats.failed_steps[index];
+-	last_failed_step = suspend_step_name(step);
+ 
+-	return sprintf(buf, "%s\n", last_failed_step);
++	return sprintf(buf, "%s\n", suspend_step_names[step]);
+ }
+ static struct kobj_attribute last_failed_step = __ATTR_RO(last_failed_step);
+ 
+@@ -473,30 +463,26 @@ static int suspend_stats_show(struct seq
+ 			"failed_resume_noirq",
+ 				suspend_stats.failed_resume_noirq);
+ 	seq_printf(s,	"failures:\n  last_failed_dev:\t%-s\n",
+-			suspend_stats.failed_devs[last_dev]);
++		   suspend_stats.failed_devs[last_dev]);
+ 	for (i = 1; i < REC_FAILED_NUM; i++) {
+ 		index = last_dev + REC_FAILED_NUM - i;
+ 		index %= REC_FAILED_NUM;
+-		seq_printf(s, "\t\t\t%-s\n",
+-			suspend_stats.failed_devs[index]);
++		seq_printf(s, "\t\t\t%-s\n", suspend_stats.failed_devs[index]);
+ 	}
+ 	seq_printf(s,	"  last_failed_errno:\t%-d\n",
+ 			suspend_stats.errno[last_errno]);
+ 	for (i = 1; i < REC_FAILED_NUM; i++) {
+ 		index = last_errno + REC_FAILED_NUM - i;
+ 		index %= REC_FAILED_NUM;
+-		seq_printf(s, "\t\t\t%-d\n",
+-			suspend_stats.errno[index]);
++		seq_printf(s, "\t\t\t%-d\n", suspend_stats.errno[index]);
+ 	}
+ 	seq_printf(s,	"  last_failed_step:\t%-s\n",
+-			suspend_step_name(
+-				suspend_stats.failed_steps[last_step]));
++		   suspend_step_names[suspend_stats.failed_steps[last_step]]);
+ 	for (i = 1; i < REC_FAILED_NUM; i++) {
+ 		index = last_step + REC_FAILED_NUM - i;
+ 		index %= REC_FAILED_NUM;
+ 		seq_printf(s, "\t\t\t%-s\n",
+-			suspend_step_name(
+-				suspend_stats.failed_steps[index]));
++			   suspend_step_names[suspend_stats.failed_steps[index]]);
+ 	}
+ 
+ 	return 0;
+
+
+
 
