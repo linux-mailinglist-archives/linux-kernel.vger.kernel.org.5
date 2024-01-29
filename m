@@ -1,193 +1,151 @@
-Return-Path: <linux-kernel+bounces-42157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42159-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE77183FD42
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 05:36:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B070383FD44
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 05:43:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 440692855FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 04:36:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E8312854D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 04:43:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF360339BC;
-	Mon, 29 Jan 2024 04:36:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0501433D7;
+	Mon, 29 Jan 2024 04:43:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="ej0cPmGB"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nZO9iMUz"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51C1A3C481
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 04:36:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31C4A433BC
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 04:43:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706502994; cv=none; b=uo0T7vWUzq1sX9SRzhOo5j199jMjw/mnvo9XQ1MvSEQiW+dj4OWS6ESNlIzLbEeI9N3MPa9coPs/6NW+o4G1V3MSHttbZQ54hmSJWntIbJs7OSyp71/LEE34Jr/9LQqcJDdSFZMma5bqaTW1h9pa1arxUDvdTO7hnuQjfHUw1PM=
+	t=1706503418; cv=none; b=RbpV3QAG0mhWbMUAMjXZ+IecUGjKDymQsHEFsAdu+hGM9LJZumbpfSZPxjCn/y1cGQUgYyNH6VXMy0FpPLDWe9z0UJYnJcs0+W3zP6Ge/ir2c+7eV0L6DVCAv6PmIpPRWQ/2a14MU6S8m0T28UmRdaXbz9Zfzv2Ybw+LgQ/Ilzc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706502994; c=relaxed/simple;
-	bh=Qvclxu84S/Vj00n5XJGicbf+1n9+wvgXNZJSxffCMaA=;
+	s=arc-20240116; t=1706503418; c=relaxed/simple;
+	bh=KEMyZetHyT4ZTwsJA/dqGBL0UDf2ztNiYH7ALHFA6hY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cOOwBygJAOBbzj/ec1vAeuICQzz9yhQM87soZvei2u1aOlIrISuaIxxFglGDibZkZdbU3x1JqkFxSxMeejhZ2JGkMG7JaiJpp85jkYKeFg2ABqGx4pd8XFKP9LIUUXAKZqJ3T/U7XQxCel5cQhlbZE/3Jw9vwr0wgw4yodfC40Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=ej0cPmGB; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a26f73732c5so236559066b.3
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 20:36:32 -0800 (PST)
+	 To:Cc:Content-Type; b=ozVu9qGWM6docKhA5rU9ae1rS+oI0TdIzF4+08Pgkx57/q6LIk9Q0QHTY3DU4BX+DzHR0H9WpQuo1MknSue/gEx6Wpji2xRI9DdQXgyP+nddDds/HNgE8o6kuHDqnSmpdZnKOa3aKbqiPX+LutKyTn16ZJswpVRdThy494ReY00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=nZO9iMUz; arc=none smtp.client-ip=209.85.167.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-51020ec19b1so2620e87.1
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 20:43:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1706502990; x=1707107790; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=GNrDOkLUoRhPhAZaq9nU6yW/IkHOgSVhQm/kSJS29jU=;
-        b=ej0cPmGBny+KdMuseOrUhYXXVycTUu3+fxdZfL1Z2YgKqqGdUTgu1Z0Rd3E/nYABYZ
-         fbBAnusZ3NgXP4YiXRr9iTodT7ygtVFbHqTiuK+gS8Dm443gpN2Ft+znUx0qOVgxc4Hy
-         /oIDFQ2POU2NVLBhy1q4VjW9r8x+sOysReZns=
+        d=google.com; s=20230601; t=1706503415; x=1707108215; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=A9LUUJgMf4wSU1c4mOlh8wB+/iHiXWhoEQ7XvlFHKLY=;
+        b=nZO9iMUzkzoi7ims8/m40nYrF5N/d3L73jpzGt6Na7OvGDdBwcG0n9N0IkmgWPXgpj
+         FgLUkFva1zFRzaARTdhaRRlOrQeOj1NdFXIAg0aAUHYmUToti3GTcn/8nCSRj0nRH7vw
+         pXdn6PYkvyh77ZznH252pjl1z6MZUIG+sVK6IjjQgc2RwJF2KdxE/B7qvOw01C2mHvdJ
+         uE/Hy8KXXdttxEz5whWOr17r1Ag8pdR+V9mwOtNdMeqkw/Vt/Do41ajk8wMaMBmhe4QU
+         Fe9WmqOxUIksJ5CC2bhemiFa7U8zsCKHv2QFo3fcKNALWy5qVlOEKoEy7Z2ez3jxXyVv
+         nJKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706502990; x=1707107790;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GNrDOkLUoRhPhAZaq9nU6yW/IkHOgSVhQm/kSJS29jU=;
-        b=XvmFnNu6YY34/KLbmtDtccUmJ8WdGFiQshP9CqUmf25XnstqkZT3Lx0QZznQPle9Pk
-         r+X5hg2cuZ7gy7GNXJqjhNJS+lMBse9iNOPTtLG5kXBnsvkodXVEY59nJbE9tYF3lijY
-         KnOnWjWQQUBtarP9J/SOuFoQ48mQLEJ4pgIlK2N/am/mgMGnxUQgJKdvrT1CDyy3ohUP
-         5XljBgQlD8vDejOLyRVjhCpej2QMs/KaVhrgwH7Ze7hWpTC08RuW68xI2fhXdxkEakuf
-         zKSv6N1YKjriB7sJlBoioIkymeuEegSXROIa8co4lVkMTAicdk/HD8S07YUCmGFl43Yd
-         4nnA==
-X-Gm-Message-State: AOJu0Yx6R0CdeD1KVS6SPd6MzAYxfp8966zXOLb6CATzVgOcC8sng/Jp
-	zZQ6MEbuEWocquTFeCkwmirkT6obBDJr/7t0cKx57uTvz8/VjQS81bus62pBlBx8xZCeA34FMbS
-	MEtKMvA==
-X-Google-Smtp-Source: AGHT+IE9wihg2DUE9wMe1uBewTis98Pn0NhL63GVfRChMaBS7RR5F/95UGs1ENL/FJ9oET3ANvjVfA==
-X-Received: by 2002:a17:906:560e:b0:a35:3ce3:c48c with SMTP id f14-20020a170906560e00b00a353ce3c48cmr3281085ejq.23.1706502990139;
-        Sun, 28 Jan 2024 20:36:30 -0800 (PST)
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com. [209.85.208.50])
-        by smtp.gmail.com with ESMTPSA id vu5-20020a170907a64500b00a313ba55c35sm3521262ejc.98.2024.01.28.20.36.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 28 Jan 2024 20:36:29 -0800 (PST)
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-55c2c90c67dso1963484a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 20:36:29 -0800 (PST)
-X-Received: by 2002:a05:6402:2709:b0:55a:813f:8802 with SMTP id
- y9-20020a056402270900b0055a813f8802mr3784740edd.25.1706502988865; Sun, 28 Jan
- 2024 20:36:28 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706503415; x=1707108215;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=A9LUUJgMf4wSU1c4mOlh8wB+/iHiXWhoEQ7XvlFHKLY=;
+        b=qJk85Y60EMcxuue4S9CK+z8w9Qh7t8jNlrkJyqDfvVohD0AzxaU+pCzYOgh1DcqsiB
+         M1ojFgR1Yo+qfFX4pHG2TXel6v3Lcr+HohzNm7zRN/nKSquGh93r+cLMo4fY2qiFSf5L
+         Z/lDusSigzXwmWWZrmr8pUNSQetDh97FsYh1kj4BSMqR4VFC+dGRIEvYOCENBEZT2Ilo
+         EUheoOcWYAV80vZqf/N0s6LQRGccKe98xoa/JINScnkFij+dwPONsUGsVjchrb8XgQ9t
+         Q5poC8RL6dAxfCG4lCF7/PGrgTB7iWM5EmtXelEgiqrhV9GkLj1Kj4qPBEbVYpN+LKOC
+         jB6Q==
+X-Gm-Message-State: AOJu0Yzulre7R8K1L8hef/EpZeDMaxtX1qN8hKIkXMn4SltasM3WurJA
+	jWhR74bPmCdM743TJ87Zydn8rsF8Rj4rtMgYFrvNA8OAbUayemVtCItiD9gka+2repLur3Tl0Jw
+	WLQQDm8yHv4pH3jlOe/LYN9e94HzCDc9S3njb
+X-Google-Smtp-Source: AGHT+IFzrABIMMNFKWEklTz+hQsuaQAe0PizMVP7egZysLMvLyAr9M3qE6gCj6h0Qvt7HHzlYbldorBjpnjEeA62DRw=
+X-Received: by 2002:a05:6512:2803:b0:510:1656:adec with SMTP id
+ cf3-20020a056512280300b005101656adecmr337207lfb.6.1706503414839; Sun, 28 Jan
+ 2024 20:43:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <202401291043.e62e89dc-oliver.sang@intel.com>
-In-Reply-To: <202401291043.e62e89dc-oliver.sang@intel.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sun, 28 Jan 2024 20:36:12 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wh0M=e8R=ZXxa4vesLTtvGmYWJ-w1VmXxW5Mva=Nimk4Q@mail.gmail.com>
-Message-ID: <CAHk-=wh0M=e8R=ZXxa4vesLTtvGmYWJ-w1VmXxW5Mva=Nimk4Q@mail.gmail.com>
-Subject: Re: [linus:master] [eventfs] 852e46e239: BUG:unable_to_handle_page_fault_for_address
-To: kernel test robot <oliver.sang@intel.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, oe-lkp@lists.linux.dev, lkp@intel.com, 
-	linux-kernel@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Christian Brauner <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Ajay Kaher <ajay.kaher@broadcom.com>, linux-trace-kernel@vger.kernel.org
+References: <20240126061153.2883199-1-vamshigajjela@google.com> <ZbNq9q5mM6kRq7c3@hovoldconsulting.com>
+In-Reply-To: <ZbNq9q5mM6kRq7c3@hovoldconsulting.com>
+From: VAMSHI GAJJELA <vamshigajjela@google.com>
+Date: Mon, 29 Jan 2024 10:13:22 +0530
+Message-ID: <CAMTSyjqOj64z3-mDm1pdQ5bi9ZM3j_cr7iSdCtvo40RyJrh38Q@mail.gmail.com>
+Subject: Re: [PATCH v1 RESEND] spmi: hisi-spmi-controller: Fix kernel panic on rmmod
+To: Johan Hovold <johan@kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>, Stephen Boyd <sboyd@kernel.org>, 
+	Johan Hovold <johan+linaro@kernel.org>, Caleb Connolly <caleb.connolly@linaro.org>, 
+	linux-kernel@vger.kernel.org, manugautam@google.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, 28 Jan 2024 at 18:59, kernel test robot <oliver.sang@intel.com> wrote:
+On Fri, Jan 26, 2024 at 1:48=E2=80=AFPM Johan Hovold <johan@kernel.org> wro=
+te:
 >
->   21:   48 8b 47 f8             mov    -0x8(%rdi),%rax
->   25:   48 85 c0                test   %rax,%rax
->   28:   74 11                   je     0x3b
->   2a:*  f6 40 78 02             testb  $0x2,0x78(%rax)          <-- trapping instruction
+> On Fri, Jan 26, 2024 at 11:41:53AM +0530, Vamshi Gajjela wrote:
+> > Ensure consistency in spmi_controller pointers between
+> > spmi_controller_remove/put and driver spmi_del_controller functions.
+> > The former requires a pointer to struct spmi_controller, while the
+> > latter passes a pointer of struct spmi_controller_dev, leading to a
+> > "Null pointer exception".
+> >
+> > 'nr' member of struct spmi_controller, which serves as an identifier
+> > for the controller/bus. This value is assigned a dynamic ID in
+> > spmi_controller_alloc, and overriding it from the driver results in an
+> > ida_free error "ida_free called for id=3Dxx which is not allocated".
+>
+> No Fixes tag?
+There isn't a bug, I will remove word "Fix"
+>
+> > Signed-off-by: Vamshi Gajjela <vamshigajjela@google.com>
+> > ---
+> >  drivers/spmi/hisi-spmi-controller.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/spmi/hisi-spmi-controller.c b/drivers/spmi/hisi-sp=
+mi-controller.c
+> > index 9cbd473487cb..af51ffe24072 100644
+> > --- a/drivers/spmi/hisi-spmi-controller.c
+> > +++ b/drivers/spmi/hisi-spmi-controller.c
+> > @@ -303,7 +303,6 @@ static int spmi_controller_probe(struct platform_de=
+vice *pdev)
+> >
+> >       spin_lock_init(&spmi_controller->lock);
+> >
+> > -     ctrl->nr =3D spmi_controller->channel;
+This remains applicable, however, it could lead to a failure in the
+spmi_ctrl_release, I
+will refactor the patch to address this.
+also "spmi_del_controller" is removed from 6.7.2
+> >       ctrl->dev.parent =3D pdev->dev.parent;
+> >       ctrl->dev.of_node =3D of_node_get(pdev->dev.of_node);
+> >
+> > @@ -326,7 +325,8 @@ static int spmi_controller_probe(struct platform_de=
+vice *pdev)
+> >
+> >  static void spmi_del_controller(struct platform_device *pdev)
+>
+> This function does not exist in mainline so presumably this is some bug
+> you've introduced in your downstream driver that you're trying to fix.
+>
+> So this patch looks all bogus.
+spmi_del_controller is present until in 6.7.2, I have made this patch
+in last week of Dec,
+I should have checked before resending, apologies.
 
-So this is
 
-        struct tracefs_inode *ti = get_tracefs(inode);
-        struct eventfs_inode *ei = ti->private;
-
-        if (!ei || !ei->is_events || ..
-
-in set_top_events_ownership(), and it's that 'ei->is_events' test that oopses.
-
-The 'inode' is the incoming argument (in %rdi), and you don't see code
-generation for the "get_tracefs(inode)" because it's just an offset
-off the inode.
-
-So the "ti->private" read is that read off "-8(%rdi)", because
-
-  struct tracefs_inode {
-        unsigned long           flags;
-        void                    *private;
-        struct inode            vfs_inode;
-  };
-
-so 'private' is 8 bytes below the 'struct inode' pointer.
-
-So 'ei' isn't NULL, but it's a bad pointer, and 'ei->is_events' is
-that "testb  $0x2,0x78(%rax)" and it oopses as a result.
-
-I don't think this is directly related to that commit 852e46e239ee
-("eventfs: Do not create dentries nor inodes in iterate_shared") that
-the kernel test robot talks about.
-
-It looks like some inode creation never filled in the ->private field
-at all, and it's just garbage.
-
-I note that we have code like this:
-
- create_dir_dentry():
-        ...
-        mutex_unlock(&eventfs_mutex);
-
-        dentry = create_dir(ei, parent);
-
-        mutex_lock(&eventfs_mutex);
-        ...
-        if (!ei->dentry && !ei->is_freed) {
-                ei->dentry = dentry;
-                eventfs_post_create_dir(ei);
-                dentry->d_fsdata = ei;
-        } else {
-
-and that eventfs_post_create_dir() seems to be where it fills in that
-->private pointer:
-
-        ti = get_tracefs(ei->dentry->d_inode);
-        ti->private = ei;
-
-but notice how create_dir() has done that
-
-        d_instantiate(dentry, inode);
-
-which exposes the inode to lookup - long before it's actually then filled in.
-
-IOW, what I think is going on is a very basic race, where
-create_dir_dentry() will allocate the inode and attach it to the
-dentry long before the inode has been fully initialized.
-
-So if somebody comes in *immediately* after that, and does a 'stat()'
-on that name that now is exposed, it will see an inode that has not
-yet made it to that eventfs_post_create_dir() phase, and that in turn
-explains why
-
-        struct eventfs_inode *ei = ti->private;
-
-just reads random garbage values.
-
-So if I'm right (big "if" - it looks likely, but who knows) this bug
-is entirely unrelated to any dentry caching or any reference counting.
-
-It just needs just the right timing, where one CPU happens to do a
-'stat()' just as another one creates the directory.
-
-It's not a big window, so you do need some timing "luck".
-
-End result: the d_instantiate() needs to be done *after* the inode has
-been fully filled in.
-
-Alternatively, you could
-
- (a) not drop the eventfs_mutex around the create_dir() call
-
- (b) take the eventfs_mutex around all of set_top_events_ownership()
-
-and just fix it by having the lock protect the lack of ordering.
-
-                 Linus
+>
+> >  {
+> > -     struct spmi_controller *ctrl =3D platform_get_drvdata(pdev);
+> > +     struct spmi_controller_dev *spmi_controller =3D platform_get_drvd=
+ata(pdev);
+> > +     struct spmi_controller *ctrl =3D spmi_controller->controller;
+> >
+> >       spmi_controller_remove(ctrl);
+> >       spmi_controller_put(ctrl);
+>
+> Johan
 
