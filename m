@@ -1,170 +1,152 @@
-Return-Path: <linux-kernel+bounces-43376-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43377-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 273598412E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:58:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B05808412E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:59:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6BE428A36D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:58:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A30551C23CF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:59:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70BFD2E84D;
-	Mon, 29 Jan 2024 18:58:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFDE128DDE;
+	Mon, 29 Jan 2024 18:58:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XDhUi7Gs"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="OsOLphgX"
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E686414A82;
-	Mon, 29 Jan 2024 18:58:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D4252D044
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 18:58:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706554700; cv=none; b=pIHpqJApWQ+/KB753BiZIO/q4iSE/Tt6nbsSjXTMz+EzVOsEzLmU3q2IedGo0n11HQZacjo1lPbv9/oKEz7uTGP56zuGI3MDPrhwAmEaFKiGOPdbbw71aah1C8dTI92QnNC3z5kwJcr54wT04I0qV1Cglt7DJ04ShfUQc60Mty8=
+	t=1706554734; cv=none; b=LovO8QEvszeM/6FuOngChDj/qABOdkV3Upip0sBhrrnwlXrmqvZk0YO4XLiOsmj9g2BG8hLthbJCSt/Ln4rqQMgvI0JcfGpHl8Y30iJEvho9pWw4ZUrog30lGZxdzghSceu2daqVKEr7uDqVpcZtGFSizxpKonELsOC10zqD+Ks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706554700; c=relaxed/simple;
-	bh=8ch06nTcYc7s7BDv13zY6ZFLhFBoG0R9gezse2mcm2o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NOSRm7iUJkoMFBiEhDKa6FV7uI4KVpKY4SfgSNXXJhTgyGdTaKps738gsswhz/5D0WNaPLoObdOmzF9DzpaJPlaRp/mb83TPeM/1ZsCQdcOdOG0VEPiomdegw0FIMFuIRcrOGg8Bvo5jxaQOWNMsz9IWEVAXMtYQL0V57c3QkYg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XDhUi7Gs; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706554699; x=1738090699;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=8ch06nTcYc7s7BDv13zY6ZFLhFBoG0R9gezse2mcm2o=;
-  b=XDhUi7GsLcs7YIRWMPxW0MKqF+g8g6SQhsYTyeYpcqytw3adGQe2QbIa
-   X3tdO/YBbWfCmk5usfI04kyGpCr992d6fja62PTQL26YfAd2KmIeqaG4+
-   zrJXKn0bbDsoLJoSNL25zoO7T8JrnoQULdT2m/bh/IGLSk8hZh3centw9
-   y/IlT7OvUvw2HVch2aNVB2ifhEXH6BLZexIk1TfYn5dAS6HrK3fXjaKQq
-   7Jz3UClbGYovfUmLeKbkk5o08ECE7OXm8Fbrhb4s+50BLIRsOkpFogom8
-   gni3YPcKtWOTbNsa6S+bZOVr/bcJBWKI+K6fNhRD+Gyyc4STOgDNZNGz0
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="16590277"
-X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
-   d="scan'208";a="16590277"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 10:58:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="911172916"
-X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
-   d="scan'208";a="911172916"
-Received: from lkp-server01.sh.intel.com (HELO 370188f8dc87) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 29 Jan 2024 10:58:08 -0800
-Received: from kbuild by 370188f8dc87 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rUWpa-0004ZQ-16;
-	Mon, 29 Jan 2024 18:58:06 +0000
-Date: Tue, 30 Jan 2024 02:58:01 +0800
-From: kernel test robot <lkp@intel.com>
-To: Oreoluwa Babatunde <quic_obabatun@quicinc.com>, catalin.marinas@arm.com,
-	will@kernel.org, robh+dt@kernel.org, frowand.list@gmail.com,
-	vgupta@kernel.org, arnd@arndb.de, olof@lixom.net, soc@kernel.org,
-	guoren@kernel.org, monstr@monstr.eu, palmer@dabbelt.com,
-	aou@eecs.berkeley.edu, dinguyen@kernel.org, chenhuacai@kernel.org,
-	tsbogend@alpha.franken.de, jonas@southpole.se,
-	stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
-	mpe@ellerman.id.au, ysato@users.sourceforge.jp, dalias@libc.org,
-	glaubitz@physik.fu-berlin.de, richard@nod.at,
-	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
-	chris@zankel.net, jcmvbkbc@gmail.com
-Cc: oe-kbuild-all@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 30/46] of: reserved_mem: Add code to use unflattened DT
- for reserved_mem nodes
-Message-ID: <202401300258.xkXVxP8C-lkp@intel.com>
-References: <20240126235425.12233-31-quic_obabatun@quicinc.com>
+	s=arc-20240116; t=1706554734; c=relaxed/simple;
+	bh=eKMFg7i7+7j+e8Iv0NW7ko6n3ZkbnwSwN9MN8KR3iQg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aWFtSLCikHejkHrmc7CUhkAq9+bRgvrbsISxzTxJoUzBpn21zzJiQpLNkznd16oR3IGMnXWyw7vRuctB7fKNL34+GPww25NZkdqOS6w4E0IDgRxnuad67yRu1gySWT0giF5Kl28utjtAtlEtOYDvdczOBAa3Kq2+T1JMrIay94E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=OsOLphgX; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-51114557c77so1230891e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 10:58:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1706554729; x=1707159529; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=lAIeftpjE3O3z+PB+PSTo+RPyGVLY9cTuEJCruuNk/w=;
+        b=OsOLphgXcvY9l4lR1zql4yODBK9CiHilNprHE23ita63pWGQxXOny/0C4QEPHkJL4w
+         7nHUPf1MNloA2saNS/w1AKU5vBU6rqBmubOBGGuKZeypMJSUr/HtqU08a+kxfahD/FFS
+         xA7TZouk9GaxShnH83jZhmiIqb7JOItvxa1KM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706554729; x=1707159529;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lAIeftpjE3O3z+PB+PSTo+RPyGVLY9cTuEJCruuNk/w=;
+        b=fwJyQMNabozmKcNTlOulsi8ea+GmS8/Kb5YOYAm+QTRwnSVjAD6R3tIv1uXhZmrXRL
+         5XYR46buW+r9DlgRVz4sYGLOL3e+tBM5tLC05MizVNqK+nDfhUdCTaHGNQu8XqhFo9E8
+         bpUrQnlisxw/FvmWPlGWlIXokAUUnrIVE3oTW5cBjHb99fdyygDmYmVzZ0tqWJ1B+fLs
+         lASJTOHFRGdhHYucmtKBa9xPZ1+pr6fKPejirATrnb1p+p/H0I4TB6Ek3f9lO3ROhwOr
+         tSbV8Na/fwX95Vr7zLm53APiG4rkBZAyeDfvtgiE4qrCDKAdi6UCE8sXA4OsD4cvaB3D
+         IKKA==
+X-Gm-Message-State: AOJu0YyzshNi39imNyA2QwfheVT+k5MKUg5mIbl5a/QDbWoKR1AUs+wl
+	c/8cLEGWlgadgJXAlhxxAWqUIUTSWCbIsVm4UCHWIxBtdWnLZk6GU4lerG2yjSjdUiSCdSlgdll
+	EJTodnA==
+X-Google-Smtp-Source: AGHT+IFR8LJHtcgZjnSMzTup5YSwCGRu08Wn6Az2SAwb7iRNt8gnLkqDyJXK0xpKWAwjfU80tDZsEQ==
+X-Received: by 2002:ac2:4a65:0:b0:50f:1ac5:758c with SMTP id q5-20020ac24a65000000b0050f1ac5758cmr4159662lfp.17.1706554729393;
+        Mon, 29 Jan 2024 10:58:49 -0800 (PST)
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
+        by smtp.gmail.com with ESMTPSA id b21-20020a196455000000b005101f0166b6sm1187676lfj.14.2024.01.29.10.58.48
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jan 2024 10:58:48 -0800 (PST)
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2cf3a095ba6so36254361fa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 10:58:48 -0800 (PST)
+X-Received: by 2002:a05:651c:150b:b0:2cc:9ec8:fc5a with SMTP id
+ e11-20020a05651c150b00b002cc9ec8fc5amr5318335ljf.39.1706554727677; Mon, 29
+ Jan 2024 10:58:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240126235425.12233-31-quic_obabatun@quicinc.com>
+References: <20240126150209.367ff402@gandalf.local.home> <CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
+ <20240126162626.31d90da9@gandalf.local.home> <CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
+ <CAHk-=whNfNti-mn6vhL-v-WZnn0i7ZAbwSf_wNULJeyanhPOgg@mail.gmail.com>
+ <8547159a-0b28-4d75-af02-47fc450785fa@efficios.com> <CAHk-=whAG6TM6PgH0YnsRe6U=RzL+JMvCi=_f0Bhw+q_7SSZuw@mail.gmail.com>
+ <29be300d-00c4-4759-b614-2523864c074b@efficios.com> <CAHk-=wjpyv+fhxzV+XEQgsC+-HaouKT7Ns8qT31jkpN_Jm84_g@mail.gmail.com>
+ <3120f1f0-eaf8-4058-9a65-bdbee28c68c9@efficios.com>
+In-Reply-To: <3120f1f0-eaf8-4058-9a65-bdbee28c68c9@efficios.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Mon, 29 Jan 2024 10:58:30 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wg8BrZEzjJ5kUyZzHPZmFqH6ooMN1gRBCofxxCfucgjaw@mail.gmail.com>
+Message-ID: <CAHk-=wg8BrZEzjJ5kUyZzHPZmFqH6ooMN1gRBCofxxCfucgjaw@mail.gmail.com>
+Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Linux Trace Devel <linux-trace-devel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Christian Brauner <brauner@kernel.org>, Ajay Kaher <ajay.kaher@broadcom.com>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Oreoluwa,
+On Mon, 29 Jan 2024 at 08:00, Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
+>
+> This breaks "cp -aH" and "cp -aL".
 
-kernel test robot noticed the following build warnings:
+Do we care? Do we have a user that cares? Has anybody ever hit it?
 
-[auto build test WARNING on robh/for-next]
-[also build test WARNING on arm64/for-next/core vgupta-arc/for-curr powerpc/next powerpc/fixes jcmvbkbc-xtensa/xtensa-for-next linus/master v6.8-rc2 next-20240129]
-[cannot apply to vgupta-arc/for-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Why would you ever do anything like that to tracefs filesystem?
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Oreoluwa-Babatunde/of-reserved_mem-Change-the-order-that-reserved_mem-regions-are-stored/20240127-081735
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
-patch link:    https://lore.kernel.org/r/20240126235425.12233-31-quic_obabatun%40quicinc.com
-patch subject: [PATCH 30/46] of: reserved_mem: Add code to use unflattened DT for reserved_mem nodes
-config: i386-randconfig-141-20240128 (https://download.01.org/0day-ci/archive/20240130/202401300258.xkXVxP8C-lkp@intel.com/config)
-compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+In other words: my point is that tracefs just isn't a regular
+filesystem. Never was, never will be.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401300258.xkXVxP8C-lkp@intel.com/
+And people should be *aware* of that. We should not say "hey, if it
+doesn't work like a normal filesystem, it's a bug".
 
-smatch warnings:
-drivers/of/of_reserved_mem.c:111 dt_scan_reserved_mem_reg_nodes() warn: unsigned 'node' is never less than zero.
+Try "cp -aL" on /proc, and guess what? It won't work all that well
+either. For entirely *different* reasons. You'll get some variation of
+"Input/output error"s, and insanely big files and quite possibly
+you'll end up with recursive copying as you try to copy the file that
+is /proc/self/fd/<output>.
 
-vim +/node +111 drivers/of/of_reserved_mem.c
+It's just a nonsensical operation to do, and if somebody says "I can't
+copy /proc on my system" it's a PEBKAC, not a kernel problem.
 
-    98	
-    99	/*
-   100	 * Save the reserved_mem reg nodes in the reserved_mem array
-   101	 */
-   102	static void __init dt_scan_reserved_mem_reg_nodes(void)
-   103	{
-   104		int t_len = (dt_root_addr_cells + dt_root_size_cells) * sizeof(__be32);
-   105		struct device_node *node, *child;
-   106		phys_addr_t base, size;
-   107		const __be32 *prop;
-   108		int len;
-   109	
-   110		node = of_find_node_by_path("/reserved-memory");
- > 111		if (node < 0) {
-   112			pr_err("Reserved memory: Did not find reserved-memory node\n");
-   113			return;
-   114		}
-   115	
-   116		for_each_child_of_node(node, child) {
-   117			const char *uname;
-   118			struct reserved_mem *rmem;
-   119	
-   120			if (!of_device_is_available(child))
-   121				continue;
-   122	
-   123			prop = of_get_property(child, "reg", &len);
-   124			if (!prop) {
-   125				rmem = of_reserved_mem_lookup(child);
-   126				if (rmem)
-   127					rmem->dev_node = child;
-   128				continue;
-   129			}
-   130	
-   131			uname = of_node_full_name(child);
-   132			if (len && len % t_len != 0) {
-   133				pr_err("Reserved memory: invalid reg property in '%s', skipping node.\n",
-   134				       uname);
-   135				continue;
-   136			}
-   137	
-   138			base = dt_mem_next_cell(dt_root_addr_cells, &prop);
-   139			size = dt_mem_next_cell(dt_root_size_cells, &prop);
-   140	
-   141			if (size)
-   142				fdt_reserved_mem_save_node(child, uname, base, size);
-   143		}
-   144	}
-   145	
+The "no regressions" rule is not about made-up "if I do this, behavior changes".
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+The "no regressions" rule is about *users*.
+
+If you have an actual user that has been doing insane things, and we
+change something, and now the insane thing no longer works, at that
+point it's a regression, and we'll sigh, and go "Users are insane" and
+have to fix it.
+
+But if you have some random test that now behaves differently, it's
+not a regression. It's a *warning* sign, sure: tests are useful.
+
+So tests can show when something user-visible changed, and as such
+they are a "there be monsters here" sign that maybe some user
+experience will hit it too.
+
+So I agree that "just use the same inode number" changes behavior. I
+agree that it can be a bit of a danger. But these "look, I can see a
+difference" isn't an argument.
+
+And honestly, I have now spent *days* looking at tracefs, and I'm
+finding core fundamental bugs that would cause actual oopses and/or
+wild pointer accesses.
+
+All of which makes me go "this code needs to be simpler and *cleaner*
+and stop making problems".
+
+In other words: tracefs is such a complete mess that I do not care one
+*whit* about "cp -aL". I care about "this is actual kernel
+instability".
+
+           Linus
 
