@@ -1,74 +1,180 @@
-Return-Path: <linux-kernel+bounces-42928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5954A8408BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:39:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 900E68408BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:39:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 111F11F22023
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:39:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B507B1C232BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:39:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EB34152E0F;
-	Mon, 29 Jan 2024 14:39:10 +0000 (UTC)
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1952E15351F;
+	Mon, 29 Jan 2024 14:39:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Mm/sS8YI"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F40725D747;
-	Mon, 29 Jan 2024 14:39:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9485153511
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 14:39:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706539149; cv=none; b=ohlulNzUiO2V7bHLRFEY6zK5ZZNKyEgzKagKm0eEL3dLIUGlASGHrM5BFIvpTJm+rUhemodxI0i8kPucLAddZ0mZiX0ProeE8KS/96LFvhulevRbAYmlnj7d2DKxbdL+wiiCCW589dYhLN8frK0kUffLugi5JxU+nD2KzhEOj7U=
+	t=1706539155; cv=none; b=SuvXS1MvAfHuDUVL1vxEkkQ0gDwC/IWjFBtdOk3ZKw3PN7TlYpcsz0YtDCnfM8/HSe+tHFU7SbIjO8jOSLn00yETNNdNdXqeciJjRIkAOPQJ1WGo32oHcyp4HvPGQOJikz0mGTPQsk4VIY+inmg5yR8rAsQuTv/w0QSZMM+7GLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706539149; c=relaxed/simple;
-	bh=cl20W0OSVEqhA4Wo9siMG+VGLtonLKnMv9sFvFklJ3o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZezZmybF1Kb9Mmg2KR9KV6zGBlFiClCgC4bKxNK+4AztGLWdaqCdN0QpL1t2t+3VKrwxMQmZJdLPeLF5JMTtULEB5fhxke2e3e9KJxCwMlrftiic10z7rDnXEL3AmENA5GKUrXC9v5NBhIQxjjg1uDmc+QZ72+AShxGWl8oQlXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id BF20468C4E; Mon, 29 Jan 2024 15:39:02 +0100 (CET)
-Date: Mon, 29 Jan 2024 15:39:02 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: John Garry <john.g.garry@oracle.com>
-Cc: Christoph Hellwig <hch@lst.de>, martin.petersen@oracle.com,
-	Keith Busch <kbusch@kernel.org>, axboe@kernel.dk, sagi@grimberg.me,
-	jejb@linux.ibm.com, djwong@kernel.org, viro@zeniv.linux.org.uk,
-	brauner@kernel.org, dchinner@redhat.com, jack@suse.cz,
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-	linux-scsi@vger.kernel.org, ming.lei@redhat.com,
-	ojaswin@linux.ibm.com, bvanassche@acm.org,
-	Alan Adamson <alan.adamson@oracle.com>
-Subject: Re: [PATCH v3 15/15] nvme: Ensure atomic writes will be executed
- atomically
-Message-ID: <20240129143902.GA654@lst.de>
-References: <20240124113841.31824-1-john.g.garry@oracle.com> <20240124113841.31824-16-john.g.garry@oracle.com> <ZbGwv4uFdJyfKtk5@kbusch-mbp.dhcp.thefacebook.com> <dbb3ad13-7524-4861-8006-b2ea426fbacd@oracle.com> <20240129062035.GB19796@lst.de> <ca58facd-db6b-42b2-ace3-595817c81ca9@oracle.com>
+	s=arc-20240116; t=1706539155; c=relaxed/simple;
+	bh=w6xOEn8WKgVePaayx4M9kPgAo/U2r1uyqckzN4gOE88=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=J8s5LFb0lxzcTSadef3C2GOhmwWGhCgCYL2rZeE+bKFbe7z1tgn+GU78HLk5w1yxj1kOORLeL8sj3icFYVrR4vCD0L1UsmMJPaVxLOxB/zYY9p83v/UEKJ3GTcp5vTT+HR50yLWTm1tnhkbqFO4bZWdf7ppnY1y3EWOkXSgbnwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Mm/sS8YI; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706539152;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=+lTtJ8uhAys/SPsnMLyyxEvKNPaV7nrfyTBriA7a36I=;
+	b=Mm/sS8YIy8V4lO1YnYtbF2qgAYZIqrv/FgTMSi44nOCOfNtS+otFZ0k5K/O7gPnTnUYk/X
+	I/BuQjPsDYhH4/BcsdCCa2y7o7HRj4lBZExrT5mfxxDG4r2Uok/ZfEcmAL6VH0C7d5efxK
+	wKmzIC5vMpwI/P8VuQr6qFEaLju4dAc=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-367-8n_G6x7IPfiv_nzh1qwUYw-1; Mon, 29 Jan 2024 09:39:10 -0500
+X-MC-Unique: 8n_G6x7IPfiv_nzh1qwUYw-1
+Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-558b84a7eeeso1292800a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 06:39:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706539149; x=1707143949;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+lTtJ8uhAys/SPsnMLyyxEvKNPaV7nrfyTBriA7a36I=;
+        b=HkFWMUbWGPCFwTSw2sDXJV5+Mza3S05NH99njTNSOnhBt8IHQLfxsA3u55qkpMKoEp
+         77MlsZxBLq8DPp3AT+0t1FXdXlpjQi1ZclsxNKltq9CC+IbXlN2sBJECjsI+zRhBRKZk
+         15IjWTmagf1/rJcTcPwdjIyGq/UcS3uUV3HWScGTpjiv6CqIEMgJqsbJa/M3AOzjqfvx
+         pu6JUl5UZMHhv7rOR7G0E/2e5rTsQohrisNXzHQPEdAfDrU4kO4HMJIftiniPk5cwrRx
+         Pjd6LdNovZOML4TyyaolIstaFftCqpVE6GqITCVRKe1WyZjzbWIzirPzjZ+G78brMf9G
+         uLlQ==
+X-Gm-Message-State: AOJu0Yzktw/ECus+UgelIpIR86HFRm5sZX8UFgPHHlFMcx+bs/IKVYAv
+	vqZr5EoI3cGIi5VCT7saVGj8ZywgCZ8QQxQn9fpAU950MAxQVsNR9oTKD6npiVTLMrseqpBgxNt
+	6cdAennD8zjR5eookYnLTyKUjmFgbrXtaFnfaG5bkislw0Ho3cL2e0vfYLBt9Gw==
+X-Received: by 2002:a17:906:2290:b0:a35:57b6:4c0b with SMTP id p16-20020a170906229000b00a3557b64c0bmr3301762eja.45.1706539149610;
+        Mon, 29 Jan 2024 06:39:09 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHxClIAdQMqK8I0v8hoE8/MCNpvuwqMHyq6XhB6OENTtpRI1leE0cv6tj49DwtQ2/Wd2tFOHA==
+X-Received: by 2002:a17:906:2290:b0:a35:57b6:4c0b with SMTP id p16-20020a170906229000b00a3557b64c0bmr3301754eja.45.1706539149227;
+        Mon, 29 Jan 2024 06:39:09 -0800 (PST)
+Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.googlemail.com with ESMTPSA id vg14-20020a170907d30e00b00a30f3e8838bsm3963169ejc.127.2024.01.29.06.39.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jan 2024 06:39:08 -0800 (PST)
+Message-ID: <b0b5ba26-505e-4247-b30d-9ba2bb0301c1@redhat.com>
+Date: Mon, 29 Jan 2024 15:39:07 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ca58facd-db6b-42b2-ace3-595817c81ca9@oracle.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] KVM: x86/pmu: Reset perf_capabilities in vcpu to 0 if
+ PDCM is disabled
+Content-Language: en-US
+To: Sean Christopherson <seanjc@google.com>,
+ Mingwei Zhang <mizhang@google.com>
+Cc: Aaron Lewis <aaronlewis@google.com>, "H. Peter Anvin" <hpa@zytor.com>,
+ kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240124003858.3954822-1-mizhang@google.com>
+ <20240124003858.3954822-2-mizhang@google.com> <ZbExcMMl-IAzJrfx@google.com>
+ <CAAAPnDFAvJBuETUsBScX6WqSbf_j=5h_CpWwrPHwXdBxDg_LFQ@mail.gmail.com>
+ <ZbGAXpFUso9JzIjo@google.com> <ZbGOK9m6UKkQ38bK@google.com>
+ <ZbGUfmn-ZAe4lkiN@google.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Autocrypt: addr=pbonzini@redhat.com; keydata=
+ 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
+In-Reply-To: <ZbGUfmn-ZAe4lkiN@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 29, 2024 at 09:36:38AM +0000, John Garry wrote:
-> That would probably be in blk_mq_dispatch_rq_list() for block drivers with 
-> .queue_rq set, but I would need to check for a good place for ->queue_rqs . 
-> I can't imagine that we just want to inefficiently iter all rqs at the 
-> ->queue_rqs call point.
->
-> However considering the nature of this change, it is not a good sign that 
-> we/I need to check... I'd be more inclined to leave as is.
+On 1/24/24 23:51, Sean Christopherson wrote:
+>> If we follow the suggestion by removing the initial value at vCPU
+>> creation time, then I think it breaks the existing VMM code, since that
+>> requires VMM to explicitly set the MSR, which I am not sure we do today.
+> Yeah, I'm hoping we can squeak by without breaking existing setups.
+> 
+> I'm 99% certain QEMU is ok, as QEMU has explicitly set MSR_IA32_PERF_CAPABILITIES
+> since support for PDCM/PERF_CAPABILITIES was added by commit ea39f9b643
+> ("target/i386: define a new MSR based feature word - FEAT_PERF_CAPABILITIES").
+> 
+> Frankly, if our VMM doesn't do the same, then it's wildly busted.  Relying on
+> KVM to define the vCPU is irresponsible, to put it nicely.
 
-Heh.  At least early on having the checks in one place in nvme makes
-me feel easier for sure.  If we can easily use the block limits for
-the checks we shouldn't have to keep duplicate values in nvme, though.
+Yes, I tend to agree.
+
+What QEMU does goes from the squeaky clean to the very debatable 
+depending on the parameters you give it.
+
+With "-cpu Haswell" and similar, it will provide values for all CPUID 
+and MSR bits that match as much as possible values from an actual CPU 
+model.  It will complain if there are some values that do not match[1].
+
+With "-cpu host", it will copy values from KVM_GET_SUPPORTED_CPUID and 
+from the feature MSRs, but only for features that it knows about.
+
+With "-cpu host,migratable=no", it will copy values from 
+KVM_GET_SUPPORTED_CPUID and from the feature MSRs, but only for *feature 
+words* (CPUID registers, or MSRs) that it knows about.  This is where it 
+becomes debatable, because a CPUID bit could be added without QEMU 
+knowing the corresponding MSR.  In this case, the user probably expects 
+the MSR to have a nonzero.  On one hand I agree that it would be 
+irresponsible, on the other hand that's the point of "-cpu 
+host,migratable=no".
+
+If you want to proceed with the change, I don't have any problem with 
+considering it a QEMU bug that it doesn't copy over to the guest any 
+unknown leaves or MSRs.
+
+Paolo
+
+[1] Unfortunately it's not fatal because there are way way too many 
+models, and also because until recently TCG lacked AVX---and therefore 
+could only emulate completely some very old CPU models.  But with "-cpu 
+Haswell,enforce" then everything's clean.
 
 
