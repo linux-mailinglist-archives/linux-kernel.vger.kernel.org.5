@@ -1,139 +1,183 @@
-Return-Path: <linux-kernel+bounces-43541-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43542-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CB3184154B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 22:58:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECBB2841550
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 23:00:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA7B8282D67
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 21:58:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B4EC1F23BC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 22:00:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7691B159563;
-	Mon, 29 Jan 2024 21:58:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ExZh8qvA"
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 483BE159563;
+	Mon, 29 Jan 2024 21:59:54 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2535B158D68
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 21:58:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3778D158D68
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 21:59:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706565496; cv=none; b=D/eSbGjUKpy4zk3HYSVi2tojEeBuTaNH3neRkC55Uh/eiFfGyD3GFyNXHHRCj3baQkEKoEOINz/aZpOOc1ZqyoM5hLsM4MAfVF9hp2WvRPljVrxg98tnWy1/FiFO9dLXEAtAgfDuj61y+FXkT9crugTSB56jSBf+6FyOkypzrSs=
+	t=1706565593; cv=none; b=t2b2AzZ8r2rm3A9OlEwnOppIUJujwy8ynrUAa1/FfEB0Z4dUCWHhyC+PjyEiwxOFSA6CIucS+9mwgXFbG+9aJ2m+qaLoOMWhMCWK85qgX/3d1H0ACrzJo5UhRxMV9T4vuKu6uis5aa8pFustlxW3VE3KMOhUJtOLvj4wrd6md2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706565496; c=relaxed/simple;
-	bh=yZyZ29p6yMC6LhYj5NL5f97FYixcVCB1YcfCBS49aMw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=nFb3KFousqIUWLjMPuY7t82VP2AH7SKfHP8Vfama5a3xu+/lv3QApUIGNFS71dVywOULVgyqzS2eFysERswHvubGhaEfIyAHoNanEThkg0F3jmX4/jGFzKeK64jmQdDs3vWJHefgr+NbK1/YKtYmAUe86G6yRZnY1Xnsafcjmp0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ExZh8qvA; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-33929364bdaso2324281f8f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 13:58:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706565493; x=1707170293; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CUG0VAx6fB3sqRZQjRRGH6lMhLjFI7rY91Z4hSbS8UE=;
-        b=ExZh8qvAvRoPwP8AmR83NNRM72HpbFMUYcCHAaqEl9UsRSWGu79vyXO6XtWV7iv96n
-         y3GQeXo4qhwt/HwslQbPkbUw12VaMJ+nu7iKb34JyZgHlE78LLN8i7gRg8Ik65x3CHYt
-         t42mcbXvSUyUA8JaNNXVH9fhK4yjrL0H6zsvNdKZHdxRjvAkJM/e9gv6dUV3accM3Slc
-         HHnBQaOpY7mxmu5z3UVSpek3ep63KHjnjICmekrW7ghycb6su1FnkRIP5bKmm9s+jadH
-         ZNBOVgWhhoGv7VW2AWcnJc5V7xZKUkCCaI+RWzUu/YIcr6+LuCv7I2ig/fd1BS7uEcUS
-         T8eQ==
+	s=arc-20240116; t=1706565593; c=relaxed/simple;
+	bh=oLz4ft6NDVhlxBOshy8i33An2i1tATyCAKzp2PWf8Ig=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=Bm0iG18Y6SmIwsI9mssRwbbWLhmqbUVAofwSHu/PWMdYOXcDX+MZqTnzB9VrSq5sObbLmENFryjlcEESjxOQ/JHW4W2fN/vssRLDaxQP8BbGGEaYN67AEGKZZ+uqZSjkcjQ+a9dt+saQ4bUoanFCKQ7nqnxGaK91pOmJGf7+c00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3637ee33669so9294785ab.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 13:59:51 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706565493; x=1707170293;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CUG0VAx6fB3sqRZQjRRGH6lMhLjFI7rY91Z4hSbS8UE=;
-        b=GQLGuH64wtbSnjpYMbNHUZc/KPcb1rqPt7uYQY34U9b4izF7n4FKSOKlaMJ8Tcbgm9
-         rXMKPVzkBnqmyK/pP5I65phUgb/jwTC8FyUsKXTHw07u9FySIUUyR4NjKcJXDVaaIfYm
-         SY8pk2LKONaPePyVnl83O/vT1+ifsxU/rKbBtPuEq4v2QBnbHGBH0ypbDznpRtTOWxAY
-         DzfmFSlPOCGmOu8rcM3gTigWPp28LNYn8R6IVSY2vp1o5teDWYFqz9CEBmFRbCN7Y5nC
-         +W/JY3KLmyUuZVdHskZrrKoCfoa+ndwwNGTmluz2V7eqoLQgJD92XmG//DbCtIPodolB
-         SoNg==
-X-Gm-Message-State: AOJu0YxdjFvKr5x0p6futjqGRQ4nv1UR7y9WFl+/gNes3RYbl0zWL3QR
-	ZyGAPNXW4FGEy9MX6kjAT4BR+NCLRTEA0k/f47JY+P0aO5VOfm2HbtMikcCd4j8CypPOmfCwFKs
-	pyn3utB/2QT4JNFzPaUMZ5iEgjyrf3KPgwjqW
-X-Google-Smtp-Source: AGHT+IEEO9aGC7CpGPiSuiXN+SuE0N37YyaPf1+lp1ZQZTirO7MY/Cp5QyQH6Dgc3eP4RAbyZkoXfbiAF1yqBSVoK0s=
-X-Received: by 2002:adf:e44a:0:b0:33a:e5a8:eaed with SMTP id
- t10-20020adfe44a000000b0033ae5a8eaedmr4230312wrm.14.1706565493189; Mon, 29
- Jan 2024 13:58:13 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706565591; x=1707170391;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aNzeGQMIKxlx3j5CSSRHESXOGzLP4dOOTM8hqwvtTOE=;
+        b=aaV2psAPAj97gnLfJjjfEAXaN8KGeNy7hiS+/UM2mSNlDwWrs3MoYMRZlAUov1GoAW
+         NYi0tVoMYIbj/1czS8j2a/REXa04NdWGwwKfWLQljdeVwdOeA3aEG2C0PJsd4/9esD95
+         sFCgQbP9dSr78KB2hnSYfvdgn4mz81Rhn9QNmyyL86f2SZC/b8ugfEA9LtOW3GGBd6dv
+         pOmD9+luyxqL8293scf/8/RE0X29A/9K5v0mnL28qLaFlnGdMHfIifrSrh75fMg7cAgJ
+         XPB9bLklzxx1tIXWeMZzJLDTcCI/yI0bmr1V1ebVOJeqfi3B8N4ytA4nno5M2m3R+2Mi
+         nYqA==
+X-Gm-Message-State: AOJu0YwamntgAHBrc62yNEM9bky40R2oO81VGCDn00ynFqQfqpLm6WnA
+	JHnA1Vqw4O4AmTc3zXfHiY2vL4bf+CyF9aBs1vrdEXzOmBLz994uk4nE7kL703VTuVueAgn62Td
+	ZO+DADDL6RtETuQbZ3ZAYTtlm+fm0k6BuHWmv1VvnOSKqHYtTb/2/UGLfTg==
+X-Google-Smtp-Source: AGHT+IGITRSukyHPc9EDxfnnVhUQSSRxkmSIoLOFQTyU8poUGQ9vyaiHj1GZtJ9f/fPzQ5hFMBcpxWCU0yCq95pGBiFCuV650ABz
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240129193512.123145-1-lokeshgidra@google.com> <20240129203904.7dcugltsjajldlea@revolver>
-In-Reply-To: <20240129203904.7dcugltsjajldlea@revolver>
-From: Lokesh Gidra <lokeshgidra@google.com>
-Date: Mon, 29 Jan 2024 13:58:00 -0800
-Message-ID: <CA+EESO5dNSg1d4L37hMbhuT-poD4R3ttBoEQdPvWEy7xHjD1oQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] per-vma locks in userfaultfd
-To: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Lokesh Gidra <lokeshgidra@google.com>, 
-	akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, selinux@vger.kernel.org, surenb@google.com, 
-	kernel-team@android.com, aarcange@redhat.com, peterx@redhat.com, 
-	david@redhat.com, axelrasmussen@google.com, bgeffon@google.com, 
-	willy@infradead.org, jannh@google.com, kaleshsingh@google.com, 
-	ngeoffray@google.com, timmurray@google.com, rppt@kernel.org
+X-Received: by 2002:a05:6e02:1a03:b0:361:a33f:36a4 with SMTP id
+ s3-20020a056e021a0300b00361a33f36a4mr676905ild.2.1706565591379; Mon, 29 Jan
+ 2024 13:59:51 -0800 (PST)
+Date: Mon, 29 Jan 2024 13:59:51 -0800
+In-Reply-To: <000000000000cb5b07060bef7ac0@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000dc387506101cc300@google.com>
+Subject: Re: [syzbot] Re: [syzbot] [net?] WARNING in ip6_route_info_create
+From: syzbot <syzbot+c15aa445274af8674f41@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 29, 2024 at 12:39=E2=80=AFPM Liam R. Howlett
-<Liam.Howlett@oracle.com> wrote:
->
-> * Lokesh Gidra <lokeshgidra@google.com> [240129 14:35]:
-> > Performing userfaultfd operations (like copy/move etc.) in critical
-> > section of mmap_lock (read-mode) causes significant contention on the
-> > lock when operations requiring the lock in write-mode are taking place
-> > concurrently. We can use per-vma locks instead to significantly reduce
-> > the contention issue.
->
-> Is this really an issue?  I'm surprised so much userfaultfd work is
-> happening to create contention.  Can you share some numbers and how your
-> patch set changes the performance?
->
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com.
 
-In Android we are using userfaultfd for Android Runtime's GC
-compaction. mmap-lock (write-mode) operations like mmap/munmap/mlock
-happening simultaneously elsewhere in the process caused significant
-contention. Of course, this doesn't happen during every compaction,
-but whenever it does it leads to a jittery experience for the user.
-During one such reproducible scenario, we observed the following
-improvements with this patch-set:
+***
 
-- Wall clock time of compaction phase came down from ~3s to less than 500ms
-- Uninterruptible sleep time (across all threads in the process) was
-~10ms (none was in mmap_lock) during compaction, instead of >20s
+Subject: Re: [syzbot] [net?] WARNING in ip6_route_info_create
+Author: sinquersw@gmail.com
 
-I will add these numbers in the cover letter in the next version of
-this patchset.
+#syz test: git@github.com:ThinkerYzu/linux.git fix-gc-uaf
 
-> >
-> > Changes since v1 [1]:
-> > - rebase patches on 'mm-unstable' branch
-> >
-> > [1] https://lore.kernel.org/all/20240126182647.2748949-1-lokeshgidra@go=
-ogle.com/
-> >
-> > Lokesh Gidra (3):
-> >   userfaultfd: move userfaultfd_ctx struct to header file
-> >   userfaultfd: protect mmap_changing with rw_sem in userfaulfd_ctx
-> >   userfaultfd: use per-vma locks in userfaultfd operations
-> >
-> >  fs/userfaultfd.c              |  86 ++++---------
-> >  include/linux/userfaultfd_k.h |  75 ++++++++---
-> >  mm/userfaultfd.c              | 229 ++++++++++++++++++++++------------
-> >  3 files changed, 229 insertions(+), 161 deletions(-)
-> >
-> > --
-> > 2.43.0.429.g432eaa2c6b-goog
-> >
-> >
+On 12/7/23 10:17, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    5a08d0065a91 ipv6: add debug checks in fib6_info_release()
+> git tree:       net-next
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=175698dae80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=f8715b6ede5c4b90
+> dashboard link: https://syzkaller.appspot.com/bug?extid=c15aa445274af8674f41
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16070374e80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=145e1574e80000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/12a59d7df47f/disk-5a08d006.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/14f0ca0a861e/vmlinux-5a08d006.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/ae9306decbe5/bzImage-5a08d006.xz
+> 
+> The issue was bisected to:
+> 
+> commit 5a08d0065a915ccf325563d7ca57fa8b4897881c
+> Author: Eric Dumazet <edumazet@google.com>
+> Date:   Tue Dec 5 17:32:50 2023 +0000
+> 
+>      ipv6: add debug checks in fib6_info_release()
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1137437ae80000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=1337437ae80000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1537437ae80000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+c15aa445274af8674f41@syzkaller.appspotmail.com
+> Fixes: 5a08d0065a91 ("ipv6: add debug checks in fib6_info_release()")
+> 
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 5062 at include/net/ip6_fib.h:332 fib6_info_release include/net/ip6_fib.h:332 [inline]
+> WARNING: CPU: 0 PID: 5062 at include/net/ip6_fib.h:332 ip6_route_info_create+0x1a1a/0x1f10 net/ipv6/route.c:3829
+> Modules linked in:
+> CPU: 0 PID: 5062 Comm: syz-executor399 Not tainted 6.7.0-rc3-syzkaller-00805-g5a08d0065a91 #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+> RIP: 0010:fib6_info_release include/net/ip6_fib.h:332 [inline]
+> RIP: 0010:ip6_route_info_create+0x1a1a/0x1f10 net/ipv6/route.c:3829
+> Code: 49 83 7f 40 00 75 28 e8 04 ae 50 f8 49 8d bf a0 00 00 00 48 c7 c6 c0 ae 37 89 e8 41 2c 3a f8 e9 65 f4 ff ff e8 e7 ad 50 f8 90 <0f> 0b 90 eb ad e8 dc ad 50 f8 90 0f 0b 90 eb cd e8 d1 ad 50 f8 e8
+> RSP: 0018:ffffc900039cf8e0 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: 0000000000400000 RCX: ffffffff8936e418
+> RDX: ffff888014695940 RSI: ffffffff8936e469 RDI: 0000000000000005
+> RBP: ffffc900039cf9d0 R08: 0000000000000005 R09: 0000000000000000
+> R10: 0000000000400000 R11: ffffffff8aa0008b R12: ffffffffffffffed
+> R13: ffff88802560682c R14: ffffc900039cfac4 R15: ffff888025606800
+> FS:  00005555567bb380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00000000200001c2 CR3: 00000000793d5000 CR4: 00000000003506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>   <TASK>
+>   ip6_route_add+0x26/0x1f0 net/ipv6/route.c:3843
+>   ipv6_route_ioctl+0x3ff/0x590 net/ipv6/route.c:4467
+>   inet6_ioctl+0x265/0x2b0 net/ipv6/af_inet6.c:575
+>   sock_do_ioctl+0x113/0x270 net/socket.c:1220
+>   sock_ioctl+0x22e/0x6b0 net/socket.c:1339
+>   vfs_ioctl fs/ioctl.c:51 [inline]
+>   __do_sys_ioctl fs/ioctl.c:871 [inline]
+>   __se_sys_ioctl fs/ioctl.c:857 [inline]
+>   __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
+>   do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+>   do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
+>   entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> RIP: 0033:0x7f73fa33f369
+> Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007ffce78f30b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+> RAX: ffffffffffffffda RBX: 00007ffce78f3288 RCX: 00007f73fa33f369
+> RDX: 00000000200001c0 RSI: 000000000000890b RDI: 0000000000000003
+> RBP: 00007f73fa3b2610 R08: 0000000000000000 R09: 00007ffce78f3288
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+> R13: 00007ffce78f3278 R14: 0000000000000001 R15: 0000000000000001
+>   </TASK>
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> 
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+> 
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
+> 
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+> 
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+> 
+> If you want to undo deduplication, reply with:
+> #syz undup
+> 
 
