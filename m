@@ -1,209 +1,234 @@
-Return-Path: <linux-kernel+bounces-42031-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42032-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 229AE83FB3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 01:40:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABF4483FB3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 01:47:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2F5A1F22085
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 00:40:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 289F4B22277
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 00:47:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93FFB8F5B;
-	Mon, 29 Jan 2024 00:40:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D59578BF1;
+	Mon, 29 Jan 2024 00:47:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S3fcEKHk"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="RK2cwpIL"
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C55495382
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 00:40:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 968CA5664;
+	Mon, 29 Jan 2024 00:46:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706488801; cv=none; b=CtvZgDWguoolyVuetIv0FFDyhlbRdHsDZgdhXCmPQvxm8I9XPPxW+VMC37QKq0y4e6tVFhC1Ug22XrIYF8Q1NVgJyblIAWevenjJfQyhqF+IpjFbI20iDCcifd15JGLSDswXxhf1PnMMyjqc9kbN9d8oTgmuiOpjgt9/CXllimU=
+	t=1706489220; cv=none; b=RL/CchCw0TakZdYreFD+rqIgqng9DSLqOOor9QIwAqFq8GYcKV9TbfowRTUyUplM50QZsCk+s2N2oyKHXrfe7L05TgvJqBm+rf8fGNUDrg5Q/POEOew907gJNcMHDJF29wpNqrsoLoSJNT4gCXBd1YAHK0dtYHVAQaBPv+Hc4fE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706488801; c=relaxed/simple;
-	bh=GOR+vztBp9qsOfWG/p7VJatHV1ebL3mS/nkMHAUATnU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WwI6wuGfEFD2v2oSTDjOekO2AM6CDvu4K9IDI6rdYlOQnjTixNZl2apCd8jZYkVB22xhUTsqnZf5vm7rrkKxu7BRf8enZPBPMZLYnRqGxG8Arc3751scrlORjqWfxv7nOEOu57WGwG5yiNM12kiMVTn2MwsN+q28d26ZFiySaBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S3fcEKHk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 636C6C433B2
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 00:40:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706488801;
-	bh=GOR+vztBp9qsOfWG/p7VJatHV1ebL3mS/nkMHAUATnU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=S3fcEKHkqEqitRMIVj5hmqHJZU8fhO5OEUusrfOzN27629hkWvh/7fyDdeLi0PZr9
-	 n3vr5PXcB47an+jKNzx35aEt0hmZOf9EWGsH5XYeb9ylZl1NWtz4bqsBvWTpD44/lm
-	 nT1LsovvG7nanfo1PWWW25GgvPqdNHMVyPJDiLO0zJZETUyw/QsgWENqq+dOaSLyQI
-	 zX9iTaHdT580sJjFb1dFA0vAfwPmUzC8iU4yrYfigwYmpILiBfCFgIb1+6MDMKfjxO
-	 Z+7cssDVheDauDC40B3Stqn2Awq+CmHEyVgw2Vs0HQVYtQUtE8VYNA5yZ6/gCc8Q/y
-	 Y0ksnseRU6AFw==
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a3510d79ae9so200394266b.0
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 16:40:01 -0800 (PST)
-X-Gm-Message-State: AOJu0Ywzwn69PxMugZFiGnXsaWMCL9YuNae3wmQGGpjnN/um5PJfzQ//
-	qSqoIHWpoEOOzI5AYVjd2+xNy5dRqE51E/69eNu3ShfhkCnodNJwr1pnESjuYA6Voit6YPUoFLZ
-	Rpbqy6w3I3s0CRaXjV3Llp8QV+36fbUwAU/2a
-X-Google-Smtp-Source: AGHT+IEPQs8sUOkrWs+g/b4bMXhiO6ykzksvP2pqvceFjnm3ic5S2cUnErkR5WyrynR1Nl/rh9HjuD9/FYsibH5QMSY=
-X-Received: by 2002:a17:906:6810:b0:a31:4cf0:cf81 with SMTP id
- k16-20020a170906681000b00a314cf0cf81mr2993727ejr.37.1706488799959; Sun, 28
- Jan 2024 16:39:59 -0800 (PST)
+	s=arc-20240116; t=1706489220; c=relaxed/simple;
+	bh=tpybrTrmtAFnc0DQtXFoyBZT4xdv5dsEXBErqx4Obq4=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=PFKSoXBlXYuVbDfvove0fxbqsXj3eXM7qb1tGGa+EQfdNp2HJ5Ru1FKxOQ9lA3atc8OoFzh4ligkhGDIjz1toA9EV59zG3hiUDTeS+AwR2z2nrof7HoqwP6rbg7uNn1Xynykc61K27RZHpdCC8Z4938KQXG/ttO6dRAVHT1/M0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=RK2cwpIL; arc=none smtp.client-ip=116.203.91.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240128142522.1524741-1-ming.lei@redhat.com> <ZbbPCQZdazF7s0_b@casper.infradead.org>
- <ZbbfXVg9FpWRUVDn@redhat.com> <ZbbvfFxcVgkwbhFv@casper.infradead.org>
-In-Reply-To: <ZbbvfFxcVgkwbhFv@casper.infradead.org>
-From: Mike Snitzer <snitzer@kernel.org>
-Date: Sun, 28 Jan 2024 19:39:49 -0500
-X-Gmail-Original-Message-ID: <CAH6w=aw_46Ker0w8HmSA41vUUDKGDGC3gxBFWAhd326+kEtrNg@mail.gmail.com>
-Message-ID: <CAH6w=aw_46Ker0w8HmSA41vUUDKGDGC3gxBFWAhd326+kEtrNg@mail.gmail.com>
-Subject: Re: [RFC PATCH] mm/readahead: readahead aggressively if read drops in
- willneed range
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Mike Snitzer <snitzer@kernel.org>, Ming Lei <ming.lei@redhat.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, linux-fsdevel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Don Dutile <ddutile@redhat.com>, Raghavendra K T <raghavendra.kt@linux.vnet.ibm.com>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+	t=1706489215;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GS+RVzeqWuOYqDG8OOVdlRlDHcgTfVGr4oMD5uktGSQ=;
+	b=RK2cwpIL6QJhedwwn2vimofLkN640Q1yIRS8nV7mKqHnpPs4khbTtWfBQw9GOjFrqup7X2
+	T60hPs+CFGUsYNmHLh4ZCGwOhnLYci0cXAO5bgp/ub7hyhfkQNmOi87vjk+chYvz6RDNgM
+	OWUPC1SiKFxFz8c6OEqU+BlYixm5P5QC/lxgMesK/T8Rf7JzralM/UaRLpJs7yigGJdwcK
+	OfUtT3VFWYGVk8vgoU1eFHGaz1w8gmC/v8432P27cuQ7R9G9bigc5N/88HddgCggZ+8oWi
+	dQ91yIRtF58P1PnHShNpB2s97gQaI+3jR7uR5OEqQdaVmSFixFikV7paIlpF1Q==
+Date: Mon, 29 Jan 2024 01:46:54 +0100
+From: Dragan Simic <dsimic@manjaro.org>
+To: Alexey Charkov <alchark@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Heiko Stuebner <heiko@sntech.de>, Daniel Lezcano
+ <daniel.lezcano@linaro.org>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] arm64: dts: rockchip: enable temperature driven fan
+ control on Rock 5B
+In-Reply-To: <CABjd4YxqarUCbZ-a2XLe3TWJ-qjphGkyq=wDnctnEhdoSdPPpw@mail.gmail.com>
+References: <20240125-rk-dts-additions-v1-0-5879275db36f@gmail.com>
+ <20240125-rk-dts-additions-v1-3-5879275db36f@gmail.com>
+ <df062818d21f3318c033859d0e95efc7@manjaro.org>
+ <b5b1900a6e309890f449ec91594b8d6c@manjaro.org>
+ <CABjd4YxqarUCbZ-a2XLe3TWJ-qjphGkyq=wDnctnEhdoSdPPpw@mail.gmail.com>
+Message-ID: <30c3afc28da0a241a6397b30d2d7a922@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-On Sun, Jan 28, 2024 at 7:22=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
+Hello Alexey,
+
+On 2024-01-28 21:08, Alexey Charkov wrote:
+> On Sun, Jan 28, 2024 at 12:27 AM Dragan Simic <dsimic@manjaro.org> 
 > wrote:
->
-> On Sun, Jan 28, 2024 at 06:12:29PM -0500, Mike Snitzer wrote:
-> > On Sun, Jan 28 2024 at  5:02P -0500,
-> > Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > > On Sun, Jan 28, 2024 at 10:25:22PM +0800, Ming Lei wrote:
-> > > > Since commit 6d2be915e589 ("mm/readahead.c: fix readahead failure f=
-or
-> > > > memoryless NUMA nodes and limit readahead max_pages"), ADV_WILLNEED
-> > > > only tries to readahead 512 pages, and the remained part in the adv=
-ised
-> > > > range fallback on normal readahead.
-> > >
-> > > Does the MAINTAINERS file mean nothing any more?
-> >
-> > "Ming, please use scripts/get_maintainer.pl when submitting patches."
->
-> That's an appropriate response to a new contributor, sure.  Ming has
-> been submitting patches since, what, 2008?  Surely they know how to
-> submit patches by now.
->
-> > I agree this patch's header could've worked harder to establish the
-> > problem that it fixes.  But I'll now take a crack at backfilling the
-> > regression report that motivated this patch be developed:
->
-> Thank you.
->
-> > Linux 3.14 was the last kernel to allow madvise (MADV_WILLNEED)
-> > allowed mmap'ing a file more optimally if read_ahead_kb < max_sectors_k=
-b.
-> >
-> > Ths regressed with commit 6d2be915e589 (so Linux 3.15) such that
-> > mounting XFS on a device with read_ahead_kb=3D64 and max_sectors_kb=3D1=
-024
-> > and running this reproducer against a 2G file will take ~5x longer
-> > (depending on the system's capabilities), mmap_load_test.java follows:
-> >
-> > import java.nio.ByteBuffer;
-> > import java.nio.ByteOrder;
-> > import java.io.RandomAccessFile;
-> > import java.nio.MappedByteBuffer;
-> > import java.nio.channels.FileChannel;
-> > import java.io.File;
-> > import java.io.FileNotFoundException;
-> > import java.io.IOException;
-> >
-> > public class mmap_load_test {
-> >
-> >         public static void main(String[] args) throws FileNotFoundExcep=
-tion, IOException, InterruptedException {
-> >               if (args.length =3D=3D 0) {
-> >                       System.out.println("Please provide a file");
-> >                       System.exit(0);
-> >               }
-> >               FileChannel fc =3D new RandomAccessFile(new File(args[0])=
-, "rw").getChannel();
-> >               MappedByteBuffer mem =3D fc.map(FileChannel.MapMode.READ_=
-ONLY, 0, fc.size());
-> >
-> >               System.out.println("Loading the file");
-> >
-> >               long startTime =3D System.currentTimeMillis();
-> >               mem.load();
-> >               long endTime =3D System.currentTimeMillis();
-> >               System.out.println("Done! Loading took " + (endTime-start=
-Time) + " ms");
-> >
-> >       }
-> > }
->
-> It's good to have the original reproducer.  The unfortunate part is
-> that being at such a high level, it doesn't really show what syscalls
-> the library makes on behalf of the application.  I'll take your word
-> for it that it calls madvise(MADV_WILLNEED).  An strace might not go
-> amiss.
->
-> > reproduce with:
-> >
-> > javac mmap_load_test.java
-> > echo 64 > /sys/block/sda/queue/read_ahead_kb
-> > echo 1024 > /sys/block/sda/queue/max_sectors_kb
-> > mkfs.xfs /dev/sda
-> > mount /dev/sda /mnt/test
-> > dd if=3D/dev/zero of=3D/mnt/test/2G_file bs=3D1024k count=3D2000
-> >
-> > echo 3 > /proc/sys/vm/drop_caches
->
-> (I prefer to unmount/mount /mnt/test; it drops the cache for
-> /mnt/test/2G_file without affecting the rest of the system)
->
-> > java mmap_load_test /mnt/test/2G_file
-> >
-> > Without a fix, like the patch Ming provided, iostat will show rareq-sz
-> > is 64 rather than ~1024.
->
-> Understood.  But ... the application is asking for as much readahead as
-> possible, and the sysadmin has said "Don't readahead more than 64kB at
-> a time".  So why will we not get a bug report in 1-15 years time saying
-> "I put a limit on readahead and the kernel is ignoring it"?  I think
-> typically we allow the sysadmin to override application requests,
-> don't we?
+>> On 2024-01-26 00:13, Dragan Simic wrote:
+>> > On 2024-01-24 21:30, Alexey Charkov wrote:
+>> >> This enables thermal monitoring on Radxa Rock 5B and links the PWM
+>> >> fan as an active cooling device managed automatically by the thermal
+>> >> subsystem, with a target SoC temperature of 55C
+>> >>
+>> >> Signed-off-by: Alexey Charkov <alchark@gmail.com>
+>> >> ---
+>> >>  arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts | 25
+>> >> ++++++++++++++++++++++++-
+>> >>  1 file changed, 24 insertions(+), 1 deletion(-)
+>> >>
+>> >> diff --git a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+>> >> b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+>> >> index 9b7bf6cec8bd..c4c94e0b6163 100644
+>> >> --- a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+>> >> +++ b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+>> >> @@ -52,7 +52,7 @@ led_rgb_b {
+>> >>
+>> >>      fan: pwm-fan {
+>> >>              compatible = "pwm-fan";
+>> >> -            cooling-levels = <0 95 145 195 255>;
+>> >> +            cooling-levels = <0 120 150 180 210 240 255>;
+>> >>              fan-supply = <&vcc5v0_sys>;
+>> >>              pwms = <&pwm1 0 50000 0>;
+>> >>              #cooling-cells = <2>;
+>> >> @@ -180,6 +180,25 @@ &cpu_l3 {
+>> >>      cpu-supply = <&vdd_cpu_lit_s0>;
+>> >>  };
+>> >>
+>> >> +&package_thermal {
+>> >> +    polling-delay = <1000>;
+>> >> +
+>> >> +    trips {
+>> >> +            package_fan: package-fan {
+>> >> +                    temperature = <55000>;
+>> >> +                    hysteresis = <2000>;
+>> >> +                    type = "active";
+>> >> +            };
+>> >> +    };
+>> >> +
+>> >> +    cooling-maps {
+>> >> +            map-fan {
+>> >> +                    trip = <&package_fan>;
+>> >> +                    cooling-device = <&fan THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+>> >> +            };
+>> >> +    };
+>> >> +};
+>> >
+>> > It should be better to have two new trips and two new cooling maps
+>> > defined, instead of having just one trip/map pair, like this:
+>> >
+>> > &package_thermal {
+>> >       polling-delay = <1000>;
+>> >
+>> >       trips {
+>> >               package_warm: package-warm {
+>> >                       temperature = <55000>;
+>> >                       hysteresis = <2000>;
+>> >                       type = "active";
+>> >               };
+>> >
+>> >               package_hot: package-hot {
+>> >                       temperature = <65000>;
+>> >                       hysteresis = <2000>;
+>> >                       type = "active";
+>> >               };
+>> >       };
+>> >
+>> >       cooling-maps {
+>> >               mapX {
+>> >                       trip = <&package_warm>;
+>> >                       cooling-device = <&fan THERMAL_NO_LIMIT 1>;
+>> >               };
+>> >
+>> >               mapY {
+>> >                       trip = <&package_hot>;
+>> >                       cooling-device = <&fan 2 THERMAL_NO_LIMIT>;
+>> >               };
+>> >       };
+>> > };
+>> >
+>> > The idea behind this approach is to keep the fan spinning at the lowest
+>> > available speed until the package temperature reaches the second trip's
+>> > temperature level, at which point the fan starts ramping up.  An
+>> > approach
+>> > like this is already employed by the Pine64 RockPro64 SBC.
+>> >
+>> > This way, we'll be doing our best to keep the fan noise down;  of
+>> > course, it will depend on the particular heatsink and fan combo how
+>> > long the fan can be kept at the lowest speed, but we should aim at
+>> > supporting as many different cooling setups as possible, and as
+>> > well as possible, out of the box and with no additional tweaking
+>> > required.
+>> >
+>> > Please notice "mapX" and "mapY" as the names of the additional
+>> > cooling maps, where X and Y are simply the next lowest available
+>> > indices, which is pretty much the usual way to name the additional
+>> > cooling maps.
+>> 
+>> Just checking, have you seen this?  Quite a few messages were 
+>> exchanged
+>> on the same day, so just wanted to make sure you didn't miss this one.
+> 
+> Yes, thank you for pointing it out and following up.
+> 
+> I've been testing different setups to get my thoughts together on this
+> one. Long story short, your suggested setup indeed makes the system
+> quieter most of the time while still being safely far from hitting the
+> throttling threshold, though it appears that the main influence is
+> from the higher temperature value in the second trip (after which the
+> fan accelerates) rather than from the presence of the first trip and
+> the corresponding cooling map capped at the minimum-speed fan action.
 
-The application isn't knowingly asking for readahead.  It is asking to
-mmap the file (and reporter wants it done as quickly as possible..
-like occurred before).
+Thank you for testing all this!
 
-This fix is comparable to Jens' commit 9491ae4aade6 ("mm: don't cap
-request size based on read-ahead setting") -- same logic, just applied
-to callchain that ends up using madvise(MADV_WILLNEED).
+I see, but having a higher temperature defined in the second active
+thermal trip is exactly the trick that should make cooling setups
+  more quiet.  More precisely, the intention is to define a dual-trip
+configuration that should make as many different active cooling setups
+as quiet as possible, simply because some active cooling setups (and
+some CPU loads) may result in crossing the second trip's temperature
+less frequently than with the other setups.
 
-> > > > @@ -972,6 +974,7 @@ struct file_ra_state {
-> > > >   unsigned int ra_pages;
-> > > >   unsigned int mmap_miss;
-> > > >   loff_t prev_pos;
-> > > > + struct maple_tree *need_mt;
-> > >
-> > > No.  Embed the struct maple tree.  Don't allocate it.
-> >
-> > Constructive feedback, thanks.
-> >
-> > > What made you think this was the right approach?
-> >
-> > But then you closed with an attack, rather than inform Ming and/or
-> > others why you feel so strongly, e.g.: Best to keep memory used for
-> > file_ra_state contiguous.
->
-> That's not an attack, it's a genuine question.  Is there somewhere else
-> doing it wrong that Ming copied from?  Does the documentation need to
-> be clearer?  I can't fix what I don't know.
+> In my observation, the system rarely crosses the 55C threshold under
+> partial load, and when the load is high (e.g. compiling stuff with 8
+> concurrent jobs) it takes ~2 seconds to go from below the first trip
+> point to above the second trip point, so the fan doesn't really get
+> the chance to stay at its leisurely first state.
+> 
+> So frankly I'm inclined to leave one trip point here, and simply
+> change its temperature threshold from 55C to 65C - just to keep it
+> simple.
+> 
+> What do you think?
 
-OK
+I'd much rather have two active thermal trips defined, simply because
+a beefier heatsink, with much larger fin surface, may completely change
+the behavior of the Rock 5B's active cooling.  Radxa already sells a
+much larger heatsink, linked below, to which a fan can rather easily be
+attached, or a fan can be used to provide some airflow inside the case
+into which the board is mounted.
+
+- 
+https://shop.allnetchina.cn/products/rock5-b-passive-heat-sink?variant=39895250239590
+
+In other words, having two active thermal trips at 55 oC and 65 oC does
+not hurt the acoustics and the thermal performance of the active
+cooling setup you're using, compared with having just one active trip
+at 65 oC, while the dual-trip configuration can help with other active
+cooling setups that are different from yours.  It's a win-win.
+
+I hope you agree.
 
