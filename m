@@ -1,120 +1,157 @@
-Return-Path: <linux-kernel+bounces-43299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A32668411E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:16:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F7F98411E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:16:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3710B288B6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:16:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21DA1B268A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:16:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AF966F08A;
-	Mon, 29 Jan 2024 18:15:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EC936F06B;
+	Mon, 29 Jan 2024 18:16:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pPW3f9Sj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P6KeVEXS"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C52BF3F9FC;
-	Mon, 29 Jan 2024 18:15:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5DA73F9FC
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 18:16:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706552156; cv=none; b=C8Y/dBnbLQZWJjvqbdCMo7tnIX1Y2YxRngXsNE+16Vr5UXFgjiZwdwc/p5zrnt8ZQFDFutJr6s5j5dqyPuqF2UF/BuUXhtakXVtOvVg3cHveU1yU9PC1SnL4aLpUDnGlVFPJis/5hvYxrSM84y91F9BoqCtMQ/JabHqijGZ8ys4=
+	t=1706552177; cv=none; b=Rklgu5FGnZJQ3yIYCXABOLP57utNp2gk8ZldY6NRiJLJ/FrIgeB8MVxdqiaM5kUR6SVxLK5n+ImX6Xklp7t6z70tLoSRxSSrVHYy+YZJhJ/QacE7XLoOJfOeH4dxNW1wl2SzxYkVHxJX7SzxvpBQ7Q3YqhuEdWJE9vGi9QMBL5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706552156; c=relaxed/simple;
-	bh=HtWWFC71BCavDoQvTNSF5iID0oN+lBFa3TU2UQoctyw=;
+	s=arc-20240116; t=1706552177; c=relaxed/simple;
+	bh=4eYLj/Lm5IOPUr7af+2C6a/UQ1OO1uxY23YBH7rnuMQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E8AFEhOnkF67a/wpCQHKKde5gWxqYTx+xDqcdg9xAG/T56xjCRxaYDeUOs0Ovm973YFQNBZ5CVYw6bkVK8G4IbgwWvpyxaeTa2Amt+wver0u4Rs0me3J34Bq61A4FEOt7CNAk0jUI0PUjbo6xHW6XB4jLoajOk2hAplh90odN+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pPW3f9Sj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A849C433C7;
-	Mon, 29 Jan 2024 18:15:51 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=tHGv59MlwtfbuaeAHDEvEtlZauyhVvcCMBH7I80Mqpqo7seG0/+DZyzV7hOrUHM9OVhM79k7tXP6WvdETJFSzy57gXDpfrr1MLEDiiFtCrurahnM6jDQFL33x+lfWTgY067pFEQuBWcwP1Glyfw+ugiBsbTG5gWXCJokc8SpubQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P6KeVEXS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DE0AC43390;
+	Mon, 29 Jan 2024 18:16:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706552156;
-	bh=HtWWFC71BCavDoQvTNSF5iID0oN+lBFa3TU2UQoctyw=;
+	s=k20201202; t=1706552177;
+	bh=4eYLj/Lm5IOPUr7af+2C6a/UQ1OO1uxY23YBH7rnuMQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pPW3f9SjldNx036oVfr2mb7rF/1uWtZ+8laYPTJFddNQu22KfZ9+JSUv3x0Zuw9Bs
-	 Zg59bttwt3Mq13HLeF7PE+CdppqGpDgui6gYfX2F0YP/bMAsrPRvM5xTKFMs/xgxq0
-	 AKs03jubjF5XETb+5vpA4ubGccF/LgcfoHaiv9vPYmZcxEq+QxwuBLK+1qOOKyz2hB
-	 bDObKuNdlKVq94bl6KJx3hVJOl9w6th4nhM+Xg7uZ9cxQowb+FA6/48N6cVWwyJpPH
-	 Cya7zQern418k52+XIWRSXC9HRRO//yRjqbXG8Ogd0pMHsMRLRIJNPE8O4O6X4juuj
-	 UDdExsudUOJfg==
-Date: Mon, 29 Jan 2024 18:15:47 +0000
-From: Will Deacon <will@kernel.org>
-To: Mihai Carabas <mihai.carabas@oracle.com>
-Cc: linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org,
-	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	catalin.marinas@arm.com, tglx@linutronix.de, mingo@redhat.com,
-	bp@alien8.de, x86@kernel.org, hpa@zytor.com, pbonzini@redhat.com,
-	wanpengli@tencent.com, vkuznets@redhat.com, rafael@kernel.org,
-	daniel.lezcano@linaro.org, akpm@linux-foundation.org,
-	pmladek@suse.com, peterz@infradead.org, dianders@chromium.org,
-	npiggin@gmail.com, rick.p.edgecombe@intel.com,
-	joao.m.martins@oracle.com, juerg.haefliger@canonical.com,
-	mic@digikod.net, arnd@arndb.de, ankur.a.arora@oracle.com
-Subject: Re: [PATCH 7/7] cpuidle/poll_state: replace cpu_relax with
- smp_cond_load_relaxed
-Message-ID: <20240129181547.GA12305@willie-the-truck>
-References: <1700488898-12431-1-git-send-email-mihai.carabas@oracle.com>
- <1700488898-12431-8-git-send-email-mihai.carabas@oracle.com>
- <20231211114642.GB24899@willie-the-truck>
- <1b3650c5-822e-4789-81d2-0304573cabd9@oracle.com>
+	b=P6KeVEXSToGyeem1pchNMajeFGtoD9G9sIiQiQEfXKACNlusnFQ+nElZ28J5l1dTf
+	 2lHc6BUcIcO94lv0eiRCXRNh0PlwylRLi2AunxuduIesrx0mL3dkIJk6lK8Ve6bEu3
+	 5MBuCN43X5Ny0/9blfPv5VhHJ+Tfi2JuTdxn/UpCS5yrXTcy70VDCmLzt0ONykvGWB
+	 kGKs+4RzzGHSW+Vl8Y66WkEPa99kpss/UvoaBlITv7TiXCtcippQI836W5nadNMS4u
+	 tDu+oKcjn7DlPvMBaJNzYGrlLGtpCvdWDh1Ena/LF8pHJAQHApmlpohzNX0zey340P
+	 VBAHcZ7w/z/mA==
+Date: Mon, 29 Jan 2024 18:16:13 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Jisheng Zhang <jszhang@kernel.org>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] riscv: optimize memcpy/memmove/memset
+Message-ID: <20240129-prelaw-tweet-ae59a90ded20@spud>
+References: <20240128111013.2450-1-jszhang@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="d1n2JiHAv+OvTEWE"
+Content-Disposition: inline
+In-Reply-To: <20240128111013.2450-1-jszhang@kernel.org>
+
+
+--d1n2JiHAv+OvTEWE
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1b3650c5-822e-4789-81d2-0304573cabd9@oracle.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jan 28, 2024 at 11:22:50PM +0200, Mihai Carabas wrote:
-> La 11.12.2023 13:46, Will Deacon a scris:
-> > On Mon, Nov 20, 2023 at 04:01:38PM +0200, Mihai Carabas wrote:
-> > > cpu_relax on ARM64 does a simple "yield". Thus we replace it with
-> > > smp_cond_load_relaxed which basically does a "wfe".
-> > > 
-> > > Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> > > Signed-off-by: Mihai Carabas <mihai.carabas@oracle.com>
-> > > ---
-> > >   drivers/cpuidle/poll_state.c | 14 +++++++++-----
-> > >   1 file changed, 9 insertions(+), 5 deletions(-)
-> > > 
-> > > diff --git a/drivers/cpuidle/poll_state.c b/drivers/cpuidle/poll_state.c
-> > > index 9b6d90a72601..440cd713e39a 100644
-> > > --- a/drivers/cpuidle/poll_state.c
-> > > +++ b/drivers/cpuidle/poll_state.c
-> > > @@ -26,12 +26,16 @@ static int __cpuidle poll_idle(struct cpuidle_device *dev,
-> > >   		limit = cpuidle_poll_time(drv, dev);
-> > > -		while (!need_resched()) {
-> > > -			cpu_relax();
-> > > -			if (loop_count++ < POLL_IDLE_RELAX_COUNT)
-> > > -				continue;
-> > > -
-> > > +		for (;;) {
-> > >   			loop_count = 0;
-> > > +
-> > > +			smp_cond_load_relaxed(&current_thread_info()->flags,
-> > > +					      (VAL & _TIF_NEED_RESCHED) ||
-> > > +					      (loop_count++ >= POLL_IDLE_RELAX_COUNT));
-> > > +
-> > > +			if (loop_count < POLL_IDLE_RELAX_COUNT)
-> > > +				break;
-> > > +
-> > >   			if (local_clock_noinstr() - time_start > limit) {
-> > >   				dev->poll_time_limit = true;
-> > >   				break;
-> > Doesn't this make ARCH_HAS_CPU_RELAX a complete misnomer?
-> 
-> This controls the build of poll_state.c and the generic definition of
-> smp_cond_load_relaxed (used by x86) is using cpu_relax(). Do you propose
-> other approach here?
+On Sun, Jan 28, 2024 at 07:10:10PM +0800, Jisheng Zhang wrote:
+> This series is to renew Matteo's "riscv: optimized mem* functions"
+> sereies.
+>=20
+> Compared with Matteo's original series, Jisheng made below changes:
+> 1. adopt Emil's change to fix boot failure when build with clang
+> 2. add corresponding changes to purgatory
+> 3. always build optimized string.c rather than only build when optimize
+> for performance
+> 4. implement unroll support when src & dst are both aligned to keep
+> the same performance as assembly version. After disassembling, I found
+> that the unroll version looks something like below, so it acchieves
+> the "unroll" effect as asm version but in C programming language:
+> 	ld	t2,0(a5)
+> 	ld	t0,8(a5)
+> 	ld	t6,16(a5)
+> 	ld	t5,24(a5)
+> 	ld	t4,32(a5)
+> 	ld	t3,40(a5)
+> 	ld	t1,48(a5)
+> 	ld	a1,56(a5)
+> 	sd	t2,0(a6)
+> 	sd	t0,8(a6)
+> 	sd	t6,16(a6)
+> 	sd	t5,24(a6)
+> 	sd	t4,32(a6)
+> 	sd	t3,40(a6)
+> 	sd	t1,48(a6)
+> 	sd	a1,56(a6)
+> And per my testing, unrolling more doesn't help performance, so
+> the "c" version only unrolls by using 8 GP regs rather than 16
+> ones as asm version.
+> 5. Add proper __pi_memcpy and __pi___memcpy alias
+> 6. more performance numbers.
+>=20
+> Per my benchmark with [1] on TH1520, CV1800B and JH7110 platforms,
+> the unaligned medium memcpy performance is running about 3.5x ~ 8.6x
+> speed of the unpatched versions's! Check patch1 for more details and
+> performance numbers.
+>=20
+> Link:https://github.com/ARM-software/optimized-routines/blob/master/strin=
+g/bench/memcpy.c [1]
+>=20
+> Here is the original cover letter msg from Matteo:
+> Replace the assembly mem{cpy,move,set} with C equivalent.
+>=20
+> Try to access RAM with the largest bit width possible, but without
+> doing unaligned accesses.
+>=20
+> A further improvement could be to use multiple read and writes as the
+> assembly version was trying to do.
+>=20
+> Tested on a BeagleV Starlight with a SiFive U74 core, where the
+> improvement is noticeable.
 
-Give it a better name? Having ARCH_HAS_CPU_RELAX control a piece of code
-that doesn't use cpu_relax() doesn't make sense to me.
+However, with allmodconfig it doesn't compile:
+  Redirect to /build/tmp.zzMIlhgQQo and /build/tmp.vxnoxu8G5e
+  Tree base:
+  0c526539d432 ("riscv: optimized memcpy")
+  Building the whole tree with the patch
+  ../arch/riscv/lib/string.c:118:7: error: expected identifier or '('
+  ../arch/riscv/lib/string.c:118:7: error: expected ')'
+  ../arch/riscv/lib/string.c:143:7: error: expected identifier or '('
+  ../arch/riscv/lib/string.c:143:7: error: expected ')'
+  ../arch/riscv/lib/string.c:118:7: error: expected identifier or '('
+  ../arch/riscv/lib/string.c:118:7: error: expected ')'
+  ../arch/riscv/lib/string.c:143:7: error: expected identifier or '('
+  ../arch/riscv/lib/string.c:143:7: error: expected ')'
 
-Will
+Seems to be the case both with llvm and gcc.
+
+Cheers,
+Conor.
+
+
+--d1n2JiHAv+OvTEWE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbfrbQAKCRB4tDGHoIJi
+0tfSAP9CXefieMdiPqbq7pdjY+14U99AxgMlsgdjf8Ba7tagMQD/bq4CepFhnrUJ
+AmdXmVbmVEhI6YWXz3uuEssFY1Sg5A4=
+=DP0s
+-----END PGP SIGNATURE-----
+
+--d1n2JiHAv+OvTEWE--
 
