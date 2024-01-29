@@ -1,172 +1,116 @@
-Return-Path: <linux-kernel+bounces-43319-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43320-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90A22841216
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:35:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F0DC841219
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:36:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE7E91C228F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:35:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6244B1C21EE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:36:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E59694C63D;
-	Mon, 29 Jan 2024 18:34:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66836335B5;
+	Mon, 29 Jan 2024 18:34:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Eub8a9ui"
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F2k0G+JP"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 618A155E75
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 18:34:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CD8C12E47;
+	Mon, 29 Jan 2024 18:34:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706553257; cv=none; b=McwyRTCKOY3R3IU/1svd6Im78FMmRYHsS93LRt9fH+077zgJVOgdV+Ehy/l75ya6x1VidgsFNJnUCRAD3xUnR0/xT2alp4SUcu0gZwuQSlg5W2XCpEDlBUlTzybDcYDUKGYX/oVIrpHzGzog53Xn3BNxiMSgYtK/SQRmAgyyFDw=
+	t=1706553283; cv=none; b=HQkqdaTI6o341x/LzgFT7UU16DyRyG3ACVpELCKLRZRSqZaqAWKwZOQ35iYRwkaMUEbjZvckqoWlivx5KELyRlxelY//GId04HZ4ETcJUzFe22dLpBuS24vANAKtos3x4JaXL3yD+zLsBHb8+43WHzc314HR/+XbCKgwXTYaf/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706553257; c=relaxed/simple;
-	bh=8qBo+r1o5uX8xwwRI2+8kwqWeOJfk0QZ5WpwUuylvAw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mrysNOWopp5FABuKLixC/xqOBoLyTUJxNHSd4VoCNqnA2eGjdSoMOeMZ8jSNHoQTaOoXhgZhDVwpoD5AFePJJZ4jzP7MqnDuyKYmxrWprXodVV3Rdanu24anaMQP4TV5z22booQLRJVqpruuCTOEUHSLAUw/FF3QwCRT8IAQwNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Eub8a9ui; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5d835c7956bso1559086a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 10:34:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706553255; x=1707158055; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vOi3qaLwpWcyO/WH2EIxnXUOlsjjGr/OsABWCZKoxrI=;
-        b=Eub8a9ui/PD9+H2I/pc7bb4Nb3sbuiqED1cEn2I9VPVW35a6n4PLBQ2Hpvu+Ya8t9g
-         JNyaYZ5kJNJd8CuX4NCvm5j3FwtJ1PGYx2qqLTRuNZo2Q97mIWYJ5ZhPXA81seL/pIgo
-         PR2GRTOl5cIXxr+4gCyhc0muUbaANhoEyLwPM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706553255; x=1707158055;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vOi3qaLwpWcyO/WH2EIxnXUOlsjjGr/OsABWCZKoxrI=;
-        b=jBxL93lotXdXS7CzyZ5K94PZTEtQjhug1FVQJddPKQptl/rxXR+on9kVIwSqtQgeAv
-         KuTJbC9OupgHTRTm0uD2zJ2gq7OL9z85oF7TWKlMirBTrtFCTAfNlR5KOS4cr12Ltmx+
-         l2P3cQUlH8sJknzKjxHUjtfPmpNYcKwVHtFYU5IiXZ0lRWV88GW7n90nFBgwL/gkzpHZ
-         tEi1i4y+NKEO9uig9SbJpZyQ+sx6mqjnuK4uWyQZCkgmyD6IEW16NEuPVBoiNJxFVE2X
-         L9sg6B5Y/BjsEZGvNgM2t9CsVwwj3kNT2eWNivx8ICsh6IAFTP6r3WFqUxf/UaR1GYST
-         MYuQ==
-X-Gm-Message-State: AOJu0YwRExfMiKO7TR47IPsWUsYfrBuS6vuXAOlYvtVadEmIWr0jlBPM
-	9+NXYndIXJI7yB8+Bblc3QwSLpjk8tdfiKblfswAuzxpS0MchfLzAeXvuWfE0g==
-X-Google-Smtp-Source: AGHT+IFnFzWopA+FTNbLpeku3V9/v0WIlaYJvIgixHV3VvflgAsIYyXCbCLM6XVYfJn/avWkMTal3Q==
-X-Received: by 2002:a05:6a20:4f1a:b0:19c:8fcf:97ca with SMTP id gi26-20020a056a204f1a00b0019c8fcf97camr2530546pzb.60.1706553255720;
-        Mon, 29 Jan 2024 10:34:15 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id g7-20020a170902f74700b001d71669a30fsm5722452plw.109.2024.01.29.10.34.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 10:34:14 -0800 (PST)
-From: Kees Cook <keescook@chromium.org>
-To: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Cc: Kees Cook <keescook@chromium.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-hardening@vger.kernel.org,
-	Nathan Chancellor <nathan@kernel.org>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Marco Elver <elver@google.com>,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH 5/5] overflow: Introduce inc_wrap() and dec_wrap()
-Date: Mon, 29 Jan 2024 10:34:09 -0800
-Message-Id: <20240129183411.3791340-5-keescook@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240129182845.work.694-kees@kernel.org>
-References: <20240129182845.work.694-kees@kernel.org>
+	s=arc-20240116; t=1706553283; c=relaxed/simple;
+	bh=Wfk4yPeASuxwl48Oyf/iy94v6/Ove6zw/HOC6KbRDiE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=bZUL3q3WVKlcnnz1n0TwmEQD7fMIwOFf03V6bKajL0CAsUUdtFZw8vK8/BjCT8kz5abk9PAsgGAy3AuQQnUPP1kBq7RnTE1bMm6Z6e2dwt9DCMPl5tVuRVRAR+VYtqG1tlSYODFfP6+SKJol3pT8QfZBJVcgrIBB/tu/GC7n/aw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F2k0G+JP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 477ACC433F1;
+	Mon, 29 Jan 2024 18:34:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706553283;
+	bh=Wfk4yPeASuxwl48Oyf/iy94v6/Ove6zw/HOC6KbRDiE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=F2k0G+JPOks06KgR3j6gUbiPLuWkGZX9w+VHdYe6NRSMDEl9Hbd4DpubRu8sdKsRU
+	 fek81S/M1xvYMm/ZJGH9iQOu2glPNqK5F9qyOVek5ptYvckHXoGz3Nz0WTe1iVMzE9
+	 7iy6OOAc1LQWFC+FBSL46K6851kRJ3b1uc7dxPxCEXcpNUQ/Pz9r4WGXdi0Ep2UVy+
+	 KHmhQKG8jepPGXgVSPsPTlSH4Reh87MaC0d9t7AoewqZl2XtIUFmOnHaQpAwoJvRXe
+	 fayJGNnIu838VlL78u3vocEPh/37NuYUuw/YUwbmV0cBMxMHoXZpUKUW/hz9VP0MrU
+	 7cJzZs8eqwA0Q==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Hector Martin <marcan@marcan.st>,
+	=?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>,
+	Vinod Koul <vkoul@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
+	sven@svenpeter.dev,
+	asahi@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	dmaengine@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 01/12] dmaengine: apple-admac: Keep upper bits of REG_BUS_WIDTH
+Date: Mon, 29 Jan 2024 13:34:10 -0500
+Message-ID: <20240129183440.463998-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2034; i=keescook@chromium.org;
- h=from:subject; bh=8qBo+r1o5uX8xwwRI2+8kwqWeOJfk0QZ5WpwUuylvAw=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlt++hTMcckwazpkGwN3co7nO6qqaui6d7qOFGo
- HqcZdYYMsCJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZbfvoQAKCRCJcvTf3G3A
- JjLYD/41af8TH5vPKBme99k9V45iwAafnhobwzSpJqZkoF4aHZaUg8mvXE/PdM99iATMf4nPr/O
- ycsKDiuC7/euYHLEyODmb5I9L6hzlvWnzy42LxuTs2qIAFSxP5t9wx/DrAEDO3LAmhOQdFJlJMm
- 2Ya7/S7q9Qz68sLIZXcotFktkTo/X4bZvLP126YodD7eWqlUlcK2vrCtT8tuDe9Zkp6VAaHTVOm
- KsbmGdkOwxg+/TbsvkvFAsAwGF/fuL9/dZ5yM61GTA7QXOEPvth0Qn7dNxOZWI4eHPH1vQe7h5Z
- q3sB+SXjCesHuzwWrb5yTTJYOiOAwNKg49o/EbdiX2smvigUX7v1rxToz8wEsj8hk1DP4q3oFC6
- Qo8klArnkKEr+dgnT2Efc1viiGfzP9mNWSKecF2xMm/WYmp3DSvP2BA708K+PGI8LBok2W/2Gt+
- zz6DukdknEKikX0o6i1odluirCLQohzsIQ7nGemLeuxI23hqmTwS/axvt5RUexfKh9cLroTPRgf
- 3knmXQSDxlUrZIwyrhLjczoe36Hb0WgjSwMOounvBs2H1dF+67uD4HOd5Y6OkyVzf4W3EbHrA7R
- fpbNA1NoQ9sdcKeZQprybnCISRKc+FxGIQUWR99xo9Yu7mB6oaTidtLxM3vHjKPL2BMSZ6xdL5B 9K5/jDKen/0fwXA==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.7.2
 Content-Transfer-Encoding: 8bit
 
-This allows replacements of the idioms "var += offset" and "var -= offset"
-with the inc_wrap() and dec_wrap() helpers respectively. They will avoid
-wrap-around sanitizer instrumentation.
+From: Hector Martin <marcan@marcan.st>
 
-Cc: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
+[ Upstream commit 306f5df81fcc89b462fbeb9dbe26d9a8ad7c7582 ]
+
+For RX channels, REG_BUS_WIDTH seems to default to a value of 0xf00, and
+macOS preserves the upper bits when setting the configuration in the
+lower ones. If we reset the upper bits to 0, this causes framing errors
+on suspend/resume (the data stream "tears" and channels get swapped
+around). Keeping the upper bits untouched, like the macOS driver does,
+fixes this issue.
+
+Signed-off-by: Hector Martin <marcan@marcan.st>
+Reviewed-by: Martin Povišer <povik+lin@cutebit.org>
+Signed-off-by: Martin Povišer <povik+lin@cutebit.org>
+Link: https://lore.kernel.org/r/20231029170704.82238-1-povik+lin@cutebit.org
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/overflow.h | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+ drivers/dma/apple-admac.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/overflow.h b/include/linux/overflow.h
-index 4f945e9e7881..080b18b84498 100644
---- a/include/linux/overflow.h
-+++ b/include/linux/overflow.h
-@@ -138,6 +138,22 @@ static inline bool __must_check __must_check_overflow(bool overflow)
- 		__sum;					\
- 	})
+diff --git a/drivers/dma/apple-admac.c b/drivers/dma/apple-admac.c
+index 5b63996640d9..9588773dd2eb 100644
+--- a/drivers/dma/apple-admac.c
++++ b/drivers/dma/apple-admac.c
+@@ -57,6 +57,8 @@
  
-+/**
-+ * add_wrap() - Intentionally perform a wrapping increment
-+ * @a: variable to be incremented
-+ * @b: amount to add
-+ *
-+ * Increments @a by @b with wrap-around. Returns the resulting
-+ * value of @a. Will not trip any wrap-around sanitizers.
-+ */
-+#define inc_wrap(var, offset)					\
-+	({							\
-+		if (check_add_overflow(var, offset, &var)) {	\
-+			/* do nothing */			\
-+		}						\
-+		var;						\
-+	})
-+
- /**
-  * check_sub_overflow() - Calculate subtraction with overflow checking
-  * @a: minuend; value to subtract from
-@@ -169,6 +185,22 @@ static inline bool __must_check __must_check_overflow(bool overflow)
- 		__val;					\
- 	})
+ #define REG_BUS_WIDTH(ch)	(0x8040 + (ch) * 0x200)
  
-+/**
-+ * dec_wrap() - Intentionally perform a wrapping decrement
-+ * @a: variable to be decremented
-+ * @b: amount to subtract
-+ *
-+ * Decrements @a by @b with wrap-around. Returns the resulting
-+ * value of @a. Will not trip any wrap-around sanitizers.
-+ */
-+#define dec_wrap(var, offset)					\
-+	({							\
-+		if (check_sub_overflow(var, offset, &var)) {	\
-+			/* do nothing */			\
-+		}						\
-+		var;						\
-+	})
-+
- /**
-  * check_mul_overflow() - Calculate multiplication with overflow checking
-  * @a: first factor
++#define BUS_WIDTH_WORD_SIZE	GENMASK(3, 0)
++#define BUS_WIDTH_FRAME_SIZE	GENMASK(7, 4)
+ #define BUS_WIDTH_8BIT		0x00
+ #define BUS_WIDTH_16BIT		0x01
+ #define BUS_WIDTH_32BIT		0x02
+@@ -740,7 +742,8 @@ static int admac_device_config(struct dma_chan *chan,
+ 	struct admac_data *ad = adchan->host;
+ 	bool is_tx = admac_chan_direction(adchan->no) == DMA_MEM_TO_DEV;
+ 	int wordsize = 0;
+-	u32 bus_width = 0;
++	u32 bus_width = readl_relaxed(ad->base + REG_BUS_WIDTH(adchan->no)) &
++		~(BUS_WIDTH_WORD_SIZE | BUS_WIDTH_FRAME_SIZE);
+ 
+ 	switch (is_tx ? config->dst_addr_width : config->src_addr_width) {
+ 	case DMA_SLAVE_BUSWIDTH_1_BYTE:
 -- 
-2.34.1
+2.43.0
 
 
