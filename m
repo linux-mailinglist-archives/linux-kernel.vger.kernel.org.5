@@ -1,316 +1,175 @@
-Return-Path: <linux-kernel+bounces-43108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43107-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BED1D840BA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:35:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D641B840BA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:35:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C88E61C22BE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:35:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4446D1F23C29
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:35:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3545115AADF;
-	Mon, 29 Jan 2024 16:32:10 +0000 (UTC)
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12F2215AAA2;
+	Mon, 29 Jan 2024 16:32:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p+YZYA9S"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2F5C15AAC5;
-	Mon, 29 Jan 2024 16:32:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4456F15A4AB
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 16:32:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706545929; cv=none; b=WA9iUfdnMhd0/lpUtzJqClMhFV6Tdrcrd5PbVe9jL0terz+FtbjC5aO3B3puWzWYduMM1bMUYCJthvCbXqv8CwCqXXxdZ5TiLQHQzlWT4ZRvAL2Ezi9nvMSO/k4h8uMPc/J23TZ/g2Vd9BCqUQuxseEw60TP4goFIbf+0vHQs00=
+	t=1706545924; cv=none; b=uBPifmk2EnIFOg6k1RYI9+QjQhihQJ8RKf9rcUEeLSmXtKIJY6UEqxfjkrc1OS/Tu0n3Dnn5olJWZhj3bTYm6frBGUf4LOvcRSKZkg31Ih1eK14TjtFVgjwG/hZYrnQokHxzyKwryZYrU+bR7X7s5o+0GP8+/4+j+FAiNdK39kg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706545929; c=relaxed/simple;
-	bh=TF0P9TEJQ6uWxFofCM9XjL8Cc46UH+Kmrrr9PszlHyw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CGGIOW1PEQS+62qSug1Hh9b1/0tMSAljvuOilYc7dDUNV8QQA+zD/cfyuxcqcS5djb1kbUE2gOA6u8h+hHAxJzm533I0c0L+zSMLbr4Z+juKuPbDziWjZsf9YulgP+MZgN8XvTtjoibxABAIFT/o7O288kfAsGO8W67CwoEIlT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id caebe9d19cc60e9b; Mon, 29 Jan 2024 17:31:59 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 00B7166975C;
-	Mon, 29 Jan 2024 17:31:58 +0100 (CET)
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-Subject: [PATCH v2 04/10] PM: sleep: stats: Define suspend_stats next to the code using it
-Date: Mon, 29 Jan 2024 17:30:44 +0100
-Message-ID: <2469144.jE0xQCEvom@kreacher>
-In-Reply-To: <5770175.DvuYhMxLoT@kreacher>
-References: <5770175.DvuYhMxLoT@kreacher>
+	s=arc-20240116; t=1706545924; c=relaxed/simple;
+	bh=/u1rFiHmhXAQAtlUXq7FgxQxSIB+dSj/HU6AwwQbRoo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EWL8xi3H11+V0Hoz0Nf4J1r/7JWMhrqF2BgsF35aYVPaqDjJUkbaobnMag+Ra7Z0ciQIRaUcDwTrDVUSqfrZDS9hbdIf2L8wkbfxKGnEDsnPv0riKJysbwP8MoAnJFKbi47LJormEbpNVkDa/uVM5vXxZBPyVt99iLhhheMu1dU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p+YZYA9S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9FD4C4166B
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 16:32:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706545923;
+	bh=/u1rFiHmhXAQAtlUXq7FgxQxSIB+dSj/HU6AwwQbRoo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=p+YZYA9S5HvYtpH/fWISTw5LLg6YC26CUaUE0OOkycY2NWeb4mIy88mZqtJ3zu2TA
+	 CUpwtuAcyoVN25144BfjKst3mkyuVvnDA8ELm7vKAFrzBramuJCqNmRIupLIsrivd2
+	 geGtoUhQzku9bIcOOwhNJN+srTO1fQyUOh+BcVTNpNbcBz6MB0QqnJnnC4jGeetD2g
+	 Wie4q3thvfistpghwe9jY38naYjt0lob/XXbn5qr2OwB40a3CAeu0S/HRxRcCo4wDX
+	 QnwcEq6FcIwOLHI4tx3LKCqZM/SIQ9VpKYbJbUomnYHU4Sdne44ItfBKJzV5dmXMCS
+	 4v8lEFRTEDvyw==
+Received: by mail-il1-f175.google.com with SMTP id e9e14a558f8ab-3638b5f8240so313445ab.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 08:32:03 -0800 (PST)
+X-Gm-Message-State: AOJu0Yz8kJydBcmd4YBuNVChyFvCuxpPA87ek50Mz9TcHYvk3LGWJu54
+	xUQo6JZxhbhdroG1Hm24aLQenjoXE4DuceaInblNin2CXKBGFw60jKoEgP4y+ygMzgmPRU49DT0
+	DQIdtQCUGawJEHjuDfTLuKyoT8y4jp1sJYuB6
+X-Google-Smtp-Source: AGHT+IESDGAmy2d4K/fKQc27p+6fDI0mCGTCPnb2naFB86pPGb1OS+MLUkevgvtCdcIj3BNmBQogt+Hm5RAyE7VgE4c=
+X-Received: by 2002:a92:a306:0:b0:360:73de:be5e with SMTP id
+ a6-20020a92a306000000b0036073debe5emr4185014ili.14.1706545922962; Mon, 29 Jan
+ 2024 08:32:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+References: <20231025144546.577640-1-ryan.roberts@arm.com> <20240118111036.72641-1-21cnbao@gmail.com>
+ <20240118111036.72641-6-21cnbao@gmail.com> <58efd8d4-28aa-45d6-b384-7463568b24bb@redhat.com>
+ <CAGsJ_4zwUpL7LihRBOefg-cmY2mgNjMm-MPkq9VFBdXS_4b=uQ@mail.gmail.com>
+ <CAF8kJuNHrM+ZQSnTAOt6rrmGr1P=YS8eU+RSqhAc1CjQ7qdEwQ@mail.gmail.com> <c11d73d5-105e-4ae1-837a-b9da392d2dad@redhat.com>
+In-Reply-To: <c11d73d5-105e-4ae1-837a-b9da392d2dad@redhat.com>
+From: Chris Li <chrisl@kernel.org>
+Date: Mon, 29 Jan 2024 08:31:51 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuMmh06rCXuiu5V0BiT8t1ckEEnY4rM-ivRBQ+xdyMhRKQ@mail.gmail.com>
+Message-ID: <CAF8kJuMmh06rCXuiu5V0BiT8t1ckEEnY4rM-ivRBQ+xdyMhRKQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 5/6] mm: rmap: weaken the WARN_ON in __folio_add_anon_rmap()
+To: David Hildenbrand <david@redhat.com>
+Cc: Barry Song <21cnbao@gmail.com>, ryan.roberts@arm.com, akpm@linux-foundation.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, mhocko@suse.com, 
+	shy828301@gmail.com, wangkefeng.wang@huawei.com, willy@infradead.org, 
+	xiang@kernel.org, ying.huang@intel.com, yuzhao@google.com, surenb@google.com, 
+	steven.price@arm.com, Barry Song <v-songbaohua@oppo.com>, 
+	Chuanhua Han <hanchuanhua@oppo.com>
 Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtgedgjeelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepgedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehulhhfrdhhrghnshhsohhnsehlihhnrghrohdrohhrghdprhgtphhtthhopehsthgrnhhishhlrgifrdhgrhhushiikhgrsehlihhnuhigrdhinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
+Content-Transfer-Encoding: quoted-printable
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Mon, Jan 29, 2024 at 2:07=E2=80=AFAM David Hildenbrand <david@redhat.com=
+> wrote:
+>
+> On 29.01.24 04:25, Chris Li wrote:
+> > Hi David and Barry,
+> >
+> > On Mon, Jan 22, 2024 at 10:49=E2=80=AFPM Barry Song <21cnbao@gmail.com>=
+ wrote:
+> >>
+> >>>
+> >>>
+> >>> I have on my todo list to move all that !anon handling out of
+> >>> folio_add_anon_rmap_ptes(), and instead make swapin code call add
+> >>> folio_add_new_anon_rmap(), where we'll have to pass an exclusive flag
+> >>> then (-> whole new folio exclusive).
+> >>>
+> >>> That's the cleaner approach.
+> >>>
+> >>
+> >> one tricky thing is that sometimes it is hard to know who is the first
+> >> one to add rmap and thus should
+> >> call folio_add_new_anon_rmap.
+> >> especially when we want to support swapin_readahead(), the one who
+> >> allocated large filio might not
+> >> be that one who firstly does rmap.
+> >
+> > I think Barry has a point. Two tasks might race to swap in the folio
+> > then race to perform the rmap.
+> > folio_add_new_anon_rmap() should only call a folio that is absolutely
+> > "new", not shared. The sharing in swap cache disqualifies that
+> > condition.
+>
+> We have to hold the folio lock. So only one task at a time might do the
+> folio_add_anon_rmap_ptes() right now, and the
+> folio_add_new_shared_anon_rmap() in the future [below].
+>
 
-It is not necessary to define struct suspend_stats in a header file and the
-suspend_stats variable in the core device system-wide PM code.  They both
-can be defined in kernel/power/main.c, next to the sysfs and debugfs code
-accessing suspend_stats, which can be static.
+Ah, I see. The folio_lock() is the answer I am looking for.
 
-Modify the code in question in accordance with the above observation and
-replace the static inline functions manipulating suspend_stats with
-regular ones defined in kernel/power/main.c.
+> Also observe how folio_add_anon_rmap_ptes() states that one must hold
+> the page lock, because otherwise this would all be completely racy.
+>
+>  From the pte swp exclusive flags, we know for sure whether we are
+> dealing with exclusive vs. shared. I think patch #6 does not properly
+> check that all entries are actually the same in that regard (all
+> exclusive vs all shared). That likely needs fixing.
+>
+> [I have converting per-page PageAnonExclusive flags to a single
+> per-folio flag on my todo list. I suspect that we'll keep the
+> per-swp-pte exlusive bits, but the question is rather what we can
+> actually make work, because swap and migration just make it much more
+> complicated. Anyhow, future work]
+>
+> >
+> >> is it an acceptable way to do the below in do_swap_page?
+> >> if (!folio_test_anon(folio))
+> >>        folio_add_new_anon_rmap()
+> >> else
+> >>        folio_add_anon_rmap_ptes()
+> >
+> > I am curious to know the answer as well.
+>
+>
+> Yes, the end code should likely be something like:
+>
+> /* ksm created a completely new copy */
+> if (unlikely(folio !=3D swapcache && swapcache)) {
+>         folio_add_new_anon_rmap(folio, vma, vmf->address);
+>         folio_add_lru_vma(folio, vma);
+> } else if (folio_test_anon(folio)) {
+>         folio_add_anon_rmap_ptes(rmap_flags)
+> } else {
+>         folio_add_new_anon_rmap(rmap_flags)
+> }
+>
+> Maybe we want to avoid teaching all existing folio_add_new_anon_rmap()
+> callers about a new flag, and just have a new
+> folio_add_new_shared_anon_rmap() instead. TBD.
 
-While at it, move the enum suspend_stat_step to the end of suspend.h which
-is a more suitable place for it.
-
-No intentional functional impact.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
-
-v1 -> v2:
-   * Take the modifications of patches [2-3/10] into account.
-
----
- drivers/base/power/main.c |    1 
- include/linux/suspend.h   |   71 +++++++++---------------------------------
- kernel/power/main.c       |   76 ++++++++++++++++++++++++++++++++++++++--------
- kernel/power/power.h      |    2 +
- kernel/power/suspend.c    |    7 ----
- 5 files changed, 81 insertions(+), 76 deletions(-)
-
-Index: linux-pm/include/linux/suspend.h
-===================================================================
---- linux-pm.orig/include/linux/suspend.h
-+++ linux-pm/include/linux/suspend.h
-@@ -40,62 +40,6 @@ typedef int __bitwise suspend_state_t;
- #define PM_SUSPEND_MIN		PM_SUSPEND_TO_IDLE
- #define PM_SUSPEND_MAX		((__force suspend_state_t) 4)
- 
--enum suspend_stat_step {
--	SUSPEND_NONE = 0,
--	SUSPEND_FREEZE,
--	SUSPEND_PREPARE,
--	SUSPEND_SUSPEND,
--	SUSPEND_SUSPEND_LATE,
--	SUSPEND_SUSPEND_NOIRQ,
--	SUSPEND_RESUME_NOIRQ,
--	SUSPEND_RESUME_EARLY,
--	SUSPEND_RESUME
--};
--
--#define SUSPEND_NR_STEPS	SUSPEND_RESUME
--
--struct suspend_stats {
--	unsigned int step_failures[SUSPEND_NR_STEPS];
--	unsigned int success;
--	unsigned int fail;
--#define	REC_FAILED_NUM	2
--	int	last_failed_dev;
--	char	failed_devs[REC_FAILED_NUM][40];
--	int	last_failed_errno;
--	int	errno[REC_FAILED_NUM];
--	int	last_failed_step;
--	u64	last_hw_sleep;
--	u64	total_hw_sleep;
--	u64	max_hw_sleep;
--	enum suspend_stat_step	failed_steps[REC_FAILED_NUM];
--};
--
--extern struct suspend_stats suspend_stats;
--
--static inline void dpm_save_failed_dev(const char *name)
--{
--	strscpy(suspend_stats.failed_devs[suspend_stats.last_failed_dev],
--		name,
--		sizeof(suspend_stats.failed_devs[0]));
--	suspend_stats.last_failed_dev++;
--	suspend_stats.last_failed_dev %= REC_FAILED_NUM;
--}
--
--static inline void dpm_save_failed_errno(int err)
--{
--	suspend_stats.errno[suspend_stats.last_failed_errno] = err;
--	suspend_stats.last_failed_errno++;
--	suspend_stats.last_failed_errno %= REC_FAILED_NUM;
--}
--
--static inline void dpm_save_failed_step(enum suspend_stat_step step)
--{
--	suspend_stats.step_failures[step-1]++;
--	suspend_stats.failed_steps[suspend_stats.last_failed_step] = step;
--	suspend_stats.last_failed_step++;
--	suspend_stats.last_failed_step %= REC_FAILED_NUM;
--}
--
- /**
-  * struct platform_suspend_ops - Callbacks for managing platform dependent
-  *	system sleep states.
-@@ -623,4 +567,19 @@ static inline void queue_up_suspend_work
- 
- #endif /* !CONFIG_PM_AUTOSLEEP */
- 
-+enum suspend_stat_step {
-+	SUSPEND_NONE = 0,
-+	SUSPEND_FREEZE,
-+	SUSPEND_PREPARE,
-+	SUSPEND_SUSPEND,
-+	SUSPEND_SUSPEND_LATE,
-+	SUSPEND_SUSPEND_NOIRQ,
-+	SUSPEND_RESUME_NOIRQ,
-+	SUSPEND_RESUME_EARLY,
-+	SUSPEND_RESUME
-+};
-+
-+void dpm_save_failed_dev(const char *name);
-+void dpm_save_failed_step(enum suspend_stat_step step);
-+
- #endif /* _LINUX_SUSPEND_H */
-Index: linux-pm/kernel/power/main.c
-===================================================================
---- linux-pm.orig/kernel/power/main.c
-+++ linux-pm/kernel/power/main.c
-@@ -95,19 +95,6 @@ int unregister_pm_notifier(struct notifi
- }
- EXPORT_SYMBOL_GPL(unregister_pm_notifier);
- 
--void pm_report_hw_sleep_time(u64 t)
--{
--	suspend_stats.last_hw_sleep = t;
--	suspend_stats.total_hw_sleep += t;
--}
--EXPORT_SYMBOL_GPL(pm_report_hw_sleep_time);
--
--void pm_report_max_hw_sleep(u64 t)
--{
--	suspend_stats.max_hw_sleep = t;
--}
--EXPORT_SYMBOL_GPL(pm_report_max_hw_sleep);
--
- int pm_notifier_call_chain_robust(unsigned long val_up, unsigned long val_down)
- {
- 	int ret;
-@@ -319,6 +306,69 @@ static ssize_t pm_test_store(struct kobj
- power_attr(pm_test);
- #endif /* CONFIG_PM_SLEEP_DEBUG */
- 
-+#define SUSPEND_NR_STEPS	SUSPEND_RESUME
-+#define REC_FAILED_NUM		2
-+
-+struct suspend_stats {
-+	unsigned int step_failures[SUSPEND_NR_STEPS];
-+	unsigned int success;
-+	unsigned int fail;
-+	int last_failed_dev;
-+	char failed_devs[REC_FAILED_NUM][40];
-+	int last_failed_errno;
-+	int errno[REC_FAILED_NUM];
-+	int last_failed_step;
-+	u64 last_hw_sleep;
-+	u64 total_hw_sleep;
-+	u64 max_hw_sleep;
-+	enum suspend_stat_step failed_steps[REC_FAILED_NUM];
-+};
-+
-+static struct suspend_stats suspend_stats;
-+
-+void dpm_save_failed_dev(const char *name)
-+{
-+	strscpy(suspend_stats.failed_devs[suspend_stats.last_failed_dev],
-+		name, sizeof(suspend_stats.failed_devs[0]));
-+	suspend_stats.last_failed_dev++;
-+	suspend_stats.last_failed_dev %= REC_FAILED_NUM;
-+}
-+
-+void dpm_save_failed_step(enum suspend_stat_step step)
-+{
-+	suspend_stats.step_failures[step-1]++;
-+	suspend_stats.failed_steps[suspend_stats.last_failed_step] = step;
-+	suspend_stats.last_failed_step++;
-+	suspend_stats.last_failed_step %= REC_FAILED_NUM;
-+}
-+
-+void dpm_save_errno(int err)
-+{
-+	if (!err) {
-+		suspend_stats.success++;
-+		return;
-+	}
-+
-+	suspend_stats.fail++;
-+
-+	suspend_stats.errno[suspend_stats.last_failed_errno] = err;
-+	suspend_stats.last_failed_errno++;
-+	suspend_stats.last_failed_errno %= REC_FAILED_NUM;
-+}
-+
-+void pm_report_hw_sleep_time(u64 t)
-+{
-+	suspend_stats.last_hw_sleep = t;
-+	suspend_stats.total_hw_sleep += t;
-+}
-+EXPORT_SYMBOL_GPL(pm_report_hw_sleep_time);
-+
-+void pm_report_max_hw_sleep(u64 t)
-+{
-+	suspend_stats.max_hw_sleep = t;
-+}
-+EXPORT_SYMBOL_GPL(pm_report_max_hw_sleep);
-+
- static const char * const suspend_step_names[] = {
- 	[SUSPEND_NONE] = "",
- 	[SUSPEND_FREEZE] = "freeze",
-Index: linux-pm/kernel/power/power.h
-===================================================================
---- linux-pm.orig/kernel/power/power.h
-+++ linux-pm/kernel/power/power.h
-@@ -327,3 +327,5 @@ static inline void pm_sleep_enable_secon
- 	suspend_enable_secondary_cpus();
- 	cpuidle_resume();
- }
-+
-+void dpm_save_errno(int err);
-Index: linux-pm/kernel/power/suspend.c
-===================================================================
---- linux-pm.orig/kernel/power/suspend.c
-+++ linux-pm/kernel/power/suspend.c
-@@ -616,12 +616,7 @@ int pm_suspend(suspend_state_t state)
- 
- 	pr_info("suspend entry (%s)\n", mem_sleep_labels[state]);
- 	error = enter_state(state);
--	if (error) {
--		suspend_stats.fail++;
--		dpm_save_failed_errno(error);
--	} else {
--		suspend_stats.success++;
--	}
-+	dpm_save_errno(error);
- 	pr_info("suspend exit\n");
- 	return error;
- }
-Index: linux-pm/drivers/base/power/main.c
-===================================================================
---- linux-pm.orig/drivers/base/power/main.c
-+++ linux-pm/drivers/base/power/main.c
-@@ -60,7 +60,6 @@ static LIST_HEAD(dpm_suspended_list);
- static LIST_HEAD(dpm_late_early_list);
- static LIST_HEAD(dpm_noirq_list);
- 
--struct suspend_stats suspend_stats;
- static DEFINE_MUTEX(dpm_list_mtx);
- static pm_message_t pm_transition;
- 
+There is more than one caller needed to perform that dance around
+folio_test_anon() then decide which function to call. It would be nice
+to have a wrapper function folio_add_new_shared_anon_rmap() to
+abstract this behavior.
 
 
+>
+> >
+> > BTW, that test might have a race as well. By the time the task got
+> > !anon result, this result might get changed by another task. We need
+> > to make sure in the caller context this race can't happen. Otherwise
+> > we can't do the above safely.
+> Again, folio lock. Observe the folio_lock_or_retry() call that covers
+> our existing folio_add_new_anon_rmap/folio_add_anon_rmap_pte calls.
 
+Ack. Thanks for the explanation.
+
+Chris
 
