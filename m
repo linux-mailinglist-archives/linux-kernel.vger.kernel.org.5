@@ -1,147 +1,198 @@
-Return-Path: <linux-kernel+bounces-43023-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43026-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15D05840A54
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:43:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 736AF840A5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:44:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9BF0BB25ED4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:43:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDB7A1F2716D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:44:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A2AD155317;
-	Mon, 29 Jan 2024 15:42:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09BD3155A28;
+	Mon, 29 Jan 2024 15:43:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="MUe+POmJ"
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A6BQG4Rw"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B284D154445
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 15:42:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE07D154C07;
+	Mon, 29 Jan 2024 15:43:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.88
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706542968; cv=none; b=ILTYKAxF072bymuk1HOsjgjsY3VzYK/gbYA8KHkjMohEjrjsTdlFmAjviVil+rTiZ9Pm2Tzc2slXtujLlkVaLlQQE0p0pN8YnwCsZ6WiKZUPAwhdp2sf9E/iASQtOGAhLiXfYG/G40vZGd8VC1YoOnvRYUWk3aaiPP876VBFpWo=
+	t=1706543019; cv=none; b=hyraUHWUxhktfGnycxuRz4DV1wOFC/ktVhEKTtMAExRhG7VqP+CIYZBOXE7hKAkMsVanxbi+VX3O9+Gkp5tGy4wfFpSi+b4VHvlhTXvkgiM8vjCPDYixfXOA4fzEKfLAEXdk0B0PP0YP77nkTq3+YPnn0HyVv+TE6rQYnV0zj+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706542968; c=relaxed/simple;
-	bh=E2pz83SaHUUBSu+k2FmR9GyqPifnumB7xkbI8/ZNP6c=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=IWFaXWHFRBCBbWbDo/0DDxIif28YEQMW3UIxoo+CQicxWTZ04VCWZlZsmOuWb+SSxEESv2foaU03G+qjA73MY9WYAHf8v09z0AObssPPWZpl83SB/7PBBH1OX2Vb+wgZ/VdaOceP1LelX1f0wlgQgsN6gx4KqY4a4/Yn2NR+05E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=MUe+POmJ; arc=none smtp.client-ip=185.125.188.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 3C7EA3FD9F
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 15:42:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1706542962;
-	bh=FmVwiL7ssmvBS/Rk3AP7EZwNHMhnVZ9IcleUiv9ucoo=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type;
-	b=MUe+POmJwanreQNkMuyXUEq1Gmq9m0Zpn4dwmRWFZQ5BzDHtJDEdYSbd9rki/VMhn
-	 dfeKT+ZUKscxbYDeyC3KelkrTJw1HbA7L9P7QTOlOe6BfmIElvg+wjzi/K0Jk+y0xF
-	 y65fe92JueevglKGclECrr2iB95ErVFt+4SCp2UZLlAY8GQysEiPd2itKVm//iUhZr
-	 KP7Xg0A+mkx/gS8biAlzu8ZQklRHklnZknAQTOd5MdTbkG/Gkcsst1k+IkrN4SLULj
-	 t69SIeJzDyouJzA+9nLCib2mpNC1TJbwZvsDwPTm9iVjqMNyeIwfjs2IswUrau5pcn
-	 9cKF1KwKjHLuw==
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a35a649c608so68701166b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 07:42:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706542961; x=1707147761;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FmVwiL7ssmvBS/Rk3AP7EZwNHMhnVZ9IcleUiv9ucoo=;
-        b=CAzXIZ0zmKI7X5VqKrT+MfGJHelkYOMir1Jffb7Bev4Nz9IGBQueMWv/AIZobyJrBZ
-         gS+fiGXIwpYMbJTvwLeH1d1NEHRWwliRxuLGZJSzGwuBD3ZDZJcWHLbG1I5oBPdFX+29
-         j57B0DKZvmFe2bynALPFriX+3ogHcbXprd2KK2OIK/rWBq4MYokvZroxePfvPdvIZfbS
-         rlyJ7sdSYIFfpocKRQci7I1a6+ne/iQO1zfQpJyrUouDJJPU+9bEXaLFd0cjMuTouRI9
-         XXomQUZ7zHhHxid2aU1K27OXqWLqk+xZMG4BfbQ+nGeIXH1nTjztNqXfwI2V5LSi3hlx
-         NGhA==
-X-Gm-Message-State: AOJu0Yy0PK5FqDesj2Za7uBWAOYwnEDlfRnZntdOfxSG3eb8kF5yADRV
-	LYX2k0CaQarD2X4IbYYrrA3t7bKyv5d+kphRjSCwC+CpNuzIG0xRXUD5yhfkq8dQ2rky+MzK+hM
-	EG+Dkl6advuu6piqLf65RhWMl02H1EivqoC3u3g2H6XRjH5k26X+IYUJJDkaV7fmStwuC7aPb/4
-	DVPg==
-X-Received: by 2002:a17:906:7f90:b0:a2c:3596:b0c1 with SMTP id f16-20020a1709067f9000b00a2c3596b0c1mr4985254ejr.75.1706542961640;
-        Mon, 29 Jan 2024 07:42:41 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF4WvBpWmKQPkCgy9/7v4IVO3JZ0fzYsBag+YDG8GPdLA0TxgRJEg58UOGotA/ZgDC9TpA24w==
-X-Received: by 2002:a17:906:7f90:b0:a2c:3596:b0c1 with SMTP id f16-20020a1709067f9000b00a2c3596b0c1mr4985242ejr.75.1706542961322;
-        Mon, 29 Jan 2024 07:42:41 -0800 (PST)
-Received: from amikhalitsyn ([91.64.72.41])
-        by smtp.gmail.com with ESMTPSA id fj18-20020a1709069c9200b00a3496fa1f7fsm4069969ejc.91.2024.01.29.07.42.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 07:42:40 -0800 (PST)
-Date: Mon, 29 Jan 2024 16:42:40 +0100
-From: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: mszeredi@redhat.com, stgraber@stgraber.org,
- linux-fsdevel@vger.kernel.org, Seth Forshee <sforshee@kernel.org>, Miklos
- Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, Bernd
- Schubert <bschubert@ddn.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 4/9] fs/fuse: support idmapped getattr inode op
-Message-Id: <20240129164240.9e35bcf01695efcb1f966517@canonical.com>
-In-Reply-To: <20240120-heult-applaudieren-d6449392b497@brauner>
-References: <20240108120824.122178-1-aleksandr.mikhalitsyn@canonical.com>
-	<20240108120824.122178-5-aleksandr.mikhalitsyn@canonical.com>
-	<20240120-heult-applaudieren-d6449392b497@brauner>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706543019; c=relaxed/simple;
+	bh=n8a6DcN34MCg2EL+T3oLmFAy3UeopUFYPMC/oHMiox8=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:From:Subject:
+	 In-Reply-To:Content-Type; b=tJQHLkf0+wz6VVFlXlwMntx6130f1IylE8swOY1yh5kUjQiTAH5pk/o3F80r8qt6406yDLk9jQx2gxyCYoo3SApbE3hyyDk7aPIkspzldu1cJYAo//O+WsWFrnf4VceKLfFWd03AUnZ9EIfENrGaAnhXrptPdnWzyaOnCuHsmw8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=A6BQG4Rw; arc=none smtp.client-ip=192.55.52.88
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706543016; x=1738079016;
+  h=message-id:date:mime-version:to:cc:references:from:
+   subject:in-reply-to:content-transfer-encoding;
+  bh=n8a6DcN34MCg2EL+T3oLmFAy3UeopUFYPMC/oHMiox8=;
+  b=A6BQG4RwneBFN8Q4gWtiXBLKGTsuaebuepLrO3TglQ93JZ3mevmg9oRm
+   EmgU5AwqtyssKKIAXrEnmIio4ghC5e0mXkmJ4YzujE5ba2Q+VCBLJSvZF
+   iFryVKhwFL1kI+5LXp5HwJKPTQfMNtPmku4NTHlr5Ups+6oSNmw34JnUM
+   W8yNIZvOVq5I7kjyOA/tVr8lsU/9lMPF06KTYAeHc5cFTB8Mlt3bPwr4l
+   yUJf7JAHD0G+CB+fm1zd+U6/QRVOUEf6AmsLb9Mn9unh8datVb41pH7tI
+   FrfDoUu/EgyH9tjl/YL+sCIQWKnlgneyF5dCUULtRK1A1YSfgMOdfGxeU
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="434159615"
+X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
+   d="scan'208";a="434159615"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 07:43:35 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="960921358"
+X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
+   d="scan'208";a="960921358"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
+  by orsmga005.jf.intel.com with ESMTP; 29 Jan 2024 07:43:25 -0800
+Message-ID: <44a3d4db-7759-dd93-782a-1efbebfdb22c@linux.intel.com>
+Date: Mon, 29 Jan 2024 17:44:58 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Content-Language: en-US
+To: Wesley Cheng <quic_wcheng@quicinc.com>, srinivas.kandagatla@linaro.org,
+ mathias.nyman@intel.com, perex@perex.cz, conor+dt@kernel.org,
+ corbet@lwn.net, gregkh@linuxfoundation.org, lgirdwood@gmail.com,
+ andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ konrad.dybcio@linaro.org, Thinh.Nguyen@synopsys.com, broonie@kernel.org,
+ bgoswami@quicinc.com, tiwai@suse.com, robh+dt@kernel.org, agross@kernel.org
+Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-sound@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org,
+ alsa-devel@alsa-project.org, "Neronin, Niklas" <niklas.neronin@intel.com>
+References: <20240102214549.22498-1-quic_wcheng@quicinc.com>
+ <20240102214549.22498-5-quic_wcheng@quicinc.com>
+ <734591a1-50b4-6dc7-0b93-077355ec12e4@linux.intel.com>
+ <7b2ec96b-b72f-c848-7c35-36e61a4072ac@quicinc.com>
+ <b254f73b-a1bc-3dd4-f485-a3acf556835d@quicinc.com>
+ <2178e799-2068-7443-59b2-310dfdd1ddee@linux.intel.com>
+ <ae64ce69-dc1b-1534-7950-0a35c4a56f58@quicinc.com>
+ <ff0bff8b-f26a-87bd-9762-9f2af98abcca@quicinc.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: Re: [PATCH v12 04/41] usb: host: xhci-mem: Cleanup pending secondary
+ event ring events
+In-Reply-To: <ff0bff8b-f26a-87bd-9762-9f2af98abcca@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Sat, 20 Jan 2024 16:21:08 +0100
-Christian Brauner <brauner@kernel.org> wrote:
-
-> >  int fuse_update_attributes(struct inode *inode, struct file *file, u32 mask)
-> >  {
-> > -	return fuse_update_get_attr(inode, file, NULL, mask, 0);
-> > +	return fuse_update_get_attr(&nop_mnt_idmap, inode, file, NULL, mask, 0);
-> >  }
-> >  
-> >  int fuse_reverse_inval_entry(struct fuse_conn *fc, u64 parent_nodeid,
-> > @@ -1506,7 +1510,7 @@ static int fuse_perm_getattr(struct inode *inode, int mask)
-> >  		return -ECHILD;
-> >  
-> >  	forget_all_cached_acls(inode);
-> > -	return fuse_do_getattr(inode, NULL, NULL);
-> > +	return fuse_do_getattr(&nop_mnt_idmap, inode, NULL, NULL);
-> >  }
-> >  
-> >  /*
-> > @@ -2062,7 +2066,7 @@ static int fuse_setattr(struct mnt_idmap *idmap, struct dentry *entry,
-> >  			 * ia_mode calculation may have used stale i_mode.
-> >  			 * Refresh and recalculate.
-> >  			 */
-> > -			ret = fuse_do_getattr(inode, NULL, file);
-> > +			ret = fuse_do_getattr(&nop_mnt_idmap, inode, NULL, file);
-> >  			if (ret)
-> >  				return ret;
+On 26.1.2024 23.13, Wesley Cheng wrote:
+> Hi Mathias,
 > 
+> On 1/16/2024 12:24 PM, Wesley Cheng wrote:
+>> Hi Mathias,
+>>
+>> On 1/15/2024 6:01 AM, Mathias Nyman wrote:
+>>> On 10.1.2024 1.42, Wesley Cheng wrote:
+>>>> Hi Mathias,
+>>>>
+>>>> On 1/8/2024 12:51 PM, Wesley Cheng wrote:
+>>>>> Hi Mathias,
+>>>>>
+>>>>> On 1/4/2024 6:48 AM, Mathias Nyman wrote:
+>>>>>> On 2.1.2024 23.45, Wesley Cheng wrote:
+>>>>>>> As part of xHCI bus suspend, the XHCI is halted.  However, if there are
+>>>>>>> pending events in the secondary event ring, it is observed that the xHCI
+>>>>>>> controller stops responding to further commands upon host or device
+>>>>>>> initiated bus resume.  Iterate through all pending events and update the
+>>>>>>> dequeue pointer to the beginning of the event ring.
+>>>>>>>
+>>>>>>> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+>>>>>> ...
+>>>>>>> +/*
+>>>>>>> + * Move the event ring dequeue pointer to skip events kept in the secondary
+>>>>>>> + * event ring.  This is used to ensure that pending events in the ring are
+>>>>>>> + * acknowledged, so the XHCI HCD can properly enter suspend/resume. The
+>>>>>>> + * secondary ring is typically maintained by an external component.
+>>>>>>> + */
+>>>>>>> +void xhci_skip_sec_intr_events(struct xhci_hcd *xhci,
+>>>>>>> +    struct xhci_ring *ring,    struct xhci_interrupter *ir)
+>>>>>>> +{
+>>>>>>> +    union xhci_trb *erdp_trb, *current_trb;
+>>>>>>> +    u64 erdp_reg;
+>>>>>>> +    u32 iman_reg;
+>>>>>>> +    dma_addr_t deq;
+>>>>>>> +
+>>>>>>> +    /* disable irq, ack pending interrupt and ack all pending events */
+>>>>>>> +    xhci_disable_interrupter(ir);
+>>>>>>> +    iman_reg = readl_relaxed(&ir->ir_set->irq_pending);
+>>>>>>> +    if (iman_reg & IMAN_IP)
+>>>>>>> +        writel_relaxed(iman_reg, &ir->ir_set->irq_pending);
+>>>>>>> +
+>>>>>>> +    /* last acked event trb is in erdp reg  */
+>>>>>>> +    erdp_reg = xhci_read_64(xhci, &ir->ir_set->erst_dequeue);
+>>>>>>> +    deq = (dma_addr_t)(erdp_reg & ERST_PTR_MASK);
+>>>>>>> +    if (!deq) {
+>>>>>>> +        xhci_err(xhci, "event ring handling not required\n");
+>>>>>>> +        return;
+>>>>>>> +    }
+>>>>>>> +
+>>>>>>> +    erdp_trb = current_trb = ir->event_ring->dequeue;
+>>>>>>> +    /* read cycle state of the last acked trb to find out CCS */
+>>>>>>> +    ring->cycle_state = le32_to_cpu(current_trb->event_cmd.flags) & TRB_CYCLE;
+>>>>>>> +
+>>>>>>> +    while (1) {
+>>>>>>> +        inc_deq(xhci, ir->event_ring);
+>>>>>>> +        erdp_trb = ir->event_ring->dequeue;
+>>>>>>> +        /* cycle state transition */
+>>>>>>> +        if ((le32_to_cpu(erdp_trb->event_cmd.flags) & TRB_CYCLE) !=
+>>>>>>> +            ring->cycle_state)
+>>>>>>> +            break;
+>>>>>>> +    }
+>>>>>>> +
+>>>>>>> +    xhci_update_erst_dequeue(xhci, ir, current_trb, true);
+>>>>>>> +}
+>>>>>>
+>>>>>> Code above is very similar to the existing event ring processing parts of xhci_irq()
+>>>>>> and xhci_handle_event()
+>>>>>>
+>>>>>> I'll see if I can refactor the existing event ring processing, decouple it from
+>>>>>> event handling so that it could be used by primary and secondary interrupters with
+>>>>>> handlers, and this case where we just want to clear the event ring.
+>>>>>>
+>>>>>
+>>>>> Thanks, that makes sense.  Will take a look as well.
+>>>>>
+>>>>
+>>>> How about something like the below?  Tested this on my set up and everything looks to be working fine.  Had to add another param to struct xhci_interrupters to tell the XHCI interrupt handler to say if that particular interrupter wants to skip_events (handling).  This way, its something that the class driver utilizing the interrupter will have to tell XHCI sideband.  It would allow the user to determine if they want to use the interrupter to actually handle events or not on the proc running Linux.
+>>>>
+>>>
+>>> Yes, I have something similar.
+>>> I'll share it soon, just need to
+>>> clean it up a bit fist.
+>>>
+>>
+>> Sure, no worries.  Will test it when its available.  Thanks!
+>>
+> 
+> Was just wondering if you had the time to clean up the changes?  If not, maybe you can provide a patch with whatever you have, and I can try my best to clean it up to your liking?  Thanks!
 
-Hi, Christian!
+Sure, got stuck fixing other issues.
 
-> These are internal getattr requests that don't originate from a specific mount?
+Code is not yet cleaned up, commit messages are not ready etc, but current work is in
+a fix_eventhandling branch:
 
-These requests do originate from a specific mount, but we don't need an idmapping in there
-because 3rd argument of fuse_do_getattr(struct mnt_idmap *idmap, struct inode *inode, struct kstat *stat, struct file *file) is NULL,
-which means that this request will not fill an stat structure => we don't need to take an idmapping into account.
+git://git.kernel.org/pub/scm/linux/kernel/git/mnyman/xhci.git  fix_eventhandling
+https://git.kernel.org/pub/scm/linux/kernel/git/mnyman/xhci.git/log/?h=fix_eventhandling
 
-> Can you please add a comment about this in the commit message so it's
-> clear why it's ok to not pass the idmapping?
+I was in the middle of figuring out when and where the ip_autoclear and interrupt
+moderation values should be set for secondary interrupters
 
-Sure, that's my bad that I haven't added this explanation! It's not obvious at all.
-
-Will be fixed in -v2.
-
-Thanks,
-Alex
+Thanks
+Mathias
 
 
