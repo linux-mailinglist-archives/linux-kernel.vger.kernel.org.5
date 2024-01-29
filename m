@@ -1,313 +1,187 @@
-Return-Path: <linux-kernel+bounces-43388-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43389-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFD03841306
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 20:05:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B30384130D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 20:06:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4FFD287455
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:05:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F3E9D1F258BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:06:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9C1B1EB42;
-	Mon, 29 Jan 2024 19:05:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="i4o151IY"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B143D76C85;
-	Mon, 29 Jan 2024 19:05:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2E9B3C060;
+	Mon, 29 Jan 2024 19:06:30 +0000 (UTC)
+Received: from cae.in-ulm.de (cae.in-ulm.de [217.10.14.231])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 797AB29CFB;
+	Mon, 29 Jan 2024 19:06:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.10.14.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706555132; cv=none; b=BvdvW2/Dtur91VTV9Iv5THsCcOX3wYrG63HXmsBkyVpk+UL4qbt9InTY4FdMnbFQqab7wK4ZmlTpKfeMUQBZ6RbSbpRbmb8gzvUJvKKM/5yJYnw3l9KgAZ6geQKn9WTb4UoSYVYqZGIifY6VK9GePZ9f0mYFiq6Pin1SvKaIl6A=
+	t=1706555190; cv=none; b=dwaDV6852ntNjn2jyuB5bzrPLSRCDIqH4gn0Ec2EtnVev5P4YArr4IVGDW7s0IFZ2mu9dGNC8ZX7SA88Uao6RDxzt/2Xvg11GjVkhRylfzruQY5A7GO0IH+t9K1uZtQCx3uYoqcgAmDqMkojwW/RheoxPZUaWNM+SJpF8ixMRVQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706555132; c=relaxed/simple;
-	bh=J2F3t7U90gGxRYFzv0nzoRdnJzT5QlZ5PZYI4AZgkwo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=EX0UdLodZG9ZlDs/QK0NCaFuRzHV8LxyItWk6ltG2mw9uvjsIWJBV0DPeT299mId7drQE496tF7/xqSlfKRJGt5cZakwDHto9JFvSl46j/BGJ44H5eJDMHfgegYPlGosY2QIDqjeSL7WmPVyYwKdWwGfU1Ph4E/fhI1C5205ZOQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=i4o151IY; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40TIsLAC023069;
-	Mon, 29 Jan 2024 19:05:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=81QrPjX7gzFIZg+7qFwRZB9B2uhffa8qDakhjufL21c=; b=i4
-	o151IYh5ZvGeqRCnieSpT4TyaD754RW7PHbksmDhgUIJRAV/lPN4eF18lLv+5UwV
-	au4bBjC48IxoTdnp32VPmfLEKvMbngKpbk/QlVSV4/V3olcwvybDDaYjRTTYrkVD
-	nGzyqqHvFzVoWu082Syox3nTPjGYtKjD9ui3phf5frhSot0s/800m0u67aNqq9yh
-	OapuFp9AR1jFaR4wCiDQucxKvxFa96bHMvrJBp/FHp+Zits0P4kQPwhwcKeCHoxW
-	oQ3KvL/LM1RNGEKKI6fWPcnX2GYRzmeIvruQvxtvKDjHOuK+ZYjD2ssVgp02OGZJ
-	+h6rQkIiYfcMHjmQJeHA==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vx3t9t61r-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 29 Jan 2024 19:05:14 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40TJ5D65026809
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 29 Jan 2024 19:05:13 GMT
-Received: from [10.71.109.81] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 29 Jan
- 2024 11:05:12 -0800
-Message-ID: <99705d73-abcf-6d41-3d50-757e706cf1fc@quicinc.com>
-Date: Mon, 29 Jan 2024 11:05:12 -0800
+	s=arc-20240116; t=1706555190; c=relaxed/simple;
+	bh=QWJhC9KauIHgrOBoUrRh45vzEQe6OoYHJxiTtCcpTV8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oLby4DTN0HFxg0Nf+xkIG2wFfGcO+1A4U2Kc1bleR+8fxKUnMSx5NR4qIw7fVEC8aUZ/roDq44d0uw06nDV5DBaJsx9sho/gyL8q5ITIMsZwT5nblO9undF4IHWW9LCx9qkVng/q3BmRMPUGsNKhOuwkWEuetsIJRW8NHJKk/58=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de; spf=pass smtp.mailfrom=c--e.de; arc=none smtp.client-ip=217.10.14.231
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=c--e.de
+Received: by cae.in-ulm.de (Postfix, from userid 1000)
+	id 36F881402F9; Mon, 29 Jan 2024 20:06:27 +0100 (CET)
+Date: Mon, 29 Jan 2024 20:06:27 +0100
+From: "Christian A. Ehrhardt" <lk@c--e.de>
+To: Paul Menzel <pmenzel@molgen.mpg.de>
+Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: typec_altmode_release =?utf-8?B?4oaS?=
+ =?utf-8?Q?_refcount=5Ft=3A?= underflow; use-after-free.
+Message-ID: <Zbf3M2+r5RP9K8jJ@cae.in-ulm.de>
+References: <e12b5e52-1c94-472d-949b-2ee158857584@molgen.mpg.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH RFC 0/4] Support for Simulated Panels
-Content-Language: en-US
-To: Maxime Ripard <mripard@kernel.org>
-CC: Jani Nikula <jani.nikula@linux.intel.com>,
-        Jessica Zhang
-	<quic_jesszhan@quicinc.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Sam Ravnborg <sam@ravnborg.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>, "Daniel
- Vetter" <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        Dmitry Baryshkov
-	<dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@gmail.com>, Rob Herring
-	<robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED
- DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>
-References: <20240116-jz-test-sim-panel-v1-0-f9511f46c9c7@quicinc.com>
- <x6wi5xnihnbpqsujjfjfw3ft6njncruta5l3xa44pds5oxmdkw@mmvv4bciy65s>
- <87cyu0qn81.fsf@intel.com> <e1f10583-1d5b-fdac-24bf-098a0ba06241@quicinc.com>
- <hhmbghooegclx3jbsx2neryligk3mj77lq7gns5xegags5ltoz@acdu6hssqwlw>
-From: Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <hhmbghooegclx3jbsx2neryligk3mj77lq7gns5xegags5ltoz@acdu6hssqwlw>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: BtSEJq69FeWsXz7GNLyzTyemKb1WNfHV
-X-Proofpoint-ORIG-GUID: BtSEJq69FeWsXz7GNLyzTyemKb1WNfHV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-29_12,2024-01-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=999 phishscore=0 lowpriorityscore=0 bulkscore=0 adultscore=0
- impostorscore=0 clxscore=1011 spamscore=0 suspectscore=0
- priorityscore=1501 mlxscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2401190000 definitions=main-2401290141
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e12b5e52-1c94-472d-949b-2ee158857584@molgen.mpg.de>
 
-<adding device tree maintainers to comment>
 
-Hi Maxime
+Hi Paul,
 
-On 1/26/2024 4:45 AM, Maxime Ripard wrote:
-> On Wed, Jan 17, 2024 at 09:36:20AM -0800, Abhinav Kumar wrote:
->> Hi Jani and Maxime
->>
->> On 1/17/2024 2:16 AM, Jani Nikula wrote:
->>> On Wed, 17 Jan 2024, Maxime Ripard <mripard@kernel.org> wrote:
->>>> Hi,
->>>>
->>>> On Tue, Jan 16, 2024 at 02:22:03PM -0800, Jessica Zhang wrote:
->>>>> This series introduces a simulated MIPI DSI panel.
->>>>>
->>>>> Currently, the only way to validate DSI connectors is with a physical
->>>>> panel. Since obtaining physical panels for all possible DSI configurations
->>>>> is logistically infeasible, introduce a way for DSI drivers to simulate a
->>>>> panel.
->>>>>
->>>>> This will be helpful in catching DSI misconfiguration bugs and catching
->>>>> performance issues for high FPS panels that might not be easily
->>>>> obtainable.
->>>>>
->>>>> For now, the simulated panel driver only supports setting customized
->>>>> modes via the panel_simlation.mode modparam. Eventually, we would like
->>>>> to add more customizations (such as configuring DSC, dual DSI, etc.).
->>>>
->>>> I think that it's more complicated than it needs to be.
->>>
->>> Both too complicated and not complicated enough! :p
->>
->> The end goal is to have a framework to be able to validate the display
->> pipeline with MIPI panels of any resolution , DSC/non-DSC, different MIPI
->> flags etc.
->>
->> Historically, QC has been having an in-house framework to validate the
->> panels in a simulated way as its logistically not possible to procure every
->> panel from every vendor. This has been working pretty well but its not
->> upstream yet. So we would like to work with the community to work on a model
->> which works for everyone and this RFC was initiated with that in mind.
+On Mon, Jan 29, 2024 at 12:57:11PM +0100, Paul Menzel wrote:
+> Dear Linux folks,
 > 
-> I think the goal was pretty clear. My point was more that there's no
-> reason it should be driver specific, and having a second path for it
-> doesn't really exert the actual panel path in the driver. I think a
-> separate driver would be better.
 > 
-
-We can make this generic. That would be great actually. One option could 
-be to move the modparam we have within the msm to the drm_of.c so that 
-drm_of_find_panel_or_bridge shall return the sim panel if the modparam 
-is passed to select a sim panel.
-
-So if we make this a compile time decision whether to use real panel or 
-sim panel and just enable the appropriate config, we dont need the 
-modparam and we can implement some policy in the drm_of to first check 
-if sim panel is available and if not try the real panel then everything 
-will just happen under-the-hood. But we thought that a modparam based 
-switching might be convenient if users dont want to recompile the code 
-to switch but will need to compile both the panels.
-
->> There is simulation infrastructure in place in upstream for HDMI/DP in the
->> form of chamelium based testing in IGT but no such fwk exists for DSI
->> displays.
->>
->> Different MIPI panels and resolutions test out not only the DSI controller
->> but the entire display pipeline as based on resolution, compression and MIPI
->> mode flags different parts of the pipeline can get exercised.
->>
->>>> Why do we need to support (and switch to) both the actual and
->>>> "simulated" panel?
->>>>
->>
->> As per my discussion on IRC with the panel/bridge maintainers and DT
->> maintainers, a simulation panel does not qualify for its own devicetree as
->> its not a real hardware so we needed to come up with a way to have a module
->> which can be attached to the encoder without its own bindings and
->> devicetree. Thats what led to this RFC.
+> I noticed the message first time with Linux 6.6.8 on December 26th, and also
+> with 6.6.11, 6.7 and 6.7.1. I am unsure how to reproduce it though.
 > 
-> I still think it's worth trying, there's plenty of virtual drivers in
-> the DT already. But even then, DT policies shouldn't dictate general
-> framework design decisions: we have other ways to probe panels than
-> using the DT (by loading overlays, registering devices by hand, etc.). I
-> still think it would be a good idea to try though.
+> Here the trace from Linux 6.7.1-1~exp1:
 > 
-
-DT option would be great if accepted and will nicely solve the 
-scalability issue of this as it desperately needs one.
-
-I have absolutely no concerns and would be glad if it will be accepted.
-
-Can the DT maintainers please comment if having a device tree for a 
-simulation panel would work OR be considered because of the scalability 
-of the number of panels which can be tried as Maxime wrote.
-
->>>> Wouldn't it be simpler if we had a vkms-like panel that we could either
->>>> configure from DT or from debugfs that would just be registered the
->>>> usual way and would be the only panel we register?
->>>
->>
->> No, we need to have validate actual hardware pipeline with the simulated
->> panel. With vkms, actual display pipeline will not be validated. With
->> incorrect display pipeline misconfigurations arising from different panel
->> combinations, this can easily be caught with any existing IGT CRC testing.
->> In addition, all performance related bugs can also be easily caught by
->> simulating high resolution displays.
+> ```
+> [    0.000000] Linux version 6.7-amd64 (debian-kernel@lists.debian.org)
+> (x86_64-linux-gnu-gcc-13 (Debian 13.2.0-10) 13.2.0, GNU ld (GNU Binutils for
+> Debian) 2.41.90.20240115) #1 SMP PREEMPT_DYNAMIC Debian 6.7.1-1~exp1
+> (2024-01-22)
+> […]
+> [    0.000000] DMI: Dell Inc. XPS 13 9360/0596KF, BIOS 2.21.0 06/02/2022
+> […]
+> [ 9068.294345] ucsi_acpi USBC000:00: failed to re-enable notifications
+> (-110)
+> [ 9068.499156] ------------[ cut here ]------------
+> [ 9068.499172] refcount_t: underflow; use-after-free.
+> [ 9068.499199] WARNING: CPU: 0 PID: 5598 at lib/refcount.c:28
+> refcount_warn_saturate+0xbe/0x110
+> [ 9068.499209] Modules linked in: uinput rfcomm cmac algif_hash
+> algif_skcipher af_alg bnep xfrm_interface xfrm6_tunnel tunnel6 tunnel4
+> xfrm_user l2tp_ppp xfrm_algo l2tp_netlink l2tp_core ip6_udp_tunnel
+> udp_tunnel pppox ppp_generic slhc ctr ccm typec_displayport snd_seq_dummy
+> snd_hrtimer snd_seq snd_seq_device qrtr binfmt_misc snd_sof_pci_intel_skl
+> snd_sof_intel_hda_common soundwire_intel soundwire_generic_allocation
+> snd_sof_intel_hda_mlink soundwire_cadence snd_sof_intel_hda snd_sof_pci
+> snd_sof_xtensa_dsp snd_sof snd_sof_utils soundwire_bus snd_hda_codec_hdmi
+> snd_soc_avs snd_soc_hda_codec snd_soc_skl snd_soc_hdac_hda snd_hda_ext_core
+> snd_soc_sst_ipc snd_soc_sst_dsp snd_soc_acpi_intel_match snd_soc_acpi
+> snd_ctl_led btusb snd_soc_core btrtl btintel snd_hda_codec_realtek
+> ath10k_pci btbcm x86_pkg_temp_thermal nls_ascii btmtk intel_powerclamp
+> snd_hda_codec_generic bluetooth mei_hdcp mei_pxp mei_wdt ath10k_core
+> coretemp snd_compress nls_cp437 snd_pcm_dmaengine kvm_intel vfat
+> snd_hda_intel ath snd_intel_dspcfg fat
+> [ 9068.499300]  snd_intel_sdw_acpi kvm mac80211 snd_hda_codec intel_rapl_msr
+> dell_laptop ledtrig_audio i915 snd_hda_core sha3_generic jitterentropy_rng
+> irqbypass libarc4 dell_smm_hwmon snd_hwdep dell_wmi rapl cfg80211 uvcvideo
+> snd_pcm intel_cstate dell_smbios joydev videobuf2_vmalloc iTCO_wdt
+> intel_pmc_bxt drbg intel_uncore dcdbas ansi_cprng uvc snd_timer
+> iTCO_vendor_support dell_wmi_descriptor intel_wmi_thunderbolt
+> videobuf2_memops snd videobuf2_v4l2 watchdog ecdh_generic wmi_bmof pcspkr
+> videodev soundcore rfkill mei_me ucsi_acpi mei typec_ucsi videobuf2_common
+> ecc typec mc drm_buddy intel_pch_thermal drm_display_helper sg
+> processor_thermal_device_pci_legacy cec processor_thermal_device
+> processor_thermal_wt_hint rc_core intel_vbtn processor_thermal_rfim
+> soc_button_array processor_thermal_rapl intel_rapl_common ttm
+> processor_thermal_wt_req drm_kms_helper int3403_thermal
+> processor_thermal_power_floor evdev processor_thermal_mbox
+> intel_xhci_usb_role_switch int340x_thermal_zone intel_pmc_core i2c_algo_bit
+> intel_hid
+> [ 9068.499386]  int3400_thermal intel_soc_dts_iosf acpi_pad roles ac
+> acpi_thermal_rel sparse_keymap button hid_multitouch serio_raw msr
+> parport_pc ppdev lp parport loop efi_pstore configfs nfnetlink efivarfs
+> ip_tables x_tables autofs4 ext4 crc16 mbcache jbd2 crc32c_generic sd_mod
+> r8153_ecm cdc_ether usbnet r8152 mii uas usb_storage scsi_mod scsi_common
+> usbhid dm_crypt dm_mod hid_generic nvme i2c_hid_acpi crc32_pclmul i2c_hid
+> crc32c_intel nvme_core t10_pi xhci_pci ghash_clmulni_intel drm
+> crc64_rocksoft_generic xhci_hcd crc64_rocksoft crc_t10dif sha512_ssse3
+> sha512_generic crct10dif_generic intel_lpss_pci crct10dif_pclmul i2c_i801
+> sha256_ssse3 intel_lpss crc64 usbcore sha1_ssse3 crct10dif_common i2c_smbus
+> idma64 hid usb_common battery video wmi aesni_intel crypto_simd cryptd
+> [ 9068.499459] CPU: 0 PID: 5598 Comm: kworker/0:1 Not tainted 6.7-amd64 #1
+> Debian 6.7.1-1~exp1
+> [ 9068.499471] Hardware name: Dell Inc. XPS 13 9360/0596KF, BIOS 2.21.0
+> 06/02/2022
+> [ 9068.499473] Workqueue: events ucsi_handle_connector_change [typec_ucsi]
+> [ 9068.499484] RIP: 0010:refcount_warn_saturate+0xbe/0x110
+> [ 9068.499496] Code: 01 01 e8 d5 21 a9 ff 0f 0b c3 cc cc cc cc 80 3d bf 61
+> 7e 01 00 75 85 48 c7 c7 30 ca 8f aa c6 05 af 61 7e 01 01 e8 b2 21 a9 ff <0f>
+> 0b c3 cc cc cc cc 80 3d 9d 61 7e 01 00 0f 85 5e ff ff ff 48 c7
+> [ 9068.499498] RSP: 0018:ffffae5a05d67d90 EFLAGS: 00010282
+> [ 9068.499500] RAX: 0000000000000000 RBX: ffff8d8a094d2c08 RCX:
+> 0000000000000027
+> [ 9068.499502] RDX: ffff8d8d6f021408 RSI: 0000000000000001 RDI:
+> ffff8d8d6f021400
+> [ 9068.499503] RBP: ffff8d8a094d2c00 R08: 0000000000000000 R09:
+> ffffae5a05d67c18
+> [ 9068.499504] R10: 0000000000000003 R11: ffff8d8d80ffffe8 R12:
+> 0000000000000000
+> [ 9068.499506] R13: ffff8d8a038a51d0 R14: ffffffffaa520100 R15:
+> ffff8d8a4028b038
+> [ 9068.499507] FS:  0000000000000000(0000) GS:ffff8d8d6f000000(0000)
+> knlGS:0000000000000000
+> [ 9068.499509] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 9068.499516] CR2: 000002f9ce649010 CR3: 000000010cc86004 CR4:
+> 00000000003706f0
+> [ 9068.499517] Call Trace:
+> [ 9068.499521]  <TASK>
+> [ 9068.499522]  ? refcount_warn_saturate+0xbe/0x110
+> [ 9068.499526]  ? __warn+0x81/0x130
+> [ 9068.499533]  ? refcount_warn_saturate+0xbe/0x110
+> [ 9068.499545]  ? report_bug+0x171/0x1a0
+> [ 9068.499549]  ? console_unlock+0x78/0x120
+> [ 9068.499553]  ? handle_bug+0x3c/0x80
+> [ 9068.499557]  ? exc_invalid_op+0x17/0x70
+> [ 9068.499565]  ? asm_exc_invalid_op+0x1a/0x20
+> [ 9068.499570]  ? refcount_warn_saturate+0xbe/0x110
+> [ 9068.499576]  typec_altmode_release+0x49/0xc0 [typec]
+> [ 9068.499615]  device_release+0x34/0x90
+> [ 9068.499624]  kobject_put+0x78/0x190
+> [ 9068.499629]  ucsi_unregister_altmodes+0x41/0xa0 [typec_ucsi]
+> [ 9068.499648]  ucsi_unregister_partner.part.0+0x77/0xa0 [typec_ucsi]
+> [ 9068.499662]  ucsi_handle_connector_change+0x1bb/0x310 [typec_ucsi]
+> [ 9068.499671]  process_one_work+0x171/0x340
+> [ 9068.499676]  worker_thread+0x27b/0x3a0
+> [ 9068.499679]  ? __pfx_worker_thread+0x10/0x10
+> [ 9068.499681]  kthread+0xe5/0x120
+> [ 9068.499690]  ? __pfx_kthread+0x10/0x10
+> [ 9068.499693]  ret_from_fork+0x31/0x50
+> [ 9068.499698]  ? __pfx_kthread+0x10/0x10
+> [ 9068.499700]  ret_from_fork_asm+0x1b/0x30
+> [ 9068.499714]  </TASK>
+> [ 9068.499715] ---[ end trace 0000000000000000 ]---
+> ```
 > 
-> That's not what I meant. What I meant was that something like a
-> user-configurable, generic, panel driver would be a good idea. Just like
-> vkms (with the debugfs patches) is for a full blown KMS device.
-> 
+> Please find the full output of `dmesg` attached.
 
-Let me respond for both this question and the one below from you/Jani.
+This should be fixed by
 
-Certainly having user-configurable information is a goal here. The 
-end-goal is to make everything there in the existing panels such as 
-below like I wrote:
+| commit 5962ded777d689cd8bf04454273e32228d7fb71f
+| Author: RD Babiera <rdbabiera@google.com>
+| Date:   Wed Jan 3 18:17:55 2024 +0000
+| 
+|     usb: typec: class: fix typec_altmode_put_partner to put plugs
 
-1) Display resolution with timings (drm_display_mode)
-2) Compression/non-compression
-3) Command mode/Video mode
-4) MIPI mode flags
-5) DCS commands for panel enable/disable and other panel sequences
-6) Power-up/Power-down sequence for the panel
+which is in mainline and 6.7.2.
 
-But, we also have to see what all is feasible today from the DRM fwk 
-standpoint. There are some limitations about what is boot-time 
-configurable using bootparams and what is runtime configurable (across a 
-modeset) using debugfs.
+     regards    Christian
 
-1) Today, everything part of struct mipi_dsi_device needs to be 
-available at boot time from what I can see as we need that while calling 
-mipi_dsi_attach(). So for that we went with boot-params.
-
-2) For the list of modes, we can move this to a debugfs like 
-"populate_modes" which the client using a sim panel can call before 
-picking a mode and triggering a commit.
-
-But we need to have some default mode and configuration.
-
-This is where I am not totally sure of. On HDMI/DP sinks, we usually go 
-with a default of 640x480 as that one is guaranteed to be supported 
-across sinks.
-
-For MIPI displays, we will have to agree on some default configuration then.
-
-So, we can certainly add debugfs to make the runtime params but we need 
-to start with some default during boot-up and move the others to debugfs.
-
-With vkms, can you pls point us to the debugfs patches you are referring 
-to? With the current vkms, very little is available which is debugfs 
-configurable (overlay, writeback and cursor support).
-
-Ofcourse, all these concerns go away if DT option gets accepted.
-
->>> I get the idea of trying to test DSI code without panels, and looking at
->>> the goals above, I think your vkms suggestion is going to fall short of
->>> those goals.
->>>
->>> However, my gut feeling is that creating a simulated panel to catch DSI
->>> misconfiguration etc. is going to be insanely complicated, and this
->>> series doesn't even scratch the surface.
->>>
->>> I guess my questions are, what's the scope here really, are those goals
->>> realistic, does more code already exist beyond this skeleton?
->>>
->>
->>
->> This series is only a starting RFC to be able to validate any display mode.
->> This would have to be extended to be able to customize different pieces of
->> the panel. Lets talk about the customizable pieces:
->>
->> 1) Display resolution with timings (drm_display_mode)
->> 2) Compression/non-compression
->> 3) Command mode/Video mode
->> 4) MIPI mode flags
->> 5) DCS commands for panel enable/disable and other panel sequences
->> 6) Power-up/Power-down sequence for the panel
->>
->> Without a physical panel, yes its hard to validate if anything is wrong with
->> (4) OR (5), the display might not come up at all visually. But from our
->> experience, thats only a small portion and the real benefit of this
->> framework will actually be from the validation failures we will catch from
->> (1) to (4).
->>
->> This RFC only provides a way to customize (1) at the moment as we wanted to
->> get some feedback from the community about the best way which will work for
->> everyone to customize all these parameters.
->>
->> We are willing to expand this series based on the generic way we agree on to
->> customize other params.
->>
->> Yes, debugfs is an option too. But typically MIPI displays need some
->> parameters configured to attach the panel to the encoder. So perhaps we can
->> boot the simulation panel with a default resolution passed through command
->> line and then across a modeset switch (1) to (4).
-> 
-> I think Jani's feeling was that it was going to be super complicated
-> fairly fast so supporting more features would definitely help to get an
-> idea of where this is going.
-> 
-> Maxime
 
