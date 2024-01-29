@@ -1,131 +1,190 @@
-Return-Path: <linux-kernel+bounces-43562-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43563-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70894841589
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 23:21:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40BC584158A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 23:22:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CFFB2891F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 22:21:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6614B1C24413
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 22:22:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30C5915AAAB;
-	Mon, 29 Jan 2024 22:21:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6A1915958D;
+	Mon, 29 Jan 2024 22:21:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c9jUHeMO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OlI9wuNW"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D411158D99;
-	Mon, 29 Jan 2024 22:21:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE33E604C5
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 22:21:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706566879; cv=none; b=J8N646pYZAL1anBQ4Cdn8yvPkch7yZx9+kjF54NV9I1ZC2iqSVVvZQWbaaQYPD62wAlNdTBvAABHXwO4SeZW3RDqnyjqir1IsvWv2RNayK1bF86cBTaiO/r15uuQbF61Iiwz6dF2qPaKieAGTRe2Ruix8npo3tiI71ScAkH8hZA=
+	t=1706566909; cv=none; b=tTj6tTv7qP/pRjmJG64qeZQZlxiuvi6fVJGt2xCulZcRPzCdlAjgaEgGARaPryAPAuBub6rH/yAFE/1BXYw5j9OChmlrNJ1NnU10NcjE1XtBMKL+lilCcXPMdJJTw3F9c34sirrYbg4KicOO4f9pdVk+TctADHjHNaGtWLqeT6k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706566879; c=relaxed/simple;
-	bh=QO6T5tt8NMalRJEwbBqkth8IWMyi4TL9rAZyeRq7xfQ=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=GfpvIFdQ55lPyVIETPnWCRVVxLZyY41EI9Ya0PtZ0AXgjByvlBekXQ2wqgQFDvkfJSo2dNQvjBgeXdJwmvSF7deFs4XRJyf29DyYrmXEHmwUsixoOmOKso61Fm+td+xrp573frv0+rV5ngR/DYgmuSLbZCP+g0VXWTiGEHZq5CA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c9jUHeMO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB723C433F1;
-	Mon, 29 Jan 2024 22:21:18 +0000 (UTC)
+	s=arc-20240116; t=1706566909; c=relaxed/simple;
+	bh=FTMWuaADebvmwGwTX/rc57uT2xejBM2n+L472Cqyuyo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tLf8xgNCjvWXJ2+J/otFAZ3anjn2Xiu8GwNrr7MrdSfZt7qn2Omvhn9/SfFJdJTSKR9b/OC8qF8nNd8co1v7x7OCpUh4cSb/eoI0PPp0J9VJAvPS7wmu4VBoQZC3cgxCE54jK8CvXZ7m2Y51GrzAWu2cYEPvDIvJ7i1olZP5+v8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OlI9wuNW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0891CC433C7;
+	Mon, 29 Jan 2024 22:21:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706566879;
-	bh=QO6T5tt8NMalRJEwbBqkth8IWMyi4TL9rAZyeRq7xfQ=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=c9jUHeMOD/K7aR0Uf+b3B4DBqzuWwA7jfgXE848L4Wsl451pPJPmNH4Rck0a80mfo
-	 +XFdvvbNst3mTrfUUMY08jpBWCZrI6/dLIIoZvx7C/++iEd3gkAdW+G+STQU3cJC2x
-	 LkGJ5C1ahoTso91BRS7048PwfQA0pltRZt3i0EzLuQDKJiwb7be/Isn5EekdUTiHvc
-	 nieGvGjsu1WJTIZtStiGtwGnYOxOVEeZvkbynSWsCgxfcsqnB7VPEkum9Dz2bhiPER
-	 i6pY3T44egVesB40L5qXkL0VMVAgPofT0R6oQqyM/f+HICRsv2IYe56u6KXIRf0mtI
-	 ZD4g3yGVQZzYQ==
-Date: Mon, 29 Jan 2024 16:21:17 -0600
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=k20201202; t=1706566909;
+	bh=FTMWuaADebvmwGwTX/rc57uT2xejBM2n+L472Cqyuyo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OlI9wuNWhjAsjVAuXRUxU6IauebnuhJP4vkYNGXU9ograN3cFwPCtJSJeAkMFMkkr
+	 h3VPeYjIgq61f6nedPm3tyIZcIPvcgfeWZ/9Kl27i+1Tx/V+nrpBLTMS/CMizKF3hF
+	 nQKkce0b7vYfXIvhXEjG3JocXMTQWrR2i29h8TvrpXtjcWDDdinEBtciBtnlgthgPI
+	 QLgRWOmj5eTL3OprVEGw3jqinkuFfdjSueB5SoZksYJaV3EBTUh/3ubt+fgI0jtiaq
+	 LTXwFbZGJ3dkAynZzg2hRCFbbtT2BKdu9BZ8+iFIB6j4Po18y+Za0bth2dGfeJnqUY
+	 Kh5Uh7YVW1jbQ==
+Date: Mon, 29 Jan 2024 23:21:46 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+	John Stultz <jstultz@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Eric Dumazet <edumazet@google.com>,
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+	Arjan van de Ven <arjan@infradead.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Rik van Riel <riel@surriel.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Sebastian Siewior <bigeasy@linutronix.de>,
+	Giovanni Gherdovich <ggherdovich@suse.cz>,
+	Lukasz Luba <lukasz.luba@arm.com>,
+	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v10 18/20] timers: Implement the hierarchical pull model
+Message-ID: <Zbgk-q863VU6yZKm@pavilion.home>
+References: <ZbWJtkAj9z0S9xsH@pavilion.home>
+ <87sf2gqups.fsf@somnus>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Dragan Cvetic <dragan.cvetic@amd.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Rob Herring <robh+dt@kernel.org>, Michal Simek <michal.simek@amd.com>, 
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, 
- Jonathan Corbet <corbet@lwn.net>, Derek Kiernan <derek.kiernan@amd.com>, 
- "moderated list:ARM/ZYNQ ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, 
- "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, 
- open list <linux-kernel@vger.kernel.org>, 
- "Erim, Salih" <salih.erim@amd.com>, Conor Dooley <conor+dt@kernel.org>
-In-Reply-To: <20240129171854.3570055-1-dragan.cvetic@amd.com>
-References: <20240129171854.3570055-1-dragan.cvetic@amd.com>
-Message-Id: <170656680094.3132.1588315626789249618.robh@kernel.org>
-Subject: Re: [PATCH v2] dt-bindings: misc: xlnx,sd-fec: convert bindings to
- yaml
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87sf2gqups.fsf@somnus>
 
-
-On Mon, 29 Jan 2024 17:18:51 +0000, Dragan Cvetic wrote:
-> Convert AMD (Xilinx) sd-fec bindings to yaml format, so it can validate
-> dt-entries as well as any future additions to yaml.
-> Change in clocks is due to IP is itself configurable and
-> only the first two clocks are in all combinations. The last
-> 6 clocks can be present in some of them. It means order is
-> not really fixed and any combination is possible.
-> Interrupt may or may not be present.
-> The documentation for sd-fec bindings is now YAML, so update the
-> MAINTAINERS file.
-> Update the link to the new yaml file in xilinx_sdfec.rst.
+Le Mon, Jan 29, 2024 at 11:50:39AM +0100, Anna-Maria Behnsen a écrit :
+> Frederic Weisbecker <frederic@kernel.org> writes:
 > 
-> Signed-off-by: Dragan Cvetic <dragan.cvetic@amd.com>
-> ---
-> Changes in v2:
-> ---
-> Drop clocks description.
-> Use "contains:" with enum for optional clock-names and update
-> comment explaining diference from the original DT binding file.
-> Remove trailing full stops.
-> Add more details in sdfec-code description.
-> Set sdfec-code to "string" not "string-array"
-> ---
->  .../devicetree/bindings/misc/xlnx,sd-fec.txt  |  58 --------
->  .../devicetree/bindings/misc/xlnx,sd-fec.yaml | 136 ++++++++++++++++++
->  Documentation/misc-devices/xilinx_sdfec.rst   |   2 +-
->  MAINTAINERS                                   |   2 +-
->  4 files changed, 138 insertions(+), 60 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/misc/xlnx,sd-fec.txt
->  create mode 100644 Documentation/devicetree/bindings/misc/xlnx,sd-fec.yaml
+> > Le Mon, Jan 15, 2024 at 03:37:41PM +0100, Anna-Maria Behnsen a écrit :
+> >> +static bool tmigr_inactive_up(struct tmigr_group *group,
+> >> +			      struct tmigr_group *child,
+> >> +			      void *ptr)
+> >> +{
+> >> +	union tmigr_state curstate, newstate, childstate;
+> >> +	struct tmigr_walk *data = ptr;
+> >> +	bool walk_done;
+> >> +	u8 childmask;
+> >> +
+> >> +	childmask = data->childmask;
+> >> +	curstate.state = atomic_read(&group->migr_state);
+> >> +	childstate.state = 0;
+> >> +
+> >> +	do {
+> >
+> > So I got the confirmation from Boqun (+Cc) and Paul that a failing cmpxchg
+> > may not order the load of the old value against subsequent loads. And
+> > that may apply to atomic_try_cmpxchg() as well.
+> >
+> > Therefore you not only need to turn group->migr_state read into
+> > an atomic_read_acquire() but you also need to do this on each iteration
+> > of this loop. For example you can move the read_acquire right here.
 > 
+> I tried to read and understand more about the memory barriers especially
+> the acquire/release stuff. So please correct me whenever I'm wrong.
+> 
+> We have to make sure that the child/group state values contain the last
+> updates and prevent reordering to be able to rely on those values.
+> 
+> So I understand, that we need the atomic_read_acquire() here for the
+> child state, because we change the group state accordingly and need to
+> make sure, that it contains the last update of it. The cmpxchg which
+> writes the child state is (on success) a full memory barrier. And the
+> atomic_read_acquire() makes sure all preceding "critical sections"
+> (which ends with the full memory barrier) are visible. Is this right?
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Right. And BTW I'm being suggested by Paul to actually avoid
+atomic_read_acquire() after cmpxchg() failure because that implies an
+error prone re-read. So pick up your favourite between smp_rmb() or
+smp_mb__after_atomic().
 
-yamllint warnings/errors:
+With the latter this could look like:
 
-dtschema/dtc warnings/errors:
-Error: Documentation/devicetree/bindings/misc/xlnx,sd-fec.example.dts:32.29-30 syntax error
-FATAL ERROR: Unable to parse input tree
-make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/misc/xlnx,sd-fec.example.dtb] Error 1
-make[2]: *** Waiting for unfinished jobs....
-make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1428: dt_binding_check] Error 2
-make: *** [Makefile:240: __sub-make] Error 2
+curstate.state = atomic_read_acquire(&group->migr_state);
+for (;;) {
+    childstate.state = atomic_read(&child->migr_state);
+    ...
+    if (atomic_try_cmpxchg(&group->migr_state, &curstate.state, newstate.state))
+       break;
+    smp_mb__after_atomic();
+}
 
-doc reference errors (make refcheckdocs):
+> 
+> To make sure the proper states are used, atomic_read_acquire() is then
+> also required in:
+>   - tmigr_check_migrator()
+>   - tmigr_check_migrator_and_lonely()
+>   - tmigr_check_lonely()
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240129171854.3570055-1-dragan.cvetic@amd.com
+Not sure about those. I'll check them.
 
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
+>   - tmigr_new_timer_up() (for childstate and groupstate)
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+Actually you need to fix some ordering there that I suggested a while ago :)
+See https://lore.kernel.org/all/ZIhKT3h7Dc0G3xoU@lothringen/
 
-pip3 install dtschema --upgrade
+>   - tmigr_connect_child_parent()
+> Right?
+> 
+> Regarding the pairing of acquire: What happens when two
+> atomic_read_acquire() are executed afterwards without pairing 1:1 with a
+> release or stronger memory barrier?
 
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+I think I'll need an example.
 
+> 
+> Now I want to understand the case for the group state here and also in
+> active_up path. When reading it without acquire, it is possible, that
+> not all changes are visible due to reordering,... . But then the worst
+> outcome would be that the cmpxchg fails and the loop has to be done once
+> more? Is this right?
+
+Right. This one looks good as it doesn't depend on the child's value.
+
+> 
+> I know that memory barriers are not for free and redo the loop is also
+> not for free. But I don't know which of both is worse. At least in
+> inactive_up() path, we are not in the critical path. In active_up() it
+> would be good to take the less expensive option.
+
+I don't think you need to change the active_up(), from a quick glance.
+
+> 
+> I want to understand the atomic_try_cmpxchg_acquire() variant: The Read
+> is an acquire, so even if the compare/write fails, the value which is
+> handed back is the one which was update last with a succesful cmpxchg
+> and then we can rely on this value?
+
+So cmpxchg_acquire() provides a weaker ordering than cmpxchg(). Instead
+of issuing a full memory barrier, it issues an acquire barrier, which is
+really not what you want since you actually want to order what precedes
+the cmpxchg() with the write that it performs. At the very least you would
+actually need cmpxchg_release().
+
+And most importantly, neither cmpxchg(), cmpxchg_release() nor cmpxchg_acquire()
+guarantee any ordering on failure.
+
+Thanks.
 
