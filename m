@@ -1,140 +1,113 @@
-Return-Path: <linux-kernel+bounces-43084-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA18F840B66
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:29:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5790D840B90
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:33:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6552228E34A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:29:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 148F6282651
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:33:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C70211586D8;
-	Mon, 29 Jan 2024 16:28:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D428E157053;
+	Mon, 29 Jan 2024 16:29:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I+FOuich"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CZlHoyrt"
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0640D156963;
-	Mon, 29 Jan 2024 16:27:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFD6A157043;
+	Mon, 29 Jan 2024 16:29:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706545681; cv=none; b=KjLO33dt1fkZeFP9EeSEN1QAAfhYgObYIIOHNMq3xo5FSbOPQdMF0Pk3tG80k49oznHjXdy38vhSV8Q5/H2o1FZ/Ca6/j+bIIk+iL/sR7mMvjQ6vTP3rcmjf4oML5S+bpTvXrDDwUcjN98yTFW1QyovWw0lptwPALCop6VMGehA=
+	t=1706545756; cv=none; b=RT+mOiA89R4/UuUCR0Lg3ODP0fLP0+TFvAjWx5iM+oIAEvynu+P9NJn0SzamowmU7xCeyBRuV9WDRAWw/h9wrndSnB6gLuHaFcF5gowfZ07AOL5ZsxezqgAVgAMBKQVqDqbi1CuU+mHihUdNrto/c+qujsD/mkZ1hz9q/K6WKEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706545681; c=relaxed/simple;
-	bh=CkQykIsUrm3sfSKR0V8g1q/+LCFk4Llq9v1g5jrzoS4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z7XVWM2+ToAf17pW9R5IaO2S7YrklqEFhR1vbn8YJQxbRzcEvx8NJj/TRFziFalospWtXmxbxJD3OWZsHb6mhU4jInoBbEaiaZ2+AxXd64b0h+sJJaiEZ8p8o0qW0vD8v6hvCIDQOWq+YHGnnsyJ7oHg4MUGW3jawwnaexUulA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I+FOuich; arc=none smtp.client-ip=209.85.218.44
+	s=arc-20240116; t=1706545756; c=relaxed/simple;
+	bh=+INxXA+sGgvh1Q/k988NqOX38wZyZZlhJW4AzbbZvFE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KWWF11TCfpVcGajj/Pqb1o7jNS1myXx7BMpeqIjqigtVw5YyFwdrnUmwScG5Q7pPzLwJLh1NXDUMckGUQ8jsNU+0ry7rrdehJF6zmzrAkRDX0tPYkZCxuUZovvn9WJuckhFBwteUvMoxayZopNLfMocpBe/oQbYtDgTdyZ1KdjE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CZlHoyrt; arc=none smtp.client-ip=209.85.210.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a350bfcc621so301994366b.0;
-        Mon, 29 Jan 2024 08:27:59 -0800 (PST)
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6de3141f041so386011b3a.0;
+        Mon, 29 Jan 2024 08:29:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706545678; x=1707150478; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ekRXlRD9sMYvDhkEUn4vNmGp7PidTrPzm1ir271L0uQ=;
-        b=I+FOuichFoO2vZfZYpQq3HerAKr/3plrUxvbfKljbGfuoOS52O6QSsBuRfG7DWqAth
-         c13EyQcsIaDs749X+GfdYmliNaYuUc0RRVA7S2TnAO6nzwwnW4PcnQcKmWKipGfHy9JP
-         z1HVHMszai/8pOn6Tay81IOOBpQza/vDUR3LUhaEs/RhrNxx58kDLH5qY2Z7hJ+zsG45
-         7AQ76bwe1OqGlbtjTxbBgXBs+HAI/IigrQz+X17iksv+INMfxzhXDAzGYUzGFN1h7Qld
-         t7bwVnUeL/B4beGVZu218kxp8j/QkHPLh4W/GiX4uw1yNGxtehzZkBZzduf3FZ2c8ECJ
-         mSIw==
+        d=gmail.com; s=20230601; t=1706545754; x=1707150554; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=myZaihACyUJUsgUkXKOA1oofUNHQVfAkH1R/0fTWfv4=;
+        b=CZlHoyrtF7lT+TcLDezERfppRPM4ZB1Qq3GLtgwtRoqWTgpx9cXsGPDkLFcN8p+8Ho
+         0raIo6Al1ALl+6qxO/S/Pc5s9yDm1+/zNd+IL0BUK8aHeyxJhYIC6k60nPYEb53zfLmr
+         C8TmTPc1+9Lejl4iE2HLgQ9W+1R1VpGXRhjdEH8doDPe5uevT99fHsrNoOU4RB59b35q
+         H6FcCOtF/fnuUEI2q3u+1Acsx/y20U8cDcpmiAvQtv6xIL2O9iJNz6mTiQ6IvPaRdc5/
+         dNzl2EK0pSKPFWTgGacriyl+e8n06A6w+/ik7VgzR3BSpAkn1GSQmeAAWyKQ7wvzl6PY
+         Ij3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706545678; x=1707150478;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ekRXlRD9sMYvDhkEUn4vNmGp7PidTrPzm1ir271L0uQ=;
-        b=wAm6gPKFTLpq/rnv1HQx6RBw/qB4zpQdGMdeuEpo0cZFGYQdKMM0Ont/Y/4ByEzvVA
-         8mdN7+DsRvqYtdsa0rY7aa/kxbqNhzJr2K+X6NhbcOlXLU66h1frP+SYvU7lHGmoihy4
-         87anyLvOQ+FkX1PM4HoiT+rHFjURZj4VYEmzX3cw5Gmk8qHFz2kEomBIYbFfRZ4Q5DH4
-         r48oeRTuKFJ3J4XeuseBhXTPI3SuW1W2ARHLe9FViACATnWs2ocrvI90nZ7EFOaJK/wD
-         Uq4+RcY3I62yx7ZvHAj6L8i2AINdinHBTa3VNjkpFDXhg4YxDaHpFJDPj70e2zyOO7IP
-         5wtQ==
-X-Gm-Message-State: AOJu0YyHWqE3FwRxBmxIqpARkGjua5qNkv2xk8uNOXp/jGuSHB0zMlDr
-	oC2FrLXLJKVsldXps1Hb7vzmG95+2qiHp67jO0vSzJ0bbD8hCim0
-X-Google-Smtp-Source: AGHT+IEfp1ng4c16rTEjqdb1pWuJos1D0ck6ThBr47sPROdD23LYtXmEIBt7ZDzRCiDCnIKranZbGQ==
-X-Received: by 2002:a17:906:28c4:b0:a26:90a0:696e with SMTP id p4-20020a17090628c400b00a2690a0696emr4775654ejd.41.1706545678086;
-        Mon, 29 Jan 2024 08:27:58 -0800 (PST)
-Received: from skbuf ([188.25.173.195])
-        by smtp.gmail.com with ESMTPSA id u11-20020a170906068b00b00a2d49132dc3sm4037147ejb.197.2024.01.29.08.27.56
+        d=1e100.net; s=20230601; t=1706545754; x=1707150554;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=myZaihACyUJUsgUkXKOA1oofUNHQVfAkH1R/0fTWfv4=;
+        b=TU3ik+R7BacH4dG66ldVuR0HLVRyvynt0AfpfLJgki8QUaJrtaTvU65ceXhz1IxPaV
+         Trxi0DyE3/naXNidf4yPGDloHKRiadRjBTvZc4fmDjAVbRAfbfamZFZAu2eGe8M/SfEK
+         vS+kFJm3jvIe7dgvom/cI5OnpJyMOJbXNS4QGoyt6hVjk2KdzIxRA1BTggb2yi3Q1Sqd
+         eCO+svNeOwwKNR2Y+PaRmVH8Syr4YyATuYtM7AQcKwKbX8bxLMBtH9R9URbXF6qQk4Ri
+         ieI77MCXdt+4KeZMIp1cBI15hrl1qJ7dWItOkKt7FtZUtxVVh19apZbAeQ5pUclThoGa
+         MgAA==
+X-Gm-Message-State: AOJu0Ywif3W2ZpsjDmQcGo04MVUTwH1lxSnchEuVllqGgYiYdCMMKNwt
+	Mwjg1xAcvlOJSpd59Oxv1eA6Q3pnyc+lIo818u/wqRnKug//aY+74+0/nSRxdok=
+X-Google-Smtp-Source: AGHT+IEVDk5kfmQa+NB3FpC/nBGh3Jt4V2HODqGFNvRKZekPIrnVgxVPfs86wVngMdsvNPTtiEjN5A==
+X-Received: by 2002:a05:6a00:4f08:b0:6db:d986:5c1a with SMTP id lb8-20020a056a004f0800b006dbd9865c1amr2487945pfb.25.1706545753738;
+        Mon, 29 Jan 2024 08:29:13 -0800 (PST)
+Received: from kousik.local ([2405:201:c006:31fd:e71f:2351:f8bc:8b88])
+        by smtp.gmail.com with ESMTPSA id gx20-20020a056a001e1400b006dde04c10dasm6021864pfb.217.2024.01.29.08.29.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 08:27:57 -0800 (PST)
-Date: Mon, 29 Jan 2024 18:27:55 +0200
-From: Vladimir Oltean <olteanv@gmail.com>
-To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-Cc: Daniel Golle <daniel@makrotopia.org>,
-	Landen Chao <Landen.Chao@mediatek.com>,
-	DENG Qingfang <dqfext@gmail.com>,
-	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Russell King <linux@armlinux.org.uk>, mithat.guner@xeront.com,
-	erkin.bozoglu@xeront.com,
-	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net-next v3 6/7] net: dsa: mt7530: do not set
- priv->p5_interface on mt7530_setup_port5()
-Message-ID: <20240129162755.j3q3wxtovzv4sh3i@skbuf>
-References: <20240122-for-netnext-mt7530-improvements-1-v3-0-042401f2b279@arinc9.com>
- <20240122-for-netnext-mt7530-improvements-1-v3-6-042401f2b279@arinc9.com>
- <20240129125241.gu4srgufad6hpwor@skbuf>
- <431750cc-fb6b-4f7a-9123-b6986d359742@arinc9.com>
+        Mon, 29 Jan 2024 08:29:13 -0800 (PST)
+From: Kousik Sanagavarapu <five231003@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Kousik Sanagavarapu <five231003@gmail.com>
+Subject: [PATCH] selftest/ftrace: fix typo in ftracetest script
+Date: Mon, 29 Jan 2024 21:58:07 +0530
+Message-ID: <20240129162841.57979-1-five231003@gmail.com>
+X-Mailer: git-send-email 2.43.0.443.g6965527da0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <431750cc-fb6b-4f7a-9123-b6986d359742@arinc9.com>
 
-On Mon, Jan 29, 2024 at 07:22:28PM +0300, Arınç ÜNAL wrote:
-> On 29.01.2024 15:52, Vladimir Oltean wrote:
-> > On Mon, Jan 22, 2024 at 08:35:57AM +0300, Arınç ÜNAL via B4 Relay wrote:
-> > > From: Arınç ÜNAL <arinc.unal@arinc9.com>
-> > > 
-> > > Running mt7530_setup_port5() from mt7530_setup() used to handle all cases
-> > > of configuring port 5, including phylink.
-> > > 
-> > > Setting priv->p5_interface under mt7530_setup_port5() makes sure that
-> > > mt7530_setup_port5() from mt753x_phylink_mac_config() won't run.
-> > > 
-> > > The commit ("net: dsa: mt7530: improve code path for setting up port 5")
-> > > makes so that mt7530_setup_port5() from mt7530_setup() runs only on
-> > > non-phylink cases.
-> > > 
-> > > Get rid of unnecessarily setting priv->p5_interface under
-> > > mt7530_setup_port5() as port 5 phylink configuration will be done by
-> > > running mt7530_setup_port5() from mt753x_phylink_mac_config() now.
-> > > 
-> > > Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-> > > ---
-> > 
-> > Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
-> > 
-> > I hope this moves the patch set out of the 'deferred' state.
-> > 
-> > ---
-> > pw-bot: under-review
-> 
-> I still see deferred. I guess I'll have to submit this again. :/
-> 
-> Arınç
+Fix a typo in ftracetest script which is run when running the kselftests
+for ftrace.
 
-Please wait for a few more hours for one of the networking maintainers
-to have a chance to see this and ask you to resend, if necessary.
+s/faii/fail
+
+Signed-off-by: Kousik Sanagavarapu <five231003@gmail.com>
+---
+ tools/testing/selftests/ftrace/ftracetest | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/ftrace/ftracetest b/tools/testing/selftests/ftrace/ftracetest
+index c778d4dcc17e..25d4e0fca385 100755
+--- a/tools/testing/selftests/ftrace/ftracetest
++++ b/tools/testing/selftests/ftrace/ftracetest
+@@ -504,7 +504,7 @@ prlog "# of undefined(test bug): " `echo $UNDEFINED_CASES | wc -w`
+ if [ "$KTAP" = "1" ]; then
+   echo -n "# Totals:"
+   echo -n " pass:"`echo $PASSED_CASES | wc -w`
+-  echo -n " faii:"`echo $FAILED_CASES | wc -w`
++  echo -n " fail:"`echo $FAILED_CASES | wc -w`
+   echo -n " xfail:"`echo $XFAILED_CASES | wc -w`
+   echo -n " xpass:0"
+   echo -n " skip:"`echo $UNTESTED_CASES $UNSUPPORTED_CASES | wc -w`
+-- 
+2.43.0.443.g6965527da0
+
 
