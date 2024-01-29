@@ -1,115 +1,114 @@
-Return-Path: <linux-kernel+bounces-42504-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42505-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C39B840245
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:54:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA935840248
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:54:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B100A1F22366
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:54:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5C650B21BFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:54:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE6D555E58;
-	Mon, 29 Jan 2024 09:52:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32C875645B;
+	Mon, 29 Jan 2024 09:53:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="SKSAjcFU"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="MulYlYir"
+Received: from mout.web.de (mout.web.de [217.72.192.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5AE859B49;
-	Mon, 29 Jan 2024 09:52:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FF6155E63;
+	Mon, 29 Jan 2024 09:53:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706521978; cv=none; b=a/hrC3Zt5PvfTyjiTMHDRWGen2zM/aErpuSEg2mSuSgvPg2Hpwe36HJUiUTG5u5du0NKGJCee4sXsgCXHv1qB536+ry/jpv4h3y57drZ4/DvBFtLzvHPiSPkht1cjoEviZO+xScOXbuXaK4paI40xSRsepKpCkfCrUfs9pGNHic=
+	t=1706522008; cv=none; b=k2N2F5WLOgAjAwrpeABIEGY2ljYnpVsdCrZFmn2/sg4PR84Z5p3dSNIXvWhieHQEKKx+0S7rQjkEWoX85eSZBiruE50Dvsgp0Lq44CZ7yF1hhoL+uL5D4VgP9aE7zjV+qYV/BrXueGHHsgAWzKHkDHL+VD6vJ39w8dcA4rzVm7E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706521978; c=relaxed/simple;
-	bh=oyc6YC+UnMBs4AnjnMQ3lMqIsNFfLoqBWzpH4/9Sh3k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UYZhTPX+/FeaQRgs1wd+bVc2lGXOw36Krz9/DZO32tbIqZDJldLqeks/3asLFSY8s3AOEAL83npLOJvsn63Nb94woWeQ8yltEGQ/4pY/QippBqIFowIy6Nb52GXn1jTqFzIcLS077FcNxcQKtotl2fBPW30GAWkvgo83GWF8TZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=SKSAjcFU; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40T8j5cB009027;
-	Mon, 29 Jan 2024 09:52:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=T8yzjOj6VbfU/AtzvHhpBsK5Qg/KXZet/7IHkYOELGI=;
- b=SKSAjcFUGjyx4ZsO10RCmlgHGlxNt/1wkYtl1gFX+6qGeof/k7siWUWUw3kwippwkt0m
- DeVCqVmZdULrurFKdQvl+tp914+sIaTMfTmkMXb4VP4y/cn3HAyX5wtcIwMCBEb/XL3A
- 3M1lmMrZxRiwEh8k/j3WxjGKVVyxO/miRC/4NmMdKuWzxeUyZaSLnLo+b/KfaCemSXte
- vdzeqrj0CO4k5n0t6A0MGxe2wtTTKMUKN+kvHGeqPYtjJevpmfTQhHOzZI2t1rITp2RH
- qPrAufnetdPrViAuj28W6gg/ouwhA/EQJgats8W1/W2EVP+fj6lI6Xs9thOaUe9+vLLb xA== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vx6e2cqr0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 29 Jan 2024 09:52:48 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40T8XeBx011067;
-	Mon, 29 Jan 2024 09:52:47 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vwd5nfd2d-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 29 Jan 2024 09:52:47 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40T9qf6x24511136
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 29 Jan 2024 09:52:44 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 6973020043;
-	Mon, 29 Jan 2024 09:52:41 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D923920040;
-	Mon, 29 Jan 2024 09:52:40 +0000 (GMT)
-Received: from osiris (unknown [9.171.85.65])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon, 29 Jan 2024 09:52:40 +0000 (GMT)
-Date: Mon, 29 Jan 2024 10:52:39 +0100
-From: Heiko Carstens <hca@linux.ibm.com>
-To: Alexander Gordeev <agordeev@linux.ibm.com>
-Cc: Frederic Weisbecker <frederic@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Vasily Gorbik <gor@linux.ibm.com>, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 5/5] sched/vtime: do not include <asm/vtime.h> header
-Message-ID: <20240129095239.6722-C-hca@linux.ibm.com>
-References: <cover.1706470223.git.agordeev@linux.ibm.com>
- <2402f44309e1c9705501bdc9b798e8fe6d73f905.1706470223.git.agordeev@linux.ibm.com>
+	s=arc-20240116; t=1706522008; c=relaxed/simple;
+	bh=PXPCn+oYLrnbt+qWU2Af2frSRG+t1bYgfk7qBkMYuQc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ApJE3NWo96F1/oG9qGhpOk9rpXWFiuicpyBG/YOw87HgKOnGUg5oo5GE6ztDw69B20GExa66SGMOeXNZA5dkNunUPi6NpcaKeu+EYhh/5Hq285P5rd5lZgZbHXsAK8Mj9l9mH2blg+NpS+5ZBRL0WujvQwzangkTTXxH+UsQIS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=MulYlYir; arc=none smtp.client-ip=217.72.192.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1706521984; x=1707126784; i=markus.elfring@web.de;
+	bh=PXPCn+oYLrnbt+qWU2Af2frSRG+t1bYgfk7qBkMYuQc=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=MulYlYirkI6QwlOPVvP0zj0zAR1P99IaFr92JeF9mRHJRdM8PbYjopBdLCYqJCeJ
+	 GoE40I1TyJKICLLT3AJtKTRfP+x6YcSz3vpRoT7OFlrS9Lql3yModydf3oRQ/dMdz
+	 MS7kYUWCKat8DnH8Rz55wqiUHDGKo5KWkiyW0MuMIJTK6H3jt+g2a4fC/0aSrN9MA
+	 qIGJAKGJW35tyDxgF/JIRykIIj99Wo1yu0q/rltI23bE58+cgLPB6RIJV1PDH+25i
+	 ghPXmGQP8A9A0m/yasE7xuGThZdm820nK6DzHD+qISoqHvG051zXxHe5gwJHOdG76
+	 DuASI53yA7GG9E/wzw==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.81.95]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1M59nK-1rTHrY3FWW-001IKu; Mon, 29
+ Jan 2024 10:53:04 +0100
+Message-ID: <3ca56d3f-5a2b-4321-adbb-4e2c0d72b573@web.de>
+Date: Mon, 29 Jan 2024 10:52:48 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2402f44309e1c9705501bdc9b798e8fe6d73f905.1706470223.git.agordeev@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: t5dGNDAG7oDR415HEJK8W843mUfuva5W
-X-Proofpoint-ORIG-GUID: t5dGNDAG7oDR415HEJK8W843mUfuva5W
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-29_05,2024-01-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=2 clxscore=1015 bulkscore=0
- priorityscore=1501 suspectscore=0 impostorscore=0 phishscore=0
- lowpriorityscore=0 adultscore=0 malwarescore=0 mlxscore=2 spamscore=2
- mlxlogscore=175 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401290070
+User-Agent: Mozilla Thunderbird
+Subject: Re: [v2] platform/x86/amd/pmf: Fix memory leak in
+ amd_pmf_get_pb_data()
+Content-Language: en-GB
+To: Hans de Goede <hdegoede@redhat.com>, Cong Liu <liucong2@kylinos.cn>,
+ Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+ Mario Limonciello <mario.limonciello@amd.com>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ platform-driver-x86@vger.kernel.org, kernel-janitors@vger.kernel.org
+Cc: LKML <linux-kernel@vger.kernel.org>
+References: <901291c8-ca9c-47b2-8321-256b314690da@redhat.com>
+ <2b3b4754-4c20-48ef-9844-f5db6a7f527e@web.de>
+ <bbcf1b06-2a65-4f87-b15a-583a668dfc1e@redhat.com>
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <bbcf1b06-2a65-4f87-b15a-583a668dfc1e@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:4BvwCS8lGjsVcbwXquWcqTMlULuUVkV7zZs9jcpaGdX/8hT9jj1
+ QbZZ0qctnLpc1msSNIhSobmAyN7AdkMqr3kpPFNTSAMfBN/N8j7KkRJuGRUgFqcws0LtGYx
+ NPAFT1GMkmdf6IGvOF+sEs0HH5qkww7ajh+Q+a3/ebCXTI+Gdjn8tEMZ0Fx/ztoC63tsOZT
+ RXCbeMDZmnEBLhzRlPhDQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:2RcZ5CezqYE=;72yBd+1QRh0XfBtOycVS5Uu75LT
+ WVIziAJUe5Bd1HC4byJ1U8nvgFOxorN9sMx05Z+wYJOsw6MFv4kwjdaid6ICX/mjEjPk+GJsL
+ 38GZVYpMH1p/oYfM926pRBMPwa2wGo/1Brz9r/bfjoo++bag1ZiRqCxhkfiPXo8KQBdmCdhgM
+ arCdsPvJrjUaiYJv/7NTZZ9V38uOIRaljZFRXIbqThWY5geCEK3MyK5Co6oaCdFQJ0O7MXVGb
+ rbSZ8Jyk6D0s8J5ddb7LPKr+iINYtR2xwlqaRWewxigCuhFiI7wew6JAbwYiavx36CIH6tcRv
+ HKZS2yJ8etBwzGGPhEXZAHn2bB+7cV5MrH9kX07YdMJNYa/Soe70GbVrumfO9ezz6Fnez3W8l
+ VDnwYPRbLD98rvWJS1jPKJJSNqZmbkJ4Au7yLbXDnQJLqr+FqJWe67vaOlhLGTRvYXqEz/MlQ
+ q2j0NFdeWqOOnYJ19zZ6fdMk0vheWIV/TzemQqgT0SZMUUi+9JAU6L8ZbZ068T7kYx+B2gncg
+ C1wj4IjRuCBaZuK/4qIuLAWhrK8onxNE1h/jF87jUT7D3rsUbi5KQ3WOjY7PBQhg/84KTIE5t
+ 1X1vy1MmHwI3ida7nAOb6c1lGlt2pSWMW+Ff5Ko38vMa4HdGjyRHZjM7/nWYJIrcpIyddlalj
+ Pb2SAqmhJiMMCqLyL2Nj8+9HHKH48SyP1tjBWCXv7scOuXE+3bP9E5OpB4F+OyWHWHIefkwbN
+ 9pv5AsJyrQo4hlgpmDrlIleAbJfaoU51MOH5JfXqg7zNiB0ow1fxCTxszw+ALG4E29SKZdv2O
+ 5/xpA5gu0prxR/zH0mwvWhH+BTpQBCDNNAJVUrnaN1/poTb+DmqUgHH+5JC6xUnZ9oKjicdBD
+ 7sQUYjPvfyFRGY7pcxdcRHfukIn571Zg4NARTznBTXr84vQ/47u8wuvAW+GE1UXAogUNzD81O
+ /VUfTQ==
 
-On Sun, Jan 28, 2024 at 08:58:54PM +0100, Alexander Gordeev wrote:
-> There is no architecture-specific code or data left
-> that generic <linux/vtime.h> needs to know about.
-> Thus, avoid the inclusion of <asm/vtime.h> header.
-> 
-> Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
-> ---
->  include/asm-generic/vtime.h | 1 -
->  include/linux/vtime.h       | 4 ----
->  2 files changed, 5 deletions(-)
->  delete mode 100644 include/asm-generic/vtime.h
+> If the question is: "Are patches generated by coccinelle welcome?"
+> then the answer is "Yes patches generated by coccinelle are very
+> much welcome".
 
-I guess you need to get rid of this as well:
+How do you think about to fix a questionable memory leak
+by using the function =E2=80=9Cmemdup_user=E2=80=9D instead?
+https://elixir.bootlin.com/linux/v6.8-rc1/source/mm/util.c#L185
 
-arch/powerpc/include/asm/Kbuild:generic-y += vtime.h
+Would you like to try a corresponding command out once more on source file=
+s
+of a software like =E2=80=9CLinux next-20240125=E2=80=9D?
+https://elixir.bootlin.com/linux/v6.8-rc1/source/scripts/coccinelle/api/me=
+mdup_user.cocci#L2
+
+make COCCI=3Dscripts/coccinelle/api/memdup_user.cocci M=3Ddrivers/platform=
+/x86/amd/pmf/ MODE=3Dpatch coccicheck
+
+
+Regards,
+Markus
 
