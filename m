@@ -1,147 +1,177 @@
-Return-Path: <linux-kernel+bounces-42337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42341-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17B3483FFD0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:16:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 283A583FFEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:20:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4ACBF1C22BF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 08:16:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE66F1F2313D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 08:20:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0552B52F97;
-	Mon, 29 Jan 2024 08:16:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0DCA537ED;
+	Mon, 29 Jan 2024 08:19:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MXFHZndS"
-Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com [209.85.221.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JIhpEHYY"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D156AFC1E;
-	Mon, 29 Jan 2024 08:16:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 551C652F7D;
+	Mon, 29 Jan 2024 08:19:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706516177; cv=none; b=eYNXfBFEOXTvHDcphD0Idgzhe3cmsq0ZdCX+trAuRRfAdi+toUe4lwkhZA3FpOqbek21QqmTB1UmB+YadPq7WX/KCGELaMDRyurS1htaR9q3zkAU8xnb0QiUjHr5Q6NCVFeRn4cccSvzKpRLF1wvYTpg32TkLiZeczZ4TVAfilU=
+	t=1706516393; cv=none; b=CpRrJAC2ll/imTZJ2P/FSxufAu+JG1YjoHf5cn+/WAmQhKBEc4CgrLI0L+kLpHwW2bGaoHy6KgJYIBSuW9UpIyIErW1jGgZPemP7HpH+04xlHbjUCEEAzhOKh2cG7lDQvL8nGRTmC06l9T85rz2uaPCEz6uAzGI3/t1TqHT/TqI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706516177; c=relaxed/simple;
-	bh=jFq6CQO9eMcsqJNLoTyOaRKicc+pCL4ISPcZG7GRp1U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JvsSOugODvt09evKW45ZVstBn+z3SKQ5ceck8K8yzZORrLnpBrraubEmy9JnT/hUr/L+YmV+PMmRr9NYgPyOMyH3EHMG9Lk3jDNDiOZ5i20heXrTrrGY/se//QIfc4Mv+7ArEFPlH8rWWEEab2AKqwNnk/nWmTyewWNIfikQjZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MXFHZndS; arc=none smtp.client-ip=209.85.221.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f178.google.com with SMTP id 71dfb90a1353d-4b7fc7642fcso340797e0c.0;
-        Mon, 29 Jan 2024 00:16:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706516174; x=1707120974; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/OL962hsrazE62p7R/jJW2A1J29P+0IWGTWAVOKd3dc=;
-        b=MXFHZndSOTqGhp/9kDYBFlzd98hV4Dfee8lxBS5KV64dToev0O7UKr8wXk/WbNNh8X
-         ZAw4RHlLHowE925ko6IHzq5zQZ8NjIJ7LT/KfurqVOIfGoWsUVar3AxphGj9AgzI4Xlr
-         2Ry37zZW2QtYH1Wd/CplNjrEqh74L4Biy8sRG3SdOfen17p8sBF1tjfdOU9Sm6CE3aMn
-         hHhvpdbh+DU3zvUuA2MA4UksZftTgYjhWFU/W/Zd81p3JC066DnbpBut9agv1/bp9sdQ
-         supa/e87LFFJlPFNoqr5/kFNOmL6dWDhGL/FHQwgEKGp4ICKVgZX/9UIFs6t6XIUr7dH
-         JlEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706516174; x=1707120974;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/OL962hsrazE62p7R/jJW2A1J29P+0IWGTWAVOKd3dc=;
-        b=ZucXktoLourPE34pKHCtRomsUq2q7mU+HDUr9w1a2l8I2bpllmtC7n9RbwMtC9n/Ce
-         Ei10Uk2MwCL4HyGWMqIwayFqN/iH9fsMTCTrgt5Oo5xnhXr5vjSxQtglufheLoGrCD+C
-         fReUTIiJFieTM3gjCfJ+lTTmwpeVDqsNaFkPn0F2f/FboI9G+cwr+6xkoXWtkHwkrhrh
-         kV28xj4roYnJQ+V5bUpY+uV5PemKJUYoEGOxvvTc9lUyj/lyGVP0W0gg7SQmViqAFtNQ
-         7Vxusn8FIqw2a1nQLnJrdbFct4J5f4+tHRH3AKCmEFsux0dpThfw52mIWpcW90txvLuu
-         zQTg==
-X-Gm-Message-State: AOJu0YwR3946pQbIJOMDJ6240YvaivNnQL17mopH0dBOX+xme+DE4ZN/
-	pGBdQ3mcmHKS+/x3IDq7/IM385Q0Eto6P/MvVixJDIr3F/HGwqyOD0v6Ap3xfla9FtMjkx9LzAE
-	5+/wbSNCB1m4rswInmeKjHlPQPYI=
-X-Google-Smtp-Source: AGHT+IFVLswNDcWZYfO3yzzAlQv+TtXRezQ/W4fDx0M03rR10TDzekL3bjX7/Ul6Vk7QpTK9ppe6q4oY0+U+lD94G6U=
-X-Received: by 2002:a05:6122:2528:b0:4bd:5799:2c09 with SMTP id
- cl40-20020a056122252800b004bd57992c09mr1524815vkb.5.1706516174654; Mon, 29
- Jan 2024 00:16:14 -0800 (PST)
+	s=arc-20240116; t=1706516393; c=relaxed/simple;
+	bh=q9yLJZ27jvLejI0DqUZQHKwFIPnOnNb3BDVtGNN+2V8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=RJYQJ6u/J1sVUml+D6zngjlqj+H9vl+rpshN8y15mM9mjYIqMP5KQxFvwkYUsJxKjmdtn7haKMX7sQMpBDnKfi4Xg0qqAdrEs6DiXUhQyP5XHeEkUn3NIUroX5Qu0FHmx7Im6r9F/w4iSQPPiDva1jok24dTk/0VeyhO7YPz/Ow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JIhpEHYY; arc=none smtp.client-ip=134.134.136.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706516391; x=1738052391;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=q9yLJZ27jvLejI0DqUZQHKwFIPnOnNb3BDVtGNN+2V8=;
+  b=JIhpEHYYMvTxRTFQDg0GX6eNZ8ZrelCTytzl6lu3MLSj8do4/hyeMKdr
+   Pxr61zTtMSIsq6v8Ng5HsbrffwCcCKBWp5xxrRQr4ApC1xndMde+HBIYu
+   UcjWBmn+tDgGOQQNyY1A4JYZe39PIvX7c76rGpS97oGoMjBfyUHyv/Yie
+   puqXR4o8//dVHWt4KTttEn4MVPMcQDpO5WUUOx+CHi4H82k3hw9uXG1hb
+   cXC4HRGKBOrcEv8bpVq//efrh+O6Bjtzk6uWpJNbrOg4xZRtJskdvH2Hn
+   MVsMdx/90lTxckoJwhLIlyUYUAFTGCS7axdUQxvy9e07n8i3KHfJHrD3H
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="406609298"
+X-IronPort-AV: E=Sophos;i="6.05,226,1701158400"; 
+   d="scan'208";a="406609298"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 00:19:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,226,1701158400"; 
+   d="scan'208";a="29701150"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 00:19:43 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Gregory Price <gregory.price@memverge.com>
+Cc: Gregory Price <gourry.memverge@gmail.com>,  <linux-mm@kvack.org>,
+  <linux-kernel@vger.kernel.org>,  <linux-doc@vger.kernel.org>,
+  <linux-fsdevel@vger.kernel.org>,  <linux-api@vger.kernel.org>,
+  <corbet@lwn.net>,  <akpm@linux-foundation.org>,  <honggyu.kim@sk.com>,
+  <rakie.kim@sk.com>,  <hyeongtak.ji@sk.com>,  <mhocko@kernel.org>,
+  <vtavarespetr@micron.com>,  <jgroves@micron.com>,
+  <ravis.opensrc@micron.com>,  <sthanneeru@micron.com>,
+  <emirakhur@micron.com>,  <Hasan.Maruf@amd.com>,
+  <seungjun.ha@samsung.com>,  <hannes@cmpxchg.org>,
+  <dan.j.williams@intel.com>
+Subject: Re: [PATCH v3 4/4] mm/mempolicy: change cur_il_weight to atomic and
+ carry the node with it
+In-Reply-To: <ZbPf6d2cQykdl3Eb@memverge.com> (Gregory Price's message of "Fri,
+	26 Jan 2024 11:38:01 -0500")
+References: <20240125184345.47074-1-gregory.price@memverge.com>
+	<20240125184345.47074-5-gregory.price@memverge.com>
+	<87sf2klez8.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<ZbPf6d2cQykdl3Eb@memverge.com>
+Date: Mon, 29 Jan 2024 16:17:46 +0800
+Message-ID: <877cjsk0yd.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240115130817.88456-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20240115130817.88456-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date: Mon, 29 Jan 2024 08:15:48 +0000
-Message-ID: <CA+V-a8t4v2CxZWrLRKBinS5fyG-_FzDFz5zA=mgcrNutJABr5g@mail.gmail.com>
-Subject: Re: [PATCH v5 0/4] Add missing port pins for RZ/Five SoC
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Magnus Damm <magnus.damm@gmail.com>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=ascii
 
-Hi Geert,
+Gregory Price <gregory.price@memverge.com> writes:
 
-On Mon, Jan 15, 2024 at 1:08=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.c=
-om> wrote:
+> On Fri, Jan 26, 2024 at 03:40:27PM +0800, Huang, Ying wrote:
+>> Gregory Price <gourry.memverge@gmail.com> writes:
+>> 
+>> > Two special observations:
+>> > - if the weight is non-zero, cur_il_weight must *always* have a
+>> >   valid node number, e.g. it cannot be NUMA_NO_NODE (-1).
+>> 
+>> IIUC, we don't need that, "MAX_NUMNODES-1" is used instead.
+>> 
 >
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Correct, I just thought it pertinent to call this out explicitly since
+> I'm stealing the top byte, but the node value has traditionally been a
+> full integer.
 >
-> Hi All,
+> This may be relevant should anyone try to carry, a random node value
+> into this field. For example, if someone tried to copy policy->home_node
+> into cur_il_weight for whatever reason.
 >
-> This patch series intends to incorporate the absent port pins P19 to P28,
-> which are exclusively available on the RZ/Five SoC.
+> It's worth breaking out a function to defend against this - plus to hide
+> the bit operations directly as you recommend below.
 >
-> Cheers,
-> Prabhakar
+>> >  	/* Weighted interleave settings */
+>> > -	u8 cur_il_weight;
+>> > +	atomic_t cur_il_weight;
+>> 
+>> If we use this field for node and weight, why not change the field name?
+>> For example, cur_wil_node_weight.
+>> 
 >
-> v4 -> v5:
-> * Made struct rzg2l_variable_pin_cfg variables u32
-> * Updated PIN_CFG_PIN_MAP_MASK macro to use GENMASK_ULL() as reported
->   by kernel test robot.
+> ack.
 >
-> v3 -> v4:
-> * Rebased the changes on top Claudiu's patches
-> * patch 1/4 is new patch for using FIELD_PREP_CONST/FIELD_GET as
->   suggested by Geert
-> * patch 2/4 adjusted the code again using FIELD_PREP_CONST/FIELD_GET
-> * patch 3/4 fixed rzg2l_pinctrl_get_variable_pin_cfg() as pointed by Geer=
-t
-> * patch 4/4 is unchanged
-> * patches 1-3 have been boot tested on g2l family
+>> > +			if (cweight & 0xFF)
+>> > +				*policy = cweight >> 8;
+>> 
+>> Please define some helper functions or macros instead of operate on bits
+>> directly.
+>> 
 >
-> v2->v3:
-> * Fixed build warnings for m68k as reported by Kernel test robot.
+> ack.
 >
-> RFC -> v2:
-> * Fixed review comments pointed by Geert & Biju
+>> >  			else
+>> >  				*policy = next_node_in(current->il_prev,
+>> >  						       pol->nodes);
+>> 
+>> If we record current node in pol->cur_il_weight, why do we still need
+>> curren->il_prev.  Can we only use pol->cur_il_weight?  And if so, we can
+>> even make current->il_prev a union.
+>> 
 >
-> RFC:
-> Link: https://lore.kernel.org/lkml/20230630120433.49529-3-prabhakar.mahad=
-ev-lad.rj@bp.renesas.com/T/
+> I just realized that there's a problem here for shared memory policies.
+>
+> from weighted_interleave_nodes, I do this:
+>
+> cur_weight = atomic_read(&policy->cur_il_weight);
+> ...
+> weight--;
+> ...
+> atomic_set(&policy->cur_il_weight, cur_weight);
+>
+> On a shared memory policy, this is a race condition.
 >
 >
-> Lad Prabhakar (4):
->   pinctrl: renesas: rzg2l: Improve code for readability
->   pinctrl: renesas: rzg2l: Include pinmap in RZG2L_GPIO_PORT_PACK()
->     macro
->   pinctrl: renesas: pinctrl-rzg2l: Add the missing port pins P19 to P28
->   riscv: dts: renesas: r9a07g043f: Update gpio-ranges property
+> I don't think we can combine il_prev and cur_wil_node_weight because
+> the task policy may be different than the current policy.
 >
->  arch/riscv/boot/dts/renesas/r9a07g043f.dtsi |   4 +
->  drivers/pinctrl/renesas/pinctrl-rzg2l.c     | 284 +++++++++++++++++---
->  2 files changed, 248 insertions(+), 40 deletions(-)
+> i.e. it's totally valid to do the following:
 >
-With recent changes to pinctrl-rzg2l.c this patch series (patch #2)
-does not apply cleanly anymore. Shall I resend it?
+> 1) set_mempolicy(MPOL_INTERLEAVE)
+> 2) mbind(..., MPOL_WEIGHTED_INTERLEAVE)
+>
+> Using current->il_prev between these two policies, is just plain incorrect,
+> so I will need to rethink this, and the existing code will need to be
+> updated such that weighted_interleave does not use current->il_prev.
 
-Cheers,
-Prabhakar
+IIUC, weighted_interleave_nodes() is only used for mempolicy of tasks
+(set_mempolicy()), as in the following code.
+
++		*nid = (ilx == NO_INTERLEAVE_INDEX) ?
++			weighted_interleave_nodes(pol) :
++			weighted_interleave_nid(pol, ilx);
+
+But, in contrast, it's bad to put task-local "current weight" in
+mempolicy.  So, I think that it's better to move cur_il_weight to
+task_struct.  And maybe combine it with current->il_prev.
+
+--
+Best Regards,
+Huang, Ying
 
