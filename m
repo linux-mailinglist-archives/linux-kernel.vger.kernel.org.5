@@ -1,158 +1,195 @@
-Return-Path: <linux-kernel+bounces-43234-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43226-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C164841142
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:48:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6D6E84111C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:46:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F4381C23F08
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:48:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E6191F26906
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:46:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53ABC15705E;
-	Mon, 29 Jan 2024 17:47:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A18F3F9D8;
+	Mon, 29 Jan 2024 17:46:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rxVIC+S6"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="KZdkwnlD"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 473E63F9E0
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 17:47:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A87A13F9CC;
+	Mon, 29 Jan 2024 17:46:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706550435; cv=none; b=IwEv/JIyS0WCLjnlKngvxCgd53WPey50RSzPXbn+cRL7UmOXiVk6aYtbvd4T71bM827319UAxlumQbLEYx4HLQPmY9/gnrIkRMYJpBU0C1mjGT3DlHT5RKTCdrxTT7lPxccFkHiY+J2u2rI2s4F7Kpy6jRI4Zehi1zqHQKwRGwQ=
+	t=1706550378; cv=none; b=f/jhAN8bDcXC4QK1faEp9I5Tg8hbcUkwcG1UEWM6A9jk8HtoeeaHHmPJPMPs7dGoCMZGc3Fl7vBVq6+PE9VjReasM+RH9cNoMlXtwUBpoNob6BvgPgE5kCcN1IjGmcpWb1XlxAwPCXRpW74TCc3LKjB2arICjS+vnRsh9cu2P/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706550435; c=relaxed/simple;
-	bh=EYbrVsBx4CczVTo2it9ewxYkNd2HjzVb5k8/lZR7m9U=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UwrL8f4wyWWdi3p2cbQTEtHS1GvxXHEJ7uvDGnmXBmyQt8vERJ7UOOOt7/SvYzrhHyIr8YJFZcjl88ASk+a1I3TH3OOYzY87CRFGkZ9Qj8m1sRve1f9H93sJ4DnoAsk7obdRpdF6/IMbbWeYJgAY6/761yZQ18PhfFe8SAd52FA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rxVIC+S6; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2cf1288097aso41002211fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:47:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706550430; x=1707155230; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YN7Q9lvRKaAglbSzz4YTb/Gj6CnT1pQKtP0U/KtQa4g=;
-        b=rxVIC+S68AT1fvl5V1ayIIMhvjMfa6mng+JRE/W0XYA5mgI08ayOxwa/KcieAEedIW
-         dCUN5gHEe1NqZehVJS0o3sTrbqL0tMbm3iyIrE+9jWIDZppb2md7tMI4JT24VL1HPsSE
-         cnnXsouipiE3DAO8dxsaxF7LqN+I2KXBS7DnZ3t5e7h7KIEnV8kKVmVY6gRynW31eCTu
-         y00IKgeS2lkyX1BAUAJ3JdLy2mq99FzSVn2DY/nW6KmRib7dlc2whIS9mBMbC81vTROm
-         aVTHnVfL055blSYpTt0n+o2VC0ZJfHysxY6ExtD2gTWyYewUcSAo4AlgdzwmIO8RNepw
-         GFCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706550430; x=1707155230;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YN7Q9lvRKaAglbSzz4YTb/Gj6CnT1pQKtP0U/KtQa4g=;
-        b=P/zwMZGrL7XcgKjbzi/MFPYabHh5rnWqI+QjfKyi5DNwQJoTJso+YI9hZjK9LRdnJ8
-         dj37/HGZdjL3vpz2K1wsEP0ilsSsTtriF/WwQvsO7J7nFzF79FZPCvM6LnhFGnc69+ux
-         nxTgKc4Fx/u7Hrn0HoUpxVCFgnE6wJO/ExOY2PJMhDWuM31XiKUmmIpkSXvfmqwYN2eS
-         JKLza7UUPTUwByhYV1P0XKbM2ccY9XAlJGXiSwr/oLNyDN61qyDxKvZaf43po/eXaeNh
-         8ppin5J0g7n2mqQrVxzf7Kkz1vg/A/ETwZpWNBfERUKx1BjhHLNMvP/T/VSxCnru/j9U
-         lSEw==
-X-Gm-Message-State: AOJu0YxrGwBBnXCNcPbkoRiHQXdSUImJ8Sj8vQijHGjPjEyffwYHgMDy
-	YfU/TBpUfsQpgG3eRmVh0AFW+Ps0bXcmY+OmEPme3awVAXxRWgA35OaAhWR8xik=
-X-Google-Smtp-Source: AGHT+IGGX12jefZ3ORpqP3WpoKoqBC3NixlOwRo4Dex+hqaEW+6BruXCJDU6lnoik6V45yxURorkPw==
-X-Received: by 2002:a05:651c:1a1e:b0:2d0:5283:84a8 with SMTP id by30-20020a05651c1a1e00b002d0528384a8mr1574080ljb.36.1706550430239;
-        Mon, 29 Jan 2024 09:47:10 -0800 (PST)
-Received: from puffmais.c.googlers.com.com (94.189.141.34.bc.googleusercontent.com. [34.141.189.94])
-        by smtp.gmail.com with ESMTPSA id u10-20020a05640207ca00b0055f08fa9286sm1000999edy.23.2024.01.29.09.47.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 09:47:09 -0800 (PST)
-From: =?UTF-8?q?Andr=C3=A9=20Draszik?= <andre.draszik@linaro.org>
-To: peter.griffin@linaro.org,
-	mturquette@baylibre.com,
-	sboyd@kernel.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@android.com,
-	tudor.ambarus@linaro.org,
-	willmcvicker@google.com,
-	semen.protsenko@linaro.org,
-	alim.akhtar@samsung.com,
-	s.nawrocki@samsung.com,
-	tomasz.figa@gmail.com,
-	cw00.choi@samsung.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-clk@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: [PATCH v3 7/7] arm64: dts: exynos: gs101: enable i2c bus 12 on gs101-oriole
-Date: Mon, 29 Jan 2024 17:46:06 +0000
-Message-ID: <20240129174703.1175426-8-andre.draszik@linaro.org>
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-In-Reply-To: <20240129174703.1175426-1-andre.draszik@linaro.org>
-References: <20240129174703.1175426-1-andre.draszik@linaro.org>
+	s=arc-20240116; t=1706550378; c=relaxed/simple;
+	bh=s93DASLXzgaSLrX3kPwTzofL6DaVYy0uKoz5AbAVS2c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t43FGZ/L4aANV1RSVsxuJEy85qTn74s49xuTLfdniG3/v5Ij7r7uUZXuohGX+8sg6wooBP+7lnpf1KafXmSxDPG5ca/n6GeFKX1MD8Xg55rpLPQJrsPbSUo2i7aAVzx/MeNjEn58uiFTHAqOHzSRPaS0kz8jqpXXISTAB+3/KbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=KZdkwnlD; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
+	bh=12CzKYhCfKqun2A4domPiemnWWbzqM+PUv+a4ErseME=; b=KZdkwnlDbT8eAW0GrcflfnrVvu
+	VTXDUzAwpieANDEa8k07vlipq2o51Z+841CgkuOYWEQ4ZKHIb2+uc020A/uT7Bx9kgKYcbYhth221
+	pwsr9Awh2PT9ZiUDrf4Imbjz8Cybrt/iX9lbNuN/pDIzRoR/Og1MYp2UjImIPiQrjQY26Ai2UTpUC
+	d0iCIno+oxBxqcz1pfcr5QH0K20E8ffubEviROc46EXkUTwGzqP1+6LCOPO5MDTW1gsQ4boAok3Zm
+	UG/wcvj9VJ/Beeaukhh42tbiAEuYp9zASeJ8NAahEpxzZ3qQnXCL8q1OAUom8grZOoHRIEm6DQuDo
+	GJGVUx7A==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rUVi3-0000000Dn65-2Waj;
+	Mon, 29 Jan 2024 17:46:15 +0000
+Date: Mon, 29 Jan 2024 09:46:15 -0800
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: linan666@huaweicloud.com, jejb@linux.ibm.com,
+	martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linan122@huawei.com,
+	yi.zhang@huawei.com, houtao1@huawei.com, yangerkun@huawei.com,
+	"yukuai (C)" <yukuai3@huawei.com>
+Subject: Re: [PATCH] scsi: sd: unregister device if device_add_disk() failed
+ in sd_probe()
+Message-ID: <ZbfkZxMVpVI97zmk@bombadil.infradead.org>
+References: <20231208082335.1754205-1-linan666@huaweicloud.com>
+ <ZYUxZc/my2v6UfFJ@bombadil.infradead.org>
+ <78fb6d82-c50a-8fea-ae6d-551fd35656bf@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <78fb6d82-c50a-8fea-ae6d-551fd35656bf@huaweicloud.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-This bus has three USB-related devices attached to it:
-    0x25: Maxim 77759 Type-C port controller
-    0x35: Maxim 20339EWB Surge protection IC
-    0x36: Maxim 77759 Fuel gauge
-    0x57: NXP PCA9468 Battery charger
-    0x66: Maxim 77759 PMIC
-    0x69: Maxim 77759 Charger
-where the Maxim 77759 has multiple i2c slave addresses.
+On Fri, Dec 22, 2023 at 04:27:16PM +0800, Yu Kuai wrote:
+> Hi,
+> 
+> 在 2023/12/22 14:49, Luis Chamberlain 写道:
+> > On Fri, Dec 08, 2023 at 04:23:35PM +0800, linan666@huaweicloud.com wrote:
+> > > From: Li Nan <linan122@huawei.com>
+> > > 
+> > > "if device_add() succeeds, you should call device_del() when you want to
+> > > get rid of it."
+> > > 
+> > > In sd_probe(), device_add_disk() fails when device_add() has already
+> > > succeeded, so change put_device() to device_unregister() to ensure device
+> > > resources are released.
+> > > 
+> > > Fixes: 2a7a891f4c40 ("scsi: sd: Add error handling support for add_disk()")
+> > > Signed-off-by: Li Nan <linan122@huawei.com>
+> > 
+> > Nacked-by: Luis Chamberlain <mcgrof@kernel.org>
+> > 
+> > > ---
+> > >   drivers/scsi/sd.c | 2 +-
+> > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
+> > > index 542a4bbb21bc..d81cbeee06eb 100644
+> > > --- a/drivers/scsi/sd.c
+> > > +++ b/drivers/scsi/sd.c
+> > > @@ -3736,7 +3736,7 @@ static int sd_probe(struct device *dev)
+> > >   	error = device_add_disk(dev, gd, NULL);
+> > >   	if (error) {
+> > > -		put_device(&sdkp->disk_dev);
+> > > +		device_unregister(&sdkp->disk_dev);
+> > >   		put_disk(gd);
+> > >   		goto out;
+> > >   	}
+> > 
+> > This is incorrect, device_unregister() calls:
+> > 
+> > void device_unregister(struct device *dev)
+> > {
+> > 	pr_debug("device: '%s': %s\n", dev_name(dev), __func__);
+> > 	device_del(dev);
+> > 	put_device(dev);
+> > }
+> > 
+> > So you're adding what you believe to be a correct missing device_del().
+> > But what you missed is that if device_add_disk() fails then device_add()
+> > did not succeed because the new code we have in the kernel *today* unwinds
+> > this for us now.
+> 
+> I'm confused here, there are two device here, one is 'sdkp->disk_dev',
+> one is gendisk->part0->bd_device, and the order in which they
+> initialize:
+> 
+> sd_probe
+> device_add(&sdkp->disk_dev) -> succeed
+> device_add_disk -> failed, and device_add(bd_device) did not succeed
+> put_device(&sdkp->disk_dev) -> device_del is missed
+> 
+> I don't see that if device_add_disk() fail, device_del() for
+> 'sdkp->disk_dev'is called from anywhere. Do I missing anything?
 
-These don't have (upstream) Linux drivers yet, but nevertheless we can
-enable the bus so as to allow working on them (and to make i2cdetect /
-i2cdump / etc. work).
+Ah then the fix is still incorrect and the commit log should
+describe that this is for another device.
 
-Signed-off-by: André Draszik <andre.draszik@linaro.org>
-Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
+How about this instead?
 
+From c3f6e03f4a82aa253b6c487a293dcd576393b606 Mon Sep 17 00:00:00 2001
+From: Luis Chamberlain <mcgrof@kernel.org>
+Date: Mon, 29 Jan 2024 09:25:18 -0800
+Subject: [PATCH] sd: remove extra put_device() for extra scsi device
+
+The sd driver first device_add() its own device, and later use
+device_add_disk() with another device. When we added error handling
+for device_add_disk() we now call put_disk() and that will trigger
+disk_release() when the refcount is 0. That will end up calling
+the block driver's disk->fops->free_disk() if one is defined. The
+sd driver has scsi_disk_free_disk() as its free_disk() and that
+does the proper put_device(&sdkp->disk_dev) for us so we should not
+need to call it, however we are left still missing the device_del()
+for it.
+
+While at it, unwind with scsi_autopm_put_device(sdp) *prior* to
+putting to device as we do in sd_remove().
+
+Reported-by: Li Nan <linan122@huawei.com>
+Reported-by: Yu Kuai <yukuai1@huaweicloud.com>
+Fixes: 2a7a891f4c40 ("scsi: sd: Add error handling support for add_disk()")
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
-v2:
-* add short summary of devices attached to this bus & add TODO
-* collect Reviewed-by: tags
----
- arch/arm64/boot/dts/exynos/google/gs101-oriole.dts | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/scsi/sd.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts b/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
-index cb4d17339b6b..6ccade2c8cb4 100644
---- a/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
-+++ b/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
-@@ -72,6 +72,11 @@ eeprom: eeprom@50 {
- 	};
- };
+diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
+index 7f949adbadfd..6475a3c947f8 100644
+--- a/drivers/scsi/sd.c
++++ b/drivers/scsi/sd.c
+@@ -3693,8 +3693,9 @@ static int sd_probe(struct device *dev)
  
-+&hsi2c_12 {
-+	status = "okay";
-+	/* TODO: add the devices once drivers exist */
-+};
-+
- &pinctrl_far_alive {
- 	key_voldown: key-voldown-pins {
- 		samsung,pins = "gpa7-3";
-@@ -113,6 +118,11 @@ &usi8 {
- 	status = "okay";
- };
+ 	error = device_add(&sdkp->disk_dev);
+ 	if (error) {
++		scsi_autopm_put_device(sdp);
+ 		put_device(&sdkp->disk_dev);
+-		goto out;
++		return error;
+ 	}
  
-+&usi12 {
-+	samsung,mode = <USI_V2_I2C>;
-+	status = "okay";
-+};
-+
- &watchdog_cl0 {
- 	timeout-sec = <30>;
- 	status = "okay";
+ 	dev_set_drvdata(dev, sdkp);
+@@ -3734,9 +3735,10 @@ static int sd_probe(struct device *dev)
+ 
+ 	error = device_add_disk(dev, gd, NULL);
+ 	if (error) {
+-		put_device(&sdkp->disk_dev);
++		scsi_autopm_put_device(sdp);
++		device_del(&sdkp->disk_dev);
+ 		put_disk(gd);
+-		goto out;
++		return error;
+ 	}
+ 
+ 	if (sdkp->security) {
 -- 
-2.43.0.429.g432eaa2c6b-goog
-
+2.42.0
 
