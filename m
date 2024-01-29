@@ -1,137 +1,99 @@
-Return-Path: <linux-kernel+bounces-42295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DD3C83FF3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 08:50:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 069BB83FF40
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 08:50:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5016C1C22139
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 07:50:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AC8C283541
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 07:50:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA48651C43;
-	Mon, 29 Jan 2024 07:50:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7D5D4F1EC;
+	Mon, 29 Jan 2024 07:50:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="O/TQ23FN"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gjwDujoo"
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4404251C2C;
-	Mon, 29 Jan 2024 07:50:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A07674EB3D;
+	Mon, 29 Jan 2024 07:50:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706514614; cv=none; b=Aw/FTvrhw4z3UnqmVATzKsqQF02GUPuy0yFsHKA049y0iqLu7ZIVFYZ9PjsPxjM1elhSt8EwcV75LmSoGr55EAi4g3XZZCgaeIftCC2ugD7odRi3qAlnnl0XQ4KQOzeMzt40coD3I7snEBKq36MgMjicA32vHfiMK/5nXLmr/cY=
+	t=1706514636; cv=none; b=SinqM4W0mqblkMNATiHO8uCx56/ZO9btCYfp9kFQyd/CJOKFQchfN2wKsBhKQ0bt9/pnAm0V6bAdWc8GhmwBXhPMm2BdixRaNGKcJCK8V/B74TJ3xkZAYs4A7REBiDYwDaLB6L4VxZqmZh42Lb0IE9ayULErW/e52i9uOfUWngg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706514614; c=relaxed/simple;
-	bh=8E9fzWhF/4hAclcZkGyOSv5khN2S6oOJKz86E4S1Cx4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tiuZLI1q+mQ8G5lR5z7DXVUv85NllOiM8e3wHocEKzLoW1ug3ym7ja4dOgMs/VtkXioEWt+Pn579lyL4GnXeuIkVXpfGivsrC4QOAC6PQmeABNvl1QpqQy+t9t8nWwGQzXhrKFYoRyW97bDJhayg+Wu8iokG6OutHmNfIZTuF7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=O/TQ23FN; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706514612; x=1738050612;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=8E9fzWhF/4hAclcZkGyOSv5khN2S6oOJKz86E4S1Cx4=;
-  b=O/TQ23FNFbNY57d6ag2HJixL50p1b+ZQ+UDLotiCYtz1wqS+9jqiwAD1
-   PE1JtGj75wYbTl6a/QXXxrieWunLKoukNSYGRo5mV3TtHtletwwfnQk/Z
-   RjreExzUFxZO26DMJ64ihs7Y5rl82MuXOUigxXCwnAQS+xXnAj6MU8WIj
-   derLTIJAyhHBcG58EJfOOPaPcOM9gxCu3TyqdMY6sPZ145OBQbeDcb8tP
-   sqWLws38jdW7DwiBmLyp8Db9YRg8wC8MJmcoJb2g4XAY3P1suI40l6sXP
-   mcr9EHoqNcS1JNdoYIVupwjYs+x0St9KVpUlBCG47UijZlSwonjaKrOoK
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="21406802"
-X-IronPort-AV: E=Sophos;i="6.05,226,1701158400"; 
-   d="scan'208";a="21406802"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2024 23:50:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="910971389"
-X-IronPort-AV: E=Sophos;i="6.05,226,1701158400"; 
-   d="scan'208";a="910971389"
-Received: from yy-desk-7060.sh.intel.com (HELO localhost) ([10.239.159.76])
-  by orsmga004.jf.intel.com with ESMTP; 28 Jan 2024 23:50:08 -0800
-Date: Mon, 29 Jan 2024 15:50:07 +0800
-From: Yuan Yao <yuan.yao@linux.intel.com>
-To: isaku.yamahata@intel.com
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-	erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
-Subject: Re: [PATCH v18 005/121] KVM: x86/vmx: initialize loaded_vmcss_on_cpu
- in vmx_hardware_setup()
-Message-ID: <20240129075007.kvlj6gykk6aom75s@yy-desk-7060>
-References: <cover.1705965634.git.isaku.yamahata@intel.com>
- <51c5466c541e1eddad928af602bd889721524d34.1705965634.git.isaku.yamahata@intel.com>
+	s=arc-20240116; t=1706514636; c=relaxed/simple;
+	bh=daBtVwb/lXqjAG7knocO2q2VJO0kTxb3gqnLhCRYuBY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=dvAHFGuI7mj249Csxmyew9vCB/XIgURscTmplowb7Gv+aNixGym5UPrQ5ib4xDEx17pqU2/Ixq0KbKmXW62C9X18gaI6yzOU5ZEVZC2FTdhrhGBOlcVvmfQKsQujEx5ylsqfKpgDGirl2FB6IMX4S8bZC8Kwb/AHGu7z4m0vSyk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gjwDujoo; arc=none smtp.client-ip=209.85.215.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5d8b70b39efso770667a12.0;
+        Sun, 28 Jan 2024 23:50:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706514634; x=1707119434; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=daBtVwb/lXqjAG7knocO2q2VJO0kTxb3gqnLhCRYuBY=;
+        b=gjwDujooSxKr1WlOtJT9HmgsnA6vLRZc9s4Yr4TdvZErj5F4b8M3+rwilqoPcXKMVn
+         MAblr4KzIhe0yrDn83Er5Ejv5W1JO/uoWNE12r0eMxfF+cK9r8eRXZTQ0Ai1YQed4ElF
+         h0RigkrrK1vPB45//+ooRzRLXFByMyFNeebWfv2cR4WHdq+SZKVzSlrlyScq4fiXKWq9
+         YSQeh/Ob2xJzHywDbLuoqwBlXkTMQqRChDh9E4YGJeNexrEzRm5xEt3Wj3XZf97yTKSY
+         Uscm/FFxv9GoFovOt/J42FRYWvYB+MuhPl6s9V/4V7ChvTzCMA2vUgh9j9emSlW85zsM
+         Ts/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706514634; x=1707119434;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=daBtVwb/lXqjAG7knocO2q2VJO0kTxb3gqnLhCRYuBY=;
+        b=Beo2g30qHfXMTpx90cyO+zGWrPDQPDPpPdQOesRB7TTED85Zi4PRWUi7x7wQEk3U3W
+         X6iee0/GeiOiLvyPGsRPT+1N+GuXkorqkfKzluCHaKhMntJTpCcHBzrnbY9bsLGX/Jyg
+         s78Cx6rHeVcM45FbXR2rRlzcgJU/nJJYWB20R2xHaU5hTRYBJFCEjc/7A2EWwEoEMDzs
+         SW6QSVOf85LbTDKv5bBOYhOR2ytIPY/wyhzpbr5jSnUQThoCkP10+2UkF8Ksl4uAfWVG
+         kUeR9eQ2z/0yzZb3a/I6BY2Tx0fMCNnti70RlR3MrUFM4VdePSatnoRKwrh2KAHsyiG+
+         JU3Q==
+X-Gm-Message-State: AOJu0YwyzmRrcJpRXc9MajhaNjx+9DMA8R9KDz+VLQLunN3OPWjPlwy4
+	A0wNS0CFJpaYufSVkE33hDIfH57S5D7ol8SfdYe5c96E8ozA2oQc
+X-Google-Smtp-Source: AGHT+IF7fEYIei+OVQWtVITm5s1kpndgqSHGPRXXSGXQJ+77ZRujKNPYEaQFdrEZqcFm4BZ+b9UnjQ==
+X-Received: by 2002:a05:6a20:2d0a:b0:19c:ad6b:e1c2 with SMTP id g10-20020a056a202d0a00b0019cad6be1c2mr750080pzl.12.1706514633901;
+        Sun, 28 Jan 2024 23:50:33 -0800 (PST)
+Received: from kohshi54-ThinkCentre-M715q.. ([2404:7a80:c880:6500:a374:2c9:8d38:9a2d])
+        by smtp.gmail.com with ESMTPSA id kh7-20020a170903064700b001d721ee41c6sm4737820plb.232.2024.01.28.23.50.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Jan 2024 23:50:33 -0800 (PST)
+From: Kohshi Yamaguchi <kohshi54.yam@gmail.com>
+To: rdunlap@infradead.org
+Cc: corbet@lwn.net,
+	gregkh@linuxfoundation.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-usb@vger.kernel.org,
+	skhan@linuxfoundation.org
+Subject: Re: [PATCH] doc: Fix malformed table in gadget-testing.rst
+Date: Mon, 29 Jan 2024 16:50:30 +0900
+Message-Id: <20240129075030.52625-1-kohshi54.yam@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <d3bc8995-b0bc-4d9e-b811-fccdbaf426c5@infradead.org>
+References: <d3bc8995-b0bc-4d9e-b811-fccdbaf426c5@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <51c5466c541e1eddad928af602bd889721524d34.1705965634.git.isaku.yamahata@intel.com>
-User-Agent: NeoMutt/20171215
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jan 22, 2024 at 03:52:41PM -0800, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
->
-> vmx_hardware_disable() accesses loaded_vmcss_on_cpu via
-> hardware_disable_all().  To allow hardware_enable/disable_all() before
-> kvm_init(), initialize it in before kvm_x86_vendor_init() in vmx_init()
-> so that tdx module initialization, hardware_setup method, can reference
-> the variable.
->
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
-> v18:
-> - Move the vmcss_on_cpu initialization from vmx_hardware_setup() to
->   early point of vmx_init() by Binbin
-> ---
->  arch/x86/kvm/vmx/vmx.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 55597b3bdc55..77011799b1f4 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -8539,6 +8539,10 @@ static int __init vmx_init(void)
->  	 */
->  	hv_init_evmcs();
->
-> +	/* vmx_hardware_disable() accesses loaded_vmcss_on_cpu. */
-> +	for_each_possible_cpu(cpu)
-> +		INIT_LIST_HEAD(&per_cpu(loaded_vmcss_on_cpu, cpu));
-> +
+Hi Randy,
 
-The subject "KVM: x86/vmx: initialize loaded_vmcss_on_cpu in vmx_hardware_setup()"
-should match the change here.
+Thank you for reviewing my patch and pointing out the similar change you posted.
+I appreciate your feedback.
 
-Reviewed-by: Yuan Yao <yuan.yao@intel.com>
+Best regards,
+--
+Kohshi Yamaguchi
 
->  	r = kvm_x86_vendor_init(&vt_init_ops);
->  	if (r)
->  		return r;
-> @@ -8554,11 +8558,8 @@ static int __init vmx_init(void)
->  	if (r)
->  		goto err_l1d_flush;
->
-> -	for_each_possible_cpu(cpu) {
-> -		INIT_LIST_HEAD(&per_cpu(loaded_vmcss_on_cpu, cpu));
-> -
-> +	for_each_possible_cpu(cpu)
->  		pi_init_cpu(cpu);
-> -	}
->
->  	cpu_emergency_register_virt_callback(vmx_emergency_disable);
->
-> --
-> 2.25.1
->
->
 
