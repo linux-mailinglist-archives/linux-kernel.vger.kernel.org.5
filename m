@@ -1,78 +1,94 @@
-Return-Path: <linux-kernel+bounces-43033-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43034-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E2E6840A88
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:50:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D7D5840A8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:50:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC8FD287CD2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:50:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 33CD81C21843
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:50:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0967C15530A;
-	Mon, 29 Jan 2024 15:50:23 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91419153BE2;
-	Mon, 29 Jan 2024 15:50:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46CE9155A39;
+	Mon, 29 Jan 2024 15:50:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PZPZOj+n"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C0B2155A23;
+	Mon, 29 Jan 2024 15:50:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706543422; cv=none; b=Et6uOZhZPpx93P4PJHr1po0V/Fnjr3x0no8jA9ScOgCNVODURzzefuTiYTASPZSKqHhRoyuFFpPlEJ29tmTi6N2Smvj3t3ydyJJBw3rSt78X/PEmjNWepoDvzPFut/mAN9IRfbr7kw0Nh/rTgkMDbYEoAR6bvpfiQyroN+IPnqc=
+	t=1706543424; cv=none; b=Q0y+J/xJ0jqV88QaemBfMA/zrDidlhR6VB/7XxFWeKFFaRARPGMLR15A7y/kkrlD8PD/Jy17L8kgdqQayMEjTjoL8/2SFEC5axxLB1SjkrhRV2RlzfjSUptJyceFcJLKfoVKfj82qwAPkUuWNeVQV2txbSZ3bHlM9PbW7inxEhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706543422; c=relaxed/simple;
-	bh=VmvZDhKYfgrRdCXKs7qjeIO7NOgbgsUQBfZdk3ARslU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tbahPpA4SmP8zAGrfqUy6EdSMrUmhhl4Y9+MF9qkYkV3Opa7js5kZ9t3IL0KXIvZdCC9WllFn8OEXE+qSZi9FHFWX1hWshSCDYZYZyjsBErydduvYlfUnbsH42EZKoQQZvuWQ4BdIzsgbjGk7k+mAAn9D4KxOs0chSi/y4ypuVk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CC82BDA7;
-	Mon, 29 Jan 2024 07:51:03 -0800 (PST)
-Received: from pluto (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EF7343F738;
-	Mon, 29 Jan 2024 07:50:17 -0800 (PST)
-Date: Mon, 29 Jan 2024 15:50:15 +0000
-From: Cristian Marussi <cristian.marussi@arm.com>
-To: Sibi Sankar <quic_sibis@quicinc.com>
-Cc: sudeep.holla@arm.com, rafael@kernel.org, viresh.kumar@linaro.org,
-	morten.rasmussen@arm.com, dietmar.eggemann@arm.com,
-	lukasz.luba@arm.com, linux-arm-kernel@lists.infradead.org,
-	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	quic_mdtipton@quicinc.com, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH V2 1/4] firmware: arm_scmi: Add perf_notify_support
- interface
-Message-ID: <ZbfJN1c9viiLhO1L@pluto>
-References: <20240117104116.2055349-1-quic_sibis@quicinc.com>
- <20240117104116.2055349-2-quic_sibis@quicinc.com>
+	s=arc-20240116; t=1706543424; c=relaxed/simple;
+	bh=MFMW2gGj8UPTfzSUu/AE4tRnn2jz014AVeZMHtJf6i8=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=s8Hglbn58EV3nBLwSKo1V3sRO9YV57Bt7Al6l55lwRBcUKdQc/5i4NCgihk1bxk2lZ93k2v8Ogc8rRR8uNKWZCcOiFhNKjeSwikufyDLAG3gJRAzAtXNjlvrvwadl+k9cvN+bzJkzyk0SeXipqN+bAW4uVpqEe5NG4n+4q70ma8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PZPZOj+n; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 23156C43394;
+	Mon, 29 Jan 2024 15:50:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706543424;
+	bh=MFMW2gGj8UPTfzSUu/AE4tRnn2jz014AVeZMHtJf6i8=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=PZPZOj+n9k4znzXji8lTRD+6nRabXwN6bB5XWLebfqPNrG1Z3kOPjopWuCJHgcXzU
+	 7m+z+WV2wnI6I91y9wYcGzEOx7CL8gTt0JeZtjU91XgxW7TWI5dRDtJbTy+6f21G5z
+	 hPGuNjB+2qEWgJzh2G4mIbKlUyLoQvODZO6TpfjJlHxlJo54KI5ejYCvfsc88qIOFs
+	 dWQB3tJnQDB3tidZk3bbX3vbtI9HywKiNhcmufYZmd2q2FKccFkhicqwLX2sU9n+Fj
+	 qnZb03x6oy22M+7RH3LLqs8baW76lyQJ+T4EQy9fdfZzfL0KpKA8lmmWnBWP1OUvVZ
+	 ZPlNM5LtkSISA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 07A3CC3274C;
+	Mon, 29 Jan 2024 15:50:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240117104116.2055349-2-quic_sibis@quicinc.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] bpf: remove unused field "mod" in struct
+ bpf_trampoline
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170654342402.16483.547185809042657698.git-patchwork-notify@kernel.org>
+Date: Mon, 29 Jan 2024 15:50:24 +0000
+References: <20240128055443.413291-1-dongmenglong.8@bytedance.com>
+In-Reply-To: <20240128055443.413291-1-dongmenglong.8@bytedance.com>
+To: Menglong Dong <dongmenglong.8@bytedance.com>
+Cc: andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ john.fastabend@gmail.com, martin.lau@linux.dev, eddyz87@gmail.com,
+ song@kernel.org, yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 
-On Wed, Jan 17, 2024 at 04:11:13PM +0530, Sibi Sankar wrote:
-> Add a new perf_notify_support interface to the existing perf_ops to export
-> info regarding limit/level change notification support.
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Sun, 28 Jan 2024 13:54:43 +0800 you wrote:
+> It seems that the field "mod" in struct bpf_trampoline is not used
+> anywhere after the commit 31bf1dbccfb0 ("bpf: Fix attaching
+> fentry/fexit/fmod_ret/lsm to modules"). So we can just remove it now.
 > 
+> Signed-off-by: Menglong Dong <dongmenglong.8@bytedance.com>
+> ---
+>  include/linux/bpf.h | 1 -
+>  1 file changed, 1 deletion(-)
 
-Hi Sibi,
+Here is the summary with links:
+  - [bpf-next] bpf: remove unused field "mod" in struct bpf_trampoline
+    https://git.kernel.org/bpf/bpf-next/c/efaa47db9245
 
-as I mentioned previously, in order not to add a needless stream of SCMI
-Perf accessors I posted this:
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-https://lore.kernel.org/linux-arm-kernel/20240129151002.1215333-1-cristian.marussi@arm.com/T/#u
 
-to expose all the Perf domains infos via the usual info_get(), similarly
-to how other SCMI protocols do already.
-
-I think that reworking this series on that, you can certainly drop this patch and just
-check the _notify booleans on the retrieved domain info.
-
-Thanks,
-Cristian
 
