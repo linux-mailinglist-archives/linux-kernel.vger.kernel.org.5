@@ -1,96 +1,120 @@
-Return-Path: <linux-kernel+bounces-43298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43299-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A49E8411E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:16:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A32668411E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:16:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 358F7288248
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:16:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3710B288B6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:16:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2941E6F09E;
-	Mon, 29 Jan 2024 18:15:43 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D92873F9F3;
-	Mon, 29 Jan 2024 18:15:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AF966F08A;
+	Mon, 29 Jan 2024 18:15:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pPW3f9Sj"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C52BF3F9FC;
+	Mon, 29 Jan 2024 18:15:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706552142; cv=none; b=PXNBT9PP16JmCmWNvR3vM5VnI5ZF41f6J2YoOCcgJ1CO8WgE+7xRucxE2+C515CWySWUhsimIuKK4zdz1NzwJt67UqWtDdoA3tXBnpGC0QOsFTjXViS0mhIuM0DR34samTHq9R/RsbBdVqmEOZZPxwKH0Aj0CmMVjMPGqhl3jhs=
+	t=1706552156; cv=none; b=C8Y/dBnbLQZWJjvqbdCMo7tnIX1Y2YxRngXsNE+16Vr5UXFgjiZwdwc/p5zrnt8ZQFDFutJr6s5j5dqyPuqF2UF/BuUXhtakXVtOvVg3cHveU1yU9PC1SnL4aLpUDnGlVFPJis/5hvYxrSM84y91F9BoqCtMQ/JabHqijGZ8ys4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706552142; c=relaxed/simple;
-	bh=ewiyKl+qgVhKnM4cIz0AXQmrRLnvvgCR5PofG1HuxlU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IGSLbEqsYjOb9SwDHgXgwDttXMv8hDKAIqvorlpRZhB1RPfSWCM9loRj5B7O+fa1K7UolvWjzfsVfujO3tc77gryW5F/m7K4Yda3sErugo0AYip2UfANai3IPLpc6rL7c/GnAnV7u/EXmx1HOu8fX54qx/Dbxaucjim7YiH/E8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2CA80DA7;
-	Mon, 29 Jan 2024 10:16:24 -0800 (PST)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1A9363F738;
-	Mon, 29 Jan 2024 10:15:37 -0800 (PST)
-Message-ID: <1edf0dcc-ca15-49fa-9c42-95e837fc073b@arm.com>
-Date: Mon, 29 Jan 2024 19:15:36 +0100
+	s=arc-20240116; t=1706552156; c=relaxed/simple;
+	bh=HtWWFC71BCavDoQvTNSF5iID0oN+lBFa3TU2UQoctyw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=E8AFEhOnkF67a/wpCQHKKde5gWxqYTx+xDqcdg9xAG/T56xjCRxaYDeUOs0Ovm973YFQNBZ5CVYw6bkVK8G4IbgwWvpyxaeTa2Amt+wver0u4Rs0me3J34Bq61A4FEOt7CNAk0jUI0PUjbo6xHW6XB4jLoajOk2hAplh90odN+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pPW3f9Sj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A849C433C7;
+	Mon, 29 Jan 2024 18:15:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706552156;
+	bh=HtWWFC71BCavDoQvTNSF5iID0oN+lBFa3TU2UQoctyw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=pPW3f9SjldNx036oVfr2mb7rF/1uWtZ+8laYPTJFddNQu22KfZ9+JSUv3x0Zuw9Bs
+	 Zg59bttwt3Mq13HLeF7PE+CdppqGpDgui6gYfX2F0YP/bMAsrPRvM5xTKFMs/xgxq0
+	 AKs03jubjF5XETb+5vpA4ubGccF/LgcfoHaiv9vPYmZcxEq+QxwuBLK+1qOOKyz2hB
+	 bDObKuNdlKVq94bl6KJx3hVJOl9w6th4nhM+Xg7uZ9cxQowb+FA6/48N6cVWwyJpPH
+	 Cya7zQern418k52+XIWRSXC9HRRO//yRjqbXG8Ogd0pMHsMRLRIJNPE8O4O6X4juuj
+	 UDdExsudUOJfg==
+Date: Mon, 29 Jan 2024 18:15:47 +0000
+From: Will Deacon <will@kernel.org>
+To: Mihai Carabas <mihai.carabas@oracle.com>
+Cc: linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org,
+	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	catalin.marinas@arm.com, tglx@linutronix.de, mingo@redhat.com,
+	bp@alien8.de, x86@kernel.org, hpa@zytor.com, pbonzini@redhat.com,
+	wanpengli@tencent.com, vkuznets@redhat.com, rafael@kernel.org,
+	daniel.lezcano@linaro.org, akpm@linux-foundation.org,
+	pmladek@suse.com, peterz@infradead.org, dianders@chromium.org,
+	npiggin@gmail.com, rick.p.edgecombe@intel.com,
+	joao.m.martins@oracle.com, juerg.haefliger@canonical.com,
+	mic@digikod.net, arnd@arndb.de, ankur.a.arora@oracle.com
+Subject: Re: [PATCH 7/7] cpuidle/poll_state: replace cpu_relax with
+ smp_cond_load_relaxed
+Message-ID: <20240129181547.GA12305@willie-the-truck>
+References: <1700488898-12431-1-git-send-email-mihai.carabas@oracle.com>
+ <1700488898-12431-8-git-send-email-mihai.carabas@oracle.com>
+ <20231211114642.GB24899@willie-the-truck>
+ <1b3650c5-822e-4789-81d2-0304573cabd9@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 22/23] PM: EM: Add em_dev_compute_costs()
-Content-Language: en-US
-To: Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
- linux-pm@vger.kernel.org, rafael@kernel.org
-Cc: rui.zhang@intel.com, amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
- daniel.lezcano@linaro.org, viresh.kumar@linaro.org, len.brown@intel.com,
- pavel@ucw.cz, mhiramat@kernel.org, qyousef@layalina.io, wvw@google.com,
- xuewen.yan94@gmail.com
-References: <20240117095714.1524808-1-lukasz.luba@arm.com>
- <20240117095714.1524808-23-lukasz.luba@arm.com>
-From: Dietmar Eggemann <dietmar.eggemann@arm.com>
-In-Reply-To: <20240117095714.1524808-23-lukasz.luba@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1b3650c5-822e-4789-81d2-0304573cabd9@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On 17/01/2024 10:57, Lukasz Luba wrote:
+On Sun, Jan 28, 2024 at 11:22:50PM +0200, Mihai Carabas wrote:
+> La 11.12.2023 13:46, Will Deacon a scris:
+> > On Mon, Nov 20, 2023 at 04:01:38PM +0200, Mihai Carabas wrote:
+> > > cpu_relax on ARM64 does a simple "yield". Thus we replace it with
+> > > smp_cond_load_relaxed which basically does a "wfe".
+> > > 
+> > > Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> > > Signed-off-by: Mihai Carabas <mihai.carabas@oracle.com>
+> > > ---
+> > >   drivers/cpuidle/poll_state.c | 14 +++++++++-----
+> > >   1 file changed, 9 insertions(+), 5 deletions(-)
+> > > 
+> > > diff --git a/drivers/cpuidle/poll_state.c b/drivers/cpuidle/poll_state.c
+> > > index 9b6d90a72601..440cd713e39a 100644
+> > > --- a/drivers/cpuidle/poll_state.c
+> > > +++ b/drivers/cpuidle/poll_state.c
+> > > @@ -26,12 +26,16 @@ static int __cpuidle poll_idle(struct cpuidle_device *dev,
+> > >   		limit = cpuidle_poll_time(drv, dev);
+> > > -		while (!need_resched()) {
+> > > -			cpu_relax();
+> > > -			if (loop_count++ < POLL_IDLE_RELAX_COUNT)
+> > > -				continue;
+> > > -
+> > > +		for (;;) {
+> > >   			loop_count = 0;
+> > > +
+> > > +			smp_cond_load_relaxed(&current_thread_info()->flags,
+> > > +					      (VAL & _TIF_NEED_RESCHED) ||
+> > > +					      (loop_count++ >= POLL_IDLE_RELAX_COUNT));
+> > > +
+> > > +			if (loop_count < POLL_IDLE_RELAX_COUNT)
+> > > +				break;
+> > > +
+> > >   			if (local_clock_noinstr() - time_start > limit) {
+> > >   				dev->poll_time_limit = true;
+> > >   				break;
+> > Doesn't this make ARCH_HAS_CPU_RELAX a complete misnomer?
+> 
+> This controls the build of poll_state.c and the generic definition of
+> smp_cond_load_relaxed (used by x86) is using cpu_relax(). Do you propose
+> other approach here?
 
-[...]
+Give it a better name? Having ARCH_HAS_CPU_RELAX control a piece of code
+that doesn't use cpu_relax() doesn't make sense to me.
 
-> diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
-> index e91c8efb5361..104cc2e2aa84 100644
-> --- a/kernel/power/energy_model.c
-> +++ b/kernel/power/energy_model.c
-> @@ -276,6 +276,24 @@ static int em_compute_costs(struct device *dev, struct em_perf_state *table,
->  	return 0;
->  }
->  
-> +/**
-> + * em_dev_compute_costs() - Calculate cost values for new runtime EM table
-> + * @dev		: Device for which the EM table is to be updated
-> + * @table	: The new EM table that is going to get the costs calculated
-> + *
-> + * Calculate the em_perf_state::cost values for new runtime EM table. The
-> + * values are used for EAS during task placement. It also calculates and sets
-> + * the efficiency flag for each performance state. When the function finish
-> + * successfully the EM table is ready to be updated and used by EAS.
-> + *
-> + * Return 0 on success or a proper error in case of failure.
-> + */
-> +int em_dev_compute_costs(struct device *dev, struct em_perf_state *table,
-> +			 int nr_states)
-> +{
-> +	return em_compute_costs(dev, table, NULL, nr_states, 0);
-> +}
-> +
-
-Still no user of this function in this patch-set so it could be
-introduced with the follow-up patch 'OPP: Add API to update EM after
-adjustment of voltage for OPPs'. Especially now since Viresh and you
-have agreed that this should be part of the EM code as well:
-
-https://lkml.kernel.org/r/a42ae8dd-383c-43c0-88b4-101303d6f548@arm.com
+Will
 
