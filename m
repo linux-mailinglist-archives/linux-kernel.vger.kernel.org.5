@@ -1,134 +1,119 @@
-Return-Path: <linux-kernel+bounces-42934-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42935-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A53278408CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:42:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA55A8408D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:42:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48186B2551D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:42:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 670781F26CF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:42:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83283153BC3;
-	Mon, 29 Jan 2024 14:41:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F35A5152E08;
+	Mon, 29 Jan 2024 14:42:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Q2RoPQbx"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ROFlSVTd"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 117AE152DFA
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 14:41:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CA1A151CFB;
+	Mon, 29 Jan 2024 14:42:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706539299; cv=none; b=mNmOkBoDMH7eza/3bWle8AmrvPkVGOTlHLbgl4TwThVBu3XdjCGFK2iZcvaN5A0KP2vkxbEXlEw87dE88aRQ5TCz9UpRN3GnxsTqEGD6fTPlEGdJ2U53zkxy052eGvZw31m3ULNjs0ZIj4/NabRmFeK92n6VP1TRNro5BBhq+W4=
+	t=1706539323; cv=none; b=FZAvd3kW8DJTBewVzSLe6IN1pLxfjBD67AZ3VayC8TEG7/bPp+iI4kOFZtEenwtWaLL9cOFzyqOPquQy6BJ8pymxtTUQeqow+NLOxlUAs21PwsS/Rze8DA/mJyVsCdoF/ljxBZokvbFiWTaO2pWNf5HLsuJrj9idEPAVWDyQqlc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706539299; c=relaxed/simple;
-	bh=8EuammNvz7q0zLsv/fNHGrCFJkNOTUOv7xYPFDSydtM=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=n3q6G0GdssTDOdndd2WAziuIvCyNW4GdlPXjydIvj9KTlyz1WOIwEJsyf1FTsHmGK2nIbZK1p8TrIJjaU70FN1OsbxlJx2fy8J6KI1VANZaJOHd9leC8oATZ0YXmvulDea8CnaWShjVkM3O7j9A65Ydhlh4jJntGIIE3Pg/5BL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Q2RoPQbx; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-55f279dca99so571947a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 06:41:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706539296; x=1707144096; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=L2ZdJpKQBRnfaS4iSb7zJfUhDZu3ZFuYALkM/QlvKws=;
-        b=Q2RoPQbxoit4G+yKmPpYg1oHKcjDC0L+owtUFho6Iz1lMRuJ8rkWQogIx6a2o/Z7mU
-         NHYNyZRr1it7NvwQlxPc8G2qZohKRFQ11o9MBH5Hg/68y+ErzJANZmuhf3BzFgQRAjQq
-         N9k6dMCGXznuTi/bD2fsuQvxp1ZTGI+cTt7ssPsNdKzjspHmYMUo+Bi6q1jDL3mkGEcn
-         dxigM4A4v2CPFii+s0fCFxufVyVluknolOB0mCTRQDea5DRataaGuUoVKKAESHEMPsXa
-         r93lBJ6lyr7ylbrazc/JvhZDqzZF/gbXJEp0mXg0Lf4DRUE+XCl8SV8bTIrwUPYklpA2
-         Of1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706539296; x=1707144096;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=L2ZdJpKQBRnfaS4iSb7zJfUhDZu3ZFuYALkM/QlvKws=;
-        b=ipQGEz+9iaU01p9a8agHW7YzMu4/oVTM08VeyZvtEAruJySXFPJ4n+xNt7WAcFXOWF
-         f2GYqf3DnppmAgLLUNn8/UGLcYzKklfLbJHb2Padn2GhdE6q3ycVBGsjLpAqTMot8HsM
-         x6LHhaQ4iSICSXJDxO0qYnWLb8d/1xOEPDBKfKcBb1JSugXSJ9QqBAqJMZno9hPHHgSN
-         KnGPo2iazOEmgX3lD8xORsGIb0zTgubaIynm5be5OUEmI1ob77EGmgL68h7/akUYL1BO
-         +8tJ+x1x7uRoyGZjkMbho8vbrIYaPoDwULjHa+hlikCM+m0mLAx5+maHvnitkwhFSFDJ
-         RFJg==
-X-Gm-Message-State: AOJu0YxpIWzn+iMdMSRAVKZnQuRMxPrRRra/iHZQdSJpr5+63VimCHAl
-	2QuiHzSBYSmD29EBGd7R5BoTw3abc8LbuQXcnFWcW+PTuxEz7TMRrvSi4elVk3M=
-X-Google-Smtp-Source: AGHT+IFBJJ9FYkR0EvWij9nrzW1SQPFdCGakWRsLV2MT2ywjx8+ij9jjR3qQye1Uq3mRypIiCCKxyQ==
-X-Received: by 2002:a05:6402:3482:b0:55d:190:5a45 with SMTP id v2-20020a056402348200b0055d01905a45mr4809825edc.4.1706539296237;
-        Mon, 29 Jan 2024 06:41:36 -0800 (PST)
-Received: from [127.0.1.1] ([79.115.23.25])
-        by smtp.gmail.com with ESMTPSA id em2-20020a056402364200b0055ec051ab49sm2548415edb.6.2024.01.29.06.41.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 06:41:35 -0800 (PST)
-From: Abel Vesa <abel.vesa@linaro.org>
-Date: Mon, 29 Jan 2024 16:41:20 +0200
-Subject: [PATCH RESEND v2 2/2] PCI: qcom: Add X1E80100 PCIe support
+	s=arc-20240116; t=1706539323; c=relaxed/simple;
+	bh=XfHCbPuZ9Sd6Dii9sMHgMoRG9OJOdipphUeAliz/bbk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NoHEMomSls5qJKIR3ubtKiErhhHs5G4bNe5SzNmJZ5RqW2ATdBdOrcM11CUAem9ojXmcCxjM1aa3Z2Tn7Jeep96Obegxq/VqJfmpfQFnjcycVugQu9tpjsAKjeEmlKkzQKzOyw8RbLq4H7eXJVfAQdmb1+6NqlzW6YVG6eSEWaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ROFlSVTd; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=qvYyv6g1p9HNR7/QDn+cPswg81RWpt5qBAdgn5bPezw=; b=ROFlSVTd1kgyssYmy6tVpcJUtf
+	z3nFeKi0OwU5HmznNOR0u7CHaLQpg7AYX2wmPgHRowOIvC5ms9mynHoDW4KyEJczHdCnZryoZzhSc
+	13f5Ek8zW2WcfHs67PtWBmFS09IG5TUOb6mQTqDnonns/nvSs+kb9x+tsUVWVw6AhV/VHA+za0HRb
+	5asZ0gGvCYBhJ3f380lurNdYu5OVgiJFPu3rsQy84Gq/vezfDirvghj3WX6HCin+KRYbvXMY+fc4O
+	MKf6iRbHnmzZVjlwP3+WULzjVoTpXQkr2vjRgYf75aO7RtrQ1uhpQzjuTwLsuss9xiXH0Yi7UPaNO
+	PSDhf1Fw==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rUSph-00000006sUh-0ImC;
+	Mon, 29 Jan 2024 14:41:57 +0000
+Date: Mon, 29 Jan 2024 14:41:56 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Jan Kara <jack@suse.cz>
+Cc: Roman Smirnov <r.smirnov@omp.ru>, stable@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Alexey Khoroshilov <khoroshilov@ispras.ru>,
+	Sergey Shtylyov <s.shtylyov@omp.ru>,
+	Karina Yankevich <k.yankevich@omp.ru>, lvc-project@linuxtesting.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, linux-ext4@vger.kernel.org,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>
+Subject: Re: [PATCH 5.10/5.15 v2 0/1 RFC] mm/truncate: fix WARNING in
+ ext4_set_page_dirty()
+Message-ID: <Zbe5NBKrugBpRpM-@casper.infradead.org>
+References: <20240125130947.600632-1-r.smirnov@omp.ru>
+ <ZbJrAvCIufx1K2PU@casper.infradead.org>
+ <20240129091124.vbyohvklcfkrpbyp@quack3>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240129-x1e80100-pci-v2-2-5751ab805483@linaro.org>
-References: <20240129-x1e80100-pci-v2-0-5751ab805483@linaro.org>
-In-Reply-To: <20240129-x1e80100-pci-v2-0-5751ab805483@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
- Lorenzo Pieralisi <lpieralisi@kernel.org>, 
- =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
- Abel Vesa <abel.vesa@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=785; i=abel.vesa@linaro.org;
- h=from:subject:message-id; bh=8EuammNvz7q0zLsv/fNHGrCFJkNOTUOv7xYPFDSydtM=;
- b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlt7kbluuO7UPwf50lOLVC4XV28LzyrD4IabNlY
- iwFvTD2k9OJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZbe5GwAKCRAbX0TJAJUV
- VqTZD/0Z04vfaJg0gch7xWARMZ5xT8UZyu84ReIKEIpAS9JM3sl8NeOdAW9bPH8cgNhJsYlmNOA
- XQi0OYZfMFfsIUR3HkSueuqdu784+I27kJQp6hJ8LqdcvhMpuw2nwAB3evbSmBWFxZ2UfkBVh4C
- icc0ibzcb/nk0urh3FH+SQx+r0RWBc/qNV7jtXdRJPdz0UFhFboSlH0nvIYT5foj+CqO0TelRJZ
- o0glORL2K2sREvvHyRAYOy0KjhnHk7CgW8EDRakzQy3aYSIUbIbdP/Gt9CzpTe1mr9J5CWD37Vb
- u1HRQQzeFnpjMUKYPShlTexaQDBiD+iNv2jPAW6ZfZ45KDMSzy8lAkOdedpebegSkRpslw7WMQ6
- rs8epzOZRF5qtq4IG03XlACpf/3Hgyj01mTe9DnIXM4Ri+5oe4JzTpW7sS+QIC2X2M5AFVE47g7
- oR2gvS79YbQe8M9P6b6DD3mPwjOWr3Udxzyw4Z4akJ84Doq2eGgym/iSk18sCtbUjwdZV66pBUQ
- 0CbX4g7lrenOiOeoYItxdX+69DLDm5QfZ2a+f/S/5gk3a+zxr++NUOG2TetnEnR5kcnw3w8lKyi
- +WCBFjGexpYNiZpZJ+669TLvFLtSxDhYLbLvZEzfELEVRpwyMfYL1KCZVMhYa2VzosP//7VStjT
- JntrtxwQmJ62nfA==
-X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
- fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240129091124.vbyohvklcfkrpbyp@quack3>
 
-Add the compatible and the driver data for X1E80100.
+On Mon, Jan 29, 2024 at 10:11:24AM +0100, Jan Kara wrote:
+> On Thu 25-01-24 14:06:58, Matthew Wilcox wrote:
+> > On Thu, Jan 25, 2024 at 01:09:46PM +0000, Roman Smirnov wrote:
+> > > Syzkaller reports warning in ext4_set_page_dirty() in 5.10 and 5.15
+> > > stable releases. It happens because invalidate_inode_page() frees pages
+> > > that are needed for the system. To fix this we need to add additional
+> > > checks to the function. page_mapped() checks if a page exists in the 
+> > > page tables, but this is not enough. The page can be used in other places:
+> > > https://elixir.bootlin.com/linux/v6.8-rc1/source/include/linux/page_ref.h#L71
+> > > 
+> > > Kernel outputs an error line related to direct I/O:
+> > > https://syzkaller.appspot.com/text?tag=CrashLog&x=14ab52dac80000
+> > 
+> > OK, this is making a lot more sense.
+> > 
+> > The invalidate_inode_page() path (after the page_mapped check) calls
+> > try_to_release_page() which strips the buffers from the page.
+> > __remove_mapping() tries to freeze the page and presuambly fails.
+> 
+> Yep, likely.
+> 
+> > ext4 is checking there are still buffer heads attached to the page.
+> > I'm not sure why it's doing that; it's legitimate to strip the
+> > bufferheads from a page and then reattach them later (if they're
+> > attached to a dirty page, they are created dirty).
+> 
+> Well, we really need to track dirtiness on per fs-block basis in ext4
+> (which makes a difference when blocksize < page size). For example for
+> delayed block allocation we reserve exactly as many blocks as we need
+> (which need not be all the blocks in the page e.g. when writing just one
+> block in the middle of a large hole). So when all buffers would be marked
+> as dirty we would overrun our reservation. Hence at the moment of dirtying
+> we really need buffers to be attached to the page and stay there until the
+> page is written back.
 
-Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
----
- drivers/pci/controller/dwc/pcie-qcom.c | 1 +
- 1 file changed, 1 insertion(+)
+Thanks for the clear explanation!
 
-diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-index 10f2d0bb86be..2a6000e457bc 100644
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -1642,6 +1642,7 @@ static const struct of_device_id qcom_pcie_match[] = {
- 	{ .compatible = "qcom,pcie-sm8450-pcie0", .data = &cfg_1_9_0 },
- 	{ .compatible = "qcom,pcie-sm8450-pcie1", .data = &cfg_1_9_0 },
- 	{ .compatible = "qcom,pcie-sm8550", .data = &cfg_1_9_0 },
-+	{ .compatible = "qcom,pcie-x1e80100", .data = &cfg_1_9_0 },
- 	{ }
- };
- 
+Isn't the correct place to ensure that this is true in
+ext4_release_folio()?  I think all paths to remove buffer_heads from a
+folio go through ext4_release_folio() and so it can be prohibited here
+if the folio is part of a delalloc extent?
 
--- 
-2.34.1
-
+I worry that the proposed fix here cuts off only one path to hitting
+this WARN_ON and we need a more comprehensive fix.
 
