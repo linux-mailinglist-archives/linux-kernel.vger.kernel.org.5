@@ -1,121 +1,140 @@
-Return-Path: <linux-kernel+bounces-43096-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43084-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68A1B840B80
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:31:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA18F840B66
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:29:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E8CF1F23C6C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:31:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6552228E34A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:29:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8464215B0EC;
-	Mon, 29 Jan 2024 16:28:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C70211586D8;
+	Mon, 29 Jan 2024 16:28:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="VAq83DXf"
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I+FOuich"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE56B15957D;
-	Mon, 29 Jan 2024 16:28:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0640D156963;
+	Mon, 29 Jan 2024 16:27:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706545688; cv=none; b=RH9WTL+HY5dpsm5EqYoz6TfCYrXMnqhkA4GHZeBIM/xsWoTbL7OmHN4XNNpmvGp4r6O3RgAS0ptfXvU2UWXHevI7D1XWb2ldTqC1r5zECMkOMuGYLF8zLFRS0Od84U8NJdqWZz/c9TSG6JRxJPCNeo5xBonyVVVKSyQ3krg1uHk=
+	t=1706545681; cv=none; b=KjLO33dt1fkZeFP9EeSEN1QAAfhYgObYIIOHNMq3xo5FSbOPQdMF0Pk3tG80k49oznHjXdy38vhSV8Q5/H2o1FZ/Ca6/j+bIIk+iL/sR7mMvjQ6vTP3rcmjf4oML5S+bpTvXrDDwUcjN98yTFW1QyovWw0lptwPALCop6VMGehA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706545688; c=relaxed/simple;
-	bh=BkYUj9J0S9uZC6cARe/4MnNL8VlDnXU3fcAQ1S2UeUk=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=efdaODs11iXDVqMUCMToE1VcSF7HhyhCO9n9d0vjx3h/qpW7JYewHVrsrInkSsPiesJNWBSNRc2fgOHkdR9aQok+wn27vS3G3bYrsydAboeo8WiPBeO7PS9hwfLl8Ixm8hlI3mEojlMN69SVkL/80RiW+CC1DOOUHGlQrKMNQ/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=VAq83DXf; arc=none smtp.client-ip=67.231.152.168
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40T5fM0R006968;
-	Mon, 29 Jan 2024 10:28:00 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=wpM0IEXUU+L0htJrBM+q7AUNIjabpxsqMat65cQAX8Q=; b=
-	VAq83DXfWvQdH58ZCz7hzM0HWUjNbSF+rGcNY8Awbk4CkgMhjCvuUKQktnzyU8/o
-	ZAqs9avwZfJDsSNfs0Kyd6F2Mu8hW8SF+QO1pskAxcWmkSOxQggFa0U9xVUBbXO+
-	bVdi20W9YxOMfTdw+e4PqIQECeNv9yN/GyO3O1q2ZSSVnlKxMV2bEolGfBNzjyg+
-	f+yHIReq3BETUBvNhUHjXH2olYf6+abx4NTNDhe+8D2Lyk4eTNz+4k6R/J9PFDhG
-	Z+pZhbb/Nxijyx9MLXbjmO/EJ0ZWaumZ41QwgK1q6SOORF+fDcToyxeWTRR733iv
-	G6HLZGHY9q+d/RI0/+jpRA==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3vvy4nta8p-11
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 29 Jan 2024 10:28:00 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 29 Jan
- 2024 16:27:47 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.40 via Frontend Transport; Mon, 29 Jan 2024 16:27:47 +0000
-Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com [198.61.64.204])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 9B198820247;
-	Mon, 29 Jan 2024 16:27:47 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <broonie@kernel.org>, <tiwai@suse.com>
-CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        "Richard
- Fitzgerald" <rf@opensource.cirrus.com>
-Subject: [PATCH 18/18] ALSA: hda: cs35l56: Remove unused test stub function
-Date: Mon, 29 Jan 2024 16:27:37 +0000
-Message-ID: <20240129162737.497-19-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240129162737.497-1-rf@opensource.cirrus.com>
-References: <20240129162737.497-1-rf@opensource.cirrus.com>
+	s=arc-20240116; t=1706545681; c=relaxed/simple;
+	bh=CkQykIsUrm3sfSKR0V8g1q/+LCFk4Llq9v1g5jrzoS4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Z7XVWM2+ToAf17pW9R5IaO2S7YrklqEFhR1vbn8YJQxbRzcEvx8NJj/TRFziFalospWtXmxbxJD3OWZsHb6mhU4jInoBbEaiaZ2+AxXd64b0h+sJJaiEZ8p8o0qW0vD8v6hvCIDQOWq+YHGnnsyJ7oHg4MUGW3jawwnaexUulA4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I+FOuich; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a350bfcc621so301994366b.0;
+        Mon, 29 Jan 2024 08:27:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706545678; x=1707150478; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ekRXlRD9sMYvDhkEUn4vNmGp7PidTrPzm1ir271L0uQ=;
+        b=I+FOuichFoO2vZfZYpQq3HerAKr/3plrUxvbfKljbGfuoOS52O6QSsBuRfG7DWqAth
+         c13EyQcsIaDs749X+GfdYmliNaYuUc0RRVA7S2TnAO6nzwwnW4PcnQcKmWKipGfHy9JP
+         z1HVHMszai/8pOn6Tay81IOOBpQza/vDUR3LUhaEs/RhrNxx58kDLH5qY2Z7hJ+zsG45
+         7AQ76bwe1OqGlbtjTxbBgXBs+HAI/IigrQz+X17iksv+INMfxzhXDAzGYUzGFN1h7Qld
+         t7bwVnUeL/B4beGVZu218kxp8j/QkHPLh4W/GiX4uw1yNGxtehzZkBZzduf3FZ2c8ECJ
+         mSIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706545678; x=1707150478;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ekRXlRD9sMYvDhkEUn4vNmGp7PidTrPzm1ir271L0uQ=;
+        b=wAm6gPKFTLpq/rnv1HQx6RBw/qB4zpQdGMdeuEpo0cZFGYQdKMM0Ont/Y/4ByEzvVA
+         8mdN7+DsRvqYtdsa0rY7aa/kxbqNhzJr2K+X6NhbcOlXLU66h1frP+SYvU7lHGmoihy4
+         87anyLvOQ+FkX1PM4HoiT+rHFjURZj4VYEmzX3cw5Gmk8qHFz2kEomBIYbFfRZ4Q5DH4
+         r48oeRTuKFJ3J4XeuseBhXTPI3SuW1W2ARHLe9FViACATnWs2ocrvI90nZ7EFOaJK/wD
+         Uq4+RcY3I62yx7ZvHAj6L8i2AINdinHBTa3VNjkpFDXhg4YxDaHpFJDPj70e2zyOO7IP
+         5wtQ==
+X-Gm-Message-State: AOJu0YyHWqE3FwRxBmxIqpARkGjua5qNkv2xk8uNOXp/jGuSHB0zMlDr
+	oC2FrLXLJKVsldXps1Hb7vzmG95+2qiHp67jO0vSzJ0bbD8hCim0
+X-Google-Smtp-Source: AGHT+IEfp1ng4c16rTEjqdb1pWuJos1D0ck6ThBr47sPROdD23LYtXmEIBt7ZDzRCiDCnIKranZbGQ==
+X-Received: by 2002:a17:906:28c4:b0:a26:90a0:696e with SMTP id p4-20020a17090628c400b00a2690a0696emr4775654ejd.41.1706545678086;
+        Mon, 29 Jan 2024 08:27:58 -0800 (PST)
+Received: from skbuf ([188.25.173.195])
+        by smtp.gmail.com with ESMTPSA id u11-20020a170906068b00b00a2d49132dc3sm4037147ejb.197.2024.01.29.08.27.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 08:27:57 -0800 (PST)
+Date: Mon, 29 Jan 2024 18:27:55 +0200
+From: Vladimir Oltean <olteanv@gmail.com>
+To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc: Daniel Golle <daniel@makrotopia.org>,
+	Landen Chao <Landen.Chao@mediatek.com>,
+	DENG Qingfang <dqfext@gmail.com>,
+	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Russell King <linux@armlinux.org.uk>, mithat.guner@xeront.com,
+	erkin.bozoglu@xeront.com,
+	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next v3 6/7] net: dsa: mt7530: do not set
+ priv->p5_interface on mt7530_setup_port5()
+Message-ID: <20240129162755.j3q3wxtovzv4sh3i@skbuf>
+References: <20240122-for-netnext-mt7530-improvements-1-v3-0-042401f2b279@arinc9.com>
+ <20240122-for-netnext-mt7530-improvements-1-v3-6-042401f2b279@arinc9.com>
+ <20240129125241.gu4srgufad6hpwor@skbuf>
+ <431750cc-fb6b-4f7a-9123-b6986d359742@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: ThVYG6jeUEf0DAB4fk-r0FgbZvgPRDcg
-X-Proofpoint-GUID: ThVYG6jeUEf0DAB4fk-r0FgbZvgPRDcg
-X-Proofpoint-Spam-Reason: safe
+In-Reply-To: <431750cc-fb6b-4f7a-9123-b6986d359742@arinc9.com>
 
-Remove an unused stub function that calls a non-existant function.
+On Mon, Jan 29, 2024 at 07:22:28PM +0300, Arınç ÜNAL wrote:
+> On 29.01.2024 15:52, Vladimir Oltean wrote:
+> > On Mon, Jan 22, 2024 at 08:35:57AM +0300, Arınç ÜNAL via B4 Relay wrote:
+> > > From: Arınç ÜNAL <arinc.unal@arinc9.com>
+> > > 
+> > > Running mt7530_setup_port5() from mt7530_setup() used to handle all cases
+> > > of configuring port 5, including phylink.
+> > > 
+> > > Setting priv->p5_interface under mt7530_setup_port5() makes sure that
+> > > mt7530_setup_port5() from mt753x_phylink_mac_config() won't run.
+> > > 
+> > > The commit ("net: dsa: mt7530: improve code path for setting up port 5")
+> > > makes so that mt7530_setup_port5() from mt7530_setup() runs only on
+> > > non-phylink cases.
+> > > 
+> > > Get rid of unnecessarily setting priv->p5_interface under
+> > > mt7530_setup_port5() as port 5 phylink configuration will be done by
+> > > running mt7530_setup_port5() from mt753x_phylink_mac_config() now.
+> > > 
+> > > Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+> > > ---
+> > 
+> > Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+> > 
+> > I hope this moves the patch set out of the 'deferred' state.
+> > 
+> > ---
+> > pw-bot: under-review
+> 
+> I still see deferred. I guess I'll have to submit this again. :/
+> 
+> Arınç
 
-This function was accidentally added as part of commit
-2144833e7b41 ("ALSA: hda: cirrus_scodec: Add KUnit test"). It was
-a relic of an earlier version of the test that should have been
-removed.
-
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Fixes: 2144833e7b41 ("ALSA: hda: cirrus_scodec: Add KUnit test")
----
- sound/pci/hda/cs35l56_hda.c | 10 ----------
- 1 file changed, 10 deletions(-)
-
-diff --git a/sound/pci/hda/cs35l56_hda.c b/sound/pci/hda/cs35l56_hda.c
-index 32736d3e45ba..75a14ba54fcd 100644
---- a/sound/pci/hda/cs35l56_hda.c
-+++ b/sound/pci/hda/cs35l56_hda.c
-@@ -1063,16 +1063,6 @@ const struct dev_pm_ops cs35l56_hda_pm_ops = {
- };
- EXPORT_SYMBOL_NS_GPL(cs35l56_hda_pm_ops, SND_HDA_SCODEC_CS35L56);
- 
--#if IS_ENABLED(CONFIG_SND_HDA_SCODEC_CS35L56_KUNIT_TEST)
--/* Hooks to export static function to KUnit test */
--
--int cs35l56_hda_test_hook_get_speaker_id(struct device *dev, int amp_index, int num_amps)
--{
--	return cs35l56_hda_get_speaker_id(dev, amp_index, num_amps);
--}
--EXPORT_SYMBOL_NS_GPL(cs35l56_hda_test_hook_get_speaker_id, SND_HDA_SCODEC_CS35L56);
--#endif
--
- MODULE_DESCRIPTION("CS35L56 HDA Driver");
- MODULE_IMPORT_NS(SND_HDA_CIRRUS_SCODEC);
- MODULE_IMPORT_NS(SND_HDA_CS_DSP_CONTROLS);
--- 
-2.39.2
-
+Please wait for a few more hours for one of the networking maintainers
+to have a chance to see this and ask you to resend, if necessary.
 
