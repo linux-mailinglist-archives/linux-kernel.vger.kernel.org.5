@@ -1,147 +1,113 @@
-Return-Path: <linux-kernel+bounces-42945-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42946-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36D3C840920
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:57:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46865840922
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:57:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E537E28AC68
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:57:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 794751C24C54
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:57:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94C1E1534FB;
-	Mon, 29 Jan 2024 14:57:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE36D1534E6;
+	Mon, 29 Jan 2024 14:57:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cyphar.com header.i=@cyphar.com header.b="ZI+aRyxb"
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="kArXEvxu"
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8298C151CF5;
-	Mon, 29 Jan 2024 14:57:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCF12152E11
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 14:57:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706540225; cv=none; b=amZxfLk5HknCPP4f4CHnPv27q6qqY/l1Ec99QlejyQ++eAm3P8oj0mWNaakJZZbDFL4BTMztqpZQOzfKinSng1cGCR7Iuh8tLOkyA3xvUhLl4ETrPFYjjs6WXPGZljCeqdjkBHZchAJ7KDArmUx9JQYSLncZpO7mqljkyaGSnHQ=
+	t=1706540257; cv=none; b=CnJ1GBqAP3anmWfiMugMlA4M3UOZabpKX8K15f33E4IbRJAGWLzvL6RFjgIY4fqwyBnzfPvvU1q/LqtETLyCU0MWIAjQym1vWzZJbwjvtlvqiHIoWKEZPpJ3sg8eXIxSyjKL9OlR+dcKuUT8YiazIyYJ3nNVxPp4AQ0XRyB/3X0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706540225; c=relaxed/simple;
-	bh=vojW5fK18zKG7CTpJFdUoZSw70bfqoyRn6Md9NRWvyk=;
+	s=arc-20240116; t=1706540257; c=relaxed/simple;
+	bh=YHpJANTxleXUQc7Etefu3WOAFvTm2NiP/au00SDkl2k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hbNWsWMe6jylo8lZmMoCoEwKzomLKBoZm7ZgvQUxsM5jiU0LFwZDp6cysrP2pZzXPVqFyIx2riVGTluch6+DpmU74DIqiN1WrgRWBsySDnWY1pc9IAKYllWsFiz4Du1DqbyFX9wb+srROO/PYhudQNrFC+v2dSVUwzXo+ODg0vM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cyphar.com; spf=pass smtp.mailfrom=cyphar.com; dkim=pass (2048-bit key) header.d=cyphar.com header.i=@cyphar.com header.b=ZI+aRyxb; arc=none smtp.client-ip=80.241.56.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cyphar.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cyphar.com
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:b231:465::202])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4TNrx70q9xz9sWq;
-	Mon, 29 Jan 2024 15:56:59 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cyphar.com; s=MBO0001;
-	t=1706540219;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LSy8Y2RKVEfJHAxTckSyU8TwlR6K+8Rc0NJSkTl9BMI=;
-	b=ZI+aRyxbTixzKdtk7CIMSskSNT98AvY80z+GFGBR77B3sPzYC+5hIpQzUP+W7LPiyzrp5s
-	HPVNXUwt4+JA6OWSuNQt6nUEKcglUqTpEapISpJBKJSrlAN5CgfITUectwCJ0FcQAQQO8M
-	3bTwyr2FZ1ekB65WYMWf51McF2v7VdXFhTkYBXALhGjYnc91AudxFqUk8LELh73qDdQUBb
-	XDLicYuNRFdfBTPFxQbamLrhpnv8IJtXFHchVhcPB5TNZo8jtz8hEhp6oRMRxb9W53rk+Z
-	DRtB1qA48/d+HAqAlDE0bUyu2fdcE/Cnpw5dpVwNrYhxO0IyNUrR5GFPbuqhdQ==
-Date: Tue, 30 Jan 2024 01:56:47 +1100
-From: Aleksa Sarai <cyphar@cyphar.com>
-To: =?utf-8?B?5a2f5pWs5ae/?= <mengjingzi@iie.ac.cn>
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: Identified Redundant Capability Check in File Access under
- /proc/sys
-Message-ID: <20240129.145132-coarse.snow.stunned.whim-FB0Em3Z0Yuv@cyphar.com>
-References: <30b59a4.19708.18d4f3f3620.Coremail.mengjingzi@iie.ac.cn>
+	 Content-Type:Content-Disposition:In-Reply-To; b=LhMAq1rp52HM520ZSFcCtBqJEh0r9WFhCeF79BoG7j+rXYG5+S3RG37qK8zbk45qeIcjgIt9oJjd6jN12MZvXPCgygDa05ZwfQ9aAqVZzSbz9cBrgREiLHU3dI6A6+aj78xGFetOA+NaBuT8koDdddv1QIlirbJJUWllPPDbmKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=kArXEvxu; arc=none smtp.client-ip=209.85.167.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3be6df6bc9bso349879b6e.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 06:57:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1706540254; x=1707145054; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=tVF4k3bK1tmVpRSxaU3/SMcZMqTGWrDu+a1szTYxZBs=;
+        b=kArXEvxuVVYpogZL3Mfjos2nqq2ipEdLbGxddNiJzkVgXtkjaEhTFAJEqkABi+oJeH
+         e+MIwTe3H1xphiJUZT989MVpP+Cj+bj/rVjlB9lCGMRgVKHmNBQhs7Xgg/OtZWqXLSJv
+         jrL7G8to3BJllL2g0y5dHfnNAr74WlklCNNQpGZgjrs2h7Xfp2ve2GKF4WOj2c0ezrY/
+         TSW80sYEZmVQqWiR8+iwFKxgF1WPpDJ9o2TV6OMaJZ231y2iI4OMBmkiCObpMjppC0NP
+         ry1L03/2QH9ptY9SYBo07MX6VespBYUE7SPptU038VExn0sHCfUuADiZWU78LQ95xwph
+         IPPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706540254; x=1707145054;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tVF4k3bK1tmVpRSxaU3/SMcZMqTGWrDu+a1szTYxZBs=;
+        b=ZSiuyymJ3nJgsPp5ZJG8aLT3Nv/sr1Wi4/6sgK8/lURI5lzx67VN4D/qOl0rPQ2MNf
+         mQAw+3yFS3WaZVcSVv+CEpmX3fu+0nKf7FgZTimMhIs3ZW9wLvJv8b0uSwDPhEd9bSI7
+         +9xkO6BH+Ump8iRXaj/dWc4kUFf9I6L/8bo5SjafEY1sOAgNRyC1yMKnETaXcVVFUNkX
+         6D4pxCo2cQYRz19CjtrUe3ImftafHSqZ7eubZK9qERXu2k5eXUtHU3CLSCAyNhAlBlPs
+         TD5+IOFOKifJBacPtP4CJn8ob7dlQZYsZQf9xBWPukugZCpODb3+CcBwBSSvOJepqjCE
+         v4rg==
+X-Gm-Message-State: AOJu0YwD8eOpJyxiJiPCNOMwKZjpaFglWK0LhfN32SlV/3wvhzE0On0w
+	IoaTeUy1TgFY/00suREuAT2OMOeOTn2A4KxeMrdf0khMCJ2zl+GQ1NuieN0TQ0Q=
+X-Google-Smtp-Source: AGHT+IHM0UgiqzxE42+B8o1wd1JtnMkZnMEzc9DwbMI9lJHOkViPkWLsfI2IUYUXYItE3p/l6Rn1Ag==
+X-Received: by 2002:a05:6870:d287:b0:210:a68b:7066 with SMTP id d7-20020a056870d28700b00210a68b7066mr4254363oae.43.1706540253754;
+        Mon, 29 Jan 2024 06:57:33 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id ry11-20020a056871208b00b002149bb5d09asm2064275oab.56.2024.01.29.06.57.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 06:57:33 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rUT4l-00A9ie-VM;
+	Mon, 29 Jan 2024 10:57:31 -0400
+Date: Mon, 29 Jan 2024 10:57:31 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: "Tian, Kevin" <kevin.tian@intel.com>
+Cc: Lu Baolu <baolu.lu@linux.intel.com>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/2] iommu: Use mutex instead of spinlock for
+ iommu_device_list
+Message-ID: <20240129145731.GD50608@ziepe.ca>
+References: <20240126105341.78086-1-baolu.lu@linux.intel.com>
+ <20240126105341.78086-2-baolu.lu@linux.intel.com>
+ <BN9PR11MB5276E9618612DCF4DAE0CAE68C7E2@BN9PR11MB5276.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="vo4uela55g3d7y46"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <30b59a4.19708.18d4f3f3620.Coremail.mengjingzi@iie.ac.cn>
-X-Rspamd-Queue-Id: 4TNrx70q9xz9sWq
+In-Reply-To: <BN9PR11MB5276E9618612DCF4DAE0CAE68C7E2@BN9PR11MB5276.namprd11.prod.outlook.com>
 
+On Mon, Jan 29, 2024 at 08:04:35AM +0000, Tian, Kevin wrote:
+> > From: Lu Baolu <baolu.lu@linux.intel.com>
+> > Sent: Friday, January 26, 2024 6:54 PM
+> > 
+> > The iommu_device_lock spinlock was used to protect the iommu device
+> > list. However, there is no requirement to access the iommu device
+> > list in interrupt context. Therefore, a mutex is sufficient.
+> 
+> I don't think that interrupt is the reason for spinlock otherwise
+> spin_lock_irqsave() should be used instead.
 
---vo4uela55g3d7y46
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Right, there is no touch of this from an interrupt
 
-On 2024-01-28, =E5=AD=9F=E6=95=AC=E5=A7=BF <mengjingzi@iie.ac.cn> wrote:
-> Hello developers,
->=20
-> I hope this message finds you well. I wanted to bring to your
-> attention an observation regarding file access under /proc/sys in the
-> kernel source code.
->=20
-> Upon review, it appears that certain files are protected by
-> capabilities in the kernel source code; however, the capability check
-> does not seem to be effectively enforced during file access.
->=20
-> For example, I noticed this inconsistency in the access functions of some=
- special files:
-> 1. The access function mmap_min_addr_handler() in /proc/sys/vm/mmap_min_a=
-ddr utilizes the CAP_SYS_RAWIO check.
-> 2. The access function proc_dointvec_minmax_sysadmin() in /proc/sys/kerne=
-l/kptr_restrict requires the CAP_SYS_ADMIN check.
->=20
-> Despite these capability checks in the source code, when accessing a
-> file, it undergoes a UGO permission check before triggering these
-> specialized file access functions. The UGO permissions for these files
-> are configured as root:root rw- r-- r--, meaning only the root user
-> can pass the UGO check.
->=20
-> As a result, to access these files, one must be the root user, who
-> inherently possesses all capabilities. Consequently, the capabilities
-> check in the file access function seems redundant.
->=20
-> Please consider reviewing and adjusting the capability checks in the
-> mentioned access functions for better alignment with the UGO
-> permissions.
+I suspect it is following the the general kernel wisdom that a
+spinlock is better if the critical sections are very small.
 
-These are not redundant -- opening a file and writing to a file
-descriptor are different operations that can be done by:
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
- 1. The same process with the same credential set (what you're
-    describing);
- 2. The same process but with the write operation happening after a
-    setuid() or similar operation that changed its credentials; or
- 3. A different process that has been given access to the file
-    descriptor (passing it as an open file to a subprocess, SCM_RIGHTS,
-	etc.)
-
-On Unix, access checks when opening a file for writing are different to
-access checks when doing a write operation. For some sysctls, it is
-prudent to restrict both the open and write operations to privileged
-users.
-
-> Thank you for your attention to this matter.
->=20
-> Best regards,
-> Jingzi Meng
-
---=20
-Aleksa Sarai
-Senior Software Engineer (Containers)
-SUSE Linux GmbH
-<https://www.cyphar.com/>
-
---vo4uela55g3d7y46
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQS2TklVsp+j1GPyqQYol/rSt+lEbwUCZbe8pwAKCRAol/rSt+lE
-b03fAP9VH1smXUs1qIwNgPTer9MEUBsfNyy+gb3uI+c1f4aS4wD/f65WIy2NbxTm
-3VSOsgoc5IKkS2GKXtl9+06x4L55gg8=
-=IQ1h
------END PGP SIGNATURE-----
-
---vo4uela55g3d7y46--
+Jason
 
