@@ -1,304 +1,255 @@
-Return-Path: <linux-kernel+bounces-42712-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42714-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D36EC84056B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:49:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3E41840573
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:50:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 607A31F20F53
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:49:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ADDC3B229D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:50:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFA68627F4;
-	Mon, 29 Jan 2024 12:46:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B1326310D;
+	Mon, 29 Jan 2024 12:47:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=esdhannover.onmicrosoft.com header.i=@esdhannover.onmicrosoft.com header.b="m1JCOvuR"
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2108.outbound.protection.outlook.com [40.107.22.108])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YfaWmx2n"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF947664A7;
-	Mon, 29 Jan 2024 12:46:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.108
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706532389; cv=fail; b=F5jP06H/Qlva3lGwr75WtBTLILyEN0H8xv3yWjwm55WY4MHXowJq4vNb7O87gWjJ6xZOXMLnEpm0dS2nrAD2AbV4mV0RgmyZ+GbOWXJqcak1QSvwEeFR0wHiErHSgZpSPv+TLGr+Osz8lWeVsLStg45QBJIaaG53LIGWTF2yWA8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706532389; c=relaxed/simple;
-	bh=iHkBeTrsO4XoLYmFjW7hB0NAnTEV8OG9TzxtvR8wAFI=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=jVhKkdXe74Knjx/ZU14k4jdL83+WZq/2A4rAj8Fuyrqm9GpwM7sSb806adDLbz7yu/xj82VLChA8QIzeaIUigX8XHGVnwS59En8BoPEA805IR2AJIOnpnFvTSKAGlOc3watOLwJSS0SdDmMWrHdMIhsEegw03+CR5yFRhYR3pU0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=esd.eu; spf=pass smtp.mailfrom=esd.eu; dkim=pass (1024-bit key) header.d=esdhannover.onmicrosoft.com header.i=@esdhannover.onmicrosoft.com header.b=m1JCOvuR; arc=fail smtp.client-ip=40.107.22.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=esd.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=esd.eu
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YcxcJ5h9Jgkpd2ZQdaJ93D3VaykFbQH5+ohn7N72JG1g8fuPZXg5XipOSSky9RjhwxUuztBzGLwcRWGR68pT7LYXE+h8G2TokGcuJSJKQHJt0tRcWpDh2sC5+fFVXDxliOXIttJCfLoe85mUX9jxDFtQ6H2C40qopQU3YWUVSlTCk1ajDxLWCSeUmgfWz2YCWm9p8Rsa3uzfHIzPn96j9ilQ7X+4RY6gTHtNLa877+lBiKtmPlK4AoGm5M802gSwIeqI5luCAVWMSBU/DAV6OwUE0o6yCiHdY0JDW1wx1TPRVC/cxUG8m4n4qbS7B0h55TKsHS2ZFYumf4g90F+pUw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iHkBeTrsO4XoLYmFjW7hB0NAnTEV8OG9TzxtvR8wAFI=;
- b=mv6iLudMJk4tasSYfO3zltekl7pQA56ykkf4lrurIui1f1wknfxo5h3gn28FFlTF/X+kDSd/NiMrcsvg9kOM77kIb/Bm4p/kU9GHwVtHtby4k0pgXdUko9CftYLM9F+5qUplKZAX2qjIz70I3d8+eF8RFQh4dO5K/a2ZFNuzySj3ciMywkJQCxdhE+27y+4kDlXhfE9912NT+A8MihgZvRjefQ/JoPqjFVeZrEEHDfsmCYyHKcHZUdu7n1eZxrLeViyN7d19BN6w4p3JhyIr8totowIJdPLbELYfVoaQ/AnYKbWZ0EoHJme5VPqIKA8sr960i55HG1c0jwjvYlQojA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=esd.eu; dmarc=pass action=none header.from=esd.eu; dkim=pass
- header.d=esd.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=esdhannover.onmicrosoft.com; s=selector1-esdhannover-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iHkBeTrsO4XoLYmFjW7hB0NAnTEV8OG9TzxtvR8wAFI=;
- b=m1JCOvuReHAh1NCwbUo1ekV0eGfY6tltwlOuDzxsYla6ESSLAmXTZBG97maYTaf8S2fv0D640wmWsIIx055luml6OCXSgZkAOOIiqb/mkNWUloQJpm8FUcVXPPfiTYgZs0DBDF8aD5l35pwNt1lYziFGRiAHXZ0K5yEr6n5Z//4=
-Received: from AM6PR03MB4296.eurprd03.prod.outlook.com (2603:10a6:20b:3::16)
- by AS2PR03MB9419.eurprd03.prod.outlook.com (2603:10a6:20b:59d::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.32; Mon, 29 Jan
- 2024 12:46:20 +0000
-Received: from AM6PR03MB4296.eurprd03.prod.outlook.com
- ([fe80::d5c5:9d87:1e80:478]) by AM6PR03MB4296.eurprd03.prod.outlook.com
- ([fe80::d5c5:9d87:1e80:478%3]) with mapi id 15.20.7228.029; Mon, 29 Jan 2024
- 12:46:20 +0000
-From: =?utf-8?B?U3RlZmFuIE3DpHRqZQ==?= <Stefan.Maetje@esd.eu>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
-	"mkl@pengutronix.de" <mkl@pengutronix.de>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-CC: "wg@grandegger.com" <wg@grandegger.com>, "edumazet@google.com"
-	<edumazet@google.com>, "davem@davemloft.net" <davem@davemloft.net>,
-	"kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>
-Subject: Re: [PATCH v11 0/2] can: esd: add support for esd GmbH PCIe/402 CAN
- interface
-Thread-Topic: [PATCH v11 0/2] can: esd: add support for esd GmbH PCIe/402 CAN
- interface
-Thread-Index: AQHaHV/MUchwCksNTkOeS+zv8AjBELCyducAgD6wqIA=
-Date: Mon, 29 Jan 2024 12:46:20 +0000
-Message-ID: <04f5eb3af2b4165083301bf5052e005b9013c72b.camel@esd.eu>
-References: <20231122160211.2110448-1-stefan.maetje@esd.eu>
-	 <77d81c492c78a8ce1b51e71af5607917f6aebd5d.camel@esd.eu>
-In-Reply-To: <77d81c492c78a8ce1b51e71af5607917f6aebd5d.camel@esd.eu>
-Accept-Language: de-DE, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Evolution 3.36.5-0ubuntu1 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=esd.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AM6PR03MB4296:EE_|AS2PR03MB9419:EE_
-x-ms-office365-filtering-correlation-id: b51b0ece-40f8-457f-17d9-08dc20c84aeb
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- 5s8QdKxj70IqWZscywoa5JeBgl5izR7g46MfCnAQYf+UkzBqXfg9cEcjOUirKZru07IoXVukI9/m3YIwwtwqqP66jk2azTpmcdK63Pr86Dk3w7RMLJYtW2gH+6ml9Y7YgiPK1z131p0VAwcX6apRlDxiRfCw94Etzo0pMlKyyDeZT/r4DsIUpM/Jjp3Gt8z1RdgdzaqmuNOYPiALiFTm8qVCSpi9g6ECq/EbY+9CQN9FFp9Tpwcu7sWdhcp8onVIR4A4Fa+JfKvbReb+fYYdr90TdLp7oWapzws63+hRHlX+MtkG5CssGdkrtXJuTKiBC2ePpAQy44HrhzXcViiAZFGkXlt6mXM5MGSpOBA/Q9Q+l7rAf2GceyB2i7vm9deh1/xHwDbMyvPyJi1ZbQf2SyDku4eJ3vrl8nawRCiTpqYNfrA1XlEbBpfZpuMUNgTe6qHC89vUQskYl6N1BWQRvU+u0H1xNjJXCDiLgUzwoBrt+lYJvWhaO5D1+Bs4wRtAR8boCXRYII4YZGtrFMLvenIvewJjlvMc5josoOt7XCUnNmuBO3ih8F4rcUVTBX9ImRfGQJTLbmUeuFODXQULgyFYeYy8waHZuYao25g6pd06WY8H4K/yqvzRhk9mckWYqNWT7O3QmiS5ez5rilWPcw==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR03MB4296.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39830400003)(136003)(396003)(376002)(346002)(230173577357003)(230922051799003)(230273577357003)(1800799012)(64100799003)(186009)(451199024)(66556008)(5660300002)(4326008)(8936002)(8676002)(2906002)(110136005)(86362001)(66946007)(76116006)(64756008)(54906003)(316002)(38070700009)(36756003)(85182001)(85202003)(966005)(66446008)(38100700002)(122000001)(66476007)(6506007)(6512007)(478600001)(71200400001)(6486002)(83380400001)(41300700001)(66574015)(26005)(2616005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?Rndwb1BFWW5MV3FyQlBhNURKdm5ObTJUQnhJa2krczRmSVNXZEV1dE9MN2dK?=
- =?utf-8?B?eGxWMm40NXdJekdHVjg4bTVxTXRNYTArRW1pYlVrY3I1UjJxRHhIendJUWlk?=
- =?utf-8?B?Zms0Y0REdTlXNjV1WDNmS1VucS9HTjVNQ3pOVUdYR0xlTHFRd0M1a0tNc3pj?=
- =?utf-8?B?T0w3MGRRamlIa2Q1WCtydHhuRzdIZjBEZ0hCS0ovTEJIMXBLQkp1dGg5R2sy?=
- =?utf-8?B?OGNNRXFJajRGdFdXS2M3bmRIbnBNUGpZOVlJQ0RDMUdNMGR6alZHRDc0UGNF?=
- =?utf-8?B?ZEtrdkNON1pMTXJSdTRXVmx0Tk9lOHREQ0JGcWpsY2FHM0R2cmZRUXRxcTlp?=
- =?utf-8?B?TTIvUktKZU10MlY2eHF5TTBRSVh5OCtLTTJZeXNabkIvTFNqQkkrbzhKKzdq?=
- =?utf-8?B?MXFNTSt4SGwvTmwzVmRYUk1pL0EraTlkRE1vZExxelFZRHBETXpPams5M05H?=
- =?utf-8?B?eUZBTFZSZ3FBQ2tGUCsrMFlCb1N2TldMNWkrYmtIWEZ6Nkw2MTYxUFI0NkQ4?=
- =?utf-8?B?dmhqL254TlhiNUN3Rlpsbk13Ry9MUkxvb25tSDN5MjFvcTdvWHRadVZNZm10?=
- =?utf-8?B?WVJrbHJwWmhiY0sxbFljWEFEZ3RiaEFrQWVxakw4OGh2VHEzLzRjSWpNd0Rj?=
- =?utf-8?B?QlhCbkVmR3o2NnN3ay9vMEJSQitReS9EMFRoak1tMFRDUjM5V0M2UGQrSHFK?=
- =?utf-8?B?NFdKWktMZ2FWTlR4VWdOeklhQnBxQWFCZHlVS0hlTDdTUXpjWkxDWFZPMmFQ?=
- =?utf-8?B?R2t3b3pCaWlKcWI1TFRmcE94RmJmSlJYUDI0NjVaaDVLZHRMamJsWUR1a0Fa?=
- =?utf-8?B?L1AzZnpPMDFMMUMrNEJYS1ZPV0NNaGJhRHd1Ny9kajRPaFJSQ3QyaEhZVlp0?=
- =?utf-8?B?cDNhMVhnZzNwcVNGOXRMZ2FRNlR6SU1BenUrbDlqYXF5VlQ0R1ZaUWVPcW1z?=
- =?utf-8?B?eGMzN0VUM2ZldDVCLzdEb2ZPSjQyQUhyVW5rQUZsbWZIQitjd0M2NHVoN1dM?=
- =?utf-8?B?dndLVjQ3a1I1aTNlN1FqNFpHRHpHUWh3SHJmcEpaeDhIRGVZVEEyVExFMUhD?=
- =?utf-8?B?Um8yZ2VqWnpWWGU4SVZsU0hyRnQwai8zM0h1MVpKWVQza1N0dW15NEg0Nita?=
- =?utf-8?B?Tm9Galg1TnVjT1NlSVF5eTFHMDRDYjhuUlZaVmQvS1I5Myt6TjgyU3JqQ01r?=
- =?utf-8?B?SEd4OWFJUWlBaGxZaXlpSktDVDJDSnpibG4vTmpjM0JkQld3eGFoS1l2SVow?=
- =?utf-8?B?R1pyYm5CN3ZmcTBqa1hubFJDNnNtZ1YvM1QvaFNsQ1dhb2x1aXZGNEdpQ0NU?=
- =?utf-8?B?ZUN6eTNNZmxrZHQ5bDRrdnJyNEFWclhUMTV1Mk5nS0JQYnVYZ1VYYXFqd3ln?=
- =?utf-8?B?NDNQSElrbHllTnN4Rjd3MC9HVlBIY0hIKzhhSVltdVRPSHZKNWFZVUpxTHl5?=
- =?utf-8?B?WFdPUjd0V0pJQzZYMWVuQXdzalpPc0U1VGFJOHA5MURNdXpvQms5bjNGeEha?=
- =?utf-8?B?M3JQdS8xdEFKMDdyeEhXZnQ5UXN2V0xkMkN4Rm1xWW5jTXkxcERqMlZ4dEhl?=
- =?utf-8?B?QXhsaW9XVklqY2VGZEFrajRKeE12S25sZkRmWVFmZnhiU0Y5RDBzWWFmTVov?=
- =?utf-8?B?KzdRWmV6TDB2aWFhWkNZRzdPbk1OUFExaDk0UGFsNTI1OVBOWS83SnV5NVdY?=
- =?utf-8?B?Q3pCeVhtenVUMGJMVTBUWnNTbzF4cXVBVjJNTHdzV0E3ZjYxZVBOMXlZNVlF?=
- =?utf-8?B?OXhwb29OZ0xPTWhmbTMzUy9Ya1A5U21vcS80dVljbE9Db2VhdjFuLzJ1b09i?=
- =?utf-8?B?RlF3dWYrcEJKd2thSTY5UEJya1R5clBaWnU0NWVseVY4WTVyWlF3YUpiSjhT?=
- =?utf-8?B?VHV1N25MMk5TQVZUVm5EVnJtaDBMc3BNNk9UdlBybUM2Y0liYisyZHBza1c3?=
- =?utf-8?B?WGt3QzQ4Q1g3Z0RRdFJtM1VYeVdZUVc4a1c1L3ZpT3B1ZXY3QUlyZVN5aFJ2?=
- =?utf-8?B?aDZJNGszYjYwVnRoSis2WnBUdFBlbWxZQUZtRHNRa0pESVlEYW8zeEVoYWNk?=
- =?utf-8?B?MmMxM2xRSUx1L3N3SDdxR1JPajFMK0xaLzhsZ1F2U3RmR0ZBVklnODJhcU1N?=
- =?utf-8?B?WTFTUHpSdC9HaldMLzBXblIzQzlKdkpzb0lwaWdQVmRRVS9DY25pYzM1M1B3?=
- =?utf-8?B?OVE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <5EA4963E86489C409EFAE324C0995245@eurprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EBFA629F7
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 12:47:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706532424; cv=none; b=KeIfJbhv5klcVfDTxVB0XDTHZteyLVFODQeHNLoRj84h/t8stGqO7zD0wUDyME7dugBbdbyDqzKpkzsB/0KGM0KSgu4wgmsdLGyQsr1kFZ+5lO4V2R6pUDPgbiBOY9YRnJ/dwNhG/1kVxfJbuNREtYYrcBSBSe0T+IbC9AA5+u4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706532424; c=relaxed/simple;
+	bh=dSZhJnkm+lk1rkMsXbN5KoduCyNmkc5UTp7HhAyhlDE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=c4iTdCC5kHhAgVcfOrSiK3PiR+ZB8S4RbP+jFx9xR7R0FgCCbqX/hlPgS2rrYYl1nCEUGY7ei8sLdJ5DUv3RbT3VwRjEGSuXw1Uk3OTyMoM3F4rsZL0xRGlQ1oIX1Ep3XwhVF4iNjfOddxJkS0zGRTbjq3J+rjssDIRSXfa2b6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YfaWmx2n; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706532420;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=KvkAH0bQzCOTptNfhBBhiuyqh5M2/G8GqLgKULFKaNQ=;
+	b=YfaWmx2nBejTq5HMH1lesyq31vqoeAI0m71bVkpBELOzisHNYTWH2ZNWKgsbC57xS8hNJ/
+	qTFYk/t6derFCllTKjseRRGFKrBNgo3as4Fwtq1F9qpTYrNp1hvN8AEjCbXQBRAP+dMMtw
+	I0JbSNNiDtT333Hff3XJrbOxftsRJYE=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-369-GprgdTNKNKqdu1U7aI74eA-1; Mon,
+ 29 Jan 2024 07:46:58 -0500
+X-MC-Unique: GprgdTNKNKqdu1U7aI74eA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B4DE129AC02A;
+	Mon, 29 Jan 2024 12:46:56 +0000 (UTC)
+Received: from t14s.fritz.box (unknown [10.39.194.46])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 4C575107BD;
+	Mon, 29 Jan 2024 12:46:50 +0000 (UTC)
+From: David Hildenbrand <david@redhat.com>
+To: linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org,
+	David Hildenbrand <david@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	linux-arm-kernel@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	sparclinux@vger.kernel.org
+Subject: [PATCH v3 00/15] mm/memory: optimize fork() with PTE-mapped THP
+Date: Mon, 29 Jan 2024 13:46:34 +0100
+Message-ID: <20240129124649.189745-1-david@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: esd.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB4296.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b51b0ece-40f8-457f-17d9-08dc20c84aeb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jan 2024 12:46:20.1646
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5a9c3a1d-52db-4235-b74c-9fd851db2e6b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: uJAIaVGfO6luVmwHQWKlnz328fXhclmR7X4QHBuintFVea2dDfgzUuyVTjXuPntR+GOHBlEY8ZJS+txQdSb57g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR03MB9419
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-SGksDQoNCnRoZXJlIGhhcyBzb21lIHRpbWUgcGFzc2VkIHNpbmNlIG15IGxhc3QgcGluZyBvbiB0
-aGUgbWFpbGluZyBsaXN0LiBJcyB0aGVyZQ0KYW55dGhpbmcgSSBjYW4gZG8gdG8gcGF2ZSB0aGUg
-cGF0aCBmb3IgdGhpcyBwYXRjaD8gUGxlYXNlIGxldCBtZSBrbm93Lg0KDQpCZXN0IHJlZ2FyZHMs
-DQogICAgU3RlZmFuIE3DpHRqZQ0KDQoNCg0KQW0gTWl0dHdvY2gsIGRlbSAyMC4xMi4yMDIzIHVt
-IDE1OjI1ICswMDAwIHNjaHJpZWIgU3RlZmFuIE3DpHRqZToNCj4gSGksDQo+IA0KPiBhcmUgdGhl
-cmUgYW55IGNvbW1lbnRzIG9uIHRoaXMgcGF0Y2ggYmVzaWRlcyB0aGUgb25lcyBmcm9tIFZpbmNl
-bnQ/DQo+IElzIHRoZXJlIGFueXRoaW5nIEkgY2FuIGRvIHRvIHBhdmUgdGhlIHBhdGggZm9yIHRo
-aXMgcGF0Y2g/DQo+IA0KPiBCZXN0IHJlZ2FyZHMsDQo+ICAgICBTdGVmYW4NCj4gDQo+IEFtIE1p
-dHR3b2NoLCBkZW0gMjIuMTEuMjAyMyB1bSAxNzowMiArMDEwMCBzY2hyaWViIFN0ZWZhbiBNw6R0
-amU6DQo+ID4gVGhlIHB1cnBvc2Ugb2YgdGhpcyBwYXRjaCBpcyB0byBpbnRyb2R1Y2UgYSBuZXcg
-Q0FOIGRyaXZlciB0byBzdXBwb3J0DQo+ID4gdGhlIGVzZCBHbWJIIDQwMiBmYW1pbHkgb2YgQ0FO
-IGludGVyZmFjZSBib2FyZHMuIFRoZSBoYXJkd2FyZSBkZXNpZ24NCj4gPiBpcyBiYXNlZCBvbiBh
-IENBTiBjb250cm9sbGVyIGltcGxlbWVudGVkIGluIGEgRlBHQSBhdHRhY2hlZCB0byBhDQo+ID4g
-UENJZSBsaW5rLg0KPiA+IA0KPiA+IE1vcmUgaW5mb3JtYXRpb24gb24gdGhlc2UgYm9hcmRzIGNh
-biBiZSBmb3VuZCBmb2xsb3dpbmcgdGhlIGxpbmtzDQo+ID4gaW5jbHVkZWQgaW4gdGhlIGNvbW1p
-dCBtZXNzYWdlLg0KPiA+IA0KPiA+IFRoaXMgcGF0Y2ggc3VwcG9ydHMgYWxsIGJvYXJkcyBidXQg
-d2lsbCBvcGVyYXRlIHRoZSBDQU4tRkQgY2FwYWJsZQ0KPiA+IGJvYXJkcyBvbmx5IGluIENsYXNz
-aWMtQ0FOIG1vZGUuIFRoZSBDQU4tRkQgc3VwcG9ydCB3aWxsIGJlIGFkZGVkDQo+ID4gd2hlbiB0
-aGUgaW5pdGlhbCBwYXRjaCBoYXMgc3RhYmlsaXplZC4NCj4gPiANCj4gPiBUaGUgcGF0Y2ggaXMg
-cmV1c2VzIHRoZSBwcmV2aW91cyB3b3JrIG9mIG15IGZvcm1lciBjb2xsZWFndWU6DQo+ID4gTGlu
-azogaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgtY2FuLzE0MjY1OTIzMDgtMjM4MTctMS1n
-aXQtc2VuZC1lbWFpbC10aG9tYXMua29lcnBlckBlc2QuZXUvDQo+ID4gDQo+ID4gDQo+ID4gVGhl
-IHBhdGNoIGlzIGJhc2VkIG9uIHRoZSBsaW51eC1jYW4tbmV4dCBtYWluIGJyYW5jaC4NCj4gPiAN
-Cj4gPiBDaGFuZ2VkIGluIHYxMToNCj4gPiAgIE5vIGZ1bmN0aW9uYWwsIG9ubHkgZWRpdG9yaWFs
-IGNoYW5nZXMgZHVlIHRvIGZlZWRiYWNrIG9uIHYxMC4NCj4gPiAgIC0gTWFrZSBsaWZldGltZSBv
-ZiBtYWNyb3MgdXNlZCBmb3IgaGFyZHdhcmUgdGltZXN0YW1wIGNhbGN1bGF0aW9uDQo+ID4gICAg
-IHZlcnkgc2hvcnQgYnkgI3VuZGVmLWluZyB0aGVtIGFmdGVyIHVzZS4NCj4gPiAgIC0gRml4ZWQg
-aW5zZXJ0aW9uIG9yZGVyIG9mIG5ldyBlbnRyeSBpbiBNQUlOVEFJTkVSUyBmaWxlLg0KPiA+IA0K
-PiA+IENoYW5nZWQgaW4gdjEwOg0KPiA+ICAgTW9zdCBjaGFuZ2VzIGR1ZSB0byBmZWVkYmFjayBi
-eSBWaW5jZW50IE1haWxob2wNCj4gPiAgIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LWNh
-bi9DQU1aNlJxTE9BQzkzMEdOT1UrcFd1b2k2RmdZd0ZPdUZyU3lBelZqdkUyZnVWZ3k4b0FAbWFp
-bC5nbWFpbC5jb20vDQo+ID4gICAtIEFkZCBzdXBwb3J0IGZvciBldGh0b29sIG9wZXJhdGlvbnMg
-YnkgdXNpbmcgZGVmYXVsdCBvcGVyYXRpb25zIA0KPiA+ICAgICBwcm92aWRlZCBieSB0aGUgY2Fu
-X2RldiBtb2R1bGUgZm9yIGRyaXZlcnMgd2l0aCBoYXJkd2FyZSB0aW1lDQo+ID4gICAgIHN0YW1w
-IHN1cHBvcnQuDQo+ID4gICAtIEZhY3RvciBvdXQgY29yZSB1bnJlZ2lzdHJhdGlvbiBpbnRvIHBj
-aTQwMl91bnJlZ2lzdGVyX2NvcmUoKS4NCj4gPiAgIC0gRmFjdG9yIG91dCBnZXR0aW5nIG5leHQg
-VFggZmlmbyBpbmRleCBpbnRvIGFjY190eF9maWZvX25leHQoKS4NCj4gPiAgIC0gU3RvcCBjb3Vu
-dGluZyBhbGxvY19jYW5fZXJyX3NrYigpIGZhaWx1cmVzIGluIHJ4X2Ryb3BwZWQgc3RhdGlzdGlj
-Lg0KPiA+ICAgLSBBZGQgQ0FOX0VSUl9DTlQgZmxhZyBpbiBDQU4gZXJyb3IgZnJhbWVzIGFzIG5l
-ZWRlZC4NCj4gPiAgIC0gUmV3b3JrIGZ1bmN0aW9uIGFjY19yZXNldF9mcGdhKCkuIFRvIGNsZWFy
-IEleMkMgYnVzIGVuYWJsZSBiaXQNCj4gPiAgICAgaXMgbm90IG5lY2Vzc2FyeSBhZnRlciBGUEdB
-IHJlc2V0Lg0KPiA+ICAgLSBTaW1wbGlmeSBzdHJ1Y3QgYWNjX2JtbXNnX3J4dHhkb25lIGxheW91
-dC4NCj4gPiAgIC0gQWRkaXRpb25hbCBub24gZnVuY3Rpb25hbCBjaGFuZ2VzIGR1ZSB0byBmZWVk
-YmFjayBieSBWaW5jZW50DQo+ID4gICAtIFNvbWUgc3BlbGxpbmcgY29ycmVjdGlvbnM6IEVTREFD
-QyAtPiBlc2RBQ0MNCj4gPiANCj4gPiBDaGFuZ2VzIGluIHY5Og0KPiA+ICAgLSBGaXggcmV0dXJu
-aW5nIHN1Y2Nlc3MgZXJyb3IgY29kZSBpbiBjYXNlIG9mIGFsbG9jYXRpb24gZmFpbHVyZSBpbg0K
-PiA+ICAgICBwY2k0MDJfcHJvYmUoKS4NCj4gPiANCj4gPiBDaGFuZ2VzIGluIHY4Og0KPiA+ICAg
-LSBSZWJhc2VkIHRvIDYuNi1yYzIgb24gbGludXgtY2FuLW5leHQgYnJhbmNoIG1haW4NCj4gPiAN
-Cj4gPiBDaGFuZ2VzIGluIHY3Og0KPiA+ICAgLSBOdW1lcm91cyBjaGFuZ2VzLiBGaW5kIHRoZSBx
-dW90ZWQgd2l0aCBpbmxpbmUgY29tbWVudHMgYWJvdXQgY2hhbmdlcw0KPiA+ICAgICBiZWxvdyBh
-ZnRlciB0aGUgY2hhbmdlcyBsaXN0LiBTdHVmZiB0aGF0IEkgZG9uJ3QgdW5kZXJzdGFuZCBhbmQN
-Cj4gPiAgICAgd2hlcmUgSSBoYXZlIHF1ZXN0aW9ucyBpcyBtYXJrZWQgd2l0aCA/Pz8/Lg0KPiA+
-ICAgICBVbmZvcnR1bmF0ZWx5IEkgd2lsbCBiZSBBRksgdGlsbCAyOHRoIG9mIE5vdmVtYmVyLg0K
-PiA+IA0KPiA+IENoYW5nZXMgaW4gdjY6DQo+ID4gICAtIEZpeGVkIHRoZSBzdGF0aXN0aWMgaGFu
-ZGxpbmcgb2YgUlggb3ZlcnJ1biBlcnJvcnMgYW5kIGluY3JlYXNlIA0KPiA+ICAgICBuZXRfZGV2
-aWNlX3N0YXRzOjpyeF9lcnJvcnMgaW5zdGVhZCBvZiBuZXRfZGV2aWNlX3N0YXRzOjpyeF9kcm9w
-cGVkLg0KPiA+ICAgLSBBZGRlZCBhIHBhdGNoIHRvIG5vdCBpbmNyZWFzZSByeCBzdGF0aXN0aWNz
-IHdoZW4gZ2VuZXJhdGluZyBhIENBTg0KPiA+ICAgICByeCBlcnJvciBtZXNzYWdlIGZyYW1lIGFz
-IHN1Z2dlc3RlZCBvbiB0aGUgbGludXgtY2FuIGxpc3QuDQo+ID4gICAtIEFkZGVkIGEgcGF0Y2gg
-dG8gbm90IG5vdCBpbmNyZWFzZSByeF9ieXRlcyBzdGF0aXN0aWNzIGZvciBSVFIgZnJhbWVzDQo+
-ID4gICAgIGFzIHN1Z2dlc3RlZCBvbiB0aGUgbGludXgtY2FuIGxpc3QuDQo+ID4gDQo+ID4gICAg
-IFRoZSBsYXN0IHR3byBwYXRjaGVzIGNoYW5nZSB0aGUgc3RhdGlzdGljcyBoYW5kbGluZyBmcm9t
-IHRoZSBwcmV2aW91cw0KPiA+ICAgICBzdHlsZSB1c2VkIGluIG90aGVyIGRyaXZlcnMgdG8gdGhl
-IG5ld2x5IHN1Z2dlc3RlZCBvbmUuDQo+ID4gDQo+ID4gQ2hhbmdlcyBpbiB2NToNCj4gPiAgIC0g
-QWRkZWQgdGhlIGluaXRpYWxpemF0aW9uIGZvciBuZXRkZXY6OmRldl9wb3J0IGFzIGl0IGlzIGlt
-cGxlbWVudGVkDQo+ID4gICAgIGZvciBhbm90aGVyIENBTiBkcml2ZXIuIFNlZQ0KPiA+ICAgICBo
-dHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC1jYW4vMjAyMTEwMjYxODA1NTMuMTk1MzE4OS0x
-LW1haWxob2wudmluY2VudEB3YW5hZG9vLmZyLw0KPiA+IA0KPiA+IENoYW5nZXMgaW4gdjQ6DQo+
-ID4gICAtIEZpeGVkIHRoZSBidWlsZCBmYWlsdXJlIG9uIEFSQ0g9YXJtNjQgdGhhdCB3YXMgZm91
-bmQgYnkgdGhlIEludGVsDQo+ID4gICAgIGtlcm5lbCB0ZXN0IHJvYm90LiBTZWUNCj4gPiAgICAg
-aHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgtY2FuLzIwMjEwOTEyMDYwOC43WmJRWGtSaC1s
-a3BAaW50ZWwuY29tLw0KPiA+IA0KPiA+ICAgICBSZW1vdmVkIGVycm9yIG1vbml0b3JpbmcgY29k
-ZSB0aGF0IHVzZWQgR0NDJ3MgYnVpbHQtaW4gY29tcGlsZXINCj4gPiAgICAgZnVuY3Rpb25zIGZv
-ciBhdG9taWMgYWNjZXNzIChfX3N5bmNfKiBmdW5jdGlvbnMpLiBHQ0MgdmVyc2lvbnMNCj4gPiAg
-ICAgYWZ0ZXIgOSAodGVzdGVkIHdpdGggImdjYy0xMCAoVWJ1bnR1IDEwLjMuMC0xdWJ1bnR1MX4y
-MC4wNCkiKQ0KPiA+ICAgICBkb24ndCBpbXBsZW1lbnQgdGhlIGludHJpbnNpYyBhdG9taWMgYXMg
-aW4tbGluZSBjb2RlIGJ1dCBjYWxsDQo+ID4gICAgICJfX2FhcmNoNjRfbGRhZGQ0X2FjcV9yZWwi
-IG9uIGFybTY0LiBUaGlzIEdDQyBzdXBwb3J0IGZ1bmN0aW9uDQo+ID4gICAgIGlzIG5vdCBleHBv
-cnRlZCBieSB0aGUga2VybmVsIGFuZCB0aGVyZWZvcmUgdGhlIG1vZHVsZSBidWlsZA0KPiA+ICAg
-ICBwb3N0LXByb2Nlc3NpbmcgZmFpbHMuDQo+ID4gDQo+ID4gICAgIFJlbW92ZWQgdGhhdCBjb2Rl
-IGJlY2F1c2UgdGhlIGVycm9yIG1vbml0b3JpbmcgbmV2ZXIgc2hvd2VkIGENCj4gPiAgICAgcHJv
-YmxlbSBkdXJpbmcgdGhlIGRldmVsb3BtZW50IHRoaXMgeWVhci4NCj4gPiANCj4gPiANCj4gPiBD
-aGFuZ2VzIGluIHYzOg0KPiA+ICAgLSBSZXdvcmsgdGhlIGJ1cy1vZmYgcmVzdGFydCBsb2dpYyBp
-biBhY2Nfc2V0X21vZGUoKSBhbmQNCj4gPiAgICAgaGFuZGxlX2NvcmVfbXNnX2VycnN0YXRlY2hh
-bmdlKCkgdG8gY2FsbCBuZXRpZl93YWtlX3F1ZXVlKCkgZnJvbSB0aGUNCj4gPiAgICAgZXJyb3Ig
-YWN0aXZlIGV2ZW50Lg0KPiA+ICAgLSBDaGFuZ2VkIHBjaTQwMl9pbml0X2NhcmQoKSB0byBhbGxv
-Y2F0ZSBhIHZhcmlhYmxlIHNpemVkIGFycmF5IG9mDQo+ID4gICAgIHN0cnVjdCBhY2NfY29yZSB1
-c2luZyBkZXZtX2tjYWxsb2MoKSBpbnN0ZWFkIG9mIHVzaW5nIGEgZml4ZWQgc2l6ZQ0KPiA+ICAg
-ICBhcnJheSBpbiBzdHJ1Y3QgcGNpNDAyX2NhcmQuDQo+ID4gICAtIENoYW5nZWQgaGFuZGxlX2Nv
-cmVfbXNnX3R4YWJvcnQoKSB0byByZWxlYXNlIGFib3J0ZWQgVFggZnJhbWVzIGluDQo+ID4gICAg
-IFRYIEZJRk8gb3JkZXIuDQo+ID4gICAtIEZpeGVkIHRoZSBhY2NfY2xvc2UoKSBmdW5jdGlvbiB0
-byBhYm9ydCBhbGwgcGVuZGluZyBUWCByZXF1ZXN0IGluDQo+ID4gICAgIGVzZEFDQyBjb250cm9s
-bGVyLg0KPiA+ICAgLSBGaXhlZCBjb3VudGluZyBvZiB0cmFuc21pdCBhYm9ydHMgaW4gaGFuZGxl
-X2NvcmVfbXNnX3R4YWJvcnQoKS4NCj4gPiAgICAgSXQgaXMgbm93IGRvbmUgbGlrZSBpbiBjYW5f
-Zmx1c2hfZWNob19za2IoKS4NCj4gPiAgIC0gRml4ZWQgaGFuZGxlX2NvcmVfbXNnX2J1c2Vycigp
-IHRvIGNyZWF0ZSBlcnJvciBmcmFtZXMgaW5jbHVkaW5nIHRoZQ0KPiA+ICAgICBDQU4gUlggYW5k
-IFRYIGVycm9yIGNvdW50ZXJzIHRoYXQgd2VyZSBtaXNzaW5nLg0KPiA+ICAgLSBGaXhlZCBhY2Nf
-c2V0X2JpdHRpbWluZygpIG5laXRoZXIgdG8gdG91Y2ggTE9NIG1vZGUgc2V0dGluZyBvZg0KPiA+
-ICAgICBlc2RBQ0MgY29udHJvbGxlciBub3IgdG8gZW50ZXIgb3IgbGVhdmUgUkVTRVQgbW9kZS4N
-Cj4gPiAgICAgVGhlIGVzZEFDQyBjb250cm9sbGVyIGlzIGdvaW5nIGFjdGl2ZSBvbiB0aGUgQ0FO
-IGJ1cyBpbiBhY2Nfb3BlbigpDQo+ID4gICAgIGFuZCBpcyBnb2luZyBpbmFjdGl2ZSAoUkVTRVQg
-bW9kZSkgYWdhaW4gaW4gYWNjX2Nsb3NlKCkuDQo+ID4gICAtIFJlbHkgb24gdGhlIGF1dG9tYXRp
-YyByZWxlYXNlIG9mIG1lbW9yeSBmZXRjaGVkIGJ5IGRldm1fa3phbGxvYygpLg0KPiA+ICAgICBC
-dXQgc3RpbGwgdXNlIGRldm1faXJxX2ZyZWUoKSBleHBsaWNpdGVseSB0byBtYWtlIHN1cmUgdGhh
-dCB0aGUNCj4gPiAgICAgaW50ZXJydXB0IGhhbmRsZXIgaXMgZGlzY29ubmVjdGVkIGF0IHRoYXQg
-cG9pbnQuDQo+ID4gICAgIFRoaXMgYXZvaWRzIGEgcG9zc2libGUgY3Jhc2ggaW4gbm9uLU1TSSBt
-b2RlIGR1ZSB0byB0aGUgSVJRDQo+ID4gICAgIHRyaWdnZXJlZCBieSBhbm90aGVyIGRldmljZSBv
-biB0aGUgc2FtZSBQQ0kgSVJRIGxpbmUuDQo+ID4gICAtIENoYW5nZWQgdG8gdXNlIERNQSBtYXAg
-QVBJIGluc3RlYWQgb2YgcGNpXypfY29uc2lzdGVudCBjb21wYXRpYmlsaXR5DQo+ID4gICAgIHdy
-YXBwZXJzLg0KPiA+ICAgLSBGaXhlZCBzdGFsZSBlbWFpbCByZWZlcmVuY2VzIGFuZCB1cGRhdGVk
-IGNvcHlyaWdodCBpbmZvcm1hdGlvbi4NCj4gPiAgIC0gUmVtb3ZlZCBhbnkgdHJhY2VzIG9mIGZ1
-dHVyZSBDQU4tRkQgc3VwcG9ydC4NCj4gPiANCj4gPiANCj4gPiBDaGFuZ2VzIGluIHYyOg0KPiA+
-ICAgLSBBdm9pZCB3YXJuaW5nIHRyaWdnZXJlZCBieSAtV3NoaWZ0LWNvdW50LW92ZXJmbG93IG9u
-IGFyY2hpdGVjdHVyZXMNCj4gPiAgICAgd2l0aCAzMi1iaXQgZG1hX2FkZHJfdC4NCj4gPiAgIC0g
-Rml4ZWQgTWFrZWZpbGUgbm90IHRvIGJ1aWxkIHRoZSBrZXJuZWwgbW9kdWxlIGFsd2F5cy4gRG9p
-bmcgdGhpcw0KPiA+ICAgICByZW5hbWVkIGVzZDQwMl9wY2kuYyB0byBlc2RfNDAyX3BjaS1jb3Jl
-LmMgYXMgcmVjb21tZW5kZWQgYnkgTWFyYy4NCj4gPiANCj4gPiBwcmV2aW91cyB2ZXJzaW9uczoN
-Cj4gPiB2MSAtIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LWNhbi8yMDIxMDcyODIwMzY0
-Ny4xNTI0MC0xLVN0ZWZhbi5NYWV0amVAZXNkLmV1Lw0KPiA+IHYyIC0gaHR0cHM6Ly9sb3JlLmtl
-cm5lbC5vcmcvbGludXgtY2FuLzIwMjEwNzMwMTczODA1LjM5MjYtMS1TdGVmYW4uTWFldGplQGVz
-ZC5ldS8NCj4gPiB2MyAtIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LWNhbi8yMDIxMDkw
-ODE2NDY0MC4yMzI0My0xLXN0ZWZhbi5tYWV0amVAZXNkLmV1Lw0KPiA+IHY0IC0gaHR0cHM6Ly9s
-b3JlLmtlcm5lbC5vcmcvbGludXgtY2FuLzIwMjEwOTE2MTcyMTUyLjUxMjctMS1zdGVmYW4ubWFl
-dGplQGVzZC5ldS8NCj4gPiB2NSAtIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LWNhbi8y
-MDIxMTEwOTE1NTMyNi4yNjA4ODIyLTEtc3RlZmFuLm1hZXRqZUBlc2QuZXUvDQo+ID4gdjYgLSBo
-dHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC1jYW4vMjAyMTEyMDEyMjAzMjguMzA3OTI3MC0x
-LXN0ZWZhbi5tYWV0amVAZXNkLmV1Lw0KPiA+IHY3IC0gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcv
-bGludXgtY2FuLzIwMjIxMTA2MjI0MTU2LjM2MTkzMzQtMS1zdGVmYW4ubWFldGplQGVzZC5ldS8N
-Cj4gPiB2OCAtIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LWNhbi8yMDIzMTAyNTE0MTYz
-NS4xNDU5NjA2LTEtc3RlZmFuLm1hZXRqZUBlc2QuZXUvDQo+ID4gdjkgLSBodHRwczovL2xvcmUu
-a2VybmVsLm9yZy9saW51eC1jYW4vMjAyMzExMDcxODQxMDMuMjgwMjY3OC0xLXN0ZWZhbi5tYWV0
-amVAZXNkLmV1Lw0KPiA+IHYxMCAtIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LWNhbi8y
-MDIzMTEyMDE3NTY1Ny40MDcwOTIxLTEtc3RlZmFuLm1hZXRqZUBlc2QuZXUvDQo+ID4gDQo+ID4g
-DQo+ID4gU3RlZmFuIE3DpHRqZSAoMik6DQo+ID4gICBNQUlOVEFJTkVSUzogYWRkIFN0ZWZhbiBN
-w6R0amUgYXMgbWFpbnRhaW5lciBmb3IgdGhlIGVzZCBlbGVjdHJvbmljcw0KPiA+ICAgICBHbWJI
-IFBDSWUvNDAyIENBTiBkcml2ZXJzDQo+ID4gICBjYW46IGVzZDogYWRkIHN1cHBvcnQgZm9yIGVz
-ZCBHbWJIIFBDSWUvNDAyIENBTiBpbnRlcmZhY2UgZmFtaWx5DQo+ID4gDQo+ID4gIE1BSU5UQUlO
-RVJTICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA3ICsNCj4gPiAgZHJpdmVycy9uZXQv
-Y2FuL0tjb25maWcgICAgICAgICAgICAgICAgfCAgIDEgKw0KPiA+ICBkcml2ZXJzL25ldC9jYW4v
-TWFrZWZpbGUgICAgICAgICAgICAgICB8ICAgMSArDQo+ID4gIGRyaXZlcnMvbmV0L2Nhbi9lc2Qv
-S2NvbmZpZyAgICAgICAgICAgIHwgIDEyICsNCj4gPiAgZHJpdmVycy9uZXQvY2FuL2VzZC9NYWtl
-ZmlsZSAgICAgICAgICAgfCAgIDcgKw0KPiA+ICBkcml2ZXJzL25ldC9jYW4vZXNkL2VzZF80MDJf
-cGNpLWNvcmUuYyB8IDUxNCArKysrKysrKysrKysrKysrKw0KPiA+ICBkcml2ZXJzL25ldC9jYW4v
-ZXNkL2VzZGFjYy5jICAgICAgICAgICB8IDc2NCArKysrKysrKysrKysrKysrKysrKysrKysrDQo+
-ID4gIGRyaXZlcnMvbmV0L2Nhbi9lc2QvZXNkYWNjLmggICAgICAgICAgIHwgMzU2ICsrKysrKysr
-KysrKw0KPiA+ICA4IGZpbGVzIGNoYW5nZWQsIDE2NjIgaW5zZXJ0aW9ucygrKQ0KPiA+ICBjcmVh
-dGUgbW9kZSAxMDA2NDQgZHJpdmVycy9uZXQvY2FuL2VzZC9LY29uZmlnDQo+ID4gIGNyZWF0ZSBt
-b2RlIDEwMDY0NCBkcml2ZXJzL25ldC9jYW4vZXNkL01ha2VmaWxlDQo+ID4gIGNyZWF0ZSBtb2Rl
-IDEwMDY0NCBkcml2ZXJzL25ldC9jYW4vZXNkL2VzZF80MDJfcGNpLWNvcmUuYw0KPiA+ICBjcmVh
-dGUgbW9kZSAxMDA2NDQgZHJpdmVycy9uZXQvY2FuL2VzZC9lc2RhY2MuYw0KPiA+ICBjcmVhdGUg
-bW9kZSAxMDA2NDQgZHJpdmVycy9uZXQvY2FuL2VzZC9lc2RhY2MuaA0KPiA+IA0KPiA+IA0KPiA+
-IGJhc2UtY29tbWl0OiA5M2U3ZWNhODUzY2EwMDg3YjEyOTQzMzYzMGRkZDg5Mjg4ZDJiOGI0DQo=
+Now that the rmap overhaul[1] is upstream that provides a clean interface
+for rmap batching, let's implement PTE batching during fork when processing
+PTE-mapped THPs.
+
+This series is partially based on Ryan's previous work[2] to implement
+cont-pte support on arm64, but its a complete rewrite based on [1] to
+optimize all architectures independent of any such PTE bits, and to
+use the new rmap batching functions that simplify the code and prepare
+for further rmap accounting changes.
+
+We collect consecutive PTEs that map consecutive pages of the same large
+folio, making sure that the other PTE bits are compatible, and (a) adjust
+the refcount only once per batch, (b) call rmap handling functions only
+once per batch and (c) perform batch PTE setting/updates.
+
+While this series should be beneficial for adding cont-pte support on
+ARM64[2], it's one of the requirements for maintaining a total mapcount[3]
+for large folios with minimal added overhead and further changes[4] that
+build up on top of the total mapcount.
+
+Independent of all that, this series results in a speedup during fork with
+PTE-mapped THP, which is the default with THPs that are smaller than a PMD
+(for example, 16KiB to 1024KiB mTHPs for anonymous memory[5]).
+
+On an Intel Xeon Silver 4210R CPU, fork'ing with 1GiB of PTE-mapped folios
+of the same size (stddev < 1%) results in the following runtimes
+for fork() (shorter is better):
+
+Folio Size | v6.8-rc1 |      New | Change
+------------------------------------------
+      4KiB | 0.014328 | 0.014035 |   - 2%
+     16KiB | 0.014263 | 0.01196  |   -16%
+     32KiB | 0.014334 | 0.01094  |   -24%
+     64KiB | 0.014046 | 0.010444 |   -26%
+    128KiB | 0.014011 | 0.010063 |   -28%
+    256KiB | 0.013993 | 0.009938 |   -29%
+    512KiB | 0.013983 | 0.00985  |   -30%
+   1024KiB | 0.013986 | 0.00982  |   -30%
+   2048KiB | 0.014305 | 0.010076 |   -30%
+
+Note that these numbers are even better than the ones from v1 (verified
+over multiple reboots), even though there were only minimal code changes.
+Well, I removed a pte_mkclean() call for anon folios, maybe that also
+plays a role.
+
+But my experience is that fork() is extremely sensitive to code size,
+inlining, ... so I suspect we'll see on other architectures rather a change
+of -20% instead of -30%, and it will be easy to "lose" some of that speedup
+in the future by subtle code changes.
+
+Next up is PTE batching when unmapping. Only tested on x86-64.
+Compile-tested on most other architectures.
+
+v2 -> v3:
+ * Rebased on mm-unstable
+ * Picked up RB's
+ * Updated documentation of wrprotect_ptes().
+
+v1 -> v2:
+ * "arm64/mm: Make set_ptes() robust when OAs cross 48-bit boundary"
+  -> Added patch from Ryan
+ * "arm/pgtable: define PFN_PTE_SHIFT"
+  -> Removed the arm64 bits
+ * "mm/pgtable: make pte_next_pfn() independent of set_ptes()"
+ * "arm/mm: use pte_next_pfn() in set_ptes()"
+ * "powerpc/mm: use pte_next_pfn() in set_ptes()"
+  -> Added to use pte_next_pfn() in some arch set_ptes() implementations
+     I tried to make use of pte_next_pfn() also in the others, but it's
+     not trivial because the other archs implement set_ptes() in their
+     asm/pgtable.h. Future work.
+ * "mm/memory: factor out copying the actual PTE in copy_present_pte()"
+  -> Move common folio_get() out of if/else
+ * "mm/memory: optimize fork() with PTE-mapped THP"
+  -> Add doc for wrprotect_ptes
+  -> Extend description to mention handling of pinned folios
+  -> Move common folio_ref_add() out of if/else
+ * "mm/memory: ignore dirty/accessed/soft-dirty bits in folio_pte_batch()"
+  -> Be more conservative with dirt/soft-dirty, let the caller specify
+     using flags
+
+[1] https://lkml.kernel.org/r/20231220224504.646757-1-david@redhat.com
+[2] https://lkml.kernel.org/r/20231218105100.172635-1-ryan.roberts@arm.com
+[3] https://lkml.kernel.org/r/20230809083256.699513-1-david@redhat.com
+[4] https://lkml.kernel.org/r/20231124132626.235350-1-david@redhat.com
+[5] https://lkml.kernel.org/r/20231207161211.2374093-1-ryan.roberts@arm.com
+
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Dinh Nguyen <dinguyen@kernel.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
+Cc: "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Albert Ou <aou@eecs.berkeley.edu>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>
+Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Christian Borntraeger <borntraeger@linux.ibm.com>
+Cc: Sven Schnelle <svens@linux.ibm.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-riscv@lists.infradead.org
+Cc: linux-s390@vger.kernel.org
+Cc: sparclinux@vger.kernel.org
+
+---
+
+Andrew asked for a resend based on latest mm-unstable. I am sending this
+out earlier than I would usually have sent out the next version, so we can
+pull it into mm-unstable again now that v1 was dropped.
+
+David Hildenbrand (14):
+  arm/pgtable: define PFN_PTE_SHIFT
+  nios2/pgtable: define PFN_PTE_SHIFT
+  powerpc/pgtable: define PFN_PTE_SHIFT
+  riscv/pgtable: define PFN_PTE_SHIFT
+  s390/pgtable: define PFN_PTE_SHIFT
+  sparc/pgtable: define PFN_PTE_SHIFT
+  mm/pgtable: make pte_next_pfn() independent of set_ptes()
+  arm/mm: use pte_next_pfn() in set_ptes()
+  powerpc/mm: use pte_next_pfn() in set_ptes()
+  mm/memory: factor out copying the actual PTE in copy_present_pte()
+  mm/memory: pass PTE to copy_present_pte()
+  mm/memory: optimize fork() with PTE-mapped THP
+  mm/memory: ignore dirty/accessed/soft-dirty bits in folio_pte_batch()
+  mm/memory: ignore writable bit in folio_pte_batch()
+
+Ryan Roberts (1):
+  arm64/mm: Make set_ptes() robust when OAs cross 48-bit boundary
+
+ arch/arm/include/asm/pgtable.h      |   2 +
+ arch/arm/mm/mmu.c                   |   2 +-
+ arch/arm64/include/asm/pgtable.h    |  28 ++--
+ arch/nios2/include/asm/pgtable.h    |   2 +
+ arch/powerpc/include/asm/pgtable.h  |   2 +
+ arch/powerpc/mm/pgtable.c           |   5 +-
+ arch/riscv/include/asm/pgtable.h    |   2 +
+ arch/s390/include/asm/pgtable.h     |   2 +
+ arch/sparc/include/asm/pgtable_64.h |   2 +
+ include/linux/pgtable.h             |  33 ++++-
+ mm/memory.c                         | 212 ++++++++++++++++++++++------
+ 11 files changed, 229 insertions(+), 63 deletions(-)
+
+
+base-commit: d162e170f1181b4305494843e1976584ddf2b72e
+-- 
+2.43.0
+
 
