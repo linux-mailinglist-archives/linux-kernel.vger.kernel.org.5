@@ -1,111 +1,226 @@
-Return-Path: <linux-kernel+bounces-42602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F9128403A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:17:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 034C78403A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:17:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D57352857DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:17:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54462B20BE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:17:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80F885B5A5;
-	Mon, 29 Jan 2024 11:16:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDDA55B5DE;
+	Mon, 29 Jan 2024 11:17:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MloQDblJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="xZZzXE9F";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="TPfLB/H6";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="PoVBNPnA";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="7Mj6ZCOB"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C80685B5B0
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 11:16:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03D135B5B0;
+	Mon, 29 Jan 2024 11:17:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706527015; cv=none; b=NdF+bpPBVmLC3jGrI+eBvpY37+xd9ynHY6l/OCCndCIK4PIoh33pXTPSOPCTmssdz5DThzo32gsBJ3ALgYI0ZisK4D2y88ZXhtHSu6OqvV+7PtqvYMkneCnOo1bZY0Gzt1yIe+I2PJKtzURHVGyfeje66Qgu9Mw58SI2I/zKE00=
+	t=1706527038; cv=none; b=afxnNy067UacS3it6WWg+Cbig9YEvt+Hd03wzeXE7U1A+bm1KqsMCD0Dr+ChjagvaoCYkmMxKRPYlz/WN147U39C/zqDEHNrl4yhJsfjQ3N1v7tnzIAz3q4Mt4r5sZBbq2Cz3Xa7xgmtvCtXsaHuO4PLz6mj9sWj9/PcpsLQSms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706527015; c=relaxed/simple;
-	bh=S9RgsTiinDPCOsZbeFEA2HpDxwJGkw8/kTFTAURjfYY=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=D3T61yvb/ldFDfMydePNsZP+JqJe9MXnyttaT/iz+LjVSapv11wNEtpKKf6CR4wOT1ll5smTLy+EaWOauPDJGbvgZmdzPtVIni4EnFEPmxafkLvFQUfzDx0y5hMezTQmG/IJT4CFfuNpDiV4s/7hgkUgPj9ZlpBCT5IP8csfbRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MloQDblJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2414C433F1;
-	Mon, 29 Jan 2024 11:16:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706527015;
-	bh=S9RgsTiinDPCOsZbeFEA2HpDxwJGkw8/kTFTAURjfYY=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=MloQDblJX8MmBA9g95QdxAITc2g2x/5JFsfZaXmWxhROVFlStuSOEUO1A35qQRyuX
-	 l2XiE0bvoUtN6Kpft3NYUPEu4RJvADWhpIA3LyQWMwweowwNX4MTvVhxsZzZBO95UP
-	 KqMzgAQueECLGs5aBg9UJZ1H0zrCuSE+xcSU0ZbaXhx3ExAOhw1L4L5mJdiwM4k28+
-	 8DWEYB4Sh6r+nW9t2xUK2Z53w1mlNg+p+QG0ASXiMtTGva/EnxNP8JfOlzzP+S7sLp
-	 j3axAlq48y0MfuA/qB3QchQd4amMnGid+awTNDRkA5dqc1GcwW5EArVYD7N8hq2qeT
-	 0QcWnpS2NhKWA==
-Message-ID: <0f356116-9e67-4abb-8bc2-65e63a936c17@kernel.org>
-Date: Mon, 29 Jan 2024 19:16:51 +0800
+	s=arc-20240116; t=1706527038; c=relaxed/simple;
+	bh=TLgpO6bVDu9ZlVqcFU4FafX5DCbdfjLdFbKgel+FKYU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=jPJPsb3IXkb7FcHUfARyHv4ICXckI84dK1CDX0y0vx5iT+i7ujj19LQBbKsH/UtVTIUjb8C3Wl1UMFp6XwoEg8m0HLHKvYCQXEN04lYJegvWt+Y4r75XbaBXdfrZ95RpgXkdJXE8AXjH9NoQq9h+YYz5QG6e5MbpS5422chJiC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=xZZzXE9F; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=TPfLB/H6; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=PoVBNPnA; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=7Mj6ZCOB; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E4B821FCF1;
+	Mon, 29 Jan 2024 11:17:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1706527032; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ucSmWZC5i1uAfzHbYBObRHzIlIbwMfDip4/fjgCGR6E=;
+	b=xZZzXE9FPxklhaBAQaNEXhq57XfZ/zvUUnLnHBy5k5aH48GMgnBndK4GcCt8x8JvUc0b0C
+	ErCL4/QC1X1sbaeJ1linBFlqssKhuDtXid4UHjUYW1IWOaJvL4Yu/Qi4l3Q7tHEi6RNpp2
+	1bAOxzOc/wuLbHtdRpfgQ98ldPCEpHk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1706527032;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ucSmWZC5i1uAfzHbYBObRHzIlIbwMfDip4/fjgCGR6E=;
+	b=TPfLB/H6ODAApTu47ef39If6dMD1R6esFRLjFzVSvK78IISfh8/IRBIloLOGHnBHtmfJmj
+	42lokxVYcC4MplAg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1706527031; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ucSmWZC5i1uAfzHbYBObRHzIlIbwMfDip4/fjgCGR6E=;
+	b=PoVBNPnAFcEjNxVTjiLj0YQz0Xeis1CLqSXpsycLRHOfmtlDoZACul/XUYpx51bAkXCOon
+	PTScF7ShVV/VHYyGeMDrTSBZEvglLlomoX6CGmXspZ5/8aah56c50QE3ciLXz9Svi4E/Zy
+	D+pBcB33tGQ2ZPEnfatC+uBaqZaN1c4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1706527031;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ucSmWZC5i1uAfzHbYBObRHzIlIbwMfDip4/fjgCGR6E=;
+	b=7Mj6ZCOBJ1dAnAIkM332zqR6kRe4Fy/5r8V/Jl1lSHcrOLWGRQuLv3yjs0M13EjwRDlkYh
+	OsxUgAxJ+Fxkq8BQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6A1D613647;
+	Mon, 29 Jan 2024 11:17:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id XmwxFjeJt2VnCQAAD6G6ig
+	(envelope-from <lhenriques@suse.de>); Mon, 29 Jan 2024 11:17:11 +0000
+Received: from localhost (brahms.olymp [local])
+	by brahms.olymp (OpenSMTPD) with ESMTPA id 86d7b1fb;
+	Mon, 29 Jan 2024 11:17:04 +0000 (UTC)
+From: Luis Henriques <lhenriques@suse.de>
+To: Daniel Dawson <danielcdawson@gmail.com>
+Cc: Theodore Ts'o <tytso@mit.edu>,  Andreas Dilger
+ <adilger.kernel@dilger.ca>,  linux-ext4@vger.kernel.org,
+  linux-kernel@vger.kernel.org
+Subject: Re: [inline_data] ext4: Stale flags before sync when convert to
+ non-inline
+In-Reply-To: <a25e5ee6-70c2-421f-92c2-407b43a7c61e@gmail.com> (Daniel Dawson's
+	message of "Sun, 28 Jan 2024 04:06:38 -0800")
+References: <5189fe60-c3e3-4bc6-89d4-1033cf4337c3@gmail.com>
+	<358aaf68-0618-41e6-9adf-04e211eb690e@gmail.com>
+	<87jznyr6xd.fsf@suse.de>
+	<a25e5ee6-70c2-421f-92c2-407b43a7c61e@gmail.com>
+Date: Mon, 29 Jan 2024 11:17:04 +0000
+Message-ID: <87frygqthr.fsf@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [f2fs-dev] [PATCH v1] f2fs: fix NULL pointer dereference in
- f2fs_submit_page_write()
-Content-Language: en-US
-From: Chao Yu <chao@kernel.org>
-To: Wenjie Qi <qwjhust@gmail.com>, jaegeuk@kernel.org
-Cc: linux-kernel@vger.kernel.org, hustqwj@hust.edu.cn,
- linux-f2fs-devel@lists.sourceforge.net
-References: <20240116141138.1245-1-qwjhust@gmail.com>
- <d379bc01-ca31-41e6-9d85-7fca846af491@kernel.org>
-In-Reply-To: <d379bc01-ca31-41e6-9d85-7fca846af491@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -4.30
+X-Spamd-Result: default: False [-4.30 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCPT_COUNT_FIVE(0.00)[5];
+	 RCVD_COUNT_THREE(0.00)[4];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-0.998];
+	 FREEMAIL_TO(0.00)[gmail.com];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_LAST(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Flag: NO
 
-On 2024/1/29 18:27, Chao Yu wrote:
-> On 2024/1/16 22:11, Wenjie Qi wrote:
->> BUG: kernel NULL pointer dereference, address: 0000000000000014
->> RIP: 0010:f2fs_submit_page_write+0x6cf/0x780 [f2fs]
->> Call Trace:
->> <TASK>
->> ? show_regs+0x6e/0x80
->> ? __die+0x29/0x70
->> ? page_fault_oops+0x154/0x4a0
->> ? prb_read_valid+0x20/0x30
->> ? __irq_work_queue_local+0x39/0xd0
->> ? irq_work_queue+0x36/0x70
->> ? do_user_addr_fault+0x314/0x6c0
->> ? exc_page_fault+0x7d/0x190
->> ? asm_exc_page_fault+0x2b/0x30
->> ? f2fs_submit_page_write+0x6cf/0x780 [f2fs]
->> ? f2fs_submit_page_write+0x736/0x780 [f2fs]
->> do_write_page+0x50/0x170 [f2fs]
->> f2fs_outplace_write_data+0x61/0xb0 [f2fs]
->> f2fs_do_write_data_page+0x3f8/0x660 [f2fs]
->> f2fs_write_single_data_page+0x5bb/0x7a0 [f2fs]
->> f2fs_write_cache_pages+0x3da/0xbe0 [f2fs]
->> ...
->> It is possible that other threads have added this fio to io->bio
->> and submitted the io->bio before entering f2fs_submit_page_write().
->> At this point io->bio = NULL.
->> If is_end_zone_blkaddr(sbi, fio->new_blkaddr) of this fio is true,
->> then an NULL pointer dereference error occurs at bio_get(io->bio).
->> The original code for determining zone end was after "out:",
->> which would have missed some fio who is zone end. I've moved
->>   this code before "skip:" to make sure it's done for each fio.
->>
+Daniel Dawson <danielcdawson@gmail.com> writes:
 
-Fixes: e067dc3c6b9c ("f2fs: maintain six open zones for zoned devices")
+> I didn't see your message until now. Sorry.
+>
+> On 1/24/24 9:13 AM, Luis Henriques wrote:
+>> Bellow, I'm inlining a patch that started as debug patch that I've used =
+to
+>> try to understand what was going on.  It seems to workaround that bug, b=
+ut
+>> I know it's not a real fix -- I don't yet understand what's going on.
+>
+> Thanks for this. I'm not sure if you meant to say you think it works arou=
+nd the
+> present issue. I just tested it, and it does not. In case you missed the =
+start
 
->> Signed-off-by: Wenjie Qi <qwjhust@gmail.com>
-> 
-> Reviewed-by: Chao Yu <chao@kernel.org>
-> 
-> Thanks,
-> 
-> 
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+I was referring to the bugzilla bug [1] I've been looking into recently.
+My patch was a debug patch for that bug, but it definitely does not fix
+the issue you're reporting.  Sorry for mixing up everything and confusing
+everyone ;-)
+
+[1] https://bugzilla.kernel.org/show_bug.cgi?id=3D200681
+
+> of the thread, here is the test I gave for triggering the issue:
+>
+> $ rm -f test-file; dd if=3D/dev/zero of=3Dtest-file bs=3D64 count=3D3 sta=
+tus=3Dnone;
+> lsattr test-file
+>
+> Instead of writing the file all at once, it splits it into 3 writes, wher=
+e the
+> first is small enough to make the file inline, and then it becomes
+> non-inline. Ideally, the output should be
+>
+> --------------e------- test-file
+>
+> but delayed allocation means it instead shows
+>
+> ------------------N--- test-file
+>
+> until sync. I also gave this code for testing SEEK_HOLE:
+>
+> https://gist.github.com/ddawson/22cfd4cac32916f6f1dcc86f90eed21a
+>
+>> Regarding your specific usecase, I can reproduce it and, unfortunately, I
+>> don't thing Ted's suggestion will fix it as I don't even see
+>> ext4_iomap_begin_report() being executed at all.
+>
+> To be clear, that function is called in a few specific circumstances, suc=
+h as
+> when lseek() is called with SEEK_HOLE or SEEK_DATA, or with FIEMAP. When I
+> traced the kernel myself, I did see it being executed from the lseek() ca=
+ll. The
+> changes are to address the file not yet being converted from inline, wher=
+e the
+> contents are still written where the map would otherwise be. If you treat=
+ it as
+> the map, you get nonsense. Something else needs to be done.
+>
+> I'm not clear on whether his proposed changes would then allow an applica=
+tion to
+> function properly under such a condition, but it should at least *not* gi=
+ve
+> ENOENT.
+>
+> After testing what I think are the changes he proposed, I find it doesn't
+> work. If I remove the "&& iomap->type =3D=3D IOMAP_HOLE", lseek() no long=
+er gives an
+> error, but instead returns 0, which I'm pretty sure won't work for the af=
+fected
+> use case. Either way, I'm not sure I interpreted his description of the c=
+hanges
+> correctly.
+
+Sure, I can understand under which circumstances ext4_iomap_begin_report()
+can be executed.  What I meant was that, for your very simple test case
+(using 'dd' and 'lsattr'), this function will not be executed and thus the
+suggested fix will still show the 'N' in the file attributes.
+
+Anyway, thanks a lot for the extra information your providing here.  I'll
+try to find some time in the next few days to keep debugging the issue and
+hopefully get some more useful info (and, who knows! a patch).
+
+Cheers,
+--=20
+Lu=C3=ADs
 
