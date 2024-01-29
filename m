@@ -1,112 +1,120 @@
-Return-Path: <linux-kernel+bounces-43070-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43071-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0CDF840B40
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:22:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C04E840B44
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:23:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54CD4B24EE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:22:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 093352885E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:23:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94FF615696E;
-	Mon, 29 Jan 2024 16:22:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D23E8156965;
+	Mon, 29 Jan 2024 16:23:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="h3InIN03"
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HKAyNdTb"
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06CAB155A58;
-	Mon, 29 Jan 2024 16:22:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A65A9155A22;
+	Mon, 29 Jan 2024 16:23:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706545365; cv=none; b=GRRzOoZE2CaG8dV6HPvGbmDyGt2DzYEY6EzZqY9tVTiw6oo6CGoKLj0Q6BJAxQ8iYDgYAL/ueLc30s3eQi+dlNOrHWoewrk3ePaxzFq6T+BCkjf0YRCEwmFSxJaukUK+oCT98nufdqtQAbfpGVxG+nbcid5UiEROgngLC1r4nio=
+	t=1706545388; cv=none; b=oXyLu1uR8WXKBiuS2OD6buFUspPW8warOlr7sUYn4ARW3RkPWCBUu0FhDLxueSAghpc7KqShFwPbO/9+8xa/9/mc448tCq/IMHzzTajkrRpwD5eCntu4UdmaCHlx5yyCQKCCkupFjGoou7ocbxLSsx1C427ikkvNpOwRpt9/bUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706545365; c=relaxed/simple;
-	bh=dk2iePkKQ8WbTc/CyWOkKphWL6R6O1SRme8w1LVKSd0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kPZsthMTWwtdAk05VscNBFt7aIu7PWhp63Dpk5UOOUJF8oHWtqVThAjG94/4u0V7TlkVRdG1+FcaL7JhGrER5WokpvRKVJK9GA9E64j4WA/MyJfWprgLyFzsK7/brbBjAGm6kKQnNPSUDcimiFEwubqLb39yWuTCHm/wa6wklL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=h3InIN03; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 069DCE000D;
-	Mon, 29 Jan 2024 16:22:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1706545355;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jfalacopj05NBro973M+ZIGKXKczGFxAKP3QzKWb2R4=;
-	b=h3InIN03yzv4r1p1AceaEKvatMaRv+Vz4cv+wuVpgHnZ99PedXpFWaffXGs9sQVzxtpO9l
-	9gYZhkgjR7Vl3rpSK4+PSCeiwXtlSPaZFnuH8pjLDVqEkudBjE7Y32v64syOpZC8EnZVO5
-	Z7WSrGvgYGaH0SAE+pNSt1yVxJnOPQTGnymjVcGmcdTLQuMJRjsUcXHWvRhFXlj57sMaZ/
-	e/ZSUD6cYhjGOsYmBaAJ542QIU0lV57bMwCglw0MBXbH1D7pXz70MeSmB+Qjpk4YWSs+pw
-	AyjokGotuJYUWPCgNGwfjtP7y1w+jKN+y2mtjRX3EnNjv67xx1WyMj/arujzfg==
-Message-ID: <431750cc-fb6b-4f7a-9123-b6986d359742@arinc9.com>
-Date: Mon, 29 Jan 2024 19:22:28 +0300
+	s=arc-20240116; t=1706545388; c=relaxed/simple;
+	bh=OMqVP6ph42lDf1Ky7eApI1rvSIdCU1Rk3uR4ghXPe7s=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YZv5OrEK1IyQwCPY6Pb0GmDFD4Ani7O87gV5phJQXKgEd+pDSIpvf27xqL33KJV6zHgMB+YmXqTVIj5fx2G+FLXCPdO8PPKxMtpEV3Z0UFkSKdzd2wQXWHIZjYfIejmxkeaVsK59QReZbmC1GEEwFmxhO/Ax0cM1dn/7f+J7dbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HKAyNdTb; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-510322d5275so2844909e87.1;
+        Mon, 29 Jan 2024 08:23:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706545385; x=1707150185; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=boQI9oYiK4uW55M3uxYeL65Mv+jSVBAg7WNoRgTbhwA=;
+        b=HKAyNdTbWgKsrVO1i5IwD/oEwiH5tvNi0SPGcQWdOGwZ0ZL91O25EcPLGms4faYZWQ
+         VJKv28JWFcdeCqxFXO/iHTi5CXR+LuRefwGE1iELbhHQva5Agg6N6NNiJjvKXlTaIjmm
+         ywxmAEGyxNqU789x+cYL7Y0wiTP96eFqgGOSJMJ+QiOFon5lsKEztU6QfszG627eIFWS
+         jkKxtMY8LI5bpFGhQ/1W3GyJvCuw5hrwCLkpV4ud0zOTsCuA45BR5OScfcndNrGmx1Pp
+         WaiTUnSQhabf7Wbnrih8IePaONNtvTiQ0/ZlGx0ol3y+hhJfx/lrM5uz08UCSmUfSO/2
+         cihw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706545385; x=1707150185;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=boQI9oYiK4uW55M3uxYeL65Mv+jSVBAg7WNoRgTbhwA=;
+        b=SKzPPGUHF6eQoIUEiJdq6pBV9bdCyR9NTeUjjlMvAX0UYjtfmxZYFsksN3P6W7ipmt
+         ORTx3Ma1A6fz/i0RiphtiuH8QTpGVfrL8k9ja6g/FFhYzKugPA94+64K00o3snLM7JBc
+         8KUvuNTjbr57sS7wDsbRuNfpV6YVYdZ8sMUTHVyYdAPbH7AN7rG1ymQlxaXfsqI/b13h
+         JvoFPq5cjQkx1RYRsywn5T2C1VHRjJl6TMQMnmdtESQeF8j8jUr04XzlsCaO2aFDiJa+
+         vQovs4wh8XtSyprrygKtQf5abdArVBFwJHQknq8kUWtFDrZ0gBROvvnsAKK5wP9LSx81
+         JElw==
+X-Gm-Message-State: AOJu0YxyXIXEuKKBnLjBJ1iUn3L4m3e15HUKP5wUnrRiGKHzMtsuSsyA
+	tAWTdb435hB5LYgzpFTneYk4TJw175e41yOtYvtqpegqGVztIT3F
+X-Google-Smtp-Source: AGHT+IHMb/abY1Egka+gDUQktv39XD/3oc+K/jwDOtSEICdJqJJJ+HlM+QesxWLQLb5dtoB1kU12rw==
+X-Received: by 2002:a05:6512:3da8:b0:511:f33:4e4c with SMTP id k40-20020a0565123da800b005110f334e4cmr2859516lfv.40.1706545384364;
+        Mon, 29 Jan 2024 08:23:04 -0800 (PST)
+Received: from pc636 (host-90-233-198-33.mobileonline.telia.com. [90.233.198.33])
+        by smtp.gmail.com with ESMTPSA id 9-20020ac25f09000000b0050eacc0c80bsm1141544lfq.131.2024.01.29.08.23.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 08:23:03 -0800 (PST)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Mon, 29 Jan 2024 17:23:01 +0100
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>, RCU <rcu@vger.kernel.org>,
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH v4 0/4] Reduce synchronize_rcu() latency(v4)
+Message-ID: <ZbfQ5cOkeReti7J0@pc636>
+References: <20240104162510.72773-1-urezki@gmail.com>
+ <620b475d-eef8-4396-9d3a-d3dcf1d70f9a@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v3 6/7] net: dsa: mt7530: do not set
- priv->p5_interface on mt7530_setup_port5()
-Content-Language: en-US
-To: Vladimir Oltean <olteanv@gmail.com>
-Cc: Daniel Golle <daniel@makrotopia.org>,
- Landen Chao <Landen.Chao@mediatek.com>, DENG Qingfang <dqfext@gmail.com>,
- Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
- Florian Fainelli <f.fainelli@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Russell King <linux@armlinux.org.uk>, mithat.guner@xeront.com,
- erkin.bozoglu@xeront.com, Bartel Eerdekens <bartel.eerdekens@constell8.be>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-References: <20240122-for-netnext-mt7530-improvements-1-v3-0-042401f2b279@arinc9.com>
- <20240122-for-netnext-mt7530-improvements-1-v3-6-042401f2b279@arinc9.com>
- <20240129125241.gu4srgufad6hpwor@skbuf>
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <20240129125241.gu4srgufad6hpwor@skbuf>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: arinc.unal@arinc9.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <620b475d-eef8-4396-9d3a-d3dcf1d70f9a@paulmck-laptop>
 
-On 29.01.2024 15:52, Vladimir Oltean wrote:
-> On Mon, Jan 22, 2024 at 08:35:57AM +0300, Arınç ÜNAL via B4 Relay wrote:
->> From: Arınç ÜNAL <arinc.unal@arinc9.com>
->>
->> Running mt7530_setup_port5() from mt7530_setup() used to handle all cases
->> of configuring port 5, including phylink.
->>
->> Setting priv->p5_interface under mt7530_setup_port5() makes sure that
->> mt7530_setup_port5() from mt753x_phylink_mac_config() won't run.
->>
->> The commit ("net: dsa: mt7530: improve code path for setting up port 5")
->> makes so that mt7530_setup_port5() from mt7530_setup() runs only on
->> non-phylink cases.
->>
->> Get rid of unnecessarily setting priv->p5_interface under
->> mt7530_setup_port5() as port 5 phylink configuration will be done by
->> running mt7530_setup_port5() from mt753x_phylink_mac_config() now.
->>
->> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
->> ---
+On Fri, Jan 26, 2024 at 11:07:18PM -0800, Paul E. McKenney wrote:
+> On Thu, Jan 04, 2024 at 05:25:06PM +0100, Uladzislau Rezki (Sony) wrote:
+> > This is a v4 that tends to improve synchronize_rcu() call. To be more
+> > specific it is about reducing a waiting time(especially worst cases)
+> > of caller that blocks until a grace period is elapsed. 
+> > 
+> > In general, this series separates synchronize_rcu() callers from other
+> > callbacks. We keep a dedicated an independent queue, thus the processing
+> > of it starts as soon as grace period is over, so there is no need to wait
+> > until other callbacks are processed one by one. Please note, a number of
+> > callbacks can be 10K, 20K, 60K and so on. That is why this series maintain
+> > a separate track for this call that blocks a context.
 > 
-> Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+> And before I forget (again), a possible follow-on to this work is to
+> reduce cond_synchronize_rcu() and cond_synchronize_rcu_full() latency.
+> Right now, these wait for a full additional grace period (and maybe
+> more) when the required grace period has not elapsed.  In contrast,
+> this work might enable waiting only for the needed portion of a grace
+> period to elapse.
 > 
-> I hope this moves the patch set out of the 'deferred' state.
-> 
-> ---
-> pw-bot: under-review
+Thanks. I see it. Probably we also need to move "sync" related
+functionality out of tree.c file to the sync.c or something similar
+to that name. IMO. 
 
-I still see deferred. I guess I'll have to submit this again. :/
+Thanks!
 
-Arınç
+--
+Uladzislau Rezki
 
