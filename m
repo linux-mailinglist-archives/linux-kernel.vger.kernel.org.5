@@ -1,200 +1,122 @@
-Return-Path: <linux-kernel+bounces-43148-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43149-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80CA2840C68
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:53:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6474840C6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:53:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36E01285182
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:53:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 470071F24926
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:53:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1330B157054;
-	Mon, 29 Jan 2024 16:52:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DB4715703B;
+	Mon, 29 Jan 2024 16:53:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="JdFo6k4n"
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="XFH4jAma"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EAD115704B
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 16:52:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83248154BF0;
+	Mon, 29 Jan 2024 16:53:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706547173; cv=none; b=Z0bBDqvs1ho4XOt4CfMnSc+wWRDImEwYI5izTj53zaoE9A+CqP7NB/7dx0qwuwP8fWMmtKFLi7YMHyd5RSDk0ZtE34o2HVx4+uBNAstN6RjMshg3zikXIYmqSgq76vNXON+ofq689RQvHQ/KSnKSWx6+GFOQbodB49izxVKpjEs=
+	t=1706547193; cv=none; b=fI8k+rMxcl0rZ/yBbdV6ey6Yki5XQXejzigQ8qPXGN/+Emsoe7y81JhsJrwxf0Bi6GST+087jZ9o2RQwhrhf837zytOu/ScP9ix1oo4br6frwsQzcjZxaFQ02eEzngjpWEJ1xmio+TY/Mv1lWx6Ffe9QBNU8/kl0diVSByb/vb0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706547173; c=relaxed/simple;
-	bh=tNx0bVBnJxItBJ/LbcaY2I3try0BCc3gyB6Ux2dJpxQ=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=oxyukT2VK29UlC6rbK9Bvflx0NiwALRyT8fTYAtFVglV4Uwyk1XERumqG5zsuQ0ZiW9RZjsJQ5OQSasJSE/RhjZ4pE55yV1CB6iRkO/EP7tTIHGkdvRn55ZTC1ekFrvAMYVtMcU7eVX1dwm3TbJZDVrrI0Uxhw7vJvlIkGbc5bY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=JdFo6k4n; arc=none smtp.client-ip=185.125.188.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 5EDC83FD96
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 16:52:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1706547168;
-	bh=Hj89ZZQX3ZdKnHTpVh+K+VIK2Y4dhKlLE4jhHB2GPL4=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type;
-	b=JdFo6k4n8tZ0sTdDNfpcXWy0e5jAefUTTPY5L3e3LQo2XHZ5hBj+ne3NdhSccNFTN
-	 UkrwTDbJvLOgAPS4cyAgJupqmHkCbSHCZFPUW/Z3IYJTK1TJJNv+eje/N/fK9NwasX
-	 E6WBmgonYZSrM93mXasBAk3NwVW9RlnVBxHWxzg03DxIkkJ5x7olzORwC471ZlaCs9
-	 cEYnP/gZocuTN5a1NwmVPQGkIAy/TSfUIumtsc2qRoLcsPUIcFqcZsrxA2jGPI6fsw
-	 mCwl9awWXxrOOgcOERKwfuMnESxeAatTAHHQmsKDJ5dS131Ivr5F1PiAWeKzvhOMfn
-	 VEGepWPfv7tYw==
-Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-55f07d8f61fso545162a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 08:52:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706547167; x=1707151967;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Hj89ZZQX3ZdKnHTpVh+K+VIK2Y4dhKlLE4jhHB2GPL4=;
-        b=JnTCrL8LG3LMsULuN5s/6YNxXi4nN7NlovnJlQCMWURFKBGkYeVblzl/ffI54QZ4oY
-         BDbuqWJ/ZHGxjaW1mCVlxyN15byOv8o1vl/TESkDr1wf5aidEUfr/KGzOwpNjGnSu++m
-         Tr3212kLhuhYuyr88ZLy41csx4nDgheBbJBZ9NHXH/V6lGwy16JhWQ84ENnkgQBOrBEF
-         6A8AHcI0brij6jlKz5097H7WuRRq32mBuukbPhvD2FvrLXKvlc0Oa5TSA66bxF9szpgg
-         9t/0Cm+LiapnSNScLyQhuv9pEkYCNsh6AgLcSD1u+EfmNQl+2IS+JmT/LLEWVUGZSwIp
-         VOKQ==
-X-Gm-Message-State: AOJu0Yz6MC6PnED2k58Co6R+3rxkd3ES5nl3vuHhyu+Fytjf9j4pWEQd
-	ULWw7fvv62PShxsz45zkt5G0UiOdYQi2saxUDkz2W1bjSk5liqXy9+V4oy7cObLD7jmuWnO5GX6
-	UgBhCLZZGPxJUEwxYQH6+HFlbeNuot9rG3bJhRaRJSodr84ZeApQ2RSVPz7sYUsWjbnj5tv9y3T
-	QN1Uje7Yq52Q==
-X-Received: by 2002:a05:6402:1cbc:b0:55e:f33c:8744 with SMTP id cz28-20020a0564021cbc00b0055ef33c8744mr1941926edb.41.1706547167745;
-        Mon, 29 Jan 2024 08:52:47 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGEhGqbgBtNxq0ql9XKUHbIEMA/ryS6jF4kGkClbNBu/BtwxqVXa/rdoK8fOlMR41AVoUgGeA==
-X-Received: by 2002:a05:6402:1cbc:b0:55e:f33c:8744 with SMTP id cz28-20020a0564021cbc00b0055ef33c8744mr1941911edb.41.1706547167438;
-        Mon, 29 Jan 2024 08:52:47 -0800 (PST)
-Received: from amikhalitsyn (ip5b404829.dynamic.kabel-deutschland.de. [91.64.72.41])
-        by smtp.gmail.com with ESMTPSA id f19-20020a056402195300b0055e96290001sm3020260edz.27.2024.01.29.08.52.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 08:52:47 -0800 (PST)
-Date: Mon, 29 Jan 2024 17:52:46 +0100
-From: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: mszeredi@redhat.com, stgraber@stgraber.org,
- linux-fsdevel@vger.kernel.org, Seth Forshee <sforshee@kernel.org>, Miklos
- Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, Bernd
- Schubert <bschubert@ddn.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 0/9] fuse: basic support for idmapped mounts
-Message-Id: <20240129175246.d329155abb7c299f58783d7f@canonical.com>
-In-Reply-To: <20240121-pfeffer-erkranken-f32c63956aac@brauner>
-References: <20240108120824.122178-1-aleksandr.mikhalitsyn@canonical.com>
-	<20240121-pfeffer-erkranken-f32c63956aac@brauner>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706547193; c=relaxed/simple;
+	bh=7IF3NRzkq7YYR37XIex5QmrIK/n0fB3HatMOIeK/cRI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LQ0wTYeszUUyp0AyT8NuXfkaBXGXALwPbjs4orB/+LY5WKucwOM85NhqkhlgVfZ1Ixsc+97LvvPXfDWi+xU3XE89d08L8ILrZDb31Ohp2iZTyOFXYn3N1G2jlpafqOs4heT/k8qjWHAiKKycqn0qdPHv6dc/FpalvHuxX1sKRFs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=XFH4jAma; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40TGhM0Q013516;
+	Mon, 29 Jan 2024 16:53:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=uBbid1amquyLIJr4bv4Vc6+0vlJFqIwuorIR4rfEizY=;
+ b=XFH4jAma6yKsf+fdSqmODgkKkygoAmxgpJiWmUtQA8b7GaQfs0Cb9uORzmvR1C5LaRmM
+ 0F7oQrvIkSPifBeh8lp5AZ+aVP2k4asZE61i8gL1sO3desMR22F59fO/46600kjBPFmx
+ Kg23VVSg083gdhWfr5zAcVWB7QR3xLq50WIT8vQI9OuBZ8uxzatg5lP/avJQdS7oyjJ6
+ QEXz/2O4lsNX6J39K57caKV3VpfBssBZO210P1ywneoufcAFP5d8h/Fwtp8jVcFaizK3
+ QK66cko0z08h9c+FzJSTA816WAehdkD9P7p0G9oxWtWZsP0GiJH5qvo/46ISoAadv/NX TQ== 
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vxfsp89m7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Jan 2024 16:53:10 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40TG8d7E011266;
+	Mon, 29 Jan 2024 16:53:09 GMT
+Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vweck92gd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Jan 2024 16:53:09 +0000
+Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
+	by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40TGr8Gr57606618
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 29 Jan 2024 16:53:08 GMT
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 132F958056;
+	Mon, 29 Jan 2024 16:53:08 +0000 (GMT)
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id AB4425803F;
+	Mon, 29 Jan 2024 16:53:07 +0000 (GMT)
+Received: from [9.61.175.71] (unknown [9.61.175.71])
+	by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 29 Jan 2024 16:53:07 +0000 (GMT)
+Message-ID: <324d5277-8272-458f-b7fc-f0a21a50af64@linux.ibm.com>
+Date: Mon, 29 Jan 2024 11:53:07 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] s390/vfio-ap: queue_configuration sysfs attribute for
+ mdevctl automation
+Content-Language: en-US
+To: "Jason J. Herne" <jjherne@linux.ibm.com>, linux-s390@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, pasic@linux.ibm.com
+References: <20240126143533.14043-1-jjherne@linux.ibm.com>
+From: Anthony Krowiak <akrowiak@linux.ibm.com>
+In-Reply-To: <20240126143533.14043-1-jjherne@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: assim4J50zwtlhPGROSHkPBsBlbFeqSs
+X-Proofpoint-GUID: assim4J50zwtlhPGROSHkPBsBlbFeqSs
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-29_10,2024-01-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
+ priorityscore=1501 lowpriorityscore=0 bulkscore=0 impostorscore=0
+ mlxlogscore=644 suspectscore=0 phishscore=0 mlxscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401290124
 
-On Sun, 21 Jan 2024 18:50:57 +0100
-Christian Brauner <brauner@kernel.org> wrote:
+Isn't this v4 of this series?
 
-> On Mon, Jan 08, 2024 at 01:08:15PM +0100, Alexander Mikhalitsyn wrote:
-> > Dear friends,
-> > 
-> > This patch series aimed to provide support for idmapped mounts
-> > for fuse. We already have idmapped mounts support for almost all
-> > widely-used filesystems:
-> > * local (ext4, btrfs, xfs, fat, vfat, ntfs3, squashfs, f2fs, erofs, ZFS (out-of-tree))
-> > * network (ceph)
-> > 
-> > Git tree (based on https://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git/log/?h=for-next):
-> > v1: https://github.com/mihalicyn/linux/commits/fuse_idmapped_mounts.v1
-> > current: https://github.com/mihalicyn/linux/commits/fuse_idmapped_mounts
-> 
-> Great work!
-> 
-> > Things to discuss:
-> > - we enable idmapped mounts support only if "default_permissions" mode is enabled,
-> > because otherwise, we would need to deal with UID/GID mappings on the userspace side OR
-> > provide the userspace with idmapped req->in.h.uid/req->in.h.gid values which is not
-> > something that we probably want to do. Idmapped mounts philosophy is not about faking
-> > caller uid/gid.
-> 
-> Having VFS idmaps but then outsourcing permission checking to userspace
-> is conceptually strange so requiring default_permissions is the correct
-> thing to do. 
-> 
-> > - We have a small offlist discussion with Christian about adding fs_type->allow_idmap
-> > hook. Christian pointed out that it would be nice to have a superblock flag instead like
-> > SB_I_NOIDMAP and we can set this flag during mount time if we see that the filesystem does not
-> > support idmappings. But, unfortunately, I didn't succeed here because the kernel will
-> > know if the filesystem supports idmapping or not after FUSE_INIT request, but FUSE_INIT request
-> > is being sent at the end of the mounting process, so the mount and superblock will exist and
-> > visible by the userspace in that time. It seems like setting SB_I_NOIDMAP flag, in this
-> > case, is too late as a user may do the trick by creating an idmapped mount while it wasn't
-> > restricted by SB_I_NOIDMAP. Alternatively, we can introduce a "positive" version SB_I_ALLOWIDMAP
-> 
-> I see.
-> 
-> > and a "weak" version of FS_ALLOW_IDMAP like FS_MAY_ALLOW_IDMAP. So if FS_MAY_ALLOW_IDMAP is set,
-> > then SB_I_ALLOWIDMAP has to be set on the superblock to allow the creation of an idmapped mount.
-> > But that's a matter of our discussion.
-> 
-> I dislike making adding a struct super_block method. Because it means that we
-> call into the filesystem from generic mount code and specifically with the
-> namespace semaphore held. If there's ever any network filesystem that e.g.,
-> calls to a hung server it will lockup the whole system.So I'm opposed to
-> calling into the filesystem here at all. It's also ugly because this is really
-> a vfs level change. The only involvement should be whether the filesystem type
-> can actually support this ideally.
-
-That's a very interesting point about holding a semaphore. Thanks!
-
-> 
-> I think we should handle this within FUSE. So we allow the creation of idmapped
-> mounts just based on FS_ALLOW_IDMAP. And if the server doesn't support the
-> FUSE_OWNER_UID_GID_EXT then we simply refuse all creation requests originating
-> from an idmapped mount. Either we return EOPNOSUPP or we return EOVERFLOW to
-> indicate that we can't represent the owner correctly because the server is
-> missing the required extension.
-
-Ok, that's effectively the same approach that we already have in cephfs:
-https://github.com/torvalds/linux/blob/41bccc98fb7931d63d03f326a746ac4d429c1dd3/fs/ceph/mds_client.c#L3059
-
-I personally comfortable with this too.
-
-It's interesting to hear what Miklos thinks about it.
-
-Kind regards,
-Alex
-
-> 
-> diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
-> index 3f37ba6a7a10..0726da21150a 100644
-> --- a/fs/fuse/dir.c
-> +++ b/fs/fuse/dir.c
-> @@ -606,8 +606,16 @@ static int get_create_ext(struct mnt_idmap *idmap,
->                 err = get_security_context(dentry, mode, &ext);
->         if (!err && fc->create_supp_group)
->                 err = get_create_supp_group(dir, &ext);
-> -       if (!err && fc->owner_uid_gid_ext)
-> -               err = get_owner_uid_gid(idmap, fc, &ext);
-> +       if (!err) {
-> +               /*
-> +                * If the server doesn't support FUSE_OWNER_UID_GID_EXT and
-> +                * this is a creation request from an idmapped mount refuse it.
-> +                */
-> +               if (fc->owner_uid_gid_ext)
-> +                       err = get_owner_uid_gid(idmap, fc, &ext);
-> +               else if (idmap != &nop_mnt_idmap)
-> +                       err = -EOPNOTSUPP;
-> +       }
-> 
->         if (!err && ext.size) {
->                 WARN_ON(args->in_numargs >= ARRAY_SIZE(args->in_args));
-
-
--- 
-Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+On 1/26/24 9:35 AM, Jason J. Herne wrote:
+> Mdevctl requires a way to atomically query and atomically update a vfio-ap
+> mdev's current state. This patch set creates the queue_configuration sysfs
+> attribute.  This new attribute allows reading and writing an mdev's entire
+> state in one go. If a newly written state is invalid for any reason the entire
+> state is rejected and the target mdev remains unchanged.
+>
+> Jason J. Herne (3):
+>    s390/ap: Externalize AP bus specific bitmap reading function
+>    s390/vfio-ap: Add sysfs attr, queue_configuration, to export mdev
+>      state
+>    s390/vfio-ap: Add write support to sysfs attr ap_config
+>
+>   Documentation/arch/s390/vfio-ap.rst   |  27 ++++
+>   drivers/s390/crypto/ap_bus.c          |  13 +-
+>   drivers/s390/crypto/ap_bus.h          |  22 +++
+>   drivers/s390/crypto/vfio_ap_ops.c     | 213 +++++++++++++++++++++++---
+>   drivers/s390/crypto/vfio_ap_private.h |   6 +-
+>   5 files changed, 248 insertions(+), 33 deletions(-)
+>
 
