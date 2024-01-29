@@ -1,129 +1,133 @@
-Return-Path: <linux-kernel+bounces-43187-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43189-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 375FB840D8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:11:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50164840ED9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:19:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E82A928CAB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:11:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E6C43B2342A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:19:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5FF515B964;
-	Mon, 29 Jan 2024 17:08:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 131A515AAB7;
+	Mon, 29 Jan 2024 17:12:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="On+uWy0v"
-Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CeWhUdpA"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9975615B308
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 17:08:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE5FB15AAB1
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 17:12:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706548121; cv=none; b=uGh54s1MOpC0L+LxxjfQC7I2fh8nP3Eu93J2acGjV8YR7Mupup9ZpCWtq/vua8FXJybPK0xEnuAKklAlcXlabcR0ZH9cZH1awBYjSz4Z/j/nUj3pWkI866M2Ii69vGAzYv1qBxIhqf7aUPv360UPywrKuhRGNX1Ca4oQ0FkN7o0=
+	t=1706548354; cv=none; b=IozwfP9jKuCxpNc3JTaUnSKYV1Q+KTshCFcKwVuKsXCCI5PXjNsEa/dbWVBrdRvELHcD1vz3YuLDqyNS+R0fomAa3BlfWivuKXQGqgzHf3MQof7VzKZNnu28FtD8NZWa3Wn26sT2/mDyUGdZsjkupLTGqD+RwlsOSaTNLRHYGXI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706548121; c=relaxed/simple;
-	bh=UFA2sbZ3Uszgy+yX9T1/72+bJwfqcVAD5CapdxRxgN0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=U0boYOChQdIEGFXKdA4Y2ywBdBr9OAa4EsxC45x1hmQdMcnlok5BeuPY6wmRGdDctqr8OWUHpMFua+CUNVcbB6BPjAFiOu2xzGfjKRrCC8s6w0FqQmDGw/aYqs9Dd7fM9Eit/OqOcgzVYCQNWkfrEn+QSvYQYCBDLrnbQCEOe0o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=On+uWy0v; arc=none smtp.client-ip=209.85.222.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-7d2a78c49d1so1733939241.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:08:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706548118; x=1707152918; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EytCfCt7Mdn+cYY/W3p5gw2x+cwVqNDRPkfT5+zTUNI=;
-        b=On+uWy0vOWV6oVVgcSwFa0WMil8Hqocjk50nCrwJRtMSPGPvQ0Mm7NoGZ42WFprNDn
-         n6wT3QBFwFFvoGCVwqt0QTEQO33zIyvvYbAt9BmiZrCghYbF0CumaGv9Mbk/fI3/ZNCN
-         9IZK2+tavJf4L9tam7xxEWheZ/uvu5SjuqA0s+wCIWy8Vpb5B7GoAddBr2qD8cWPmGa+
-         yj/6yYmxfeDTSpuy3Mg0q2zx5kzQSPXS80VgHm4BkMCOM5Z646JAS4nHBmdt9BuwRKFX
-         ug5lliiZHy0WALv2FJFgiarlw3CF6i5FClmblQkcs+KvKOaSRZ16M3KHV+ucoxhE3KkF
-         RS8g==
+	s=arc-20240116; t=1706548354; c=relaxed/simple;
+	bh=xN7z0yKJVYS2/AX2hKKn2FEDmI//91+6xCLFTLbayKQ=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=sV8C4t8gUR9F/Gtvn6CxYvRwCYkcEm7J5eCXcwLtenmMbWX/2kYI95CpS+rE76Al9L/Fm5K2TTPJ9/jICECJg0VJiS0dkUSdI3b+YQmfbaPq05ZNaE4y41xKMmIgjkMzd+mYrI8QltrG258pjjr+sIxebmw5ajuLfAX+rRpR6Wo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CeWhUdpA; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706548351;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=xsce6k1bFLcIW+x8jc3gQMrtFj/bRo1gjpGuOMox5NI=;
+	b=CeWhUdpAVEd3eHA/uJYbjZnkEXzNZDbxbsIqdrXMVmE1B2KAYrDIUE1JKusbkGRAEVSaCJ
+	D7XdmHgMdU6Jv81Fos+aBkqFWe23vTS3ithqLNBryVSi7l1B9QLdN3e47R2Jr9t6yqQQG+
+	D8ffZ9Ce5mS8KO26lxfM5j/ZgHRG7nw=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-486-eL0bGzjINZiEB58PYLMPbQ-1; Mon, 29 Jan 2024 12:12:29 -0500
+X-MC-Unique: eL0bGzjINZiEB58PYLMPbQ-1
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-784078a3852so26059185a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:12:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706548118; x=1707152918;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EytCfCt7Mdn+cYY/W3p5gw2x+cwVqNDRPkfT5+zTUNI=;
-        b=WbksMhg0k0r+fBK6aRsjadZDexL2MLm6P5XRxcS/oC0GHp1LBrUo5Kqul8uArLOwnk
-         RmahVzW8+kz3+hVlv1EofL85iqJCELzJXwZwbbeyKj/wCxYouvnsp0c+MNIsNWxaSPFP
-         iZQ7V9HbrZ+Aej3C1JXeqXQfzz/R/n9hGV3A0vXdDAvmnWke3adxltnDAMsvZOTEt3UM
-         mdKhIR1cn9hPrkCJfVPPUVMuzhpUCqGTkyNzFNnyXRB9jPU6Pq0HJ7MQ299blwAobeEB
-         r7nuGUUAs8u6Ibf544lHDh5yRvUfvPdTJ5YyFFeoOP7zGeKIIkd8shUkCLYFjX8F0fY5
-         Cmvg==
-X-Gm-Message-State: AOJu0YwSf+vphvIUTEpevTY+3meCGq5FIzGy1LKlIEnyfMwiAXDrUo6P
-	iSRJVzb95KOVTVsQochaFjXeM9ugfGelAs2WMb+V5+GfvWV3QGXz8vl4khTBf7Xq6nV4cVpJKcN
-	FdO3xGEtyPLktsK7yJbU5jCEVAC3RK0aRX4AB
-X-Google-Smtp-Source: AGHT+IF9Cu5QQ8w4oZJwiWiMcHW4RaXyLjrg31UTRbHFnVHAFPnrShgJD92nkJB3pF4cIqhqy+YlGQA7E/cQ25bGa4E=
-X-Received: by 2002:a05:6122:1799:b0:4b7:57a4:1238 with SMTP id
- o25-20020a056122179900b004b757a41238mr3247799vkf.14.1706548118338; Mon, 29
- Jan 2024 09:08:38 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706548349; x=1707153149;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xsce6k1bFLcIW+x8jc3gQMrtFj/bRo1gjpGuOMox5NI=;
+        b=GPS5oCH6aBylxbs1GHyoRUYoBzVbLW/tucOqAe9GWa5HqxdvteA/vLbfljtKCsQbQx
+         M1ZnWj0t75UG+KVxH+TfBtXjv6Dcs+KlvHxRuCO/pEIpvabGaQwhS0loeTXZHNiP3j+0
+         upZ1kj51tDTH69eWb4EEREqpBWGiP8MFpTRQRL+o+xa3IHHX7rtgeMKWti9AQuvbIY23
+         JiaQR5NyvBOhnI/FBUHeZfwYJO+TT2z3gwnZy3KjMcErswehgusTAKnRvxToLv0hxjF2
+         fB84hzxmuRguasIebUgawZ9RvV8QEZ4eK9YBh8BTxHtz0iR8MZgWJciVV9E6m3lZj/OA
+         YCqQ==
+X-Gm-Message-State: AOJu0Yy3sIa369lbeMljCXf2h/Mn+ugpfcimRgZ3fVhGMVJ3RVpl978D
+	rBv+pSCGzMfGjZXVgmiZEoLTGKMkG0u86N6YHzhmOPjmanGUOwG8g6fbxkE4SoP6we5VIsCbKsY
+	jC4044GG5JuRrfgu+aHlUYj5JPnKMJPNhFh6aFAQcEDsq7bLnxP2ozCvYaiPVdA==
+X-Received: by 2002:a05:620a:909:b0:783:7775:b395 with SMTP id v9-20020a05620a090900b007837775b395mr5917725qkv.74.1706548349406;
+        Mon, 29 Jan 2024 09:12:29 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IElNUymv0hHq1m2C6+cST6qAHiLIvOpOWStiSVR+Syryq46JeptpoFsfRaKAcF+vcwSHf43/Q==
+X-Received: by 2002:a05:620a:909:b0:783:7775:b395 with SMTP id v9-20020a05620a090900b007837775b395mr5917709qkv.74.1706548349138;
+        Mon, 29 Jan 2024 09:12:29 -0800 (PST)
+Received: from [192.168.1.163] ([2600:1700:1ff0:d0e0::47])
+        by smtp.gmail.com with ESMTPSA id e22-20020a05620a209600b00783e70cf38asm2195577qka.130.2024.01.29.09.12.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 09:12:28 -0800 (PST)
+From: Andrew Halaney <ahalaney@redhat.com>
+Date: Mon, 29 Jan 2024 11:12:11 -0600
+Subject: [PATCH] MAINTAINERS: Drop unreachable reviewer for Qualcomm ETHQOS
+ ethernet driver
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240118-alice-file-v3-0-9694b6f9580c@google.com>
- <20240118-alice-file-v3-9-9694b6f9580c@google.com> <1ac11c65-7024-41c3-a788-cfcad8fb6c55@proton.me>
-In-Reply-To: <1ac11c65-7024-41c3-a788-cfcad8fb6c55@proton.me>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Mon, 29 Jan 2024 18:08:27 +0100
-Message-ID: <CAH5fLgjMvh65PXdxnkPAtxNH82UDAwtyXmPK+VJPFTtXfiN2JQ@mail.gmail.com>
-Subject: Re: [PATCH v3 9/9] rust: file: add abstraction for `poll_table`
-To: Benno Lossin <benno.lossin@proton.me>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Andreas Hindborg <a.hindborg@samsung.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Dan Williams <dan.j.williams@intel.com>, 
-	Kees Cook <keescook@chromium.org>, Matthew Wilcox <willy@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org, 
-	rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240129-remove-dwmac-qcom-ethqos-reviewer-v1-1-2645eab61451@redhat.com>
+X-B4-Tracking: v=1; b=H4sIAGrct2UC/x2NwQqDMBAFf0X23AWTFNT+ivQQklfdQ0zdiBbEf
+ 2/a4xxm5qQCFRR6NCcpdimSlwrm1lCY/TKBJVYm29p7a+zAipR3cDySD7yGnBjbvObCPxsHlI1
+ 3XexDZ1zvqHbeipd8/o/xeV1ffEfE9nMAAAA=
+To: Vinod Koul <vkoul@kernel.org>, 
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+ Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+ linux-arm-kernel@lists.infradead.org, Andrew Halaney <ahalaney@redhat.com>
+X-Mailer: b4 0.12.3
 
-On Wed, Jan 24, 2024 at 11:11=E2=80=AFAM Benno Lossin <benno.lossin@proton.=
-me> wrote:
->
-> On 18.01.24 15:36, Alice Ryhl wrote:
-> > +/// Wraps the kernel's `struct poll_table`.
-> > +///
-> > +/// # Invariants
-> > +///
-> > +/// This struct contains a valid `struct poll_table`.
-> > +///
-> > +/// For a `struct poll_table` to be valid, its `_qproc` function must =
-follow the safety
-> > +/// requirements of `_qproc` functions. It must ensure that when the w=
-aiter is removed and a rcu
->
-> The first sentence sounds a bit weird, what is meant by `_qproc` function=
-s?
-> Do you have a link to where that is defined? Or is the whole definition t=
-he
-> next sentence?
+Bhupesh's email responds indicating they've changed employers and with
+no new contact information. Let's drop the line from MAINTAINERS to
+avoid getting the same response over and over.
 
-Yeah. Does this wording work better for you?
+Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
+---
+If anyone knows how to contact Bhupesh / if they're willing to continue
+being a reviewer feel free to suggest an alternative, but for the moment
+this is better than nothing.
+---
+ MAINTAINERS | 1 -
+ 1 file changed, 1 deletion(-)
 
-/// For a `struct poll_table` to be valid, its `_qproc` function must
-follow the safety
-/// requirements of `_qproc` functions:
-///
-/// * The `_qproc` function is given permission to enqueue a waiter to
-the provided `poll_table`
-///   during the call. Once the waiter is removed and an rcu grace
-period has passed, it must no
-///   longer access the `wait_queue_head`.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 939f6dd0ef6a..b285d9a123ce 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -18080,7 +18080,6 @@ F:	drivers/net/ethernet/qualcomm/emac/
+ 
+ QUALCOMM ETHQOS ETHERNET DRIVER
+ M:	Vinod Koul <vkoul@kernel.org>
+-R:	Bhupesh Sharma <bhupesh.sharma@linaro.org>
+ L:	netdev@vger.kernel.org
+ L:	linux-arm-msm@vger.kernel.org
+ S:	Maintained
 
-Alice
+---
+base-commit: 596764183be8ebb13352b281a442a1f1151c9b06
+change-id: 20240129-remove-dwmac-qcom-ethqos-reviewer-1a37d8c71383
+
+Best regards,
+-- 
+Andrew Halaney <ahalaney@redhat.com>
+
 
