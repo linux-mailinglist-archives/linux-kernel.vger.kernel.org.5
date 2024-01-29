@@ -1,158 +1,211 @@
-Return-Path: <linux-kernel+bounces-43517-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43518-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDA90841512
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 22:19:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B85084151A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 22:23:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67D271F25640
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 21:19:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 268152850CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 21:23:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C86E815959B;
-	Mon, 29 Jan 2024 21:19:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF7801586CE;
+	Mon, 29 Jan 2024 21:23:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WZc/IIkI"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RtCrPygT"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53F76159583
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 21:19:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706563168; cv=none; b=KH29ZXpcOZxZeScs13LXEiQvUwjylxeE1Irtka7rIlSPyt901PQgEnTN2i8TAh98hqab/57Ic6LWsvS1/3hCTr4syJBTf/acXZCFTO37qoQNZV6oEdXqDKDasr67NvO7DX4Kl1B7YY+2GrPG/w5lcYxthXLSORrtbQhBFFEA0+g=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706563168; c=relaxed/simple;
-	bh=N/dTvAXukJJ3gcdpKEbrdzFSZE0mfVmJtWEBs7Wr1pM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=a+K3T8rspJzOsQ9EeST7BENu5oVV/dwUYPJAIMUCWEdVqlqMqqF1AkAkwcLMTD5vjfmptlqFSfJUUXFKVgKN+xsiOEpb9RM3yLnnN6/YJFTTIQsfIwQybQgmEaei2dxsYNXCNeZX0lSxK4qDmjv9OCyulkkwbdmBuDoS4wjN7ps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WZc/IIkI; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40e913e3f03so38420945e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 13:19:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706563164; x=1707167964; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z9S0cbpz+w0Ro+UeWqvavBY4QIBfmENEBk/Ib6o78C0=;
-        b=WZc/IIkIqjwgtKKvlgBXT/Bft6YF1xHxevLo1ti3rMzyHyFXm1wC4bR/T2Ye6GR2IH
-         Klk93wXU6xu/HMHdluV36naKQMvpU5ZkgCptO39ibAFlpDN8GX1ogc/hEU3si6w2K1Jt
-         wCVzQk+cuC8mSBbBNhp8WjPxEL5YtU0H7szvpkWBdLQDru5RTZI35m+4Ie02LFaPteoh
-         lyd+ew1w/aAJKugFxtVstVBNC7vp/Q+fBZhlRqTdqMugN33v/iFHMwiaD/Bmr/Gm05RW
-         1OpoyA0FVVAZ4hqsSqjGkMcNbLV5o3mJWVM5Ko5wuAVVh+luOxugRpkdgd500gmMOR7n
-         VC/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706563164; x=1707167964;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z9S0cbpz+w0Ro+UeWqvavBY4QIBfmENEBk/Ib6o78C0=;
-        b=oDKfh3hyJMo5v3iDXWDpj0kgLqQdyKyGPtnmzyAWDVxHwCn3B97i4hZnKrO+iiz61+
-         0XE4z+f905DLKOSuZ49py2Y2At5abTZV+MdgpBnd0yvrU8RoeHkSmgPmjMF0FwzfPL+9
-         QhW5s+83HpDN25I80MVOVAT1TOuXSb3GGPY98kRbfhneYJ1B1rt+oiJ15sWjWBdmWP8T
-         Mt8pUHtd2VQi3L7QexQNh3mwTroBLBXmQDIqye0k0Ku1H68EURtteixoVCJyHLUFPLgq
-         Y8ntXiJHJqumzZFsZTNck7WcrS4SnSnMQqaOXTzl9WDGqsX2fx95S3F8w4leMJ2qa1Em
-         iNPQ==
-X-Gm-Message-State: AOJu0YyIGZPMd+0MKTgoa0WOPtpK0s7wPT6UP7A2PQ5I3ydDWJ3PICsn
-	yNmMr8W1XElMcqJYZbAA9V2aC+sfkOBU593cfxiEitaq93zl8oYUgjft+72au/k=
-X-Google-Smtp-Source: AGHT+IGRgk5GtfOJQyRiGtbxBlTIlUTAyVf6cU6RUUU54aSsEc2ZIIRYWl3+Pb5eH74+lrAfwBsHyA==
-X-Received: by 2002:a05:600c:ad0:b0:40e:779f:416 with SMTP id c16-20020a05600c0ad000b0040e779f0416mr6409689wmr.2.1706563164594;
-        Mon, 29 Jan 2024 13:19:24 -0800 (PST)
-Received: from gpeter-l.lan (host-92-21-139-67.as13285.net. [92.21.139.67])
-        by smtp.gmail.com with ESMTPSA id iv16-20020a05600c549000b0040e3635ca65sm15126928wmb.2.2024.01.29.13.19.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 13:19:24 -0800 (PST)
-From: Peter Griffin <peter.griffin@linaro.org>
-To: arnd@arndb.de,
-	krzysztof.kozlowski@linaro.org,
-	linux@roeck-us.net,
-	wim@linux-watchdog.org,
-	alim.akhtar@samsung.com,
-	jaewon02.kim@samsung.com,
-	semen.protsenko@linaro.org
-Cc: kernel-team@android.com,
-	peter.griffin@linaro.org,
-	tudor.ambarus@linaro.org,
-	andre.draszik@linaro.org,
-	saravanak@google.com,
-	willmcvicker@google.com,
-	linux-fsd@tesla.com,
-	linux-watchdog@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org
-Subject: [PATCH v2 2/2] watchdog: s3c2410_wdt: use exynos_get_pmu_regmap_by_phandle() for PMU regs
-Date: Mon, 29 Jan 2024 21:19:12 +0000
-Message-ID: <20240129211912.3068411-3-peter.griffin@linaro.org>
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-In-Reply-To: <20240129211912.3068411-1-peter.griffin@linaro.org>
-References: <20240129211912.3068411-1-peter.griffin@linaro.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30E0376020;
+	Mon, 29 Jan 2024 21:23:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.55.52.115
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706563389; cv=fail; b=GeyZ5ewxZq3s8zGWkpTpu31B4eIeK64JmaSHgJogxMuETdEyONDRmhFhNlwq+CqXfwrMqi9Ryjv8uWrvADb64xEiI+471gUzLhRuuvIseEousOourSeY5O2BM9dnZYoYWaVaeYAo25N8xrfONV7Dv76cd6M65stp0cFALnxBZXk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706563389; c=relaxed/simple;
+	bh=xf2LulBxSHt1RXtMDFIPRSjtyr/+41Rt3BsU+P0GoPM=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=LGLg23+XmW/36hnDCuRaCuNpaw08z1mJU93zgMFOE4vDyBpIn/bms6GOZJBl4H5nVziwCqtwraPi1iZfH5S6PpxURUUod6k6ThZQKYWER6C/O8Z1D0h84XufYSa4ylDEC3NK/E/0456MEOWhIce6OjkJA7Kz0ApdkTJNTuJDLZU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RtCrPygT; arc=fail smtp.client-ip=192.55.52.115
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706563388; x=1738099388;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=xf2LulBxSHt1RXtMDFIPRSjtyr/+41Rt3BsU+P0GoPM=;
+  b=RtCrPygTNYhk6j0DB6mC4n3QV0jnuRGUfrgXhGq7QVrpxri1u5/WY9aI
+   yG1tqDjjiW8Lnx1E5a9vcRZ+zijHInX1rtKph4kHc9sMtLtMRQjG8o7G5
+   E2C6uJWKa2ScOAPuFCFr1Qxs+8bikxyOGKVYqrt2BeV1vF1HeGF+4V7f+
+   hpl2kuixBgYf/DxNIoKAwVmA5sOLzxAHepDsThMjJ3fWgUCwvaizrKBl1
+   95Gu7k0vdv/2OMTwqAXuQGtDtEyKj3/H+Gs+aHfuLzTg+16PxBx+I5RW2
+   MZafykOFNgPrtiuLaFDrc81N5k+IVVlSt/Bdzb4C0GJtDAPYWhXZHddZg
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="402724972"
+X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
+   d="scan'208";a="402724972"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 13:23:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
+   d="scan'208";a="29665336"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Jan 2024 13:23:06 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 29 Jan 2024 13:23:05 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 29 Jan 2024 13:23:04 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 29 Jan 2024 13:23:04 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 29 Jan 2024 13:23:03 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PWOVCKNFzN1h2HM4CXCNHVhKjHG2tIWYpKgdXTpz8jH8ziCnivdhvY0KCDzKhLS/VK8+er7q8paSRvKNgA+YpejSFT/A+ksWwz6rBmHEOdIX8L1tIfOzg5dLkqfIHENiKXXleTi8ctwalHIC7XFRkL9WZlJLTQQemwfOGbZnioSR0t4xPMDC+ykHuk9HrjrMI6fuZ/3LQtOi2mL6m+zV16zfLxze6DoyabmRRXf45PHxZRN4ex8IGTOyjjA0ULbME66p+b4H8MapGMThIENGMAKt8JCKBXap7q2Qj8A304liEUwFlBa/d1ClwYVsDaGut/pr8upDNg/IYRc7M2ZAfQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QXcEM6n8Mlu0TNPiuBMLJ7Z58qv+am10UXwvZtprJ/Y=;
+ b=AKyEnmTXghq+4yc06hnitg37uHWSKtIQwWKLjOu7QRSGgCgFvbK4FZHkz7Oq1cwwWb8Fma2ZtHx0cYiHd3YJKVUGQrICzye9Spis5DWUucMVW59vDqz6wCPll9qIrhefBen0A7iEYesQ7bCltMYunsKdHL/XRjtm1j7/wQXAOWh2uZsZbaRq2B7MRo1OZ2wmPPb0RDAbMPTqmYoYBTSMbOa7hTRbWErPzEnVPTvjRUB/IRMpNBcbApWGKIalG9JJsX8/qZUeeheAEDYFV2oYRFqINR1HYtyj5/Gu8N/M7a3ut98A+0RVX8R4pOGQscsAxCyWID4/Tmzg1+7aTWSHOA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by IA0PR11MB8356.namprd11.prod.outlook.com (2603:10b6:208:486::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.32; Mon, 29 Jan
+ 2024 21:23:01 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6257:f90:c7dd:f0b2]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6257:f90:c7dd:f0b2%4]) with mapi id 15.20.7228.029; Mon, 29 Jan 2024
+ 21:23:00 +0000
+Date: Mon, 29 Jan 2024 13:22:57 -0800
+From: Dan Williams <dan.j.williams@intel.com>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Dan Williams
+	<dan.j.williams@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, "Dave
+ Jiang" <dave.jiang@intel.com>
+CC: <linux-kernel@vger.kernel.org>, Mathieu Desnoyers
+	<mathieu.desnoyers@efficios.com>, Andrew Morton <akpm@linux-foundation.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>, <linux-mm@kvack.org>,
+	<linux-arch@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>,
+	<linux-cxl@vger.kernel.org>, <nvdimm@lists.linux.dev>
+Subject: Re: [RFC PATCH 0/7] Introduce cache_is_aliasing() to fix DAX
+ regression
+Message-ID: <65b8173160ec8_59028294b3@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+References: <20240129210631.193493-1-mathieu.desnoyers@efficios.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240129210631.193493-1-mathieu.desnoyers@efficios.com>
+X-ClientProxiedBy: MW4PR04CA0154.namprd04.prod.outlook.com
+ (2603:10b6:303:85::9) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|IA0PR11MB8356:EE_
+X-MS-Office365-Filtering-Correlation-Id: a5b2ef27-e674-4689-f5a1-08dc21107863
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zsnBSDozb3/ffc7kYoQFDMlE9qWFLDjgOvoLiGM12zsV9x37HlRNd04bjOuUvqxWDLfO8cjNU4U5XY5LJk74uJiDfmzSGirNTdyqZRoF+S3SCs5giATbtA44IYjtGdPomyUSmCeQJZvQWkF3PMVs7ZivbsibA2VRd/bRC67S9P4SQnDF6Hhgm0mWtAl2vdF/VIdIWlc3BF4oHZhHOXnE93dkEgKn7x9dLjXSd08AbMlrYWO4IacdYIciDxwtLUkVN0x8MYwO3PxlBO60nI6SX3lU8kSEWqGvnH2RpQrjtevqYX1DaR+7ZyOjiO52hT6AfOYhNeGPacDSizWA0HQHX6sfTnZqtTTSWatbWKQTST+4vzPtBkbB5N1Tpa0IH9D3zGOZrZjwlT0U16F3mI0tH2TtIzVCsZEops7iST2fOHSe21WAP1aFQ1s0TR3wRogVQnbJ1uW8i1GgjyUDy37esVSBaHoTmFWG6OL7DL3JOEvyXIAC2B/bJQhTGzrvanYDeopCg0LdWLJTNqnOdURB8/Qnzdzgwa1g2iadIeY5R3AKZcyVlNE4D3C9BlS9bojx
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(366004)(39860400002)(396003)(376002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(41300700001)(82960400001)(38100700002)(110136005)(316002)(6506007)(86362001)(54906003)(6636002)(66946007)(6486002)(66476007)(8676002)(8936002)(5660300002)(6512007)(9686003)(26005)(478600001)(2906002)(4326008)(6666004)(66556008)(66899024)(83380400001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ryZT/I9SaDFZZPlWVMLCR99jTOfFnjAtK/CUVJHmOsDfp7vKH8S5tQ3mVR3y?=
+ =?us-ascii?Q?QNH0SMWJ/01ZHcuxO3tJrD2ffM28bYTL7kDS6LvcOWepiSET5bKq8lUFj8dJ?=
+ =?us-ascii?Q?ZKTJT8IH+Fjke77KK+3D1LbrbP0iJdEexv3g1HBUggkL0DD7Ald4UdzHQZmx?=
+ =?us-ascii?Q?O35To9sJ5uCMcARKs9HkFZxJpxl7c3/UIicJWszayetfOARcBH3kK/1OiKHK?=
+ =?us-ascii?Q?m4TdMec1v8HeDKm+hJXqA01zA2s1Nu9zfWVlo+bfSdu1oJNrWPvv2cGhJb/f?=
+ =?us-ascii?Q?oCfowA4hXTbpMrDH8fm4ZEsejicFdjsfEru8oB+ei334FCIu556w+y12O8it?=
+ =?us-ascii?Q?PLBVh1NcI8yI4NdRxA2vOCv/GBVb1Jern9RVwpQh3zkQ/jEg0mlHdI757ZOw?=
+ =?us-ascii?Q?P0aYebyLLEHzoiZQlMmZPSvQDnDtl5MEvHcLXaUGbDxiPL2LX/TkIiHq0h8L?=
+ =?us-ascii?Q?T5TEM9u6axshW+5pt/1bEXkDtfjs2gOgajDwHeKGa4tB3i81wIsR/9A5VTKh?=
+ =?us-ascii?Q?M7VTsfaNDJkmC0h+norGzO0F9M+8wg19W/d6RUfZfJ1md48haAhdWpFkCz+O?=
+ =?us-ascii?Q?Cuhy8sISalj+FEMwmWR0NnsKYTw3JFbnC0rWWGFJIfpgoEHYEFLxR0OcBExV?=
+ =?us-ascii?Q?9tWG19lNbXeISHajOX0JkoA4wvJKCLk2NzgiIAjL994xNCu56F3Ie7iV9qED?=
+ =?us-ascii?Q?DMbFhTfb5CTJUsAyQEjvPqOFbgnBpbYBOICUf2kGOoEnas32phXEyyU4mJ5H?=
+ =?us-ascii?Q?5tWqVwaxKrMu5jg7j8Op4A03ef4ok7pVtbTWD+Gew5fe4kKH2l0z250OVizv?=
+ =?us-ascii?Q?b/t9mSONGDxP+P/mw8Sc4W9i4PMGkTe/RUnZZYs+93kNwJ+jchevieFYRlDo?=
+ =?us-ascii?Q?pH5RXVo1y+chUcQM9f7sDFmCh4BQyDA4rjtHx3M89LUNedsdt3TmjYGt6Vaf?=
+ =?us-ascii?Q?yhkorypBS/FzUJ915pkxDUDhznaTIUUfIZYSEJweW3x8gD5q7fEVfsu60+M8?=
+ =?us-ascii?Q?m8Ve1TBDsZ5JiHAj19cGe9Cw+eb5i5fj1DTK4M3AdodrPnbBKwBUV/5an630?=
+ =?us-ascii?Q?xsIfyrB0LntpQ+bEEx+Nu2i9N1QkNBHcRtt3Pb6k8TiNKdwvFT37isgcaEAh?=
+ =?us-ascii?Q?3+7GSeJ/EfG/oaUCufhNKieUQok0fBHL/DDTnwMF2W0UFsYD8WDZ5l6diiZo?=
+ =?us-ascii?Q?TxRI7hPGGi0nOVgX+GYNRkzmlQuP2a1tHfX408TizHV1pti0TaME40o6Iqok?=
+ =?us-ascii?Q?95YlJs2Ro1N1cNOBJZ0s5/v+GOQpRMs8CzAEiflZcqvCCzRS9xyutw+7j1N2?=
+ =?us-ascii?Q?BBeUQMLXkMiqkwcSOwQ1H1z+pQRRxJhmx5hhLPgVPwT6tc4Xs/vtv0oxrBP0?=
+ =?us-ascii?Q?jIhcFUGJsIjalIVLCt8+phvEQa8smcK8bdeebca0ZglnSs9Qmmj5tRHzSnn5?=
+ =?us-ascii?Q?WrXELSWY+liQP/5cWXUq/Nms+0qAkBjYw4zfgVBjOBVsSi0X6C5Y0hHbHDQO?=
+ =?us-ascii?Q?p+Dd06Ur8igXgedkU+dNmwGcU2BpsFWzQmWLHuQ6exERmHew6SnXSHAq6DGs?=
+ =?us-ascii?Q?65tLR3lqMRzNL5Pc1ft6Z0qTUfXX0wLcDV10AY8l+JTxSCLT27Pvn1RcKqR1?=
+ =?us-ascii?Q?sQ=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a5b2ef27-e674-4689-f5a1-08dc21107863
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2024 21:23:00.3944
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8SRYYS57A5c7woHxV2xKq8Tb0KoqrSmhw8O6CB1P4wypFQwIbJbofTLnlhvhnkLeiB9m8WhbF+uygE1eaCyAk7WbyuxkEI8Wz5lIrncsffk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR11MB8356
+X-OriginatorOrg: intel.com
 
-Obtain the PMU regmap using the new API added to exynos-pmu driver rather
-than syscon_regmap_lookup_by_phandle(). As this driver no longer depends
-on mfd syscon remove that header and Kconfig dependency.
+Mathieu Desnoyers wrote:
+> This commit introduced in v5.13 prevents building FS_DAX on 32-bit ARM,
+> even on ARMv7 which does not have virtually aliased dcaches:
+> 
+> commit d92576f1167c ("dax: does not work correctly with virtual aliasing caches")
+> 
+> It used to work fine before: I have customers using dax over pmem on
+> ARMv7, but this regression will likely prevent them from upgrading their
+> kernel.
+> 
+> The root of the issue here is the fact that DAX was never designed to
+> handle virtually aliased dcache (VIVT and VIPT with aliased dcache). It
+> touches the pages through their linear mapping, which is not consistent
+> with the userspace mappings on virtually aliased dcaches. 
+> 
+> This patch series introduces cache_is_aliasing() with new Kconfig
+> options:
+> 
+>   * ARCH_HAS_CACHE_ALIASING
+>   * ARCH_HAS_CACHE_ALIASING_DYNAMIC
+> 
+> and implements it for all architectures. The "DYNAMIC" implementation
+> implements cache_is_aliasing() as a runtime check, which is what is
+> needed on architectures like 32-bit ARMV6 and ARMV6K.
+> 
+> With this we can basically narrow down the list of architectures which
+> are unsupported by DAX to those which are really affected.
+> 
+> Feedback is welcome,
 
-Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
----
- drivers/watchdog/Kconfig       | 1 -
- drivers/watchdog/s3c2410_wdt.c | 9 +++++----
- 2 files changed, 5 insertions(+), 5 deletions(-)
+Hi Mathieu, this looks good overall, just some quibbling about the
+ordering.
 
-diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-index 7d22051b15a2..d78fe7137799 100644
---- a/drivers/watchdog/Kconfig
-+++ b/drivers/watchdog/Kconfig
-@@ -512,7 +512,6 @@ config S3C2410_WATCHDOG
- 	tristate "S3C6410/S5Pv210/Exynos Watchdog"
- 	depends on ARCH_S3C64XX || ARCH_S5PV210 || ARCH_EXYNOS || COMPILE_TEST
- 	select WATCHDOG_CORE
--	select MFD_SYSCON if ARCH_EXYNOS
- 	help
- 	  Watchdog timer block in the Samsung S3C64xx, S5Pv210 and Exynos
- 	  SoCs. This will reboot the system when the timer expires with
-diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
-index 349d30462c8c..a1e2682c7e57 100644
---- a/drivers/watchdog/s3c2410_wdt.c
-+++ b/drivers/watchdog/s3c2410_wdt.c
-@@ -24,9 +24,9 @@
- #include <linux/slab.h>
- #include <linux/err.h>
- #include <linux/of.h>
--#include <linux/mfd/syscon.h>
- #include <linux/regmap.h>
- #include <linux/delay.h>
-+#include <linux/soc/samsung/exynos-pmu.h>
- 
- #define S3C2410_WTCON		0x00
- #define S3C2410_WTDAT		0x04
-@@ -699,11 +699,12 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
- 		return ret;
- 
- 	if (wdt->drv_data->quirks & QUIRKS_HAVE_PMUREG) {
--		wdt->pmureg = syscon_regmap_lookup_by_phandle(dev->of_node,
--						"samsung,syscon-phandle");
-+
-+		wdt->pmureg = exynos_get_pmu_regmap_by_phandle(dev->of_node,
-+						 "samsung,syscon-phandle");
- 		if (IS_ERR(wdt->pmureg))
- 			return dev_err_probe(dev, PTR_ERR(wdt->pmureg),
--					     "syscon regmap lookup failed.\n");
-+					     "PMU regmap lookup failed.\n");
- 	}
- 
- 	wdt_irq = platform_get_irq(pdev, 0);
--- 
-2.43.0.429.g432eaa2c6b-goog
+I would introduce dax_is_supported() with the current overly broad
+interpretation of "!(ARM || MIPS || SPARC)" using IS_ENABLED(), then
+fixup the filesystems to use the new helper, and finally go back and
+convert dax_is_supported() to use cache_is_aliasing() internally.
 
+Separately, it is not clear to me why ARCH_HAS_CACHE_ALIASING_DYNAMIC
+needs to exist. As long as all paths that care are calling
+cache_is_aliasing() then whether it is dynamic or not is something only
+the compiler cares about. If those dynamic archs do not want to pay the
+text size increase they can always do CONFIG_FS_DAX=n, right?
 
