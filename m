@@ -1,58 +1,85 @@
-Return-Path: <linux-kernel+bounces-43427-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43429-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 899FF8413BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 20:49:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43D9B8413C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 20:52:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4608B286D04
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:49:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6801D1C235CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:52:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75E0A6F081;
-	Mon, 29 Jan 2024 19:49:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6746C76048;
+	Mon, 29 Jan 2024 19:52:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MdoABHmG"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FXli1qFn"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7D394C619;
-	Mon, 29 Jan 2024 19:49:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B061D6A008;
+	Mon, 29 Jan 2024 19:52:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706557785; cv=none; b=fmxmwQfoaSHcei2/lptMUXC+7VVMlEOZ35eCkcK3/CzoQA4ZevOf+hsatyH/OGqCSfv/MN50iyhigAiv1xYlpjUj9JNH9qnZoab+RAc0LwCxEOTQHShf9Vf4ii2p2xB1NdrOoZTB/ZcuzsxHfV/zO/VvLYAHURKP5oQhatndE9k=
+	t=1706557941; cv=none; b=QRvDtcY6Qxj18kbfPFqfF/WB0YKVx86f7S7kWf/wwyjnh/4mtYQojT45WwwyQ1z2dGLLnzEF3aQwoF9FyCdtNUXvjjoKxnIGbK/Tz9pOBxelQIyfQsXlUxsTr/Z5Nz6WMtyU5Az8rDh/q7UKKsN3fD3SjKSEDpNjhPQpLJvga2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706557785; c=relaxed/simple;
-	bh=AFzIbjcOWSZos8y3SLuij19ce0bzY428EYdt2/6+Cpk=;
+	s=arc-20240116; t=1706557941; c=relaxed/simple;
+	bh=AkBpWCt8Yn5W3lR5XfqNrLHf+HDLn89jCMBMA0LnBBE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kr2tuD0PxyqqFZsueDqmsoF4tKwX3yfwZIHLLpC/cdTB7Q/nP3LsdJAsQk9n/GSi35ZU8RGm/r8fO5My3eImdthRrXfs7AH879ns5Lo97mviH2W6SoIjfCuhoicwWToGQMU9TpLx7miVB18tz0Cy/SM5O1NbwqhBoiX4avoNUf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MdoABHmG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AB93C43390;
-	Mon, 29 Jan 2024 19:49:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706557785;
-	bh=AFzIbjcOWSZos8y3SLuij19ce0bzY428EYdt2/6+Cpk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MdoABHmGOXwnshWW4D5hELpR9s7yY69FTCmInEgq8suc3c2l3EGmjnVZhTLznkrFx
-	 DEvb8GBmww1NXRcZN7+xt/O0ajuY7Rwe4BxhBGrR9CP2+zOhOQ7lZ2bSldtEj/nH0O
-	 9orUw5tnHHJ3cL1UaPLATYfmH61xKusG207ogj3PmR7mMhYyavCqTr41oA0pHT9LiT
-	 SsDkQs9YGBEbooHTLRlaLjOpjKvQlzqejAhx8Om4NCXo2oJ7FUf4dUg/TJ9MMRCCTe
-	 RXorT9zg3rtejrUbaKWZvqgS4vzb0VjkKpfD1/2FN/G7XAN2b/5Vmzg/9inW7o5H3H
-	 YOh3i2Z5ic7gA==
-Date: Mon, 29 Jan 2024 19:49:40 +0000
-From: Will Deacon <will@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: linux-kernel@vger.kernel.org, kernel-team@android.com,
-	iommu@lists.linux.dev, Marek Szyprowski <m.szyprowski@samsung.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Petr Tesarik <petr.tesarik1@huawei-partners.com>,
-	Dexuan Cui <decui@microsoft.com>
-Subject: Re: [PATCH 2/2] swiotlb: Enforce page alignment in swiotlb_alloc()
-Message-ID: <20240129194939.GE12631@willie-the-truck>
-References: <20240126151956.10014-1-will@kernel.org>
- <20240126151956.10014-3-will@kernel.org>
- <20240129060853.GB19258@lst.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=LHwPtFNIxhbxc+Mfvq0BYrBumOvbfGm0T6ktYc62ghNf6CAvu0oVOrDVRjjJVgYtvxPZbI+CzDIHMhijTNfKxsP4BdVxYrsGNAgrP3zNmSORDlARARZZT35Z1Qk1srO3MEP1QD9g44RIlR/XevhKA+CX0KpWi/3QVCNM8t8WtKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FXli1qFn; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706557940; x=1738093940;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=AkBpWCt8Yn5W3lR5XfqNrLHf+HDLn89jCMBMA0LnBBE=;
+  b=FXli1qFn5rtHdMiLjYOTCvTrdNQppYdukJ5O2ALII639G2tMVhbKFIM2
+   NMxd0CGnV9FJKkc59YpdYPblGrJ491KUlGou95OEDY8y9s+TYyGOhCA40
+   SkYw34jg4dLUhbu98ghBcSJjLxFYTc2IMfQFdOWhpIXlCdnwsdobOZhC9
+   m49px8Cb5VQq6Zg2P/brZcaFtvXPjuySu6FqUl9McwtjZhTJrYhJiGv0a
+   xr8Wq5Xmm9TnsXMxiq0q+2L3ICkZWQ6Pwt6HOJtdOXSDvDOr6KAW9ipvG
+   bITidKIwMweqOhiCLo+FcRR3G3JF2cKlBZ7VFAjIW1ujM1eOM2kpXxB2q
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="16450390"
+X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
+   d="scan'208";a="16450390"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 11:52:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
+   d="scan'208";a="29905599"
+Received: from lkp-server01.sh.intel.com (HELO 370188f8dc87) ([10.239.97.150])
+  by fmviesa001.fm.intel.com with ESMTP; 29 Jan 2024 11:52:13 -0800
+Received: from kbuild by 370188f8dc87 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rUXfv-0004bQ-0f;
+	Mon, 29 Jan 2024 19:52:11 +0000
+Date: Tue, 30 Jan 2024 03:51:51 +0800
+From: kernel test robot <lkp@intel.com>
+To: William Qiu <william.qiu@starfivetech.com>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-can@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	Emil Renner Berthing <kernel@esmil.dk>,
+	Rob Herring <robh+dt@kernel.org>,
+	Wolfgang Grandegger <wg@grandegger.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	William Qiu <william.qiu@starfivetech.com>
+Subject: Re: [PATCH v1 3/4] can: cast: add driver for CAST CAN controller
+Message-ID: <202401300313.9DPa2nuW-lkp@intel.com>
+References: <20240129031239.17037-4-william.qiu@starfivetech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,54 +88,59 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240129060853.GB19258@lst.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20240129031239.17037-4-william.qiu@starfivetech.com>
 
-On Mon, Jan 29, 2024 at 07:08:53AM +0100, Christoph Hellwig wrote:
-> On Fri, Jan 26, 2024 at 03:19:56PM +0000, Will Deacon wrote:
-> > diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> > index 25febb9e670c..92433ea9f2d2 100644
-> > --- a/kernel/dma/swiotlb.c
-> > +++ b/kernel/dma/swiotlb.c
-> > @@ -1647,6 +1647,12 @@ struct page *swiotlb_alloc(struct device *dev, size_t size)
-> >  		return NULL;
-> >  
-> >  	tlb_addr = slot_addr(pool->start, index);
-> > +	if (!PAGE_ALIGNED(tlb_addr)) {
-> > +		dev_WARN_ONCE(dev, 1, "Cannot return 'struct page *' for non page-aligned swiotlb addr 0x%pa.\n",
-> > +			      &tlb_addr);
-> > +		swiotlb_release_slots(dev, tlb_addr);
-> > +		return NULL;
-> > +	}
-> >  
-> >  	return pfn_to_page(PFN_DOWN(tlb_addr));
-> 
-> So PFN_DOWN aligns the address and thus per se converting the unaligned
-> address isn't a problem.
+Hi William,
 
-Hmm, I'm not sure I follow why it isn't a problem. If the first 2KiB slot
-of the 4KiB page has already been allocated to somebody else, isn't it a
-big problem to align down like that? Maybe I should word the warning
-message a bit better -- how about:
+kernel test robot noticed the following build warnings:
 
-  "Cannot allocate pages from non page-aligned swiotlb addr 0x%pa.\n"
+[auto build test WARNING on robh/for-next]
+[also build test WARNING on linus/master mkl-can-next/testing v6.8-rc2 next-20240129]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-?
+url:    https://github.com/intel-lab-lkp/linux/commits/William-Qiu/dt-bindings-vendor-prefixes-Add-cast-vendor-prefix/20240129-114752
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+patch link:    https://lore.kernel.org/r/20240129031239.17037-4-william.qiu%40starfivetech.com
+patch subject: [PATCH v1 3/4] can: cast: add driver for CAST CAN controller
+config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/20240130/202401300313.9DPa2nuW-lkp@intel.com/config)
+compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 4a39d08908942b2d415db405844cbe4af73e75d4)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240130/202401300313.9DPa2nuW-lkp@intel.com/reproduce)
 
-> That being said swiotlb obviously should never
-> allocate unaligned addresses, but the placement of this check feels
-> odd to me.  Also because it only catches swiotlb_alloc and not the
-> map side.
-> 
-> Maybe just throw a WARN_ON_ONCE into slot_addr() ?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401300313.9DPa2nuW-lkp@intel.com/
 
-Everything is slot-aligned, so I don't think slot_addr() can detect
-this. I put the check in swiotlb_alloc() because I think that's the only
-place where we assume that a slot address is page-aligned. I don't think
-the map path particularly cares, but if you prefer to have the warning
-there too then I think we'd have to stick it at the end of
-swiotlb_search_pool_area() (effectively just checking that the returned
-slot is consistent with the 'alloc_align_mask' parameter).
+All warnings (new ones prefixed by >>):
 
-Will
+>> drivers/net/can/cast_can.c:352:5: warning: no previous prototype for function 'ccan_get_freebuffer' [-Wmissing-prototypes]
+     352 | int ccan_get_freebuffer(struct ccan_priv *priv)
+         |     ^
+   drivers/net/can/cast_can.c:352:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+     352 | int ccan_get_freebuffer(struct ccan_priv *priv)
+         | ^
+         | static 
+   1 warning generated.
+
+
+vim +/ccan_get_freebuffer +352 drivers/net/can/cast_can.c
+
+   351	
+ > 352	int ccan_get_freebuffer(struct ccan_priv *priv)
+   353	{
+   354		/* Get next transmit buffer */
+   355		ccan_reigister_set_bit(priv, CCAN_TCTRL_OFFSET, CCAN_SET_TENEXT_MASK);
+   356	
+   357		if (ccan_ioread8(priv->reg_base + CCAN_TCTRL_OFFSET) & CCAN_SET_TENEXT_MASK)
+   358			return -EPERM;
+   359	
+   360		return 0;
+   361	}
+   362	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
