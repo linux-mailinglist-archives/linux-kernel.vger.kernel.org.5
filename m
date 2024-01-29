@@ -1,131 +1,130 @@
-Return-Path: <linux-kernel+bounces-43052-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D787840ACB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:06:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BC8E840ACD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:06:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 867B41C21259
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:06:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B15381C218A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:06:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 750B1155314;
-	Mon, 29 Jan 2024 16:06:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0E4E155316;
+	Mon, 29 Jan 2024 16:06:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ajW5/ZI7"
-Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W4bHpZJU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B5CB1552FE
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 16:06:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3BF1155311
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 16:06:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706544374; cv=none; b=DTpgRXS/3/GoYht7iCGUIJLqpyBp/R/ZE9wsP9qa591vooF4LcI5DETs1fXPq1jrOzwNjC7M8yMw8+8GY8y/ha7LTQLBeugUpSS5zHG7OVgLjHNV158iA6zShLKK3ivedA14eKNMT7GgBBQYzWJvDrdRbHlP1WGQun0x209L1HU=
+	t=1706544389; cv=none; b=lJ4DncFYoQryoR4l5u2ycV32+41Fben55ZE2LHx6TXeDosJQmehgRvGn9YrmxB32Kl6s3apE9HFUO2ybYUb4yXxSaYOtkmpTvOYplf0KLzBLzwzBx533YCPdJPw3ksPBj/PH+NYK8LXcuxeYa7t42gMIxhgp0/0JoIPk7ZO2Wp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706544374; c=relaxed/simple;
-	bh=spdhQtlVqwZGxE4WLvNyqmE4pPTaQvGGfD0owlqyrn4=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=WKiCJB15kIc7/J+TY8JS1D+l0yD+X+XthK88LSB8JTU5aIZBuukQS2lsbnkwPbSpol3iMwNvshn9679swDUT/TaIbOEe/kn7oFYJBqLFxECkbQyIgIf6OKaAVBtAxPWfw54v5GMrPiyJJwfPxJwip2dZv+EorO9UTNpSTNm3LEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ajW5/ZI7; arc=none smtp.client-ip=209.85.215.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5d8df7c5500so74926a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 08:06:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706544372; x=1707149172; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/QJhPN9B0DFyt0uGBm0tTKyr6mAm9uyszmwYK+ey7JU=;
-        b=ajW5/ZI73utd0MqqP3WWh+4f7jf4psLeRjJ/BN2v2Z03F7RcwqaYKoGtszeSesseNZ
-         GyQoFb1Sw3JoEiBEjsASZoNRvtvTypf8rG97Yeqsa/47NVOPEVztYucB9WU0suZJWD9y
-         Oii1eTT7/DanBMoFiSKJIKkajxmJC4MaYpidDGxD60DmphA5g0RArG0g3xRGQGLV/css
-         iaWXuPxnUS87cif0QPMGXry1AOOixYKLnSeiCVPAr+SFSGynH1UuBqlYyw0h6UrPAABH
-         nPydt/w7CEWZU8LEVZOpHeozovbHA0U1YE3QUk8s0izBjgWeyN4q7b6kR5HOh/SfBd13
-         iJmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706544372; x=1707149172;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/QJhPN9B0DFyt0uGBm0tTKyr6mAm9uyszmwYK+ey7JU=;
-        b=vlN5Wbn75WnLyczUJQnPXxelc7fSrd8usvEwQlJQ4zk+vWvR8f5zlsanpf5k57S5OT
-         I4Lq4zN+Fes83Xbs6T4AenbUwiorQXsSYPECW7BtqFyUp5VHtUuH5zqWm8e52u3NhU+w
-         IfHVsy6WAsVf9OnxlOBv2lwpuZaLx1TtUXi/jvCZCTt0FT8gQxS4Nsj9O9/qtuzfS1tN
-         ijVXnUycf0pBvRQVHYZKBcJBY0Ab5jYnHYCjc7qfzlLvlo4dsbXKq6G32ot6Ix0yY1q5
-         M+0SX8I2e3FCuhFOfiyFeKkdBkTZBfurVRN+WsIchW7yqYTtWE+HiDVFFBW3s85boOqw
-         A0og==
-X-Gm-Message-State: AOJu0YyymDE4SYWXDccIvLOIOGiMwKkXqYwUfmBUB+QyEF+4Jf04sh+S
-	Wf8pbN+UlnOsGLRQUDMEfYUMjmgCFqwvkytxCkoPucJlENEwIjRhYQj4fKgGiRCF7n8lMvb0HJm
-	gcA==
-X-Google-Smtp-Source: AGHT+IGeJuMzinOv4G1LhBN1dQPrLZMNZOW8qaacXubx8vE2kR3dJwXXjPyvetrZj6mvs5PmsYPxMJiYqs4=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a65:6803:0:b0:5d8:c0fa:c982 with SMTP id
- l3-20020a656803000000b005d8c0fac982mr19571pgt.10.1706544372349; Mon, 29 Jan
- 2024 08:06:12 -0800 (PST)
-Date: Mon, 29 Jan 2024 08:06:10 -0800
-In-Reply-To: <877cjs8q8d.fsf@redhat.com>
+	s=arc-20240116; t=1706544389; c=relaxed/simple;
+	bh=gsE0VC+Mvbx3+PkIl0OpvvJzIerilw+wc6PT2Cojk7M=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=fCfDm1rgz1dqb89STxqVhcW6amINMtm6uyjI1ajSL+lbdlBZlzxzv7NR+ss2Mns5WPg9fsCF6OHnfOvt1N3sVcrEW75FmBmq1gIHIxnCqSXLMvMOVzxkMX4Q/G+RiwFDcqEhnGUKgCqoqPoG6uRyijzLe9+WZ4T5wJ6m/yjD80k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W4bHpZJU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 778D2C433F1;
+	Mon, 29 Jan 2024 16:06:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706544389;
+	bh=gsE0VC+Mvbx3+PkIl0OpvvJzIerilw+wc6PT2Cojk7M=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=W4bHpZJUG5NkBQWJp3rWUIB/6TdU+kl66Nf4/ZU78lxHVixTYe9AeKvbbDRmSksr0
+	 m+Vh7H3/nkNF2q/r/V0l71sx/bwdyNgjdX1I/kvUF8mnhEw5+7aD0K96ORl9Gcs+eE
+	 6a2qZ8cTBCxgFiCXSUeDsuinsOVArv2nrnaxEfaDiZIkSMdDnzrtTN6ApIvaVyL10U
+	 5KhH2X1L1fgcjY47JAU74bG/thy9vAnRDt7MAltHpWBokVnvFMQexc3aoZO6yZ5ZHt
+	 BUaltN98E3w+RPHXUZttVy6LeHQVZcnNGlzOTSeyajChSGZKbePBpaF3ZXyl/aFgho
+	 CKt39XlaD041w==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240111135901.1785096-1-vkuznets@redhat.com> <877cjs8q8d.fsf@redhat.com>
-Message-ID: <ZbfM8peFYU-jY9-o@google.com>
-Subject: Re: [PATCH] KVM: selftests: Compare wall time from xen shinfo against KVM_GET_CLOCK
-From: Sean Christopherson <seanjc@google.com>
-To: Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc: kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, 
-	David Woodhouse <dwmw@amazon.co.uk>, Jan Richter <jarichte@redhat.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Date: Mon, 29 Jan 2024 17:06:22 +0100
+From: Michael Walle <mwalle@kernel.org>
+To: Dave Airlie <airlied@gmail.com>, Dario Binacchi
+ <dario.binacchi@amarulasolutions.com>, Dmitry Osipenko
+ <dmitry.osipenko@collabora.com>
+Cc: Inki Dae <daeinki@gmail.com>, Neil Armstrong
+ <neil.armstrong@linaro.org>, Laurent Pinchart
+ <Laurent.pinchart@ideasonboard.com>, Robert Foss <rfoss@kernel.org>, Frieder
+ Schrempf <frieder.schrempf@kontron.de>, Jagan Teki
+ <jagan@amarulasolutions.com>, Andrzej Hajda <andrzej.hajda@intel.com>, Marek
+ Szyprowski <m.szyprowski@samsung.com>, Jonas Karlman <jonas@kwiboo.se>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>, Tim Harvey
+ <tharvey@gateworks.com>, Alexander Stein <alexander.stein@ew.tq-group.com>,
+ linux-kernel@vger.kernel.org, DRI mailing list
+ <dri-devel@lists.freedesktop.org>, Daniel Vetter <daniel@ffwll.ch>, Michael
+ Trimarchi <michael@amarulasolutions.com>
+Subject: Re: [PATCH] drm: bridge: samsung-dsim: Don't use FORCE_STOP_STATE
+In-Reply-To: <b18d88302acfca001a6693d78909bc2a@kernel.org>
+References: <20231113164344.1612602-1-mwalle@kernel.org>
+ <631fe35a2a3b00781231e4f3f5094fae@kernel.org>
+ <1ef3dad2-5f55-40e5-bba7-3c71d71c12e4@kontron.de>
+ <CAAQKjZMccDwa63_PNJCP0rNOaHjTwcOz8AbKa=JXLQi-b0QVVw@mail.gmail.com>
+ <2400535875c353ff7208be2d86d4556f@kernel.org>
+ <ZZ1BBO2nNSp3g-gT@phenom.ffwll.local>
+ <CAAQKjZNnJQDn_r1+WNmsxM-2O48O0+yWAUAqpjZRjMYMT3xGwg@mail.gmail.com>
+ <CAPM=9tytMB9frxNeD08hu1qsusY=wEE3bJOFmUgA1rSpabwDpg@mail.gmail.com>
+ <b18d88302acfca001a6693d78909bc2a@kernel.org>
+Message-ID: <31e1a38a1d012a32d6f7bc8372b6360e@kernel.org>
+X-Sender: mwalle@kernel.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 29, 2024, Vitaly Kuznetsov wrote:
-> Vitaly Kuznetsov <vkuznets@redhat.com> writes:
+>> Just FYI this conflictted pretty heavily with drm-misc-next changes in
+>> the same area, someone should check drm-tip has the correct
+>> resolution, I'm not really sure what is definitely should be.
 > 
-> > xen_shinfo_test is observed to be flaky failing sporadically with
-> > "VM time too old". With min_ts/max_ts debug print added:
-> >
-> > Wall clock (v 3269818) 1704906491.986255664
-> > Time info 1: v 1282712 tsc 33530585736 time 14014430025 mul 3587552223 shift 4294967295 flags 1
-> > Time info 2: v 1282712 tsc 33530585736 time 14014430025 mul 3587552223 shift 4294967295 flags 1
-> > min_ts: 1704906491.986312153
-> > max_ts: 1704906506.001006963
-> > ==== Test Assertion Failure ====
-> >   x86_64/xen_shinfo_test.c:1003: cmp_timespec(&min_ts, &vm_ts) <= 0
-> >   pid=32724 tid=32724 errno=4 - Interrupted system call
-> >      1	0x00000000004030ad: main at xen_shinfo_test.c:1003
-> >      2	0x00007fca6b23feaf: ?? ??:0
-> >      3	0x00007fca6b23ff5f: ?? ??:0
-> >      4	0x0000000000405e04: _start at ??:?
-> >   VM time too old
-> >
-> > The test compares wall clock data from shinfo (which is the output of
-> > kvm_get_wall_clock_epoch()) against clock_gettime(CLOCK_REALTIME) in the
-> > host system before the VM is created. In the example above, it compares
-> >
-> >  shinfo: 1704906491.986255664 vs min_ts: 1704906491.986312153
-> >
-> > and fails as the later is greater than the former.  While this sounds like
-> > a sane test, it doesn't pass reality check: kvm_get_wall_clock_epoch()
-> > calculates guest's epoch (realtime when the guest was created) by
-> > subtracting kvmclock from the current realtime and the calculation happens
-> > when shinfo is setup. The problem is that kvmclock is a raw clock and
-> > realtime clock is affected by NTP. This means that if realtime ticks with a
-> > slightly reduced frequency, "guest's epoch" calculated by
-> > kvm_get_wall_clock_epoch() will actually tick backwards! This is not a big
-> > issue from guest's perspective as the guest can't really observe this but
-> > this epoch can't be compared with a fixed clock_gettime() on the host.
-> >
-> > Replace the check with comparing wall clock data from shinfo to
-> > KVM_GET_CLOCK. The later gives both realtime and kvmclock so guest's epoch
-> > can be calculated by subtraction. Note, the computed epoch may still differ
-> > a few nanoseconds from shinfo as different TSC is used and there are
-> > rounding errors but 100 nanoseconds margin should be enough to cover
-> > it (famous last words).
-> >
-> > Reported-by: Jan Richter <jarichte@redhat.com>
-> > Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> > ---
+> FWIW, this looks rather messy now. The drm-tip doesn't build.
+> 
+> There was a new call to samsung_dsim_set_stop_state() introduced
+> in commit b2fe2292624ac (drm: bridge: samsung-dsim: enter display
+> mode in the enable() callback).
 
-David, any objection?
+I had a closer look at the latest linux-next (where somehow my patch
+made it into) and tried to apply commit b2fe2292624ac (drm: bridge:
+samsung-dsim: enter display mode in the enable() callback). It looks
+like only the following hunk is still needed from that patch. Everything
+else is covered by this fixes patch.
+
+Dario, could you rebase your commit onto this patch? I had a quick test
+with this change and it seems to work fine for our case.
+
+--snip--
+diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c 
+b/drivers/gpu/drm/bridge/samsung-dsim.c
+index 63a1a0c88be4..92755c90e7d2 100644
+--- a/drivers/gpu/drm/bridge/samsung-dsim.c
++++ b/drivers/gpu/drm/bridge/samsung-dsim.c
+@@ -1498,6 +1498,8 @@ static void samsung_dsim_atomic_disable(struct 
+drm_bridge *bridge,
+         if (!(dsi->state & DSIM_STATE_ENABLED))
+                 return;
+
++       samsung_dsim_set_display_enable(dsi, false);
++
+         dsi->state &= ~DSIM_STATE_VIDOUT_AVAILABLE;
+  }
+
+@@ -1506,8 +1508,6 @@ static void 
+samsung_dsim_atomic_post_disable(struct drm_bridge *bridge,
+  {
+         struct samsung_dsim *dsi = bridge_to_dsi(bridge);
+
+-       samsung_dsim_set_display_enable(dsi, false);
+-
+         dsi->state &= ~DSIM_STATE_ENABLED;
+         pm_runtime_put_sync(dsi->dev);
+  }
+--snip--
+
+-michael
 
