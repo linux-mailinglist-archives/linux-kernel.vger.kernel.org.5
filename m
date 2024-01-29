@@ -1,235 +1,151 @@
-Return-Path: <linux-kernel+bounces-42843-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB7CE84079B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:56:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B284840793
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:56:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C0911F27333
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:56:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC95628C256
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:56:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07E3365BC4;
-	Mon, 29 Jan 2024 13:56:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A3EB65BAC;
+	Mon, 29 Jan 2024 13:56:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OVVbshUu"
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="hROZEAOj"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A371657B9;
-	Mon, 29 Jan 2024 13:56:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44AD5657B5
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 13:55:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706536588; cv=none; b=Nrx0a+FMr6NKFoy/BapEQQ8zxtN0np5ETaRg2cjYcxR2toYrp32B5x1t1PD86Iyr7GxZOP+Mez4AU8C5awaaVD0Tbs+QIZ7FVeMYgxEVIWvCz7ouNkv9Vbw0UnZ5IqKVSIJFzq7lFKjvh+S+XiiZMlqtDcpInGNKhR4iSK++abk=
+	t=1706536560; cv=none; b=l7AWV+Or0QY5iSJoDEJJfykZMGeKxeJ4y3726Hl0LfdEwhlGQEBbahVqBitpLCBYTgkpxQE54w6lYyBFSnZZ4//9DAlEn7Elbw683PUvr2HWyGVgTbMYM1KG5W4yHo1BKoLicvvM8XKbXZ5pNgcKCqyrH1VlFdhMlYkc7Xm0gyE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706536588; c=relaxed/simple;
-	bh=mTtSqAY9WSHR3XRmwFrnCt/54qdX28p1oaTlKRQzAag=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=qScrprobfrfW7DgRLHUZcpuekPLuMJsfJ0C4IT+YMnlzW/f3tvXW12cvwLuoCWwgCvK/roEp7rCGBx/A/oCAWM7U5dhQIZ/8vOZ3oQweNXZcY5dWiZT4NWJ0Z0MPtrmxJGgouVqYQXjZZi/BBYRf0MW4H2OzAu2foai2Gt3TzTI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OVVbshUu; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3392b045e0aso2281215f8f.2;
-        Mon, 29 Jan 2024 05:56:25 -0800 (PST)
+	s=arc-20240116; t=1706536560; c=relaxed/simple;
+	bh=0kU0XJcwqyXCVZxm+kFwwNR3JQ+C+nscVOHBvBX63BU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IzjrCGI2aLxKBmY4BPmhpfM0baYv57oXibwEIYEkFDBcEGK7bXtcbZOK+d4uXOHWsDB9S2+KNkK4i2auOh9DhmJ+gkInq1eBBRHFUOXpri0rV7TquFS2WLBmTQT/4l7ach77Xbt7+rO7FuLsXzDim1dDTb1epv+D1YLZAX+zDMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=hROZEAOj; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a3566c0309fso177641666b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 05:55:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706536584; x=1707141384; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GfIWoQHy7z0V0yUTX2XoUCJ/M52iXXotNEoKtHwDMZA=;
-        b=OVVbshUuD3zfDF7w1oNuJCbLqPLhUQjgDM6Tr8ahzjcBnircVLRhnQTzXvnd4zLXpW
-         kNiryUNjMykz3dsnLT8Yk/CmxFvSN9Fb8jRvKrPiHlkd6xrxJN+Q66kgHvTyf0+MVRGc
-         Kuh8zVRGT0v0yghOZ2rUOg2TSF1LeKft43L7UqQwlQpDp0fdnW7IqJ08NrsLq0oyuRbj
-         /psNxUSfOia9/4zndKMJusWnUgYT3d4gcRvLGQaUvigbvr2eiciSJxM4wdFUmJFjTdWO
-         OENjkdpib1dEaf9v0XGtiJJLm20e0wxoAAo9yUYyrcy/mfvVE80DR+TZhs50ABu7T/zl
-         4FwA==
+        d=tuxon.dev; s=google; t=1706536556; x=1707141356; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=c2pjxJTJw4PCQDkxC6JWUuLXXl1QpeecImfpOYgGbFk=;
+        b=hROZEAOjLz3J60bpDQybqKcOKTAfOfCWZM1ktDfBXG9EqRZZRx+KL5llybC2WYa2Ze
+         hRkajEAO8ntFw39Oq+MQb0XPtC24dmYmYrSu5wC+VniBLDRbCLedDWd5B4mEaIP61Phx
+         9c03UmMFs9oScGcL9ey3d9swu7NnWAjV1124iDSjmzXhfMBUo7w1SJoBBXCTbea64kMt
+         VRqi8PNdIjXSkegMXHfvAZ40TrC7NPFf6yO6rT0vI+aSeFyiqK/T6JP+YCikybSrUZf7
+         hfSeNPI1VQz1v4c6lZMt4zXEttgLj8Ew6XEwH5/anW+zRG0vQnpvOjJm1qJnEFuy5gEl
+         LttA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706536584; x=1707141384;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GfIWoQHy7z0V0yUTX2XoUCJ/M52iXXotNEoKtHwDMZA=;
-        b=Mk7mrPIesuhAEx+ttoGLGj4zBrX6yJt539tBsJtaLPUmcRXljtMzAFyc8wbxLKplKj
-         uEdzGesdz1kbiN61zMMP53yYiMudGmEcVXm70Dg/16tvLJplGMYynEyt7nbXxxvyyaUj
-         G/vlVCs9usqx7vLYDW4Bizp7HnfKWhrUYT25rPTFKrGESBsAZZBamRCqJuz8eeg2w4S7
-         qQv45KAr5AN8pB9nrED7ScGt1TREqdHI2g2dpsKjbyhytgCq3fR7LT4C85b8LCWtRKnj
-         vqFL/rv0KIHplbguI4S62O6agTRjW0uPmANO8eyI3c4gjLCdr6qfg0EfriMwaHPJfVqY
-         ngvg==
-X-Gm-Message-State: AOJu0YwmtK71ExUl/oyglzyDoFQCd0pcfH8DgpY1rcyR3g6eC9v7Wh8Y
-	HQC/zjRcroc3LQNp2eC/mZGlHH5RQtMn+40MGGbOK5hzMOtsU+IY
-X-Google-Smtp-Source: AGHT+IGycLUfTOhiGCB1QpVZLXn2w4f1Ppl0M/acXciIm/NV5A5s81OdEiAa0rGcaESwQpLdyGy+6A==
-X-Received: by 2002:a5d:6692:0:b0:33a:e773:5f3c with SMTP id l18-20020a5d6692000000b0033ae7735f3cmr2922585wru.3.1706536583999;
-        Mon, 29 Jan 2024 05:56:23 -0800 (PST)
-Received: from prasmi.home ([2a00:23c8:2500:a01:5616:a18c:ea50:2995])
-        by smtp.gmail.com with ESMTPSA id bh5-20020a05600005c500b0033aed46956csm3058057wrb.80.2024.01.29.05.56.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 05:56:23 -0800 (PST)
-From: Prabhakar <prabhakar.csengg@gmail.com>
-X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>,
-	Magnus Damm <magnus.damm@gmail.com>,
-	Linus Walleij <linus.walleij@linaro.org>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-renesas-soc@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-gpio@vger.kernel.org,
-	Prabhakar <prabhakar.csengg@gmail.com>,
-	Biju Das <biju.das.jz@bp.renesas.com>,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v6 1/4] pinctrl: renesas: rzg2l: Improve code for readability
-Date: Mon, 29 Jan 2024 13:55:53 +0000
-Message-Id: <20240129135556.63466-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240129135556.63466-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20240129135556.63466-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        d=1e100.net; s=20230601; t=1706536556; x=1707141356;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=c2pjxJTJw4PCQDkxC6JWUuLXXl1QpeecImfpOYgGbFk=;
+        b=lfx6Hiwmgbwrs3JZAGolgdB9FtpY+1bPexFgqdmnEZCDSpDz9smLpg1kDLR49lJDoL
+         ELHaJQfXA7cFDwnIZWzjul16ybUAKSoK2yNqI1hsrM1ffvfuHcHNv7tlnTbRW1ImtbNl
+         8odHuKEVVadUXih8J8VI9Is8D8NWVyX+5najQFXPeoe7F8FoeWnQd4XoYrW/7vFMCSvR
+         lezH460hWB/EFHalr9GBUgewTCc9rX8axYQk99dX423NemNxsAB+DjGBkjfDeLcV/j22
+         k1JqZE91qga15JCDvXMFtqcfsQpPCcoMp5Fr+8bwRsPPyqtzjc9CXyHZeHBpH8xj1n00
+         wtyg==
+X-Gm-Message-State: AOJu0YzhUIvX5b0+oCxXuBbHpBovut/BdRntKfKJrA9AKPxVJ/HFru6/
+	XOJ3JmjlwNlqYxYmloVYxa1UEWVNFGGAlUbjiV67lZwXRwnYbG0Ecqj3OX5hJ8o=
+X-Google-Smtp-Source: AGHT+IEdvnhMQ/CDu0i2JcMjQ93Mjck1u0vYpVh300T2TKQ++pg6Wjm5npTJCOfGrbQJZ3bPR/M7rw==
+X-Received: by 2002:a17:906:b0d:b0:a35:dafa:a5d8 with SMTP id u13-20020a1709060b0d00b00a35dafaa5d8mr1224292ejg.73.1706536556328;
+        Mon, 29 Jan 2024 05:55:56 -0800 (PST)
+Received: from [192.168.50.4] ([82.78.167.87])
+        by smtp.gmail.com with ESMTPSA id vx6-20020a170907a78600b00a35ea4a21e8sm425895ejc.2.2024.01.29.05.55.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jan 2024 05:55:55 -0800 (PST)
+Message-ID: <1c680be4-67b7-435b-9609-b5f7a45ca675@tuxon.dev>
+Date: Mon, 29 Jan 2024 15:55:54 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v4 10/15] net: ravb: Move delay mode set in the
+ driver's ndo_open API
+Content-Language: en-US
+To: Sergey Shtylyov <s.shtylyov@omp.ru>, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ richardcochran@gmail.com, p.zabel@pengutronix.de, geert+renesas@glider.be
+Cc: netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240123125829.3970325-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240123125829.3970325-11-claudiu.beznea.uj@bp.renesas.com>
+ <b0a4f320-6218-2631-a5a0-26cfa9a25ee1@omp.ru>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <b0a4f320-6218-2631-a5a0-26cfa9a25ee1@omp.ru>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-As the RZ/G2L pinctrl driver is extensively utilized by numerous SoCs and
-has experienced substantial growth, enhance code readability by
-incorporating FIELD_PREP_CONST/FIELD_GET macros wherever necessary.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
----
- drivers/pinctrl/renesas/pinctrl-rzg2l.c | 41 +++++++++++++++----------
- 1 file changed, 24 insertions(+), 17 deletions(-)
+On 24.01.2024 22:18, Sergey Shtylyov wrote:
+> On 1/23/24 3:58 PM, Claudiu wrote:
+> 
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>
+>> Delay parsing and setting were done in the driver's probe API. As some IP
+>> variants switch to reset mode (and thus registers content is lost) when
+> 
+>    s/registers content/the register contents/, perhaps?
+> 
+>> setting clocks (due to module standby functionality) to be able to
+>> implement runtime PM keep the delay parsing in the driver's probe function
+>> and move the delay applying function to the driver's ndo_open API.
+>>
+>> Along with it, both delay specific functions were kept together.
+>>
+>> Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> [...]
+> 
+>> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+>> index 8956c33c60e2..69d4854d6738 100644
+>> --- a/drivers/net/ethernet/renesas/ravb_main.c
+>> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+>> @@ -1800,6 +1800,59 @@ static int ravb_compute_gti(struct net_device *ndev)
+>>  	return 0;
+>>  }
+>>  
+>> +/* Set tx and rx clock internal delay modes */
+>> +static void ravb_parse_delay_mode(struct device_node *np, struct net_device *ndev)
+> 
+>    Wait, why are you moving this? Its call site didn't move -- it's still
+> down in the probe() method...
 
-diff --git a/drivers/pinctrl/renesas/pinctrl-rzg2l.c b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-index 80fb5011c7bb..c7dc32176bfe 100644
---- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-+++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-@@ -5,6 +5,7 @@
-  * Copyright (C) 2021 Renesas Electronics Corporation.
-  */
- 
-+#include <linux/bitfield.h>
- #include <linux/bitops.h>
- #include <linux/clk.h>
- #include <linux/gpio/driver.h>
-@@ -38,8 +39,6 @@
-  */
- #define MUX_PIN_ID_MASK		GENMASK(15, 0)
- #define MUX_FUNC_MASK		GENMASK(31, 16)
--#define MUX_FUNC_OFFS		16
--#define MUX_FUNC(pinconf)	(((pinconf) & MUX_FUNC_MASK) >> MUX_FUNC_OFFS)
- 
- /* PIN capabilities */
- #define PIN_CFG_IOLH_A			BIT(0)
-@@ -81,8 +80,12 @@
-  * n indicates number of pins in the port, a is the register index
-  * and f is pin configuration capabilities supported.
-  */
--#define RZG2L_GPIO_PORT_PACK(n, a, f)	(((n) << 28) | ((a) << 20) | (f))
--#define RZG2L_GPIO_PORT_GET_PINCNT(x)	(((x) & GENMASK(30, 28)) >> 28)
-+#define PIN_CFG_PIN_CNT_MASK		GENMASK(30, 28)
-+#define PIN_CFG_PIN_REG_MASK		GENMASK(27, 20)
-+#define PIN_CFG_MASK			GENMASK(19, 0)
-+#define RZG2L_GPIO_PORT_PACK(n, a, f)	(FIELD_PREP_CONST(PIN_CFG_PIN_CNT_MASK, (n)) | \
-+					 FIELD_PREP_CONST(PIN_CFG_PIN_REG_MASK, (a)) | \
-+					 FIELD_PREP_CONST(PIN_CFG_MASK, (f)))
- 
- /*
-  * BIT(31) indicates dedicated pin, p is the register index while
-@@ -90,14 +93,18 @@
-  * (b * 8) and f is the pin configuration capabilities supported.
-  */
- #define RZG2L_SINGLE_PIN		BIT(31)
-+#define RZG2L_SINGLE_PIN_INDEX_MASK	GENMASK(30, 24)
-+#define RZG2L_SINGLE_PIN_BITS_MASK	GENMASK(22, 20)
-+
- #define RZG2L_SINGLE_PIN_PACK(p, b, f)	(RZG2L_SINGLE_PIN | \
--					 ((p) << 24) | ((b) << 20) | (f))
--#define RZG2L_SINGLE_PIN_GET_BIT(x)	(((x) & GENMASK(22, 20)) >> 20)
-+					 FIELD_PREP_CONST(RZG2L_SINGLE_PIN_INDEX_MASK, (p)) | \
-+					 FIELD_PREP_CONST(RZG2L_SINGLE_PIN_BITS_MASK, (b)) | \
-+					 FIELD_PREP_CONST(PIN_CFG_MASK, (f)))
- 
--#define RZG2L_PIN_CFG_TO_CAPS(cfg)		((cfg) & GENMASK(19, 0))
-+#define RZG2L_PIN_CFG_TO_CAPS(cfg)		((cfg) & PIN_CFG_MASK)
- #define RZG2L_PIN_CFG_TO_PORT_OFFSET(cfg)	((cfg) & RZG2L_SINGLE_PIN ? \
--						(((cfg) & GENMASK(30, 24)) >> 24) : \
--						(((cfg) & GENMASK(26, 20)) >> 20))
-+						 FIELD_GET(RZG2L_SINGLE_PIN_INDEX_MASK, (cfg)) : \
-+						 FIELD_GET(PIN_CFG_PIN_REG_MASK, (cfg)))
- 
- #define P(off)			(0x0000 + (off))
- #define PM(off)			(0x0100 + (off) * 2)
-@@ -432,8 +439,8 @@ static int rzg2l_dt_subnode_to_map(struct pinctrl_dev *pctldev,
- 		ret = of_property_read_u32_index(np, "pinmux", i, &value);
- 		if (ret)
- 			goto done;
--		pins[i] = value & MUX_PIN_ID_MASK;
--		psel_val[i] = MUX_FUNC(value);
-+		pins[i] = FIELD_GET(MUX_PIN_ID_MASK, value);
-+		psel_val[i] = FIELD_GET(MUX_FUNC_MASK, value);
- 	}
- 
- 	if (parent) {
-@@ -560,7 +567,7 @@ static int rzg2l_dt_node_to_map(struct pinctrl_dev *pctldev,
- static int rzg2l_validate_gpio_pin(struct rzg2l_pinctrl *pctrl,
- 				   u32 cfg, u32 port, u8 bit)
- {
--	u8 pincount = RZG2L_GPIO_PORT_GET_PINCNT(cfg);
-+	u8 pincount = FIELD_GET(PIN_CFG_PIN_CNT_MASK, cfg);
- 	u32 off = RZG2L_PIN_CFG_TO_PORT_OFFSET(cfg);
- 	u32 data;
- 
-@@ -868,7 +875,7 @@ static int rzg2l_pinctrl_pinconf_get(struct pinctrl_dev *pctldev,
- 	off = RZG2L_PIN_CFG_TO_PORT_OFFSET(*pin_data);
- 	cfg = RZG2L_PIN_CFG_TO_CAPS(*pin_data);
- 	if (*pin_data & RZG2L_SINGLE_PIN) {
--		bit = RZG2L_SINGLE_PIN_GET_BIT(*pin_data);
-+		bit = FIELD_GET(RZG2L_SINGLE_PIN_BITS_MASK, *pin_data);
- 	} else {
- 		bit = RZG2L_PIN_ID_TO_PIN(_pin);
- 
-@@ -972,7 +979,7 @@ static int rzg2l_pinctrl_pinconf_set(struct pinctrl_dev *pctldev,
- 	off = RZG2L_PIN_CFG_TO_PORT_OFFSET(*pin_data);
- 	cfg = RZG2L_PIN_CFG_TO_CAPS(*pin_data);
- 	if (*pin_data & RZG2L_SINGLE_PIN) {
--		bit = RZG2L_SINGLE_PIN_GET_BIT(*pin_data);
-+		bit = FIELD_GET(RZG2L_SINGLE_PIN_BITS_MASK, *pin_data);
- 	} else {
- 		bit = RZG2L_PIN_ID_TO_PIN(_pin);
- 
-@@ -1608,12 +1615,12 @@ static int rzg2l_gpio_get_gpioint(unsigned int virq, const struct rzg2l_pinctrl_
- 	bit = virq % 8;
- 
- 	if (port >= data->n_ports ||
--	    bit >= RZG2L_GPIO_PORT_GET_PINCNT(data->port_pin_configs[port]))
-+	    bit >= FIELD_GET(PIN_CFG_PIN_CNT_MASK, data->port_pin_configs[port]))
- 		return -EINVAL;
- 
- 	gpioint = bit;
- 	for (i = 0; i < port; i++)
--		gpioint += RZG2L_GPIO_PORT_GET_PINCNT(data->port_pin_configs[i]);
-+		gpioint += FIELD_GET(PIN_CFG_PIN_CNT_MASK, data->port_pin_configs[i]);
- 
- 	return gpioint;
- }
-@@ -1788,7 +1795,7 @@ static void rzg2l_init_irq_valid_mask(struct gpio_chip *gc,
- 		bit = offset % 8;
- 
- 		if (port >= pctrl->data->n_ports ||
--		    bit >= RZG2L_GPIO_PORT_GET_PINCNT(pctrl->data->port_pin_configs[port]))
-+		    bit >= FIELD_GET(PIN_CFG_PIN_CNT_MASK, pctrl->data->port_pin_configs[port]))
- 			clear_bit(offset, valid_mask);
- 	}
- }
--- 
-2.34.1
+As explained in the patch description ("Along with it, both delay specific
+functions were kept together.") functions were moved closed to each other
+to have the code dealing with delay in the same place.
 
+> 
+> [...]
+>> @@ -2785,10 +2793,7 @@ static int ravb_probe(struct platform_device *pdev)
+>>  	if (error)
+>>  		goto out_rpm_put;
+>>  
+>> -	if (info->internal_delay) {
+>> -		ravb_parse_delay_mode(np, ndev);
+>> -		ravb_set_delay_mode(ndev);
+>> -	}
+>> +	ravb_parse_delay_mode(np, ndev);
+>>  
+>>  	/* Allocate descriptor base address table */
+>>  	priv->desc_bat_size = sizeof(struct ravb_desc) * DBAT_ENTRY_NUM;
+>>
+> 
+> MBR, Sergey
 
