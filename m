@@ -1,131 +1,215 @@
-Return-Path: <linux-kernel+bounces-43237-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43238-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06E3584114C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:51:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58A8A84114E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:51:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30F0BB21BFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:51:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FF352847A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:51:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A755B76C88;
-	Mon, 29 Jan 2024 17:51:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PvF516rY"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7036E76C85
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 17:51:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C88E476C99;
+	Mon, 29 Jan 2024 17:51:43 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 312FE3F9CC
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 17:51:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706550668; cv=none; b=g4OfNEC8/FrnXr2ijSh/nwfc3MuiqKVthcWYTwTIGsGt7ieVJm+nEKV+u9CgrcwSZTiGvip3AsawESCbtTOLau3Dbt7XNCyFzXEbBMg/Fjz5bH89EI056/YAl6ggmiDLZnvftzQhPvFcKT/2PYH/7HIikTgQDcHckSYzmO58CtU=
+	t=1706550703; cv=none; b=LTAl22W/HRwElI8FG0NtRUzvOuAjd6/tI9uJ+Pdpk4sOIduIfWtANNd8WUVc7isJ+C2mq67bqsgvgGFWU/hBr4SweWVkTrIN99hVqkguhM0bFwgc2A4Q0z32hycFbqdrLIUc4dbAhRqeORbMkbRe5nZX/vJSALJjk9zf7mjkbS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706550668; c=relaxed/simple;
-	bh=WVcPxlPoFZbcDre4Mz58FOn74ovoHGfqo6wpm82JGa8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=I9YKndnbh+IjQdGtOawlA0D1KSa1fcxpiZDP+j2Cd1LzYYzx5x6x1kEFv/ZHwZdCmwUoe2wDzLrLfMXbBle54n7I/69jqB+bA1FWMCBdU9OgP6E00wggzwfKUSWMElGFtVfTCLo6U+TLgzqkv1GZoqeuftSzTECWW9R7WGtr+iU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=PvF516rY; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a35385da5bbso327539166b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:51:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706550665; x=1707155465; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=S8toqIrvYZfogfXp6ps9M0ZWOkca7q4FBajUFTEMNOg=;
-        b=PvF516rYvG8hEsceo69hKYqnt0nWVJffLiaZC1LB9GJrIOf9jruAPeIYNA+YeNNLbF
-         FHf2tmkenmpA7ZjrrP92rgMQDqsUsy3UZxSBR85wkqi+R0FoCJ9eKkUQ0ntEywboZucl
-         dcoJciqgYJ3gvyVX8MCuEuP7wU8Fh3Z92ZiTk0Pn8vwIdxBfHdsStJ5VwicU2wpruSOm
-         uYgDr4Mcdff6SlgqVPPfsj9DQXSler4cKeW4u6z8q34sQtY6YEWMASyQUCisXJ7cu9/D
-         wKbfnHELYHmHm2dQ7c/GoM/INo1dqrmlTuLVgmKC0Ii+Fqc20pI0191X28GDgpWWR2Ft
-         +rsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706550665; x=1707155465;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=S8toqIrvYZfogfXp6ps9M0ZWOkca7q4FBajUFTEMNOg=;
-        b=ufFoPKAKosemal83IQTQMrRloLve2Q1H6XP7bU75+svIuMAQSDJT31eRm4/KSxC8XW
-         EkJN28KoFAFbMJA6NQPRFVK+0WJldpdWVPb5FiATzuZsBxio1yb5pQVILA/rnJ7PkINh
-         p+FD+VT7gRoZglRpNm07vfFzZfNXT3j2TLfObXn+F3ZE2PkveMmngA+aN2Oc3r0RX9Na
-         O0euORXxSKnBJOOKj855vWc/54+lrOcCGGX7waOSWFlkaBqv2LNYdytfP/HiqqvnlqBL
-         85gQTlrCMZnAJDigzJpY8/7fhBDUMIFewdEiBLdidBe363ykm2QBkuQ0BFAFTey7D61a
-         Wezg==
-X-Gm-Message-State: AOJu0YylQSJ2VfJlo666bPilVN7XcYs+K1K7sMZ2RkFwYjY0Hr57+Znp
-	rt4GvL3c+NnLNtvPkj5Zzu7X/hihawwpgBff/pro5cvWyYreGtUGs3FbmgeLiO4=
-X-Google-Smtp-Source: AGHT+IFN5WBqjuCZ0LLHJN0gA/j+3nth/Q8T+OUkfqR3MYT3a8tAWCiirKOA/twxv2J6LBgopZdYNw==
-X-Received: by 2002:a17:906:81d0:b0:a28:d1f9:976 with SMTP id e16-20020a17090681d000b00a28d1f90976mr5009746ejx.65.1706550664785;
-        Mon, 29 Jan 2024 09:51:04 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id pk27-20020a170906d7bb00b00a35242f5976sm3371315ejb.164.2024.01.29.09.51.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jan 2024 09:51:04 -0800 (PST)
-Message-ID: <1b27fa0d-5dc8-497f-ab17-76d82c2aaf40@linaro.org>
-Date: Mon, 29 Jan 2024 17:51:02 +0000
+	s=arc-20240116; t=1706550703; c=relaxed/simple;
+	bh=i4txDDfrPArVMsPizlpg+yYFpCSeVcyFICydVAUi/AU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uqDmxTU0R5hFmwdyIrxjPDox2qcp2yDbTNyyrpEMMEBL+HnmSTkQiioOjtFbm0JfhoFo6dghhaf308rEh8w4SwWthoB0QbOLSccaHysA07rZXIc2XIev24prDxbDoTrnXPiNn1gPKhaQGm4TsPw81ShWr3/n8LoA/3YCp/ipGj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 58831139F;
+	Mon, 29 Jan 2024 09:52:24 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.48.128])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 529603F738;
+	Mon, 29 Jan 2024 09:51:36 -0800 (PST)
+Date: Mon, 29 Jan 2024 17:51:33 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Tong Tiangen <tongtiangen@huawei.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, James Morse <james.morse@arm.com>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	Alexander Potapenko <glider@google.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Andrey Konovalov <andreyknvl@gmail.com>,
+	Dmitry Vyukov <dvyukov@google.com>,
+	Vincenzo Frascino <vincenzo.frascino@arm.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+	kasan-dev@googlegroups.com, wangkefeng.wang@huawei.com,
+	Guohanjun <guohanjun@huawei.com>
+Subject: Re: [PATCH v10 2/6] arm64: add support for machine check error safe
+Message-ID: <ZbflpQV7aVry0qPz@FVFF77S0Q05N>
+References: <20240129134652.4004931-1-tongtiangen@huawei.com>
+ <20240129134652.4004931-3-tongtiangen@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/3] arm64: dts: exynos: Add SPI nodes for Exynos850
-Content-Language: en-US
-To: Sam Protsenko <semen.protsenko@linaro.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Rob Herring <robh+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
-Cc: Alim Akhtar <alim.akhtar@samsung.com>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Tomasz Figa <tomasz.figa@gmail.com>, Chanwoo Choi <cw00.choi@samsung.com>,
- linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-References: <20240125013858.3986-1-semen.protsenko@linaro.org>
- <20240125013858.3986-4-semen.protsenko@linaro.org>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20240125013858.3986-4-semen.protsenko@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240129134652.4004931-3-tongtiangen@huawei.com>
 
-
-
-On 1/25/24 01:38, Sam Protsenko wrote:
-> diff --git a/arch/arm64/boot/dts/exynos/exynos850.dtsi b/arch/arm64/boot/dts/exynos/exynos850.dtsi
-> index 618bc674896e..ca257da74b50 100644
-> --- a/arch/arm64/boot/dts/exynos/exynos850.dtsi
-> +++ b/arch/arm64/boot/dts/exynos/exynos850.dtsi
-> @@ -738,6 +738,24 @@ usi_spi_0: usi@139400c0 {
->  				 <&cmu_peri CLK_GOUT_SPI0_IPCLK>;
->  			clock-names = "pclk", "ipclk";
->  			status = "disabled";
+On Mon, Jan 29, 2024 at 09:46:48PM +0800, Tong Tiangen wrote:
+> For the arm64 kernel, when it processes hardware memory errors for
+> synchronize notifications(do_sea()), if the errors is consumed within the
+> kernel, the current processing is panic. However, it is not optimal.
+> 
+> Take uaccess for example, if the uaccess operation fails due to memory
+> error, only the user process will be affected. Killing the user process and
+> isolating the corrupt page is a better choice.
+> 
+> This patch only enable machine error check framework and adds an exception
+> fixup before the kernel panic in do_sea().
+> 
+> Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+> ---
+>  arch/arm64/Kconfig               |  1 +
+>  arch/arm64/include/asm/extable.h |  1 +
+>  arch/arm64/mm/extable.c          | 16 ++++++++++++++++
+>  arch/arm64/mm/fault.c            | 29 ++++++++++++++++++++++++++++-
+>  4 files changed, 46 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index aa7c1d435139..2cc34b5e7abb 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -20,6 +20,7 @@ config ARM64
+>  	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if PGTABLE_LEVELS > 2
+>  	select ARCH_ENABLE_THP_MIGRATION if TRANSPARENT_HUGEPAGE
+>  	select ARCH_HAS_CACHE_LINE_SIZE
+> +	select ARCH_HAS_COPY_MC if ACPI_APEI_GHES
+>  	select ARCH_HAS_CURRENT_STACK_POINTER
+>  	select ARCH_HAS_DEBUG_VIRTUAL
+>  	select ARCH_HAS_DEBUG_VM_PGTABLE
+> diff --git a/arch/arm64/include/asm/extable.h b/arch/arm64/include/asm/extable.h
+> index 72b0e71cc3de..f80ebd0addfd 100644
+> --- a/arch/arm64/include/asm/extable.h
+> +++ b/arch/arm64/include/asm/extable.h
+> @@ -46,4 +46,5 @@ bool ex_handler_bpf(const struct exception_table_entry *ex,
+>  #endif /* !CONFIG_BPF_JIT */
+>  
+>  bool fixup_exception(struct pt_regs *regs);
+> +bool fixup_exception_mc(struct pt_regs *regs);
+>  #endif
+> diff --git a/arch/arm64/mm/extable.c b/arch/arm64/mm/extable.c
+> index 228d681a8715..478e639f8680 100644
+> --- a/arch/arm64/mm/extable.c
+> +++ b/arch/arm64/mm/extable.c
+> @@ -76,3 +76,19 @@ bool fixup_exception(struct pt_regs *regs)
+>  
+>  	BUG();
+>  }
 > +
-> +			spi_0: spi@13940000 {
-> +				compatible = "samsung,exynos850-spi";
-> +				reg = <0x13940000 0x30>;
-> +				interrupts = <GIC_SPI 221 IRQ_TYPE_LEVEL_HIGH>;
-> +				pinctrl-0 = <&spi0_pins>;
-> +				pinctrl-names = "default";
-> +				clocks = <&cmu_peri CLK_GOUT_SPI0_IPCLK>,
-> +					 <&cmu_peri CLK_GOUT_SPI0_PCLK>;
-> +				clock-names = "spi_busclk0", "spi";
-> +				samsung,spi-src-clk = <0>;
+> +bool fixup_exception_mc(struct pt_regs *regs)
 
-this optional property
+Can we please replace 'mc' with something like 'memory_error' ?
 
-> +				dmas = <&pdma0 5>, <&pdma0 4>;
-> +				dma-names = "tx", "rx";
-> +				num-cs = <1>;
+There's no "machine check" on arm64, and 'mc' is opaque regardless.
 
-and this one, are already defaults in the driver. Shall you remove them?
+> +{
+> +	const struct exception_table_entry *ex;
+> +
+> +	ex = search_exception_tables(instruction_pointer(regs));
+> +	if (!ex)
+> +		return false;
+> +
+> +	/*
+> +	 * This is not complete, More Machine check safe extable type can
+> +	 * be processed here.
+> +	 */
+> +
+> +	return false;
+> +}
 
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
-> +				status = "disabled";
-> +			};
->  		};
+As with my comment on the subsequenty patch, I'd much prefer that we handle
+EX_TYPE_UACCESS_ERR_ZERO from the outset.
+
+
+
+> diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+> index 55f6455a8284..312932dc100b 100644
+> --- a/arch/arm64/mm/fault.c
+> +++ b/arch/arm64/mm/fault.c
+> @@ -730,6 +730,31 @@ static int do_bad(unsigned long far, unsigned long esr, struct pt_regs *regs)
+>  	return 1; /* "fault" */
+>  }
+>  
+> +static bool arm64_do_kernel_sea(unsigned long addr, unsigned int esr,
+> +				     struct pt_regs *regs, int sig, int code)
+> +{
+> +	if (!IS_ENABLED(CONFIG_ARCH_HAS_COPY_MC))
+> +		return false;
+> +
+> +	if (user_mode(regs))
+> +		return false;
+
+This function is called "arm64_do_kernel_sea"; surely the caller should *never*
+call this for a SEA taken from user mode?
+
+> +
+> +	if (apei_claim_sea(regs) < 0)
+> +		return false;
+> +
+> +	if (!fixup_exception_mc(regs))
+> +		return false;
+> +
+> +	if (current->flags & PF_KTHREAD)
+> +		return true;
+
+I think this needs a comment; why do we allow kthreads to go on, yet kill user
+threads? What about helper threads (e.g. for io_uring)?
+
+> +
+> +	set_thread_esr(0, esr);
+
+Why do we set the ESR to 0?
+
+Mark.
+
+> +	arm64_force_sig_fault(sig, code, addr,
+> +		"Uncorrected memory error on access to user memory\n");
+> +
+> +	return true;
+> +}
+> +
+>  static int do_sea(unsigned long far, unsigned long esr, struct pt_regs *regs)
+>  {
+>  	const struct fault_info *inf;
+> @@ -755,7 +780,9 @@ static int do_sea(unsigned long far, unsigned long esr, struct pt_regs *regs)
+>  		 */
+>  		siaddr  = untagged_addr(far);
+>  	}
+> -	arm64_notify_die(inf->name, regs, inf->sig, inf->code, siaddr, esr);
+> +
+> +	if (!arm64_do_kernel_sea(siaddr, esr, regs, inf->sig, inf->code))
+> +		arm64_notify_die(inf->name, regs, inf->sig, inf->code, siaddr, esr);
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.25.1
+> 
 
