@@ -1,510 +1,220 @@
-Return-Path: <linux-kernel+bounces-43177-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DD7A840CDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:04:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15DA1840CC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:02:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 095AAB24D27
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:04:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 33E381C2399A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:02:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D926815703E;
-	Mon, 29 Jan 2024 17:02:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C345F1586C5;
+	Mon, 29 Jan 2024 17:02:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="ta/1CnnS"
-Received: from aposti.net (aposti.net [89.234.176.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="HCCMtJVs";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="eoKoH4ri"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A107E155308;
-	Mon, 29 Jan 2024 17:02:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.234.176.197
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706547772; cv=none; b=PvMKHiNrhEJeAlTZ8b1oPSKzYe8cSzgTTLo5STD3EN5xu7wQCRFt7/VjV8KKiG/r4gk3raNfkz5tpyULSNm27HxxtjpDszpkp0zQ02nHyvcaJ8EHeRVoXw+7gOH7w4Rax+DEFGM13hTGNmXm4mxeZgroo/e2ISXO0eIM00+ke5g=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706547772; c=relaxed/simple;
-	bh=trjw935VDwEIeOU0qg2uhxE1OiIa43EkLjDtCqLmxaE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SMQWV1lPkUuT3FWK5GqgFmApaIhaTPY+o1WqjyXCh3M7cmgo2SKfSLkoa6UenRRASR8NXpK4Mgfeo+FHob6OtwwClsjTnlL+tRDa0OopkunhMUojQEg4DY6JS3zTNZM7Xeth/T6k3H/dRDmBFZlC5PfSRVKPQsNM+FhW7FCY2cE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net; spf=pass smtp.mailfrom=crapouillou.net; dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b=ta/1CnnS; arc=none smtp.client-ip=89.234.176.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-	s=mail; t=1706547739;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=U+LY8goyLQKkbUw8Rbl+fN90hSYYz2kVkllDTHptXMg=;
-	b=ta/1CnnSm2Wl77kAN7mLMFTKRNmZOuFZ18vdn+mO82mqHDPQ4CAxL+juWPQMLQX1xosbcp
-	u+ExyzCorCWhSLOKV0gX2ireza//M8JwLo4Zr3cOc+L6uAqoKWl3ceRGrxumsRWzxWfFAF
-	Edc7OVslLSF4hxc9/GSaMPAsNp4rUio=
-From: Paul Cercueil <paul@crapouillou.net>
-To: Jonathan Cameron <jic23@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Vinod Koul <vkoul@kernel.org>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
-Cc: Daniel Vetter <daniel@ffwll.ch>,
-	Nuno Sa <nuno.sa@analog.com>,
-	Michael Hennerich <Michael.Hennerich@analog.com>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	dmaengine@vger.kernel.org,
-	linux-iio@vger.kernel.org,
-	linux-media@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	linaro-mm-sig@lists.linaro.org,
-	Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH v6 4/6] iio: buffer-dma: Enable support for DMABUFs
-Date: Mon, 29 Jan 2024 18:01:59 +0100
-Message-ID: <20240129170201.133785-5-paul@crapouillou.net>
-In-Reply-To: <20240129170201.133785-1-paul@crapouillou.net>
-References: <20240129170201.133785-1-paul@crapouillou.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDC20157020;
+	Mon, 29 Jan 2024 17:02:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706547746; cv=fail; b=h8vRGVzMne908b+9HvTY3MNdBsyNBaAgxW7d0bIm53EDejqabkjvb0lpNe7uBFTYJi8tD69uS1QOZC0TVBkzuo9+YW+g40TdcqJ3w1vSDff9NLtvp/0ddsSjetieoB7cT9W9QwC8tCDMrDLskyG2ZIsxPeJVHn3GZIZMIGF4wXo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706547746; c=relaxed/simple;
+	bh=ip4gvHM2fX+rGpGRXyw4kYoAIu+P/4nK+7T93RDl9qY=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=GWlVZQe8tivt+AECs1mYX8iYq6Hy0ztnVr87+rbgzwmMnvB1fb3HNh8zMmgVoZVvoKG5jL+uic78TS3BUbVWZGbZJAD5AkPMK39jg5PrOptES1rMkSSf17joBX2wpTsCJ+STkt7cmc8sfpE9Mckm93cy9sQon5OcMudc2K3P9as=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=HCCMtJVs; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=eoKoH4ri; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40TGmvAB007080;
+	Mon, 29 Jan 2024 17:02:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=ip4gvHM2fX+rGpGRXyw4kYoAIu+P/4nK+7T93RDl9qY=;
+ b=HCCMtJVsQm7JWV+p3A2AkJlZtbxlCmPCuTTuWy9qneJMG6iFCkXZttVqbbo6vJkzU1Vg
+ Q4HQ9QQ70xq9QfIRL1H5ufNzHKaTHy4RH6ir5+jz/P0DpBXLl5Ww4PF7E00DM9h1AAUt
+ H3bHPSEliIURN8gcnmHiOwyDRGt/lnoR2vdPPjqpjVTSOqraCemyVgyit7Tz4TllyeBb
+ h2wRJkeAt/amOIcYAJmJPGFtdGSGT+E4UYrXuEv68uMFZ8KWz704X/FCROQD0xCcDC4U
+ IwA6wVi5OSHSrW9w+oMKN/iNjaY8AfkBTyLx4VsUZ4RkprERfYAgEpjJR+dpOoiNvh1Y wA== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vvrm3vfrn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 29 Jan 2024 17:02:08 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 40TG0FbT035398;
+	Mon, 29 Jan 2024 17:02:07 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2100.outbound.protection.outlook.com [104.47.70.100])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3vvr9bwygy-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 29 Jan 2024 17:02:07 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AbkaTD04jMql+N7O077O71FD0gzA6GB64kN6y6dG2+g6NC/JAN89Hj8/4WGnM/0CNSD5dr6zLCN/qGwig325y48gKMiSySVzWSh/RXmbQNvRuqVAro+LQBj1ZJesKmT1wDQhC3xEYqfMr9SNPjGJczQFNBAG+mQ3KtIpTaeXh7APWmJ9qSoye/6WLePa+ZCU8ow9oRToMRsfKhgQjOWL7WHG47l2WJtjZTWdR/h3+E1Gkgq+xssak5QoSCg5L44Th1WtjYDszkIRcX6ZHhIEl3Apy9Re7Zvos8M6FXy01Mhw2y806BC/K8tA/ksPo6uZf1OWFisdk596nxWRay16MQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ip4gvHM2fX+rGpGRXyw4kYoAIu+P/4nK+7T93RDl9qY=;
+ b=gY4hC0VcgzMd0/bTrCjN7x8ADEnpU4ew7B6TOF2NQ/gWIZ8M1l0Ho/HhLsZp0kfr5tlW9+MGG8OmgDJ/gB6ulJ3GJYAZuPc+NawA89lUfbvPcx+yJKjnexI5sbd6XWC/IU2hB5jsGA9XuJf7ZGL9YJQ/n2PVAX/h+LrPVxjez4BbvcLu+XPcHBDy7vnktV4iaZ69ZwA0ScYD6ZI7ivZ7FhLZ2XX+Fxk5QLEfS6ZdH9hTK4xK6qYoR4dzGiZEDu99AjQ9OE647DQw1Neo2uXe25GNEy/bSLxxhP7FBkB/MnTFL+CEh3zSdjSOZ2OAMCesVfP3KP9FxlSMzEh0oXTTOw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ip4gvHM2fX+rGpGRXyw4kYoAIu+P/4nK+7T93RDl9qY=;
+ b=eoKoH4rilAPAA5dD1kuKbXsn+0v6liMWhoCMYdckpL9OsG5MBufUuiT4/9MTMTB612yiIuU8ydDMrydrX5ScJkbLTCyJNHTRtgHRz5gC3xUOs3rs86ZJphEpDS6Pv4LPGqOF3pUITz3BS0DgPE1BUtMff1l73V02AKI/Dy0q2iA=
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
+ by CO6PR10MB5572.namprd10.prod.outlook.com (2603:10b6:303:147::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.34; Mon, 29 Jan
+ 2024 17:02:04 +0000
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::ed:9f6b:7944:a2fa]) by BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::ed:9f6b:7944:a2fa%6]) with mapi id 15.20.7228.029; Mon, 29 Jan 2024
+ 17:02:04 +0000
+From: Chuck Lever III <chuck.lever@oracle.com>
+To: Benjamin Coddington <bcodding@redhat.com>
+CC: Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
+        Olga
+ Kornievskaia <kolga@netapp.com>, Dai Ngo <dai.ngo@oracle.com>,
+        Tom Talpey
+	<tom@talpey.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna
+ Schumaker <anna@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni
+	<pabeni@redhat.com>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        Linux NFS
+ Mailing List <linux-nfs@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]"
+	<netdev@vger.kernel.org>,
+        Linux Kernel Mailing List
+	<linux-kernel@vger.kernel.org>,
+        Alexander Aring <aahringo@redhat.com>
+Subject: Re: [PATCH] sunrpc: fix assignment of to_retries in svc_process_bc
+Thread-Topic: [PATCH] sunrpc: fix assignment of to_retries in svc_process_bc
+Thread-Index: AQHaUtJM1QSrjYxmB0ONPOC4M70BBbDxAXoAgAAAxgCAAAEwgIAAAKKA
+Date: Mon, 29 Jan 2024 17:02:04 +0000
+Message-ID: <FF83118C-41C6-4D4F-B4D0-8567E2F68708@oracle.com>
+References: <20240129-nfsd-fixes-v1-1-49a3a45bd750@kernel.org>
+ <7E6930D1-14BC-4CBC-9833-531BF6F5D874@redhat.com>
+ <C4D894E0-F9C9-4C31-BA49-05E942FE0A6A@oracle.com>
+ <54456569-284D-4294-BD75-6AD3F68BB5A8@redhat.com>
+In-Reply-To: <54456569-284D-4294-BD75-6AD3F68BB5A8@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3774.400.31)
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN0PR10MB5128:EE_|CO6PR10MB5572:EE_
+x-ms-office365-filtering-correlation-id: 9505e882-a275-4e6f-2e37-08dc20ec049c
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ Xfb/CO2avh360CPJgkUVCqzP2HQZYF9AWNWxYu7GNiJq44Y4GSEpkyeealQOjgbNfWFtkcnqsI8dWMP7VL/4rJAiUNJN18/5NBorpoUHgxWjHKThgpq2nFigpQwTdkDzkxprJ5k5P6eyOJpXSaryx6QBPBqp5+OCebHbDsDTz24RJi25jXprxUn9RkGo+zRLfiTfC6T7bPhRLyJOuBr/qovZkl3B4easjnMWGnXkILkv6COEEFaP5bfxk+xoF0KyuBhvJcL/aRFAsQTRr1A/1o6OKOJ6IRjAR93BBHn7yq7EaGwiS8G7j2jRAcsr8dLtZandHB/WrYfCeGu1a/ZR75nn/9jjMez1RHoEumL2Ep+FncuV5Of5PjftLqOc6xjd28yIqEstowez+cOZAscngDJVPhgvOsPBjlPCtQ40GNyqgpg6G3PE1FIfB9zX2fixkxUgjbUZ0nVbZjNoJ4yW4LIgYoDKbI2dIo3zmeIuQALLXPKev09KiDzmDPBe6IEQybyLiDa0SKa4Rbr7QZFqfL9z8RyWOgMDf2LgJcvB+repk7bx3Czr+GoK3jhSJLwthvqzCmEdraCBtw0bIlLhuQe+jGvRitXyVUIC1wN2na/IRgLDMKGN0INV2q18qEWcRLwhRtXeTsLBkifiiiPZyA==
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(346002)(396003)(366004)(39860400002)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(53546011)(6512007)(6506007)(33656002)(478600001)(122000001)(38100700002)(316002)(4326008)(5660300002)(8676002)(41300700001)(8936002)(71200400001)(2616005)(4744005)(7416002)(6486002)(966005)(2906002)(66476007)(64756008)(54906003)(76116006)(6916009)(66446008)(66556008)(66946007)(26005)(36756003)(86362001)(38070700009)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?utf-8?B?TytqMGFtNmZNWlhYdS9hODgwcHFueFEyZzZzTkxNN1hBbFJYNUlUeXZ6dFdF?=
+ =?utf-8?B?cVdvcldGNEl4eUU5YXNUVEZRYXBzZGdYelVMcXptU3ZtbWYxV1YycVM4cHN3?=
+ =?utf-8?B?OG1wdnZMMFdsWTV2TzN3KzVNZkx5UUZ1MVNteVN3TDlkZW5IbS9hVkRJUHpX?=
+ =?utf-8?B?Q1ZZR2ZHSmhEb3FsaWpkOGJTUnU1TjRQS3NSUGw1RzFwSHBtWk9VSmRJeDFM?=
+ =?utf-8?B?YnNmZ3N2c3dLTnByMGdleWtOc05XYkxVNUw3RG05YUtKTHlmOVBvTng3UWRp?=
+ =?utf-8?B?TDdVMkZsVm54Sk9uUEdsUlRnMU9OQ0hTbU1zRTUvRmZGaTJkaHk2dDV6R3lj?=
+ =?utf-8?B?MWFQZXdFWDZDVGRTOUtoYmVOL1dZdWs3K25kcHJRSzJ4RzQxSTZ4eURseDZq?=
+ =?utf-8?B?UmJma2s2QTNpNmpBM3QwUDBDYno5TEwzNmlYZVY4RVdrYjdWQWQ5dEZlMTFZ?=
+ =?utf-8?B?UENVRWZhc0luL1FoYjNYT2RPOGlDMnlvUFBXUHNsaTV5NzZRMy9pQmVabXNW?=
+ =?utf-8?B?SFBGODh1ZU9mSm80NzZqVGtKWFZhQ1Z1Q09wV1ZyQWt4M1JML2dTYTFQRldD?=
+ =?utf-8?B?OVplMXdXMzFaSVlyYVdVWFhjMTExN3RrT2VhckZCczdhY2Vma2Z4NHpzRUJx?=
+ =?utf-8?B?MzY5dlN2MFhycENWWnFhY0JUN1luZHZJdE9IeUJMUkJBemRCK2FDWkM0clcx?=
+ =?utf-8?B?R0tEWklOazJDYlYwcGtSZmRYZFRzOVFvZGJ6bEQ5SkVEQTVQd2hIaTVXSEw3?=
+ =?utf-8?B?UFlINWFCaU9xOElZVlFUbUFWc3A0bDZRN3R4UG1NQWlVUHFZSHA4QTZkTW1h?=
+ =?utf-8?B?S0ZjN3pkRWFySEpEUkN0Y1Q0dGYrU2VxNTcvTndiQnhINEJBWlFsdjB4QW4w?=
+ =?utf-8?B?SDBUU2Z2MXRjdmRRdXcxQnJJaEhFVU05Wlk5T1lhZEpCbGQ2S0tDbkovb2tU?=
+ =?utf-8?B?b2tGbFFnd28yaWxQTHozUndvMUNiczJjNzk4SkR5VGYvYWloN015bGZ1eGRN?=
+ =?utf-8?B?NkQ5SHZvMGhsU2ZUMzNHRmZaRUsydE8rdmpjRXFiM1Y5OGlFVS81MExhQzk5?=
+ =?utf-8?B?ZklTc2hkUlk1VTVmS25DdnJxNFI2cCtLUlNGL2xDME1CWVg4dG80TXJMWjh4?=
+ =?utf-8?B?ekRGMHRxV2lqa3FzL3V4M1Q0UTgxb0JLQ1BocTEwa2lBQlVZelpUMVFaL0Ir?=
+ =?utf-8?B?Y0lncnVQK3gwcTBPdUVnRTh4L1JYbGxobk8vSGhSblBUVlNERzd3QXpzT0pl?=
+ =?utf-8?B?V0g3ekpxSnBndzBKVHQxMy9UamllTGgrcmtUTlQvckR2aXFjVk9CTWgxR0JR?=
+ =?utf-8?B?Z254RHE4ZWMxTnhwY3hySVZhbVJKMjhPK2hDWHp6Q3lreUNsamFJMm8xa2NT?=
+ =?utf-8?B?Kzg0NHhZWFFGZUpqZGE0WWw1QlYrblE1dnVuM094TlN5d3ZxaWVBQlVSN094?=
+ =?utf-8?B?VUFYQ2kraWZXajhXYzRlRHlrMklOMU9WZTdCZjNWQVBKYytTQ3JPZWFNckJh?=
+ =?utf-8?B?TC9NdVI1dGQ5VUpBVGtveVlMcFozL1hRQk4zcXhhN1ZOVjQ1eVhWdnBaaDN2?=
+ =?utf-8?B?cmFHL3hick13MU5UYzFKUXcvR2JCdTFQVVBVSmhpcEVvaGE5WDBiL3BUemM5?=
+ =?utf-8?B?ZGFUUE1FYUVMK2pRVGhINjVQNDRMeDNOM3ZsdHdwY3ZEbUZkLzEyczVQYy9v?=
+ =?utf-8?B?Y2srblFtRzhpdkxkNTBQZFl4WVl4dFRDU2U0M1hMaG5Rck1aUXI4VExhT0JQ?=
+ =?utf-8?B?Nk5EakxSaGN1em04N3hUQlV4ekRwK0Fld0VodTlOa0p5eGMzYzlxb3UrcGZK?=
+ =?utf-8?B?MVBEUUNrc2tMN0Ntd3praFdsbHZGbnc5c1I3NHBmNTFYRmlTbE1CRm1QVEp0?=
+ =?utf-8?B?bENTVC9meThzV2RlWWVxOWZlUmdMUk5UTHh3bHRLMklRNXdqRVFGcEhIRWpy?=
+ =?utf-8?B?QVVVSTlGRmo5MzAwVUZEd1pVU3BRQ2RsUjQ1QjA0ejVqdGc2NXZGK2Y3ejFL?=
+ =?utf-8?B?cE5zNTZQNnFMNXVXNVdkZmtiQVFLTHdSem0ybndXNGhqZlFtcmc0aE1kVzY3?=
+ =?utf-8?B?S2o4VWRLTkwxWXBaeHRNZXB5YlpURDRBTFhwZWtGcVY0a0Q5ZFhQWUYvb08x?=
+ =?utf-8?B?YU5samJRZm11UjVHZENYcGhrS2pRcFFydHExSFVqUW1yYk90ZGxiaDRwZm8x?=
+ =?utf-8?B?VHc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <33ACA40CD5DF644C845C6AC9633360C4@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	PX9fN0xaMukU1yJd4Q5jQnisoXKJkZyEdNKG2D27Qrbyf35wxGseGPL3wyuolaeOs5W+C3LvSTXNRz4WvYLC/nxvjyhcVp6US+y/Tyts4RS2CSQmKWmmNGVG6Q63PD1FJRPZUZEUl3ai2gTj79t3duUY12+RFfQ6LiwxQgkD7RmvirqO8FXPJsRoL64DzZG7znqxsc1HwAXN2vRDaUy87wQz0Dun3AUr06nVdqJnZd3kS+pylCsoh/zws91P/ExlzNx4k1KvWmcHXTsx95Xee4Y+syciO39sCfMzPHrhQrkkXSrYzLuha0Ait3ipHFazPPeTbt3J5uaKXACZbSimRhz59nhuM0GiNXsVfMpSM2BGSSQk0EhItxxz162Go0ig0pH7iDgRUme6hYkzJ34Ab364YnG0Y9DDljySohDWOOL3OaI1gyheML1BH7t41Iq8ooQU5Tr1UAEwW2C0oGbHnt54SAkCEFKEP3TItScLlnEjJE4sMhkvIfaSxYmmaONAzuFxaMnF972ZRQWANiEiRQCaZnKvTrNyxmXkjTRtVPGvoB/APKKHsV59m/kXZQeiJv7H0660VTzYORqLr5SWJtA3z14L3TEvwJmuxjI6QoY=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9505e882-a275-4e6f-2e37-08dc20ec049c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jan 2024 17:02:04.0993
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 3t7y0F5iiYr6/u5P5p7HB3d2imKXh+rvU6csrN2ZX7dHAX13CZFHLzfBukDwUAP2Thad0sCK5vVm+AcEzeMouA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR10MB5572
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-29_10,2024-01-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 spamscore=0
+ phishscore=0 adultscore=0 mlxlogscore=999 suspectscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2401290125
+X-Proofpoint-GUID: blLG44DCf1cvZ0tySuqyIcpyNlJKZrK6
+X-Proofpoint-ORIG-GUID: blLG44DCf1cvZ0tySuqyIcpyNlJKZrK6
 
-Implement iio_dma_buffer_attach_dmabuf(), iio_dma_buffer_detach_dmabuf()
-and iio_dma_buffer_transfer_dmabuf(), which can then be used by the IIO
-DMA buffer implementations.
-
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-
----
-v3: Update code to provide the functions that will be used as callbacks
-    for the new IOCTLs.
-
-v6: - Update iio_dma_buffer_enqueue_dmabuf() to take a dma_fence pointer
-    - Pass that dma_fence pointer along to
-      iio_buffer_signal_dmabuf_done()
-    - Add iio_dma_buffer_lock_queue() / iio_dma_buffer_unlock_queue()
-    - Do not lock the queue in iio_dma_buffer_enqueue_dmabuf().
-      The caller will ensure that it has been locked already.
-    - Replace "int += bool;" by "if (bool) int++;"
-    - Use dma_fence_begin/end_signalling in the dma_fence critical
-      sections
-    - Use one "num_dmabufs" fields instead of one "num_blocks" and one
-      "num_fileio_blocks". Make it an atomic_t, which makes it possible
-      to decrement it atomically in iio_buffer_block_release() without
-      having to lock the queue mutex; and in turn, it means that we
-      don't need to use iio_buffer_block_put_atomic() everywhere to
-      avoid locking the queue mutex twice.
-    - Use cleanup.h guard(mutex) when possible
-    - Explicitely list all states in the switch in
-      iio_dma_can_enqueue_block()
-    - Rename iio_dma_buffer_fileio_mode() to
-      iio_dma_buffer_can_use_fileio(), and add a comment explaining why
-      it cannot race vs. DMABUF.
----
- drivers/iio/buffer/industrialio-buffer-dma.c | 181 +++++++++++++++++--
- include/linux/iio/buffer-dma.h               |  31 ++++
- 2 files changed, 201 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/iio/buffer/industrialio-buffer-dma.c b/drivers/iio/buffer/industrialio-buffer-dma.c
-index 5610ba67925e..c0f539af98f9 100644
---- a/drivers/iio/buffer/industrialio-buffer-dma.c
-+++ b/drivers/iio/buffer/industrialio-buffer-dma.c
-@@ -4,6 +4,8 @@
-  *  Author: Lars-Peter Clausen <lars@metafoo.de>
-  */
- 
-+#include <linux/atomic.h>
-+#include <linux/cleanup.h>
- #include <linux/slab.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
-@@ -14,6 +16,8 @@
- #include <linux/poll.h>
- #include <linux/iio/buffer_impl.h>
- #include <linux/iio/buffer-dma.h>
-+#include <linux/dma-buf.h>
-+#include <linux/dma-fence.h>
- #include <linux/dma-mapping.h>
- #include <linux/sizes.h>
- 
-@@ -94,13 +98,18 @@ static void iio_buffer_block_release(struct kref *kref)
- {
- 	struct iio_dma_buffer_block *block = container_of(kref,
- 		struct iio_dma_buffer_block, kref);
-+	struct iio_dma_buffer_queue *queue = block->queue;
- 
--	WARN_ON(block->state != IIO_BLOCK_STATE_DEAD);
-+	WARN_ON(block->fileio && block->state != IIO_BLOCK_STATE_DEAD);
- 
--	dma_free_coherent(block->queue->dev, PAGE_ALIGN(block->size),
--					block->vaddr, block->phys_addr);
-+	if (block->fileio) {
-+		dma_free_coherent(queue->dev, PAGE_ALIGN(block->size),
-+				  block->vaddr, block->phys_addr);
-+	} else {
-+		atomic_dec(&queue->num_dmabufs);
-+	}
- 
--	iio_buffer_put(&block->queue->buffer);
-+	iio_buffer_put(&queue->buffer);
- 	kfree(block);
- }
- 
-@@ -163,7 +172,7 @@ static struct iio_dma_buffer_queue *iio_buffer_to_queue(struct iio_buffer *buf)
- }
- 
- static struct iio_dma_buffer_block *iio_dma_buffer_alloc_block(
--	struct iio_dma_buffer_queue *queue, size_t size)
-+	struct iio_dma_buffer_queue *queue, size_t size, bool fileio)
- {
- 	struct iio_dma_buffer_block *block;
- 
-@@ -171,13 +180,16 @@ static struct iio_dma_buffer_block *iio_dma_buffer_alloc_block(
- 	if (!block)
- 		return NULL;
- 
--	block->vaddr = dma_alloc_coherent(queue->dev, PAGE_ALIGN(size),
--		&block->phys_addr, GFP_KERNEL);
--	if (!block->vaddr) {
--		kfree(block);
--		return NULL;
-+	if (fileio) {
-+		block->vaddr = dma_alloc_coherent(queue->dev, PAGE_ALIGN(size),
-+						  &block->phys_addr, GFP_KERNEL);
-+		if (!block->vaddr) {
-+			kfree(block);
-+			return NULL;
-+		}
- 	}
- 
-+	block->fileio = fileio;
- 	block->size = size;
- 	block->state = IIO_BLOCK_STATE_DONE;
- 	block->queue = queue;
-@@ -186,6 +198,9 @@ static struct iio_dma_buffer_block *iio_dma_buffer_alloc_block(
- 
- 	iio_buffer_get(&queue->buffer);
- 
-+	if (!fileio)
-+		atomic_inc(&queue->num_dmabufs);
-+
- 	return block;
- }
- 
-@@ -206,13 +221,21 @@ void iio_dma_buffer_block_done(struct iio_dma_buffer_block *block)
- {
- 	struct iio_dma_buffer_queue *queue = block->queue;
- 	unsigned long flags;
-+	bool cookie;
-+
-+	cookie = dma_fence_begin_signalling();
- 
- 	spin_lock_irqsave(&queue->list_lock, flags);
- 	_iio_dma_buffer_block_done(block);
- 	spin_unlock_irqrestore(&queue->list_lock, flags);
- 
-+	if (!block->fileio)
-+		iio_buffer_signal_dmabuf_done(block->fence, 0);
-+
- 	iio_buffer_block_put_atomic(block);
- 	wake_up_interruptible_poll(&queue->buffer.pollq, EPOLLIN | EPOLLRDNORM);
-+
-+	dma_fence_end_signalling(cookie);
- }
- EXPORT_SYMBOL_GPL(iio_dma_buffer_block_done);
- 
-@@ -231,17 +254,27 @@ void iio_dma_buffer_block_list_abort(struct iio_dma_buffer_queue *queue,
- {
- 	struct iio_dma_buffer_block *block, *_block;
- 	unsigned long flags;
-+	bool cookie;
-+
-+	cookie = dma_fence_begin_signalling();
- 
- 	spin_lock_irqsave(&queue->list_lock, flags);
- 	list_for_each_entry_safe(block, _block, list, head) {
- 		list_del(&block->head);
- 		block->bytes_used = 0;
- 		_iio_dma_buffer_block_done(block);
-+
-+		if (!block->fileio)
-+			iio_buffer_signal_dmabuf_done(block->fence, -EINTR);
- 		iio_buffer_block_put_atomic(block);
- 	}
- 	spin_unlock_irqrestore(&queue->list_lock, flags);
- 
-+	if (queue->fileio.enabled)
-+		queue->fileio.enabled = false;
-+
- 	wake_up_interruptible_poll(&queue->buffer.pollq, EPOLLIN | EPOLLRDNORM);
-+	dma_fence_end_signalling(cookie);
- }
- EXPORT_SYMBOL_GPL(iio_dma_buffer_block_list_abort);
- 
-@@ -261,6 +294,16 @@ static bool iio_dma_block_reusable(struct iio_dma_buffer_block *block)
- 	}
- }
- 
-+static bool iio_dma_buffer_can_use_fileio(struct iio_dma_buffer_queue *queue)
-+{
-+	/*
-+	 * Note that queue->num_dmabufs cannot increase while the queue is
-+	 * locked, it can only decrease, so it does not race against
-+	 * iio_dma_buffer_alloc_block().
-+	 */
-+	return queue->fileio.enabled || !atomic_read(&queue->num_dmabufs);
-+}
-+
- /**
-  * iio_dma_buffer_request_update() - DMA buffer request_update callback
-  * @buffer: The buffer which to request an update
-@@ -287,6 +330,12 @@ int iio_dma_buffer_request_update(struct iio_buffer *buffer)
- 
- 	mutex_lock(&queue->lock);
- 
-+	queue->fileio.enabled = iio_dma_buffer_can_use_fileio(queue);
-+
-+	/* If DMABUFs were created, disable fileio interface */
-+	if (!queue->fileio.enabled)
-+		goto out_unlock;
-+
- 	/* Allocations are page aligned */
- 	if (PAGE_ALIGN(queue->fileio.block_size) == PAGE_ALIGN(size))
- 		try_reuse = true;
-@@ -327,7 +376,7 @@ int iio_dma_buffer_request_update(struct iio_buffer *buffer)
- 		}
- 
- 		if (!block) {
--			block = iio_dma_buffer_alloc_block(queue, size);
-+			block = iio_dma_buffer_alloc_block(queue, size, true);
- 			if (!block) {
- 				ret = -ENOMEM;
- 				goto out_unlock;
-@@ -384,8 +433,12 @@ static void iio_dma_buffer_submit_block(struct iio_dma_buffer_queue *queue,
- 
- 	block->state = IIO_BLOCK_STATE_ACTIVE;
- 	iio_buffer_block_get(block);
-+
- 	ret = queue->ops->submit(queue, block);
- 	if (ret) {
-+		if (!block->fileio)
-+			iio_buffer_signal_dmabuf_done(block->fence, ret);
-+
- 		/*
- 		 * This is a bit of a problem and there is not much we can do
- 		 * other then wait for the buffer to be disabled and re-enabled
-@@ -588,6 +641,112 @@ size_t iio_dma_buffer_data_available(struct iio_buffer *buf)
- }
- EXPORT_SYMBOL_GPL(iio_dma_buffer_data_available);
- 
-+struct iio_dma_buffer_block *
-+iio_dma_buffer_attach_dmabuf(struct iio_buffer *buffer,
-+			     struct dma_buf_attachment *attach)
-+{
-+	struct iio_dma_buffer_queue *queue = iio_buffer_to_queue(buffer);
-+	struct iio_dma_buffer_block *block;
-+
-+	guard(mutex)(&queue->lock);
-+
-+	/*
-+	 * If the buffer is enabled and in fileio mode new blocks can't be
-+	 * allocated.
-+	 */
-+	if (queue->fileio.enabled)
-+		return ERR_PTR(-EBUSY);
-+
-+	block = iio_dma_buffer_alloc_block(queue, attach->dmabuf->size, false);
-+	if (!block)
-+		return ERR_PTR(-ENOMEM);
-+
-+	block->attach = attach;
-+
-+	/* Free memory that might be in use for fileio mode */
-+	iio_dma_buffer_fileio_free(queue);
-+
-+	return block;
-+}
-+EXPORT_SYMBOL_GPL(iio_dma_buffer_attach_dmabuf);
-+
-+void iio_dma_buffer_detach_dmabuf(struct iio_buffer *buffer,
-+				  struct iio_dma_buffer_block *block)
-+{
-+	block->state = IIO_BLOCK_STATE_DEAD;
-+	iio_buffer_block_put_atomic(block);
-+}
-+EXPORT_SYMBOL_GPL(iio_dma_buffer_detach_dmabuf);
-+
-+static int iio_dma_can_enqueue_block(struct iio_dma_buffer_block *block)
-+{
-+	struct iio_dma_buffer_queue *queue = block->queue;
-+
-+	/* If in fileio mode buffers can't be enqueued. */
-+	if (queue->fileio.enabled)
-+		return -EBUSY;
-+
-+	switch (block->state) {
-+	case IIO_BLOCK_STATE_QUEUED:
-+		return -EPERM;
-+	case IIO_BLOCK_STATE_ACTIVE:
-+	case IIO_BLOCK_STATE_DEAD:
-+		return -EBUSY;
-+	case IIO_BLOCK_STATE_DONE:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+int iio_dma_buffer_enqueue_dmabuf(struct iio_buffer *buffer,
-+				  struct iio_dma_buffer_block *block,
-+				  struct dma_fence *fence,
-+				  struct sg_table *sgt,
-+				  size_t size, bool cyclic)
-+{
-+	struct iio_dma_buffer_queue *queue = iio_buffer_to_queue(buffer);
-+	bool cookie;
-+	int ret;
-+
-+	WARN_ON(!mutex_is_locked(&queue->lock));
-+
-+	cookie = dma_fence_begin_signalling();
-+
-+	ret = iio_dma_can_enqueue_block(block);
-+	if (ret < 0)
-+		goto out_end_signalling;
-+
-+	block->bytes_used = size;
-+	block->cyclic = cyclic;
-+	block->sg_table = sgt;
-+	block->fence = fence;
-+
-+	iio_dma_buffer_enqueue(queue, block);
-+
-+out_end_signalling:
-+	dma_fence_end_signalling(cookie);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(iio_dma_buffer_enqueue_dmabuf);
-+
-+void iio_dma_buffer_lock_queue(struct iio_buffer *buffer)
-+{
-+	struct iio_dma_buffer_queue *queue = iio_buffer_to_queue(buffer);
-+
-+	mutex_lock(&queue->lock);
-+}
-+EXPORT_SYMBOL_GPL(iio_dma_buffer_lock_queue);
-+
-+void iio_dma_buffer_unlock_queue(struct iio_buffer *buffer)
-+{
-+	struct iio_dma_buffer_queue *queue = iio_buffer_to_queue(buffer);
-+
-+	mutex_unlock(&queue->lock);
-+}
-+EXPORT_SYMBOL_GPL(iio_dma_buffer_unlock_queue);
-+
- /**
-  * iio_dma_buffer_set_bytes_per_datum() - DMA buffer set_bytes_per_datum callback
-  * @buffer: Buffer to set the bytes-per-datum for
-diff --git a/include/linux/iio/buffer-dma.h b/include/linux/iio/buffer-dma.h
-index 18d3702fa95d..b62ff2a3f554 100644
---- a/include/linux/iio/buffer-dma.h
-+++ b/include/linux/iio/buffer-dma.h
-@@ -7,6 +7,7 @@
- #ifndef __INDUSTRIALIO_DMA_BUFFER_H__
- #define __INDUSTRIALIO_DMA_BUFFER_H__
- 
-+#include <linux/atomic.h>
- #include <linux/list.h>
- #include <linux/kref.h>
- #include <linux/spinlock.h>
-@@ -16,6 +17,9 @@
- struct iio_dma_buffer_queue;
- struct iio_dma_buffer_ops;
- struct device;
-+struct dma_buf_attachment;
-+struct dma_fence;
-+struct sg_table;
- 
- /**
-  * enum iio_block_state - State of a struct iio_dma_buffer_block
-@@ -41,6 +45,8 @@ enum iio_block_state {
-  * @queue: Parent DMA buffer queue
-  * @kref: kref used to manage the lifetime of block
-  * @state: Current state of the block
-+ * @cyclic: True if this is a cyclic buffer
-+ * @fileio: True if this buffer is used for fileio mode
-  */
- struct iio_dma_buffer_block {
- 	/* May only be accessed by the owner of the block */
-@@ -63,6 +69,14 @@ struct iio_dma_buffer_block {
- 	 * queue->list_lock if the block is not owned by the core.
- 	 */
- 	enum iio_block_state state;
-+
-+	bool cyclic;
-+	bool fileio;
-+
-+	struct dma_buf_attachment *attach;
-+	struct sg_table *sg_table;
-+
-+	struct dma_fence *fence;
- };
- 
- /**
-@@ -72,6 +86,7 @@ struct iio_dma_buffer_block {
-  * @pos: Read offset in the active block
-  * @block_size: Size of each block
-  * @next_dequeue: index of next block that will be dequeued
-+ * @enabled: Whether the buffer is operating in fileio mode
-  */
- struct iio_dma_buffer_queue_fileio {
- 	struct iio_dma_buffer_block *blocks[2];
-@@ -80,6 +95,7 @@ struct iio_dma_buffer_queue_fileio {
- 	size_t block_size;
- 
- 	unsigned int next_dequeue;
-+	bool enabled;
- };
- 
- /**
-@@ -95,6 +111,7 @@ struct iio_dma_buffer_queue_fileio {
-  *   the DMA controller
-  * @incoming: List of buffers on the incoming queue
-  * @active: Whether the buffer is currently active
-+ * @num_dmabufs: Total number of DMABUFs attached to this queue
-  * @fileio: FileIO state
-  */
- struct iio_dma_buffer_queue {
-@@ -107,6 +124,7 @@ struct iio_dma_buffer_queue {
- 	struct list_head incoming;
- 
- 	bool active;
-+	atomic_t num_dmabufs;
- 
- 	struct iio_dma_buffer_queue_fileio fileio;
- };
-@@ -142,4 +160,17 @@ int iio_dma_buffer_init(struct iio_dma_buffer_queue *queue,
- void iio_dma_buffer_exit(struct iio_dma_buffer_queue *queue);
- void iio_dma_buffer_release(struct iio_dma_buffer_queue *queue);
- 
-+struct iio_dma_buffer_block *
-+iio_dma_buffer_attach_dmabuf(struct iio_buffer *buffer,
-+			     struct dma_buf_attachment *attach);
-+void iio_dma_buffer_detach_dmabuf(struct iio_buffer *buffer,
-+				  struct iio_dma_buffer_block *block);
-+int iio_dma_buffer_enqueue_dmabuf(struct iio_buffer *buffer,
-+				  struct iio_dma_buffer_block *block,
-+				  struct dma_fence *fence,
-+				  struct sg_table *sgt,
-+				  size_t size, bool cyclic);
-+void iio_dma_buffer_lock_queue(struct iio_buffer *buffer);
-+void iio_dma_buffer_unlock_queue(struct iio_buffer *buffer);
-+
- #endif
--- 
-2.43.0
-
+DQoNCj4gT24gSmFuIDI5LCAyMDI0LCBhdCAxMTo1OeKAr0FNLCBCZW5qYW1pbiBDb2RkaW5ndG9u
+IDxiY29kZGluZ0ByZWRoYXQuY29tPiB3cm90ZToNCj4gDQo+IE9uIDI5IEphbiAyMDI0LCBhdCAx
+MTo1NSwgQ2h1Y2sgTGV2ZXIgSUlJIHdyb3RlOg0KPiANCj4+PiBPbiBKYW4gMjksIDIwMjQsIGF0
+IDExOjUy4oCvQU0sIEJlbmphbWluIENvZGRpbmd0b24gPGJjb2RkaW5nQHJlZGhhdC5jb20+IHdy
+b3RlOg0KPj4+IA0KPj4+IE9uIDI5IEphbiAyMDI0LCBhdCAxMTo0MywgSmVmZiBMYXl0b24gd3Jv
+dGU6DQo+Pj4gDQo+Pj4+IEFsZXggcmVwb3J0ZWQgc2VlaW5nIHRoaXM6DQo+Pj4+IA0KPj4+PiAg
+IFsgICAxOC4yMzgyNjZdIC0tLS0tLS0tLS0tLVsgY3V0IGhlcmUgXS0tLS0tLS0tLS0tLQ0KPj4+
+PiAuLi4NCj4+PiANCj4+PiBUaGlzIG9uZSBnb3QgZml4ZWQgYWxyZWFkeSwganVzdCB3YWl0aW5n
+IGZvciBhIG1haW50YWluZXIgdG8gc2VuZCBpdCBhbG9uZzoNCj4+PiANCj4+PiBodHRwczovL2xv
+cmUua2VybmVsLm9yZy9saW51eC1uZnMvMjAyNDAxMjMwNTM1MDkuMzU5MjY1My0xLXNhbWFzdGgu
+bm9yd2F5LmFuYW5kYUBvcmFjbGUuY29tLw0KPj4gDQo+PiBBaC4gVGhhdCB0b3VjaGVzIG5ldC9z
+dW5ycGMvc3ZjLmMsIGJ1dCBpdCB3YXMgc2VudCB0byB0aGUgY2xpZW50IG1haW50YWluZXJzLg0K
+Pj4gDQo+PiBEbyB5b3Ugd2FudCBtZSB0byB0YWtlIGl0IHRocm91Z2ggdGhlIG5mc2QgdHJlZT8N
+Cj4gDQo+IE9oIHllYWggaWYgeW91IGxpa2UsIG5vdCBzdXJlIGhvdyB5b3Ugd2FudCB0byBzb3J0
+IGl0IGJldHdlZW4gdGhlIGJlY2F1c2UNCj4gZXZlbiB0aG91Z2ggaXRzIGluIHN2Yy5jLCBpdHMg
+YSBjbGllbnQgZml4OyB0aGlzIGNvZGUgaXMgc3BlY2lmaWMgZm9yIHRoZQ0KPiBjbGllbnQncyBi
+YWNrY2hhbm5lbC4NCg0KSSdsbCBhZGQgdG8gbmZzZC1maXhlcy4NCg0KDQo+IE5vdGUgdGhlIHZl
+cnNpb24gb24gdGhpcyB0aHJlYWQgbWlzc2VzIHRoZSAybmQgdHlwby4NCg0KQWNrLg0KDQoNCi0t
+DQpDaHVjayBMZXZlcg0KDQoNCg==
 
