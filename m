@@ -1,61 +1,62 @@
-Return-Path: <linux-kernel+bounces-43593-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49271841611
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 23:56:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BC56F841610
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 23:56:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F40FA2869FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 22:56:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 786FF2869C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 22:56:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C9B9524C4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B9A75103C;
 	Mon, 29 Jan 2024 22:56:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com header.b="l5KtMpis"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com header.b="Ug86lLel"
 Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com [208.88.110.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DDC94F5ED;
-	Mon, 29 Jan 2024 22:56:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0EF423741;
+	Mon, 29 Jan 2024 22:56:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=208.88.110.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706568989; cv=none; b=S/r5p34quGkMxhEUutU+pWARjNknyAmT/PLU9ITlPUN3JO2waWqbu92ifL/+IkLNqDpitMHwQPIuyLC4mNSZEFPiVeY/asQ3oj/F0joButpeb8+xqy26oYCjR5pxgPoPh9YK98Z5pdoCy8MzqKjwgSsOSE0QyF2CNThDxciVGgA=
+	t=1706568989; cv=none; b=VMxhY7VcWRGIc2t2DG2OjFqYbYcN1UpfiARyoLJigwyfqizFiTdlE2ihXTLonnfuDQdc/OmLEXNXUL8NPJKQmcmbEZVRxVi5wLzaBHKLTEW8cLglXxbC8Pf2f5ygapguzxUhyJHkAhl7rxLDsZUy29N4NxfG6iKhau5jnYGpeRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706568989; c=relaxed/simple;
-	bh=Vdt6zzGCnz4ON7W184F6UA1X8WKxEyaQezxOdmyCp2c=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=g/ci86rXJvLC6Pfwp4ceSCYFqYQSO8P7vwEtHtUOOLn3MutatCDBfO/x7oHyhsqAhTmohXmcnKg2CFznWuZf/77Z9KWeu/V46fNIkz+rKq/oWN4Ig6ZEuTCkEIGnE7xFymejdbi+hogeFolYXD9VCOtUkZMQ7T/KFbvvvfsEFEk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=savoirfairelinux.com; spf=pass smtp.mailfrom=savoirfairelinux.com; dkim=pass (2048-bit key) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com header.b=l5KtMpis; arc=none smtp.client-ip=208.88.110.44
+	bh=fJ6PjO/0FcZMze5mUXPpKJExQw6zsz0lRHzIhYnacJY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Sa1oKiCE4ZLiXxnULaRYi6QGEGHo4pir0sMmSRe1t2W9okzxDVn7OI71987MJBj+zGC3+SIAQijoKEQOAxaefl7kMyGIYuQXZGqBPv1/XBvdY9EbTNKc9bP7Ipgj+5hYvk9LExvQuLTkCVsfemaX76rHZHfgr/n9n30YrcJ+Mf4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=savoirfairelinux.com; spf=pass smtp.mailfrom=savoirfairelinux.com; dkim=pass (2048-bit key) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com header.b=Ug86lLel; arc=none smtp.client-ip=208.88.110.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=savoirfairelinux.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=savoirfairelinux.com
 Received: from localhost (localhost [127.0.0.1])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id 7C26E9C2D22;
-	Mon, 29 Jan 2024 17:56:18 -0500 (EST)
+	by mail.savoirfairelinux.com (Postfix) with ESMTP id 0B8929C471E;
+	Mon, 29 Jan 2024 17:56:20 -0500 (EST)
 Received: from mail.savoirfairelinux.com ([127.0.0.1])
  by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10032)
- with ESMTP id 3cbqhkf9hxjW; Mon, 29 Jan 2024 17:56:17 -0500 (EST)
+ with ESMTP id sfVhYJe3m3jd; Mon, 29 Jan 2024 17:56:19 -0500 (EST)
 Received: from localhost (localhost [127.0.0.1])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id 2439E9C45C6;
-	Mon, 29 Jan 2024 17:56:17 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.savoirfairelinux.com 2439E9C45C6
+	by mail.savoirfairelinux.com (Postfix) with ESMTP id 76BAB9C4650;
+	Mon, 29 Jan 2024 17:56:19 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.savoirfairelinux.com 76BAB9C4650
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=savoirfairelinux.com; s=DFC430D2-D198-11EC-948E-34200CB392D2;
-	t=1706568977; bh=y6z1gTE4j19+eEg9PnR1EFGgw9U4TMFqauCXWaMmKYQ=;
+	t=1706568979; bh=KDGtC4FzTZzlXlycbP8AfeeUcJA8DdDr21H9KBNnofE=;
 	h=From:To:Date:Message-ID:MIME-Version;
-	b=l5KtMpisXrCwPRIU7BcrYxw6sFskZJSym0uMdNLxxAn1rh4yedK5z5LsTi8FxBZkF
-	 eXbtZah2bLkarrxyZM2z6rL2GDGCtBkglNdZuB8eMwEZqAhUkXJ3vUIlVKFD0IVgIj
-	 +9x76YI1dJMl9RDCUa50muAuuzFszJVmSNIRNLB58vDPqklTyMmIpO0tZ+MqPlbJrF
-	 f9YXhXg8G3hsp/TvKfdqO/Nv5JdPmYiM2mTh13YixC0c7hKMZJXtk4sAbGeN0Hy3WF
-	 rSHGeGkyM/uXlXPYa31bzmxcgi8qfklkvlVO4Us2PztOsMyrgccYOgzdt9+1Uv5GaU
-	 SWlGYNaqopGPA==
+	b=Ug86lLelzLWUoIl9K7HPpxaT4VCML4FzCkxfd3IeI++z7rkPgvhlcfMr8aM7OPnlJ
+	 esGRPSAYtZJrosl9+mNPPw82+pRKPe/5DML95Hz8B0NZAHA0RPktdfjrD98Wut0Grl
+	 5cZiWn4ehCos5YLnWg04Z9RIxpoWFWco6NiEtUFwF3F2+nXzFJ9/WtrDESZ5QOpHYs
+	 ke1+C0I42q0FpfDmvIWHOVT1J1eM02kS/x1mOSCFsTuonlJP/bPb24gxzChtbiHs4x
+	 1kyvsjzzLgq204jlM+unSCVoOreoO7MZ36koyrhJrMGsbAyId3mMePF5Q5ZwrMKSEX
+	 GNSM92ZQrCeLA==
 X-Virus-Scanned: amavis at mail.savoirfairelinux.com
 Received: from mail.savoirfairelinux.com ([127.0.0.1])
  by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10026)
- with ESMTP id a7QWPjPclxKh; Mon, 29 Jan 2024 17:56:17 -0500 (EST)
+ with ESMTP id 44GFnZux4IGD; Mon, 29 Jan 2024 17:56:19 -0500 (EST)
 Received: from pcperry.mtl.sfl (unknown [192.168.51.254])
-	by mail.savoirfairelinux.com (Postfix) with ESMTPSA id F36919C2D22;
-	Mon, 29 Jan 2024 17:56:16 -0500 (EST)
+	by mail.savoirfairelinux.com (Postfix) with ESMTPSA id 5BA2B9C45C6;
+	Mon, 29 Jan 2024 17:56:19 -0500 (EST)
 From: Charles Perry <charles.perry@savoirfairelinux.com>
 To: mdf@kernel.org
 Cc: hao.wu@intel.com,
@@ -68,10 +69,12 @@ Cc: hao.wu@intel.com,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Charles Perry <charles.perry@savoirfairelinux.com>
-Subject: [PATCH 1/3] fpga: xilinx-spi: extract a common driver core
-Date: Mon, 29 Jan 2024 17:56:00 -0500
-Message-ID: <20240129225602.3832449-1-charles.perry@savoirfairelinux.com>
+Subject: [PATCH 2/3] dt-bindings: fpga: xlnx,fpga-slave-selectmap: add DT schema
+Date: Mon, 29 Jan 2024 17:56:01 -0500
+Message-ID: <20240129225602.3832449-2-charles.perry@savoirfairelinux.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240129225602.3832449-1-charles.perry@savoirfairelinux.com>
+References: <20240129225602.3832449-1-charles.perry@savoirfairelinux.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,577 +83,113 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Factor out the gpio handshaking (using PROGRAM_B, INIT_B and DONE)
-protocol in xilinx-core so that it can be reused for another driver.
-This commit does not change anything functionally to xilinx-spi.
-
-xilinx-core expects drivers to provide two operations:
-
- * ->write(const char* buf, size_t count): write to the device
- * ->write_one_dummy_byte(): write 0xFF to the device
+Document the slave SelectMAP interface of Xilinx 7 series FPGA.
 
 Signed-off-by: Charles Perry <charles.perry@savoirfairelinux.com>
 ---
- drivers/fpga/Kconfig       |   4 +
- drivers/fpga/Makefile      |   1 +
- drivers/fpga/xilinx-core.c | 210 +++++++++++++++++++++++++++++++++++++
- drivers/fpga/xilinx-core.h |  27 +++++
- drivers/fpga/xilinx-spi.c  | 202 +++--------------------------------
- 5 files changed, 256 insertions(+), 188 deletions(-)
- create mode 100644 drivers/fpga/xilinx-core.c
- create mode 100644 drivers/fpga/xilinx-core.h
+ .../fpga/xlnx,fpga-slave-selectmap.yaml       | 85 +++++++++++++++++++
+ 1 file changed, 85 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/fpga/xlnx,fpga-slav=
+e-selectmap.yaml
 
-diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
-index 2f689ac4ba3a3..d27a1ebf40838 100644
---- a/drivers/fpga/Kconfig
-+++ b/drivers/fpga/Kconfig
-@@ -64,9 +64,13 @@ config FPGA_MGR_STRATIX10_SOC
- 	help
- 	  FPGA manager driver support for the Intel Stratix10 SoC.
-=20
-+config FPGA_MGR_XILINX_CORE
-+	tristate
-+
- config FPGA_MGR_XILINX_SPI
- 	tristate "Xilinx Configuration over Slave Serial (SPI)"
- 	depends on SPI
-+	select FPGA_MGR_XILINX_CORE
- 	help
- 	  FPGA manager driver support for Xilinx FPGA configuration
- 	  over slave serial interface.
-diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
-index 352a2612623e0..7ec795b6a5a70 100644
---- a/drivers/fpga/Makefile
-+++ b/drivers/fpga/Makefile
-@@ -15,6 +15,7 @@ obj-$(CONFIG_FPGA_MGR_SOCFPGA)		+=3D socfpga.o
- obj-$(CONFIG_FPGA_MGR_SOCFPGA_A10)	+=3D socfpga-a10.o
- obj-$(CONFIG_FPGA_MGR_STRATIX10_SOC)	+=3D stratix10-soc.o
- obj-$(CONFIG_FPGA_MGR_TS73XX)		+=3D ts73xx-fpga.o
-+obj-$(CONFIG_FPGA_MGR_XILINX_CORE)	+=3D xilinx-core.o
- obj-$(CONFIG_FPGA_MGR_XILINX_SPI)	+=3D xilinx-spi.o
- obj-$(CONFIG_FPGA_MGR_ZYNQ_FPGA)	+=3D zynq-fpga.o
- obj-$(CONFIG_FPGA_MGR_ZYNQMP_FPGA)	+=3D zynqmp-fpga.o
-diff --git a/drivers/fpga/xilinx-core.c b/drivers/fpga/xilinx-core.c
+diff --git a/Documentation/devicetree/bindings/fpga/xlnx,fpga-slave-selec=
+tmap.yaml b/Documentation/devicetree/bindings/fpga/xlnx,fpga-slave-select=
+map.yaml
 new file mode 100644
-index 0000000000000..47839b5541ddd
+index 0000000000000..20cea24e3e39a
 --- /dev/null
-+++ b/drivers/fpga/xilinx-core.c
-@@ -0,0 +1,210 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Common parts of the Xilinx Spartan6 and 7 Series FPGA manager drivers=
-.
-+ *
-+ * Copyright (C) 2017 DENX Software Engineering
-+ *
-+ * Anatolij Gustschin <agust@denx.de>
-+ */
++++ b/Documentation/devicetree/bindings/fpga/xlnx,fpga-slave-selectmap.ya=
+ml
+@@ -0,0 +1,85 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/fpga/xlnx,fpga-slave-selectmap.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+#include "xilinx-core.h"
++title: Xilinx Slave SelectMAP FPGA
 +
-+#include <linux/delay.h>
-+#include <linux/fpga/fpga-mgr.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/of.h>
++description: |
++  Xilinx 7 Series FPGAs support a method of loading the bitstream over a
++  parallel port named the slave SelectMAP interface in the documentation=
+ Only
++  the x8 mode is supported where data is loaded at one byte per rising e=
+dge of
++  the clock, with the MSB of each byte presented to the D0 pin.
 +
-+static int get_done_gpio(struct fpga_manager *mgr)
-+{
-+	struct xilinx_fpga_core *core =3D mgr->priv;
-+	int ret;
++  Datasheets:
++    https://www.xilinx.com/support/documentation/user_guides/ug470_7Seri=
+es_Config.pdf
 +
-+	ret =3D gpiod_get_value(core->done);
++properties:
++  compatible:
++    enum:
++      - xlnx,fpga-slave-selectmap
 +
-+	if (ret < 0)
-+		dev_err(&mgr->dev, "Error reading DONE (%d)\n", ret);
++  reg:
++    description:
++      At least 1 byte of memory mapped IO
++    maxItems: 1
 +
-+	return ret;
-+}
++  prog_b-gpios:
++    description:
++      config pin (referred to as PROGRAM_B in the manual)
++    maxItems: 1
 +
-+static enum fpga_mgr_states xilinx_core_state(struct fpga_manager *mgr)
-+{
-+	if (!get_done_gpio(mgr))
-+		return FPGA_MGR_STATE_RESET;
++  done-gpios:
++    description:
++      config status pin (referred to as DONE in the manual)
++    maxItems: 1
 +
-+	return FPGA_MGR_STATE_UNKNOWN;
-+}
++  init-b-gpios:
++    description:
++      initialization status and configuration error pin
++      (referred to as INIT_B in the manual)
++    maxItems: 1
 +
-+/**
-+ * wait_for_init_b - wait for the INIT_B pin to have a given state, or w=
-ait
-+ * a given delay if the pin is unavailable
-+ *
-+ * @mgr:        The FPGA manager object
-+ * @value:      Value INIT_B to wait for (1 =3D asserted =3D low)
-+ * @alt_udelay: Delay to wait if the INIT_B GPIO is not available
-+ *
-+ * Returns 0 when the INIT_B GPIO reached the given state or -ETIMEDOUT =
-if
-+ * too much time passed waiting for that. If no INIT_B GPIO is available
-+ * then always return 0.
-+ */
-+static int wait_for_init_b(struct fpga_manager *mgr, int value,
-+			   unsigned long alt_udelay)
-+{
-+	struct xilinx_fpga_core *core =3D mgr->priv;
-+	unsigned long timeout =3D jiffies + msecs_to_jiffies(1000);
++  csi-b-gpios:
++    description:
++      chip select pin (referred to as CSI_B in the manual)
++      Optional gpio for if the bus controller does not provide a chip se=
+lect.
++    maxItems: 1
 +
-+	if (core->init_b) {
-+		while (time_before(jiffies, timeout)) {
-+			int ret =3D gpiod_get_value(core->init_b);
++  rdwr-b-gpios:
++    description:
++      read/write select pin (referred to as RDWR_B in the manual)
++      Optional gpio for if the bus controller does not provide this pin.
++    maxItems: 1
 +
-+			if (ret =3D=3D value)
-+				return 0;
++required:
++  - compatible
++  - reg
++  - prog_b-gpios
++  - done-gpios
++  - init-b-gpios
 +
-+			if (ret < 0) {
-+				dev_err(&mgr->dev, "Error reading INIT_B (%d)\n", ret);
-+				return ret;
-+			}
++additionalProperties: true
 +
-+			usleep_range(100, 400);
-+		}
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    &weim {
++      status =3D "okay";
++      ranges =3D <0 0 0x08000000 0x04000000>;
 +
-+		dev_err(&mgr->dev, "Timeout waiting for INIT_B to %s\n",
-+			value ? "assert" : "deassert");
-+		return -ETIMEDOUT;
-+	}
-+
-+	udelay(alt_udelay);
-+
-+	return 0;
-+}
-+
-+static int xilinx_core_write_init(struct fpga_manager *mgr,
-+				 struct fpga_image_info *info,
-+				 const char *buf, size_t count)
-+{
-+	struct xilinx_fpga_core *core =3D mgr->priv;
-+	int err;
-+
-+	if (info->flags & FPGA_MGR_PARTIAL_RECONFIG) {
-+		dev_err(&mgr->dev, "Partial reconfiguration not supported\n");
-+		return -EINVAL;
-+	}
-+
-+	gpiod_set_value(core->prog_b, 1);
-+
-+	err =3D wait_for_init_b(mgr, 1, 1); /* min is 500 ns */
-+	if (err) {
-+		gpiod_set_value(core->prog_b, 0);
-+		return err;
-+	}
-+
-+	gpiod_set_value(core->prog_b, 0);
-+
-+	err =3D wait_for_init_b(mgr, 0, 0);
-+	if (err)
-+		return err;
-+
-+	if (get_done_gpio(mgr)) {
-+		dev_err(&mgr->dev, "Unexpected DONE pin state...\n");
-+		return -EIO;
-+	}
-+
-+	/* program latency */
-+	usleep_range(7500, 7600);
-+	return 0;
-+}
-+
-+static int xilinx_core_write(struct fpga_manager *mgr, const char *buf,
-+			    size_t count)
-+{
-+	struct xilinx_fpga_core *core =3D mgr->priv;
-+
-+	return core->write(core, buf, count);
-+}
-+
-+static int xilinx_core_write_complete(struct fpga_manager *mgr,
-+				     struct fpga_image_info *info)
-+{
-+	struct xilinx_fpga_core *core =3D mgr->priv;
-+	unsigned long timeout =3D jiffies + usecs_to_jiffies(info->config_compl=
-ete_timeout_us);
-+	bool expired =3D false;
-+	int done;
-+	int ret;
-+
-+	/*
-+	 * This loop is carefully written such that if the driver is
-+	 * scheduled out for more than 'timeout', we still check for DONE
-+	 * before giving up and we apply 8 extra CCLK cycles in all cases.
-+	 */
-+	while (!expired) {
-+		expired =3D time_after(jiffies, timeout);
-+
-+		done =3D get_done_gpio(mgr);
-+		if (done < 0)
-+			return done;
-+
-+		ret =3D core->write_one_dummy_byte(core);
-+		if (ret)
-+			return ret;
-+
-+		if (done)
-+			return 0;
-+	}
-+
-+	if (core->init_b) {
-+		ret =3D gpiod_get_value(core->init_b);
-+
-+		if (ret < 0) {
-+			dev_err(&mgr->dev, "Error reading INIT_B (%d)\n", ret);
-+			return ret;
-+		}
-+
-+		dev_err(&mgr->dev,
-+			ret ? "CRC error or invalid device\n"
-+			: "Missing sync word or incomplete bitstream\n");
-+	} else {
-+		dev_err(&mgr->dev, "Timeout after config data transfer\n");
-+	}
-+
-+	return -ETIMEDOUT;
-+}
-+
-+static const struct fpga_manager_ops xilinx_core_ops =3D {
-+	.state =3D xilinx_core_state,
-+	.write_init =3D xilinx_core_write_init,
-+	.write =3D xilinx_core_write,
-+	.write_complete =3D xilinx_core_write_complete,
-+};
-+
-+int xilinx_core_probe(struct xilinx_fpga_core *core,
-+					  struct device *dev,
-+					  xilinx_write_func write,
-+					  xilinx_write_one_dummy_byte_func write_one_dummy_byte)
-+{
-+	struct fpga_manager *mgr;
-+
-+	core->dev =3D dev;
-+	core->write =3D write;
-+	core->write_one_dummy_byte =3D write_one_dummy_byte;
-+
-+	/* PROGRAM_B is active low */
-+	core->prog_b =3D devm_gpiod_get(dev, "prog_b", GPIOD_OUT_LOW);
-+	if (IS_ERR(core->prog_b))
-+		return dev_err_probe(dev, PTR_ERR(core->prog_b),
-+				     "Failed to get PROGRAM_B gpio\n");
-+
-+	core->init_b =3D devm_gpiod_get_optional(dev, "init-b", GPIOD_IN);
-+	if (IS_ERR(core->init_b))
-+		return dev_err_probe(dev, PTR_ERR(core->init_b),
-+				     "Failed to get INIT_B gpio\n");
-+
-+	core->done =3D devm_gpiod_get(dev, "done", GPIOD_IN);
-+	if (IS_ERR(core->done))
-+		return dev_err_probe(dev, PTR_ERR(core->done),
-+				     "Failed to get DONE gpio\n");
-+
-+	mgr =3D devm_fpga_mgr_register(dev,
-+				     "Xilinx Slave Serial FPGA Manager",
-+				     &xilinx_core_ops, core);
-+	return PTR_ERR_OR_ZERO(mgr);
-+}
-diff --git a/drivers/fpga/xilinx-core.h b/drivers/fpga/xilinx-core.h
-new file mode 100644
-index 0000000000000..2e6ce2235531f
---- /dev/null
-+++ b/drivers/fpga/xilinx-core.h
-@@ -0,0 +1,27 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+
-+#ifndef	__XILINX_CORE_H
-+#define	__XILINX_CORE_H
-+
-+#include <linux/device.h>
-+
-+struct xilinx_fpga_core;
-+
-+typedef int (*xilinx_write_func)(struct xilinx_fpga_core *core, const ch=
-ar *buf,
-+			    size_t count);
-+typedef int (*xilinx_write_one_dummy_byte_func)(struct xilinx_fpga_core =
-*core);
-+
-+struct xilinx_fpga_core {
-+	struct device *dev;
-+	xilinx_write_func write;
-+	xilinx_write_one_dummy_byte_func write_one_dummy_byte;
-+	struct gpio_desc *prog_b;
-+	struct gpio_desc *init_b;
-+	struct gpio_desc *done;
-+};
-+
-+int xilinx_core_probe(struct xilinx_fpga_core *core, struct device *dev,
-+					xilinx_write_func write,
-+					xilinx_write_one_dummy_byte_func write_one_dummy_byte);
-+
-+#endif /* __XILINX_CORE_H */
-diff --git a/drivers/fpga/xilinx-spi.c b/drivers/fpga/xilinx-spi.c
-index e1a227e7ff2ae..71d8d421f3c63 100644
---- a/drivers/fpga/xilinx-spi.c
-+++ b/drivers/fpga/xilinx-spi.c
-@@ -10,127 +10,25 @@
-  * the slave serial configuration interface.
-  */
-=20
--#include <linux/delay.h>
--#include <linux/device.h>
--#include <linux/fpga/fpga-mgr.h>
--#include <linux/gpio/consumer.h>
-+#include "xilinx-core.h"
-+
- #include <linux/module.h>
- #include <linux/mod_devicetable.h>
- #include <linux/of.h>
- #include <linux/spi/spi.h>
--#include <linux/sizes.h>
-=20
- struct xilinx_spi_conf {
-+	struct xilinx_fpga_core core;
- 	struct spi_device *spi;
--	struct gpio_desc *prog_b;
--	struct gpio_desc *init_b;
--	struct gpio_desc *done;
- };
-=20
--static int get_done_gpio(struct fpga_manager *mgr)
--{
--	struct xilinx_spi_conf *conf =3D mgr->priv;
--	int ret;
--
--	ret =3D gpiod_get_value(conf->done);
--
--	if (ret < 0)
--		dev_err(&mgr->dev, "Error reading DONE (%d)\n", ret);
--
--	return ret;
--}
--
--static enum fpga_mgr_states xilinx_spi_state(struct fpga_manager *mgr)
--{
--	if (!get_done_gpio(mgr))
--		return FPGA_MGR_STATE_RESET;
--
--	return FPGA_MGR_STATE_UNKNOWN;
--}
--
--/**
-- * wait_for_init_b - wait for the INIT_B pin to have a given state, or w=
-ait
-- * a given delay if the pin is unavailable
-- *
-- * @mgr:        The FPGA manager object
-- * @value:      Value INIT_B to wait for (1 =3D asserted =3D low)
-- * @alt_udelay: Delay to wait if the INIT_B GPIO is not available
-- *
-- * Returns 0 when the INIT_B GPIO reached the given state or -ETIMEDOUT =
-if
-- * too much time passed waiting for that. If no INIT_B GPIO is available
-- * then always return 0.
-- */
--static int wait_for_init_b(struct fpga_manager *mgr, int value,
--			   unsigned long alt_udelay)
--{
--	struct xilinx_spi_conf *conf =3D mgr->priv;
--	unsigned long timeout =3D jiffies + msecs_to_jiffies(1000);
--
--	if (conf->init_b) {
--		while (time_before(jiffies, timeout)) {
--			int ret =3D gpiod_get_value(conf->init_b);
--
--			if (ret =3D=3D value)
--				return 0;
--
--			if (ret < 0) {
--				dev_err(&mgr->dev, "Error reading INIT_B (%d)\n", ret);
--				return ret;
--			}
--
--			usleep_range(100, 400);
--		}
--
--		dev_err(&mgr->dev, "Timeout waiting for INIT_B to %s\n",
--			value ? "assert" : "deassert");
--		return -ETIMEDOUT;
--	}
--
--	udelay(alt_udelay);
--
--	return 0;
--}
--
--static int xilinx_spi_write_init(struct fpga_manager *mgr,
--				 struct fpga_image_info *info,
--				 const char *buf, size_t count)
--{
--	struct xilinx_spi_conf *conf =3D mgr->priv;
--	int err;
--
--	if (info->flags & FPGA_MGR_PARTIAL_RECONFIG) {
--		dev_err(&mgr->dev, "Partial reconfiguration not supported\n");
--		return -EINVAL;
--	}
--
--	gpiod_set_value(conf->prog_b, 1);
--
--	err =3D wait_for_init_b(mgr, 1, 1); /* min is 500 ns */
--	if (err) {
--		gpiod_set_value(conf->prog_b, 0);
--		return err;
--	}
--
--	gpiod_set_value(conf->prog_b, 0);
--
--	err =3D wait_for_init_b(mgr, 0, 0);
--	if (err)
--		return err;
--
--	if (get_done_gpio(mgr)) {
--		dev_err(&mgr->dev, "Unexpected DONE pin state...\n");
--		return -EIO;
--	}
--
--	/* program latency */
--	usleep_range(7500, 7600);
--	return 0;
--}
-+#define to_xilinx_spi_conf(obj) \
-+	container_of(obj, struct xilinx_spi_conf, core)
-=20
--static int xilinx_spi_write(struct fpga_manager *mgr, const char *buf,
-+static int xilinx_spi_write(struct xilinx_fpga_core *core, const char *b=
-uf,
- 			    size_t count)
- {
--	struct xilinx_spi_conf *conf =3D mgr->priv;
-+	struct xilinx_spi_conf *conf =3D to_xilinx_spi_conf(core);
- 	const char *fw_data =3D buf;
- 	const char *fw_data_end =3D fw_data + count;
-=20
-@@ -143,7 +41,7 @@ static int xilinx_spi_write(struct fpga_manager *mgr, =
-const char *buf,
-=20
- 		ret =3D spi_write(conf->spi, fw_data, stride);
- 		if (ret) {
--			dev_err(&mgr->dev, "SPI error in firmware write: %d\n",
-+			dev_err(core->dev, "SPI error in firmware write: %d\n",
- 				ret);
- 			return ret;
- 		}
-@@ -153,77 +51,22 @@ static int xilinx_spi_write(struct fpga_manager *mgr=
-, const char *buf,
- 	return 0;
- }
-=20
--static int xilinx_spi_apply_cclk_cycles(struct xilinx_spi_conf *conf)
-+static int xilinx_spi_apply_cclk_cycles(struct xilinx_fpga_core *core)
- {
--	struct spi_device *spi =3D conf->spi;
-+	struct xilinx_spi_conf *conf =3D to_xilinx_spi_conf(core);
- 	const u8 din_data[1] =3D { 0xff };
- 	int ret;
-=20
- 	ret =3D spi_write(conf->spi, din_data, sizeof(din_data));
- 	if (ret)
--		dev_err(&spi->dev, "applying CCLK cycles failed: %d\n", ret);
-+		dev_err(core->dev, "applying CCLK cycles failed: %d\n", ret);
-=20
- 	return ret;
- }
-=20
--static int xilinx_spi_write_complete(struct fpga_manager *mgr,
--				     struct fpga_image_info *info)
--{
--	struct xilinx_spi_conf *conf =3D mgr->priv;
--	unsigned long timeout =3D jiffies + usecs_to_jiffies(info->config_compl=
-ete_timeout_us);
--	bool expired =3D false;
--	int done;
--	int ret;
--
--	/*
--	 * This loop is carefully written such that if the driver is
--	 * scheduled out for more than 'timeout', we still check for DONE
--	 * before giving up and we apply 8 extra CCLK cycles in all cases.
--	 */
--	while (!expired) {
--		expired =3D time_after(jiffies, timeout);
--
--		done =3D get_done_gpio(mgr);
--		if (done < 0)
--			return done;
--
--		ret =3D xilinx_spi_apply_cclk_cycles(conf);
--		if (ret)
--			return ret;
--
--		if (done)
--			return 0;
--	}
--
--	if (conf->init_b) {
--		ret =3D gpiod_get_value(conf->init_b);
--
--		if (ret < 0) {
--			dev_err(&mgr->dev, "Error reading INIT_B (%d)\n", ret);
--			return ret;
--		}
--
--		dev_err(&mgr->dev,
--			ret ? "CRC error or invalid device\n"
--			: "Missing sync word or incomplete bitstream\n");
--	} else {
--		dev_err(&mgr->dev, "Timeout after config data transfer\n");
--	}
--
--	return -ETIMEDOUT;
--}
--
--static const struct fpga_manager_ops xilinx_spi_ops =3D {
--	.state =3D xilinx_spi_state,
--	.write_init =3D xilinx_spi_write_init,
--	.write =3D xilinx_spi_write,
--	.write_complete =3D xilinx_spi_write_complete,
--};
--
- static int xilinx_spi_probe(struct spi_device *spi)
- {
- 	struct xilinx_spi_conf *conf;
--	struct fpga_manager *mgr;
-=20
- 	conf =3D devm_kzalloc(&spi->dev, sizeof(*conf), GFP_KERNEL);
- 	if (!conf)
-@@ -231,26 +74,9 @@ static int xilinx_spi_probe(struct spi_device *spi)
-=20
- 	conf->spi =3D spi;
-=20
--	/* PROGRAM_B is active low */
--	conf->prog_b =3D devm_gpiod_get(&spi->dev, "prog_b", GPIOD_OUT_LOW);
--	if (IS_ERR(conf->prog_b))
--		return dev_err_probe(&spi->dev, PTR_ERR(conf->prog_b),
--				     "Failed to get PROGRAM_B gpio\n");
--
--	conf->init_b =3D devm_gpiod_get_optional(&spi->dev, "init-b", GPIOD_IN)=
-;
--	if (IS_ERR(conf->init_b))
--		return dev_err_probe(&spi->dev, PTR_ERR(conf->init_b),
--				     "Failed to get INIT_B gpio\n");
--
--	conf->done =3D devm_gpiod_get(&spi->dev, "done", GPIOD_IN);
--	if (IS_ERR(conf->done))
--		return dev_err_probe(&spi->dev, PTR_ERR(conf->done),
--				     "Failed to get DONE gpio\n");
--
--	mgr =3D devm_fpga_mgr_register(&spi->dev,
--				     "Xilinx Slave Serial FPGA Manager",
--				     &xilinx_spi_ops, conf);
--	return PTR_ERR_OR_ZERO(mgr);
-+	return xilinx_core_probe(&conf->core, &spi->dev,
-+							&xilinx_spi_write,
-+							&xilinx_spi_apply_cclk_cycles);
- }
-=20
- #ifdef CONFIG_OF
++      fpga_mgr: fpga_programmer@0,0 {
++        compatible =3D "xlnx,fpga-slave-selectmap";
++        reg =3D <0 0 0x4000000>;
++        fsl,weim-cs-timing =3D <0x00070031 0x00000142
++              0x00020000 0x00000000
++              0x0c000645 0x00000000>;
++        prog_b-gpios =3D <&gpio5 5 GPIO_ACTIVE_LOW>;
++        init-b-gpios =3D <&gpio5 8 GPIO_ACTIVE_LOW>;
++        done-gpios =3D <&gpio2 30 GPIO_ACTIVE_HIGH>;
++        csi-b-gpios =3D <&gpio3 19 GPIO_ACTIVE_LOW>;
++        rdwr-b-gpios =3D <&gpio3 10 GPIO_ACTIVE_LOW>;
++      };
++    };
++...
 --=20
 2.43.0
 
