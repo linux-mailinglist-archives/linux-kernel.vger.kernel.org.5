@@ -1,78 +1,82 @@
-Return-Path: <linux-kernel+bounces-43483-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43464-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDDFD841498
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 21:44:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1967984143B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 21:26:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F27C1F23370
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 20:44:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 89D6AB247B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 20:26:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57CCB159576;
-	Mon, 29 Jan 2024 20:44:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCA181534EB;
+	Mon, 29 Jan 2024 20:26:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iQ9gsx7u"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="C+R5wmvj"
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEE061534EB
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 20:44:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F0CA6F09C
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 20:26:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706561054; cv=none; b=XyqV12AVH2fYxpdTluo+1mqlYWNcTJcE5ZnPCjFY1LisTOKfcEK/Fw8FXSbocHPkTnf/CEBpp0YMl8fO9lOSPEO3QJpvLivwflN1oKOk7NisKJ+AaV5OP1whCUyDCmubsAfHiIGHWT4p7MmupiPz2CtwDuiQoKNneb9W67oejNw=
+	t=1706559987; cv=none; b=PEQzYV/jcXyvAe2LZobWu8V2qrFXAtPHod6LQSddiavB3Vf89PzCFUgkfu8yAYanSlQdYIgoXsZK/cVkqcRxgOquW2ySlhdie7cJfBF6vHtunZvkzAM+upLh/VOevkgC7h0s0bPt9GiK3ItsFAeLK1nqnz1gQfiH7I7ngk1jID8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706561054; c=relaxed/simple;
-	bh=Elo6Kas6QgeP8iJYfbZQ29s6uVogIsyKYcHhQDUTX4w=;
+	s=arc-20240116; t=1706559987; c=relaxed/simple;
+	bh=SMrAnU030wuDhlboOt55byceqkItemYdSY9Vo59Y2yw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VxJJSN0VymY8lyFr1NRwQ4X+MAiH8xH9viMiSqQKkDZDVUy91lQfF9CMdQTfmFqBuwlc67wjn2Bv6VhpxZZWPK4z+utgS8hQvOcQDAzzF6hQlogd16K4VU1haZy8m8PB+Nu4uMUGK1ko5yr4Uen1esu19FeU0q5WxjX6OlA9/Vk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iQ9gsx7u; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706561053; x=1738097053;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Elo6Kas6QgeP8iJYfbZQ29s6uVogIsyKYcHhQDUTX4w=;
-  b=iQ9gsx7uYHD3Ow405moXh8YF/f8oPpayxZTt/D9tYublkUhRIX36oIvP
-   5HA1jvzwDCLrIfYf69ApCFXdw+vaUaMm7huZHyHFK2cEjROr0veGttdEQ
-   N9pIkP7g+PMaPlEODJiCPN/PLole5wjukZijYffmTjoHsUYgqj2DFIy8N
-   mRj/IqVXFi80dk/5w//skIfqpeM5QTDpYnv2nNoGkaPJ6Zz0DfHAdVWTY
-   ro5W/pmfmCXNvFT8EUKUt6I4B8gDK7ZNx6G7qKeSWDSNDfOVz2ymWJR5H
-   YuLALJ/sH8zyByDPmJiUuWhAPSTq5RmPUORUTucKx96Xd9Z1PFHAmTpHg
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="2913273"
-X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
-   d="scan'208";a="2913273"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 12:44:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="858241427"
-X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
-   d="scan'208";a="858241427"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga004.fm.intel.com with ESMTP; 29 Jan 2024 12:44:07 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id E906FFF; Mon, 29 Jan 2024 22:26:06 +0200 (EET)
-Date: Mon, 29 Jan 2024 22:26:06 +0200
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: Dave Hansen <dave.hansen@intel.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	"H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Theodore Ts'o <tytso@mit.edu>, 
-	"Jason A. Donenfeld" <Jason@zx2c4.com>, 
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, Elena Reshetova <elena.reshetova@intel.com>, 
-	Jun Nakajima <jun.nakajima@intel.com>, Tom Lendacky <thomas.lendacky@amd.com>, 
-	"Kalra, Ashish" <ashish.kalra@amd.com>, Sean Christopherson <seanjc@google.com>, 
-	linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [RFC] Randomness on confidential computing platforms
-Message-ID: <dlhffyn7cccn5d4uvubggkrmtyxl4jodj5ukffafpsxsnqini3@5rcbybumab4c>
-References: <20240126134230.1166943-1-kirill.shutemov@linux.intel.com>
- <276aaeee-cb01-47d3-a3bf-f8fa2e59016c@intel.com>
- <dqiaimv3qqh77cfm2huzja4vsho3jls7vjmnwgda7enw633ke2@qiqrdnno75a7>
- <f5236e76-27d0-4a90-bde5-513ac9446184@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=AOcsliQ4DDBwt6JxxOCWhWWjj7STclUUNKzC2cWIBUWQkdyo/TAGKDAlUcSFlWfuHwgyXalibwK+iQWKa4hCRp8tg7/uFTocLRzSEES9PCkKBStsNHT6ad3ejQtk5nnp/idFjFejx8X8ngdZoIMzXZGLFQCWDUHdkjy135lcSU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=C+R5wmvj; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6ddc1fad6ddso2690207b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 12:26:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706559985; x=1707164785; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6E+CSDDSvT91f9Viy+M6uu4Auu69C79V+Tns03Gp4VA=;
+        b=C+R5wmvjfctGYZ9SDDMSVdhjyUSByuz1xutV7NvLPV+DijWDZeL0ByHkiMBD9nuV42
+         cUMhqHqVCk9SaqAvZ09kpnC7D/IFzz2OjBu1Th9eqTBS2gWlDRpmew+m+G0g9QDSQJk8
+         hgt7tmGFi3bGZp1p+rPFWDyzoPpr8I4X1fysM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706559985; x=1707164785;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6E+CSDDSvT91f9Viy+M6uu4Auu69C79V+Tns03Gp4VA=;
+        b=L++LGq5fEIqT5tJZH+VNyzvhr47HlSjsr4aSJdMQDxysGI5HV0Lar2sZ+tiAdH7T4D
+         +f2S1hguWfBDqWI/CaVxZUcMnjUM7B81M6fHB3irqRjc66cvN0Nn2nUvmJOErFalE/cE
+         oqC4jZh6Hlr1fkfBioAjTt9AqnsCVvT3c+k1H5Mq3wVikbmq9XtSCPuB/35IA+oOiBXF
+         M9Xe1xAR1m80rlVXPHRrqGmgFJwNXoI5OnFCoDU0Baaad6obLvrpdixBNQtTWJ0iHhij
+         yVc0JnDel0TuT2qG7pQX1QrBhNySodBCo/u9sC0pd5tnZdsHhnmanxfJAmwVpLMqhf3i
+         8IZA==
+X-Gm-Message-State: AOJu0Yyhl0CAG1lWh0uXdqvICUWGNJ1vjx0ghgS44ZnepKM1ouZ5DF0r
+	Z062Jrqb/0lJokVPi32LlfQ4IzBsHcERK1TW0r+RJjxEEViYedoaosyLPAPD3g==
+X-Google-Smtp-Source: AGHT+IEljCTSge/PCk3xrZvAhS+vec3Iv/hm4f2dPqTNvAEMD81HKYx4c8Hh7l8Y79fYPZE4uKvCYQ==
+X-Received: by 2002:a05:6a00:d74:b0:6dd:8a25:e167 with SMTP id n52-20020a056a000d7400b006dd8a25e167mr4255359pfv.34.1706559985074;
+        Mon, 29 Jan 2024 12:26:25 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id a15-20020aa78e8f000000b006ddc3794de7sm6239422pfr.134.2024.01.29.12.26.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 12:26:24 -0800 (PST)
+Date: Mon, 29 Jan 2024 12:26:23 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Cc: Mark Rutland <mark.rutland@arm.com>, linux-hardening@vger.kernel.org,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Miguel Ojeda <ojeda@kernel.org>, Marco Elver <elver@google.com>,
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH 4/5] overflow: Introduce add_wrap(), sub_wrap(), and
+ mul_wrap()
+Message-ID: <202401291224.53CA9C17E0@keescook>
+References: <20240129182845.work.694-kees@kernel.org>
+ <20240129183411.3791340-4-keescook@chromium.org>
+ <8dead2fb-d522-492b-89f2-1358198c1cdf@prevas.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,50 +85,70 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f5236e76-27d0-4a90-bde5-513ac9446184@intel.com>
+In-Reply-To: <8dead2fb-d522-492b-89f2-1358198c1cdf@prevas.dk>
 
-On Mon, Jan 29, 2024 at 10:55:38AM -0800, Dave Hansen wrote:
-> On 1/29/24 08:41, Kirill A. Shutemov wrote:
-> > On Mon, Jan 29, 2024 at 08:30:11AM -0800, Dave Hansen wrote:
-> >> On 1/26/24 05:42, Kirill A. Shutemov wrote:
-> >>> 3. Panic after enough re-tries of RDRAND/RDSEED instructions fail.
-> >>>    Another DoS variant against the Guest.
-> >>
-> >> I think Sean was going down the same path, but I really dislike the idea
-> >> of having TDX-specific (or CoCo-specific) policy here.
-> >>
-> >> How about we WARN_ON() RDRAND/RDSEED going bonkers?  The paranoid folks
-> >> can turn on panic_on_warn, if they haven't already.
+On Mon, Jan 29, 2024 at 09:08:43PM +0100, Rasmus Villemoes wrote:
+> On 29/01/2024 19.34, Kees Cook wrote:
+> > Provide helpers that will perform wrapping addition, subtraction, or
+> > multiplication without tripping the arithmetic wrap-around sanitizers. The
+> > first argument is the type under which the wrap-around should happen
+> > with. In other words, these two calls will get very different results:
 > > 
-> > Sure, we can do it for kernel, but we have no control on what userspace
-> > does.
+> > 	add_wrap(int, 50, 50) == 2500
+> > 	add_wrap(u8,  50, 50) ==  196
+> 
+> s/add/mul/g I suppose.
+
+Oops, yes.
+
+> > Cc: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+> > Cc: Mark Rutland <mark.rutland@arm.com>
+> > Cc: linux-hardening@vger.kernel.org
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  include/linux/overflow.h | 54 ++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 54 insertions(+)
 > > 
-> > Sensible userspace on RDRAND/RDSEED failure should fallback to kernel
-> > asking for random bytes, but who knows if it happens in practice
-> > everywhere.
-> > 
-> > Do we care?
+> > diff --git a/include/linux/overflow.h b/include/linux/overflow.h
+> > index 3c46c648d2e8..4f945e9e7881 100644
+> > --- a/include/linux/overflow.h
+> > +++ b/include/linux/overflow.h
+> > @@ -120,6 +120,24 @@ static inline bool __must_check __must_check_overflow(bool overflow)
+> >  		check_add_overflow(var, offset, &__result);	\
+> >  	}))
+> >  
+> > +/**
+> > + * add_wrap() - Intentionally perform a wrapping addition
+> > + * @type: type to check overflow against
 > 
-> I want to make sure I understand the scenario:
+> Well, nothing is "checked", so why not just say "type of result"?
+
+Yeah, that's better. I was trying to describe that @type will affect the
+value of the result.
+
+> > +/**
+> > + * sub_wrap() - Intentionally perform a wrapping subtraction
+> > + * @type: type to check underflow against
 > 
->  1. We're running in a guest under TDX (or SEV-SNP)
->  2. The VMM (or somebody) is attacking the guest by eating all the
->     hardware entropy and RDRAND is effectively busted
->  3. Assuming kernel-based panic_on_warn and WARN_ON() rdrand_long()
->     failure, that rdrand_long() never gets called.
+> The terminology becomes muddy, is (INT_MAX) - (-1) an underflow or
+> overflow? Anyway, see above.
 
-Never gets called during attack. It can be used before and after.
+Right, I should explicitly say "wrap-around".
 
->  4. Userspace is using RDRAND output in some critical place like key
->     generation and is not checking it for failure, nor mixing it with
->     entropy from any other source
->  5. Userspace uses the failed RDRAND output to generate a key
->  6. Someone exploits the horrible key
 > 
-> Is that it?
+> >  
+> > +/**
+> > + * mul_wrap() - Intentionally perform a wrapping multiplication
+> > + * @type: type to check underflow against
+> 
+> And here there's definitely a copy-pasto.
 
-Yes.
+Ek, yes.
+
+> The code itself looks fine.
+
+Thanks!
 
 -- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Kees Cook
 
