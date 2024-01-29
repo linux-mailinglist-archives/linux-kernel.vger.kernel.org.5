@@ -1,133 +1,106 @@
-Return-Path: <linux-kernel+bounces-43189-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43190-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50164840ED9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:19:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27368840F1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:21:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E6C43B2342A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:19:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F831B24E7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:21:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 131A515AAB7;
-	Mon, 29 Jan 2024 17:12:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5953163A94;
+	Mon, 29 Jan 2024 17:13:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CeWhUdpA"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rmcL9c9u"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE5FB15AAB1
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 17:12:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 829E815D5A9
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 17:13:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706548354; cv=none; b=IozwfP9jKuCxpNc3JTaUnSKYV1Q+KTshCFcKwVuKsXCCI5PXjNsEa/dbWVBrdRvELHcD1vz3YuLDqyNS+R0fomAa3BlfWivuKXQGqgzHf3MQof7VzKZNnu28FtD8NZWa3Wn26sT2/mDyUGdZsjkupLTGqD+RwlsOSaTNLRHYGXI=
+	t=1706548385; cv=none; b=Plvx+FdV7a+0Q3pm22DRFhcHBjeQXmFU/FXGarFkg9jKbP3n6yklAPgKyxFVkxmnzNzd8vK4W7Xum01qi6S08eSGYkyYmiSprDlSyvsiLB+C3RLiVKybG1kiJmRFYBY6GW/L0SAxRfiTVGmVPQbo6r9QtUBbSljgLf4s6Rm57zQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706548354; c=relaxed/simple;
-	bh=xN7z0yKJVYS2/AX2hKKn2FEDmI//91+6xCLFTLbayKQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=sV8C4t8gUR9F/Gtvn6CxYvRwCYkcEm7J5eCXcwLtenmMbWX/2kYI95CpS+rE76Al9L/Fm5K2TTPJ9/jICECJg0VJiS0dkUSdI3b+YQmfbaPq05ZNaE4y41xKMmIgjkMzd+mYrI8QltrG258pjjr+sIxebmw5ajuLfAX+rRpR6Wo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CeWhUdpA; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706548351;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=xsce6k1bFLcIW+x8jc3gQMrtFj/bRo1gjpGuOMox5NI=;
-	b=CeWhUdpAVEd3eHA/uJYbjZnkEXzNZDbxbsIqdrXMVmE1B2KAYrDIUE1JKusbkGRAEVSaCJ
-	D7XdmHgMdU6Jv81Fos+aBkqFWe23vTS3ithqLNBryVSi7l1B9QLdN3e47R2Jr9t6yqQQG+
-	D8ffZ9Ce5mS8KO26lxfM5j/ZgHRG7nw=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-486-eL0bGzjINZiEB58PYLMPbQ-1; Mon, 29 Jan 2024 12:12:29 -0500
-X-MC-Unique: eL0bGzjINZiEB58PYLMPbQ-1
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-784078a3852so26059185a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:12:29 -0800 (PST)
+	s=arc-20240116; t=1706548385; c=relaxed/simple;
+	bh=RD+lt7YvkHcHv4LIgrF0qv3CjQvy3/HZ38p8GITdbRU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YuZ4HuLgrFX/qVszTVFVi0SllSLDbyStpZ5hOHz4/AwUV48HFnJ5N8gFFePUFeDsDp97Vwm+wqeqehPDwMZsSMEp92UQjjt7OMqS9L5TT0kcujxMaU7QPPj3Mr/mMaAXpH7f7qF29C2aB3hZY0PBvOvUB/r3WsRhoV5KhDo7DZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rmcL9c9u; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a3510d79ae9so311126166b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:13:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706548382; x=1707153182; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RD+lt7YvkHcHv4LIgrF0qv3CjQvy3/HZ38p8GITdbRU=;
+        b=rmcL9c9uZHWM036T8caRkwNYLtQFPVhz+cv9aIsLcC9JQwf35aRdXW/tDzqLDgtWus
+         d4QRdtDCCDAch4tJKMSEKoJC/RgbDMer8aBz3LyddhhaLHHWO4+kjav2o6QH7Ik8z21a
+         ko7ESrvJsCioOcQ6ZeznQWUVRPlzA5q1H1LnvCNo9HL3plnmQKw9zu+0Cz+WohXwKCwM
+         lwSny0Ic5LUVvgQf0lSPb7s3XgCxoeISacMwXCSTsXr5tgeJDi8Y1ykTRfPx9hbch93m
+         CkpoT1t3T24dp2qWrWYZOTWuTfIL+B2ttMqcr3EgC501stzmZIWsFoETcISrz8YrM+7w
+         8NCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706548349; x=1707153149;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xsce6k1bFLcIW+x8jc3gQMrtFj/bRo1gjpGuOMox5NI=;
-        b=GPS5oCH6aBylxbs1GHyoRUYoBzVbLW/tucOqAe9GWa5HqxdvteA/vLbfljtKCsQbQx
-         M1ZnWj0t75UG+KVxH+TfBtXjv6Dcs+KlvHxRuCO/pEIpvabGaQwhS0loeTXZHNiP3j+0
-         upZ1kj51tDTH69eWb4EEREqpBWGiP8MFpTRQRL+o+xa3IHHX7rtgeMKWti9AQuvbIY23
-         JiaQR5NyvBOhnI/FBUHeZfwYJO+TT2z3gwnZy3KjMcErswehgusTAKnRvxToLv0hxjF2
-         fB84hzxmuRguasIebUgawZ9RvV8QEZ4eK9YBh8BTxHtz0iR8MZgWJciVV9E6m3lZj/OA
-         YCqQ==
-X-Gm-Message-State: AOJu0Yy3sIa369lbeMljCXf2h/Mn+ugpfcimRgZ3fVhGMVJ3RVpl978D
-	rBv+pSCGzMfGjZXVgmiZEoLTGKMkG0u86N6YHzhmOPjmanGUOwG8g6fbxkE4SoP6we5VIsCbKsY
-	jC4044GG5JuRrfgu+aHlUYj5JPnKMJPNhFh6aFAQcEDsq7bLnxP2ozCvYaiPVdA==
-X-Received: by 2002:a05:620a:909:b0:783:7775:b395 with SMTP id v9-20020a05620a090900b007837775b395mr5917725qkv.74.1706548349406;
-        Mon, 29 Jan 2024 09:12:29 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IElNUymv0hHq1m2C6+cST6qAHiLIvOpOWStiSVR+Syryq46JeptpoFsfRaKAcF+vcwSHf43/Q==
-X-Received: by 2002:a05:620a:909:b0:783:7775:b395 with SMTP id v9-20020a05620a090900b007837775b395mr5917709qkv.74.1706548349138;
-        Mon, 29 Jan 2024 09:12:29 -0800 (PST)
-Received: from [192.168.1.163] ([2600:1700:1ff0:d0e0::47])
-        by smtp.gmail.com with ESMTPSA id e22-20020a05620a209600b00783e70cf38asm2195577qka.130.2024.01.29.09.12.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 09:12:28 -0800 (PST)
-From: Andrew Halaney <ahalaney@redhat.com>
-Date: Mon, 29 Jan 2024 11:12:11 -0600
-Subject: [PATCH] MAINTAINERS: Drop unreachable reviewer for Qualcomm ETHQOS
- ethernet driver
+        d=1e100.net; s=20230601; t=1706548382; x=1707153182;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RD+lt7YvkHcHv4LIgrF0qv3CjQvy3/HZ38p8GITdbRU=;
+        b=JQpYvPnvFzgW67X/yN6XwBve7kOhkUChZa59ccWf6/pdv2tleYvpbQj3PouVQeGLJ8
+         fblr/ORPb+izHr37SCPSykv1EgVLCl2XUasvZUmeVtER+ObkbQhwNgc5hDnKsufdUHf7
+         KGWpLp/AArbyXX15AgwgBbSOK04JQnex308XLkBW63Jz3Cille7H4JtHG/BD9GA7kxmf
+         YGBNeLgUcsZsil0I6yHoNpkWRvhI/Sim0W9r6Rugpbss9KL7hBGuDtwdBZ8MXK8cP+Uj
+         woHELxX1JcfL+hW2+iFs04bMyrTRizDbtOnEQIsNfVZ4vLSCtxlA1NJcP93BSqxvDWsD
+         wq/g==
+X-Gm-Message-State: AOJu0Ywx1S21pI2Iovtv5SsGMC+tu3dvt6X7dHgtk0kWopL26zshO7Fx
+	0Auqe1k9L23arqYD3GIOm/2SsYY7VnSpfG9tSJZR21BnS8r2AvRxDL7n5trTpDY=
+X-Google-Smtp-Source: AGHT+IG/oRJ8oWuP/HmXdOKqKOlMvxVgwfT+KSK0YZ5sdUr46qcUJUXI+zsHeu/0N5NVPBndHmgE9g==
+X-Received: by 2002:a17:906:e15:b0:a30:e17e:67ee with SMTP id l21-20020a1709060e1500b00a30e17e67eemr4889297eji.18.1706548381692;
+        Mon, 29 Jan 2024 09:13:01 -0800 (PST)
+Received: from [192.168.2.107] ([79.115.63.202])
+        by smtp.gmail.com with ESMTPSA id cw13-20020a170907160d00b00a35f34efb32sm441325ejd.23.2024.01.29.09.12.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jan 2024 09:13:01 -0800 (PST)
+Message-ID: <95f0eddf-14d4-4851-91f6-f8adaa05833b@linaro.org>
+Date: Mon, 29 Jan 2024 17:12:59 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/9] clk: samsung: gs101: add support for cmu_peric1
+Content-Language: en-US
+To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
+ peter.griffin@linaro.org, mturquette@baylibre.com, sboyd@kernel.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc: linux-kernel@vger.kernel.org, kernel-team@android.com,
+ willmcvicker@google.com, semen.protsenko@linaro.org,
+ alim.akhtar@samsung.com, s.nawrocki@samsung.com, tomasz.figa@gmail.com,
+ cw00.choi@samsung.com, linux-arm-kernel@lists.infradead.org,
+ linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+ devicetree@vger.kernel.org
+References: <20240127001926.495769-1-andre.draszik@linaro.org>
+ <20240127001926.495769-4-andre.draszik@linaro.org>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20240127001926.495769-4-andre.draszik@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240129-remove-dwmac-qcom-ethqos-reviewer-v1-1-2645eab61451@redhat.com>
-X-B4-Tracking: v=1; b=H4sIAGrct2UC/x2NwQqDMBAFf0X23AWTFNT+ivQQklfdQ0zdiBbEf
- 2/a4xxm5qQCFRR6NCcpdimSlwrm1lCY/TKBJVYm29p7a+zAipR3cDySD7yGnBjbvObCPxsHlI1
- 3XexDZ1zvqHbeipd8/o/xeV1ffEfE9nMAAAA=
-To: Vinod Koul <vkoul@kernel.org>, 
- Alexandre Torgue <alexandre.torgue@foss.st.com>, 
- Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
- linux-arm-msm@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
- linux-arm-kernel@lists.infradead.org, Andrew Halaney <ahalaney@redhat.com>
-X-Mailer: b4 0.12.3
 
-Bhupesh's email responds indicating they've changed employers and with
-no new contact information. Let's drop the line from MAINTAINERS to
-avoid getting the same response over and over.
+Hi, Andre',
 
-Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
----
-If anyone knows how to contact Bhupesh / if they're willing to continue
-being a reviewer feel free to suggest an alternative, but for the moment
-this is better than nothing.
----
- MAINTAINERS | 1 -
- 1 file changed, 1 deletion(-)
+I played with SPI and noticed that we have to propagate some clock rates
+to parents here. If you don't play with all the peripherals from the
+block you can't know what to propagate. So I think it's fine to not
+handle this topic right now. I'll come with a patch on top of yours when
+I finish the SPI validation. The patch is looking fine. I'll finish
+reviewing the series after v2 is out.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 939f6dd0ef6a..b285d9a123ce 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18080,7 +18080,6 @@ F:	drivers/net/ethernet/qualcomm/emac/
- 
- QUALCOMM ETHQOS ETHERNET DRIVER
- M:	Vinod Koul <vkoul@kernel.org>
--R:	Bhupesh Sharma <bhupesh.sharma@linaro.org>
- L:	netdev@vger.kernel.org
- L:	linux-arm-msm@vger.kernel.org
- S:	Maintained
-
----
-base-commit: 596764183be8ebb13352b281a442a1f1151c9b06
-change-id: 20240129-remove-dwmac-qcom-ethqos-reviewer-1a37d8c71383
-
-Best regards,
--- 
-Andrew Halaney <ahalaney@redhat.com>
-
+Cheers,
+ta
 
