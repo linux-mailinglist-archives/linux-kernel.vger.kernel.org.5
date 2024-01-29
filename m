@@ -1,154 +1,86 @@
-Return-Path: <linux-kernel+bounces-43046-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43112-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32E84840ABC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:01:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 043C6840BA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:36:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9FF62B24BE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:01:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 161BF1C22BDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:36:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70422155A58;
-	Mon, 29 Jan 2024 16:00:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="REb131pB"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0039715B10E;
+	Mon, 29 Jan 2024 16:32:11 +0000 (UTC)
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 736051552FE;
-	Mon, 29 Jan 2024 16:00:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B72715AABD;
+	Mon, 29 Jan 2024 16:32:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706544034; cv=none; b=jvhxvE4/b+KZXKOrEX6yPqaqJ2jLqwCAv9zlNVKHNU6iCp/F3XP+RHYroshp/Jhrhj0v7TglAYs/AH53h/5hM2R33EOkDSHDmNXFEJT156voO8oxYrMt272HG6pUfl40MtCBxIZxPR1L/ku20JGBVUx0Fcx+Qi2uJgZRVUVeQr4=
+	t=1706545930; cv=none; b=G1fE7oyJc0peM7CWL9AzzU7WWC3uMmg4Q68dAwnUpAwut1CoM+sBEgUMXMWmRTajE5JbP8E3mOvjfDvqfffKSJJHU7688YsdGo/ceZ94oAdGw6VXnUYJeSd89Ai1uXsvnFlfkui28SUTsCCNR7rqw1lgMDzpKgafzX7lr21xAYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706544034; c=relaxed/simple;
-	bh=FX/3JZsgoeRJk8/gT/ahewzSdOBqCFPARvgcZJkGxSA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kaz7dDcoCCNdojhomeQBjIiyNtRlwFa6pl1T0y7/bc72YyBCdzJt2C6vgrFfgtSmaM2IJuNQMlQ3INtzbfHuvNaRiLY6Ybc2vbpfZStKHL1wsDEOCwxYfVnSUBewFRPv6xJ4QxJQyIb57H6MBZRpJK55dD7qjpchFhfXWFAiKxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=REb131pB; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=pBVtJRmqf+crBbobrGzBK2lFMDtFqvFaWK9LtbdMiw0=; b=REb131pBQOlURPlaqY/BWYJkYn
-	6XiNQWL5ysnJDjT2Q/knsZymoxmJ9qg3ZTfjxAzf6s28tQ2qC1Ej9fGitEUS0C5NtE8hqJL7EnBxD
-	C/JZrsLTBbNkc1ACH0HcmRUwZOBoMDQ2lO5CbUnkpj5e3WtB+EImTFJ71cHYj126vSqqUID5tbF1z
-	pbQ5vbvK7Xy0+YFlr0gSMvXuWxBk9IpWXiUtwGPHQgFsV8nF2BPawr+OO5aM6hwKcaZFTE63IkmdY
-	d2w1qigl2szKcAIB8iDyKjNn+GVTOJr78eGOyl+6Zny6+WsIjo3bFpaYg1BK6O65xAHu46yrE1pTR
-	+ZBF5jNQ==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rUU3b-0000000DPH0-3JRj;
-	Mon, 29 Jan 2024 16:00:23 +0000
-Date: Mon, 29 Jan 2024 08:00:23 -0800
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Yoann Congal <yoann.congal@smile.fr>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Petr Mladek <pmladek@suse.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	John Ogness <john.ogness@linutronix.de>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc: x86@kernel.org, linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kbuild@vger.kernel.org,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Darren Hart <dvhart@infradead.org>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
-	Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH v2] printk: Remove redundant CONFIG_BASE_SMALL
-Message-ID: <ZbfLl6PR_qxxreeX@bombadil.infradead.org>
-References: <20240127220026.1722399-1-yoann.congal@smile.fr>
+	s=arc-20240116; t=1706545930; c=relaxed/simple;
+	bh=X8yJX78PRc9PLq39CvJuPfk62qc/DaiPaXVMfh6eyMM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Uz8PfD6jQdBObDZgmIdOzhUQ5TWM5nfhFXSco+GJ+sGchpXvyfS8Cnz6XCQ+ZsiRXT4RJXI+geBtncvH0eiCaEH9uzSEK2VRu7pBMcBSr2zEL7RWPhny36svGtVproZwmG8LJbZARdorjy1zlTfIXyZJkmVxsIFdp11M/OJMWKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id 46298f7f9473cea7; Mon, 29 Jan 2024 17:32:06 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id D765C66975C;
+	Mon, 29 Jan 2024 17:32:05 +0100 (CET)
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Linux PM <linux-pm@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+Subject: [PATCH v2 00/10] PM: sleep: Fix up suspend stats handling and clean up core suspend code
+Date: Mon, 29 Jan 2024 17:00:43 +0100
+Message-ID: <5770175.DvuYhMxLoT@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240127220026.1722399-1-yoann.congal@smile.fr>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtgedgjeekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepgeffhfdujeelhfdtgeffkeetudfhtefhhfeiteethfekvefgvdfgfeeikeeigfehnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeegpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuhhlfhdrhhgrnhhsshhonheslhhinhgrrhhordhorhhgpdhrtghpthhtohepshhtrghnihhslhgrfidrghhruhhsiihk
+ rgeslhhinhhugidrihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
 
-You wanna address the printk maintainers, which I've added now.
-And Josh as he's interested in tiny linux.
+Hi Everyone,
 
-On Sat, Jan 27, 2024 at 11:00:26PM +0100, Yoann Congal wrote:
-> CONFIG_BASE_SMALL is currently a type int but is only used as a boolean
-> equivalent to !CONFIG_BASE_FULL.
+This is a v2 of
+
+https://lore.kernel.org/linux-pm/5760158.DvuYhMxLoT@kreacher
+
+except for the first two patches that have been queued up for 6.9
+already.
+
+The original series description still applies:
+
+> This series of patches modifies the core system-wide suspend resume of
+> devices to get it more internally consistent (between the suspend and
+> resume parts) and fixes up the handling of suspend statistics in it.
 > 
-> So, remove it entirely and move every usage to !CONFIG_BASE_FULL.
+> The functional changes made by it are expected to be limited to the
+> statistics handling part.
 
-Thanks for doing this.
+and the differences from the v1 are minor.
 
-> In addition, recent kconfig changes (see the discussion in Closes: tag)
-> revealed that using:
->   config SOMETHING
->      default "some value" if X
-> does not work as expected if X is not of type bool.
+Please refer to individual patch changelogs for details.
 
-We should see if we can get kconfig to warn on this type of use.
-Also note that this was reported long ago by Vegard Nossum but he
-never really sent a fix [0] as I suggested, so thanks for doing this
-work.
+Thanks!
 
-[0] https://lkml.iu.edu/hypermail/linux/kernel/2110.2/02402.html
 
-You should mention the one case which this patch fixes is:
 
-> CONFIG_BASE_SMALL was used that way in init/Kconfig:
->   config LOG_CPU_MAX_BUF_SHIFT
->   	default 12 if !BASE_SMALL
->   	default 0 if BASE_SMALL
-
-You should then mention this has been using 12 for a long time now
-for BASE_SMALL, and so this patch is a functional fix for those
-who used BASE_SMALL and wanted a smaller printk buffer contribtion per
-cpu. The contribution was only per CPU, and since BASE_SMALL systems
-likely don't have many CPUs the impact of this was relatively small,
-4 KiB per CPU.  This patch fixes that back down to 0 KiB per CPU.
-
-So in practice I'd imagine this fix is not critical to stable. However
-if folks do want it backported I'll note BAS_FULL has been around since
-we started with git on Linux so it should backport just fine.
-
-> diff --git a/init/Kconfig b/init/Kconfig
-> index 8d4e836e1b6b1..877b3f6f0e605 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -734,8 +734,8 @@ config LOG_CPU_MAX_BUF_SHIFT
->  	int "CPU kernel log buffer size contribution (13 => 8 KB, 17 => 128KB)"
->  	depends on SMP
->  	range 0 21
-> -	default 12 if !BASE_SMALL
-> -	default 0 if BASE_SMALL
-> +	default 12 if BASE_FULL
-> +	default 0
->  	depends on PRINTK
->  	help
->  	  This option allows to increase the default ring buffer size
-
-This is the only functional change, it is a fix, so please address
-this in a separate small patch where you can go into all the above
-details about its issue and implications of fixing this as per my
-note above.
-
-Then you can address a separate patch which addresses the move of
-BASE_SMALL users to BASE_FULL so to remove BASE_SMALL, that is
-because that commit would have no functional changes and it makes
-it easier to review.
-
-  Luis
 
