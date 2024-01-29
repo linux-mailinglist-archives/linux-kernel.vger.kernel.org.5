@@ -1,119 +1,131 @@
-Return-Path: <linux-kernel+bounces-42401-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42402-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 025338400DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:04:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BE7B8400DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:04:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 032641C22B7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:04:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 392562819A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:04:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C459C54F9F;
-	Mon, 29 Jan 2024 09:04:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9894354F82;
+	Mon, 29 Jan 2024 09:04:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eOzGMpKS"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="o0KVvwiI"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADDAC54F85
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:04:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4E9C55761
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:04:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706519043; cv=none; b=pPiUfx5/Wf1zfM1Ai+QYOmMQpbm3fXvXCjX25tmzDoncRKCaI8tDOCQsIFIM/FsI9R2lDLaXJzF2RSlCw1TBMWxBhmJr48VTKe5lmDlgQUw/dlJnSyTCTrZKcg9ICJ/8FqHf8P/NSuWSknN/TBEaTCOdlbfmLqO/jkfWie2051w=
+	t=1706519070; cv=none; b=e5B7WlWORm+X0Q7lxKWRIdgn1HzALUx4t17d4nyUaFX4UTyHmc17dnuqErVm3eFwNpcDS/y4uS11vpACIV+peVSWWUqJG7n2f7tLlPa8VyvTJQ7vp0r5BAAZl2NO9D7sG7Om/pfsOlEcbM0xkgOdJCUMszG80hi12WBidN8ftLo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706519043; c=relaxed/simple;
-	bh=aaqzDJagx7VtoO97qs85Dq0uoWjJTuO/qVeqF8e7ssc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=BT5rW9ZMXFO5y3yzolnMwZ1BaqAop5HmlM55NymXeU6lO8Oxch9sBEXkG7YGq1CaWGCoba+EDwyOpBhqEmWEmTKulZzjCxrRHXmtcisLUfm/49WQ14dhm/UBKBwghFi1RKWY/FO1Z93xBDzu6VpH0I9eXjvfau933XE+4qWomCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eOzGMpKS; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706519040;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8LxNQVXsu9usio1d9bkE2ficZHEFLd5sQcdQVhw5rlw=;
-	b=eOzGMpKSeLiLd7FwtDIT8zen2fAOkOU/o9d545NgQoFtYn+/k9JeW1ajrP0OllwHEyCc2z
-	d21ymKSUTV9xCx3iHeyxB/6o7DYymDO9ZVMAA6hIW/CEznCOIwqkA/AFOtUs0amd1GGfVp
-	x5gzEeMBt3iBzeeAAASKkBAgYBymsYo=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-547-u3TTXWLbOjWryuQfpWF8gA-1; Mon, 29 Jan 2024 04:03:59 -0500
-X-MC-Unique: u3TTXWLbOjWryuQfpWF8gA-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-33ae6433d55so673324f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 01:03:58 -0800 (PST)
+	s=arc-20240116; t=1706519070; c=relaxed/simple;
+	bh=ksF4ZWil8K2mr+5dzsAVbWuBapkyv+wm9DHTkXKrfiM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TbP4CKtBo4SHegSHpqAw5r+XoDh1OMGl6+woLY+bOrUqfDfHSfL477md9lOn5Xfow+1A53wQsvfUv5+Ye4GLTWdblRBd+Z2JASLye7L2q2xKyeEy5uX1FR3VQzGutfUGk9XSzzbDhSA431BXA7PFV5tq8zITSW3M9wP+SfaicuQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=o0KVvwiI; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a28a6cef709so286584966b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 01:04:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706519067; x=1707123867; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nmg3Hmk9zJNrE7hya32tHVBXLNynM4oyDoMxztwJS0A=;
+        b=o0KVvwiIKTYzokLmADSAACt9L+wjhsc+Zp/P9rnFP6Tr1BrQwmEoGyYok0xrsYgKeh
+         V5wMQKrFNlcQAaeT5tu7f369v5dww7WEFPKIEDVYcGNngvFgDmc4Hye+bTekaMjvSJkd
+         Mc4+6tsNJy/WFn+m6upMvVBumOn7F4ZsIw9ZjCLBP26BUPbw8CZuMFv7tTeiMExrmriH
+         KT+IHu+TXoupHdvj5IFpCCQHOwmLac/0hMRIOy00MnN4D4iqXABM2baUL89JRt0fJ1Nu
+         5JaLM8uAFRqLeCRV6lgOu0QZUsBhL/+Oqs3a3yAsKHpwFrVu6Wwppgra60SoqxYfGnSL
+         y4DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706519038; x=1707123838;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8LxNQVXsu9usio1d9bkE2ficZHEFLd5sQcdQVhw5rlw=;
-        b=cQj3YL4jqQIluuwfDkO8PuRSEqz+lYP5GafuDTfLIrVOVI8vZwwKsBbXmL0q79stEh
-         aATWNlZ15k5E2hQ/ysRz50VYTAKa/uK3y74dITxP7IesM8ckF4Je9XZs6CJMiIcy7NOm
-         0qZUFqx0gIukEEbzaraMoLUVM0jqdB+lmc4RSx9KNObUSppOLZaX924imIHDZBn6FCJA
-         JmfU/Cd3NrEccfAtFQ5cSCyDcmJ1cZBF8em5nRsFqekUYaqCf8ef6ogskJRV1fLb/olH
-         uLt23dzal/B3HLdLgxgc+NJ4Fctg7wQtov8n4QL/H2VCfb1YJU+ie22qsM955MHFsMj2
-         52/g==
-X-Gm-Message-State: AOJu0Yy9uPKWFsAaYLUrWQ9p7/OfhdYGR+f1NFpNd6C+A/iAyC+uT2kg
-	zUdfvWch3Ibo15GOkfivkOqXw9dzFcYmOXNtVhMSBLTLhcHvRY5grggpWwxKAZyCAZedG0apImD
-	OPm5XpgnGRZXcH3ya0fYLlD49FfyUSA1hV/Qjsl1GZEaq/ru0kTCXVWeCxInkJl4ruunUKFfeNB
-	5zYJLy8Y1FoRkqJQEb5J2J9/zGh/K5jbcLqJ9prROj5LGdHA==
-X-Received: by 2002:adf:e909:0:b0:33a:ded1:b01 with SMTP id f9-20020adfe909000000b0033aded10b01mr3642088wrm.28.1706519038045;
-        Mon, 29 Jan 2024 01:03:58 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGVKnXjePT8qznNPLmkBfNjFF0aIxtCnpc7cma66ujpkb6g0ZWX63QCwUZYiXc7/8xFmdApqg==
-X-Received: by 2002:adf:e909:0:b0:33a:ded1:b01 with SMTP id f9-20020adfe909000000b0033aded10b01mr3642074wrm.28.1706519037728;
-        Mon, 29 Jan 2024 01:03:57 -0800 (PST)
-Received: from fedora (g2.ign.cz. [91.219.240.8])
-        by smtp.gmail.com with ESMTPSA id bn7-20020a056000060700b0033946c0f9e7sm7564062wrb.17.2024.01.29.01.03.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 01:03:57 -0800 (PST)
-From: Vitaly Kuznetsov <vkuznets@redhat.com>
-To: kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, Sean
- Christopherson <seanjc@google.com>
-Cc: Oliver Upton <oupton@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] KVM: selftests: Fix clocksource requirements in tests
-In-Reply-To: <20240109141121.1619463-1-vkuznets@redhat.com>
-References: <20240109141121.1619463-1-vkuznets@redhat.com>
-Date: Mon, 29 Jan 2024 10:03:56 +0100
-Message-ID: <87a5oo8q9v.fsf@redhat.com>
+        d=1e100.net; s=20230601; t=1706519067; x=1707123867;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nmg3Hmk9zJNrE7hya32tHVBXLNynM4oyDoMxztwJS0A=;
+        b=JWBGDkYEjLZcKrb3w1ctotgYgOQMNy3ikHTtQCiCQPQd09ediTTyp3oqDeFiz7pznL
+         /kAZrqHVJr6Sn2jerHFucDG1G1SXV6JQsEzVPpOaBHkjub/Vxj7nUpCAGf9I2jcZOnkH
+         3yQVywRob0dQhIsyXmye0cSdejQlr1Aln8UN2hPIAK6DB06vCqiEIKX9+AOxBfxNejmc
+         6poMxlcKLvbA+9Pn6ZpdjVZOobVakAtPdNxYJYd7C9Vy/d1940jYD1sLsrpZ80XuyVos
+         nmnMv8ztsPQkBLNsWuWS6c3epEiqdhMOTUlVmQVZA5By4g9hA7WIa892/srby+fW9pBz
+         ihcQ==
+X-Gm-Message-State: AOJu0Yww+pcVMh/jpG+GOMiujZ/TqF/XzHh9hLUrQRZMYOYgmGlWgA4G
+	f/HnJ08IBIf8BiDFblWwg9bEoZKG/D59MzlHgwVWd+wooI7rwu3kq9IhkEYosdhglFj7EyuoXz0
+	kNMNRu1mkQtgJVtzak1jUlU4CuU//rZf1U+lJxA==
+X-Google-Smtp-Source: AGHT+IFzvYufgRiNAVracHuQK2cLPonaFabFFL3fAz4Cpzxi0d4lWhEOTYTzLWAXVttGPvnGz4xbM9SbOoOM7XAfjvM=
+X-Received: by 2002:a17:906:b204:b0:a35:ee97:7ca6 with SMTP id
+ p4-20020a170906b20400b00a35ee977ca6mr224215ejz.24.1706519066861; Mon, 29 Jan
+ 2024 01:04:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20240123132730.2297719-1-alexghiti@rivosinc.com> <ZbdpTPMOw4lsPxBi@snowbird>
+In-Reply-To: <ZbdpTPMOw4lsPxBi@snowbird>
+From: Alexandre Ghiti <alexghiti@rivosinc.com>
+Date: Mon, 29 Jan 2024 10:04:16 +0100
+Message-ID: <CAHVXubiwoB3jwGqNyKvoUB=73zU-w35c45CcaReD0vgTBxWKQA@mail.gmail.com>
+Subject: Re: [PATCH] riscv: Fix wrong size passed to local_flush_tlb_range_asid()
+To: Dennis Zhou <dennis@kernel.org>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Vitaly Kuznetsov <vkuznets@redhat.com> writes:
-
-> It was discovered that 'hyperv_clock' fails miserably when the system is
-> using an unsupported (by KVM) clocksource, e.g. 'kvm-clock'. The root cause
-> of the failure is that 'hyperv_clock' doesn't actually check which clocksource
-> is currently in use. Other tests (kvm_clock_test, vmx_nested_tsc_scaling_test)
-> have the required check but each test does it on its own.
+On Mon, Jan 29, 2024 at 10:01=E2=80=AFAM Dennis Zhou <dennis@kernel.org> wr=
+ote:
 >
-> Generalize clocksource checking infrastructure, make all three clocksource
-> dependent tests run with 'tsc' and 'hyperv_clocksource_tsc_page', and skip
-> gracefully when run in an unsupported configuration.
+> Hi Alexandre,
 >
-> The last patch of the series is a loosely related minor nitpick for KVM
-> code itself.
+> On Tue, Jan 23, 2024 at 02:27:30PM +0100, Alexandre Ghiti wrote:
+> > local_flush_tlb_range_asid() takes the size as argument, not the end of
+> > the range to flush, so fix this by computing the size from the end and
+> > the start of the range.
+> >
+> > Fixes: 7a92fc8b4d20 ("mm: Introduce flush_cache_vmap_early()")
+> > Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> > ---
+> >  arch/riscv/mm/tlbflush.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+> > index 8d12b26f5ac3..9619965f6501 100644
+> > --- a/arch/riscv/mm/tlbflush.c
+> > +++ b/arch/riscv/mm/tlbflush.c
+> > @@ -68,7 +68,7 @@ static inline void local_flush_tlb_range_asid(unsigne=
+d long start,
+> >
+> >  void local_flush_tlb_kernel_range(unsigned long start, unsigned long e=
+nd)
+> >  {
+> > -     local_flush_tlb_range_asid(start, end, PAGE_SIZE, FLUSH_TLB_NO_AS=
+ID);
+> > +     local_flush_tlb_range_asid(start, end - start, PAGE_SIZE, FLUSH_T=
+LB_NO_ASID);
+> >  }
+> >
+> >  static void __ipi_flush_tlb_all(void *info)
+> > --
+> > 2.39.2
+> >
 >
-> Vitaly Kuznetsov (5):
->   KVM: selftests: Generalize check_clocksource() from kvm_clock_test
->   KVM: selftests: Use generic sys_clocksource_is_tsc() in
->     vmx_nested_tsc_scaling_test
->   KVM: selftests: Run clocksource dependent tests with
->     hyperv_clocksource_tsc_page too
->   KVM: selftests: Make hyperv_clock require TSC based system clocksource
->   KVM: x86: Make gtod_is_based_on_tsc() return 'bool'
+> Sorry for the delay, I just pulled this into percpu#for-6.8-fixes. I'll
+> send it to Linus this week.
+>
+> Thanks,
+> Dennis
 
-Ping)
+No problem, thanks!
 
--- 
-Vitaly
-
+Alex
 
