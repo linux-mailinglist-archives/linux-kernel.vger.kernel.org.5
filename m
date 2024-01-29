@@ -1,56 +1,75 @@
-Return-Path: <linux-kernel+bounces-42177-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42178-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 651F983FD76
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 06:08:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 723DF83FD7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 06:12:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30FDFB22F68
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 05:08:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C7092816BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 05:12:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7149441C93;
-	Mon, 29 Jan 2024 05:08:06 +0000 (UTC)
-Received: from mail115-118.sinamail.sina.com.cn (mail115-118.sinamail.sina.com.cn [218.30.115.118])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1D8F446C4;
+	Mon, 29 Jan 2024 05:11:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="mIF+KXVF"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2ADD335CC
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 05:08:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.118
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94D9E3D3AC;
+	Mon, 29 Jan 2024 05:11:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706504886; cv=none; b=D2hdqikOcL3Z40QoSL4xlVPGoq9ai1s95C3evMnMtqd54E14i+2E3OkRB0hzwulXF6EABMTuzFuSQ8pdC5WIiD/3W7thcTu+EaBmndHGb6zI+JrGUNBt9gODfMdpakKA/BphM30MmozGSGgIJn6VLYofCejSXBkDlzlUEa6SFyc=
+	t=1706505119; cv=none; b=G3zKu1NgDXf/P1Fm19N+DEvA5qdS4BtyU4QbgjvfUeVzhAIffnjBytL1a4xrHburCTIDZ1z0t7VNraauLqoYIbHI0hLNNmUMVT+TVJWlHZFVD1d28ylh3G+FRilyWUS1dLennctQTpmO9wKmLcSZ/uh4yFXF+HQi61pfEUF1ph4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706504886; c=relaxed/simple;
-	bh=i0IQCh6o0xdt0om92jW6gIk0NFwCoQpjaGyNJqppFyA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=OLihTCwPtwgEuybi9tk6FtIyrHtwd7JQOhJLOABwMljcRINAWTsz4knHXG/aSjg/gUPvmW2ECgGs0zuhfaMW+iVMqcOX68qe5XgF49pKS0ciNIiFtzqMA7xbaiEeuyl2Eot1EOptmOALJj1iIeYsfPlgLh5dyMBXYo85u0m2GO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.118
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([116.24.8.153])
-	by sina.com (172.16.235.25) with ESMTP
-	id 65B732A6000007B4; Mon, 29 Jan 2024 13:07:52 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 77711334210205
-X-SMAIL-UIID: 5876B911FDAA459388955DD1AD8FC127-20240129-130752-1
-From: Hillf Danton <hdanton@sina.com>
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: syzbot <syzbot+da4f9f61f96525c62cc7@syzkaller.appspotmail.com>,
-	Amir Goldstein <amir73il@gmail.com>,
-	linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [overlayfs?] possible deadlock in seq_read_iter (2)
-Date: Mon, 29 Jan 2024 13:07:45 +0800
-Message-Id: <20240129050745.1271-1-hdanton@sina.com>
-In-Reply-To: <20240128214335.GE2087318@ZenIV>
-References: <0000000000008efd70060ce21487@google.com> <20240127114610.961-1-hdanton@sina.com>
+	s=arc-20240116; t=1706505119; c=relaxed/simple;
+	bh=/Xbx5iud/jNw2n247ZZHQLr3VIYzbgeqZXaBadjU2wM=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZlQP9JQhyx7S2nzEVpy0eVzV/rGV7O/iys7m5oS32krU9b1tfm715Pz+tATMORqHA1oAbkOiCk9zKOAObsnSNIqAqQbm1Pwp9TqhVUgIFfueci0U68dkKJ4/gtW8WGOHUGO/IlTZ3FwWvDOHV5BHzIZCtS8EIAa2vZDrgFvIKz4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=mIF+KXVF; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40T4BRUg002358;
+	Mon, 29 Jan 2024 05:11:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=dllY4O7
+	uZ73K357nbzp17SDxldytUa04WbNlzeykXLw=; b=mIF+KXVF8GNMpBZHPWdfYVZ
+	kjirV/gR6jSvkMlRYPUlVin0hZU7vP6VsKg/PB4TQBdRneOMJ0AGnxKrF/yBbsTY
+	3cWfKx7raeHerjzB4gQG39rqLRTL+cVoPp3JbMTDGQ4yb8rzelgbwgYpI6PD1p/o
+	7qzId+3SW5oeMQzYkjbPbXD2Hm8UzNjwgNS8ZA090apYfMcvY6VZSWNLtsvPHnsN
+	VhMiKxhN1VTETApTD3W88UDufScYv1HnnRSeJYWi+4TXy8baqFjcQEMeoSeHX/bw
+	6QfVjnziwFoBa9W3QQyan/Sl8AeBOh8jQ6kcifqyGSSFddGRfCm/uwpCzou7nhQ=
+	=
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vvu4ctrdh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Jan 2024 05:11:26 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40T5BPVI023202
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Jan 2024 05:11:25 GMT
+Received: from hu-devipriy-blr.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Sun, 28 Jan 2024 21:11:18 -0800
+From: Devi Priya <quic_devipriy@quicinc.com>
+To: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <catalin.marinas@arm.com>, <will@kernel.org>, <p.zabel@pengutronix.de>,
+        <richardcochran@gmail.com>, <geert+renesas@glider.be>, <arnd@arndb.de>,
+        <neil.armstrong@linaro.org>, <nfraprado@collabora.com>,
+        <m.szyprowski@samsung.com>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>,
+        <quic_devipriy@quicinc.com>
+Subject: [PATCH V3 0/7] Add NSS clock controller support for IPQ9574
+Date: Mon, 29 Jan 2024 10:40:57 +0530
+Message-ID: <20240129051104.1855487-1-quic_devipriy@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,66 +77,72 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: iERiaerN-W2X_6N-QiAi-qUOlGUuE5zd
+X-Proofpoint-ORIG-GUID: iERiaerN-W2X_6N-QiAi-qUOlGUuE5zd
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-29_02,2024-01-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
+ clxscore=1011 priorityscore=1501 lowpriorityscore=0 adultscore=0
+ bulkscore=0 suspectscore=0 mlxlogscore=922 phishscore=0 malwarescore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401190000 definitions=main-2401290033
 
-On Sun, 28 Jan 2024 21:43:35 +0000 Al Viro <viro@zeniv.linux.org.uk>
-> On Sat, Jan 27, 2024 at 07:46:10PM +0800, Hillf Danton wrote:
-> > On Tue, 19 Dec 2023 11:43:27 -0800
-> > > syzbot has found a reproducer for the following issue on:
-> > > 
-> > > HEAD commit:    2cf4f94d8e86 Merge tag 'scsi-fixes' of git://git.kernel.or..
-> > > git tree:       upstream
-> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=154aa8d6e80000
-> > 
-> > #syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  2cf4f94d8e86
-> > 
-> > --- x/fs/namei.c
-> > +++ y/fs/namei.c
-> > @@ -3533,6 +3533,8 @@ static const char *open_last_lookups(str
-> >  
-> >  	if (open_flag & (O_CREAT | O_TRUNC | O_WRONLY | O_RDWR)) {
-> >  		got_write = !mnt_want_write(nd->path.mnt);
-> > +		if (!got_write && (open_flag & O_CREAT))
-> > +			return ERR_PTR(-EISDIR);
-> 
-> NAK.
+Add bindings, driver and devicetree node for networking sub system clock 
+controller on IPQ9574. Also add support for NSS Huayra type alpha PLL and
+add support for gpll0_out_aux clock which serves as the parent for 
+some nss clocks.
 
-Thanks for looking at it, the AV legend.
-> 
-> Please, RTFComment just below your addition.
+Some of the nssnoc clocks present in GCC driver is
+enabled by default and its RCG is configured by bootloaders, so enable
+those clocks in driver probe.
 
-That is a simple debug patch to test why mnt_want_write() is needed in
-ovl_create_object() as per the syzbot report [1], given the locking
-order in open_last_lookups() in case of O_CREAT.
+The NSS clock controller driver depends on the below patchset which adds
+support for multiple configurations for same frequency.
+https://lore.kernel.org/linux-arm-msm/20231220221724.3822-1-ansuelsmth@gmail.com/
 
-	mnt_want_write();
-	inode_lock();
+Changes in V3:
+	- Detailed change logs are added to the respective patches.
 
-> Besides, EISDIR is
-> obviously bogus in a lot of cases, starting with attempting to
-> create a new file on a read-only filesystem.
+V2 can be found at:
+https://lore.kernel.org/linux-arm-msm/20230825091234.32713-1-quic_devipriy@quicinc.com/
 
-EISDIR should have been replaced with EDEADLOCK.
+Devi Priya (7):
+  clk: qcom: clk-alpha-pll: Add NSS HUAYRA ALPHA PLL support for ipq9574
+  dt-bindings: clock: gcc-ipq9574: Add definition for GPLL0_OUT_AUX
+  clk: qcom: gcc-ipq9574: Add gpll0_out_aux clock & enable few nssnoc
+    clocks
+  dt-bindings: clock: Add ipq9574 NSSCC clock and reset definitions
+  clk: qcom: Add NSS clock Controller driver for IPQ9574
+  arm64: dts: qcom: ipq9574: Add support for nsscc node
+  arm64: defconfig: Build NSS Clock Controller driver for IPQ9574
 
-	-> #3
-	 (sb_writers#4){.+.+}-{0:0}:
-	       lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
-	       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
-	       __sb_start_write include/linux/fs.h:1635 [inline]
-	       sb_start_write+0x4d/0x1c0 include/linux/fs.h:1710
-	       mnt_want_write+0x3f/0x90 fs/namespace.c:404
-	       ovl_create_object+0x13b/0x360 fs/overlayfs/dir.c:629
-	       lookup_open fs/namei.c:3477 [inline]
-	       open_last_lookups fs/namei.c:3546 [inline]
-	       path_openat+0x13fa/0x3290 fs/namei.c:3776
-	       do_filp_open+0x234/0x490 fs/namei.c:3809
-	       do_sys_openat2+0x13e/0x1d0 fs/open.c:1437
-	       do_sys_open fs/open.c:1452 [inline]
-	       __do_sys_open fs/open.c:1460 [inline]
-	       __se_sys_open fs/open.c:1456 [inline]
-	       __x64_sys_open+0x225/0x270 fs/open.c:1456
-	       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-	       do_syscall_64+0x45/0x110 arch/x86/entry/common.c:83
-	       entry_SYSCALL_64_after_hwframe+0x63/0x6b
+ .../bindings/clock/qcom,ipq9574-nsscc.yaml    |   69 +
+ arch/arm64/boot/dts/qcom/ipq9574.dtsi         |   39 +
+ arch/arm64/configs/defconfig                  |    1 +
+ drivers/clk/qcom/Kconfig                      |    7 +
+ drivers/clk/qcom/Makefile                     |    1 +
+ drivers/clk/qcom/clk-alpha-pll.c              |   10 +
+ drivers/clk/qcom/clk-alpha-pll.h              |    1 +
+ drivers/clk/qcom/gcc-ipq9574.c                |   83 +-
+ drivers/clk/qcom/nsscc-ipq9574.c              | 3068 +++++++++++++++++
+ include/dt-bindings/clock/qcom,ipq9574-gcc.h  |    1 +
+ .../dt-bindings/clock/qcom,ipq9574-nsscc.h    |  152 +
+ .../dt-bindings/reset/qcom,ipq9574-nsscc.h    |  134 +
+ 12 files changed, 3511 insertions(+), 55 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,ipq9574-nsscc.yaml
+ create mode 100644 drivers/clk/qcom/nsscc-ipq9574.c
+ create mode 100644 include/dt-bindings/clock/qcom,ipq9574-nsscc.h
+ create mode 100644 include/dt-bindings/reset/qcom,ipq9574-nsscc.h
 
-[1] https://lore.kernel.org/lkml/0000000000008efd70060ce21487@google.com/
+
+base-commit: 596764183be8ebb13352b281a442a1f1151c9b06
+-- 
+2.34.1
+
 
