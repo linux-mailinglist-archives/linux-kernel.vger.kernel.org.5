@@ -1,124 +1,147 @@
-Return-Path: <linux-kernel+bounces-42944-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42945-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C7BF84091F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:56:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36D3C840920
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:57:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1177285778
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:56:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E537E28AC68
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:57:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAF271534F0;
-	Mon, 29 Jan 2024 14:56:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94C1E1534FB;
+	Mon, 29 Jan 2024 14:57:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zq+PBRE4"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=cyphar.com header.i=@cyphar.com header.b="ZI+aRyxb"
+Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 901DD60DEF;
-	Mon, 29 Jan 2024 14:56:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8298C151CF5;
+	Mon, 29 Jan 2024 14:57:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706540199; cv=none; b=L2g/8QPcABCjk//00pO9wxXcN6vrFa5cltxqXvvGKJFaYQtEQJYVZIDMmrSzOmbjyybzMVi51tTjhsSFPz9HY5KMoryTCthonwxf0PuGtJfumFQSPSVKtlaLPsaLeuS8SIuBhAo3ruzenmTzISgNuORPCy1MLHwwueKLUTyWk+U=
+	t=1706540225; cv=none; b=amZxfLk5HknCPP4f4CHnPv27q6qqY/l1Ec99QlejyQ++eAm3P8oj0mWNaakJZZbDFL4BTMztqpZQOzfKinSng1cGCR7Iuh8tLOkyA3xvUhLl4ETrPFYjjs6WXPGZljCeqdjkBHZchAJ7KDArmUx9JQYSLncZpO7mqljkyaGSnHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706540199; c=relaxed/simple;
-	bh=kaaVpI7LDaG0uH0fkT3XOQiB7JqvFksV/AM/Syz+XVI=;
+	s=arc-20240116; t=1706540225; c=relaxed/simple;
+	bh=vojW5fK18zKG7CTpJFdUoZSw70bfqoyRn6Md9NRWvyk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PNpb3tP6L6rW1yNItqpUSEuRaGPKVIqidiAkThISD9c5SsXTH0nNVKtaVpeGzM0mQ/WXo8ecxbIHH9+TbxvJeDC6ot3t9FJ12cbVZe0G3Va2qGY9gNhXtfyRd0h8ZPJRGLQYwcmkvCePnsTMgWU9i+wq1unVuphyK6zBwlWThmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Zq+PBRE4; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5110ef21c76so1785137e87.1;
-        Mon, 29 Jan 2024 06:56:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706540195; x=1707144995; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=NAJkJkcPwG8nuRAAgJpfIK0vVFsBkG5KrzaQLnD/SnY=;
-        b=Zq+PBRE41tf1vYgoM3IBdJUziIGE9wdjEGuZZMQLbYaV/xPWzPNgcfY7fWTBQRk4zk
-         MS7MQUzWavx30ygoTbcomXjdTdkdnDK0lbOMFNSOC+Jge3QKu3NtgMGhkZakX/D3+0Mg
-         GS6yd9mAQ0ryDzXSA5f8JbJbDWBCWBeSTzcTnZkThmuErWDhEp06azJ50Xh2e0uVWa8G
-         k0VcgBYs+R4o5MfEDjBfPm1c0m5HCDEYQzQXvPMlwNSCuU1EVmyU9XjI73bP9Rv6boeO
-         fQ+22zSwF4MByA6ZDbH7eC2YLxawNGCHgJgsDUFTG0XXta5WDZ4W8iWDWdoKo9R7phF2
-         ImPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706540195; x=1707144995;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NAJkJkcPwG8nuRAAgJpfIK0vVFsBkG5KrzaQLnD/SnY=;
-        b=Ty//+Slnr8Y4Em1L6KeGxzjiUPJI5It5FNavBFmWQBt3sWbNlU7BgKnn1U7XMhlSF/
-         SeqLWMH5FszW7Jbs3zA27jx5oHJtfLkUVir6TZTAf5odm3Phu/SxI8n4ot+EVfCkOE9d
-         Y7Gimi5lcDxX9OKb18A+jYMUPKwBsLMticKQBa6aAxAEykZ3/saTA1NmJo3EWTSf573Z
-         a2s79jSbJhGzfD4rXuZT5154THlu3YSjQXzdzgDFUvn+H7v+r2PHQkq87sQ5wEM8fSql
-         bcIHMCAhqQAIBuCDjThtKmQjWOvz/REft8YaQm6lAXNt5jm8vP5YdzX1zuDr+P8PBMOz
-         iQyw==
-X-Gm-Message-State: AOJu0YyTOyO5y/j01hIYmvS0fJUJX4Q+0xOoN8kyxuVGVzenSmkxsRNn
-	RcJkWrP3uahb1Kj7dUfY1EfWhmL8ZvhQRj8LfOwCWlqQRHBG/KSm
-X-Google-Smtp-Source: AGHT+IGacQrN++ehCAVKGus4IrAPseuvrd7OjNWz6Lp7W5tyukehnQ014tLZGJdF3E7iJXqrnB5sAg==
-X-Received: by 2002:a19:7506:0:b0:510:6e7:6999 with SMTP id y6-20020a197506000000b0051006e76999mr3854595lfe.45.1706540195125;
-        Mon, 29 Jan 2024 06:56:35 -0800 (PST)
-Received: from skbuf ([188.25.173.195])
-        by smtp.gmail.com with ESMTPSA id h14-20020a17090634ce00b00a35a11fd795sm1561216ejb.129.2024.01.29.06.56.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 06:56:34 -0800 (PST)
-Date: Mon, 29 Jan 2024 16:56:32 +0200
-From: Vladimir Oltean <olteanv@gmail.com>
-To: Luiz Angelo Daros de Luca <luizluca@gmail.com>
-Cc: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
-	Alvin =?utf-8?Q?=C5=A0ipraga?= <ALSI@bang-olufsen.dk>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] net: dsa: remove OF-based MDIO bus registration
- from DSA core
-Message-ID: <20240129145632.d2mu6vbwcqhjpyty@skbuf>
-References: <20240122053348.6589-1-arinc.unal@arinc9.com>
- <20240123154431.gwhufnatxjppnm64@skbuf>
- <d32d17ed-87b5-4032-b310-f387cea72837@arinc9.com>
- <CAJq09z6pidHvtv=3F_yKHDdY89kzYSF+xh89pzg1raAiQPMyMg@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=hbNWsWMe6jylo8lZmMoCoEwKzomLKBoZm7ZgvQUxsM5jiU0LFwZDp6cysrP2pZzXPVqFyIx2riVGTluch6+DpmU74DIqiN1WrgRWBsySDnWY1pc9IAKYllWsFiz4Du1DqbyFX9wb+srROO/PYhudQNrFC+v2dSVUwzXo+ODg0vM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cyphar.com; spf=pass smtp.mailfrom=cyphar.com; dkim=pass (2048-bit key) header.d=cyphar.com header.i=@cyphar.com header.b=ZI+aRyxb; arc=none smtp.client-ip=80.241.56.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cyphar.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cyphar.com
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:b231:465::202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4TNrx70q9xz9sWq;
+	Mon, 29 Jan 2024 15:56:59 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cyphar.com; s=MBO0001;
+	t=1706540219;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LSy8Y2RKVEfJHAxTckSyU8TwlR6K+8Rc0NJSkTl9BMI=;
+	b=ZI+aRyxbTixzKdtk7CIMSskSNT98AvY80z+GFGBR77B3sPzYC+5hIpQzUP+W7LPiyzrp5s
+	HPVNXUwt4+JA6OWSuNQt6nUEKcglUqTpEapISpJBKJSrlAN5CgfITUectwCJ0FcQAQQO8M
+	3bTwyr2FZ1ekB65WYMWf51McF2v7VdXFhTkYBXALhGjYnc91AudxFqUk8LELh73qDdQUBb
+	XDLicYuNRFdfBTPFxQbamLrhpnv8IJtXFHchVhcPB5TNZo8jtz8hEhp6oRMRxb9W53rk+Z
+	DRtB1qA48/d+HAqAlDE0bUyu2fdcE/Cnpw5dpVwNrYhxO0IyNUrR5GFPbuqhdQ==
+Date: Tue, 30 Jan 2024 01:56:47 +1100
+From: Aleksa Sarai <cyphar@cyphar.com>
+To: =?utf-8?B?5a2f5pWs5ae/?= <mengjingzi@iie.ac.cn>
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: Identified Redundant Capability Check in File Access under
+ /proc/sys
+Message-ID: <20240129.145132-coarse.snow.stunned.whim-FB0Em3Z0Yuv@cyphar.com>
+References: <30b59a4.19708.18d4f3f3620.Coremail.mengjingzi@iie.ac.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="vo4uela55g3d7y46"
+Content-Disposition: inline
+In-Reply-To: <30b59a4.19708.18d4f3f3620.Coremail.mengjingzi@iie.ac.cn>
+X-Rspamd-Queue-Id: 4TNrx70q9xz9sWq
+
+
+--vo4uela55g3d7y46
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJq09z6pidHvtv=3F_yKHDdY89kzYSF+xh89pzg1raAiQPMyMg@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jan 27, 2024 at 11:23:33PM -0300, Luiz Angelo Daros de Luca wrote:
-> > > IIUC, Luiz made the original patch for the realtek switches. Shouldn't
-> > > we wait until realtek registers ds->user_mii_bus on its own, before
-> > > reverting? Otherwise, you're basically saying that Luiz made the DSA
-> > > core patch without needing it.
-> >
-> > My findings point to that. Luiz made the patch to optionally register the
-> > MDIO bus of the MDIO controlled Realtek switches OF-based. So it's not
-> > necessary to wait.
-> 
-> Back in the time when I wrote that code, with the phy_read/write in
-> dsa_switch_ops, the OF node was only required to associate IRQ to each
-> port. Until my patch to register its own mdiobus driver lands (I hope
-> that happens before the next version), the port status will fall back
-> to polling. I don't think it is a critical feature but I'll let the
-> maintainers decide. ACK for me.
-> 
-> Regards,
-> 
-> Luiz
+On 2024-01-28, =E5=AD=9F=E6=95=AC=E5=A7=BF <mengjingzi@iie.ac.cn> wrote:
+> Hello developers,
+>=20
+> I hope this message finds you well. I wanted to bring to your
+> attention an observation regarding file access under /proc/sys in the
+> kernel source code.
+>=20
+> Upon review, it appears that certain files are protected by
+> capabilities in the kernel source code; however, the capability check
+> does not seem to be effectively enforced during file access.
+>=20
+> For example, I noticed this inconsistency in the access functions of some=
+ special files:
+> 1. The access function mmap_min_addr_handler() in /proc/sys/vm/mmap_min_a=
+ddr utilizes the CAP_SYS_RAWIO check.
+> 2. The access function proc_dointvec_minmax_sysadmin() in /proc/sys/kerne=
+l/kptr_restrict requires the CAP_SYS_ADMIN check.
+>=20
+> Despite these capability checks in the source code, when accessing a
+> file, it undergoes a UGO permission check before triggering these
+> specialized file access functions. The UGO permissions for these files
+> are configured as root:root rw- r-- r--, meaning only the root user
+> can pass the UGO check.
+>=20
+> As a result, to access these files, one must be the root user, who
+> inherently possesses all capabilities. Consequently, the capabilities
+> check in the file access function seems redundant.
+>=20
+> Please consider reviewing and adjusting the capability checks in the
+> mentioned access functions for better alignment with the UGO
+> permissions.
 
-It isn't really great that this loses IRQ support for Realtek internal PHYs,
-especially since Arınç's commit message did not estimate this would happen.
+These are not redundant -- opening a file and writing to a file
+descriptor are different operations that can be done by:
 
-I don't see why this patch could not wait until you resubmit the realtek
-consolidation set and it gets accepted.
+ 1. The same process with the same credential set (what you're
+    describing);
+ 2. The same process but with the write operation happening after a
+    setuid() or similar operation that changed its credentials; or
+ 3. A different process that has been given access to the file
+    descriptor (passing it as an open file to a subprocess, SCM_RIGHTS,
+	etc.)
+
+On Unix, access checks when opening a file for writing are different to
+access checks when doing a write operation. For some sysctls, it is
+prudent to restrict both the open and write operations to privileged
+users.
+
+> Thank you for your attention to this matter.
+>=20
+> Best regards,
+> Jingzi Meng
+
+--=20
+Aleksa Sarai
+Senior Software Engineer (Containers)
+SUSE Linux GmbH
+<https://www.cyphar.com/>
+
+--vo4uela55g3d7y46
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQS2TklVsp+j1GPyqQYol/rSt+lEbwUCZbe8pwAKCRAol/rSt+lE
+b03fAP9VH1smXUs1qIwNgPTer9MEUBsfNyy+gb3uI+c1f4aS4wD/f65WIy2NbxTm
+3VSOsgoc5IKkS2GKXtl9+06x4L55gg8=
+=IQ1h
+-----END PGP SIGNATURE-----
+
+--vo4uela55g3d7y46--
 
