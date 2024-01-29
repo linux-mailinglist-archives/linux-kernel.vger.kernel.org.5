@@ -1,156 +1,220 @@
-Return-Path: <linux-kernel+bounces-42575-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDC7C84034A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:56:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B040D840356
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:59:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 739321F22351
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:56:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 674B91F22781
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:59:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECBB95A795;
-	Mon, 29 Jan 2024 10:56:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE5DD5A7B3;
+	Mon, 29 Jan 2024 10:59:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="ij/fcDFH"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B9NmIx0h"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB0403CF77
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 10:56:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFF3A5A791;
+	Mon, 29 Jan 2024 10:59:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706525764; cv=none; b=RplIDrDSm/KcOHBGzAf7tI/UhrjtJHiKRgGON0f9cRRWrU4KRrBQ/RY+tn3+zsgaFiSFlKnEosGnbInTv+MUOsIM97nH4rOVHV6NiAYPXgk9Z8v95LBKowKz4vUrh3cpH3cmwxcvu6O05qdWOG5ltAtFj5RUAZJKzZOIaT+dfyg=
+	t=1706525966; cv=none; b=sjW5MH4Nwt5ifhLLwUXdAeTnYe3fhKW4e0mQxH6THgzsd1/WhVPzjocmGk/OAssCFXEVEk8eq+fGvrocfE9P5TdQBcSYicx4GkV80rH+H1i3Vz1JYUDEpesfAu5khAtYjV5REDuTsodexn7QRGRb27e4MK63biIsq/N2kZG2t1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706525764; c=relaxed/simple;
-	bh=gQ+bkqp1o7w6DpXGvLyO3qBfZJBn2zhyUnneYg5MOUI=;
+	s=arc-20240116; t=1706525966; c=relaxed/simple;
+	bh=2168ndFnkTOwy1W7Dx7tqWHb2Pb29S7aUYNrNolsgZ4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oTseFpuvmk4ObG3O64GiMEQz46bBDR5G2HPOqXEyZMeeNF5xYI3sinz9LAxbosw/fGh4xEa/ZsIzfkqhL+2TgVKd+NPN0NJhTKta3Ka6/VKpYXjal+apPW/oG08djg+dqLbC8dm06c6CjrZMqoOGOf4yrEumRitmuQ1cQzeN29s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=ij/fcDFH; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=8Vds
-	N256lqT0aql6yEsOs12eHyuM7++ETK7rDRF3YI4=; b=ij/fcDFHetOFQcKrVOvV
-	0Qn79z/rMW7AOAtzX2mbgv68+NVz+4T0FZVtEYr+NCB6t/O3986dv6PPzJUm1zFL
-	1wro4VX0UNSyiL19hyjy6zDiLjs/OyW3ELPkuEHYN4rReSI+dD+Wy9+IzOmI0BYq
-	Z/+2AJqeSEf3EyV4cjIqOQ1XyabCHr0avzqcnkRSkPBiNAOT0FhEb2jSTFKmhC+y
-	egulRm47zDeqYzDvQpl+94qqRRhAdHKug8wXDRmH1yTrUsAPiLJHnAVxhlCdfdbO
-	/qvatcved4g9oD8KKiBwzX5LBb0hduw83gOBmP8cE3m/T6aKq++BdTaRc/CifAun
-	+g==
-Received: (qmail 2447710 invoked from network); 29 Jan 2024 11:55:59 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 29 Jan 2024 11:55:59 +0100
-X-UD-Smtp-Session: l3s3148p1@Ym6qfRMQYuRehhtJ
-Date: Mon, 29 Jan 2024 11:55:58 +0100
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Claudiu <claudiu.beznea@tuxon.dev>
-Cc: ulf.hansson@linaro.org, takeshi.saito.xv@renesas.com,
-	masaharu.hayakawa.ry@renesas.com, yoshihiro.shimoda.uh@renesas.com,
-	linux-mmc@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: Re: [PATCH v2] mmc: renesas_sdhi: Fix change point of data handling
-Message-ID: <ZbeEPg1jc5qWJa5m@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Claudiu <claudiu.beznea@tuxon.dev>, ulf.hansson@linaro.org,
-	takeshi.saito.xv@renesas.com, masaharu.hayakawa.ry@renesas.com,
-	yoshihiro.shimoda.uh@renesas.com, linux-mmc@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20240117110646.1317843-1-claudiu.beznea.uj@bp.renesas.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=EgwkikpSRHZSJHGZ4wUI4s5xuUH3FqNSS9N7YaEjusILsvV1FwUcARQ2Wm4DTPPJrDtiDohSOPSeXNG+j5MsPZwPhEEPCa4QYU5cYZplHFi8RKDNJX7TqC94OG1CYvrGnFxPL56kaxm07RY/MUopQtTXuEKsO8mztponrYoPDHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B9NmIx0h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69A13C433C7;
+	Mon, 29 Jan 2024 10:59:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706525965;
+	bh=2168ndFnkTOwy1W7Dx7tqWHb2Pb29S7aUYNrNolsgZ4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=B9NmIx0hCKcLFWUkZX6pTSPgdsLxvMqWu3TX4fznAwdFCzXRIJZZWDzVBPT/Q3st1
+	 67HpuCje5vvNd8AfzKK+1o31PbuBjGFmMcZHz1vkhbB8anF9bLMJvO76vDxMQngFgE
+	 3ujoKHgAnYdk0CUopuPkXXrfbNJAUwXDX/gwH6+6JK5bwUY1hv8utfQgwC0CCE5XhX
+	 8juxdJKClDgcVpoUgyuRRbu8cDj02IPwqrjrgo+87tNlu5b6Gk43+WcZ17Yi7N4/YE
+	 lpHseaMZR7VhtKj2zpBqOsgNARM9tHV9LgVWzCqDaFWQTYM0O57BYPhsSPTo3r+6fF
+	 Jah3zb4SpzWtw==
+Date: Mon, 29 Jan 2024 10:59:21 +0000
+From: Simon Horman <horms@kernel.org>
+To: Sai Krishna <saikrishnag@marvell.com>
+Cc: richardcochran@gmail.com, davem@davemloft.net, kuba@kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	sgoutham@marvell.com, gakula@marvell.com, lcherian@marvell.com,
+	hkelam@marvell.com, sbhatta@marvell.com,
+	Naveen Mamindlapalli <naveenm@marvell.com>
+Subject: Re: [net-next PATCH] octeontx2: Add PTP clock driver for Octeon PTM
+ clock.
+Message-ID: <20240129105921.GJ401354@kernel.org>
+References: <20240124064156.2577119-1-saikrishnag@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="HF6yaJEjzgKGpRxK"
-Content-Disposition: inline
-In-Reply-To: <20240117110646.1317843-1-claudiu.beznea.uj@bp.renesas.com>
-
-
---HF6yaJEjzgKGpRxK
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20240124064156.2577119-1-saikrishnag@marvell.com>
 
-Hi Claudiu,
+On Wed, Jan 24, 2024 at 12:11:56PM +0530, Sai Krishna wrote:
+> The PCIe PTM(Precision time measurement) protocol provides precise
+> coordination of events across multiple components like PCIe host
+> clock, PCIe EP PHC local clocks of PCIe devices. This patch adds
+> support for ptp clock based PTM clock. We can use this PTP device
+> to sync the PTM time with CLOCK_REALTIME or other PTP PHC
+> devices using phc2sys.
+> 
+> Signed-off-by: Sai Krishna <saikrishnag@marvell.com>
+> Signed-off-by: Naveen Mamindlapalli <naveenm@marvell.com>
+> Signed-off-by: Sunil Kovvuri Goutham <sgoutham@marvell.com>
 
-but one thing I can ask already:
+Hi Sai,
 
-> Investigating it on RZ/G3S lead to the conclusion that every time the issue
-> is reproduced all the probed TAPs are OK. According to datasheet, when this
-> happens the change point of data need to be considered for tuning.
+some minor review items from my side.
 
-Yes, "considered" means here it should be *avoided*.
+> diff --git a/drivers/ptp/ptp_octeon_ptm.c b/drivers/ptp/ptp_octeon_ptm.c
 
-> Previous code considered the change point of data happens when the content
-> of the SMPCMP register is zero. According to RZ/V2M hardware manual,
+..
 
-When SMPCMP is zero, there is *no* change point. Which is good.
+> +static u32 read_pcie_config32(int ep_pem, int cfg_addr)
+> +{
+> +	void __iomem *addr;
+> +	u64 val;
+> +
+> +	if (oct_ptp_clock.cn10k_variant) {
+> +		addr  = ioremap(PEMX_PFX_CSX_PFCFGX(ep_pem, 0, cfg_addr), 8);
+> +		if (!addr) {
+> +			pr_err("PTM_EP: Failed to ioremap Octeon CSR space\n");
+> +			return -1U;
+> +		}
+> +		val = readl(addr);
+> +		iounmap(addr);
+> +	} else {
+> +		addr  = ioremap(PEMX_CFG_RD(ep_pem), 8);
+> +		if (!addr) {
+> +			pr_err("PTM_EP: Failed to ioremap Octeon CSR space\n");
+> +			return -1U;
+> +		}
+> +		val = ((1 << 15) | (cfg_addr & 0xfff));
+> +		writeq(val, addr);
 
-> chapter "Change Point of the Input Data" (as this is the most clear
-> description that I've found about change point of the input data and all
-> RZ hardware manual are similar on this chapter),
+This causes a build failure on x86_32 because writeq() is undefined.
 
-I also have a chapter named like this. If you check the diagram, change
-point is between TAP2 and 3, so the suggested TAP to use is 6 or 7. As
-far away as possible from the change point.
+> +		val = readq(addr) >> 32;
+> +		iounmap(addr);
+> +	}
+> +	return (val & 0xffffffff);
+> +}
+> +
+> +static uint64_t octeon_csr_read(u64 csr_addr)
+> +{
+> +	u64 val;
+> +	void __iomem *addr;
 
-> at the time of tuning,
-> data is captured by the previous and next TAPs and the result is stored in
-> the SMPCMP register (previous TAP in bits 22..16, next TAP in bits 7..0).
-> If there is a mismatch b/w the previous and the next TAPs, it indicates
-> that there is a change point of the input data.
+nit: In Networking code, please consider arranging local variables
+     in reverse xmas tree order - longest line to shortest.
 
-This is correct.
+> +
+> +	addr = ioremap(csr_addr, 8);
+> +	if (!addr) {
+> +		pr_err("PTM_EP: Failed to ioremap CSR space\n");
+> +		return -1UL;
+> +	}
+> +	val = (u64)READ_ONCE(*(u64 __iomem *)addr);
 
-> To comply with this, the code checks if this mismatch is present and
-> updates the priv->smpcmp mask.
+Sparse seems unhappy about this cast.
+So if this is really what you want to do then probably a
+__force is needed in the cast.
 
-That means you select the "change point" instead of avoiding it?
+But I do wonder if there is an endian consideration
+that needs to be taken care of here. And, moreover,
+if a standard routine, such as ioread64(), could be
+used instead of this function.
 
-> This change has been checked on the devices with the following DTSes by
-> doing 50 consecutive reboots and checking for the tuning failure message:
+N.B. as per the note on writeq, possibly this only works on 64bit systems.
 
-Okay, you might not have a failure message, but you might have selected
-the worst TAP. Or?
+Likewise elsewhere in this patch.
 
-> +			if (cmpngu_data != cmpngd_data)
-> +				set_bit(i, priv->smpcmp);
+> +	iounmap(addr);
+> +	return val;
+> +}
 
-Really looks like you select the change point instead of avoiding it.
+..
 
-However, with some SD cards, I also see the EIO error you see. So, there
-might be room to improve TAP selection when all TAPs are good. I need to
-check if this is really is the same case for the SD cards in question.
+> +static int __init ptp_oct_ptm_init(void)
+> +{
+> +	struct pci_dev *pdev = NULL;
+> +
+> +	pdev = pci_get_device(PCI_VENDOR_ID_CAVIUM,
+> +			      PCI_DEVID_OCTEONTX2_PTP, pdev);
+> +	if (!pdev)
+> +		return 0;
+> +
+> +	if (octeon_csr_read(PEMX_CFG) & 0x1ULL) {
+> +		pr_err("PEM0 is configured as RC\n");
+> +		return 0;
+> +	}
+> +
+> +	if (is_otx2_support_ptm(pdev)) {
+> +		oct_ptp_clock.cn10k_variant = 0;
+> +	} else if (is_cn10k_support_ptm(pdev)) {
+> +		oct_ptp_clock.cn10k_variant = 1;
+> +	} else {
+> +		/* PTM_EP: unsupported processor */
+> +		return 0;
+> +	}
+> +
+> +	ptm_ctl_addr = ioremap(PEMX_PTM_CTL, 8);
+> +	if (!ptm_ctl_addr) {
+> +		pr_err("PTM_EP: Failed to ioremap CSR space\n");
+> +		return 0;
+> +	}
+> +
+> +	ptm_lcl_addr = ioremap(PEMX_PTM_LCL_TIME, 8);
+> +	if (!ptm_lcl_addr) {
+> +		pr_err("PTM_EP: Failed to ioremap CSR space\n");
+> +		return 0;
+> +	}
+> +
+> +	oct_ptp_clock.caps = ptp_oct_caps;
+> +
+> +	oct_ptp_clock.ptp_clock = ptp_clock_register(&oct_ptp_clock.caps, NULL);
+> +
+> +	pr_info("PTP device index for PTM clock:%d\n", oct_ptp_clock.ptp_clock->index);
 
-Happy hacking,
+It seems that the pr_info() call above assumes that oct_ptp_clock.ptp_clock
+is not an error, but it may be.
 
-   Wolfram
+Perhaps something like this is more appropriate:
 
+	oct_ptp_clock.ptp_clock = ...
+	if (IS_ERR(oct_ptp_clock.ptp_clock))
+		ERR_PTR(oct_ptp_clock.ptp_clock);
 
---HF6yaJEjzgKGpRxK
-Content-Type: application/pgp-signature; name="signature.asc"
+	pr_info(...)
+	...
 
------BEGIN PGP SIGNATURE-----
+	return 0;
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmW3hD4ACgkQFA3kzBSg
-Kbb8Dg/8DrowMh5CLHCBUWs2/pcKYYF4sJe4baRaxs4GocwbmVVc1hMMdKJ6BY1V
-beHVjZES8O4NnMzQqkmkMGWJEkd/M7XdKeZLT+R+SnupO3AtFcS3mBFyDSWF+wA7
-bAc5EuIyIZ4pPkrNf3f1a0xa7Dq1wpX2qGGud69e0ckprXn8xLh0f5L1Oy469L7s
-uj7xEsUxf4kgCsPtdIksFiubebBrf8GJ534R9d4byOMZap6BRNEBgrbFfRJeldkV
-U/9CH+WngENnRi+COcOjGQmPXc+9Kk/S5O4GeVS0V496Z1zMujUtQAK0S7akvLpo
-y+J1D34OyKBGcs6xf6LK6hXEPLxTrbTjV/CVope5PcO0XiEp2HsZ1SPcWT0r8OOZ
-cZe51zQWxms04J35ggkILJPAmbvvSpQLjDCANP2UvyAh63d7tXmUAdrA0qQqfbMZ
-OXREgvHNw6/+S0PkqdnS7U5vC5+PrvzS/rwM4QUCxBE5yHDZ+QPA4OXu7vNiciwL
-OZjwOxcuRXlOJf8oxgpHdFoInHVwy7SNG0716yTCEgVxpLsVCOdCzKJXet/2BWH3
-q5XspwgKQLIl/8eu78wcK81cZ4r6R6bmwrn3yV6urUzxdy0IWZVQmbY0HSaMzI6L
-q9qoNKj34IftkZVt0aTcZDy2F1jC2P33biFcYxQWzUxrJ6YT4UI=
-=jnUv
------END PGP SIGNATURE-----
+Flagged by Smatch.
 
---HF6yaJEjzgKGpRxK--
+> +	pr_info("cn10k_variant %d\n", oct_ptp_clock.cn10k_variant);
+> +
+> +	return PTR_ERR_OR_ZERO(oct_ptp_clock.ptp_clock);
+> +}
+> +
+> +module_init(ptp_oct_ptm_init);
+> +module_exit(ptp_oct_ptm_exit);
+> +
+> +MODULE_AUTHOR("Marvell Inc.");
+> +MODULE_DESCRIPTION("PTP PHC clock using PTM");
+> +MODULE_LICENSE("GPL");
+> -- 
+> 2.25.1
 
