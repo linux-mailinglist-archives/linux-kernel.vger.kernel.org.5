@@ -1,98 +1,109 @@
-Return-Path: <linux-kernel+bounces-42810-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42809-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3235684070D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:34:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5759D840709
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:34:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94981B2462A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:34:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 895E61C22103
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:34:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C97FF6519B;
-	Mon, 29 Jan 2024 13:34:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6244F64CF6;
+	Mon, 29 Jan 2024 13:34:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="ymukBF1m"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tFGCjtsq"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7578A64CF8;
-	Mon, 29 Jan 2024 13:34:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9B3164CE0
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 13:34:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706535277; cv=none; b=VnZDzGZC3rW1bIdTmeVxcIZhuhsW8h+TZNB+YG0FX1ag8/5xCYlD3dEzsrU4asfs1VD5/S1qUpn5JZEh2gV/+9WFeovK/a5FpvvCpYi+beiJMJnAky2NJRhPXkQ/+w9p05DMExoc9CwklwgjD8USb8QGbxJ0zF2OQ/r/++EIv5c=
+	t=1706535262; cv=none; b=IOxfamkEV6nwZ8cJYkEzPHttpQYmVjXu2RhoHvznb2jy69xM4VnuB2cgghs03oIwS33FGyKDrqv0KlrMlRqJfge0K/7XooT5P+8lnsPHv0+Po3AjsZyzFFyv8DhlSWBYWAMPMsT4VM0cRcfYpawB056+c0rP9IbGfPX7KoPwbAc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706535277; c=relaxed/simple;
-	bh=/v6jv4eq+mfToHNxJ6RHn6Z5EZCjZlX7IDopru1EQvc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dZx/LVUhZlTrc60lxiBFEkaDnRgU+gLckNc5TtraDLOEya04CITZdv8wMSR6Ksdoz6TZl5lnAhZIrOHFiin5vkb0ovxkZ3iSrYAjMSK1UYl1gIzyvxskLi6N8wZrkDlBNJeWMOwhbcX/iYNih0ZtiyewVlg3baeu6WPn80kr214=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=ymukBF1m; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=Sw+Uc8eIUTOSmcpYyqc0Pr30gRLyGicqOuK7mBwSw0Y=; b=ymukBF1mJOtwGiyHpcUelZv6sQ
-	63xYTF/lfTF2ATMCsUEPgXODnKa2XIWjBFZp9W1OF7lNIViDmsczfg9EbE+TbJylYFdmCP2i9GXWr
-	onVSVf6tp4Kv6vkPtgi+ap0JxlJwIuZSZdhIAXpZ//2ikqatf1QUXT0Gf37wHTE0QeRc=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rURmB-006NkS-Kr; Mon, 29 Jan 2024 14:34:15 +0100
-Date: Mon, 29 Jan 2024 14:34:15 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Emil Renner Berthing <kernel@esmil.dk>,
-	Samin Guo <samin.guo@starfivetech.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-	Jacob Keller <jacob.e.keller@intel.com>, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, kernel@collabora.com
-Subject: Re: [PATCH v4 1/2] dt-bindings: net: starfive,jh7110-dwmac: Add
- JH7100 SoC compatible
-Message-ID: <56f3bd3c-c099-405b-837b-16d8aeb4cc4b@lunn.ch>
-References: <20240126191319.1209821-1-cristian.ciocaltea@collabora.com>
- <20240126191319.1209821-2-cristian.ciocaltea@collabora.com>
- <0a6f6dcb-18b0-48d5-8955-76bce0e1295d@linaro.org>
- <e29ae12b-5823-4fba-8029-e8e490462138@collabora.com>
+	s=arc-20240116; t=1706535262; c=relaxed/simple;
+	bh=Y32Ro5hXWgmbKAtIr0bWdglhv9oAGAt86HXcokVaqoo=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=PGIFUwipK6LUPAxaiOuqWnTOlHC0XN5fww06t4IHTd7Px77wmDavizli+n4Eu0ZnJxP6URreXevNrYIMZmtnQiuJiJWJ3K/GjlOnx3dxfGruZqONb+vNle3wrg4zApxhd0yExMWCFR7jzBrmaWiLz2biskxK/kqn6laUZ+XcvAQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tFGCjtsq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58B50C433F1;
+	Mon, 29 Jan 2024 13:34:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706535262;
+	bh=Y32Ro5hXWgmbKAtIr0bWdglhv9oAGAt86HXcokVaqoo=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=tFGCjtsqpCEdO0JDTVGrqvdHwzKxH7Y9iuq0p9pfWkGybaBpGSKQMDua/IPS4l4qq
+	 cWvRe1qQ50t/XO2y4GlrTjsO9fPe3QfwGQ55yRLs+idMjYao08vvU6pnriLb23QpgA
+	 SNZCaRtJ6nYnOjMdG6hGcK2PdGP06ISk2KzdzcZBy2RjePiMOAIuKTkJi1+H6djk9g
+	 EQeY3K1rQvPUrtRmV8cjcAhKLIBnE42RqtS+vYH28qQi3NV8+zGvvG9E5rOAFGrvoI
+	 lAVtgE7OwVaQ0p55xvlxGlLYmotph51SKpToeLtJguEkGC5MoNEEw8sbnfiCj90/N7
+	 FGEQN6gRKdz1A==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: Pratyush Yadav <pratyush@kernel.org>,  michael@walle.cc,
+  miquel.raynal@bootlin.com,  richard@nod.at,  jaimeliao@mxic.com.tw,
+  linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] mtd: spi-nor: drop superfluous debug prints
+In-Reply-To: <99babcb3-770d-487c-a297-beea2f6f8e9e@linaro.org> (Tudor
+	Ambarus's message of "Mon, 29 Jan 2024 13:27:50 +0000")
+References: <20231215082138.16063-1-tudor.ambarus@linaro.org>
+	<20231215082138.16063-5-tudor.ambarus@linaro.org>
+	<120bf090-0c07-4971-a18a-a1b326f1b139@linaro.org>
+	<mafs0v87cs238.fsf@kernel.org>
+	<99babcb3-770d-487c-a297-beea2f6f8e9e@linaro.org>
+Date: Mon, 29 Jan 2024 14:34:20 +0100
+Message-ID: <mafs0r0i0s1pf.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e29ae12b-5823-4fba-8029-e8e490462138@collabora.com>
+Content-Type: text/plain
 
-> > Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
-> Thank you for the review!
-> 
-> Could you please apply it to the RESEND version [1] instead, as this one 
-> had an issue collecting the latest tags, as indicated in [2].
-> 
-> Regards,
-> Cristian
+On Mon, Jan 29 2024, Tudor Ambarus wrote:
 
-Hi Cristian
+> On 1/29/24 13:26, Pratyush Yadav wrote:
+>> On Fri, Dec 15 2023, Tudor Ambarus wrote:
+>> 
+>>> I missed to drop some unused variables. Will drop them if everything
+>>> else is fine.
+>>>
+>>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+>>> index a708c3448809..92c992eb73d5 100644
+>>> --- a/drivers/mtd/spi-nor/core.c
+>>> +++ b/drivers/mtd/spi-nor/core.c
+>>> @@ -3492,9 +3492,7 @@ int spi_nor_scan(struct spi_nor *nor, const char
+>>> *name,
+>>>  {
+>>>         const struct flash_info *info;
+>>>         struct device *dev = nor->dev;
+>>> -       struct mtd_info *mtd = &nor->mtd;
+>>>         int ret;
+>>> -       int i;
+>>>
+>>>         ret = spi_nor_check(nor);
+>>>         if (ret)
+>> 
+>> 
+>> With these, 
+>> 
+>> Reviewed-by: Pratyush Yadav <pratyush@kernel.org>
+>> 
+> Hi, Pratyush,
+>
+> All in these series were already applied, as I specified in a reply.
+> Please check patchwork for patches that are not yet handled.
 
-IT is your job as developers to collect together such reviewed-by:
-tags add apply them to the latest version. So long as there are no
-major changes, they are still consider applicable.
+Ah sorry, I didn't see that. I was browsing through my email backlog and
+these patches just caught my eye.
 
-	 Andrew
+Will look at the newer ones.
+
+-- 
+Regards,
+Pratyush Yadav
 
