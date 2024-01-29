@@ -1,154 +1,591 @@
-Return-Path: <linux-kernel+bounces-42621-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42622-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F0A68403E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:34:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F1068403EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:37:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E86391F21897
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:34:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 992361F214FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:37:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 709965F544;
-	Mon, 29 Jan 2024 11:33:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0EE35BAED;
+	Mon, 29 Jan 2024 11:37:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UW5N78mj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YOw95HYh"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BBCE5C5E0;
-	Mon, 29 Jan 2024 11:33:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33E4A1E48C;
+	Mon, 29 Jan 2024 11:37:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706528029; cv=none; b=tz4k1GTxRRxF0IkYf/84Rxn3KkhkqDyFdS6oxr4DWCJBlHQX5y7LzQnHkWuzUjtF9liIfzSKtfif85NK99oYxe9U0AFNgMTgBwk7MioA8DOSMfdTFKvCfHnjtc91WNpjPSqgjGH0FkNmLe76haQBoH5JTKKrlh7Dq4grtcFtePQ=
+	t=1706528241; cv=none; b=CrF8aa1MmZIYpE9EbN6ZotuiveFVeKuU9a6NW82CtQX77LD43zzw9lmIkhQdqrpUQRXUmyQrPrGPq1r6e+yemfdTdWVnRQECvCInyCVe/uqg0DHWHxRneNO8Lt3vOJKor/cbUzq6WsBQehxNShjyWfQgShDcJDOVM0Drm5D99rY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706528029; c=relaxed/simple;
-	bh=9Im3//+edoEovvD3z3/DbAAPUqCpZJ6xFDEEDLE/cAc=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=tdXdCg5IFu5TzwysYNolx2LWw+LiZhBr522Z8C+HbK4Dg+g+MU7Vz8LId5u8l3FHsjF8XaCW2rlvi8wscJHCMXmQqCV+DAObeu/Mr0m0W4RdMz8aJctHWlanKgWENilEmH8Y9+VlLlX6tGCPQWx/pU4VNZ7bsbUiqT2xIgCgkOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UW5N78mj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92439C433C7;
-	Mon, 29 Jan 2024 11:33:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706528028;
-	bh=9Im3//+edoEovvD3z3/DbAAPUqCpZJ6xFDEEDLE/cAc=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=UW5N78mjfQDgW+vaQbyiiO6D8tkCP8cRM7tAqn84SoSFF5x1fAdF8D4B+gIFK4vDO
-	 VYl1odPjW8p1bXYpB7W9oZuUgfpjL07elXav6uAhpSje5ZTYrtOINTjFi1d+ELUtUd
-	 iWswgaclE6f2MmGV7VVNxhxVN/QT59vkYhENAdJ+VFWx+Sq5QyPYNSh1Lbddg3eV8x
-	 96/MKtnee1NQB4Pd/KFwJ+1QSc+k6RnOQxYc0G/3wGL3q1PhW9YLTJ/oMxS1/TrkJW
-	 oEyt73bIvsGO6jgNjiywmBVm2sW1+rhCc0YsrDQ7FSWGokeXVSMyRLTopm6blQXUkw
-	 MsyaAf+fxBKhw==
-From: Kalle Valo <kvalo@kernel.org>
-To: Thorsten Leemhuis <regressions@leemhuis.info>
-Cc: ath11k@lists.infradead.org,  Linux regressions mailing list
- <regressions@lists.linux.dev>,  linux-wireless@vger.kernel.org,
-  linux-kernel@vger.kernel.org
-Subject: Re: [regression] ath11k broken in v6.7
-References: <874jfjiolh.fsf@kernel.org> <87frytg7b8.fsf@kernel.org>
-	<878r4lg3t8.fsf@kernel.org> <87jzo13jmf.fsf@kernel.org>
-	<94150b26-bdd9-49c2-82a1-26ff46c9d32a@leemhuis.info>
-	<87fryp3he0.fsf@kernel.org>
-	<0253854a-e5f9-4316-bec3-61aaf3ebfd1a@leemhuis.info>
-Date: Mon, 29 Jan 2024 13:33:45 +0200
-In-Reply-To: <0253854a-e5f9-4316-bec3-61aaf3ebfd1a@leemhuis.info> (Thorsten
-	Leemhuis's message of "Mon, 22 Jan 2024 11:24:06 +0100")
-Message-ID: <871qa0xtk6.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=arc-20240116; t=1706528241; c=relaxed/simple;
+	bh=n+P7qHJEIq2V70wnllFn/3PAXvuly6wK/oDSQT7vCsk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=mhl19eEjdYZ4DXoP1+OvaE6CVy7XHe73JnIi+R+Ug57dNprRNl/APsIOHVOhb75AhBLfyq4dUVxOSAJ2cDk0F1J9QZAgePywNkayD0OuQnx9RSLNaA9L9q7mbY6afN0X7Yd7x0kw1Wn1ZrOdlj+3mjr0nQqb/aPwD+bfOUTXiZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YOw95HYh; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706528239; x=1738064239;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=n+P7qHJEIq2V70wnllFn/3PAXvuly6wK/oDSQT7vCsk=;
+  b=YOw95HYhkg7o4gTjySIHvAXNBjWvKo0alHM/mwhcRAE30CCwWz/n2IcA
+   wC4F/fpLvggjKJR9wzx/JTH5ceHWual2hxPnzl7iyDPMHmBM/ba5FTqQF
+   VifbhmNsATW/5PRkPIwe2ebEBu1nzeGuHMN9Fg/DUHCnfef5o9OubcoGm
+   UZiklgH2+vM+/DkYhzY5tJfW5O+kjsLDFMHfeJut4eeM0A+uAZiQ7Zyqa
+   d0/TR5S389rysOqeobfB39PpjgShKKQOyvOsPMXPb+3t1ln75WzJ6+48i
+   ybR55Zlwej2ZD1lvSEhArk6Xypa7U8pvRW+l8H85QfdYQ7TmEKfDB4ZF2
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="9672538"
+X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
+   d="scan'208";a="9672538"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 03:37:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="960869964"
+X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
+   d="scan'208";a="960869964"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.94.253.213])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 03:37:08 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To: Bjorn Helgaas <bhelgaas@google.com>,
+	linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org
+Cc: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH 1/1] PCI: Place interrupt related code into irq.c
+Date: Mon, 29 Jan 2024 13:36:54 +0200
+Message-Id: <20240129113655.3368-1-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Thorsten Leemhuis <regressions@leemhuis.info> writes:
+Interrupt related code is spread into irq.c, pci.c, and setup-irq.c.
+Group them into pre-existing irq.c.
 
-> On 22.01.24 09:24, Kalle Valo wrote:
->> "Linux regression tracking (Thorsten Leemhuis)"
->> <regressions@leemhuis.info> writes:
->>
->>> FWIW, that usage was slightly off and not how it's supposed to be done.
->>> But whatever, let's ignore that. I'm reworking things currently
->>> slightly, as you are not the first one that slightly got mislead -- and
->>> the newer commands will hopefully be mire intuitive.
->> 
->> Just to educate myself, how should I have done it? (But feel free to
->> skip the question if you are busy)
->
-> I think that's not worth it, as I hope to introduce the new commands in
-> the near future (but you know how it is with the last 5 to 10
-> percent...).
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+---
+ drivers/pci/Makefile     |   2 +-
+ drivers/pci/irq.c        | 204 +++++++++++++++++++++++++++++++++++++++
+ drivers/pci/pci-driver.c |   9 --
+ drivers/pci/pci.c        | 144 ---------------------------
+ drivers/pci/setup-irq.c  |  64 ------------
+ 5 files changed, 205 insertions(+), 218 deletions(-)
+ delete mode 100644 drivers/pci/setup-irq.c
 
-I sure do know :) I assume you will announce in the regressions list
-once the new interface is available, I'll then take a look at it in
-detail and update my notes.
-
-> But let me show you how it's then supposed to be done in this
-> situation, that way you can give early feedback:
->
->   #regzbot report: https://bugzilla.kernel.org/show_bug.cgi?id=218364
->   #regzbot introduced: 0a3d898ee9a8
->
-> That "#regzbot report" will be new and make it more obvious to users
-> what regzbot should consider to be the report (e.g. what Link:/Closes:
-> tags later in commits fixing the issue will link to).
-
-Thanks, this looks very intuitive to me.
-
-> You used "#regzbot introduced: 0a3d898ee9a8 ^" and due to the "^" it
-> assumed the start of this thread would be the report
-
-Actually I did that on purpose as I wanted to test how including a mail
-to a regression report works :)
-
-> (side note: mixing that aspect into the "introduced" command was a
-> stupid idea anyway.).
->
-> That "#regzbot link:" will vanish as well (at least from the docs, it
-> will remain to be supported), as people use it wrong in various
-> different ways: for duplicates, reports (like your did), patch
-> submissions fixing the issue (then 'regzbot monitor' should have been
-> used) among others. Which is totally understandable now that I look at
-> it. That's why it will be replaced by "#regzbot related: <url>" to avoid
-> any connection with the Link: tag used in commits; for duplicates
-> "#regzbot dup:" will stay around.
-
-So, in the new interface, how should I handle a situation that a
-regression is first reported on the mailing list, added to regzbot and
-later there's also a bug report opened for the issue?
-
->> I wish there would be a person who could follow stable
->> releases from wireless perspective and make sure everything is ok there.
->
-> Maybe at some point regression tracking can help somewhat with that. But
-> I still have to fix a few things to make people use it and scale it up.
-
-I just feel it should be more than that, I'm worried that randomly
-taking wireless commits to stable releases is risky. There really should
-be someone looking after wireless (read: reviewing patches) in stable
-releases. This would be a good role for someone who is interested to
-learn how kernel.org development works and helping the community. Do we
-have a way to announce these kind volunteer vacancies somewhere? :)
-
-> Side note: some people seem to have gotten the impression that I care a
-> lot about *all* stable/longterm kernels. Let me use this opportunity to
-> say that it's not really the case. I fully understand and respect that
-> those series are a somewhat separate thing some developers don't want to
-> be involved in (especially the older trees). But the thing is: the
-> latest stable tree is what we tell users to use -- and something quite a
-> few important distros ship as their regular kernel these days. That's
-> why I take special care of regression that found there.
-
-Yeah, I understand that a lot of users use stable kernel releases. But
-the reality is that we in wireless really don't have the bandwidth to
-manage stable kernels, it is enough of a challenge to manage Linus'
-releases. So help here is very much needed.
-
+diff --git a/drivers/pci/Makefile b/drivers/pci/Makefile
+index cc8b4e01e29d..54a7adf0bb88 100644
+--- a/drivers/pci/Makefile
++++ b/drivers/pci/Makefile
+@@ -5,7 +5,7 @@
+ obj-$(CONFIG_PCI)		+= access.o bus.o probe.o host-bridge.o \
+ 				   remove.o pci.o pci-driver.o search.o \
+ 				   pci-sysfs.o rom.o setup-res.o irq.o vpd.o \
+-				   setup-bus.o vc.o mmap.o setup-irq.o
++				   setup-bus.o vc.o mmap.o
+ 
+ obj-$(CONFIG_PCI)		+= msi/
+ obj-$(CONFIG_PCI)		+= pcie/
+diff --git a/drivers/pci/irq.c b/drivers/pci/irq.c
+index 0050e8f6814e..4555630be9ec 100644
+--- a/drivers/pci/irq.c
++++ b/drivers/pci/irq.c
+@@ -8,9 +8,13 @@
+ 
+ #include <linux/device.h>
+ #include <linux/kernel.h>
++#include <linux/errno.h>
+ #include <linux/export.h>
++#include <linux/interrupt.h>
+ #include <linux/pci.h>
+ 
++#include "pci.h"
++
+ /**
+  * pci_request_irq - allocate an interrupt line for a PCI device
+  * @dev:	PCI device to operate on
+@@ -74,3 +78,203 @@ void pci_free_irq(struct pci_dev *dev, unsigned int nr, void *dev_id)
+ 	kfree(free_irq(pci_irq_vector(dev, nr), dev_id));
+ }
+ EXPORT_SYMBOL(pci_free_irq);
++
++/**
++ * pci_swizzle_interrupt_pin - swizzle INTx for device behind bridge
++ * @dev: the PCI device
++ * @pin: the INTx pin (1=INTA, 2=INTB, 3=INTC, 4=INTD)
++ *
++ * Perform INTx swizzling for a device behind one level of bridge.  This is
++ * required by section 9.1 of the PCI-to-PCI bridge specification for devices
++ * behind bridges on add-in cards.  For devices with ARI enabled, the slot
++ * number is always 0 (see the Implementation Note in section 2.2.8.1 of
++ * the PCI Express Base Specification, Revision 2.1)
++ */
++u8 pci_swizzle_interrupt_pin(const struct pci_dev *dev, u8 pin)
++{
++	int slot;
++
++	if (pci_ari_enabled(dev->bus))
++		slot = 0;
++	else
++		slot = PCI_SLOT(dev->devfn);
++
++	return (((pin - 1) + slot) % 4) + 1;
++}
++
++int pci_get_interrupt_pin(struct pci_dev *dev, struct pci_dev **bridge)
++{
++	u8 pin;
++
++	pin = dev->pin;
++	if (!pin)
++		return -1;
++
++	while (!pci_is_root_bus(dev->bus)) {
++		pin = pci_swizzle_interrupt_pin(dev, pin);
++		dev = dev->bus->self;
++	}
++	*bridge = dev;
++	return pin;
++}
++
++/**
++ * pci_common_swizzle - swizzle INTx all the way to root bridge
++ * @dev: the PCI device
++ * @pinp: pointer to the INTx pin value (1=INTA, 2=INTB, 3=INTD, 4=INTD)
++ *
++ * Perform INTx swizzling for a device.  This traverses through all PCI-to-PCI
++ * bridges all the way up to a PCI root bus.
++ */
++u8 pci_common_swizzle(struct pci_dev *dev, u8 *pinp)
++{
++	u8 pin = *pinp;
++
++	while (!pci_is_root_bus(dev->bus)) {
++		pin = pci_swizzle_interrupt_pin(dev, pin);
++		dev = dev->bus->self;
++	}
++	*pinp = pin;
++	return PCI_SLOT(dev->devfn);
++}
++EXPORT_SYMBOL_GPL(pci_common_swizzle);
++
++void pci_assign_irq(struct pci_dev *dev)
++{
++	u8 pin;
++	u8 slot = -1;
++	int irq = 0;
++	struct pci_host_bridge *hbrg = pci_find_host_bridge(dev->bus);
++
++	if (!(hbrg->map_irq)) {
++		pci_dbg(dev, "runtime IRQ mapping not provided by arch\n");
++		return;
++	}
++
++	/*
++	 * If this device is not on the primary bus, we need to figure out
++	 * which interrupt pin it will come in on. We know which slot it
++	 * will come in on because that slot is where the bridge is. Each
++	 * time the interrupt line passes through a PCI-PCI bridge we must
++	 * apply the swizzle function.
++	 */
++	pci_read_config_byte(dev, PCI_INTERRUPT_PIN, &pin);
++	/* Cope with illegal. */
++	if (pin > 4)
++		pin = 1;
++
++	if (pin) {
++		/* Follow the chain of bridges, swizzling as we go. */
++		if (hbrg->swizzle_irq)
++			slot = (*(hbrg->swizzle_irq))(dev, &pin);
++
++		/*
++		 * If a swizzling function is not used, map_irq() must
++		 * ignore slot.
++		 */
++		irq = (*(hbrg->map_irq))(dev, slot, pin);
++		if (irq == -1)
++			irq = 0;
++	}
++	dev->irq = irq;
++
++	pci_dbg(dev, "assign IRQ: got %d\n", dev->irq);
++
++	/*
++	 * Always tell the device, so the driver knows what is the real IRQ
++	 * to use; the device does not use it.
++	 */
++	pci_write_config_byte(dev, PCI_INTERRUPT_LINE, irq);
++}
++
++static bool pci_check_and_set_intx_mask(struct pci_dev *dev, bool mask)
++{
++	struct pci_bus *bus = dev->bus;
++	bool mask_updated = true;
++	u32 cmd_status_dword;
++	u16 origcmd, newcmd;
++	unsigned long flags;
++	bool irq_pending;
++
++	/*
++	 * We do a single dword read to retrieve both command and status.
++	 * Document assumptions that make this possible.
++	 */
++	BUILD_BUG_ON(PCI_COMMAND % 4);
++	BUILD_BUG_ON(PCI_COMMAND + 2 != PCI_STATUS);
++
++	raw_spin_lock_irqsave(&pci_lock, flags);
++
++	bus->ops->read(bus, dev->devfn, PCI_COMMAND, 4, &cmd_status_dword);
++
++	irq_pending = (cmd_status_dword >> 16) & PCI_STATUS_INTERRUPT;
++
++	/*
++	 * Check interrupt status register to see whether our device
++	 * triggered the interrupt (when masking) or the next IRQ is
++	 * already pending (when unmasking).
++	 */
++	if (mask != irq_pending) {
++		mask_updated = false;
++		goto done;
++	}
++
++	origcmd = cmd_status_dword;
++	newcmd = origcmd & ~PCI_COMMAND_INTX_DISABLE;
++	if (mask)
++		newcmd |= PCI_COMMAND_INTX_DISABLE;
++	if (newcmd != origcmd)
++		bus->ops->write(bus, dev->devfn, PCI_COMMAND, 2, newcmd);
++
++done:
++	raw_spin_unlock_irqrestore(&pci_lock, flags);
++
++	return mask_updated;
++}
++
++/**
++ * pci_check_and_mask_intx - mask INTx on pending interrupt
++ * @dev: the PCI device to operate on
++ *
++ * Check if the device dev has its INTx line asserted, mask it and return
++ * true in that case. False is returned if no interrupt was pending.
++ */
++bool pci_check_and_mask_intx(struct pci_dev *dev)
++{
++	return pci_check_and_set_intx_mask(dev, true);
++}
++EXPORT_SYMBOL_GPL(pci_check_and_mask_intx);
++
++/**
++ * pci_check_and_unmask_intx - unmask INTx if no interrupt is pending
++ * @dev: the PCI device to operate on
++ *
++ * Check if the device dev has its INTx line asserted, unmask it if not and
++ * return true. False is returned and the mask remains active if there was
++ * still an interrupt pending.
++ */
++bool pci_check_and_unmask_intx(struct pci_dev *dev)
++{
++	return pci_check_and_set_intx_mask(dev, false);
++}
++EXPORT_SYMBOL_GPL(pci_check_and_unmask_intx);
++
++/**
++ * pcibios_penalize_isa_irq - penalize an ISA IRQ
++ * @irq: ISA IRQ to penalize
++ * @active: IRQ active or not
++ *
++ * Permits the platform to provide architecture-specific functionality when
++ * penalizing ISA IRQs. This is the default implementation. Architecture
++ * implementations can override this.
++ */
++void __weak pcibios_penalize_isa_irq(int irq, int active) {}
++
++int __weak pcibios_alloc_irq(struct pci_dev *dev)
++{
++	return 0;
++}
++
++void __weak pcibios_free_irq(struct pci_dev *dev)
++{
++}
+diff --git a/drivers/pci/pci-driver.c b/drivers/pci/pci-driver.c
+index 51ec9e7e784f..ec838f2e892e 100644
+--- a/drivers/pci/pci-driver.c
++++ b/drivers/pci/pci-driver.c
+@@ -419,15 +419,6 @@ static int __pci_device_probe(struct pci_driver *drv, struct pci_dev *pci_dev)
+ 	return error;
+ }
+ 
+-int __weak pcibios_alloc_irq(struct pci_dev *dev)
+-{
+-	return 0;
+-}
+-
+-void __weak pcibios_free_irq(struct pci_dev *dev)
+-{
+-}
+-
+ #ifdef CONFIG_PCI_IOV
+ static inline bool pci_device_can_probe(struct pci_dev *pdev)
+ {
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index d8f11a078924..75388584e60d 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -24,7 +24,6 @@
+ #include <linux/log2.h>
+ #include <linux/logic_pio.h>
+ #include <linux/pm_wakeup.h>
+-#include <linux/interrupt.h>
+ #include <linux/device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/pci_hotplug.h>
+@@ -2292,17 +2291,6 @@ void __weak pcibios_release_device(struct pci_dev *dev) {}
+  */
+ void __weak pcibios_disable_device(struct pci_dev *dev) {}
+ 
+-/**
+- * pcibios_penalize_isa_irq - penalize an ISA IRQ
+- * @irq: ISA IRQ to penalize
+- * @active: IRQ active or not
+- *
+- * Permits the platform to provide architecture-specific functionality when
+- * penalizing ISA IRQs. This is the default implementation. Architecture
+- * implementations can override this.
+- */
+-void __weak pcibios_penalize_isa_irq(int irq, int active) {}
+-
+ static void do_pci_disable_device(struct pci_dev *dev)
+ {
+ 	u16 pci_command;
+@@ -3964,66 +3952,6 @@ int pci_enable_atomic_ops_to_root(struct pci_dev *dev, u32 cap_mask)
+ }
+ EXPORT_SYMBOL(pci_enable_atomic_ops_to_root);
+ 
+-/**
+- * pci_swizzle_interrupt_pin - swizzle INTx for device behind bridge
+- * @dev: the PCI device
+- * @pin: the INTx pin (1=INTA, 2=INTB, 3=INTC, 4=INTD)
+- *
+- * Perform INTx swizzling for a device behind one level of bridge.  This is
+- * required by section 9.1 of the PCI-to-PCI bridge specification for devices
+- * behind bridges on add-in cards.  For devices with ARI enabled, the slot
+- * number is always 0 (see the Implementation Note in section 2.2.8.1 of
+- * the PCI Express Base Specification, Revision 2.1)
+- */
+-u8 pci_swizzle_interrupt_pin(const struct pci_dev *dev, u8 pin)
+-{
+-	int slot;
+-
+-	if (pci_ari_enabled(dev->bus))
+-		slot = 0;
+-	else
+-		slot = PCI_SLOT(dev->devfn);
+-
+-	return (((pin - 1) + slot) % 4) + 1;
+-}
+-
+-int pci_get_interrupt_pin(struct pci_dev *dev, struct pci_dev **bridge)
+-{
+-	u8 pin;
+-
+-	pin = dev->pin;
+-	if (!pin)
+-		return -1;
+-
+-	while (!pci_is_root_bus(dev->bus)) {
+-		pin = pci_swizzle_interrupt_pin(dev, pin);
+-		dev = dev->bus->self;
+-	}
+-	*bridge = dev;
+-	return pin;
+-}
+-
+-/**
+- * pci_common_swizzle - swizzle INTx all the way to root bridge
+- * @dev: the PCI device
+- * @pinp: pointer to the INTx pin value (1=INTA, 2=INTB, 3=INTD, 4=INTD)
+- *
+- * Perform INTx swizzling for a device.  This traverses through all PCI-to-PCI
+- * bridges all the way up to a PCI root bus.
+- */
+-u8 pci_common_swizzle(struct pci_dev *dev, u8 *pinp)
+-{
+-	u8 pin = *pinp;
+-
+-	while (!pci_is_root_bus(dev->bus)) {
+-		pin = pci_swizzle_interrupt_pin(dev, pin);
+-		dev = dev->bus->self;
+-	}
+-	*pinp = pin;
+-	return PCI_SLOT(dev->devfn);
+-}
+-EXPORT_SYMBOL_GPL(pci_common_swizzle);
+-
+ /**
+  * pci_release_region - Release a PCI bar
+  * @pdev: PCI device whose resources were previously reserved by
+@@ -4737,78 +4665,6 @@ void pci_intx(struct pci_dev *pdev, int enable)
+ }
+ EXPORT_SYMBOL_GPL(pci_intx);
+ 
+-static bool pci_check_and_set_intx_mask(struct pci_dev *dev, bool mask)
+-{
+-	struct pci_bus *bus = dev->bus;
+-	bool mask_updated = true;
+-	u32 cmd_status_dword;
+-	u16 origcmd, newcmd;
+-	unsigned long flags;
+-	bool irq_pending;
+-
+-	/*
+-	 * We do a single dword read to retrieve both command and status.
+-	 * Document assumptions that make this possible.
+-	 */
+-	BUILD_BUG_ON(PCI_COMMAND % 4);
+-	BUILD_BUG_ON(PCI_COMMAND + 2 != PCI_STATUS);
+-
+-	raw_spin_lock_irqsave(&pci_lock, flags);
+-
+-	bus->ops->read(bus, dev->devfn, PCI_COMMAND, 4, &cmd_status_dword);
+-
+-	irq_pending = (cmd_status_dword >> 16) & PCI_STATUS_INTERRUPT;
+-
+-	/*
+-	 * Check interrupt status register to see whether our device
+-	 * triggered the interrupt (when masking) or the next IRQ is
+-	 * already pending (when unmasking).
+-	 */
+-	if (mask != irq_pending) {
+-		mask_updated = false;
+-		goto done;
+-	}
+-
+-	origcmd = cmd_status_dword;
+-	newcmd = origcmd & ~PCI_COMMAND_INTX_DISABLE;
+-	if (mask)
+-		newcmd |= PCI_COMMAND_INTX_DISABLE;
+-	if (newcmd != origcmd)
+-		bus->ops->write(bus, dev->devfn, PCI_COMMAND, 2, newcmd);
+-
+-done:
+-	raw_spin_unlock_irqrestore(&pci_lock, flags);
+-
+-	return mask_updated;
+-}
+-
+-/**
+- * pci_check_and_mask_intx - mask INTx on pending interrupt
+- * @dev: the PCI device to operate on
+- *
+- * Check if the device dev has its INTx line asserted, mask it and return
+- * true in that case. False is returned if no interrupt was pending.
+- */
+-bool pci_check_and_mask_intx(struct pci_dev *dev)
+-{
+-	return pci_check_and_set_intx_mask(dev, true);
+-}
+-EXPORT_SYMBOL_GPL(pci_check_and_mask_intx);
+-
+-/**
+- * pci_check_and_unmask_intx - unmask INTx if no interrupt is pending
+- * @dev: the PCI device to operate on
+- *
+- * Check if the device dev has its INTx line asserted, unmask it if not and
+- * return true. False is returned and the mask remains active if there was
+- * still an interrupt pending.
+- */
+-bool pci_check_and_unmask_intx(struct pci_dev *dev)
+-{
+-	return pci_check_and_set_intx_mask(dev, false);
+-}
+-EXPORT_SYMBOL_GPL(pci_check_and_unmask_intx);
+-
+ /**
+  * pci_wait_for_pending_transaction - wait for pending transaction
+  * @dev: the PCI device to operate on
+diff --git a/drivers/pci/setup-irq.c b/drivers/pci/setup-irq.c
+deleted file mode 100644
+index cc7d26b015f3..000000000000
+--- a/drivers/pci/setup-irq.c
++++ /dev/null
+@@ -1,64 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*
+- * Support routines for initializing a PCI subsystem
+- *
+- * Extruded from code written by
+- *      Dave Rusling (david.rusling@reo.mts.dec.com)
+- *      David Mosberger (davidm@cs.arizona.edu)
+- *	David Miller (davem@redhat.com)
+- */
+-
+-#include <linux/kernel.h>
+-#include <linux/pci.h>
+-#include <linux/errno.h>
+-#include <linux/ioport.h>
+-#include <linux/cache.h>
+-#include "pci.h"
+-
+-void pci_assign_irq(struct pci_dev *dev)
+-{
+-	u8 pin;
+-	u8 slot = -1;
+-	int irq = 0;
+-	struct pci_host_bridge *hbrg = pci_find_host_bridge(dev->bus);
+-
+-	if (!(hbrg->map_irq)) {
+-		pci_dbg(dev, "runtime IRQ mapping not provided by arch\n");
+-		return;
+-	}
+-
+-	/*
+-	 * If this device is not on the primary bus, we need to figure out
+-	 * which interrupt pin it will come in on. We know which slot it
+-	 * will come in on because that slot is where the bridge is. Each
+-	 * time the interrupt line passes through a PCI-PCI bridge we must
+-	 * apply the swizzle function.
+-	 */
+-	pci_read_config_byte(dev, PCI_INTERRUPT_PIN, &pin);
+-	/* Cope with illegal. */
+-	if (pin > 4)
+-		pin = 1;
+-
+-	if (pin) {
+-		/* Follow the chain of bridges, swizzling as we go. */
+-		if (hbrg->swizzle_irq)
+-			slot = (*(hbrg->swizzle_irq))(dev, &pin);
+-
+-		/*
+-		 * If a swizzling function is not used, map_irq() must
+-		 * ignore slot.
+-		 */
+-		irq = (*(hbrg->map_irq))(dev, slot, pin);
+-		if (irq == -1)
+-			irq = 0;
+-	}
+-	dev->irq = irq;
+-
+-	pci_dbg(dev, "assign IRQ: got %d\n", dev->irq);
+-
+-	/*
+-	 * Always tell the device, so the driver knows what is the real IRQ
+-	 * to use; the device does not use it.
+-	 */
+-	pci_write_config_byte(dev, PCI_INTERRUPT_LINE, irq);
+-}
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+2.39.2
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
