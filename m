@@ -1,135 +1,240 @@
-Return-Path: <linux-kernel+bounces-42894-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42895-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88417840838
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:26:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 068AF84083B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:26:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44AEE283483
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:26:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B186F284581
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:26:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EEE466B3D;
-	Mon, 29 Jan 2024 14:25:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65E5C65BB4;
+	Mon, 29 Jan 2024 14:26:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dubeyko-com.20230601.gappssmtp.com header.i=@dubeyko-com.20230601.gappssmtp.com header.b="WCv3wOx+"
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MoS1gs2H";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lWxaA4vI";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gfO7Mc1E";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="sd1TWSyq"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4752D66B25
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 14:25:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1DA865BAC;
+	Mon, 29 Jan 2024 14:26:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706538352; cv=none; b=PunbjJaoDzaOtToWVj7RpRbYV3FiRwN4Es3wHPF/ePdTZNGZl5LJt48br0u746/BTiDPMUGq9uz8NJWYqqm6jZaea5XbnuhrF5DmJM1bhSj0PdbvzRjjdLtJT729p5WKO7+2OqtjJRXVEf3mNTkDY8mSP339ZuU8DcK/dBiI6FE=
+	t=1706538395; cv=none; b=baj6qki1xC561MRX1J086jafdrkRFfE8nHxxfFShHsLLsD1anAgXcHukfc2+IpWEoFT5HSg6rn3otQTTtvy5DIbNU5o7xSbFtnFZPqH93MGVzKTaCkj7ETlk7/XUzeqDfGk7blp9yYQXYrTxZ7umGO0RGme6+p2X0BTHWoBBcgs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706538352; c=relaxed/simple;
-	bh=e17Rkv1b2zsSeeqMrexTc68GxjbjLQz9ZAoYZ7+OZ5c=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=jnrFb+aHp4AYxXFSF1sKsQM9nGXAhZQ/BiASta+IkT+4LeXLkmC6Mwv+LFBfZKiHZZ+vZRjU0qiz4BXFzQczgXNOXhkIsH2XxChpHeo7rm5Ywxt/KMo7LSkWgIED4CEhF9hjhdKbVafbKSU5gOOF2JjIgqqXGOjD58rRIj4HvQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dubeyko.com; spf=pass smtp.mailfrom=dubeyko.com; dkim=pass (2048-bit key) header.d=dubeyko-com.20230601.gappssmtp.com header.i=@dubeyko-com.20230601.gappssmtp.com header.b=WCv3wOx+; arc=none smtp.client-ip=209.85.208.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dubeyko.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dubeyko.com
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2cf33b909e8so39008251fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 06:25:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dubeyko-com.20230601.gappssmtp.com; s=20230601; t=1706538348; x=1707143148; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rwSVowneYmPFoCOKARAGdH4LO9xvR38K95NUycdd4WU=;
-        b=WCv3wOx+GMfJ9gaQ4PIj4r6eINyGfZNpTH5R08krlxG/QLbzKYDnSIxAAtXAV6z9ER
-         z4uJpMiIEzaGXKbw6EWzS1e3eQ020BaFtqHTqHjS1cKReNDYlVFFQ60waO2adtMa9wIH
-         ZxVWasFDvIioMkf6kDIE5NzltAdRinBaaAZT1Wu6DqBv7/K3EHs8udYNwhc4d0BFhQwk
-         IY4pW/R/WdnoDrCAHuklqGN3d7e3j9qT023HPGq7TT/2iyvUqUfRHV8zgc5AgOlun4uk
-         ybbbkpcm8XnVtz9NbZuMTEA3ZDrP5syysx8rdtzm4SPXo7ikXumIoj7MEogW0gSTKp4N
-         C10Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706538348; x=1707143148;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rwSVowneYmPFoCOKARAGdH4LO9xvR38K95NUycdd4WU=;
-        b=cXP6ZKZrmHShp7HhiAyedDCDkWd5VboPuL/b7/Sd95aI9WZcW6ERojcNRhpHc6b1g3
-         krnb6W6hHrl07IROq3E1RQwukTTI/0nBcnWQZ0Nn6CSZtKzl1Z0QI1yoGsvQoxv+boGF
-         WD0PhfMWWfsUS89R1HIwY5hrGTmNGhYkxbttzfXmqnWbUsBuhI1W5PiTYc+QS+RwzCwZ
-         /OmODCVZFdSuPbqhGTylw4MIb51N1AdQ0w1Tfxzy3ci9Rydu1KdOTXHipZoztw5BVr/H
-         GfAPELNUkvWSiz8iW27V9B0iCTyplfknuaVPqIgLIAJS12SAUbD0JvdFv+kakAstVfXs
-         wt7A==
-X-Gm-Message-State: AOJu0YwNlHO4OePVm8S8TM2uef3S+6OoFmzGfbjdDAaPlKdAR0CyckHv
-	gPhou4JMh5OhJobDXqDU5MXTm3YNLvx7EdXq45YBuKuyqRTnHF+kS/dFh/veFQA=
-X-Google-Smtp-Source: AGHT+IEabj504gYXXe4D4PEHMJg6a1FtXh3NfgJV/TjJ5fhQu4YxTrEI9z3hdikxYRV4R7GfF8W3+Q==
-X-Received: by 2002:a2e:a78e:0:b0:2cc:78b7:1ef0 with SMTP id c14-20020a2ea78e000000b002cc78b71ef0mr2957712ljf.4.1706538348044;
-        Mon, 29 Jan 2024 06:25:48 -0800 (PST)
-Received: from smtpclient.apple ([84.252.147.253])
-        by smtp.gmail.com with ESMTPSA id x12-20020a2ea98c000000b002d0524ec71bsm164546ljq.117.2024.01.29.06.25.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 29 Jan 2024 06:25:47 -0800 (PST)
-Content-Type: text/plain;
-	charset=us-ascii
+	s=arc-20240116; t=1706538395; c=relaxed/simple;
+	bh=1CWG8fGDTE0PFV2DRxwsn6+363/lO1dP/IeyyUt0PoY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rsGd+iSf8nacC2mm6Ysrdp/iF6szX4yypq4LQGADPqYnzY2CoNEAsjwG5Of0myJrVS2pMy74xwsG54edAuCuyUY0CZju19mNxNdbvPt3hJhfTNDSCBNnK7Ym2GdMNvRxpgG5VgoVq8LiXgR/rySXq4p0qPVN73nRgFR8lLxSYOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MoS1gs2H; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lWxaA4vI; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gfO7Mc1E; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=sd1TWSyq; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E012C21BF5;
+	Mon, 29 Jan 2024 14:26:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706538391; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yVCErth3fJSXbSPYKO931WJVaP5CdJG9Rs6XjxdlFvY=;
+	b=MoS1gs2Hl4EgJ5NL6qalPr5In9E86rdnlvIznU6e6uzBepu+P+a0IA3lv84Ad2PzWvlMyQ
+	hxoXkyxOG2VPmgjftKtmq1GlPP379m4z03COsx7ohuQr/BlvK5JSkoDNk7WLGBSbAbNLFw
+	5KJ009zaCwYLAYNjS9CHarYnvFpB7FI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706538391;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yVCErth3fJSXbSPYKO931WJVaP5CdJG9Rs6XjxdlFvY=;
+	b=lWxaA4vI45WlLR5SVl+jZF3+l5yuFu9OW9bU6bJGmfamA8bxRT4JWrN5/sgvElyJ5cHzV1
+	wUM/aMXPmstFo6CQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706538389; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yVCErth3fJSXbSPYKO931WJVaP5CdJG9Rs6XjxdlFvY=;
+	b=gfO7Mc1E1PiMODYu+5MLfCH3iGbrIB26IpBO4ToDdMgglzyXCPJCUV6j/pBJwIh28EHLOA
+	vso3+m3dnRk3TNOJ/iAPbh9RFv8O4T1LKt1VC0+uiF+y+P1peMVG41CIi4juS3SKyDiOhf
+	Hgrn5fDKGnsuNp7qAdgKdQBVKVSG3mQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706538389;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yVCErth3fJSXbSPYKO931WJVaP5CdJG9Rs6XjxdlFvY=;
+	b=sd1TWSyqZeSLloNag5rRyzE3DDd9JvMRR0bf2I1EfXwV4odzaQaVunxZ/10QQB7zUqffYs
+	u7U2ysU9swvXdECA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9B73012FF7;
+	Mon, 29 Jan 2024 14:26:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id BmKbJZW1t2WqNQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Mon, 29 Jan 2024 14:26:29 +0000
+Message-ID: <1cc76023-ef3e-4639-9a02-644c5abe918d@suse.cz>
+Date: Mon, 29 Jan 2024 15:26:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.400.31\))
-Subject: Re: [PATCH] hfs: fix a memleak in hfs_find_init
-From: Viacheslav Dubeyko <slava@dubeyko.com>
-X-Priority: 3
-In-Reply-To: <38fd9f3.214a.18d5548ac0c.Coremail.alexious@zju.edu.cn>
-Date: Mon, 29 Jan 2024 17:25:26 +0300
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
- linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 15/25] x86/sev: Introduce snp leaked pages list
+Content-Language: en-US
+To: Michael Roth <michael.roth@amd.com>, x86@kernel.org
+Cc: kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org,
+ linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+ tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de,
+ thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org,
+ pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+ jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
+ slp@redhat.com, pgonda@google.com, peterz@infradead.org,
+ srinivas.pandruvada@linux.intel.com, rientjes@google.com, tobin@ibm.com,
+ bp@alien8.de, kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
+ sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+ jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
+ pankaj.gupta@amd.com, liam.merwick@oracle.com
+References: <20240126041126.1927228-1-michael.roth@amd.com>
+ <20240126041126.1927228-16-michael.roth@amd.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20240126041126.1927228-16-michael.roth@amd.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <DCBF7671-E982-49F2-8687-DF030D2A99C7@dubeyko.com>
-References: <20240122172719.3843098-1-alexious@zju.edu.cn>
- <F36C0C80-DAF3-4D8F-8EA3-5209E8FB5BE3@dubeyko.com>
- <38fd9f3.214a.18d5548ac0c.Coremail.alexious@zju.edu.cn>
-To: Zhipeng Lu <alexious@zju.edu.cn>
-X-Mailer: Apple Mail (2.3774.400.31)
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [-3.09 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 MIME_GOOD(-0.10)[text/plain];
+	 R_RATELIMIT(0.00)[to_ip_from(RL81e5qggtdx371s8ik49ru6xr)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[36];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -3.09
 
-
-
-> On 29 Jan 2024, at 15:54, alexious@zju.edu.cn wrote:
+On 1/26/24 05:11, Michael Roth wrote:
+> From: Ashish Kalra <ashish.kalra@amd.com>
 > 
->>> On 22 Jan 2024, at 20:27, Zhipeng Lu <alexious@zju.edu.cn> wrote:
->>> 
->>> When the switch statment goes to default and return an error, ptr should
->>> be freed since it is allocated in hfs_find_init.
->>> 
->> 
->> Do you have any memory leaks report? Could you share it in the comments?
->> Which use-case reproduces the issue? It will be easier to review the fix
->> If you can share the path of reproduction.
->> 
->> Thanks,
->> Slava.
+> Pages are unsafe to be released back to the page-allocator, if they
+> have been transitioned to firmware/guest state and can't be reclaimed
+> or transitioned back to hypervisor/shared state. In this case add
+> them to an internal leaked pages list to ensure that they are not freed
+> or touched/accessed to cause fatal page faults.
 > 
-> Well, we found this potential memory leak by static analysis.
-> 
-> We found that all of hfs_find_init's callers won't release `ptr` when 
-> hfs_find_init fails, while they will do release `ptr` when functions 
-> that after hfs_find_init fails. This tactic observation suggests that
-> hfs_find_init proberly should release `ptr` when it fails, i.e. in the
-> default branch of switch in this patch.
-> 
-> Besides, we noticed another implementation of hfs_find_init in 
-> fs/hfsplus/bfind.c, which is essentially identical to the one in 
-> this patch (in fs/hfs/bfind.c) but calling `BUG();` in default branch
-> to trigger an error-handling.
-> 
+> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> [mdr: relocate to arch/x86/virt/svm/sev.c]
+> Signed-off-by: Michael Roth <michael.roth@amd.com>
 
-I see. I believe it makes sense to add all of this explanation
-into comment section. Modification looks good. Mostly, hfs_find_exit()
-does freeing resources and if hfs_find_init() fails, then hfs_find_exit()
-is never called. Maybe, it makes sense to set fd->tree = NULL too but
-it is not critical, as far as I can see.
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
-Could you please rework the comment section of the patch?
+Some minor nitpicks:
 
-Thanks,
-Slava.
+> ---
+>  arch/x86/include/asm/sev.h |  2 ++
+>  arch/x86/virt/svm/sev.c    | 34 ++++++++++++++++++++++++++++++++++
+>  2 files changed, 36 insertions(+)
+> 
+> diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
+> index d3ccb7a0c7e9..435ba9bc4510 100644
+> --- a/arch/x86/include/asm/sev.h
+> +++ b/arch/x86/include/asm/sev.h
+> @@ -264,6 +264,7 @@ void snp_dump_hva_rmpentry(unsigned long address);
+>  int psmash(u64 pfn);
+>  int rmp_make_private(u64 pfn, u64 gpa, enum pg_level level, int asid, bool immutable);
+>  int rmp_make_shared(u64 pfn, enum pg_level level);
+> +void snp_leak_pages(u64 pfn, unsigned int npages);
+>  #else
+>  static inline bool snp_probe_rmptable_info(void) { return false; }
+>  static inline int snp_lookup_rmpentry(u64 pfn, bool *assigned, int *level) { return -ENODEV; }
+> @@ -275,6 +276,7 @@ static inline int rmp_make_private(u64 pfn, u64 gpa, enum pg_level level, int as
+>  	return -ENODEV;
+>  }
+>  static inline int rmp_make_shared(u64 pfn, enum pg_level level) { return -ENODEV; }
+> +static inline void snp_leak_pages(u64 pfn, unsigned int npages) {}
+>  #endif
+>  
+>  #endif
+> diff --git a/arch/x86/virt/svm/sev.c b/arch/x86/virt/svm/sev.c
+> index 1a13eff78c9d..649ac1bb6b0e 100644
+> --- a/arch/x86/virt/svm/sev.c
+> +++ b/arch/x86/virt/svm/sev.c
+> @@ -65,6 +65,11 @@ static u64 probed_rmp_base, probed_rmp_size;
+>  static struct rmpentry *rmptable __ro_after_init;
+>  static u64 rmptable_max_pfn __ro_after_init;
+>  
+> +static LIST_HEAD(snp_leaked_pages_list);
+> +static DEFINE_SPINLOCK(snp_leaked_pages_list_lock);
+> +
+> +static unsigned long snp_nr_leaked_pages;
+> +
+>  #undef pr_fmt
+>  #define pr_fmt(fmt)	"SEV-SNP: " fmt
+>  
+> @@ -505,3 +510,32 @@ int rmp_make_shared(u64 pfn, enum pg_level level)
+>  	return rmpupdate(pfn, &state);
+>  }
+>  EXPORT_SYMBOL_GPL(rmp_make_shared);
+> +
+> +void snp_leak_pages(u64 pfn, unsigned int npages)
+> +{
+> +	struct page *page = pfn_to_page(pfn);
+> +
+> +	pr_warn("Leaking PFN range 0x%llx-0x%llx\n", pfn, pfn + npages);
+> +
+> +	spin_lock(&snp_leaked_pages_list_lock);
+> +	while (npages--) {
+> +		/*
+> +		 * Reuse the page's buddy list for chaining into the leaked
+> +		 * pages list. This page should not be on a free list currently
+> +		 * and is also unsafe to be added to a free list.
+> +		 */
+> +		if (likely(!PageCompound(page)) ||
+> +		    (PageHead(page) && compound_nr(page) <= npages))
+> +			/*
+> +			 * Skip inserting tail pages of compound page as
+> +			 * page->buddy_list of tail pages is not usable.
+> +			 */
+> +			list_add_tail(&page->buddy_list, &snp_leaked_pages_list);
+
+Even though it's not necessary for correctness, with the comment I'd put the
+whole block into { } to make easier to follow. Or just move the comment
+above the if() itself?
+
+> +		dump_rmpentry(pfn);
+> +		snp_nr_leaked_pages++;
+> +		pfn++;
+> +		page++;
+> +	}
+> +	spin_unlock(&snp_leaked_pages_list_lock);
+> +}
+> +EXPORT_SYMBOL_GPL(snp_leak_pages);
 
 
