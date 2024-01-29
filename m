@@ -1,440 +1,264 @@
-Return-Path: <linux-kernel+bounces-42474-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8F398401D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:35:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E4EC8401DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:38:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2233AB235CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:35:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E83E81F224E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:38:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6359A56451;
-	Mon, 29 Jan 2024 09:34:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6A5B55C35;
+	Mon, 29 Jan 2024 09:38:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FxRhbUTB"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nl0TWa5S"
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 256B859158;
-	Mon, 29 Jan 2024 09:34:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.55.52.88
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706520892; cv=fail; b=PMtT4zeghZ/pTHQIdjaRm8Cja44ml5UnxkGuvC2ptLQ3aKvrR7rg7xsfGZRTB0OqAVbYjEfZgY+e3ruQ8St13IHw4EEyeGQNdETezqYM9jEtqAAPtIdpPlJm06OI788aa4o54iI7yomBu8jCgVa9SVWKAec/+lDNABGCdYqb/EQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706520892; c=relaxed/simple;
-	bh=pwKjl5mXK7djdyTxjv9jXx6KbuB9WU0ulGq3eX7sGeA=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=mwCt+kJtHU27kytUr2nLBMYnFXwYxH8pV2/i7SVExgbiweai9aa6GUOzKjxkhBsHOaIxDwgBLSKymyWLG5ZWANCm7qHMANAdv7Zj27paTOsG4tJe5gV/e2ux1lNIwb+bdWvhkk+solt2OzkLYPPR4LTBnPeuz41LNdkAkEcmMpo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FxRhbUTB; arc=fail smtp.client-ip=192.55.52.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706520890; x=1738056890;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=pwKjl5mXK7djdyTxjv9jXx6KbuB9WU0ulGq3eX7sGeA=;
-  b=FxRhbUTBScpBV0IsyHO2jeLlWFll62DuVSshSesldp69NPCdXiMjYAlF
-   NnhEcYNwgdukwerHmRR8JfSuJzfvImmK3WAhxwRJ4WPioOWPLI9DbA0GR
-   mVNnY+NK+RBCKo3oSPaDxbfWn4JAcHschil2QnIiq/SKYJD+tx09AzDtl
-   E1+RfRtevunE0qTASGNCbVBtPT90Q0t9sRVxJt226bW4XhSK1wg+h6tKW
-   Frhd+jrpkRaFkEUZZs0qhF55XuLdRt74V339t62V+nOWGIYmN+p+O5qbL
-   2HTbto6eDJP2XtuRjH49b0koDUlm2OL/TVUWSsThX3hd44u8/JP/yD5Wm
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="434067514"
-X-IronPort-AV: E=Sophos;i="6.05,226,1701158400"; 
-   d="scan'208";a="434067514"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 01:34:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,226,1701158400"; 
-   d="scan'208";a="36075769"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orviesa001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Jan 2024 01:34:49 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 29 Jan 2024 01:34:48 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 29 Jan 2024 01:34:47 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.101)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 29 Jan 2024 01:34:47 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W4Tfg7raQbw7stpvGvGr1ygpkeIw6cUWxp+Nir50l+CyRL0JAsxR9uFdlFMUB+67ZdSwNszbPs81OMrlwimLsqaAuUY52gpvGkXZyhoUdxwMPazDni8rJN3F9dvwzkHGkQU7aSEnTPniljocCexasnQbJ79HkuIAOiYqhnpOafpSa4u6aymnHqcAUxu5an8RlOgdaeL/BleT9BSxmkeyuXyUf69p8Adl+9l5d2CZXKj8OS+4yg5nv3edv9kQmuxcuINKXUL5r25a2Jw97w9hZoZKDybAzXcTgHvx96s2NDHXLzFGl0gDgl6x9U4M+8TtepYo2k9FHSFk5eVSGlgfnA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VVe3EZOGf2Lo9xt1E7yEH6J78JqzbY77iC9c8ZfQAjU=;
- b=HTUUJs+Mj3xH+9JlT3R+QrDpm+aOwsg/C/9k2B72ccJkmhX6lmD5feUMb8QR1ffZWr2dXf1j27DSPdK2vTnLsjn+gDqIDiO5LMtiIE8GKQ4Li1qV6ojJdxjZAZOM4+B7VLI2kGOH+RE3Kc38RyZgEWDkLD/ESHRYDQZuRKYOn7nF20FRAuPq0LGdpqsfoX43LSaxkOhMxQxMne7nQbPijoq4yP+bqomcHHMJB2kd4qVaonDruK+5OcOH65U5oKVBpUMxK50YZox8v9YchSX6NXRvWzILJGYYSJ14T6t9TXFL8vYyAjou+d7IJudIOtssAXBtJ8rurj1wbquYRroyYA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20)
- by DM4PR11MB6264.namprd11.prod.outlook.com (2603:10b6:8:a5::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7228.32; Mon, 29 Jan 2024 09:34:45 +0000
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::b877:93ff:2217:eb13]) by DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::b877:93ff:2217:eb13%7]) with mapi id 15.20.7228.029; Mon, 29 Jan 2024
- 09:34:45 +0000
-Message-ID: <b7a8ee11-7fa7-4240-9d52-651f17bfe213@intel.com>
-Date: Mon, 29 Jan 2024 17:37:50 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 3/5] iommu/vt-d: simplify parameters of
- qi_submit_sync() ATS invalidation callers
-Content-Language: en-US
-To: Ethan Zhao <haifeng.zhao@linux.intel.com>, <baolu.lu@linux.intel.com>,
-	<bhelgaas@google.com>, <robin.murphy@arm.com>, <jgg@ziepe.ca>
-CC: <kevin.tian@intel.com>, <dwmw2@infradead.org>, <will@kernel.org>,
-	<lukas@wunner.de>, <iommu@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-	<linux-pci@vger.kernel.org>
-References: <20240129034924.817005-1-haifeng.zhao@linux.intel.com>
- <20240129034924.817005-4-haifeng.zhao@linux.intel.com>
-From: Yi Liu <yi.l.liu@intel.com>
-In-Reply-To: <20240129034924.817005-4-haifeng.zhao@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI2PR01CA0039.apcprd01.prod.exchangelabs.com
- (2603:1096:4:193::16) To DS0PR11MB7529.namprd11.prod.outlook.com
- (2603:10b6:8:141::20)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B78EC4CE02
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:38:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706521089; cv=none; b=EQZj5UTGB5444eiqeNGkDAVkvyZRa3YBi/TR3wz67wPx7qmCrLR1XTI+4TWAhPqref2y+Qks2j6OA8tR4oEeW8LQC+4v6NRwhgSE6cuWi+HUunk+wti9DxitZzP2zosKHQMa/piJP6DNKXteQZqADelX0PTwOPexcXjb1l8tlOU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706521089; c=relaxed/simple;
+	bh=Ldj1FDg/nEnZb9STOe9WZ7ecK09+3FkjkQDPFWHzixs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TXCWl1Y9SnvDeB8BBd8W57cx1/s0u3EGVR/XoohEyBMbb3tZMabdbz6fcFO2FfcAYcxiL++XwQWq5/0aGGnR9dCXWWh+DpXipA0eKucyHRdHknTU7DlATFjUvalWZlIWNPn1HnJc7OpKOtzccyFJoGMOkSOuy+wvmdbWBevFZZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nl0TWa5S; arc=none smtp.client-ip=209.85.128.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-5ffcb478512so16998457b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 01:38:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706521086; x=1707125886; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=7GUkQLMq88GAXuh3Eqx0lD6UD7ww86b8Rhtv6iqBIbU=;
+        b=nl0TWa5SnLrytGAWQRk0g4SW80M2Vo4gZU8aO+ILxSlBU6DlflrmukDGMWwy3fKHuj
+         NfBj+FGfE+hWjxiPdNrya5S4r/Q17k4mcLM+Zeg8aTFUXbePSS0gjYkBPvm+Uc3ZJ6SF
+         JB0L74Xb8+JkitijWhxS+1tw0QETuMbpiQY4la1GCCo9YygJRvtu/hp5oaWx/DNzk4sz
+         1O5rScmqiieFOSr8k+mnIjucTQ7wbFCmom+1JFY9oWZZwVB45IbT6F262ShYPeSR/V2G
+         8AYFlS73+LG1OyDmQ2fGG5NMe0/GRdrfY7uK+RGp2VWro1r+sdF+PiZkl5l9oMwGlgFw
+         AxFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706521086; x=1707125886;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7GUkQLMq88GAXuh3Eqx0lD6UD7ww86b8Rhtv6iqBIbU=;
+        b=O5oUChJby/23UPuzYerA/UqluXk0qVfOYUomV4R0c1G0HgmwDexwxQWe1dio2MvczD
+         s3J/jqj8mPbArdwMxq5bX0eWPBOQXXFS9WVU6N+8qmcXVjJfujMSNFvSDe9m3alDoVMU
+         wkHwMvLITDHu9lpQOn96qQ0sXiom6p011Vu5TqK5dZ18IGUes/+TtuNmw/M0QZL4wKwM
+         mZO2yDXbk9NWKuy0kP7wt3NcnL+DP5IER3aZrechzUppqPfjuPfpTN2Mq5TjRAlBrluE
+         QJ5Kf30dnAl7Uby+nACcxxCQWfFaerNR7Zn6FxgMBEKG5SjgfAxWdS+WaOmHu7cK4PUg
+         swtQ==
+X-Gm-Message-State: AOJu0YyUolJljujxgJjn860qkVafhuNkPLAqavHZN8RuQzVttTem1EHZ
+	sbt38W/Eorw7J3pQZzQLu31JPzhnJaJgauzhfqD7pq81VfL5u3kWR4lztFt4C7T/u8W8Cy3oPYe
+	2ojopNTXPTarhjnBzzV/e2XElwXbweXhxbbaoCg==
+X-Google-Smtp-Source: AGHT+IEeoJUoLMtBvZJFkIJY4mg0SVO8RrXIC2eL8rV9XVO7o4cYzCCwHONGiBoxbodpc9WxXQGklKeSWkdZplHmeNA=
+X-Received: by 2002:a81:aa12:0:b0:5ff:5406:e064 with SMTP id
+ i18-20020a81aa12000000b005ff5406e064mr2222313ywh.10.1706521085719; Mon, 29
+ Jan 2024 01:38:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR11MB7529:EE_|DM4PR11MB6264:EE_
-X-MS-Office365-Filtering-Correlation-Id: 37692daa-5e29-4b0a-8b60-08dc20ad8747
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Rw+7zwfl1riKqNv7N6GPilGRetmowOJAsrTbjhmrbnz/C7U3d1MTR5CMNbnPMME1rDTr0tjNxOP1Yfp7nLbqoRi1AHO25K5wNoG8HUcbzZk6C4wNKXaL6EybxdBqs4A1TAKBMgOBmMhK8jh+Ka5gKn5957SCFz2CUhSoOjNPZ3neIAg04phA9krKtPHzK75c/vR5wBjbB0l2gLdc++JqrdcgJkHzG5quGPEKHsn5fTKWMsk54klZS1UNmWXf5U1zY0EqWPgZDQNnuLvacd5KMiErNnjs2gNLMDxmy13EjIFoLd+Sxm+NwP/S1izO0bsOG0ReTo0Keb5wDOCo7sr9c2JXooENsU/r1rrwF6mMm+AB8rEpbkXOuwkztWnslpKsJs+djrXEWSW4G8IdfPE4NHqcAvYIxStRWUu8W/GzwcVC6CEvIoMKEWrwg1PZy3fmSw+F6xyzQXbjID9vsmhIiWaEzjYmRZZO4j8TPP/FlhKbStGOgEuMJVoU97zJgh6pP446dV7nCaidCg8cVDL0CtDpO9AguufK1zb1ZLi8egwrpaS5slyVqECA2KlYZPJozXCY8DQrOdrZFRK71aylmuRU2BsQph+0/kxQGTkGWti3llALjeBrtGREIsEmjHT0YvVVZNvTv+LlqfPW+gL98A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7529.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(396003)(39860400002)(376002)(136003)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(86362001)(82960400001)(38100700002)(83380400001)(26005)(2616005)(6512007)(478600001)(6506007)(53546011)(6666004)(6486002)(316002)(31696002)(66476007)(66556008)(66946007)(8676002)(8936002)(4326008)(7416002)(2906002)(5660300002)(36756003)(31686004)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MWRBS3ZqWkc3dEVLbW5Yc1l3aXZmeDNhR2FOV21WQkV5a2xxZU0xR01vY2JL?=
- =?utf-8?B?QWl1djVmdzBTdjRhK1JUUjRsV3EvUll4RUF3Y0N1bHpLQnd3NzA2ZGRyRWF3?=
- =?utf-8?B?RCtFR2FXeW1mZEdmMjVQTU5nVHY0akVxNVh6UHpwSGZMV2tjWmZHWDBnRzlV?=
- =?utf-8?B?ZU9QZm9DazFKckFkSkg4NVdUMGhoc2NnNDFVaUpESFNZYTRwUVJuc0pFSTVD?=
- =?utf-8?B?RmRtNkVFRy8wS2RoMUVINDJmVzRnTFUrUlJDL3dmSktqc2MvRFUyUzd0TEN0?=
- =?utf-8?B?T1B0TVYydys2TkQ5S3NaUmpOdVRZY2tvZHV6enVYR2gvU3BKdTJpOEdzRE91?=
- =?utf-8?B?NW56OHdMTXdQdDhieTgzOFl3SWxZMERxODJDd1Z3S2Vya3VxSFlRZUNsWEw0?=
- =?utf-8?B?TG1YUjJDT2Fmc0wyeGh5UzNndTBLL3JOUGdCU2FhRlo5RXNNR01QNDJyczJY?=
- =?utf-8?B?V1NPQklUMElNZ281SllSQlhMVmR3MUlheE84M3plc1FIQXZqUlk0NzRFMkMv?=
- =?utf-8?B?RjNxS0l4RFhkYnlvakFkOGozUWhEU2RJZVNXdDZVYVlNVUVLQndYV0ZoMldC?=
- =?utf-8?B?dmxFNzluTmFEZEZDMmN3akVNQ056eXFrUThvSkgySXlXTzcxZFJxNTJFRnF4?=
- =?utf-8?B?R0ZQQ1VnQm5lQkUrdkdvd1BEcDlRTXgyaTBoRVd0QTNlTTEwUFRablpZNVp6?=
- =?utf-8?B?WmhsY3RKSU1tUDFyckhOVUtLU0M2b05rQy9INjFMcVEvL1RPMUJIa0grSlMx?=
- =?utf-8?B?NitkRXZmVlN1dW1ueUZFTVNFYlFuR0x2Q01iN3dvTzR5UEF6WjdUcHFIOUlP?=
- =?utf-8?B?NXpKUkJQOG5FdExldEtBNjRBKzhXakxCN3FiSVVaeTA3QmdaUXUrY0QyYzhu?=
- =?utf-8?B?UStvdXo1SkIyVzBaQ0lYMXhwYytnb01heGJleVJMSlo1bStPcFlST0U3R25M?=
- =?utf-8?B?dzdHSnk3MHUvVUdJSmhOUk9xdVZRTWVrY0tabG9hRXF5Q0JCSytla0lWdGw2?=
- =?utf-8?B?djZjR1MrNmxMZnd5NnVHMlBEdEsrMnRhOXlUZkZRaFI1MXFON0o0bUI5NE5z?=
- =?utf-8?B?cHNUUWVxbk1tYVJ2b1QrWmUxVmh5dEs3MUxqVDlGUUpOcGtPc1AwdHgyK1p0?=
- =?utf-8?B?TUlvVmI0b25iT2l1a1lkRzdlVmdFbmlORmNaU2twWnc1MVRTOTA3SlpQdklu?=
- =?utf-8?B?ckp2ekxtcFhZa1d6akRNQ2QwWDJxazhjcmwzb005K3BkcEwzNzZjKzVVbzNN?=
- =?utf-8?B?Sm85Q0orZDNFV2IzeG9DUENEeEFxWGt0ZWhLNnNvUWFKWXFrWkhld3RXc0VI?=
- =?utf-8?B?eDZwQ0JlU2k4SHlLeWFndzVEK0hOSmJzUkFmVFNTck1HeUhjQWkyZExiWnBX?=
- =?utf-8?B?cTM2aWlZN1pMeGQxZkN4dm1QK1ZEQ1F1L0plMklVS1FSMWh2SDhsSklNcktX?=
- =?utf-8?B?R21qSzBtb3ZPSWVDOXo4TmdqYWhSTElNUHdDMVc5dm95WGVKNU1BQjl3QWl4?=
- =?utf-8?B?a05pNUtkR1VWTFFUSTJrdFlqd0p2TzBCaUNBTUlpd1FZTGhEd202SDBvK3Qz?=
- =?utf-8?B?T3pndThTUDdiWGM1N0Qzd3I2ZHY5cEx5cm1qVnhTbm9Kckw5dWxEYlV3dnVl?=
- =?utf-8?B?Nll0bnYydFZYb1Y1WnV6UzRWaTR0V1U3MGR6d1pnYWRXaFNGY3hUUDE5S1ZW?=
- =?utf-8?B?Z2R5THhldDJPay8zNXJNSXQ3OHVqWjdxbFlKcE1iY1JKNEVZN0pUSkVnWDZv?=
- =?utf-8?B?Wld1K0RVam1zMG9zWTZNcUNqYldPcnc2bndKZ1hDem1yL3Q0Y3BaclVBYkow?=
- =?utf-8?B?cjg0ajllaVZyZGtuaXdwQk0zdi9mOFB1WDdrdzNwQ1g1d0R5d1FDbmlqa2Er?=
- =?utf-8?B?N3BKTUNRb1RGQ1RxcUhyeUgxOXRWQXdVSGREU1h4RE9sWmdBYmxrWFEyL25s?=
- =?utf-8?B?cjdINWRIb1V3K2pLb1VtUlpwcGl4dk1nRHVkUUxSd1NuK2dJci9YODYvZHVs?=
- =?utf-8?B?WDNiNHBWUzVHWlpjZXR6Vy9leFZwWU02V3NJZTg4ZDV4S0MyN1hSMTg3RDJi?=
- =?utf-8?B?UEYyaG52K0d4TGgwbTR5VWpmOVlWKzVIdm9za1pqdjk5UzNvcFRtTzNBN3VI?=
- =?utf-8?Q?XoqeQd2Y+oDHI79XXq90oJTP8?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 37692daa-5e29-4b0a-8b60-08dc20ad8747
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7529.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2024 09:34:45.1780
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: z8KEo2mQF6zKI960Ok11radY3nleK0hVte4cm5/eMKY/na3RSUswmgm834A2eAPiYw9DRjBDM4rhW0OJ+RlKgQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB6264
-X-OriginatorOrg: intel.com
+References: <20240129051104.1855487-1-quic_devipriy@quicinc.com> <20240129051104.1855487-4-quic_devipriy@quicinc.com>
+In-Reply-To: <20240129051104.1855487-4-quic_devipriy@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Mon, 29 Jan 2024 11:37:54 +0200
+Message-ID: <CAA8EJppG0NehyLPkML5_Xe__Vy_aEu=qNYAd8WU5rsgLjrW8CA@mail.gmail.com>
+Subject: Re: [PATCH V3 3/7] clk: qcom: gcc-ipq9574: Add gpll0_out_aux clock &
+ enable few nssnoc clocks
+To: Devi Priya <quic_devipriy@quicinc.com>
+Cc: andersson@kernel.org, konrad.dybcio@linaro.org, mturquette@baylibre.com, 
+	sboyd@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
+	conor+dt@kernel.org, catalin.marinas@arm.com, will@kernel.org, 
+	p.zabel@pengutronix.de, richardcochran@gmail.com, geert+renesas@glider.be, 
+	arnd@arndb.de, neil.armstrong@linaro.org, nfraprado@collabora.com, 
+	m.szyprowski@samsung.com, linux-arm-msm@vger.kernel.org, 
+	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 2024/1/29 11:49, Ethan Zhao wrote:
-> fold parameters back to struct device_domain_info *info instead of extract
-> and pass them, thus decrease the number of the parameter passed for
-> following functions
-> 
-> qi_flush_dev_iotlb()
-> qi_flush_dev_iotlb_pasid()
-> quirk_extra_dev_tlb_flush()
-> 
-> no function change.
-> 
-> Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
+On Mon, 29 Jan 2024 at 07:13, Devi Priya <quic_devipriy@quicinc.com> wrote:
+>
+> gcc_nssnoc_nsscc_clk, gcc_nssnoc_snoc_clk, gcc_nssnoc_snoc_1_clk are
+> enabled by default and the RCGs are properly configured by the bootloader.
+>
+> Some of the NSS clocks needs these clocks to be enabled. To avoid
+> these clocks being disabled by clock framework, drop these entries
+> from the clock table and enable it in the driver probe itself.
+
+Obvious NAK for mixing two independent changes into a single patch.
+
+>
+> Also, add support for gpll0_out_aux clock which acts as the parent for
+> certain networking subsystem (nss) clocks.
+>
+> Signed-off-by: Devi Priya <quic_devipriy@quicinc.com>
 > ---
->   drivers/iommu/intel/dmar.c   | 26 ++++++++++++++++++++++----
->   drivers/iommu/intel/iommu.c  | 29 +++++++----------------------
->   drivers/iommu/intel/iommu.h  | 17 ++++++++---------
->   drivers/iommu/intel/nested.c |  9 ++-------
->   drivers/iommu/intel/pasid.c  |  9 ++-------
->   drivers/iommu/intel/svm.c    | 17 ++++++++---------
->   6 files changed, 49 insertions(+), 58 deletions(-)
-> 
-> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
-> index 23cb80d62a9a..ab5e1760bd59 100644
-> --- a/drivers/iommu/intel/dmar.c
-> +++ b/drivers/iommu/intel/dmar.c
-> @@ -1517,11 +1517,20 @@ void qi_flush_iotlb(struct intel_iommu *iommu, u16 did, u64 addr,
->   	qi_submit_sync(iommu, &desc, 1, 0);
->   }
->   
-> -void qi_flush_dev_iotlb(struct intel_iommu *iommu, u16 sid, u16 pfsid,
-> -			u16 qdep, u64 addr, unsigned mask)
-> +void qi_flush_dev_iotlb(struct intel_iommu *iommu,
-> +			struct device_domain_info *info, u64 addr,
+>  Changes in V3:
+>         - Dropped flags for gpll0_out_aux
+>         - Dropped few nss clock entries from the clock table and enabled
+>           them in the probe
+>
+>  drivers/clk/qcom/gcc-ipq9574.c | 83 ++++++++++++----------------------
+>  1 file changed, 28 insertions(+), 55 deletions(-)
+>
+> diff --git a/drivers/clk/qcom/gcc-ipq9574.c b/drivers/clk/qcom/gcc-ipq9574.c
+> index e8190108e1ae..987703431b5b 100644
+> --- a/drivers/clk/qcom/gcc-ipq9574.c
+> +++ b/drivers/clk/qcom/gcc-ipq9574.c
+> @@ -105,6 +105,20 @@ static struct clk_alpha_pll_postdiv gpll0 = {
+>         },
+>  };
+>
+> +static struct clk_alpha_pll_postdiv gpll0_out_aux = {
+> +       .offset = 0x20000,
+> +       .regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_DEFAULT],
+> +       .width = 4,
+> +       .clkr.hw.init = &(const struct clk_init_data) {
+> +               .name = "gpll0_out_aux",
+> +               .parent_hws = (const struct clk_hw *[]) {
+> +                       &gpll0_main.clkr.hw
+> +               },
+> +               .num_parents = 1,
+> +               .ops = &clk_alpha_pll_postdiv_ro_ops,
+> +       },
+> +};
+> +
+>  static struct clk_alpha_pll gpll4_main = {
+>         .offset = 0x22000,
+>         .regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_DEFAULT],
+> @@ -2186,23 +2200,6 @@ static struct clk_branch gcc_nsscfg_clk = {
+>         },
+>  };
+>
+> -static struct clk_branch gcc_nssnoc_nsscc_clk = {
+> -       .halt_reg = 0x17030,
+> -       .clkr = {
+> -               .enable_reg = 0x17030,
+> -               .enable_mask = BIT(0),
+> -               .hw.init = &(const struct clk_init_data) {
+> -                       .name = "gcc_nssnoc_nsscc_clk",
+> -                       .parent_hws = (const struct clk_hw *[]) {
+> -                               &pcnoc_bfdcd_clk_src.clkr.hw
+> -                       },
+> -                       .num_parents = 1,
+> -                       .flags = CLK_SET_RATE_PARENT,
+> -                       .ops = &clk_branch2_ops,
+> -               },
+> -       },
+> -};
+> -
 
-If you want to fold the parameters, why iommu is left? info also includes
-iommu pointer.
+What is the actual consumer for these clocks? Why are you trying to
+hide them instead of making them used by the consumer device?
 
-> +			unsigned int mask)
->   {
-> +	u16 sid, qdep, pfsid;
->   	struct qi_desc desc;
->   
-> +	if (!info || !info->ats_enabled)
-> +		return;
-> +
-> +	sid = info->bus << 8 | info->devfn;
-> +	qdep = info->ats_qdep;
-> +	pfsid = info->pfsid;
-> +
->   	/*
->   	 * VT-d spec, section 4.3:
->   	 *
-> @@ -1590,11 +1599,20 @@ void qi_flush_piotlb(struct intel_iommu *iommu, u16 did, u32 pasid, u64 addr,
->   }
->   
->   /* PASID-based device IOTLB Invalidate */
-> -void qi_flush_dev_iotlb_pasid(struct intel_iommu *iommu, u16 sid, u16 pfsid,
-> -			      u32 pasid,  u16 qdep, u64 addr, unsigned int size_order)
-> +void qi_flush_dev_iotlb_pasid(struct intel_iommu *iommu,
-> +			      struct device_domain_info *info, u64 addr, u32 pasid,
-> +			      unsigned int size_order)
->   {
->   	unsigned long mask = 1UL << (VTD_PAGE_SHIFT + size_order - 1);
->   	struct qi_desc desc = {.qw1 = 0, .qw2 = 0, .qw3 = 0};
-> +	u16 sid, qdep, pfsid;
-> +
-> +	if (!info || !dev_is_pci(info->dev))
-> +		return;
-> +
-> +	sid = info->bus << 8 | info->devfn;
-> +	qdep = info->ats_qdep;
-> +	pfsid = info->pfsid;
->   
->   	/*
->   	 * VT-d spec, section 4.3:
-> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-> index 6fb5f6fceea1..e5902944b3db 100644
-> --- a/drivers/iommu/intel/iommu.c
-> +++ b/drivers/iommu/intel/iommu.c
-> @@ -1310,16 +1310,11 @@ static void iommu_disable_pci_caps(struct device_domain_info *info)
->   static void __iommu_flush_dev_iotlb(struct device_domain_info *info,
->   				    u64 addr, unsigned int mask)
->   {
-> -	u16 sid, qdep;
+>  static struct clk_branch gcc_nsscc_clk = {
+>         .halt_reg = 0x17034,
+>         .clkr = {
+> @@ -2585,40 +2582,6 @@ static struct clk_branch gcc_q6ss_boot_clk = {
+>         },
+>  };
+>
+> -static struct clk_branch gcc_nssnoc_snoc_clk = {
+> -       .halt_reg = 0x17028,
+> -       .clkr = {
+> -               .enable_reg = 0x17028,
+> -               .enable_mask = BIT(0),
+> -               .hw.init = &(const struct clk_init_data) {
+> -                       .name = "gcc_nssnoc_snoc_clk",
+> -                       .parent_hws = (const struct clk_hw *[]) {
+> -                               &system_noc_bfdcd_clk_src.clkr.hw
+> -                       },
+> -                       .num_parents = 1,
+> -                       .flags = CLK_SET_RATE_PARENT,
+> -                       .ops = &clk_branch2_ops,
+> -               },
+> -       },
+> -};
 > -
->   	if (!info || !info->ats_enabled)
->   		return;
->   
-> -	sid = info->bus << 8 | info->devfn;
-> -	qdep = info->ats_qdep;
-> -	qi_flush_dev_iotlb(info->iommu, sid, info->pfsid,
-> -			   qdep, addr, mask);
-> -	quirk_extra_dev_tlb_flush(info, addr, mask, IOMMU_NO_PASID, qdep);
-> +	qi_flush_dev_iotlb(info->iommu, info, addr, mask);
-> +	quirk_extra_dev_tlb_flush(info, addr, IOMMU_NO_PASID, mask);
->   }
->   
->   static void iommu_flush_dev_iotlb(struct dmar_domain *domain,
-> @@ -1342,11 +1337,7 @@ static void iommu_flush_dev_iotlb(struct dmar_domain *domain,
->   		if (!info->ats_enabled)
->   			continue;
->   
-> -		qi_flush_dev_iotlb_pasid(info->iommu,
-> -					 PCI_DEVID(info->bus, info->devfn),
-> -					 info->pfsid, dev_pasid->pasid,
-> -					 info->ats_qdep, addr,
-> -					 mask);
-> +		qi_flush_dev_iotlb_pasid(info->iommu, info, addr, dev_pasid->pasid, mask);
->   	}
->   	spin_unlock_irqrestore(&domain->lock, flags);
->   }
-> @@ -4990,22 +4981,16 @@ static void __init check_tylersburg_isoch(void)
->    *
->    * As a reminder, #6 will *NEED* this quirk as we enable nested translation.
->    */
-> -void quirk_extra_dev_tlb_flush(struct device_domain_info *info,
-> -			       unsigned long address, unsigned long mask,
-> -			       u32 pasid, u16 qdep)
-> +void quirk_extra_dev_tlb_flush(struct device_domain_info *info, u32 pasid,
-> +			       unsigned long address, unsigned long mask)
->   {
-> -	u16 sid;
+> -static struct clk_branch gcc_nssnoc_snoc_1_clk = {
+> -       .halt_reg = 0x1707c,
+> -       .clkr = {
+> -               .enable_reg = 0x1707c,
+> -               .enable_mask = BIT(0),
+> -               .hw.init = &(const struct clk_init_data) {
+> -                       .name = "gcc_nssnoc_snoc_1_clk",
+> -                       .parent_hws = (const struct clk_hw *[]) {
+> -                               &system_noc_bfdcd_clk_src.clkr.hw
+> -                       },
+> -                       .num_parents = 1,
+> -                       .flags = CLK_SET_RATE_PARENT,
+> -                       .ops = &clk_branch2_ops,
+> -               },
+> -       },
+> -};
 > -
->   	if (likely(!info->dtlb_extra_inval))
->   		return;
->   
-> -	sid = PCI_DEVID(info->bus, info->devfn);
->   	if (pasid == IOMMU_NO_PASID) {
-> -		qi_flush_dev_iotlb(info->iommu, sid, info->pfsid,
-> -				   qdep, address, mask);
-> +		qi_flush_dev_iotlb(info->iommu, info, address, mask);
->   	} else {
-> -		qi_flush_dev_iotlb_pasid(info->iommu, sid, info->pfsid,
-> -					 pasid, qdep, address, mask);
-> +		qi_flush_dev_iotlb_pasid(info->iommu, info, address, pasid, mask);
->   	}
->   }
->   
-> diff --git a/drivers/iommu/intel/iommu.h b/drivers/iommu/intel/iommu.h
-> index d02f916d8e59..f68f17476d85 100644
-> --- a/drivers/iommu/intel/iommu.h
-> +++ b/drivers/iommu/intel/iommu.h
-> @@ -1037,18 +1037,17 @@ void qi_flush_context(struct intel_iommu *iommu, u16 did,
->   		      u16 sid, u8 fm, u64 type);
->   void qi_flush_iotlb(struct intel_iommu *iommu, u16 did, u64 addr,
->   		    unsigned int size_order, u64 type);
-> -void qi_flush_dev_iotlb(struct intel_iommu *iommu, u16 sid, u16 pfsid,
-> -			u16 qdep, u64 addr, unsigned mask);
-> -
-> +void qi_flush_dev_iotlb(struct intel_iommu *iommu,
-> +			struct device_domain_info *info, u64 addr,
-> +			unsigned int mask);
->   void qi_flush_piotlb(struct intel_iommu *iommu, u16 did, u32 pasid, u64 addr,
->   		     unsigned long npages, bool ih);
->   
-> -void qi_flush_dev_iotlb_pasid(struct intel_iommu *iommu, u16 sid, u16 pfsid,
-> -			      u32 pasid, u16 qdep, u64 addr,
-> -			      unsigned int size_order);
-> -void quirk_extra_dev_tlb_flush(struct device_domain_info *info,
-> -			       unsigned long address, unsigned long pages,
-> -			       u32 pasid, u16 qdep);
-> +void qi_flush_dev_iotlb_pasid(struct intel_iommu *iommu,
-> +			      struct device_domain_info *info, u64 addr,
-> +			      u32 pasid, unsigned int size_order);
-> +void quirk_extra_dev_tlb_flush(struct device_domain_info *info, u32 pasid,
-> +			       unsigned long address, unsigned long mask);
->   void qi_flush_pasid_cache(struct intel_iommu *iommu, u16 did, u64 granu,
->   			  u32 pasid);
->   
-> diff --git a/drivers/iommu/intel/nested.c b/drivers/iommu/intel/nested.c
-> index f26c7f1c46cc..d15f72b55940 100644
-> --- a/drivers/iommu/intel/nested.c
-> +++ b/drivers/iommu/intel/nested.c
-> @@ -78,18 +78,13 @@ static void nested_flush_dev_iotlb(struct dmar_domain *domain, u64 addr,
->   {
->   	struct device_domain_info *info;
->   	unsigned long flags;
-> -	u16 sid, qdep;
->   
->   	spin_lock_irqsave(&domain->lock, flags);
->   	list_for_each_entry(info, &domain->devices, link) {
->   		if (!info->ats_enabled)
->   			continue;
-> -		sid = info->bus << 8 | info->devfn;
-> -		qdep = info->ats_qdep;
-> -		qi_flush_dev_iotlb(info->iommu, sid, info->pfsid,
-> -				   qdep, addr, mask);
-> -		quirk_extra_dev_tlb_flush(info, addr, mask,
-> -					  IOMMU_NO_PASID, qdep);
-> +		qi_flush_dev_iotlb(info->iommu, info, addr, mask);
-> +		quirk_extra_dev_tlb_flush(info, IOMMU_NO_PASID, addr, mask);
->   	}
->   	spin_unlock_irqrestore(&domain->lock, flags);
->   }
-> diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
-> index 953592125e4a..5dacdea3cab7 100644
-> --- a/drivers/iommu/intel/pasid.c
-> +++ b/drivers/iommu/intel/pasid.c
-> @@ -208,7 +208,6 @@ devtlb_invalidation_with_pasid(struct intel_iommu *iommu,
->   			       struct device *dev, u32 pasid)
->   {
->   	struct device_domain_info *info;
-> -	u16 sid, qdep, pfsid;
->   
->   	info = dev_iommu_priv_get(dev);
->   	if (!info || !info->ats_enabled)
-> @@ -217,10 +216,6 @@ devtlb_invalidation_with_pasid(struct intel_iommu *iommu,
->   	if (pci_dev_is_disconnected(to_pci_dev(dev)))
->   		return;
->   
-> -	sid = info->bus << 8 | info->devfn;
-> -	qdep = info->ats_qdep;
-> -	pfsid = info->pfsid;
-> -
->   	/*
->   	 * When PASID 0 is used, it indicates RID2PASID(DMA request w/o PASID),
->   	 * devTLB flush w/o PASID should be used. For non-zero PASID under
-> @@ -228,9 +223,9 @@ devtlb_invalidation_with_pasid(struct intel_iommu *iommu,
->   	 * efficient to flush devTLB specific to the PASID.
->   	 */
->   	if (pasid == IOMMU_NO_PASID)
-> -		qi_flush_dev_iotlb(iommu, sid, pfsid, qdep, 0, 64 - VTD_PAGE_SHIFT);
-> +		qi_flush_dev_iotlb(iommu, info, 0, 64 - VTD_PAGE_SHIFT);
->   	else
-> -		qi_flush_dev_iotlb_pasid(iommu, sid, pfsid, pasid, qdep, 0, 64 - VTD_PAGE_SHIFT);
-> +		qi_flush_dev_iotlb_pasid(iommu, info, 0, pasid, 64 - VTD_PAGE_SHIFT);
->   }
->   
->   void intel_pasid_tear_down_entry(struct intel_iommu *iommu, struct device *dev,
-> diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-> index 40edd282903f..89168b31bf31 100644
-> --- a/drivers/iommu/intel/svm.c
-> +++ b/drivers/iommu/intel/svm.c
-> @@ -181,11 +181,10 @@ static void __flush_svm_range_dev(struct intel_svm *svm,
->   
->   	qi_flush_piotlb(sdev->iommu, sdev->did, svm->pasid, address, pages, ih);
->   	if (info->ats_enabled) {
-> -		qi_flush_dev_iotlb_pasid(sdev->iommu, sdev->sid, info->pfsid,
-> -					 svm->pasid, sdev->qdep, address,
-> +		qi_flush_dev_iotlb_pasid(sdev->iommu, info, address, svm->pasid,
->   					 order_base_2(pages));
-> -		quirk_extra_dev_tlb_flush(info, address, order_base_2(pages),
-> -					  svm->pasid, sdev->qdep);
-> +		quirk_extra_dev_tlb_flush(info, svm->pasid, address,
-> +					  order_base_2(pages));
->   	}
->   }
->   
-> @@ -227,11 +226,11 @@ static void intel_flush_svm_all(struct intel_svm *svm)
->   
->   		qi_flush_piotlb(sdev->iommu, sdev->did, svm->pasid, 0, -1UL, 0);
->   		if (info->ats_enabled) {
-> -			qi_flush_dev_iotlb_pasid(sdev->iommu, sdev->sid, info->pfsid,
-> -						 svm->pasid, sdev->qdep,
-> -						 0, 64 - VTD_PAGE_SHIFT);
-> -			quirk_extra_dev_tlb_flush(info, 0, 64 - VTD_PAGE_SHIFT,
-> -						  svm->pasid, sdev->qdep);
-> +			qi_flush_dev_iotlb_pasid(sdev->iommu, info, 0,
-> +						 svm->pasid,
-> +						 64 - VTD_PAGE_SHIFT);
-> +			quirk_extra_dev_tlb_flush(info, svm->pasid, 0,
-> +						  64 - VTD_PAGE_SHIFT);
->   		}
->   	}
->   	rcu_read_unlock();
+>  static struct clk_branch gcc_qdss_etr_usb_clk = {
+>         .halt_reg = 0x2d060,
+>         .clkr = {
+> @@ -4043,7 +4006,6 @@ static struct clk_regmap *gcc_ipq9574_clks[] = {
+>         [GCC_SDCC1_AHB_CLK] = &gcc_sdcc1_ahb_clk.clkr,
+>         [PCNOC_BFDCD_CLK_SRC] = &pcnoc_bfdcd_clk_src.clkr,
+>         [GCC_NSSCFG_CLK] = &gcc_nsscfg_clk.clkr,
+> -       [GCC_NSSNOC_NSSCC_CLK] = &gcc_nssnoc_nsscc_clk.clkr,
+>         [GCC_NSSCC_CLK] = &gcc_nsscc_clk.clkr,
+>         [GCC_NSSNOC_PCNOC_1_CLK] = &gcc_nssnoc_pcnoc_1_clk.clkr,
+>         [GCC_QDSS_DAP_AHB_CLK] = &gcc_qdss_dap_ahb_clk.clkr,
+> @@ -4059,8 +4021,6 @@ static struct clk_regmap *gcc_ipq9574_clks[] = {
+>         [GCC_CMN_12GPLL_AHB_CLK] = &gcc_cmn_12gpll_ahb_clk.clkr,
+>         [GCC_CMN_12GPLL_APU_CLK] = &gcc_cmn_12gpll_apu_clk.clkr,
+>         [SYSTEM_NOC_BFDCD_CLK_SRC] = &system_noc_bfdcd_clk_src.clkr,
+> -       [GCC_NSSNOC_SNOC_CLK] = &gcc_nssnoc_snoc_clk.clkr,
+> -       [GCC_NSSNOC_SNOC_1_CLK] = &gcc_nssnoc_snoc_1_clk.clkr,
+>         [GCC_QDSS_ETR_USB_CLK] = &gcc_qdss_etr_usb_clk.clkr,
+>         [WCSS_AHB_CLK_SRC] = &wcss_ahb_clk_src.clkr,
+>         [GCC_Q6_AHB_CLK] = &gcc_q6_ahb_clk.clkr,
+> @@ -4140,6 +4100,7 @@ static struct clk_regmap *gcc_ipq9574_clks[] = {
+>         [GCC_SNOC_PCIE1_1LANE_S_CLK] = &gcc_snoc_pcie1_1lane_s_clk.clkr,
+>         [GCC_SNOC_PCIE2_2LANE_S_CLK] = &gcc_snoc_pcie2_2lane_s_clk.clkr,
+>         [GCC_SNOC_PCIE3_2LANE_S_CLK] = &gcc_snoc_pcie3_2lane_s_clk.clkr,
+> +       [GPLL0_OUT_AUX] = &gpll0_out_aux.clkr,
+>  };
+>
+>  static const struct qcom_reset_map gcc_ipq9574_resets[] = {
+> @@ -4326,7 +4287,19 @@ static const struct qcom_cc_desc gcc_ipq9574_desc = {
+>
+>  static int gcc_ipq9574_probe(struct platform_device *pdev)
+>  {
+> -       return qcom_cc_probe(pdev, &gcc_ipq9574_desc);
+> +       struct regmap *regmap;
+> +
+> +       regmap = qcom_cc_map(pdev, &gcc_ipq9574_desc);
+> +
+> +       if (IS_ERR(regmap))
+> +               return PTR_ERR(regmap);
+> +
+> +       /* Keep the critical clocks always-On */
+> +       regmap_update_bits(regmap, 0x17030, BIT(0), BIT(0)); /* gcc_nssnoc_nsscc_clk */
+> +       regmap_update_bits(regmap, 0x17028, BIT(0), BIT(0)); /* gcc_nssnoc_snoc_clk */
+> +       regmap_update_bits(regmap, 0x1707C, BIT(0), BIT(0)); /* gcc_nssnoc_snoc_1_clk */
+> +
+> +       return qcom_cc_really_probe(pdev, &gcc_ipq9574_desc, regmap);
+>  }
+>
+>  static struct platform_driver gcc_ipq9574_driver = {
+> --
+> 2.34.1
+>
+>
+
 
 -- 
-Regards,
-Yi Liu
+With best wishes
+Dmitry
 
