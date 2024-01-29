@@ -1,72 +1,51 @@
-Return-Path: <linux-kernel+bounces-42111-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42112-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3D8B83FC6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 04:01:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2A7B83FC70
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 04:01:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E4A52831F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 03:00:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 601A028300D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 03:01:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF229FC05;
-	Mon, 29 Jan 2024 03:00:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Lj3ZlaMS"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC6D5FBEB;
+	Mon, 29 Jan 2024 03:01:28 +0000 (UTC)
+Received: from smtp.gentoo.org (woodpecker.gentoo.org [140.211.166.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 669FDF9D6
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 03:00:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92441F9DF;
+	Mon, 29 Jan 2024 03:01:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706497252; cv=none; b=CKzluGxWYbQHEo0tFf8z/ei5Kl6k01G8RvcI/l94p2Py14xezJnhQ6t73eV+k837S3eZzOkmPrPb0IjHgQSGf78kje+cQoRCz7aylSEhQrsqQMTwVrHcOmqWvuba7sdzjdpbb36jW7B8WbL6+idueHSQIbjz4jkQ4DI9bjUpc1A=
+	t=1706497288; cv=none; b=DvPh/4gbKo2ICaUBXaMcbScc1Vlf/smHztJwHj5V8KG9K6fdr0MWCgauAfBlxx+MrY5gRAidU8RlN+em1/gObgn6eUL3Qbs2aQVvJCNwxDl9NwM4inS2Z52vH5SBE9jPcDVeYVnQ42huvWGdvCk6csXrzQwi5XWdoRCoe9D/fj4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706497252; c=relaxed/simple;
-	bh=/oGa5ABPhpXed7C0cgst3BJAf0CGV7fQ9TLfp798wPU=;
+	s=arc-20240116; t=1706497288; c=relaxed/simple;
+	bh=2xUcCAm+iqsfWkBCNUqENNuPxYyGpXz+6bPj71mvjR0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=phwifk99YK560at1ePDQY/z/UHuNWjtb4T9Qdz2bAiDdFszxN3Bg6Xa2s3P811x0QhN1gBtRWUj9dQi0jffuFOIY87k25IPIggtMPf09UTUheE3ZbyJQYbAtImExNROHtIJ23DxHM4QkP5ekMH56V+wdTrLdF+aUYRmeWrF8SBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Lj3ZlaMS; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706497249;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SH5JJA8B2/oLNz4ErgboH6AqTlVlU9RXl7tVsXTShf0=;
-	b=Lj3ZlaMSkbSqhI9QPb3uvNYOPrudpdRXFCaqa3swaeO6N+N1qBkS/vNZN0irGVD/hdTi/f
-	r9QkDz0M1BWZ43OjuJOXrtC9fb1gM223AXWFtIObkHbzrkcNTw0iz1yEPcB/YessPI1oCB
-	oRidc4vIMCGdTtalox92HnSdStJTwDo=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-540-GSvxAW-rMwWbug6hU-02LQ-1; Sun,
- 28 Jan 2024 22:00:45 -0500
-X-MC-Unique: GSvxAW-rMwWbug6hU-02LQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2077E29AC015;
-	Mon, 29 Jan 2024 03:00:45 +0000 (UTC)
-Received: from fedora (unknown [10.72.116.135])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id C4D5B2026F95;
-	Mon, 29 Jan 2024 03:00:40 +0000 (UTC)
-Date: Mon, 29 Jan 2024 11:00:36 +0800
-From: Ming Lei <ming.lei@redhat.com>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, Mike Snitzer <snitzer@kernel.org>,
-	Don Dutile <ddutile@redhat.com>,
-	Raghavendra K T <raghavendra.kt@linux.vnet.ibm.com>,
-	ming.lei@redhat.com
-Subject: Re: [RFC PATCH] mm/readahead: readahead aggressively if read drops
- in willneed range
-Message-ID: <ZbcU1PXACdxbtjWx@fedora>
-References: <20240128142522.1524741-1-ming.lei@redhat.com>
- <ZbbPCQZdazF7s0_b@casper.infradead.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=snfsquH39kXfuAIHi6Kjh+ELNVR+6eF1UaDgWVi+Eexu9u1f/SeGTZjJnGo9vi0WvvZSmx9v0dWiBUZLmv0JnDFdE8SR+WrBZeHdkmKH36jP6+YBuhVXuFjYBGhvkrMRnboc9RUxdtXgy+0jsF/puZY/FEmXkDYYmgDMBx6Samk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gentoo.org; spf=pass smtp.mailfrom=gentoo.org; arc=none smtp.client-ip=140.211.166.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gentoo.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gentoo.org
+Date: Mon, 29 Jan 2024 03:01:15 +0000
+From: Yixun Lan <dlan@gentoo.org>
+To: Inochi Amaoto <inochiama@outlook.com>
+Cc: Chao Wei <chao.wei@sophgo.com>, Chen Wang <unicorn_wang@outlook.com>,
+	Conor Dooley <conor@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Jisheng Zhang <jszhang@kernel.org>,
+	Liu Gui <kenneth.liu@sophgo.com>,
+	Jingbao Qiu <qiujingbao.dlmu@gmail.com>,
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/2] riscv: dts: sophgo: cv18xx: Add spi devices
+Message-ID: <20240129030115.GB1097489@ofsar>
+References: <IA1PR20MB49533BACE8D47590C1C341D2BB7E2@IA1PR20MB4953.namprd20.prod.outlook.com>
+ <IA1PR20MB4953654F150743B649D5ADCEBB7E2@IA1PR20MB4953.namprd20.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,64 +54,84 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZbbPCQZdazF7s0_b@casper.infradead.org>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+In-Reply-To: <IA1PR20MB4953654F150743B649D5ADCEBB7E2@IA1PR20MB4953.namprd20.prod.outlook.com>
 
-On Sun, Jan 28, 2024 at 10:02:49PM +0000, Matthew Wilcox wrote:
-> On Sun, Jan 28, 2024 at 10:25:22PM +0800, Ming Lei wrote:
-> > Since commit 6d2be915e589 ("mm/readahead.c: fix readahead failure for
-> > memoryless NUMA nodes and limit readahead max_pages"), ADV_WILLNEED
-> > only tries to readahead 512 pages, and the remained part in the advised
-> > range fallback on normal readahead.
+Hi Inochi Amaoto
+
+On 10:26 Mon 29 Jan     , Inochi Amaoto wrote:
+> Add spi devices for the CV180x, CV181x and SG200x soc.
 > 
-> Does the MAINTAINERS file mean nothing any more?
-
-It is just miss to Cc you, sorry.
-
+> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
+> ---
+>  arch/riscv/boot/dts/sophgo/cv18xx.dtsi | 44 ++++++++++++++++++++++++++
+>  1 file changed, 44 insertions(+)
 > 
-> > If bdi->ra_pages is set as small, readahead will perform not efficient
-> > enough. Increasing read ahead may not be an option since workload may
-> > have mixed random and sequential I/O.
+> diff --git a/arch/riscv/boot/dts/sophgo/cv18xx.dtsi b/arch/riscv/boot/dts/sophgo/cv18xx.dtsi
+> index 7c88cbe8e91d..e66f9e9feb48 100644
+> --- a/arch/riscv/boot/dts/sophgo/cv18xx.dtsi
+> +++ b/arch/riscv/boot/dts/sophgo/cv18xx.dtsi
+> @@ -176,6 +176,50 @@ uart3: serial@4170000 {
+>  			status = "disabled";
+>  		};
 > 
-> I thik there needs to be a lot more explanation than this about what's
-> going on before we jump to "And therefore this patch is the right
-> answer".
+> +		spi0: spi@4180000 {
+> +			compatible = "snps,dw-apb-ssi";
+> +			reg = <0x04180000 0x10000>;
+> +			interrupts = <54 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks = <&clk CLK_SPI>, <&clk CLK_APB_SPI0>;
+> +			clock-names = "ssi_clk", "pclk";
+.
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+I'd suggest moving those two above 'interrupts' property
 
-Both 6d2be915e589 and the commit log provids background about this
-issue, let me explain it more:
+there is an ongoing discussion here..
+https://lore.kernel.org/all/20231203174622.18402-1-krzysztof.kozlowski@linaro.org/
 
-1) before commit 6d2be915e589, madvise/fadvise(WILLNEED)/readahead
-syscalls try to readahead in the specified range if memory is allowed,
-and for each readahead in this range, the ra size is set as max sectors
-of the block device, see force_page_cache_ra().
+> +			status = "disabled";
+> +		};
+> +
+> +		spi1: spi@4190000 {
+> +			compatible = "snps,dw-apb-ssi";
+> +			reg = <0x04190000 0x10000>;
+> +			interrupts = <55 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks = <&clk CLK_SPI>, <&clk CLK_APB_SPI1>;
+> +			clock-names = "ssi_clk", "pclk";
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			status = "disabled";
+> +		};
+> +
+> +		spi2: spi@41a0000 {
+> +			compatible = "snps,dw-apb-ssi";
+> +			reg = <0x041a0000 0x10000>;
+> +			interrupts = <56 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks = <&clk CLK_SPI>, <&clk CLK_APB_SPI2>;
+> +			clock-names = "ssi_clk", "pclk";
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			status = "disabled";
+> +		};
+> +
+> +		spi3: spi@41b0000 {
+> +			compatible = "snps,dw-apb-ssi";
+> +			reg = <0x041b0000 0x10000>;
+> +			interrupts = <57 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks = <&clk CLK_SPI>, <&clk CLK_APB_SPI3>;
+> +			clock-names = "ssi_clk", "pclk";
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			status = "disabled";
+> +		};
+> +
+>  		uart4: serial@41c0000 {
+>  			compatible = "snps,dw-apb-uart";
+>  			reg = <0x041c0000 0x100>;
+> --
+> 2.43.0
 
-2) since commit 6d2be915e589, only 2MB bytes are load in these syscalls,
-and the remained bytes fallback to future normal readahead when reads
-from page cache or mmap buffer
-
-3) this patch wires the advise(WILLNEED) range info to normal readahead for
-both mmap fault and buffered read code path, so each readhead can use
-max sectors of block size for the ra, basically takes the similar
-approach before commit 6d2be915e589
-
-> 
-> > @@ -972,6 +974,7 @@ struct file_ra_state {
-> >  	unsigned int ra_pages;
-> >  	unsigned int mmap_miss;
-> >  	loff_t prev_pos;
-> > +	struct maple_tree *need_mt;
-> 
-> No.  Embed the struct maple tree.  Don't allocate it.  What made you
-> think this was the right approach?
-
-Can you explain why it has to be embedded? core-api/maple_tree.rst
-mentioned it is fine to call "mt_init() for dynamically allocated ones".
-
-maple tree provides one easy way to record the advised willneed range,
-so readahead code path can apply this info for speedup readahead.
-
-
-Thanks,
-Ming
-
+-- 
+Yixun Lan (dlan)
+Gentoo Linux Developer
+GPG Key ID AABEFD55
 
