@@ -1,129 +1,106 @@
-Return-Path: <linux-kernel+bounces-42478-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42495-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1C168401E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:38:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B469284022C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:52:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7649F1F22983
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:38:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 718C1284F62
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:52:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8289D55E68;
-	Mon, 29 Jan 2024 09:38:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77E6655E41;
+	Mon, 29 Jan 2024 09:51:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R/A8iDK+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Oaqej0ZZ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCBAD55765;
-	Mon, 29 Jan 2024 09:38:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6AAF5579D
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:51:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706521102; cv=none; b=KukQa8jmbjNYvADqoYvW8mZzbljspgKTm/c5ZDNRetNV30PJHvcH5clF/lMyqf4xsB6zPKF9S/VudPjENZNB2iceTZVwp7E0q1fr2dZxkhlmnRc39NRSVh8KIUGhLjBZpzrcSPMgbrc5ezKGpovkAfavOUXzUQrDRghZIDGNN38=
+	t=1706521904; cv=none; b=LptdzPsBG3MUiewf37KyLOFg8IU+GwlFqewzZKja3zH8SRikeglDESddiPNwkWJIL4/qawSkkoD3Ns0R1Bgf3fKBIR52YDL0rhxvjh6QuABeMwOE9ZkxNm4JWg+ofMBfCseBDxvOFol+3z+iEwl0VjxA4C+X8EgMqfoQT9CII7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706521102; c=relaxed/simple;
-	bh=rhLbs8RDtFB5pDbCrc/ZKmEFvyOrcNyrTDC+mGeGs/Q=;
+	s=arc-20240116; t=1706521904; c=relaxed/simple;
+	bh=pPcqsz1uE3yIcm/qTdgdW4qxwK1Hx8R1HyPonk2uprY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aHugUOY+B6OGJ8ZeZFrkE7jKxUoJfbiRFhAo3NTCHtzcqD1ykfvXPNleZlftGVMgYBSKMQ28EhzaEG4tCtdv8ijmCtDeTUUvd3RrKy/rEiIyplvbR1mTiEhLi95/QY+mkPU8U/7tToG2uxteGW905/XXfa61pXRqSvamQuvKKCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R/A8iDK+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BDE6C433F1;
-	Mon, 29 Jan 2024 09:38:22 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=T0hShGNk/hxf6QFWrcP3MyBH2740PRBks0zdRcnS077MTXtfTrgTB+6qh+El72aM+w3bzzhMa5H3zqzIpViuwLq5Xsa0cOR+cNvbXyw13cdH+V/LT+QJW4C+kKc8fDLM+c+OkrAWqP4u+w86Yiqhe+2NQOAbn6xqAonrftjz9IQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Oaqej0ZZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCEA8C43609;
+	Mon, 29 Jan 2024 09:51:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706521102;
-	bh=rhLbs8RDtFB5pDbCrc/ZKmEFvyOrcNyrTDC+mGeGs/Q=;
+	s=k20201202; t=1706521904;
+	bh=pPcqsz1uE3yIcm/qTdgdW4qxwK1Hx8R1HyPonk2uprY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=R/A8iDK+qvEwZQs2jOfXYFIcUpQQ/XZuYln2omvDlDaFiFFOy/yzYlz2KordHXCDh
-	 Zj1TdiiWtfD235gQGah2tV+0Sxg/xDBNEy/iwcL2QXprybV7H0nNFQnEsoTiuzlROF
-	 KcPcjXd8fQYU8yUZU2zJwQNH/vttSQB9FAJKiDOL9J3tu3q50LAr2OMO68asc/1bPa
-	 lfWeBWaxFR3jwv0xWtlLmsf748j/eDZzdBLIHj2NRs6Jy7gl9g4PV6O6t5vCOQEXCl
-	 Mqt3sGrOkb6afAVlF8IP6KJmIbIuGhwORf1387FSgHyNklONGfkfykiSoft9uwXN80
-	 kWmM9t1DqFqNg==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rUO5m-000000006fw-2Kvx;
-	Mon, 29 Jan 2024 10:38:15 +0100
-Date: Mon, 29 Jan 2024 10:38:14 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Bjorn Andersson <quic_bjorande@quicinc.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] arm64: dts: qcom: sc8280xp: Introduce additional
- tsens instances
-Message-ID: <ZbdyBgbX2Su80eln@hovoldconsulting.com>
-References: <20240126-sc8280xp-tsens2_3-v2-1-8504d18828de@quicinc.com>
- <ZbPfeq6ElA3vMf_O@hovoldconsulting.com>
- <20240126165113.GS2936378@hu-bjorande-lv.qualcomm.com>
- <ZbPlRsx3czAHRBew@hovoldconsulting.com>
- <f28604d2-20a8-4662-9412-f09c6bf4a67b@linaro.org>
+	b=Oaqej0ZZ+tvwKJxMIRiPCQLm/V6l8p1aL0VAtqTi0s8D9hH7dH8niv1rBxXPTD78k
+	 sn+ZxKcQ/phWalG8E0pi1o6nicXKbjsyVyK3ofnNJJFAXF1I0kdS4II2+Obj1hs5dh
+	 Gc5ATdyDlG97DC13v2EpHxVVkrU2/7JH8UfAcdYX+8UKZsQEdbHyDxPgvyxNVHVbIr
+	 9+8GIFKQL+23YlvYTwlB8VUsjEbAvQwWELbyrVHXAdOXYYNTS2fGj5EGnyETldEBBC
+	 o9JYsU/52KZuWTGX7wFgmOAP3nAzL9lbAUgEa3AWcGqKywZsVVx/i2byqWZC8DPHdw
+	 b4Uejvm5Pu5MQ==
+Date: Mon, 29 Jan 2024 17:38:52 +0800
+From: Jisheng Zhang <jszhang@kernel.org>
+To: yunhui cui <cuiyunhui@bytedance.com>
+Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
+	alexghiti@rivosinc.com, samuel.holland@sifive.com,
+	ajones@ventanamicro.com, mchitale@ventanamicro.com,
+	dylan@andestech.com, sergey.matyukevich@syntacore.com,
+	prabhakar.mahadev-lad.rj@bp.renesas.com, apatel@ventanamicro.com,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [External] Re: [PATCH] RISC-V: add uniprocessor
+ flush_tlb_range() support
+Message-ID: <ZbdyLJ24I2fa6oNb@xhacker>
+References: <20240125062044.63344-1-cuiyunhui@bytedance.com>
+ <ZbdYijWK1PnHXn47@xhacker>
+ <CAEEQ3wnSN8dLh3FcmHq5yPwQRdjLQa_VjcuTH+7YYZLOqCzaCQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <f28604d2-20a8-4662-9412-f09c6bf4a67b@linaro.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEEQ3wnSN8dLh3FcmHq5yPwQRdjLQa_VjcuTH+7YYZLOqCzaCQ@mail.gmail.com>
 
-On Fri, Jan 26, 2024 at 10:23:41PM +0100, Konrad Dybcio wrote:
-> On 26.01.2024 18:00, Johan Hovold wrote:
-> > On Fri, Jan 26, 2024 at 08:51:13AM -0800, Bjorn Andersson wrote:
-> >> On Fri, Jan 26, 2024 at 05:36:10PM +0100, Johan Hovold wrote:
-> > 
-> >>> Shall you submit a follow-on patch to set the polling delays to zero
-> >>> for the other thermal zones (cpu, cluster, mem) so that we don't poll
-> >>> for those?
-> >>
-> >> I optimistically interpreted Konrad's response as a promise by him to do
-> >> so ;)
-> >>
-> >> I do like his patch which remove the poll-properties for non-polling
-> >> mode. Would be nice to not first change the values to 0 and then remove
-> >> the properties...
+On Mon, Jan 29, 2024 at 04:26:57PM +0800, yunhui cui wrote:
+> Hi Jisheng,
 > 
-> That was my intention as well..
+> On Mon, Jan 29, 2024 at 4:02 PM Jisheng Zhang <jszhang@kernel.org> wrote:
+> >
+> > On Thu, Jan 25, 2024 at 02:20:44PM +0800, Yunhui Cui wrote:
+> > > Add support for flush_tlb_range() to improve TLB performance for
+> > > UP systems. In order to avoid the mutual inclusion of tlbflush.h
+> > > and hugetlb.h, the UP part is also implemented in tlbflush.c.
+> >
+> > Hi Yunhui,
+> >
+> > IIRC, Samuel sent similar patch series a few weeks ago.
+> >
+> > https://lore.kernel.org/linux-riscv/20240102220134.3229156-1-samuel.holland@sifive.com/
+> >
+> > After that series, do you still need this patch?
 > 
-> > 
-> > No, that should not be an issue as it allows us to get rid of the
-> > polling without waiting for a binding update which may or may not
-> > materialise in 6.9-rc1.
+> Thank you for your reminder. I didn't find it before I mailed my
+> patch. I just looked at the content of this patch. I understand that
+> my patch is needed. For a single core, a more concise TLB flush logic
+> is needed, and it is helpful to improve performance.
+
+Currently, riscv UP flush_tlb_range still use flush all TLB entries,
+obviously it's is a big hammer, this is what your patch is trying to
+optimize. I'm not sure whether I understand your code correctly or not.
+Let me know if I misunderstand your code.
+
+After patch5 of the Samuel's series, __flush_tlb_range is unified for
+SMP and UP, so that UP can also benefit from recent improvements, such
+as range flush rather than all.
+
+Thanks
+
 > 
-> If you really insist, I may do that, but if the thermal guys act on it
-> quickly and we negotiate an immutable branch, we can simply but atop it,
-> saving the submitter timeof(patchset), the reviewers timeof(verify), the
-> build bots timeof(builds) and the applier timeof(pick-build-push)..
-
-Why would introduce such a dependency for really no good reason?
-
-Submit a patch based on the current binding, then when/if your proposed
-binding update hits mainline, you can send a *single* patch dropping the
-parameters from all qualcomm dtsi.
-
-Updating the binding is a separate and lower priority task. In fact, it
-may not even be desirable at all as an omission of adding these
-parameters could then lead to broken thermal management on platforms
-where the interrupts do not work. Having an explicit poll-delay of zero
-at least gives people a reason to think about it when merging a new
-platform.
-
-But again, that's a separate discussion. Don't make this patch depend on
-that.
-
-> > But whoever updates those properties need to do some proper testing to
-> > make sure that those interrupts really work.
-> 
-> They seem to, check /proc/interrupts before and after adding an e.g. 45degC
-> trip point on one of the CPU thermal zones, they fire aplenty.
-
-That's not proper testing. Add/enable debugging in the thermal driver
-and make sure that you trigger precisely once when passing the threshold
-in both directions.
-
-Johan
+> Thanks,
+> Yunhui
 
