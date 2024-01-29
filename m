@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-42911-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3BF7840865
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:33:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C2D584086A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:33:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59B541F22BE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:33:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E04231F2370E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:33:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71BCC153500;
-	Mon, 29 Jan 2024 14:32:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 889F4153BCF;
+	Mon, 29 Jan 2024 14:32:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="P3Y20xYS"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dlZY9/hn"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B3171534E2
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 14:32:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5516F152E05
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 14:32:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706538762; cv=none; b=R8nZrmNZ+rM1Jev0j/OEaLx767KAr2X14DHzzs6uc0XKloXuwCkiR3RN+Kgpg1e+XxMUCvDRLWnL493DATbxlpOYxNQSJ6qaJgWaRT4Oe2xpvo8S1e28Z1RmKKHucWLqFq61atUgBhcMiXTL8lu1pPXEcuM2136iGgCTP9hI8ew=
+	t=1706538770; cv=none; b=uNN/IHQMgue9pObq6G85E9ahpNLVOo7/ZYGuTNDzv20eYSUvTW0B3YwmXnQpm1On2FHFi6QM3IkzP7mGWWP7dAznaib6WzTqgnmrVxrzDOoUQypgqiQDf+eI19FUbj2MUA2G4CkSSjAWl9KFWQyci+AAcjoo5eu8cCeKcBhhD10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706538762; c=relaxed/simple;
-	bh=jvwufdFMljuhAFpV9jNqh1ZIQmLNafZjEeBNPodulTo=;
+	s=arc-20240116; t=1706538770; c=relaxed/simple;
+	bh=ox+eQ1EXoBSzOjUFapo41STtCich4R5P1O+bP48vyb4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mOU+NVRRvIVFidFsIi14j5OXhj+ks2oMTUDvZG6bkWBgvFRyuY0+iz7CQ+wvNlT7naLkpob+NTckik1iYY7qtB1V2bYl9okUZyAOmE6XAFO+0saAUhEw7UpdWvQmo0jCkrobk+fcgliRoBCmjPAF3bFPI9YK2VmnKi2Q6qPOS/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=P3Y20xYS; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=sC2Y0okHHLrFcQlR++y4hTtXNIA0uVhV2EOre5byGzchBIvZd2/o5kRydgDBHBv+rH4UDEi4pdObq+bKdwUu86Bsy4xa/wtuP5bZULCdsalvmPtYUEyBnIWdD3b5LN6lhDNeRAD9/GACVuVS+NXvSr9yKeYcMlCosDd+07u5u1c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dlZY9/hn; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706538760;
+	s=mimecast20190719; t=1706538768;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=5k519pv5yC0dphpRGDmBdAjVLNwRA0D+0XMigEKB7uE=;
-	b=P3Y20xYSKuf+gMiRjtMGC6PQlAAR2BPsMBE+9a0XhbrNoymaDSt+Gv2P/CEInyBVXahqhQ
-	adkmuPM+QY7JSTUYG2V72STOMu5v1XbQF6KmlMzM3VURIfTNMInulTxgaHuZAYGalM0fc3
-	0RSCdsiHWZGorf+NBOqtZacnquP69j4=
+	bh=FNlnKqTU8a/1Fu37QrFx8MEnv7tH60nNAECNkKLkAAs=;
+	b=dlZY9/hnjnZceAb2FjAWaLhBT4yWwN+Wz8A0qXGMWmqrggv9tA11IJBDCMh9KI/3ggtaST
+	+21nqDue6snZJA0b4cMG0NQOR7UADOoPtZmDIFNvnAkYf9CqdM+cXGSPWr+ZGJsHM4lOP6
+	q7f8FN53sj4/2EfVpvqFC4ujRUkCGWk=
 Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
  by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-502-hf9kkbPYM4OwjicnjD23xg-1; Mon,
- 29 Jan 2024 09:32:33 -0500
-X-MC-Unique: hf9kkbPYM4OwjicnjD23xg-1
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-151-unK-9W-5NjSJSLj6qcQ8jg-1; Mon,
+ 29 Jan 2024 09:32:41 -0500
+X-MC-Unique: unK-9W-5NjSJSLj6qcQ8jg-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B4A5D1C05137;
-	Mon, 29 Jan 2024 14:32:32 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 902141C05137;
+	Mon, 29 Jan 2024 14:32:37 +0000 (UTC)
 Received: from t14s.fritz.box (unknown [10.39.194.46])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 02540AD1;
-	Mon, 29 Jan 2024 14:32:27 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 20796AD1;
+	Mon, 29 Jan 2024 14:32:32 +0000 (UTC)
 From: David Hildenbrand <david@redhat.com>
 To: linux-kernel@vger.kernel.org
 Cc: linux-mm@kvack.org,
@@ -78,9 +78,9 @@ Cc: linux-mm@kvack.org,
 	linux-arch@vger.kernel.org,
 	linuxppc-dev@lists.ozlabs.org,
 	linux-s390@vger.kernel.org
-Subject: [PATCH v1 1/9] mm/memory: factor out zapping of present pte into zap_present_pte()
-Date: Mon, 29 Jan 2024 15:32:13 +0100
-Message-ID: <20240129143221.263763-2-david@redhat.com>
+Subject: [PATCH v1 2/9] mm/memory: handle !page case in zap_present_pte() separately
+Date: Mon, 29 Jan 2024 15:32:14 +0100
+Message-ID: <20240129143221.263763-3-david@redhat.com>
 In-Reply-To: <20240129143221.263763-1-david@redhat.com>
 References: <20240129143221.263763-1-david@redhat.com>
 Precedence: bulk
@@ -92,130 +92,67 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-Let's prepare for further changes by factoring out processing of present
-PTEs.
+We don't need uptodate accessed/dirty bits, so in theory we could
+replace ptep_get_and_clear_full() by an optimized ptep_clear_full()
+function. Let's rely on the provided pte.
+
+Further, there is no scenario where we would have to insert uffd-wp
+markers when zapping something that is not a normal page (i.e., zeropage).
+Add a sanity check to make sure this remains true.
+
+should_zap_folio() no longer has to handle NULL pointers. This change
+replaces 2/3 "!page/!folio" checks by a single "!page" one.
 
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- mm/memory.c | 92 ++++++++++++++++++++++++++++++-----------------------
- 1 file changed, 52 insertions(+), 40 deletions(-)
+ mm/memory.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
 diff --git a/mm/memory.c b/mm/memory.c
-index b05fd28dbce1..50a6c79c78fc 100644
+index 50a6c79c78fc..69502cdc0a7d 100644
 --- a/mm/memory.c
 +++ b/mm/memory.c
-@@ -1532,13 +1532,61 @@ zap_install_uffd_wp_if_needed(struct vm_area_struct *vma,
- 	pte_install_uffd_wp_if_needed(vma, addr, pte, pteval);
- }
+@@ -1497,10 +1497,6 @@ static inline bool should_zap_folio(struct zap_details *details,
+ 	if (should_zap_cows(details))
+ 		return true;
  
-+static inline void zap_present_pte(struct mmu_gather *tlb,
-+		struct vm_area_struct *vma, pte_t *pte, pte_t ptent,
-+		unsigned long addr, struct zap_details *details,
-+		int *rss, bool *force_flush, bool *force_break)
-+{
-+	struct mm_struct *mm = tlb->mm;
-+	bool delay_rmap = false;
-+	struct folio *folio;
-+	struct page *page;
-+
-+	page = vm_normal_page(vma, addr, ptent);
-+	if (page)
-+		folio = page_folio(page);
-+
-+	if (unlikely(!should_zap_folio(details, folio)))
-+		return;
-+	ptent = ptep_get_and_clear_full(mm, addr, pte, tlb->fullmm);
-+	arch_check_zapped_pte(vma, ptent);
-+	tlb_remove_tlb_entry(tlb, pte, addr);
-+	zap_install_uffd_wp_if_needed(vma, addr, pte, details, ptent);
-+	if (unlikely(!page)) {
+-	/* E.g. the caller passes NULL for the case of a zero folio */
+-	if (!folio)
+-		return true;
+-
+ 	/* Otherwise we should only zap non-anon folios */
+ 	return !folio_test_anon(folio);
+ }
+@@ -1543,19 +1539,23 @@ static inline void zap_present_pte(struct mmu_gather *tlb,
+ 	struct page *page;
+ 
+ 	page = vm_normal_page(vma, addr, ptent);
+-	if (page)
+-		folio = page_folio(page);
++	if (!page) {
++		/* We don't need up-to-date accessed/dirty bits. */
++		ptep_get_and_clear_full(mm, addr, pte, tlb->fullmm);
++		arch_check_zapped_pte(vma, ptent);
++		tlb_remove_tlb_entry(tlb, pte, addr);
++		VM_WARN_ON_ONCE(userfaultfd_wp(vma));
 +		ksm_might_unmap_zero_page(mm, ptent);
 +		return;
 +	}
-+
-+	if (!folio_test_anon(folio)) {
-+		if (pte_dirty(ptent)) {
-+			folio_mark_dirty(folio);
-+			if (tlb_delay_rmap(tlb)) {
-+				delay_rmap = true;
-+				*force_flush = true;
-+			}
-+		}
-+		if (pte_young(ptent) && likely(vma_has_recency(vma)))
-+			folio_mark_accessed(folio);
-+	}
-+	rss[mm_counter(folio)]--;
-+	if (!delay_rmap) {
-+		folio_remove_rmap_pte(folio, page, vma);
-+		if (unlikely(page_mapcount(page) < 0))
-+			print_bad_pte(vma, addr, ptent, page);
-+	}
-+	if (unlikely(__tlb_remove_page(tlb, page, delay_rmap))) {
-+		*force_flush = true;
-+		*force_break = true;
-+	}
-+}
-+
- static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 				struct vm_area_struct *vma, pmd_t *pmd,
- 				unsigned long addr, unsigned long end,
- 				struct zap_details *details)
- {
-+	bool force_flush = false, force_break = false;
- 	struct mm_struct *mm = tlb->mm;
--	int force_flush = 0;
- 	int rss[NR_MM_COUNTERS];
- 	spinlock_t *ptl;
- 	pte_t *start_pte;
-@@ -1565,45 +1613,9 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 			break;
  
- 		if (pte_present(ptent)) {
--			unsigned int delay_rmap;
--
--			page = vm_normal_page(vma, addr, ptent);
--			if (page)
--				folio = page_folio(page);
--
--			if (unlikely(!should_zap_folio(details, folio)))
--				continue;
--			ptent = ptep_get_and_clear_full(mm, addr, pte,
--							tlb->fullmm);
--			arch_check_zapped_pte(vma, ptent);
--			tlb_remove_tlb_entry(tlb, pte, addr);
--			zap_install_uffd_wp_if_needed(vma, addr, pte, details,
--						      ptent);
--			if (unlikely(!page)) {
--				ksm_might_unmap_zero_page(mm, ptent);
--				continue;
--			}
--
--			delay_rmap = 0;
--			if (!folio_test_anon(folio)) {
--				if (pte_dirty(ptent)) {
--					folio_mark_dirty(folio);
--					if (tlb_delay_rmap(tlb)) {
--						delay_rmap = 1;
--						force_flush = 1;
--					}
--				}
--				if (pte_young(ptent) && likely(vma_has_recency(vma)))
--					folio_mark_accessed(folio);
--			}
--			rss[mm_counter(folio)]--;
--			if (!delay_rmap) {
--				folio_remove_rmap_pte(folio, page, vma);
--				if (unlikely(page_mapcount(page) < 0))
--					print_bad_pte(vma, addr, ptent, page);
--			}
--			if (unlikely(__tlb_remove_page(tlb, page, delay_rmap))) {
--				force_flush = 1;
-+			zap_present_pte(tlb, vma, pte, ptent, addr, details,
-+					rss, &force_flush, &force_break);
-+			if (unlikely(force_break)) {
- 				addr += PAGE_SIZE;
- 				break;
- 			}
++	folio = page_folio(page);
+ 	if (unlikely(!should_zap_folio(details, folio)))
+ 		return;
+ 	ptent = ptep_get_and_clear_full(mm, addr, pte, tlb->fullmm);
+ 	arch_check_zapped_pte(vma, ptent);
+ 	tlb_remove_tlb_entry(tlb, pte, addr);
+ 	zap_install_uffd_wp_if_needed(vma, addr, pte, details, ptent);
+-	if (unlikely(!page)) {
+-		ksm_might_unmap_zero_page(mm, ptent);
+-		return;
+-	}
+ 
+ 	if (!folio_test_anon(folio)) {
+ 		if (pte_dirty(ptent)) {
 -- 
 2.43.0
 
