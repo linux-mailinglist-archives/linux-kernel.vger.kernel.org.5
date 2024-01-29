@@ -1,188 +1,162 @@
-Return-Path: <linux-kernel+bounces-43060-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E99DF840AF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:12:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C85B3840AC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:03:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F30028CA65
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:12:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E794B25767
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:03:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 455AE155A34;
-	Mon, 29 Jan 2024 16:12:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83DE915530D;
+	Mon, 29 Jan 2024 16:02:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jmZTr9+s"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HjuHlYPS"
+Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE5C8155316;
-	Mon, 29 Jan 2024 16:11:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E96F153BE2
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 16:02:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706544719; cv=none; b=DSvHah43ICESVSxnnFce5yntactFraCyt4yC/RAXhSFqqTtQ5HYsRQwCW2pONsO3uObZpEiVzCw2Y4dknOIevIEj8PhLBH5Y1DaQ4Y/RU49KQ56EwFOoB+IUqCBfKf2ECCC6liu/q3Ut1R9g06CJYu1plLS72iRdgwLLKYUZpPI=
+	t=1706544177; cv=none; b=EISX/P8CnDP3lTs6xZnR6d0XUdZ/Y+GUxB4mOGtZWrcnwcaG321wEoPKO4baUo9NuzBaSTdT9FXHVpvU9wE1GehihlKzAr6ANhyFhDdM32LwwSC5pDlQ5QgigHvOcx4Ikm4X9SWr1aiK8C10qMWDgHQJb4QZ09fgtU3Z754dZCo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706544719; c=relaxed/simple;
-	bh=EJuKz+rDfnnrgz4jtF7KK8M8+lKo37WzgpZ8fWKe+go=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZB+GO7gWznVf1uLUo7DDZhMlCsWOew2DnJD823kDZZqLuhIsD4Z+e6j9AHZf69vhtpei0uO7giXMeQDt1H8coK1LAQRYajRcA/wcF0e1iVz/mo9APHBx0Bg8oioTzX80JOcYExzB7hD6fAckJi0gxa2p1WDOWJSbp7DcmE6X7Bc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jmZTr9+s; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706544717; x=1738080717;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=EJuKz+rDfnnrgz4jtF7KK8M8+lKo37WzgpZ8fWKe+go=;
-  b=jmZTr9+s0BH0yotyOal0q9jxcJoA62wy25l1FbdVyMSYrG8n8/5I5iXX
-   j6f1Uam6LcnTvGo2QtuQdybq/982+bOjOmiro8aVgfeC/za03w88C5U5F
-   0MGWVmSus8W51EfUIEjZVSDBYPoL8e/2N5o60F5D710ImRdsL38rx5RIQ
-   zqrV4PPN/KiyHIRtvMwhY9U+wL+Ksvj18xrmdcZN/pmKjqluICEowsKVw
-   gjIiuQJbyWMUQsUy0e+m1ye3rkP1aVqCbJwhlC0ZrVeDObPRNslWn3LnY
-   PKaaucS09jcnGyHHffyopgrqE/81eywmV6W0Wm1vy1AUk6AlNf/trU4v0
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="16359739"
-X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
-   d="scan'208";a="16359739"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 08:02:50 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
-   d="scan'208";a="3342415"
-Received: from lkp-server01.sh.intel.com (HELO 370188f8dc87) ([10.239.97.150])
-  by fmviesa005.fm.intel.com with ESMTP; 29 Jan 2024 08:02:44 -0800
-Received: from kbuild by 370188f8dc87 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rUU5q-0004Oq-0h;
-	Mon, 29 Jan 2024 16:02:42 +0000
-Date: Tue, 30 Jan 2024 00:02:16 +0800
-From: kernel test robot <lkp@intel.com>
-To: Billy Tsai <billy_tsai@aspeedtech.com>, jdelvare@suse.com,
-	linux@roeck-us.net, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	joel@jms.id.au, andrew@codeconstruct.com.au, corbet@lwn.net,
-	u.kleine-koenig@pengutronix.de, p.zabel@pengutronix.de,
-	naresh.solanki@9elements.com, linux-hwmon@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-pwm@vger.kernel.org,
-	BMC-SW@aspeedtech.com, patrick@stwcx.xyz
-Cc: oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH v13 3/3] hwmon: (aspeed-g6-pwm-tacho): Support for ASPEED
- g6 PWM/Fan tach
-Message-ID: <202401292303.6SVAncvn-lkp@intel.com>
-References: <20240124060705.1342461-4-billy_tsai@aspeedtech.com>
+	s=arc-20240116; t=1706544177; c=relaxed/simple;
+	bh=hXlY0ftLlr6P+LZ8KvIoazr2KLExV1awHs5qk0LTyQs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Smo+buaN5oRq++A56MONhvgKByMq1/ZzOgp0fyh0vtfsrpPh8eVGrXtptyg51S7tnFR0Vix/Kt77h5XILS6nS24FJSKl6hg33+kLyzRYK008aQbOiTQ3En5j9aa1ioVoHlbEr1B9L10yWdZfERLsA5dZBgsYLgcIogsA4XsCPLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HjuHlYPS; arc=none smtp.client-ip=209.85.219.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-68c37bf73aaso25426286d6.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 08:02:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706544175; x=1707148975; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fStLCbKUTcGzRAhk1o+DOE0szU2Or0956o0vgo2cygQ=;
+        b=HjuHlYPSW72fuKMoJFBktRH6IlWuSB7UI4iqrhrL2JLgXWUyCGJNPg4oVdZIv1ype1
+         2POGGO8QC7PDMzupJGKYUY1B/zq0iz8NBvilijjUkdfI/BMkBIhax9aoRdyxcrT3vx0K
+         R5fjIVyVl1ZK5cSxlpeoWh/bOKEM/FKUfSU+EVPYLbX8Qk892cfgxLcQzHFZj9xS0tDQ
+         k1imBxieMN6yRN8KvOf5Qs7BN/SkLABmqdNCb5AoJJexDFw068pRec32DpAjmnHDom2N
+         OAZAo4BrAU4wo/SMg/iWhXaqhINxIapxdk4oPurbytbMaAMIBEit7luQQpQG62B9o5HD
+         qmUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706544175; x=1707148975;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fStLCbKUTcGzRAhk1o+DOE0szU2Or0956o0vgo2cygQ=;
+        b=s3BgqlzfR0A1ekYcc+wqseblu0e13alAzfYvprpFrCzr6VXyZ0FaVw8Rjf0DhMRyTj
+         IG1RGmSpHcAIU/ggTzzkn6EJwMekBKe/u1kMAjy6tGIYfeKAqEkFSWYsNY/x0pYiNvsi
+         uBGC29GhdrV2sEJ/OQKxtGO9oNO+0DeEBW2y/yI2UAwcv1i0oe30g0Px6sw8imEwJx03
+         CSgFUzyJRoFyV55YLacPYEdtmJ5D4TmyjhaULTzrKVA8zVl7bNHQ5v2MKNfBCV9teo10
+         xKhZdnmAw8pdx3Y2opmjDHqyjzt5SR2AJ5bNVPNL2nphmKpqPyczJw0QUtLiKcovbYPk
+         /Oyg==
+X-Gm-Message-State: AOJu0Yx+akY+hju+2TVqurXQtcTVVR/sFt9OU6dazBpTyZn9aVaVsdSH
+	X6YBLb66uw+H9GKAvKtuR7U9s6LElY9hI6+tKwvXeoXeb+ZC9FxL4Gg02bIx8HzBzQbeoHgOJp2
+	lBFs8ik7FaLRI+Uwi2byoLR9lATQ5hPPd
+X-Google-Smtp-Source: AGHT+IHBY+NYlPvzlNbY5B0NDhyQZuJLDGA4D0xQA4x9CU2a4FSDpGesHGJijQAaIWOPvHAlcXSv1vtPLB6KRBQD0Ag=
+X-Received: by 2002:a05:6214:20ad:b0:686:ae74:ae2f with SMTP id
+ 13-20020a05621420ad00b00686ae74ae2fmr6678844qvd.92.1706544175148; Mon, 29 Jan
+ 2024 08:02:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240124060705.1342461-4-billy_tsai@aspeedtech.com>
+References: <20240125170628.2017784-1-tj@kernel.org> <20240125170628.2017784-9-tj@kernel.org>
+In-Reply-To: <20240125170628.2017784-9-tj@kernel.org>
+From: Lai Jiangshan <jiangshanlai@gmail.com>
+Date: Tue, 30 Jan 2024 00:02:42 +0800
+Message-ID: <CAJhGHyA=uO4P4skas0-DZCE+cS453V+PrJMOFj2G2DAc1tE0jA@mail.gmail.com>
+Subject: Re: [PATCH 08/10] workqueue: Introduce struct wq_node_nr_active
+To: Tejun Heo <tj@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Naohiro.Aota@wdc.com, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Billy,
+Hello, Tejun
 
-kernel test robot noticed the following build errors:
+On Fri, Jan 26, 2024 at 1:06=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
 
-[auto build test ERROR on groeck-staging/hwmon-next]
-[also build test ERROR on linus/master v6.8-rc2 next-20240129]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> @@ -4036,12 +4097,62 @@ static void wq_free_lockdep(struct workqueue_stru=
+ct *wq)
+>  }
+>  #endif
+>
+> +static void free_node_nr_active(struct wq_node_nr_active **nna_ar)
+> +{
+> +       int node;
+> +
+> +       for_each_node(node) {
+> +               kfree(nna_ar[node]);
+> +               nna_ar[node] =3D NULL;
+> +       }
+> +
+> +       kfree(nna_ar[nr_node_ids]);
+> +       nna_ar[nr_node_ids] =3D NULL;
+> +}
+> +
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Billy-Tsai/dt-bindings-hwmon-fan-Add-fan-binding-to-schema/20240124-141405
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-next
-patch link:    https://lore.kernel.org/r/20240124060705.1342461-4-billy_tsai%40aspeedtech.com
-patch subject: [PATCH v13 3/3] hwmon: (aspeed-g6-pwm-tacho): Support for ASPEED g6 PWM/Fan tach
-config: riscv-randconfig-r071-20240129 (https://download.01.org/0day-ci/archive/20240129/202401292303.6SVAncvn-lkp@intel.com/config)
-compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240129/202401292303.6SVAncvn-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401292303.6SVAncvn-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> drivers/hwmon/aspeed-g6-pwm-tach.c:496:2: error: implicit declaration of function 'of_platform_populate' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-           of_platform_populate(dev->of_node, NULL, NULL, dev);
-           ^
-   1 error generated.
+[....]
 
 
-vim +/of_platform_populate +496 drivers/hwmon/aspeed-g6-pwm-tach.c
+>  static void rcu_free_wq(struct rcu_head *rcu)
+>  {
+>         struct workqueue_struct *wq =3D
+>                 container_of(rcu, struct workqueue_struct, rcu);
+>
+>         wq_free_lockdep(wq);
+> +       free_node_nr_active(wq->node_nr_active);
 
-   446	
-   447	static int aspeed_pwm_tach_probe(struct platform_device *pdev)
-   448	{
-   449		struct device *dev = &pdev->dev, *hwmon;
-   450		int ret;
-   451		struct device_node *child;
-   452		struct aspeed_pwm_tach_data *priv;
-   453	
-   454		priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-   455		if (!priv)
-   456			return -ENOMEM;
-   457		priv->dev = dev;
-   458		priv->base = devm_platform_ioremap_resource(pdev, 0);
-   459		if (IS_ERR(priv->base))
-   460			return PTR_ERR(priv->base);
-   461	
-   462		priv->clk = devm_clk_get_enabled(dev, NULL);
-   463		if (IS_ERR(priv->clk))
-   464			return dev_err_probe(dev, PTR_ERR(priv->clk),
-   465					     "Couldn't get clock\n");
-   466		priv->clk_rate = clk_get_rate(priv->clk);
-   467		priv->reset = devm_reset_control_get_exclusive(dev, NULL);
-   468		if (IS_ERR(priv->reset))
-   469			return dev_err_probe(dev, PTR_ERR(priv->reset),
-   470					     "Couldn't get reset control\n");
-   471	
-   472		ret = reset_control_deassert(priv->reset);
-   473		if (ret)
-   474			return dev_err_probe(dev, ret,
-   475					     "Couldn't deassert reset control\n");
-   476	
-   477		priv->chip.dev = dev;
-   478		priv->chip.ops = &aspeed_pwm_ops;
-   479		priv->chip.npwm = PWM_ASPEED_NR_PWMS;
-   480	
-   481		ret = devm_pwmchip_add(dev, &priv->chip);
-   482		if (ret < 0) {
-   483			reset_control_assert(priv->reset);
-   484			return dev_err_probe(dev, ret, "Failed to add PWM chip\n");
-   485		}
-   486	
-   487		for_each_child_of_node(dev->of_node, child) {
-   488			ret = aspeed_tach_create_fan(dev, child, priv);
-   489			if (ret < 0) {
-   490				of_node_put(child);
-   491				dev_warn(dev, "Failed to create fan %d", ret);
-   492				return 0;
-   493			}
-   494		}
-   495	
- > 496		of_platform_populate(dev->of_node, NULL, NULL, dev);
-   497	
-   498		hwmon = devm_hwmon_device_register_with_info(dev, "aspeed_tach", priv,
-   499							     &aspeed_tach_chip_info, NULL);
-   500		ret = PTR_ERR_OR_ZERO(hwmon);
-   501		if (ret) {
-   502			reset_control_assert(priv->reset);
-   503			return dev_err_probe(dev, ret,
-   504					     "Failed to register hwmon device\n");
-   505		}
-   506	
-   507		return 0;
-   508	}
-   509	
+for percpu workqueue, free_node_nr_active() will access out of bound.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>         free_percpu(wq->cpu_pwq);
+>         free_workqueue_attrs(wq->unbound_attrs);
+>         kfree(wq);
+
+[......]
+
+> @@ -4832,8 +4950,13 @@ struct workqueue_struct *alloc_workqueue(const cha=
+r *fmt,
+>         wq_init_lockdep(wq);
+>         INIT_LIST_HEAD(&wq->list);
+>
+> +       if (flags & WQ_UNBOUND) {
+> +               if (alloc_node_nr_active(wq->node_nr_active) < 0)
+> +                       goto err_unreg_lockdep;
+> +       }
+> +
+>         if (alloc_and_link_pwqs(wq) < 0)
+> -               goto err_unreg_lockdep;
+> +               goto err_free_node_nr_active;
+>
+>         if (wq_online && init_rescuer(wq) < 0)
+>                 goto err_destroy;
+> @@ -4858,6 +4981,8 @@ struct workqueue_struct *alloc_workqueue(const char=
+ *fmt,
+>
+>         return wq;
+>
+> +err_free_node_nr_active:
+> +       free_node_nr_active(wq->node_nr_active);
+
+
+for percpu workqueue, free_node_nr_active() will access out of bound.
+
+
+Thanks
+Lai
+
+>  err_unreg_lockdep:
+>         wq_unregister_lockdep(wq);
+>         wq_free_lockdep(wq);
+> --
+> 2.43.0
+>
 
