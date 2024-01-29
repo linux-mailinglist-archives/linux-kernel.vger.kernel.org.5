@@ -1,121 +1,170 @@
-Return-Path: <linux-kernel+bounces-43050-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43051-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62E60840AC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:04:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D28AB840ACA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:05:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0071A1F27E94
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:04:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 073BB1C228F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:05:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B15115531D;
-	Mon, 29 Jan 2024 16:04:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5289155312;
+	Mon, 29 Jan 2024 16:05:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dz2X9qOR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K82rzX/p"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 721091552E9;
-	Mon, 29 Jan 2024 16:04:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 082211552FE
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 16:05:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706544278; cv=none; b=KwvJPnl7nFhm8BZCb16t/ALQzlXGS3jDjOhlGx7irm1xQvsUztV6UWfQxHJEtpi8xNvORP1waxdskAZ5Q6HeOUT0xjMNZbrsXsuYm0pHdNI5fJX4aJOPVPVV+aCuuE9CFFGPyxV9bzQDDm5X0colneJewzxZlfDdTee8otBMu/k=
+	t=1706544316; cv=none; b=GCgaUiUtHNVb9HwHw9+dfyom3OPSVAmelIhtgcaTq7j6yyGvde6NW+HFS+EVJG9QPSQQ6DQjfRm/VQrzCw/4JUO7ubzkknnDEtLjZGcnXZNp1YmnMQsoiw+lqGm9ZCRBzffZ9HpIg8WKtrvWUywb6mZ59zKc1EheGSxTmM6pRd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706544278; c=relaxed/simple;
-	bh=rrF5M/nyZQ+K0nhCjlO7cD1vmBoa6qCOpTEz1qNzJys=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FcYD0C3MpHrd3Cwt3oF0ousIIfNlZjNyK0j2dBKXqQGvhtoPSBdsMtd8xgVKx/DltCn3aKxGkWUohwN3gCqQx4vk6Ii4hzRkgXjScG1nd/KZWw96h6BZpk9h2uNtvHag7zkbF8dnHvtvLX017FnH2hvj5N5vLzO/U6RzYE44qWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dz2X9qOR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA296C433F1;
-	Mon, 29 Jan 2024 16:04:30 +0000 (UTC)
+	s=arc-20240116; t=1706544316; c=relaxed/simple;
+	bh=u3fDGUEBpCS6+m427D+VgxX1MSplev1LxWdiYDMvUFw=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=K8/G+Oni+119EDys4kn25n4eIe7wFmZgiQarBEYaXSSfW3qwc2tmKh887XW0RWPnLxMxH1yOf0oDkojIva9Lg31wY8C2AFRfE6ym83WOZtD2sLGDoZQtL0lOWmVVtHaTkzLf5PeC1NL0sqaFvNUWRnqFWFc6dyVrRZp4xFY466Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K82rzX/p; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7043C433F1;
+	Mon, 29 Jan 2024 16:05:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706544277;
-	bh=rrF5M/nyZQ+K0nhCjlO7cD1vmBoa6qCOpTEz1qNzJys=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Dz2X9qOR470blV81A32kJLPi10DjH2zNYtxAw1INh5zFauLVb3x81ElJxCa534MGG
-	 hQ7kpQ3f6y5pMcKtkqfBmmakiyVNG+LSVPUViiXe5Q8c3lQLtyyB3AO88cdEx993KY
-	 RwRdjgbSCnSblBi7jhmBBIMf9qA6Pbb/lhp/bXzK3S+dC2UYHlonv4lJkntkDFF2Ex
-	 wWEb+L6q05GY5GS0AoTS6Ru0uBG3eWD7aDKn/3xdR/uNxM7n4KGlwj5YTDGQ5qVviL
-	 3r9HDXCST3Xsh+619JPqxeAAftOYacFeBp7YJu0CNRgAh9EERquLe87ZLjWtGfjdyj
-	 dYEOZfDCsbQWA==
-Date: Mon, 29 Jan 2024 21:34:20 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Brian Masney <bmasney@redhat.com>,
-	Georgi Djakov <djakov@kernel.org>, linux-arm-msm@vger.kernel.org,
-	vireshk@kernel.org, quic_vbadigan@quicinc.com,
-	quic_skananth@quicinc.com, quic_nitegupt@quicinc.com,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 5/6] arm64: dts: qcom: sm8450: Add opp table support
- to PCIe
-Message-ID: <20240129160420.GA27739@thinkpad>
-References: <20240112-opp_support-v6-0-77bbf7d0cc37@quicinc.com>
- <20240112-opp_support-v6-5-77bbf7d0cc37@quicinc.com>
+	s=k20201202; t=1706544315;
+	bh=u3fDGUEBpCS6+m427D+VgxX1MSplev1LxWdiYDMvUFw=;
+	h=Date:From:To:Cc:Subject:From;
+	b=K82rzX/pMmmPA29vpdB7mRKjdRYKhbue0D9hYq8NW8+rbjTBIVggb86JQdMe0PQ52
+	 D5UJGF+szSFbYpzHur16zLYT4p1Kyqm/mCbL0QcYTTUGhMWexX+F/UClmKJrjHuzwX
+	 PzzHyDbSsbi8l8Z92JMnUvOYHJ/Kg1zMk0qwvoVEdNC/g/wgz3xYJSn3Q3sm+ZH3tT
+	 pPzlFGyEZJAIw6+MxoZLmP3cH26rBdq3UEQjmFCi2M2WNKCAqFzpDzRpOt6apPsTqC
+	 Y0Ch+eE4gYMtUyKLIeZ3zMAaeM9ksCBV6KY04d6I0JUkJjs62ZbHog73jdgGBEO1ve
+	 /GNnb9459ekIA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+	id D548F40441; Mon, 29 Jan 2024 13:05:12 -0300 (-03)
+Date: Mon, 29 Jan 2024 13:05:12 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: linux-kernel@vger.kernel.org
+Cc: Casey Schaufler <casey@schaufler-ca.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Miklos Szeredi <mszeredi@redhat.com>,
+	Paul Moore <paul@paul-moore.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>
+Subject: [PATCH 1/1 fyi] tools headers UAPI: Sync unistd.h to pick
+ {list,stat}mount, lsm_{[gs]et_self_attr,list_modules} syscall numbers
+Message-ID: <ZbfMuAlUMRO9Hqa6@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240112-opp_support-v6-5-77bbf7d0cc37@quicinc.com>
 
-On Fri, Jan 12, 2024 at 07:52:04PM +0530, Krishna chaitanya chundru wrote:
-> PCIe needs to choose the appropriate performance state of RPMH power
-> domain and interconnect bandwidth based up on the PCIe gen speed.
-> 
-> Add the OPP table support to specify RPMH performance states and
-> interconnect peak bandwidth.
-> 
-> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-> ---
->  arch/arm64/boot/dts/qcom/sm8450.dtsi | 74 ++++++++++++++++++++++++++++++++++++
->  1 file changed, 74 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
-> index 6b1d2e0d9d14..eab85ecaeff0 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
-> @@ -1827,7 +1827,32 @@ pcie0: pcie@1c00000 {
->  			pinctrl-names = "default";
->  			pinctrl-0 = <&pcie0_default_state>;
->  
-> +			operating-points-v2 = <&pcie0_opp_table>;
-> +
->  			status = "disabled";
-> +
-> +			pcie0_opp_table: opp-table {
-> +				compatible = "operating-points-v2";
-> +
-> +				opp-2500000 {
-> +					opp-hz = /bits/ 64 <2500000>;
-> +					required-opps = <&rpmhpd_opp_low_svs>;
-> +					opp-peak-kBps = <250000 250000>;
+tldr; Just FYI, I'm carrying this on the perf tools tree.
 
-This is a question for Viresh: We already have macros in the driver to derive
-the bandwidth based on link speed. So if OPP core exposes a callback to allow
-the consumers to set the bw on its own, we can get rid of this entry.
+- Arnaldo
 
-Similar to config_clks()/config_regulators(). Is that feasible?
+Full explanation:
 
-- Mani
+There used to be no copies, with tools/ code using kernel headers
+directly. From time to time tools/perf/ broke due to legitimate kernel
+hacking. At some point Linus complained about such direct usage. Then we
+adopted the current model.
 
+The way these headers are used in perf are not restricted to just
+including them to compile something.
+
+There are sometimes used in scripts that convert defines into string
+tables, etc, so some change may break one of these scripts, or new MSRs
+may use some different #define pattern, etc.
+
+E.g.:
+
+  $ ls -1 tools/perf/trace/beauty/*.sh | head -5
+  tools/perf/trace/beauty/arch_errno_names.sh
+  tools/perf/trace/beauty/drm_ioctl.sh
+  tools/perf/trace/beauty/fadvise.sh
+  tools/perf/trace/beauty/fsconfig.sh
+  tools/perf/trace/beauty/fsmount.sh
+  $
+  $ tools/perf/trace/beauty/fadvise.sh
+  static const char *fadvise_advices[] = {
+  	[0] = "NORMAL",
+  	[1] = "RANDOM",
+  	[2] = "SEQUENTIAL",
+  	[3] = "WILLNEED",
+  	[4] = "DONTNEED",
+  	[5] = "NOREUSE",
+  };
+  $
+
+The tools/perf/check-headers.sh script, part of the tools/ build
+process, points out changes in the original files.
+
+So its important not to touch the copies in tools/ when doing changes in
+the original kernel headers, that will be done later, when
+check-headers.sh inform about the change to the perf tools hackers.
+
+---
+
+To pick the changes in these csets:
+
+  d8b0f5465012538c ("wire up syscalls for statmount/listmount")
+  5f42375904b08890 ("LSM: wireup Linux Security Module syscalls")
+
+Used in some architectures to create syscall tables.
+
+This addresses this perf build warning:
+
+  Warning: Kernel ABI header differences:
+    diff -u tools/include/uapi/asm-generic/unistd.h include/uapi/asm-generic/unistd.h
+
+Cc: Casey Schaufler <casey@schaufler-ca.com>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: Miklos Szeredi <mszeredi@redhat.com>
+Cc: Paul Moore <paul@paul-moore.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Link: https://lore.kernel.org/lkml/
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/include/uapi/asm-generic/unistd.h | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
+
+diff --git a/tools/include/uapi/asm-generic/unistd.h b/tools/include/uapi/asm-generic/unistd.h
+index 756b013fb8324bd7..75f00965ab1586cd 100644
+--- a/tools/include/uapi/asm-generic/unistd.h
++++ b/tools/include/uapi/asm-generic/unistd.h
+@@ -829,8 +829,21 @@ __SYSCALL(__NR_futex_wait, sys_futex_wait)
+ #define __NR_futex_requeue 456
+ __SYSCALL(__NR_futex_requeue, sys_futex_requeue)
+ 
++#define __NR_statmount   457
++__SYSCALL(__NR_statmount, sys_statmount)
++
++#define __NR_listmount   458
++__SYSCALL(__NR_listmount, sys_listmount)
++
++#define __NR_lsm_get_self_attr 459
++__SYSCALL(__NR_lsm_get_self_attr, sys_lsm_get_self_attr)
++#define __NR_lsm_set_self_attr 460
++__SYSCALL(__NR_lsm_set_self_attr, sys_lsm_set_self_attr)
++#define __NR_lsm_list_modules 461
++__SYSCALL(__NR_lsm_list_modules, sys_lsm_list_modules)
++
+ #undef __NR_syscalls
+-#define __NR_syscalls 457
++#define __NR_syscalls 462
+ 
+ /*
+  * 32 bit systems traditionally used different
 -- 
-மணிவண்ணன் சதாசிவம்
+2.43.0
+
 
