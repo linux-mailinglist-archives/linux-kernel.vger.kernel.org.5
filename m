@@ -1,149 +1,134 @@
-Return-Path: <linux-kernel+bounces-42345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42346-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D93F483FFF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:23:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 199C283FFFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:26:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66DE51F23577
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 08:23:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9FC95B22ABB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 08:26:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDD43537EE;
-	Mon, 29 Jan 2024 08:23:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Bz2FgY36"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02C9C537F3;
+	Mon, 29 Jan 2024 08:25:53 +0000 (UTC)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56D3053E07
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 08:23:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5945553E01;
+	Mon, 29 Jan 2024 08:25:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706516621; cv=none; b=X+SU1Yv9G7eZpraIWasyCi1qeMjKHdU2Nbpsrt7q0sO0IFHPL5BWUghMotK5nj+RHgbv/TdpKsDMrnGPveXxEsXaYZiFlXXy9cR4jl0KdLnQvmA5LoWthvbvNVPiZTj6eOKACz/14QWvwGl5D8mVI8xm+ULbGozqGNsMYu3Hz+w=
+	t=1706516752; cv=none; b=HyK+Ulk5TiygJppaerGMNzHJ+2/A+Ha3OxMT6o5GVswRAyhrOgh/S0HcQfgCrscLoFPLBTeVwMDyeLm4UAjmdN7woKrsLee71xCDEpE3UD9QA+V3qLPnnSBJ4SH6Bx3IZRnwomhCY9sVODkobi3RqwYBrXz3pJJAJpDoRprXVjo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706516621; c=relaxed/simple;
-	bh=hTq664ZF45Lm76f0DHWseje2J4hDL51tHrYg8CYraBY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WHj0Nem8KTwLgvqUIdYACcxylmFvPwttKqixq5IVBJkXunYFj5MPpqQRrZuSf3Y2TBTuZ5uJql0C3XJYDi3m5ikiW8LuCXBONIHsHR8m/cKG2VqeXAuWXXfM7jj0iFJQ0t2AvAOWvM/bVwQye8hXDA+6S9elIFzmNBaywEBcIMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Bz2FgY36; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a28fb463a28so255182266b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 00:23:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706516617; x=1707121417; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=V4eraHHv/+5OLXlBhZc4oHICad8CWWfZ8PMHfSnGUco=;
-        b=Bz2FgY36s58Wmr527orMfIY9tv0zSgmEzlgKPmOm2mhneeyHkeu6QgN+zGuqxAwAe8
-         KVRuLe1FXGfH2i7ymYqSpFZ11i32Ep5HSqfKMeJi/KtbWqb9tHFeiRRnuUcBstZgE4hj
-         4eN2eZM0awq7zLFPslR0EP5ZIlrUMrfAyHxB7IpEMp/pSBappkn1IeGWCOy4ldF7UFds
-         2tBs/sDUYhImBDisVihIY9myBqdlQdekJdsL66dPV7ibbFI9uEJYf9LenP3VYwqMeCfd
-         urVMcKyJjCCqlflOiFeFDYHnfDvcQkLkJksNg4H1il0O2J6zmEKN7nmeBOGrdQw01VlJ
-         b6gg==
+	s=arc-20240116; t=1706516752; c=relaxed/simple;
+	bh=q1gYYgdvPMV7TyEEJ8sN3MbDG/IkDzJ19sdzRd6Dl2M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mhu2/gYkYqd1sqGk+AUIaCjPwGkwaWlWIzVuBmRMdpl5dvPq4zfp8F7PgtNbNNkRuPrkjGTOTY5oIvxzEFQOY+/ouKA4FIAg2/5Qd7AGrv26S3UW8FdRq24Jtd+sPNVGpZ867wGLe5zqKJlMvVq48kmPxBRZy8t+Ssx/SHwBfi0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-602ab446cd8so23294597b3.1;
+        Mon, 29 Jan 2024 00:25:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706516617; x=1707121417;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=V4eraHHv/+5OLXlBhZc4oHICad8CWWfZ8PMHfSnGUco=;
-        b=Ph7DESclF1+XmmslIM4jiv7CM6FQ5yh8g0/d52yzlBcpIZaNQ338fSitoi5gMDLRIG
-         OzHlKi4G05W0SqrgyNaPQyKZvNv3avsa1/1ABofUduz8AwfncnXxPamw2e9vr9UOfGMg
-         /LAUjPm7hNI6jXV0MyWVaZOFGLRaqj9+BrC9e/TgjvsmeSKT0FftS+l5WW2Ijo7mUgE6
-         OWCPRpP4yhNPG8XiVXqVEIlPGEfYjQ7nw+XRZaNSPa7VliaN8/syU6D7mK4qnxl+UeLI
-         nBMwF/dmK8fQz1kqElDN2DUgB7V4qRaW2uiJ9fYoTwap2i+xLT2An8rrVSr+DasKssJn
-         n1dg==
-X-Gm-Message-State: AOJu0YzDVlbEhgu8Gr15Al/8Zx09VwDqiBtoAoPOZlLG/2gKCyQVHjCR
-	m1rtctnTG5Lm1rDrnEBxojBmMkLPjIv2u0YTZJ58quq2/t6AGuMi3zpTHy9X2sQ=
-X-Google-Smtp-Source: AGHT+IGEog5bJVIO5TK3ZWoSpwv+oXfH1qdPWDR+5/abHTz6qjYkTixOz/iVF2aEqxTxUwhfIa1b6g==
-X-Received: by 2002:a17:906:c343:b0:a30:d336:d7b6 with SMTP id ci3-20020a170906c34300b00a30d336d7b6mr3950484ejb.57.1706516617458;
-        Mon, 29 Jan 2024 00:23:37 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id ku17-20020a170907789100b00a32fb8e79e1sm3644677ejc.65.2024.01.29.00.23.36
+        d=1e100.net; s=20230601; t=1706516749; x=1707121549;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Qnxd1+UMtflAeTNDn68oCiHgIyPBn7p4OxcQPfoNqMU=;
+        b=QezAcRnUy5ur0Nrmm2KIEo+KbsbyHMpviD+ZqL+B9g0Ld8zV7UV0DVh1O4rnNuiNrj
+         b3sWMVqBABeGj2qVvqqEZD5UnjdEBl8ZFzMSOWs0AtMF18v4IApMtJijNwW/j1TYNwmn
+         1/dFc8WCcNDZbW6olaaujJ56OlnHlbOyHx7sUbf4SP4ObuZtO7DQMYL6kMx42Ijx8YSR
+         VxaLX4Wi/EcsWJsYFu4K2OXUjT4gLePFae6TlDjRfJTTfl39LIrQysBsZJx/lKkxLWmp
+         wzpbafJ1I9GCPivIh2m5GOF4h0mOZubOY4y6sTDeDbHwqXCPEX+I8Fu61dJMwWol8rwf
+         7JlQ==
+X-Gm-Message-State: AOJu0Yw2X5PGeW7ziogVVqkTo1T/SKfjJa3/OYxqxiRpjFlSWfYNGsHg
+	OUG3LXE1hjj+jvHHfzyZMzeCvlJsXGA6riQU2mCjJurUB4oKSCI0cyHUX2sjH7Y=
+X-Google-Smtp-Source: AGHT+IHt2FmPfFVJVznJxUnbieijcR7PqiKiojtoj9hmaXt1H3lzWCLb/jXnHgeQs9w+ybZi9rzqaw==
+X-Received: by 2002:a81:431b:0:b0:5e7:ae43:e90f with SMTP id q27-20020a81431b000000b005e7ae43e90fmr3071006ywa.3.1706516749098;
+        Mon, 29 Jan 2024 00:25:49 -0800 (PST)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
+        by smtp.gmail.com with ESMTPSA id v4-20020a81a544000000b005ff9a21d042sm2305094ywg.46.2024.01.29.00.25.48
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jan 2024 00:23:37 -0800 (PST)
-Message-ID: <1de7829c-8e11-4d48-a28a-a7eacc16c8a3@linaro.org>
-Date: Mon, 29 Jan 2024 09:23:36 +0100
+        Mon, 29 Jan 2024 00:25:48 -0800 (PST)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-602ab446cd8so23294537b3.1;
+        Mon, 29 Jan 2024 00:25:48 -0800 (PST)
+X-Received: by 2002:a05:690c:338f:b0:5ff:b07c:3b72 with SMTP id
+ fl15-20020a05690c338f00b005ffb07c3b72mr3540193ywb.62.1706516748639; Mon, 29
+ Jan 2024 00:25:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/4] dt-bindings: iio: pressure:
- honeywell,hsc030pa.yaml add spi props
-Content-Language: en-US
-To: Petre Rodan <petre.rodan@subdimension.ro>, linux-iio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen
- <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-References: <20240127160405.19696-1-petre.rodan@subdimension.ro>
- <20240127160405.19696-2-petre.rodan@subdimension.ro>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240127160405.19696-2-petre.rodan@subdimension.ro>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240115130817.88456-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <CA+V-a8t4v2CxZWrLRKBinS5fyG-_FzDFz5zA=mgcrNutJABr5g@mail.gmail.com>
+In-Reply-To: <CA+V-a8t4v2CxZWrLRKBinS5fyG-_FzDFz5zA=mgcrNutJABr5g@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 29 Jan 2024 09:25:37 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWKvJRFP+zOeWPALbYwAf7Z_UW879q1aLXyFwXqaJp9GA@mail.gmail.com>
+Message-ID: <CAMuHMdWKvJRFP+zOeWPALbYwAf7Z_UW879q1aLXyFwXqaJp9GA@mail.gmail.com>
+Subject: Re: [PATCH v5 0/4] Add missing port pins for RZ/Five SoC
+To: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Magnus Damm <magnus.damm@gmail.com>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-gpio@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>, 
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 27/01/2024 17:03, Petre Rodan wrote:
-> Add spi-peripheral-props.yaml requirement needed by the
-> spi-max-frequency property.
-> 
-> Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
-> ---
+Hi Prabhakar,
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+On Mon, Jan 29, 2024 at 9:16=E2=80=AFAM Lad, Prabhakar
+<prabhakar.csengg@gmail.com> wrote:
+> On Mon, Jan 15, 2024 at 1:08=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail=
+com> wrote:
+> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > This patch series intends to incorporate the absent port pins P19 to P2=
+8,
+> > which are exclusively available on the RZ/Five SoC.
+> >
+> > Cheers,
+> > Prabhakar
+> >
+> > v4 -> v5:
+> > * Made struct rzg2l_variable_pin_cfg variables u32
+> > * Updated PIN_CFG_PIN_MAP_MASK macro to use GENMASK_ULL() as reported
+> >   by kernel test robot.
 
-Best regards,
-Krzysztof
+> > Lad Prabhakar (4):
+> >   pinctrl: renesas: rzg2l: Improve code for readability
+> >   pinctrl: renesas: rzg2l: Include pinmap in RZG2L_GPIO_PORT_PACK()
+> >     macro
+> >   pinctrl: renesas: pinctrl-rzg2l: Add the missing port pins P19 to P28
+> >   riscv: dts: renesas: r9a07g043f: Update gpio-ranges property
+> >
+> >  arch/riscv/boot/dts/renesas/r9a07g043f.dtsi |   4 +
+> >  drivers/pinctrl/renesas/pinctrl-rzg2l.c     | 284 +++++++++++++++++---
+> >  2 files changed, 248 insertions(+), 40 deletions(-)
+> >
+> With recent changes to pinctrl-rzg2l.c this patch series (patch #2)
+> does not apply cleanly anymore. Shall I resend it?
 
+Yes please. That would save me from resolving the conflict when
+I get to this series.
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
