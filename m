@@ -1,416 +1,311 @@
-Return-Path: <linux-kernel+bounces-42033-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42034-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 758D083FB77
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 01:58:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C75583FB7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 01:59:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A0FD1C219BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 00:58:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 091E81F21E78
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 00:59:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 600D3944F;
-	Mon, 29 Jan 2024 00:58:28 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09D2CC8C4;
+	Mon, 29 Jan 2024 00:59:20 +0000 (UTC)
+Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2074.outbound.protection.partner.outlook.cn [139.219.146.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFC598F48;
-	Mon, 29 Jan 2024 00:58:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706489907; cv=none; b=gkVb8PnhrHl9ij4m6i3j5Vtn1TK0UIVfvtNIGwsx9K1/f5BJTQUZ5vpecdkPb4yTqxS7IB5oUhGiD8UDeB0CGaE3Gg54Om2DBi2jweyWWrEw4fgaMkg1IEb3+P9yOQgLOftfAM3hbiu/QNUebefuQeg/DcQ4UNZpBYo+F7PCBjA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706489907; c=relaxed/simple;
-	bh=yLf1sjGWYdMM9fdfNcWRgLefYZRSrK/jPkHLJgbeR4s=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=lPgyCa3lz1U4R+mj450Jj3q6YQ2DNLMp5qCIlvPs0MsZcHuc2WiwE5SLfuUdsybuwlr/9yt1eWSutJwyFFdskaKCsnvGwpjz2Y9orDpAGHiV6UTK4HSehW8NMJIljD3q84JMkdba7kU5j+T2lEoNJe8M3uV9vCEhhAY0n2bpdls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4TNVHR01DGzvVFW;
-	Mon, 29 Jan 2024 08:56:34 +0800 (CST)
-Received: from kwepemm600003.china.huawei.com (unknown [7.193.23.202])
-	by mail.maildlp.com (Postfix) with ESMTPS id 21D551400CD;
-	Mon, 29 Jan 2024 08:58:12 +0800 (CST)
-Received: from [10.67.111.205] (10.67.111.205) by
- kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 29 Jan 2024 08:58:11 +0800
-Subject: Re: [RFC PATCH] kprobes: Use synchronize_rcu_tasks_rude in
- kprobe_optimizer
-To: <paulmck@kernel.org>
-CC: Chen Zhongjin <chenzhongjin@huawei.com>, <linux-kernel@vger.kernel.org>,
-	<linux-trace-kernel@vger.kernel.org>, <naveen.n.rao@linux.ibm.com>,
-	<anil.s.keshavamurthy@intel.com>, <davem@davemloft.net>,
-	<mhiramat@kernel.org>, <akpm@linux-foundation.org>, <tglx@linutronix.de>,
-	<peterz@infradead.org>, <pmladek@suse.com>, <dianders@chromium.org>,
-	<npiggin@gmail.com>, <mpe@ellerman.id.au>, <jkl820.git@gmail.com>,
-	<juerg.haefliger@canonical.com>, <rick.p.edgecombe@intel.com>,
-	<eric.devolder@oracle.com>, <mic@digikod.net>
-References: <20240102034024.256326-1-chenzhongjin@huawei.com>
- <29eaed4d-c4e5-cf9b-113b-da146b719820@huawei.com>
- <d7cb96d8-86e1-423d-a135-46b4e472fe9e@paulmck-laptop>
-From: Yang Jihong <yangjihong1@huawei.com>
-Message-ID: <d7dfe177-6bfb-63c2-9be5-6ad25c8c243e@huawei.com>
-Date: Mon, 29 Jan 2024 08:58:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F11BDDDA0;
+	Mon, 29 Jan 2024 00:59:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.146.74
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706489959; cv=fail; b=paYepL0PP4ksjP14U7bDYQyCAJRqorj3w9/wiRaGtZYIp9lZfmI9hgUTZBxhPjxjdTULHnZrYEDyvRyYrFfub+y1kN7uVNjBno+npePtH/XZ5+NQhBdSLG2hEsiW1ERSz+mZyMTN7dPCqntlqO5zK0NmdpPMTD0EXgPJJcIggeg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706489959; c=relaxed/simple;
+	bh=a1fIuVIFQj5jHzv1N+V662J9jOLA6EtmSot2Scq1ggI=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=Orr0H7SbW9yx2pltrCwuUnUMA6shRPh5ygzwlQZM9OstyAtMAuG0l2WoMzrPHAdZSZE7xWkNDRQuEEu5OceWdSOGRdIMNmhallgA/ZkknIliBPPd2rX6ulalqqRFVcPsP5hxI+TQHjMa7oAvBfj2gxxfLeeH0lvv8CNjVfhIOWA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.146.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lg3hP0DuesBGqT2ukU1vJPVt5Z3+521u4fD3brpvJvM9NUi5kxiQovJuMbIPmqUlbBcZCXiEr954mgKQJ91pyAuABk6I8GI6V1DtSr+Eh7pShRF5n//IapbErdBt8Cn0yqP9vulxWrJyGaTbK2IKmboq7FZCLc8gUu4Lp0wCnsd26FBuaT/6+n2iIyGFcEB1syLv62DOVHBvGPM2bzraAdA+H4h/XfjrYAn02ZP3bMRAYG3DsJGm4l+1FJrhx1XdTZGQhyPJRTqtfAyJ/oLNfHjsfNiPig0l8YL59ogXeNuhJwKt01ddaS02HTSyJKDMMyt2OXE5R398WEeMaBRspg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+NgpySmXzoxq5FMielMScxGtRu1EyeCLpduhOf7+TO4=;
+ b=SJU8krBeKy1UvUFs4oCVunryNUC2rsawvr/cm96FeeC/WLin1xyOGxJpsBtzaSNIk33aIB4UdPAZGLA3E1El3nzhX1Xg1vsHRCm5WqRJYfzkYsdmNA7I3ev9B2wmNiec7n+0aRy8raZ2YSn6plL+tj3iemvHVPxbl9I8kqAFUTe3TzWbXEH2wR9reYtoFe+9b/urFoavdk/JM/VErrqP/q99o/yyU8Fdxu80OU82FUiPbpaoTzVUa9HwX3ybNzCxF+0W6UnjMA5652Ix7PEAgtNnwYh1vjpGeoLGCvucxJW4c8swF9RbRRJdbpfL0NpGcjH0UkdzOAb0q9QEyAr9dA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+Received: from BJXPR01MB0855.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c211:18::12) by BJXPR01MB0630.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c211:14::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.28; Mon, 29 Jan
+ 2024 00:59:04 +0000
+Received: from BJXPR01MB0855.CHNPR01.prod.partner.outlook.cn
+ ([fe80::1ea1:19d5:efef:6fc6]) by
+ BJXPR01MB0855.CHNPR01.prod.partner.outlook.cn ([fe80::1ea1:19d5:efef:6fc6%4])
+ with mapi id 15.20.7228.029; Mon, 29 Jan 2024 00:59:04 +0000
+From: Minda Chen <minda.chen@starfivetech.com>
+To: Conor Dooley <conor@kernel.org>,
+	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Daire McNamara <daire.mcnamara@microchip.com>,
+	Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-pci@vger.kernel.org,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Mason Huo <mason.huo@starfivetech.com>,
+	Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+	Kevin Xie <kevin.xie@starfivetech.com>,
+	Minda Chen <minda.chen@starfivetech.com>
+Subject: [PATCH v14,RESEND 00/22] Refactoring Microchip PCIe driver and add StarFive PCIe
+Date: Mon, 29 Jan 2024 08:58:53 +0800
+Message-Id: <20240129005854.3554-1-minda.chen@starfivetech.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: ZQ0PR01CA0035.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c550:2::21) To BJXPR01MB0855.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c211:18::12)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <d7cb96d8-86e1-423d-a135-46b4e472fe9e@paulmck-laptop>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600003.china.huawei.com (7.193.23.202)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BJXPR01MB0855:EE_|BJXPR01MB0630:EE_
+X-MS-Office365-Filtering-Correlation-Id: feca1bc8-6606-4a71-5846-08dc20657cd6
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	xnOYMZQziqJXl91EbiqgE/AQbexJSDaq8Apox2jR7lKMmP3JOKh8j13+8brjJR6aQQ3m8aDf0ajOUX7M/ontKrIio7z6JmXzYm8k2lgXf4zKguv1exdUSTP9zV93bA/zhkMrTZQNDd/Lc29E6DffPTFrP4RKvClafZC5CPsVxk0g678BGYji2DH2jF8t9CsA46pnwtLkhzhBVGlNJtWMfPsiIR4vYKqEeQXg1IIu3kA0F9FAXHUKtBg/oa/RJBEFapCSTjbf/Tt9NoVvQh14QxUwuXcbzbUVAXmpZsgngL6JgJT1u45ICXJM3K43m1sH483NeWb4k/AzujfjjUj0MeVJjP2VDD+281zmIXPkkoCteGM1oXeFyKtaiT9Ir9M8oYBUkGWKqLMbz6G7MO2jMMoN1tP6BLEHU1DidJD+7eOuwdf7NNOPeDixbMtVxfkZOaO6FWUZzKFmaoiYEMxAP3r2Q885XqGZRXCq12iZisDZFPkQzIwmOQAAvFa5P89k1FHsY6TS6KTQwwcZcjUFhucZNJZBYxR0jhgScFCbXLycu/9E8VKDvLXL049k58E3
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BJXPR01MB0855.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(136003)(39830400003)(396003)(346002)(366004)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(83380400001)(41320700001)(40180700001)(86362001)(40160700002)(36756003)(38350700005)(1076003)(38100700002)(2616005)(26005)(107886003)(2906002)(52116002)(508600001)(6666004)(41300700001)(110136005)(66946007)(66556008)(66476007)(54906003)(5660300002)(8936002)(4326008)(44832011)(8676002)(7416002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?toLbP8W1gckkGRR2qijtxUW4nxX2ksqH30YMEp5lLoq9YK1icaGl+XqqPh30?=
+ =?us-ascii?Q?VgONJf78Yz1rRn6VtG1vt3IokQGv7oXU2N9PWA4KhaSccBfJ20S4ZKMotefT?=
+ =?us-ascii?Q?B988yRVmQgY0HIgWmKhAiv9Ps03eDgLTao+DPLqR1mQW1AOgtnI9YbPs9995?=
+ =?us-ascii?Q?tdzsK5Bgl06L3kAuihKBseZzj4b+/FgVaizWacBCl92AinCKXFMCDuKkQeYP?=
+ =?us-ascii?Q?lHNPZGSU+q/W5x78T1W8qU5bso3r6F0H+5d74LWveemnRmwuRn3ep3nw9YCK?=
+ =?us-ascii?Q?WI5VARTmuhj/Gs1LPwrTs/T3Atd4vqE6qEaLWJpNJDsFRfiobYpyPsIL7DEx?=
+ =?us-ascii?Q?j/YdCL2aG6zCpydm+HLID/hV77IKqqXbx7w6HPq9DDTgSTfgsxvQCN9hPeRb?=
+ =?us-ascii?Q?NgEN0gzKx4gaBfrLUDgyNj5eBRtAOqypJEdulkLWWqovB6HA9NQQik5Z95kB?=
+ =?us-ascii?Q?4AL7ZxCbuWH5Htq31qzOLK9xc87NXup/PryuMurs5qhJJFfSHEYXVMfnpxYj?=
+ =?us-ascii?Q?W9l0wO9hSMxJkRvYnCggjOc3+5x57BGU96P0061jzUOitliNej0gjUQFtZO/?=
+ =?us-ascii?Q?tFVb2XrQb7sQ7wTPSM0ftVsziRr2R4IMlqK/xNv1kCqs5oHrM87t9hNyfN25?=
+ =?us-ascii?Q?XOXFLJrHHLAw511lONfAvleNRFkTyIa8WGZOGPp2sfaG6F3GwGOx0SUCabxR?=
+ =?us-ascii?Q?zMm02Ebh4zawuWoF+BwFFhw5c667VuyEE6MQ/n6SXG9DtSkOQtTnPmXKF4uC?=
+ =?us-ascii?Q?OqCeD55bJ76k63AdiWLOTP1iqrndfafk541KhOeHzz2JNMJY42myRrgANTTy?=
+ =?us-ascii?Q?/+z/s4YCWkDYCN098+5ss0x43bbETETsV/lHiK/+iv+wuhfRgdtYv5MAhfWT?=
+ =?us-ascii?Q?yJziyt+FDjtC/jmBZc1HIP3kBpS9CXaGnuVthXUhPjaa5Zfv0tes4EfT06CD?=
+ =?us-ascii?Q?/LYLMZqI8WJOIufNZ1BYRGBVSIXBg9jOff4KBDin+dWs0C/UXeSpNavmpd82?=
+ =?us-ascii?Q?une1UiRg1E9eJvjW9hFm8/hTJSZNv6+Y5ko+N83gBgJeimYCQiX1k/Q14+ro?=
+ =?us-ascii?Q?BHatD/ZooYwxFsqq//d1160Mmk6pMMS/aSmQZ8wYkuTkEhWlgvaGjvXjhrQk?=
+ =?us-ascii?Q?igcn6sBQ9fO2a10JrZUq2E7d0R9ZVp1kePvlnc0coatUnmvTVHmoZzIIDBrU?=
+ =?us-ascii?Q?Ekz04P648v2Eu9OchP08/zZPOs5B3BmLl+G4mRrKW6Kuc8C9VAYCwQlFIZyF?=
+ =?us-ascii?Q?q4nMgBtzp5BFJEH0cuAEZ4DUEHncXRdjfrKNPFe57YmOnTuXHGHd9kySFOxy?=
+ =?us-ascii?Q?fqPH2hsSJCQ94tCf2N/5lVLkqZYj1MF8KIOb8fYMHlORqG3y4OqaTwO1sNhr?=
+ =?us-ascii?Q?rkvB5QAOJeW90Ek4JduKB/vaT2StXzWIk5Wl7w9nzcc5bOWk4cxa+fcCvFfH?=
+ =?us-ascii?Q?Lrc+YuIaUnlF6d2SDdU0b3s2CqMDlQEcVuIGorB9Dw2D4bZMBuUZU4r27H3i?=
+ =?us-ascii?Q?B88daEtlnIn9EiwoBMAjRU5dHj9b/GM6+v2KbgdV8Hbn6MZ2K12m6z7yApjH?=
+ =?us-ascii?Q?NCXFvYE3U4Cdh6x7o5MD094ZuK8NqmPwHljgMPzaUKFcCF9zswSp8OdkPd6Y?=
+ =?us-ascii?Q?Rw=3D=3D?=
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: feca1bc8-6606-4a71-5846-08dc20657cd6
+X-MS-Exchange-CrossTenant-AuthSource: BJXPR01MB0855.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2024 00:59:04.0057
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: e/hysvxo45zahjyjbw8pomObEmqUBqN7BqwaxD0Rtz7oxMs0jk/0R/dtX0j8t7nHoTtp8qrC9lQZ50Y5iLROATwemKf89X3U14TQx+zixNw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BJXPR01MB0630
 
-Hello,
+This patchset final purpose is add PCIe driver for StarFive JH7110 SoC.
+JH7110 using PLDA XpressRICH PCIe IP. Microchip PolarFire Using the
+same IP and have commit their codes, which are mixed with PLDA
+controller codes and Microchip platform codes.
 
-On 2024/1/28 3:22, Paul E. McKenney wrote:
-> On Tue, Jan 09, 2024 at 07:28:29PM +0800, Yang Jihong wrote:
->> Hello,
->>
->> PING.
->>
->> I had a similar problem. Is this solution feasible?
-> 
-> Sadly, no.
-> 
-> It fails on CONFIG_PREEMPT=y kernels because synchronize_rcu_tasks_rude()
-> will not wait on tasks that have been preempted while executing in
-> a trampoline.
-> 
-> But could you please try out the patch shown at the end of this email?
+For re-use the PLDA controller codes, I request refactoring microchip
+codes, move PLDA common codes to PLDA files.
+Desigware and Cadence is good example for refactoring codes.
 
-Thanks for the patch, yes, I've tested and it solves the problem.
+----------------------------------------------------------
+The refactoring patches total number is 16,(patch 1-16)
+which do NOT contain changing logic of codes.
 
-> 
-> 							Thanx, Paul
-> 
->> Thanks,
->> Yang
->>
->> On 2024/1/2 11:40, Chen Zhongjin wrote:
->>> There is a deadlock scenario in kprobe_optimizer():
->>>
->>> pid A				pid B			pid C
->>> kprobe_optimizer()		do_exit()		perf_kprobe_init()
->>> mutex_lock(&kprobe_mutex)	exit_tasks_rcu_start()	mutex_lock(&kprobe_mutex)
->>> synchronize_rcu_tasks()		zap_pid_ns_processes()	// waiting kprobe_mutex
->>> // waiting tasks_rcu_exit_srcu	kernel_wait4()
->>> 				// waiting pid C exit
->>>
->>> To avoid this deadlock loop, use synchronize_rcu_tasks_rude() in kprobe_optimizer()
->>> rather than synchronize_rcu_tasks(). synchronize_rcu_tasks_rude() can also promise
->>> that all preempted tasks have scheduled, but it will not wait tasks_rcu_exit_srcu.
->>>
->>> Signed-off-by: Chen Zhongjin <chenzhongjin@huawei.com>
->>> ---
->>>    arch/Kconfig     | 2 +-
->>>    kernel/kprobes.c | 2 +-
->>>    2 files changed, 2 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/arch/Kconfig b/arch/Kconfig
->>> index f4b210ab0612..dc6a18854017 100644
->>> --- a/arch/Kconfig
->>> +++ b/arch/Kconfig
->>> @@ -104,7 +104,7 @@ config STATIC_CALL_SELFTEST
->>>    config OPTPROBES
->>>    	def_bool y
->>>    	depends on KPROBES && HAVE_OPTPROBES
->>> -	select TASKS_RCU if PREEMPTION
->>> +	select TASKS_RUDE_RCU
->>>    config KPROBES_ON_FTRACE
->>>    	def_bool y
->>> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
->>> index d5a0ee40bf66..09056ae50c58 100644
->>> --- a/kernel/kprobes.c
->>> +++ b/kernel/kprobes.c
->>> @@ -623,7 +623,7 @@ static void kprobe_optimizer(struct work_struct *work)
->>>    	 * Note that on non-preemptive kernel, this is transparently converted
->>>    	 * to synchronoze_sched() to wait for all interrupts to have completed.
->>>    	 */
->>> -	synchronize_rcu_tasks();
->>> +	synchronize_rcu_tasks_rude();
->>>    	/* Step 3: Optimize kprobes after quiesence period */
->>>    	do_optimize_kprobes();
-> 
-> ------------------------------------------------------------------------
-> 
-> commit bc31e6cb27a9334140ff2f0a209d59b08bc0bc8c
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Sat Jan 20 07:07:08 2024 -0800
-> 
->      rcu-tasks: Eliminate deadlocks involving do_exit() and RCU tasks
->      
->      Holding a mutex across synchronize_rcu_tasks() and acquiring
->      that same mutex in code called from do_exit() after its call to
->      exit_tasks_rcu_start() but before its call to exit_tasks_rcu_stop()
->      results in deadlock.  This is by design, because tasks that are far
->      enough into do_exit() are no longer present on the tasks list, making
->      it a bit difficult for RCU Tasks to find them, let alone wait on them
->      to do a voluntary context switch.  However, such deadlocks are becoming
->      more frequent.  In addition, lockdep currently does not detect such
->      deadlocks and they can be difficult to reproduce.
->      
->      In addition, if a task voluntarily context switches during that time
->      (for example, if it blocks acquiring a mutex), then this task is in an
->      RCU Tasks quiescent state.  And with some adjustments, RCU Tasks could
->      just as well take advantage of that fact.
->      
->      This commit therefore eliminates these deadlock by replacing the
->      SRCU-based wait for do_exit() completion with per-CPU lists of tasks
->      currently exiting.  A given task will be on one of these per-CPU lists for
->      the same period of time that this task would previously have been in the
->      previous SRCU read-side critical section.  These lists enable RCU Tasks
->      to find the tasks that have already been removed from the tasks list,
->      but that must nevertheless be waited upon.
->      
->      The RCU Tasks grace period gathers any of these do_exit() tasks that it
->      must wait on, and adds them to the list of holdouts.  Per-CPU locking
->      and get_task_struct() are used to synchronize addition to and removal
->      from these lists.
->      
->      Link: https://lore.kernel.org/all/20240118021842.290665-1-chenzhongjin@huawei.com/
->      
->      Reported-by: Chen Zhongjin <chenzhongjin@huawei.com>
->      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index cdb8ea53c365..4f0e9274da2d 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -858,6 +858,8 @@ struct task_struct {
->   	u8				rcu_tasks_idx;
->   	int				rcu_tasks_idle_cpu;
->   	struct list_head		rcu_tasks_holdout_list;
-> +	int				rcu_tasks_exit_cpu;
-> +	struct list_head		rcu_tasks_exit_list;
->   #endif /* #ifdef CONFIG_TASKS_RCU */
->   
->   #ifdef CONFIG_TASKS_TRACE_RCU
-> diff --git a/init/init_task.c b/init/init_task.c
-> index 7ecb458eb3da..4daee6d761c8 100644
-> --- a/init/init_task.c
-> +++ b/init/init_task.c
-> @@ -147,6 +147,7 @@ struct task_struct init_task __aligned(L1_CACHE_BYTES) = {
->   	.rcu_tasks_holdout = false,
->   	.rcu_tasks_holdout_list = LIST_HEAD_INIT(init_task.rcu_tasks_holdout_list),
->   	.rcu_tasks_idle_cpu = -1,
-> +	.rcu_tasks_exit_list = LIST_HEAD_INIT(init_task.rcu_tasks_exit_list),
->   #endif
->   #ifdef CONFIG_TASKS_TRACE_RCU
->   	.trc_reader_nesting = 0,
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index 47ff3b35352e..3eb86f30e664 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -1975,6 +1975,7 @@ static inline void rcu_copy_process(struct task_struct *p)
->   	p->rcu_tasks_holdout = false;
->   	INIT_LIST_HEAD(&p->rcu_tasks_holdout_list);
->   	p->rcu_tasks_idle_cpu = -1;
-> +	INIT_LIST_HEAD(&p->rcu_tasks_exit_list);
->   #endif /* #ifdef CONFIG_TASKS_RCU */
->   #ifdef CONFIG_TASKS_TRACE_RCU
->   	p->trc_reader_nesting = 0;
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index 732ad5b39946..bd4a51fd5b1f 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -32,6 +32,7 @@ typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
->    * @rtp_irq_work: IRQ work queue for deferred wakeups.
->    * @barrier_q_head: RCU callback for barrier operation.
->    * @rtp_blkd_tasks: List of tasks blocked as readers.
-> + * @rtp_exit_list: List of tasks in the latter portion of do_exit().
->    * @cpu: CPU number corresponding to this entry.
->    * @rtpp: Pointer to the rcu_tasks structure.
->    */
-> @@ -46,6 +47,7 @@ struct rcu_tasks_percpu {
->   	struct irq_work rtp_irq_work;
->   	struct rcu_head barrier_q_head;
->   	struct list_head rtp_blkd_tasks;
-> +	struct list_head rtp_exit_list;
->   	int cpu;
->   	struct rcu_tasks *rtpp;
->   };
-> @@ -144,8 +146,6 @@ static struct rcu_tasks rt_name =							\
->   }
->   
->   #ifdef CONFIG_TASKS_RCU
-> -/* Track exiting tasks in order to allow them to be waited for. */
-> -DEFINE_STATIC_SRCU(tasks_rcu_exit_srcu);
->   
->   /* Report delay in synchronize_srcu() completion in rcu_tasks_postscan(). */
->   static void tasks_rcu_exit_srcu_stall(struct timer_list *unused);
-> @@ -275,6 +275,8 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
->   		rtpcp->rtpp = rtp;
->   		if (!rtpcp->rtp_blkd_tasks.next)
->   			INIT_LIST_HEAD(&rtpcp->rtp_blkd_tasks);
-> +		if (!rtpcp->rtp_exit_list.next)
-> +			INIT_LIST_HEAD(&rtpcp->rtp_exit_list);
->   	}
->   
->   	pr_info("%s: Setting shift to %d and lim to %d rcu_task_cb_adjust=%d.\n", rtp->name,
-> @@ -851,10 +853,12 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
->   //	number of voluntary context switches, and add that task to the
->   //	holdout list.
->   // rcu_tasks_postscan():
-> -//	Invoke synchronize_srcu() to ensure that all tasks that were
-> -//	in the process of exiting (and which thus might not know to
-> -//	synchronize with this RCU Tasks grace period) have completed
-> -//	exiting.
-> +//	Gather per-CPU lists of tasks in do_exit() to ensure that all
-> +//	tasks that were in the process of exiting (and which thus might
-> +//	not know to synchronize with this RCU Tasks grace period) have
-> +//	completed exiting.  The synchronize_rcu() in rcu_tasks_postgp()
-> +//	will take care of any tasks stuck in the non-preemptible region
-> +//	of do_exit() following its call to exit_tasks_rcu_stop().
->   // check_all_holdout_tasks(), repeatedly until holdout list is empty:
->   //	Scans the holdout list, attempting to identify a quiescent state
->   //	for each task on the list.  If there is a quiescent state, the
-> @@ -867,8 +871,10 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
->   //	with interrupts disabled.
->   //
->   // For each exiting task, the exit_tasks_rcu_start() and
-> -// exit_tasks_rcu_finish() functions begin and end, respectively, the SRCU
-> -// read-side critical sections waited for by rcu_tasks_postscan().
-> +// exit_tasks_rcu_finish() functions add and remove, respectively, the
-> +// current task to a per-CPU list of tasks that rcu_tasks_postscan() must
-> +// wait on.  This is necessary because rcu_tasks_postscan() must wait on
-> +// tasks that have already been removed from the global list of tasks.
->   //
->   // Pre-grace-period update-side code is ordered before the grace
->   // via the raw_spin_lock.*rcu_node().  Pre-grace-period read-side code
-> @@ -932,9 +938,13 @@ static void rcu_tasks_pertask(struct task_struct *t, struct list_head *hop)
->   	}
->   }
->   
-> +void call_rcu_tasks(struct rcu_head *rhp, rcu_callback_t func);
-> +DEFINE_RCU_TASKS(rcu_tasks, rcu_tasks_wait_gp, call_rcu_tasks, "RCU Tasks");
-> +
->   /* Processing between scanning taskslist and draining the holdout list. */
->   static void rcu_tasks_postscan(struct list_head *hop)
->   {
-> +	int cpu;
->   	int rtsi = READ_ONCE(rcu_task_stall_info);
->   
->   	if (!IS_ENABLED(CONFIG_TINY_RCU)) {
-> @@ -948,9 +958,9 @@ static void rcu_tasks_postscan(struct list_head *hop)
->   	 * this, divide the fragile exit path part in two intersecting
->   	 * read side critical sections:
->   	 *
-> -	 * 1) An _SRCU_ read side starting before calling exit_notify(),
-> -	 *    which may remove the task from the tasklist, and ending after
-> -	 *    the final preempt_disable() call in do_exit().
-> +	 * 1) A task_struct list addition before calling exit_notify(),
-> +	 *    which may remove the task from the tasklist, with the
-> +	 *    removal after the final preempt_disable() call in do_exit().
->   	 *
->   	 * 2) An _RCU_ read side starting with the final preempt_disable()
->   	 *    call in do_exit() and ending with the final call to schedule()
-> @@ -959,7 +969,18 @@ static void rcu_tasks_postscan(struct list_head *hop)
->   	 * This handles the part 1). And postgp will handle part 2) with a
->   	 * call to synchronize_rcu().
->   	 */
-> -	synchronize_srcu(&tasks_rcu_exit_srcu);
-> +
-> +	for_each_possible_cpu(cpu) {
-> +		unsigned long flags;
-> +		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rcu_tasks.rtpcpu, cpu);
-> +		struct task_struct *t;
-> +
-> +		raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
-> +		list_for_each_entry(t, &rtpcp->rtp_exit_list, rcu_tasks_exit_list)
-> +			if (list_empty(&t->rcu_tasks_holdout_list))
-> +				rcu_tasks_pertask(t, hop);
-> +		raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
-> +	}
->   
->   	if (!IS_ENABLED(CONFIG_TINY_RCU))
->   		del_timer_sync(&tasks_rcu_exit_srcu_stall_timer);
-> @@ -1027,7 +1048,6 @@ static void rcu_tasks_postgp(struct rcu_tasks *rtp)
->   	 *
->   	 * In addition, this synchronize_rcu() waits for exiting tasks
->   	 * to complete their final preempt_disable() region of execution,
-> -	 * cleaning up after synchronize_srcu(&tasks_rcu_exit_srcu),
->   	 * enforcing the whole region before tasklist removal until
->   	 * the final schedule() with TASK_DEAD state to be an RCU TASKS
->   	 * read side critical section.
-> @@ -1035,9 +1055,6 @@ static void rcu_tasks_postgp(struct rcu_tasks *rtp)
->   	synchronize_rcu();
->   }
->   
-> -void call_rcu_tasks(struct rcu_head *rhp, rcu_callback_t func);
-> -DEFINE_RCU_TASKS(rcu_tasks, rcu_tasks_wait_gp, call_rcu_tasks, "RCU Tasks");
-> -
->   static void tasks_rcu_exit_srcu_stall(struct timer_list *unused)
->   {
->   #ifndef CONFIG_TINY_RCU
-> @@ -1147,25 +1164,45 @@ struct task_struct *get_rcu_tasks_gp_kthread(void)
->   EXPORT_SYMBOL_GPL(get_rcu_tasks_gp_kthread);
->   
->   /*
-> - * Contribute to protect against tasklist scan blind spot while the
-> - * task is exiting and may be removed from the tasklist. See
-> - * corresponding synchronize_srcu() for further details.
-> + * Protect against tasklist scan blind spot while the task is exiting and
-> + * may be removed from the tasklist.  Do this by adding the task to yet
-> + * another list.
->    */
-> -void exit_tasks_rcu_start(void) __acquires(&tasks_rcu_exit_srcu)
-> +void exit_tasks_rcu_start(void)
->   {
-> -	current->rcu_tasks_idx = __srcu_read_lock(&tasks_rcu_exit_srcu);
-> +	unsigned long flags;
-> +	struct rcu_tasks_percpu *rtpcp;
-> +	struct task_struct *t = current;
-> +
-> +	WARN_ON_ONCE(!list_empty(&t->rcu_tasks_exit_list));
-> +	get_task_struct(t);
-> +	preempt_disable();
-> +	rtpcp = this_cpu_ptr(rcu_tasks.rtpcpu);
-> +	t->rcu_tasks_exit_cpu = smp_processor_id();
-> +	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
-> +	if (!rtpcp->rtp_exit_list.next)
-> +		INIT_LIST_HEAD(&rtpcp->rtp_exit_list);
-> +	list_add(&t->rcu_tasks_exit_list, &rtpcp->rtp_exit_list);
-> +	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
-> +	preempt_enable();
->   }
->   
->   /*
-> - * Contribute to protect against tasklist scan blind spot while the
-> - * task is exiting and may be removed from the tasklist. See
-> - * corresponding synchronize_srcu() for further details.
-> + * Remove the task from the "yet another list" because do_exit() is now
-> + * non-preemptible, allowing synchronize_rcu() to wait beyond this point.
->    */
-> -void exit_tasks_rcu_stop(void) __releases(&tasks_rcu_exit_srcu)
-> +void exit_tasks_rcu_stop(void)
->   {
-> +	unsigned long flags;
-> +	struct rcu_tasks_percpu *rtpcp;
->   	struct task_struct *t = current;
->   
-> -	__srcu_read_unlock(&tasks_rcu_exit_srcu, t->rcu_tasks_idx);
-> +	WARN_ON_ONCE(list_empty(&t->rcu_tasks_exit_list));
-> +	rtpcp = per_cpu_ptr(rcu_tasks.rtpcpu, t->rcu_tasks_exit_cpu);
-> +	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
-> +	list_del_init(&t->rcu_tasks_exit_list);
-> +	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
-> +	put_task_struct(t);
->   }
->   
->   /*
-> 
-Tested-by: Yang Jihong <yangjihong1@huawei.com>
+These patches just contain three type basic operations.
+(rename, modify codes to support starfive platform, and moving to common file)
+If these patched are all be reviewed. They can be accepted first.
 
-Thanks,
-Yang
+Refactoring patches can be devided to different groups
+1. (patch 1- 3 is the prepare work of refactoring)
+patch1 is move PLDA XpressRICH PCIe host common properties dt-binding
+       docs from microchip,pcie-host.yaml
+patch2 is move PolarFire codes to PLDA directory.
+patch3 is move PLDA IP register macros to plda-pcie.h
+
+2. (patch4 - 6 is processing and re-use PCIe host instance)
+patch4 is add bridge_addr field to PCIe host instance.
+patch5 is rename data structure in microchip codes.
+patch6 is moving two data structures to head file
+
+3. (patch 7 - 9 are for re-use two PCIe setup function)
+patch7 is rename two setup functions in microchip codes, prepare to move
+to common file.
+patch8 is change the arguments of plda_pcie_setup_iomems()
+patch9 is move the two setup functions to common file pcie-plda-host.c
+
+4.(patch 10 - 16 are for re-use interupt processing codes)
+patch10 is rename the IRQ related functions, prepare to move to
+pcie-plda-host.c
+patch 11 - 15 is modify the interrupt event codes, preparing for support starfive
+and microchip two platforms.
+patch16 is move IRQ related functions to pcie-plda-host.c
+
+------------------------------------------------------------
+The remainder patches (patch 17 -22) are not refactoring patch.
+They are for adding StarFive codes and dont modify the microchip's
+codes.
+
+patch17 is Add event bitmap for mask unused/unimpementes interrupts
+patch18 is Add host init/deinit functions.
+patch19 is add StarFive JH7110 PCIe dt-binding doc.
+patch20 is Add a PCIe delay time macro
+patch21 is add StarFive JH7110 Soc PCIe codes.
+patch22 is Starfive dts config
+
+This patchset is base on v6.8-rc1
+
+previous version:
+v9:https://patchwork.kernel.org/project/linux-pci/cover/20231020104341.63157-1-minda.chen@starfivetech.com/
+v10:https://patchwork.kernel.org/project/linux-pci/cover/20231031115430.113586-1-minda.chen@starfivetech.com/
+v11:https://patchwork.kernel.org/project/linux-pci/cover/20231115114912.71448-1-minda.chen@starfivetech.com/
+v12:https://patchwork.kernel.org/project/linux-pci/cover/20231206105839.25805-1-minda.chen@starfivetech.com/
+v13:https://patchwork.kernel.org/project/linux-pci/cover/20231214072839.2367-1-minda.chen@starfivetech.com/
+
+change:
+  v14:
+   resend: correct some commit messages. base on v6.8-rc1
+   Add a new patch 17. Add interrupt eventmap to mask non-implemented or unused interrupt.
+   patch3: rename the PLDA interrupts macro name.
+   patch9: remove the redundant head file.
+   patch10,11: modify the commit message suggested by Lorrenzo.
+   patch12: modify the commit message.
+   patch14, 15: PLDA codes will handle DMA interrupts. Modify the commit message. 
+   patch18 remove plda default events. This is implemented by vendor.
+   patch21 Add plda_event instance stf_pcie_event.
+
+  v13:
+   patch14: 1. Add plda_get_event() function. This can be compare with mc_get_event() easily and 
+		track the codes changes in case in the future..
+            2. The host event_ops is directly set to plda host port.
+	    3. Setting default host event_ops instead of checking event ops.
+   patch15:1. Add PLDA event irq_chip instead of event_domain_ops, The
+		event_domain_ops can be re-used.
+            2. The host event irq_chip is directly set to plda host port.
+	    3. Add PLDA event irqchip ops codes.
+            4. Remove Conor's review tag due to whole patch have been changed.
+   patch16: Also move the new added PLDA event codes.
+   patch18: Add plda host init and deinit function only.
+
+  v12:
+   patch18: modify the commit message and add starfive review tag.
+   Add PCIE_RESET_CONFIG_DEVICE_WAIT_MS to patch 19.
+   patch21: Add disable runtime pm function in starfive_pcie_remove()
+            Add "depens on ARCH_STARFIVE || COMPILE_TEST" in Starfive PCie Kconfig
+
+  v11:
+     check and modify some commit messages again.
+     All the codes are the same with v10.   
+
+  v10:
+   All the commit message set to fit in 75 columns.
+   All the codes fit in less than 80 colunms.
+   patch 14: 
+	Commit message changes suggested by Conor.
+   patch 21:
+        Add 100 ms delay macro to pci.h
+	generic phy pointer related codes moving to pcie-starfive.c
+	This patch Change pcie-starfive only, bus_ops move to patch 16.
+	Some Codes changes suggested by Bjorn.
+
+  v9:
+   v8 patch 10 squash to v9 patch 12, v8 patch 18 squash to v9 patch 16.
+   patch 4 - 16: Add new review tags and add more accurate commit messages.
+   patch 18: move the plda_pcie_host_init/deinit from patch 19. Make
+             plda driver become to whole driver.
+
+
+Kevin Xie (1):
+  PCI: Add PCIE_RESET_CONFIG_DEVICE_WAIT_MS waiting time value
+
+Minda Chen (21):
+  dt-bindings: PCI: Add PLDA XpressRICH PCIe host common properties
+  PCI: microchip: Move pcie-microchip-host.c to plda directory
+  PCI: microchip: Move PLDA IP register macros to pcie-plda.h
+  PCI: microchip: Add bridge_addr field to struct mc_pcie
+  PCI: microchip: Rename two PCIe data structures
+  PCI: microchip: Move PCIe host data structures to plda-pcie.h
+  PCI: microchip: Rename two setup functions
+  PCI: microchip: Change the argument of plda_pcie_setup_iomems()
+  PCI: microchip: Move setup functions to pcie-plda-host.c
+  PCI: microchip: Rename interrupt related functions
+  PCI: microchip: Add num_events field to struct plda_pcie_rp
+  PCI: microchip: Add request_event_irq() callback function
+  PCI: microchip: Add INTx and MSI event num to struct plda_event
+  PCI: microchip: Add get_events() callback and add PLDA get_event()
+  PCI: microchip: Add event irqchip field to host port and add PLDA
+    irqchip
+  PCI: microchip: Move IRQ functions to pcie-plda-host.c
+  PCI: plda: Add event bitmap field to struct plda_pcie_rp
+  PCI: plda: Add host init/deinit and map bus functions
+  dt-bindings: PCI: Add StarFive JH7110 PCIe controller
+  PCI: starfive: Add JH7110 PCIe controller
+  riscv: dts: starfive: add PCIe dts configuration for JH7110
+
+ .../bindings/pci/microchip,pcie-host.yaml     |  55 +-
+ .../pci/plda,xpressrich3-axi-common.yaml      |  75 ++
+ .../bindings/pci/starfive,jh7110-pcie.yaml    | 120 ++++
+ MAINTAINERS                                   |  19 +-
+ .../jh7110-starfive-visionfive-2.dtsi         |  64 ++
+ arch/riscv/boot/dts/starfive/jh7110.dtsi      |  86 +++
+ drivers/pci/controller/Kconfig                |   9 +-
+ drivers/pci/controller/Makefile               |   2 +-
+ drivers/pci/controller/plda/Kconfig           |  30 +
+ drivers/pci/controller/plda/Makefile          |   4 +
+ .../{ => plda}/pcie-microchip-host.c          | 615 ++---------------
+ drivers/pci/controller/plda/pcie-plda-host.c  | 651 ++++++++++++++++++
+ drivers/pci/controller/plda/pcie-plda.h       | 272 ++++++++
+ drivers/pci/controller/plda/pcie-starfive.c   | 473 +++++++++++++
+ drivers/pci/pci.h                             |  16 +
+ 15 files changed, 1875 insertions(+), 616 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/pci/plda,xpressrich3-axi-common.yaml
+ create mode 100644 Documentation/devicetree/bindings/pci/starfive,jh7110-pcie.yaml
+ create mode 100644 drivers/pci/controller/plda/Kconfig
+ create mode 100644 drivers/pci/controller/plda/Makefile
+ rename drivers/pci/controller/{ => plda}/pcie-microchip-host.c (54%)
+ create mode 100644 drivers/pci/controller/plda/pcie-plda-host.c
+ create mode 100644 drivers/pci/controller/plda/pcie-plda.h
+ create mode 100644 drivers/pci/controller/plda/pcie-starfive.c
+
+
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+-- 
+2.17.1
+
 
