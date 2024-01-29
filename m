@@ -1,176 +1,156 @@
-Return-Path: <linux-kernel+bounces-42542-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42544-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C09C8402D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:32:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 510948402DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:34:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8178E1C21ECD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:32:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02CEB2817AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:34:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 577A158108;
-	Mon, 29 Jan 2024 10:32:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3D4B56451;
+	Mon, 29 Jan 2024 10:34:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CpyBq7uU"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tbEaabXn"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE6555810D
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 10:32:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65E5B56B84
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 10:34:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706524335; cv=none; b=KJZtxpqW2+aMiDZwTjaZAllkF8YQ3yDMl/glqB4k/LEtqw+zkLK7TmFoo41uqfI4OG+oec0F1kKtGHbj/KNdQN0NVnVBV9rJ5vKT14qsc5Tz8UtBsxuMhtEjduMpsg/R+6RpWOOnCw05hLD0kI1x/CXFOmeL+SZscAeMEpidzus=
+	t=1706524466; cv=none; b=dWJLKxk/fE4PR262vtikZY6wX+F2AFKXTpOlEGRblwR5b41IpKW0hV8s0ynSoXR8rj9iiSYrk+jlfwfn6QibNiZ5ExLQh+bjXVgWl62SqdIvFVmD4qM+ppnM6bT0oRku33OftJ5NfvS5hixD7KC2zAhOpd0372/dAhn1EAjuA/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706524335; c=relaxed/simple;
-	bh=hSrQeulBJP6f7Cl5YGuj8SjRqojYDcJ3SxASn5yQP/g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VRUzYlbtDKowUNcJZRuEDiTBX8b1lIWyX9ds9OpJk0RYlHQU6iODMXX+WEGQZOdvudkBKUmhwE6iqbvmlaZZIjC9HWFGLDvsF9anpzwmnEbMug0xfKOXoTX76bvFLXrUheqO+GOups4se5Ql9z2Ith1coD6Z+E1V6n7op/CbmVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CpyBq7uU; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706524332;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hSrQeulBJP6f7Cl5YGuj8SjRqojYDcJ3SxASn5yQP/g=;
-	b=CpyBq7uUWrgcgqHMBTSPgZyNBrVTgkeC5LH8Mp3tVBtFOMq52Vl7xv2nw6IxNiEeEnZrCo
-	6bbkpYc8Rgn/nOiVCPAiUd7BCdcrCq4njpiGWiKOU2XoP6vrLzobZPV8QovcG6PtgxlVc2
-	D1oS7WosaIOKeZzhaq1BL0I7qshVDDg=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-192-ezPDptSZMuGkFjM4-_F2-w-1; Mon, 29 Jan 2024 05:32:10 -0500
-X-MC-Unique: ezPDptSZMuGkFjM4-_F2-w-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-33ae4fd9c3cso814797f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 02:32:10 -0800 (PST)
+	s=arc-20240116; t=1706524466; c=relaxed/simple;
+	bh=U3Gl97xjw4oC3MXhCS40c5jo7v5dFA0H58gsCXtXEcw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RJ3r8WNCGNk2r8JBDhUor8zZdw4mmvpd1pEpFnsC9gmIsCa9quDt2bLKqQ8/HeNfiZ/YfA0twoyTdBQc0dnMYJK0HDTGhwab4VmKUmDlm8WxTygp7SwGEmqBtdcLLl/zUdrjSeAYpifW0Vx4OkWX/lj+7BWzw0x1aOFIWFUwiB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tbEaabXn; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a35ba5744e0so81303366b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 02:34:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706524462; x=1707129262; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=qydfoZVP85IdMiubhiKm9Jneo/wEbV/EV80+UeWPEe4=;
+        b=tbEaabXnAjqHSIg0ij67hR9go6q2OJz7jAKkfkXlqk0BqHbyTjxAFo0k9lAtSVnd4+
+         U0BAoRJbzoidGW9Xb+VD6wR4Df2i/yfeluWTudg3uxp1OR/y+eQcnVZC+jZHSag5075v
+         sSJTZ6IvTdnfrbetnUaWXQC1sUtixLqFkpM0/0wxrpdEEVHPjlLLMo0ioQOFmmsGOmIE
+         s3nLChFGTuaGQqAEq2LOo2XBXhfTU2Lp5JVNuJGdjlbOgqCeveF1P2V11TQ+899hd5PY
+         FYCNbYCMoOqh4RKFPbmSnLIo6CjJM7uYJgla6ppXhM/okBJDSlehNvZPhXgLtO3O73nU
+         j/sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706524329; x=1707129129;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1706524462; x=1707129262;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hSrQeulBJP6f7Cl5YGuj8SjRqojYDcJ3SxASn5yQP/g=;
-        b=C2hqgFQIqc3NHzKC9IeTUHqsGCSixEgzMvkGQocdnGNu7cPfYrLMvfYcJXAvcamRZF
-         W8pyFDYVKbSIFCGgb03BNly3CTd3Buk0wPPrwNyHRr1+DEcm7xfdRGsJJ+46dnGVWU3H
-         tg5mmkliTk2FyiNIfnIbCRzbKesRmYIH1iyzyIImFo9cF00RlsPEZPKyltFWzQ65ug/H
-         4VikzH+uimMoxsf22y1XjEm6Vnos7AsoNLB6QlKF9d23xyXBcrQAaEhEZ2REteZKtNda
-         2hs9b+MQhFSmqbPk3+HLacDzVLPYfYcMJr2reXrxN/GNbXmbJfEDiVGW+GEdDJVCffPy
-         DA+g==
-X-Gm-Message-State: AOJu0YyjwLviCoQGAZpbU9yTCgxKhWRz1UWKKl73z1SimQWEpDF1p5wv
-	cnTfv5aC8ea6iRaw/Xri0zMmF+TV94IkRp3tKa8aRBet0nIszm6aPj1XLVFjs5eSNXgWLaopKEJ
-	Kpt6wDgr9foVzUGNSMr1ml2wjV50Y5QXkc8r2WjlmffKUupj/mXAY3n8Mp71G6g==
-X-Received: by 2002:a05:6000:1788:b0:33a:e2fa:6cc8 with SMTP id e8-20020a056000178800b0033ae2fa6cc8mr4401454wrg.38.1706524329648;
-        Mon, 29 Jan 2024 02:32:09 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF09g2HXpZvz0vVeDKKSoVe4wTKN5Hqy926UbiMg26Ii1Oafi0mU4TDkY2KCAHB2MH6G4kAQQ==
-X-Received: by 2002:a05:6000:1788:b0:33a:e2fa:6cc8 with SMTP id e8-20020a056000178800b0033ae2fa6cc8mr4401436wrg.38.1706524329282;
-        Mon, 29 Jan 2024 02:32:09 -0800 (PST)
-Received: from localhost ([2a01:e0a:b25:f902::ff])
-        by smtp.gmail.com with ESMTPSA id i8-20020adfefc8000000b0033af093e296sm1535587wrp.15.2024.01.29.02.32.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 02:32:09 -0800 (PST)
-Date: Mon, 29 Jan 2024 11:32:08 +0100
-From: Maxime Ripard <mripard@redhat.com>
-To: Pavel Machek <pavel@ucw.cz>
-Cc: Lucas Stach <dev@lynxeye.de>, 
-	kernel list <linux-kernel@vger.kernel.org>, Milan Zamazal <mzamazal@redhat.com>, 
-	Christoph Hellwig <hch@lst.de>, iommu@lists.linux.dev, Will Deacon <will@kernel.org>, 
-	catalin.marinas@arm.com, Bryan O'Donoghue <bryan.odonoghue@linaro.org>, 
-	Andrey Konovalov <andrey.konovalov.ynk@gmail.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
-	kieran.bingham@ideasonboard.com, Hans de Goede <hdegoede@redhat.com>
-Subject: Re: Re: Uncached buffers from CMA DMA heap on some Arm devices?
-Message-ID: <xd5ofun26gfdgn7hig3gipj5rgojqyuouwmii7xecgrbzyliil@y6rufxtwdmrc>
-References: <87bk9ahex7.fsf@redhat.com>
- <d2ff8df896d8a167e9abf447ae184ce2f5823852.camel@lynxeye.de>
- <Zbd8lOgVqfCrGUL7@duo.ucw.cz>
+        bh=qydfoZVP85IdMiubhiKm9Jneo/wEbV/EV80+UeWPEe4=;
+        b=arfwo03I2/6HA9hIfupYP3v4eixjqo/F8lzzxbuKmK5G1VFGH2hlH0XUyQeS+wUKvZ
+         dxZlKNhD0F9lP59fFynxA7zSrDsidDjk73cs+epRmh495MjB7Azv9ztzD5DTYJbMi9+x
+         rMtXME62OaSMUtTGNfyqir9za8M7xVVWeIHqEfSWACAOxtT7M/y2zLeHT4N4vUCDUNg5
+         Dom9rSE4MBCdaC1JfLPBtZCQidz0uFeZ2qiqckiqpXGupiEV2an11Z4HpntPN32JQYrU
+         CtY4VPSw4mYYaNu8CUnrhGt2b5oEsJHmPPx3//RfGhmDFpJDt3eOZKkzboI1EH6pPI1K
+         xUfQ==
+X-Gm-Message-State: AOJu0YzwRQWV6S6LvY+zCGqM0O2t715PnGH1eeFEt7PoyNaOidR9loL8
+	GPs4t8paM2UUgyMG41afzPOQgGHItvi8eOKWiKKasYNW5YopFhjdvjwo2pzZFKQ=
+X-Google-Smtp-Source: AGHT+IFsuk/zVuo44KErQR+oNXgqwuaPiqCP9PdIhRJdXYh9l8T8nMWPKNQ3chP38rQ6nFzUtfhnKw==
+X-Received: by 2002:a17:906:2852:b0:a34:d426:1bec with SMTP id s18-20020a170906285200b00a34d4261becmr4095258ejc.12.1706524462614;
+        Mon, 29 Jan 2024 02:34:22 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id a10-20020a170906368a00b00a349d05c837sm3740526ejc.154.2024.01.29.02.34.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jan 2024 02:34:22 -0800 (PST)
+Message-ID: <778ec92e-8f9f-4521-a31d-fba696518bed@linaro.org>
+Date: Mon, 29 Jan 2024 11:34:20 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="rgbsaoykivldpxmx"
-Content-Disposition: inline
-In-Reply-To: <Zbd8lOgVqfCrGUL7@duo.ucw.cz>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/8] dt-bindings: clock: qcom: Allow VDD_GFX supply to
+ GX
+To: Bjorn Andersson <quic_bjorande@quicinc.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Taniya Das <quic_tdas@quicinc.com>,
+ Johan Hovold <johan+linaro@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20240125-sa8295p-gpu-v4-0-7011c2a63037@quicinc.com>
+ <20240125-sa8295p-gpu-v4-1-7011c2a63037@quicinc.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240125-sa8295p-gpu-v4-1-7011c2a63037@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
+On 25/01/2024 22:05, Bjorn Andersson wrote:
+> In some designs the SoC's VDD_GFX pads are supplied by an external
+> regulator, rather than a power-domain. Allow this to be described in the
+> GPU clock controller binding.
+> 
+> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> ---
 
---rgbsaoykivldpxmx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-On Mon, Jan 29, 2024 at 11:23:16AM +0100, Pavel Machek wrote:
-> Hi!
->=20
-> > That's right and a reality you have to deal with on those small ARM
-> > systems. The ARM architecture allows for systems that don't enforce
-> > hardware coherency across the whole SoC and many of the small/cheap SoC
-> > variants make use of this architectural feature.
-> >=20
-> > What this means is that the CPU caches aren't coherent when it comes to
-> > DMA from other masters like the video capture units. There are two ways
-> > to enforce DMA coherency on such systems:
-> > 1. map the DMA buffers uncached on the CPU
-> > 2. require explicit cache maintenance when touching DMA buffers with
-> > the CPU
-> >=20
-> > Option 1 is what you see is happening in your setup, as it is simple,
-> > straight-forward and doesn't require any synchronization points.
->=20
-> Yeah, and it also does not work :-).
->=20
-> Userspace gets the buffers, and it is not really equipped to work with
-> them. For example, on pinephone, memcpy() crashes on uncached
-> memory. I'm pretty sure user could have some kind of kernel-crashing
-> fun if he passed the uncached memory to futex or something similar.
-
-Uncached buffers are ubiquitous on arm/arm64 so there must be something
-else going on. And there's nothing to equip for, it's just a memory
-array you can access in any way you want (but very slowly).
-
-How does it not work?
-
-> > Option 2 could be implemented by allocating cached DMA buffers in the
-> > V4L2 device and then executing the necessary cache synchronization in
-> > qbuf/dqbuf when ownership of the DMA buffer changes between CPU and DMA
-> > master. However this isn't guaranteed to be any faster, as the cache
-> > synchronization itself is a pretty heavy-weight operation when you are
-> > dealing with buffer that are potentially multi-megabytes in size.
->=20
-> Yes, cache synchronization can be slow, but IIRC it was on order of
-> milisecond in the worst case.. and copying megayte images is still
-> slower than that.
->=20
-> Note that it is faster to do read/write syscalls then deal with
-> uncached memory. And userspace can't simply flush the caches and remap
-> memory as cached.
-
-You can't change the memory mapping, but you can flush the caches with
-dma-buf. It's even required by the dma-buf documentation.
-
-> v4l2 moved away from read/write "because it is slow" and switched to
-> interface that is even slower than that. And libcamera exposes
-> uncached memory to the user :-(.
-
-There's also the number of copies to consider. If you were to use
-read/write to display a frame on a framebuffer, you would use 4 copies
-vs 2 with dma-buf.
-
-Maxime
-
---rgbsaoykivldpxmx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZbd+qAAKCRDj7w1vZxhR
-xTHhAP9A4AyvYSGs0JorWHjsfmCICZAeJOyYv/T4wk5MHI8IzQEAmMs2T3pXgUVp
-aoZS4N2vWOpFF9+yrzmpVk/QoucFHgg=
-=dyAt
------END PGP SIGNATURE-----
-
---rgbsaoykivldpxmx--
+Best regards,
+Krzysztof
 
 
