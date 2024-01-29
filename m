@@ -1,47 +1,57 @@
-Return-Path: <linux-kernel+bounces-42213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 223D883FDFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 07:09:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 10D2683FDFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 07:10:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5EFFB1C21994
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 06:09:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4481C1C21B9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 06:10:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7EA745BF0;
-	Mon, 29 Jan 2024 06:09:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 848124C602;
+	Mon, 29 Jan 2024 06:09:53 +0000 (UTC)
 Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 870984C618
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 06:08:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B32FA4C60B;
+	Mon, 29 Jan 2024 06:09:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706508541; cv=none; b=isj7wsY36ASKaRPaFqTxTx6KlWFaHz+OY/RzZ8dOW/fITr51x4t2EdYpib7sy6LliDANJ1tyn/kdjjq/qOmJKhnk+cCYF/aGIF9X3TCv1xHlYP/AVjvhik88Soq5lGLrhZCkvCy+iqbKmaAjl+Pv6tol+JhuiKlRtynMKVskbd0=
+	t=1706508593; cv=none; b=tv9uOq5Ofed8Mdqc4wszcO2MR+QL7lAiied1jbBXjlOmht7WsGGqOHMocu02zt+PlwOG9lf2Pv7IJTsQOJWWCcJe6FyTbbJaa6gebZXgfRj+9+PwrDuWsaRgmCrbq0s7z6JcEx2od5zN9Kox1O3goWVY9hZc8x6yWZPvebydfMs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706508541; c=relaxed/simple;
-	bh=jAALexVfdB8CH5+NUTWXDLvoHfK5Y5gEBA7XS2daLRE=;
+	s=arc-20240116; t=1706508593; c=relaxed/simple;
+	bh=fHF9zvpHCMx5CBMtV4x2qjE8Os/bWEdv7JcnskjEfj0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J5ohcnCZpGL6d/sggYF46BmUUDL+WQ3CySyhzpf36wS1QGDZzGJKwqUEyEOHMVEnPLjw8xYflILvhr1KnZJ5FBXyJ6HpHLDavbqxq7PwEp+R/Mp3WlBbU1U9PyGAUFRMorhdH1AqkGdZZ4tHKyJ9C+HxJiFpsDAjG8nSm0/487A=
+	 Content-Type:Content-Disposition:In-Reply-To; b=peUa4pQWVYAQXXKW2d4nKE+GAufNFKrAwKSdLCbzJ6IxIFgfltjC0MrBQq8m3OXZu0J1kwIv3F56rRvTVCRwWFlgenUQ/MMcD8RM9aDmAJRCjSOSM4V0ff9BXSJrPDJ7mKrvEwixKoFTGms6Fp3vuTY+9xM2faINa3ETeYmWqrE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
 Received: by verein.lst.de (Postfix, from userid 2407)
-	id 50B8C68B05; Mon, 29 Jan 2024 07:08:54 +0100 (CET)
-Date: Mon, 29 Jan 2024 07:08:53 +0100
+	id C292668B05; Mon, 29 Jan 2024 07:09:47 +0100 (CET)
+Date: Mon, 29 Jan 2024 07:09:47 +0100
 From: Christoph Hellwig <hch@lst.de>
-To: Will Deacon <will@kernel.org>
-Cc: linux-kernel@vger.kernel.org, kernel-team@android.com,
-	iommu@lists.linux.dev, Christoph Hellwig <hch@lst.de>,
+To: Robin Murphy <robin.murphy@arm.com>
+Cc: Petr =?utf-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>,
+	Alexander Lobakin <aleksander.lobakin@intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Christoph Hellwig <hch@lst.de>,
 	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Petr Tesarik <petr.tesarik1@huawei-partners.com>,
-	Dexuan Cui <decui@microsoft.com>
-Subject: Re: [PATCH 2/2] swiotlb: Enforce page alignment in swiotlb_alloc()
-Message-ID: <20240129060853.GB19258@lst.de>
-References: <20240126151956.10014-1-will@kernel.org> <20240126151956.10014-3-will@kernel.org>
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Alexander Duyck <alexanderduyck@fb.com>, bpf@vger.kernel.org,
+	netdev@vger.kernel.org, iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 2/7] dma: avoid expensive redundant calls for
+ sync operations
+Message-ID: <20240129060947.GC19258@lst.de>
+References: <20240126135456.704351-1-aleksander.lobakin@intel.com> <20240126135456.704351-3-aleksander.lobakin@intel.com> <0f6f550c-3eee-46dc-8c42-baceaa237610@arm.com> <7ff3cf5d-b3ff-4b52-9031-30a1cb71c0c9@intel.com> <0cf72c00-21d9-4f1a-be14-80336da5dff4@arm.com> <20240126194819.147cb4e2@meshulam.tesarici.cz> <1c62d388-a600-40d8-b386-15841cb1af95@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -50,37 +60,21 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240126151956.10014-3-will@kernel.org>
+In-Reply-To: <1c62d388-a600-40d8-b386-15841cb1af95@arm.com>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 
-On Fri, Jan 26, 2024 at 03:19:56PM +0000, Will Deacon wrote:
-> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> index 25febb9e670c..92433ea9f2d2 100644
-> --- a/kernel/dma/swiotlb.c
-> +++ b/kernel/dma/swiotlb.c
-> @@ -1647,6 +1647,12 @@ struct page *swiotlb_alloc(struct device *dev, size_t size)
->  		return NULL;
->  
->  	tlb_addr = slot_addr(pool->start, index);
-> +	if (!PAGE_ALIGNED(tlb_addr)) {
-> +		dev_WARN_ONCE(dev, 1, "Cannot return 'struct page *' for non page-aligned swiotlb addr 0x%pa.\n",
-> +			      &tlb_addr);
-> +		swiotlb_release_slots(dev, tlb_addr);
-> +		return NULL;
-> +	}
->  
->  	return pfn_to_page(PFN_DOWN(tlb_addr));
+On Fri, Jan 26, 2024 at 07:13:05PM +0000, Robin Murphy wrote:
+>> Can we have a comment that states this assumption along with the flag?
+>> Because when it breaks, it will keep someone cursing for days why DMA
+>> sometimes fails on their device before they find out it's not synced.
+>> And then wondering why the code makes such silly assumptions...
+>
+> Indeed, apologies if it wasn't totally clear, but I really was implying a 
+> literal "may skip sync if coherent and not using SWIOTLB (which matches 
+> dma-direct)" flag, documented as such, and not trying to dress it up as 
+> anything more generic. I just can't suggest a suitably concise name for 
+> that of the top of my head... :)
 
-So PFN_DOWN aligns the address and thus per se converting the unaligned
-address isn't a problem.  That being said swiotlb obviously should never
-allocate unaligned addresses, but the placement of this check feels
-odd to me.  Also because it only catches swiotlb_alloc and not the
-map side.
+Yes, that seems like the right way to go.
 
-Maybe just throw a WARN_ON_ONCE into slot_addr() ?
-
->  }
-> -- 
-> 2.43.0.429.g432eaa2c6b-goog
----end quoted text---
 
