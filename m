@@ -1,144 +1,106 @@
-Return-Path: <linux-kernel+bounces-42059-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42060-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C7BF83FBCC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 02:27:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67E7B83FBCF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 02:28:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D7B71C20D29
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 01:27:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97AC61C21C5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 01:28:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00603D528;
-	Mon, 29 Jan 2024 01:27:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hpGWaGzR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 349478F6A
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 01:27:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70843DDC1;
+	Mon, 29 Jan 2024 01:28:18 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79BE8DDA3;
+	Mon, 29 Jan 2024 01:28:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706491669; cv=none; b=QacewUNecKoWrkCa6fWWMAhdFdB+uDgjDXAYrlxeD4EeAXSwxyOOUPO5e5rqve5Rh/RMcbJsBtwNZEEyl+qUKwzQPKiSuREMp07u2Yig13nr06MtzRSLODevskXh2B269CB4Cqs3lOy1sFbgmQ1BB07Jh2E3s7FL6ET2YKP9fKw=
+	t=1706491698; cv=none; b=Ay4EtrPd6RbNsSK9zEYE7H/fI/R/Jgm0U0PmRmOkdi3HwKYLBWYG3F5l5hU+AhBpPJ6wj/cm+4CfFjlxUbdrcX/q9ymwEuyn3arhXezazb/R30cSfnuouW0g93s0VpndgfynMwebOuQZrc7jIBrJr1xj3BZ591esXLaDC7505Hk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706491669; c=relaxed/simple;
-	bh=NkU7xTweU96ajdi9Fvy8l3qWym9x0Ihl2M8f3JBKtCs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=L3VA+di7oZuebj8G74jxx3TaXfzR7itlxoZCW/6nJ+zxZoVedR4+oNQhMPuIg+UO+ax8p/7YWTljoWAwFS81wun5o4J7RX4DRb7Y9Ps3KY0cU43kbNh6cHEQVZNGKBbYgN+6bADmew3lQSvAOYn2EFyvGWXED36oeUef/kWFfmA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hpGWaGzR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF83EC433C7;
-	Mon, 29 Jan 2024 01:27:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706491668;
-	bh=NkU7xTweU96ajdi9Fvy8l3qWym9x0Ihl2M8f3JBKtCs=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=hpGWaGzRZQO3vY65y0NHyElKDi8PXRMW0iwOAaWRjxervIvQH3ZVIu+E0Up/EcD0L
-	 1PFsxld3n+kZjpj+4VjmVWBVAetWYCbdDLiGlN07jcGx6IEB8QSZEVy2SxqUqcCtCD
-	 optOJHib52iCli9R8CTa2qNiocSVyFW1JUmxpdGCQIXEuSL2fDd22CNJaM7181FD8w
-	 8z3027AN+rMZDv+9xpMn0PI1JQB3F1p8iIkvv4+Wt5wURaJ8n9mb+lf6HqLJ83lMyN
-	 abIgtCCsEyTUOtJpIc7ljBsAt44zXYBEO8lHaErtPGeCiCA82UIqCgiruxTQAJXtzb
-	 WoFtvpUG3RH/Q==
-Message-ID: <e879da72-4c4f-4aed-8081-784f2de5c887@kernel.org>
-Date: Mon, 29 Jan 2024 09:27:44 +0800
+	s=arc-20240116; t=1706491698; c=relaxed/simple;
+	bh=Lw72eSf10rqs9M4ILP3RajtxyQIU+eHOGp7ZrHxu5Vw=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=TuDZ011Jdy1ihKghDsORvxVR8S/+XejnW9umPqOtjzPzQpIfnyYMnn5eFaxCEH8c9IAAGJ1z1Adqe9H3qtwbAY+XiLiTL8fC6NH5iCOvlrNi2+q0yHfSMsLOIicMzB1CBo7zVdEz8dcGLxcVr+5mINE5pG94fq8Uct3kS15I/4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.20.42.173])
+	by gateway (Coremail) with SMTP id _____8DxJ+gn_7ZlmpMHAA--.4333S3;
+	Mon, 29 Jan 2024 09:28:07 +0800 (CST)
+Received: from [10.20.42.173] (unknown [10.20.42.173])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8DxDc8k_7ZliAskAA--.13536S3;
+	Mon, 29 Jan 2024 09:28:06 +0800 (CST)
+Subject: Re: [PATCH v6 4/4] KVM: selftests: Add test cases for LoongArch
+To: Sean Christopherson <seanjc@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+ Tianrui Zhao <zhaotianrui@loongson.cn>, linux-kernel@vger.kernel.org,
+ kvm@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20240125015420.1960090-1-maobibo@loongson.cn>
+ <20240125015420.1960090-5-maobibo@loongson.cn> <ZbQV75Q-N_cJLhj6@google.com>
+From: maobibo <maobibo@loongson.cn>
+Message-ID: <2b3c7e2a-b748-5635-3f8d-71323a53b28d@loongson.cn>
+Date: Mon, 29 Jan 2024 09:28:04 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [f2fs-dev] [PATCH] f2fs-tools: allocate logs after conventional
- area for HM zoned devices
+In-Reply-To: <ZbQV75Q-N_cJLhj6@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To: Daeho Jeong <daeho43@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- kernel-team@android.com, Daeho Jeong <daehojeong@google.com>,
- Yongpeng Yang <yangyongpeng1@oppo.com>
-References: <20240117230032.2312067-1-daeho43@gmail.com>
- <df9645d9-1e9a-4bd2-88bb-26425cf45811@kernel.org>
- <CACOAw_yjEuGSvo_qyoA13U0HwOr3gOzGtNf2Twhes01SNSGQeg@mail.gmail.com>
- <b18c286a-cc72-439c-b373-98e0d6504618@kernel.org>
- <CACOAw_yqrtEhq4wtJbs7CVn260h7iZyC7koCWH1iMyeQo5140g@mail.gmail.com>
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <CACOAw_yqrtEhq4wtJbs7CVn260h7iZyC7koCWH1iMyeQo5140g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8DxDc8k_7ZliAskAA--.13536S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj9xXoW7XF48JFWfKFykuw45uFW3urX_yoWfZFXEqF
+	4av3s7CrWkZ3WYqF48tw15CF4aqa1DXF4fZFZxtr1fXFWUJa13AFWkur95ArySqFZ5J39I
+	kF4vkF1Y9rWUuosvyTuYvTs0mTUanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUj1kv1TuYvT
+	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+	cSsGvfJTRUUUbxxYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+	vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+	WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVW8
+	JVW8Jr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27wAqx4
+	xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v2
+	6r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67
+	vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAF
+	wI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc4
+	0Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AK
+	xVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr
+	1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxU7_MaUUUU
+	U
 
-On 2024/1/27 2:17, Daeho Jeong wrote:
-> On Thu, Jan 25, 2024 at 5:27 PM Chao Yu <chao@kernel.org> wrote:
->>
->> On 2024/1/26 0:25, Daeho Jeong wrote:
->>> On Wed, Jan 24, 2024 at 7:34 PM Chao Yu <chao@kernel.org> wrote:
->>>>
->>>> +Cc Yongpeng Yang
->>>>
->>>> Daeho,
->>>>
->>>> Yongpeng reports a potential issue: if c.devices[0].total_segments is
->>>> larger than segments of mainarea, c.cur_seg[CURSEG_HOT_NODE] will exceed
->>>> end boundary of mainarea. Could you please check that? though it's a corner
->>>> case.
->>>
->>> Can you elaborate more?
->>
->> Since c.cur_seg[CURSEG_HOT_NODE] is an offset started from main_blkaddr.
+
+
+On 2024/1/27 上午4:28, Sean Christopherson wrote:
+> On Thu, Jan 25, 2024, Bibo Mao wrote:
+>> diff --git a/tools/testing/selftests/kvm/set_memory_region_test.c b/tools/testing/selftests/kvm/set_memory_region_test.c
+>> index 075b80dbe237..7b09e59296be 100644
+>> --- a/tools/testing/selftests/kvm/set_memory_region_test.c
+>> +++ b/tools/testing/selftests/kvm/set_memory_region_test.c
+>> @@ -333,7 +333,7 @@ static void test_invalid_memory_region_flags(void)
+>>   	struct kvm_vm *vm;
+>>   	int r, i;
+>>   
+>> -#if defined __aarch64__ || defined __x86_64__
+>> +#if defined __aarch64__ || defined __x86_64__ || __loongarch__
 > 
-> Oh, Got it.
-> Then, how about this?
+> I assume that last one wants to be "defined __loongarch__"
+Good catch, it should be "defined __loongarch__". And I will refresh
+the patch in the next version.
+
+Regards
+Bibo Mao
 > 
->           c.cur_seg[CURSEG_HOT_NODE] = c.zoned_model == F2FS_ZONED_HM ?
->                           (c.devices[1].start_blkaddr -
-> get_sb(main_blkaddr)) / c.blks_per_seg : 0;
+>>   	supported_flags |= KVM_MEM_READONLY;
+>>   #endif
+>>   
+>> -- 
+>> 2.39.3
+>>
 
-Better, but log header should align to start blkaddr of zone?
-
-Thanks,
-
-> 
->> If c.cur_seg[CURSEG_HOT_NODE] was assigned w/ c.devices[0].total_segments,
->> and c.devices[0].total_segments is larger than segments of mainare,
->> c.cur_seg[CURSEG_HOT_NODE] will exceed the end boundary of mainarea.
->>
->>          c.cur_seg[CURSEG_HOT_NODE] = c.zoned_model == F2FS_ZONED_HM ?
->>                          c.devices[0].total_segments : 0;
->>
->>> In the case of F2FS_ZONED_HM, we have the devices[1].
->>> Do you mean the case we format the filesystem intentionally smaller
->>> than what devices have?
->>
->> I mean blew case:
->> device[0]: conventional device size = 10240 MB
->> device[1]: zone device size = 2 MB
->>
->> Thanks,
->>
->>>
->>>>
->>>> On 2024/1/18 7:00, Daeho Jeong wrote:
->>>>> From: Daeho Jeong <daehojeong@google.com>
->>>>>
->>>>> Make to allocate logs after conventional area for HM zoned devices to
->>>>> spare them for file pinning support.
->>>>>
->>>>> Signed-off-by: Daeho Jeong <daehojeong@google.com>
->>>>> ---
->>>>>     mkfs/f2fs_format.c | 3 ++-
->>>>>     1 file changed, 2 insertions(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/mkfs/f2fs_format.c b/mkfs/f2fs_format.c
->>>>> index f2840c8..91a7f4b 100644
->>>>> --- a/mkfs/f2fs_format.c
->>>>> +++ b/mkfs/f2fs_format.c
->>>>> @@ -557,7 +557,8 @@ static int f2fs_prepare_super_block(void)
->>>>>                 c.cur_seg[CURSEG_COLD_DATA] = 0;
->>>>>                 c.cur_seg[CURSEG_WARM_DATA] = next_zone(CURSEG_COLD_DATA);
->>>>>         } else if (c.zoned_mode) {
->>>>> -             c.cur_seg[CURSEG_HOT_NODE] = 0;
->>>>> +             c.cur_seg[CURSEG_HOT_NODE] = c.zoned_model == F2FS_ZONED_HM ?
->>>>> +                     c.devices[0].total_segments : 0;
->>>>>                 c.cur_seg[CURSEG_WARM_NODE] = next_zone(CURSEG_HOT_NODE);
->>>>>                 c.cur_seg[CURSEG_COLD_NODE] = next_zone(CURSEG_WARM_NODE);
->>>>>                 c.cur_seg[CURSEG_HOT_DATA] = next_zone(CURSEG_COLD_NODE);
 
