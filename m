@@ -1,91 +1,81 @@
-Return-Path: <linux-kernel+bounces-42955-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42957-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F960840940
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:04:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0171C840942
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:05:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE87E28B0A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:04:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 945E81F288CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:05:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C13E1534F4;
-	Mon, 29 Jan 2024 15:04:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67050152E03;
+	Mon, 29 Jan 2024 15:05:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="saGxSX6N";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="rggoIBsx"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ILWkiaqk"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB277152E03
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 15:04:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AD72657DB
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 15:05:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706540672; cv=none; b=ouqCET+sC7L/UGS5423TbAxj2w5KAyruk04KeVH0kLE0XUTz9Uj/rW0BM0FariNSK4+0LxPe1QP4sMng/ZBUTzN4Sb8TI30nS11MQt64cU3bOwFA+Nijc0V9Ym8Q1DAnRu6GBEc3kv4G0pkKJgyXJQGlg3HUxYVF7GNLZQppeak=
+	t=1706540713; cv=none; b=NAXk8fQnCc2cbEmo89ingsKvOTyzGUkigbUPxiSyeZcVz3lBAmLX33iOinocVTl7Ab1MItvbWlvOpv6IZtIGHJ0XP31PHIHGwH4H3Cw1aJTcJFOsupvZMDhPvU22JcgZmuyRTTgAcpJOIgtGwTZZwjFoKlbtmK1GzDdprGfjVoc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706540672; c=relaxed/simple;
-	bh=W71jzVeX/ucO0N44eoO+UKhuasj/ay4HyG1qWOve9E0=;
+	s=arc-20240116; t=1706540713; c=relaxed/simple;
+	bh=w0SmiVf1VIVWURSBibSHsWqoAWrZC4py0itUpxFcYnM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HyPcjJrKt8Dk0ARSOiisZvETK76oR8AJF+V7mXbyuQ89YqzzKbTb/oQn+J/WIRI/uTyK3dw9sXAIPG9JhdpLFMsKeVixqVzP6DSLE8iaVy3Nfq3jFmaX+Bm4Gr5Sv4PoHvWy8bQMkdg/6Lhx51YSA9gnO8LOLxXwYFnbiHh9pmU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=saGxSX6N; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=rggoIBsx; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id DF0182229F;
-	Mon, 29 Jan 2024 15:04:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706540669; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qLDYdWmw6CK2qQtrHRQgWWQYsKvJNWhiGQv/PrF1tIo=;
-	b=saGxSX6N5mcW8/z9thvLMK5caQHOHCBZJOPUGc0sZVhwRuZhazmNFySksz/OUxiFGC+aii
-	gFBHXnKLFwF+cae2M10qPoLPX62/20ECeUB3vaIiMFqkHNdV1VMJFP6yOGHhNchvCTFz7t
-	TYb8b1Spj0lqrux2CAqcSZxPvn5OK94=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706540668; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qLDYdWmw6CK2qQtrHRQgWWQYsKvJNWhiGQv/PrF1tIo=;
-	b=rggoIBsxma3yEW0oIshlsDtMevx74QEdciEc1yYE5AR2UwDobVchyv9b5u3O4s3D0rLLtV
-	NXVXH28qVvWl1y2zAZJq5v4EeWU05vKrPBfELxDMwg0RKz1ediHLRmvctsqwICrdJWtPNZ
-	CVo1J7VZboxv8X0TS+KUWSPWVFGinVo=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C0AC312FF7;
-	Mon, 29 Jan 2024 15:04:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id NHzoK3y+t2UQPwAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Mon, 29 Jan 2024 15:04:28 +0000
-Date: Mon, 29 Jan 2024 16:04:28 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Zach O'Keefe <zokeefe@google.com>
-Cc: Charan Teja Kalla <quic_charante@quicinc.com>,
-	akpm@linux-foundation.org, mgorman@techsingularity.net,
-	david@redhat.com, vbabka@suse.cz, hannes@cmpxchg.org,
-	quic_pkondeti@quicinc.com, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	Yosry Ahmed <yosryahmed@google.com>,
-	David Rientjes <rientjes@google.com>
-Subject: Re: [PATCH V3 3/3] mm: page_alloc: drain pcp lists before oom kill
-Message-ID: <Zbe-fEYUJYzq_3Ij@tiehlicka>
-References: <cover.1699104759.git.quic_charante@quicinc.com>
- <a8e16f7eb295e1843f8edaa1ae1c68325c54c896.1699104759.git.quic_charante@quicinc.com>
- <ZUy1dNvbvHc6gquo@tiehlicka>
- <5c7f25f9-f86b-8e15-8603-e212b9911cac@quicinc.com>
- <ZVNQdQKQAMjgOK9y@tiehlicka>
- <342a8854-eef5-f68a-15e5-275de70e3f01@quicinc.com>
- <CAAa6QmRnfTOCD0uaxVbbiDRWtwzC9y+gZDFOjYF2YWDTrXyMNQ@mail.gmail.com>
- <5adb12eb-8403-5860-28eb-5f6ab12f3c04@quicinc.com>
- <ZbOQC0mYNsX0voKM@tiehlicka>
- <CAAa6QmQwSRn=XdHjyjNxX0PrBCKbOovBVCYaDHKAzAzYYFZwug@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZM8GG0z+mOIOR72Zz1yod+x5kcbTJEjIDZZ6juXKaIstzRceLZkKA5uEwIzgn2I0rCJ0xqg068JQQzwmL0fG3oh3b8pcSHctauLwiEDrF4nASYIvY+FPioVOeRzEXQovPuelev4B4J0QiZXQRm8LoSIVyKQlNhbeaFdX50+9SV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ILWkiaqk; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-510e0d700c6so1469330e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 07:05:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706540708; x=1707145508; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=is7ro7B8vSrt0TvYSJ+DPFn+IXQv7f7Zkz1f/rmDyPY=;
+        b=ILWkiaqk9/a/cmBsH7vwMDCpY4e1MF8/5shvUoLYTVd569elx9/arEHeB3Wumvyo7E
+         CfK5/RDvOGkQEWnw6zHLkx3gsGrObAXOJQ23/4hkZXqfF8H4JIzkj9Kyc8IwCBMHZdtD
+         zGhtvuywz8F6Y9AMhq4ThUEUUehq2HSm6ArRwLofSLwdzjLS2K+0vUT3fQOIiV5va1f4
+         0oPeNXFIScxeuf/SL+I/+QK8FFIAS97tboGOvGiKtFU7TSt4JwM+VdbA7sTyb0laW0dp
+         kcC4XL1kWDqZqJQrBslsCSkpqTLTJGbFEE055j2yh6a/Jd42vM4RhdnKHnZoVwOWjQEo
+         kInw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706540708; x=1707145508;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=is7ro7B8vSrt0TvYSJ+DPFn+IXQv7f7Zkz1f/rmDyPY=;
+        b=MrD0nmwPrB48ujs9PpYxozI+fZBAnrfiQTR2UdH5e903FR5B8UyoDn/Dza7xBsEOz2
+         I7jWtDlfih4KJJEl74skdUiH7dti8Gwtbg8wwdmyUl86RRvNCQG6PF7WJnHnvVfVnYwN
+         sePouDDAiICCJCVhWKpCWc7qCwi/vcvQZHDiYXxpb8xe4Kxnb/s8RvmXRSna2Ur5D+Hj
+         gO7PQUHjCdhG7lKYtI0fJ59KpOOkVuGHEpF8zWfSdqnilPa00Xl0opwct/9hhwPIoVqC
+         fCWIRe6yPRq3kT+5C6qCk+cvBO3O17j67NK3POCwHP/kD4dOuFaH++nHXduHldrLFhXG
+         OjPA==
+X-Gm-Message-State: AOJu0Yxy0OSOKze4yyNkrV+iTSz6Vz1T1pCA5rJPig/PK2h5ZX9HJoe0
+	QW++SXJ1WJKZquAPdsFHHxYITAwcxe02fvvMA+avREW1loTKpRek8GcPchiEJzQ=
+X-Google-Smtp-Source: AGHT+IEqmh/cI1PozuMSleeGae2wsgcL+hEQKSB8fVSpWf8NAz1wVQzEOkLik3p398u18vSo0zPTnA==
+X-Received: by 2002:a05:6512:20d2:b0:50e:7aaf:ec53 with SMTP id u18-20020a05651220d200b0050e7aafec53mr3597889lfr.12.1706540708419;
+        Mon, 29 Jan 2024 07:05:08 -0800 (PST)
+Received: from localhost ([102.140.209.237])
+        by smtp.gmail.com with ESMTPSA id f7-20020a05600c4e8700b0040e4914f28dsm14282173wmq.18.2024.01.29.07.05.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 07:05:07 -0800 (PST)
+Date: Mon, 29 Jan 2024 18:05:04 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Meir Elisha <meir6264@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Ruan Jinjie <ruanjinjie@huawei.com>,
+	Yang Yingliang <yangyingliang@huawei.com>,
+	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] Staging: rtl8723bs: Remove extra spaces
+Message-ID: <080d2c0d-49b1-45e9-9b7b-fae2afaf0b4f@moroto.mountain>
+References: <20240129141856.416532-1-meir6264@Gmail.com>
+ <20240129141856.416532-3-meir6264@Gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,65 +84,46 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAAa6QmQwSRn=XdHjyjNxX0PrBCKbOovBVCYaDHKAzAzYYFZwug@mail.gmail.com>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=rggoIBsx
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-2.54 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[13];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-1.53)[91.96%]
-X-Spam-Score: -2.54
-X-Rspamd-Queue-Id: DF0182229F
-X-Spam-Flag: NO
+In-Reply-To: <20240129141856.416532-3-meir6264@Gmail.com>
 
-On Fri 26-01-24 14:51:26, Zach O'Keefe wrote:
-[...]
-> Node 0 DMA32 free:66592kB min:2580kB low:5220kB high:7860kB
-[...]
-> free_pcp:8040kB local_pcp:244kB free_cma:0kB
-> lowmem_reserve[]: 0 0 16029 16029
-> Node 0 Normal free:513048kB min:513192kB low:1038700kB high:1564208kB
-[...]
-> mlocked:12344kB bounce:0kB free_pcp:790040kB local_pcp:7060kB
-[...]
-> mlocked:1588kB bounce:0kB free_pcp:253500kB local_pcp:12kB
-[...]
-> I'm not familiar with these changes, but a quick check of recent
-> activity points to v6.7 commit fa8c4f9a665b ("mm: fix draining remote
-> pageset") ; is this what you are referring to?
+On Mon, Jan 29, 2024 at 04:18:54PM +0200, Meir Elisha wrote:
+> Fix checkpatch warning: please, no space before tabs
+> 
+> Signed-off-by: Meir Elisha <meir6264@Gmail.com>
+> ---
+>  drivers/staging/rtl8723bs/core/rtw_mlme.c | 48 +++++++++++------------
+>  1 file changed, 23 insertions(+), 25 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme.c b/drivers/staging/rtl8723bs/core/rtw_mlme.c
+> index 5568215b35bd..a7c4350e0783 100644
+> --- a/drivers/staging/rtl8723bs/core/rtw_mlme.c
+> +++ b/drivers/staging/rtl8723bs/core/rtw_mlme.c
+> @@ -169,7 +169,7 @@ void _rtw_free_network(struct	mlme_priv *pmlmepriv, struct wlan_network *pnetwor
+>  {
+>  	unsigned int delta_time;
+>  	u32 lifetime = SCANQUEUE_LIFETIME;
+> -/* 	_irqL irqL; */
+> +/*	_irqL irqL; */
 
-No, but looking at above discrepancy between free_pcp and local_pcp
-would point that direction for sure. So this is worth checking.
-vmstat is a periodic activity and it cannot really deal with bursts
-of memory allocations but it is quite possible that the patch above
-will prevent the build up before it grows that large.
+Just delete dead code.
 
-I originally referred to different work though https://lore.kernel.org/all/20231016053002.756205-10-ying.huang@intel.com/T/#m9fdfabaee37db1320bbc678a69d1cdd8391640e0
-merged as ca71fe1ad922 ("mm, pcp: avoid to drain PCP when process exit")
-and the associated patches.
+>  	struct __queue *free_queue = &(pmlmepriv->free_bss_pool);
+>  
+>  	if (!pnetwork)
+> @@ -389,7 +389,7 @@ int is_same_network(struct wlan_bssid_ex *src, struct wlan_bssid_ex *dst, u8 fea
+>  	d_cap = le16_to_cpu(tmpd);
+>  
+>  	return (src->ssid.ssid_length == dst->ssid.ssid_length) &&
+> -		/* 	(src->configuration.ds_config == dst->configuration.ds_config) && */
+> +		/*	(src->configuration.ds_config == dst->configuration.ds_config) && */
 
--- 
-Michal Hocko
-SUSE Labs
+Here too.
+
+>  			((!memcmp(src->mac_address, dst->mac_address, ETH_ALEN))) &&
+>  			((!memcmp(src->ssid.ssid, dst->ssid.ssid, src->ssid.ssid_length))) &&
+>  			((s_cap & WLAN_CAPABILITY_IBSS) ==
+
+regards,
+dan carpenter
+
 
