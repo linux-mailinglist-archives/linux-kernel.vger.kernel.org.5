@@ -1,117 +1,99 @@
-Return-Path: <linux-kernel+bounces-42784-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42785-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E38128406B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:21:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 815FB8406BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:23:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7FD14B25023
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:21:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 158E7B252FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:23:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25AD763135;
-	Mon, 29 Jan 2024 13:21:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B25C26312F;
+	Mon, 29 Jan 2024 13:23:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="vtws33Mh";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZQjETdD5"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NchS+6Nw"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF77B63112;
-	Mon, 29 Jan 2024 13:21:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3417E62A03
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 13:23:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706534502; cv=none; b=l8BdB1FaNaD5FJ6Ego7NvRBwtzmyKRSRzjlv/wyB4APTc0sUAVXejK4VjhjzRcqzpPNwlIKU4EnTrPXG6fRV+8X3VxS9PVgXXw0Zn9ZPAZXxVWRP1B8O6f7ujoAE+Cd+EBKIM8i/eUNthE5B9CoVWAF4tYJavbIjIm6vqzWDTM8=
+	t=1706534590; cv=none; b=TJ/ODFWvmev2r//Oh4rLla1NqNvX6gsVm8armycNWSvV7zg4dl31M/yr/GZvpHKWhiht6Bbs548YiJ+W5LHFstBzGPZ6Oe3Cb6ITPS2NpnmEuLeq7NFMGMdF30GQ9pytmiP8QnJlNyQMmxpPk4vf2p/qiu+z6/Ek9VbKCBbGjgw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706534502; c=relaxed/simple;
-	bh=0pEULVPu+zWIBMmD1eo1hQ+2bfOBZ18qqMqydR+ghZ0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=FudQRzvLRhGNyHXdD2pII9p0faE5+hivNGF5pSVT3l++pIHUA4tSamJhO/v/yc44VmXV+ly9Eq5jTEU8wfldp2yifHII2IqxqomEBUBR6m0ywkGdP5gkD/5tX/+RcD65Worem81TeATlyv4LrEIC3dIOIuQxureVLMDTq+3rlzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=vtws33Mh; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ZQjETdD5; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Anna-Maria Behnsen <anna-maria@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1706534498;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AfVt3oAKgzDKkygtJtzkC8uaIqXYdsey9gM4hCAem3s=;
-	b=vtws33MhW6tZCG4lyyRzPlAz/gB7PW7GbUoiFoxBuvXMVyiSuiap3mPHXrrmAm/Tk2BdXw
-	JAX9e7egUaTh6qVvP+Gz8mblimlfeZWqp+9PchRq53VG2TtWv2SQrJM52Di8O4IO+Kd20e
-	y1C/aHfM1IsGKCu1srQCAbgie1uW3g3LojKodSvbsu5WgDXZdUQ8EUJ52rWNm/jMCa2jAC
-	cRSHUVltJT9sO/ZaOTtImyFm/xVtshECTnILL2gNDXTf9ntAlv+9PgxtDZ3aveeG6N06VL
-	22pawZbAdSFOMsg5WKeXomsj2OTZrLdorXIVUItdxfrEZJ9b+amKaDIpD57cwg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1706534498;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AfVt3oAKgzDKkygtJtzkC8uaIqXYdsey9gM4hCAem3s=;
-	b=ZQjETdD51Ax1BU5LMPzuXWWUNC7iOBDP+fNpQfuSe50INL4U9WTJLMGJNzMXyOWGS5LmeU
-	rXMKWWcR8JRayiAg==
-To: Jonathan Corbet <corbet@lwn.net>, Randy Dunlap <rdunlap@infradead.org>,
- linux-kernel@vger.kernel.org
-Cc: Thomas Gleixner <tglx@linutronix.de>, Frederic Weisbecker
- <frederic@kernel.org>, Ingo Molnar <mingo@kernel.org>, John Stultz
- <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>, Clemens Ladisch
- <clemens@ladisch.de>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH 6/8] Documentation: Create a new folder for all timer
- internals
-In-Reply-To: <87r0i59ops.fsf@meer.lwn.net>
-References: <20240123164702.55612-1-anna-maria@linutronix.de>
- <20240123164702.55612-7-anna-maria@linutronix.de>
- <8eac7bf0-86c5-43ef-99e0-0896c994184a@infradead.org>
- <87o7d9d7dd.fsf@somnus> <87plxpbgpz.fsf@meer.lwn.net>
- <87zfwtbbjd.fsf@somnus> <87r0i59ops.fsf@meer.lwn.net>
-Date: Mon, 29 Jan 2024 14:21:38 +0100
-Message-ID: <87plxkqnq5.fsf@somnus>
+	s=arc-20240116; t=1706534590; c=relaxed/simple;
+	bh=GOL4CLf7NJSi1+Yl6Eux39JaESbVEoPmfBFe2dFCDvc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JMVP6gVwCvAlc1uSnK4/EOpw9MpcLLmXGx2SX4op+ISAdVXU+wkX9410rbAQJGYX+A81zQwNc8eGgbzCq2ETNK2rgK9o6mez6kFc673452E63sfWUa/7DUWEW8qkiAeZm9Hs5MowPhfgLf34e53+NudAjfzIAKRg/Vs74WZKezU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NchS+6Nw; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55eda7c5bffso8495a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 05:23:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706534586; x=1707139386; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GOL4CLf7NJSi1+Yl6Eux39JaESbVEoPmfBFe2dFCDvc=;
+        b=NchS+6NwDS6r4IRefpKVS2LqB+DEKBdMPk/o6EJzgCS5qiU5GJ/+2zpUFUvTs366Bp
+         K6Fd/27iPgaSvVbZZQdOlswH8tZ2/tKeasamnTFwcpFXemiQLl2+bMv/4H/XoQE9v5MF
+         +LQQdUcZNWgfKBeI7t1fSLD3aHMl6kafZtlti8eS7UKBiuFYPLciO8wTPrnfHRTSHzzw
+         xE082tsC+J+e6GpUtI0Fs/7KSFG6zno3nF8EWrhnymU/r87FSTdh1RA58ezb4Jci8/Ww
+         IWjcfjToVuhAYCLLNEfb5ZFtXncb5/MwbooDB9LKorUgSXzbGsmAi3mpHMGZN7JglTxn
+         jJVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706534586; x=1707139386;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GOL4CLf7NJSi1+Yl6Eux39JaESbVEoPmfBFe2dFCDvc=;
+        b=vBm50A1WUi5jdMVGxfsjZUQ2hOyIUlyxcwqgE+rvMH2hEkepLHvMNe+/uvT3H+IkDQ
+         xZliN64QRvp25aWBhja3Rqpn5219ZsZGKTY6ZtWnH3kPx5Blpv//00tfWEMKVyUTkXon
+         qOcHcXrokmF7HxAhie0pIgrqbjvsdn6UiUWmzQqGWx9QovAkfNrXRDqeSEne6VysCCxy
+         1YHEJFl25Rv9g2CAVlvbTABqd+hVqQGuAi9nXf1OJN0/akaocrmUTWsBjhX7UvjYzsXl
+         YkwXIeGGRPrzr5eGIQAyukzdVlbbprnc/HnYfdpyuRvTftpn4RbDqqH233r+VAPU75CR
+         s32A==
+X-Gm-Message-State: AOJu0Yya5qJhMSB/M/Q16SCRhJpHjeFGTWMM1hdIgmv2bCBktK37Jrkq
+	86+SuKOqNJsPjyTX5akkbAtpcMTOEiJYG6w7agDU+aAUbu4BMoAYdbHr9eebxZWY8rRGenYIClG
+	6Pj89R+j+oQrtCC7hWBUMhz1eGBAjuZ1xrazqPFKlojRFFn7msA==
+X-Google-Smtp-Source: AGHT+IG1astNKH1/HDc0wBTVk6TC8yGv+pvI7UwKY5UN/sQS0hwFaBZIZw8cIgMPOsBKIZYZeMT8luqWWhKHlR6S/3c=
+X-Received: by 2002:a05:6402:b9d:b0:55c:ebca:e69e with SMTP id
+ cf29-20020a0564020b9d00b0055cebcae69emr482056edb.5.1706534586055; Mon, 29 Jan
+ 2024 05:23:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20240129091017.2938835-1-alexious@zju.edu.cn>
+In-Reply-To: <20240129091017.2938835-1-alexious@zju.edu.cn>
+From: Eric Dumazet <edumazet@google.com>
+Date: Mon, 29 Jan 2024 14:22:55 +0100
+Message-ID: <CANn89i+eR_WHdndbCWCgZymB=QnmMaURKeVj-by-+=fXJNgDxg@mail.gmail.com>
+Subject: Re: [PATCH] [v2] net: ipv4: fix a memleak in ip_setup_cork
+To: Zhipeng Lu <alexious@zju.edu.cn>
+Cc: "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Jonathan Corbet <corbet@lwn.net> writes:
-
-> Anna-Maria Behnsen <anna-maria@linutronix.de> writes:
+On Mon, Jan 29, 2024 at 10:23=E2=80=AFAM Zhipeng Lu <alexious@zju.edu.cn> w=
+rote:
 >
->>> I've thought for a while that we should have a standard warning or two
->>> along these lines, like Wikipedia does, but of course haven't done
->>> anything about it.
->>>
->>
->> Sure, if we could standardize it, I would definitely prefere it! For me
->> as a not sphinx/rst/... expert, it would be great if only something like
->>
->> .. might_be_outdated:: <optional additional text>
->>
->> needs to be added to the code. And then the default lines would appear
->> together with the optional additional text.
->>
->> Is this what you have been thinking about?
+> When inetdev_valid_mtu fails, cork->opt should be freed if it is
+> allocated in ip_setup_cork. Otherwise there could be a memleak.
 >
-> You've already put more thought into it than I have :)
->
-> I was just thinking in terms of some relatively standard text.  I'd
-> rather not create an extension just for this, but Jani's idea of using
-> the todo extension could work, or just a convention like:
->
->   .. include crufty-stuff-note.rst
->
-> might be good enough and not require an extension at all.
+> Fixes: 501a90c94510 ("inet: protect against too small mtu values.")
+> Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+> ---
 
-Maybe also a combination of both - using the todo extension inside the
-include file?
+Okay, although the changelog is a bit confusing, since we do not free
+cork->opt anymore in V2...
 
-I would integrate it into a v2, but I'm not sure, when I have time to
-prepare it.
-
-Thanks,
-
-        Anna-Maria
-
+Reviewed-by: Eric Dumazet <edumazet@google.com>
 
