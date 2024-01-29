@@ -1,213 +1,143 @@
-Return-Path: <linux-kernel+bounces-43584-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43585-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8F718415EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 23:46:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01FDF8415F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 23:47:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CEE11F25523
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 22:46:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32DDE1C23573
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 22:47:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 750555477C;
-	Mon, 29 Jan 2024 22:45:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MYLSlJDo"
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C46BF51C34;
+	Mon, 29 Jan 2024 22:46:57 +0000 (UTC)
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9576751C3B;
-	Mon, 29 Jan 2024 22:45:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 824054F1EC
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 22:46:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706568349; cv=none; b=YVCPCODn4QrUeEsa/xIieiZ+S+sMxAu63r/vInZIF8+BoimBSq0kuNiIbw0NKF2K8Q6QfrIgdslLMUlZvwOQdW9eo87ZTzyrH885WA13HRZqs+brZaBhIInpS1NEOzgssKP/xfxWOk2iNvsCOdKs8PxRVHGrog/GPM/YC9UM3II=
+	t=1706568417; cv=none; b=mlmI4LFRxCJz6nANxEodIXUj45QMRuPfKJYgdGBexQ4DjPC9NV3bDTG1z/wHt5a4+qZHdBV2JtbnfdJ/iDyEpb1dskFEzU51KlLibTvoNetqtxpw5j8/OmdxyehaGAvinJjdVnpJB+2f8J8/CUuGlwgBD2+zQepDk9qWQ++WVWA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706568349; c=relaxed/simple;
-	bh=Y5QmW3rtP/uUq0/9W3YpsAMR2J1KrHWGIXa9+1PEYak=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IazbBXitPJaunmz7J0MnKdKWUxmL0gDrVXDC1YAf5htv73iwv71NVt54ruLQ4Res2/xw7fxTnGbCbbkveUgTcKf1rFDQ9WK5EF1lyaiQqnIDjVl96YjXPmgAuQp2jiRm7piX+sqcoP235B67tYx4hOA3X+aVzWN4HsyGCeQn+vY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MYLSlJDo; arc=none smtp.client-ip=209.85.222.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-783d84ecb13so328916085a.0;
-        Mon, 29 Jan 2024 14:45:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706568345; x=1707173145; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xef0hVDdHdF2jNfb1sbGTppVQNq89HdiJsXx3j0Z+RA=;
-        b=MYLSlJDouqXOQJZaJTWyIzUrHYLtz/mLrII8tiA0U0lH3Gf9YYXjhl3uCDV7R1J7X/
-         LOTyvM8QVSLJU6538gQ+fdp8xefEZRHSkyR/28CK4Mu++mR+SjZWTMCP9lG2+7wj44Nw
-         HRxZFfrNCSaLpErAEpg2vLEHGZ7r/UDAyfvAZts5IwDx5jjeuZn73JCB8HEUnL5Y+h5S
-         cVhVHm7g65pf+a3JJxNEOIcryF4DoQqTP65f5cFiJkCgqhL122aIUqu1LsL41sf+9Pb5
-         jTMIhJg6bsrC98Q2pZR/vjS3BWp5k72QYe8gHZEqFLPf02j+XuSXY8c9DHrN7IXOeP+B
-         3NQg==
+	s=arc-20240116; t=1706568417; c=relaxed/simple;
+	bh=z4i3/tfWy/FJa7/iha829M+16JqzAz4CEfvIfR+Zbvk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mlJzsrjzxV2phjCDcfJWlpUEhRxUYlhsIKvL3gpWpKgT/aK92/LKiv5RvxHVgNZatvPe4b2K9LAlR7LQBk9nZiSJrpo6+3kAdG4NzqgzlVEfQMC7WAAsAZE9Eg1HrYWJlSW0i4kHtMjCgQgEtCswhIKO4aoziRPjgyVlQDHr8Po=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=redhat.com; arc=none smtp.client-ip=209.85.160.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-42a8900bb93so34117301cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 14:46:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706568345; x=1707173145;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xef0hVDdHdF2jNfb1sbGTppVQNq89HdiJsXx3j0Z+RA=;
-        b=a3OW2r9HEa5eupfot1QFD7836cCWdIoF81sL4CsyEEbsYKklhSq+bmstFIeVOkj/gu
-         +Yy+aTUe6HP6i6k+0XHIH7VIx/V+nrni0qD48eviwRQAsvt37psheZ+FNUkRMsW26AQF
-         Lpwm85cNl3DUO/IDwKQGV4s59lfUlIUxHw2i4HPhC6iIBhMvBNBWwnNpP1ZDcTzOaIqo
-         e1JclKBk26FAzxLuDc1E3fcpbcHBe4swDdZbIQfeUtnI7BPfFkfIq06GgvRZyGiCvJWQ
-         Q8aDEV35iylYjEE9B7VkE1XaD8peQ5vzovF/Orr9bBwz6Ylofds5Qzw2Sk0gXARTzxPq
-         g0IA==
-X-Gm-Message-State: AOJu0YzNTDURTw+nadBLTHfUNb1q1EGOSH2i8pxbO8scSEWYscnD3Kfr
-	ShFGbomwbG29tJI5F822+NLMY28VrFLQN/BjBYyDAB+AO7EU/KNk
-X-Google-Smtp-Source: AGHT+IFA4GtOI5DVLY0CR9h66W+OqJ3ySRkcMjVMpPQ4jAh32cn+UJ5P037C4f1Ww4qSMDoHjtOsIA==
-X-Received: by 2002:a05:620a:4485:b0:783:f862:88a7 with SMTP id x5-20020a05620a448500b00783f86288a7mr4466928qkp.10.1706568345431;
-        Mon, 29 Jan 2024 14:45:45 -0800 (PST)
-Received: from localhost (fwdproxy-nao-013.fbsv.net. [2a03:2880:23ff:d::face:b00c])
-        by smtp.gmail.com with ESMTPSA id p15-20020ae9f30f000000b00783f606dcf8sm1926576qkg.73.2024.01.29.14.45.45
+        d=1e100.net; s=20230601; t=1706568414; x=1707173214;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4Y1TC6ozjJZpDR660NrUM2DmjgjZssr5RPk8k265VkY=;
+        b=hTo8n0vTJi7Rihh8BZiaRTzf9Wb+gYzJUIHsB4/AWTrxyFZ/pIg5LUZDJqDyQ35XLl
+         gmML2jUaDsOtlp0uCclZAoKoKhQwCjJzMhUsvpn9egDO7dRaBTujIXYJd9i13dYPd5pa
+         xJesSghv5c6kFMGc+gnvHlJKjuBKRmXu31qyi1C61ohtTtrZ+nzxUABlQ2bzbfSAvlW1
+         Nmpox1kMF+N6COvLrTtF/n4qxTfTBXoKCapcNG+Mdz98Zqn5WVxzkGCZ6U4nANfFVkOf
+         q4J1Ae2uAmHCB1z/849wuzxUjZxL9plNeIvkg1LwkeKva88F0exco3v1N1IkrGLNTPk9
+         7D1Q==
+X-Gm-Message-State: AOJu0YzSnRv6bzJx2sJC6ic6qtKCgtDdt4Ex4YqJJRRjuVHPY+ISWD0T
+	ypEy6dvVfbjP2vTmsza9ayRD1w8P5NvpConQuDe5F5C5uvsv00zENsS0nuv09Q==
+X-Google-Smtp-Source: AGHT+IE6sdw2UMPyjdmSHO2Q/aOZ/VKQc/wBLWuOWcfTwiePWMJWreri2G4nKR0FgOPeREPo2MLweQ==
+X-Received: by 2002:ac8:7c4d:0:b0:42a:b4c2:e71d with SMTP id o13-20020ac87c4d000000b0042ab4c2e71dmr293866qtv.70.1706568414455;
+        Mon, 29 Jan 2024 14:46:54 -0800 (PST)
+Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
+        by smtp.gmail.com with ESMTPSA id bc6-20020a05622a1cc600b00427f1fa87e6sm2079280qtb.56.2024.01.29.14.46.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 14:45:45 -0800 (PST)
-From: Nhat Pham <nphamcs@gmail.com>
-To: akpm@linux-foundation.org
-Cc: shuah@kernel.org,
-	hannes@cmpxchg.org,
-	yosryahmed@google.com,
-	tj@kernel.org,
-	lizefan.x@bytedance.com,
-	linux-mm@kvack.org,
-	kernel-team@meta.com,
-	linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH 3/3] selftests: add test for zswapin
-Date: Mon, 29 Jan 2024 14:45:42 -0800
-Message-Id: <20240129224542.162599-4-nphamcs@gmail.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240129224542.162599-1-nphamcs@gmail.com>
-References: <20240129224542.162599-1-nphamcs@gmail.com>
+        Mon, 29 Jan 2024 14:46:54 -0800 (PST)
+Date: Mon, 29 Jan 2024 17:46:52 -0500
+From: Mike Snitzer <snitzer@kernel.org>
+To: Dave Chinner <david@fromorbit.com>
+Cc: Ming Lei <ming.lei@redhat.com>, Matthew Wilcox <willy@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, Don Dutile <ddutile@redhat.com>,
+	Raghavendra K T <raghavendra.kt@linux.vnet.ibm.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, linux-block@vger.kernel.org,
+	David Hildenbrand <david@redhat.com>
+Subject: Re: [RFC PATCH] mm/readahead: readahead aggressively if read drops
+ in willneed range
+Message-ID: <Zbgq3B8nmMuJooEl@redhat.com>
+References: <ZbenbtEXY82N6tHt@casper.infradead.org>
+ <Zbc0ZJceZPyt8m7q@dread.disaster.area>
+ <20240128142522.1524741-1-ming.lei@redhat.com>
+ <ZbfeBrKVMaeSwtYm@redhat.com>
+ <Zbgi6wajZlEkWISO@dread.disaster.area>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zbgi6wajZlEkWISO@dread.disaster.area>
 
-We recently encountered a kernel crash on the zswapin path in our
-internal kernel, which went undetected because of a lack of test
-coverage for this path. Add a selftest to cover this code path,
-allocating more memories than the cgroup limit to trigger
-swapout/zswapout, then reading the pages back in memories several times.
+On Mon, Jan 29 2024 at  5:12P -0500,
+Dave Chinner <david@fromorbit.com> wrote:
 
-Also add a variant of this test that runs with zswap disabled, to verify
-swapin correctness as well.
+> On Mon, Jan 29, 2024 at 12:19:02PM -0500, Mike Snitzer wrote:
+> > While I'm sure this legacy application would love to not have to
+> > change its code at all, I think we can all agree that we need to just
+> > focus on how best to advise applications that have mixed workloads
+> > accomplish efficient mmap+read of both sequential and random.
+> > 
+> > To that end, I heard Dave clearly suggest 2 things:
+> > 
+> > 1) update MADV/FADV_SEQUENTIAL to set file->f_ra.ra_pages to
+> >    bdi->io_pages, not bdi->ra_pages * 2
+> > 
+> > 2) Have the application first issue MADV_SEQUENTIAL to convey that for
+> >    the following MADV_WILLNEED is for sequential file load (so it is
+> >    desirable to use larger ra_pages)
+> > 
+> > This overrides the default of bdi->ra_pages and _should_ provide the
+> > required per-file duality of control for readahead, correct?
+> 
+> I just discovered MADV_POPULATE_READ - see my reply to Ming
+> up-thread about that. The applicaiton should use that instead of
+> MADV_WILLNEED because it gives cache population guarantees that
+> WILLNEED doesn't. Then we can look at optimising the performance of
+> MADV_POPULATE_READ (if needed) as there is constrained scope we can
+> optimise within in ways that we cannot do with WILLNEED.
 
-Suggested-by: Rik van Riel <riel@surriel.com>
-Signed-off-by: Nhat Pham <nphamcs@gmail.com>
----
- tools/testing/selftests/cgroup/test_zswap.c | 67 ++++++++++++++++++++-
- 1 file changed, 65 insertions(+), 2 deletions(-)
+Nice find! Given commit 4ca9b3859dac ("mm/madvise: introduce
+MADV_POPULATE_(READ|WRITE) to prefault page tables"), I've cc'd David
+Hildenbrand just so he's in the loop.
 
-diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/selftests/cgroup/test_zswap.c
-index 32ce975b21d1..86231c86dc89 100644
---- a/tools/testing/selftests/cgroup/test_zswap.c
-+++ b/tools/testing/selftests/cgroup/test_zswap.c
-@@ -60,17 +60,39 @@ static long get_zswpout(const char *cgroup)
- 	return cg_read_key_long(cgroup, "memory.stat", "zswpout ");
- }
+FYI, I proactively raised feedback and questions to the reporter of
+this issue:
  
--static int allocate_bytes(const char *cgroup, void *arg)
-+static int allocate_bytes_and_read(const char *cgroup, void *arg, bool read)
- {
- 	size_t size = (size_t)arg;
- 	char *mem = (char *)malloc(size);
-+	int ret = 0;
+CONTEXT: madvise(WILLNEED) doesn't convey the nature of the access,
+sequential vs random, just the range that may be accessed.
  
- 	if (!mem)
- 		return -1;
- 	for (int i = 0; i < size; i += 4095)
- 		mem[i] = 'a';
-+
-+	if (read) {
-+		/* cycle through the allocated memory to (z)swap in and out pages */
-+		for (int t = 0; t < 5; t++) {
-+			for (int i = 0; i < size; i += 4095) {
-+				if (mem[i] != 'a')
-+					ret = -1;
-+			}
-+		}
-+	}
-+
- 	free(mem);
--	return 0;
-+	return ret;
-+}
-+
-+static int allocate_bytes(const char *cgroup, void *arg)
-+{
-+	return allocate_bytes_and_read(cgroup, arg, false);
-+}
-+
-+static int read_bytes(const char *cgroup, void *arg)
-+{
-+	return allocate_bytes_and_read(cgroup, arg, true);
- }
+Q1: Is your application's sequential vs random (or smaller sequential)
+access split on a per-file basis?  Or is the same file accessed both
+sequentially and randomly?
  
- static char *setup_test_group_1M(const char *root, const char *name)
-@@ -133,6 +155,45 @@ static int test_zswap_usage(const char *root)
- 	return ret;
- }
+  A1: The same files can be accessed either randomly or sequentially,
+  depending on certain access patterns and optimizing logic.
  
-+/* Simple test to verify the (z)swapin code paths */
-+static int test_zswapin_size(const char *root, char *zswap_size)
-+{
-+	int ret = KSFT_FAIL;
-+	char *test_group;
-+
-+	/* Set up */
-+	test_group = cg_name(root, "zswapin_test");
-+	if (!test_group)
-+		goto out;
-+	if (cg_create(test_group))
-+		goto out;
-+	if (cg_write(test_group, "memory.max", "8M"))
-+		goto out;
-+	if (cg_write(test_group, "memory.zswap.max", zswap_size))
-+		goto out;
-+
-+	/* Allocate and read more than memory.max to trigger (z)swap in */
-+	if (cg_run(test_group, read_bytes, (void *)MB(32)))
-+		goto out;
-+
-+	ret = KSFT_PASS;
-+
-+out:
-+	cg_destroy(test_group);
-+	free(test_group);
-+	return ret;
-+}
-+
-+static int test_swapin(const char *root)
-+{
-+	return test_zswapin_size(root, "0");
-+}
-+
-+static int test_zswapin_no_limit(const char *root)
-+{
-+	return test_zswapin_size(root, "max");
-+}
-+
- /*
-  * When trying to store a memcg page in zswap, if the memcg hits its memory
-  * limit in zswap, writeback should affect only the zswapped pages of that
-@@ -309,6 +370,8 @@ struct zswap_test {
- 	const char *name;
- } tests[] = {
- 	T(test_zswap_usage),
-+	T(test_swapin),
-+	T(test_zswapin_no_limit),
- 	T(test_no_kmem_bypass),
- 	T(test_no_invasive_cgroup_shrink),
- };
--- 
-2.39.3
+Q2: Can the application be changed to use madvise() MADV_SEQUENTIAL
+and MADV_RANDOM to indicate its access pattern?
+ 
+  A2: No, the application is a Java application. Java does not expose
+  MADVISE API directly. Our application uses Java NIO API via
+  MappedByteBuffer.load()
+  (https://docs.oracle.com/javase/8/docs/api/java/nio/MappedByteBuffer.html#load--)
+  that calls MADVISE_WILLNEED at the low level. There is no way for us
+  to switch this behavior, but we take advantage of this behavior to
+  optimize large file sequential I/O with great success.
+ 
+So it's looking like it'll be hard to help this reporter avoid
+changes... but that's not upstream's problem!
 
+Mike
 
