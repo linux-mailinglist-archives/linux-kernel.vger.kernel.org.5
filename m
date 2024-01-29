@@ -1,135 +1,104 @@
-Return-Path: <linux-kernel+bounces-43363-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43369-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A92F8412B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:50:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60B6C8412C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:54:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D5211C239D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:50:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18B852875E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:54:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88D8015B0E8;
-	Mon, 29 Jan 2024 18:43:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 123A533CE7;
+	Mon, 29 Jan 2024 18:54:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jQiUsHzL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="vZSXZ+d7"
+Received: from relay.smtp-ext.broadcom.com (unknown [192.19.166.228])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBF0113DB96;
-	Mon, 29 Jan 2024 18:43:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6BBF76C63
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 18:54:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.166.228
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706553836; cv=none; b=G3rE1Xm3hy45BjVPF5r+3/E3UhUONPMM89mAqu4SkSWh5M5asfEpdauGCjGk6tvIF6/s/TvRtAiMiMtkxz/agPmbqUPh32tOtSgkhnXK/4nwxF9zrT8B9Zw6VwGjYQpI3nVXMQetWJ/WCT740+mIM/717JMGN9+36yZzirKXUmM=
+	t=1706554445; cv=none; b=FWwZ/pU8K71De6Mkwmeb/YJV/kUbXpEzB/2AdFaYQDsHy5yA+/Ozz4xFXqfZ/fiyvkDVW2ze90Eehd+etCwJyZ0ApsDK9tohW1VEJ19pOD96FagSYJbjLTDfOOZsSo/LPZ1LnAz/jY3L6hbnQZmn43udgwjbgJNB96cLGGEZvCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706553836; c=relaxed/simple;
-	bh=kBUlimme0aHHv3ib7jWky40pcFXZPQIKkBv6fF9NIkM=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=fuOrGmFMgEnKYQPMbjBwbhawvO65db4RJwxSviuPalEWVbuVTmJJ5cgv7LI7yX7nIe8xQlSgdpGDQtkfulmu6ZwBJeO9Bs2V7nbyeVeLQZOAgXi2aoDl9VO8knWQRfBd+clZBLSy4SvhcRQtf0j+OCBJXIyr/ZUvvvcbqu8KvSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jQiUsHzL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AB33C433F1;
-	Mon, 29 Jan 2024 18:43:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706553836;
-	bh=kBUlimme0aHHv3ib7jWky40pcFXZPQIKkBv6fF9NIkM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=jQiUsHzLvgRaXw/Rx8Xk3VQ+OnpRjZLvC2wjhFKMsMdQciYgp8rdV3oZEEdm536yX
-	 bYWHsbX7vLMv1N4C3AaDfb62L0AGMqYxakkNNMvShx4ZQdcLKZynvcX0AKziNFZ0nz
-	 swOriLJKUE8hbv0S0OxXPW8a5GleMqSTsre1chaV5sTqhFOvC+Qw+xEPbyM+3pizR9
-	 L1PZhj6XLHt3C0+LYyiO3+8MQynwl9YAdVxg3C3yfmgNtazl9J80GBxmeNKNshicKg
-	 /luscWDgqnB9DMsk5WF2FrnsPfK03cYuEMxzfkCJb3OouHPG1D0KQDEn2i2AB4gQz1
-	 XLQuLBcrGbxhQ==
-Date: Mon, 29 Jan 2024 12:43:54 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-	"Maciej W. Rozycki" <macro@orcam.me.uk>,
-	linux-kernel@vger.kernel.org,
-	Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: Re: [PATCH 1/2] PCI: Clear LBMS on resume to avoid Target Speed quirk
-Message-ID: <20240129184354.GA470131@bhelgaas>
+	s=arc-20240116; t=1706554445; c=relaxed/simple;
+	bh=JeZJfxUbhOcjTviijQYRAn1s2uITCFQ+zhFFFu5Xo1U=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=sgjOw2Sy4EQK4LrvMsIy3p7ZoZULM1En/NffO2AEEjOZas8vsAgRGyvfLXl8SOYUtNioQLUk2V8GOGhMQRFMqwOSe3GWmHFM2Pj4nu1QHPqdQsZnvA82xml9lp3y693jZFrFgDUogGU9zYDocIoNFcPYo1PoQ/upJlv14UDDor0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=vZSXZ+d7; arc=none smtp.client-ip=192.19.166.228
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id D7744C0094DB;
+	Mon, 29 Jan 2024 10:46:52 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com D7744C0094DB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+	s=dkimrelay; t=1706554012;
+	bh=JeZJfxUbhOcjTviijQYRAn1s2uITCFQ+zhFFFu5Xo1U=;
+	h=From:To:Cc:Subject:Date:From;
+	b=vZSXZ+d71mX13XNrk1YfEAW2wXaYC2no3D516QFYiJK1xWKFBmSYM2C9X8DJLMOYA
+	 ZFaTVoDPKnK9n3NVv7XdRmuHFwPaVwiHl02774xzLToiF9bH7gxDWJhimXn/97y2b8
+	 2GJn16eKac6r9qNWLpbExNnpCVeWGS98b9h5JmYI=
+Received: from fainelli-desktop.igp.broadcom.net (fainelli-desktop.dhcp.broadcom.net [10.67.48.245])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id 4DA6518041CAC4;
+	Mon, 29 Jan 2024 10:46:51 -0800 (PST)
+From: Florian Fainelli <florian.fainelli@broadcom.com>
+To: linux-arm-kernel@lists.infradead.org
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] ARM: brcmstb: Add debug UART entry for 74165
+Date: Mon, 29 Jan 2024 10:46:51 -0800
+Message-Id: <20240129184651.2405485-1-florian.fainelli@broadcom.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240129112710.2852-2-ilpo.jarvinen@linux.intel.com>
 
-On Mon, Jan 29, 2024 at 01:27:09PM +0200, Ilpo Järvinen wrote:
-> While a device is runtime suspended along with its PCIe hierarchy, the
-> device could get disconnected. Because of the suspend, the device
-> disconnection cannot be detected until portdrv/hotplug have resumed. On
-> runtime resume, pcie_wait_for_link_delay() is called:
-> 
->   pci_pm_runtime_resume()
->     pci_pm_bridge_power_up_actions()
->       pci_bridge_wait_for_secondary_bus()
->         pcie_wait_for_link_delay()
-> 
-> Because the device is already disconnected, this results in cascading
-> failures:
-> 
->   1. pcie_wait_for_link_status() returns -ETIMEDOUT.
-> 
->   2. After the commit a89c82249c37 ("PCI: Work around PCIe link
->      training failures"),
+BCM74165 uses the same address map as the 7278 family (v7 memory map)
+therefore re-use that constant and shit down the other labels to keep
+numerical ordering.
 
-I this this also depends on the merge resolution in 1abb47390350
-("Merge branch 'pci/enumeration'").  Just looking at a89c82249c37 in
-isolation suggests that pcie_wait_for_link_status() returning
--ETIMEDOUT would not cause pcie_wait_for_link_delay() to call
-pcie_failed_link_retrain().
+Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+---
+ arch/arm/include/debug/brcmstb.S | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
->      pcie_failed_link_retrain() spuriously detects
->      this failure as a Link Retraining failure and attempts the Target
->      Speed trick, which also fails.
+diff --git a/arch/arm/include/debug/brcmstb.S b/arch/arm/include/debug/brcmstb.S
+index f6175e6e28cd..3f7d68740ed4 100644
+--- a/arch/arm/include/debug/brcmstb.S
++++ b/arch/arm/include/debug/brcmstb.S
+@@ -27,6 +27,7 @@
+ #define UARTA_72165		UARTA_7278
+ #define UARTA_7364		REG_PHYS_ADDR(0x40b000)
+ #define UARTA_7366		UARTA_7364
++#define UARTA_74165		UARTA_7278
+ #define UARTA_74371		REG_PHYS_ADDR(0x406b00)
+ #define UARTA_7439		REG_PHYS_ADDR(0x40a900)
+ #define UARTA_7445		REG_PHYS_ADDR(0x40ab00)
+@@ -88,9 +89,10 @@ ARM_BE8(	rev	\rv, \rv )
+ 30:		checkuart(\rp, \rv, 0x72780000, 7278)
+ 31:		checkuart(\rp, \rv, 0x73640000, 7364)
+ 32:		checkuart(\rp, \rv, 0x73660000, 7366)
+-33:		checkuart(\rp, \rv, 0x07437100, 74371)
+-34:		checkuart(\rp, \rv, 0x74390000, 7439)
+-35:		checkuart(\rp, \rv, 0x74450000, 7445)
++33:		checkuart(\rp, \rv, 0x07416500, 74165)
++34:		checkuart(\rp, \rv, 0x07437100, 74371)
++35:		checkuart(\rp, \rv, 0x74390000, 7439)
++36:		checkuart(\rp, \rv, 0x74450000, 7445)
+ 
+ 		/* No valid UART found */
+ 90:		mov	\rp, #0
+-- 
+2.34.1
 
-Based on the comment below, I guess "Target Speed trick" probably
-refers to the "retrain at 2.5GT/s, then remove the speed restriction
-and retrain again" part of pcie_failed_link_retrain() (which I guess
-is basically the entire point of the function)?
-
->   3. pci_bridge_wait_for_secondary_bus() then calls pci_dev_wait() which
->      cannot succeed (but waits ~1 minute, delaying the resume).
-> 
-> The Target Speed trick (in step 2) is only used if LBMS bit (PCIe r6.1
-> sec 7.5.3.8) is set. For links that have been operational before
-> suspend, it is well possible that LBMS has been set at the bridge and
-> remains on. Thus, after resume, LBMS does not indicate the link needs
-> the Target Speed quirk. Clear LBMS on resume for bridges to avoid the
-> issue.
-> 
-> Fixes: a89c82249c37 ("PCI: Work around PCIe link training failures")
-> Reported-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-> Tested-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> ---
->  drivers/pci/pci-driver.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/pci/pci-driver.c b/drivers/pci/pci-driver.c
-> index 51ec9e7e784f..05a114962df3 100644
-> --- a/drivers/pci/pci-driver.c
-> +++ b/drivers/pci/pci-driver.c
-> @@ -574,6 +574,12 @@ static void pci_pm_bridge_power_up_actions(struct pci_dev *pci_dev)
->  {
->  	int ret;
->  
-> +	/*
-> +	 * Clear LBMS on resume to avoid spuriously triggering Target Speed
-> +	 * quirk in pcie_failed_link_retrain().
-> +	 */
-> +	pcie_capability_write_word(pci_dev, PCI_EXP_LNKSTA, PCI_EXP_LNKSTA_LBMS);
-> +
->  	ret = pci_bridge_wait_for_secondary_bus(pci_dev, "resume");
->  	if (ret) {
->  		/*
-> -- 
-> 2.39.2
-> 
 
