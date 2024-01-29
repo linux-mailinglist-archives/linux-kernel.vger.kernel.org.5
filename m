@@ -1,236 +1,218 @@
-Return-Path: <linux-kernel+bounces-42835-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42824-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AA27840777
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:53:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0E51840758
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:47:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E6E11C24648
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:53:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A3131F2779E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:47:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34A7C657BA;
-	Mon, 29 Jan 2024 13:53:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EvEcwYMO"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10FD365BBC;
+	Mon, 29 Jan 2024 13:47:08 +0000 (UTC)
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 621A6657A7
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 13:53:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17715657A9
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 13:47:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706536419; cv=none; b=lYueK+ysYC4M3/r8dxcRb7zIAIFhjAq9pX/JSVqNSynUo30+hUkUJOZ2dNBolAMiEr+G0z67kXjFKRqZY0Ahs5xEA1S3JgjyBbX2KiHxyLC54M3ZSHqIVrkPb6sy6F6iId0EFkdlvmgVxcWgfK8ulvx/EBQOd1s3OOJThDBY/C8=
+	t=1706536027; cv=none; b=Jrq2Dp25C6cjikZVG+c+PLYqfXtmaL4XuP9J9wjH7b2X6OLHkACwIV0SqABfpApkdxBvIZkoVbUPEPjhUEW7kw7PjXuspjly8DPVSaVrthHFTsRsOvrEv5c3MUZPaUupW32Z/IAXrW1xillYRq7oUcxSqXebZLL1XuJeCr5QI50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706536419; c=relaxed/simple;
-	bh=oul+8EboxPRMOmzDiRgdrl50CO3bLgpxsn1+vCbxHUY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fTQoIXvPoLD46KnXVA6utVjCc0EPSJCWfxxXdnUKWzCcIeo4hslkfLvvyCVkrvxDu4Wj4QQAFChA/32UNxYLCxvAPIQoYml5ViBuiAzEl7Zw3qfcNirtW9AHdKeh7qt1RA0W8Juci+hpflHj+UVOcJ8MzI1UgWznGIbxCmPYj4k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EvEcwYMO; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706536417; x=1738072417;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=oul+8EboxPRMOmzDiRgdrl50CO3bLgpxsn1+vCbxHUY=;
-  b=EvEcwYMOPzSUSeGBF6NdIVMio2W46ZWDfsH1evwMANldGUUswKTFAp8w
-   99w7XoN1MRmDNeeZTD2SnT+kAmjNtn/1jB1aVWEmlM//QPyjp93nXmW4b
-   CVwfHpV8uJzvSVIuNn8+s2krnJTioNWgSyGt7ria3fJpAkPBlmEIgj+C1
-   lcSYSNS1+CxP7btDvtEmkM6eFXFlIK5ronEeWwW1pZZFkVldq/Ijvd88l
-   gBffxP14zZGni1oBfNREwMiEb2xP8X/7bP2j5Qpn13fkduyXtbq0ifAdk
-   2xIN2ox2OY/X9g2wrHeUfc86g2IYpwNMZMhEYb2Wv1lPnvv7wqROOLgIn
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="1887228"
-X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
-   d="scan'208";a="1887228"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 05:53:37 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="821855385"
-X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
-   d="scan'208";a="821855385"
-Received: from feng-clx.sh.intel.com ([10.239.159.50])
-  by orsmga001.jf.intel.com with ESMTP; 29 Jan 2024 05:53:33 -0800
-From: Feng Tang <feng.tang@intel.com>
-To: John Stultz <jstultz@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Stephen Boyd <sboyd@kernel.org>,
-	paulmck@kernel.org,
-	Waiman Long <longman@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	linux-kernel@vger.kernel.org
-Cc: Feng Tang <feng.tang@intel.com>,
-	Jin Wang <jin1.wang@intel.com>
-Subject: [PATCH v3] clocksource: Scale the max retry number of watchdog read according to CPU numbers
-Date: Mon, 29 Jan 2024 21:45:05 +0800
-Message-Id: <20240129134505.961208-1-feng.tang@intel.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706536027; c=relaxed/simple;
+	bh=s0GkP39lzIog7rll0vBtyRSt02Qd5BjKK+pCwH8GTp8=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Mt2Fs58It5fxQKiEyjxj86rz4tTr1hNm6e3wZLAo/xk4OfVyfoEDICdmaHqWnmQiI0DJg57/cKC5lHM48JYQtpn9AjB1UwTn30a8Z4uYvzEMsXo8AwTBP9d+19F4Y2odDRCcg0qYRtd0slC9u451obSHlDgkBuhIy2yxABb6DO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TNqLC0Jb8z1Q89j;
+	Mon, 29 Jan 2024 21:45:07 +0800 (CST)
+Received: from kwepemm600017.china.huawei.com (unknown [7.193.23.234])
+	by mail.maildlp.com (Postfix) with ESMTPS id 26EE01A016B;
+	Mon, 29 Jan 2024 21:46:56 +0800 (CST)
+Received: from localhost.localdomain (10.175.112.125) by
+ kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 29 Jan 2024 21:46:54 +0800
+From: Tong Tiangen <tongtiangen@huawei.com>
+To: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>, James Morse <james.morse@arm.com>, Robin
+ Murphy <robin.murphy@arm.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	Alexander Potapenko <glider@google.com>, Alexander Viro
+	<viro@zeniv.linux.org.uk>, Andrey Konovalov <andreyknvl@gmail.com>, Dmitry
+ Vyukov <dvyukov@google.com>, Vincenzo Frascino <vincenzo.frascino@arm.com>,
+	Andrew Morton <akpm@linux-foundation.org>, Michael Ellerman
+	<mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy
+	<christophe.leroy@csgroup.eu>, Aneesh Kumar K.V <aneesh.kumar@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Thomas Gleixner
+	<tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
+	<bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
+	"H. Peter Anvin" <hpa@zytor.com>
+CC: <linux-arm-kernel@lists.infradead.org>, <linux-mm@kvack.org>,
+	<linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+	<kasan-dev@googlegroups.com>, Tong Tiangen <tongtiangen@huawei.com>,
+	<wangkefeng.wang@huawei.com>, Guohanjun <guohanjun@huawei.com>
+Subject: [PATCH v10 0/6]arm64: add machine check safe support
+Date: Mon, 29 Jan 2024 21:46:46 +0800
+Message-ID: <20240129134652.4004931-1-tongtiangen@huawei.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="yes"
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600017.china.huawei.com (7.193.23.234)
 
-There was a bug on one 8-socket server that the TSC is wrongly marked as
-'unstable' and disabled during boot time (reproduce rate is about every
-120 rounds of reboot tests), with log:
+With the increase of memory capacity and density, the probability of memory
+error also increases. The increasing size and density of server RAM in data
+centers and clouds have shown increased uncorrectable memory errors.
 
-    clocksource: timekeeping watchdog on CPU227: wd-tsc-wd excessive read-back delay of 153560ns vs. limit of 125000ns,
-    wd-wd read-back delay only 11440ns, attempt 3, marking tsc unstable
-    tsc: Marking TSC unstable due to clocksource watchdog
-    TSC found unstable after boot, most likely due to broken BIOS. Use 'tsc=unstable'.
-    sched_clock: Marking unstable (119294969739, 159204297)<-(125446229205, -5992055152)
-    clocksource: Checking clocksource tsc synchronization from CPU 319 to CPUs 0,99,136,180,210,542,601,896.
-    clocksource: Switched to clocksource hpet
+Currently, more and more scenarios that can tolerate memory errors，such as
+CoW[1,2], KSM copy[3], coredump copy[4], khugepaged[5,6], uaccess copy[7],
+etc.
 
-The reason is for platform with lots of CPU, there are sporadic big or huge
-read latency of read watchog/clocksource during boot or when system is under
-stress work load, and the frequency and maximum value of the latency goes up
-with the increasing of CPU numbers. Current code already has logic to detect
-and filter such high latency case by reading 3 times of watchdog, and check
-the 2 deltas. Due to the randomness of the latency, there is a low possibility
-situation that the first delta (latency) is big, but the second delta is small
-and looks valid, which can escape from the check, and there is a
-'max_cswd_read_retries' for retrying that check covering this case, whose
-default value is only 2 and may be not enough for machines with huge number
-of CPUs.
+This patchset introduces a new processing framework on ARM64, which enables
+ARM64 to support error recovery in the above scenarios, and more scenarios
+can be expanded based on this in the future.
 
-So scale and enlarge the max retry number according to CPU number to better
-filter those latency noise for large systems, which has been verified fine
-in 4 days and 670 rounds of reboot test on the 8-socket machine.
+In arm64, memory error handling in do_sea(), which is divided into two cases:
+ 1. If the user state consumed the memory errors, the solution is to kill
+    the user process and isolate the error page.
+ 2. If the kernel state consumed the memory errors, the solution is to
+    panic.
 
-Also add sanity check for user input value for 'max_cswd_read_retries', make
-it self-adaptive by default, and provide a general helper for getting this
-max retry number as suggested by Paul and Waiman.
+For case 2, Undifferentiated panic may not be the optimal choice, as it can
+be handled better. In some scenarios, we can avoid panic, such as uaccess,
+if the uaccess fails due to memory error, only the user process will be
+affected, killing the user process and isolating the user page with
+hardware memory errors is a better choice.
 
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Cc: Waiman Long <longman@redhat.com>
-Signed-off-by: Feng Tang <feng.tang@intel.com>
-Tested-by: Jin Wang <jin1.wang@intel.com>
----
-Changelog:
+[1] commit d302c2398ba2 ("mm, hwpoison: when copy-on-write hits poison, take page offline")
+[2] commit 1cb9dc4b475c ("mm: hwpoison: support recovery from HugePage copy-on-write faults")
+[3] commit 6b970599e807 ("mm: hwpoison: support recovery from ksm_might_need_to_copy()")
+[4] commit 245f09226893 ("mm: hwpoison: coredump: support recovery from dump_user_range()")
+[5] commit 98c76c9f1ef7 ("mm/khugepaged: recover from poisoned anonymous memory")
+[6] commit 12904d953364 ("mm/khugepaged: recover from poisoned file-backed memory")
+[7] commit 278b917f8cb9 ("x86/mce: Add _ASM_EXTABLE_CPY for copy user access")
 
-    since v2:
-      * Fix the unexported symbol of helper function being used by
-        kernel module issue (Waiman)
+Since V9:
+ 1. Rebase to latest kernel version 6.8-rc2.
+ 2. Add patch 6/6 to support copy_mc_to_kernel().
 
-    since v1:
-      * Add santity check for user input value of 'max_cswd_read_retries'
-        and a helper function for getting max retry nubmer (Paul)
-      * Apply the same logic to watchdog test code (Waiman)
+Since V8:
+ 1. Rebase to latest kernel version and fix topo in some of the patches.
+ 2. According to the suggestion of Catalin, I attempted to modify the
+    return value of function copy_mc_[user]_highpage() to bytes not copied.
+    During the modification process, I found that it would be more
+    reasonable to return -EFAULT when copy error occurs (referring to the
+    newly added patch 4). 
 
- include/linux/clocksource.h      | 18 +++++++++++++++++-
- kernel/time/clocksource-wdtest.c | 12 +++++++-----
- kernel/time/clocksource.c        | 10 ++++++----
- 3 files changed, 30 insertions(+), 10 deletions(-)
+    For ARM64, the implementation of copy_mc_[user]_highpage() needs to
+    consider MTE. Considering the scenario where data copying is successful
+    but the MTE tag copying fails, it is also not reasonable to return
+    bytes not copied.
+ 3. Considering the recent addition of machine check safe support for
+    multiple scenarios, modify commit message for patch 5 (patch 4 for V8).
 
-diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
-index 1d42d4b17327..0483f7dd66a3 100644
---- a/include/linux/clocksource.h
-+++ b/include/linux/clocksource.h
-@@ -291,7 +291,23 @@ static inline void timer_probe(void) {}
- #define TIMER_ACPI_DECLARE(name, table_id, fn)		\
- 	ACPI_DECLARE_PROBE_ENTRY(timer, name, table_id, 0, NULL, 0, fn)
- 
--extern ulong max_cswd_read_retries;
-+extern long max_cswd_read_retries;
-+
-+static inline long clocksource_max_watchdog_read_retries(void)
-+{
-+	long max_retries = max_cswd_read_retries;
-+
-+	if (max_cswd_read_retries <= 0) {
-+		/* santity check for user input value */
-+		if (max_cswd_read_retries != -1)
-+			pr_warn_once("max_cswd_read_retries was set with an invalid number: %ld\n",
-+				max_cswd_read_retries);
-+
-+		max_retries = ilog2(num_online_cpus()) + 1;
-+	}
-+	return max_retries;
-+}
-+
- void clocksource_verify_percpu(struct clocksource *cs);
- 
- #endif /* _LINUX_CLOCKSOURCE_H */
-diff --git a/kernel/time/clocksource-wdtest.c b/kernel/time/clocksource-wdtest.c
-index df922f49d171..c70cea3c44a1 100644
---- a/kernel/time/clocksource-wdtest.c
-+++ b/kernel/time/clocksource-wdtest.c
-@@ -106,6 +106,7 @@ static int wdtest_func(void *arg)
- 	unsigned long j1, j2;
- 	char *s;
- 	int i;
-+	long max_retries;
- 
- 	schedule_timeout_uninterruptible(holdoff * HZ);
- 
-@@ -139,18 +140,19 @@ static int wdtest_func(void *arg)
- 	WARN_ON_ONCE(time_before(j2, j1 + NSEC_PER_USEC));
- 
- 	/* Verify tsc-like stability with various numbers of errors injected. */
--	for (i = 0; i <= max_cswd_read_retries + 1; i++) {
--		if (i <= 1 && i < max_cswd_read_retries)
-+	max_retries = clocksource_max_watchdog_read_retries();
-+	for (i = 0; i <= max_retries + 1; i++) {
-+		if (i <= 1 && i < max_retries)
- 			s = "";
--		else if (i <= max_cswd_read_retries)
-+		else if (i <= max_retries)
- 			s = ", expect message";
- 		else
- 			s = ", expect clock skew";
--		pr_info("--- Watchdog with %dx error injection, %lu retries%s.\n", i, max_cswd_read_retries, s);
-+		pr_info("--- Watchdog with %dx error injection, %ld retries%s.\n", i, max_retries, s);
- 		WRITE_ONCE(wdtest_ktime_read_ndelays, i);
- 		schedule_timeout_uninterruptible(2 * HZ);
- 		WARN_ON_ONCE(READ_ONCE(wdtest_ktime_read_ndelays));
--		WARN_ON_ONCE((i <= max_cswd_read_retries) !=
-+		WARN_ON_ONCE((i <= max_retries) !=
- 			     !(clocksource_wdtest_ktime.flags & CLOCK_SOURCE_UNSTABLE));
- 		wdtest_ktime_clocksource_reset();
- 	}
-diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index c108ed8a9804..2e5a1d6c6712 100644
---- a/kernel/time/clocksource.c
-+++ b/kernel/time/clocksource.c
-@@ -208,8 +208,8 @@ void clocksource_mark_unstable(struct clocksource *cs)
- 	spin_unlock_irqrestore(&watchdog_lock, flags);
- }
- 
--ulong max_cswd_read_retries = 2;
--module_param(max_cswd_read_retries, ulong, 0644);
-+long max_cswd_read_retries = -1;
-+module_param(max_cswd_read_retries, long, 0644);
- EXPORT_SYMBOL_GPL(max_cswd_read_retries);
- static int verify_n_cpus = 8;
- module_param(verify_n_cpus, int, 0644);
-@@ -225,8 +225,10 @@ static enum wd_read_status cs_watchdog_read(struct clocksource *cs, u64 *csnow,
- 	unsigned int nretries;
- 	u64 wd_end, wd_end2, wd_delta;
- 	int64_t wd_delay, wd_seq_delay;
-+	long max_retries;
- 
--	for (nretries = 0; nretries <= max_cswd_read_retries; nretries++) {
-+	max_retries = clocksource_max_watchdog_read_retries();
-+	for (nretries = 0; nretries <= max_retries; nretries++) {
- 		local_irq_disable();
- 		*wdnow = watchdog->read(watchdog);
- 		*csnow = cs->read(cs);
-@@ -238,7 +240,7 @@ static enum wd_read_status cs_watchdog_read(struct clocksource *cs, u64 *csnow,
- 		wd_delay = clocksource_cyc2ns(wd_delta, watchdog->mult,
- 					      watchdog->shift);
- 		if (wd_delay <= WATCHDOG_MAX_SKEW) {
--			if (nretries > 1 || nretries >= max_cswd_read_retries) {
-+			if (nretries > 1 || nretries >= max_retries) {
- 				pr_warn("timekeeping watchdog on CPU%d: %s retried %d times before success\n",
- 					smp_processor_id(), watchdog->name, nretries);
- 			}
+Since V7:
+ Currently, there are patches supporting recover from poison
+ consumption for the cow scenario[1]. Therefore, Supporting cow
+ scenario under the arm64 architecture only needs to modify the relevant
+ code under the arch/.
+ [1]https://lore.kernel.org/lkml/20221031201029.102123-1-tony.luck@intel.com/
+
+Since V6:
+ Resend patches that are not merged into the mainline in V6.
+
+Since V5:
+ 1. Add patch2/3 to add uaccess assembly helpers.
+ 2. Optimize the implementation logic of arm64_do_kernel_sea() in patch8.
+ 3. Remove kernel access fixup in patch9.
+ All suggestion are from Mark. 
+
+Since V4:
+ 1. According Michael's suggestion, add patch5.
+ 2. According Mark's suggestiog, do some restructuring to arm64
+ extable, then a new adaptation of machine check safe support is made based
+ on this.
+ 3. According Mark's suggestion, support machine check safe in do_mte() in
+ cow scene.
+ 4. In V4, two patches have been merged into -next, so V5 not send these
+ two patches.
+
+Since V3:
+ 1. According to Robin's suggestion, direct modify user_ldst and
+ user_ldp in asm-uaccess.h and modify mte.S.
+ 2. Add new macro USER_MC in asm-uaccess.h, used in copy_from_user.S
+ and copy_to_user.S.
+ 3. According to Robin's suggestion, using micro in copy_page_mc.S to
+ simplify code.
+ 4. According to KeFeng's suggestion, modify powerpc code in patch1.
+ 5. According to KeFeng's suggestion, modify mm/extable.c and some code
+ optimization.
+
+Since V2:
+ 1. According to Mark's suggestion, all uaccess can be recovered due to
+    memory error.
+ 2. Scenario pagecache reading is also supported as part of uaccess
+    (copy_to_user()) and duplication code problem is also solved. 
+    Thanks for Robin's suggestion.
+ 3. According Mark's suggestion, update commit message of patch 2/5.
+ 4. According Borisllav's suggestion, update commit message of patch 1/5.
+
+Since V1:
+ 1.Consistent with PPC/x86, Using CONFIG_ARCH_HAS_COPY_MC instead of
+   ARM64_UCE_KERNEL_RECOVERY.
+ 2.Add two new scenes, cow and pagecache reading.
+ 3.Fix two small bug(the first two patch).
+
+V1 in here:
+https://lore.kernel.org/lkml/20220323033705.3966643-1-tongtiangen@huawei.com/
+
+Tong Tiangen (6):
+  uaccess: add generic fallback version of copy_mc_to_user()
+  arm64: add support for machine check error safe
+  arm64: add uaccess to machine check safe
+  mm/hwpoison: return -EFAULT when copy fail in
+    copy_mc_[user]_highpage()
+  arm64: support copy_mc_[user]_highpage()
+  arm64: introduce copy_mc_to_kernel() implementation
+
+ arch/arm64/Kconfig                   |   1 +
+ arch/arm64/include/asm/asm-extable.h |  15 ++
+ arch/arm64/include/asm/assembler.h   |   4 +
+ arch/arm64/include/asm/extable.h     |   1 +
+ arch/arm64/include/asm/mte.h         |   5 +
+ arch/arm64/include/asm/page.h        |  10 ++
+ arch/arm64/include/asm/string.h      |   5 +
+ arch/arm64/include/asm/uaccess.h     |  21 +++
+ arch/arm64/lib/Makefile              |   4 +-
+ arch/arm64/lib/copy_from_user.S      |  10 +-
+ arch/arm64/lib/copy_mc_page.S        |  78 ++++++++
+ arch/arm64/lib/copy_to_user.S        |  10 +-
+ arch/arm64/lib/memcpy_mc.S           | 257 +++++++++++++++++++++++++++
+ arch/arm64/lib/mte.S                 |  27 +++
+ arch/arm64/mm/copypage.c             |  66 ++++++-
+ arch/arm64/mm/extable.c              |  21 ++-
+ arch/arm64/mm/fault.c                |  29 ++-
+ arch/powerpc/include/asm/uaccess.h   |   1 +
+ arch/x86/include/asm/uaccess.h       |   1 +
+ include/linux/highmem.h              |  16 +-
+ include/linux/uaccess.h              |   9 +
+ mm/kasan/shadow.c                    |  12 ++
+ mm/khugepaged.c                      |   4 +-
+ 23 files changed, 581 insertions(+), 26 deletions(-)
+ create mode 100644 arch/arm64/lib/copy_mc_page.S
+ create mode 100644 arch/arm64/lib/memcpy_mc.S
+
 -- 
-2.34.1
+2.25.1
 
 
