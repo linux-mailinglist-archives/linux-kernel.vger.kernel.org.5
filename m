@@ -1,215 +1,222 @@
-Return-Path: <linux-kernel+bounces-42569-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42571-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D8D7840335
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:51:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B95D84033A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:52:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD8B2B22B49
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:51:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 301091C22762
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:52:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 306F55821B;
-	Mon, 29 Jan 2024 10:50:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB20F5A792;
+	Mon, 29 Jan 2024 10:52:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Dia79f7t";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="IpOamZLE"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="SmC7qxAO"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66B935810D;
-	Mon, 29 Jan 2024 10:50:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32AF359166;
+	Mon, 29 Jan 2024 10:52:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706525450; cv=none; b=GavFuotwvrAG9wUIvhXWM9DH6nRmSswT7dQ1pW6nVjOZtNrajJzQEm8tzuq1ZhVcHPm7QmT+lUJ6gZxmS+EDwqUGit9c0vf01vxTaiOanuNJtPn1+ZIdrkUlmrnWMgepD0rDU65CmrXyHDXt51CYC28uhr1ABS6WDXz41h9MMyQ=
+	t=1706525563; cv=none; b=e0WvGphje0bnkhX+Ut/icpSDPlhiVLUDfTTeNQ2wuGltKLmGC97Dh5AMCU8zCpiCe/QBbnf4C5IAF8W6qrtaBa+47qmH5ZHfkDmC56VbJZAtQ9tNaRlLgmzzRciLA4i0kU0NTYa7c6Bn2r+/CyhOIDREgR4zm4r7GaZ67Qd9/CI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706525450; c=relaxed/simple;
-	bh=W/bFJTnHsEGR4cCFLWzVQay1Nw506nMdbBNrQzZUyTo=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=Z/F0ghZOcpO/Gs5h8oGJaZ8hMmmTcpOYLsozxGBYVhDNIPWgRVofD7/TagyR4bLIs7T/StM50PMk1rLB3r1DU5aMuBJxbrXwNhqqq/uzoU5veGawzRYkbl9bX5aW2dmHGpkJHGU2AlFaVWK/FpjhqrPTRUC/m74y6MW2yKLvthU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Dia79f7t; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=IpOamZLE; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 29 Jan 2024 10:50:45 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1706525446;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
+	s=arc-20240116; t=1706525563; c=relaxed/simple;
+	bh=UYAyZ91fb6AS92l2LL/GD79fck5Q5BXJcU0K8ZP7G7I=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=cbfZay2HoVBQp5lvY86E+z0Ir78C0z2ZTsmQlMj+YIt4MsCEuJn7/z8aNbjrWAkvUTLroZ6JmXqlUro/+f7Ip7guCwKFRU6b2eKwKNg4NENXHLJKsW5U8X4wTNoiqdE34MfBqPW9ehfnaS/G5wg+seLidtUih/fcvKs8YgNqBIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=SmC7qxAO; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 9BEC5FF80E;
+	Mon, 29 Jan 2024 10:52:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1706525552;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ffkKSYcj75lGpOSBioIHErCcbl/NbswiwLRlbhSqyfc=;
-	b=Dia79f7t4/Z6EPDPrbBNr5G9SfMDcyLIhXzBaDNi6EC5uiZpcji4myoa1QhOKUbN6546IE
-	OVLI4upQKbVJh6c3G7v7MquelV1h7dRsdmQmpOSI9sYC6d0DDGoELWpPYEhULhQJ7CQkgL
-	qarTjoqfqxQ5f2PRmW1PFwnnJzvZwGT0Bm9Of3H/8RTmRbfWWRKRk5cu4tHxeI7hVyxGXG
-	IB456gcWORRZWuP8uFExGAyJxQD79ZDP3QI64J8mkQLvdKaBjNfDmgj0g2bnSwW3li9/Ec
-	I47X7T0h074vaz2NvFyUdztSFAFvj3ZQcpuqP1U9vKIvwoSgRslasw2Uvkk5LQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1706525446;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ffkKSYcj75lGpOSBioIHErCcbl/NbswiwLRlbhSqyfc=;
-	b=IpOamZLE0qkraJnxLbYt+k3PwFyLjj91kiUzREuk4+y38t/EvPXP6zwBBF+vSLKDpTXq9e
-	3/3OUHcefx/oCzBQ==
-From: "tip-bot2 for Qiuxu Zhuo" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/lib: Revert to _ASM_EXTABLE_UA() for
- {get,put}_user() fixups
-Cc: Qiuxu Zhuo <qiuxu.zhuo@intel.com>, "Borislav Petkov (AMD)" <bp@alien8.de>,
- "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,  <stable@kernel.org>,
- x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240129063842.61584-1-qiuxu.zhuo@intel.com>
-References: <20240129063842.61584-1-qiuxu.zhuo@intel.com>
+	bh=FcUfvlOtpKiNCvjO4iOwB2dkcftJ97AES2z0e0scJ5E=;
+	b=SmC7qxAOwt2XyvIWfGHgHiy8Zal6fObDL6o3CJOloIjXc+WFcTjobse8iS6p0pqdb0Qkdi
+	n627jGKbyy6lOvVWKit34x8AwBW/DDVxIzHjaR1DRptmUA2C6MFsgWls/PWu0xOFRhwUJt
+	XppK0UKNBZXPcajtSA/JQf225G4a5r7SAFHXGqI3naZ+68K8kHS4jNLCsk7Fbu141pdWoy
+	U6OfGZIk8ddkVrkvZ611sMYtd88t0CW44TXdXZTU345eWCohAihjKlaQxlC8Um0L1kTjT2
+	p/ktSi7HM0goZs+zY5M7MBacWN0O0olnk430R953ky1EFKvOkvHBFCsLylcbMA==
+Date: Mon, 29 Jan 2024 11:52:28 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: David Regan <dregan@broadcom.com>
+Cc: dregan@mail.com, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ computersforpeace@gmail.com, kdasu.kdev@gmail.com,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, Linux Kernel
+ Mailing List <linux-kernel@vger.kernel.org>, Joel Peshkin
+ <joel.peshkin@broadcom.com>, Tomer Yacoby <tomer.yacoby@broadcom.com>, Dan
+ Beygelman <dan.beygelman@broadcom.com>, William Zhang
+ <william.zhang@broadcom.com>, Anand Gore <anand.gore@broadcom.com>, Kursad
+ Oney <kursad.oney@broadcom.com>, Florian Fainelli
+ <florian.fainelli@broadcom.com>, rafal@milecki.pl,
+ bcm-kernel-feedback-list@broadcom.com, andre.przywara@arm.com,
+ baruch@tkos.co.il, linux-arm-kernel@lists.infradead.org, Dan Carpenter
+ <dan.carpenter@linaro.org>
+Subject: Re: [PATCH v3 10/10] mtd: rawnand: brcmnand: allow for on-die ecc
+Message-ID: <20240129115228.06dc2292@xps-13>
+In-Reply-To: <CAA_RMS5gX88v_Qt1csgSL_ffMNsqo2G8B164EB_Hg=hXd620eg@mail.gmail.com>
+References: <20240124030458.98408-1-dregan@broadcom.com>
+	<20240124030458.98408-11-dregan@broadcom.com>
+	<20240124184027.712b1e47@xps-13>
+	<CAA_RMS42FaiN+Za1iY12o0YUANH9rJarBTBa=9jNn8x6_g-Fng@mail.gmail.com>
+	<20240126071913.699c3795@xps-13>
+	<CAA_RMS5gX88v_Qt1csgSL_ffMNsqo2G8B164EB_Hg=hXd620eg@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170652544552.398.565528579108985833.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
 
-The following commit has been merged into the x86/urgent branch of tip:
+Hi David,
 
-Commit-ID:     8eed4e00a370b37b4e5985ed983dccedd555ea9d
-Gitweb:        https://git.kernel.org/tip/8eed4e00a370b37b4e5985ed983dccedd555ea9d
-Author:        Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-AuthorDate:    Mon, 29 Jan 2024 14:38:42 +08:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Mon, 29 Jan 2024 11:40:41 +01:00
+dregan@broadcom.com wrote on Fri, 26 Jan 2024 11:57:39 -0800:
 
-x86/lib: Revert to _ASM_EXTABLE_UA() for {get,put}_user() fixups
+> Hi Miqu=C3=A8l,
+>=20
+> On Thu, Jan 25, 2024 at 10:19=E2=80=AFPM Miquel Raynal
+> <miquel.raynal@bootlin.com> wrote:
+> >
+> > Hi David,
+> >
+> > dregan@broadcom.com wrote on Thu, 25 Jan 2024 11:47:46 -0800:
+> > =20
+> > > Hi Miqu=C3=A8l,
+> > >
+> > > On Wed, Jan 24, 2024 at 9:40=E2=80=AFAM Miquel Raynal <miquel.raynal@=
+bootlin.com> wrote: =20
+> > > >
+> > > > Hi David,
+> > > >
+> > > > dregan@broadcom.com wrote on Tue, 23 Jan 2024 19:04:58 -0800:
+> > > > =20
+> > > > > Allow settings for on-die ecc such that if on-die ECC is selected
+> > > > > don't error out but require ECC strap setting of zero
+> > > > >
+> > > > > Signed-off-by: David Regan <dregan@broadcom.com>
+> > > > > Reviewed-by: William Zhang <william.zhang@broadcom.com>
+> > > > > ---
+> > > > > Changes in v3: None
+> > > > > ---
+> > > > > Changes in v2:
+> > > > > - Added to patch series
+> > > > > ---
+> > > > >  drivers/mtd/nand/raw/brcmnand/brcmnand.c | 14 ++++++++++----
+> > > > >  1 file changed, 10 insertions(+), 4 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/m=
+td/nand/raw/brcmnand/brcmnand.c
+> > > > > index a4e311b6798c..42526f3250c9 100644
+> > > > > --- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+> > > > > +++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+> > > > > @@ -2727,9 +2727,11 @@ static int brcmnand_setup_dev(struct brcmn=
+and_host *host)
+> > > > >       cfg->blk_adr_bytes =3D get_blk_adr_bytes(mtd->size, mtd->wr=
+itesize);
+> > > > >
+> > > > >       if (chip->ecc.engine_type !=3D NAND_ECC_ENGINE_TYPE_ON_HOST=
+) {
+> > > > > -             dev_err(ctrl->dev, "only HW ECC supported; selected=
+: %d\n",
+> > > > > -                     chip->ecc.engine_type);
+> > > > > -             return -EINVAL;
+> > > > > +             if (chip->ecc.strength) {
+> > > > > +                     dev_err(ctrl->dev, "ERROR!!! HW ECC must be=
+ set to zero for non-hardware ECC; selected: %d\n",
+> > > > > +                             chip->ecc.strength); =20
+> > > >
+> > > > Can you use a more formal string? Also clarify it because I don't
+> > > > really understand what it leads to. =20
+> > >
+> > > How about:
+> > >
+> > > dev_err(ctrl->dev, "HW ECC set to %d, must be zero for on-die ECC\n",=
+ =20
+> >
+> > Actually I am wondering how legitimate this is. Just don't enable the
+> > on host ECC engine if it's not in use. No need to check the core's
+> > choice. =20
+>=20
+> Our chip ECC engine will either be on if it's needed or off if it's not.
+> Either I can do that in one place or put checks in before each
+> read/write to turn on/off the ECC engine, which seems a lot more
+> work and changes and possible issues/problems.
+> Turning it on/off as needed has not been explicitly tested and
+> could cause unforeseen consequences. This
+> is a minimal change which should have minimal impact.
+>=20
+> > =20
+> > > =20
+> > > > =20
+> > > > > +                     return -EINVAL;
+> > > > > +             }
+> > > > >       }
+> > > > >
+> > > > >       if (chip->ecc.algo =3D=3D NAND_ECC_ALGO_UNKNOWN) {
+> > > > > @@ -2797,7 +2799,11 @@ static int brcmnand_setup_dev(struct brcmn=
+and_host *host)
+> > > > >       if (ret)
+> > > > >               return ret;
+> > > > >
+> > > > > -     brcmnand_set_ecc_enabled(host, 1);
+> > > > > +     if (chip->ecc.engine_type =3D=3D NAND_ECC_ENGINE_TYPE_ON_DI=
+E) {
+> > > > > +             dev_dbg(ctrl->dev, "Disable HW ECC for on-die ECC\n=
+"); =20
+> > > >
+> > > > Not needed. =20
+> > >
+> > > Will remove.
+> > > =20
+> > > > =20
+> > > > > +             brcmnand_set_ecc_enabled(host, 0);
+> > > > > +     } else
+> > > > > +             brcmnand_set_ecc_enabled(host, 1); =20
+> > > >
+> > > > Style is wrong, but otherwise I think ECC should be kept disabled w=
+hile
+> > > > not in active use, so I am a bit surprised by this line. =20
+> > >
+> > > This is a double check to turn on/off our hardware ECC. =20
+> >
+> > I expect the engine to be always disabled. Enable it only when you
+> > need (may require an additional patch before this one). =20
+>=20
+> We are already turning on the ECC enable at this point,
+> this is just adding the option to turn it off if the NAND chip
+> itself will be doing the ECC instead of our controller.
 
-During memory error injection test on kernels >= v6.4, the kernel panics
-like below. However, this issue couldn't be reproduced on kernels <= v6.3.
+Sorry if I have not been clear.
 
-  mce: [Hardware Error]: CPU 296: Machine Check Exception: f Bank 1: bd80000000100134
-  mce: [Hardware Error]: RIP 10:<ffffffff821b9776> {__get_user_nocheck_4+0x6/0x20}
-  mce: [Hardware Error]: TSC 411a93533ed ADDR 346a8730040 MISC 86
-  mce: [Hardware Error]: PROCESSOR 0:a06d0 TIME 1706000767 SOCKET 1 APIC 211 microcode 80001490
-  mce: [Hardware Error]: Run the above through 'mcelog --ascii'
-  mce: [Hardware Error]: Machine check: Data load in unrecoverable area of kernel
-  Kernel panic - not syncing: Fatal local machine check
+This sequence:
+- init
+- enable hw ECC engine
+Is broken.
 
-The MCA code can recover from an in-kernel #MC if the fixup type is
-EX_TYPE_UACCESS, explicitly indicating that the kernel is attempting to
-access userspace memory. However, if the fixup type is EX_TYPE_DEFAULT
-the only thing that is raised for an in-kernel #MC is a panic.
+It *cannot* work as any operation going through exec_op now may
+perform page reads which should be unmodified by the ECC engine. You
+driver *must* follow the following sequence:
 
-ex_handler_uaccess() would warn if users gave a non-canonical addresses
-(with bit 63 clear) to {get, put}_user(), which was unexpected.
+- init and disable (or keep disabled) the hw ECC engine
+- when you perform a page operation with correction you need to
+	- enable the engine
+	- perform the operation
+	- disable the engine
 
-Therefore, commit
-
-  b19b74bc99b1 ("x86/mm: Rework address range check in get_user() and put_user()")
-
-replaced _ASM_EXTABLE_UA() with _ASM_EXTABLE() for {get, put}_user()
-fixups. However, the new fixup type EX_TYPE_DEFAULT results in a panic.
-
-Commit
-
-  6014bc27561f ("x86-64: make access_ok() independent of LAM")
-
-added the check gp_fault_address_ok() right before the WARN_ONCE() in
-ex_handler_uaccess() to not warn about non-canonical user addresses due
-to LAM.
-
-With that in place, revert back to _ASM_EXTABLE_UA() for {get,put}_user()
-exception fixups in order to be able to handle in-kernel MCEs correctly
-again.
-
-  [ bp: Massage commit message. ]
-
-Fixes: b19b74bc99b1 ("x86/mm: Rework address range check in get_user() and put_user()")
-Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Cc: <stable@kernel.org>
-Link: https://lore.kernel.org/r/20240129063842.61584-1-qiuxu.zhuo@intel.com
----
- arch/x86/lib/getuser.S | 24 ++++++++++++------------
- arch/x86/lib/putuser.S | 20 ++++++++++----------
- 2 files changed, 22 insertions(+), 22 deletions(-)
-
-diff --git a/arch/x86/lib/getuser.S b/arch/x86/lib/getuser.S
-index 20ef350..10d5ed8 100644
---- a/arch/x86/lib/getuser.S
-+++ b/arch/x86/lib/getuser.S
-@@ -163,23 +163,23 @@ SYM_CODE_END(__get_user_8_handle_exception)
- #endif
- 
- /* get_user */
--	_ASM_EXTABLE(1b, __get_user_handle_exception)
--	_ASM_EXTABLE(2b, __get_user_handle_exception)
--	_ASM_EXTABLE(3b, __get_user_handle_exception)
-+	_ASM_EXTABLE_UA(1b, __get_user_handle_exception)
-+	_ASM_EXTABLE_UA(2b, __get_user_handle_exception)
-+	_ASM_EXTABLE_UA(3b, __get_user_handle_exception)
- #ifdef CONFIG_X86_64
--	_ASM_EXTABLE(4b, __get_user_handle_exception)
-+	_ASM_EXTABLE_UA(4b, __get_user_handle_exception)
- #else
--	_ASM_EXTABLE(4b, __get_user_8_handle_exception)
--	_ASM_EXTABLE(5b, __get_user_8_handle_exception)
-+	_ASM_EXTABLE_UA(4b, __get_user_8_handle_exception)
-+	_ASM_EXTABLE_UA(5b, __get_user_8_handle_exception)
- #endif
- 
- /* __get_user */
--	_ASM_EXTABLE(6b, __get_user_handle_exception)
--	_ASM_EXTABLE(7b, __get_user_handle_exception)
--	_ASM_EXTABLE(8b, __get_user_handle_exception)
-+	_ASM_EXTABLE_UA(6b, __get_user_handle_exception)
-+	_ASM_EXTABLE_UA(7b, __get_user_handle_exception)
-+	_ASM_EXTABLE_UA(8b, __get_user_handle_exception)
- #ifdef CONFIG_X86_64
--	_ASM_EXTABLE(9b, __get_user_handle_exception)
-+	_ASM_EXTABLE_UA(9b, __get_user_handle_exception)
- #else
--	_ASM_EXTABLE(9b, __get_user_8_handle_exception)
--	_ASM_EXTABLE(10b, __get_user_8_handle_exception)
-+	_ASM_EXTABLE_UA(9b, __get_user_8_handle_exception)
-+	_ASM_EXTABLE_UA(10b, __get_user_8_handle_exception)
- #endif
-diff --git a/arch/x86/lib/putuser.S b/arch/x86/lib/putuser.S
-index 2877f59..975c9c1 100644
---- a/arch/x86/lib/putuser.S
-+++ b/arch/x86/lib/putuser.S
-@@ -133,15 +133,15 @@ SYM_CODE_START_LOCAL(__put_user_handle_exception)
- 	RET
- SYM_CODE_END(__put_user_handle_exception)
- 
--	_ASM_EXTABLE(1b, __put_user_handle_exception)
--	_ASM_EXTABLE(2b, __put_user_handle_exception)
--	_ASM_EXTABLE(3b, __put_user_handle_exception)
--	_ASM_EXTABLE(4b, __put_user_handle_exception)
--	_ASM_EXTABLE(5b, __put_user_handle_exception)
--	_ASM_EXTABLE(6b, __put_user_handle_exception)
--	_ASM_EXTABLE(7b, __put_user_handle_exception)
--	_ASM_EXTABLE(9b, __put_user_handle_exception)
-+	_ASM_EXTABLE_UA(1b, __put_user_handle_exception)
-+	_ASM_EXTABLE_UA(2b, __put_user_handle_exception)
-+	_ASM_EXTABLE_UA(3b, __put_user_handle_exception)
-+	_ASM_EXTABLE_UA(4b, __put_user_handle_exception)
-+	_ASM_EXTABLE_UA(5b, __put_user_handle_exception)
-+	_ASM_EXTABLE_UA(6b, __put_user_handle_exception)
-+	_ASM_EXTABLE_UA(7b, __put_user_handle_exception)
-+	_ASM_EXTABLE_UA(9b, __put_user_handle_exception)
- #ifdef CONFIG_X86_32
--	_ASM_EXTABLE(8b, __put_user_handle_exception)
--	_ASM_EXTABLE(10b, __put_user_handle_exception)
-+	_ASM_EXTABLE_UA(8b, __put_user_handle_exception)
-+	_ASM_EXTABLE_UA(10b, __put_user_handle_exception)
- #endif
+Thanks,
+Miqu=C3=A8l
 
