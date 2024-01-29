@@ -1,271 +1,243 @@
-Return-Path: <linux-kernel+bounces-42610-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42607-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 562918403C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:25:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F6248403BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:24:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3CD69B22F01
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:25:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E28E1F23935
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:24:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44A8D5C8E4;
-	Mon, 29 Jan 2024 11:24:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 965E05BACB;
+	Mon, 29 Jan 2024 11:24:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eTbSexiS"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="FJJhHOtc";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="HRrekIDT";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="FJJhHOtc";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="HRrekIDT"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A72AB5C5E0
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 11:24:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F07125B21C;
+	Mon, 29 Jan 2024 11:24:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706527481; cv=none; b=cygUu92FXOQgtyvRG9yOEnBX/SgyLqW7uSleblzMmxwPwMN5fRDHe9sO/dEXNG4mc47gfi9S90IEGVd/peMG8KE3+rDW4jTnxqvgiESyrtXNGERxDrfamDWcB6tFFIiSNPM5kKLNgw2btUYgNXbAYgkEoLuordNyZytlkn0O8UQ=
+	t=1706527444; cv=none; b=f8bBmKiX59aM1dlnifuIn2wD/B3XRINYz64P0p3XFR8dkXZf3ZmTanljZ/n3uBXb+lcCZsuJINLHqOmpmICfhwkZYFIcOZ/CaScQLsf8wBsHjjn9tBmG0oCRcPkQ3NJ9Jr8aS6vB/omesGqIeXXO8VsHZ2rpKM/Leg2TBI5/+qw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706527481; c=relaxed/simple;
-	bh=M1eZFkZenuGschG9LJXhONAKU2yn51nzZ4is/X0qaLA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Wslvh4UuvzLB5ohlSsn7Xx+Ds8Lj8b26C8k7jB74SixicJ7SfMnGPfx8TMyDQquPyNzr69Nox6/OlSPhC809X+pgs9Qn4+afWsq0BGVXnMJzNW27OXGtMyuJKITzGpyBujKHNJNJZYEHpp9rCul7kKGRaCJoGFmKV3fXjqQliJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eTbSexiS; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706527478;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JNer/v8iFw3iF09xSTRkhGhoZsEuyh12Q2EV6DHDyCc=;
-	b=eTbSexiSrAvOctlVTVm5cb9NEvWJ0N8+TxKa568yj3jhWDwwk75xcA6RfoOZRdsUcsviUc
-	roim5TJZFPLVb9f09YaO0HnqPt9FLtrMmChx+oQfKCrgHPHHOPHS7+h/VbUMIoAcq3ROnN
-	5QzDWNtFvLgU8ody9ueCnRuMgQPrGEU=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-620-Phvqwf0aNS-LDx8ZAaLthQ-1; Mon,
- 29 Jan 2024 06:24:32 -0500
-X-MC-Unique: Phvqwf0aNS-LDx8ZAaLthQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	s=arc-20240116; t=1706527444; c=relaxed/simple;
+	bh=VhQbo2Ta/LUPWz7UoV9ADL7IXiXPbP+88STQOYGKQ78=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ahUoe/blyfgXpvt03YeB/dYCkigeNWhlRlmBSXTPm0SxHm5BUqNVk4xRw8KC+5qJ4KByWcb+c38ws45DPzWo+XAAOBzvGNpTMC0dEyv1n0F7A8gRT82FZ/N+nxDW58wVHRSZqyTenvEPluwK/74/9NUNI2dL7bZCaFc7RI/DVqs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=FJJhHOtc; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=HRrekIDT; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=FJJhHOtc; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=HRrekIDT; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3CB933806635;
-	Mon, 29 Jan 2024 11:24:32 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.247])
-	by smtp.corp.redhat.com (Postfix) with SMTP id A7502152E;
-	Mon, 29 Jan 2024 11:24:30 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Mon, 29 Jan 2024 12:23:17 +0100 (CET)
-Date: Mon, 29 Jan 2024 12:23:15 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Tycho Andersen <tycho@tycho.pizza>
-Cc: Christian Brauner <brauner@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-api@vger.kernel.org, Tycho Andersen <tandersen@netflix.com>,
-	"Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [RFC PATCH] pidfd: implement PIDFD_THREAD flag for pidfd_open()
-Message-ID: <20240129112313.GA11635@redhat.com>
-References: <ZbArN3EYRfhrNs3o@tycho.pizza>
- <20240125140830.GA5513@redhat.com>
- <ZbQpPknTTCyiyxrP@tycho.pizza>
- <20240127105410.GA13787@redhat.com>
- <ZbUngjQMg+YUBAME@tycho.pizza>
- <20240127163117.GB13787@redhat.com>
- <ZbU7d0dpTY08JgIl@tycho.pizza>
- <20240127193127.GC13787@redhat.com>
- <ZbVrRgIvudX242ZU@tycho.pizza>
- <20240127210634.GE13787@redhat.com>
+	by smtp-out1.suse.de (Postfix) with ESMTPS id C492222033;
+	Mon, 29 Jan 2024 11:24:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1706527440; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6aj5mLb+2il4qUCNjeQIpYPe+3N72x6SbebAktm1kOU=;
+	b=FJJhHOtc5nM+5SlZuIoZUlawukmxnfLMxuRotjwULN25sGiOBUF5T8RGEyL/nqFRMKWe6y
+	zG1dlOE1Q/2NBr8kUmgIbkC99D/GsX8AQl+ZveZNEDQU5gVUIiqsgk5W6ksHyp5ewtefO4
+	z0tUPhL/1vRT7gAd66FnCxUCLHCe7CY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1706527440;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6aj5mLb+2il4qUCNjeQIpYPe+3N72x6SbebAktm1kOU=;
+	b=HRrekIDTJvjzB6qTnyAk6zicT70gdnXVzwhDeSzWsI16DfT9BJhrf7X1KvFiELoHivW6d+
+	PHUzvK7rE2mmp7Cg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1706527440; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6aj5mLb+2il4qUCNjeQIpYPe+3N72x6SbebAktm1kOU=;
+	b=FJJhHOtc5nM+5SlZuIoZUlawukmxnfLMxuRotjwULN25sGiOBUF5T8RGEyL/nqFRMKWe6y
+	zG1dlOE1Q/2NBr8kUmgIbkC99D/GsX8AQl+ZveZNEDQU5gVUIiqsgk5W6ksHyp5ewtefO4
+	z0tUPhL/1vRT7gAd66FnCxUCLHCe7CY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1706527440;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6aj5mLb+2il4qUCNjeQIpYPe+3N72x6SbebAktm1kOU=;
+	b=HRrekIDTJvjzB6qTnyAk6zicT70gdnXVzwhDeSzWsI16DfT9BJhrf7X1KvFiELoHivW6d+
+	PHUzvK7rE2mmp7Cg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4EE9B13647;
+	Mon, 29 Jan 2024 11:24:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id M5ySD9CKt2UACwAAD6G6ig
+	(envelope-from <lhenriques@suse.de>); Mon, 29 Jan 2024 11:24:00 +0000
+Received: from localhost (brahms.olymp [local])
+	by brahms.olymp (OpenSMTPD) with ESMTPA id cb9889d0;
+	Mon, 29 Jan 2024 11:23:59 +0000 (UTC)
+From: Luis Henriques <lhenriques@suse.de>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: David Howells <dhowells@redhat.com>,  Jarkko Sakkinen
+ <jarkko@kernel.org>,  keyrings@vger.kernel.org,
+  linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2] keys: update key quotas in key_put()
+In-Reply-To: <20240127064220.GB11935@sol.localdomain> (Eric Biggers's message
+	of "Fri, 26 Jan 2024 22:42:20 -0800")
+References: <2744563.1702303367@warthog.procyon.org.uk>
+	<20240115120300.27606-1-lhenriques@suse.de>
+	<20240124221225.GD1088@sol.localdomain> <87bk988450.fsf@suse.de>
+	<20240127064220.GB11935@sol.localdomain>
+Date: Mon, 29 Jan 2024 11:23:59 +0000
+Message-ID: <87bk94qt68.fsf@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240127210634.GE13787@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=FJJhHOtc;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=HRrekIDT
+X-Spamd-Result: default: False [-3.31 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCPT_COUNT_FIVE(0.00)[5];
+	 RCVD_COUNT_THREE(0.00)[4];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_LAST(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: C492222033
+X-Spam-Level: 
+X-Spam-Score: -3.31
+X-Spam-Flag: NO
 
-On 01/27, Oleg Nesterov wrote:
+Eric Biggers <ebiggers@kernel.org> writes:
+
+> On Fri, Jan 26, 2024 at 04:12:59PM +0000, Luis Henriques wrote:
+>> Eric Biggers <ebiggers@kernel.org> writes:
+>>=20
+>> > On Mon, Jan 15, 2024 at 12:03:00PM +0000, Luis Henriques wrote:
+>> >> Delaying key quotas update when key's refcount reaches 0 in key_put()=
+ has
+>> >> been causing some issues in fscrypt testing.  This patches fixes this=
+ test
+>> >> flakiness by dealing with the quotas immediately, but leaving all the=
+ other
+>> >> clean-ups to the key garbage collector.  Unfortunately, this means th=
+at we
+>> >> also need to switch to the irq-version of the spinlock that protects =
+quota.
+>> >>=20
+>> >> Signed-off-by: Luis Henriques <lhenriques@suse.de>
+>> >> ---
+>> >> Hi David!
+>> >>=20
+>> >> I have these changes in my local disk for a while; I wanted to send t=
+hem
+>> >> before EOY break but... yeah, it didn't happen.  Anyway, I'm still se=
+nding
+>> >> it as an RFC as I'm probably missing something.
+>> >>=20
+>> >>  security/keys/gc.c     |  8 --------
+>> >>  security/keys/key.c    | 32 ++++++++++++++++++++++----------
+>> >>  security/keys/keyctl.c | 11 ++++++-----
+>> >>  3 files changed, 28 insertions(+), 23 deletions(-)
+>> >
+>> > This patch seems reasonable to me, though I'm still thinking about cha=
+nging
+>> > fs/crypto/ to manage its key quotas itself which would avoid the issue=
+ entirely.
+>> >
+>> > Note that as I said before, fs/crypto/ does key_put() on a whole keyri=
+ng at
+>> > once, in order to release the quota of the keys in the keyring.  Do yo=
+u plan to
+>> > also change fs/crypto/ to keyring_clear() the keyring before putting i=
+t?
+>> > Without that, I don't think the problem is solved, as the quota releas=
+e will
+>> > still happen asynchronously due to the keyring being cleared asynchron=
+ously.
+>>=20
+>> Ah, good point.  In the meantime I had forgotten everything about this
+>> code and missed that.  So, I can send another patch to fs/crypto to add
+>> that extra call once (or if) this patch is accepted.
+>>=20
+>> If I'm reading the code correctly, the only place where this extra call =
+is
+>> required is on fscrypt_put_master_key():
+>>=20
+>> diff --git a/fs/crypto/keyring.c b/fs/crypto/keyring.c
+>> index 0edf0b58daa7..4afd32f1aed9 100644
+>> --- a/fs/crypto/keyring.c
+>> +++ b/fs/crypto/keyring.c
+>> @@ -74,6 +74,7 @@ void fscrypt_put_master_key(struct fscrypt_master_key =
+*mk)
+>>  	 * that concurrent keyring lookups can no longer find it.
+>>  	 */
+>>  	WARN_ON_ONCE(refcount_read(&mk->mk_active_refs) !=3D 0);
+>> +	keyring_clear(mk->mk_users);
+>>  	key_put(mk->mk_users);
+>>  	mk->mk_users =3D NULL;
 >
-> I'll (hopefully) send v2 on top of
+> This will need a NULL check, since keyring_clear() doesn't accept NULL:
 >
-> 	pidfd: cleanup the usage of __pidfd_prepare's flags
-> 	pidfd: don't do_notify_pidfd() if !thread_group_empty()
+> 	if (mk->mk_users) {
+> 		keyring_clear(mk->mk_users);
+> 		key_put(mk->mk_users);
+> 		mk->mk_users =3D NULL;
+> 	}
 >
-> on Monday
 
-Sorry, I don't have time to finish v2 today, I need to update the comments
-and write the changelog.
+Ah, good point.  Makes sense.
 
-But the patch itself is ready, I am sending it for review.
+>>  	call_rcu(&mk->mk_rcu_head, fscrypt_free_master_key);
+>>=20
+>> On the other hand, if you're really working towards dropping this code
+>> entirely, maybe there's not point doing that.
+>
+> Well, it depends whether this patch (the one for security/keys/) is accep=
+ted or
+> not.  If it's accepted, I think it makes sense to add the keyring_clear()=
+ and
+> otherwise keep the fs/crypto/ code as-is.  If it's not accepted, I think =
+I'll
+> have to make fs/crypto/ handle the quotas itself.
 
-Tycho, Christian, any comments?
+Awesome, thank.
 
-Oleg.
+David, do you have any feedback on this patch or would you rather have me
+send v3, addressing Jarkko comments regarding the commit message?
 
-
-From c31780f6c1136a72048d24701ac6d8401fc1afda Mon Sep 17 00:00:00 2001
-From: Oleg Nesterov <oleg@redhat.com>
-Date: Sat, 27 Jan 2024 16:59:18 +0100
-Subject: [PATCH] pidfd: implement PIDFD_THREAD flag for pidfd_open()
-
----
- include/uapi/linux/pidfd.h |  3 ++-
- kernel/exit.c              |  7 +++++++
- kernel/fork.c              | 29 +++++++++++++++++++++++++++--
- kernel/pid.c               |  2 +-
- kernel/signal.c            |  4 +++-
- 5 files changed, 40 insertions(+), 5 deletions(-)
-
-diff --git a/include/uapi/linux/pidfd.h b/include/uapi/linux/pidfd.h
-index 5406fbc13074..2e6461459877 100644
---- a/include/uapi/linux/pidfd.h
-+++ b/include/uapi/linux/pidfd.h
-@@ -7,6 +7,7 @@
- #include <linux/fcntl.h>
- 
- /* Flags for pidfd_open().  */
--#define PIDFD_NONBLOCK O_NONBLOCK
-+#define PIDFD_NONBLOCK	O_NONBLOCK
-+#define PIDFD_THREAD	O_EXCL
- 
- #endif /* _UAPI_LINUX_PIDFD_H */
-diff --git a/kernel/exit.c b/kernel/exit.c
-index dfb963d2f862..74fe6bfb9577 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -739,6 +739,13 @@ static void exit_notify(struct task_struct *tsk, int group_dead)
- 		kill_orphaned_pgrp(tsk->group_leader, NULL);
- 
- 	tsk->exit_state = EXIT_ZOMBIE;
-+	/*
-+	 * sub-thread or delay_group_leader(), wake up the PIDFD_THREAD
-+	 * waiters.
-+	 */
-+	if (!thread_group_empty(tsk))
-+		do_notify_pidfd(tsk);
-+
- 	if (unlikely(tsk->ptrace)) {
- 		int sig = thread_group_leader(tsk) &&
- 				thread_group_empty(tsk) &&
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 347641398f9d..977b58c0eac6 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -101,6 +101,7 @@
- #include <linux/user_events.h>
- #include <linux/iommu.h>
- #include <linux/rseq.h>
-+#include <uapi/linux/pidfd.h>
- 
- #include <asm/pgalloc.h>
- #include <linux/uaccess.h>
-@@ -2050,6 +2051,8 @@ static void pidfd_show_fdinfo(struct seq_file *m, struct file *f)
- 
- 	seq_put_decimal_ll(m, "Pid:\t", nr);
- 
-+	/* TODO: report PIDFD_THREAD */
-+
- #ifdef CONFIG_PID_NS
- 	seq_put_decimal_ll(m, "\nNSpid:\t", nr);
- 	if (nr > 0) {
-@@ -2068,12 +2071,27 @@ static void pidfd_show_fdinfo(struct seq_file *m, struct file *f)
- }
- #endif
- 
-+static bool pidfd_task_exited(struct pid *pid, bool thread)
-+{
-+	struct task_struct *task;
-+	bool exited;
-+
-+	rcu_read_lock();
-+	task = pid_task(pid, PIDTYPE_PID);
-+	exited = !task ||
-+		(READ_ONCE(task->exit_state) && (thread || thread_group_empty(task)));
-+	rcu_read_unlock();
-+
-+	return exited;
-+}
-+
- /*
-  * Poll support for process exit notification.
-  */
- static __poll_t pidfd_poll(struct file *file, struct poll_table_struct *pts)
- {
- 	struct pid *pid = file->private_data;
-+	bool thread = file->f_flags & PIDFD_THREAD;
- 	__poll_t poll_flags = 0;
- 
- 	poll_wait(file, &pid->wait_pidfd, pts);
-@@ -2083,7 +2101,7 @@ static __poll_t pidfd_poll(struct file *file, struct poll_table_struct *pts)
- 	 * If the thread group leader exits before all other threads in the
- 	 * group, then poll(2) should block, similar to the wait(2) family.
- 	 */
--	if (thread_group_exited(pid))
-+	if (pidfd_task_exited(pid, thread))
- 		poll_flags = EPOLLIN | EPOLLRDNORM;
- 
- 	return poll_flags;
-@@ -2141,6 +2159,11 @@ static int __pidfd_prepare(struct pid *pid, unsigned int flags, struct file **re
- 		return PTR_ERR(pidfd_file);
- 	}
- 	get_pid(pid); /* held by pidfd_file now */
-+	/*
-+	 * anon_inode_getfile() ignores everything outside of the
-+	 * O_ACCMODE | O_NONBLOCK mask, set PIDFD_THREAD manually.
-+	 */
-+	pidfd_file->f_flags |= (flags & PIDFD_THREAD);
- 	*ret = pidfd_file;
- 	return pidfd;
- }
-@@ -2173,7 +2196,9 @@ static int __pidfd_prepare(struct pid *pid, unsigned int flags, struct file **re
-  */
- int pidfd_prepare(struct pid *pid, unsigned int flags, struct file **ret)
- {
--	if (!pid || !pid_has_task(pid, PIDTYPE_TGID))
-+	bool thread = flags & PIDFD_THREAD;
-+
-+	if (!pid || !pid_has_task(pid, thread ? PIDTYPE_PID : PIDTYPE_TGID));
- 		return -EINVAL;
- 
- 	return __pidfd_prepare(pid, flags, ret);
-diff --git a/kernel/pid.c b/kernel/pid.c
-index c7a3e359f8f5..04bdd5ecf183 100644
---- a/kernel/pid.c
-+++ b/kernel/pid.c
-@@ -629,7 +629,7 @@ SYSCALL_DEFINE2(pidfd_open, pid_t, pid, unsigned int, flags)
- 	int fd;
- 	struct pid *p;
- 
--	if (flags & ~PIDFD_NONBLOCK)
-+	if (flags & ~(PIDFD_NONBLOCK | PIDFD_THREAD))
- 		return -EINVAL;
- 
- 	if (pid <= 0)
-diff --git a/kernel/signal.c b/kernel/signal.c
-index 9561a3962ca6..919cd33a0405 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -2051,7 +2051,8 @@ bool do_notify_parent(struct task_struct *tsk, int sig)
- 	WARN_ON_ONCE(!tsk->ptrace &&
- 	       (tsk->group_leader != tsk || !thread_group_empty(tsk)));
- 	/*
--	 * tsk is a group leader and has no threads, wake up the pidfd waiters.
-+	 * tsk is a group leader and has no threads, wake up the !PIDFD_THREAD
-+	 * waiters.
- 	 */
- 	if (thread_group_empty(tsk))
- 		do_notify_pidfd(tsk);
-@@ -3926,6 +3927,7 @@ SYSCALL_DEFINE4(pidfd_send_signal, int, pidfd, int, sig,
- 		prepare_kill_siginfo(sig, &kinfo);
- 	}
- 
-+	/* TODO: respect PIDFD_THREAD */
- 	ret = kill_pid_info(sig, &kinfo, pid);
- 
- err:
--- 
-2.25.1.362.g51ebf55
-
-
+Cheers,
+--=20
+Lu=C3=ADs
 
