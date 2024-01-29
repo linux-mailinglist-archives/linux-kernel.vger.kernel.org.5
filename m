@@ -1,151 +1,95 @@
-Return-Path: <linux-kernel+bounces-42616-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42612-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EAF98403D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:30:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99B058403C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:28:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E029A285F3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:30:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CDE00B22EF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:28:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72A115C8F4;
-	Mon, 29 Jan 2024 11:29:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F68D5BAD4;
+	Mon, 29 Jan 2024 11:27:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YPY9ehdi"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N8fAALCA"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED17B5B5B2;
-	Mon, 29 Jan 2024 11:29:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 838BE5BAC0
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 11:27:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706527791; cv=none; b=DkG8Qm8CkK2rZzvnAUwBJw8Etb3BciaMpcqEAt8QZu+KS9ntZVY2WCidAQSOk7CHDpWSzZ8D5H47jE93zedpizfcU4B5ECYrXhDN0/p6KvsTchGcxq2tJIJYp/AdRHjoDeVLpg0R4nypOn+3JDmbwk9SljHsDPL98A62CgVxMVo=
+	t=1706527672; cv=none; b=HhRHuycmRuBYGKLJqQuOdtmX76Y/ZyWcGFYDVDgGyhioK5VmLfiW/YZMeMKn+7ymOCGWi9q6unInGcTXSWPNLi3IEB1huOAmTpIKTECo6Q1oieR+RGCRvCP0C8fj/CAks28JimM216R9NyAGcq1bKbeQTAxoT3GTu3OuRxVz45c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706527791; c=relaxed/simple;
-	bh=C1bZO06qv1Eiozo75zTNq7EL0T6h5w//IZNDQaGVD68=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ONnMykk2rqbQeP9XbVl/txQ8XXcEMCV+RC4dUXtZF7znEMRhWKD15Pgnj5dyoljHx//CgWagZKQa2kBUmIxgMkdqPvkHU/5G1btmjlzZY9b1I+rWfyttYTmNx+qk+IHyT1kfUISVOSiGpe9TY96q/0QZBCVibS/mjx1BJkHTc9E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YPY9ehdi; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706527790; x=1738063790;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=C1bZO06qv1Eiozo75zTNq7EL0T6h5w//IZNDQaGVD68=;
-  b=YPY9ehdi779HyVu/ug4cNFRoALxjw5V+hY3VV8MRtC0KN8fUHppzqCCv
-   B4x7iLNGA3XtDUx0PBvj/0roMj80r4i/ECKbiSzfox+McX6tHwjTiZ352
-   FisRAyFZL9O0J3mscofoj4BfLGcmvVLq6Sib+VRcom94Onj/mPlPz183R
-   CXEJGqbCwtqXpnjQTZCtKFuPpTpkf6lF9FMSgMsRQBdk55Jx028zYSXXQ
-   Upi4842QMaCse9mZ4yJK0wR8wjiynnpNXCMh7VjYjdcOA81g29iUb/JnK
-   nszDdKiTrX9tnmatsU1SWtZN1Mq0aKlAXDiLvtjdU7JDL89r0sTE5NOwg
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="16284307"
-X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
-   d="scan'208";a="16284307"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 03:29:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="960868400"
-X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
-   d="scan'208";a="960868400"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.94.253.213])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 03:29:18 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To: Bjorn Helgaas <bhelgaas@google.com>,
-	linux-pci@vger.kernel.org,
-	"Maciej W. Rozycki" <macro@orcam.me.uk>,
-	linux-kernel@vger.kernel.org
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH 2/2] PCI: Do not wait for disconnected devices when resuming
-Date: Mon, 29 Jan 2024 13:27:10 +0200
-Message-Id: <20240129112710.2852-3-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240129112710.2852-1-ilpo.jarvinen@linux.intel.com>
-References: <20240129112710.2852-1-ilpo.jarvinen@linux.intel.com>
+	s=arc-20240116; t=1706527672; c=relaxed/simple;
+	bh=K+SoEOU6xu54KZgacf/5Gi6Jlpq+URdws/owLbfDtyk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Rrdh0SsAj1e8/7buMuJh15mXpHDoMZnXsaDAdsXsK25MnG+Rhqbju/4sMFfWUtPpJPoUaI0suidjXmQ7p2Ug9lp/QTxJRPQod1W0qOabiPNnhQ4wScFUocWUktY+OPkpm/HrEL88GF8ABeD2+9x22B9cIVOI9F9ZtPdJtf1rQvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N8fAALCA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2A2CC433C7;
+	Mon, 29 Jan 2024 11:27:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706527672;
+	bh=K+SoEOU6xu54KZgacf/5Gi6Jlpq+URdws/owLbfDtyk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=N8fAALCAOzGymJZPOGyuPKdywZ0KLY/CSMt6p06Q9Bbrmk6oDIyrzEcXpTGJmhuGj
+	 tED0fFlgYtd4ws09ioEWHM47oJoVKdEcfpZD/LrWzbp/TvPjhkC7ZgAcMhVLr2RVLY
+	 j28kR4dgZIV6pQbimFWM4cR6mDMHioxsf+p1GLheWLyKUreMLC8z/8wtPhwiJxgvkZ
+	 ExRyyIxF5zXCh4d21vlAYesFzpRCKrqTruKTIOZPfi1ow7bZMAwsD3K2waD3w9qCA0
+	 frhZFsB96kX5eFFl6mN0k9i0Ja/+N8NH0VEMmkvn92HqpPcWXALHye47KkfN9AZysD
+	 HYsl+FD2PsJrQ==
+From: Chao Yu <chao@kernel.org>
+To: jaegeuk@kernel.org
+Cc: linux-f2fs-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org,
+	Chao Yu <chao@kernel.org>,
+	Daeho Jeong <daehojeong@google.com>
+Subject: [PATCH] f2fs: zone: fix to wait completion of last bio in zone correctly
+Date: Mon, 29 Jan 2024 19:27:40 +0800
+Message-Id: <20240129112740.1908649-1-chao@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On runtime resume, pci_dev_wait() is called:
-  pci_pm_runtime_resume()
-    pci_pm_bridge_power_up_actions()
-      pci_bridge_wait_for_secondary_bus()
-        pci_dev_wait()
+It needs to check last zone_pending_bio and wait IO completion before
+traverse next fio in io->io_list, otherwise, bio in next zone may be
+submitted before all IO completion in current zone.
 
-While a device is runtime suspended along with its PCIe hierarchy, the
-device could get disconnected. In such case, the link will not come up
-no matter how log pci_dev_wait() waits for it.
-
-Besides the above mentioned case, there could be other ways to get the
-device disconnected while pci_dev_wait() is waiting for the link to
-come up.
-
-Make pci_dev_wait() to exit if the device is already disconnected to
-avoid unnecessary delay. As disconnected device is not really even a
-failure in the same sense as link failing to come up for whatever
-reason, return 0 instead of errno.
-
-Also make sure compiler does not become too clever with
-dev->error_state and use READ_ONCE() to force a fetch for the
-up-to-date value.
-
-Reported-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Tested-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Fixes: e067dc3c6b9c ("f2fs: maintain six open zones for zoned devices")
+Cc: Daeho Jeong <daehojeong@google.com>
+Signed-off-by: Chao Yu <chao@kernel.org>
 ---
- drivers/pci/pci.c | 5 +++++
- drivers/pci/pci.h | 4 +++-
- 2 files changed, 8 insertions(+), 1 deletion(-)
+ fs/f2fs/data.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index d8f11a078924..ec9bf6c90312 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -1250,6 +1250,11 @@ static int pci_dev_wait(struct pci_dev *dev, char *reset_type, int timeout)
- 	for (;;) {
- 		u32 id;
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index f45ecb810ae6..8cdbc5ae44db 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -1006,7 +1006,7 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
+ 	f2fs_bug_on(sbi, is_read_io(fio->op));
  
-+		if (pci_dev_is_disconnected(dev)) {
-+			pci_dbg(dev, "disconnected; not waiting\n");
-+			return 0;
-+		}
-+
- 		pci_read_config_dword(dev, PCI_COMMAND, &id);
- 		if (!PCI_POSSIBLE_ERROR(id))
- 			break;
-diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-index 2336a8d1edab..563a275dff67 100644
---- a/drivers/pci/pci.h
-+++ b/drivers/pci/pci.h
-@@ -4,6 +4,8 @@
+ 	f2fs_down_write(&io->io_rwsem);
+-
++next:
+ #ifdef CONFIG_BLK_DEV_ZONED
+ 	if (f2fs_sb_has_blkzoned(sbi) && btype < META && io->zone_pending_bio) {
+ 		wait_for_completion_io(&io->zone_wait);
+@@ -1016,7 +1016,6 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
+ 	}
+ #endif
  
- #include <linux/pci.h>
- 
-+#include <asm/rwonce.h>
-+
- /* Number of possible devfns: 0.0 to 1f.7 inclusive */
- #define MAX_NR_DEVFNS 256
- 
-@@ -370,7 +372,7 @@ static inline int pci_dev_set_disconnected(struct pci_dev *dev, void *unused)
- 
- static inline bool pci_dev_is_disconnected(const struct pci_dev *dev)
- {
--	return dev->error_state == pci_channel_io_perm_failure;
-+	return READ_ONCE(dev->error_state) == pci_channel_io_perm_failure;
- }
- 
- /* pci_dev priv_flags */
+-next:
+ 	if (fio->in_list) {
+ 		spin_lock(&io->io_lock);
+ 		if (list_empty(&io->io_list)) {
 -- 
-2.39.2
+2.40.1
 
 
