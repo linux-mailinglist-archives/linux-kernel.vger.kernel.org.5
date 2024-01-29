@@ -1,137 +1,137 @@
-Return-Path: <linux-kernel+bounces-43207-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9E548410DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:37:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B33F98410EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:42:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A381286225
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:37:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F5872825C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:42:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F58276C94;
-	Mon, 29 Jan 2024 17:37:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0877C3F9E8;
+	Mon, 29 Jan 2024 17:42:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HCfLqCvL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WnYZn8QK"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DE2976C6E;
-	Mon, 29 Jan 2024 17:37:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C0FC3F9C4
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 17:42:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706549860; cv=none; b=OyWXc4OboMcdHYelInvnvSuJKDcFmdASiS98pI98v53KhJoBlK32C6kb8x5deNpAmxyWEU1+fFSBSjjoY8iLoY7PGc+YxUPRKWFMGGZanFGgBnwbUEXi0GBBBRhoSsx2CEj4lxIsBtP2vrmuOIeyNxZfAXGoPPEV/bZz+MMS3QE=
+	t=1706550124; cv=none; b=g6+iI/Zgg/iXUiRieDO1VTlgPaYN1EYmuVKPdW0xlmDSjH6od3DVX5iEYUXRBzGCZpPyjemAnqW7mLGnLxzeZz3AJs9VcxqLV1nxlPhqvELt8p9EIPMx+E49RihO3J4ecwU66PP5mThtSTYKwtYvIf1kU0Uy3lPC4EuKG1GRCso=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706549860; c=relaxed/simple;
-	bh=wWhOLdLXWR1J1NWYiGZwNuJQrSw+KC0GWCJmCtB76nM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rZR/EwD3J07wRxU9RDH7QaN2Q5rI1ubOOj8QiWGk3VX1bcKYYui1hjGc8FL0QnnNjlaNkXQH/uyUwTzZiTBiqQH/6t1bu9DDVJ5bF/LPB3Z47YFpdUX0M9FBHS7ceggZleDaC6WGY43hF5PAulFTL74Y5FRF98uuwZazAyhbhOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HCfLqCvL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0385BC433C7;
-	Mon, 29 Jan 2024 17:37:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706549859;
-	bh=wWhOLdLXWR1J1NWYiGZwNuJQrSw+KC0GWCJmCtB76nM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HCfLqCvLEn2f/rHk1ypJKgFsAPd5jmBc2bDnCVeJR1lxgrjULX/wI5r4ZUBE3kusZ
-	 /ZjBWLjTpVzK12QvQaRnSiqKSQs41szRviG17dOAvJ2S/JpXODaMyzLbeXYFJ7G/qo
-	 QZLUqntvH2OX9vLeXqUOFGMC9xZ2wdLd5YC2r8nYdMpnLFhBZzkW2f4Fm69HuqXYoO
-	 2WWH4WaBUz6qkkJWa4rpwTfLxiW5yv0cWOK02mnJT28FsU5Ag6G3AHRzQS4TwgG/4I
-	 rhUy/OXX5aQIB0rxZjUQL6xToHDrug8kK9Eej7Ghfa0H/wwyYCSGNlNLgwCPQ3o9+d
-	 h7IlwIac7LuGw==
-Date: Mon, 29 Jan 2024 17:37:33 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Luca Weiss <luca.weiss@fairphone.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
-	Vikash Garodia <quic_vgarodia@quicinc.com>,
-	Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-	Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-	linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: dt-bindings: qcom,sc7280-venus: Allow one IOMMU
- entry
-Message-ID: <20240129-numerate-brought-4660c2a89719@spud>
-References: <20240129-sc7280-venus-bindings-v1-1-20a9ba194c60@fairphone.com>
+	s=arc-20240116; t=1706550124; c=relaxed/simple;
+	bh=9Zx3aXA18R94SWzrgSUtc4EnGCzDqdY9//c/8FHjsGo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=b3ldmzGV7OeukEeOn42dL0csmRnae9esvZBqZjoa+gONmXdE5++wWI/Ox+/gSRyNwqnIecc0Sz9KJwW56T9Cp4sD9f5cV/j5tc4mMEnbxsDFvBL1WYuy9YUaEr++WqfbW+IpukB4RvKcph+SmOSEadLeYCboIwoMLSU82HZIrRg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WnYZn8QK; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a35e0532900so117315966b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:42:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706550120; x=1707154920; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pRPrglOzwRqa+H7Y4VRUrVxomNsbjEqwuGbyydOpG0o=;
+        b=WnYZn8QK5RDqk0hn/Hkems0BFoTduw2sY23Ylk5SnxSDWXHYswQ+XMTplV7mwwJQPr
+         kBKyDTO14vNJrglbZcWP1kIQXwnjygmwIisQ47eFJ0xeC8y/VCe0q6ba/2Yu/gecgJRI
+         otTZRdKusVquMIGMIQoa6H3Z8ICa5spflBmXjo0Jj7D1kVwjOzTAX/TFkFIVPhGtPfZ0
+         tkbkql9hro4emtiJ0Zlir0/TwA//cAkfWAQjw56Fe0HpJhQL0D0eDMF+CRjxlFzH/8CE
+         674hP5Ja5raVspH99TvnujEdP4nTuXrNnz8d2iTGe8yWO2slpLB2+8QzciZNF/0iyd37
+         SUeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706550120; x=1707154920;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pRPrglOzwRqa+H7Y4VRUrVxomNsbjEqwuGbyydOpG0o=;
+        b=LIjNgaBigslYcR2ieOcsBpy+U7QNRuRuyD8O/cNwrHA/GOe2GeYXYyKJNx5ioeGx3f
+         2HHU5OQJ4CunVhNFfS+7kcK6fTRxHYcewp93uCHf/xpvRp2hxNRl+unUdgY8jlOjGYny
+         oxCWZt4oipUrx+HmDQqwTeyYuWFE3BCICFk8ueT+ZeTsaze+JireWe9hBa1lVe1kVYxj
+         O0ZZez+h26M6j2KIxuxCHkHgROpvOil3sgT1BrgOC3YPADU6PN7c4pkIM29BANlQE2fs
+         0/PEBBhF5lVlHr/oRgRMryIjrCl97OC1suQYE0f11LNngSVUf1cPy103y03eF0lAA2KZ
+         5RpQ==
+X-Gm-Message-State: AOJu0Yw7ou4LmzbVvZHCDi1oxQ+aLDifn2J3oKHeWu4LUIPTgSf+FjKc
+	MQNm7pUymvmDBvpZXAJY88b7Cm5EcScwov/Wj11aBRFpTv+tPp3NYGBziofG3i/x3QwuxIXD8pu
+	/CTB8Lg==
+X-Google-Smtp-Source: AGHT+IH7SnCVkKpDcbSdNp0DbMhNvvyF+vX+c9HHkogBjefDuaYJ7t+c82tOi7AZ9KE+TzdqrxqPSA==
+X-Received: by 2002:a17:906:450:b0:a35:ad38:35e with SMTP id e16-20020a170906045000b00a35ad38035emr2735029eja.69.1706550119715;
+        Mon, 29 Jan 2024 09:41:59 -0800 (PST)
+Received: from puffmais.c.googlers.com.com (94.189.141.34.bc.googleusercontent.com. [34.141.189.94])
+        by smtp.gmail.com with ESMTPSA id qx25-20020a170906fcd900b00a311a360433sm4237765ejb.143.2024.01.29.09.41.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 09:41:59 -0800 (PST)
+From: =?UTF-8?q?Andr=C3=A9=20Draszik?= <andre.draszik@linaro.org>
+To: peter.griffin@linaro.org,
+	mturquette@baylibre.com,
+	sboyd@kernel.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel-team@android.com,
+	tudor.ambarus@linaro.org,
+	willmcvicker@google.com,
+	semen.protsenko@linaro.org,
+	inux-kernel@vger.kernel.org,
+	alim.akhtar@samsung.com,
+	s.nawrocki@samsung.com,
+	tomasz.figa@gmail.com,
+	cw00.choi@samsung.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org,
+	linux-clk@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: [PATCH v2 0/7] gs101 oriole: peripheral block 1 (peric1) and i2c12 support
+Date: Mon, 29 Jan 2024 17:40:03 +0000
+Message-ID: <20240129174151.1174248-1-andre.draszik@linaro.org>
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="uIfXiQKiceuPgh4l"
-Content-Disposition: inline
-In-Reply-To: <20240129-sc7280-venus-bindings-v1-1-20a9ba194c60@fairphone.com>
+Content-Transfer-Encoding: 8bit
 
+Hi,
 
---uIfXiQKiceuPgh4l
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This patch series implements support for the 2nd connectivity
+peripheral block on gs101.
+This block contains an additional 6 USI, 1 I3C and 1 PWM
+interfaces/busses.
 
-On Mon, Jan 29, 2024 at 08:48:54AM +0100, Luca Weiss wrote:
-> Some SC7280-based boards crash when providing the "secure_non_pixel"
-> context bank, so allow only one iommu in the bindings also.
->=20
-> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+i2cdetect shows all expected devices on the one i2c bus that this patch
+series enables.
+Everything that's in scope in this series works also without the
+clk_ignore_unused kernel command line argument.
 
-Do we have any idea why this happens? How is someone supposed to know
-whether or not their system requires you to only provide one iommu?
-Yes, a crash might be the obvious answer, but is there a way of knowing
-without the crashes?
+While working on this, I noticed the existing peric0 support for gs101
+has a couple issues. That explains why there are differences compared
+to it and a separate patch series has been sent to fix up peric0
+support.
 
 Cheers,
-Conor.
+Andre'
 
-> ---
-> Reference:
-> https://lore.kernel.org/linux-arm-msm/20231201-sc7280-venus-pas-v3-2-bc13=
-2dc5fc30@fairphone.com/
-> ---
->  Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/media/qcom,sc7280-venus.ya=
-ml b/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
-> index 8f9b6433aeb8..10c334e6b3dc 100644
-> --- a/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
-> +++ b/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
-> @@ -43,6 +43,7 @@ properties:
->        - const: vcodec_bus
-> =20
->    iommus:
-> +    minItems: 1
->      maxItems: 2
-> =20
->    interconnects:
->=20
-> ---
-> base-commit: 596764183be8ebb13352b281a442a1f1151c9b06
-> change-id: 20240129-sc7280-venus-bindings-6e62a99620de
->=20
-> Best regards,
-> --=20
-> Luca Weiss <luca.weiss@fairphone.com>
->=20
+Changes in v2:
+- squash original patches #3+#9 (Krzysztof)
+- move original patch #7 to new #4
+- squash original patches #4+#8 and make it #5 (Krzysztof)
+- add short summary of devices attached to i2c bus 12 & add TODO (Sam & Peter)
+- collect Reviewed-by: tags
+- I kept Reviewed-by: tags for the squashed patches. Please shout if
+  that wasn't expected
 
---uIfXiQKiceuPgh4l
-Content-Type: application/pgp-signature; name="signature.asc"
+ .../bindings/clock/google,gs101-clock.yaml    |   9 +-
+ .../soc/samsung/samsung,exynos-sysreg.yaml    |   1 +
+ .../boot/dts/exynos/google/gs101-oriole.dts   |  10 +
+ arch/arm64/boot/dts/exynos/google/gs101.dtsi  |  41 ++
+ drivers/clk/samsung/clk-gs101.c               | 347 ++++++++++++++++-
+ include/dt-bindings/clock/google,gs101.h      |  48 +++
+ 6 files changed, 452 insertions(+), 4 deletions(-)
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbfiXQAKCRB4tDGHoIJi
-0u+kAQD6hQJxEFZGeDrdCSNz807MgW2B9L9wp4d7nPT8zipYcQD+PHraEQhlwbax
-l6JDJfuJlD+YZfuAGqEETe5slN7CuA8=
-=uaeV
------END PGP SIGNATURE-----
-
---uIfXiQKiceuPgh4l--
 
