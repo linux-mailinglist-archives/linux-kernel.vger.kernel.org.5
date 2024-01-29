@@ -1,90 +1,209 @@
-Return-Path: <linux-kernel+bounces-42538-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42539-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14BA58402C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:28:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF7AF8402CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:32:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A46321F23148
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:28:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A26A284EE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:32:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8ADC57874;
-	Mon, 29 Jan 2024 10:27:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF9A33C472;
+	Mon, 29 Jan 2024 10:32:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="x0PVYpGv"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="0/Md2734"
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2044.outbound.protection.outlook.com [40.107.100.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D0AE56454;
-	Mon, 29 Jan 2024 10:27:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706524067; cv=none; b=PRjxZWqx6cgM2+csbu06dMq4mdFvASg16JEX6uC0x83xz3fqK/kSYVH9/Cte2XqfHwV7xqHb85fNFDFnJqmwKYECElNue+7E8fbKe+QZ+Of4gkVQf/xwFHQ3THOynPWb7yKZ6uJ/1DTGDwBQBjsU49fE67DIq26uyOPZ0cEG84w=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706524067; c=relaxed/simple;
-	bh=ajpfWU56N4RiwDnamz+uZJp8PwvIobXur3OZBlUPeCM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fqrDoZvTJZResEy5s9Jlewu32Jjb75rZDlWZv4i13WzwP90uy8fECOj7W1XcFa2HHBivn4HZGGovm9bb6QSyBt4Xv5k0FwgHsDr5T3yzx8zhBpMlaUzGsP1MG1xxosi6jcl1wsvmjVLze4mY2B4UMLSly1YTE6Sy8Tq7g1cvXHo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=x0PVYpGv; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706524063;
-	bh=ajpfWU56N4RiwDnamz+uZJp8PwvIobXur3OZBlUPeCM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=x0PVYpGv8qE8Ji2aqHvfglZO6ogSUhFasmuKtiPZu9dHFW/yKofiFIyqpvnbJnryk
-	 ZWyvEwzfBBD+La0u0vIRkeANJWjaNvYKn8SoS0O64ek9xwpRS+h9iXdJirCRyO3cWI
-	 AOA95AH5TSIz5A7xKTHr/DOtDaML4KagP0KnWHD1TbLPfbr2FkZvVIwjiLMRinn3yD
-	 Z5jK680MEjzcJvNm1+DlejpJ5yBpVr5Oxz35BLAOwSM8HQQXSqOY1ilAbmKn26Hchl
-	 Hfcl/OC891mvthb4HihMFNm+5elBm/ca1iA3hqxnbylN+5ta2IX5SWO4ryNN47XXk+
-	 7Q/FMSg8lcyLw==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4F9DC3781FCF;
-	Mon, 29 Jan 2024 10:27:43 +0000 (UTC)
-Message-ID: <861b9921-1869-4341-8299-f25215cfebbb@collabora.com>
-Date: Mon, 29 Jan 2024 11:27:43 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D09AA1E482
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 10:32:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.100.44
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706524325; cv=fail; b=oWNayEA07mdAQgPt0kU9wMp4CCGVBL0npC3TJ0s0E6bPIaKK/pdk74Zd3qSN3f7W/EsQkn+MeSQO4ChfffDfKU2Aq/f7Uvv24ttWq0gspZJyVjAqJgN5k3qRu0jrTCLb7gGJqAPaYBY294Xs7KB6C/ha13PE6vi29naFca5b8cA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706524325; c=relaxed/simple;
+	bh=knrcjWNFtk11UQ7+FkhkHawhH6bkM9/tNanSnve6H00=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ApPi4sp/q0NibXOgpEwfumAfNyr/mwQw9CrukbO3WBiulrJ6EUotr69ZLrtbImRoS7mR/2CTZ5CpGdmIopEAPG/ySnKLd3tDoXvYguUa0UFjczMloTPFaH78LpBHGap/+MRn4MgM2qSOxJtfe0eFMNUB9bdLDVQ49Y3Mb4sjIDg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=0/Md2734; arc=fail smtp.client-ip=40.107.100.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=G9wyagglfb8v9w5vbzU0+SlBk/rxztNjGVgbFVl/BnyZGfno6E56TtBVtN4eBmgXr1jzmpxnQIj+W5cv5OpjdfXW0yiLXWmb+/Yq36q8EYLsEmgh5IT4VHJz3I5P62ak6YKdEXsN+F3ZnjDMPnmeDXgI/hnfrxDACkGNfZIM2VX4vks5Qx9AwTyt3UMfz32IU1xvBOrpB2/LVFKirC3b2KeZWyc/JzqWOnCNEyanwG7I1v5JJ2m7uJbK/n5x4Nyn6MfdosJVBfksVBr3sy/HNaSNKcEaFN254QCSTmvfFXv3BdKvt8s7wkcltymItVWaT4VOkVT6bsehx40wE7eSwg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=C9mwCClnAJMBs1lDy69fPwQW56kKkdyFW6BbQYzn9as=;
+ b=AQgPan3e8KaQNUPLDeENuVJRgNYvo41Vxk7gQMkc/Rl4R2uWFv4ld0s9lP2erCnzyfp4m3ICzPjUrBeL4pvnQiHQGaW595kPZyvOr1EmaaReAWe+rnPhrQ0fxNA/++xDXa+OxNmR12OdlO07UDopbcSA9RDWBwLwA24lyxfTSd1+bkKwYw/aq8b1MDbpZIocZkJWjPLfXz5lZMWqIRhrZiIzUNqQ3hfzJkkdF4fiUDHE50A9u0nvbEL0oIK2iJM4f85bewnDDotRC6Id5zb6aLU+KuFpvbVwIGeOEMHj71bTJtqqJ1GkzcnFbBRrX6UCamPX9vmAvr74DaaIiGZE/A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=chromium.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=C9mwCClnAJMBs1lDy69fPwQW56kKkdyFW6BbQYzn9as=;
+ b=0/Md2734ATn7c8xRphmVBEfnUJloySNUH4qVuuSOdaK49HiKZxjYVmOwkeDlwRhEMASrXKOrCpZmo9mcQqMPAnmYtCyHZOkAxjLSmNC6QJPnlMHkt1NhaOzBnDE3iS6zBGcwedI8JhN9qMXIu/KC+bMrTK3zGQpZP716wK9labI=
+Received: from SJ0PR03CA0177.namprd03.prod.outlook.com (2603:10b6:a03:338::32)
+ by SA1PR12MB8722.namprd12.prod.outlook.com (2603:10b6:806:373::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.34; Mon, 29 Jan
+ 2024 10:31:58 +0000
+Received: from SJ1PEPF00001CE1.namprd05.prod.outlook.com
+ (2603:10b6:a03:338:cafe::8e) by SJ0PR03CA0177.outlook.office365.com
+ (2603:10b6:a03:338::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.32 via Frontend
+ Transport; Mon, 29 Jan 2024 10:31:58 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SJ1PEPF00001CE1.mail.protection.outlook.com (10.167.242.9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7202.16 via Frontend Transport; Mon, 29 Jan 2024 10:31:58 +0000
+Received: from jenkins-julia.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Mon, 29 Jan
+ 2024 04:31:53 -0600
+From: Julia Zhang <julia.zhang@amd.com>
+To: Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
+	<olvaffe@gmail.com>, David Airlie <airlied@redhat.com>, Gerd Hoffmann
+	<kraxel@redhat.com>, <linux-kernel@vger.kernel.org>,
+	<dri-devel@lists.freedesktop.org>, <amd-gfx@lists.freedesktop.org>,
+	<virtualization@lists.linux-foundation.org>
+CC: Alex Deucher <alexander.deucher@amd.com>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>, Daniel Vetter
+	<daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, Erik Faye-Lund
+	<kusmabite@gmail.com>, =?UTF-8?q?Marek=20Ol=C5=A1=C3=A1k?=
+	<marek.olsak@amd.com>, Pierre-Eric Pelloux-Prayer
+	<pierre-eric.pelloux-prayer@amd.com>, Honglei Huang <honglei1.huang@amd.com>,
+	Chen Jiqian <Jiqian.Chen@amd.com>, Huang Rui <ray.huang@amd.com>, Julia Zhang
+	<julia.zhang@amd.com>
+Subject: [PATCH v2 1/1] drm/virtio: Implement device_attach
+Date: Mon, 29 Jan 2024 18:31:19 +0800
+Message-ID: <20240129103118.3258781-1-julia.zhang@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/3] soc: mediatek: mtk-socinfo: Add driver for getting
- chip information
-Content-Language: en-US
-To: William-tw Lin <william-tw.lin@mediatek.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-References: <20231222080739.21706-1-william-tw.lin@mediatek.com>
- <20231222080739.21706-3-william-tw.lin@mediatek.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231222080739.21706-3-william-tw.lin@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ1PEPF00001CE1:EE_|SA1PR12MB8722:EE_
+X-MS-Office365-Filtering-Correlation-Id: 73f4873f-f92b-4794-ff86-08dc20b5859d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	sC2T/8bEL5N4yez0Jn4Y368hXzKJK7Hbpty+ksiwLxjP5DLxgMmR0P+bLtFHzZuihpMyceM7GjK7RiFKejk42FK49BCgP7HhBo8H6DbF5BeECWqxMi+cjyKsf+qtQ0mAayeMtyfP/0oMn0uopDvbktGambZuZ5wQAmxy/e3nzsOx+jMMJ3UtDsafc/CarJE13KHfijsa3zFD/RfDMcrM2oCmYTn1ufoWDi2FYGxc7Gx/xvu2EDS9ToZQzpmlGIn2dIvytvznbyZfna4Oi8G5y2T1IV1oRtR1RKFKE4WWQQ+aodUpsQtrkOtVp8sb4UX+1NvhsTYbxYAKCmu9ciHCJ1lVHJHz6RXQKt91XtIDiRUEKqxdu8/u8tUYYkT3MvSeaiqKK4s8uhqKV6A/AsrBMT5SwA4GKxznUbtUV/tgJPuRp0kducAtN+QRGR83X+hFDMkL0ls6nCqrtTJso2iMaF7LQBlahGzea00e8qF6sgKkNf6JqYQzsl8syuMB0pNi5gq3Sk5kRSKX4fcdy0l1zQfFdq/KN6aEF4jtFhyAVzyDpMwf16D3u6+VbGXz6F3WSpFoWmOVVk7B1KzKtrs3BaVEWy5jvWG42wzKkDAPNHvXlEsYi9xUepdH0S4MD2CWDH82QLxKHWolBGNQBNIr56bB9FlbPrv/PtjTI1QVjjThLLTxFNn1KLWnCwjjWe9OmS9rno26PcuSVDkTpQpOBigz65RerQ5mPgUz+ABq+FTKrJ0yJ1GesjEvf5YXC0O99uHyRO1H+vrkWgaWIiNwTg==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(346002)(136003)(376002)(396003)(230922051799003)(82310400011)(64100799003)(186009)(451199024)(1800799012)(40470700004)(46966006)(36840700001)(40460700003)(40480700001)(26005)(16526019)(1076003)(83380400001)(336012)(426003)(6666004)(7696005)(36756003)(86362001)(82740400003)(81166007)(356005)(5660300002)(7416002)(44832011)(8676002)(41300700001)(8936002)(4326008)(36860700001)(2616005)(47076005)(70206006)(70586007)(110136005)(54906003)(2906002)(478600001)(316002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2024 10:31:58.1411
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 73f4873f-f92b-4794-ff86-08dc20b5859d
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SJ1PEPF00001CE1.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8722
 
-Il 22/12/23 09:07, William-tw Lin ha scritto:
-> Add driver for socinfo retrieval. This patch includes the following:
-> 1. mtk-socinfo driver for chip info retrieval
-> 2. Related changes to Makefile and Kconfig
-> 
-> Signed-off-by: William-tw Lin <william-tw.lin@mediatek.com>
+As vram objects don't have backing pages and thus can't implement
+drm_gem_object_funcs.get_sg_table callback. This removes drm dma-buf
+callbacks in virtgpu_gem_map_dma_buf()/virtgpu_gem_unmap_dma_buf()
+and implement virtgpu specific map/unmap/attach callbacks to support
+both of shmem objects and vram objects.
 
-Applied to v6.4-next/soc
+Signed-off-by: Julia Zhang <julia.zhang@amd.com>
+---
+ drivers/gpu/drm/virtio/virtgpu_prime.c | 40 +++++++++++++++++++++++---
+ 1 file changed, 36 insertions(+), 4 deletions(-)
 
-Thanks!
-Angelo
-
+diff --git a/drivers/gpu/drm/virtio/virtgpu_prime.c b/drivers/gpu/drm/virtio/virtgpu_prime.c
+index 44425f20d91a..b490a5343b06 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_prime.c
++++ b/drivers/gpu/drm/virtio/virtgpu_prime.c
+@@ -49,11 +49,26 @@ virtgpu_gem_map_dma_buf(struct dma_buf_attachment *attach,
+ {
+ 	struct drm_gem_object *obj = attach->dmabuf->priv;
+ 	struct virtio_gpu_object *bo = gem_to_virtio_gpu_obj(obj);
++	struct sg_table *sgt;
++	int ret;
+ 
+ 	if (virtio_gpu_is_vram(bo))
+ 		return virtio_gpu_vram_map_dma_buf(bo, attach->dev, dir);
+ 
+-	return drm_gem_map_dma_buf(attach, dir);
++	sgt = drm_prime_pages_to_sg(obj->dev,
++				    to_drm_gem_shmem_obj(obj)->pages,
++				    obj->size >> PAGE_SHIFT);
++	if (IS_ERR(sgt))
++		return sgt;
++
++	ret = dma_map_sgtable(attach->dev, sgt, dir, DMA_ATTR_SKIP_CPU_SYNC);
++	if (ret) {
++		sg_free_table(sgt);
++		kfree(sgt);
++		return ERR_PTR(ret);
++	}
++
++	return sgt;
+ }
+ 
+ static void virtgpu_gem_unmap_dma_buf(struct dma_buf_attachment *attach,
+@@ -63,12 +78,29 @@ static void virtgpu_gem_unmap_dma_buf(struct dma_buf_attachment *attach,
+ 	struct drm_gem_object *obj = attach->dmabuf->priv;
+ 	struct virtio_gpu_object *bo = gem_to_virtio_gpu_obj(obj);
+ 
++	if (!sgt)
++		return;
++
+ 	if (virtio_gpu_is_vram(bo)) {
+ 		virtio_gpu_vram_unmap_dma_buf(attach->dev, sgt, dir);
+-		return;
++	} else {
++		dma_unmap_sgtable(attach->dev, sgt, dir, DMA_ATTR_SKIP_CPU_SYNC);
++		sg_free_table(sgt);
++		kfree(sgt);
+ 	}
++}
++
++static int virtgpu_gem_device_attach(struct dma_buf *dma_buf,
++				     struct dma_buf_attachment *attach)
++{
++	struct drm_gem_object *obj = attach->dmabuf->priv;
++	struct virtio_gpu_object *bo = gem_to_virtio_gpu_obj(obj);
++	int ret = 0;
++
++	if (!virtio_gpu_is_vram(bo) && obj->funcs->pin)
++		ret = obj->funcs->pin(obj);
+ 
+-	drm_gem_unmap_dma_buf(attach, sgt, dir);
++	return ret;
+ }
+ 
+ static const struct virtio_dma_buf_ops virtgpu_dmabuf_ops =  {
+@@ -83,7 +115,7 @@ static const struct virtio_dma_buf_ops virtgpu_dmabuf_ops =  {
+ 		.vmap = drm_gem_dmabuf_vmap,
+ 		.vunmap = drm_gem_dmabuf_vunmap,
+ 	},
+-	.device_attach = drm_gem_map_attach,
++	.device_attach = virtgpu_gem_device_attach,
+ 	.get_uuid = virtgpu_virtio_get_uuid,
+ };
+ 
+-- 
+2.34.1
 
 
