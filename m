@@ -1,259 +1,128 @@
-Return-Path: <linux-kernel+bounces-42804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42794-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 428FE8406F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:30:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E0748406DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:28:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 688DA1C2513C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:30:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C7EC287F4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:28:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15FCD64CDF;
-	Mon, 29 Jan 2024 13:28:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 498CE6312A;
+	Mon, 29 Jan 2024 13:27:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="bNZfwVoq"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GA9qMj1z"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70B3B664B8;
-	Mon, 29 Jan 2024 13:28:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E44B463105
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 13:27:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706534913; cv=none; b=H0KckyKK87f0ZORAkp95BjqFe1dfBssrRRiQZ+IKUaedvtrdrTY664QcYq8gZoG5QoVZD9p6bSHfVLcktH3K4oaQeZYI2ODBmmofn5BZAXr0Eak7XfxRUyRVho7aSebBbjo7D8ofWpxgcmtB+MEoszLTmpZMjS0TQOJsvm0FX3g=
+	t=1706534875; cv=none; b=gIufcBqyzyf/4xkB9Fx4R6eeX3+ePDKdSfB5d9Drk5GeWKWEK1/cmarHwLtqjAXv9wx4RmBWfQvO4JRP4AgiqQcoqwbh32MwZDsEGnrkUEwBOkYzERxFYXy8A7PAYm+Ynd0hq9mIx2y/Sm5z9M2cvsI1TGmWaSwFYGWUbyIWKZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706534913; c=relaxed/simple;
-	bh=cHGpYx7pLrXkI4kU27psyajXtKlh66ypKBcO2m7U5so=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rMH0BJexOD1yW5k9N+RUakeZmeX/qW4UBRRDgL30UBaIrtKKDxrM7zXY8+egzQzY4gwm6g+X/EvswaN1RTmCczxuFpLahpQFFQ1kp8fGJ2l321v4v2/90VV3rDJZnBjPywsXEFfUf8CTN8/E3lCpVYEyV/neuEuGmPffiBU/2cE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=bNZfwVoq; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40TDSMrp099437;
-	Mon, 29 Jan 2024 07:28:22 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706534902;
-	bh=pxRAtQYXyM4cN8XqY5QkA82gb4WIzyA0aGBOWzc4m8k=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=bNZfwVoqLurp4h1y5+7zwLDl90vURgn3RLVQsrcZgEz6Pnzc5aqV3NOkw4boZvqhK
-	 fIaikHStk/ZdXRbqKSXF+u0a7qZUOryPSqfXUM8DxW5ZlkREadxYdaBYvZ3RUjbjy8
-	 D1YZqIlOLgES7JVpXV6UBQdzmDTx+A6XG+QmInEQ=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40TDSM9p093614
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 29 Jan 2024 07:28:22 -0600
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 29
- Jan 2024 07:28:22 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 29 Jan 2024 07:28:22 -0600
-Received: from uda0490681.dhcp.ti.com ([10.24.69.142])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40TDRg9J036720;
-	Mon, 29 Jan 2024 07:28:18 -0600
-From: Vaishnav Achath <vaishnav.a@ti.com>
-To: <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC: <kernel@pengutronix.de>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <vaishnav.a@ti.com>, <u-kumar1@ti.com>, <j-choudhary@ti.com>,
-        <j-luthra@ti.com>
-Subject: [PATCH 9/9] arm64: dts: ti: k3-am69-sk: Add overlay for IMX219
-Date: Mon, 29 Jan 2024 18:57:42 +0530
-Message-ID: <20240129132742.1189783-10-vaishnav.a@ti.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240129132742.1189783-1-vaishnav.a@ti.com>
-References: <20240129132742.1189783-1-vaishnav.a@ti.com>
+	s=arc-20240116; t=1706534875; c=relaxed/simple;
+	bh=X3kl8N2vafBkloeoPe9c+Hpl2cjCFdlalloXzGtwppE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=X0awJ2J4f6KyH5KK+Yi3SeKz0zbUDXNFYnsSFgjDgPCUQeSFJw7YfR1w63EU9T7BvYvzP520NMEeMjo5L/2XaUnF4VqEFf3Hib8XOQuQ6QD9zQXS3NfMYNI2mAoxHarxenjr4Cf1qHyZCjNAtb9CdCPlKhRpdUpT1DlkIIZlOac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GA9qMj1z; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-55790581457so2961104a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 05:27:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706534872; x=1707139672; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SvkwZXsYxPu3g0WrMtrLcpdJEvY5sTv7TKTF9i+RZnU=;
+        b=GA9qMj1zKWFD+F6GmflzE6D61yGfApthHosbY2qFGas3qKTSgKMqZlynD6IVkT6Chx
+         MlpnJtkQ080v31cdxGiqym285B0XwLwdGUjs46Dob2NYV5zJD+13eBGwoSL7+kyhordM
+         gXMvRHs2aDoIy+jButX9PvXbyKWyB35YANFg2bcvmmgHnQkKpi6liNurl6LRqEUj+jdT
+         pkMTmSDDbZgpsvmlMEA7TAbXUWpLYFxzQIKMvlWOuD2Lf7U2XfKJvkp/go74PfftQnDT
+         ZI65u/923k7v443tw12R7p/boODWMQ1rzSrei8kXsa+IC7cTQdPvYw7yrkQn69Sn7+zm
+         V3cQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706534872; x=1707139672;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SvkwZXsYxPu3g0WrMtrLcpdJEvY5sTv7TKTF9i+RZnU=;
+        b=GOS8zJL7AGBUS5ZXIbrChG23UOD2ZNQftmIdl4tuCns6tzR9xLsFsnlCrUgj/DgXRC
+         6wZMAvbN7h4jGClhdqVQHyYRYYSi6nni3cYqbvO/u7KdTf5lpaXMuru88hgO8VwNv/Vj
+         wEW3eAPXoZ6nV2Lw4fzNt2g1u8nTn10FHTngfpOYfN7jxqmf63si6WoFGs7WQ3QSqjiH
+         vIqIUsoE+9SUChSFQ8lJ7rvX5c3jYOywt/5HYKn2uVvbCejcU6sJWphGnsUDFOSVD5fo
+         grkAWZU3Li+v8NpmjL5j9Wx1kkyQiM7ZBehQ8CD70ROqBUBcqR9WTo6fJpybfFOab+BX
+         g4Gg==
+X-Gm-Message-State: AOJu0YxT7T07PkCvq0qoKboyROS64t3WUJx0Grk2l8b2+hQCIucMxkLN
+	YFbWWwwygQD6XCm8VgGNE4I06n2szaGK5PLVUc83xyAwskGSZQobY7RUtxl3IUE=
+X-Google-Smtp-Source: AGHT+IFnx1q5hL4nHDdmXKFiDszwxY6FzyveSXwDW9rfgUz0h6+gSYZlzeffKj30ObxZrGj6146rIg==
+X-Received: by 2002:a05:6402:1285:b0:55e:f71c:c47d with SMTP id w5-20020a056402128500b0055ef71cc47dmr1944387edv.25.1706534872147;
+        Mon, 29 Jan 2024 05:27:52 -0800 (PST)
+Received: from [192.168.2.107] ([79.115.63.202])
+        by smtp.gmail.com with ESMTPSA id es19-20020a056402381300b0055cffd3fd32sm3773362edb.68.2024.01.29.05.27.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jan 2024 05:27:51 -0800 (PST)
+Message-ID: <99babcb3-770d-487c-a297-beea2f6f8e9e@linaro.org>
+Date: Mon, 29 Jan 2024 13:27:50 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/4] mtd: spi-nor: drop superfluous debug prints
+Content-Language: en-US
+To: Pratyush Yadav <pratyush@kernel.org>
+Cc: michael@walle.cc, miquel.raynal@bootlin.com, richard@nod.at,
+ jaimeliao@mxic.com.tw, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20231215082138.16063-1-tudor.ambarus@linaro.org>
+ <20231215082138.16063-5-tudor.ambarus@linaro.org>
+ <120bf090-0c07-4971-a18a-a1b326f1b139@linaro.org>
+ <mafs0v87cs238.fsf@kernel.org>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <mafs0v87cs238.fsf@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-RPi v2 Camera (IMX219) is an 8MP camera that can be used with SK-AM69
-through the 22-pin CSI-RX connector.
 
-Same overlay can be used across AM68 SK, TDA4VM SK boards that have a
-15/22-pin FFC connector. Also enable build testing and symbols for
-all the three platforms.
 
-Signed-off-by: Vaishnav Achath <vaishnav.a@ti.com>
----
- arch/arm64/boot/dts/ti/Makefile               |   6 +
- .../boot/dts/ti/k3-am69-sk-csi2-imx219.dtso   | 124 ++++++++++++++++++
- 2 files changed, 130 insertions(+)
- create mode 100644 arch/arm64/boot/dts/ti/k3-am69-sk-csi2-imx219.dtso
+On 1/29/24 13:26, Pratyush Yadav wrote:
+> On Fri, Dec 15 2023, Tudor Ambarus wrote:
+> 
+>> I missed to drop some unused variables. Will drop them if everything
+>> else is fine.
+>>
+>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+>> index a708c3448809..92c992eb73d5 100644
+>> --- a/drivers/mtd/spi-nor/core.c
+>> +++ b/drivers/mtd/spi-nor/core.c
+>> @@ -3492,9 +3492,7 @@ int spi_nor_scan(struct spi_nor *nor, const char
+>> *name,
+>>  {
+>>         const struct flash_info *info;
+>>         struct device *dev = nor->dev;
+>> -       struct mtd_info *mtd = &nor->mtd;
+>>         int ret;
+>> -       int i;
+>>
+>>         ret = spi_nor_check(nor);
+>>         if (ret)
+> 
+> 
+> With these, 
+> 
+> Reviewed-by: Pratyush Yadav <pratyush@kernel.org>
+> 
+Hi, Pratyush,
 
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index 52c1dc910308..9fc8d68f7d26 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -80,6 +80,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-j721s2-evm-pcie1-ep.dtbo
- 
- # Boards with J784s4 SoC
- dtb-$(CONFIG_ARCH_K3) += k3-am69-sk.dtb
-+dtb-$(CONFIG_ARCH_K3) += k3-am69-sk-csi2-imx219.dtbo
- dtb-$(CONFIG_ARCH_K3) += k3-j784s4-evm.dtb
- 
- # Build time test only, enabled by CONFIG_OF_ALL_DTBS
-@@ -105,6 +106,8 @@ k3-am642-tqma64xxl-mbax4xxl-sdcard-dtbs := \
- 	k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-sdcard.dtbo
- k3-am642-tqma64xxl-mbax4xxl-wlan-dtbs := \
- 	k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-wlan.dtbo
-+k3-am69-sk-csi2-imx219-dtbs := k3-am69-sk.dtb \
-+	k3-am69-sk-csi2-imx219.dtbo
- k3-j721e-evm-pcie0-ep-dtbs := k3-j721e-common-proc-board.dtb \
- 	k3-j721e-evm-pcie0-ep.dtbo
- k3-j721s2-evm-pcie1-ep-dtbs := k3-j721s2-common-proc-board.dtb \
-@@ -130,5 +133,8 @@ DTC_FLAGS_k3-am62-lp-sk += -@
- DTC_FLAGS_k3-am62a7-sk += -@
- DTC_FLAGS_k3-am642-tqma64xxl-mbax4xxl += -@
- DTC_FLAGS_k3-am6548-iot2050-advanced-m2 += -@
-+DTC_FLAGS_k3-am68-sk-base-board += -@
-+DTC_FLAGS_k3-am69-sk += -@
- DTC_FLAGS_k3-j721e-common-proc-board += -@
- DTC_FLAGS_k3-j721s2-common-proc-board += -@
-+DTC_FLAGS_k3-j721e-sk += -@
-diff --git a/arch/arm64/boot/dts/ti/k3-am69-sk-csi2-imx219.dtso b/arch/arm64/boot/dts/ti/k3-am69-sk-csi2-imx219.dtso
-new file mode 100644
-index 000000000000..4cd1d8d5004a
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am69-sk-csi2-imx219.dtso
-@@ -0,0 +1,124 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/**
-+ * DT Overlay for RPi Camera V2.1 (Sony IMX219) interfaced with CSI2 on AM68-SK board.
-+ * https://datasheets.raspberrypi.org/camera/camera-v2-schematic.pdf
-+ *
-+ * Copyright (C) 2023 Texas Instruments Incorporated - https://www.ti.com/
-+ */
-+
-+/dts-v1/;
-+/plugin/;
-+
-+#include <dt-bindings/gpio/gpio.h>
-+#include "k3-pinctrl.h"
-+
-+&{/} {
-+	clk_imx219_fixed: imx219-xclk {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <24000000>;
-+	};
-+};
-+
-+&csi_mux {
-+	idle-state = <1>;
-+};
-+
-+/* CAM0 I2C */
-+&cam0_i2c {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	imx219_0: imx219_0@10 {
-+		compatible = "sony,imx219";
-+		reg = <0x10>;
-+
-+		clocks = <&clk_imx219_fixed>;
-+		clock-names = "xclk";
-+
-+		port {
-+			csi2_cam0: endpoint {
-+				remote-endpoint = <&csi2rx0_in_sensor>;
-+				link-frequencies = /bits/ 64 <456000000>;
-+				clock-lanes = <0>;
-+				data-lanes = <1 2>;
-+			};
-+		};
-+	};
-+};
-+
-+/* CAM1 I2C */
-+&cam1_i2c {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	imx219_1: imx219_1@10 {
-+		compatible = "sony,imx219";
-+		reg = <0x10>;
-+
-+		clocks = <&clk_imx219_fixed>;
-+		clock-names = "xclk";
-+
-+		port {
-+			csi2_cam1: endpoint {
-+				remote-endpoint = <&csi2rx1_in_sensor>;
-+				link-frequencies = /bits/ 64 <456000000>;
-+				clock-lanes = <0>;
-+				data-lanes = <1 2>;
-+			};
-+		};
-+	};
-+};
-+
-+
-+&cdns_csi2rx0 {
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		csi0_port0: port@0 {
-+			reg = <0>;
-+			status = "okay";
-+
-+			csi2rx0_in_sensor: endpoint {
-+				remote-endpoint = <&csi2_cam0>;
-+				bus-type = <4>; /* CSI2 DPHY. */
-+				clock-lanes = <0>;
-+				data-lanes = <1 2>;
-+			};
-+		};
-+	};
-+};
-+
-+&dphy0 {
-+	status = "okay";
-+};
-+
-+&ti_csi2rx0 {
-+	status = "okay";
-+};
-+
-+&cdns_csi2rx1 {
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		csi1_port0: port@0 {
-+			reg = <0>;
-+			status = "okay";
-+
-+			csi2rx1_in_sensor: endpoint {
-+				remote-endpoint = <&csi2_cam1>;
-+				bus-type = <4>; /* CSI2 DPHY. */
-+				clock-lanes = <0>;
-+				data-lanes = <1 2>;
-+			};
-+		};
-+	};
-+};
-+
-+&dphy1 {
-+	status = "okay";
-+};
-+
-+&ti_csi2rx1 {
-+	status = "okay";
-+};
-\ No newline at end of file
--- 
-2.34.1
+All in these series were already applied, as I specified in a reply.
+Please check patchwork for patches that are not yet handled.
 
+Cheers,
+ta
 
