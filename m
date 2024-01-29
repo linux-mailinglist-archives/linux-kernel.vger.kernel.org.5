@@ -1,201 +1,134 @@
-Return-Path: <linux-kernel+bounces-42773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6766E840686
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3FE0840687
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:17:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EE80287CDE
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7EF9A287D2B
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:17:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93A8E63410;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAEA163414;
 	Mon, 29 Jan 2024 13:17:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="MnhAVwCi"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2046.outbound.protection.outlook.com [40.107.93.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PgaFvKX3"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2130F5BAD2;
-	Mon, 29 Jan 2024 13:17:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.46
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706534255; cv=fail; b=lRjZRmgoKNK868vcVfhmiKu6GSUtFujMzvcvd94pexuyPpRS1LmcXE04RsGsXr9S8VBU1P6UwNMHsWtjMn9cjHEIEl2fo3Nux7Xsp88H8Fx9TX7yq9Xt3crLmkqURuRvTPftWs4O/WKl668Ffa3fmyInpGiPMIShnrJnY5Uz81o=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706534255; c=relaxed/simple;
-	bh=0gtN9VALRvJvx/I9xj4xdl6kKVCfOD87CA4doYg7Nm0=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=R2BV5Ir2+h6a8oBTmpZs7z41Qc/ixuC48e3g6fUUJHV98MSqWxbI68bDOom9d/EnmF43PFmHj4CeVJ+NSoESTICNsIxQeQKOkGc/1gnsDFs45GlOcVjSfg8ISjSzNErYCw4T1L/OrPeM5q9+oVI6Ez+vPgCs3adah7ZMjV1SVEY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=MnhAVwCi; arc=fail smtp.client-ip=40.107.93.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PZ0zFnLD9jxYRW3nnRlAOj5mYFiHPOTW3MvPyV3FVJvzyXcSPGbzualEw74HcIztYUmkTESekwAvm6qlEIgd/5vWQXwnZYChATnaGWgUJaAIwrGfnZlTy6EFSWyJQgjhLNYNmy7VIKaQ/4ADpzMXvbbfGHgkUTOqkNG0q+4uoOLtDy7Wuy5RhFkwg4rHqbudkIK0V9IoP0fE8JZ+QO1kUbYGXv7n4s1MgqDspRUkg5o25EsE77QX+YW7K2xw1pqgg8RYgbKrKbDF8rzHQdB5vowNy1B6SZST8TzwgK/VqMyEDbRy1S0Tr3BLGg1YE0JaJ2nmBobhJj1LMlUE6sS50g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TziM/MC4a+7rQVfajuIG3rpuBRK6MBZi4HF8k3308O8=;
- b=Dpt6U1mGGy2sfgw2r9JrdWo9c2APj+XNct7Xizq8bX9TWulVyrxZ86XiF0JVY2uU/f2UALctmZAGT9oCk2evUzKdTxdak5Ns6QZsG16Q4NdwVJw/nJayD5apnKVHhgBNXPM1WdELgiljnbXH8wCM+bV5ond+piqYQSZVtBzQpDZu4BDJlg1k5K6RItvzj+RwgX1Ftv1EZSJC1tcQeBgoq5QaSsYjP46pUoS+fWprTpZ0hFNUqmPfWtqYJOCUAGG9beFzZ+r3eQ2viRyf9TayxJqg0RGmypxVR3SVAm0zNAvnMw/5yytBpCstNgABrBOwRWArnqsJd3dO8+xRwjJXOg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TziM/MC4a+7rQVfajuIG3rpuBRK6MBZi4HF8k3308O8=;
- b=MnhAVwCiZpTZ9qD28NLHTwxl5Wd9RXx2HonTwAZWkrtRG6Yze7hvGKwANUUWJhBfoYKhO0UCtG0tYlGStSEoDcxInpI8y4cMBVoLIOm2mbcb5jenmZwYB/wrGif2w8/OtxyrsxvD64RyVcBBQaVlOogTcftwxCy4jlcKK4LyR1g=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by BL0PR12MB4929.namprd12.prod.outlook.com (2603:10b6:208:1c4::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.34; Mon, 29 Jan
- 2024 13:17:30 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::e1fb:4123:48b1:653]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::e1fb:4123:48b1:653%4]) with mapi id 15.20.7228.029; Mon, 29 Jan 2024
- 13:17:30 +0000
-Message-ID: <8fc55451-dfd7-4d09-8051-8b39048f85e2@amd.com>
-Date: Mon, 29 Jan 2024 14:17:22 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 5/8] iio: core: Add new DMABUF interface infrastructure
-Content-Language: en-US
-To: Paul Cercueil <paul@crapouillou.net>, Jonathan Cameron <jic23@kernel.org>
-Cc: Lars-Peter Clausen <lars@metafoo.de>,
- Sumit Semwal <sumit.semwal@linaro.org>, Vinod Koul <vkoul@kernel.org>,
- Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
- =?UTF-8?Q?Nuno_S=C3=A1?= <noname.nuno@gmail.com>,
- Michael Hennerich <Michael.Hennerich@analog.com>
-References: <20231219175009.65482-1-paul@crapouillou.net>
- <20231219175009.65482-6-paul@crapouillou.net>
- <20231221120624.7bcdc302@jic23-huawei>
- <ee5d7bb2fb3e74e8fc621d745b23d1858e1f0c3c.camel@crapouillou.net>
- <20240127165044.22f1b329@jic23-huawei>
- <d6bef39c-f940-4097-8ca3-0cf4ef89a743@amd.com>
- <aac82ce15a49c5e4b939a69229b9a8a51ca00f5d.camel@crapouillou.net>
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <aac82ce15a49c5e4b939a69229b9a8a51ca00f5d.camel@crapouillou.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR0P281CA0181.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:ab::8) To PH7PR12MB5685.namprd12.prod.outlook.com
- (2603:10b6:510:13c::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 552596280D;
+	Mon, 29 Jan 2024 13:17:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706534256; cv=none; b=ePpd1QAP8dVSvNXfYn6P944lwPML3OpwxWilYEg9J96NP5lpy7EjjKQashNSLX6m/3FPhC1fjcDuqDfa++FzMgnm/o2m0yyXdtmYB4TzV5C26j0CyIobKIysxxQu7j6aAw3X+HFlyU7Baa5VKGJ6oQSiMvV9fUZgcqnP+/zQAaA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706534256; c=relaxed/simple;
+	bh=6QTPt33T5rQKL/6Gt/bIWU0jYiWt8sqi5iCPonlXgec=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=tqFDqnfr9HxRWFQMsSbvwcr5F3X0BcdoGWs8DrW386y+rVOMxg/A8bXiwaYJ38jbf2hm/6m7XypAKegYrW78mX9YaCAwAhjOVwydhu8xdRA3wQK0FmhODYB3eJze0M24Px1+W85Ln9w3OncdoIN8IMCd+KIchf1gUxg2V4SHlHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PgaFvKX3; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a349ed467d9so286164666b.1;
+        Mon, 29 Jan 2024 05:17:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706534252; x=1707139052; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tMwNqcZZgOVXT/J1FjC+xI4RABs1qjk7vHn8GPhDdCA=;
+        b=PgaFvKX3hLtNIRwS3CD1g+ugBX57+JA3YHbRQ9n6tneYEWhJ3uoU6T4hzxhG/qtp0h
+         Ct64xKsJrffFcJyMxcDuXe++aYwxmYeZkwg6bm+9OmXBR8jwM3everq/e2LnCx13r87m
+         Z6mxBBBtWWl7Gs+a12ilJ9M522NinOaDo5i2FfgjW0/ZNB6yj6UWy/RaA/42By1tmrKB
+         F9oHvCyLYwUO5usWCD2kaWYsd3GQXOmUpsHnKwy7ZMa2bPIFiewRCQ/3/2AAbZnhDFv4
+         HsvTK1GiyGaw7ZnhvYHmpt7GfEVNdDgSKCgJcmmKVrXmSRAGE+VM33DjyLnMcO5XHwFy
+         uoMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706534252; x=1707139052;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tMwNqcZZgOVXT/J1FjC+xI4RABs1qjk7vHn8GPhDdCA=;
+        b=RRYpqnIjGEtw2KISnxaoPCV2y34gE+oGG+jNHDGieuIfMbq3iMq3v5AlOSDlTJ6i12
+         hh64Eh/lmXBFlFDrp8T8dTyNbMnjgqj3Lbtp/mn7zEqfq4EvgzdCSQfxLI6gJQ6gC4gk
+         +j8iNPbcwNihVAWeIydVeca8Ee3ntZj9+BMEjWlQeDKC3dcq+mHZAn+RubNKIaIDvrnO
+         eYLc5Q5Sf2fzKdGUFQQCZxPywabZug6NS6+K1g1IW7WsKIYzIl1XRacx2/4LR3Una13r
+         LmyMo5uXoQEJVLOZ8r8IkSgvK06SWAKkgkOEFeucpDrKalTelsub5DGW1ZAEyORxdDJS
+         zQVw==
+X-Gm-Message-State: AOJu0Yw4SnnPm32ru6DB+TRfh5Exje0re0294+BGmHdF+USzCAQysQqI
+	qMCU8H8tyLuvK6cDMqlyEB13g0vI4f5/9yEeczlZzJLFiX0KNDOB
+X-Google-Smtp-Source: AGHT+IF56lsLVSwWT0MpkDQTXGgYqHeVKKkqZNQrGyXnP0BOY5XivLNVLZnraDMCsPBFwK/blGmZfg==
+X-Received: by 2002:a17:906:2e94:b0:a35:fdf9:e6fc with SMTP id o20-20020a1709062e9400b00a35fdf9e6fcmr55005eji.18.1706534252237;
+        Mon, 29 Jan 2024 05:17:32 -0800 (PST)
+Received: from felia.fritz.box ([2a02:810d:7e40:14b0:fddc:9ce:9e0f:3ad3])
+        by smtp.gmail.com with ESMTPSA id q15-20020a17090622cf00b00a359afad88dsm1590449eja.10.2024.01.29.05.17.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 05:17:31 -0800 (PST)
+From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To: Danny Tsen <dtsen@linux.ibm.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	linux-crypto@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] MAINTAINERS: adjust file entries after crypto vmx file movement
+Date: Mon, 29 Jan 2024 14:17:29 +0100
+Message-Id: <20240129131729.4311-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|BL0PR12MB4929:EE_
-X-MS-Office365-Filtering-Correlation-Id: 65f51ebd-7e7e-44bf-b98a-08dc20cca552
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	jthF+GGY5TWMfceu2Yvm06OP/1R7d0ggj8QmOeQta+12IqHw0inAHicHIn5Mbh2BMk9Ug8gaxc392uQJ7Si7oFyGM79R0cur4sWf1/i1/1QQEFUbR12NwfkL/f8OS50Mvlf68yJkFslgM/YVRcVWknH8EYTzjjqJdTRYyRJivYVtMydFQdAu2FXfY3IbyuI7QmMA2iS2D/OGUiIA3hE2DSdsuA9igHdnmeu+O4qtxb9z1wyjRI73MEt5sOm1FHC29+oHf3GwNPOIKE/oqS4YMRqHzIb0Cgj8QTvnB9odNjQt3gO1OqJ4HHUgyCpexI5UsQ2T0Zo4e2JFOdSj2loCzJHHZcz2p/CtJBJprHVywEmmKtYCSGIuTXnBji3npizxoc0qJc0dM3CXZ9Vh1Xr+G5mYCSGr9VdibeMMkaUBswPT8Otabj20AOpQqLu31oMUtu3VK6OzeLMjwWOnU4Ee4zbfwm2/0SDBJmdHlFac5tHe1IlVmDHzy90Bhq4qXnhnrPp6//el7KhroYyrLcddyeCJUsayVt9YAgFIjHWhPLJyT2FycsDOFp+/zffDJqEl8+HueD5V3N+zCVV5SIA7m4gnGm2Sv0rguX/+dRUMM+WCpHCf4JkDQ3fxvVrc/LUW/D08p1qZ+Y3l4zfnJSTu2g==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(376002)(366004)(39850400004)(346002)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(86362001)(31696002)(36756003)(38100700002)(6486002)(478600001)(41300700001)(8676002)(8936002)(4326008)(66946007)(26005)(66556008)(316002)(66476007)(54906003)(110136005)(2616005)(2906002)(7416002)(66574015)(6666004)(6512007)(5660300002)(6506007)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?UUZUVFdOcjk1QzJlYmZFV2NlNkplbURLNHliTVFKa25teEROTi9BSUhpSG9Q?=
- =?utf-8?B?WkZRRU1tWDJ3NVYra1ZBaC8vcjk5azZFV3h4UFVXQVFCTGhROFdGQlYyc0Nt?=
- =?utf-8?B?MlJtMGVXTHozaVlweGZmN2gvcTlyejRqUGtuWHI1NTkrYURxenk1Z29HOUtI?=
- =?utf-8?B?ZzcvTmtXWnNQTWdxc1ZycWNlcFJvK2pxc3V4cjlZQWsxUXFvZ0wrSXNEazRX?=
- =?utf-8?B?QjQ0cGRWRmg3ZGdSNzBPU2ZKWkloSUk1cG1iaXdXZlNJSUtkekpZUzgxM1BS?=
- =?utf-8?B?UEJ3MlcwQlpDYXltWWoxK3BtWEE2eXNrNnU2ZzBkTXBXNDZwbGExNU1oMUdi?=
- =?utf-8?B?anJYVFFkaU9VWWpIVFNiUVZXK25ydEdrSjlmOVN0ZWluL0E3NFdxZXI3eHNq?=
- =?utf-8?B?U2E0VDJVbDRBRnF3akxhS3p0WjFJVWdwU0N2bFh3WjIxNWFEbEJnenliUGFX?=
- =?utf-8?B?d1c3T3dXN1BWengyNnpwbXdYaUtDdWhCTDFTNkZSNkVBSEsyRmJtR3d1RUsw?=
- =?utf-8?B?cmF6eGJvTmZHL1pGZ1FwL1FVd1hpRkhQVE1MeVdlM3pnMkI2bmorNlgwelZK?=
- =?utf-8?B?cmJXRW5KS3lEMlladEVnZHkreDNzNzkxTjEraW96cHg0RUtrRG1yVDI4Qlda?=
- =?utf-8?B?QWw0bExwdm5xZENJTnhjRlRQUDU3NXVhOUhYT3kyNnk0UlRnNWpHWTJFbDF1?=
- =?utf-8?B?RlozalpZVzlITU5pblFUQXRCNlI2dTZMU2E5QmczWlBRSS9XUFEzYnFIVW1L?=
- =?utf-8?B?OHRaek5OMitKTjV5RCs0SkxTS2N5aVNSSXQydXljZFJnM2hnamQ5U2RnMW14?=
- =?utf-8?B?QjVrWnc3ekZXUVJJVFlkdnp3U1QrdERodm1DOGdEbk9RTFFZeWpRenlCU2Zo?=
- =?utf-8?B?UENlL2JWbWhnOEwvanpLQmd6YUxLbWZqcmNJRXRYMzE2U0pEeCtFMzh3WnBw?=
- =?utf-8?B?Vkd5dmxsbGtzM2VQWWNCekIzdnVsczgyMzRacWpsMkxPNDhRazdDc0g3ZCtC?=
- =?utf-8?B?NTVGY0RuR2MyNGdhWjQvSFhFSGFBZ05DeGpBUEljYXlScE5SM0ROeHNZbHZS?=
- =?utf-8?B?NFUzVnoxS0NzSmFweEw1NGtzd0d5MGUwQmxjTVZVSk82azMyekd3eXZXTDRP?=
- =?utf-8?B?OHBaNkRoZWhMOW5VQzBzQkszcEt6a1JDRGYvTlBMR2YwN21FVGcvd0RjNmh6?=
- =?utf-8?B?b0J5dXpYbU9CMkdua2paUWhUSzhsNzYwVGg2UlZVSDdud0t6eWkvSUhzNjVq?=
- =?utf-8?B?S3MyaVBWNTVHSVQrQzU4YXRPczhBOEZLOW0zNmF6RmpIczFpNUpONWdCR1RI?=
- =?utf-8?B?RkFZOXVOUmIySWFWT2hYcFJJSWFlVng2bFVmVWJTZXY3WklUcnJ0eVM0RUtp?=
- =?utf-8?B?UTJUZEdkVjFiQW1EeUlSMElsTW84NTk0Zk1yNml0SXZaZHU0UE5sSE9qRkR2?=
- =?utf-8?B?N05MWk12MDhMMFhwS0JmWWcvMkRUOGdVeW1kU3ZNc1F0WU44Sk16ZzlDaS95?=
- =?utf-8?B?b0FmanNvUTBZdHE4ZHRkWjVsUVBXUXgwdGd5NE1yWkI2dmEzelc1eVVnS3NM?=
- =?utf-8?B?RVBYeVF5MDAvU2hTd0RFVWRsK1p3OFJRczdISEZRQ3NXWjRuVWR3Q1ZIeXd5?=
- =?utf-8?B?cnBMMEF5VHdGcnVRNWpjUTF5eVVEdHVVVnJXWmphZHMrckowOEd6N0JSdDUv?=
- =?utf-8?B?VFZoOGo5KzNpeFVkaDVRWlh5TmMyRytrNzA2WTB1Z1Bna2JzNGNQK0Z1c283?=
- =?utf-8?B?SEZ5eU5YaWM2bzhzTnZySkQrYmhTUXRHTk0wUkxMWHYveCtrUEVON0RlUHhy?=
- =?utf-8?B?ZVRzNFFTRnFYWjVOYThrTEdNZHlCMjYrcC8wMWNiNW5nVkVMeVFRc3ROYnVN?=
- =?utf-8?B?VzQwQkp2b1pJTXQ5S1pKT3hlZkZjWEpOZWFaVG5GVkU3d2lIS0k2TzhoTndO?=
- =?utf-8?B?UDduQUE1amszYzlUVXdqMDNsdmcrcW01d3NEZStsZnA5ZTlvL0hxelpEdkll?=
- =?utf-8?B?U0Zqb2VXZ2p3eEhYbjJ3OHdZengrL3huQlhTM1NZa3lxdXFGRkhjcDdFUGJO?=
- =?utf-8?B?NFlxR2F2WWY2Y3B6SFJISjI1S3hpRDJxWFhmNU80WmJidjhmcVRpSUcza0VT?=
- =?utf-8?Q?UrDJfYroSoIvRCEnnHNp7jHOS?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 65f51ebd-7e7e-44bf-b98a-08dc20cca552
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2024 13:17:29.9931
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: s9ERICCRppoDrgUG8pZry0OgcfxpOQjLkvHmWUtTQQcUdVLBZ2mgT8S6HvR1TdLF
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4929
 
-Am 29.01.24 um 14:06 schrieb Paul Cercueil:
-> Hi Christian,
->
-> Le lundi 29 janvier 2024 à 13:52 +0100, Christian König a écrit :
->> Am 27.01.24 um 17:50 schrieb Jonathan Cameron:
->>>>>> +	iio_buffer_dmabuf_put(attach);
->>>>>> +
->>>>>> +out_dmabuf_put:
->>>>>> +	dma_buf_put(dmabuf);
->>>>> As below. Feels like a __free(dma_buf_put) bit of magic would
->>>>> be a
->>>>> nice to have.
->>>> I'm working on the patches right now, just one quick question.
->>>>
->>>> Having a __free(dma_buf_put) requires that dma_buf_put is first
->>>> "registered" as a freeing function using DEFINE_FREE() in
->>>> <linux/dma-
->>>> buf.h>, which has not been done yet.
->>>>
->>>> That would mean carrying a dma-buf specific patch in your tree,
->>>> are you
->>>> OK with that?
->>> Needs an ACK from appropriate maintainer, but otherwise I'm fine
->>> doing
->>> so.  Alternative is to circle back to this later after this code is
->>> upstream.
->> Separate patches for that please, the autocleanup feature is so new
->> that
->> I'm not 100% convinced that everything works out smoothly from the
->> start.
-> Separate patches is a given, did you mean outside this patchset?
-> Because I can send a separate patchset that introduces scope-based
-> management for dma_fence and dma_buf, but then it won't have users.
+Commit 109303336a0c ("crypto: vmx - Move to arch/powerpc/crypto") moves the
+crypto vmx files to arch/powerpc, but misses to adjust the file entries for
+IBM Power VMX Cryptographic instructions and LINUX FOR POWERPC.
 
-Outside of the patchset, this is essentially brand new stuff.
+Hence, ./scripts/get_maintainer.pl --self-test=patterns complains about
+broken references.
 
-IIRC we have quite a number of dma_fence selftests and sw_sync which is 
-basically code inside the drivers/dma-buf directory only there for 
-testing DMA-buf functionality.
+Adjust these file entries accordingly.
 
-Convert those over as well and I'm more than happy to upstream this change.
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+Danny, please ack.
+Herbert, please pick this minor clean-up patch on your -next tree.
 
-Thanks,
-Christian.
+ MAINTAINERS | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
->
-> Cheers,
-> -Paul
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 2fb944964be5..15bc79e80e28 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10307,12 +10307,12 @@ M:	Nayna Jain <nayna@linux.ibm.com>
+ M:	Paulo Flabiano Smorigo <pfsmorigo@gmail.com>
+ L:	linux-crypto@vger.kernel.org
+ S:	Supported
+-F:	drivers/crypto/vmx/Kconfig
+-F:	drivers/crypto/vmx/Makefile
+-F:	drivers/crypto/vmx/aes*
+-F:	drivers/crypto/vmx/ghash*
+-F:	drivers/crypto/vmx/ppc-xlate.pl
+-F:	drivers/crypto/vmx/vmx.c
++F:	arch/powerpc/crypto/Kconfig
++F:	arch/powerpc/crypto/Makefile
++F:	arch/powerpc/crypto/aes*
++F:	arch/powerpc/crypto/ghash*
++F:	arch/powerpc/crypto/ppc-xlate.pl
++F:	arch/powerpc/crypto/vmx.c
+ 
+ IBM ServeRAID RAID DRIVER
+ S:	Orphan
+@@ -12397,7 +12397,6 @@ F:	drivers/*/*/*pasemi*
+ F:	drivers/*/*pasemi*
+ F:	drivers/char/tpm/tpm_ibmvtpm*
+ F:	drivers/crypto/nx/
+-F:	drivers/crypto/vmx/
+ F:	drivers/i2c/busses/i2c-opal.c
+ F:	drivers/net/ethernet/ibm/ibmveth.*
+ F:	drivers/net/ethernet/ibm/ibmvnic.*
+-- 
+2.17.1
 
 
