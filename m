@@ -1,323 +1,179 @@
-Return-Path: <linux-kernel+bounces-42764-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42765-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A669384065D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:12:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E87DA840664
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:12:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 124FB1F21AD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:12:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EC24283AB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:12:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18ED6629F0;
-	Mon, 29 Jan 2024 13:11:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89E2462A02;
+	Mon, 29 Jan 2024 13:12:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OKjxsM/J"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YC4DUsm8"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1387B62804;
-	Mon, 29 Jan 2024 13:11:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F8BB6340E;
+	Mon, 29 Jan 2024 13:12:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706533913; cv=none; b=EuJiyc38NpkKirk+xyJXookKgkCgiZFBYC19LF3Xu4dN0GnXuG9NhSc/xcQOjqDSAakXhXJ6cpNGMjCpPXubQ0ESlqrwM6PVGw4E5ZF68W4QOoJ36TSRIjA3gh9DHkQKSTm2c2u49LOc4oxHaxjG+a6Z9f6EW4SkQzBBiNbi1fY=
+	t=1706533931; cv=none; b=SyltPVSF4DcuSm+t7jz4EoEwVka+xgihZnzYLVACpn8g9SWHWt1qa1aarNk+2evK1XLExZsfPEQBYnrg+h5+ePNetxYNmVMSNla/EqRo3nYhfHh04V92YTHRsdnIZfa9REwiYSdJ8ZPhkUHIVivx/Q6cuTQosS/dAojg98CrwWQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706533913; c=relaxed/simple;
-	bh=ZnTukG0ry6mY3S68K6+Bb7CU4b4XhqHBZ2rqk7MM7uk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=S+Vagg3FUNofxWUB9mSjAk9H8z7AfDulr3kEvMbi3R6uVY1UNxfSDiMfDZvY2YmVrdVQDXnV/Fbmrp40BxtLnZJ0OHHP1FZxjYw7r1yLMGmoMWMXTX4ivd+77ci6n2MbYO8lBZS4oKpCo+bnIkJ2/6N6S67trcddt4jxAW3YTvQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OKjxsM/J; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A99BEC43399;
-	Mon, 29 Jan 2024 13:11:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706533912;
-	bh=ZnTukG0ry6mY3S68K6+Bb7CU4b4XhqHBZ2rqk7MM7uk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=OKjxsM/JqzCOSUwLADpWgrNEZS88Om80y6gqueEU4TasftSyLcTVaIMr6iR8hlcKN
-	 NY4rYvx2qwWcp5286XdMkG0srhX1ar4BFlNOKXKgCG8MjyWeSe8EsfXDEJWjRkQMkG
-	 ABb30mF6c6eTuP9YwOetPm0B4FFoLznUzcm4Xt3hVsVZP75RtKzrRAloG0UcqdMhzq
-	 KM0hryVSodNKQlByH8lWfw9Dym5zoWrf7+PYwDicP34ERJl9SrZ2i03s7sUFDRmdo/
-	 qBuM92InOKhTei6K9Qwczcosc10h7sQTxh2S4eQrsagtCUBv5ztG9ullfILH+jAE4N
-	 3+/aQkXsE+S+Q==
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-55f0b2c79cdso976630a12.3;
-        Mon, 29 Jan 2024 05:11:52 -0800 (PST)
-X-Gm-Message-State: AOJu0YxmxMPqa1pPFyeayJxXc0uxRmq5GC7bmh2JvxmRRY8WWZHpJ5aY
-	i6etH483XHYv9o1/DQiIqTzkHbYtpzPGwYFPjMTT0n0GNYcC3nBdWX67L0q4l+l24Ars52auTDd
-	WD9PFCOHsRpnEkYqmMQhLg8Jz9l8=
-X-Google-Smtp-Source: AGHT+IFQnhgfnpp+VE5IQCX1aYZC0mg2RyViiRDUgWm/V/YSKftwQ7xS3+Lvsojh4UebgJU9yOs6uZ0X/z3KAqgiqWU=
-X-Received: by 2002:a05:6402:35c2:b0:55d:2447:844f with SMTP id
- z2-20020a05640235c200b0055d2447844fmr5704057edc.26.1706533910974; Mon, 29 Jan
- 2024 05:11:50 -0800 (PST)
+	s=arc-20240116; t=1706533931; c=relaxed/simple;
+	bh=+Ew5LUI3g/pPiKdhhQ2t8V+CzBXr7IlkIiYR6xaMc2Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kfQVTkcLMPOEXnxS736OixosEW3sraKNhoV/6X+43Xjqi+mzJqTym17wEZoH0dRvGMh6ymA+ttwOwndBNt3B+WyR+Vqp9AOkdkRr8vH6yrdDEUbQpOKBIiW9E58EuYcVopk3vOY9aKTEYU8eYOHZxGr+VmlnzNw2VvVBOCJCMVM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YC4DUsm8; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706533931; x=1738069931;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=+Ew5LUI3g/pPiKdhhQ2t8V+CzBXr7IlkIiYR6xaMc2Q=;
+  b=YC4DUsm8dK20MvP3ERW0YBTv1/EnztBrD/5OEmKRhfiHCZ4ncrtNCyNZ
+   82De0zanK/R2nKfktCf8GzU4eaIFvaz3NivKNesPQQWIQnHoeJgbL5Mg/
+   FMNeGdOdzqLaQCkJNExesZE2ORNqS7cWIffHMzWPEP/KQ6g/ccOCLpx5l
+   iRd7Z8fFUCbm0ojisVCu+L3CuxWeXezalsK0umzyVf795jr9XPZPjqTqj
+   zEqSUbZtR4BZ8/LAeP0WQ2F8WpdBhrNjEoZT7mpVkb6dptH9yZyOzwvZP
+   px1lRD/hU7RlK5EqDCw4Np7ZFfao7otOytJCL3RWhxV5acqqJOah+xgmd
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="10328222"
+X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
+   d="scan'208";a="10328222"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 05:12:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="878068136"
+X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
+   d="scan'208";a="878068136"
+Received: from choongyo-mobl.gar.corp.intel.com (HELO [10.247.122.111]) ([10.247.122.111])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 05:11:56 -0800
+Message-ID: <aec1ba8e-b609-4ec1-b6e2-8f850ab45c7f@linux.intel.com>
+Date: Mon, 29 Jan 2024 21:11:53 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122100313.1589372-1-maobibo@loongson.cn> <20240122100313.1589372-6-maobibo@loongson.cn>
-In-Reply-To: <20240122100313.1589372-6-maobibo@loongson.cn>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Mon, 29 Jan 2024 21:11:42 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H78HiRRsdsVHxYBYOEWew9FKDSF++bK_=g=UbBKc46d2Q@mail.gmail.com>
-Message-ID: <CAAhV-H78HiRRsdsVHxYBYOEWew9FKDSF++bK_=g=UbBKc46d2Q@mail.gmail.com>
-Subject: Re: [PATCH v3 5/6] LoongArch: KVM: Add physical cpuid map support
-To: Bibo Mao <maobibo@loongson.cn>
-Cc: Tianrui Zhao <zhaotianrui@loongson.cn>, Juergen Gross <jgross@suse.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, loongarch@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, virtualization@lists.linux.dev, 
-	kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v2 0/5] TSN auto negotiation between 1G and 2.5G
+Content-Language: en-US
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>,
+ Andrew Lunn <andrew@lunn.ch>
+Cc: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+ David E Box <david.e.box@linux.intel.com>,
+ Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>,
+ Jose Abreu <Jose.Abreu@synopsys.com>, Heiner Kallweit
+ <hkallweit1@gmail.com>, "David S . Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, =?UTF-8?Q?Marek_Beh=C3=BAn?=
+ <kabel@kernel.org>, Jean Delvare <jdelvare@suse.com>,
+ Guenter Roeck <linux@roeck-us.net>,
+ Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Jose Abreu <joabreu@synopsys.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Richard Cochran <richardcochran@gmail.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Wong Vee Khee
+ <veekhee@apple.com>, Jon Hunter <jonathanh@nvidia.com>,
+ Jesse Brandeburg <jesse.brandeburg@intel.com>,
+ Revanth Kumar Uppala <ruppala@nvidia.com>,
+ Shenwei Wang <shenwei.wang@nxp.com>,
+ Andrey Konovalov <andrey.konovalov@linaro.org>,
+ Jochen Henneberg <jh@henneberg-systemdesign.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, platform-driver-x86@vger.kernel.org,
+ linux-hwmon@vger.kernel.org, bpf@vger.kernel.org,
+ Voon Wei Feng <weifeng.voon@intel.com>,
+ Tan Tee Min <tee.min.tan@linux.intel.com>,
+ Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+ Lai Peter Jun Ann <jun.ann.lai@intel.com>
+References: <20230804084527.2082302-1-yong.liang.choong@linux.intel.com>
+ <5bd05ba2-fd88-4e5c-baed-9971ff917484@lunn.ch>
+ <f9b21a9d-4ae2-1f91-b621-2e27f746f661@linux.intel.com>
+ <37fe9352-ec84-47b8-bb49-9441987ca1b9@lunn.ch>
+ <ZQxPQ9t8/TKcjlo8@shell.armlinux.org.uk>
+ <0098eaf3-717a-4b50-b2a0-4b28b75b0735@lunn.ch>
+ <ZQxZVbmdcAN6UI2G@shell.armlinux.org.uk>
+From: Choong Yong Liang <yong.liang.choong@linux.intel.com>
+In-Reply-To: <ZQxZVbmdcAN6UI2G@shell.armlinux.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi, Bibo,
 
-Without this patch I can also create a SMP VM, so what problem does
-this patch want to solve?
 
-Huacai
+On 21/9/2023 10:55 pm, Russell King (Oracle) wrote:
+> On Thu, Sep 21, 2023 at 04:41:20PM +0200, Andrew Lunn wrote:
+>> On Thu, Sep 21, 2023 at 03:12:19PM +0100, Russell King (Oracle) wrote:
+>>> On Thu, Sep 21, 2023 at 03:21:00PM +0200, Andrew Lunn wrote:
+>>>>> Hi Andrew,
+>>>>>
+>>>>> After conducting a comprehensive study, it seems that implementing
+>>>>> out-of-band for all link modes might not be feasible. I may have missed some
+>>>>> key aspects during my analysis.
+>>>>>
+>>>>> Would you be open to sharing a high-level idea of how we could potentially
+>>>>> make this feasible? Your insights would be greatly appreciated.
+>>>>
+>>>> stmmac_mac_link_up() gets passed interface, speed and duplex. That
+>>>> tells you what the PHY has negotiated. Is there anything else you need
+>>>> to know?
+>>>
+>>> The problem is... the stmmac driver is utter bollocks - that information
+>>> is *not* passed to the BSP. Instead, stmmac parse and store information
+>>> such as the PHY interface mode at initialisation time. BSPs also re-
+>>> parse and store e.g. the PHY interface mode at initialisation time.
+>>> The driver ignores what it gets from phylink.
+>>>
+>>> The driver is basically utter crap. That's an area I _had_ patches to
+>>> clean up. I no longer do. stmmac is crap crap crap and will stay crap
+>>> until they become more receptive to patches to fix it, even if the
+>>> patches are not 100% to their liking but are in fact correct. Maybe
+>>> if I ever decide to touch that driver in the future. Which I doubt
+>>> given my recent experience.
+>>
+>> Hi Russell
+>>
+>> You pointed out the current proposal will break stuff. Do you see a
+>> way forward for this patchset which does not first involve actually
+>> cleaning up of this driver?
+> 
+> As I said in one of my replies, it would really help if the author can
+> provide a table showing what is attempting to be achieved here. With
+> that, we should be able to work out exactly what is required, what
+> needs to change in stmmac, etc.
+> 
 
-On Mon, Jan 22, 2024 at 6:03=E2=80=AFPM Bibo Mao <maobibo@loongson.cn> wrot=
-e:
->
-> Physical cpuid is used to irq routing for irqchips such as ipi/msi/
-> extioi interrupt controller. And physical cpuid is stored at CSR
-> register LOONGARCH_CSR_CPUID, it can not be changed once vcpu is
-> created. Since different irqchips have different size definition
-> about physical cpuid, KVM uses the smallest cpuid from extioi, and
-> the max cpuid size is defines as 256.
->
-> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
-> ---
->  arch/loongarch/include/asm/kvm_host.h | 26 ++++++++
->  arch/loongarch/include/asm/kvm_vcpu.h |  1 +
->  arch/loongarch/kvm/vcpu.c             | 93 ++++++++++++++++++++++++++-
->  arch/loongarch/kvm/vm.c               | 11 ++++
->  4 files changed, 130 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/loongarch/include/asm/kvm_host.h b/arch/loongarch/inclu=
-de/asm/kvm_host.h
-> index 2d62f7b0d377..57399d7cf8b7 100644
-> --- a/arch/loongarch/include/asm/kvm_host.h
-> +++ b/arch/loongarch/include/asm/kvm_host.h
-> @@ -64,6 +64,30 @@ struct kvm_world_switch {
->
->  #define MAX_PGTABLE_LEVELS     4
->
-> +/*
-> + * Physical cpu id is used for interrupt routing, there are different
-> + * definitions about physical cpuid on different hardwares.
-> + *  For LOONGARCH_CSR_CPUID register, max cpuid size if 512
-> + *  For IPI HW, max dest CPUID size 1024
-> + *  For extioi interrupt controller, max dest CPUID size is 256
-> + *  For MSI interrupt controller, max supported CPUID size is 65536
-> + *
-> + * Currently max CPUID is defined as 256 for KVM hypervisor, in future
-> + * it will be expanded to 4096, including 16 packages at most. And every
-> + * package supports at most 256 vcpus
-> + */
-> +#define KVM_MAX_PHYID          256
-> +
-> +struct kvm_phyid_info {
-> +       struct kvm_vcpu *vcpu;
-> +       bool            enabled;
-> +};
-> +
-> +struct kvm_phyid_map {
-> +       int max_phyid;
-> +       struct kvm_phyid_info phys_map[KVM_MAX_PHYID];
-> +};
-> +
->  struct kvm_arch {
->         /* Guest physical mm */
->         kvm_pte_t *pgd;
-> @@ -71,6 +95,8 @@ struct kvm_arch {
->         unsigned long invalid_ptes[MAX_PGTABLE_LEVELS];
->         unsigned int  pte_shifts[MAX_PGTABLE_LEVELS];
->         unsigned int  root_level;
-> +       struct mutex  phyid_map_lock;
-> +       struct kvm_phyid_map  *phyid_map;
->
->         s64 time_offset;
->         struct kvm_context __percpu *vmcs;
-> diff --git a/arch/loongarch/include/asm/kvm_vcpu.h b/arch/loongarch/inclu=
-de/asm/kvm_vcpu.h
-> index e71ceb88f29e..2402129ee955 100644
-> --- a/arch/loongarch/include/asm/kvm_vcpu.h
-> +++ b/arch/loongarch/include/asm/kvm_vcpu.h
-> @@ -81,6 +81,7 @@ void kvm_save_timer(struct kvm_vcpu *vcpu);
->  void kvm_restore_timer(struct kvm_vcpu *vcpu);
->
->  int kvm_vcpu_ioctl_interrupt(struct kvm_vcpu *vcpu, struct kvm_interrupt=
- *irq);
-> +struct kvm_vcpu *kvm_get_vcpu_by_cpuid(struct kvm *kvm, int cpuid);
->
->  /*
->   * Loongarch KVM guest interrupt handling
-> diff --git a/arch/loongarch/kvm/vcpu.c b/arch/loongarch/kvm/vcpu.c
-> index 27701991886d..97ca9c7160e6 100644
-> --- a/arch/loongarch/kvm/vcpu.c
-> +++ b/arch/loongarch/kvm/vcpu.c
-> @@ -274,6 +274,95 @@ static int _kvm_getcsr(struct kvm_vcpu *vcpu, unsign=
-ed int id, u64 *val)
->         return 0;
->  }
->
-> +static inline int kvm_set_cpuid(struct kvm_vcpu *vcpu, u64 val)
-> +{
-> +       int cpuid;
-> +       struct loongarch_csrs *csr =3D vcpu->arch.csr;
-> +       struct kvm_phyid_map  *map;
-> +
-> +       if (val >=3D KVM_MAX_PHYID)
-> +               return -EINVAL;
-> +
-> +       cpuid =3D kvm_read_sw_gcsr(csr, LOONGARCH_CSR_ESTAT);
-> +       map =3D vcpu->kvm->arch.phyid_map;
-> +       mutex_lock(&vcpu->kvm->arch.phyid_map_lock);
-> +       if (map->phys_map[cpuid].enabled) {
-> +               /*
-> +                * Cpuid is already set before
-> +                * Forbid changing different cpuid at runtime
-> +                */
-> +               if (cpuid !=3D val) {
-> +                       /*
-> +                        * Cpuid 0 is initial value for vcpu, maybe inval=
-id
-> +                        * unset value for vcpu
-> +                        */
-> +                       if (cpuid) {
-> +                               mutex_unlock(&vcpu->kvm->arch.phyid_map_l=
-ock);
-> +                               return -EINVAL;
-> +                       }
-> +               } else {
-> +                        /* Discard duplicated cpuid set */
-> +                       mutex_unlock(&vcpu->kvm->arch.phyid_map_lock);
-> +                       return 0;
-> +               }
-> +       }
-> +
-> +       if (map->phys_map[val].enabled) {
-> +               /*
-> +                * New cpuid is already set with other vcpu
-> +                * Forbid sharing the same cpuid between different vcpus
-> +                */
-> +               if (map->phys_map[val].vcpu !=3D vcpu) {
-> +                       mutex_unlock(&vcpu->kvm->arch.phyid_map_lock);
-> +                       return -EINVAL;
-> +               }
-> +
-> +               /* Discard duplicated cpuid set operation*/
-> +               mutex_unlock(&vcpu->kvm->arch.phyid_map_lock);
-> +               return 0;
-> +       }
-> +
-> +       kvm_write_sw_gcsr(csr, LOONGARCH_CSR_CPUID, val);
-> +       map->phys_map[val].enabled      =3D true;
-> +       map->phys_map[val].vcpu         =3D vcpu;
-> +       if (map->max_phyid < val)
-> +               map->max_phyid =3D val;
-> +       mutex_unlock(&vcpu->kvm->arch.phyid_map_lock);
-> +       return 0;
-> +}
-> +
-> +struct kvm_vcpu *kvm_get_vcpu_by_cpuid(struct kvm *kvm, int cpuid)
-> +{
-> +       struct kvm_phyid_map  *map;
-> +
-> +       if (cpuid >=3D KVM_MAX_PHYID)
-> +               return NULL;
-> +
-> +       map =3D kvm->arch.phyid_map;
-> +       if (map->phys_map[cpuid].enabled)
-> +               return map->phys_map[cpuid].vcpu;
-> +
-> +       return NULL;
-> +}
-> +
-> +static inline void kvm_drop_cpuid(struct kvm_vcpu *vcpu)
-> +{
-> +       int cpuid;
-> +       struct loongarch_csrs *csr =3D vcpu->arch.csr;
-> +       struct kvm_phyid_map  *map;
-> +
-> +       map =3D vcpu->kvm->arch.phyid_map;
-> +       cpuid =3D kvm_read_sw_gcsr(csr, LOONGARCH_CSR_ESTAT);
-> +       if (cpuid >=3D KVM_MAX_PHYID)
-> +               return;
-> +
-> +       if (map->phys_map[cpuid].enabled) {
-> +               map->phys_map[cpuid].vcpu =3D NULL;
-> +               map->phys_map[cpuid].enabled =3D false;
-> +               kvm_write_sw_gcsr(csr, LOONGARCH_CSR_CPUID, 0);
-> +       }
-> +}
-> +
->  static int _kvm_setcsr(struct kvm_vcpu *vcpu, unsigned int id, u64 val)
->  {
->         int ret =3D 0, gintc;
-> @@ -291,7 +380,8 @@ static int _kvm_setcsr(struct kvm_vcpu *vcpu, unsigne=
-d int id, u64 val)
->                 kvm_set_sw_gcsr(csr, LOONGARCH_CSR_ESTAT, gintc);
->
->                 return ret;
-> -       }
-> +       } else if (id =3D=3D LOONGARCH_CSR_CPUID)
-> +               return kvm_set_cpuid(vcpu, val);
->
->         kvm_write_sw_gcsr(csr, id, val);
->
-> @@ -925,6 +1015,7 @@ void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu)
->         hrtimer_cancel(&vcpu->arch.swtimer);
->         kvm_mmu_free_memory_cache(&vcpu->arch.mmu_page_cache);
->         kfree(vcpu->arch.csr);
-> +       kvm_drop_cpuid(vcpu);
->
->         /*
->          * If the vCPU is freed and reused as another vCPU, we don't want=
- the
-> diff --git a/arch/loongarch/kvm/vm.c b/arch/loongarch/kvm/vm.c
-> index 0a37f6fa8f2d..6fd5916ebef3 100644
-> --- a/arch/loongarch/kvm/vm.c
-> +++ b/arch/loongarch/kvm/vm.c
-> @@ -30,6 +30,14 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long ty=
-pe)
->         if (!kvm->arch.pgd)
->                 return -ENOMEM;
->
-> +       kvm->arch.phyid_map =3D kvzalloc(sizeof(struct kvm_phyid_map),
-> +                               GFP_KERNEL_ACCOUNT);
-> +       if (!kvm->arch.phyid_map) {
-> +               free_page((unsigned long)kvm->arch.pgd);
-> +               kvm->arch.pgd =3D NULL;
-> +               return -ENOMEM;
-> +       }
-> +
->         kvm_init_vmcs(kvm);
->         kvm->arch.gpa_size =3D BIT(cpu_vabits - 1);
->         kvm->arch.root_level =3D CONFIG_PGTABLE_LEVELS - 1;
-> @@ -44,6 +52,7 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long typ=
-e)
->         for (i =3D 0; i <=3D kvm->arch.root_level; i++)
->                 kvm->arch.pte_shifts[i] =3D PAGE_SHIFT + i * (PAGE_SHIFT =
-- 3);
->
-> +       mutex_init(&kvm->arch.phyid_map_lock);
->         return 0;
->  }
->
-> @@ -51,7 +60,9 @@ void kvm_arch_destroy_vm(struct kvm *kvm)
->  {
->         kvm_destroy_vcpus(kvm);
->         free_page((unsigned long)kvm->arch.pgd);
-> +       kvfree(kvm->arch.phyid_map);
->         kvm->arch.pgd =3D NULL;
-> +       kvm->arch.phyid_map =3D NULL;
->  }
->
->  int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
-> --
-> 2.39.3
->
+Thank you, Russell and Andrew for the comments.
+
+What I'm trying to achieve here is to enable interface mode switching 
+between 2500basex and SGMII interfaces for Intel platforms.
+
+I did based on the DM7052 SFP module and BCM84881 PHY to make the necessary 
+changes in the new version of my patch series.
+
+In the new patch series, the 'allow_switch_interface' flag was introduced, 
+based on the 'allow_switch_interface' flag, the interface mode is 
+configured to PHY_INTERFACE_MODE_NA within the 'phylink_validate_phy' 
+function. This setting allows all ethtool link modes that are supported and 
+advertised will be published. Then interface mode switching occurs based on
+the selection of different link modes.
+
+During the interface mode switching, the code will go through the 
+`phylink_major_config` function and based on the interface mode to select 
+PCS and PCS negotiation mode to configure PCS. Then, the MAC driver will 
+perform SerDes configuration according to the interface mode.
+
+I did rewrite the description for the new patch series, hoping that it is 
+clear to describe the whole intention of the changes.
 
