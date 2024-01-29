@@ -1,186 +1,133 @@
-Return-Path: <linux-kernel+bounces-43252-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43253-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A57F841171
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:59:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA88C841175
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:59:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 677A0B24570
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:59:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75D3728E8A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:59:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 814C83F9FB;
-	Mon, 29 Jan 2024 17:59:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F7183F9E9;
+	Mon, 29 Jan 2024 17:59:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Cotx7+I0"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OhJOoi/A"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95A313F9DA;
-	Mon, 29 Jan 2024 17:58:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E3FD76C9C
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 17:59:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706551139; cv=none; b=uzE32sVhDNGYbgnToh43AcQr0TF8PV3uwC/hf1kpT6lVq5dhsb940fru2TFoZTbaj3n0xAR4kly7E3WV9Jnc90p/PF7lTlbPDwpymHEocQCGtdeHSPzlOSJ3Xq/rVk/BchIg8RDIehupErUM/pKbCL4+ZzsOTuuZ1dpTMCtyGzg=
+	t=1706551182; cv=none; b=PHX71xIBA+ymyiTXqVlKw0brkLgjCEoHaHwrj61LSHzzEgxbvbykUKTQzQsc6rftNpSYwtDW4xiEvlwRM6zL+NCDd/1VLL57rVChUJw0qHB69NpikxYJvjf7lI++uOcIOzO62JmRqGwFk9whOmB+3W+7T9T0fAptND2B3EdEZoQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706551139; c=relaxed/simple;
-	bh=brZXU+54yeeIyXk8P9EznYfF+mgwIvbQaMmnQXIIBt4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SXgt2h30MndcNiO6ooNtv+F0NHq1KQsG/Pc1aQmLFiGNQfAu0TAvNBcxHoMjxXzk4nZO8hJd0vYQxXYWm6ZyoSGmDXEX2V2s4PwGHfwIgPsBVwCymxI6vDkQuj7D1BbZyk7JtCyQhkZvf+dZ6QipS5njw6z20iRdK1JfxJe7seA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=fail (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=Cotx7+I0 reason="signature verification failed"; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 68C1140E00C5;
-	Mon, 29 Jan 2024 17:58:53 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=fail (4096-bit key)
-	reason="fail (body has been altered)" header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id i6QaokLd0hxR; Mon, 29 Jan 2024 17:58:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1706551131; bh=haKRuQSPjwn4cZ6Nd5ze9P3MYIvIFCO4ld+rTiW5Nok=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Cotx7+I0f/7Gt9x7NWnbs/g0LaIwF6oRcwW5rTcKXCC9xkME6wAfqHrTzkkgOup7A
-	 kDUNDxWsdDds1nDmCKD58UhsVntsZo4C1fKrPqXjaY9dqRt+Z9cIJeFDdI9mLbgpKZ
-	 s4qgfyCwegiOe+c95T55T+0LMrvWz73oQGMlt6hhTINLQ9u87OV1BBkzI+s3UAMQki
-	 EiE6/lwoUIQamQYxuGWU4v8uXNZLA5BzheYMPr+4XA6EAJG+cTumWaule7SYdQzd3X
-	 CjbsbDw4O+fCxHaSfXhPPQWWT4oCT5B2SRv3OUnqAXhk8gefpEDl39LkU1ErXglmpz
-	 IihJRAoHAdwcNdjWr/KPPnqwegCBx27/RNuUlxQ340dn5QvkqTNFfTdKgGO9WwNUR1
-	 aoYa+eaWqChUqSSrv+g/QxeICCyfZaIicFzzOIjUmKN7xRw4Wal7qz4dNYTfEzOT4q
-	 q968O/clmAVLn5qoGPNuD3WoaQS/ESk1uAeK2GLknMWm+Rh+HIO8KvXhrRTwibbd0/
-	 rzkAqbvj5HS19afzr2rnkbYCCU/HRthEyYW3mpHBsK7JwXgWzu1WEjqZzR5jK15Yt8
-	 mtoc0sk0JJii4l6Roz1lSmr79VPsu/i8lclUem/bo+LBSd+mlVZtNyFzNat27QDPzs
-	 SNsPorfagbq1htmTG2J6pDaM=
-Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A6D1940E016C;
-	Mon, 29 Jan 2024 17:58:12 +0000 (UTC)
-Date: Mon, 29 Jan 2024 18:58:06 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Michael Roth <michael.roth@amd.com>
-Cc: x86@kernel.org, kvm@vger.kernel.org, linux-coco@lists.linux.dev,
-	linux-mm@kvack.org, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-	ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-	peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-	rientjes@google.com, tobin@ibm.com, vbabka@suse.cz,
-	kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
-	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
-	pankaj.gupta@amd.com, liam.merwick@oracle.com,
-	Brijesh Singh <brijesh.singh@amd.com>,
-	Jarkko Sakkinen <jarkko@profian.com>
-Subject: Re: [PATCH v2 13/25] crypto: ccp: Add support to initialize the
- AMD-SP for SEV-SNP
-Message-ID: <20240129175806.GBZbfnLsqTgqoKwt0S@fat_crate.local>
-References: <20240126041126.1927228-1-michael.roth@amd.com>
- <20240126041126.1927228-14-michael.roth@amd.com>
+	s=arc-20240116; t=1706551182; c=relaxed/simple;
+	bh=WdFE5G28qXw91+L/5jczJ22evdDNgsN+116WMT64VSg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sIALmB85yAHvisdqm+DnxdxDFS89hNy9xxUXmrhopr4w0anODWG7RWJAcz3DQDenQHJZ2Pr+EbIjPGo2Ne+jAYbGJiT/1Ep/6YECTOyqQovTwgmjTseHdO37l1iuLHJ0rBy02DWMf896F3DIbrBBMiQcMZhb4yzaoGDxCuLj0Os=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OhJOoi/A; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a3122b70439so409805066b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:59:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706551179; x=1707155979; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=EduC/u1ISeMAo6EudIFVFUKWN5Hqy6PJTVRFHHs3oCM=;
+        b=OhJOoi/Ase69h8hEUoTLqDqNpscKZC88bdQrjJQqLOfvgWO+cy8Uw+L+DJ3Lj75Xsj
+         fNa+NP1pC3H0AGS6lBE1fHCAJYHXQFpPag32pAxJdrslPnh2M5R1MAinrDQKnMPhjm4Y
+         m09mQE75SSwNVagJAqYEMeIEHvWCwvBHMPDOCDVV007EIycvPacehgu87q/aHfLH65TN
+         jxpFxSNXJIGPVeEEDf7AF2k7WzTc7mjilsAVIqjbVoGCiWpaJKecr9RJcO8A2sjooJBJ
+         eHJkYwoTXP/rC7boK0mfcXQrx7gDQK4qRd01jwcEFjYkP2r8CfwSrvmVvGa/4F5YpToh
+         8ENw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706551179; x=1707155979;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EduC/u1ISeMAo6EudIFVFUKWN5Hqy6PJTVRFHHs3oCM=;
+        b=LpC2gXeZ79PbndZClb4GOK8WMY2A6da93qtirteN54wDe1WiUFjihn8z2V8b7QVkRA
+         itkEwBoEb18sI0jPKUscz7TmB/umMKnFfH/+pQgW9/1ECixO1X/3nQTDZX5DyMCz+WMT
+         /hmV874jc1wQfW676atZbqZ2k3mhY7OroLdLRvgQouBE/AESbu/y7dpiISJtdTVGD6U0
+         CBacvD5rsJnqDUy/FVl/t+OsHpFiJ6+AXs9QwyVFS4WLE5vtkepIob674cvaMcfFcPjy
+         X0vcuonopfaD4VwlnfzXtp2vUQDPxndkYZy9cfagMJneKJahl1v3NgO9bPqFmmYUUn0d
+         nR9g==
+X-Gm-Message-State: AOJu0Yz/TKD1SmLhPjoHE2j75e5xmxMi4GmTglT6BB7pzZ7+krayhDIg
+	tQo3ojjOWalgjmoqNyQCV3pgLemspG3i/Tx/Ls8VaY4iuVfMiQMAxE0AQGGtgZ8=
+X-Google-Smtp-Source: AGHT+IEzv8qsRZ10vsBI4VJJ9TZr1g1+ImxJzul/w+UUW58owJdgCXBMoGnQlYGYgpyx/hyrawdszA==
+X-Received: by 2002:a17:906:5613:b0:a35:cd14:4147 with SMTP id f19-20020a170906561300b00a35cd144147mr1867189ejq.24.1706551179451;
+        Mon, 29 Jan 2024 09:59:39 -0800 (PST)
+Received: from [192.168.2.107] ([79.115.63.202])
+        by smtp.gmail.com with ESMTPSA id rg9-20020a1709076b8900b00a354e4d3449sm2834896ejc.120.2024.01.29.09.59.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jan 2024 09:59:39 -0800 (PST)
+Message-ID: <6877683f-6018-4b29-a378-3a04c7b7f838@linaro.org>
+Date: Mon, 29 Jan 2024 17:59:37 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240126041126.1927228-14-michael.roth@amd.com>
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 17/17] spi: s3c64xx: use bitfield access macros
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>
+Cc: Sam Protsenko <semen.protsenko@linaro.org>, andi.shyti@kernel.org,
+ krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com,
+ jassi.brar@samsung.com, linux-spi@vger.kernel.org,
+ linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, andre.draszik@linaro.org,
+ peter.griffin@linaro.org, kernel-team@android.com, willmcvicker@google.com
+References: <20240126171546.1233172-1-tudor.ambarus@linaro.org>
+ <20240126171546.1233172-18-tudor.ambarus@linaro.org>
+ <CAPLW+4nL6D7R88Q_kJjAT-bWTFBk8a=FT0vL+fyRgxaDeSyhNw@mail.gmail.com>
+ <b5ecacaa-8ccc-4588-b3be-4b5f85813909@linaro.org>
+ <CAPLW+4nN--gG9XsOu6a-mo5vcM-GycRrhPQFOtNidfVTM=KonQ@mail.gmail.com>
+ <facbcbf3-7dba-43a1-b4fe-ac77b5bef545@linaro.org>
+ <56f81e10-86b7-4bd6-938c-e2e9acd6a755@sirena.org.uk>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <56f81e10-86b7-4bd6-938c-e2e9acd6a755@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jan 25, 2024 at 10:11:13PM -0600, Michael Roth wrote:
-> diff --git a/include/linux/psp-sev.h b/include/linux/psp-sev.h
-> index 006e4cdbeb78..8128de17f0f4 100644
-> --- a/include/linux/psp-sev.h
-> +++ b/include/linux/psp-sev.h
-> @@ -790,10 +790,23 @@ struct sev_data_snp_shutdown_ex {
-> =20
->  #ifdef CONFIG_CRYPTO_DEV_SP_PSP
-> =20
-> +/**
-> + * struct sev_platform_init_args
-> + *
-> + * @error: SEV firmware error code
-> + * @probe: True if this is being called as part of CCP module probe, w=
-hich
-> + *  will defer SEV_INIT/SEV_INIT_EX firmware initialization until need=
-ed
-> + *  unless psp_init_on_probe module param is set
-> + */
-> +struct sev_platform_init_args {
-> +	int error;
-> +	bool probe;
-> +};
 
-This struct definition cannot be under the ifdef, otherwise:
 
-arch/x86/kvm/svm/sev.c: In function =E2=80=98sev_guest_init=E2=80=99:
-arch/x86/kvm/svm/sev.c:267:33: error: passing argument 1 of =E2=80=98sev_=
-platform_init=E2=80=99 from incompatible pointer type [-Werror=3Dincompat=
-ible-pointer-types]
-  267 |         ret =3D sev_platform_init(&init_args);
-      |                                 ^~~~~~~~~~
-      |                                 |
-      |                                 struct sev_platform_init_args *
-In file included from arch/x86/kvm/svm/sev.c:16:
-/include/linux/psp-sev.h:952:42: note: expected =E2=80=98int *=E2=80=99 =
-but argument is of type =E2=80=98struct sev_platform_init_args *=E2=80=99
-  952 | static inline int sev_platform_init(int *error) { return -ENODEV;=
- }
-      |                                     ~~~~~^~~~~
-cc1: all warnings being treated as errors
+On 1/29/24 16:42, Mark Brown wrote:
+> On Sat, Jan 27, 2024 at 03:44:24AM +0000, Tudor Ambarus wrote:
+>> On 1/27/24 03:38, Sam Protsenko wrote:
+> 
+>>>>>> -               val |= S3C64XX_SPI_MODE_BUS_TSZ_HALFWORD;
+>>>>>> -               val |= S3C64XX_SPI_MODE_CH_TSZ_HALFWORD;
+>>>>>> +               val |= FIELD_PREP(S3C64XX_SPI_MODE_BUS_TSZ_MASK,
+>>>>>> +                                 S3C64XX_SPI_MODE_BUS_TSZ_HALFWORD) |
+>>>>>> +                      FIELD_PREP(S3C64XX_SPI_MODE_CH_TSZ_MASK,
+>>>>>> +                                 S3C64XX_SPI_MODE_CH_TSZ_HALFWORD);
+> 
+>>>>> Two people complained it makes the code harder to read. Yet it's not
+>>>>> addressed in v3. Please see my comments for your previous submission
+>>>>> explaining what can be done, and also Andi's comment on that matter.
+> 
+>>>> I kept these intentionally. Please read my reply on that matter or the
+>>>> cover letter to this patch set.
+> 
+>>> I read it. But still don't like it 🙂 I'm sure it's possible to do
+>>> this modification, but at the same time keep the code clean an easy to
+>>> read. The code above -- I don't like at all, sorry. It was much better
+>>> before this patch, IMHO.
+> 
+>> Yeah, I guess Mark will tip the scale.
+> 
+> All other things being equal I tend to try not to get too involved with
+> minor coding style stuff in drivers.  People do seem to like
+> FIELD_PREP() but I have a hard time getting *too* excited.
 
----
-
-on a 32-bit allmodconfig.
-
-Build fix:
-
----
-
-diff --git a/include/linux/psp-sev.h b/include/linux/psp-sev.h
-index beba10d6b39c..d0e184db9d37 100644
---- a/include/linux/psp-sev.h
-+++ b/include/linux/psp-sev.h
-@@ -797,8 +797,6 @@ struct sev_data_snp_commit {
- 	u32 len;
- } __packed;
-=20
--#ifdef CONFIG_CRYPTO_DEV_SP_PSP
--
- /**
-  * struct sev_platform_init_args
-  *
-@@ -812,6 +810,8 @@ struct sev_platform_init_args {
- 	bool probe;
- };
-=20
-+#ifdef CONFIG_CRYPTO_DEV_SP_PSP
-+
- /**
-  * sev_platform_init - perform SEV INIT command
-  *
-@@ -949,7 +949,7 @@ void snp_free_firmware_page(void *addr);
- static inline int
- sev_platform_status(struct sev_user_data_status *status, int *error) { r=
-eturn -ENODEV; }
-=20
--static inline int sev_platform_init(int *error) { return -ENODEV; }
-+static inline int sev_platform_init(struct sev_platform_init_args *args)=
- { return -ENODEV; }
-=20
- static inline int
- sev_guest_deactivate(struct sev_data_deactivate *data, int *error) { ret=
-urn -ENODEV; }
-
---=20
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Ok, I'll remove FIELD_PREP. Would you please consider the other patches,
+all are simple. There's another "controversy" on 6/17. You can ignore
+that as well maybe, and I'll resend it where I refrain myself to just
+removing the cast.
 
