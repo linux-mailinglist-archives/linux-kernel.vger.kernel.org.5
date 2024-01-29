@@ -1,283 +1,131 @@
-Return-Path: <linux-kernel+bounces-43525-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43526-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F23C841529
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 22:28:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED62284152B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 22:28:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CAAD51F23526
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 21:28:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78E691F2334A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 21:28:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1B131586FC;
-	Mon, 29 Jan 2024 21:27:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="b+Lauid6"
-Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com [209.85.222.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECD65158D71;
+	Mon, 29 Jan 2024 21:28:17 +0000 (UTC)
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 177D8157E79
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 21:27:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7141157E79;
+	Mon, 29 Jan 2024 21:28:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706563678; cv=none; b=HS8Ml0OMFVaBwn4RnXm2qh5qj8spqraRqDFFR1PlmQgjHmjwNcqpnb7EN87dwpg1nqqqOPLxDnEO5jLv7+ysBtSWn1OK4YumqDAE9PQWoqjuyg8y+gbvRVOuEHkCm61UNOXEoyZgunJT2ATvMX6cWkcGVgNhRYkEyo9oosJPRL4=
+	t=1706563697; cv=none; b=NrPZOJ0VdIY43mGeGkdSje71JUNdq/mdl+MChcldJgESDujW/CNy4Pd6oASmozRH+1Om1g34UHisgqygVhcrQ593G2kzTwMaQ+FqLgH/aTz20vPlkhqq9x9dwS09NOEXrnaEkC5RNk17KnvMwAhRLvHVGtmBBlL4tGWzCnuLY/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706563678; c=relaxed/simple;
-	bh=umDEiWFPLY+J0E0ZohRjUVyk/OqulVHRAScoRzh7bR0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XCtvuaUMbcSxWHGMBCzA4IXoRywVrPBl9/m79hPISdYWmypixveFyWCKsH1bTcxeD8Mvx2G+/XWWlt+PfmhXQ1BrV1XJIdUBqZfczgTwC6pgy1UFL5dU2mZcxroBRaBRxD8T0vOCdZJd5/oVBhfF33w5HrUlMSTn3v2ads11HtU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=b+Lauid6; arc=none smtp.client-ip=209.85.222.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f51.google.com with SMTP id a1e0cc1a2514c-7d5c890c67fso780727241.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 13:27:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706563676; x=1707168476; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=brAWAuHMK3TSM8Xhcazu9ZlxC5Vo2cjLsypBIp5RI5M=;
-        b=b+Lauid6/sncQ8zdpURq6tuBnpJKxj/VteVas6YE9A/+3KT7xw/IuhLteGHRZLKR2Q
-         Z7UF+H0Kt1VZxKRrPOpO9gEpG9wN+mwzu665p/3S+twin3MONIMmSxa9YttBJlQ/JsxM
-         8J13qkgdjmekWQrnyFpsgWcv4aKHc2zq4v578ID3AbQPJP0ODnQdp1pZqOJ0dnUMzgSi
-         WE0SGKQWedajKs2aJIXNA6L8+16xAfQchIASkPIyqoZZXocL6cbjnOXybiUyME1GKcA0
-         Se7tIsGFFk7dQbd4qiQzPswzF3XHdxdVjeufyl7zPqn+MhIDXd1pw2+/yxT+JQXu3a6j
-         aWUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706563676; x=1707168476;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=brAWAuHMK3TSM8Xhcazu9ZlxC5Vo2cjLsypBIp5RI5M=;
-        b=lt2iZ6E7s6EYaXtcvwG8vmGBIhSDWyx3zYIKeAD0a4/PDIUN63F3mJ6fthfGsbw4wD
-         VudPmhjzxkEI+EGrR/otbLMD7s3Eo3E/sUA14dRpbEz5Jih7B9vBzZymeCs77iSErB0R
-         C34NcJUGAKBI57JtR7tw2CTdttrVgSQ+8V/v4uWC5XRQC6eyO3Hsht9qm4i/tbcqbRZJ
-         1jGXZaafdG7fBBVk7p8V1F9ET6uNdkonpPIK1V6ObLLwZEo6osCqUMHfQmM98NOGK7ud
-         FWRIOvmZ6eTsrXnpkaZJFFgFGEoWiBJbGhi8Ew7hW8esJJUY0zHZf9hT9tn0k6cKJWqx
-         8VMA==
-X-Gm-Message-State: AOJu0YyU6S+wMeHruPaC72SuY6bkXwVYRsoh1jIT81ayRkqDtF1oIAe+
-	/CuU2YVl2EePKqM+1kwArCVkvWh9Qv6+lAKFiuFLGpZznU+37RfQEIHdhM/mmiQ9R+BVFI9ohHs
-	asmckLz5O6vxZvE6IdubH9sCILOwKxI728aTm
-X-Google-Smtp-Source: AGHT+IFj5xck2ZZMU+sBSPYdylP/U9nNDCaRvFkvDK5pc2OQBzprbb2S01cfLCABG6cBuYniOj+KiU6IznAyfqEqbhs=
-X-Received: by 2002:a05:6102:317a:b0:46b:3d9c:99cc with SMTP id
- l26-20020a056102317a00b0046b3d9c99ccmr2810766vsm.9.1706563675784; Mon, 29 Jan
- 2024 13:27:55 -0800 (PST)
+	s=arc-20240116; t=1706563697; c=relaxed/simple;
+	bh=nlR7TkSdtDDX6+CuKv4AwSsmM+koGCZsA7ddVOj/tGU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VxHr7K+XZQwWW+2hpmIiC8qLlrDL7hp+ONmIeNmDxGm977zpGHKoqbTOSyU2JTiM2RlOh6rAQcGVUYnsIDIW54JWjVFi3hDvzhH4KdTnTJGRD9j8VcnXeaOW9FojSxNN7tVkiRsT9vLZJxeWWrv5mIqGONFRYSWEIeldATjm3sA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
+Received: from [192.168.0.6] (unknown [95.90.246.18])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 0197161E5FE04;
+	Mon, 29 Jan 2024 22:27:44 +0100 (CET)
+Message-ID: <b1f77ee7-0684-4260-bcaf-d826af19978d@molgen.mpg.de>
+Date: Mon, 29 Jan 2024 22:27:44 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124-alice-mm-v1-0-d1abcec83c44@google.com>
- <20240124-alice-mm-v1-3-d1abcec83c44@google.com> <ZbfnmX1J8iLV8UnO@casper.infradead.org>
-In-Reply-To: <ZbfnmX1J8iLV8UnO@casper.infradead.org>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Mon, 29 Jan 2024 22:27:43 +0100
-Message-ID: <CAH5fLgjFRTTOa4Xjvxr1pmpFKv1o3Mm76iAQ6j-ST0jQ7DWyCQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] rust: add abstraction for `struct page`
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Kees Cook <keescook@chromium.org>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Andrew Morton <akpm@linux-foundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	=?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, 
-	Christian Brauner <brauner@kernel.org>, liam.howlett@oracle.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: =?UTF-8?B?UmU6IHR5cGVjX2FsdG1vZGVfcmVsZWFzZSDihpIgcmVmY291bnRfdDog?=
+ =?UTF-8?Q?underflow=3B_use-after-free=2E?=
+To: "Christian A. Ehrhardt" <lk@c--e.de>
+Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+ linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <e12b5e52-1c94-472d-949b-2ee158857584@molgen.mpg.de>
+ <Zbf3M2+r5RP9K8jJ@cae.in-ulm.de>
+Content-Language: en-US
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <Zbf3M2+r5RP9K8jJ@cae.in-ulm.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jan 29, 2024 at 6:59=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
-> wrote:
->
-> On Wed, Jan 24, 2024 at 11:20:23AM +0000, Alice Ryhl wrote:
-> > Adds a new struct called `Page` that wraps a pointer to `struct page`.
-> > This struct is assumed to hold ownership over the page, so that Rust
-> > code can allocate and manage pages directly.
->
-> OK ...
+Dear Christian,
 
-Thank you for taking your time to review my wrappers!
 
-> > This patch only adds support for pages of order zero, as that is all
-> > Rust Binder needs. However, it is written to make it easy to add suppor=
-t
-> > for higher-order pages in the future. To do that, you would add a const
-> > generic parameter to `Page` that specifies the order. Most of the
-> > methods do not need to be adjusted, as the logic for dealing with
-> > mapping multiple pages at once can be isolated to just the
-> > `with_pointer_into_page` method. Finally, the struct can be renamed to
-> > `Pages<ORDER>`, and the type alias `Page =3D Pages<0>` can be introduce=
-d.
->
-> This description concerns me because it reads like you're not keeping
-> up with the current thinking in MM about what pages are and how we're
-> improving the type hierarchy.  As in, we're creating one instead of
-> allowing the current mish-mash of absolutely everything to continue.
+Am 29.01.24 um 20:06 schrieb Christian A. Ehrhardt:
 
-That's very possible. I have a good understanding about how C binder
-interacts with pages, but I don't know too much about the abstractions
-that Binder is not using.
+> On Mon, Jan 29, 2024 at 12:57:11PM +0100, Paul Menzel wrote:
 
-> Are you the right person to ask about the operations that Binder does
-> with a page so we can figure out where it fits in the type hierarchy?
+>> I noticed the message first time with Linux 6.6.8 on December 26th, and also
+>> with 6.6.11, 6.7 and 6.7.1. I am unsure how to reproduce it though.
+>>
+>> Here the trace from Linux 6.7.1-1~exp1:
+>>
+>> ```
+>> [    0.000000] Linux version 6.7-amd64 (debian-kernel@lists.debian.org) (x86_64-linux-gnu-gcc-13 (Debian 13.2.0-10) 13.2.0, GNU ld (GNU Binutils for Debian) 2.41.90.20240115) #1 SMP PREEMPT_DYNAMIC Debian 6.7.1-1~exp1 (2024-01-22)
+>> […]
+>> [    0.000000] DMI: Dell Inc. XPS 13 9360/0596KF, BIOS 2.21.0 06/02/2022
+>> […]
+>> [ 9068.294345] ucsi_acpi USBC000:00: failed to re-enable notifications (-110)
+>> [ 9068.499156] ------------[ cut here ]------------
+>> [ 9068.499172] refcount_t: underflow; use-after-free.
+>> [ 9068.499199] WARNING: CPU: 0 PID: 5598 at lib/refcount.c:28 refcount_warn_saturate+0xbe/0x110
 
-I can definitely answer questions about that. If we can find another
-abstraction that is not too far away from what we are doing today,
-then I am open to looking into whether we can do that instead of the
-current approach. However, I want to avoid large deviations from C
-Binder, at least before I get Rust binder into the kernel tree.
+[…]
+>> [ 9068.499517] Call Trace:
+>> [ 9068.499521]  <TASK>
+>> [ 9068.499522]  ? refcount_warn_saturate+0xbe/0x110
+>> [ 9068.499526]  ? __warn+0x81/0x130
+>> [ 9068.499533]  ? refcount_warn_saturate+0xbe/0x110
+>> [ 9068.499545]  ? report_bug+0x171/0x1a0
+>> [ 9068.499549]  ? console_unlock+0x78/0x120
+>> [ 9068.499553]  ? handle_bug+0x3c/0x80
+>> [ 9068.499557]  ? exc_invalid_op+0x17/0x70
+>> [ 9068.499565]  ? asm_exc_invalid_op+0x1a/0x20
+>> [ 9068.499570]  ? refcount_warn_saturate+0xbe/0x110
+>> [ 9068.499576]  typec_altmode_release+0x49/0xc0 [typec]
+>> [ 9068.499615]  device_release+0x34/0x90
+>> [ 9068.499624]  kobject_put+0x78/0x190
+>> [ 9068.499629]  ucsi_unregister_altmodes+0x41/0xa0 [typec_ucsi]
+>> [ 9068.499648]  ucsi_unregister_partner.part.0+0x77/0xa0 [typec_ucsi]
+>> [ 9068.499662]  ucsi_handle_connector_change+0x1bb/0x310 [typec_ucsi]
+>> [ 9068.499671]  process_one_work+0x171/0x340
+>> [ 9068.499676]  worker_thread+0x27b/0x3a0
+>> [ 9068.499679]  ? __pfx_worker_thread+0x10/0x10
+>> [ 9068.499681]  kthread+0xe5/0x120
+>> [ 9068.499690]  ? __pfx_kthread+0x10/0x10
+>> [ 9068.499693]  ret_from_fork+0x31/0x50
+>> [ 9068.499698]  ? __pfx_kthread+0x10/0x10
+>> [ 9068.499700]  ret_from_fork_asm+0x1b/0x30
+>> [ 9068.499714]  </TASK>
+>> [ 9068.499715] ---[ end trace 0000000000000000 ]---
+>> ```
+>>
+>> Please find the full output of `dmesg` attached.
+> 
+> This should be fixed by
+> 
+> | commit 5962ded777d689cd8bf04454273e32228d7fb71f
+> | Author: RD Babiera <rdbabiera@google.com>
+> | Date:   Wed Jan 3 18:17:55 2024 +0000
+> |
+> |     usb: typec: class: fix typec_altmode_put_partner to put plugs
+> 
+> which is in mainline and 6.7.2.
 
-A short overview of what Binder does:
-* Every process will mmap a region of memory. This memory region will
-contain the data for all incoming transactions sent to that process.
-Only the kernel can modify these pages.
-* Binder has a data structure that keeps track of where the
-allocations in this mmap'd region are. It has functionality to find an
-open interval of a given size (so it's essentially an allocator). This
-is called the "range allocator".
-* The pages in this region are allocated lazily whenever the range
-allocator starts using the page.
-* When the range allocator stops using a page, it is marked as unused
-and put on an LRU list.
-* There's a custom shrinker that can free pages not currently used by
-any allocation.
+Awesome. Thank you for mentioning this, and nice timing, as the commit 
+referenced in the Fixed-by tag is from v4.19-rc1 from August 2018. ;-)
 
-So when process A sends a transaction to process B using the
-appropriate ioctl, process A will go into the range allocator for
-process B and reserve a range for the transaction that A is sending.
-If any pages in the resulting range are missing, then new pages are
-allocated, and process A will vm_insert_page them into process B's
-mmap. Then, process A will map the page with kmap_local_page, and use
-copy_from_user to copy data *directly* from A's userspace into a page
-in process B's address space.
 
-Note that transactions don't have uniform sizes. Think of them as
-arbitrary buffers provided by userspace. They will generally not be
-larger than a few hundred bytes each, but larger transactions are
-possible. The mmap for a process is usually 4 MB.
+Kind regards,
 
-The biggest user of Page is here in the RFC:
-https://lore.kernel.org/rust-for-linux/20231101-rust-binder-v1-19-08ba9197f=
-637@google.com/
-
-The range allocator is defined here:
-https://lore.kernel.org/rust-for-linux/20231101-rust-binder-v1-6-08ba9197f6=
-37@google.com/
-
-> > Rust Binder needs to manage pages directly as that is how transactions
-> > are delivered: Each process has an mmap'd region for incoming
-> > transactions. When an incoming transaction arrives, the Binder driver
-> > will choose a region in the mmap, allocate and map the relevant pages
-> > manually, and copy the incoming transaction directly into the page. Thi=
-s
-> > architecture allows the driver to copy transactions directly from the
-> > address space of one process to another, without an intermediate copy
-> > to a kernel buffer.
->
-> Everything about this says "This is what a first year comp sci student
-> thinks will be fast".  Oh well, the thinking here isn't your fault.
-
-Ultimately, I am just replicating what C Binder does.
-
-I had a long discussion with Liam Howlett at Plumbers where we
-discussed various alternatives to the hand-rolled stuff that Binder
-does. Liam thought that we may be able to replace the entire thing
-with maple trees. These are things that I definitely want to
-experiment with, but I am reluctant to try replacing the entire thing
-with a maple tree, at least until I get Rust Binder into the kernel
-tree.
-
-In general, there are many places in Binder where we are hand-rolling
-something that has an alternative elsewhere in the kernel, but
-replacing them is not always trivial. The hand-rolled versions often
-have Binder-specific optimizations that make it a regression to
-replace it with the general thing.
-
-> > @@ -127,6 +129,24 @@ int rust_helper_signal_pending(struct task_struct =
-*t)
-> >  }
-> >  EXPORT_SYMBOL_GPL(rust_helper_signal_pending);
-> >
-> > +struct page *rust_helper_alloc_pages(gfp_t gfp_mask, unsigned int orde=
-r)
-> > +{
-> > +       return alloc_pages(gfp_mask, order);
-> > +}
-> > +EXPORT_SYMBOL_GPL(rust_helper_alloc_pages);
-> > +
-> > +void *rust_helper_kmap_local_page(struct page *page)
-> > +{
-> > +       return kmap_local_page(page);
-> > +}
-> > +EXPORT_SYMBOL_GPL(rust_helper_kmap_local_page);
-> > +
-> > +void rust_helper_kunmap_local(const void *addr)
-> > +{
-> > +       kunmap_local(addr);
-> > +}
-> > +EXPORT_SYMBOL_GPL(rust_helper_kunmap_local);
->
-> I remain opposed to all these fidgetty little helpers.  Particularly
-> when they're noops on machines without HIGHMEM, which is ~all of them.
-
-I don't disagree with you, but there's not much I can do about them. I
-can wrap them in #ifdef HIGHMEM if they are no-ops or exported without
-HIGHMEM?
-
-> > +/// A bitwise shift for the page size.
-> > +pub const PAGE_SHIFT: usize =3D bindings::PAGE_SHIFT as usize;
->
-> Does PAGE_SHIFT really need to be as large as 'usize'?  If it's more
-> than 63 by the time I retire, I'll be shocked.  If it's more than 127
-> by the time I die, I'll be even more shocked.  And it won't get to 255
-> by the heat death of the universe.
-
-Rust usually requires that both operands to an integer operation are
-of the same integer type, requiring explicit conversions if that is
-not the case. That is why I am using usize here.
-
-However, it seems like Rust doesn't actually require that for the <<
-operator, so I guess it doesn't matter much for this particular
-constant.
-
-> > +/// A bitwise mask for the page size.
-> > +pub const PAGE_MASK: usize =3D PAGE_SIZE - 1;
->
-> Are you trying to get somebody killed?
->
-> include/asm-generic/page.h:#define PAGE_MASK    (~(PAGE_SIZE-1))
->
-> Defining PAGE_MASK to be the opposite set of bits in C and Rust is
-> going to bite us all day every day for a decade.
-
-Oops, that's embarrassing. Thank you for catching that. I'll make sure
-to change it.
-
-> > +impl Page {
-> > +    /// Allocates a new set of contiguous pages.
-> > +    pub fn new() -> Result<Self, AllocError> {
-> > +        // SAFETY: These are the correct arguments to allocate a singl=
-e page.
-> > +        let page =3D unsafe {
-> > +            bindings::alloc_pages(
-> > +                bindings::GFP_KERNEL | bindings::__GFP_ZERO | bindings=
-::__GFP_HIGHMEM,
-> > +                0,
-> > +            )
-> > +        };
->
-> This feels too Binder-specific to be 'Page'.  Pages are not necessarily
-> allocated with GFP_HIGHMEM, nor are they necessarily zeroed.  Maybe you
-> want a BinderPage type?
-
-We can add a constructor that takes a flag argument, so this type
-doesn't necessarily have to be tied to those specific arguments.
-
-Alice
+Paul
 
