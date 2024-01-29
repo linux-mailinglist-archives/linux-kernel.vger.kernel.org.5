@@ -1,60 +1,108 @@
-Return-Path: <linux-kernel+bounces-43414-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43415-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7196284138B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 20:33:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AADFA841392
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 20:34:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ABDA1B238F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:33:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06411B261F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:34:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F32645644E;
-	Mon, 29 Jan 2024 19:33:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18CAA6F080;
+	Mon, 29 Jan 2024 19:34:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HrV+MjYM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="bdsIxLwX"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D5302E834;
-	Mon, 29 Jan 2024 19:33:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2655E2E834;
+	Mon, 29 Jan 2024 19:34:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706556822; cv=none; b=i9skpk2TFJZi7vwGO8IjgIzTTrGwvKkdov0U/y1XcILJ7TdyziATFKxCigQ/5JvjWZNlK98SDzjonG5WH1XaTw3A+wj2CRPBgYIZZFqKwCdkCcYgNwKwvZw9AzEkFGNSyIExE/CstMECSU/3dxwh2X0KxPoPlNWlCr0U0SgpjJo=
+	t=1706556870; cv=none; b=ZRszzev+Be3/k3Rc4pUYFFVzhH0Q4A0SyHh3vBqbwsiISp0HKuFdjIjNV1Uc9ydMOlvNICr8LPmJoI62xJj8j1No8CS48fjJiog0C6DmaQTOeVv66L/G0EUsVxfAExPF6OKFoRlMJc8gJGzUzgn76JQbproRJ2CM603jeZ8RyEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706556822; c=relaxed/simple;
-	bh=E3YCH6GYX+uJl1+PT0VCyfk5YO/Fz8wVTyeEoFriD2s=;
+	s=arc-20240116; t=1706556870; c=relaxed/simple;
+	bh=I7RxhbY/EibWYZIjX/KVd/UOGTnYnSVr17JA67fezys=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dem4PXAEH1uNvJBloiQfPC5OJLbOWA7kbu0MNQ+xIo8BA+nCw0stnRN63gXKPXR1PNG0r5WClfvr+9HJn6QZnTs849AFGgsCZ6e0pYr+Xi9pibR/qqirIKCyHEj3CGnhL6FqAyitwhEqNA5m/RJR0zArgoFtmlYrlBMPOMZ8jPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HrV+MjYM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E49C1C433F1;
-	Mon, 29 Jan 2024 19:33:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706556821;
-	bh=E3YCH6GYX+uJl1+PT0VCyfk5YO/Fz8wVTyeEoFriD2s=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=JfJfI9RYVOyfghxSzu6mE68E8A/2jRUaj6utGZt7UPh9xVZvxM91OxqSEKjn8GCyra4Ezyq7/AtsuDiy4A4XRSztobfi8qscOFwuJCh4wQdV5Jx+KPRItYiV2HQDyXhClvM+UuY4Bfr2W64JsEGAwBSDAKGJw9XqPEDGDEgDIo8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=bdsIxLwX; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 45A6640E016C;
+	Mon, 29 Jan 2024 19:34:25 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 4_ICJQF_PwKX; Mon, 29 Jan 2024 19:34:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1706556863; bh=Y20SlS97Pif+eZWcli8UoWz3jQtBHyVieM06xnSycFE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HrV+MjYMgUNseHK2862ddZm2tnf7xedLJgEa2/1Qgmp9ivNwvYOp8WzZ4u0dtXEfP
-	 blEouP921It5RpiOHYIAaRS1odcOaKv74a1d7YodSh+tA1ryBRB/DLNIJi5seRTFm7
-	 3CZWjtdQ8nzSJg08PPY3yVpz2eJOyTYiyCm6CyE87K2DW6YhU/bb/CckLd5NRGS/OJ
-	 Rq8nkU0wADeT9KbVxMuHFyMg0U6hqIo84nciFPvoU/ZrlAwL86h1QhoEssdHYkQv1R
-	 n8PhVCquwiv1IWhjwnN4jw93jcjBoU7XH3IR4QovbsgTL+cELuGjsIuJGWYweweb45
-	 ufPaK4OZ0kOrw==
-Date: Mon, 29 Jan 2024 19:33:36 +0000
-From: Will Deacon <will@kernel.org>
-To: Petr =?utf-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-Cc: linux-kernel@vger.kernel.org, kernel-team@android.com,
-	iommu@lists.linux.dev, Christoph Hellwig <hch@lst.de>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Petr Tesarik <petr.tesarik1@huawei-partners.com>,
-	Dexuan Cui <decui@microsoft.com>
-Subject: Re: [PATCH 0/2] Fix double allocation in swiotlb_alloc()
-Message-ID: <20240129193335.GC12631@willie-the-truck>
-References: <20240126151956.10014-1-will@kernel.org>
- <20240126172059.48ad7b9f@meshulam.tesarici.cz>
- <20240129184255.GA12631@willie-the-truck>
- <20240129202619.69178dea@meshulam.tesarici.cz>
+	b=bdsIxLwXTfiTiQNBBuB4jxzMjtcW9WLQgDndiKuh2Dgb1Fycm7YYU1xoqIfx8WkDk
+	 ZWPNJ92VcRA1likU1aDH2DuQQ7wGisMuAlPOoUjuJESd23/x1dOTfWX9bt5UW1wmKO
+	 rHqGvrOI2XHAzgnHlljaQXh3TONXOx51jFEdh8ehAc3IT296ZK3HC4+Pam2D4/uDPq
+	 fMTRb2p0RgOZRUCeqxKFq0ATiK3GGxR9YoTj16jRNFwQN8Jfl0rhgBBWliLPOJByFm
+	 0Td75HtzdqwyPNJj86PRwlop6u+oa52/lGQDVrYYDp2x7jNnJSVXCc176KK6TJWi15
+	 PleiW0y++W5QfJAynv5b2KyzlzKuVHFgYHiE19YgVM7xqUnPJtXzHwg88/O5VVUGvf
+	 Ih4s4Cp5x4PlvJouh/SQWBI/8w8nnVddxJmn4cov/xaqB0Ue9l9VfcJArJOV1O3BSG
+	 pSMPG234d7SXmNE0YITi5zqaBZMRqGvjr7zYkGwoMtl6NnQ0o430Idm6aw4KArALM0
+	 1F0CPmVk1pZzMIAcEnJDhltOfay5/dxNH6KDVIB/5hEzJoAAhGGWpa48ZrBKyJN0DB
+	 0JacNamOknGrSMo/o4CSeVOcYWxIzE9hvOEGg4CDxDlyHSiQWj4J7LytH4Bvm1aMi7
+	 Njo5QWcNHZ2lOUtJBw05ByGk=
+Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 92C6C40E00C5;
+	Mon, 29 Jan 2024 19:33:45 +0000 (UTC)
+Date: Mon, 29 Jan 2024 20:33:44 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Liam Merwick <liam.merwick@oracle.com>
+Cc: Michael Roth <michael.roth@amd.com>, "x86@kernel.org" <x86@kernel.org>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"mingo@redhat.com" <mingo@redhat.com>,
+	"jroedel@suse.de" <jroedel@suse.de>,
+	"thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+	"hpa@zytor.com" <hpa@zytor.com>,
+	"ardb@kernel.org" <ardb@kernel.org>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>,
+	"seanjc@google.com" <seanjc@google.com>,
+	"vkuznets@redhat.com" <vkuznets@redhat.com>,
+	"jmattson@google.com" <jmattson@google.com>,
+	"luto@kernel.org" <luto@kernel.org>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+	"slp@redhat.com" <slp@redhat.com>,
+	"pgonda@google.com" <pgonda@google.com>,
+	"peterz@infradead.org" <peterz@infradead.org>,
+	"srinivas.pandruvada@linux.intel.com" <srinivas.pandruvada@linux.intel.com>,
+	"rientjes@google.com" <rientjes@google.com>,
+	"tobin@ibm.com" <tobin@ibm.com>, "vbabka@suse.cz" <vbabka@suse.cz>,
+	"kirill@shutemov.name" <kirill@shutemov.name>,
+	"ak@linux.intel.com" <ak@linux.intel.com>,
+	"tony.luck@intel.com" <tony.luck@intel.com>,
+	"sathyanarayanan.kuppuswamy@linux.intel.com" <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	"alpergun@google.com" <alpergun@google.com>,
+	"jarkko@kernel.org" <jarkko@kernel.org>,
+	"ashish.kalra@amd.com" <ashish.kalra@amd.com>,
+	"nikunj.dadhania@amd.com" <nikunj.dadhania@amd.com>,
+	"pankaj.gupta@amd.com" <pankaj.gupta@amd.com>,
+	Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH v2 10/25] x86/sev: Add helper functions for RMPUPDATE and
+ PSMASH instruction
+Message-ID: <20240129193344.GFZbf9mEIxZg7ZEb8f@fat_crate.local>
+References: <20240126041126.1927228-1-michael.roth@amd.com>
+ <20240126041126.1927228-11-michael.roth@amd.com>
+ <23cb85b1-4072-45a4-b7dd-9afd6ad20126@oracle.com>
+ <20240129192820.GEZbf8VBsDhI0Be8y0@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,56 +111,37 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240129202619.69178dea@meshulam.tesarici.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20240129192820.GEZbf8VBsDhI0Be8y0@fat_crate.local>
 
-On Mon, Jan 29, 2024 at 08:26:19PM +0100, Petr Tesařík wrote:
-> On Mon, 29 Jan 2024 18:42:55 +0000
-> Will Deacon <will@kernel.org> wrote:
+On Mon, Jan 29, 2024 at 08:28:20PM +0100, Borislav Petkov wrote:
+> On Mon, Jan 29, 2024 at 06:00:36PM +0000, Liam Merwick wrote:
+> > asid is typically a u32 (or at least unsigned) - is it better to avoid 
+> > potential conversion issues with an 'int'?
 > 
-> > On Fri, Jan 26, 2024 at 05:20:59PM +0100, Petr Tesařík wrote:
-> > > On Fri, 26 Jan 2024 15:19:54 +0000
-> > > Will Deacon <will@kernel.org> wrote:
-> > >   
-> > > > Hi folks,
-> > > > 
-> > > > These two patches fix a nasty double allocation problem in swiotlb_alloc()
-> > > > and add a diagnostic to help catch any similar issues in future. This was
-> > > > a royal pain to track down and I've had to make a bit of a leap at the
-> > > > correct alignment semantics (i.e. iotlb_align_mask vs alloc_align_mask).  
-> > > 
-> > > Welcome to the club. I believe you had to re-discover what I described here:
-> > > 
-> > >   https://lore.kernel.org/linux-iommu/20231108101347.77cab795@meshulam.tesarici.cz/  
-> > 
-> > Lucky me...
-> > 
-> > > The relevant part would be this:
-> > > 
-> > >   To sum it up, there are two types of alignment:
-> > > 
-> > >   1. specified by a device's min_align_mask; this says how many low
-> > >      bits of a buffer's physical address must be preserved,
-> > > 
-> > >   2. specified by allocation size and/or the alignment parameter;
-> > >      this says how many low bits in the first IO TLB slot's physical
-> > >      address must be zero.  
-> > > 
-> > > Fix for that has been sitting on my TODO list for too long. :-(  
-> > 
-> > FWIW, it did _used_ to work (or appear to work), so it would be good to
-> > at least get it back to the old behaviour if nothing else.
-> 
-> Yes, now that I look at the code, it was probably misunderstanding on
-> my side as to how the three different alignment requirements are
-> supposed to work together.
-> 
-> AFAICT your patch addresses everything that has ever worked. The rest
-> needs some more thought, and before I touch this loop again, I'll write
-> a proper test case.
+> struct rmp_state.asid is already u32 but yeah, lemme fix that.
 
-Thanks, that would be much appreciated!
+Btw,
 
-Will
+static int sev_get_asid(struct kvm *kvm)
+{
+        struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+
+        return sev->asid;
+}
+
+whereas
+
+struct kvm_sev_info {
+	...
+        unsigned int asid;      /* ASID used for this guest */
+
+so that function needs fixing too.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
