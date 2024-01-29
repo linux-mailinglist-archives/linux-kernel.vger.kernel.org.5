@@ -1,270 +1,175 @@
-Return-Path: <linux-kernel+bounces-43359-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43360-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1134841296
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:47:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6017084129A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:48:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52393285E6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:47:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 849791C23937
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:48:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A88176F080;
-	Mon, 29 Jan 2024 18:38:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E44976043;
+	Mon, 29 Jan 2024 18:40:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="GwRicA4v"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="YKVpCR0o"
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2DFB46A0;
-	Mon, 29 Jan 2024 18:38:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C6866F092
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 18:40:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706553516; cv=none; b=JqdUGbdygU+eQZ8lzvVmfklSWdB/xO5Et4YFcIPBBXuvEJYQHjfsgpKxibdGrfTwkAP7AQFp6tG5J0fj3gUKkp3ib2kIYPsN3qQbWtlWT8+7q+NXWPrMURBi0KktUuNy04OyPK9S+ZfLrZaJ/ojcVSsTQWd9cLVDSe1FB22Sinc=
+	t=1706553621; cv=none; b=lCs5Rkg45BHIAOAAT0yPZgPFwReJfdxVTyhxysV3URVGuFNiPIa18aMPsndvPXyuaYKNTHsFqOihah2oNbC/b4WfWf0HTPegtQqEBOYxS7Wi1VMHutUEgF6I3V2jyExk5RJ5DBbpVOSfWVve2mKs9bunnDEHEPmMX2Rn8K5nCk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706553516; c=relaxed/simple;
-	bh=Wgb6AHbASHAIbUYNKyispgBiH/PHmLv6+sY9S/alqBI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=RIrNlbsrlxLQOGlly4BLGJRaiakUrKo/w5QPaL+EeQA52OSKLWbgrayE8kYTG15WCZf5uqhRMloWHYvA7/qHzNdGtsjLZCi68FIHWcdlsYzKgtl7eokpPq/ReFuHeVSuP1cth/bUVuOEH53YfL2AARpX4DiLCuh9Aa3euLMkuM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=GwRicA4v; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40TIcLcw040405;
-	Mon, 29 Jan 2024 12:38:21 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706553501;
-	bh=s/J2LZYspsxQ9oo7bDTDwuZFAw/7FHF06DORePa2lCw=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=GwRicA4vEh0sDI6mL8bRoYHrqdV+N3kNx6auz3L9T82U7YSuD84bv/qDNrvnDx33C
-	 mBDFjkV9vZYqbnp5iXGeKRWzlnZZg43q5mtoyFh48leLg8iQ3dsnUs8NRmHE5+FqMt
-	 29R6GLBPwoYg7xsuFlleDH+5ZIMobRJiuX6cOXwU=
-Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40TIcLnX009828
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 29 Jan 2024 12:38:21 -0600
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 29
- Jan 2024 12:38:20 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 29 Jan 2024 12:38:20 -0600
-Received: from [10.249.42.149] ([10.249.42.149])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40TIcJf9084941;
-	Mon, 29 Jan 2024 12:38:20 -0600
-Message-ID: <3dcd38ef-c78d-4a28-b756-6be84ce7f252@ti.com>
-Date: Mon, 29 Jan 2024 12:38:19 -0600
+	s=arc-20240116; t=1706553621; c=relaxed/simple;
+	bh=R2t7ERucYntEaiouukVxBCXGGyHD7wa90M6aZ+Evuwc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YH0m1NsP9btF5t08G7R9MymSBnqP3zSykurCCCxGn5wVFCaYlbbg2Rt8BKQET/3rHHP/4DFmJpomm8CtoseC8Nz2JMMGV8ukasL6RT1aYKPGMwXBmKiZmAhcqZjm7BpMLlxxIZ2Fm90AtpgYB3/+LiczB6zXq/2JMKxbCzTZ44Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=YKVpCR0o; arc=none smtp.client-ip=209.85.161.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-598699c0f1eso1500482eaf.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 10:40:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706553618; x=1707158418; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1FndaoLuezk++wxgVrcH5NtXJoTq/9EmRf7oCHvFRc0=;
+        b=YKVpCR0oacknJ8wxTULb127zriOH+E//z3pPhQins5bYgYqK+4Dgdze79PZCCzP3Bo
+         95DyjSBEyL0oAeynXPoI5anVT0xLw4Txap1NGjkIQcnEwbmK/Lt71ejXEddXjTtZav6s
+         aLIAP5XARwhNVephydle/KFdQm0r/p7Op5uq0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706553618; x=1707158418;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1FndaoLuezk++wxgVrcH5NtXJoTq/9EmRf7oCHvFRc0=;
+        b=rofgVDFgHpOx6pobRkPG0GCO/tta3oErPdytwU1XC5v9JHKNiMgOm3X5PV3/IfwH0v
+         WQqMyOiotfGfnePalTIjTxMktDVVIoWXXNXVWZ0c7B5OZbMSEd7FdITTbPKxlo77DBGJ
+         WRaOf7WpIK23fmXLv2Obdlf3xQbMAkTRtDaRJIE9UABWA9EPu1hjslS2tbxy4zoLP/Vr
+         AuBG46kfGOTyQMxcIviIQ5eKFWXfbsMtjPiSTCH6lgtklL2kwRtSBO1wBfvF3524aJ+6
+         f2w2FufH3AUizCQaBd3TWF5SAITPDL1oMxBSEVReBJC/e5boAAeUXhnSr4UTyfu04A/C
+         jpgA==
+X-Gm-Message-State: AOJu0Yy3xYLMWglWBVjLxehVqv3mjZzQwPzvy1IbsuKhVDukyU7wI957
+	f334USFFCyanYCrNpF3ARoVXnE9CbeJaIOkY9IFxDlTGIgBCQ0H9jL+uxsbtiA==
+X-Google-Smtp-Source: AGHT+IHOhi+sxu1kUOA8mCIzVmAbbxxks8PiFMkQLmL98Lyj8XHKWyUPwIfFNCDqEurVhlwYZZyIyw==
+X-Received: by 2002:a05:6358:d592:b0:178:632d:656f with SMTP id ms18-20020a056358d59200b00178632d656fmr2226352rwb.62.1706553618251;
+        Mon, 29 Jan 2024 10:40:18 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id u13-20020a63454d000000b005cd86cd9055sm6450299pgk.1.2024.01.29.10.40.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 10:40:17 -0800 (PST)
+From: Kees Cook <keescook@chromium.org>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Jan Kara <jack@suse.cz>,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH] select: Avoid wrap-around instrumentation in do_sys_poll()
+Date: Mon, 29 Jan 2024 10:40:15 -0800
+Message-Id: <20240129184014.work.593-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 9/9] arm64: dts: ti: k3-am69-sk: Add overlay for IMX219
-Content-Language: en-US
-To: Vaishnav Achath <vaishnav.a@ti.com>, <nm@ti.com>, <vigneshr@ti.com>,
-        <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC: <kernel@pengutronix.de>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <u-kumar1@ti.com>, <j-choudhary@ti.com>, <j-luthra@ti.com>
-References: <20240129132742.1189783-1-vaishnav.a@ti.com>
- <20240129132742.1189783-10-vaishnav.a@ti.com>
-From: Andrew Davis <afd@ti.com>
-In-Reply-To: <20240129132742.1189783-10-vaishnav.a@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2692; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=R2t7ERucYntEaiouukVxBCXGGyHD7wa90M6aZ+Evuwc=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlt/EPCgLg3aGtKRVzbHxjO78YeZKfPnx5tmaL9
+ ehYjSVEgj6JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZbfxDwAKCRCJcvTf3G3A
+ JudFD/4uj/y23P8K+iLzDJ8hOxwYy4bJl41fAFTr2k6Q1vBAcDDMCSOq7ZggcPMb7ixLGFwyNcY
+ KlAInc1U0WE9ttaTeseDa0Rj/x8VV4ygOBIkywlomWkVKJXAMRv3RzT0H/MtQBaayJVZ7+a6KIG
+ 03JEZgOWmMKFT6mMl9hDu65yy37G7tRzOfLbWF7hcuzhEz2Z6hUhkl/yXUwNq3/ml5T3D+DuSFw
+ ySoX+Bk/uLVmIEtFiRK4WrXbLH8ld3qwsU1CN8GNApzcJhb2Nb8E0pjM8QRvm+SLGznR9p0yXut
+ Cj/UnGpJs1l+GIvDv/n6H4aRvcXauUntzoT+qLmYseBhos4YiHAtT/1GVFx/IWfPeV0/Or9Gxol
+ 1VQUpH5v09Z0yt3IxuJXLmYMhFxOKgVAubQk9JQZafDMW0Y8Y9FAcXJ1O0r6TmhE8lZba2qiTi7
+ /4VTVfjzPLrfyrJy/+h8yt2OmQhT5kU06J39wfOYI8b39I+B9Fduig96lgysYFTZC4dYLniRgbv
+ n5QosAv43xkYCX9W7n7GASxlft7ESwATPaZ0bb5JEOV012ZuuX0TyK61a/ZeR/Yzhi9LrYnNwRT
+ qhOS1mgazV2q9wTf5a+VzSWFPqz+4Yxb0Cpb5cMk1Y7UVCXCA4xjJ+sni5dnXpvgxgxOeSkYiP+
+ BYy8vSA Ho8G6Txw==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
-On 1/29/24 7:27 AM, Vaishnav Achath wrote:
-> RPi v2 Camera (IMX219) is an 8MP camera that can be used with SK-AM69
-> through the 22-pin CSI-RX connector.
-> 
-> Same overlay can be used across AM68 SK, TDA4VM SK boards that have a
-> 15/22-pin FFC connector. Also enable build testing and symbols for
-> all the three platforms.
-> 
-> Signed-off-by: Vaishnav Achath <vaishnav.a@ti.com>
-> ---
->   arch/arm64/boot/dts/ti/Makefile               |   6 +
->   .../boot/dts/ti/k3-am69-sk-csi2-imx219.dtso   | 124 ++++++++++++++++++
->   2 files changed, 130 insertions(+)
->   create mode 100644 arch/arm64/boot/dts/ti/k3-am69-sk-csi2-imx219.dtso
-> 
-> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-> index 52c1dc910308..9fc8d68f7d26 100644
-> --- a/arch/arm64/boot/dts/ti/Makefile
-> +++ b/arch/arm64/boot/dts/ti/Makefile
-> @@ -80,6 +80,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-j721s2-evm-pcie1-ep.dtbo
->   
->   # Boards with J784s4 SoC
->   dtb-$(CONFIG_ARCH_K3) += k3-am69-sk.dtb
-> +dtb-$(CONFIG_ARCH_K3) += k3-am69-sk-csi2-imx219.dtbo
->   dtb-$(CONFIG_ARCH_K3) += k3-j784s4-evm.dtb
->   
->   # Build time test only, enabled by CONFIG_OF_ALL_DTBS
-> @@ -105,6 +106,8 @@ k3-am642-tqma64xxl-mbax4xxl-sdcard-dtbs := \
->   	k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-sdcard.dtbo
->   k3-am642-tqma64xxl-mbax4xxl-wlan-dtbs := \
->   	k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-wlan.dtbo
-> +k3-am69-sk-csi2-imx219-dtbs := k3-am69-sk.dtb \
-> +	k3-am69-sk-csi2-imx219.dtbo
+The mix of int, unsigned int, and unsigned long used by struct
+poll_list::len, todo, len, and j meant that the signed overflow
+sanitizer got worried it needed to instrument several places where
+arithmetic happens between these variables. Since all of the variables
+are always positive and bounded by unsigned int, use a single type in
+all places. Additionally expand the zero-test into an explicit range
+check before updating "todo".
 
-You need to also add this "k3-am69-sk-csi2-imx219.dtb" to the list:
+This keeps sanitizer instrumentation[1] out of a UACCESS path:
 
-dtb- +=
+vmlinux.o: warning: objtool: do_sys_poll+0x285: call to __ubsan_handle_sub_overflow() with UACCESS enabled
 
-below for it to actually get build tested.
+Link: https://github.com/KSPP/linux/issues/26 [1]
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Jan Kara <jack@suse.cz>
+Cc: linux-fsdevel@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ fs/select.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
->   k3-j721e-evm-pcie0-ep-dtbs := k3-j721e-common-proc-board.dtb \
->   	k3-j721e-evm-pcie0-ep.dtbo
->   k3-j721s2-evm-pcie1-ep-dtbs := k3-j721s2-common-proc-board.dtb \
-> @@ -130,5 +133,8 @@ DTC_FLAGS_k3-am62-lp-sk += -@
->   DTC_FLAGS_k3-am62a7-sk += -@
->   DTC_FLAGS_k3-am642-tqma64xxl-mbax4xxl += -@
->   DTC_FLAGS_k3-am6548-iot2050-advanced-m2 += -@
-> +DTC_FLAGS_k3-am68-sk-base-board += -@
-> +DTC_FLAGS_k3-am69-sk += -@
->   DTC_FLAGS_k3-j721e-common-proc-board += -@
->   DTC_FLAGS_k3-j721s2-common-proc-board += -@
-> +DTC_FLAGS_k3-j721e-sk += -@
-> diff --git a/arch/arm64/boot/dts/ti/k3-am69-sk-csi2-imx219.dtso b/arch/arm64/boot/dts/ti/k3-am69-sk-csi2-imx219.dtso
-> new file mode 100644
-> index 000000000000..4cd1d8d5004a
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/ti/k3-am69-sk-csi2-imx219.dtso
-> @@ -0,0 +1,124 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/**
-> + * DT Overlay for RPi Camera V2.1 (Sony IMX219) interfaced with CSI2 on AM68-SK board.
-> + * https://datasheets.raspberrypi.org/camera/camera-v2-schematic.pdf
-> + *
-> + * Copyright (C) 2023 Texas Instruments Incorporated - https://www.ti.com/
-> + */
-> +
-> +/dts-v1/;
-> +/plugin/;
-> +
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include "k3-pinctrl.h"
-> +
-> +&{/} {
-> +	clk_imx219_fixed: imx219-xclk {
-> +		compatible = "fixed-clock";
-> +		#clock-cells = <0>;
-> +		clock-frequency = <24000000>;
-> +	};
-> +};
-> +
-> +&csi_mux {
-> +	idle-state = <1>;
-> +};
-> +
-> +/* CAM0 I2C */
-> +&cam0_i2c {
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	imx219_0: imx219_0@10 {
-> +		compatible = "sony,imx219";
-> +		reg = <0x10>;
-> +
-> +		clocks = <&clk_imx219_fixed>;
-> +		clock-names = "xclk";
-> +
-> +		port {
-> +			csi2_cam0: endpoint {
-> +				remote-endpoint = <&csi2rx0_in_sensor>;
-> +				link-frequencies = /bits/ 64 <456000000>;
-> +				clock-lanes = <0>;
-> +				data-lanes = <1 2>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +/* CAM1 I2C */
-> +&cam1_i2c {
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	imx219_1: imx219_1@10 {
-> +		compatible = "sony,imx219";
-> +		reg = <0x10>;
-> +
-> +		clocks = <&clk_imx219_fixed>;
-> +		clock-names = "xclk";
-> +
-> +		port {
-> +			csi2_cam1: endpoint {
-> +				remote-endpoint = <&csi2rx1_in_sensor>;
-> +				link-frequencies = /bits/ 64 <456000000>;
-> +				clock-lanes = <0>;
-> +				data-lanes = <1 2>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +
-> +&cdns_csi2rx0 {
-> +	ports {
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +
-> +		csi0_port0: port@0 {
-> +			reg = <0>;
-> +			status = "okay";
-> +
-> +			csi2rx0_in_sensor: endpoint {
-> +				remote-endpoint = <&csi2_cam0>;
-> +				bus-type = <4>; /* CSI2 DPHY. */
-> +				clock-lanes = <0>;
-> +				data-lanes = <1 2>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&dphy0 {
-> +	status = "okay";
-> +};
-> +
-> +&ti_csi2rx0 {
-> +	status = "okay";
-> +};
-> +
-> +&cdns_csi2rx1 {
-> +	ports {
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +
-> +		csi1_port0: port@0 {
-> +			reg = <0>;
-> +			status = "okay";
-> +
-> +			csi2rx1_in_sensor: endpoint {
-> +				remote-endpoint = <&csi2_cam1>;
-> +				bus-type = <4>; /* CSI2 DPHY. */
-> +				clock-lanes = <0>;
-> +				data-lanes = <1 2>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&dphy1 {
-> +	status = "okay";
-> +};
-> +
-> +&ti_csi2rx1 {
-> +	status = "okay";
-> +};
-> \ No newline at end of file
+diff --git a/fs/select.c b/fs/select.c
+index 0ee55af1a55c..11a3b1312abe 100644
+--- a/fs/select.c
++++ b/fs/select.c
+@@ -839,7 +839,7 @@ SYSCALL_DEFINE1(old_select, struct sel_arg_struct __user *, arg)
+ 
+ struct poll_list {
+ 	struct poll_list *next;
+-	int len;
++	unsigned int len;
+ 	struct pollfd entries[];
+ };
+ 
+@@ -975,14 +975,15 @@ static int do_sys_poll(struct pollfd __user *ufds, unsigned int nfds,
+ 		struct timespec64 *end_time)
+ {
+ 	struct poll_wqueues table;
+-	int err = -EFAULT, fdcount, len;
++	int err = -EFAULT, fdcount;
+ 	/* Allocate small arguments on the stack to save memory and be
+ 	   faster - use long to make sure the buffer is aligned properly
+ 	   on 64 bit archs to avoid unaligned access */
+ 	long stack_pps[POLL_STACK_ALLOC/sizeof(long)];
+ 	struct poll_list *const head = (struct poll_list *)stack_pps;
+  	struct poll_list *walk = head;
+- 	unsigned long todo = nfds;
++	unsigned int todo = nfds;
++	unsigned int len;
+ 
+ 	if (nfds > rlimit(RLIMIT_NOFILE))
+ 		return -EINVAL;
+@@ -998,9 +999,9 @@ static int do_sys_poll(struct pollfd __user *ufds, unsigned int nfds,
+ 					sizeof(struct pollfd) * walk->len))
+ 			goto out_fds;
+ 
+-		todo -= walk->len;
+-		if (!todo)
++		if (walk->len >= todo)
+ 			break;
++		todo -= walk->len;
+ 
+ 		len = min(todo, POLLFD_PER_PAGE);
+ 		walk = walk->next = kmalloc(struct_size(walk, entries, len),
+@@ -1020,7 +1021,7 @@ static int do_sys_poll(struct pollfd __user *ufds, unsigned int nfds,
+ 
+ 	for (walk = head; walk; walk = walk->next) {
+ 		struct pollfd *fds = walk->entries;
+-		int j;
++		unsigned int j;
+ 
+ 		for (j = walk->len; j; fds++, ufds++, j--)
+ 			unsafe_put_user(fds->revents, &ufds->revents, Efault);
+-- 
+2.34.1
 
-checkpatch..
-
-Andrew
 
