@@ -1,165 +1,226 @@
-Return-Path: <linux-kernel+bounces-42163-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42164-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FD7C83FD4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 05:48:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8537483FD4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 05:56:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1ED01F24BE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 04:48:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D9A77B21152
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 04:56:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C39C63C68E;
-	Mon, 29 Jan 2024 04:48:43 +0000 (UTC)
-Received: from mail78-36.sinamail.sina.com.cn (mail78-36.sinamail.sina.com.cn [219.142.78.36])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C597A42040;
+	Mon, 29 Jan 2024 04:56:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="eMAiFTjr"
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0B213C481
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 04:48:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=219.142.78.36
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 482903C49D
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 04:56:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706503723; cv=none; b=dBzU6Fvk1NIBeiUEI80DY/2W/mGzaLefeASGIIiMnqNa9GvY5gwwva8p6kT3OaABhMTzN9EhWwxpvA4Hgz8Ww2Yi73FU3sdh93vbG0XSPVbKNkkLg7+MWbJq/bS2OmWw76+RKmuLgwqsKrcVbMWoSF/9YFeZxM6mqC/suJ4CMbk=
+	t=1706504198; cv=none; b=sKuTjh1RvlIPq8jumLKLFyydQAeJrTIBs66Mu5KoZdUTZtAWV7fCqG/ybwXLC+uqb6pvtMlw/dijWTUMWGk8MbB9fUndd0qtOAPMt/1zlVAdVrXoDxtsHjQ5LZnd7mKzHOoHogsXbfCTw7sKi46MHqLmGMorWPWmZNkBJ7yKcXE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706503723; c=relaxed/simple;
-	bh=HIBtGv4Miu5XdmHF/ZzwPC6oGGZ1r7oevZa+DA6OqNo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=JqoNxkunrvG1OhEzPR/OTDNgZMdIqgewtHogKLJVUQV8fUToWI+i6rImHV+7A5jfTBwMCsJ09hmx7+ffblWsv7Fjz3UfGfSFIWB7tZ77kTleZ25Fw61Aut+mwTtLZHC0x47SVSsFtO/wl34Hlxcy/s+C5vBLbY94LARmuSdpskI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=219.142.78.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([116.24.8.153])
-	by sina.com (172.16.235.25) with ESMTP
-	id 65B72E1E00007DF4; Mon, 29 Jan 2024 12:48:33 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 78843434210369
-X-SMAIL-UIID: 736E54B9EAFC4C309ECFBE2DC1A80295-20240129-124833-1
-From: Hillf Danton <hdanton@sina.com>
-To: syzbot <syzbot+a984066a63e9c1e62662@syzkaller.appspotmail.com>
-Cc: eadavis@qq.com,
-	Peter Zijlstra <peterz@infradead.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [bluetooth?] INFO: task hung in hci_conn_failed
-Date: Mon, 29 Jan 2024 12:48:24 +0800
-Message-Id: <20240129044824.1218-1-hdanton@sina.com>
-In-Reply-To: <0000000000001529bf060ff852b9@google.com>
-References: <tencent_4A66EF6ACD6878526F542C2D6D109794E80A@qq.com>
+	s=arc-20240116; t=1706504198; c=relaxed/simple;
+	bh=JKE/IW5TVkbID/Q/j2NFEsbb8Z3r/k7LT5ELUg8rmMY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=S20Zv0hBkwhGZlw75nRDCjAVsvUQmCEygF/OJQY0R3srzsmk9jERlvO1Xc2VJz75o0eTudXnnD6Pp129eZn+Wc6nWawagsM8V+cII1N3tZqDWzkrZ4ul6EhtGfw2wHqPQkrtG0IEWIu/MlnnIpUI4zFwfXOKZlFNsM7xg7Ul/Sk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=eMAiFTjr; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6ddfb0dac4dso1814207b3a.1
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 20:56:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1706504196; x=1707108996; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=4uVgZZNOGdztcThCjImfEeg1T+w1JfprEYe6mBtACg8=;
+        b=eMAiFTjrr/vQjBBlNKqeI5B5NSt9vl4lhaVcImm+hbr1WtchPEmzKuNtWYiqG+pzDm
+         24yT59EtQwzDTTEiVfMsero+dKkYqYE7os0l56W34qpBwoVYzQtchAWMRiVUE/MW9je9
+         Zcy0HWtCZCLdavxWi0dYlGUFEqzBqXRv6nY11RiIp7jdEI4BGIlTP27RRES0d1tQlj8q
+         SI/uKOKLOeRK8Xb0kEvnhu+j8P8r5ntkY24/Ej1MHkQu6LgOutx/7eKLOPMN/bdmjEz7
+         TH6mCYZ+dGRAOmdray4AGapQ1aOGd7geuK4PhTClbbb0LdNmnhSQ8tndQUZCM7PNlKPg
+         KX6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706504196; x=1707108996;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4uVgZZNOGdztcThCjImfEeg1T+w1JfprEYe6mBtACg8=;
+        b=W4lSG6zf0L9BlFqryz9KrwS0PJUPkgpyha7LEAql1KUqDcJ6ps5Zbx17SMKPRiO3dA
+         CYeOjTUdhOqvHQb7UnZIsoP5rev/ZQCelqRtYVIBkSrOqNXPylvs6KXRPEXiFMZ6dvFb
+         ltAhBXuySNRAg/kCy8D0jQK8bHTdF8YxmCLV46jvAEHDRqvfhCDOQaz7VKKSYU1MRPss
+         /CkuoS8i90izQT3zMgY9zOwtYmE3eHrgpSkfMeFHCKSgwbu+rvKcdKY/j6Fvns8mdQJ3
+         6dy6PRd7OZvKRavq4xQ19xRECpi+tTyl78WpBm8mbbTnd/SrMKav53AV+7e3ukED18/K
+         Ca2A==
+X-Gm-Message-State: AOJu0YxbV43oI4Qq4xAnKQD9YK5AygJYc9suUkYyktWvExGsgT3VKiAa
+	qO2h9b6vzZHOn1ap6Glx+bAAkaQf5Uql57wmgeDTDfrH9/9sstmvf9TYoYaggto=
+X-Google-Smtp-Source: AGHT+IFoFcFBxLwYTXGmXANOC97mvFw7PZV9squyfuKtmaABij+gT0sLLCatjYYhzbO+aUmnpRulcA==
+X-Received: by 2002:a05:6a00:18a1:b0:6dd:c61e:2026 with SMTP id x33-20020a056a0018a100b006ddc61e2026mr3771217pfh.9.1706504196508;
+        Sun, 28 Jan 2024 20:56:36 -0800 (PST)
+Received: from dread.disaster.area (pa49-181-38-249.pa.nsw.optusnet.com.au. [49.181.38.249])
+        by smtp.gmail.com with ESMTPSA id c24-20020aa78c18000000b006dddd283526sm4893266pfd.53.2024.01.28.20.56.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Jan 2024 20:56:35 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1rUJgw-00Gj5q-2H;
+	Mon, 29 Jan 2024 15:56:18 +1100
+Date: Mon, 29 Jan 2024 15:56:18 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: Mike Snitzer <snitzer@redhat.com>
+Cc: Mike Snitzer <snitzer@kernel.org>, Matthew Wilcox <willy@infradead.org>,
+	Ming Lei <ming.lei@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, Don Dutile <ddutile@redhat.com>,
+	Raghavendra K T <raghavendra.kt@linux.vnet.ibm.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>
+Subject: Re: [RFC PATCH] mm/readahead: readahead aggressively if read drops
+ in willneed range
+Message-ID: <Zbcv8tKISFYRaMye@dread.disaster.area>
+References: <20240128142522.1524741-1-ming.lei@redhat.com>
+ <ZbbPCQZdazF7s0_b@casper.infradead.org>
+ <ZbbfXVg9FpWRUVDn@redhat.com>
+ <ZbbvfFxcVgkwbhFv@casper.infradead.org>
+ <CAH6w=aw_46Ker0w8HmSA41vUUDKGDGC3gxBFWAhd326+kEtrNg@mail.gmail.com>
+ <ZbcDvTkeDKttPfJ4@dread.disaster.area>
+ <CAH6w=azbfYCbC6m-bh-yUt3HMUe-EnWPV71P+Z=jeNwMU5aHaQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAH6w=azbfYCbC6m-bh-yUt3HMUe-EnWPV71P+Z=jeNwMU5aHaQ@mail.gmail.com>
 
-On Sat, 27 Jan 2024 18:31:03 -0800
-> Hello,
+On Sun, Jan 28, 2024 at 09:12:12PM -0500, Mike Snitzer wrote:
+> On Sun, Jan 28, 2024 at 8:48 PM Dave Chinner <david@fromorbit.com> wrote:
+> >
+> > On Sun, Jan 28, 2024 at 07:39:49PM -0500, Mike Snitzer wrote:
+> > > On Sun, Jan 28, 2024 at 7:22 PM Matthew Wilcox <willy@infradead.org> wrote:
+> > > >
+> > > > On Sun, Jan 28, 2024 at 06:12:29PM -0500, Mike Snitzer wrote:
+> > > > > On Sun, Jan 28 2024 at  5:02P -0500,
+> > > > > Matthew Wilcox <willy@infradead.org> wrote:
+> > > > Understood.  But ... the application is asking for as much readahead as
+> > > > possible, and the sysadmin has said "Don't readahead more than 64kB at
+> > > > a time".  So why will we not get a bug report in 1-15 years time saying
+> > > > "I put a limit on readahead and the kernel is ignoring it"?  I think
+> > > > typically we allow the sysadmin to override application requests,
+> > > > don't we?
+> > >
+> > > The application isn't knowingly asking for readahead.  It is asking to
+> > > mmap the file (and reporter wants it done as quickly as possible..
+> > > like occurred before).
+> >
+> > .. which we do within the constraints of the given configuration.
+> >
+> > > This fix is comparable to Jens' commit 9491ae4aade6 ("mm: don't cap
+> > > request size based on read-ahead setting") -- same logic, just applied
+> > > to callchain that ends up using madvise(MADV_WILLNEED).
+> >
+> > Not really. There is a difference between performing a synchronous
+> > read IO here that we must complete, compared to optimistic
+> > asynchronous read-ahead which we can fail or toss away without the
+> > user ever seeing the data the IO returned.
+> >
+> > We want required IO to be done in as few, larger IOs as possible,
+> > and not be limited by constraints placed on background optimistic
+> > IOs.
+> >
+> > madvise(WILLNEED) is optimistic IO - there is no requirement that it
+> > complete the data reads successfully. If the data is actually
+> > required, we'll guarantee completion when the user accesses it, not
+> > when madvise() is called.  IOWs, madvise is async readahead, and so
+> > really should be constrained by readahead bounds and not user IO
+> > bounds.
+> >
+> > We could change this behaviour for madvise of large ranges that we
+> > force into the page cache by ignoring device readahead bounds, but
+> > I'm not sure we want to do this in general.
+> >
+> > Perhaps fadvise/madvise(willneed) can fiddle the file f_ra.ra_pages
+> > value in this situation to override the device limit for large
+> > ranges (for some definition of large - say 10x bdi->ra_pages) and
+> > restore it once the readahead operation is done. This would make it
+> > behave less like readahead and more like a user read from an IO
+> > perspective...
 > 
-> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-> INFO: task hung in hci_conn_failed
-> 
-> INFO: task kworker/u5:2:5062 blocked for more than 143 seconds.
->       Not tainted 6.8.0-rc1-syzkaller-g8a696a29c690-dirty #0
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:kworker/u5:2    state:D stack:27840 pid:5062  tgid:5062  ppid:2      flags:0x00004000
-> Workqueue: hci5 hci_cmd_sync_work
-> Call Trace:
->  <TASK>
->  context_switch kernel/sched/core.c:5400 [inline]
->  __schedule+0xf12/0x5c00 kernel/sched/core.c:6727
->  __schedule_loop kernel/sched/core.c:6802 [inline]
->  schedule+0xe9/0x270 kernel/sched/core.c:6817
->  schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6874
->  __mutex_lock_common kernel/locking/mutex.c:684 [inline]
->  __mutex_lock+0x5b9/0x9d0 kernel/locking/mutex.c:752
->  hci_connect_cfm include/net/bluetooth/hci_core.h:1983 [inline]
->  hci_conn_failed+0x158/0x370 net/bluetooth/hci_conn.c:1289
->  hci_abort_conn_sync+0x7f8/0xb70 net/bluetooth/hci_sync.c:5356
->  abort_conn_sync+0x187/0x390 net/bluetooth/hci_conn.c:2988
->  hci_cmd_sync_work+0x1a4/0x410 net/bluetooth/hci_sync.c:306
->  process_one_work+0x886/0x15d0 kernel/workqueue.c:2633
->  process_scheduled_works kernel/workqueue.c:2706 [inline]
->  worker_thread+0x8b9/0x1290 kernel/workqueue.c:2787
->  kthread+0x2c6/0x3a0 kernel/kthread.c:388
->  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
->  </TASK>
-> 
-> Showing all locks held in the system:
-> 2 locks held by kworker/0:1/9:
-> 2 locks held by kworker/u4:0/11:
->  #0: ffff888013089938 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x789/0x15d0 kernel/workqueue.c:2608
->  #1: ffffc90000107d80 (connector_reaper_work){+.+.}-{0:0}, at: process_one_work+0x7eb/0x15d0 kernel/workqueue.c:2609
-> 3 locks held by kworker/1:1/27:
-> 1 lock held by khungtaskd/29:
->  #0: ffffffff8d1acba0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
->  #0: ffffffff8d1acba0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:750 [inline]
->  #0: ffffffff8d1acba0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x75/0x340 kernel/locking/lockdep.c:6614
-> 6 locks held by kworker/u5:0/51:
->  #0: ffff88802a730d38 ((wq_completion)hci2){+.+.}-{0:0}, at: process_one_work+0x789/0x15d0 kernel/workqueue.c:2608
->  #1: ffffc90000bc7d80 ((work_completion)(&hdev->cmd_sync_work)){+.+.}-{0:0}, at: process_one_work+0x7eb/0x15d0 kernel/workqueue.c:2609
->  #2: ffff888020989060 (&hdev->req_lock){+.+.}-{3:3}, at: hci_cmd_sync_work+0x170/0x410 net/bluetooth/hci_sync.c:305
->  #3: ffff888020988078 (&hdev->lock){+.+.}-{3:3}, at: hci_abort_conn_sync+0x150/0xb70 net/bluetooth/hci_sync.c:5337
->  #4: ffffffff8ef23348 (hci_cb_list_lock){+.+.}-{3:3}, at: hci_connect_cfm include/net/bluetooth/hci_core.h:1983 [inline]
->  #4: ffffffff8ef23348 (hci_cb_list_lock){+.+.}-{3:3}, at: hci_conn_failed+0x158/0x370 net/bluetooth/hci_conn.c:1289
->  #5: ffffffff8d1b83f8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:324 [inline]
->  #5: ffffffff8d1b83f8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x3ff/0x800 kernel/rcu/tree_exp.h:995
-> 3 locks held by kworker/1:2/779:
->  #0: ffff8880b993ccd8 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x29/0x130 kernel/sched/core.c:559
->  #1: ffffc900038c7d80 ((work_completion)(&aux->work)#2){+.+.}-{0:0}, at: process_one_work+0x7eb/0x15d0 kernel/workqueue.c:2609
->  #2: ffff888052984c80 (&aux->poke_mutex){+.+.}-{3:3}, at: __fd_array_map_delete_elem+0x125/0x2f0 kernel/bpf/arraymap.c:884
+> I'm not going to pretend like I'm an expert in this code or all the
+> distinctions that are in play.  BUT, if you look at the high-level
+> java reproducer: it is requesting mmap of a finite size, starting from
+> the beginning of the file:
+> FileChannel fc = new RandomAccessFile(new File(args[0]), "rw").getChannel();
+> MappedByteBuffer mem = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
 
-Could locking people shed any light on the failure of detecting the
-poke_mutex with rq lock held?
+Mapping an entire file does not mean "we are going to access the
+entire file". Lots of code will do this, especially those that do
+random accesses within the file.
 
-> 2 locks held by kworker/u4:7/2797:
-> 2 locks held by kworker/u4:9/2812:
->  #0: ffff888013089938 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x789/0x15d0 kernel/workqueue.c:2608
->  #1: ffffc9000a05fd80 ((reaper_work).work){+.+.}-{0:0}, at: process_one_work+0x7eb/0x15d0 kernel/workqueue.c:2609
-> 5 locks held by kworker/u5:1/4456:
->  #0: ffff888021b4a138 ((wq_completion)hci0){+.+.}-{0:0}, at: process_one_work+0x789/0x15d0 kernel/workqueue.c:2608
->  #1: ffffc9000d7dfd80 ((work_completion)(&hdev->cmd_sync_work)){+.+.}-{0:0}, at: process_one_work+0x7eb/0x15d0 kernel/workqueue.c:2609
->  #2: ffff88806a001060 (&hdev->req_lock){+.+.}-{3:3}, at: hci_cmd_sync_work+0x170/0x410 net/bluetooth/hci_sync.c:305
->  #3: ffff88806a000078 (&hdev->lock){+.+.}-{3:3}, at: hci_abort_conn_sync+0x150/0xb70 net/bluetooth/hci_sync.c:5337
->  #4: ffffffff8d1b83f8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:324 [inline]
->  #4: ffffffff8d1b83f8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x3ff/0x800 kernel/rcu/tree_exp.h:995
-> 3 locks held by udevd/4512:
-> 2 locks held by getty/4813:
->  #0: ffff88802e7980a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x24/0x80 drivers/tty/tty_ldisc.c:243
->  #1: ffffc9000311b2f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0xfc6/0x1490 drivers/tty/n_tty.c:2201
-> 5 locks held by kworker/u5:2/5062:
->  #0: ffff88802271a938 ((wq_completion)hci5){+.+.}-{0:0}, at: process_one_work+0x789/0x15d0 kernel/workqueue.c:2608
->  #1: ffffc900041cfd80 ((work_completion)(&hdev->cmd_sync_work)){+.+.}-{0:0}, at: process_one_work+0x7eb/0x15d0 kernel/workqueue.c:2609
->  #2: ffff888019ff1060 (&hdev->req_lock){+.+.}-{3:3}, at: hci_cmd_sync_work+0x170/0x410 net/bluetooth/hci_sync.c:305
->  #3: ffff888019ff0078 (&hdev->lock){+.+.}-{3:3}, at: hci_abort_conn_sync+0x150/0xb70 net/bluetooth/hci_sync.c:5337
->  #4: ffffffff8ef23348 (hci_cb_list_lock){+.+.}-{3:3}, at: hci_connect_cfm include/net/bluetooth/hci_core.h:1983 [inline]
->  #4: ffffffff8ef23348 (hci_cb_list_lock){+.+.}-{3:3}, at: hci_conn_failed+0x158/0x370 net/bluetooth/hci_conn.c:1289
-> 2 locks held by kworker/0:3/5070:
-> 2 locks held by kworker/1:4/5071:
->  #0: ffff8880b993ccd8 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x29/0x130 kernel/sched/core.c:559
->  #1: ffff8880b9928a08 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_switch+0x2d9/0x900 kernel/sched/psi.c:988
-> 3 locks held by kworker/1:5/5493:
-> 3 locks held by kworker/1:6/5497:
-> 3 locks held by kworker/0:6/5520:
-> 2 locks held by kworker/0:8/5525:
->  #0: ffff8880b983ccd8 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x29/0x130 kernel/sched/core.c:559
->  #1: ffff8880b9828a08 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_switch+0x2d9/0x900 kernel/sched/psi.c:988
-> 1 lock held by dhcpcd/20169:
->  #0: ffff8880581ba130 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1691 [inline]
->  #0: ffff8880581ba130 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: packet_do_bind+0x2c/0xf50 net/packet/af_packet.c:3202
-> 1 lock held by syz-executor.0/21114:
-> 
-> =============================================
-> 
-> 
+> Yet you're talking about the application like it is stabbingly
+> triggering unbounded async reads that can get dropped, etc, etc.  I
+
+I don't know what the application actually does. All I see is a
+microbenchmark that mmaps() a file and walks it sequentially. On a
+system where readahead has been tuned to de-prioritise sequential IO
+performance.
+
+> just want to make sure the subtlety of (ab)using madvise(WILLNEED)
+> like this app does isn't incorrectly attributed to something it isn't.
+> The app really is effectively requesting a user read of a particular
+> extent in terms of mmap, right?
+
+madvise() is an -advisory- interface that does not guarantee any
+specific behaviour. the man page says:
+
+MADV_WILLNEED
+       Expect access in the near future.  (Hence, it might be a good
+       idea to read some pages ahead.)
+
+It says nothing about guaranteeing that all the data is brought into
+memory, or that if it does get brought into memory that it will
+remain there until the application accesses it. It doesn't even
+imply that IO will even be done immediately. Any application
+relying on madvise() to fully populate the page cache range before
+returning is expecting behaviour that is not documented nor
+guaranteed.
+
+Similarly, the fadvise64() man page does not say that WILLNEED will
+bring the entire file into cache:
+
+POSIX_FADV_WILLNEED
+        The specified data will be accessed in the near future.
+
+	POSIX_FADV_WILLNEED  initiates a nonblocking read of the
+	specified region into the page cache.  The amount of data
+	read may be de‐ creased by the kernel depending on virtual
+	memory load.  (A few megabytes will usually be fully
+	satisfied, and more is rarely use‐ ful.)
+
+> BTW, your suggestion to have this app fiddle with ra_pages and then
+
+No, I did not suggest that the app fiddle with anything. I was
+talking about the in-kernel FADV_WILLNEED implementation changing
+file->f_ra.ra_pages similar to how FADV_RANDOM and FADV_SEQUENTIAL
+do to change readahead IO behaviour. That then allows subsequent
+readahead on that vma->file to use a larger value than the default
+value pulled in off the device.
+
+Largely, I think the problem is that the application has set a
+readahead limit too low for optimal sequential performance.
+Complaining that readahead is slow when it has been explicitly tuned
+to be slow doesn't really seem like a problem we can fix with code.
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
 
