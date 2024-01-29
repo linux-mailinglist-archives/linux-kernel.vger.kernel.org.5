@@ -1,175 +1,101 @@
-Return-Path: <linux-kernel+bounces-43144-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43145-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 457D9840C57
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:51:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12FC2840C5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:52:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0F4B2836C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:51:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB7F51F2387D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:52:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AEB615697A;
-	Mon, 29 Jan 2024 16:51:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAEEA157027;
+	Mon, 29 Jan 2024 16:52:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mysnt.onmicrosoft.com header.i=@mysnt.onmicrosoft.com header.b="b8aiJBa8"
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2124.outbound.protection.outlook.com [40.107.21.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E+hVcMcz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2548B25773
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 16:51:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.124
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706547080; cv=fail; b=EnPV6MM1yV2/F9jk/xlHkZpbZAhtZCJ02HIvQo8C885UB58O9vxK3W4Sa+jEyNJWIxjhJ48p5XdQC28HeGBA6HkvJgs19XYFp0lXPTrJKuK+rFs1OTSBHHI9OvqhpzmIJvTjs3ZP/9bwPZ78idtDwjykfY+5EQtcT1yO4VWCX4Y=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706547080; c=relaxed/simple;
-	bh=FmrxWQPSqhkcoGOp+pxsUMxOWtLDictKoUMyb2O09mU=;
-	h=Message-ID:Date:Subject:From:To:Cc:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=qZ+Ne9B3IM3RvXbLmxJ9dty0jBLZPjZ+Qrb+TbBRQr8LzhVhQ8hiKGhyeup12DU9aeD2LOM16uaGE879SOYGQ/XQbz5ltheBJneIOw5uG7v5rOAejTboJ6FBLpvCCTfw8YZKasQyzwnuXzHc+2eY2Orb+5Sbg47ncmUK2MZO5sw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kontron.de; spf=pass smtp.mailfrom=kontron.de; dkim=pass (1024-bit key) header.d=mysnt.onmicrosoft.com header.i=@mysnt.onmicrosoft.com header.b=b8aiJBa8; arc=fail smtp.client-ip=40.107.21.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kontron.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kontron.de
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SvHCbFAws9Su673OevYSK+XyHNj94miGK6mUO061Sdaay6GigvnEYb+01UFyzwbg8Ky0nbRl1bCY5x0QMwTE5B1+WOtqaduM/adshP6XiD+TcmxWqiNgexD63mHZF6R7pJxJG2OgGnPXMgXEPDq4hBgSthZqBLkdUyNCubVKHS43uhLq8QkK6FCNdQDKhjItKSeRZOPJGqPErT7pnLhsBuu40ywG+vuXVnSnWVeC5/mpxR1HGU8F1tDvpa83DHbXZb6mVuTiUnjV5CSRJVVKaF2BlgR1c3MMcZh9B4iWZ3X+Mf1HYTeTsqyatfrSTw/yhGAOu2znuR/r5k7PODNBFw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TW0f5NChj/C3XGpVC2DyoL0eEYoPNYhMSEbJ6vAWtOs=;
- b=bhcqkKvsBGYrj/D34Ad1oaK0biz1X0x1DG0ggyd3+ZanuzxChditljAVUbaSDsPK4s/VzwMQpRLr0ExPxxKFdwgfZYoANKpQhruy4081ZjLVlOrAqNHo1FPHVfq1flr5fQqqjy6uWC9Ga4PNyNkMysZZIbqzjYQfVLUGYsTwQJ3phD0TGKLY2x3MVoEkUX0Bho0iN6IYmYErWrgBHRxV0YQXJH2B0xGX8PAV6p6nrLANdoB/gQkpDJwoyw/ylJGswU97igWGmxL2ozEutOWtVuvNF8Liug+pVY9qJUiutcPyu8/leZjKPKDt8R4Ye14r2+I33KlOXaKZyYwFamp4/w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
- dkim=pass header.d=kontron.de; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
- s=selector2-mysnt-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TW0f5NChj/C3XGpVC2DyoL0eEYoPNYhMSEbJ6vAWtOs=;
- b=b8aiJBa8d83nUwFDtySpzQgoxrIi1t60/f1bZl/6tze1ttMuaFDa/vKiwv1ptpxV5po6f31NhW9Jjpxd/nCLSnZUN/DHUgTFQFltZu850zjUAlqpYY+W2gqv+DxRYHc5KhdGMVdft6JxR5Nitvkg1k6DflaJQIhgw8nNcbvHuCo=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=kontron.de;
-Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:263::10)
- by VI1PR10MB8135.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:800:1d3::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.32; Mon, 29 Jan
- 2024 16:51:12 +0000
-Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::44de:8e9c:72ac:a985]) by PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::44de:8e9c:72ac:a985%6]) with mapi id 15.20.7228.027; Mon, 29 Jan 2024
- 16:51:12 +0000
-Message-ID: <021a118a-5ced-4bf9-b6ea-2a7b1980962b@kontron.de>
-Date: Mon, 29 Jan 2024 17:51:10 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm: bridge: samsung-dsim: Don't use FORCE_STOP_STATE
-Content-Language: en-US, de-DE
-From: Frieder Schrempf <frieder.schrempf@kontron.de>
-To: Dave Airlie <airlied@gmail.com>, Inki Dae <daeinki@gmail.com>
-Cc: Michael Walle <mwalle@kernel.org>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
- Robert Foss <rfoss@kernel.org>, Jagan Teki <jagan@amarulasolutions.com>,
- Andrzej Hajda <andrzej.hajda@intel.com>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Jonas Karlman
- <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>,
- Tim Harvey <tharvey@gateworks.com>,
- Alexander Stein <alexander.stein@ew.tq-group.com>,
- linux-kernel@vger.kernel.org,
- DRI mailing list <dri-devel@lists.freedesktop.org>,
- Daniel Vetter <daniel@ffwll.ch>
-References: <20231113164344.1612602-1-mwalle@kernel.org>
- <631fe35a2a3b00781231e4f3f5094fae@kernel.org>
- <1ef3dad2-5f55-40e5-bba7-3c71d71c12e4@kontron.de>
- <CAAQKjZMccDwa63_PNJCP0rNOaHjTwcOz8AbKa=JXLQi-b0QVVw@mail.gmail.com>
- <2400535875c353ff7208be2d86d4556f@kernel.org>
- <ZZ1BBO2nNSp3g-gT@phenom.ffwll.local>
- <CAAQKjZNnJQDn_r1+WNmsxM-2O48O0+yWAUAqpjZRjMYMT3xGwg@mail.gmail.com>
- <CAPM=9tytMB9frxNeD08hu1qsusY=wEE3bJOFmUgA1rSpabwDpg@mail.gmail.com>
- <49b26e7b-0205-45c6-b7ab-8424c20d3f6c@kontron.de>
-In-Reply-To: <49b26e7b-0205-45c6-b7ab-8424c20d3f6c@kontron.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR0P281CA0013.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:15::18) To PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:102:263::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC137664D2;
+	Mon, 29 Jan 2024 16:51:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706547120; cv=none; b=jO9+j/GnjDgPsYGbjph0vAepTA6lFNKAzUFeYiXl+lxNS0MOGpvhHAdMPxSGgsVapoky9pzCpeYgRaszkcwFY5UgGYUcmgQsppGKAmh31jGOsjqhyaua4lymuu2girGKMUTZ0y4U+Sv0ezkuPBK6c+E2W7p46NId65/I7gb04LY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706547120; c=relaxed/simple;
+	bh=Tere6Vxvz/ed/+qOczM5/zXeFie6UH3FjdtmUEOHVDE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CEBspswqVpXKrq45w5Rp0fpX2s4Rip4r/CoQ6ka7oC1auwFCe8SbnVFoVB1YMfBBc+jEUwI0a7nY5bFLu78JugbA9O0wwhSeE3NQHwx2KUwytMiH2nS4Gn3VwdF/ePbKDFf/uq7zFFLEdNCBt3w+uY6XJkMkeJOcu+K3dZax6CM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E+hVcMcz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C9F4C433C7;
+	Mon, 29 Jan 2024 16:51:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706547119;
+	bh=Tere6Vxvz/ed/+qOczM5/zXeFie6UH3FjdtmUEOHVDE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=E+hVcMczXYoZwjx5iobCvRdHJflXivAr+727+oIPradNseUtwlzkDMBaOmHo17UDf
+	 6jYj1c6sudKkKAcrAEybsZUoVw1iJtz+teX1reyrtHkVR5DRbF+LUgD1JWxZvLaRb5
+	 AyPeurvXiFgSUQtSR2jEL/MzDbjaqDAqRRl6YDI2IgA8MY5vQ+qaERRd8rR5C1Pvgp
+	 ZBdSMkTBY91LMIDawr9Pbff2AJeD6YKjwGfNWEvLS9tCayJzgn6YCP84/SNRp7+dej
+	 V1K6l4oidJedDLe6gZSZk+wJhwdrNWhReI9OG2bNS7JgHLkfosCGzIlyNEINWvuHUA
+	 LIOY/ekd3r9kQ==
+Date: Mon, 29 Jan 2024 16:51:54 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Alex Elder <elder@kernel.org>,
+	linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: net: qcom,ipa: do not override
+ firmware-name $ref
+Message-ID: <20240129-anthill-boxcar-a73159ac1c79@spud>
+References: <20240129142121.102450-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PA4PR10MB5681:EE_|VI1PR10MB8135:EE_
-X-MS-Office365-Filtering-Correlation-Id: ed45f619-7345-41c8-f859-08dc20ea7fea
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	ae7QxEQtP0SBovqqPH3QUt9izu5J78UPcocWM+Ooh5iVARfdsdh4NhfC0WWEl7pa33i02iNNDTtmoNyQ1edbUoGhKluA7khZzDQ63E+pJD5uLmu4sUMraeHyyivrQplcoMlpxP35ckIB7sGeZPlLmmYhUqOcUdOqD3ySz9dzmVkiI4Oz56ZWW3TZWEnBVZsYnb/YjPCq2mNYxy7vy1vkVJwP9ADpqA78GFGZ2d+7+X+GR6hF56/alq+QQm9EJLnb/xpmlUc8ysdtqGEfnC5qCdXUbOql8ANpfBtS+GYW7rX6P6KYNvfhtDiGmDA7a1qbr3FDCB6ZZY1zWuBeua5ynLetjrJcgOHU40nfBOjUKTAVFoXrU3wGmWJ6espo0utx2WxVGXwsgXTrKM8Llt9tB12Q/qdCVyKPOrU76DM3mT0sdhnFWe5hANbtUcDEKmZu3mehridg+Kx8Sw23b1I+7GFChuDcwt07p/2DsDuxeqowhln6GAcUlbv7n6YWAXfL59jbcQO49P8H7xBM+Y5hQXjHN81+KphAeeVhQIXyDw6oxB0VBwQGjTyZ2efZYaeitVuTcpM5+SylTj0NIfYMSLab8xtdbPNTHauz0ckuWIBlY2ZYqmDxUiRxIhYiCTBoLuZwPuWgu2Ezat4HtnmYDg==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(346002)(376002)(136003)(39860400002)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(26005)(86362001)(6506007)(53546011)(6486002)(31696002)(54906003)(316002)(66946007)(110136005)(66556008)(478600001)(66476007)(2616005)(6512007)(8936002)(4326008)(8676002)(44832011)(38100700002)(31686004)(5660300002)(7416002)(4744005)(2906002)(41300700001)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?SURPOWFLUEVkU2FKL3JiSVZPR2VFSUhXakFORCtkZDZ1SFdTUENPVmZUblNT?=
- =?utf-8?B?UU5yb0d6ZlhXTEJ2T2pQTUFkRjFRcHNObk1FSy9KT2t6R01mbHhDNFkrT0Ex?=
- =?utf-8?B?K1Y1VjlzUzMxSUhzZHY1dkt1NlRaYVgxNUl4MVVEbUUwVlJCQVdyUm5FYUs4?=
- =?utf-8?B?VGYxVU5za29PSkc1SWt0TkhibGtOVkVxN2lOUUpqajI5Q2lZbEF0YkRXSm9z?=
- =?utf-8?B?M2xDY1JJeEhwdm9lQ1RjY1owbzdyb09iUEl6NGFYd3hkMXIxdUhqU0paSmJu?=
- =?utf-8?B?TUFUTnMwYUJYdVhCTkxCZjQySGhlUVVzZ2NvNUdpVjRYK2dhQkh2MmVqdnpP?=
- =?utf-8?B?Ty9vYitmYVBnS1o3enRLMUFMVStqV0Jvam4zZ1BNRVRWd0hVT25MbmlBQU1z?=
- =?utf-8?B?OWRsWEd1bHBDV3YrL05SRjNwK3krSXoxQWlOZU9Dc21uWW1IZkNKWWRmQVlC?=
- =?utf-8?B?VUhVVE1odGxoZFd6dXVyZVgrOVMwZTdTOXpEd2l5SlNLMElUeDVyWS8rTzFj?=
- =?utf-8?B?U3l6bnpmdC8vZlhJdEx0N05oWkpMS1VoMUxiemEvcW04TisyRW4yUlViYzBQ?=
- =?utf-8?B?Wk8xQ2NqNW1QSVF0eVZnWU16Qld2QUpWdXQza3BBZHJFYzRxb0FNbXlPYWx6?=
- =?utf-8?B?NWhScTlQcTlOaFBLdnJtZ08yQXlrdW5DY09yS3ZhU0tiQXFhWGVsVlVIMjFT?=
- =?utf-8?B?NWdObTVhYTlCOVpXd1ZVbGVOUHB3TDQwVnB0MTBGbGt2Yk02RjNpVTZBMk1U?=
- =?utf-8?B?UTYxK2RvZlRwVXR5NU5wT3BkYkFKS1psWVIxZlRBb0Q5RHBXeGkydDJJV3lv?=
- =?utf-8?B?V0EvRCtwYUwrcU9DSzcxcWN2Nmx6NFBKaEhISitJQnFseC82Q3piYUpZL2NT?=
- =?utf-8?B?aFJhUkJ5d1NFc0VZTXFMZ1VzVGZBWUVnWEw2RXdsTEVmQ1JUbG1UQ2NiYVFp?=
- =?utf-8?B?NFZ2YitLM3p5aWtOVTR0ZlhGcEV5VTZmYXpnUDVYaFFUTzhxL01PejZsbEYw?=
- =?utf-8?B?c1VrN3hmNVJtVU9uYjN6ZkVNR0tKM1NtTTMySURyUGtOWnFnYmI5TEk4ZzEx?=
- =?utf-8?B?SyswVlN4MXpkVXYvM0kyczQ2VmxObmQ4RHpLWEt4QS8vNjNmUEMzSmZDeFVk?=
- =?utf-8?B?VkxLbExLTG1XZ3NyVnhaZ0RQbzRQU3VVQ2Y4VCtsNjVYUUdEMFY5ZTArTHIx?=
- =?utf-8?B?ZEY5dGJOQ1dPREpxci8yU0w1Z20ranVNZUVwcTQvVUVVamZlQlcvY3U4SkpN?=
- =?utf-8?B?R0VLQmZoSFgvL2FRUlhKMmRVT2xPcHJWODVWbkY0VmNzL0pMc1IvYmZrV0Qr?=
- =?utf-8?B?cU9yMndONVlieXM3NGxoL01JN3k4TE90R1hQVWVKMjBSMk9RbHplNWEyL1FJ?=
- =?utf-8?B?QlhaUWpWQldOR3ZobGR6cHBKQThIUmJIS1RDY3g1cUhwdndqWjJ2NWNEdkVK?=
- =?utf-8?B?dzJydXBXMC9EeGJzRTRFaFptcERlYk5UanIxcHJpaTNUV1hta3Exazg0ZW5G?=
- =?utf-8?B?RVRhSzFkL21tU2V1TVpFdEZ0V2xyZEEyVUY1dWpkS2RLOWhYZmE2Sy9NS0pp?=
- =?utf-8?B?dDd5U0picXdzRjJaNGpYR3FIUDhpT3ROS0wvUEFRcDJkSDRNMW1ndHBoOGVV?=
- =?utf-8?B?cnk4UnVOUU5GUzlGYnREU1ZZZ2NNNG8wUWhyOFd0Y1hCQ0UvelF2ckhKSmRo?=
- =?utf-8?B?UHV1UTdrK0RRMjJ1MW54dlBySTFhNEM5OEdQNVhQckdxcHY3dnl0Vlh5U2JN?=
- =?utf-8?B?WTZGbUhzMlY2ZUN4cEFsSUVUWmgzYS9ua1UwbUVOMHNRL1RlQjVSSmZpSnJu?=
- =?utf-8?B?WEppYVd4WVdJVXgxeHQ3UE9ocHdxTXpYRDkraEprdTRMaUlnMjl3S1dKZi9C?=
- =?utf-8?B?aElrVEJNRFIyM25BaUNndDVqbmw2UVVHQkE3c3NUT3F5dDBhOVBINjlvOXRr?=
- =?utf-8?B?UGFWaXgvT0xKN0xJMGJCcUJjUGw1K0crSnRySXpnTVRnaDVoOWFvQjNudk5R?=
- =?utf-8?B?Zzd0TXl2SVJsbjA1NElIczNTWVJpTkdJRU5LOVhXQy9KdDNPOWg2SkptQUFi?=
- =?utf-8?B?aVdMRTBCcEF4Nk9qTDVuUEZuUkpYbm9QNUJzNWNVZWp5SXBXSFJPSWNSVDlQ?=
- =?utf-8?B?ZVZON1Q5Vml1bGhJc3VQaDhQRXlJa20va3hGaTZCTmprS0hSME9xUmc0UnFh?=
- =?utf-8?B?a3c9PQ==?=
-X-OriginatorOrg: kontron.de
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed45f619-7345-41c8-f859-08dc20ea7fea
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2024 16:51:12.1350
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OICG7vJCgYINc3aw8OADTvuSjzrvhY9tkCBeXHVoZlj3O5DpUwYpLBN1rQw4nWW1gU45sO9Ba+NSEI23evjSPxC6iaLsI5btlP1kCQW2SGs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR10MB8135
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="sjsnelgbeNpCDbvr"
+Content-Disposition: inline
+In-Reply-To: <20240129142121.102450-1-krzysztof.kozlowski@linaro.org>
 
-On 29.01.24 10:20, Frieder Schrempf wrote:
-> On 26.01.24 19:28, Dave Airlie wrote:
->> Just FYI this conflictted pretty heavily with drm-misc-next changes in
->> the same area, someone should check drm-tip has the correct
->> resolution, I'm not really sure what is definitely should be.
->>
->> Dave.
-> 
-> Thanks! I took a quick look at what is now in Linus' tree and it looks
-> correct to me. The only thing I'm missing is my Reviewed-by tag which
-> got lost somewhere, but I can get over that.
 
-Apparently I missed the point here. I was looking at the wrong trees
-(drm-next and master instead of drm-misc-next and drm-tip). Sorry for
-the noise. Michael already pointed out the correct details.
+--sjsnelgbeNpCDbvr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Jan 29, 2024 at 03:21:21PM +0100, Krzysztof Kozlowski wrote:
+> dtschema package defines firmware-name as string-array, so individual
+> bindings should not make it a string but instead just narrow the number
+> of expected firmware file names.
+>=20
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+Cheers,
+Conor.
+
+
+--sjsnelgbeNpCDbvr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbfXqQAKCRB4tDGHoIJi
+0lfXAQC1ejpO+kSb2Dfpi4BzRds5tGo/fgK/EdsP/ySoLnyhrQEA28RolBg1YnvV
+IRrIGSK94JgSp+hJqsKTpBnHMmxKXgU=
+=uGjc
+-----END PGP SIGNATURE-----
+
+--sjsnelgbeNpCDbvr--
 
