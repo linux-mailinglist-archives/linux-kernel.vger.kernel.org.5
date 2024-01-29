@@ -1,104 +1,165 @@
-Return-Path: <linux-kernel+bounces-43568-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43570-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C18E9841598
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 23:24:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2942F84159C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 23:25:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E0B2B224FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 22:24:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E63D1C23BEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 22:25:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C3AB15A483;
-	Mon, 29 Jan 2024 22:24:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E910159576;
+	Mon, 29 Jan 2024 22:25:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ck2k0fZw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="SSbb6sj/"
+Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACD21604C5;
-	Mon, 29 Jan 2024 22:24:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C12CA158D99
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 22:25:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706567059; cv=none; b=SfCuUhB17tOT1m7HkIvKvcDmwGHHWsOA2d/gHBi7/Mr6SmXqaYntHZRlNVxWr4ZjgA/W/57uJYaYXFnLWR57V/uUaxni6B/+B+iSIzTkOoXSXJV8LEtH8j4kSIWgI4v4bjuSFC3AiHAcMbZXwmgox0pDeXQvKK/OQtSkZS8IGik=
+	t=1706567143; cv=none; b=TrKT4UxkL5SHQiOuziNrX4PRbmnM//w0UE1IX+8wC/uMElRsCqMX2jse/7U+Vb4kplTF4tI6fibX9HbJZLXHPEtDCAx1L6f+tHvPh5dcMxsRgZTR+Wt6uTS1T5Vq4zLJNngEy/KA1MYRKrKgfhoNxUyMKQwYQ11fobJlGfEwCLw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706567059; c=relaxed/simple;
-	bh=ybFG/1Z4KxjabyhfsG3KnCV0yC0WVemE8bZH31BWBWs=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=LKCkAd4RSdtnwguZOzkaRwvaEJdX4xNP7lq6EKac4pXwJmonhMuQ3eTX2GOCZ4An8PmO+OY3r75/9LsiffqmEDKXOPN9hacN+2aZsA+zjcccQPgEb+7eSZfiasq4/AyLAppj28rQv4LrLLQyMrAKjGPwrIoA4WbOiWtMoIb5/Tk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ck2k0fZw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37A73C433C7;
-	Mon, 29 Jan 2024 22:24:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706567059;
-	bh=ybFG/1Z4KxjabyhfsG3KnCV0yC0WVemE8bZH31BWBWs=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=Ck2k0fZwm/Pk8pIi0KJeREyhovqDDsGwMIZgTbTDEMIvOq+jcsS6gwzg6tSqm2yg/
-	 Un7ZiJ28Dy5HREDsy3riYcb7eyEhabvcj1iKQ4sPAxSVHGGGB0HE/fsf2aBy4FAhMQ
-	 pEC7ux/ujiSzz8Y7i5g4gIQxwMxX5NHtu9xqWz+Qb4x2l05G7BsmL3oMOh4m6siavA
-	 TCiOXzOQdnUGZzjSpIyAukY0UNO5mkt2X8Sy5TzavFpMOQQLgruDl//y/D89GDN+T+
-	 JkRoApJbNDyjseUhath0mAq9O1iHmGXNMri1QlN1mzR6hlIcdcMBI3yBc8XFxF9QZ+
-	 VFCMG08qKy0mw==
-Date: Mon, 29 Jan 2024 16:24:17 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Thomas Richard <thomas.richard@bootlin.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Andy Shevchenko <andy@kernel.org>, Tony Lindgren <tony@atomide.com>,
-	Haojian Zhuang <haojian.zhuang@linaro.org>,
-	Vignesh R <vigneshr@ti.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
-	Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
-	Vinod Koul <vkoul@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Tom Joseph <tjoseph@cadence.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-	linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
-	linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
-	theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com,
-	u-kumar1@ti.com
-Subject: Re: [PATCH v2 13/15] PCI: cadence: add resume support to
- cdns_pcie_host_setup()
-Message-ID: <20240129222417.GA477936@bhelgaas>
+	s=arc-20240116; t=1706567143; c=relaxed/simple;
+	bh=9WFxEDtj6oqii1H2ZC+yUNwxmBiIaPxWMCAeynATpXo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sJ48A1/y5ovkDS8XEfIM2ps4Rw62y5TIgvgq2nxhnn4n+DJSw5g5cSyNpWBbwbHh6V15UR/qy4N87VMBuPoji4vW3iLO4eCFHobWICQZ7jmRg5nJpL+k+rOhNJmDwH6bVWye8FYGnNk8UblOxQRK5u5Kl0ChrkD6YUJx73LYUmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SSbb6sj/; arc=none smtp.client-ip=209.85.160.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-42a7765511bso27491cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 14:25:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706567139; x=1707171939; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4mdCPUKoIVhBRVBAt+UHLaSJZg2VQOPHD/VbN5Tg7Oc=;
+        b=SSbb6sj/sNzQYrd4jl/5aK7V/5YJD0d3HzDooAVqfMbYWfBtRkmxexSVu0IiiA0RoU
+         851Gws+eFc/GjQQ4ueSKacGs53mQtUsnj3RZDzi/7pyeJKopRfTbX2FvQjMyzLj8L/HB
+         KScw0OsB/I9T5ZQukQyuN4HTVH0ZEySVagWLg8m5Sma8xvNACoGnFoyJ+F7DJeqRNADA
+         t+MB9MOWePHJHFaSw2Y0RQdmjyjO19Iv12FcHn0duWXc1glht8EEIio8pyJwvP9vd4hO
+         g4kSpkKZqEVCYZkKF0rOG9oLmOGO601aLgwgOS3tJcH/FoE8Qmz2eoHEzBU6VZFowc6U
+         2FzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706567139; x=1707171939;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4mdCPUKoIVhBRVBAt+UHLaSJZg2VQOPHD/VbN5Tg7Oc=;
+        b=uqD8o0Y7Dzjkykfk1Lps9Ao/H0T6Fvd5aGSqR1w0jbVowfaO1QbGnSWrNznJ9qm6jE
+         JCEUsQXsOogcxf9RHe+hC2V4ZnePJvQ2L/RA8RMYBuukaq2DqVi749Sj7At3SaJuZds/
+         BtMSZl26naWEy8+hcM8kP3zWTCGKCMLyO3RtxjAVu7PbppkjcdgERF6kacDj7hab9PYU
+         p1Xcez83Y+WoFMsv4RJ4jg9VeGRyDZwA0+3opfU0r52iD5vDL+jYwtJXT64GB6e6nU53
+         VJg14DrBUsUsJ3KIhB/q0eAxEAI+YvTGFqmYvJB4B91JFay9lDgVfjl79cw7/0z/Qz0s
+         m3KA==
+X-Gm-Message-State: AOJu0Yz0QiTXQ5MQmTsIUf+tHGZk3dr9ph7exU7QIo+FWJm2Lq4dV28W
+	9mKx+0t6tMpgvM+zM9V/EKlIsFCUPZeiZAt+dx/9seNxSmSE+pnVBRKAF2A62v0h24YzNUIp+S/
+	G4hkqAgK5BPq19TtCb6TKpyPCJ3QnitZRFMIQ
+X-Google-Smtp-Source: AGHT+IEKPLC8FP3KN5kmdAvJzmMvRg7tW3fa6XSk1BQM5ezj9Lc933d0Ukw4+BUisvUPJGQh3OC952raVMhPdnBJjxs=
+X-Received: by 2002:ac8:5c43:0:b0:42a:a9c7:271f with SMTP id
+ j3-20020ac85c43000000b0042aa9c7271fmr25035qtj.11.1706567139419; Mon, 29 Jan
+ 2024 14:25:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240129221647.GA477676@bhelgaas>
+References: <20240129211912.3068411-1-peter.griffin@linaro.org> <20240129211912.3068411-3-peter.griffin@linaro.org>
+In-Reply-To: <20240129211912.3068411-3-peter.griffin@linaro.org>
+From: Saravana Kannan <saravanak@google.com>
+Date: Mon, 29 Jan 2024 14:25:03 -0800
+Message-ID: <CAGETcx8UsseQAHc76QaMxgMUe7cwajZVdYLA2uwpZxF90RLjJQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] watchdog: s3c2410_wdt: use exynos_get_pmu_regmap_by_phandle()
+ for PMU regs
+To: Peter Griffin <peter.griffin@linaro.org>
+Cc: arnd@arndb.de, krzysztof.kozlowski@linaro.org, linux@roeck-us.net, 
+	wim@linux-watchdog.org, alim.akhtar@samsung.com, jaewon02.kim@samsung.com, 
+	semen.protsenko@linaro.org, kernel-team@android.com, tudor.ambarus@linaro.org, 
+	andre.draszik@linaro.org, willmcvicker@google.com, linux-fsd@tesla.com, 
+	linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-samsung-soc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 29, 2024 at 04:16:49PM -0600, Bjorn Helgaas wrote:
-> On Fri, Jan 26, 2024 at 03:43:39PM -0600, Bjorn Helgaas wrote:
-> > On Fri, Jan 26, 2024 at 03:36:55PM +0100, Thomas Richard wrote:
-> > > From: Théo Lebrun <theo.lebrun@bootlin.com>
-> > > 
-> > > That function mixes probe structure init and hardware config.
-> > > The whole hardware config part must be done at resume after a suspend to
-> > > ram.
-> > > We therefore pass it a boolean flag determining if we are at probe or at
-> > > resume.
-> > ...
+On Mon, Jan 29, 2024 at 1:19=E2=80=AFPM Peter Griffin <peter.griffin@linaro=
+org> wrote:
+>
+> Obtain the PMU regmap using the new API added to exynos-pmu driver rather
+> than syscon_regmap_lookup_by_phandle(). As this driver no longer depends
+> on mfd syscon remove that header and Kconfig dependency.
+>
+> Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
+> ---
+>  drivers/watchdog/Kconfig       | 1 -
+>  drivers/watchdog/s3c2410_wdt.c | 9 +++++----
+>  2 files changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+> index 7d22051b15a2..d78fe7137799 100644
+> --- a/drivers/watchdog/Kconfig
+> +++ b/drivers/watchdog/Kconfig
+> @@ -512,7 +512,6 @@ config S3C2410_WATCHDOG
+>         tristate "S3C6410/S5Pv210/Exynos Watchdog"
+>         depends on ARCH_S3C64XX || ARCH_S5PV210 || ARCH_EXYNOS || COMPILE=
+_TEST
+>         select WATCHDOG_CORE
+> -       select MFD_SYSCON if ARCH_EXYNOS
+>         help
+>           Watchdog timer block in the Samsung S3C64xx, S5Pv210 and Exynos
+>           SoCs. This will reboot the system when the timer expires with
+> diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wd=
+t.c
+> index 349d30462c8c..a1e2682c7e57 100644
+> --- a/drivers/watchdog/s3c2410_wdt.c
+> +++ b/drivers/watchdog/s3c2410_wdt.c
+> @@ -24,9 +24,9 @@
+>  #include <linux/slab.h>
+>  #include <linux/err.h>
+>  #include <linux/of.h>
+> -#include <linux/mfd/syscon.h>
+>  #include <linux/regmap.h>
+>  #include <linux/delay.h>
+> +#include <linux/soc/samsung/exynos-pmu.h>
+>
+>  #define S3C2410_WTCON          0x00
+>  #define S3C2410_WTDAT          0x04
+> @@ -699,11 +699,12 @@ static int s3c2410wdt_probe(struct platform_device =
+*pdev)
+>                 return ret;
+>
+>         if (wdt->drv_data->quirks & QUIRKS_HAVE_PMUREG) {
+> -               wdt->pmureg =3D syscon_regmap_lookup_by_phandle(dev->of_n=
+ode,
+> -                                               "samsung,syscon-phandle")=
+;
+> +
+> +               wdt->pmureg =3D exynos_get_pmu_regmap_by_phandle(dev->of_=
+node,
+> +                                                "samsung,syscon-phandle"=
+);
 
-> > It'd be super nice to have them the same.  Passing in a "probe" flag
-> > works but seems a little harder to read in cdns_pcie_host_setup() and
-> > you have to keep track of what it means in the callers.
-> 
-> Maybe a better way to say this is that this patch uses the "probe"
-> flag to select the behavior of cdns_pcie_host_setup(), and I think it
-> would be nicer to split those two behaviors into separate functions.
+IIUC, the exynos PMU driver is registering a regmap interface with
+regmap framework. So, can't we get the remap from the framework
+instead of directly talking to the PMU driver?
 
-Oops, sorry, Andy, I wrote this before I saw your similar response
-from last Friday.  Didn't mean to repeat what you already said!
+-Saravana
 
-Bjorn
+>                 if (IS_ERR(wdt->pmureg))
+>                         return dev_err_probe(dev, PTR_ERR(wdt->pmureg),
+> -                                            "syscon regmap lookup failed=
+\n");
+> +                                            "PMU regmap lookup failed.\n=
+");
+>         }
+>
+>         wdt_irq =3D platform_get_irq(pdev, 0);
+> --
+> 2.43.0.429.g432eaa2c6b-goog
+>
 
