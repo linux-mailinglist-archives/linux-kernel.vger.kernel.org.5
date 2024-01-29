@@ -1,187 +1,204 @@
-Return-Path: <linux-kernel+bounces-43389-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43390-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B30384130D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 20:06:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAC27841316
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 20:09:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F3E9D1F258BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:06:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4AA42B22927
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:09:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2E9B3C060;
-	Mon, 29 Jan 2024 19:06:30 +0000 (UTC)
-Received: from cae.in-ulm.de (cae.in-ulm.de [217.10.14.231])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 797AB29CFB;
-	Mon, 29 Jan 2024 19:06:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.10.14.231
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B9214CB24;
+	Mon, 29 Jan 2024 19:09:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="rIkU6Ws2"
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FB963C060
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 19:09:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706555190; cv=none; b=dwaDV6852ntNjn2jyuB5bzrPLSRCDIqH4gn0Ec2EtnVev5P4YArr4IVGDW7s0IFZ2mu9dGNC8ZX7SA88Uao6RDxzt/2Xvg11GjVkhRylfzruQY5A7GO0IH+t9K1uZtQCx3uYoqcgAmDqMkojwW/RheoxPZUaWNM+SJpF8ixMRVQ=
+	t=1706555370; cv=none; b=cqIcn7kjvDCNF5nOuG7j5iQBeBLg1GfUbkPyRa0w1gqJ6zWCj6H4BTl7feBIs63fJUhgB8kI0lFOH8pX/Ef7/0c7JWBukrfHDC2XaMTFD2UaO6C1UPMJXpjGOp3CyvOp48nMxer8woaWccZx/UD9D4rOIvR0aGZ6yHpXgpR+q1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706555190; c=relaxed/simple;
-	bh=QWJhC9KauIHgrOBoUrRh45vzEQe6OoYHJxiTtCcpTV8=;
+	s=arc-20240116; t=1706555370; c=relaxed/simple;
+	bh=511hvbc1Pbq2+EOuaGOVAprY+/qc4fIDXxmZ7B+0s2w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oLby4DTN0HFxg0Nf+xkIG2wFfGcO+1A4U2Kc1bleR+8fxKUnMSx5NR4qIw7fVEC8aUZ/roDq44d0uw06nDV5DBaJsx9sho/gyL8q5ITIMsZwT5nblO9undF4IHWW9LCx9qkVng/q3BmRMPUGsNKhOuwkWEuetsIJRW8NHJKk/58=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de; spf=pass smtp.mailfrom=c--e.de; arc=none smtp.client-ip=217.10.14.231
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=c--e.de
-Received: by cae.in-ulm.de (Postfix, from userid 1000)
-	id 36F881402F9; Mon, 29 Jan 2024 20:06:27 +0100 (CET)
-Date: Mon, 29 Jan 2024 20:06:27 +0100
-From: "Christian A. Ehrhardt" <lk@c--e.de>
-To: Paul Menzel <pmenzel@molgen.mpg.de>
-Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: typec_altmode_release =?utf-8?B?4oaS?=
- =?utf-8?Q?_refcount=5Ft=3A?= underflow; use-after-free.
-Message-ID: <Zbf3M2+r5RP9K8jJ@cae.in-ulm.de>
-References: <e12b5e52-1c94-472d-949b-2ee158857584@molgen.mpg.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=hl/2x/gGECoKw85SoCSMyN8cI5FiS05mOlWPGvenO8x8lBlkuE0cDoSD//hWUcEE4cbe9OvoftyU9FFJZ51UkV3uoaWiEOt8WfSsEPGPIrg7IXzwWpxrfIBnMNOvZsLk6yHiTQRW+ETkOcC9dbZWQtymrCu+poBnjhZcosXQhAc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=rIkU6Ws2; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6ddc268ce2bso1703650b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 11:09:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1706555368; x=1707160168; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=A+pfwsAR7dQEMZaUbmAmf7P3tGpaqey93GDUy/LCXUY=;
+        b=rIkU6Ws2QKHii+1VfbHJ2qXmJcqT+IfmpgjYD4xzI5MIRFiSvC+xRxCq3OP1SGpSgF
+         4TglgnOJTGktPRPsH8rsgF7lN7JIo5WrTDlJVg1OO4glT8goQETCjiwYdIofMJ5z+XVc
+         D3eVlvTYsLHUwtw4Ginkr08ZTdGu83VGHMZK4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706555368; x=1707160168;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=A+pfwsAR7dQEMZaUbmAmf7P3tGpaqey93GDUy/LCXUY=;
+        b=uJz0bVlSaXINWODivarFd1gbd4LBlnNFimaPgP6kbqD+7EZq1+kJTUUqam7CVXBbhU
+         gPoT0wrQohXxk3UL1LR/bd5k3hWnFwuSofM1b3s6mSfDcy2xbCt2EpGoefWZkOIGjeJZ
+         h2ttNHVA/7K2uHZZCtENBpPO+yEzf/E/pPen7ISHWrs0lcuAcY5kAxuyB84XAy7Frgs0
+         D667S833EKYqGC2SBXvEs4s7T9bLyhc7g0aVf/4PR4Q8CEZ94Wkrn6Gqpq8VTU2RaHvJ
+         noPv5rFnozolxQILfQOcp41PqnJUM0KJoHxN2zKBd5uHpAcLlBy/p1D6mTs1lDru8VUN
+         VjTw==
+X-Gm-Message-State: AOJu0YwgwifGa+XZ555ZbZic2/vUl8X6D/MTm4JqcvkuC9+56cL7/JW/
+	MG+C/7+DnJFTMFQvSBGhboCkJtiv6c4T3WBmxDlTajTRA4ikBsIrsQk45ApS9Vo=
+X-Google-Smtp-Source: AGHT+IESoPfU8AaOOY4JrFQlBadzLfIdEEVi2A6ryh3PYylu1gurZgUOMvs8PMQt3gmoBwZrfVF57g==
+X-Received: by 2002:a05:6a00:939c:b0:6dd:8767:2fa1 with SMTP id ka28-20020a056a00939c00b006dd87672fa1mr4221676pfb.0.1706555367798;
+        Mon, 29 Jan 2024 11:09:27 -0800 (PST)
+Received: from fastly.com (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
+        by smtp.gmail.com with ESMTPSA id gu7-20020a056a004e4700b006db105027basm6234279pfb.50.2024.01.29.11.09.24
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 29 Jan 2024 11:09:27 -0800 (PST)
+Date: Mon, 29 Jan 2024 11:09:23 -0800
+From: Joe Damato <jdamato@fastly.com>
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	chuck.lever@oracle.com, jlayton@kernel.org,
+	linux-api@vger.kernel.org, brauner@kernel.org, edumazet@google.com,
+	davem@davemloft.net, alexander.duyck@gmail.com,
+	sridhar.samudrala@intel.com, kuba@kernel.org, weiwan@google.com,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Andrew Waterman <waterman@eecs.berkeley.edu>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Dominik Brodowski <linux@dominikbrodowski.net>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jan Kara <jack@suse.cz>, Jiri Slaby <jirislaby@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Julien Panis <jpanis@baylibre.com>,
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+	"(open list:FILESYSTEMS \\(VFS and infrastructure\\))" <linux-fsdevel@vger.kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nathan Lynch <nathanl@linux.ibm.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Steve French <stfrench@microsoft.com>,
+	Thomas Huth <thuth@redhat.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH net-next v3 0/3] Per epoll context busy poll support
+Message-ID: <20240129190922.GA1315@fastly.com>
+References: <20240125225704.12781-1-jdamato@fastly.com>
+ <65b52d6381de7_3a9e0b2943d@willemb.c.googlers.com.notmuch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e12b5e52-1c94-472d-949b-2ee158857584@molgen.mpg.de>
+In-Reply-To: <65b52d6381de7_3a9e0b2943d@willemb.c.googlers.com.notmuch>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 
-
-Hi Paul,
-
-On Mon, Jan 29, 2024 at 12:57:11PM +0100, Paul Menzel wrote:
-> Dear Linux folks,
+On Sat, Jan 27, 2024 at 11:20:51AM -0500, Willem de Bruijn wrote:
+> Joe Damato wrote:
+> > Greetings:
+> > 
+> > Welcome to v3. Cover letter updated from v2 to explain why ioctl and
+> > adjusted my cc_cmd to try to get the correct people in addition to folks
+> > who were added in v1 & v2. Labeled as net-next because it seems networking
+> > related to me even though it is fs code.
+> > 
+> > TL;DR This builds on commit bf3b9f6372c4 ("epoll: Add busy poll support to
+> > epoll with socket fds.") by allowing user applications to enable
+> > epoll-based busy polling and set a busy poll packet budget on a per epoll
+> > context basis.
+> > 
+> > This makes epoll-based busy polling much more usable for user
+> > applications than the current system-wide sysctl and hardcoded budget.
+> > 
+> > To allow for this, two ioctls have been added for epoll contexts for
+> > getting and setting a new struct, struct epoll_params.
+> > 
+> > ioctl was chosen vs a new syscall after reviewing a suggestion by Willem
+> > de Bruijn [1]. I am open to using a new syscall instead of an ioctl, but it
+> > seemed that: 
+> >   - Busy poll affects all existing epoll_wait and epoll_pwait variants in
+> >     the same way, so new verions of many syscalls might be needed. It
 > 
+> There is no need to support a new feature on legacy calls. Applications have
+> to be upgraded to the new ioctl, so they can also be upgraded to the latest
+> epoll_wait variant.
+
+Sure, that's a fair point. I think we could probably make reasonable
+arguments in both directions about the pros/cons of each approach.
+
+It's still not clear to me that a new syscall is the best way to go on
+this, and IMO it does not offer a clear advantage. I understand that part
+of the premise of your argument is that ioctls are not recommended, but in
+this particular case it seems like a good use case and there have been
+new ioctls added recently (at least according to git log).
+
+This makes me think that while their use is not recommended, they can serve
+a purpose in specific use cases. To me, this use case seems very fitting.
+
+More of a joke and I hate to mention this, but this setting is changing how
+io is done and it seems fitting that this done via an ioctl ;)
+
+> epoll_pwait extends epoll_wait with a sigmask.
+> epoll_pwait2 extends extends epoll_pwait with nsec resolution timespec.
+> Since they are supersets, nothing is lots by limiting to the most recent API.
 > 
-> I noticed the message first time with Linux 6.6.8 on December 26th, and also
-> with 6.6.11, 6.7 and 6.7.1. I am unsure how to reproduce it though.
+> In the discussion of epoll_pwait2 the addition of a forward looking flags
+> argument was discussed, but eventually dropped. Based on the argument that
+> adding a syscall is not a big task and does not warrant preemptive code.
+> This decision did receive a suitably snarky comment from Jonathan Corbet [1].
 > 
-> Here the trace from Linux 6.7.1-1~exp1:
+> It is definitely more boilerplate, but essentially it is as feasible to add an
+> epoll_pwait3 that takes an optional busy poll argument. In which case, I also
+> believe that it makes more sense to configure the behavior of the syscall
+> directly, than through another syscall and state stored in the kernel.
+
+I definitely hear what you are saying; I think I'm still not convinced, but
+I am thinking it through.
+
+In my mind, all of the other busy poll settings are configured by setting
+options on the sockets using various SO_* options, which modify some state
+in the kernel. The existing system-wide busy poll sysctl also does this. It
+feels strange to me to diverge from that pattern just for epoll.
+
+In the case of epoll_pwait2 the addition of a new syscall is an approach
+that I think makes a lot of sense. The new system call is also probably
+better from an end-user usability perspective, as well. For busy poll, I
+don't see a clear reasoning why a new system call is better, but maybe I am
+still missing something.
+
+> I don't think that the usec fine grain busy poll argument is all that useful.
+> Documentation always suggests setting it to 50us or 100us, based on limited
+> data. Main point is to set it to exceed the round-trip delay of whatever the
+> process is trying to wait on. Overestimating is not costly, as the call
+> returns as soon as the condition is met. An epoll_pwait3 flag EPOLL_BUSY_POLL
+> with default 100us might be sufficient.
 > 
-> ```
-> [    0.000000] Linux version 6.7-amd64 (debian-kernel@lists.debian.org)
-> (x86_64-linux-gnu-gcc-13 (Debian 13.2.0-10) 13.2.0, GNU ld (GNU Binutils for
-> Debian) 2.41.90.20240115) #1 SMP PREEMPT_DYNAMIC Debian 6.7.1-1~exp1
-> (2024-01-22)
-> […]
-> [    0.000000] DMI: Dell Inc. XPS 13 9360/0596KF, BIOS 2.21.0 06/02/2022
-> […]
-> [ 9068.294345] ucsi_acpi USBC000:00: failed to re-enable notifications
-> (-110)
-> [ 9068.499156] ------------[ cut here ]------------
-> [ 9068.499172] refcount_t: underflow; use-after-free.
-> [ 9068.499199] WARNING: CPU: 0 PID: 5598 at lib/refcount.c:28
-> refcount_warn_saturate+0xbe/0x110
-> [ 9068.499209] Modules linked in: uinput rfcomm cmac algif_hash
-> algif_skcipher af_alg bnep xfrm_interface xfrm6_tunnel tunnel6 tunnel4
-> xfrm_user l2tp_ppp xfrm_algo l2tp_netlink l2tp_core ip6_udp_tunnel
-> udp_tunnel pppox ppp_generic slhc ctr ccm typec_displayport snd_seq_dummy
-> snd_hrtimer snd_seq snd_seq_device qrtr binfmt_misc snd_sof_pci_intel_skl
-> snd_sof_intel_hda_common soundwire_intel soundwire_generic_allocation
-> snd_sof_intel_hda_mlink soundwire_cadence snd_sof_intel_hda snd_sof_pci
-> snd_sof_xtensa_dsp snd_sof snd_sof_utils soundwire_bus snd_hda_codec_hdmi
-> snd_soc_avs snd_soc_hda_codec snd_soc_skl snd_soc_hdac_hda snd_hda_ext_core
-> snd_soc_sst_ipc snd_soc_sst_dsp snd_soc_acpi_intel_match snd_soc_acpi
-> snd_ctl_led btusb snd_soc_core btrtl btintel snd_hda_codec_realtek
-> ath10k_pci btbcm x86_pkg_temp_thermal nls_ascii btmtk intel_powerclamp
-> snd_hda_codec_generic bluetooth mei_hdcp mei_pxp mei_wdt ath10k_core
-> coretemp snd_compress nls_cp437 snd_pcm_dmaengine kvm_intel vfat
-> snd_hda_intel ath snd_intel_dspcfg fat
-> [ 9068.499300]  snd_intel_sdw_acpi kvm mac80211 snd_hda_codec intel_rapl_msr
-> dell_laptop ledtrig_audio i915 snd_hda_core sha3_generic jitterentropy_rng
-> irqbypass libarc4 dell_smm_hwmon snd_hwdep dell_wmi rapl cfg80211 uvcvideo
-> snd_pcm intel_cstate dell_smbios joydev videobuf2_vmalloc iTCO_wdt
-> intel_pmc_bxt drbg intel_uncore dcdbas ansi_cprng uvc snd_timer
-> iTCO_vendor_support dell_wmi_descriptor intel_wmi_thunderbolt
-> videobuf2_memops snd videobuf2_v4l2 watchdog ecdh_generic wmi_bmof pcspkr
-> videodev soundcore rfkill mei_me ucsi_acpi mei typec_ucsi videobuf2_common
-> ecc typec mc drm_buddy intel_pch_thermal drm_display_helper sg
-> processor_thermal_device_pci_legacy cec processor_thermal_device
-> processor_thermal_wt_hint rc_core intel_vbtn processor_thermal_rfim
-> soc_button_array processor_thermal_rapl intel_rapl_common ttm
-> processor_thermal_wt_req drm_kms_helper int3403_thermal
-> processor_thermal_power_floor evdev processor_thermal_mbox
-> intel_xhci_usb_role_switch int340x_thermal_zone intel_pmc_core i2c_algo_bit
-> intel_hid
-> [ 9068.499386]  int3400_thermal intel_soc_dts_iosf acpi_pad roles ac
-> acpi_thermal_rel sparse_keymap button hid_multitouch serio_raw msr
-> parport_pc ppdev lp parport loop efi_pstore configfs nfnetlink efivarfs
-> ip_tables x_tables autofs4 ext4 crc16 mbcache jbd2 crc32c_generic sd_mod
-> r8153_ecm cdc_ether usbnet r8152 mii uas usb_storage scsi_mod scsi_common
-> usbhid dm_crypt dm_mod hid_generic nvme i2c_hid_acpi crc32_pclmul i2c_hid
-> crc32c_intel nvme_core t10_pi xhci_pci ghash_clmulni_intel drm
-> crc64_rocksoft_generic xhci_hcd crc64_rocksoft crc_t10dif sha512_ssse3
-> sha512_generic crct10dif_generic intel_lpss_pci crct10dif_pclmul i2c_i801
-> sha256_ssse3 intel_lpss crc64 usbcore sha1_ssse3 crct10dif_common i2c_smbus
-> idma64 hid usb_common battery video wmi aesni_intel crypto_simd cryptd
-> [ 9068.499459] CPU: 0 PID: 5598 Comm: kworker/0:1 Not tainted 6.7-amd64 #1
-> Debian 6.7.1-1~exp1
-> [ 9068.499471] Hardware name: Dell Inc. XPS 13 9360/0596KF, BIOS 2.21.0
-> 06/02/2022
-> [ 9068.499473] Workqueue: events ucsi_handle_connector_change [typec_ucsi]
-> [ 9068.499484] RIP: 0010:refcount_warn_saturate+0xbe/0x110
-> [ 9068.499496] Code: 01 01 e8 d5 21 a9 ff 0f 0b c3 cc cc cc cc 80 3d bf 61
-> 7e 01 00 75 85 48 c7 c7 30 ca 8f aa c6 05 af 61 7e 01 01 e8 b2 21 a9 ff <0f>
-> 0b c3 cc cc cc cc 80 3d 9d 61 7e 01 00 0f 85 5e ff ff ff 48 c7
-> [ 9068.499498] RSP: 0018:ffffae5a05d67d90 EFLAGS: 00010282
-> [ 9068.499500] RAX: 0000000000000000 RBX: ffff8d8a094d2c08 RCX:
-> 0000000000000027
-> [ 9068.499502] RDX: ffff8d8d6f021408 RSI: 0000000000000001 RDI:
-> ffff8d8d6f021400
-> [ 9068.499503] RBP: ffff8d8a094d2c00 R08: 0000000000000000 R09:
-> ffffae5a05d67c18
-> [ 9068.499504] R10: 0000000000000003 R11: ffff8d8d80ffffe8 R12:
-> 0000000000000000
-> [ 9068.499506] R13: ffff8d8a038a51d0 R14: ffffffffaa520100 R15:
-> ffff8d8a4028b038
-> [ 9068.499507] FS:  0000000000000000(0000) GS:ffff8d8d6f000000(0000)
-> knlGS:0000000000000000
-> [ 9068.499509] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 9068.499516] CR2: 000002f9ce649010 CR3: 000000010cc86004 CR4:
-> 00000000003706f0
-> [ 9068.499517] Call Trace:
-> [ 9068.499521]  <TASK>
-> [ 9068.499522]  ? refcount_warn_saturate+0xbe/0x110
-> [ 9068.499526]  ? __warn+0x81/0x130
-> [ 9068.499533]  ? refcount_warn_saturate+0xbe/0x110
-> [ 9068.499545]  ? report_bug+0x171/0x1a0
-> [ 9068.499549]  ? console_unlock+0x78/0x120
-> [ 9068.499553]  ? handle_bug+0x3c/0x80
-> [ 9068.499557]  ? exc_invalid_op+0x17/0x70
-> [ 9068.499565]  ? asm_exc_invalid_op+0x1a/0x20
-> [ 9068.499570]  ? refcount_warn_saturate+0xbe/0x110
-> [ 9068.499576]  typec_altmode_release+0x49/0xc0 [typec]
-> [ 9068.499615]  device_release+0x34/0x90
-> [ 9068.499624]  kobject_put+0x78/0x190
-> [ 9068.499629]  ucsi_unregister_altmodes+0x41/0xa0 [typec_ucsi]
-> [ 9068.499648]  ucsi_unregister_partner.part.0+0x77/0xa0 [typec_ucsi]
-> [ 9068.499662]  ucsi_handle_connector_change+0x1bb/0x310 [typec_ucsi]
-> [ 9068.499671]  process_one_work+0x171/0x340
-> [ 9068.499676]  worker_thread+0x27b/0x3a0
-> [ 9068.499679]  ? __pfx_worker_thread+0x10/0x10
-> [ 9068.499681]  kthread+0xe5/0x120
-> [ 9068.499690]  ? __pfx_kthread+0x10/0x10
-> [ 9068.499693]  ret_from_fork+0x31/0x50
-> [ 9068.499698]  ? __pfx_kthread+0x10/0x10
-> [ 9068.499700]  ret_from_fork_asm+0x1b/0x30
-> [ 9068.499714]  </TASK>
-> [ 9068.499715] ---[ end trace 0000000000000000 ]---
-> ```
+> [1] https://lwn.net/Articles/837816/
+
+Perhaps I am misunderstanding what you are suggesting, but I am opposed to
+hardcoding a value. If it is currently configurable system-wide and via
+SO_* options for other forms of busy poll, I think it should similarly be
+configurable for epoll busy poll.
+
+I may yet be convinced by the new syscall argument, but I don't think I'd
+agree on imposing a default. The value can be modified by other forms of
+busy poll and the goal of my changes are to:
+  - make epoll-based busy poll per context
+  - allow applications to configure (within reason) how epoll-based busy
+    poll behaves, like they can do now with the existing SO_* options for
+    other busy poll methods.
+
+> >     seems much simpler for users to use the correct
+> >     epoll_wait/epoll_pwait for their app and add a call to ioctl to enable
+> >     or disable busy poll as needed. This also probably means less work to
+> >     get an existing epoll app using busy poll.
 > 
-> Please find the full output of `dmesg` attached.
-
-This should be fixed by
-
-| commit 5962ded777d689cd8bf04454273e32228d7fb71f
-| Author: RD Babiera <rdbabiera@google.com>
-| Date:   Wed Jan 3 18:17:55 2024 +0000
-| 
-|     usb: typec: class: fix typec_altmode_put_partner to put plugs
-
-which is in mainline and 6.7.2.
-
-     regards    Christian
-
 
