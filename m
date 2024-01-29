@@ -1,390 +1,1239 @@
-Return-Path: <linux-kernel+bounces-43125-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43126-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B064B840BD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:40:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EB866840BD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:40:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A5CF1F24A31
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:40:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A46B1F2278C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:40:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38073158D98;
-	Mon, 29 Jan 2024 16:35:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7331615959E;
+	Mon, 29 Jan 2024 16:36:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ElSA3Tnp"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="d4giT426"
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on2088.outbound.protection.outlook.com [40.107.14.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA3B2158D95
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 16:35:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706546103; cv=none; b=DCXJh0afdERluPVgsevi9AJy+EP+1EChMUMaOF0stMPf5SMNRo8c9kCNBbwq81cVzp9WnBTNHWzeNcDCKLRpf7ymYxGtM8Dtdna2DmjtqOUIYSVb88mzJd1Wg+NqXevdNWrh1UUo4H9NWgHrqKuGPE4cy36tY3WXL3BEkR+54G8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706546103; c=relaxed/simple;
-	bh=ha+gkVG8/zn6aZEH9rIVdE9aMWwOucc2/kkJ3OxCGr4=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=j0LyIljlSUH3UA4dP8Kx7haOU42WGHkphLsBaLoIh3teq2EIVumYdIi8lROyWy862Ik/8CFwuqciVykjV/gutTmNAbNksih6TFp+r+MriUfoHQT6Kg5wNdSoZtehPAclwGoN08HsHCq/E/8r2jOSqNJKMbE4tB7F0gbFFQeQGsE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ElSA3Tnp; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706546100;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Cnxc7g1CCZMSmgVTOsS1bbzZVy9L35+UTayMqPPm28A=;
-	b=ElSA3Tnp6bkDvYiHhju+WVa6UdYuG/LCEmnA1Ty1U+rv31NnOUs5TfzIY/NOx/1SV1FTgj
-	NOVKdG+YQI5/HUEXTtJKY8860OjFR29uITgjFtTfh632WBHOOC2Do6jeRpC1cARAdR6eH4
-	1UQ44eC00OWKIB41p0tG3stPPFMHadg=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-177-_GUyyg5UMA6WJBcMu_5Zvw-1; Mon, 29 Jan 2024 11:34:57 -0500
-X-MC-Unique: _GUyyg5UMA6WJBcMu_5Zvw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2C98D85A599;
-	Mon, 29 Jan 2024 16:34:56 +0000 (UTC)
-Received: from rotkaeppchen (unknown [10.39.193.97])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id B18E41C060AF;
-	Mon, 29 Jan 2024 16:34:51 +0000 (UTC)
-Date: Mon, 29 Jan 2024 17:34:50 +0100
-From: Philipp Rudo <prudo@redhat.com>
-To: Alexander Graf <graf@amazon.com>
-Cc: <linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
- <linux-mm@kvack.org>, <devicetree@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <kexec@lists.infradead.org>,
- <linux-doc@vger.kernel.org>, <x86@kernel.org>, Eric Biederman
- <ebiederm@xmission.com>, "H . Peter Anvin" <hpa@zytor.com>, Andy Lutomirski
- <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Steven Rostedt
- <rostedt@goodmis.org>, Andrew Morton <akpm@linux-foundation.org>, Mark
- Rutland <mark.rutland@arm.com>, "Tom Lendacky" <thomas.lendacky@amd.com>,
- Ashish Kalra <ashish.kalra@amd.com>, James Gowans <jgowans@amazon.com>,
- Stanislav Kinsburskii <skinsburskii@linux.microsoft.com>, <arnd@arndb.de>,
- <pbonzini@redhat.com>, <madvenka@linux.microsoft.com>, Anthony Yznaga
- <anthony.yznaga@oracle.com>, Usama Arif <usama.arif@bytedance.com>, David
- Woodhouse <dwmw@amazon.co.uk>, Benjamin Herrenschmidt
- <benh@kernel.crashing.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof
- Kozlowski <krzk@kernel.org>, linux-integrity@vger.kernel.org
-Subject: Re: [PATCH v3 00/17] kexec: Allow preservation of ftrace buffers
-Message-ID: <20240129173450.038e46b7@rotkaeppchen>
-In-Reply-To: <20240117144704.602-1-graf@amazon.com>
-References: <20240117144704.602-1-graf@amazon.com>
-Organization: Red Hat inc.
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EA6515444C;
+	Mon, 29 Jan 2024 16:36:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.14.88
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706546170; cv=fail; b=mhdtO6W1ZH1pYq0Z9r9Wmf5JHXt0j9urMvQmBRU32Czt7RfNMSRSD8dVT4FUep4ojLoFCBEH20fLGg/5jnYA0s+ZQe2p1oIrNj3vBdud8GIdrMa+GF8XLdRwjIfcW79AViNAp1MrlJ7MeWbcLMCt3g/Q8+0EvUpYqe7b9gk5Q3A=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706546170; c=relaxed/simple;
+	bh=vzzZAmhxHsTGIpe87/N2a6tRsV4/TpYNYVc5xLSkaZU=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=iDGGG5F8k8ivBzUSxUHdsEjqk3FCsRMgwwySeK/IS8ncXrwKT9t9mEkLXPciabAT9o6VmDkRkRBHhm4f4hCyoWQipjo9eP0UHDvC4rMC6rbH+ataK0ahGtj1lB/Ry3mgNy9DJZXmxV1jZeH8RIJ5SqOm0CWpDz+ZpOX9kJApDyA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=d4giT426; arc=fail smtp.client-ip=40.107.14.88
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nUiJf13/Y5CuGXuEGm2XVP9+8VDzZq9S53VgJfbgy/Q27pSPKPeRu9M75+NIMpb+q/XFUFaPFhahzudmDjICRjneg6rpp+ilonCgvGCtT8+r7GmD3cGN8qMDE2dQRvSUEIF834xVXUpxV5BvpQFRPWugJrSoGXGWpz+McmuE0BMDqJ3defkbi15S7UQ0mHxrkPklYU8imjA5dDn2aISo7DU0bmbPAknIrT4dvEbR1BIT+jAvalX35jgpDd7BQ5pWidStjt+gxXJWHdbRsOMB5iI9FSKQBTUThxDZR5brjfn7U0sKPMHvsQTXZ2R0zkgC5JqsITrJIFGV0jAjEjxtEg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kdhR3vWmOIa4CKWxjBnTlAFaPDeAWgpLx5/sipPG2LQ=;
+ b=B/Fb2DA53ShMXIfHjdd1pGVo8F8+VzV4DqUek+sZzU+f+IzDHc5QzMPYDrBdV4kQFVbh6tLuBB0MpKrmtNld6SOFxFIEFbzoVaOOgMeOHKkpyzz2Z3A6kZ6HgFgnua5sKkkwqJZ5LpmuIu9vKa6BdzKE2T8CvEDvYRGLiPoM0U8ncd7SHtjpAxhWFLLhbM06T3Ry5UEZlyWyLwuLaDoHmU6cV9dJsDayLJntETUdjg8pRpJEJm56aFP2GDQ9bNZBFIaVNXEi38/3yEJ9Ccsn/1fDO8VCE3UkKJqG9I0mPhAYAAkvkAnP+jB2CjXjsEuIF8zLYA7eM0IkHvZpwTqaDQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kdhR3vWmOIa4CKWxjBnTlAFaPDeAWgpLx5/sipPG2LQ=;
+ b=d4giT426FJbaFSC4xFno1p/aj0RRMxAx2/dUy4efCNrVkWVg4cWAbaZx7E6DA/nS1/sWZJ2L8F6GzEeRAxFUy4ZZmeZlHzxsYs/C3P8AjE/wV1sIBW+/E5DkKs8OkMQTEzCf2qeYyaZkSOuecIhCCLd/R2L/P1Xg8OVQmzMCOhY=
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by PAWPR04MB9768.eurprd04.prod.outlook.com (2603:10a6:102:381::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.32; Mon, 29 Jan
+ 2024 16:36:01 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::c8b4:5648:8948:e85c]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::c8b4:5648:8948:e85c%3]) with mapi id 15.20.7228.029; Mon, 29 Jan 2024
+ 16:36:01 +0000
+From: Frank Li <frank.li@nxp.com>
+To: Xu Yang <xu.yang_2@nxp.com>, "will@kernel.org" <will@kernel.org>,
+	"mark.rutland@arm.com" <mark.rutland@arm.com>, "robh+dt@kernel.org"
+	<robh+dt@kernel.org>, "krzysztof.kozlowski+dt@linaro.org"
+	<krzysztof.kozlowski+dt@linaro.org>, "conor+dt@kernel.org"
+	<conor+dt@kernel.org>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
+	"s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "kernel@pengutronix.de"
+	<kernel@pengutronix.de>, "festevam@gmail.com" <festevam@gmail.com>,
+	"john.g.garry@oracle.com" <john.g.garry@oracle.com>, "jolsa@kernel.org"
+	<jolsa@kernel.org>, "namhyung@kernel.org" <namhyung@kernel.org>,
+	"irogers@google.com" <irogers@google.com>
+CC: dl-linux-imx <linux-imx@nxp.com>, "mike.leach@linaro.org"
+	<mike.leach@linaro.org>, "leo.yan@linaro.org" <leo.yan@linaro.org>,
+	"peterz@infradead.org" <peterz@infradead.org>, "mingo@redhat.com"
+	<mingo@redhat.com>, "acme@kernel.org" <acme@kernel.org>,
+	"alexander.shishkin@linux.intel.com" <alexander.shishkin@linux.intel.com>,
+	"adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-perf-users@vger.kernel.org"
+	<linux-perf-users@vger.kernel.org>
+Subject: RE: [PATCH v3 4/4] perf vendor events arm64:: Add i.MX95 DDR
+ Performane Monitor metrics
+Thread-Topic: [PATCH v3 4/4] perf vendor events arm64:: Add i.MX95 DDR
+ Performane Monitor metrics
+Thread-Index: AQHaUpsczp2w7mQBhUGDAzro6DtY1LDw/MoQ
+Date: Mon, 29 Jan 2024 16:36:01 +0000
+Message-ID:
+ <PAXPR04MB964250C00BC537E59BDCF808887E2@PAXPR04MB9642.eurprd04.prod.outlook.com>
+References: <20240129101433.2429536-1-xu.yang_2@nxp.com>
+ <20240129101433.2429536-4-xu.yang_2@nxp.com>
+In-Reply-To: <20240129101433.2429536-4-xu.yang_2@nxp.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PAXPR04MB9642:EE_|PAWPR04MB9768:EE_
+x-ms-office365-filtering-correlation-id: 2b29eb4e-df1a-44f1-00a9-08dc20e86142
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ wL4KNx4E2MoTDxL7RL1ZAPI9Lac1VcWo8JVyaWo2jGSN2HxoDpkYkuIgo46ibkwt41RiMJKPotMd1yOZBaeufRARiJnGoqnahctgEPI4ugP7oFNB1QyvtQ8ZMxNmhsoDOgX3v+t2gZ2xgTq6FoZM1Y5544fCGtp2LYirHjVibRMs5AIQJ26jYESyyusd6eZZcysgeFzopqtEiERCqq0/RparrztUyo2ZcbJdgxD+z66T5tpz2hBQiVPnd+1oNjiQD70zX63y0QJ4enHfBDFxVBSuI9fYPVCLOmgLibnatHcXZxx756HMvRMaadVhbCnZ1j7o/UpyThPKxMfR7kwgMNXbjOYPDuEJD8isH8rY1/xpF00iI64Sof3FqCRN0+NcwjKEh32ALuGtvNFPegIem/HPLN2CmGe1z3XFwZCr6ZupYXvfwDrLaSpQUgC7Gs1l4TPrjjyr77Wwvmy6lARhj9OUA5RiAdcrdZwsgAYCi0+fINo9Tlur12psBv9raqjW3U7abjjukwwNOKICiJgMxwOXDnYbZi0d3S/hIGvQFvxqjTQ1NANlAcR2ojpmgEBBAO/7kR1onivj/eSg4CrZA32WUzTIsGS6ftdJwkWWiyPKXUx6mI/gyHVnpo4FJPfc
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(346002)(396003)(366004)(39860400002)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(53546011)(26005)(83380400001)(7696005)(6506007)(55236004)(9686003)(38100700002)(122000001)(30864003)(66946007)(5660300002)(4326008)(8936002)(8676002)(52536014)(41300700001)(44832011)(54906003)(71200400001)(66446008)(478600001)(316002)(7416002)(110136005)(64756008)(76116006)(2906002)(66476007)(66556008)(921011)(86362001)(38070700009)(33656002)(55016003)(559001)(579004);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?tXE2IEtRi5Og5aYyarIJExwtILxY0v/r3vMlIlvOYxSHsv2IinNhpmVnBAUL?=
+ =?us-ascii?Q?ccNj4Cj5A6xmDWC4jMuYpNoi214ZSgQfPd2bdIDs/b6QCgJMRWNEpljkvmkJ?=
+ =?us-ascii?Q?7xeTZuLzIKE/35Ry9NlMZVJtNvLclwKf2IBjzRl3yl2zyBTm/9Yj/cYphClZ?=
+ =?us-ascii?Q?9hHXkgJkrkLcI/OtkPFmj49+3r/t1Oj8gCbCCUJWxHIJ2jwOrxbDthUn+KLI?=
+ =?us-ascii?Q?kWjXR4+V8HrMO/heloeMA89Juth6/GyEJGTwA+Ulvsk9r37lgiMiW0YssQr4?=
+ =?us-ascii?Q?W21DWabxaIG0GFADcm4DGcOUfkNDirQ3/5fcrSnSknRL3vZQlUApCjRDiAbc?=
+ =?us-ascii?Q?o5sPrE9HitPILnbRrLClDsFxjRx3cDKAWOrcdvM0p45spYu8IF6bjZ4vLtbM?=
+ =?us-ascii?Q?4s32wdQeIDk9dDG+OakRzDva1PLNEHygb5SHgy+X4Zu/usY23whJEDauoGz/?=
+ =?us-ascii?Q?B78kEpGLnorHsDEKAf9hW5OCwi5va+ZAUPJUHotHmNUNkdcufdBD8e4zjMkZ?=
+ =?us-ascii?Q?ydqOqLIEE5HuYxo3R3P0oGq7XByvpo31F/4oGcBzC1MNFPhTcYDBxW1kewGa?=
+ =?us-ascii?Q?8e1kN2lJHaiJece0oE4LgDAy9abdXHibUJpafBRzoUmncbB1skBilOxgkn60?=
+ =?us-ascii?Q?hXQXYo/ly6puWIrcmmL3ctnYDuPszGWVV1Mt1ikZo14kowQWUPQH52NpToX7?=
+ =?us-ascii?Q?3dnHFWxjNJ9XwdbEAX5PXtB1tTgx2SvU5CkC93TyoLWC7cqTX4dJ7h5Xbhs8?=
+ =?us-ascii?Q?rG2wK/zHoKq39BgdsanMgFrZhKg8t9mAxJWMqkS1dcN/G7QqFZhxf3GvM1TR?=
+ =?us-ascii?Q?x9RCvcXPBs5D8PdG94q2IbGUlILPudra5041le/7Fsz6HgQvZ/6MfBohzCqm?=
+ =?us-ascii?Q?uVfWaz6rG5IX+w3NYOrVZfoZ6SFSDK9beiGtpfYTtKlbjK56sxViwGgERvy2?=
+ =?us-ascii?Q?J8rtpUs3AeXolw1qbM+LkSF0tGXt4gI0C+JrEoaLignRA9rWijh+ctLwM5zb?=
+ =?us-ascii?Q?gSp+sf9UIhHJlD7ku4XELhC75JvNT71482YyFYk/0Bmh0NWgVNVsvApciun0?=
+ =?us-ascii?Q?G1/lA0CLwebWUOy04pVQ5RcKTulhcbHsLGhQqCQox6atVxlSpOTWx21qDQP6?=
+ =?us-ascii?Q?Pz64k/RjVzlvD6GwOvhCDmEDCxYAo89EvHgS7YidIx+Xh8aQX+0QIvk0T8Qz?=
+ =?us-ascii?Q?034NcLWMgIl7MSP800h9SbIdICCaRYIMGoQpo+1/D2EAE01XXE8I4M6Z/3Eq?=
+ =?us-ascii?Q?f/CIZqceMp7VG046SCsm7c/3z6rpIUlpB085dB/OgtWJykrNuKdXzgVqoRnd?=
+ =?us-ascii?Q?FpSZVFLncG+pfEeZ/TPazDPNOqnEDiDu3H4B4GWpc0s1VgwOtxWyfDsKi1K0?=
+ =?us-ascii?Q?xnG+xUrTLQ67x7YDjIihJxRNCglUkWDqcAxxVwV2IZxr9ieSZ2ncnHIRhExa?=
+ =?us-ascii?Q?FijEXdNYxEU7SlZJE2d8bl0uoc5g3R5fJvaLiGDYX1Nz0ThE4IIWdNDU529x?=
+ =?us-ascii?Q?8qy7UY7UX8UlV5zpqaWKaOdTRZkyh3akWu3egxfHn2ZqG/bOrc6leqp+dN5r?=
+ =?us-ascii?Q?bJZhjWxjOBto3U+yK9M=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
-
-Hi Alex,
-
-adding linux-integrity as there are some synergies with IMA_KEXEC (in case we
-get KHO to work).
-
-Fist of all I believe that having a generic framework to pass information from
-one kernel to the other across kexec would be a good thing. But I'm afraid that
-you are ignoring some fundamental problems which makes it extremely hard, if
-not impossible, to reliably transfer the kernel's state from one kernel to the
-other.
-
-One thing I don't understand is how reusing the scratch area is working. Sure
-you pass it's location via the dt/boot_params but I don't see any code that
-makes it a CMA region. So IIUC the scratch area won't be available for the 2nd
-kernel. Which is probably for the better as IIUC the 2nd kernel gets loaded and
-runs inside that area and I don't believe the CMA design ever considered that
-the kernel image could be included in a CMA area.
-
-Staying at reusing the scratch area. One thing that is broken for sure is that
-you reuse the scratch area without ever checking the kho_scratch parameter of
-the 2nd kernel's command line. Remember, with kexec you are dealing with two
-different kernels with two different command lines. Meaning you can only reuse
-the scratch area if the requested size in the 2nd kernel is identical to the
-one of the 1st kernel. In all other cases you need to adjust the scratch area's
-size or reserve a new one.
-
-This directly leads to the next problem. In kho_reserve_previous_mem you are
-reusing the different memory regions wherever the 1st kernel allocated them.
-But that also means you are handing over the 1st kernel's memory
-fragmentation to the 2nd kernel and you do that extremely early during boot.
-Which means that users who need to allocate large continuous physical memory,
-like the scratch area or the crashkernel memory, will have increasing chance to
-not find a suitable area. Which IMHO is unacceptable.
-
-Finally, and that's the big elephant in the room, is your lax handling of the
-unstable kernel internal ABI. Remember, you are dealing with two different
-kernels, that also means two different source levels and two different configs.
-So only because both the 1st and 2nd kernel have a e.g. struct buffer_page
-doesn't means that they have the same struct buffer_page. But that's what your
-code implicitly assumes. For KHO ever to make it upstream you need to make sure
-that both kernels are "speaking the same language".
-
-Personally I see two possible solutions:
-
-1) You introduce a stable intermediate format for every subsystem similar to
-what IMA_KEXEC does. This should work for simple types like struct buffer_page
-but for complex ones like struct vfio_device that's basically impossible.
-
-2) You also hand over the ABI version for every given type (basically just a
-hash over all fields including all the dependencies). So the 2nd kernel can
-verify that the data handed over is in a format it can handle and if not bail
-out with a descriptive error message rather than reading garbage. Plus side is
-that once such a system is in place you can reuse it to automatically resolve
-all dependencies so you no longer need to manually store the buffer_page and
-its buffer_data_page separately.
-Down side is that traversing the debuginfo (including the ones from modules) is
-not a simple task and I expect that such a system will be way more complex than
-the rest of KHO. In addition there are some cases that the versioning won't be
-able to capture. For example if a type contains a "void *"-field. Then although
-the definition of the type is identical in both kernels the field can be cast
-to different types when used. An other problem will be function pointers which
-you first need to resolve in the 1st kernel and then map to the identical
-function in the 2nd kernel. This will become particularly "fun" when the
-function is part of a module that isn't loaded at the time when you try to
-recreate the kernel's state.
-
-So to summarize, while it would be nice to have a generic framework like KHO to
-pass data from one kernel to the other via kexec there are good reasons why it
-doesn't exist, yet.
-
-Thanks
-Philipp
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2b29eb4e-df1a-44f1-00a9-08dc20e86142
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jan 2024 16:36:01.5840
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Jt1bUsp/klbluPkyjMX1H03ysoPXaBw6/uCF43XVYsHWLcchYYb8bDDoA/Sjx5uUvlK6jjdFjojLqHfN0lmKXQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR04MB9768
 
 
-On Wed, 17 Jan 2024 14:46:47 +0000
-Alexander Graf <graf@amazon.com> wrote:
 
-> Kexec today considers itself purely a boot loader: When we enter the new
-> kernel, any state the previous kernel left behind is irrelevant and the
-> new kernel reinitializes the system.
-> 
-> However, there are use cases where this mode of operation is not what we
-> actually want. In virtualization hosts for example, we want to use kexec
-> to update the host kernel while virtual machine memory stays untouched.
-> When we add device assignment to the mix, we also need to ensure that
-> IOMMU and VFIO states are untouched. If we add PCIe peer to peer DMA, we
-> need to do the same for the PCI subsystem. If we want to kexec while an
-> SEV-SNP enabled virtual machine is running, we need to preserve the VM
-> context pages and physical memory. See James' and my Linux Plumbers
-> Conference 2023 presentation for details:
-> 
->   https://lpc.events/event/17/contributions/1485/
-> 
-> To start us on the journey to support all the use cases above, this
-> patch implements basic infrastructure to allow hand over of kernel state
-> across kexec (Kexec HandOver, aka KHO). As example target, we use ftrace:
-> With this patch set applied, you can read ftrace records from the
-> pre-kexec environment in your post-kexec one. This creates a very powerful
-> debugging and performance analysis tool for kexec. It's also slightly
-> easier to reason about than full blown VFIO state preservation.
-> 
-> == Alternatives ==
-> 
-> There are alternative approaches to (parts of) the problems above:
-> 
->   * Memory Pools [1] - preallocated persistent memory region + allocator
->   * PRMEM [2] - resizable persistent memory regions with fixed metadata
->                 pointer on the kernel command line + allocator
->   * Pkernfs [3] - preallocated file system for in-kernel data with fixed
->                   address location on the kernel command line
->   * PKRAM [4] - handover of user space pages using a fixed metadata page
->                 specified via command line
-> 
-> All of the approaches above fundamentally have the same problem: They
-> require the administrator to explicitly carve out a physical memory
-> location because they have no mechanism outside of the kernel command
-> line to pass data (including memory reservations) between kexec'ing
-> kernels.
-> 
-> KHO provides that base foundation. We will determine later whether we
-> still need any of the approaches above for fast bulk memory handover of for
-> example IOMMU page tables. But IMHO they would all be users of KHO, with
-> KHO providing the foundational primitive to pass metadata and bulk memory
-> reservations as well as provide easy versioning for data.
-> 
-> == Overview ==
-> 
-> We introduce a metadata file that the kernels pass between each other. How
-> they pass it is architecture specific. The file's format is a Flattened
-> Device Tree (fdt) which has a generator and parser already included in
-> Linux. When the root user enables KHO through /sys/kernel/kho/active, the
-> kernel invokes callbacks to every driver that supports KHO to serialize
-> its state. When the actual kexec happens, the fdt is part of the image
-> set that we boot into. In addition, we keep a "scratch region" available
-> for kexec: A physically contiguous memory region that is guaranteed to
-> not have any memory that KHO would preserve.  The new kernel bootstraps
-> itself using the scratch region and sets all handed over memory as in use.
-> When drivers initialize that support KHO, they introspect the fdt and
-> recover their state from it. This includes memory reservations, where the
-> driver can either discard or claim reservations.
-> 
-> == Limitations ==
-> 
-> I currently only implemented file based kexec. The kernel interfaces
-> in the patch set are already in place to support user space kexec as well,
-> but I have not implemented it yet inside kexec tools.
-> 
-> == How to Use ==
-> 
-> To use the code, please boot the kernel with the "kho_scratch=" command
-> line parameter set: "kho_scratch=512M". KHO requires a scratch region.
-> 
-> Make sure to fill ftrace with contents that you want to observe after
-> kexec.  Then, before you invoke file based "kexec -l", activate KHO:
-> 
->   # echo 1 > /sys/kernel/kho/active
->   # kexec -l Image --initrd=initrd -s
->   # kexec -e
-> 
-> The new kernel will boot up and contain the previous kernel's trace
-> buffers in /sys/kernel/debug/tracing/trace.
-> 
-> == Changelog ==
-> 
-> v1 -> v2:
->   - Removed: tracing: Introduce names for ring buffers
->   - Removed: tracing: Introduce names for events
->   - New: kexec: Add config option for KHO
->   - New: kexec: Add documentation for KHO
->   - New: tracing: Initialize fields before registering
->   - New: devicetree: Add bindings for ftrace KHO
->   - test bot warning fixes
->   - Change kconfig option to ARCH_SUPPORTS_KEXEC_KHO
->   - s/kho_reserve_mem/kho_reserve_previous_mem/g
->   - s/kho_reserve/kho_reserve_scratch/g
->   - Remove / reduce ifdefs
->   - Select crc32
->   - Leave anything that requires a name in trace.c to keep buffers
->     unnamed entities
->   - Put events as array into a property, use fingerprint instead of
->     names to identify them
->   - Reduce footprint without CONFIG_FTRACE_KHO
->   - s/kho_reserve_mem/kho_reserve_previous_mem/g
->   - make kho_get_fdt() const
->   - Add stubs for return_mem and claim_mem
->   - make kho_get_fdt() const
->   - Get events as array from a property, use fingerprint instead of
->     names to identify events
->   - Change kconfig option to ARCH_SUPPORTS_KEXEC_KHO
->   - s/kho_reserve_mem/kho_reserve_previous_mem/g
->   - s/kho_reserve/kho_reserve_scratch/g
->   - Leave the node generation code that needs to know the name in
->     trace.c so that ring buffers can stay anonymous
->   - s/kho_reserve/kho_reserve_scratch/g
->   - Move kho enums out of ifdef
->   - Move from names to fdt offsets. That way, trace.c can find the trace
->     array offset and then the ring buffer code only needs to read out
->     its per-CPU data. That way it can stay oblivient to its name.
->   - Make kho_get_fdt() const
-> 
-> v2 -> v3:
-> 
->   - Fix make dt_binding_check
->   - Add descriptions for each object
->   - s/trace_flags/trace-flags/
->   - s/global_trace/global-trace/
->   - Make all additionalProperties false
->   - Change subject to reflect subsysten (dt-bindings)
->   - Fix indentation
->   - Remove superfluous examples
->   - Convert to 64bit syntax
->   - Move to kho directory
->   - s/"global_trace"/"global-trace"/
->   - s/"global_trace"/"global-trace"/
->   - s/"trace_flags"/"trace-flags"/
->   - Fix wording
->   - Add Documentation to MAINTAINERS file
->   - Remove kho reference on read error
->   - Move handover_dt unmap up
->   - s/reserve_scratch_mem/mark_phys_as_cma/
->   - Remove ifdeffery
->   - Remove superfluous comment
-> 
-> Alexander Graf (17):
->   mm,memblock: Add support for scratch memory
->   memblock: Declare scratch memory as CMA
->   kexec: Add Kexec HandOver (KHO) generation helpers
->   kexec: Add KHO parsing support
->   kexec: Add KHO support to kexec file loads
->   kexec: Add config option for KHO
->   kexec: Add documentation for KHO
->   arm64: Add KHO support
->   x86: Add KHO support
->   tracing: Initialize fields before registering
->   tracing: Introduce kho serialization
->   tracing: Add kho serialization of trace buffers
->   tracing: Recover trace buffers from kexec handover
->   tracing: Add kho serialization of trace events
->   tracing: Recover trace events from kexec handover
->   tracing: Add config option for kexec handover
->   Documentation: KHO: Add ftrace bindings
-> 
->  Documentation/ABI/testing/sysfs-firmware-kho  |   9 +
->  Documentation/ABI/testing/sysfs-kernel-kho    |  53 ++
->  .../admin-guide/kernel-parameters.txt         |  10 +
->  .../kho/bindings/ftrace/ftrace-array.yaml     |  38 ++
->  .../kho/bindings/ftrace/ftrace-cpu.yaml       |  43 ++
->  Documentation/kho/bindings/ftrace/ftrace.yaml |  62 +++
->  Documentation/kho/concepts.rst                |  88 +++
->  Documentation/kho/index.rst                   |  19 +
->  Documentation/kho/usage.rst                   |  57 ++
->  Documentation/subsystem-apis.rst              |   1 +
->  MAINTAINERS                                   |   3 +
->  arch/arm64/Kconfig                            |   3 +
->  arch/arm64/kernel/setup.c                     |   2 +
->  arch/arm64/mm/init.c                          |   8 +
->  arch/x86/Kconfig                              |   3 +
->  arch/x86/boot/compressed/kaslr.c              |  55 ++
->  arch/x86/include/uapi/asm/bootparam.h         |  15 +-
->  arch/x86/kernel/e820.c                        |   9 +
->  arch/x86/kernel/kexec-bzimage64.c             |  39 ++
->  arch/x86/kernel/setup.c                       |  46 ++
->  arch/x86/mm/init_32.c                         |   7 +
->  arch/x86/mm/init_64.c                         |   7 +
->  drivers/of/fdt.c                              |  39 ++
->  drivers/of/kexec.c                            |  54 ++
->  include/linux/kexec.h                         |  58 ++
->  include/linux/memblock.h                      |  19 +
->  include/linux/ring_buffer.h                   |  17 +-
->  include/linux/trace_events.h                  |   1 +
->  include/uapi/linux/kexec.h                    |   6 +
->  kernel/Kconfig.kexec                          |  13 +
->  kernel/Makefile                               |   2 +
->  kernel/kexec_file.c                           |  41 ++
->  kernel/kexec_kho_in.c                         | 298 ++++++++++
->  kernel/kexec_kho_out.c                        | 526 ++++++++++++++++++
->  kernel/trace/Kconfig                          |  14 +
->  kernel/trace/ring_buffer.c                    | 243 +++++++-
->  kernel/trace/trace.c                          |  96 +++-
->  kernel/trace/trace_events.c                   |  14 +-
->  kernel/trace/trace_events_synth.c             |  14 +-
->  kernel/trace/trace_events_user.c              |   4 +
->  kernel/trace/trace_output.c                   | 247 +++++++-
->  kernel/trace/trace_output.h                   |   5 +
->  kernel/trace/trace_probe.c                    |   4 +
->  mm/Kconfig                                    |   4 +
->  mm/memblock.c                                 |  79 ++-
->  45 files changed, 2351 insertions(+), 24 deletions(-)
->  create mode 100644 Documentation/ABI/testing/sysfs-firmware-kho
->  create mode 100644 Documentation/ABI/testing/sysfs-kernel-kho
->  create mode 100644 Documentation/kho/bindings/ftrace/ftrace-array.yaml
->  create mode 100644 Documentation/kho/bindings/ftrace/ftrace-cpu.yaml
->  create mode 100644 Documentation/kho/bindings/ftrace/ftrace.yaml
->  create mode 100644 Documentation/kho/concepts.rst
->  create mode 100644 Documentation/kho/index.rst
->  create mode 100644 Documentation/kho/usage.rst
->  create mode 100644 kernel/kexec_kho_in.c
->  create mode 100644 kernel/kexec_kho_out.c
-> 
+> -----Original Message-----
+> From: Xu Yang <xu.yang_2@nxp.com>
+> Sent: Monday, January 29, 2024 4:15 AM
+> To: Frank Li <frank.li@nxp.com>; will@kernel.org; mark.rutland@arm.com;
+> robh+dt@kernel.org; krzysztof.kozlowski+dt@linaro.org;
+> conor+dt@kernel.org; shawnguo@kernel.org; s.hauer@pengutronix.de;
+> kernel@pengutronix.de; festevam@gmail.com; john.g.garry@oracle.com;
+> jolsa@kernel.org; namhyung@kernel.org; irogers@google.com
+> Cc: dl-linux-imx <linux-imx@nxp.com>; mike.leach@linaro.org;
+> leo.yan@linaro.org; peterz@infradead.org; mingo@redhat.com;
+> acme@kernel.org; alexander.shishkin@linux.intel.com;
+> adrian.hunter@intel.com; Xu Yang <xu.yang_2@nxp.com>; linux-arm-
+> kernel@lists.infradead.org; devicetree@vger.kernel.org; linux-
+> kernel@vger.kernel.org; linux-perf-users@vger.kernel.org
+> Subject: [PATCH v3 4/4] perf vendor events arm64:: Add i.MX95 DDR
+> Performane Monitor metrics
+>=20
+> Add JSON metrics for i.MX95 DDR Performane Monitor.
+>=20
+> Signed-off-by: Xu Yang <xu.yang_2@nxp.com>
+
+Reviewed-by: Frank Li <Frank.Li@nxp.com>
+
+Please add imx@lists.linux.dev in next version
+
+>=20
+> ---
+> Changes in v2:
+>  - fix wrong AXI_MASK setting
+>  - remove unnecessary metrics
+>  - add bandwidth_usage, camera_all, disp_all metrics
+> Changes in v3:
+>  - no changes
+> ---
+>  .../arch/arm64/freescale/imx95/sys/ddrc.json  |   9 +
+>  .../arm64/freescale/imx95/sys/metrics.json    | 778 ++++++++++++++++++
+>  tools/perf/pmu-events/jevents.py              |   1 +
+>  3 files changed, 788 insertions(+)
+>  create mode 100644 tools/perf/pmu-
+> events/arch/arm64/freescale/imx95/sys/ddrc.json
+>  create mode 100644 tools/perf/pmu-
+> events/arch/arm64/freescale/imx95/sys/metrics.json
+>=20
+> diff --git a/tools/perf/pmu-
+> events/arch/arm64/freescale/imx95/sys/ddrc.json b/tools/perf/pmu-
+> events/arch/arm64/freescale/imx95/sys/ddrc.json
+> new file mode 100644
+> index 000000000000..4dc9d2968bdc
+> --- /dev/null
+> +++ b/tools/perf/pmu-events/arch/arm64/freescale/imx95/sys/ddrc.json
+> @@ -0,0 +1,9 @@
+> +[
+> +   {
+> +           "BriefDescription": "ddr cycles event",
+> +           "EventCode": "0x00",
+> +           "EventName": "imx95_ddr.cycles",
+> +           "Unit": "imx9_ddr",
+> +           "Compat": "imx95"
+> +   }
+> +]
+> diff --git a/tools/perf/pmu-
+> events/arch/arm64/freescale/imx95/sys/metrics.json b/tools/perf/pmu-
+> events/arch/arm64/freescale/imx95/sys/metrics.json
+> new file mode 100644
+> index 000000000000..2bfcd4d574a8
+> --- /dev/null
+> +++ b/tools/perf/pmu-events/arch/arm64/freescale/imx95/sys/metrics.json
+> @@ -0,0 +1,778 @@
+> +[
+> +	{
+> +		"BriefDescription": "bandwidth usage for lpddr5 evk board",
+> +		"MetricName": "imx95_bandwidth_usage.lpddr5",
+> +		"MetricExpr":
+> "(( imx9_ddr0@eddrtq_pm_rd_beat_filt0\\,counter\\=3D5\\,axi_mask\\=3D0x00
+> 0\\,axi_id\\=3D0x000@ +
+> imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x000\\,
+> axi_id\\=3D0x000@ ) * 32 / duration_time) / (6400 * 1000000 * 4)",
+> +		"ScaleUnit": "1e2%",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of all masters read from ddr",
+> +		"MetricName": "imx95_ddr_read.all",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt0\\,counter\\=3D5\\,axi_mask\\=3D0x000
+> \\,axi_id\\=3D0x000@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of all masters write to ddr",
+> +		"MetricName": "imx95_ddr_write.all",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x000
+> \\,axi_id\\=3D0x000@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of all a55 read from ddr",
+> +		"MetricName": "imx95_ddr_read.a55_all",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt0\\,counter\\=3D5\\,axi_mask\\=3D0x3fc
+> \\,axi_id\\=3D0x000@ +
+> imx9_ddr0@eddrtq_pm_rd_beat_filt1\\,counter\\=3D4\\,axi_mask\\=3D0x3fe\\,
+> axi_id\\=3D0x004@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of all a55 write to ddr (part1)",
+> +		"MetricName": "imx95_ddr_write.a55_all_1",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3fc\
+> \,axi_id\\=3D0x000@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of all a55 write to ddr (part2)",
+> +		"MetricName": "imx95_ddr_write.a55_all_2",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3fe\
+> \,axi_id\\=3D0x004@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of a55 core 0 read from ddr",
+> +		"MetricName": "imx95_ddr_read.a55_0",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt0\\,counter\\=3D5\\,axi_mask\\=3D0x3ff
+> \\,axi_id\\=3D0x000@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of a55 core 0 write to ddr",
+> +		"MetricName": "imx95_ddr_write.a55_0",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3ff\
+> \,axi_id\\=3D0x000@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of a55 core 1 read from ddr",
+> +		"MetricName": "imx95_ddr_read.a55_1",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt1\\,counter\\=3D4\\,axi_mask\\=3D0x00f
+> \\,axi_id\\=3D0x001@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of a55 core 1 write to ddr",
+> +		"MetricName": "imx95_ddr_write.a55_1",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x00f\
+> \,axi_id\\=3D0x001@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of a55 core 2 read from ddr",
+> +		"MetricName": "imx95_ddr_read.a55_2",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt2\\,counter\\=3D3\\,axi_mask\\=3D0x00f
+> \\,axi_id\\=3D0x002@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of a55 core 2 write to ddr",
+> +		"MetricName": "imx95_ddr_write.a55_2",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x00f\
+> \,axi_id\\=3D0x002@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of a55 core 3 read from ddr",
+> +		"MetricName": "imx95_ddr_read.a55_3",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt0\\,counter\\=3D5\\,axi_mask\\=3D0x00f
+> \\,axi_id\\=3D0x003@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of a55 core 3 write to ddr",
+> +		"MetricName": "imx95_ddr_write.a55_3",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x00f\
+> \,axi_id\\=3D0x003@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of a55 core 4 read from ddr",
+> +		"MetricName": "imx95_ddr_read.a55_4",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt1\\,counter\\=3D4\\,axi_mask\\=3D0x00f
+> \\,axi_id\\=3D0x004@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of a55 core 4 write to ddr",
+> +		"MetricName": "imx95_ddr_write.a55_4",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x00f\
+> \,axi_id\\=3D0x004@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of a55 core 5 read from ddr",
+> +		"MetricName": "imx95_ddr_read.a55_5",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt2\\,counter\\=3D3\\,axi_mask\\=3D0x00f
+> \\,axi_id\\=3D0x005@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of a55 core 5 write to ddr",
+> +		"MetricName": "imx95_ddr_write.a55_5",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x00f\
+> \,axi_id\\=3D0x005@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of Cortex-A DSU L3 evicted/ACP
+> transactions read from ddr",
+> +		"MetricName": "imx95_ddr_read.cortexa_dsu_l3",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt0\\,counter\\=3D5\\,axi_mask\\=3D0x00f
+> \\,axi_id\\=3D0x007@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of Cortex-A DSU L3 evicted/ACP
+> transactions write to ddr",
+> +		"MetricName": "imx95_ddr_write.cortexa_dsu_l3",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x00f\
+> \,axi_id\\=3D0x007@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of m33 read from ddr",
+> +		"MetricName": "imx95_ddr_read.m33",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt0\\,counter\\=3D5\\,axi_mask\\=3D0x00f
+> \\,axi_id\\=3D0x008@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of m33 write to ddr",
+> +		"MetricName": "imx95_ddr_write.m33",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x00f\
+> \,axi_id\\=3D0x008@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of m7 read from ddr",
+> +		"MetricName": "imx95_ddr_read.m7",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt1\\,counter\\=3D4\\,axi_mask\\=3D0x00f
+> \\,axi_id\\=3D0x009@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of m7 write to ddr",
+> +		"MetricName": "imx95_ddr_write.m7",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x00f\
+> \,axi_id\\=3D0x009@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of sentinel read from ddr",
+> +		"MetricName": "imx95_ddr_read.sentinel",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt2\\,counter\\=3D3\\,axi_mask\\=3D0x00f
+> \\,axi_id\\=3D0x00a@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of sentinel write to ddr",
+> +		"MetricName": "imx95_ddr_write.sentinel",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x00f\
+> \,axi_id\\=3D0x00a@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of edma1 read from ddr",
+> +		"MetricName": "imx95_ddr_read.edma1",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt0\\,counter\\=3D5\\,axi_mask\\=3D0x00f
+> \\,axi_id\\=3D0x00b@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of edma1 write to ddr",
+> +		"MetricName": "imx95_ddr_write.edma1",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x00f\
+> \,axi_id\\=3D0x00b@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of edma2 read from ddr",
+> +		"MetricName": "imx95_ddr_read.edma2",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt1\\,counter\\=3D4\\,axi_mask\\=3D0x00f
+> \\,axi_id\\=3D0x00c@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of edma2 write to ddr",
+> +		"MetricName": "imx95_ddr_write.edma2",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x00f\
+> \,axi_id\\=3D0x00c@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of netc read from ddr",
+> +		"MetricName": "imx95_ddr_read.netc",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt2\\,counter\\=3D3\\,axi_mask\\=3D0x00f
+> \\,axi_id\\=3D0x00d@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of netc write to ddr",
+> +		"MetricName": "imx95_ddr_write.netc",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x00f\
+> \,axi_id\\=3D0x00d@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of npu read from ddr",
+> +		"MetricName": "imx95_ddr_read.npu",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt0\\,counter\\=3D5\\,axi_mask\\=3D0x3f0
+> \\,axi_id\\=3D0x010@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of npu write to ddr",
+> +		"MetricName": "imx95_ddr_write.npu",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x010@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of gpu read from ddr",
+> +		"MetricName": "imx95_ddr_read.gpu",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt1\\,counter\\=3D4\\,axi_mask\\=3D0x3f0
+> \\,axi_id\\=3D0x020@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of gpu write to ddr",
+> +		"MetricName": "imx95_ddr_write.gpu",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x020@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of usdhc1 read from ddr",
+> +		"MetricName": "imx95_ddr_read.usdhc1",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt2\\,counter\\=3D3\\,axi_mask\\=3D0x3f0
+> \\,axi_id\\=3D0x0b0@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of usdhc1 write to ddr",
+> +		"MetricName": "imx95_ddr_write.usdhc1",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x0b0@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of usdhc2 read from ddr",
+> +		"MetricName": "imx95_ddr_read.usdhc2",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt0\\,counter\\=3D5\\,axi_mask\\=3D0x3f0
+> \\,axi_id\\=3D0x0c0@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of usdhc2 write to ddr",
+> +		"MetricName": "imx95_ddr_write.usdhc2",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x0c0@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of usdhc3 read from ddr",
+> +		"MetricName": "imx95_ddr_read.usdhc3",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt1\\,counter\\=3D4\\,axi_mask\\=3D0x3f0
+> \\,axi_id\\=3D0x0d0@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of usdhc3 write to ddr",
+> +		"MetricName": "imx95_ddr_write.usdhc3",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x0d0@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of xspi read from ddr",
+> +		"MetricName": "imx95_ddr_read.xspi",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt2\\,counter\\=3D3\\,axi_mask\\=3D0x3f0
+> \\,axi_id\\=3D0x0f0@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of xspi write to ddr",
+> +		"MetricName": "imx95_ddr_write.xspi",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x0f0@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of pcie1 read from ddr",
+> +		"MetricName": "imx95_ddr_read.pcie1",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt0\\,counter\\=3D5\\,axi_mask\\=3D0x3f0
+> \\,axi_id\\=3D0x100@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of pcie1 write to ddr",
+> +		"MetricName": "imx95_ddr_write.pcie1",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x100@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of pcie2 read from ddr",
+> +		"MetricName": "imx95_ddr_read.pcie2",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt1\\,counter\\=3D4\\,axi_mask\\=3D0x00f
+> \\,axi_id\\=3D0x006@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of pcie2 write to ddr",
+> +		"MetricName": "imx95_ddr_write.pcie2",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x00f\
+> \,axi_id\\=3D0x006@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of pcie3 read from ddr",
+> +		"MetricName": "imx95_ddr_read.pcie3",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt2\\,counter\\=3D3\\,axi_mask\\=3D0x3f0
+> \\,axi_id\\=3D0x120@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of pcie3 write to ddr",
+> +		"MetricName": "imx95_ddr_write.pcie3",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x120@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of pcie4 read from ddr",
+> +		"MetricName": "imx95_ddr_read.pcie4",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt0\\,counter\\=3D5\\,axi_mask\\=3D0x3f0
+> \\,axi_id\\=3D0x130@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of pcie4 write to ddr",
+> +		"MetricName": "imx95_ddr_write.pcie4",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x130@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of usb1 read from ddr",
+> +		"MetricName": "imx95_ddr_read.usb1",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt1\\,counter\\=3D4\\,axi_mask\\=3D0x3f0
+> \\,axi_id\\=3D0x140@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of usb1 write to ddr",
+> +		"MetricName": "imx95_ddr_write.usb1",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x140@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of usb2 read from ddr",
+> +		"MetricName": "imx95_ddr_read.usb2",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt2\\,counter\\=3D3\\,axi_mask\\=3D0x3f0
+> \\,axi_id\\=3D0x150@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of usb2 write to ddr",
+> +		"MetricName": "imx95_ddr_write.usb2",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x150@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of vpu codec primary bus read
+> from ddr",
+> +		"MetricName": "imx95_ddr_read.vpu_primy",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt0\\,counter\\=3D5\\,axi_mask\\=3D0x3f0
+> \\,axi_id\\=3D0x180@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of vpu codec primary bus write to
+> ddr",
+> +		"MetricName": "imx95_ddr_write.vpu_primy",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x180@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of vpu codec secondary bus read
+> from ddr",
+> +		"MetricName": "imx95_ddr_read.vpu_secndy",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt1\\,counter\\=3D4\\,axi_mask\\=3D0x3f0
+> \\,axi_id\\=3D0x190@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of vpu codec secondary bus write
+> to ddr",
+> +		"MetricName": "imx95_ddr_write.vpu_secndy",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x190@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of jpeg decoder read from ddr",
+> +		"MetricName": "imx95_ddr_read.jpeg_dec",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt2\\,counter\\=3D3\\,axi_mask\\=3D0x3f0
+> \\,axi_id\\=3D0x1a0@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of jpeg decoder write to ddr",
+> +		"MetricName": "imx95_ddr_write.jpeg_dec",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x1a0@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of jpeg encoder read from ddr",
+> +		"MetricName": "imx95_ddr_read.jpeg_dec",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt0\\,counter\\=3D5\\,axi_mask\\=3D0x3f0
+> \\,axi_id\\=3D0x1b0@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of jpeg encoder write to ddr",
+> +		"MetricName": "imx95_ddr_write.jpeg_enc",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x1b0@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of all vpu submodules read from
+> ddr",
+> +		"MetricName": "imx95_ddr_read.vpu_all",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt1\\,counter\\=3D4\\,axi_mask\\=3D0x380
+> \\,axi_id\\=3D0x180@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of all vpu submodules write to ddr",
+> +		"MetricName": "imx95_ddr_write.vpu_all",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x380
+> \\,axi_id\\=3D0x180@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of cortex m0+ read from ddr",
+> +		"MetricName": "imx95_ddr_read.m0",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt2\\,counter\\=3D3\\,axi_mask\\=3D0x3f0
+> \\,axi_id\\=3D0x200@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of cortex m0+ write to ddr",
+> +		"MetricName": "imx95_ddr_write.m0",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x200@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of camera edma read from ddr",
+> +		"MetricName": "imx95_ddr_read.camera_edma",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt0\\,counter\\=3D5\\,axi_mask\\=3D0x3f0
+> \\,axi_id\\=3D0x210@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of camera edma write to ddr",
+> +		"MetricName": "imx95_ddr_write.camera_edma",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x210@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of isi rd read from ddr",
+> +		"MetricName": "imx95_ddr_read.isi_rd",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt1\\,counter\\=3D4\\,axi_mask\\=3D0x3f0
+> \\,axi_id\\=3D0x220@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of isi rd write to ddr",
+> +		"MetricName": "imx95_ddr_write.isi_rd",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x220@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of isi wr y read from ddr",
+> +		"MetricName": "imx95_ddr_read.isi_wr_y",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt2\\,counter\\=3D3\\,axi_mask\\=3D0x3f0
+> \\,axi_id\\=3D0x230@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of isi wr y write to ddr",
+> +		"MetricName": "imx95_ddr_write.isi_wr_y",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x230@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of isi wr u read from ddr",
+> +		"MetricName": "imx95_ddr_read.isi_wr_u",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt0\\,counter\\=3D5\\,axi_mask\\=3D0x3f0
+> \\,axi_id\\=3D0x240@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of isi wr u write to ddr",
+> +		"MetricName": "imx95_ddr_write.isi_wr_u",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x240@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of isi wr v read from ddr",
+> +		"MetricName": "imx95_ddr_read.isi_wr_v",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt1\\,counter\\=3D4\\,axi_mask\\=3D0x3f0
+> \\,axi_id\\=3D0x250@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of isi wr v write to ddr",
+> +		"MetricName": "imx95_ddr_write.isi_wr_v",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x250@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of isp input dma1 read from ddr",
+> +		"MetricName": "imx95_ddr_read.isp_in_dma1",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt2\\,counter\\=3D3\\,axi_mask\\=3D0x3f0
+> \\,axi_id\\=3D0x260@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of isp input dma1 write to ddr",
+> +		"MetricName": "imx95_ddr_write.isp_in_dma1",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x260@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of isp input dma2 read from ddr",
+> +		"MetricName": "imx95_ddr_read.isp_in_dma2",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt0\\,counter\\=3D5\\,axi_mask\\=3D0x3f0
+> \\,axi_id\\=3D0x270@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of isp input dma2 write to ddr",
+> +		"MetricName": "imx95_ddr_write.isp_in_dma2",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x270@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of isp output dma1 read from ddr",
+> +		"MetricName": "imx95_ddr_read.isp_out_dma1",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt1\\,counter\\=3D4\\,axi_mask\\=3D0x3f0
+> \\,axi_id\\=3D0x280@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of isp output dma1 write to ddr",
+> +		"MetricName": "imx95_ddr_write.isp_out_dma1",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x280@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of isp output dma2 read from ddr",
+> +		"MetricName": "imx95_ddr_read.isp_out_dma2",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt2\\,counter\\=3D3\\,axi_mask\\=3D0x3f0
+> \\,axi_id\\=3D0x290@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of isp output dma2 write to ddr",
+> +		"MetricName": "imx95_ddr_write.isp_out_dma2",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x290@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of all camera submodules read
+> from ddr",
+> +		"MetricName": "imx95_ddr_read.camera_all",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt0\\,counter\\=3D5\\,axi_mask\\=3D0x380
+> \\,axi_id\\=3D0x200@ +
+> imx9_ddr0@eddrtq_pm_rd_beat_filt1\\,counter\\=3D4\\,axi_mask\\=3D0x3f0\\,
+> axi_id\\=3D0x280@ +
+> imx9_ddr0@eddrtq_pm_rd_beat_filt2\\,counter\\=3D3\\,axi_mask\\=3D0x3f0\\,
+> axi_id\\=3D0x290@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of all camera submodules write to
+> ddr (part1)",
+> +		"MetricName": "imx95_ddr_write.camera_all_1",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x380
+> \\,axi_id\\=3D0x200@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of all camera submodules write to
+> ddr (part2)",
+> +		"MetricName": "imx95_ddr_write.camera_all_2",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x280@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of all camera submodules write to
+> ddr (part3)",
+> +		"MetricName": "imx95_ddr_write.camera_all_3",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x290@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of display blitter store read from
+> ddr",
+> +		"MetricName": "imx95_ddr_read.disp_blit",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt0\\,counter\\=3D5\\,axi_mask\\=3D0x3f0
+> \\,axi_id\\=3D0x2a0@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of display blitter write to ddr",
+> +		"MetricName": "imx95_ddr_write.disp_blit",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x2a0@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of display command sequencer
+> read from ddr",
+> +		"MetricName": "imx95_ddr_read.disp_cmd",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt1\\,counter\\=3D4\\,axi_mask\\=3D0x3f0
+> \\,axi_id\\=3D0x2b0@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of display command sequencer
+> write to ddr",
+> +		"MetricName": "imx95_ddr_write.disp_cmd",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3f0\
+> \,axi_id\\=3D0x2b0@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of all display submodules read
+> from ddr",
+> +		"MetricName": "imx95_ddr_read.disp_all",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_rd_beat_filt0\\,counter\\=3D5\\,axi_mask\\=3D0x300
+> \\,axi_id\\=3D0x300@ +
+> imx9_ddr0@eddrtq_pm_rd_beat_filt1\\,counter\\=3D4\\,axi_mask\\=3D0x3a0\\
+> ,axi_id\\=3D0x2a0@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of all display submodules write to
+> ddr (part1)",
+> +		"MetricName": "imx95_ddr_write.disp_all_1",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x300
+> \\,axi_id\\=3D0x300@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	},
+> +	{
+> +		"BriefDescription": "bytes of all display submodules write to
+> ddr (part2)",
+> +		"MetricName": "imx95_ddr_write.disp_all_2",
+> +		"MetricExpr":
+> "( imx9_ddr0@eddrtq_pm_wr_beat_filt\\,counter\\=3D2\\,axi_mask\\=3D0x3a0
+> \\,axi_id\\=3D0x2a0@ ) * 32",
+> +		"ScaleUnit": "9.765625e-4KB",
+> +		"Unit": "imx9_ddr",
+> +		"Compat": "imx95"
+> +	}
+> +]
+> diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-
+> events/jevents.py
+> index 53ab050c8fa4..be4b541a0820 100755
+> --- a/tools/perf/pmu-events/jevents.py
+> +++ b/tools/perf/pmu-events/jevents.py
+> @@ -284,6 +284,7 @@ class JsonEvent:
+>            'hisi_sccl,hha': 'hisi_sccl,hha',
+>            'hisi_sccl,l3c': 'hisi_sccl,l3c',
+>            'imx8_ddr': 'imx8_ddr',
+> +          'imx9_ddr': 'imx9_ddr',
+>            'L3PMC': 'amd_l3',
+>            'DFPMC': 'amd_df',
+>            'UMCPMC': 'amd_umc',
+> --
+> 2.34.1
 
 
