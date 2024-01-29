@@ -1,147 +1,135 @@
-Return-Path: <linux-kernel+bounces-42960-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42962-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03B7084094F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:06:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3937840958
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:09:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD68428C15A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:06:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 581791F22E00
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:09:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C83B61534EC;
-	Mon, 29 Jan 2024 15:06:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 254F5153BCB;
+	Mon, 29 Jan 2024 15:08:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VdRdT15M"
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="KLQg21T0"
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EF991534E6
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 15:06:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA35A1534F6
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 15:08:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706540801; cv=none; b=rUT8DYtWCmQsDJpMXyoUp//ofZLtPx6bFAoQvMrROu1tsaiywKEfsFd6s6AeTxrfC3Seyjb4HUS8QPfZw0cIqpCuZduktuRs2f0wHMrR50nTdbWUak9MuhUOO+s2QqtBacMJeY9417uLqb6a+zs5ckrBQRKbV3ZivchmiE9HCjc=
+	t=1706540923; cv=none; b=DH7jbfioJrEXgIGJdQn5GFxLCnkYvrKG5sB+su9KMg7y+GPk72+vZJG3XKA3N6iqy2otYApRyeG6czQx9wWdNmhdcAI57ZU2jPMdgfGRMBFOHeYbENsODc3ONy17PLUz2NUFYCD9k543bKtgvKZliGuia83Sa2lHJZlBZPLN1gE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706540801; c=relaxed/simple;
-	bh=UdVE88RvKofu1niD7h9x7NM6QyJbb3bceyHPaqVCFyM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UBJIBKQ1kj7rnnq8ImIcG6UJC1pXjt7W9f3BrDVz3aFoioL4AsIjUQuMa2fOz0QBg1NT+zgOt3fCD7LmQ+XetiSF5wBecKsscLYbPXI6xU6Iyp+NUB8SvFxWBfZHm3zwo5NmSYWX4EJvP4WmyqXnIMIM9/HOPMwsQGqGUswFsKg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VdRdT15M; arc=none smtp.client-ip=209.85.221.41
+	s=arc-20240116; t=1706540923; c=relaxed/simple;
+	bh=7Ad9b8sC5p4drimOlyy33kQgcYMT6N80v45xUSMRDqA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JD2T61bsnkRws2WSvNDj4Eqv1NIw3LsrxGxMs/9PIebaATvW/xagKYTU3397czfFFgavhuAFjuEYGWoywGaNoH6445hpZSp3wFG39/NTc2ix3dhQe27sgWv9I/wsAO7zCdJPPIYzWSBvlfuvzKilF4tGftadXdmW+lsYi0A0rHE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=KLQg21T0; arc=none smtp.client-ip=209.85.128.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-33ae3be1c37so957283f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 07:06:39 -0800 (PST)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-6002a655d77so24762647b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 07:08:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706540797; x=1707145597; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=SB7k/BFApJBDg3KYf+GK3Duye99o6PLwEtImHq4bcyM=;
-        b=VdRdT15MKtBIYKo1FVDLVuBJOyolpgnhYmkvL+t+E380Q7RVpZ2Ht+Ab249wG3NQpe
-         uoX2HB5715VR2K6zWuPUWlIGodBsPjBU7yP/9z5O/krCnjGfOdKlYPtMpWVQWssFIDDA
-         916K48BGaMT4lDsiFhGZUwR6px2Fgi8O5UwzN8n4DjjOdQeOHr27Bk1APMv78a5ovSjs
-         mr7CbqjvT7/mCQehPrhEHRsGhJupHyt/YkpmJnDHke+VJdz9Yv/Kg42R3s1k33kBzx3i
-         YkV1vJUC2uDVAeHn0e0CElgn8Qv6jICrOPKKnIoiqHKpKW7TdWOgTuztNMrEj2kz60pF
-         8MSw==
+        d=linaro.org; s=google; t=1706540921; x=1707145721; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=WHc0ySmd3+BUchE2A6eeEhPhJOTzoceSWy6/UF2YYmg=;
+        b=KLQg21T03+/PwPrp/bd8sHw9xBbxj4gWOBzAfzuAc0wnAR5lctlHxPGr/Z62PQkjZb
+         9o0YGarWzCHb7GBhhsuA3aCdXD0HNdDSXs/l66QHVEUE9Etn9m2kVw9jJY5LWT+1GLAz
+         5j3lUT+qz4KOZalNwE9v31ya2UyG7eIKMbVPeTRiY2u9Jchzr9BaPGAIqyEbqC07QCe4
+         R3JnOSibM43CNhMo5YNzisIqPdJhbhuA86URPbXiQ7+DrLiiUkwn7RdfEHyzZbKYr3yE
+         aNheC1DR5pkw8O4YzSUFiR1SDTp9wNedA5Ca0HS4gwzs2bXllVQTHncPXZSfNBTRSBrC
+         Cecg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706540797; x=1707145597;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SB7k/BFApJBDg3KYf+GK3Duye99o6PLwEtImHq4bcyM=;
-        b=S1mW9vZgZrpi3J+WP8xCn1q6z1gTnJwrqR06HS7Evy8Iesd33q29ehi6LRMjY4E7QO
-         BLrVYYV5Nk39nLOySYYd9FIVKPJY+fdSAVy7fMjIRTgGWdaiTTs5eywVqJ5ius2YQryK
-         X7Z/1WwxOPdho765N/2DFVcNw//syJYN/UV3tqe1+yIBHYHNaFqtaWg2B/UiGG18tpdE
-         /pgaxkNmU42UDjFq1jSDg+jPxQDghfrYnFxyVtNt5MUqjX2jCNpXpPE/wWGDluvmr7pu
-         gdGo7H8SyyZ7WFXa4Pj+xsFG0NFcXSN4UCLRu1NygzHAOvdvbOx8u1WtD7Sf9+lqZt3B
-         qMXQ==
-X-Gm-Message-State: AOJu0YzapyVNeIjY178sasjyuPPLS33QckZVbkeyQo9XJTM5mQ6x+eOk
-	ftyw/Y7MWrxkqBZHuZvZorwu9LxKvOrVwJ4ZZwcKL6Emx2vaPKQFyalhZvVH7KQ=
-X-Google-Smtp-Source: AGHT+IE+uX7yUe7MwfmkZ12D1Eijb9mak9vnudqGmL2IFa7HkMwnDFRdrTBve8PDAwKPyZ2UDUlpMA==
-X-Received: by 2002:adf:ce0d:0:b0:33a:e559:5357 with SMTP id p13-20020adfce0d000000b0033ae5595357mr4148708wrn.28.1706540797491;
-        Mon, 29 Jan 2024 07:06:37 -0800 (PST)
-Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id k7-20020a5d6e87000000b0033addeabd6fsm7642647wrz.18.2024.01.29.07.06.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 07:06:37 -0800 (PST)
-Date: Mon, 29 Jan 2024 18:06:34 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Meir Elisha <meir6264@gmail.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Ruan Jinjie <ruanjinjie@huawei.com>,
-	Yang Yingliang <yangyingliang@huawei.com>,
-	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/4] Staging: rtl8723bs: Fix block comments warning
-Message-ID: <888364a5-0445-467b-9e3c-6662019852e4@moroto.mountain>
-References: <20240129141856.416532-1-meir6264@Gmail.com>
- <20240129141856.416532-4-meir6264@Gmail.com>
+        d=1e100.net; s=20230601; t=1706540921; x=1707145721;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WHc0ySmd3+BUchE2A6eeEhPhJOTzoceSWy6/UF2YYmg=;
+        b=o3oNj5hK0SiPwCEHqsZiAacVllnjUxaXsKrgNAht4Dl1/7Pd8L1AOeH6De+w/BeRl3
+         cJXm0f1vs0qkKiYCPL8BJ2FKvquH8tgHx6WYHmYHEgP1MVo4Vg29xO4BQLGDW2/i/tLF
+         qHoOy3tO68aXaoKG1Jlv0CljBKyjo4M/h1nKm4gsE1R0HHzKaraGFGsIuBud9hId1bo0
+         mwMMHyC79jwOV4ee1pNK+XTtovNw6+MgXHBt3cucWQwnej5NK2Or65Hvrnd3aRMEVGGZ
+         J4JcyXy1II9bCeNEbrKPm26KSKOVikaWa2SvAmYKQPfar5vDIwIFltneo+a+uicgRUhm
+         hVNQ==
+X-Gm-Message-State: AOJu0YzgYGmh/Op3TWJ7xLBLqAm/T8Lz+LJ3d1rDGGOjtJuXGtFr7YNZ
+	ZdFShn04wSLIodDx530lMMtzs2rTNd134MnI/IeMm/VyWjRNTUuwhuwmdoFexA89bOoIGEg+sAP
+	XemLk1xh/dL5b3f8kxyA9I0tjOmgWXYc14iQNcQ==
+X-Google-Smtp-Source: AGHT+IEGAtVAdaZvHFjfmQf1IJOtCdXiDeGVR3eL7R75RzaD4DvPC28PHklGGBsD3t+yL5unf4AHNAwUb1afgQibw48=
+X-Received: by 2002:a5b:18d:0:b0:dc2:23cf:6ada with SMTP id
+ r13-20020a5b018d000000b00dc223cf6adamr2403587ybl.73.1706540920775; Mon, 29
+ Jan 2024 07:08:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240129141856.416532-4-meir6264@Gmail.com>
+References: <20240129-x1e80100-display-v1-0-0d9eb8254df0@linaro.org> <20240129-x1e80100-display-v1-4-0d9eb8254df0@linaro.org>
+In-Reply-To: <20240129-x1e80100-display-v1-4-0d9eb8254df0@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Mon, 29 Jan 2024 17:08:29 +0200
+Message-ID: <CAA8EJpq1RSi4H6m6UQcyxEr=hip=ypKz9DhHziNKvDjUHsES8Q@mail.gmail.com>
+Subject: Re: [PATCH 4/5] drm/msm/dp: Try looking for link-frequencies into the
+ port@0's endpoint first
+To: Abel Vesa <abel.vesa@linaro.org>
+Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, linux-arm-msm@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Jan 29, 2024 at 04:18:55PM +0200, Meir Elisha wrote:
->  /*
-> -struct	wlan_network *_rtw_dequeue_network(struct __queue *queue)
-> -{
-> -	_irqL irqL;
-> -
-> -	struct wlan_network *pnetwork;
-> -
-> -	spin_lock_bh(&queue->lock);
-> -
-> -	if (list_empty(&queue->queue))
-> -
-> -		pnetwork = NULL;
-> -
-> -	else
-> -	{
-> -		pnetwork = container_of(get_next(&queue->queue), struct wlan_network, list);
-> -
-> -		list_del_init(&(pnetwork->list));
-> -	}
-> -
-> -	spin_unlock_bh(&queue->lock);
-> -
-> -	return pnetwork;
-> -}
-> -*/
-> + *struct wlan_network *_rtw_dequeue_network(struct __queue *queue)
-> + *{
-> + *	_irqL irqL;
-> + *
-> + *	struct wlan_network *pnetwork;
-> + *
-> + *	spin_lock_bh(&queue->lock);
-> + *
-> + *	if (list_empty(&queue->queue))
-> + *
-> + *		pnetwork = NULL;
-> + *
-> + *	else
-> + *	{
-> + *		pnetwork = container_of(get_next(&queue->queue), struct wlan_network, list);
-> + *
-> + *		list_del_init(&(pnetwork->list));
-> + *	}
-> + *
-> + *	spin_unlock_bh(&queue->lock);
-> + *
-> + *	return pnetwork;
-> + *}
-> + */
+On Mon, 29 Jan 2024 at 15:19, Abel Vesa <abel.vesa@linaro.org> wrote:
+>
+> From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+>
+> On platforms where the endpoint used is on port@0, looking for port@1
+> instead results in just ignoring the max link-frequencies altogether.
+> Look at port@0 first, then, if not found, look for port@1.
+
+NAK. Platforms do not "use port@0". It is for the connection between
+DPU and DP, while the link-frequencies property is for the link
+between DP controller and the actual display.
+
+>
+> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> ---
+>  drivers/gpu/drm/msm/dp/dp_parser.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/msm/dp/dp_parser.c b/drivers/gpu/drm/msm/dp/dp_parser.c
+> index 7032dcc8842b..eec5b8b83f4b 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_parser.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_parser.c
+> @@ -97,7 +97,11 @@ static u32 dp_parser_link_frequencies(struct device_node *of_node)
+>         u64 frequency = 0;
+>         int cnt;
+>
+> -       endpoint = of_graph_get_endpoint_by_regs(of_node, 1, 0); /* port@1 */
+> +       endpoint = of_graph_get_endpoint_by_regs(of_node, 0, 0); /* port@0 */
+> +
+> +       if (!endpoint)
+> +               endpoint = of_graph_get_endpoint_by_regs(of_node, 1, 0); /* port@1 */
+> +
+>         if (!endpoint)
+>                 return 0;
+>
+>
+> --
+> 2.34.1
+>
 
 
-Delete the dead code.
-
-regards,
-dan carpenter
-
-
+-- 
+With best wishes
+Dmitry
 
