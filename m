@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-43280-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43281-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 514368411B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:09:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 03DBA8411B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:09:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1A3B1F25056
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:09:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 960541F244FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:09:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 414B815AAC7;
-	Mon, 29 Jan 2024 18:06:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 998C815AAD9;
+	Mon, 29 Jan 2024 18:06:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PePKihMI"
-Received: from mail-wm1-f73.google.com (mail-wm1-f73.google.com [209.85.128.73])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HHxwKq+n"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDA946F090
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 18:06:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BF1F3F9DA
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 18:06:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706551563; cv=none; b=JQYcdQJYzLVE9zu8+EjT6xAFgAerpRtrrbHNsKii6Bs1RO+XBusbvbBfBFI5LIdhIBkb0dfgpFIG0KA8OdhaQYSHIzcONGcC9q+yXt23lm59sfhF10xPQJcHKcUIAjmp4tuP46P8AORl7V9IQt7s8niVxJr8XwdAtlFtW2fXRpQ=
+	t=1706551564; cv=none; b=QmHsHayNX9rG0duGfoCLl3pf1zZwqsMiK0Ow9un75TY9x/lUd0gU2CIKpRe4qDWUnpQ6pGn0sEpjNAjqFz75KMiWZkGC7kZzUaL9RriopOREq3GFONo5MA7UHRMbv8bRlRjW+abWhmyozGAUJsCHi9l1n8NPCoBDN3UAfE/Ej3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706551563; c=relaxed/simple;
-	bh=ywQcTtrCDMHJcI+QkXWX2nFyJwoVE8xehI2i+Z3nGsk=;
+	s=arc-20240116; t=1706551564; c=relaxed/simple;
+	bh=2tkXbI4kkP7Bg5PktzWdMGd8q8tWspLGt7tFV60fDKM=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=d8G1Yg2a6LhI1C2hqO0uQxCP4f2uMxB8+X1U2DVD4dy8+uYUH6dSS8+lsBAwbREfVD3UrQjwcU3iIsMjVXMFBF51Ln9Bhfd1zKr9SJSV2gVd+u39mzs+34ge6qoXHtHWqhXEm36z4iGW69xa9XZjiEdbsfyI0XirdKQK3AbJ4Oc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PePKihMI; arc=none smtp.client-ip=209.85.128.73
+	 To:Cc:Content-Type; b=gxnYA98Qq9BGlb6TJ64/Q7ZJn42elTGMQCwo9MRl/lEfPyIaNPDdV33mPLfAym8jX9MM/xDa92RsWGf8Q14cVf3cfD2Mt/qimYPD7h7SJZcfEgKS7wvx0ZV8nQ5oxLREMCKr1G5pzDSU1yQje0P47fKcqUuGPdRO0JB4MPA/HSI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HHxwKq+n; arc=none smtp.client-ip=209.85.219.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com
-Received: by mail-wm1-f73.google.com with SMTP id 5b1f17b1804b1-40e478693bcso20448755e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 10:06:01 -0800 (PST)
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc2629d180fso6441691276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 10:06:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706551560; x=1707156360; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1706551562; x=1707156362; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fLLl1bcVbRYtnIzLBeH2xJGti8beoepv/z/uSZlJPHo=;
-        b=PePKihMIIMoDRiafr8/B5H0JSooV6zBWN12mgzsMtuezB4BxjNtZqUuUwJ0AX7Jo1X
-         LTg84Ia83obzKLG+p06g835IqPxjaUAKnuOAyRCW+dSe2tDftB5D4lpvIi9oUgVDMAfA
-         upbEeHjGTvTxNgCeGTYe1kYJ1f0pB4gdN9AgmDBul4vNOGGv221vJmK6BeQkqs2wl155
-         pGy8ltGR0DTI01dlvkwIcEPlAwAC7pYA5ILDkBklmYCpkh1EG7xhbzDCkmadwkBWDg0n
-         fzyEBI18fOPI89duJF+eQ+wnTJVV4XDHXp6/xAZm3Q2x13N2V1iYeMp86YnevNLWM/4a
-         TfIw==
+        bh=6DdM1fA2/BUC7ScxyUb41JZesEtpKP4YlIE0jOqBF4A=;
+        b=HHxwKq+nXkk2HJ3qoSkywtt5wIE0R0J/2KgfyyeyC9rWcHw7NdABIQGtgZpoLe3Uqj
+         Uik/7h1LPurFgs4BIxuoXsUtCMgybzfcQI8QWBpt0FkTGvWJKebEUh6Os0xiMhENdQSq
+         sLKfBDBJj34bxS7dj8ld1eanbODydLv5qIHml66Fl3PXVhZhc7DEiWfD55G9UgkbC5+Z
+         ZmKXqE1kQ+9Z9BxW9q/NrYeDkogHX8vwGju/ZBDDZzUbVRmTZuAuv3HsbQuL0aWDr9u+
+         HEwdVPtLlrXMZmvt25bVK7JSqIuQlsNzNhXbUpS3UQlr3rBx3SkOKA5MjgOgdcntMe+K
+         Hb/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706551560; x=1707156360;
+        d=1e100.net; s=20230601; t=1706551562; x=1707156362;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fLLl1bcVbRYtnIzLBeH2xJGti8beoepv/z/uSZlJPHo=;
-        b=NiUJRFcLdkwdILrmVRo8COPXeb+8HG+Kgz3G1BYYdgIkROXW8XbN40b7NDa3L3XZme
-         YQU2iChlh0nD5mTVw3OaARVmig7mclxOiwg5XZiNt5p6fyNs27VwMJ8Uzg5/ONm+Jn65
-         J4pTdZxstYMrlSwrZkqfSpSlMqd/IbeiRQz2uNIRsB40rh903YTS+gNcvE9750xVhsGz
-         pDxdW7jZZBkepmh0xEDloKygqq2YEcigIDn3QRbARbrtAhlnpqBOTvHHBKOgvPIxSk43
-         jYJR3pT3tvIPqGLn/TWaj2q8O5ysg1ywMajAW0B7ACBEayrT+1/esYkkj/Oiyk6G80vX
-         8H6g==
-X-Gm-Message-State: AOJu0YwAl1WEuxV0GsL1T5nIolDWPLek/UDfOfp2GSDN+fVAsmom6rdS
-	oORUtxwnxmpzD9Iw0GAo3ek8+1aPJ6LTYWw2cC75/lXjbFVdUxs3zvSjDwlDGB7y4jNyo3qolse
-	Y7PPFWJRK9UzFzhD1lXVmlMyQtzFmjEM7jec1ix91eWSnUC27StfQUHzqYWMPL3j+4+MC60Cduo
-	M4Gy1iGKqkNv9PFcFwFcdKIo1lSQCv2g==
-X-Google-Smtp-Source: AGHT+IFRYaQgWgn7lS/fBsOiZY67lNa50V8yvvYuuoCz5vPDJOnfUaUEOPLRn1IO8EMDt34AydE5rmRl
+        bh=6DdM1fA2/BUC7ScxyUb41JZesEtpKP4YlIE0jOqBF4A=;
+        b=dV4dmbJ5Ij0x+Sqa4BOeXaLpjF+GN68mvZyHf1WQheQ+AT2yANKT+XK694qpvQcgI9
+         7dixpm9Hg8Qk/jcHYSbJgq6O2KmqOOpmjTwT+zrAq40TsJ0Adto2xMX/gVgCDURgFSQ4
+         KMKcRYyd17KuTEzlnj+DAnNHdiyafd6DeB8B+ig2YpSSqh6/cgfXSU9Cx6BJhnhNa7cl
+         VQKbxfwIepvmGMH8x9GtPjLeubqrtRJvezxlo9B1tAhyV17mcIaQDZVEODGrqfsub6QM
+         lE6lDHaaXq3EvI0mdBoqAbYYpWldW5Hw+Hbw87C4r1QufLyLpVsXhGMZDTb3aE1mtuUl
+         /QjQ==
+X-Gm-Message-State: AOJu0YzEdWJhVgYxbEtwJy4M+q9aOmEfgIm5YUPjZebGXKH2Ghbzjm4X
+	KPZchSm3FjyUm2WZwetF/ffPTcy4KFOM35qXRODgS/uRD1bnE3bvtU8q3qpYYgwsjUkvlAdGW9T
+	Aac51ibUNkZ2uMzaqN7q4qHNmvAaolbyitc/aRWG13jANWnXbZe6Zblw9xKGP6S+9PJPjVXvZ7s
+	LFsoh+G3IrtG8TJAN1KOHTj7jTmLJ7+g==
+X-Google-Smtp-Source: AGHT+IEtY0wHG6Bv+Cfuwk98fDoP1mB4rkr70PowOvdhb/HTma9T9dk4Ph+McoAi3VylYPwwX4+//SgC
 X-Received: from palermo.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:118a])
- (user=ardb job=sendgmr) by 2002:a05:6000:1e06:b0:33a:e517:57f1 with SMTP id
- bj6-20020a0560001e0600b0033ae51757f1mr89123wrb.0.1706551560216; Mon, 29 Jan
- 2024 10:06:00 -0800 (PST)
-Date: Mon, 29 Jan 2024 19:05:16 +0100
+ (user=ardb job=sendgmr) by 2002:a05:6902:e0d:b0:dc3:721f:7a4e with SMTP id
+ df13-20020a0569020e0d00b00dc3721f7a4emr2254113ybb.12.1706551562591; Mon, 29
+ Jan 2024 10:06:02 -0800 (PST)
+Date: Mon, 29 Jan 2024 19:05:17 +0100
 In-Reply-To: <20240129180502.4069817-21-ardb+git@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,15 +73,14 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240129180502.4069817-21-ardb+git@google.com>
 X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
-X-Developer-Signature: v=1; a=openpgp-sha256; l=979; i=ardb@kernel.org;
- h=from:subject; bh=DDaOUA3J+CFMHhm3e2XXAeDqtyhjkdr8A2J8hJRp8QM=;
- b=owGbwMvMwCFmkMcZplerG8N4Wi2JIXX7i7vMP9b7C0XfsczNYLSSucj1x3p6wJuiY837VhzfN
- +vbpewPHaUsDGIcDLJiiiwCs/++23l6olSt8yxZmDmsTCBDGLg4BWAiakcYGVby7QyTU6idwMOc
- J38qUmJ1p+F91buzM3Z8Xzphas7LJ+sZGZYqnkl8ycjtbnKv6+ovZ1E/e8uaWONjpw6xe+z87Cp rxgYA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1516; i=ardb@kernel.org;
+ h=from:subject; bh=XIt7BesiIe5Ouf8eLT5Jk6gT3ML8ZNdNuPHWU+248+Y=;
+ b=owGbwMvMwCFmkMcZplerG8N4Wi2JIXX7i3sXJ3YtNZs6V0Vn46sNwfPVvywvyvumoxTpaWPlJ
+ Nz4QT6mo5SFQYyDQVZMkUVg9t93O09PlKp1niULM4eVCWQIAxenAExk7QxGhtn/Pbk3KEkWcd6X
+ n8erVbj74eH4N1o8/57WlE5hkr1zU4XhN8vqb2tihGJOxm3c8mZjeq3tTemlor/sxaf2e0qmZ2w +wAoA
 X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-Message-ID: <20240129180502.4069817-34-ardb+git@google.com>
-Subject: [PATCH v3 13/19] modpost: Warn about calls from __pitext into other
- text sections
+Message-ID: <20240129180502.4069817-35-ardb+git@google.com>
+Subject: [PATCH v3 14/19] x86/coco: Make cc_set_mask() static inline
 From: Ard Biesheuvel <ardb+git@google.com>
 To: linux-kernel@vger.kernel.org
 Cc: Ard Biesheuvel <ardb@kernel.org>, Kevin Loughlin <kevinloughlin@google.com>, 
@@ -96,38 +95,60 @@ Content-Type: text/plain; charset="UTF-8"
 
 From: Ard Biesheuvel <ardb@kernel.org>
 
-Ensure that code that is marked as being able to safely run from a 1:1
-mapping does not call into other code which might lack that property.
+Setting the cc_mask global variable may be done early in the boot while
+running fromm a 1:1 translation. This code is built with -fPIC in order
+to support this.
+
+Make cc_set_mask() static inline so it can execute safely in this
+context as well.
 
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- scripts/mod/modpost.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/x86/coco/core.c        | 7 +------
+ arch/x86/include/asm/coco.h | 8 +++++++-
+ 2 files changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index 962d00df47ab..33b56d6b4e7b 100644
---- a/scripts/mod/modpost.c
-+++ b/scripts/mod/modpost.c
-@@ -825,6 +825,7 @@ enum mismatch {
- 	ANY_INIT_TO_ANY_EXIT,
- 	ANY_EXIT_TO_ANY_INIT,
- 	EXTABLE_TO_NON_TEXT,
-+	PI_TEXT_TO_NON_PI_TEXT,
- };
+diff --git a/arch/x86/coco/core.c b/arch/x86/coco/core.c
+index eeec9986570e..d07be9d05cd0 100644
+--- a/arch/x86/coco/core.c
++++ b/arch/x86/coco/core.c
+@@ -14,7 +14,7 @@
+ #include <asm/processor.h>
  
- /**
-@@ -887,6 +888,11 @@ static const struct sectioncheck sectioncheck[] = {
- 	.bad_tosec = { ".altinstr_replacement", NULL },
- 	.good_tosec = {ALL_TEXT_SECTIONS , NULL},
- 	.mismatch = EXTABLE_TO_NON_TEXT,
-+},
-+{
-+	.fromsec = { ALL_PI_TEXT_SECTIONS, NULL },
-+	.bad_tosec = { ALL_NON_PI_TEXT_SECTIONS, NULL },
-+	.mismatch = PI_TEXT_TO_NON_PI_TEXT,
+ enum cc_vendor cc_vendor __ro_after_init = CC_VENDOR_NONE;
+-static u64 cc_mask __ro_after_init;
++u64 cc_mask __ro_after_init;
+ 
+ static bool noinstr intel_cc_platform_has(enum cc_attr attr)
+ {
+@@ -148,8 +148,3 @@ u64 cc_mkdec(u64 val)
+ 	}
  }
- };
+ EXPORT_SYMBOL_GPL(cc_mkdec);
+-
+-__init void cc_set_mask(u64 mask)
+-{
+-	cc_mask = mask;
+-}
+diff --git a/arch/x86/include/asm/coco.h b/arch/x86/include/asm/coco.h
+index 6ae2d16a7613..ecc29d6136ad 100644
+--- a/arch/x86/include/asm/coco.h
++++ b/arch/x86/include/asm/coco.h
+@@ -13,7 +13,13 @@ enum cc_vendor {
+ extern enum cc_vendor cc_vendor;
  
+ #ifdef CONFIG_ARCH_HAS_CC_PLATFORM
+-void cc_set_mask(u64 mask);
++static inline void cc_set_mask(u64 mask)
++{
++	extern u64 cc_mask;
++
++	cc_mask = mask;
++}
++
+ u64 cc_mkenc(u64 val);
+ u64 cc_mkdec(u64 val);
+ #else
 -- 
 2.43.0.429.g432eaa2c6b-goog
 
