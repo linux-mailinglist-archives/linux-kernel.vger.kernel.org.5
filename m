@@ -1,270 +1,134 @@
-Return-Path: <linux-kernel+bounces-42671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42674-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 747C28404B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:12:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E72DC8404BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:14:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 939DF1C2257D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:12:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53E06283E4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:14:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDAAD605B2;
-	Mon, 29 Jan 2024 12:12:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D94CA604C6;
+	Mon, 29 Jan 2024 12:13:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="BxU+D5Xl"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PTISgWzx"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45F935FEED;
-	Mon, 29 Jan 2024 12:12:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD5D5604B8
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 12:13:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706530350; cv=none; b=aFCJAbju37UFVXIyNlM5DCfZlF/we9jSBsYdyKbYhkY5Zncwfz7cdR3JvkPwX8TPiY54zN0DIogHwWGw1e+XE2f5bFyuiq84VRvh469gl7Wt+HdbCfDTdAnDVm6gN97jt6/kigRvF+cmSYscKCRvigvQrCAGFpHL6CQjHsteLAY=
+	t=1706530405; cv=none; b=XQ8+4jV9h0SDHQZSuPxUvIAby5oN3lU+V5gEHo/0fy53RKOkxkKPQYZYHjVkmGn04eO1x0ZzSzziZXRODbnHn2vp3qYHhsAxDtP8cV0ymbbsussWbws7EArlGxd20nh7TyDKtrjYXOqWGNPZWimLnvUn6LpYWigyGRQRkxlrLlQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706530350; c=relaxed/simple;
-	bh=GaSDuS+sDglwSyiar59DjSzyNTlD1BqHSEPx3+jWZXM=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TO5BZDkUkqPD0U9mrB+2+xTdt3WrVausLn1nmmlyB/MHp/3FQpA5M4ivNF4k6UtZpTqJET3aKEypsQpCaOHD9iynPrMWhz2C07fKjfqcSHHpqOlBGY6WKRtBn+YylemxW3uVKhIy2gNX8RSn+Uhn2Vl//PA+EZmSEypLhYQ8SRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=BxU+D5Xl; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40TAG2aT019995;
-	Mon, 29 Jan 2024 12:12:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=5wESy/498DHj/3BcjLShykVaFa+dINc2CeCNCA27zfU=; b=Bx
-	U+D5XluH0+6ZMv+WrOFEpordF3PfPgtHkd1wOStsBJe6CS6QoJNUFpkCZL2AZPt7
-	XPsbPNNuRPoOPrz5IiS6gOPRREJ4KlfgCJ3ZIhZmWzLDYETiXT3ijOFrfhYT1/l0
-	9PZpJUR9a1jrdueE/cU83LLU6He4IWB35JAU8aTrl/anjWLEXeKAqscxqwp2kyad
-	7x2YPtKrpCyXImsOh7X25qgt3aeMYK6fza2ZTH5b7GIleirMaCNk5p/e5oS3rHHr
-	vc0ZedeZfro7+r85M3IRfHkWnwyQJIv3OUh9DVdtRaPVRWsT/Hi618EaoYs6i8tJ
-	8uDcjqhJncfSExaY991Q==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vxa42g782-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 29 Jan 2024 12:12:14 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40TCCEwl006136
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 29 Jan 2024 12:12:14 GMT
-Received: from hu-jsuraj-hyd.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 29 Jan 2024 04:12:04 -0800
-From: Suraj Jaiswal <quic_jsuraj@quicinc.com>
-To: <quic_jsuraj@quicinc.com>, Vinod Koul <vkoul@kernel.org>,
-        Bhupesh Sharma
-	<bhupesh.sharma@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "David S.
- Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        "Jakub
- Kicinski" <kuba@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        "Jose
- Abreu" <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>, <netdev@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Prasad Sodagudi
-	<psodagud@quicinc.com>,
-        Andrew Halaney <ahalaney@redhat.com>, Rob Herring
-	<robh@kernel.org>
-CC: <kernel@quicinc.com>
-Subject: [PATCH net-next v10 3/3] net: stmmac: Add driver support for common safety IRQ
-Date: Mon, 29 Jan 2024 17:41:29 +0530
-Message-ID: <20240129121129.3581530-4-quic_jsuraj@quicinc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240129121129.3581530-1-quic_jsuraj@quicinc.com>
-References: <20240129121129.3581530-1-quic_jsuraj@quicinc.com>
+	s=arc-20240116; t=1706530405; c=relaxed/simple;
+	bh=WLvrHrbgSBFuvT4E7HlrAAw1sNsWn7JBXxbApEH6mhE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=REA3vx9KqQnRxCUlh4dyrfbEZvVguvBDXHpMdsfukbumbAPw90ZgSS2Vev8i0bmhXzqigOZcyaruEHb+nogiGMBmAwY4mnCeTMtcSwSwKP8lkrtgjPLCWNx6MSSzPx+4GDMrYSKKHDeGNaACU1WMC/RPex5gwXyQi5jmbsD4f7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PTISgWzx; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d8da50bfd9so3077245ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 04:13:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706530403; x=1707135203; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hoaRRVJZbpwuRBmsx74Q+sew1YTbfPVtekdObdLjHlE=;
+        b=PTISgWzxBsKKdQOw2Xjf2BD9ijlLC1o1mW8m50l42sJGPHEHkrPHFud0PTHj/XmCUp
+         X9C+idBG4yUYOAORQp8HieTBxfWnS8OZN7OkraLFZTsPDjs/8GP2tMvD3FnkqP7AY3i8
+         z+A5QJaChkoFPIKIHIi1MrfKkjfLqbW6gAK1MjsRyL+5+Qo2Ju/dxVVb0usZVTf5B1ZV
+         RQBOrJSiDvzBrQSKu4bGz1rogX3+jhUAHzaV/iFCZoeW3ldfw2oKybmIqMUegm24ovku
+         ngQ0DVJi8ZKbGYP511lDiyU0j75Ee/fYk4EZCcqeiYha24EIxCIfL1Ek/uLOqaUqGmnl
+         vlAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706530403; x=1707135203;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hoaRRVJZbpwuRBmsx74Q+sew1YTbfPVtekdObdLjHlE=;
+        b=mAqAw4L2q0e+kQrRg1YE/ypoasOxX6nADJEkpwW8otC8qqmhZWok+SxEnMTJA3owXh
+         onOnprCfRqJ9TeKU+0wEEoqasfeUfzG1e5Ph0YWj2z9I3wDJ2EROb6trow8U0hYBevr5
+         wYqjnEA3RYRPESwMVTWkcw+V2D1yRCL2v+kt15kpCHLrd1EcVhCAekLpAeuJqbNWCPCF
+         PswsYsCUu+1KlVfZWmS6oAVzKmpI5FKEIJDI8oE/ZZpZNj3038gzHXdBo0B9sWk3P+4w
+         tfLUAmqXIE0X9iJEQFE3KJ/jZJ4ddhB37xRNImDD3ELhZutZSMG9D+2uJplhj15AAJlB
+         gA2g==
+X-Gm-Message-State: AOJu0YyOn4Sj5Sv+Cw8Mbxuz7SS2YDkxjB+GRYxdS43nCIqerfGzx2Jv
+	oMiWh1pnHmm5rpxnIKHIevyVx4neHNagPpTkKgdrdNWKsBvNT7I2gMfiED5u
+X-Google-Smtp-Source: AGHT+IGe75wXRfHfhKAZFoV1YLgi2pirWtWkd84BfMTXVJ46oMR/sFEsWExHX0KeLGpQuF/FiHFUMA==
+X-Received: by 2002:a17:902:6804:b0:1d4:e04b:4742 with SMTP id h4-20020a170902680400b001d4e04b4742mr2117030plk.58.1706530403008;
+        Mon, 29 Jan 2024 04:13:23 -0800 (PST)
+Received: from cuiyangpei ([43.224.245.227])
+        by smtp.gmail.com with ESMTPSA id s10-20020a170902ea0a00b001d714a1530bsm5242067plg.176.2024.01.29.04.13.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 29 Jan 2024 04:13:22 -0800 (PST)
+Date: Mon, 29 Jan 2024 20:13:16 +0800
+From: cuiyangpei <cuiyangpei@gmail.com>
+To: SeongJae Park <sj@kernel.org>
+Cc: akpm@linux-foundation.org, damon@lists.linux.dev, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, xiongping1@xiaomi.com
+Subject: Re: [PATCH 1/2] mm/damon/sysfs: Implement recording feature
+Message-ID: <20240129121316.GA9706@cuiyangpei>
+References: <ZbYanPU16klwz0HA@cyp-ubuntu>
+ <20240128162804.17866-1-sj@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: pSMvFbj37y4zu4r-YTICZ7j9vwsBx4F5
-X-Proofpoint-ORIG-GUID: pSMvFbj37y4zu4r-YTICZ7j9vwsBx4F5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-29_07,2024-01-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=951 phishscore=0
- malwarescore=0 mlxscore=0 clxscore=1015 spamscore=0 priorityscore=1501
- adultscore=0 lowpriorityscore=0 suspectscore=0 bulkscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2401190000
- definitions=main-2401290089
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240128162804.17866-1-sj@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 
-Add support to listen HW safety IRQ like ECC(error
-correction code), DPP(data path parity), FSM(finite state
-machine) fault in common IRQ line.
+On Sun, Jan 28, 2024 at 08:28:04AM -0800, SeongJae Park wrote:
+> On Sun, 28 Jan 2024 17:13:00 +0800 cuiyangpei <cuiyangpei@gmail.com> wrote:
+> 
+> > On Fri, Jan 26, 2024 at 12:04:54AM -0800, SeongJae Park wrote:
+> [...]
+> > > So, 'update_schemes_tried_regions' command is firstly handled by
+> > > 'damon_sysfs_cmd_request_callback()', which is registered as
+> > > after_wmarks_check() and after_aggregation() callback.  Hence
+> > > 'update_schemes_tried_regions' command is still effectively working in
+> > > aggregation interval granularity.  I think this is what you found, right?
+> > > 
+> > Yes.
+> > > If I'm not wrongly understanding your point, I think the concern is valid.  I
+> > > think we should make it works in sampling interval granularity.  I will try to
+> > > make so.  Would that work for your use case?
+> > > 
+> > It's much better than working in aggregation interval.
+> 
+> Thank you for confirming.  I will start working on this.
+> 
 
-Signed-off-by: Suraj Jaiswal <quic_jsuraj@quicinc.com>
----
- drivers/net/ethernet/stmicro/stmmac/common.h  |  1 +
- drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  3 ++
- .../net/ethernet/stmicro/stmmac/stmmac_main.c | 41 ++++++++++++++++++-
- .../ethernet/stmicro/stmmac/stmmac_platform.c |  8 ++++
- 4 files changed, 51 insertions(+), 2 deletions(-)
+Great, looking forward to seeing the progress.
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
-index 721c1f8e892f..b9233b09b80f 100644
---- a/drivers/net/ethernet/stmicro/stmmac/common.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/common.h
-@@ -344,6 +344,7 @@ enum request_irq_err {
- 	REQ_IRQ_ERR_ALL,
- 	REQ_IRQ_ERR_TX,
- 	REQ_IRQ_ERR_RX,
-+	REQ_IRQ_ERR_SFTY,
- 	REQ_IRQ_ERR_SFTY_UE,
- 	REQ_IRQ_ERR_SFTY_CE,
- 	REQ_IRQ_ERR_LPI,
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-index 9f89acf31050..ca3d93851bed 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-@@ -31,6 +31,7 @@ struct stmmac_resources {
- 	int wol_irq;
- 	int lpi_irq;
- 	int irq;
-+	int sfty_irq;
- 	int sfty_ce_irq;
- 	int sfty_ue_irq;
- 	int rx_irq[MTL_MAX_RX_QUEUES];
-@@ -297,6 +298,7 @@ struct stmmac_priv {
- 	void __iomem *ptpaddr;
- 	void __iomem *estaddr;
- 	unsigned long active_vlans[BITS_TO_LONGS(VLAN_N_VID)];
-+	int sfty_irq;
- 	int sfty_ce_irq;
- 	int sfty_ue_irq;
- 	int rx_irq[MTL_MAX_RX_QUEUES];
-@@ -305,6 +307,7 @@ struct stmmac_priv {
- 	char int_name_mac[IFNAMSIZ + 9];
- 	char int_name_wol[IFNAMSIZ + 9];
- 	char int_name_lpi[IFNAMSIZ + 9];
-+	char int_name_sfty[IFNAMSIZ + 10];
- 	char int_name_sfty_ce[IFNAMSIZ + 10];
- 	char int_name_sfty_ue[IFNAMSIZ + 10];
- 	char int_name_rx_irq[MTL_MAX_TX_QUEUES][IFNAMSIZ + 14];
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 47de466e432c..e0192a282121 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -3592,6 +3592,10 @@ static void stmmac_free_irq(struct net_device *dev,
- 		if (priv->wol_irq > 0 && priv->wol_irq != dev->irq)
- 			free_irq(priv->wol_irq, dev);
- 		fallthrough;
-+	case REQ_IRQ_ERR_SFTY:
-+		if (priv->sfty_irq > 0 && priv->sfty_irq != dev->irq)
-+			free_irq(priv->sfty_irq, dev);
-+		fallthrough;
- 	case REQ_IRQ_ERR_WOL:
- 		free_irq(dev->irq, dev);
- 		fallthrough;
-@@ -3661,6 +3665,23 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
- 		}
- 	}
- 
-+	/* Request the common Safety Feature Correctible/Uncorrectible
-+	 * Error line in case of another line is used
-+	 */
-+	if (priv->sfty_irq > 0 && priv->sfty_irq != dev->irq) {
-+		int_name = priv->int_name_sfty;
-+		sprintf(int_name, "%s:%s", dev->name, "safety");
-+		ret = request_irq(priv->sfty_irq, stmmac_safety_interrupt,
-+				  0, int_name, dev);
-+		if (unlikely(ret < 0)) {
-+			netdev_err(priv->dev,
-+				   "%s: alloc sfty MSI %d (error: %d)\n",
-+				   __func__, priv->sfty_irq, ret);
-+			irq_err = REQ_IRQ_ERR_SFTY;
-+			goto irq_error;
-+		}
-+	}
-+
- 	/* Request the Safety Feature Correctible Error line in
- 	 * case of another line is used
- 	 */
-@@ -3798,6 +3819,21 @@ static int stmmac_request_irq_single(struct net_device *dev)
- 		}
- 	}
- 
-+	/* Request the common Safety Feature Correctible/Uncorrectible
-+	 * Error line in case of another line is used
-+	 */
-+	if (priv->sfty_irq > 0 && priv->sfty_irq != dev->irq) {
-+		ret = request_irq(priv->sfty_irq, stmmac_safety_interrupt,
-+				  IRQF_SHARED, dev->name, dev);
-+		if (unlikely(ret < 0)) {
-+			netdev_err(priv->dev,
-+				   "%s: ERROR: allocating the sfty IRQ %d (%d)\n",
-+				   __func__, priv->sfty_irq, ret);
-+			irq_err = REQ_IRQ_ERR_SFTY;
-+			goto irq_error;
-+		}
-+	}
-+
- 	return 0;
- 
- irq_error:
-@@ -6022,8 +6058,8 @@ static irqreturn_t stmmac_interrupt(int irq, void *dev_id)
- 	if (test_bit(STMMAC_DOWN, &priv->state))
- 		return IRQ_HANDLED;
- 
--	/* Check if a fatal error happened */
--	if (stmmac_safety_feat_interrupt(priv))
-+	/* Check ASP error if it isn't delivered via an individual IRQ */
-+	if (priv->sfty_irq <= 0 && stmmac_safety_feat_interrupt(priv))
- 		return IRQ_HANDLED;
- 
- 	/* To handle Common interrupts */
-@@ -7462,6 +7498,7 @@ int stmmac_dvr_probe(struct device *device,
- 	priv->dev->irq = res->irq;
- 	priv->wol_irq = res->wol_irq;
- 	priv->lpi_irq = res->lpi_irq;
-+	priv->sfty_irq = res->sfty_irq;
- 	priv->sfty_ce_irq = res->sfty_ce_irq;
- 	priv->sfty_ue_irq = res->sfty_ue_irq;
- 	for (i = 0; i < MTL_MAX_RX_QUEUES; i++)
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-index 70eadc83ca68..ab250161fd79 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-@@ -743,6 +743,14 @@ int stmmac_get_platform_resources(struct platform_device *pdev,
- 		dev_info(&pdev->dev, "IRQ eth_lpi not found\n");
- 	}
- 
-+	stmmac_res->sfty_irq =
-+		platform_get_irq_byname_optional(pdev, "sfty");
-+	if (stmmac_res->sfty_irq < 0) {
-+		if (stmmac_res->sfty_irq == -EPROBE_DEFER)
-+			return -EPROBE_DEFER;
-+		dev_info(&pdev->dev, "IRQ safety IRQ not found\n");
-+	}
-+
- 	stmmac_res->addr = devm_platform_ioremap_resource(pdev, 0);
- 
- 	return PTR_ERR_OR_ZERO(stmmac_res->addr);
--- 
-2.25.1
+> > 
+> > I have a question. Why does the 'update_schemes_tried_regions' command need to work
+> > in the sampling time or aggregation time? 'update_schemes_tried_regions' is a
+> > relatively special state that updates the regions that corresponding operation scheme.
+> > Can it be separated from other states and controlled by sysfs node to respond immediately
+> > after being written?
+> 
+> Mainly because the region data is updated by a kdamond thread.  To safely
+> access the region, the accessor should do some kind of synchronization with the
+> kdamond thread.  To minimize such synchronization overhead, DAMON let the API
+> users (kernel components) to register callbacks which kdamond invokes under
+> specific events including 'after_sampling' or 'after_aggregate'.  Because the
+> callback is executed in the kdamond thread, callbacks can safely access the
+> data without additional synchronization.  DAMON sysfs interface is using the
+> callback mechanism, and hence need to work in the sampling or aggregation
+> times.
+> 
+Thank you for the detailed explanation.
 
+> Thanks,
+> SJ
+> 
+> [...]
 
