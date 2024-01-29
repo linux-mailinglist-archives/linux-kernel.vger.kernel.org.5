@@ -1,155 +1,143 @@
-Return-Path: <linux-kernel+bounces-42521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42523-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6A4D840289
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:11:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AD98E840292
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:14:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73327281D8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:11:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 652E0283120
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:14:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55D9A56444;
-	Mon, 29 Jan 2024 10:11:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07C0856454;
+	Mon, 29 Jan 2024 10:14:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b="yyS6D+u3"
-Received: from www530.your-server.de (www530.your-server.de [188.40.30.78])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="VVG/Z89y"
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2076.outbound.protection.outlook.com [40.107.95.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57AA155784;
-	Mon, 29 Jan 2024 10:11:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.30.78
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706523101; cv=none; b=IAuJEVJ1kJ9tK/fzpPbvuhL5IptScjnSyQJAKixvYNZnImeB1bX3QoJTWSoZSGjjI8sGpn56fXdtKzWko680u5/AacO3vAgjGQD4WFjnhzqy2ME0sLBn+vgwrzrMSCfPBkI3yO5VaIHVJBA/iB9nPN9AAxnykcEvQ7ibyCqjdtc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706523101; c=relaxed/simple;
-	bh=aP6nppY5vuDWhdT1EKho5Ztj2YLfKifFJSnO2YmYNGk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=LcIxr8oMP7bHnwaQz3KbMGI/xIDNY7s5TmwduVDtG99ZDFGF8BcPOzT7XK14FAi+eAM5ocs48yIw35ESEJrnwnMlzIRLTylb2Xzzj538IHZ/ckny10AGwRStfD61mWVbb3N8BRpqvJgxjaTCYIflTvtYJp6FZrHN1HtauFUUzO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com; spf=pass smtp.mailfrom=geanix.com; dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b=yyS6D+u3; arc=none smtp.client-ip=188.40.30.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=geanix.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
-	s=default2211; h=Content-Type:MIME-Version:Message-ID:Date:References:
-	In-Reply-To:Subject:Cc:To:From:Sender:Reply-To:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=F3JBR5y9GKGAqMtonNzwpD3YmZTrMPQTqcJ9HmXVvzc=; b=yyS6D+u3TeFvuc2yHwCeZfP0JR
-	OgJzuLndRUYv7v6AM35molg6u0/YwdUERsHc8tZMxqn4K2hr9aEaDYuPlIkH8MsfguYVjxS2jB4p+
-	f0zW2O9ytkKSensR9kvABo/dufznu3EUbn5pPFyiUxi6aPMkypV8NRJnHskaOev8kpF9yRVf5pIor
-	/JBu+YIOUz4t97i3qloAd31bpDL3fdttH97a8GDHfb229B1FoRwfryShX/KDEZ4MUuCYMBIwVMxJg
-	h/SxO4AKTNVlJTzVRYFpCNYUmOa3bpBPeplerPFb3R3Khms9eXPk6uUoM/pE4VuXXMi1ZvPpy2H+o
-	sWfhyh5g==;
-Received: from sslproxy04.your-server.de ([78.46.152.42])
-	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <esben@geanix.com>)
-	id 1rUObn-0003SD-7S; Mon, 29 Jan 2024 11:11:19 +0100
-Received: from [87.49.42.9] (helo=localhost)
-	by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <esben@geanix.com>)
-	id 1rUObm-000XU1-3Y; Mon, 29 Jan 2024 11:11:18 +0100
-From: Esben Haabendal <esben@geanix.com>
-To: rohan.g.thomas@intel.com
-Cc: alexandre.torgue@foss.st.com,  conor+dt@kernel.org,
-  davem@davemloft.net,  devicetree@vger.kernel.org,  edumazet@google.com,
-  fancer.lancer@gmail.com,  joabreu@synopsys.com,
-  krzysztof.kozlowski+dt@linaro.org,  kuba@kernel.org,
-  linux-arm-kernel@lists.infradead.org,  linux-kernel@vger.kernel.org,
-  linux-stm32@st-md-mailman.stormreply.com,  mcoquelin.stm32@gmail.com,
-  netdev@vger.kernel.org,  pabeni@redhat.com,  peppe.cavallaro@st.com,
-  robh+dt@kernel.org
-Subject: Re: [PATCH net-next 2/2] net: stmmac: TBS support for platform driver
-In-Reply-To: <20240126173925.16794-1-rohan.g.thomas@intel.com> (rohan g.
-	thomas's message of "Sat, 27 Jan 2024 01:39:25 +0800")
-References: <87v87g4hmy.fsf@geanix.com>
-	<20240126173925.16794-1-rohan.g.thomas@intel.com>
-Date: Mon, 29 Jan 2024 11:11:17 +0100
-Message-ID: <87plxktpoa.fsf@geanix.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DE8D55E6D
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 10:14:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.76
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706523289; cv=fail; b=iclkd7A/aPUjH2XHiogIunbjMbo+TFbHrVH+x0JvlxAZH3nM6WU4xHs2qmVyqSK6aj/97Y4bv6p+30U/KlAKnKW8g29L8aAVOcrBb9LuvoKayeeBV1Qk7lOPw8/sP+OCTsTSsUWFgRY+mSFy+hYyfVBDG+BGUXLxnD0EwyBYX30=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706523289; c=relaxed/simple;
+	bh=sDsa2rrz1C9gAis2A2KB5XriCh0e4eWEsIv0+7a9zyE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=J87YgvI0Z4bUITbILKzmFNdF5t+eN9PnHOPk4cn65OAW0lQOqbxSMvYmz/Q8AJrfcPBiX8hkAijUqSAmILjujL4NPp3PoDhVBbCSi296j7A4Cp1wj/31+hDsRGsXaukv9Wuujf29uFCL+ldb6mZMz9buMFVp8MvYUkl9b0mbr8E=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=VVG/Z89y; arc=fail smtp.client-ip=40.107.95.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i/bsnUl/3Fim3B8Sd3d0Qp6vVMQprk3bjsouBwT57BHRsXXo+nMdDapzM6KzQWc9VbOgMjHOY9IbpLnyn6x4wv+DIQ+VXvxvq/jlbFz6gOKaG3D97W3H0yhmC9u/TWgdzVL45xJw2JYeLlQyJNqgQpfrUpTABODCcSB184TNKupzD5WmOLk7/4my/B2DXvqp+8ckCCV5jmxlxMVQsM9M5B/xCS1Y85zb3mmTCwufPvoZuMAg10PsGCDrzdraBM8aY1dGrkc45xC/ZcEXWRFJgH7JoHQiJX592NkmmLOHR6LsRNCyWn2eM6QfspY2SmoJdjVbfjld7UxlyjAClxxZbA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mXz8U5sHL14QZqUyWbb3DSTiT0B8Egw2qRU0QM00mkY=;
+ b=GuKmocaWYbc5Y5km1vodzH8Jjw3eqLdxVpKHCazqlhOwhXG1SDy1S7KWsRKNGCLmBn2dwdgZjsfyKGulZ7SUkf77Xg/PgjGJbR8+3ARJsmsI9sD102u1fck0wla7G+YKDVPjhqgT+96d5JoURdBVvhOWq9fB0oRIkRw9gnHt365CRMhsBMHxtYCiQD37PwHFMbvL71PkHm4v1W8mQKI5qVAMwkKLkbMkI/+263IMi3Ax/3ENZbOvlNIxQdffYKTrmxjjRq/7gq6hx5T4kT4S90rFaKwqqnTUnT6nGZvJHwhesIIHLdS0uD8PXEl/7TXVRKB+25hQLm8pY412xw4UWQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=chromium.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mXz8U5sHL14QZqUyWbb3DSTiT0B8Egw2qRU0QM00mkY=;
+ b=VVG/Z89yTSWY2AgwHNYkzS4AL+Sh8zedeEiZ6D9sc8pigm1P5ESFY+q4cs+rBBsxaOvLYYPEBUMopKuluCqOaU4OWIYrjVCI6ChsP12THVBEtzHSihJHTGnizozCGPUkOyWGsmWxeGoYsH+bhR5KSxiZDgNTtIbKfFXwRLHgvik=
+Received: from BN6PR17CA0026.namprd17.prod.outlook.com (2603:10b6:405:75::15)
+ by SJ2PR12MB9239.namprd12.prod.outlook.com (2603:10b6:a03:55e::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.32; Mon, 29 Jan
+ 2024 10:14:44 +0000
+Received: from BN1PEPF00004682.namprd03.prod.outlook.com
+ (2603:10b6:405:75:cafe::d8) by BN6PR17CA0026.outlook.office365.com
+ (2603:10b6:405:75::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.34 via Frontend
+ Transport; Mon, 29 Jan 2024 10:14:44 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BN1PEPF00004682.mail.protection.outlook.com (10.167.243.88) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7249.19 via Frontend Transport; Mon, 29 Jan 2024 10:14:44 +0000
+Received: from jenkins-julia.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Mon, 29 Jan
+ 2024 04:14:39 -0600
+From: Julia Zhang <julia.zhang@amd.com>
+To: Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
+	<olvaffe@gmail.com>, David Airlie <airlied@redhat.com>, Gerd Hoffmann
+	<kraxel@redhat.com>, <linux-kernel@vger.kernel.org>,
+	<dri-devel@lists.freedesktop.org>, <amd-gfx@lists.freedesktop.org>,
+	<virtualization@lists.linux-foundation.org>
+CC: Alex Deucher <alexander.deucher@amd.com>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>, Daniel Vetter
+	<daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, Erik Faye-Lund
+	<kusmabite@gmail.com>, =?UTF-8?q?Marek=20Ol=C5=A1=C3=A1k?=
+	<marek.olsak@amd.com>, Pierre-Eric Pelloux-Prayer
+	<pierre-eric.pelloux-prayer@amd.com>, Honglei Huang <honglei1.huang@amd.com>,
+	Chen Jiqian <Jiqian.Chen@amd.com>, Huang Rui <ray.huang@amd.com>, Julia Zhang
+	<julia.zhang@amd.com>
+Subject: [PATCH v2 0/1] Implement device_attach for virtio gpu
+Date: Mon, 29 Jan 2024 18:12:50 +0800
+Message-ID: <20240129101250.3258049-1-julia.zhang@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Authenticated-Sender: esben@geanix.com
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27168/Sun Jan 28 10:37:47 2024)
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN1PEPF00004682:EE_|SJ2PR12MB9239:EE_
+X-MS-Office365-Filtering-Correlation-Id: 99948683-2562-4498-ad97-08dc20b31d48
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	MgkGA6IdpLqfVHUHQeMwWS2mvLen/yyQLYvmN8/SMtEGKOtE2M11FC6yy6MaFxJMld6NvonwZWEXCPD+WbGEw+JEfFB7oc9c/WV3hD6uLxgryZ8LBpT+G/Bre61hFOwjNuThiv6C0TzAYS9vWujdhlz1MYkgFnvNh0txM42jiFSEhJBR7ruqsipADmwDcKMAlLMFXzfEFPxJIlgeho7rtTB4Nex9ZLKKmRXgmRwdpQb379iVDkVqwjhUbENJUTBD8kDS/Kgm6OwB08/z2lRqs5D+gOXvPvUDakmk+VdqAdfpVRK7ANRYh9VxUHom5HIiisTiZ7dfY5nV2U+SBQSEPtUWsEGDQZI3vX1fqv6T9TGOKnaKbHC6ZqgH6DjBwGsq8EAjzCBuRpomuxkWCIBSkiuR5J9NM8hJd6VCcg9Tp48hOxs3EwIIGhGWM1ZAGitRIrQmq4jJaqhMlMNeIJqyhOPEv2k5VeopnCjycgfHLAkS3v0yzlxWekIQ5dBq29htWUBLo7q3o/qzjT26vxspb/IuG9q/28moAJeqGKxFNhxKKqtNQvddPALKZeIE9/AFrBT66KskGUY6rYnJun4pkHTIwb1wwFaI8XUTvZV3FISTbHxAOyZPu4ToHmhlaz6b5ghXtZGen0Vvam2Aar2odqBvP34u+I0RXBI+Gt2t2f9Jh02Q/nM39faTtPygVhHUJuJw86wCwv7jlQUiFSioOW9pbIA/mwOeBqVsxu7wpytnWgC3wz6wJeUuZ6kG0mpzwL9JDJUx5UqeZh2gsQslPA==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(346002)(396003)(376002)(136003)(230922051799003)(82310400011)(186009)(64100799003)(1800799012)(451199024)(46966006)(40470700004)(36840700001)(40480700001)(40460700003)(26005)(16526019)(1076003)(83380400001)(426003)(336012)(6666004)(7696005)(36756003)(86362001)(81166007)(82740400003)(356005)(5660300002)(44832011)(7416002)(41300700001)(4326008)(8936002)(8676002)(36860700001)(2616005)(47076005)(70586007)(70206006)(110136005)(54906003)(2906002)(4744005)(316002)(478600001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2024 10:14:44.1367
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 99948683-2562-4498-ad97-08dc20b31d48
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BN1PEPF00004682.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB9239
 
-rohan.g.thomas@intel.com writes:
+To realize dGPU prime feature for virtio gpu, we are trying to let dGPU
+import vram object of virtio gpu. As vram objects don't have backing pages
+and thus can't implement the drm_gem_object_funcs.get_sg_table callback,
+this removes calling drm_gem_map_dma_buf in virtgpu_gem_map_dma_buf and
+implement virtgpu specific map/unmap/attach callbacks to support both of
+shmem objects and vram objects.
+ 
+Changes from v1 to v2:
+-Reimplement virtgpu_gem_device_attach() 
+-Remove calling drm dma-buf funcs in virtgpu callbacks and reimplement virtgpu
+specific dma-buf callbacks.
 
-> From: Rohan G Thomas <rohan.g.thomas@intel.com>
->
-> On Fri, 26 Jan 2024 09:35:01 +0100, Esben Haabendal wrote:
->
->> > +	/* If TBS feature is supported(i.e. tbssel is true), then at least 1 Tx
->> > +	 * DMA channel supports TBS. So if tbs_ch_num is 0 and tbssel is true,
->> > +	 * assume all Tx DMA channels support TBS. TBS_CH field, which gives
->> > +	 * number of Tx DMA channels with TBS support is only available only
->> for
->> > +	 * DW xGMAC IP. For other DWMAC IPs all Tx DMA channels can
->> support TBS.
->> 
->> The Ethernet QOS controllers found in various i.MX socs does not support TBS
->> on TX queue 0. I believe this patch would break the dwmac driver for these
->> platforms.
->
-> AFAIU from Synopsys DWMAC5 Databook, all queues support TBS. But TBS
-> cannot coexist with TSO. So all glue drivers enabling TBS feature are
-> avoiding queue 0 to support TSO. Also packets requesting TSO are
-> always directed to queue 0 by stmmac driver.
+Julia Zhang (1):
+  drm/virtio: Implement device_attach
 
-After re-reading the i.MX8MP documentation, and making a few
-experiments, I have to agree with you. Enabling TBS (enhanced
-descriptors) for Q0 should be ok on i.MX.
+ drivers/gpu/drm/virtio/virtgpu_prime.c | 40 +++++++++++++++++++++++---
+ 1 file changed, 36 insertions(+), 4 deletions(-)
 
->> > --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
->> > +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
->> > @@ -3773,12 +3773,18 @@ stmmac_setup_dma_desc(struct stmmac_priv
->> *priv, unsigned int mtu)
->> >  		dma_conf->dma_rx_size = DMA_DEFAULT_RX_SIZE;
->> >
->> >  	/* Earlier check for TBS */
->> > -	for (chan = 0; chan < priv->plat->tx_queues_to_use; chan++) {
->> > -		struct stmmac_tx_queue *tx_q = &dma_conf-
->> >tx_queue[chan];
->> > -		int tbs_en = priv->plat->tx_queues_cfg[chan].tbs_en;
->> > +	if (priv->dma_cap.tbssel) {
->> > +		/* TBS is available only for tbs_ch_num of Tx DMA channels,
->> > +		 * starting from the highest Tx DMA channel.
->> > +		 */
->> > +		chan = priv->dma_cap.number_tx_channel - priv-
->> >dma_cap.tbs_ch_num;
->
-> For IPs which don't have tbs_ch_num, this loop goes from 0 to
-> number_tx_channel to check if tbs_enable is set by glue driver.
-> Existing logic is also the same. Unless you set tbs_en flag of
-> queue 0 from the glue driver or dts configuration this patch doesn't
-> set tbs flag for queue 0. This is a sanity check to avoid wrong
-> configuration for IPs which support tbs only in a few number of
-> queues.
+-- 
+2.34.1
 
-Sounds good.
-
->> > +		for (; chan < priv->plat->tx_queues_to_use; chan++) {
->> > +			struct stmmac_tx_queue *tx_q = &dma_conf-
->> >tx_queue[chan];
->> > +			int tbs_en = priv->plat->tx_queues_cfg[chan].tbs_en;
->> >
->> > -		/* Setup per-TXQ tbs flag before TX descriptor alloc */
->> > -		tx_q->tbs |= tbs_en ? STMMAC_TBS_AVAIL : 0;
->> > +			/* Setup per-TXQ tbs flag before TX descriptor alloc
->> */
->> > +			tx_q->tbs |= tbs_en ? STMMAC_TBS_AVAIL : 0;
->> > +		}
->> >  	}
->
-> Please correct me if I've misstated anything.
-
-No corrections for now :)
-
-/Esben
 
