@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-43277-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43278-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D98808411AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:08:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAFBB8411B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:08:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95C81286EE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:08:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 066B0B24F77
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:08:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 390FD159593;
-	Mon, 29 Jan 2024 18:05:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BBD515A4AC;
+	Mon, 29 Jan 2024 18:05:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="4GM0rg7A"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="I1V788Gb"
+Received: from mail-wm1-f73.google.com (mail-wm1-f73.google.com [209.85.128.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B32EB159560
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 18:05:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E489515A48D
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 18:05:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706551555; cv=none; b=lMgqJNSBGgRssKb99/4f5NSuuIMQhYH0cOBpmc1A29hU3D7OB5ZdtpaNxF1ER0RHBtNXCwaBp0LoXzT7GhTNqrizv1kWuVSOD95aR1rvqQF2uBv+ZiF7VY3f0UYuYZWAlgvH8/ejuTADj1vwIDXyVrn41dxA+87ma5crWcfIIVI=
+	t=1706551558; cv=none; b=VNcxnEJenie8z8Njx6ZJdAEON5xw5GAA91w49GwmjxvzsnrHbMuDr8AWQqXlKv0DyMXnBZ2DPXPC6YYzuF82ZLVwkLgIRYCAHxkyjTxeWxMoy7KalnvuEspHZpM5Gf6R1Cnj7UZ1p8e/KR+VLk1J9Hwr5DElpzprhTTwEhF/7GM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706551555; c=relaxed/simple;
-	bh=UonHlMqjgEJH+56iHsla4J1Fp0ovIjuTCcCNqIOSjk0=;
+	s=arc-20240116; t=1706551558; c=relaxed/simple;
+	bh=BHUup4Ao15H5a0x4s+HXfGoWgWU/14gkkZKIK0ZXAdk=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Qltc/y02OhKu3H9nKGjvMZo/UPVrj4+r7xnuow8XyGq5mWTKl0jLQjd23Z017LhqZ5xGGw9Fosj+rMQbDAjV2Y0WwDQq3NC4Oqq/owZjPOrAflyTgSCSKaz7p4ZzsXvmBCFVddZM9InWe3ZsbRhSqWNfi+opSThyETfDJypb17Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4GM0rg7A; arc=none smtp.client-ip=209.85.219.201
+	 To:Cc:Content-Type; b=hjviLRNptwlypvTGWQrbVtwNlz+riX20FhqoApUHmBhyUp7h+Y4TQoKrTabsFLD6OwXg5U/hx+MPsmGMHY4pLHCQTwmbvZB4fWH1YyWI+/FT6vPkefTskE0PN7W1rZACYzbNGrVfa5hlnhfNxhETbztdIMuEFNP7Vf0QQe/iTao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=I1V788Gb; arc=none smtp.client-ip=209.85.128.73
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc64e0fc7c8so4071021276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 10:05:53 -0800 (PST)
+Received: by mail-wm1-f73.google.com with SMTP id 5b1f17b1804b1-40e8810b5f3so25160775e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 10:05:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706551553; x=1707156353; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1706551555; x=1707156355; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ap19tN/uXJaW7OWqMmvQ4dnQyY/I7jMfOfg7BtI2vyw=;
-        b=4GM0rg7AYbDNE5b5L8LZUCm/+mATnFwYmb2Xkjvp2c9whD1wMHMzU+vmAr5Bzjofcr
-         iT1wBEwdmky7FvDrDhkWQ2iPjijLD6RlNS41sbIZuREqAmuGX+oPCconluCWvxlEfbt/
-         Ti5Ughww7+m0YYmff6vRvOtlIKsUwXPtIaeqKASD0sP5OcQ5x63Mh6uNzu9vDltoD5DC
-         4myoQEx64XVmkdjN22Smx1YfZJndmb+qt+N6p6vKH+wfYKYZjb7g3gP9sMPy8uyjjDPN
-         UdYc5rDHSroKTGu9WgviNBbpR3CTNWXI+apI9zQ0R/IKuqt5stMuPtLodGpi8S0KZ0Av
-         Decw==
+        bh=usiDcusxejCbluC36Vpk0on80rVNZ7Itzv8e5WwmSQI=;
+        b=I1V788GbqvKtKxxYQnLQzkd87zUujtwsJrEsJtzWQtl7X1BEhozGG3JraJCpp6pEAT
+         wjOnayYq44aWOdRcgjaYdefkwCD532Aw3Awogc8dGVhjbMDxL2/8WiEKC+7ksff3GRkE
+         MYP6U+QivGClA9HEiE4ve+CxSty3BXEGTJZobqd1MIBTcJ9Ewi/mSSFtQ2x/04NjNAN7
+         xpzk3Xop3BJh3sDvfcM3d3HamVDH7wI4LeemoYRMI5udVyRPe+KUiZF5fX+X8Djjg8hJ
+         qYgUK9VBReJpA0xc/5IbQl4iAijpH1zpSNzcaXHDyuT+OX20QIxmTQ2p1wSt5FED6gJ6
+         BNBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706551553; x=1707156353;
+        d=1e100.net; s=20230601; t=1706551555; x=1707156355;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ap19tN/uXJaW7OWqMmvQ4dnQyY/I7jMfOfg7BtI2vyw=;
-        b=Qff15sBM2m8OpA3IEL7JCEi72UNGzTXjl3jS3oI/s8B0Sbg6h5dMMqY+f30g+0EmPI
-         SWprxY95wnWxAs1cPnOwxZ6WrgnGS/YME2S9ls6c00ueVsBgJabCIkTqG5ZPxiX+UCOs
-         SoL5Ul9MHtnF2ovBTX7x+nxIXlC2V9YY4+KAn1pgC/MEiqH2fnSogW/9RqaoIY1sPeCE
-         k5YJF/+0j8Y2zU9JrrWiLrGGYEoJfhcPVrP9JbUsEKhiRm5/5cB2k/U87RLm2el53Ur0
-         u83rYIrpZuYTy2j2A8VSoH90QqRPVwXBLClnsUHLQhp2dKEb0ZQi9LUO8/MJsNw29Dam
-         wtMQ==
-X-Gm-Message-State: AOJu0YxfyCgg886uxsXGIOC0SpmEn44RjPiH3sC9otxLkf7t06AWvCuu
-	RUb5c6+7rTq190p7f90nIAdX+wRg7rOBWErsYNlZbyK3LtHJD8wHIy3K8p4GosNYSPyFodoCO7v
-	TcEsKJkVJ2VD26Qk2e29pVqP2h1h9hwPApmvttLvkQSX1MClhs/fgbLwGYwL1rDAZIT9d2c2HUz
-	NabhZEP8DjF8khqR7LDHd3KAsLaEMcqA==
-X-Google-Smtp-Source: AGHT+IFdlkgRmOLuPYQ4HYGJOcfOyvmrF8pJsjH+7Ju2xNGTWiYFEILGYxiFeCWVd7IhoWiApQSqZNZJ
+        bh=usiDcusxejCbluC36Vpk0on80rVNZ7Itzv8e5WwmSQI=;
+        b=N+Vv9qMVxMiv/0pHvKTg9hhiZlKIKAuowrtvCppM0a5xM2ek/MLl9Gq0uDphQkZfiN
+         0zc2Kv8j7KxtuJ0LYoqlpvpvCln/GpvrfCXLSF7pCRMmIc2uGYaYYE2bnyHwtO9KW1ML
+         6s2SUHosBKuCZrDKGKFV3k5MY3WGM4+ZsmueUXyyaydrIoiomT+MqDsRAF6AHUX8xA61
+         FgR4rT4f4Hkysk25QOsMeZfFwVVcgFO3Wr2YS+0pn64KI1lPI7pFtcLc88xBG3ryhtvX
+         PD6NbiUdLasLXvXSQmpZJahV2Kxy/Cz/ck04joxMesDMLt4HcKCnpNYS3/hvJLwkuSPs
+         PnWg==
+X-Gm-Message-State: AOJu0YwG3V+lMrGnquMtUhG1hHdg5ApEdOpY09nKSJYnMEvWyo7bwMVO
+	az+2wchLTDw1m22qzC1H23WFkO56L/0aavsyeULxZuGh5RT1CZ4mW3Lf4Z8T4C4huHRXsxA34ay
+	9lq/SZ/D0joIty1qJPqHsan/SkcsCfaJK6JJxe3Lht89OMIJCtlfS73I6ZQDhzFwWA9DcZteb0y
+	WuGJ2HE/wJYMOtiiW/J/lDvvtIf2a83g==
+X-Google-Smtp-Source: AGHT+IEH4d52wGH8vbNwfzvpV2wqsfdLfYYhb20TejcQqFRaHlU9GjFY3tNK9qHPkBnSWswi3vS1ehXT
 X-Received: from palermo.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:118a])
- (user=ardb job=sendgmr) by 2002:a05:6902:1b01:b0:dc2:3619:e94e with SMTP id
- eh1-20020a0569021b0100b00dc23619e94emr414348ybb.6.1706551552670; Mon, 29 Jan
- 2024 10:05:52 -0800 (PST)
-Date: Mon, 29 Jan 2024 19:05:13 +0100
+ (user=ardb job=sendgmr) by 2002:a05:600c:1d88:b0:40e:f9fa:14ea with SMTP id
+ p8-20020a05600c1d8800b0040ef9fa14eamr11573wms.6.1706551554793; Mon, 29 Jan
+ 2024 10:05:54 -0800 (PST)
+Date: Mon, 29 Jan 2024 19:05:14 +0100
 In-Reply-To: <20240129180502.4069817-21-ardb+git@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,15 +73,14 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240129180502.4069817-21-ardb+git@google.com>
 X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4822; i=ardb@kernel.org;
- h=from:subject; bh=Kb1Zn5CHQVUPzxgeHo6uRlzKgwc2NWlyfd+RzWsJs24=;
- b=owGbwMvMwCFmkMcZplerG8N4Wi2JIXX7i1tSpVekMhqlzlrlfb/JMsl/O//tz/rfnvtxfTN9K
- xfxQaivo5SFQYyDQVZMkUVg9t93O09PlKp1niULM4eVCWQIAxenAEwkX5Lhv5OomU7pjraIyH/7
- ztt9/Of40YFDqmqzV+W3Fp85b/RspRj+yorzxqrcmK60VSHRPl6b5eeETAbXibMsFrfufP7hcKI IBwA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1335; i=ardb@kernel.org;
+ h=from:subject; bh=+Hn8XwOONyFACfVl0+TV+ToDQrCQwdquUdW+H4YgWKM=;
+ b=owGbwMvMwCFmkMcZplerG8N4Wi2JIXX7i9u7Fp4sj3V7udXtpNY9MXsR10NPBb0cuP92X1ry+
+ VW5ZJd4RykLgxgHg6yYIovA7L/vdp6eKFXrPEsWZg4rE8gQBi5OAZjIfTOG/9We01eGNZ24aN3g
+ GLjUIHZG9EL9Tn/mrwzhRufLA4NNixl+s9z50czfGr3v0OlmYdt8rSt7pp3lK5l6zCp89pbDm8z uswAA
 X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-Message-ID: <20240129180502.4069817-31-ardb+git@google.com>
-Subject: [PATCH v3 10/19] asm-generic: Add special .pi.text section for
- position independent code
+Message-ID: <20240129180502.4069817-32-ardb+git@google.com>
+Subject: [PATCH v3 11/19] x86: Move return_thunk to __pitext section
 From: Ard Biesheuvel <ardb+git@google.com>
 To: linux-kernel@vger.kernel.org
 Cc: Ard Biesheuvel <ardb@kernel.org>, Kevin Loughlin <kevinloughlin@google.com>, 
@@ -96,132 +95,43 @@ Content-Type: text/plain; charset="UTF-8"
 
 From: Ard Biesheuvel <ardb@kernel.org>
 
-Add a special .pi.text section that architectures will use to carry code
-that can be called while the kernel is executing from a different
-virtual address than its link time address. This is typically needed by
-very early boot code that executes from a 1:1 mapping, and may need to
-call into other code to perform preparatory tasks that must be completed
-before switching to the kernel's ordinary virtual mapping.
-
-Note that this implies that the code in question cannot generally be
-instrumented safely, and so the contents are combined with the existing
-noinstr.text section, making .pi.text a proper subset of the former.
+The x86 return thunk will function correctly even when it is called via
+a different virtual mapping than the one it was linked at, so it can
+safely be moved to .pi.text. This allows other code in that section to
+call it.
 
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- include/asm-generic/vmlinux.lds.h |  3 +++
- include/linux/init.h              | 12 +++++++++
- scripts/mod/modpost.c             |  5 +++-
- tools/objtool/check.c             | 26 ++++++++------------
- 4 files changed, 29 insertions(+), 17 deletions(-)
+ arch/x86/kernel/vmlinux.lds.S | 2 +-
+ arch/x86/lib/retpoline.S      | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index 5dd3a61d673d..70c9767cac5a 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -553,6 +553,9 @@
- 		__cpuidle_text_start = .;				\
- 		*(.cpuidle.text)					\
- 		__cpuidle_text_end = .;					\
-+		__pi_text_start = .;					\
-+		*(.pi.text)						\
-+		__pi_text_end = .;					\
- 		__noinstr_text_end = .;
+diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
+index a349dbfc6d5a..77262e804250 100644
+--- a/arch/x86/kernel/vmlinux.lds.S
++++ b/arch/x86/kernel/vmlinux.lds.S
+@@ -134,7 +134,7 @@ SECTIONS
+ 		SOFTIRQENTRY_TEXT
+ #ifdef CONFIG_RETPOLINE
+ 		*(.text..__x86.indirect_thunk)
+-		*(.text..__x86.return_thunk)
++		*(.pi.text..__x86.return_thunk)
+ #endif
+ 		STATIC_CALL_TEXT
  
- /*
-diff --git a/include/linux/init.h b/include/linux/init.h
-index 3fa3f6241350..85bb701b664c 100644
---- a/include/linux/init.h
-+++ b/include/linux/init.h
-@@ -55,6 +55,17 @@
- #define __exitdata	__section(".exit.data")
- #define __exit_call	__used __section(".exitcall.exit")
+diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
+index 7b2589877d06..003b35445bbb 100644
+--- a/arch/x86/lib/retpoline.S
++++ b/arch/x86/lib/retpoline.S
+@@ -136,7 +136,7 @@ SYM_CODE_END(__x86_indirect_jump_thunk_array)
+  * relocations for same-section JMPs and that breaks the returns
+  * detection logic in apply_returns() and in objtool.
+  */
+-	.section .text..__x86.return_thunk
++	.section .pi.text..__x86.return_thunk, "ax"
  
-+/*
-+ * __pitext should be used to mark code that can execute correctly from a
-+ * different virtual offset than the kernel was linked at. This is used for
-+ * code that is called extremely early during boot.
-+ *
-+ * Note that this is incompatible with KAsan, which applies an affine
-+ * translation to the virtual address to obtain the shadow address which is
-+ * strictly tied to the kernel's virtual address space.
-+ */
-+#define __pitext	__section(".pi.text") __no_sanitize_address notrace
-+
- /*
-  * modpost check for section mismatches during the kernel build.
-  * A section mismatch happens when there are references from a
-@@ -92,6 +103,7 @@
+ #ifdef CONFIG_CPU_SRSO
  
- /* For assembly routines */
- #define __HEAD		.section	".head.text","ax"
-+#define __PITEXT	.section	".pi.text","ax"
- #define __INIT		.section	".init.text","ax"
- #define __FINIT		.previous
- 
-diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index 795b21154446..962d00df47ab 100644
---- a/scripts/mod/modpost.c
-+++ b/scripts/mod/modpost.c
-@@ -813,9 +813,12 @@ static void check_section(const char *modname, struct elf_info *elf,
- 
- #define INIT_SECTIONS      ".init.*"
- 
--#define ALL_TEXT_SECTIONS  ".init.text", ".meminit.text", ".exit.text", \
-+#define ALL_PI_TEXT_SECTIONS  ".pi.text", ".pi.text.*"
-+#define ALL_NON_PI_TEXT_SECTIONS  ".init.text", ".meminit.text", ".exit.text", \
- 		TEXT_SECTIONS, OTHER_TEXT_SECTIONS
- 
-+#define ALL_TEXT_SECTIONS  ALL_NON_PI_TEXT_SECTIONS, ALL_PI_TEXT_SECTIONS
-+
- enum mismatch {
- 	TEXTDATA_TO_ANY_INIT_EXIT,
- 	XXXINIT_TO_SOME_INIT,
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 548ec3cd7c00..af8f23a96037 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -389,6 +389,7 @@ static int decode_instructions(struct objtool_file *file)
- 		if (!strcmp(sec->name, ".noinstr.text") ||
- 		    !strcmp(sec->name, ".entry.text") ||
- 		    !strcmp(sec->name, ".cpuidle.text") ||
-+		    !strncmp(sec->name, ".pi.text", 8) ||
- 		    !strncmp(sec->name, ".text..__x86.", 13))
- 			sec->noinstr = true;
- 
-@@ -4234,23 +4235,16 @@ static int validate_noinstr_sections(struct objtool_file *file)
- {
- 	struct section *sec;
- 	int warnings = 0;
-+	static char const *noinstr_sections[] = {
-+		".noinstr.text", ".entry.text", ".cpuidle.text", ".pi.text",
-+	};
- 
--	sec = find_section_by_name(file->elf, ".noinstr.text");
--	if (sec) {
--		warnings += validate_section(file, sec);
--		warnings += validate_unwind_hints(file, sec);
--	}
--
--	sec = find_section_by_name(file->elf, ".entry.text");
--	if (sec) {
--		warnings += validate_section(file, sec);
--		warnings += validate_unwind_hints(file, sec);
--	}
--
--	sec = find_section_by_name(file->elf, ".cpuidle.text");
--	if (sec) {
--		warnings += validate_section(file, sec);
--		warnings += validate_unwind_hints(file, sec);
-+	for (int i = 0; i < ARRAY_SIZE(noinstr_sections); i++) {
-+		sec = find_section_by_name(file->elf, noinstr_sections[i]);
-+		if (sec) {
-+			warnings += validate_section(file, sec);
-+			warnings += validate_unwind_hints(file, sec);
-+		}
- 	}
- 
- 	return warnings;
 -- 
 2.43.0.429.g432eaa2c6b-goog
 
