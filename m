@@ -1,199 +1,122 @@
-Return-Path: <linux-kernel+bounces-42133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 406CC83FCE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 04:39:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC0E983FCE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 04:40:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C16AB2814AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 03:39:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C53D1F2318C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 03:40:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05B5D125C1;
-	Mon, 29 Jan 2024 03:39:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 395A310A03;
+	Mon, 29 Jan 2024 03:40:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="NhLmcjLE"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Iy0L7m2j"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71272101D5
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 03:39:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7496710957;
+	Mon, 29 Jan 2024 03:40:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706499545; cv=none; b=ByFHwI7VwoaMHkDDwYcbFtpW3L4sMBU3WRKIcRtEK5YB2I25z68q7TlCxgAzupaVnI/XiS2cERRwMZrRj1P1z9WF/M8s2En4sl/A/cRlfnAt3lQ9LXtJUrkEM8pJUPiMvayDF89flV1PGvQn5ySlb1hIJhnAt/BuL/XljMUVolg=
+	t=1706499612; cv=none; b=XfwncRFRMWio0QZCLESgQz9dt4WAgXrVHGEM0QyqZEse2bECgp6IqJEdMIEtJk/WcH6zagyKrq+JdAZolperpXrknhLIPXFS6k0FgeE67OT/rDDfAYKcWw7MLcevR5wuN1cnDbX8hJHGIvmgfcBm8eMrKA9SNVM9BCYdaV0vvmU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706499545; c=relaxed/simple;
-	bh=wE4cixn0oIglWKeS/zIrvtFsWbeheeYOTmOIKWPKXCE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PJfB0U5C+YU7ky5zqC91IZn5eSu7UmmRXSbH1mA8iMudJWd/dH7nKfepYv/1+YA/eZj3hdIQLC91gVK09Tl5yz7lW4E7MLTEaFx26a9iWyDRABJLGD7dHCHpyuflqr4sEfBzu6ijW+ASfGmVZne8WoA4wQnzXiiuiA++sWBkhcI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=NhLmcjLE; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5110fae7af5so487691e87.0
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 19:39:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706499540; x=1707104340; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/yyUGF5rIxxEr8wGxy6mzO1hK1BzZ2gmE5L9TwgfgxA=;
-        b=NhLmcjLEUKN0XxvcQ/70ZW2TkD9d3g8WQqvTjI3yX8UCNlQ/CJtbE2ApB9meI5+TDD
-         zLtc948i1kSVgFnzBQqed5AHQyx2WT6BZL2t49gCmqte/vrmPc0r7DULnucETTnP0HP3
-         ut/5ujrsQ0b8wjeFQqdJ+O7lkdfuLAYhny6R0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706499540; x=1707104340;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/yyUGF5rIxxEr8wGxy6mzO1hK1BzZ2gmE5L9TwgfgxA=;
-        b=pfQJbVHCLC66stRg6li4Po/3nK1ltY5zxh5CegS9WsBFNMSeeHYkEQAJD0wQP2XBTh
-         OCymtnBdrOoSu4XzUaDowXJ10Ps4A1FLgtx6stKVd9420CMFtctJw8qsCvSO1QUzOYC1
-         45z2U0VWfUFDe+DEAZjCbBb4f7LSESPeKYBm2fZ6JLecrqH3TQ1UECPaBYaESN5ejgZP
-         hETdgURjQwhRIXuJiAZSoPn0pJm8lus5+3+dQTA03YK4huihN4iHcq5FBsGrQViLF8oK
-         zq9S2Bk+oEJfaj9TC4kwEKOSJ8C1MFOywnFtNZzzBA1l3uHI3HDxZew4jGN4GNXG0V/k
-         s6DA==
-X-Gm-Message-State: AOJu0YxkifhKRoxWrI515A4iOuZ2XFWge9jJ/MrFZUl7OuYLuixW8Um6
-	D2nihv9fgDqMRr7ehqAUuW6/IxH5AKW8mrL6/BJGy3LbKd48GzgYTBtoG5C9ON1YpCbJiFLDkNN
-	ewioaM3A6u258KhefnfVCKicKgercUJe+SiRZ
-X-Google-Smtp-Source: AGHT+IEXgMUgHt38rJa9lkZWY3kg2sc8NUxr6P4rZVQj9hDCI16H5nC2o9tzHW8pEEyFHfhwuR4GhhyhIWVA70eTXH0=
-X-Received: by 2002:a05:6512:280e:b0:50e:b25e:94d8 with SMTP id
- cf14-20020a056512280e00b0050eb25e94d8mr3488177lfb.41.1706499540469; Sun, 28
- Jan 2024 19:39:00 -0800 (PST)
+	s=arc-20240116; t=1706499612; c=relaxed/simple;
+	bh=+bQCXJR0sf7n1fc5UEvI/I5MK89K8Itu0r2VGI3HRFo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lqNUMe5DeGrWy+yiztLiy82WylP5omhgcqqK5+Q3Y+GYzbIHSPqg/xyhzyvm44mxzM50GPgfJJwOYypHCWhRRpn27vncV2rCJIQdPnPUOh6HfFAqYNWGFyI2RpwSYffrWnyBmyJ5/lR276LME97ooAZzp50jop57ubFpZj17Gzc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Iy0L7m2j; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706499610; x=1738035610;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+bQCXJR0sf7n1fc5UEvI/I5MK89K8Itu0r2VGI3HRFo=;
+  b=Iy0L7m2j7ZhYwqtcpqKy1g8hjLWgHpAfjYHL8rW1nsSvJy5X2NpUfmWe
+   34NO9MLiGSUmRxxkS2iW8+0mn+0TPo4PJtCeyLjXz1I3BPgcCrU2iSbVV
+   DLcJ1ABr4QFtGOGeN1M4gdMMLyeLbNNAQsXEq8OeBqRNNgwiwIW2/yCkr
+   MNSQ8k90zb+K7J0pF6eHKu4nfaTdzRIBXvt0q7JJ5Ecnf+o7RST9ASejL
+   G7YL9ZLYo2wQ7K7VTk/xZSqhmfA7Sxmxl0vNzwa4wMmasx8rekwQvZEda
+   XJ9jg5KeMuJTQM/vXhgSDboE+OVez/fqmPhVdDYH+2YZiCbPt4rVxTFGq
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="9952522"
+X-IronPort-AV: E=Sophos;i="6.05,226,1701158400"; 
+   d="scan'208";a="9952522"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2024 19:40:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="906947399"
+X-IronPort-AV: E=Sophos;i="6.05,226,1701158400"; 
+   d="scan'208";a="906947399"
+Received: from lkp-server01.sh.intel.com (HELO 370188f8dc87) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 28 Jan 2024 19:40:02 -0800
+Received: from kbuild by 370188f8dc87 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rUIV6-00040q-2C;
+	Mon, 29 Jan 2024 03:40:00 +0000
+Date: Mon, 29 Jan 2024 11:39:11 +0800
+From: kernel test robot <lkp@intel.com>
+To: Oreoluwa Babatunde <quic_obabatun@quicinc.com>, catalin.marinas@arm.com,
+	will@kernel.org, robh+dt@kernel.org, frowand.list@gmail.com,
+	vgupta@kernel.org, arnd@arndb.de, olof@lixom.net, soc@kernel.org,
+	guoren@kernel.org, monstr@monstr.eu, palmer@dabbelt.com,
+	aou@eecs.berkeley.edu, dinguyen@kernel.org, chenhuacai@kernel.org,
+	tsbogend@alpha.franken.de, jonas@southpole.se,
+	stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
+	mpe@ellerman.id.au, ysato@users.sourceforge.jp, dalias@libc.org,
+	glaubitz@physik.fu-berlin.de, richard@nod.at,
+	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
+	chris@zankel.net, jcmvbkbc@gmail.com
+Cc: oe-kbuild-all@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 18/46] of: reserved_mem: Add code to dynamically allocate
+ reserved_mem array
+Message-ID: <202401291128.e7tdNh5x-lkp@intel.com>
+References: <20240126235425.12233-19-quic_obabatun@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240126063500.2684087-1-wenst@chromium.org> <20240126063500.2684087-2-wenst@chromium.org>
- <74b9f249-fcb4-4338-bf7b-8477de6c935c@linaro.org>
-In-Reply-To: <74b9f249-fcb4-4338-bf7b-8477de6c935c@linaro.org>
-From: Chen-Yu Tsai <wenst@chromium.org>
-Date: Mon, 29 Jan 2024 11:38:49 +0800
-Message-ID: <CAGXv+5Hu+KsTBd1JtnKcaE3qUzPhHbunoVaH2++yfNopHtFf4g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: net: bluetooth: Add MediaTek MT7921S
- SDIO Bluetooth
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Sean Wang <sean.wang@mediatek.com>, linux-bluetooth@vger.kernel.org, 
-	netdev@vger.kernel.org, linux-mediatek@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240126235425.12233-19-quic_obabatun@quicinc.com>
 
-On Fri, Jan 26, 2024 at 6:40=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 26/01/2024 07:34, Chen-Yu Tsai wrote:
-> > The MediaTek MT7921S is a WiFi/Bluetooth combo chip that works over
-> > SDIO. While the Bluetooth function is fully discoverable, the chip
-> > has a pin that can reset just the Bluetooth side, as opposed to the
-> > full chip. This needs to be described in the device tree.
-> >
-> > Add a device tree binding for MT7921S Bluetooth over SDIO specifically
-> > ot document the reset line.
->
-> s/ot/to/
->
-> >
-> > Cc: Sean Wang <sean.wang@mediatek.com>
-> > Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
-> > ---
-> > Changes since v1:
-> > - Reworded descriptions
-> > - Moved binding maintainer section before description
-> > - Added missing reference to bluetooth-controller.yaml
-> > - Added missing GPIO header to example
-> >
-> >  .../bluetooth/mediatek,mt7921s-bluetooth.yaml | 53 +++++++++++++++++++
-> >  MAINTAINERS                                   |  1 +
-> >  2 files changed, 54 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/net/bluetooth/med=
-iatek,mt7921s-bluetooth.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/net/bluetooth/mediatek,m=
-t7921s-bluetooth.yaml b/Documentation/devicetree/bindings/net/bluetooth/med=
-iatek,mt7921s-bluetooth.yaml
-> > new file mode 100644
-> > index 000000000000..ff11c95c816c
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/net/bluetooth/mediatek,mt7921s-=
-bluetooth.yaml
-> > @@ -0,0 +1,53 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/net/bluetooth/mediatek,mt7921s-blue=
-tooth.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: MediaTek MT7921S Bluetooth
-> > +
-> > +maintainers:
-> > +  - Sean Wang <sean.wang@mediatek.com>
-> > +
-> > +description:
-> > +  MT7921S is an SDIO-attached dual-radio WiFi+Bluetooth Combo chip; ea=
-ch
-> > +  function is its own SDIO function on a shared SDIO interface. The ch=
-ip
-> > +  has two dedicated reset lines, one for each function core.
-> > +  This binding only covers the Bluetooth part of the chip.
-> > +
-> > +allOf:
-> > +  - $ref: bluetooth-controller.yaml#
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - mediatek,mt7921s-bluetooth
->
-> Can it be also WiFi on separate bus? How many device nodes do you need
-> for this device?
+Hi Oreoluwa,
 
-For the "S" variant, WiFi is also on SDIO. For the other two variants,
-"U" and "E", WiFi goes over USB and PCIe respectively. On both those
-variants, Bluetooth can either go over USB or UART. That is what I
-gathered from the pinouts. There are a dozen GPIO pins which don't
-have detailed descriptions though. If you want a comprehensive
-binding of the whole chip and all its variants, I suggest we ask
-MediaTek to provide it instead. My goal with the binding is to document
-existing usage and allow me to upstream new device trees.
+kernel test robot noticed the following build warnings:
 
-For now we only need the Bluetooth node. The WiFi part is perfectly
-detectable, and the driver doesn't seem to need the WiFi reset pin.
-The Bluetooth driver only uses its reset pin to reset a hung controller.
+[auto build test WARNING on robh/for-next]
+[also build test WARNING on arm64/for-next/core vgupta-arc/for-curr powerpc/next powerpc/fixes jcmvbkbc-xtensa/xtensa-for-next linus/master v6.8-rc1 next-20240125]
+[cannot apply to vgupta-arc/for-next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> Missing blank line.
+url:    https://github.com/intel-lab-lkp/linux/commits/Oreoluwa-Babatunde/of-reserved_mem-Change-the-order-that-reserved_mem-regions-are-stored/20240127-081735
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+patch link:    https://lore.kernel.org/r/20240126235425.12233-19-quic_obabatun%40quicinc.com
+patch subject: [PATCH 18/46] of: reserved_mem: Add code to dynamically allocate reserved_mem array
+config: arm-aspeed_g4_defconfig (https://download.01.org/0day-ci/archive/20240129/202401291128.e7tdNh5x-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240129/202401291128.e7tdNh5x-lkp@intel.com/reproduce)
 
-Will fix.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401291128.e7tdNh5x-lkp@intel.com/
 
-> > +  reg:
-> > +    const: 2
-> > +
-> > +  reset-gpios:
-> > +    maxItems: 1
-> > +    description:
-> > +      An active-low reset line for the Bluetooth core; on typical M.2
-> > +      key E modules this is the W_DISABLE2# pin.
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +
-> > +additionalProperties: false
->
-> Instead 'unevaluatedProperties: false'
+All warnings (new ones prefixed by >>, old ones prefixed by <<):
 
-Will fix.
+WARNING: modpost: missing MODULE_DESCRIPTION() in vmlinux.o
+>> WARNING: modpost: vmlinux: section mismatch in reference: alloc_reserved_mem_array+0x50 (section: .text.unlikely) -> memblock_alloc_try_nid (section: .init.text)
 
-
-Thanks
-ChenYu
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
