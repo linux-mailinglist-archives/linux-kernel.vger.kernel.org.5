@@ -1,203 +1,133 @@
-Return-Path: <linux-kernel+bounces-43114-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43073-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B67A840BB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:37:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40B6E840B4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:26:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9E7AB224CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:37:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E69691F222BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:26:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3866215D5AC;
-	Mon, 29 Jan 2024 16:32:13 +0000 (UTC)
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDBC0156990;
+	Mon, 29 Jan 2024 16:26:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="bpLROeWM"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF73615AAD2;
-	Mon, 29 Jan 2024 16:32:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E9CC155A22;
+	Mon, 29 Jan 2024 16:26:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706545932; cv=none; b=tyMwzwSJglJhRgHBIeFeOta7pyCOLNnPbPgANrQv6n5TB5YvOlQEkK/NkSYc6E/ILPdqWQiLY1Q2ONY3+Bs7Ih4HvDQn4m1emXecvET9EcxtedhLmH99b78jFb6FNLEsSGxJLBeCJGX7vkw10sKhg7lI0ZByAbi2P82d0gKnDVY=
+	t=1706545571; cv=none; b=fx9+CmVsZwdl5DlbfcBBb+2E1+e1D+cqvfO3r509vsz2nlvbP6J3xmgw2uiGfbIVN38agGQh3QBteNkcBEDO1W8UBJNd/vhMl8n3LS/aZt/ojkDY1QhF0REa1EnZZjhkDKSBQLrJz/PTBg2fBi5NN+8s/C1uzoDrZAGhSvIve9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706545932; c=relaxed/simple;
-	bh=fw+tx0QLXKQOvFgAfYfyFRwUUJeuGesaym5awIhseJo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tVEhaGJWe1dvTTdDjTyzb8ZE0M5pOGsqdG5GyadbBeSgHB1/TwqyPQtXQBXLajtfGrYJdfb8KyRrsJuHrmQY9Mer0OufcVuxf7VElwyfxt6VSB8gnqj3Gc5K6InY7mkkJ9P0wY970Cbn9Vcif2OLZtMmpnW6HDznJpwVpLFbKk4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id 4723b7508d8cd2cc; Mon, 29 Jan 2024 17:32:02 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id BCBD366975C;
-	Mon, 29 Jan 2024 17:32:01 +0100 (CET)
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-Subject: [PATCH v2 07/10] PM: sleep: stats: Log errors right after running suspend callbacks
-Date: Mon, 29 Jan 2024 17:25:48 +0100
-Message-ID: <2200952.Mh6RI2rZIc@kreacher>
-In-Reply-To: <5770175.DvuYhMxLoT@kreacher>
-References: <5770175.DvuYhMxLoT@kreacher>
+	s=arc-20240116; t=1706545571; c=relaxed/simple;
+	bh=W46H/aCMXfesOX2zY96FjX0batkbZQUarj6CDXDqBP8=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=rdNS8mvpSZP/dxa3ARITf34PxHIasdJRM3yMeovO4iobbkSlP6Mqz/KJXnW07lriupugsimnyy7Na8tNPXjAVEXaVOhGqJv7TnA0OLwyPVsQhx8n6ejC5x/eg5A7yJ+Ml+mChm+ogwvPE8zj0R6pmraw2jKj8BpE0Ct230BdfM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=bpLROeWM; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 2430DE0008;
+	Mon, 29 Jan 2024 16:26:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1706545565;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=E9Y1YO9a4lUPIXa97ED1XfcPSm0h5Y2q/VaMDZEFmqw=;
+	b=bpLROeWMvuPAptm68QoPAg0rklxbUdEqyDVt0QebadEgi2fFXBAaOeAHosWg5PL9oDrqp6
+	gLcV0KTxxN/uSqowdPt9hq6IzIcEF9w1nKroKiXeIe9uNTbOyFyuS/eHp5wpuWBnFjbiAx
+	NW4skpr/0UxuH1LswPFISPQjgpCAHEyl3YEl0i0mRGq0ylwuDKIvgYqXKfZ9C0HYgRU1aA
+	8j8Uz1ryodJSoctJYfhUejX0/NfFWSk89UzNgL/qnQChYmC5UGq29Vzs/HKhim/Myr6Qm4
+	+DXnV6JGL22peVHrjpmu+H3ko49tCbqwSQtjLtO9plZW94DuCr/fK6TdTKxycw==
+From: Kory Maincent <kory.maincent@bootlin.com>
+Subject: [PATCH v7 0/6] Fix support of dw-edma HDMA NATIVE IP in remote
+ setup
+Date: Mon, 29 Jan 2024 17:25:56 +0100
+Message-Id: <20240129-b4-feature_hdma_mainline-v7-0-8e8c1acb7a46@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtgedgjeelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepgedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehulhhfrdhhrghnshhsohhnsehlihhnrghrohdrohhrghdprhgtphhtthhopehsthgrnhhishhlrgifrdhgrhhushiikhgrsehlihhnuhigrdhinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAJTRt2UC/43OTQrCMBAF4KtI1kaSJk1aV95DRPIzsQHbSFqLI
+ r27oxvFQnH5ZnjfzIP0kCP0ZLt6kAxj7GPqMOj1irjGdCeg0WMmBSsEZ5xTK2kAM1wzHBvfmmN
+ rYneOHVCrXKlDBcKWnmD9kiHE25veHzA3sR9Svr8vjeI1/QMdBWW0kADM1bp2KuxsSgOuNi615
+ MWO8l9KIiWFl1zbWnBRzanyQ3EuF6gSKW1dpXwl8Ck9p9Q3pRcohRTYoI1hIJn/oaZpegIAGNo
+ HowEAAA==
+To: Manivannan Sadhasivam <mani@kernel.org>, 
+ Gustavo Pimentel <gustavo.pimentel@synopsys.com>, 
+ Serge Semin <fancer.lancer@gmail.com>, Vinod Koul <vkoul@kernel.org>, 
+ Cai Huoqing <cai.huoqing@linux.dev>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Herve Codina <herve.codina@bootlin.com>, 
+ Kory Maincent <kory.maincent@bootlin.com>, 
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+X-Mailer: b4 0.12.4
+X-GND-Sasl: kory.maincent@bootlin.com
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+This patch series fix the support of dw-edma HDMA NATIVE IP.
+I can only test it in remote HDMA IP setup with single dma transfer, but
+with these fixes it works properly.
 
-The error logging and failure statistics updates are carried out in two
-places in each system-wide device suspend phase, which is unnecessary
-code duplication, so do that in one place in each phase, right after
-invoking device suspend callbacks.
+Few fixes has also been added for eDMA version. Similarly to HDMA I have
+tested only eDMA in remote setup.
 
-While at it, add "noirq" or "late" to the "async" string printed when
-the failing device callback in the "noirq" or "late" suspend phase,
-respectively, was run asynchronously.
+Changes in v2:
+- Update comments and fix typos.
+- Removed patches that tackle hypothetical bug and then were not pertinent.
+- Add the similar HDMA race condition in remote setup fix to eDMA IP driver.
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Changes in v3:
+- Fix comment style.
+- Split a patch in two to differ bug fix and simple harmless typo.
+
+Changes in v4:
+- Update patch git commit message.
+- Link to v3: https://lore.kernel.org/r/20231011-b4-feature_hdma_mainline-v3-0-24ee0c979c6f@bootlin.com
+
+Changes in v5:
+- No change
+- Rebase to mainline 6.7-rc1
+- Link to v4: https://lore.kernel.org/r/20231011-b4-feature_hdma_mainline-v4-0-43d417b93138@bootlin.com
+
+Changes in v6:
+- Fix several commit messages and comments.
+- Link to v5: https://lore.kernel.org/r/20231114-b4-feature_hdma_mainline-v5-0-7bc86d83c6f7@bootlin.com
+
+Changes in v7:
+- No change, ready for merge
+- Rebase to mainline 6.8-rc2
+- Link to v6: https://lore.kernel.org/r/20231117-b4-feature_hdma_mainline-v6-0-ebf7aa0e40d7@bootlin.com
+
+Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 ---
- drivers/base/power/main.c |   49 ++++++++++++----------------------------------
- 1 file changed, 13 insertions(+), 36 deletions(-)
+Kory Maincent (6):
+      dmaengine: dw-edma: Fix the ch_count hdma callback
+      dmaengine: dw-edma: Fix wrong interrupt bit set for HDMA
+      dmaengine: dw-edma: HDMA_V0_REMOTEL_STOP_INT_EN typo fix
+      dmaengine: dw-edma: Add HDMA remote interrupt configuration
+      dmaengine: dw-edma: HDMA: Add sync read before starting the DMA transfer in remote setup
+      dmaengine: dw-edma: eDMA: Add sync read before starting the DMA transfer in remote setup
 
-Index: linux-pm/drivers/base/power/main.c
-===================================================================
---- linux-pm.orig/drivers/base/power/main.c
-+++ linux-pm/drivers/base/power/main.c
-@@ -1244,6 +1244,8 @@ Run:
- 	error = dpm_run_callback(callback, dev, state, info);
- 	if (error) {
- 		async_error = error;
-+		dpm_save_failed_dev(dev_name(dev));
-+		pm_dev_err(dev, state, async ? " async noirq" : " noirq", error);
- 		goto Complete;
- 	}
- 
-@@ -1273,14 +1275,8 @@ Complete:
- static void async_suspend_noirq(void *data, async_cookie_t cookie)
- {
- 	struct device *dev = data;
--	int error;
--
--	error = __device_suspend_noirq(dev, pm_transition, true);
--	if (error) {
--		dpm_save_failed_dev(dev_name(dev));
--		pm_dev_err(dev, pm_transition, " async", error);
--	}
- 
-+	__device_suspend_noirq(dev, pm_transition, true);
- 	put_device(dev);
- }
- 
-@@ -1312,12 +1308,8 @@ static int dpm_noirq_suspend_devices(pm_
- 
- 		mutex_lock(&dpm_list_mtx);
- 
--		if (error) {
--			pm_dev_err(dev, state, " noirq", error);
--			dpm_save_failed_dev(dev_name(dev));
--		} else if (!list_empty(&dev->power.entry)) {
-+		if (!error && !list_empty(&dev->power.entry))
- 			list_move(&dev->power.entry, &dpm_noirq_list);
--		}
- 
- 		mutex_unlock(&dpm_list_mtx);
- 
-@@ -1437,6 +1429,8 @@ Run:
- 	error = dpm_run_callback(callback, dev, state, info);
- 	if (error) {
- 		async_error = error;
-+		dpm_save_failed_dev(dev_name(dev));
-+		pm_dev_err(dev, state, async ? " async late" : " late", error);
- 		goto Complete;
- 	}
- 	dpm_propagate_wakeup_to_parent(dev);
-@@ -1453,13 +1447,8 @@ Complete:
- static void async_suspend_late(void *data, async_cookie_t cookie)
- {
- 	struct device *dev = data;
--	int error;
- 
--	error = __device_suspend_late(dev, pm_transition, true);
--	if (error) {
--		dpm_save_failed_dev(dev_name(dev));
--		pm_dev_err(dev, pm_transition, " async", error);
--	}
-+	__device_suspend_late(dev, pm_transition, true);
- 	put_device(dev);
- }
- 
-@@ -1500,11 +1489,6 @@ int dpm_suspend_late(pm_message_t state)
- 		if (!list_empty(&dev->power.entry))
- 			list_move(&dev->power.entry, &dpm_late_early_list);
- 
--		if (error) {
--			pm_dev_err(dev, state, " late", error);
--			dpm_save_failed_dev(dev_name(dev));
--		}
--
- 		mutex_unlock(&dpm_list_mtx);
- 
- 		put_device(dev);
-@@ -1719,8 +1703,11 @@ static int __device_suspend(struct devic
- 	dpm_watchdog_clear(&wd);
- 
-  Complete:
--	if (error)
-+	if (error) {
- 		async_error = error;
-+		dpm_save_failed_dev(dev_name(dev));
-+		pm_dev_err(dev, state, async ? " async" : "", error);
-+	}
- 
- 	complete_all(&dev->power.completion);
- 	TRACE_SUSPEND(error);
-@@ -1730,14 +1717,8 @@ static int __device_suspend(struct devic
- static void async_suspend(void *data, async_cookie_t cookie)
- {
- 	struct device *dev = data;
--	int error;
--
--	error = __device_suspend(dev, pm_transition, true);
--	if (error) {
--		dpm_save_failed_dev(dev_name(dev));
--		pm_dev_err(dev, pm_transition, " async", error);
--	}
- 
-+	__device_suspend(dev, pm_transition, true);
- 	put_device(dev);
- }
- 
-@@ -1778,12 +1759,8 @@ int dpm_suspend(pm_message_t state)
- 
- 		mutex_lock(&dpm_list_mtx);
- 
--		if (error) {
--			pm_dev_err(dev, state, "", error);
--			dpm_save_failed_dev(dev_name(dev));
--		} else if (!list_empty(&dev->power.entry)) {
-+		if (!error && !list_empty(&dev->power.entry))
- 			list_move(&dev->power.entry, &dpm_suspended_list);
--		}
- 
- 		mutex_unlock(&dpm_list_mtx);
- 
+ drivers/dma/dw-edma/dw-edma-v0-core.c | 17 +++++++++++++++
+ drivers/dma/dw-edma/dw-hdma-v0-core.c | 39 +++++++++++++++++++++++------------
+ drivers/dma/dw-edma/dw-hdma-v0-regs.h |  2 +-
+ 3 files changed, 44 insertions(+), 14 deletions(-)
+---
+base-commit: 41bccc98fb7931d63d03f326a746ac4d429c1dd3
+change-id: 20231011-b4-feature_hdma_mainline-b6c57f8e3b5d
 
-
+Best regards,
+-- 
+Köry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
 
