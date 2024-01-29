@@ -1,125 +1,119 @@
-Return-Path: <linux-kernel+bounces-42485-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42486-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CB708401FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:45:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F069840207
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:48:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C125C1C20E02
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:45:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A165CB20F7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:48:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4D8A55C3C;
-	Mon, 29 Jan 2024 09:45:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A32655C3F;
+	Mon, 29 Jan 2024 09:47:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="GX26r+TY"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UM3si/uz"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACA0455C0B;
-	Mon, 29 Jan 2024 09:45:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17AEE41C63;
+	Mon, 29 Jan 2024 09:47:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706521503; cv=none; b=JtnzKHUghvYeawLBhHXX/luMBPVGFEWDGKM1j5l+Ec+ygetVAVNqQo57+Kl8cAaweThKR6vgq/aNFpf6NYooM4YQTXAW2Eo9LP8JCvQCpDrL7VtVNGT5B2PRaDGbPmQx7E7J94yvk91KOwNRMxl+zV9a1gdwkb/BHepJuCZ+05s=
+	t=1706521667; cv=none; b=DeyaZ+n/QrKh09lImbyHV4ummQkw9AUsqlw27w3O1e4Q8Z231uD6jtsxEeQCpnAF0uvvlZ2ua9i3LgQw2zIt1rNrWsZ4gnI3vbEp2Hnrp0+Cr6K+3ufI2k6m4DFfD6U2MXolp7G/+QDP/A471Qnvt9dinUHB/KuwGm3NHjk+uv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706521503; c=relaxed/simple;
-	bh=QX/PFUYDG2vhsO4TCvlDaojkMhlNxRxarKZxxn4FApA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ofq2aGgPGNSYLJ08PnpDlhx24S45mVvf4WFVEX3oH8jP4XJXMzZNYg/ZvcwwM1WLqQply2VMOAzQOaQEqsiRz4jkrghbI4oEGqzSxrowyiWMRSQn0VubK9tqAgHYEcJ7oNa9BpRYT1gPgsKUGLcv5CI4U9GoFX2O13+6WZtqObE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=GX26r+TY; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40T3j1fd007708;
-	Mon, 29 Jan 2024 09:44:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=9wAZq4jboDZtPCARUsN9UHi5l7EnsT/DcCmFq7v51XI=; b=GX
-	26r+TYeRRyyN8DBELJ/3ILCw2Ai/87MUnV5U3PMYcKO/OWr252DVWLNnrsd7LdxF
-	CQM/5DKNO5og9cuhcC+WaXstAVSGfGu/+HlhT6kn8dFgBi/qDk/MxO0NxaEuNZo1
-	bepSxo8JdFgxVLlIBi6xJYn6rKuZacF0n0iF+Xk9wUkyVDQ8aQ3kxwFHtb/wWwve
-	gZCIGshM3rcOS4PtIlFuspnxe0f/AAn5XgmiXOiOgTVwNRM+H3F50zW/skdyAPI8
-	iURERb5C8OjscGL7evWPxsdvIVAwjLmN4Y8LQ+wIuddd97hzRh0DFvwj3fK6oKOs
-	eNP7jCbpe2lINj7qbTHg==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vvqhmug57-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 29 Jan 2024 09:44:37 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40T9iadn008167
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 29 Jan 2024 09:44:36 GMT
-Received: from [10.50.63.208] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 29 Jan
- 2024 01:44:22 -0800
-Message-ID: <c566c3fc-8eac-4f53-9a5a-1d4495071bb1@quicinc.com>
-Date: Mon, 29 Jan 2024 15:14:16 +0530
+	s=arc-20240116; t=1706521667; c=relaxed/simple;
+	bh=VBR7uHoh5G4bx356M7+wqgaO8/xBmXdJrn7Uz3rJrXU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ceFMYS4wADgNE3Lr7AiY2P9gor5sJgUvWYDiADqpIeQ5YR5k9VQ/KruLZ10F9QmiFcDxDP8B78dnYQ+2KD3DN9TQQzTFllFSUK5o1evvVGSALN8KnfTuyVwE9AYiRH/Ubs4RFArQ3rG9JatAgeq4tMEAXmpGNFREme9mC6uYwfY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UM3si/uz; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706521666; x=1738057666;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=VBR7uHoh5G4bx356M7+wqgaO8/xBmXdJrn7Uz3rJrXU=;
+  b=UM3si/uzuk9wzk7/1AR6iRl8NMahd8GHdLsM1Fg5lxXmfyXukbiFruu+
+   G4XXzip2yNhktO0OwSF1H/VZm3hgNhXI/39c2hSWcwxRP+D9XBIl+I4hY
+   VVKzhiVbSOBL6lxoq1YqgqayNN3Qo/4GLatWSqM4TZekaQesXn3pVo2Pt
+   WxNFJmN6rR3dC2oKCMJ6u/YTZu1ovojxpqP2GFpgx4cfYaRIOITf4yKCJ
+   tJdfD2kOPJy1Z179AhkFg5YMXM6hxmFHiHLL8m0Am/InCrc6n2Q340Sr5
+   X6MXMeBb0EK9jUjnGHgStr9gOW8abpQbtomGHI1waS7Si9NWZzmEfjBDD
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="9652174"
+X-IronPort-AV: E=Sophos;i="6.05,226,1701158400"; 
+   d="scan'208";a="9652174"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 01:47:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="787778209"
+X-IronPort-AV: E=Sophos;i="6.05,226,1701158400"; 
+   d="scan'208";a="787778209"
+Received: from hbrandbe-mobl.ger.corp.intel.com (HELO localhost) ([10.252.59.53])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 01:47:40 -0800
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: David Laight <David.Laight@ACULAB.COM>, "'linux-kernel@vger.kernel.org'"
+ <linux-kernel@vger.kernel.org>, 'Linus
+ Torvalds' <torvalds@linux-foundation.org>, 'Netdev'
+ <netdev@vger.kernel.org>, "'dri-devel@lists.freedesktop.org'"
+ <dri-devel@lists.freedesktop.org>
+Cc: 'Jens Axboe' <axboe@kernel.dk>, "'Matthew Wilcox (Oracle)'"
+ <willy@infradead.org>, 'Christoph Hellwig' <hch@infradead.org>,
+ "'linux-btrfs@vger.kernel.org'" <linux-btrfs@vger.kernel.org>, 'Andrew
+ Morton' <akpm@linux-foundation.org>, 'Andy Shevchenko'
+ <andriy.shevchenko@linux.intel.com>, "'David S . Miller'"
+ <davem@davemloft.net>, 'Dan Carpenter' <dan.carpenter@linaro.org>
+Subject: RE: [PATCH next 10/11] block: Use a boolean expression instead of
+ max() on booleans
+In-Reply-To: <963d1126612347dd8c398a9449170e16@AcuMS.aculab.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <0ca26166dd2a4ff5a674b84704ff1517@AcuMS.aculab.com>
+ <b564df3f987e4371a445840df1f70561@AcuMS.aculab.com>
+ <87sf2gjyn9.fsf@intel.com>
+ <963d1126612347dd8c398a9449170e16@AcuMS.aculab.com>
+Date: Mon, 29 Jan 2024 11:47:37 +0200
+Message-ID: <87il3cjwsm.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v3] net: stmmac: dwmac-qcom-ethqos: Add support
- for 2.5G SGMII
-Content-Language: en-US
-To: Simon Horman <horms@kernel.org>
-CC: Vinod Koul <vkoul@kernel.org>, Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu
-	<joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet
-	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni
-	<pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>, <netdev@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@quicinc.com>, Andrew Halaney <ahalaney@redhat.com>
-References: <20240124092215.14678-1-quic_snehshah@quicinc.com>
- <20240126113619.GA401354@kernel.org>
-From: Sneh Shah <quic_snehshah@quicinc.com>
-In-Reply-To: <20240126113619.GA401354@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: yDevhHvjNuuNdsiUa3vCw0iWq4ry_wVS
-X-Proofpoint-ORIG-GUID: yDevhHvjNuuNdsiUa3vCw0iWq4ry_wVS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-29_05,2024-01-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
- adultscore=0 priorityscore=1501 lowpriorityscore=0 mlxlogscore=579
- spamscore=0 impostorscore=0 clxscore=1011 mlxscore=0 bulkscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401190000 definitions=main-2401290070
+Content-Type: text/plain
+
+On Mon, 29 Jan 2024, David Laight <David.Laight@ACULAB.COM> wrote:
+> From: Jani Nikula
+>> Sent: 29 January 2024 09:08
+>> 
+>> On Sun, 28 Jan 2024, David Laight <David.Laight@ACULAB.COM> wrote:
+>> > blk_stack_limits() contains:
+>> > 	t->zoned = max(t->zoned, b->zoned);
+>> > These are bool, so it is just a bitwise or.
+>> 
+>> Should be a logical or, really. And || in code.
+>
+> Not really, bitwise is fine for bool (especially for 'or')
+> and generates better code.
+
+Logical operations for booleans are more readable for humans than
+bitwise. And semantically correct.
+
+With a = b || c you know what happens regardless of the types in
+question. a = b | c you have to look up the types to know what's going
+on.
+
+To me, better code only matters if it's a hotpath.
+
+That said, not my are of maintenance, so *shrug*.
 
 
+BR,
+Jani.
 
-On 1/26/2024 5:06 PM, Simon Horman wrote:
-> On Wed, Jan 24, 2024 at 02:52:15PM +0530, Sneh Shah wrote:
->> Serdes phy needs to operate at 2500 mode for 2.5G speed and 1000
->> mode for 1G/100M/10M speed.
->> Added changes to configure serdes phy and mac based on link speed.
->> Changing serdes phy speed involves multiple register writes for
->> serdes block. To avoid redundant write opertions only update serdes
->> phy when new speed is different.
->>
->> Signed-off-by: Sneh Shah <quic_snehshah@quicinc.com>
-> 
-> Hi,
-> 
-> unfortunately this patch does not seem to apply to current net-next.
-> Please rebase and repost.
-> 
-My bad! let me rebase and repost the patch!
+
+-- 
+Jani Nikula, Intel
 
