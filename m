@@ -1,186 +1,129 @@
-Return-Path: <linux-kernel+bounces-42260-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42261-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6982783FEA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 07:44:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88BBD83FEA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 07:45:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AD492832F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 06:44:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95732B222EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 06:45:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ECE54D135;
-	Mon, 29 Jan 2024 06:44:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00A074CDE5;
+	Mon, 29 Jan 2024 06:45:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PWFgdv3Z"
-Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=phytec.de header.i=@phytec.de header.b="r+AeYvWN"
+Received: from mickerik.phytec.de (mickerik.phytec.de [91.26.50.163])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 337DC4CDE0;
-	Mon, 29 Jan 2024 06:44:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB4F34CDF9
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 06:45:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.26.50.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706510683; cv=none; b=aA/ZLsHtK/Jxb8ojZkt9xjvynyhivdM6Gqq4Vc1EJ60oLKHOviktFcDbdXpKfgjdvFgzqgAXZx01+ch4bFQHMhqJpxyXv/o/n9M4bH0XRLPEo9/Hp3Wz2qSxG8OCMlb/igeRP6JRtPn4hpKopZHckmZtbsdx5wc6LtDNU5ao6q4=
+	t=1706510716; cv=none; b=pLw9i2xV4eCBHmba+XK6yY1bfSAiJI5vhAk6Bku3Pwb2IcHh/LKEEanyOchIDYYeKqEXvRsAtmQCy2iwGm+4exGai3zVN0iYfmoeZYMw2PqXdtxhk9RB1071QaAbeYB6Ko1yjBgMXa3ytr+qTAxRRFDKEkO0fUzt/lf5Ro0zryM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706510683; c=relaxed/simple;
-	bh=OxoRCOkmkae41vCfWm0QMR2mN2otuI42kdEjLO9tyNk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mtfRhtZ90dJTrc0xV3MsGAmXCVGDAM2s0lAZoPjVKK/KUWyU/GR5AsvsTZl7USnTSQgtAuOAn4p4PbO16UzFLRlpkGEIEjER1VzLwYIKjppw9tU8G6tVFvMdazfyjZH2j9eOovDvka8m+GO+Hkmt8SpQvdFBBids5skBFR0xOVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PWFgdv3Z; arc=none smtp.client-ip=209.85.219.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-68c3ac1fdb9so14734196d6.2;
-        Sun, 28 Jan 2024 22:44:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706510681; x=1707115481; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=3sIeOV9vvB6C8MqwdJNXvnHEjm5BSZtIFxk4IlFlbAE=;
-        b=PWFgdv3ZLyYn0BUBuz5b/IehZZKk7sUjSbMY2mQIt1axObMEUnzxY9oaskcv4hWZ+5
-         17GgHrWcDyWynFGpKUk0qaQmWK0aY7Nxdkp0ljZdFB6qa0TpyJoXEz5VvHIaRT5fPNbK
-         EXTWlZntxMgiPnX9YRh37VKMxcdW8fs1imj1q1nqXg0q7sqszG9p4S2ipY+ThhRvN0h1
-         bqiSHD0LP73BZxLrgS6u5s1Eu+sM/ueShLHbtw7ZOHfMwTZbKuGrQLnK/p+J3786m77l
-         uFRyR3qkqu537hPFwFcAP4Nkj020IX2yhrqIHNlwpN9V0bBC5ZxwQmnMxGbYkhxo7yD9
-         WxOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706510681; x=1707115481;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3sIeOV9vvB6C8MqwdJNXvnHEjm5BSZtIFxk4IlFlbAE=;
-        b=AaCbTj07hVV+r1HfJ6byHHyh79y07TsWzhLI/Mffjb0sAqdf3OOPQgaukXSTT/4kUx
-         jFotg2j/t9f3t4jXwmAYsX2RSHH/xIVGI0U1HFhrmMAdZ7N3VB5iegppT00TJGVdpAhC
-         zvsT+8hSyE4Mlp0zbnSz8X8YfMnRdZ83h3iKOVxugv4uVpC4jg7rKU+dy0Sfi9DpRZ5E
-         VE+cHIgdz8SQzQcMU14fqnGKcDZ6EzEonSRnaEza6f41y0nTaqQ5a8foKpDvuwnpfPPy
-         wkv2miLyGfw1gKn7NFn4Idf9mkJ/2gTOKGG6xvMktvp3ue2cqhayCvqVJnjzCVuOq6uB
-         eTrQ==
-X-Gm-Message-State: AOJu0YwLo1LJX5tC4I2DZQOQP7mhGlqUSwMenwYbBfFd6QV9j1lg8CtE
-	V6pfQqHEQl1RXiy6B9VIciDNY/j47fOi2oziZhNgQWR1rlwkGSFhoxcJ5h5gbqgKCNl6ER7N84U
-	4/dQaf0J4JRakfrjE1ul6QZ3417Q=
-X-Google-Smtp-Source: AGHT+IFfnDR1hP2vNcK5/+uNBDfC+cRSdRdOBWtG/DpVWbvO1oPjEMoTq+dNVq51e1c6V3N7S06sP6xZmzYAK3sGg6M=
-X-Received: by 2002:ad4:576f:0:b0:681:7c2b:d86e with SMTP id
- r15-20020ad4576f000000b006817c2bd86emr5735432qvx.114.1706510681049; Sun, 28
- Jan 2024 22:44:41 -0800 (PST)
+	s=arc-20240116; t=1706510716; c=relaxed/simple;
+	bh=CdvBsoSoCHzWsp34cpiSESmPcI6Lb+0AyCuuanJvfi4=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=ulNtrXXcBxi/Lr2fkLL7rGMqt7kVVhhE+Fn/xPn9zjXUd3963K6TecEivK7e+NKJbsvRmlWRo9Q08Q4ipbP9qI2B5boDuudZ5J8iYljgfv/GedqFXs22/ZqTU6qbhzJ7UiNeak2solR+iXMzsXNWQtiWHhfvc2SkzirDiPoyXuc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.de; spf=pass smtp.mailfrom=phytec.de; dkim=pass (1024-bit key) header.d=phytec.de header.i=@phytec.de header.b=r+AeYvWN; arc=none smtp.client-ip=91.26.50.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=phytec.de
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
+	q=dns/txt; i=@phytec.de; t=1706510701; x=1709102701;
+	h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=CdvBsoSoCHzWsp34cpiSESmPcI6Lb+0AyCuuanJvfi4=;
+	b=r+AeYvWNt8cHIyynPq8reGYyTjMrSlDbnakgJrT66bHk6oanKD2NqPm70Cz/evZM
+	Ud+PvkkpvjtP8DkKuv6SPnw/QP6utNJqbco4PuKXm0+4YD5NI0CxkEhSeQaTqQJE
+	BzD7GUydxp/5rfE/j3JIbbnB+hyQBouAXIIIfoQKKc8=;
+X-AuditID: ac14000a-fbefe7000000290d-4e-65b7496d27ac
+Received: from berlix.phytec.de (Unknown_Domain [172.25.0.12])
+	(using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(Client did not present a certificate)
+	by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 1F.91.10509.D6947B56; Mon, 29 Jan 2024 07:45:01 +0100 (CET)
+Received: from Berlix.phytec.de (172.25.0.12) by Berlix.phytec.de
+ (172.25.0.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.6; Mon, 29 Jan
+ 2024 07:45:01 +0100
+Received: from Berlix.phytec.de ([fe80::197e:d26b:2ca:c7b4]) by
+ berlix.phytec.de ([fe80::197e:d26b:2ca:c7b4%4]) with mapi id 15.01.2507.006;
+ Mon, 29 Jan 2024 07:45:01 +0100
+From: Yannic Moog <Y.Moog@phytec.de>
+To: "conor@kernel.org" <conor@kernel.org>
+CC: "linux-imx@nxp.com" <linux-imx@nxp.com>, "dri-devel@lists.freedesktop.org"
+	<dri-devel@lists.freedesktop.org>, "upstream@lists.phytec.de"
+	<upstream@lists.phytec.de>, "krzysztof.kozlowski+dt@linaro.org"
+	<krzysztof.kozlowski+dt@linaro.org>, "tzimmermann@suse.de"
+	<tzimmermann@suse.de>, "mripard@kernel.org" <mripard@kernel.org>,
+	"thierry.reding@gmail.com" <thierry.reding@gmail.com>, "daniel@ffwll.ch"
+	<daniel@ffwll.ch>, "maarten.lankhorst@linux.intel.com"
+	<maarten.lankhorst@linux.intel.com>, "conor+dt@kernel.org"
+	<conor+dt@kernel.org>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
+	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"kernel@pengutronix.de" <kernel@pengutronix.de>, "s.hauer@pengutronix.de"
+	<s.hauer@pengutronix.de>, "will@kernel.org" <will@kernel.org>,
+	"robh+dt@kernel.org" <robh+dt@kernel.org>, "airlied@gmail.com"
+	<airlied@gmail.com>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "neil.armstrong@linaro.org"
+	<neil.armstrong@linaro.org>, "festevam@gmail.com" <festevam@gmail.com>,
+	"quic_jesszhan@quicinc.com" <quic_jesszhan@quicinc.com>,
+	"primoz.fiser@norik.com" <primoz.fiser@norik.com>, "sam@ravnborg.org"
+	<sam@ravnborg.org>
+Subject: Re: [PATCH RFC for upstream 1/4] dt-bindings: display: panel-simple:
+ add ETML1010G3DRA
+Thread-Topic: [PATCH RFC for upstream 1/4] dt-bindings: display: panel-simple:
+ add ETML1010G3DRA
+Thread-Index: AQHaUDW1vX4f1M9A2kaPejSYk7EXprDsN9gAgAQUVQA=
+Date: Mon, 29 Jan 2024 06:45:01 +0000
+Message-ID: <dd0954c68bf32cf7a96690af1c78ebb05baf66d4.camel@phytec.de>
+References: <20240126-wip-y-moog-phytec-de-upstream-pollux-lvds-v1-0-8ec5b48eec05@phytec.de>
+	 <20240126-wip-y-moog-phytec-de-upstream-pollux-lvds-v1-1-8ec5b48eec05@phytec.de>
+	 <20240126-briskly-clang-d1e6ad7d40e8@spud>
+In-Reply-To: <20240126-briskly-clang-d1e6ad7d40e8@spud>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <33C813F92074E14DB8AA8A451C6EF94B@phytec.de>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240126150209.367ff402@gandalf.local.home> <CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
- <20240126162626.31d90da9@gandalf.local.home> <CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
- <CAHk-=whNfNti-mn6vhL-v-WZnn0i7ZAbwSf_wNULJeyanhPOgg@mail.gmail.com>
- <CAHk-=wj+DsZZ=2iTUkJ-Nojs9fjYMvPs1NuoM3yK7aTDtJfPYQ@mail.gmail.com>
- <20240128175111.69f8b973@rorschach.local.home> <CAHk-=wjHc48QSGWtgBekej7F+Ln3b0j1tStcqyEf3S-Pj_MHHw@mail.gmail.com>
- <20240128185943.6920388b@rorschach.local.home> <20240128192108.6875ecf4@rorschach.local.home>
- <CAHk-=wg7tML8L+27j=7fh8Etk4Wvo0Ay3mS5U7JOTEGxjy1viA@mail.gmail.com> <20240128210938.436fc3b4@rorschach.local.home>
-In-Reply-To: <20240128210938.436fc3b4@rorschach.local.home>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Mon, 29 Jan 2024 08:44:29 +0200
-Message-ID: <CAOQ4uxikMN9EapL5+6jtMn5Ahe4h7wGZOgEsdsjy87v72FxJDw@mail.gmail.com>
-Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, LKML <linux-kernel@vger.kernel.org>, 
-	Linux Trace Devel <linux-trace-devel@vger.kernel.org>, Christian Brauner <brauner@kernel.org>, 
-	Ajay Kaher <ajay.kaher@broadcom.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	linux-fsdevel <linux-fsdevel@vger.kernel.org>, Greg KH <gregkh@linuxfoundation.org>, 
-	Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUiTURTHu8+bj6Ph05zsqpU0rFDypUy6WFQfIm4EmUVFfqmlDzmntuas
+	rKgMFZ2iKfk2TS1Hc2vRnJrOHNUS8gU00ozMtKGIQWkWZRb2sj1Ffvufc/6//zkXLktKntAB
+	rDJNy2vSFClyRkRZ/JctD0vd08ZH2hp8UffLWwSavV0IkMXRTyBTmZlBv+6XkKiuq59GQ19m
+	GeR6EYvMZXYKFU27SGSbGKaR7ruJRIMdNQy6OddKodz82zSatY8A1K1z0ehqaQWJchxdXmix
+	zUahxoVWgKZbZGiho5ZCLe9LaFQwsx5lj0bvDMCWWgvAjq/1FLbr33hhmzmfwaPDnQyu7YnD
+	4wVPCdxsuIyLC7JpPP/FSuOmmXYCFy9G4pLOS9hQ/oLBzX0X8Gfb6v1cvGhbIp+iPMNrIrYf
+	FyVNtv0i1P3MuZEfzBXQzuiANwu5zXCqogXogIiVcA0ErPww5yUU4wBaTK2kUFgBLKo1UW6E
+	4YJhT+Vz4NZSLgQaS2sIt4nkHotgU9mkx+TLKeBgfjUpmE7Ah4UOL0HHwLtXFwi3pri10J41
+	QesAy4q53TDPGS8sGwPQ8fGZ5z5vbgvMnSr3sIBbBa3WAU8mycmgbWqeFt7AQUOn0IecH3w3
+	8fNvPwh2j5QT7nzyz6H3OiIEFMFcXS8h6DXweoHLEy/mVsCeqknqGpDpl2zQ/6f1S2j9Elq/
+	hK4HtBlIUpUJKl6jVIWrkzK1fEJ4Im8D7o8mXSZqB0U12AkIFjgBZEm5VLwQ0spLxImKzPO8
+	5tQxTUYKn+4EgSwll4nv5B3kJdxJhZZX8bya1/ybEqx3wBVQFR3tPfspvFTuPOB76JJJPbPV
+	HAQbj5ZmaKOK08cS4nzSTvcZAg4/2J+ozul1GpPFa0NxLOCDjc2vzyp8d8j84+Okm9KGVH5h
+	L/cdeXRvw92BZGMh6PjYk31j5cW64V12nyjXK1vMlqDXe8O+bX1bbWTX6aZDzJOBcbgvVJbV
+	KKfSkxQbQ0lNuuI3M8uzMlYDAAA=
 
-> >
-> > You need to deal with the realities of having made a filesystem. And
-> > one of those realities is that you don't control the dentries, and you
-> > can't randomly cache dentry state and then do things behind the VFS
-> > layer's back.
->
-> I'm not. I'm trying to let VFS know a directory is deleted. Because
-> when you delete a kprobe, the directory that has the control files for
-> that kprobe (like enabling it) go away too. I have to let VFS know that
-> the directory is deleted, just like procfs has to tell it when a
-> directory for a process id is no more.
->
-> You don't kill tasks with: rmdir /proc/1234
->
-> And you don't delete kprobes with: rmdir events/kprobe/sched
->
-> >
-> > So remove that broken function. Really.  You did a filesystem, and
-> > that means that you had better play by the VFS rules.
-> >
-> > End of discussion.
->
-> And I do it just like debugfs when it deletes files outside of VFS or
-> procfs, and pretty much most virtual file systems.
->
-
-I think it is better if we used the term "pseudo" file systems, because
-to me VFS already stands for "virtual file system".
-
-> >
-> > Now, you can then make your own "read" and "lookup" etc functions say
-> > "if the backing store data has been marked dead, I'll not do this".
-> > That's *YOUR* data structures, and that's your choice.
-> >
-> > But you need to STOP thinking you can play games with dentries.  And
-> > you need to stop making up BS arguments for why  you should be able
-> > to.
-> >
-> > So if you are thinking of a "Here's how to do a virtual filesystem"
-> > talk, I would suggest you start with one single word: "Don't".
-> >
-> > I'm convinced that we have made it much too easy to do a half-arsed
-> > virtual filesystem. And eventfs is way beyond half-arsed.
-> >
-> > It's now gone from half-arsed to "I told you how to do this right, and
-> > you are still arguing". That makes it full-arsed.
-> >
-> > So just stop the arsing around, and just get rid of those _broken_ dentry games.
->
-> Sorry, but you didn't prove your point. The example you gave me is
-> already covered. Please tell me when a kprobe goes away, how do I let
-> VFS know? Currently the tracing code (like kprobes and synthetic
-> events) calls eventfs_remove_dir() with just a reference to that ei
-> eventfs_inode structure. I currently use the ei->dentry to tell VFS
-> "this directory is being deleted". What other means do I have to
-> accomplish the same thing?
->
-
-Would kernfs_node_dentry() have been useful in that case?
-Just looking at kernfs_node and eventfs_inode gives a very strong
-smell of reinventing.
-
-Note that the fact that eventfs has no rename makes the whole dentry
-business a lot less complicated than it is in the general VFS case -
-IIUC, an eventfs path either exists or it does not exist, but if it exists,
-it conceptually always refers to the same underlying object (kprobe).
-
-I am not claiming that kernfs can do everything that eventfs needs  -
-I don't know, because I did not look into it.
-
-But the concept of detaching the pseudo filesystem backing objects
-from the vfs objects was already invented once and Greg has also
-said the same thing.
-
-My *feeling* at this point is that the best course of action is to use
-kernfs and to improve kernfs to meet eventfs needs, if anything needs
-improving at all.
-
-IMO, the length and content of this correspondence in itself
-is proof that virtual file systems should use an abstraction that
-is much less flexible than the VFS.
-
-Think of it this way - kernefs and VFS are both under-documented,
-but the chances of getting kernfs well documented are far better
-than ever being able to document all the subtleties of VFS for mortals.
-
-IOW, I would be happy if instead of the LSFMM topic
-"Making pseudo file systems inodes/dentries more like normal file systems"
-We would be talking about
-"Best practices for writing a pseudo filesystem" and/or
-"Missing kernfs functionality for writing pseudo filesystems"
-
-Thanks,
-Amir.
+SGkgQ29ub3IsDQoNCk9uIEZyaSwgMjAyNC0wMS0yNiBhdCAxNjoyNyArMDAwMCwgQ29ub3IgRG9v
+bGV5IHdyb3RlOg0KPiBIZXksDQo+IA0KPiBPbiBGcmksIEphbiAyNiwgMjAyNCBhdCAwOTo1Nzoy
+M0FNICswMTAwLCBZYW5uaWMgTW9vZyB3cm90ZToNCj4gPiBBZGQgRW1lcmdpbmcgRGlzcGxheSBU
+ZWNobm9sb2d5IENvcnAuIGV0bWwxMDEwZzNkcmEgMTAuMSIgTENELVRGVCBMVkRTDQo+ID4gcGFu
+ZWwgY29tcGF0aWJsZSBzdHJpbmcuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogWWFubmljIE1v
+b2cgPHkubW9vZ0BwaHl0ZWMuZGU+DQo+IA0KPiA+IFtQQVRDSCBSRkMgZm9yIHVwc3RyZWFtIDEv
+NF0NCj4gDQo+IFRoZSAiZm9yIHVwc3RyZWFtIiBoZXJlIGlzIG5vdCByZWFsbHkgcmVsZXZhbnQs
+IHdoYXQgZWxzZSB3b3VsZCB0aGUNCj4gcGF0Y2ggYmUgZm9yPw0KDQpJIHNlbnQgdGhpcyBmb3Ig
+aW50ZXJuYWwgcmV2aWV3IGZpcnN0IGFuZCBmb3Jnb3QgdG8gcmVtb3ZlIHRoZSB0YWdzLCBzb3Jy
+eS4NCg0KWWFubmljDQoNCj4gDQo+IEFja2VkLWJ5OiBDb25vciBEb29sZXkgPGNvbm9yLmRvb2xl
+eUBtaWNyb2NoaXAuY29tPg0KPiANCj4gVGhhbmtzLA0KPiBDb25vci4NCj4gDQo=
 
