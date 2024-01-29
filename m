@@ -1,247 +1,240 @@
-Return-Path: <linux-kernel+bounces-42425-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42427-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D809840139
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:18:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F983840141
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:19:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E976A281F12
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:18:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9FF4BB22678
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:19:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D912855763;
-	Mon, 29 Jan 2024 09:18:21 +0000 (UTC)
-Received: from air.basealt.ru (air.basealt.ru [194.107.17.39])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8190F54FA9;
+	Mon, 29 Jan 2024 09:18:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="O+Zw8yen"
+Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F22E654F93;
-	Mon, 29 Jan 2024 09:18:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.107.17.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF42355E7A
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:18:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706519901; cv=none; b=aSyXcbnywSM/V4ib/q2hyyBgBcFqI1dq0G6rcKQmAkhP4WwYHr/2L3O1m4M7Nw8+396qCUQWcFb9XrRea6bx4zkbVF82QbWKtb2npLgkm9Dr7bNp8taHKBzu84cSJl8uE2xv23SYlJJOIXH+FNrxQfz8z+G8eHxApZjtzpamnAE=
+	t=1706519922; cv=none; b=dyUAg6MyWoqg+eLwiL3CWH4+SOYTtsRnsE6FqGpJcrqplJoj2nH5h1qqlmudI1kE9a98OF4EuF1EUxEE8J8zKw4AAqJMLiOT6/QbVvVW4kA+Ch0UgHCOZ4TvIXPpWOo9ANP8xVfrT5N3mkdOcFGc01snVRgeNQJAc6ilSb6XTCw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706519901; c=relaxed/simple;
-	bh=P8ynzDwz5GrtNYNcuVcBHM0772BqNg+2Sc8rLmRjSCk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gWjyWwhX+9QkaivuR2r6isQrcsrI5oJRtfdDq8+ZlVUmH2RUgq5MZMwYHckVJrB+uHSENCLHHeNh+r0h9ZXyU1Wmr7CnpTfxhz+Bj+Yh6HtgvD6NEv30VTCISfw7Q5IboaIeb451doAYboaLDvjXGzqFvwAbmH+Pzp6qp9Nhjvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org; spf=pass smtp.mailfrom=altlinux.org; arc=none smtp.client-ip=194.107.17.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altlinux.org
-Received: by air.basealt.ru (Postfix, from userid 490)
-	id F19F92F20226; Mon, 29 Jan 2024 09:18:15 +0000 (UTC)
-X-Spam-Level: 
-Received: from altlinux.malta.altlinux.ru (obninsk.basealt.ru [217.15.195.17])
-	by air.basealt.ru (Postfix) with ESMTPSA id 771F12F2024A;
-	Mon, 29 Jan 2024 09:18:13 +0000 (UTC)
-From: kovalev@altlinux.org
-To: stable@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	kpsingh@kernel.org,
-	john.fastabend@gmail.com,
-	yhs@fb.com,
-	songliubraving@fb.com,
-	kafai@fb.com,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	kovalev@altlinux.org,
-	nickel@altlinux.org,
-	oficerovas@altlinux.org,
-	dutyrok@altlinux.org
-Subject: [PATCH 5.10.y 1/1] bpf: Convert BPF_DISPATCHER to use static_call() (not ftrace)
-Date: Mon, 29 Jan 2024 12:17:46 +0300
-Message-Id: <20240129091746.260538-2-kovalev@altlinux.org>
-X-Mailer: git-send-email 2.33.8
-In-Reply-To: <20240129091746.260538-1-kovalev@altlinux.org>
-References: <20240129091746.260538-1-kovalev@altlinux.org>
+	s=arc-20240116; t=1706519922; c=relaxed/simple;
+	bh=sFozMJoAolAGCF8tscjr3ajpcwVLl1NfdfeFIagusCw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=esgFD6gsTezn8i7aOsFfWLJcbzMp/r3LP3lnK1Gt8a9eiYjBoCzhL1b79luJuNOV3MR4FmFuhOITpqgP/H2D9XXaalc56qOlIWPZ6IygmwyjOV+1eHyT6wO4ljYzdtiO2hXz52/JoGau2SxYGUgSWWPrL9PF8sa80ZrvhUpPGuk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=O+Zw8yen; arc=none smtp.client-ip=209.85.219.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-68c2f4c3282so21451756d6.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 01:18:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706519918; x=1707124718; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=P8QUCC8mxaAYBk9a7j4VTD2YmBLyr7XLPrPfEMJfXSE=;
+        b=O+Zw8yenzEoPh/vaH6nKmPzzb1zsqsmaYbBFktz6RVnBM709pNz15R6Rgvr27AfR0o
+         MwO7/mLx21K8jGrMCKDJyuUSUseeMayD/QLFWdsrc+sYiEy0UxlWS6E7t0S4BsZuBLgM
+         HB4AbIL3J5FtCKzhg84o0DXq49wR1NpIQzAEy3/4RwjvXPxHsIEeFC/gcBRsVpN1UZAa
+         Po0CsTl3vBnKZxWjSs89KtSYk9WZ9XK6y6CuaqRcWYufniEVgL21lo9vy703ZfCX+kKL
+         rpLjP6jUhISNkU87OLmhnLmZPUAaAsAfMhMyGoums+jBARQj3aM3vkv55eXhSsUqDY7B
+         nTNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706519918; x=1707124718;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=P8QUCC8mxaAYBk9a7j4VTD2YmBLyr7XLPrPfEMJfXSE=;
+        b=tup1wFMbvakkTjPy7KcBxSJQA6+luz2rt2P0ClLVOMHKFv6y5MkFLrpsz8JcpsmYS7
+         aUDC3FO4NrWo4BKP1VhtYGYqw0QGTfzU/RjiXqos/Wbl3kZHQeA73DGEk6DwWc2Wkz81
+         8Vei0VSmimzHmAw3kkU359ZnU6iPSzmJwiYtJvSKGgaV5iB5+/z+sIkdHT1IezFZUb1q
+         Etzf+l9HNtFeUV5LSgs5ksGuVDuCaAIy2dNiIcmHGqXnGYGWZqYofGUAzfYewtINmfV4
+         OASKUN27nBC5Ny/Mt/PLnWVsGQIunrO4Uw0Ss8lSuvCaMU0EaZEfyDJg7kjneGymOYKf
+         YRsg==
+X-Gm-Message-State: AOJu0YxmaDrApmqXn1AG/3xFeLMwitqt09/i9Gyp4g9lAVsY2O2JEiew
+	MNFWJrQCPKOHOxiUR+p5zgwM/2BZ6bhC9W92vE+j7Moo3IPpdKlte0ECM3rDlUnuh7B7ajOS+UW
+	nUyv3wpvs/fz1mqpVqSQIEOt60tDCz15xjZFQFA==
+X-Google-Smtp-Source: AGHT+IHMF9jA2tNnrgpg+GOHbhcFMUcNlosZdvmduCi5ermtTKqbkzvQ64jyco/nTt46T/fJWnSt6/5J7Zh94ctVnIA=
+X-Received: by 2002:a05:6214:2a4e:b0:685:cf86:45eb with SMTP id
+ jf14-20020a0562142a4e00b00685cf8645ebmr6633834qvb.104.1706519918653; Mon, 29
+ Jan 2024 01:18:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240127001926.495769-1-andre.draszik@linaro.org> <20240127001926.495769-3-andre.draszik@linaro.org>
+In-Reply-To: <20240127001926.495769-3-andre.draszik@linaro.org>
+From: Peter Griffin <peter.griffin@linaro.org>
+Date: Mon, 29 Jan 2024 09:18:27 +0000
+Message-ID: <CADrjBPox_NDkq+-XxX5cuxAhYDubMHnqjnpwj4+76_A=izuhjw@mail.gmail.com>
+Subject: Re: [PATCH 2/9] dt-bindings: clock: google,gs101-clock: add PERIC1
+ clock management unit
+To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
+Cc: mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	linux-kernel@vger.kernel.org, kernel-team@android.com, 
+	tudor.ambarus@linaro.org, willmcvicker@google.com, semen.protsenko@linaro.org, 
+	alim.akhtar@samsung.com, s.nawrocki@samsung.com, tomasz.figa@gmail.com, 
+	cw00.choi@samsung.com, linux-arm-kernel@lists.infradead.org, 
+	linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
+	devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Peter Zijlstra <peterz@infradead.org>
+Hi Andr=C3=A9
 
-[ Upstream commit c86df29d11dfba27c0a1f5039cd6fe387fbf4239 ]
+On Sat, 27 Jan 2024 at 00:19, Andr=C3=A9 Draszik <andre.draszik@linaro.org>=
+ wrote:
+>
+> Add dt-schema documentation and clock IDs for the Connectivity
+> Peripheral 1 (PERIC1) clock management unit.
+>
+> Signed-off-by: Andr=C3=A9 Draszik <andre.draszik@linaro.org>
+>
+> ---
 
-The dispatcher function is currently abusing the ftrace __fentry__
-call location for its own purposes -- this obviously gives trouble
-when the dispatcher and ftrace are both in use.
+Thanks for working on these regexes! That should make enabling more
+clock units and other Exynos SoCs a bit easier.
 
-A previous solution tried using __attribute__((patchable_function_entry()))
-which works, except it is GCC-8+ only, breaking the build on the
-earlier still supported compilers. Instead use static_call() -- which
-has its own annotations and does not conflict with ftrace -- to
-rewrite the dispatch function.
+Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
 
-By using: return static_call()(ctx, insni, bpf_func) you get a perfect
-forwarding tail call as function body (iow a single jmp instruction).
-By having the default static_call() target be bpf_dispatcher_nop_func()
-it retains the default behaviour (an indirect call to the argument
-function). Only once a dispatcher program is attached is the target
-rewritten to directly call the JIT'ed image.
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Tested-by: Björn Töpel <bjorn@kernel.org>
-Tested-by: Jiri Olsa <jolsa@kernel.org>
-Acked-by: Björn Töpel <bjorn@kernel.org>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Link: https://lkml.kernel.org/r/Y1/oBlK0yFk5c/Im@hirez.programming.kicks-ass.net
-Link: https://lore.kernel.org/bpf/20221103120647.796772565@infradead.org
-Signed-off-by: Vasiliy Kovalev <kovalev@altlinux.org>
----
- include/linux/bpf.h     | 39 ++++++++++++++++++++++++++++++++++++++-
- kernel/bpf/dispatcher.c | 22 ++++++++--------------
- 2 files changed, 46 insertions(+), 15 deletions(-)
-
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 8f4379e93ad49b..2c8c7515609a07 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -21,6 +21,7 @@
- #include <linux/kallsyms.h>
- #include <linux/capability.h>
- #include <linux/percpu-refcount.h>
-+#include <linux/static_call.h>
- 
- struct bpf_verifier_env;
- struct bpf_verifier_log;
-@@ -650,6 +651,10 @@ struct bpf_dispatcher {
- 	void *image;
- 	u32 image_off;
- 	struct bpf_ksym ksym;
-+#ifdef CONFIG_HAVE_STATIC_CALL
-+	struct static_call_key *sc_key;
-+	void *sc_tramp;
-+#endif
- };
- 
- static __always_inline unsigned int bpf_dispatcher_nop_func(
-@@ -667,6 +672,34 @@ struct bpf_trampoline *bpf_trampoline_get(u64 key,
- 					  struct bpf_attach_target_info *tgt_info);
- void bpf_trampoline_put(struct bpf_trampoline *tr);
- int arch_prepare_bpf_dispatcher(void *image, s64 *funcs, int num_funcs);
-+
-+/*
-+ * When the architecture supports STATIC_CALL replace the bpf_dispatcher_fn
-+ * indirection with a direct call to the bpf program. If the architecture does
-+ * not have STATIC_CALL, avoid a double-indirection.
-+ */
-+#ifdef CONFIG_HAVE_STATIC_CALL
-+
-+#define __BPF_DISPATCHER_SC_INIT(_name)				\
-+	.sc_key = &STATIC_CALL_KEY(_name),			\
-+	.sc_tramp = STATIC_CALL_TRAMP_ADDR(_name),
-+
-+#define __BPF_DISPATCHER_SC(name)				\
-+	DEFINE_STATIC_CALL(bpf_dispatcher_##name##_call, bpf_dispatcher_nop_func)
-+
-+#define __BPF_DISPATCHER_CALL(name)				\
-+	static_call(bpf_dispatcher_##name##_call)(ctx, insnsi, bpf_func)
-+
-+#define __BPF_DISPATCHER_UPDATE(_d, _new)			\
-+	__static_call_update((_d)->sc_key, (_d)->sc_tramp, (_new))
-+
-+#else
-+#define __BPF_DISPATCHER_SC_INIT(name)
-+#define __BPF_DISPATCHER_SC(name)
-+#define __BPF_DISPATCHER_CALL(name)		bpf_func(ctx, insnsi)
-+#define __BPF_DISPATCHER_UPDATE(_d, _new)
-+#endif
-+
- #define BPF_DISPATCHER_INIT(_name) {				\
- 	.mutex = __MUTEX_INITIALIZER(_name.mutex),		\
- 	.func = &_name##_func,					\
-@@ -678,20 +711,23 @@ int arch_prepare_bpf_dispatcher(void *image, s64 *funcs, int num_funcs);
- 		.name  = #_name,				\
- 		.lnode = LIST_HEAD_INIT(_name.ksym.lnode),	\
- 	},							\
-+	__BPF_DISPATCHER_SC_INIT(_name##_call)			\
- }
- 
- #define DEFINE_BPF_DISPATCHER(name)					\
-+	__BPF_DISPATCHER_SC(name);					\
- 	noinline unsigned int bpf_dispatcher_##name##_func(		\
- 		const void *ctx,					\
- 		const struct bpf_insn *insnsi,				\
- 		unsigned int (*bpf_func)(const void *,			\
- 					 const struct bpf_insn *))	\
- 	{								\
--		return bpf_func(ctx, insnsi);				\
-+		return __BPF_DISPATCHER_CALL(name);			\
- 	}								\
- 	EXPORT_SYMBOL(bpf_dispatcher_##name##_func);			\
- 	struct bpf_dispatcher bpf_dispatcher_##name =			\
- 		BPF_DISPATCHER_INIT(bpf_dispatcher_##name);
-+
- #define DECLARE_BPF_DISPATCHER(name)					\
- 	unsigned int bpf_dispatcher_##name##_func(			\
- 		const void *ctx,					\
-@@ -699,6 +735,7 @@ int arch_prepare_bpf_dispatcher(void *image, s64 *funcs, int num_funcs);
- 		unsigned int (*bpf_func)(const void *,			\
- 					 const struct bpf_insn *));	\
- 	extern struct bpf_dispatcher bpf_dispatcher_##name;
-+
- #define BPF_DISPATCHER_FUNC(name) bpf_dispatcher_##name##_func
- #define BPF_DISPATCHER_PTR(name) (&bpf_dispatcher_##name)
- void bpf_dispatcher_change_prog(struct bpf_dispatcher *d, struct bpf_prog *from,
-diff --git a/kernel/bpf/dispatcher.c b/kernel/bpf/dispatcher.c
-index 2444bd15cc2d03..4c6c2e3ac56459 100644
---- a/kernel/bpf/dispatcher.c
-+++ b/kernel/bpf/dispatcher.c
-@@ -4,6 +4,7 @@
- #include <linux/hash.h>
- #include <linux/bpf.h>
- #include <linux/filter.h>
-+#include <linux/static_call.h>
- 
- /* The BPF dispatcher is a multiway branch code generator. The
-  * dispatcher is a mechanism to avoid the performance penalty of an
-@@ -104,17 +105,11 @@ static int bpf_dispatcher_prepare(struct bpf_dispatcher *d, void *image)
- 
- static void bpf_dispatcher_update(struct bpf_dispatcher *d, int prev_num_progs)
- {
--	void *old, *new;
--	u32 noff;
--	int err;
--
--	if (!prev_num_progs) {
--		old = NULL;
--		noff = 0;
--	} else {
--		old = d->image + d->image_off;
-+	void *new, *tmp;
-+	u32 noff = 0;
-+
-+	if (prev_num_progs)
- 		noff = d->image_off ^ (PAGE_SIZE / 2);
--	}
- 
- 	new = d->num_progs ? d->image + noff : NULL;
- 	if (new) {
-@@ -122,11 +117,10 @@ static void bpf_dispatcher_update(struct bpf_dispatcher *d, int prev_num_progs)
- 			return;
- 	}
- 
--	err = bpf_arch_text_poke(d->func, BPF_MOD_JUMP, old, new);
--	if (err || !new)
--		return;
-+	__BPF_DISPATCHER_UPDATE(d, new ?: &bpf_dispatcher_nop_func);
- 
--	d->image_off = noff;
-+	if (new)
-+		d->image_off = noff;
- }
- 
- void bpf_dispatcher_change_prog(struct bpf_dispatcher *d, struct bpf_prog *from,
--- 
-2.33.8
-
+> Note for future reference: To ensure consistent naming throughout this
+> file, the IDs have been derived from the data sheet using the
+> following, with the expectation for all future additions to this file
+> to use the same:
+>     sed \
+>         -e 's|^PLL_LOCKTIME_PLL_\([^_]\+\)|CLK_FOUT_\1_PLL|' \
+>         \
+>         -e 's|^PLL_CON0_MUX_CLKCMU_\([^_]\+\)_|CLK_MOUT_\1_|' \
+>         -e 's|^PLL_CON0_PLL_\(.*\)|CLK_MOUT_PLL_\1|' \
+>         -e 's|^CLK_CON_MUX_MUX_CLK_\(.*\)|CLK_MOUT_\1|' \
+>         -e '/^PLL_CON[1-4]_[^_]\+_/d' \
+>         -e '/^[^_]\+_CMU_[^_]\+_CONTROLLER_OPTION/d' \
+>         -e '/^CLKOUT_CON_BLK_[^_]\+_CMU_[^_]\+_CLKOUT0/d' \
+>         \
+>         -e 's|_IPCLKPORT||' \
+>         -e 's|_RSTNSYNC||' \
+>         \
+>         -e 's|^CLK_CON_DIV_DIV_CLK_\([^_]\+\)_|CLK_DOUT_\1_|' \
+>         \
+>         -e 's|^CLK_CON_BUF_CLKBUF_\([^_]\+\)_|CLK_GOUT_\1_|' \
+>         -e 's|^CLK_CON_GAT_CLK_BLK_\([^_]\+\)_UID_|CLK_GOUT_\1_|' \
+>         -e 's|^CLK_GOUT_[^_]\+_[^_]\+_CMU_\([^_]\+\)_PCLK$|CLK_GOUT_\1_PC=
+LK|' \
+>         -e 's|^CLK_CON_GAT_GOUT_BLK_\([^_]\+\)_UID_|CLK_GOUT_\1_|' \
+>         -e 's|^CLK_CON_GAT_CLK_\([^_]\+\)_\(.*\)|CLK_GOUT_\1_CLK_\1_\2|' =
+\
+>         \
+>         -e '/^\(DMYQCH\|PCH\|QCH\|QUEUE\)_/d'
+> ---
+>  .../bindings/clock/google,gs101-clock.yaml    |  9 ++--
+>  include/dt-bindings/clock/google,gs101.h      | 48 +++++++++++++++++++
+>  2 files changed, 54 insertions(+), 3 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/clock/google,gs101-clock.y=
+aml b/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
+> index 03698cdecf7a..1d2bcea41c85 100644
+> --- a/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
+> +++ b/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
+> @@ -31,6 +31,7 @@ properties:
+>        - google,gs101-cmu-apm
+>        - google,gs101-cmu-misc
+>        - google,gs101-cmu-peric0
+> +      - google,gs101-cmu-peric1
+>
+>    clocks:
+>      minItems: 1
+> @@ -93,15 +94,17 @@ allOf:
+>        properties:
+>          compatible:
+>            contains:
+> -            const: google,gs101-cmu-peric0
+> +            enum:
+> +              - google,gs101-cmu-peric0
+> +              - google,gs101-cmu-peric1
+>
+>      then:
+>        properties:
+>          clocks:
+>            items:
+>              - description: External reference clock (24.576 MHz)
+> -            - description: Connectivity Peripheral 0 bus clock (from CMU=
+_TOP)
+> -            - description: Connectivity Peripheral 0 IP clock (from CMU_=
+TOP)
+> +            - description: Connectivity Peripheral 0/1 bus clock (from C=
+MU_TOP)
+> +            - description: Connectivity Peripheral 0/1 IP clock (from CM=
+U_TOP)
+>
+>          clock-names:
+>            items:
+> diff --git a/include/dt-bindings/clock/google,gs101.h b/include/dt-bindin=
+gs/clock/google,gs101.h
+> index 64e6bdc6359c..3dac3577788a 100644
+> --- a/include/dt-bindings/clock/google,gs101.h
+> +++ b/include/dt-bindings/clock/google,gs101.h
+> @@ -470,4 +470,52 @@
+>  #define CLK_GOUT_PERIC0_CLK_PERIC0_USI8_USI_CLK                78
+>  #define CLK_GOUT_PERIC0_SYSREG_PERIC0_PCLK             79
+>
+> +/* CMU_PERIC1 */
+> +#define CLK_MOUT_PERIC1_BUS_USER                       1
+> +#define CLK_MOUT_PERIC1_I3C_USER                       2
+> +#define CLK_MOUT_PERIC1_USI0_USI_USER                  3
+> +#define CLK_MOUT_PERIC1_USI10_USI_USER                 4
+> +#define CLK_MOUT_PERIC1_USI11_USI_USER                 5
+> +#define CLK_MOUT_PERIC1_USI12_USI_USER                 6
+> +#define CLK_MOUT_PERIC1_USI13_USI_USER                 7
+> +#define CLK_MOUT_PERIC1_USI9_USI_USER                  8
+> +#define CLK_DOUT_PERIC1_I3C                            9
+> +#define CLK_DOUT_PERIC1_USI0_USI                       10
+> +#define CLK_DOUT_PERIC1_USI10_USI                      11
+> +#define CLK_DOUT_PERIC1_USI11_USI                      12
+> +#define CLK_DOUT_PERIC1_USI12_USI                      13
+> +#define CLK_DOUT_PERIC1_USI13_USI                      14
+> +#define CLK_DOUT_PERIC1_USI9_USI                       15
+> +#define CLK_GOUT_PERIC1_IP                             16
+> +#define CLK_GOUT_PERIC1_PCLK                           17
+> +#define CLK_GOUT_PERIC1_CLK_PERIC1_I3C_CLK             18
+> +#define CLK_GOUT_PERIC1_CLK_PERIC1_OSCCLK_CLK          19
+> +#define CLK_GOUT_PERIC1_D_TZPC_PERIC1_PCLK             20
+> +#define CLK_GOUT_PERIC1_GPC_PERIC1_PCLK                        21
+> +#define CLK_GOUT_PERIC1_GPIO_PERIC1_PCLK               22
+> +#define CLK_GOUT_PERIC1_LHM_AXI_P_PERIC1_I_CLK         23
+> +#define CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_1            24
+> +#define CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_2            25
+> +#define CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_3            26
+> +#define CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_4            27
+> +#define CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_5            28
+> +#define CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_6            29
+> +#define CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_8            30
+> +#define CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_1             31
+> +#define CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_15            32
+> +#define CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_2             33
+> +#define CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_3             34
+> +#define CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_4             35
+> +#define CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_5             36
+> +#define CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_6             37
+> +#define CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_8             38
+> +#define CLK_GOUT_PERIC1_CLK_PERIC1_BUSP_CLK            39
+> +#define CLK_GOUT_PERIC1_CLK_PERIC1_USI0_USI_CLK                40
+> +#define CLK_GOUT_PERIC1_CLK_PERIC1_USI10_USI_CLK       41
+> +#define CLK_GOUT_PERIC1_CLK_PERIC1_USI11_USI_CLK       42
+> +#define CLK_GOUT_PERIC1_CLK_PERIC1_USI12_USI_CLK       43
+> +#define CLK_GOUT_PERIC1_CLK_PERIC1_USI13_USI_CLK       44
+> +#define CLK_GOUT_PERIC1_CLK_PERIC1_USI9_USI_CLK                45
+> +#define CLK_GOUT_PERIC1_SYSREG_PERIC1_PCLK             46
+> +
+>  #endif /* _DT_BINDINGS_CLOCK_GOOGLE_GS101_H */
+> --
+> 2.43.0.429.g432eaa2c6b-goog
+>
 
