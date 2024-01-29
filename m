@@ -1,64 +1,76 @@
-Return-Path: <linux-kernel+bounces-43543-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43544-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7EF4841555
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 23:01:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FE3D841557
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 23:03:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA30E1C22224
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 22:01:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2AAF285B35
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 22:03:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3912A159571;
-	Mon, 29 Jan 2024 22:01:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B931E15956A;
+	Mon, 29 Jan 2024 22:02:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vfdddmn/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="e/c0xJXo"
+Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70D4E7605C;
-	Mon, 29 Jan 2024 22:01:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36688604C5
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 22:02:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706565675; cv=none; b=fL/zBBKQKljLzAq61ZEMh49DXhcT0grgQQxWm1Yde+0QmtUFvObbVft88CZ/f+Xb67nh6Q1x2vIlWqoNdARrFeRXO0BCocQu+uYQFxoCgUDAZfKduzxmDdzsfBngQWCDC/sK5oak0o6RF5gUk0Z/mF8TYRD8ke0lbVhggGhBM8s=
+	t=1706565778; cv=none; b=GE0q6A+V05dtovXA/ephcZJL8khsq5q+QOauzm8R+hwnrgl2NU9PbLsY3fSk42+cDD1OA2Co5D65DnwEgcxpHTSGbHNLqNnecjNRfSMPp5edGsJ97npz+knx8REfR7PGD45oTpByQ4LzcAM4GbxwfAw5fBiaUDkIc5z9EOZxwuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706565675; c=relaxed/simple;
-	bh=cV/c+lxwpIFnbqiq+B+v39dXErDc5uXplFaoJSoJCJ4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=mlY9QcWVftEVlntSaIh60FfDs2K+bCiHfyeP9UV91j2NUNVw//PWO4RXjItLuIjMHdOHPZEPV51Gdt2rQhM4p5iyRM48ih+a/m4NMwEC+f128Eha2Yi0SBP53wn6Pa2jwm4TTcLQGZsnSCGUf/9N8kvf8a2k3XGqq/NOR1ZFdAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vfdddmn/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A01A3C433C7;
-	Mon, 29 Jan 2024 22:01:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706565674;
-	bh=cV/c+lxwpIFnbqiq+B+v39dXErDc5uXplFaoJSoJCJ4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=Vfdddmn/0f2BfvE7vHxcAViKU0mKrmZTpyQ5tRCfSEaQJjjHvh14JIjQoqlgOfP7v
-	 T1TASQ17qXlrKzZ8Wlef66DxfbfK7vJpFSNfW3nWR+oijHfEW7WilBVpk0gbGbEw8T
-	 E8Ee6swgvKZePW5j7bLr5wZW76qZ9MbLX4sBQvhvb3h8AjePrhzHlQVx55IJBgedgI
-	 b4rhvnU5N18+JzLGJ5+NGjoV8yLnnn1Qr8X+kwNTnzPxwmi3R9iAXOFT694aPi/szP
-	 HArljeBdBljSeaeVwKoIyr4l0zpPOJhI27c6tb2NmfaSNtrrZhST5N+oDk4rs1LPyF
-	 F354Sd83H4xFg==
-Date: Mon, 29 Jan 2024 16:01:13 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: "Chen, Jiqian" <Jiqian.Chen@amd.com>
-Cc: "Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
-	Juergen Gross <jgross@suse.com>,
-	Stefano Stabellini <sstabellini@kernel.org>,
-	Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>,
-	"xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-	"Hildebrand, Stewart" <Stewart.Hildebrand@amd.com>,
-	"Huang, Ray" <Ray.Huang@amd.com>,
-	"Ragiadakou, Xenia" <Xenia.Ragiadakou@amd.com>
-Subject: Re: [RFC KERNEL PATCH v4 3/3] PCI/sysfs: Add gsi sysfs for pci_dev
-Message-ID: <20240129220113.GA475965@bhelgaas>
+	s=arc-20240116; t=1706565778; c=relaxed/simple;
+	bh=MW/5ZCjJ37qSeWHAtt0SmK5TN0mf0X1NxMCMQONYebk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gmIYfqyEDI9bWoASme2f52XIA7Re6HKMOFcYR0VsxylBXlVf45AWj3cXdN0A0/3Bw0z0MOb8S1CktBOvm0WVUVyyW9oU9MJjqruKyMaCR8xjqdFIYaP4Cv6PMAiozMMLcbdY0papx5LpAufFvTki/RmZIb/6zFj/4c0DPQubL54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=e/c0xJXo; arc=none smtp.client-ip=209.85.161.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-59a0f490312so896844eaf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 14:02:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706565776; x=1707170576; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ol2CXx93aKg4WCXAQoWOfpsSTkl3lWgAytlfeS6JK5g=;
+        b=e/c0xJXoHPd59RDwEH1yQcDrFchl3xFTSEhHaCCPmKkDlIdXEeg+ptTnZwR8NvZY+C
+         n14HqRC3yFExxdqYAK6+LiITkqA4OHIX5dW0AMmksj96Hqx+NbPL/T4UgoVDA0JbWEZh
+         9Vp0PJJcw80+KOz/kGXOAdyJSzi8UowipEyqo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706565776; x=1707170576;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ol2CXx93aKg4WCXAQoWOfpsSTkl3lWgAytlfeS6JK5g=;
+        b=VBEbQL/2Rm1sMjOPybITfT81/TnNeWda43W747F/TFQlxzoP06OyzW3Byb6K3cdFdV
+         lhfAIzKgplSSSiVFm3mf2/dOd6K8s4JJkClwC2yC3B2rA/9fhUXYu8jzOe4U7IxKd8rh
+         O5oTKnYeabZldOd3bzXCGc2eSrd01OzvUGvs3o6tpABcfKBg7cp0VvdfPf7Zg/UnCZS/
+         KjMOxlpzn8lZ8gYOSsV3MYZkTN0HWwsx9YzpH3Aex+jYfWkLgTA4j6pdZBtJaDcXuQP7
+         wx/MCs17XtqW4l+iYbF2q1SbIISnrmjYGLNPcX17O/R9ztruhRHP9erSh0M544BZhYpN
+         kpjw==
+X-Gm-Message-State: AOJu0YyuZPF9ii8iroFGGcQSNtFYogMtYnGDhmhAzgi+UNaKiqUgGAd2
+	g1WRebz6GdavaQmTDNFMqtWhDudCTCDQia9uh+VHO/4x7AfY76/0lOiDUCVbEQ==
+X-Google-Smtp-Source: AGHT+IFsutnZlHnSpy1EV22HSoguu9M4O1lGXRQNALJKbsNXTVK5tbe3AinhAdaNuxbaT0oXSl1U6Q==
+X-Received: by 2002:a05:6358:180c:b0:178:60fa:d700 with SMTP id u12-20020a056358180c00b0017860fad700mr2442904rwm.12.1706565776148;
+        Mon, 29 Jan 2024 14:02:56 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id b6-20020a62cf06000000b006dbdb5946d7sm6641686pfg.6.2024.01.29.14.02.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 14:02:55 -0800 (PST)
+Date: Mon, 29 Jan 2024 14:02:55 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Justin Stitt <justinstitt@google.com>
+Cc: Andy Shevchenko <andy@kernel.org>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC] string: Allow 2-argument strscpy()
+Message-ID: <202401291357.DAA9670F3@keescook>
+References: <20240129202901.work.282-kees@kernel.org>
+ <20240129215525.4uxchtrywzzsrauc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,60 +79,142 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <BL1PR12MB5849B51FADC8226764078A98E77A2@BL1PR12MB5849.namprd12.prod.outlook.com>
+In-Reply-To: <20240129215525.4uxchtrywzzsrauc@google.com>
 
-On Thu, Jan 25, 2024 at 07:17:24AM +0000, Chen, Jiqian wrote:
-> On 2024/1/24 00:02, Bjorn Helgaas wrote:
-> > On Tue, Jan 23, 2024 at 10:13:52AM +0000, Chen, Jiqian wrote:
-> >> On 2024/1/23 07:37, Bjorn Helgaas wrote:
-> >>> On Fri, Jan 05, 2024 at 02:22:17PM +0800, Jiqian Chen wrote:
-> >>>> There is a need for some scenarios to use gsi sysfs.
-> >>>> For example, when xen passthrough a device to dumU, it will
-> >>>> use gsi to map pirq, but currently userspace can't get gsi
-> >>>> number.
-> >>>> So, add gsi sysfs for that and for other potential scenarios.
-> >> ...
-> > 
-> >>> I don't know enough about Xen to know why it needs the GSI in
-> >>> userspace.  Is this passthrough brand new functionality that can't be
-> >>> done today because we don't expose the GSI yet?
+On Mon, Jan 29, 2024 at 09:55:25PM +0000, Justin Stitt wrote:
+> Hi,
+> 
+> On Mon, Jan 29, 2024 at 12:29:04PM -0800, Kees Cook wrote:
+> > Using sizeof(dst) is the overwhelmingly common case for strscpy().
+> > Instead of requiring this everywhere, allow a 2-argument version to be
+> > used that will use the sizeof() internally.
+> 
+> Yeah, this is definitely the case. I have a ton of patches replacing
+> strncpy with strscpy [1] and many of them match the pattern of:
+> | strscpy(dest, src, sizeof(dest))
+> 
+> BTW, this hack for function overloading is insane. Never really looked into
+> it before.
 
-I assume this must be new functionality, i.e., this kind of
-passthrough does not work today, right?
+It very much is. :P Hence the RFC nature of this patch. I don't think we
+any any other API in the kernel that does this (though there are plenty
+of wild macro wrappers to do similar tricks, like the syscall wrappers).
 
-> >> has ACPI support and is responsible for detecting and controlling
-> >> the hardware, also it performs privileged operations such as the
-> >> creation of normal (unprivileged) domains DomUs. When we give to a
-> >> DomU direct access to a device, we need also to route the physical
-> >> interrupts to the DomU. In order to do so Xen needs to setup and map
-> >> the interrupts appropriately.
-> > 
-> > What kernel interfaces are used for this setup and mapping?
->
-> For passthrough devices, the setup and mapping of routing physical
-> interrupts to DomU are done on Xen hypervisor side, hypervisor only
-> need userspace to provide the GSI info, see Xen code:
-> xc_physdev_map_pirq require GSI and then will call hypercall to pass
-> GSI into hypervisor and then hypervisor will do the mapping and
-> routing, kernel doesn't do the setup and mapping.
+> > Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> > Cc: Andy Shevchenko <andy@kernel.org>
+> > Cc: linux-hardening@vger.kernel.org
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> > What do people think of this idea? It's usually very redundant to
+> > include the 3rd argument, so this might improve readability (and
+> > perhaps make things more robust by avoiding mistakes when the
+> > destination name changes).
+> 
+> I like this, though, should you include documentation changes/additions?
 
-So we have to expose the GSI to userspace not because userspace itself
-uses it, but so userspace can turn around and pass it back into the
-kernel?
+Yeah, though I'm not sure how to do this -- kerndoc expects a fixed
+number of arguments. :P Maybe I can just do something like add
+"optional" to @size:
 
-It seems like it would be better for userspace to pass an identifier
-of the PCI device itself back into the hypervisor.  Then the interface
-could be generic and potentially work even on non-ACPI systems where
-the GSI concept doesn't apply.
+ * strscpy - Copy a C-string into a sized buffer
+ * @p: Where to copy the string to
+ * @q: Where to copy the string from
+ * @size: Size of destination buffer (optional)
 
-> For devices on PVH Dom0, Dom0 setups interrupts for devices as the
-> baremetal Linux kernel does, through using acpi_pci_irq_enable->
-> acpi_register_gsi-> __acpi_register_gsi->acpi_register_gsi_ioapic.
+> 
+> Reviewed-by: Justin Stitt <justinstitt@google.com>
+> 
+> > ---
+> >  include/linux/fortify-string.h | 4 ++--
+> >  include/linux/string.h         | 9 ++++++++-
+> >  lib/string.c                   | 4 ++--
+> >  3 files changed, 12 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/include/linux/fortify-string.h b/include/linux/fortify-string.h
+> > index 89a6888f2f9e..56be4d4a5dea 100644
+> > --- a/include/linux/fortify-string.h
+> > +++ b/include/linux/fortify-string.h
+> > @@ -215,7 +215,7 @@ __kernel_size_t __fortify_strlen(const char * const POS p)
+> >  }
+> >
+> >  /* Defined after fortified strnlen() to reuse it. */
+> > -extern ssize_t __real_strscpy(char *, const char *, size_t) __RENAME(strscpy);
+> > +extern ssize_t __real_strscpy(char *, const char *, size_t) __RENAME(sized_strscpy);
+> >  /**
+> >   * strscpy - Copy a C-string into a sized buffer
+> >   *
+> > @@ -234,7 +234,7 @@ extern ssize_t __real_strscpy(char *, const char *, size_t) __RENAME(strscpy);
+> >   * Returns the number of characters copied in @p (not including the
+> >   * trailing %NUL) or -E2BIG if @size is 0 or the copy of @q was truncated.
+> >   */
+> > -__FORTIFY_INLINE ssize_t strscpy(char * const POS p, const char * const POS q, size_t size)
+> > +__FORTIFY_INLINE ssize_t sized_strscpy(char * const POS p, const char * const POS q, size_t size)
+> >  {
+> >  	/* Use string size rather than possible enclosing struct size. */
+> >  	const size_t p_size = __member_size(p);
+> > diff --git a/include/linux/string.h b/include/linux/string.h
+> > index ab148d8dbfc1..0bb1c8d05f18 100644
+> > --- a/include/linux/string.h
+> > +++ b/include/linux/string.h
+> > @@ -67,9 +67,16 @@ extern char * strcpy(char *,const char *);
+> >  extern char * strncpy(char *,const char *, __kernel_size_t);
+> >  #endif
+> >  #ifndef __HAVE_ARCH_STRSCPY
+> > -ssize_t strscpy(char *, const char *, size_t);
+> > +ssize_t sized_strscpy(char *, const char *, size_t);
+> >  #endif
+> >
+> > +#define __strscpy0(dst, src, ...)	sized_strscpy(dst, src, sizeof(dst))
 
-This case sounds like it's all inside Linux, so I assume there's no
-problem with this one?  If you can call acpi_pci_irq_enable(), you
-have the pci_dev, so I assume there's no need to expose the GSI in
-sysfs?
+In thinking about this slightly longer, I realize that the size may be
+better as: sizeof(dst) + __must_be_array(dst)
 
-Bjorn
+otherwise a "char *" will be allowed as a dst for the 2-arg method, and
+will get a 1 byte size. :)
+
+> > +
+> > +#define __strscpy1(dst, src, size)	sized_strscpy(dst, src, size)
+> > +
+
+And I should probably relocate the kern-doc to here...
+
+> > +#define strscpy(dst, src, ...)	\
+> > +	CONCATENATE(__strscpy, COUNT_ARGS(__VA_ARGS__))(dst, src, __VA_ARGS__)
+> > +
+> >  /* Wraps calls to strscpy()/memset(), no arch specific code required */
+> >  ssize_t strscpy_pad(char *dest, const char *src, size_t count);
+> >
+> > diff --git a/lib/string.c b/lib/string.c
+> > index 6891d15ce991..2869895a1180 100644
+> > --- a/lib/string.c
+> > +++ b/lib/string.c
+> > @@ -104,7 +104,7 @@ EXPORT_SYMBOL(strncpy);
+> >  #endif
+> >
+> >  #ifndef __HAVE_ARCH_STRSCPY
+> > -ssize_t strscpy(char *dest, const char *src, size_t count)
+> > +ssize_t sized_strscpy(char *dest, const char *src, size_t count)
+> >  {
+> >  	const struct word_at_a_time constants = WORD_AT_A_TIME_CONSTANTS;
+> >  	size_t max = count;
+> > @@ -170,7 +170,7 @@ ssize_t strscpy(char *dest, const char *src, size_t count)
+> >
+> >  	return -E2BIG;
+> >  }
+> > -EXPORT_SYMBOL(strscpy);
+> > +EXPORT_SYMBOL(sized_strscpy);
+> >  #endif
+> >
+> >  /**
+> > --
+> > 2.34.1
+> >
+> 
+> [1]: https://lore.kernel.org/all/?q=f%3A%22justinstitt%40google.com%22+AND+b%3Astrscpy+AND+NOT+s%3A%22Re%22
+> 
+> Thanks
+> Justin
+
+-- 
+Kees Cook
 
