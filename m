@@ -1,139 +1,204 @@
-Return-Path: <linux-kernel+bounces-42666-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42667-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40EB8840498
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:07:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 751DA840499
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:08:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6656F1C224E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:07:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CA94282D40
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:08:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FE4B5FEE5;
-	Mon, 29 Jan 2024 12:07:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="Bng2QaIT"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17989604B9;
+	Mon, 29 Jan 2024 12:07:56 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B8F85F849
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 12:07:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8C3B604A4
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 12:07:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706530047; cv=none; b=Mrw42wPuHUn+IinR1mHm2H7N9QgVy89LwraSwkUABnJ6kXkRdouN6lS+kR61Qs/94UegZ/2OPkzRXfKgqTA35jwNJU3N70axDXjhkc160DKMkcegtmdK9YXfJRgF7Iur1LAyv7DlacP9mEI92Pr/TLkkbNvbcoyi+rdAlHtURgA=
+	t=1706530075; cv=none; b=oHxuT7oKoP/cnEKDXhQFMvXMDNMcHeFh+kQvckA8ZsfdgUt2RAA7aeKgJen0MhYwCB9zklnB/wzj4beLm3FRnIqzpAW+GYTE23TbDDtvmsOWZwVMlmblLf35+6ENjwOoHc4vY8S++3L8G7myJGY7a1tiYsWSi3IEWQSw5RMpJ0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706530047; c=relaxed/simple;
-	bh=02RsKKzHL4abWx1faKlfDuafe93KQrefn/s+0sF/td4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ls0rfXNCVCEYhhgc8S7aIecDKggdjCFom5EhFYZmLLXUV3BEk91Kv/GRoJLk340MTRZi8kvzzBO4zYq6Av39mWMmS7UHIEw87mkUyVU1cgNRQtsEJf9DggbLuYdQ9x53raGMnG4SB+45RAA1DdSP8qhfJnBn9+YxMqujuZOoDao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=Bng2QaIT; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id E2A301F73;
-	Mon, 29 Jan 2024 13:06:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1706529966;
-	bh=02RsKKzHL4abWx1faKlfDuafe93KQrefn/s+0sF/td4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Bng2QaITQuLJ4bvGTqFurH19uWh0yXqPUEFBt+X1ITARn2E9TKIO+L0WqYNrXBWdr
-	 CUHI57HtWuujJMfjtRrv1Gu1kgEtvaeW1kHOa6Yk2NK5b9AKaTAmrRzgsKMYjveFQk
-	 U0MiROY+lOq+OgWaANiqkaeDeMci27kvfS4mcOU0=
-Date: Mon, 29 Jan 2024 14:07:23 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Maxime Ripard <mripard@redhat.com>
-Cc: Pavel Machek <pavel@ucw.cz>, Lucas Stach <dev@lynxeye.de>,
-	kernel list <linux-kernel@vger.kernel.org>,
-	Milan Zamazal <mzamazal@redhat.com>, Christoph Hellwig <hch@lst.de>,
-	iommu@lists.linux.dev, Will Deacon <will@kernel.org>,
-	catalin.marinas@arm.com,
-	Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-	Andrey Konovalov <andrey.konovalov.ynk@gmail.com>,
-	kieran.bingham@ideasonboard.com,
-	Hans de Goede <hdegoede@redhat.com>
-Subject: Re: Re: Uncached buffers from CMA DMA heap on some Arm devices?
-Message-ID: <20240129120723.GB8131@pendragon.ideasonboard.com>
-References: <87bk9ahex7.fsf@redhat.com>
- <d2ff8df896d8a167e9abf447ae184ce2f5823852.camel@lynxeye.de>
- <Zbd8lOgVqfCrGUL7@duo.ucw.cz>
- <xd5ofun26gfdgn7hig3gipj5rgojqyuouwmii7xecgrbzyliil@y6rufxtwdmrc>
+	s=arc-20240116; t=1706530075; c=relaxed/simple;
+	bh=RIIkdrX22p+Icw1d29ZJ8nqI7L3u/afIDvRVKhBvrwg=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qYlLxQAuVAMWrLJh/Q+X1pq1g66QKGkK82oqI5WaLHqlZjtJ0sTSw20SIczTbwFfubLv59h5foIdFSmXey99xOmtysP0IuQTUe4Q5pJt5hE3fcOCG91WmgU5TlATZQoYM8WLL0g877rkZ+VR018nTwevKCu0WftT4byxEN7GA9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TNn6D4rrwz6J9b9;
+	Mon, 29 Jan 2024 20:04:36 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id A3FBF1400D7;
+	Mon, 29 Jan 2024 20:07:50 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 29 Jan
+ 2024 12:07:50 +0000
+Date: Mon, 29 Jan 2024 12:07:49 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Gowthami Thiagarajan <gthiagarajan@marvell.com>
+CC: <will@kernel.org>, <mark.rutland@arm.com>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<sgoutham@marvell.com>, <bbhushan2@marvell.com>, <george.cherian@marvell.com>
+Subject: Re: [PATCH v3 2/2] perf/marvell : Odyssey LLC-TAD performance
+ monitor support
+Message-ID: <20240129120749.00002538@Huawei.com>
+In-Reply-To: <20240122124933.1311925-3-gthiagarajan@marvell.com>
+References: <20240122124933.1311925-1-gthiagarajan@marvell.com>
+	<20240122124933.1311925-3-gthiagarajan@marvell.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <xd5ofun26gfdgn7hig3gipj5rgojqyuouwmii7xecgrbzyliil@y6rufxtwdmrc>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Mon, Jan 29, 2024 at 11:32:08AM +0100, Maxime Ripard wrote:
-> On Mon, Jan 29, 2024 at 11:23:16AM +0100, Pavel Machek wrote:
-> > Hi!
-> > 
-> > > That's right and a reality you have to deal with on those small ARM
-> > > systems. The ARM architecture allows for systems that don't enforce
-> > > hardware coherency across the whole SoC and many of the small/cheap SoC
-> > > variants make use of this architectural feature.
-> > > 
-> > > What this means is that the CPU caches aren't coherent when it comes to
-> > > DMA from other masters like the video capture units. There are two ways
-> > > to enforce DMA coherency on such systems:
-> > > 1. map the DMA buffers uncached on the CPU
-> > > 2. require explicit cache maintenance when touching DMA buffers with
-> > > the CPU
-> > > 
-> > > Option 1 is what you see is happening in your setup, as it is simple,
-> > > straight-forward and doesn't require any synchronization points.
-> > 
-> > Yeah, and it also does not work :-).
-> > 
-> > Userspace gets the buffers, and it is not really equipped to work with
-> > them. For example, on pinephone, memcpy() crashes on uncached
-> > memory. I'm pretty sure user could have some kind of kernel-crashing
-> > fun if he passed the uncached memory to futex or something similar.
+On Mon, 22 Jan 2024 18:19:33 +0530
+Gowthami Thiagarajan <gthiagarajan@marvell.com> wrote:
+
+> Each TAD provides eight 64-bit counters for monitoring
+> cache behavior.The driver always configures the same counter for
+> all the TADs. The user would end up effectively reserving one of
+> eight counters in every TAD to look across all TADs.
+> The occurrences of events are aggregated and presented to the user
+> at the end of running the workload. The driver does not provide a
+> way for the user to partition TADs so that different TADs are used for
+> different applications.
 > 
-> Uncached buffers are ubiquitous on arm/arm64 so there must be something
-> else going on. And there's nothing to equip for, it's just a memory
-> array you can access in any way you want (but very slowly).
+> The performance events reflect various internal or interface activities.
+> By combining the values from multiple performance counters, cache
+> performance can be measured in terms such as: cache miss rate, cache
+> allocations, interface retry rate, internal resource occupancy, etc.
 > 
-> How does it not work?
-
-I agree, this should just work (albeit possibly slowly). A crash is a
-sign something needs to be fixed.
-
-> > > Option 2 could be implemented by allocating cached DMA buffers in the
-> > > V4L2 device and then executing the necessary cache synchronization in
-> > > qbuf/dqbuf when ownership of the DMA buffer changes between CPU and DMA
-> > > master. However this isn't guaranteed to be any faster, as the cache
-> > > synchronization itself is a pretty heavy-weight operation when you are
-> > > dealing with buffer that are potentially multi-megabytes in size.
-> > 
-> > Yes, cache synchronization can be slow, but IIRC it was on order of
-> > milisecond in the worst case.. and copying megayte images is still
-> > slower than that.
-
-Those numbers are platform-specific, you can't assume this to be true
-everywhere.
-
-> > Note that it is faster to do read/write syscalls then deal with
-> > uncached memory. And userspace can't simply flush the caches and remap
-> > memory as cached.
+> Each supported counter's event and formatting information is exposed
+> to sysfs at /sys/devices/tad/. Use perf tool stat command to measure
+> the pmu events. For instance:
 > 
-> You can't change the memory mapping, but you can flush the caches with
-> dma-buf. It's even required by the dma-buf documentation.
+> perf stat -e tad_hit_ltg,tad_hit_dtg <workload>
 > 
-> > v4l2 moved away from read/write "because it is slow" and switched to
-> > interface that is even slower than that. And libcamera exposes
-> > uncached memory to the user :-(.
+> Signed-off-by: Gowthami Thiagarajan <gthiagarajan@marvell.com>
+Hi Gowthami,
+
+A few quick comments inline
+
+Jonathan
+
+> ---
+>  drivers/perf/marvell_cn10k_tad_pmu.c | 41 +++++++++++++++++++++++++++-
+>  1 file changed, 40 insertions(+), 1 deletion(-)
 > 
-> There's also the number of copies to consider. If you were to use
-> read/write to display a frame on a framebuffer, you would use 4 copies
-> vs 2 with dma-buf.
+> diff --git a/drivers/perf/marvell_cn10k_tad_pmu.c b/drivers/perf/marvell_cn10k_tad_pmu.c
+> index fec8e82edb95..b5786fcec0ec 100644
+> --- a/drivers/perf/marvell_cn10k_tad_pmu.c
+> +++ b/drivers/perf/marvell_cn10k_tad_pmu.c
+> @@ -214,6 +214,24 @@ static const struct attribute_group tad_pmu_events_attr_group = {
+>  	.attrs = tad_pmu_event_attrs,
+>  };
+>  
+> +static struct attribute *ody_tad_pmu_event_attrs[] = {
+> +	TAD_PMU_EVENT_ATTR(tad_req_msh_in_exlmn, 0x3),
+> +	TAD_PMU_EVENT_ATTR(tad_alloc_dtg, 0x1a),
+> +	TAD_PMU_EVENT_ATTR(tad_alloc_ltg, 0x1b),
+> +	TAD_PMU_EVENT_ATTR(tad_alloc_any, 0x1c),
+> +	TAD_PMU_EVENT_ATTR(tad_hit_dtg, 0x1d),
+> +	TAD_PMU_EVENT_ATTR(tad_hit_ltg, 0x1e),
+> +	TAD_PMU_EVENT_ATTR(tad_hit_any, 0x1f),
+> +	TAD_PMU_EVENT_ATTR(tad_tag_rd, 0x20),
+> +	TAD_PMU_EVENT_ATTR(tad_tot_cycle, 0xFF),
+> +	NULL
+> +};
+> +
+> +static const struct attribute_group ody_tad_pmu_events_attr_group = {
+> +	.name = "events",
+> +	.attrs = ody_tad_pmu_event_attrs,
+> +};
+> +
+>  PMU_FORMAT_ATTR(event, "config:0-7");
+>  
+>  static struct attribute *tad_pmu_format_attrs[] = {
+> @@ -252,11 +270,19 @@ static const struct attribute_group *tad_pmu_attr_groups[] = {
+>  	NULL
+>  };
+>  
+> +static const struct attribute_group *ody_tad_pmu_attr_groups[] = {
+> +	&ody_tad_pmu_events_attr_group,
+> +	&tad_pmu_format_attr_group,
+> +	&tad_pmu_cpumask_attr_group,
+> +	NULL
+> +};
+> +
+>  static int tad_pmu_probe(struct platform_device *pdev)
+>  {
+>  	struct device *dev = &pdev->dev;
+>  	struct tad_region *regions;
+>  	struct tad_pmu *tad_pmu;
+> +	const char *compatible;
+>  	struct resource *res;
+>  	u32 tad_pmu_page_size;
+>  	u32 tad_page_size;
+> @@ -276,6 +302,12 @@ static int tad_pmu_probe(struct platform_device *pdev)
+>  		return -ENODEV;
+>  	}
+>  
+> +	ret = device_property_read_string(dev, "compatible", &compatible);
+Unusual to find a compatible in an ACPI DSDT table unless PRP0001 is being used
+and if that is being used, I'd not expect ACPI ID as below.
 
--- 
-Regards,
+Maybe give a DSDT blob (disassembled) in the patch intro?
 
-Laurent Pinchart
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "compatible property not found\n");
+> +		return ret;
+> +	}
+> +
+>  	ret = device_property_read_u32(dev, "marvell,tad-page-size",
+>  				       &tad_page_size);
+>  	if (ret) {
+> @@ -319,7 +351,6 @@ static int tad_pmu_probe(struct platform_device *pdev)
+>  	tad_pmu->pmu = (struct pmu) {
+>  
+>  		.module		= THIS_MODULE,
+> -		.attr_groups	= tad_pmu_attr_groups,
+>  		.capabilities	= PERF_PMU_CAP_NO_EXCLUDE |
+>  				  PERF_PMU_CAP_NO_INTERRUPT,
+>  		.task_ctx_nr	= perf_invalid_context,
+> @@ -332,6 +363,13 @@ static int tad_pmu_probe(struct platform_device *pdev)
+>  		.read		= tad_pmu_event_counter_read,
+>  	};
+>  
+> +	if ((strncmp("marvell,cn10k-ddr-pmu", compatible,
+> +		     strlen(compatible)) == 0)) {
+
+How does this work with the ACPI ID added below?  Also, just
+put this in the tables so device_get_match_data() can retrieve it
+instead of string matching in here.
+
+
+> +		tad_pmu->pmu.attr_groups = tad_pmu_attr_groups;
+> +	} else {
+> +		tad_pmu->pmu.attr_groups = ody_tad_pmu_attr_groups;
+> +	}
+> +
+>  	tad_pmu->cpu = raw_smp_processor_id();
+>  
+>  	/* Register pmu instance for cpu hotplug */
+> @@ -372,6 +410,7 @@ static const struct of_device_id tad_pmu_of_match[] = {
+>  #ifdef CONFIG_ACPI
+>  static const struct acpi_device_id tad_pmu_acpi_match[] = {
+>  	{"MRVL000B", 0},
+> +	{"MRVL000D", 0},
+>  	{},
+>  };
+>  MODULE_DEVICE_TABLE(acpi, tad_pmu_acpi_match);
+
 
