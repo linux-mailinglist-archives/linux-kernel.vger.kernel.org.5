@@ -1,114 +1,121 @@
-Return-Path: <linux-kernel+bounces-43647-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43648-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AB8084172E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 00:58:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26487841730
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 00:58:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FC0D1C22833
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 23:58:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 903951F23B39
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 23:58:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBBC154659;
-	Mon, 29 Jan 2024 23:57:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54E0F15705A;
+	Mon, 29 Jan 2024 23:57:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QdrtcQ/b"
-Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YWpA6BOe"
+Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 337045380F;
-	Mon, 29 Jan 2024 23:57:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C091254670;
+	Mon, 29 Jan 2024 23:57:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706572672; cv=none; b=pal0A27vQNhlqBvp8NY7xyWIrYLRBfnuM6WgzNNQl+v+1IGOpZcrNNMPTwmfOceEjhvCgV6VShKR3ciKye08vFEKvUTnyj1srwInRy8jIndb6RzjzostOs0YNFcpJtERu9kz/QhxLmJ68+Y6ff+AGyaLT5AnFh7nfnugFarFh1M=
+	t=1706572676; cv=none; b=MV5tlFlf19f2FOl5LrV/LwLspYVxKUpLg8j8EOw3+MeUUuGh8uS07jD71X92cgFus6gYwmoLWjc16lL5ExRplEVQ/MbZFF2fYnBlBlSx3rjlIQHNSJsnSvFhoPOjOsVJARfA1VAFUiMEuiMfQcXdC1yA3CFt4MSBUFpLmyy0JSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706572672; c=relaxed/simple;
-	bh=8wqE5rf9UxhPmmiVtHpD8CarsI0v9KgYGp0MYzOQlBE=;
+	s=arc-20240116; t=1706572676; c=relaxed/simple;
+	bh=W0XzN0qkMvIRBzxDSAsFx1Wj0qZvkVGIaHK8Ta6QP/A=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EjraanEKkw1Azcwq4tKi/RCGRx/TOgINiiL3q0YMa75RkGaSnTQmB2vy4ioNkESHONBYG8dWJ7LdDwFXbYB/bKsy7G/Op3w/t2oSXX+tK+/FptEXUt+N3MFZttULIBj5CHtgrszmFoMH8unXHKCcqvr4dNLD+qk/qob5k9/Ki0c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QdrtcQ/b; arc=none smtp.client-ip=209.85.160.171
+	 MIME-Version; b=sH1nOGCCswMQZ6CCprr/g57o80NLKaqHOzelvoqb41d3TcUMAdqA9Pb/fFwf0kRcXYZB1RyH0pXSPUtk0RJvQ3CAsWPzi+hzCm12wCwP9n5sDSjZ8XclIQnIwOFzBCDjof4BMkifd9Pud6PHoUuNbrOgJlrF9mOaUsgEA1THaYE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YWpA6BOe; arc=none smtp.client-ip=209.85.219.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-42a4516ec46so28753011cf.0;
-        Mon, 29 Jan 2024 15:57:50 -0800 (PST)
+Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-68c2f4c3282so26347106d6.3;
+        Mon, 29 Jan 2024 15:57:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706572670; x=1707177470; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706572673; x=1707177473; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=Kb0IeKP4KjdN91MnFOwXJ+hR32foD6IhOMX4SQFbYRw=;
-        b=QdrtcQ/brQzWACFOSrBTbDXtv7xHKk8vwy/g67eqCCn/w/z7qc8UNRboW+QH7r5yd6
-         U3z8qqTGNQbbzC0T2nHHSx+vrq2swkPgs5gGfTF6BQ0xDBtaTpwCDsdSiIjmyiei3/j8
-         T7BMLnrYfKlZJS00eHrBUy7sAjhu7QyMx3gLoDwNQhmfKO5EfUHMs1BHnOxRHBt68HRe
-         on4h/Jc54oTCHPkUI4CkzAlsyB9zXDxbQW6xoJRUEWt12ycmpsc8uwz5aVKBq/czY85E
-         swtEtAlKS3/r/RAjoIMpAs7Bc9x4qInL2G7EqOQOfwIGKOXHf6YfiL8DCBoyXpgKqQ2t
-         wYXw==
+        bh=X5SWUW+m7tI0wwKK9KxgCmfN7nKEUdz6H5ceQbRqNGY=;
+        b=YWpA6BOeIHAGujCYlWfewlcJtJk4Kkz9L5inOAy2mYhoKc0IKL3HCkuMSltZ4kzVnl
+         xmqjw9jLoZqhc9uvSFczYkXB8yEAgjcY+ihNLvgo857jjcGD/MHB16fU8K7pGibqg8R+
+         +AN1rz+Kj06F2EcK7OZyiJLKir1qdzeT/nmOp4I3wPb4S9dzJ3bHgdeP5phroWbxGa0I
+         uBxePzsHYUkmQm2iVU+PMgoU324ieOpwqpHIWdg/4kWx98RIiAbQ3Ou4XVxKFfgvLi3E
+         p4WzHjHJhn6AQtXhqXL8d37naim4QT1RT8z81zK/cEWzMVGmZYWfckFrA05pCyfdDc1w
+         e4+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706572670; x=1707177470;
+        d=1e100.net; s=20230601; t=1706572673; x=1707177473;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Kb0IeKP4KjdN91MnFOwXJ+hR32foD6IhOMX4SQFbYRw=;
-        b=PVTCcDXieM56a3BryQF08PRHAhv/zXCZUW9r3Zta1UwhqXXwv5Xx326GS3zm3JHyD8
-         AzJzpiE7YLmC92xCxLzztS67+Xt4gmsoqekbwBs+jaLbr9zsCUkdfFEqj04PAiuA1A/Y
-         oLRwSyu6aF7AzUvEO00TawGpr1A7NIB6u7y7NXzSs3SIQHl3dhhCSN9DoiC/usdUJscG
-         qpAq+qf0wNeSGGQs0FyjNNe2bA823LUiXYJm6PWBd3szZQNXp7mLiqcOIRYyIramgDJb
-         vobhGiFyLjySdejcF8QUrvHapZS//Jl1vR04r5mMrfRBTvg5lenkZfDb1LJXYuxnoytb
-         WhlQ==
-X-Gm-Message-State: AOJu0YzwM4qQtgpN3xe3JAB7E/GDcayYEeBJaOorFCgEfGyM/XRl6TEU
-	kxPEjVNujnBohrdnyABH+3mkmME0KyH/uqVwJLU3mZ9djwZCJOd8
-X-Google-Smtp-Source: AGHT+IGhN8klhm/WpPphfEZ/okJyUgUeg/JXdz1RBe8k0av97p37nBsdiyM7KVoStWqnabLLlQA27A==
-X-Received: by 2002:a05:622a:1492:b0:42a:b06e:84db with SMTP id t18-20020a05622a149200b0042ab06e84dbmr141342qtx.12.1706572669990;
-        Mon, 29 Jan 2024 15:57:49 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWElj/lKfHU0n6yMFY5LQt1Kbf5Z0a5m8u+G/UPOJRBwPvN0k68wZ6v1PrirsmxjOvvieMXlE0OK23pkaEJ4YTiaf2QmhVIIcILiGRmYBAEwftVQeGB64AObcj0lx1y3tHX0XNp8WVVMsjFa7lD404HEzNhtWfxHB2O8XCw/GfOhDBSd9y/Rkuge0DVDEgTYx6NM5myBWXQ2LlO/Od8rZcFaAYqtwctpm9wubV+2Fh4Y+r+BjqLsiRGEfl/WNm+vOmUUo3uBCLmlQOTXjX4lGBn1OPy/Fji8/myfOkndg1oxe0oKH/N6n4wPXu38+g4E7/hDQCOAesF+dGx7i4XFufn7HpGKJtQ2MGpRPThmYjFDyperzBz9U/R6YjB5sI7s2bSM8f84+zFdH3WpXtlDOpm
+        bh=X5SWUW+m7tI0wwKK9KxgCmfN7nKEUdz6H5ceQbRqNGY=;
+        b=Hzp+elVqL5gLk8Ois7vac6WPipOpu58wiyZkn8oP+t2+zB3Czn7uFfaB2ywxexJbIK
+         w2dm6bHy5p1WbhYNcRhlARvypRZK47TVl6TXA0nH6tCY2YHAfzeO2qKnNcbkyaACBxHo
+         plgqR/KdmWQJUYV9p8gu3JWIuys4/mTii/kx1WKozCsL0EXMT33EUHZof4vrz5bGcDWB
+         +EPq2+nS9Z9QvhdVDvOsymZmlqi1iE4x1q2AbctftJ21VXmAItCw1grvrBZcX3dtrGZX
+         o3uzc2CYwAVD5DwUMEcOqj7ETLi6Y26Y8AuFlyrvZi+D5lEDFTYgU7LtB5bE8Aai+y+w
+         AZvg==
+X-Gm-Message-State: AOJu0Yxg3HaMvm4zAc5lVuESdPXXwHTXOmQ2b4PZ9UoByOD0JPSXMrMW
+	4pkeihskz1AcEI0M4QXL0TjzxRmIOYCbmS/rUvoKQuXb5UUQSkgC
+X-Google-Smtp-Source: AGHT+IFeSapqqsfg4gNLYGxYvmjlsKND48UUNQn6Qu5QGNLt+/l7ndRTv7hKbaJXXr4oaDtuz7eD3Q==
+X-Received: by 2002:a05:6214:27c7:b0:68c:5f06:202c with SMTP id ge7-20020a05621427c700b0068c5f06202cmr342365qvb.96.1706572673627;
+        Mon, 29 Jan 2024 15:57:53 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWjcVy5kC85qmp7+akcRl4wdVne8Jmt8ZCY2iBS2Ienx4dTMzxsmKwynI9NExnZwFguBkWLq8Wx6xxTd7MCkj+xWQveThFvGc+yNsREap7r4uEmM7A1pToIDDReDGzrbERsD5cHewBr6Iuieii4CUSFVKEqL9PfA6bvClHUaaoyUIqgu5ccpLBp8pJs3mPLIf2qaSng9ohL21lBq9CZcNvab6qkcXoKxSpRfLUyZDjtl2su16f7xyCJ4cUAz4qyDZOmnzG2v2XvE1TPzOowWiOrmCQjJTETAArChp+8C99NTfIFrBXR25J2j7L+n7PSm3Qs7vOtQC4DG2nIStO9Xcxu53w7xyjYLJ5gnUOL4R/kWACBuw2Is5XdeDnGGkR1DTCMCz5qtfT2Ff4I04TNOGOpENJClOnGEaPGQZcj4jNUKRqNBn9lbCANYFPm0NfkkyeLr5+m0iGmEDmr6vps/D/+4c3r5h4HiiiavIKWAhRClHQJyLM/HwxqJKW2dUKebU/6mlrJgLvEOcHF9+us+kQTtNfnaC7QmEZknc5txxLIdxNPqYtrJTamSJ4B6++2hTeW54WPjmZBhVOguD8uD/xZW7wwmPGXrol7jg==
 Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id kb8-20020a05622a448800b004280cad48basm4002476qtb.77.2024.01.29.15.57.49
+        by smtp.gmail.com with ESMTPSA id lb9-20020a056214318900b006869c05a875sm472651qvb.32.2024.01.29.15.57.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 15:57:49 -0800 (PST)
+        Mon, 29 Jan 2024 15:57:53 -0800 (PST)
 Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailauth.nyi.internal (Postfix) with ESMTP id 0E2C527C0061;
-	Mon, 29 Jan 2024 18:57:49 -0500 (EST)
+	by mailauth.nyi.internal (Postfix) with ESMTP id 9CF6F27C0061;
+	Mon, 29 Jan 2024 18:57:52 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Mon, 29 Jan 2024 18:57:49 -0500
-X-ME-Sender: <xms:fDu4Zb6kXz9aBmPwnoNeZzH9Mru19-PnapM_SVCWal9EvNVT-QU1IQ>
-    <xme:fDu4ZQ712dRvn8vvj4UGbw8Qe4sTyQ9g2ulFkHn95t4RkM4_Z6bi8_NoFze_yBKv5
-    8vt_aoi1l01fGV5vg>
-X-ME-Received: <xmr:fDu4ZSdDQHf6Yi768x7ua4IlLqEoX9xYHN45FpyiV5CJfpaujiCTxyFdz2Tq0A>
+  by compute2.internal (MEProxy); Mon, 29 Jan 2024 18:57:52 -0500
+X-ME-Sender: <xms:gDu4Za6dipyIpHwOjUlIMAlXz62k5A2aJtVicitVHfqVYte23BJ7-g>
+    <xme:gDu4ZT6TDbkyUIhFoLVUI8KVFeePTb8gAbsTr0aqF7wsZzLgzbA2XebbrmxdxV7rL
+    8mq8UbdFjVY503-bw>
+X-ME-Received: <xmr:gDu4ZZe9mXWlWUueKAkkkzMTUsb9-LUHaTPbP1R6105H4yfXAoCTLrY_MGisxg>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedthedgudejucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhephffvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepuehoqhhu
     nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
     htthgvrhhnpeegleejiedthedvheeggfejveefjeejkefgveffieeujefhueeigfegueeh
-    geeggfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    geeggfenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpe
     gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
     gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
     igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:fDu4ZcINiYFeMhv64Cm2-pIrfUlKvG5ar4X4OlyBlAw1BHbq5mwHgA>
-    <xmx:fDu4ZfLr0nBcEM3Qq9Tku9pZKzimlMOcfMunm-HdTFt1Nvn0z5UTaw>
-    <xmx:fDu4ZVx-yGlR2rNM-N5MQiT9bgC4VBk403ceBCGDfbmawKgLb80s2A>
-    <xmx:fTu4ZZAXNctR7Axcgm2Byf-cmLRFsy2jvEOrpLfnWqDx4_3p6j81cg>
+X-ME-Proxy: <xmx:gDu4ZXLP4jAuKm3SZ2SL85Vd1S661_GDjSKrlI_ca1vx-enj_5sFzQ>
+    <xmx:gDu4ZeKDTuz4rWYsyDa9lQXEsCkegXhyzGBtsf2Tl50kKgRbZgPWCg>
+    <xmx:gDu4ZYzPKTmzblC6OJ0QzKsxbvRu9fv-kuxytbzE58XkokHYAhrfdA>
+    <xmx:gDu4ZS-MZZDRva8w-_9gIyzInFyb5WFkNvvessV1bMEhxjU23T_GAw>
 Feedback-ID: iad51458e:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 29 Jan 2024 18:57:48 -0500 (EST)
+ 29 Jan 2024 18:57:51 -0500 (EST)
 From: Boqun Feng <boqun.feng@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	rcu@vger.kernel.org
-Cc: Frederic Weisbecker <frederic@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
+Cc: Qais Yousef <qyousef@layalina.io>,
+	Andrea Righi <andrea.righi@canonical.com>,
 	"Paul E . McKenney" <paulmck@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
 	Josh Triplett <josh@joshtriplett.org>,
 	Boqun Feng <boqun.feng@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>,
-	Davidlohr Bueso <dave@stgolabs.net>
-Subject: [PATCH 1/8] rcu: Rename jiffies_till_flush to jiffies_lazy_flush
-Date: Mon, 29 Jan 2024 15:56:34 -0800
-Message-ID: <20240129235646.3171983-2-boqun.feng@gmail.com>
+	Randy Dunlap <rdunlap@infradead.org>,
+	Tejun Heo <tj@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Yan-Jie Wang <yanjiewtw@gmail.com>,
+	linux-doc@vger.kernel.org (open list:DOCUMENTATION)
+Subject: [PATCH 2/8] rcu: Provide a boot time parameter to control lazy RCU
+Date: Mon, 29 Jan 2024 15:56:35 -0800
+Message-ID: <20240129235646.3171983-3-boqun.feng@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240129235646.3171983-1-boqun.feng@gmail.com>
 References: <20240129235646.3171983-1-boqun.feng@gmail.com>
@@ -120,137 +127,105 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Frederic Weisbecker <frederic@kernel.org>
+From: Qais Yousef <qyousef@layalina.io>
 
-The variable name jiffies_till_flush is too generic and therefore:
+To allow more flexible arrangements while still provide a single kernel
+for distros, provide a boot time parameter to enable/disable lazy RCU.
 
-* It may shadow a global variable
-* It doesn't tell on what it operates
+Specify:
 
-Make the name more precise, along with the related APIs.
+	rcutree.enable_rcu_lazy=[y|1|n|0]
 
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Which also requires
+
+	rcu_nocbs=all
+
+at boot time to enable/disable lazy RCU.
+
+To disable it by default at build time when CONFIG_RCU_LAZY=y, the new
+CONFIG_RCU_LAZY_DEFAULT_OFF can be used.
+
+Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
+Tested-by: Andrea Righi <andrea.righi@canonical.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcu.h       |  8 ++++----
- kernel/rcu/rcuscale.c  |  6 +++---
- kernel/rcu/tree_nocb.h | 22 +++++++++++-----------
- 3 files changed, 18 insertions(+), 18 deletions(-)
+ Documentation/admin-guide/kernel-parameters.txt |  5 +++++
+ kernel/rcu/Kconfig                              | 13 +++++++++++++
+ kernel/rcu/tree.c                               |  7 ++++++-
+ 3 files changed, 24 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index f94f65877f2b..dcfb666f2499 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -543,11 +543,11 @@ enum rcutorture_type {
- };
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 31b3a25680d0..b6c848c29a53 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -5034,6 +5034,11 @@
+ 			this kernel boot parameter, forcibly setting it
+ 			to zero.
  
- #if defined(CONFIG_RCU_LAZY)
--unsigned long rcu_lazy_get_jiffies_till_flush(void);
--void rcu_lazy_set_jiffies_till_flush(unsigned long j);
-+unsigned long rcu_get_jiffies_lazy_flush(void);
-+void rcu_set_jiffies_lazy_flush(unsigned long j);
- #else
--static inline unsigned long rcu_lazy_get_jiffies_till_flush(void) { return 0; }
--static inline void rcu_lazy_set_jiffies_till_flush(unsigned long j) { }
-+static inline unsigned long rcu_get_jiffies_lazy_flush(void) { return 0; }
-+static inline void rcu_set_jiffies_lazy_flush(unsigned long j) { }
- #endif
++	rcutree.enable_rcu_lazy= [KNL]
++			To save power, batch RCU callbacks and flush after
++			delay, memory pressure or callback list growing too
++			big.
++
+ 	rcuscale.gp_async= [KNL]
+ 			Measure performance of asynchronous
+ 			grace-period primitives such as call_rcu().
+diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+index bdd7eadb33d8..e7d2dd267593 100644
+--- a/kernel/rcu/Kconfig
++++ b/kernel/rcu/Kconfig
+@@ -314,6 +314,19 @@ config RCU_LAZY
+ 	  To save power, batch RCU callbacks and flush after delay, memory
+ 	  pressure, or callback list growing too big.
  
- #if defined(CONFIG_TREE_RCU)
-diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-index ffdb30495e3c..8db4fedaaa1e 100644
---- a/kernel/rcu/rcuscale.c
-+++ b/kernel/rcu/rcuscale.c
-@@ -764,9 +764,9 @@ kfree_scale_init(void)
- 
- 	if (kfree_by_call_rcu) {
- 		/* do a test to check the timeout. */
--		orig_jif = rcu_lazy_get_jiffies_till_flush();
-+		orig_jif = rcu_get_jiffies_lazy_flush();
- 
--		rcu_lazy_set_jiffies_till_flush(2 * HZ);
-+		rcu_set_jiffies_lazy_flush(2 * HZ);
- 		rcu_barrier();
- 
- 		jif_start = jiffies;
-@@ -775,7 +775,7 @@ kfree_scale_init(void)
- 
- 		smp_cond_load_relaxed(&rcu_lazy_test1_cb_called, VAL == 1);
- 
--		rcu_lazy_set_jiffies_till_flush(orig_jif);
-+		rcu_set_jiffies_lazy_flush(orig_jif);
- 
- 		if (WARN_ON_ONCE(jiffies_at_lazy_cb - jif_start < 2 * HZ)) {
- 			pr_alert("ERROR: call_rcu() CBs are not being lazy as expected!\n");
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index 4efbf7333d4e..aecef51166c7 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -256,6 +256,7 @@ static bool wake_nocb_gp(struct rcu_data *rdp, bool force)
- 	return __wake_nocb_gp(rdp_gp, rdp, force, flags);
++	  Requires rcu_nocbs=all to be set.
++
++	  Use rcutree.enable_rcu_lazy=0 to turn it off at boot time.
++
++config RCU_LAZY_DEFAULT_OFF
++	bool "Turn RCU lazy invocation off by default"
++	depends on RCU_LAZY
++	default n
++	help
++	  Allows building the kernel with CONFIG_RCU_LAZY=y yet keep it default
++	  off. Boot time param rcutree.enable_rcu_lazy=1 can be used to switch
++	  it back on.
++
+ config RCU_DOUBLE_CHECK_CB_TIME
+ 	bool "RCU callback-batch backup time check"
+ 	depends on RCU_EXPERT
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index b2bccfd37c38..41c50a6c607e 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2753,6 +2753,9 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
  }
  
-+#ifdef CONFIG_RCU_LAZY
- /*
-  * LAZY_FLUSH_JIFFIES decides the maximum amount of time that
-  * can elapse before lazy callbacks are flushed. Lazy callbacks
-@@ -264,21 +265,20 @@ static bool wake_nocb_gp(struct rcu_data *rdp, bool force)
-  * left unsubmitted to RCU after those many jiffies.
+ #ifdef CONFIG_RCU_LAZY
++static bool enable_rcu_lazy __read_mostly = !IS_ENABLED(CONFIG_RCU_LAZY_DEFAULT_OFF);
++module_param(enable_rcu_lazy, bool, 0444);
++
+ /**
+  * call_rcu_hurry() - Queue RCU callback for invocation after grace period, and
+  * flush all lazy callbacks (including the new one) to the main ->cblist while
+@@ -2778,6 +2781,8 @@ void call_rcu_hurry(struct rcu_head *head, rcu_callback_t func)
+ 	__call_rcu_common(head, func, false);
+ }
+ EXPORT_SYMBOL_GPL(call_rcu_hurry);
++#else
++#define enable_rcu_lazy		false
+ #endif
+ 
+ /**
+@@ -2826,7 +2831,7 @@ EXPORT_SYMBOL_GPL(call_rcu_hurry);
   */
- #define LAZY_FLUSH_JIFFIES (10 * HZ)
--static unsigned long jiffies_till_flush = LAZY_FLUSH_JIFFIES;
-+static unsigned long jiffies_lazy_flush = LAZY_FLUSH_JIFFIES;
- 
--#ifdef CONFIG_RCU_LAZY
- // To be called only from test code.
--void rcu_lazy_set_jiffies_till_flush(unsigned long jif)
-+void rcu_set_jiffies_lazy_flush(unsigned long jif)
+ void call_rcu(struct rcu_head *head, rcu_callback_t func)
  {
--	jiffies_till_flush = jif;
-+	jiffies_lazy_flush = jif;
+-	__call_rcu_common(head, func, IS_ENABLED(CONFIG_RCU_LAZY));
++	__call_rcu_common(head, func, enable_rcu_lazy);
  }
--EXPORT_SYMBOL(rcu_lazy_set_jiffies_till_flush);
-+EXPORT_SYMBOL(rcu_set_jiffies_lazy_flush);
+ EXPORT_SYMBOL_GPL(call_rcu);
  
--unsigned long rcu_lazy_get_jiffies_till_flush(void)
-+unsigned long rcu_get_jiffies_lazy_flush(void)
- {
--	return jiffies_till_flush;
-+	return jiffies_lazy_flush;
- }
--EXPORT_SYMBOL(rcu_lazy_get_jiffies_till_flush);
-+EXPORT_SYMBOL(rcu_get_jiffies_lazy_flush);
- #endif
- 
- /*
-@@ -299,7 +299,7 @@ static void wake_nocb_gp_defer(struct rcu_data *rdp, int waketype,
- 	 */
- 	if (waketype == RCU_NOCB_WAKE_LAZY &&
- 	    rdp->nocb_defer_wakeup == RCU_NOCB_WAKE_NOT) {
--		mod_timer(&rdp_gp->nocb_timer, jiffies + jiffies_till_flush);
-+		mod_timer(&rdp_gp->nocb_timer, jiffies + rcu_get_jiffies_lazy_flush());
- 		WRITE_ONCE(rdp_gp->nocb_defer_wakeup, waketype);
- 	} else if (waketype == RCU_NOCB_WAKE_BYPASS) {
- 		mod_timer(&rdp_gp->nocb_timer, jiffies + 2);
-@@ -482,7 +482,7 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
- 	// flush ->nocb_bypass to ->cblist.
- 	if ((ncbs && !bypass_is_lazy && j != READ_ONCE(rdp->nocb_bypass_first)) ||
- 	    (ncbs &&  bypass_is_lazy &&
--	     (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + jiffies_till_flush))) ||
-+	     (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + rcu_get_jiffies_lazy_flush()))) ||
- 	    ncbs >= qhimark) {
- 		rcu_nocb_lock(rdp);
- 		*was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
-@@ -723,7 +723,7 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
- 		lazy_ncbs = READ_ONCE(rdp->lazy_len);
- 
- 		if (bypass_ncbs && (lazy_ncbs == bypass_ncbs) &&
--		    (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + jiffies_till_flush) ||
-+		    (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + rcu_get_jiffies_lazy_flush()) ||
- 		     bypass_ncbs > 2 * qhimark)) {
- 			flush_bypass = true;
- 		} else if (bypass_ncbs && (lazy_ncbs != bypass_ncbs) &&
 -- 
 2.43.0
 
