@@ -1,133 +1,139 @@
-Return-Path: <linux-kernel+bounces-43540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43541-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D98A841549
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 22:57:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CB3184154B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 22:58:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5373F286D32
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 21:57:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA7B8282D67
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 21:58:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D529159560;
-	Mon, 29 Jan 2024 21:57:10 +0000 (UTC)
-Received: from cae.in-ulm.de (cae.in-ulm.de [217.10.14.231])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E4DB158D68;
-	Mon, 29 Jan 2024 21:57:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.10.14.231
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7691B159563;
+	Mon, 29 Jan 2024 21:58:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ExZh8qvA"
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2535B158D68
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 21:58:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706565430; cv=none; b=hOP0TOWVYq8fMBYN9/3grTxKeu5ylgHaAZ1SVQXRL3BUF67GQRjNRhuxlpEv67k4WkHtMvzjGPyDDvXnoXoEIDBT9gm9W9ZcTbzqo8G9iakQREregx1z4U4HUhVb0TbqRqjSfq91oKqD4wl9zLgl3Erf/KV+atX+OcsoaC6FWis=
+	t=1706565496; cv=none; b=D/eSbGjUKpy4zk3HYSVi2tojEeBuTaNH3neRkC55Uh/eiFfGyD3GFyNXHHRCj3baQkEKoEOINz/aZpOOc1ZqyoM5hLsM4MAfVF9hp2WvRPljVrxg98tnWy1/FiFO9dLXEAtAgfDuj61y+FXkT9crugTSB56jSBf+6FyOkypzrSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706565430; c=relaxed/simple;
-	bh=mPC+xQ4Dz5ztfF5Vr0v6InEG2owUyBpyLFQaFv8aEG8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VWpWTJ0jl4aJQf8MOXrAJeoivQPtG5f3Zoo2l/lkozA8dIteUS5fde6NlG17YG4MNTGfs+crcmToPc7Xa/eFbWqAF48+62XNioEtOgyflBNFDUfwFU/vCp+3B1P4aQQXGFn5XKLtGJnlf6pXPk8mXgDkKnlj5w9LRa4+tso0+Ac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de; spf=pass smtp.mailfrom=c--e.de; arc=none smtp.client-ip=217.10.14.231
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=c--e.de
-Received: by cae.in-ulm.de (Postfix, from userid 1000)
-	id 8161E1402F9; Mon, 29 Jan 2024 22:57:04 +0100 (CET)
-Date: Mon, 29 Jan 2024 22:57:04 +0100
-From: "Christian A. Ehrhardt" <lk@c--e.de>
-To: Paul Menzel <pmenzel@molgen.mpg.de>
-Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: typec_altmode_release =?utf-8?B?4oaS?=
- =?utf-8?Q?_refcount=5Ft=3A?= underflow; use-after-free.
-Message-ID: <ZbgfMEmpsuzLc1Hv@cae.in-ulm.de>
-References: <e12b5e52-1c94-472d-949b-2ee158857584@molgen.mpg.de>
- <Zbf3M2+r5RP9K8jJ@cae.in-ulm.de>
- <b1f77ee7-0684-4260-bcaf-d826af19978d@molgen.mpg.de>
+	s=arc-20240116; t=1706565496; c=relaxed/simple;
+	bh=yZyZ29p6yMC6LhYj5NL5f97FYixcVCB1YcfCBS49aMw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Content-Type; b=nFb3KFousqIUWLjMPuY7t82VP2AH7SKfHP8Vfama5a3xu+/lv3QApUIGNFS71dVywOULVgyqzS2eFysERswHvubGhaEfIyAHoNanEThkg0F3jmX4/jGFzKeK64jmQdDs3vWJHefgr+NbK1/YKtYmAUe86G6yRZnY1Xnsafcjmp0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ExZh8qvA; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-33929364bdaso2324281f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 13:58:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706565493; x=1707170293; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CUG0VAx6fB3sqRZQjRRGH6lMhLjFI7rY91Z4hSbS8UE=;
+        b=ExZh8qvAvRoPwP8AmR83NNRM72HpbFMUYcCHAaqEl9UsRSWGu79vyXO6XtWV7iv96n
+         y3GQeXo4qhwt/HwslQbPkbUw12VaMJ+nu7iKb34JyZgHlE78LLN8i7gRg8Ik65x3CHYt
+         t42mcbXvSUyUA8JaNNXVH9fhK4yjrL0H6zsvNdKZHdxRjvAkJM/e9gv6dUV3accM3Slc
+         HHnBQaOpY7mxmu5z3UVSpek3ep63KHjnjICmekrW7ghycb6su1FnkRIP5bKmm9s+jadH
+         ZNBOVgWhhoGv7VW2AWcnJc5V7xZKUkCCaI+RWzUu/YIcr6+LuCv7I2ig/fd1BS7uEcUS
+         T8eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706565493; x=1707170293;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CUG0VAx6fB3sqRZQjRRGH6lMhLjFI7rY91Z4hSbS8UE=;
+        b=GQLGuH64wtbSnjpYMbNHUZc/KPcb1rqPt7uYQY34U9b4izF7n4FKSOKlaMJ8Tcbgm9
+         rXMKPVzkBnqmyK/pP5I65phUgb/jwTC8FyUsKXTHw07u9FySIUUyR4NjKcJXDVaaIfYm
+         SY8pk2LKONaPePyVnl83O/vT1+ifsxU/rKbBtPuEq4v2QBnbHGBH0ypbDznpRtTOWxAY
+         DzfmFSlPOCGmOu8rcM3gTigWPp28LNYn8R6IVSY2vp1o5teDWYFqz9CEBmFRbCN7Y5nC
+         +W/JY3KLmyUuZVdHskZrrKoCfoa+ndwwNGTmluz2V7eqoLQgJD92XmG//DbCtIPodolB
+         SoNg==
+X-Gm-Message-State: AOJu0YxdjFvKr5x0p6futjqGRQ4nv1UR7y9WFl+/gNes3RYbl0zWL3QR
+	ZyGAPNXW4FGEy9MX6kjAT4BR+NCLRTEA0k/f47JY+P0aO5VOfm2HbtMikcCd4j8CypPOmfCwFKs
+	pyn3utB/2QT4JNFzPaUMZ5iEgjyrf3KPgwjqW
+X-Google-Smtp-Source: AGHT+IEEO9aGC7CpGPiSuiXN+SuE0N37YyaPf1+lp1ZQZTirO7MY/Cp5QyQH6Dgc3eP4RAbyZkoXfbiAF1yqBSVoK0s=
+X-Received: by 2002:adf:e44a:0:b0:33a:e5a8:eaed with SMTP id
+ t10-20020adfe44a000000b0033ae5a8eaedmr4230312wrm.14.1706565493189; Mon, 29
+ Jan 2024 13:58:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b1f77ee7-0684-4260-bcaf-d826af19978d@molgen.mpg.de>
+References: <20240129193512.123145-1-lokeshgidra@google.com> <20240129203904.7dcugltsjajldlea@revolver>
+In-Reply-To: <20240129203904.7dcugltsjajldlea@revolver>
+From: Lokesh Gidra <lokeshgidra@google.com>
+Date: Mon, 29 Jan 2024 13:58:00 -0800
+Message-ID: <CA+EESO5dNSg1d4L37hMbhuT-poD4R3ttBoEQdPvWEy7xHjD1oQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] per-vma locks in userfaultfd
+To: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Lokesh Gidra <lokeshgidra@google.com>, 
+	akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, selinux@vger.kernel.org, surenb@google.com, 
+	kernel-team@android.com, aarcange@redhat.com, peterx@redhat.com, 
+	david@redhat.com, axelrasmussen@google.com, bgeffon@google.com, 
+	willy@infradead.org, jannh@google.com, kaleshsingh@google.com, 
+	ngeoffray@google.com, timmurray@google.com, rppt@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Jan 29, 2024 at 12:39=E2=80=AFPM Liam R. Howlett
+<Liam.Howlett@oracle.com> wrote:
+>
+> * Lokesh Gidra <lokeshgidra@google.com> [240129 14:35]:
+> > Performing userfaultfd operations (like copy/move etc.) in critical
+> > section of mmap_lock (read-mode) causes significant contention on the
+> > lock when operations requiring the lock in write-mode are taking place
+> > concurrently. We can use per-vma locks instead to significantly reduce
+> > the contention issue.
+>
+> Is this really an issue?  I'm surprised so much userfaultfd work is
+> happening to create contention.  Can you share some numbers and how your
+> patch set changes the performance?
+>
 
-Hi Paul,
+In Android we are using userfaultfd for Android Runtime's GC
+compaction. mmap-lock (write-mode) operations like mmap/munmap/mlock
+happening simultaneously elsewhere in the process caused significant
+contention. Of course, this doesn't happen during every compaction,
+but whenever it does it leads to a jittery experience for the user.
+During one such reproducible scenario, we observed the following
+improvements with this patch-set:
 
-On Mon, Jan 29, 2024 at 10:27:44PM +0100, Paul Menzel wrote:
-> Dear Christian,
-> 
-> 
-> Am 29.01.24 um 20:06 schrieb Christian A. Ehrhardt:
-> 
-> > On Mon, Jan 29, 2024 at 12:57:11PM +0100, Paul Menzel wrote:
-> 
-> > > I noticed the message first time with Linux 6.6.8 on December 26th, and also
-> > > with 6.6.11, 6.7 and 6.7.1. I am unsure how to reproduce it though.
-> > > 
-> > > Here the trace from Linux 6.7.1-1~exp1:
-> > > 
-> > > ```
-> > > [    0.000000] Linux version 6.7-amd64 (debian-kernel@lists.debian.org) (x86_64-linux-gnu-gcc-13 (Debian 13.2.0-10) 13.2.0, GNU ld (GNU Binutils for Debian) 2.41.90.20240115) #1 SMP PREEMPT_DYNAMIC Debian 6.7.1-1~exp1 (2024-01-22)
-> > > […]
-> > > [    0.000000] DMI: Dell Inc. XPS 13 9360/0596KF, BIOS 2.21.0 06/02/2022
-> > > […]
-> > > [ 9068.294345] ucsi_acpi USBC000:00: failed to re-enable notifications (-110)
-> > > [ 9068.499156] ------------[ cut here ]------------
-> > > [ 9068.499172] refcount_t: underflow; use-after-free.
-> > > [ 9068.499199] WARNING: CPU: 0 PID: 5598 at lib/refcount.c:28 refcount_warn_saturate+0xbe/0x110
-> 
-> […]
-> > > [ 9068.499517] Call Trace:
-> > > [ 9068.499521]  <TASK>
-> > > [ 9068.499522]  ? refcount_warn_saturate+0xbe/0x110
-> > > [ 9068.499526]  ? __warn+0x81/0x130
-> > > [ 9068.499533]  ? refcount_warn_saturate+0xbe/0x110
-> > > [ 9068.499545]  ? report_bug+0x171/0x1a0
-> > > [ 9068.499549]  ? console_unlock+0x78/0x120
-> > > [ 9068.499553]  ? handle_bug+0x3c/0x80
-> > > [ 9068.499557]  ? exc_invalid_op+0x17/0x70
-> > > [ 9068.499565]  ? asm_exc_invalid_op+0x1a/0x20
-> > > [ 9068.499570]  ? refcount_warn_saturate+0xbe/0x110
-> > > [ 9068.499576]  typec_altmode_release+0x49/0xc0 [typec]
-> > > [ 9068.499615]  device_release+0x34/0x90
-> > > [ 9068.499624]  kobject_put+0x78/0x190
-> > > [ 9068.499629]  ucsi_unregister_altmodes+0x41/0xa0 [typec_ucsi]
-> > > [ 9068.499648]  ucsi_unregister_partner.part.0+0x77/0xa0 [typec_ucsi]
-> > > [ 9068.499662]  ucsi_handle_connector_change+0x1bb/0x310 [typec_ucsi]
-> > > [ 9068.499671]  process_one_work+0x171/0x340
-> > > [ 9068.499676]  worker_thread+0x27b/0x3a0
-> > > [ 9068.499679]  ? __pfx_worker_thread+0x10/0x10
-> > > [ 9068.499681]  kthread+0xe5/0x120
-> > > [ 9068.499690]  ? __pfx_kthread+0x10/0x10
-> > > [ 9068.499693]  ret_from_fork+0x31/0x50
-> > > [ 9068.499698]  ? __pfx_kthread+0x10/0x10
-> > > [ 9068.499700]  ret_from_fork_asm+0x1b/0x30
-> > > [ 9068.499714]  </TASK>
-> > > [ 9068.499715] ---[ end trace 0000000000000000 ]---
-> > > ```
-> > > 
-> > > Please find the full output of `dmesg` attached.
-> > 
-> > This should be fixed by
-> > 
-> > | commit 5962ded777d689cd8bf04454273e32228d7fb71f
-> > | Author: RD Babiera <rdbabiera@google.com>
-> > | Date:   Wed Jan 3 18:17:55 2024 +0000
-> > |
-> > |     usb: typec: class: fix typec_altmode_put_partner to put plugs
-> > 
-> > which is in mainline and 6.7.2.
-> 
-> Awesome. Thank you for mentioning this, and nice timing, as the commit
-> referenced in the Fixed-by tag is from v4.19-rc1 from August 2018. ;-)
+- Wall clock time of compaction phase came down from ~3s to less than 500ms
+- Uninterruptible sleep time (across all threads in the process) was
+~10ms (none was in mmap_lock) during compaction, instead of >20s
 
-A first attempt to fix that 2018 commit made it into 6.7 and caused
-the regression and the warning (b17b7fe6dd5c). This commit was then
-reverted (9c6b789e954f). The final fix (5962ded777d6) is a new
-version of the reverted fix that does not cause regressions.
+I will add these numbers in the cover letter in the next version of
+this patchset.
 
-The Fixes: tag for the revert does point into the post 6.7 range.
-
-    regards  Christian
-
+> >
+> > Changes since v1 [1]:
+> > - rebase patches on 'mm-unstable' branch
+> >
+> > [1] https://lore.kernel.org/all/20240126182647.2748949-1-lokeshgidra@go=
+ogle.com/
+> >
+> > Lokesh Gidra (3):
+> >   userfaultfd: move userfaultfd_ctx struct to header file
+> >   userfaultfd: protect mmap_changing with rw_sem in userfaulfd_ctx
+> >   userfaultfd: use per-vma locks in userfaultfd operations
+> >
+> >  fs/userfaultfd.c              |  86 ++++---------
+> >  include/linux/userfaultfd_k.h |  75 ++++++++---
+> >  mm/userfaultfd.c              | 229 ++++++++++++++++++++++------------
+> >  3 files changed, 229 insertions(+), 161 deletions(-)
+> >
+> > --
+> > 2.43.0.429.g432eaa2c6b-goog
+> >
+> >
 
