@@ -1,158 +1,105 @@
-Return-Path: <linux-kernel+bounces-42986-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CA788409B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:20:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 775468409BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:21:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 282EA28C1C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:20:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 193951F23682
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:21:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5B9D154BEE;
-	Mon, 29 Jan 2024 15:19:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 432A0153BD8;
+	Mon, 29 Jan 2024 15:20:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="tA9L37g+"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pGfEJkf5"
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B5A815443F;
-	Mon, 29 Jan 2024 15:19:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 996DE153BCD
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 15:20:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706541595; cv=none; b=qpLZ9/8yoqoq1QL64c0MscwGETwYvPtDhCOl//r2eHn1lLK2ogQEEbQbhVQuiXNh6w5ye8/Tnsbg+bjqcacOac0IIcrEkPZDm+QwkPs91tATe6XTkJsW1PGpcfREw1JfcV8hmkEFFg/ggtXo6/EQcXAj271RDsUKeNwNrY3fdDo=
+	t=1706541619; cv=none; b=e+Ma4/opdtmEog9T9OtW1P8jLnEGg5YVw0wUZt0E/J/j9+lycP5HD/QMK8dFP9C25gi+sXNraAXsNrTzw68MYAiIgbbyFevgLEd8kJ3GA+Q8eEZrjK2cCxrToEroMJ5SBCjdQUuJpbB+HuIT4bcdFIri96D1KQWok9TwxwKGR+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706541595; c=relaxed/simple;
-	bh=ZP/y7rwTNXQRRS57Mj+sf0zKJdTCjZmzL7LSP32iLCI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=nn/HaWDky8/AVw6/U9zRQVEMpBpDot1i6FxU4qqxNGl3k1Gi8nuNQAPwDX/jZhENs1hu2oCrHACHss1v3ablWSMLHIyLRNEyWgi+o29OPv9Rsmq1mYkn7+3XuqIhRwjJWfbmMG/jJGTcmJwZ7r4c68aJ9abycnqbwCbTzC8gAtY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=tA9L37g+; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40TFJfSl091902;
-	Mon, 29 Jan 2024 09:19:41 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706541581;
-	bh=LfcJ9zlfwzsGfl0+LgvF4CNibbNNKcmZOBPqSOAfWHE=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=tA9L37g+pjnQgFLbIPV3hITGSdJ5U6xepE4CRSItBY+A36zluNNw7cm4dr5JK0CZd
-	 WBvwQzXPQ3dCgBacqCSN4krPJsnsWEz93fTeCl6LlLL48TSbNcGD2/m3NE6graaNxK
-	 BQ9BRJEIsi3kP5axXUsMYQEMjw/6laK+Kv07SDnE=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40TFJfMj019376
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 29 Jan 2024 09:19:41 -0600
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 29
- Jan 2024 09:19:40 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 29 Jan 2024 09:19:40 -0600
-Received: from [10.249.42.149] ([10.249.42.149])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40TFJew2086755;
-	Mon, 29 Jan 2024 09:19:40 -0600
-Message-ID: <077682de-7789-4f1f-8dcc-aa47f4fb2dff@ti.com>
-Date: Mon, 29 Jan 2024 09:19:40 -0600
+	s=arc-20240116; t=1706541619; c=relaxed/simple;
+	bh=mU6e8uETmKPJ2827KqRKhqi6FjqcNSn7r6FAsSfjeWA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fGVfRf4iMvdMgvDcF4eiZ7U1Gfq7ZN1pT/R4sTFAPl7O05d7sYdrhpbRsAPhGcPf8s0uCj2gXAzPHuJ3ixcJYqEDj+fH1yt6X91HCZuXarZUCNsXJphjO8IjShea+QEAIHmo8JmzI1csc3OuyVo29PSvJFWhIqvsLDOF6yQBXEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pGfEJkf5; arc=none smtp.client-ip=209.85.219.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dc68150f46fso916648276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 07:20:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706541615; x=1707146415; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=HM4oKJKjaECYklXiQu+oSrVSN78CLNrHNPBMMaAeH+4=;
+        b=pGfEJkf5c2ftFG2ZZ0u28kbFvmZnzbn/tBpWlCHDogxAOpzOeZK/hXpCkUffOsfjvI
+         FY+SGWkQHGGNFO/TVnm4oNXxgMP1wZmEQ0MRfhj+EbFeU7TpdRc7z+Kx4es2TSPrxzxF
+         hhcXoVuI4Kvv1ZFDRsowXtaccnC4stHGIaU+GbeMXArjQhrOMr2NxtupBSBjEb/4wiJj
+         +lSfGncVWu+tyX//o9TrR5lMzPGzXkcCOaT0za9KGyZ/NDCR6S/2R0PegWMUX5U/JUhm
+         uGTHcWK8yKDWVrO9dVaImKkBqtnCCxM5q4c0YR0FptTjLuaUbfxoq/ctI4GfhxHnKCzX
+         mjQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706541615; x=1707146415;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HM4oKJKjaECYklXiQu+oSrVSN78CLNrHNPBMMaAeH+4=;
+        b=SRTPCDYn69g2p51XBpIBmDQ8s8+VajpO6OzlyG9d3NEYN+/0EtmBITxu4eb7HDmuKh
+         Ysu3xA1ti2IA3+vYL1fc11iqb1XC+ZkwngdPNhqeMyxBr8k8VNSgWMc+QtPC49ta7S/w
+         I72JYT5P8eQheir779cZ4tPm0dgTIXbLnVp2r+HON9lSJTmYW3Wf7oBzBIp8hGies7fB
+         mBzRP8Bm4xaNHQP0+OSWoqGbybEkRUMXxDwBYJ6ak4SRpEWwA/3jRKS96VTR9Vyw0fJM
+         3IlurTv1uI6sWfZUKjSJV1lug4CCj2q/2wKmo62+XOY0bcYWZVoezu6f93D/LfGwmFML
+         V8Eg==
+X-Gm-Message-State: AOJu0YxnPfEHHvHy9l3x/8V/5L8tA6NhOih8K4U0oluOU4AjzUVoc4MZ
+	O6m+zO+VP9ZfKSM1V6n8feD/M0tZTjtIB/Ro62W2g2Lhz/ZZZDYNTSJm4HBO03YulHm3df03Idd
+	ID979K8M2fySv3pnOysZiFVVLZVKUJifcX/SWCA==
+X-Google-Smtp-Source: AGHT+IH/kSP17UuZbT0esTyo8sAM9ro7kxiy0XA20jRmTGGdm4q9oJTvHL7EujRbD/wQpB+sQQrHiodPITjmHdSrDkg=
+X-Received: by 2002:a05:6902:2681:b0:dc2:2654:513e with SMTP id
+ dx1-20020a056902268100b00dc22654513emr4555425ybb.53.1706541615698; Mon, 29
+ Jan 2024 07:20:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] PCI: j721e: Extend j721e_pcie_ctrl_init() for non syscon
- nodes
-To: Siddharth Vadapalli <s-vadapalli@ti.com>, <bhelgaas@google.com>,
-        <lpieralisi@kernel.org>, <kw@linux.com>, <robh@kernel.org>,
-        <vigneshr@ti.com>
-CC: <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>
-References: <20240129104958.1139787-1-s-vadapalli@ti.com>
-Content-Language: en-US
-From: Andrew Davis <afd@ti.com>
-In-Reply-To: <20240129104958.1139787-1-s-vadapalli@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20240129-x1e80100-remoteproc-v1-0-15d21ef58a4b@linaro.org> <20240129-x1e80100-remoteproc-v1-2-15d21ef58a4b@linaro.org>
+In-Reply-To: <20240129-x1e80100-remoteproc-v1-2-15d21ef58a4b@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Mon, 29 Jan 2024 17:20:04 +0200
+Message-ID: <CAA8EJpo0Bmu-=KHhEiFAJXC7CwxoWpT2FB+Y0aSiskkfz_1EUg@mail.gmail.com>
+Subject: Re: [PATCH 2/3] remoteproc: qcom_q6v5_pas: Add support for X1E80100 ADSP/CDSP
+To: Abel Vesa <abel.vesa@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Mathieu Poirier <mathieu.poirier@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, linux-arm-msm@vger.kernel.org, 
+	linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Sibi Sankar <quic_sibis@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 1/29/24 4:49 AM, Siddharth Vadapalli wrote:
-> The "ti,syscon-pcie-ctrl" device-tree property is used to obtain
-> reference to the "pcie_ctrl" register within the System Controller Module
-> in order to configure the link speed, number of lanes and the mode of
-> operation of the PCIe controller. The existing implementation of the
-> "j721e_pcie_ctrl_init()" function handles the case where the compatible for
-> the System Controller Module node specified using the "ti,syscon-pcie-ctrl"
-> property is "syscon". Since the System Controller Module can be modelled as
-> a "simple-bus" as well, extend the implementation of the
-> "j721e_pcie_ctrl_init()" function to handle the "simple-bus" case.
-> 
-> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+On Mon, 29 Jan 2024 at 15:35, Abel Vesa <abel.vesa@linaro.org> wrote:
+>
+> From: Sibi Sankar <quic_sibis@quicinc.com>
+>
+> Add support for PIL loading on ADSP and CDSP on X1E80100 SoCs.
+>
+> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
 > ---
-> 
-> Hello,
-> 
-> This patch is based on linux-next tagged next-20240129.
-> 
-> The System Controller Module is modelled as a "simple-bus" in J784S4 SoC at
-> https://github.com/torvalds/linux/blob/master/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi#L45
-> The existing SoCs such as J721E and J7200 which currently model the node as
-> a Syscon node will also be updated to model it as a "simple-bus".
-> Therefore this patch aims to update the driver in order to handle the
-> migration of the System Controller Module to the "simple-bus" compatible
-> without breaking PCIe functionality on existing TI SoCs which make use
-> of the pci-j721e.c driver.
-> 
-> Regards,
-> Siddharth.
-> 
->   drivers/pci/controller/cadence/pci-j721e.c | 10 +++++++++-
->   1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
-> index 85718246016b..2ace7e78a880 100644
-> --- a/drivers/pci/controller/cadence/pci-j721e.c
-> +++ b/drivers/pci/controller/cadence/pci-j721e.c
-> @@ -224,12 +224,20 @@ static int j721e_pcie_ctrl_init(struct j721e_pcie *pcie)
->   {
->   	struct device *dev = pcie->cdns_pcie->dev;
->   	struct device_node *node = dev->of_node;
-> +	struct device_node *scm_conf;
->   	struct of_phandle_args args;
->   	unsigned int offset = 0;
->   	struct regmap *syscon;
->   	int ret;
->   
-> -	syscon = syscon_regmap_lookup_by_phandle(node, "ti,syscon-pcie-ctrl");
-> +	scm_conf = of_parse_phandle(node, "ti,syscon-pcie-ctrl", 0);
-> +	if (!scm_conf) {
-> +		dev_err(dev, "unable to get System Controller node\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	syscon = device_node_to_regmap(scm_conf);
+>  drivers/remoteproc/qcom_q6v5_pas.c | 41 ++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 41 insertions(+)
+>
 
-Turning the entire "simple-bus" region into a regmap using this
-function is just as broken as having it as a "syscon". The core
-problem we are solving by getting rid of the blanket syscon nodes
-is that it causes multiple mappings of the same register. This
-can cause issues with regmap caching, read–modify–write, etc..
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-What you want to do is add a subnode to the simple-bus, have that
-encapsulate just the registers used for PCIe, and have the PCIe
-node point to that. Then this patch isn't needed.
 
-For an example, see how it's done for DSS[0].
-
-Andrew
-
-[0] https://github.com/torvalds/linux/blob/41bccc98fb7931d63d03f326a746ac4d429c1dd3/arch/arm64/boot/dts/ti/k3-am65-main.dtsi#L502
-
-> +	of_node_put(scm_conf);
->   	if (IS_ERR(syscon)) {
->   		dev_err(dev, "Unable to get ti,syscon-pcie-ctrl regmap\n");
->   		return PTR_ERR(syscon);
+-- 
+With best wishes
+Dmitry
 
