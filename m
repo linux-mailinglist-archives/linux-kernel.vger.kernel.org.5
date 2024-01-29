@@ -1,157 +1,122 @@
-Return-Path: <linux-kernel+bounces-43300-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43301-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F7F98411E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:16:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4A138411E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:16:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21DA1B268A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:16:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0321E1C21358
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:16:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EC936F06B;
-	Mon, 29 Jan 2024 18:16:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4F636F080;
+	Mon, 29 Jan 2024 18:16:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P6KeVEXS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZZB6xfZa"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5DA73F9FC
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 18:16:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F9C03F9FC
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 18:16:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706552177; cv=none; b=Rklgu5FGnZJQ3yIYCXABOLP57utNp2gk8ZldY6NRiJLJ/FrIgeB8MVxdqiaM5kUR6SVxLK5n+ImX6Xklp7t6z70tLoSRxSSrVHYy+YZJhJ/QacE7XLoOJfOeH4dxNW1wl2SzxYkVHxJX7SzxvpBQ7Q3YqhuEdWJE9vGi9QMBL5w=
+	t=1706552183; cv=none; b=nCorAI69gIzxjVUwwGgq/40nshksSQnEaXpNQNId5WELR/UpBCmBkrBCe/u+bnx6AN5tMhYUeyzq8CuODn8G+wLDokqcQRaoDE991u57MKoe/IkP0uf7NAKBLKYcoPi0nepniB823abZYvLQgXOtaL8IX2J7B95nB1Nn9AVwxEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706552177; c=relaxed/simple;
-	bh=4eYLj/Lm5IOPUr7af+2C6a/UQ1OO1uxY23YBH7rnuMQ=;
+	s=arc-20240116; t=1706552183; c=relaxed/simple;
+	bh=4TWZ4WsxRlDcM1yW2EecnzCe9JTpQcCO+ieUAB1Ukg4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tHGv59MlwtfbuaeAHDEvEtlZauyhVvcCMBH7I80Mqpqo7seG0/+DZyzV7hOrUHM9OVhM79k7tXP6WvdETJFSzy57gXDpfrr1MLEDiiFtCrurahnM6jDQFL33x+lfWTgY067pFEQuBWcwP1Glyfw+ugiBsbTG5gWXCJokc8SpubQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P6KeVEXS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DE0AC43390;
-	Mon, 29 Jan 2024 18:16:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706552177;
-	bh=4eYLj/Lm5IOPUr7af+2C6a/UQ1OO1uxY23YBH7rnuMQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=P6KeVEXSToGyeem1pchNMajeFGtoD9G9sIiQiQEfXKACNlusnFQ+nElZ28J5l1dTf
-	 2lHc6BUcIcO94lv0eiRCXRNh0PlwylRLi2AunxuduIesrx0mL3dkIJk6lK8Ve6bEu3
-	 5MBuCN43X5Ny0/9blfPv5VhHJ+Tfi2JuTdxn/UpCS5yrXTcy70VDCmLzt0ONykvGWB
-	 kGKs+4RzzGHSW+Vl8Y66WkEPa99kpss/UvoaBlITv7TiXCtcippQI836W5nadNMS4u
-	 tDu+oKcjn7DlPvMBaJNzYGrlLGtpCvdWDh1Ena/LF8pHJAQHApmlpohzNX0zey340P
-	 VBAHcZ7w/z/mA==
-Date: Mon, 29 Jan 2024 18:16:13 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Jisheng Zhang <jszhang@kernel.org>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] riscv: optimize memcpy/memmove/memset
-Message-ID: <20240129-prelaw-tweet-ae59a90ded20@spud>
-References: <20240128111013.2450-1-jszhang@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ckUodnHPfu6ujdf4blkpS55ZbPTTCk7l5ERoSJEQJ83OsZqLi7ruwGt9ymFYVm+H84o81gIxSSjHvAZ6B1yQYRt5tLd5bctEG50fY6QHhTuFuFWrtAukjvHNxEZ49q1/d5OFBCq4fLEJXVs7dfUjMrt31zeULIXjwcVEDExxDBQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZZB6xfZa; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d51ba18e1bso29182625ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 10:16:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706552181; x=1707156981; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kqyU9DXwN8j46E2KrXUrO2lXrMIFjFZ0DrupptOiWZw=;
+        b=ZZB6xfZaHXtJ8+zb8TWtobIRy1vqLiQYj7/FYF5ey7rzAQg2eu8DZTP8Qi7BBBSQ7f
+         ioAr4SNVjBrC5BMp5rB1xllQh3klvn3l7u1Y2pKYmyAOWeerGopQ4PfQoZdAW+a5PFSR
+         3gr8hVf1owknpLtUxzsmfl2OhzNr3Izij1W465W1QAnKGbGTlotILRePp6wnDpkLwMCS
+         +/Ffgrhf5YC57WN2Uyw3YgAYmrCh/Eb/CRw8a4eXcDManlW8jfediHfnFhTSr6ANzXYm
+         hWVC+DYIq9w7ZtWJIWYMIYDG59CSj+ThI7rGAjstYroZmGRx8SFpO3cDfBNjKOp9R0mF
+         7vUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706552181; x=1707156981;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kqyU9DXwN8j46E2KrXUrO2lXrMIFjFZ0DrupptOiWZw=;
+        b=gHo0eL2ZaiHCn/0MRujooLKRu97Zo79LM2uxS92q2BxYXxz8ksczJqOSNYhJ4jqGJj
+         RXeQR6LW/SzBjZLIbwQO6eGiyh8vDI2vFHwmNxlJ5G3L2b3KsI3SrgV7OseTCKh/deQ2
+         Whfp6eht2NdLaUzmJMZ4opaS/1WDRSPCwSqXNr1HAEKysbm2WPnK2REGyDh62zLpSkds
+         Ha/kWzo5brx68qVt2IEl22+F/jDt4kTKtcVUx7SBCqn8g2SRZL5JcD1BThpMkB1+B3vP
+         JCVDYBvy1S78l72/OUjrFaOwJ8FbeN03+RgBSun6dfgFiIftSEeFnvGkVnFFV5xWADc/
+         IT5A==
+X-Gm-Message-State: AOJu0Yw2fU0ZL7ycy265Vb7TUWfdVMl3YXtVoblnh+l/9imyYeYBM8lj
+	pWmEGFSY+vjd9XRIi4XT6cW/6Ouu9LddWYhzWdgb/aVfc5AEQASYa9kPe/es
+X-Google-Smtp-Source: AGHT+IH9tPkBWGOEAnVDZvo+C4jPC6Td+LamA27dO+2bpJfn3kVt8MEdJYsE3Ml4FrVJVHhsiR7+EQ==
+X-Received: by 2002:a17:902:7482:b0:1d8:ab46:c18 with SMTP id h2-20020a170902748200b001d8ab460c18mr6045754pll.45.1706552180698;
+        Mon, 29 Jan 2024 10:16:20 -0800 (PST)
+Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
+        by smtp.gmail.com with ESMTPSA id la13-20020a170902fa0d00b001d8e9750b0csm1747228plb.52.2024.01.29.10.16.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 10:16:20 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Mon, 29 Jan 2024 08:16:19 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Naohiro.Aota@wdc.com,
+	kernel-team@meta.com
+Subject: Re: [PATCHSET v3 wq/for-6.9] workqueue: Implement system-wide
+ max_active for unbound workqueues
+Message-ID: <Zbfrc__7_kWow5wG@slm.duckdns.org>
+References: <20240125170628.2017784-1-tj@kernel.org>
+ <CAJhGHyDHP97ZHbDwPwhiYvBWbzvXw_UnXhPs4RRJ6nQBo3_x=Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="d1n2JiHAv+OvTEWE"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240128111013.2450-1-jszhang@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJhGHyDHP97ZHbDwPwhiYvBWbzvXw_UnXhPs4RRJ6nQBo3_x=Q@mail.gmail.com>
 
+On Tue, Jan 30, 2024 at 12:07:33AM +0800, Lai Jiangshan wrote:
+> Hello, Tejun
+> 
+> On Fri, Jan 26, 2024 at 1:06 AM Tejun Heo <tj@kernel.org> wrote:
+> 
+> > This patchset includes the following patches:
+> >
+> >  0001-workqueue-Move-pwq-max_active-to-wq-max_active.patch
+> >  0002-workqueue-Factor-out-pwq_is_empty.patch
+> >  0003-workqueue-Replace-pwq_activate_inactive_work-with-__.patch
+> >  0004-workqueue-Move-nr_active-handling-into-helpers.patch
+> >  0005-workqueue-Make-wq_adjust_max_active-round-robin-pwqs.patch
+> >  0006-workqueue-RCU-protect-wq-dfl_pwq-and-implement-acces.patch
+> >  0007-workqueue-Move-pwq_dec_nr_in_flight-to-the-end-of-wo.patch
+> >  0008-workqueue-Introduce-struct-wq_node_nr_active.patch
+> >  0009-workqueue-Implement-system-wide-nr_active-enforcemen.patch
+> >  0010-tools-workqueue-wq_dump.py-Add-node_nr-max_active-du.patch
+> >
+> 
+> I just left a small piece of comments on patch 8 and patch 9.
+> After they are resolved, for patch 1-9:
+> 
+> Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
 
---d1n2JiHAv+OvTEWE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Updated 8 and 9 and applied the series to wq/for-6.9. If there are further
+issues, let's address with followup patches.
 
-On Sun, Jan 28, 2024 at 07:10:10PM +0800, Jisheng Zhang wrote:
-> This series is to renew Matteo's "riscv: optimized mem* functions"
-> sereies.
->=20
-> Compared with Matteo's original series, Jisheng made below changes:
-> 1. adopt Emil's change to fix boot failure when build with clang
-> 2. add corresponding changes to purgatory
-> 3. always build optimized string.c rather than only build when optimize
-> for performance
-> 4. implement unroll support when src & dst are both aligned to keep
-> the same performance as assembly version. After disassembling, I found
-> that the unroll version looks something like below, so it acchieves
-> the "unroll" effect as asm version but in C programming language:
-> 	ld	t2,0(a5)
-> 	ld	t0,8(a5)
-> 	ld	t6,16(a5)
-> 	ld	t5,24(a5)
-> 	ld	t4,32(a5)
-> 	ld	t3,40(a5)
-> 	ld	t1,48(a5)
-> 	ld	a1,56(a5)
-> 	sd	t2,0(a6)
-> 	sd	t0,8(a6)
-> 	sd	t6,16(a6)
-> 	sd	t5,24(a6)
-> 	sd	t4,32(a6)
-> 	sd	t3,40(a6)
-> 	sd	t1,48(a6)
-> 	sd	a1,56(a6)
-> And per my testing, unrolling more doesn't help performance, so
-> the "c" version only unrolls by using 8 GP regs rather than 16
-> ones as asm version.
-> 5. Add proper __pi_memcpy and __pi___memcpy alias
-> 6. more performance numbers.
->=20
-> Per my benchmark with [1] on TH1520, CV1800B and JH7110 platforms,
-> the unaligned medium memcpy performance is running about 3.5x ~ 8.6x
-> speed of the unpatched versions's! Check patch1 for more details and
-> performance numbers.
->=20
-> Link:https://github.com/ARM-software/optimized-routines/blob/master/strin=
-g/bench/memcpy.c [1]
->=20
-> Here is the original cover letter msg from Matteo:
-> Replace the assembly mem{cpy,move,set} with C equivalent.
->=20
-> Try to access RAM with the largest bit width possible, but without
-> doing unaligned accesses.
->=20
-> A further improvement could be to use multiple read and writes as the
-> assembly version was trying to do.
->=20
-> Tested on a BeagleV Starlight with a SiFive U74 core, where the
-> improvement is noticeable.
+Thanks a lot for all the reviews. Hopefully, this should address the
+max_active issue for the long term.
 
-However, with allmodconfig it doesn't compile:
-  Redirect to /build/tmp.zzMIlhgQQo and /build/tmp.vxnoxu8G5e
-  Tree base:
-  0c526539d432 ("riscv: optimized memcpy")
-  Building the whole tree with the patch
-  ../arch/riscv/lib/string.c:118:7: error: expected identifier or '('
-  ../arch/riscv/lib/string.c:118:7: error: expected ')'
-  ../arch/riscv/lib/string.c:143:7: error: expected identifier or '('
-  ../arch/riscv/lib/string.c:143:7: error: expected ')'
-  ../arch/riscv/lib/string.c:118:7: error: expected identifier or '('
-  ../arch/riscv/lib/string.c:118:7: error: expected ')'
-  ../arch/riscv/lib/string.c:143:7: error: expected identifier or '('
-  ../arch/riscv/lib/string.c:143:7: error: expected ')'
-
-Seems to be the case both with llvm and gcc.
-
-Cheers,
-Conor.
-
-
---d1n2JiHAv+OvTEWE
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbfrbQAKCRB4tDGHoIJi
-0tfSAP9CXefieMdiPqbq7pdjY+14U99AxgMlsgdjf8Ba7tagMQD/bq4CepFhnrUJ
-AmdXmVbmVEhI6YWXz3uuEssFY1Sg5A4=
-=DP0s
------END PGP SIGNATURE-----
-
---d1n2JiHAv+OvTEWE--
+-- 
+tejun
 
