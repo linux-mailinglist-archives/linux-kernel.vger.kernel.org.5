@@ -1,214 +1,124 @@
-Return-Path: <linux-kernel+bounces-42471-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42472-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D00B8401C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:34:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EC5F8401C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:35:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78F551F21D00
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:34:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C18DE1C2271E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:35:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 667095732E;
-	Mon, 29 Jan 2024 09:32:59 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D492D55789;
+	Mon, 29 Jan 2024 09:33:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zpcYOqIM"
+Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFD155730E;
-	Mon, 29 Jan 2024 09:32:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C4205576D
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:33:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706520778; cv=none; b=M2dCUsbmmBSLwJzccu0LTOBZ2JVM3OxUP4V3hSiFOkqAnYPhnWZGGrDQk0ZJY6YIGCelgXdMciqBIirlYVysE1LSYvRuNB4pUqPuRcNYROf1zDKCLqO0AIwrK6UXsCbSyoJiMjKWuOLow64e1B8cUbZm5cyveU9cM6XPCIJ9c6w=
+	t=1706520803; cv=none; b=fk27ufS7oBawNGOsBAzQTQAOedNaduHPpMCUbVRdjaGqnoTbgvt9VvP8SkeKRGnb4tnRAuMI9pPZyKc9+7Z3CjYq33i4AW+inXP9wm4f3My8+CzsM3nVrv+IywFoaNNyoDitYF97emFamlQJvRJzuCIEqWZAh8gwv1ej30FGXdY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706520778; c=relaxed/simple;
-	bh=RNCTIC1LHxN8TP52KyYN51dpjEvqeKfPe48AkEi5JGU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XIbN9FYk43nQ8XG1zXkUfuvXuUidTE2LJPrCUPescBRxlk3l7VL6Ud4nzmI2SsrBoc0Vb9Bm74fIb+8eay29ljnvFxlPcTpu6XltrzV/D3IXWhNLN7N6hO3NWAs6/nD+4tz1KY00cuLZQEvZQM8+0APOFmZBp8JAf/ZKe3i1ZIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05A35C43394;
-	Mon, 29 Jan 2024 09:32:56 +0000 (UTC)
-Date: Mon, 29 Jan 2024 04:32:55 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- LKML <linux-kernel@vger.kernel.org>, Linux Trace Devel
- <linux-trace-devel@vger.kernel.org>, Christian Brauner
- <brauner@kernel.org>, Ajay Kaher <ajay.kaher@broadcom.com>, Geert
- Uytterhoeven <geert@linux-m68k.org>, linux-fsdevel
- <linux-fsdevel@vger.kernel.org>, Greg KH <gregkh@linuxfoundation.org>, Al
- Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
-Message-ID: <20240129043255.0487d864@rorschach.local.home>
-In-Reply-To: <CAOQ4uxikMN9EapL5+6jtMn5Ahe4h7wGZOgEsdsjy87v72FxJDw@mail.gmail.com>
-References: <20240126150209.367ff402@gandalf.local.home>
-	<CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
-	<20240126162626.31d90da9@gandalf.local.home>
-	<CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
-	<CAHk-=whNfNti-mn6vhL-v-WZnn0i7ZAbwSf_wNULJeyanhPOgg@mail.gmail.com>
-	<CAHk-=wj+DsZZ=2iTUkJ-Nojs9fjYMvPs1NuoM3yK7aTDtJfPYQ@mail.gmail.com>
-	<20240128175111.69f8b973@rorschach.local.home>
-	<CAHk-=wjHc48QSGWtgBekej7F+Ln3b0j1tStcqyEf3S-Pj_MHHw@mail.gmail.com>
-	<20240128185943.6920388b@rorschach.local.home>
-	<20240128192108.6875ecf4@rorschach.local.home>
-	<CAHk-=wg7tML8L+27j=7fh8Etk4Wvo0Ay3mS5U7JOTEGxjy1viA@mail.gmail.com>
-	<20240128210938.436fc3b4@rorschach.local.home>
-	<CAOQ4uxikMN9EapL5+6jtMn5Ahe4h7wGZOgEsdsjy87v72FxJDw@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706520803; c=relaxed/simple;
+	bh=lnkFjsphcezQpZWvGOYGk0VDXPFFwVinksF+qkpMu5c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Mhp5gCckVaNEHESk9yqOAK5F6wnZjr+qSX1YtU+eadrjYXkBZQQN2oWUqeaCLHFVuNxkACRZm99GjNskybf2IfyYAkL/uEQHM6yKpKfyNBf4ZnHyAuYs4T4dkh9ygmpWqzgYwxsFvCYQu4OA1E9ziGc8XFLrgzxKqbtbu8zoD2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zpcYOqIM; arc=none smtp.client-ip=209.85.219.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-680b1335af6so33457656d6.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 01:33:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706520800; x=1707125600; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Dq424Qli/Kfhhi0JPG1g3XUSsIiCTsFPRy5rSRMY0fc=;
+        b=zpcYOqIMU7I9qR0m4vb8f8kl7BLNdHvQomLmR7gPYjUXX+yPoSz/5O272i6mDkau8x
+         x3KS1iQFwLhs9vB25IorpHRYL52rBVinzcF7+RfIcEbTYqZI14Izdp6UpjJO6eCBCnGf
+         cyTPd/KKjKD/KyhXfAhFcK+mf8aA8U82uJv6Soh4BjB3bMoEY7n8eNwDrFHilP31l2vQ
+         VlnTtwRxn3vzlZTrgK3q9VgUi9gYpAc+j2VHNNIyylx7InS+cKlFnWLn9C7gP1k+VfEc
+         Y2AuB8kZCvAG+aqS/JJxPVTBVEFFCStOTq+VNgAk0BwADwYOlcYCQRL4PCvCp2FqpF9v
+         YY4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706520800; x=1707125600;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Dq424Qli/Kfhhi0JPG1g3XUSsIiCTsFPRy5rSRMY0fc=;
+        b=QrAh3XUo2Nk08XNmIvant+cGymDG4chrAcLa/4ROruvBntv+8C5Kz97YcL6NPaGG3l
+         lOxX/xX+2po1Zuh749eAnE/XNZzm9rSCVz1Iv0mbQcMkOkRrQYvOIMxAW2w5CPrsGWQO
+         U58lnWLDBtoNIVAdZzj6DtGM1QDsS8UAUSJeqPRFtZJyP/RmHg1fRS8r9j+L2ngOf/sQ
+         +rClVhoaHlWDG1zmrg4ScjIzoiBV+cocLAOAzLVhRJv8OgJ7ag6hjEFAlQDgeacihz5M
+         wit5IshRdV4HDjPFHEvMFfyIgVdhCx+lIj0dXVsLndwRLfR76kbvF3Ei8UyPiqlJUqVt
+         O9GQ==
+X-Gm-Message-State: AOJu0YwHB8WKdbFFqE2UtKL2xMJb6E3PR9M6iI6duve+MaUlcC1yAjwr
+	n+79oqDmJcRoLpqbS/VolAYGDSkIfojCuJjmad5LGXNHzYJetjxouSo37nwm5Is/lwEw3PbKzaq
+	yRNx3/3hpCJo9uSJS1LAWqFF4XxoXnQO92elQh83TQ9AxHjWAe9A=
+X-Google-Smtp-Source: AGHT+IGlninTsbthRgv7YfGO6TDhLl3jpQ6rysNWVNRWFEYfCzjOfdh3Cea6xHHl58XzEXklrGeXPz+XTkTDWVwwfAw=
+X-Received: by 2002:a05:6214:f28:b0:68b:5142:ba18 with SMTP id
+ iw8-20020a0562140f2800b0068b5142ba18mr10003938qvb.9.1706520800405; Mon, 29
+ Jan 2024 01:33:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240127001926.495769-1-andre.draszik@linaro.org> <20240127001926.495769-10-andre.draszik@linaro.org>
+In-Reply-To: <20240127001926.495769-10-andre.draszik@linaro.org>
+From: Peter Griffin <peter.griffin@linaro.org>
+Date: Mon, 29 Jan 2024 09:33:08 +0000
+Message-ID: <CADrjBPpDfaXWBJ07Xh8sm6jDjHy94=3m8TFmeOFnSFDRs9hu0A@mail.gmail.com>
+Subject: Re: [PATCH 9/9] clk: samsung: gs101: don't CLK_IGNORE_UNUSED
+ peric1_sysreg clock
+To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
+Cc: mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	linux-kernel@vger.kernel.org, kernel-team@android.com, 
+	tudor.ambarus@linaro.org, willmcvicker@google.com, semen.protsenko@linaro.org, 
+	alim.akhtar@samsung.com, s.nawrocki@samsung.com, tomasz.figa@gmail.com, 
+	cw00.choi@samsung.com, linux-arm-kernel@lists.infradead.org, 
+	linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
+	devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 29 Jan 2024 08:44:29 +0200
-Amir Goldstein <amir73il@gmail.com> wrote:
+On Sat, 27 Jan 2024 at 00:19, Andr=C3=A9 Draszik <andre.draszik@linaro.org>=
+ wrote:
+>
+> Now that we have hooked it up in the DTS, we can drop the
+> CLK_IGNORE_UNUSED from here.
+>
+> Signed-off-by: Andr=C3=A9 Draszik <andre.draszik@linaro.org>
+> ---
 
-Hi Amir,
+Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
 
-[ Suffering a bit of insomnia, I made the mistake of reading email from
-  bed, and now I have to reply :-p ]
-
-> >
-> > And I do it just like debugfs when it deletes files outside of VFS or
-> > procfs, and pretty much most virtual file systems.
-> >  
-> 
-> I think it is better if we used the term "pseudo" file systems, because
-> to me VFS already stands for "virtual file system".
-
-Oops, you are absolutely correct. I meant "pseudo" but somehow switch
-to saying "virtual". :-p
-
-> >
-> > Sorry, but you didn't prove your point. The example you gave me is
-> > already covered. Please tell me when a kprobe goes away, how do I let
-> > VFS know? Currently the tracing code (like kprobes and synthetic
-> > events) calls eventfs_remove_dir() with just a reference to that ei
-> > eventfs_inode structure. I currently use the ei->dentry to tell VFS
-> > "this directory is being deleted". What other means do I have to
-> > accomplish the same thing?
-> >  
-> 
-> Would kernfs_node_dentry() have been useful in that case?
-> Just looking at kernfs_node and eventfs_inode gives a very strong
-> smell of reinventing.
-
-Close, but looking at kernfs real quick, I think I see the difference
-and why eventfs relies on the dentry, and why it doesn't need to.
-
-> 
-> Note that the fact that eventfs has no rename makes the whole dentry
-> business a lot less complicated than it is in the general VFS case -
-> IIUC, an eventfs path either exists or it does not exist, but if it exists,
-> it conceptually always refers to the same underlying object (kprobe).
-> 
-> I am not claiming that kernfs can do everything that eventfs needs  -
-> I don't know, because I did not look into it.
-
-eventfs has one other major simplicity that kernfs does not. Not only
-does it not have renames, but files are not created or deleted
-individually. That is, when a directory is created, it will have a
-fixed number of files. It will have those same files until the
-directory is deleted.
-
-That means I have no meta data saving anything about the files, except
-a fixed array that that holds only a name and a callback for each file
-in that directory.
-
-> 
-> But the concept of detaching the pseudo filesystem backing objects
-> from the vfs objects was already invented once and Greg has also
-> said the same thing.
-> 
-> My *feeling* at this point is that the best course of action is to use
-> kernfs and to improve kernfs to meet eventfs needs, if anything needs
-> improving at all.
-> 
-> IMO, the length and content of this correspondence in itself
-> is proof that virtual file systems should use an abstraction that
-> is much less flexible than the VFS.
-> 
-> Think of it this way - kernefs and VFS are both under-documented,
-> but the chances of getting kernfs well documented are far better
-> than ever being able to document all the subtleties of VFS for mortals.
-> 
-> IOW, I would be happy if instead of the LSFMM topic
-> "Making pseudo file systems inodes/dentries more like normal file systems"
-> We would be talking about
-> "Best practices for writing a pseudo filesystem" and/or
-> "Missing kernfs functionality for writing pseudo filesystems"
-
-I'm fine with that, and I think I also understand how to solve the
-issue with Linus here.
-
-Linus hates the fact that eventfs_inode has a reference to the dentry.
-The reason I do that is because when the dentry is created, it happens
-in lookup with a given file name. The registered callback for the file
-name will return back a "data" pointer that gets assigned to the
-dentry's inode->i_private data. This gets returned directly to the
-open function calls.
-
-That is, the kprobe will register a handle that gets assigned to the
-inode->i_private data just like it did when it was in debugfs. Then the
-open() call would get the kprode data via the inode->i_private.
-
-This is why reference counters do not work here. If I don't make the
-dentry and inode go away after the last reference, it is possible to
-call that open function with the i_private data directly.
-
-I noticed that kernfs assigns the kernfs_inode to the i_private data.
-Thus it has some control over what's in the i_private.
-
-I use that simple_recursive_removal() to clear out any inodes that have
-a dentry ref count of zero so that there will be no inode->i_private
-references in the open.
-
-I'll have to look more at kernfs to see how it works. Perhaps it can
-give me some ideas on not having to use dentry.
-
-Hmm, I may have been looking at this all wrong. I don't need the
-dentry. I need the inode! Instead of keeping a pointer to the dentry in
-the eventfs_inode, I should just be keeping a pointer to the inode. As
-then I could remove the inode->i_private to NULL on the last reference.
-The open() calls will have to check for NULL in that case.
-
-Are inodes part of the VFS system like dentry is?
-
-I would think not as tracefs has a "container_of" around the inode to
-get to the tracefs_inode, just like many other file systems do.
-
-That would remove my need to have to keep around any dentry.
-
-I first need to know why I'm seeing "ghost" files. That is without that
-simple_recursive_removal() call, I get:
-
- # echo 'p:sched schedule' >> /sys/kernel/tracing/kprobe_events 
- # echo 'p:timer read_current_timer' >> kprobe_events 
- # ls events/kprobes/
-enable  filter  sched  timer
-
- # cat events/kprobes/sched/enable
-0
-
- # ls events/kprobes/sched
-enable  filter  format  hist  hist_debug  id  inject  trigger
-
- # echo '-:sched schedule' >> /sys/kernel/tracing/kprobe_events 
- # ls events/kprobes
-enable  filter  timer
-
- # ls events/kprobes/sched/enable
-events/kprobes/sched/enable
-
-  ??
-
-The sched directory has been deleted but I can still "ls" the files
-within it.
-
--- Steve
+>  drivers/clk/samsung/clk-gs101.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/clk/samsung/clk-gs101.c b/drivers/clk/samsung/clk-gs=
+101.c
+> index 7f6c3b52d9ff..d55ed64d0e29 100644
+> --- a/drivers/clk/samsung/clk-gs101.c
+> +++ b/drivers/clk/samsung/clk-gs101.c
+> @@ -3393,7 +3393,7 @@ static const struct samsung_gate_clock peric1_gate_=
+clks[] __initconst =3D {
+>         GATE(CLK_GOUT_PERIC1_SYSREG_PERIC1_PCLK,
+>              "gout_peric1_sysreg_peric1_pclk", "mout_peric1_bus_user",
+>              CLK_CON_GAT_GOUT_BLK_PERIC1_UID_SYSREG_PERIC1_IPCLKPORT_PCLK=
+,
+> -            21, CLK_IGNORE_UNUSED, 0),
+> +            21, 0, 0),
+>  };
+>
+>  static const struct samsung_cmu_info peric1_cmu_info __initconst =3D {
+> --
+> 2.43.0.429.g432eaa2c6b-goog
+>
 
