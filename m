@@ -1,42 +1,52 @@
-Return-Path: <linux-kernel+bounces-42290-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42289-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FB4883FF2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 08:42:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60CD083FF2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 08:42:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17CFC2838BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 07:42:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 014081F224FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 07:42:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 045864F1F6;
-	Mon, 29 Jan 2024 07:42:13 +0000 (UTC)
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A70A4EB42;
+	Mon, 29 Jan 2024 07:42:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="Yr5YsKEB"
+Received: from smtp-out3.simply.com (smtp-out3.simply.com [94.231.106.210])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7940F1E883;
-	Mon, 29 Jan 2024 07:42:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C6AF2A1C5;
+	Mon, 29 Jan 2024 07:42:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.231.106.210
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706514132; cv=none; b=biPd4rItOknKY/6tHDd4lWtQ6BYTew/J40xdlQex2XybvCxHN+45+ViDfV3/UWsbhxK3Yfl54/ByfJgaybuxB/a7T45uqPlTYk0ig6uLzTRaXVpnQb/iuyQiR6BfC6F85AZwdj4pm7XjSDiqL7UF3grPCiLfcGPuNg424AlQA1c=
+	t=1706514131; cv=none; b=KKA5Lg54cF/als36/7N+9Zfy2OwGdZYJHbuO8WsYegibzqaVXk8A+SVAuV8aSF0mKNNeeQzFsa15GFiAhecZNOVY1lv4wftQWmvCmc0imA75vxVQGWONnaszQ/lIWUPgfP6HUjsG/DjYkThYXbWnryYab6gBo2MM3qGfb1wF9CY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706514132; c=relaxed/simple;
-	bh=CqKak82DKuvMol0BLjon5b1CL3W0Gvv1hZYXKnCinuk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
-	 In-Reply-To:Content-Type; b=o9F0RhbNNps0buRVM+S1vGVMipsGohSWUzBu218BKXyv8VhJGsdIIh34osx2ECDTgNiMqUDdsZktGYLQBKkQG2U/e40ccko13WaT8yeIwMOlLXtaYdvtkXjIA4aTXqq6B+ahGriymkwm1BuinDJAVmW9NeiraAeX7EEyDfkBtRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
-Received: from [192.168.0.224] (ip5f5aec51.dynamic.kabel-deutschland.de [95.90.236.81])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pmenzel)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id B24CA61E5FE04;
-	Mon, 29 Jan 2024 08:40:58 +0100 (CET)
-Message-ID: <c8af1073-22ed-4c14-be85-67632d82a3fa@molgen.mpg.de>
-Date: Mon, 29 Jan 2024 08:40:58 +0100
+	s=arc-20240116; t=1706514131; c=relaxed/simple;
+	bh=yQQDb/o4l6LtPL8dPnJpuMsw8Xm/OFfGdjAcl1qLjWs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=U+ctfDO+RnDJEv7Fo7Eytr4iHgOL0AeGuLznJZJvVpoN8fxasHvFmb88QSl3Keg6gMT/7xXcQVgMwdshPqXdCtiBG351oHAQbht4YGCppjuyGjb5ph/c821SjF2fl90Xw3pRZGEktzDQw2+9ONKNrbS8YgZ7dpGvY5AobWXWPus=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=pass (1024-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=Yr5YsKEB; arc=none smtp.client-ip=94.231.106.210
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gaisler.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gaisler.com
+Received: from localhost (localhost [127.0.0.1])
+	by smtp.simply.com (Simply.com) with ESMTP id 4TNgH926mFz681W;
+	Mon, 29 Jan 2024 08:41:57 +0100 (CET)
+Received: from [10.10.15.12] (h-98-128-223-123.NA.cust.bahnhof.se [98.128.223.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(Client did not present a certificate)
+	by smtp.simply.com (Simply.com) with ESMTPSA id 4TNgH33mzSz684Y;
+	Mon, 29 Jan 2024 08:41:50 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
+	s=unoeuro; t=1706514117;
+	bh=oXiXeQ4VP+sEpye87bHNuGWO3HZKCaSbCgqkPACpIrg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=Yr5YsKEBjPDL+a1wpMe+Qv/yrgcXq4dFIG2g8vbTm3xptBh6GfnKgA63Dh8/gs5Gp
+	 F91K4nvg+CLNr03tRC2OLXYnBxL99k8nwC/wlVZSaK72OFv1M3O+UM4647vF3fqXGB
+	 1UCVn9IvYUgaryECIPRECSvsDpHkwQ0wVdrxqrwo=
+Message-ID: <b6b66bed-10f1-421a-a561-3e07dcbd6781@gaisler.com>
+Date: Mon, 29 Jan 2024 08:41:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -44,74 +54,39 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 1/3] gnss: Add AI2 protocol used by some TI combo
- chips.
-To: Andreas Kemnade <andreas@kemnade.info>
-References: <20240128173352.2714442-1-andreas@kemnade.info>
- <20240128173352.2714442-2-andreas@kemnade.info>
+Subject: Re: [PATCH] usb: uhci-grlib: Explicitly include
+ linux/platform_device.h
 Content-Language: en-US
-Cc: marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
- johan@kernel.org, jirislaby@kernel.org, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
- Adam Ford <aford173@gmail.com>, Tony Lindgren <tony@atomide.com>,
- tomi.valkeinen@ideasonboard.com, =?UTF-8?Q?P=C3=A9ter_Ujfalusi?=
- <peter.ujfalusi@gmail.com>, robh@kernel.org, hns@goldelico.com
-From: Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <20240128173352.2714442-2-andreas@kemnade.info>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Alan Stern <stern@rowland.harvard.edu>, linux-usb@vger.kernel.org,
+ Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+ software@gaisler.com
+References: <20240122082225.984523-1-andreas@gaisler.com>
+ <2024012740-amaretto-unvarying-465a@gregkh>
+From: Andreas Larsson <andreas@gaisler.com>
+In-Reply-To: <2024012740-amaretto-unvarying-465a@gregkh>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Dear Andreas,
-
-
-Thank you for your patch. I think Linux Bluetooth patches need to be 
-have Bluetooth as the prefix for the commit message summary/title. Also, 
-it’d be great if you removed the dot/period at the end of the commit 
-message summary/title.
-
-Am 28.01.24 um 18:33 schrieb Andreas Kemnade:
-> Texas Instruments uses something called Air Independent Interface (AI2) for
-> their WLAN/BT/GPS combo chips.
-> No public documentation is available, but allow that protocol to be
-> specified.
-
-I’d add a blank line between paragraphs.
-
-> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-> ---
->   drivers/gnss/core.c  | 1 +
->   include/linux/gnss.h | 1 +
->   2 files changed, 2 insertions(+)
+On 2024-01-28 01:31, Greg Kroah-Hartman wrote:
+> On Mon, Jan 22, 2024 at 09:22:25AM +0100, Andreas Larsson wrote:
+>> This fixes relying upon linux/of_platform.h to include
+>> linux/platform_device.h, which it no longer does, thereby fixing
+>> compilation problems like:
+>>
+>> In file included from drivers/usb/host/uhci-hcd.c:850:
+>> drivers/usb/host/uhci-grlib.c: In function 'uhci_hcd_grlib_probe':
+>> drivers/usb/host/uhci-grlib.c:92:29: error: invalid use of undefined type 'struct platform_device'
+>>    92 |  struct device_node *dn = op->dev.of_node;
+>>       |                             ^~
+>>
+>> Fixes: 0d18bcdebb2f ("of: Stop circularly including of_device.h and of_platform.h")
 > 
-> diff --git a/drivers/gnss/core.c b/drivers/gnss/core.c
-> index 48f2ee0f78c4d..cac9f45aec4b2 100644
-> --- a/drivers/gnss/core.c
-> +++ b/drivers/gnss/core.c
-> @@ -335,6 +335,7 @@ static const char * const gnss_type_names[GNSS_TYPE_COUNT] = {
->   	[GNSS_TYPE_SIRF]	= "SiRF",
->   	[GNSS_TYPE_UBX]		= "UBX",
->   	[GNSS_TYPE_MTK]		= "MTK",
-> +	[GNSS_TYPE_AI2]		= "AI2",
->   };
->   
->   static const char *gnss_type_name(const struct gnss_device *gdev)
-> diff --git a/include/linux/gnss.h b/include/linux/gnss.h
-> index 36968a0f33e8d..16b565dab83ea 100644
-> --- a/include/linux/gnss.h
-> +++ b/include/linux/gnss.h
-> @@ -23,6 +23,7 @@ enum gnss_type {
->   	GNSS_TYPE_SIRF,
->   	GNSS_TYPE_UBX,
->   	GNSS_TYPE_MTK,
-> +	GNSS_TYPE_AI2,
->   
->   	GNSS_TYPE_COUNT
->   };
+> I don't see this commit id in Linus's tree, where is it?
 
-Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Ah, sorry, it went into Linus's tree with a different commit ID. I
+should have referred to ef175b29a242.
+Cheers,
+Andreas
 
-
-Kind regards,
-
-Paul
 
