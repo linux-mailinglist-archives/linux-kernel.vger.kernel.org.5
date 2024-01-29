@@ -1,164 +1,134 @@
-Return-Path: <linux-kernel+bounces-42095-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42097-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B08383FC41
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 03:33:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 337D583FC44
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 03:34:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DC751C21251
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 02:33:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E51CB285D31
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 02:34:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACF6DF4E2;
-	Mon, 29 Jan 2024 02:32:53 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7885F14F98;
+	Mon, 29 Jan 2024 02:34:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="EADrx82o"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C28CF9D6;
-	Mon, 29 Jan 2024 02:32:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 681B214A8B;
+	Mon, 29 Jan 2024 02:33:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706495573; cv=none; b=XET4rGEhxRoDjkNDV9WIcS7IzXgumrhLNzt8QPKfLAoiic+THDlzpKt4tzMEf2YqytnaoGPafofhF4QqHNw5hmqE6g/D+8nFk6iS0Jp2soiNxlfN6Be3A0/dReGrnB2FhhgZIkgljcV5fezWUJ9p3+Hr/05oCiwWSUvG84pJG6k=
+	t=1706495640; cv=none; b=tZKYuLrlKj3BdrZkSJhtGpBXvEovQYiwfTJLCCm3U/KDKYyiWGebHfWUExISeVIXeGn1AUrcNd3rKEL0wXbMkMOfpF5J0+S3e3aolDrfwRVAK/WdRu4pXup8Z742BE9cJdRriiKURlLsK2DaeUnLOdDCkPp7zvz/yt284Fete8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706495573; c=relaxed/simple;
-	bh=o63n5WMpln1TRFn0Kucd9NqGIM5xQz1xSMHbQaPz57Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GBgRREvlveqz6ArDd2d7oegSGdWZLNHL1NhUqAPOI1OQpvTOgfWlbDkktA0VlEP7/+tjzcDplNjFJ6Q0qPe7ydVb+4xOpLfdGrAPGxpQWG4puz/bdrSWZiSkvj/kKNMGXAy9pAebxjkREPShk8xsyhk84qGn1muHiYKl3fIcDAY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18A10C43390;
-	Mon, 29 Jan 2024 02:32:50 +0000 (UTC)
-Date: Sun, 28 Jan 2024 21:32:49 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, LKML <linux-kernel@vger.kernel.org>,
- Linux Trace Devel <linux-trace-devel@vger.kernel.org>, Christian Brauner
- <brauner@kernel.org>, Ajay Kaher <ajay.kaher@broadcom.com>, Geert
- Uytterhoeven <geert@linux-m68k.org>, linux-fsdevel
- <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
-Message-ID: <20240128213249.605a7ade@rorschach.local.home>
-In-Reply-To: <CAHk-=wjKagcAh5rHuNPMqp9hH18APjF4jW7LQ06pNQwZ1Qp0Eg@mail.gmail.com>
-References: <20240126150209.367ff402@gandalf.local.home>
-	<CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
-	<20240126162626.31d90da9@gandalf.local.home>
-	<CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
-	<CAHk-=whNfNti-mn6vhL-v-WZnn0i7ZAbwSf_wNULJeyanhPOgg@mail.gmail.com>
-	<CAHk-=wj+DsZZ=2iTUkJ-Nojs9fjYMvPs1NuoM3yK7aTDtJfPYQ@mail.gmail.com>
-	<20240128175111.69f8b973@rorschach.local.home>
-	<CAHk-=wjHc48QSGWtgBekej7F+Ln3b0j1tStcqyEf3S-Pj_MHHw@mail.gmail.com>
-	<20240128185943.6920388b@rorschach.local.home>
-	<20240128192108.6875ecf4@rorschach.local.home>
-	<CAHk-=wg7tML8L+27j=7fh8Etk4Wvo0Ay3mS5U7JOTEGxjy1viA@mail.gmail.com>
-	<CAHk-=wjKagcAh5rHuNPMqp9hH18APjF4jW7LQ06pNQwZ1Qp0Eg@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706495640; c=relaxed/simple;
+	bh=8TOeeWD/2D0/4l8IGm1//aIl2M4Ap4d6hJGFq6oUnZs=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=u/QzXy1vsbKXLUI9DGG4ZXwGCOLprZMMcoV+MnBwSaPjW3BZaiF0pz+5Iz2fno7xCF4mA31LbTgQETZFtgtEMh0v0WOU2KdN0jorKRoPUU3cm2FsI+S7+AIKh46y8X9mPIdlhPgqHfn0xg0BImKMa8TqegbLnijwtTk/4gwl+gU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=EADrx82o; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1706495634;
+	bh=sVqEco6myPIGO0i/9dacl7z3nklP6DquNjZ2EOIPXYA=;
+	h=Date:From:To:Cc:Subject:From;
+	b=EADrx82owkZmngGSE+bw/v8XvEoK9enK4z0L86wrOAZCPtLBPTSTTeodpnOq4yxEy
+	 HtdrmuLep+tkS9qlPk9r96+Wu+xRnA4o60dpQKwe5CySsMqRPQox1Y4HL5L9M0DVHT
+	 HKRIp38YOMP9riZOwgjoDEykxdk8h1Sujlaj2m87VVCrwAoixI9d66tSbMhHTbTtSm
+	 J+42Q07iZdrAoDJNiuRLoYkUzOYG++4gZiEA//iZUYDYY6DU2K0ELqL+5I6HiqmGsA
+	 AvKj2BjgyMkY1+otB5aCeXmCREGBY0prOD+r3s42HdHRlMWevVMt4nU7YZqkU+KSsV
+	 2h8BWsI9DvaAA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TNXRk01r8z4wc6;
+	Mon, 29 Jan 2024 13:33:53 +1100 (AEDT)
+Date: Mon, 29 Jan 2024 13:33:52 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Miguel Ojeda <ojeda@kernel.org>, Andrew Morton
+ <akpm@linux-foundation.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>, Nathan Chancellor
+ <nathan@kernel.org>
+Subject: linux-next: manual merge of the rust tree with the mm tree
+Message-ID: <20240129133352.25a3ee19@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/Te+XTXsK9_2B292JnXKszzb";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+
+--Sig_/Te+XTXsK9_2B292JnXKszzb
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, 28 Jan 2024 17:42:30 -0800
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+Hi all,
 
-> On Sun, 28 Jan 2024 at 17:00, Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> >    mkdir dummy
-> >    cd dummy
-> >    echo "Hello" > hello
-> >    ( sleep 10; cat ) < hello &
-> >    rm hello
-> >    cd ..
-> >    rmdir dummy  
-> 
-> Note that it's worth repeating that simple_recursive_removal()
-> wouldn't change any of the above. It only unhashes things and makes
-> them *look* gone, doing things like clearing i_nlink etc.
+Today's linux-next merge of the rust tree got a conflict in:
 
-I know, but I already cover the above case. And that case is not what
-simple_recursive_removal() is covering.
+  Documentation/process/changes.rst
 
-I'm worried about what can be opened after a deletion. Not what has
-already been opened. The simple_recrusive_removal() is the way to clear
-the dcache on those files and directories that are being removed so
-that no new references can happen on them.
+between commit:
 
-So, I removed the simple_recursive_removal() from the code to see what
-happened. Interesting, the opposite occurred.
+  3d21fad38152 ("kbuild: raise the minimum supported version of LLVM to 13.=
+0.1")
 
- # cd /sys/kernel/tracing
- # echo 'p:sched schedule' > kprobe_events
- # ls events/kprobes
-enable  filter  sched
- # ls events/kprobes/sched
-enable  filter  format  hist  hist_debug  id  inject  trigger
- # cat events/kprobes/sched/enable
-0
+from the mm-non-mm-unstable branch of the mm tree and commit:
 
- # echo 'p:timer read_current_timer' >> kprobe_events
- # ls events/kprobes
-enable  filter  sched  timer
+  c5fed8ce6549 ("rust: upgrade to Rust 1.75.0")
 
-Now delete just one kprobe (keeping the kprobes directory around)
+from the rust tree.
 
- # echo '-:sched schedule' >> kprobe_events
- # ls events/kprobes/
-enable  filter  timer
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
-Now recreate that kprobe
+--=20
+Cheers,
+Stephen Rothwell
 
- # echo 'p:sched schedule' >> kprobe_events
- # ls events/kprobes
-enable  filter  sched  timer
+diff --cc Documentation/process/changes.rst
+index d7306b8cad13,eab7e2f8c196..000000000000
+--- a/Documentation/process/changes.rst
++++ b/Documentation/process/changes.rst
+@@@ -30,8 -30,8 +30,8 @@@ you probably needn't concern yourself w
+          Program        Minimal version       Command to check the version
+  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+  GNU C                  5.1              gcc --version
+ -Clang/LLVM (optional)  11.0.0           clang --version
+ +Clang/LLVM (optional)  13.0.1           clang --version
+- Rust (optional)        1.74.1           rustc --version
++ Rust (optional)        1.75.0           rustc --version
+  bindgen (optional)     0.65.1           bindgen --version
+  GNU make               3.82             make --version
+  bash                   4.2              bash --version
 
- # ls events/kprobes/sched/
-ls: reading directory 'events/kprobes/sched/': Invalid argument
+--Sig_/Te+XTXsK9_2B292JnXKszzb
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-I have no access to the directory that was deleted and recreated.
+-----BEGIN PGP SIGNATURE-----
 
-> 
-> But those VFS data structures would still exist, and the files that
-> had them open would still continue to be open.
-> 
-> So if you thought that simple_recursive_removal() would make the above
-> kind of thing not able to happen, and that eventfs wouldn't have to
-> deal with dentries that point to event_inodes that are dead, you were
-> always wrong.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmW3DpAACgkQAVBC80lX
+0GzZWAf9GRE8mBBaN9909dq4E2m2tDSCbbEsLzzaqmc2UE0Rpyhp8IfODjJACmie
+kNIwtUvlE7C3Z1l8MkRCRzRG2fjwbrDRb7lEFP4nS3Y0QFXub4oLlr/TICmupvM4
+h8xrO6mWYtS1Sot5o0v/J8mWL6l4yJSiEN9liWoAK/SO419qpgu1YlNgmckYJnJN
+/IgyjYRbrbju+eegnVkFXFL2M9/mjisHBIllLzsfPa2hVxPbpQvpzrmowczqngAj
+9CaoLwTOg0+dqZWAAD12lifEqUGHfGOmX87lmTfce9eZz98xMayWJQ+e3Cc6Ye0V
+WMMGnYmz1siymut5zvl7UfEqP2/GQw==
+=8WMk
+-----END PGP SIGNATURE-----
 
-No but I want to shrink the dentries after the directory is removed.
-
-Perhaps something else is the error here.
-
-> 
-> simple_recursive_removal() is mostly just lipstick on a pig. It does
-> cause the cached dentries that have no active use be removed earlier,
-> so it has that "memory pressure" kind of effect, but it has no real
-> fundamental semantic effect.
-
-I was using it to "flush" the cache on that directory. Nothing more.
-
-> 
-> Of course, for a filesystem where the dentry tree *is* the underlying
-> data (ie the 'tmpfs' kind, but also things like debugfs or ipathfs,
-> for example), then things are different.
-
-Note, tracefs was built on debugfs. Only the "events" directory is
-"different". The rest of /sys/kernel/tracing behaves exactly like
-debugfs.
-
-> 
-> There the dentries are the primary thing, and not just a cache in
-> front of the backing store.
-> 
-> But you didn't want that, and those days are long gone as far as
-> tracefs is concerned.
-
-Well, as long as eventfs is ;-)
-
--- Steve
+--Sig_/Te+XTXsK9_2B292JnXKszzb--
 
