@@ -1,151 +1,177 @@
-Return-Path: <linux-kernel+bounces-42599-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E277884039C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:15:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CFBC84039E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:15:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E6A1285874
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:15:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8FC01F22EE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:15:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A3C15DF1E;
-	Mon, 29 Jan 2024 11:15:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G+YWEDC3"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 262D35BAD2;
+	Mon, 29 Jan 2024 11:15:42 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DF045D725;
-	Mon, 29 Jan 2024 11:15:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E7395BAD8
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 11:15:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706526920; cv=none; b=AllQLDxeizvoxr/JDz8ILjqArOjm+2ZGqkQNYRGdZ/srSRv4/ljsyGSMu8dVb3YUtQaZR+15uBMdkZwgFmAa+hrqPrWSTh292Qf4v+syUFrtkLBtIteBq3m0nvwt6zdPfBTbgUMMFF2etlxB8RqYrVtzpJJy0KptrYkmwaxPrY4=
+	t=1706526941; cv=none; b=o2zLPdc01dUFYhzWq2el26Kg9pSSlw5qnOltDMSsjR9kZqeojCAgMky2lsP0uzq5lZcnfdLevPWufoTDHUnVr7P9iUG82iyKNUsmFWAC2DQauv4Q3CEeTynMWf/3enk9cLrnnLRUFnxHx0xDR6at5IGlZrORKbDFrhmAsmlC9pY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706526920; c=relaxed/simple;
-	bh=tf5Q0HIbO4qTabgW0ywf4WwR+VLIcexBLSXGEFNXWSE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rNkCWUaHNDsPHQlLNTjSi8Zgk41MAvv/wUxNECOVjhaAM9GZ0GYELbHPP2POy++Ka2GJJTcMauxqXj9JCbkFPIxdyN36HA9106P3nuSbmwoXlP9Vie8aYqfZDqIwkgj+3Ue8svgDJBzR/vUYhKSGRk+1n+0Tqt6jESmu9NAY4+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G+YWEDC3; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d8e7ebbbadso2618235ad.3;
-        Mon, 29 Jan 2024 03:15:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706526918; x=1707131718; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7scJMGxeFHrcGgXPLEWFIweNtSat17qmnJuRxoKTd0Y=;
-        b=G+YWEDC3CoRMcjRO/YMPmX7lBTRhutGX0sH/JqFIIlZeIts00Q3GJNa5m9IqouYxPc
-         t6pEYI2tz8hgG8AyKYneyEukiLJxiyca0cUt3bSRXJME/n63qkH6XDOuXpD3MV5lTXJo
-         FZ5vxwAXIlXGwe9Sq+C1Ac3B6DsjhHbjdQPpnUNC5GcaD/oviwWF2chbxPTSCTQnlRen
-         HZwMWc8lHPdO+n5c9O8LJKvCQ46xtrTU21Wjs+cNKMnZO3gm6KWxXc4qNvz1U4m/jXb2
-         E7HMDptNhtSTECRwQBsd1+FrgMbgbHAJtkTOlnPI3DZbZQMZNvx4AH4yXqyzjporQuPx
-         98+Q==
+	s=arc-20240116; t=1706526941; c=relaxed/simple;
+	bh=kOUlYic7Fn4tmPG/QHZOYrN/pkry6BjIpcGyJkSF12E=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=K6MUyrCyGsjW0Iq2aA7hJU3xET7gWmWOjfGfzqPBoPnjbb9igzyh4i8mwyxG8MLjkbopiQKxhBj/fqmiE+FJHR4rmclFCPiglIEInHhHt4v9w3jYcudd83JTYPIv1pDdUpwP+ptTY8d1cTQC5YeiO8h4soT4EVm4RKKNfFUjSFQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-363887f15c2so284835ab.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 03:15:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706526918; x=1707131718;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7scJMGxeFHrcGgXPLEWFIweNtSat17qmnJuRxoKTd0Y=;
-        b=DIOdRFrhDon1R5KNz6N1pmcioYS2egtqDNEzsrBqUTgXBXcZSTqLtJ+kpUPsgcnusS
-         FSjCl5tjurmmP0iPG2lZ4sdSIbzScRMds0e+cOYzN+lYtH7M5Xq3k8TmddpBNKZY4K7X
-         zVZxMOVXQ/JSoiviR9c8N+pQRLO1p3ASZ58VfwtIlqOSLjlQJRRxT8cOJMQfR28bU1QS
-         PG7fJkEh4hosGzoilSHLrrJI3xwQZu2EiQC92iuc/fRrzkMFmAVosts1U94B118GJU9F
-         ri5VCy2cD6yS0LznVUwvmqqf720GbApNDgSFfAqps13UOza6wKuXhwACxjHFG05v5dm5
-         JvSQ==
-X-Gm-Message-State: AOJu0YxyEbEGpT8qymR18ogujD7d7Yu8WO1Xe6nsRf1d/jaRQvpkeWsf
-	4VnO7TMzhCveB9xWvepzT4TGZtTFZUT1D49dlZqWJqssKA4kxgoj
-X-Google-Smtp-Source: AGHT+IFvXX4X2fhRJiLfvsjdhKeTqwEJL7/3Zm8hG3tmqNGudgqdTwzkbfiRHFPbuJ05EB4lVChLQw==
-X-Received: by 2002:a17:903:41cf:b0:1d8:f07a:ba78 with SMTP id u15-20020a17090341cf00b001d8f07aba78mr629036ple.55.1706526918293;
-        Mon, 29 Jan 2024 03:15:18 -0800 (PST)
-Received: from amiden.localdomain ([2402:e280:2243:161:f722:9af3:1e16:1363])
-        by smtp.gmail.com with ESMTPSA id r18-20020aa79892000000b006d9a13b491csm5501124pfl.212.2024.01.29.03.15.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 03:15:17 -0800 (PST)
-From: Amitesh Singh <singh.amitesh@gmail.com>
-To: pavel@ucw.cz,
-	lee@kernel.org,
-	linux-leds@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Amitesh Singh <singh.amitesh@gmail.com>
-Subject: [PATCH v2] leds/pca963x: implement power management
-Date: Mon, 29 Jan 2024 16:45:05 +0530
-Message-ID: <20240129111505.196068-1-singh.amitesh@gmail.com>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1706526938; x=1707131738;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ycDQ6Z9P2JkRi6wLH7pT3fZX69qKnXMvwBk2WNT/alY=;
+        b=nyMh6gBYj4dpJaFhq+9Bzkh/ByAyLh6UrV7wlvHwA3AgH8gsLEjYMMy/2ltKd13hlU
+         MaEEo1qYMocrTrTZa53dUq6Cb2EdKlh3n9omDyy3mmgJyWPsY3UnsB9HVHvTwYH9gCh4
+         0mp4bcEsajWpLonTc6FRjexPcjFcpx7SAnjTliVh3FppuBA9uPos80JygpEPMywpey3L
+         bFql9LEeQAU2ZfI+IzsUxV/k/v0rDDjCd6ipCYQp0ciG/ZVZ32Jw3o+9Ws+3Ul1tI+LW
+         hUcOjzfKqeUXKwOZ93WPXaVBQ0rcbbNFUsdSbac5AEXJTRokTXwX7BuEHYG9/uKKd1u6
+         jwiQ==
+X-Gm-Message-State: AOJu0YwDIQLH+kWUy+OaGzX31uXWiP/ZQOcwv3TRVBJbLWjrsAzEBNsB
+	ON3zVha60TuPfWSfofD6PW3M+xsh98guiWWsPU6zb9CELtRJY/Vm5CwmLPkO+KrRv71J+zSKHOD
+	r4B9JaQI/85bbrd5H/0ErFJCMbCMbHg6xpXec1Bz8dfrt/9MvFifIoiU=
+X-Google-Smtp-Source: AGHT+IFQIkVLb54/9JdZ/Ho960jFLmVYI3EuhujB8GBn5vCDmVPYpcBM+vVYMoO3oGrw4zD61NfxpGSpEaiszqEySMhxQLtEcO5v
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:170a:b0:363:820f:72b8 with SMTP id
+ u10-20020a056e02170a00b00363820f72b8mr208755ill.1.1706526938621; Mon, 29 Jan
+ 2024 03:15:38 -0800 (PST)
+Date: Mon, 29 Jan 2024 03:15:38 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f9f23d061013c383@google.com>
+Subject: [syzbot] [mm?] kernel BUG in validate_mm (3)
+From: syzbot <syzbot+39a72b995ba73633c1a7@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-This implements power management for pca9633
-which enables device sleep and resume on system-wide
-sleep/hibernation
+Hello,
 
-Signed-off-by: Amitesh Singh <singh.amitesh@gmail.com>
+syzbot found the following issue on:
+
+HEAD commit:    596764183be8 Add linux-next specific files for 20240129
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=142042f3e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=584144ad19f381aa
+dashboard link: https://syzkaller.appspot.com/bug?extid=39a72b995ba73633c1a7
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11844ba7e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15bd01efe80000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/b647c038857b/disk-59676418.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/729e26c3ac55/vmlinux-59676418.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/15aa5e287059/bzImage-59676418.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+39a72b995ba73633c1a7@syzkaller.appspotmail.com
+
+arg_start 7fffd9277efb arg_end 7fffd9277f14 env_start 7fffd9277f14 env_end 7fffd9277fdf
+binfmt ffffffff8d9c5c00 flags 80007fd
+ioctx_table 0000000000000000
+owner ffff88802c0cda00 exe_file ffff88801ff60500
+notifier_subscriptions 0000000000000000
+numa_next_scan 0 numa_scan_offset 0 numa_scan_seq 0
+tlb_flush_pending 0
+def_flags: 0x0()
+------------[ cut here ]------------
+kernel BUG at mm/mmap.c:328!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
+CPU: 1 PID: 5058 Comm: syz-executor310 Not tainted 6.8.0-rc1-next-20240129-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+RIP: 0010:validate_mm+0x3f3/0x4b0 mm/mmap.c:328
+Code: 0f 84 a4 fd ff ff e9 47 ff ff ff e8 77 91 b9 ff 44 89 f2 89 de 48 c7 c7 e0 af 19 8b e8 56 69 9b ff 4c 89 ff e8 ce c4 fa ff 90 <0f> 0b e8 56 91 b9 ff 0f b6 15 1f dd b1 0d 31 ff 89 d6 88 14 24 e8
+RSP: 0018:ffffc900035df958 EFLAGS: 00010282
+RAX: 000000000000032a RBX: 000000000000000d RCX: ffffffff816e2f59
+RDX: 0000000000000000 RSI: ffffffff816eb7e6 RDI: 0000000000000005
+RBP: dffffc0000000000 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000080000000 R11: 0000000000000001 R12: 00007fffd92ff000
+R13: 0000000000000000 R14: 000000000000000e R15: ffff88802c6b8000
+FS:  0000555557046380(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f10ada208a0 CR3: 000000007b434000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ vma_merge+0x16a9/0x3d70 mm/mmap.c:1033
+ vma_merge_new_vma mm/mmap.c:2465 [inline]
+ mmap_region+0x206b/0x2760 mm/mmap.c:2841
+ do_mmap+0x8ae/0xf10 mm/mmap.c:1380
+ vm_mmap_pgoff+0x1ab/0x3c0 mm/util.c:573
+ ksys_mmap_pgoff+0x425/0x5b0 mm/mmap.c:1426
+ __do_sys_mmap arch/x86/kernel/sys_x86_64.c:93 [inline]
+ __se_sys_mmap arch/x86/kernel/sys_x86_64.c:86 [inline]
+ __x64_sys_mmap+0x125/0x190 arch/x86/kernel/sys_x86_64.c:86
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7f10ad9e52a9
+Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffd9276338 EFLAGS: 00000246 ORIG_RAX: 0000000000000009
+RAX: ffffffffffffffda RBX: 00007fffd9276518 RCX: 00007f10ad9e52a9
+RDX: 0000000000000001 RSI: 0000000000002000 RDI: 0000000020ffc000
+RBP: 00007f10ada58610 R08: 0000000000000003 R09: 0000000000000000
+R10: 0000000000000011 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007fffd9276508 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:validate_mm+0x3f3/0x4b0 mm/mmap.c:328
+Code: 0f 84 a4 fd ff ff e9 47 ff ff ff e8 77 91 b9 ff 44 89 f2 89 de 48 c7 c7 e0 af 19 8b e8 56 69 9b ff 4c 89 ff e8 ce c4 fa ff 90 <0f> 0b e8 56 91 b9 ff 0f b6 15 1f dd b1 0d 31 ff 89 d6 88 14 24 e8
+RSP: 0018:ffffc900035df958 EFLAGS: 00010282
+RAX: 000000000000032a RBX: 000000000000000d RCX: ffffffff816e2f59
+RDX: 0000000000000000 RSI: ffffffff816eb7e6 RDI: 0000000000000005
+RBP: dffffc0000000000 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000080000000 R11: 0000000000000001 R12: 00007fffd92ff000
+R13: 0000000000000000 R14: 000000000000000e R15: ffff88802c6b8000
+FS:  0000555557046380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000664740 CR3: 000000007b434000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
 ---
- drivers/leds/leds-pca963x.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/leds/leds-pca963x.c b/drivers/leds/leds-pca963x.c
-index 47223c850e4b..227f24ba2ca2 100644
---- a/drivers/leds/leds-pca963x.c
-+++ b/drivers/leds/leds-pca963x.c
-@@ -39,6 +39,7 @@
- #define PCA963X_LED_PWM		0x2	/* Controlled through PWM */
- #define PCA963X_LED_GRP_PWM	0x3	/* Controlled through PWM/GRPPWM */
- 
-+#define PCA963X_MODE1_SLEEP     0x04    /* Normal mode or Low Power mode, oscillator off */
- #define PCA963X_MODE2_OUTDRV	0x04	/* Open-drain or totem pole */
- #define PCA963X_MODE2_INVRT	0x10	/* Normal or inverted direction */
- #define PCA963X_MODE2_DMBLNK	0x20	/* Enable blinking */
-@@ -380,6 +381,34 @@ static int pca963x_register_leds(struct i2c_client *client,
- 	return ret;
- }
- 
-+#ifdef CONFIG_PM_SLEEP
-+static int pca963x_suspend(struct device *dev)
-+{
-+	struct pca963x *chip = dev_get_drvdata(dev);
-+	u8 reg;
-+
-+	reg = i2c_smbus_read_byte_data(chip->client, PCA963X_MODE1);
-+	reg = reg | BIT(PCA963X_MODE1_SLEEP);
-+	i2c_smbus_write_byte_data(chip->client, PCA963X_MODE1, reg);
-+
-+	return 0;
-+}
-+
-+static int pca963x_resume(struct device *dev)
-+{
-+	struct pca963x *chip = dev_get_drvdata(dev);
-+	u8 reg;
-+
-+	reg = i2c_smbus_read_byte_data(chip->client, PCA963X_MODE1);
-+	reg = reg & ~BIT(PCA963X_MODE1_SLEEP);
-+	i2c_smbus_write_byte_data(chip->client, PCA963X_MODE1, reg);
-+
-+	return 0;
-+}
-+#endif
-+
-+static SIMPLE_DEV_PM_OPS(pca963x_pm, pca963x_suspend, pca963x_resume);
-+
- static const struct of_device_id of_pca963x_match[] = {
- 	{ .compatible = "nxp,pca9632", },
- 	{ .compatible = "nxp,pca9633", },
-@@ -430,6 +459,7 @@ static struct i2c_driver pca963x_driver = {
- 	.driver = {
- 		.name	= "leds-pca963x",
- 		.of_match_table = of_pca963x_match,
-+		.pm = &pca963x_pm
- 	},
- 	.probe = pca963x_probe,
- 	.id_table = pca963x_id,
--- 
-2.43.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
