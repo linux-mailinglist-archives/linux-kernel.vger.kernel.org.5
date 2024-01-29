@@ -1,161 +1,138 @@
-Return-Path: <linux-kernel+bounces-42451-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D6DF840180
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:28:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 199818401A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:31:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DEE71281737
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:28:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86395B20B97
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:31:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4568955C35;
-	Mon, 29 Jan 2024 09:27:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C609A5BAE2;
+	Mon, 29 Jan 2024 09:28:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZDNBM9KY";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cB0yyXiT";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZDNBM9KY";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cB0yyXiT"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UAqxeE3C"
+Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C778955C05;
-	Mon, 29 Jan 2024 09:27:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DA8E60275
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:28:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706520455; cv=none; b=gyzQre3F2MPvR2UQRtA0zuGuc6dACmpI+lKfNGle1ShQ8QLh+izzIReKOGatTFPMqAmWYe3gB/QgbPC+SnQqL0vU1/DxOxrCsoFo/pHu0Jf1wsfGwVvxHl0dIkpwRMN1k43jLjZj9+7KwdthPmy5ms/qy6U5SlNn6TSKl5Xwx6I=
+	t=1706520504; cv=none; b=GPt6sugqEDHb4pi9IV4CjnD1povGR8pRCPlb/VevCbBASsi2IPujV5ouluhrEb4zX7oJTqSRNeUndklcgCrseHf2IiphipuyFUTcRyV2w2547zR8oOuJW2cyf3T+pv+DpSRZvEf8Q4HtuEOViyKYa2qm4PSbhVBK6HHyW09Ohu4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706520455; c=relaxed/simple;
-	bh=VsiVxzTbTaLu7R1Vjuj7c3jEKlCzr5I/cSPclERw6/w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iIgnvQARwm5lLN1Ctac4DeTjAhmHkj+BDBc5QVqQZaSj2FtfwrsYi1uZ6glseZfPpmrFiV9uhyHZio5X09qlB/lCQLs8xyoa4ZOJq3ClUGZzsOk0E5usU++C4skxu6xUJBcB6bBv5Vzax6jsNLiDQV8EHE35D9vBXPAx3OOpR4k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZDNBM9KY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=cB0yyXiT; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZDNBM9KY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=cB0yyXiT; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BBF711F7DE;
-	Mon, 29 Jan 2024 09:27:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706520451; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HNF1/TeRE/xduKFDk0e37ozpmkiTyLLOJA0349b6JaY=;
-	b=ZDNBM9KYFX7JJ0kMoCLPXttTZewoecqxfHxdB/uVibt4fhMqnhBF9w9ikFEsgyr1xmRPEA
-	BhKcRgXo4Ir0zjR44FvnGWf+td+7RlrFHmiNRMt1kdrPnaLX74zfTihILUiMU0jG6bh/Iw
-	tZzAbtHAXAusdUiKKtnYNlHQmLfuePA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706520451;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HNF1/TeRE/xduKFDk0e37ozpmkiTyLLOJA0349b6JaY=;
-	b=cB0yyXiTrIIuSzjPcGODnI6L0p80/Eu+qIzrf6ikkgGa87itYjccOAQbjOnpGUx3a6aBBd
-	JL85ojTzA46dY4BQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706520451; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HNF1/TeRE/xduKFDk0e37ozpmkiTyLLOJA0349b6JaY=;
-	b=ZDNBM9KYFX7JJ0kMoCLPXttTZewoecqxfHxdB/uVibt4fhMqnhBF9w9ikFEsgyr1xmRPEA
-	BhKcRgXo4Ir0zjR44FvnGWf+td+7RlrFHmiNRMt1kdrPnaLX74zfTihILUiMU0jG6bh/Iw
-	tZzAbtHAXAusdUiKKtnYNlHQmLfuePA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706520451;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HNF1/TeRE/xduKFDk0e37ozpmkiTyLLOJA0349b6JaY=;
-	b=cB0yyXiTrIIuSzjPcGODnI6L0p80/Eu+qIzrf6ikkgGa87itYjccOAQbjOnpGUx3a6aBBd
-	JL85ojTzA46dY4BQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id AAEC113911;
-	Mon, 29 Jan 2024 09:27:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id vZZlKYNvt2VJQwAAn2gu4w
-	(envelope-from <jack@suse.cz>); Mon, 29 Jan 2024 09:27:31 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 52859A0807; Mon, 29 Jan 2024 10:27:27 +0100 (CET)
-Date: Mon, 29 Jan 2024 10:27:27 +0100
-From: Jan Kara <jack@suse.cz>
-To: syzbot <syzbot+cc717c6c5fee9ed6e41d@syzkaller.appspotmail.com>
-Cc: axboe@kernel.dk, brauner@kernel.org, jack@suse.com, jack@suse.cz,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [udf?] WARNING in udf_new_block
-Message-ID: <20240129092727.s3smagmot77rmsud@quack3>
-References: <000000000000e9e9ee05f716c445@google.com>
- <0000000000007bd31e060ff7d8f0@google.com>
+	s=arc-20240116; t=1706520504; c=relaxed/simple;
+	bh=fqIQss9YrlmVdaiZwyyrl0wDsFJ+mHTn4IZB8IBL3MA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=E6J++aByXqN1naVKrzS3wYzRMF546oX/QD2VGCoPRqycdh12hmIT0dC1/oReuSx/L2R3/JLwi2iejKMlUB9Lb/bP+LrVNir0lVmIAcErlwbZbhnAVBNT8upis3VQ4zml/2Ddl8ag25r7A2ppeMjTR/Iq9Kh5P4JFoJ5R8EkIFAo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UAqxeE3C; arc=none smtp.client-ip=209.85.219.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-68c444f9272so9121076d6.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 01:28:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706520500; x=1707125300; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4q8db41yY87l7MxKvbYpo3+xjJtcNE9e9gSZAUqcvLs=;
+        b=UAqxeE3C1ZxyM2d2BcPUz99YFgY/WnpE58yTZkT2naebUlL7SubL8kkSiabXMf0TCL
+         2jBd2kmLxdmLs5nJVLW6okr+qCnMXLfqLaUmuLkjD0WIJc7PvvPQi2LItnGUqM2Cid4M
+         JEmOAq9lMYPdVa1C48P3/ZLqm9EKNuQJr5bQlNJR7JZhNAfRb6aeALC0SaFap2AFPCKx
+         6YL50Fk2DykjfGJ/2iy1EJM63y8s7H9G384FOvboiqe5DFOCChe6g8rEcsbGYrMDPQCy
+         EJqH7aHMuAPxIhsehOi9HyZBwkPd+aUcOZ64yknNFWtt3lvM6HTPbqOSUcaBTDbSnfBR
+         VIIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706520500; x=1707125300;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4q8db41yY87l7MxKvbYpo3+xjJtcNE9e9gSZAUqcvLs=;
+        b=gclRjXqfxL/HNpzmOdmOgi21qfXNazCn1ruzCoLyFtK5YskWpzIq76FGFdOjhEwSZG
+         7ul0Npuixqw1FcaezI0WvLPVyfThFJJeAbz8m2pQJT8mmsV1u+MD/Drzi6RidfRIzSZl
+         d8N8jq9oxkqKRr42KoKoKyIdSG5dxR+FYpYRn/Nkk0nIJ9arrQ/wbM5TenO/Ow4wTrKo
+         yWzlElYXAIv9cdQ6BCnAUaBsuhlQIGFXsn+S+7/+5Ppm+cbzpt5mEQwlEVoqHppsF+g/
+         Otiyd/7t4VWkscdvcx/BLFwOsqxYjjo1XHUIdKSt8W8rpTGC2mReqVZZPdHFb5XU1O+6
+         kf2A==
+X-Gm-Message-State: AOJu0YwGkVxcT61Qe1AlAyFsa1K6pPHypHiXewLjHUeU3UOAYJ5PC16g
+	wobEIOWswS99W5Uoq0XMwWbiCvp9RDTUGB1tuCSn1Gr49Wb+uUMpznxtemDp+VIez8KMZHvlyJ5
+	jrk+M23MQQkPD69wERDI2OILUvQfAOo/kG5xEsQ==
+X-Google-Smtp-Source: AGHT+IGYFxZ7DGE0AfRt4ew5dYvWGTQXLN6eczBCd27vBSvEmlBwqJjbpYwEvVAfNowUSbRibLTBmiPYXnGcFr6dY2E=
+X-Received: by 2002:a05:6214:2a87:b0:68c:5337:b717 with SMTP id
+ jr7-20020a0562142a8700b0068c5337b717mr677358qvb.18.1706520500069; Mon, 29 Jan
+ 2024 01:28:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000007bd31e060ff7d8f0@google.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -1.30
-X-Spamd-Result: default: False [-1.30 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=11e478e28144788c];
-	 TAGGED_RCPT(0.00)[cc717c6c5fee9ed6e41d];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email,syzkaller.appspot.com:url];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 SUBJECT_HAS_QUESTION(0.00)[]
-X-Spam-Flag: NO
+References: <20240127001926.495769-1-andre.draszik@linaro.org> <20240127001926.495769-7-andre.draszik@linaro.org>
+In-Reply-To: <20240127001926.495769-7-andre.draszik@linaro.org>
+From: Peter Griffin <peter.griffin@linaro.org>
+Date: Mon, 29 Jan 2024 09:28:07 +0000
+Message-ID: <CADrjBPoTPzWo10VvFX1m83q72xqzR_y83TZ4JSFgK+YtyaRsPA@mail.gmail.com>
+Subject: Re: [PATCH 6/9] arm64: dts: exynos: gs101: enable i2c bus 12 on gs101-oriole
+To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
+Cc: mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	linux-kernel@vger.kernel.org, kernel-team@android.com, 
+	tudor.ambarus@linaro.org, willmcvicker@google.com, semen.protsenko@linaro.org, 
+	alim.akhtar@samsung.com, s.nawrocki@samsung.com, tomasz.figa@gmail.com, 
+	cw00.choi@samsung.com, linux-arm-kernel@lists.infradead.org, 
+	linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
+	devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat 27-01-24 17:57:03, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
-> 
-> commit 6f861765464f43a71462d52026fbddfc858239a5
-> Author: Jan Kara <jack@suse.cz>
-> Date:   Wed Nov 1 17:43:10 2023 +0000
-> 
->     fs: Block writes to mounted block devices
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15fe39a7e80000
-> start commit:   10a6e5feccb8 Merge tag 'drm-fixes-2023-10-13' of git://ano..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=11e478e28144788c
-> dashboard link: https://syzkaller.appspot.com/bug?extid=cc717c6c5fee9ed6e41d
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16700ae5680000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17f897f1680000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
- 
-Yes, I was suspecting this from my experiments for a long time :)
+On Sat, 27 Jan 2024 at 00:19, Andr=C3=A9 Draszik <andre.draszik@linaro.org>=
+ wrote:
+>
+> This bus has various USB-related devices attached to it.
+>
+> Signed-off-by: Andr=C3=A9 Draszik <andre.draszik@linaro.org>
+> ---
 
-#syz fix: fs: Block writes to mounted block devices
+As Sam said, you could be a bit more verbose on what those USB devices
+are on the bus as they aren't enabled in this series. But apart from
+that
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
+
+>  arch/arm64/boot/dts/exynos/google/gs101-oriole.dts | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts b/arch/ar=
+m64/boot/dts/exynos/google/gs101-oriole.dts
+> index cb4d17339b6b..c8f6b955cd4e 100644
+> --- a/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
+> +++ b/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
+> @@ -72,6 +72,10 @@ eeprom: eeprom@50 {
+>         };
+>  };
+>
+> +&hsi2c_12 {
+> +       status =3D "okay";
+> +};
+> +
+>  &pinctrl_far_alive {
+>         key_voldown: key-voldown-pins {
+>                 samsung,pins =3D "gpa7-3";
+> @@ -113,6 +117,11 @@ &usi8 {
+>         status =3D "okay";
+>  };
+>
+> +&usi12 {
+> +       samsung,mode =3D <USI_V2_I2C>;
+> +       status =3D "okay";
+> +};
+> +
+>  &watchdog_cl0 {
+>         timeout-sec =3D <30>;
+>         status =3D "okay";
+> --
+> 2.43.0.429.g432eaa2c6b-goog
+>
 
