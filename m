@@ -1,222 +1,171 @@
-Return-Path: <linux-kernel+bounces-42571-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42572-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B95D84033A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:52:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FDF884033E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:54:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 301091C22762
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:52:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9C02283723
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:54:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB20F5A792;
-	Mon, 29 Jan 2024 10:52:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4D565A799;
+	Mon, 29 Jan 2024 10:54:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="SmC7qxAO"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xcQDfkYr"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32AF359166;
-	Mon, 29 Jan 2024 10:52:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 148EC5A0FE
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 10:54:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706525563; cv=none; b=e0WvGphje0bnkhX+Ut/icpSDPlhiVLUDfTTeNQ2wuGltKLmGC97Dh5AMCU8zCpiCe/QBbnf4C5IAF8W6qrtaBa+47qmH5ZHfkDmC56VbJZAtQ9tNaRlLgmzzRciLA4i0kU0NTYa7c6Bn2r+/CyhOIDREgR4zm4r7GaZ67Qd9/CI=
+	t=1706525674; cv=none; b=XVSx3P8Gy45NbCZY0GDcF52XdAshUw/gzkpEm9nJb1AWmFHjbnF4qUtEuK1dmp6EfdXlnrjORuGCgghryJUKKKBBvw/188h0nnz0qD/gB/+OdsZcRc25ZQL+RMSI2E9gkY9S4wNZJxtuB4ciKRplsPCYdORmcxt6sScstwzKncM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706525563; c=relaxed/simple;
-	bh=UYAyZ91fb6AS92l2LL/GD79fck5Q5BXJcU0K8ZP7G7I=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cbfZay2HoVBQp5lvY86E+z0Ir78C0z2ZTsmQlMj+YIt4MsCEuJn7/z8aNbjrWAkvUTLroZ6JmXqlUro/+f7Ip7guCwKFRU6b2eKwKNg4NENXHLJKsW5U8X4wTNoiqdE34MfBqPW9ehfnaS/G5wg+seLidtUih/fcvKs8YgNqBIc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=SmC7qxAO; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 9BEC5FF80E;
-	Mon, 29 Jan 2024 10:52:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1706525552;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FcUfvlOtpKiNCvjO4iOwB2dkcftJ97AES2z0e0scJ5E=;
-	b=SmC7qxAOwt2XyvIWfGHgHiy8Zal6fObDL6o3CJOloIjXc+WFcTjobse8iS6p0pqdb0Qkdi
-	n627jGKbyy6lOvVWKit34x8AwBW/DDVxIzHjaR1DRptmUA2C6MFsgWls/PWu0xOFRhwUJt
-	XppK0UKNBZXPcajtSA/JQf225G4a5r7SAFHXGqI3naZ+68K8kHS4jNLCsk7Fbu141pdWoy
-	U6OfGZIk8ddkVrkvZ611sMYtd88t0CW44TXdXZTU345eWCohAihjKlaQxlC8Um0L1kTjT2
-	p/ktSi7HM0goZs+zY5M7MBacWN0O0olnk430R953ky1EFKvOkvHBFCsLylcbMA==
-Date: Mon, 29 Jan 2024 11:52:28 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: David Regan <dregan@broadcom.com>
-Cc: dregan@mail.com, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- computersforpeace@gmail.com, kdasu.kdev@gmail.com,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, Linux Kernel
- Mailing List <linux-kernel@vger.kernel.org>, Joel Peshkin
- <joel.peshkin@broadcom.com>, Tomer Yacoby <tomer.yacoby@broadcom.com>, Dan
- Beygelman <dan.beygelman@broadcom.com>, William Zhang
- <william.zhang@broadcom.com>, Anand Gore <anand.gore@broadcom.com>, Kursad
- Oney <kursad.oney@broadcom.com>, Florian Fainelli
- <florian.fainelli@broadcom.com>, rafal@milecki.pl,
- bcm-kernel-feedback-list@broadcom.com, andre.przywara@arm.com,
- baruch@tkos.co.il, linux-arm-kernel@lists.infradead.org, Dan Carpenter
- <dan.carpenter@linaro.org>
-Subject: Re: [PATCH v3 10/10] mtd: rawnand: brcmnand: allow for on-die ecc
-Message-ID: <20240129115228.06dc2292@xps-13>
-In-Reply-To: <CAA_RMS5gX88v_Qt1csgSL_ffMNsqo2G8B164EB_Hg=hXd620eg@mail.gmail.com>
-References: <20240124030458.98408-1-dregan@broadcom.com>
-	<20240124030458.98408-11-dregan@broadcom.com>
-	<20240124184027.712b1e47@xps-13>
-	<CAA_RMS42FaiN+Za1iY12o0YUANH9rJarBTBa=9jNn8x6_g-Fng@mail.gmail.com>
-	<20240126071913.699c3795@xps-13>
-	<CAA_RMS5gX88v_Qt1csgSL_ffMNsqo2G8B164EB_Hg=hXd620eg@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706525674; c=relaxed/simple;
+	bh=pmYCeHvnx4VaiExqcBWEO6e0a64iMl8rwNzANq8/yjI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CIpOio/HqT3KdKHu3xD1WNfASKLXtfI1nUhFRXO2uc1WTNhnYgYJCpt/ywdELMMykStIQ3JOjeVOp6XIa4sBD6Wjc8bGXGwZJPrepnszno3ZrphSpa1pzfShxsYFkyThYwaLnbO7SO+gbR1vthLAD5OCJ9EQJPn8Cd0Od8CMyTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xcQDfkYr; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a358ec50b7cso174062166b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 02:54:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706525671; x=1707130471; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=f/oSSDICCHbrdP4BH59WaW/TlR2fru4lRGyTtk+4aYs=;
+        b=xcQDfkYrBGblf+kQeUU/3LH1QuI6v0Hl8nu1hIk5BVKWsETGf8bWxuTVYzwqG/EcSh
+         dxVCl/ibgJIxb5N7ga0Vvbqpvc4XAzB/qlBh1g2Zq8aaL9Xv1SHZG8Hl+/TpyLSBPF66
+         x6kTPHqxsa5OMWNYGONI9EYVSHosDojoJB0EsDuCz/DBTTraBjZsYmN/GSB+DElUzefh
+         XKrgLnqO9uOsT6J3eGBqqqzGNsOPkd2qbxENEVGzIrJf2tIF1RD+1ef45n5jBoDKRZD9
+         sotbTtWfrdkCf518AfbfWHEPft/5F1mQxCC+LXE4Db6Ru2IbldX/vddyZbf2IhOEdjRt
+         R5fA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706525671; x=1707130471;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=f/oSSDICCHbrdP4BH59WaW/TlR2fru4lRGyTtk+4aYs=;
+        b=B6narRgCRuFW2Z+y0rk55FWJOvoRSliFlkCq/Y1byMUXeCihwtnqPkwbusMo3MUFrm
+         wOrn4xYHbdzDqPUK3oa0Wh9SOsJhVzfhSBPvf2w9/A6bM8asoy5CFtBT41mxVCsiAhpw
+         FQhysiIVhuUKP2QNCH6cPDDAaUx8UuvRsSYGvHIDygFkwrs7B3R+FoGan0eDfITcUW1c
+         RkDpIN4bdgrowPyBs7EHV59ZjD+TkkVDnWNUa3BnhsCHyy+QzGctqQDjEJ9dG4QOZs/U
+         4IFmGcHHtm0Z54D3YqmGKMbWq78f16F5OKHSN8EjHsap9c9e8IE4+N5IS1gPfEe83aRb
+         xUXA==
+X-Gm-Message-State: AOJu0YxT/N/Gyj8jwv58muCt6c/nz9AGzp6V6B+gtaZg3xVooOvUyMs7
+	gQ6BqK0nrL0fMhccB7juaqx5YlN6xWmtgxQ4ReZTRDfHFMoJBt1Fn59nWs8baXM=
+X-Google-Smtp-Source: AGHT+IGYJNC7edW5Scg3uDqbgjo1SqWrpwkLVxKzftNyn2dt9ODUd83gW+enc/Joa5DPoyRrJaHk+A==
+X-Received: by 2002:a17:906:4eca:b0:a28:c04e:315b with SMTP id i10-20020a1709064eca00b00a28c04e315bmr5994406ejv.13.1706525671246;
+        Mon, 29 Jan 2024 02:54:31 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id hd10-20020a170907968a00b00a35cd148c7esm636039ejc.212.2024.01.29.02.54.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jan 2024 02:54:30 -0800 (PST)
+Message-ID: <83b4315c-f2d8-419d-9b16-36341764b797@linaro.org>
+Date: Mon, 29 Jan 2024 11:54:28 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 04/14] dt-bindings: phy: qcom,sc8280xp-qmp-pcie-phy: Fix
+ the usage of aux clk
+Content-Language: en-US
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>,
+ Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ cros-qcom-dts-watchers@chromium.org
+Cc: linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240124-pcie-aux-clk-fix-v1-0-d8a4852b6ba6@linaro.org>
+ <20240124-pcie-aux-clk-fix-v1-4-d8a4852b6ba6@linaro.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240124-pcie-aux-clk-fix-v1-4-d8a4852b6ba6@linaro.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Transfer-Encoding: 7bit
 
-Hi David,
+On 24/01/2024 08:36, Manivannan Sadhasivam wrote:
+> On some platforms, PHY block requires PCIE_PHY_AUX_CLK to be used when the
+> PCIe link enters L1SS state. On those platforms, a dedicated
+> PCIE_PHY_AUX_CLK is available from GCC. Other than this, the PHY block
+> doesn't require any other "aux" clock, including PCIE_AUX_CLK which only
+> required by the PCIe controller.
+> 
+> Historically, the DTs of the platforms requiring "aux" clock passed
+> PCIE_PHY_AUX_CLK as "aux" clock. But over the period of time, platforms
+> that do not require this dedicated "aux" clock mistakenly started passing
+> the PCIE_AUX_CLK as the "aux" clock. More recently, SA8775P platform passed
+> both "aux" (PCIE_AUX_CLK) and "phy_aux" (PCIE_PHY_AUX_CLK) clocks.
+> 
+> So to clean up this mess, let's remove the newly introduced "phy_aux" clock
+> and just use "aux" clock to supply PCIE_PHY_AUX_CLK for platforms that
+> require it. For the platforms that do not require a dedicated "aux" clock,
+> the clock is removed from DT.
+> 
+> While at it, let's also define "qcom,sc7280-qmp-pcie-phy" compatible for
+> SC7280 SoC which was earlier using the compatible
+> "qcom,sm8250-qmp-gen3x2-pcie-phy" as the clock requirement has changed and
+> also restructure the "clock-names" property for the affected platforms.
+> 
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-dregan@broadcom.com wrote on Fri, 26 Jan 2024 11:57:39 -0800:
 
-> Hi Miqu=C3=A8l,
->=20
-> On Thu, Jan 25, 2024 at 10:19=E2=80=AFPM Miquel Raynal
-> <miquel.raynal@bootlin.com> wrote:
-> >
-> > Hi David,
-> >
-> > dregan@broadcom.com wrote on Thu, 25 Jan 2024 11:47:46 -0800:
-> > =20
-> > > Hi Miqu=C3=A8l,
-> > >
-> > > On Wed, Jan 24, 2024 at 9:40=E2=80=AFAM Miquel Raynal <miquel.raynal@=
-bootlin.com> wrote: =20
-> > > >
-> > > > Hi David,
-> > > >
-> > > > dregan@broadcom.com wrote on Tue, 23 Jan 2024 19:04:58 -0800:
-> > > > =20
-> > > > > Allow settings for on-die ecc such that if on-die ECC is selected
-> > > > > don't error out but require ECC strap setting of zero
-> > > > >
-> > > > > Signed-off-by: David Regan <dregan@broadcom.com>
-> > > > > Reviewed-by: William Zhang <william.zhang@broadcom.com>
-> > > > > ---
-> > > > > Changes in v3: None
-> > > > > ---
-> > > > > Changes in v2:
-> > > > > - Added to patch series
-> > > > > ---
-> > > > >  drivers/mtd/nand/raw/brcmnand/brcmnand.c | 14 ++++++++++----
-> > > > >  1 file changed, 10 insertions(+), 4 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/m=
-td/nand/raw/brcmnand/brcmnand.c
-> > > > > index a4e311b6798c..42526f3250c9 100644
-> > > > > --- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-> > > > > +++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-> > > > > @@ -2727,9 +2727,11 @@ static int brcmnand_setup_dev(struct brcmn=
-and_host *host)
-> > > > >       cfg->blk_adr_bytes =3D get_blk_adr_bytes(mtd->size, mtd->wr=
-itesize);
-> > > > >
-> > > > >       if (chip->ecc.engine_type !=3D NAND_ECC_ENGINE_TYPE_ON_HOST=
-) {
-> > > > > -             dev_err(ctrl->dev, "only HW ECC supported; selected=
-: %d\n",
-> > > > > -                     chip->ecc.engine_type);
-> > > > > -             return -EINVAL;
-> > > > > +             if (chip->ecc.strength) {
-> > > > > +                     dev_err(ctrl->dev, "ERROR!!! HW ECC must be=
- set to zero for non-hardware ECC; selected: %d\n",
-> > > > > +                             chip->ecc.strength); =20
-> > > >
-> > > > Can you use a more formal string? Also clarify it because I don't
-> > > > really understand what it leads to. =20
-> > >
-> > > How about:
-> > >
-> > > dev_err(ctrl->dev, "HW ECC set to %d, must be zero for on-die ECC\n",=
- =20
-> >
-> > Actually I am wondering how legitimate this is. Just don't enable the
-> > on host ECC engine if it's not in use. No need to check the core's
-> > choice. =20
->=20
-> Our chip ECC engine will either be on if it's needed or off if it's not.
-> Either I can do that in one place or put checks in before each
-> read/write to turn on/off the ECC engine, which seems a lot more
-> work and changes and possible issues/problems.
-> Turning it on/off as needed has not been explicitly tested and
-> could cause unforeseen consequences. This
-> is a minimal change which should have minimal impact.
->=20
-> > =20
-> > > =20
-> > > > =20
-> > > > > +                     return -EINVAL;
-> > > > > +             }
-> > > > >       }
-> > > > >
-> > > > >       if (chip->ecc.algo =3D=3D NAND_ECC_ALGO_UNKNOWN) {
-> > > > > @@ -2797,7 +2799,11 @@ static int brcmnand_setup_dev(struct brcmn=
-and_host *host)
-> > > > >       if (ret)
-> > > > >               return ret;
-> > > > >
-> > > > > -     brcmnand_set_ecc_enabled(host, 1);
-> > > > > +     if (chip->ecc.engine_type =3D=3D NAND_ECC_ENGINE_TYPE_ON_DI=
-E) {
-> > > > > +             dev_dbg(ctrl->dev, "Disable HW ECC for on-die ECC\n=
-"); =20
-> > > >
-> > > > Not needed. =20
-> > >
-> > > Will remove.
-> > > =20
-> > > > =20
-> > > > > +             brcmnand_set_ecc_enabled(host, 0);
-> > > > > +     } else
-> > > > > +             brcmnand_set_ecc_enabled(host, 1); =20
-> > > >
-> > > > Style is wrong, but otherwise I think ECC should be kept disabled w=
-hile
-> > > > not in active use, so I am a bit surprised by this line. =20
-> > >
-> > > This is a double check to turn on/off our hardware ECC. =20
-> >
-> > I expect the engine to be always disabled. Enable it only when you
-> > need (may require an additional patch before this one). =20
->=20
-> We are already turning on the ECC enable at this point,
-> this is just adding the option to turn it off if the NAND chip
-> itself will be doing the ECC instead of our controller.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Sorry if I have not been clear.
+Best regards,
+Krzysztof
 
-This sequence:
-- init
-- enable hw ECC engine
-Is broken.
-
-It *cannot* work as any operation going through exec_op now may
-perform page reads which should be unmodified by the ECC engine. You
-driver *must* follow the following sequence:
-
-- init and disable (or keep disabled) the hw ECC engine
-- when you perform a page operation with correction you need to
-	- enable the engine
-	- perform the operation
-	- disable the engine
-
-Thanks,
-Miqu=C3=A8l
 
