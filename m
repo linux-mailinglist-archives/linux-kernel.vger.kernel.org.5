@@ -1,252 +1,341 @@
-Return-Path: <linux-kernel+bounces-42480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42482-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8ABA8401EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:39:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6E9B8401F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:40:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F041283483
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:39:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 313A41F229E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:40:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A92D65577D;
-	Mon, 29 Jan 2024 09:39:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F1CA55C0B;
+	Mon, 29 Jan 2024 09:40:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DiK3P93Z"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uRWOIs5z"
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67E9F55E63;
-	Mon, 29 Jan 2024 09:39:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7320955765
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:40:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706521182; cv=none; b=qClwbzzcFPFlJI9+L0xg7Z5hJBUbbdFuBUMnVAwSposkrVfbhn2xlBrt7KczDEevbf8p+nqukuzPYQzmwYkvJFgdWC6ts+92sqBVd4tNrZ7m/dH+5e67/7btF8K2S8CByC6FYOPxSmsoFlU+Rvtjj8x2U/iX7SmSWck2X2oAE5A=
+	t=1706521239; cv=none; b=RMwVcENNEvVn4FOSIDqdW74u8tbpq324lOFCDkFxp2njD6GE9fl58mFPax3rXTS6Vs2LBKGWNDvDNMel7Q44vMPR1Jbow2tCsT2eHNT56NMDiYfeT8zvXy0fzLQRoveGFyXilvwa9PMLirKBVLu852CHULQ65np8YGClQTYHs+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706521182; c=relaxed/simple;
-	bh=vUokWzEw5+VC5jpC2OPRStu+GWoiZ2lrs+sppMiHM5k=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=HV6Udwh272czUxQz686S+rvBw8jUj3iyyWi6j6b5spvLHC8lOjTIAPKRHGAFAoDdA4fiSvRF4FgM5A1S1TaAGqG05g/IL1V+7nLIDvyy0pUcMeUFvf2RU5ibtJ7p+cwEbkovQj1UnpJTy+/XqfuoW4NSHNKzT5VVb8101JOApEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DiK3P93Z; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706521180; x=1738057180;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=vUokWzEw5+VC5jpC2OPRStu+GWoiZ2lrs+sppMiHM5k=;
-  b=DiK3P93Zk8DZxJKkBJbtJAt8nTd9VgOgq7WddB1boej3/y6zu/jB2mje
-   6JDWppiqXnjdTecPIZXMGZo9ZhuFFQlM94aJXZSKA1Beqv0VJauX4SISr
-   JR2qFdiFacmO7UEoCE3+kkoCS/X4ftQ9jehGMpnw4NlsLFdy+bzRWOU2X
-   LERX/xLMjhEHsWg6TJEvcOJkPD/wQz/0spT3pQg1Ukw/utktXB/hTYI5O
-   y7kt6rHEYJp51yL8q7RpnWAjT0tehKjfSPXwk8Sw0mke1JwHqWz1U9fmq
-   AxqX1vv6/GoyRh+8IoIRnfjpBeV2aKqkveLhYG8x6PClWmjVU1+u8nhj6
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="9650774"
-X-IronPort-AV: E=Sophos;i="6.05,226,1701158400"; 
-   d="scan'208";a="9650774"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 01:39:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,226,1701158400"; 
-   d="scan'208";a="3246388"
-Received: from hbrandbe-mobl.ger.corp.intel.com (HELO localhost) ([10.252.59.53])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 01:39:34 -0800
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Mario Limonciello <mario.limonciello@amd.com>,
- amd-gfx@lists.freedesktop.org, Alex Deucher <alexander.deucher@amd.com>,
- Harry Wentland <harry.wentland@amd.com>, "Rafael J . Wysocki"
- <rafael@kernel.org>, Hans de Goede <hdegoede@redhat.com>
-Cc: open list <linux-kernel@vger.kernel.org>, "open list:DRM DRIVERS"
- <dri-devel@lists.freedesktop.org>, Melissa Wen <mwen@igalia.com>, "open
- list:ACPI" <linux-acpi@vger.kernel.org>, Mario Limonciello
- <mario.limonciello@amd.com>, Mark
- Pearson <mpearson-lenovo@squebb.ca>
-Subject: Re: [PATCH 2/2] drm/amd: Fetch the EDID from _DDC if available for eDP
-In-Reply-To: <20240126184639.8187-3-mario.limonciello@amd.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240126184639.8187-1-mario.limonciello@amd.com>
- <20240126184639.8187-3-mario.limonciello@amd.com>
-Date: Mon, 29 Jan 2024 11:39:32 +0200
-Message-ID: <87le88jx63.fsf@intel.com>
+	s=arc-20240116; t=1706521239; c=relaxed/simple;
+	bh=LvIa5rnussX39WpEvTL5gFnyjahkkKM2xWu0Uymx6WY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PcseUIJIcIVsVAGGpe7aZIGnHCJlVN8M6KEEytJRireg5f4zsarnVJXCylyGe8gXGEeVY0zyLl2O13+0jAcGEC+4VVWeiw65HtCZIJdPj4VfjV2tPjTHPyBY6kjUky83V9tMwaSGVv2vEVTBkq+HkRbE28v+2PjLqWPr+uKPWZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uRWOIs5z; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-6001449a2beso15512007b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 01:40:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706521235; x=1707126035; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=2JY6ToXPjNwXhuXrTT6QOjgiDmdF+CeM/r9NF1DgPmk=;
+        b=uRWOIs5z5cpIcgIRteOBk0BWRv4DIT3n5pAnv7v7NShb/QfsK6qDWeMocGKBOtUzau
+         U3DaFctFnVIdZo09w5hXWYD8ZxeJMobkjIOklZlp6xX4PK6osWLV/poAM2t9IKiByT4r
+         2oAjaqTt8ld2m0oBA8pQXgolEHfBckhB9BRdu9YdoHcUWiVMFgAXyyIc3OSHrhk+1knF
+         WGCr9HVS4/YNLY61Vr6y62RpIapzlUnFLiuWcEI0hDipgPG+RXIMtvaLilpbE6ltUJ9Y
+         yX+WI327PXEgCa7HRGzEhrDxug4fDl3u6Uf/weUK+KZEYci2ViHnf+TsAewMVW794B1I
+         VN/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706521235; x=1707126035;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2JY6ToXPjNwXhuXrTT6QOjgiDmdF+CeM/r9NF1DgPmk=;
+        b=qipDIh01HifA4+m3h+2CzE35lHc9PpSQnSJI1gOVd224/b1HZF37uVPkPy1i+5Tyai
+         c0zp23L2oKmKrTxD0J4RD+vRIuZ+cULmilkuNQp+WtHVXpoi207rCnwY/3RpDfBY9uBg
+         N4Ffvwqx7PCogeFmiQJ/Q+nMuBsMTZ+XL11rKPrmxh9JU+DgC1dgnSP/YuuiwlRvTn6d
+         6tLbeIKF+z9mRwkig8VRpA6U84kxxcGZzeIuqHj1YWlqttvU32XX3NatBi7UNqrA442c
+         dXcgWGcVGValplJNfzMMj/Y4sj1jUbnR0HqYGNXA+Uep/gG+lLAfIfH9jww/+AGiAksJ
+         2I3A==
+X-Gm-Message-State: AOJu0YywD/Oya/CcpDRkFpmOWgltPkjvOfH1td42rwNFNRKGiC52zJL1
+	h1DT1mM521rWyFfx6Uh9rxp4Lv6OxFYVJ6WYF9WEUEOHN4iMnNjdeHyYBFs6fU9cezQ1jlUL3/Z
+	AB+/o5YA8WU1gaqZyUc83rrWI9UuYkqAUd0rTAEiZnYZuHOII
+X-Google-Smtp-Source: AGHT+IH4lWSb6WG9jfOKtjqmDCo4I5nviQ3kAEzfInwhv5cfQoct03pp8KFNFA8IYJr4yCU2gWeZ0ebx2mBpRYiPCJA=
+X-Received: by 2002:a0d:d415:0:b0:5ef:78ad:b0b6 with SMTP id
+ w21-20020a0dd415000000b005ef78adb0b6mr3331146ywd.69.1706521235443; Mon, 29
+ Jan 2024 01:40:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20240129-x1e80100-phy-edp-compatible-refactor-v3-0-e71f3359c535@linaro.org>
+ <20240129-x1e80100-phy-edp-compatible-refactor-v3-2-e71f3359c535@linaro.org>
+ <CAA8EJpr5Ci7M92ibsCMec3wcQTVqFkaVgRQUhKUSdhg66YhW1Q@mail.gmail.com> <Zbdcao0emQyBodCK@linaro.org>
+In-Reply-To: <Zbdcao0emQyBodCK@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Mon, 29 Jan 2024 11:40:24 +0200
+Message-ID: <CAA8EJppkEksTL90KLcaw0adg73K=ngoYp8semB_u5YFk6rChhA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] phy: qcom: edp: Add set_mode op for configuring
+ eDP/DP submode
+To: Abel Vesa <abel.vesa@linaro.org>
+Cc: Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Johan Hovold <johan@kernel.org>, linux-phy@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 26 Jan 2024, Mario Limonciello <mario.limonciello@amd.com> wrote:
-> Some manufacturers have intentionally put an EDID that differs from
-> the EDID on the internal panel on laptops.
+On Mon, 29 Jan 2024 at 10:06, Abel Vesa <abel.vesa@linaro.org> wrote:
 >
-> Attempt to fetch this EDID if it exists and prefer it over the EDID
-> that is provided by the panel.
+> On 24-01-29 06:05:09, Dmitry Baryshkov wrote:
+> > On Mon, 29 Jan 2024 at 02:26, Abel Vesa <abel.vesa@linaro.org> wrote:
+> > >
+> > > Future platforms should not use different compatibles to differentiate
+> > > between eDP and DP mode. Instead, they should use a single compatible as the
+> > > IP block is the same. It will be the job of the controller to set the submode
+> > > of the PHY accordingly.
+> > >
+> > > The existing platforms will remain with separate compatibles for each mode.
+> > >
+> > > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> > > ---
+> > >  drivers/phy/qualcomm/phy-qcom-edp.c | 71 ++++++++++++++++++++++++++-----------
+> > >  1 file changed, 51 insertions(+), 20 deletions(-)
+> > >
+> > > diff --git a/drivers/phy/qualcomm/phy-qcom-edp.c b/drivers/phy/qualcomm/phy-qcom-edp.c
+> > > index 8e5078304646..af941d6c5588 100644
+> > > --- a/drivers/phy/qualcomm/phy-qcom-edp.c
+> > > +++ b/drivers/phy/qualcomm/phy-qcom-edp.c
+> > > @@ -14,6 +14,7 @@
+> > >  #include <linux/module.h>
+> > >  #include <linux/of.h>
+> > >  #include <linux/phy/phy.h>
+> > > +#include <linux/phy/phy-dp.h>
+> > >  #include <linux/platform_device.h>
+> > >  #include <linux/regulator/consumer.h>
+> > >  #include <linux/reset.h>
+> > > @@ -68,19 +69,21 @@
+> > >
+> > >  #define TXn_TRAN_DRVR_EMP_EN                    0x0078
+> > >
+> > > -struct qcom_edp_cfg {
+> > > -       bool is_dp;
+> > > -
+> > > -       /* DP PHY swing and pre_emphasis tables */
+> > > +struct qcom_edp_swing_pre_emph_cfg {
+> > >         const u8 (*swing_hbr_rbr)[4][4];
+> > >         const u8 (*swing_hbr3_hbr2)[4][4];
+> > >         const u8 (*pre_emphasis_hbr_rbr)[4][4];
+> > >         const u8 (*pre_emphasis_hbr3_hbr2)[4][4];
+> > >  };
+> > >
+> > > +struct qcom_edp_phy_cfg {
+> > > +       bool is_edp;
+> > > +       const struct qcom_edp_swing_pre_emph_cfg *swing_pre_emph_cfg;
+> > > +};
+> > > +
+> > >  struct qcom_edp {
+> > >         struct device *dev;
+> > > -       const struct qcom_edp_cfg *cfg;
+> > > +       const struct qcom_edp_phy_cfg *cfg;
+> > >
+> > >         struct phy *phy;
+> > >
+> > > @@ -96,6 +99,8 @@ struct qcom_edp {
+> > >
+> > >         struct clk_bulk_data clks[2];
+> > >         struct regulator_bulk_data supplies[2];
+> > > +
+> > > +       bool is_edp;
+> > >  };
+> > >
+> > >  static const u8 dp_swing_hbr_rbr[4][4] = {
+> > > @@ -126,8 +131,7 @@ static const u8 dp_pre_emp_hbr2_hbr3[4][4] = {
+> > >         { 0x04, 0xff, 0xff, 0xff }
+> > >  };
+> > >
+> > > -static const struct qcom_edp_cfg dp_phy_cfg = {
+> > > -       .is_dp = true,
+> > > +static const struct qcom_edp_swing_pre_emph_cfg dp_phy_swing_pre_emph_cfg = {
+> > >         .swing_hbr_rbr = &dp_swing_hbr_rbr,
+> > >         .swing_hbr3_hbr2 = &dp_swing_hbr2_hbr3,
+> > >         .pre_emphasis_hbr_rbr = &dp_pre_emp_hbr_rbr,
+> > > @@ -162,18 +166,28 @@ static const u8 edp_pre_emp_hbr2_hbr3[4][4] = {
+> > >         { 0x00, 0xff, 0xff, 0xff }
+> > >  };
+> > >
+> > > -static const struct qcom_edp_cfg edp_phy_cfg = {
+> > > -       .is_dp = false,
+> > > +static const struct qcom_edp_swing_pre_emph_cfg edp_phy_swing_pre_emph_cfg = {
+> > >         .swing_hbr_rbr = &edp_swing_hbr_rbr,
+> > >         .swing_hbr3_hbr2 = &edp_swing_hbr2_hbr3,
+> > >         .pre_emphasis_hbr_rbr = &edp_pre_emp_hbr_rbr,
+> > >         .pre_emphasis_hbr3_hbr2 = &edp_pre_emp_hbr2_hbr3,
+> > >  };
+> > >
+> > > +static const struct qcom_edp_phy_cfg sc7280_dp_phy_cfg = {
+> > > +};
+> > > +
+> > > +static const struct qcom_edp_phy_cfg sc8280xp_dp_phy_cfg = {
+> > > +       .swing_pre_emph_cfg = &dp_phy_swing_pre_emph_cfg,
+> > > +};
+> > > +
+> > > +static const struct qcom_edp_phy_cfg sc8280xp_edp_phy_cfg = {
+> > > +       .is_edp = true,
+> > > +       .swing_pre_emph_cfg = &edp_phy_swing_pre_emph_cfg,
+> > > +};
+> > > +
+> > >  static int qcom_edp_phy_init(struct phy *phy)
+> > >  {
+> > >         struct qcom_edp *edp = phy_get_drvdata(phy);
+> > > -       const struct qcom_edp_cfg *cfg = edp->cfg;
+> > >         int ret;
+> > >         u8 cfg8;
+> > >
+> > > @@ -200,7 +214,7 @@ static int qcom_edp_phy_init(struct phy *phy)
+> > >                DP_PHY_PD_CTL_PLL_PWRDN | DP_PHY_PD_CTL_DP_CLAMP_EN,
+> > >                edp->edp + DP_PHY_PD_CTL);
+> > >
+> > > -       if (cfg && cfg->is_dp)
+> > > +       if (edp->cfg->swing_pre_emph_cfg && !edp->is_edp)
+> >
+> > I think (!edp->is_edp) should be enough here.
 >
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu.h           |  2 ++
->  drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c      | 30 +++++++++++++++++++
->  .../gpu/drm/amd/amdgpu/amdgpu_connectors.c    |  5 ++++
->  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  8 ++++-
->  .../amd/display/amdgpu_dm/amdgpu_dm_helpers.c |  7 +++--
->  5 files changed, 49 insertions(+), 3 deletions(-)
+> Actually, in case of DP, the cfg8 needs to be 0xb7 for sc8280xp, while for sc7280 it should be 0x37.
 >
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-> index c5f3859fd682..99abe12567a4 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-> @@ -1520,6 +1520,7 @@ int amdgpu_acpi_get_mem_info(struct amdgpu_device *adev, int xcc_id,
->  
->  void amdgpu_acpi_get_backlight_caps(struct amdgpu_dm_backlight_caps *caps);
->  bool amdgpu_acpi_should_gpu_reset(struct amdgpu_device *adev);
-> +void *amdgpu_acpi_edid(struct amdgpu_device *adev, struct drm_connector *connector);
->  void amdgpu_acpi_detect(void);
->  void amdgpu_acpi_release(void);
->  #else
-> @@ -1537,6 +1538,7 @@ static inline int amdgpu_acpi_get_mem_info(struct amdgpu_device *adev,
->  }
->  static inline void amdgpu_acpi_fini(struct amdgpu_device *adev) { }
->  static inline bool amdgpu_acpi_should_gpu_reset(struct amdgpu_device *adev) { return false; }
-> +static inline void *amdgpu_acpi_edid(struct amdgpu_device *adev, struct drm_connector *connector) { return NULL; }
->  static inline void amdgpu_acpi_detect(void) { }
->  static inline void amdgpu_acpi_release(void) { }
->  static inline bool amdgpu_acpi_is_power_shift_control_supported(void) { return false; }
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
-> index e550067e5c5d..c106335f1f22 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
-> @@ -1380,6 +1380,36 @@ bool amdgpu_acpi_should_gpu_reset(struct amdgpu_device *adev)
->  #endif
->  }
->  
-> +/**
-> + * amdgpu_acpi_edid
-> + * @adev: amdgpu_device pointer
-> + * @connector: drm_connector pointer
-> + *
-> + * Returns the EDID used for the internal panel if present, NULL otherwise.
-> + */
-> +void *
-> +amdgpu_acpi_edid(struct amdgpu_device *adev, struct drm_connector *connector)
-> +{
-> +	struct drm_device *ddev = adev_to_drm(adev);
-> +	struct acpi_device *acpidev = ACPI_COMPANION(ddev->dev);
-> +	void *edid;
-> +	int r;
-> +
-> +	if (!acpidev)
-> +		return NULL;
-> +
-> +	if (connector->connector_type != DRM_MODE_CONNECTOR_eDP)
-> +		return NULL;
-> +
-> +	r = acpi_video_get_edid(acpidev, ACPI_VIDEO_DISPLAY_LCD, -1, &edid);
-> +	if (r < 0) {
-> +		DRM_DEBUG_DRIVER("Failed to get EDID from ACPI: %d\n", r);
-> +		return NULL;
-> +	}
-> +
-> +	return kmemdup(edid, r, GFP_KERNEL);
-> +}
-> +
->  /*
->   * amdgpu_acpi_detect - detect ACPI ATIF/ATCS methods
->   *
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
-> index 9caba10315a8..c7e1563a46d3 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
-> @@ -278,6 +278,11 @@ static void amdgpu_connector_get_edid(struct drm_connector *connector)
->  	struct amdgpu_device *adev = drm_to_adev(dev);
->  	struct amdgpu_connector *amdgpu_connector = to_amdgpu_connector(connector);
->  
-> +	if (amdgpu_connector->edid)
-> +		return;
-> +
-> +	/* if the BIOS specifies the EDID via _DDC, prefer this */
-> +	amdgpu_connector->edid = amdgpu_acpi_edid(adev, connector);
+> So to differentiate between first and second we check if the config
+> provides a swing_pre_emph_cfg
 
-Imagine the EDID returned by acpi_video_get_edid() has edid->extensions
-bigger than 4. Of course it should not, but you have no guarantees, and
-it originates outside of the kernel.
+Using swing_pre_emph_cfg to distinguish between those two cases is a pure hack.
+Is there any sensible meaning behind those bits? If not, just put
+those values into the configuration data.
 
-The real fix is to have the function return a struct drm_edid which
-tracks the allocation size separately. Unfortunately, it requires a
-bunch of changes along the way. We've mostly done it in i915, and I've
-sent a series to do this in drm/bridge [1].
+>
+> >
+> > >                 cfg8 = 0xb7;
+> > >         else
+> > >                 cfg8 = 0x37;
+> > > @@ -234,7 +248,7 @@ static int qcom_edp_phy_init(struct phy *phy)
+> > >
+> > >  static int qcom_edp_set_voltages(struct qcom_edp *edp, const struct phy_configure_opts_dp *dp_opts)
+> > >  {
+> > > -       const struct qcom_edp_cfg *cfg = edp->cfg;
+> > > +       const struct qcom_edp_swing_pre_emph_cfg *cfg = edp->cfg->swing_pre_emph_cfg;
+> > >         unsigned int v_level = 0;
+> > >         unsigned int p_level = 0;
+> > >         u8 ldo_config;
+> > > @@ -245,6 +259,9 @@ static int qcom_edp_set_voltages(struct qcom_edp *edp, const struct phy_configur
+> > >         if (!cfg)
+> > >                 return 0;
+> > >
+> > > +       if (edp->is_edp)
+> > > +               cfg = &edp_phy_swing_pre_emph_cfg;
+> > > +
+> > >         for (i = 0; i < dp_opts->lanes; i++) {
+> > >                 v_level = max(v_level, dp_opts->voltage[i]);
+> > >                 p_level = max(p_level, dp_opts->pre[i]);
+> > > @@ -261,7 +278,7 @@ static int qcom_edp_set_voltages(struct qcom_edp *edp, const struct phy_configur
+> > >         if (swing == 0xff || emph == 0xff)
+> > >                 return -EINVAL;
+> > >
+> > > -       ldo_config = (cfg && cfg->is_dp) ? 0x1 : 0x0;
+> > > +       ldo_config = edp->is_edp ? 0x0 : 0x1;
+> > >
+> > >         writel(ldo_config, edp->tx0 + TXn_LDO_CONFIG);
+> > >         writel(swing, edp->tx0 + TXn_TX_DRV_LVL);
+> > > @@ -447,10 +464,9 @@ static int qcom_edp_set_vco_div(const struct qcom_edp *edp, unsigned long *pixel
+> > >  static int qcom_edp_phy_power_on(struct phy *phy)
+> > >  {
+> > >         const struct qcom_edp *edp = phy_get_drvdata(phy);
+> > > -       const struct qcom_edp_cfg *cfg = edp->cfg;
+> > >         u32 bias0_en, drvr0_en, bias1_en, drvr1_en;
+> > >         unsigned long pixel_freq;
+> > > -       u8 ldo_config;
+> > > +       u8 ldo_config = 0x0;
+> > >         int timeout;
+> > >         int ret;
+> > >         u32 val;
+> > > @@ -468,7 +484,8 @@ static int qcom_edp_phy_power_on(struct phy *phy)
+> > >                 return timeout;
+> > >
+> > >
+> > > -       ldo_config = (cfg && cfg->is_dp) ? 0x1 : 0x0;
+> > > +       if (edp->cfg->swing_pre_emph_cfg && !edp->cfg->is_edp)
+> >
+> > I'd assume this should be `if (!edp->is_edp)`, see qcom_edp_set_voltages()
+> >
+>
+> Yep. will fix.
+>
+> > > +               ldo_config = 0x1;
+> > >
+> > >         writel(ldo_config, edp->tx0 + TXn_LDO_CONFIG);
+> > >         writel(ldo_config, edp->tx1 + TXn_LDO_CONFIG);
+> > > @@ -589,6 +606,18 @@ static int qcom_edp_phy_power_off(struct phy *phy)
+> > >         return 0;
+> > >  }
+> > >
+> > > +static int qcom_edp_phy_set_mode(struct phy *phy, enum phy_mode mode, int submode)
+> > > +{
+> > > +       struct qcom_edp *edp = phy_get_drvdata(phy);
+> > > +
+> > > +       if (mode != PHY_MODE_DP)
+> > > +               return -EINVAL;
+> > > +
+> > > +       edp->is_edp = submode == PHY_SUBMODE_EDP ? true : false;
+> > > +
+> > > +       return 0;
+> > > +}
+> > > +
+> > >  static int qcom_edp_phy_exit(struct phy *phy)
+> > >  {
+> > >         struct qcom_edp *edp = phy_get_drvdata(phy);
+> > > @@ -604,6 +633,7 @@ static const struct phy_ops qcom_edp_ops = {
+> > >         .configure      = qcom_edp_phy_configure,
+> > >         .power_on       = qcom_edp_phy_power_on,
+> > >         .power_off      = qcom_edp_phy_power_off,
+> > > +       .set_mode       = qcom_edp_phy_set_mode,
+> > >         .exit           = qcom_edp_phy_exit,
+> > >         .owner          = THIS_MODULE,
+> > >  };
+> > > @@ -781,6 +811,7 @@ static int qcom_edp_phy_probe(struct platform_device *pdev)
+> > >
+> > >         edp->dev = dev;
+> > >         edp->cfg = of_device_get_match_data(&pdev->dev);
+> > > +       edp->is_edp = edp->cfg->is_edp;
+> > >
+> > >         edp->edp = devm_platform_ioremap_resource(pdev, 0);
+> > >         if (IS_ERR(edp->edp))
+> > > @@ -839,10 +870,10 @@ static int qcom_edp_phy_probe(struct platform_device *pdev)
+> > >  }
+> > >
+> > >  static const struct of_device_id qcom_edp_phy_match_table[] = {
+> > > -       { .compatible = "qcom,sc7280-edp-phy" },
+> > > -       { .compatible = "qcom,sc8180x-edp-phy" },
+> > > -       { .compatible = "qcom,sc8280xp-dp-phy", .data = &dp_phy_cfg },
+> > > -       { .compatible = "qcom,sc8280xp-edp-phy", .data = &edp_phy_cfg },
+> > > +       { .compatible = "qcom,sc7280-edp-phy" , .data = &sc7280_dp_phy_cfg, },
+> > > +       { .compatible = "qcom,sc8180x-edp-phy", .data = &sc7280_dp_phy_cfg, },
+> > > +       { .compatible = "qcom,sc8280xp-dp-phy", .data = &sc8280xp_dp_phy_cfg, },
+> > > +       { .compatible = "qcom,sc8280xp-edp-phy", .data = &sc8280xp_edp_phy_cfg, },
+> > >         { }
+> > >  };
+> > >  MODULE_DEVICE_TABLE(of, qcom_edp_phy_match_table);
+> > >
+> > > --
+> > > 2.34.1
+> > >
+> >
+> >
+> > --
+> > With best wishes
+> > Dmitry
 
-Bottom line, we should stop using struct edid in drivers. They'll all
-parse the info differently, and from what I've seen, often wrong.
 
-
-BR,
-Jani.
-
-
-[1] https://patchwork.freedesktop.org/series/128149/
-
-
->  	if (amdgpu_connector->edid)
->  		return;
->  
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> index cd98b3565178..1faa21f542bd 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> @@ -6562,17 +6562,23 @@ static void amdgpu_dm_connector_funcs_force(struct drm_connector *connector)
->  {
->  	struct amdgpu_dm_connector *aconnector = to_amdgpu_dm_connector(connector);
->  	struct amdgpu_connector *amdgpu_connector = to_amdgpu_connector(connector);
-> +	struct amdgpu_device *adev = drm_to_adev(connector->dev);
->  	struct dc_link *dc_link = aconnector->dc_link;
->  	struct dc_sink *dc_em_sink = aconnector->dc_em_sink;
->  	struct edid *edid;
->  
-> +	/* prefer ACPI over panel for eDP */
-> +	edid = amdgpu_acpi_edid(adev, connector);
-> +
->  	/*
->  	 * Note: drm_get_edid gets edid in the following order:
->  	 * 1) override EDID if set via edid_override debugfs,
->  	 * 2) firmware EDID if set via edid_firmware module parameter
->  	 * 3) regular DDC read.
->  	 */
-> -	edid = drm_get_edid(connector, &amdgpu_connector->ddc_bus->aux.ddc);
-> +	if (!edid)
-> +		edid = drm_get_edid(connector, &amdgpu_connector->ddc_bus->aux.ddc);
-> +
->  	if (!edid) {
->  		DRM_ERROR("No EDID found on connector: %s.\n", connector->name);
->  		return;
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-> index e3915c4f8566..6bf2a8867e76 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-> @@ -895,6 +895,7 @@ enum dc_edid_status dm_helpers_read_local_edid(
->  {
->  	struct amdgpu_dm_connector *aconnector = link->priv;
->  	struct drm_connector *connector = &aconnector->base;
-> +	struct amdgpu_device *adev = drm_to_adev(connector->dev);
->  	struct i2c_adapter *ddc;
->  	int retry = 3;
->  	enum dc_edid_status edid_status;
-> @@ -909,8 +910,10 @@ enum dc_edid_status dm_helpers_read_local_edid(
->  	 * do check sum and retry to make sure read correct edid.
->  	 */
->  	do {
-> -
-> -		edid = drm_get_edid(&aconnector->base, ddc);
-> +		/* prefer ACPI over panel for eDP */
-> +		edid = amdgpu_acpi_edid(adev, connector);
-> +		if (!edid)
-> +			edid = drm_get_edid(&aconnector->base, ddc);
->  
->  		/* DP Compliance Test 4.2.2.6 */
->  		if (link->aux_mode && connector->edid_corrupt)
 
 -- 
-Jani Nikula, Intel
+With best wishes
+Dmitry
 
