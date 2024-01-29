@@ -1,133 +1,155 @@
-Return-Path: <linux-kernel+bounces-43529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43530-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E121B84152F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 22:39:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1EEC841530
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 22:39:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D78361C22EFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 21:39:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 207161C22CBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 21:39:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 421D51586E8;
-	Mon, 29 Jan 2024 21:39:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17476158D89;
+	Mon, 29 Jan 2024 21:39:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=zytor.com header.i=@zytor.com header.b="PJnpcwBA"
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZumjhOHj"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD2EE266D4
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 21:39:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7C721586CE
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 21:39:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706564350; cv=none; b=UXb3bExE+bIp667StrIb6neUaIAxbdIgSBTu0DwGE4c3nAbnaueEWl5UHbk5MnnYd8FhKSzGkEOD47A1GJAacBeSDdu9U2ThvQsxUGgRcQuzvFggZ8e81yIe9wPIgl+MEpcA+6FMIR+6fv6PvK1uexyDEv1WxHvLbwiRtWc4bwQ=
+	t=1706564373; cv=none; b=rLOKs61EqxnFVLX0aQ2KInvNQ9iolMDm8xKTVjwdZOwJIscobkfRue0AoD58JXTN+3sOaKughIEWKCYtwdjsfPevhXkHokkEULQ1iwnQG7I3lgeHnJVbogaSZrtod2IgtnakBqTUPSSou88j/a2wuUGcKrHUwFnN+fcAHvGVi00=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706564350; c=relaxed/simple;
-	bh=ogg20et2iq65Lw43aBq/H1Xbh8RROR9TNaO43aP826M=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=hFH0XFNIrgqxMGLlN3cSBRHGDJXUqFgzPNY8AK/5sSsN5R8FxBCNonWHNv00jvY9fWqavKzeplVGwkTCi71mjBBW+EhMkQnQv/e0jFvUnd7MyWeeqr0OkQUXJJg4wIVg5qwD8LtRUgbcVRK4oPQamJfN0hG+EYsaUR2pxzb04UA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=fail (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=PJnpcwBA reason="signature verification failed"; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [127.0.0.1] ([76.133.66.138])
-	(authenticated bits=0)
-	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 40TLcXBH2349627
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Mon, 29 Jan 2024 13:38:33 -0800
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 40TLcXBH2349627
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2024011201; t=1706564314;
-	bh=QJYMHBD/bmYs+dj9muQqH/5bDeBVzbMM80yiJCupDLo=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=PJnpcwBAwwXR99Ezq39ER4qLZ5Vtvxu/KvPqloozL1dtoQS9EdjqHoIgRhz3Ufo5Y
-	 A2iwaH0nqf4c/Xyo74+Mf2/M3SXY8aDgWJ2Qzt+fziz7LOefduWZtQYLBfB0ptL6mo
-	 ckr2a8VJjZzvEwWU8Gc4Uw84hjm20nDEGAOL50+9ogkVMirjdX3Ij8Q/YUnny3At4p
-	 ufXuKSWGuGF2+yG5skIVzYaV/Ou1ge8KH/jOWXriIPErvTiZKtXhaeidydoANTlRGM
-	 WddMJrf7dK8ohQRvrc4sqvEO8SVZaM+QGv+IQPckz0vILDgnU0uk423MemU9aWJDyB
-	 77dDkwuAM27LA==
-Date: Mon, 29 Jan 2024 13:38:32 -0800
-From: "H. Peter Anvin" <hpa@zytor.com>
-To: Dave Hansen <dave.hansen@intel.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-CC: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        Jun Nakajima <jun.nakajima@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Kalra, Ashish" <ashish.kalra@amd.com>,
-        Sean Christopherson <seanjc@google.com>, linux-coco@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC] Randomness on confidential computing platforms
-User-Agent: K-9 Mail for Android
-In-Reply-To: <CC681F94-469C-4225-A075-C5F9129E7D96@zytor.com>
-References: <20240126134230.1166943-1-kirill.shutemov@linux.intel.com> <276aaeee-cb01-47d3-a3bf-f8fa2e59016c@intel.com> <dqiaimv3qqh77cfm2huzja4vsho3jls7vjmnwgda7enw633ke2@qiqrdnno75a7> <f5236e76-27d0-4a90-bde5-513ac9446184@intel.com> <dlhffyn7cccn5d4uvubggkrmtyxl4jodj5ukffafpsxsnqini3@5rcbybumab4c> <3a37eae3-9d3c-420c-a1c7-2d14f6982774@intel.com> <CC681F94-469C-4225-A075-C5F9129E7D96@zytor.com>
-Message-ID: <CA4D4182-8D65-4CEB-A173-68B92B04641B@zytor.com>
+	s=arc-20240116; t=1706564373; c=relaxed/simple;
+	bh=7Nu5d56ZeDA6l5eLrmk49xSbFqNKeDMhhp/l9C/XfqI=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=LMF9UOUX77/aOsJI4LHHqd6OKJyC6RV5/DAy+gdXlNfKefRAucU3BWuw2EwhVjV2cDT292gsQrix+zEQTz/JHKhU8PlX7C55mQBZ+cNspzSftzDNBJdnGevO43lLcx2A7Wy88iu5rrvJ0Q8m/OITuVRaJin+uzTmZs33fWazZus=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--coltonlewis.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ZumjhOHj; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--coltonlewis.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc221fad8c7so5076965276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 13:39:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706564371; x=1707169171; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=B99eaBaQvufEj95SWhNrEVaGQs5nxLAIqm27nnip6fg=;
+        b=ZumjhOHjWvebavKmoiTpwKV2HZOWh2JrXNMNeai7+UQ+vz7+V3W+f/UYt9XTAVlNzf
+         iqtFgi60YpN800Qku2RlBwzTwYOu7pM1KXzDdtIu1aV6KHygnHcCMYLlbbRKvggcHKIT
+         GzklPzp+2CHjdnQVUhbyvvYBSrTrj/DP9S9tkNK7HESw5NsQIzYH4y95cbfa9o3pjH3n
+         uCTL2DuDLbKAXicEt6/nHykZkihWKp/DZqyIGeIWxs08jzWl1k76NhYeA8dByvIGox9n
+         uNLQUwnGNQIymH/eHYbvO4tq26vKxYZwq+Td+ohxPvSTzWDkh3H7MAklRCH+l9//61b/
+         c37Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706564371; x=1707169171;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=B99eaBaQvufEj95SWhNrEVaGQs5nxLAIqm27nnip6fg=;
+        b=FjkPsLsZAAfsO0Ha6ur8XGEbrGx7tK9r9p7WJYOH4+gywU4EpbHCfvvj7XXny1vmQc
+         pZHIs5v1w/lk4x8Tyi2wiNkdBnxrdhlW+LtyT3qA9onco8M0K3U1+oeStttMJYBhkg1n
+         7T8JzT2mbZCKzVxuvLwXM+S/yBkNlBaYaTadJR2qEr9CKghr4QJyaV6mCjiStmMUiIZy
+         QsJayn9kcGKc7ILKZw8Y5d/BUC6KWRF9okfKxpOlHw0TZGTMd5ndribJTzZJpnUJyivf
+         ZriMQyP+ATbTj/euSg3FASXsSCauc8coJW7+WVwauyNfK7KxgsgDNpYKWC6ep2EUNbNL
+         uf1w==
+X-Gm-Message-State: AOJu0YxzKGZYZvijKU3KLkJnvEE+PhFTnDpGuX/Vv7AlccTD9mLhy+9B
+	04O3XcwjYqecSxfV+A8IXldlaVWUo/ZZ9GVWG/aIBQtP+gNZv00iwZ06vuniz2/Gr8EhrgXEIkU
+	M2Xr4KMoJHnZC8ycKBf2BbQ==
+X-Google-Smtp-Source: AGHT+IGygDA4Yqae/lvO9WyCp0eJko74aZVetrKCwp+siiLUcGXRBnWtoHzcunXD7W6Fuab5xM5aed9VfSPBn+KUWA==
+X-Received: from coltonlewis-kvm.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:14ce])
+ (user=coltonlewis job=sendgmr) by 2002:a05:6902:2082:b0:dc2:5525:f6b with
+ SMTP id di2-20020a056902208200b00dc255250f6bmr2459078ybb.7.1706564370856;
+ Mon, 29 Jan 2024 13:39:30 -0800 (PST)
+Date: Mon, 29 Jan 2024 21:39:17 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+Message-ID: <20240129213918.3124494-1-coltonlewis@google.com>
+Subject: [PATCH] KVM: arm64: Add capability for unconditional WFx passthrough
+From: Colton Lewis <coltonlewis@google.com>
+To: kvm@vger.kernel.org
+Cc: Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
+	James Morse <james.morse@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
+	Zenghui Yu <yuzenghui@huawei.com>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>, 
+	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, Colton Lewis <coltonlewis@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On January 29, 2024 1:17:07 PM PST, "H=2E Peter Anvin" <hpa@zytor=2Ecom> wr=
-ote:
->On January 29, 2024 1:04:23 PM PST, Dave Hansen <dave=2Ehansen@intel=2Eco=
-m> wrote:
->>On 1/29/24 12:26, Kirill A=2E Shutemov wrote:
->>>>> Do we care?
->>>> I want to make sure I understand the scenario:
->>>>
->>>>  1=2E We're running in a guest under TDX (or SEV-SNP)
->>>>  2=2E The VMM (or somebody) is attacking the guest by eating all the
->>>>     hardware entropy and RDRAND is effectively busted
->>>>  3=2E Assuming kernel-based panic_on_warn and WARN_ON() rdrand_long()
->>>>     failure, that rdrand_long() never gets called=2E
->>> Never gets called during attack=2E It can be used before and after=2E
->>>=20
->>>>  4=2E Userspace is using RDRAND output in some critical place like ke=
-y
->>>>     generation and is not checking it for failure, nor mixing it with
->>>>     entropy from any other source
->>>>  5=2E Userspace uses the failed RDRAND output to generate a key
->>>>  6=2E Someone exploits the horrible key
->>>>
->>>> Is that it?
->>> Yes=2E
->>
->>Is there something that fundamentally makes this a VMM vs=2E TDX guest
->>problem?  If a malicious VMM can exhaust RDRAND, why can't malicious
->>userspace do the same?
->>
->>Let's assume buggy userspace exists=2E  Is that userspace *uniquely*
->>exposed to a naughty VMM or is that VMM just added to the list of things
->>that can attack buggy userspace?
->
->The concern, I believe, is that a TDX guest is vulnerable as a *victim*, =
-especially if the OS is being malicious=2E
->
->However, as you say a malicious user space including a conventional VM co=
-uld try to use it to attack another=2E The only thing we can do in the kern=
-el about that is to be resilient=2E
->
->Note that there is an option to the kernel to suspend boot until enough e=
-ntropy has been gathered that predicting the output of the entropy pool in =
-the kernel ought to be equivalent to breaking AES (in which case we have fa=
-r worse problems=2E) To harden the VM case in general perhaps we should con=
-sider RDRAND to have zero entropy credit when used as a fallback for RDSEED=
-=2E
->
+Add KVM_CAP_ARM_WFX_PASSTHROUGH capability to always allow WFE/WFI
+instructions to run without trapping. Current behavior is to only
+allow this if the vcpu is the only task running. This commit keeps the
+old behavior when the capability is not set.
 
-It is probably worth pointing out, too, that in reality the specs for RDRA=
-ND/RDSEED are *extremely* sandbagged=2E The architect told me that it is ex=
-tremely unlikely that we will *ever* see a failure due to exhaustion, even =
-if it is executed continuously on all cores =E2=80=93 the randomness produc=
-tion rate exceeds the bandwidth of the bus in uncore=2E
+This allows userspace to set deterministic behavior and increase
+efficiency for platforms with direct interrupt injection support.
+
+The implementation adds a new flag
+KVM_ARCH_FLAG_WFX_PASSTHROUGH_ENABLED to kvm.arch.flags.
+
+Signed-off-by: Colton Lewis <coltonlewis@google.com>
+---
+ arch/arm64/include/asm/kvm_host.h | 2 ++
+ arch/arm64/kvm/arm.c              | 7 ++++++-
+ include/uapi/linux/kvm.h          | 1 +
+ 3 files changed, 9 insertions(+), 1 deletion(-)
+
+This patch is based on v6.8-rc1
+diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+index 21c57b812569..e0d5ec2983fa 100644
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -274,6 +274,8 @@ struct kvm_arch {
+ #define KVM_ARCH_FLAG_TIMER_PPIS_IMMUTABLE		6
+ 	/* Initial ID reg values loaded */
+ #define KVM_ARCH_FLAG_ID_REGS_INITIALIZED		7
++	/* Never trap WFE/WFI instructions */
++#define KVM_ARCH_FLAG_WFX_PASSTHROUGH_ENABLED		8
+ 	unsigned long flags;
+
+ 	/* VM-wide vCPU feature set */
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index a25265aca432..6d993991bd7a 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -116,6 +116,10 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
+ 		}
+ 		mutex_unlock(&kvm->slots_lock);
+ 		break;
++	case KVM_CAP_ARM_WFX_PASSTHROUGH:
++		r = 0;
++		set_bit(KVM_ARCH_FLAG_WFX_PASSTHROUGH_ENABLED, &kvm->arch.flags);
++		break;
+ 	default:
+ 		r = -EINVAL;
+ 		break;
+@@ -456,7 +460,8 @@ void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
+ 	if (kvm_arm_is_pvtime_enabled(&vcpu->arch))
+ 		kvm_make_request(KVM_REQ_RECORD_STEAL, vcpu);
+
+-	if (single_task_running())
++	if (single_task_running() ||
++	    test_bit(KVM_ARCH_FLAG_WFX_PASSTHROUGH_ENABLED, &vcpu->kvm->arch.flags))
+ 		vcpu_clear_wfx_traps(vcpu);
+ 	else
+ 		vcpu_set_wfx_traps(vcpu);
+diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+index c3308536482b..7635b5cd2b3b 100644
+--- a/include/uapi/linux/kvm.h
++++ b/include/uapi/linux/kvm.h
+@@ -1155,6 +1155,7 @@ struct kvm_ppc_resize_hpt {
+ #define KVM_CAP_MEMORY_ATTRIBUTES 233
+ #define KVM_CAP_GUEST_MEMFD 234
+ #define KVM_CAP_VM_TYPES 235
++#define KVM_CAP_ARM_WFX_PASSTHROUGH 236
+
+ #ifdef KVM_CAP_IRQ_ROUTING
+
+--
+2.43.0.429.g432eaa2c6b-goog
 
