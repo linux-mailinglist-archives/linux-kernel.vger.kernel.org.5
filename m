@@ -1,78 +1,47 @@
-Return-Path: <linux-kernel+bounces-42601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42602-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEACD8403A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:16:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F9128403A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:17:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4AEA2858AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:16:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D57352857DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:17:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 722615B5C9;
-	Mon, 29 Jan 2024 11:16:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80F885B5A5;
+	Mon, 29 Jan 2024 11:16:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DoLfR8QC"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MloQDblJ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D97415C8FD
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 11:16:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C80685B5B0
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 11:16:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706526962; cv=none; b=bRnj+daKrNBbaTXoh1YWItsXXBGrmRn6ZWSsWBsDe5gTFXIvFPW1WNEfmu0lGE5W93j1amLa95Hv4T+EverhHz1AxLTRVv1XDbLgej9kGy8cwjgjVP/4zaqylqwFmkMVdAzvZZCTmi7BuGTOvP7sQF5mGRp5XAM+ITM1gUwHlvo=
+	t=1706527015; cv=none; b=NdF+bpPBVmLC3jGrI+eBvpY37+xd9ynHY6l/OCCndCIK4PIoh33pXTPSOPCTmssdz5DThzo32gsBJ3ALgYI0ZisK4D2y88ZXhtHSu6OqvV+7PtqvYMkneCnOo1bZY0Gzt1yIe+I2PJKtzURHVGyfeje66Qgu9Mw58SI2I/zKE00=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706526962; c=relaxed/simple;
-	bh=RpKJBPyAuJx70Gw2vedDa9+hb0ZDyAGj7AdkuSzaxD0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pttel/jZdXX1vDdgbHn3aPQUKvSPP4D3TTVkMK3Il+zDBWV0IfEO5COdeDArGi2yQs7iI8m84qpU1nr9sFYp2Kqp+3/9nSoW2YbbEpKbJObp2Oi5G735DPR7pKtSuAVlKXQgO/LVuFQyj8HSDPBY/ucXGj8m8LcnClru6++c1NM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DoLfR8QC; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706526959;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PdmBCDGtM8wSDqYKx2ZDXDpktAyoxR2CO0TvUORZDug=;
-	b=DoLfR8QCd/dk5uwbVCn7dGIsgOHlI/pz4pTUgue8ZHxHup5x1BLwPWfkWiOq1bxappQ2GW
-	l/GKHFXYcx/tk47J1T4mAw/MV8a6omE8Yy5fk9K/MBB3DWlfEMOpCpBiPBxT1XZcq+BTlT
-	GCsjpvkJV6yjHTPMwznAamPTXx+dRfA=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-397-4_HHGjQ4Njii0vgE3CJX-Q-1; Mon, 29 Jan 2024 06:15:56 -0500
-X-MC-Unique: 4_HHGjQ4Njii0vgE3CJX-Q-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a358c652e42so51660766b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 03:15:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706526955; x=1707131755;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PdmBCDGtM8wSDqYKx2ZDXDpktAyoxR2CO0TvUORZDug=;
-        b=L7CnT1ug9Vv8ROEnda+2eNDYRT8jwu6uuQRmYoHIJx8nWVekMfePQgsKo8Jdmh8cAF
-         kFEikak3suLV9CugJ/dmtHmrS0bwhmoRPtugs/+QTHJrkEkkUzcSlNvpX/FL2/fQn/QS
-         YyfJEim68Lz8VhHkBizzOT68suiZ6TQs/fcOuqDwcwKwqj4dTt+oDE/94KgCVujk33Hv
-         Vr/J07fCDZ5AvGZGhDP0qpwuueXZqFYPGzCzV1ChE2hxeT3ta1/GDp1GEgKAIPVdcD3X
-         jrdNnmV17tsw08RX2Fhkm0/hzISfbLvVY2BhxOqEHGJBAlJ8jMmfxZxEedid1JK4jcVL
-         itsg==
-X-Gm-Message-State: AOJu0YwyVMlEnwfGQP6z175ggKxoihsNkaGH0kAdHpBOX7g7r9NYIDtm
-	6NlDrJlQXTYCoKf0Z5NFlJJIlRNmJiY/UjYNSAox/iUs46QJotpqrzqufXdMxmZNS+wj5mTBzsY
-	kn3Fj1O6tZ6Xhf9qkBcFLuWm+Spv86dUSBAU0HzMhcMAS1V7wn3bG6h081EU1pw==
-X-Received: by 2002:a17:906:a013:b0:a2b:a7e:3496 with SMTP id p19-20020a170906a01300b00a2b0a7e3496mr3812588ejy.28.1706526955473;
-        Mon, 29 Jan 2024 03:15:55 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGpAHqhErhQZXiA+dg1bA0riWjrWB83FQhDQeuo1UG0xYvOnaHB3CqQACeeik/4F+TYM4aupQ==
-X-Received: by 2002:a17:906:a013:b0:a2b:a7e:3496 with SMTP id p19-20020a170906a01300b00a2b0a7e3496mr3812571ejy.28.1706526955125;
-        Mon, 29 Jan 2024 03:15:55 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id qx25-20020a170906fcd900b00a311a360433sm3893770ejb.143.2024.01.29.03.15.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jan 2024 03:15:54 -0800 (PST)
-Message-ID: <e21c0853-d10a-44b5-917a-3f3c08102b87@redhat.com>
-Date: Mon, 29 Jan 2024 12:15:53 +0100
+	s=arc-20240116; t=1706527015; c=relaxed/simple;
+	bh=S9RgsTiinDPCOsZbeFEA2HpDxwJGkw8/kTFTAURjfYY=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=D3T61yvb/ldFDfMydePNsZP+JqJe9MXnyttaT/iz+LjVSapv11wNEtpKKf6CR4wOT1ll5smTLy+EaWOauPDJGbvgZmdzPtVIni4EnFEPmxafkLvFQUfzDx0y5hMezTQmG/IJT4CFfuNpDiV4s/7hgkUgPj9ZlpBCT5IP8csfbRg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MloQDblJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2414C433F1;
+	Mon, 29 Jan 2024 11:16:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706527015;
+	bh=S9RgsTiinDPCOsZbeFEA2HpDxwJGkw8/kTFTAURjfYY=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+	b=MloQDblJX8MmBA9g95QdxAITc2g2x/5JFsfZaXmWxhROVFlStuSOEUO1A35qQRyuX
+	 l2XiE0bvoUtN6Kpft3NYUPEu4RJvADWhpIA3LyQWMwweowwNX4MTvVhxsZzZBO95UP
+	 KqMzgAQueECLGs5aBg9UJZ1H0zrCuSE+xcSU0ZbaXhx3ExAOhw1L4L5mJdiwM4k28+
+	 8DWEYB4Sh6r+nW9t2xUK2Z53w1mlNg+p+QG0ASXiMtTGva/EnxNP8JfOlzzP+S7sLp
+	 j3axAlq48y0MfuA/qB3QchQd4amMnGid+awTNDRkA5dqc1GcwW5EArVYD7N8hq2qeT
+	 0QcWnpS2NhKWA==
+Message-ID: <0f356116-9e67-4abb-8bc2-65e63a936c17@kernel.org>
+Date: Mon, 29 Jan 2024 19:16:51 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,112 +49,63 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 10/10] drm/vboxvideo: fix mapping leaks
-Content-Language: en-US, nl
-To: Philipp Stanner <pstanner@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Bjorn Helgaas <bhelgaas@google.com>, Sam Ravnborg <sam@ravnborg.org>,
- dakr@redhat.com
-Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org,
- stable@kernel.vger.org
-References: <20240123094317.15958-1-pstanner@redhat.com>
- <20240123094317.15958-11-pstanner@redhat.com>
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20240123094317.15958-11-pstanner@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: [f2fs-dev] [PATCH v1] f2fs: fix NULL pointer dereference in
+ f2fs_submit_page_write()
+Content-Language: en-US
+From: Chao Yu <chao@kernel.org>
+To: Wenjie Qi <qwjhust@gmail.com>, jaegeuk@kernel.org
+Cc: linux-kernel@vger.kernel.org, hustqwj@hust.edu.cn,
+ linux-f2fs-devel@lists.sourceforge.net
+References: <20240116141138.1245-1-qwjhust@gmail.com>
+ <d379bc01-ca31-41e6-9d85-7fca846af491@kernel.org>
+In-Reply-To: <d379bc01-ca31-41e6-9d85-7fca846af491@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi Philipp,
+On 2024/1/29 18:27, Chao Yu wrote:
+> On 2024/1/16 22:11, Wenjie Qi wrote:
+>> BUG: kernel NULL pointer dereference, address: 0000000000000014
+>> RIP: 0010:f2fs_submit_page_write+0x6cf/0x780 [f2fs]
+>> Call Trace:
+>> <TASK>
+>> ? show_regs+0x6e/0x80
+>> ? __die+0x29/0x70
+>> ? page_fault_oops+0x154/0x4a0
+>> ? prb_read_valid+0x20/0x30
+>> ? __irq_work_queue_local+0x39/0xd0
+>> ? irq_work_queue+0x36/0x70
+>> ? do_user_addr_fault+0x314/0x6c0
+>> ? exc_page_fault+0x7d/0x190
+>> ? asm_exc_page_fault+0x2b/0x30
+>> ? f2fs_submit_page_write+0x6cf/0x780 [f2fs]
+>> ? f2fs_submit_page_write+0x736/0x780 [f2fs]
+>> do_write_page+0x50/0x170 [f2fs]
+>> f2fs_outplace_write_data+0x61/0xb0 [f2fs]
+>> f2fs_do_write_data_page+0x3f8/0x660 [f2fs]
+>> f2fs_write_single_data_page+0x5bb/0x7a0 [f2fs]
+>> f2fs_write_cache_pages+0x3da/0xbe0 [f2fs]
+>> ...
+>> It is possible that other threads have added this fio to io->bio
+>> and submitted the io->bio before entering f2fs_submit_page_write().
+>> At this point io->bio = NULL.
+>> If is_end_zone_blkaddr(sbi, fio->new_blkaddr) of this fio is true,
+>> then an NULL pointer dereference error occurs at bio_get(io->bio).
+>> The original code for determining zone end was after "out:",
+>> which would have missed some fio who is zone end. I've moved
+>>   this code before "skip:" to make sure it's done for each fio.
+>>
 
-On 1/23/24 10:43, Philipp Stanner wrote:
-> When the PCI devres API was introduced to this driver, it was wrongly
-> assumed that initializing the device with pcim_enable_device() instead
-> of pci_enable_device() will make all PCI functions managed.
+Fixes: e067dc3c6b9c ("f2fs: maintain six open zones for zoned devices")
+
+>> Signed-off-by: Wenjie Qi <qwjhust@gmail.com>
 > 
-> This is wrong and was caused by the quite confusing devres API for PCI
-> in which some, but not all, functions become managed that way.
+> Reviewed-by: Chao Yu <chao@kernel.org>
 > 
-> The function pci_iomap_range() is never managed.
+> Thanks,
 > 
-> Replace pci_iomap_range() with the actually managed function
-> pcim_iomap_range().
 > 
-> Additionally, add a call to pcim_request_region() to ensure exclusive
-> access to BAR 0.
-
-I'm a bit worried about this last change. There might be
-issues where the pcim_request_region() fails due to
-e.g. a conflict with the simplefb / simpledrm code.
-
-There is a drm_aperture_remove_conflicting_pci_framebuffers()
-call done before hw_init() gets called, but still this
-has been known to cause issues in the past.
-
-Can you split out the adding of the pcim_request_region()
-into a separate patch and *not* mark that separate patch
-for stable ?
-
-Regards,
-
-Hans
-
-
-
-
-
-> 
-> CC: <stable@kernel.vger.org> # v5.10+
-> Fixes: 8558de401b5f ("drm/vboxvideo: use managed pci functions")
-> Signed-off-by: Philipp Stanner <pstanner@redhat.com>
-> ---
->  drivers/gpu/drm/vboxvideo/vbox_main.c | 24 +++++++++++++-----------
->  1 file changed, 13 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/vboxvideo/vbox_main.c b/drivers/gpu/drm/vboxvideo/vbox_main.c
-> index 42c2d8a99509..7f686a0190e6 100644
-> --- a/drivers/gpu/drm/vboxvideo/vbox_main.c
-> +++ b/drivers/gpu/drm/vboxvideo/vbox_main.c
-> @@ -42,12 +42,11 @@ static int vbox_accel_init(struct vbox_private *vbox)
->  	/* Take a command buffer for each screen from the end of usable VRAM. */
->  	vbox->available_vram_size -= vbox->num_crtcs * VBVA_MIN_BUFFER_SIZE;
->  
-> -	vbox->vbva_buffers = pci_iomap_range(pdev, 0,
-> -					     vbox->available_vram_size,
-> -					     vbox->num_crtcs *
-> -					     VBVA_MIN_BUFFER_SIZE);
-> -	if (!vbox->vbva_buffers)
-> -		return -ENOMEM;
-> +	vbox->vbva_buffers = pcim_iomap_range(
-> +			pdev, 0, vbox->available_vram_size,
-> +			vbox->num_crtcs * VBVA_MIN_BUFFER_SIZE);
-> +	if (IS_ERR(vbox->vbva_buffers))
-> +		return PTR_ERR(vbox->vbva_buffers);
->  
->  	for (i = 0; i < vbox->num_crtcs; ++i) {
->  		vbva_setup_buffer_context(&vbox->vbva_info[i],
-> @@ -115,12 +114,15 @@ int vbox_hw_init(struct vbox_private *vbox)
->  
->  	DRM_INFO("VRAM %08x\n", vbox->full_vram_size);
->  
-> +	ret = pcim_request_region(pdev, 0, "vboxvideo");
-> +	if (ret)
-> +		return ret;
-> +
->  	/* Map guest-heap at end of vram */
-> -	vbox->guest_heap =
-> -	    pci_iomap_range(pdev, 0, GUEST_HEAP_OFFSET(vbox),
-> -			    GUEST_HEAP_SIZE);
-> -	if (!vbox->guest_heap)
-> -		return -ENOMEM;
-> +	vbox->guest_heap = pcim_iomap_range(pdev, 0,
-> +			GUEST_HEAP_OFFSET(vbox), GUEST_HEAP_SIZE);
-> +	if (IS_ERR(vbox->guest_heap))
-> +		return PTR_ERR(vbox->guest_heap);
->  
->  	/* Create guest-heap mem-pool use 2^4 = 16 byte chunks */
->  	vbox->guest_pool = devm_gen_pool_create(vbox->ddev.dev, 4, -1,
-
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
 
