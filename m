@@ -1,110 +1,168 @@
-Return-Path: <linux-kernel+bounces-42230-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42222-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6004983FE43
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 07:24:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBEA083FE2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 07:21:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 925C51C226D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 06:24:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96C8C28112B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 06:21:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46B154CB2E;
-	Mon, 29 Jan 2024 06:22:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10B234CE18;
+	Mon, 29 Jan 2024 06:20:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IyVrbS20"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ZHvgzaJA"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2092745BE3;
-	Mon, 29 Jan 2024 06:21:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B1144CDE7;
+	Mon, 29 Jan 2024 06:20:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706509320; cv=none; b=s47lf0EeiZJJrRXEAdPAgEN/lUICJd1J0YjxurHO7FhOgMXw4z/9rtnTUxl4NGFmBr3z4MDIDfyUxnGWCG0w4EpGVoNNygEEotAwHI3PlSQEFrrXwVaSwc/sDcOtcuRKPqbVsV/Kae529aKHPDRwfPNZ5mRNm6Rm05FwkKOx/Y0=
+	t=1706509253; cv=none; b=WVowOWrMOXSnPQREM0U1ofkjYtOMgPeb7LLn49d1I/uVLcBBTManHcEgOoWtSnh1wII/vkI2SsFnWV2vfvxNiPrDadFc0VuGdWiUt7OUdB7LEjBxftoY/rBY4iFneQ3VgspHIMyFHbFuNOx3TNCqOi10Tgh0uor1J9mb/JHPH7o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706509320; c=relaxed/simple;
-	bh=NyFm/qK97sk3YCbcjtu2VHQloWxPYZyoAekB4PP4bnI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=KR2Lu1kTiu0vaXopF9c6k82RbplgEhtUF9XTNob2ZsfWDYwe9NIsgQS8kBoIlwUbTGoa44ch2zciyF1sq0DoRqlb1AnnK1S6gYJXDQm8IMU223XNQi7HDfAXnYYLmZAozd0UHfLRBBX8Y/InPwx2bPIPYGMd8aiL7X1qShH/heI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IyVrbS20; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706509319; x=1738045319;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=NyFm/qK97sk3YCbcjtu2VHQloWxPYZyoAekB4PP4bnI=;
-  b=IyVrbS20F5rv4pdlrFyIBczGSxQfYrYZqBMchMo1Lwv7VaArS0E4qkzl
-   LwWySDMTdqyJ+TvyooOCaW8ezQfYcm22RIj+9hpQGY1udHqiWx5kmMmOR
-   AyC5M94PZIkss8foW8xhRvPmiGsBmzVjwFbMWUNKENI6AatobkUgaJm30
-   OOXQKjH7HZfTfWlWyxOhwg+Lvunu1SFis3ZDq/dMRuPvZBCQEwAq+j3aj
-   lY8dUm7seE98WDjJuWsclTfLfEB7RXu3PoMMCOFRBWvmyZb/k3v4mYlf7
-   74GtgG++uUDXN1hrViGjEBCwNhdFVEQKKAjUpMAOw00ClOqMyAa3Nm/hh
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="16219206"
-X-IronPort-AV: E=Sophos;i="6.05,226,1701158400"; 
-   d="scan'208";a="16219206"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2024 22:21:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,226,1701158400"; 
-   d="scan'208";a="3270608"
-Received: from qiuxu-clx.sh.intel.com ([10.239.53.109])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2024 22:21:55 -0800
-From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-To: Tony Luck <tony.luck@intel.com>
-Cc: Lili Li <lili.li@intel.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Aristeu Rozanski <aris@redhat.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
-	linux-edac@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	ricardo.neri-calderon@linux.intel.com
-Subject: [PATCH 1/2] EDAC/igen6: Add one more Intel Alder Lake-N SoC support
-Date: Mon, 29 Jan 2024 14:20:39 +0800
-Message-Id: <20240129062040.60809-2-qiuxu.zhuo@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240129062040.60809-1-qiuxu.zhuo@intel.com>
-References: <20240129062040.60809-1-qiuxu.zhuo@intel.com>
+	s=arc-20240116; t=1706509253; c=relaxed/simple;
+	bh=qw/DP9PETNrIhcO6gljeKYbbK08PVRuQsY8yGpNxvlc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Cz7x0TTVi28m6SaZm2lPbEMGeVUROHHWmyPXFbDnv1x2Nl7ZSynuz2ngpKXRpS7/bVruwWWsBePV7KRA2E5hqZRH95vfgDO4I9PPzwF9MclnT2SsDhz59pOa2wyZqlKe7Y/yXDxAIm8pXC2f8Ulra3+M1onjB7bVA3ywolvXDXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=ZHvgzaJA; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40T4ro2U007142;
+	Mon, 29 Jan 2024 06:20:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=tuVzaSE0q/q50xp0AxYrUAe66nQO9Sqbqhz7iRe9JuA=; b=ZH
+	vgzaJAq+sQ+MYdIFTbYYRb4b+abxB49TmqTfxGkjWdLAn3hUa9vEAbCNt8UyJHyT
+	LwykJTTiDYkXe56ykMHKsDQJAjUfdZGXtq0/XjIKF+4vOBOw87OoADePlxNjp3/x
+	VlZDbf5Bkxo24GXPm3sYP65stBEl1hG4T8MwT+v8vowLJ2oa7OpiEM1BUqbB3VqU
+	yVNb3SYTa9GiwAOADk3FqS+pzNVnNlvV3yV7g0tklSm3EMqksopLm+wbZcbZrL1Q
+	+goyg1lzRpnCuFIuz7/Th/W6Y/qyYLlAgNljohYRDCtYsYV64OfJYC3jmHByoafE
+	9wI1lXZDaIjNo6q20Nnw==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vvrubaxua-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Jan 2024 06:20:46 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40T6KjXm030220
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Jan 2024 06:20:45 GMT
+Received: from [10.217.198.224] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sun, 28 Jan
+ 2024 22:20:43 -0800
+Message-ID: <589dddd8-0ed2-4138-a617-402aa28c79da@quicinc.com>
+Date: Mon, 29 Jan 2024 11:50:40 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] soc: qcom: rpmh-rsc: Enhance check for VREG in-flight
+ request
+To: Bjorn Andersson <andersson@kernel.org>
+CC: Konrad Dybcio <konrad.dybcio@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_eberman@quicinc.com>,
+        <quic_collinsd@quicinc.com>, <quic_lsrao@quicinc.com>
+References: <20240119-rpmh-rsc-fixes-v2-1-e42c0a9e36f0@quicinc.com>
+ <xjcefuurfbv7oquotsmm4iv4pnwzoone7jxrm42vjsnpfcgk4z@mnrsxec43bhp>
+Content-Language: en-US
+From: "Maulik Shah (mkshah)" <quic_mkshah@quicinc.com>
+In-Reply-To: <xjcefuurfbv7oquotsmm4iv4pnwzoone7jxrm42vjsnpfcgk4z@mnrsxec43bhp>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 1XsAPNs6ynOh5yrHSKpwwnuGQNC831UY
+X-Proofpoint-GUID: 1XsAPNs6ynOh5yrHSKpwwnuGQNC831UY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-29_02,2024-01-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 mlxlogscore=999 spamscore=0 mlxscore=0 malwarescore=0
+ priorityscore=1501 adultscore=0 suspectscore=0 impostorscore=0
+ phishscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401190000 definitions=main-2401290044
 
-From: Lili Li <lili.li@intel.com>
+Hi,
 
-Add a new Intel Alder Lake-N SoC compute die ID for EDAC support.
+On 1/28/2024 9:13 AM, Bjorn Andersson wrote:
+> On Fri, Jan 19, 2024 at 01:56:54PM +0530, Maulik Shah wrote:
 
-Signed-off-by: Lili Li <lili.li@intel.com>
-Reviewed-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
----
- drivers/edac/igen6_edac.c | 2 ++
- 1 file changed, 2 insertions(+)
+>>
+>> Signed-off-by: Maulik Shah <quic_mkshah@quicinc.com>
+>> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
+> 
+> The s-o-b chain doesn't look right.
 
-diff --git a/drivers/edac/igen6_edac.c b/drivers/edac/igen6_edac.c
-index 2b0ecdeba5cd..cdd8480e7368 100644
---- a/drivers/edac/igen6_edac.c
-+++ b/drivers/edac/igen6_edac.c
-@@ -238,6 +238,7 @@ static struct work_struct ecclog_work;
- #define DID_ADL_N_SKU9	0x4678
- #define DID_ADL_N_SKU10	0x4679
- #define DID_ADL_N_SKU11	0x467c
-+#define DID_ADL_N_SKU12	0x4632
- 
- /* Compute die IDs for Raptor Lake-P with IBECC */
- #define DID_RPL_P_SKU1	0xa706
-@@ -583,6 +584,7 @@ static const struct pci_device_id igen6_pci_tbl[] = {
- 	{ PCI_VDEVICE(INTEL, DID_ADL_N_SKU9), (kernel_ulong_t)&adl_n_cfg },
- 	{ PCI_VDEVICE(INTEL, DID_ADL_N_SKU10), (kernel_ulong_t)&adl_n_cfg },
- 	{ PCI_VDEVICE(INTEL, DID_ADL_N_SKU11), (kernel_ulong_t)&adl_n_cfg },
-+	{ PCI_VDEVICE(INTEL, DID_ADL_N_SKU12), (kernel_ulong_t)&adl_n_cfg },
- 	{ PCI_VDEVICE(INTEL, DID_RPL_P_SKU1), (kernel_ulong_t)&rpl_p_cfg },
- 	{ PCI_VDEVICE(INTEL, DID_RPL_P_SKU2), (kernel_ulong_t)&rpl_p_cfg },
- 	{ PCI_VDEVICE(INTEL, DID_RPL_P_SKU3), (kernel_ulong_t)&rpl_p_cfg },
--- 
-2.17.1
+I will fix in v3.
 
+> 
+>> ---
+>>   
+>> +#define ACCL_TYPE(addr)			FIELD_GET(GENMASK(19, 16), addr)
+> 
+> Command DB is there so we don't have to make assumptions about the
+> addresses of resources. As such, I dislike this define.
+
+sure i will consider querying command db for resource type.
+
+> 
+>> +#define VREG_ADDR(addr)			FIELD_GET(GENMASK(19, 4), addr)
+>> +
+>> +enum {
+>> +	HW_ACCL_CLK = 0x3,
+>> +	HW_ACCL_VREG,
+>> +	HW_ACCL_BUS,
+> 
+> We already define these in the kernel, but with different names:
+> CMD_DB_HW_ARC, CMD_DB_HW_VRM, CMD_DB_HW_BCM. I see no reason to use
+> different names for the same thing.
+> 
+>> +};
+
+Right, I missed it, With querying cmd-db would not need this enum.
+
+>> +
+>>   /*
+>>    * Here's a high level overview of how all the registers in RPMH work
+>>    * together:
+>> @@ -557,7 +568,15 @@ static int check_for_req_inflight(struct rsc_drv *drv, struct tcs_group *tcs,
+>>   		for_each_set_bit(j, &curr_enabled, MAX_CMDS_PER_TCS) {
+>>   			addr = read_tcs_cmd(drv, drv->regs[RSC_DRV_CMD_ADDR], i, j);
+>>   			for (k = 0; k < msg->num_cmds; k++) {
+>> -				if (addr == msg->cmds[k].addr)
+>> +				/*
+>> +				 * Each RPMh VREG accelerator resource has 3 or 4 contiguous 4-byte
+>> +				 * aligned addresses associated with it. Ignore the offset to check
+>> +				 * for in-flight VREG requests.
+>> +				 */
+>> +				if (ACCL_TYPE(msg->cmds[k].addr) == HW_ACCL_VREG &&
+>> +				    VREG_ADDR(msg->cmds[k].addr) == VREG_ADDR(addr))
+> 
+> I'm sure this work, at least for some targets, but I don't fancy
+> encoding this information here. It feels like a hack.
+> 
+> Furthermore, I really would like TP_printk() of trace_rpmh_send_msg() to
+> be able to resolve the symbolic names for VRMs as well, and it would
+> need the same information...
+
+I can update in separate patch for trace_() to resolve symbolic names.
+
+> 
+> Please consider how we can query command db for the type and/or grouping
+> information.
+
+Sure, i will update in v3 to query command db for the type.
+
+Thanks,
+Maulik
 
