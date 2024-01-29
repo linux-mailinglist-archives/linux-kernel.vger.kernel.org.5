@@ -1,471 +1,199 @@
-Return-Path: <linux-kernel+bounces-42910-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42909-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB082840861
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:33:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F7B184085C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:32:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3369B1F21666
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:33:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA070281E53
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:32:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2A4C1534EC;
-	Mon, 29 Jan 2024 14:32:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8481A151CE0;
+	Mon, 29 Jan 2024 14:32:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="GrY/GFDa"
-Received: from mail-0201.mail-europe.com (mail-0201.mail-europe.com [51.77.79.158])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ej3Gtral"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72D64152DE8;
-	Mon, 29 Jan 2024 14:32:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=51.77.79.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7B26151CDD
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 14:32:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706538757; cv=none; b=EcvgixGnIvWUarejg7XmYxGtwSiwt4SBA0h+DC4aF3eLr9XKccfZvNl1SF8DYwJsrMtIQvHzM1OX0L3dsPyo7pODw8oM4E2XRkxOKGTiC0n6+hDcdem3sEEuH7Wn5b2iduYQdOiIBL1Al97lGlztIPTKhtQS/C194Mtk3iGY2lk=
+	t=1706538754; cv=none; b=VQzF8B48quBZQBRUMW1Z3Xz/z5/dPgohQv0IukY1M7J35yEv56E9z0BLR++KuEAMOsiLlfSXnqmAsy0X3jxZJhC3+GnvqJMV8FWLVUNBDCvZKB3QzMbUxyjsAD7QSk1ZShL+0KD4GK7fboI9bj86AsTiFpwkMdIyBZs3acW0j4A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706538757; c=relaxed/simple;
-	bh=iLKirAOBFsjwMJqhIF9KvWCex4SweNAYIAJgss0M7a4=;
-	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=DGe/IU9vXnSeIyNwk0R2MaWQYZkzvG3kOl0l9I6YyqhnLypLF34nqtrB71aBCWh6vOiPpAUJzyV/eIKJUrcyvKnu7L1frHXC5wLuIQmMB2cmMnDsruVQOeWbxT5xWURf743DCzhlY6tYm3gM4zz+S5uhPYCxNN23ps+yHLKlMnw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=GrY/GFDa; arc=none smtp.client-ip=51.77.79.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-	s=protonmail3; t=1706538739; x=1706797939;
-	bh=F+uuXyg6J0fkNKlbhNfTA8pIOgWaw2kxlqkQX5fXG3M=;
-	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=GrY/GFDaQudVtWaUisxqZv02BJoDxdIiIPq8BbetgAGjg/nmgH2E2AuCoKvHXX4ne
-	 GC8DM8H3FyLjXhXdCCVTmza6nBj78eUkB7vO91hITpWcQkohmO/m231XCL7e+kZENl
-	 jnRkFBwuxXuiZVKEAuBEfP/3dNEDulssb3yh2lfQVPScj/70oYiJavAHDjbIBUhZcn
-	 0HI20zIzb68lRdCn1Vip6diTEjnV5Zp1cBcH+OZuT69iySY4xGECkB9Y6MufPxMjAo
-	 Axb4j2vn90t17Lak6GR7NkZdP9M70dS6vpnWFsOB08/gafmbBqNtFFCK+P6TYVYOj5
-	 hRUM9PbgZXLNA==
-Date: Mon, 29 Jan 2024 14:32:02 +0000
+	s=arc-20240116; t=1706538754; c=relaxed/simple;
+	bh=4KscbxAYCjj2PD8V1wCvHcnFXsKmpE5jCNYRuVMCyW4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KsRXDZhOZ28ltzAwjfANYXmGTPQ1lm8DYDaVaRGmG/ZORzkjUp1PEWUlvCwjyu12qZyzqi4y0lrxBAVPBSpDCsRk9FUjG3FY93oNA3Iw8MtyougEKmfb6aQJjvm4lZndXha4j4d/zcGQKADAoHFqC2fMMkckAlYd2BUxxeqYok0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ej3Gtral; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706538751;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=UhBdOI+JB6L0dCFGLAOqO2pJABjn3Znd2yV65wClG/w=;
+	b=ej3GtralVDolEs5cYmdUtsPEjISAMnGhmFNFiYddKWPMzPPLKD/Doa8j//oEtAFey0ePry
+	VDjXI+/uClitakNmzzMCdhgVbS02Hg/y2wECh1x9+nldqy1CJtycAQvJetXwnkKIrqhAqz
+	4AkrHQNDd9w+MuSV53C2jSzmvIKoKsY=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-478-Kz5-1HWrO6SlttN34_aWHQ-1; Mon,
+ 29 Jan 2024 09:32:29 -0500
+X-MC-Unique: Kz5-1HWrO6SlttN34_aWHQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 979933C13A90;
+	Mon, 29 Jan 2024 14:32:27 +0000 (UTC)
+Received: from t14s.fritz.box (unknown [10.39.194.46])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 75D74C3F;
+	Mon, 29 Jan 2024 14:32:22 +0000 (UTC)
+From: David Hildenbrand <david@redhat.com>
 To: linux-kernel@vger.kernel.org
-From: Raymond Hackley <raymondhackley@protonmail.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Stephan Gerhold <stephan@gerhold.net>, Nikita Travkin <nikita@trvn.ru>, linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht, Walter Broemeling <wallebroem@gmail.com>, Joe Mason <buddyjojo06@outlook.com>, Siddharth Manthan <siddharth.manthan@gmail.com>
-Subject: [PATCH v4] arm64: dts: qcom: msm8916-samsung-fortuna/rossa: Add initial device trees
-Message-ID: <20240129143147.5058-1-raymondhackley@protonmail.com>
-Feedback-ID: 49437091:user:proton
+Cc: linux-mm@kvack.org,
+	David Hildenbrand <david@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	"Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+	Nick Piggin <npiggin@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	linux-arch@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-s390@vger.kernel.org
+Subject: [PATCH v1 0/9] mm/memory: optimize unmap/zap with PTE-mapped THP
+Date: Mon, 29 Jan 2024 15:32:12 +0100
+Message-ID: <20240129143221.263763-1-david@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-From: Walter Broemeling <wallebroem@gmail.com>
+This series is based on [1] and must be applied on top of it.
+Similar to what we did with fork(), let's implement PTE batching
+during unmap/zap when processing PTE-mapped THPs.
 
-Samsung Galaxy Core Prime and Grand Prime are phones based on MSM8916.
-They are similar to the other Samsung devices based on MSM8916 with only a
-few minor differences.
+We collect consecutive PTEs that map consecutive pages of the same large
+folio, making sure that the other PTE bits are compatible, and (a) adjust
+the refcount only once per batch, (b) call rmap handling functions only
+once per batch, (c) perform batch PTE setting/updates and (d) perform TLB
+entry removal once per batch.
 
-This initial commit adds support for:
- - fortuna3g (SM-G530H)
- - gprimeltecan (SM-G530W)
- - grandprimelte (SM-G530FZ)
- - rossa (SM-G360G)
+Ryan was previously working on this in the context of cont-pte for
+arm64, int latest iteration [2] with a focus on arm6 with cont-pte only.
+This series implements the optimization for all architectures, independent
+of such PTE bits, teaches MMU gather/TLB code to be fully aware of such
+large-folio-pages batches as well, and amkes use of our new rmap batching
+function when removing the rmap.
 
-The device trees contain initial support with:
- - GPIO keys
- - Regulator haptic
- - SDHCI (internal and external storage)
- - USB Device Mode
- - UART (on USB connector via the SM5502/SM5504 MUIC)
- - WCNSS (WiFi/BT)
- - Regulators
- - QDSP6 audio
- - Speaker/earpiece/headphones/microphones via digital/analog codec in
-   MSM8916/PM8916
- - WWAN Internet via BAM-DMUX
+To achieve that, we have to enlighten MMU gather / page freeing code
+(i.e., everything that consumes encoded_page) to process unmapping
+of consecutive pages that all belong to the same large folio. I'm being
+very careful to not degrade order-0 performance, and it looks like I
+managed to achieve that.
 
-There are different variants of Core Prime and Grand Prime, with some
-differences in accelerometer, NFC and panel.
-Core Prime and Grand Prime are similar, with some differences in MUIC,
-panel and touchscreen.
+While this series should -- similar to [1] -- be beneficial for adding
+cont-pte support on arm64[2], it's one of the requirements for maintaining
+a total mapcount[3] for large folios with minimal added overhead and
+further changes[4] that build up on top of the total mapcount.
 
-The common parts are shared in
-msm8916-samsung-fortuna-common.dtsi and msm8916-samsung-rossa-common.dtsi
-to reduce duplication.
+Independent of all that, this series results in a speedup during munmap()
+and similar unmapping (process teardown, MADV_DONTNEED on larger ranges)
+with PTE-mapped THP, which is the default with THPs that are smaller than
+a PMD (for example, 16KiB to 1024KiB mTHPs for anonymous memory[5]).
 
-Signed-off-by: Walter Broemeling <wallebroem@gmail.com>
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-[Joe: Add audio, buttons and WiFi]
-Signed-off-by: Joe Mason <buddyjojo06@outlook.com>
-[Siddharth: Add fortuna3g]
-Signed-off-by: Siddharth Manthan <siddharth.manthan@gmail.com>
-[Raymond: Add modem, fortuna-common.dtsi, grandprimelte and rossa]
-Signed-off-by: Raymond Hackley <raymondhackley@protonmail.com>
----
-v4: dt-bindings have been applied, skip.
-    Fix missing msm8216-samsung-fortuna3g.dts
-    Enable &venus, &venus_mem and &wcnss_mem. Add comments for &mpss_mem.
-v3: Drop fortunaltezt and heatqlte. Add sound and modem.
-    /delete-node/ &muic; in rossa-common.dtsi
-v2: Use interrupt-extended. Drop fuelgauge, sensors and NFC for now.
----
- arch/arm64/boot/dts/qcom/Makefile             |   4 +
- .../dts/qcom/msm8216-samsung-fortuna3g.dts    |  11 ++
- .../qcom/msm8916-samsung-fortuna-common.dtsi  | 182 ++++++++++++++++++
- .../dts/qcom/msm8916-samsung-gprimeltecan.dts |  27 +++
- .../qcom/msm8916-samsung-grandprimelte.dts    |  16 ++
- .../qcom/msm8916-samsung-rossa-common.dtsi    |  16 ++
- .../boot/dts/qcom/msm8916-samsung-rossa.dts   |  16 ++
- 7 files changed, 272 insertions(+)
- create mode 100644 arch/arm64/boot/dts/qcom/msm8216-samsung-fortuna3g.dts
- create mode 100644 arch/arm64/boot/dts/qcom/msm8916-samsung-fortuna-common=
-dtsi
- create mode 100644 arch/arm64/boot/dts/qcom/msm8916-samsung-gprimeltecan.d=
-ts
- create mode 100644 arch/arm64/boot/dts/qcom/msm8916-samsung-grandprimelte.=
-dts
- create mode 100644 arch/arm64/boot/dts/qcom/msm8916-samsung-rossa-common.d=
-tsi
- create mode 100644 arch/arm64/boot/dts/qcom/msm8916-samsung-rossa.dts
+On an Intel Xeon Silver 4210R CPU, munmap'ing a 1GiB VMA backed by
+PTE-mapped folios of the same size (stddev < 1%) results in the following
+runtimes for munmap() in seconds (shorter is better):
 
-diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/M=
-akefile
-index b5f88b3d6793..239ea867f0f5 100644
---- a/arch/arm64/boot/dts/qcom/Makefile
-+++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -24,6 +24,7 @@ dtb-$(CONFIG_ARCH_QCOM)=09+=3D ipq9574-rdp433.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D ipq9574-rdp449.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D ipq9574-rdp453.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D ipq9574-rdp454.dtb
-+dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8216-samsung-fortuna3g.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-acer-a1-724.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-alcatel-idol347.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-asus-z00l.dtb
-@@ -36,11 +37,14 @@ dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-samsung-a3u-eur.=
-dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-samsung-a5u-eur.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-samsung-e5.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-samsung-e7.dtb
-+dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-samsung-gprimeltecan.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-samsung-grandmax.dtb
-+dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-samsung-grandprimelte.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-samsung-gt510.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-samsung-gt58.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-samsung-j5.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-samsung-j5x.dtb
-+dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-samsung-rossa.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-samsung-serranove.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-thwc-uf896.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-thwc-ufi001c.dtb
-diff --git a/arch/arm64/boot/dts/qcom/msm8216-samsung-fortuna3g.dts b/arch/=
-arm64/boot/dts/qcom/msm8216-samsung-fortuna3g.dts
-new file mode 100644
-index 000000000000..366914be7d53
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/msm8216-samsung-fortuna3g.dts
-@@ -0,0 +1,11 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+/dts-v1/;
-+
-+#include "msm8916-samsung-fortuna-common.dtsi"
-+
-+/ {
-+=09model =3D "Samsung Galaxy Grand Prime (SM-G530H)";
-+=09compatible =3D "samsung,fortuna3g", "qcom,msm8916";
-+=09chassis-type =3D "handset";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-fortuna-common.dtsi b=
-/arch/arm64/boot/dts/qcom/msm8916-samsung-fortuna-common.dtsi
-new file mode 100644
-index 000000000000..052024073f54
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-fortuna-common.dtsi
-@@ -0,0 +1,182 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include "msm8916-pm8916.dtsi"
-+#include "msm8916-modem-qdsp6.dtsi"
-+
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/input/input.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
-+
-+/ {
-+=09aliases {
-+=09=09mmc0 =3D &sdhc_1; /* eMMC */
-+=09=09mmc1 =3D &sdhc_2; /* SD card */
-+=09=09serial0 =3D &blsp_uart2;
-+=09};
-+
-+=09chosen {
-+=09=09stdout-path =3D "serial0";
-+=09};
-+
-+=09reserved-memory {
-+=09=09/* Additional memory used by Samsung firmware modifications */
-+=09=09tz-apps@85a00000 {
-+=09=09=09reg =3D <0x0 0x85a00000 0x0 0x600000>;
-+=09=09=09no-map;
-+=09=09};
-+=09};
-+
-+=09gpio-keys {
-+=09=09compatible =3D "gpio-keys";
-+
-+=09=09pinctrl-0 =3D <&gpio_keys_default>;
-+=09=09pinctrl-names =3D "default";
-+
-+=09=09label =3D "GPIO Buttons";
-+
-+=09=09button-volume-up {
-+=09=09=09label =3D "Volume Up";
-+=09=09=09gpios =3D <&tlmm 107 GPIO_ACTIVE_LOW>;
-+=09=09=09linux,code =3D <KEY_VOLUMEUP>;
-+=09=09};
-+
-+=09=09button-home {
-+=09=09=09label =3D "Home";
-+=09=09=09gpios =3D <&tlmm 109 GPIO_ACTIVE_LOW>;
-+=09=09=09linux,code =3D <KEY_HOMEPAGE>;
-+=09=09};
-+=09};
-+
-+=09haptic {
-+=09=09compatible =3D "regulator-haptic";
-+=09=09haptic-supply =3D <&reg_motor_vdd>;
-+=09=09min-microvolt =3D <3300000>;
-+=09=09max-microvolt =3D <3300000>;
-+=09};
-+
-+=09reg_motor_vdd: regulator-motor-vdd {
-+=09=09compatible =3D "regulator-fixed";
-+=09=09regulator-name =3D "motor_vdd";
-+=09=09regulator-min-microvolt =3D <3300000>;
-+=09=09regulator-max-microvolt =3D <3300000>;
-+
-+=09=09gpio =3D <&tlmm 72 GPIO_ACTIVE_HIGH>;
-+=09=09enable-active-high;
-+
-+=09=09pinctrl-0 =3D <&motor_en_default>;
-+=09=09pinctrl-names =3D "default";
-+=09};
-+};
-+
-+&blsp_i2c1 {
-+=09status =3D "okay";
-+
-+=09muic: extcon@25 {
-+=09=09compatible =3D "siliconmitus,sm5502-muic";
-+=09=09reg =3D <0x25>;
-+=09=09interrupts-extended =3D <&tlmm 12 IRQ_TYPE_EDGE_FALLING>;
-+=09=09pinctrl-0 =3D <&muic_int_default>;
-+=09=09pinctrl-names =3D "default";
-+=09};
-+};
-+
-+&blsp_uart2 {
-+=09status =3D "okay";
-+};
-+
-+&mpss_mem {
-+=09reg =3D <0x0 0x86800000 0x0 0x5000000>;
-+};
-+
-+&pm8916_resin {
-+=09linux,code =3D <KEY_VOLUMEDOWN>;
-+=09status =3D "okay";
-+};
-+
-+&pm8916_rpm_regulators {
-+=09pm8916_l17: l17 {
-+=09=09regulator-min-microvolt =3D <2850000>;
-+=09=09regulator-max-microvolt =3D <2850000>;
-+=09};
-+};
-+
-+&sdhc_1 {
-+=09status =3D "okay";
-+};
-+
-+&sdhc_2 {
-+=09pinctrl-0 =3D <&sdc2_default &sdc2_cd_default>;
-+=09pinctrl-1 =3D <&sdc2_sleep &sdc2_cd_default>;
-+=09pinctrl-names =3D "default", "sleep";
-+
-+=09cd-gpios =3D <&tlmm 38 GPIO_ACTIVE_LOW>;
-+
-+=09status =3D "okay";
-+};
-+
-+&sound {
-+=09model =3D "msm8916-1mic";
-+=09audio-routing =3D
-+=09=09"AMIC1", "MIC BIAS External1",
-+=09=09"AMIC2", "MIC BIAS Internal2",
-+=09=09"AMIC3", "MIC BIAS External1";
-+};
-+
-+&usb {
-+=09extcon =3D <&muic>, <&muic>;
-+=09status =3D "okay";
-+};
-+
-+&usb_hs_phy {
-+=09extcon =3D <&muic>;
-+};
-+
-+&venus {
-+=09status =3D "okay";
-+};
-+
-+&venus_mem {
-+=09status =3D "okay";
-+};
-+
-+&wcnss {
-+=09status =3D "okay";
-+};
-+
-+&wcnss_iris {
-+=09compatible =3D "qcom,wcn3620";
-+};
-+
-+&wcnss_mem {
-+=09status =3D "okay";
-+};
-+
-+&tlmm {
-+=09gpio_keys_default: gpio-keys-default-state {
-+=09=09pins =3D "gpio107", "gpio109";
-+=09=09function =3D "gpio";
-+=09=09drive-strength =3D <2>;
-+=09=09bias-pull-up;
-+=09};
-+
-+=09motor_en_default: motor-en-default-state {
-+=09=09pins =3D "gpio72";
-+=09=09function =3D "gpio";
-+=09=09drive-strength =3D <2>;
-+=09=09bias-disable;
-+=09};
-+
-+=09muic_int_default: muic-int-default-state {
-+=09=09pins =3D "gpio12";
-+=09=09function =3D "gpio";
-+=09=09drive-strength =3D <2>;
-+=09=09bias-disable;
-+=09};
-+
-+=09sdc2_cd_default: sdc2-cd-default-state {
-+=09=09pins =3D "gpio38";
-+=09=09function =3D "gpio";
-+=09=09drive-strength =3D <2>;
-+=09=09bias-disable;
-+=09};
-+};
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-gprimeltecan.dts b/ar=
-ch/arm64/boot/dts/qcom/msm8916-samsung-gprimeltecan.dts
-new file mode 100644
-index 000000000000..9d65fa58ba92
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-gprimeltecan.dts
-@@ -0,0 +1,27 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+/dts-v1/;
-+
-+#include "msm8916-samsung-fortuna-common.dtsi"
-+
-+/ {
-+=09model =3D "Samsung Galaxy Grand Prime (SM-G530W)";
-+=09compatible =3D "samsung,gprimeltecan", "qcom,msm8916";
-+=09chassis-type =3D "handset";
-+
-+=09reserved-memory {
-+=09=09/* Firmware for gprimeltecan needs more space */
-+=09=09/delete-node/ tz-apps@85a00000;
-+
-+=09=09/* Additional memory used by Samsung firmware modifications */
-+=09=09tz-apps@85500000 {
-+=09=09=09reg =3D <0x0 0x85500000 0x0 0xb00000>;
-+=09=09=09no-map;
-+=09=09};
-+=09};
-+};
-+
-+&mpss_mem {
-+=09/* Firmware for gprimeltecan needs more space */
-+=09reg =3D <0x0 0x86800000 0x0 0x5400000>;
-+};
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-grandprimelte.dts b/a=
-rch/arm64/boot/dts/qcom/msm8916-samsung-grandprimelte.dts
-new file mode 100644
-index 000000000000..a66ce4b13547
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-grandprimelte.dts
-@@ -0,0 +1,16 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+/dts-v1/;
-+
-+#include "msm8916-samsung-fortuna-common.dtsi"
-+
-+/ {
-+=09model =3D "Samsung Galaxy Grand Prime (SM-G530FZ)";
-+=09compatible =3D "samsung,grandprimelte", "qcom,msm8916";
-+=09chassis-type =3D "handset";
-+};
-+
-+&mpss_mem {
-+=09/* Firmware for grandprimelte needs more space */
-+=09reg =3D <0x0 0x86800000 0x0 0x5400000>;
-+};
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-rossa-common.dtsi b/a=
-rch/arm64/boot/dts/qcom/msm8916-samsung-rossa-common.dtsi
-new file mode 100644
-index 000000000000..42843771ae2a
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-rossa-common.dtsi
-@@ -0,0 +1,16 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include "msm8916-samsung-fortuna-common.dtsi"
-+
-+/* SM5504 MUIC instead of SM5502 */
-+/delete-node/ &muic;
-+
-+&blsp_i2c1 {
-+=09muic: extcon@14 {
-+=09=09compatible =3D "siliconmitus,sm5504-muic";
-+=09=09reg =3D <0x14>;
-+=09=09interrupts-extended =3D <&tlmm 12 IRQ_TYPE_EDGE_FALLING>;
-+=09=09pinctrl-0 =3D <&muic_int_default>;
-+=09=09pinctrl-names =3D "default";
-+=09};
-+};
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-rossa.dts b/arch/arm6=
-4/boot/dts/qcom/msm8916-samsung-rossa.dts
-new file mode 100644
-index 000000000000..ebaa13c6b016
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-rossa.dts
-@@ -0,0 +1,16 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+/dts-v1/;
-+
-+#include "msm8916-samsung-rossa-common.dtsi"
-+
-+/ {
-+=09model =3D "Samsung Galaxy Core Prime LTE";
-+=09compatible =3D "samsung,rossa", "qcom,msm8916";
-+=09chassis-type =3D "handset";
-+};
-+
-+&mpss_mem {
-+=09/* Firmware for rossa needs more space */
-+=09reg =3D <0x0 0x86800000 0x0 0x5800000>;
-+};
---=20
-2.39.2
+Folio Size | mm-unstable |      New | Change
+---------------------------------------------
+      4KiB |    0.058110 | 0.057715 |   - 1%
+     16KiB |    0.044198 | 0.035469 |   -20%
+     32KiB |    0.034216 | 0.023522 |   -31%
+     64KiB |    0.029207 | 0.018434 |   -37%
+    128KiB |    0.026579 | 0.014026 |   -47%
+    256KiB |    0.025130 | 0.011756 |   -53%
+    512KiB |    0.024292 | 0.010703 |   -56%
+   1024KiB |    0.023812 | 0.010294 |   -57%
+   2048KiB |    0.023785 | 0.009910 |   -58%
 
+CCing especially s390x folks, because they have a tlb freeing hooks that
+needs adjustment. Only tested on x86-64 for now, will have to do some more
+stress testing. Compile-tested on most other architectures. The PPC
+change is negleglible and makes my cross-compiler happy.
+
+[1] https://lkml.kernel.org/r/20240129124649.189745-1-david@redhat.com
+[2] https://lkml.kernel.org/r/20231218105100.172635-1-ryan.roberts@arm.com
+[3] https://lkml.kernel.org/r/20230809083256.699513-1-david@redhat.com
+[4] https://lkml.kernel.org/r/20231124132626.235350-1-david@redhat.com
+[5] https://lkml.kernel.org/r/20231207161211.2374093-1-ryan.roberts@arm.com
+
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Cc: Nick Piggin <npiggin@gmail.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>
+Cc: Christian Borntraeger <borntraeger@linux.ibm.com>
+Cc: Sven Schnelle <svens@linux.ibm.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-arch@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-s390@vger.kernel.org
+
+David Hildenbrand (9):
+  mm/memory: factor out zapping of present pte into zap_present_pte()
+  mm/memory: handle !page case in zap_present_pte() separately
+  mm/memory: further separate anon and pagecache folio handling in
+    zap_present_pte()
+  mm/memory: factor out zapping folio pte into zap_present_folio_pte()
+  mm/mmu_gather: pass "delay_rmap" instead of encoded page to
+    __tlb_remove_page_size()
+  mm/mmu_gather: define ENCODED_PAGE_FLAG_DELAY_RMAP
+  mm/mmu_gather: add __tlb_remove_folio_pages()
+  mm/mmu_gather: add tlb_remove_tlb_entries()
+  mm/memory: optimize unmap/zap with PTE-mapped THP
+
+ arch/powerpc/include/asm/tlb.h |   2 +
+ arch/s390/include/asm/tlb.h    |  30 ++++--
+ include/asm-generic/tlb.h      |  40 ++++++--
+ include/linux/mm_types.h       |  37 ++++++--
+ include/linux/pgtable.h        |  66 +++++++++++++
+ mm/memory.c                    | 167 +++++++++++++++++++++++----------
+ mm/mmu_gather.c                |  63 +++++++++++--
+ mm/swap.c                      |  12 ++-
+ mm/swap_state.c                |  12 ++-
+ 9 files changed, 347 insertions(+), 82 deletions(-)
+
+-- 
+2.43.0
 
 
