@@ -1,302 +1,190 @@
-Return-Path: <linux-kernel+bounces-42383-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42384-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86E10840097
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:47:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E62A84009C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:50:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3355B22D0F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 08:47:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5353D1C22EB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 08:50:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F34C854BEC;
-	Mon, 29 Jan 2024 08:47:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1159A54BE8;
+	Mon, 29 Jan 2024 08:50:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gXhNJaws"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YeUEnX+a"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F9A654BDF
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 08:47:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706518027; cv=none; b=LSYDZhjx665kolafXOZ34XyVcZ7GftG97qSYz/Uuv+nr1crfqGGCKv9u1xMAtsAjVtQGoTuE+C1DQimZCsy1McMmMMFd2KfRfuAO89+WJuCZ/J0a3W9tYFW/IMIPvm+SboNBcmQIHV52PbsNG1iPBllzDPkHkSYwdcuD4ttXQYk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706518027; c=relaxed/simple;
-	bh=wan+/40Gb1SyAcbTJJKFngUv3lxpedgrk4APeSN8y8k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YGs22CbxOqWkii9Gy0m4oPyacKxyKG2o0RG5LddUkHyJVYqJN+LUw4dkoMS3g794QwiVMTdS7hiyaJVOPyoY3+pg8KHIi1SCPj91DsLf340UZUAEo0GmrDxMn+McaDBcnCuwymiiEdbWF5A+Q1TWRapjmZOSkn4blCDRbrga9c4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gXhNJaws; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706518023;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mHx98I53Z/x+UcJL2CQPXiS0oxn65PZb6tI9zRyZW1E=;
-	b=gXhNJawsOJ+eIei3mAZpxm9yxL3RCo2IoBJc47iQSQ6PUtS7fUo8dr6ZKjc7EyQQcz1Ayp
-	0xDryY6fK4UcZmQU1JEHvuR1sLU2n7X4tIUTzitveMaHUBqo2o34s09QmTMPGTyDW0HhG3
-	3AdYTYoDITdZaaMoeucn+0+nESdC9ok=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-192-kbXVUE6JPHWb3g1qksIbzw-1; Mon, 29 Jan 2024 03:47:01 -0500
-X-MC-Unique: kbXVUE6JPHWb3g1qksIbzw-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-33af036e53cso221180f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 00:47:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706518020; x=1707122820;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mHx98I53Z/x+UcJL2CQPXiS0oxn65PZb6tI9zRyZW1E=;
-        b=IS6rJ5vRiXRj7iK9Ej20PR77amBdPfiWAwSCLn1zgMZeAXKprocWheja3kpoIyIWEY
-         2GSdlC7b61wBl5P5/GDBIRjWfbEq7tfOCBfDLm3PFoLceT9EvR+MtYC8HOOG/08xYA7B
-         Tu5q6GmRC073okWsMZ/cS8K34tCTSv2zN8/simiNnbEav32+LT1XEBa5cClK3DCoIJyp
-         B0VCCEjSzLEFLtN8/DKPM5tRV2pbUB6CH/ZPHq7xqAkp3l18Pqso2usT838DbeB1Iqi3
-         aZoZ07e62o+QS3C6P/8eEKBbeQu3pEzCdxJ6FCWXPJoLAc3gTF5UfRw70NlKGvOSIpMQ
-         l0Ag==
-X-Gm-Message-State: AOJu0YzdLiWlaWpt7PoEhp2GNQlwbfAa6E3chp/5US1CNc2RE+rdoWNW
-	mQSxajbfTMYWsx9cQhqgDYAZsJhNvlFWu+hM33pTaTV8hNss2NhGYl17pwleQehKMB1+wetUSTb
-	0aSYde0ip79IM1izQefzAwj41ttoAKs3CMmvXEE+sXYcf6PER0S+QIS4qpUptgA==
-X-Received: by 2002:a05:6000:710:b0:33a:f399:5de3 with SMTP id bs16-20020a056000071000b0033af3995de3mr576161wrb.39.1706518020228;
-        Mon, 29 Jan 2024 00:47:00 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEwh3LLMODSTkeFeUAQPUxU73Kw1Df+2FZWQ7IIt52Rgmjhp3f7mup1S9zJyIE8dHYQ33LIqQ==
-X-Received: by 2002:a05:6000:710:b0:33a:f399:5de3 with SMTP id bs16-20020a056000071000b0033af3995de3mr576145wrb.39.1706518019789;
-        Mon, 29 Jan 2024 00:46:59 -0800 (PST)
-Received: from redhat.com ([2.52.129.159])
-        by smtp.gmail.com with ESMTPSA id bp19-20020a5d5a93000000b003394495566dsm7571525wrb.22.2024.01.29.00.46.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 00:46:59 -0800 (PST)
-Date: Mon, 29 Jan 2024 03:46:55 -0500
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Nathan Chancellor <nathan@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	stable@vger.kernel.org, patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-	llvm@lists.linux.dev, keescook@chromium.org,
-	arei.gonglei@huawei.com, jasowang@redhat.com,
-	virtualization@lists.linux.dev, linux-crypto@vger.kernel.org,
-	zhenwei pi <pizhenwei@bytedance.com>
-Subject: Re: [PATCH 5.10 000/286] 5.10.209-rc1 review
-Message-ID: <20240129034304-mutt-send-email-mst@kernel.org>
-References: <20240122235732.009174833@linuxfoundation.org>
- <6b563537-b62f-428e-96d1-2a228da99077@roeck-us.net>
- <2024012636-clubbed-radial-1997@gregkh>
- <2f342268-8517-4c06-8785-96a588d20c63@roeck-us.net>
- <20240126203436.GA913905@dev-arch.thelio-3990X>
- <0a194a79-e3a3-45e7-be98-83abd3e1cb7e@roeck-us.net>
- <20240126223554.GA1320833@dev-arch.thelio-3990X>
- <bef7737e-4b8e-4a89-b538-cd8e75874fd2@roeck-us.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0628454BCC;
+	Mon, 29 Jan 2024 08:50:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.9
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706518242; cv=fail; b=tb3joCZ8Y++++9A2ic95q7ITsANEEL8OBkitt5owRXYsfezAuei8Yx2ZjrTstoSjoZLWdKt1q9rAAt/xeI0e6OBU+na2qa1Oa6sFHMMqRUkp+2cOzKScJIjYIBsNhJ/oAlQIMrdiJKZ5IaE+J6ykRN6PxtiKkYT/TphjiXewcBI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706518242; c=relaxed/simple;
+	bh=UyEyx4TcnnODi04XpxKGe7BzqSrPpR6IXiTByG9dkfs=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=LiH+PtK6W61/uoP03k9helPfAljA4QHtdFdnSWCF9KMfZKiT6ouYbCgSznDF8FvPDU0d/aVEKCUrcie4JuwWf7XKjGpOh+DcBCUvXcUvfauIFDp+AnuvJphtz1BsX9U1/cr7yF7HTjdo7ZD09ZveIl/0nfiefRiqW4MmwFk15mk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YeUEnX+a; arc=fail smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706518240; x=1738054240;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=UyEyx4TcnnODi04XpxKGe7BzqSrPpR6IXiTByG9dkfs=;
+  b=YeUEnX+aJyIuVl5Lhgx41KAtNlOQ+Et9bhGg7/pBQY+Vpy/sSefO7clg
+   +TLuEO8QkMlz7TwIAByKkrcoSfupbt0Ot/7SYNn4JU3K0vBe6vq99+zvB
+   qaN1mHgjtDrZFo1lapCQHbZaV4frVWDzD0IHNXphJCxUirp39tlNX1b2M
+   LC/NwgJqUHFkvvn0FXcmdO6jEZZaHSXSs/dmSDzwqk2dT6GbuAVHtqruR
+   oL/AkR93/U625dGx49Qziy6ogw8lsrgXI6MjvSQn69+NdeoYO9yQgXSt6
+   MLsJ4p+DeCkI6lgjt4xXNTHeK2+3O9g1mTGMzmvW6OwxlzlQm7aBVQlY6
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="9639438"
+X-IronPort-AV: E=Sophos;i="6.05,226,1701158400"; 
+   d="scan'208";a="9639438"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 00:50:19 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,226,1701158400"; 
+   d="scan'208";a="3334905"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmviesa004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Jan 2024 00:50:19 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 29 Jan 2024 00:50:18 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 29 Jan 2024 00:50:17 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 29 Jan 2024 00:50:17 -0800
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 29 Jan 2024 00:50:16 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Toex1orcTN5yrmJa8O/qbjc5fnHMfo+NzftqX0/ePDMo1733g2UV+sxFIRva6sO3wUpWC3D9dORzyEfwbn1vRhT6dbXIcco+0Uhq4kcEt8TTuwT/y9TyV14SufjyO5G9lsYmBkQ5AcFLQlg0WdLA3Rq4tp11BS3Vy0UMKID+4q856rtvvMDPrWGG1MdgmY58Gma6NLdLsqOxjE6Abfq9eeGRoMP1EFdOO2v2i+cV6a08n9qVBIhWgM7+WgfVkP7IhWH1ZE0Bhn1n4HiJpgUlLLFCHwIftH4p8l/Hpu+tQ6yJqgyJasteCJ9374RJgl/GUYhqZOOSSg8VtA2EuTWY+A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=UyEyx4TcnnODi04XpxKGe7BzqSrPpR6IXiTByG9dkfs=;
+ b=LTzmckmzlQnUM6jlu71E3lExT/ZrbKbYMbpt6zscEOEMHkPyGQIq2WGwU0tDLP3ZjIb9RyG/wV79VlXMqQ/Kk31Dh+ji67RU4v2jaldiFHokHWgjPWJey7vfQc8cUBPGahVa1TPliaJ8gl2sCFem1JJPQNQvCjFv9MhNe7nOeg1iyDKXQSZHtCxbKuZ0HSjMeGpDYwLbbj7rfSNQfEUFqdM8W21qxMDhn43Y2j6wfmoO61YAMipDCVmX8T/7hQJM3H5ZyOHdW7W9mDNcM2F2V0vSD2qkYi4M7GEUiOqat2U4AEQZOfiEkrFGEk3SShlB6BJAnLtB+LAj9W8NSttd4A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
+ by PH8PR11MB7966.namprd11.prod.outlook.com (2603:10b6:510:25d::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.32; Mon, 29 Jan
+ 2024 08:50:14 +0000
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::a8e9:c80f:9484:f7cb]) by BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::a8e9:c80f:9484:f7cb%3]) with mapi id 15.20.7228.029; Mon, 29 Jan 2024
+ 08:50:14 +0000
+From: "Tian, Kevin" <kevin.tian@intel.com>
+To: Ethan Zhao <haifeng.zhao@linux.intel.com>, "baolu.lu@linux.intel.com"
+	<baolu.lu@linux.intel.com>, "bhelgaas@google.com" <bhelgaas@google.com>,
+	"robin.murphy@arm.com" <robin.murphy@arm.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>
+CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "will@kernel.org"
+	<will@kernel.org>, "lukas@wunner.de" <lukas@wunner.de>, "Liu, Yi L"
+	<yi.l.liu@intel.com>, "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, Haorong Ye
+	<yehaorong@bytedance.com>
+Subject: RE: [PATCH v12 1/5] PCI: make pci_dev_is_disconnected() helper public
+ for other drivers
+Thread-Topic: [PATCH v12 1/5] PCI: make pci_dev_is_disconnected() helper
+ public for other drivers
+Thread-Index: AQHaUmYyZOQ2PispIkqjAdYF1ImrBrDwey1w
+Date: Mon, 29 Jan 2024 08:50:14 +0000
+Message-ID: <BN9PR11MB5276B0ADF497AEE3D990824A8C7E2@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <20240129034924.817005-1-haifeng.zhao@linux.intel.com>
+ <20240129034924.817005-2-haifeng.zhao@linux.intel.com>
+In-Reply-To: <20240129034924.817005-2-haifeng.zhao@linux.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|PH8PR11MB7966:EE_
+x-ms-office365-filtering-correlation-id: d8125536-923e-49a6-53a6-08dc20a74f70
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: XO7D+SpRWizG/qlMEaLksP35DjqCtcYjuGtcqERhtzdFe449GSiHVDtxztO1aP8+SBV4+kDhPEXvdh5LG6hhg8214G1iRPhsF5UPF5ZuSE1PvgddT+l9+KvskaXD1/yzngTHJ4eSsl7oVi7ndSNp0JJ0GLfVHqQJbsrB8QyZBc9iZ8kXNeh1Tpv3lGCNcdwmv9SchX6WMDkMNM5VI/XRvc3R7V4bNUvrUpasgyM7WWOdhrhtZcbjdLvy0XkjxuqSWp08MWlRyHPsLK1+FgZhz8IBwRdmVIEAMLX56v3Lzy72qm2PD9O5h9Ac/ZyHpAVZbwteq6wOWeWlSiiuSaz2OBDM67r9AXRjE4jgZG9AJS66EedZCIZZQ+Z0NHPdWzDoA8nKeclAoo9Ym53ZXLcnZIZY4itQlxIU6ptSq79CwVbYWU/R8dRwO6KhVOdLhkxHynTX1jYGZsvdLsOlhqBCBCloXB18aOKDDVqyPJ3nxS0wJU008vqdfh+2jX8AyIT5lhgCgt7qEOYEe3qP+T95PRdnFv7ZHL5eLlgP5ge2EM1AfA0Rt5Fb6Qns1iVd6igr52jyQtp+OtP+RlAmM0dW3ACaK3SB2IFIUj3ocz1vVBWuBt6cB/JINBAI6mh6Phlh
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(376002)(396003)(366004)(346002)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(66446008)(52536014)(8936002)(8676002)(4326008)(33656002)(2906002)(4744005)(7416002)(5660300002)(86362001)(110136005)(66556008)(76116006)(66946007)(66476007)(54906003)(38070700009)(64756008)(316002)(38100700002)(122000001)(82960400001)(6506007)(7696005)(9686003)(478600001)(83380400001)(71200400001)(26005)(41300700001)(55016003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?j9L1D/uf2W3Iqe08/t11McQbSuHoRqJnTTAZ2VdH82djUrDdwpk+PNKMRSIH?=
+ =?us-ascii?Q?9z8RWDOZo2wbyRsb/4SMEIIV9ncLmexs5rgAeL7yLFtaKpnn+IlPhC9q2L0Q?=
+ =?us-ascii?Q?3re2WSb8IGXuvuhFhMWZCxHJpw1ixwVmb6Rd/gJcYut+TwcwPVuPUUF2oFQg?=
+ =?us-ascii?Q?VxvQA/ec5NVLCNV3Bv8MhnOLMbkAn2ig8uEDrQRfhF86NQND1PpNlJx1c464?=
+ =?us-ascii?Q?+sAi22D4jTFE3UkUPOudqF8t1hd4WL9baAxQo4e1wA6+abSdR+OaicjgY4ZE?=
+ =?us-ascii?Q?EBHqQveY1Gkop3AIXf67LQFen/Dcm9RcSp3LljrxDQ2jF8isqG1APDrEeN0u?=
+ =?us-ascii?Q?EXIEn/1jWCoRPu+VtzlKzvIzgx4xEdI8f8F4e0Rrm7WNUMb5piFu57FNq8UB?=
+ =?us-ascii?Q?Eg3UqA1p/bYectsNP6Jvi4XL5+vdRT187qNNVWrlffawWQD2r/Q4dv8v4e4O?=
+ =?us-ascii?Q?2Iflu8zwmU6MwAsL66XiVb3E36xh7/RaQwV1J2zGm+tBpuOtHGYLqDo0qg89?=
+ =?us-ascii?Q?SduxQJv3L6T2mOBqBJNHaf8YALhYEsG/97BbJXCBCeFRDpCG7blzE/fnTBLb?=
+ =?us-ascii?Q?bzVV4ix6Qx35T2AwPjecOoHyo8SCLg5Kycr/iyulXJs9EV2D6cN4V+4WMIAA?=
+ =?us-ascii?Q?DPgDUpplpF//0tZ6EMTepR+uXsLP62HKbIc6paXu8covhgTa6ZJUkriR7+mj?=
+ =?us-ascii?Q?gpGSmPDNnoiY8C6nX9nxNzsL0sCzUldJ+uaonUpXCYXr1HlmQCftZi3w2BWk?=
+ =?us-ascii?Q?9mDKfqqznDQwKsZvRZjjlHlQsfCwYwF4VZ13lWrDJd5CFoKsITrSXA/73nft?=
+ =?us-ascii?Q?SvMz7VRSfOwCcc+tZoymb4r0cEnat5HBwo07JeaVANCWCNAwEp8LJXNpalcF?=
+ =?us-ascii?Q?SEfrf8og42GF8mP8it5/IDeA2O1/vg6J2/kEgvpQgQE42MxiP42RihGDGWmn?=
+ =?us-ascii?Q?zn37Ud1FYQbE/0gcDPEppPZp4qyEA06yC61Hj8CG3HQnP4zf1aAB0m/zIIq/?=
+ =?us-ascii?Q?7Q1C/W8iIicXDDna22T9Ui8TW8hvZo95VdjdyJa+GXUzatKpQKMTdyVJ936M?=
+ =?us-ascii?Q?fEksdaYbEd5saq+38AMcvvnuN5xyaY6/ounPi3EkuCJVZNC6HLGlT6/T2s/H?=
+ =?us-ascii?Q?fSCLqPmozVSrqh3AqcO8YnOF0tKQZ56P2wKyQ//n1J9pVs57hzUP4tDqu5Cq?=
+ =?us-ascii?Q?2C5u52MkPoRgLzT16IPMx0TVYNRr9zfDxIVujU0dfUPHEtAC67zgTVa7Jcax?=
+ =?us-ascii?Q?zU33vBRRAPKEaZ4G3lD9Pv5u/GOFiwMqKU4QzXANxInsRnAHNsbT/yYpaN52?=
+ =?us-ascii?Q?PCbKXvq9hLlm6w2PnW2jmCpODe3/GAw6JBdwCxWtAZ0l/GPILcq48MZ4RtG5?=
+ =?us-ascii?Q?RNoUz+YEN3lkPq0Ao6o67dWOqvGvSSbiAUF+Q4mfTCQUBumAzG+C43HwITAY?=
+ =?us-ascii?Q?pqoElMvMvb6pzAEnvtrq1LTONs7wTsoJKFiMBuYFgwbjTTPqS7F3Cwvj9pbp?=
+ =?us-ascii?Q?jGRfNXNq03L0I0OZZ9OO+NcP+d/HwDNWml/AmWHRaAxWclMZsfKMqicNDZNf?=
+ =?us-ascii?Q?PUXz7SQs9IfyXi38zVJ8T0PD484EatnNuSdEIiXD?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bef7737e-4b8e-4a89-b538-cd8e75874fd2@roeck-us.net>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d8125536-923e-49a6-53a6-08dc20a74f70
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jan 2024 08:50:14.3936
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: yKJMw5Sjams0HzPB20Xryzym5pzNdAnzFS+LTdlcCIKdLs/aAbgBi7eUTyuWTPuI7nnoTCdb9As+ag5ZXN7jHQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB7966
+X-OriginatorOrg: intel.com
 
-On Fri, Jan 26, 2024 at 03:55:02PM -0800, Guenter Roeck wrote:
-> On 1/26/24 14:35, Nathan Chancellor wrote:
-> > (slimming up the CC list, I don't think this is too relevant to the
-> > wider stable community)
-> > 
-> > On Fri, Jan 26, 2024 at 01:01:15PM -0800, Guenter Roeck wrote:
-> > > On 1/26/24 12:34, Nathan Chancellor wrote:
-> > > > On Fri, Jan 26, 2024 at 10:17:23AM -0800, Guenter Roeck wrote:
-> > > > > On 1/26/24 09:51, Greg Kroah-Hartman wrote:
-> > > > > > On Fri, Jan 26, 2024 at 08:46:42AM -0800, Guenter Roeck wrote:
-> > > > > > > On 1/22/24 15:55, Greg Kroah-Hartman wrote:
-> > > > > > > > This is the start of the stable review cycle for the 5.10.209 release.
-> > > > > > > > There are 286 patches in this series, all will be posted as a response
-> > > > > > > > to this one.  If anyone has any issues with these being applied, please
-> > > > > > > > let me know.
-> > > > > > > > 
-> > > > > > > > Responses should be made by Wed, 24 Jan 2024 23:56:49 +0000.
-> > > > > > > > Anything received after that time might be too late.
-> > > > > > > > 
-> > > > > > > [ ... ]
-> > > > > > > 
-> > > > > > > > zhenwei pi <pizhenwei@bytedance.com>
-> > > > > > > >         virtio-crypto: implement RSA algorithm
-> > > > > > > > 
-> > > > > > > 
-> > > > > > > Curious: Why was this (and its subsequent fixes) backported to v5.10.y ?
-> > > > > > > It is quite beyond a bug fix. Also, unless I am really missing something,
-> > > > > > > the series (or at least this patch) was not applied to v5.15.y, so we now
-> > > > > > > have functionality in v5.10.y which is not in v5.15.y.
-> > > > > > 
-> > > > > > See the commit text, it was a dependency of a later fix and documented
-> > > > > > as such.
-> > > > > > 
-> > > > > > Having it in 5.10 and not 5.15 is a bit odd, I agree, so patches are
-> > > > > > gladly accepted :)
-> > > > > > 
-> > > > > 
-> > > > > We reverted the entire series from the merge because it results in a build
-> > > > > failure for us.
-> > > > > 
-> > > > > In file included from /home/groeck/src/linux-chromeos/drivers/crypto/virtio/virtio_crypto_akcipher_algs.c:10:
-> > > > > In file included from /home/groeck/src/linux-chromeos/include/linux/mpi.h:21:
-> > > > > In file included from /home/groeck/src/linux-chromeos/include/linux/scatterlist.h:5:
-> > > > > In file included from /home/groeck/src/linux-chromeos/include/linux/string.h:293:
-> > > > > /home/groeck/src/linux-chromeos/include/linux/fortify-string.h:512:4: error: call to __read_overflow2_field declared with 'warning' attribute: detected read beyond size of field (2nd parameter); maybe use struct_group()? [-Werror,-Wattribute-warning]
-> > > > >                           __read_overflow2_field(q_size_field, size);
-> > > > 
-> > > > For what it's worth, this is likely self inflicted for chromeos-5.10,
-> > > > which carries a revert of commit eaafc590053b ("fortify: Explicitly
-> > > > disable Clang support") as commit c19861d34c003 ("CHROMIUM: Revert
-> > > > "fortify: Explicitly disable Clang support""). I don't see the series
-> > > > that added proper support for clang to fortify in 5.18 that ended with
-> > > > commit 281d0c962752 ("fortify: Add Clang support") in that ChromeOS
-> > > > branch, so this seems somewhat expected.
-> > > > 
-> > > 
-> > > That explains that ;-). I don't mind if the patches stay in v5.10.y,
-> > > we have them reverted anyway.
-> > > 
-> > > The revert was a pure process issue, as you may see when looking into
-> > > commit c19861d34c003, so, yes, I agree that it is self-inflicted damage.
-> > > Still, that doesn't explain why the problem exists in 5.18+.
-> > > 
-> > > > > I also see that upstream (starting with 6.1) when trying to build it with clang,
-> > > > > so I guess it is one of those bug-for-bug compatibility things. I really have
-> > > > > no idea what causes it, or why we don't see the problem when building
-> > > > > chromeos-6.1 or chromeos-6.6, but (so far) only with chromeos-5.10 after
-> > > > > merging 5.10.209 into it. Making things worse, the problem isn't _always_
-> > > > > seen. Sometimes I can compile the file in 6.1.y without error, sometimes not.
-> > > > > I have no idea what triggers the problem.
-> > > > 
-> > > > Have a .config that reproduces it on upstream? I have not personally
-> > > > seen this warning in my build matrix nor has our continuous-integration
-> > > > matrix (I don't see it in the warning output at the bottom but that
-> > > > could have missed something for some reason) in 6.1:
-> > > > 
-> > > 
-> > > The following command sequence reproduces the problem for me with all stable
-> > > branches starting with 5.18.y (plus mainline).
-> > > 
-> > > rm -rf /tmp/crypto-build
-> > > mkdir /tmp/crypto-build
-> > > make -j CC=clang-15 mrproper >/dev/null 2>&1
-> > > make -j O=/tmp/crypto-build CC=clang-15 allmodconfig >/dev/null 2>&1
-> > > make -j O=/tmp/crypto-build W=1 CC=clang-15 drivers/crypto/virtio/virtio_crypto_akcipher_algs.o
-> > > 
-> > > I tried clang versions 14, 15, and 16. This is with my home system running
-> > > Ubuntu 22.04, no ChromeOS or Google specifics/internals involved. For clang-15,
-> > > the version is
-> > > 
-> > > Ubuntu clang version 15.0.7
-> > > Target: x86_64-pc-linux-gnu
-> > > Thread model: posix
-> > > InstalledDir: /usr/bin
-> > 
-> > Okay interesting, this warning is hidden behind W=1, which our CI does
-> > not test with. Looks like it has been that way since the introduction of
-> > these checks in f68f2ff91512 ("fortify: Detect struct member overflows
-> > in memcpy() at compile-time").
-> > 
-> 
-> Interestingly the warning is seen in chromeos-5.10, without this patch,
-> and without W=1. I guess that must have to do with the revert which is
-> finally biting us.
-> 
-> > I think this is a legitimate warning though. It is complaining about the
-> > second memcpy() in virtio_crypto_alg_akcipher_init_session():
-> > 
-> >    memcpy(&ctrl->u, para, sizeof(ctrl->u));
-> > 
-> > where ctrl is:
-> > 
-> >    struct virtio_crypto_op_ctrl_req {
-> >            struct virtio_crypto_ctrl_header header;         /*     0    16 */
-> >            union {
-> >                    struct virtio_crypto_sym_create_session_req sym_create_session; /*    16    56 */
-> >                    struct virtio_crypto_hash_create_session_req hash_create_session; /*    16    56 */
-> >                    struct virtio_crypto_mac_create_session_req mac_create_session; /*    16    56 */
-> >                    struct virtio_crypto_aead_create_session_req aead_create_session; /*    16    56 */
-> >                    struct virtio_crypto_akcipher_create_session_req akcipher_create_session; /*    16    56 */
-> >                    struct virtio_crypto_destroy_session_req destroy_session; /*    16    56 */
-> >                    __u8               padding[56];          /*    16    56 */
-> >            } u;                                             /*    16    56 */
-> >            union {
-> >                    struct virtio_crypto_sym_create_session_req sym_create_session; /*     0    56 */
-> >                    struct virtio_crypto_hash_create_session_req hash_create_session; /*     0    56 */
-> >                    struct virtio_crypto_mac_create_session_req mac_create_session; /*     0    56 */
-> >                    struct virtio_crypto_aead_create_session_req aead_create_session; /*     0    56 */
-> >                    struct virtio_crypto_akcipher_create_session_req akcipher_create_session; /*     0    56 */
-> >                    struct virtio_crypto_destroy_session_req destroy_session; /*     0    56 */
-> >                    __u8                       padding[56];          /*     0    56 */
-> >            };
-> > 
-> > 
-> >            /* size: 72, cachelines: 2, members: 2 */
-> >            /* last cacheline: 8 bytes */
-> >    };
-> > 
-> > (so size and p_size_field should be 56) and the type of the para
-> > parameter in virtio_crypto_alg_akcipher_init_session() is 'void *' but
-> > the para passed by reference to
-> > virtio_crypto_alg_akcipher_init_session() in virtio_crypto_rsa_set_key()
-> > has a type of 'struct virtio_crypto_akcipher_session_para':
-> > 
-> >    struct virtio_crypto_akcipher_session_para {
-> >            __le32                     algo;                 /*     0     4 */
-> >            __le32                     keytype;              /*     4     4 */
-> >            __le32                     keylen;               /*     8     4 */
-> >            union {
-> >                    struct virtio_crypto_rsa_session_para rsa; /*    12     8 */
-> >                    struct virtio_crypto_ecdsa_session_para ecdsa; /*    12     8 */
-> >            } u;                                             /*    12     8 */
-> >            union {
-> >                    struct virtio_crypto_rsa_session_para rsa;       /*     0     8 */
-> >                    struct virtio_crypto_ecdsa_session_para ecdsa;   /*     0     8 */
-> >            };
-> > 
-> > 
-> >            /* size: 20, cachelines: 1, members: 4 */
-> >            /* last cacheline: 20 bytes */
-> >    };
-> > 
-> > (so q_size_field would be 20 if clang were able to do inlining to see
-> > through the 'void *'...?), which would result in the
-> > 
-> >    __compiletime_lessthan(q_size_field, size)
-> > 
-> > check succeeding and triggering the warning because 20 < 56, so it does
-> > seem like there is an overread of the source buffer here? Adding the
-> 
-> Looks like it; I think either the passed 'para' should be of type
-> virtio_crypto_akcipher_create_session_req() or it should only copy
-> sizeof(struct virtio_crypto_akcipher_session_para) bytes.
-> 
-> Anyway, how did you find that ? Is there a magic trick to find the
-> actual code causing the warning ? I am asking because we had seen
-> similar warnings before, and it would help to know how to find the
-> problematic code.
-> 
-> Thanks,
-> Guenter
+> From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+> Sent: Monday, January 29, 2024 11:49 AM
+>=20
+> Make pci_dev_is_disconnected() public so that it can be called from
+> Intel VT-d driver to quickly fix/workaround the surprise removal
+> unplug hang issue for those ATS capable devices on PCIe switch downstream
+> hotplug capable ports.
+>=20
+> Beside pci_device_is_present() function, this one has no config space
 
+s/Beside/Unlike/
 
+> space access, so is light enough to optimize the normal pure surprise
+> removal and safe removal flow.
 
-Cc: zhenwei pi <pizhenwei@bytedance.com>
-
-Zhenwei I think you wrote most of the code here.
-Can you take a look please?
-Stack overflows are plus plus ungood.
-
-
-
-
-> > maintainers of the driver and subsystem in question.
-> > 
-> > Cheers,
-> > Nathan
-
+somehow this paragraph belongs to the patch using it. The 1st paragraph
+is sufficient for the reason of exposure.
 
