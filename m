@@ -1,299 +1,141 @@
-Return-Path: <linux-kernel+bounces-42886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42887-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7097284081D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:21:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD442840821
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:21:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 262FB2903D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:21:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79A14290332
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:21:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5950B7CF1B;
-	Mon, 29 Jan 2024 14:19:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B2BF1272AC;
+	Mon, 29 Jan 2024 14:19:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="lbPOLPYR"
-Received: from mout.web.de (mout.web.de [217.72.192.78])
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="AESviUD4"
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2B216BB20;
-	Mon, 29 Jan 2024 14:19:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B2C474E24;
+	Mon, 29 Jan 2024 14:19:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706537970; cv=none; b=E+aN9OAVa6KbOQgqK5GR8/fSEISmMqoABnS8BbBnN6kVnFYgp6oUtJKkZtYh3C2UmvMJJP5NFuQ/FE8EcCdgU1AgcLsQOHNl6FGOTm8UCtiBW1/LvtIGAAVLFNOa4GvUQh8vyGIkEZGe+BSuX3Y6sgrAInjs7hMn65uiVIbCkn4=
+	t=1706537973; cv=none; b=JSepaynuB5dW2x0XQQaTHsKcu7tQmEEzeRGiRtix83AN2nR6xwZ0hsaZ+cL8Ma902J8EU7Xt8+UpAQD1bQxk/lnEjSZobXcvwxoSbPmNzpnQhAH+aJV9CLX/MKffF+vk4AtfbkgLf2c8hkQOFHwn4ycy4aLM28yuVWBZE56qgnc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706537970; c=relaxed/simple;
-	bh=eYivng0WaDFd0Vu2WyMIJTEbBIN3RYQKrUhlxi/DlWc=;
-	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=lRn6s396wIauSjQ/J7qTgpRLWlR5dMBphh3sA1u0NJMb+lLYA4waiIxUPWZkTt0jXA0wE7hQwMfJEZOmDIC+U35qporYyiOwoJCb1gHgiYHLE65v0VHrEh6szC8UKhbiwrBMVhZTuA9vKeS5Ujww6IVFWOqC8i8TQrJmJHb1Jqs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=lbPOLPYR; arc=none smtp.client-ip=217.72.192.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1706537956; x=1707142756; i=markus.elfring@web.de;
-	bh=eYivng0WaDFd0Vu2WyMIJTEbBIN3RYQKrUhlxi/DlWc=;
-	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
-	b=lbPOLPYR5P74yNuMHrnShtN2rw25ilrv68L1jycG17b6Q5guJzSCGXEgP75Ceftp
-	 SGW5F9+VKYzO7Rgj9C8OZHWoM9D+ICdyAq45373sVbqFsk40QWpIoG7lXjgo7PcRE
-	 FrU7XegcDhV3mpimY+LnCN7NGf+lRBiFRrrpPBKy7fQJlfX24AgUYI1EGSh5ErBWP
-	 gMoOgHZvVt9fFNOszBBq8TE/bK92zaxX/6qJpCe7TGkpl0tqQFPqRv3wSB3Nccuq6
-	 76sBzLrFCx0B6rHFnRAmVRPR1oyKq6Nlwgkhaj/+bXal9tqZPzyPywPK0O9L3srZG
-	 uStkOBY4oNc2dVxCkg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.81.95]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1Ma0Tu-1rXmNM0ne0-00W6xA; Mon, 29
- Jan 2024 15:19:16 +0100
-Message-ID: <e8939703-b9a4-4ed0-ae7e-ad9a08ae96d4@web.de>
-Date: Mon, 29 Jan 2024 15:19:00 +0100
+	s=arc-20240116; t=1706537973; c=relaxed/simple;
+	bh=DBI5+ltamoC/la8uCrx5/uRCiXV5fQOs4kMU6m6p4mU=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iSC74XP9e0WjrLkzf5o/msWtBLVFVgy0ldWbPQ/R7wgoBTwUwTruymvmk4d+3E8j3r6kBvOCTniLLoAXH5V0JiW48bPwGbZTGwHkxEuulFUBGy4aLZ3CAg4FM9f9NX5+CrML6bsjwWLkrJAxjnnzplDiFYHaDa2eX72IU/cHKMk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=AESviUD4; arc=none smtp.client-ip=45.89.224.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id C0E1512000B;
+	Mon, 29 Jan 2024 17:19:27 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru C0E1512000B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1706537967;
+	bh=7WNOpe9GGkirEoGdJnPDDhRmC2NQr+O7BpCO8Kgm7sg=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+	b=AESviUD4O3eGrdIku5y681V+0nXhIqPo6ib4DVOA5WzjLfnw4qG4g37A8J15lvlrN
+	 DeQPg9hmUiQLUH/MLLLFgBrLrD6Kr4CF9cl9vyJ3G74PO/sBKTHqwCrLahinJ58HsL
+	 tkezHI+c7RjKCvgfVzBebX16ZDMxsGSOCHGXkcigAiMfS1OV262ONaUS0/FXjWt7g+
+	 YkT+kRwaXXYBHKqk2Sqgjqf27o31IlR7301Fg86SO3VAJRHywAipT/DQlGXu6Goduh
+	 +98lVzKykUqOamwpUeq8F7kh6gqprLyqRM0TmCCCyTccltbez2c0VXmk6XNm/n8ufb
+	 roGjhVL0aYvIg==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Mon, 29 Jan 2024 17:19:27 +0300 (MSK)
+Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
+ (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 29 Jan
+ 2024 17:19:27 +0300
+Date: Mon, 29 Jan 2024 17:19:27 +0300
+From: Dmitry Rokosov <ddrokosov@salutedevices.com>
+To: Pavel Machek <pavel@ucw.cz>
+CC: Lee Jones <lee@kernel.org>, Martin Kurbanov
+	<mmkurbanov@salutedevices.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+	<conor+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Andy Shevchenko
+	<andy.shevchenko@gmail.com>, <linux-kernel@vger.kernel.org>,
+	<linux-leds@vger.kernel.org>, <devicetree@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <kernel@salutedevices.com>, Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v1 1/2] leds: aw200xx: support for hw pattern controllers
+Message-ID: <20240129141927.4shshli37fb3cwen@CAB-WSD-L081021>
+References: <20231207125938.175119-1-mmkurbanov@salutedevices.com>
+ <20231207125938.175119-2-mmkurbanov@salutedevices.com>
+ <20231221161011.GO10102@google.com>
+ <ZbQ-jKD_zhonHOCa@ucw.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: linux-s390@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- =?UTF-8?Q?Christian_Borntr=C3=A4ger?= <borntraeger@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>,
- Peter Oberparleiter <oberpar@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Vineeth Vijayan <vneethv@linux.ibm.com>
-Content-Language: en-GB
-Cc: LKML <linux-kernel@vger.kernel.org>
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] s390/cio: Use memdup_user() rather than duplicating its
- implementation
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:hQ7s/Dgj1zmFsnvUTN1JnmecsVLnRztFvRlxs9buzoqOIiVuJH5
- U+GScZF2QktLf+RSf9cPS6U5x6XpFh6Y20e01pAAxd7cdt0qVZW30fUp/HgMnA5bY+ySUc8
- XGwlUmAwpJFIyUldglOcZtk/mzElUiec5k3QxZgTaC+MwtzRl9IUDND9X999jhAeZu0ZKEj
- nrd55iK/b6fSgJSAy/J6A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:dZEMqn4WVQo=;sZnBrghKsL9L1lgCA/ryW/JqZhW
- F3VRJb5+N2692biWwI2AvMtGiLalgXPjPy4QBwbZiuBOSareIMPcI7O3CfehwMM4TdyB3Moue
- l6YjQzqZVuS8NJKlFVLY4kGe89Bop6x+9sxcGJturlGYvfpeD/ZFeFlybd9+wSsEmuirW5DiH
- X/18u07gCADOY8QEs/w2HY/71pq4g23WeP3Gsxs1EJHaLR0yEK0+roXBLyYgF99XmQKEW02QU
- HPN8e2jsLjCDbHMLbO9YR3KV/z+2CWG1aRilDmdDuMK9gsVl2HQmzlpcefVo9Xu8B7uIA7Jas
- hPvcPqNDYdNzFYRNTbtUz4MSmJ1RDyjXNdEu8M8uJISTd9kOtgl26NGntgNwDm4XbmpnvLjJg
- o2fypzj2wZhtv9tM8xXb0lXbxu/uCdj+xluHx0gL9rBiZEoI0diU/+8gYh1JHe1oOqeh/0ygP
- xkNvmZS5WgUaO/5VhKlVYlCT2do1Rea2myLEZ1gyQeXSpq8BA2gOktyRaZy4vOu3xZha66cZj
- a+uu1N2A8fJLFMTkw9jbQ/zIdfV67rE/chNRyLJ6zvqlsYxtsvTsqWPZkSa0PaRU2DZ+8cwB+
- N2bVgxq/HEVoqTOSUVO5Mn1YXjFOqAb2PuJxdPyV93VdQpPxq87qnHLD9EXJm6hEX/Q+MTQW8
- RQzd9O/4EtcwgI8WkfziKz2VlArTTb4RLriIDeIr0/0RVN3mOHAVtKixwAxr1tFGL0mWs7wWC
- iOCoz+6aBh/7GQPCvCN2p1svTt0r7bvsN3dL0h9i5rlG0YAiLvnQ2Ysc349apK8uTcF3NRFah
- hCiZo5GFESK12eM+MfDLqIGvdHqbE2LNVrRxKcIYIs0NGMtns7q9pImb3VZUAHzpXgcMddzqB
- S2vPqtV7zU6m69YjxZqrdGSojnK5nArkeTzgoOXrNgJmxzYja9W1wsK3LVR6ky8j+ACAApjYL
- Y3qih0BAxSq58M5K5fSOESoSm58=
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZbQ-jKD_zhonHOCa@ucw.cz>
+User-Agent: NeoMutt/20220415
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 183011 [Jan 29 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.3
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;smtp.sberdevices.ru:7.1.1,5.0.1;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/01/29 10:45:00 #23482469
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Mon, 29 Jan 2024 15:00:36 +0100
+Hello Pavel,
 
-* Reuse existing functionality from memdup_user() instead of keeping
-  duplicate source code.
+On Sat, Jan 27, 2024 at 12:21:48AM +0100, Pavel Machek wrote:
+> Hi!
+> 
+> > > This led-controller supports 3 pattern controllers for auto breathing or
+> > > group dimming control. Each pattern controller can work in auto
+> > > breathing or manual control mode. All breathing parameters including
+> > > rising/falling slope, on/off time, repeat times, min/max brightness
+> > > and so on are configurable.
+> > > 
+> > > Signed-off-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
+> > > ---
+> > >  .../testing/sysfs-class-led-driver-aw200xx    | 108 +++
+> > >  Documentation/leds/leds-aw200xx.rst           | 274 ++++++++
+> > >  drivers/leds/leds-aw200xx.c                   | 649 ++++++++++++++++++
+> > >  3 files changed, 1031 insertions(+)
+> > >  create mode 100644 Documentation/leds/leds-aw200xx.rst
+> > 
+> > This interface is bananas.  Exposing an entire register interface to
+> > sysfs does not sit will with me at all.  When we add support to a sysfs
+> > class, we usually require it to be generic and work across all devices.
+> > Adding device specific interfaces is generally decried and to be
+> > avoided.  Don't forget, once we commit something to sysfs, it becomes
+> > ABI and we have to support it forever.
+> 
+> If you do git grep hw_pattern, you should get pointers to qcom-lpg
+> driver that solves similar problem, with interface that should be
+> acceptable.
 
-  Generated by: scripts/coccinelle/api/memdup_user.cocci
+Thank you for pointing that out. Yes, it's a very similar situation to
+ours.
 
-* Use another label in six function implementations.
+But I haven't observed the merging of this driver. Was it encountering
+similar issues with the sysfs interface?
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- drivers/s390/cio/chsc_sch.c | 90 +++++++++++++++++--------------------
- 1 file changed, 42 insertions(+), 48 deletions(-)
-
-diff --git a/drivers/s390/cio/chsc_sch.c b/drivers/s390/cio/chsc_sch.c
-index 902237d0baef..2ad4264589d9 100644
-=2D-- a/drivers/s390/cio/chsc_sch.c
-+++ b/drivers/s390/cio/chsc_sch.c
-@@ -442,15 +442,13 @@ static int chsc_ioctl_info_channel_path(void __user =
-*user_cd)
- 	scpcd_area =3D (void *)get_zeroed_page(GFP_KERNEL | GFP_DMA);
- 	if (!scpcd_area)
- 		return -ENOMEM;
--	cd =3D kzalloc(sizeof(*cd), GFP_KERNEL);
--	if (!cd) {
--		ret =3D -ENOMEM;
--		goto out_free;
--	}
--	if (copy_from_user(cd, user_cd, sizeof(*cd))) {
--		ret =3D -EFAULT;
--		goto out_free;
-+
-+	cd =3D memdup_user(user_cd, sizeof(*cd));
-+	if (IS_ERR(cd)) {
-+		ret =3D PTR_ERR(cd);
-+		goto out_free_page;
- 	}
-+
- 	scpcd_area->request.length =3D 0x0010;
- 	scpcd_area->request.code =3D 0x0028;
- 	scpcd_area->m =3D cd->m;
-@@ -477,6 +475,7 @@ static int chsc_ioctl_info_channel_path(void __user *u=
-ser_cd)
- 		ret =3D 0;
- out_free:
- 	kfree(cd);
-+out_free_page:
- 	free_page((unsigned long)scpcd_area);
- 	return ret;
- }
-@@ -504,15 +503,13 @@ static int chsc_ioctl_info_cu(void __user *user_cd)
- 	scucd_area =3D (void *)get_zeroed_page(GFP_KERNEL | GFP_DMA);
- 	if (!scucd_area)
- 		return -ENOMEM;
--	cd =3D kzalloc(sizeof(*cd), GFP_KERNEL);
--	if (!cd) {
--		ret =3D -ENOMEM;
--		goto out_free;
--	}
--	if (copy_from_user(cd, user_cd, sizeof(*cd))) {
--		ret =3D -EFAULT;
--		goto out_free;
-+
-+	cd =3D memdup_user(user_cd, sizeof(*cd));
-+	if (IS_ERR(cd)) {
-+		ret =3D PTR_ERR(cd);
-+		goto out_free_page;
- 	}
-+
- 	scucd_area->request.length =3D 0x0010;
- 	scucd_area->request.code =3D 0x0026;
- 	scucd_area->m =3D cd->m;
-@@ -539,6 +536,7 @@ static int chsc_ioctl_info_cu(void __user *user_cd)
- 		ret =3D 0;
- out_free:
- 	kfree(cd);
-+out_free_page:
- 	free_page((unsigned long)scucd_area);
- 	return ret;
- }
-@@ -567,15 +565,13 @@ static int chsc_ioctl_info_sch_cu(void __user *user_=
-cud)
- 	sscud_area =3D (void *)get_zeroed_page(GFP_KERNEL | GFP_DMA);
- 	if (!sscud_area)
- 		return -ENOMEM;
--	cud =3D kzalloc(sizeof(*cud), GFP_KERNEL);
--	if (!cud) {
--		ret =3D -ENOMEM;
--		goto out_free;
--	}
--	if (copy_from_user(cud, user_cud, sizeof(*cud))) {
--		ret =3D -EFAULT;
--		goto out_free;
-+
-+	cud =3D memdup_user(user_cud, sizeof(*cud));
-+	if (IS_ERR(cud)) {
-+		ret =3D PTR_ERR(cud);
-+		goto out_free_page;
- 	}
-+
- 	sscud_area->request.length =3D 0x0010;
- 	sscud_area->request.code =3D 0x0006;
- 	sscud_area->m =3D cud->schid.m;
-@@ -603,6 +599,7 @@ static int chsc_ioctl_info_sch_cu(void __user *user_cu=
-d)
- 		ret =3D 0;
- out_free:
- 	kfree(cud);
-+out_free_page:
- 	free_page((unsigned long)sscud_area);
- 	return ret;
- }
-@@ -629,15 +626,13 @@ static int chsc_ioctl_conf_info(void __user *user_ci=
-)
- 	sci_area =3D (void *)get_zeroed_page(GFP_KERNEL | GFP_DMA);
- 	if (!sci_area)
- 		return -ENOMEM;
--	ci =3D kzalloc(sizeof(*ci), GFP_KERNEL);
--	if (!ci) {
--		ret =3D -ENOMEM;
--		goto out_free;
--	}
--	if (copy_from_user(ci, user_ci, sizeof(*ci))) {
--		ret =3D -EFAULT;
--		goto out_free;
-+
-+	ci =3D memdup_user(user_ci, sizeof(*ci));
-+	if (IS_ERR(ci)) {
-+		ret =3D PTR_ERR(ci);
-+		goto out_free_page;
- 	}
-+
- 	sci_area->request.length =3D 0x0010;
- 	sci_area->request.code =3D 0x0012;
- 	sci_area->m =3D ci->id.m;
-@@ -663,6 +658,7 @@ static int chsc_ioctl_conf_info(void __user *user_ci)
- 		ret =3D 0;
- out_free:
- 	kfree(ci);
-+out_free_page:
- 	free_page((unsigned long)sci_area);
- 	return ret;
- }
-@@ -700,15 +696,13 @@ static int chsc_ioctl_conf_comp_list(void __user *us=
-er_ccl)
- 	sccl_area =3D (void *)get_zeroed_page(GFP_KERNEL | GFP_DMA);
- 	if (!sccl_area)
- 		return -ENOMEM;
--	ccl =3D kzalloc(sizeof(*ccl), GFP_KERNEL);
--	if (!ccl) {
--		ret =3D -ENOMEM;
--		goto out_free;
--	}
--	if (copy_from_user(ccl, user_ccl, sizeof(*ccl))) {
--		ret =3D -EFAULT;
--		goto out_free;
-+
-+	ccl =3D memdup_user(user_ccl, sizeof(*ccl));
-+	if (IS_ERR(ccl)) {
-+		ret =3D PTR_ERR(ccl);
-+		goto out_free_page;
- 	}
-+
- 	sccl_area->request.length =3D 0x0020;
- 	sccl_area->request.code =3D 0x0030;
- 	sccl_area->fmt =3D ccl->req.fmt;
-@@ -746,6 +740,7 @@ static int chsc_ioctl_conf_comp_list(void __user *user=
-_ccl)
- 		ret =3D 0;
- out_free:
- 	kfree(ccl);
-+out_free_page:
- 	free_page((unsigned long)sccl_area);
- 	return ret;
- }
-@@ -800,15 +795,13 @@ static int chsc_ioctl_dcal(void __user *user_dcal)
- 	sdcal_area =3D (void *)get_zeroed_page(GFP_KERNEL | GFP_DMA);
- 	if (!sdcal_area)
- 		return -ENOMEM;
--	dcal =3D kzalloc(sizeof(*dcal), GFP_KERNEL);
--	if (!dcal) {
--		ret =3D -ENOMEM;
--		goto out_free;
--	}
--	if (copy_from_user(dcal, user_dcal, sizeof(*dcal))) {
--		ret =3D -EFAULT;
--		goto out_free;
-+
-+	dcal =3D memdup_user(user_dcal, sizeof(*dcal));
-+	if (IS_ERR(dcal)) {
-+		ret =3D PTR_ERR(dcal);
-+		goto out_free_page;
- 	}
-+
- 	sdcal_area->request.length =3D 0x0020;
- 	sdcal_area->request.code =3D 0x0034;
- 	sdcal_area->atype =3D dcal->req.atype;
-@@ -835,6 +828,7 @@ static int chsc_ioctl_dcal(void __user *user_dcal)
- 		ret =3D 0;
- out_free:
- 	kfree(dcal);
-+out_free_page:
- 	free_page((unsigned long)sdcal_area);
- 	return ret;
- }
-=2D-
-2.43.0
-
+-- 
+Thank you,
+Dmitry
 
