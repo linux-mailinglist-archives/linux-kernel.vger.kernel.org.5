@@ -1,107 +1,122 @@
-Return-Path: <linux-kernel+bounces-43491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43492-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA82A8414B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 21:53:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E51B28414B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 21:54:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B7101F24BFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 20:53:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7731BB22DD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 20:54:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24838157E6E;
-	Mon, 29 Jan 2024 20:53:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8055F157E60;
+	Mon, 29 Jan 2024 20:53:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=crudebyte.com header.i=@crudebyte.com header.b="a45d4hFm"
-Received: from kylie.crudebyte.com (kylie.crudebyte.com [5.189.157.229])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kemnade.info header.i=@kemnade.info header.b="vGjrVOYq"
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [178.238.236.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5641629D03;
-	Mon, 29 Jan 2024 20:53:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.189.157.229
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26EDB156967;
+	Mon, 29 Jan 2024 20:53:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.238.236.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706561604; cv=none; b=X22E8Xxa1nUJsYlqO3mf4P+CoS5I7Qs5sLk8z5e3jevhvBZFygqMsnSeHRXeTlnOqikWfidU4vPk3CGP6x+6PbZafU/q4Vy94d94hBCyOMspcL5tmzo3QIwcDMnIFdo0OJ7p7i+yuxP1urTSfVm1a0zkqgAKUyAaZL/sfhdtmCg=
+	t=1706561635; cv=none; b=LUYc7ODiDzxTajtRZF0f8jkwhvt/VuB7/k4zk2cm1v0WqSsWzL+CfEGNmKsLY1l9rOmfEx5uwNc6IiX3G5QnDovMgIjV9t7l/vnN3bHpOwuE2sGmV2HEh5sri00m1LoSmg4Z7JX5whq1Gp6yxJTfz+HP8GsSt3xIJCaLZbVf93o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706561604; c=relaxed/simple;
-	bh=7shu1kQp5hKe9agoMH9qJo8QtYjjAUCVX1MLlx22v1s=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ugpHnhI4KGp3hoOH7d80b3fsllh1b+BLq6RtP1SoEGy0aYefmWiDkIviUrvz4Fl65kWKTd+6u6yj/ry4Ia+FnsjWT5Zq0P7+BGa0T6OqXhd27usIwW2ujUiH1calD7rc/TGmOf1PEvR2/dvAr0dhC/imPd7nt9xWQSpf1nvu4cQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=crudebyte.com; spf=pass smtp.mailfrom=crudebyte.com; dkim=pass (4096-bit key) header.d=crudebyte.com header.i=@crudebyte.com header.b=a45d4hFm; arc=none smtp.client-ip=5.189.157.229
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=crudebyte.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crudebyte.com
+	s=arc-20240116; t=1706561635; c=relaxed/simple;
+	bh=nEjyZHEGpRJL0+zy08rgYVHyls7/S7js1fkWuJqu/Ig=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=MmHNAzXI2OkYiwhv4e1An92jOzlGY6gHk8OzWJw1KQtLydHdsUr7TneFu01+jIV/hklgLXycrzO+4NCGT+UiYZT4VMd4QmuP2LRbnBs8M9yVixsNd6HoRxm2N1urS+XbQ/jx8YasLQPOBqraamJe8+h1ahh0w/veOuepOoPcthw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kemnade.info; spf=pass smtp.mailfrom=kemnade.info; dkim=pass (2048-bit key) header.d=kemnade.info header.i=@kemnade.info header.b=vGjrVOYq; arc=none smtp.client-ip=178.238.236.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kemnade.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kemnade.info
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=crudebyte.com; s=kylie; h=Content-Type:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Content-ID:Content-Description;
-	bh=2dTEyjtteeuqOs2PRClBfhfMNIS8T9MNH+TgboxuqbY=; b=a45d4hFmybCdijy4TXhiCFFbFs
-	NWL/Y7lkUWm58OqzeLEYiUTCBAtp5Sr8kyOIuyiKIwZ0mLIUqgucQRoZzy5dOUyN9iTy1Bq/kSkgY
-	9P3gHx44UdxOLI6qodRvssAYO2nZFe/FMU0SKlmCONjNmS+kR33o+5Nopw+SZljmhme5zH1Iw4yQK
-	Pj85DoPO0i95fpuEohClOsrBVgEO4xM6yOckL5nuIZciCidzLCs/Wy7Z5OKY6zXHIXUxYwuXnep3g
-	GOPKlRPwxAXe/umGjGi4SOVXW9HWm7Brp/MedqI89RRZ0b8LLUo0e1LJxndDOQ75AdulrvBpnYbuX
-	izXrrKTdYCofr60bEqe3Gh2MeOxui8Hdtu7lVxeHtLprFrYdgvQ/HIPRdSQuFncWGE+6VyQoPTNQ6
-	kk3cpHwmNX1Wo8cfhrO4QYV8Fe8LhPxwIHZGiRwsyAJ4D4ZgfJ5Csc4fn15+UXdMMK0qeFCIlfuMJ
-	OxrlC1cpbDMpGVusfhNKoTsYj6eZumqAXQArpszJXmlwmUAo7tPrZ8hPa/ZXD3+MpgiyOTDvUd//I
-	xpyxSo/JMpX3HExjDwhCQldsKf1WFrv3DyjHv1L2ZDBTdnR7dvRiLrLwoKoBaR+0vqJYggqCgl9s/
-	zvf+SagYnHCxVsKxc24z5tOE8T9g0ZWakGfvQeZks=;
-From: Christian Schoenebeck <linux_oss@crudebyte.com>
-To: David Howells <dhowells@redhat.com>
-Cc: dhowells@redhat.com, Eric Van Hensbergen <ericvh@kernel.org>,
- Dominique Martinet <asmadeus@codewreck.org>,
- Latchesar Ionkov <lucho@ionkov.net>, Matthew Wilcox <willy@infradead.org>,
- Jeff Layton <jlayton@kernel.org>, Christian Brauner <christian@brauner.io>,
- netfs@lists.linux.dev, v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/3] 9p: Further netfslib-related changes
-Date: Mon, 29 Jan 2024 21:53:09 +0100
-Message-ID: <5747464.0Q8nNhgPvr@silver>
-In-Reply-To: <1400271.1706538135@warthog.procyon.org.uk>
-References:
- <1726980.McBZPkGeyK@silver> <20240129115512.1281624-1-dhowells@redhat.com>
- <1400271.1706538135@warthog.procyon.org.uk>
+	d=kemnade.info; s=20220719; h=Content-Transfer-Encoding:Content-Type:
+	MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=nEjyZHEGpRJL0+zy08rgYVHyls7/S7js1fkWuJqu/Ig=; b=vGjrVOYqWojCP1MneYHbWGxJz7
+	8Bss/7zI7yVepYSkzBvunYLQXyjOfGZECow7oPCS2EQLtCYaFBsNVOtdXftene+iQEWlX5oUgAZbR
+	uUh1gsWBEGVzW2hGe1p2KddXdDSjyUkQnUC3lrl7rwQ+vlMUnle3JbowUJ0Q/MxNsNQuQou2H5XqM
+	YmHu2Nn2v7BZWuEpXa2y3UQ/LtTJy6uLFM8ncI5B9aSzkdvdacXzi2cuEWUb7anL4JHu9K0DtcDyY
+	gve79lC//WsLZWcJ+JZc36tGvLKkPEdaR1fug4NuV1yAGjAglAO4lZVDIde7vI9ErEC+0OfjXvKBq
+	a1dw45cg==;
+Received: from p200300c2070939001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:c2:709:3900:1a3d:a2ff:febf:d33a] helo=aktux)
+	by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <andreas@kemnade.info>)
+	id 1rUYda-008sHn-Q3; Mon, 29 Jan 2024 21:53:50 +0100
+Date: Mon, 29 Jan 2024 21:53:48 +0100
+From: Andreas Kemnade <andreas@kemnade.info>
+To: Paul Menzel <pmenzel@molgen.mpg.de>
+Cc: marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+ johan@kernel.org, jirislaby@kernel.org, gregkh@linuxfoundation.org,
+ linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org, Adam Ford
+ <aford173@gmail.com>, Tony Lindgren <tony@atomide.com>,
+ tomi.valkeinen@ideasonboard.com, =?UTF-8?B?UMOpdGVy?= Ujfalusi
+ <peter.ujfalusi@gmail.com>, robh@kernel.org, hns@goldelico.com
+Subject: Re: [RFC PATCH v2 3/3] gnss: Add driver for AI2 protocol
+Message-ID: <20240129215348.05fe6f7f@aktux>
+In-Reply-To: <1cc869a6-8547-4c5b-b39d-10f4a3e11dff@molgen.mpg.de>
+References: <20240128173352.2714442-1-andreas@kemnade.info>
+	<20240128173352.2714442-4-andreas@kemnade.info>
+	<1cc869a6-8547-4c5b-b39d-10f4a3e11dff@molgen.mpg.de>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Monday, January 29, 2024 3:22:15 PM CET David Howells wrote:
-> Christian Schoenebeck <linux_oss@crudebyte.com> wrote:
-> 
-> > >  (1) Enable large folio support for 9p.  This is handled entirely by
-> > >      netfslib and is already supported in afs.  I wonder if we should limit
-> > >      the maximum folio size to 1MiB to match the maximum I/O size in the 9p
-> > >      protocol.
-> > 
-> > The limit depends on user's 'msize' 9p client option and on the 9p transport
-> > implementation. The hard limit with virtio transport for instance is currently
-> > just 500k (patches for virtio 4MB limit fetching dust unfortunately).
-> 
-> Okay.  Is that 500KiB or 512Kib?
+On Mon, 29 Jan 2024 08:53:27 +0100
+Paul Menzel <pmenzel@molgen.mpg.de> wrote:
 
-'msize' is currently hard limited by virtio transport to exactly 512000. For
-rdma and fd transports it's both exactly 1MiB. For xen transport it should be
-exactly 524288 (could be lowered though depending on configured xen ring
-size). You find the individual transports to fill the field 'maxsize'
-accordingly (in net/9p/trans_*.c).
+> Dear Andreas,
+>=20
+>=20
+> Thank you for your patch.
+>=20
+>=20
+> Am 28.01.24 um 18:33 schrieb Andreas Kemnade:
+> > Add a driver for the Air Independent Interface protocol used by some TI
+> > Wilink combo chips. Per default, send out just NMEA to userspace and tu=
+rn
+> > on/off things at open()/close() but keep the door open for any
+> > sophisticated development regarding the AI2 protocol by having a kernel
+> > parameter to turn it into raw mode resembling /dev/tigps provided by so=
+me
+> > TI vendor kernels. =20
+>=20
+> It=E2=80=99d be great, if you could add the name the kernel parameter *ai=
+2raw*,=20
+> and also document at least one of these vendor kernels.
+>=20
+> Could you give a high level overview of the driver design?
+>=20
+basically I rely on the hci_ll stuff for doing wakeup and initializing
+the firmware. So I queue up there another sort of TLV construction besides
+the Bluetooth packets using the hci_dev infrastructure and offload all the
+GNSS specific handling to a platform subdevice.
+So in raw AI2 mode, the input is just en/decapsulated into GPS_CH9_OP_READ/=
+WRITE
+packets and sent/recv via the hci queuing system (gnss_recv_frame() / ai2_s=
+end_frame()).
 
-So that's the maximum message size. Then the individual 9p message header
-size needs to be subtracted. For Twrite request that's -23, for Rread
-response that's -11.
+On top of that in NMEA mode, proper intialization is done at
+open()/close(). The commands are in ai2_compose_frame() prepared by adding
+checksums, escaping any occurance of 0x10 and adding start/end markes()
+In the rx path, the mechanism works the other way round and if the packet
+is an NMEA report it is sent to userspace.
 
-> > Would you see an advantage to limit folio size? I mean p9_client_read() etc.
-> > are automatically limiting the read/write chunk size accordingly.
-> 
-> For reads not so much, but for writes it would mean that a dirty folio is
-> either entirely written or entirely failed.  I don't know how important this
-> would be for the 9p usecases.
-> 
-> David
-> 
-> 
+> What device did you test with?
+>
+As said in 0/3 I am testing with an Epson Moverio BT-200 containing
+a WL1283.
 
-
+Regards,
+Andreas
 
