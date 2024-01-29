@@ -1,204 +1,153 @@
-Return-Path: <linux-kernel+bounces-43042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43043-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A193C840AAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:58:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62E52840AB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:00:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C51AB1C22E31
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:58:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE169B226BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:00:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24CB615530A;
-	Mon, 29 Jan 2024 15:58:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=natalenko.name header.i=@natalenko.name header.b="XzfQz4iq"
-Received: from prime.voidband.net (prime.voidband.net [199.247.17.104])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87C52154BF1;
-	Mon, 29 Jan 2024 15:58:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.247.17.104
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 337F8155314;
+	Mon, 29 Jan 2024 15:59:58 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF2C9154C0C;
+	Mon, 29 Jan 2024 15:59:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706543920; cv=none; b=ErHYl8P8DGzXkZQLiCML/yRmDyx90owQPZ11pF7LyMAMrNU/v335uFfTK9H0r5eVY/21ig4wxCsTYkMlnTGhsCIjUB/iwVlflI/VKzOqpZU2faM/8tYMbVt/SpteCzjdsQIAFBmlMRdg6TchUnaAvzd4JQLUES48ZShY3hqYdcI=
+	t=1706543997; cv=none; b=sOZpERoKoKJMus3x/z8RgSo74r52NRiS5JMBGG7TZclX2TzH5/st1S/Wz/8k8lJjhbItFqeAN6Ew1B0/XqgTlAGvAQmOhDnyRIQOCsPHDhmPWcS0IUWpn+4JrCKWL0ZXvobAQAVOA7CeJ8Ldi/0r/sodIu6E8CWTWbijQzyxGOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706543920; c=relaxed/simple;
-	bh=4PClhCK4gD/HIW8kuwqqrqaOpA7DCCJC/PVBgoJeB5g=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ddcKQXo02QbaBxYVuiG81D1oohj4e65LHDVbFLk8SiLMeX1WAd1+Gr52mCkNk278CyvZhaWiuFD9K2my+ATHlvF5hN2Kg5HI5ld+LAVyeeVtbBDFsN5FhPhYQj5IwzaKaGmei/WF41pMYvDLqQhY+myLqnB75lNgoTVrz3JTq10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=natalenko.name; spf=pass smtp.mailfrom=natalenko.name; dkim=pass (1024-bit key) header.d=natalenko.name header.i=@natalenko.name header.b=XzfQz4iq; arc=none smtp.client-ip=199.247.17.104
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=natalenko.name
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=natalenko.name
-Received: from spock.localnet (unknown [94.142.239.106])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	by prime.voidband.net (Postfix) with ESMTPSA id 626A46356CC0;
-	Mon, 29 Jan 2024 16:58:27 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-	s=dkim-20170712; t=1706543907;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4PClhCK4gD/HIW8kuwqqrqaOpA7DCCJC/PVBgoJeB5g=;
-	b=XzfQz4iqgs8PEb3R1KXO0wbZwETm/gD243U09oWn/4/o9Vxc8H9SP5UIW+rXNZd91Nlira
-	1eM9Ahho6PBBLgNhKHfHuvQcZBJVorLreFYhOm5LOfP9UV+GxwztZGJ1fEOzOMlNzvuQEO
-	Npm2COz6EzrS1Z7RedzNJJayHtT+YY0=
-From: Oleksandr Natalenko <oleksandr@natalenko.name>
-To: linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>
-Cc: linux-input@vger.kernel.org,
- Filipe =?ISO-8859-1?Q?La=EDns?= <lains@riseup.net>,
- Bastien Nocera <hadess@hadess.net>, Jiri Kosina <jikos@kernel.org>,
- Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Subject: Re: Flood of logitech-hidpp-device messages in v6.7
-Date: Mon, 29 Jan 2024 16:58:12 +0100
-Message-ID: <12371430.O9o76ZdvQC@natalenko.name>
-In-Reply-To: <824573bb-ae01-41b9-8f97-a760ae8f3f18@redhat.com>
-References:
- <3277085.44csPzL39Z@natalenko.name>
- <824573bb-ae01-41b9-8f97-a760ae8f3f18@redhat.com>
+	s=arc-20240116; t=1706543997; c=relaxed/simple;
+	bh=iul6xK0e4EN46G8goBsLPgIN2sLhocsKXHQYJX65YiU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rOu5kS6s239JFuA/alf5GFD2mI2CV7/dp9DXrJ6AOZEbnlPiqoON84bygKtxjKE0sOEMvOOcrCGk4AJkjUFGMY7hxzxCRM3mp6ffO/ohzIxi6X7Ga1b5QXF7AOLKFa/dRBgM099xPHw7K1H18Fa3/yPTrPSTcBfRWq5fvmgDvyE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0027ADA7;
+	Mon, 29 Jan 2024 08:00:39 -0800 (PST)
+Received: from pluto (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 22E3B3F738;
+	Mon, 29 Jan 2024 07:59:53 -0800 (PST)
+Date: Mon, 29 Jan 2024 15:59:50 +0000
+From: Cristian Marussi <cristian.marussi@arm.com>
+To: Sibi Sankar <quic_sibis@quicinc.com>
+Cc: sudeep.holla@arm.com, rafael@kernel.org, viresh.kumar@linaro.org,
+	morten.rasmussen@arm.com, dietmar.eggemann@arm.com,
+	lukasz.luba@arm.com, linux-arm-kernel@lists.infradead.org,
+	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	quic_mdtipton@quicinc.com, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH V2 4/4] cpufreq: scmi: Register for limit change
+ notifications
+Message-ID: <ZbfLdvi_sePXiVmM@pluto>
+References: <20240117104116.2055349-1-quic_sibis@quicinc.com>
+ <20240117104116.2055349-5-quic_sibis@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart5751109.DvuYhMxLoT";
- micalg="pgp-sha256"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240117104116.2055349-5-quic_sibis@quicinc.com>
 
---nextPart5751109.DvuYhMxLoT
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"; protected-headers="v1"
-From: Oleksandr Natalenko <oleksandr@natalenko.name>
-To: linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>
-Subject: Re: Flood of logitech-hidpp-device messages in v6.7
-Date: Mon, 29 Jan 2024 16:58:12 +0100
-Message-ID: <12371430.O9o76ZdvQC@natalenko.name>
-In-Reply-To: <824573bb-ae01-41b9-8f97-a760ae8f3f18@redhat.com>
-MIME-Version: 1.0
+On Wed, Jan 17, 2024 at 04:11:16PM +0530, Sibi Sankar wrote:
+> Register for limit change notifications if supported with the help of
+> perf_notify_support interface and determine the throttled frequency
+> using the perf_freq_xlate to apply HW pressure.
+> 
+> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+> ---
+> 
+> v2:
+> * Export cpufreq_update_pressure and use it directly [Lukasz]
+> 
+>  drivers/cpufreq/scmi-cpufreq.c | 42 +++++++++++++++++++++++++++++++++-
+>  1 file changed, 41 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/cpufreq/scmi-cpufreq.c b/drivers/cpufreq/scmi-cpufreq.c
+> index 4ee23f4ebf4a..e0aa85764451 100644
+> --- a/drivers/cpufreq/scmi-cpufreq.c
+> +++ b/drivers/cpufreq/scmi-cpufreq.c
+> @@ -25,9 +25,13 @@ struct scmi_data {
+>  	int domain_id;
+>  	int nr_opp;
+>  	struct device *cpu_dev;
+> +	struct cpufreq_policy *policy;
+>  	cpumask_var_t opp_shared_cpus;
+> +	struct notifier_block limit_notify_nb;
+>  };
+>  
+> +const struct scmi_handle *handle;
+> +static struct scmi_device *scmi_dev;
+>  static struct scmi_protocol_handle *ph;
+>  static const struct scmi_perf_proto_ops *perf_ops;
+>  
+> @@ -144,6 +148,22 @@ scmi_get_cpu_power(struct device *cpu_dev, unsigned long *power,
+>  	return 0;
+>  }
+>  
+> +static int scmi_limit_notify_cb(struct notifier_block *nb, unsigned long event, void *data)
+> +{
+> +	unsigned long freq_hz;
+> +	struct scmi_perf_limits_report *limit_notify = data;
+> +	struct scmi_data *priv = container_of(nb, struct scmi_data, limit_notify_nb);
+> +	struct cpufreq_policy *policy = priv->policy;
+> +
+> +	if (perf_ops->perf_freq_xlate(ph, priv->domain_id, limit_notify->range_max, &freq_hz))
+> +		return NOTIFY_OK;
+> +
+> +	policy->max = freq_hz / HZ_PER_KHZ;
+> +	cpufreq_update_pressure(policy);
+> +
+> +	return NOTIFY_OK;
+> +}
+> +
+>  static int scmi_cpufreq_init(struct cpufreq_policy *policy)
+>  {
+>  	int ret, nr_opp, domain;
+> @@ -151,6 +171,7 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
+>  	struct device *cpu_dev;
+>  	struct scmi_data *priv;
+>  	struct cpufreq_frequency_table *freq_table;
+> +	struct scmi_perf_notify_info info = {};
+>  
+>  	cpu_dev = get_cpu_device(policy->cpu);
+>  	if (!cpu_dev) {
+> @@ -250,6 +271,25 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
+>  	policy->fast_switch_possible =
+>  		perf_ops->fast_switch_possible(ph, domain);
+>  
+> +	ret = perf_ops->perf_notify_support(ph, domain, &info);
+> +	if (ret)
+> +		dev_warn(cpu_dev, "failed to get supported notifications: %d\n", ret);
+> +
+> +	if (info.perf_limit_notify) {
+> +		priv->limit_notify_nb.notifier_call = scmi_limit_notify_cb;
+> +		ret = handle->notify_ops->devm_event_notifier_register(scmi_dev, SCMI_PROTOCOL_PERF,
+> +							SCMI_EVENT_PERFORMANCE_LIMITS_CHANGED,
+> +							&domain,
+> +							&priv->limit_notify_nb);
+> +		if (ret) {
+> +			dev_err(cpu_dev, "Error in registering limit change notifier for domain %d\n",
+> +				domain);
+> +			return ret;
+> +		}
 
-Hello.
+Is there a reason to fail completely here if it was not possible to register
+the notifier ? (even though expected to succeed given perf_limit_notify
+was true...)
 
-On =FAter=FD 9. ledna 2024 12:58:10 CET Hans de Goede wrote:
-> Hi Oleksandr,
->=20
-> On 1/9/24 12:45, Oleksandr Natalenko wrote:
-> > Hello Hans et al.
-> >=20
-> > Starting from v6.7 release I get the following messages repeating in `d=
-mesg` regularly:
-> >=20
-> > ```
-> > Jan 09 10:05:06 spock kernel: logitech-hidpp-device 0003:046D:4051.0006=
-: Disconnected
-> > Jan 09 10:07:15 spock kernel: logitech-hidpp-device 0003:046D:408A.0005=
-: Disconnected
-> > Jan 09 10:16:51 spock kernel: logitech-hidpp-device 0003:046D:4051.0006=
-: HID++ 4.5 device connected.
-> > Jan 09 10:16:55 spock kernel: logitech-hidpp-device 0003:046D:408A.0005=
-: HID++ 4.5 device connected.
-> > Jan 09 10:16:55 spock kernel: logitech-hidpp-device 0003:046D:408A.0005=
-: HID++ 4.5 device connected.
-> > Jan 09 10:36:31 spock kernel: logitech-hidpp-device 0003:046D:4051.0006=
-: Disconnected
-> > Jan 09 10:37:07 spock kernel: logitech-hidpp-device 0003:046D:4051.0006=
-: HID++ 4.5 device connected.
-> > Jan 09 10:46:21 spock kernel: logitech-hidpp-device 0003:046D:4051.0006=
-: Disconnected
-> > Jan 09 10:48:23 spock kernel: logitech-hidpp-device 0003:046D:408A.0005=
-: Disconnected
-> > Jan 09 11:12:27 spock kernel: logitech-hidpp-device 0003:046D:4051.0006=
-: HID++ 4.5 device connected.
-> > Jan 09 11:12:47 spock kernel: logitech-hidpp-device 0003:046D:408A.0005=
-: HID++ 4.5 device connected.
-> > Jan 09 11:12:47 spock kernel: logitech-hidpp-device 0003:046D:408A.0005=
-: HID++ 4.5 device connected.
-> > Jan 09 11:38:32 spock kernel: logitech-hidpp-device 0003:046D:4051.0006=
-: Disconnected
-> > Jan 09 11:43:32 spock kernel: logitech-hidpp-device 0003:046D:408A.0005=
-: Disconnected
-> > Jan 09 11:45:10 spock kernel: logitech-hidpp-device 0003:046D:4051.0006=
-: HID++ 4.5 device connected.
-> > Jan 09 11:45:11 spock kernel: logitech-hidpp-device 0003:046D:408A.0005=
-: HID++ 4.5 device connected.
-> > Jan 09 11:45:11 spock kernel: logitech-hidpp-device 0003:046D:408A.0005=
-: HID++ 4.5 device connected.
-> > Jan 09 12:31:48 spock kernel: logitech-hidpp-device 0003:046D:4051.0006=
-: Disconnected
-> > Jan 09 12:33:21 spock kernel: logitech-hidpp-device 0003:046D:4051.0006=
-: HID++ 4.5 device connected.
-> > ```
-> >=20
-> > I've got the following hardware:
-> >=20
-> > * Bus 006 Device 004: ID 046d:c52b Logitech, Inc. Unifying Receiver
-> > * Logitech MX Keys
-> > * Logitech M510v2
-> >=20
-> > With v6.6 I do not get those messages.
-> >=20
-> > I think this is related to 680ee411a98e ("HID: logitech-hidpp: Fix conn=
-ect event race").
-> >=20
-> > My speculation is that some of the devices enter powersaving state afte=
-r being idle for some time (5 mins?), and then wake up and reconnect once I=
- touch either keyboard or mouse. I should highlight that everything works j=
-ust fine, it is the flood of messages that worries me.
-> >=20
-> > Is it expected?
->=20
-> Yes this is expected, looking at your logs I see about 10 messages per
-> hour which IMHO is not that bad.
->=20
-> I guess we could change things to track we have logged the connect
-> message once and if yes then log future connect messages (and all
-> disconnect messages) at debug level.
+Maybe a big fat warn that the system perf could be degraded, but
+carrying on ?
 
-How granular such a tracking should be? Per-`struct hidpp_device`?
+Or maybe you have in mind a good reason to fail like you did, so please
+explain in that case in a comment.
 
-Should there be something like `hid_info_once_then_dbg()` macro, or open-co=
-de it in each place instead?
-
-Thanks.
-
-> Jiri, Benjamin, do you have any opinion on this ?
->=20
-> Regards,
->=20
-> Hans
->=20
->=20
->=20
->=20
-
-
-=2D-=20
-Oleksandr Natalenko (post-factum)
---nextPart5751109.DvuYhMxLoT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEZUOOw5ESFLHZZtOKil/iNcg8M0sFAmW3yxQACgkQil/iNcg8
-M0t1SRAAgt55kvScXbRofCukdWh8aHqoe1t2F9BSC35Eqrp9h30h9Z25VDvrSWpC
-KkYn1UOwSMxwVpigahOJ3DKfE1DK4RuWAeu8oeUrG4ixdbXsWJ0/YxGoJQojgMcv
-JMmcE0rNooEGgCfdDYXJsEJk0Nu9icHlpzUDuKYH3kJt8Z7uJPkULKw1ywYFiE9l
-ySny5dR41hN6owfVSJr9wdcJoVGOS0PbLDH1IhNAftonCi9tbcTvxZVjiu8OyH4a
-2xsgGoqoYh+RS9X8leXatO4NVXeWpW78lqKYveFLAMLpF0J6Uajj9jIourFk0kuy
-PtL1AGuwep8cYkjED5bvUlKJztdd2w7itEcSPDRFRnKux/SJJyPcrGhVWxu9fhd8
-qWOYvFl7vbb/nFWp5Xbyirso38eGerev+S3jrZGMaMNEK6Kn7uo3PUTew0atoXbv
-1oX4B2vkzV4qONnZ5ROLvFxEA5WrWstbSlWX4etvQL0w+JkByW4QGHziUYGI4TRF
-mElZqRiUxx0TLPr8gAOFTf8KDgqrDM3IUbEqBc7gaKpXtN2Gt8eqN53lxSnz7812
-7Wq3FgP9Mz0E+N00GpRHXygwcmmJsDEmWRpkDxSlA322cUCeMTCyXtxz8FtYyWlp
-qSj0tS1YxuKQll/vmkmMEDSJ+C0JBgVWcKkLEjsaflgzhhH3loo=
-=mgIn
------END PGP SIGNATURE-----
-
---nextPart5751109.DvuYhMxLoT--
-
-
-
+Thanks,
+Cristian
 
