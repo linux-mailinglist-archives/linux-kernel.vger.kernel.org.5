@@ -1,190 +1,183 @@
-Return-Path: <linux-kernel+bounces-43563-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43565-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40BC584158A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 23:22:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6C1A84158E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 23:22:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6614B1C24413
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 22:22:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC14B1C24557
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 22:22:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6A1915958D;
-	Mon, 29 Jan 2024 22:21:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OlI9wuNW"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3FF115A487;
+	Mon, 29 Jan 2024 22:21:54 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE33E604C5
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 22:21:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5327315A486
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 22:21:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706566909; cv=none; b=tTj6tTv7qP/pRjmJG64qeZQZlxiuvi6fVJGt2xCulZcRPzCdlAjgaEgGARaPryAPAuBub6rH/yAFE/1BXYw5j9OChmlrNJ1NnU10NcjE1XtBMKL+lilCcXPMdJJTw3F9c34sirrYbg4KicOO4f9pdVk+TctADHjHNaGtWLqeT6k=
+	t=1706566914; cv=none; b=tlrjobEU7UFmqHszV2IsLR7hbf0m7b7xSlmfSVNb9VVHjZBsG+K0cJEZ93Ls9R4rhyMaTePf7C3+z9LTe5rN9sluIcjiBYi7P8nAGhw5z88XGtCARsfSIpki1IQW7KMLJLyr5jDUmxJJ802/VJPapI8QuOAH6DP2knsZro9+DYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706566909; c=relaxed/simple;
-	bh=FTMWuaADebvmwGwTX/rc57uT2xejBM2n+L472Cqyuyo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tLf8xgNCjvWXJ2+J/otFAZ3anjn2Xiu8GwNrr7MrdSfZt7qn2Omvhn9/SfFJdJTSKR9b/OC8qF8nNd8co1v7x7OCpUh4cSb/eoI0PPp0J9VJAvPS7wmu4VBoQZC3cgxCE54jK8CvXZ7m2Y51GrzAWu2cYEPvDIvJ7i1olZP5+v8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OlI9wuNW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0891CC433C7;
-	Mon, 29 Jan 2024 22:21:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706566909;
-	bh=FTMWuaADebvmwGwTX/rc57uT2xejBM2n+L472Cqyuyo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OlI9wuNWhjAsjVAuXRUxU6IauebnuhJP4vkYNGXU9ograN3cFwPCtJSJeAkMFMkkr
-	 h3VPeYjIgq61f6nedPm3tyIZcIPvcgfeWZ/9Kl27i+1Tx/V+nrpBLTMS/CMizKF3hF
-	 nQKkce0b7vYfXIvhXEjG3JocXMTQWrR2i29h8TvrpXtjcWDDdinEBtciBtnlgthgPI
-	 QLgRWOmj5eTL3OprVEGw3jqinkuFfdjSueB5SoZksYJaV3EBTUh/3ubt+fgI0jtiaq
-	 LTXwFbZGJ3dkAynZzg2hRCFbbtT2BKdu9BZ8+iFIB6j4Po18y+Za0bth2dGfeJnqUY
-	 Kh5Uh7YVW1jbQ==
-Date: Mon, 29 Jan 2024 23:21:46 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-	John Stultz <jstultz@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Eric Dumazet <edumazet@google.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-	Arjan van de Ven <arjan@infradead.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Rik van Riel <riel@surriel.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Sebastian Siewior <bigeasy@linutronix.de>,
-	Giovanni Gherdovich <ggherdovich@suse.cz>,
-	Lukasz Luba <lukasz.luba@arm.com>,
-	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v10 18/20] timers: Implement the hierarchical pull model
-Message-ID: <Zbgk-q863VU6yZKm@pavilion.home>
-References: <ZbWJtkAj9z0S9xsH@pavilion.home>
- <87sf2gqups.fsf@somnus>
+	s=arc-20240116; t=1706566914; c=relaxed/simple;
+	bh=oLz4ft6NDVhlxBOshy8i33An2i1tATyCAKzp2PWf8Ig=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=TXYRpZbx5XmrySYxtseJ8fRmsO2ABUJ5zB9yGpuVKOfVz8/4k4PUHzpsinUZ8FHJnPchCmlcspTM751+27h5Fj+wg4CGDXrJrPRynubYfJx0hCEmI7+f2C377JKOXZG47dYriJ4nfYlyCK91wxwVDYgvNrwHs3i+HzWf0mE6zT8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3637b5e1487so8949145ab.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 14:21:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706566911; x=1707171711;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aNzeGQMIKxlx3j5CSSRHESXOGzLP4dOOTM8hqwvtTOE=;
+        b=lyWymlwC8OZ5k058eTDrY72Kch3epqcNCLA5ejLMr7c2V5P2FHyjEEpaC98usipgRO
+         uXDhimLld2mfxDjUEaNTDmx6bDvAPJ0Z566HygbRZcTnsRlEwkzEBKQtzwjtQaUEMWQj
+         PD5ICP+/gZtGHjd4tiabDtvacfHk6p7Lc+MD585R0ejy9twDai7SpSvoo7tE8hFZHsnV
+         sAdq0zSz2GZHLPSV1jWYAL9KXsT39cdwP6Er8Z9jIanN0xb1fWhPnqwlRbDVDkTicq0h
+         WS8etIMN88N1rKNjXy6+o/B59ME4IU2TecMOQVraIDavnNm1K2oMFQZQMKHkXQEo8Xxq
+         UpFA==
+X-Gm-Message-State: AOJu0YxP44Azlq3dJMa/63YkRt82k6WPJhGI/cVBMAVvaAQ6QBLyejFD
+	e813K8RH2NB5Mg8la9wFxFqExi5Dp6kKa/lMCESjLX3hTbcq99wqbzyHSW8BCpx5dIAwG6GwoF6
+	+uDE0typK0VCfZshpl9ovKApcAg/16Pwsb6esZWoYpvapv+JIYCAtW9i1lQ==
+X-Google-Smtp-Source: AGHT+IFJBNj7YXXeck89GQlAOvshsCaVadGTGnULf5CVc3JA07hfNBCW6nNHkcbMNhvVJ8xpgJiascgkODrid3ErQkBtdAz185SW
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87sf2gqups.fsf@somnus>
+X-Received: by 2002:a05:6e02:12e3:b0:363:7aed:f073 with SMTP id
+ l3-20020a056e0212e300b003637aedf073mr444456iln.0.1706566911554; Mon, 29 Jan
+ 2024 14:21:51 -0800 (PST)
+Date: Mon, 29 Jan 2024 14:21:51 -0800
+In-Reply-To: <000000000000cb5b07060bef7ac0@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008c79ef06101d1226@google.com>
+Subject: Re: [syzbot] Re: [syzbot] [net?] WARNING in ip6_route_info_create
+From: syzbot <syzbot+c15aa445274af8674f41@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Le Mon, Jan 29, 2024 at 11:50:39AM +0100, Anna-Maria Behnsen a écrit :
-> Frederic Weisbecker <frederic@kernel.org> writes:
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com.
+
+***
+
+Subject: Re: [syzbot] [net?] WARNING in ip6_route_info_create
+Author: sinquersw@gmail.com
+
+#syz test: git@github.com:ThinkerYzu/linux.git fix-gc-uaf
+
+On 12/7/23 10:17, syzbot wrote:
+> Hello,
 > 
-> > Le Mon, Jan 15, 2024 at 03:37:41PM +0100, Anna-Maria Behnsen a écrit :
-> >> +static bool tmigr_inactive_up(struct tmigr_group *group,
-> >> +			      struct tmigr_group *child,
-> >> +			      void *ptr)
-> >> +{
-> >> +	union tmigr_state curstate, newstate, childstate;
-> >> +	struct tmigr_walk *data = ptr;
-> >> +	bool walk_done;
-> >> +	u8 childmask;
-> >> +
-> >> +	childmask = data->childmask;
-> >> +	curstate.state = atomic_read(&group->migr_state);
-> >> +	childstate.state = 0;
-> >> +
-> >> +	do {
-> >
-> > So I got the confirmation from Boqun (+Cc) and Paul that a failing cmpxchg
-> > may not order the load of the old value against subsequent loads. And
-> > that may apply to atomic_try_cmpxchg() as well.
-> >
-> > Therefore you not only need to turn group->migr_state read into
-> > an atomic_read_acquire() but you also need to do this on each iteration
-> > of this loop. For example you can move the read_acquire right here.
+> syzbot found the following issue on:
 > 
-> I tried to read and understand more about the memory barriers especially
-> the acquire/release stuff. So please correct me whenever I'm wrong.
+> HEAD commit:    5a08d0065a91 ipv6: add debug checks in fib6_info_release()
+> git tree:       net-next
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=175698dae80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=f8715b6ede5c4b90
+> dashboard link: https://syzkaller.appspot.com/bug?extid=c15aa445274af8674f41
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16070374e80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=145e1574e80000
 > 
-> We have to make sure that the child/group state values contain the last
-> updates and prevent reordering to be able to rely on those values.
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/12a59d7df47f/disk-5a08d006.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/14f0ca0a861e/vmlinux-5a08d006.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/ae9306decbe5/bzImage-5a08d006.xz
 > 
-> So I understand, that we need the atomic_read_acquire() here for the
-> child state, because we change the group state accordingly and need to
-> make sure, that it contains the last update of it. The cmpxchg which
-> writes the child state is (on success) a full memory barrier. And the
-> atomic_read_acquire() makes sure all preceding "critical sections"
-> (which ends with the full memory barrier) are visible. Is this right?
-
-Right. And BTW I'm being suggested by Paul to actually avoid
-atomic_read_acquire() after cmpxchg() failure because that implies an
-error prone re-read. So pick up your favourite between smp_rmb() or
-smp_mb__after_atomic().
-
-With the latter this could look like:
-
-curstate.state = atomic_read_acquire(&group->migr_state);
-for (;;) {
-    childstate.state = atomic_read(&child->migr_state);
-    ...
-    if (atomic_try_cmpxchg(&group->migr_state, &curstate.state, newstate.state))
-       break;
-    smp_mb__after_atomic();
-}
-
+> The issue was bisected to:
 > 
-> To make sure the proper states are used, atomic_read_acquire() is then
-> also required in:
->   - tmigr_check_migrator()
->   - tmigr_check_migrator_and_lonely()
->   - tmigr_check_lonely()
-
-Not sure about those. I'll check them.
-
->   - tmigr_new_timer_up() (for childstate and groupstate)
-
-Actually you need to fix some ordering there that I suggested a while ago :)
-See https://lore.kernel.org/all/ZIhKT3h7Dc0G3xoU@lothringen/
-
->   - tmigr_connect_child_parent()
-> Right?
+> commit 5a08d0065a915ccf325563d7ca57fa8b4897881c
+> Author: Eric Dumazet <edumazet@google.com>
+> Date:   Tue Dec 5 17:32:50 2023 +0000
 > 
-> Regarding the pairing of acquire: What happens when two
-> atomic_read_acquire() are executed afterwards without pairing 1:1 with a
-> release or stronger memory barrier?
-
-I think I'll need an example.
-
+>      ipv6: add debug checks in fib6_info_release()
 > 
-> Now I want to understand the case for the group state here and also in
-> active_up path. When reading it without acquire, it is possible, that
-> not all changes are visible due to reordering,... . But then the worst
-> outcome would be that the cmpxchg fails and the loop has to be done once
-> more? Is this right?
-
-Right. This one looks good as it doesn't depend on the child's value.
-
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1137437ae80000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=1337437ae80000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1537437ae80000
 > 
-> I know that memory barriers are not for free and redo the loop is also
-> not for free. But I don't know which of both is worse. At least in
-> inactive_up() path, we are not in the critical path. In active_up() it
-> would be good to take the less expensive option.
-
-I don't think you need to change the active_up(), from a quick glance.
-
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+c15aa445274af8674f41@syzkaller.appspotmail.com
+> Fixes: 5a08d0065a91 ("ipv6: add debug checks in fib6_info_release()")
 > 
-> I want to understand the atomic_try_cmpxchg_acquire() variant: The Read
-> is an acquire, so even if the compare/write fails, the value which is
-> handed back is the one which was update last with a succesful cmpxchg
-> and then we can rely on this value?
-
-So cmpxchg_acquire() provides a weaker ordering than cmpxchg(). Instead
-of issuing a full memory barrier, it issues an acquire barrier, which is
-really not what you want since you actually want to order what precedes
-the cmpxchg() with the write that it performs. At the very least you would
-actually need cmpxchg_release().
-
-And most importantly, neither cmpxchg(), cmpxchg_release() nor cmpxchg_acquire()
-guarantee any ordering on failure.
-
-Thanks.
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 5062 at include/net/ip6_fib.h:332 fib6_info_release include/net/ip6_fib.h:332 [inline]
+> WARNING: CPU: 0 PID: 5062 at include/net/ip6_fib.h:332 ip6_route_info_create+0x1a1a/0x1f10 net/ipv6/route.c:3829
+> Modules linked in:
+> CPU: 0 PID: 5062 Comm: syz-executor399 Not tainted 6.7.0-rc3-syzkaller-00805-g5a08d0065a91 #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+> RIP: 0010:fib6_info_release include/net/ip6_fib.h:332 [inline]
+> RIP: 0010:ip6_route_info_create+0x1a1a/0x1f10 net/ipv6/route.c:3829
+> Code: 49 83 7f 40 00 75 28 e8 04 ae 50 f8 49 8d bf a0 00 00 00 48 c7 c6 c0 ae 37 89 e8 41 2c 3a f8 e9 65 f4 ff ff e8 e7 ad 50 f8 90 <0f> 0b 90 eb ad e8 dc ad 50 f8 90 0f 0b 90 eb cd e8 d1 ad 50 f8 e8
+> RSP: 0018:ffffc900039cf8e0 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: 0000000000400000 RCX: ffffffff8936e418
+> RDX: ffff888014695940 RSI: ffffffff8936e469 RDI: 0000000000000005
+> RBP: ffffc900039cf9d0 R08: 0000000000000005 R09: 0000000000000000
+> R10: 0000000000400000 R11: ffffffff8aa0008b R12: ffffffffffffffed
+> R13: ffff88802560682c R14: ffffc900039cfac4 R15: ffff888025606800
+> FS:  00005555567bb380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00000000200001c2 CR3: 00000000793d5000 CR4: 00000000003506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>   <TASK>
+>   ip6_route_add+0x26/0x1f0 net/ipv6/route.c:3843
+>   ipv6_route_ioctl+0x3ff/0x590 net/ipv6/route.c:4467
+>   inet6_ioctl+0x265/0x2b0 net/ipv6/af_inet6.c:575
+>   sock_do_ioctl+0x113/0x270 net/socket.c:1220
+>   sock_ioctl+0x22e/0x6b0 net/socket.c:1339
+>   vfs_ioctl fs/ioctl.c:51 [inline]
+>   __do_sys_ioctl fs/ioctl.c:871 [inline]
+>   __se_sys_ioctl fs/ioctl.c:857 [inline]
+>   __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
+>   do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+>   do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
+>   entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> RIP: 0033:0x7f73fa33f369
+> Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007ffce78f30b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+> RAX: ffffffffffffffda RBX: 00007ffce78f3288 RCX: 00007f73fa33f369
+> RDX: 00000000200001c0 RSI: 000000000000890b RDI: 0000000000000003
+> RBP: 00007f73fa3b2610 R08: 0000000000000000 R09: 00007ffce78f3288
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+> R13: 00007ffce78f3278 R14: 0000000000000001 R15: 0000000000000001
+>   </TASK>
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> 
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+> 
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
+> 
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+> 
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+> 
+> If you want to undo deduplication, reply with:
+> #syz undup
+> 
 
