@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-42240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42238-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B97C83FE6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 07:32:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D41F583FE65
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 07:31:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 139FA284926
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 06:32:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04E5B1C225AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 06:31:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4201524BE;
-	Mon, 29 Jan 2024 06:30:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB8F750252;
+	Mon, 29 Jan 2024 06:30:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="LD+6dD3I"
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="jhkTa5bB"
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D1274D599;
-	Mon, 29 Jan 2024 06:30:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0E3D4CE02;
+	Mon, 29 Jan 2024 06:30:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.61.82.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706509852; cv=none; b=lHPcB3KFF0z+kbYOMENpEtVXR4TGdzGOQoE5CUzV5fFZOwup5ELNi4jmkw1n7Ycc8vmOSPs+cUolMF1k7nOXPCJ9PK7kkmYlBgKApLOJxUI6susy1pOhuZWgXZICtNIHbyyyr4/9rS1xsMqBnA9101jfi67paHHQFjJlOtP83fw=
+	t=1706509851; cv=none; b=XF6omy+l7RbNq2vZ9g+LsiwzadBX82KJW0SbFOsBDa10LWKYd1wgujZt+CrlipkRKTGVfutEQA3X5xR3dSifJQV7r9p4WWX7ycGjFw5L/RSAz54m0MTcQpyFpg4dCeh5w8FyMrV2bTsaa3Aosw1IdieVQaG7GecGv/uXNO5q17c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706509852; c=relaxed/simple;
-	bh=B2BbMbPzqwowimew9zJAjA/tTXytJajNYxTUH+gmpT8=;
+	s=arc-20240116; t=1706509851; c=relaxed/simple;
+	bh=9w2g6Gq7+Vgz14KR9HnQQihLeCCf4NtwnAbBqhhkmRM=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tfuvlJewh0u9M/dvA6MGPU+M0tBNFhL6vzQhGbYTg8gV+xv6Bkze+Au8jEzL8bn1QoO9dd3MbVsZ+YW5JlOZAJ5/O7B5nMGY2+yce/EfGN/MSQ5PSD3fYp1WVLMtiVz0VHxkCMdnOzLkN5Ecgvz6J5UZmLCCTDUeD1oB5CFgrBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=LD+6dD3I; arc=none smtp.client-ip=60.244.123.138
+	 MIME-Version:Content-Type; b=HXawG8Ii/ZQ/qmHXI/oLkksNIrERm5q2A9x6YciBvtW02CY+R0R+KtmY9QyXXtY/gHJtz6feEv0pCXI/33diTa7hWa5jv5ybsw7roQguATpoCWfO5BF1bYof7SepaV+y9P/2daiW6MHCCK+exKcqEQd8+yckR1kQmWCY63JpuxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=jhkTa5bB; arc=none smtp.client-ip=210.61.82.184
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: eb6c3b58be6f11ee9e680517dc993faa-20240129
+X-UUID: edf4142cbe6f11eea2298b7352fd921d-20240129
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=BD29QZW6/FDb7FZtrvhAxAS5CCjAP62wNXiOAvvLw5I=;
-	b=LD+6dD3I0dp1/S9SwTmkafuXqR2ff5p7CQUJ6PKzk/a9+FxrEE4+bwIyvTwmPrY3J6xSMCNS75yEskCAP0ZjgnEysYvrze/7n5c4d4YvOlPmnnJsaz+4j3p8RBKTxjr4GKjN4MPUpVxMvNlyHmdLSa4rM3oCVnjdbNmX7gz1MwM=;
+	h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=iRfjJ9YWROks75IUMtZC2wrUKi1suXGk03fbJUFbyt0=;
+	b=jhkTa5bBLiYUT3wpEltBxfzcWPuTQQZYVqddzaf9asJdWmMcexNnkzGzCmHJqKWIzWSQxBOVUfhdMicHCknFw6ecI1RAoTomn2is7LHQtJgekjkE1ZtA2Lo6HW2V877F/BsOqusz6vAkJ+Cfu6vXriNcO0HJT9lNCgFAU1VnBUE=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.36,REQID:e00845e5-6348-4a93-b871-3692684fce89,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:6e16cf4,CLOUDID:a6a85c83-8d4f-477b-89d2-1e3bdbef96d1,B
+X-CID-O-INFO: VERSION:1.1.36,REQID:fb4fdc5f-960c-4c64-89c6-9a1053dcc4b8,IP:0,U
+	RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:-5
+X-CID-META: VersionHash:6e16cf4,CLOUDID:7ed4dc7f-4f93-4875-95e7-8c66ea833d57,B
 	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
 	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
 	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
 X-CID-BVR: 0,NGT
 X-CID-BAS: 0,NGT,0,_
 X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: eb6c3b58be6f11ee9e680517dc993faa-20240129
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
+X-UUID: edf4142cbe6f11eea2298b7352fd921d-20240129
+Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw02.mediatek.com
 	(envelope-from <yunfei.dong@mediatek.com>)
 	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 521927469; Mon, 29 Jan 2024 14:30:39 +0800
+	with ESMTP id 902818360; Mon, 29 Jan 2024 14:30:43 +0800
 Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
  mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 29 Jan 2024 14:30:38 +0800
+ 15.2.1118.26; Mon, 29 Jan 2024 14:30:40 +0800
 Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
  mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Mon, 29 Jan 2024 14:30:37 +0800
+ 15.2.1118.26 via Frontend Transport; Mon, 29 Jan 2024 14:30:38 +0800
 From: Yunfei Dong <yunfei.dong@mediatek.com>
 To: Jeffrey Kardatzke <jkardatzke@google.com>,
 	=?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?=
@@ -75,9 +75,9 @@ CC: Chen-Yu Tsai <wenst@chromium.org>, Yong Wu <yong.wu@mediatek.com>,
 	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
 	<Project_Global_Chrome_Upstream_Group@mediatek.com>
-Subject: [PATCH v4,02/22] v4l2: handle restricted memory flags in queue setup
-Date: Mon, 29 Jan 2024 14:30:05 +0800
-Message-ID: <20240129063025.29251-3-yunfei.dong@mediatek.com>
+Subject: [PATCH v4,03/22] v4l2: verify restricted dmabufs are used in restricted queue
+Date: Mon, 29 Jan 2024 14:30:06 +0800
+Message-ID: <20240129063025.29251-4-yunfei.dong@mediatek.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240129063025.29251-1-yunfei.dong@mediatek.com>
 References: <20240129063025.29251-1-yunfei.dong@mediatek.com>
@@ -90,133 +90,68 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--6.647000-8.000000
-X-TMASE-MatchedRID: D0Pm2dEMlxOWHmpvkeKJB57tR0mnRAg1TJDl9FKHbrk1LB46LFAAkq/H
-	ZLCMsEf9UVB7I/2CDSABbn1cvMDZHaEAqPOtlpvtjtK7dC6UBnnbKTxp3+WtIMj0QMA/92m24ft
-	l+EKh+CByQYB2WJEWjc4upQc4xGVCue4A1S8vO3qUa50su1E7W7l8khgtUner0rKJ/e4C60yEIt
-	GBZvH9STFmRUjzEp4LgDLqnrRlXrZ8nn9tnqel2LI7zVffJqTzY1SQaZlBkE5q9KgCqgNquvdVF
-	r8ODUj71JdaDtUEfQfhx+G8+x+UoX7cGd19dSFd
+X-TM-AS-Result: No-10--8.360000-8.000000
+X-TMASE-MatchedRID: vT/skvKLwFh/+iNkyaz33x+WEMjoO9WWTJDl9FKHbrn8dcjERAe6XpPD
+	bikkMnICYUA4QKGgNJ2/QAgXHCg/RXdWNVeH9NKPSEQN/D/3cG4k9Lf/qe8xx9VU7IWeAUCLMCm
+	LSFOvZt1yylwV7Bc73YAy6p60ZV62fJ5/bZ6npdiyO81X3yak88kZdO1mPd6HHujJdWgMIOuuBc
+	q5ylGQImmWoby5Y3Os7MRn2aF6FKR+3BndfXUhXQ==
 X-TM-AS-User-Approved-Sender: No
 X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--6.647000-8.000000
+X-TMASE-Result: 10--8.360000-8.000000
 X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: DF0AFB3E5D025F6365231BC54E73BDE096F68A18030DC6CC188FCD1EB7D572242000:8
+X-TM-SNTS-SMTP: DF28679987472B888EA7E9A1D6228B4E0BCD01647BD0B2DD86B95E8C06EC4EB42000:8
 X-MTK: N
 
 From: Jeffrey Kardatzke <jkardatzke@google.com>
 
-Validates the restricted memory flags when setting up a queue and
-ensures the queue has the proper capability.
+Verfies in the dmabuf implementations that if the restricted memory
+flag is set for a queue that the dmabuf submitted to the queue is
+unmappable.
 
 Signed-off-by: Jeffrey Kardatzke <jkardatzke@google.com>
 Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
 ---
- .../media/common/videobuf2/videobuf2-core.c   | 21 +++++++++++++++++++
- .../media/common/videobuf2/videobuf2-v4l2.c   |  4 +++-
- 2 files changed, 24 insertions(+), 1 deletion(-)
+ drivers/media/common/videobuf2/videobuf2-dma-contig.c | 8 ++++++++
+ drivers/media/common/videobuf2/videobuf2-dma-sg.c     | 8 ++++++++
+ 2 files changed, 16 insertions(+)
 
-diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-index 41a832dd1426..7f5fd9ec9117 100644
---- a/drivers/media/common/videobuf2/videobuf2-core.c
-+++ b/drivers/media/common/videobuf2/videobuf2-core.c
-@@ -813,6 +813,15 @@ static bool verify_coherency_flags(struct vb2_queue *q, bool non_coherent_mem)
- 	return true;
- }
+diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+index 3d4fd4ef5310..f953570fef27 100644
+--- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
++++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+@@ -710,6 +710,14 @@ static int vb2_dc_map_dmabuf(void *mem_priv)
+ 		return -EINVAL;
+ 	}
  
-+static bool verify_restricted_mem_flags(struct vb2_queue *q, bool restricted_mem)
-+{
-+	if (restricted_mem != q->restricted_mem) {
-+		dprintk(q, 1, "restricted memory model mismatch\n");
-+		return false;
++	/* Verify the dmabuf is restricted if we are in restricted mode, this is done
++	 * by validating there is no page entry for the dmabuf.
++	 */
++	if (buf->vb->vb2_queue->restricted_mem && sg_page(sgt->sgl)) {
++		pr_err("restricted queue requires restricted dma_buf");
++		return -EINVAL;
 +	}
-+	return true;
-+}
 +
- int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
- 		     unsigned int flags, unsigned int *count)
- {
-@@ -820,6 +829,7 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
- 	unsigned int q_num_bufs = vb2_get_num_buffers(q);
- 	unsigned plane_sizes[VB2_MAX_PLANES] = { };
- 	bool non_coherent_mem = flags & V4L2_MEMORY_FLAG_NON_COHERENT;
-+	bool restricted_mem = flags & V4L2_MEMORY_FLAG_RESTRICTED;
- 	unsigned int i;
- 	int ret = 0;
- 
-@@ -862,6 +872,9 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
- 			return 0;
+ 	/* checking if dmabuf is big enough to store contiguous chunk */
+ 	contig_size = vb2_dc_get_contiguous_size(sgt);
+ 	if (contig_size < buf->size) {
+diff --git a/drivers/media/common/videobuf2/videobuf2-dma-sg.c b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
+index 6975a71d740f..f87bd3f40b9b 100644
+--- a/drivers/media/common/videobuf2/videobuf2-dma-sg.c
++++ b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
+@@ -570,6 +570,14 @@ static int vb2_dma_sg_map_dmabuf(void *mem_priv)
+ 		return -EINVAL;
  	}
  
-+	if (restricted_mem && (!q->allow_restricted_mem || memory != V4L2_MEMORY_DMABUF))
++	/* Verify the dmabuf is restricted if we are in restricted mode, this is done
++	 * by validating there is no page entry for the dmabuf.
++	 */
++	if (buf->vb->vb2_queue->restricted_mem && !sg_page(sgt->sgl)) {
++		pr_err("restricted queue requires restricted dma_buf");
 +		return -EINVAL;
++	}
 +
- 	/*
- 	 * Make sure the requested values and current defaults are sane.
- 	 */
-@@ -882,6 +895,7 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
- 	if (ret)
- 		return ret;
- 	set_queue_coherency(q, non_coherent_mem);
-+	q->restricted_mem = restricted_mem;
- 
- 	/*
- 	 * Ask the driver how many buffers and planes per buffer it requires.
-@@ -986,6 +1000,7 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
- 	unsigned plane_sizes[VB2_MAX_PLANES] = { };
- 	bool non_coherent_mem = flags & V4L2_MEMORY_FLAG_NON_COHERENT;
- 	unsigned int q_num_bufs = vb2_get_num_buffers(q);
-+	bool restricted_mem = flags & V4L2_MEMORY_FLAG_RESTRICTED;
- 	bool no_previous_buffers = !q_num_bufs;
- 	int ret = 0;
- 
-@@ -994,6 +1009,9 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
- 		return -ENOBUFS;
- 	}
- 
-+	if (restricted_mem && (!q->allow_restricted_mem || memory != V4L2_MEMORY_DMABUF))
-+		return -EINVAL;
-+
- 	if (no_previous_buffers) {
- 		if (q->waiting_in_dqbuf && *count) {
- 			dprintk(q, 1, "another dup()ped fd is waiting for a buffer\n");
-@@ -1015,6 +1033,7 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
- 			return ret;
- 		q->waiting_for_buffers = !q->is_output;
- 		set_queue_coherency(q, non_coherent_mem);
-+		q->restricted_mem = restricted_mem;
- 	} else {
- 		if (q->memory != memory) {
- 			dprintk(q, 1, "memory model mismatch\n");
-@@ -1022,6 +1041,8 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
- 		}
- 		if (!verify_coherency_flags(q, non_coherent_mem))
- 			return -EINVAL;
-+		if (!verify_restricted_mem_flags(q, restricted_mem))
-+			return -EINVAL;
- 	}
- 
- 	num_buffers = min(*count, q->max_num_buffers - q_num_bufs);
-diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-index 54d572c3b515..e825b1e2e22f 100644
---- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
-+++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-@@ -686,6 +686,8 @@ static void fill_buf_caps(struct vb2_queue *q, u32 *caps)
- 		*caps |= V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS;
- 	if (q->supports_requests)
- 		*caps |= V4L2_BUF_CAP_SUPPORTS_REQUESTS;
-+	if (q->allow_restricted_mem && q->io_modes & VB2_DMABUF)
-+		*caps |= V4L2_BUF_CAP_SUPPORTS_RESTRICTED_MEM;
- }
- 
- static void validate_memory_flags(struct vb2_queue *q,
-@@ -700,7 +702,7 @@ static void validate_memory_flags(struct vb2_queue *q,
- 		*flags = 0;
- 	} else {
- 		/* Clear all unknown flags. */
--		*flags &= V4L2_MEMORY_FLAG_NON_COHERENT;
-+		*flags &= V4L2_MEMORY_FLAG_NON_COHERENT | V4L2_MEMORY_FLAG_RESTRICTED;
- 	}
- }
+ 	buf->dma_sgt = sgt;
+ 	buf->vaddr = NULL;
  
 -- 
 2.18.0
