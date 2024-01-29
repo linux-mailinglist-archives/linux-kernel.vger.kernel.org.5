@@ -1,131 +1,238 @@
-Return-Path: <linux-kernel+bounces-42402-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42403-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BE7B8400DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:04:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7C2D8400DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:05:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 392562819A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:04:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC08D1C22C5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:05:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9894354F82;
-	Mon, 29 Jan 2024 09:04:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB82154F8D;
+	Mon, 29 Jan 2024 09:05:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="o0KVvwiI"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Teu787rA"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4E9C55761
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:04:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7A4254BFB
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:04:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706519070; cv=none; b=e5B7WlWORm+X0Q7lxKWRIdgn1HzALUx4t17d4nyUaFX4UTyHmc17dnuqErVm3eFwNpcDS/y4uS11vpACIV+peVSWWUqJG7n2f7tLlPa8VyvTJQ7vp0r5BAAZl2NO9D7sG7Om/pfsOlEcbM0xkgOdJCUMszG80hi12WBidN8ftLo=
+	t=1706519103; cv=none; b=eAzWbCLQfc2PlneTDK+YaM9MFPlrdZE1PKDdJkBiOFeg8Wotk9v9cToqWF+Bgfnr6z7bik5hQDmEZlGIcGBJxtLzzEjEs6NjasrezeJT7PU62YNZyPn0GxXtqB0SpQT7j4lm02oNpcsAj7jGQmEozYqlMtHIZsVUlRizElaEPqg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706519070; c=relaxed/simple;
-	bh=ksF4ZWil8K2mr+5dzsAVbWuBapkyv+wm9DHTkXKrfiM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TbP4CKtBo4SHegSHpqAw5r+XoDh1OMGl6+woLY+bOrUqfDfHSfL477md9lOn5Xfow+1A53wQsvfUv5+Ye4GLTWdblRBd+Z2JASLye7L2q2xKyeEy5uX1FR3VQzGutfUGk9XSzzbDhSA431BXA7PFV5tq8zITSW3M9wP+SfaicuQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=o0KVvwiI; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a28a6cef709so286584966b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 01:04:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706519067; x=1707123867; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nmg3Hmk9zJNrE7hya32tHVBXLNynM4oyDoMxztwJS0A=;
-        b=o0KVvwiIKTYzokLmADSAACt9L+wjhsc+Zp/P9rnFP6Tr1BrQwmEoGyYok0xrsYgKeh
-         V5wMQKrFNlcQAaeT5tu7f369v5dww7WEFPKIEDVYcGNngvFgDmc4Hye+bTekaMjvSJkd
-         Mc4+6tsNJy/WFn+m6upMvVBumOn7F4ZsIw9ZjCLBP26BUPbw8CZuMFv7tTeiMExrmriH
-         KT+IHu+TXoupHdvj5IFpCCQHOwmLac/0hMRIOy00MnN4D4iqXABM2baUL89JRt0fJ1Nu
-         5JaLM8uAFRqLeCRV6lgOu0QZUsBhL/+Oqs3a3yAsKHpwFrVu6Wwppgra60SoqxYfGnSL
-         y4DQ==
+	s=arc-20240116; t=1706519103; c=relaxed/simple;
+	bh=VJvkIe/MENx6xqRVqQh2+H9rOcn9rWjIoJplPArrUq0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=iSR2Tvu1jkcIN4DhS/VzSUOEKV8y/Rmfx6ND//MbID6AgD2cZmoXf25VkwhRUPmjpSiauyBRrNJ8S+cjotnNFnl+FmL/pfNpOTWixRl9tzd4McSKWB0VIPA8eccBj0WaH0qtqK4PSGbq3E+wqZGtcHgnW9Tll09Tx2Njnx180ss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Teu787rA; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706519095;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GPGwyui0Z38uDt+2tS5AdYhBJQdQKP0ZtYseGgohscg=;
+	b=Teu787rAQOv4m4QkHGJOu1bS5eVkNDa4Pl9rjVa1Xa5k2RETkltKmsjJy81qi7dUQ/TR+a
+	xVHkFsRZetOmqVKQuxE5GPXt15rZItV4wEaFTXEFHExdPKeOUAb3yOjbgcILLE6/Q+j0dx
+	YfkElH8+bE2nHsN+Y5NsMU2KXRCjtuk=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-557-KE7mTPiyPdCZAXieqUZiRw-1; Mon, 29 Jan 2024 04:04:53 -0500
+X-MC-Unique: KE7mTPiyPdCZAXieqUZiRw-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-337cc89a049so1293407f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 01:04:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706519067; x=1707123867;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nmg3Hmk9zJNrE7hya32tHVBXLNynM4oyDoMxztwJS0A=;
-        b=JWBGDkYEjLZcKrb3w1ctotgYgOQMNy3ikHTtQCiCQPQd09ediTTyp3oqDeFiz7pznL
-         /kAZrqHVJr6Sn2jerHFucDG1G1SXV6JQsEzVPpOaBHkjub/Vxj7nUpCAGf9I2jcZOnkH
-         3yQVywRob0dQhIsyXmye0cSdejQlr1Aln8UN2hPIAK6DB06vCqiEIKX9+AOxBfxNejmc
-         6poMxlcKLvbA+9Pn6ZpdjVZOobVakAtPdNxYJYd7C9Vy/d1940jYD1sLsrpZ80XuyVos
-         nmnMv8ztsPQkBLNsWuWS6c3epEiqdhMOTUlVmQVZA5By4g9hA7WIa892/srby+fW9pBz
-         ihcQ==
-X-Gm-Message-State: AOJu0Yww+pcVMh/jpG+GOMiujZ/TqF/XzHh9hLUrQRZMYOYgmGlWgA4G
-	f/HnJ08IBIf8BiDFblWwg9bEoZKG/D59MzlHgwVWd+wooI7rwu3kq9IhkEYosdhglFj7EyuoXz0
-	kNMNRu1mkQtgJVtzak1jUlU4CuU//rZf1U+lJxA==
-X-Google-Smtp-Source: AGHT+IFzvYufgRiNAVracHuQK2cLPonaFabFFL3fAz4Cpzxi0d4lWhEOTYTzLWAXVttGPvnGz4xbM9SbOoOM7XAfjvM=
-X-Received: by 2002:a17:906:b204:b0:a35:ee97:7ca6 with SMTP id
- p4-20020a170906b20400b00a35ee977ca6mr224215ejz.24.1706519066861; Mon, 29 Jan
- 2024 01:04:26 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706519092; x=1707123892;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GPGwyui0Z38uDt+2tS5AdYhBJQdQKP0ZtYseGgohscg=;
+        b=wa9q4cisnykNutc2s6EAB5drmybZ83fRJ0Kskv0X9n8e4cKuK1PlZZKXsST9UipvZZ
+         vfVUFXSChwxU/F5Ma23bBd7yXSACwMSL0lAP3IDtPzSrP3BjI4lhcYmx9vhxAqsWsyVK
+         6UjosrZbBB7zxyU3ByQRvnvlZIJGmQ2EnnLvp0tidaw+YKVDRLKQTdK/wkGacV+bn892
+         rxS2PqAv2tHJFd3nhZw3JtsRbvkaen48HBHqL77TMIyMTrwMyZ2tcwUOnhhi2ErHWCxp
+         55a9x12sC+Af6t19xo58ss1nWNd5EpTtjbxGBR/CHgDegwdkliQyNYxQ0Yd19vKab29b
+         AlXQ==
+X-Gm-Message-State: AOJu0YxJ6ZoPVVrzs9c51RZX3xtIhZJR2l0aE+kzS7bmJL/rUa3rf+M9
+	IE3gDOpfSJ4lLEcNaVaUcfcBCUaM8RAQV0V0pQslZu0lSf9mA1u9IOzwX6li9t5jzxdCl5S7Nqv
+	mRIT3Ct8VS/J6Dj0k8OKx7s9TYOrIXshoIiTyxUKwavfKbEH8wep71pCPVok0lnN1yI4c5MpVUm
+	lnJYgcbJlPm63z7uYopkehZm8wznPvE8DvH2j9TJ3g7wLdFw==
+X-Received: by 2002:a05:6000:1a88:b0:33a:ed85:f23f with SMTP id f8-20020a0560001a8800b0033aed85f23fmr1742450wry.15.1706519092049;
+        Mon, 29 Jan 2024 01:04:52 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IErRlb3yWQyKsGEa8fyyMOnt7X/8Z4waSJ3/2+gAeDdD2FrMmHUIP11niiRjhVZZYgv0abJiw==
+X-Received: by 2002:a05:6000:1a88:b0:33a:ed85:f23f with SMTP id f8-20020a0560001a8800b0033aed85f23fmr1742420wry.15.1706519091690;
+        Mon, 29 Jan 2024 01:04:51 -0800 (PST)
+Received: from fedora (g2.ign.cz. [91.219.240.8])
+        by smtp.gmail.com with ESMTPSA id ce2-20020a5d5e02000000b0033af4848124sm601539wrb.109.2024.01.29.01.04.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 01:04:51 -0800 (PST)
+From: Vitaly Kuznetsov <vkuznets@redhat.com>
+To: kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, Sean
+ Christopherson <seanjc@google.com>
+Cc: David Woodhouse <dwmw@amazon.co.uk>, Jan Richter <jarichte@redhat.com>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: selftests: Compare wall time from xen shinfo
+ against KVM_GET_CLOCK
+In-Reply-To: <20240111135901.1785096-1-vkuznets@redhat.com>
+References: <20240111135901.1785096-1-vkuznets@redhat.com>
+Date: Mon, 29 Jan 2024 10:04:50 +0100
+Message-ID: <877cjs8q8d.fsf@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240123132730.2297719-1-alexghiti@rivosinc.com> <ZbdpTPMOw4lsPxBi@snowbird>
-In-Reply-To: <ZbdpTPMOw4lsPxBi@snowbird>
-From: Alexandre Ghiti <alexghiti@rivosinc.com>
-Date: Mon, 29 Jan 2024 10:04:16 +0100
-Message-ID: <CAHVXubiwoB3jwGqNyKvoUB=73zU-w35c45CcaReD0vgTBxWKQA@mail.gmail.com>
-Subject: Re: [PATCH] riscv: Fix wrong size passed to local_flush_tlb_range_asid()
-To: Dennis Zhou <dennis@kernel.org>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Mon, Jan 29, 2024 at 10:01=E2=80=AFAM Dennis Zhou <dennis@kernel.org> wr=
-ote:
->
-> Hi Alexandre,
->
-> On Tue, Jan 23, 2024 at 02:27:30PM +0100, Alexandre Ghiti wrote:
-> > local_flush_tlb_range_asid() takes the size as argument, not the end of
-> > the range to flush, so fix this by computing the size from the end and
-> > the start of the range.
-> >
-> > Fixes: 7a92fc8b4d20 ("mm: Introduce flush_cache_vmap_early()")
-> > Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> > ---
-> >  arch/riscv/mm/tlbflush.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-> > index 8d12b26f5ac3..9619965f6501 100644
-> > --- a/arch/riscv/mm/tlbflush.c
-> > +++ b/arch/riscv/mm/tlbflush.c
-> > @@ -68,7 +68,7 @@ static inline void local_flush_tlb_range_asid(unsigne=
-d long start,
-> >
-> >  void local_flush_tlb_kernel_range(unsigned long start, unsigned long e=
-nd)
-> >  {
-> > -     local_flush_tlb_range_asid(start, end, PAGE_SIZE, FLUSH_TLB_NO_AS=
-ID);
-> > +     local_flush_tlb_range_asid(start, end - start, PAGE_SIZE, FLUSH_T=
-LB_NO_ASID);
-> >  }
-> >
-> >  static void __ipi_flush_tlb_all(void *info)
-> > --
-> > 2.39.2
-> >
->
-> Sorry for the delay, I just pulled this into percpu#for-6.8-fixes. I'll
-> send it to Linus this week.
->
-> Thanks,
-> Dennis
+Vitaly Kuznetsov <vkuznets@redhat.com> writes:
 
-No problem, thanks!
+> xen_shinfo_test is observed to be flaky failing sporadically with
+> "VM time too old". With min_ts/max_ts debug print added:
+>
+> Wall clock (v 3269818) 1704906491.986255664
+> Time info 1: v 1282712 tsc 33530585736 time 14014430025 mul 3587552223 shift 4294967295 flags 1
+> Time info 2: v 1282712 tsc 33530585736 time 14014430025 mul 3587552223 shift 4294967295 flags 1
+> min_ts: 1704906491.986312153
+> max_ts: 1704906506.001006963
+> ==== Test Assertion Failure ====
+>   x86_64/xen_shinfo_test.c:1003: cmp_timespec(&min_ts, &vm_ts) <= 0
+>   pid=32724 tid=32724 errno=4 - Interrupted system call
+>      1	0x00000000004030ad: main at xen_shinfo_test.c:1003
+>      2	0x00007fca6b23feaf: ?? ??:0
+>      3	0x00007fca6b23ff5f: ?? ??:0
+>      4	0x0000000000405e04: _start at ??:?
+>   VM time too old
+>
+> The test compares wall clock data from shinfo (which is the output of
+> kvm_get_wall_clock_epoch()) against clock_gettime(CLOCK_REALTIME) in the
+> host system before the VM is created. In the example above, it compares
+>
+>  shinfo: 1704906491.986255664 vs min_ts: 1704906491.986312153
+>
+> and fails as the later is greater than the former.  While this sounds like
+> a sane test, it doesn't pass reality check: kvm_get_wall_clock_epoch()
+> calculates guest's epoch (realtime when the guest was created) by
+> subtracting kvmclock from the current realtime and the calculation happens
+> when shinfo is setup. The problem is that kvmclock is a raw clock and
+> realtime clock is affected by NTP. This means that if realtime ticks with a
+> slightly reduced frequency, "guest's epoch" calculated by
+> kvm_get_wall_clock_epoch() will actually tick backwards! This is not a big
+> issue from guest's perspective as the guest can't really observe this but
+> this epoch can't be compared with a fixed clock_gettime() on the host.
+>
+> Replace the check with comparing wall clock data from shinfo to
+> KVM_GET_CLOCK. The later gives both realtime and kvmclock so guest's epoch
+> can be calculated by subtraction. Note, the computed epoch may still differ
+> a few nanoseconds from shinfo as different TSC is used and there are
+> rounding errors but 100 nanoseconds margin should be enough to cover
+> it (famous last words).
+>
+> Reported-by: Jan Richter <jarichte@redhat.com>
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> ---
+>  .../selftests/kvm/x86_64/xen_shinfo_test.c    | 36 ++++++++-----------
+>  1 file changed, 14 insertions(+), 22 deletions(-)
+>
+> diff --git a/tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c b/tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c
+> index 9ec9ab60b63e..5e1ad243d95d 100644
+> --- a/tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c
+> +++ b/tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c
+> @@ -375,20 +375,6 @@ static void guest_code(void)
+>  	GUEST_SYNC(TEST_DONE);
+>  }
+>  
+> -static int cmp_timespec(struct timespec *a, struct timespec *b)
+> -{
+> -	if (a->tv_sec > b->tv_sec)
+> -		return 1;
+> -	else if (a->tv_sec < b->tv_sec)
+> -		return -1;
+> -	else if (a->tv_nsec > b->tv_nsec)
+> -		return 1;
+> -	else if (a->tv_nsec < b->tv_nsec)
+> -		return -1;
+> -	else
+> -		return 0;
+> -}
+> -
+>  static struct vcpu_info *vinfo;
+>  static struct kvm_vcpu *vcpu;
+>  
+> @@ -425,7 +411,6 @@ static void *juggle_shinfo_state(void *arg)
+>  
+>  int main(int argc, char *argv[])
+>  {
+> -	struct timespec min_ts, max_ts, vm_ts;
+>  	struct kvm_xen_hvm_attr evt_reset;
+>  	struct kvm_vm *vm;
+>  	pthread_t thread;
+> @@ -443,8 +428,6 @@ int main(int argc, char *argv[])
+>  	bool do_eventfd_tests = !!(xen_caps & KVM_XEN_HVM_CONFIG_EVTCHN_2LEVEL);
+>  	bool do_evtchn_tests = do_eventfd_tests && !!(xen_caps & KVM_XEN_HVM_CONFIG_EVTCHN_SEND);
+>  
+> -	clock_gettime(CLOCK_REALTIME, &min_ts);
+> -
+>  	vm = vm_create_with_one_vcpu(&vcpu, guest_code);
+>  
+>  	/* Map a region for the shared_info page */
+> @@ -969,7 +952,6 @@ int main(int argc, char *argv[])
+>  	vm_ioctl(vm, KVM_XEN_HVM_SET_ATTR, &evt_reset);
+>  
+>  	alarm(0);
+> -	clock_gettime(CLOCK_REALTIME, &max_ts);
+>  
+>  	/*
+>  	 * Just a *really* basic check that things are being put in the
+> @@ -978,11 +960,16 @@ int main(int argc, char *argv[])
+>  	 */
+>  	struct pvclock_wall_clock *wc;
+>  	struct pvclock_vcpu_time_info *ti, *ti2;
+> +	struct kvm_clock_data kcdata;
+> +	long long delta;
+>  
+>  	wc = addr_gpa2hva(vm, SHINFO_REGION_GPA + 0xc00);
+>  	ti = addr_gpa2hva(vm, SHINFO_REGION_GPA + 0x40 + 0x20);
+>  	ti2 = addr_gpa2hva(vm, PVTIME_ADDR);
+>  
+> +	vm_ioctl(vm, KVM_GET_CLOCK, &kcdata);
+> +	delta = (wc->sec * NSEC_PER_SEC + wc->nsec) - (kcdata.realtime - kcdata.clock);
+> +
+>  	if (verbose) {
+>  		printf("Wall clock (v %d) %d.%09d\n", wc->version, wc->sec, wc->nsec);
+>  		printf("Time info 1: v %u tsc %" PRIu64 " time %" PRIu64 " mul %u shift %u flags %x\n",
+> @@ -991,14 +978,19 @@ int main(int argc, char *argv[])
+>  		printf("Time info 2: v %u tsc %" PRIu64 " time %" PRIu64 " mul %u shift %u flags %x\n",
+>  		       ti2->version, ti2->tsc_timestamp, ti2->system_time, ti2->tsc_to_system_mul,
+>  		       ti2->tsc_shift, ti2->flags);
+> +		printf("KVM_GET_CLOCK realtime: %lld.%09lld\n", kcdata.realtime / NSEC_PER_SEC,
+> +		       kcdata.realtime % NSEC_PER_SEC);
+> +		printf("KVM_GET_CLOCK clock: %lld.%09lld\n", kcdata.clock / NSEC_PER_SEC,
+> +		       kcdata.clock % NSEC_PER_SEC);
+>  	}
+>  
+> -	vm_ts.tv_sec = wc->sec;
+> -	vm_ts.tv_nsec = wc->nsec;
+>  	TEST_ASSERT(wc->version && !(wc->version & 1),
+>  		    "Bad wallclock version %x", wc->version);
+> -	TEST_ASSERT(cmp_timespec(&min_ts, &vm_ts) <= 0, "VM time too old");
+> -	TEST_ASSERT(cmp_timespec(&max_ts, &vm_ts) >= 0, "VM time too new");
+> +
+> +	TEST_ASSERT(llabs(delta) < 100,
+> +		    "Guest's epoch from shinfo %d.%09d differs from KVM_GET_CLOCK %lld.%lld",
+> +		    wc->sec, wc->nsec, (kcdata.realtime - kcdata.clock) / NSEC_PER_SEC,
+> +		    (kcdata.realtime - kcdata.clock) % NSEC_PER_SEC);
+>  
+>  	TEST_ASSERT(ti->version && !(ti->version & 1),
+>  		    "Bad time_info version %x", ti->version);
 
-Alex
+Ping?
+
+-- 
+Vitaly
+
 
