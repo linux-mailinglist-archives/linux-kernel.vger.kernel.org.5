@@ -1,57 +1,57 @@
-Return-Path: <linux-kernel+bounces-43327-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43328-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DC8B841230
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:38:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F727841233
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:38:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB1C8B2385B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:38:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB1201F27D94
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:38:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D4D015A4A5;
-	Mon, 29 Jan 2024 18:35:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A90315AAAA;
+	Mon, 29 Jan 2024 18:35:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BWkUFmC/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I6U3RUPs"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4B5976021;
-	Mon, 29 Jan 2024 18:35:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 431C315A4B3;
+	Mon, 29 Jan 2024 18:35:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706553312; cv=none; b=UxE2bBhC0qbidWxilOrfN5zqkq/BuHdvS3BlnsVQn2/hu7loZZPt7J4tExvhYvD8sdqiVqt4rhn5jOSHApZzbHZchYwibMlunq8aLanuYjXx+B6NiEtLZZu5RJ/OXMIMD3YGmRxsF6g5AY3ECTs55r1i+cf2INwFEakvVt5sv0E=
+	t=1706553314; cv=none; b=DmlBTnLrxtV7j4V81vcJXgMmKgfcsaO9Qk/WPvpojYB8xVsQcp7ctgw6DYHW6Paf1j7VoZXHIAl9Z44FrR967JecB2OQ+PSK7lODee3BEdJ+3JtRZx+ate1WbjMyD5FevZYdxgbN8R7mCYKZ4Gvm5sx5/FC6A9SjZIXkzjtUYgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706553312; c=relaxed/simple;
-	bh=l87KiJ170usvV5zSRSj06Qcf2I0kjoR1fXeN8IRGanI=;
+	s=arc-20240116; t=1706553314; c=relaxed/simple;
+	bh=mKe94oXHijUCD41Gsl/vdEsMQ4NY3znazbTmZLqIyLQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mdGpCZkDk2Af4BTufI9HMKv+lil5xR0DlSuewflymyGRr1sz/xaP0ZxGvkBwpYFypr+vR64BUiKFY5LV2KFOGreswpVgUNWpqrG1QALMqsI6iz9LaiW2Rb+dH3X93m+UHpibtEiyHM7SlxHhbzQakkuXAr9PBr7sP5SfR8v2z70=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BWkUFmC/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 693FEC43390;
-	Mon, 29 Jan 2024 18:35:11 +0000 (UTC)
+	 MIME-Version; b=IoYeOzrUS3nwE911yGkDQuPbhraMzRpo3W+zzf5UDKvCsyybYrq8KIFpIWANXqdDqpKlOhCUHDi6hZOB+rUZJbzHTB2IUkSYIJef3pJecCtManghDFXYWhCI0vDZ2FwrCgbn3WavLHMNfW9kirRq5HT7BkcJi9hlY7EGl6B8LrA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I6U3RUPs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C964CC433F1;
+	Mon, 29 Jan 2024 18:35:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706553312;
-	bh=l87KiJ170usvV5zSRSj06Qcf2I0kjoR1fXeN8IRGanI=;
+	s=k20201202; t=1706553313;
+	bh=mKe94oXHijUCD41Gsl/vdEsMQ4NY3znazbTmZLqIyLQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=BWkUFmC/L0hNwmGobl7thyLMyE2q8g2ORy9VT/z1XRCN5OzDyWgqDV4szWTev7uTs
-	 mrm4q2OwoVrknSdy66KY5+j02NkGRu8jpIdEA/HTTrYzFUK5ajup30TlQOwK6vzHQR
-	 syoTgGNbtnF9Ht7ZOJhkTlb1S+bKyuXm4iyMXe61EcGlqDzcnJr1wXueA7JTpWwV0s
-	 5mEn+KbC6Q+8N1IHAk/bkxyA76pXVQv9adPnczc2X/gjfOKNSJtOY94OJ5kDJ/09wL
-	 ZQ6qLbRjcpUIEhJq80SXal3z8k2tUa9q5RlKHC/ai5AtjqcJp9/jTlIVG/VSPjbHJY
-	 6ps3B4G8MiZ2g==
+	b=I6U3RUPs/bgdoFS0sq7LsNtvfB1wRjCUgUB7fvWPsmWS+p6Zlio47/KJfGdAAJHO9
+	 iP8PdNZNnKfDIZJtDys5wt6P2oisLCDj+BBjB3sRE4sFJ1E6V9NuUz7G6hmZBimR4/
+	 1jBw+D2k4CfdWuodXoDzC50VxrCh1SCTpp0gmrsp9V6q+q8omOMq4Mo4uMbPDP0Bvx
+	 9ig8hZ1BaHikhpv3v8BP2bbNGBq84TnZ0unRcZ20BxJ7l5jZRiqAZkriGGM++Lbneq
+	 8cBZ6RTlqTboLoshaeM7wtk8nVnEzcwqwvqDfOak9GBf5BYIHbsLfZ6vl1hSqwBkGT
+	 TXEnC2nHoN6Kg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Dmitry Bogdanov <d.bogdanov@yadro.com>,
-	Mike Christie <michael.christie@oracle.com>,
-	"Martin K . Petersen" <martin.petersen@oracle.com>,
+Cc: Shyam Prasad N <sprasad@microsoft.com>,
+	Steve French <stfrench@microsoft.com>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-scsi@vger.kernel.org,
-	target-devel@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 08/12] scsi: target: core: Add TMF to tmr_list handling
-Date: Mon, 29 Jan 2024 13:34:17 -0500
-Message-ID: <20240129183440.463998-8-sashal@kernel.org>
+	sfrench@samba.org,
+	linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org
+Subject: [PATCH AUTOSEL 6.7 09/12] cifs: open_cached_dir should not rely on primary channel
+Date: Mon, 29 Jan 2024 13:34:18 -0500
+Message-ID: <20240129183440.463998-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240129183440.463998-1-sashal@kernel.org>
 References: <20240129183440.463998-1-sashal@kernel.org>
@@ -66,86 +66,38 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.2
 Content-Transfer-Encoding: 8bit
 
-From: Dmitry Bogdanov <d.bogdanov@yadro.com>
+From: Shyam Prasad N <sprasad@microsoft.com>
 
-[ Upstream commit 83ab68168a3d990d5ff39ab030ad5754cbbccb25 ]
+[ Upstream commit 936eba9cfb5cfbf6a2c762cd163605f2b784e03e ]
 
-An abort that is responded to by iSCSI itself is added to tmr_list but does
-not go to target core. A LUN_RESET that goes through tmr_list takes a
-refcounter on the abort and waits for completion. However, the abort will
-be never complete because it was not started in target core.
+open_cached_dir today selects ses->server a.k.a primary channel
+to send requests. When multichannel is used, the primary
+channel maybe down. So it does not make sense to rely only
+on that channel.
 
- Unable to locate ITT: 0x05000000 on CID: 0
- Unable to locate RefTaskTag: 0x05000000 on CID: 0.
- wait_for_tasks: Stopping tmf LUN_RESET with tag 0x0 ref_task_tag 0x0 i_state 34 t_state ISTATE_PROCESSING refcnt 2 transport_state active,stop,fabric_stop
- wait for tasks: tmf LUN_RESET with tag 0x0 ref_task_tag 0x0 i_state 34 t_state ISTATE_PROCESSING refcnt 2 transport_state active,stop,fabric_stop
-..
- INFO: task kworker/0:2:49 blocked for more than 491 seconds.
- task:kworker/0:2     state:D stack:    0 pid:   49 ppid:     2 flags:0x00000800
- Workqueue: events target_tmr_work [target_core_mod]
-Call Trace:
- __switch_to+0x2c4/0x470
- _schedule+0x314/0x1730
- schedule+0x64/0x130
- schedule_timeout+0x168/0x430
- wait_for_completion+0x140/0x270
- target_put_cmd_and_wait+0x64/0xb0 [target_core_mod]
- core_tmr_lun_reset+0x30/0xa0 [target_core_mod]
- target_tmr_work+0xc8/0x1b0 [target_core_mod]
- process_one_work+0x2d4/0x5d0
- worker_thread+0x78/0x6c0
+This fix makes this function pick a channel with the standard
+helper function cifs_pick_channel.
 
-To fix this, only add abort to tmr_list if it will be handled by target
-core.
-
-Signed-off-by: Dmitry Bogdanov <d.bogdanov@yadro.com>
-Link: https://lore.kernel.org/r/20240111125941.8688-1-d.bogdanov@yadro.com
-Reviewed-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Shyam Prasad N <sprasad@microsoft.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/target/target_core_device.c    | 5 -----
- drivers/target/target_core_transport.c | 4 ++++
- 2 files changed, 4 insertions(+), 5 deletions(-)
+ fs/smb/client/cached_dir.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/target/target_core_device.c b/drivers/target/target_core_device.c
-index 506193e870c4..7a85e6477e46 100644
---- a/drivers/target/target_core_device.c
-+++ b/drivers/target/target_core_device.c
-@@ -147,7 +147,6 @@ int transport_lookup_tmr_lun(struct se_cmd *se_cmd)
- 	struct se_session *se_sess = se_cmd->se_sess;
- 	struct se_node_acl *nacl = se_sess->se_node_acl;
- 	struct se_tmr_req *se_tmr = se_cmd->se_tmr_req;
--	unsigned long flags;
+diff --git a/fs/smb/client/cached_dir.c b/fs/smb/client/cached_dir.c
+index d64a306a414b..971892620504 100644
+--- a/fs/smb/client/cached_dir.c
++++ b/fs/smb/client/cached_dir.c
+@@ -151,7 +151,7 @@ int open_cached_dir(unsigned int xid, struct cifs_tcon *tcon,
+ 		return -EOPNOTSUPP;
  
- 	rcu_read_lock();
- 	deve = target_nacl_find_deve(nacl, se_cmd->orig_fe_lun);
-@@ -178,10 +177,6 @@ int transport_lookup_tmr_lun(struct se_cmd *se_cmd)
- 	se_cmd->se_dev = rcu_dereference_raw(se_lun->lun_se_dev);
- 	se_tmr->tmr_dev = rcu_dereference_raw(se_lun->lun_se_dev);
+ 	ses = tcon->ses;
+-	server = ses->server;
++	server = cifs_pick_channel(ses);
+ 	cfids = tcon->cfids;
  
--	spin_lock_irqsave(&se_tmr->tmr_dev->se_tmr_lock, flags);
--	list_add_tail(&se_tmr->tmr_list, &se_tmr->tmr_dev->dev_tmr_list);
--	spin_unlock_irqrestore(&se_tmr->tmr_dev->se_tmr_lock, flags);
--
- 	return 0;
- }
- EXPORT_SYMBOL(transport_lookup_tmr_lun);
-diff --git a/drivers/target/target_core_transport.c b/drivers/target/target_core_transport.c
-index 670cfb7bd426..73d0d6133ac8 100644
---- a/drivers/target/target_core_transport.c
-+++ b/drivers/target/target_core_transport.c
-@@ -3629,6 +3629,10 @@ int transport_generic_handle_tmr(
- 	unsigned long flags;
- 	bool aborted = false;
- 
-+	spin_lock_irqsave(&cmd->se_dev->se_tmr_lock, flags);
-+	list_add_tail(&cmd->se_tmr_req->tmr_list, &cmd->se_dev->dev_tmr_list);
-+	spin_unlock_irqrestore(&cmd->se_dev->se_tmr_lock, flags);
-+
- 	spin_lock_irqsave(&cmd->t_state_lock, flags);
- 	if (cmd->transport_state & CMD_T_ABORTED) {
- 		aborted = true;
+ 	if (!server->ops->new_lease_key)
 -- 
 2.43.0
 
