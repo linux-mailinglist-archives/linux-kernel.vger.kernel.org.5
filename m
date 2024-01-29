@@ -1,148 +1,111 @@
-Return-Path: <linux-kernel+bounces-43356-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43357-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91CC4841290
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:46:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A5A2841293
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:47:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C506B1C23906
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:46:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E919B24D85
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:47:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5A20162760;
-	Mon, 29 Jan 2024 18:36:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CC7A163AB3;
+	Mon, 29 Jan 2024 18:36:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="erpjfTK3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vPN5xLNO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02997163A90;
-	Mon, 29 Jan 2024 18:36:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B34F2163A8C;
+	Mon, 29 Jan 2024 18:36:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706553397; cv=none; b=uP0/73CPnDuTA/wvU6vWKNGLJiUj5Bv2nWvkzCaJRzN9fwtJt2ylKOkCzoIMG5qGQTudK0J+2we+BK/NAmA4mrwIVxET973EUzgndfG3NzQx+8VfjsQERpZqWqKk2Xn9i//9k7FNgNPV3TUSwuZ1y5uqee5ykjJIDGepucxjcUM=
+	t=1706553399; cv=none; b=QtdNcVAn3EQuwSd00vbjzVEYR2cS1fDzpc6MVXckTzUnmsLURHHSlZiPqBE03NXhpkIxW/VUjA+jO32CoZVC413wdq1mLIG/Y34I9No0claLoTcTeC1OXK+YCfTFx2zlAOsc0UWOdkNPYERRe+LehYk2beZC6oLTgrYFBtGQrEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706553397; c=relaxed/simple;
-	bh=8+O35hG4S9TnllCWxGdxV+fD6BRhl7a744frjYfU15c=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=P79rkaM0sS/Xr63/94hZtTD/Jky1cdWVDx2FVSIs1/sJNMNlm3854gPctjhBAl1hzByPsAFyzg3PspXVqZL0oOvDdrQ+gW2uEMtLdLbxluuHkZqLe89ZCvxY4Rpn/bWoR1tZJtkLdKP1Vn0yk0lO8qscFExAqZMz2BmxCrljYjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=erpjfTK3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C59DBC433F1;
-	Mon, 29 Jan 2024 18:36:34 +0000 (UTC)
+	s=arc-20240116; t=1706553399; c=relaxed/simple;
+	bh=IJj+o+sqNxtyfAHUVNauVEUUerzlkQDRMA0j72uWKmI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=N9lJDgtB5JplnRIY0hoHUkD3+pA9QteJ/R/umizaIfLPRmpwW+f5/VCYEhe08R4TygXP547T8/S7vhLIC0vREl2hejhSbA2+PsT+4rb/uZkAhma6hi5XZBk7AnN6ldI6qWwp9jCA1UyvM3uxFNcgDBEPk/wZ8ayuclGAFFiNiyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vPN5xLNO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74C27C43390;
+	Mon, 29 Jan 2024 18:36:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706553396;
-	bh=8+O35hG4S9TnllCWxGdxV+fD6BRhl7a744frjYfU15c=;
-	h=From:To:Cc:Subject:Date:From;
-	b=erpjfTK3mlyTtQYX61P54SDS4onnfiZYoYet6qUnydpZGVZm0dBgAH7kvjczfngQ7
-	 Ov4tTtpbjPHBU0VPPewI73u1RNs0+ZRcUzjkzrxgG0PrDvsOqvQYuQ90sB9npHROHU
-	 XtlPzRbQavI4CHG57zl11N63N0Bue1Yp0vof8hpTyNqrAOwF5tWSmhqvysqLD10Jea
-	 9xhQaWTZzlelh5kfglZa9rBdKLC/+T8Eno3w0bPK9FN/5DXpAv0QrbMOLsUka1aeUo
-	 qctyDrThsu4mZh1PA14bSqbiqC1v3Cx4nlrV+w0di82yPS6tJ8ud1qkysMtssEzvu1
-	 DWMWmkBA21pXA==
+	s=k20201202; t=1706553399;
+	bh=IJj+o+sqNxtyfAHUVNauVEUUerzlkQDRMA0j72uWKmI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=vPN5xLNOpOpRlkUog7YHfMKMO6iZF+vOs831QFi6dVHLUFEXwWXBwlty5hJDCq02s
+	 T2HlFCogdYR6VkZqBIsAoqgPO0+NZzghhJ6OE0tglHAUQ2I0GpTKQ7UVWnnxW+F0VS
+	 wD3uh7mqtTIfjYjmyQYySAEBao8vX4nlSglejW2ROg50mtetNMo3twpwLWCHpKb+DE
+	 M/YFrtjhFFZi8ud2ND0qM/pb/gqptks9QyaLtvg+GcjCns1rrh1nB+SU4HGErUJrcz
+	 2lnKf6KEC2/qTrN5G92H9XM4Rmou+e1OndATke8ouPAOgUZ5NR5iYTsTvGwRU1M3mj
+	 akgjZKeOSlHGA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Dmitry Bogdanov <d.bogdanov@yadro.com>,
-	Mike Christie <michael.christie@oracle.com>,
-	"Martin K . Petersen" <martin.petersen@oracle.com>,
+Cc: Vinod Koul <vkoul@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-scsi@vger.kernel.org,
-	target-devel@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 1/2] scsi: target: core: Add TMF to tmr_list handling
-Date: Mon, 29 Jan 2024 13:36:30 -0500
-Message-ID: <20240129183633.464847-1-sashal@kernel.org>
+	dmaengine@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 2/2] dmaengine: shdma: increase size of 'dev_id'
+Date: Mon, 29 Jan 2024 13:36:31 -0500
+Message-ID: <20240129183633.464847-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240129183633.464847-1-sashal@kernel.org>
+References: <20240129183633.464847-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 4.19.306
 Content-Transfer-Encoding: 8bit
 
-From: Dmitry Bogdanov <d.bogdanov@yadro.com>
+From: Vinod Koul <vkoul@kernel.org>
 
-[ Upstream commit 83ab68168a3d990d5ff39ab030ad5754cbbccb25 ]
+[ Upstream commit 404290240827c3bb5c4e195174a8854eef2f89ac ]
 
-An abort that is responded to by iSCSI itself is added to tmr_list but does
-not go to target core. A LUN_RESET that goes through tmr_list takes a
-refcounter on the abort and waits for completion. However, the abort will
-be never complete because it was not started in target core.
+We seem to have hit warnings of 'output may be truncated' which is fixed
+by increasing the size of 'dev_id'
 
- Unable to locate ITT: 0x05000000 on CID: 0
- Unable to locate RefTaskTag: 0x05000000 on CID: 0.
- wait_for_tasks: Stopping tmf LUN_RESET with tag 0x0 ref_task_tag 0x0 i_state 34 t_state ISTATE_PROCESSING refcnt 2 transport_state active,stop,fabric_stop
- wait for tasks: tmf LUN_RESET with tag 0x0 ref_task_tag 0x0 i_state 34 t_state ISTATE_PROCESSING refcnt 2 transport_state active,stop,fabric_stop
-..
- INFO: task kworker/0:2:49 blocked for more than 491 seconds.
- task:kworker/0:2     state:D stack:    0 pid:   49 ppid:     2 flags:0x00000800
- Workqueue: events target_tmr_work [target_core_mod]
-Call Trace:
- __switch_to+0x2c4/0x470
- _schedule+0x314/0x1730
- schedule+0x64/0x130
- schedule_timeout+0x168/0x430
- wait_for_completion+0x140/0x270
- target_put_cmd_and_wait+0x64/0xb0 [target_core_mod]
- core_tmr_lun_reset+0x30/0xa0 [target_core_mod]
- target_tmr_work+0xc8/0x1b0 [target_core_mod]
- process_one_work+0x2d4/0x5d0
- worker_thread+0x78/0x6c0
+drivers/dma/sh/shdmac.c: In function ‘sh_dmae_probe’:
+drivers/dma/sh/shdmac.c:541:34: error: ‘%d’ directive output may be truncated writing between 1 and 10 bytes into a region of size 9 [-Werror=format-truncation=]
+  541 |                          "sh-dmae%d.%d", pdev->id, id);
+      |                                  ^~
+In function ‘sh_dmae_chan_probe’,
+    inlined from ‘sh_dmae_probe’ at drivers/dma/sh/shdmac.c:845:9:
+drivers/dma/sh/shdmac.c:541:26: note: directive argument in the range [0, 2147483647]
+  541 |                          "sh-dmae%d.%d", pdev->id, id);
+      |                          ^~~~~~~~~~~~~~
+drivers/dma/sh/shdmac.c:541:26: note: directive argument in the range [0, 19]
+drivers/dma/sh/shdmac.c:540:17: note: ‘snprintf’ output between 11 and 21 bytes into a destination of size 16
+  540 |                 snprintf(sh_chan->dev_id, sizeof(sh_chan->dev_id),
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  541 |                          "sh-dmae%d.%d", pdev->id, id);
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To fix this, only add abort to tmr_list if it will be handled by target
-core.
-
-Signed-off-by: Dmitry Bogdanov <d.bogdanov@yadro.com>
-Link: https://lore.kernel.org/r/20240111125941.8688-1-d.bogdanov@yadro.com
-Reviewed-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/target/target_core_device.c    | 5 -----
- drivers/target/target_core_transport.c | 4 ++++
- 2 files changed, 4 insertions(+), 5 deletions(-)
+ drivers/dma/sh/shdma.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/target/target_core_device.c b/drivers/target/target_core_device.c
-index a23dcbe79e14..3ed43a5f1fd3 100644
---- a/drivers/target/target_core_device.c
-+++ b/drivers/target/target_core_device.c
-@@ -164,7 +164,6 @@ int transport_lookup_tmr_lun(struct se_cmd *se_cmd, u64 unpacked_lun)
- 	struct se_session *se_sess = se_cmd->se_sess;
- 	struct se_node_acl *nacl = se_sess->se_node_acl;
- 	struct se_tmr_req *se_tmr = se_cmd->se_tmr_req;
--	unsigned long flags;
- 
- 	rcu_read_lock();
- 	deve = target_nacl_find_deve(nacl, unpacked_lun);
-@@ -195,10 +194,6 @@ int transport_lookup_tmr_lun(struct se_cmd *se_cmd, u64 unpacked_lun)
- 	se_cmd->se_dev = rcu_dereference_raw(se_lun->lun_se_dev);
- 	se_tmr->tmr_dev = rcu_dereference_raw(se_lun->lun_se_dev);
- 
--	spin_lock_irqsave(&se_tmr->tmr_dev->se_tmr_lock, flags);
--	list_add_tail(&se_tmr->tmr_list, &se_tmr->tmr_dev->dev_tmr_list);
--	spin_unlock_irqrestore(&se_tmr->tmr_dev->se_tmr_lock, flags);
--
- 	return 0;
- }
- EXPORT_SYMBOL(transport_lookup_tmr_lun);
-diff --git a/drivers/target/target_core_transport.c b/drivers/target/target_core_transport.c
-index 64481a3a34d4..f8ba730fa1cf 100644
---- a/drivers/target/target_core_transport.c
-+++ b/drivers/target/target_core_transport.c
-@@ -3463,6 +3463,10 @@ int transport_generic_handle_tmr(
- 	unsigned long flags;
- 	bool aborted = false;
- 
-+	spin_lock_irqsave(&cmd->se_dev->se_tmr_lock, flags);
-+	list_add_tail(&cmd->se_tmr_req->tmr_list, &cmd->se_dev->dev_tmr_list);
-+	spin_unlock_irqrestore(&cmd->se_dev->se_tmr_lock, flags);
-+
- 	spin_lock_irqsave(&cmd->t_state_lock, flags);
- 	if (cmd->transport_state & CMD_T_ABORTED) {
- 		aborted = true;
+diff --git a/drivers/dma/sh/shdma.h b/drivers/dma/sh/shdma.h
+index 2c0a969adc9f..35987a35a848 100644
+--- a/drivers/dma/sh/shdma.h
++++ b/drivers/dma/sh/shdma.h
+@@ -29,7 +29,7 @@ struct sh_dmae_chan {
+ 	const struct sh_dmae_slave_config *config; /* Slave DMA configuration */
+ 	int xmit_shift;			/* log_2(bytes_per_xfer) */
+ 	void __iomem *base;
+-	char dev_id[16];		/* unique name per DMAC of channel */
++	char dev_id[32];		/* unique name per DMAC of channel */
+ 	int pm_error;
+ 	dma_addr_t slave_addr;
+ };
 -- 
 2.43.0
 
