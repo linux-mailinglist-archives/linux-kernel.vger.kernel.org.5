@@ -1,106 +1,122 @@
-Return-Path: <linux-kernel+bounces-42675-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3D228404C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:15:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2469A8404C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:15:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63C6D284226
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:15:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B734C1F238DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:15:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 372B3605A8;
-	Mon, 29 Jan 2024 12:15:15 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3D4F604AA;
-	Mon, 29 Jan 2024 12:15:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8DDD5FEE5;
+	Mon, 29 Jan 2024 12:15:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="eymzkr+1"
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8C392F41
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 12:15:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706530514; cv=none; b=J3+TrflixdwayOLQQV81P2iEqIXTIZVQAFoeFv0URYieRtUEfrSIq5vH/5ino5GuM91/S+2yc6eltviaxj1yilstCd4x1QET1bRl8nykYFKrXlW74tgGQBhjuMQLngcKSOPINrYFSIYzGKYengoBP5zm+1EfnvwemRNBk13r0Jc=
+	t=1706530548; cv=none; b=u0vRbJJ4P2E+uyC246WSyO6kpTMIv+sIXtKRnPtTAn4Fp0MQGwUjPSIJFM1TsZ0zEUczj/zJ7c7sHXNK6UDgLWpK8M4gXgr+2pgZX/3p0vqV2gcgad/nw3EeTPoh/+s1xi8kfdw4c+nnUhdFHQcTitmFY/P9lYpkG5YGqGHv0Ik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706530514; c=relaxed/simple;
-	bh=CI2SITbEyDMK/SnfUcFawfQgI/5HdPELOd7hdQeM9Fw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uRD69cEOQSMzB7OMSXmKXP/6aOB+tyGHxs/g+1kBa7qPWsLBScS+Gm7mCz7NoJ/Cpz957Zalcmq/vwKBQ+pB+1w5BPsSA6VW+pRrAfOmv+TiPRRk67AMYsQsOuv9UOg47vGFxwB9gG1Bt2H5s3LpaqHvoeqOi7Iuv14vHI+PBOQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 296821FB;
-	Mon, 29 Jan 2024 04:15:56 -0800 (PST)
-Received: from [10.57.77.253] (unknown [10.57.77.253])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A8F643F5A1;
-	Mon, 29 Jan 2024 04:15:09 -0800 (PST)
-Message-ID: <df8f1bf4-819a-4b2a-927d-e97fe196cdf6@arm.com>
-Date: Mon, 29 Jan 2024 12:15:07 +0000
+	s=arc-20240116; t=1706530548; c=relaxed/simple;
+	bh=beSEpMwWPhoXPG21YOXXQgt1VNjIWZ1tYR3wUsAzp44=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=c9LKko2YzzhPClNGkMME1Ec1jzY+ABNhMnj4FxkO3QY+8/TQF15lAEaftwUwB5iEAstVmpF9xt8LdNtUre6xjpSxMhq78TUDXW+m5pRfOVbWpSPeuYTASHsdk41hwzsbt85rnuzFOlpb80PPn3uzwRDQ9zLNkILE6w2iGi0oZII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=eymzkr+1; arc=none smtp.client-ip=185.125.188.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id B52DA3F131
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 12:15:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1706530543;
+	bh=SaRR+cA5aioFaC6rHkjuNEVQCXHh/LCdTL3vZh7l9Dc=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type;
+	b=eymzkr+1b3xldoWCGrNHMslbgf+d97XdFX1QFWRi854taBNE13cXjw4vvPD16Ma/R
+	 Z/uiSwGB+6pyluRXlc4YUxdJZG5mmpsXGbTpNP6k5XzreRarY6teLW7VhVEAzEhlje
+	 3+ny9OeakWRCLOIqCzMyeDF0YVqca7LXaU5MCjBcO8seXgfFJxRP++nPRznr1Cf96U
+	 /6H8zR3kCethE7YzwjjofoaJ4w94WnXMfNhzjBb3RxaUUQ0mMjhoOhXv5LSb8/cAId
+	 Bp0o+VEMF49THHx+GsqBIoR276ZYj8leITb7NG4qp9BsckgEXVN11D1fbwsRFrabSM
+	 19gQOatRHmSzw==
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-558b04cb660so1340582a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 04:15:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706530543; x=1707135343;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SaRR+cA5aioFaC6rHkjuNEVQCXHh/LCdTL3vZh7l9Dc=;
+        b=nA70hai5odDVRB6a0NodzkoB427PfE5nNRqXYHxqW/kb5gyJp2EfLeVgAJ54ZqrfTB
+         I4N/JhVkC5KgQ97g1BjMjn8I7hdicBx6+z8Z8+tWHxVcTGx6yb553i+f04rwzeUWebuY
+         qCXOtgBob+girEd3dI5WiMkWy3vG1FBC81ABRIZflSinTYmHDXLQrTmJOeuyiRtYzyf0
+         wc88xwCeak6a+83I/6fSfDgGfgLW5VEGNN4xbJa1UahWO3eSb7KJgulhm/s+OamS6v++
+         YhejVmoDwRCi2NXTBFrsJ3pSL/LatcC7hGInWYgLo0JnAN8HI3CrjmJh49IEt75koxSk
+         8uYQ==
+X-Gm-Message-State: AOJu0Yz5AlLAilyKS3yTAlcxCyxJWsX2kIV7LWz5o/IH0xlGnm4/dojB
+	iWGo93tq8dgAgAPY0c8fO+sTj/qkp5cYgnS4OInTKEdOvvDesxt9/4xM35wBRyT8gIAxbzeZMW1
+	5V7IRC/+qK6SBtiE73y3IvZ+BK2y6GnPfyvhsZqpXdpphaY455j7mHYqqlyfGtantumPc/aVxD2
+	9xcA==
+X-Received: by 2002:aa7:dc0f:0:b0:55c:d474:56dc with SMTP id b15-20020aa7dc0f000000b0055cd47456dcmr3504327edu.39.1706530543436;
+        Mon, 29 Jan 2024 04:15:43 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEE1UPnji4HFFHIfmLwUcudfhejZixFf7AfaUc8q8iJEaCdy+QPERSuFFEev3B3r0IdQz2X+g==
+X-Received: by 2002:aa7:dc0f:0:b0:55c:d474:56dc with SMTP id b15-20020aa7dc0f000000b0055cd47456dcmr3504315edu.39.1706530543167;
+        Mon, 29 Jan 2024 04:15:43 -0800 (PST)
+Received: from amikhalitsyn ([91.64.72.41])
+        by smtp.gmail.com with ESMTPSA id cs10-20020a0564020c4a00b0055d37af4d20sm3576492edb.74.2024.01.29.04.15.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 04:15:42 -0800 (PST)
+Date: Mon, 29 Jan 2024 13:15:41 +0100
+From: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: mszeredi@redhat.com, Miklos Szeredi <miklos@szeredi.hu>,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 3/3] fuse: __kuid_val/__kgid_val helpers in
+ fuse_fill_attr_from_inode()
+Message-Id: <20240129131541.a5005f1ec36b0424dfdb69af@canonical.com>
+In-Reply-To: <20240108-ramponiert-lernziel-86f5e0926c3c@brauner>
+References: <20240105152129.196824-1-aleksandr.mikhalitsyn@canonical.com>
+	<20240105152129.196824-4-aleksandr.mikhalitsyn@canonical.com>
+	<20240108-ramponiert-lernziel-86f5e0926c3c@brauner>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 1/7] dma: compile-out DMA sync op calls when not
- used
-Content-Language: en-GB
-To: Alexander Lobakin <aleksander.lobakin@intel.com>,
- Christoph Hellwig <hch@lst.de>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Marek Szyprowski
- <m.szyprowski@samsung.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>,
- Magnus Karlsson <magnus.karlsson@intel.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Alexander Duyck <alexanderduyck@fb.com>, bpf@vger.kernel.org,
- netdev@vger.kernel.org, iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20240126135456.704351-1-aleksander.lobakin@intel.com>
- <20240126135456.704351-2-aleksander.lobakin@intel.com>
- <20240129061136.GD19258@lst.de>
- <4e23d103-ea1c-4fd3-852e-f7e2ec9170ad@intel.com>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <4e23d103-ea1c-4fd3-852e-f7e2ec9170ad@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On 2024-01-29 11:07 am, Alexander Lobakin wrote:
-> From: Christoph Hellwig <hch@lst.de>
-> Date: Mon, 29 Jan 2024 07:11:36 +0100
-> 
->> On Fri, Jan 26, 2024 at 02:54:50PM +0100, Alexander Lobakin wrote:
->>> Some platforms do have DMA, but DMA there is always direct and coherent.
->>> Currently, even on such platforms DMA sync operations are compiled and
->>> called.
->>> Add a new hidden Kconfig symbol, DMA_NEED_SYNC, and set it only when
->>> either sync operations are needed or there is DMA ops or swiotlb
->>> enabled. Set dma_need_sync() and dma_skip_sync() (stub for now)
->>> depending on this symbol state and don't call sync ops when
->>> dma_skip_sync() is true.
->>> The change allows for future optimizations of DMA sync calls depending
->>> on compile-time or runtime conditions.
->>
->> So the idea of compiling out the calls sounds fine to me.  But what
->> is the point of the extra indirection through the __-prefixed calls?
-> 
-> Because dma_sync_* ops are external functions, not inlines, and in the
-> next patch I'm adding a check there.
-> 
->>
->> And if we need that (please document it in the commit log), please
->> make the wrappers proper inline functions and not macros.
+On Mon, 8 Jan 2024 12:37:07 +0100
+Christian Brauner <brauner@kernel.org> wrote:
 
-In fact those wrappers could perhaps subsume the existing stub 
-definitions, by starting with a refactor along these lines:
+> On Fri, Jan 05, 2024 at 04:21:29PM +0100, Alexander Mikhalitsyn wrote:
+> > For the sake of consistency, let's use these helpers to extract
+> > {u,g}id_t values from k{u,g}id_t ones.
+> > 
+> > There are no functional changes, just to make code cleaner.
+> > 
+> > Cc: Christian Brauner <brauner@kernel.org>
+> > Cc: Miklos Szeredi <miklos@szeredi.hu>
+> > Cc: <linux-fsdevel@vger.kernel.org>
+> > Cc: <linux-kernel@vger.kernel.org>
+> > Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+> > ---
+> 
+> Looks good to me,
+> Reviewed-by: Christian Brauner <brauner@kernel.org>
 
-static inline dma_sync_x(...)
-{
-	if (IS_ENABLED(CONFIG_NEED_DMA_SYNC))
-		__dma_sync_x(...);
-}
+Thanks!
 
-Cheers,
-Robin.
+Kind regards,
+Alex
 
