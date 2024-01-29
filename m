@@ -1,125 +1,112 @@
-Return-Path: <linux-kernel+bounces-42380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42381-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C11384008B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:44:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B25584008E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:46:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1742428144D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 08:44:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E71B1C221BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 08:46:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A37FD54BE4;
-	Mon, 29 Jan 2024 08:44:34 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B8CB54BCC;
-	Mon, 29 Jan 2024 08:44:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE3F954BD4;
+	Mon, 29 Jan 2024 08:45:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JaW41u9q"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 193DB524D5;
+	Mon, 29 Jan 2024 08:45:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706517874; cv=none; b=QK/A/pSlEnlnUDePUQUFRz5Flbr77eN/GZ4V3fUzOFw1CbYOgAUtmGld/ijoRHRDNOmHykaa9wYt0c+5C8eVPzJk1OyC3oeBE4NxdKIjwLVTYucFZ4nE0kV8qsxrmTM/c1yN1Y5Z5rLxEjSEqOayLnCewmVLStoqvdTKv8zS5I8=
+	t=1706517957; cv=none; b=kiJoudats0yP6NU6ElMDPVwLQzz60svKN1MMxfRhNvNOS1t4MN1JkFDquZNeqIoVPpZK5IBVEMQ8WrGStjS0OrxgKF97G/WtrJWK+p8RP5NGiwIs+KIZTJtDvf1pI4oHQftfpfp+PVruBJb5pRTVIwl5ExQqCWbPa54HFrosTew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706517874; c=relaxed/simple;
-	bh=MjJD+Ju24rDZFA9W3lNsMnwl/3iRcy6XP1BuXxb2O30=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ns3ZiSjbFnoTOaXaI2ry+y6OAtZ8kTBOIuLlFC3l4FDUZamzebKSAS8211cPwltgkIvsfB92xoFXCkoMhhQWWbtIy5TFdS897/mz6xYl8iF9aYdNajt3HfaTJ6GHM9m6pmie12+5YyojBWWMRqvszwTBbMCGg1QSmxLsiGaFfOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 11ED01FB;
-	Mon, 29 Jan 2024 00:45:14 -0800 (PST)
-Received: from [10.162.42.11] (a077893.blr.arm.com [10.162.42.11])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C240E3F762;
-	Mon, 29 Jan 2024 00:44:19 -0800 (PST)
-Message-ID: <a5f593c7-0e5f-46e9-a394-a2c0dad03c8f@arm.com>
-Date: Mon, 29 Jan 2024 14:14:16 +0530
+	s=arc-20240116; t=1706517957; c=relaxed/simple;
+	bh=h+w67Av4j/ZtT+FxipGw15DHMifwDMi67xcC7YTpOW4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=A/tFhlMGkQ7bp+fZ/T3g7QswckeWIpCU3Zfg/yzD7Xxwyv+j059XWGlh28BmnKDwVM4LEuYuUEXnutc/DTq/ol2SpbXQnKbqZbFwMm3Ym8Ts9pShDxR0P3Ivk7xGshH+XW4bKPOct/ixoa01zGsuSMSciR6nIf1qbZMSRaCEZn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JaW41u9q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F08EBC433F1;
+	Mon, 29 Jan 2024 08:45:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706517956;
+	bh=h+w67Av4j/ZtT+FxipGw15DHMifwDMi67xcC7YTpOW4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JaW41u9q07rH9eLkLikVQ03Zi2vIlErkRPCy26x/LqPtHUw3clevjCrngCsngOnIa
+	 5GA9xPvgWjjwP9g110+WAM6mGjJiY6rHTuAH/tBaf65VkKsR6P5FM4N9mohyvJs1EP
+	 Wu0jzL7St53u0V+mxvSwBvnMZVMb0pPKidIpwARr66BAoDilG+A2ogtZWjv1nhyoqD
+	 Vb8KE4l3o4BdzL5UaLKMJ1iDVUX0TBXbECCf6keFcP6eU0Xpj+3SJQYyUN5kFRv/AI
+	 fgBkOsUW8Vdp9ThjMc81YMKT2lX3hQ1YICJqFmwh1CVzvLBwbjA5cGO8OiYE8EhTyP
+	 6I8opYtF3UM0g==
+Date: Mon, 29 Jan 2024 09:45:52 +0100
+From: Lorenzo Pieralisi <lpieralisi@kernel.org>
+To: Marc Zyngier <maz@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	Thomas Gleixner <tglx@linutronix.de>, yuzenghui@huawei.com,
+	stable@vger.kernel.org
+Subject: Re: [PATCH] irqchip/gic-v3-its: Restore quirk probing for ACPI-based
+ systems
+Message-ID: <ZbdlwKow22QNkWS/@lpieralisi>
+References: <20240127110702.4068488-1-maz@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v3 03/35] mm: page_alloc: Add an arch hook to filter
- MIGRATE_CMA allocations
-Content-Language: en-US
-To: Alexandru Elisei <alexandru.elisei@arm.com>, catalin.marinas@arm.com,
- will@kernel.org, oliver.upton@linux.dev, maz@kernel.org,
- james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com,
- arnd@arndb.de, akpm@linux-foundation.org, mingo@redhat.com,
- peterz@infradead.org, juri.lelli@redhat.com, vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
- mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
- mhiramat@kernel.org, rppt@kernel.org, hughd@google.com
-Cc: pcc@google.com, steven.price@arm.com, vincenzo.frascino@arm.com,
- david@redhat.com, eugenis@google.com, kcc@google.com, hyesoo.yu@samsung.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-mm@kvack.org,
- linux-trace-kernel@vger.kernel.org
-References: <20240125164256.4147-1-alexandru.elisei@arm.com>
- <20240125164256.4147-4-alexandru.elisei@arm.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <20240125164256.4147-4-alexandru.elisei@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240127110702.4068488-1-maz@kernel.org>
 
+On Sat, Jan 27, 2024 at 11:07:02AM +0000, Marc Zyngier wrote:
+> While refactoring the way the ITSs are probed, the handling of
+> quirks applicable to ACPI-based platforms was lost. As a result,
+> systems such as HIP07 lose their GICv4 functionnality, and some
 
+Just noticed: s/functionnality/functionality
 
-On 1/25/24 22:12, Alexandru Elisei wrote:
-> As an architecture might have specific requirements around the allocation
-> of CMA pages, add an arch hook that can disable allocations from
-> MIGRATE_CMA, if the allocation was otherwise allowed.
+> other may even fail to boot, unless they are configured to boot
+> with DT.
 > 
-> This will be used by arm64, which will put tag storage pages on the
-> MIGRATE_CMA list, and tag storage pages cannot be tagged. The filter will
-> be used to deny using MIGRATE_CMA for __GFP_TAGGED allocations.
-
-Just wondering how allocation requests would be blocked for direct
-alloc_contig_range() requests ?
-
+> Move the enabling of quirks into its_probe_one(), making it
+> common to all firmware implementations.
 > 
-> Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
+> Fixes: 9585a495ac93 ("irqchip/gic-v3-its: Split allocation from initialisation of its_node")
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> Cc: stable@vger.kernel.org
 > ---
->  include/linux/pgtable.h | 7 +++++++
->  mm/page_alloc.c         | 3 ++-
->  2 files changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-> index 6d98d5fdd697..c5ddec6b5305 100644
-> --- a/include/linux/pgtable.h
-> +++ b/include/linux/pgtable.h
-> @@ -905,6 +905,13 @@ static inline void arch_do_swap_page(struct mm_struct *mm,
->  static inline void arch_free_pages_prepare(struct page *page, int order) { }
->  #endif
+>  drivers/irqchip/irq-gic-v3-its.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+
+I obviously tested it with ACPI with platforms not neededing
+its quirks, apologies.
+
+Reviewed-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
+
+> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+> index fec1b58470df..250b4562f308 100644
+> --- a/drivers/irqchip/irq-gic-v3-its.c
+> +++ b/drivers/irqchip/irq-gic-v3-its.c
+> @@ -5091,6 +5091,8 @@ static int __init its_probe_one(struct its_node *its)
+>  	u32 ctlr;
+>  	int err;
 >  
-> +#ifndef __HAVE_ARCH_ALLOC_CMA
-
-Same as last patch i.e __HAVE_ARCH_ALLOC_CMA could be avoided via
-a direct check on #ifndef arch_alloc_cma instead.
-
-> +static inline bool arch_alloc_cma(gfp_t gfp)
-> +{
-> +	return true;
-> +}
-> +#endif
+> +	its_enable_quirks(its);
 > +
->  #ifndef __HAVE_ARCH_UNMAP_ONE
->  /*
->   * Some architectures support metadata associated with a page. When a
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 27282a1c82fe..a96d47a6393e 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -3157,7 +3157,8 @@ static inline unsigned int gfp_to_alloc_flags_cma(gfp_t gfp_mask,
->  						  unsigned int alloc_flags)
->  {
->  #ifdef CONFIG_CMA
-> -	if (gfp_migratetype(gfp_mask) == MIGRATE_MOVABLE)
-> +	if (gfp_migratetype(gfp_mask) == MIGRATE_MOVABLE &&
-> +	    arch_alloc_cma(gfp_mask))
->  		alloc_flags |= ALLOC_CMA;
->  #endif
->  	return alloc_flags;
+>  	if (is_v4(its)) {
+>  		if (!(its->typer & GITS_TYPER_VMOVP)) {
+>  			err = its_compute_its_list_map(its);
+> @@ -5442,7 +5444,6 @@ static int __init its_of_probe(struct device_node *node)
+>  		if (!its)
+>  			return -ENOMEM;
+>  
+> -		its_enable_quirks(its);
+>  		err = its_probe_one(its);
+>  		if (err)  {
+>  			its_node_destroy(its);
+> -- 
+> 2.39.2
+> 
 
