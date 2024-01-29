@@ -1,141 +1,141 @@
-Return-Path: <linux-kernel+bounces-42887-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42888-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD442840821
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:21:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70903840824
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:21:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79A14290332
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:21:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A361B1C22ACC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:21:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B2BF1272AC;
-	Mon, 29 Jan 2024 14:19:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFDD3657C3;
+	Mon, 29 Jan 2024 14:19:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="AESviUD4"
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nDjvJGfh"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B2C474E24;
-	Mon, 29 Jan 2024 14:19:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F314365BB9;
+	Mon, 29 Jan 2024 14:19:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706537973; cv=none; b=JSepaynuB5dW2x0XQQaTHsKcu7tQmEEzeRGiRtix83AN2nR6xwZ0hsaZ+cL8Ma902J8EU7Xt8+UpAQD1bQxk/lnEjSZobXcvwxoSbPmNzpnQhAH+aJV9CLX/MKffF+vk4AtfbkgLf2c8hkQOFHwn4ycy4aLM28yuVWBZE56qgnc=
+	t=1706537994; cv=none; b=H3QsSRoypJ68yTMPA/arPV82QuVmoMWKtZrM9vOFik62LmI7mpRySpjcAd7yp7w1v3Dv3B7XP0GsULlDL7nUcbECxUnxT8dkjXBMBG2db4+rh1zRFZUtel2i1ltx75mWxdP1e5WVpcV2xi805Ql+rDDp17yaXcwSaX5zmahkgfE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706537973; c=relaxed/simple;
-	bh=DBI5+ltamoC/la8uCrx5/uRCiXV5fQOs4kMU6m6p4mU=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iSC74XP9e0WjrLkzf5o/msWtBLVFVgy0ldWbPQ/R7wgoBTwUwTruymvmk4d+3E8j3r6kBvOCTniLLoAXH5V0JiW48bPwGbZTGwHkxEuulFUBGy4aLZ3CAg4FM9f9NX5+CrML6bsjwWLkrJAxjnnzplDiFYHaDa2eX72IU/cHKMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=AESviUD4; arc=none smtp.client-ip=45.89.224.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id C0E1512000B;
-	Mon, 29 Jan 2024 17:19:27 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru C0E1512000B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1706537967;
-	bh=7WNOpe9GGkirEoGdJnPDDhRmC2NQr+O7BpCO8Kgm7sg=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
-	b=AESviUD4O3eGrdIku5y681V+0nXhIqPo6ib4DVOA5WzjLfnw4qG4g37A8J15lvlrN
-	 DeQPg9hmUiQLUH/MLLLFgBrLrD6Kr4CF9cl9vyJ3G74PO/sBKTHqwCrLahinJ58HsL
-	 tkezHI+c7RjKCvgfVzBebX16ZDMxsGSOCHGXkcigAiMfS1OV262ONaUS0/FXjWt7g+
-	 YkT+kRwaXXYBHKqk2Sqgjqf27o31IlR7301Fg86SO3VAJRHywAipT/DQlGXu6Goduh
-	 +98lVzKykUqOamwpUeq8F7kh6gqprLyqRM0TmCCCyTccltbez2c0VXmk6XNm/n8ufb
-	 roGjhVL0aYvIg==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Mon, 29 Jan 2024 17:19:27 +0300 (MSK)
-Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
- (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 29 Jan
- 2024 17:19:27 +0300
-Date: Mon, 29 Jan 2024 17:19:27 +0300
-From: Dmitry Rokosov <ddrokosov@salutedevices.com>
-To: Pavel Machek <pavel@ucw.cz>
-CC: Lee Jones <lee@kernel.org>, Martin Kurbanov
-	<mmkurbanov@salutedevices.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Andy Shevchenko
-	<andy.shevchenko@gmail.com>, <linux-kernel@vger.kernel.org>,
-	<linux-leds@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <kernel@salutedevices.com>, Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v1 1/2] leds: aw200xx: support for hw pattern controllers
-Message-ID: <20240129141927.4shshli37fb3cwen@CAB-WSD-L081021>
-References: <20231207125938.175119-1-mmkurbanov@salutedevices.com>
- <20231207125938.175119-2-mmkurbanov@salutedevices.com>
- <20231221161011.GO10102@google.com>
- <ZbQ-jKD_zhonHOCa@ucw.cz>
+	s=arc-20240116; t=1706537994; c=relaxed/simple;
+	bh=6lCTggBgr0R66dy/5DnPFw7G9wnDCHveSsJHdM5MT/s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cCf9EfM9W1bYIu2qc1ePCSZpKUvYDcX86XCzsX/ue6VOslrpIc/rzy3PDh4q4PwGQnWaZPEhzy1k3tNtD82ZplQseB8kuQVjI9VrUDRbLeYblSWZxmPooGtMCANkMDdk4+cAPhlpWIOGlhcX5HOSweqX7AqLkHlt3xDLKITwDtM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nDjvJGfh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 095BEC433C7;
+	Mon, 29 Jan 2024 14:19:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706537993;
+	bh=6lCTggBgr0R66dy/5DnPFw7G9wnDCHveSsJHdM5MT/s=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=nDjvJGfhJslWP/7AW1mE65MkSjlLNIlWCQM8DdsgKOU0An+Klrbdr2wGIZwI13S1A
+	 wMO65g7yeqrTnMXu8br7hS5SD8ghEy2AVeHi7PUHtxgXPgRonrP2qFOySfDfetflqO
+	 Lsa22Z0b+v2CUOhj1KMJnWxsEQPgzYHsPZeurFUz9YxzN+ZwxbqzUL4t2SUv5Qh4zv
+	 Ogy1MP7DLHBhMRGn7mGWEsrQKyWghzHBUVky4qNHDXr813FvYiCHeIaDZbxtralC0+
+	 nqYYB/mrd9I7gqs1YH54+hWUW00ZFZiXdL9DkTGUa7+DqAChx2vxjrdsn56gJZiVyG
+	 gTztrHhcRB08w==
+Message-ID: <3aa071cc-32f2-4228-bd32-6dc2375a4c2c@kernel.org>
+Date: Mon, 29 Jan 2024 15:19:46 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZbQ-jKD_zhonHOCa@ucw.cz>
-User-Agent: NeoMutt/20220415
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 183011 [Jan 29 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.3
-X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;smtp.sberdevices.ru:7.1.1,5.0.1;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/01/29 10:45:00 #23482469
-X-KSMG-AntiVirus-Status: Clean, skipped
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] dt-bindings: PCI: qcom: Document the X1E80100 PCIe
+ Controller
+Content-Language: en-US
+To: Abel Vesa <abel.vesa@linaro.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240129-x1e80100-pci-v2-0-a466d10685b6@linaro.org>
+ <20240129-x1e80100-pci-v2-1-a466d10685b6@linaro.org>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240129-x1e80100-pci-v2-1-a466d10685b6@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello Pavel,
-
-On Sat, Jan 27, 2024 at 12:21:48AM +0100, Pavel Machek wrote:
-> Hi!
+On 29/01/2024 12:10, Abel Vesa wrote:
+> Document the PCIe Controllers on the X1E80100 platform. They are similar
+> to the ones found on SM8550, but they don't have SF QTB clock.
 > 
-> > > This led-controller supports 3 pattern controllers for auto breathing or
-> > > group dimming control. Each pattern controller can work in auto
-> > > breathing or manual control mode. All breathing parameters including
-> > > rising/falling slope, on/off time, repeat times, min/max brightness
-> > > and so on are configurable.
-> > > 
-> > > Signed-off-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
-> > > ---
-> > >  .../testing/sysfs-class-led-driver-aw200xx    | 108 +++
-> > >  Documentation/leds/leds-aw200xx.rst           | 274 ++++++++
-> > >  drivers/leds/leds-aw200xx.c                   | 649 ++++++++++++++++++
-> > >  3 files changed, 1031 insertions(+)
-> > >  create mode 100644 Documentation/leds/leds-aw200xx.rst
-> > 
-> > This interface is bananas.  Exposing an entire register interface to
-> > sysfs does not sit will with me at all.  When we add support to a sysfs
-> > class, we usually require it to be generic and work across all devices.
-> > Adding device specific interfaces is generally decried and to be
-> > avoided.  Don't forget, once we commit something to sysfs, it becomes
-> > ABI and we have to support it forever.
-> 
-> If you do git grep hw_pattern, you should get pointers to qcom-lpg
-> driver that solves similar problem, with interface that should be
-> acceptable.
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> ---
 
-Thank you for pointing that out. Yes, it's a very similar situation to
-ours.
+Please use scripts/get_maintainers.pl to get a list of necessary people
+and lists to CC. It might happen, that command when run on an older
+kernel, gives you outdated entries. Therefore please be sure you base
+your patches on recent Linux kernel.
 
-But I haven't observed the merging of this driver. Was it encountering
-similar issues with the sysfs interface?
+Tools like b4 or scripts_getmaintainer.pl provide you proper list of
+people, so fix your workflow. Tools might also fail if you work on some
+ancient tree (don't, use mainline), work on fork of kernel (don't, use
+mainline) or you ignore some maintainers (really don't). Just use b4 and
+all the problems go away.
 
--- 
-Thank you,
-Dmitry
+You missed at least devicetree list (maybe more), so this won't be
+tested by automated tooling. Performing review on untested code might be
+a waste of time.
+
+Please kindly resend and include all necessary To/Cc entries.
+
+
+Best regards,
+Krzysztof
+
 
