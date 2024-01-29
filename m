@@ -1,170 +1,217 @@
-Return-Path: <linux-kernel+bounces-42938-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42939-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FBED8408E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:49:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 701B98408EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:49:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7CB5E1F276C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:49:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20B8428A1D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:49:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B81F8657DB;
-	Mon, 29 Jan 2024 14:49:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2BA5152DE0;
+	Mon, 29 Jan 2024 14:49:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NARfMgzI"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MgvadNBZ"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82335152DE0;
-	Mon, 29 Jan 2024 14:49:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.115
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706539746; cv=none; b=OSdXkklJh4h2UCa78psL4QVqYASvFy8C17EkSi2rKaAo5ocnP3Th5HjGL/0bXsoc51+/wuCkEEvaJyEIeTM61hZ9BMGhAZtwfUvs/8LeS2SCis/N6B4YzdLBavYHBwCBxgUzR1TGamr7UC+Dks8TF9GCKzSaQvRVzk34WYnvm6I=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706539746; c=relaxed/simple;
-	bh=B+Q7J9j4jl1343Xufi5xIgruTezV/90wo8FCib5ZR9U=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=cnRop6YX+Gn2f+D3P8Jv9Xh9naa3RzORNi3RdQ17emi5k6tArnxu6sjtZFERhAQeeLTRxsC1KlMc7GAP2bext0aG64PbuhBTPZywXVWf/9mrP5j0JQ6Ni/fcjB5wUO+KJvzAZxoak6sC81FboSr0MvZ5YGUGnHBRM3ZAgLg+27E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NARfMgzI; arc=none smtp.client-ip=192.55.52.115
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7D5A66B27
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 14:49:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.15
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706539787; cv=fail; b=ZUJsGVYpCtVnqLM1+5+KRDizc2SfJyqvwftIUOTRlnbLhmhxkVwB1K9vdHc50vUDgpHkjBXYKH84MY/L5Qj+8Ols/C9jqMeSPHIT8z2UqAwyKdSGx0sFY8O7hklDyrX8AbruNNA/hYPDb4jNNZdhT2Vt5XKFHoho/KxxjRCfiIE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706539787; c=relaxed/simple;
+	bh=Vh2h3JDAP+qdf7orrFflJ41QDqUFiMQO3OVxrmvUKgA=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=l6hnJ9eUQdiLAOhQec5aUaDgh0TjOh7eq1HkKPx54+RVeNg561feBmcuvAFfkX833D7SIhf9R4X6jtbko576zdjQ21jln5seByc5K/jKP0nxeOCtM7EyDJQP+RoWXvZO29n3L6Q7/TkHPDMST6wccgRkjXyIBJN8cdd8VikJrAs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MgvadNBZ; arc=fail smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706539743; x=1738075743;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=B+Q7J9j4jl1343Xufi5xIgruTezV/90wo8FCib5ZR9U=;
-  b=NARfMgzI18WTFMR551Rxnos7Bp5cFdzf/QnyUxiCCmpnc4okQPWIMLFZ
-   pjb1vHE7Gt/fl/i6wgkspX1G3bGdEkoPGEbhU/fmgaaVZ436PMrsrgKYn
-   gXsW5cBZRasot6oGuREfX0hNjlFGw2Br12BFx5u46NfXUv5jhGaBczCDE
-   rTOijaXPCFk9HKtK99r5mGBjLrjCTe7Z7sKgu3ISRXf9JIRkvm3iYW24k
-   1Kn7PBFuSqV/pZR+Eu3bsdoOcrb/bAeV6SRLzBXkFaKF38gwRLMEbYx/o
-   ZDnenzYfnAYGacaQjcq06Dm/so7r/1ve6ip0LDDPHd6CabP8BBIq5ll6x
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="402609503"
+  t=1706539786; x=1738075786;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=Vh2h3JDAP+qdf7orrFflJ41QDqUFiMQO3OVxrmvUKgA=;
+  b=MgvadNBZ7cPkXXmc/awU4/ZjGeinexdoD+jW0O42f4svIZntiE0cMDnu
+   zOD3vx4feE9CTNIBIV3jocpaMJ7/hiYaBsDqHDFmlB4yAOVcoZk3LZ6+l
+   Eq1kzzqJ6n+hvRJk4usJMP97vjIu2cXfzhnzbLlmWPRwFrBwLDOKW0EXi
+   HbxnvkQFxrTvBisbo9cJOHYpcDfHjPE8yfR8v5e+ZOPaNmFixZhJV85WV
+   x7cmN4TDCTl7iSOngaldkkMdspcoIcz3ZhHbHh4vG5Kbi0jIe5GIyhOfa
+   N6Qbc1kGwbDizEvAkQCp5p3mpWhMS/s5EpWeRbm1AGvh3aOJbM628U+5R
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="2831727"
 X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
-   d="scan'208";a="402609503"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 06:49:02 -0800
+   d="scan'208";a="2831727"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 06:49:45 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="960907268"
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="737421538"
 X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
-   d="scan'208";a="960907268"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.249.174.51]) ([10.249.174.51])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 06:48:58 -0800
-Message-ID: <46e0c704-cc77-4d23-9503-0d6d5d07bb26@linux.intel.com>
-Date: Mon, 29 Jan 2024 22:48:56 +0800
+   d="scan'208";a="737421538"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Jan 2024 06:49:45 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 29 Jan 2024 06:49:44 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 29 Jan 2024 06:49:44 -0800
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.41) by
+ edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 29 Jan 2024 06:49:44 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i9AkoqxS3Whl5Z2Xpp7nJc4GOMwzaIUWQCQ1zb7kABZ/0YE4c5VVupuET5+M3pVZP0k1LMeoJVgcKB3zOoD0f9saT8BBXfBk2ExrNcBQUh5CgOr/HUSED5LGToiFWwNhq4iMsFm+xRtWGAEyAPjNpjQk/qJGzuqkwBl5gKpyUJ/MxsQIGVamepJf0GfmZ/d9aOy9Yw5vUCecY9PFQRrFxRyX9giY38RiK30mNrRpm/lnPpGPGMWF0E/sfVE8YvP4eE6+DJa5uSvsJ0Yx4Wt0CYGp6mnDOUqbh+as6cbqz4dUGF+T4IsrZo4wlLexQgR+C0Nucy0R6GtkyGOzY/6OdA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=epICro8KSYbGRjOgwCVbyxNcdWgGSGYhykPU22kDjuE=;
+ b=D4XuVR9SxoEbjeUsC3JgaehPh/xyr8xaOHXyu8jyl/M7TNt6WZqIf30ZzsqcM25fP2S8NyKe4pANybz/FZnmqQEEvzkl9/+lf049dFpAsGp7YYoEVF34Dpdt+53PZ6Dq+G3xFughUxqw4SBEqldXpezAwDq+dHf3A4qL7nzvyRzkVhaxDV7X+nAEbum5hnv5Dz+bdRrr19y7XZCoGelXvCv+vdIO1+XiypdVa9maKhEXTYY1jKHK2oWQCdcDp+FHJfayLYrthrxr3LlDjzFv23YysiVq6O8+qr7VelOX7f6fzlf1Job9ZduMmOxWNwAx5hCu7UEpYttSPGn+r4uCkA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CY5PR11MB6139.namprd11.prod.outlook.com (2603:10b6:930:29::17)
+ by CO1PR11MB5057.namprd11.prod.outlook.com (2603:10b6:303:6c::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.34; Mon, 29 Jan
+ 2024 14:49:37 +0000
+Received: from CY5PR11MB6139.namprd11.prod.outlook.com
+ ([fe80::9f32:ce50:1914:e954]) by CY5PR11MB6139.namprd11.prod.outlook.com
+ ([fe80::9f32:ce50:1914:e954%7]) with mapi id 15.20.7228.029; Mon, 29 Jan 2024
+ 14:49:37 +0000
+Date: Mon, 29 Jan 2024 08:49:35 -0600
+From: Lucas De Marchi <lucas.demarchi@intel.com>
+To: Yury Norov <yury.norov@gmail.com>
+CC: <intel-gfx@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+	<dri-devel@lists.freedesktop.org>, Andy Shevchenko
+	<andriy.shevchenko@linux.intel.com>, <intel-xe@lists.freedesktop.org>
+Subject: Re: Re: Re: [PATCH 1/3] bits: introduce fixed-type genmasks
+Message-ID: <yro4nl7ryt6ckxpkctkaao6sd7j4533w2u66ae4kecpu6riszl@lj5sspyvapwq>
+References: <20240124050205.3646390-1-lucas.demarchi@intel.com>
+ <20240124050205.3646390-2-lucas.demarchi@intel.com>
+ <87v87jkvrx.fsf@intel.com>
+ <gvkvihpcc45275idrfukjqbvgem767evrux5sx5lnh5hofqemk@ppbkcauitvwb>
+ <ZbEsfl0tGLY+xJl0@yury-ThinkPad>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZbEsfl0tGLY+xJl0@yury-ThinkPad>
+X-ClientProxiedBy: BYAPR07CA0039.namprd07.prod.outlook.com
+ (2603:10b6:a03:60::16) To CY5PR11MB6139.namprd11.prod.outlook.com
+ (2603:10b6:930:29::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "will@kernel.org" <will@kernel.org>, "lukas@wunner.de" <lukas@wunner.de>,
- "Liu, Yi L" <yi.l.liu@intel.com>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
-Subject: Re: [PATCH v12 5/5] iommu/vt-d: improve ITE fault handling if target
- device isn't present
-To: "Tian, Kevin" <kevin.tian@intel.com>,
- Ethan Zhao <haifeng.zhao@linux.intel.com>,
- "bhelgaas@google.com" <bhelgaas@google.com>,
- "robin.murphy@arm.com" <robin.murphy@arm.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>
-References: <20240129034924.817005-1-haifeng.zhao@linux.intel.com>
- <20240129034924.817005-6-haifeng.zhao@linux.intel.com>
- <BN9PR11MB52761CC3E5F08D4B7BAD7F918C7E2@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Language: en-US
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <BN9PR11MB52761CC3E5F08D4B7BAD7F918C7E2@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY5PR11MB6139:EE_|CO1PR11MB5057:EE_
+X-MS-Office365-Filtering-Correlation-Id: a0485262-0f1c-4df1-52e0-08dc20d983bc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7E8dcpD6uWrSdLBVp+4hoGt/Na4sITxnDBXuMMQ+wz5K9Q/gU7nQO34lUMehvY18Lvni3P+c2JGa97Vi4YobY1rNb8vAF6mJwXfobYgEiKpeJXpg6jdzGkYw5tF1br+loQpOYUqNnJwpj0PZJdX3u8WjzXQn8sGQnh4/kk1VLph7W0xia/5S6/5fjBBSqcdW3GsMWQuItbmVAS8VPeeL3GfSQfpYDggPsB6I0vKCyKE0dPQoDYzzfy2Fp5JCCP6Msj1c5+iPz/dsqGPsuKIFDUwFto4n6Gq1J71sdMJ4vMqDwdTcu3QTlTwlsO60qlci1iulHLcvBPag+Xjd5XIvyU8ABmhvYbj3oPYPbqztltpLvnHdktgssoHx7ouAjivhqu1eXmQuYj2e/Lz3wj/C42fLQ5Nly2TNAjxbSYYj7UtdZvqELZxU+hffr7jaRpUCa8KSjzBb1IEzmfTgC+k7SxVySWdb3023DcpDonDvJ+1G0dTRM/jgRwLIxco+wWB6oNFWCkjvxQJosgNIO6+kFDUgqJORxhjzBQ8iX4XCT5Z5SsOURI0nt5VSQDoE1X0j
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6139.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(346002)(376002)(366004)(396003)(39860400002)(136003)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(83380400001)(26005)(6506007)(38100700002)(4326008)(5660300002)(8676002)(33716001)(8936002)(41300700001)(478600001)(2906002)(316002)(6486002)(66556008)(66476007)(6916009)(66946007)(9686003)(86362001)(82960400001)(6512007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?a3YrTTR0T2ttZkFTVjA5MlpPcWxlSkgyaDJIN0oxUVNkOUVyRmI2NDRjb2Y0?=
+ =?utf-8?B?ang3UCtrOG40KzBHM1F6TUxDK2l6SjNSUEIwREJRdE00N0UwRWpYQnErMlV3?=
+ =?utf-8?B?bzZXaTdLR1RUQUJlaWc5UjhvZUFsMjJoZUZTRVV6VkQ0SVIyQkIzdytKRmhJ?=
+ =?utf-8?B?S0NWQUx6WnRremlmMVI2N05wVWx0VHYweDJ3U2F6RGRNcHZabEV2ekpuVGJj?=
+ =?utf-8?B?YzU3c3FuWUxOajNLdm5vRGdyVERFbGtURW9iOGhIbUNSTnJRdG0zeTZQOHhV?=
+ =?utf-8?B?ZEx5OG53WGlBVXFwVURJSWRjVDd5cWUzclQzbTFxOWpBd3gyNTZubU9nKzl1?=
+ =?utf-8?B?dTdtdmNtTXA3bm9qNitNNXNHdDJ0S2xnakxaa2I0U0xVREJUTkVTdEFrdExt?=
+ =?utf-8?B?cG9RVWJQbk1TZEVFdHhqME5WYUViWEM1MlJGT1JqWk90QS9HSHRFbndoanpZ?=
+ =?utf-8?B?TUp4bzRLd3hwN3ZTWGM2b2hqaTJwQ1ZMQzNhdUN0YjMxaTBjVXJ4RFVqQ2hD?=
+ =?utf-8?B?a2U1TUpCUXlZMlliVXZyaE0zUTNQNlFyQmxrb3lNdFBIcmpzdWg5bVpCclhz?=
+ =?utf-8?B?ZG1NQWI4OS9IWE4yQ3NWMllqeUVGNWVyQ3dOUUlCbDkyRGxMc0F5WFFTUWxi?=
+ =?utf-8?B?M3dpTnhMdldaTXhWR3EvVDFtODE1SkhmdHFqb0hoNmQvekE4cXhySEVCRjBw?=
+ =?utf-8?B?M25UbHF0YllqakZ0S2V0SW50MTBQQ3luMzRxU2s5cWtNT0I1WGttUjlEUVlH?=
+ =?utf-8?B?VzhWT0ZXcnJGajVQbC93ZUc5NU5oaWJITkxtaDdXbWQwV1l3eTZmSkZ0VXBV?=
+ =?utf-8?B?cTZYK1o4TGp5RGVwSzkwRnlMT0hISDAzZTZINStWaDFubFRkWjRkUEttUCt4?=
+ =?utf-8?B?djcya01GZDFXb1MwRURuL1J5MmZURGFDUXJ5RGhuaXBGVkp2ZDlSa2pxM3FL?=
+ =?utf-8?B?NUFoWXBYVDZxeWl4L0ZWQjdtenNHL2V4Z3Y1OWRJY1BDQ01nYWtRWVNuL1dl?=
+ =?utf-8?B?TS9kMHdZM1hxR3hkUGljcFhTQTBxOVFQZ0RxWUF2Ni9ucUpINTI2RklwWlFG?=
+ =?utf-8?B?SlpTZUNjMlljd3ozZEZLRnRBT2NQS04rb09iZ01FSjRYRmFyd0RsSnJpQ3hk?=
+ =?utf-8?B?UXRic29GVUJXU1NsMWlTOURXc2VYRTBXRU90ai9uY25uT05NSU1IU0s1YjUw?=
+ =?utf-8?B?R1NwU2ZGL24wenBKeE1hTSswQTN3dGhmeUhwL3BPWVk1UXoxbG9BVHVJNXI4?=
+ =?utf-8?B?RVhVU0dScjJ6clk0amc2ZUZwNkJHMnVXcFRjZ3c1cDdWeVRQRFBVUHdBYjBo?=
+ =?utf-8?B?QURBNjdFaTNWbGZFWFhJMUMyZyt2YzhEZmcvMndMa2gyZGxUdGdZOHRZSk5S?=
+ =?utf-8?B?S0dVMlR0aEhlUU5jQitlM0FQM1RoakNSUDR0Um0vREV3VDhZeTBIVStmcXYr?=
+ =?utf-8?B?VUUwYlF2ckhZY3dKckNZQkphcEVvSjNENXo1TEg3dmQyYmVTaXFhckxWTnlm?=
+ =?utf-8?B?RE10WE9mTys2b1pQVFF1U3ViVDQ0Q0M5QmFLeU1SeDZwVzU5d2dPOHhVT1Y0?=
+ =?utf-8?B?Rm5MdTNhSG9Yc3cybFNYUVVHb09TWXRDOENHZlVLOTJmbzZCMjZoVW1hWS9h?=
+ =?utf-8?B?VnF6TWdUTzFvSG5CVHE5TWs4bVhGelZXRnhFazBPWXZnNHdxOEpCak1oN29O?=
+ =?utf-8?B?N0I5NXZ5VVJwMVZKVWJDcW8wYTA5dTdaa0VyalFBMTRzeVFNRFhyVGVxOHd6?=
+ =?utf-8?B?QUJUVzdmd3kxZDVsTlFZM3RpdmNvNUdBeW9yMThOK1NGaUlURHd3akhmdDAv?=
+ =?utf-8?B?aHk1UWR4d29JYmVZNU5ZNmF1ck5Lcld6cTBMYkRpdytSS3lwS0J3eUhmLzRu?=
+ =?utf-8?B?dVVIa1MzNkRFOElKaHBZQVpMUXl3TG5lTFBIUVpScFZLMmFQUGV1N093MkUw?=
+ =?utf-8?B?SzdHU2dYd1QrRGdnV0FYMEszVFo4K3RWaFBsRElkUlFONEV4bTRzOWhieUUr?=
+ =?utf-8?B?MllNOG14MVJPWkxXcGFWMTRrUTZjRDFhdFlBQysyUVA4WXJjMHYxMFhMQ1Mr?=
+ =?utf-8?B?aE5lL2JjS1IwTnNNeGdsTDRYWnNjZXFkd3JsazZ2NDkrSGpwSUtDTkdvT09Y?=
+ =?utf-8?B?NENIdnRHajBhcXNYSFNabUVhU3ZsRWJPNlNUcmZseEV5Q1RidVhJczNYdkpY?=
+ =?utf-8?B?Znc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a0485262-0f1c-4df1-52e0-08dc20d983bc
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6139.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2024 14:49:37.1773
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ptd06JQeTmXx1egCB1eKk/h6CTSrD/0GfKskxqZfL08wV1lMGJuBhp4AvTH7wGr1677AOAGACP3UA+BiDLNh1u+dE81IacDxeti7t9RSWHk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB5057
+X-OriginatorOrg: intel.com
 
-On 2024/1/29 17:06, Tian, Kevin wrote:
->> From: Ethan Zhao<haifeng.zhao@linux.intel.com>
->> Sent: Monday, January 29, 2024 11:49 AM
+On Wed, Jan 24, 2024 at 07:27:58AM -0800, Yury Norov wrote:
+>On Wed, Jan 24, 2024 at 08:03:53AM -0600, Lucas De Marchi wrote:
+>> On Wed, Jan 24, 2024 at 09:58:26AM +0200, Jani Nikula wrote:
+>> > On Tue, 23 Jan 2024, Lucas De Marchi <lucas.demarchi@intel.com> wrote:
+>> > > From: Yury Norov <yury.norov@gmail.com>
+>> > >
+>> > > Generalize __GENMASK() to support different types, and implement
+>> > > fixed-types versions of GENMASK() based on it. The fixed-type version
+>> > > allows more strict checks to the min/max values accepted, which is
+>> > > useful for defining registers like implemented by i915 and xe drivers
+>> > > with their REG_GENMASK*() macros.
+>> >
+>> > Mmh, the commit message says the fixed-type version allows more strict
+>> > checks, but none are actually added. GENMASK_INPUT_CHECK() remains the
+>> > same.
+>> >
+>> > Compared to the i915 and xe versions, this is more lax now. You could
+>> > specify GENMASK_U32(63,32) without complaints.
 >>
->> Because surprise removal could happen anytime, e.g. user could request safe
->> removal to EP(endpoint device) via sysfs and brings its link down to do
->> surprise removal cocurrently. such aggressive cases would cause ATS
->> invalidation request issued to non-existence target device, then deadly
->> loop to retry that request after ITE fault triggered in interrupt context.
->> this patch aims to optimize the ITE handling by checking the target device
->> presence state to avoid retrying the timeout request blindly, thus avoid
->> hard lockup or system hang.
+>> Doing this on top of the this series:
 >>
->> Signed-off-by: Ethan Zhao<haifeng.zhao@linux.intel.com>
->> ---
->>   drivers/iommu/intel/dmar.c | 18 ++++++++++++++++++
->>   1 file changed, 18 insertions(+)
+>> -#define   XELPDP_PORT_M2P_COMMAND_TYPE_MASK            REG_GENMASK(30, 27)
+>> +#define   XELPDP_PORT_M2P_COMMAND_TYPE_MASK            REG_GENMASK(62, 32)
 >>
->> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
->> index 814134e9aa5a..2e214b43725c 100644
->> --- a/drivers/iommu/intel/dmar.c
->> +++ b/drivers/iommu/intel/dmar.c
->> @@ -1272,6 +1272,7 @@ static int qi_check_fault(struct intel_iommu
->> *iommu, int index, int wait_index,
->>   {
->>   	u32 fault;
->>   	int head, tail;
->> +	u64 iqe_err, ite_sid;
->>   	struct q_inval *qi = iommu->qi;
->>   	int shift = qi_shift(iommu);
+>> and I do get a build failure:
 >>
->> @@ -1316,6 +1317,13 @@ static int qi_check_fault(struct intel_iommu
->> *iommu, int index, int wait_index,
->>   		tail = readl(iommu->reg + DMAR_IQT_REG);
->>   		tail = ((tail >> shift) - 1 + QI_LENGTH) % QI_LENGTH;
->>
->> +		/*
->> +		 * SID field is valid only when the ITE field is Set in FSTS_REG
->> +		 * see Intel VT-d spec r4.1, section 11.4.9.9
->> +		 */
->> +		iqe_err = dmar_readq(iommu->reg + DMAR_IQER_REG);
->> +		ite_sid = DMAR_IQER_REG_ITESID(iqe_err);
->> +
->>   		writel(DMA_FSTS_ITE, iommu->reg + DMAR_FSTS_REG);
->>   		pr_info("Invalidation Time-out Error (ITE) cleared\n");
->>
->> @@ -1325,6 +1333,16 @@ static int qi_check_fault(struct intel_iommu
->> *iommu, int index, int wait_index,
->>   			head = (head - 2 + QI_LENGTH) % QI_LENGTH;
->>   		} while (head != tail);
->>
->> +		/*
->> +		 * If got ITE, we need to check if the sid of ITE is the same as
->> +		 * current ATS invalidation target device, if yes, don't try this
->> +		 * request anymore if the target device isn't present.
->> +		 * 0 value of ite_sid means old VT-d device, no ite_sid value.
->> +		 */
->> +		if (pdev && ite_sid && !pci_device_is_present(pdev) &&
->> +			ite_sid == pci_dev_id(pci_physfn(pdev)))
->> +			return -ETIMEDOUT;
->> +
-> since the hardware already reports source id leading to timeout, can't we
-> just find the pci_dev according to reported ite_sid? this is a slow path (either
-> due to device in bad state or removed) hence it's not necessary to add more
-> intelligence to pass the pci_dev in, leading to only a partial fix can be backported.
-> 
-> It's also more future-proof, say if one day the driver allows batching invalidation
-> requests for multiple devices then no need to pass in a list of devices.
+>> ../drivers/gpu/drm/i915/display/intel_cx0_phy.c: In function ‘__intel_cx0_read_once’:
+>> ../include/linux/bits.h:41:31: error: left shift count >= width of type [-Werror=shift-count-overflow]
+>>    41 |          (((t)~0ULL - ((t)(1) << (l)) + 1) & \
+>>       |                               ^~
+>
+>I would better include this in commit message to avoid people's
+>confusion. If it comes to v2, can you please do it and mention that
+>this trick relies on shift-count-overflow compiler check?
 
-I have ever thought about this solution and gave up in the end due to
-the locking issue.
+either that or an explicit check as it was suggested. What's your
+preference?
 
-A batch of qi requests must be handled in the spin lock critical region
-to enforce that only one batch of requests is submitted at a time.
-Searching pci_dev in this locking region might result in nested locking
-issues, and I haven't found a good solution for this yet.
+Lucas De Marchi
 
-Unless someone can bring up a better solution, perhaps we have to live
-in a world where only single device TLB invalidation request in a batch
-could be submitted to the queue.
-
-Best regards,
-baolu
+>
+>Thanks,
+>Yury
 
