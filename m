@@ -1,264 +1,129 @@
-Return-Path: <linux-kernel+bounces-42477-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42478-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E4EC8401DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:38:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1C168401E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:38:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E83E81F224E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:38:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7649F1F22983
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:38:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6A5B55C35;
-	Mon, 29 Jan 2024 09:38:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8289D55E68;
+	Mon, 29 Jan 2024 09:38:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nl0TWa5S"
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R/A8iDK+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B78EC4CE02
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:38:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCBAD55765;
+	Mon, 29 Jan 2024 09:38:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706521089; cv=none; b=EQZj5UTGB5444eiqeNGkDAVkvyZRa3YBi/TR3wz67wPx7qmCrLR1XTI+4TWAhPqref2y+Qks2j6OA8tR4oEeW8LQC+4v6NRwhgSE6cuWi+HUunk+wti9DxitZzP2zosKHQMa/piJP6DNKXteQZqADelX0PTwOPexcXjb1l8tlOU=
+	t=1706521102; cv=none; b=KukQa8jmbjNYvADqoYvW8mZzbljspgKTm/c5ZDNRetNV30PJHvcH5clF/lMyqf4xsB6zPKF9S/VudPjENZNB2iceTZVwp7E0q1fr2dZxkhlmnRc39NRSVh8KIUGhLjBZpzrcSPMgbrc5ezKGpovkAfavOUXzUQrDRghZIDGNN38=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706521089; c=relaxed/simple;
-	bh=Ldj1FDg/nEnZb9STOe9WZ7ecK09+3FkjkQDPFWHzixs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TXCWl1Y9SnvDeB8BBd8W57cx1/s0u3EGVR/XoohEyBMbb3tZMabdbz6fcFO2FfcAYcxiL++XwQWq5/0aGGnR9dCXWWh+DpXipA0eKucyHRdHknTU7DlATFjUvalWZlIWNPn1HnJc7OpKOtzccyFJoGMOkSOuy+wvmdbWBevFZZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nl0TWa5S; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-5ffcb478512so16998457b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 01:38:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706521086; x=1707125886; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=7GUkQLMq88GAXuh3Eqx0lD6UD7ww86b8Rhtv6iqBIbU=;
-        b=nl0TWa5SnLrytGAWQRk0g4SW80M2Vo4gZU8aO+ILxSlBU6DlflrmukDGMWwy3fKHuj
-         NfBj+FGfE+hWjxiPdNrya5S4r/Q17k4mcLM+Zeg8aTFUXbePSS0gjYkBPvm+Uc3ZJ6SF
-         JB0L74Xb8+JkitijWhxS+1tw0QETuMbpiQY4la1GCCo9YygJRvtu/hp5oaWx/DNzk4sz
-         1O5rScmqiieFOSr8k+mnIjucTQ7wbFCmom+1JFY9oWZZwVB45IbT6F262ShYPeSR/V2G
-         8AYFlS73+LG1OyDmQ2fGG5NMe0/GRdrfY7uK+RGp2VWro1r+sdF+PiZkl5l9oMwGlgFw
-         AxFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706521086; x=1707125886;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7GUkQLMq88GAXuh3Eqx0lD6UD7ww86b8Rhtv6iqBIbU=;
-        b=O5oUChJby/23UPuzYerA/UqluXk0qVfOYUomV4R0c1G0HgmwDexwxQWe1dio2MvczD
-         s3J/jqj8mPbArdwMxq5bX0eWPBOQXXFS9WVU6N+8qmcXVjJfujMSNFvSDe9m3alDoVMU
-         wkHwMvLITDHu9lpQOn96qQ0sXiom6p011Vu5TqK5dZ18IGUes/+TtuNmw/M0QZL4wKwM
-         mZO2yDXbk9NWKuy0kP7wt3NcnL+DP5IER3aZrechzUppqPfjuPfpTN2Mq5TjRAlBrluE
-         QJ5Kf30dnAl7Uby+nACcxxCQWfFaerNR7Zn6FxgMBEKG5SjgfAxWdS+WaOmHu7cK4PUg
-         swtQ==
-X-Gm-Message-State: AOJu0YyUolJljujxgJjn860qkVafhuNkPLAqavHZN8RuQzVttTem1EHZ
-	sbt38W/Eorw7J3pQZzQLu31JPzhnJaJgauzhfqD7pq81VfL5u3kWR4lztFt4C7T/u8W8Cy3oPYe
-	2ojopNTXPTarhjnBzzV/e2XElwXbweXhxbbaoCg==
-X-Google-Smtp-Source: AGHT+IEeoJUoLMtBvZJFkIJY4mg0SVO8RrXIC2eL8rV9XVO7o4cYzCCwHONGiBoxbodpc9WxXQGklKeSWkdZplHmeNA=
-X-Received: by 2002:a81:aa12:0:b0:5ff:5406:e064 with SMTP id
- i18-20020a81aa12000000b005ff5406e064mr2222313ywh.10.1706521085719; Mon, 29
- Jan 2024 01:38:05 -0800 (PST)
+	s=arc-20240116; t=1706521102; c=relaxed/simple;
+	bh=rhLbs8RDtFB5pDbCrc/ZKmEFvyOrcNyrTDC+mGeGs/Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aHugUOY+B6OGJ8ZeZFrkE7jKxUoJfbiRFhAo3NTCHtzcqD1ykfvXPNleZlftGVMgYBSKMQ28EhzaEG4tCtdv8ijmCtDeTUUvd3RrKy/rEiIyplvbR1mTiEhLi95/QY+mkPU8U/7tToG2uxteGW905/XXfa61pXRqSvamQuvKKCI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R/A8iDK+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BDE6C433F1;
+	Mon, 29 Jan 2024 09:38:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706521102;
+	bh=rhLbs8RDtFB5pDbCrc/ZKmEFvyOrcNyrTDC+mGeGs/Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=R/A8iDK+qvEwZQs2jOfXYFIcUpQQ/XZuYln2omvDlDaFiFFOy/yzYlz2KordHXCDh
+	 Zj1TdiiWtfD235gQGah2tV+0Sxg/xDBNEy/iwcL2QXprybV7H0nNFQnEsoTiuzlROF
+	 KcPcjXd8fQYU8yUZU2zJwQNH/vttSQB9FAJKiDOL9J3tu3q50LAr2OMO68asc/1bPa
+	 lfWeBWaxFR3jwv0xWtlLmsf748j/eDZzdBLIHj2NRs6Jy7gl9g4PV6O6t5vCOQEXCl
+	 Mqt3sGrOkb6afAVlF8IP6KJmIbIuGhwORf1387FSgHyNklONGfkfykiSoft9uwXN80
+	 kWmM9t1DqFqNg==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rUO5m-000000006fw-2Kvx;
+	Mon, 29 Jan 2024 10:38:15 +0100
+Date: Mon, 29 Jan 2024 10:38:14 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Bjorn Andersson <quic_bjorande@quicinc.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] arm64: dts: qcom: sc8280xp: Introduce additional
+ tsens instances
+Message-ID: <ZbdyBgbX2Su80eln@hovoldconsulting.com>
+References: <20240126-sc8280xp-tsens2_3-v2-1-8504d18828de@quicinc.com>
+ <ZbPfeq6ElA3vMf_O@hovoldconsulting.com>
+ <20240126165113.GS2936378@hu-bjorande-lv.qualcomm.com>
+ <ZbPlRsx3czAHRBew@hovoldconsulting.com>
+ <f28604d2-20a8-4662-9412-f09c6bf4a67b@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240129051104.1855487-1-quic_devipriy@quicinc.com> <20240129051104.1855487-4-quic_devipriy@quicinc.com>
-In-Reply-To: <20240129051104.1855487-4-quic_devipriy@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Mon, 29 Jan 2024 11:37:54 +0200
-Message-ID: <CAA8EJppG0NehyLPkML5_Xe__Vy_aEu=qNYAd8WU5rsgLjrW8CA@mail.gmail.com>
-Subject: Re: [PATCH V3 3/7] clk: qcom: gcc-ipq9574: Add gpll0_out_aux clock &
- enable few nssnoc clocks
-To: Devi Priya <quic_devipriy@quicinc.com>
-Cc: andersson@kernel.org, konrad.dybcio@linaro.org, mturquette@baylibre.com, 
-	sboyd@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
-	conor+dt@kernel.org, catalin.marinas@arm.com, will@kernel.org, 
-	p.zabel@pengutronix.de, richardcochran@gmail.com, geert+renesas@glider.be, 
-	arnd@arndb.de, neil.armstrong@linaro.org, nfraprado@collabora.com, 
-	m.szyprowski@samsung.com, linux-arm-msm@vger.kernel.org, 
-	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f28604d2-20a8-4662-9412-f09c6bf4a67b@linaro.org>
 
-On Mon, 29 Jan 2024 at 07:13, Devi Priya <quic_devipriy@quicinc.com> wrote:
->
-> gcc_nssnoc_nsscc_clk, gcc_nssnoc_snoc_clk, gcc_nssnoc_snoc_1_clk are
-> enabled by default and the RCGs are properly configured by the bootloader.
->
-> Some of the NSS clocks needs these clocks to be enabled. To avoid
-> these clocks being disabled by clock framework, drop these entries
-> from the clock table and enable it in the driver probe itself.
+On Fri, Jan 26, 2024 at 10:23:41PM +0100, Konrad Dybcio wrote:
+> On 26.01.2024 18:00, Johan Hovold wrote:
+> > On Fri, Jan 26, 2024 at 08:51:13AM -0800, Bjorn Andersson wrote:
+> >> On Fri, Jan 26, 2024 at 05:36:10PM +0100, Johan Hovold wrote:
+> > 
+> >>> Shall you submit a follow-on patch to set the polling delays to zero
+> >>> for the other thermal zones (cpu, cluster, mem) so that we don't poll
+> >>> for those?
+> >>
+> >> I optimistically interpreted Konrad's response as a promise by him to do
+> >> so ;)
+> >>
+> >> I do like his patch which remove the poll-properties for non-polling
+> >> mode. Would be nice to not first change the values to 0 and then remove
+> >> the properties...
+> 
+> That was my intention as well..
+> 
+> > 
+> > No, that should not be an issue as it allows us to get rid of the
+> > polling without waiting for a binding update which may or may not
+> > materialise in 6.9-rc1.
+> 
+> If you really insist, I may do that, but if the thermal guys act on it
+> quickly and we negotiate an immutable branch, we can simply but atop it,
+> saving the submitter timeof(patchset), the reviewers timeof(verify), the
+> build bots timeof(builds) and the applier timeof(pick-build-push)..
 
-Obvious NAK for mixing two independent changes into a single patch.
+Why would introduce such a dependency for really no good reason?
 
->
-> Also, add support for gpll0_out_aux clock which acts as the parent for
-> certain networking subsystem (nss) clocks.
->
-> Signed-off-by: Devi Priya <quic_devipriy@quicinc.com>
-> ---
->  Changes in V3:
->         - Dropped flags for gpll0_out_aux
->         - Dropped few nss clock entries from the clock table and enabled
->           them in the probe
->
->  drivers/clk/qcom/gcc-ipq9574.c | 83 ++++++++++++----------------------
->  1 file changed, 28 insertions(+), 55 deletions(-)
->
-> diff --git a/drivers/clk/qcom/gcc-ipq9574.c b/drivers/clk/qcom/gcc-ipq9574.c
-> index e8190108e1ae..987703431b5b 100644
-> --- a/drivers/clk/qcom/gcc-ipq9574.c
-> +++ b/drivers/clk/qcom/gcc-ipq9574.c
-> @@ -105,6 +105,20 @@ static struct clk_alpha_pll_postdiv gpll0 = {
->         },
->  };
->
-> +static struct clk_alpha_pll_postdiv gpll0_out_aux = {
-> +       .offset = 0x20000,
-> +       .regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_DEFAULT],
-> +       .width = 4,
-> +       .clkr.hw.init = &(const struct clk_init_data) {
-> +               .name = "gpll0_out_aux",
-> +               .parent_hws = (const struct clk_hw *[]) {
-> +                       &gpll0_main.clkr.hw
-> +               },
-> +               .num_parents = 1,
-> +               .ops = &clk_alpha_pll_postdiv_ro_ops,
-> +       },
-> +};
-> +
->  static struct clk_alpha_pll gpll4_main = {
->         .offset = 0x22000,
->         .regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_DEFAULT],
-> @@ -2186,23 +2200,6 @@ static struct clk_branch gcc_nsscfg_clk = {
->         },
->  };
->
-> -static struct clk_branch gcc_nssnoc_nsscc_clk = {
-> -       .halt_reg = 0x17030,
-> -       .clkr = {
-> -               .enable_reg = 0x17030,
-> -               .enable_mask = BIT(0),
-> -               .hw.init = &(const struct clk_init_data) {
-> -                       .name = "gcc_nssnoc_nsscc_clk",
-> -                       .parent_hws = (const struct clk_hw *[]) {
-> -                               &pcnoc_bfdcd_clk_src.clkr.hw
-> -                       },
-> -                       .num_parents = 1,
-> -                       .flags = CLK_SET_RATE_PARENT,
-> -                       .ops = &clk_branch2_ops,
-> -               },
-> -       },
-> -};
-> -
+Submit a patch based on the current binding, then when/if your proposed
+binding update hits mainline, you can send a *single* patch dropping the
+parameters from all qualcomm dtsi.
 
-What is the actual consumer for these clocks? Why are you trying to
-hide them instead of making them used by the consumer device?
+Updating the binding is a separate and lower priority task. In fact, it
+may not even be desirable at all as an omission of adding these
+parameters could then lead to broken thermal management on platforms
+where the interrupts do not work. Having an explicit poll-delay of zero
+at least gives people a reason to think about it when merging a new
+platform.
 
->  static struct clk_branch gcc_nsscc_clk = {
->         .halt_reg = 0x17034,
->         .clkr = {
-> @@ -2585,40 +2582,6 @@ static struct clk_branch gcc_q6ss_boot_clk = {
->         },
->  };
->
-> -static struct clk_branch gcc_nssnoc_snoc_clk = {
-> -       .halt_reg = 0x17028,
-> -       .clkr = {
-> -               .enable_reg = 0x17028,
-> -               .enable_mask = BIT(0),
-> -               .hw.init = &(const struct clk_init_data) {
-> -                       .name = "gcc_nssnoc_snoc_clk",
-> -                       .parent_hws = (const struct clk_hw *[]) {
-> -                               &system_noc_bfdcd_clk_src.clkr.hw
-> -                       },
-> -                       .num_parents = 1,
-> -                       .flags = CLK_SET_RATE_PARENT,
-> -                       .ops = &clk_branch2_ops,
-> -               },
-> -       },
-> -};
-> -
-> -static struct clk_branch gcc_nssnoc_snoc_1_clk = {
-> -       .halt_reg = 0x1707c,
-> -       .clkr = {
-> -               .enable_reg = 0x1707c,
-> -               .enable_mask = BIT(0),
-> -               .hw.init = &(const struct clk_init_data) {
-> -                       .name = "gcc_nssnoc_snoc_1_clk",
-> -                       .parent_hws = (const struct clk_hw *[]) {
-> -                               &system_noc_bfdcd_clk_src.clkr.hw
-> -                       },
-> -                       .num_parents = 1,
-> -                       .flags = CLK_SET_RATE_PARENT,
-> -                       .ops = &clk_branch2_ops,
-> -               },
-> -       },
-> -};
-> -
->  static struct clk_branch gcc_qdss_etr_usb_clk = {
->         .halt_reg = 0x2d060,
->         .clkr = {
-> @@ -4043,7 +4006,6 @@ static struct clk_regmap *gcc_ipq9574_clks[] = {
->         [GCC_SDCC1_AHB_CLK] = &gcc_sdcc1_ahb_clk.clkr,
->         [PCNOC_BFDCD_CLK_SRC] = &pcnoc_bfdcd_clk_src.clkr,
->         [GCC_NSSCFG_CLK] = &gcc_nsscfg_clk.clkr,
-> -       [GCC_NSSNOC_NSSCC_CLK] = &gcc_nssnoc_nsscc_clk.clkr,
->         [GCC_NSSCC_CLK] = &gcc_nsscc_clk.clkr,
->         [GCC_NSSNOC_PCNOC_1_CLK] = &gcc_nssnoc_pcnoc_1_clk.clkr,
->         [GCC_QDSS_DAP_AHB_CLK] = &gcc_qdss_dap_ahb_clk.clkr,
-> @@ -4059,8 +4021,6 @@ static struct clk_regmap *gcc_ipq9574_clks[] = {
->         [GCC_CMN_12GPLL_AHB_CLK] = &gcc_cmn_12gpll_ahb_clk.clkr,
->         [GCC_CMN_12GPLL_APU_CLK] = &gcc_cmn_12gpll_apu_clk.clkr,
->         [SYSTEM_NOC_BFDCD_CLK_SRC] = &system_noc_bfdcd_clk_src.clkr,
-> -       [GCC_NSSNOC_SNOC_CLK] = &gcc_nssnoc_snoc_clk.clkr,
-> -       [GCC_NSSNOC_SNOC_1_CLK] = &gcc_nssnoc_snoc_1_clk.clkr,
->         [GCC_QDSS_ETR_USB_CLK] = &gcc_qdss_etr_usb_clk.clkr,
->         [WCSS_AHB_CLK_SRC] = &wcss_ahb_clk_src.clkr,
->         [GCC_Q6_AHB_CLK] = &gcc_q6_ahb_clk.clkr,
-> @@ -4140,6 +4100,7 @@ static struct clk_regmap *gcc_ipq9574_clks[] = {
->         [GCC_SNOC_PCIE1_1LANE_S_CLK] = &gcc_snoc_pcie1_1lane_s_clk.clkr,
->         [GCC_SNOC_PCIE2_2LANE_S_CLK] = &gcc_snoc_pcie2_2lane_s_clk.clkr,
->         [GCC_SNOC_PCIE3_2LANE_S_CLK] = &gcc_snoc_pcie3_2lane_s_clk.clkr,
-> +       [GPLL0_OUT_AUX] = &gpll0_out_aux.clkr,
->  };
->
->  static const struct qcom_reset_map gcc_ipq9574_resets[] = {
-> @@ -4326,7 +4287,19 @@ static const struct qcom_cc_desc gcc_ipq9574_desc = {
->
->  static int gcc_ipq9574_probe(struct platform_device *pdev)
->  {
-> -       return qcom_cc_probe(pdev, &gcc_ipq9574_desc);
-> +       struct regmap *regmap;
-> +
-> +       regmap = qcom_cc_map(pdev, &gcc_ipq9574_desc);
-> +
-> +       if (IS_ERR(regmap))
-> +               return PTR_ERR(regmap);
-> +
-> +       /* Keep the critical clocks always-On */
-> +       regmap_update_bits(regmap, 0x17030, BIT(0), BIT(0)); /* gcc_nssnoc_nsscc_clk */
-> +       regmap_update_bits(regmap, 0x17028, BIT(0), BIT(0)); /* gcc_nssnoc_snoc_clk */
-> +       regmap_update_bits(regmap, 0x1707C, BIT(0), BIT(0)); /* gcc_nssnoc_snoc_1_clk */
-> +
-> +       return qcom_cc_really_probe(pdev, &gcc_ipq9574_desc, regmap);
->  }
->
->  static struct platform_driver gcc_ipq9574_driver = {
-> --
-> 2.34.1
->
->
+But again, that's a separate discussion. Don't make this patch depend on
+that.
 
+> > But whoever updates those properties need to do some proper testing to
+> > make sure that those interrupts really work.
+> 
+> They seem to, check /proc/interrupts before and after adding an e.g. 45degC
+> trip point on one of the CPU thermal zones, they fire aplenty.
 
--- 
-With best wishes
-Dmitry
+That's not proper testing. Add/enable debugging in the thermal driver
+and make sure that you trigger precisely once when passing the threshold
+in both directions.
+
+Johan
 
