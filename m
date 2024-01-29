@@ -1,72 +1,73 @@
-Return-Path: <linux-kernel+bounces-42816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42817-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 189A5840736
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:39:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AD7384073D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:41:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7DA6287A22
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:39:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E97CA28AAF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:40:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB220651AF;
-	Mon, 29 Jan 2024 13:39:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B3AC657A9;
+	Mon, 29 Jan 2024 13:40:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="Mq/rZv4g"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sKvyrcZ7"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BAC165197
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 13:39:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64E3B612FE;
+	Mon, 29 Jan 2024 13:40:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706535575; cv=none; b=OnjOGVEtJ5VRkSR9H0LE7/W4wTX+xFXRe4rxNedeqwL96zW/0iKqP569g83gEABMExOUacL0jkZZz5b7lsUTtRqmZTse5Ic4ue501H9cY8HRUuIQj/EpJ3gW4v0XTKvFwud1PvfV161AX11ZMTQd8jx0hN1S5fSnCcTMAW4+k9M=
+	t=1706535650; cv=none; b=S22EwhsLIRvQxQj5EwLXj8HjTPdb1HENgAG4bjCwM8DTGpHDs4ut4/i0/rfA8AjUzdM81SppHeYnidANMUNLgR/lhnsmjwzvtP7t/Ns7ak64xaKV2ExiGlulzZRZDc6Cv5CahDHZLN+XntQTiyY32cloopATd41WS4IdsMuNaUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706535575; c=relaxed/simple;
-	bh=DZLG/eaOFFdhgnpZbe7dOvuKH3LsocoZcT6b84kQCRU=;
+	s=arc-20240116; t=1706535650; c=relaxed/simple;
+	bh=myYtOyQpPG13KAG+Jfjgn0hzsfD9Kx1Zu98b8RETqnA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y+6Szd1bXFZ3RU2hYagh/mDZjNn/AR++5otbepyF3MMBRbEJdL3dKe8v8cG2TxHC3aYG4Trcs91ZEAHT/UknpdT/bj2sV+5hhrL2mB8zBNhwhhkTSooo/N6CbMIfj9SElVYgxwA6wem40+0E5qNfVrYk+8413VkWt8LwyGz+wiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=Mq/rZv4g; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=DZLG
-	/eaOFFdhgnpZbe7dOvuKH3LsocoZcT6b84kQCRU=; b=Mq/rZv4guvldS3IWM2Ag
-	LwXdXmI/RnxvHNR/0tEUAbnWEXNfgA2RrQggsPjmuSkwuH5GU+5c7ReNkhYvnJVW
-	Ovj04jF4YuG0vkrG7EYLKNNEHaA74C16T/pCrrOLv240lUMNB4BINpGpg3Ss0kkt
-	bpd6Ex8ZKeJvq5Oqinh/FkX506nQU+En+Kv3G25//V8md8SHK2sVUIVR+/6h0JrJ
-	XLIQ/HVh3JklNJcIT8K5Cki2QRLhIZRPs/GIMpb8NOlvIXJaopQkIYDOXNWu0mEx
-	qoyqix4n4RrjBFq2aSfTA9362eT8o2Vy6LqlXhRqYxLp5GIJ4GIrsPQtGLGDyQDv
-	Tw==
-Received: (qmail 2495069 invoked from network); 29 Jan 2024 14:39:28 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 29 Jan 2024 14:39:28 +0100
-X-UD-Smtp-Session: l3s3148p1@5x5axhUQtJRehhtJ
-Date: Mon, 29 Jan 2024 14:39:27 +0100
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-renesas-soc@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v3 2/2] arm64: dts: renesas: ulcb-kf: add node for
- GNSS
-Message-ID: <Zbeqj9c49GXIOWAs@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-renesas-soc@vger.kernel.org,
-	Magnus Damm <magnus.damm@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-References: <20240117131807.24997-1-wsa+renesas@sang-engineering.com>
- <20240117131807.24997-3-wsa+renesas@sang-engineering.com>
- <CAMuHMdX7Z8w0JykKuboP__ZE4x+LeKSQAGdyrUezERxysPUCKA@mail.gmail.com>
- <ZbPKPGB7DIHhZ3GJ@ninjato>
- <CAMuHMdW6KV0Gh-JA8x2Z_vj2n5QPDLLFFZRNLUg2rdc3wFqChg@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=GEeR2JDh2ciP1J0Mhx1Z80F6+LW0WBhpej0Ro7y9RP1/TiWaGTJ36POqTTZ/w44uocN6hdn6DO/VmiVAYbypyhWg4/jdbZWuomp9ZMSoiAqtWZLlSrPsFVsttbj+1CeACJyQdLskLQ0dC5Py8tIlLgOfthuqvZVB5yFSKdu08Ac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sKvyrcZ7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9736C433F1;
+	Mon, 29 Jan 2024 13:40:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706535650;
+	bh=myYtOyQpPG13KAG+Jfjgn0hzsfD9Kx1Zu98b8RETqnA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sKvyrcZ7UjClhy7LEb2Fw37rHo77QPoiM+4zbmX8dA2tp90YgGt5gXUUyWBXpvb8o
+	 p61PHtTg9Gw/Pg3V8ZRnltW500xu5TIWQ7ZxTs8prLIzVKwqA6ek5XUMOUbNxC+sRn
+	 3CB3RW4khTD/jBvITNGq5zMLZ6QehQZYRr6WrHXmQyLXgIAqcd3ICkMYVSkRWSDkdo
+	 53BHcGc/e7vzphQ2FGdOzfsd3P1MeClj61bcwwQGJVzfAm9qBbZnTqsdrJ6PkUDJKD
+	 sgj0lmx4bMsil2WAGAUYBGL5rPf4MB84DxvQrUaNJrINb9KH1yYtvwcsUmojKrhLox
+	 8neiCg+nICL0w==
+Date: Mon, 29 Jan 2024 13:40:42 +0000
+From: Mark Brown <broonie@kernel.org>
+To: "Ding, Shenghao" <shenghao-ding@ti.com>
+Cc: "conor+dt@kernel.org" <conor+dt@kernel.org>,
+	"krzysztof.kozlowski@linaro.org" <krzysztof.kozlowski@linaro.org>,
+	"robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>,
+	"Lu, Kevin" <kevin-lu@ti.com>, "Xu, Baojun" <baojun.xu@ti.com>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"P O, Vijeth" <v-po@ti.com>,
+	"lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+	"perex@perex.cz" <perex@perex.cz>,
+	"pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>,
+	"13916275206@139.com" <13916275206@139.com>,
+	"Chawla, Mohit" <mohit.chawla@ti.com>,
+	"linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>,
+	"soyer@irl.hu" <soyer@irl.hu>, "Huang, Jonathan" <jkhuang3@ti.com>,
+	"tiwai@suse.de" <tiwai@suse.de>, "Djuandi, Peter" <pdjuandi@ti.com>,
+	"McPherson, Jeff" <j-mcpherson@ti.com>,
+	"Navada Kanyana, Mukund" <navada@ti.com>
+Subject: Re: [EXTERNAL] Re: [PATCH v2 1/4] ASoc: PCM6240: Create PCM6240
+ Family driver code
+Message-ID: <00acc379-2812-43da-aa14-4a43a0d25f79@sirena.org.uk>
+References: <20240126035855.1785-1-shenghao-ding@ti.com>
+ <6c1d04be-c558-4aa4-96a3-ac21ae36bfae@sirena.org.uk>
+ <39804840911a44c8b9da9478f7b4c05d@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,43 +75,67 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Ylaf6ZwSg+ufLk5J"
+	protocol="application/pgp-signature"; boundary="Gp4iAJ9213u/5udW"
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdW6KV0Gh-JA8x2Z_vj2n5QPDLLFFZRNLUg2rdc3wFqChg@mail.gmail.com>
+In-Reply-To: <39804840911a44c8b9da9478f7b4c05d@ti.com>
+X-Cookie: Jenkinson's Law:
 
 
---Ylaf6ZwSg+ufLk5J
+--Gp4iAJ9213u/5udW
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Jan 29, 2024 at 05:03:48AM +0000, Ding, Shenghao wrote:
 
-> Indeed, drivers/gnss/ seems to have no support for I2C yet.
+> > It might be better to request the firmware in the I2C probe rather than=
+ in the
+> > ASoC level probe, that way there's more time for the firmware to be loa=
+ded
+> > before we actually need it.  That does mean you can't register the cont=
+rols
+> > immediately though so it may be more trouble than it's worth.
 
-Neither does GPSD. But looking again, I found a I2C->virtualSerial
-script to do it: https://github.com/MaffooClock/gpsd-i2c
+> I once put request_firmware_nowait in i2c_probe, but it sometimes returne=
+d=20
+> error in some platforms. So my customer suggest that it would be moved in=
+to=20
+> the codec_probe. It seemed filesystem is not completely ready in some=20
+> platform during calling the i2c_probe.
 
-Everything exists! :)
+That indicates that this is still racy - shuffling things around has
+papered over a timing issue on their particular system but it's still
+possible to have the card come up before the filesystems are fully ready
+(especially if all the drivers are built in).  If the DSP firmware is
+essential to the device's operation the driver should defer registration
+with the core until the firmware has loaded.  wm8958 should have an
+example of this IIRC.
 
+> > Similarly for the reset, if we reset as early as possible that seems be=
+tter.
 
---Ylaf6ZwSg+ufLk5J
+> As to reset, it is also from my customers' suggestion. they found the iss=
+ue that=20
+> i2c access error in i2c_probe in some platform. So they put it into codec=
+_probe.
+
+That suggests the reset might be missing some delays or something and
+again there might be some issues.
+
+--Gp4iAJ9213u/5udW
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmW3qowACgkQFA3kzBSg
-KbaquQ//T/MwgHTKgIBWLbsnEsH4+wBZgWBfHs8cJfO6pOKm6OTcSVx6+2ULqbAp
-/QMDgt6S5DMzisMTbkTHP+iA1sj11HgPP2CO3cQjRSRbdLZAPnIXvofdVLw6Fiw5
-oM0O/gW/itXtwHhmdL/jQDyJ1eRVwRyQuYmWczdbZ4ShbCem6PXJfq9bP0WEt/8Q
-KUf+sMIHgRZPeRWhRNwaLri1pzq8wZ42e/HYYYHGY9a2UWCauKriITOtbEKK4jjU
-rXPE5ShNlkhBIQuPtjc7xdAh0SJQQXt71FyN6Cv83kbHgiESJ1kj2tnHqpuFhVqp
-C3Vxop1bmXvW0y0zPDNJjVzhiFu9KcXaAUEshYulO5Ysidsu4Oz0buHJEWI9YqYv
-ks/DMCp5YCAiMFeb4duByPy7vh8e7ps01KRaX/TLpxxlWfIKtkRE7dzjhGNrGMd5
-qoE6a38lzb16AFd4/lTBfmzb8vqHd1qDSWVwSdl4t/v03SpPUjAnX3RIT5DAt98e
-QqQdygdjCG4dNJx5TAbJ8eKstePK6PKGNQRxcT+3afqgCgZya0M82Tr+i2M1JSy7
-Oo7LKL/n7L+XdA2FxFWNWOzvRQTknFxKoxa/lTylULtH6n2NQWnudiHPJptgCe+N
-ZBQWL6pzji2hJmtGSNDxm/fq4LPU8NTD2qjEZdfVH+6ix+AVGQY=
-=LQru
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmW3qtoACgkQJNaLcl1U
+h9DGDgf8Ddtf4ZwjLwPbD5U+SfhXdG5PnDKCAG+Dm/99/W5j65NEv4NLVzKe8GO6
+1A+qnYNIQ+8pqs2PpaBUrrVTODhNOk5MEkICREVOVjNwDqmbOhGVe6vw3d9fiST0
+VJOq6t1HQX4BV8TRuYWKr1FQQSc5OkzCccAnNleZrdrnVsQCR5XvzyaNtE1SXaYF
+DJDZ3H6W1p1zOzeOGTErOha62WUjtaaAZ1e7cZmKp5mljc1BUkHAELBJCuUukMkS
+QwnDiHApQ0XspY8efCWcvf5MYu2uBesQaEIxkCp9k4pT7g0iAmD12bf4BpasHeXy
+CNyYPPIVDy9JB/DrXNJYCoFLw+4ULg==
+=19Xl
 -----END PGP SIGNATURE-----
 
---Ylaf6ZwSg+ufLk5J--
+--Gp4iAJ9213u/5udW--
 
