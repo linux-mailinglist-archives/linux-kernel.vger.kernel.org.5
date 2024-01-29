@@ -1,119 +1,116 @@
-Return-Path: <linux-kernel+bounces-42889-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42890-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB0DA840828
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:22:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2028784082B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:22:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A5E61F210FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:22:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B54AAB22E94
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:22:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F50265BC7;
-	Mon, 29 Jan 2024 14:21:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 185F4664C6;
+	Mon, 29 Jan 2024 14:22:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IlUY5qtZ"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BgnpDePZ"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B46D65BB4
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 14:21:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5F0765BAC
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 14:22:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706538087; cv=none; b=uY95gspQRuppJpDoWkw6BzyN5egy2dz/rk0irlT43/6n2dnxHaN3xHb0BA/tt1vl0QGBBsszSFyvcWJn2MpSa8IaU2dNABLEKTJPLnJPPl1wopPvl0/746cHB3Nr03RrF7haYs5xs6mwvcpdvFFgehU4s1HDnQanXFJ9VkwcdF4=
+	t=1706538145; cv=none; b=GDq769AHWVEKVwciX424NUKvoAbic7ZXxxG3ik/GUwlGvHiIyulkc/hxQ8zrP2aQGx28NHQrXG71CK1GLA9qlR4U4NdM3aKAnEnkQTELkO/or/zCBhMzLYR0ESkLbX5y1TXyOMPSJ1URzcri32+RD5kY5JxJb/U68YHIMQUf/KA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706538087; c=relaxed/simple;
-	bh=6ooVY3tCH+LuZLs3fS116FlZFUTRKgmzzxCB52sqz2I=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eKn/ZDLxPNmvHOHHrTBr7MSSuDs4fe7RBO2Gc5GJrJKiYPSfpNbombK/okOT7WXyVV7FHSIvwtpsyej475kXCOtOlrU2TKb6cinqnt+V4Cu8SgClvljyIEG4lv04V8+2o+IZ2nFYnwoci24ObpiMcRUrFhXok9DsyxFpssewrfc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IlUY5qtZ; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a30f7c9574eso291784966b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 06:21:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706538084; x=1707142884; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8xvAQ4GfJSx9uAg2g1Cik9jmurTFuIkBcKsMco4Ol/M=;
-        b=IlUY5qtZrNnt/HMEReAMXpKx2J1wkKRIpzCqi6epixM95fzv0ArgpCJb/Fho+f1IEI
-         Kc+nMZJvh4ErwZeJVufUN1JenKkFC0ynkaSl7J1KdZlcMDI3PLdHDGQc/OQJahXROwpV
-         tX7lcnfgzws36FAEPrX549EHHMoPriRNTyuos/CtLpsp77biLnjB/nAdo7ull8YIwlP2
-         t9fNmam/OK2cgZfYRsqDAUYlaPeH0eS9BrX9BEjXvlFT1afmDL3dldCtgnziDzM+rUuP
-         B1HiLhqMU3kFy0454Ejrccu5BuZOe+KzdzUIIqD+T6LXhrBQviEyzAe8LBjr1AXatUgL
-         zpwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706538084; x=1707142884;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8xvAQ4GfJSx9uAg2g1Cik9jmurTFuIkBcKsMco4Ol/M=;
-        b=oQ1ksNcpHJo3nRlF6EZA5MEZUk6E2l92XXhohVs3CV12WnzpBRwkO9UbVN16Dp0924
-         QEBUH58+Yfahd7Bxc9qje6P1A57CyvvjT7cGMZQuont7SF6AwY/tfkO5nNi1THmLpifR
-         Cod67W3HavtpeFtWlFGnUQsPTRyt1HaDIV5B4Wam2qnBvuOwwQw73A6bxr2SYY65Kxci
-         sO9BmFgqpLRxO0t7G7pBWn6xe6hxEvq6WWl7p4jNRGDPR3/g0YKMQEY8jYYHeogiHker
-         6qlQF55zT6v6xRr4/n8opPlFvLv9U9/Vyx54p9U3dBVedge+Q/akFBnfAd7sWhL9p00N
-         F1xg==
-X-Gm-Message-State: AOJu0YxMJSwCNWxzIZgTh9+Ah3XSPPtEuikvuzqHo11/MmYokAnFX/En
-	Jbv142bQw5JVoSKYsnKmY2L+3bKZgJJRMyfkw0uAUU0Rx3MuRXIFiLKFABniABM=
-X-Google-Smtp-Source: AGHT+IHAFInFVHJG6lhAU3fcYvwUQbSAsGy/m19hvlbJSjKaDCVxBsf8RHHwydjEm/2wZmsKlD3aLw==
-X-Received: by 2002:a17:906:b48:b0:a35:cd66:3e32 with SMTP id v8-20020a1709060b4800b00a35cd663e32mr1394848ejg.35.1706538084240;
-        Mon, 29 Jan 2024 06:21:24 -0800 (PST)
-Received: from krzk-bin.. ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id s12-20020a17090699cc00b00a2cd74b743csm3979681ejn.3.2024.01.29.06.21.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 06:21:23 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Alex Elder <elder@kernel.org>,
-	linux-arm-msm@vger.kernel.org,
-	netdev@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH] dt-bindings: net: qcom,ipa: do not override firmware-name $ref
-Date: Mon, 29 Jan 2024 15:21:21 +0100
-Message-Id: <20240129142121.102450-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706538145; c=relaxed/simple;
+	bh=tCWWZomfJcyxHGHphvF07Z+awA1I576ll6ppz1EFzEw=;
+	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
+	 Content-Type:Date:Message-ID; b=UOlLkgTvtfglTbGO/qaaKHGFw+wRLXXM4JZz23ap8xd/NBZHsJcNuW3EgYX/Hu/EUv6on62DYWFO5diexPgFsJ9asvnpNp7U7mCB5ILXPnzD+JLyYNnBj7RVFXR3XOehEQx0aBh2j+LAxnl5m3I967zWuYLhdt4YJhyz4ZjATTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BgnpDePZ; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706538142;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JY6BkJiBfGvFZHOyLdscqIayyamnbMR5+XLPiL0Fn18=;
+	b=BgnpDePZi02bCUSDHjbqgypEyE1d/isJCszgp/LKhwLuIkfRmqGw7NlxEZYtJ6Cn3u/qkp
+	mETmZJbN6l2xMWVmCGNW2OZot97meMjleVWjLcWL0Msw63nHfCIVVF5fCGmyNVjM5t6FcK
+	Moc0mfODd/VxCIgJFdxPdvgZ669hRnc=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-484-G4-T2WGhNT-FuUxip56YNA-1; Mon,
+ 29 Jan 2024 09:22:19 -0500
+X-MC-Unique: G4-T2WGhNT-FuUxip56YNA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 521DE1C0432A;
+	Mon, 29 Jan 2024 14:22:18 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.245])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 8D63B2166B31;
+	Mon, 29 Jan 2024 14:22:16 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <1726980.McBZPkGeyK@silver>
+References: <1726980.McBZPkGeyK@silver> <20240129115512.1281624-1-dhowells@redhat.com>
+To: Christian Schoenebeck <linux_oss@crudebyte.com>
+Cc: dhowells@redhat.com, Eric Van Hensbergen <ericvh@kernel.org>,
+    Dominique Martinet <asmadeus@codewreck.org>,
+    Latchesar Ionkov <lucho@ionkov.net>,
+    Matthew Wilcox <willy@infradead.org>,
+    Jeff Layton <jlayton@kernel.org>,
+    Christian Brauner <christian@brauner.io>, netfs@lists.linux.dev,
+    v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+    linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/3] 9p: Further netfslib-related changes
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1400270.1706538135.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 29 Jan 2024 14:22:15 +0000
+Message-ID: <1400271.1706538135@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-dtschema package defines firmware-name as string-array, so individual
-bindings should not make it a string but instead just narrow the number
-of expected firmware file names.
+Christian Schoenebeck <linux_oss@crudebyte.com> wrote:
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- Documentation/devicetree/bindings/net/qcom,ipa.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> >  (1) Enable large folio support for 9p.  This is handled entirely by
+> >      netfslib and is already supported in afs.  I wonder if we should =
+limit
+> >      the maximum folio size to 1MiB to match the maximum I/O size in t=
+he 9p
+> >      protocol.
+> =
 
-diff --git a/Documentation/devicetree/bindings/net/qcom,ipa.yaml b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
-index c30218684cfe..53cae71d9957 100644
---- a/Documentation/devicetree/bindings/net/qcom,ipa.yaml
-+++ b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
-@@ -159,7 +159,7 @@ properties:
-       when the AP (not the modem) performs early initialization.
- 
-   firmware-name:
--    $ref: /schemas/types.yaml#/definitions/string
-+    maxItems: 1
-     description:
-       If present, name (or relative path) of the file within the
-       firmware search path containing the firmware image used when
--- 
-2.34.1
+> The limit depends on user's 'msize' 9p client option and on the 9p trans=
+port
+> implementation. The hard limit with virtio transport for instance is cur=
+rently
+> just 500k (patches for virtio 4MB limit fetching dust unfortunately).
+
+Okay.  Is that 500KiB or 512Kib?
+
+> Would you see an advantage to limit folio size? I mean p9_client_read() =
+etc.
+> are automatically limiting the read/write chunk size accordingly.
+
+For reads not so much, but for writes it would mean that a dirty folio is
+either entirely written or entirely failed.  I don't know how important th=
+is
+would be for the 9p usecases.
+
+David
 
 
