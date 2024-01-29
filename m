@@ -1,204 +1,249 @@
-Return-Path: <linux-kernel+bounces-43390-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43391-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAC27841316
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 20:09:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC75F84131F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 20:16:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4AA42B22927
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:09:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A15172886DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:16:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B9214CB24;
-	Mon, 29 Jan 2024 19:09:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A23C94C635;
+	Mon, 29 Jan 2024 19:16:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="rIkU6Ws2"
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YebaDAKh"
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FB963C060
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 19:09:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11EEF1401B
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 19:16:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706555370; cv=none; b=cqIcn7kjvDCNF5nOuG7j5iQBeBLg1GfUbkPyRa0w1gqJ6zWCj6H4BTl7feBIs63fJUhgB8kI0lFOH8pX/Ef7/0c7JWBukrfHDC2XaMTFD2UaO6C1UPMJXpjGOp3CyvOp48nMxer8woaWccZx/UD9D4rOIvR0aGZ6yHpXgpR+q1c=
+	t=1706555789; cv=none; b=keKTkNQgMt3MsCq6Zpwi5vDbP/NUYDhAUTIt2lTe8ACzqmTUsukeMyUWcYIajWdplnaCfMrL+dxJOYjt2M70/fGShz4ozazLMuAyIG7I4hRKP7zR56NW2hMBpqAs/ueZyrSH4UQ59RigUpBOUAi4ZG3dJMtUgaHa49tP+xItLeg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706555370; c=relaxed/simple;
-	bh=511hvbc1Pbq2+EOuaGOVAprY+/qc4fIDXxmZ7B+0s2w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hl/2x/gGECoKw85SoCSMyN8cI5FiS05mOlWPGvenO8x8lBlkuE0cDoSD//hWUcEE4cbe9OvoftyU9FFJZ51UkV3uoaWiEOt8WfSsEPGPIrg7IXzwWpxrfIBnMNOvZsLk6yHiTQRW+ETkOcC9dbZWQtymrCu+poBnjhZcosXQhAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=rIkU6Ws2; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6ddc268ce2bso1703650b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 11:09:28 -0800 (PST)
+	s=arc-20240116; t=1706555789; c=relaxed/simple;
+	bh=Qayk4ythZqaRbfuOzKrPm9wdDeQ7kDu33Z22nbx/cgo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=glKcTjTVEcb2aZ0wq/3lpIPnDkj83uKS+wl16+m8EX/WIPjj/QYldZdQhDSm7D9RMb4lpuLs+IKsJg+7as5HnMUIvFNWTYS5Ot9Ir1hwnxRiFm0+f5DusHyN01Vi9NERwWWW6PtjWJagyPGAHnL2eUwSjHTz1pfNLFDZRyan2VE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YebaDAKh; arc=none smtp.client-ip=209.85.215.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5d3907ff128so2598144a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 11:16:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1706555368; x=1707160168; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1706555787; x=1707160587; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=A+pfwsAR7dQEMZaUbmAmf7P3tGpaqey93GDUy/LCXUY=;
-        b=rIkU6Ws2QKHii+1VfbHJ2qXmJcqT+IfmpgjYD4xzI5MIRFiSvC+xRxCq3OP1SGpSgF
-         4TglgnOJTGktPRPsH8rsgF7lN7JIo5WrTDlJVg1OO4glT8goQETCjiwYdIofMJ5z+XVc
-         D3eVlvTYsLHUwtw4Ginkr08ZTdGu83VGHMZK4=
+        bh=we14nktryRJy2wvi6XVLgSirq+hDUDJitZ06Eruhqe0=;
+        b=YebaDAKhe4fCjHGyx5SmchouOSJfHFGcq/cDNQJ7HvXtwn2MYgUXPWX4hHmQaE7gtY
+         a8m/K10KSHKhuNbq/RgvvpNjyVsyKg7cz3S4KWjlfOig7OMnJaR/Q64d1+Ececo/BXLa
+         YsJaI07kcU4l+/UvQpkyGJWVCTqkCiRLRRJzrAg4igbp+Mrkh1DTS7nyk8XxMEqNgzOF
+         dgJMoYFzaUHVDQMXlkQvZfSzyrSKspDPwVfzb9Dq4zjTBBUOgAonvBEQhi4A5uYpxQ3X
+         golVVYGKXRJHgqHmt8+utkWEG4fINV0y7XFDYngqCoT5QI5e3lPxoFCvbjh112vHZb07
+         3RVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706555368; x=1707160168;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1706555787; x=1707160587;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=A+pfwsAR7dQEMZaUbmAmf7P3tGpaqey93GDUy/LCXUY=;
-        b=uJz0bVlSaXINWODivarFd1gbd4LBlnNFimaPgP6kbqD+7EZq1+kJTUUqam7CVXBbhU
-         gPoT0wrQohXxk3UL1LR/bd5k3hWnFwuSofM1b3s6mSfDcy2xbCt2EpGoefWZkOIGjeJZ
-         h2ttNHVA/7K2uHZZCtENBpPO+yEzf/E/pPen7ISHWrs0lcuAcY5kAxuyB84XAy7Frgs0
-         D667S833EKYqGC2SBXvEs4s7T9bLyhc7g0aVf/4PR4Q8CEZ94Wkrn6Gqpq8VTU2RaHvJ
-         noPv5rFnozolxQILfQOcp41PqnJUM0KJoHxN2zKBd5uHpAcLlBy/p1D6mTs1lDru8VUN
-         VjTw==
-X-Gm-Message-State: AOJu0YwgwifGa+XZ555ZbZic2/vUl8X6D/MTm4JqcvkuC9+56cL7/JW/
-	MG+C/7+DnJFTMFQvSBGhboCkJtiv6c4T3WBmxDlTajTRA4ikBsIrsQk45ApS9Vo=
-X-Google-Smtp-Source: AGHT+IESoPfU8AaOOY4JrFQlBadzLfIdEEVi2A6ryh3PYylu1gurZgUOMvs8PMQt3gmoBwZrfVF57g==
-X-Received: by 2002:a05:6a00:939c:b0:6dd:8767:2fa1 with SMTP id ka28-20020a056a00939c00b006dd87672fa1mr4221676pfb.0.1706555367798;
-        Mon, 29 Jan 2024 11:09:27 -0800 (PST)
-Received: from fastly.com (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
-        by smtp.gmail.com with ESMTPSA id gu7-20020a056a004e4700b006db105027basm6234279pfb.50.2024.01.29.11.09.24
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 29 Jan 2024 11:09:27 -0800 (PST)
-Date: Mon, 29 Jan 2024 11:09:23 -0800
-From: Joe Damato <jdamato@fastly.com>
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	chuck.lever@oracle.com, jlayton@kernel.org,
-	linux-api@vger.kernel.org, brauner@kernel.org, edumazet@google.com,
-	davem@davemloft.net, alexander.duyck@gmail.com,
-	sridhar.samudrala@intel.com, kuba@kernel.org, weiwan@google.com,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Andrew Waterman <waterman@eecs.berkeley.edu>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Dominik Brodowski <linux@dominikbrodowski.net>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jan Kara <jack@suse.cz>, Jiri Slaby <jirislaby@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Julien Panis <jpanis@baylibre.com>,
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-	"(open list:FILESYSTEMS \\(VFS and infrastructure\\))" <linux-fsdevel@vger.kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nathan Lynch <nathanl@linux.ibm.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Steve French <stfrench@microsoft.com>,
-	Thomas Huth <thuth@redhat.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: [PATCH net-next v3 0/3] Per epoll context busy poll support
-Message-ID: <20240129190922.GA1315@fastly.com>
-References: <20240125225704.12781-1-jdamato@fastly.com>
- <65b52d6381de7_3a9e0b2943d@willemb.c.googlers.com.notmuch>
+        bh=we14nktryRJy2wvi6XVLgSirq+hDUDJitZ06Eruhqe0=;
+        b=dp82t5ly4OCUwdpk25mjQryq4OaXGCtyE+BlhVuHbBH2yp0KZGrLwJiA9I5FDB5z22
+         g7ycN3iDFtHSFSAdZkmM5WXkySynRS084eVGiyvXuBmv1iSN64DorlzktlMdEmsr5s6P
+         0S8Wy/lignd6LcRWQZiGHeMzeKh7cqSwPrsy5mM4HdzMli9sgwwFmqYPZfribkJd0AXc
+         9358nV8/SWyetlZH2s9hHlxPPXW5Ey2aNM311KnQfktPo2VtJszv02L8nKMgM6MGySPn
+         ewCrqrsIOHkZi1fhFq8HafAv1aKc8QvYUzXfujBoEH9livdFEboGIKQyM4rvBZp0aJUZ
+         ZK1Q==
+X-Gm-Message-State: AOJu0YzwlMWyFD0ZzyDdVR8seisY02PINFJiVs6M39JAfpHyoxw1f2w+
+	WCxW0Jzr0Pn1Dw9x/aAzyDcKnbQGeurLccE7aC1N8n6kkup9wpnoPtBQg/7XD+rTQ+Q39iJFDmr
+	EjUli4zF96bUyTL+PXnWk8p3ea7xDoGsMow+bQQL7oQjrVvbq
+X-Google-Smtp-Source: AGHT+IETcxJeom82cOjcjhkTNG+N6vPXPjaw3ncehNOVSjCswTqHGZvADR2UV+/I/BOd70NRgztfNVdIZx+uB/myjEI=
+X-Received: by 2002:a05:6a21:2d8c:b0:19c:a0d4:bc93 with SMTP id
+ ty12-20020a056a212d8c00b0019ca0d4bc93mr4213894pzb.31.1706555787440; Mon, 29
+ Jan 2024 11:16:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <65b52d6381de7_3a9e0b2943d@willemb.c.googlers.com.notmuch>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20240127003607.501086-1-andre.draszik@linaro.org>
+ <20240127003607.501086-6-andre.draszik@linaro.org> <CAPLW+4mL1gb_R8PhKaMhwOUTa0GDqat_9W=348ScYj+hBarQJg@mail.gmail.com>
+ <d45de3b2bb6b48653842cf1f74e58889ed6783ae.camel@linaro.org>
+In-Reply-To: <d45de3b2bb6b48653842cf1f74e58889ed6783ae.camel@linaro.org>
+From: Sam Protsenko <semen.protsenko@linaro.org>
+Date: Mon, 29 Jan 2024 13:16:16 -0600
+Message-ID: <CAPLW+4kSka+twSoZmQeMsh3RWermrGG-wyENrr14AmX3zZ2eqA@mail.gmail.com>
+Subject: Re: [PATCH 5/5] clk: samsung: gs101: don't mark non-essential clocks
+ as critical
+To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
+Cc: peter.griffin@linaro.org, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	linux-kernel@vger.kernel.org, kernel-team@android.com, 
+	tudor.ambarus@linaro.org, willmcvicker@google.com, alim.akhtar@samsung.com, 
+	s.nawrocki@samsung.com, tomasz.figa@gmail.com, cw00.choi@samsung.com, 
+	mturquette@baylibre.com, sboyd@kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
+	linux-clk@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jan 27, 2024 at 11:20:51AM -0500, Willem de Bruijn wrote:
-> Joe Damato wrote:
-> > Greetings:
-> > 
-> > Welcome to v3. Cover letter updated from v2 to explain why ioctl and
-> > adjusted my cc_cmd to try to get the correct people in addition to folks
-> > who were added in v1 & v2. Labeled as net-next because it seems networking
-> > related to me even though it is fs code.
-> > 
-> > TL;DR This builds on commit bf3b9f6372c4 ("epoll: Add busy poll support to
-> > epoll with socket fds.") by allowing user applications to enable
-> > epoll-based busy polling and set a busy poll packet budget on a per epoll
-> > context basis.
-> > 
-> > This makes epoll-based busy polling much more usable for user
-> > applications than the current system-wide sysctl and hardcoded budget.
-> > 
-> > To allow for this, two ioctls have been added for epoll contexts for
-> > getting and setting a new struct, struct epoll_params.
-> > 
-> > ioctl was chosen vs a new syscall after reviewing a suggestion by Willem
-> > de Bruijn [1]. I am open to using a new syscall instead of an ioctl, but it
-> > seemed that: 
-> >   - Busy poll affects all existing epoll_wait and epoll_pwait variants in
-> >     the same way, so new verions of many syscalls might be needed. It
-> 
-> There is no need to support a new feature on legacy calls. Applications have
-> to be upgraded to the new ioctl, so they can also be upgraded to the latest
-> epoll_wait variant.
+On Mon, Jan 29, 2024 at 8:37=E2=80=AFAM Andr=C3=A9 Draszik <andre.draszik@l=
+inaro.org> wrote:
+>
+> Hi Sam,
+>
+> On Fri, 2024-01-26 at 21:30 -0600, Sam Protsenko wrote:
+> > On Fri, Jan 26, 2024 at 6:37=E2=80=AFPM Andr=C3=A9 Draszik <andre.drasz=
+ik@linaro.org> wrote:
+> >
+> > >
+> > > Note that this commit has the side-effect of causing earlycon to stop
+> > > to work sometime into the boot for two reasons:
+> > >     * peric0_top1_ipclk_0 requires its parent gout_cmu_peric0_ip to b=
+e
+> > >       running, but because earlycon doesn't deal with clocks that
+> > >       parent will be disabled when none of the other drivers that
+> > >       actually deal with clocks correctly require it to be running an=
+d
+> > >       the real serial driver (which does deal with clocks) hasn't tak=
+en
+> > >       over yet
+> >
+> > That's weird. Doesn't your bootloader setup serial clocks properly?
+> > AFAIU, earlycon should rely on everything already configured in
+> > bootloader.
+>
+> I tried to explain that above, but let me try again...
+>
+> The console UART, and I2C bus 8 are on the same cmu_peric0 controller, an=
+d
+> that cmu_peric0 has two clocks coming from cmu_top, ip and bus. For I2C8 =
+& UART
+> to work, both of these clocks from cmu_top need to to be on as they are t=
+he
+> parent of the i2c8-(ip|pclk) and uart-(ip|pclk) each.
+>
+> The bootloader leaves those clocks running, yes. So earlycon works (for a
+> while).
+>
+> At some point into the boot, one of two things happens:
+> 1) Linux will load the i2c driver. That driver does clock handling
+> (correctly), it will initialise and then it has nothing to do, therefore =
+it
+> disables cmu_peric0's i2c8 ip and pclk clocks. Because at that stage noth=
+ing
+> appears to be using the cmu_peric0's ip clock (the real serial driver has=
+n't
+> initialised yet), Linux decides to also disable the parent ip clock comin=
+g
+> from cmu_top.
+>
+> At this stage, the earlycon driver stops working, as the parent ip clock =
+of
+> the uart ip clock is not running any more. No serial output can be observ=
+ed
+> from this stage onwards. I think what is probably happening is that the
+> console uart FIFO doesn't get emptied anymore, and earlycon will simply w=
+ait
+> forever for space to become available in the FIFO (but I didn't debug thi=
+s).
+>
+> Anyway, the boot doesn't progress, the system appears to hang. In any cas=
+e it's
+> not usable as we have no other means of using it at this stage (network /
+> usb / display etc.).
+>
+> 2) Alternatively, the UART driver will load at this stage. Again, it will
+> tweak the clocks and after probe it will leave its clocks disabled. The
+> serial console driver hasn't taken over at this stage and earlycon is sti=
+ll
+> active. Again, the system will hang, because IP and PCLK have been disabl=
+ed
+> by the UART driver. Once the serial console is enabled, clocks are being
+> enabled again, but because earlycon is still waiting for progress, the
+> boot doesn't progress past disabling ip and pclk. It never gets to enabli=
+ng
+> the serial console (re-enabling the clocks).
+>
+> So in both cases we get some output from earlycon, but the system hangs o=
+nce
+> the first consumer driver of an IP attached to cmu_peric0 has completed
+> probing.
+>
+>
+>
+> > >     * hand-over between earlycon and serial driver appears to be
+> > >       fragile and clocks get enabled and disabled a few times, which
+> > >       also causes register access to hang while earlycon is still
+> > >       active
+> > > Nonetheless we shouldn't keep these clocks running unconditionally ju=
+st
+> > > for earlycon. Clocks should be disabled where possible. If earlycon i=
+s
+> > > required in the future, e.g. for debug, this commit can simply be
+> > > reverted (locally!).
+> >
+> > That sounds... not ideal. The ability to enable earlycon just by
+> > adding some string to bootargs can be very useful for developers.
+> > Maybe just make those clocks CLK_IGNORE_UNUSED, if that keeps earlycon
+> > functional? With corresponding comments of course.
+>
+> CLK_IGNORE_UNUSED doesn't help in this case, the i2c and uart drivers wil=
+l load
+> and probe before earlycon gets disabled and as part of their probing disa=
+ble
+> the cmu_top ip clock going to cmu_peric0
+>
+> If earlycon is not enabled in kernel command line, everything works fine,=
+ the
+> kernel buffers its messages and once the real serial console driver start=
+s,
+> all messages since boot are being printed.
+>
+> Other than keeping it as CLK_IS_CRITICAL, there is no way that I can see =
+to
+> way to make the hand-over from earlycon to the real serial driver work in
+> all cases.
+>
+> They are not critical clocks for the system, though, so it's wrong to alw=
+ays
+> keep them running unconditionally.
+>
+> We are past a stage where earlycon is generally required.
+>
+> If it's required for some local development, people can revert this patch=
+ locally.
+>
 
-Sure, that's a fair point. I think we could probably make reasonable
-arguments in both directions about the pros/cons of each approach.
+That sounds reasonable. But I wonder if that bit (about making this
+clock CLK_IS_CRITICAL to make earlycon functional) can be documented
+somewhere. Perhaps in the serial driver (earlycon function), or
+somewhere in device tree bindings? Because otherwise it might remain
+an arcane knowledge and people won't be able to use earlycon later.
+Anyways, for this patch:
 
-It's still not clear to me that a new syscall is the best way to go on
-this, and IMO it does not offer a clear advantage. I understand that part
-of the premise of your argument is that ioctls are not recommended, but in
-this particular case it seems like a good use case and there have been
-new ioctls added recently (at least according to git log).
+Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
 
-This makes me think that while their use is not recommended, they can serve
-a purpose in specific use cases. To me, this use case seems very fitting.
+and if you think it makes sense to document the bit above, please do.
 
-More of a joke and I hate to mention this, but this setting is changing how
-io is done and it seems fitting that this done via an ioctl ;)
+>
+> BTW, downstream doesn't suffer from this problem because downstream uses =
+ACG
+> throughout and clocks are enabled automatically in hardware as required.
+>
 
-> epoll_pwait extends epoll_wait with a sigmask.
-> epoll_pwait2 extends extends epoll_pwait with nsec resolution timespec.
-> Since they are supersets, nothing is lots by limiting to the most recent API.
-> 
-> In the discussion of epoll_pwait2 the addition of a forward looking flags
-> argument was discussed, but eventually dropped. Based on the argument that
-> adding a syscall is not a big task and does not warrant preemptive code.
-> This decision did receive a suitably snarky comment from Jonathan Corbet [1].
-> 
-> It is definitely more boilerplate, but essentially it is as feasible to add an
-> epoll_pwait3 that takes an optional busy poll argument. In which case, I also
-> believe that it makes more sense to configure the behavior of the syscall
-> directly, than through another syscall and state stored in the kernel.
+Yes, using QCH clocks (HWACG) seems like a correct way to fix this,
+and would be nice to have otherwise. Alas, it doesn't seems very easy
+to implement, and should probably be based on top of regular clock
+driver anyway. I thought about it for a while, but never came up with
+particular ideas on how to implement HWACG support in Samsung CCF
+framework properly.
 
-I definitely hear what you are saying; I think I'm still not convinced, but
-I am thinking it through.
-
-In my mind, all of the other busy poll settings are configured by setting
-options on the sockets using various SO_* options, which modify some state
-in the kernel. The existing system-wide busy poll sysctl also does this. It
-feels strange to me to diverge from that pattern just for epoll.
-
-In the case of epoll_pwait2 the addition of a new syscall is an approach
-that I think makes a lot of sense. The new system call is also probably
-better from an end-user usability perspective, as well. For busy poll, I
-don't see a clear reasoning why a new system call is better, but maybe I am
-still missing something.
-
-> I don't think that the usec fine grain busy poll argument is all that useful.
-> Documentation always suggests setting it to 50us or 100us, based on limited
-> data. Main point is to set it to exceed the round-trip delay of whatever the
-> process is trying to wait on. Overestimating is not costly, as the call
-> returns as soon as the condition is met. An epoll_pwait3 flag EPOLL_BUSY_POLL
-> with default 100us might be sufficient.
-> 
-> [1] https://lwn.net/Articles/837816/
-
-Perhaps I am misunderstanding what you are suggesting, but I am opposed to
-hardcoding a value. If it is currently configurable system-wide and via
-SO_* options for other forms of busy poll, I think it should similarly be
-configurable for epoll busy poll.
-
-I may yet be convinced by the new syscall argument, but I don't think I'd
-agree on imposing a default. The value can be modified by other forms of
-busy poll and the goal of my changes are to:
-  - make epoll-based busy poll per context
-  - allow applications to configure (within reason) how epoll-based busy
-    poll behaves, like they can do now with the existing SO_* options for
-    other busy poll methods.
-
-> >     seems much simpler for users to use the correct
-> >     epoll_wait/epoll_pwait for their app and add a call to ioctl to enable
-> >     or disable busy poll as needed. This also probably means less work to
-> >     get an existing epoll app using busy poll.
-> 
+>
+> Cheers,
+> Andre'
+>
 
