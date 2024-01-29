@@ -1,167 +1,129 @@
-Return-Path: <linux-kernel+bounces-43185-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43187-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7B7A840D42
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:09:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 375FB840D8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:11:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A853B25C12
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:09:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E82A928CAB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:11:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3760415AAAA;
-	Mon, 29 Jan 2024 17:07:53 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 404166166D
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 17:07:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5FF515B964;
+	Mon, 29 Jan 2024 17:08:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="On+uWy0v"
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9975615B308
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 17:08:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706548072; cv=none; b=u4Vo0nLI+Die/w/fQFSDI0v1tdjJ2MAAGry1JXIZ+6eUJjLhCvLccF5/g3nKG/RbykJcJXb5ZLbo6eqfP7fYaPOHHx8AA6EUWw1pE35mNSsB/jSj66UQAJKriNNANql3FqrSKZlwfcRMMTrOZS2IS2Lq7G2pJ8IVOqgKpCSZxcY=
+	t=1706548121; cv=none; b=uGh54s1MOpC0L+LxxjfQC7I2fh8nP3Eu93J2acGjV8YR7Mupup9ZpCWtq/vua8FXJybPK0xEnuAKklAlcXlabcR0ZH9cZH1awBYjSz4Z/j/nUj3pWkI866M2Ii69vGAzYv1qBxIhqf7aUPv360UPywrKuhRGNX1Ca4oQ0FkN7o0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706548072; c=relaxed/simple;
-	bh=ztUZhYu4cJ+2Ais77SXBMRY7jNrgEZe37F6IuGLKA14=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Mg08vNf4Z8N0p+MEnM41gqXUnuNMEJcakuTpE0TCzDYxvzoJlOxNf5B4PqV1HrO42nIf0WdPAjZD0UokZVGbMPbEXRJk/iXiPHxu8DlRpQq8HjHB7wQyUqCqKRpbAR83mEhL5DqsTj3b9uuppfgmc8FKhdXMhryKiFeoVJyuUgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1E1B8DA7;
-	Mon, 29 Jan 2024 09:08:33 -0800 (PST)
-Received: from [10.57.77.253] (unknown [10.57.77.253])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 330813F738;
-	Mon, 29 Jan 2024 09:07:48 -0800 (PST)
-Message-ID: <154b01c4-2ce3-4b85-abb6-b3baffe4f272@arm.com>
-Date: Mon, 29 Jan 2024 17:07:46 +0000
+	s=arc-20240116; t=1706548121; c=relaxed/simple;
+	bh=UFA2sbZ3Uszgy+yX9T1/72+bJwfqcVAD5CapdxRxgN0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=U0boYOChQdIEGFXKdA4Y2ywBdBr9OAa4EsxC45x1hmQdMcnlok5BeuPY6wmRGdDctqr8OWUHpMFua+CUNVcbB6BPjAFiOu2xzGfjKRrCC8s6w0FqQmDGw/aYqs9Dd7fM9Eit/OqOcgzVYCQNWkfrEn+QSvYQYCBDLrnbQCEOe0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=On+uWy0v; arc=none smtp.client-ip=209.85.222.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-7d2a78c49d1so1733939241.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:08:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706548118; x=1707152918; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EytCfCt7Mdn+cYY/W3p5gw2x+cwVqNDRPkfT5+zTUNI=;
+        b=On+uWy0vOWV6oVVgcSwFa0WMil8Hqocjk50nCrwJRtMSPGPvQ0Mm7NoGZ42WFprNDn
+         n6wT3QBFwFFvoGCVwqt0QTEQO33zIyvvYbAt9BmiZrCghYbF0CumaGv9Mbk/fI3/ZNCN
+         9IZK2+tavJf4L9tam7xxEWheZ/uvu5SjuqA0s+wCIWy8Vpb5B7GoAddBr2qD8cWPmGa+
+         yj/6yYmxfeDTSpuy3Mg0q2zx5kzQSPXS80VgHm4BkMCOM5Z646JAS4nHBmdt9BuwRKFX
+         ug5lliiZHy0WALv2FJFgiarlw3CF6i5FClmblQkcs+KvKOaSRZ16M3KHV+ucoxhE3KkF
+         RS8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706548118; x=1707152918;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EytCfCt7Mdn+cYY/W3p5gw2x+cwVqNDRPkfT5+zTUNI=;
+        b=WbksMhg0k0r+fBK6aRsjadZDexL2MLm6P5XRxcS/oC0GHp1LBrUo5Kqul8uArLOwnk
+         RmahVzW8+kz3+hVlv1EofL85iqJCELzJXwZwbbeyKj/wCxYouvnsp0c+MNIsNWxaSPFP
+         iZQ7V9HbrZ+Aej3C1JXeqXQfzz/R/n9hGV3A0vXdDAvmnWke3adxltnDAMsvZOTEt3UM
+         mdKhIR1cn9hPrkCJfVPPUVMuzhpUCqGTkyNzFNnyXRB9jPU6Pq0HJ7MQ299blwAobeEB
+         r7nuGUUAs8u6Ibf544lHDh5yRvUfvPdTJ5YyFFeoOP7zGeKIIkd8shUkCLYFjX8F0fY5
+         Cmvg==
+X-Gm-Message-State: AOJu0YwSf+vphvIUTEpevTY+3meCGq5FIzGy1LKlIEnyfMwiAXDrUo6P
+	iSRJVzb95KOVTVsQochaFjXeM9ugfGelAs2WMb+V5+GfvWV3QGXz8vl4khTBf7Xq6nV4cVpJKcN
+	FdO3xGEtyPLktsK7yJbU5jCEVAC3RK0aRX4AB
+X-Google-Smtp-Source: AGHT+IF9Cu5QQ8w4oZJwiWiMcHW4RaXyLjrg31UTRbHFnVHAFPnrShgJD92nkJB3pF4cIqhqy+YlGQA7E/cQ25bGa4E=
+X-Received: by 2002:a05:6122:1799:b0:4b7:57a4:1238 with SMTP id
+ o25-20020a056122179900b004b757a41238mr3247799vkf.14.1706548118338; Mon, 29
+ Jan 2024 09:08:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] perf/arm-cmn: Enable support for tertiary match group
-Content-Language: en-GB
-To: Ilkka Koskinen <ilkka@os.amperecomputing.com>,
- Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240126221215.1537377-1-ilkka@os.amperecomputing.com>
- <20240126221215.1537377-4-ilkka@os.amperecomputing.com>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20240126221215.1537377-4-ilkka@os.amperecomputing.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240118-alice-file-v3-0-9694b6f9580c@google.com>
+ <20240118-alice-file-v3-9-9694b6f9580c@google.com> <1ac11c65-7024-41c3-a788-cfcad8fb6c55@proton.me>
+In-Reply-To: <1ac11c65-7024-41c3-a788-cfcad8fb6c55@proton.me>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Mon, 29 Jan 2024 18:08:27 +0100
+Message-ID: <CAH5fLgjMvh65PXdxnkPAtxNH82UDAwtyXmPK+VJPFTtXfiN2JQ@mail.gmail.com>
+Subject: Re: [PATCH v3 9/9] rust: file: add abstraction for `poll_table`
+To: Benno Lossin <benno.lossin@proton.me>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
+	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
+	Suren Baghdasaryan <surenb@google.com>, Dan Williams <dan.j.williams@intel.com>, 
+	Kees Cook <keescook@chromium.org>, Matthew Wilcox <willy@infradead.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org, 
+	rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024-01-26 10:12 pm, Ilkka Koskinen wrote:
-> Add support for tertiary match group.
- >
-> Signed-off-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
-> ---
->   drivers/perf/arm-cmn.c | 23 +++++++++++++++++++----
->   1 file changed, 19 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/perf/arm-cmn.c b/drivers/perf/arm-cmn.c
-> index dc6370396ad0..ce9fbdcf6144 100644
-> --- a/drivers/perf/arm-cmn.c
-> +++ b/drivers/perf/arm-cmn.c
-> @@ -91,10 +91,13 @@
->   #define CMN600_WPn_CONFIG_WP_COMBINE	BIT(6)
->   #define CMN600_WPn_CONFIG_WP_EXCLUSIVE	BIT(5)
->   #define CMN_DTM_WPn_CONFIG_WP_GRP	GENMASK_ULL(5, 4)
-> +#define CMN600_WPn_CONFIG_WP_GRP	BIT(4)
->   #define CMN_DTM_WPn_CONFIG_WP_CHN_SEL	GENMASK_ULL(3, 1)
->   #define CMN_DTM_WPn_CONFIG_WP_DEV_SEL	BIT(0)
->   #define CMN_DTM_WPn_VAL(n)		(CMN_DTM_WPn(n) + 0x08)
->   #define CMN_DTM_WPn_MASK(n)		(CMN_DTM_WPn(n) + 0x10)
-> +#define CMN_DTM_WP_CHN_SEL_REQ_VC	0
-> +#define CMN_DTM_WP_GRP_TERTIARY		0x2
->   
->   #define CMN_DTM_PMU_CONFIG		0x210
->   #define CMN__PMEVCNT0_INPUT_SEL		GENMASK_ULL(37, 32)
-> @@ -175,8 +178,8 @@
->   #define CMN_CONFIG_WP_DEV_SEL		GENMASK_ULL(50, 48)
->   #define CMN_CONFIG_WP_CHN_SEL		GENMASK_ULL(55, 51)
->   /* Note that we don't yet support the tertiary match group on newer IPs */
-> -#define CMN_CONFIG_WP_GRP		BIT_ULL(56)
-> -#define CMN_CONFIG_WP_EXCLUSIVE		BIT_ULL(57)
-> +#define CMN_CONFIG_WP_GRP		GENMASK_ULL(57, 56)
-> +#define CMN_CONFIG_WP_EXCLUSIVE		BIT_ULL(58)
->   #define CMN_CONFIG1_WP_VAL		GENMASK_ULL(63, 0)
->   #define CMN_CONFIG2_WP_MASK		GENMASK_ULL(63, 0)
->   
-> @@ -1298,7 +1301,9 @@ static struct attribute *arm_cmn_format_attrs[] = {
->   
->   	CMN_FORMAT_ATTR(CMN_ANY, wp_dev_sel, CMN_CONFIG_WP_DEV_SEL),
->   	CMN_FORMAT_ATTR(CMN_ANY, wp_chn_sel, CMN_CONFIG_WP_CHN_SEL),
-> -	CMN_FORMAT_ATTR(CMN_ANY, wp_grp, CMN_CONFIG_WP_GRP),
-> +	CMN_FORMAT_ATTR(CMN600, wp_grp, CMN600_WPn_CONFIG_WP_GRP),
+On Wed, Jan 24, 2024 at 11:11=E2=80=AFAM Benno Lossin <benno.lossin@proton.=
+me> wrote:
+>
+> On 18.01.24 15:36, Alice Ryhl wrote:
+> > +/// Wraps the kernel's `struct poll_table`.
+> > +///
+> > +/// # Invariants
+> > +///
+> > +/// This struct contains a valid `struct poll_table`.
+> > +///
+> > +/// For a `struct poll_table` to be valid, its `_qproc` function must =
+follow the safety
+> > +/// requirements of `_qproc` functions. It must ensure that when the w=
+aiter is removed and a rcu
+>
+> The first sentence sounds a bit weird, what is meant by `_qproc` function=
+s?
+> Do you have a link to where that is defined? Or is the whole definition t=
+he
+> next sentence?
 
-Perhaps an easy confusion, but 4 != 56: CMN_CONFIG_WP_* represent 
-perf_event->config{,1,2} attribute fields per the CMN_CONFIG_* pattern, 
-whereas CMN*_WPn_CONFIG_* are hardware register fields where "config" is 
-just annoygingly part of the register name.
+Yeah. Does this wording work better for you?
 
-> +	CMN_FORMAT_ATTR(NOT_CMN600, wp_grp, CMN_CONFIG_WP_GRP),
+/// For a `struct poll_table` to be valid, its `_qproc` function must
+follow the safety
+/// requirements of `_qproc` functions:
+///
+/// * The `_qproc` function is given permission to enqueue a waiter to
+the provided `poll_table`
+///   during the call. Once the waiter is removed and an rcu grace
+period has passed, it must no
+///   longer access the `wait_queue_head`.
 
-Hmm, I'm sure last time I tried something like this, sysfs wouldn't let 
-two attributes with the same name exist, regardless of whether one was 
-meant to be hidden :/
-
-TBH I think that either we change ABI for everyone consistently, or we 
-extend the field in a backwards-compatible way. If you think an ABI 
-break would affect existing CMN-600 users, then surely at stands to 
-affect existing CMN-650 and CMN-700 users just as much?
-
-> +
->   	CMN_FORMAT_ATTR(CMN_ANY, wp_exclusive, CMN_CONFIG_WP_EXCLUSIVE),
->   	CMN_FORMAT_ATTR(CMN_ANY, wp_combine, CMN_CONFIG_WP_COMBINE),
->   
-> @@ -1398,8 +1403,11 @@ static u32 arm_cmn_wp_config(struct perf_event *event)
->   
->   	config = FIELD_PREP(CMN_DTM_WPn_CONFIG_WP_DEV_SEL, dev) |
->   		 FIELD_PREP(CMN_DTM_WPn_CONFIG_WP_CHN_SEL, chn) |
-> -		 FIELD_PREP(CMN_DTM_WPn_CONFIG_WP_GRP, grp) |
->   		 FIELD_PREP(CMN_DTM_WPn_CONFIG_WP_DEV_SEL2, dev >> 1);
-> +
-> +	if (grp)
-> +		config |= is_cmn600 ? CMN600_WPn_CONFIG_WP_GRP :
-> +				      FIELD_PREP(CMN_DTM_WPn_CONFIG_WP_GRP, grp);
-
-FWIW I think something more like "if (is_cmn600) grp &= 1;" before the 
-existing assignent might be clearer. Note that that *is* effectively how 
-this works already since CMN_DTM_WPn_CONFIG_WP_GRP was updated, it's 
-just currently implicit in CMN_EVENT_WP_GRP().
-
->   	if (exc)
->   		config |= is_cmn600 ? CMN600_WPn_CONFIG_WP_EXCLUSIVE :
->   				      CMN_DTM_WPn_CONFIG_WP_EXCLUSIVE;
-
-You've missed the "(combine && !grp)" logic below this point, which also 
-needs to get rather more involved if a combined match across groups 1 
-and 2 is going to work correctly.
-
-> @@ -1764,6 +1772,13 @@ static int arm_cmn_event_init(struct perf_event *event)
->   		/* ...and we need a "real" direction */
->   		if (eventid != CMN_WP_UP && eventid != CMN_WP_DOWN)
->   			return -EINVAL;
-> +
-> +		if (cmn->part != PART_CMN600)
-> +			if (CMN_EVENT_WP_GRP(event) > CMN_DTM_WP_GRP_TERTIARY ||
-> +			    (CMN_EVENT_WP_GRP(event) == CMN_DTM_WP_GRP_TERTIARY &&
-> +			     CMN_EVENT_WP_CHN_SEL(event) != CMN_DTM_WP_CHN_SEL_REQ_VC))
-> +				return -EINVAL;
-> +
-
-We already don't attempt to sanity-check watchpoint arguments (e.g. 
-chn>3 or chn=1,grp=1), so I'm not really inclined to start. The aim here 
-has always been not to try to understand watchpoints at all, and 
-effectively just pass through the register interface to the user.
-
-Thanks,
-Robin.
-
->   		/* ...but the DTM may depend on which port we're watching */
->   		if (cmn->multi_dtm)
->   			hw->dtm_offset = CMN_EVENT_WP_DEV_SEL(event) / 2;
+Alice
 
