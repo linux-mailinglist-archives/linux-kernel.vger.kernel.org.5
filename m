@@ -1,358 +1,198 @@
-Return-Path: <linux-kernel+bounces-42423-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FA32840130
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:17:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 206F3840135
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:18:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DB4BDB22C44
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:17:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB5E32814E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:18:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8F3155E7A;
-	Mon, 29 Jan 2024 09:16:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 305D25789F;
+	Mon, 29 Jan 2024 09:18:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bGSacqq4"
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="eqtqcmFB";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="dXEVXfQT"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5066555790
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:16:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706519807; cv=none; b=RoPJDD/JG1BwG5N9kSQP+0Bsbw5NNNm0BRWtgGRBp3Fq5Y2ZzicEJoMiooTckCnM4lXggDj5cqPO6jmVtda/NeXdAvm4QF++pXIUJVkOJkDHjbQ+j+3DyC84xYNQYXjaSssN8jgVOOrLSX44ywEkPdYmtbp+RnV4I/J4PTq7hVs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706519807; c=relaxed/simple;
-	bh=4NyS6D5Qofbhb2SQAREqrd3GswVI2CZPZl6TmOTm0fg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=VxhVA7iJI46jHtKXPs3p/tpTIsnuE1iTl2Y2q/e9RD0SqecxnTbU8U4nmO0dhPASlLO1xcPMpiifi0wmsBTs8MnMZlt/SVBIkp0PBXLvPAKvsysjGMET/HQjoaAAPNfTbmnh4RljFTfYLgJ15sTjgf+HMIKRlsm0agix9Yrcl/M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bGSacqq4; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-33af4b34e2cso101673f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 01:16:45 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C698D57865;
+	Mon, 29 Jan 2024 09:18:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706519889; cv=fail; b=NGcaa2GIkAirFdzmUdyOfKmEcymAmEuQPi6GQynDysO57w+NWty89N/E748bOuE+raDaeYm2W0UwAJjsAYpF1Fav8acssMNUkqozx2TEYq5NkbcdokTDAsiME/BYW2F3c0AxKK+Qg/MbRIufwhNu4g6q2NvfJQsJiLxd4VsvIxM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706519889; c=relaxed/simple;
+	bh=/sfAZ7L3l/0NvQ1cVGx6/3f84sXh93T1m8A2NxmTqDk=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=u72KIY958QGKRlJj9S7zd0GI+5iyG5JIWg8pu2E1rZB5+NZj+ZYTyZKE53/vNqXpzvRdf7VJ37T8Slh60cnZNLY81atu8Z5DEwSf/eLtIWmBJ06N1SrS7k0L+z6H1OLfBdTCaXqXowUSBucMf1iLD5AV12cAw9J62UMUacMK3yo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=eqtqcmFB; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=dXEVXfQT; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40T6x3NU019955;
+	Mon, 29 Jan 2024 09:17:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=pcpJ7JgzhEEn2EGUcwn3HUGhg1VWOomkfkEt6VV2p9g=;
+ b=eqtqcmFBSSgnqx2NYWYdaJkoum4F/4/9+pJQ8XTkp9ipJuLHUDYDtGWKvE5joBTiASF1
+ y3HAk4ZhayxkSW6gz1U5vfPApPUwuh6vQkGMGGv3fqWknpAKA8Idt5xb8rFYF0jpJAvL
+ sX8gVNYxEl2odNP2JTEGs5NeGlku9JTj8+KtjAyX9oMJwkDqqdtduq2+A0mLkRerj93h
+ pcF4RQO4/Od8/IG23bWd6xi2TnUB4MvXyTav7d0ddQEMQCvveig65X6KfOQxVhp2Fqe0
+ EEbE6mdgxZ0WFM68Zri9gA05VBN/HYv8RutcnxERECAfiDfDAKr4F7Ydcgce/G0W285d BQ== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vvr8eb8d2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 29 Jan 2024 09:17:18 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 40T8QEAa014589;
+	Mon, 29 Jan 2024 09:17:18 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2168.outbound.protection.outlook.com [104.47.55.168])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3vvr9bm21f-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 29 Jan 2024 09:17:18 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GKZvvrRQbx/hX/ugpohPQTPu9rymy3LLTZqIKohX6yJ9s6813/WsEWp46ZRce3XPnyGPxov2trkdVIj7K788oct63jfwTimaDJRGBL5o9pVgXanKPyTGK1mt9cZ5wQq9+MaXqqP9FPu0g/Bl3kW3hL1NQC2j0aEVJiK6JIstd2UDfwwdNvnic42N+ODSJa4Z/elA/3p4hqAjN+m2LGVh50TNw1us+qw8K4TN+D0c9PLRkReSQxZErTMKuPYUkZrf39BVzEvkUlpg5tZPIM6DllL5Ffsr2JncPMFxK5Xo+2x2ikg5hYpKhdSJy9mm7Z131PYOskotHUk8sWany40zsA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pcpJ7JgzhEEn2EGUcwn3HUGhg1VWOomkfkEt6VV2p9g=;
+ b=hvCPPamT1XI5VZRWspa/U6jxGaVvRLXiib3ehHdD/hfeKDHbxuJSDbo2dFC5edz3/SSiaEuSlh3iBN+ZUz6I6FyQYw69CCTJb+/3zUEd50iLUMPUSy4nAkLlkLt0p7lzJ6LMmE5Rpb4XdpLnlfFti8PmExlgse9P/kXtzyXdxHuW8WqrPDFMlBEzaZpHP0WR6CjVrtNXUJXeqW+e6l9VU/3ddKh9OSQDW/pluqhDiC8t5KFPJgl2Kedypo+o31/dIbIGWcsCxlDbyRhyxeFUJbIrotWKy3kT4Pqt8WG46/uyeYDb5OQz9Tvha60S7dNQ2TVyynAWxCbwYa4Wvg96oA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706519803; x=1707124603; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OetDTW52ox4JEw6CgWxlaDanXL4m3ZtE503VRTXSSV0=;
-        b=bGSacqq4Bx/uMFuFjpUFcHJoEkn2OgkQJqGWiIaqbfBtbUNhBXuU0WUKTp6hw3ened
-         nbc1ZqxqqAdd+FkPuXF1Ed9dtzqpgZdBspHdjpxX6TTqvBSOxPpEa/BUAfsYQrfz7ctL
-         02eLLu0ahmApjSkEzHJK6xeo+z+jnWoiGjIOtdXF5wwN4JIMBJFED4yZKeM8qXJlsbPx
-         pHdk1zwFchR/11hv8uGMtH0X2mgnjF9zsD/hIiIxxzVgoARbsqVXx+AbuMO5RrQWCmUg
-         Gn5nt0mZl8tnvcQhq3g3b+USOcrCFhUjWjESQ7OgUFWY1sE9ovXZV1BrhrUUvwtbtxlG
-         IIbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706519803; x=1707124603;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OetDTW52ox4JEw6CgWxlaDanXL4m3ZtE503VRTXSSV0=;
-        b=tukc3MbACMmvsute0symiEtV8Ek6D3xudsH0JmgLyVS5ob/rEEgUExZ03TSds2Irfp
-         5F5ld9nY1Vckyhf4nHn5/GRo+53MYUzeVzgJdiFjsk43iHwoQXKiUzCw6/hR27AIEB20
-         kEtCBpdvNNg7EH/7Q/PDtchaZYBtEyTq9352OWczH54mtboguyyVSY8j0n5L3PhvP8sA
-         cU3fsMwX2TM/9c93qsptMfLY/XmUJcgIfBqzoND8w4DzIvRVN/qbLKoTHMZV4C61Tfuo
-         HlJdWynv2q9xjQe/wZW7WDkf7/9/HH5OhoKFHHWiDad0BeEfBSlHinin4p2tvWiL3uqR
-         NUOg==
-X-Gm-Message-State: AOJu0YzmClzOyQmkVi15snVzmDrTwXwyjnTSdIHAqJEIFzT4hV3Vcdi3
-	QQA3u/Tssyg+fbFIVK7FlPLmgNQ5OKNuAYUaSs6VMtdg2pXlC4Nd/ih4FckVv1U=
-X-Google-Smtp-Source: AGHT+IHEaVC3jg0Z/Kp44EOxFGL3kQrfQN2WdpS3j0NCaOlBXdoSrOYL0T27GepzO98iWarPzWHftA==
-X-Received: by 2002:adf:e943:0:b0:33a:e653:96b with SMTP id m3-20020adfe943000000b0033ae653096bmr3622091wrn.21.1706519803632;
-        Mon, 29 Jan 2024 01:16:43 -0800 (PST)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id b7-20020adfee87000000b0033aebf727b2sm2818198wro.60.2024.01.29.01.16.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 01:16:43 -0800 (PST)
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Date: Mon, 29 Jan 2024 10:16:38 +0100
-Subject: [PATCH v15 4/4] Input: goodix-berlin - add SPI support for Goodix
- Berlin Touchscreen IC
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pcpJ7JgzhEEn2EGUcwn3HUGhg1VWOomkfkEt6VV2p9g=;
+ b=dXEVXfQTInI10lo5jwG8DfknJPxmCY0shSENmZJFDY6AVYQw1oDQAwYD4cF+ZwWaPAFFvUX3Ich8zpMDIF+mWu/nBVi1sv4x1NS38ynbAPQ9g5QtPRjBA3PARCgK3hVpYL82CVCQg9TNY+0DcKAipDu8la5+tYOakC/x7xJD/Xg=
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
+ by SJ0PR10MB4688.namprd10.prod.outlook.com (2603:10b6:a03:2db::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.32; Mon, 29 Jan
+ 2024 09:17:16 +0000
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::f11:7303:66e7:286c]) by DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::f11:7303:66e7:286c%5]) with mapi id 15.20.7228.029; Mon, 29 Jan 2024
+ 09:17:16 +0000
+Message-ID: <60dc2c30-bb05-4388-9a17-d325fda25bee@oracle.com>
+Date: Mon, 29 Jan 2024 09:17:11 +0000
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 00/15] block atomic writes
+To: Christoph Hellwig <hch@lst.de>
+Cc: axboe@kernel.dk, kbusch@kernel.org, sagi@grimberg.me, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, djwong@kernel.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, dchinner@redhat.com, jack@suse.cz,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+        linux-scsi@vger.kernel.org, ming.lei@redhat.com, ojaswin@linux.ibm.com,
+        bvanassche@acm.org
+References: <20240124113841.31824-1-john.g.garry@oracle.com>
+ <20240129061839.GA19796@lst.de>
+Content-Language: en-US
+From: John Garry <john.g.garry@oracle.com>
+Organization: Oracle Corporation
+In-Reply-To: <20240129061839.GA19796@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DB8PR06CA0040.eurprd06.prod.outlook.com
+ (2603:10a6:10:120::14) To DM6PR10MB4313.namprd10.prod.outlook.com
+ (2603:10b6:5:212::20)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240129-topic-goodix-berlin-upstream-initial-v15-4-6f7d096c0a0a@linaro.org>
-References: <20240129-topic-goodix-berlin-upstream-initial-v15-0-6f7d096c0a0a@linaro.org>
-In-Reply-To: <20240129-topic-goodix-berlin-upstream-initial-v15-0-6f7d096c0a0a@linaro.org>
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
- linux-input@vger.kernel.org
-Cc: Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Bastien Nocera <hadess@hadess.net>, 
- Hans de Goede <hdegoede@redhat.com>, Henrik Rydberg <rydberg@bitmath.org>, 
- Jeff LaBundy <jeff@labundy.com>, linux-arm-msm@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Neil Armstrong <neil.armstrong@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=8094;
- i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=4NyS6D5Qofbhb2SQAREqrd3GswVI2CZPZl6TmOTm0fg=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlt2z1cpm+XgwSsKJqACAF9VCd+DXrdfVhLpXTNrTK
- FkuPRjqJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZbds9QAKCRB33NvayMhJ0X4uD/
- 9kECfHMz3XFjUBoZGyXTqaPvK2Qq7u3SsFbaHNfNK1Gl1ZDeLnh5HgFk4CsYtzxW8vcDYk9UpMJXFf
- E1Je5QPfnTel6SyyYb4UtxG+GPpWDikIH3K9tROaDm77dyjmrqhEv95I9z06JBYtWPvgK8Rwvu2V5W
- hF02P9NjxWs5ItZitRYZjrqUl7dg9Z37XDIhrbRFhiPKJvzcRhbfUuZpMDiSgVr8ZxhhtTuiFxpvyY
- Z7hu4Orao5OKEF/MOWKsieUq2Ov+MJB+Cn5AeoKrtQlbdrLsh3asLjLuB5Hf7ZsI8cG67XfzZjpYPh
- NC96kchL0VMx7gwcNQt5V1F1douVleCqCvQU2+KvAGpgPpSPSBiaazsAC03va4iFfthOp4cF2YPz+8
- F0LSfIerlc3qfs+w5R3h/lVkOQya6L+4wQFhP+vhId5cFQPB6Ymogh+qp7zDG5y472wlcp/dR3LuTz
- HYIKZMslpuaE1MIIofrw77LzHbfH5ahW7K9lwRbLX0o06PSv0Ia96NsRW7VYVExdRyEuBt6UYOWT1Z
- KjMeIyFVtkSQ7ecDE6E4hFdJ9NtuShE/Liu3vfYD6FDxDLPctQXjbYuLWAS/LppPs0IC1+Y9NYfGV0
- 7gdMCnVe7R1EWAMsGckJDwGtQDWfWdAlj9uDYwcRzLrjwgA0Hc6CNRxE54xA==
-X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
- fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|SJ0PR10MB4688:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0e3a547e-2cd7-4a15-d3e1-08dc20ab15b5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	vE3SY66546IxO44E/VUiuuJwRQZCzkSSTpj/bfoCX92vQbWuwiQ7RpfZZVS6nfkw2/qETuk6SEZvx1OzW6hRW5k/khMeK7lWUMwgptR0eRWh5VaNlr03QJcQ8rmPvOKAZaXrO9k0rfZU5QrIGt52uNZK9ooBmujQmQXXPXzUJ0DxwNnX6GAXNWLvBMInWh5nl7Ym6TWZ+o947DmUYWBSHAv4foen4ODv+dDpf9zaltXhGA2yVRIXo6Lj5ytamVE6p6EwVDpHABaBV25Ig0mSBiAXREO53SXelDSUIo5kxn+wUqBKbJKbs1AtsvOrjmoa2n3WmhoxT4FP1cP6GXo4jp8NiEofm5kWm/ZzXa07bXRchASz6OYEROHyO7VlyVOkM+Wk5Bvl5jgD4pk68mHXt+FgJVsT0XTN3w3bNvvnaT4ElyyrD4u2CvQpuLvh20YYY+wXkur/yBqxgP/P+rBRRTfoUO5n2Qmhuq5RoE5bBqUNlloQqbYmsmN6FdlpS/lFIlx049HhHL79R405KnvZH89e8eSOXFMAHYX/N1rY7hwUlyzLG901E8bta2j8tT7Vnnvhjgm47z208bdvisDhk5/Sq7rQHK7K0CZl/Dfoi+nw5a1i77/ji0+ZPV0yJU6Y
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(366004)(396003)(136003)(39860400002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(41300700001)(31686004)(38100700002)(66556008)(53546011)(6506007)(66946007)(36916002)(316002)(6916009)(86362001)(966005)(6486002)(66476007)(8676002)(8936002)(5660300002)(2616005)(6512007)(7416002)(31696002)(478600001)(2906002)(4744005)(4326008)(6666004)(26005)(83380400001)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?NHN5aVowSmJwZUk0NVhubjJrMXdIUzBqa092aTBHSy92VlFrV25DUVFUVTFZ?=
+ =?utf-8?B?TE82TnpxL1pNREhobjRHOHZVc24zbkZ1QmJvVmhSWGtkR2ZIc2VjQTZSa0tk?=
+ =?utf-8?B?TmQrU1U4Zit0SGk4WXNucEh2QTJ5amUyOGpiYVBvclBCeEJ3NHpyY1BRODlx?=
+ =?utf-8?B?aUFWdE1rb2tUTjFyU2Z3Rk1IZUt2UHJ2L2I1b2RYb0NRMmZvb2g0K25RVUhh?=
+ =?utf-8?B?RTVQVEFhUUtCLzVlblpIRmZtOHdlQmR0ejNrSmlRMDNON25BQUNaT0R2T2Nr?=
+ =?utf-8?B?UFRUSjNwRzFtYk8zbTZIdzMzbW8rWXdWc1VHVWRXSmJzWFc3dWFndDdZODJV?=
+ =?utf-8?B?WjQ5SXl2YUNGMTlDY2I5QnRNOVpvRjNBOGxQK0JqMmFzYTNlSHFwS0hQc0RT?=
+ =?utf-8?B?dCt3NUkwL3pONytvTTQ4SEVxNUlUT2xtVkt5OGpsMGRsSDVsRDFNdGQ3Wk5P?=
+ =?utf-8?B?RDlEejlpK29QZkx5YnhmQ3NzVjVPTFd0YmpXNFppTGJSOWtzMzRDbjYra1lG?=
+ =?utf-8?B?Z2RaRGhscDdCRldUbVV0c0swS2hYb3l1S0ZHZXR5MWRGdlR4STZLSXdoOTA0?=
+ =?utf-8?B?SjBlMGpPSENmWUk4WlF2dkNJdGNFYVZBbkRTbjZUR1lYL1JqNkxQZnhBMGdD?=
+ =?utf-8?B?K0ZKLy9ZQnV5K1hrdEptM1NTdGVqb1BYY3RxUzZ5em43OHZTUFhFaGllL3hv?=
+ =?utf-8?B?eXRNVUlOM0xxbnFDcisxR1dZeVZndGlrTVFDczJ5U29TdXBReUI2SG9HTDc5?=
+ =?utf-8?B?ODZoYjRxWjUrb0gxcHoyMGJCT3hZYzZZdFRnUjd6ZXdLajlGRFJOZUdOdlpj?=
+ =?utf-8?B?TVF6Qzdpd3Q1dW9Fc3dMYlN5bjdUNjVURWQ1cmI5aG11VEpCc2ZISVljMVZv?=
+ =?utf-8?B?ZEtnMVhtQ0ZMWmZuQlVLUC9aVnU5cnJRL01lVUtnblhOYUZWN2xiMHUwLzI3?=
+ =?utf-8?B?YzYwMWd4bnI5dDNrcEZxYzdicy94OVZDM1JYYmtXZ0VwOXRSd1hFZWVzWUxN?=
+ =?utf-8?B?Sk1QVDYyL2dzanRpdXNQeXNZUmw3b3MzN09EQlIxUytGZE5odkxrZmdnTmJU?=
+ =?utf-8?B?ZERIb3g3Ui9XSnBxSUpTSkVzcVVmNEtZcVh4VU5xS3pMQlBzalpDdnZxNUVT?=
+ =?utf-8?B?dVUvUDBPcmRwd1NwZHBGMWJUM3pPZ1ZyQ2xiaC81TUpnMXBIdkNxcFhKbXFN?=
+ =?utf-8?B?M1JBQlppRDZKN0k4WTFvL1lIZXZaV3EvWVZLb3Blc3VwUWIxUDZwRzY5OE9K?=
+ =?utf-8?B?bzFqb0RReGw1K3R5Z205NDN1Ump1a21WNmRlZDhGQWpwOWVVL0hzbWx1bjE4?=
+ =?utf-8?B?U2FsaDBIZkhmeEhsaWlFeGJQcHpJQ2g0YWhvZ1c5anhjbWliUVo4NWJuaDFh?=
+ =?utf-8?B?czJtQVcxQnh0L3RrRXBtK0hnYjdVbU5aRmV6Y3dJblpTSTFwLzRaY2R3VzQ5?=
+ =?utf-8?B?VW9TZ1ZyVFhHRE5pcmlsSHljSTYzY0VkL3NBOEpBWHYxWlVoWjN4QUZoZGx2?=
+ =?utf-8?B?RXlDbVpkenVIRDI2aFY2QWM2MDZLREM1OTlUeFRoSjdmdlBBUVlWVzFvNjdn?=
+ =?utf-8?B?SnlPcllTMDNsblNub3IzYUg3cEJPYW1QTnhSV0tEcFpUU3pGUUNqb3pZNU1k?=
+ =?utf-8?B?Vkc3MUpUV2paN2pwN0xZN2tnZjRFZjBLNXRJRC9DaHNwOSsyNzVJZm5xSjlr?=
+ =?utf-8?B?NURUZzNrQjdTUDlnSVN1bWtoYklNSzFpVGcxRkViRWROSUQxQkFqSFJiWkcw?=
+ =?utf-8?B?cjEvOXRSL2Y4ZnB0ekhkeldnbzJsQ1RMZzhvWUt3eFhOY0pkZHhXTTRLV2l1?=
+ =?utf-8?B?eHFDTlp4R1JQcEgyQkQ5MUNYR1RET2Q4eWEzUVpDYjZnRmVWancvdzl4eTFD?=
+ =?utf-8?B?TCswaUpDNmF6ZW9vZGNhY0lVUjN1d3ZlUHUyNWs4SkNBQlIwL1lUTlA0VjhK?=
+ =?utf-8?B?UlpFcmUyQWFqcU9kcEt5ZVcwaEljeU9ZNzI5enErTUovZ1BQWTltMUdDNVpI?=
+ =?utf-8?B?TjlDY3ljTlVVQkx4Q2U1UEJqWlExc09US01rcGxzZUxYb0FnOGoyNG1IZU9n?=
+ =?utf-8?B?NVhuR3JTVGY2eXFuNit3L2JUY2VuNlI4c0RNejgvWXNjbEp2VXVxQkZlaDIv?=
+ =?utf-8?B?eU1rVXNFcjJWdExEMThhOC9RZXkyMGtFV3NYbXZ0dTdJYVNqeEpnQ01KNERL?=
+ =?utf-8?B?Y2c9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	ccNkNKiqXYvBsvnM5OLXn1bv7yJvlbuXdFG429gf8VYKc8MwLHEMxDEaGxADPmi3YaMOVxuebgY5umbLzsX68g0arYh6Px+47CRcPOwvq931F+LaBG9AU8+GrxFMpVKanOzp0MkC44iC9J1sObgBYLpmOPH8jGLCGPEei3aU70pFnJOcEpc5fUxOOXy2N1deFa7I6fHmGESx+UXq3dhHph4oqzV3uy/5845o76rjxLL3tnVHGS/Z9gyHYad/CpGaWif9BzpUMeNE43YlENBiDjxTUqXgt99dkVTsI95Tkzw+q+02N/RupRN2PHi4OHuky2Un1X3UckpXylo86II14SwLWLSn6F6zBqvrR6bXMSMvftEpfQci1t1grkqRZkr7G113r+lKYZfe+YjwINQegR6IYPl3MgFR8MWuFiDGgL/SBmc770cJlZz8WO8nNmWPf+9kSnFw3LBZLZvMk1rwa1Bn3eiIb/9gZTUJ6iyCISGIYyLglC5j1kGbmQqNRvzYI4u7UtxUgjQHwzck5GJZw3ZgPyb/9AeUJiBqic4H0DdsGQb6FR1fMSzAepl9MG2HMWStAuuZnxqYadOlhXoicvkyFt0FMGVVk4Pze0I7HD4=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0e3a547e-2cd7-4a15-d3e1-08dc20ab15b5
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2024 09:17:15.7773
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: AtMEXji7RAmaWU/eq4CzmQ+c8vFVkELCng5ajuKpliRvP2MbMRQK3BRVRywTznM0pKzjZjderPR3FJm6q8cQFQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4688
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-29_04,2024-01-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ bulkscore=0 malwarescore=0 suspectscore=0 phishscore=0 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401290066
+X-Proofpoint-ORIG-GUID: R9JkMT61rdUSkVEykY7sSKwS13YiDam7
+X-Proofpoint-GUID: R9JkMT61rdUSkVEykY7sSKwS13YiDam7
 
-Add initial support for the new Goodix "Berlin" touchscreen ICs
-over the SPI interface.
+On 29/01/2024 06:18, Christoph Hellwig wrote:
+> Do you have a git tree with all patches somewhere?
+>
 
-The driver doesn't use the regmap_spi code since the SPI messages
-needs to be prefixed, thus this custom regmap code.
+They should apply cleanly on v6.8-rc1, but you can also check 
+https://github.com/johnpgarry/linux/commits/atomic-writes-v6.8-v3/ for 
+this series. The XFS series is at top and can be found at 
+https://github.com/johnpgarry/linux/tree/atomic-writes-v6.8-v3-fs
 
-This initial driver is derived from the Goodix goodix_ts_berlin
-available at [1] and [2] and only supports the GT9916 IC
-present on the Qualcomm SM8550 MTP & QRD touch panel.
+Cheers,
+John
 
-The current implementation only supports BerlinD, aka GT9916.
 
-[1] https://github.com/goodix/goodix_ts_berlin
-[2] https://git.codelinaro.org/clo/la/platform/vendor/opensource/touch-drivers
-
-Reviewed-by: Jeff LaBundy <jeff@labundy.com>
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
----
- drivers/input/touchscreen/Kconfig             |  14 ++
- drivers/input/touchscreen/Makefile            |   1 +
- drivers/input/touchscreen/goodix_berlin_spi.c | 178 ++++++++++++++++++++++++++
- 3 files changed, 193 insertions(+)
-
-diff --git a/drivers/input/touchscreen/Kconfig b/drivers/input/touchscreen/Kconfig
-index cc7b88118158..c821fe3ee794 100644
---- a/drivers/input/touchscreen/Kconfig
-+++ b/drivers/input/touchscreen/Kconfig
-@@ -433,6 +433,20 @@ config TOUCHSCREEN_GOODIX_BERLIN_I2C
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called goodix_berlin_i2c.
- 
-+config TOUCHSCREEN_GOODIX_BERLIN_SPI
-+	tristate "Goodix Berlin SPI touchscreen"
-+	depends on SPI_MASTER
-+	select REGMAP
-+	select TOUCHSCREEN_GOODIX_BERLIN_CORE
-+	help
-+	  Say Y here if you have a Goodix Berlin IC connected to
-+	  your system via SPI.
-+
-+	  If unsure, say N.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called goodix_berlin_spi.
-+
- config TOUCHSCREEN_HIDEEP
- 	tristate "HiDeep Touch IC"
- 	depends on I2C
-diff --git a/drivers/input/touchscreen/Makefile b/drivers/input/touchscreen/Makefile
-index 7ef677cf7a10..a81cb5aa21a5 100644
---- a/drivers/input/touchscreen/Makefile
-+++ b/drivers/input/touchscreen/Makefile
-@@ -49,6 +49,7 @@ obj-$(CONFIG_TOUCHSCREEN_FUJITSU)	+= fujitsu_ts.o
- obj-$(CONFIG_TOUCHSCREEN_GOODIX)	+= goodix_ts.o
- obj-$(CONFIG_TOUCHSCREEN_GOODIX_BERLIN_CORE)	+= goodix_berlin_core.o
- obj-$(CONFIG_TOUCHSCREEN_GOODIX_BERLIN_I2C)	+= goodix_berlin_i2c.o
-+obj-$(CONFIG_TOUCHSCREEN_GOODIX_BERLIN_SPI)	+= goodix_berlin_spi.o
- obj-$(CONFIG_TOUCHSCREEN_HIDEEP)	+= hideep.o
- obj-$(CONFIG_TOUCHSCREEN_HYNITRON_CSTXXX)	+= hynitron_cstxxx.o
- obj-$(CONFIG_TOUCHSCREEN_ILI210X)	+= ili210x.o
-diff --git a/drivers/input/touchscreen/goodix_berlin_spi.c b/drivers/input/touchscreen/goodix_berlin_spi.c
-new file mode 100644
-index 000000000000..4cc557da048a
---- /dev/null
-+++ b/drivers/input/touchscreen/goodix_berlin_spi.c
-@@ -0,0 +1,178 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Goodix Berlin Touchscreen Driver
-+ *
-+ * Copyright (C) 2020 - 2021 Goodix, Inc.
-+ * Copyright (C) 2023 Linaro Ltd.
-+ *
-+ * Based on goodix_ts_berlin driver.
-+ */
-+#include <asm/unaligned.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/regmap.h>
-+#include <linux/spi/spi.h>
-+#include <linux/input.h>
-+
-+#include "goodix_berlin.h"
-+
-+#define GOODIX_BERLIN_SPI_TRANS_PREFIX_LEN	1
-+#define GOODIX_BERLIN_REGISTER_WIDTH		4
-+#define GOODIX_BERLIN_SPI_READ_DUMMY_LEN	3
-+#define GOODIX_BERLIN_SPI_READ_PREFIX_LEN	(GOODIX_BERLIN_SPI_TRANS_PREFIX_LEN + \
-+						 GOODIX_BERLIN_REGISTER_WIDTH + \
-+						 GOODIX_BERLIN_SPI_READ_DUMMY_LEN)
-+#define GOODIX_BERLIN_SPI_WRITE_PREFIX_LEN	(GOODIX_BERLIN_SPI_TRANS_PREFIX_LEN + \
-+						 GOODIX_BERLIN_REGISTER_WIDTH)
-+
-+#define GOODIX_BERLIN_SPI_WRITE_FLAG		0xF0
-+#define GOODIX_BERLIN_SPI_READ_FLAG		0xF1
-+
-+static int goodix_berlin_spi_read(void *context, const void *reg_buf,
-+				  size_t reg_size, void *val_buf,
-+				  size_t val_size)
-+{
-+	struct spi_device *spi = context;
-+	struct spi_transfer xfers;
-+	struct spi_message spi_msg;
-+	const u32 *reg = reg_buf; /* reg is stored as native u32 at start of buffer */
-+	u8 *buf;
-+	int error;
-+
-+	if (reg_size != GOODIX_BERLIN_REGISTER_WIDTH)
-+		return -EINVAL;
-+
-+	buf = kzalloc(GOODIX_BERLIN_SPI_READ_PREFIX_LEN + val_size, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	spi_message_init(&spi_msg);
-+	memset(&xfers, 0, sizeof(xfers));
-+
-+	/* buffer format: 0xF1 + addr(4bytes) + dummy(3bytes) + data */
-+	buf[0] = GOODIX_BERLIN_SPI_READ_FLAG;
-+	put_unaligned_be32(*reg, buf + GOODIX_BERLIN_SPI_TRANS_PREFIX_LEN);
-+	memset(buf + GOODIX_BERLIN_SPI_TRANS_PREFIX_LEN + GOODIX_BERLIN_REGISTER_WIDTH,
-+	       0xff, GOODIX_BERLIN_SPI_READ_DUMMY_LEN);
-+
-+	xfers.tx_buf = buf;
-+	xfers.rx_buf = buf;
-+	xfers.len = GOODIX_BERLIN_SPI_READ_PREFIX_LEN + val_size;
-+	xfers.cs_change = 0;
-+	spi_message_add_tail(&xfers, &spi_msg);
-+
-+	error = spi_sync(spi, &spi_msg);
-+	if (error < 0)
-+		dev_err(&spi->dev, "spi transfer error, %d", error);
-+	else
-+		memcpy(val_buf, buf + GOODIX_BERLIN_SPI_READ_PREFIX_LEN, val_size);
-+
-+	kfree(buf);
-+	return error;
-+}
-+
-+static int goodix_berlin_spi_write(void *context, const void *data,
-+				   size_t count)
-+{
-+	unsigned int len = count - GOODIX_BERLIN_REGISTER_WIDTH;
-+	struct spi_device *spi = context;
-+	struct spi_transfer xfers;
-+	struct spi_message spi_msg;
-+	const u32 *reg = data; /* reg is stored as native u32 at start of buffer */
-+	u8 *buf;
-+	int error;
-+
-+	buf = kzalloc(GOODIX_BERLIN_SPI_WRITE_PREFIX_LEN + len, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	spi_message_init(&spi_msg);
-+	memset(&xfers, 0, sizeof(xfers));
-+
-+	buf[0] = GOODIX_BERLIN_SPI_WRITE_FLAG;
-+	put_unaligned_be32(*reg, buf + GOODIX_BERLIN_SPI_TRANS_PREFIX_LEN);
-+	memcpy(buf + GOODIX_BERLIN_SPI_WRITE_PREFIX_LEN,
-+	       data + GOODIX_BERLIN_REGISTER_WIDTH, len);
-+
-+	xfers.tx_buf = buf;
-+	xfers.len = GOODIX_BERLIN_SPI_WRITE_PREFIX_LEN + len;
-+	xfers.cs_change = 0;
-+	spi_message_add_tail(&xfers, &spi_msg);
-+
-+	error = spi_sync(spi, &spi_msg);
-+	if (error < 0)
-+		dev_err(&spi->dev, "spi transfer error, %d", error);
-+
-+	kfree(buf);
-+	return error;
-+}
-+
-+static const struct regmap_config goodix_berlin_spi_regmap_conf = {
-+	.reg_bits = 32,
-+	.val_bits = 8,
-+	.read = goodix_berlin_spi_read,
-+	.write = goodix_berlin_spi_write,
-+};
-+
-+/* vendor & product left unassigned here, should probably be updated from fw info */
-+static const struct input_id goodix_berlin_spi_input_id = {
-+	.bustype = BUS_SPI,
-+};
-+
-+static int goodix_berlin_spi_probe(struct spi_device *spi)
-+{
-+	struct regmap_config regmap_config;
-+	struct regmap *regmap;
-+	size_t max_size;
-+	int error = 0;
-+
-+	spi->mode = SPI_MODE_0;
-+	spi->bits_per_word = 8;
-+	error = spi_setup(spi);
-+	if (error)
-+		return error;
-+
-+	max_size = spi_max_transfer_size(spi);
-+
-+	regmap_config = goodix_berlin_spi_regmap_conf;
-+	regmap_config.max_raw_read = max_size - GOODIX_BERLIN_SPI_READ_PREFIX_LEN;
-+	regmap_config.max_raw_write = max_size - GOODIX_BERLIN_SPI_WRITE_PREFIX_LEN;
-+
-+	regmap = devm_regmap_init(&spi->dev, NULL, spi, &regmap_config);
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
-+
-+	error = goodix_berlin_probe(&spi->dev, spi->irq,
-+				    &goodix_berlin_spi_input_id, regmap);
-+	if (error)
-+		return error;
-+
-+	return 0;
-+}
-+
-+static const struct spi_device_id goodix_berlin_spi_ids[] = {
-+	{ "gt9916" },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(spi, goodix_berlin_spi_ids);
-+
-+static const struct of_device_id goodix_berlin_spi_of_match[] = {
-+	{ .compatible = "goodix,gt9916", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, goodix_berlin_spi_of_match);
-+
-+static struct spi_driver goodix_berlin_spi_driver = {
-+	.driver = {
-+		.name = "goodix-berlin-spi",
-+		.of_match_table = goodix_berlin_spi_of_match,
-+		.pm = pm_sleep_ptr(&goodix_berlin_pm_ops),
-+	},
-+	.probe = goodix_berlin_spi_probe,
-+	.id_table = goodix_berlin_spi_ids,
-+};
-+module_spi_driver(goodix_berlin_spi_driver);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("Goodix Berlin SPI Touchscreen driver");
-+MODULE_AUTHOR("Neil Armstrong <neil.armstrong@linaro.org>");
-
--- 
-2.34.1
 
 
