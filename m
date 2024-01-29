@@ -1,326 +1,159 @@
-Return-Path: <linux-kernel+bounces-42035-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42036-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE6BC83FB7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 01:59:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FFFD83FB82
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 02:00:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 839D2283F51
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 00:59:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A6B92B20C5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 01:00:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20CC8DDD4;
-	Mon, 29 Jan 2024 00:59:24 +0000 (UTC)
-Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2074.outbound.protection.partner.outlook.cn [139.219.146.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57FCBC8C4;
+	Mon, 29 Jan 2024 01:00:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="OigTqese"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77F0F944F;
-	Mon, 29 Jan 2024 00:59:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.146.74
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706489963; cv=fail; b=MTPhtwJ3K9bdbj/E8XAQsC5pVTQDdGYAm7n28ulQS4aI4dOxET9+8zkOCoohU0u1gmuMXatzeOgNJRaq9+2jNKvBVjHN85u9hraw2lUz0oMyW3E/VQ2a3HUwDASRb4QMJoYRBjBhBmUBWRcee1Sh9ycC8yx6WhUIh5pek+anj+k=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706489963; c=relaxed/simple;
-	bh=153z9nphCTtjtmLY0yRQaHO9ivj+TovGeZp8rlL4AZY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=T51SsKKbOwua7pVS5K0FcR5zv4Ge5OLNxFTJ/wl0AF52dXa49JWVZ0WR42Tx4AxxpeuS6nRd3BgN2Pa1bpNH4rrZnSLAoo2oerYO4ub9h9fFocZOrp4y4Pg6LabBdfv5EQjdMLkZRp5hScF6ttJbGxzJait4KPXORIWZmp3rsDE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.146.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LXT9Yy5JeM7kuE32uNBanMBy2aPgWBfuzZWMVeqAy0Rps8L8CpvmQVE2fj3o6TxkPgPoa2HdNIX3JKBIBhCxB05SKDMa8g0WazjBpnuqPvjQeACeVIvXaae5NN97X9TrqVQoeKWsHZdaDTAsPFRZHhn9uU/Tquosmx1Ydz12XrnlnECkcpE1qdFjqK2RbcLTD6ZBRkl2ygPH5FtuX/aa3wxZmqSJQLCXcHVNO6ZAn9KXOTcirpnuF7C1aGNWENQklOcycpGHCq6ec9Ia4CKw2EOSBgWsRa4ztbOjxEBBr/zn/mzvLLBWVu4Ij6dWYlJSNkXe2p7ltkXf0b9k2fesiw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=K7UZdmdyYz24tezUgGACcYCmJKOSO6Q04qEPwmoKWvY=;
- b=MBsYGoRO9KX0ebyIZ+Au6AvXvEvnzFKjFusZlTVoxYb61itBLpQsZLTuDLvoHwU2+tMCmckXyL77jk0zO67qLf020SEDp7qwf3UZc7aADfCMhwHUgeRwg5EBs748cbKPS9gP6/nH/buYnIVMPAe+vbltDYkd3xWurEhfgon9BK5UNBC9biUjVKsuc09kcVVAo0aMMGiphtrRDLafvMXBYYAQVJpczNaLOHqD/0opbdDH7sqaVpzoYEUZNyg78fpKqfLX4INGPUwcnDrVb+ndXOe7ea7R1w1ASPWZsg/c5oA/rq0z4UAv/5pm+qNw9Z/sv6pGtm40B/0jtttdYcIDZg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starfivetech.com; dmarc=pass action=none
- header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=starfivetech.com;
-Received: from BJXPR01MB0855.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c211:18::12) by BJXPR01MB0630.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c211:14::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.28; Mon, 29 Jan
- 2024 00:59:05 +0000
-Received: from BJXPR01MB0855.CHNPR01.prod.partner.outlook.cn
- ([fe80::1ea1:19d5:efef:6fc6]) by
- BJXPR01MB0855.CHNPR01.prod.partner.outlook.cn ([fe80::1ea1:19d5:efef:6fc6%4])
- with mapi id 15.20.7228.029; Mon, 29 Jan 2024 00:59:05 +0000
-From: Minda Chen <minda.chen@starfivetech.com>
-To: Conor Dooley <conor@kernel.org>,
-	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Daire McNamara <daire.mcnamara@microchip.com>,
-	Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc: devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-pci@vger.kernel.org,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Mason Huo <mason.huo@starfivetech.com>,
-	Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-	Kevin Xie <kevin.xie@starfivetech.com>,
-	Minda Chen <minda.chen@starfivetech.com>
-Subject: [PATCH v14,RESEND 01/22] dt-bindings: PCI: Add PLDA XpressRICH PCIe host common properties
-Date: Mon, 29 Jan 2024 08:58:54 +0800
-Message-Id: <20240129005854.3554-2-minda.chen@starfivetech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240129005854.3554-1-minda.chen@starfivetech.com>
-References: <20240129005854.3554-1-minda.chen@starfivetech.com>
-Content-Type: text/plain
-X-ClientProxiedBy: ZQ0PR01CA0035.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c550:2::21) To BJXPR01MB0855.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c211:18::12)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAF9FEEC4
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 01:00:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706490030; cv=none; b=aHj+v3Mf3GzOmp16ru1a+wzyZUgza4PM2N9v/9SUOlAk5jZXOCrexLolqcN35cWc4WUknZHryfRnLi+2S8CICmcy5nRfXz07CIaVkXY3rE4kE1lhZ4+4y3E8s9ob/Fe3/QicQ3WL+1OEscGH3N8Qig5RHARM9+Den/UxZb96eyA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706490030; c=relaxed/simple;
+	bh=YV/bcQkrjkJZfVbuHo0SUwf0M9gitRb1norNvaA7gns=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=H5ponAtBYZcIASVOqMsC4gPniUjgTxVsgL9X7ZGGmfcRIzAgIyo+iLCUFIgMsEO86gzdzvvxTD1i8YWsrwv9ubQWPh89XozXX3jsDtW1xIMFsp2aanSOKXkz54WNRgj/kT3gLIuTGnATE2nLVD/++13zTUMMkM7QKyEYKs0l4Jo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=OigTqese; arc=none smtp.client-ip=209.85.167.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-51111e57a66so151466e87.3
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 17:00:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1706490026; x=1707094826; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=sUl32XdnagElZC/GjdZNn8oS0p+2WjUorr6tDLMCHP4=;
+        b=OigTqeseAW2CIy6Me+bfySidSRXFp9f+4/jDeM6qsR1w4P61zChgRnYMSgbkTzJn57
+         SDV9rpcz4LFWHTVwGg9pqvc7jDPi69eDk872GaHbGI+teXF5oIf/Xb1c7YBDUP8rDbHP
+         TLnjgMywGRGtCyGOrT5YB+qFvvsMOzkS70XeQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706490026; x=1707094826;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sUl32XdnagElZC/GjdZNn8oS0p+2WjUorr6tDLMCHP4=;
+        b=TbVCkoOPNvuthiV0M8v1Xeq+21lSCvJX9oryi2eFb2NH5AFgW+VR56J1a2bUpIk5Fd
+         bSkKr3uZZsolLxTZoLkKLiujDQ+mMr8GL4KCupp3wQ73z6qGYwm+FA5UQuh8N0bJCvWE
+         y+Lp5QM6wLXS8SsBUR3pe21KHVdp1G1UJ4N8MXD6C9Y055UUtB2m+s3g+b8BY7KVMDn/
+         NJ5q9eQofDn9BuqmtmIqtAewbWm1rh9Se2YDE/9mjDYttm3EVkvtneE7wskca2w45gvM
+         x7ERrAm+wP2fu7zSufV1wp3fjG2WYLx3p9GWM6PK3x2oCk+JChJXI/A2HGl38xSOLJXg
+         tWFA==
+X-Gm-Message-State: AOJu0YxPpVfm3/TibhtGiXl+TPgWOtuhnecErchwF8aSYdNKicQtXCOU
+	Bs0xuD5mWDsi3XxChQLwAhctmPc+YVCnvupAPxJz8IvuqmPdF4b8n+tcqqOXwPqxeNK3KQoNNmS
+	OjEk=
+X-Google-Smtp-Source: AGHT+IGlxgk9Ix2el2zaHVYTRTV68H+2zsncOMqnc1AdEZRwCJ+rUBhCAVk4H3KMkoPBvUilbhaVhw==
+X-Received: by 2002:a05:6512:3c95:b0:50e:560c:351 with SMTP id h21-20020a0565123c9500b0050e560c0351mr3124565lfv.3.1706490026681;
+        Sun, 28 Jan 2024 17:00:26 -0800 (PST)
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com. [209.85.208.41])
+        by smtp.gmail.com with ESMTPSA id s8-20020a170906bc4800b00a317165027fsm3430208ejv.13.2024.01.28.17.00.25
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Jan 2024 17:00:25 -0800 (PST)
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55c2c90c67dso1858767a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 17:00:25 -0800 (PST)
+X-Received: by 2002:aa7:d7da:0:b0:55d:333c:1ae with SMTP id
+ e26-20020aa7d7da000000b0055d333c01aemr2876130eds.15.1706490025336; Sun, 28
+ Jan 2024 17:00:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BJXPR01MB0855:EE_|BJXPR01MB0630:EE_
-X-MS-Office365-Filtering-Correlation-Id: e44324e6-6ae8-45c3-d1b6-08dc20657dd7
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	NXU8MG2yF1afcvI7R+rHgU33tw2+zHVRt4qSnBrHqaSOBV2i1og2/rO6nHgFb6mnMHgKLz3af9jzWpBdyT2BDuUQZlD4fRAVhUlfnioVzvgOHjJ73MmDUrp57e6Yuj5seqMv1ljU8dT4/+9V5VVqPcX9e1Hab0UgqjtV6bDHj8xkvRsdPm+yE/o2zIJAbvUGGfO0Z4jHWzmWsGVhQsr5p6DLrHvpiSthFd0GpMCcbb65MI99Wc9IAHgT0m7wyw6LHoNHzJOW3Bv/h88AGj8rT8rkJhZ3NuF5XQGxO4fi+Ztz4U/eTylLxiPGSlHAuvNs7onP6o4JwSQBZxvi3g1JtzLq1WnmYKXxxKe2JY587H0C8ReBChxWO5m6tjzRr84pBCHn2mC0RD1DWyFPlu7G0AJIsvnxb9PyG0GzyMzQLD2Awqk+bnQPBfLUKJgDm0T62lU6hBfuDirkLKexgDb1ieenPjbEOHMDiycSyPgvbWOgzCmaKWCZ9YKqyNbulUk0FQHbhatS7y9LTtTOdOmP1ptQkQvmUZSYCaseYvXQhUOn3hcL3fwHX5mOEWZrnlUV
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BJXPR01MB0855.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(136003)(39830400003)(396003)(346002)(366004)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(83380400001)(41320700001)(40180700001)(86362001)(40160700002)(36756003)(38350700005)(1076003)(38100700002)(2616005)(26005)(107886003)(966005)(2906002)(52116002)(508600001)(6666004)(41300700001)(110136005)(66946007)(66556008)(66476007)(54906003)(5660300002)(8936002)(4326008)(44832011)(8676002)(7416002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?FWBkwTFh5av1f7b2+Vc0Jp9kVM0TM61XGOg/4co21CdnVO+qugd9WJPwm/Lh?=
- =?us-ascii?Q?bcb33fnEtaEI+FHHl/VJ0b+5/iqDMT2rEbzctxH/MFgWGuMT8IAlPJT0+LH0?=
- =?us-ascii?Q?J0a+gxPdVmxtnXCg/xOOryPw0tfW16OmFisiXncNnpVXy99vgsRh28yRmmMo?=
- =?us-ascii?Q?T+R5zf9rcYqaJ3M15UD62bX8YEJksuT7k6knlvi9TT7e6Cc4srTgBZiET+tl?=
- =?us-ascii?Q?M7HY1gkK4Vf3UE636HbrO8/oKwNXgpx2xTWruLyE1tqk0o5Djk0yxmIHhS9x?=
- =?us-ascii?Q?XNfiLLPulQbOzbEXkMC0DWNSqaqaqStY8P6TpAxxMljjpn0XfCdsxEZ5bPrM?=
- =?us-ascii?Q?4+BqVt6cnneNsw8am9yw2VpLfatKiZliaYOLYYl+j5jFA5AwnwX804JQanq2?=
- =?us-ascii?Q?HZ/WFLjKzCW3O0j957k6arKXUk5Q9JPR9nj71gOz18Af+mBNQ5AOiK/htgnq?=
- =?us-ascii?Q?HxFNyltP6mAYTKreVhoLc/KmKnbbHz5SdtuxF43fsOWcRDoyIu7SPZnQPfEf?=
- =?us-ascii?Q?Rkp5RjT0SucSwWCJZYJVe/3qjLdCfvIaiIzhdnn4U6Dla8Ceqo0cR4uncO5V?=
- =?us-ascii?Q?CTQGyRsBhqy4MJrmE8iFFYt7D9YXGf8/YwCzl4p6A81Ob6RuBq8THYNg5uew?=
- =?us-ascii?Q?Oy/Z2qcU/Mn520ZiiLs4ymwbL8d8aodELKqLpdCPp2N+X+cKXfB4rAm3JvC5?=
- =?us-ascii?Q?l2jWVIHTzvjevCCAOKl4GXfqHE6VELxhM8couS2Y4ohHDvEMcW91EeiZj5wn?=
- =?us-ascii?Q?QpYI2XPFzX0gWaYM0MntrsHNWBkDS9WILHOqNAXdT4QJc/JdsOdb+zZyEocD?=
- =?us-ascii?Q?cfV9Bbwyiz5lIIvwCoS9zm1PBByKhYEhU69aVX7xtw2GgE5ZT3rvltpLsvCD?=
- =?us-ascii?Q?nUgQJVdro9wZBgmViQ/z0J52w9kQbJmrzb1vCb6fqhMU3ynbata6gs3X8Vyj?=
- =?us-ascii?Q?ZVgM9mhIIyxfgKmXFkSOwgaLANATuKJX7QApf9zl7jVJJ9YmwT+afuN1nwRF?=
- =?us-ascii?Q?7mdYpIGSedn5qADxidmmv8hmQ3RbZXE4hIWf3b1azBxMrJlep6CzY2zUKRQ0?=
- =?us-ascii?Q?wbbTGNPHje5pJ7+94Mw92cSfbKJIfvHK8j1MHJmcQwPFjNdVJFYuwyBfJvkL?=
- =?us-ascii?Q?2Ef5LU5M5RbfbmqMa+rp7domfDoJnM98FcGBVkLtf645X9VH2C88Bz86i4PC?=
- =?us-ascii?Q?MgfMwtBQyL15mEQSXUZ3zoHjcthxkYkdWeJ+sACoy5zudmBtboH9zE9Uta+I?=
- =?us-ascii?Q?waEWeNYWoqIysvD5QOZFNnQNTaxOJAFWkT8dB3PMbJWf7eOgBLhUEhlEEl1E?=
- =?us-ascii?Q?3ejl5xPKGd13hqscQ+zuw8nzDWMmk7LaZuixPRNNUF5eeAGbSDmfBXVLmd/W?=
- =?us-ascii?Q?ZI9ZzKXTmJ9TV/Atya/C6mPvrKA1nSN67KTK9u9489Va/y85F7p+oJTW9TmM?=
- =?us-ascii?Q?5HkvTZY6O7xu9TQ4GhoxpCs5wCHYpoFBQzXJ5gE1j79HhgmgG+L5R758oOwP?=
- =?us-ascii?Q?RtiDU5Iozoc1bQTV7Z3G4lv5hTMlYaFFyu1xEv7dGRD8WOZBXMZ4X1bryJuU?=
- =?us-ascii?Q?HcjyLlbgURBg396N2LaWmdDwjR+j/WIMeUHm7/+eO+yNwboSR9ysfKP7HJkj?=
- =?us-ascii?Q?6Q=3D=3D?=
-X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e44324e6-6ae8-45c3-d1b6-08dc20657dd7
-X-MS-Exchange-CrossTenant-AuthSource: BJXPR01MB0855.CHNPR01.prod.partner.outlook.cn
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2024 00:59:05.6080
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: U6gGZOPBWmMhHQ+bJPbLya7wl9Ip9IHXhKBZDm+2RzorWWBfVCFXEMT+yJ3ueaYbbGz5RkvmszM68ozAoOny06vlOMNj38N1aUNfCldlI30=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BJXPR01MB0630
+References: <20240126150209.367ff402@gandalf.local.home> <CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
+ <20240126162626.31d90da9@gandalf.local.home> <CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
+ <CAHk-=whNfNti-mn6vhL-v-WZnn0i7ZAbwSf_wNULJeyanhPOgg@mail.gmail.com>
+ <CAHk-=wj+DsZZ=2iTUkJ-Nojs9fjYMvPs1NuoM3yK7aTDtJfPYQ@mail.gmail.com>
+ <20240128175111.69f8b973@rorschach.local.home> <CAHk-=wjHc48QSGWtgBekej7F+Ln3b0j1tStcqyEf3S-Pj_MHHw@mail.gmail.com>
+ <20240128185943.6920388b@rorschach.local.home> <20240128192108.6875ecf4@rorschach.local.home>
+In-Reply-To: <20240128192108.6875ecf4@rorschach.local.home>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Sun, 28 Jan 2024 17:00:08 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wg7tML8L+27j=7fh8Etk4Wvo0Ay3mS5U7JOTEGxjy1viA@mail.gmail.com>
+Message-ID: <CAHk-=wg7tML8L+27j=7fh8Etk4Wvo0Ay3mS5U7JOTEGxjy1viA@mail.gmail.com>
+Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	Linux Trace Devel <linux-trace-devel@vger.kernel.org>, Christian Brauner <brauner@kernel.org>, 
+	Ajay Kaher <ajay.kaher@broadcom.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Add PLDA XpressRICH PCIe host common properties dt-binding doc.
-PolarFire PCIe host using PLDA IP. Move common properties from Microchip
-PolarFire PCIe host to PLDA files.
+On Sun, 28 Jan 2024 at 16:21, Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> >
+> > Wouldn't it be bad if the dentry hung around after the rmdir. You don't
+> > want to be able to access files after rmdir has finished.
 
-Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
-Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Tested-by: John Clark <inindev@gmail.com>
----
- .../bindings/pci/microchip,pcie-host.yaml     | 55 +-------------
- .../pci/plda,xpressrich3-axi-common.yaml      | 75 +++++++++++++++++++
- 2 files changed, 76 insertions(+), 54 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/pci/plda,xpressrich3-axi-common.yaml
+Steven, I already told you that that is NORMAL.
 
-diff --git a/Documentation/devicetree/bindings/pci/microchip,pcie-host.yaml b/Documentation/devicetree/bindings/pci/microchip,pcie-host.yaml
-index f7a3c2636355..7c2d51221f65 100644
---- a/Documentation/devicetree/bindings/pci/microchip,pcie-host.yaml
-+++ b/Documentation/devicetree/bindings/pci/microchip,pcie-host.yaml
-@@ -10,21 +10,13 @@ maintainers:
-   - Daire McNamara <daire.mcnamara@microchip.com>
- 
- allOf:
--  - $ref: /schemas/pci/pci-bus.yaml#
-+  - $ref: plda,xpressrich3-axi-common.yaml#
-   - $ref: /schemas/interrupt-controller/msi-controller.yaml#
- 
- properties:
-   compatible:
-     const: microchip,pcie-host-1.0 # PolarFire
- 
--  reg:
--    maxItems: 2
--
--  reg-names:
--    items:
--      - const: cfg
--      - const: apb
--
-   clocks:
-     description:
-       Fabric Interface Controllers, FICs, are the interface between the FPGA
-@@ -52,18 +44,6 @@ properties:
-     items:
-       pattern: '^fic[0-3]$'
- 
--  interrupts:
--    minItems: 1
--    items:
--      - description: PCIe host controller
--      - description: builtin MSI controller
--
--  interrupt-names:
--    minItems: 1
--    items:
--      - const: pcie
--      - const: msi
--
-   ranges:
-     maxItems: 1
- 
-@@ -71,39 +51,6 @@ properties:
-     minItems: 1
-     maxItems: 6
- 
--  msi-controller:
--    description: Identifies the node as an MSI controller.
--
--  msi-parent:
--    description: MSI controller the device is capable of using.
--
--  interrupt-controller:
--    type: object
--    properties:
--      '#address-cells':
--        const: 0
--
--      '#interrupt-cells':
--        const: 1
--
--      interrupt-controller: true
--
--    required:
--      - '#address-cells'
--      - '#interrupt-cells'
--      - interrupt-controller
--
--    additionalProperties: false
--
--required:
--  - reg
--  - reg-names
--  - "#interrupt-cells"
--  - interrupts
--  - interrupt-map-mask
--  - interrupt-map
--  - msi-controller
--
- unevaluatedProperties: false
- 
- examples:
-diff --git a/Documentation/devicetree/bindings/pci/plda,xpressrich3-axi-common.yaml b/Documentation/devicetree/bindings/pci/plda,xpressrich3-axi-common.yaml
-new file mode 100644
-index 000000000000..31bb17b11e58
---- /dev/null
-+++ b/Documentation/devicetree/bindings/pci/plda,xpressrich3-axi-common.yaml
-@@ -0,0 +1,75 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/pci/plda,xpressrich3-axi-common.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: PLDA XpressRICH PCIe host common properties
-+
-+maintainers:
-+  - Daire McNamara <daire.mcnamara@microchip.com>
-+  - Kevin Xie <kevin.xie@starfivetech.com>
-+
-+description:
-+  Generic PLDA XpressRICH PCIe host common properties.
-+
-+allOf:
-+  - $ref: /schemas/pci/pci-bus.yaml#
-+
-+properties:
-+  reg:
-+    maxItems: 2
-+
-+  reg-names:
-+    items:
-+      - const: cfg
-+      - const: apb
-+
-+  interrupts:
-+    minItems: 1
-+    items:
-+      - description: PCIe host controller
-+      - description: builtin MSI controller
-+
-+  interrupt-names:
-+    minItems: 1
-+    items:
-+      - const: pcie
-+      - const: msi
-+
-+  msi-controller:
-+    description: Identifies the node as an MSI controller.
-+
-+  msi-parent:
-+    description: MSI controller the device is capable of using.
-+
-+  interrupt-controller:
-+    type: object
-+    properties:
-+      '#address-cells':
-+        const: 0
-+
-+      '#interrupt-cells':
-+        const: 1
-+
-+      interrupt-controller: true
-+
-+    required:
-+      - '#address-cells'
-+      - '#interrupt-cells'
-+      - interrupt-controller
-+
-+    additionalProperties: false
-+
-+required:
-+  - reg
-+  - reg-names
-+  - interrupts
-+  - msi-controller
-+  - "#interrupt-cells"
-+  - interrupt-map-mask
-+  - interrupt-map
-+
-+additionalProperties: true
-+
-+...
--- 
-2.17.1
+This is how UNIX filesystems work. Try this:
 
+   mkdir dummy
+   cd dummy
+   echo "Hello" > hello
+   ( sleep 10; cat ) < hello &
+   rm hello
+   cd ..
+   rmdir dummy
+
+and guess what? It will print "hello" after that file has been
+removed, and the whole directory is gone.
+
+YOU NEED TO DEAL WITH THIS.
+
+> And thinking about this more, this is one thing that is different with
+> eventfs than a normal file system. The rmdir in most cases where
+> directories are deleted in eventfs will fail if there's any open files
+> within it.
+
+No.
+
+Stop thinking that eventfs is special. It's not.
+
+You need to deal with the realities of having made a filesystem. And
+one of those realities is that you don't control the dentries, and you
+can't randomly cache dentry state and then do things behind the VFS
+layer's back.
+
+So remove that broken function. Really.  You did a filesystem, and
+that means that you had better play by the VFS rules.
+
+End of discussion.
+
+Now, you can then make your own "read" and "lookup" etc functions say
+"if the backing store data has been marked dead, I'll not do this".
+That's *YOUR* data structures, and that's your choice.
+
+But you need to STOP thinking you can play games with dentries.  And
+you need to stop making up BS arguments for why  you should be able
+to.
+
+So if you are thinking of a "Here's how to do a virtual filesystem"
+talk, I would suggest you start with one single word: "Don't".
+
+I'm convinced that we have made it much too easy to do a half-arsed
+virtual filesystem. And eventfs is way beyond half-arsed.
+
+It's now gone from half-arsed to "I told you how to do this right, and
+you are still arguing". That makes it full-arsed.
+
+So just stop the arsing around, and just get rid of those _broken_ dentry games.
+
+               Linus
 
