@@ -1,80 +1,80 @@
-Return-Path: <linux-kernel+bounces-43619-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43620-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4ABCA8416B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 00:26:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 333FC8416BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 00:26:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8309EB24033
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 23:26:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5318B1C2312A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 23:26:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2410551C38;
-	Mon, 29 Jan 2024 23:25:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D48C9524BB;
+	Mon, 29 Jan 2024 23:25:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V2BH1a++"
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KDgN1dKR"
+Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87FB854679;
-	Mon, 29 Jan 2024 23:25:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49BF07603C;
+	Mon, 29 Jan 2024 23:25:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706570720; cv=none; b=hKB3YjT5sVITpTVT833V7dv+YqSHeJID5P1sJD8PegeTHLkGuNxH5SckwmosNNgsCGtN432si7OOn6D2xS27kauU6VRZJOyPmNjX1M3lI+LX7KIzfrwtbZ20yQtoNRIHOxO2/4aQh8NOTVSYYL0egIpmEzM9sNZV3Mylzfx76IY=
+	t=1706570721; cv=none; b=qIBMu5HkFIXWN4hqaF+uKhI35hKIOt2KOFFKv17WRiKzrcvESxl/LCnpLFbxU2Cg8m8fATKoSVsMAMzA8FJsEQizLMRMhKfw0i+i/2+C1SAcxOtYVko1tdpYSVkLXvussa6V/MJKaUgydqOiAMCrGkZ8mRn7s0xWMO7USPmG1qs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706570720; c=relaxed/simple;
-	bh=tOPwwwAuI3o44t0gdJ5R9ub2RRxXX/bYOQUsMbxK9Ec=;
+	s=arc-20240116; t=1706570721; c=relaxed/simple;
+	bh=6Fxu62jgWecOBzhuRlJqFy8cBWmtPCl5ok4CyaFOmZg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ewXUcH6/uq+LkKvmX/g8PIUr1zVB8i3LFBjVrUCmt1TWqWITX2Rh0pwS44Z1VMsscNrLKT1oPnA+JfGCA+Hk6CqC5tsrL+QcVx3d7yt/tz7VsAp96LWZQFPiPJbhD2EPjPOQcTyRRtgyyojuKHvKPQrCY4QmiCqB1iOEhHEGTfU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V2BH1a++; arc=none smtp.client-ip=209.85.160.173
+	 MIME-Version; b=DxdkqcI0TBVjs2mstDtmQ2xbF/aEyNit7rRt5HVQPGGQZ/EK+DdnBhdSD9IScpY/kUZToL6SLn9NN0aoh+ZYrZk5cPg7geCwZtlH3NmWGPnMaEC2f5ndRe2vlq8WzYxcfFsdxf1ILwlbLqa+8SeCW2z0FR+Fe1FEHdAcp/jh+m8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KDgN1dKR; arc=none smtp.client-ip=209.85.219.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-42a8be32041so26639841cf.1;
-        Mon, 29 Jan 2024 15:25:18 -0800 (PST)
+Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-6868823be58so25072746d6.0;
+        Mon, 29 Jan 2024 15:25:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706570717; x=1707175517; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706570719; x=1707175519; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=NMdvE0HmwIDlVJwOttocbmozTihZY+Emgf8doJHmn8A=;
-        b=V2BH1a++iAiJkf+eQl5HlLhRxRoNPgTCOqS3glBzUZvBBA3sVTFGR4p9/Cc1KX04Mm
-         QrOATetJCNlhiwmRY39vp+bsHJG+DombU4h5b3WO3yIBEvqsL05HU15jNqyZh2K2/o0g
-         0fZLixIcclqu46CVGvybJojOpHjleQzJwYih0UktkGr8vBqcQQYFQwu//PZaLnU4oVUK
-         c1pVnF3kiW7a9i5rWbH9A2ZuiYrvKRWF3IKCL6wA8WZDK/er6r1MzFXxZ47Y8Nyt3ehU
-         qlmP+YshWBY02oI8BgQPZTvswlx7tz3Kyf6N4ZSTHyIFf0BPdpvNLYxVuzOy50mhroTm
-         JFng==
+        bh=Wkmf0C6jjHSizsoyLESwTs8SZ7UOIs7D67BRQdDmsB4=;
+        b=KDgN1dKR8lyIxScp5cmEEZkrHvEg1TPHMl8FM8N6LvIDW0IBLbiQ+mhRbkNlfPk30P
+         1M4rOnbZgbdYPOM1yEg0yU1zJ1ip6ewCviXAJ2jeDRWgn+ZkdviZrSv4TjHx8pESZR00
+         Jn65BqSBHKatJL9csred4uu2MWcY/SzzGFDkI4KO9wwJPcHf4AsNRyhWLbaP91wSIk2B
+         X2EJZ/W3sBsiyJdT9nZO4rjgC7awhXWLT+qK0dlAPc5S5YmynWCLGuZItaFPf/8WYxLc
+         jw8BYdiSAw3VYsZ4VhQV6kihJDxxOqoGhRkWwwei/AAp+aq/lGhiq5vt8VlHg/ICAm5K
+         Hu0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706570717; x=1707175517;
+        d=1e100.net; s=20230601; t=1706570719; x=1707175519;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=NMdvE0HmwIDlVJwOttocbmozTihZY+Emgf8doJHmn8A=;
-        b=PKuaLw9SJrG1SwJnJd3914SOheKx8qsZCINCfMAslR84rS6q9Ry+Y4xYb8ZSTj27nU
-         gMnKZcktDgr4Nm+95ZUNAFtLMCTrYGw9ZgpLQffhpxUIijzKFExJHmfRK/Yn8T+xxVSm
-         5wdwdmbYZ6LqDpFSZcl2VT5bY9Zr4uvauVbPpUcW3YUNF3PwrU2+EztSeTaDMlyWDjTZ
-         N+JhB86T1/sT5te7f/O4j0JzKCTQfKP6Z2+Gayy/CaN/Wj0G7DQQOih92T+RxO3tBFLj
-         oQayHvJ/kKSJDzNnlViuhzvd2LWBk3aD/yJ8qEuEQqgJy0B0X8kRraoqbHnObrSuJTTK
-         j7Xg==
-X-Gm-Message-State: AOJu0YyS8ryGJKVPJXloJqn6pvEEb38pM2tTpfZMoIICzHsofIcehSWv
-	GBU0g01dTDgoVY86/4Ab0Gl53byyzhvOx/hPKIFZFvvKqHi656HA
-X-Google-Smtp-Source: AGHT+IEoTzzZ11Snmk0w5e03CmWrdSYU5OewEBM5Kxnuipd4rpO3o/JfJiRy9wRzK/Ce5SpFa0fUwA==
-X-Received: by 2002:ac8:5902:0:b0:42a:b108:2bfc with SMTP id 2-20020ac85902000000b0042ab1082bfcmr1410819qty.96.1706570717326;
-        Mon, 29 Jan 2024 15:25:17 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWqhd/Xr8rRhpUqIY/vIhZLE8JGCZDnYQcetZlKsBAw+ZifdHNrrGHxz2cMivqKt+YsaUUr/aHbUSEcSFfFHdR6lnIxDatbtnrbLlBrnnbIj59WIY7cT1PLmpqCHeGK2LH6Z1oTMxzm+dRmJZaQLfW1tIi3X7oURYVxDciyv+BdnzGaPY8mWxBF1NwS9sHAHwpfYCjAdPzeNHMfcUpyJjm5+A1nVfVPOxBRiKRtEmNj8moaOySDJnDu8PPrzA6gb1iZHlSYO6MeFmeEKBEWZmwdNUP3DRLudEtVVMPeHL6h5lzdVXKfr/EAYtHlFW6TVymZH3vB+NMCqzZN1rIVR4Z+p8H9C7goSoS4nMQetpjFW6MLzBzAjZJDSKtFdsWWEPrtHmeEocAcQtCwTYlOHoDwDxdIugQ=
+        bh=Wkmf0C6jjHSizsoyLESwTs8SZ7UOIs7D67BRQdDmsB4=;
+        b=M78nK4b5IXN6iZwIGY0c+/CFehWmb4gBhFFcYsX1glUnv1gEdoNSnoB5Zbepvjf3zn
+         G/AZZDfwM42t6SZ/BUBQqcCvgO4z1bJZ+I51B/d+rp4obgzU1Hi/yEhpcu4xl/bNs4PG
+         wJPRAUZLp6FF6e9X7X+BBqPf8od/Mi8eCJECJFi4cZFO3s56QIqSneMMUL4cD2mytLdo
+         NMoF+RcgRkBIS6uMeeLWDJcc5LSaEWKyjLDCy3jQVoA7raX4vU8Nh6ej4iA5tTvJCmoF
+         uvpyb1ElkYT/RXw7/+521eStgUp8dsA2qg0WqxEYjp5AwW6RdtznJOvBlCsa4BcBHsGl
+         oiIA==
+X-Gm-Message-State: AOJu0YxrpmdYACpPPGt7APU6/lcpGSnjZmplfRIVxgJk3mhy0GZJQu4R
+	23njAb7hOERcew7zlOPD/L1I0fiDvuKeU92QCobsDDytplS5sgdN
+X-Google-Smtp-Source: AGHT+IGCR+lvmMOtKqre0oEiCSPn6/0z6kzGljUU4tM7zowHCj/1YUko77lLEnK0OMHEa8Lv2dUGng==
+X-Received: by 2002:a05:6214:2346:b0:686:9f2e:da2a with SMTP id hu6-20020a056214234600b006869f2eda2amr7838680qvb.37.1706570719277;
+        Mon, 29 Jan 2024 15:25:19 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVs9NA+PHx80Po9OCOeTN9DA3FVCtJBFE4fVoVL6y6GacVR/OwCzFmxnocbT1QhDk8f9Ghf2gkiIDLMTY7LA9yf7NW8BWI8ye5Vjtc13omMYAUmkm2QuU6dGJOxEsjRkA/5G1W3zgscHOlYcrE8NGbgGEi1yQUibKIi+eubVgN8dgCev8IsAU3egTyvPdVMm8EtxggTe4GgrYeGRDDIjmO1DOhmHTDaxduH9NuN4lBcHr1vWfuXyER7P1OlG1Fq+FDpNWQnAsAPLPioNwtP2zL6Lajjcnqs76eiq+ZrdOV+0BzbJM1FFOCgfqmDTiVmqEG+wnRceL9bVX1N04tIwQh7noTjzSToS2+L0cYbDYM+2UlrPVYl7svFx2VX0N0=
 Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id j24-20020ac85518000000b0042a86e06fdfsm3376480qtq.37.2024.01.29.15.25.16
+        by smtp.gmail.com with ESMTPSA id di3-20020ad458e3000000b0068c4f1da09csm1430070qvb.120.2024.01.29.15.25.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 15:25:16 -0800 (PST)
+        Mon, 29 Jan 2024 15:25:18 -0800 (PST)
 Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailauth.nyi.internal (Postfix) with ESMTP id 8CE7627C005B;
-	Mon, 29 Jan 2024 18:25:16 -0500 (EST)
+	by mailauth.nyi.internal (Postfix) with ESMTP id 5DB3027C005B;
+	Mon, 29 Jan 2024 18:25:18 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Mon, 29 Jan 2024 18:25:16 -0500
-X-ME-Sender: <xms:3DO4ZZn6VnMGOnQP6RjFiVGSLc2dt0FaiSjnc6IgC0Rk_3ibMHkoSA>
-    <xme:3DO4ZU1FMDwOvUYXXrcAASDs-EfhuwbQmXqRCFlBGS_yi4WgqonomlMASkqh0V6XR
-    NhFPipTiA5acBJSnw>
-X-ME-Received: <xmr:3DO4ZfoHLZ-RoMPfZnJAyXEAv6uu12-R4cr59hywid-u37Abnh31KZqgywVMNw>
+  by compute2.internal (MEProxy); Mon, 29 Jan 2024 18:25:18 -0500
+X-ME-Sender: <xms:3jO4ZW_zuzsHJlpLHeliORnK8yNacwmnyVqWA20VEy7nSwY-4LLdBw>
+    <xme:3jO4ZWt8BkCoZfLjKTZ-kL2RhxXhpbdWlwxO88Ua23cMGNn8Uubz39LErQiXD8OwL
+    tJ8IM9BehOD0ci5sg>
+X-ME-Received: <xmr:3jO4ZcBzj4qtXaDi4D7X0fWBC_pPOU_KBNrab26jIhJC7gaTsEdZAS4iwsJtGA>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedthedgudduucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
@@ -85,18 +85,17 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedthedgudduucetufdoteggod
     gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
     gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
     igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:3DO4ZZltsqZrd_H8Jh5cTFt4ym1dYvLVKj6VWXhIcbfvagPifm5B6w>
-    <xmx:3DO4ZX3kvzsZBN4YRiskIM9CwEyGlS6fdoHBhik55EOyEtxnUHeyfw>
-    <xmx:3DO4ZYszH2IYBE7P9YHta6F-8GcuoWaPx5Ax7e3xYSoc1iOxE7KJlg>
-    <xmx:3DO4ZVM9LrYq3FC4IKRPNcKAoIYtqrUdwzUOS_eJZ2cbuYrAOResqQ>
+X-ME-Proxy: <xmx:3jO4Zec09lrGnGekUsxre3sE04JSupx3JSYDMsgtG5K6NKiJXv57aQ>
+    <xmx:3jO4ZbPUk0HCF1pobjDauGqQ-lvGPgccAZ9ealNtQiA180-6ntxHSg>
+    <xmx:3jO4ZYn-9Iw6mseMg8l8_mGsClAtZGJpQZX7_TfLLi_eubQyrZgVew>
+    <xmx:3jO4ZYnF26gPD7-ruOsbkvE9tVYatJcis1APfubrs7D0fi15YFY7Zg>
 Feedback-ID: iad51458e:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 29 Jan 2024 18:25:15 -0500 (EST)
+ 29 Jan 2024 18:25:17 -0500 (EST)
 From: Boqun Feng <boqun.feng@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	rcu@vger.kernel.org
 Cc: Frederic Weisbecker <frederic@kernel.org>,
-	Kalesh Singh <kaleshsingh@google.com>,
 	"Paul E . McKenney" <paulmck@kernel.org>,
 	Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
@@ -106,9 +105,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>
-Subject: [PATCH 3/8] rcu/exp: Handle RCU expedited grace period kworker allocation failure
-Date: Mon, 29 Jan 2024 15:23:41 -0800
-Message-ID: <20240129232349.3170819-4-boqun.feng@gmail.com>
+Subject: [PATCH 4/8] rcu: s/boost_kthread_mutex/kthread_mutex
+Date: Mon, 29 Jan 2024 15:23:42 -0800
+Message-ID: <20240129232349.3170819-5-boqun.feng@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240129232349.3170819-1-boqun.feng@gmail.com>
 References: <20240129232349.3170819-1-boqun.feng@gmail.com>
@@ -122,120 +121,100 @@ Content-Transfer-Encoding: 8bit
 
 From: Frederic Weisbecker <frederic@kernel.org>
 
-Just like is done for the kworker performing nodes initialization,
-gracefully handle the possible allocation failure of the RCU expedited
-grace period main kworker.
+This mutex is currently protecting per node boost kthreads creation and
+affinity setting across CPU hotplug operations.
 
-While at it perform a rename of the related checking functions to better
-reflect the expedited specifics.
+Since the expedited kworkers will soon be split per node as well, they
+will be subject to the same concurrency constraints against hotplug.
 
-Reviewed-by: Kalesh Singh <kaleshsingh@google.com>
-Fixes: 9621fbee44df ("rcu: Move expedited grace period (GP) work to RT kthread_worker")
+Therefore their creation and affinity tuning operations will be grouped
+with those of boost kthreads and then rely on the same mutex.
+
+To prepare for that, generalize its name.
+
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c     |  2 ++
- kernel/rcu/tree_exp.h | 25 +++++++++++++++++++------
- 2 files changed, 21 insertions(+), 6 deletions(-)
+ kernel/rcu/tree.c        |  2 +-
+ kernel/rcu/tree.h        |  2 +-
+ kernel/rcu/tree_plugin.h | 10 +++++-----
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 38c86f2c040b..f2c10d351b59 100644
+index f2c10d351b59..cdb80835c469 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -4743,6 +4743,7 @@ static void __init rcu_start_exp_gp_kworkers(void)
- 	rcu_exp_gp_kworker = kthread_create_worker(0, gp_kworker_name);
- 	if (IS_ERR_OR_NULL(rcu_exp_gp_kworker)) {
- 		pr_err("Failed to create %s!\n", gp_kworker_name);
-+		rcu_exp_gp_kworker = NULL;
- 		return;
- 	}
+@@ -4918,7 +4918,7 @@ static void __init rcu_init_one(void)
+ 			init_waitqueue_head(&rnp->exp_wq[2]);
+ 			init_waitqueue_head(&rnp->exp_wq[3]);
+ 			spin_lock_init(&rnp->exp_lock);
+-			mutex_init(&rnp->boost_kthread_mutex);
++			mutex_init(&rnp->kthread_mutex);
+ 			raw_spin_lock_init(&rnp->exp_poll_lock);
+ 			rnp->exp_seq_poll_rq = RCU_GET_STATE_COMPLETED;
+ 			INIT_WORK(&rnp->exp_poll_wq, sync_rcu_do_polled_gp);
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index e9821a8422db..13e7b0d907ab 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -113,7 +113,7 @@ struct rcu_node {
+ 				/*  side effect, not as a lock. */
+ 	unsigned long boost_time;
+ 				/* When to start boosting (jiffies). */
+-	struct mutex boost_kthread_mutex;
++	struct mutex kthread_mutex;
+ 				/* Exclusion for thread spawning and affinity */
+ 				/*  manipulation. */
+ 	struct task_struct *boost_kthread_task;
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 41021080ad25..0d307674915c 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -1195,7 +1195,7 @@ static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
+ 	struct sched_param sp;
+ 	struct task_struct *t;
  
-@@ -4751,6 +4752,7 @@ static void __init rcu_start_exp_gp_kworkers(void)
- 		pr_err("Failed to create %s!\n", par_gp_kworker_name);
- 		rcu_exp_par_gp_kworker = NULL;
- 		kthread_destroy_worker(rcu_exp_gp_kworker);
-+		rcu_exp_gp_kworker = NULL;
- 		return;
- 	}
+-	mutex_lock(&rnp->boost_kthread_mutex);
++	mutex_lock(&rnp->kthread_mutex);
+ 	if (rnp->boost_kthread_task || !rcu_scheduler_fully_active)
+ 		goto out;
  
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 014ddf672165..6123a60d9a4d 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -427,7 +427,12 @@ static void sync_rcu_exp_select_node_cpus(struct kthread_work *wp)
- 	__sync_rcu_exp_select_node_cpus(rewp);
+@@ -1212,7 +1212,7 @@ static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
+ 	wake_up_process(t); /* get to TASK_INTERRUPTIBLE quickly. */
+ 
+  out:
+-	mutex_unlock(&rnp->boost_kthread_mutex);
++	mutex_unlock(&rnp->kthread_mutex);
  }
  
--static inline bool rcu_gp_par_worker_started(void)
-+static inline bool rcu_exp_worker_started(void)
-+{
-+	return !!READ_ONCE(rcu_exp_gp_kworker);
-+}
-+
-+static inline bool rcu_exp_par_worker_started(void)
- {
- 	return !!READ_ONCE(rcu_exp_par_gp_kworker);
- }
-@@ -477,7 +482,12 @@ static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
- 	__sync_rcu_exp_select_node_cpus(rewp);
- }
- 
--static inline bool rcu_gp_par_worker_started(void)
-+static inline bool rcu_exp_worker_started(void)
-+{
-+	return !!READ_ONCE(rcu_gp_wq);
-+}
-+
-+static inline bool rcu_exp_par_worker_started(void)
- {
- 	return !!READ_ONCE(rcu_par_gp_wq);
- }
-@@ -540,7 +550,7 @@ static void sync_rcu_exp_select_cpus(void)
- 		rnp->exp_need_flush = false;
- 		if (!READ_ONCE(rnp->expmask))
- 			continue; /* Avoid early boot non-existent wq. */
--		if (!rcu_gp_par_worker_started() ||
-+		if (!rcu_exp_par_worker_started() ||
- 		    rcu_scheduler_active != RCU_SCHEDULER_RUNNING ||
- 		    rcu_is_last_leaf_node(rnp)) {
- 			/* No worker started yet or last leaf, do direct call. */
-@@ -955,7 +965,7 @@ static void rcu_exp_print_detail_task_stall_rnp(struct rcu_node *rnp)
+ /*
+@@ -1224,7 +1224,7 @@ static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
+  * no outgoing CPU.  If there are no CPUs left in the affinity set,
+  * this function allows the kthread to execute on any CPU.
+  *
+- * Any future concurrent calls are serialized via ->boost_kthread_mutex.
++ * Any future concurrent calls are serialized via ->kthread_mutex.
   */
- void synchronize_rcu_expedited(void)
+ static void rcu_boost_kthread_setaffinity(struct rcu_node *rnp, int outgoingcpu)
  {
--	bool boottime = (rcu_scheduler_active == RCU_SCHEDULER_INIT);
-+	bool use_worker;
- 	unsigned long flags;
- 	struct rcu_exp_work rew;
- 	struct rcu_node *rnp;
-@@ -966,6 +976,9 @@ void synchronize_rcu_expedited(void)
- 			 lock_is_held(&rcu_sched_lock_map),
- 			 "Illegal synchronize_rcu_expedited() in RCU read-side critical section");
- 
-+	use_worker = (rcu_scheduler_active != RCU_SCHEDULER_INIT) &&
-+		      rcu_exp_worker_started();
-+
- 	/* Is the state is such that the call is a grace period? */
- 	if (rcu_blocking_is_gp()) {
- 		// Note well that this code runs with !PREEMPT && !SMP.
-@@ -995,7 +1008,7 @@ void synchronize_rcu_expedited(void)
- 		return;  /* Someone else did our work for us. */
- 
- 	/* Ensure that load happens before action based on it. */
--	if (unlikely(boottime)) {
-+	if (unlikely(!use_worker)) {
- 		/* Direct call during scheduler init and early_initcalls(). */
- 		rcu_exp_sel_wait_wake(s);
- 	} else {
-@@ -1013,7 +1026,7 @@ void synchronize_rcu_expedited(void)
- 	/* Let the next expedited grace period start. */
- 	mutex_unlock(&rcu_state.exp_mutex);
- 
--	if (likely(!boottime))
-+	if (likely(use_worker))
- 		synchronize_rcu_expedited_destroy_work(&rew);
+@@ -1237,7 +1237,7 @@ static void rcu_boost_kthread_setaffinity(struct rcu_node *rnp, int outgoingcpu)
+ 		return;
+ 	if (!zalloc_cpumask_var(&cm, GFP_KERNEL))
+ 		return;
+-	mutex_lock(&rnp->boost_kthread_mutex);
++	mutex_lock(&rnp->kthread_mutex);
+ 	mask = rcu_rnp_online_cpus(rnp);
+ 	for_each_leaf_node_possible_cpu(rnp, cpu)
+ 		if ((mask & leaf_node_cpu_bit(rnp, cpu)) &&
+@@ -1250,7 +1250,7 @@ static void rcu_boost_kthread_setaffinity(struct rcu_node *rnp, int outgoingcpu)
+ 			cpumask_clear_cpu(outgoingcpu, cm);
+ 	}
+ 	set_cpus_allowed_ptr(t, cm);
+-	mutex_unlock(&rnp->boost_kthread_mutex);
++	mutex_unlock(&rnp->kthread_mutex);
+ 	free_cpumask_var(cm);
  }
- EXPORT_SYMBOL_GPL(synchronize_rcu_expedited);
+ 
 -- 
 2.43.0
 
