@@ -1,104 +1,90 @@
-Return-Path: <linux-kernel+bounces-42609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42611-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B5B28403C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:24:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0424B8403C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:27:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEBAC1C2290E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:24:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3710D1C20434
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:27:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10C115BAD8;
-	Mon, 29 Jan 2024 11:24:18 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C6445FBB1
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 11:24:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E8165BAED;
+	Mon, 29 Jan 2024 11:27:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AlHukrP0"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 419B55BACE;
+	Mon, 29 Jan 2024 11:27:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706527457; cv=none; b=AeMwbOfUsyVG8b5OYincpDWsrWYp9buQSmJ5IrE8EGz2axGAFxolVTNVmj5M1i1nQkg7RfyfKz7kzR9bXtrgJg0+BSXWOf0L3hZ8dOhODLN2Ntkx4AfqMDCWlCovcOQilbkvl2180wDpQYQJ1HLwoe0w9Wop0CthexTgnsCAiiA=
+	t=1706527649; cv=none; b=UhaFG2IpXt8X9LIcWADwj1veyAWO77nmaBlnta66vVFWPlyBjHGYJHymLJGRiBk0zKj3alnf/DzSRzuuEXXE6xhUbV+UOhUs6IhrCmP0Pi7RqvxK5Q0by58KchiA68PdHzVkVy+NuEMwGuPIK+QEJwkUsOSVGK7SAVYDtgfL1b8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706527457; c=relaxed/simple;
-	bh=WH7PYjaSBNnuD+pJLor2J13V+w5N5SZnUqFkJocu1Hk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cl0wcZvEL1UT4LLGrVZFsukKO/OUCBVA1LqfswpBtqp+hu72SaASFY++1f9Tbe1wQYQNpZC+TfVf6MkAb9m/2sHdHu4T3o0SR3dgEMfFoDX6nc0ewXp++34EGMRK0IMUP9c+ZHfQjZtsXPF3dX61afLvPFP38b89HYtPv1XHYWA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 478D91FB;
-	Mon, 29 Jan 2024 03:24:58 -0800 (PST)
-Received: from [10.57.77.253] (unknown [10.57.77.253])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3DAF23F7D8;
-	Mon, 29 Jan 2024 03:24:13 -0800 (PST)
-Message-ID: <e8b8f470-f7f9-4238-a473-a6ed764353a4@arm.com>
-Date: Mon, 29 Jan 2024 11:24:10 +0000
+	s=arc-20240116; t=1706527649; c=relaxed/simple;
+	bh=QjEduxmVVqL7KnO5vm0x6bH4grGRCF1a+Hd2U0PJUFo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=D+TKgorQaFUD41XskuOQ2rHdIzwBRwg2h8iXWdoB0cfzZlEzKyf0ovcScHRQe5G7w9pVtCQGkG3Nhkg8fnZEbF8O0OU1BvgNY2wxj7jvwofYUAbI/6CxA2B1GFsgXmJpA9tUGwFFDGMOvgFygZKtOTytVGPJSJnG/ZV/1LlJMqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AlHukrP0; arc=none smtp.client-ip=134.134.136.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706527648; x=1738063648;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=QjEduxmVVqL7KnO5vm0x6bH4grGRCF1a+Hd2U0PJUFo=;
+  b=AlHukrP0E+sffuUa+K2EK6/hUYQ2zJfrdb28XvSP91sRu26ev9dslJF9
+   kYga2fHGR7D/fDMpP9tbcolpf1xzPAjmERZBXVFILVI1+7LJhZtqaN4vh
+   Smh0IrDz+/f124irIZVBCVejWFDR2TuQiXQUc1+8M0nPzY5MEDM37lPBQ
+   1peD/fZgHTRcCgn5MsuluAjoVJrFQQZVQlzDSNM1JV8CkNdC0uGJGTdai
+   +mcT6afdNCOUOpAbPByX0mtKZkDe7Gt5FAwz6ceinOXHugTq1YHERfrh8
+   8XNt6lX7mTt9hBt+P0orJ2mayG6yiKI1qOL7mcC0mpbfzlG2ejedk3qci
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="467186852"
+X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
+   d="scan'208";a="467186852"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 03:27:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
+   d="scan'208";a="29488541"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.94.253.213])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 03:27:23 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To: Bjorn Helgaas <bhelgaas@google.com>,
+	linux-pci@vger.kernel.org,
+	"Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc: Mika Westerberg <mika.westerberg@linux.intel.com>,
+	linux-kernel@vger.kernel.org,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH 0/2] PCI: Fix disconnect related issues
+Date: Mon, 29 Jan 2024 13:27:08 +0200
+Message-Id: <20240129112710.2852-1-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] iommu/vt-d: Remove INTEL_IOMMU_BROKEN_GFX_WA
-Content-Language: en-GB
-To: Baolu Lu <baolu.lu@linux.intel.com>, "Tian, Kevin"
- <kevin.tian@intel.com>, Christoph Hellwig <hch@infradead.org>
-Cc: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
- Jason Gunthorpe <jgg@ziepe.ca>, "iommu@lists.linux.dev"
- <iommu@lists.linux.dev>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20240127064512.16744-1-baolu.lu@linux.intel.com>
- <Zbc_mdOYxMIxWAdd@infradead.org>
- <BN9PR11MB5276D63FAC442A415018ACB58C7E2@BN9PR11MB5276.namprd11.prod.outlook.com>
- <abc6771f-fafe-4ca7-898a-aecbe017b3c7@linux.intel.com>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <abc6771f-fafe-4ca7-898a-aecbe017b3c7@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 2024-01-29 7:24 am, Baolu Lu wrote:
-> On 2024/1/29 14:08, Tian, Kevin wrote:
->>> From: Christoph Hellwig <hch@infradead.org>
->>> Sent: Monday, January 29, 2024 2:03 PM
->>>
->>> On Sat, Jan 27, 2024 at 02:45:12PM +0800, Lu Baolu wrote:
->>>> Commit 62edf5dc4a524 ("intel-iommu: Restore DMAR_BROKEN_GFX_WA
->>> option for
->>>> broken graphics drivers") was introduced 24 years ago as a temporary
->>>> workaround for graphics drivers that used physical addresses for DMA 
->>>> and
->>>> avoided DMA APIs. This workaround was disabled by default.
->>>>
->>>> As 24 years have passed, it is expected that graphics driver developers
->>>> have migrated their drivers to use kernel DMA APIs. Therefore, this
->>>> workaround is no longer required and could been removed.
->>>
->>> How about you Cc the intel graphics maintainers and get a confirmation?
->>>
->>
->> in the worst case there is still "igfx_off" option available to 
->> achieve the
->> same effect.
->>
->> there is really no good reason to keep this config option so long 
->> while it
->> was intended to be removed in 2.6.32.
->>
->> but yes the Intel graphics maintainers should be CCed.
->>
-> 
-> You both are right.
-> 
-> I will add above in the commit message and Cc graphic guys with a new
-> upgraded version.
+This series addresses two PCI suspend related issues Mika Westerberg
+reported to occur because of Thunderbolt disconnect.
 
-Right, you're not removing the actual workaround at all, you're only 
-removing the Kconfig option to force it on by default, which clearly 
-nobody is using since it's been dead code since 2009 with 0c02a20ff769 
-("intel-iommu: Kill DMAR_BROKEN_GFX_WA option.")
+Ilpo Järvinen (2):
+  PCI: Clear LBMS on resume to avoid Target Speed quirk
+  PCI: Do not wait for disconnected devices when resuming
 
-Cheers,
-Robin.
+ drivers/pci/pci-driver.c | 6 ++++++
+ drivers/pci/pci.c        | 5 +++++
+ drivers/pci/pci.h        | 4 +++-
+ 3 files changed, 14 insertions(+), 1 deletion(-)
+
+-- 
+2.39.2
+
 
