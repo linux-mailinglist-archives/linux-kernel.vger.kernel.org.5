@@ -1,226 +1,181 @@
-Return-Path: <linux-kernel+bounces-42164-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42165-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8537483FD4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 05:56:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C373C83FD52
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 06:03:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D9A77B21152
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 04:56:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F329B2273F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 05:03:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C597A42040;
-	Mon, 29 Jan 2024 04:56:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C3143D3AC;
+	Mon, 29 Jan 2024 05:03:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="eMAiFTjr"
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="YtNf6NFD"
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 482903C49D
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 04:56:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BEE33C68E;
+	Mon, 29 Jan 2024 05:03:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706504198; cv=none; b=sKuTjh1RvlIPq8jumLKLFyydQAeJrTIBs66Mu5KoZdUTZtAWV7fCqG/ybwXLC+uqb6pvtMlw/dijWTUMWGk8MbB9fUndd0qtOAPMt/1zlVAdVrXoDxtsHjQ5LZnd7mKzHOoHogsXbfCTw7sKi46MHqLmGMorWPWmZNkBJ7yKcXE=
+	t=1706504597; cv=none; b=Nx/iPwSCr7bBMdgUnRerFe0ymRE9DKkUJfeyYEDjENsnmYBLTRffGDLeBM/qGnr1lCTvEckfVv6GufZNgX3IA3ZR10kfhTixFxUh1KQ1i+QQU4xBG9jI76E9FPF9HBq2dgDYz8xEXpDBqV09/lAcN9yHQfafv7KTlYzGcyqIUiY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706504198; c=relaxed/simple;
-	bh=JKE/IW5TVkbID/Q/j2NFEsbb8Z3r/k7LT5ELUg8rmMY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S20Zv0hBkwhGZlw75nRDCjAVsvUQmCEygF/OJQY0R3srzsmk9jERlvO1Xc2VJz75o0eTudXnnD6Pp129eZn+Wc6nWawagsM8V+cII1N3tZqDWzkrZ4ul6EhtGfw2wHqPQkrtG0IEWIu/MlnnIpUI4zFwfXOKZlFNsM7xg7Ul/Sk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=eMAiFTjr; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6ddfb0dac4dso1814207b3a.1
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 20:56:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1706504196; x=1707108996; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=4uVgZZNOGdztcThCjImfEeg1T+w1JfprEYe6mBtACg8=;
-        b=eMAiFTjrr/vQjBBlNKqeI5B5NSt9vl4lhaVcImm+hbr1WtchPEmzKuNtWYiqG+pzDm
-         24yT59EtQwzDTTEiVfMsero+dKkYqYE7os0l56W34qpBwoVYzQtchAWMRiVUE/MW9je9
-         Zcy0HWtCZCLdavxWi0dYlGUFEqzBqXRv6nY11RiIp7jdEI4BGIlTP27RRES0d1tQlj8q
-         SI/uKOKLOeRK8Xb0kEvnhu+j8P8r5ntkY24/Ej1MHkQu6LgOutx/7eKLOPMN/bdmjEz7
-         TH6mCYZ+dGRAOmdray4AGapQ1aOGd7geuK4PhTClbbb0LdNmnhSQ8tndQUZCM7PNlKPg
-         KX6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706504196; x=1707108996;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4uVgZZNOGdztcThCjImfEeg1T+w1JfprEYe6mBtACg8=;
-        b=W4lSG6zf0L9BlFqryz9KrwS0PJUPkgpyha7LEAql1KUqDcJ6ps5Zbx17SMKPRiO3dA
-         CYeOjTUdhOqvHQb7UnZIsoP5rev/ZQCelqRtYVIBkSrOqNXPylvs6KXRPEXiFMZ6dvFb
-         ltAhBXuySNRAg/kCy8D0jQK8bHTdF8YxmCLV46jvAEHDRqvfhCDOQaz7VKKSYU1MRPss
-         /CkuoS8i90izQT3zMgY9zOwtYmE3eHrgpSkfMeFHCKSgwbu+rvKcdKY/j6Fvns8mdQJ3
-         6dy6PRd7OZvKRavq4xQ19xRECpi+tTyl78WpBm8mbbTnd/SrMKav53AV+7e3ukED18/K
-         Ca2A==
-X-Gm-Message-State: AOJu0YxbV43oI4Qq4xAnKQD9YK5AygJYc9suUkYyktWvExGsgT3VKiAa
-	qO2h9b6vzZHOn1ap6Glx+bAAkaQf5Uql57wmgeDTDfrH9/9sstmvf9TYoYaggto=
-X-Google-Smtp-Source: AGHT+IFoFcFBxLwYTXGmXANOC97mvFw7PZV9squyfuKtmaABij+gT0sLLCatjYYhzbO+aUmnpRulcA==
-X-Received: by 2002:a05:6a00:18a1:b0:6dd:c61e:2026 with SMTP id x33-20020a056a0018a100b006ddc61e2026mr3771217pfh.9.1706504196508;
-        Sun, 28 Jan 2024 20:56:36 -0800 (PST)
-Received: from dread.disaster.area (pa49-181-38-249.pa.nsw.optusnet.com.au. [49.181.38.249])
-        by smtp.gmail.com with ESMTPSA id c24-20020aa78c18000000b006dddd283526sm4893266pfd.53.2024.01.28.20.56.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jan 2024 20:56:35 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1rUJgw-00Gj5q-2H;
-	Mon, 29 Jan 2024 15:56:18 +1100
-Date: Mon, 29 Jan 2024 15:56:18 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: Mike Snitzer <snitzer@redhat.com>
-Cc: Mike Snitzer <snitzer@kernel.org>, Matthew Wilcox <willy@infradead.org>,
-	Ming Lei <ming.lei@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, Don Dutile <ddutile@redhat.com>,
-	Raghavendra K T <raghavendra.kt@linux.vnet.ibm.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>
-Subject: Re: [RFC PATCH] mm/readahead: readahead aggressively if read drops
- in willneed range
-Message-ID: <Zbcv8tKISFYRaMye@dread.disaster.area>
-References: <20240128142522.1524741-1-ming.lei@redhat.com>
- <ZbbPCQZdazF7s0_b@casper.infradead.org>
- <ZbbfXVg9FpWRUVDn@redhat.com>
- <ZbbvfFxcVgkwbhFv@casper.infradead.org>
- <CAH6w=aw_46Ker0w8HmSA41vUUDKGDGC3gxBFWAhd326+kEtrNg@mail.gmail.com>
- <ZbcDvTkeDKttPfJ4@dread.disaster.area>
- <CAH6w=azbfYCbC6m-bh-yUt3HMUe-EnWPV71P+Z=jeNwMU5aHaQ@mail.gmail.com>
+	s=arc-20240116; t=1706504597; c=relaxed/simple;
+	bh=2cPCgKCL9oHVmZVdo3Cx2J07fyLL6Gf3esVI0v1s9Wc=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QenJAnMl/qnb45A7bUAZNdpXAMwjJAd/0HQ/2GTfzyw4hY7r5cScAfkWaTsJ0cv4qoPcr45wQxm0cKtBZ/kNWn5NYX3FwxJ3gzA0y11RX7QNzFkdY7IMLFLDyXwBQewZVlkEuSI8VhU+wKDWgpE20CAsFp1GqcIfDNPUVvztWBU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=YtNf6NFD; arc=none smtp.client-ip=67.231.148.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40T4JfwM026826;
+	Sun, 28 Jan 2024 21:02:58 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=pfpt0220; bh=DVsZRYQB
+	Tvhr7iUeJv18qgbyYpacseiPyRfLLN27DQo=; b=YtNf6NFDQzEya5cGAtZyZEox
+	YiUatMDfKynn7NiyzvIdh8JD8VMUlI7q8pZsqyv0qO3i1T2rcS4OeymiJiiQSlIE
+	ID6EaM0cSrOJaDvBQz7YPGRM8zdTSIdjRiQ3jL2N/kbSYlSxTi2HOXopiP5v/aYk
+	XxtQhm5dNzcdTOdj/oeDQrNcqSLj6J1I33tFhHd04iIecSVNotEf+chHZWWljpBK
+	1ViTBsQsj1BtPJcdUqQ8dCaaghym3vRA+DOcGsQWrEzRv8DpeV7RqxYCIAt0bBtQ
+	3hm19rjJ2RmScTAZxZnfLO+5dzFg/CYm6EtYfEvK7yv1fbeIHoXcComzIXlH/A==
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3vx4vr82c1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+	Sun, 28 Jan 2024 21:02:57 -0800 (PST)
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 28 Jan
+ 2024 21:02:56 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Sun, 28 Jan 2024 21:02:56 -0800
+Received: from ubuntu-PowerEdge-T110-II.sclab.marvell.com (unknown [10.106.27.86])
+	by maili.marvell.com (Postfix) with ESMTP id 06AF83F7048;
+	Sun, 28 Jan 2024 21:02:56 -0800 (PST)
+From: Shinas Rasheed <srasheed@marvell.com>
+To: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC: <hgani@marvell.com>, <vimleshk@marvell.com>, <sedara@marvell.com>,
+        <srasheed@marvell.com>, <egallen@redhat.com>, <mschmidt@redhat.com>,
+        <pabeni@redhat.com>, <kuba@kernel.org>, <horms@kernel.org>,
+        <wizhao@redhat.com>, <kheib@redhat.com>, <konguyen@redhat.com>
+Subject: [PATCH net-next v5 0/8] add octeon_ep_vf driver
+Date: Sun, 28 Jan 2024 21:02:46 -0800
+Message-ID: <20240129050254.3047778-1-srasheed@marvell.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAH6w=azbfYCbC6m-bh-yUt3HMUe-EnWPV71P+Z=jeNwMU5aHaQ@mail.gmail.com>
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: _NLogbpFaZ3r6SkIp7Rv9rHQhpoQcpEq
+X-Proofpoint-GUID: _NLogbpFaZ3r6SkIp7Rv9rHQhpoQcpEq
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-29_02,2024-01-25_01,2023-05-22_02
 
-On Sun, Jan 28, 2024 at 09:12:12PM -0500, Mike Snitzer wrote:
-> On Sun, Jan 28, 2024 at 8:48 PM Dave Chinner <david@fromorbit.com> wrote:
-> >
-> > On Sun, Jan 28, 2024 at 07:39:49PM -0500, Mike Snitzer wrote:
-> > > On Sun, Jan 28, 2024 at 7:22 PM Matthew Wilcox <willy@infradead.org> wrote:
-> > > >
-> > > > On Sun, Jan 28, 2024 at 06:12:29PM -0500, Mike Snitzer wrote:
-> > > > > On Sun, Jan 28 2024 at  5:02P -0500,
-> > > > > Matthew Wilcox <willy@infradead.org> wrote:
-> > > > Understood.  But ... the application is asking for as much readahead as
-> > > > possible, and the sysadmin has said "Don't readahead more than 64kB at
-> > > > a time".  So why will we not get a bug report in 1-15 years time saying
-> > > > "I put a limit on readahead and the kernel is ignoring it"?  I think
-> > > > typically we allow the sysadmin to override application requests,
-> > > > don't we?
-> > >
-> > > The application isn't knowingly asking for readahead.  It is asking to
-> > > mmap the file (and reporter wants it done as quickly as possible..
-> > > like occurred before).
-> >
-> > .. which we do within the constraints of the given configuration.
-> >
-> > > This fix is comparable to Jens' commit 9491ae4aade6 ("mm: don't cap
-> > > request size based on read-ahead setting") -- same logic, just applied
-> > > to callchain that ends up using madvise(MADV_WILLNEED).
-> >
-> > Not really. There is a difference between performing a synchronous
-> > read IO here that we must complete, compared to optimistic
-> > asynchronous read-ahead which we can fail or toss away without the
-> > user ever seeing the data the IO returned.
-> >
-> > We want required IO to be done in as few, larger IOs as possible,
-> > and not be limited by constraints placed on background optimistic
-> > IOs.
-> >
-> > madvise(WILLNEED) is optimistic IO - there is no requirement that it
-> > complete the data reads successfully. If the data is actually
-> > required, we'll guarantee completion when the user accesses it, not
-> > when madvise() is called.  IOWs, madvise is async readahead, and so
-> > really should be constrained by readahead bounds and not user IO
-> > bounds.
-> >
-> > We could change this behaviour for madvise of large ranges that we
-> > force into the page cache by ignoring device readahead bounds, but
-> > I'm not sure we want to do this in general.
-> >
-> > Perhaps fadvise/madvise(willneed) can fiddle the file f_ra.ra_pages
-> > value in this situation to override the device limit for large
-> > ranges (for some definition of large - say 10x bdi->ra_pages) and
-> > restore it once the readahead operation is done. This would make it
-> > behave less like readahead and more like a user read from an IO
-> > perspective...
-> 
-> I'm not going to pretend like I'm an expert in this code or all the
-> distinctions that are in play.  BUT, if you look at the high-level
-> java reproducer: it is requesting mmap of a finite size, starting from
-> the beginning of the file:
-> FileChannel fc = new RandomAccessFile(new File(args[0]), "rw").getChannel();
-> MappedByteBuffer mem = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
+This driver implements networking functionality of Marvell's Octeon
+PCI Endpoint NIC VF.
 
-Mapping an entire file does not mean "we are going to access the
-entire file". Lots of code will do this, especially those that do
-random accesses within the file.
+This driver support following devices:
+ * Network controller: Cavium, Inc. Device b203
+ * Network controller: Cavium, Inc. Device b403
+ * Network controller: Cavium, Inc. Device b103
+ * Network controller: Cavium, Inc. Device b903
+ * Network controller: Cavium, Inc. Device ba03
+ * Network controller: Cavium, Inc. Device bc03
+ * Network controller: Cavium, Inc. Device bd03
 
-> Yet you're talking about the application like it is stabbingly
-> triggering unbounded async reads that can get dropped, etc, etc.  I
+Changes:
+V5:
+  - Changed unchecked return types to void and removed unnecessary
+    initializations in [2/8] patch.
 
-I don't know what the application actually does. All I see is a
-microbenchmark that mmaps() a file and walks it sequentially. On a
-system where readahead has been tuned to de-prioritise sequential IO
-performance.
+V4: https://lore.kernel.org/all/20240108124213.2966536-1-srasheed@marvell.com/
+  - Moved some stats from ethtool and added more to ndo_get_stats64
+  - Replaced code in IQ full check function to use helper from
+    net/netdev_queues.h
+  - Refactored code so that NETDEV_TX_BUSY is avoided
 
-> just want to make sure the subtlety of (ab)using madvise(WILLNEED)
-> like this app does isn't incorrectly attributed to something it isn't.
-> The app really is effectively requesting a user read of a particular
-> extent in terms of mmap, right?
+V3: https://lore.kernel.org/all/20240105203823.2953604-1-srasheed@marvell.com/
+  - Removed UINT64_MAX, which is unused
+  - Replaced masks and ULL declarations with GENMASK_ULL(), ULL() and
+    other linux/bits.h macros, corrected declarations to conform to xmas tree format in patch [2/8]
+  - Moved vfree and vzalloc null pointer casting corrections to patch
+    [3/8], and corrected return values to follow standard kernel error codes in same
+   - Set static budget of 64 for tx completion processing in NAPI
+  - Replaces napi_complete and build_skb APIs to napi_complete_done and
+    napi_build_skb APIs respectively
+  - Replaced code with helper from net/netdev_queues.h to wake queues in TX completion
+    processing
+  - Removed duplicate reporting of TX/RX packets/bytes, which is already
+    done during ndo_get_stats64
 
-madvise() is an -advisory- interface that does not guarantee any
-specific behaviour. the man page says:
+V2: https://lore.kernel.org/all/20231223134000.2906144-1-srasheed@marvell.com/
+  - Removed linux/version.h header file from inclusion in
+    octep_vf_main.c
+  - Corrected Makefile entry to include building octep_vf_mbox.c in
+    [6/8] patch.
+  - Removed redundant vzalloc pointer cast and vfree pointer check in
+    [6/8] patch.
 
-MADV_WILLNEED
-       Expect access in the near future.  (Hence, it might be a good
-       idea to read some pages ahead.)
+V1: https://lore.kernel.org/all/20231221092844.2885872-1-srasheed@marvell.com/
 
-It says nothing about guaranteeing that all the data is brought into
-memory, or that if it does get brought into memory that it will
-remain there until the application accesses it. It doesn't even
-imply that IO will even be done immediately. Any application
-relying on madvise() to fully populate the page cache range before
-returning is expecting behaviour that is not documented nor
-guaranteed.
+Shinas Rasheed (8):
+  octeon_ep_vf: Add driver framework and device initialization
+  octeon_ep_vf: add hardware configuration APIs
+  octeon_ep_vf: add VF-PF mailbox communication.
+  octeon_ep_vf: add Tx/Rx ring resource setup and cleanup
+  octeon_ep_vf: add support for ndo ops
+  octeon_ep_vf: add Tx/Rx processing and interrupt support
+  octeon_ep_vf: add ethtool support
+  octeon_ep_vf: update MAINTAINERS
 
-Similarly, the fadvise64() man page does not say that WILLNEED will
-bring the entire file into cache:
+ .../device_drivers/ethernet/index.rst         |    1 +
+ .../ethernet/marvell/octeon_ep_vf.rst         |   24 +
+ MAINTAINERS                                   |    9 +
+ drivers/net/ethernet/marvell/Kconfig          |    1 +
+ drivers/net/ethernet/marvell/Makefile         |    1 +
+ .../net/ethernet/marvell/octeon_ep_vf/Kconfig |   19 +
+ .../ethernet/marvell/octeon_ep_vf/Makefile    |   10 +
+ .../marvell/octeon_ep_vf/octep_vf_cn9k.c      |  491 +++++++
+ .../marvell/octeon_ep_vf/octep_vf_cnxk.c      |  502 +++++++
+ .../marvell/octeon_ep_vf/octep_vf_config.h    |  160 +++
+ .../marvell/octeon_ep_vf/octep_vf_ethtool.c   |  273 ++++
+ .../marvell/octeon_ep_vf/octep_vf_main.c      | 1240 +++++++++++++++++
+ .../marvell/octeon_ep_vf/octep_vf_main.h      |  334 +++++
+ .../marvell/octeon_ep_vf/octep_vf_mbox.c      |  430 ++++++
+ .../marvell/octeon_ep_vf/octep_vf_mbox.h      |  166 +++
+ .../marvell/octeon_ep_vf/octep_vf_regs_cn9k.h |  154 ++
+ .../marvell/octeon_ep_vf/octep_vf_regs_cnxk.h |  162 +++
+ .../marvell/octeon_ep_vf/octep_vf_rx.c        |  510 +++++++
+ .../marvell/octeon_ep_vf/octep_vf_rx.h        |  224 +++
+ .../marvell/octeon_ep_vf/octep_vf_tx.c        |  330 +++++
+ .../marvell/octeon_ep_vf/octep_vf_tx.h        |  276 ++++
+ 21 files changed, 5317 insertions(+)
+ create mode 100644 Documentation/networking/device_drivers/ethernet/marvell/octeon_ep_vf.rst
+ create mode 100644 drivers/net/ethernet/marvell/octeon_ep_vf/Kconfig
+ create mode 100644 drivers/net/ethernet/marvell/octeon_ep_vf/Makefile
+ create mode 100644 drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_cn9k.c
+ create mode 100644 drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_cnxk.c
+ create mode 100644 drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_config.h
+ create mode 100644 drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_ethtool.c
+ create mode 100644 drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_main.c
+ create mode 100644 drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_main.h
+ create mode 100644 drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_mbox.c
+ create mode 100644 drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_mbox.h
+ create mode 100644 drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_regs_cn9k.h
+ create mode 100644 drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_regs_cnxk.h
+ create mode 100644 drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_rx.c
+ create mode 100644 drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_rx.h
+ create mode 100644 drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_tx.c
+ create mode 100644 drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_tx.h
 
-POSIX_FADV_WILLNEED
-        The specified data will be accessed in the near future.
-
-	POSIX_FADV_WILLNEED  initiates a nonblocking read of the
-	specified region into the page cache.  The amount of data
-	read may be de‐ creased by the kernel depending on virtual
-	memory load.  (A few megabytes will usually be fully
-	satisfied, and more is rarely use‐ ful.)
-
-> BTW, your suggestion to have this app fiddle with ra_pages and then
-
-No, I did not suggest that the app fiddle with anything. I was
-talking about the in-kernel FADV_WILLNEED implementation changing
-file->f_ra.ra_pages similar to how FADV_RANDOM and FADV_SEQUENTIAL
-do to change readahead IO behaviour. That then allows subsequent
-readahead on that vma->file to use a larger value than the default
-value pulled in off the device.
-
-Largely, I think the problem is that the application has set a
-readahead limit too low for optimal sequential performance.
-Complaining that readahead is slow when it has been explicitly tuned
-to be slow doesn't really seem like a problem we can fix with code.
-
--Dave.
 -- 
-Dave Chinner
-david@fromorbit.com
+2.25.1
+
 
