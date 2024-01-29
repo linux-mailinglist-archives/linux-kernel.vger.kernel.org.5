@@ -1,122 +1,351 @@
-Return-Path: <linux-kernel+bounces-42559-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42560-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A81A84031A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:45:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBEC984031E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:46:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4BEB281CE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:45:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 485E51F234BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:46:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2D3A56477;
-	Mon, 29 Jan 2024 10:45:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nFaBQ8RO"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F3DC56469
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 10:45:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4956C56476;
+	Mon, 29 Jan 2024 10:46:38 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D656537F6;
+	Mon, 29 Jan 2024 10:46:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706525116; cv=none; b=aePqb7TwiTTbpMeRneuv/PyEoXUaQAY3KsH5T1CnmP921PukdnkmN3ncsDIRyi+w9LVj1iY2Z6ftAF3rEkSM4EuI09wwMGngh4I/b9sJTnA4fJqMaDr9m1ChQ21IvNhUiJyQZbfl/9i89rIdbaSmjZDypgI68bOyyUTfYCTopaA=
+	t=1706525197; cv=none; b=Gn0uP9Z0EkyP+lfWrNv5khH1Akfs1Sa4WW6Zqx4EW4Zui0t853AR6GEgG2MGQP+jDJOzeI9OV+1SLP5mydNku5vaAlV9EVFCTvaKlA6o+tsnqRmpusRbA6CHYX7A3Extu/ngmKxw19PvA3mRQoUoH7EY/aOfV6I/qEE2onMK0YY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706525116; c=relaxed/simple;
-	bh=Z8mp0RtDl51BFHkxZNr+PFoZ3oiWgxeFj38gUyFpRkI=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=iZ+hlF6z22Ke6Hx/sTxg1uFg8KxrOb5uR42ffQBNsAH5in2NSc7FtgN7c6KgspTaiLm4YMdx6gqwciKNBTjT+K2dul46EwFz+49pegW2iK1V0PHrUHzVtod4NdHskhM9YKVL8gedLLZAEoRAAXBfPRr8LjSpz2cOsph/H4tlQDA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nFaBQ8RO; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40ef6442d60so7039345e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 02:45:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706525113; x=1707129913; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Z8mp0RtDl51BFHkxZNr+PFoZ3oiWgxeFj38gUyFpRkI=;
-        b=nFaBQ8RO7T2Kcea7ugzG1qrFh3i5QQHRzpbdTiqLiertD0wwSiGFRqUFw5E8hslyIp
-         TVmjnFRYPJEAuymNs1HA+YnifsWw/fl/zgEHs0qiDCZkVhlnbW8p4SSg6gaEmTXhw4Pg
-         FBAdXnV6/22Im0N9n23buznfIE5Nvbmj78vuwREIM4nPgtMaMyYVHVoNHds6CYvBl0UZ
-         JdH0kaFnQ8hBCrK0rFoQH7L+Ge14MbGKUNJKLQtcK768y2VGswI0SFNtoVB1ZKWYyZzM
-         yrrHMgN29LbjO2YOjsfzVHdsGDe34TpgWCseyWMnQM8eBzF1rYEuSx04q/iz4RKWltUG
-         mnnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706525113; x=1707129913;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Z8mp0RtDl51BFHkxZNr+PFoZ3oiWgxeFj38gUyFpRkI=;
-        b=l3D2VCWHHEzqGj0TNNnw0WHBP3zFVqUziuyA+1z6CaLi/HSPbIPd15JSTSsgQjSerj
-         5LSDK/817KKm3HUhgW4mbYHW4ucpfYZGAc+GoRF+zDdPrEarYT9CUB8BpNTKAP70guZ5
-         CN4pP0KUXP5fYRywXcjeKsA0iWso8CYAWXnsC731OmzFLHZ/UETDZhzGyWBA+R3g2Lt9
-         19rQopCMVE5859mK2NLmPxi0ac+hDVzqhyFKvO52J0G6JcDpBY3ZrB2WqxWFYuegJWAK
-         iBr59kyadbaC80oqfRN0yFTTxjk+yY+LUOmviUyukDKVtbNHKrYGfa/uQJhHcS/g1I3K
-         ikXA==
-X-Gm-Message-State: AOJu0YwvcyDp+kUTuTNn6PFqzY+8VD+VjRC8gwJk8R9fsQCriFezdKR+
-	U8GzEBrxDesTK4I9o0tDtAKcLaHdDSILhAXIA8hRngAvNlCm5kC1bT6YyVICrcI=
-X-Google-Smtp-Source: AGHT+IFihQ01Lv/3xhmJ2QRY4zWM3/6pk8fnT64QKAKwosslS/C3loV+UgYjHKedBDBzrFE/BLHtcA==
-X-Received: by 2002:adf:a348:0:b0:33a:e73b:b0d0 with SMTP id d8-20020adfa348000000b0033ae73bb0d0mr2794136wrb.32.1706525112807;
-        Mon, 29 Jan 2024 02:45:12 -0800 (PST)
-Received: from draszik.lan ([80.111.64.44])
-        by smtp.gmail.com with ESMTPSA id v2-20020a5d6b02000000b0033ae7d768b2sm3982537wrw.117.2024.01.29.02.45.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 02:45:12 -0800 (PST)
-Message-ID: <d234060148ab6027bd84c5475851a30329e877a2.camel@linaro.org>
-Subject: Re: [PATCH 8/9] arm64: dts: exynos: gs101: sysreg_peric1 needs a
- clock
-From: =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
-To: Sam Protsenko <semen.protsenko@linaro.org>
-Cc: peter.griffin@linaro.org, mturquette@baylibre.com, sboyd@kernel.org, 
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-  linux-kernel@vger.kernel.org, kernel-team@android.com,
- tudor.ambarus@linaro.org,  willmcvicker@google.com,
- alim.akhtar@samsung.com, s.nawrocki@samsung.com,  tomasz.figa@gmail.com,
- cw00.choi@samsung.com,  linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org,  linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org
-Date: Mon, 29 Jan 2024 10:45:10 +0000
-In-Reply-To: <CAPLW+4=PWCegZi8Wd=rhSUUiXNn_J46VGZoxDcRA89MX-2Y9tg@mail.gmail.com>
-References: <20240127001926.495769-1-andre.draszik@linaro.org>
-	 <20240127001926.495769-9-andre.draszik@linaro.org>
-	 <CAPLW+4=PWCegZi8Wd=rhSUUiXNn_J46VGZoxDcRA89MX-2Y9tg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1-1 
+	s=arc-20240116; t=1706525197; c=relaxed/simple;
+	bh=NqG0s4fYWg6scS6UMngSUDDHrFP+zLacIbrxIwSSybA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QAnK8zOPpCI4sANKAArQodlxfCIVdIT61YBzkg16DL8tKuk3O0CoWICJqrajHZqcwKKOTlantovJ3nzmLk2mHMwXrVnDLnm4lij6qNc1uxbGB7oM4jxk0c9lM5nV7b6WG5uKUUI/Ld+bDUtHnq9Fhc1KckDvhisDWt5o9z59DtU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1F6C11FB;
+	Mon, 29 Jan 2024 02:47:17 -0800 (PST)
+Received: from [10.57.65.9] (unknown [10.57.65.9])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C3ED53F738;
+	Mon, 29 Jan 2024 02:46:29 -0800 (PST)
+Message-ID: <25ae5e0d-d07d-4be9-beb2-1a4333b0ee8f@arm.com>
+Date: Mon, 29 Jan 2024 10:46:28 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 13/15] mm/memory: optimize fork() with PTE-mapped THP
+To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Dinh Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
+ Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, "David S. Miller"
+ <davem@davemloft.net>, linux-arm-kernel@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, sparclinux@vger.kernel.org
+References: <20240125193227.444072-1-david@redhat.com>
+ <20240125193227.444072-14-david@redhat.com>
+Content-Language: en-GB
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240125193227.444072-14-david@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Sam,
+On 25/01/2024 19:32, David Hildenbrand wrote:
+> Let's implement PTE batching when consecutive (present) PTEs map
+> consecutive pages of the same large folio, and all other PTE bits besides
+> the PFNs are equal.
+> 
+> We will optimize folio_pte_batch() separately, to ignore selected
+> PTE bits. This patch is based on work by Ryan Roberts.
+> 
+> Use __always_inline for __copy_present_ptes() and keep the handling for
+> single PTEs completely separate from the multi-PTE case: we really want
+> the compiler to optimize for the single-PTE case with small folios, to
+> not degrade performance.
+> 
+> Note that PTE batching will never exceed a single page table and will
+> always stay within VMA boundaries.
+> 
+> Further, processing PTE-mapped THP that maybe pinned and have
+> PageAnonExclusive set on at least one subpage should work as expected,
+> but there is room for improvement: We will repeatedly (1) detect a PTE
+> batch (2) detect that we have to copy a page (3) fall back and allocate a
+> single page to copy a single page. For now we won't care as pinned pages
+> are a corner case, and we should rather look into maintaining only a
+> single PageAnonExclusive bit for large folios.
+> 
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-On Fri, 2024-01-26 at 21:00 -0600, Sam Protsenko wrote:
-> On Fri, Jan 26, 2024 at 6:19=E2=80=AFPM Andr=C3=A9 Draszik <andre.draszik=
-@linaro.org> wrote:
-> >=20
-> > Without the clock running, we can not access its registers, and now
-> > that we have it, we should add it here so that it gets enabled as
-> > and when needed.
-> >=20
->=20
-> That sounds like this patch deserves "Fixes:" tag :) Other than that:
+Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
 
-I didn't add it, because at the time &sysreg_peric1 was added, the clock
-macro CLK_GOUT_PERIC1_SYSREG_PERIC1_PCLK didn't exist and &sysreg_peric1
-wasn't in use until this series here anyway.
-If this patch here gets backported to some older kernel due to the Fixes: t=
-ag,
-without the whole peric1 series, it wouldn't build. Therefore I left it out=
-.
-
-Should it still be added?
-
-Cheers,
-Andre'
+> ---
+>  include/linux/pgtable.h |  31 +++++++++++
+>  mm/memory.c             | 112 +++++++++++++++++++++++++++++++++-------
+>  2 files changed, 124 insertions(+), 19 deletions(-)
+> 
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index 351cd9dc7194f..891ed246978a4 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -650,6 +650,37 @@ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addres
+>  }
+>  #endif
+>  
+> +#ifndef wrprotect_ptes
+> +/**
+> + * wrprotect_ptes - Write-protect consecutive pages that are mapped to a
+> + *		    contiguous range of addresses.
+> + * @mm: Address space to map the pages into.
+> + * @addr: Address the first page is mapped at.
+> + * @ptep: Page table pointer for the first entry.
+> + * @nr: Number of pages to write-protect.
+> + *
+> + * May be overridden by the architecture; otherwise, implemented as a simple
+> + * loop over ptep_set_wrprotect().
+> + *
+> + * Note that PTE bits in the PTE range besides the PFN can differ. For example,
+> + * some PTEs might already be write-protected.
+> + *
+> + * Context: The caller holds the page table lock.  The pages all belong
+> + * to the same folio.  The PTEs are all in the same PMD.
+> + */
+> +static inline void wrprotect_ptes(struct mm_struct *mm, unsigned long addr,
+> +		pte_t *ptep, unsigned int nr)
+> +{
+> +	for (;;) {
+> +		ptep_set_wrprotect(mm, addr, ptep);
+> +		if (--nr == 0)
+> +			break;
+> +		ptep++;
+> +		addr += PAGE_SIZE;
+> +	}
+> +}
+> +#endif
+> +
+>  /*
+>   * On some architectures hardware does not set page access bit when accessing
+>   * memory page, it is responsibility of software setting this bit. It brings
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 729ca4d6a820c..4d1be89a01ee0 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -930,15 +930,15 @@ copy_present_page(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma
+>  	return 0;
+>  }
+>  
+> -static inline void __copy_present_pte(struct vm_area_struct *dst_vma,
+> +static __always_inline void __copy_present_ptes(struct vm_area_struct *dst_vma,
+>  		struct vm_area_struct *src_vma, pte_t *dst_pte, pte_t *src_pte,
+> -		pte_t pte, unsigned long addr)
+> +		pte_t pte, unsigned long addr, int nr)
+>  {
+>  	struct mm_struct *src_mm = src_vma->vm_mm;
+>  
+>  	/* If it's a COW mapping, write protect it both processes. */
+>  	if (is_cow_mapping(src_vma->vm_flags) && pte_write(pte)) {
+> -		ptep_set_wrprotect(src_mm, addr, src_pte);
+> +		wrprotect_ptes(src_mm, addr, src_pte, nr);
+>  		pte = pte_wrprotect(pte);
+>  	}
+>  
+> @@ -950,26 +950,93 @@ static inline void __copy_present_pte(struct vm_area_struct *dst_vma,
+>  	if (!userfaultfd_wp(dst_vma))
+>  		pte = pte_clear_uffd_wp(pte);
+>  
+> -	set_pte_at(dst_vma->vm_mm, addr, dst_pte, pte);
+> +	set_ptes(dst_vma->vm_mm, addr, dst_pte, pte, nr);
+> +}
+> +
+> +/*
+> + * Detect a PTE batch: consecutive (present) PTEs that map consecutive
+> + * pages of the same folio.
+> + *
+> + * All PTEs inside a PTE batch have the same PTE bits set, excluding the PFN.
+> + */
+> +static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
+> +		pte_t *start_ptep, pte_t pte, int max_nr)
+> +{
+> +	unsigned long folio_end_pfn = folio_pfn(folio) + folio_nr_pages(folio);
+> +	const pte_t *end_ptep = start_ptep + max_nr;
+> +	pte_t expected_pte = pte_next_pfn(pte);
+> +	pte_t *ptep = start_ptep + 1;
+> +
+> +	VM_WARN_ON_FOLIO(!pte_present(pte), folio);
+> +
+> +	while (ptep != end_ptep) {
+> +		pte = ptep_get(ptep);
+> +
+> +		if (!pte_same(pte, expected_pte))
+> +			break;
+> +
+> +		/*
+> +		 * Stop immediately once we reached the end of the folio. In
+> +		 * corner cases the next PFN might fall into a different
+> +		 * folio.
+> +		 */
+> +		if (pte_pfn(pte) == folio_end_pfn)
+> +			break;
+> +
+> +		expected_pte = pte_next_pfn(expected_pte);
+> +		ptep++;
+> +	}
+> +
+> +	return ptep - start_ptep;
+>  }
+>  
+>  /*
+> - * Copy one pte.  Returns 0 if succeeded, or -EAGAIN if one preallocated page
+> - * is required to copy this pte.
+> + * Copy one present PTE, trying to batch-process subsequent PTEs that map
+> + * consecutive pages of the same folio by copying them as well.
+> + *
+> + * Returns -EAGAIN if one preallocated page is required to copy the next PTE.
+> + * Otherwise, returns the number of copied PTEs (at least 1).
+>   */
+>  static inline int
+> -copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+> +copy_present_ptes(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+>  		 pte_t *dst_pte, pte_t *src_pte, pte_t pte, unsigned long addr,
+> -		 int *rss, struct folio **prealloc)
+> +		 int max_nr, int *rss, struct folio **prealloc)
+>  {
+>  	struct page *page;
+>  	struct folio *folio;
+> +	int err, nr;
+>  
+>  	page = vm_normal_page(src_vma, addr, pte);
+>  	if (unlikely(!page))
+>  		goto copy_pte;
+>  
+>  	folio = page_folio(page);
+> +
+> +	/*
+> +	 * If we likely have to copy, just don't bother with batching. Make
+> +	 * sure that the common "small folio" case is as fast as possible
+> +	 * by keeping the batching logic separate.
+> +	 */
+> +	if (unlikely(!*prealloc && folio_test_large(folio) && max_nr != 1)) {
+> +		nr = folio_pte_batch(folio, addr, src_pte, pte, max_nr);
+> +		folio_ref_add(folio, nr);
+> +		if (folio_test_anon(folio)) {
+> +			if (unlikely(folio_try_dup_anon_rmap_ptes(folio, page,
+> +								  nr, src_vma))) {
+> +				folio_ref_sub(folio, nr);
+> +				return -EAGAIN;
+> +			}
+> +			rss[MM_ANONPAGES] += nr;
+> +			VM_WARN_ON_FOLIO(PageAnonExclusive(page), folio);
+> +		} else {
+> +			folio_dup_file_rmap_ptes(folio, page, nr);
+> +			rss[mm_counter_file(page)] += nr;
+> +		}
+> +		__copy_present_ptes(dst_vma, src_vma, dst_pte, src_pte, pte,
+> +				    addr, nr);
+> +		return nr;
+> +	}
+> +
+>  	folio_get(folio);
+>  	if (folio_test_anon(folio)) {
+>  		/*
+> @@ -981,8 +1048,9 @@ copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+>  		if (unlikely(folio_try_dup_anon_rmap_pte(folio, page, src_vma))) {
+>  			/* Page may be pinned, we have to copy. */
+>  			folio_put(folio);
+> -			return copy_present_page(dst_vma, src_vma, dst_pte, src_pte,
+> -						 addr, rss, prealloc, page);
+> +			err = copy_present_page(dst_vma, src_vma, dst_pte, src_pte,
+> +						addr, rss, prealloc, page);
+> +			return err ? err : 1;
+>  		}
+>  		rss[MM_ANONPAGES]++;
+>  		VM_WARN_ON_FOLIO(PageAnonExclusive(page), folio);
+> @@ -992,8 +1060,8 @@ copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+>  	}
+>  
+>  copy_pte:
+> -	__copy_present_pte(dst_vma, src_vma, dst_pte, src_pte, pte, addr);
+> -	return 0;
+> +	__copy_present_ptes(dst_vma, src_vma, dst_pte, src_pte, pte, addr, 1);
+> +	return 1;
+>  }
+>  
+>  static inline struct folio *folio_prealloc(struct mm_struct *src_mm,
+> @@ -1030,10 +1098,11 @@ copy_pte_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+>  	pte_t *src_pte, *dst_pte;
+>  	pte_t ptent;
+>  	spinlock_t *src_ptl, *dst_ptl;
+> -	int progress, ret = 0;
+> +	int progress, max_nr, ret = 0;
+>  	int rss[NR_MM_COUNTERS];
+>  	swp_entry_t entry = (swp_entry_t){0};
+>  	struct folio *prealloc = NULL;
+> +	int nr;
+>  
+>  again:
+>  	progress = 0;
+> @@ -1064,6 +1133,8 @@ copy_pte_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+>  	arch_enter_lazy_mmu_mode();
+>  
+>  	do {
+> +		nr = 1;
+> +
+>  		/*
+>  		 * We are holding two locks at this point - either of them
+>  		 * could generate latencies in another task on another CPU.
+> @@ -1100,9 +1171,10 @@ copy_pte_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+>  			 */
+>  			WARN_ON_ONCE(ret != -ENOENT);
+>  		}
+> -		/* copy_present_pte() will clear `*prealloc' if consumed */
+> -		ret = copy_present_pte(dst_vma, src_vma, dst_pte, src_pte,
+> -				       ptent, addr, rss, &prealloc);
+> +		/* copy_present_ptes() will clear `*prealloc' if consumed */
+> +		max_nr = (end - addr) / PAGE_SIZE;
+> +		ret = copy_present_ptes(dst_vma, src_vma, dst_pte, src_pte,
+> +					ptent, addr, max_nr, rss, &prealloc);
+>  		/*
+>  		 * If we need a pre-allocated page for this pte, drop the
+>  		 * locks, allocate, and try again.
+> @@ -1119,8 +1191,10 @@ copy_pte_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+>  			folio_put(prealloc);
+>  			prealloc = NULL;
+>  		}
+> -		progress += 8;
+> -	} while (dst_pte++, src_pte++, addr += PAGE_SIZE, addr != end);
+> +		nr = ret;
+> +		progress += 8 * nr;
+> +	} while (dst_pte += nr, src_pte += nr, addr += PAGE_SIZE * nr,
+> +		 addr != end);
+>  
+>  	arch_leave_lazy_mmu_mode();
+>  	pte_unmap_unlock(orig_src_pte, src_ptl);
+> @@ -1141,7 +1215,7 @@ copy_pte_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+>  		prealloc = folio_prealloc(src_mm, src_vma, addr, false);
+>  		if (!prealloc)
+>  			return -ENOMEM;
+> -	} else if (ret) {
+> +	} else if (ret < 0) {
+>  		VM_WARN_ON_ONCE(1);
+>  	}
+>  
 
 
