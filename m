@@ -1,153 +1,240 @@
-Return-Path: <linux-kernel+bounces-43043-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62E52840AB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:00:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68A76840AB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:00:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE169B226BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:00:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77E9CB24073
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:00:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 337F8155314;
-	Mon, 29 Jan 2024 15:59:58 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF2C9154C0C;
-	Mon, 29 Jan 2024 15:59:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95A6A155317;
+	Mon, 29 Jan 2024 16:00:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DkR+Sn31"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B32BD1552FE;
+	Mon, 29 Jan 2024 16:00:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706543997; cv=none; b=sOZpERoKoKJMus3x/z8RgSo74r52NRiS5JMBGG7TZclX2TzH5/st1S/Wz/8k8lJjhbItFqeAN6Ew1B0/XqgTlAGvAQmOhDnyRIQOCsPHDhmPWcS0IUWpn+4JrCKWL0ZXvobAQAVOA7CeJ8Ldi/0r/sodIu6E8CWTWbijQzyxGOM=
+	t=1706544025; cv=none; b=MukbeoP4L0oeXZg1VeLzoVDvHkT6MRvrDbLpk2ximvohRlZik8A8ClISaPjtyomFRYvTFE0Ci8zKOo+WMDLtdcWMG6uiLnJPSIrHxmdaj3QbL4etUyDm5KWTox/Ys/3BCCgkzPrwNDbGMYx/viCBmAb7JgPGOXyecCMmePieQHc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706543997; c=relaxed/simple;
-	bh=iul6xK0e4EN46G8goBsLPgIN2sLhocsKXHQYJX65YiU=;
+	s=arc-20240116; t=1706544025; c=relaxed/simple;
+	bh=d7kTJL5yA5KYsTfmmiVBkb+irsEYdcGncOobIUTBvxE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rOu5kS6s239JFuA/alf5GFD2mI2CV7/dp9DXrJ6AOZEbnlPiqoON84bygKtxjKE0sOEMvOOcrCGk4AJkjUFGMY7hxzxCRM3mp6ffO/ohzIxi6X7Ga1b5QXF7AOLKFa/dRBgM099xPHw7K1H18Fa3/yPTrPSTcBfRWq5fvmgDvyE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0027ADA7;
-	Mon, 29 Jan 2024 08:00:39 -0800 (PST)
-Received: from pluto (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 22E3B3F738;
-	Mon, 29 Jan 2024 07:59:53 -0800 (PST)
-Date: Mon, 29 Jan 2024 15:59:50 +0000
-From: Cristian Marussi <cristian.marussi@arm.com>
-To: Sibi Sankar <quic_sibis@quicinc.com>
-Cc: sudeep.holla@arm.com, rafael@kernel.org, viresh.kumar@linaro.org,
-	morten.rasmussen@arm.com, dietmar.eggemann@arm.com,
-	lukasz.luba@arm.com, linux-arm-kernel@lists.infradead.org,
-	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	quic_mdtipton@quicinc.com, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH V2 4/4] cpufreq: scmi: Register for limit change
- notifications
-Message-ID: <ZbfLdvi_sePXiVmM@pluto>
-References: <20240117104116.2055349-1-quic_sibis@quicinc.com>
- <20240117104116.2055349-5-quic_sibis@quicinc.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=sxzXNoEifFBtMvUVLRJIlL7lV1YwVCwZoz8Heorpi58/xn6k9js5C/CTfsjNst6nrMJvn+oopRkJY1VF6NpKl+To0cytj0NyEQQQlO7UOKJFJ+zZ7Whx8JpqzWPscRmvXszu6fSNdQbuc3Yh4Ba/te35qpTbvlB7b8Xv4isr/tY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DkR+Sn31; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABB10C43390;
+	Mon, 29 Jan 2024 16:00:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706544024;
+	bh=d7kTJL5yA5KYsTfmmiVBkb+irsEYdcGncOobIUTBvxE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=DkR+Sn31qxVYwJj06PpjCcnkbakbuOXyswHUgHAnUQxfxXuPYNH9/AdJPIr9DFudP
+	 7LD2UJC56+6JehOKTitGXlPtwrjbpzXsQhY19AOlKRn4t9RNs42NrunwuYV9vv6lA1
+	 SiSCglNYWNiqIQw5ttetpifKZ3RfoiXarniIMKQ5NUSMMT08dXxutjpUURWMjl+tGQ
+	 2wio/1VoLqIPLC8pvOO0mJhnQGWhgY6K24EazISnuG88jFNx2Dzo5N7gn9LTFOPEV1
+	 sUa4FhHgfBDMvX+gGwGd0/ozZQvf3lOKBqq9Q1PK0pmooqSXJSRJDNUc1GWYpPuaGl
+	 /uJICIXalHPaw==
+Date: Mon, 29 Jan 2024 21:30:00 +0530
+From: Manivannan Sadhasivam <mani@kernel.org>
+To: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Brian Masney <bmasney@redhat.com>,
+	Georgi Djakov <djakov@kernel.org>, linux-arm-msm@vger.kernel.org,
+	vireshk@kernel.org, quic_vbadigan@quicinc.com,
+	quic_skananth@quicinc.com, quic_nitegupt@quicinc.com,
+	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 6/6] PCI: qcom: Add OPP support to scale performance
+ state of power domain
+Message-ID: <20240129160000.GF22617@thinkpad>
+References: <20240112-opp_support-v6-0-77bbf7d0cc37@quicinc.com>
+ <20240112-opp_support-v6-6-77bbf7d0cc37@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240117104116.2055349-5-quic_sibis@quicinc.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240112-opp_support-v6-6-77bbf7d0cc37@quicinc.com>
 
-On Wed, Jan 17, 2024 at 04:11:16PM +0530, Sibi Sankar wrote:
-> Register for limit change notifications if supported with the help of
-> perf_notify_support interface and determine the throttled frequency
-> using the perf_freq_xlate to apply HW pressure.
+On Fri, Jan 12, 2024 at 07:52:05PM +0530, Krishna chaitanya chundru wrote:
+> QCOM Resource Power Manager-hardened (RPMh) is a hardware block which
+> maintains hardware state of a regulator by performing max aggregation of
+> the requests made by all of the processors.
 > 
-> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+
+s/processors/clients
+
+> PCIe controller can operate on different RPMh performance state of power
+> domain based up on the speed of the link. And this performance state varies
+> from target to target.
+> 
+> It is manadate to scale the performance state based up on the PCIe speed
+> link operates so that SoC can run under optimum power conditions.
+> 
+> Add Operating Performance Points(OPP) support to vote for RPMh state based
+> upon GEN speed link is operating.
+> 
+> OPP can handle ICC bw voting also, so move icc bw voting through opp
+> framework if opp entries are present.
+> 
+> In PCIe certain gen speeds like GEN1x2 & GEN2X1 or GEN3x2 & GEN4x1 use
+> same icc bw and has frequency, so use frequency based search to reduce
+> number of entries in the opp table.
+> 
+> Don't initialize icc if opp is supported.
+> 
+> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
 > ---
+>  drivers/pci/controller/dwc/pcie-qcom.c | 83 ++++++++++++++++++++++++++++------
+>  1 file changed, 70 insertions(+), 13 deletions(-)
 > 
-> v2:
-> * Export cpufreq_update_pressure and use it directly [Lukasz]
-> 
->  drivers/cpufreq/scmi-cpufreq.c | 42 +++++++++++++++++++++++++++++++++-
->  1 file changed, 41 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/cpufreq/scmi-cpufreq.c b/drivers/cpufreq/scmi-cpufreq.c
-> index 4ee23f4ebf4a..e0aa85764451 100644
-> --- a/drivers/cpufreq/scmi-cpufreq.c
-> +++ b/drivers/cpufreq/scmi-cpufreq.c
-> @@ -25,9 +25,13 @@ struct scmi_data {
->  	int domain_id;
->  	int nr_opp;
->  	struct device *cpu_dev;
-> +	struct cpufreq_policy *policy;
->  	cpumask_var_t opp_shared_cpus;
-> +	struct notifier_block limit_notify_nb;
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> index 035953f0b6d8..31512dc9d6ff 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> @@ -22,6 +22,7 @@
+>  #include <linux/of.h>
+>  #include <linux/of_gpio.h>
+>  #include <linux/pci.h>
+> +#include <linux/pm_opp.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/phy/pcie.h>
+> @@ -244,6 +245,7 @@ struct qcom_pcie {
+>  	const struct qcom_pcie_cfg *cfg;
+>  	struct dentry *debugfs;
+>  	bool suspended;
+> +	bool opp_supported;
 >  };
 >  
-> +const struct scmi_handle *handle;
-> +static struct scmi_device *scmi_dev;
->  static struct scmi_protocol_handle *ph;
->  static const struct scmi_perf_proto_ops *perf_ops;
->  
-> @@ -144,6 +148,22 @@ scmi_get_cpu_power(struct device *cpu_dev, unsigned long *power,
+>  #define to_qcom_pcie(x)		dev_get_drvdata((x)->dev)
+> @@ -1404,16 +1406,14 @@ static int qcom_pcie_icc_init(struct qcom_pcie *pcie)
 >  	return 0;
 >  }
 >  
-> +static int scmi_limit_notify_cb(struct notifier_block *nb, unsigned long event, void *data)
-> +{
-> +	unsigned long freq_hz;
-> +	struct scmi_perf_limits_report *limit_notify = data;
-> +	struct scmi_data *priv = container_of(nb, struct scmi_data, limit_notify_nb);
-> +	struct cpufreq_policy *policy = priv->policy;
-> +
-> +	if (perf_ops->perf_freq_xlate(ph, priv->domain_id, limit_notify->range_max, &freq_hz))
-> +		return NOTIFY_OK;
-> +
-> +	policy->max = freq_hz / HZ_PER_KHZ;
-> +	cpufreq_update_pressure(policy);
-> +
-> +	return NOTIFY_OK;
-> +}
-> +
->  static int scmi_cpufreq_init(struct cpufreq_policy *policy)
+> -static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
+> +static void qcom_pcie_icc_opp_update(struct qcom_pcie *pcie)
 >  {
->  	int ret, nr_opp, domain;
-> @@ -151,6 +171,7 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
->  	struct device *cpu_dev;
->  	struct scmi_data *priv;
->  	struct cpufreq_frequency_table *freq_table;
-> +	struct scmi_perf_notify_info info = {};
+>  	struct dw_pcie *pci = pcie->pci;
+> -	u32 offset, status;
+> +	u32 offset, status, freq;
+> +	struct dev_pm_opp *opp;
+>  	int speed, width;
+>  	int ret;
 >  
->  	cpu_dev = get_cpu_device(policy->cpu);
->  	if (!cpu_dev) {
-> @@ -250,6 +271,25 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
->  	policy->fast_switch_possible =
->  		perf_ops->fast_switch_possible(ph, domain);
+> -	if (!pcie->icc_mem)
+> -		return;
+> -
+>  	offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
+>  	status = readw(pci->dbi_base + offset + PCI_EXP_LNKSTA);
 >  
-> +	ret = perf_ops->perf_notify_support(ph, domain, &info);
-> +	if (ret)
-> +		dev_warn(cpu_dev, "failed to get supported notifications: %d\n", ret);
-> +
-> +	if (info.perf_limit_notify) {
-> +		priv->limit_notify_nb.notifier_call = scmi_limit_notify_cb;
-> +		ret = handle->notify_ops->devm_event_notifier_register(scmi_dev, SCMI_PROTOCOL_PERF,
-> +							SCMI_EVENT_PERFORMANCE_LIMITS_CHANGED,
-> +							&domain,
-> +							&priv->limit_notify_nb);
-> +		if (ret) {
-> +			dev_err(cpu_dev, "Error in registering limit change notifier for domain %d\n",
-> +				domain);
-> +			return ret;
+> @@ -1424,11 +1424,42 @@ static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
+>  	speed = FIELD_GET(PCI_EXP_LNKSTA_CLS, status);
+>  	width = FIELD_GET(PCI_EXP_LNKSTA_NLW, status);
+>  
+> -	ret = icc_set_bw(pcie->icc_mem, 0, width * QCOM_PCIE_LINK_SPEED_TO_BW(speed));
+> -	if (ret) {
+> -		dev_err(pci->dev, "failed to set interconnect bandwidth: %d\n",
+> -			ret);
+> +	if (pcie->opp_supported) {
+> +		switch (speed) {
+> +		case 1:
+> +			freq = 2500000;
+> +			break;
+> +		case 2:
+> +			freq = 5000000;
+> +			break;
+> +		case 3:
+> +			freq = 8000000;
+> +			break;
+> +		default:
+> +			WARN_ON_ONCE(1);
+> +			fallthrough;
+> +		case 4:
+> +			freq = 16000000;
+> +			break;
 > +		}
 
-Is there a reason to fail completely here if it was not possible to register
-the notifier ? (even though expected to succeed given perf_limit_notify
-was true...)
+This switch case is PCIe generic, so need to be moved to drivers/pci/pci.c.
+There is already an API, pcie_link_speed_mbps() that returns the frequency in
+MBps but uses the pcie_capability_read_word() API to read LNKSTA of the device.
 
-Maybe a big fat warn that the system perf could be degraded, but
-carrying on ?
+But you can move the switch case inside that API to a separate function and
+reuse that here.
 
-Or maybe you have in mind a good reason to fail like you did, so please
-explain in that case in a comment.
+> +
+> +		opp = dev_pm_opp_find_freq_exact(pci->dev, freq * width, true);
+> +		if (!IS_ERR(opp)) {
+> +			ret = dev_pm_opp_set_opp(pci->dev, opp);
+> +			if (ret)
+> +				dev_err(pci->dev, "Failed to set opp: freq %ld ret %d\n",
+> +					dev_pm_opp_get_freq(opp), ret);
+> +			dev_pm_opp_put(opp);
+> +		}
+> +	} else {
+> +		ret = icc_set_bw(pcie->icc_mem, 0, width * QCOM_PCIE_LINK_SPEED_TO_BW(speed));
+> +		if (ret) {
+> +			dev_err(pci->dev, "failed to set interconnect bandwidth for pcie-mem: %d\n",
+> +				ret);
+> +		}
+>  	}
+> +
+> +	return;
+>  }
+>  
+>  static int qcom_pcie_link_transition_count(struct seq_file *s, void *data)
+> @@ -1471,8 +1502,10 @@ static void qcom_pcie_init_debugfs(struct qcom_pcie *pcie)
+>  static int qcom_pcie_probe(struct platform_device *pdev)
+>  {
+>  	const struct qcom_pcie_cfg *pcie_cfg;
+> +	unsigned long max_freq = INT_MAX;
+>  	struct device *dev = &pdev->dev;
+>  	struct qcom_pcie *pcie;
+> +	struct dev_pm_opp *opp;
+>  	struct dw_pcie_rp *pp;
+>  	struct resource *res;
+>  	struct dw_pcie *pci;
+> @@ -1539,9 +1572,33 @@ static int qcom_pcie_probe(struct platform_device *pdev)
+>  		goto err_pm_runtime_put;
+>  	}
+>  
+> -	ret = qcom_pcie_icc_init(pcie);
+> -	if (ret)
+> +	 /* OPP table is optional */
+> +	ret = devm_pm_opp_of_add_table(dev);
+> +	if (ret && ret != -ENODEV) {
+> +		dev_err_probe(dev, ret, "Failed to add OPP table\n");
+>  		goto err_pm_runtime_put;
+> +	}
+> +
+> +	/* vote for max freq in the opp table if opp table is present */
 
-Thanks,
-Cristian
+/*
+ * Use highest OPP here if the OPP table is present. At the end of the probe(),
+ * OPP will be updated using qcom_pcie_icc_opp_update().
+ */
+
+- Mani
+
+-- 
+மணிவண்ணன் சதாசிவம்
 
