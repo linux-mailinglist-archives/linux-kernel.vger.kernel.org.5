@@ -1,204 +1,127 @@
-Return-Path: <linux-kernel+bounces-43455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43458-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A616841413
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 21:16:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DE195841419
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 21:19:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EAEDA1F24585
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 20:16:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 862461F24A6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 20:19:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 645887604A;
-	Mon, 29 Jan 2024 20:16:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF39376053;
+	Mon, 29 Jan 2024 20:19:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=prevas.dk header.i=@prevas.dk header.b="emp6LSgH"
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2125.outbound.protection.outlook.com [40.107.6.125])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="fLQTzX0B"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B740C76037;
-	Mon, 29 Jan 2024 20:16:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.6.125
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706559404; cv=fail; b=IhY1imyIiA1AUyeGbgr9CGu0axBYTbyv05BYYN4f4MRPmlT8khIreLLXODODlseY5CJzQZuRaolkUEN41NLDGGsKlVtl74w3SczmSXsdIhKfXCxVva9R5kluN2wafjAr9fDHo7LwTyINPO4sPI0J4TJ/yEVdoEW6is8js9JRnmc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706559404; c=relaxed/simple;
-	bh=XS4fGporXJGlnLFxdAC+duY31ksSwbiWw7w9fUQr2ok=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=h71UE14so3N2dvuRaZ6OfVYsg/U/yNMgx8TtsCEPyJl5YYl+oTwvmXzH4K4hFw4hE5T7Ru69yzZQpwcdOGhUprw0UnO0Mf7oYIm7bo9R7gDZwfI4oQEf+avUXIr5wXWydF16jwpNbHaDf39drJcQjOHINtkM0FOzUdtvWH7QlgE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=prevas.dk; spf=pass smtp.mailfrom=prevas.dk; dkim=pass (1024-bit key) header.d=prevas.dk header.i=@prevas.dk header.b=emp6LSgH; arc=fail smtp.client-ip=40.107.6.125
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=prevas.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=prevas.dk
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LOt4kmeIn5KoWQTzTSqRNQTPGFEMl6FlyeJxJ2hXvAxoNCgAzePwMSrAB+UN31YfMiW/a1chUox6w3ryh1TYPgiYpdfk8dzdrXKxkC7dESZTkrfNNXYNIkukeACPXXS6AJ1SQjV4lCkACEx26PJxQ8CIBZ/GCJUBZCyLlxzyBM/70hN7pTBQKTZsyzZJa2evvezPe09KcohleZSRqrs40iCAiNHCxWWa8FFkcZ+rr49k7FBbyCG+UC1mecj9faAhaG7H/CW69uSUjNmm8OlSSGqcHqVvrz5MUHeeGrWfTLodd+YhPpZig8XOl70KMG5ulhOVZp6Ch7bde2Av+aYkpA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=STATidvgRcl4kE44tZzQyGWVeYrnKC+Z5eAvDBYkx7w=;
- b=eFeR/RbHXX/SwcAB2JKe7rwo6C0SG/D5jMo4sHNiG+JpetYjLrOYFd1WcEXS/4iIdkY4k8ONKgnOh7jsw0B0hOaq+qSJzihqTsqIMDXM66OHgIIPQl3aPMzApPMlhthmP31tPMovGCRUBiUP8xZ0FOzO0l2rMH/dzJwJD40k+bQcoZMeNyGVRxhK/JXffAbYX0JVpwxwkfg18isdiixgLQocK3AuoP+JPyQkeTKJjUmLlVCdEpVkX+O+2lCU95JyVnBMkqt4v9AeC7X4GqIP/OcTHA7qIRTXKwqTnXf2wNVAEaoaMtAqtlm8BQbIQech2+jUi98NvFz5SuKjHn8VNg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
- dkim=pass header.d=prevas.dk; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=STATidvgRcl4kE44tZzQyGWVeYrnKC+Z5eAvDBYkx7w=;
- b=emp6LSgHJD0liZtzqOCZ+UYvldeaB33RfRzg/4hq450NGfhmvvyMfRv8hz53hfdY78dvLvh/k1PiMxTLpKvGf/cOAlM0UtepeovQWOKW0ml/yxusWPpVr76rhaXxlZR+oFWJCWfT6SLCzUwpydxNuq3MTjnW/XJLuaZrsmsw53E=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=prevas.dk;
-Received: from DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:45a::14)
- by AS8PR10MB6770.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:5bc::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.32; Mon, 29 Jan
- 2024 20:16:39 +0000
-Received: from DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::f059:23ad:b039:15de]) by DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::f059:23ad:b039:15de%7]) with mapi id 15.20.7228.029; Mon, 29 Jan 2024
- 20:16:38 +0000
-Message-ID: <33dcfa96-e584-404e-a9e5-afeca9105818@prevas.dk>
-Date: Mon, 29 Jan 2024 21:16:36 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/5] overflow: Introduce inc_wrap() and dec_wrap()
-Content-Language: en-US, da
-To: Kees Cook <keescook@chromium.org>
-Cc: Mark Rutland <mark.rutland@arm.com>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- linux-hardening@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
- Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
- Miguel Ojeda <ojeda@kernel.org>, Marco Elver <elver@google.com>,
- linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-References: <20240129182845.work.694-kees@kernel.org>
- <20240129183411.3791340-5-keescook@chromium.org>
-From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-In-Reply-To: <20240129183411.3791340-5-keescook@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MM0P280CA0117.SWEP280.PROD.OUTLOOK.COM
- (2603:10a6:190:9::32) To DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:10:45a::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AF267602C;
+	Mon, 29 Jan 2024 20:19:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706559565; cv=none; b=p/Co7MljbzCAc0m9vhHk2Ue5lYyok6vvweBqPjlNTjKdBkYBKIa19B4hlNoyNDEoacCYNZO5X0BfF42D3hilcu9gWPdGP1JSRfbx/pj18oEPlW0QqZso4+X68X+IZx334gBndHS8fu6fmhe3nsotm3FYuDLoshRPuiDiEYFVBvY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706559565; c=relaxed/simple;
+	bh=zBCohKNvRGhj7gfexT0mPaUTjd2BuLf8CXnzCM5fCPI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LV1Snh7i1GLd4rYkRT77DrXLXa7BYuKhKj5QYKfdz463Yon4weKaMkIobtd/9I8VZUZGtTJDFQjtyLYEGGVrLibr7avYo1fKE3H66NWN9WI8a1tyjqgAOsT/a0Tx7aJpP5j42seRDqnEYwe7G+lESk1OcWKxn5YDmKvxq4ZHrlA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=fLQTzX0B; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=WAigPmVNmrZ4Q7NScBbnGOHfNcKGdxLaLpMpEktixVw=; b=fLQTzX0B2kYvB5i93Y4XIvbGMc
+	dm9ecb4yVk5wybSuBljWIkleLuSyQ+mMl1Dxvj7yWn21F4JhMRWxn0+9oCv7tRwP6tdD+euHOiAhC
+	Zo1XZHkbL/FLYK49Ucm0dmV/chfpFGtcKdy51xhkmwSVtH7CFvdq2xZMg1ZF9X81K2Le1kDaWcksS
+	E22VHU7BwhPIgw0UT7SOS6zY26Hn0G42CRc08Ions+kWCPRGnglT3bs8H63h3B91lCJOj+ehwZkJw
+	lYJpFLjfRvYD0rIXA99z0WQkDlD+kpDM92/1lTAZC+dAJxXroKVExnN8OJfIubl/tmp9v7wjLUOE8
+	5Sp5KOeQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rUY63-00000007eMk-11Xv;
+	Mon, 29 Jan 2024 20:19:11 +0000
+Date: Mon, 29 Jan 2024 20:19:11 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Carlos Llamas <cmllamas@google.com>
+Cc: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>,
+	Alex Gaynor <alex.gaynor@gmail.com>,
+	Wedson Almeida Filho <wedsonaf@gmail.com>,
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+	Benno Lossin <benno.lossin@proton.me>,
+	Andreas Hindborg <a.hindborg@samsung.com>,
+	Kees Cook <keescook@chromium.org>,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
+	Christian Brauner <brauner@kernel.org>
+Subject: Re: [PATCH 3/3] rust: add abstraction for `struct page`
+Message-ID: <ZbgIP88JtKAP7hyP@casper.infradead.org>
+References: <20240124-alice-mm-v1-0-d1abcec83c44@google.com>
+ <20240124-alice-mm-v1-3-d1abcec83c44@google.com>
+ <ZbfnmX1J8iLV8UnO@casper.infradead.org>
+ <Zbf0-o-8m_V9gSzZ@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB9PR10MB7100:EE_|AS8PR10MB6770:EE_
-X-MS-Office365-Filtering-Correlation-Id: 95b3dcd3-d57a-4845-6611-08dc2107333f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	wEWjHIFVbNtOpVHhv83nyjuwGexp1BwTZFEPV1tXpT4VM9VUciaXtEILGl1K1UP1Im8hmnYzzataX+fBL2uCDQ+vHOmziwwnm7g5kLbS7SFBncCbcV3wCfuJFReqUuM7ZNu5DcraIxnvqyikcgEcIQNNrjIMbWR9NoLTaUbeSJgFp84HZ6uQm0z5MbbQEoPU9PU4jivMNNINPyQf1SFxNu62+PuSicfQuF8in+YXkqwHJsNp57aooDVvxl9BmGvA4OOwsQoB9bp7A/S0r+M9LLRsOTPdL4Q17fSuo3m9swmBe9l7lhvXgGI3KDE+HgUuAT+7iPWsiNf8lgP8+GreiFNNQTj4wdL3YchoCrTVF+t/FP+eh/ZInrOYqu3bnoo9cJOimpTQ6OFdUawC++ihHyryTgjTbtithtj51RuKGvHHCW8lpDBWh5sIY3K106IKyS3LWBLO2QNHxeLvB+DVOg4QXE84Sl+qkHCmpeIlpULB3jF+pp0EdXcEmk8pigK7elDbC8q+KX5u05seqsHpvZuwym0iS9XQoTk0O5cT+JEYyWPAf2JhPj6fQPO3J+AowJ1lVPCV0Chw4TA+BnfVwLElBwDnfnJBAOkTBHzjHiRZ2d70YGDWIlG+YGPr7nkLX7z+stwC52zCV2PFmRFYXA==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(376002)(366004)(39850400004)(396003)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(26005)(31686004)(6512007)(6506007)(36756003)(31696002)(86362001)(44832011)(8676002)(8936002)(41300700001)(4326008)(5660300002)(66946007)(8976002)(478600001)(38100700002)(316002)(66476007)(6916009)(54906003)(66556008)(7416002)(6486002)(2616005)(2906002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?TTZYTWkramlSS3hpM0FTZGluSWVRK3hHTlZabGZiNlhRdFhYdEJTWnc1ZEt1?=
- =?utf-8?B?NmFuZlEwVWlTMmpOYU5Xcmt0TUpOdVVlZlloOURDYmJzeEFCdjl4dTVVWnpq?=
- =?utf-8?B?bVNqNEk5akIwN0ZqWFAwVnhOcGpybmdwZWxNN1ZBUnFIR1I2NStuYVNvVGFG?=
- =?utf-8?B?TTZRd0grZFhqdzlGNjg1QzZQL0JFUm44SXU2VnNobmFsSmR6Nmdrem5pQ0hs?=
- =?utf-8?B?SjhRRWtWVnFHYmwzejVoQzRJSis0ZGEvNjFOcDVJajlCRUY0VSsyRjBVODUr?=
- =?utf-8?B?UVJQQUgyY3ovWUdkNXA0UnJza3NNRXJ3Tk5ORUt3WUVYaUgwRW9DeEluL2F1?=
- =?utf-8?B?RjdORms1TU9FeHVJemdFNExNYTB2WHE0WTd6TjZXU29TRXNwM3Vielo4emJu?=
- =?utf-8?B?cUlFcm92Zm10c3VTcHNXSjdjUE5kZEVTUnJYN1pyOGk0SXVaWkdja2NidVZS?=
- =?utf-8?B?T2JZU0xUMEZuMjh1QnZJbWV4cllZcEErSWdTREJhU3krbFg4bzBqWVN6a2Rx?=
- =?utf-8?B?NmdqNjdnZC9LMGJpL3J0UjVGZTZPcFNoekxqdEF5bmd2L3hkKzltRXBPL0d5?=
- =?utf-8?B?TVI0TEhlR2VUU25PSXI0QkhLeEJNYUl4LzY2UEJwTkNnS2g3RnRHTjdYOXhD?=
- =?utf-8?B?eko4OWhkMzRVSUR0MHRLSlFBcHVmdXFpUnVjbHJmLzdKdmtjeTRORjUrY29B?=
- =?utf-8?B?azk1cU1RZlE0TG8zVlV4SkRObnRUdlBVQjY1L1NuTExkL1hld1pPQkp6RUxW?=
- =?utf-8?B?NlE5TnQ5UWZmQTM3SWNxZU5oVEg3WGtIQm1iOWQ2K3YrU1pDeDM0VmtQQ3RF?=
- =?utf-8?B?Y3U2RVF2dkFuN1JGT2FNWUMvMkVCdDJwSVpHdWxUWDlGcyt5TXBzQ21MNzFJ?=
- =?utf-8?B?bGJZMllsbWF6Z2pSdmhCR1ZjQVFWY3phY01zQXlJSUpwMUhHeitFZHVZMzhB?=
- =?utf-8?B?UTJLN2RXQmU1VzJvcldpd3kyQjU0MWxHbHdwanowTnJPTlcvaUdNSEtoUnVx?=
- =?utf-8?B?RGJMY0ZhK2grc1ZDcnlEL3c3THhSUm52aEgzWFR3OC9rNElHaGQ5ZUNrWXky?=
- =?utf-8?B?d2NXK0Jua0ZLYjlWVWgxYVJkKy8ya2tXbXQ1L0c2blVOUkUwQTlITmZRSzd6?=
- =?utf-8?B?SlRQVFlDTE9QYUFzUXBhM0JBSTJFdC9lQW9ueFNOR21ydXNWckNSTzNnYklG?=
- =?utf-8?B?VVlxdmRKTmdyeGN5NVNtTGZUd2oxeTdiOWFhbjA3VzNhWlVrcjNHSG9vemZW?=
- =?utf-8?B?YjdvZk9tM2ZJS1Bqb1hzYWdkaVcvOGJwbmpXclV3Wk9jRERIY3JFTm96QWN5?=
- =?utf-8?B?ZFlwRWY2SFkzRXh5bVUzWG5uT0MrTk9YbjJmekthK0FBcEQ1OGUwQmd0Umsy?=
- =?utf-8?B?SlJ3OWg0WGZlSnFXaGhMUDVTU3dJSWcvUFFwVUV1bkRTSTkzcG1IYXNGTDMz?=
- =?utf-8?B?TXVqTm11Tks1em1Da2VnNnBVVmVJRkNMcHBTbnZmVGhBQkdQNHoxcGViemo3?=
- =?utf-8?B?bVRHaVdKOUdCR1NieUlJOFhIRVQ3dXd5dlFvSHNHVFBQdzJOZ0tIQlNPbGtJ?=
- =?utf-8?B?V3pTaXgwc0ZUVXhCR2hMWTRUdk1MRFgzK2VjdmovSEw2bFJYcmQ3T0o2UnV2?=
- =?utf-8?B?VkdtRmtiSkJ6eWhwd0EvODJVRmVkRk9FaEpCL0FaMjFHKzlrTUllUHNpdDdI?=
- =?utf-8?B?WkFsdEtKc3J6cGdLeHh3akdKMG9wM1JMOW04anlPM1FwZXRHbDM0d29mQ3hp?=
- =?utf-8?B?ZjlENE9MSks4RnNhZ1g3WnFJMmp0S1FJMEFUQ2Z2Wm5XWnB2V0RlVWsvN1Vy?=
- =?utf-8?B?RXppeWZyekZGL3RuWEJnMkdPTU1sSkJQMFoxVk5XazgxNG9uVUg2VDZETWFB?=
- =?utf-8?B?U1cyL01LclJ4T2dKYzlYQ3B6WjJSMFdkVURsajJaUG5IVG1PWUFVUjBhUFBE?=
- =?utf-8?B?YlNqbHVybEk4OFB2QUtma3MvNERWbzE5Wmptdy9PcTFMbS9hZFpLR3JZTjdO?=
- =?utf-8?B?R29zU3oraUpXeSt6eFpqVDFPUFREOTc0cFh1ZzlMOWk2aGhqU2l3dE5hYlVi?=
- =?utf-8?B?MDRkQ0RJVGptejJ4ck1vMWhUbENja08zbWRBc2ZuSjdNWGNlVUxEa3krcWU1?=
- =?utf-8?B?eWtqTDJGZUh6VFMzRVl4ZFhhYkRtbzFlS1MrNkZReGFvbE9mdFFkL0RiekR2?=
- =?utf-8?B?YXc9PQ==?=
-X-OriginatorOrg: prevas.dk
-X-MS-Exchange-CrossTenant-Network-Message-Id: 95b3dcd3-d57a-4845-6611-08dc2107333f
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2024 20:16:38.9138
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: j9jUUikgWXNxLGzOGKrInZLFxDEgmVOXgthrKLVb+a9jbm/ipeCaSFlQ0JVBywRaRB1GfLSNThx8RHXsGTNuq90jN4Jta1D8XT4Y2vG1X+w=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR10MB6770
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zbf0-o-8m_V9gSzZ@google.com>
 
-On 29/01/2024 19.34, Kees Cook wrote:
-> This allows replacements of the idioms "var += offset" and "var -= offset"
-> with the inc_wrap() and dec_wrap() helpers respectively. They will avoid
-> wrap-around sanitizer instrumentation.
-> 
-> Cc: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  include/linux/overflow.h | 32 ++++++++++++++++++++++++++++++++
->  1 file changed, 32 insertions(+)
-> 
-> diff --git a/include/linux/overflow.h b/include/linux/overflow.h
-> index 4f945e9e7881..080b18b84498 100644
-> --- a/include/linux/overflow.h
-> +++ b/include/linux/overflow.h
-> @@ -138,6 +138,22 @@ static inline bool __must_check __must_check_overflow(bool overflow)
->  		__sum;					\
->  	})
+On Mon, Jan 29, 2024 at 06:56:58PM +0000, Carlos Llamas wrote:
+> On Mon, Jan 29, 2024 at 05:59:53PM +0000, Matthew Wilcox wrote:
+> > On Wed, Jan 24, 2024 at 11:20:23AM +0000, Alice Ryhl wrote:
+> > > This patch only adds support for pages of order zero, as that is all
+> > > Rust Binder needs. However, it is written to make it easy to add support
+> > > for higher-order pages in the future. To do that, you would add a const
+> > > generic parameter to `Page` that specifies the order. Most of the
+> > > methods do not need to be adjusted, as the logic for dealing with
+> > > mapping multiple pages at once can be isolated to just the
+> > > `with_pointer_into_page` method. Finally, the struct can be renamed to
+> > > `Pages<ORDER>`, and the type alias `Page = Pages<0>` can be introduced.
+> > 
+> > This description concerns me because it reads like you're not keeping
+> > up with the current thinking in MM about what pages are and how we're
+> > improving the type hierarchy.  As in, we're creating one instead of
+> > allowing the current mish-mash of absolutely everything to continue.
+> > 
+> > Are you the right person to ask about the operations that Binder does
+> > with a page so we can figure out where it fits in the type hierarchy?
 >  
-> +/**
-> + * add_wrap() - Intentionally perform a wrapping increment
+> I would guess you are suggesting a transition to folios here? I don't
 
-inc_wrap
+I don't think folios are the right type to use.  Folios are for files and
+anonymous memory; things which are managed on the LRU, have refcounts and
+mapcounts, can be found with an rmap, need private data, belong to memory
+control groups, belong to either an inode or an anon_vma, and so on.
 
-> + * @a: variable to be incremented
-> + * @b: amount to add
-> + *
-> + * Increments @a by @b with wrap-around. Returns the resulting
-> + * value of @a. Will not trip any wrap-around sanitizers.
-> + */
-> +#define inc_wrap(var, offset)					\
-> +	({							\
-> +		if (check_add_overflow(var, offset, &var)) {	\
-> +			/* do nothing */			\
-> +		}						\
-> +		var;						\
+It's _possible_ that Binder fits this use case well enough, but my
+guess is that it needs its own type, or maybe it's the initial example
+of a different type from folios (right now we have three types: folios,
+slabs and ptdescs, but more are on their way).
 
-Hm. I wonder if multiple evaluations of var could be a problem.
-Obviously never if var is actually some automatic variable, nor if it is
-some simple foo->bar expression. But nothing really prevents var from
-being, say, foo[gimme_an_index()] or something similarly convoluted.
+> The only concern I have is that we've implemented a binder LRU-shrinker
+> mechanism. We add the unused pages to our freelist and give them back to
+> the system on demand. However, if a new transaction requests the unused
+> page before it gets reclaimed it is simply removed from this freelist.
+> This is convenient as we avoid taking the mmap sem during this process.
+> I don't know how this mechanism would look with folios though?
 
-Does the compiler generate ok code if one does
-
-  typeof(var) *__pvar = &(var);
-  if (check_add_overflow(*__pvar, offset, __pvar)) {}
-  *__pvar;
-
-[in fact, does it even generate code, i.e. does it compile?]
-
-I dunno, maybe it's overkill to worry about.
-
-Rasmus
-
+This doesn't seem like too much of a problem.  The key thing is that
+with memdescs, you get to define your own data type of whatever size
+makes sense for you.  Until then you're limited to what we can fit into
+a struct page (and we need to be careful not to step on stuff that other
+people look at like the refcount).
 
