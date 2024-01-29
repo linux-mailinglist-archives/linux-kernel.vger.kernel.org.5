@@ -1,156 +1,121 @@
-Return-Path: <linux-kernel+bounces-43062-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43118-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B700840B06
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:13:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7876E840BB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:37:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55DE528D4BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:13:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1783A1F24BF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:37:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4EEF155A35;
-	Mon, 29 Jan 2024 16:13:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="VOm+VMpz";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="yb9+nKKm"
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAB0B15AAA8;
+	Mon, 29 Jan 2024 16:32:14 +0000 (UTC)
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82F8D155A22;
-	Mon, 29 Jan 2024 16:13:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.26
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF24E15B99D;
+	Mon, 29 Jan 2024 16:32:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706544799; cv=none; b=RTi38lYErZum4Cxmvr6jzas6OhSIbpqO4tO3zgtjJ5W6V2UPMd6E1LdBCFxhoBVqQe9bZ4nfMZg3z7aqJFkXarPWsIUkhjVf7EHzaZYV2g//K+Y32eQClJ1V9gTpiPOWpigrrQKbuTUOD4dCNHmheikZHLo2b7Bf9lSfyrzYrdI=
+	t=1706545934; cv=none; b=Nv2V+CeK9bUT5vrHLyHBHdg13E1IU33StFQfdkHx7euNj+pG3eufHI5cQvEVdQlQ4YMeHSTAQjRtO0fMprg/wz07tdffuMJf5VKRLC3oR8fJ4J/BFLX+KxWTzMQCoyj+RE+N5Qi0ldnyIpdAVjAfVJpRAxZSa9bFTStC0uG4L5o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706544799; c=relaxed/simple;
-	bh=U5knNVeSUC02Kp52IYtCJFDsNCRfi5Zfl/yaznZobHo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EniYrJKwrSJHV/07F5bkY1c/YPly0d22vzfV2g6BqcDMqXJTVnpLafq4sr4JtE+LRHiiwfcNmBfc5bYvHGneKHlP6B7j7Ta0YuVCwDha3GzNiXBHz7rlxB6zD6651I4dVHoyBq812nLydTtA2LTP3rdhDiAKdLeEQX8W/9el0WE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=VOm+VMpz; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=yb9+nKKm; arc=none smtp.client-ip=66.111.4.26
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.nyi.internal (Postfix) with ESMTP id 83E815C015C;
-	Mon, 29 Jan 2024 11:13:16 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 29 Jan 2024 11:13:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1706544796; x=1706631196; bh=NWhpZ4Anx6
-	A8C8PAGZ4L9Hr5r5a+wvYAeeIbNmcd0qU=; b=VOm+VMpzkv3+IsNZJ4sSO3Rhkm
-	1+Se7H6xOwopyi+D+1iV2XGPZNUXXk2219B5xWo8eRFBD0jEfx/w+xXYlRBp7sHw
-	HPA/Nbyfr80uufvyxzxpihct1FuYHvf6jz9PILZvgHDOMKj2Yt/OsDwJE6sct6NN
-	no3YxTYXrL8z0z2C9Hb3se69ZWKg6VduZsQgKD2HXmz2yeTJnwqn6uwv5T3JyvnX
-	FFzMVIbsTR4d3y9wS0YSYQH5lfdhgpoUQb9Vc8l0sqCyuocygVZHoZGp8JN01R1p
-	USaxulmlmJ9f6TZ72iWh5C+jUcWB9DqNjU9QX6LmUBzb6rsdUo5fe/JhDo8g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1706544796; x=1706631196; bh=NWhpZ4Anx6A8C8PAGZ4L9Hr5r5a+
-	wvYAeeIbNmcd0qU=; b=yb9+nKKmeF6edNDEM1qJkq8963omb38gnHL78bXBIEgJ
-	mkzw3Hcu5Uq0tFTI4c5f0P7/iPZnZRrr6niOi7Au+80HNFi7MVBg0RkQ59cscuVx
-	YGi7tsjXOUVlL/2c76E06Og6kWLeR7mN3SEutmJpG452DgD+Aiy3ggvSyQu7kExD
-	gPTgk56208mjASRYNmmpg4FF1QwcygRQSdaHGBx4ti2DAnLPcKw3IsYd0GB3h2AA
-	Nmaq/Jvou7wny6YubLw8dKkRpGfzhcRpnwhwZebVPVQxkyDkPkHWy6481WcY3K83
-	WghA6RY9gaFz7c1d03lKcbWZ1BrPBbRwUUQSTz7oIA==
-X-ME-Sender: <xms:nM63ZTAPoFX3KNffT1rBQ3rx_K3AD6BBPKK508KUr0OHFxySHAGTQA>
-    <xme:nM63ZZizASsqB3pGgiMra1uurC9WOcN5ygDyO_Z7Kx8TtLZhCWUhMz0QeXj9ZlUj0
-    aBahjpvdXRfBC5Fxw>
-X-ME-Received: <xmr:nM63ZelflC7YE6_uhoOjA22N6xiwymfb2EgcdG1Grt9XYuSvaaRu4Hx-Y6w0qOsKWqArwaCI7V9lRJuXkiD6hERdDayzrylhq9Mh58Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtgedgjeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddt
-    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
-    cuggftrfgrthhtvghrnhepvdefkeetuddufeeigedtheefffekuedukeehudffudfffffg
-    geeitdetgfdvhfdvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:nM63ZVyYB-Grv--dv8mYLQrpsJULhNM6ywbwmXama-kK9jn1cvPbBg>
-    <xmx:nM63ZYRLMhw5PJmUgH1X9qOfKiF7uOi04LAm0aIx-YYAUzxRKlq6Hw>
-    <xmx:nM63ZYZb2ccjU8IwfwIxUnY-0L3SaROyc9mf9fOK99k_ZwEp9RgGcw>
-    <xmx:nM63ZRAEp0tooN094oLEfrN1wuFgTtfBiSikXjMDlxz33Ogid7uyQw>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 29 Jan 2024 11:13:14 -0500 (EST)
-Date: Mon, 29 Jan 2024 09:13:13 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: quentin@isovalent.com, daniel@iogearbox.net, ast@kernel.org, 
-	andrii@kernel.org, alexei.starovoitov@gmail.com, alan.maguire@oracle.com, 
-	memxor@gmail.com, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com, 
-	haoluo@google.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next] bpftool: Support dumping kfunc prototypes from
- BTF
-Message-ID: <spuzs32tv6v5czb76gstpvisv2xkfzz2scqw4hmqncflhxoj66@hie6m7pctfdo>
-References: <373d86f4c26c0ebf5046b6627c8988fa75ea7a1d.1706492080.git.dxu@dxuuu.xyz>
- <ZbeV5adWhiNZu5xj@krava>
+	s=arc-20240116; t=1706545934; c=relaxed/simple;
+	bh=SLYZDfBRj0nJ3TIDw4DlpBNWJI9WE3g0fX18rhc77nY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=QHbwmcSlMvmf14z0zkFLsOiCfxvtfqJXrh0W2a0vgsssbJFVJsIgf/B+p9JiS3BYoA5OaDen99id31jrwOMrgU1DDQiJ7XZ43Px9qOpOyXtpgB6mkIstHe4pFFkmQuE0CUJVmqw3fKFY0fLHL4v+htzgJuJuFa4PwQCXa8zew/0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id 2e1f42a0c7c859a6; Mon, 29 Jan 2024 17:32:04 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id C8DE266975C;
+	Mon, 29 Jan 2024 17:32:03 +0100 (CET)
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Linux PM <linux-pm@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+Subject: [PATCH v2 03/10] PM: sleep: stats: Use unsigned int for success and failure counters
+Date: Mon, 29 Jan 2024 17:13:14 +0100
+Message-ID: <2941406.e9J7NaK4W3@kreacher>
+In-Reply-To: <5770175.DvuYhMxLoT@kreacher>
+References: <5770175.DvuYhMxLoT@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZbeV5adWhiNZu5xj@krava>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtgedgjeekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepgedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehulhhfrdhhrghnshhsohhnsehlihhnrghrohdrohhrghdprhgtphhtthhopehsthgrnhhishhlrgifrdhgrhhushiikhgrsehlihhnuhigrdhinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
 
-Hi Jiri,
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-On Mon, Jan 29, 2024 at 01:11:17PM +0100, Jiri Olsa wrote:
-> On Sun, Jan 28, 2024 at 06:35:33PM -0700, Daniel Xu wrote:
-> > This patch enables dumping kfunc prototypes from bpftool. This is useful
-> > b/c with this patch, end users will no longer have to manually define
-> > kfunc prototypes. For the kernel tree, this also means we can drop
-> > kfunc prototypes from:
-> > 
-> >         tools/testing/selftests/bpf/bpf_kfuncs.h
-> >         tools/testing/selftests/bpf/bpf_experimental.h
-> > 
-> > Example usage:
-> > 
-> >         $ make PAHOLE=/home/dxu/dev/pahole/build/pahole -j30 vmlinux
-> > 
-> >         $ ./tools/bpf/bpftool/bpftool btf dump file ./vmlinux format c | rg "__ksym;" | head -3
-> >         extern void cgroup_rstat_updated(struct cgroup * cgrp, int cpu) __ksym;
-> >         extern void cgroup_rstat_flush(struct cgroup * cgrp) __ksym;
-> >         extern struct bpf_key * bpf_lookup_user_key(u32 serial, u64 flags) __ksym;
-> 
-> hi,
-> I'm getting following declaration for bpf_rbtree_add_impl:
-> 
-> 	extern int bpf_rbtree_add_impl(struct bpf_rb_root * root, struct bpf_rb_node * node, bool (struct bpf_rb_node *, const struct bpf_rb_node *)* less, void * meta__ign, u64 off) __ksym; 
-> 
-> and it fails to compile with:
-> 
-> 	In file included from skeleton/pid_iter.bpf.c:3:
-> 	./vmlinux.h:164511:141: error: expected ')'
-> 	 164511 | extern int bpf_rbtree_add_impl(struct bpf_rb_root * root, struct bpf_rb_node * node, bool (struct bpf_rb_node *, const struct bpf_rb_node *)* less, void * meta__ign, u64 off) __ksym;
-> 		|                                                                                                                                             ^
-> 	./vmlinux.h:164511:31: note: to match this '('
-> 	 164511 | extern int bpf_rbtree_add_impl(struct bpf_rb_root * root, struct bpf_rb_node * node, bool (struct bpf_rb_node *, const struct bpf_rb_node *)* less, void * meta__ign, u64 off) __ksym;
-> 
-> looks like the btf_dumper_type_only won't dump function pointer argument
-> properly.. I guess we should fix that, but looking at the other stuff in
-> vmlinux.h like *_ops struct we can print function pointers properly, so
-> perhaps another way around is to use btf_dumper interface instead
+Change the type of the "success" and "fail" fields in struct
+suspend_stats to unsigned int, because they cannot be negative.
 
-Ah, crap, looks like between all the branch switching I didn't build
-vmlinux with kfunc annotations. Having fixed that, I can repro this
-build failure.
+No intentional functional impact.
 
-I'll take a look and see what the best way to fix this is.
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
-Given that end to end the whole flow basically works, should we start
-working on merging patches?
+v1 -> v2: New patch.
 
-Thanks,
-Daniel
+---
+ include/linux/suspend.h |    4 ++--
+ kernel/power/main.c     |    6 +++---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-[..]
+Index: linux-pm/include/linux/suspend.h
+===================================================================
+--- linux-pm.orig/include/linux/suspend.h
++++ linux-pm/include/linux/suspend.h
+@@ -56,8 +56,8 @@ enum suspend_stat_step {
+ 
+ struct suspend_stats {
+ 	unsigned int step_failures[SUSPEND_NR_STEPS];
+-	int	success;
+-	int	fail;
++	unsigned int success;
++	unsigned int fail;
+ #define	REC_FAILED_NUM	2
+ 	int	last_failed_dev;
+ 	char	failed_devs[REC_FAILED_NUM][40];
+Index: linux-pm/kernel/power/main.c
+===================================================================
+--- linux-pm.orig/kernel/power/main.c
++++ linux-pm/kernel/power/main.c
+@@ -339,8 +339,8 @@ static ssize_t _name##_show(struct kobje
+ }								\
+ static struct kobj_attribute _name = __ATTR_RO(_name)
+ 
+-suspend_attr(success, "%d\n");
+-suspend_attr(fail, "%d\n");
++suspend_attr(success, "%u\n");
++suspend_attr(fail, "%u\n");
+ suspend_attr(last_hw_sleep, "%llu\n");
+ suspend_attr(total_hw_sleep, "%llu\n");
+ suspend_attr(max_hw_sleep, "%llu\n");
+@@ -458,7 +458,7 @@ static int suspend_stats_show(struct seq
+ 	last_step = suspend_stats.last_failed_step + REC_FAILED_NUM - 1;
+ 	last_step %= REC_FAILED_NUM;
+ 
+-	seq_printf(s, "success: %d\nfail: %d\n",
++	seq_printf(s, "success: %u\nfail: %u\n",
+ 		   suspend_stats.success, suspend_stats.fail);
+ 
+ 	for (step = SUSPEND_FREEZE; step <= SUSPEND_NR_STEPS; step++)
+
+
+
 
