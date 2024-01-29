@@ -1,119 +1,162 @@
-Return-Path: <linux-kernel+bounces-42524-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42525-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FE4F8402A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:16:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 246E88402A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:17:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B93C28345A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:16:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18740B21C20
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:17:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1557D56473;
-	Mon, 29 Jan 2024 10:16:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C5CE57873;
+	Mon, 29 Jan 2024 10:16:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WliwLMXR"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Q7zCIc8K";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0oR/7VUd"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC57E55E51
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 10:16:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05A6757867;
+	Mon, 29 Jan 2024 10:16:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706523403; cv=none; b=RL82i5RbHBR0bAis3UyozbhcVcv1mM6aHxELlN1Ln5/gfv0RFA/AgIP7RuBkQSYTXSgTbM3k15CtGc5lj6xwAjCmaEfaxRy/HvvjtGUVz4CUutznjBu28skSD5tj4XqNpE9PoTgUB/N4ZcDF0RO3aKYUijof8a3zgrf2zwmsq3M=
+	t=1706523409; cv=none; b=h1BcOdkplkPnzsnhRTsI/iyYTTvHaueUqhco5JVUoJftJ9HGK0Vha6cIrYj5BfwmcCuAFGH2W03q2f1qO7ZpVSe10iu5GQJNmqyMmIdMhpHpw/zxfkGMS/lIzn7jsGnvh6Wauj/7hyrVEE1uv1wgEZ6JPtZ+2UI/9zD3imCfPF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706523403; c=relaxed/simple;
-	bh=9bB/+pYSzIDzHnesJvCHGI9xL4OX/zPz3pf6v9GMJ88=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qmOgekBzX131cpga5t0v8x57Co+sGmAnozwavURdfRJ8KzbydKdZPfc4N865v0diQF2Hik8UoBFUEQFK0VpSGA5GlAn7NXeUGhBOC/2M2a2LomEuGSb2L41qyn7oHrQYSHHrHq4DJtNTlZIey5ob7zIzzw3RjigZ8AgAtzqjRvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WliwLMXR; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40ef64d8955so7133635e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 02:16:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706523400; x=1707128200; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NKy2gXfjJl67cLJ142YEpKmEzsXs/wjVnlS7KJyhEVM=;
-        b=WliwLMXRtTGdulxYWnj0Sw7G05KaAUFXAzuh3E3URhTJTXToxChS/R5/DzKimA4Ltd
-         mdfQ5Z9oIwHl8UhvY4npeH1Z4F9qOWCEEhXDG1FkfzHwbgN+HmpArHGeLUoq+A3Cv8f4
-         XTjcHWSJXFnTQjoWjR7cTW99szaf0ww6w+RT2EhLmmdPes1uMD1agXxYrMOtefAGzrfU
-         2zGE2PqTup7ufMTlgIPIUIswnoG0mgVJgxdAa4S/3UAWYGVYGYTXRh7WQRv1v5O2SXWI
-         8PUave/05EBPl5qu4AxzfktfxTHYeFlQqMXG91NYR6WyVXc6/sDcmFlWlqiv5WGCeNG5
-         h7gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706523400; x=1707128200;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NKy2gXfjJl67cLJ142YEpKmEzsXs/wjVnlS7KJyhEVM=;
-        b=W0Y56hqryWFkO05NyTJC9sd6kpyEdzDjqXn36QyjZrdkkGgFHemC4WxsBcr3yepAWJ
-         kHi6xjQpZLbrQsOCDCLQCnIKsKZuuTy49gnoJ6O8fm/A4LPaOU+3V9cYuz7i8v5TZQ8Y
-         GbgvxxeXiNDwZIBdbiYdOXj2UBOWUBOPgBOrGuLTiTIo43SZVVhI+D3Arh048rd2O5di
-         NwX/94mXiCUBTA936LtOU5ms529B8AGP3fCndfL3geDQxQtkWObPQ1pFg4XkckjCwcz6
-         TQxdhLZuIk9qpBpMmLXhv+LYZDT9OoXJhm1MD1JfMfPY9FAZh9HNuNPsnrnPqX3ZuFLR
-         pgvg==
-X-Gm-Message-State: AOJu0YwAuSB8mVKJ3+xP2sLpLRtFt+vY/h2lNW2Q63lM03TFDilhK06y
-	azhQ/dUHZ8me2XrLGbRLVRtPmbxslrseTHItGGwA3esqfpG8hk3fVZBVMurSxl+PaZHf35yRldi
-	2CEqmFg==
-X-Google-Smtp-Source: AGHT+IH5bjN8ErIkVNKTlTrzFnhf+0GWnSJB3KhJvYnwW8dR3tdpM+mdQ3RTeCDlNT0u0sOij3Dtdw==
-X-Received: by 2002:a5d:438e:0:b0:33a:e478:94a6 with SMTP id i14-20020a5d438e000000b0033ae47894a6mr3466412wrq.31.1706523400116;
-        Mon, 29 Jan 2024 02:16:40 -0800 (PST)
-Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id cl10-20020a5d5f0a000000b0033aeb20f5b8sm3292519wrb.13.2024.01.29.02.16.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 02:16:39 -0800 (PST)
-Date: Mon, 29 Jan 2024 13:16:36 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: David Laight <David.Laight@aculab.com>
-Cc: 'Jani Nikula' <jani.nikula@linux.intel.com>,
-	"'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
-	'Linus Torvalds' <torvalds@linux-foundation.org>,
-	'Netdev' <netdev@vger.kernel.org>,
-	"'dri-devel@lists.freedesktop.org'" <dri-devel@lists.freedesktop.org>,
-	'Jens Axboe' <axboe@kernel.dk>,
-	"'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
-	'Christoph Hellwig' <hch@infradead.org>,
-	"'linux-btrfs@vger.kernel.org'" <linux-btrfs@vger.kernel.org>,
-	'Andrew Morton' <akpm@linux-foundation.org>,
-	'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>,
-	"'David S . Miller'" <davem@davemloft.net>
-Subject: Re: [PATCH next 10/11] block: Use a boolean expression instead of
- max() on booleans
-Message-ID: <6eaa0f91-104f-4efb-9ea3-7c7f21e75842@moroto.mountain>
-References: <0ca26166dd2a4ff5a674b84704ff1517@AcuMS.aculab.com>
- <b564df3f987e4371a445840df1f70561@AcuMS.aculab.com>
- <87sf2gjyn9.fsf@intel.com>
- <963d1126612347dd8c398a9449170e16@AcuMS.aculab.com>
+	s=arc-20240116; t=1706523409; c=relaxed/simple;
+	bh=MMDGCwc+FSOicV5E+PeIAyDklNGTkpiv2XznQeMswrw=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=JxUGgptoqvjvrpbjZvNBnjCBVDwMFk9Tk7eRMzTmPHJndHHb4RUXL4n7FddpzAYbsmoBCwN4nMHblFTorrbT83xnrLi7dCr0xF1DRKuiznrVsZaj49+bQEiZQ20AkGLRm31dfKGAhYupnmTsTR03KjX/xISqCh60Qt75mq1N4LI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Q7zCIc8K; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=0oR/7VUd; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Mon, 29 Jan 2024 10:16:44 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1706523405;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6k+lQZriCq0HWtXwAcVFYcKM+F9ivNEC2bp4CEGAbA4=;
+	b=Q7zCIc8KWm1il92nA5SDg11i5odaPU3F9mNB15aE/XVHkl8k/1WXnnQYjjsie1FZnuNBp3
+	sZ2A2hb6s9BDUygWMBXzGK5apr3p+SD+TkOwrMDAptQF6iu/8ej0gKuMq2L14hGOAuB+dU
+	xAFCKsLkJcSW+6Fk7eTnm0oGH/PwFQq5dQitJIrmjwHGGVH/W7t83IvUv3WcJB4HB5v4Wp
+	cRMwfK8ybRZu+eOWs608uftZp5BRriQrUHih7C93ZBgNCwgLyym38mtFHrtT1e1zfy8yIo
+	gf9ckbtIImhbkK5fgoW0KIDIp5qiG3FqwcKHbs2W3W2TcWyKX8Ey+1vu/v2BGw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1706523405;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6k+lQZriCq0HWtXwAcVFYcKM+F9ivNEC2bp4CEGAbA4=;
+	b=0oR/7VUdjSKLdHHxSYYISUIc4RIkG1L2JyaPTQXGbb+oUJOmLiuJqagz3MMouSpIf3GC/z
+	gYWlExnGSWjytICA==
+From: "tip-bot2 for Bartosz Golaszewski" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/core] genirq/irq_sim: Shrink code by using
+ <linux/cleanup.h> helpers
+Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+ Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Nathan Chancellor <nathan@kernel.org>, x86@kernel.org,
+ linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: <20240122124243.44002-5-brgl@bgdev.pl>
+References: <20240122124243.44002-5-brgl@bgdev.pl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <963d1126612347dd8c398a9449170e16@AcuMS.aculab.com>
+Message-ID: <170652340477.398.6421562413831650962.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 29, 2024 at 09:22:40AM +0000, David Laight wrote:
-> From: Jani Nikula
-> > Sent: 29 January 2024 09:08
-> > 
-> > On Sun, 28 Jan 2024, David Laight <David.Laight@ACULAB.COM> wrote:
-> > > blk_stack_limits() contains:
-> > > 	t->zoned = max(t->zoned, b->zoned);
-> > > These are bool, so it is just a bitwise or.
-> > 
-> > Should be a logical or, really. And || in code.
-> 
-> Not really, bitwise is fine for bool (especially for 'or')
-> and generates better code.
+The following commit has been merged into the irq/core branch of tip:
 
-For | vs || the type doesn't make a difference...  It makes a difference
-for AND.  "0x1 & 0x10" vs "0x1 && 0x10".
+Commit-ID:     aafd753555c0ecb9c7ce11ff14429a34c8c0a14b
+Gitweb:        https://git.kernel.org/tip/aafd753555c0ecb9c7ce11ff14429a34c8c0a14b
+Author:        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+AuthorDate:    Mon, 22 Jan 2024 13:42:43 +01:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Mon, 29 Jan 2024 11:07:57 +01:00
 
-regards,
-dan carpenter
+genirq/irq_sim: Shrink code by using <linux/cleanup.h> helpers
+
+Use the new __free() mechanism to remove all gotos and simplify the error
+paths.
+
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Link: https://lore.kernel.org/r/20240122124243.44002-5-brgl@bgdev.pl
+---
+ kernel/irq/irq_sim.c | 25 ++++++++++---------------
+ 1 file changed, 10 insertions(+), 15 deletions(-)
+
+diff --git a/kernel/irq/irq_sim.c b/kernel/irq/irq_sim.c
+index b0d50b4..38d6ae6 100644
+--- a/kernel/irq/irq_sim.c
++++ b/kernel/irq/irq_sim.c
+@@ -4,6 +4,7 @@
+  * Copyright (C) 2020 Bartosz Golaszewski <bgolaszewski@baylibre.com>
+  */
+ 
++#include <linux/cleanup.h>
+ #include <linux/interrupt.h>
+ #include <linux/irq.h>
+ #include <linux/irq_sim.h>
+@@ -163,33 +164,27 @@ static const struct irq_domain_ops irq_sim_domain_ops = {
+ struct irq_domain *irq_domain_create_sim(struct fwnode_handle *fwnode,
+ 					 unsigned int num_irqs)
+ {
+-	struct irq_sim_work_ctx *work_ctx;
++	struct irq_sim_work_ctx *work_ctx __free(kfree) =
++				kmalloc(sizeof(*work_ctx), GFP_KERNEL);
+ 
+-	work_ctx = kmalloc(sizeof(*work_ctx), GFP_KERNEL);
+ 	if (!work_ctx)
+-		goto err_out;
++		return ERR_PTR(-ENOMEM);
+ 
+-	work_ctx->pending = bitmap_zalloc(num_irqs, GFP_KERNEL);
+-	if (!work_ctx->pending)
+-		goto err_free_work_ctx;
++	unsigned long *pending __free(bitmap) = bitmap_zalloc(num_irqs, GFP_KERNEL);
++	if (!pending)
++		return ERR_PTR(-ENOMEM);
+ 
+ 	work_ctx->domain = irq_domain_create_linear(fwnode, num_irqs,
+ 						    &irq_sim_domain_ops,
+ 						    work_ctx);
+ 	if (!work_ctx->domain)
+-		goto err_free_bitmap;
++		return ERR_PTR(-ENOMEM);
+ 
+ 	work_ctx->irq_count = num_irqs;
+ 	work_ctx->work = IRQ_WORK_INIT_HARD(irq_sim_handle_irq);
++	work_ctx->pending = no_free_ptr(pending);
+ 
+-	return work_ctx->domain;
+-
+-err_free_bitmap:
+-	bitmap_free(work_ctx->pending);
+-err_free_work_ctx:
+-	kfree(work_ctx);
+-err_out:
+-	return ERR_PTR(-ENOMEM);
++	return no_free_ptr(work_ctx)->domain;
+ }
+ EXPORT_SYMBOL_GPL(irq_domain_create_sim);
+ 
 
