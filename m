@@ -1,449 +1,162 @@
-Return-Path: <linux-kernel+bounces-42827-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42829-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD13184075B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:48:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BF7D840762
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:49:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49362B260F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:48:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7756E1F26A33
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:49:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47E30664CB;
-	Mon, 29 Jan 2024 13:47:13 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA79D657BD;
+	Mon, 29 Jan 2024 13:47:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xLt8otU/"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF68065BD7
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 13:47:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC273657A9
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 13:47:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706536032; cv=none; b=hL5fVkw9sLIJdIPn1YgUcVZcSTGwkXsmlN7jxf5o4oHqw3NNL35djDyQMS9Zm9PUZdyY70M7KsmLAy0pchWtcU9Oa1HA8VZeet48eOk8Gdr40+9R1J72k5aaUguawt0/Ne87QO1a2jQd4zh+ZNMW51SIiHsh7jax9kUIVuAizDg=
+	t=1706536077; cv=none; b=Rro9aQXTqcdYYw8LaKJG99h2hazpXMmnbWYJSrQGyOqkXVM9UXGH+9ymuGK3ydGFn9QDGkvGkR99I2njRsPiUnU6kQsKwzLEVy/tjKmRSpfczhUOlP/TUfeMJyJVHQb/UV6yLKKP6MOUgKMtAf1ANp+BblfaBevaI9eW65L9E8w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706536032; c=relaxed/simple;
-	bh=oD9AC20hql/UrzNxOWtD5QAMDy1y4lAX3oWbv4oREOg=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dWkkfi2WqcdH23riZzNnjNV0KrhEodGQlIEbANaYsFh8lWLx2+dQBocSgTpVyL6O+ZYCTFf2DYnL5Ki6Ef1G91rYdQ/WMgvkFCC7qCl9lhsuaDnHSIZ7QV7PbZRe1B9VXkz+zgd8wuS6iZkYZLC+qmIjegnu2KNGk1vcWfKB5iw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TNqMP4rlkz1xmlr;
-	Mon, 29 Jan 2024 21:46:09 +0800 (CST)
-Received: from kwepemm600017.china.huawei.com (unknown [7.193.23.234])
-	by mail.maildlp.com (Postfix) with ESMTPS id 957621404DB;
-	Mon, 29 Jan 2024 21:47:07 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.125) by
- kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 29 Jan 2024 21:47:05 +0800
-From: Tong Tiangen <tongtiangen@huawei.com>
-To: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>, James Morse <james.morse@arm.com>, Robin
- Murphy <robin.murphy@arm.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Alexander Potapenko <glider@google.com>, Alexander Viro
-	<viro@zeniv.linux.org.uk>, Andrey Konovalov <andreyknvl@gmail.com>, Dmitry
- Vyukov <dvyukov@google.com>, Vincenzo Frascino <vincenzo.frascino@arm.com>,
-	Andrew Morton <akpm@linux-foundation.org>, Michael Ellerman
-	<mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy
-	<christophe.leroy@csgroup.eu>, Aneesh Kumar K.V <aneesh.kumar@kernel.org>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Thomas Gleixner
-	<tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
-	<bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
-	"H. Peter Anvin" <hpa@zytor.com>
-CC: <linux-arm-kernel@lists.infradead.org>, <linux-mm@kvack.org>,
-	<linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-	<kasan-dev@googlegroups.com>, Tong Tiangen <tongtiangen@huawei.com>,
-	<wangkefeng.wang@huawei.com>, Guohanjun <guohanjun@huawei.com>
-Subject: [PATCH v10 6/6] arm64: introduce copy_mc_to_kernel() implementation
-Date: Mon, 29 Jan 2024 21:46:52 +0800
-Message-ID: <20240129134652.4004931-7-tongtiangen@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240129134652.4004931-1-tongtiangen@huawei.com>
-References: <20240129134652.4004931-1-tongtiangen@huawei.com>
+	s=arc-20240116; t=1706536077; c=relaxed/simple;
+	bh=21jznJn2yyDb6oC/magzEzz9zV3F+RCWlsRUoVdYgTA=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=D/4mDT3h2jnOE6EHnnzqyD/sSVCb+cs7HggifMblLSS4q1/yvMOf3j6KNZSQ5ABJ7zoSvRiCtdCUmNt8kxbSUXbMJ+y4THNMzoM9fzo1EbZukVy7QWmvo7+7I8gJQzOCM/lVAkbITSGvhBe3V0uGgqx0ehoCfW/D1d4nC6loERE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xLt8otU/; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40ef6da20feso5417735e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 05:47:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706536072; x=1707140872; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=byhnXqD/Gkvhb9bjZRgQdgbOondAaOF5MjikPjTLXrc=;
+        b=xLt8otU/sk3R2wcsfa0GTVQlpr2h5oCA3g11Ji2RX7yVMZ+Jy2LeC6AGiF9dS/Hqd2
+         ZlZLkF4Qj2f1R1zbe/7pgMhZ5m5lAAH10Jw/6Lo04ooBUsBjDEgnnKvJO/nhY8hOF5+I
+         T/8SCE3GQlpR5ssnq6udr8Rts3+8HZDhGONVzkS11fZglpO+BMfQGdKEShX7DbxeqD5E
+         FgaY4LHXeyORAgGhI4NsGnIEFiI8ToBPghPQtW8n6qSODEBy2ws1uiVYWtzOVXQC6WjD
+         VWyWGY+Qxh0Xct3TAlxklVlCGy16hFrEDsvsQPHepVKBdKGxHVjaOFECmNpVWoq79ILW
+         25pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706536072; x=1707140872;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=byhnXqD/Gkvhb9bjZRgQdgbOondAaOF5MjikPjTLXrc=;
+        b=JkFqClwTQrX0T9nkDu5wovGaEkPJYsBdDkMuA6OCaFu5ZfywqM0tXN9FKFFUCuZHfu
+         Pr4ZqVuGhcp5QsDKwVRtVs7PP3/WFpSqSlRmewjLATLBXQk0dW+l8Bk5GKw/lU2raVCq
+         mlXmLtdsCEe9R0X3kfleUu60lB0BRRiNurGpbI/YD/SlDb+/DnrxlFyDILJcslX/3n/k
+         yyrwGR5cwn8J96eQWFaDD/a3n0QKDlGYJs53dbgyrILwO2WMfXL15L2VXzC1naiuIFF2
+         0eA3DJBfqYoEL34zezHvOw9GVwpN6XLV+iTEFLWD+Xu4010E4VqgtsbbWhueeiYe+YL3
+         /4GQ==
+X-Gm-Message-State: AOJu0YyUa+WmzygbK6bLoW5/P7k+34Lz5fu5yxw9cHiHCmIes3u4c/cS
+	2yjFFjZHLap0i/i2rz7/pGZdcmKWFgK+JpMHAJ6E2wQgb52lom3o1CplNDpDnSQ=
+X-Google-Smtp-Source: AGHT+IGqogLrgYhcgplVsYkT3hYqcyoHgLEBbbw8STFX++f8EIwc2vbsjJ9GItKiK5AqTowVfrMSCQ==
+X-Received: by 2002:a05:600c:1c26:b0:40e:e8e3:40c2 with SMTP id j38-20020a05600c1c2600b0040ee8e340c2mr4715714wms.12.1706536072116;
+        Mon, 29 Jan 2024 05:47:52 -0800 (PST)
+Received: from [10.1.1.109] ([80.111.64.44])
+        by smtp.gmail.com with ESMTPSA id h13-20020a05600c314d00b0040efb445698sm1340224wmo.5.2024.01.29.05.47.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 05:47:51 -0800 (PST)
+Message-ID: <7d42f80acf7c8bd3882f5ac253a761c71de2034c.camel@linaro.org>
+Subject: Re: [PATCH 9/9] clk: samsung: gs101: don't CLK_IGNORE_UNUSED
+ peric1_sysreg clock
+From: =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+	peter.griffin@linaro.org, mturquette@baylibre.com, sboyd@kernel.org, 
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc: linux-kernel@vger.kernel.org, kernel-team@android.com, 
+ tudor.ambarus@linaro.org, willmcvicker@google.com,
+ semen.protsenko@linaro.org,  alim.akhtar@samsung.com,
+ s.nawrocki@samsung.com, tomasz.figa@gmail.com,  cw00.choi@samsung.com,
+ linux-arm-kernel@lists.infradead.org,  linux-samsung-soc@vger.kernel.org,
+ linux-clk@vger.kernel.org,  devicetree@vger.kernel.org
+Date: Mon, 29 Jan 2024 13:47:49 +0000
+In-Reply-To: <74b63fd9-bf7a-4a88-bfa9-a975a4f12bca@linaro.org>
+References: <20240127001926.495769-1-andre.draszik@linaro.org>
+	 <20240127001926.495769-10-andre.draszik@linaro.org>
+	 <74b63fd9-bf7a-4a88-bfa9-a975a4f12bca@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1-1 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600017.china.huawei.com (7.193.23.234)
 
-The copy_mc_to_kernel() helper is memory copy implementation that handles
-source exceptions. It can be used in memory copy scenarios that tolerate
-hardware memory errors(e.g: pmem_read/dax_copy_to_iter).
+Hi=C2=A0Krzysztof,
 
-Currnently, only x86 and ppc suuport this helper, after arm64 support
-machine check safe framework, we introduce copy_mc_to_kernel()
-implementation.
+On Mon, 2024-01-29 at 12:03 +0100, Krzysztof Kozlowski wrote:
+> On 27/01/2024 01:19, Andr=C3=A9 Draszik wrote:
+> > Now that we have hooked it up in the DTS, we can drop the
+>=20
+> Your driver patch cannot depend on DTS. Not for a new platform. I am
+> repeating this all the time last days...
+>=20
+> > CLK_IGNORE_UNUSED from here.
+> >=20
+> > Signed-off-by: Andr=C3=A9 Draszik <andre.draszik@linaro.org>
+> > ---
+> > =C2=A0drivers/clk/samsung/clk-gs101.c | 2 +-
+> > =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
+> >=20
+> > diff --git a/drivers/clk/samsung/clk-gs101.c b/drivers/clk/samsung/clk-=
+gs101.c
+> > index 7f6c3b52d9ff..d55ed64d0e29 100644
+> > --- a/drivers/clk/samsung/clk-gs101.c
+> > +++ b/drivers/clk/samsung/clk-gs101.c
+> > @@ -3393,7 +3393,7 @@ static const struct samsung_gate_clock peric1_gat=
+e_clks[] __initconst =3D {
+> > =C2=A0	GATE(CLK_GOUT_PERIC1_SYSREG_PERIC1_PCLK,
+> > =C2=A0	=C2=A0=C2=A0=C2=A0=C2=A0 "gout_peric1_sysreg_peric1_pclk", "mout=
+_peric1_bus_user",
+> > =C2=A0	=C2=A0=C2=A0=C2=A0=C2=A0 CLK_CON_GAT_GOUT_BLK_PERIC1_UID_SYSREG_=
+PERIC1_IPCLKPORT_PCLK,
+> > -	=C2=A0=C2=A0=C2=A0=C2=A0 21, CLK_IGNORE_UNUSED, 0),
+>=20
+> I don't understand. You just added this clock in this patchset. This
+> means that your patch #3 is incorrect.
 
-Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
----
- arch/arm64/include/asm/string.h  |   5 +
- arch/arm64/include/asm/uaccess.h |  21 +++
- arch/arm64/lib/Makefile          |   2 +-
- arch/arm64/lib/memcpy_mc.S       | 257 +++++++++++++++++++++++++++++++
- mm/kasan/shadow.c                |  12 ++
- 5 files changed, 296 insertions(+), 1 deletion(-)
- create mode 100644 arch/arm64/lib/memcpy_mc.S
+In patch #3 I'm hooking up all the clocks to Linux. If I don't CLK_IGNORE_U=
+NUSED
+for the 'sysreg' pclk in patch #3, then it'll hang on loading drivers that
+require sysreg access (because Linux disabled the clock).
 
-diff --git a/arch/arm64/include/asm/string.h b/arch/arm64/include/asm/string.h
-index 3a3264ff47b9..995b63c26e99 100644
---- a/arch/arm64/include/asm/string.h
-+++ b/arch/arm64/include/asm/string.h
-@@ -35,6 +35,10 @@ extern void *memchr(const void *, int, __kernel_size_t);
- extern void *memcpy(void *, const void *, __kernel_size_t);
- extern void *__memcpy(void *, const void *, __kernel_size_t);
- 
-+#define __HAVE_ARCH_MEMCPY_MC
-+extern int memcpy_mcs(void *, const void *, __kernel_size_t);
-+extern int __memcpy_mcs(void *, const void *, __kernel_size_t);
-+
- #define __HAVE_ARCH_MEMMOVE
- extern void *memmove(void *, const void *, __kernel_size_t);
- extern void *__memmove(void *, const void *, __kernel_size_t);
-@@ -57,6 +61,7 @@ void memcpy_flushcache(void *dst, const void *src, size_t cnt);
-  */
- 
- #define memcpy(dst, src, len) __memcpy(dst, src, len)
-+#define memcpy_mcs(dst, src, len) __memcpy_mcs(dst, src, len)
- #define memmove(dst, src, len) __memmove(dst, src, len)
- #define memset(s, c, n) __memset(s, c, n)
- 
-diff --git a/arch/arm64/include/asm/uaccess.h b/arch/arm64/include/asm/uaccess.h
-index 14be5000c5a0..61e28ef2112a 100644
---- a/arch/arm64/include/asm/uaccess.h
-+++ b/arch/arm64/include/asm/uaccess.h
-@@ -425,4 +425,25 @@ static inline size_t probe_subpage_writeable(const char __user *uaddr,
- 
- #endif /* CONFIG_ARCH_HAS_SUBPAGE_FAULTS */
- 
-+#ifdef CONFIG_ARCH_HAS_COPY_MC
-+/**
-+ * copy_mc_to_kernel - memory copy that handles source exceptions
-+ *
-+ * @dst:	destination address
-+ * @src:	source address
-+ * @len:	number of bytes to copy
-+ *
-+ * Return 0 for success, or #size if there was an exception.
-+ */
-+static inline unsigned long __must_check
-+copy_mc_to_kernel(void *to, const void *from, unsigned long size)
-+{
-+	int ret;
-+
-+	ret = memcpy_mcs(to, from, size);
-+	return (ret == -EFAULT) ? size : 0;
-+}
-+#define copy_mc_to_kernel copy_mc_to_kernel
-+#endif
-+
- #endif /* __ASM_UACCESS_H */
-diff --git a/arch/arm64/lib/Makefile b/arch/arm64/lib/Makefile
-index a2fd865b816d..899d6ae9698c 100644
---- a/arch/arm64/lib/Makefile
-+++ b/arch/arm64/lib/Makefile
-@@ -3,7 +3,7 @@ lib-y		:= clear_user.o delay.o copy_from_user.o		\
- 		   copy_to_user.o copy_page.o				\
- 		   clear_page.o csum.o insn.o memchr.o memcpy.o		\
- 		   memset.o memcmp.o strcmp.o strncmp.o strlen.o	\
--		   strnlen.o strchr.o strrchr.o tishift.o
-+		   strnlen.o strchr.o strrchr.o tishift.o memcpy_mc.o
- 
- ifeq ($(CONFIG_KERNEL_MODE_NEON), y)
- obj-$(CONFIG_XOR_BLOCKS)	+= xor-neon.o
-diff --git a/arch/arm64/lib/memcpy_mc.S b/arch/arm64/lib/memcpy_mc.S
-new file mode 100644
-index 000000000000..7076b500d154
---- /dev/null
-+++ b/arch/arm64/lib/memcpy_mc.S
-@@ -0,0 +1,257 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (c) 2012-2021, Arm Limited.
-+ *
-+ * Adapted from the original at:
-+ * https://github.com/ARM-software/optimized-routines/blob/afd6244a1f8d9229/string/aarch64/memcpy.S
-+ */
-+
-+#include <linux/linkage.h>
-+#include <asm/assembler.h>
-+
-+/* Assumptions:
-+ *
-+ * ARMv8-a, AArch64, unaligned accesses.
-+ *
-+ */
-+
-+#define L(label) .L ## label
-+
-+#define dstin	x0
-+#define src	x1
-+#define count	x2
-+#define dst	x3
-+#define srcend	x4
-+#define dstend	x5
-+#define A_l	x6
-+#define A_lw	w6
-+#define A_h	x7
-+#define B_l	x8
-+#define B_lw	w8
-+#define B_h	x9
-+#define C_l	x10
-+#define C_lw	w10
-+#define C_h	x11
-+#define D_l	x12
-+#define D_h	x13
-+#define E_l	x14
-+#define E_h	x15
-+#define F_l	x16
-+#define F_h	x17
-+#define G_l	count
-+#define G_h	dst
-+#define H_l	src
-+#define H_h	srcend
-+#define tmp1	x14
-+
-+/* This implementation handles overlaps and supports both memcpy and memmove
-+   from a single entry point.  It uses unaligned accesses and branchless
-+   sequences to keep the code small, simple and improve performance.
-+
-+   Copies are split into 3 main cases: small copies of up to 32 bytes, medium
-+   copies of up to 128 bytes, and large copies.  The overhead of the overlap
-+   check is negligible since it is only required for large copies.
-+
-+   Large copies use a software pipelined loop processing 64 bytes per iteration.
-+   The destination pointer is 16-byte aligned to minimize unaligned accesses.
-+   The loop tail is handled by always copying 64 bytes from the end.
-+*/
-+
-+SYM_FUNC_START(__pi_memcpy_mcs)
-+	add	srcend, src, count
-+	add	dstend, dstin, count
-+	cmp	count, 128
-+	b.hi	L(copy_long)
-+	cmp	count, 32
-+	b.hi	L(copy32_128)
-+
-+	/* Small copies: 0..32 bytes.  */
-+	cmp	count, 16
-+	b.lo	L(copy16)
-+	CPY_MC(9998f, ldp	A_l, A_h, [src])
-+	CPY_MC(9998f, ldp	D_l, D_h, [srcend, -16])
-+	CPY_MC(9998f, stp	A_l, A_h, [dstin])
-+	CPY_MC(9998f, stp	D_l, D_h, [dstend, -16])
-+	mov x0, #0
-+	ret
-+
-+	/* Copy 8-15 bytes.  */
-+L(copy16):
-+	tbz	count, 3, L(copy8)
-+	CPY_MC(9998f, ldr	A_l, [src])
-+	CPY_MC(9998f, ldr	A_h, [srcend, -8])
-+	CPY_MC(9998f, str	A_l, [dstin])
-+	CPY_MC(9998f, str	A_h, [dstend, -8])
-+	mov x0, #0
-+	ret
-+
-+	.p2align 3
-+	/* Copy 4-7 bytes.  */
-+L(copy8):
-+	tbz	count, 2, L(copy4)
-+	CPY_MC(9998f, ldr	A_lw, [src])
-+	CPY_MC(9998f, ldr	B_lw, [srcend, -4])
-+	CPY_MC(9998f, str	A_lw, [dstin])
-+	CPY_MC(9998f, str	B_lw, [dstend, -4])
-+	mov x0, #0
-+	ret
-+
-+	/* Copy 0..3 bytes using a branchless sequence.  */
-+L(copy4):
-+	cbz	count, L(copy0)
-+	lsr	tmp1, count, 1
-+	CPY_MC(9998f, ldrb	A_lw, [src])
-+	CPY_MC(9998f, ldrb	C_lw, [srcend, -1])
-+	CPY_MC(9998f, ldrb	B_lw, [src, tmp1])
-+	CPY_MC(9998f, strb	A_lw, [dstin])
-+	CPY_MC(9998f, strb	B_lw, [dstin, tmp1])
-+	CPY_MC(9998f, strb	C_lw, [dstend, -1])
-+L(copy0):
-+	mov x0, #0
-+	ret
-+
-+	.p2align 4
-+	/* Medium copies: 33..128 bytes.  */
-+L(copy32_128):
-+	CPY_MC(9998f, ldp	A_l, A_h, [src])
-+	CPY_MC(9998f, ldp	B_l, B_h, [src, 16])
-+	CPY_MC(9998f, ldp	C_l, C_h, [srcend, -32])
-+	CPY_MC(9998f, ldp	D_l, D_h, [srcend, -16])
-+	cmp	count, 64
-+	b.hi	L(copy128)
-+	CPY_MC(9998f, stp	A_l, A_h, [dstin])
-+	CPY_MC(9998f, stp	B_l, B_h, [dstin, 16])
-+	CPY_MC(9998f, stp	C_l, C_h, [dstend, -32])
-+	CPY_MC(9998f, stp	D_l, D_h, [dstend, -16])
-+	mov x0, #0
-+	ret
-+
-+	.p2align 4
-+	/* Copy 65..128 bytes.  */
-+L(copy128):
-+	CPY_MC(9998f, ldp	E_l, E_h, [src, 32])
-+	CPY_MC(9998f, ldp	F_l, F_h, [src, 48])
-+	cmp	count, 96
-+	b.ls	L(copy96)
-+	CPY_MC(9998f, ldp	G_l, G_h, [srcend, -64])
-+	CPY_MC(9998f, ldp	H_l, H_h, [srcend, -48])
-+	CPY_MC(9998f, stp	G_l, G_h, [dstend, -64])
-+	CPY_MC(9998f, stp	H_l, H_h, [dstend, -48])
-+L(copy96):
-+	CPY_MC(9998f, stp	A_l, A_h, [dstin])
-+	CPY_MC(9998f, stp	B_l, B_h, [dstin, 16])
-+	CPY_MC(9998f, stp	E_l, E_h, [dstin, 32])
-+	CPY_MC(9998f, stp	F_l, F_h, [dstin, 48])
-+	CPY_MC(9998f, stp	C_l, C_h, [dstend, -32])
-+	CPY_MC(9998f, stp	D_l, D_h, [dstend, -16])
-+	mov x0, #0
-+	ret
-+
-+	.p2align 4
-+	/* Copy more than 128 bytes.  */
-+L(copy_long):
-+	/* Use backwards copy if there is an overlap.  */
-+	sub	tmp1, dstin, src
-+	cbz	tmp1, L(copy0)
-+	cmp	tmp1, count
-+	b.lo	L(copy_long_backwards)
-+
-+	/* Copy 16 bytes and then align dst to 16-byte alignment.  */
-+
-+	CPY_MC(9998f, ldp	D_l, D_h, [src])
-+	and	tmp1, dstin, 15
-+	bic	dst, dstin, 15
-+	sub	src, src, tmp1
-+	add	count, count, tmp1	/* Count is now 16 too large.  */
-+	CPY_MC(9998f, ldp	A_l, A_h, [src, 16])
-+	CPY_MC(9998f, stp	D_l, D_h, [dstin])
-+	CPY_MC(9998f, ldp	B_l, B_h, [src, 32])
-+	CPY_MC(9998f, ldp	C_l, C_h, [src, 48])
-+	CPY_MC(9998f, ldp	D_l, D_h, [src, 64]!)
-+	subs	count, count, 128 + 16	/* Test and readjust count.  */
-+	b.ls	L(copy64_from_end)
-+
-+L(loop64):
-+	CPY_MC(9998f, stp	A_l, A_h, [dst, 16])
-+	CPY_MC(9998f, ldp	A_l, A_h, [src, 16])
-+	CPY_MC(9998f, stp	B_l, B_h, [dst, 32])
-+	CPY_MC(9998f, ldp	B_l, B_h, [src, 32])
-+	CPY_MC(9998f, stp	C_l, C_h, [dst, 48])
-+	CPY_MC(9998f, ldp	C_l, C_h, [src, 48])
-+	CPY_MC(9998f, stp	D_l, D_h, [dst, 64]!)
-+	CPY_MC(9998f, ldp	D_l, D_h, [src, 64]!)
-+	subs	count, count, 64
-+	b.hi	L(loop64)
-+
-+	/* Write the last iteration and copy 64 bytes from the end.  */
-+L(copy64_from_end):
-+	CPY_MC(9998f, ldp	E_l, E_h, [srcend, -64])
-+	CPY_MC(9998f, stp	A_l, A_h, [dst, 16])
-+	CPY_MC(9998f, ldp	A_l, A_h, [srcend, -48])
-+	CPY_MC(9998f, stp	B_l, B_h, [dst, 32])
-+	CPY_MC(9998f, ldp	B_l, B_h, [srcend, -32])
-+	CPY_MC(9998f, stp	C_l, C_h, [dst, 48])
-+	CPY_MC(9998f, ldp	C_l, C_h, [srcend, -16])
-+	CPY_MC(9998f, stp	D_l, D_h, [dst, 64])
-+	CPY_MC(9998f, stp	E_l, E_h, [dstend, -64])
-+	CPY_MC(9998f, stp	A_l, A_h, [dstend, -48])
-+	CPY_MC(9998f, stp	B_l, B_h, [dstend, -32])
-+	CPY_MC(9998f, stp	C_l, C_h, [dstend, -16])
-+	mov x0, #0
-+	ret
-+
-+	.p2align 4
-+
-+	/* Large backwards copy for overlapping copies.
-+	   Copy 16 bytes and then align dst to 16-byte alignment.  */
-+L(copy_long_backwards):
-+	CPY_MC(9998f, ldp	D_l, D_h, [srcend, -16])
-+	and	tmp1, dstend, 15
-+	sub	srcend, srcend, tmp1
-+	sub	count, count, tmp1
-+	CPY_MC(9998f, ldp	A_l, A_h, [srcend, -16])
-+	CPY_MC(9998f, stp	D_l, D_h, [dstend, -16])
-+	CPY_MC(9998f, ldp	B_l, B_h, [srcend, -32])
-+	CPY_MC(9998f, ldp	C_l, C_h, [srcend, -48])
-+	CPY_MC(9998f, ldp	D_l, D_h, [srcend, -64]!)
-+	sub	dstend, dstend, tmp1
-+	subs	count, count, 128
-+	b.ls	L(copy64_from_start)
-+
-+L(loop64_backwards):
-+	CPY_MC(9998f, stp	A_l, A_h, [dstend, -16])
-+	CPY_MC(9998f, ldp	A_l, A_h, [srcend, -16])
-+	CPY_MC(9998f, stp	B_l, B_h, [dstend, -32])
-+	CPY_MC(9998f, ldp	B_l, B_h, [srcend, -32])
-+	CPY_MC(9998f, stp	C_l, C_h, [dstend, -48])
-+	CPY_MC(9998f, ldp	C_l, C_h, [srcend, -48])
-+	CPY_MC(9998f, stp	D_l, D_h, [dstend, -64]!)
-+	CPY_MC(9998f, ldp	D_l, D_h, [srcend, -64]!)
-+	subs	count, count, 64
-+	b.hi	L(loop64_backwards)
-+
-+	/* Write the last iteration and copy 64 bytes from the start.  */
-+L(copy64_from_start):
-+	CPY_MC(9998f, ldp	G_l, G_h, [src, 48])
-+	CPY_MC(9998f, stp	A_l, A_h, [dstend, -16])
-+	CPY_MC(9998f, ldp	A_l, A_h, [src, 32])
-+	CPY_MC(9998f, stp	B_l, B_h, [dstend, -32])
-+	CPY_MC(9998f, ldp	B_l, B_h, [src, 16])
-+	CPY_MC(9998f, stp	C_l, C_h, [dstend, -48])
-+	CPY_MC(9998f, ldp	C_l, C_h, [src])
-+	CPY_MC(9998f, stp	D_l, D_h, [dstend, -64])
-+	CPY_MC(9998f, stp	G_l, G_h, [dstin, 48])
-+	CPY_MC(9998f, stp	A_l, A_h, [dstin, 32])
-+	CPY_MC(9998f, stp	B_l, B_h, [dstin, 16])
-+	CPY_MC(9998f, stp	C_l, C_h, [dstin])
-+	mov x0, #0
-+	ret
-+
-+9998:	mov x0, #-EFAULT
-+	ret
-+SYM_FUNC_END(__pi_memcpy_mcs)
-+
-+SYM_FUNC_ALIAS(__memcpy_mcs, __pi_memcpy_mcs)
-+EXPORT_SYMBOL(__memcpy_mcs)
-+SYM_FUNC_ALIAS_WEAK(memcpy_mcs, __memcpy_mcs)
-+EXPORT_SYMBOL(memcpy_mcs)
-diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
-index 9ef84f31833f..e6519fd329b2 100644
---- a/mm/kasan/shadow.c
-+++ b/mm/kasan/shadow.c
-@@ -79,6 +79,18 @@ void *memcpy(void *dest, const void *src, size_t len)
- }
- #endif
- 
-+#ifdef __HAVE_ARCH_MEMCPY_MC
-+#undef memcpy_mcs
-+int memcpy_mcs(void *dest, const void *src, size_t len)
-+{
-+	if (!check_memory_region((unsigned long)src, len, false, _RET_IP_) ||
-+	    !check_memory_region((unsigned long)dest, len, true, _RET_IP_))
-+		return (unsigned long)len;
-+
-+	return __memcpy_mcs(dest, src, len);
-+}
-+#endif
-+
- void *__asan_memset(void *addr, int c, ssize_t len)
- {
- 	if (!kasan_check_range(addr, len, true, _RET_IP_))
--- 
-2.25.1
+I can not change patch #8 to come between 2 and 3 either, because at that s=
+tage
+neither the clock nor the DT node reference &cmu_peric1 actually exist, and=
+ the
+clock and can't be claimed by sysreg.
+
+Since we can not mix DT and driver changes in the same commit, I can not me=
+rge
+patches #3 and #4 and #8 either.
+
+I had to do it this way so that the platform always boots for every commit =
+to keep
+things bisectable.
+
+Alternatively, I could merge patches #4 and #8 (but that seems wrong to me)=
+, or
+drop patches #7, #8 and #9 from this series and apply it later in the -rc p=
+hase?
+
+
+Is there a better way that you have in mind that we're missing, that keeps =
+things
+atomic and bootable/bisectable?=20
+
+
+Cheers,
+Andre'
 
 
