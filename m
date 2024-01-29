@@ -1,241 +1,269 @@
-Return-Path: <linux-kernel+bounces-43311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49FF5841204
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:31:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44AF2841205
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:32:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0172828B0F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:31:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2C551F24830
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:32:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE56A28DDE;
-	Mon, 29 Jan 2024 18:31:28 +0000 (UTC)
-Received: from air.basealt.ru (air.basealt.ru [194.107.17.39])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D8B513ADA;
+	Mon, 29 Jan 2024 18:32:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="aNAJqleb"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D63724B57;
-	Mon, 29 Jan 2024 18:31:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.107.17.39
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706553088; cv=none; b=gidmga/iW0rs90mdN6Db1682t7jJFhCoaOMZZ/1DHWFoRUfqmAtph5Eui9UQWRGwFTs8ASaDNCt3ewAkD40H1N2/kxEux29KI7lbN55JVjAQcnA99SAG9Zsmid4wx6oat+6LYOndTCWswdP8CmSHyGKc/aJS3I/YjhRiVuDE0sU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706553088; c=relaxed/simple;
-	bh=R5ExbsnlDpJ49rgKEjkzc5NVxjz/P/2IgwQO2spxJHY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=X4bcVBpOJiOCporGabCZ41O2fEKtJh96apu8Ul/OYfE2eHaygbDUhk7DHdFnVohLty0c9JqadNz9WWqoCmfBCguwcGnkTrnEcRLtWErpHQ5X9Lin1K9Z9w9kQ9JxbRmUlv5xfwDX9GCPshS2nM5UcbwCjtyBWJP6PIR2ZM4k2E0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org; spf=pass smtp.mailfrom=altlinux.org; arc=none smtp.client-ip=194.107.17.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altlinux.org
-Received: by air.basealt.ru (Postfix, from userid 490)
-	id 766272F20240; Mon, 29 Jan 2024 18:31:23 +0000 (UTC)
-X-Spam-Level: 
-Received: from altlinux.malta.altlinux.ru (obninsk.basealt.ru [217.15.195.17])
-	by air.basealt.ru (Postfix) with ESMTPSA id A00E22F2023D;
-	Mon, 29 Jan 2024 18:31:20 +0000 (UTC)
-From: kovalev@altlinux.org
-To: stable@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	kpsingh@kernel.org,
-	john.fastabend@gmail.com,
-	yhs@fb.com,
-	songliubraving@fb.com,
-	kafai@fb.com,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	kovalev@altlinux.org
-Subject: [PATCH 5.10.y] bpf: Convert BPF_DISPATCHER to use static_call() (not ftrace)
-Date: Mon, 29 Jan 2024 21:31:20 +0300
-Message-Id: <20240129183120.284801-1-kovalev@altlinux.org>
-X-Mailer: git-send-email 2.33.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 379FF33CE7
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 18:32:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.41
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706553145; cv=fail; b=hEALU719YIiSBoVdD9vrC57wSBJ9N2jlUA4st3NVJSlVSn9ov+bXw+D5I76EdO6rSkmALaVdUn6px33T40L4Shz+zdd9X+XqTJ55Wue1kSSWm6Uzt9uKDF+eAU9x5WFuRw7B6dtWxkCfaO0bIE9j8/vO07HkHhvuZT/0YatPZns=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706553145; c=relaxed/simple;
+	bh=868cwphYqMBzINlcevQrkb+tpC/rpOsrBobgluEHGcQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=bZGHn/IO4Hbvm7O7p+0Z+E7tnxpucun2gMAWxlAmJADAuax8DFyCYtlhZ3tGjWdrf3dqnxiqpw/xwh3EAXwRq3FMxBVbsNQTEUUmO6cVk5AqtdTzUhQvD0fIgCYC1r+rLv1uZu89C223jgAUwuIe4edZNA8erdD8A4D60hDpmXw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=aNAJqleb; arc=fail smtp.client-ip=40.107.236.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dfUO6Msh6xZ1GF/x1GopCJUPXDbbd4XeSubyx8ZBWko+I+pLa1V39R2wRkl42mMso348fiGfenQrtItQtJEQw3JdvHguw66TohwaCabCCGVPiklYF/2vON/OHYKVjiVt8toY8kNh3GVGDn9Mh1WaNzdFm2JMl1kEwcfz4YlIVikjgGaKJARJwTMcYF1+36re1kBRipZepqLO/WTGFA1wCkZ4IT4nK0qdXBieN7/gWYbReDdqn8JMuN0ye8Dpsypa+uJq3yrzoLz77QBIzwFsFHOqgXA9og4aIXEhQG3S6F3bqqGNBEkZUNdGhpIUsOODBuwGLZdWo53fAladGTjPzQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qk8E0v66+vP8VdhaFSNPL5KbWvqtxL3V0iYA22udKgg=;
+ b=je3+RjsIBY0ZuyO63/miL03cEzAGPMThT31Zqee9xTfhAo/Kkdc9R3dayyLx+aCp3q9rCsxwQM0gPTpZpnYh5teLOitoFAqVirajQJSO1sNSxAg3AUqsc9NByK0C2PWhSunryjZnVZFKnG5wrIdhBdeAcPj2DFAlYYJCgtPka7Nfbd7jOQP48bmkhudO64npKt0DzFIL3BRAmzgS3ZUUkQfgmpsT+08zSZgrltARJGOFBEW9g4VAOreix6ta0teTw5Lge0K11VAROe2qtmPiTYxgMaY02nJkONHlO4Op8/nw9j9h6zYA5MBftnxQR3P07+qIPGUBxf/YAI98oWURRg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qk8E0v66+vP8VdhaFSNPL5KbWvqtxL3V0iYA22udKgg=;
+ b=aNAJqlebKMgn1SuafoLHgK/14ZXbKFuioi6q4O+/44GzM5QtqWatgM2xsiZ/8XqE7PotJX36OrdCjCi+RjmztmrfyjyrxB3mtvjv7c0YTJ4gIbDraZT3QNDGhwBBppTgDGC8rfuTNjqHphW6NRrWOpO+KjFhzlWnNCsyNpgf0MJHniHSZYvOJiYN9P8pGAMX0QPnlrdQI6JhfToy6ZHIKzE/HJp62gmHLO2GEO4XvE/4HLhPAP91mW4GL7Sr8MKiXboYHTnD3y5vbk3C9AB75GzAIl8ix5oOB/Rl6Zkfe1cqnPjnHb3kn5bNvJmG7GByXQjg+beSYPf6wRqQM+OiQw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
+ MN0PR12MB6368.namprd12.prod.outlook.com (2603:10b6:208:3d2::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.32; Mon, 29 Jan
+ 2024 18:32:19 +0000
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::63ac:1dc1:e486:121f]) by DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::63ac:1dc1:e486:121f%4]) with mapi id 15.20.7228.029; Mon, 29 Jan 2024
+ 18:32:19 +0000
+From: Zi Yan <ziy@nvidia.com>
+To: linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc: Zi Yan <ziy@nvidia.com>, "\"Huang, Ying\"" <ying.huang@intel.com>,
+ Ryan Roberts <ryan.roberts@arm.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ "\"Matthew Wilcox (Oracle)\"" <willy@infradead.org>,
+ David Hildenbrand <david@redhat.com>,
+ "\"Yin, Fengwei\"" <fengwei.yin@intel.com>, Yu Zhao <yuzhao@google.com>,
+ Vlastimil Babka <vbabka@suse.cz>,
+ "\"Kirill A . Shutemov\"" <kirill.shutemov@linux.intel.com>,
+ Johannes Weiner <hannes@cmpxchg.org>,
+ Baolin Wang <baolin.wang@linux.alibaba.com>,
+ Kemeng Shi <shikemeng@huaweicloud.com>,
+ Mel Gorman <mgorman@techsingularity.net>,
+ Rohan Puri <rohan.puri15@gmail.com>, Mcgrof Chamberlain <mcgrof@kernel.org>,
+ Adam Manzanares <a.manzanares@samsung.com>,
+ "\"Vishal Moola (Oracle)\"" <vishal.moola@gmail.com>
+Subject: Re: [PATCH v2 2/3] mm/compaction: add support for >0 order folio
+ memory compaction.
+Date: Mon, 29 Jan 2024 13:32:16 -0500
+X-Mailer: MailMate (1.14r6018)
+Message-ID: <23BA8CC1-1014-4D09-9C33-938638E13C01@nvidia.com>
+In-Reply-To: <20240123034636.1095672-3-zi.yan@sent.com>
+References: <20240123034636.1095672-1-zi.yan@sent.com>
+ <20240123034636.1095672-3-zi.yan@sent.com>
+Content-Type: multipart/signed;
+ boundary="=_MailMate_531A4F8A-D19F-4C4D-B350-FBF4281FFA54_=";
+ micalg=pgp-sha512; protocol="application/pgp-signature"
+X-ClientProxiedBy: MN2PR15CA0002.namprd15.prod.outlook.com
+ (2603:10b6:208:1b4::15) To DS7PR12MB5744.namprd12.prod.outlook.com
+ (2603:10b6:8:73::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|MN0PR12MB6368:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1df9edb4-21ed-4387-dcfc-08dc20f8a001
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	LUAd551UDZYa2xtuQR+aXnBusoPGDlqjPzi7Bai37pkr9aie9vPQXE7Sd+MI8AjPyFBe5dNVGed7SuQXsyskAh2uKnMY3C5IYEqViEJwU1W7OyuKCL20dQp5tqudE5+5x4RCs8oknh3rkR3kSu0DN6cXbLskKt/2uExFDJEk5tBNIoaLZyrR6OeeKaFCOsI1j3KUkNqbF2r9uTIhK5YfKi3DrAtV9dJoZG0queiFnS3bx4u0faXDzvW73er+JzOOKaZjUgJcqk7IyADUX1oUx9JUGOcU863KKWZF9Vzis5Qm5pVaOGye9whOEahjeQO64f3Zy72W8vWirCtcQJCyyrmoXlIXQXFZUb6PPJb2FPMWHfCPMn9D/dLIntZWESlTscSAU16Di91Iz7BZgex2gf5FwPNrwiuuScB0WkilxvQe74KUWTLpMi9X6VQMgZCaVtnDVJtCfKPMt8osQ5ynLpQcBibnKeDmJjcEsiKByVP1CTOroLRTRPa/i1CY5OnMxisMqHjHkxX93/vOCQZ3EmUNbexlweKP7kb0uW934Jj36EbK5qQ/SVZmk/xPdInpWrEg9t6Yy47Oz2i/i3pS0+OXT8GrBV7iwMEGR9rSTJCaPhYt2RM1Hk9MA/Xn2H3E
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(376002)(396003)(366004)(39860400002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(41300700001)(38100700002)(6506007)(86362001)(316002)(54906003)(53546011)(66946007)(6486002)(66476007)(8676002)(8936002)(2616005)(5660300002)(235185007)(6512007)(7416002)(33656002)(26005)(478600001)(2906002)(4326008)(6666004)(66556008)(36756003)(83380400001)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?dJcq20gHcBMTl/q7AEGw6OZNQbrJKj/QVh6JSv9ehlHOWNJZX8jfRC8o+/Pn?=
+ =?us-ascii?Q?UeyVyqKgGAxUZZFzMHbM9BR3tK3pzhB+9sbQ3lZaY0qIH3O6O6GUH/RMtamw?=
+ =?us-ascii?Q?F5XgvrJMOH9yEyt1/tSx8uZlCtR4kBunbwcXY76LdL8M5/fwe483bA7TQwL+?=
+ =?us-ascii?Q?WlCSZyCIX6lRU016NzlqAi88khoaTKEDLPQHoIFFMRXF31I16PUWtYly8f3o?=
+ =?us-ascii?Q?OIMH9vNW3nbQhUX31tWPOBff1e+RwGeCaEEIc3w7EqaHbMJSHXZqG47dh+Me?=
+ =?us-ascii?Q?ms4sBjopjQraW0ajDmRHWH3DQY1t02NjsMiuqZOFG71hknNQXXcQsrGnGPGv?=
+ =?us-ascii?Q?4SsLCfXb51ckmvrpnl88hZNcICDAuBPdsTd8grISr3aPxXgjt0m/Mqk4Boh1?=
+ =?us-ascii?Q?UBK0e4J95UFTi8SJTTrFXU62cS1Dhm78RDs4EkQnomhOjy3pyOn6OqRX9vql?=
+ =?us-ascii?Q?WqMIoRNSdqLAmDJGyQi0s33+B3gN50pFqgpqlfqvVa4u2NGKYP3rbGypylQ0?=
+ =?us-ascii?Q?SlqMr4r5qSPUWw71GFiHOV9oos4obzl3srOmbLBcWmmLHfYh1H00KlubdeiT?=
+ =?us-ascii?Q?/3EA6FnWZL9sPop2wDNQlSwfar8tKUgmU3B3OKk3Yo7y24G66f4WhiL7VPFq?=
+ =?us-ascii?Q?pO1oxrvafDqmMHP/0ffxl2V6MZ/1gXsh0brJAz5UGY5Dx7DsF+PW93To9jEb?=
+ =?us-ascii?Q?I9m6D32dpBZEP1VglC+jEKEu9fpBKTis3kYnNs4MpIXbx3qO2uzda7uAvoaj?=
+ =?us-ascii?Q?9FGa4i8AE8iKP4DqPkVf5laHzqynquvhjTmzUNFVz53/IG+0lFQf/pAy21kG?=
+ =?us-ascii?Q?nl7SbYXFWDe3lY8+gnegt1ER+Svvkw4hwRYvgwpZdTPoPnvc2HPrHIyG6AVL?=
+ =?us-ascii?Q?Feay1LEcFYsOFIhvc3eksPuGp9rjs1u5MQ9NODR6mOmwkhaWHTf3PqF+YylX?=
+ =?us-ascii?Q?xaTqk0mz4AMmip7qBSBKNJ9HUWQ0OSR/geuzJXE9coj/0BKwtdbE+PzZrpab?=
+ =?us-ascii?Q?ZmNXXSAHf17GgvXQL+l1XJBNCyCD1lKBNyTXvExs0m2T51lUfG7NWyvXrnV0?=
+ =?us-ascii?Q?iwrEZAQdB6WZObmOKHKoqNxHajDgs9NkllWmmIFdjmHi8Vh2XMEhfvO3sARo?=
+ =?us-ascii?Q?AseQEGK5X+EoQrxPokeVtJcoR2DovHG2kDh0d7eR0ZelN7lTJwIevGiJa+NM?=
+ =?us-ascii?Q?uQx/Vu2AyTza+BpN/P4ZFBUDSAIUXRjz8IlQ0Kb9sy7pG8Pb3VT1wk8ydnEs?=
+ =?us-ascii?Q?u6axhNXY54wJ0GCstLujUDp4SaIQwyxBl3LfYtAKbT7JqIRX7w6ed9GgsT4g?=
+ =?us-ascii?Q?PSqyyNLuNdrqI4Qp9iLapLb1MmLXpVoov5tgbFj/Pw3WC+3esNo3Yg2ZXwnP?=
+ =?us-ascii?Q?8YXCkE1JINoABOo8MjDSgk4F9PlamG7aRm/b+ZQ9fievMXfWNrmN0MPx9gi7?=
+ =?us-ascii?Q?TzpsaMc9+mu7f9aYy9FtzqksTPgVPsS/XUFiwrW9PPolrNM6cRH4FQetlqKJ?=
+ =?us-ascii?Q?VR1ghDjdlnYlG71DcJprMRlYrTMWoE8NufWg21RsH6u3b/Op/DInP4HG3jkG?=
+ =?us-ascii?Q?MQf5JTUb3PwWolV3gb4=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1df9edb4-21ed-4387-dcfc-08dc20f8a001
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2024 18:32:19.0176
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5sMCKcXqU7MDosND/swG5RTd8er2DQkyhouPa3rzeH1OiEtt1J8Em9cWLwXJHDPS
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6368
 
-From: Peter Zijlstra <peterz@infradead.org>
+--=_MailMate_531A4F8A-D19F-4C4D-B350-FBF4281FFA54_=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-[ Upstream commit c86df29d11dfba27c0a1f5039cd6fe387fbf4239 ]
+On 22 Jan 2024, at 22:46, Zi Yan wrote:
 
-The dispatcher function is currently abusing the ftrace __fentry__
-call location for its own purposes -- this obviously gives trouble
-when the dispatcher and ftrace are both in use.
+> From: Zi Yan <ziy@nvidia.com>
+>
+> Before last commit, memory compaction only migrates order-0 folios and
+> skips >0 order folios. Last commit splits all >0 order folios during
+> compaction. This commit migrates >0 order folios during compaction by
+> keeping isolated free pages at their original size without splitting th=
+em
+> into order-0 pages and using them directly during migration process.
+>
+> What is different from the prior implementation:
+> 1. All isolated free pages are kept in a NR_PAGE_ORDERS array of page
+>    lists, where each page list stores free pages in the same order.
+> 2. All free pages are not post_alloc_hook() processed nor buddy pages,
+>    although their orders are stored in first page's private like buddy
+>    pages.
+> 3. During migration, in new page allocation time (i.e., in
+>    compaction_alloc()), free pages are then processed by post_alloc_hoo=
+k().
+>    When migration fails and a new page is returned (i.e., in
+>    compaction_free()), free pages are restored by reversing the
+>    post_alloc_hook() operations using newly added
+>    free_pages_prepare_fpi_none().
+>
+> Step 3 is done for a latter optimization that splitting and/or merging =
+free
+> pages during compaction becomes easier.
+>
+> Note: without splitting free pages, compaction can end prematurely due =
+to
+> migration will return -ENOMEM even if there is free pages. This happens=
 
-A previous solution tried using __attribute__((patchable_function_entry()))
-which works, except it is GCC-8+ only, breaking the build on the
-earlier still supported compilers. Instead use static_call() -- which
-has its own annotations and does not conflict with ftrace -- to
-rewrite the dispatch function.
+> when no order-0 free page exist and compaction_alloc() return NULL.
+>
+> Signed-off-by: Zi Yan <ziy@nvidia.com>
+> ---
+>  mm/compaction.c | 148 +++++++++++++++++++++++++++++-------------------=
 
-By using: return static_call()(ctx, insni, bpf_func) you get a perfect
-forwarding tail call as function body (iow a single jmp instruction).
-By having the default static_call() target be bpf_dispatcher_nop_func()
-it retains the default behaviour (an indirect call to the argument
-function). Only once a dispatcher program is attached is the target
-rewritten to directly call the JIT'ed image.
+>  mm/internal.h   |   9 ++-
+>  mm/page_alloc.c |   6 ++
+>  3 files changed, 103 insertions(+), 60 deletions(-)
+>
+<snip>
+> @@ -1462,7 +1489,7 @@ fast_isolate_around(struct compact_control *cc, u=
+nsigned long pfn)
+>  	if (!page)
+>  		return;
+>
+> -	isolate_freepages_block(cc, &start_pfn, end_pfn, &cc->freepages, 1, f=
+alse);
+> +	isolate_freepages_block(cc, &start_pfn, end_pfn, cc->freepages, 1, fa=
+lse);
+>
+>  	/* Skip this pageblock in the future as it's full or nearly full */
+>  	if (start_pfn =3D=3D end_pfn && !cc->no_set_skip_hint)
+> @@ -1591,7 +1618,7 @@ static void fast_isolate_freepages(struct compact=
+_control *cc)
+>  				nr_scanned +=3D nr_isolated - 1;
+>  				total_isolated +=3D nr_isolated;
+>  				cc->nr_freepages +=3D nr_isolated;
+> -				list_add_tail(&page->lru, &cc->freepages);
+> +				list_add_tail(&page->lru, &cc->freepages[order].pages);
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Tested-by: Björn Töpel <bjorn@kernel.org>
-Tested-by: Jiri Olsa <jolsa@kernel.org>
-Acked-by: Björn Töpel <bjorn@kernel.org>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Link: https://lkml.kernel.org/r/Y1/oBlK0yFk5c/Im@hirez.programming.kicks-ass.net
-Link: https://lore.kernel.org/bpf/20221103120647.796772565@infradead.org
-Signed-off-by: Vasiliy Kovalev <kovalev@altlinux.org>
----
- include/linux/bpf.h     | 39 ++++++++++++++++++++++++++++++++++++++-
- kernel/bpf/dispatcher.c | 22 ++++++++--------------
- 2 files changed, 46 insertions(+), 15 deletions(-)
+I did not increase nr_pages here, so compaction_alloc() thought no free p=
+age
+was isolated.
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 8f4379e93ad49b..2c8c7515609a07 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -21,6 +21,7 @@
- #include <linux/kallsyms.h>
- #include <linux/capability.h>
- #include <linux/percpu-refcount.h>
-+#include <linux/static_call.h>
- 
- struct bpf_verifier_env;
- struct bpf_verifier_log;
-@@ -650,6 +651,10 @@ struct bpf_dispatcher {
- 	void *image;
- 	u32 image_off;
- 	struct bpf_ksym ksym;
-+#ifdef CONFIG_HAVE_STATIC_CALL
-+	struct static_call_key *sc_key;
-+	void *sc_tramp;
-+#endif
- };
- 
- static __always_inline unsigned int bpf_dispatcher_nop_func(
-@@ -667,6 +672,34 @@ struct bpf_trampoline *bpf_trampoline_get(u64 key,
- 					  struct bpf_attach_target_info *tgt_info);
- void bpf_trampoline_put(struct bpf_trampoline *tr);
- int arch_prepare_bpf_dispatcher(void *image, s64 *funcs, int num_funcs);
-+
-+/*
-+ * When the architecture supports STATIC_CALL replace the bpf_dispatcher_fn
-+ * indirection with a direct call to the bpf program. If the architecture does
-+ * not have STATIC_CALL, avoid a double-indirection.
-+ */
-+#ifdef CONFIG_HAVE_STATIC_CALL
-+
-+#define __BPF_DISPATCHER_SC_INIT(_name)				\
-+	.sc_key = &STATIC_CALL_KEY(_name),			\
-+	.sc_tramp = STATIC_CALL_TRAMP_ADDR(_name),
-+
-+#define __BPF_DISPATCHER_SC(name)				\
-+	DEFINE_STATIC_CALL(bpf_dispatcher_##name##_call, bpf_dispatcher_nop_func)
-+
-+#define __BPF_DISPATCHER_CALL(name)				\
-+	static_call(bpf_dispatcher_##name##_call)(ctx, insnsi, bpf_func)
-+
-+#define __BPF_DISPATCHER_UPDATE(_d, _new)			\
-+	__static_call_update((_d)->sc_key, (_d)->sc_tramp, (_new))
-+
-+#else
-+#define __BPF_DISPATCHER_SC_INIT(name)
-+#define __BPF_DISPATCHER_SC(name)
-+#define __BPF_DISPATCHER_CALL(name)		bpf_func(ctx, insnsi)
-+#define __BPF_DISPATCHER_UPDATE(_d, _new)
-+#endif
-+
- #define BPF_DISPATCHER_INIT(_name) {				\
- 	.mutex = __MUTEX_INITIALIZER(_name.mutex),		\
- 	.func = &_name##_func,					\
-@@ -678,20 +711,23 @@ int arch_prepare_bpf_dispatcher(void *image, s64 *funcs, int num_funcs);
- 		.name  = #_name,				\
- 		.lnode = LIST_HEAD_INIT(_name.ksym.lnode),	\
- 	},							\
-+	__BPF_DISPATCHER_SC_INIT(_name##_call)			\
- }
- 
- #define DEFINE_BPF_DISPATCHER(name)					\
-+	__BPF_DISPATCHER_SC(name);					\
- 	noinline unsigned int bpf_dispatcher_##name##_func(		\
- 		const void *ctx,					\
- 		const struct bpf_insn *insnsi,				\
- 		unsigned int (*bpf_func)(const void *,			\
- 					 const struct bpf_insn *))	\
- 	{								\
--		return bpf_func(ctx, insnsi);				\
-+		return __BPF_DISPATCHER_CALL(name);			\
- 	}								\
- 	EXPORT_SYMBOL(bpf_dispatcher_##name##_func);			\
- 	struct bpf_dispatcher bpf_dispatcher_##name =			\
- 		BPF_DISPATCHER_INIT(bpf_dispatcher_##name);
-+
- #define DECLARE_BPF_DISPATCHER(name)					\
- 	unsigned int bpf_dispatcher_##name##_func(			\
- 		const void *ctx,					\
-@@ -699,6 +735,7 @@ int arch_prepare_bpf_dispatcher(void *image, s64 *funcs, int num_funcs);
- 		unsigned int (*bpf_func)(const void *,			\
- 					 const struct bpf_insn *));	\
- 	extern struct bpf_dispatcher bpf_dispatcher_##name;
-+
- #define BPF_DISPATCHER_FUNC(name) bpf_dispatcher_##name##_func
- #define BPF_DISPATCHER_PTR(name) (&bpf_dispatcher_##name)
- void bpf_dispatcher_change_prog(struct bpf_dispatcher *d, struct bpf_prog *from,
-diff --git a/kernel/bpf/dispatcher.c b/kernel/bpf/dispatcher.c
-index 2444bd15cc2d03..4c6c2e3ac56459 100644
---- a/kernel/bpf/dispatcher.c
-+++ b/kernel/bpf/dispatcher.c
-@@ -4,6 +4,7 @@
- #include <linux/hash.h>
- #include <linux/bpf.h>
- #include <linux/filter.h>
-+#include <linux/static_call.h>
- 
- /* The BPF dispatcher is a multiway branch code generator. The
-  * dispatcher is a mechanism to avoid the performance penalty of an
-@@ -104,17 +105,11 @@ static int bpf_dispatcher_prepare(struct bpf_dispatcher *d, void *image)
- 
- static void bpf_dispatcher_update(struct bpf_dispatcher *d, int prev_num_progs)
- {
--	void *old, *new;
--	u32 noff;
--	int err;
--
--	if (!prev_num_progs) {
--		old = NULL;
--		noff = 0;
--	} else {
--		old = d->image + d->image_off;
-+	void *new;
-+	u32 noff = 0;
-+
-+	if (prev_num_progs)
- 		noff = d->image_off ^ (PAGE_SIZE / 2);
--	}
- 
- 	new = d->num_progs ? d->image + noff : NULL;
- 	if (new) {
-@@ -122,11 +117,10 @@ static void bpf_dispatcher_update(struct bpf_dispatcher *d, int prev_num_progs)
- 			return;
- 	}
- 
--	err = bpf_arch_text_poke(d->func, BPF_MOD_JUMP, old, new);
--	if (err || !new)
--		return;
-+	__BPF_DISPATCHER_UPDATE(d, new ?: &bpf_dispatcher_nop_func);
- 
--	d->image_off = noff;
-+	if (new)
-+		d->image_off = noff;
- }
- 
- void bpf_dispatcher_change_prog(struct bpf_dispatcher *d, struct bpf_prog *from,
--- 
-2.33.8
+This is the fix:
 
+diff --git a/mm/compaction.c b/mm/compaction.c
+index 335a6f6787e4..fa9993c8a389 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -1638,6 +1638,7 @@ static void fast_isolate_freepages(struct compact_c=
+ontrol *cc)
+                                total_isolated +=3D nr_isolated;
+                                cc->nr_freepages +=3D nr_isolated;
+                                list_add_tail(&page->lru, &cc->freepages[=
+order].pages);
++                               cc->freepages[order].nr_pages++;
+                                count_compact_events(COMPACTISOLATED, nr_=
+isolated);
+                        } else {
+                                /* If isolation fails, abort the search *=
+/
+
+
+I will send out v3 once I rerun vm-scalability and thpcompact.
+
+--
+Best Regards,
+Yan, Zi
+
+--=_MailMate_531A4F8A-D19F-4C4D-B350-FBF4281FFA54_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename=signature.asc
+Content-Type: application/pgp-signature; name=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmW37zAPHHppeUBudmlk
+aWEuY29tAAoJEOJ/noEUByhUqOoP/iGdf1zf+AEQ6shsWVGXQDpaHvSjBYBa1+xe
+RWNjX+N2na4MoymOYCtExonMi6Wa5vc5DglfVs6WXN38TQRYybbYAUhFg2soVxx0
+Z9y62ixIW//8y2cPfb0fg6WJXw8aIMHkmDK9gf8KTf5nTxOkFBxUcPJsTaB17XZf
+yY1I1qljmVNdf85Jy4u36DtoXP0+YqedpjBwrqIgIKgf9TWcRPioNCKb6htzmH+h
+c5fOWVAtdBCsCoGyjklP/LJ96rZNgN1i+tw2+uWwpNIeB2HHbJxq4ZLkdM3NC7br
+KaOf28TaHg5MTnOyMVurS4ehNJNJbkikxIerDa8qDcxGaNXidGyHwN1FcWkdZJEH
+cnnA5Cl/cpCypCOETrSqdOQttNtQbARC66SjumLGnrxrK41O7xTFuDTH1btU3Fu/
+rVNmwva7j87P1r6i5M7GjG/acCAc9v6e9kR2555j3M8EbsxHt4MCQNboAlknZbSP
+MMCPx5G6w7yjKdqBnGLGvz1pW3TVKqgsOpYCGILnB2kzVgAAD67/Qm7OHdwFxuwF
+M5UpXGj8SatAOOoxHAkQQdTDWxauZM7xrAru2jj5ThNjMaRfHANrSVN/Q8/UsdEt
+lfNBRqXlJRst5f6XfCQivmD7LvienjVl0TU0FIH1rbzHyHZPj3f1C5rJjq3eKwk0
+iV30atSu
+=V/a8
+-----END PGP SIGNATURE-----
+
+--=_MailMate_531A4F8A-D19F-4C4D-B350-FBF4281FFA54_=--
 
