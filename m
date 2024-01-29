@@ -1,123 +1,108 @@
-Return-Path: <linux-kernel+bounces-42550-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42551-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 384798402F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:41:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC0A48402FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:42:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9B0F2846E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:41:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1AA911C220FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:42:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 453F851C2C;
-	Mon, 29 Jan 2024 10:41:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F03435647A;
+	Mon, 29 Jan 2024 10:41:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="STCR4vUq"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3423744371
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 10:41:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="yK5IHEbo"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C41CC56B70;
+	Mon, 29 Jan 2024 10:41:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706524888; cv=none; b=pkkSXxqQ7hcgG5zNvMXB61XZbyRn2GJRD+JFc2xUYnbqCkqUwbI1etvT2/ovzl78tfKWrZ0Vbndcx0KeazlizCI3d5X0QFQF36ChHsJzR2WOpHqG+gSFGBEnuPqeuw4RCtTq7C5MmYjx8a20bmlGZux7ARg3Hjbxevs/drcadV4=
+	t=1706524919; cv=none; b=CWTppGW6SmhWsHkKT43PxvQjIa72/kjuJVz5D8SGpv8H+9sRfVOA3BoYA+jT+0MkJLRMgIw7XDQqjbQmUaTm+vzQxxFYrZm23DaIX9leRd2C+oedEzIaF1f06JlCZ+2AMWwWjvTofFkDv5cadPzMS2ElIQERIGEs/MDEo9hUsRI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706524888; c=relaxed/simple;
-	bh=mziL3smNpACHeEVkLl7JlHuipOHyJpTEIIo2FfIWXuQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gyyUVIyAsvotaGObiMf3rh79ElZ3koehj6JcWVfgFRTXSZx6XIGfja0w4JUT2UY6lGE+hs5WkuqPQ+RFiSFd9njLvcGSqDwKHouDnvdPPaU5a//Lkl9LBUYVYAEqJIyvEQ9CRa7ulLeZgU27glwVz1jMYf7bXKlCLB8Mw3MsJG0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=STCR4vUq; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1112)
-	id 6E48820E67D1; Mon, 29 Jan 2024 02:41:25 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6E48820E67D1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1706524885;
-	bh=poMPwNlCA9ASorWGoIcCLj1xsjtr7a7gs6hsW60aNI4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=STCR4vUqyLhO4ItMg9dbXnXPUlEmkYF6gyp14yscuoLtZTrCQSj4wR0JAliItBFGf
-	 iTjjeMxbC+Rm9iTq6PzFtGwSiVnZFo0Uwv6sjiaTrowrStgJ40D5FrKwAqV4155FOH
-	 Pc+DWe8upwpS7MAFselbmv8CaIkRfQpzeZK3Dv+c=
-Date: Mon, 29 Jan 2024 02:41:25 -0800
-From: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-To: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Michael Roth <michael.roth@amd.com>,
-	Ashish Kalra <ashish.kalra@amd.com>
-Subject: Re: [PATCH 07/11] x86/sev: Provide SVSM discovery support
-Message-ID: <20240129104125.GA20729@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <cover.1706307364.git.thomas.lendacky@amd.com>
- <2518c82f24f3e5d7533eea72512cea9ce985704b.1706307364.git.thomas.lendacky@amd.com>
+	s=arc-20240116; t=1706524919; c=relaxed/simple;
+	bh=5K42SYeoC+w5voAFjka3K8jssH6MUMzwzzlFjaiWuq0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=dFhQasGJ9dt/6nQUQr6E3PAlBg1K6LKze984Zkd3UVDoPZPWf2wKL8VuIUEIumbdPi0jOTKPQpoDxOfxWCxdR0lRZH69/KwD964W7kZHdSXK71oPF4OtR/JEneL262fOsr/bWKGLdOmZrItIo05iJRUbLTEbV3mU+Zv/AYpVm40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=yK5IHEbo; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1706524916;
+	bh=5K42SYeoC+w5voAFjka3K8jssH6MUMzwzzlFjaiWuq0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=yK5IHEboSYgBsJWcg4lNpZ967zp4zSh/slm5W1q3/zwtHYkIgcg4uRsYolaG0RrdK
+	 UStPmhONTOaXD0lRVaPU3a7iKj5PJxnvsZ745SC/y2glJXs9b2kIgQFNIcS5PGbwDv
+	 PFGI1i/OR/tSmfBPQiGOO/ZdjUTHjVomzGujPGZwA2m2QA8IIAWKHa2yocCWwci1Yc
+	 8nFiJrPbQBdo7vzncgUpmRXDN81n6lo1+naHigyBstytHFUlxkrrIdgu91XYzTTq2S
+	 QaRBclMsX+69vJef3gAPCXWEz+RRp6lqK9ZkdbMswGHWOheDMfAkmpj4M8VEi5VrbZ
+	 lW4drTZb2qySg==
+Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8B9153781FCF;
+	Mon, 29 Jan 2024 10:41:55 +0000 (UTC)
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+To: tiffany.lin@mediatek.com,
+	andrew-ct.chen@mediatek.com,
+	matthias.bgg@gmail.com,
+	linux-mediatek@lists.infradead.org,
+	Eugen Hristev <eugen.hristev@collabora.com>
+Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	linux-media@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	robh+dt@kernel.org,
+	kernel@collabora.com
+Subject: Re: (subset) [PATCH v3 0/6] video encoder on mt8186
+Date: Mon, 29 Jan 2024 11:41:42 +0100
+Message-ID: <170652472371.127352.1415914611175058375.b4-ty@collabora.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231228113245.174706-1-eugen.hristev@collabora.com>
+References: <20231228113245.174706-1-eugen.hristev@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2518c82f24f3e5d7533eea72512cea9ce985704b.1706307364.git.thomas.lendacky@amd.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jan 26, 2024 at 04:16:00PM -0600, Tom Lendacky wrote:
-> The SVSM specification documents an alternative method of discovery for
-> the SVSM using a reserved CPUID bit and a reserved MSR.
-> 
-> For the CPUID support, the #VC handler of an SEV-SNP guest should modify
-> the returned value in the EAX register for the 0x8000001f CPUID function
-> by setting bit 28 when an SVSM is present.
-> 
 
-It seems awkward that the guest would have to set the bit in the CPUID response
-itself. Is there no way for the SVSM to fixup the CPUID page contents, or the
-CPUID instruction return?
-
-Could you also add a definition for the feature to arch/x86/include/asm/cpufeatures.h.
-
-> For the MSR support, new reserved MSR 0xc001f000 has been defined. A #VC
-> should be generated when accessing this MSR. The #VC handler is expected
-> to ignore writes to this MSR and return the physical calling area address
-> (CAA) on reads of this MSR.
+On Thu, 28 Dec 2023 13:32:39 +0200, Eugen Hristev wrote:
+> This series adds support for the video encoder on mt8186.
 > 
-> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-> ---
->  arch/x86/include/asm/msr-index.h |  2 ++
->  arch/x86/kernel/sev-shared.c     |  4 ++++
->  arch/x86/kernel/sev.c            | 17 +++++++++++++++++
->  3 files changed, 23 insertions(+)
+> Few patches fix the binding, there is a patch for the DT node,
+> and one patch for the driver that fixes an imbalance.
 > 
-> diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-> index f1bd7b91b3c6..4746135cbe21 100644
-> --- a/arch/x86/include/asm/msr-index.h
-> +++ b/arch/x86/include/asm/msr-index.h
-> @@ -622,6 +622,8 @@
->  
->  #define MSR_AMD64_VIRT_SPEC_CTRL	0xc001011f
->  
-> +#define MSR_SVSM_CAA			0xc001f000
-> +
->  /* AMD Collaborative Processor Performance Control MSRs */
->  #define MSR_AMD_CPPC_CAP1		0xc00102b0
->  #define MSR_AMD_CPPC_ENABLE		0xc00102b1
-> diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
-> index f26e872bc5d0..9bd7d7e75b31 100644
-> --- a/arch/x86/kernel/sev-shared.c
-> +++ b/arch/x86/kernel/sev-shared.c
-> @@ -628,6 +628,10 @@ static int snp_cpuid_postprocess(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
->  		/* node ID */
->  		leaf->ecx = (leaf->ecx & GENMASK(31, 8)) | (leaf_hv.ecx & GENMASK(7, 0));
->  		break;
-> +	case 0x8000001f:
-> +		if (vmpl)
-> +			leaf->eax |= BIT(28);
-> +		break;
->  	default:
->  		/* No fix-ups needed, use values as-is. */
->  		break;
+> Changes in v3:
+> - removed the patch to add dma-ranges, because this was intentionally
+> removed (e.g. https://patchwork.kernel.org/project/linux-media/patch/20230303013842.23259-3-allen-kh.cheng@mediatek.com/ )
+> also removed dma-ranges and cells from the DT node
+> 
+> [...]
+
+Applied to v6.4-next/dts64, thanks!
+
+[2/6] dt-bindings: media: mtk-vcodec-encoder: fix non-vp8 clock name
+      commit: b8248c4831787f0854e2e856fa83da68ad5afcde
+[3/6] arm64: dts: mediatek: mt8192: fix vencoder clock name
+      commit: 0157de54920b556d575ffc82ae5d16f2b4cb9494
+[4/6] dt-bindings: media: mtk-vcodec-encoder: add compatible for mt8186
+      commit: 178eaba322868a75c2e0ad078fcf91c3a6f5abba
+[5/6] arm64: dts: mediatek: mt8186: fix VENC power domain clocks
+      commit: 2a08dba6bf6637295175f48ad870a24833955cd4
+[6/6] arm64: dts: mediatek: mt8186: Add venc node
+      commit: f971c7ee301bbd423e06f82bcae768223a4dd602
+
+Best regards,
+-- 
+AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
