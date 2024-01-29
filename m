@@ -1,132 +1,128 @@
-Return-Path: <linux-kernel+bounces-43120-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43121-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4827E840BC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:39:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24859840BC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:39:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 037EE28A6BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:39:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56F481C22EDE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:39:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A44AD156977;
-	Mon, 29 Jan 2024 16:33:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C96A15B310;
+	Mon, 29 Jan 2024 16:33:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qGyzyaS+"
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="QS7P6y5N";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="q0I4l+8T"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E10A156987
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 16:33:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B374615698B;
+	Mon, 29 Jan 2024 16:33:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706546003; cv=none; b=bubzjkhr63YS+cvVkgBe/WVW11D0dpPR870QiFX9uuwMua5a2vTsr6kwwmUxFfWDozY+zRLXhrLi5JUo1wWly7a/hdxAo/fR/M3QMFWsjfsgJIwwRa6baCjLwg0RoRvI6WMkeKiIrMlciykQF4nAkrHKnWdcOH9cuiJAmBy6SKk=
+	t=1706546008; cv=none; b=W43faLWebjEGQxy1ip6Mur5AcYifXpqoUmqEqqPgVARpRhORpav2Jc4DxJH0GFGaH3D+LWBCitje346TKidP2lZJjHJDv1dcz53kwWB4rSngknnz8XM+mHkODtCLR2Ccm2YvhH19shTAm/UUU5Kz5BZFV1MX071iaQXzPIdlX/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706546003; c=relaxed/simple;
-	bh=RbYijDpPVVCJap+th+HFTbm3g0/fwzh/E0PyKIP7Z8I=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=FXFz3GPllveRwWkllaNsU76wEyUtlgjOSXKfhkFt++/mZ6PxNZTSDq80fUS04BU9VD5v9jL5/473kH8zrYzXy4EZF6818aBrHIzTEJHlUyTeAjtiRhVN3FAcFkko7zafQzr28P9xhzI1lCH72saDEmygjXA9CjNcoEwPU1gCGGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qGyzyaS+; arc=none smtp.client-ip=209.85.208.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2cf3a0b2355so35793051fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 08:33:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706546000; x=1707150800; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yYsUavmWV+6BfBH3yu3ngTFUF3L9esmHz5FzVfYvcmg=;
-        b=qGyzyaS+kyWR+pZEsV9LFoCBiJZTBeFsoETw5LnzeigL38d7tJuMkpCBjgDpl7hnx8
-         wQVhysdRxgPYCyjiBAQ2xeY1cVdwjDrTSnxJs3nyHZqpIYpAnutiowS1hSEmH38rjuuA
-         pAjusI0aK9Xyfq4LOzNwMYfkXms8l6tM6SJEzu9ldScR8njLbOFQf0Jox3TkFEYD8O6f
-         dg+byEX6qb5hhkDS9EGsb6uaSIlJeBms36I/icxhhfUd3l35ncxZdw1KhVJAzG7b0grU
-         /b0aKr5zXICS/gZKkuaCkx4OaLv5nUf5qNxj02HM6HHbv7vYW1qCOH0EvBUZiPgKSuSn
-         yNWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706546000; x=1707150800;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yYsUavmWV+6BfBH3yu3ngTFUF3L9esmHz5FzVfYvcmg=;
-        b=QFgiagXqG+yhKeTJfD74/GTZHn1cLOuGF+IjxH9zi1y7WCnH6jv4v4juyF6Xz51AkX
-         n4aPnQ4PJyANZxee+2wu5HdDDIumW6JuKMJ/q9bHXn3HQ+7faTNQeaRwZ8WQbZ9x+NlK
-         ngO6Tb2lqsTEWeGMSg9J0HWtT5dKHN+Feta1zGWRGygG/vnxKgKrEIK7YdVpzmkZrL7R
-         zbco0BelkzTAwQVULIJVjGf3jee5dwL9QUHgjk42O+8cAATQuo5AdFVjKJOy6RUQxG6c
-         lb7cQcYJIH50zomq+X1QV6kRljZljPaCafFC5OSDg7hgkHWy2Duj26iuaGK46UhWXJaQ
-         iIsA==
-X-Gm-Message-State: AOJu0YzZn6YBDNZYRYPQfh565tCpgdj7nCw8+E1/1s4bgHsRcZknIQEN
-	2DiPdMbXC0OZvg/e3PKhMrTi1ccz7TMuzOJFq/ROTRUslFbSR0gPVXAQ4Kp0yhw=
-X-Google-Smtp-Source: AGHT+IH+05/t+GD++Fm4xFiAjxPfYadf/7tiraj4U+n+W6gTozYIsXgXGJnWAj6dePSqJIAtmsSeVQ==
-X-Received: by 2002:a2e:740d:0:b0:2d0:417a:80f2 with SMTP id p13-20020a2e740d000000b002d0417a80f2mr2809772ljc.2.1706546000074;
-        Mon, 29 Jan 2024 08:33:20 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id em2-20020a056402364200b0055ec051ab49sm2642169edb.6.2024.01.29.08.33.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jan 2024 08:33:19 -0800 (PST)
-Message-ID: <49d187f5-3c37-4c3b-a2f5-52dd805e84ee@linaro.org>
-Date: Mon, 29 Jan 2024 16:33:17 +0000
+	s=arc-20240116; t=1706546008; c=relaxed/simple;
+	bh=3v40ec3fp4rIySLwMRSC+DSQBuRjYm7PCdjEg/BN2qM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GzvO/0KebU7bI6EnQLsEjhjCoMcyRpRW0DTBVUxot8525uALSJ+BguZjJu6WVAP+NmUWGQoHZ349uwcW13TBXmcyNTef37OInzwZJvU5SwrC3bR3LczQGMbnStHkBEJ+bIQTmHaJAlCTCkaLV4Z9NtHATnqg1/7Ou8EyLId7gNw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=QS7P6y5N; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=q0I4l+8T; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from blackpad (unknown [10.100.12.75])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id D827C21280;
+	Mon, 29 Jan 2024 16:33:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706546002; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3v40ec3fp4rIySLwMRSC+DSQBuRjYm7PCdjEg/BN2qM=;
+	b=QS7P6y5NylUMxfuK6r6g4fywoDhhJIXpG9fyGzogfuMl36ZKDunidmXOJ6XVGwV3I69Ge4
+	fcCjtuEYDKsUP9mx8ISkyr5opP1RkHUue2j/hzeADM63HHJA9T9cU18r0QdDKVQx1GXA4D
+	OGaBzuuhU6U680MPu82F2UTHFbbLrTY=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706546000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3v40ec3fp4rIySLwMRSC+DSQBuRjYm7PCdjEg/BN2qM=;
+	b=q0I4l+8T7E1lhioda0ghqHOS8BmWrpp9LLLkQ1FVSr4xlnPaJGHrRte1C97ica/5adav1Z
+	hvyp5W7+OIio0fSLbzR2AtrDZ6uTPEbJqkVwsVNe7Z8pRbJFoYWMijP7tD8c6wikqm5qTh
+	8hQaYG8pivL4RwYt332QUgQ5RKAIZaU=
+Date: Mon, 29 Jan 2024 17:33:19 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Deepak Kumar Singh <quic_deesin@quicinc.com>
+Cc: linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, afaerber@suse.com, 
+	ivan.ivanov@suse.com
+Subject: Re: Re: [RFC PATCH] rpmsg: glink: Add bounds check on tx path
+Message-ID: <egp4g4i54le4iizpdfpxi24k563hniwub7iy2dwrk7ul47uhf4@z5scfrisbd46>
+References: <20240113002505.15503-1-mkoutny@suse.com>
+ <151f5738-791e-42cb-b8fe-e0cfbf9f7dca@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/5] arm64: dts: exynos: gs101: use correct clocks for
- usi8
-Content-Language: en-US
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: Sam Protsenko <semen.protsenko@linaro.org>,
- =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: peter.griffin@linaro.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- linux-kernel@vger.kernel.org, kernel-team@android.com,
- willmcvicker@google.com, alim.akhtar@samsung.com, s.nawrocki@samsung.com,
- tomasz.figa@gmail.com, cw00.choi@samsung.com, mturquette@baylibre.com,
- sboyd@kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org
-References: <20240127003607.501086-1-andre.draszik@linaro.org>
- <20240127003607.501086-4-andre.draszik@linaro.org>
- <CAPLW+4m0137jfMROYE_Lv915U+y0CK7M4dieHULOG90Z8XctQQ@mail.gmail.com>
- <b801e6b2-dfdf-4776-b90a-83780982b142@linaro.org>
-In-Reply-To: <b801e6b2-dfdf-4776-b90a-83780982b142@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="fdlqzqmm5seh4aly"
+Content-Disposition: inline
+In-Reply-To: <151f5738-791e-42cb-b8fe-e0cfbf9f7dca@quicinc.com>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -0.51
+X-Spamd-Result: default: False [-0.51 / 50.00];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	 NEURAL_SPAM_SHORT(2.21)[0.737];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 SIGNED_PGP(-2.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_COUNT_ZERO(0.00)[0];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+,1:+,2:~];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 BAYES_HAM(-0.02)[53.78%]
+X-Spam-Flag: NO
 
 
+--fdlqzqmm5seh4aly
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 1/27/24 04:00, Tudor Ambarus wrote:
->>> Wrong pclk clocks have been used in this usi8 instance here. For USI
->>> and I2C, we need the ipclk and pclk, where pclk is the bus clock.
->>> Without it, nothing can work.
->> Empty line is missing here?
->>
->>> It is unclear what exactly is using USI8_USI_CLK, but it is not
->>> required for the IP to be operational at this stage, while pclk is.
->> From [1] it looks like DIV_CLK_PERIC0_USI8_USI is a common parrent for
->> these two leaf gate clocks:
->>   1. GOUT_BLK_PERIC0_UID_RSTNSYNC_CLK_PERIC0_USI8_USI_IPCLKPORT_CLK
->>   2. GOUT_BLK_PERIC0_UID_PERIC0_TOP0_IPCLKPORT_IPCLK_7
->>
->> So IIUC, you replace clock #1 with clock #2 in this patch? If so, I
-> No, GOUT_BLK_PERIC0_UID_PERIC0_TOP0_IPCLKPORT_IPCLK_7 is already used by
-> IPCLK, the one that controls the clock frequency.
-> 
-> So I understand Andre' replaces a child of the USI8 with something else.
-> 
-> I don't think this works. We shall at least test it. I tested my usi8
-> patches with the eeprom that's populated on the battery connector. I'll
-> sync with Andre' offline and redo the tests on Monday.
+On Mon, Jan 29, 2024 at 04:18:36PM +0530, Deepak Kumar Singh <quic_deesin@quicinc.com> wrote:
+> There is already a patch posted for similar problem -
+> https://lore.kernel.org/all/20231201110631.669085-1-quic_deesin@quicinc.com/
 
-Andre' is right, I messed up the bus clocks for USI. I tested the IPCLK,
-the one that feeds USI clients, but I failed to correctly test the bus
-clock. I retested by removing the clk_ignore_unused bootargs param and
-verified that the patch is correct.
+I was not aware, thanks for the pointer.
 
-Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-Tested-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+Do you plan to update your patch to "just" bail-out/zero instead of
+using slightly random values (as pointed out by Bjorn)?
+
+Michal
+
+--fdlqzqmm5seh4aly
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZbfTTQAKCRAGvrMr/1gc
+jjXFAP9Um5p58DEI4KDPRXFI2e/uPlQEy/pIzWZc4O3XF1pRUwEA+6k1aF11nti8
+VOaJgaLHsoDXocKFBct9GyKDZz7F7g8=
+=uPQp
+-----END PGP SIGNATURE-----
+
+--fdlqzqmm5seh4aly--
 
