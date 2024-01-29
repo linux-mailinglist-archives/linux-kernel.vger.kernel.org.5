@@ -1,146 +1,194 @@
-Return-Path: <linux-kernel+bounces-42699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42702-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6414840541
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:45:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF47A84054A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:46:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 439DB1F22AC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:45:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F42241C21B51
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:46:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50D49612FC;
-	Mon, 29 Jan 2024 12:45:41 +0000 (UTC)
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 774906280F;
+	Mon, 29 Jan 2024 12:46:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dIZLEbh7"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCE8E612CD
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 12:45:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFDA2612FE
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 12:46:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706532340; cv=none; b=GgHqvnAT3R0bQpXZ/FBD3odaHezcylhYpb0Z4ZWRgMmuLpjJwwIBZ3Y2cncrtO9BtI63T5MffdaTnuVme43XpYa2VM/dVMpqHEuEC3/0JXuKM1s0AMJisZWYiale1pU1lV2YgU/YitU17TeRItbmJphqXq7G7wswJFLdMuoxxVs=
+	t=1706532364; cv=none; b=a5eeWUM3XU3F/XQ95N9HFLPNoNh4Io52F9NhoVXmaYMT3WKB/SZtHCM1ANETIAloed2ttceAabS7HcQS5HjKQRPkRh90JQPSW9NmqyZni1Z4+4jchLQznnRWkhEQ7/pNB0wQ+pmWBv2TVjQyNipjJJUVwdtccee5S4RZLIJsJ9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706532340; c=relaxed/simple;
-	bh=CHT/UvYOHji0r/mcFEVYGzN2pmHuEOKTabVerwfiNOY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YsYPAdp0ZC08DQBJ9qVFLHVYd8BQ39XngLWyfznSnZj5MdqNeq6xqU20f2ExXlFqV79w85J0WiJv61rR13isUBrcmf6VwcpzP0ntb8LxdOzE0DzmpFsLw+f8h1Te14owalENBAF7yv38GGvjcN5oKrL9mnVhE5IzHhey2EyoZ04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-55f03ede12cso949582a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 04:45:38 -0800 (PST)
+	s=arc-20240116; t=1706532364; c=relaxed/simple;
+	bh=AVtgRWF4IVOkUGVH/tXix06fZG32DEgHg3PWnXYoMsY=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=KaJilvUP8zQHmKkNHjOFw/KlvV3P4eHxpr/c2tA/Ru4AU0P7g/AIEacs01KdEu+Jmxy8WwMkNU7bpwFpUuyVMA58Pw+22aZNOY7ksAoubGbP6+2LSdztzHAT5MX1e1LJE6v7jJb4RL1+r76mOi+O//6KEor2Cs7WDh2wG1YweeM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dIZLEbh7; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a35c0ed672cso96794066b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 04:46:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706532361; x=1707137161; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MQbi0jsaceor2m1l5UXb1GXMtF9OCnFgnWE+RJJAt/A=;
+        b=dIZLEbh7xUCB2GAkAlRJYssLbWxwP3rJ5F0YvqLZ2eZfWoeS/frPEC3EvRLbnSLQs9
+         n9xfZ36KPCwjcwS8lPDgL7YhPWbWnlMOxJIFvysRd4iN3TBowxfdzH+tPBKVRhTyuvFF
+         AHLgzbQSXTMik4rTYJ7KBK9RoZ0OgEwYZuqeQXFOIYJqgZ6Lgvpij94MlEg84Xl6L43E
+         Gk6G/Jit8yNIrm1TafcBOSIJ8w8HZwU4XNiKfhls3UaUf/J4e4+nx7YKxKm6cA0PKNiq
+         P1rT85vTk+B6O4VmUywez6M2WaxcLhja8O9FLKGBbWyBZYpfaixyTjrl4a1ebuuopSpI
+         U9nQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706532337; x=1707137137;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/XBG9kFEaRnAAH7vBNHAabPo0iBDwnoKijQp+k7kbBw=;
-        b=GCurvUB6Xfx+XbbLIoKQokWfTYIfA4bmb1kGCTGivqGl87rOqT2jvggY9slgh+vaKp
-         KbeckaALbZx0El7oUnIJbiEmNrKrysE8u2cjDYLKjWJlD0dQxwiSY4ZctFh/5q5vFHS3
-         OUVn/PKbyds0IaGbbshoj9wYmGWJFLrFU28u1017x98KdqlXxaCrCc90Sh09/BkoMN5O
-         ZXHVpeC+Jmhoa8E4b95rPZZpqpBNe7UCPkzB3z/yETyul9uzmUL+73DaD4oLwD49fOwD
-         kyEsZQqfpntXhyhmGj2BfhcLCofOidudgNDmyYhMMdIUTkAz1C07YRzs0V/bBUxnx8LF
-         qekA==
-X-Gm-Message-State: AOJu0Yx2bgXbY1FaOBXFrbL0GcPG3d8sQUC1xFHZqH2hf1a/H5CgyI/i
-	zhUx96qCd8UcGGJCeNuFdRVB2oIi4koM1fI62m34KheAwlZo9uZzCpSVduwi/xLT0g==
-X-Google-Smtp-Source: AGHT+IFWCfE0GI5vHIVPrNSMYwLdUjsx2uLON4IZW8QzhSo44niCSgeugPXbLnsIcOeVK17JCtnuuA==
-X-Received: by 2002:aa7:d8d0:0:b0:55e:faef:b1fd with SMTP id k16-20020aa7d8d0000000b0055efaefb1fdmr1731568eds.2.1706532336550;
-        Mon, 29 Jan 2024 04:45:36 -0800 (PST)
-Received: from gmail.com (fwdproxy-cln-011.fbsv.net. [2a03:2880:31ff:b::face:b00c])
-        by smtp.gmail.com with ESMTPSA id a20-20020aa7d754000000b0055efeee7722sm1005959eds.79.2024.01.29.04.45.35
+        d=1e100.net; s=20230601; t=1706532361; x=1707137161;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MQbi0jsaceor2m1l5UXb1GXMtF9OCnFgnWE+RJJAt/A=;
+        b=paU1N6ciISrirykwHySTkFWdUmZql8ChzLj3DU5jeH+MQdn5UXNm/0fHEpMEPZckbG
+         a6EVT2JzJEkY6BKAiuya+vpaFZtHkFv6VOFmaNXSdTTb1Gicbmz2oAm5pBfXs6dnHI6W
+         pOaC25UHGXmuJAgns3LEzTzYIqHLtRiyVHZu5sZwCiBEswKnjdqsYtkwyl4UQVnCv+3E
+         Ts5wK+rOktoWArO3Lv9LWYiqE4vZMzXhdaUE3tUfiRyaKyxoos4m+xyKjAd/2WJJwB4u
+         UvFetc5feYmarozfz77Svkl0NxODZ9aiixq/v/yutdzTENJg0psYFXC+TZb+Jkbaxd2A
+         Ib8w==
+X-Gm-Message-State: AOJu0Yx+21v+ZyedD7BEzaMIECfXwcqtFQwG/mc/rI90od8dH4sRAPjO
+	mfk9FgdWYi8NpTrEdUwUs0UNt3fVdngV+ynp1PsopRCyP/L7h0usGUrw18ugIvU=
+X-Google-Smtp-Source: AGHT+IEB9Pyf9whoM5HIm92rVMv2R8bAY18zITac8cQuXVunC/SWY/7TSPbRUP5isKTuZiEHomAtRw==
+X-Received: by 2002:a17:906:2807:b0:a35:3ce3:c492 with SMTP id r7-20020a170906280700b00a353ce3c492mr3335525ejc.26.1706532361019;
+        Mon, 29 Jan 2024 04:46:01 -0800 (PST)
+Received: from [127.0.1.1] ([79.115.23.25])
+        by smtp.gmail.com with ESMTPSA id 20-20020a170906329400b00a3527dba974sm3041495ejw.35.2024.01.29.04.45.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 04:45:36 -0800 (PST)
-Date: Mon, 29 Jan 2024 04:45:34 -0800
-From: Breno Leitao <leitao@debian.org>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>, lstoakes@gmail.com,
-	willy@infradead.org, mike.kravetz@oracle.com,
-	Rik van Riel <riel@surriel.com>,
-	"open list:HUGETLB SUBSYSTEM" <linux-mm@kvack.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] mm/hugetlb: Restore the reservation if needed
-Message-ID: <Zbed7hlo38WHbQaf@gmail.com>
-References: <20240117171058.2192286-1-leitao@debian.org>
- <7a0d92a9-f28c-4f3c-b956-1157e614dcbe@arm.com>
+        Mon, 29 Jan 2024 04:46:00 -0800 (PST)
+From: Abel Vesa <abel.vesa@linaro.org>
+Date: Mon, 29 Jan 2024 14:45:34 +0200
+Subject: [PATCH v6 02/11] arm64: dts: qcom: x1e80100: Add SMP2P nodes
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7a0d92a9-f28c-4f3c-b956-1157e614dcbe@arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240129-x1e80100-dts-missing-nodes-v6-2-2c0e691cfa3b@linaro.org>
+References: <20240129-x1e80100-dts-missing-nodes-v6-0-2c0e691cfa3b@linaro.org>
+In-Reply-To: <20240129-x1e80100-dts-missing-nodes-v6-0-2c0e691cfa3b@linaro.org>
+To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Sibi Sankar <quic_sibis@quicinc.com>, 
+ Rajendra Nayak <quic_rjendra@quicinc.com>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Abel Vesa <abel.vesa@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2334; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=k1gnvHRfVSoGERtnk8fkV8vtL7EyKZdKEihjsBB0+sY=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlt535reupJK7mVRphtWf/a+4ODF+lGMWRsvzJA
+ rh4uH9LAZWJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZbed+QAKCRAbX0TJAJUV
+ Vh51D/wKhecHj34JtSsFLr9VijD1yv6sgv5YNWdAdq3yyxTt3+qs98xyMUlir07cY4He0Vt+uBa
+ zqViB//E2CxG3xu3euYcF9wftjwzcs23tu9DMes7XPcwic8eWZoSxVz0CrdB+QmWBbcMLugJOON
+ iW1sqvcT7TW9yL6E8W5Xh3CimKc82ZBBHSLR3tBLb7G8IhETRTe4yDNaldG5K0dMiesb3/1zqdF
+ tJQgL1trqVtK5P3UZ77KAE0e5ISujwsGFhNhqk5e/tJFRF7GUWYGHXqHuUpprKRHvogrRoFFURx
+ bDgaZDR6KglnDDMC9GS8IhlRuLQGjF0LaDxNjJwoECoIU45ER+nuDIFNS9PGu/XvnQiRvx4kDz8
+ 3pagydjebERHQC2019SA01Nml4/vPJTE1RZS35YX9hkgpDleOgz0gK9ZHB6G66oMfd7KNyDJ64g
+ SUOlp0uH4t9Fujbn+nmABjvVWYDHUcnfpKAmMZGe1LlVK1B1b004y1804a2gHobqYR4P6FhxTFl
+ PEtCBz06EDTo4m//iEsALocFMI34Ojen5WfZdKLWskRSk1pN/Qssl87J58lZNV6lsOUYaHu9DH3
+ rugPyRdLjw+r6xl0dCeSp3O9L5szEvp8nfqYwrewNw8/bKEwNbuxwg8dAnZa8XA9ogIwolfT/MC
+ dhvubPBiAE6f7uw==
+X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
+ fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 
-On Wed, Jan 24, 2024 at 09:22:03AM +0000, Ryan Roberts wrote:
-> On 17/01/2024 17:10, Breno Leitao wrote:
-> > Currently there is a bug that a huge page could be stolen, and when the
-> > original owner tries to fault in it, it causes a page fault.
-> > 
-> > You can achieve that by:
-> >   1) Creating a single page
-> > 	echo 1 > /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages
-> > 
-> >   2) mmap() the page above with MAP_HUGETLB into (void *ptr1).
-> > 	* This will mark the page as reserved
-> >   3) touch the page, which causes a page fault and allocates the page
-> > 	* This will move the page out of the free list.
-> > 	* It will also unreserved the page, since there is no more free
-> > 	  page
-> >   4) madvise(MADV_DONTNEED) the page
-> > 	* This will free the page, but not mark it as reserved.
-> >   5) Allocate a secondary page with mmap(MAP_HUGETLB) into (void *ptr2).
-> > 	* it should fail, but, since there is no more available page.
-> > 	* But, since the page above is not reserved, this mmap() succeed.
-> >   6) Faulting at ptr1 will cause a SIGBUS
-> > 	* it will try to allocate a huge page, but there is none
-> > 	  available
-> > 
-> > A full reproducer is in selftest. See
-> > https://lore.kernel.org/all/20240105155419.1939484-1-leitao@debian.org/
-> > 
-> > Fix this by restoring the reserved page if necessary. If the page being
-> > unmapped has HPAGE_RESV_OWNER set, and needs a reservation, set the
-> > restore_reserve flag, which will move the page from free to reserved.
-> > 
-> > Suggested-by: Rik van Riel <riel@surriel.com>
-> > Signed-off-by: Breno Leitao <leitao@debian.org>
-> > ---
-> >  mm/hugetlb.c | 10 ++++++++++
-> >  1 file changed, 10 insertions(+)
-> > 
-> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> > index ed1581b670d4..fa2c17767e44 100644
-> > --- a/mm/hugetlb.c
-> > +++ b/mm/hugetlb.c
-> > @@ -5677,6 +5677,16 @@ void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
-> >  		hugetlb_count_sub(pages_per_huge_page(h), mm);
-> >  		hugetlb_remove_rmap(page_folio(page));
-> >  
-> > +		if (is_vma_resv_set(vma, HPAGE_RESV_OWNER) &&
-> > +		    vma_needs_reservation(h, vma, start)) {
-> > +			/*
-> > +			 * Restore the reservation if needed, otherwise the
-> > +			 * backing page could be stolen by someone.
-> > +			 */
-> > +			folio_set_hugetlb_restore_reserve(page_folio(page));
-> > +			vma_add_reservation(h, vma, address);
-> > +		}
-> > +
-> >  		spin_unlock(ptl);
-> >  		tlb_remove_page_size(tlb, page, huge_page_size(h));
-> >  		/*
-> 
-> Hi Breno,
-> 
-> I'm seeing a kernel bug fire when running the "map_hugetlb" mm selftest against latest mm-unstable. Bisect tells me this patch is culprit. I'm running on arm64 with defconfig plus the following:
+From: Sibi Sankar <quic_sibis@quicinc.com>
 
-Hello Ryan,
+SMP2P is used for interrupting and being interrupted about remoteproc
+state changes related to the audio, compute and sensor subsystems.
 
-Thanks for the heads-up. I was able to reproduce the problem, and I am
-working on a solution.
+Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+---
+ arch/arm64/boot/dts/qcom/x1e80100.dtsi | 53 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 53 insertions(+)
 
-Thanks,
+diff --git a/arch/arm64/boot/dts/qcom/x1e80100.dtsi b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
+index 954f2bd9b1de..1210351b6538 100644
+--- a/arch/arm64/boot/dts/qcom/x1e80100.dtsi
++++ b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
+@@ -9,6 +9,7 @@
+ #include <dt-bindings/interconnect/qcom,icc.h>
+ #include <dt-bindings/interconnect/qcom,x1e80100-rpmh.h>
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
++#include <dt-bindings/mailbox/qcom-ipcc.h>
+ #include <dt-bindings/power/qcom,rpmhpd.h>
+ #include <dt-bindings/power/qcom-rpmpd.h>
+ #include <dt-bindings/soc/qcom,rpmh-rsc.h>
+@@ -662,6 +663,58 @@ smem_mem: smem@ffe00000 {
+ 		};
+ 	};
+ 
++	smp2p-adsp {
++		compatible = "qcom,smp2p";
++
++		interrupts-extended = <&ipcc IPCC_CLIENT_LPASS
++					     IPCC_MPROC_SIGNAL_SMP2P
++					     IRQ_TYPE_EDGE_RISING>;
++
++		mboxes = <&ipcc IPCC_CLIENT_LPASS
++				IPCC_MPROC_SIGNAL_SMP2P>;
++
++		qcom,smem = <443>, <429>;
++		qcom,local-pid = <0>;
++		qcom,remote-pid = <2>;
++
++		smp2p_adsp_out: master-kernel {
++			qcom,entry-name = "master-kernel";
++			#qcom,smem-state-cells = <1>;
++		};
++
++		smp2p_adsp_in: slave-kernel {
++			qcom,entry-name = "slave-kernel";
++			interrupt-controller;
++			#interrupt-cells = <2>;
++		};
++	};
++
++	smp2p-cdsp {
++		compatible = "qcom,smp2p";
++
++		interrupts-extended = <&ipcc IPCC_CLIENT_CDSP
++					     IPCC_MPROC_SIGNAL_SMP2P
++					     IRQ_TYPE_EDGE_RISING>;
++
++		mboxes = <&ipcc IPCC_CLIENT_CDSP
++				IPCC_MPROC_SIGNAL_SMP2P>;
++
++		qcom,smem = <94>, <432>;
++		qcom,local-pid = <0>;
++		qcom,remote-pid = <5>;
++
++		smp2p_cdsp_out: master-kernel {
++			qcom,entry-name = "master-kernel";
++			#qcom,smem-state-cells = <1>;
++		};
++
++		smp2p_cdsp_in: slave-kernel {
++			qcom,entry-name = "slave-kernel";
++			interrupt-controller;
++			#interrupt-cells = <2>;
++		};
++	};
++
+ 	soc: soc@0 {
+ 		compatible = "simple-bus";
+ 
+
+-- 
+2.34.1
+
 
