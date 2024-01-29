@@ -1,121 +1,106 @@
-Return-Path: <linux-kernel+bounces-43648-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43649-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26487841730
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 00:58:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DBDE841731
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 00:58:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 903951F23B39
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 23:58:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92A821C22C59
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 23:58:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54E0F15705A;
-	Mon, 29 Jan 2024 23:57:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B5D515959E;
+	Mon, 29 Jan 2024 23:57:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YWpA6BOe"
-Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JjNaZfyk"
+Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C091254670;
-	Mon, 29 Jan 2024 23:57:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1267B152DE5;
+	Mon, 29 Jan 2024 23:57:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706572676; cv=none; b=MV5tlFlf19f2FOl5LrV/LwLspYVxKUpLg8j8EOw3+MeUUuGh8uS07jD71X92cgFus6gYwmoLWjc16lL5ExRplEVQ/MbZFF2fYnBlBlSx3rjlIQHNSJsnSvFhoPOjOsVJARfA1VAFUiMEuiMfQcXdC1yA3CFt4MSBUFpLmyy0JSs=
+	t=1706572678; cv=none; b=CBnnxYeZlV3vUbsrxJj9PBO61ixf6ROB7m3qSPC6t2Lv9p4mKQmF58whuoGAMq62EFItdi8myEjbNiAYg2vi5Csne5vNs1rAiIknwpdcQMp41XLem2rFgJc8oo6QbucrmSADuuQ8q9YnJFwegf+MmcKek7lYigRAU5qKgVJnhHk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706572676; c=relaxed/simple;
-	bh=W0XzN0qkMvIRBzxDSAsFx1Wj0qZvkVGIaHK8Ta6QP/A=;
+	s=arc-20240116; t=1706572678; c=relaxed/simple;
+	bh=729O94EoCREx3FZ9Z1vQ84ULvsbGf6rHZJbzo7snSIo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sH1nOGCCswMQZ6CCprr/g57o80NLKaqHOzelvoqb41d3TcUMAdqA9Pb/fFwf0kRcXYZB1RyH0pXSPUtk0RJvQ3CAsWPzi+hzCm12wCwP9n5sDSjZ8XclIQnIwOFzBCDjof4BMkifd9Pud6PHoUuNbrOgJlrF9mOaUsgEA1THaYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YWpA6BOe; arc=none smtp.client-ip=209.85.219.48
+	 MIME-Version; b=qV+ugdFrGGfuauNBsmcGRFo2F0JpOd6q+lSWil33Q3hKqOvV8TxyQo116QckQIfg6mlXRYBC3eQwr3s/lB4YJQb11RyIhh1HIxNBv0EJKOxANd+tC0xvVwaALcI/Kodhw+pJa5ZiwdZiGT34AfHCm0Pgd85XcC9eXyamgb9wQcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JjNaZfyk; arc=none smtp.client-ip=209.85.222.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-68c2f4c3282so26347106d6.3;
-        Mon, 29 Jan 2024 15:57:54 -0800 (PST)
+Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-781753f52afso283406485a.2;
+        Mon, 29 Jan 2024 15:57:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706572673; x=1707177473; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706572676; x=1707177476; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=X5SWUW+m7tI0wwKK9KxgCmfN7nKEUdz6H5ceQbRqNGY=;
-        b=YWpA6BOeIHAGujCYlWfewlcJtJk4Kkz9L5inOAy2mYhoKc0IKL3HCkuMSltZ4kzVnl
-         xmqjw9jLoZqhc9uvSFczYkXB8yEAgjcY+ihNLvgo857jjcGD/MHB16fU8K7pGibqg8R+
-         +AN1rz+Kj06F2EcK7OZyiJLKir1qdzeT/nmOp4I3wPb4S9dzJ3bHgdeP5phroWbxGa0I
-         uBxePzsHYUkmQm2iVU+PMgoU324ieOpwqpHIWdg/4kWx98RIiAbQ3Ou4XVxKFfgvLi3E
-         p4WzHjHJhn6AQtXhqXL8d37naim4QT1RT8z81zK/cEWzMVGmZYWfckFrA05pCyfdDc1w
-         e4+w==
+        bh=fT86kh/TbRUN/0ULbFYKGCXq2c0HprpskOGj7i+dxyE=;
+        b=JjNaZfyk3W/b1dAOBqovorX1/VaXXO4IjvG5W3/jwRKhqK0yfiAx5V/NKRkFqH4YSZ
+         FTCyY8rzqlkLEsr4kEyYtOqD2T4kRgOuN14gyEYeP6s0aqW2ji0WOj3lvSk95cR+bIkg
+         ZkqNz4meX+zIybVjfbinVHxCYeNOHEDeaOmMiJJiyG0Mt8MAn+8ejbc16+SlikW+YYPn
+         bmoWPuoVa8i+Xol8SgRq7iRq4ascGSue8sr/1ivTJHPNJ7DvYYJtpBeO/l7oPCFiXbF/
+         LkRHsbLxQTM6Zvv/WhcxjPbppq2vtrhz74aJVY45H4zreGTQ0yB1kkTvct0qGcpyRekm
+         hDBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706572673; x=1707177473;
+        d=1e100.net; s=20230601; t=1706572676; x=1707177476;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=X5SWUW+m7tI0wwKK9KxgCmfN7nKEUdz6H5ceQbRqNGY=;
-        b=Hzp+elVqL5gLk8Ois7vac6WPipOpu58wiyZkn8oP+t2+zB3Czn7uFfaB2ywxexJbIK
-         w2dm6bHy5p1WbhYNcRhlARvypRZK47TVl6TXA0nH6tCY2YHAfzeO2qKnNcbkyaACBxHo
-         plgqR/KdmWQJUYV9p8gu3JWIuys4/mTii/kx1WKozCsL0EXMT33EUHZof4vrz5bGcDWB
-         +EPq2+nS9Z9QvhdVDvOsymZmlqi1iE4x1q2AbctftJ21VXmAItCw1grvrBZcX3dtrGZX
-         o3uzc2CYwAVD5DwUMEcOqj7ETLi6Y26Y8AuFlyrvZi+D5lEDFTYgU7LtB5bE8Aai+y+w
-         AZvg==
-X-Gm-Message-State: AOJu0Yxg3HaMvm4zAc5lVuESdPXXwHTXOmQ2b4PZ9UoByOD0JPSXMrMW
-	4pkeihskz1AcEI0M4QXL0TjzxRmIOYCbmS/rUvoKQuXb5UUQSkgC
-X-Google-Smtp-Source: AGHT+IFeSapqqsfg4gNLYGxYvmjlsKND48UUNQn6Qu5QGNLt+/l7ndRTv7hKbaJXXr4oaDtuz7eD3Q==
-X-Received: by 2002:a05:6214:27c7:b0:68c:5f06:202c with SMTP id ge7-20020a05621427c700b0068c5f06202cmr342365qvb.96.1706572673627;
-        Mon, 29 Jan 2024 15:57:53 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWjcVy5kC85qmp7+akcRl4wdVne8Jmt8ZCY2iBS2Ienx4dTMzxsmKwynI9NExnZwFguBkWLq8Wx6xxTd7MCkj+xWQveThFvGc+yNsREap7r4uEmM7A1pToIDDReDGzrbERsD5cHewBr6Iuieii4CUSFVKEqL9PfA6bvClHUaaoyUIqgu5ccpLBp8pJs3mPLIf2qaSng9ohL21lBq9CZcNvab6qkcXoKxSpRfLUyZDjtl2su16f7xyCJ4cUAz4qyDZOmnzG2v2XvE1TPzOowWiOrmCQjJTETAArChp+8C99NTfIFrBXR25J2j7L+n7PSm3Qs7vOtQC4DG2nIStO9Xcxu53w7xyjYLJ5gnUOL4R/kWACBuw2Is5XdeDnGGkR1DTCMCz5qtfT2Ff4I04TNOGOpENJClOnGEaPGQZcj4jNUKRqNBn9lbCANYFPm0NfkkyeLr5+m0iGmEDmr6vps/D/+4c3r5h4HiiiavIKWAhRClHQJyLM/HwxqJKW2dUKebU/6mlrJgLvEOcHF9+us+kQTtNfnaC7QmEZknc5txxLIdxNPqYtrJTamSJ4B6++2hTeW54WPjmZBhVOguD8uD/xZW7wwmPGXrol7jg==
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id lb9-20020a056214318900b006869c05a875sm472651qvb.32.2024.01.29.15.57.52
+        bh=fT86kh/TbRUN/0ULbFYKGCXq2c0HprpskOGj7i+dxyE=;
+        b=gmYlRtnNLh+mApM7E8XC997ro3UXPk/+/lNzxqNziUlkv3RrOeQ29iap0jz7JwKXNx
+         sErhxLPbJbdHwQBMfLPokfaP1DRRmeUH8cdePw4qvKuncLbMZ/+qC2vuEr8CjG/8VhgN
+         OGkuOYjmKpopKIahyLjpLkZZFEzhS9GtcZRj5sHau7ytUZk9VxaAeMlYWtSl6awy5kWL
+         BMPdR4QgioS8SupdPXWNrPv7IIpTW/LBj/66v+Js2OVlfqVPGkdSEIBbmtg9+70mV9JD
+         /og3sNFikwfwIgnIViWzf4arKLC2YBWmzX7TkgmpXb0iD4yTN2cu2crVfj4EWNicX6Gl
+         S0dw==
+X-Gm-Message-State: AOJu0YxtPIB5X5UWW+GNSrHu0ge4edYjauLdHOzRg0k2l9dORKxxbtKR
+	fye4ZOVJw40zBg/tG0qruQXGbRwMDpZ3nl+GEfkzPiUcH8uUEf3/nqkSEepc
+X-Google-Smtp-Source: AGHT+IGJz/Rq4NlJ/IdK4N4g9Fd8Vz7QNxgfWOxmrnIEJOx01Xrw6XMoL0Dw1kPX5UPxhz0FZxIBPw==
+X-Received: by 2002:a05:6214:174b:b0:68c:3ad7:517f with SMTP id dc11-20020a056214174b00b0068c3ad7517fmr5291035qvb.30.1706572675853;
+        Mon, 29 Jan 2024 15:57:55 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCU71LJ8pAwVCRMD652qgpsLr+ijpMZYquK1a0W9XPwacdxp4RvF10kZ3VgUR9W3+J1JhkprpAeM8IeBEoYKlZXAC3Xk+rrwFR2/dggSJGeJ6eA8oL+BwjfuZjOLuD7v03H1xCesiodNNXBuNw==
+Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
+        by smtp.gmail.com with ESMTPSA id ma8-20020a0562145b0800b0068c38dd9ca4sm3259266qvb.8.2024.01.29.15.57.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 15:57:53 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailauth.nyi.internal (Postfix) with ESMTP id 9CF6F27C0061;
-	Mon, 29 Jan 2024 18:57:52 -0500 (EST)
+        Mon, 29 Jan 2024 15:57:55 -0800 (PST)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id 44AF91200043;
+	Mon, 29 Jan 2024 18:57:55 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Mon, 29 Jan 2024 18:57:52 -0500
-X-ME-Sender: <xms:gDu4Za6dipyIpHwOjUlIMAlXz62k5A2aJtVicitVHfqVYte23BJ7-g>
-    <xme:gDu4ZT6TDbkyUIhFoLVUI8KVFeePTb8gAbsTr0aqF7wsZzLgzbA2XebbrmxdxV7rL
-    8mq8UbdFjVY503-bw>
-X-ME-Received: <xmr:gDu4ZZe9mXWlWUueKAkkkzMTUsb9-LUHaTPbP1R6105H4yfXAoCTLrY_MGisxg>
+  by compute4.internal (MEProxy); Mon, 29 Jan 2024 18:57:55 -0500
+X-ME-Sender: <xms:gju4ZaD14glIUHYCbGU_yDvgU2HdteCXQ1u3_Kp5s8fRgS-LOjFiIQ>
+    <xme:gju4ZUhxxpWDDMDbUEGWH6B1Gvi3cFS8QTxYsrvd8IIoFZ1qLYeWUj35jGXKKfXAG
+    g1yPS7OEM5vRsEwCQ>
+X-ME-Received: <xmr:gju4ZdlDBeWuaHR1ZB2qmQHDSRuzaO8DofkginU-Thi28TqbBYofp07269oSKQ>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedthedgudejucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhephffvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepuehoqhhu
     nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
     htthgvrhhnpeegleejiedthedvheeggfejveefjeejkefgveffieeujefhueeigfegueeh
-    geeggfenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    geeggfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
     gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
     gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
     igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:gDu4ZXLP4jAuKm3SZ2SL85Vd1S661_GDjSKrlI_ca1vx-enj_5sFzQ>
-    <xmx:gDu4ZeKDTuz4rWYsyDa9lQXEsCkegXhyzGBtsf2Tl50kKgRbZgPWCg>
-    <xmx:gDu4ZYzPKTmzblC6OJ0QzKsxbvRu9fv-kuxytbzE58XkokHYAhrfdA>
-    <xmx:gDu4ZS-MZZDRva8w-_9gIyzInFyb5WFkNvvessV1bMEhxjU23T_GAw>
+X-ME-Proxy: <xmx:gju4ZYxFIj1aWa0Ag-r9048e6xo-juiyixbiD1FQEHawPl-h6w3f5w>
+    <xmx:gju4ZfQoZ5N_bRrF4AFiGgUNNq-Fdl8gSQUZjLLuGN2eAc13_66kpg>
+    <xmx:gju4ZTZEjktGwMRiiQzDheEo4ENR8Yp_X_UTcp5SNvFBbOm9fcR0OQ>
+    <xmx:gzu4ZdO7nEQo4Wv95bc4p-kufhhR0d7PECKO6a8nPlgdOguG2AFQUYkR1dU>
 Feedback-ID: iad51458e:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 29 Jan 2024 18:57:51 -0500 (EST)
+ 29 Jan 2024 18:57:53 -0500 (EST)
 From: Boqun Feng <boqun.feng@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	rcu@vger.kernel.org
-Cc: Qais Yousef <qyousef@layalina.io>,
-	Andrea Righi <andrea.righi@canonical.com>,
+Cc: Frederic Weisbecker <frederic@kernel.org>,
 	"Paul E . McKenney" <paulmck@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Tejun Heo <tj@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Yan-Jie Wang <yanjiewtw@gmail.com>,
-	linux-doc@vger.kernel.org (open list:DOCUMENTATION)
-Subject: [PATCH 2/8] rcu: Provide a boot time parameter to control lazy RCU
-Date: Mon, 29 Jan 2024 15:56:35 -0800
-Message-ID: <20240129235646.3171983-3-boqun.feng@gmail.com>
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 3/8] hrtimer: Report offline hrtimer enqueue
+Date: Mon, 29 Jan 2024 15:56:36 -0800
+Message-ID: <20240129235646.3171983-4-boqun.feng@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240129235646.3171983-1-boqun.feng@gmail.com>
 References: <20240129235646.3171983-1-boqun.feng@gmail.com>
@@ -127,105 +112,69 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Qais Yousef <qyousef@layalina.io>
+From: Frederic Weisbecker <frederic@kernel.org>
 
-To allow more flexible arrangements while still provide a single kernel
-for distros, provide a boot time parameter to enable/disable lazy RCU.
+The hrtimers migration on CPU-down hotplug process has been moved
+earlier, before the CPU actually goes to die. This leaves a small window
+of opportunity to queue an hrtimer in a blind spot, leaving it ignored.
 
-Specify:
+For example a practical case has been reported with RCU waking up a
+SCHED_FIFO task right before the CPUHP_AP_IDLE_DEAD stage, queuing that
+way a sched/rt timer to the local offline CPU.
 
-	rcutree.enable_rcu_lazy=[y|1|n|0]
+Make sure such situations never go unnoticed and warn when that happens.
 
-Which also requires
-
-	rcu_nocbs=all
-
-at boot time to enable/disable lazy RCU.
-
-To disable it by default at build time when CONFIG_RCU_LAZY=y, the new
-CONFIG_RCU_LAZY_DEFAULT_OFF can be used.
-
-Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
-Tested-by: Andrea Righi <andrea.righi@canonical.com>
+Reported-by: Paul E. McKenney <paulmck@kernel.org>
+Fixes: 5c0930ccaad5 ("hrtimers: Push pending hrtimers away from outgoing CPU earlier")
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- Documentation/admin-guide/kernel-parameters.txt |  5 +++++
- kernel/rcu/Kconfig                              | 13 +++++++++++++
- kernel/rcu/tree.c                               |  7 ++++++-
- 3 files changed, 24 insertions(+), 1 deletion(-)
+ include/linux/hrtimer.h | 3 ++-
+ kernel/time/hrtimer.c   | 3 +++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 31b3a25680d0..b6c848c29a53 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -5034,6 +5034,11 @@
- 			this kernel boot parameter, forcibly setting it
- 			to zero.
- 
-+	rcutree.enable_rcu_lazy= [KNL]
-+			To save power, batch RCU callbacks and flush after
-+			delay, memory pressure or callback list growing too
-+			big.
-+
- 	rcuscale.gp_async= [KNL]
- 			Measure performance of asynchronous
- 			grace-period primitives such as call_rcu().
-diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-index bdd7eadb33d8..e7d2dd267593 100644
---- a/kernel/rcu/Kconfig
-+++ b/kernel/rcu/Kconfig
-@@ -314,6 +314,19 @@ config RCU_LAZY
- 	  To save power, batch RCU callbacks and flush after delay, memory
- 	  pressure, or callback list growing too big.
- 
-+	  Requires rcu_nocbs=all to be set.
-+
-+	  Use rcutree.enable_rcu_lazy=0 to turn it off at boot time.
-+
-+config RCU_LAZY_DEFAULT_OFF
-+	bool "Turn RCU lazy invocation off by default"
-+	depends on RCU_LAZY
-+	default n
-+	help
-+	  Allows building the kernel with CONFIG_RCU_LAZY=y yet keep it default
-+	  off. Boot time param rcutree.enable_rcu_lazy=1 can be used to switch
-+	  it back on.
-+
- config RCU_DOUBLE_CHECK_CB_TIME
- 	bool "RCU callback-batch backup time check"
- 	depends on RCU_EXPERT
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index b2bccfd37c38..41c50a6c607e 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2753,6 +2753,9 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
- }
- 
- #ifdef CONFIG_RCU_LAZY
-+static bool enable_rcu_lazy __read_mostly = !IS_ENABLED(CONFIG_RCU_LAZY_DEFAULT_OFF);
-+module_param(enable_rcu_lazy, bool, 0444);
-+
- /**
-  * call_rcu_hurry() - Queue RCU callback for invocation after grace period, and
-  * flush all lazy callbacks (including the new one) to the main ->cblist while
-@@ -2778,6 +2781,8 @@ void call_rcu_hurry(struct rcu_head *head, rcu_callback_t func)
- 	__call_rcu_common(head, func, false);
- }
- EXPORT_SYMBOL_GPL(call_rcu_hurry);
-+#else
-+#define enable_rcu_lazy		false
- #endif
- 
- /**
-@@ -2826,7 +2831,7 @@ EXPORT_SYMBOL_GPL(call_rcu_hurry);
-  */
- void call_rcu(struct rcu_head *head, rcu_callback_t func)
+diff --git a/include/linux/hrtimer.h b/include/linux/hrtimer.h
+index 87e3bedf8eb0..4f2cf7309486 100644
+--- a/include/linux/hrtimer.h
++++ b/include/linux/hrtimer.h
+@@ -179,7 +179,8 @@ struct hrtimer_cpu_base {
+ 	unsigned int			hres_active		: 1,
+ 					in_hrtirq		: 1,
+ 					hang_detected		: 1,
+-					softirq_activated       : 1;
++					softirq_activated       : 1,
++					online			: 1;
+ #ifdef CONFIG_HIGH_RES_TIMERS
+ 	unsigned int			nr_events;
+ 	unsigned short			nr_retries;
+diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
+index 760793998cdd..edb0f821dcea 100644
+--- a/kernel/time/hrtimer.c
++++ b/kernel/time/hrtimer.c
+@@ -1085,6 +1085,7 @@ static int enqueue_hrtimer(struct hrtimer *timer,
+ 			   enum hrtimer_mode mode)
  {
--	__call_rcu_common(head, func, IS_ENABLED(CONFIG_RCU_LAZY));
-+	__call_rcu_common(head, func, enable_rcu_lazy);
- }
- EXPORT_SYMBOL_GPL(call_rcu);
+ 	debug_activate(timer, mode);
++	WARN_ON_ONCE(!base->cpu_base->online);
  
+ 	base->cpu_base->active_bases |= 1 << base->index;
+ 
+@@ -2183,6 +2184,7 @@ int hrtimers_prepare_cpu(unsigned int cpu)
+ 	cpu_base->softirq_next_timer = NULL;
+ 	cpu_base->expires_next = KTIME_MAX;
+ 	cpu_base->softirq_expires_next = KTIME_MAX;
++	cpu_base->online = 1;
+ 	hrtimer_cpu_base_init_expiry_lock(cpu_base);
+ 	return 0;
+ }
+@@ -2250,6 +2252,7 @@ int hrtimers_cpu_dying(unsigned int dying_cpu)
+ 	smp_call_function_single(ncpu, retrigger_next_event, NULL, 0);
+ 
+ 	raw_spin_unlock(&new_base->lock);
++	old_base->online = 0;
+ 	raw_spin_unlock(&old_base->lock);
+ 
+ 	return 0;
 -- 
 2.43.0
 
