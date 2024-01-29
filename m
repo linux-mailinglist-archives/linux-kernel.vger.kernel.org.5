@@ -1,184 +1,157 @@
-Return-Path: <linux-kernel+bounces-42027-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42028-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DB0B83FB2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 01:21:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30F2683FB33
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 01:26:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C4C0CB22ACD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 00:21:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB9F51F21713
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 00:26:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0605F2117;
-	Mon, 29 Jan 2024 00:21:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09F688F48;
+	Mon, 29 Jan 2024 00:26:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="YrQM/5A1"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uZJ1ukuI"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 454692106;
-	Mon, 29 Jan 2024 00:21:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D29504C66
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 00:26:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706487682; cv=none; b=kSjcqioHk6KS2u7QAYgg15hYBeB30OvUwi7LO3GvoZkuE116W0VmVxueoPkZnd/z3ZTwiFtXu5OxSXy9z0xCs6tTv6cjz0HseZfG18O8EWkd1oUokltEJKQynrqTgIT2GNHwz5PIl79AYp975NaoMpYU6DiK9sg7WRyLzKOlq6s=
+	t=1706487967; cv=none; b=lHEcHjrZ/XWBMt4+OE60OzlmZ4bCza+92EuenS+2XAAhiLF53khCwXeTR0t1ax25oYsQiW0Q9XfkGVS4v2PbekGBCf+jq5LSvRpSDY/LrUBwePY5grxwEgAIM7k4SPLCpWI2kako6KHjRS7FAFZPsf+fMOnQSi7HbJzUntFMoZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706487682; c=relaxed/simple;
-	bh=suxJoQ6Tx+wCWAmdF+akYk+1aZaESx8sHvpnaMX8/Jg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VScdWBHk0jh0DSp94lMs8B5n3il7eLMtYfSM+4Nmll9gJ6JkrOW1VeghBFa0/5giBwqAc/2jtN3nvXroh7f428kf9WxpH1wHce8kNIr+9LWDXqGO87pwXVV70fpfuJEFAt2Ns+J+EXXbU1iykrGGFoezqwt9oQuhGOwFDoS+S4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=YrQM/5A1; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=TtcvkfpjeeZrMMvO5FMe9b4Sy38+nE76hEUK8iZvFVU=; b=YrQM/5A1V/xN0zBHd0Tl1PDh5h
-	fpS54DN4lYo/murXbdbzG5CGsZgqP4yal7mkBQxPIknYMVeUyrtxTrznzLT/PZ3SVlLnQC6UX9lQW
-	7KiIIj+yhOrmb5ws5z+GPF0x3cG5hQoI2nJhRwl6e4K02a1shj9GKSqGE//taor2XTj2rDiMNuBS/
-	IOtwCbsx2ofToRNyQZpz2/uMf3+rApIosBa8VWvFn17naRWtZz22PihuWw5NVf99FRUalUFwznIz8
-	fb7uWzn/y8fp3f1/mXWfVTV9rJHZQRTY0CAk25yp1fHXFQPxK9JoLJI+psU6AhNq616ODzUDdHl68
-	Zn5hctlA==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rUFOm-00000004ynq-1UyX;
-	Mon, 29 Jan 2024 00:21:16 +0000
-Date: Mon, 29 Jan 2024 00:21:16 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Mike Snitzer <snitzer@kernel.org>
-Cc: Ming Lei <ming.lei@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, Don Dutile <ddutile@redhat.com>,
-	Raghavendra K T <raghavendra.kt@linux.vnet.ibm.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>
-Subject: Re: [RFC PATCH] mm/readahead: readahead aggressively if read drops
- in willneed range
-Message-ID: <ZbbvfFxcVgkwbhFv@casper.infradead.org>
-References: <20240128142522.1524741-1-ming.lei@redhat.com>
- <ZbbPCQZdazF7s0_b@casper.infradead.org>
- <ZbbfXVg9FpWRUVDn@redhat.com>
+	s=arc-20240116; t=1706487967; c=relaxed/simple;
+	bh=fAzsOPWQXg496cQXdSRwttLRSK17eobKfvDNm7cJwnI=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=ukPeRs5oYXPSRogW4KOqhqfqjpSp8x1ch87nQ80P/95QC53DH9APkhKKWln9mGIv7vkdZyCF5MGg/5cAO5vfFaYM0Pv8cJE11LyJ1gTR48W3NPi+Fd6j9GZDFN+phYD3W6v8639Um6dT8asH8uvsCFMvixebYRukh1WzM1Tj0A8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uZJ1ukuI; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-55a179f5fa1so2192171a12.0
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 16:26:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706487961; x=1707092761; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QSP/j0QUmoRkVRe8b6nQxtIgMt443r+QjiLpoKVUJr8=;
+        b=uZJ1ukuIKsQ/cc6NPsllbQ9F/w4l2IM/LxJC8QUlCZFRYf75UHbT5rHzCpsSFE5Ybe
+         kbJwSQ0hWMytVioBAedwd4A6FMlyIJRObI95J2EbZ4/dNcDwxMsMjyOEhOGcRrEdcnI9
+         ZBJWHt7DDr1NaTEajI5KOE9iLE+NVWPTo95XFhI6zVlkdhTTnlb5usK3c/mVdnSnmDNe
+         NvsrFIvJjij+3qDQWw9pRG+8+mqQ3ez7+aIGYQrtQZJFWI8nZfwdVcOiYWzby7L6FB3H
+         WL8Zg50figIPfffkA6VSIUPh4wh3KKTwzPob+BG2iXkMAhzkc1MoK0swklE91IrrnNKQ
+         5ngg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706487961; x=1707092761;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QSP/j0QUmoRkVRe8b6nQxtIgMt443r+QjiLpoKVUJr8=;
+        b=db6I7U+0GX2M33ZVfXLLwqmUUDG1ZyeEk23sHOF9aesAp6zfq2Q+IYE6Uka4U7pQEz
+         Bxebpj5CzEZQAnQjcyvP1myxnftzZO/zu9D5ntiFh0CQtnU408/gbUwN2EIH0/0sdg9u
+         bIQdVxQkiEyHzD9QVkrYODyNSHSIiz/TDxXzRVKzpo2L/22Dy92VcwhMo1htLE7eqP6v
+         2HFb67fFDGoUGqX4ubDdlC2LESPvsdKfCZp5Nt+1NqiSd3qzv+zuBjghoWReEVRwLvlx
+         MZ/Gymqcr98gEaRtpUhKHyMlmpDn2AxQ3soMIPL4FahNnbp7fXccWGmiLkwIEZadSRnI
+         E31w==
+X-Gm-Message-State: AOJu0Yz2I5SV6cluwMduuf/YaiKMiOvR5hlc0fVxWXNipAI+H2kilRJ4
+	olmZzLws/iMNNha9T6pLiQPvvxV0UWBmqrpqmAL9lqlscv7wpzPaHuiBbOo1QWE=
+X-Google-Smtp-Source: AGHT+IERBspR/BOG1bTBqBY4Y6bfWcD0fOJHyOWkJ1LLmNscXmuRLmLuU5s0xeNWt9RRyzLTJhBxbw==
+X-Received: by 2002:a05:6402:4503:b0:55e:dcdf:50b0 with SMTP id ez3-20020a056402450300b0055edcdf50b0mr1828652edb.15.1706487961084;
+        Sun, 28 Jan 2024 16:26:01 -0800 (PST)
+Received: from [127.0.1.1] ([79.115.23.25])
+        by smtp.gmail.com with ESMTPSA id h29-20020a0564020e9d00b0055cfb3f948fsm3208193eda.76.2024.01.28.16.25.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Jan 2024 16:26:00 -0800 (PST)
+From: Abel Vesa <abel.vesa@linaro.org>
+Subject: [PATCH v3 0/2] phy: qcom: edp: Allow eDP/DP configuring via
+ set_mode op
+Date: Mon, 29 Jan 2024 02:25:44 +0200
+Message-Id: <20240129-x1e80100-phy-edp-compatible-refactor-v3-0-e71f3359c535@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZbbfXVg9FpWRUVDn@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAIjwtmUC/5WNQQ6CMBBFr2K6dkw7TS248h7GRWkHaIK0KYRAC
+ He3sNKdLt/Mz3srGyh5GtjttLJEkx986DPI84nZ1vQNgXeZGXKUAkUJs6CCC84htguQi2DDK5r
+ RVx1BotrYMSQotJRkjbbWGZZVMX/8fGQez8ytH/JsOaqT2K9/BiYBHOqStNYKSyXdvfO9SeESU
+ sP2woQfVsQfrZitplK6uFqUqqy/rNu2vQEn1po0LwEAAA==
+To: Vinod Koul <vkoul@kernel.org>, 
+ Kishon Vijay Abraham I <kishon@kernel.org>, 
+ Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+ Johan Hovold <johan@kernel.org>
+Cc: linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ Abel Vesa <abel.vesa@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1980; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=fAzsOPWQXg496cQXdSRwttLRSK17eobKfvDNm7cJwnI=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBltvCQBfS5UyZzHhV0GQwwQcciT4hN0x/JoP1/G
+ prHeMx7m1OJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZbbwkAAKCRAbX0TJAJUV
+ VjrFEADJnJpjIiS2JY5iAhr+bwymSv6XOiwMhJ4R5gRXky2QknEdN7w8QdUAGoS07hIU4ZeZKU5
+ 4Kk7X6k8N13FcTvv/Ht1o+l3wmqIalhWQh4dZ3cM3eF/E5bNlEDeU8036WLOhvjJ0JGKG9PAbkN
+ 3bs/fH8DxEQ1P/phajqIl1H1lzWqu2irPh+c5CkDeUuaLj3FdCLTOHPIF8YS8Vp4kUpNosfk0vM
+ gBAuV8+n2fylK6tg8MKzHUDb3ReTmrvLfemSWq/wbKwz6nNu1RyPA3pb4lu3NOG41ZQAaw2b23a
+ MjVgkuadPGVWqSPTALwhB8FlxfX+SQ9hmpD0yFlWXOqknOZ9hXt7xBIos7MCWNwNdf2c6n3uD/M
+ rjMUWV4yvrKK1ZrJW/34XfANc8E7Nt7yKDj5RrwdRakP18BOyoggYkQht47G/50ICnNAK4kNtQW
+ NSL8UfHuws+qy2HRPME1/c+6g/3mggQfIWEgwLAKqO24eoLWnoYvYUVI+fpD9r0UJLJnndziSAn
+ 4eMdvcoilH3189B3ptkwTgmfjyt+hFMpoGRbqgJNmfAW2RsR9sBGVD3gui2xPuG7hUuDeYYw+4+
+ 8FZdDSfWWdBq4CgLknUIzjVjt02xpgcdW4ythAC5a9B9WleDfsG/ZC5S2LILtuvPI0pEhnRgDnR
+ uwQ62LSjJwkC52w==
+X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
+ fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 
-On Sun, Jan 28, 2024 at 06:12:29PM -0500, Mike Snitzer wrote:
-> On Sun, Jan 28 2024 at  5:02P -0500,
-> Matthew Wilcox <willy@infradead.org> wrote:
-> 
-> > On Sun, Jan 28, 2024 at 10:25:22PM +0800, Ming Lei wrote:
-> > > Since commit 6d2be915e589 ("mm/readahead.c: fix readahead failure for
-> > > memoryless NUMA nodes and limit readahead max_pages"), ADV_WILLNEED
-> > > only tries to readahead 512 pages, and the remained part in the advised
-> > > range fallback on normal readahead.
-> > 
-> > Does the MAINTAINERS file mean nothing any more?
-> 
-> "Ming, please use scripts/get_maintainer.pl when submitting patches."
+Until now, all platform that supported both eDP and DP had different
+compatibles for each mode. Using different compatibles for basically
+the same IP block but for a different configuration is bad way all
+around. There is a new compute platform from Qualcomm that supports
+both eDP and DP with the same PHY. So instead of following the old
+method, we should allow the submode to be configured via set_mode from
+the controller driver.
 
-That's an appropriate response to a new contributor, sure.  Ming has
-been submitting patches since, what, 2008?  Surely they know how to
-submit patches by now.
+The controller part will follow after we conclude the PHY part first.
 
-> I agree this patch's header could've worked harder to establish the
-> problem that it fixes.  But I'll now take a crack at backfilling the
-> regression report that motivated this patch be developed:
+Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+---
+Changes in v3:
+- Dropped needs_swing_pre_emph_cfg as we store the table instead
+- Picking the table based on is_edp instead of overriding.
+- Link to v2: https://lore.kernel.org/r/20231222-x1e80100-phy-edp-compatible-refactor-v2-0-ab5786c2359f@linaro.org
 
-Thank you.
+Changes in v2:
+- Dropped the dedicated xlate function and added set_mode op instead
+- Dropped the eDP PHY type and mode addition
+- Added the DP PHY submodes (eDP and DP)
+- Removed the device match data storing from the container struct
+- Link to v1: https://lore.kernel.org/r/20231219-x1e80100-phy-edp-compatible-refactor-v1-0-f9e77752953d@linaro.org
 
-> Linux 3.14 was the last kernel to allow madvise (MADV_WILLNEED)
-> allowed mmap'ing a file more optimally if read_ahead_kb < max_sectors_kb.
-> 
-> Ths regressed with commit 6d2be915e589 (so Linux 3.15) such that
-> mounting XFS on a device with read_ahead_kb=64 and max_sectors_kb=1024
-> and running this reproducer against a 2G file will take ~5x longer
-> (depending on the system's capabilities), mmap_load_test.java follows:
-> 
-> import java.nio.ByteBuffer;
-> import java.nio.ByteOrder;
-> import java.io.RandomAccessFile;
-> import java.nio.MappedByteBuffer;
-> import java.nio.channels.FileChannel;
-> import java.io.File;
-> import java.io.FileNotFoundException;
-> import java.io.IOException;
-> 
-> public class mmap_load_test {
-> 
->         public static void main(String[] args) throws FileNotFoundException, IOException, InterruptedException {
-> 		if (args.length == 0) {
-> 			System.out.println("Please provide a file");
-> 			System.exit(0);
-> 		}
-> 		FileChannel fc = new RandomAccessFile(new File(args[0]), "rw").getChannel();
-> 		MappedByteBuffer mem = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
-> 
-> 		System.out.println("Loading the file");
-> 
-> 		long startTime = System.currentTimeMillis();
-> 		mem.load();
-> 		long endTime = System.currentTimeMillis();
-> 		System.out.println("Done! Loading took " + (endTime-startTime) + " ms");
-> 		
-> 	}
-> }
+Initial attepmpt was here:
+https://lore.kernel.org/all/20231122-phy-qualcomm-edp-x1e80100-v3-3-576fc4e9559d@linaro.org/
+Compared to that version, this one uses the phy-cells method and drops
+the X1E80100 support. The X1E80100 support will be a separate patchset.
 
-It's good to have the original reproducer.  The unfortunate part is
-that being at such a high level, it doesn't really show what syscalls
-the library makes on behalf of the application.  I'll take your word
-for it that it calls madvise(MADV_WILLNEED).  An strace might not go
-amiss.
+---
+Abel Vesa (2):
+      phy: Add Embedded DisplayPort and DisplayPort submodes
+      phy: qcom: edp: Add set_mode op for configuring eDP/DP submode
 
-> reproduce with:
-> 
-> javac mmap_load_test.java
-> echo 64 > /sys/block/sda/queue/read_ahead_kb
-> echo 1024 > /sys/block/sda/queue/max_sectors_kb
-> mkfs.xfs /dev/sda
-> mount /dev/sda /mnt/test
-> dd if=/dev/zero of=/mnt/test/2G_file bs=1024k count=2000
-> 
-> echo 3 > /proc/sys/vm/drop_caches
+ drivers/phy/qualcomm/phy-qcom-edp.c | 71 ++++++++++++++++++++++++++-----------
+ include/linux/phy/phy-dp.h          |  3 ++
+ 2 files changed, 54 insertions(+), 20 deletions(-)
+---
+base-commit: 72dd5696a6a27d019a1592acbca13263a2ebbac6
+change-id: 20231219-x1e80100-phy-edp-compatible-refactor-8733eca7ccda
 
-(I prefer to unmount/mount /mnt/test; it drops the cache for
-/mnt/test/2G_file without affecting the rest of the system)
+Best regards,
+-- 
+Abel Vesa <abel.vesa@linaro.org>
 
-> java mmap_load_test /mnt/test/2G_file
-> 
-> Without a fix, like the patch Ming provided, iostat will show rareq-sz
-> is 64 rather than ~1024.
-
-Understood.  But ... the application is asking for as much readahead as
-possible, and the sysadmin has said "Don't readahead more than 64kB at
-a time".  So why will we not get a bug report in 1-15 years time saying
-"I put a limit on readahead and the kernel is ignoring it"?  I think
-typically we allow the sysadmin to override application requests,
-don't we?
-
-> > > @@ -972,6 +974,7 @@ struct file_ra_state {
-> > >  	unsigned int ra_pages;
-> > >  	unsigned int mmap_miss;
-> > >  	loff_t prev_pos;
-> > > +	struct maple_tree *need_mt;
-> > 
-> > No.  Embed the struct maple tree.  Don't allocate it.
-> 
-> Constructive feedback, thanks.
-> 
-> > What made you think this was the right approach?
-> 
-> But then you closed with an attack, rather than inform Ming and/or
-> others why you feel so strongly, e.g.: Best to keep memory used for
-> file_ra_state contiguous.
-
-That's not an attack, it's a genuine question.  Is there somewhere else
-doing it wrong that Ming copied from?  Does the documentation need to
-be clearer?  I can't fix what I don't know.
 
