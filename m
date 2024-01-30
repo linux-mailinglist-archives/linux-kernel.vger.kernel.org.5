@@ -1,132 +1,113 @@
-Return-Path: <linux-kernel+bounces-44606-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44621-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3570F8424F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:29:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5746384252F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:42:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6A132821FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:29:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DFB80B237BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:42:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B652C67E9F;
-	Tue, 30 Jan 2024 12:29:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0FA476030;
+	Tue, 30 Jan 2024 12:40:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="JzMfKxUk"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=dh-electronics.com header.i=@dh-electronics.com header.b="NgId3XpE"
+Received: from mx2.securetransport.de (mx2.securetransport.de [188.68.39.254])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D009F67E7A
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 12:29:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B71476A35F;
+	Tue, 30 Jan 2024 12:40:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.68.39.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706617766; cv=none; b=d9k8y86e4g+gw6nnmix5iicmpxba+nhndOxpRjRYQqy+3C0p0aJrhLt7jz/nmkimxMvyct3zhsFxqLG/MmlLNlzshl+Ak6yuZ7oirgck4hIZHmKVH1u7MOQjFanXQGWksxeD40Nf/wuCd+AWmh+ElQPv2QzEUBBSQeS5vT1UrN0=
+	t=1706618431; cv=none; b=P1m99ETxEThZLLR1XcIp7B3gxv2HvuCmM9Wn493Wjq31UPhiwdUpx0cWRCRMRN6JnMIKsrvPDvQNfCfdNBmaUgSP5A6Xy4z8fkdLrQHW3gamF2MHM4uV9x9AFh6mHuEHNITIjoFHw8Cw1pX8iNAAWKvdvlCgMwgiXIBl6iZ60EM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706617766; c=relaxed/simple;
-	bh=qsIiCLqaLUknvCs6gj9gNldzzaHio3dXD0f4X/3u4Jc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=A/oK/VUR9EQQGhY0GRO2EsmN28f0BwHT5fNsMDwc+Ouq7IT9QR/LCebenxrzTz3DhPUZDG7YAqNWbA9GywHZ1r4wBqYqqD9V7vKIGZsuDaUX4J2noXGqLt6J4ke0nFJWLL/ce0wHeSMd5n6esj31BS7XggOZYXXt+ZGlxVzr+I4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=JzMfKxUk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 177BFC433F1
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 12:29:26 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="JzMfKxUk"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-	t=1706617763;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+mwVKBiEiIEYjQjxu2rl+y+jfQVIMNK8et3Pu7l5bfk=;
-	b=JzMfKxUkQK/g4RWE6IHVltGlcUOp8G23T5+z9yTrD2ydRVcbbgpkQYajXhs04VzIdlVp5p
-	/tCdNqgdRXQTlVwGJLaA4DyrOrpD9POxARDWEMyqbtRw7tYWgBTxhJm0tvLu2k/MGDKzuX
-	+ul8JldwwqMwRvywUZgSy+52sayfWIg=
-Received: 
-	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 95299615 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO)
-	for <linux-kernel@vger.kernel.org>;
-	Tue, 30 Jan 2024 12:29:23 +0000 (UTC)
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dc256e97e0aso2673854276.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 04:29:22 -0800 (PST)
-X-Gm-Message-State: AOJu0Yy0vFY/2ExRfuwSuBV2V0AmF4yYsVv9jHePRbSJKMXy/oawTQ3O
-	95mjQORZKoBPBlKvn5tJ8IvwJZFSttVM5lmoxEOmGuf1DJ4ZZXRAUFTbp8M4BxJ2khM4PaLVknn
-	64x2EqTyfwJIj5w7ANjM8IzAUgEc=
-X-Google-Smtp-Source: AGHT+IGzrUAZ8eeCxiURky9BbLZcKZRYDdZjm2ie1uZ/chlKKKDiusDHkduPVUrbda3ObuhZHE1pCVRlt8IC4qGfUUM=
-X-Received: by 2002:a25:8e84:0:b0:dc6:4d0c:e9de with SMTP id
- q4-20020a258e84000000b00dc64d0ce9demr4850031ybl.0.1706617761118; Tue, 30 Jan
- 2024 04:29:21 -0800 (PST)
+	s=arc-20240116; t=1706618431; c=relaxed/simple;
+	bh=LWCEE7Ky7ZqC2xZnLL48J6mdU/wI6QANLum+jdUp8h0=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=uL9DcwVj2Ntemu09/jq8ssX7rRRo3sQswa+vi/mD5KCd5fyDrDLrXg4fBIoXkdV0p/nS0ev7MBnzjhJ+qJwDdbnH+QMO2PlCsQGCW4Da+Su+PspZqzvSEWHzhdf+U7eEyQyUu/pyLIoDYYq30F3d0enX+dr6tW0QKLwGRsqdrhE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=dh-electronics.com; spf=pass smtp.mailfrom=dh-electronics.com; dkim=pass (2048-bit key) header.d=dh-electronics.com header.i=@dh-electronics.com header.b=NgId3XpE; arc=none smtp.client-ip=188.68.39.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=dh-electronics.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dh-electronics.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dh-electronics.com;
+	s=dhelectronicscom; t=1706617791;
+	bh=LWCEE7Ky7ZqC2xZnLL48J6mdU/wI6QANLum+jdUp8h0=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+	b=NgId3XpE+F7hU3JeeLXAjPrhKu+VadeUAbULAkoAsMkzesjEieSKAiGsfiyrPNtA+
+	 qw+d1amDXOCQd5vbru+vg78kXzeNnsGlYQPP6qvSwJRYcgj50+xQlIR6q1jqxaV5Zk
+	 SLrv9M0tovDUYBwzTGhkOsceeFUxwzFE1NNE59qcbLxdvqg92rGdJpFPTw9BDvdVaZ
+	 ahJkQfTRibb211YJNJQo0vDS56xkNAx04VcAkFhCp1fwxSaSShTX8RM3ZVIsGsl8zv
+	 BAF0CiYnEJr2jSuF2Ehn+1sW4AXxy/tVSK0bwDI7TemAp6QAVnFZzOG7VZO7C2kUvV
+	 YJeC2zlJhtMAg==
+X-secureTransport-forwarded: yes
+From: Christoph Niedermaier <cniedermaier@dh-electronics.com>
+Complaints-To: abuse@cubewerk.de
+To: Farouk Bouabid <farouk.bouabid@theobroma-systems.com>, Lino Sanfilippo
+	<LinoSanfilippo@gmx.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+	<conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>
+CC: Rob Herring <robh@kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-serial@vger.kernel.org"
+	<linux-serial@vger.kernel.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linux-rockchip@lists.infradead.org"
+	<linux-rockchip@lists.infradead.org>, "quentin.schulz@theobroma-systems.com"
+	<quentin.schulz@theobroma-systems.com>, Heiko Stuebner
+	<heiko.stuebner@cherry.de>
+Subject: RE: [PATCH v5 2/6] serial: 8250: Support separate rs485 rx-enable
+ GPIO
+Thread-Topic: [PATCH v5 2/6] serial: 8250: Support separate rs485 rx-enable
+ GPIO
+Thread-Index: AQHaUH1C9lFNHAGCbEecDp85JK6VnLDscmeAgAP+JYCAAd4lkA==
+Date: Tue, 30 Jan 2024 12:29:47 +0000
+Message-ID: <3d31b17ffd4a4f02aaaa1b6c33a09009@dh-electronics.com>
+References: <20240126-dev-rx-enable-v5-0-5d934eda05ca@theobroma-systems.com>
+ <20240126-dev-rx-enable-v5-2-5d934eda05ca@theobroma-systems.com>
+ <098216ce-50b3-43e4-ad1a-42228c58b761@gmx.de>
+ <37522087-d3ac-4cc7-b11b-c844d36206ba@theobroma-systems.com>
+In-Reply-To: <37522087-d3ac-4cc7-b11b-c844d36206ba@theobroma-systems.com>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130083007.1876787-1-kirill.shutemov@linux.intel.com>
-In-Reply-To: <20240130083007.1876787-1-kirill.shutemov@linux.intel.com>
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date: Tue, 30 Jan 2024 13:29:10 +0100
-X-Gmail-Original-Message-ID: <CAHmME9pOt=uEmuBzBpgUHw9DqAD2FZTZ3v53AOZbQ3Cd2p97xQ@mail.gmail.com>
-Message-ID: <CAHmME9pOt=uEmuBzBpgUHw9DqAD2FZTZ3v53AOZbQ3Cd2p97xQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] x86/random: Retry on RDSEED failure
-To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, 
-	"Theodore Ts'o" <tytso@mit.edu>, 
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, 
-	Elena Reshetova <elena.reshetova@intel.com>, Jun Nakajima <jun.nakajima@intel.com>, 
-	Tom Lendacky <thomas.lendacky@amd.com>, "Kalra, Ashish" <ashish.kalra@amd.com>, 
-	Sean Christopherson <seanjc@google.com>, linux-coco@lists.linux.dev, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi Kirill,
-
-I've been following the other discussion closely thinking about the
-matter, but I suppose I'll jump in here directly on this patch, if
-this is the approach the discussion is congealing around.
-
-A comment below:
-
-On Tue, Jan 30, 2024 at 9:30=E2=80=AFAM Kirill A. Shutemov
-<kirill.shutemov@linux.intel.com> wrote:
->  static inline bool __must_check rdseed_long(unsigned long *v)
->  {
-> +       unsigned int retry =3D RDRAND_RETRY_LOOPS;
->         bool ok;
-> -       asm volatile("rdseed %[out]"
-> -                    CC_SET(c)
-> -                    : CC_OUT(c) (ok), [out] "=3Dr" (*v));
-> -       return ok;
-> +
-> +       do {
-> +               asm volatile("rdseed %[out]"
-> +                            CC_SET(c)
-> +                            : CC_OUT(c) (ok), [out] "=3Dr" (*v));
-> +
-> +               if (ok)
-> +                       return true;
-> +       } while (--retry);
-> +
-> +       return false;
->  }
-
-So, my understanding of RDRAND vs RDSEED -- deliberately leaving out
-any cryptographic discussion here -- is roughly that RDRAND will
-expand the seed material for longer, while RDSEED will mostly always
-try to sample more bits from the environment. AES is fast, while
-sampling is slow, so RDRAND gives better performance and is less
-likely to fail, whereas RDSEED always has to wait on the hardware to
-collect some bits, so is more likely to fail.
-
-For that reason, most of the usage of RDRAND and RDSEED inside of
-random.c is something to the tune of `if (!rdseed(out)) rdrand(out);`,
-first trying RDSEED but falling back to RDRAND if it's busy. That
-still seems to me like a reasonable approach, which this patch would
-partly undermine (in concert with the next patch, which I'll comment
-on in a follow up email there).
-
-So maybe this patch #1 (of 2) can be dropped?
-
-Jason
+RnJvbTogRmFyb3VrIEJvdWFiaWQNClNlbnQ6IE1vbmRheSwgSmFudWFyeSAyOSwgMjAyNCA5OjU3
+IEFNDQoNCkhpLA0KDQo+IE9uIDI2LjAxLjI0IDIwOjU4LCBMaW5vIFNhbmZpbGlwcG8gd3JvdGU6
+DQo+PiBbU29tZSBwZW9wbGUgd2hvIHJlY2VpdmVkIHRoaXMgbWVzc2FnZSBkb24ndCBvZnRlbiBn
+ZXQgZW1haWwgZnJvbSBsaW5vc2FuZmlsaXBwb0BnbXguZGUuIExlYXJuIHdoeSB0aGlzIGlzIGlt
+cG9ydGFudCBhdCBodHRwczovL2FrYS5tcy9MZWFybkFib3V0U2VuZGVySWRlbnRpZmljYXRpb24g
+XQ0KPj4NCj4+IEhpLA0KPj4NCj4+IE9uIDI2LjAxLjI0IDE4OjI3LCBGYXJvdWsgQm91YWJpZCB3
+cm90ZToNCj4+PiBGcm9tOiBIZWlrbyBTdHVlYm5lciA8aGVpa28uc3R1ZWJuZXJAY2hlcnJ5LmRl
+Pg0KPj4+DQo+Pj4gVGhlIFJFIHNpZ25hbCBpcyB1c2VkIHRvIGNvbnRyb2wgdGhlIGR1cGxleCBt
+b2RlIG9mIHRyYW5zbWlzc2lvbnMsDQo+Pj4gYWthIHJlY2VpdmluZyBkYXRhIHdoaWxlIHNlbmRp
+bmcgaW4gZnVsbCBkdXBsZXggbW9kZSwgd2hpbGUgc3RvcHBpbmcNCj4+PiByZWNlaXZpbmcgZGF0
+YSBpbiBoYWxmLWR1cGxleCBtb2RlLg0KPj4+DQo+Pj4gT24gYSBudW1iZXIgb2YgYm9hcmRzIHRo
+ZSAhUkUgc2lnbmFsIGlzIHRpZWQgdG8gZ3JvdW5kIHNvIHJlY2VwdGlvbg0KPj4+IGlzIGFsd2F5
+cyBlbmFibGVkIGV4Y2VwdCBpZiB0aGUgVUFSVCBhbGxvd3MgZGlzYWJsaW5nIHRoZSByZWNlaXZl
+ci4NCj4+PiBUaGlzIGNhbiBiZSB0YWtlbiBhZHZhbnRhZ2Ugb2YgdG8gaW1wbGVtZW50IGhhbGYt
+ZHVwbGV4IG1vZGUgLSBsaWtlDQo+Pj4gZG9uZSBvbiA4MjUwX2JjbTI4MzVhdXguDQo+Pj4NCj4+
+PiBBbm90aGVyIHNvbHV0aW9uIGlzIHRvIHRpZSAhUkUgdG8gUlRTIGFsd2F5cyBmb3JjaW5nIGhh
+bGYtZHVwbGV4IG1vZGUuDQo+Pj4NCj4+PiBBbmQgZmluYWxseSB0aGVyZSBpcyB0aGUgb3B0aW9u
+IHRvIGNvbnRyb2wgdGhlIFJFIHNpZ25hbCBzZXBhcmF0ZWx5LA0KPj4+IGxpa2UgZG9uZSBoZXJl
+IGJ5IGludHJvZHVjaW5nIGEgbmV3IHJzNDg1LXNwZWNpZmljIGdwaW8gdGhhdCBjYW4gYmUNCj4+
+PiBzZXQgZGVwZW5kaW5nIG9uIHRoZSBSWF9EVVJJTkdfVFggc2V0dGluZyBpbiB0aGUgY29tbW9u
+IGVtNDg1IGNhbGxiYWNrcy4NCj4+Pg0KPj4gd2UganVzdCBhZGRlZCB0aGUgcnhfZHVyaW5nX3R4
+X2dwaW8gdG8gdGhlIHNlcmlhbCBjb3JlLg0KPj4gV2h5IGNhbnQgeW91IHVzZSB0aGlzIEdQSU8g
+Zm9yIHlvdXIgcHVycG9zZT8NCj4+DQo+PiBSZWdhcmRzLA0KPj4gTGluby4NCj4gV2hhdCB3ZSBh
+cmUgdHJ5aW5nIHRvIGltcGxlbWVudCBpcyBhIGdwaW8gdGhhdCBlbXVsYXRlcyB0aGUgUlRTIHNp
+Z25hbA0KPiBpdHNlbGYgYXMgd2UgZG8gbm90IGhhdmUgYSBkZWRpY2F0ZWQgUlRTIHNpZ25hbCB0
+aGF0IGNhbiBiZSBjb250cm9sbGVkDQo+IHRocm91Z2ggTUNSLiBUaGUgcnggZHVyaW5nIHR4IHN0
+YXRlIGluIG91ciBjYXNlIGlzIGEgZml4ZWQgc3RhdGUgb2YNCj4gIk5PX1JYX1dISUxFX1RYIg0K
+DQpXaHkgY2FuJ3QgdGhlIHByb3BlcnR5IHJ0cy1ncGlvcyBiZSB1c2VkIGhlcmUgZm9yIHRoaXMg
+cHVycG9zZT8NCg0KDQpSZWdhcmRzDQpDaHJpc3RvcGgNCg==
 
