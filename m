@@ -1,131 +1,167 @@
-Return-Path: <linux-kernel+bounces-44557-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8134484242F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:55:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2ED4784242B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:54:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06B72B23F57
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:55:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2D27B26397
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:54:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60B1467749;
-	Tue, 30 Jan 2024 11:54:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCA18679EF;
+	Tue, 30 Jan 2024 11:54:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=futuring-girl-com.20230601.gappssmtp.com header.i=@futuring-girl-com.20230601.gappssmtp.com header.b="ItHmt0V5"
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="a1/K2Lja";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="o1pRKWzY";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bTJ6JEVv";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9bOvETPW"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CE4067E67
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 11:54:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D68167730;
+	Tue, 30 Jan 2024 11:54:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706615682; cv=none; b=aAHBveF8pLJiFNC8pclVfvgfnFxSlzSQ6FmZ6A8Dwhyf0rqf/vuTwV0jjzp2/9C3ucq5MpSvNiYuU4bzA3xS33oGailn3ak1LNGD11ljf3y+k8lo1D6c/FQb9TBabVq2siTVAaJ5f2VVD0BTL04exDDBr0TlLlssuLzwErahwxo=
+	t=1706615676; cv=none; b=JLJyX56erIRwSqyvmF6W1MIElMjogiSUtj+PNtCC4S7tX2I0p2Y9+SxJTwnpmd0AcrqDetyLc+OChrVAI5Jrno/eLl+U0RZQllS2DmChSmQshrpTSPAthKY3k6SxGNJpCLnftS+l9s3EiGfPsvJzTCBdhcYOXG/oGZOW1w+z3fI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706615682; c=relaxed/simple;
-	bh=vNdnIux1xX62xc2eKT/WMUKc9JQEqx7tiep7+FUX95I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TLMPIgb8DnRg/Z2gJMqMatmJD55cMU7jasz4SZGeW3tQfTeW630NCIhyCBRPxLQ87C7fJsRvWpJO3C5yMhJxXqM0C0rCtkF9gqG+3O2T7/Sj0UFwIeiw2qWTUkifpA5c6EgTkJzOdKFPnzmyjaz5RVjIVFztyla8J/ZgQGSvFf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=futuring-girl.com; spf=pass smtp.mailfrom=futuring-girl.com; dkim=pass (2048-bit key) header.d=futuring-girl-com.20230601.gappssmtp.com header.i=@futuring-girl-com.20230601.gappssmtp.com header.b=ItHmt0V5; arc=none smtp.client-ip=209.85.216.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=futuring-girl.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=futuring-girl.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-29036dc3a63so1964287a91.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 03:54:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=futuring-girl-com.20230601.gappssmtp.com; s=20230601; t=1706615680; x=1707220480; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DWvxEqM2sAiMA41B2v7Y3h0SQJvpGs9/4DqAKQgags4=;
-        b=ItHmt0V5q7JLG9KagljCoZK0mymRJXBl0424EjvO5JWt5Ubif18K182kpm6L4J6uGH
-         2dltNAhjmv/P70t/WpIOfq0hWsKp5iR249LfpOz3bPQuZDvGHYzZdtI1eFkvas6FzZEv
-         wiPcTsfHK7JTbmk9jJCzsmOF77vgEV1EBiIOlwMXNIWYQclqZbVgXPNliScg8iRa1hbz
-         m83HOkioD8LdGD4JFTEugogf0ebWYwffI4tAFU57wWaCDq9G5I0WRxo4owhWx0kigDF/
-         s3H9uR5ATp39n/txt9K0npUASQpQw04W4cH4yKJMF3XEkK/QVfIWpFJAA30EdLSvnGXm
-         2wpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706615680; x=1707220480;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DWvxEqM2sAiMA41B2v7Y3h0SQJvpGs9/4DqAKQgags4=;
-        b=BPAB+0yLtbVwCLJlTYtHNli9eyeYSg0Onrv+7HWJdDQQy473OQZx7rECugyJPHKkMA
-         aveRa+o+gwrULhmaLbeQc0SMIQQBshqYF0uZ7h96Q/J5p3GR4ZbuS/oH86Vi6spmuyZ1
-         W+P7TC7nyqWX3zPlbxIpFtrIytE7DkjU+jJM4fEl83c6dI713rgV51+G8SD9/9dxEk8i
-         eH6X9JeQDVXoL9baVe5Jh10jJ+wrGmFgrANLSLUk23FeMQIzhfA6OjgWoYy4yaIPw7YT
-         AD5FTLi+2wJC8hylDrrAGVLphVeP5N+Tbfavg3OgIsiaQ0edPZ3HcEKFt9tXFOPKwcy4
-         MbMw==
-X-Gm-Message-State: AOJu0YwJEOGVNqENxZ8C6nkHFyLdKabDHTgxrDHwCfeBONm5CvYqwGUL
-	ckDFv1xq6ufNZnjnc4UH/bJ45kOF+NaQb3xkumYKVMV6YewrUVwqShUdookdxhlOZDoaV4b3IdA
-	aMLneIdSOYdYKo3w68SYp4dJa4m02ZiRCwvkLkw==
-X-Google-Smtp-Source: AGHT+IH9c3sIo7Ld5jc0z4sK97HzRMshtPUDQAZ0vZw+NLsRxgD8BOaqACZQUS5hFwA6GvRwGajwBgs7ZIKruDMHNBQ=
-X-Received: by 2002:a17:90a:bb12:b0:290:304f:e651 with SMTP id
- u18-20020a17090abb1200b00290304fe651mr4886258pjr.39.1706615680339; Tue, 30
- Jan 2024 03:54:40 -0800 (PST)
+	s=arc-20240116; t=1706615676; c=relaxed/simple;
+	bh=uFzF0c7y0Xa5eSfpXQjqGeNrxWa15vZJgvwqZSw5274=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gQqXJtst+uodcEFAwQm4a2rnFHYMGzoT9NO5nKOtLu1Nq1t8MF4VwreQRE7jmDAMSqCUiGBz/8W85FwNRwCHnKl+yqSIzAHt0qSRRzFr9zrWRrr2jOTp5yGO1MwSFEGbluwU1HMb9yCv65JnnDR4efeXszt0V4S6g6lNErx00dc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=a1/K2Lja; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=o1pRKWzY; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bTJ6JEVv; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9bOvETPW; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 76A7A1F848;
+	Tue, 30 Jan 2024 11:54:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706615672; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DnqLZBlDKpe4vlipCmXXPECUe1oy+3ydvLI/2aiDEv8=;
+	b=a1/K2LjasCHk8VC1+Mv9MMio1D7f+pKVCjtL2QvlP4ud6ZJn/jrPzv1HW0lZw4nhyiE6OO
+	w8Mh25o1VAaeNHtbAPaiBgF3wrKuDeVvDWQv9MJnj1MDg5EQNoflnBYd2tcN86clPJF433
+	hu1jDRX/Ii9KMMGot0KKUUz9U44Bl00=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706615672;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DnqLZBlDKpe4vlipCmXXPECUe1oy+3ydvLI/2aiDEv8=;
+	b=o1pRKWzY/K2bnB4oa2+DxPSI9kNchKco4S3HJJKut0FnJlyV5nlQf9ch3GPYbyyj8+EYmB
+	WRpCMU/GfoxJPhAA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706615670; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DnqLZBlDKpe4vlipCmXXPECUe1oy+3ydvLI/2aiDEv8=;
+	b=bTJ6JEVvHTL1X4SldT6ke7pjLnJ03JzIPjm3+FdH/PZPETNwOsA3YMkmxfysIWSOo48ozg
+	XPJbtaljXB/+zCw0hCxFgefHm5bjr6Z+X2TaftOVjuTMHCfJvTVJzPkqZq3nYi9oWlhKQ2
+	1muuCC42T7KLL7Bpk8G9gcUi12qQy1M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706615670;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DnqLZBlDKpe4vlipCmXXPECUe1oy+3ydvLI/2aiDEv8=;
+	b=9bOvETPWQ8F6h2aztso666fLDiQVBQP4e0vjNNAhAyWRzfiXw3Zc86Y5EjZnR/47SVGohq
+	Q+WVAr8dJP7OTdDQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 6327A13462;
+	Tue, 30 Jan 2024 11:54:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id 9JcxGHbjuGWDFAAAn2gu4w
+	(envelope-from <jack@suse.cz>); Tue, 30 Jan 2024 11:54:30 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 1B758A0807; Tue, 30 Jan 2024 12:54:30 +0100 (CET)
+Date: Tue, 30 Jan 2024 12:54:30 +0100
+From: Jan Kara <jack@suse.cz>
+To: syzbot <syzbot+69b40dc5fd40f32c199f@syzkaller.appspotmail.com>
+Cc: akpm@linux-foundation.org, axboe@kernel.dk, brauner@kernel.org,
+	chenzhongjin@huawei.com, dchinner@redhat.com, hch@infradead.org,
+	hch@lst.de, jack@suse.cz, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, penguin-kernel@i-love.sakura.ne.jp,
+	syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
+	willy@infradead.org
+Subject: Re: [syzbot] [fs?] BUG: sleeping function called from invalid
+ context in __getblk_gfp
+Message-ID: <20240130115430.rljjwjcji3vlrgyz@quack3>
+References: <0000000000000ccf9a05ee84f5b0@google.com>
+ <0000000000000d130006101f7e0e@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240129170014.969142961@linuxfoundation.org>
-In-Reply-To: <20240129170014.969142961@linuxfoundation.org>
-From: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
-Date: Tue, 30 Jan 2024 20:54:29 +0900
-Message-ID: <CAKL4bV6poHN0WqBN7Z=TZ9E3uaLz=h=5Ovn9xHm8y6E-mabKfA@mail.gmail.com>
-Subject: Re: [PATCH 6.6 000/331] 6.6.15-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0000000000000d130006101f7e0e@google.com>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-0.10 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=174a257c5ae6b4fd];
+	 TAGGED_RCPT(0.00)[69b40dc5fd40f32c199f];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[15];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,syzkaller.appspot.com:url,suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 SUBJECT_HAS_QUESTION(0.00)[]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -0.10
 
-Hi Greg
+On Mon 29-01-24 17:15:05, syzbot wrote:
+> syzbot suspects this issue was fixed by commit:
+> 
+> commit 6f861765464f43a71462d52026fbddfc858239a5
+> Author: Jan Kara <jack@suse.cz>
+> Date:   Wed Nov 1 17:43:10 2023 +0000
+> 
+>     fs: Block writes to mounted block devices
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=116642dfe80000
+> start commit:   d88520ad73b7 Merge tag 'pull-nfsd-fix' of git://git.kernel..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=174a257c5ae6b4fd
+> dashboard link: https://syzkaller.appspot.com/bug?extid=69b40dc5fd40f32c199f
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16a77593680000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1104a593680000
+> 
+> If the result looks correct, please mark the issue as fixed by replying with:
+> 
+> #syz fix: fs: Block writes to mounted block devices
 
-On Tue, Jan 30, 2024 at 2:22=E2=80=AFAM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.6.15 release.
-> There are 331 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 31 Jan 2024 16:59:28 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.6.15-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.6.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+This doesn't look correct. The problem here really is that sysv is calling
+sb_bread() under a RWLOCK - pointers_lock - in get_block(). Which more or
+less shows nobody has run sysv in ages because otherwise the chances of
+sleeping in atomic context are really high? Perhaps another candidate for
+removal?
 
-6.6.15-rc1 tested.
-
-Build successfully completed.
-Boot successfully completed.
-No dmesg regressions.
-Video output normal.
-Sound output normal.
-
-Lenovo ThinkPad X1 Carbon Gen10(Intel i7-1260P(x86_64) arch linux)
-
-[    0.000000] Linux version 6.6.15-rc1rv
-(takeshi@ThinkPadX1Gen10J0764) (gcc (GCC) 13.2.1 20230801, GNU ld (GNU
-Binutils) 2.41.0) #1 SMP PREEMPT_DYNAMIC Tue Jan 30 20:22:49 JST 2024
-
-Thanks
-
-Tested-by: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
