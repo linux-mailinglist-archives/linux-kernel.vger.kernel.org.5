@@ -1,119 +1,151 @@
-Return-Path: <linux-kernel+bounces-44503-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44502-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5FDC8422E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:24:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2325A8422E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:24:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 147FF1C235C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:24:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3C13291454
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:24:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C142466B47;
-	Tue, 30 Jan 2024 11:24:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5381366B38;
+	Tue, 30 Jan 2024 11:24:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ht80Dq2P"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mPQJOgpy"
+Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ABE959B7C;
-	Tue, 30 Jan 2024 11:24:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4409F66B29
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 11:24:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706613870; cv=none; b=LDHDtvlkowByyIqJkvhOJ8diAvpEmJL0ruK/65JRujHUA4eKFw8Lpv55SQ+qcMEWBabd9HjcFrrk2EJUQPHqEQ1jumtyUjHK4jLzRYWn39Xzh9I/1jOXR57VLd6joDoTbZiyDpqQSauXOBAk+dSltuvPrzezJwgp8xjzoZbTl/0=
+	t=1706613843; cv=none; b=VMjT4mfnCarVGehATCLZhPshvY0RI1Y9B0UvebCyeqA8+J5cRr2uMgmV0rBscJI8g15PCO3MQq9ZpwIoh+/C7T0uCtXNL1FUwWr2ymmI0ynuBEDq4jYuQ0RkAl19ZfO8JvYSDDZRknJP0ofd6QwYgoyT7eDWdDrSsVgYnE0zu7o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706613870; c=relaxed/simple;
-	bh=55twkulurKEhU3/5jQyrocYphXr36C8mLB2dQCIalOg=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=iL45w1r8kd49gmpEUK+Mipf/KKcQorkwpRqzHr882Eh2SG4oFciAhz522iJ73PYG5ks2Jtzhj1s5R0D0PXDw+ZBlOx8rgq0dhVwPWHil+7xncbjC6H9YK1cQ+6ffqfA/OmxkVizNGtF3WMvEr5gGeVaBShCCJ3YdelqPLBsTvRs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=ht80Dq2P; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40U9Ruu7008388;
-	Tue, 30 Jan 2024 11:24:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=qcppdkim1; bh=zJmbk1V
-	qksggc73frfFlV2kdKy6n+PP3JCr/btLA9JM=; b=ht80Dq2PHWzH6usw9uCqFfL
-	oeyuGoWC5EA+sg9JaOCTJwrsXCdz2sXIUVXxt/CV0Kuu2odi9ROnqnL+J5PRWN89
-	aAGo1VWchJrTCw7FKpz+homnggPwWPDK1v5GBjBCtpGsHOuM1dvww58vhk0TS/CK
-	UmWn95E6xl5gxMZcOuTickhHEpRQu4/n2kytXx02m/i98oyF092R2OFCH9bi59sK
-	v99/mxQGMsbGnQg4KkyagccLjPtk9wV8VeBYk3qMqgIwoAH8B8d9OTOKMj4MjqUd
-	HQoebTC9a2xvRzYJPBHnfbBPi+5jw8lG/qrd5r7btXVvUIa8AKMnwFF2Sam0Bxg=
-	=
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vxsc20u54-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Jan 2024 11:24:23 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40UBOMcA020870
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Jan 2024 11:24:22 GMT
-Received: from hu-sachinku-hyd.qualcomm.com (10.80.80.8) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 30 Jan 2024 03:24:18 -0800
-From: Sachin Kumar Garg <quic_sachinku@quicinc.com>
-To: <hverkuil-cisco@xs4all.nl>, Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
-        Vikash Garodia
-	<quic_vgarodia@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-CC: Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>
-Subject: [PATCH v2 0/2] add MBR type rate control for encoder
-Date: Tue, 30 Jan 2024 16:53:58 +0530
-Message-ID: <20240130112400.2636143-1-quic_sachinku@quicinc.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706613843; c=relaxed/simple;
+	bh=lv43hevcTa+64J0GxwrbWW7IYyzTy2+TvNR2spRRFog=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ebtDJS8jV27dOIA/2vovL51eoeRloJE9Xyj2W+e3BvK95mYIM7Hcdz//yKsQjLDW/OA26AdW7r0tsC0FFiQnCyhWS9lz0K6u8M4wY9sunlCi0GhearA98HscxuMLBMvb5t98LCdeVn2kJ1+UjX41cwJdQYV7kQXKy1EtP3/Lt8U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mPQJOgpy; arc=none smtp.client-ip=209.85.166.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-36379bc5d93so5653475ab.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 03:24:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706613840; x=1707218640; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1F5K1w5ptPpWVbrzL69kxVWikdQT589qSufOOrLNvyk=;
+        b=mPQJOgpy+wTYbwtDum+aQq7oz33hTL0GIglFPB5vs6lUOtuhGEcrHVMimZokGK8tBx
+         KF0JU3vrYL5ATdAjFhbZ+IO82dHUMseNkIGO00lfVnBIrNQRBNHQ5NN8FOe/2bk5Cprz
+         8iwK0Zc074HVHEjE7jHvWpxD4X8tpr9VxKPi9BvHSK5ty1WzgXsLOMmcx/SDXOOC3+P+
+         ljMpkur++avK9FnO7/9lIjR/UzaBh1A+dxNErNA4XwxnIQLT16p6/stsM2KsszYa791c
+         WciaTYjFxQ3uJDHRe2+N2clevGyAP6aHS1qiIR9Rh4STySrbCbkrGg2N0qTz12Yq258N
+         X8dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706613840; x=1707218640;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1F5K1w5ptPpWVbrzL69kxVWikdQT589qSufOOrLNvyk=;
+        b=uLY/MLRUF/aVPkRBC2/3FhMMgd8VPdKWy+gFNmZ9hNTQAVWIvk0KxZCG8Mpm+/zGxt
+         ZuO2vq503WsuCj3tuZvENqmt9aofbYrvBhZSNNLtGtaiFvEs6fVXy25nXWnL9PehR84l
+         tRsx9etjyQqNDNIe7n71MkpQVUEoTEBapek29nWwO8x0WxrS92Nu7FugQfpeESJFTBll
+         UZBtLMFSjEYVNMwjiyI10QiZVgy5zsSh4jCb2XAKjBY38CN1s4+O4ehhrDuF9iHs6xTS
+         PH+hJSmzEdBKKj7l32aiPFWDchqfc5lSTYP6G+YLwW5cJEpt5epQgtUtybAiaY4RYsKw
+         qW6Q==
+X-Gm-Message-State: AOJu0YxxaMPhnSSD7+H3bc/ZpLFhgnj7lx57kFYcLvqAQsnTysf0+/0Z
+	ICp17V5PG6zVfMoXt841BP0BtoLxfNvMiTSe3Xozr21qW2E0M27A+ZZ/A+Zx3JY=
+X-Google-Smtp-Source: AGHT+IHKdQCanZI5XXVDCMtb7vhvgINd+abU2YHqtb5E0Q9PMHdFUkLdkHUE23F69+B0bNtzNBk0pg==
+X-Received: by 2002:a92:c14b:0:b0:363:8559:edf with SMTP id b11-20020a92c14b000000b0036385590edfmr3200068ilh.1.1706613840424;
+        Tue, 30 Jan 2024 03:24:00 -0800 (PST)
+Received: from [172.22.22.28] (c-98-61-227-136.hsd1.mn.comcast.net. [98.61.227.136])
+        by smtp.gmail.com with ESMTPSA id e16-20020a92d750000000b00362902d6818sm2787085ilq.62.2024.01.30.03.23.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jan 2024 03:23:59 -0800 (PST)
+Message-ID: <b5ae6fd2-1dee-47e4-b7e4-ebd8a2aea472@linaro.org>
+Date: Tue, 30 Jan 2024 05:23:58 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: rYOHJIX_EUsV0uMZhC82x6jx-D5jJ2lk
-X-Proofpoint-ORIG-GUID: rYOHJIX_EUsV0uMZhC82x6jx-D5jJ2lk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-30_05,2024-01-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 adultscore=0 mlxlogscore=408 phishscore=0 priorityscore=1501
- clxscore=1015 suspectscore=0 spamscore=0 mlxscore=0 malwarescore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401190000 definitions=main-2401300083
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] bus: mhi: ep: Use kcalloc() instead of kzalloc()
+To: Erick Archer <erick.archer@gmx.com>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ Jeffrey Hugo <quic_jhugo@quicinc.com>, "Rafael J. Wysocki"
+ <rafael@kernel.org>, Dan Carpenter <error27@gmail.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, mhi@lists.linux.dev,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20240128112722.4334-1-erick.archer@gmx.com>
+Content-Language: en-US
+From: Alex Elder <elder@linaro.org>
+In-Reply-To: <20240128112722.4334-1-erick.archer@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-This series adds the support for MBR rate control type in the
-venus driver.
-This rate control type will limit the frame level maximum bitrate as
-per the target bitrate.
-It will improve the video quality of low motion video at ultra low
-bit-rates.
+On 1/28/24 5:27 AM, Erick Archer wrote:
+> This is an effort to get rid of all multiplications from allocation
+> functions in order to prevent integer overflows [1].
+> 
+> Here the multiplication is obviously safe because the "event_rings"
+> member never can have a value greater than 255 (8 bits). This member
+> is set twice using always FIELD_GET:
+> 
+> mhi_cntrl->event_rings = FIELD_GET(MHICFG_NER_MASK, regval);
+> mhi_cntrl->event_rings = FIELD_GET(MHICFG_NER_MASK, regval);
+> 
+> And the MHICFG_NER_MASK macro defines the 8 bits mask that guarantees
+> a maximum value of 255.
+> 
+> However, using kcalloc() is more appropriate [1] and improves
+> readability. This patch has no effect on runtime behavior.
+> 
+> Link: https://github.com/KSPP/linux/issues/162 [1]
+> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
+> Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Signed-off-by: Erick Archer <erick.archer@gmx.com>
+> ---
+> Changes in v2:
+> - Add more info in the commit message to better explain the change.
+>    (Dan Carpenter)
+> - Add the "Reviewed-by:" tag.
 
-Sachin Kumar Garg (2):
-  media: v4l2-ctrls: add encoder maximum bitrate control
-  media: venus: add new rate control type MBR for encoder
+Looks good.
 
- Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 2 ++
- drivers/media/platform/qcom/venus/hfi_cmds.c              | 7 +++++++
- drivers/media/platform/qcom/venus/hfi_helper.h            | 1 +
- drivers/media/platform/qcom/venus/venc.c                  | 2 ++
- drivers/media/platform/qcom/venus/venc_ctrls.c            | 5 +++--
- drivers/media/v4l2-core/v4l2-ctrls-defs.c                 | 1 +
- include/uapi/linux/v4l2-controls.h                        | 1 +
- 7 files changed, 17 insertions(+), 2 deletions(-)
+Reviewed-by: Alex Elder <elder@linaro.org>
 
--- 
-2.34.1
+> 
+> Previous versions:
+> v1 - https://lore.kernel.org/linux-hardening/20240120152518.13006-1-erick.archer@gmx.com/
+> ---
+>   drivers/bus/mhi/ep/main.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/bus/mhi/ep/main.c b/drivers/bus/mhi/ep/main.c
+> index 65fc1d738bec..8d7a4102bdb7 100644
+> --- a/drivers/bus/mhi/ep/main.c
+> +++ b/drivers/bus/mhi/ep/main.c
+> @@ -1149,8 +1149,9 @@ int mhi_ep_power_up(struct mhi_ep_cntrl *mhi_cntrl)
+>   	mhi_ep_mmio_mask_interrupts(mhi_cntrl);
+>   	mhi_ep_mmio_init(mhi_cntrl);
+> 
+> -	mhi_cntrl->mhi_event = kzalloc(mhi_cntrl->event_rings * (sizeof(*mhi_cntrl->mhi_event)),
+> -					GFP_KERNEL);
+> +	mhi_cntrl->mhi_event = kcalloc(mhi_cntrl->event_rings,
+> +				       sizeof(*mhi_cntrl->mhi_event),
+> +				       GFP_KERNEL);
+>   	if (!mhi_cntrl->mhi_event)
+>   		return -ENOMEM;
+> 
+> --
+> 2.25.1
+> 
 
 
