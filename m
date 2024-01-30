@@ -1,97 +1,137 @@
-Return-Path: <linux-kernel+bounces-44819-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44820-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 321708427D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:19:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA2418427D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:20:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6E881F22B8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:19:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 907881F22443
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:20:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 997EC82D7E;
-	Tue, 30 Jan 2024 15:19:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CFE481ABC;
+	Tue, 30 Jan 2024 15:19:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="XFA5OF+9"
-Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FeZ3AuoP"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3F7421105
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 15:19:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F22385C7C;
+	Tue, 30 Jan 2024 15:19:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706627966; cv=none; b=lehDuiiC0EEH7uFleQFwMqXbuCH6PJ/si76uKVqQphS//ZH1go7z1Ona4Rdyb8qPDy++N8hGBeZBZAKsg291DMtWwvlS9qbjRc1Ash05s0B7Es77FRjdn/N63c5W/A6GFobjJUk0b6sRjKGiXr8T7bbJYgUx7o0qRhjL8KVLXpU=
+	t=1706627977; cv=none; b=IOXni3TUs+m9ogns8TTjkrG4SqRMNnFPTvZLceGc0zqU0TGGMsWWmr8swyeJTOoZ7quwAxl8fdHzCgrvxjZbU7i8TCNOIQr+vKMVPwNGm+e1sEwmozZw71TYTeZCLVCPCA0/lJbTUiR18bnH0P4lqb0zGvp8w9u6ryD6hwRo4c8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706627966; c=relaxed/simple;
-	bh=LMAcdJG3xZ4+Ru0fXLgdqDWcwD0srNKy2FBjYjgi3MI=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=DI/WtU/pN3p6SCT6pmtT/2Q/zeiNgvHUaSDIS2Y1hY8txYJf6RsQF63lrgdyyr+i3fTg+MGNOiKBbw4jgVpGblKHX7gwayz5BhX7EHLEmKIY9Yc199fpI11oXv2/Ic36Y8MzIwSZVYfnMnuCIvsf4MMIQWlQbVQpylA7Az8bBac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=XFA5OF+9; arc=none smtp.client-ip=168.119.38.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=LMAcdJG3xZ4+Ru0fXLgdqDWcwD0srNKy2FBjYjgi3MI=;
-	t=1706627963; x=1707837563; b=XFA5OF+9I7LOmmiXjMRn6vPHXEAyPn+KoIa//0Z/JfYofwu
-	gJVo3DWclDIr+4OxdBCngOlIMHV03LbXmUXP6MPk/iSnmAxLa19HEPYc+ug6Yi6NmfVXiGmxt9xI5
-	CUZPK77rLJCddTHjETf8qq7PGCXZMUJugKgUVXrwMDUgG+X1MmqttDb2bcKUfcIr+0QPiGSO0VPtd
-	4ZY0yZMRVICyavbiFlj1qNxrDHKCT5HxH9phvPgm3jIHc74s5pXJTwtor1KvAn3wmnu21NoPOtaZn
-	mCtL1jn9UQP8bmfWIB2TnBdNuFFwJiyCkB7Prw3T7MnlA6B5XBaMcACQYj5x3Gfg==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.97)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1rUptP-000000067XL-2uX8;
-	Tue, 30 Jan 2024 16:19:19 +0100
-Message-ID: <8681168464fa85061db4a7234f89cead65cb0261.camel@sipsolutions.net>
-Subject: Re: [PATCH 1/2] devcoredump: Remove devcoredump device if failing
- device is gone
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc: linux-kernel@vger.kernel.org, Jose Souza <jose.souza@intel.com>, Maarten
- Lankhorst <maarten.lankhorst@linux.intel.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>,  "Rafael J . Wysocki" <rafael@kernel.org>
-Date: Tue, 30 Jan 2024 16:19:18 +0100
-In-Reply-To: <ZbkSvcEtRgTXuzgJ@intel.com>
-References: <20240126151121.1076079-1-rodrigo.vivi@intel.com>
-	 <d57dc34fa8b0e25cec014b8001dcd0527d1c1013.camel@sipsolutions.net>
-	 <ZbgYyra1Ypa0nf6u@intel.com>
-	 <33df6c78c4c47a8f57a1c2bfe835065becb5a253.camel@sipsolutions.net>
-	 <ZbkSvcEtRgTXuzgJ@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+	s=arc-20240116; t=1706627977; c=relaxed/simple;
+	bh=jPo6hyN6XhHYnljaQLnlP7oqLr70pQ2Jj+eWhTrA6zQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fDtqpuJQPqSTvFy6L1vStBC4uw9nUswDYWY7vAb9j3jviDRmcyo7KnLXwWmF578VtFArLAHePqMjssip7XwuZIcGVCYKlqsjjJQ7mg5WOi6C5NbyNfnFEySKfZzWQMqBi7VFmECcCOV1LIWpCjv4FVUSPeiIcIV1FsLQ/c1VSgs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FeZ3AuoP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDB1DC43394;
+	Tue, 30 Jan 2024 15:19:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706627977;
+	bh=jPo6hyN6XhHYnljaQLnlP7oqLr70pQ2Jj+eWhTrA6zQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FeZ3AuoP0++uHYH1IylQRWG0HSkcfz9zMErCpgNZlOw4JrqPoo5ukCXKC6EVkt9sD
+	 mTOsAqV1Qw1O3SMuQ9XrhG3wcxZ/iveBhDP5yPxjpF/81swPJNmreEdf0PCs5aUXmI
+	 YsidSpMeGXcke4YqPG48aZUMBeNkMSzhpv75A+YEEJT5poAAadKksYTXYYs2f6RvPN
+	 /E8enk2yfdRMzYyJST+ZF/pyXLbk7aLitBchMgJBv6TvUJPQG8mBEmwAFJd/6GCrDC
+	 F9qSBo2zFv+4Vn6PC1v7I90dpHyVlrXvG+IC4WVGstJ2AT18dFe2QNBy2AVV4BRcLQ
+	 a5Dg4ETfrzHJQ==
+Date: Tue, 30 Jan 2024 09:19:34 -0600
+From: Rob Herring <robh@kernel.org>
+To: Minda Chen <minda.chen@starfivetech.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Kevin Xie <kevin.xie@starfivetech.com>,
+	Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	linux-pci@vger.kernel.org,
+	Daire McNamara <daire.mcnamara@microchip.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>, devicetree@vger.kernel.org,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	linux-kernel@vger.kernel.org,
+	Mason Huo <mason.huo@starfivetech.com>,
+	Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+	Conor Dooley <conor@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v14,RESEND 19/22] dt-bindings: PCI: Add StarFive JH7110
+ PCIe controller
+Message-ID: <20240130151934.GA1636501-robh@kernel.org>
+References: <20240129010142.3732-1-minda.chen@starfivetech.com>
+ <20240129010142.3732-4-minda.chen@starfivetech.com>
+ <170656679886.3057.12378312489853176077.robh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <170656679886.3057.12378312489853176077.robh@kernel.org>
 
-On Tue, 2024-01-30 at 10:16 -0500, Rodrigo Vivi wrote:
-> >=20
-> > But I'd rather not, it
-> > feels weird to have a need for it.
+On Mon, Jan 29, 2024 at 04:21:12PM -0600, Rob Herring wrote:
 >=20
-> We could change or CI and instruct our devs to always write
-> something to 'data' to ensure that devcoredump is deleted
-> before we can reload our module. Maybe that's the right
-> approach indeed, although I would really prefer to have
-> a direct way.
+> On Mon, 29 Jan 2024 09:01:39 +0800, Minda Chen wrote:
+> > Add StarFive JH7110 SoC PCIe controller dt-bindings. JH7110 using PLDA
+> > XpressRICH PCIe host controller IP.
+> >=20
+> > Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+> > Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
+> > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> > Reviewed-by: Rob Herring <robh@kernel.org>
+> > ---
+> >  .../bindings/pci/starfive,jh7110-pcie.yaml    | 120 ++++++++++++++++++
+> >  1 file changed, 120 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/pci/starfive,jh71=
+10-pcie.yaml
+> >=20
+>=20
+> My bot found errors running 'make DT_CHECKER_FLAGS=3D-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+>=20
+> yamllint warnings/errors:
+>=20
+> dtschema/dtc warnings/errors:
+> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/p=
+ci/starfive,jh7110-pcie.yaml:
+> Error in referenced schema matching $id: http://devicetree.org/schemas/pc=
+i/plda,xpressrich3-axi-common.yaml
+> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/p=
+ci/starfive,jh7110-pcie.example.dtb: pcie@940000000: False schema does not =
+allow {'compatible': ['starfive,jh7110-pcie'], 'reg': [[9, 1073741824, 0, 2=
+68435456], [0, 721420288, 0, 16777216]], 'reg-names': ['cfg', 'apb'], '#add=
+ress-cells': [[3]], '#size-cells': [[2]], '#interrupt-cells': [[1]], 'devic=
+e_type': ['pci'], 'ranges': [[2181038080, 0, 805306368, 0, 805306368, 0, 13=
+4217728], [3271557120, 9, 0, 9, 0, 0, 1073741824]], 'starfive,stg-syscon': =
+[[4294967295]], 'bus-range': [[0, 255]], 'interrupts': [[56]], 'interrupt-m=
+ap-mask': [[0, 0, 0, 7]], 'interrupt-map': [[0, 0, 0, 1, 2, 1], [0, 0, 0, 2=
+, 2, 2], [0, 0, 0, 3, 2, 3], [0, 0, 0, 4, 2, 4]], 'msi-controller': True, '=
+clocks': [[4294967295, 86], [4294967295, 10], [4294967295, 8], [4294967295,=
+ 9]], 'clock-names': ['noc', 'tl', 'axi_mst0', 'apb'], 'resets': [[42949672=
+95, 11], [4294967295, 12], [4294967295, 13], [4294967295, 14], [4294967295,=
+ 15], [4294967295, 16]], 'perst-gpios': [[4294967295, 26, 1]], 'phys': [[42=
+94967295]], 'interrupt-controller': {'#address-cells': [[0]], '#interrupt-c=
+ells': [[1]], 'interrupt-controller': True, 'phandle': [[2]]}, '$nodename':=
+ ['pcie@940000000']}
+> 	from schema $id: http://devicetree.org/schemas/pci/starfive,jh7110-pcie.=
+yaml#
+> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/p=
+ci/starfive,jh7110-pcie.example.dtb: pcie@940000000: Unevaluated properties=
+ are not allowed ('#address-cells', '#interrupt-cells', '#size-cells', 'bus=
+-range', 'device_type', 'interrupt-controller', 'interrupt-map', 'interrupt=
+-map-mask', 'interrupts', 'msi-controller', 'ranges', 'reg', 'reg-names' we=
+re unexpected)
+> 	from schema $id: http://devicetree.org/schemas/pci/starfive,jh7110-pcie.=
+yaml#
 
-That's not really what I meant :-) I think we can agree that it's wrong
-for the kernel to be _able_ to run into some kind of use-after-free if
-userspace isn't doing the right thing here!
+These are probably due to only patches 16-22 showing up in lore.
 
-What I meant though is: it's weird for 'data' to actually depend on the
-struct device being still around, no? Whatever you want 'data' to be,
-couldn't you arrange it so that it's valid as long as the module isn't
-removed, so that the 'data' pointer literally encapsulates the needed
-data, doesn't depend on anything else, and the method you pass is more
-like a 'format' method.
-
-johannes
+Rob
 
