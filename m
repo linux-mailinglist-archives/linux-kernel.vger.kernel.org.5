@@ -1,92 +1,135 @@
-Return-Path: <linux-kernel+bounces-45305-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45306-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3809B842E4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 21:59:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8401842E4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 21:59:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AFE21C24B96
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:59:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3E01287D97
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:59:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D64E871B5F;
-	Tue, 30 Jan 2024 20:59:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FDC571B5C;
+	Tue, 30 Jan 2024 20:59:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="H6jT2K0w"
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XlMvxfOE"
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFF106A00F;
-	Tue, 30 Jan 2024 20:59:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0B0471B48;
+	Tue, 30 Jan 2024 20:59:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706648350; cv=none; b=R76CVF3SyHLH2c4de1wr0/9G+dxR8PwT+Yw1IuETvgYy1nhEzB0XbfGhEsS+kXePRh/Yb8/5hio1M5uQ2EuebPLbpm0wKJpXQZItitXxVFk8sXEXHwnDQ7bYovjdMamR/tCYXxYJmoAylk+4/SA2R3J5F9XGSjG+dEQBUV2L+3Q=
+	t=1706648372; cv=none; b=gYpfUUlPmxTkR4G+wWOXpQNYWHlOR5N8usPmySxwcdcurkp0ncVszb8WLSZ11GWB0c/Hy8DnzTdU722Bw6FKeVC9WR+OFiTcv9mhr5CN2t/PSHPZz9abjwZoNRVyF6RVNLouNVLTYKq5Nu4qU+7w03taKihd+cnxvNT3qna0lXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706648350; c=relaxed/simple;
-	bh=MJJXb4qG2owFQ8t6ZUQMC31iJNYtleq0l6H3DZgMq7s=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=dtup2BUlmTBlld6EeTnf8w+g2FGUecPR39tHAvj/N5qWIn00IWoiNSNcAiGtEnP31qKKtPUESQeYAOM8fWwTiJ0KHCVO2HZqPE+KCn5GVC/8BEOGGmanGyiiBbx4H9wJi/pFFpEyiXSk6w70IxDiOQfeE7RZPETs+FfHPX3Vo0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=H6jT2K0w; arc=none smtp.client-ip=45.79.88.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net BAAAB41A47
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1706648347; bh=vRKu2O/0VPzoBZOtxNzJJj2/lV4jOxX7B02gcKXYkV8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=H6jT2K0wd4Q1sbqGP0dO9KBXWHIMmBwpf1ZLGQbfFE0jLFDSam3yYaMKU9C4OFAlB
-	 mTFTOSYbDUyHYSd7ERV+KYeCcY8/j0RbgkreeIe874YqiERc0/UWTXno2oLxBRCwD7
-	 9Y5+RHU6QGPpencdsfLbRcAfM67F2XftD8SxFpm0U06JreMmMeWsj4xAmxIn6jsA7K
-	 /SdaIqOU1K/YBAwbX9BN2d3heZ9GJP4mh+Vkw5dk+Yw7dScwdygEPm/EfauGuvYiQS
-	 yBzhuncio/SVDkruYfLtlV7V5NtKGV/MOWb+MmLeYyqWqDo1IZX7EzsmjcnIoQR0tu
-	 qba1bKL6JhGEg==
-Received: from localhost (unknown [IPv6:2601:280:5e00:7e19::646])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id BAAAB41A47;
-	Tue, 30 Jan 2024 20:59:07 +0000 (UTC)
-From: Jonathan Corbet <corbet@lwn.net>
-To: Leo Yan <leo.yan@linaro.org>, Arnaldo Carvalho de Melo
- <acme@kernel.org>, Ian Rogers <irogers@google.com>, Thomas Richter
- <tmricht@linux.ibm.com>, Peter Zijlstra <peterz@infradead.org>, Adrian
- Hunter <adrian.hunter@intel.com>, Jiri Olsa <jolsa@kernel.org>, Ingo
- Molnar <mingo@kernel.org>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Cc: Leo Yan <leo.yan@linaro.org>
-Subject: Re: [PATCH v8] Documentation: userspace-api: Document perf ring
- buffer mechanism
-In-Reply-To: <20240102085001.228815-1-leo.yan@linaro.org>
-References: <20240102085001.228815-1-leo.yan@linaro.org>
-Date: Tue, 30 Jan 2024 13:59:06 -0700
-Message-ID: <87sf2ea679.fsf@meer.lwn.net>
+	s=arc-20240116; t=1706648372; c=relaxed/simple;
+	bh=hKNIC3ubOL8awV14Yi8/zq+d4Qi6blzxIbGvY3Cd85U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=IqzEP2TH8NsuZvDHvc4WkL/KfbyTerktbCTdvLN/I6WMtTZWvjQzkr9yr8S7qcKw/Bo82KaOPJJsQHrKUSP+1ELI84wpKHM4P0UVoWFKRK++h+BgPsdkiIr8xvs0uQgNDryZYMeudTtZR1OoLCGLgv8TnH8P2tkhrtaiJhbX17o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XlMvxfOE; arc=none smtp.client-ip=209.85.208.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d03fde0bd9so39056051fa.0;
+        Tue, 30 Jan 2024 12:59:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706648369; x=1707253169; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hKNIC3ubOL8awV14Yi8/zq+d4Qi6blzxIbGvY3Cd85U=;
+        b=XlMvxfOEBYZIj+NUMrAY0TZE46tI4N0Q2/OKR4H1G/R3t0PgGa/5NBa2RZ93N/7ren
+         0eLibyf16XvkHB2ZVdGzfVi5w9fJye8HKY65UrLMrZLeGu8d5VK98jFlDw4EqQgpgFkG
+         jKNiPJHOkAwHBq0djSMDj/kzj3VJx+dEepW9yTHnGeZwZ61FcrHDRLOuL9w5xZBl6gvt
+         8IMCx1Pba9MnD/JBoBCvSZEjqRpZPrhlaNRDksUjXTLjBRaEjaPweyQcVD6w6uFkTCWY
+         Pfrxs90mrVNEu9c3586rIgS/Dz3cAJOIGQ5yj7Y43f+8x/vMGqB3KP0EQpK2xKMgpVN9
+         xFQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706648369; x=1707253169;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hKNIC3ubOL8awV14Yi8/zq+d4Qi6blzxIbGvY3Cd85U=;
+        b=Y7zMivW5j8acvfuPyyQkdY7fUOWR+RwiC8JpuOIH48KZIeNckfU5FwgxH+lu8fISTJ
+         pXcAvwsODxVHNJ8YTtJKKtR38s6SBHyfQLovTCsOxUUaGfdhB3MPvaOlMpta3GtlG6y8
+         0fzjTyypn26wCtMvv05CdNJm7mSJs4nK33KDLfxBLK50Acb28cUXZp0PML7RNSSDCdu8
+         K9Mengs8MJPsqK+utDSvOqSrHo/fsWDNhew1NH3XPtSrthk2z+T5+Vgp1AbUd3yhs6ey
+         EssORyZWxa6lr6v4Wjg2VpQGAFRoD6bWTZnLcTVK26sJq32XTVOkpKiycJLbqA3O8kyz
+         DgRQ==
+X-Gm-Message-State: AOJu0YzEITKvANQyMrVCa2OqVP1VzUd8CAs0/zj1fq3c8STzuPk540Yo
+	6xP/JUp7+PA3Kz465EwzoJQfsAjmvvwYE//9qyDyrMIX6+CCOeMTc4YB+hSJ6nlYilSumDgrXnt
+	og/fl2EeM28DADnp2IIYr0P9WLRg=
+X-Google-Smtp-Source: AGHT+IHnCZxPwY8EE1gl5dA94a/VcMqHZxdwN3MKKOsXVfbb/PXf0EQY0HKq5VesrGEzb4Ge/LB4AqMXlQlSAjC3mkI=
+X-Received: by 2002:a2e:b550:0:b0:2d0:5435:7b11 with SMTP id
+ a16-20020a2eb550000000b002d054357b11mr2815357ljn.52.1706648368382; Tue, 30
+ Jan 2024 12:59:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20240115144538.12018-1-max@enpas.org> <20240115144538.12018-3-max@enpas.org>
+ <CAEc3jaD9qXp=F6Xfg8bdeC1Hv5pHiKA16SBd=-ac74ibE1ELyw@mail.gmail.com> <cb8290a0-1937-4937-ace5-e2a22a1f6e41@enpas.org>
+In-Reply-To: <cb8290a0-1937-4937-ace5-e2a22a1f6e41@enpas.org>
+From: Roderick Colenbrander <thunderbird2k@gmail.com>
+Date: Tue, 30 Jan 2024 12:59:16 -0800
+Message-ID: <CAEc3jaDp-GRoZs9Pp0XxCeARfPx0xFq5SdNkignGeCu0P2+Fdw@mail.gmail.com>
+Subject: Re: [PATCH v1 2/7] HID: playstation: DS4: Don't fail on MAC address request
+To: Max Staudt <max@enpas.org>
+Cc: Roderick Colenbrander <roderick.colenbrander@sony.com>, Jiri Kosina <jikos@kernel.org>, 
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>, linux-input@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Leo Yan <leo.yan@linaro.org> writes:
-
-> In the Linux perf tool, the ring buffer serves not only as a medium for
-> transferring PMU event data but also as a vital mechanism for hardware
-> tracing using technologies like Intel PT and Arm CoreSight, etc.
+On Sat, Jan 27, 2024 at 12:51=E2=80=AFAM Max Staudt <max@enpas.org> wrote:
 >
-> Consequently, the ring buffer mechanism plays a crucial role by ensuring
-> high throughput for data transfer between the kernel and user space
-> while avoiding excessive overhead caused by the ring buffer itself.
+> On 1/25/24 09:39, Roderick Colenbrander wrote:
+> > On Mon, Jan 15, 2024 at 6:58=E2=80=AFAM Max Staudt <max@enpas.org> wrot=
+e:
+> >>
+> >> Some third-party controllers can't report their MAC address.
+> >>
+> > For what type of devices is this not working? This one example of this
+> > request which is very foundational for a controller working on even
+> > the game console. Are this perhaps USB-only devices? If the case maybe
+> > some kind of error is only needed for USB connections.
 >
-> This commit documents the ring buffer mechanism in detail.  It explains
-> the implementation of both the regular ring buffer and the AUX ring
-> buffer.  Additionally, it covers how these ring buffers support various
-> tracing modes and explains the synchronization with memory barriers.
+> IIRC I've only seen this quirk with the oddball VID/PID 7545:0104 that my=
+ patch 7/7 adds. It is indeed a USB-only controller. I have not tried this =
+device (or any, really) with an actual console, my focus is just on Linux. =
+Admittedly, I'd also like to know what happens on a real PS4 :)
 >
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> ---
+> My intention was to keep the error message and the solution as universal =
+as possible, in case a controller comes along that has both this quirk *and=
+* Bluetooth. It's a bit of an ugly workaround though - if you (or anyone el=
+se) have an idea for a nicer solution, I'd be really glad.
+>
+>
+> Max
+>
 
-Applied, thanks.
+I remember on the console side that we support a number of controllers
+including our official model and some licensed controllers. I recall
+them taking some different codepaths and HID reports differently. It
+has been a while, so I don't recall the details. If I remember it
+could be that all of the licensed ones were USB-only (of course there
+are some Bluetooth capable clones).
 
-jon
+For this reason I think not all DS4-compatible devices have a MAC
+address or handle this request. (We made some fixes in hid-playstation
+relative to hid-sony, where hid-sony used another less known HID
+report for the MAC address. Now we use the more commonly known one and
+that helped other clone devices).
+
+I'm not sure about the best way to handle this. I have kind of been
+leaning towards doing a vid/pid like check for this case even though I
+really hate it. It could be within dualshock4_get_mac_address as we do
+some other special handling there too (although having the caller of
+dualshock4_get_mac_address do it is an option too, but I think within
+get_mac_address is slightly nicer for now).
+
+Thanks,
+Roderick
 
