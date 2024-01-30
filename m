@@ -1,229 +1,119 @@
-Return-Path: <linux-kernel+bounces-44708-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44709-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DFDA842653
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:42:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83A4D842652
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:42:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AAE92B25095
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:42:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40205285F18
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:42:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE1066D1B8;
-	Tue, 30 Jan 2024 13:42:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="K1ohGfaW"
-Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B6246D1B7;
+	Tue, 30 Jan 2024 13:42:25 +0000 (UTC)
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EE186BB36
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 13:41:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C959159165;
+	Tue, 30 Jan 2024 13:42:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706622121; cv=none; b=FzH4GtBpbF737qsJ4/Q3JDgQJgjEjzB9hCJ3nN28w6iqulpmWnqUQp5qGtzNOSZq18AS+ckHtl2Y9BuFu/2IWpwAzcs2e6O7Ic3+ah6Aj17Wcq93Qovh52V6GPvb1lOyT5WZ3QPLuuNwlGxklMaZKuQkjurv+uU3AUPXX1w9ljw=
+	t=1706622145; cv=none; b=Ti+EWyIxCqetDLeJbd8lQgTVyj38TvRUN7O4RlPqEp/DJsBc4x9P7j08LpoaaWNxkbsNjU6yVPil/DrkSC+6+1v790+pGz19cqL13I+/mRYKZ3QwNMHaHWZ47PRMbgj97yPgemqX8t21knXtuMujVA4f2OTajP4DUBGty86Jbzo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706622121; c=relaxed/simple;
-	bh=0BeGZI2lfjCwg/wzly1hzEkL+SQ37NX3sQSXaRiSC/Q=;
+	s=arc-20240116; t=1706622145; c=relaxed/simple;
+	bh=yZIuSbQwmhsNBImBxP16rMMqoK8f4QFDk5EkKtA5CJY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VX1ISi+t4X0EAMQ+kKVL3/WK+9m7BZr7geW38wM5sxdMTnGdI7UV1mt3o5XfE0AuJ8fh1770216wuoMKxec3XyuQXY6vCy3IjraDYjTDRztrRZ/XFxkFt7XvKBvDLM6uof1z6WxuOlBXuI/PBfQ53KEIwi/K92Fn30MToMid2qA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=K1ohGfaW; arc=none smtp.client-ip=209.85.166.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-3638bd37107so192585ab.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 05:41:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706622118; x=1707226918; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EbgyJimBDL2xlM1FoVUE3T9sFVvozDsEdx2g1TNsrH8=;
-        b=K1ohGfaWtW9fnSR1o1Y5YWNOvXogVL9sK7bZ2uPuNMJ2JOkOXqzMWCLe0C0hpRvm5J
-         859OqDhlBmX+o8uy367x6oamtJdIo+X6bhzfT/ahZF60Xv3QoteS409g/NCMLYp+BGYR
-         nlg6tEG62Pe6KJ8Cil+K6otY8x4cNFD7w5M3GC7j/eYsv3sOqYjaAxKzOUivcMJtYq9i
-         YtjZAxB6QO2Tqd+X0eN+pCW36TfyM8vaHTZqYzVjnOkI7NUbFczxLQSt9qFsqHZ65tMX
-         yUgxNelp6/AksrW1N4OubufGQkgAArwsg6/jUw7fWJhyg2Cm9sd1Ctk8m8oEXUtnSa44
-         eZpQ==
+	 To:Cc:Content-Type; b=DP9vFLy0Tj04VBQijdJB7D059fMOYFgfRf+M5feNXW093eRpFFOufUP7iiXKxCY1I5KdW6aVw4HcC+9NgDWarCVbfnj+lIA83JX8DphWUQiB10Uqskkq92pDBFxAzvhzYL9BKlNcSj/WB0cAjtTrc0MujirzCdLCD1WABJRsdiQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-59a1f85923aso236658eaf.1;
+        Tue, 30 Jan 2024 05:42:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706622118; x=1707226918;
+        d=1e100.net; s=20230601; t=1706622143; x=1707226943;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=EbgyJimBDL2xlM1FoVUE3T9sFVvozDsEdx2g1TNsrH8=;
-        b=PruD0PvBI5ZwYZ6FLxSQigYyVK+6xTZkgBllcrdAFLBKxXWLAD3kF2gU8GbiTNZJ+N
-         VWf21RJ6odDeIwIL464mIxelaG+1Cma3Pu6TSidVcgmzNNS/veeUugsC5sFb6P2om4Qu
-         MQRLtx2HGCLX4/5IGlWtipA85Byl+LkhL7rNHWuq/quGjhxmLa6thCopmtLoT8FE9siR
-         785jSlut1oueZjYr8ReDlMO9GcMKv4yxTny9Ynl2tS0D2PoWCHc9k40qriM8Kq4suNUJ
-         7MrQOmA+cRR2Mq5P8RXaH4AycKnQ3elc7Fqz65BnEvq5lcLOC5Eu8TvZvCct5nURI6ug
-         Hu9g==
-X-Gm-Message-State: AOJu0YwmdTSm4VIPswXc9TALEGV+WzmpM2TfhsKyaFaM8GLXc26wfV8B
-	KTBMrwThb4Xh5TZEN2UQUokOcZbpNRap4K/5lpBsaXdqvZAAb9Tr1CvG4FcwA3WqruAA9DkaAEk
-	M9pokDLKoP4LNitaGpO7w4IWs9am6mfOmav9b
-X-Google-Smtp-Source: AGHT+IFTttrH0F0yFcNDAhaFz/OUEZdWofrsyIOjQ2cUIUV60IsTbFRJFPYibEwh47w8FBbLvqod5S8rXW+N2rbJZEA=
-X-Received: by 2002:a92:d483:0:b0:363:7b27:283b with SMTP id
- p3-20020a92d483000000b003637b27283bmr183068ilg.11.1706622118267; Tue, 30 Jan
- 2024 05:41:58 -0800 (PST)
+        bh=sGl++iIA4A9u+4qEV+u6ph09ARs/qmkRzVLAgGs2Okc=;
+        b=BHX7OPApczGexSMZ/ylPW+g01dVce1hK3GYPovVFtF1J3BSrzkfu8msKu8+GEd0Je3
+         WO1rjqV4v3XZ9VA5gjUMQhDwQJw1nf7jetP4oAaSkI95ONisugQCwHAzfIR0nnB824cj
+         oGCTtgycrltt4KlMq09O5HJD096BWS+6KprjnUIzMT0ONhsnZObgMEMZAKeFyTg347aQ
+         tHsPHwy978HMfxjCGIoEu7gJQExaCtH+nDveYEOllrcFYCjz2P6vKcgzMVwulGRwh8b3
+         xZUwbQCnWM2XtaSPHx4jOZumCxVLn74em2Swg6Cy417AoaLNfKh3SMcVrZg4XLF3Ov9k
+         PlrQ==
+X-Forwarded-Encrypted: i=0; AJvYcCWohR6uluzBy/vW9auzuR+vySYZ8bbPg/xSuP7yQUdNJJmKmv61s+1ccuud0O1YoeFdC8fgVpXbOPb/UAcaNQFICEo0a0s1DmgCPRNCfixfMz9Za1h2EEHV7aLJUAzTrvVWa97yUqY=
+X-Gm-Message-State: AOJu0YyKSTAl1tQ0xAVBZ7c99NaDipwjTmNunr3mcmVkMBYLJ+kzfv4i
+	KBfM9pNgqSLFdOyh0x6pyrTWM0E9jofG1rAeR+LVr0qat9WUduTty0oKOJFfxyG2CtoMWk7tDBW
+	XZm4AhII1BfTGk3fB/QJzPjZRnFUHuu3OoN0=
+X-Google-Smtp-Source: AGHT+IGW/gIo/IHhmpwB9vVWiQRFfsVvA0RJeOnRNPHdBsXzjS/Kmjhnfbd60m1A88WTc89VixssY6oxlvg6pwj+4uU=
+X-Received: by 2002:a4a:dc92:0:b0:599:e8ff:66d9 with SMTP id
+ g18-20020a4adc92000000b00599e8ff66d9mr9403802oou.1.1706622142795; Tue, 30 Jan
+ 2024 05:42:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240125231840.1647951-1-irogers@google.com> <CAEf4BzamUW+O35hfj-SctPo0Z-oZk5u-96fvD0cFPDZTwFyiMg@mail.gmail.com>
-In-Reply-To: <CAEf4BzamUW+O35hfj-SctPo0Z-oZk5u-96fvD0cFPDZTwFyiMg@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Tue, 30 Jan 2024 05:41:47 -0800
-Message-ID: <CAP-5=fWd3U4VTU7Quj+EjdU8F_o3VwprUz18PeAGfphgUS7vPg@mail.gmail.com>
-Subject: Re: [PATCH v3] libbpf: Add some details for BTF parsing failures
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alan Maguire <alan.maguire@oracle.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <5770175.DvuYhMxLoT@kreacher> <2192653.irdbgypaU6@kreacher> <Zbie+bepNv1xob3J@linux.intel.com>
+In-Reply-To: <Zbie+bepNv1xob3J@linux.intel.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 30 Jan 2024 14:42:10 +0100
+Message-ID: <CAJZ5v0hwXbtYBLx8EJo3N_SY9RU-63syf=6Q-dCaOh7eXkg-0w@mail.gmail.com>
+Subject: Re: [PATCH v2 02/10] PM: sleep: stats: Use an array of step failure counters
+To: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Linux PM <linux-pm@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 29, 2024 at 4:43=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Tue, Jan 30, 2024 at 8:02=E2=80=AFAM Stanislaw Gruszka
+<stanislaw.gruszka@linux.intel.com> wrote:
 >
-> On Thu, Jan 25, 2024 at 3:18=E2=80=AFPM Ian Rogers <irogers@google.com> w=
-rote:
+> On Mon, Jan 29, 2024 at 05:11:57PM +0100, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > >
-> > As CONFIG_DEBUG_INFO_BTF is default off the existing "failed to find
-> > valid kernel BTF" message makes diagnosing the kernel build issue some
-> > what cryptic. Add a little more detail with the hope of helping users.
+> > Instead of using a set of individual struct suspend_stats fields
+> > representing suspend step failure counters, use an array of counters
+> > indexed by enum suspend_stat_step for this purpose, which allows
+> > dpm_save_failed_step() to increment the appropriate counter
+> > automatically, so that its callers don't need to do that directly.
 > >
-> > Before:
-> > ```
-> > libbpf: failed to find valid kernel BTF
-> > libbpf: Error loading vmlinux BTF: -3
-> > ```
+> > It also allows suspend_stats_show() to carry out a loop over the
+> > counters array to print their values.
 > >
-> > After not accessible:
-> > ```
-> > libbpf: access to canonical vmlinux (/sys/kernel/btf/vmlinux) to load B=
-TF failed: No such file or directory
-> > libbpf: was CONFIG_DEBUG_INFO_BTF enabled?
-> > libbpf: failed to find valid kernel BTF
-> > libbpf: Error loading vmlinux BTF: -3
-> > ```
+> > Because the counters cannot become negative, use unsigned int for
+> > representing them.
 > >
-> > After not readable:
-> > ```
-> > libbpf: unable to read canonical vmlinux (/sys/kernel/btf/vmlinux): Per=
-mission denied
-> > libbpf: failed to find valid kernel BTF
-> > libbpf: Error loading vmlinux BTF: -3
-> > ```
+> > The only user-observable impact of this change is a different
+> > ordering of entries in the suspend_stats debugfs file which is not
+> > expected to matter.
 > >
-> > Closes: https://lore.kernel.org/bpf/CAP-5=3DfU+DN_+Y=3DY4gtELUsJxKNDDCO=
-vJzPHvjUVaUoeFAzNnig@mail.gmail.com/
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> >
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > > ---
-> > v3. Try to address review comments from Andrii Nakryiko.
+> >
+> > v1 -> v2:
+> >    * Use one cell less in suspend_stats.step_failures[] to avoid
+> >      introducing an unused array cell (Stanislaw).
+> >
+> > @Stanislaw: This is different from setting SUSPEND_FREEZE to 0, because
+> > that would complicate printing in the sysfs attributes and the debugfs
+> > code, so I've not added the R-by.
 >
-> I did some further simplifications and clean ups while applying.
+> LGTM.
 >
-> I dropped an extra faccessat(R_OK) check for /sys/kernel/btf/vmlinux
-> and instead if F_OK passes, just go ahead and try to parse
-> /sys/kernel/btf/vmlinux. If we have no access, we should get -EPERM or
-> -EACCESS (I didn't check which), otherwise we'll either parse or won't
-> find any BTF, both are errors. If /sys/kernel/btf/vmlinux exists,
-> there seems to be little point nowadays to try fallback locations,
-> kernel clearly is modern enough to generate /sys/kernel/btf/vmlinux,
-> so we just bail out with error.
+> Reviewed-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
 >
-> Please check the landed commit in bpf-next and let me know if it
-> doesn't cover your use case properly.
+> > +     for (step =3D SUSPEND_FREEZE; step <=3D SUSPEND_NR_STEPS; step++)
+> > +             seq_printf(s, "failed_%s: %u\n", suspend_step_names[step]=
+,
+> > +                        suspend_stats.step_failures[step-1]);
+>
+> Consider (in separate patch) removing SUSPEND_NONE from suspend_step_name=
+s[]
+> and use step-1 for it as well.
 
-It does, thanks Andrii!
-
-Ian
-
-> > ---
-> >  tools/lib/bpf/btf.c | 35 +++++++++++++++++++++++++++--------
-> >  1 file changed, 27 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> > index ec92b87cae01..45983f42aba9 100644
-> > --- a/tools/lib/bpf/btf.c
-> > +++ b/tools/lib/bpf/btf.c
-> > @@ -4932,10 +4932,9 @@ static int btf_dedup_remap_types(struct btf_dedu=
-p *d)
-> >   */
-> >  struct btf *btf__load_vmlinux_btf(void)
-> >  {
-> > +       const char *canonical_vmlinux =3D "/sys/kernel/btf/vmlinux";
-> > +       /* fall back locations, trying to find vmlinux on disk */
-> >         const char *locations[] =3D {
-> > -               /* try canonical vmlinux BTF through sysfs first */
-> > -               "/sys/kernel/btf/vmlinux",
-> > -               /* fall back to trying to find vmlinux on disk otherwis=
-e */
-> >                 "/boot/vmlinux-%1$s",
-> >                 "/lib/modules/%1$s/vmlinux-%1$s",
-> >                 "/lib/modules/%1$s/build/vmlinux",
-> > @@ -4946,14 +4945,34 @@ struct btf *btf__load_vmlinux_btf(void)
-> >         };
-> >         char path[PATH_MAX + 1];
-> >         struct utsname buf;
-> > -       struct btf *btf;
-> > +       struct btf *btf =3D NULL;
-> >         int i, err;
-> >
-> > -       uname(&buf);
-> > +       /* is canonical sysfs location accessible? */
-> > +       err =3D faccessat(AT_FDCWD, canonical_vmlinux, F_OK, AT_EACCESS=
-);
-> > +       if (err) {
-> > +               pr_warn("access to canonical vmlinux (%s) to load BTF f=
-ailed: %s\n",
-> > +                       canonical_vmlinux, strerror(errno));
-> > +               pr_warn("was CONFIG_DEBUG_INFO_BTF enabled?\n");
-> > +       } else {
-> > +               err =3D faccessat(AT_FDCWD, canonical_vmlinux, R_OK, AT=
-_EACCESS);
-> > +               if (err) {
-> > +                       pr_warn("unable to read canonical vmlinux (%s):=
- %s\n",
-> > +                               canonical_vmlinux, strerror(errno));
-> > +               }
-> > +       }
-> > +       if (!err) {
-> > +               /* load canonical and return any parsing failures */
-> > +               btf =3D btf__parse(canonical_vmlinux, NULL);
-> > +               err =3D libbpf_get_error(btf);
-> > +               pr_debug("loading kernel BTF '%s': %d\n", canonical_vml=
-inux, err);
-> > +               return btf;
-> > +       }
-> >
-> > +       /* try fallback locations */
-> > +       uname(&buf);
-> >         for (i =3D 0; i < ARRAY_SIZE(locations); i++) {
-> >                 snprintf(path, PATH_MAX, locations[i], buf.release);
-> > -
-> >                 if (faccessat(AT_FDCWD, path, R_OK, AT_EACCESS))
-> >                         continue;
-> >
-> > @@ -4965,9 +4984,9 @@ struct btf *btf__load_vmlinux_btf(void)
-> >
-> >                 return btf;
-> >         }
-> > -
-> >         pr_warn("failed to find valid kernel BTF\n");
-> > -       return libbpf_err_ptr(-ESRCH);
-> > +       /* return the last error or ESRCH if no fallback locations were=
- found */
-> > +       return btf ?: libbpf_err_ptr(-ESRCH);
-> >  }
-> >
-> >  struct btf *libbpf_find_kernel_btf(void) __attribute__((alias("btf__lo=
-ad_vmlinux_btf")));
-> > --
-> > 2.43.0.429.g432eaa2c6b-goog
-> >
+SUSPEND_NONE is handy for printing an empty string when there are no
+suspend-resume errors.
 
