@@ -1,238 +1,236 @@
-Return-Path: <linux-kernel+bounces-44058-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44068-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 880A6841CCA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:40:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE51D841CEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:49:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A70AE1C2587B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:40:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 757002821B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:49:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3E0953E3D;
-	Tue, 30 Jan 2024 07:40:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9167A53E29;
+	Tue, 30 Jan 2024 07:48:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vk+NtIjN"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="STUbqRyx"
+Received: from out203-205-221-242.mail.qq.com (out203-205-221-242.mail.qq.com [203.205.221.242])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F610524BB
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 07:40:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D804753E07;
+	Tue, 30 Jan 2024 07:48:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.242
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706600434; cv=none; b=LjCTRPp7ySwkXuwVMO2Pvz+EerrhOMStytrC+MCoGZTd7urr9zlLYthxdmKOCwfLSwwLb3/c2VUJXYxgX7wEelNeudGWZKptmrimFQJg/v0vRfmw5lmHlNRMC2C7IwPYPGa7XqMCB+1meigHsJc2a9zx5fzTri0OkY3KwybHwdk=
+	t=1706600921; cv=none; b=sDsH4XPU1VIX5T2C73Q8afH28cUuZu/gRJoKJLxKr4Xq9pdo6lHdF95skdeNOx0pZx9TwgyTejRrrIZJh2vG4JR9jH7HzNn5xqO3Me2+pzV42RTxf+vZ0AQ+i2O83xz0F8KhizhtPDz+CEw+TbAhZJIIwfRgCUYLtNsFemFMVu8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706600434; c=relaxed/simple;
-	bh=X8V9pvpV0JNRuDhoPRdTK4TGozcDMk3G0rZ4Q7XMqic=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=l9v/8d1Ow9SgzLjrUuh8Thri/IsI030euNEB0Hd3RvEMiH6dEnnOnv/eQr3hdEhxcfUr6svMhTfnkZsq5+KxAg615xWnG6dLeENh3+sHcZznzqnqQpHboFCjOpI2MPgUZbU9z2gBTBtAFRMoiIbs7y1VmLiKlV7bXkd3R9wrixo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vk+NtIjN; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a2d7e2e7fe0so672892166b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 23:40:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706600431; x=1707205231; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uPe60IzTNRhQ8xdKXhrI1YkRrC86QmovGAq/H+j7848=;
-        b=vk+NtIjN+424w+N92139h8KhT8HBQ/8yTi3vrGJwq01a/6Y7BpF8Q3R3229TSm2WLZ
-         knwYwGosb+O4DvdHXuIMjt7qEkncwa6nuz9ZOGKGeNPOUKiVf1rYCgJjTWnW0u/8qzzb
-         /jp04m99871RNPRZM1KRKEfY01Dt11bq0/f0G2TjG4doYfWEQWQSZd6aew6dEx6IUFw/
-         vXelMLculQEeO6bvCf1i78UqRVE/2VmeUHE2K1UVXAPCRu1+vDPMmfBbZoBHeVtU1X0Q
-         zb8+00+QfT448vrHapS+mqhnDeM6qcqJlumH4hgfKYYWbZff0XUfkNuxxxoY0CYEGW8/
-         y+Og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706600431; x=1707205231;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uPe60IzTNRhQ8xdKXhrI1YkRrC86QmovGAq/H+j7848=;
-        b=CgxupZ1ZJD2q5SeFeo/hJrcCyk6kQUvjQ5Appva9QeBiCihF0uC9IdDK4D+WlhhFeB
-         tpuuA9U8/ziJ4Iu0iRSKMcFMdeOJXqSQlfSLeJ+Z5KIJPc7a7hT995ODJ1BO/NL/LmS9
-         UIiwXRroswaUv4icD90n9o9sbfeZQINifwwiIlHzM3N8Fh4cYKE0EgnIK/ti33aS+eDE
-         jy44ARIJcFnk3uRuxYQLvKuYZDM/Au+QyV5ggZ3jIFamC2/C3MEQE5hLA7KloZ4AzXtL
-         /4bjw40MACaVc8Iw3te+z1e91Fq7ucnt0AiRxcyZwCQLHFBT5fVerKj7Fl8CjAtz2Ub7
-         2KPw==
-X-Gm-Message-State: AOJu0YwzdrcCx1zP3RULXPUhPZdGom8tWfRboRwTiZfeK81WtVQYi1da
-	k8ughFVjNedl7scidV7Kk3CxyeBp44dJOLdIguWQXqfZUPy/Mcfy8xVOKOpfE7Q=
-X-Google-Smtp-Source: AGHT+IFOW1yMVhj72oFmD37Hzaqe45ko6oyFddynA0fudFTsS0/WukBC5Pbd5ko3gKlDIwPzaYErdA==
-X-Received: by 2002:a17:906:d110:b0:a35:991e:5085 with SMTP id b16-20020a170906d11000b00a35991e5085mr737177ejz.30.1706600431327;
-        Mon, 29 Jan 2024 23:40:31 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id sf5-20020a1709078a8500b00a353bfdd411sm3690334ejc.59.2024.01.29.23.40.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jan 2024 23:40:30 -0800 (PST)
-Message-ID: <f3811c1f-eff2-4c7b-8cea-6d3115525235@linaro.org>
-Date: Tue, 30 Jan 2024 08:40:29 +0100
+	s=arc-20240116; t=1706600921; c=relaxed/simple;
+	bh=fAUfUG9L4OPjwP8nXsyDo7NvEYVxO4MXF8LFC9SkkaI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=PcS+tes8vcHsXaOdDnT0THNbZouMrdCcZpA14GTPSMdbnM5PrFEmUnLAj9w3vc59uZEOWxT4fgtjBmXegfBAnz8709ZXnDw7a9yfkTAnRCIMUDPr3EqwBNM2kPB9ucsj2MVPGaOL9Dsz3zVJ8/cKSx/YTawet3aUu2qTneNKwCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=STUbqRyx; arc=none smtp.client-ip=203.205.221.242
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1706600905; bh=fAUfUG9L4OPjwP8nXsyDo7NvEYVxO4MXF8LFC9SkkaI=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=STUbqRyxYwU5lMugJ59BHtKnpuJB87h+PvGLc1FcWuB4JYNCWIygPzemk1ooDDqyY
+	 /Nlu93h8L8bYdWq3FG4yjkfuc0BkSlUpMAWNn7g8PkgSreUDhe/9vaXoJ3S0fOBI8s
+	 1nASbNjNoB2dzwaeI0cRpNTX8faMQGkKV+nCXDc0=
+Received: from [127.0.0.1] ([240e:379:2245:2000:e9ce:4171:6217:836b])
+	by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
+	id A918EA0B; Tue, 30 Jan 2024 15:42:17 +0800
+X-QQ-mid: xmsmtpt1706600537t67bwsgl5
+Message-ID: <tencent_3B64210B8DDF7C048223DA638EF8B8673108@qq.com>
+X-QQ-XMAILINFO: MMvVzQSdFuTpkPwgZxrJfyAica3qlAnRBmAAVdUxKzcJLV2MecuHBHwBjcVLnv
+	 2MXcpPyqsKD2ZL6QLhRh2eZ7hl43gK18XGkC5ndhaNz402ero8zKzgka5jllKqeSR3M16rPrf33X
+	 mw7wPcCYxbKtl5B6uX2FKlm1Yn9/RPZfkWzHvS5d/3skcdhs/b9utJkzg4MWxBu63qqZxS2mu1dP
+	 UD2XBqct6r7dUrWeOKTGJkIA5ek3g+Fgb4t2J/BKBTMSnENbXkOhvm4FN5M2pBFV3CKC0AwGJUP8
+	 vj3vw08XvJPS/szXCE0ZqeDxCkfIeszThuGmZEhrnghS7TgA997+/RNqQX8MgINjPOCFXOvtb3pu
+	 dUapj1FxiBvOMPV0niztePsqA39skJcy3h/I6UgXxQUDkNqankG9xzSaZKjmT4NGobANvvAd+dDT
+	 uCHDiFHDJpcHV19dYOeUN2o4tXx9Wgp+WEfIJ9PZvZryy1QWTdyPcD/wLPZBRp1WrLSowm9qV0r6
+	 2fOnHMnZKubmewJuEnjsfVVTxMNyLVqmYu4rqIH+d+5PdHUX25/lnOLtcIdwXgzOwwOB5AkmEE2E
+	 05kVj2z9plKkzHd+R15RFePMy+fhqoWhuY6I6yF1654JOyhVz3jnglz5VEvKkvTl2OH+bjmtxmM8
+	 7fwVtn/ZrsZdnpMGDbxMKAD5JstMzCkiwdPIkR/+Vh/tWTOVjRjw0IejOpA+DzNVPXwHsLbVft4D
+	 nBxmfCugFbfM8p2/QfVypqOk5avAHCpMCtxKk7L6NyK1XH5XoQGwrxAut+OLk6e3P4tDEoEl1ciT
+	 jgTOPwxZxNuB/D+FGj7xf7f42MNdhj/KhWEyymGcFLrAxy8aSuz2jOl9N4RZKEVaz9rmY5AKJ+5h
+	 3fWjNNH7Hhk3LQrFomUEsrrlnscI4ujFsCMXIVQUBg8EzfCAlzVdfVNl7CMkzwOi2PMi3VlVbq+K
+	 3A1sbWGeTD3pKa/A1Eivr3PKukejS001jwBJsF6h/UOK/rUwuYVT0/AGVX321L
+X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
+X-OQ-MSGID: <f42c1bc8b986de3ec63ac740e87be128b385b115.camel@cyyself.name>
+Subject: Re: [PATCH 1/3] riscv: mm: Use hint address in mmap if available
+From: Yangyu Chen <cyy@cyyself.name>
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: Alexandre Ghiti <alexghiti@rivosinc.com>, Paul Walmsley
+ <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
+ <aou@eecs.berkeley.edu>, Shuah Khan <shuah@kernel.org>, Jonathan Corbet
+ <corbet@lwn.net>, linux-riscv@lists.infradead.org,
+ linux-kernel@vger.kernel.org,  linux-kselftest@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-mm@kvack.org
+Date: Tue, 30 Jan 2024 15:42:17 +0800
+In-Reply-To: <ZbhkAUf+h7sK71Rs@ghost>
+References: <20240129-use_mmap_hint_address-v1-0-4c74da813ba1@rivosinc.com>
+	 <20240129-use_mmap_hint_address-v1-1-4c74da813ba1@rivosinc.com>
+	 <tencent_F34C3BC7F1077728A62E84A7D183EF5BF005@qq.com>
+	 <ZbhkAUf+h7sK71Rs@ghost>
+Autocrypt: addr=cyy@cyyself.name; prefer-encrypt=mutual;
+ keydata=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
+	0mslfht1JyMf5dUi38RQI/fOO0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3-1 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: usb: dwc3: Add system bus request info
-Content-Language: en-US
-To: Frank Li <Frank.li@nxp.com>, Conor Dooley <conor@kernel.org>
-Cc: thinh.nguyen@synopsys.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, balbi@kernel.org,
- devicetree@vger.kernel.org, gregkh@linuxfoundation.org, imx@lists.linux.dev,
- linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
- mark.rutland@arm.com, mathias.nyman@intel.com, pku.leo@gmail.com,
- sergei.shtylyov@cogentembedded.com
-References: <20240123-poking-geography-33be2b5ae578@spud>
- <Za/8J8MDJaZEPEKO@lizhi-Precision-Tower-5810>
- <20240123-anew-lilly-0d645bdbfb30@spud>
- <Za//LX9U6QG5A5NW@lizhi-Precision-Tower-5810>
- <20240123-nanometer-atlantic-6465b270043a@spud>
- <ZbAR/NQvjUnf2At+@lizhi-Precision-Tower-5810>
- <46781012-2678-4f6c-9aee-b020cabcbb28@linaro.org>
- <ZbA8ea9Ex+hMdDDZ@lizhi-Precision-Tower-5810>
- <ZbfB/KT+fzO/F2e5@lizhi-Precision-Tower-5810>
- <20240129-encode-catchable-f5712d561a47@spud>
- <ZbfjZoHiH7BsKyzl@lizhi-Precision-Tower-5810>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <ZbfjZoHiH7BsKyzl@lizhi-Precision-Tower-5810>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-On 29/01/2024 18:41, Frank Li wrote:
-> On Mon, Jan 29, 2024 at 04:49:21PM +0000, Conor Dooley wrote:
->> On Mon, Jan 29, 2024 at 10:19:24AM -0500, Frank Li wrote:
->>> On Tue, Jan 23, 2024 at 05:23:53PM -0500, Frank Li wrote:
->>>> On Tue, Jan 23, 2024 at 10:46:39PM +0100, Krzysztof Kozlowski wrote:
->>>>> On 23/01/2024 20:22, Frank Li wrote:
->>>>>> On Tue, Jan 23, 2024 at 06:42:27PM +0000, Conor Dooley wrote:
->>>>>>> On Tue, Jan 23, 2024 at 01:02:21PM -0500, Frank Li wrote:
->>>>>>>> On Tue, Jan 23, 2024 at 05:51:48PM +0000, Conor Dooley wrote:
->>>>>>>>> On Tue, Jan 23, 2024 at 12:49:27PM -0500, Frank Li wrote:
->>>>>>>>>> On Tue, Jan 23, 2024 at 05:27:13PM +0000, Conor Dooley wrote:
->>>>>>>>>>> On Tue, Jan 23, 2024 at 12:02:05PM -0500, Frank Li wrote:
->>>>>>>>>>>> Add device tree binding allow platform overwrite default value of *REQIN in
->>>>>>>>>>>> GSBUSCFG0.
->>>>>>>>>>>
->>>>>>>>>>> Why might a platform actually want to do this? Why does this need to be
->>>>>>>>>>> set at the board level and being aware of which SoC is in use is not
->>>>>>>>>>> sufficient for the driver to set the correct values?
->>>>>>>>>>
->>>>>>>>>> In snps,dwc3.yaml, there are already similary proptery, such as
->>>>>>>>>> snps,incr-burst-type-adjustment. Use this method can keep whole dwc3 usb
->>>>>>>>>> driver keep consistent. And not all platform try enable hardware
->>>>>>>>>> dma_cohenrence. It is configable for difference platform.
->>>>>>>>>
->>>>>>>>> When you say "platform", what do you mean? I understand that term to
->>>>>>>>> mean a combination of board, soc and firmware.
->>>>>>>>
->>>>>>>> In my company's environment, "platform" is "board". I will use "board" in
->>>>>>>> future. Is it big difference here?
->>>>>>>
->>>>>>> Nah, that's close enough that it makes no difference here.
->>>>>>>
->>>>>>> I'd still like an explanation for why a platform would need to actually
->>>>>>> set these properties though, and why information about coherency cannot
->>>>>>> be determined from whether or not the boss the usb controller is on is
->>>>>>> communicated to be dma coherent via the existing devicetree properties
->>>>>>> for that purpose.
->>>>>>
->>>>>> Actually, I am not very clear about reason. I guest maybe treat off power
->>>>>> consumption and performance.
->>>>>>
->>>>>> What's your judgement about proptery, which should be in dts. Such as
->>>>>> reg, clk, reset, dma and irq, which is tighted with SOC. It is the fixed
->>>>>> value for every SOC. The board dts never change these.
->>>>>
->>>>> Then it can be deduced from the compatible and there is no need for new
->>>>> properties.
->>>>
->>>> Okay, I think "*reqinfo" match this. When new Soc(using compatible dwc usb
->>>> controller) appear regardless dma-cohorence or not, connect by AXI3 or
->>>> AXI4, needn't add new propterties. 
->>>
->>> Anyone have objection? I will prepare v2 to fix rob's bot error.
->>
->> I'm not sure what you want me to object to/not object to.
->> Your last message said "needn't add new propterties", seemingly in
->> agreement with Krzysztoff saying that it can be deduced from the
->> compatible. That seems like a good way forward for me.
-> 
-> Okay, let me clear it again. dwc usb is quite common IP. The below is
-> what reason why need "*reginfo* instead of using compatible string.
-> 
-> 1. *reginfo* property is decscript hardware behevior, which will be changed
-> at difference SOC.
-> 2. it may change at board level according to if enable dma coherence.
+On Mon, 2024-01-29 at 18:50 -0800, Charlie Jenkins wrote:
+> On Tue, Jan 30, 2024 at 10:34:03AM +0800, Yangyu Chen wrote:
+> >=20
+> > > On Jan 30, 2024, at 08:37, Charlie Jenkins <charlie@rivosinc.com>
+> > > wrote:
+> > >=20
+> > > On riscv it is guaranteed that the address returned by mmap is
+> > > less than
+> > > the hint address. Allow mmap to return an address all the way up
+> > > to
+> > > addr, if provided, rather than just up to the lower address
+> > > space.
+> > >=20
+> > > This provides a performance benefit as well, allowing mmap to
+> > > exit after
+> > > checking that the address is in range rather than searching for a
+> > > valid
+> > > address.
+> > >=20
+> > > It is possible to provide an address that uses at most the same
+> > > number
+> > > of bits, however it is significantly more computationally
+> > > expensive to
+> > > provide that number rather than setting the max to be the hint
+> > > address.
+> > > There is the instruction clz/clzw in Zbb that returns the highest
+> > > set bit
+> > > which could be used to performantly implement this, but it would
+> > > still
+> > > be slower than the current implementation. At worst case, half of
+> > > the
+> > > address would not be able to be allocated when a hint address is
+> > > provided.
+> > >=20
+> > > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> > > ---
+> > > arch/riscv/include/asm/processor.h | 21 ++++++++-------------
+> > > 1 file changed, 8 insertions(+), 13 deletions(-)
+> > >=20
+> > > diff --git a/arch/riscv/include/asm/processor.h
+> > > b/arch/riscv/include/asm/processor.h
+> > > index f19f861cda54..f3ea5166e3b2 100644
+> > > --- a/arch/riscv/include/asm/processor.h
+> > > +++ b/arch/riscv/include/asm/processor.h
+> > > @@ -22,14 +22,11 @@
+> > > ({ \
+> > > unsigned long mmap_end; \
+> > > typeof(addr) _addr =3D (addr); \
+> > > - if ((_addr) =3D=3D 0 || (IS_ENABLED(CONFIG_COMPAT) &&
+> > > is_compat_task())) \
+> > > - mmap_end =3D STACK_TOP_MAX; \
+> > > - else if ((_addr) >=3D VA_USER_SV57) \
+> > > - mmap_end =3D STACK_TOP_MAX; \
+> > > - else if ((((_addr) >=3D VA_USER_SV48)) && (VA_BITS >=3D
+> > > VA_BITS_SV48)) \
+> > > - mmap_end =3D VA_USER_SV48; \
+> > > + if ((_addr) =3D=3D 0 || \
+> > > + (IS_ENABLED(CONFIG_COMPAT) && is_compat_task()) || \
+> > > + ((_addr + len) > BIT(VA_BITS - 1))) \
+> >=20
+> > How about replacing BIT(VA_BITS-1) to DEFAULT_MAP_WINDOW to make
+> > the code
+> > more general.
+> >=20
+> > > else \
+> > > - mmap_end =3D VA_USER_SV39; \
+> > > + mmap_end =3D (_addr + len); \
+> > > mmap_end; \
+> > > })
+> > >=20
+> > > @@ -39,14 +36,12 @@
+> > > typeof(addr) _addr =3D (addr); \
+> > > typeof(base) _base =3D (base); \
+> > > unsigned long rnd_gap =3D DEFAULT_MAP_WINDOW - (_base); \
+> > > - if ((_addr) =3D=3D 0 || (IS_ENABLED(CONFIG_COMPAT) &&
+> > > is_compat_task())) \
+> > > + if ((_addr) =3D=3D 0 || \
+> > > +=C2=A0=C2=A0=C2=A0 (IS_ENABLED(CONFIG_COMPAT) && is_compat_task()) |=
+| \
+> > > +=C2=A0=C2=A0=C2=A0 ((_addr + len) > BIT(VA_BITS - 1))) \
+> >=20
+> > Same here.
+> >=20
+> > > mmap_base =3D (_base); \
+> > > - else if (((_addr) >=3D VA_USER_SV57) && (VA_BITS >=3D
+> > > VA_BITS_SV57)) \
+> > > - mmap_base =3D VA_USER_SV57 - rnd_gap; \
+> > > - else if ((((_addr) >=3D VA_USER_SV48)) && (VA_BITS >=3D
+> > > VA_BITS_SV48)) \
+> > > - mmap_base =3D VA_USER_SV48 - rnd_gap; \
+> > > else \
+> > > - mmap_base =3D VA_USER_SV39 - rnd_gap; \
+> > > + mmap_base =3D (_addr + len) - rnd_gap; \
+> > > mmap_base; \
+> > > })
+> > >=20
+> > >=20
+> >=20
+> > What about not setting the upper bound as x86/arm/powerpc as [1]
+> > did?
+> > In this case, user space can directly pass a constant hint address
+> > >
+> > BIT(47) to get a mapping in sv57. If you want this, this code also
+> > allows
+> > user-space to pass any address larger than TASK_SIZE. You should
+> > also
+> > limit the mmap_base to (base) + TASK_SIZE - DEFAULT_MAP_WINDOW.
+>=20
+> No. This suggestion causes a random address to be used if the hint
+> address is not available. That is why I didn't simply go with your
+> patch.
 
-dma coherence is not a board property. Anyway, you said it will never
-change in the board.
 
-> 3. dwc core part is quite common, all SOC using common "snps, dwc3" as
-> core-part, all soc specific "nxp, dwc3 *", "qcom, dwc3*" is used for glue
-> logic part.
+I think return random address is expected and other ISAs like
+x86/arm/powerpc will also return random address if hint is NULL.
 
-And all should be having dedicated compatibles.
+Also add CC linux-mm to get more opinions from people who familiar with
+mm.
 
-> 4. using *reginfo* can reduce add more strange compatible string such as
-> "nxp, dwc3-core" ...
-> 5. *reginfo* property likes "reg", "clk", and align what Kryzystoff said.
-> "reg", "clk" is fixed for specfic SOC. These can help reduce "compatible"
-> string number. "reginfo" do the same work as "reg", "clk" ..
-
-So again, reginfo is fixed for specific SoC? So it can be deduced from
-compatible.
-
-I don't know what to say more here... so let's be clear that you
-understood me:
-
-NAK
-
-Best regards,
-Krzysztof
+>=20
+> This patch both gives your application the benefit of being able to
+> use
+> a hint address in the hopes that the address is available, as well as
+> continuing to support the guarantee that an address using more bits
+> than
+> the hint address is not returned.
+>=20
+> - Charlie
+>=20
+> >=20
+> > I=E2=80=99m also aware of the rnd_gap if it is not 0, then we will not =
+get
+> > address mapped to VA_USER_SV39 - rnd_gap.
+> >=20
+> > [1].
+> > https://lore.kernel.org/linux-riscv/tencent_2683632BEE438C6D4854E30BDF9=
+CA0843606@qq.com/
+> >=20
+> > > --=20
+> > > 2.43.0
+> > >=20
+> >=20
 
 
