@@ -1,118 +1,115 @@
-Return-Path: <linux-kernel+bounces-44846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44847-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 959F8842817
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:32:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BEC484281B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:33:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D5CC1F2648A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:32:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2DA8B1F2574A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:33:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE46D82D94;
-	Tue, 30 Jan 2024 15:32:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF48E82D8A;
+	Tue, 30 Jan 2024 15:33:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="HPpvSE07"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YEUZmIfF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 981C182D85
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 15:32:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A03B7F7CF;
+	Tue, 30 Jan 2024 15:33:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706628724; cv=none; b=CYbD5xDKxUBqzhkc4KOJqMhDZJ9Z09IQdy2x6cPx14QrsCfjLHWemytCFgVEdlmGWMvfycK0+a/JAWLpcuuFUOKfqCmjOUShM/vP20Hvfp+UZ2RfvyqCCuzGAl6tOyJAC/ln9IAcJEgE8FFJrrbJVNohSs9IOW4Ri1lKf4v86Kg=
+	t=1706628807; cv=none; b=tokEfzQudBwbjhr4bM6PvIzF+rhv/CupW/gBvGDij+J/ZYqkGZbCfEaVdh4yv62pcDEqcY+M2kBTrzJgNUL5GNd5RSA/2r9DUrSiOIwuISSujYFnf25u71m+ospwu/YqapQfvLIy5r5712bKNbpmQv4nD4rVE6pHSY4Qy7Fz1Cg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706628724; c=relaxed/simple;
-	bh=/mb0FlNJsasGY09t2fVBMH3IJJ17htS6caWYWfCl6nY=;
+	s=arc-20240116; t=1706628807; c=relaxed/simple;
+	bh=xL9kFnUvGlP9fBkvgK0in4ewf6ZPO4qQZEK2ExFEHDc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WxVrJY6ANaalwkbCmPUQEIaSdZ/fcNEFgZEFtryIJEDY7rQ63WZfDqIBqYirvFv7mqVRmNhJZ6AHKq1vPrW7X4MMNu8WUz/WCzSsjH07vxDRQxXoK6EQ/MjLyCd2rOaywxtrFNjDjNe9/EnnREr2jEf/q5L0L6r5ccoF3rg5D44=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=HPpvSE07; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 3CAD740E016C;
-	Tue, 30 Jan 2024 15:31:59 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id gPMgD9ziwYsG; Tue, 30 Jan 2024 15:31:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1706628716; bh=QBO0DN0ipIKH7sKZQJ7hGPJ0BINXkDod39T7fhCWYlA=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=pZPHlAgUbtbS+H+C8B61WuIkHA36QZXGRY+pGgrKK6mWDI73z5cpYSoTfvcEwjDXKIJ9kWJP7hXcN5tourfxZwGbKz777oZ2SDaOiZSonxSbHjSiC97GNQ/YGVMqHgtipCS0jjtODSk86sO1qXt5ZA1yRUAy7txngiZUpDd7EQk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YEUZmIfF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BEC3C433F1;
+	Tue, 30 Jan 2024 15:33:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706628806;
+	bh=xL9kFnUvGlP9fBkvgK0in4ewf6ZPO4qQZEK2ExFEHDc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HPpvSE07XxIN+63fjfGCnA4yTxw27SQoLz1KMeIYbyYSzL4ZB0RLpy1Odj6b+pxHD
-	 p4YKH6wb4t76jCHVRyOisLbzvHkD3hTvsBPH5GhHQSkfo/RBDuVlLyxe1ty9I7bTiY
-	 pbrnMUZj0zYAqp4inRN91mp6jRWGOEhNJWAvWcEanByIBAojcxP6fpxdQTpl1zuP7Y
-	 JERt2A4s9kdoR5SqKNnCY78Qy+oesLxGGb98hQAxUkLOLYTy74Yv6LhX9D2lu9bGHV
-	 ZKvs/K6jBumTZtpJox6dxM3lAiF5OJqe4aCot19fpE7rLN6fZqwBFStecyKG0oy6Ip
-	 l0iN3KHxpYAVH0eLyFPhUbPXQKzmIIQIpE2b3IfZ2gAflulAnQ7GXK0prhASL1cNip
-	 vbNd8YbF8DDiDJ4RCejLwYArKzlDLfSbl5j5yEoYwIpv8693DXbGfRBCiYid4QzZp+
-	 oKNwcBmetiS1rPCAHoEfJm3WhnJQVGmeObujwsSN+dpo84nUnDX/qkQiYlNwl+XZNc
-	 XpOlLIjuKlO6KdKJEYBsAAf62Uk9L0FbXY/OndOoakgyj6GfZ34uh/tPFOsmLdtIVZ
-	 TW/ygqrgxNaRH1eVwEA2/1F/LO5CuVEHv45s2iiDdCyOP7KhNdA+hY2LDu9EVv9vgq
-	 AoAgcPpjXCoj+QtjKnNbOOmA=
-Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6146640E00C5;
-	Tue, 30 Jan 2024 15:31:46 +0000 (UTC)
-Date: Tue, 30 Jan 2024 16:31:41 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: "Li, Xin3" <xin3.li@intel.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"mingo@redhat.com" <mingo@redhat.com>,
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-	"x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-	"luto@kernel.org" <luto@kernel.org>,
-	"Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-	"andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>
-Subject: Re: [PATCH 2/2] x86/fred: Fix build with CONFIG_IA32_EMULATION=n
-Message-ID: <20240130153141.GEZbkWXQt2H3JHHGHx@fat_crate.local>
-References: <20240127093728.1323-1-xin3.li@intel.com>
- <20240127093728.1323-3-xin3.li@intel.com>
- <20240130124816.GCZbjwEFrZS55FLxb8@fat_crate.local>
- <SA1PR11MB6734A226858F6030C86AE2E5A87D2@SA1PR11MB6734.namprd11.prod.outlook.com>
+	b=YEUZmIfF+/ZFfhkJ3j7kTnmXvKgFiXwU2qigFrT46q3b8HIMfyqkw+WzXrm9Mhkh4
+	 LZNOEMSgh85IO6caMHOLwHdKOohDvsEo3cgbbsQjw4m9c9lofKrVQ3k6yh4SNcwBoa
+	 Dan/4pjo9RcTNFU+BvpwXuRRtJxKgfg1EPWjWohZCKy2VqmS8iCmpGC48n4PHfjk6X
+	 I4Cmxyb+XMMh7NpYq0Lg9UZW1VjxvUBrilF0PRAuiQLlRj7p9jn/NYTj/IZx86z3le
+	 Eqsjgl06VCmBYhZu1PY+rAhK+lJnKpnxkgtzVZotG2k8sHTWulLXTaGFITD1+1EUxv
+	 RBELXLAODvuXA==
+Date: Tue, 30 Jan 2024 21:03:22 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Andrew Halaney <ahalaney@redhat.com>, bhupesh.linux@gmail.com
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] MAINTAINERS: Drop unreachable reviewer for Qualcomm
+ ETHQOS ethernet driver
+Message-ID: <ZbkWwn-oN5wqoPfJ@matsya>
+References: <20240129-remove-dwmac-qcom-ethqos-reviewer-v1-1-2645eab61451@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <SA1PR11MB6734A226858F6030C86AE2E5A87D2@SA1PR11MB6734.namprd11.prod.outlook.com>
+In-Reply-To: <20240129-remove-dwmac-qcom-ethqos-reviewer-v1-1-2645eab61451@redhat.com>
 
-On Tue, Jan 30, 2024 at 03:22:01PM +0000, Li, Xin3 wrote:
-> How do you think?
+On 29-01-24, 11:12, Andrew Halaney wrote:
+> Bhupesh's email responds indicating they've changed employers and with
+> no new contact information. Let's drop the line from MAINTAINERS to
+> avoid getting the same response over and over.
 
-Interesting. For some reason gcc doesn't constant-fold it away like
-clang does.
+Looks like Bhupesh sent the patch changing but never followed up with a
+v2 for this:
+lore.kernel.org/r/20230915191600.3410862-1-bhupesh.linux@gmail.com
 
-> diff --git a/arch/x86/include/asm/ia32.h b/arch/x86/include/asm/ia32.h
-> index c7ef6ea2fa99..01342d343c19 100644
-> --- a/arch/x86/include/asm/ia32.h
-> +++ b/arch/x86/include/asm/ia32.h
-> @@ -81,7 +81,7 @@ static inline void ia32_disable(void)
+Would prefer if this is changed to his email (copied him as well)
+
+
 > 
->  #else /* !CONFIG_IA32_EMULATION */
+> Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
+> ---
+> If anyone knows how to contact Bhupesh / if they're willing to continue
+> being a reviewer feel free to suggest an alternative, but for the moment
+> this is better than nothing.
+> ---
+>  MAINTAINERS | 1 -
+>  1 file changed, 1 deletion(-)
 > 
-> -static inline bool ia32_enabled(void)
-> +static __always_inline bool ia32_enabled(void)
->  {
->  	return IS_ENABLED(CONFIG_X86_32);
->  }
-
-Looks good to me. Lemme try it here.
-
-Thx.
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 939f6dd0ef6a..b285d9a123ce 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -18080,7 +18080,6 @@ F:	drivers/net/ethernet/qualcomm/emac/
+>  
+>  QUALCOMM ETHQOS ETHERNET DRIVER
+>  M:	Vinod Koul <vkoul@kernel.org>
+> -R:	Bhupesh Sharma <bhupesh.sharma@linaro.org>
+>  L:	netdev@vger.kernel.org
+>  L:	linux-arm-msm@vger.kernel.org
+>  S:	Maintained
+> 
+> ---
+> base-commit: 596764183be8ebb13352b281a442a1f1151c9b06
+> change-id: 20240129-remove-dwmac-qcom-ethqos-reviewer-1a37d8c71383
+> 
+> Best regards,
+> -- 
+> Andrew Halaney <ahalaney@redhat.com>
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+~Vinod
 
