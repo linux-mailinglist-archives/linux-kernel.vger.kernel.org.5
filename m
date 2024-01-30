@@ -1,101 +1,147 @@
-Return-Path: <linux-kernel+bounces-45288-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45290-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFF08842E18
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 21:42:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A4CD842E1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 21:44:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D2CAB25FFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:42:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93DAB1F263AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:44:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38FA76E2AC;
-	Tue, 30 Jan 2024 20:41:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E4E971B25;
+	Tue, 30 Jan 2024 20:44:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="LKerDBWl"
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r3Am/ZUF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13EF455E63;
-	Tue, 30 Jan 2024 20:41:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72A6555E6B;
+	Tue, 30 Jan 2024 20:44:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706647313; cv=none; b=hZEEjzZsWjhfHAn/aQ6GpKsmzVWZG7dMDx0bn1USB/9EDDeaKal3A4cQARhE010E4KIJMun06iUjbtssU72w/wtt6pKFKVP5nzWlR6fwmZahL4HdvwugSQqGXDm76sBN/T1kdrfetXyPUdR76NgcJOK6ZuaBuaRfGq2ZYhtXOQM=
+	t=1706647445; cv=none; b=RIWSysdzF7yfPSW8Kvud1ZrYObdBiaJKFqxJ5RyAsxE7DTgYn0ClGVLqAe5E5VseyIGCTAdPcJgvzRfB451iNVIYug+6R4sOGflQCI4LhaMM6wtlv0kZ3Zf31wmMii9+8w23FikEVgSEIBGBeN9SbZYMfUbLQkn5GhrIudeYzfU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706647313; c=relaxed/simple;
-	bh=3lWoI4fp1UvbzI7RP+651lFdJtAzivLl8NKwpRSUtwg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Xiyf1uyux/dS9bKEOcotJdXXRSwceZJoSikcKyQc++NEu9ujlokBVIhvjPA04Y9RQ89XqPrMsUX/k7+VwnlzOfL9VfblUW0FN9+bpP4bG6yFE4MCVBIk5v0ZbS6HOZNWwae9seLiFl/EN1tNafe8eECIV/7II2ycapeWe58/+yo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=LKerDBWl; arc=none smtp.client-ip=45.79.88.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 3D11341A47
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1706647309; bh=XW/VGubkQ/xLI57k4zHcflysiAno5fvazmiEwifngHw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=LKerDBWlc+0O2wjQbP1fsylKo/gqAXP9YmnvBFU6XxXu+hXT9p9GVkrw8L8wEWqJK
-	 dbGX5F2Uc2xDqgKbIP+G3LGWYVcK0zSuZZJegxtSP6JqPWkJFJYvUdZ0RXh3fUjtTW
-	 ShnUwMt709ara0myE7jAgQ/RIVrvxp0+OPkDzk9xFDbqZqZUlBq0MT+xTIu+OezcCL
-	 EgpUKVziE6FgPu/pIqKRJS4M18vKt1X6GT33+bt1JY7uFc1RrKVlGp1Wo0thtUri1c
-	 uRgWC3+aQenij13dYrjnXm1LoJq2TvW002TyqnMARsXnOeaMNrzgQmIdwRaBpKhZ+e
-	 hcP6Y4Zftnajw==
-Received: from localhost (unknown [IPv6:2601:280:5e00:7e19::646])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id 3D11341A47;
-	Tue, 30 Jan 2024 20:41:49 +0000 (UTC)
-From: Jonathan Corbet <corbet@lwn.net>
-To: Federico Vaga <federico.vaga@vaga.pv.it>
-Cc: Federico Vaga <federico.vaga@vaga.pv.it>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] doc:it_IT: first translation for locking/
-In-Reply-To: <20240106233820.30454-1-federico.vaga@vaga.pv.it>
-References: <20240106233820.30454-1-federico.vaga@vaga.pv.it>
-Date: Tue, 30 Jan 2024 13:41:48 -0700
-Message-ID: <871q9yblkj.fsf@meer.lwn.net>
+	s=arc-20240116; t=1706647445; c=relaxed/simple;
+	bh=bPw6ruebyasCXorT1LdxWx1GajiUvbLKrTDw9DFK5FA=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=dHRxn6Jn+lZoPm0BJZL/P1o9RgsZjiSDL4ITbfhrSYYdbq0q/A2NLYCaoZbBPoGzYu4ImusDLta3CYEBK3oO4I/woOJ97aTjasjC+gJQ5S2YtrXXBOGBCoTue6+3kFAmGuoaPjgGryNMdn+0LY1XT/wJB23fYl+/asvyCwknga8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r3Am/ZUF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94EBFC433F1;
+	Tue, 30 Jan 2024 20:44:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706647444;
+	bh=bPw6ruebyasCXorT1LdxWx1GajiUvbLKrTDw9DFK5FA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=r3Am/ZUFJ5LvciFl7LpCgQQZ28jpBwPyRmGVj9C9/vS9yk40Aa7U+KC6hq/oO2B7n
+	 wDQJ8uK7Ltr51lQF8BQiAA8Skty5QBeFsH0/3E1VTaUey75oUEjjsZccrwn+o0MZeE
+	 Miv8UzxNckXMSMLvDHFGUgNXH0sZypZ7xRpaMpeTurT916gRzkt54hEEq2RxhsCyxH
+	 s9nK0ukGPiRl9D3B/hcIKbaI2t/XGCd1zfkzJo3hNN89BP3waa48nxA5jOnij4C3r2
+	 kY5KfQ5U4IsSneu4O25TjKls3lCrZLcTzm7OdlZZdjiu5xgCsOncdeDuXSXJQsxfgP
+	 3wdiZdO2KG//w==
+Date: Tue, 30 Jan 2024 14:44:03 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
+Cc: "Chen, Jiqian" <Jiqian.Chen@amd.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, Juergen Gross <jgross@suse.com>,
+	Stefano Stabellini <sstabellini@kernel.org>,
+	Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	"xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+	"Hildebrand, Stewart" <Stewart.Hildebrand@amd.com>,
+	"Huang, Ray" <Ray.Huang@amd.com>,
+	"Ragiadakou, Xenia" <Xenia.Ragiadakou@amd.com>
+Subject: Re: [RFC KERNEL PATCH v4 3/3] PCI/sysfs: Add gsi sysfs for pci_dev
+Message-ID: <20240130204403.GA562912@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Zbi8WJPEUSMgjuVY@macbook>
 
-Federico Vaga <federico.vaga@vaga.pv.it> writes:
+On Tue, Jan 30, 2024 at 10:07:36AM +0100, Roger Pau Monné wrote:
+> On Mon, Jan 29, 2024 at 04:01:13PM -0600, Bjorn Helgaas wrote:
+> > On Thu, Jan 25, 2024 at 07:17:24AM +0000, Chen, Jiqian wrote:
+> > > On 2024/1/24 00:02, Bjorn Helgaas wrote:
+> > > > On Tue, Jan 23, 2024 at 10:13:52AM +0000, Chen, Jiqian wrote:
+> > > >> On 2024/1/23 07:37, Bjorn Helgaas wrote:
+> > > >>> On Fri, Jan 05, 2024 at 02:22:17PM +0800, Jiqian Chen wrote:
+> > > >>>> There is a need for some scenarios to use gsi sysfs.
+> > > >>>> For example, when xen passthrough a device to dumU, it will
+> > > >>>> use gsi to map pirq, but currently userspace can't get gsi
+> > > >>>> number.
+> > > >>>> So, add gsi sysfs for that and for other potential scenarios.
+> > > >> ...
+> > > > 
+> > > >>> I don't know enough about Xen to know why it needs the GSI in
+> > > >>> userspace.  Is this passthrough brand new functionality that can't be
+> > > >>> done today because we don't expose the GSI yet?
+> > 
+> > I assume this must be new functionality, i.e., this kind of
+> > passthrough does not work today, right?
+> > 
+> > > >> has ACPI support and is responsible for detecting and controlling
+> > > >> the hardware, also it performs privileged operations such as the
+> > > >> creation of normal (unprivileged) domains DomUs. When we give to a
+> > > >> DomU direct access to a device, we need also to route the physical
+> > > >> interrupts to the DomU. In order to do so Xen needs to setup and map
+> > > >> the interrupts appropriately.
+> > > > 
+> > > > What kernel interfaces are used for this setup and mapping?
+> > >
+> > > For passthrough devices, the setup and mapping of routing physical
+> > > interrupts to DomU are done on Xen hypervisor side, hypervisor only
+> > > need userspace to provide the GSI info, see Xen code:
+> > > xc_physdev_map_pirq require GSI and then will call hypercall to pass
+> > > GSI into hypervisor and then hypervisor will do the mapping and
+> > > routing, kernel doesn't do the setup and mapping.
+> > 
+> > So we have to expose the GSI to userspace not because userspace itself
+> > uses it, but so userspace can turn around and pass it back into the
+> > kernel?
+> 
+> No, the point is to pass it back to Xen, which doesn't know the
+> mapping between GSIs and PCI devices because it can't execute the ACPI
+> AML resource methods that provide such information.
+> 
+> The (Linux) kernel is just a proxy that forwards the hypercalls from
+> user-space tools into Xen.
 
-> To begin with:
->     - locking/index.rst
->     - locking/lockdep-design.rst
->     - locking/lockstat.rst
->     - locking/lockturture.rst
->     - locking/locktypes.rst
->
-> And RCU/torture.rst to avoid broken references.
->
-> Signed-off-by: Federico Vaga <federico.vaga@vaga.pv.it>
-> ---
->  Documentation/RCU/torture.rst                 |   2 +-
->  .../translations/it_IT/RCU/index.rst          |  19 +
->  .../translations/it_IT/RCU/torture.rst        | 369 ++++++++++
->  .../translations/it_IT/core-api/index.rst     |  12 +
->  Documentation/translations/it_IT/index.rst    |   1 +
->  .../translations/it_IT/locking/index.rst      |  20 +
->  .../it_IT/locking/lockdep-design.rst          | 678 ++++++++++++++++++
->  .../translations/it_IT/locking/lockstat.rst   | 230 ++++++
->  .../it_IT/locking/locktorture.rst             | 181 +++++
->  .../translations/it_IT/locking/locktypes.rst  | 547 ++++++++++++++
->  10 files changed, 2058 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/translations/it_IT/RCU/index.rst
->  create mode 100644 Documentation/translations/it_IT/RCU/torture.rst
->  create mode 100644 Documentation/translations/it_IT/locking/index.rst
->  create mode 100644 Documentation/translations/it_IT/locking/lockdep-design.rst
->  create mode 100644 Documentation/translations/it_IT/locking/lockstat.rst
->  create mode 100644 Documentation/translations/it_IT/locking/locktorture.rst
->  create mode 100644 Documentation/translations/it_IT/locking/locktypes.rst
+But I guess Xen knows how to interpret a GSI even though it doesn't
+have access to AML?
 
-Applied, thanks.
+> > It seems like it would be better for userspace to pass an identifier
+> > of the PCI device itself back into the hypervisor.  Then the interface
+> > could be generic and potentially work even on non-ACPI systems where
+> > the GSI concept doesn't apply.
+> 
+> We would still need a way to pass the GSI to PCI device relation to
+> the hypervisor, and then cache such data in the hypervisor.
+> 
+> I don't think we have any preference of where such information should
+> be exposed, but given GSIs are an ACPI concept not specific to Xen
+> they should be exposed by a non-Xen specific interface.
 
-jon
+AFAIK Linux doesn't expose GSIs directly to userspace yet.  The GSI
+concept relies on ACPI MADT, _MAT, _PRT, etc.  A GSI is associated
+with some device (PCI in this case) and some interrupt controller
+entry.  I don't understand how a GSI value is useful without knowing
+something about that framework in which GSIs exist.
+
+Obviously I know less than nothing about Xen, so I apologize for
+asking all these stupid questions, but it just doesn't all make sense
+to me yet.
+
+Bjorn
 
