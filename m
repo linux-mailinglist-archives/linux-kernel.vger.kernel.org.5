@@ -1,355 +1,143 @@
-Return-Path: <linux-kernel+bounces-45324-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45326-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3D95842E84
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 22:13:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78806842E8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 22:16:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E7E51C25326
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 21:13:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AABF51C24F1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 21:16:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8E4F762F0;
-	Tue, 30 Jan 2024 21:13:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83351762EA;
+	Tue, 30 Jan 2024 21:15:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h8e2OOat"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dUYmH0xF"
+Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA029762C7
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 21:13:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37A0A762C3;
+	Tue, 30 Jan 2024 21:15:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706649199; cv=none; b=dMN0PSm5kdO7ZGO/X8CPQrTArRC/y01lqX6//xMBKyBa5NFQeqEUwKz8Gg7b2vuEjxDAsSkMW3eloMzQTI4jiqQUZvDhCk4BCMUJZL6HlymWB/vUJ1dUT1gdVLRUcp2a8wEzqWHfwMWwvwWdU/dWw5B/1hgD1f7ysvawQKWku/Q=
+	t=1706649356; cv=none; b=U1TSrTdYHV+zEGsPOZfQ2e0qvaJvOYpOuvu0ZdjAUOVQjrB9Uo2gup01w1mSTnIstDF7bYWgoPPzvgar9loSfWpRHibbnhP/EVJ3OSx3CnDuAbEeiAagxVeCt4BkULfuhDIu9NWrF2BNFsmirLJa5GzbAykQSKluBz6AehoGUrI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706649199; c=relaxed/simple;
-	bh=O4Tyv99Ce8WAKIj525zTnqLmSNekR2HvNaaDN+njopg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZytrKWiLpG97CtA9E0JuiWnb8lkNEEhmAf4aSsLmoUjIhFSnaaYsHpL8znYTCt3/Rf0bNUXhHewgZJpQrZPqCapmql5muYH3GMJnisVZTLoEEQRhW5BkhefUAhBhAX9LxP+zdcPQJvtFAAzVQGyJPEFfX3KkneagDTP7IpEikg4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h8e2OOat; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B610DC433C7;
-	Tue, 30 Jan 2024 21:13:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706649199;
-	bh=O4Tyv99Ce8WAKIj525zTnqLmSNekR2HvNaaDN+njopg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=h8e2OOatKVWrjrqN2r6c91KYIPtYQO183smzNbxkgWry5Kd6kBuwwQeGaDSdDbCpS
-	 TuyNLtA3c4RiQBZugA0L3+5YJ0OptYKRvLJcz/VvXLtyKpG6Wt+Kf/TvzsFnzWyV22
-	 z8f4arQP5bX6041fiX355kMEZAgbANmVJHaYwNEo0cTI3WoSi5ddI+v4m8D8AJKrFO
-	 zcEee+7Z3DNeP8mm7h7+IvgCHhZPd1uAiaVQYX33RHSLjP0kRrXo/6H4ddhk4k9DdH
-	 YjJYifHfIzVBr58977gGq4UB7w4cWzAyaGP0H3oJVj7kWRhV69TzGsYICbNKAnqCVp
-	 ckP4gaIXJ+7nw==
-Date: Tue, 30 Jan 2024 22:13:15 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-	John Stultz <jstultz@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Eric Dumazet <edumazet@google.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-	Arjan van de Ven <arjan@infradead.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Rik van Riel <riel@surriel.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Sebastian Siewior <bigeasy@linutronix.de>,
-	Giovanni Gherdovich <ggherdovich@suse.cz>,
-	Lukasz Luba <lukasz.luba@arm.com>,
-	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>
-Subject: Re: [PATCH v10 18/20] timers: Implement the hierarchical pull model
-Message-ID: <Zblma8NNZOftJ5fb@pavilion.home>
-References: <Zbb5m0hRHgk59-8z@pavilion.home>
- <87v87a9033.fsf@somnus>
+	s=arc-20240116; t=1706649356; c=relaxed/simple;
+	bh=2J6sAooCk62fHjWrW7YUBlLRP5OyzMo31VVLNDHdhWQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tBy0jYT80DoJM2c0rCct2TVpDMm/+jyRiL6T5fGul5ZBbdjQqCw/A+rP/pVT6ezo4lw7ZC/zb0n5i2n9ZgSYPgVCNiJHB3Xz3qQDy/ZvKEO7PGBePzIQbPnxHzMFUDS/93lfXSbozc4vBy7/YzRl5Mc6N69CRiODCON41xgfMCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dUYmH0xF; arc=none smtp.client-ip=209.85.160.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-2185d5f4366so1584420fac.2;
+        Tue, 30 Jan 2024 13:15:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706649354; x=1707254154; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=7uVaLbUp0zV3Lqp8SjRyaTBacDGvqyOGhA2F/OG5J9Q=;
+        b=dUYmH0xFW1MRjJUyf9mRScCLFOVBMtyPuRC9hhr2s6lPOYptyJgeAqN20q257sFvdq
+         ViPL1MAMMfZUwuPWMfftIZrTZfR6P4RndSdxiU4/u0r0Jl41yInWeonk/wXF0P89fu6O
+         AReLoUPoGiPbQAa1971UXSj2Mp+VWRfYntiT1Vbx7uNO4lMXpnpk3ud10NM9x4ohxsa2
+         MsGbSUZWoDLNzXvjiHjBd/xuej/qklA+5l21Ng2caIP28gRC4QFGkqbEOKcVQzcad1R/
+         8klams3C/iiKQ6sg5YtjwBdZaS9ZIkb3TI4GwYXkdmedmD/qCyNkALb66KFZTpDwcNAB
+         ybLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706649354; x=1707254154;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7uVaLbUp0zV3Lqp8SjRyaTBacDGvqyOGhA2F/OG5J9Q=;
+        b=MwpfXOepPDEeJfDz6QX30PW33f1REIEcWsr7fQpJGLNGniWyyaLlGZLVYuS/V4k8mZ
+         abTrQYu11UmZ+6cEz3ahT1PIzFwC2KHo+qNWrp+Lvc8acxv0R7QswwktIoXyvVBt65Lp
+         YTPk2YVqUFvgqEGYItvPw/aPHUyXBN86tL0vrkJdeY3Cn8VAxnRPM/EBAv5BxX8qHAkb
+         aGBox3DX6hwQGeBWME2w2B745jbrevV7vgucSgo17UcTLevyzuh81SzrZ+dz3sQmOiOH
+         xGiqILwj6Ig4ORYdRXONyLl3/g/pNu0YNM/bdp5AwpnOSB4P3fNM+Tqcd6s6OE1ZT2sx
+         i3SA==
+X-Gm-Message-State: AOJu0Yy90GXEovmjupnf3+5/j1zfCgq4s+zUQKCmGi8Ch1ptT4+rbU5M
+	GYam3iYqmqAjY6svd/KV5Cs7ERxBnBDha2fX6SGFighvOhc/aQsUlUj5l3zYtqZxHvnDDMIhjwu
+	OtuaTCyQEK50i9OMNcJqa94MQhzM4oygJ
+X-Google-Smtp-Source: AGHT+IGH9PpeiWaqfEAXJVURKEkRwkn0w1eqpTcew158AuIabqXuAJ+Md2qP4etm6tpr/3laTRZT+arssHuDHEtrV9w=
+X-Received: by 2002:a05:6871:3415:b0:218:7597:2018 with SMTP id
+ nh21-20020a056871341500b0021875972018mr5405415oac.16.1706649354251; Tue, 30
+ Jan 2024 13:15:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87v87a9033.fsf@somnus>
+References: <20240129085250.1550594-1-yi.sun@unisoc.com>
+In-Reply-To: <20240129085250.1550594-1-yi.sun@unisoc.com>
+From: Stefan Hajnoczi <stefanha@gmail.com>
+Date: Tue, 30 Jan 2024 16:15:41 -0500
+Message-ID: <CAJSP0QWLk_=Nm2aw+rwgg6L4CJPy6w--=SyF4vCU_sDCyQdosQ@mail.gmail.com>
+Subject: Re: [PATCH V2] virtio-blk: Ensure no requests in virtqueues before
+ deleting vqs.
+To: Yi Sun <yi.sun@unisoc.com>
+Cc: stefanha@redhat.com, mst@redhat.com, jasowang@redhat.com, axboe@kernel.dk, 
+	sunyibuaa@gmail.com, hongyu.jin@unisoc.com, zhiguo.niu@unisoc.com, 
+	xuanzhuo@linux.alibaba.com, pbonzini@redhat.com, 
+	virtualization@lists.linux.dev, linux-block@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Le Tue, Jan 30, 2024 at 06:56:32PM +0100, Anna-Maria Behnsen a écrit :
-> Frederic Weisbecker <frederic@kernel.org> writes:
-> > CPU 1 went idle, CPU 3 will take care of CPU 1's timer. Then come two
-> > things happening at the same time: CPU 0 has a timer interrupt, due to
-> > RCU callbacks handling for example, and CPU 3 goes offline:
-> >
-> > CPU 0                                   CPU 3
-> > -----                                   -----
-> >                                         // On top level [GRP1:0], just set migrator = TMIGR_NONE
-> >                                         tmigr_inactive_up() {
-> >                                             cpu = cpumask_any_but(cpu_online_mask, cpu);
-> >                                             //cpu == 0
-> >                                             tmc_resched = per_cpu_ptr(&tmigr_cpu, CPU 0);
-> >                                             raw_spin_lock(&tmc_resched->lock);
-> >                                             tmc_resched->wakeup_recalc = true;
-> >                                             raw_spin_unlock(&tmc_resched->lock);
-> > // timer interrupt
-> > run_local_timers() {
-> >     tmigr_requires_handle_remote() {
-> >         data.firstexp = KTIME_MAX;
-> >         // CPU 0 sees the tmc_resched->wakeup_recalc
-> >         // latest update
-> >         if (tmc->wakeup_recalc) {
-> >             tmigr_requires_handle_remote_up() {
-> >                 // CPU 0 doesn't see GRP0:0 
-> >                 // latest update from CPU 1,
-> >                 // because it has no locking
-> >                 // and does a racy check.
-> >         	    if (!tmigr_check_migrator(group, childmask))
-> >                     return true;
-> >             }
-> >             raw_spin_lock(&tmc->lock);
-> >             WRITE_ONCE(tmc->wakeup, data.firstexp);
-> >             tmc->wakeup_recalc = false;
-> >             raw_spin_unlock(&tmc->lock)
-> >             return 0;
-> >         }
-> >                                             // IPI is sent only now
-> > 		                                    smp_send_reschedule(cpu);
-> >                                             }
-> >
-> >
-> > There is nothing that prevents CPU 0 from not seeing the hierarchy updates from
-> > other CPUs since it checks the migrators in a racy way. As a result the timer of
-> > CPU 1 may be ignored by CPU 0.
-> >
-> > You'd need to lock the tmc while calling tmigr_requires_handle_remote_up(), so
-> > that CPU 0 "inherits" everything that CPU 3 has seen, and that includes changes
-> > from CPU 1.
-> >
-> 
-> puhh. ok. But for the !idle case the lockless walk of
-> tmigr_requires_handle_remote_up() is ok?
+On Mon, 29 Jan 2024 at 03:54, Yi Sun <yi.sun@unisoc.com> wrote:
+>
+> Ensure no remaining requests in virtqueues before resetting vdev and
+> deleting virtqueues. Otherwise these requests will never be completed.
+> It may cause the system to become unresponsive.
+>
+> Function blk_mq_quiesce_queue() can ensure that requests have become
+> in_flight status, but it cannot guarantee that requests have been
+> processed by the device. Virtqueues should never be deleted before
+> all requests become complete status.
+>
+> Function blk_mq_freeze_queue() ensure that all requests in virtqueues
+> become complete status. And no requests can enter in virtqueues.
+>
+> Signed-off-by: Yi Sun <yi.sun@unisoc.com>
+> ---
+>  drivers/block/virtio_blk.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
 
-Looks ok to me. It's racy but if the !idle migrator doesn't notice in the
-current tick, it will in the next one.
+Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
 
-> It's also possible, that the
-> CPU misses an update of the state - another CPU goes idle and selects
-> this CPU as the new migrator. And this CPU reads a stale value where the
-> other CPU is migrator. But this will be revisited on the next
-> tick. hmm...
-
-Exactly, and I'm not worried. There has to be strong ordering with atomics
-or locking in the idle case because the CPU goes to sleep and it must make
-sure not to miss a timer. But in the !idle case the check is periodic, so you
-don't need any of that. We can live with an unnoticed timer for a tick or two.
-
-> 
-> >
-> > But I see that tmigr_cpu_new_timer() does it right. Wouldn't it be possible to
-> > exlusively let tmigr_cpu_new_timer() handle the wakeup_recalc thing? This is
-> > going to be called after the end of the IRQ (whether timer interrupt or sched
-> > IPI) in any case.
-> 
-> Should work, yes. But when a timer has to be handled right away and it
-> is checked after the end of the IRQ, then the tick might be reprogrammed
-> so that CPU comes out of idle, or am I wrong?
-
-If there is a pending timer, it can wait a tick. That's what happens if
-we wait for tmigr_cpu_new_timer() to handle it.
-
-But you know what, let's make it more simple. CPU down hotplug is not a
-fast path and it doesn't deserve so many optimizations. Just remove ->wakeup_recalc
-entirely and if the offlining CPU detects it's the last active CPU in the
-hierarchy, just queue an empty work to the first online CPU. It will briefly
-force that CPU out of idle and trigger an activate. Then either the CPU
-periodically checks remote timers or it will go back idle and notice.
-
-Something like this (untested):
-
-diff --git a/kernel/time/timer_migration.c b/kernel/time/timer_migration.c
-index de1905b0bae7..0f15215ef257 100644
---- a/kernel/time/timer_migration.c
-+++ b/kernel/time/timer_migration.c
-@@ -548,7 +548,6 @@ static void __tmigr_cpu_activate(struct tmigr_cpu *tmc)
- 
- 	tmc->cpuevt.ignore = true;
- 	WRITE_ONCE(tmc->wakeup, KTIME_MAX);
--	tmc->wakeup_recalc = false;
- 
- 	walk_groups(&tmigr_active_up, &data, tmc);
- }
-@@ -1041,41 +1040,11 @@ int tmigr_requires_handle_remote(void)
- 	}
- 
- 	/*
--	 * If the CPU is idle, check whether the recalculation of @tmc->wakeup
--	 * is required. @tmc->wakeup_recalc is set, when the last active CPU
--	 * went offline. The last active CPU delegated the handling of the timer
--	 * migration hierarchy to another (this) CPU by updating this flag and
--	 * sending a reschedule.
--	 *
--	 * Racy lockless check is valid:
--	 * - @tmc->wakeup_recalc is set by the remote CPU before it issues
--	 *   reschedule IPI.
--	 * - As interrupts are disabled here this CPU will either observe
--	 *   @tmc->wakeup_recalc set before the reschedule IPI can be handled or
--	 *   it will observe it when this function is called again on return
--	 *   from handling the reschedule IPI.
--	 */
--	if (tmc->wakeup_recalc) {
--		__walk_groups(&tmigr_requires_handle_remote_up, &data, tmc);
--
--		if (data.firstexp != KTIME_MAX)
--			ret = 1;
--
--		raw_spin_lock(&tmc->lock);
--		WRITE_ONCE(tmc->wakeup, data.firstexp);
--		tmc->wakeup_recalc = false;
--		raw_spin_unlock(&tmc->lock);
--
--		return ret;
--	}
--
--	/*
--	 * When the CPU is idle and @tmc->wakeup is reliable as
--	 * @tmc->wakeup_recalc is not set, compare it with @data.now. The lock
--	 * is required on 32bit architectures to read the variable consistently
--	 * with a concurrent writer. On 64bit the lock is not required because
--	 * the read operation is not split and so it is always consistent.
--
-+	 * When the CPU is idle and @tmc->wakeup is reliable, compare it with
-+	 * @data.now. The lock is required on 32bit architectures to read the
-+	 * variable consistently with a concurrent writer. On 64bit the lock
-+	 * is not required because the read operation is not split and so it is
-+	 * always consistent.
- 	 */
- 	if (IS_ENABLED(CONFIG_64BIT)) {
- 		if (data.now >= READ_ONCE(tmc->wakeup))
-@@ -1119,21 +1088,7 @@ u64 tmigr_cpu_new_timer(u64 nextexp)
- 		    tmc->cpuevt.ignore) {
- 			ret = tmigr_new_timer(tmc, nextexp);
- 		}
--	} else if (tmc->wakeup_recalc) {
--		struct tmigr_remote_data data;
--
--		data.now = KTIME_MAX;
--		data.childmask = tmc->childmask;
--		data.firstexp = KTIME_MAX;
--		data.tmc_active = false;
--		data.check = false;
--
--		__walk_groups(&tmigr_requires_handle_remote_up, &data, tmc);
--
--		ret = data.firstexp;
- 	}
--	tmc->wakeup_recalc = false;
--
- 	/*
- 	 * Make sure the reevaluation of timers in idle path will not miss an
- 	 * event.
-@@ -1212,36 +1167,7 @@ static bool tmigr_inactive_up(struct tmigr_group *group,
- 	 *   hierarchy) and
- 	 * - there is a pending event in the hierarchy
- 	 */
--	if (data->firstexp != KTIME_MAX) {
--		WARN_ON_ONCE(group->parent);
--		/*
--		 * Top level path: If this CPU is about going offline and was
--		 * the last active CPU, wake up some random other CPU so it will
--		 * take over the migrator duty and program its timer
--		 * properly. Ideally wake the CPU with the closest expiry time,
--		 * but that's overkill to figure out.
--		 *
--		 * Set wakeup_recalc of remote CPU, to make sure the complete
--		 * idle hierarchy with enqueued timers is reevaluated.
--		 */
--		if (!(this_cpu_ptr(&tmigr_cpu)->online)) {
--			struct tmigr_cpu *tmc = this_cpu_ptr(&tmigr_cpu);
--			unsigned int cpu = smp_processor_id();
--			struct tmigr_cpu *tmc_resched;
--
--			cpu = cpumask_any_but(cpu_online_mask, cpu);
--			tmc_resched = per_cpu_ptr(&tmigr_cpu, cpu);
--
--			raw_spin_unlock(&tmc->lock);
--
--			raw_spin_lock(&tmc_resched->lock);
--			tmc_resched->wakeup_recalc = true;
--			raw_spin_unlock(&tmc_resched->lock);
--
--			raw_spin_lock(&tmc->lock);
--			smp_send_reschedule(cpu);
--		}
--	}
-+	WARN_ON_ONCE(data->firstexp != KTIME_MAX && group->parent);
- 
- 	return walk_done;
- }
-@@ -1579,9 +1505,20 @@ static int tmigr_cpu_online(unsigned int cpu)
- 	return 0;
- }
- 
-+long tmigr_trigger_active(void *unused)
-+{
-+	struct tmigr_cpu *tmc = this_cpu_ptr(&tmigr_cpu);
-+
-+	WARN_ON_ONCE(!tmc->online || tmc->idle);
-+
-+	return 0;
-+}
-+
- static int tmigr_cpu_offline(unsigned int cpu)
- {
- 	struct tmigr_cpu *tmc = this_cpu_ptr(&tmigr_cpu);
-+	int migrator;
-+	u64 firstexp;
- 
- 	raw_spin_lock_irq(&tmc->lock);
- 	tmc->online = false;
-@@ -1591,9 +1528,14 @@ static int tmigr_cpu_offline(unsigned int cpu)
- 	 * CPU has to handle the local events on his own, when on the way to
- 	 * offline; Therefore nextevt value is set to KTIME_MAX
- 	 */
--	__tmigr_cpu_deactivate(tmc, KTIME_MAX);
-+	firstexp = __tmigr_cpu_deactivate(tmc, KTIME_MAX);
- 	raw_spin_unlock_irq(&tmc->lock);
- 
-+	if (firstexp != KTIME_MAX) {
-+		migrator = cpumask_any_but(cpu_online_mask, cpu);
-+		work_on_cpu(migrator, tmigr_trigger_active, NULL);
-+	}
-+
- 	return 0;
- }
- 
-diff --git a/kernel/time/timer_migration.h b/kernel/time/timer_migration.h
-index c32947cf429b..c556d5824792 100644
---- a/kernel/time/timer_migration.h
-+++ b/kernel/time/timer_migration.h
-@@ -78,18 +78,12 @@ struct tmigr_group {
-  * @idle:		Indicates whether the CPU is idle in the timer migration
-  *			hierarchy
-  * @remote:		Is set when timers of the CPU are expired remotely
-- * @wakeup_recalc:	Indicates, whether a recalculation of the @wakeup value
-- *			is required. @wakeup_recalc is only used by this CPU
-- *			when it is marked idle in the timer migration
-- *			hierarchy. It is set by a remote CPU which was the last
-- *			active CPU and is on the way to idle.
-  * @tmgroup:		Pointer to the parent group
-  * @childmask:		childmask of tmigr_cpu in the parent group
-  * @wakeup:		Stores the first timer when the timer migration
-  *			hierarchy is completely idle and remote expiry was done;
-  *			is returned to timer code in the idle path and is only
-- *			used in idle path; it is only valid, when @wakeup_recalc
-- *			is not set.
-+ *			used in idle path.
-  * @cpuevt:		CPU event which could be enqueued into the parent group
-  */
- struct tmigr_cpu {
-@@ -97,7 +91,6 @@ struct tmigr_cpu {
- 	bool			online;
- 	bool			idle;
- 	bool			remote;
--	bool			wakeup_recalc;
- 	struct tmigr_group	*tmgroup;
- 	u8			childmask;
- 	u64			wakeup;
+>
+> diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+> index 3b6b9abb8ce1..14ecc14ce8db 100644
+> --- a/drivers/block/virtio_blk.c
+> +++ b/drivers/block/virtio_blk.c
+> @@ -1595,14 +1595,15 @@ static int virtblk_freeze(struct virtio_device *vdev)
+>  {
+>         struct virtio_blk *vblk = vdev->priv;
+>
+> +       /* Ensure no requests in virtqueues before deleting vqs. */
+> +       blk_mq_freeze_queue(vblk->disk->queue);
+> +
+>         /* Ensure we don't receive any more interrupts */
+>         virtio_reset_device(vdev);
+>
+>         /* Make sure no work handler is accessing the device. */
+>         flush_work(&vblk->config_work);
+>
+> -       blk_mq_quiesce_queue(vblk->disk->queue);
+> -
+>         vdev->config->del_vqs(vdev);
+>         kfree(vblk->vqs);
+>
+> @@ -1620,7 +1621,7 @@ static int virtblk_restore(struct virtio_device *vdev)
+>
+>         virtio_device_ready(vdev);
+>
+> -       blk_mq_unquiesce_queue(vblk->disk->queue);
+> +       blk_mq_unfreeze_queue(vblk->disk->queue);
+>         return 0;
+>  }
+>  #endif
+> --
+> 2.25.1
+>
+>
 
