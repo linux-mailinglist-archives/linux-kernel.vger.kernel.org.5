@@ -1,190 +1,171 @@
-Return-Path: <linux-kernel+bounces-45359-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45360-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB684842F4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:00:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC788842F51
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:05:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA4D61C220A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 22:00:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 945EF28688B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 22:05:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D21167D3FC;
-	Tue, 30 Jan 2024 22:00:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BB6F14AAA;
+	Tue, 30 Jan 2024 22:05:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DqPeVdmr"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=fastmail.com header.i=@fastmail.com header.b="ZwLKbUHV";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="rCmG7DTj"
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49B427D3EE;
-	Tue, 30 Jan 2024 22:00:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BF237D3F7;
+	Tue, 30 Jan 2024 22:05:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706652003; cv=none; b=FfnETyFYEg7DA7JjXVIa3gcEopEOLGO4OEJVVbQDTZFCLEm9XInlBnBLG5CWtrgYszJ5CBscSSEC/19u6ohvzOnIjcHB+fhMqtlU7KUMKnzY3CzEc4+hclDIm4OEe+IKhR/cqkgLTPFfJ1pRg7hhKTvZJ4rWa4ybCMQ3cvewvso=
+	t=1706652321; cv=none; b=CnH41UziSSVY0EQH87n6SoPh9n4JV2u+bRKeHUgjff+cFEnnIYVjurolkLcJNDJ/gH87EvGLawMoMjqqkHuWVAhrtHbxYKwJv1bPtqNwJhucaMHPZoY+ojhfCpDN0OlfgGNsjHjoOvG4zuT2SIlBsYWVpgYoZZ80k+eRqH8utCQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706652003; c=relaxed/simple;
-	bh=1CW3qMyVGvYAz2Ags8+A5XJXNqBlJu/Dw4yb/APpQuQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QdbRJ+MvkVXoT7ZpQdGcHLqBEmyS4XxpVnc53l6x9t5yOADuNgdgPOTtOME83lUQeU5hdEvNutludJ2BcoKAbA+jnCjmg8Ns2i+Op5xlK0tizPZaerAISACep9hMfJGaFePIFuWa4s/vFvxnlS+m3Py7Dp1qg2QbS8ZyySbb+qw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DqPeVdmr; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d91397bd22so7215065ad.0;
-        Tue, 30 Jan 2024 14:00:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706652000; x=1707256800; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9gsRDr5VvL9comRbizRuuGN62ar8G3zXGkqfZiAmKLE=;
-        b=DqPeVdmrV2bpMdiV5gJ5gHijtDSJZQoFKqtM4ZI0IIklYxxTO45tbDOztCD+NUptUa
-         4yEdHVwzZiK8a6u83lN7jhapG6wtBrNGf10+hYhRWwFozED6Yd7Kxhpr7u/QsVMUfPaO
-         pJAXTQQj4qtCJIzPYganX03oFPF6XLWfm8iTKBfo4FAg60jPDOlyO52Dg9wcVD1OXh9h
-         O3VwDo17GBm65Cr4OH7xxx5TDQ1SO+TcYRn4cTx5w7R+vg1XYk0sdFYbuWoRu54EedEQ
-         nnyA3/V3ea1Gn25Tg47bpzpd5Wi6avt28utYQWv3HE6jF/bZ6jhxVfflhOtvfgPnns6j
-         OZXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706652000; x=1707256800;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9gsRDr5VvL9comRbizRuuGN62ar8G3zXGkqfZiAmKLE=;
-        b=LIB3Ig8EsbYm4klYpElvKwqGslX5VCZOU++T+nTMJV7hFE7Pnu0Eqp+s//pVJbql7D
-         uUU2r2R3laAaFsj2aRrHkGJsFGZT2tGVn9oEl6fuy82zXbHmU+F88pwpnOiTplAa61Iq
-         GAuCzB6qKFQQ5m63eAxp3XDObw5y4WklX5zfrqVJ2kSr3S4oIbWirvPiNMKSnLVW4lj1
-         EA0TI5a+bj4OXWTvD+4muxSrwM4PEIpapp76u6CtCwnxGOjCVs9pvbulSSBdd5OL9RBG
-         dXdUxLJtEy30msanYZbyxpYmbz5TWW630Em1b0nH/ZrfDL1XymyzUNznB/kS6lndnIFd
-         5wdQ==
-X-Gm-Message-State: AOJu0YyS7tmq3ne1fxIQiBgeo8U8Evl5odsE8Ocmpp7JeiCytZCneFIB
-	NAQ8Exjk0c6xnW1yMQHLZGTkfacC40CNrpz0MMqXFEgYrpG4rcjK
-X-Google-Smtp-Source: AGHT+IH3yWI6AdKAlLcFmsCpgy1m/pZebQoKxre+4/5fgpML7mVHH7PSVwwJu6mXQw7vmimJ/CcW4g==
-X-Received: by 2002:a17:902:d48e:b0:1d8:c1ed:74d6 with SMTP id c14-20020a170902d48e00b001d8c1ed74d6mr907547plg.14.1706652000342;
-        Tue, 30 Jan 2024 14:00:00 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id lb3-20020a170902fa4300b001d913992d91sm1494529plb.240.2024.01.30.13.59.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 13:59:59 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Tue, 30 Jan 2024 13:59:57 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: Naresh Solanki <naresh.solanki@9elements.com>
-Cc: Jean Delvare <jdelvare@suse.com>, mazziesaccount@gmail.com,
-	Patrick Rudolph <patrick.rudolph@9elements.com>,
-	linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hwmon: (pmbus/mp2975) Fix IRQ masking
-Message-ID: <cd84b051-1608-48c0-8335-b038cd236f61@roeck-us.net>
-References: <20240130175140.3834889-1-naresh.solanki@9elements.com>
+	s=arc-20240116; t=1706652321; c=relaxed/simple;
+	bh=LQEy0+LoZYeGKc2TxPi2Mrhvs+qROPoYuaU6oR3C34U=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=NcM2iz0zljN5vnjA8EbB/2spTHGtJITqKX66o82KBG1VfMIOlq1HNor006GVuQMhsnxUPbhsBmqeHqHFzQ8/GXTqx2uyHhibojfOhYVIFLeOt9vCbmtl0r8a3VBQC/FeOxC8wEqgsptroN5nnhhYBOm+EWgEdGRnMZd4JzV4hCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.com; spf=pass smtp.mailfrom=fastmail.com; dkim=pass (2048-bit key) header.d=fastmail.com header.i=@fastmail.com header.b=ZwLKbUHV; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=rCmG7DTj; arc=none smtp.client-ip=64.147.123.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.com
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailout.west.internal (Postfix) with ESMTP id 333953200B26;
+	Tue, 30 Jan 2024 17:05:17 -0500 (EST)
+Received: from imap50 ([10.202.2.100])
+  by compute3.internal (MEProxy); Tue, 30 Jan 2024 17:05:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com; h=
+	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1706652316; x=1706738716; bh=6JySg6oxBL
+	ctqW7yqA5TQZwLK2NTOu4x+J4bcx93/hs=; b=ZwLKbUHVGU5pLTJfuE8bRKeO7p
+	xlRPn5sb3L13ArVNiQlJdRZAIqUjrW/HX30wHoZOmNBHm6OvPjcQJ+KM/P16roNq
+	CF7ell2U+wN0Ea6v6R30MujOVViv6Y3v4J+iN8aSlO3he021giX7JhNjsOo7ZlXx
+	KmBs0huTzeka+mCf/K3bLuXgLMclQZhZkUHediibs+ws036URqsKzApLRHWZZMlQ
+	UNxYtfg/0iYXZ+94jz8LwQXOzzqPXenJSkrH/sixlDujMGjp4FdFvfYk/n0tBAZT
+	SBOLG5DbMoF8pqqcSKh7+rYy1CayYbaDWhXq+A+AUbruYZlfSdd/hXPHF8IQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1706652316; x=1706738716; bh=6JySg6oxBLctqW7yqA5TQZwLK2NT
+	Ou4x+J4bcx93/hs=; b=rCmG7DTjLQB/zm6pU3uus63GXaKb9OPy0pBSlFYDB+9G
+	vPjUThKVGiVPiT2TxpqF0umOv1EPdeRG7dQdrUryp9reng8LJnhDuuy2+mdmIao/
+	z60SAwF8pEAHiBMPybINo41PYzP/x9EmSz6MtPd6jwcd5PfyNRlEEdZQFlqle6JT
+	v0tHQRc9jdHVOczm+3i7h8oSR+KRrzMOUAuJ1WxE45Ii4LxPK5B1mRQWKYBX8BeI
+	KzHMWxV4TR95WrJi+1+2U1nU95IJxQN90lxMzRQTL+yvKsR8KQo+Ndz28kZjgMPx
+	vHwLYolc31U5Yc0mItgzV9iGXY7Ev5qucYPedV4zZQ==
+X-ME-Sender: <xms:m3K5ZS-GoQITLfLuEyih--a_ywEwLuR7CvGjR3101vpj_YV2E9XCig>
+    <xme:m3K5ZSt4nvo3ub-7LvzV0l7v9rzatpBMtxS-57qExDsZxJgB0NWRVB7Q_04jqRL3W
+    kJzNdMR2NxUG5M6mg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtjedgkeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedfufht
+    vghfrghnucfqkdftvggrrhdfuceoshhorhgvrghrsehfrghsthhmrghilhdrtghomheqne
+    cuggftrfgrthhtvghrnhepjeeuheegtdeuteeghfehjeejiefghfeifeejheduvdeugedt
+    hfehvefggefgkedtnecuffhomhgrihhnpehinhhfrhgruggvrggurdhorhhgnecuvehluh
+    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshhorhgvrghrsehf
+    rghsthhmrghilhdrtghomh
+X-ME-Proxy: <xmx:nHK5ZYAkdB7mu9efbNWQu13ueqsxhWSVjBgtSayAtJgB_fhwG-aO_w>
+    <xmx:nHK5Zaf2ITv3PhoX-zP8ZJTpHkfoMR5WhhsD2dbZx9kc1a1cJvj9pg>
+    <xmx:nHK5ZXPTRyHejQGewkPQWQDXjP_V5qHGuxgA4eMk_RDxe10rIe7fGQ>
+    <xmx:nHK5ZSoPTsiybhyKCrNJ3diUTscE515yAD27vQoy-UTePUTvjC2_kg>
+Feedback-ID: i84414492:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id DB27E1700093; Tue, 30 Jan 2024 17:05:15 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240130175140.3834889-1-naresh.solanki@9elements.com>
+Message-Id: <6352ff7f-1e69-4f7a-b793-f69d223d4684@app.fastmail.com>
+In-Reply-To: <ZbhbNYLR9kh5dtFU@ghost>
+References: <20240129-use_mmap_hint_address-v1-0-4c74da813ba1@rivosinc.com>
+ <5fd69812-f07b-4079-a871-7e0ee857aaca@app.fastmail.com>
+ <ZbhbNYLR9kh5dtFU@ghost>
+Date: Tue, 30 Jan 2024 17:04:55 -0500
+From: "Stefan O'Rear" <sorear@fastmail.com>
+To: "Charlie Jenkins" <charlie@rivosinc.com>
+Cc: "Alexandre Ghiti" <alexghiti@rivosinc.com>,
+ "Paul Walmsley" <paul.walmsley@sifive.com>,
+ "Palmer Dabbelt" <palmer@dabbelt.com>, "Albert Ou" <aou@eecs.berkeley.edu>,
+ "Shuah Khan" <shuah@kernel.org>, "Jonathan Corbet" <corbet@lwn.net>,
+ "Yangyu Chen" <cyy@cyyself.name>, linux-riscv@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-doc@vger.kernel.org
+Subject: Re: [PATCH 0/3] riscv: mm: Use hint address in mmap if available
+Content-Type: text/plain
 
-On Tue, Jan 30, 2024 at 11:21:39PM +0530, Naresh Solanki wrote:
-> From: Patrick Rudolph <patrick.rudolph@9elements.com>
-> 
-> The MP2971/MP2973 use a custom 16bit register format for
-> SMBALERT_MASK which doesn't follow the PMBUS specification.
-> 
-> Map the PMBUS defined bits used by the common code onto the custom
-> format used by MPS and since the SMBALERT_MASK is currently never read
-> by common code only implement the mapping for write transactions.
-> 
-> Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
-> Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
-> ---
->  drivers/hwmon/pmbus/mp2975.c | 57 ++++++++++++++++++++++++++++++++++++
->  1 file changed, 57 insertions(+)
-> 
-> 
-> base-commit: 909d8d33f8b4664c9b6c7fd585114921af77fc2b
-> 
-> diff --git a/drivers/hwmon/pmbus/mp2975.c b/drivers/hwmon/pmbus/mp2975.c
-> index b9bb469e2d8f..788ec2c5a45f 100644
-> --- a/drivers/hwmon/pmbus/mp2975.c
-> +++ b/drivers/hwmon/pmbus/mp2975.c
-> @@ -377,6 +377,62 @@ static int mp2973_read_word_data(struct i2c_client *client, int page,
->  	return ret;
->  }
->  
-> +static int mp2973_write_word_data(struct i2c_client *client, int page,
-> +				  int reg, u16 word)
-> +{
-> +	u8 target, mask;
-> +	int ret;
-> +
-> +	if (reg != PMBUS_SMBALERT_MASK)
-> +		return -ENODATA;
-> +
-> +	/*
-> +	 * Vendor-specific SMBALERT_MASK register with 16 maskable bits.
-> +	 */
-> +	ret = pmbus_read_word_data(client, 0, 0, PMBUS_SMBALERT_MASK);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	target = word & 0xff;
-> +	mask = word >> 8;
-> +
-> +#define SWAP(cond, bit) (ret = (cond) ? (ret & ~BIT(bit)) : (ret | BIT(bit)))
+On Mon, Jan 29, 2024, at 9:13 PM, Charlie Jenkins wrote:
+> On Mon, Jan 29, 2024 at 09:04:50PM -0500, Stefan O'Rear wrote:
+>> On Mon, Jan 29, 2024, at 7:36 PM, Charlie Jenkins wrote:
+>> > On riscv, mmap currently returns an address from the largest address
+>> > space that can fit entirely inside of the hint address. This makes it
+>> > such that the hint address is almost never returned. This patch raises
+>> > the mappable area up to and including the hint address. This allows mmap
+>> > to often return the hint address, which allows a performance improvement
+>> > over searching for a valid address as well as making the behavior more
+>> > similar to other architectures.
+>> 
+>> This means that if an application or library opts in to Sv48 support by
+>> passing a nonzero hint, it will lose the benefits of ASLR.
+>
+> sv48 is default. However your statement stands for opting into sv57.
+> If they always pass the same hint address, only the first address will
+> be deterministic though, correct?
 
-This isn't really a "SWAP", but setting or clearing of bits in "ret"
-depending on a bit set in "cond". I don't have a good idea for a
-better name, but either case I think a comment describing what it
-does would be useful.
+I think this is correct.
 
-"ret" use is implied, but "mask" is always provided as parameter.
-Please either provide both as arguments, or make both implied.
+>> 
+>> Allowing applications to opt in to a VA space smaller than the
+>> architectural minimum seems like an independently useful feature.
+>> Is there a reason to only add it for riscv64?
+>> 
+>
+> If there is interest, it can be added to other architectures as well.
 
-Also, the first parameter is a bit mask, while the second parameter
-is a bit position. Please used defines for the second parameter
-and make it a mask as well.
+I meant as opposed to riscv32.
 
-> +	switch (target) {
-> +	case PMBUS_STATUS_CML:
-> +		SWAP(mask & PB_CML_FAULT_INVALID_DATA, 8);
-> +		SWAP(mask & PB_CML_FAULT_INVALID_COMMAND,  9);
-> +		SWAP(mask & PB_CML_FAULT_OTHER_COMM, 5);
-> +		SWAP(mask & PB_CML_FAULT_PACKET_ERROR, 7);
-> +		break;
-> +	case PMBUS_STATUS_VOUT:
-> +		SWAP(mask & PB_VOLTAGE_UV_FAULT, 13);
-> +		SWAP(mask & PB_VOLTAGE_OV_FAULT, 14);
-> +		break;
-> +	case PMBUS_STATUS_IOUT:
-> +		SWAP(mask & PB_IOUT_OC_FAULT, 11);
-> +		SWAP(mask & PB_IOUT_OC_LV_FAULT, 10);
-> +		break;
-> +	case PMBUS_STATUS_TEMPERATURE:
-> +		SWAP(mask & PB_TEMP_OT_FAULT, 0);
-> +		break;
-> +	/*
-> +	 * Map remaining bits to MFR specific to let the PMBUS core mask
-> +	 * those bits by default.
-> +	 */
-> +	case PMBUS_STATUS_MFR_SPECIFIC:
-> +		SWAP(mask & BIT(1), 1);
-> +		SWAP(mask & BIT(3), 3);
-> +		SWAP(mask & BIT(4), 4);
-> +		SWAP(mask & BIT(6), 6);
-> +		break;
+-s
 
-Coming back to using defines for the second parameter: The
-above bit positions appear to be purely random. Having defines for
-those bits will at least explain what is being masked (and hopefully
-explain why bit 2, 12, and 15 are not covered at all).
-For example, at least one other chip from the same vendor defines
-bit 6 as CRC_ERROR, and the matching status register bit is bit
-4 (memory fault detected) in STATUS_CML. Also, it is unclear why
-the chip would not issue any alerts when warning limits are exceeded.
-Without knowing what the bits in SMBALERT_MASK mean it is impossible
-to validate if the above is correct and/or complete.
-
-Thanks,
-Guenter
+> - Charlie
+>
+>> -s
+>> 
+>> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+>> > ---
+>> > Charlie Jenkins (3):
+>> >       riscv: mm: Use hint address in mmap if available
+>> >       selftests: riscv: Generalize mm selftests
+>> >       docs: riscv: Define behavior of mmap
+>> >
+>> >  Documentation/arch/riscv/vm-layout.rst           | 16 ++--
+>> >  arch/riscv/include/asm/processor.h               | 21 ++----
+>> >  tools/testing/selftests/riscv/mm/mmap_bottomup.c | 20 +----
+>> >  tools/testing/selftests/riscv/mm/mmap_default.c  | 20 +----
+>> >  tools/testing/selftests/riscv/mm/mmap_test.h     | 93 +++++++++++++-----------
+>> >  5 files changed, 66 insertions(+), 104 deletions(-)
+>> > ---
+>> > base-commit: 556e2d17cae620d549c5474b1ece053430cd50bc
+>> > change-id: 20240119-use_mmap_hint_address-f9f4b1b6f5f1
+>> > -- 
+>> > - Charlie
+>> >
+>> >
+>> > _______________________________________________
+>> > linux-riscv mailing list
+>> > linux-riscv@lists.infradead.org
+>> > http://lists.infradead.org/mailman/listinfo/linux-riscv
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
