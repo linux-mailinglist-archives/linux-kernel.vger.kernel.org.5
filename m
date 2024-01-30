@@ -1,77 +1,102 @@
-Return-Path: <linux-kernel+bounces-44724-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44727-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 258F584268C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:59:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4820842696
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:03:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3E15281E1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:59:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 038491C25573
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:03:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C35A16D1CC;
-	Tue, 30 Jan 2024 13:59:39 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 143096D1DF;
+	Tue, 30 Jan 2024 14:03:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ew4Uhpl8"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5F886D1AD
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 13:59:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC19E6D1B1;
+	Tue, 30 Jan 2024 14:03:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706623179; cv=none; b=Rj5DhyIt2+fM6J2x713UCf9bnmsd/GkRPQaD99GlCyv9gxyVaYtPHOMHWzzf+Ib+MrcgvnfB5erzojupkaOEAUbiNiW5LaUnwySOXDzoQuM8VWUSva6Y/ivvUfEJ4hBPBJVsF8/1FD81tB5Gdl6EgvL6a5+Vv7Ef4gOE28vi9tI=
+	t=1706623392; cv=none; b=bk4DJS3xgcxNlTCS4TRlvOtWSHQgUT6mujFsLepR0cuNG9CGiNEGcOy1+UcQwlgA6CrpxKQ+znBhZeOPdzA7AyDzPo/KeR0yWRESQprRw0pJwrZyRJ7Co2TKOO7V8UNDg2snQhBK5CINExi1M0cE8bYGvAuhKtIXjlUotSE7rEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706623179; c=relaxed/simple;
-	bh=CProxbpfby4lnV/hzByBECixIjiFhMLUgDGEQ3lXS2A=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=DEp7qaXLS0kMLILAuxVzaHJateOxZ2Hnrrv8DFP7fDrDcv/SJpzizAkT06/n0ZN/OViBAt2iY2q6NyEMdDqJGi+Zp38VoaTrCLE28t4a3A/84+qqSudhRBMnIWkX+wJarE20v8xarSZTTIlh9Pqef/0lPvsgRpFZNZzb4P77It8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-363824b0968so13728875ab.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 05:59:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706623177; x=1707227977;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CProxbpfby4lnV/hzByBECixIjiFhMLUgDGEQ3lXS2A=;
-        b=QnG1aKH6EtqZ/LutPuJWirqIjeYkxZOq15cCdoY9/X6lLOBL3X319L9n3NfeKK9gV8
-         PxaloxidGfq6ZmpeHjWXsy40HBxWGew5Jr+64+dvQMZrEWr4rvcPl0YJBr3UZTz7a1Bk
-         PUPUuUKKu32RZsjz+gGe+nXzGw4+SiBMO1Fje9fuRSVql65fE8R/fBodoGXK6vsUjJhC
-         0r6oTORmFbQxT11/iACCPVoJ6ytHLR+9H7j83WMke1/titkJDyJG7vUlft45XZQEeNDY
-         vUKcsYE6oDi/xCGPwRdV1CSXjIRVJF1s9ZraEeHK4Rp/GTy3R2AYcAS5sARgruXFq1Zv
-         IkyQ==
-X-Gm-Message-State: AOJu0YyiXpo/TKknfsANALR/5e7p740pJ29ujvGq/o0KpLWGw9RlINR1
-	SzZBPhlzgl+YJaRitGzuWlrEk5Vp+YPYX3mQeaT91wrLSYBRa9MO54B/tr0IqhVNJXwajns3CAm
-	f0cqYePmJdrl04RrSYG3BKT4xibH+xsDIdOgZqBnIQgfp5qvVpwI9Tl3BKA==
-X-Google-Smtp-Source: AGHT+IEj9fp1jvHMNPe8dWChyqtD0OW9MiT5N/e1uUP4exJmqo1iCKfzgS5S7ch+q+G9cQutxPc1CIbp5WzNGun4jStcgc+VDAZq
+	s=arc-20240116; t=1706623392; c=relaxed/simple;
+	bh=DzsaNEVFKguc0ZC4CtlzX7lscBOx1aUABMiNF9+SE+U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OEJw6NG92SI7I/aiNmOisJc6Tfx4nMc5n0+FMknJINtoxP64pHFb6PVwFxw56AOwpsjO/jgjF73/GIh2GA4IUeqxA4kMOtyHnKxS9XidSyEw9wkLx3G7hNjBLEmxkPV7u/l3M64ZxbzgobRH4ZdPfZ8VI6+Kdn0G5VgLw51IIFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ew4Uhpl8; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706623391; x=1738159391;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=DzsaNEVFKguc0ZC4CtlzX7lscBOx1aUABMiNF9+SE+U=;
+  b=Ew4Uhpl8Ue1muczcA+RtPNqyl3P1jfCDZE+NCtFLmXw4FV5vw5FG8Z/Z
+   dr9DWeJ6Yl8vJUPe+AtrSfspSlM8giu9d2m/wlWZkPWWsXwahZj1W8kzi
+   UKp9x4SMu+/BvmwpnhESLl4Q5PcdpV/GMU7PgBXqKYemaPjYCfdCPwjAU
+   hemVJNMGBjAFWRrnWN9XtPpcb4Rpt4NZoQuPsO4t6zA7OdVXlnMwmdO8A
+   RKNdzDhQ0hstSdN00fzl+HJt52tTeq+96RiIPVVUuF4efSjLkWn4FZHqQ
+   PcvCMS0vadwJO9p9aQlrI2uEHs2g8b+8UjCqPxQdzEuAZ/A15wqJg8Id2
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="10676692"
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="10676692"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 06:03:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="3697226"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by fmviesa005.fm.intel.com with ESMTP; 30 Jan 2024 06:03:08 -0800
+Date: Tue, 30 Jan 2024 21:59:42 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Markus Elfring <Markus.Elfring@web.de>
+Cc: linux-fpga@vger.kernel.org, kernel-janitors@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Luwei Kang <luwei.kang@intel.com>, Moritz Fischer <mdf@kernel.org>,
+	Tom Rix <trix@redhat.com>, Wu Hao <hao.wu@intel.com>,
+	Xu Yilun <yilun.xu@intel.com>, LKML <linux-kernel@vger.kernel.org>,
+	Kunwu Chan <chentao@kylinos.cn>
+Subject: Re: fpga: dfl: fme: Return directly after a failed devm_kasprintf()
+ call in fme_perf_pmu_register()
+Message-ID: <ZbkAziPCX+RDSgfP@yilunxu-OptiPlex-7050>
+References: <d94376b6-12e8-45bb-a9be-4887bb316d35@web.de>
+ <ZbjJYMlDifIv0WId@yilunxu-OptiPlex-7050>
+ <ZbjPDX1y2I9Heanq@yilunxu-OptiPlex-7050>
+ <49183574-ea83-4517-8e34-5d6e87ede064@web.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:cd82:0:b0:35f:c723:1f62 with SMTP id
- r2-20020a92cd82000000b0035fc7231f62mr879801ilb.0.1706623176948; Tue, 30 Jan
- 2024 05:59:36 -0800 (PST)
-Date: Tue, 30 Jan 2024 05:59:36 -0800
-In-Reply-To: <00000000000065fe6705cad8850e@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003a406406102a2cf2@google.com>
-Subject: Re: [syzbot] Re: [syzbot] WARNING in j1939_session_deactivate
-From: syzbot <syzbot+535e5aae63c0d0433473@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <49183574-ea83-4517-8e34-5d6e87ede064@web.de>
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+On Tue, Jan 30, 2024 at 11:48:31AM +0100, Markus Elfring wrote:
+> >>> Thus return directly after a failed devm_kasprintf() call.
+> >>>
+> >>> Fixes: 724142f8c42a7 ("fpga: dfl: fme: add performance reporting support")
+> >
+> > One more char of sha.
+> 
+> There are different preferences involved.
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?h=v6.8-rc2#n109
 
-***
+Ah, I mean you use 13 chars, but 12 chars is better. Also the doc
+doens't seem to enforce 12 chars, but checkpatch warns on that. So just
+follow the 12 chars style.
 
-Subject: Re: [syzbot] WARNING in j1939_session_deactivate
-Author: pchelkin@ispras.ru
+Thanks,
+Yilun
 
-#syz dup: WARNING in j1939_session_deactivate_activate_next
-
+> 
+> Regards,
+> Markus
 
