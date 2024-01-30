@@ -1,39 +1,60 @@
-Return-Path: <linux-kernel+bounces-43945-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43947-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6CD8841B5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 06:20:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C680B841B65
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 06:23:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 328C61F24E22
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 05:20:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 054481C23B77
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 05:23:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F3AE381B0;
-	Tue, 30 Jan 2024 05:20:21 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FBA9381AB;
-	Tue, 30 Jan 2024 05:20:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C40C3381BA;
+	Tue, 30 Jan 2024 05:23:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nnZBm0kw"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB74B381AB;
+	Tue, 30 Jan 2024 05:23:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706592020; cv=none; b=M6JFZo+qUx1JEq3WN4ZTfy9m+a0y2wHN7LW1J+DOLaCZ3Dhxk0SB8ekMGL9ImhvY9RAPItR5ichFakl2mRq+hHrbT81c9t1AZ4G1XzbrfZDXSffs7VrUknINytm+8NmskIcAMjPy29YDq+JkBgMdOdUj6IuvnzBgSFkykGazGpA=
+	t=1706592192; cv=none; b=kdzzHtFUlH3nQK7tDFONnGNLJm0gXvCpRbTu5ZhImkHym/G+ZwgY4F1SwUxE8jEMGB+3H/Yncb/trmZc+Wz2388CNHzknxZZ4oJAsyE1gCJySyZjqLRLaUq2taeR9w0N/cJBDfhiWuMj0H7HQlvF1TlaT7QYtbQj/QgjYzWyFFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706592020; c=relaxed/simple;
-	bh=UXjR5+dcVj0uZ2Mi+pLNrfSsMCT9XDDXu1XkpjwGqHg=;
+	s=arc-20240116; t=1706592192; c=relaxed/simple;
+	bh=2chnDtx7fC/xK0UK9k7nOkhmZ+WTIJOelHVHg2jjY5I=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lznS6N9AGz2raU8LMc22OWjNsaEsi45sFDwqCMOBL/u7iJGqqb04otqN19dwv/QV+f+A31y2E1cTS5KvzHCt4v13OUmZpETwGfUbD4XyDrWboZikpBXNa2wAyz1q+ANn0eBrSkKmGEhMLnq006gEmjH6t2coWgx1z0y33lBTXZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 43296DA7;
-	Mon, 29 Jan 2024 21:21:00 -0800 (PST)
-Received: from [10.163.41.110] (unknown [10.163.41.110])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A76F93F762;
-	Mon, 29 Jan 2024 21:20:03 -0800 (PST)
-Message-ID: <61a3dbb7-25b6-4f49-aa70-9a8aaeb53365@arm.com>
-Date: Tue, 30 Jan 2024 10:50:00 +0530
+	 In-Reply-To:Content-Type; b=V2Tc8wa6AXxvRsTEwHAeTl8+EP39lhovGpPbgFIOQtCS0QcuofJTvaFv9jM2CcY2dI/I46rQ0E+rapLzE54MZpAt1zIUDvYJWI7XRSgsHgAvpwm+jk4nIM9KuKgjk+EISF9IpuZsVvDNoQpyYTTE3xMWgduSV9byzJMwdpXpgMk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nnZBm0kw; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706592190; x=1738128190;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=2chnDtx7fC/xK0UK9k7nOkhmZ+WTIJOelHVHg2jjY5I=;
+  b=nnZBm0kwI57oJFXABhnxKd2tONYOyOYq4CvJZJY6BO3uZP+e74pdOeMt
+   joLJVQcitipcNSBRHCIY54IGHzh2EoDzPPadW6KWwsgFwEyo224Uz0ksz
+   9evpynKd8L+4x6wb0tDK41MzPpHuHtW3uyarqILe+J2cuogJJvZnZorj/
+   dIy0XfqxRqXFSZ4M/ij4og8YL222ZvjAluHae4qzrX6rIyLjvi2OXf4FL
+   bEmTuQ9VL2k4IIEjGDXKKWXXaxMpYsCa/7WLX1DCKzsggDL5oZqltVCLD
+   kH7o817iK54WpFogRtCbX4QadVnR5eUo+qylZEGrxwybbrz05goAhwCLH
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="9813240"
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="9813240"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 21:23:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="3545275"
+Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.238.130.190]) ([10.238.130.190])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 21:23:07 -0800
+Message-ID: <bd317a41-a8c9-4029-9ec6-9076fa5aad92@linux.intel.com>
+Date: Tue, 30 Jan 2024 13:23:04 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,248 +62,53 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v3 08/35] mm: cma: Introduce cma_alloc_range()
-Content-Language: en-US
-To: Alexandru Elisei <alexandru.elisei@arm.com>, catalin.marinas@arm.com,
- will@kernel.org, oliver.upton@linux.dev, maz@kernel.org,
- james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com,
- arnd@arndb.de, akpm@linux-foundation.org, mingo@redhat.com,
- peterz@infradead.org, juri.lelli@redhat.com, vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
- mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
- mhiramat@kernel.org, rppt@kernel.org, hughd@google.com
-Cc: pcc@google.com, steven.price@arm.com, vincenzo.frascino@arm.com,
- david@redhat.com, eugenis@google.com, kcc@google.com, hyesoo.yu@samsung.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-mm@kvack.org,
- linux-trace-kernel@vger.kernel.org
-References: <20240125164256.4147-1-alexandru.elisei@arm.com>
- <20240125164256.4147-9-alexandru.elisei@arm.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <20240125164256.4147-9-alexandru.elisei@arm.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH v12 1/5] PCI: make pci_dev_is_disconnected() helper public
+ for other drivers
+To: "Tian, Kevin" <kevin.tian@intel.com>,
+ "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+ "bhelgaas@google.com" <bhelgaas@google.com>,
+ "robin.murphy@arm.com" <robin.murphy@arm.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>
+Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "will@kernel.org" <will@kernel.org>, "lukas@wunner.de" <lukas@wunner.de>,
+ "Liu, Yi L" <yi.l.liu@intel.com>,
+ "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+ Haorong Ye <yehaorong@bytedance.com>
+References: <20240129034924.817005-1-haifeng.zhao@linux.intel.com>
+ <20240129034924.817005-2-haifeng.zhao@linux.intel.com>
+ <BN9PR11MB5276B0ADF497AEE3D990824A8C7E2@BN9PR11MB5276.namprd11.prod.outlook.com>
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+In-Reply-To: <BN9PR11MB5276B0ADF497AEE3D990824A8C7E2@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 
+On 1/29/2024 4:50 PM, Tian, Kevin wrote:
+>> From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+>> Sent: Monday, January 29, 2024 11:49 AM
+>>
+>> Make pci_dev_is_disconnected() public so that it can be called from
+>> Intel VT-d driver to quickly fix/workaround the surprise removal
+>> unplug hang issue for those ATS capable devices on PCIe switch downstream
+>> hotplug capable ports.
+>>
+>> Beside pci_device_is_present() function, this one has no config space
+> s/Beside/Unlike/
 
-On 1/25/24 22:12, Alexandru Elisei wrote:
-> Today, cma_alloc() is used to allocate a contiguous memory region. The
-> function allows the caller to specify the number of pages to allocate, but
-> not the starting address. cma_alloc() will walk over the entire CMA region
-> trying to allocate the first available range of the specified size.
-> 
-> Introduce cma_alloc_range(), which makes CMA more versatile by allowing the
-> caller to specify a particular range in the CMA region, defined by the
-> start pfn and the size.
-> 
-> arm64 will make use of this function when tag storage management will be
-> implemented: cma_alloc_range() will be used to reserve the tag storage
-> associated with a tagged page.
+Beside means 'comparing with' here, perhaps it is not clear enough
 
-Basically, you would like to pass on a preferred start address and the
-allocation could just fail if a contig range is not available from such
-a starting address ?
+or there is syntax error if used here ?
 
-Then why not just change cma_alloc() to take a new argument 'start_pfn'.
-Why create a new but almost similar allocator ?
 
-But then I am wondering why this could not be done in the arm64 platform
-code itself operating on a CMA area reserved just for tag storage. Unless
-this new allocator has other usage beyond MTE, this could be implemented
-in the platform itself.
 
-> 
-> Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
-> ---
-> 
-> Changes since rfc v2:
-> 
-> * New patch.
-> 
->  include/linux/cma.h        |  2 +
->  include/trace/events/cma.h | 59 ++++++++++++++++++++++++++
->  mm/cma.c                   | 86 ++++++++++++++++++++++++++++++++++++++
->  3 files changed, 147 insertions(+)
-> 
-> diff --git a/include/linux/cma.h b/include/linux/cma.h
-> index 63873b93deaa..e32559da6942 100644
-> --- a/include/linux/cma.h
-> +++ b/include/linux/cma.h
-> @@ -50,6 +50,8 @@ extern int cma_init_reserved_mem(phys_addr_t base, phys_addr_t size,
->  					struct cma **res_cma);
->  extern struct page *cma_alloc(struct cma *cma, unsigned long count, unsigned int align,
->  			      bool no_warn);
-> +extern int cma_alloc_range(struct cma *cma, unsigned long start, unsigned long count,
-> +			   unsigned tries, gfp_t gfp);
->  extern bool cma_pages_valid(struct cma *cma, const struct page *pages, unsigned long count);
->  extern bool cma_release(struct cma *cma, const struct page *pages, unsigned long count);
->  
-> diff --git a/include/trace/events/cma.h b/include/trace/events/cma.h
-> index 25103e67737c..a89af313a572 100644
-> --- a/include/trace/events/cma.h
-> +++ b/include/trace/events/cma.h
-> @@ -36,6 +36,65 @@ TRACE_EVENT(cma_release,
->  		  __entry->count)
->  );
->  
-> +TRACE_EVENT(cma_alloc_range_start,
-> +
-> +	TP_PROTO(const char *name, unsigned long start, unsigned long count,
-> +		 unsigned tries),
-> +
-> +	TP_ARGS(name, start, count, tries),
-> +
-> +	TP_STRUCT__entry(
-> +		__string(name, name)
-> +		__field(unsigned long, start)
-> +		__field(unsigned long, count)
-> +		__field(unsigned, tries)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__assign_str(name, name);
-> +		__entry->start = start;
-> +		__entry->count = count;
-> +		__entry->tries = tries;
-> +	),
-> +
-> +	TP_printk("name=%s start=%lx count=%lu tries=%u",
-> +		  __get_str(name),
-> +		  __entry->start,
-> +		  __entry->count,
-> +		  __entry->tries)
-> +);
-> +
-> +TRACE_EVENT(cma_alloc_range_finish,
-> +
-> +	TP_PROTO(const char *name, unsigned long start, unsigned long count,
-> +		 unsigned attempts, int err),
-> +
-> +	TP_ARGS(name, start, count, attempts, err),
-> +
-> +	TP_STRUCT__entry(
-> +		__string(name, name)
-> +		__field(unsigned long, start)
-> +		__field(unsigned long, count)
-> +		__field(unsigned, attempts)
-> +		__field(int, err)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__assign_str(name, name);
-> +		__entry->start = start;
-> +		__entry->count = count;
-> +		__entry->attempts = attempts;
-> +		__entry->err = err;
-> +	),
-> +
-> +	TP_printk("name=%s start=%lx count=%lu attempts=%u err=%d",
-> +		  __get_str(name),
-> +		  __entry->start,
-> +		  __entry->count,
-> +		  __entry->attempts,
-> +		  __entry->err)
-> +);
-> +
->  TRACE_EVENT(cma_alloc_start,
->  
->  	TP_PROTO(const char *name, unsigned long count, unsigned int align),
-> diff --git a/mm/cma.c b/mm/cma.c
-> index 543bb6b3be8e..4a0f68b9443b 100644
-> --- a/mm/cma.c
-> +++ b/mm/cma.c
-> @@ -416,6 +416,92 @@ static void cma_debug_show_areas(struct cma *cma)
->  static inline void cma_debug_show_areas(struct cma *cma) { }
->  #endif
->  
-> +/**
-> + * cma_alloc_range() - allocate pages in a specific range
-> + * @cma:   Contiguous memory region for which the allocation is performed.
-> + * @start: Starting pfn of the allocation.
-> + * @count: Requested number of pages
-> + * @tries: Number of tries if the range is busy
-> + * @no_warn: Avoid printing message about failed allocation
-> + *
-> + * This function allocates part of contiguous memory from a specific contiguous
-> + * memory area, from the specified starting address. The 'start' pfn and the the
-> + * 'count' number of pages must be aligned to the CMA bitmap order per bit.
-> + */
-> +int cma_alloc_range(struct cma *cma, unsigned long start, unsigned long count,
-> +		    unsigned tries, gfp_t gfp)
-> +{
-> +	unsigned long bitmap_maxno, bitmap_no, bitmap_start, bitmap_count;
-> +	unsigned long i = 0;
-> +	struct page *page;
-> +	int err = -EINVAL;
-> +
-> +	if (!cma || !cma->count || !cma->bitmap)
-> +		goto out_stats;
-> +
-> +	trace_cma_alloc_range_start(cma->name, start, count, tries);
-> +
-> +	if (!count || start < cma->base_pfn ||
-> +	    start + count > cma->base_pfn + cma->count)
-> +		goto out_stats;
-> +
-> +	if (!IS_ALIGNED(start | count, 1 << cma->order_per_bit))
-> +		goto out_stats;
-> +
-> +	bitmap_start = (start - cma->base_pfn) >> cma->order_per_bit;
-> +	bitmap_maxno = cma_bitmap_maxno(cma);
-> +	bitmap_count = cma_bitmap_pages_to_bits(cma, count);
-> +
-> +	spin_lock_irq(&cma->lock);
-> +	bitmap_no = bitmap_find_next_zero_area(cma->bitmap, bitmap_maxno,
-> +					       bitmap_start, bitmap_count, 0);
-> +	if (bitmap_no != bitmap_start) {
-> +		spin_unlock_irq(&cma->lock);
-> +		err = -EEXIST;
-> +		goto out_stats;
-> +	}
-> +	bitmap_set(cma->bitmap, bitmap_start, bitmap_count);
-> +	spin_unlock_irq(&cma->lock);
-> +
-> +	for (i = 0; i < tries; i++) {
-> +		mutex_lock(&cma_mutex);
-> +		err = alloc_contig_range(start, start + count, MIGRATE_CMA, gfp);
-> +		mutex_unlock(&cma_mutex);
-> +
-> +		if (err != -EBUSY)
-> +			break;
-> +	}
-> +
-> +	if (err) {
-> +		cma_clear_bitmap(cma, start, count);
-> +	} else {
-> +		page = pfn_to_page(start);
-> +
-> +		/*
-> +		 * CMA can allocate multiple page blocks, which results in
-> +		 * different blocks being marked with different tags. Reset the
-> +		 * tags to ignore those page blocks.
-> +		 */
-> +		for (i = 0; i < count; i++)
-> +			page_kasan_tag_reset(nth_page(page, i));
-> +	}
-> +
-> +out_stats:
-> +	trace_cma_alloc_range_finish(cma->name, start, count, i, err);
-> +
-> +	if (err) {
-> +		count_vm_events(CMA_ALLOC_FAIL, count);
-> +		if (cma)
-> +			cma_sysfs_account_fail_pages(cma, count);
-> +	} else {
-> +		count_vm_events(CMA_ALLOC_SUCCESS, count);
-> +		cma_sysfs_account_success_pages(cma, count);
-> +	}
-> +
-> +	return err;
-> +}
-> +
-> +
->  /**
->   * cma_alloc() - allocate pages from contiguous area
->   * @cma:   Contiguous memory region for which the allocation is performed.
+Thanks,
+
+Ethan
+
+>
+>> space access, so is light enough to optimize the normal pure surprise
+>> removal and safe removal flow.
+> somehow this paragraph belongs to the patch using it. The 1st paragraph
+> is sufficient for the reason of exposure.
 
