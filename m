@@ -1,59 +1,48 @@
-Return-Path: <linux-kernel+bounces-44751-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44753-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4489D8426F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:31:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3138B8426FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:32:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D856E1F25511
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:31:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C500A1F22295
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:32:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FF546E2AE;
-	Tue, 30 Jan 2024 14:31:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P3B9X272"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69D746F067;
+	Tue, 30 Jan 2024 14:32:35 +0000 (UTC)
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACD6254F94
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 14:31:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A83116DD03;
+	Tue, 30 Jan 2024 14:32:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706625069; cv=none; b=CQN4QrnSTRoAXVypB5gauu4ljiza7UIIz+apAwARxJe0eDNjS2Ia22vRLPwyINJZ17DLRIqpudyvfpDcewj1mEC+oCLWyIzrMsQYcy+n47Ebkb6lVFy2HS5Kl/RY9ZQZ2WZ5bRMjMcWUdiMl4BzuPZNIIxcUCFDLKP/ENcSEFqk=
+	t=1706625155; cv=none; b=V9YunkJ4tO+OOv/yTa1Zhuuw837XQ9paiYoIqK6f8XfupT7/HVZB/4YICbG/iSofAcEtPgq+lDS1iehvxOAWSz/Ynxrvc6rtnVYIq/D1nW1zf4mpwR8qApSoxVL1hZR7Vm8AUPLTqUu8qDUgbQrjBDXSjUpLC+rRUD1bPOUEBgI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706625069; c=relaxed/simple;
-	bh=goKGDmqmVPKlqXB4S62+LaT1lrjL5vNzL0WYpX6Rlyk=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=mrJajfcfp7t86+Xa3LI7lDVpCsZJPUP0dat2Qr1uhOWcmNH5YIZ7zxSQ/kZzDHqWCkp4ZEDeEzEco0igqBB6qBgEYApU7JZnel5T4CqdPXzXftcyZ4DvXh6766z0Ja0REAeiYwprMkciF2WP7mrLkNiBGEg4vq92Jpxna0Ee8e8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P3B9X272; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0976AC433F1;
-	Tue, 30 Jan 2024 14:31:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706625069;
-	bh=goKGDmqmVPKlqXB4S62+LaT1lrjL5vNzL0WYpX6Rlyk=;
-	h=Date:From:To:Cc:Subject:From;
-	b=P3B9X272OjEYEFanPsmcXo/WM2zzjsXjopvMZTritP85EbbGdewMiVgt3VVFwvDsg
-	 HUkIOZhv9GFQ4RlQC04J7pbMKJofJZMdf7NVj/DC8ZpqLUOkV1fX6+xd6PSNLaDfn9
-	 OBOZjSBhF9JbzODRKrPYGldeww4kY2CLNHhlYBx/lZVIsMDinsU5UsV77r6AbdEATd
-	 4s1jFNTv8ws5DxoILclXfHFklb3Q0hfM0ZujR8+XNMravx91rSv+NqyMLGSNXWLdqk
-	 F/0mjEjiGHWxtEduCkO1Oi7SAZ+x10zOnWVEA0TBygtfi4lYW/hilwKmWVlIpb263c
-	 YvAOa6khUatxw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-	id 4A62440441; Tue, 30 Jan 2024 11:31:06 -0300 (-03)
-Date: Tue, 30 Jan 2024 11:31:06 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: linux-kernel@vger.kernel.org
-Cc: Adrian Hunter <adrian.hunter@intel.com>,
-	Ian Rogers <irogers@google.com>, Ingo Molnar <mingo@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Vincent Whitchurch <vincent.whitchurch@axis.com>
-Subject: [PATCH 1/1 fyi] tools headers: Update the copy of x86's
- mem{cpy,set}_64.S used in 'perf bench'
-Message-ID: <ZbkIKpKdNqOFdMwJ@kernel.org>
+	s=arc-20240116; t=1706625155; c=relaxed/simple;
+	bh=Z7EH6XvVnLFGgUq3HBLgyE6pJaaNG87//RotfEpd5bM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ifoH5o1tVuASOM5QqI2waZ8QwGFV7bnRbyDR8/AE9QLOUlBVuoede/2NiCpUuylDZbueweAhAQH6sb/T+6W6hSfSppcAzG9C+HPBgq+bzLk1hg9rkLhekl9CE2H+An/pzLWvjCT3M03ZKkoMQGgpb4QxzhWZ61m/36FkaozHq2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id C8B1B68B05; Tue, 30 Jan 2024 15:32:27 +0100 (CET)
+Date: Tue, 30 Jan 2024 15:32:27 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Jan Kara <jack@suse.cz>
+Cc: Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
+	Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.com>,
+	David Howells <dhowells@redhat.com>,
+	Brian Foster <bfoster@redhat.com>,
+	Christian Brauner <brauner@kernel.org>,
+	"Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 19/19] writeback: simplify writeback iteration
+Message-ID: <20240130143227.GC31330@lst.de>
+References: <20240125085758.2393327-1-hch@lst.de> <20240125085758.2393327-20-hch@lst.de> <20240130104605.2i6mmdncuhwwwfin@quack3> <20240130141601.GA31330@lst.de> <20240130142205.GB31330@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,147 +51,102 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20240130142205.GB31330@lst.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-tldr; Just FYI, I'm carrying this on the perf tools tree.
+On Tue, Jan 30, 2024 at 03:22:05PM +0100, Christoph Hellwig wrote:
+> And now for real:
 
-- Arnaldo
+Another slight variant of this would be to move the nr_to_write || err
+check for WB_SYNC_NONE out of the branch.  This adds extra tests for
+the initial iteration, but unindents a huge comment, and moves it closer
+to the other branch that it also describes.  The downside at least to
+me is that the normal non-termination path is not the straight line
+through function.  Thoughs?
 
-Full explanation:
-
-There used to be no copies, with tools/ code using kernel headers
-directly. From time to time tools/perf/ broke due to legitimate kernel
-hacking. At some point Linus complained about such direct usage. Then we
-adopted the current model.
-
-The way these headers are used in perf are not restricted to just
-including them to compile something.
-
-There are sometimes used in scripts that convert defines into string
-tables, etc, so some change may break one of these scripts, or new MSRs
-may use some different #define pattern, etc.
-
-E.g.:
-
-  $ ls -1 tools/perf/trace/beauty/*.sh | head -5
-  tools/perf/trace/beauty/arch_errno_names.sh
-  tools/perf/trace/beauty/drm_ioctl.sh
-  tools/perf/trace/beauty/fadvise.sh
-  tools/perf/trace/beauty/fsconfig.sh
-  tools/perf/trace/beauty/fsmount.sh
-  $
-  $ tools/perf/trace/beauty/fadvise.sh
-  static const char *fadvise_advices[] = {
-  	[0] = "NORMAL",
-  	[1] = "RANDOM",
-  	[2] = "SEQUENTIAL",
-  	[3] = "WILLNEED",
-  	[4] = "DONTNEED",
-  	[5] = "NOREUSE",
-  };
-  $
-
-The tools/perf/check-headers.sh script, part of the tools/ build
-process, points out changes in the original files.
-
-So its important not to touch the copies in tools/ when doing changes in
-the original kernel headers, that will be done later, when
-check-headers.sh inform about the change to the perf tools hackers.
-
----
-
-This is to get the changes from:
-
-  94ea9c05219518ef ("x86/headers: Replace #include <asm/export.h> with #include <linux/export.h>")
-  10f4c9b9a33b7df0 ("x86/asm: Fix build of UML with KASAN")
-
-That addresses these perf tools build warning:
-
-  Warning: Kernel ABI header differences:
-    diff -u tools/arch/x86/lib/memcpy_64.S arch/x86/lib/memcpy_64.S
-    diff -u tools/arch/x86/lib/memset_64.S arch/x86/lib/memset_64.S
-
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Vincent Whitchurch <vincent.whitchurch@axis.com>
-Link: https://lore.kernel.org/lkml/
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/arch/x86/lib/memcpy_64.S          | 4 ++--
- tools/arch/x86/lib/memset_64.S          | 4 ++--
- tools/perf/util/include/linux/linkage.h | 4 ++++
- 3 files changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/tools/arch/x86/lib/memcpy_64.S b/tools/arch/x86/lib/memcpy_64.S
-index d055b82d22ccd083..59cf6f9065aa84d8 100644
---- a/tools/arch/x86/lib/memcpy_64.S
-+++ b/tools/arch/x86/lib/memcpy_64.S
-@@ -1,11 +1,11 @@
- /* SPDX-License-Identifier: GPL-2.0-only */
- /* Copyright 2002 Andi Kleen */
+diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+index 973f57ad9ee548..ff6e73453aa8c4 100644
+--- a/mm/page-writeback.c
++++ b/mm/page-writeback.c
+@@ -2461,24 +2461,6 @@ struct folio *writeback_iter(struct address_space *mapping,
+ 		wbc->nr_to_write -= folio_nr_pages(folio);
+ 		if (*error && !wbc->err)
+ 			wbc->err = *error;
+-
+-		/*
+-		 * For integrity sync  we have to keep going until we have
+-		 * written all the folios we tagged for writeback prior to
+-		 * entering the writeback loop, even if we run past
+-		 * wbc->nr_to_write or encounter errors.
+-		 *
+-		 * This is because the file system may still have state to clear
+-		 * for each folio.  We'll eventually return the first error
+-		 * encountered.
+-		 *
+-		 * For background writeback just push done_index past this folio
+-		 * so that we can just restart where we left off and media
+-		 * errors won't choke writeout for the entire file.
+-		 */
+-		if (wbc->sync_mode == WB_SYNC_NONE &&
+-		    (wbc->err || wbc->nr_to_write <= 0))
+-			goto finish;
+ 	} else {
+ 		if (wbc->range_cyclic)
+ 			wbc->index = mapping->writeback_index; /* prev offset */
+@@ -2491,17 +2473,20 @@ struct folio *writeback_iter(struct address_space *mapping,
+ 		wbc->err = 0;
+ 	}
  
-+#include <linux/export.h>
- #include <linux/linkage.h>
- #include <asm/errno.h>
- #include <asm/cpufeatures.h>
- #include <asm/alternative.h>
--#include <asm/export.h>
- 
- .section .noinstr.text, "ax"
- 
-@@ -39,7 +39,7 @@ SYM_TYPED_FUNC_START(__memcpy)
- SYM_FUNC_END(__memcpy)
- EXPORT_SYMBOL(__memcpy)
- 
--SYM_FUNC_ALIAS(memcpy, __memcpy)
-+SYM_FUNC_ALIAS_MEMFUNC(memcpy, __memcpy)
- EXPORT_SYMBOL(memcpy)
- 
- SYM_FUNC_START_LOCAL(memcpy_orig)
-diff --git a/tools/arch/x86/lib/memset_64.S b/tools/arch/x86/lib/memset_64.S
-index 7c59a704c4584bf7..0199d56cb479d88c 100644
---- a/tools/arch/x86/lib/memset_64.S
-+++ b/tools/arch/x86/lib/memset_64.S
-@@ -1,10 +1,10 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- /* Copyright 2002 Andi Kleen, SuSE Labs */
- 
-+#include <linux/export.h>
- #include <linux/linkage.h>
- #include <asm/cpufeatures.h>
- #include <asm/alternative.h>
--#include <asm/export.h>
- 
- .section .noinstr.text, "ax"
- 
-@@ -40,7 +40,7 @@ SYM_FUNC_START(__memset)
- SYM_FUNC_END(__memset)
- EXPORT_SYMBOL(__memset)
- 
--SYM_FUNC_ALIAS(memset, __memset)
-+SYM_FUNC_ALIAS_MEMFUNC(memset, __memset)
- EXPORT_SYMBOL(memset)
- 
- SYM_FUNC_START_LOCAL(memset_orig)
-diff --git a/tools/perf/util/include/linux/linkage.h b/tools/perf/util/include/linux/linkage.h
-index 75e2248416f55f67..178b00205fe6a7b2 100644
---- a/tools/perf/util/include/linux/linkage.h
-+++ b/tools/perf/util/include/linux/linkage.h
-@@ -115,6 +115,10 @@
- 	SYM_ALIAS(alias, name, SYM_T_FUNC, SYM_L_WEAK)
- #endif
- 
-+#ifndef SYM_FUNC_ALIAS_MEMFUNC
-+#define SYM_FUNC_ALIAS_MEMFUNC SYM_FUNC_ALIAS
-+#endif
+-	folio = writeback_get_folio(mapping, wbc);
+-	if (!folio)
+-		goto finish;
+-	return folio;
+-
+-finish:
+-	folio_batch_release(&wbc->fbatch);
+-
+ 	/*
++	 * For integrity sync  we have to keep going until we have written all
++	 * the folios we tagged for writeback prior to entering the writeback
++	 * loop, even if we run past wbc->nr_to_write or encounter errors.
++	 *
++	 * This is because the file system may still have state to clear for
++	 * each folio.  We'll eventually return the first error encountered.
++	 *
++	 * For background writeback just push done_index past this folio so that
++	 * we can just restart where we left off and media errors won't choke
++	 * writeout for the entire file.
++	 *
+ 	 * For range cyclic writeback we need to remember where we stopped so
+-	 * that we can continue there next time we are called.  If  we hit the
++	 * that we can continue there next time we are called.  If we hit the
+ 	 * last page and there is more work to be done, wrap back to the start
+ 	 * of the file.
+ 	 *
+@@ -2509,14 +2494,21 @@ struct folio *writeback_iter(struct address_space *mapping,
+ 	 * of the file if we are called again, which can only happen due to
+ 	 * -ENOMEM from the file system.
+ 	 */
+-	if (wbc->range_cyclic) {
+-		WARN_ON_ONCE(wbc->sync_mode != WB_SYNC_NONE);
+-		if (wbc->err || wbc->nr_to_write <= 0)
++	if (wbc->sync_mode == WB_SYNC_NONE &&
++	    (wbc->err || wbc->nr_to_write <= 0)) {
++		if (wbc->range_cyclic)
+ 			mapping->writeback_index =
+ 				folio->index + folio_nr_pages(folio);
+-		else
++	} else {
++		folio = writeback_get_folio(mapping, wbc);
++		if (folio)
++			return folio;
 +
- // In the kernel sources (include/linux/cfi_types.h), this has a different
- // definition when CONFIG_CFI_CLANG is used, for tools/ just use the !clang
- // definition:
--- 
-2.43.0
-
++		if (wbc->range_cyclic)
+ 			mapping->writeback_index = 0;
+ 	}
++
++	folio_batch_release(&wbc->fbatch);
+ 	*error = wbc->err;
+ 	return NULL;
+ }
 
