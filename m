@@ -1,160 +1,172 @@
-Return-Path: <linux-kernel+bounces-45354-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45355-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41B9B842F3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 22:56:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 747FC842F3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 22:57:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 676751C23B9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 21:56:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99C451C241D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 21:57:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C99457D3F3;
-	Tue, 30 Jan 2024 21:56:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 866C314AAA;
+	Tue, 30 Jan 2024 21:57:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="NPOWjrkO"
-Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="dJRC3kZl"
+Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDD3914F61
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 21:56:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3835E7D3EE
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 21:57:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706651790; cv=none; b=cIgEEvoTLalIEPMUnqJEX3/1Ii3mBbg5+SuigRZ3l1LlUJYWsJ24P7xV8wQdtc7dRJX4vM1YL/CEeDjTsQXcA1Owce27hceJhLJp3LG63gBR8E6yWB4isYf7GM8Fxkn7c002imz8dbAquxAxaqVFe1v1MMiPwRtbts95Q0jPtj0=
+	t=1706651835; cv=none; b=nHyLQkSUQff/O740P1tLebRzmxFKetFd6Wiv3jNqJlbPfPnD9K6/6QcmqaA9LmFRS4Gl0npF4OnEZX581CZxox2PbyzfmBwja84FLC4yWG9t9RaeyM5izKBaO4Nci0EnkGhez6VaBvEzLoCNSRWpiyHrcxkTJG+5A7zntdrbz1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706651790; c=relaxed/simple;
-	bh=QFF3g8SJ4OiMza5Xx+W6HjoPtXkMrCk0w56SdKoVm3E=;
+	s=arc-20240116; t=1706651835; c=relaxed/simple;
+	bh=SJeL4VmwMt85IREwh/WCKzPi0aDbNEOX0Q8fiUCOSXI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CLVNaNEKsJkE9c45CBkhSYIR0dGnY8Nn7eW308vGGFA0YquqjW6dQi0bnQ4VNWn9tl2EaeRgU7Kz5l4GbXSe7ZIhb+hHpGbaYnf0FDqwOpSMZM38aCXcxiIcD+SYj20JIsURULGAXLDW45IZaNUgqGb8quy6kIi6kShH62gVOig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=NPOWjrkO; arc=none smtp.client-ip=209.85.219.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-68c53ed6c56so13100016d6.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 13:56:27 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=ufwwEf2NHB+D/XZvANtHmLi12VLuFsT/NxOb67a7I/KHsY71yqGJBXnxk2nZU1gFsiFRbe6yy/5gsbbVr6ONU3vmOMJVZ2H6pYbGMhhotbFliCC6E2OElZX0jgr8QVZljx31ymPXQoHUimUsuglGY+pjAri0TQWOT11HiTb2T9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=dJRC3kZl; arc=none smtp.client-ip=209.85.160.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-20536d5c5c7so2838205fac.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 13:57:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1706651786; x=1707256586; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=zUwitgcZ8PysFOK/IjV63sunJlwofoIw/gZSZx3mTw0=;
-        b=NPOWjrkOnfgF8bI7jvihkIPTJu13w3AKmOzC6OtMmjjq0My81atY0FPGwutJpJ7cFZ
-         5q+UP8E4EP68OysIHXPvvARU5NlRGWUEzCxAcwFdo2VflztzgRE3o7QDkZgPjTYIy5Pu
-         Ro3whZW3ldQXFFOfmMwil4DNc+AF9RMkm5rQGgZb8uGYgEdo2NfKzXlzwmPvqFhc++hx
-         1JcUgQL8ers4696kfJSPMI0D/J9IcYWYstHLNHX07A1gKIx0YHvk8sNYHijSBregHI4a
-         86lt9aceAOzKlS8qza1i3F78SroqUWfOLs6zNxJ3PxSVvWfEmAyY1DAh/8NA7b70qLMe
-         MREw==
+        d=chromium.org; s=google; t=1706651833; x=1707256633; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jcDCGmwUxE4c0aGDkwHcRSvrmg1sdA6mlv/IQQCx6ZY=;
+        b=dJRC3kZlZ0QuqNNAc+ZOtnJYEiQcV0bxkhdvcA2hWDjYHt2FCc287ErU93O3VtEkYp
+         d3gdWLI7e5JMP3qED1klAe0VC5QS7FfOFuO1HGfPIwRBflGr9/wOZacdnUHUgCB19Hdx
+         a0FzUQXv8qhIB9Xs+4FgD2GA3CzZhl+OxxJhs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706651786; x=1707256586;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zUwitgcZ8PysFOK/IjV63sunJlwofoIw/gZSZx3mTw0=;
-        b=eMxUrtPxoewyozIx4/4bFMAsl5GlcaVEMNKBPH/XTLW57oUHxk2lPDeNcLZSwM/qrE
-         rS6XbXOYAz39RqX+sICKE25Z+UOXcFFW85gt+oxmkE9HkgAH2+DGWPu5GE+30KHMU8uy
-         CIZ1W+dHyJZvl7SG8oGUO/1ejzKaaw9ojLdZAPZNBsD7kCwmrAWoif2q7S1r96H3y1sP
-         OAAbFGWvmQN449paDMNsL5eFBCiUK5wf7D7LQdbijTlpS7i0sLQHfdUwe4+Wv7PsGZ3+
-         Xh5pcXnEbTOJMKi9iMpBkMBSsUqirwm0O3EWwISO2o3KrS9wIKt9pRdqrukWpFZuu2un
-         ufCA==
-X-Gm-Message-State: AOJu0YzQgh5SjZwb/hQbUnGYXFQ62b0g74cSe8CqmlU397KQc6XkJURK
-	dboBs4+Fi9hAYuvglVer53q62F12ij42UtSB56W568j2AO8VsVjeEs4w+HxP1vfmSjypxr+uarn
-	f
-X-Google-Smtp-Source: AGHT+IEaHZUxi5O8j8Bxm1H1MuCEcZ4girsG/PslfOcIwAPmfhwFr0mToEqN3itXQuBrFZ8Ns2nPOw==
-X-Received: by 2002:ad4:5ecf:0:b0:686:309d:8915 with SMTP id jm15-20020ad45ecf000000b00686309d8915mr9823848qvb.6.1706651786531;
-        Tue, 30 Jan 2024 13:56:26 -0800 (PST)
-Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id pj3-20020a0562144b0300b0068c68437655sm362333qvb.115.2024.01.30.13.56.25
+        d=1e100.net; s=20230601; t=1706651833; x=1707256633;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jcDCGmwUxE4c0aGDkwHcRSvrmg1sdA6mlv/IQQCx6ZY=;
+        b=GIkpZ8EpwfOJrNIukGw8jiGDwtzFQmLKOr3nDNoSVGVnM3ocryk0EWBSVudh0e83Wq
+         sLvbGzDZalCFdbTx5w1CFuN2ImjkcX1ULAzwh2cZWtnIUZ2fRyfdB2ZzckepOYQ8JKjr
+         NNS8gns31/GFVkq+z0nnU1a7n6L/NC0wS6B3wGi5VNLFiZyHyItucfu/1ib7UgSAUi7t
+         ITNp47UxwC1HAL5aZYfNObtoILJCFT3+QZGSZhOWF+frtfDtE5er9gf8SVw8Wl8Is3oN
+         78tffusnUJp5AhpaOfyAyGXkzBAX8+QZfEvZSXjsnz6rLK3x8e3vMNMIX5eNvX5/efZ8
+         vxuQ==
+X-Gm-Message-State: AOJu0Yw5HNN7tKbhwuHgIkuxMV7cw/tc8BksBT8defRIhfb+xgmhTLRy
+	g++JnPBvYKEJXQgnxWot4PgdU4oYtps3p/7uLgdP014yxh1hiLDNJFKpMkiurQ==
+X-Google-Smtp-Source: AGHT+IG7VNSkRKTfrFQKKzj3pYu2rCl/Sscr49lUqKuRxSTqkD3njddB8NnGkSXYSNCwoZUjctqxDg==
+X-Received: by 2002:a05:6870:5707:b0:218:7079:6177 with SMTP id k7-20020a056870570700b0021870796177mr5357267oap.43.1706651833264;
+        Tue, 30 Jan 2024 13:57:13 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id 17-20020a630011000000b005c621e0de25sm2271749pga.71.2024.01.30.13.57.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 13:56:26 -0800 (PST)
-Date: Tue, 30 Jan 2024 16:56:25 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: "T.J. Mercier" <tjmercier@google.com>
-Cc: Michal Hocko <mhocko@suse.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>, android-mm@google.com,
-	yuzhao@google.com, yangyifei03@kuaishou.com,
-	cgroups@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "mm:vmscan: fix inaccurate reclaim during
- proactive reclaim"
-Message-ID: <20240130215625.GA970164@cmpxchg.org>
-References: <20240121214413.833776-1-tjmercier@google.com>
- <Za-H8NNW9bL-I4gj@tiehlicka>
- <CABdmKX2K4MMe9rsKfWi9RxUS5G1RkLVzuUkPnovt5O2hqVmbWA@mail.gmail.com>
- <20240123164819.GB1745986@cmpxchg.org>
- <CABdmKX1uDsnFSG2YCyToZHD2R+A9Vr=SKeLgSqPocUgWd16+XA@mail.gmail.com>
- <20240126163401.GJ1567330@cmpxchg.org>
- <CABdmKX0pbOn+PDYQwQC=FA6gThSG0H59+ja52vAEPq80jbaWGA@mail.gmail.com>
- <CABdmKX3Jv1O-ppJAS-oi96Mcc6E3xsD-rwoeNU=jKU9wNDODVA@mail.gmail.com>
+        Tue, 30 Jan 2024 13:57:12 -0800 (PST)
+Date: Tue, 30 Jan 2024 13:57:12 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Uladzislau Rezki <urezki@gmail.com>
+Cc: Lorenzo Stoakes <lstoakes@gmail.com>, linux-hardening@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Hellwig <hch@infradead.org>, linux-mm@kvack.org,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 33/82] mm/vmalloc: Refactor intentional wrap-around
+ calculation
+Message-ID: <202401301356.4F87B727@keescook>
+References: <20240122235208.work.748-kees@kernel.org>
+ <20240123002814.1396804-33-keescook@chromium.org>
+ <24526e13-2df6-47ea-865f-b5a5594bc024@lucifer.local>
+ <ZblT2OjkPcZQEw7A@pc636>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABdmKX3Jv1O-ppJAS-oi96Mcc6E3xsD-rwoeNU=jKU9wNDODVA@mail.gmail.com>
+In-Reply-To: <ZblT2OjkPcZQEw7A@pc636>
 
-On Tue, Jan 30, 2024 at 12:58:12PM -0800, T.J. Mercier wrote:
-> On Fri, Jan 26, 2024 at 8:41 AM T.J. Mercier <tjmercier@google.com> wrote:
+On Tue, Jan 30, 2024 at 08:54:00PM +0100, Uladzislau Rezki wrote:
+> On Tue, Jan 30, 2024 at 06:55:57PM +0000, Lorenzo Stoakes wrote:
+> > On Mon, Jan 22, 2024 at 04:27:08PM -0800, Kees Cook wrote:
+> > > In an effort to separate intentional arithmetic wrap-around from
+> > > unexpected wrap-around, we need to refactor places that depend on this
+> > > kind of math. One of the most common code patterns of this is:
+> > >
+> > > 	VAR + value < VAR
+> > >
+> > > Notably, this is considered "undefined behavior" for signed and pointer
+> > > types, which the kernel works around by using the -fno-strict-overflow
+> > > option in the build[1] (which used to just be -fwrapv). Regardless, we
+> > > want to get the kernel source to the position where we can meaningfully
+> > > instrument arithmetic wrap-around conditions and catch them when they
+> > > are unexpected, regardless of whether they are signed[2], unsigned[3],
+> > > or pointer[4] types.
+> > >
+> > > Refactor open-coded unsigned wrap-around addition test to use
+> > > check_add_overflow(), retaining the result for later usage (which removes
+> > > the redundant open-coded addition). This paves the way to enabling the
+> > > unsigned wrap-around sanitizer[2] in the future.
+> > >
+> > > Link: https://git.kernel.org/linus/68df3755e383e6fecf2354a67b08f92f18536594 [1]
+> > > Link: https://github.com/KSPP/linux/issues/26 [2]
+> > > Link: https://github.com/KSPP/linux/issues/27 [3]
+> > > Link: https://github.com/KSPP/linux/issues/344 [4]
+> > > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > > Cc: Uladzislau Rezki <urezki@gmail.com>
+> > > Cc: Christoph Hellwig <hch@infradead.org>
+> > > Cc: Lorenzo Stoakes <lstoakes@gmail.com>
+> > > Cc: linux-mm@kvack.org
+> > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > > ---
+> > >  mm/vmalloc.c | 5 +++--
+> > >  1 file changed, 3 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> > > index d12a17fc0c17..7932ac99e9d3 100644
+> > > --- a/mm/vmalloc.c
+> > > +++ b/mm/vmalloc.c
+> > > @@ -1223,6 +1223,7 @@ is_within_this_va(struct vmap_area *va, unsigned long size,
+> > >  	unsigned long align, unsigned long vstart)
+> > >  {
+> > >  	unsigned long nva_start_addr;
+> > > +	unsigned long sum;
+> > >
+> > >  	if (va->va_start > vstart)
+> > >  		nva_start_addr = ALIGN(va->va_start, align);
+> > > @@ -1230,11 +1231,11 @@ is_within_this_va(struct vmap_area *va, unsigned long size,
+> > >  		nva_start_addr = ALIGN(vstart, align);
+> > >
+> > >  	/* Can be overflowed due to big size or alignment. */
+> > > -	if (nva_start_addr + size < nva_start_addr ||
+> > > +	if (check_add_overflow(nva_start_addr, size, &sum) ||
+> > >  			nva_start_addr < vstart)
+> > >  		return false;
+> > >
+> > > -	return (nva_start_addr + size <= va->va_end);
+> > > +	return (sum <= va->va_end);
+> > >  }
+> > >
+> > >  /*
+> > > --
+> > > 2.34.1
+> > >
+> > 
+> > Looks good to me,
+> > 
+> > Reviewed-by: Lorenzo Stoakes <lstoakes@gmail.com>
 > >
-> > On Fri, Jan 26, 2024 at 8:34 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > >
-> > > On Wed, Jan 24, 2024 at 09:46:23AM -0800, T.J. Mercier wrote:
-> > > > In the meantime, instead of a revert how about changing the batch size
-> > > > geometrically instead of the SWAP_CLUSTER_MAX constant:
-> > > >
-> > > >                 reclaimed = try_to_free_mem_cgroup_pages(memcg,
-> > > > -                                       min(nr_to_reclaim -
-> > > > nr_reclaimed, SWAP_CLUSTER_MAX),
-> > > > +                                       (nr_to_reclaim - nr_reclaimed)/2,
-> > > >                                         GFP_KERNEL, reclaim_options);
-> > > >
-> > > > I think that should address the overreclaim concern (it was mentioned
-> > > > that the upper bound of overreclaim was 2 * request), and this should
-> > > > also increase the reclaim rate for root reclaim with MGLRU closer to
-> > > > what it was before.
-> > >
-> > > Hahaha. Would /4 work for you?
-> > >
-> > > I genuinely think the idea is worth a shot. /4 would give us a bit
-> > > more margin for error, since the bailout/fairness cutoffs have changed
-> > > back and forth over time. And it should still give you a reasonable
-> > > convergence on MGLRU.
-> > >
-> > > try_to_free_reclaim_pages() already does max(nr_to_reclaim,
-> > > SWAP_CLUSTER_MAX) which will avoid the painful final approach loops
-> > > the integer division would produce on its own.
-> > >
-> > > Please add a comment mentioning the compromise between the two reclaim
-> > > implementations though.
-> >
-> > I'll try it out and get back to you. :)
+> Same here. One small nit though. The "sum" variable is not something
+> that it suits for. IMO, we should use a better name and replace it:
 > 
-> Right, so (nr_to_reclaim - nr_reclaimed)/4 looks pretty good to me:
-> 
-> root - full reclaim       pages/sec   time (sec)
-> pre-0388536ac291      :    68047        10.46
-> post-0388536ac291     :    13742        inf
-> (reclaim-reclaimed)/4 :    67352        10.51
-> 
-> /uid_0 - 1G reclaim       pages/sec   time (sec)  overreclaim (MiB)
-> pre-0388536ac291      :    258822       1.12            107.8
-> post-0388536ac291     :    105174       2.49            3.5
-> (reclaim-reclaimed)/4 :    233396       1.12            -7.4
-> 
-> /uid_0 - full reclaim     pages/sec   time (sec)
-> pre-0388536ac291      :    72334        7.09
-> post-0388536ac291     :    38105        14.45
-> (reclaim-reclaimed)/4 :    72914        6.96
-> 
-> So I'll put up a new patch.
+> "nva_offset"?
 
-That looks great, thanks for giving it a shot.
+Sure, I can use that. Other folks in other patches have suggested "end",
+so maybe nva_end or nva_end_addr ?
 
-Looking forward to your patch.
+-Kees
+
+-- 
+Kees Cook
 
