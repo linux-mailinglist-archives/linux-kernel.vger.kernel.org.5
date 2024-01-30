@@ -1,200 +1,148 @@
-Return-Path: <linux-kernel+bounces-45361-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45362-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D7C3842F55
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:05:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDE15842F57
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:06:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16781B22542
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 22:05:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAD18286B6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 22:06:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 036A278667;
-	Tue, 30 Jan 2024 22:05:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85F6E7D3FD;
+	Tue, 30 Jan 2024 22:06:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="fZe7VOnN"
-Received: from SN4PR2101CU001.outbound.protection.outlook.com (mail-southcentralusazon11020003.outbound.protection.outlook.com [40.93.193.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="XraSWegW"
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 762D77D410;
-	Tue, 30 Jan 2024 22:05:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.193.3
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706652327; cv=fail; b=SR2qHHTDywbAwdwBhUyGDoG7gG5jLHS6oK4zOLrDqAKYfiDd2cl/vbU/9eraPz8Fw2dqxUghkIQN4V/9gOagWHXdDnemCzcC4rnsTR2Vky6Fdze7/F70kVflI+bUIcCpAaUK8qoymAVor3P3nkNisLhEsZdQ0XLNe42i+jsCBpk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706652327; c=relaxed/simple;
-	bh=qFi72R8WK9xNVon0e9FIzlu4pPS83cGKWKsLLsco0g8=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=SzgdrCg++nSSxM50afRp9cKlwA6SnEJSSXBqSVsfMY3+uA3jm03+e7taS+XtyrdODNByaEScb22/yk3D38G9NhYREOGdUdbLrZto8JOWI2CTapRB93101wmYKZzMak1fXSJp4UqH1Jjt5AFdPTAaHLtfttWo61qaTYGhkyYBDN8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=fZe7VOnN; arc=fail smtp.client-ip=40.93.193.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nEZG9MBz0EDNDgmmeat+tWMCwbuCey7kdkbMC5rHYjEtPmgZ5/Dd0J7eZ5na0cQnqHNEpB5pqCaXjULz3oi4QEWTXxxdaiGkMqjZiUCsj1EV2eu1zkTdc/zqOdOAwXyuhqcgqhv+PbUXDP4DoMh2cfbojeHD21P7defj1tSwlPeL4tjs59Ui4CZaDcl/FEmeXfi6BQtNcBz7AXNNt/pSVatFEpwlJl5vKTfVLRZxOoMV99chej35aL7HwMhzxFZGQ6wEUPGp2vp0cy+FPm+VGuI6AmFw9nh762pP4VMv+iETJ5cfUlxBRvAjegoDDJaBYYYPk+KXrdgd8N4IQnjdmQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FP36Wr8qHochEbbbgKZ5aRAFUcp2L+FIAYxMr1bnWW8=;
- b=UpAAY9ZolHUj02tuVFviFcD3Q0sS3J38TVvC+I7+S/pHXqkPh3fWY28EfLKRe2mflm0iYblf9foDAg0P10E8CfEGM8ksbdZEt7YFNdJ6TAFedSK6pBYQlOy44kBqr2u4VulWpRnI4Q0RisVB76cPvUmHXUsNdAmcwrnvOvdg1onWdvG1sVeZndZwEFNM+A6jhbXsN1Chf0sKeTUttd+gmyEjkyow9aACyBbSSTAcgiLX1mG3qSvNFcwh+//La2oID45WS03zVmi5Fx/2flDAE4D9/JSao9Y8B18VBMLCimwL85f5wpdoiSGkUdMmIzAXwJpr+6zlAdJNqBxr+5ro1g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FP36Wr8qHochEbbbgKZ5aRAFUcp2L+FIAYxMr1bnWW8=;
- b=fZe7VOnNiLuLZPZiLbK0mOiwDPNgIxeK9d3QVHG9HKyIeAa3jruKOffxkP5UP3HLZCZDcGCTVD00o0R7DjGhObAeOQuJo78C3t2o9/PQ5BthF+u8huSfDodYSniWfMMCRNwBCgtjenCFcnl817sX/6jLxZk2WLOaVSajfX+ABaU=
-Received: from DS1PEPF00012A5F.namprd21.prod.outlook.com
- (2603:10b6:2c:400:0:3:0:10) by SJ1PR21MB3722.namprd21.prod.outlook.com
- (2603:10b6:a03:452::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.4; Tue, 30 Jan
- 2024 22:05:21 +0000
-Received: from DS1PEPF00012A5F.namprd21.prod.outlook.com
- ([fe80::ff76:81ea:f8d6:45]) by DS1PEPF00012A5F.namprd21.prod.outlook.com
- ([fe80::ff76:81ea:f8d6:45%8]) with mapi id 15.20.7249.015; Tue, 30 Jan 2024
- 22:05:21 +0000
-From: Haiyang Zhang <haiyangz@microsoft.com>
-To: Dexuan Cui <decui@microsoft.com>, Shradha Gupta
-	<shradhagupta@linux.microsoft.com>, KY Srinivasan <kys@microsoft.com>, Wei
- Liu <wei.liu@kernel.org>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, Wojciech Drewek <wojciech.drewek@intel.com>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC: Shradha Gupta <shradhagupta@microsoft.com>, "stable@vger.kernel.org"
-	<stable@vger.kernel.org>
-Subject: RE: [PATCH] hv_netvsc:Register VF in netvsc_probe if
- NET_DEVICE_REGISTER missed
-Thread-Topic: [PATCH] hv_netvsc:Register VF in netvsc_probe if
- NET_DEVICE_REGISTER missed
-Thread-Index: AQHaU0yZNOZ7/lEXVUScWvjgIg8G/LDyyvGAgAAY7WA=
-Date: Tue, 30 Jan 2024 22:05:21 +0000
-Message-ID:
- <DS1PEPF00012A5F565EC849626E8F32EDB5CA7D2@DS1PEPF00012A5F.namprd21.prod.outlook.com>
-References:
- <1706599135-12651-1-git-send-email-shradhagupta@linux.microsoft.com>
- <SA1PR21MB1335C5554F769454AAEDE1C8BF7D2@SA1PR21MB1335.namprd21.prod.outlook.com>
-In-Reply-To:
- <SA1PR21MB1335C5554F769454AAEDE1C8BF7D2@SA1PR21MB1335.namprd21.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=beac0a21-5dac-4c54-8eec-76ca3372c098;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-01-30T18:26:57Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DS1PEPF00012A5F:EE_|SJ1PR21MB3722:EE_
-x-ms-office365-filtering-correlation-id: 4ff498b9-fafb-49ee-8ca0-08dc21df8d9f
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- 2cNk8iw8lpQ4CFXeKnsU43WxdMFjfkFus9dk1IKjtfoJje/8YhqG53Ru+P80RcJGuN3tJdYORWNcyyvDuc49B38MfUcd9PLWcCW0LqnAC1uEZ4gwLjNEdhvm6JxqvDDkuOwRnDgHSJPhtEJvgoD0diTKwRV5mfRM0bapf0Y1GxgRLevJK4CTJWJ+dDOkUF9j6YbaueOqHpd54vfL7UBE0FFLQebHo5qLIGG1+MhCYL+KmZaQ68F7DPxYoQvIEJ01Tl4RVs15m8WVa8ytnM45Ia6kbOPSolOH7fV4GVqb3qjP3mzytYJ+EjOa/ra/DmKDbSXMnVoIo7CDi1hZ0fXOQpjglvUElYF6RSlcibAsjmDu1brm8uVddoNswPn+9X1BHXjIzm7jdZk5tG25/7pnZfFKYAVe9FYKKUO8ZVytBcEnTWmp8cLih0srV5iI+2nC130IBCgENYvEo6Ds7cE+sRsfQybg6AWWhmDdXUlZwHqFztMlfh3KprD4YP2ju+3YbFzcWe15ayDxX26UF0YpGIIvjUev+QahJVz/eU3AK+ZTG9+GuPEm330pWVD8bejfMxcaYM1aesfw+jX8HsUHtIRrNhXi50FNAw4dxxNjn/XlQivku7s4qnL0uX2Wv4vVrt0oAkXQ8NXLwil+nJmwlg==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS1PEPF00012A5F.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(39860400002)(366004)(136003)(396003)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(55016003)(83380400001)(921011)(38070700009)(33656002)(82960400001)(82950400001)(8990500004)(86362001)(26005)(66476007)(122000001)(10290500003)(316002)(7416002)(5660300002)(66556008)(66446008)(9686003)(38100700002)(8676002)(7696005)(4326008)(110136005)(6506007)(71200400001)(52536014)(478600001)(2906002)(64756008)(8936002)(66946007)(76116006)(41300700001)(54906003)(53546011);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?vHsQ49v01ZYz+3HsnkAgLmuHPGpaZPJFuFZ46VL4sNzHlHQ3fzaHFKSO0oA2?=
- =?us-ascii?Q?ek/P+eLq0r1MIX663sUrFSFmNF2fZ4rbID6dwoUa95/ZnNsTLTIT4HFZb1HP?=
- =?us-ascii?Q?ZTKdAiuKawmuPFBoKqwPGjjHrXqD29cejKAbRKhco/aK9CNkYH1lRgFVDBZj?=
- =?us-ascii?Q?n+SFIT5CupH7gsvKgoyAkPyNU1ZXw2ueQgxkLmX460ze9jnXTmAx61aUYEy1?=
- =?us-ascii?Q?4C1/OwUpAvdY7nNmxJzOVcmQixRqfqJONIx7xZd6pgmY28Jpf4HPuv+ZVS7z?=
- =?us-ascii?Q?Z+8W27c92br/WH2m7DsrpZyGGE4iTAmZ95TF1rz9IOInCG4+NJRb2cfVbiYc?=
- =?us-ascii?Q?HFq4ti+HY2xxdMcmZlKfGC3mhQti4Robf4SIb/sWW//tlJdLez5cH349hKsp?=
- =?us-ascii?Q?yJwmdhHh+9mTvyjFErANVXiZ4IluKhsO21OlC1Z5jFXK4BMz3GdYLwhPwnNs?=
- =?us-ascii?Q?O4gP8jSLfVKtb2MtxUZmMlygdC5MRsz2Df7GBGhkf29zq9Rp3YkzQSMgG91P?=
- =?us-ascii?Q?DgFrfHzYEsv8XnLHrfFFEdg7QLb+WouiMO2kOAaxgZxW8QASuL5cOVnnXudJ?=
- =?us-ascii?Q?vfIJyb05+x/40NmhYO0jRMeqsDNdUcX0zrQErQuIZk8WRo1ExlqXwS6Re9Ln?=
- =?us-ascii?Q?uYNzkOUa0GULNKupT+0letNyvHKIEtPAYG2q4Enag4HbmqKFFIXfA+skma68?=
- =?us-ascii?Q?1Q0GZgnsM6HFwm2p6f8WA99+gky0hvMcZ5yzCfvVFIsWrl7jfDZeDnO/9jJv?=
- =?us-ascii?Q?cvXBkpUl0mOVNEazvyCNI3+6bshtPSgnqTUxSmLqgpxwUmmYYitf0Hp8bSnR?=
- =?us-ascii?Q?8Qjv7mbPjNUwwKbAcqTjDdF47cmJX2l5ALHjZUAt4Phm0VIVNURLNrlOL9Up?=
- =?us-ascii?Q?xdva2WuO6+MiXjX6aqRHJxwPlD1vxq662G5pWvKNXxghOXYZN1iLwKUT3RgC?=
- =?us-ascii?Q?Q8EvoTbSjunEZ0UKwKUZG9psW61gG1AIzWssZiF+5F9kAubF9Ij1Tuins7VD?=
- =?us-ascii?Q?0T8S27cFKDuRclS+WwZJh4okjIfXV4pPpMGDdlIzXcoL+NgQzt01lDlhnyNs?=
- =?us-ascii?Q?Zk2wdbghRf008JOVOQwRYNhIfVDAUMEZCZp3OfYI44ZFCBi5rwyGxSdKa81t?=
- =?us-ascii?Q?IvBvf5K5PF93Gh2JJjnYyWYfxYCWNqcO1DeoaQwMAeuMm/Jsw0IAInzgO//9?=
- =?us-ascii?Q?Pw/Q+7FZrEwhH79xyJw9f6nkKnE5bAhGGauqh4zv/ActZ6xPD853uAHrRXZv?=
- =?us-ascii?Q?CsY4fX68vmJbhzN/eELTVRQuURu6MPTCKLDGzhanphT0hk04/Wk7Sd3jG6t6?=
- =?us-ascii?Q?uYBl+DjK16oKfuOwyFCBfRvvkHKuLcOBuuxXyk0Xjn9Ruw4kIAj9K8+6T8T/?=
- =?us-ascii?Q?PMKi4pWlUYNF0+nZ78fDQxSNHj0VAo2PN00FlUI9sgistYHTZw6715PeHX5S?=
- =?us-ascii?Q?n68whMYZlV5ljhKWUkZQXw6YGcYbFDrBQH83VmtZgCJrKrikvTVwmNKTvgw6?=
- =?us-ascii?Q?f2T8cEUS1ES4bew42JwRhQPDZYsd4awjiFyXtMwbOpEd7wv3W2FKUZ7NXjVP?=
- =?us-ascii?Q?Kz6HI20vRcX3q15ZxjpHmfsBvjdVZKigvuBORqV/?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 226787D400
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 22:06:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706652377; cv=none; b=JnKg3P3FV4C8FlMW/W0XatJU7iSYlGFIHVgVgPhF+4PDHtsGWUWsgzotiOvj/fGoIGhDmXRwruMA5/zWcO+byotq/G5p3qRmhN86rht/wOX+6Twtb36h43Ch9NeJVnF+DxFewt/HyutRnn45fdprSOQDzHTBlhcTEy6FRum2Bcc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706652377; c=relaxed/simple;
+	bh=gn0dvTcLJa7mfVKsNhKm9Zlhn7EMdhhcckPZdnAEyDc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cDmYJO/jmCycudvMeu5wGWlO4bauvxQgQsKa4JgV6s2BGYRGcgP4zCHCYlIQOZy57hlOCSStV8BvNT/lw9o+5Pkao5BImwORNUAdAOhyitVi7OVbcdXf8iN1kdnGircShoM2vXmP/6GR4k4/tXxnMspal7dvTnowvhw7mX1udfo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=XraSWegW; arc=none smtp.client-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2909978624eso2590222a91.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 14:06:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706652375; x=1707257175; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=EpcTNftNmXXiGzifaQkJ3S/DIHivihv6EGVVCNRvMGk=;
+        b=XraSWegW464e8BC3XRTaJk3dE7mKxO6K2KUK1gZYYccuiJM6x2hbTtYtUaY/o2j4iw
+         mpcAtgDpRMMu59JS+GwbpXsWPuRANaZSFGzG+Tl1jXzA1cqHw3ogLefsciBNQzHIK7sx
+         kLuSrtGnpyevBd1Yxw8ETfiUC9e3Ke1qhg7oo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706652375; x=1707257175;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EpcTNftNmXXiGzifaQkJ3S/DIHivihv6EGVVCNRvMGk=;
+        b=qIQlU8OIZY4k0jPHQ+SMO0bEUnZL7bb+vGhkW2AMFDSl+TfKjxG0pzz0BnpVcxO8j6
+         x3hJp/CIPoWBFtURMfUFxGpEySKZn/aZm5VTKrUTFLvjrDSsXXxoA3B3ZCN7+hR32Gij
+         vs0CEebZItSWVFyfgUcxIEQ83Fs/5o7dmJD87mthlXcyrQhMBpBiFMFtKtimx7+QdZXo
+         v9jayIFZ00IOTUpzwUVc5b9657doaXeT1WAchXwiwe2hhyZ3rF1CQVi325H9jTkvgOGO
+         RO2+McXRB/sS/uFnS3JNiibnarKE511SC3G3xUBOHqtOwZyYQh17mvS616MiYAUfflUB
+         lS6w==
+X-Gm-Message-State: AOJu0YzcX2Cx55TC0sOqVbi79IbYFfc3aIY43xQ+avG3KGQoBwHJjRW+
+	rlQlcIfSVguqjKdIWYJHYfLz7DFn4BOqtVIT821Ozcx/dVr5uj1FV1cl8bj73w==
+X-Google-Smtp-Source: AGHT+IHHJoa4a2zVyNjNx2GD+zQa7608axdnMQUamIHrlynGd7AyzpXh5cMXkqaU+GSW4C/fHqpsfQ==
+X-Received: by 2002:a17:90a:ac0d:b0:294:1261:6412 with SMTP id o13-20020a17090aac0d00b0029412616412mr6543170pjq.9.1706652375445;
+        Tue, 30 Jan 2024 14:06:15 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id oh11-20020a17090b3a4b00b0029051dad730sm9160474pjb.26.2024.01.30.14.06.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jan 2024 14:06:14 -0800 (PST)
+From: Kees Cook <keescook@chromium.org>
+To: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Cc: Kees Cook <keescook@chromium.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Miguel Ojeda <ojeda@kernel.org>,
+	Marco Elver <elver@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: [PATCH v2 0/5] overflow: Introduce wrapping helpers
+Date: Tue, 30 Jan 2024 14:06:05 -0800
+Message-Id: <20240130220218.it.154-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DS1PEPF00012A5F.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4ff498b9-fafb-49ee-8ca0-08dc21df8d9f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jan 2024 22:05:21.6830
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZUf124y/IDvdKhqc+Fyqf2lyYwfwZ/OSDe0BHCYe3HwXcpDEI87RjcxYrqpzLfEon/ZxotxisjyVGT6q2Xk5Pg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR21MB3722
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1585; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=gn0dvTcLJa7mfVKsNhKm9Zlhn7EMdhhcckPZdnAEyDc=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBluXLRRnzyI6fI6v0nKvBOwzf6BxD/SzagDz7I/
+ NuQhNGUexqJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZbly0QAKCRCJcvTf3G3A
+ JoJyD/0Zaz7khw8rvEjl+ViRwJDZukx9DH9xCEPCJ2x1JZfinl2G4QysCjDd4MiRMmAUypVYeOs
+ OYmwV/ZO4kJq8Zp5hps0k9/JnMFZcXR9PQEnQfqml3c674pt5bPjVRMKbwIG9rmjaMgaFsBlmsR
+ kichU4kPdmgCImcDhwyYoYbC1FbwId7ylVWnEC00t2dxW08xzfIj2pongtfe9rTBcML5+5KOStu
+ Xp21F2Ca8ZV034R6GBFhk6fqOZlQGhtvSlUMit3DALF1PsYATJsjjxltZ6WacTj6geLcdgzLiC8
+ sttFAWk4F+VlO3EB7UPwxoXdeK2Ce7vX0pgLl6nPA/HeXAXtZIfqbynHTbsLwEbBDNEQuzbUHZA
+ o7KKMEbd1LRjGdr/Axku+hw0FDzmCHDSgzTFSxQPTf0I4vJi5+QLUWirWZ9wEFvbuatVTOFn87l
+ zPRN/9U+i6IqWwj8WiROByaKMehkN0vN99Fcwy5oTaWmDj3/MQ3/wHstmic8A5EAkITQkQFcMTD
+ 55Yh5ixwFtyG+0Ujnz/RLvdR94CBkqDz2klsSjn4Xk351lIkxP7kB7mH5RE/gZoHDjgxjpd1/FP
+ qxWu6FcNBX2irtQC1VHVGrdgjaDqfyQtmKi5QiuhIzit7numZ5cc0fJRIHYgKnqUuU7LrPq5Stv
+ Zuw71ws tLjJok1A==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
+Hi,
 
+v2:
+ - Define inc/dec_wrap() in terms of add/sub_wrap() and avoid side-effects (Rasmus)
+ - Fix various typos (Rasmus)
+ - Add selftests for all the new helpers
+v1: https://lore.kernel.org/lkml/20240129182845.work.694-kees@kernel.org/
 
-> -----Original Message-----
-> From: Dexuan Cui <decui@microsoft.com>
-> Sent: Tuesday, January 30, 2024 3:13 PM
-> To: Shradha Gupta <shradhagupta@linux.microsoft.com>; KY Srinivasan
+In preparation for gaining instrumentation for signed[1], unsigned[2], and
+pointer[3] wrap-around, expand the overflow header to include wrap-around
+helpers that can be used to annotate arithmetic where wrapped calculations
+are expected (e.g. atomics).
 
+After spending time getting the unsigned integer wrap-around sanitizer
+running warning-free on a basic x86_64 boot[4], I think the *_wrap()
+helpers first argument being the output type makes the most sense (as
+suggested by Rasmus).
 
->=20
-> > @@ -2205,8 +2209,11 @@ static int netvsc_vf_join(struct net_device
-> > *vf_netdev,
-> >  			   ndev->name, ret);
-> >  		goto upper_link_failed;
-> >  	}
-> > -
-> > -	schedule_delayed_work(&ndev_ctx->vf_takeover,
-> > VF_TAKEOVER_INT);
-> > +	/* If this registration is called from probe context vf_takeover
-> > +	 * is taken care of later in probe itself.
-> I suspect "later in probe itself" is not accurate.
-> If 'context' is VF_REG_IN_PROBE, I suppose what happens here is:
-> after netvsc_probe() finishes, the netvsc interface becomes available,
-> so the user space will ifup it, and netvsc_open() will UP the VF
-> interface,
-> and netvsc_netdev_event() is called for the VF with event =3D=3D
-> NETDEV_POST_INIT (?) and NETDEV_CHANGE, and the data path is
-> switched to the VF.
+-Kees
 
-In register_netdevice(), NETDEV_POST_INIT is earlier than NETDEV_REGISTER.
-This case: netvsc_open >> dev_open(vf) >> NETDEV_UP >>
- netvsc_vf_changed(event_dev, event);
+Link: https://github.com/KSPP/linux/issues/26 [1]
+Link: https://github.com/KSPP/linux/issues/27 [2]
+Link: https://github.com/KSPP/linux/issues/344 [3]
+Link: https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/log/?h=devel/overflow/enable-unsigned-sanitizer [4]
 
->=20
-> If my understanding is correct, I think in the case of 'context' =3D=3D
-> VF_REG_IN_PROBE, I suspect the "Align MTU of VF with master"
-> and the "sync address list from ndev to VF" in __netvsc_vf_setup() are
-> omitted? If so, should this be fixed? e.g. Not sure if the below is an
-> issue or not:
-> 1) a VF is bound to a NetVSC interface, and a user sets the MTUs to 1024.
-> 2) rmmod hv_netvsc
-> 3) modprobe hv_netvsc
-> 4) the netvsc interface uses MTU=3D1500 (the default), and the VF still
-> uses 1024.
+Kees Cook (5):
+  overflow: Adjust check_*_overflow() kern-doc to reflect results
+  overflow: Expand check_add_overflow() for pointer addition
+  overflow: Introduce add_would_overflow()
+  overflow: Introduce add_wrap(), sub_wrap(), and mul_wrap()
+  overflow: Introduce inc_wrap() and dec_wrap()
 
-__netvsc_vf_setup() is skipped from the netvsc_register_vf >> netvsc_vf_joi=
-n(),
-but called from netvsc_probe(), so the VF mtu is sync-ed to 1500.
-I verified mtu sync in test.
+ include/linux/compiler_types.h |  10 +++
+ include/linux/overflow.h       | 160 ++++++++++++++++++++++++++++++---
+ lib/overflow_kunit.c           | 132 ++++++++++++++++++++++++---
+ 3 files changed, 277 insertions(+), 25 deletions(-)
 
-Thanks,
-- Haiyang
+-- 
+2.34.1
 
 
