@@ -1,127 +1,92 @@
-Return-Path: <linux-kernel+bounces-43677-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43673-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D634F84178F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 01:37:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD5CE84177E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 01:35:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 153E11C22D4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 00:37:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1ED8B22A80
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 00:35:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2113236AEB;
-	Tue, 30 Jan 2024 00:36:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j/Ge8NMV"
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 842F5168BE;
+	Tue, 30 Jan 2024 00:35:41 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB0DD2EAF7;
-	Tue, 30 Jan 2024 00:36:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 162531B59D;
+	Tue, 30 Jan 2024 00:35:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706574968; cv=none; b=Xwps3OCyFt1BxA1TXR5LsI3fl86IUfI68CQ1WRQXVSSDaW8My9MtEp/RP2HihA+tKeNxBIAHOibveU5/7AD1gqPlfu02E0U/mRBS3eLFInwCotiQjs3+HodJGMmbprUWVLnK7aeQ1tTRxk3Px48thtN/39xaKx+NYtysM+oOxOY=
+	t=1706574941; cv=none; b=eZ7stavw9S/BZRjX3cWCHgM/gW3MWu3Z9EUBkhAXR/dbQKb1q3Wi+qDocUVdnhJlRtWjONrWH8uJYdgAN9j6DE2oRFBOdNsBrpt0xtjyXrfaIUJUsh7CzCUTZjyczLr76E0tLQj8I8pP/AmhcLZbXGARj1ivXHGlmmtE1o7qytg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706574968; c=relaxed/simple;
-	bh=AOE7n0KnewlaWwxbj8BBqxz1kEl4nUkcJEnkd3Rd1CM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=c0L937mNEwsDNSf6FeWYUfL946dDVlvHch9mV0bNNJ4vp9bXdQWQRFXT9mAQWYbGmo6CI0d0DjCPRiweCUci9saamYEKorFni46fplJRdzV95Xr5oPYgbNjsQOIWPqA/odiwwUVfpZdE5wmChb+2IFm2lqNs7a2kK9Ijht8qHNY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j/Ge8NMV; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33926ccbc80so2048066f8f.0;
-        Mon, 29 Jan 2024 16:36:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706574965; x=1707179765; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1Q3Rs7PU6VZ7DHw5oiGFQEWFBt/lSJt0fN7k2NTIpww=;
-        b=j/Ge8NMVfqOkF9L3ThouhsrkEhlfdGjAjq5biANy1aSk/6XzOAaQHnxgm7dXlvMUMs
-         nVx80SpIkemvxiIoqOkS7YHfLcAf4h6dfNi4swY2PeuiheKliWXfD3QAErx751XBS0Vv
-         7Ja/SnQLi0FW9sS4mYeDjmWX1GKdvsLWG3h+wsauI2iyWqJvZohwE9AoYVrT4LSpDUHn
-         56ABsZNngxy63ODFgwFssjtsnu2xzOcYgNX0a9gJRkrpWnEz7mNRresd15AqGmub/VUI
-         DgcAfvAw6Ekr2xv/oSYVul5YAGkXlV8Z1Q84P8/M5CRiuYgHpYm20opo3VAb3/zEFDNB
-         easg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706574965; x=1707179765;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1Q3Rs7PU6VZ7DHw5oiGFQEWFBt/lSJt0fN7k2NTIpww=;
-        b=G8Jh0A1oqycmf2reUM/OBHKtB9/yJffGgjYFsOvFgMlnztplrJa/66VDfseMWJjZau
-         P3TZhkCb1MkV5NhF+NtUbpLoLnU8RQeLVzD45VTGea8sAz+njKZbmYaCiZgDqgoN0IrO
-         5gVZuO9zjxQOUOAAa89KWgOt4A+1mBgyg5F4deHT4BNDdvWHosnJKiR+FNbZn8fbGR+D
-         ae59cl/j2SVwU67q8qtMKNqymA008gXTX80r+HClmE4y4LgbmEJYwWZ1n5rMJfGbBLfX
-         YlYW7pzJpTjMOsiJy+zmDtyr5j8FQPCpuFbio9663Prv1q21H4JOdzlrqXSXv04QCM91
-         gbzg==
-X-Gm-Message-State: AOJu0YyTIKNGNEMm3UUItiRdy69YL4As31XXc7i5IxsW0cWQrw9x3GSz
-	Xq/+7tvJlTkgOnN/kn0pIxtJjS9+84RxLRhZFTPjBViSwWWbnm+p
-X-Google-Smtp-Source: AGHT+IFbkckzAqMPlJhqybLQRcsbZiE3mq3fxUSAmWAwpLn5s5XQHbQ1vg+/EC6MwAlk8uRjqyRSlA==
-X-Received: by 2002:a5d:64ed:0:b0:33a:e39a:1590 with SMTP id g13-20020a5d64ed000000b0033ae39a1590mr6412578wri.53.1706574964763;
-        Mon, 29 Jan 2024 16:36:04 -0800 (PST)
-Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id l10-20020a056000022a00b0033af350fb88sm2542167wrz.25.2024.01.29.16.36.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 16:36:04 -0800 (PST)
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Andy Gross <agross@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Robert Marko <robert.marko@sartura.hr>,
-	linux-arm-msm@vger.kernel.org,
-	netdev@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jie Luo <quic_luoj@quicinc.com>
-Cc: Christian Marangi <ansuelsmth@gmail.com>
-Subject: [net-next PATCH v2 3/3] arm64: dts: qcom: ipq8074: add clock-frequency to MDIO node
-Date: Tue, 30 Jan 2024 01:35:22 +0100
-Message-ID: <20240130003546.1546-4-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240130003546.1546-1-ansuelsmth@gmail.com>
-References: <20240130003546.1546-1-ansuelsmth@gmail.com>
+	s=arc-20240116; t=1706574941; c=relaxed/simple;
+	bh=JS9b4dljgl7LjUP6KCTkMBXE0p22YQkNx+HEl5sDoVQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=nCncRp+lCNiZ9NhfZWY0Zq7bcx0KcI8dC9q3W2cFfzKEPahIMUyYgSdHAbn7pL0DOvboPGo0+s2ywYHs46zv1W2sMQI5i7ETEjiSuveS98aEPB5m7iFHJ0uWyt86Gi1i4Z3uFzbjVnDK6iPleRCdRvzKWetSXzFxUnMnE7RCxeY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 520E3C433C7;
+	Tue, 30 Jan 2024 00:35:39 +0000 (UTC)
+Date: Mon, 29 Jan 2024 19:35:49 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
+ lkp@intel.com, linux-kernel@vger.kernel.org, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mathieu
+ Desnoyers <mathieu.desnoyers@efficios.com>, Christian Brauner
+ <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, Ajay Kaher
+ <ajay.kaher@broadcom.com>, linux-trace-kernel@vger.kernel.org
+Subject: Re: [linus:master] [eventfs] 852e46e239:
+ BUG:unable_to_handle_page_fault_for_address
+Message-ID: <20240129193549.265f32c8@gandalf.local.home>
+In-Reply-To: <CAHk-=wjbzw3=nwR5zGH9jqXgB8jj03wxWfdFDn=oAVCoymQQJg@mail.gmail.com>
+References: <202401291043.e62e89dc-oliver.sang@intel.com>
+	<CAHk-=wh0M=e8R=ZXxa4vesLTtvGmYWJ-w1VmXxW5Mva=Nimk4Q@mail.gmail.com>
+	<20240129120125.605e97af@gandalf.local.home>
+	<CAHk-=wghx8Abyx_jcSrCDuNj96SuWS0NvNMhfU8VjFGg9bgm_g@mail.gmail.com>
+	<CAHk-=whb91PWEaEJpRGsuWaQpYZGj98ji8HC2vvHD4xb_TqhJw@mail.gmail.com>
+	<CAHk-=wgp7UkG31=cCcbSdhMv6-vBJ=orktUOUdiLzw4tQ4gDLg@mail.gmail.com>
+	<20240129152600.7587d1aa@gandalf.local.home>
+	<CAHk-=wghobf5qCqNUsafkQzNAZBJiS0=7CRjNXNChpoAvTbvUw@mail.gmail.com>
+	<20240129172200.1725f01b@gandalf.local.home>
+	<CAHk-=wjV6+U1FQ8wzQ5ASmqGgby+GZ6wpdh0NrJgA43mc+TEwA@mail.gmail.com>
+	<CAHk-=wgOxTeTi02C=kOXsHzuD6XCrV0L1zk1XP9t+a4Wx--xvA@mail.gmail.com>
+	<20240129174950.5a17a86c@gandalf.local.home>
+	<CAHk-=wjbzw3=nwR5zGH9jqXgB8jj03wxWfdFDn=oAVCoymQQJg@mail.gmail.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Add clock-frequency to MDIO node to set the MDC rate to 6.25Mhz instead
-of using the default value of 390KHz from MDIO default divider.
+On Mon, 29 Jan 2024 16:01:25 -0800
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
----
- arch/arm64/boot/dts/qcom/ipq8074.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
+> I'll go see what's up with the "create it again" case - I don't
+> immediately see what's wrong.
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-index 2f275c84e566..08ddfeece043 100644
---- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-@@ -264,6 +264,8 @@ mdio: mdio@90000 {
- 			clocks = <&gcc GCC_MDIO_AHB_CLK>;
- 			clock-names = "gcc_mdio_ahb_clk";
- 
-+			clock-frequency = <6250000>;
-+
- 			status = "disabled";
- 		};
- 
--- 
-2.43.0
+Interesting. I added a printk in the lookup, and just did this:
 
+ # cd /sys/kernel/tracing
+ # ls events/kprobes
+
+And it showed that it tried to see if "kprobes" existed in the lookup.
+Which it did not because I haven't created any kprobes yet.
+
+Then I did:
+
+ # echo 'p:sched schedule' >> /sys/kernel/tracing/kprobe_events
+ # ls -l events/kprobes/
+ls: cannot access 'events/kprobes/': No such file or directory
+
+Where it should now exist but doesn't. But the lookup code never triggered.
+
+If the lookup fails, does it cache the result?
+
+-- Steve
 
