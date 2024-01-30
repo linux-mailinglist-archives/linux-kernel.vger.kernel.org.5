@@ -1,199 +1,204 @@
-Return-Path: <linux-kernel+bounces-45050-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45051-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 756AD842B10
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:34:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A700842B14
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:34:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D89AE1F27D83
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:33:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E61C11F28E6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:34:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C92DD14E2CC;
-	Tue, 30 Jan 2024 17:33:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D7D414D459;
+	Tue, 30 Jan 2024 17:34:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JmAuULQF"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="J9Ukos84"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44CA914D42D;
-	Tue, 30 Jan 2024 17:33:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.93
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C55F014E2C5
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 17:34:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706636029; cv=none; b=If50Fs12w2Xgs0GQN/xhfVQ68/P2qhy081Z5fvtjsjLIfN7Rf3L1aKlLNURcXVHoudNFPfv8vQiBSly9/cy92TQw0KP2vJ05C5R6kZGltQtZi8WHhlOkhE2Gpr5o8Nbvg77RXxRXpFULuCmh0hqBJA3RiTHnXwcVBh9wKSVqhZs=
+	t=1706636043; cv=none; b=GQSUWq6mBFHlRdg19+UgbI7f0MkycrdvBKmjSijg3SWrLCMLdR7rZFIwcb4SwD3JvXEU7FKaf8S8b1oQl94X+NJr7sMxaPh93oCRROzfcd2WcoBbOgG6aoJeCYo3W5tvzQ7IOUrqUv/x0lrSAyEzs3KiajrjJcSwfwM5swLtc6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706636029; c=relaxed/simple;
-	bh=8y+JtA3p8jEEm3d08iS6Ys4QTmjqBCUJKENj1h5OFiI=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=VDjOXMAO6kt8iGkvwkwUZL2p44tBatwlVur0XTq7fVOo7OiKm4uKcynHWtCsevLvDACvwBa3AWlDGuYP8tueFHiISISg89uJOdmkmmvlawOAuvC0xP8Gc6g1K8YJcY3tlOOhRCLLYcTayIbjNCPIjrouz5LISq/iFSvegDpYq2s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JmAuULQF; arc=none smtp.client-ip=192.55.52.93
+	s=arc-20240116; t=1706636043; c=relaxed/simple;
+	bh=vmVmSnCpNwM1iU6DsPBex0hsSHgShK/dUt17/5kPrZw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ceE7uyr7S0HNz3sEFAynvaTPE8+n/3KDX+mRqHO+BVaeIra3g75dqHZJYHXMWexEt3zJz+OUXSopmKX5m6fRWPg+SevOVP1EPxmvC1ZHhir2ela337LIEQPimFbIVct5Z8MuG37HvEBGYW4s9JO0K5TflISm+nqZRGJano8iiLM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=J9Ukos84; arc=none smtp.client-ip=192.198.163.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706636027; x=1738172027;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=8y+JtA3p8jEEm3d08iS6Ys4QTmjqBCUJKENj1h5OFiI=;
-  b=JmAuULQFeuQJ2ner7n2uJQGBZrJJYEynZx03xXjWdgVzDECkvQyggSff
-   4gEkrYG4/MCcGIcclAhiC/0lXu13Cf+yApi9KYDqYhyzvOgNVqBebUovN
-   3nA6VHRh/TAL/kjk1BUzbiWZKanurqVs/LofYioSFUWzTKmgHuEJ/nM8i
-   MYUlFePqa3b0zZJn7B4xaqmnRhfwlp6n1CnEPfdrQCo6B2egHCfbuSdmc
-   w3Wdx3U2qR+qWe4sKBeDVlSmW54pW97mul1D4TBkehwwv0q+LLZDICsqf
-   XGEZCocjZwQYYDbX257L2WxLTyKsfzE0PPPW6QPIA4mwwaRcvsUhD/wP9
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="400498088"
+  t=1706636042; x=1738172042;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=vmVmSnCpNwM1iU6DsPBex0hsSHgShK/dUt17/5kPrZw=;
+  b=J9Ukos842g42ZQZg+c5j48DbCh5Nj5F7hB1S/j0VKxsJhiuEzIrW+JHK
+   3sEItuAfUAXK2nAZ/Hp4q9zWWMM8V/DIA+h0PvENqy910pOEyjRJN6/Nu
+   n88wrEDVSxKUufIqoaygpZT57xN51FUQ8J4MMMnCB+xVZ1bI32t+Ajc1j
+   yZu8FEUwAVgPnI09QAIEU02NRskRyL95VzWRIn+0vzcBSIXwyVBxHFzLO
+   2oVfCKd+NMwWww5j+V/qc/MJhAFVuPSI5tsRrmZdFGXnE3CLRAOljoTUr
+   p2oXt0yLJXiaxnj1f0j0x9YGMSLD1EZMKzs5GCPbfVbkdPvF1+sGkmn1z
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="24828650"
 X-IronPort-AV: E=Sophos;i="6.05,230,1701158400"; 
-   d="scan'208";a="400498088"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 09:33:46 -0800
+   d="scan'208";a="24828650"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 09:34:01 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.05,230,1701158400"; 
-   d="scan'208";a="36564490"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.34.252])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 09:33:44 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Tue, 30 Jan 2024 19:33:39 +0200 (EET)
-To: "Maciej W. Rozycki" <macro@orcam.me.uk>
-cc: Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org, 
-    LKML <linux-kernel@vger.kernel.org>, 
-    Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: Re: [PATCH 1/2] PCI: Clear LBMS on resume to avoid Target Speed
- quirk
-In-Reply-To: <alpine.DEB.2.21.2401301537070.15781@angie.orcam.me.uk>
-Message-ID: <a7ff7695-77c5-cf5a-812a-e24b716c3842@linux.intel.com>
-References: <20240129184354.GA470131@bhelgaas> <aa2d1c4e-9961-d54a-00c7-ddf8e858a9b0@linux.intel.com> <alpine.DEB.2.21.2401301537070.15781@angie.orcam.me.uk>
+   d="scan'208";a="29968742"
+Received: from fdefranc-mobl3.ger.corp.intel.com (HELO fdefranc-mobl3.localnet) ([10.213.21.72])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 09:33:58 -0800
+From: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
+To: linux-kernel@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>
+Cc: Peter Zijlstra <peterz@infradead.org>,
+ Dan Williams <dan.j.williams@intel.com>, Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [RFC PATCH v2] cleanup: Add cond_guard() to conditional guards
+Date: Tue, 30 Jan 2024 18:33:54 +0100
+Message-ID: <22169722.EfDdHjke4D@fdefranc-mobl3>
+Organization: intel
+In-Reply-To:
+ <65b92b91a41a8_5cc6f29484@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+References:
+ <20240130164059.25130-1-fabio.maria.de.francesco@linux.intel.com>
+ <65b92b91a41a8_5cc6f29484@dwillia2-mobl3.amr.corp.intel.com.notmuch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-1129339086-1706636019=:1000"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Tuesday, 30 January 2024 18:02:09 CET Dan Williams wrote:
+> Fabio M. De Francesco wrote:
+> > Add cond_guard() to conditional guards.
+> > 
+> > cond_guard() is used for the _interruptible(), _killable(), and _try
+> > versions of locks. It expects a block where the failure can be handled
+> > (e.g., calling printk() and returning -EINTR in case of failure).
+> > 
+> > As the other guards, it avoids to open code the release of the lock
+> > after a goto to an 'out' label.
+> > 
+> > This remains an RFC because Dan suggested a slightly different syntax:
+> > 	if (cond_guard(...))
+> > 	
+> > 		return -EINTR;
+> > 
+> > But the scoped_cond_guard() macro omits the if statement:
+> >     	scoped_cond_guard (...) {
+> >     	}
+> > 
+> > Thus define cond_guard() similarly to scoped_cond_guard() but with a block
+> > 
+> > to handle the failure case:
+> > 	cond_guard(...)
+> > 	
+> > 		return -EINTR;
+> 
+> That's too subtle for me, because of the mistakes that can be made with
+> brackets how about a syntax like:
+> 
+>  	cond_guard(..., return -EINTR, ...)
+> 
+> ...to make it clear what happens if the lock acquisition fails without
+> having to remember there is a hidden incomplete "if ()" statement in
+> that macro? More below...
 
---8323328-1129339086-1706636019=:1000
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+As you propose I can't see how to handle multi-line error path like in:
 
-On Tue, 30 Jan 2024, Maciej W. Rozycki wrote:
+	cond_guard(...) {
+		dev_dbg(...);
+		return -EINTR;
+	} 
 
-> On Tue, 30 Jan 2024, Ilpo J=C3=A4rvinen wrote:
->=20
-> > First of all, this is not true for pcie_failed_link_retrain():
-> >  * Return TRUE if the link has been successfully retrained, otherwise F=
-ALSE.
-> > If LBMS is not set, the Target Speed quirk is not applied but the funct=
-ion=20
-> > still returns true. I think that should be changed to early return fals=
-e
-> > when no LBMS is present.
->=20
->  I think there is a corner case here indeed.  If Link Active reporting is=
-=20
-> supported and neither DLLLA nor LBMS are set at entry, then the function=
-=20
-> indeed returns success even though the link is down and no attempt to=20
-> retrain will have been made.  So this does indeed look a case for a retur=
-n=20
-> with the FALSE result.
->=20
->  I think most easily this can be sorted by delegating the return result t=
-o=20
-> a temporary variable, preset to FALSE and then only updated from results=
-=20
-> of the calls to `pcie_retrain_link'.  I can offer a patch as the author o=
-f=20
-> the code and one who has means to verify it right away if that helped.
+I added a similar example in a comment in cleanup.h.
 
-I already wrote a patch which addresses this together with the caller=20
-site changes.
+> 
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Dan Williams <dan.j.williams@intel.com>
+> > Suggested-by: Ira Weiny <ira.weiny@intel.com>
+> > Signed-off-by: Fabio M. De Francesco
+> > <fabio.maria.de.francesco@linux.intel.com> ---
+> > 
+> >  drivers/cxl/core/region.c | 17 +++++------------
+> >  include/linux/cleanup.h   | 13 +++++++++++++
+> >  2 files changed, 18 insertions(+), 12 deletions(-)
+> > 
+> > [...] 
+> >
+> > diff --git a/include/linux/cleanup.h b/include/linux/cleanup.h
+> > index c2d09bc4f976..fc850e61a47e 100644
+> > --- a/include/linux/cleanup.h
+> > +++ b/include/linux/cleanup.h
+> > @@ -134,6 +134,15 @@ static inline class_##_name##_t
+> > class_##_name##ext##_constructor(_init_args) \> 
+> >   *	an anonymous instance of the (guard) class, not recommended for
+> >   *	conditional locks.
+> >   *
+> > 
+> > + * cond_guard(_name, args...):
+> > + * 	for conditional locks like mutex_trylock() or
+> > down_read_interruptible(). + * 	It expects a block for handling 
+errors
+> > like in the following example: + *
+> > + * 	cond_guard(rwsem_read_intr, &my_sem) {
+> > + * 		printk(KERN_NOTICE "Try failure in work0()\n");
+> > + * 		return -EINTR;
+> > + * 	}
+> > + *
+> > 
+> >   * scoped_guard (name, args...) { }:
+> >   *	similar to CLASS(name, scope)(args), except the variable (with the
+> >   *	explicit name 'scope') is declard in a for-loop such that its scope 
+is
+> > 
+> > @@ -165,6 +174,10 @@ static inline class_##_name##_t
+> > class_##_name##ext##_constructor(_init_args) \> 
+> >  #define __guard_ptr(_name) class_##_name##_lock_ptr
+> > 
+> > +#define cond_guard(_name, args...) \
+> > +	CLASS(_name, scope)(args); \
+> > +	if (!__guard_ptr(_name)(&scope))
+> 
+> This needs to protect against being used within another if () block.
+> Imagine a case of:
+> 
+>     if (...) {
+>     	cond_guard(...);
+> 	    <statement>
+>     } else if (...)
+> 
+> ...does that "else if" belong to the first "if ()" or the hidden one
+> inside the macro?
 
->  Overall I guess it's all legacy of how this code evolved before it's bee=
-n=20
-> finally merged.
+Good question.
 
-Indeed, it looks the step by step changed didn't yield good result here.
+> You can steal the embedded "if ()" trick from scoped_cond_guard() and do
+> something like (untested):
+> 
+> #define cond_guard(_name, _fail, args...) \
+> 	CLASS(_name, scope)(args); \
+> 	if (!__guard_ptr(_name)(&scope)) _fail; else /* pass */;
 
-> > > >   3. pci_bridge_wait_for_secondary_bus() then calls pci_dev_wait() =
-which
-> > > >      cannot succeed (but waits ~1 minute, delaying the resume).
-> > > >=20
-> > > > The Target Speed trick (in step 2) is only used if LBMS bit (PCIe r=
-6.1
-> > > > sec 7.5.3.8) is set. For links that have been operational before
-> > > > suspend, it is well possible that LBMS has been set at the bridge a=
-nd
-> > > > remains on. Thus, after resume, LBMS does not indicate the link nee=
-ds
-> > > > the Target Speed quirk. Clear LBMS on resume for bridges to avoid t=
-he
-> > > > issue.
->=20
->  This can be problematic AFAICT however.  While I am not able to verify=
-=20
-> suspend/resume operation with my devices, I expect the behaviour to be=20
-> exactly the same after resume as after a bus reset: the link will fail to=
-=20
-> negotiate and the LBMS and DLLLA bits will be respectively set and clear.=
- =20
-> Consequently if you clear LBMS at resume, then the workaround won't=20
-> trigger and the link will remain inoperational in its limbo state.
+I think this may work, but...
 
-How do you get the LBMS set in the first place? Isn't that because the=20
-link tries to come up so shouldn't it reassert that bit again before the=20
-code ends up into the target speed quirk? That is, I assumed you actually=
-=20
-wanted to detect LBMS getting set during pcie_wait_for_link_status() call=
-=20
-preceeding pcie_failed_link_retrain() call?
+Again, with this interface there is no means to handle multi-line error paths. 
+I wanted an interface sufficiently flexible to handle logging + return -EINTR, 
+and possibly more lines to undo something.
 
-There's always an option to store it into pci_dev for later use when the=20
-quirk is found to be working for the first time if other solutions don't=20
-work.
+Can we have two macros, this for multi-line error paths, and one other, like 
+you suggested, for an immediate 'return -EINTR'?
 
-In any case and unrelated to this patch, the way this quirk monopolizes=20
-LBMS bit is going to have to be changed because it won't be reliable with=
-=20
-the PCIe BW controller that sets up and irq for LBMS (and clears the bit).
-In bwctrl v5 (yet to be posted) I'll add LBMS counter into bwctrl to allow=
-=20
-this quirk to keep working (which will need to be confirmed).
+Thanks,
 
->  What kind of scenario does the LBMS bit get set in that you have a=20
-> trouble with?  You write that in your case the downstream device has been=
-=20
-> disconnected while the bug hierarchy was suspended and it is not present=
-=20
-> anymore at resume, is that correct?
->
->  But in that case no link negotiation could have been possible and=20
-> consequently the LBMS bit mustn't have been set by hardware (according to=
-=20
-> my understanding of PCIe), because (for compliant, non-broken devices=20
-> anyway) it is only specified to be set for ports that can communicate wit=
-h=20
-> the other link end (the spec explicitly says there mustn't have been a=20
-> transition through the DL_Down status for the port).
->
->  Am I missing something?
+Fabio
 
-Yes, when resuming the device is already gone but the bridge still has=20
-LBMS set. My understanding is that it was set because it was there
-from pre-suspend time but I've not really taken a deep look into it=20
-because the problem and fix seemed obvious.
 
-I read that "without the Port transitioning through DL_Down status"=20
-differently than you, I only interpret that it relates to the two=20
-bullets following it. ...So if retrain bit is set, and link then goes=20
-down, the bullet no longer applies and LBMS should not be set because=20
-there was transition through DL_Down. But I could well be wrong...
-
---=20
- i.
-
---8323328-1129339086-1706636019=:1000--
 
