@@ -1,169 +1,110 @@
-Return-Path: <linux-kernel+bounces-44547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44548-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2DA184240D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:49:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2160D842411
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:49:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 496DE28748C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:49:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 506011C260A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:49:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A635B6BB38;
-	Tue, 30 Jan 2024 11:46:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 843CF6D1AA;
+	Tue, 30 Jan 2024 11:46:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GueB1uq5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TItBj1oS"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E526BB2C;
-	Tue, 30 Jan 2024 11:46:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C70AC67A08;
+	Tue, 30 Jan 2024 11:46:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706615180; cv=none; b=I1U4FqpLzarprCW03wiRa0oqhseUSO6reuU2miZm+36mlPfE0kxHMhRG6c0Qd20KwsXXXbSkx/W/dHNDoqlEJnRq303DHd04ZKHIkt0fbNtJrPyEVmxsofyBpG+D7Ht322IHMWnbwe0xYcjzQN+mVgarW8LgmbwiXWvlHD4vQBM=
+	t=1706615186; cv=none; b=dCNODLbrY/8b6QnzVYqT70qfgInP7jQsv/dMf9jAsIQNCWdzEpYa4Cm02PNtdxzvx+8mNFRRWgq2jjpcMvwwWGKDJBl0P/PPAJt6/LbS7hCKHfpXqTlRt5/jhZeoYJetuCf2jNi16PKOBYp4v+f1WQLlTy7YCOQ+PlPmA6zOX8o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706615180; c=relaxed/simple;
-	bh=06r+eoDIdb0wUNK9nK1o7FDcwKFdTlsuHuRKweLT1c4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=TP1WCV2mqilf35Y8LGnCFcXHh/DLBOR2L72iiLQMsgvQZc4EzZv3C9CKO9Bh4/0y9BBc9SIlW5qO5eu3gMSiostjPt2uRiX65JrdnQxucCUg96360oifWSOs11N7VgeLxiKSmnvLkHxdMMWqpDuVJj3nORGsDyyWyEu5BzdeKos=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GueB1uq5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08963C43390;
-	Tue, 30 Jan 2024 11:46:18 +0000 (UTC)
+	s=arc-20240116; t=1706615186; c=relaxed/simple;
+	bh=u0N1Oqasacq+jphPnRwL/qJa4P0GjI/1+DWbV2nwIbM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=THzRfUPjgiX5WxGBVMp1DXwb4mxhCS9CrjorbHu//rbjiuEmJUpANh5cIGDO7uYY5o6tWrK0K+qokc6UME/WRnobTCjHMzHvDK5H9P9Ajpvs6+YySN6/W7K67jRhqWHx9hwVM4bmMQ/Trr7v3PXJk2L+O+wwzMdEf0s39QNJmz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TItBj1oS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68FDDC433C7;
+	Tue, 30 Jan 2024 11:46:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706615179;
-	bh=06r+eoDIdb0wUNK9nK1o7FDcwKFdTlsuHuRKweLT1c4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=GueB1uq5VGej0m02UI0z6szNNF68tqP4GszcsjFOcw63xgdIneA5HtrM61SmR5G1N
-	 qktGiqME3S+1Y0PEjqFDj2Zvdm79wGhhUtSSuFxc0uoOpNSKAND8GN5r5D6VctVrr6
-	 FtcA34kp6rgV7zHn510vSmqNLGCns4S6qh6Jb27so0QrVL+oYtx4Bi2IOGBAa8qA6q
-	 +kWsj9IQAi9WRO0/wSuiQrI/c+QXXREzkPQW5h/Qffj00WPpkb0+WNxE2omlQE1qU8
-	 T3KZuavUIGgRulenfQ+iDBYvihanGQ9iUUVyG4mjOMkxyMD5HuylFg899ls+EkKVg2
-	 yxxXuoVZgb60A==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Anup Patel <apatel@ventanamicro.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley
- <paul.walmsley@sifive.com>, Thomas Gleixner <tglx@linutronix.de>, Rob
- Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand
- <frowand.list@gmail.com>, Conor Dooley <conor+dt@kernel.org>,
- devicetree@vger.kernel.org, Saravana Kannan <saravanak@google.com>, Marc
- Zyngier <maz@kernel.org>, Anup Patel <anup@brainfault.org>,
- linux-kernel@vger.kernel.org, Atish Patra <atishp@atishpatra.org>,
- linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- Andrew Jones <ajones@ventanamicro.com>
-Subject: Re: [PATCH v12 00/25] Linux RISC-V AIA Support
-In-Reply-To: <CAK9=C2UYCKUBKggtM606orH2mBu_AbTdB5-R5AP1M0t-LsEbEQ@mail.gmail.com>
-References: <20240127161753.114685-1-apatel@ventanamicro.com>
- <87r0hzuw87.fsf@all.your.base.are.belong.to.us>
- <87le87uulb.fsf@all.your.base.are.belong.to.us>
- <CAK9=C2UYCKUBKggtM606orH2mBu_AbTdB5-R5AP1M0t-LsEbEQ@mail.gmail.com>
-Date: Tue, 30 Jan 2024 12:46:16 +0100
-Message-ID: <87cytjvybb.fsf@all.your.base.are.belong.to.us>
+	s=k20201202; t=1706615186;
+	bh=u0N1Oqasacq+jphPnRwL/qJa4P0GjI/1+DWbV2nwIbM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=TItBj1oSH2wtToFBbH8wXWUI8duuwtA/UHwkzhkw3S9TWK3khJ/eEeXNLjSW3GWID
+	 YsmCBuyYaLg8OSDfTyXXuv0/spGrRyMDd0SUhADzj8BwQQfcSXn7AN1BykVsYhqpsw
+	 ULW2UuBTlRP6uUaezhPkv4cpAA0fGNmUhc3PW+hRCOAmV+qhFQCHRrQBqYNH5BQBFp
+	 90NRtfegDy65aOBotOzCCwVM4hwwbW1u6AUfGaFrrQpUPxstH8FEd6FpfhDPxXqaFA
+	 MseWmUXWEpdnJ6l3bz+7k1RNhaTFBdYQ/GL95PqpXvG6tVP/82vllMxBGt+SVOiqWz
+	 wytVcEz9M+/xg==
+Message-ID: <6ab581f1-385c-49af-bff3-aacd1cdbe1d8@kernel.org>
+Date: Tue, 30 Jan 2024 20:46:23 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ahci: Extend ASM1061 43-bit DMA address quirk to other
+ ASM106x parts
+Content-Language: en-US
+To: Lennert Buytenhek <kernel@wantstofly.org>,
+ Niklas Cassel <cassel@kernel.org>, linux-ide@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
+ John Garry <john.g.garry@oracle.com>, Joerg Roedel <jroedel@suse.de>,
+ Szuying Chen <chensiying21@gmail.com>, Jesse1_Chang@asmedia.com.tw,
+ Richard_Hsu@asmedia.com.tw, Chloe_Chen@asmedia.com.tw
+References: <ZbjgTmR5FbAnb-Ua@wantstofly.org>
+From: Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <ZbjgTmR5FbAnb-Ua@wantstofly.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Anup Patel <apatel@ventanamicro.com> writes:
+On 1/30/24 20:41, Lennert Buytenhek wrote:
+> ASMedia have confirmed that all ASM106x parts currently listed in
+> ahci_pci_tbl[] suffer from the 43-bit DMA address limitation that we ran
+> into on the ASM1061, and therefore, we need to apply the quirk added by
+> commit 20730e9b2778 to the other supported ASM106x parts as well.
+> 
+> Signed-off-by: Lennert Buytenhek <kernel@wantstofly.org>
 
-> On Tue, Jan 30, 2024 at 1:22=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@kern=
-el.org> wrote:
->>
->> Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
->>
->> > Anup Patel <apatel@ventanamicro.com> writes:
->> >
->> >> The RISC-V AIA specification is ratified as-per the RISC-V internatio=
-nal
->> >> process. The latest ratified AIA specifcation can be found at:
->> >> https://github.com/riscv/riscv-aia/releases/download/1.0/riscv-interr=
-upts-1.0.pdf
->> >>
->> >> At a high-level, the AIA specification adds three things:
->> >> 1) AIA CSRs
->> >>    - Improved local interrupt support
->> >> 2) Incoming Message Signaled Interrupt Controller (IMSIC)
->> >>    - Per-HART MSI controller
->> >>    - Support MSI virtualization
->> >>    - Support IPI along with virtualization
->> >> 3) Advanced Platform-Level Interrupt Controller (APLIC)
->> >>    - Wired interrupt controller
->> >>    - In MSI-mode, converts wired interrupt into MSIs (i.e. MSI genera=
-tor)
->> >>    - In Direct-mode, injects external interrupts directly into HARTs
->> >>
->> >> For an overview of the AIA specification, refer the AIA virtualization
->> >> talk at KVM Forum 2022:
->> >> https://static.sched.com/hosted_files/kvmforum2022/a1/AIA_Virtualizat=
-ion_in_KVM_RISCV_final.pdf
->> >> https://www.youtube.com/watch?v=3Dr071dL8Z0yo
->> >>
->> >> To test this series, use QEMU v7.2 (or higher) and OpenSBI v1.2 (or h=
-igher).
->> >>
->> >> These patches can also be found in the riscv_aia_v12 branch at:
->> >> https://github.com/avpatel/linux.git
->> >>
->> >> Changes since v11:
->> >>  - Rebased on Linux-6.8-rc1
->> >>  - Included kernel/irq related patches from "genirq, irqchip: Convert=
- ARM
->> >>    MSI handling to per device MSI domains" series by Thomas.
->> >>    (PATCH7, PATCH8, PATCH9, PATCH14, PATCH16, PATCH17, PATCH18, PATCH=
-19,
->> >>     PATCH20, PATCH21, PATCH22, PATCH23, and PATCH32 of
->> >>     https://lore.kernel.org/linux-arm-kernel/20221121135653.208611233=
-@linutronix.de/)
->> >>  - Updated APLIC MSI-mode driver to use the new WIRED_TO_MSI mechanis=
-m.
->> >>  - Updated IMSIC driver to support per-device MSI domains for PCI and
->> >>    platform devices.
->> >
->> > Thanks for working on this, Anup! I'm still reviewing the patches.
->> >
->> > I'm hitting a boot hang in text patching, with this series applied on
->> > 6.8-rc2. IPI issues?
->>
->> Not text patching! One cpu spinning in smp_call_function_many_cond() and
->> the others are in cpu_relax(). Smells like IPI...
->
-> I tried bootefi from U-Boot multiple times but can't reproduce the
-> issue you are seeing.
+I think this needs a cc: stable tag.
 
-Thanks! I can reproduce without EFI, and simpler command-line:
+> ---
+>  drivers/ata/ahci.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
+> index d2460fa985b7..da2e74fce2d9 100644
+> --- a/drivers/ata/ahci.c
+> +++ b/drivers/ata/ahci.c
+> @@ -606,13 +606,13 @@ static const struct pci_device_id ahci_pci_tbl[] = {
+>  	{ PCI_VDEVICE(PROMISE, 0x3781), board_ahci },   /* FastTrak TX8660 ahci-mode */
+>  
+>  	/* ASMedia */
+> -	{ PCI_VDEVICE(ASMEDIA, 0x0601), board_ahci },	/* ASM1060 */
+> -	{ PCI_VDEVICE(ASMEDIA, 0x0602), board_ahci },	/* ASM1060 */
+> +	{ PCI_VDEVICE(ASMEDIA, 0x0601), board_ahci_43bit_dma },	/* ASM1060 */
+> +	{ PCI_VDEVICE(ASMEDIA, 0x0602), board_ahci_43bit_dma },	/* ASM1060 */
+>  	{ PCI_VDEVICE(ASMEDIA, 0x0611), board_ahci_43bit_dma },	/* ASM1061 */
+>  	{ PCI_VDEVICE(ASMEDIA, 0x0612), board_ahci_43bit_dma },	/* ASM1061/1062 */
+> -	{ PCI_VDEVICE(ASMEDIA, 0x0621), board_ahci },   /* ASM1061R */
+> -	{ PCI_VDEVICE(ASMEDIA, 0x0622), board_ahci },   /* ASM1062R */
+> -	{ PCI_VDEVICE(ASMEDIA, 0x0624), board_ahci },   /* ASM1062+JMB575 */
+> +	{ PCI_VDEVICE(ASMEDIA, 0x0621), board_ahci_43bit_dma },	/* ASM1061R */
+> +	{ PCI_VDEVICE(ASMEDIA, 0x0622), board_ahci_43bit_dma },	/* ASM1062R */
+> +	{ PCI_VDEVICE(ASMEDIA, 0x0624), board_ahci_43bit_dma },	/* ASM1062+JMB575 */
+>  	{ PCI_VDEVICE(ASMEDIA, 0x1062), board_ahci },	/* ASM1062A */
+>  	{ PCI_VDEVICE(ASMEDIA, 0x1064), board_ahci },	/* ASM1064 */
+>  	{ PCI_VDEVICE(ASMEDIA, 0x1164), board_ahci },   /* ASM1164 */
 
-qemu-system-riscv64 \
-  -bios /path/to/fw_dynamic.bin \
-  -kernel /path/to/Image \
-  -append 'earlycon console=3Dtty0 console=3DttyS0' \
-  -machine virt,aia=3Daplic-imsic \
-  -no-reboot -nodefaults -nographic \
-  -smp 4 \
-  -object rng-random,filename=3D/dev/urandom,id=3Drng0 \
-  -device virtio-rng-device,rng=3Drng0 \
-  -m 4G -chardev stdio,id=3Dchar0 -serial chardev:char0
-
-I can reproduce with your upstream riscv_aia_v12 plus the config in the
-gist [1], and all latest QEMU/OpenSBI:
-
-QEMU: 11be70677c70 ("Merge tag 'pull-vfio-20240129' of https://github.com/l=
-egoater/qemu into staging")
-OpenSBI: bb90a9ebf6d9 ("lib: sbi: Print number of debug triggers found")
-Linux: d9b9d6eb987f ("MAINTAINERS: Add entry for RISC-V AIA drivers")
-
-Removing ",aia=3Daplic-imsic" from the CLI above completes the boot (i.e.
-panicking about missing root mount ;-))
-
-
-Bj=C3=B6rn
-
-[1] https://gist.githubusercontent.com/bjoto/bac563e6dcaab68dba1a5eaf675d51=
-aa/raw/ff6208fb17f27819dbe97ace7d034f385d2db657/gistfile1.txt
-
+-- 
+Damien Le Moal
+Western Digital Research
 
 
