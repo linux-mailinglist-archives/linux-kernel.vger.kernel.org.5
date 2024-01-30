@@ -1,167 +1,134 @@
-Return-Path: <linux-kernel+bounces-44197-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5014D841EAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:04:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71CA1841F10
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:15:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D17F5289023
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:04:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2AABB2FC43
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:07:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBBF56086F;
-	Tue, 30 Jan 2024 09:03:43 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66EB6605CF;
-	Tue, 30 Jan 2024 09:03:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD7C55915B;
+	Tue, 30 Jan 2024 09:06:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wGT7lJqI"
+Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com [209.85.221.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BA9F5813B
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:06:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706605423; cv=none; b=ab5W//+uVBz54c99z6K7Qi1CBImG+5iUfx1ch4gjaWzYdP+4aWSdzveC8jIwIlhTL+mnxi+WDSj3ttc2nJHDG3QgBDQNfzBK62qnF8yE/PG9yCw5KUWm2ssKvVV98b+Vkt4lK53khHemelqlOVukVBG5WW5MDHwz95Sd8qWD11M=
+	t=1706605584; cv=none; b=qMkiTyfBR7FpDT7p9Gx3l1S5Evnj/2EkoTGSGdaqRBnJJwj5CNxnSN3Sdg615KcFP2d4DQtIRNBMBOH0g+nozc4+Xazsvlt9jeuTFzQNjWk0HNuyyGsPTMzFFDH22G6P/wp6S0Asi0i/LblIbprxXLJDV1G/IqgzfOCfhDI8I+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706605423; c=relaxed/simple;
-	bh=nBml0oiJ6D0UQzvGSde6AYnzRvh5VcdeBvdq6qBUeYg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=h+vhLJLTyYKkdJiMLfrDZv4avSsWiCOirj9gcSQUmHNJVZMlEJmbAtcbHlcXQ5L3ftaUc058yvRozBloYHld3MPkfx+IozyQMLOKUSQbBZ8BwpJ0fQGqeaB0Cya3l9MW9+JO5xgntkE63aHL+PtO6gLbAVJK0ZF+R75RjeLyN6c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7DCEA139F;
-	Tue, 30 Jan 2024 01:04:24 -0800 (PST)
-Received: from [10.57.79.54] (unknown [10.57.79.54])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CA66B3F738;
-	Tue, 30 Jan 2024 01:03:37 -0800 (PST)
-Message-ID: <075975db-a59b-483a-95d7-0990442ebe6f@arm.com>
-Date: Tue, 30 Jan 2024 09:03:36 +0000
+	s=arc-20240116; t=1706605584; c=relaxed/simple;
+	bh=UiTaMIx2Jm1EUQDykoIgKkQLEt+vN6yTNf/ep5hPZjA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=T5rNxCH5opbnGND0MMXoOCYg2iCAQCb4ziifKRcXSTAJ3CmhQlR5os9bUWU0xVq3SPwT5PEB9ko2y3sVYd4MqmAGdse5HRNFHdBUmjHtQUQaKT7xPD9B2IcC26fe/MkvzYQKNUCFAgrNy507hVtvabcWOkKySO7HO2uxR2qQX/0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wGT7lJqI; arc=none smtp.client-ip=209.85.221.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vk1-f176.google.com with SMTP id 71dfb90a1353d-4bd9b71456fso683967e0c.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:06:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706605581; x=1707210381; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3ZhWHmKw4vi7AxSEO7CuV+xNiUe+yFZ2ZzlwsymAg/E=;
+        b=wGT7lJqIintsMjwm0ifRYemISbJCg+SGcnQRNhf8ghKDdd4HIxQE915m/RLitrWGAE
+         trTE2vcfkzaSIdNOIVbc0voS+c4nvBQnVRCEDLcgs3v/dvJuc9wMJa+jZsOPNoGI9TCu
+         ig4kSqgHVq8EgzwxObmZtcpbwaGq2rSoSG1Bd5Aomwlp4ffjWP6VM2Vy7opqIWRRQGGl
+         YDH1V+o7SCnK7k2sC74dTTVhrxCkgMBzuZDeUDoFSK0JHk3OdQlPe+DO7psalWBjhluh
+         6t3sLmVKEZK36SZbpV1UJjdq/05qWeRvqtmSLyY4+eU2aWvAYLPNZrbuECFVpsHKo5R3
+         kmAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706605581; x=1707210381;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3ZhWHmKw4vi7AxSEO7CuV+xNiUe+yFZ2ZzlwsymAg/E=;
+        b=FWUHSnbWLrHZ59xr5BFckPR6ZzVtOawMM2HbODvpEpE4NQFhpsNgTU+mT6cI53zuVX
+         yp5zTWXnkgCfIqq4L7CBOIeLzAqi3/JJf0qX3Y8D/gcy3rjzvstVRWaOSe46LCTFwXmn
+         Vc3wH99QMaumRb1bJLllyW40TLlAyEu/QxBoV68i1fGHyLLT7DweOcl6Czx7+bbJnlOv
+         ZCoIS1VCevTJ1jhs19uDH1R4qkyWxbLiP5Ae8/rwl/sChgl4azFPgrqQT252Zh5IgpSf
+         7dxWZ7QoVvHyLZ/8/n4Pdjymzion7Sb6WoVpWHh3beoXQRnIEogMBFcagbwAgieZ6cc9
+         3t3Q==
+X-Gm-Message-State: AOJu0YzWH5viFlKV+KbDjB4bTteM8HxepG8OHSgU6xsesb9q6F2tBUpL
+	RcxqzOLy4Lag9wn1+wUX5U/ggrOjrxAZGe0LuD2KiVqNsy/uJwMnzBdbXSIMsfhXtd7kHyizzKq
+	MOonj+wDmaQev5wU29p+A9yJ4litA81vNozUB
+X-Google-Smtp-Source: AGHT+IFRKvthvPaK/eQQw262qb3uj3gwoqQFpPfljrQVEpXmKBSAG0JgZF/aeoOMlfcPoJI9wUzPo2V3cNjqBI6Lioc=
+X-Received: by 2002:a05:6122:45a5:b0:4b7:689d:9d9 with SMTP id
+ de37-20020a05612245a500b004b7689d09d9mr3412354vkb.32.1706605581206; Tue, 30
+ Jan 2024 01:06:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 6/9] mm/mmu_gather: define ENCODED_PAGE_FLAG_DELAY_RMAP
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
- Nick Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
- Michael Ellerman <mpe@ellerman.id.au>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
- linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-s390@vger.kernel.org
-References: <20240129143221.263763-1-david@redhat.com>
- <20240129143221.263763-7-david@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20240129143221.263763-7-david@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240124-alice-mm-v1-0-d1abcec83c44@google.com>
+ <20240124-alice-mm-v1-3-d1abcec83c44@google.com> <CGME20240129180005eucas1p1c1962ece31e6b9619f9e22dc95f54087@eucas1p1.samsung.com>
+ <ZbfnmX1J8iLV8UnO@casper.infradead.org> <87mssngpnc.fsf@samsung.com>
+In-Reply-To: <87mssngpnc.fsf@samsung.com>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Tue, 30 Jan 2024 10:06:09 +0100
+Message-ID: <CAH5fLghoxdAQaWRpDpn32A5YUM20oW=7Vck1fPUz1rk5ruH_AA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] rust: add abstraction for `struct page`
+To: Andreas Hindborg <a.hindborg@samsung.com>
+Cc: Matthew Wilcox <willy@infradead.org>, Miguel Ojeda <ojeda@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Kees Cook <keescook@chromium.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
+	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
+	Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, 
+	"linux-mm@kvack.org" <linux-mm@kvack.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>, Christian Brauner <brauner@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 29/01/2024 14:32, David Hildenbrand wrote:
-> Nowadays, encoded pages are only used in mmu_gather handling. Let's
-> update the documentation, and define ENCODED_PAGE_BIT_DELAY_RMAP. While at
-> it, rename ENCODE_PAGE_BITS to ENCODED_PAGE_BITS.
-> 
-> If encoded page pointers would ever be used in other context again, we'd
-> likely want to change the defines to reflect their context (e.g.,
-> ENCODED_PAGE_FLAG_MMU_GATHER_DELAY_RMAP). For now, let's keep it simple.
-> 
-> This is a preparation for using the remaining spare bit to indicate that
-> the next item in an array of encoded pages is a "nr_pages" argument and
-> not an encoded page.
-> 
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+On Tue, Jan 30, 2024 at 10:02=E2=80=AFAM Andreas Hindborg
+<a.hindborg@samsung.com> wrote:
+>
+>
+> Matthew Wilcox <willy@infradead.org> writes:
+>
+> > On Wed, Jan 24, 2024 at 11:20:23AM +0000, Alice Ryhl wrote:
+> >> +impl Page {
+> >> +    /// Allocates a new set of contiguous pages.
+> >> +    pub fn new() -> Result<Self, AllocError> {
+> >> +        // SAFETY: These are the correct arguments to allocate a sing=
+le page.
+> >> +        let page =3D unsafe {
+> >> +            bindings::alloc_pages(
+> >> +                bindings::GFP_KERNEL | bindings::__GFP_ZERO | binding=
+s::__GFP_HIGHMEM,
+> >> +                0,
+> >> +            )
+> >> +        };
+> >
+> > This feels too Binder-specific to be 'Page'.  Pages are not necessarily
+> > allocated with GFP_HIGHMEM, nor are they necessarily zeroed.  Maybe you
+> > want a BinderPage type?
+>
+> Rust null block uses the same definition of these flags [1], so there is
+> at least that synergy.
+>
+> I feel like we had the discussion of the flags before, although I can't
+> find the thread now. I think the conclusion was that we fix them until
+> we have code that need to actually change them (as to not add dead
+> code).
 
-Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
+I don't think there's any problem with replacing the constructor with
+one that takes a flag argument dead-code-wise. I can definitely do
+that.
 
-> ---
->  include/linux/mm_types.h | 17 +++++++++++------
->  mm/mmu_gather.c          |  5 +++--
->  2 files changed, 14 insertions(+), 8 deletions(-)
-> 
-> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> index 8b611e13153e..1b89eec0d6df 100644
-> --- a/include/linux/mm_types.h
-> +++ b/include/linux/mm_types.h
-> @@ -210,8 +210,8 @@ struct page {
->   *
->   * An 'encoded_page' pointer is a pointer to a regular 'struct page', but
->   * with the low bits of the pointer indicating extra context-dependent
-> - * information. Not super-common, but happens in mmu_gather and mlock
-> - * handling, and this acts as a type system check on that use.
-> + * information. Only used in mmu_gather handling, and this acts as a type
-> + * system check on that use.
->   *
->   * We only really have two guaranteed bits in general, although you could
->   * play with 'struct page' alignment (see CONFIG_HAVE_ALIGNED_STRUCT_PAGE)
-> @@ -220,21 +220,26 @@ struct page {
->   * Use the supplied helper functions to endcode/decode the pointer and bits.
->   */
->  struct encoded_page;
-> -#define ENCODE_PAGE_BITS 3ul
-> +
-> +#define ENCODED_PAGE_BITS			3ul
-> +
-> +/* Perform rmap removal after we have flushed the TLB. */
-> +#define ENCODED_PAGE_BIT_DELAY_RMAP		1ul
-> +
->  static __always_inline struct encoded_page *encode_page(struct page *page, unsigned long flags)
->  {
-> -	BUILD_BUG_ON(flags > ENCODE_PAGE_BITS);
-> +	BUILD_BUG_ON(flags > ENCODED_PAGE_BITS);
->  	return (struct encoded_page *)(flags | (unsigned long)page);
->  }
->  
->  static inline unsigned long encoded_page_flags(struct encoded_page *page)
->  {
-> -	return ENCODE_PAGE_BITS & (unsigned long)page;
-> +	return ENCODED_PAGE_BITS & (unsigned long)page;
->  }
->  
->  static inline struct page *encoded_page_ptr(struct encoded_page *page)
->  {
-> -	return (struct page *)(~ENCODE_PAGE_BITS & (unsigned long)page);
-> +	return (struct page *)(~ENCODED_PAGE_BITS & (unsigned long)page);
->  }
->  
->  /*
-> diff --git a/mm/mmu_gather.c b/mm/mmu_gather.c
-> index ac733d81b112..6540c99c6758 100644
-> --- a/mm/mmu_gather.c
-> +++ b/mm/mmu_gather.c
-> @@ -53,7 +53,7 @@ static void tlb_flush_rmap_batch(struct mmu_gather_batch *batch, struct vm_area_
->  	for (int i = 0; i < batch->nr; i++) {
->  		struct encoded_page *enc = batch->encoded_pages[i];
->  
-> -		if (encoded_page_flags(enc)) {
-> +		if (encoded_page_flags(enc) & ENCODED_PAGE_BIT_DELAY_RMAP) {
->  			struct page *page = encoded_page_ptr(enc);
->  			folio_remove_rmap_pte(page_folio(page), page, vma);
->  		}
-> @@ -119,6 +119,7 @@ static void tlb_batch_list_free(struct mmu_gather *tlb)
->  bool __tlb_remove_page_size(struct mmu_gather *tlb, struct page *page,
->  		bool delay_rmap, int page_size)
->  {
-> +	int flags = delay_rmap ? ENCODED_PAGE_BIT_DELAY_RMAP : 0;
->  	struct mmu_gather_batch *batch;
->  
->  	VM_BUG_ON(!tlb->end);
-> @@ -132,7 +133,7 @@ bool __tlb_remove_page_size(struct mmu_gather *tlb, struct page *page,
->  	 * Add the page and check if we are full. If so
->  	 * force a flush.
->  	 */
-> -	batch->encoded_pages[batch->nr++] = encode_page(page, delay_rmap);
-> +	batch->encoded_pages[batch->nr++] = encode_page(page, flags);
->  	if (batch->nr == batch->max) {
->  		if (!tlb_next_batch(tlb))
->  			return true;
-
+Alice
 
