@@ -1,178 +1,160 @@
-Return-Path: <linux-kernel+bounces-44453-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44457-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3507F84222F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:04:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 611B584223A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:05:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA1FB285BD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:04:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E274B1F2E523
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:05:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FA39664A9;
-	Tue, 30 Jan 2024 11:04:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA39D66B37;
+	Tue, 30 Jan 2024 11:05:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="j3VR5Dby";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="yvHBdjZQ";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="j3VR5Dby";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="yvHBdjZQ"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="EwcKsWm7"
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18CAB537F3;
-	Tue, 30 Jan 2024 11:04:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E14AE66B36;
+	Tue, 30 Jan 2024 11:05:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706612683; cv=none; b=VXzsZiu6JQeTxmxwxBEcQUXg6M+7sqVpaWwMlFYCbElU7nbQm3o34o6NQHl4N2oDH+Ss4oNuvWN8o/Dd7zH5CXJxfjqVa2fi6rD96VDs7VxoMrRQ8eTNyuRDlxxZC0GY6LbFj4VS8Fy1fpJjcyo5W26JAwFFP7Lpswb8Aer5grk=
+	t=1706612717; cv=none; b=p78aaRyf9UVwZI0lgp+/VXkE0KKL0m0A0r3G7SJ5wv2hxvN4wVzgLFm1pvBwuCAoGm85ogbUgVzNwx+zdi17aAPBYOCjsQM8RG0BhUazqDx30JwOd5Vi0NBAQqnqseBRwsUBB/QzDNpPuhhWtYtjoKPPJMu2fqoM/l0NjCjbgs0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706612683; c=relaxed/simple;
-	bh=wrZt8z8zTmzW8IvQQjwBzRY7jmPtbq4xDEZvOvmBoRQ=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=r2elb8ZnwKJ//V4F3bSBh1cgDB77ThGIfVVtV+zq+GyM2RCHVhXuUkU/puenx2/wOBwFhgvdy2zCUGBJ93tYHj8QHkOU61rnsbHrXyZanxpEKBlluZ0frFZrqAA0tuzCX7cfMSRI1Wa9y0Wg95nwW1ylN9/Y2HTdVXl3NEDTtoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=j3VR5Dby; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=yvHBdjZQ; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=j3VR5Dby; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=yvHBdjZQ; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 500DB222DD;
-	Tue, 30 Jan 2024 11:04:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1706612680; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YEVz5JmWBEANKaFyMPvbOuOMOWYWEZA86IFpZQWLBn4=;
-	b=j3VR5DbyoEcoY2hfmObv/PKnjl7aUb2689QjE+gcKoIQEbCOPQdbuJP5yGMNUmR5XfLK1B
-	HgdLFWF2jr2qJv7NMfsVT06uni39tXwpA9/WjNbNqq/lPugVCcBp48xC82A09XL3b/O2BW
-	BmLEf/7i69238PTN9UmjxjDAqddWgzc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1706612680;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YEVz5JmWBEANKaFyMPvbOuOMOWYWEZA86IFpZQWLBn4=;
-	b=yvHBdjZQthgfG6zpBOFsG6QnIvlJswOuf8brj2d/ZdRm0ChkyAl0i0Bf49QgoPuibHRMz2
-	fpJ1DUp68i+/WKCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1706612680; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YEVz5JmWBEANKaFyMPvbOuOMOWYWEZA86IFpZQWLBn4=;
-	b=j3VR5DbyoEcoY2hfmObv/PKnjl7aUb2689QjE+gcKoIQEbCOPQdbuJP5yGMNUmR5XfLK1B
-	HgdLFWF2jr2qJv7NMfsVT06uni39tXwpA9/WjNbNqq/lPugVCcBp48xC82A09XL3b/O2BW
-	BmLEf/7i69238PTN9UmjxjDAqddWgzc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1706612680;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YEVz5JmWBEANKaFyMPvbOuOMOWYWEZA86IFpZQWLBn4=;
-	b=yvHBdjZQthgfG6zpBOFsG6QnIvlJswOuf8brj2d/ZdRm0ChkyAl0i0Bf49QgoPuibHRMz2
-	fpJ1DUp68i+/WKCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EFF5D12FF7;
-	Tue, 30 Jan 2024 11:04:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id jUMhOcfXuGU4PQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Tue, 30 Jan 2024 11:04:39 +0000
-Date: Tue, 30 Jan 2024 12:04:39 +0100
-Message-ID: <87jznr3wvs.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kenzo Gomez <kenzo.sgomez@gmail.com>
-Cc: alsa-devel@alsa-project.org,
-	david.rhodes@cirrus.com,
-	james.schulman@cirrus.com,
-	linux-kernel@vger.kernel.org,
-	linux-sound@vger.kernel.org,
-	patches@opensource.cirrus.com,
-	perex@perex.cz,
-	rf@opensource.cirrus.com,
-	sbinding@opensource.cirrus.com,
-	tiwai@suse.com
-Subject: Re: [PATCH v3] ALSA: hda: cs35l41: Support additional ASUS Zenbook UX3402VA
-In-Reply-To: <20240127164621.26431-1-kenzo.sgomez@gmail.com>
-References: <874jfdwsfg.wl-tiwai@suse.de>
-	<20240127164621.26431-1-kenzo.sgomez@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	s=arc-20240116; t=1706612717; c=relaxed/simple;
+	bh=YWoRr++LtmqrklpXT4FN730vpyGR9Vt9NvXbQgTv6DA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=eaUHTxT+z5/88NuX4JqLnS9yl08Yr8VuekQyRFq+85aO2NMvtKxHR31lchYnBgKCkQlqwoXtlWBVHAAVq8bxx2jdVYKMsuOnKL6Y4sZzizS4Pv6IMIzzxl7WtqkWywJhlRQDCYOkGHD3dH/YsGLimrMLR43tX59W1vpWowuV9mg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=EwcKsWm7; arc=none smtp.client-ip=67.231.149.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40U6m6fK015755;
+	Tue, 30 Jan 2024 05:04:56 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	PODMain02222019; bh=7fkoap6tDn5V09KItRc07wxlB0r/CaVc096KyiaEmTw=; b=
+	EwcKsWm7Xv5RXOP9O+rQrFl4ul+uzXVB0OJTT3xwOV6klHLMs2dGIgCByBaFSHZC
+	TnbzGFdvLP9CKEw2DPjacbeYvpB7fG4KHRZZSfTFtITvqkyOEI/eHViWDi+rf/oZ
+	soEXABvXy1qbsmy5IA0q5DBoynwKcsAwfTAMKXV5erT2BSNs2NlRcTNom9BrtxS5
+	+RelvvnNHudCp6XyH6Fn7Io3/FWtGWeUNEpgB5jNnkMov1rQhHKGIsws3s+8VuTg
+	uIJ+fliAEobFWKx/rzA5gNMhywqZwvDSbUhMIFDj0H/JLieIXXwFeaCVHXCADUnW
+	ICAtk2fZjF8CGglzOLYQmQ==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3vw043u6s6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 30 Jan 2024 05:04:56 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 30 Jan
+ 2024 11:04:54 +0000
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.40 via Frontend Transport; Tue, 30 Jan 2024 11:04:54 +0000
+Received: from [198.90.208.18] (ediswws06.ad.cirrus.com [198.90.208.18])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 5F753820247;
+	Tue, 30 Jan 2024 11:04:54 +0000 (UTC)
+Message-ID: <a8432725-6dc6-4765-831f-178dcee8b829@opensource.cirrus.com>
+Date: Tue, 30 Jan 2024 11:04:54 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-0.60 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FREEMAIL_TO(0.00)[gmail.com];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -0.60
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 08/18] ASoC: cs35l56: Fix default SDW TX mixer registers
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        <broonie@kernel.org>, <tiwai@suse.com>
+CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
+References: <20240129162737.497-1-rf@opensource.cirrus.com>
+ <20240129162737.497-9-rf@opensource.cirrus.com>
+ <4f54a12c-c8a3-414c-b4df-3f7b25e6d524@linux.intel.com>
+Content-Language: en-GB
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <4f54a12c-c8a3-414c-b4df-3f7b25e6d524@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-ORIG-GUID: oet1IvvhAV8hsmYkbAJ3mUff-NWRGpf-
+X-Proofpoint-GUID: oet1IvvhAV8hsmYkbAJ3mUff-NWRGpf-
+X-Proofpoint-Spam-Reason: safe
 
-On Sat, 27 Jan 2024 17:46:21 +0100,
-Kenzo Gomez wrote:
+On 29/01/2024 17:15, Pierre-Louis Bossart wrote:
 > 
-> Add new model entry into configuration table.
 > 
-> Signed-off-by: Kenzo Gomez <kenzo.sgomez@gmail.com>
-
-Cirrus people, could you take a look?
-I'm inclined to take as is, unless you have any objections.
-
-
-thanks,
-
-Takashi
-
-> ---
->  sound/pci/hda/cs35l41_hda_property.c | 2 ++
->  1 file changed, 2 insertions(+)
+> On 1/29/24 17:27, Richard Fitzgerald wrote:
+>> Patch the SDW TX mixer registers to silicon defaults.
+>>
+>> CS35L56 is designed for SDCA and a generic SDCA driver would
+>> know nothing about these chip-specific registers. So the
+>> firmware sets up the SDW TX mixer registers to whatever audio
+>> is relevant on a specific system.
+>>
+>> This means that the driver cannot assume the initial values
+>> of these registers. But Linux has ALSA controls to configure
+>> routing, so the registers can be patched to silicon default and
+>> the ALSA controls used to select what audio to feed back to the
+>> host capture path.
 > 
-> diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
-> index 35277ce890a4..59504852adc6 100644
-> --- a/sound/pci/hda/cs35l41_hda_property.c
-> +++ b/sound/pci/hda/cs35l41_hda_property.c
-> @@ -76,6 +76,7 @@ static const struct cs35l41_config cs35l41_config_table[] = {
->  	{ "10431533", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
->  	{ "10431573", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
->  	{ "10431663", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1, 0, 1000, 4500, 24 },
-> +	{ "104316A3", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
->  	{ "104316D3", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
->  	{ "104316F3", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
->  	{ "104317F3", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
-> @@ -410,6 +411,7 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
->  	{ "CSC3551", "10431533", generic_dsd_config },
->  	{ "CSC3551", "10431573", generic_dsd_config },
->  	{ "CSC3551", "10431663", generic_dsd_config },
-> +	{ "CSC3551", "104316A3", generic_dsd_config },
->  	{ "CSC3551", "104316D3", generic_dsd_config },
->  	{ "CSC3551", "104316F3", generic_dsd_config },
->  	{ "CSC3551", "104317F3", generic_dsd_config },
-> -- 
-> 2.43.0
+> humm, which has the precedence then?
+> a) the values set by firmware
+> b) the default values set by the driver?
 > 
+> Also if the firmware touches those registers shouldn't they be marked as
+> 'volatile'?
+>
+
+The firmware was designed to work with Windows, so it looks a bit
+strange if you are coming at it from ALSA. There's not really any
+defined 'precedence'. The firmware will setup the feedback monitor paths
+to something that satisfies SDCA and Windows expectations.
+
+We don't care about that in Linux, the firmware on the Intel DSP
+probably isn't running the same algorithms for Linux, and we have ALSA
+controls to configure those paths. So we patch the mixers back to their
+silicon defaults and take over complete control of them.
+
+The firmware only writes them during its power-up sequence so they
+will only change when we are rebooting the firmware or coming out of
+low-power standby, which is under the control of the driver. When that
+happens regmap will re-apply the patch and then sync up the registers
+again. The firmware won't touch them after boot, so we can avoid having
+to mark them volatile (which would mean implementing our own manual
+caching of the settings).
+
+> 
+>> Backport note:
+>> This won't apply to kernels older than v6.6.
+>>
+>> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+>> Fixes: e49611252900 ("ASoC: cs35l56: Add driver for Cirrus Logic CS35L56")
+>> ---
+>>   sound/soc/codecs/cs35l56-shared.c | 9 +++++++++
+>>   1 file changed, 9 insertions(+)
+>>
+>> diff --git a/sound/soc/codecs/cs35l56-shared.c b/sound/soc/codecs/cs35l56-shared.c
+>> index 35789ffc63af..a812abf90836 100644
+>> --- a/sound/soc/codecs/cs35l56-shared.c
+>> +++ b/sound/soc/codecs/cs35l56-shared.c
+>> @@ -12,6 +12,15 @@
+>>   #include "cs35l56.h"
+>>   
+>>   static const struct reg_sequence cs35l56_patch[] = {
+>> +	/*
+>> +	 * Firmware can change these to non-defaults to satisfy SDCA.
+>> +	 * Ensure that they are at known defaults.
+>> +	 */
+>> +	{ CS35L56_SWIRE_DP3_CH1_INPUT,		0x00000018 },
+>> +	{ CS35L56_SWIRE_DP3_CH2_INPUT,		0x00000019 },
+>> +	{ CS35L56_SWIRE_DP3_CH3_INPUT,		0x00000029 },
+>> +	{ CS35L56_SWIRE_DP3_CH4_INPUT,		0x00000028 },
+>> +
+>>   	/* These are not reset by a soft-reset, so patch to defaults. */
+>>   	{ CS35L56_MAIN_RENDER_USER_MUTE,	0x00000000 },
+>>   	{ CS35L56_MAIN_RENDER_USER_VOLUME,	0x00000000 },
+
 
