@@ -1,285 +1,681 @@
-Return-Path: <linux-kernel+bounces-43669-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43670-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04152841770
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 01:27:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04790841775
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 01:29:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EFD12827DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 00:27:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22D1B1C22EDF
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 00:29:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCEC414F61;
-	Tue, 30 Jan 2024 00:26:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1346F14A86;
+	Tue, 30 Jan 2024 00:28:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="YUdrdMAL"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yy8iGBV7"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6E9B111E
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 00:26:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 107FF13FE2
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 00:28:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706574418; cv=none; b=dkTcG+zRh9vQZJWvh90EjNPKcQqc6grCPmJoPL4ymO0VY8XZnnQxuB54fS86RqTcaYj9TCzF1oyYVDDezvHlBrPvHrKOSptjxZysxo870vqoK2Z2sfshMEXRZuuWm1MrC3tf+wzfP5Z9UK8HHZPtUewuBP/ln8M57oRJMpyjpJk=
+	t=1706574531; cv=none; b=U02XTEJKh9YxNx8ZAP27aq3KFPkUEp96ayH/98okXoyWZAdAF2Ka/1gg2RszUkFj0NEDoh1D33YPeO5BQb+SECWPOa1JiraomL34+lOITuXTDfr0d3veLEoje4b+nZ2rSRDMR6zIal7wgDFddN2k6IOQME0kLPSjar+kZ236B1A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706574418; c=relaxed/simple;
-	bh=z2PvlQJy6oSu55Ar0+qrueOuia9IRx4cYjiHsPmCbKg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Eu0GmPTNUh5j8PLDf9gwpYreNo8JH49ZFisVBnMZWm/50FW3q8HKXe+U8KiDP4HwAOCGH7tJHFJSgRhEbkekEiNQ58bu4ZQX7eADvJhsvetdRQGllwpl1+uoWOI+mhDvYyYks6okR41IuXCEzbmZURRAXLyOsLdUqGYB3k2v0Jg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=YUdrdMAL; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40ef75adf44so12668835e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 16:26:56 -0800 (PST)
+	s=arc-20240116; t=1706574531; c=relaxed/simple;
+	bh=sV0559lqEUhi2Ek9846crc4VrdXdTEtk3iq/XhIZqdg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hHBpTuOoWwR/2QH3aauQxLW22lqGTu1X81/bZpLaEz6G3bg156vJjRtV1U4OZUDJmUsDhRrFkgMxXiv9mtBpaAJOY7dUyOQScm+TkpGw2jN2p1hBogvxctbI82vpeqIjJIcvcwIfz6lgMMk3PmndUb9NZmSdZjU7snleqWFkAiQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yy8iGBV7; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40e80046264so44160655e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 16:28:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1706574415; x=1707179215; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LoTHTB8+351LtvZp8jPnaErRIgkgUFGS9zCIdeKBry0=;
-        b=YUdrdMALuXpNIHKmT4M3EsL/YH2dZ+m9DtlR2YqiKEEb36ldg/NK+ZIq2/cJqenI1Q
-         DCxLwqMJ/m++FxV627exZ2pn1xQtLWB4IXWb9Ail+rnrzpWygPokCQ2pTID1EV6gqBPj
-         wb2grmh/v/j2zhCggjO9uVhwgHBW+DvjLbR8lrbZ2NPZ2iY9dtv8iRtmrssnaWp8OJ75
-         C5HETPoTAlcW9CfszEZyvs5ns3UF9w2ii0Vy0biLZRjVVfd2H8syyh+P4wMC+c8YTR21
-         8R1C9Pct7+xEiJA1CBsdTzuAAVnY4IB1bKkZ2O+ieYZCgWwU2gw6vfgJBX5Magmex6px
-         3o6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706574415; x=1707179215;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1706574527; x=1707179327; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LoTHTB8+351LtvZp8jPnaErRIgkgUFGS9zCIdeKBry0=;
-        b=Cp0I5MHxFVwyIS3d/iO9f2muJGgJjj2gi8dKrD0GIqcxVGv8UL66AX1snPUWo2Llm2
-         8zDWq2MeXeXtysUZjqQAyNoV+T2T/IYb/OlAt/w/yoswjr3wq8BiCnYYlqxXIFEYwM2d
-         z6Le7VR4G9LbW0EEJEVi8HgRkxwk1L5G4uXjuhe84ilBG6WcINhoo0jz+MQBFtceikZS
-         RDpQE7JM4r90CcB/EoURLRhCjMDAs6Xp/aIQ/hIogyIMPxmHTUIUNZDwkb83oP/2xcd5
-         kRaga2a/Aihdp1dxIYL9cZzLp5L6GB4JM4cdobbP3d+ZaGMKC8nzUHNMvwCH5J4tbuQD
-         VWSQ==
-X-Gm-Message-State: AOJu0YzGYuMf3gZvhGh3gFxGFO8D2i8C/K75S58qMGs6K2efXlDKyV/G
-	5CdEqbg+13a1BD597yd6d4a+P/PKIYxudhdgg1+u51ccsRfkirNHKsP5wlI9xAc=
-X-Google-Smtp-Source: AGHT+IErDNsPgM+53jLYQa1JKmwsqFgEKm+SIF4elZJgJyMfY1ZqEXDjNiAXRyQHViZAKn/wfHl2FA==
-X-Received: by 2002:a5d:6691:0:b0:33a:e8be:51bd with SMTP id l17-20020a5d6691000000b0033ae8be51bdmr3789565wru.51.1706574415100;
-        Mon, 29 Jan 2024 16:26:55 -0800 (PST)
-Received: from airbuntu ([213.122.231.14])
-        by smtp.gmail.com with ESMTPSA id u17-20020adff891000000b0033ae55db108sm6611757wrp.20.2024.01.29.16.26.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 16:26:54 -0800 (PST)
-Date: Tue, 30 Jan 2024 00:26:52 +0000
-From: Qais Yousef <qyousef@layalina.io>
-To: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
-	sudeep.holla@arm.com, rafael@kernel.org, viresh.kumar@linaro.org,
-	agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-	mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-	lukasz.luba@arm.com, rui.zhang@intel.com, mhiramat@kernel.org,
-	daniel.lezcano@linaro.org, amit.kachhap@gmail.com, corbet@lwn.net,
-	gregkh@linuxfoundation.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org
-Subject: Re: [PATCH v4 2/5] sched: Take cpufreq feedback into account
-Message-ID: <20240130002652.ipdyqs3sjy6qqt6t@airbuntu>
-References: <20240109164655.626085-1-vincent.guittot@linaro.org>
- <20240109164655.626085-3-vincent.guittot@linaro.org>
+        bh=l6wMAF7cwgtsfKbJYWyc+tWcNHqVIqoQNMitYFNxzFc=;
+        b=yy8iGBV7Z6UcZZ6B+wfqhVDRRTE6Ga7OCVsjzif/k7W9pCpjRtKxtlzrRvgqfRdDT+
+         aXYihNamP+/MpvOjSiI/MGJPHRCtUxfbNbfqmN6SxTa6dw7SVLNLf/sKLg+3C9pdadVj
+         m+tHMHIGtppzdJFiKjRZFljSovQDAV7BKu+8nCjtVfd1PnlU+2+UNiU239WPuO5VvQAc
+         M3xd7HglkmrUPNCoXmEL18TLatzUj7aISDgg92DjeCGmqY2J4gJ3QZ9dr/f82ue97UyV
+         Y77g11VdeIJt0H3zapEd1oDnvr/7/6oUj/m3RE/RHgUYHK3mImhGwfv3q3LpYSOJSouH
+         6ZNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706574527; x=1707179327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l6wMAF7cwgtsfKbJYWyc+tWcNHqVIqoQNMitYFNxzFc=;
+        b=hgRatWR8QE3KwJhPHFgCIE2XmlJu2Ibgqo+235Y5MRmHx+xMM7nxzJQ0PCpkoLaLnn
+         hln2JqkhYGy4oB2PsZW7xLjX0v6kqQU37fWTM0Qx0rw/ggMYjsKC+ZcU855mFbo+q2oH
+         owBlPlIDss244gsswzbrGBL2N2ftfaiLg5waj3azOzgbs1iGE5tEdihX3u5lbNsu5bsp
+         kgnyQvHtNBWdbgaPhCQqFc1LowYWTF2mML0YFagsti/3Xt5JrF9gKX5nxR7UhfE3BW8V
+         2LAXbK9wOh8iDceoZ5dkM8FwglpHEcS7EB8JObBu2seChdV3LwxRydwRDv1/SE3kEnf0
+         UJRQ==
+X-Gm-Message-State: AOJu0YwxZfjiLmnK4fo66GaaS30bGZxm1kBQBlh9+hWgrXuA5VeV3vWv
+	Z/p/lbN6cfw9GVRk0+lf9oSKtedD5KoeAi+bmn4O2Li/oZxvP05BVwwyUTyhhK1ktv418BoJAOl
+	x0XtOaVxSBjNkRJtJ6P+Mvcbxz7mfM5naDYov
+X-Google-Smtp-Source: AGHT+IELrPy/rIHOUSfntbeOaeQ347euO668r+7Si4IrYW8OwwoadmazH+U2fD3WUcZqKT8uYArVDiwGag+v430oiVE=
+X-Received: by 2002:a5d:5225:0:b0:336:6d62:7647 with SMTP id
+ i5-20020a5d5225000000b003366d627647mr3791991wra.5.1706574526945; Mon, 29 Jan
+ 2024 16:28:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240109164655.626085-3-vincent.guittot@linaro.org>
+References: <20240129193512.123145-1-lokeshgidra@google.com>
+ <20240129193512.123145-4-lokeshgidra@google.com> <20240129203626.uq5tdic4z5qua5qy@revolver>
+ <CAJuCfpFS=h8h1Tgn55Hv+cr9bUFFoUvejiFQsHGN5yT7utpDMg@mail.gmail.com>
+In-Reply-To: <CAJuCfpFS=h8h1Tgn55Hv+cr9bUFFoUvejiFQsHGN5yT7utpDMg@mail.gmail.com>
+From: Lokesh Gidra <lokeshgidra@google.com>
+Date: Mon, 29 Jan 2024 16:28:32 -0800
+Message-ID: <CA+EESO5r+b7QPYM5po--rxQBa9EPi4x1EZ96rEzso288dbpuow@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] userfaultfd: use per-vma locks in userfaultfd operations
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>, akpm@linux-foundation.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, selinux@vger.kernel.org, 
+	kernel-team@android.com, aarcange@redhat.com, peterx@redhat.com, 
+	david@redhat.com, axelrasmussen@google.com, bgeffon@google.com, 
+	willy@infradead.org, jannh@google.com, kaleshsingh@google.com, 
+	ngeoffray@google.com, timmurray@google.com, rppt@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 01/09/24 17:46, Vincent Guittot wrote:
-> Aggregate the different pressures applied on the capacity of CPUs and
-> create a new function that returns the actual capacity of the CPU:
->   get_actual_cpu_capacity()
-> 
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
-> ---
->  kernel/sched/fair.c | 45 +++++++++++++++++++++++++--------------------
->  1 file changed, 25 insertions(+), 20 deletions(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 9cc20855dc2b..e54bbf8b4936 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -4910,13 +4910,22 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
->  	trace_sched_util_est_se_tp(&p->se);
->  }
->  
-> +static inline unsigned long get_actual_cpu_capacity(int cpu)
-> +{
-> +	unsigned long capacity = arch_scale_cpu_capacity(cpu);
-> +
-> +	capacity -= max(thermal_load_avg(cpu_rq(cpu)), cpufreq_get_pressure(cpu));
+On Mon, Jan 29, 2024 at 12:53=E2=80=AFPM Suren Baghdasaryan <surenb@google.=
+com> wrote:
+>
+> On Mon, Jan 29, 2024 at 12:36=E2=80=AFPM Liam R. Howlett
+> <Liam.Howlett@oracle.com> wrote:
+> >
+> > * Lokesh Gidra <lokeshgidra@google.com> [240129 14:35]:
+> > > All userfaultfd operations, except write-protect, opportunistically u=
+se
+> > > per-vma locks to lock vmas. If we fail then fall back to locking
+> > > mmap-lock in read-mode.
+> > >
+> > > Write-protect operation requires mmap_lock as it iterates over multip=
+le vmas.
+> > >
+> > > Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
+> > > ---
+> > >  fs/userfaultfd.c              |  13 +--
+> > >  include/linux/userfaultfd_k.h |   5 +-
+> > >  mm/userfaultfd.c              | 175 +++++++++++++++++++++++---------=
+--
+> > >  3 files changed, 122 insertions(+), 71 deletions(-)
+> > >
+> > > diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
+> > > index c00a021bcce4..60dcfafdc11a 100644
+> > > --- a/fs/userfaultfd.c
+> > > +++ b/fs/userfaultfd.c
+> > > @@ -2005,17 +2005,8 @@ static int userfaultfd_move(struct userfaultfd=
+_ctx *ctx,
+> > >               return -EINVAL;
+> > >
+> > >       if (mmget_not_zero(mm)) {
+> > > -             mmap_read_lock(mm);
+> > > -
+> > > -             /* Re-check after taking map_changing_lock */
+> > > -             down_read(&ctx->map_changing_lock);
+> > > -             if (likely(!atomic_read(&ctx->mmap_changing)))
+> > > -                     ret =3D move_pages(ctx, mm, uffdio_move.dst, uf=
+fdio_move.src,
+> > > -                                      uffdio_move.len, uffdio_move.m=
+ode);
+> > > -             else
+> > > -                     ret =3D -EAGAIN;
+> > > -             up_read(&ctx->map_changing_lock);
+> > > -             mmap_read_unlock(mm);
+> > > +             ret =3D move_pages(ctx, uffdio_move.dst, uffdio_move.sr=
+c,
+> > > +                              uffdio_move.len, uffdio_move.mode);
+> > >               mmput(mm);
+> > >       } else {
+> > >               return -ESRCH;
+> > > diff --git a/include/linux/userfaultfd_k.h b/include/linux/userfaultf=
+d_k.h
+> > > index 3210c3552976..05d59f74fc88 100644
+> > > --- a/include/linux/userfaultfd_k.h
+> > > +++ b/include/linux/userfaultfd_k.h
+> > > @@ -138,9 +138,8 @@ extern long uffd_wp_range(struct vm_area_struct *=
+vma,
+> > >  /* move_pages */
+> > >  void double_pt_lock(spinlock_t *ptl1, spinlock_t *ptl2);
+> > >  void double_pt_unlock(spinlock_t *ptl1, spinlock_t *ptl2);
+> > > -ssize_t move_pages(struct userfaultfd_ctx *ctx, struct mm_struct *mm=
+,
+> > > -                unsigned long dst_start, unsigned long src_start,
+> > > -                unsigned long len, __u64 flags);
+> > > +ssize_t move_pages(struct userfaultfd_ctx *ctx, unsigned long dst_st=
+art,
+> > > +                unsigned long src_start, unsigned long len, __u64 fl=
+ags);
+> > >  int move_pages_huge_pmd(struct mm_struct *mm, pmd_t *dst_pmd, pmd_t =
+*src_pmd, pmd_t dst_pmdval,
+> > >                       struct vm_area_struct *dst_vma,
+> > >                       struct vm_area_struct *src_vma,
+> > > diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
+> > > index 6e2ca04ab04d..d55bf18b80db 100644
+> > > --- a/mm/userfaultfd.c
+> > > +++ b/mm/userfaultfd.c
+> > > @@ -19,20 +19,39 @@
+> > >  #include <asm/tlb.h>
+> > >  #include "internal.h"
+> > >
+> > > -static __always_inline
+> > > -struct vm_area_struct *find_dst_vma(struct mm_struct *dst_mm,
+> > > -                                 unsigned long dst_start,
+> > > -                                 unsigned long len)
+> > > +void unpin_vma(struct mm_struct *mm, struct vm_area_struct *vma, boo=
+l *mmap_locked)
+> > > +{
+> > > +     BUG_ON(!vma && !*mmap_locked);
+> > > +
+> > > +     if (*mmap_locked) {
+> > > +             mmap_read_unlock(mm);
+> > > +             *mmap_locked =3D false;
+> > > +     } else
+> > > +             vma_end_read(vma);
+> >
+> > You are missing braces here.
+> >
+> > This function is small so it could be inline, although I hope the
+> > compiler would get that right for us.
+> >
+> > I don't think this small helper is worth it, considering you are
+> > altering a pointer in here, which makes things harder to follow (not to
+> > mention the locking).  The only code that depends on this update is a
+> > single place, which already assigns a custom variable after the functio=
+n
+> > return.
+> >
+Sure. I'll replace unpin_vma() calls with inlined unlocking.
+> > > +}
+> > > +
+> > > +/*
+> > > + * Search for VMA and make sure it is stable either by locking it or=
+ taking
+> > > + * mmap_lock.
+> >
+> > This function returns something that isn't documented and also sets a
+> > boolean which is passed in as a pointer which also is lacking from the
+> > documentation.
+> >
 
-Does cpufreq_get_pressure() reflect thermally throttled frequency, or just the
-policy->max being capped by user etc? I didn't see an update to cpufreq when we
-topology_update_hw_pressure(). Not sure if it'll go through another path.
+I'll fix the comment in next version.
+> > > + */
+> > > +struct vm_area_struct *find_and_pin_dst_vma(struct mm_struct *dst_mm=
+,
+> > > +                                         unsigned long dst_start,
+> > > +                                         unsigned long len,
+> > > +                                         bool *mmap_locked)
+> > >  {
+> > > +     struct vm_area_struct *dst_vma =3D lock_vma_under_rcu(dst_mm, d=
+st_start);
+> >
+> > lock_vma_under_rcu() calls mas_walk(), which goes to dst_start for the
+> > VMA.  It is not possible for dst_start to be outside the range.
+> >
+> > > +     if (!dst_vma) {
+> >
+> > BUG_ON(mmap_locked) ?
+> >
+> > > +             mmap_read_lock(dst_mm);
+> > > +             *mmap_locked =3D true;
+> > > +             dst_vma =3D find_vma(dst_mm, dst_start);
+> >
+> > find_vma() walks to dst_start and searches upwards from that address.
+> > This is functionally different than what you have asked for above.  You
+> > will not see an issue as you have coded it - but it may be suboptimal
+> > since a start address lower than the VMA you are looking for can be
+> > found... however, later you check the range falls between the dst_start
+> > and dst_start + len.
+> >
+> > If you expect the dst_start to always be within the VMA range and not
+> > lower, then you should use vma_lookup().
+> >
 
-maxing with thermal_load_avg() will change the behavior below where we used to
-compare against instantaneous pressure. The concern was that it not just can
-appear quickly, but disappear quickly too. thermal_load_avg() will decay
-slowly, no?  This means we'll lose a lot of opportunities for better task
-placement until this decays which can take relatively long time.
+Thanks for informing. So vma_lookup() returns the vma for any address
+within [vma->vm_start, vma->vm_end)?
+> > If you want to search upwards from dst_start for a VMA then you should
+> > move the range check below into this brace.
+> >
+> > > +     }
+> > > +
+> > >       /*
+> > >        * Make sure that the dst range is both valid and fully within =
+a
+> > >        * single existing vma.
+> > >        */
+> > > -     struct vm_area_struct *dst_vma;
+> > > -
+> > > -     dst_vma =3D find_vma(dst_mm, dst_start);
+> > >       if (!range_in_vma(dst_vma, dst_start, dst_start + len))
+> > > -             return NULL;
+> > > +             goto unpin;
+> > >
+> > >       /*
+> > >        * Check the vma is registered in uffd, this is required to
+> > > @@ -40,9 +59,13 @@ struct vm_area_struct *find_dst_vma(struct mm_stru=
+ct *dst_mm,
+> > >        * time.
+> > >        */
+> > >       if (!dst_vma->vm_userfaultfd_ctx.ctx)
+> > > -             return NULL;
+> > > +             goto unpin;
+> > >
+> > >       return dst_vma;
+> > > +
+> > > +unpin:
+> > > +     unpin_vma(dst_mm, dst_vma, mmap_locked);
+> > > +     return NULL;
+> > >  }
+> > >
+> > >  /* Check if dst_addr is outside of file's size. Must be called with =
+ptl held. */
+> > > @@ -350,7 +373,8 @@ static pmd_t *mm_alloc_pmd(struct mm_struct *mm, =
+unsigned long address)
+> > >  #ifdef CONFIG_HUGETLB_PAGE
+> > >  /*
+> > >   * mfill_atomic processing for HUGETLB vmas.  Note that this routine=
+ is
+> > > - * called with mmap_lock held, it will release mmap_lock before retu=
+rning.
+> > > + * called with either vma-lock or mmap_lock held, it will release th=
+e lock
+> > > + * before returning.
+> > >   */
+> > >  static __always_inline ssize_t mfill_atomic_hugetlb(
+> > >                                             struct userfaultfd_ctx *c=
+tx,
+> > > @@ -358,7 +382,8 @@ static __always_inline ssize_t mfill_atomic_huget=
+lb(
+> > >                                             unsigned long dst_start,
+> > >                                             unsigned long src_start,
+> > >                                             unsigned long len,
+> > > -                                           uffd_flags_t flags)
+> > > +                                           uffd_flags_t flags,
+> > > +                                           bool *mmap_locked)
+> > >  {
+> > >       struct mm_struct *dst_mm =3D dst_vma->vm_mm;
+> > >       int vm_shared =3D dst_vma->vm_flags & VM_SHARED;
+> > > @@ -380,7 +405,7 @@ static __always_inline ssize_t mfill_atomic_huget=
+lb(
+> > >        */
+> > >       if (uffd_flags_mode_is(flags, MFILL_ATOMIC_ZEROPAGE)) {
+> > >               up_read(&ctx->map_changing_lock);
+> > > -             mmap_read_unlock(dst_mm);
+> > > +             unpin_vma(dst_mm, dst_vma, mmap_locked);
+> > >               return -EINVAL;
+> > >       }
+> > >
+> > > @@ -404,12 +429,25 @@ static __always_inline ssize_t mfill_atomic_hug=
+etlb(
+> > >        */
+> > >       if (!dst_vma) {
+> > >               err =3D -ENOENT;
+> > > -             dst_vma =3D find_dst_vma(dst_mm, dst_start, len);
+> > > -             if (!dst_vma || !is_vm_hugetlb_page(dst_vma))
+> > > -                     goto out_unlock;
+> > > +             dst_vma =3D find_and_pin_dst_vma(dst_mm, dst_start,
+> > > +                                            len, mmap_locked);
+> > > +             if (!dst_vma)
+> > > +                     goto out;
+> > > +             if (!is_vm_hugetlb_page(dst_vma))
+> > > +                     goto out_unlock_vma;
+> > >
+> > >               err =3D -EINVAL;
+> > >               if (vma_hpagesize !=3D vma_kernel_pagesize(dst_vma))
+> > > +                     goto out_unlock_vma;
+> > > +
+> > > +             /*
+> > > +              * If memory mappings are changing because of non-coope=
+rative
+> > > +              * operation (e.g. mremap) running in parallel, bail ou=
+t and
+> > > +              * request the user to retry later
+> > > +              */
+> > > +             down_read(&ctx->map_changing_lock);
+> > > +             err =3D -EAGAIN;
+> > > +             if (atomic_read(&ctx->mmap_changing))
+> > >                       goto out_unlock;
+> > >
+> > >               vm_shared =3D dst_vma->vm_flags & VM_SHARED;
+> > > @@ -465,7 +503,7 @@ static __always_inline ssize_t mfill_atomic_huget=
+lb(
+> > >
+> > >               if (unlikely(err =3D=3D -ENOENT)) {
+> > >                       up_read(&ctx->map_changing_lock);
+> > > -                     mmap_read_unlock(dst_mm);
+> > > +                     unpin_vma(dst_mm, dst_vma, mmap_locked);
+> > >                       BUG_ON(!folio);
+> > >
+> > >                       err =3D copy_folio_from_user(folio,
+> > > @@ -474,17 +512,6 @@ static __always_inline ssize_t mfill_atomic_huge=
+tlb(
+> > >                               err =3D -EFAULT;
+> > >                               goto out;
+> > >                       }
+> > > -                     mmap_read_lock(dst_mm);
+> > > -                     down_read(&ctx->map_changing_lock);
+> > > -                     /*
+> > > -                      * If memory mappings are changing because of n=
+on-cooperative
+> > > -                      * operation (e.g. mremap) running in parallel,=
+ bail out and
+> > > -                      * request the user to retry later
+> > > -                      */
+> > > -                     if (atomic_read(ctx->mmap_changing)) {
+> > > -                             err =3D -EAGAIN;
+> > > -                             break;
+> > > -                     }
+> >
+> > ... Okay, this is where things get confusing.
+> >
+> > How about this: Don't do this locking/boolean dance.
+> >
+> > Instead, do something like this:
+> > In mm/memory.c, below lock_vma_under_rcu(), but something like this
+> >
+> > struct vm_area_struct *lock_vma(struct mm_struct *mm,
+> >         unsigned long addr))    /* or some better name.. */
+> > {
+> >         struct vm_area_struct *vma;
+> >
+> >         vma =3D lock_vma_under_rcu(mm, addr);
+> >
+> >         if (vma)
+> >                 return vma;
+> >
+> >         mmap_read_lock(mm);
+> >         vma =3D lookup_vma(mm, addr);
+> >         if (vma)
+> >                 vma_start_read(vma); /* Won't fail */
+>
+> Please don't assume vma_start_read() won't fail even when you have
+> mmap_read_lock(). See the comment in vma_start_read() about the
+> possibility of an overflow producing false negatives.
+>
+> >
+> >         mmap_read_unlock(mm);
+> >         return vma;
+> > }
+> >
+> > Now, we know we have a vma that's vma locked if there is a vma.  The vm=
+a
+> > won't go away - you have it locked.  The mmap lock is held for even
+> > less time for your worse case, and the code gets easier to follow.
 
-So maxing handles the direction where a pressure suddenly appears. But it
-doesn't handle where it disappears.
+Your suggestion is definitely simpler and easier to follow, but due to
+the overflow situation that Suren pointed out, I would still need to
+keep the locking/boolean dance, no? IIUC, even if I were to return
+EAGAIN to the userspace, there is no guarantee that subsequent ioctls
+on the same vma will succeed due to the same overflow, until someone
+acquires and releases mmap_lock in write-mode.
+Also, sometimes it seems insufficient whether we managed to lock vma
+or not. For instance, lock_vma_under_rcu() checks if anon_vma (for
+anonymous vma) exists. If not then it bails out.
+So it seems to me that we have to provide some fall back in
+userfaultfd operations which executes with mmap_lock in read-mode.
+> >
+> > Once you are done with the vma do a vma_end_read(vma).  Don't forget to
+> > do this!
+> >
+> > Now the comment above such a function should state that the vma needs t=
+o
+> > be vma_end_read(vma), or that could go undetected..  It might be worth
+> > adding a unlock_vma() counterpart to vma_end_read(vma) even.
+>
+> Locking VMA while holding mmap_read_lock is an interesting usage
+> pattern I haven't seen yet. I think this should work quite well!
+>
+> >
+> >
+> > >
+> > >                       dst_vma =3D NULL;
+> > >                       goto retry;
+> > > @@ -505,7 +532,8 @@ static __always_inline ssize_t mfill_atomic_huget=
+lb(
+> > >
+> > >  out_unlock:
+> > >       up_read(&ctx->map_changing_lock);
+> > > -     mmap_read_unlock(dst_mm);
+> > > +out_unlock_vma:
+> > > +     unpin_vma(dst_mm, dst_vma, mmap_locked);
+> > >  out:
+> > >       if (folio)
+> > >               folio_put(folio);
+> > > @@ -521,7 +549,8 @@ extern ssize_t mfill_atomic_hugetlb(struct userfa=
+ultfd_ctx *ctx,
+> > >                                   unsigned long dst_start,
+> > >                                   unsigned long src_start,
+> > >                                   unsigned long len,
+> > > -                                 uffd_flags_t flags);
+> > > +                                 uffd_flags_t flags,
+> > > +                                 bool *mmap_locked);
+> >
+> > Just a thought, tabbing in twice for each argument would make this more
+> > compact.
+> >
+> >
+> > >  #endif /* CONFIG_HUGETLB_PAGE */
+> > >
+> > >  static __always_inline ssize_t mfill_atomic_pte(pmd_t *dst_pmd,
+> > > @@ -581,6 +610,7 @@ static __always_inline ssize_t mfill_atomic(struc=
+t userfaultfd_ctx *ctx,
+> > >       unsigned long src_addr, dst_addr;
+> > >       long copied;
+> > >       struct folio *folio;
+> > > +     bool mmap_locked =3D false;
+> > >
+> > >       /*
+> > >        * Sanitize the command parameters:
+> > > @@ -597,7 +627,14 @@ static __always_inline ssize_t mfill_atomic(stru=
+ct userfaultfd_ctx *ctx,
+> > >       copied =3D 0;
+> > >       folio =3D NULL;
+> > >  retry:
+> > > -     mmap_read_lock(dst_mm);
+> > > +     /*
+> > > +      * Make sure the vma is not shared, that the dst range is
+> > > +      * both valid and fully within a single existing vma.
+> > > +      */
+> > > +     err =3D -ENOENT;
+> > > +     dst_vma =3D find_and_pin_dst_vma(dst_mm, dst_start, len, &mmap_=
+locked);
+> > > +     if (!dst_vma)
+> > > +             goto out;
+> > >
+> > >       /*
+> > >        * If memory mappings are changing because of non-cooperative
+> > > @@ -609,15 +646,6 @@ static __always_inline ssize_t mfill_atomic(stru=
+ct userfaultfd_ctx *ctx,
+> > >       if (atomic_read(&ctx->mmap_changing))
+> > >               goto out_unlock;
+> > >
+> > > -     /*
+> > > -      * Make sure the vma is not shared, that the dst range is
+> > > -      * both valid and fully within a single existing vma.
+> > > -      */
+> > > -     err =3D -ENOENT;
+> > > -     dst_vma =3D find_dst_vma(dst_mm, dst_start, len);
+> > > -     if (!dst_vma)
+> > > -             goto out_unlock;
+> > > -
+> > >       err =3D -EINVAL;
+> > >       /*
+> > >        * shmem_zero_setup is invoked in mmap for MAP_ANONYMOUS|MAP_SH=
+ARED but
+> > > @@ -638,8 +666,8 @@ static __always_inline ssize_t mfill_atomic(struc=
+t userfaultfd_ctx *ctx,
+> > >        * If this is a HUGETLB vma, pass off to appropriate routine
+> > >        */
+> > >       if (is_vm_hugetlb_page(dst_vma))
+> > > -             return  mfill_atomic_hugetlb(ctx, dst_vma, dst_start,
+> > > -                                          src_start, len, flags);
+> > > +             return  mfill_atomic_hugetlb(ctx, dst_vma, dst_start, s=
+rc_start
+> > > +                                          len, flags, &mmap_locked);
+> > >
+> > >       if (!vma_is_anonymous(dst_vma) && !vma_is_shmem(dst_vma))
+> > >               goto out_unlock;
+> > > @@ -699,7 +727,8 @@ static __always_inline ssize_t mfill_atomic(struc=
+t userfaultfd_ctx *ctx,
+> > >                       void *kaddr;
+> > >
+> > >                       up_read(&ctx->map_changing_lock);
+> > > -                     mmap_read_unlock(dst_mm);
+> > > +                     unpin_vma(dst_mm, dst_vma, &mmap_locked);
+> > > +
+> > >                       BUG_ON(!folio);
+> > >
+> > >                       kaddr =3D kmap_local_folio(folio, 0);
+> > > @@ -730,7 +759,7 @@ static __always_inline ssize_t mfill_atomic(struc=
+t userfaultfd_ctx *ctx,
+> > >
+> > >  out_unlock:
+> > >       up_read(&ctx->map_changing_lock);
+> > > -     mmap_read_unlock(dst_mm);
+> > > +     unpin_vma(dst_mm, dst_vma, &mmap_locked);
+> > >  out:
+> > >       if (folio)
+> > >               folio_put(folio);
+> > > @@ -1285,8 +1314,6 @@ static int validate_move_areas(struct userfault=
+fd_ctx *ctx,
+> > >   * @len: length of the virtual memory range
+> > >   * @mode: flags from uffdio_move.mode
+> > >   *
+> > > - * Must be called with mmap_lock held for read.
+> > > - *
+> > >   * move_pages() remaps arbitrary anonymous pages atomically in zero
+> > >   * copy. It only works on non shared anonymous pages because those c=
+an
+> > >   * be relocated without generating non linear anon_vmas in the rmap
+> > > @@ -1353,15 +1380,16 @@ static int validate_move_areas(struct userfau=
+ltfd_ctx *ctx,
+> > >   * could be obtained. This is the only additional complexity added t=
+o
+> > >   * the rmap code to provide this anonymous page remapping functional=
+ity.
+> > >   */
+> > > -ssize_t move_pages(struct userfaultfd_ctx *ctx, struct mm_struct *mm=
+,
+> > > -                unsigned long dst_start, unsigned long src_start,
+> > > -                unsigned long len, __u64 mode)
+> > > +ssize_t move_pages(struct userfaultfd_ctx *ctx, unsigned long dst_st=
+art,
+> > > +                unsigned long src_start, unsigned long len, __u64 mo=
+de)
+> > >  {
+> > > +     struct mm_struct *mm =3D ctx->mm;
+> > >       struct vm_area_struct *src_vma, *dst_vma;
+> > >       unsigned long src_addr, dst_addr;
+> > >       pmd_t *src_pmd, *dst_pmd;
+> > >       long err =3D -EINVAL;
+> > >       ssize_t moved =3D 0;
+> > > +     bool mmap_locked =3D false;
+> > >
+> > >       /* Sanitize the command parameters. */
+> > >       if (WARN_ON_ONCE(src_start & ~PAGE_MASK) ||
+> > > @@ -1374,28 +1402,52 @@ ssize_t move_pages(struct userfaultfd_ctx *ct=
+x, struct mm_struct *mm,
+> > >           WARN_ON_ONCE(dst_start + len <=3D dst_start))
+> > >               goto out;
+> >
+> > Ah, is this safe for rmap?  I think you need to leave this read lock.
+> >
+I didn't fully understand you here.
+> > >
+> > > +     dst_vma =3D NULL;
+> > > +     src_vma =3D lock_vma_under_rcu(mm, src_start);
+> > > +     if (src_vma) {
+> > > +             dst_vma =3D lock_vma_under_rcu(mm, dst_start);
+> > > +             if (!dst_vma)
+> > > +                     vma_end_read(src_vma);
+> > > +     }
+> > > +
+> > > +     /* If we failed to lock both VMAs, fall back to mmap_lock */
+> > > +     if (!dst_vma) {
+> > > +             mmap_read_lock(mm);
+> > > +             mmap_locked =3D true;
+> > > +             src_vma =3D find_vma(mm, src_start);
+> > > +             if (!src_vma)
+> > > +                     goto out_unlock_mmap;
+> > > +             dst_vma =3D find_vma(mm, dst_start);
+> >
+> > Again, there is a difference in how find_vma and lock_vam_under_rcu
+> > works.
 
-I suspect your thoughts are that if it was transient then thermal_load_avg()
-should be small anyway - which I think makes sense.
-
-I think we need a comment to explain these nuance differences.
-
-> +
-> +	return capacity;
-> +}
-> +
->  static inline int util_fits_cpu(unsigned long util,
->  				unsigned long uclamp_min,
->  				unsigned long uclamp_max,
->  				int cpu)
->  {
-> -	unsigned long capacity_orig, capacity_orig_thermal;
->  	unsigned long capacity = capacity_of(cpu);
-> +	unsigned long capacity_orig;
->  	bool fits, uclamp_max_fits;
->  
->  	/*
-> @@ -4948,7 +4957,6 @@ static inline int util_fits_cpu(unsigned long util,
->  	 * goal is to cap the task. So it's okay if it's getting less.
->  	 */
->  	capacity_orig = arch_scale_cpu_capacity(cpu);
-> -	capacity_orig_thermal = capacity_orig - arch_scale_thermal_pressure(cpu);
->  
->  	/*
->  	 * We want to force a task to fit a cpu as implied by uclamp_max.
-> @@ -5023,7 +5031,8 @@ static inline int util_fits_cpu(unsigned long util,
->  	 * handle the case uclamp_min > uclamp_max.
->  	 */
->  	uclamp_min = min(uclamp_min, uclamp_max);
-> -	if (fits && (util < uclamp_min) && (uclamp_min > capacity_orig_thermal))
-> +	if (fits && (util < uclamp_min) &&
-> +	    (uclamp_min > get_actual_cpu_capacity(cpu)))
->  		return -1;
->  
->  	return fits;
-> @@ -7404,7 +7413,7 @@ select_idle_capacity(struct task_struct *p, struct sched_domain *sd, int target)
->  		 * Look for the CPU with best capacity.
->  		 */
->  		else if (fits < 0)
-> -			cpu_cap = arch_scale_cpu_capacity(cpu) - thermal_load_avg(cpu_rq(cpu));
-> +			cpu_cap = get_actual_cpu_capacity(cpu);
->  
->  		/*
->  		 * First, select CPU which fits better (-1 being better than 0).
-> @@ -7897,8 +7906,8 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
->  	struct root_domain *rd = this_rq()->rd;
->  	int cpu, best_energy_cpu, target = -1;
->  	int prev_fits = -1, best_fits = -1;
-> -	unsigned long best_thermal_cap = 0;
-> -	unsigned long prev_thermal_cap = 0;
-> +	unsigned long best_actual_cap = 0;
-> +	unsigned long prev_actual_cap = 0;
->  	struct sched_domain *sd;
->  	struct perf_domain *pd;
->  	struct energy_env eenv;
-> @@ -7928,7 +7937,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
->  
->  	for (; pd; pd = pd->next) {
->  		unsigned long util_min = p_util_min, util_max = p_util_max;
-> -		unsigned long cpu_cap, cpu_thermal_cap, util;
-> +		unsigned long cpu_cap, cpu_actual_cap, util;
->  		long prev_spare_cap = -1, max_spare_cap = -1;
->  		unsigned long rq_util_min, rq_util_max;
->  		unsigned long cur_delta, base_energy;
-> @@ -7940,18 +7949,17 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
->  		if (cpumask_empty(cpus))
->  			continue;
->  
-> -		/* Account thermal pressure for the energy estimation */
-> +		/* Account external pressure for the energy estimation */
->  		cpu = cpumask_first(cpus);
-> -		cpu_thermal_cap = arch_scale_cpu_capacity(cpu);
-> -		cpu_thermal_cap -= arch_scale_thermal_pressure(cpu);
-> +		cpu_actual_cap = get_actual_cpu_capacity(cpu);
->  
-> -		eenv.cpu_cap = cpu_thermal_cap;
-> +		eenv.cpu_cap = cpu_actual_cap;
->  		eenv.pd_cap = 0;
->  
->  		for_each_cpu(cpu, cpus) {
->  			struct rq *rq = cpu_rq(cpu);
->  
-> -			eenv.pd_cap += cpu_thermal_cap;
-> +			eenv.pd_cap += cpu_actual_cap;
->  
->  			if (!cpumask_test_cpu(cpu, sched_domain_span(sd)))
->  				continue;
-> @@ -8022,7 +8030,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
->  			if (prev_delta < base_energy)
->  				goto unlock;
->  			prev_delta -= base_energy;
-> -			prev_thermal_cap = cpu_thermal_cap;
-> +			prev_actual_cap = cpu_actual_cap;
->  			best_delta = min(best_delta, prev_delta);
->  		}
->  
-> @@ -8037,7 +8045,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
->  			 * but best energy cpu has better capacity.
->  			 */
->  			if ((max_fits < 0) &&
-> -			    (cpu_thermal_cap <= best_thermal_cap))
-> +			    (cpu_actual_cap <= best_actual_cap))
->  				continue;
->  
->  			cur_delta = compute_energy(&eenv, pd, cpus, p,
-> @@ -8058,14 +8066,14 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
->  			best_delta = cur_delta;
->  			best_energy_cpu = max_spare_cap_cpu;
->  			best_fits = max_fits;
-> -			best_thermal_cap = cpu_thermal_cap;
-> +			best_actual_cap = cpu_actual_cap;
->  		}
->  	}
->  	rcu_read_unlock();
->  
->  	if ((best_fits > prev_fits) ||
->  	    ((best_fits > 0) && (best_delta < prev_delta)) ||
-> -	    ((best_fits < 0) && (best_thermal_cap > prev_thermal_cap)))
-> +	    ((best_fits < 0) && (best_actual_cap > prev_actual_cap)))
->  		target = best_energy_cpu;
->  
->  	return target;
-> @@ -9441,8 +9449,8 @@ static inline void init_sd_lb_stats(struct sd_lb_stats *sds)
->  
->  static unsigned long scale_rt_capacity(int cpu)
->  {
-> +	unsigned long max = get_actual_cpu_capacity(cpu);
->  	struct rq *rq = cpu_rq(cpu);
-> -	unsigned long max = arch_scale_cpu_capacity(cpu);
->  	unsigned long used, free;
->  	unsigned long irq;
->  
-> @@ -9454,12 +9462,9 @@ static unsigned long scale_rt_capacity(int cpu)
->  	/*
->  	 * avg_rt.util_avg and avg_dl.util_avg track binary signals
->  	 * (running and not running) with weights 0 and 1024 respectively.
-> -	 * avg_thermal.load_avg tracks thermal pressure and the weighted
-> -	 * average uses the actual delta max capacity(load).
->  	 */
->  	used = READ_ONCE(rq->avg_rt.util_avg);
->  	used += READ_ONCE(rq->avg_dl.util_avg);
-> -	used += thermal_load_avg(rq);
->  
->  	if (unlikely(used >= max))
->  		return 1;
-> -- 
-> 2.34.1
-> 
+Sure, I'll use vma_lookup() instead of find_vma().
+> >
+> > > +             if (!dst_vma)
+> > > +                     goto out_unlock_mmap;
+> > > +     }
+> > > +
+> > > +     /* Re-check after taking map_changing_lock */
+> > > +     down_read(&ctx->map_changing_lock);
+> > > +     if (likely(atomic_read(&ctx->mmap_changing))) {
+> > > +             err =3D -EAGAIN;
+> > > +             goto out_unlock;
+> > > +     }
+> > >       /*
+> > >        * Make sure the vma is not shared, that the src and dst remap
+> > >        * ranges are both valid and fully within a single existing
+> > >        * vma.
+> > >        */
+> > > -     src_vma =3D find_vma(mm, src_start);
+> > > -     if (!src_vma || (src_vma->vm_flags & VM_SHARED))
+> > > -             goto out;
+> > > +     if (src_vma->vm_flags & VM_SHARED)
+> > > +             goto out_unlock;
+> > >       if (src_start < src_vma->vm_start ||
+> > >           src_start + len > src_vma->vm_end)
+> > > -             goto out;
+> > > +             goto out_unlock;
+> > >
+> > > -     dst_vma =3D find_vma(mm, dst_start);
+> > > -     if (!dst_vma || (dst_vma->vm_flags & VM_SHARED))
+> > > -             goto out;
+> > > +     if (dst_vma->vm_flags & VM_SHARED)
+> > > +             goto out_unlock;
+> > >       if (dst_start < dst_vma->vm_start ||
+> > >           dst_start + len > dst_vma->vm_end)
+> > > -             goto out;
+> > > +             goto out_unlock;
+> > >
+> > >       err =3D validate_move_areas(ctx, src_vma, dst_vma);
+> > >       if (err)
+> > > -             goto out;
+> > > +             goto out_unlock;
+> > >
+> > >       for (src_addr =3D src_start, dst_addr =3D dst_start;
+> > >            src_addr < src_start + len;) {
+> > > @@ -1512,6 +1564,15 @@ ssize_t move_pages(struct userfaultfd_ctx *ctx=
+, struct mm_struct *mm,
+> > >               moved +=3D step_size;
+> > >       }
+> > >
+> > > +out_unlock:
+> > > +     up_read(&ctx->map_changing_lock);
+> > > +out_unlock_mmap:
+> > > +     if (mmap_locked)
+> > > +             mmap_read_unlock(mm);
+> > > +     else {
+> > > +             vma_end_read(dst_vma);
+> > > +             vma_end_read(src_vma);
+> > > +     }
+> > >  out:
+> > >       VM_WARN_ON(moved < 0);
+> > >       VM_WARN_ON(err > 0);
+> > > --
+> > > 2.43.0.429.g432eaa2c6b-goog
+> > >
+> > >
 
