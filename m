@@ -1,263 +1,140 @@
-Return-Path: <linux-kernel+bounces-44010-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44008-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2396F841C2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:49:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC754841C29
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:48:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EC911F25BE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 06:49:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C65A28C342
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 06:48:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 207F93CF66;
-	Tue, 30 Jan 2024 06:49:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A3C13F9FF;
+	Tue, 30 Jan 2024 06:48:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="eYC2M3eF"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="TmHmwp7A"
+Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EDCC39879
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 06:49:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D151F3C46A
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 06:48:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.252
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706597370; cv=none; b=kzAN6RK1fXBjFjux3uEiP0QmNQ1pNjorGkLT8tNqq8wzypic0vSomxerK1SwfEL7SMJfNqhoXizvstbvMM4buOCLEiPC8TjXCgfe67RaIbW3AV2NGHDBYthDfFi9GTfa238/0mIC7POGCwLNLg4QN0f4zEMIHbxxOvUzy4B/6Fs=
+	t=1706597332; cv=none; b=e7H3D9Axh6g6bVhKdtflHBbnBBIckBQl8X0KVKJq1orwooXZxT5JkWLDy/0xw2ts4gtrxZAQEwE2b8N+ZTZBi9qcB6E6Niygn83vPp58V4nika7dX2gb7VDxQTEXfBz7VC48tCRwPtO+LN7vLFIpLS4graLbM3OzsSCpHCZv7uY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706597370; c=relaxed/simple;
-	bh=F677IBoUhHzMTuvWXqwcPdgWDOJp521cNnxnaG/vMiM=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=HPylqKdw5iRnURNNZce9LVsWe49b9jFRTkwwiyNn1uJVDH6+dWrExiVfyUfD2/4RWFRca8IW5s2SpA5Yb58BM6jl8LugLLd7slwc/7C/lXmjcqdyikd/9nLH7yoUP6lcOlKvXWR3ZAJCCZd53/NARsx2tYE+VsBzkcMjI3iNcrU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--guanyulin.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=eYC2M3eF; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--guanyulin.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbe9e13775aso5762412276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 22:49:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706597367; x=1707202167; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=0kJpyZRLEun0ampJIfj1X21WJ21b9jsbskmJbElfrgM=;
-        b=eYC2M3eFPEOfG+smc9aFGfTkPI3tlUcxF9DEyL+NkZqXhxBG7Pn5MZsPLCDUy8YOHA
-         K6PI9gejBBDWuCfpA9rSkPiA+b52atjnTS8r1vi+3JeAyfTFMV7mi4kyISEJoIaCLFXv
-         0yu0dDImyHSKzpLSA5eHq+xwHeMfx02hibxyoKI1gYqf/7Taz6j2N9HG3lBuCbE4VxlH
-         YvpuGQjhQ+r0pY0e3Oibr2xJS3Toq/Iqb00kuiLkRXgIA5xpzXk8NhbI3GvhC3xOAFj2
-         pIkrlNxmktQ6iPotU+SF1wbvs/9CITAleFef5cYBZSOcDBY+CT5QFGmRgFZ/5Awp+4af
-         wIzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706597367; x=1707202167;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0kJpyZRLEun0ampJIfj1X21WJ21b9jsbskmJbElfrgM=;
-        b=PH7FTMXcI4u6j5UsoQosX120yeze2lCLkgs2sX7xbE56EQbeLh8J3r4C0JaHXcn2JP
-         nKOiBsXAkCb/brxHH66fEsUzQJrkH+yjEURITr+aPWdyVJa4DExSIRmr6Nu3UOAjMlfY
-         qh2/zPR0QD5fTsgve03N7aS9joCmmgxsNzYOWogRKUQjuNcbLLRGAwGeVDt1zJouGAli
-         Atj2+kb/JXyYkHRNkwPIY6mYpkN0GpKjBYemN6pxFebT3h64uxJy3tRp2OO/NeBW1lky
-         quIsQ48fkkO7TNO8HCqC/Mgikdh6x+57YhQlKa6ej0lB1Srv5Zo6N/K0QRoFEBNksq8l
-         niaQ==
-X-Gm-Message-State: AOJu0YwC56eDYssifuFrunX2XxcVMZ+v1DAD7+bbr/QfZ4PENXedmlMl
-	nO0iQrwxO3tcRtS/wDqtjWeScSCpAsUUa4ONW+Gs4djtWU5xhLDfsdkA2y3bNHXQr1WLO7mmOXU
-	ZgOtXfwfduF7sRA==
-X-Google-Smtp-Source: AGHT+IHeRsN4S+ZasZ7WTqWPfffkOA5I3/+8mG/F05qDX+kl3h16PrH683ZuBuiyqhOvgaIrGl0G8sP0P81XF/s=
-X-Received: from guanyulin.c.googlers.com ([fda3:e722:ac3:cc00:3:22c1:c0a8:1af])
- (user=guanyulin job=sendgmr) by 2002:a05:6902:108f:b0:dc2:23d8:722d with SMTP
- id v15-20020a056902108f00b00dc223d8722dmr2784786ybu.13.1706597367593; Mon, 29
- Jan 2024 22:49:27 -0800 (PST)
-Date: Tue, 30 Jan 2024 06:47:13 +0000
+	s=arc-20240116; t=1706597332; c=relaxed/simple;
+	bh=6YF760Pi05L2dMHpTU/8OH8hfrtfGghIMGzlThxl55M=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=jxeBOe+adNKqMhs7AL88VbJ8eZiRfW+uI9ouHJEm1B0MFReQVdb4kXTk7DDhHKTv2HymUHgB9kM1tSBzXqbZINPVtKwkGjGaITRW9RRhaw3vJPfoTAOm1Ditq5CD5rZ6+yP2uy1Mo6lcCMQzVRS2iauN02aFHsbwmeh8TgvLcJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=TmHmwp7A; arc=none smtp.client-ip=162.62.57.252
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1706597325; bh=JLP6mlEZJuPhaiIgwDOXVR/QBpZ+ke17UGLzsQRY79A=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=TmHmwp7Ajv3hFvfMLpP08iNBCvbpmi3XKz73lHpfHSBuvvv42TZl0h5Wx9muA8Nky
+	 fR4be0wJLPC+LiHOPLH45D2Kp5EzJkqJ8c5RbN9YuV8XdWcj3IJPnI1oWEUpCwQhYz
+	 rhjBogFkgAS31vwFikjGBOIUZ0XUgkGatusZBvcI=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
+	id C2B21C6F; Tue, 30 Jan 2024 14:48:43 +0800
+X-QQ-mid: xmsmtpt1706597323t2eqdxsce
+Message-ID: <tencent_A9BA7DBB1A33069E111B6F4BF91B38255B08@qq.com>
+X-QQ-XMAILINFO: ONeCszOCk2GVZk1NHXN29/yO+WbTGl8qC5wphv1ynVXd+ZaullKKLN0k6U0ZYA
+	 9d72e+FLeJzsR3Eb+3lXQxVPV3OWXFzFscdCV/ADqdQAtoj1hb/7csHzh9gwghDv0TfOuWjhZYuj
+	 wyCZrWb8l1ZYH6RRwbkdEDrmM9e43pZ7+9n5KQS8O8lwEOr6hDu1IXQsh60IMogzAIt9pci3u/HZ
+	 F6+QWZz993kJLOgnpy8sCef7Q6eK9AWp8QozRZCXwWBWn6FF+heEgwEJ5bVDFWS42DAbfOx6nW9H
+	 KSWmapebwn1tqPCXhHCYh5fL1TDXfDN0ggNmJ3TVQRGC5jfSxNh1MLHlFHbH3q0d7kL8UlhEGd8C
+	 MkL4O75UsYuLW+aTcab2WNHxz6aOzcXT0TA8Zyl/bzrgkKmaKeXEi7uN6d16oripmTIeIkHPr6f+
+	 e3LiVBQzRH31dmAXgIzFf8d0Qc0EQK71CQ0KKi02jV1f1CZ8AVioxnpWfmWYFG/sfcT4Uv2WYj+E
+	 SbAhSPNEXr/s9tVSiP1P/O3UwVoJ0KyZV1vhK9luT3jmK1HMgoFju8XzqDVKU3MXkXNncd9v2fcx
+	 8TBOT432aaqJlLm0EanKxWp2ZQ2w5SEKwteKluFmXYYA5THc5IvPhghvwRAVjMCP9+hCPyvX5pJ5
+	 vZwIA71RHvqVWS2ZWIusCuvIZTACNmHLTkUHf76IUP3merBq8Pl+FyG2kiDgJhiCnqemK5x5pfbR
+	 mxQF+yOzhBKEAco8jUTVlWHOGI78QJ5QTXqIFKsYG1hMKKLR5y7F/3S1PtijdJneIB60Tm+navBf
+	 a3M2PBJGHhPS+up0/tmHUTwuKvgbYJNtIA+pK3i/tQ74qdjMUtO75xUfnZkZxsPixAcq6A4jkqTI
+	 7DKdSUHEPabx2sqmjjXDuAefRXee2txpFIaDLnj7iZ1aUMyGKEEWPJvsvx/rOq/WxZgZHUOtGa
+X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+2373f6be3e6de4f92562@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [block?] [trace?] INFO: task hung in blk_trace_remove (2)
+Date: Tue, 30 Jan 2024 14:48:43 +0800
+X-OQ-MSGID: <20240130064843.3597953-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <0000000000002b1fc7060fca3adf@google.com>
+References: <0000000000002b1fc7060fca3adf@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-Message-ID: <20240130064819.1362642-1-guanyulin@google.com>
-Subject: [PATCH] [RFC] usb: host: Allow userspace to control usb suspend flows
-From: Guan-Yu Lin <guanyulin@google.com>
-To: gregkh@linuxfoundation.org, mathias.nyman@intel.com, 
-	stern@rowland.harvard.edu, royluo@google.com, hadess@hadess.net, 
-	benjamin.tissoires@redhat.com, heikki.krogerus@linux.intel.com, 
-	oneukum@suse.com, grundler@chromium.org, yajun.deng@linux.dev, 
-	dianders@chromium.org
-Cc: linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, badhri@google.com, 
-	albertccwang@google.com, pumahsu@google.com, 
-	Guan-Yu Lin <guanyulin@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-In a system with sub-system engaged, the controllers are controlled by
-both the main processor and the co-processor. Chances are when the main
-processor decides to suspend the USB device, the USB device might still
-be used by the co-processor. In this scenario, we need a way to let
-system know whether it can suspend the USB device or not. We introduce a
-new sysfs entry "deprecate_device_pm" to allow userspace to control the
-device power management functionality on demand. As the userspace should
-possess the information of both the main processor and the co-processor,
-it should be able to address the conflict mentioned above.
+please test task hung in blk_trace_remove
 
-Signed-off-by: Guan-Yu Lin <guanyulin@google.com>
----
- Documentation/ABI/testing/sysfs-bus-usb | 10 +++++++++
- drivers/usb/core/driver.c               | 18 ++++++++++++++++
- drivers/usb/core/sysfs.c                | 28 +++++++++++++++++++++++++
- drivers/usb/host/xhci-plat.c            | 20 ++++++++++++++++++
- include/linux/usb.h                     |  4 ++++
- 5 files changed, 80 insertions(+)
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-usb b/Documentation/ABI/testing/sysfs-bus-usb
-index 2b7108e21977..3f3d6c14201f 100644
---- a/Documentation/ABI/testing/sysfs-bus-usb
-+++ b/Documentation/ABI/testing/sysfs-bus-usb
-@@ -19,6 +19,16 @@ Description:
- 		would be authorized by default.
- 		The value can be 1 or 0. It's by default 1.
- 
-+What:		/sys/bus/usb/devices/usbX/deprecate_device_pm
-+Date:		January 2024
-+Contact:	Guan-Yu Lin <guanyulin@google.com>
-+Description:
-+		Deprecates the device power management functionality of USB devices
-+		and their host contorller under this usb bus. The modification of
-+		this entry should be done when the system is active to ensure the
-+		correctness of system power state transitions.
-+		The value can be 1 or 0. It's by default 0.
+diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
+index d5d94510afd3..ff52ad6c7bf2 100644
+--- a/kernel/trace/blktrace.c
++++ b/kernel/trace/blktrace.c
+@@ -320,8 +320,10 @@ static void blk_trace_free(struct request_queue *q, struct blk_trace *bt)
+ 	 * under 'q->debugfs_dir', thus lookup and remove them.
+ 	 */
+ 	if (!bt->dir) {
+-		debugfs_lookup_and_remove("dropped", q->debugfs_dir);
+-		debugfs_lookup_and_remove("msg", q->debugfs_dir);
++		struct dentry *debugfs_dir = q ? q->debugfs_dir : bt->debugfs_dir;
 +
- What:		/sys/bus/usb/device/.../authorized
- Date:		July 2008
- KernelVersion:	2.6.26
-diff --git a/drivers/usb/core/driver.c b/drivers/usb/core/driver.c
-index e02ba15f6e34..e03cf972160d 100644
---- a/drivers/usb/core/driver.c
-+++ b/drivers/usb/core/driver.c
-@@ -1569,6 +1569,15 @@ int usb_suspend(struct device *dev, pm_message_t msg)
- 	struct usb_device	*udev = to_usb_device(dev);
- 	int r;
- 
-+	/*
-+	 * Skip the entire suspend process under the same usb bus if its sysfs
-+	 * entry `deprecate_device_pm` is set.
-+	 */
-+	if (udev->bus->deprecate_device_pm) {
-+		dev_vdbg(&udev->dev, "deprecating dev_pm_ops: %s\n", __func__);
-+		return 0;
-+	}
-+
- 	unbind_no_pm_drivers_interfaces(udev);
- 
- 	/* From now on we are sure all drivers support suspend/resume
-@@ -1605,6 +1614,15 @@ int usb_resume(struct device *dev, pm_message_t msg)
- 	struct usb_device	*udev = to_usb_device(dev);
- 	int			status;
- 
-+	/*
-+	 * Skip the entire resume process under the same usb bus if its sysfs
-+	 * entry `deprecate_device_pm` is set.
-+	 */
-+	if (udev->bus->deprecate_device_pm) {
-+		dev_vdbg(&udev->dev, "deprecating dev_pm_ops: %s\n", __func__);
-+		return 0;
-+	}
-+
- 	/* For all calls, take the device back to full power and
- 	 * tell the PM core in case it was autosuspended previously.
- 	 * Unbind the interfaces that will need rebinding later,
-diff --git a/drivers/usb/core/sysfs.c b/drivers/usb/core/sysfs.c
-index 5d21718afb05..b4520e5c8974 100644
---- a/drivers/usb/core/sysfs.c
-+++ b/drivers/usb/core/sysfs.c
-@@ -68,6 +68,33 @@ static ssize_t bMaxPower_show(struct device *dev,
++		debugfs_lookup_and_remove("dropped", debugfs_dir);
++		debugfs_lookup_and_remove("msg", debugfs_dir);
+ 	} else {
+ 		debugfs_remove(bt->dir);
+ 	}
+@@ -377,12 +379,25 @@ static int blk_trace_stop(struct blk_trace *bt)
+ 	return 0;
  }
- static DEVICE_ATTR_RO(bMaxPower);
  
-+static ssize_t deprecate_device_pm_show(struct device *dev,
-+					struct device_attribute *attr, char *buf)
++static void blk_trace_rcu_free(struct rcu_head *rcu)
 +{
-+	struct usb_device *udev;
++	struct blk_trace *bt;
 +
-+	udev = to_usb_device(dev);
-+	return sysfs_emit(buf, "%d\n", !!(udev->bus->deprecate_device_pm));
++	bt = container_of(rcu, struct blk_trace, rcu);
++	if (bt) {
++		blk_trace_free(NULL, bt);
++		put_probe_ref();
++	}
 +}
 +
-+static ssize_t deprecate_device_pm_store(struct device *dev,
-+					 struct device_attribute *attr,
-+					 const char *buf, size_t count)
-+{
-+	struct usb_device	*udev = to_usb_device(dev);
-+	int			val, rc;
-+
-+	if (sscanf(buf, "%d", &val) != 1 || val < 0 || val > 1)
-+		return -EINVAL;
-+	rc = usb_lock_device_interruptible(udev);
-+	if (rc < 0)
-+		return -EINTR;
-+	udev->bus->deprecate_device_pm = !!(val);
-+	usb_unlock_device(udev);
-+	return count;
-+}
-+static DEVICE_ATTR_RW(deprecate_device_pm);
-+
- static ssize_t configuration_show(struct device *dev,
- 		struct device_attribute *attr, char *buf)
+ static void blk_trace_cleanup(struct request_queue *q, struct blk_trace *bt)
  {
-@@ -984,6 +1011,7 @@ static DEVICE_ATTR_RW(interface_authorized_default);
- static struct attribute *usb_bus_attrs[] = {
- 		&dev_attr_authorized_default.attr,
- 		&dev_attr_interface_authorized_default.attr,
-+		&dev_attr_deprecate_device_pm.attr,
- 		NULL,
+ 	blk_trace_stop(bt);
+-	synchronize_rcu();
+-	blk_trace_free(q, bt);
+-	put_probe_ref();
++	if (!bt->dir)
++		bt->debugfs_dir = q->debugfs_dir;
++	mutex_unlock(&q->debugfs_mutex);
++	call_rcu(&bt->rcu, blk_trace_rcu_free);
++	mutex_lock(&q->debugfs_mutex);
+ }
+ 
+ static int __blk_trace_remove(struct request_queue *q)
+diff --git a/include/linux/blktrace_api.h b/include/linux/blktrace_api.h
+index 122c62e561fc..4920c201bd12 100644
+--- a/include/linux/blktrace_api.h
++++ b/include/linux/blktrace_api.h
+@@ -26,6 +26,8 @@ struct blk_trace {
+ 	struct dentry *dir;
+ 	struct list_head running_list;
+ 	atomic_t dropped;
++	struct dentry  *debugfs_dir;
++	struct rcu_head rcu;
  };
  
-diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
-index f04fde19f551..bc05d83d1c0b 100644
---- a/drivers/usb/host/xhci-plat.c
-+++ b/drivers/usb/host/xhci-plat.c
-@@ -442,6 +442,15 @@ static int xhci_plat_suspend(struct device *dev)
- 	struct xhci_hcd	*xhci = hcd_to_xhci(hcd);
- 	int ret;
- 
-+	/*
-+	 * Skip the entire suspend process under the same usb bus if its sysfs
-+	 * entry `deprecate_device_pm` is set.
-+	 */
-+	if (hcd->self.deprecate_device_pm) {
-+		dev_vdbg(dev, "deprecating dev_pm_ops: %s\n", __func__);
-+		return 0;
-+	}
-+
- 	if (pm_runtime_suspended(dev))
- 		pm_runtime_resume(dev);
- 
-@@ -507,6 +516,17 @@ static int xhci_plat_resume_common(struct device *dev, struct pm_message pmsg)
- 
- static int xhci_plat_resume(struct device *dev)
- {
-+	struct usb_hcd	*hcd = dev_get_drvdata(dev);
-+
-+	/*
-+	 * Skip the entire resume process under the same usb bus if its sysfs
-+	 * entry `deprecate_device_pm` is set.
-+	 */
-+	if (hcd->self.deprecate_device_pm) {
-+		dev_vdbg(dev, "deprecating dev_pm_ops: %s\n", __func__);
-+		return 0;
-+	}
-+
- 	return xhci_plat_resume_common(dev, PMSG_RESUME);
- }
- 
-diff --git a/include/linux/usb.h b/include/linux/usb.h
-index 9e52179872a5..1a1873104663 100644
---- a/include/linux/usb.h
-+++ b/include/linux/usb.h
-@@ -465,6 +465,10 @@ struct usb_bus {
- 					 * the ep queue on a short transfer
- 					 * with the URB_SHORT_NOT_OK flag set.
- 					 */
-+	unsigned deprecate_device_pm:1; /* Deprecates the device power management
-+					 * functionality of USB devices on this
-+					 * bus and their hcd.
-+					 */
- 	unsigned no_sg_constraint:1;	/* no sg constraint */
- 	unsigned sg_tablesize;		/* 0 or largest number of sg list entries */
- 
--- 
-2.43.0.429.g432eaa2c6b-goog
+ extern int blk_trace_ioctl(struct block_device *, unsigned, char __user *);
 
 
