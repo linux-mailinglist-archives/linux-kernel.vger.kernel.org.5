@@ -1,251 +1,115 @@
-Return-Path: <linux-kernel+bounces-44492-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44493-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A01908422F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:27:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BBC38422CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:21:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 359B9B29F64
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:21:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DE4E1C268A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:21:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBA6E6A029;
-	Tue, 30 Jan 2024 11:16:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C45E6A02B;
+	Tue, 30 Jan 2024 11:17:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="P4p/yS5I"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M16zKUra"
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E26F06A01B
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 11:16:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 058EA664A2;
+	Tue, 30 Jan 2024 11:17:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706613375; cv=none; b=IQ94oaEniIrnRgiqc60AruTO3UmxAJHguOEReAZPGg6CSAn6Dro3wRDXirxCNJikPCBwZRWKTryHrYzr9M4FzHjMS5K8uL+7/0F7x9LkN3HmWtuaszWTpp0TxtGLq51ZhRLn2lt3rIP4Sr6SIgObUbUqg44X6cqFCRp2rhsXmjw=
+	t=1706613439; cv=none; b=mAIbIKbQwZkuA0hk8/Q6SVpcDmS/RzkMMkCHghm+swjOfCE/b9mDK0X9R02AdHqb36sE8kWw9y9JtVHAUqja0XBkUran3QDe4WswM+3SVH/o4vo+wXZtjOqD9mmWezpUF+kyGJP7LxRr49Cy4yiwpE+vAyN7BM9HRyrw/NAtzX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706613375; c=relaxed/simple;
-	bh=ehXXPYkjs9fcwAJSYgnOWnp6d6xWZAbB9yb4YVaNJ+c=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tUuvMPXXzkLZwdE0buCDGMpSC1SsY58hmQEo1LdvsARbuPbLpTg2Zyfa5vMPLSpdNMkH28XDIroDBHDx68u0qvc6PsIBa3U5MKrEUgDHIXSnc0ak1/E00y9AdF23/2MoYPvl5KOeW9ooxTh6XjnIgkEargOQOouR1LfLps5nRig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=P4p/yS5I; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-55369c59708so1550477a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 03:16:13 -0800 (PST)
+	s=arc-20240116; t=1706613439; c=relaxed/simple;
+	bh=hok62KdyZlUwWp+vCS6X/XQdwd32WCp3cJQev+HQ4/U=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=CCKKdDZbopcD9YADgk4wnsG1WhwHsUcG2pKsHY7qcvCmr6F2QuetODYPUosYwA4rQDxqxuYnHr8AqzgWBscqrrSFt6KD9vGde5yT1Eqzb61MjB2kJISowg5lbrNzSSN1SN0en7Fb0jti6Ndme1zk0JtxsqPmq9ZlZ/fO2yFkcwU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M16zKUra; arc=none smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-51030ce36fbso3895222e87.3;
+        Tue, 30 Jan 2024 03:17:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1706613372; x=1707218172; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=C2FZft6FauqTz4a6mgFsXH5fOXhbWwAcsXYixHIZpik=;
-        b=P4p/yS5ItBO3ZwfRFF/qtPf5bsKzPF2HROeZ56DE+cApN8L3qr5HypkT+Tbt3rwhd0
-         4X30cHsuH7lShd1LngamNPzC1WSzXQA/16VJbIVTUfAOguEHVZWdHvKHtQfCluEF5ccL
-         xQNTYQ4DTHxOY3O6hq1Vx6GTF+50S1/6Y45Tc=
+        d=gmail.com; s=20230601; t=1706613436; x=1707218236; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wazdN7gWecYYIgnQB0kZi/Sg4s0sKcCnfJoTIpjsRfg=;
+        b=M16zKUraYiLKTDBqvGW/39Rwaru78TstltSv8LSMDdHiDMTh6jAq19WGJZKKUzEXLS
+         5/bZt981SgAjiToDD3rg/04L1KQOMgr0Bk0LEY3b5+w2q+fuKde6mhBL3KwAWWWgJIjt
+         I0fHeMuFlMy0BBIrPw6KOC25ozU4bg6ZC486r9eTmjEWyCNdJSKbnwr7Dlh7VRk67TEX
+         HTmeP3Wk4gAGw9ng+2536D8cb0eD32co5dAP5M+vHPlyFk/80jN7vxvd3Kc9JVu5YqFM
+         X+9xjNt2c+r2MFztvOkhlLSFS+XscSq/n1wsMK4XHfFqnTSQLSvN6/P79aj2xvUOh/ms
+         ZLVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706613372; x=1707218172;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=C2FZft6FauqTz4a6mgFsXH5fOXhbWwAcsXYixHIZpik=;
-        b=Mj3SC5Cwdfm5yjgmDFEwVwbFu+qxT82i/I8mhAg/nea/LCzRbgwb/50+5J0g363+7G
-         MBoIRD4h0XYT+aofZyE17VmFdyJdKPXYlsT9oKuKmIYiJelNKxAYtOMVmD22dnXGzVRX
-         BzqwDjpkbD5NYkPDZ04DsOwLF0Gw6n/BxSdwcHfHW7g9a3v40iAjGCTRNeM+A+S45GQ+
-         m7Vq7z+jeNrX3RWdT3D/0mxU+9AqTJFrj+Wg8eTCZGTLLTCI2ILybTibaiJigXZIcSDw
-         xsX0NuETAXCOEN8bCwKNKP9e/e3v2/tcHhX8YNvTGO64ZhXz8frFYRQhpny7y+jfLnU7
-         jqZQ==
-X-Forwarded-Encrypted: i=0; AJvYcCXPYiDJqFa12GlQKt66Rb05Lz00fU7Tsl8ITJjV/p7ZJRc9kmhKxntyTWw+yYCJ3Cc7bE4cTrD9C0XlI9LTEqGfiY8R+JVSZ5wjdTbX
-X-Gm-Message-State: AOJu0Yz6ujibbNk4S7WFD3QCKw+Y+4YknMrRjVoWV8a6+5aJo2xiZtwD
-	p89AMK+teOjKbkweZqoYQ3spED9OX8D8eQlq3cx6lZJgda3d8e92xkthE1h6DUA=
-X-Google-Smtp-Source: AGHT+IEMT3X2zvsc4bSoskcD1Q4j1mTrHeLOlnPktNoR8kFYS32umfRbdXFTr6eXS49OA5C1n9722A==
-X-Received: by 2002:a05:6402:3106:b0:55e:ff4e:70ad with SMTP id dc6-20020a056402310600b0055eff4e70admr3164992edb.0.1706613372045;
-        Tue, 30 Jan 2024 03:16:12 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id u23-20020aa7db97000000b00558a3e892b3sm4797173edt.41.2024.01.30.03.16.11
+        d=1e100.net; s=20230601; t=1706613436; x=1707218236;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wazdN7gWecYYIgnQB0kZi/Sg4s0sKcCnfJoTIpjsRfg=;
+        b=PA5zpQOVyTg9hV8MPC4oYUG3RXaNNtUBm6HTvurVLI18Cu4YcaTtkS30RbujU6xunD
+         KAo/rMzKKb4l8uv997j68bDtL1GsR7dgR+1EsvDd5C7g64l9mdXZKqAph7sIk5NkYTYC
+         kTP1i+YhbB04KllQwJ/+dsQrvlfMGeiA1EBw38vbZWWgyifNpd0/squfjMCx4Hr/2jXw
+         U3F9t7qt7XQCIrwb2SpHXchRjqxOg3YH12UnNr4ZnX8uGY4fJ09BDi6SXkNwSpjat3m9
+         vlhRgSvj5KhgbW542HFJWq0tuRzWL7laj9jPZ4n/f2IL00Srt2jdvUKplDulgzRU4S34
+         eR3g==
+X-Gm-Message-State: AOJu0Yy6i0tr1D+0STQIcWPhOaDfMVDBTB+nM1TjtS65lOyjUvrdq8gN
+	RxL94V3ZKCZGUj0aEoxX2lH1WTToDatdNj/Z33BFmbKKFxq8FDEgWb07pDsoBnp2lTHU
+X-Google-Smtp-Source: AGHT+IGxlMPKnSMbUoMbnQFyGvSDa0I2zkMTc4ETQ9XXe5Y58aHJgIMcmgPrdwIcZWV2QkCqSCigSA==
+X-Received: by 2002:ac2:538d:0:b0:510:e05:435a with SMTP id g13-20020ac2538d000000b005100e05435amr5587908lfh.26.1706613435618;
+        Tue, 30 Jan 2024 03:17:15 -0800 (PST)
+Received: from localhost.localdomain ([84.32.202.14])
+        by smtp.gmail.com with ESMTPSA id se27-20020a170906ce5b00b00a349318ea10sm4995202ejb.199.2024.01.30.03.17.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 03:16:11 -0800 (PST)
-Date: Tue, 30 Jan 2024 12:16:09 +0100
-From: Daniel Vetter <daniel@ffwll.ch>
-To: Julia Zhang <julia.zhang@amd.com>,
-	Gurchetan Singh <gurchetansingh@chromium.org>,
-	Chia-I Wu <olvaffe@gmail.com>, David Airlie <airlied@redhat.com>,
-	Gerd Hoffmann <kraxel@redhat.com>, linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-	virtualization@lists.linux-foundation.org,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	David Airlie <airlied@gmail.com>,
-	Erik Faye-Lund <kusmabite@gmail.com>,
-	Marek =?utf-8?B?T2zFocOhaw==?= <marek.olsak@amd.com>,
-	Pierre-Eric Pelloux-Prayer <pierre-eric.pelloux-prayer@amd.com>,
-	Honglei Huang <honglei1.huang@amd.com>,
-	Chen Jiqian <Jiqian.Chen@amd.com>, Huang Rui <ray.huang@amd.com>,
-	David Stevens <stevensd@chromium.org>
-Subject: Re: [PATCH v2 1/1] drm/virtio: Implement device_attach
-Message-ID: <ZbjaebswTCxmlwu0@phenom.ffwll.local>
-Mail-Followup-To: Julia Zhang <julia.zhang@amd.com>,
-	Gurchetan Singh <gurchetansingh@chromium.org>,
-	Chia-I Wu <olvaffe@gmail.com>, David Airlie <airlied@redhat.com>,
-	Gerd Hoffmann <kraxel@redhat.com>, linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-	virtualization@lists.linux-foundation.org,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	David Airlie <airlied@gmail.com>,
-	Erik Faye-Lund <kusmabite@gmail.com>,
-	Marek =?utf-8?B?T2zFocOhaw==?= <marek.olsak@amd.com>,
-	Pierre-Eric Pelloux-Prayer <pierre-eric.pelloux-prayer@amd.com>,
-	Honglei Huang <honglei1.huang@amd.com>,
-	Chen Jiqian <Jiqian.Chen@amd.com>, Huang Rui <ray.huang@amd.com>,
-	David Stevens <stevensd@chromium.org>
-References: <20240129103118.3258781-1-julia.zhang@amd.com>
- <ZbjZJ3qQzdOksnb2@phenom.ffwll.local>
+        Tue, 30 Jan 2024 03:17:15 -0800 (PST)
+From: Yaraslau Furman <yaro330@gmail.com>
+To: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc: Yaraslau Furman <yaro330@gmail.com>,
+	=?UTF-8?q?Filipe=20La=C3=ADns?= <lains@riseup.net>,
+	Jiri Kosina <jikos@kernel.org>,
+	linux-input@vger.kernel.org (open list:HID LOGITECH DRIVERS),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] HID: logitech-dj: allow mice to report multimedia keycodes
+Date: Tue, 30 Jan 2024 13:17:00 +0200
+Message-ID: <20240130111700.11666-1-yaro330@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240128214906.60606-1-yaro330@gmail.com>
+References: <20240128214906.60606-1-yaro330@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZbjZJ3qQzdOksnb2@phenom.ffwll.local>
-X-Operating-System: Linux phenom 6.6.11-amd64 
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 30, 2024 at 12:10:31PM +0100, Daniel Vetter wrote:
-> On Mon, Jan 29, 2024 at 06:31:19PM +0800, Julia Zhang wrote:
-> > As vram objects don't have backing pages and thus can't implement
-> > drm_gem_object_funcs.get_sg_table callback. This removes drm dma-buf
-> > callbacks in virtgpu_gem_map_dma_buf()/virtgpu_gem_unmap_dma_buf()
-> > and implement virtgpu specific map/unmap/attach callbacks to support
-> > both of shmem objects and vram objects.
-> > 
-> > Signed-off-by: Julia Zhang <julia.zhang@amd.com>
-> > ---
-> >  drivers/gpu/drm/virtio/virtgpu_prime.c | 40 +++++++++++++++++++++++---
-> >  1 file changed, 36 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/gpu/drm/virtio/virtgpu_prime.c b/drivers/gpu/drm/virtio/virtgpu_prime.c
-> > index 44425f20d91a..b490a5343b06 100644
-> > --- a/drivers/gpu/drm/virtio/virtgpu_prime.c
-> > +++ b/drivers/gpu/drm/virtio/virtgpu_prime.c
-> > @@ -49,11 +49,26 @@ virtgpu_gem_map_dma_buf(struct dma_buf_attachment *attach,
-> >  {
-> >  	struct drm_gem_object *obj = attach->dmabuf->priv;
-> >  	struct virtio_gpu_object *bo = gem_to_virtio_gpu_obj(obj);
-> > +	struct sg_table *sgt;
-> > +	int ret;
-> >  
-> >  	if (virtio_gpu_is_vram(bo))
-> >  		return virtio_gpu_vram_map_dma_buf(bo, attach->dev, dir);
-> >  
-> > -	return drm_gem_map_dma_buf(attach, dir);
-> > +	sgt = drm_prime_pages_to_sg(obj->dev,
-> > +				    to_drm_gem_shmem_obj(obj)->pages,
-> > +				    obj->size >> PAGE_SHIFT);
-> > +	if (IS_ERR(sgt))
-> > +		return sgt;
-> > +
-> > +	ret = dma_map_sgtable(attach->dev, sgt, dir, DMA_ATTR_SKIP_CPU_SYNC);
-> > +	if (ret) {
-> > +		sg_free_table(sgt);
-> > +		kfree(sgt);
-> > +		return ERR_PTR(ret);
-> > +	}
-> > +
-> > +	return sgt;
-> >  }
-> >  
-> >  static void virtgpu_gem_unmap_dma_buf(struct dma_buf_attachment *attach,
-> > @@ -63,12 +78,29 @@ static void virtgpu_gem_unmap_dma_buf(struct dma_buf_attachment *attach,
-> >  	struct drm_gem_object *obj = attach->dmabuf->priv;
-> >  	struct virtio_gpu_object *bo = gem_to_virtio_gpu_obj(obj);
-> >  
-> > +	if (!sgt)
-> > +		return;
-> > +
-> >  	if (virtio_gpu_is_vram(bo)) {
-> >  		virtio_gpu_vram_unmap_dma_buf(attach->dev, sgt, dir);
-> > -		return;
-> > +	} else {
-> > +		dma_unmap_sgtable(attach->dev, sgt, dir, DMA_ATTR_SKIP_CPU_SYNC);
-> > +		sg_free_table(sgt);
-> > +		kfree(sgt);
-> >  	}
-> > +}
-> > +
-> > +static int virtgpu_gem_device_attach(struct dma_buf *dma_buf,
-> > +				     struct dma_buf_attachment *attach)
-> > +{
-> > +	struct drm_gem_object *obj = attach->dmabuf->priv;
-> > +	struct virtio_gpu_object *bo = gem_to_virtio_gpu_obj(obj);
-> > +	int ret = 0;
-> > +
-> > +	if (!virtio_gpu_is_vram(bo) && obj->funcs->pin)
-> > +		ret = obj->funcs->pin(obj);
-> >  
-> > -	drm_gem_unmap_dma_buf(attach, sgt, dir);
-> > +	return ret;
-> 
-> This doesn't look like what I've expected. There should be no need to
-> change the map/unmap functions, especially not for the usual gem bo case.
-> We should definitely keep using the exact same code for that. Instead all
-> I expected is roughly
-> 
-> virtgpu_gem_device_attach()
-> {
-> 	if (virtio_gpu_is_vram(bo)) {
-> 		if (can_access_virtio_vram_directly(attach->dev)
-> 			return 0;
-> 		else
-> 			return -EBUSY;
-> 	} else {
-> 		return drm_gem_map_attach();
-> 	}
-> }
-> 
-> Note that I think can_access_virtio_vram_directly() needs to be
-> implemented first. I'm not even sure it's possible, might be that all the
-> importers need to set the attachment->peer2peer flag. Which is why this
-> thing exists really. But that's a pile more work to do.
-> 
-> Frankly the more I look at the original patch that added vram export
-> support the more this just looks like a "pls revert, this is just too
-> broken".
+Multimedia buttons can be bound to the mouse's extra keys in Windows application.
+Let Linux receive those keycodes.
 
-The commit I mean is this one: ea5ea3d8a117 ("drm/virtio: support mapping
-exported vram"). The commit message definitely needs to cite that one, and
-also needs a cc: stable because not rejecting invalid imports is a pretty
-big deal.
+Signed-off-by: Yaraslau Furman <yaro330@gmail.com>
+---
+ drivers/hid/hid-logitech-dj.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Also adding David.
--Sima
-
-> 
-> We should definitely not open-code any functions for the gem_bo export
-> case, which your patch seems to do? Or maybe I'm just extremely confused.
-> -Sima
-> 
-> >  
-> >  static const struct virtio_dma_buf_ops virtgpu_dmabuf_ops =  {
-> > @@ -83,7 +115,7 @@ static const struct virtio_dma_buf_ops virtgpu_dmabuf_ops =  {
-> >  		.vmap = drm_gem_dmabuf_vmap,
-> >  		.vunmap = drm_gem_dmabuf_vunmap,
-> >  	},
-> > -	.device_attach = drm_gem_map_attach,
-> > +	.device_attach = virtgpu_gem_device_attach,
-> >  	.get_uuid = virtgpu_virtio_get_uuid,
-> >  };
-> >  
-> > -- 
-> > 2.34.1
-> > 
-> 
-> -- 
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
-
+diff --git a/drivers/hid/hid-logitech-dj.c b/drivers/hid/hid-logitech-dj.c
+index e6a8b6d8eab7..3c3c497b6b91 100644
+--- a/drivers/hid/hid-logitech-dj.c
++++ b/drivers/hid/hid-logitech-dj.c
+@@ -965,9 +965,7 @@ static void logi_hidpp_dev_conn_notif_equad(struct hid_device *hdev,
+ 		}
+ 		break;
+ 	case REPORT_TYPE_MOUSE:
+-		workitem->reports_supported |= STD_MOUSE | HIDPP;
+-		if (djrcv_dev->type == recvr_type_mouse_only)
+-			workitem->reports_supported |= MULTIMEDIA;
++		workitem->reports_supported |= STD_MOUSE | HIDPP | MULTIMEDIA;
+ 		break;
+ 	}
+ }
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.43.0
+
 
