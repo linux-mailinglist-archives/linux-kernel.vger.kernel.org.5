@@ -1,111 +1,117 @@
-Return-Path: <linux-kernel+bounces-43661-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43662-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57B08841759
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 01:12:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA0B684175A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 01:13:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14224282527
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 00:12:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 196B61C233C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 00:13:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15A8CD2FA;
-	Tue, 30 Jan 2024 00:12:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93A489442;
+	Tue, 30 Jan 2024 00:13:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XpjJI8pF"
-Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com [209.85.222.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CcjkQZow"
+Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6BCFEC4;
-	Tue, 30 Jan 2024 00:12:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7537214A92
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 00:13:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706573565; cv=none; b=XHeVJZA9vzucNyoTbRnOPMHYjBhZ/TeJRrYZMFbs0ZTWqiErebwUu7lFkThXoWTWvLfS8fBrrUcT2p3IFoAHCScMtIG640LZzrU+pCqdqCiL/+Q6SP/O3OpRkjVNZaN+8KzT8gmjuFs0e2XgkgOzTyJWDaW9s3VmoTYlyOi+S/o=
+	t=1706573587; cv=none; b=dnLCZA+lmgqc5rHfOu9ayZi6avcbsIuV4fhQDp8nLOshCBiyhwR5te4LVq8McPkOa5b/ZtIO/7jkUfQsW3LbGIlrE7xWJV/FWMXFQk5KC1sJX0bYwE+pzwi2krPAE5zIab25JjyeoHQkxAmBZtnQ1Zwf4qlSxypIgPRCTAJRqWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706573565; c=relaxed/simple;
-	bh=qFY9pvpSAh8/gTd6U+ZRGFBZtHBuUqVyYA/q01yohwQ=;
+	s=arc-20240116; t=1706573587; c=relaxed/simple;
+	bh=OXTzc+kkuw+ShG+eg9t0/SuZakj6DjerRaMHogUdVuM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ocRhydAg9wtUCboSFZGpKQ2c99MTLpuEnlJEweoFWFya6uORJImpwBK8dU0K3lVQxr54rxXdL1XAxMHgybCdtG22jvlFDXWv+vxL0+El8eqGcoUhOwzzpJTqUIEwtmxz7oXs1jwdSWKZQVAmaEOrUEANfQfPTELDfPPoN7p8W3o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XpjJI8pF; arc=none smtp.client-ip=209.85.222.50
+	 To:Cc:Content-Type; b=WntgpCf77TSaRSQvHKolJHALkZC2B4tt7zFB1SBLD+X84MHbzzD1qzAso8EmqLUBpT7aXmtxWAri1Mnv0/5CZcgMDoZSbxwY7XOQ2rJMtM74Sb6S2csNHyKlF/w3mZrlDfWM1Xmz7WF03H3CSUZuWmC/fRBCcVnJ6PcjNu+zJ1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CcjkQZow; arc=none smtp.client-ip=209.85.166.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-7d2e16b552dso1568710241.1;
-        Mon, 29 Jan 2024 16:12:43 -0800 (PST)
+Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-36379bc5d93so4483735ab.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 16:13:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706573563; x=1707178363; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=B0ayNobXDIvlzXhxPnNo/lChDplPwaQVlQw1cYzK7mw=;
-        b=XpjJI8pFniGjeLKss2G8w3zaZb2IO4Zz53BwSQL1GUQO+AtnWgWLGhRKmvZVeN1RYc
-         9KSt08CbtS2RtIjfbmbWrbrw1BCX/WdNad6+zg2cvvrnUE/skAskcQ4eGEUZ0uSqUOL4
-         hqBHZ+a4qJvo4J9qZmHA8RZZx1lyidyNDmaY4C0Rv2yjQ3bM34YWX5RwMqEUVe2/4ZKU
-         Ft1KkeAv2p8TwbCDjPphd0dWRxjtsSc9VU9WwIJg2c6d0Lr3bgCwt8tjla0SQMkgq0BU
-         ywc0us7X3NPvKZSO+1bJ6B35h87WEc/j9UesyYbCjKLaFxs1f53qgcezMzpbOw0IWgrc
-         cR+g==
+        d=gmail.com; s=20230601; t=1706573585; x=1707178385; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OXTzc+kkuw+ShG+eg9t0/SuZakj6DjerRaMHogUdVuM=;
+        b=CcjkQZoweurF8L48wc4oDNl1xZlj7p1bAA2lhNeqwS9f5GYCKM7sffmYsNf8q6niRe
+         9I5dT2iJLODdSz1FUJ3JftVlHjDqaD3PEtA/HHLggrjmuQ1LH+TDn7TgDFINnFr/CGet
+         Do86Nw05FMPE9WCvb4qPF+0fgOPeP7x92JP1cMAzbSd9RC7UqdDs1fSUddonD9ekaOq2
+         fC0dSVeoeKAP7Jgb/uV00905KdX1e7n33Tt0AAoe+FCogQiNb4yAAIzd5mhkHKF5HmZS
+         mvnD3sEBE0kKVgE7vt3adYchQE0Gj8GvrU4k3dMhEx6d9LBK/E15BLCLDUanP2rM0jeO
+         OOgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706573563; x=1707178363;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=B0ayNobXDIvlzXhxPnNo/lChDplPwaQVlQw1cYzK7mw=;
-        b=eY3sEPgijUjy6AwB2IqaJSdMfaB+Lp1f4ye2SC0tPH9riWNHFyFctobemyy6zI9EZg
-         WYByL94sTdxguvGMoLzPPbjcjcsWx8aGwPQTCrJJXpoVcK27lrQ4QvVVCnSUZchbHOQq
-         5PHlPBb2sKVxyxM374s7kJ2xDcpivQCWWiv+FG71ChWF8pKgvH8EVoAuT6eTgryJPbdo
-         kvf0Q8LsoFa6bYdcQAFniHgmZ3B3g5JqIbpgdZL0upzL8f7MSdPKPFuaGMrxqZdxR0pr
-         xgV2092jueWNND6G6p8HISvenltJxOPQRNLmlR6tPMNwbHUMzSe95n+E+fSMTj/gWgxQ
-         KJFA==
-X-Gm-Message-State: AOJu0YyM6FjOmBCje6hbjLyDHu1NhBBkP/eXYups7QpyCucyy5WF58E8
-	8xepOc7LYjq2HA6bwfntU6WJxAGbhIpoBLoP3ibuXwIBBavnM4NdvDZF5yuc4XovWHpA9x4P47D
-	ixyGJIweul2U2Bfa8vV2XPe6t5J8=
-X-Google-Smtp-Source: AGHT+IGrqkqJqJ9naDETyV7iL4vzSRMYrGIwK5tCdF0UslTpl75d6dZ6B/x5ega8sa2iXpABKPK69EuVSGZmXtU1sR0=
-X-Received: by 2002:a05:6102:1953:b0:46b:22c5:fad0 with SMTP id
- jl19-20020a056102195300b0046b22c5fad0mr4993454vsb.19.1706573562808; Mon, 29
- Jan 2024 16:12:42 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706573585; x=1707178385;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OXTzc+kkuw+ShG+eg9t0/SuZakj6DjerRaMHogUdVuM=;
+        b=Rh9z9SW490Tfh4IyshrGjAenD/9ESmHq90W4zdbuWYS9+l6MqnwkH74NCgSSaaMCA8
+         iP5D5Rje4lz8BDB7N41ZYpRLXbwyRAmMOOhYYHsML9+oayZQ/+L2L+sGEWgLNR/0qLF8
+         44l56Off5uobLVQrQlAj6alYPwLVpTQhVz8LUV56NERYdE3Bmbi8QDLz2skx4CU0eyQ/
+         8HsMo2NXT9XF7X2DCaJCWGcgRw7YmM+razkON7pMEtdn4u/50/uDTSSHrzhPxp+hatza
+         SCKvZaDgTJZoob8QOvJqlwfMQHu7249EbmLrgvFwnpuaTh8jTr4HNvIfDu4wv8beC3Xx
+         t0CQ==
+X-Gm-Message-State: AOJu0YwwXDHlQdqXzMOBuYOS+kCuc0buluUHIs0flAybqTLN8RQsBkxA
+	qj416TxwcnSFqZW3YXS/+2Uld5mc296spyB7HOUwYrOceUsZmB1JfNr5+HM8T5QyOXo+k6a5px1
+	87RCupug6+G5YLiZqv0YEBdhxUSs=
+X-Google-Smtp-Source: AGHT+IHZG5sIOtcpxW7IIs3sEwNN+GPZLM6q0s30XelhuyQ5UDhu6LphYwezreNI8SOxPwOUbGv8yBq2Tu6BRoVh30g=
+X-Received: by 2002:a92:7312:0:b0:363:7f6e:e868 with SMTP id
+ o18-20020a927312000000b003637f6ee868mr3261356ilc.19.1706573585364; Mon, 29
+ Jan 2024 16:13:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240129170014.969142961@linuxfoundation.org>
-In-Reply-To: <20240129170014.969142961@linuxfoundation.org>
-From: Allen <allen.lkml@gmail.com>
-Date: Mon, 29 Jan 2024 16:12:31 -0800
-Message-ID: <CAOMdWS+Nvj_9z-2tL5UZNBpw1pMzBC4DXPT2dp=okuKV+gZ_vA@mail.gmail.com>
-Subject: Re: [PATCH 6.6 000/331] 6.6.15-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+References: <20240126-zswap-writeback-race-v2-0-b10479847099@bytedance.com>
+ <20240126-zswap-writeback-race-v2-1-b10479847099@bytedance.com> <Zbg-INqi9oMUqJaW@google.com>
+In-Reply-To: <Zbg-INqi9oMUqJaW@google.com>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Mon, 29 Jan 2024 16:12:54 -0800
+Message-ID: <CAKEwX=MxRTupSoYbnr14wTurbBhJ7KipV3YuEofab2JJxsk3cg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] mm/zswap: don't return LRU_SKIP if we have dropped
+ lru lock
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Chengming Zhou <zhouchengming@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Chris Li <chriscli@google.com>, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> This is the start of the stable review cycle for the 6.6.15 release.
-> There are 331 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, Jan 29, 2024 at 4:09=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
+ wrote:
 >
-> Responses should be made by Wed, 31 Jan 2024 16:59:28 +0000.
-> Anything received after that time might be too late.
+> On Sun, Jan 28, 2024 at 01:28:49PM +0000, Chengming Zhou wrote:
+> > LRU_SKIP can only be returned if we don't ever dropped lru lock, or
+> > we need to return LRU_RETRY to restart from the head of lru list.
+> >
+> > Otherwise, the iteration might continue from a cursor position that
+> > was freed while the locks were dropped.
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.15-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+> Does this warrant a stable backport?
 
-Compiled and booted on my x86_64 and ARM64 test systems. No errors or
-regressions.
+IUC, the zswap shrinker was merged in 6.8, and we're still in the RC's
+for 6.8, right? If this patch goes into 6.8 then no need?
+Otherwise, yeah it should go to 6.8 stable IMHO.
 
-Tested-by: Allen Pais <apais@linux.microsoft.com>
-
-Thanks.
+>
+> >
+> > Actually we may need to introduce another LRU_STOP to really terminate
+> > the ongoing shrinking scan process, when we encounter a warm page
+> > already in the swap cache. The current list_lru implementation
+> > doesn't have this function to early break from __list_lru_walk_one.
+> >
+> > Fixes: b5ba474f3f51 ("zswap: shrink zswap pool based on memory pressure=
+")
+> > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> > Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+> > Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+>
+> Acked-by: Yosry Ahmed <yosryahmed@google.com>
 
