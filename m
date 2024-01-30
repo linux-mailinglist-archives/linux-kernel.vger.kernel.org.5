@@ -1,128 +1,155 @@
-Return-Path: <linux-kernel+bounces-43971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFCE9841BC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:11:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65A76841BC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:11:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51F19B24897
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 06:11:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C09428A442
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 06:11:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7411E38380;
-	Tue, 30 Jan 2024 06:11:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02DEA3839D;
+	Tue, 30 Jan 2024 06:11:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NYN75jZ5"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GiCQ9Irg"
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88FC9381C1
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 06:11:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C083338396
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 06:11:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706595072; cv=none; b=t/09xbmxP6CpboOEK52Iyyu+2e757uVB6Dd7qo5y6Og2TjqIm6/Xwrs1jcNe1O2bLZvXUtItV5R/QW3HGpUt/8d1HrGdrjFqslfSNkPCdqC9uMxQfYQIvRjHPpHIwcXuEz2JIWpy+Blnqzu5R0EmQjI14H4GcHES6PQYPeXNJ0I=
+	t=1706595076; cv=none; b=on5Cpvaot/Sl15siPby33oFJ4F/IpV2j6seJ/zSlKkk8qdwcnzaVwIPGD7hWeyr2We56mCQXOzpmGzco2WlHcPuBZjAQq8ZOG/OIxwfIFAwxsEj6cVUuaDbHzf/zV1gFzvA1sW54XN0iSakYBT4GYXT3XVO1LrtN0mcsJpfR9zc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706595072; c=relaxed/simple;
-	bh=ijV34YZ0YCG5AOhUcoH9MBiyQi0Vb5QDkuuLffY1KNE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=D6Tizzw1NZqvfhXVcL7Kfdm6gQzG+6h/5QBMzhNQ92HiEs3Ero3NTsl1CYCu76Cf4RKzUVfhVUXHC+RFXBrDNyjv6yjCxv6R8XTmcTouG8kGR2omjxIeRtliMY4SeDOjvFf9W+ZwMN5UYwIHYDpXP2IT7aB7rBaE1Cf1X/hC4DY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NYN75jZ5; arc=none smtp.client-ip=209.85.218.52
+	s=arc-20240116; t=1706595076; c=relaxed/simple;
+	bh=xOea63INGOSG465h0CfnONEMeWR4NZ/xHm0T3eI1GNI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Pmgtsbh0LDf/sVrxv7vOT2L/bk7MWXHT4vXAGzqaVv47iRntF2gzZabsugsn93tsXyvlBRX60AyHag2Fl24abk4tNTksd3FjiqO2ISrrg00KdUFAyrFPXhJa0bInezKqfQHie/vYyhkTR6MhRbSDypwHkYbL4vDEBxZt9VxMROw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GiCQ9Irg; arc=none smtp.client-ip=209.85.215.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a28a6cef709so453764866b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 22:11:09 -0800 (PST)
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5c229dabbb6so1817221a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 22:11:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706595068; x=1707199868; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/w6ymI1BUhSUx1fiQjO+jJS2ASJQtR4AEE+cTThI3IY=;
-        b=NYN75jZ5f7t//2dftsLcUIOzM0s0JqgcYuX6iipeSl05zwByMLH6BgOdBAZ9yNcmnx
-         3oFZv7GBFtdYCdWb0/Fo+O3ebZ31nZLEJvjkMbznsTSNM+4eefVe25iQShvwjk+PmG6w
-         PeMhb87YeM6BaJtdXSimoU6AVItiJSJZsjDZPJg8NgkNR61dZYZjt0f2IpymDOgLSyLM
-         IdbVcIBp5ZSfzdmJfkq3+y+KLAhBpQ+H3/NR8soYrY6v8gnOnVGiw1KHehlG7QH/lL/p
-         EIwSUxMlfCmVSZY/DzqNDX+4aK3xKAPxWlA3MSzlRG7hcPTgTzjh0sATxNKYPuwtzAc9
-         cXCw==
+        d=linaro.org; s=google; t=1706595074; x=1707199874; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ypr/6L0QoG7N6GIlemwTnozF/H7mKp62EyexXYwz5pA=;
+        b=GiCQ9IrgMVPbmdtdFVAeUN1n4D6V7cxsZOK4HhmuQU0eKV84YBAqrxEwHlvh/tjvJs
+         5jjVL5BXDDvVFO2BwPywJy1jVBoxufJZSpoaz7qjMF2hO/TJHFddloz8Z4kKIF9Kdboy
+         oemECYg8ZmWSjScIBbOMn6TeD9qbygpDCW5El+lkpgW4jKQYvXVlj9YAyouO+2XasUj+
+         W6CUEj3l4Pdnd46ng88xbV8IjYuhrEbxGyrHTNgfwWP6Jm8Fev8AczEoD98k/8nD1vcW
+         CLNT00EXXg8SX5Fw03D0o+nVT/fSmBWGyfzQazrt8za2H6GQeJfoJfnZYHYEHGHTgITm
+         GuXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706595068; x=1707199868;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/w6ymI1BUhSUx1fiQjO+jJS2ASJQtR4AEE+cTThI3IY=;
-        b=dtsSO1u99/EebqXQG8S4RvLn5+TmXh9jnUO6VKq+VKR3JqYMyXRxVZxgetDYXxMDqX
-         YGiOgKYZ0ej9GttXs4Y/AfWeud8rasXvfwfns2SO/kKiXxcsZSfdTcy3Pk/G4ITHgWsy
-         a24RJpaxKNcDeovcmkAQeu/zOiL/xSSOb0PzPdgkXG0nKckKYBMnfo3I5gVkUPb1tPjx
-         1mXHrlYzm/9XTILKCpJwghHaWXV/M7hTNVt1t3HNXiX2GOsNAemto7+Oij8hR+S5qv9/
-         YMpDvmeXz1fp/rbDc+1Zehqj6aeAiXDUusdYNO4YOzITgh5lTO8rvDBsSnr5l3Py5mPv
-         cuhg==
-X-Gm-Message-State: AOJu0YzhpsGCq2WZkTBvEjQUz+NfAlYN/YdbE1H4qQi9ckOJlSoGIAkn
-	OtnoyxX+7HkGVPJYkrvaHYqozN4UvTIDJD4xVWSWj7knSGtlS2d8XI/kLE5R63Y=
-X-Google-Smtp-Source: AGHT+IFAA4vYU+oyhwGm+3xKksqN48uHtV+PRbhmg4xKKhjtQYVKwHHeRoQSq9kdWGBj5GgSXzGL9w==
-X-Received: by 2002:a17:906:3009:b0:a36:b64:e0c0 with SMTP id 9-20020a170906300900b00a360b64e0c0mr768901ejz.67.1706595067750;
-        Mon, 29 Jan 2024 22:11:07 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id ck5-20020a170906c44500b00a31930ffa7esm4698415ejb.153.2024.01.29.22.11.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jan 2024 22:11:07 -0800 (PST)
-Message-ID: <c9b01ae6-cc3f-4447-9b5a-261d234bc92a@linaro.org>
-Date: Tue, 30 Jan 2024 06:11:05 +0000
+        d=1e100.net; s=20230601; t=1706595074; x=1707199874;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ypr/6L0QoG7N6GIlemwTnozF/H7mKp62EyexXYwz5pA=;
+        b=h+l0z0g6iXg368vpYdHBeJsH7h0+vW4fiUhWzu1/SBPnIWum8RCqdQzQoo2pvWW/68
+         ZNvIRKl1EZJwq5OrtQ5xd3FQgqrXvGejvHEZe+ii66jRDUPHD/XtodMBmcSzIxEy87wV
+         QRFvl7ur4Nem3pmZOWjpOUgxP6Y7vzvieY6p6au4fll51mC7sGh4ymwDKUe+hkvp0fQO
+         yDA3oiO2FWWpBbDT8NQGRK1klf0wInHnhPNJZgZtdOCcnZMv+th6vwj0iC2lEk8HBAow
+         z6gw8YGnMdmUBQYaE1WDkiw+1fpmXf1VGSeolD7vqvIeFN1NI0UaGdLB270HZFM4jmkr
+         g+Fw==
+X-Gm-Message-State: AOJu0YycBBAsbs9lp8anoOgyYBID3pqPRw8KFgeR6zHWG7XRoIYTfy4J
+	DdKILW4WAlZQtFnMKA8TIWjGN6u+wy0AXEqLAlIE9EqbrTEKtpSrnfX07tBlJ4Q=
+X-Google-Smtp-Source: AGHT+IFXCiqNz56YhR8ZeAD95eE8xtQBHXRFokosutQyCwkchVIu/T59v2/TzAC66N+peWYD8bpDLw==
+X-Received: by 2002:a17:902:8f97:b0:1d4:79b7:b8ce with SMTP id z23-20020a1709028f9700b001d479b7b8cemr4631604plo.44.1706595074065;
+        Mon, 29 Jan 2024 22:11:14 -0800 (PST)
+Received: from localhost ([122.172.83.95])
+        by smtp.gmail.com with ESMTPSA id jg17-20020a17090326d100b001d8fae3220fsm1447045plb.73.2024.01.29.22.11.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 22:11:13 -0800 (PST)
+Date: Tue, 30 Jan 2024 11:41:11 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Manivannan Sadhasivam <mani@kernel.org>
+Cc: Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Brian Masney <bmasney@redhat.com>,
+	Georgi Djakov <djakov@kernel.org>, linux-arm-msm@vger.kernel.org,
+	vireshk@kernel.org, quic_vbadigan@quicinc.com,
+	quic_skananth@quicinc.com, quic_nitegupt@quicinc.com,
+	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 5/6] arm64: dts: qcom: sm8450: Add opp table support
+ to PCIe
+Message-ID: <20240130061111.eeo2fzaltpbh35sj@vireshk-i7>
+References: <20240112-opp_support-v6-0-77bbf7d0cc37@quicinc.com>
+ <20240112-opp_support-v6-5-77bbf7d0cc37@quicinc.com>
+ <20240129160420.GA27739@thinkpad>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/3] arm64: dts: exynos: Add SPI nodes for Exynos850
-Content-Language: en-US
-To: Sam Protsenko <semen.protsenko@linaro.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Rob Herring <robh+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
- Alim Akhtar <alim.akhtar@samsung.com>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Tomasz Figa <tomasz.figa@gmail.com>, Chanwoo Choi <cw00.choi@samsung.com>,
- linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-References: <20240125013858.3986-1-semen.protsenko@linaro.org>
- <20240125013858.3986-4-semen.protsenko@linaro.org>
- <1b27fa0d-5dc8-497f-ab17-76d82c2aaf40@linaro.org>
- <CAPLW+4ntySsQVA5u4TNWuc0KCbhQY61XcsBqC=O8GRoXmS_NYA@mail.gmail.com>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <CAPLW+4ntySsQVA5u4TNWuc0KCbhQY61XcsBqC=O8GRoXmS_NYA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240129160420.GA27739@thinkpad>
 
-
-
-On 1/29/24 19:39, Sam Protsenko wrote:
->>> +                             samsung,spi-src-clk = <0>;
->> this optional property
->>
-> The reason this property is provided here despite being optional, is
-> to avoid corresponding dev_warn() message from spi-s3c64xx.c driver:
+On 29-01-24, 21:34, Manivannan Sadhasivam wrote:
+> On Fri, Jan 12, 2024 at 07:52:04PM +0530, Krishna chaitanya chundru wrote:
+> > PCIe needs to choose the appropriate performance state of RPMH power
+> > domain and interconnect bandwidth based up on the PCIe gen speed.
+> > 
+> > Add the OPP table support to specify RPMH performance states and
+> > interconnect peak bandwidth.
+> > 
+> > Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+> > ---
+> >  arch/arm64/boot/dts/qcom/sm8450.dtsi | 74 ++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 74 insertions(+)
+> > 
+> > diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+> > index 6b1d2e0d9d14..eab85ecaeff0 100644
+> > --- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+> > @@ -1827,7 +1827,32 @@ pcie0: pcie@1c00000 {
+> >  			pinctrl-names = "default";
+> >  			pinctrl-0 = <&pcie0_default_state>;
+> >  
+> > +			operating-points-v2 = <&pcie0_opp_table>;
+> > +
+> >  			status = "disabled";
+> > +
+> > +			pcie0_opp_table: opp-table {
+> > +				compatible = "operating-points-v2";
+> > +
+> > +				opp-2500000 {
+> > +					opp-hz = /bits/ 64 <2500000>;
+> > +					required-opps = <&rpmhpd_opp_low_svs>;
+> > +					opp-peak-kBps = <250000 250000>;
 > 
->         if (of_property_read_u32(dev->of_node, "samsung,spi-src-clk", &temp)) {
->             dev_warn(dev, "spi bus clock parent not specified, using
-> clock at index 0 as parent\n");
+> This is a question for Viresh: We already have macros in the driver to derive
+> the bandwidth based on link speed. So if OPP core exposes a callback to allow
+> the consumers to set the bw on its own, we can get rid of this entry.
 > 
-> The same usage (samsung,spi-src-clk = <0>) can be encountered in
-> multiple other Exynos dts in arch/arm/ and arch/arm64/, and it's also
-> used in bindings example. Probably for the same reason explained
-> above. Even if dev_warn() is removed in the driver, I guess the older
-> kernels will still print it if spi-src-clk is omitted. So I'd like to
-> keep it here.
+> Similar to config_clks()/config_regulators(). Is that feasible?
 
-Yeah, I know. I proposed a patch switching to dev_dbg. If it's so
-annoying and implies adding superfluous properties to DT, maybe it is
-worth to add a fixes tag to the dev_dbg patch and backport it to stable
-kernels?
+I don't have any issues with a new callback for bw. But, AFAIU, the DT
+is required to represent the hardware irrespective of what any OS
+would do with it. So DT should ideally have these values here, right ?
 
-Your patch looks fine. I guess the vendor specific properties shall be
-last if you keep them, see:
-https://www.kernel.org/doc/html/latest/devicetree/bindings/dts-coding-style.html#order-of-properties-in-device-node
+Also, the driver has already moved away from using those macros now
+and depend on the OPP core to do the right thing. It only uses the
+macro for the cases where the DT OPP table isn't available. And as
+said by few others as well already, the driver really should try to
+add OPPs dynamically in that case to avoid multiple code paths and
+stick to a single OPP based solution.
 
-If you remove the vendor properties or reorder them, one can add:
-Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+-- 
+viresh
 
