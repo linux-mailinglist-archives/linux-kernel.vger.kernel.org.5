@@ -1,227 +1,355 @@
-Return-Path: <linux-kernel+bounces-45325-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45324-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12AC4842E86
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 22:14:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3D95842E84
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 22:13:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F158B24510
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 21:13:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E7E51C25326
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 21:13:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42F68762D7;
-	Tue, 30 Jan 2024 21:13:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8E4F762F0;
+	Tue, 30 Jan 2024 21:13:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JJCyDFs4"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h8e2OOat"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B3C178B76
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 21:13:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA029762C7
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 21:13:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706649209; cv=none; b=eKdnpGenhCp6ZokPYt10UBcD6+POgWIw7Wd2IVr4nf1nGEI3cAfuWr1vasyyuKvvwTUWq/laZOjt0ldgca92FfiuCuxA7LyAEWu8C5neoVCZikJ95IBc16K07ZFggMrVCQIZuOByY5wD9EsW08P5LjZW1kd6uG6zjKXJt6OVrNU=
+	t=1706649199; cv=none; b=dMN0PSm5kdO7ZGO/X8CPQrTArRC/y01lqX6//xMBKyBa5NFQeqEUwKz8Gg7b2vuEjxDAsSkMW3eloMzQTI4jiqQUZvDhCk4BCMUJZL6HlymWB/vUJ1dUT1gdVLRUcp2a8wEzqWHfwMWwvwWdU/dWw5B/1hgD1f7ysvawQKWku/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706649209; c=relaxed/simple;
-	bh=ZHJXHXKGQq4QT0JPJKhL8rGU8iGOmKQJzj/3a5PEg1s=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=Xcx4f7nnmorF8nKrJshjE90S3USwtxjsa2RUCy2zqX9xv7FqS52Ya2K4F73fsifQUrj4iKIp6UkIBZri8DqQ6fxAO8AaLN/YWgTAQu7USxPhl1Ee+WIarKAQa43gXRVL6CQ5crQFRwPYcAWqzuLrADZdsL9c3YzPCovNQyIJsJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JJCyDFs4; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so632261466b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 13:13:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706649206; x=1707254006; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ZHJXHXKGQq4QT0JPJKhL8rGU8iGOmKQJzj/3a5PEg1s=;
-        b=JJCyDFs4oXYPcbdjw9sgHl/WwIq0NvytDTX0q2zRhtOnUB5ogKIHiDJsPohov1T/Av
-         SMAR0rG7x0j669OyO8Dqj/NZy2HrGWmdOloM9twoSXkToQkjDI1iZBaVkqYsLdAzTwaG
-         juARaVmRuGgzYb9fWMEstwIH0oI4AI8k0vLou7umr5Rf1zbWeVlhyjX0W3IXqSaxRnax
-         80xDLdFizbjVvmI33YobQWcrDdSICt16np78bcZtQU72t+DlVtcU/TgK1TkrMpqaYrtf
-         2HMOV3RSX4rYTVHltDaYHsMgR55ySnhCzNvfY6/X+4uxv3+LoX10exxthNK/gaY1g7jt
-         NNlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706649206; x=1707254006;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZHJXHXKGQq4QT0JPJKhL8rGU8iGOmKQJzj/3a5PEg1s=;
-        b=HsUVh0MeY+JqYtUhw2pyeyudsh5YTA+aThD7035S2ewhaQCGuRxmQr5yTJ21J1FMl+
-         fejCDtkLbvL3IZ0nqr0uPOM9UZHH2yQWvJ2t3Cs9/slTfaUx5J2hIDzdiFP4sIZEoWNN
-         8BwTXaDg6feqCZlB+tbsag7QWZGfIGyyAdvtYXGnTqUFrtirwDIn1/KcnzvsTyeBR+9f
-         LTnCIU68u9qfyyFMOPP8c81TymCu5MFay5+3d78gI3ho+/6G2GtyjLZfeR31Qo6r+uD9
-         VznJ3bB3qrYT2WMG/ZyO+qUA7UmWmdbi7ReZUd8BI+LBh/eRQ/G/kGrvvsZarCaxRRjq
-         Nyrg==
-X-Gm-Message-State: AOJu0Yx2F7r4v/Rktlq07ryEuWfkS1AzntzL02qZs39sOjq3T8DWFOCU
-	gJEJC8rLQmIiD0nZu1XefwvPws8HyPFhZKBRcyYFxeG5n5Yb44ISIIzx8lGAhLDqpyYBeusuBfv
-	xGTgAX8cegmTy1STXXtj26hwMTwvOJ+/ZWdG/
-X-Google-Smtp-Source: AGHT+IEIMbG/KTe2t6nK37Tse+oNOBKr/g6AT7XHSJbUcz+/TVUnRu5ry7THJn3wsgnzMmKUVfzg8VzGOO8Sxa/Evn8=
-X-Received: by 2002:a17:906:ac8:b0:a36:4031:6d28 with SMTP id
- z8-20020a1709060ac800b00a3640316d28mr1343374ejf.74.1706649205558; Tue, 30 Jan
- 2024 13:13:25 -0800 (PST)
+	s=arc-20240116; t=1706649199; c=relaxed/simple;
+	bh=O4Tyv99Ce8WAKIj525zTnqLmSNekR2HvNaaDN+njopg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZytrKWiLpG97CtA9E0JuiWnb8lkNEEhmAf4aSsLmoUjIhFSnaaYsHpL8znYTCt3/Rf0bNUXhHewgZJpQrZPqCapmql5muYH3GMJnisVZTLoEEQRhW5BkhefUAhBhAX9LxP+zdcPQJvtFAAzVQGyJPEFfX3KkneagDTP7IpEikg4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h8e2OOat; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B610DC433C7;
+	Tue, 30 Jan 2024 21:13:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706649199;
+	bh=O4Tyv99Ce8WAKIj525zTnqLmSNekR2HvNaaDN+njopg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=h8e2OOatKVWrjrqN2r6c91KYIPtYQO183smzNbxkgWry5Kd6kBuwwQeGaDSdDbCpS
+	 TuyNLtA3c4RiQBZugA0L3+5YJ0OptYKRvLJcz/VvXLtyKpG6Wt+Kf/TvzsFnzWyV22
+	 z8f4arQP5bX6041fiX355kMEZAgbANmVJHaYwNEo0cTI3WoSi5ddI+v4m8D8AJKrFO
+	 zcEee+7Z3DNeP8mm7h7+IvgCHhZPd1uAiaVQYX33RHSLjP0kRrXo/6H4ddhk4k9DdH
+	 YjJYifHfIzVBr58977gGq4UB7w4cWzAyaGP0H3oJVj7kWRhV69TzGsYICbNKAnqCVp
+	 ckP4gaIXJ+7nw==
+Date: Tue, 30 Jan 2024 22:13:15 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+	John Stultz <jstultz@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Eric Dumazet <edumazet@google.com>,
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+	Arjan van de Ven <arjan@infradead.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Rik van Riel <riel@surriel.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Sebastian Siewior <bigeasy@linutronix.de>,
+	Giovanni Gherdovich <ggherdovich@suse.cz>,
+	Lukasz Luba <lukasz.luba@arm.com>,
+	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>
+Subject: Re: [PATCH v10 18/20] timers: Implement the hierarchical pull model
+Message-ID: <Zblma8NNZOftJ5fb@pavilion.home>
+References: <Zbb5m0hRHgk59-8z@pavilion.home>
+ <87v87a9033.fsf@somnus>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Pranav Prasad <pranavpp@google.com>
-Date: Tue, 30 Jan 2024 13:13:14 -0800
-Message-ID: <CACkwYU2PqXouAe9QPSMkE3he9magn2hDfLiKSOC7FBJT6QDPWw@mail.gmail.com>
-Subject: Can ETIME be returned instead of EBUSY in the kernel suspend flow?
-To: rafael@kernel.org, pavel@ucw.cz, len.brown@intel.com, 
-	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Kelly Rossmoyer <krossmo@google.com>, John Stultz <jstultz@google.com>
-Content-Type: multipart/mixed; boundary="000000000000a825b70610303b56"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87v87a9033.fsf@somnus>
 
---000000000000a825b70610303b56
-Content-Type: text/plain; charset="UTF-8"
+Le Tue, Jan 30, 2024 at 06:56:32PM +0100, Anna-Maria Behnsen a écrit :
+> Frederic Weisbecker <frederic@kernel.org> writes:
+> > CPU 1 went idle, CPU 3 will take care of CPU 1's timer. Then come two
+> > things happening at the same time: CPU 0 has a timer interrupt, due to
+> > RCU callbacks handling for example, and CPU 3 goes offline:
+> >
+> > CPU 0                                   CPU 3
+> > -----                                   -----
+> >                                         // On top level [GRP1:0], just set migrator = TMIGR_NONE
+> >                                         tmigr_inactive_up() {
+> >                                             cpu = cpumask_any_but(cpu_online_mask, cpu);
+> >                                             //cpu == 0
+> >                                             tmc_resched = per_cpu_ptr(&tmigr_cpu, CPU 0);
+> >                                             raw_spin_lock(&tmc_resched->lock);
+> >                                             tmc_resched->wakeup_recalc = true;
+> >                                             raw_spin_unlock(&tmc_resched->lock);
+> > // timer interrupt
+> > run_local_timers() {
+> >     tmigr_requires_handle_remote() {
+> >         data.firstexp = KTIME_MAX;
+> >         // CPU 0 sees the tmc_resched->wakeup_recalc
+> >         // latest update
+> >         if (tmc->wakeup_recalc) {
+> >             tmigr_requires_handle_remote_up() {
+> >                 // CPU 0 doesn't see GRP0:0 
+> >                 // latest update from CPU 1,
+> >                 // because it has no locking
+> >                 // and does a racy check.
+> >         	    if (!tmigr_check_migrator(group, childmask))
+> >                     return true;
+> >             }
+> >             raw_spin_lock(&tmc->lock);
+> >             WRITE_ONCE(tmc->wakeup, data.firstexp);
+> >             tmc->wakeup_recalc = false;
+> >             raw_spin_unlock(&tmc->lock)
+> >             return 0;
+> >         }
+> >                                             // IPI is sent only now
+> > 		                                    smp_send_reschedule(cpu);
+> >                                             }
+> >
+> >
+> > There is nothing that prevents CPU 0 from not seeing the hierarchy updates from
+> > other CPUs since it checks the migrators in a racy way. As a result the timer of
+> > CPU 1 may be ignored by CPU 0.
+> >
+> > You'd need to lock the tmc while calling tmigr_requires_handle_remote_up(), so
+> > that CPU 0 "inherits" everything that CPU 3 has seen, and that includes changes
+> > from CPU 1.
+> >
+> 
+> puhh. ok. But for the !idle case the lockless walk of
+> tmigr_requires_handle_remote_up() is ok?
 
-Hi!
+Looks ok to me. It's racy but if the !idle migrator doesn't notice in the
+current tick, it will in the next one.
 
-I am proposing a patch in which I want to return the errno code ETIME instead of
-EBUSY in enter_state() in the kernel suspend flow. Currently, EBUSY is returned
-when an imminent alarm is pending which is checked in alarmtimer_suspend() in
-alarmtimer.c. The proposed patch series moves the check to enter_state() in
-suspend.c to catch a potential suspend failure early in the suspend
-flow. I want to
-replace EBUSY with ETIME to make it more diagnosable in userspace, and may
-be more appropriate considering a timer is about to expire.
+> It's also possible, that the
+> CPU misses an update of the state - another CPU goes idle and selects
+> this CPU as the new migrator. And this CPU reads a stale value where the
+> other CPU is migrator. But this will be revisited on the next
+> tick. hmm...
 
-I am reaching out to get an opinion from the suspend maintainers if this would
-act as any potential risk in the suspend flow which only has EBUSY, EAGAIN, and
-EINVAL as return error codes currently. The patch of interest is attached with
-this email. Thank you!
+Exactly, and I'm not worried. There has to be strong ordering with atomics
+or locking in the idle case because the CPU goes to sleep and it must make
+sure not to miss a timer. But in the !idle case the check is periodic, so you
+don't need any of that. We can live with an unnoticed timer for a tick or two.
 
-Regards,
-Pranav Prasad
+> 
+> >
+> > But I see that tmigr_cpu_new_timer() does it right. Wouldn't it be possible to
+> > exlusively let tmigr_cpu_new_timer() handle the wakeup_recalc thing? This is
+> > going to be called after the end of the IRQ (whether timer interrupt or sched
+> > IPI) in any case.
+> 
+> Should work, yes. But when a timer has to be handled right away and it
+> is checked after the end of the IRQ, then the tick might be reprogrammed
+> so that CPU comes out of idle, or am I wrong?
 
---000000000000a825b70610303b56
-Content-Type: application/octet-stream; name="Proposed_ETIME_Solution.patch"
-Content-Disposition: attachment; filename="Proposed_ETIME_Solution.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_ls0uhw3c0>
-X-Attachment-Id: f_ls0uhw3c0
+If there is a pending timer, it can wait a tick. That's what happens if
+we wait for tmigr_cpu_new_timer() to handle it.
 
-RnJvbSA5NWM1YWYwNTNmNWVhMzYzMDMzYTY1YTNkMDA3ZWE4NGIxMGZjMzEzIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBQcmFuYXYgUHJhc2FkIDxwcmFuYXZwcEBnb29nbGUuY29tPgpE
-YXRlOiBNb24sIDI5IEphbiAyMDI0IDIxOjMxOjQ4ICswMDAwClN1YmplY3Q6IFtQQVRDSCAyLzNd
-IGFsYXJtdGltZXIsIFBNOiBzdXNwZW5kOiBFeHBvc2UgYSBmdW5jdGlvbiBmcm9tCiBhbGFybXRp
-bWVyIHRvIHBlcmZvcm0gY2hlY2sgYXQgdGhlIGJlZ2lubmluZyBvZiB0aGUgc3VzcGVuZCBmbG93
-IGluCiBlbnRlcl9zdGF0ZSgpCgpUaGUgYWxhcm10aW1lciBkcml2ZXIgY3VycmVudGx5IGZhaWxz
-IHN1c3BlbmQgYXR0ZW1wdHMgd2hlbiB0aGVyZSBpcyBhbgphbGFybSBwZW5kaW5nIHdpdGhpbiB0
-aGUgbmV4dCBzdXNwZW5kX2NoZWNrX2R1cmF0aW9uX25zIG5hbm9zZWNvbmRzLCBzaW5jZSB0aGUK
-c3lzdGVtIGlzIGV4cGVjdGVkIHRvIHdha2UgdXAgc29vbiBhbnl3YXkuIFRoZSBlbnRpcmUgc3Vz
-cGVuZCBwcm9jZXNzIGlzIGluaXRpYXRlZApldmVuIHRob3VnaCB0aGUgc3lzdGVtIHdpbGwgaW1t
-ZWRpYXRlbHkgYXdha2VuLiBUaGlzIHByb2Nlc3MgaW5jbHVkZXMgc3Vic3RhbnRpYWwKd29yayBi
-ZWZvcmUgdGhlIHN1c3BlbmQgZmFpbHMgYW5kIGFkZGl0aW9uYWwgd29yayBhZnRlcndhcmRzIHRv
-IHVuZG8gdGhlIGZhaWxlZApzdXNwZW5kIHRoYXQgd2FzIGF0dGVtcHRlZC4gVGhlcmVmb3JlIG9u
-IGJhdHRlcnktcG93ZXJlZCBkZXZpY2VzIHRoYXQgaW5pdGlhdGUKc3VzcGVuZCBhdHRlbXB0cyBm
-cm9tIHVzZXJzcGFjZSwgaXQgbWF5IGJlIGFkdmFudGFnZW91cyB0byBiZSBhYmxlIHRvIGZhaWwg
-dGhlCnN1c3BlbmQgZWFybGllciBpbiB0aGUgc3VzcGVuZCBmbG93IHRvIGF2b2lkIHBvd2VyIGNv
-bnN1bXB0aW9uIGluc3RlYWQgb2YKdW5uZWNlc3NhcmlseSBkb2luZyBleHRyYSB3b3JrLiBBcyBv
-bmUgZGF0YSBwb2ludCwgYW4gYW5hbHlzaXMgb2YgYSBzdWJzZXQgb2YKQW5kcm9pZCBkZXZpY2Vz
-IHNob3dlZCB0aGF0IGltbWluZW50IGFsYXJtcyBhY2NvdW50IGZvciByb3VnaGx5IDQwJSBvZiBh
-bGwgc3VzcGVuZApmYWlsdXJlcyBvbiBhdmVyYWdlIGxlYWRpbmcgdG8gdW5uZWNlc3NhcnkgcG93
-ZXIgd2FzdGFnZS4KClRvIGZhY2lsaXRhdGUgdGhpcywgZXhwb3NlIGZ1bmN0aW9uIHRpbWVfY2hl
-Y2tfc3VzcGVuZF9mYWlsKCkgZnJvbSBhbGFybXRpbWVyCnRvIGJlIHVzZWQgYnkgdGhlIHBvd2Vy
-IHN1YnN5c3RlbSB0byBwZXJmb3JtIHRoZSBjaGVjayBlYXJsaWVyIGluIHRoZSBzdXNwZW5kCmZs
-b3cuIFBlcmZvcm0gdGhlIGNoZWNrIGluIGVudGVyX3N0YXRlKCkgYW5kIHJldHVybiBlYXJseSBp
-ZiBhbiBhbGFybSBpcwp0byBiZSBmaXJlZCBpbiB0aGUgbmV4dCBzdXNwZW5kX2NoZWNrX2R1cmF0
-aW9uX25zIG5hbm9zZWNvbmRzLCBmYWlsaW5nCnN1c3BlbmQuCgpDaGFuZ2UtSWQ6IEkwMmQ3ODUz
-ZDBiMDVkOTNiMTIxOTg4ODE4ZjhhODA0NjFiNGEzNThjClNpZ25lZC1vZmYtYnk6IFByYW5hdiBQ
-cmFzYWQgPHByYW5hdnBwQGdvb2dsZS5jb20+ClNpZ25lZC1vZmYtYnk6IEtlbGx5IFJvc3Ntb3ll
-ciA8a3Jvc3Ntb0Bnb29nbGUuY29tPgotLS0KIGluY2x1ZGUvbGludXgvdGltZS5oICAgICB8ICAg
-MSArCiBrZXJuZWwvcG93ZXIvc3VzcGVuZC5jICAgfCAgIDMgKysKIGtlcm5lbC90aW1lL2FsYXJt
-dGltZXIuYyB8IDExMyArKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0KIDMg
-ZmlsZXMgY2hhbmdlZCwgODcgaW5zZXJ0aW9ucygrKSwgMzAgZGVsZXRpb25zKC0pCgpkaWZmIC0t
-Z2l0IGEvaW5jbHVkZS9saW51eC90aW1lLmggYi9pbmNsdWRlL2xpbnV4L3RpbWUuaAppbmRleCAx
-NmNmNDUyMmQ2ZjMuLmFhYjdjNGU1MWUxMSAxMDA2NDQKLS0tIGEvaW5jbHVkZS9saW51eC90aW1l
-LmgKKysrIGIvaW5jbHVkZS9saW51eC90aW1lLmgKQEAgLTU2LDYgKzU2LDcgQEAgc3RydWN0IHRt
-IHsKIH07CiAKIHZvaWQgdGltZTY0X3RvX3RtKHRpbWU2NF90IHRvdGFsc2VjcywgaW50IG9mZnNl
-dCwgc3RydWN0IHRtICpyZXN1bHQpOworaW50IHRpbWVfY2hlY2tfc3VzcGVuZF9mYWlsKHZvaWQp
-OwogCiAjIGluY2x1ZGUgPGxpbnV4L3RpbWUzMi5oPgogCmRpZmYgLS1naXQgYS9rZXJuZWwvcG93
-ZXIvc3VzcGVuZC5jIGIva2VybmVsL3Bvd2VyL3N1c3BlbmQuYwppbmRleCBmYTNiZjE2MWQxM2Yu
-LjdhMDE3NWRhZTBkOSAxMDA2NDQKLS0tIGEva2VybmVsL3Bvd2VyL3N1c3BlbmQuYworKysgYi9r
-ZXJuZWwvcG93ZXIvc3VzcGVuZC5jCkBAIC0yNiw2ICsyNiw3IEBACiAjaW5jbHVkZSA8bGludXgv
-c3VzcGVuZC5oPgogI2luY2x1ZGUgPGxpbnV4L3N5c2NvcmVfb3BzLmg+CiAjaW5jbHVkZSA8bGlu
-dXgvc3dhaXQuaD4KKyNpbmNsdWRlIDxsaW51eC90aW1lLmg+CiAjaW5jbHVkZSA8bGludXgvZnRy
-YWNlLmg+CiAjaW5jbHVkZSA8dHJhY2UvZXZlbnRzL3Bvd2VyLmg+CiAjaW5jbHVkZSA8bGludXgv
-Y29tcGlsZXIuaD4KQEAgLTU2NCw2ICs1NjUsOCBAQCBzdGF0aWMgaW50IGVudGVyX3N0YXRlKHN1
-c3BlbmRfc3RhdGVfdCBzdGF0ZSkKICNlbmRpZgogCX0gZWxzZSBpZiAoIXZhbGlkX3N0YXRlKHN0
-YXRlKSkgewogCQlyZXR1cm4gLUVJTlZBTDsKKwl9IGVsc2UgaWYgKHRpbWVfY2hlY2tfc3VzcGVu
-ZF9mYWlsKCkpIHsKKwkJcmV0dXJuIC1FVElNRTsKIAl9CiAJaWYgKCFtdXRleF90cnlsb2NrKCZz
-eXN0ZW1fdHJhbnNpdGlvbl9tdXRleCkpCiAJCXJldHVybiAtRUJVU1k7CmRpZmYgLS1naXQgYS9r
-ZXJuZWwvdGltZS9hbGFybXRpbWVyLmMgYi9rZXJuZWwvdGltZS9hbGFybXRpbWVyLmMKaW5kZXgg
-ZTVkMmU1NjBiNGMxLi4wODViMWFjZTBjMzEgMTAwNjQ0Ci0tLSBhL2tlcm5lbC90aW1lL2FsYXJt
-dGltZXIuYworKysgYi9rZXJuZWwvdGltZS9hbGFybXRpbWVyLmMKQEAgLTExNSw2ICsxMTUsODQg
-QEAgc3RhdGljIGludCBhbGFybXRpbWVyX3N5c2ZzX2FkZCh2b2lkKQogCXJldHVybiByZXQ7CiB9
-CiAKKy8qKgorICogYWxhcm10aW1lcl9pbml0X3Nvb25lc3QgLSBJbml0aWFsaXplcyBwYXJhbWV0
-ZXJzIHRvIGZpbmQgc29vbmVzdCBhbGFybS4KKyAqIEBtaW46IHB0ciB0byByZWxhdGl2ZSB0aW1l
-IHRvIHRoZSBzb29uZXN0IGFsYXJtIHRvIGV4cGlyZQorICogQGV4cGlyZXM6IHB0ciB0byBhYnNv
-bHV0ZSB0aW1lIG9mIHRoZSBzb29uZXN0IGFsYXJtIHRvIGV4cGlyZQorICogQHR5cGU6IHB0ciB0
-byBhbGFybSB0eXBlCisgKgorICovCitzdGF0aWMgdm9pZCBhbGFybXRpbWVyX2luaXRfc29vbmVz
-dChrdGltZV90ICptaW4sIGt0aW1lX3QgKmV4cGlyZXMsIGludCAqdHlwZSkKK3sKKwl1bnNpZ25l
-ZCBsb25nIGZsYWdzOworCisJc3Bpbl9sb2NrX2lycXNhdmUoJmZyZWV6ZXJfZGVsdGFfbG9jaywg
-ZmxhZ3MpOworCSptaW4gPSBmcmVlemVyX2RlbHRhOworCSpleHBpcmVzID0gZnJlZXplcl9leHBp
-cmVzOworCSp0eXBlID0gZnJlZXplcl9hbGFybXR5cGU7CisJZnJlZXplcl9kZWx0YSA9IDA7CisJ
-c3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmZnJlZXplcl9kZWx0YV9sb2NrLCBmbGFncyk7Cit9CisK
-Ky8qKgorICogYWxhcm10aW1lcl9nZXRfc29vbmVzdCAtIEZpbmRzIHRoZSBzb29uZXN0IGFsYXJt
-IHRvIGV4cGlyZSBhbW9uZyB0aGUgYWxhcm0gYmFzZXMuCisgKiBAbWluOiBwdHIgdG8gcmVsYXRp
-dmUgdGltZSB0byB0aGUgc29vbmVzdCBhbGFybSB0byBleHBpcmUKKyAqIEBleHBpcmVzOiBwdHIg
-dG8gYWJzb2x1dGUgdGltZSBvZiB0aGUgc29vbmVzdCBhbGFybSB0byBleHBpcmUKKyAqIEB0eXBl
-OiBwdHIgdG8gYWxhcm0gdHlwZQorICoKKyAqLworc3RhdGljIHZvaWQgYWxhcm10aW1lcl9nZXRf
-c29vbmVzdChrdGltZV90ICptaW4sIGt0aW1lX3QgKmV4cGlyZXMsIGludCAqdHlwZSkKK3sKKwlp
-bnQgaTsKKwl1bnNpZ25lZCBsb25nIGZsYWdzOworCisJLyogRmluZCB0aGUgc29vbmVzdCB0aW1l
-ciB0byBleHBpcmUgKi8KKwlmb3IgKGkgPSAwOyBpIDwgQUxBUk1fTlVNVFlQRTsgaSsrKSB7CisJ
-CXN0cnVjdCBhbGFybV9iYXNlICpiYXNlID0gJmFsYXJtX2Jhc2VzW2ldOworCQlzdHJ1Y3QgdGlt
-ZXJxdWV1ZV9ub2RlICpuZXh0OworCQlrdGltZV90IGRlbHRhOworCisJCXNwaW5fbG9ja19pcnFz
-YXZlKCZiYXNlLT5sb2NrLCBmbGFncyk7CisJCW5leHQgPSB0aW1lcnF1ZXVlX2dldG5leHQoJmJh
-c2UtPnRpbWVycXVldWUpOworCQlzcGluX3VubG9ja19pcnFyZXN0b3JlKCZiYXNlLT5sb2NrLCBm
-bGFncyk7CisJCWlmICghbmV4dCkKKwkJCWNvbnRpbnVlOworCQlkZWx0YSA9IGt0aW1lX3N1Yihu
-ZXh0LT5leHBpcmVzLCBiYXNlLT5nZXRfa3RpbWUoKSk7CisJCWlmICghKCptaW4pIHx8IChkZWx0
-YSA8ICptaW4pKSB7CisJCQkqZXhwaXJlcyA9IG5leHQtPmV4cGlyZXM7CisJCQkqbWluID0gZGVs
-dGE7CisJCQkqdHlwZSA9IGk7CisJCX0KKwl9Cit9CisKKy8qKgorICogdGltZV9jaGVja19zdXNw
-ZW5kX2ZhaWwgLSBDaGVjayBpZiBzdXNwZW5kIHNob3VsZCBiZSBmYWlsZWQgZHVlIHRvIGFuCisg
-KiBhbGFybSB3aXRoaW4gdGhlIG5leHQgc3VzcGVuZF9jaGVja19kdXJhdGlvbiBuYW5vc2Vjb25k
-cy4KKyAqCisgKiBSZXR1cm5zIGVycm9yIGlmIHN1c3BlbmQgc2hvdWxkIGJlIGZhaWxlZCwgZWxz
-ZSByZXR1cm5zIDAuCisgKi8KK2ludCB0aW1lX2NoZWNrX3N1c3BlbmRfZmFpbCh2b2lkKQorewor
-CWt0aW1lX3QgbWluLCBleHBpcmVzOworCWludCB0eXBlOworCisJLyogSW5pdGlhbGl6ZSBwYXJh
-bWV0ZXJzIHRvIGZpbmQgc29vbmVzdCB0aW1lciAqLworCWFsYXJtdGltZXJfaW5pdF9zb29uZXN0
-KCZtaW4sICZleHBpcmVzLCAmdHlwZSk7CisKKwkvKiBGaW5kIHRoZSBzb29uZXN0IHRpbWVyIHRv
-IGV4cGlyZSAqLworCWFsYXJtdGltZXJfZ2V0X3Nvb25lc3QoJm1pbiwgJmV4cGlyZXMsICZ0eXBl
-KTsKKworCWlmIChtaW4gPT0gMCkKKwkJcmV0dXJuIDA7CisKKwlpZiAoa3RpbWVfdG9fbnMobWlu
-KSA8IHN1c3BlbmRfY2hlY2tfZHVyYXRpb25fbnMpCisJCXJldHVybiAtRUJVU1k7CisKKwlyZXR1
-cm4gMDsKK30KK0VYUE9SVF9TWU1CT0wodGltZV9jaGVja19zdXNwZW5kX2ZhaWwpOworCiAvKioK
-ICAqIGFsYXJtdGltZXJfZ2V0X3J0Y2RldiAtIFJldHVybiBzZWxlY3RlZCBydGNkZXZpY2UKICAq
-CkBAIC0yOTYsNDkgKzM3NCwyNCBAQCBFWFBPUlRfU1lNQk9MX0dQTChhbGFybV9leHBpcmVzX3Jl
-bWFpbmluZyk7CiBzdGF0aWMgaW50IGFsYXJtdGltZXJfc3VzcGVuZChzdHJ1Y3QgZGV2aWNlICpk
-ZXYpCiB7CiAJa3RpbWVfdCBtaW4sIG5vdywgZXhwaXJlczsKLQlpbnQgaSwgcmV0LCB0eXBlOwor
-CWludCByZXQsIHR5cGU7CiAJc3RydWN0IHJ0Y19kZXZpY2UgKnJ0YzsKLQl1bnNpZ25lZCBsb25n
-IGZsYWdzOwogCXN0cnVjdCBydGNfdGltZSB0bTsKIAotCXNwaW5fbG9ja19pcnFzYXZlKCZmcmVl
-emVyX2RlbHRhX2xvY2ssIGZsYWdzKTsKLQltaW4gPSBmcmVlemVyX2RlbHRhOwotCWV4cGlyZXMg
-PSBmcmVlemVyX2V4cGlyZXM7Ci0JdHlwZSA9IGZyZWV6ZXJfYWxhcm10eXBlOwotCWZyZWV6ZXJf
-ZGVsdGEgPSAwOwotCXNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJmZyZWV6ZXJfZGVsdGFfbG9jaywg
-ZmxhZ3MpOworCS8qIEluaXRpYWxpemUgcGFyYW1ldGVycyB0byBmaW5kIHNvb25lc3QgdGltZXIg
-Ki8KKwlhbGFybXRpbWVyX2luaXRfc29vbmVzdCgmbWluLCAmZXhwaXJlcywgJnR5cGUpOwogCiAJ
-cnRjID0gYWxhcm10aW1lcl9nZXRfcnRjZGV2KCk7CiAJLyogSWYgd2UgaGF2ZSBubyBydGNkZXYs
-IGp1c3QgcmV0dXJuICovCiAJaWYgKCFydGMpCiAJCXJldHVybiAwOwogCi0JLyogRmluZCB0aGUg
-c29vbmVzdCB0aW1lciB0byBleHBpcmUqLwotCWZvciAoaSA9IDA7IGkgPCBBTEFSTV9OVU1UWVBF
-OyBpKyspIHsKLQkJc3RydWN0IGFsYXJtX2Jhc2UgKmJhc2UgPSAmYWxhcm1fYmFzZXNbaV07Ci0J
-CXN0cnVjdCB0aW1lcnF1ZXVlX25vZGUgKm5leHQ7Ci0JCWt0aW1lX3QgZGVsdGE7CisJLyogRmlu
-ZCB0aGUgc29vbmVzdCB0aW1lciB0byBleHBpcmUgKi8KKwlhbGFybXRpbWVyX2dldF9zb29uZXN0
-KCZtaW4sICZleHBpcmVzLCAmdHlwZSk7CiAKLQkJc3Bpbl9sb2NrX2lycXNhdmUoJmJhc2UtPmxv
-Y2ssIGZsYWdzKTsKLQkJbmV4dCA9IHRpbWVycXVldWVfZ2V0bmV4dCgmYmFzZS0+dGltZXJxdWV1
-ZSk7Ci0JCXNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJmJhc2UtPmxvY2ssIGZsYWdzKTsKLQkJaWYg
-KCFuZXh0KQotCQkJY29udGludWU7Ci0JCWRlbHRhID0ga3RpbWVfc3ViKG5leHQtPmV4cGlyZXMs
-IGJhc2UtPmdldF9rdGltZSgpKTsKLQkJaWYgKCFtaW4gfHwgKGRlbHRhIDwgbWluKSkgewotCQkJ
-ZXhwaXJlcyA9IG5leHQtPmV4cGlyZXM7Ci0JCQltaW4gPSBkZWx0YTsKLQkJCXR5cGUgPSBpOwot
-CQl9Ci0JfQogCWlmIChtaW4gPT0gMCkKIAkJcmV0dXJuIDA7CiAKLQlpZiAoa3RpbWVfdG9fbnMo
-bWluKSA8IHN1c3BlbmRfY2hlY2tfZHVyYXRpb25fbnMpIHsKLQkJcG1fd2FrZXVwX2V2ZW50KGRl
-diwgc3VzcGVuZF9jaGVja19kdXJhdGlvbl9ucy9OU0VDX1BFUl9NU0VDKTsKLQkJcmV0dXJuIC1F
-QlVTWTsKLQl9Ci0KIAl0cmFjZV9hbGFybXRpbWVyX3N1c3BlbmQoZXhwaXJlcywgdHlwZSk7CiAK
-IAkvKiBTZXR1cCBhbiBydGMgdGltZXIgdG8gZmlyZSB0aGF0IGZhciBpbiB0aGUgZnV0dXJlICov
-Ci0tIAoyLjQzLjAuNDI5Lmc0MzJlYWEyYzZiLWdvb2cKCg==
---000000000000a825b70610303b56--
+But you know what, let's make it more simple. CPU down hotplug is not a
+fast path and it doesn't deserve so many optimizations. Just remove ->wakeup_recalc
+entirely and if the offlining CPU detects it's the last active CPU in the
+hierarchy, just queue an empty work to the first online CPU. It will briefly
+force that CPU out of idle and trigger an activate. Then either the CPU
+periodically checks remote timers or it will go back idle and notice.
+
+Something like this (untested):
+
+diff --git a/kernel/time/timer_migration.c b/kernel/time/timer_migration.c
+index de1905b0bae7..0f15215ef257 100644
+--- a/kernel/time/timer_migration.c
++++ b/kernel/time/timer_migration.c
+@@ -548,7 +548,6 @@ static void __tmigr_cpu_activate(struct tmigr_cpu *tmc)
+ 
+ 	tmc->cpuevt.ignore = true;
+ 	WRITE_ONCE(tmc->wakeup, KTIME_MAX);
+-	tmc->wakeup_recalc = false;
+ 
+ 	walk_groups(&tmigr_active_up, &data, tmc);
+ }
+@@ -1041,41 +1040,11 @@ int tmigr_requires_handle_remote(void)
+ 	}
+ 
+ 	/*
+-	 * If the CPU is idle, check whether the recalculation of @tmc->wakeup
+-	 * is required. @tmc->wakeup_recalc is set, when the last active CPU
+-	 * went offline. The last active CPU delegated the handling of the timer
+-	 * migration hierarchy to another (this) CPU by updating this flag and
+-	 * sending a reschedule.
+-	 *
+-	 * Racy lockless check is valid:
+-	 * - @tmc->wakeup_recalc is set by the remote CPU before it issues
+-	 *   reschedule IPI.
+-	 * - As interrupts are disabled here this CPU will either observe
+-	 *   @tmc->wakeup_recalc set before the reschedule IPI can be handled or
+-	 *   it will observe it when this function is called again on return
+-	 *   from handling the reschedule IPI.
+-	 */
+-	if (tmc->wakeup_recalc) {
+-		__walk_groups(&tmigr_requires_handle_remote_up, &data, tmc);
+-
+-		if (data.firstexp != KTIME_MAX)
+-			ret = 1;
+-
+-		raw_spin_lock(&tmc->lock);
+-		WRITE_ONCE(tmc->wakeup, data.firstexp);
+-		tmc->wakeup_recalc = false;
+-		raw_spin_unlock(&tmc->lock);
+-
+-		return ret;
+-	}
+-
+-	/*
+-	 * When the CPU is idle and @tmc->wakeup is reliable as
+-	 * @tmc->wakeup_recalc is not set, compare it with @data.now. The lock
+-	 * is required on 32bit architectures to read the variable consistently
+-	 * with a concurrent writer. On 64bit the lock is not required because
+-	 * the read operation is not split and so it is always consistent.
+-
++	 * When the CPU is idle and @tmc->wakeup is reliable, compare it with
++	 * @data.now. The lock is required on 32bit architectures to read the
++	 * variable consistently with a concurrent writer. On 64bit the lock
++	 * is not required because the read operation is not split and so it is
++	 * always consistent.
+ 	 */
+ 	if (IS_ENABLED(CONFIG_64BIT)) {
+ 		if (data.now >= READ_ONCE(tmc->wakeup))
+@@ -1119,21 +1088,7 @@ u64 tmigr_cpu_new_timer(u64 nextexp)
+ 		    tmc->cpuevt.ignore) {
+ 			ret = tmigr_new_timer(tmc, nextexp);
+ 		}
+-	} else if (tmc->wakeup_recalc) {
+-		struct tmigr_remote_data data;
+-
+-		data.now = KTIME_MAX;
+-		data.childmask = tmc->childmask;
+-		data.firstexp = KTIME_MAX;
+-		data.tmc_active = false;
+-		data.check = false;
+-
+-		__walk_groups(&tmigr_requires_handle_remote_up, &data, tmc);
+-
+-		ret = data.firstexp;
+ 	}
+-	tmc->wakeup_recalc = false;
+-
+ 	/*
+ 	 * Make sure the reevaluation of timers in idle path will not miss an
+ 	 * event.
+@@ -1212,36 +1167,7 @@ static bool tmigr_inactive_up(struct tmigr_group *group,
+ 	 *   hierarchy) and
+ 	 * - there is a pending event in the hierarchy
+ 	 */
+-	if (data->firstexp != KTIME_MAX) {
+-		WARN_ON_ONCE(group->parent);
+-		/*
+-		 * Top level path: If this CPU is about going offline and was
+-		 * the last active CPU, wake up some random other CPU so it will
+-		 * take over the migrator duty and program its timer
+-		 * properly. Ideally wake the CPU with the closest expiry time,
+-		 * but that's overkill to figure out.
+-		 *
+-		 * Set wakeup_recalc of remote CPU, to make sure the complete
+-		 * idle hierarchy with enqueued timers is reevaluated.
+-		 */
+-		if (!(this_cpu_ptr(&tmigr_cpu)->online)) {
+-			struct tmigr_cpu *tmc = this_cpu_ptr(&tmigr_cpu);
+-			unsigned int cpu = smp_processor_id();
+-			struct tmigr_cpu *tmc_resched;
+-
+-			cpu = cpumask_any_but(cpu_online_mask, cpu);
+-			tmc_resched = per_cpu_ptr(&tmigr_cpu, cpu);
+-
+-			raw_spin_unlock(&tmc->lock);
+-
+-			raw_spin_lock(&tmc_resched->lock);
+-			tmc_resched->wakeup_recalc = true;
+-			raw_spin_unlock(&tmc_resched->lock);
+-
+-			raw_spin_lock(&tmc->lock);
+-			smp_send_reschedule(cpu);
+-		}
+-	}
++	WARN_ON_ONCE(data->firstexp != KTIME_MAX && group->parent);
+ 
+ 	return walk_done;
+ }
+@@ -1579,9 +1505,20 @@ static int tmigr_cpu_online(unsigned int cpu)
+ 	return 0;
+ }
+ 
++long tmigr_trigger_active(void *unused)
++{
++	struct tmigr_cpu *tmc = this_cpu_ptr(&tmigr_cpu);
++
++	WARN_ON_ONCE(!tmc->online || tmc->idle);
++
++	return 0;
++}
++
+ static int tmigr_cpu_offline(unsigned int cpu)
+ {
+ 	struct tmigr_cpu *tmc = this_cpu_ptr(&tmigr_cpu);
++	int migrator;
++	u64 firstexp;
+ 
+ 	raw_spin_lock_irq(&tmc->lock);
+ 	tmc->online = false;
+@@ -1591,9 +1528,14 @@ static int tmigr_cpu_offline(unsigned int cpu)
+ 	 * CPU has to handle the local events on his own, when on the way to
+ 	 * offline; Therefore nextevt value is set to KTIME_MAX
+ 	 */
+-	__tmigr_cpu_deactivate(tmc, KTIME_MAX);
++	firstexp = __tmigr_cpu_deactivate(tmc, KTIME_MAX);
+ 	raw_spin_unlock_irq(&tmc->lock);
+ 
++	if (firstexp != KTIME_MAX) {
++		migrator = cpumask_any_but(cpu_online_mask, cpu);
++		work_on_cpu(migrator, tmigr_trigger_active, NULL);
++	}
++
+ 	return 0;
+ }
+ 
+diff --git a/kernel/time/timer_migration.h b/kernel/time/timer_migration.h
+index c32947cf429b..c556d5824792 100644
+--- a/kernel/time/timer_migration.h
++++ b/kernel/time/timer_migration.h
+@@ -78,18 +78,12 @@ struct tmigr_group {
+  * @idle:		Indicates whether the CPU is idle in the timer migration
+  *			hierarchy
+  * @remote:		Is set when timers of the CPU are expired remotely
+- * @wakeup_recalc:	Indicates, whether a recalculation of the @wakeup value
+- *			is required. @wakeup_recalc is only used by this CPU
+- *			when it is marked idle in the timer migration
+- *			hierarchy. It is set by a remote CPU which was the last
+- *			active CPU and is on the way to idle.
+  * @tmgroup:		Pointer to the parent group
+  * @childmask:		childmask of tmigr_cpu in the parent group
+  * @wakeup:		Stores the first timer when the timer migration
+  *			hierarchy is completely idle and remote expiry was done;
+  *			is returned to timer code in the idle path and is only
+- *			used in idle path; it is only valid, when @wakeup_recalc
+- *			is not set.
++ *			used in idle path.
+  * @cpuevt:		CPU event which could be enqueued into the parent group
+  */
+ struct tmigr_cpu {
+@@ -97,7 +91,6 @@ struct tmigr_cpu {
+ 	bool			online;
+ 	bool			idle;
+ 	bool			remote;
+-	bool			wakeup_recalc;
+ 	struct tmigr_group	*tmgroup;
+ 	u8			childmask;
+ 	u64			wakeup;
 
