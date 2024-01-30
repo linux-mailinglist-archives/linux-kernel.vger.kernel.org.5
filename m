@@ -1,179 +1,149 @@
-Return-Path: <linux-kernel+bounces-44704-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44699-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6531D842641
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:39:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC37384262B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:26:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF561B2F270
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:38:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 987DD28CF72
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:26:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC6A86D1A2;
-	Tue, 30 Jan 2024 13:38:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tsj9h8iZ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BD1B6BB54;
+	Tue, 30 Jan 2024 13:26:28 +0000 (UTC)
+Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09F7938DD3
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 13:38:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8087166B51;
+	Tue, 30 Jan 2024 13:26:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706621926; cv=none; b=R/DYA4um+XzyiiNSIxJGBRwOreAa/yE0qrArUpTNz+zY4K//ZZTOAOHlbkrUcuTfFBE3zqIyjWwFxCI2SAOZEb+d2trRmW8DPDAzZ+Mn8k6qZDyucaKZR4jzyaKYjtfxbDHEPS0u2+Dbna8wXyjg42S5IdL3Tv15jQ1qm+CCRg4=
+	t=1706621187; cv=none; b=h6D5osBGsQpBTS3PmZW7D/b3KPqRwiHNjubfadIcVYh8G/8j3ooGXWKuAPgac1ZWSFwhz9web3KD3WSIMp1eSSGoEsvS6tzv5LY7O19afvzhcibkC5QgqDzDom3t5qvskKAXWSWkm+aLMdhKciPYIqw6ReEQ0Rcl+6N5Sh1AXV8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706621926; c=relaxed/simple;
-	bh=xay3PI/Hwj0fNnXBZKE/+lBBhM3wX3Wp31e3E0sjX4A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hDM383fSYIYgdWerhPh2UlnERK5ox9uSEwAq6LSj5ObcCRtyEIFtwmSHgTUPaNwlAQ7I0nExXAtVTJE3kfqx/127yXCZDGfmpEFT4dqcA6Nmga/BS68TikwcLyjwI4Zm3ufAJ/nxAdZN+FEWDu1yInQMcA7ocaK8umhtRTg6ezQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tsj9h8iZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3111C433C7;
-	Tue, 30 Jan 2024 13:38:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706621925;
-	bh=xay3PI/Hwj0fNnXBZKE/+lBBhM3wX3Wp31e3E0sjX4A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tsj9h8iZY2aMJC53CXOKLFz4LsJq8oqWRAzzEC9+cXF9Xa8WkvaoGPhVxmuq9pzj/
-	 7NcOiH14E7UmFWhgy/q292BEONRVoNwEDs9zTNO2PtpMOIMW2yWdi0BiQxnKDGpf4B
-	 KB60EB9a1dXdw9GA9SkEfIBPHzy0LjBojp50r6D0Jvzln7hmuSrbZ0F444RTnYWrOQ
-	 5+kHe28ToY98XUgNITCAeoog14Dp8FA/7AX1WYuj5ANgqVB6WFFKULJLvTi1Bele5j
-	 SnqIu6dXFD3QcfcDVZepw+rQ9YddMAZE9wVoY6HkKqtHpFtttTpL31BXS3oZFO2V15
-	 UByrHn9TCNV3g==
-Date: Tue, 30 Jan 2024 21:25:54 +0800
-From: Jisheng Zhang <jszhang@kernel.org>
-To: Nick Kossifidis <mick@ics.forth.gr>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org, Matteo Croce <mcroce@microsoft.com>
-Subject: Re: [PATCH 3/3] riscv: optimized memset
-Message-ID: <Zbj44v8QsQPtQ_jD@xhacker>
-References: <20240128111013.2450-1-jszhang@kernel.org>
- <20240128111013.2450-4-jszhang@kernel.org>
- <b7ae944c-2b7c-4c8d-8623-a8387b8d4e02@ics.forth.gr>
+	s=arc-20240116; t=1706621187; c=relaxed/simple;
+	bh=PF8CAVL4rEFi9w1ZE/f1iolLbWvY7zhJk9STs3r80is=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=N0yvkbiH163MfGwzMAG02tBzSRNBrhNVgWY2VMX7Vi1Xw9VcLgPEvZzB7F6rKakLEd8uBrxHvHE/a+HdUytPbSyrrVIPI/OTp7Solbxj+6UKucSm5pkUjqk/E/Zlq9a9WAnZkoPhBeHVxr6+2apCmW9ZB2BcRE/5gyQlPF9EWZg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-20536d5c5c7so2476396fac.2;
+        Tue, 30 Jan 2024 05:26:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706621184; x=1707225984;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=twRUHDzS8w4WKfQKLf30GrMRPHMUcxhF058BULLzw1Q=;
+        b=T6Cbm5Ook6mzsNmevwT8X4ViTMwLLVkIH0jpqoJ/aPWw1vluaiHZtpervNJaen8zcm
+         y7Efb7Xb2Vkhub8H6rKHu6MlvhKDuADkh5Rd1patBG8UmmQb/oVO3+1Z2qJNnoEgMIT2
+         oTf2/N+RwjflCSfPRKOkBwD8p4mGUACjTaJnp31A86EFu4bGBcTta8XNs+YgZlIChcjl
+         pOT6mMHsGtLk1gAjOHLN1//0jGexPdprqSjhybqPGBYZ4aKtk6TM6Zp37oG7Lx3CKyII
+         LMpuqCF7v9GGpbGf72DmfkSblZI5nWUaq4MnLvaD3qkA/X0qexTcz8vzqD0hAAMvsnB/
+         8SjA==
+X-Gm-Message-State: AOJu0YwtLR6zeQFQ/D4pXEeu0G868bKNtBkuK1ms1DEUVj2KzvDDxzP7
+	xICod1VpcLWfWNGK0SwPTn0WOkLAMRDK8YUCJKVePsSSac7wozFDKJaZucMj8KY=
+X-Google-Smtp-Source: AGHT+IGgq38bhoeG59BH65Ja8KFWXHL5iTihljLt3Fjpux1S3N8uNoMeFoWUPjhw0kO2fb2gO1QH5A==
+X-Received: by 2002:a05:6871:8191:b0:218:61af:1c75 with SMTP id so17-20020a056871819100b0021861af1c75mr5223962oab.37.1706621184274;
+        Tue, 30 Jan 2024 05:26:24 -0800 (PST)
+Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com. [209.85.210.41])
+        by smtp.gmail.com with ESMTPSA id n13-20020a9d4d0d000000b006e11d51d04csm1292201otf.18.2024.01.30.05.26.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jan 2024 05:26:23 -0800 (PST)
+Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6dde5d308c6so2643387a34.0;
+        Tue, 30 Jan 2024 05:26:23 -0800 (PST)
+X-Received: by 2002:a9d:6a8e:0:b0:6dd:e8d5:9afb with SMTP id
+ l14-20020a9d6a8e000000b006dde8d59afbmr5897353otq.3.1706621183706; Tue, 30 Jan
+ 2024 05:26:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <b7ae944c-2b7c-4c8d-8623-a8387b8d4e02@ics.forth.gr>
+References: <20240130111250.185718-1-angelogioacchino.delregno@collabora.com> <20240130111250.185718-3-angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20240130111250.185718-3-angelogioacchino.delregno@collabora.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 30 Jan 2024 14:26:12 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUKXwxAKgtmgMxj+y-8GBWBLWC=ROP31uStTnfLDx6OLQ@mail.gmail.com>
+Message-ID: <CAMuHMdUKXwxAKgtmgMxj+y-8GBWBLWC=ROP31uStTnfLDx6OLQ@mail.gmail.com>
+Subject: Re: [PATCH v1 02/18] thermal: Add new structures and thermal_zone_device_register()
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: daniel.lezcano@linaro.org, miquel.raynal@bootlin.com, rafael@kernel.org, 
+	rui.zhang@intel.com, lukasz.luba@arm.com, support.opensource@diasemi.com, 
+	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, 
+	festevam@gmail.com, linux-imx@nxp.com, andersson@kernel.org, 
+	konrad.dybcio@linaro.org, amitk@kernel.org, thara.gopinath@gmail.com, 
+	niklas.soderlund@ragnatech.se, srinivas.pandruvada@linux.intel.com, 
+	baolin.wang@linux.alibaba.com, u.kleine-koenig@pengutronix.de, 
+	hayashi.kunihiko@socionext.com, d-gole@ti.com, linus.walleij@linaro.org, 
+	DLG-Adam.Ward.opensource@dm.renesas.com, error27@gmail.com, heiko@sntech.de, 
+	hdegoede@redhat.com, jernej.skrabec@gmail.com, f.fainelli@gmail.com, 
+	bchihi@baylibre.com, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, kernel@collabora.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 30, 2024 at 02:07:37PM +0200, Nick Kossifidis wrote:
-> On 1/28/24 13:10, Jisheng Zhang wrote:
-> > diff --git a/arch/riscv/lib/string.c b/arch/riscv/lib/string.c
-> > index 20677c8067da..022edda68f1c 100644
-> > --- a/arch/riscv/lib/string.c
-> > +++ b/arch/riscv/lib/string.c
-> > @@ -144,3 +144,44 @@ void *memmove(void *dest, const void *src, size_t count) __weak __alias(__memmov
-> >   EXPORT_SYMBOL(memmove);
-> >   void *__pi_memmove(void *dest, const void *src, size_t count) __alias(__memmove);
-> >   void *__pi___memmove(void *dest, const void *src, size_t count) __alias(__memmove);
-> > +
-> > +void *__memset(void *s, int c, size_t count)
-> > +{
-> > +	union types dest = { .as_u8 = s };
-> > +
-> > +	if (count >= MIN_THRESHOLD) {
-> > +		unsigned long cu = (unsigned long)c;
-> > +
-> > +		/* Compose an ulong with 'c' repeated 4/8 times */
-> > +#ifdef CONFIG_ARCH_HAS_FAST_MULTIPLIER
-> > +		cu *= 0x0101010101010101UL;
+Hi Angelo,
 
-Here we need to check BITS_PER_LONG, use 0x01010101UL for rv32
+On Tue, Jan 30, 2024 at 12:13=E2=80=AFPM AngeloGioacchino Del Regno
+<angelogioacchino.delregno@collabora.com> wrote:
+> In preparation for extending the thermal zone devices to actually
+> have a name and disambiguate thermal zone types/names, and to do
+> a reorganization in thermal_zone_device, add some new Thermal Zone
+> structures:
+>
+> Introduce new thermal_governor_params, thermal_zone_platform_params
+> and thermal_zone_device_params structures which are meant to hold
+> the parameters for thermal zone registration and, in the future, to
+> stop having a catch-all thermal_zone_device structure.
+>
+> While at it, also add a new thermal_zone_device_register() function
+> which uses the new structure(s) for registration;
+> the now old functions thermal_tripless_zone_device_register() and
+> thermal_zone_device_register_with_trips() are now advertised as
+> being deprecated and changed to instead act as wrappers around the
+> new thermal_zone_device_register().
+>
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@coll=
+abora.com>
 
-> > +#else
-> > +		cu |= cu << 8;
-> > +		cu |= cu << 16;
-> > +		/* Suppress warning on 32 bit machines */
-> > +		cu |= (cu << 16) << 16;
-> > +#endif
-> 
-> I guess you could check against __SIZEOF_LONG__ here.
+Thanks for your patch!
 
-Hmm I believe we can remove the | and shift totally, and fall
-back to ARCH_HAS_FAST_MULTIPLIER, see
-https://lore.kernel.org/linux-riscv/20240125145703.913-1-jszhang@kernel.org/
+> ---
+>  drivers/thermal/gov_power_allocator.c |  38 +++----
+>  drivers/thermal/qcom/tsens.c          |   4 +-
+>  drivers/thermal/thermal_core.c        | 146 ++++++++++++++++++--------
+>  drivers/thermal/thermal_helpers.c     |   8 +-
+>  drivers/thermal/thermal_sysfs.c       |  16 +--
+>  include/linux/thermal.h               |  73 +++++++++++--
+>  6 files changed, 202 insertions(+), 83 deletions(-)
 
-> 
-> > +		if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS)) {
-> > +			/*
-> > +			 * Fill the buffer one byte at time until
-> > +			 * the destination is word aligned.
-> > +			 */
-> > +			for (; count && dest.as_uptr & WORD_MASK; count--)
-> > +				*dest.as_u8++ = c;
-> > +		}
-> > +
-> > +		/* Copy using the largest size allowed */
-> > +		for (; count >= BYTES_LONG; count -= BYTES_LONG)
-> > +			*dest.as_ulong++ = cu;
-> > +	}
-> > +
-> > +	/* copy the remainder */
-> > +	while (count--)
-> > +		*dest.as_u8++ = c;
-> > +
-> > +	return s;
-> > +}
-> > +EXPORT_SYMBOL(__memset);
-> 
-> BTW a similar approach could be used for memchr, e.g.:
-> 
-> #if __SIZEOF_LONG__ == 8
-> #define HAS_ZERO(_x) (((_x) - 0x0101010101010101ULL) & ~(_x) &
-> 0x8080808080808080ULL)
-> #else
-> #define HAS_ZERO(_x) (((_x) - 0x01010101UL) & ~(_x) & 0x80808080UL)
-> #endif
-> 
-> void *
-> memchr(const void *src_ptr, int c, size_t len)
-> {
-> 	union const_data src = { .as_bytes = src_ptr };
-> 	unsigned char byte = (unsigned char) c;
-> 	unsigned long mask = (unsigned long) c;
-> 	size_t remaining = len;
-> 
-> 	/* Nothing to do */
-> 	if (!src_ptr || !len)
-> 		return NULL;
-> 
-> 	if (len < 2 * WORD_SIZE)
-> 		goto trailing;
-> 
-> 	mask |= mask << 8;
-> 	mask |= mask << 16;
-> #if __SIZEOF_LONG__ == 8
-> 	mask |= mask << 32;
-> #endif
-> 
-> 	/* Search by byte up to the src's alignment boundary */
-> 	for(; src.as_uptr & WORD_MASK; remaining--, src.as_bytes++) {
-> 		if (*src.as_bytes == byte)
-> 			return (void*) src.as_bytes;
-> 	}
-> 
-> 	/* Search word by word using the mask */
-> 	for(; remaining >= WORD_SIZE; remaining -= WORD_SIZE, src.as_ulong++) {
-> 		unsigned long check = *src.as_ulong ^ mask;
-> 		if(HAS_ZERO(check))
-> 			break;
-> 	}
-> 
->  trailing:
-> 	for(; remaining > 0; remaining--, src.as_bytes++) {
-> 		if (*src.as_bytes == byte)
-> 			return (void*) src.as_bytes;
-> 	}
-> 
-> 	return NULL;
-> }
-> 
-> Regards,
-> Nick
+This also needs an update to the documentation, which still refers to
+the old function removed in commit edd220b33f479cf9 ("thermal: core:
+Drop thermal_zone_device_register()") in v6.6.:
+
+Documentation/driver-api/thermal/power_allocator.rst:`thermal_zone_device_r=
+egister()`
+Documentation/driver-api/thermal/power_allocator.rst:`thermal_zone_device_r=
+egister()`
+(i.e., platform code), then weights
+Documentation/driver-api/thermal/sysfs-api.rst:
+*thermal_zone_device_register(char *type,
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
