@@ -1,214 +1,158 @@
-Return-Path: <linux-kernel+bounces-45187-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC7F8842CA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:26:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E93CC842CAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:27:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0B081C247BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:26:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02F9028DB61
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:27:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1818169D1E;
-	Tue, 30 Jan 2024 19:25:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D0567B3D3;
+	Tue, 30 Jan 2024 19:26:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="MoZ2CrlM"
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2044.outbound.protection.outlook.com [40.107.6.44])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="YZaWIhni"
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2071.outbound.protection.outlook.com [40.107.212.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17C287B3C2;
-	Tue, 30 Jan 2024 19:25:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.6.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E5287B3C2;
+	Tue, 30 Jan 2024 19:26:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.71
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706642758; cv=fail; b=jbx+7FxflkPVF9xTJY6XfZOF0qWgXfypHBepPDyYXAydq3QePMVv+jY+BhfQMbVZPibd7Ns5JREwAK/mG9E6kjk+0Xj23o88AFeZmuwq/gEuPSGk7LeXQc3VlrdGrx5bQU/j4GPRgiawRhTZpSX2twSTRhcSmOV7tAyW/K5sJ2w=
+	t=1706642802; cv=fail; b=UZir/CCc0Ou+JEdHd2RnOClGDXOt5kWy13j0LbYTp87IvKeTBKPFwqy17UkHlu0xavZmHlRlUxJ8fgptPQmeLvWpPEgO9ZZVsoFvRIcieOhwuo3E54xoVImiEPHazKmSzrh7/qPfHVeM9BX9EtV9qRUZsIiZ0YiGNz+aoyDDOOw=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706642758; c=relaxed/simple;
-	bh=5y7vwlY9H04RteIv6+UFiuemQPCLYb0lTTJXw/LgHQY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=N3F92V7HIxNt7er/BTe0n8POWqh8p5/tq4a8OS00Gs1Njh09abOzpwoszk+rHgIRfqo0VbtKTHCYHg48gFrh5wxe7motQoR+fHi78JcWMleAkzr2fcNUb6EVfBTO043dT3/65Lp5MYRGUAJUxHabFTRr24QLUnaUD1/3OHeYPzA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=MoZ2CrlM; arc=fail smtp.client-ip=40.107.6.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+	s=arc-20240116; t=1706642802; c=relaxed/simple;
+	bh=t/kac1SUVOseqzVc1HIcxkPZzSxbn043Y6pJAqpqEic=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=klaDiDBPXjub3NwVkH0o6hQU8iZs6aymW4OmUbzJkyVYnjRmThYIm5T7BfYyC25LeaIfavKJLCmWkvF8xF4i4sV3ZLjbSbPIveOwf6Z5wn3qwOQnHFnVwAbLAa8G9L/kBOXXwolhgtSO/mw/TelnnzKtGx3r2rZZxMuAp/ZkNaA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=YZaWIhni; arc=fail smtp.client-ip=40.107.212.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eLWAecHVu+rcMTLyKRJY02T5o3PlDBCQtLRa8E03iddpX8iuWit3KmZJQDva/3pm/KbZRLyKy+NA7Xst9S+lUR0ZS8+G8km/Oef4I0v/UELsbXqUQ59idSE4V7CUXA2c3axynnYhanohYVWVN6uPT9M1jt2hRWgoKt6OD90Btogoh2f7IUDI1jqm2PVJathH4bZ+AdLvMW3G41eQ3uB+2Uht8mGbnPltlVKJqBfx2sUs+7VfGdEVccsLwj4jC5Vhv3+q+JFZ/T8RLftOHbNbOzqDJh/4VY3R6GbKMpf+6zt16RlaMKhjkWKo7D5v0zdw+WO0tRLu+I9BPXWrvMJ3lg==
+ b=IkZzc+0V3Bec3vQFeJpgHY8z2vk3rt46/BqgJ5Hwaq0miLzkRo3VCbmf8t38txS+f1nlq9HLfxRlRAt1CL+C8m1ZEU3e5Su10h8cKnzrcG+LjdCVYbJwtgXyw36A6Ynj1KATW81W24kqVuaHbUIFCd2xE9K1fCpLajCdVwnj9S0dJSytFJ57BmMKdG8x8LaudeEGThVqaAREqVa9ofGETpUmsYrbRSipj6Ubg5XfU5aGbnGXtwcud6GYcHWCfumOUu69pyy2IC8IBYDykt1qvn3CWXvAJU/LxzYxhqxvmMilEk4rvDLP0u4cTRAYNVkVY5SymIbWIJK4Ym76sW++Lg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iYjGtEwNFNF9+RrArSaw9HdhaPGquPWsAA7Sv4kngic=;
- b=TK8ZzW+aGqs48aViAAgGpvj9wTtvjZylU+KlSn4vJUaytTo4zQUie5PZRAd4IybNoSE1USl6J8FDaXLaR0oztzAcKmU/NvTjFDv5HQv0lcqqM2jHDLxTGipHejg7L+fE3XOfCnS3PdfdG+DjRy3HON5DR8mjkBqQmvnH6Rl3HYWtgWKq5DSlHQF3gb+Qe4o34slKUGS1i5ktRWwSFLlY/qgMEYHfGlCrgwUOhN5zkmATPfMbok8V47+eWgvpFFebvtG9hJ3702b04K0WIBzHs9LrEtuQ7DRjCd1vsB2ZTS5Z4MzBZMgfhcnIVs8Rrm+YsPMrOm8+uTO/lP/NI100yQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ bh=db6bwX7jDfv+EKu4pIOtvEQGFdVmC8EilqoAb6TLfdQ=;
+ b=dIbuMH/oHlp9ZtXfJwqBcS2/YUKdJk8+Ny/asJ9xFU/9XqpIx+qCFv6M6AKtWBaOjc65t9aviLtgxJSqzw2vFeB1a615xWyslDSAGdwlQw+S/nUJuxQ1UMKkOIa3fI4Hf+ZXhGM0e7wgP/tyADanmRIjHlkR6nYknNx31XIno5b/GaQTdg/ciNW9N2u0dCIoZAxj9SeBrD3YR4hO/qA5jph05IJF7eudCp3bduY6e246qL4BXx1U8SG/+U30RW4MxVak/OEt3oDi5IVovlYwdS2xNB1FbFz4dxDHKOWtu3tSwgAAqBL+WG/MDxt9T0SHPjq5yP557ugZZnFonDTSnQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=lists.freedesktop.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iYjGtEwNFNF9+RrArSaw9HdhaPGquPWsAA7Sv4kngic=;
- b=MoZ2CrlM4E/fMHAHDZh73K4EUMH5iC22tDWCdoUolcu7KZAA2EGS8sBMzi9xtq8hfwXlGT/5sn7FQbRGcArDzhJGGq4HLQHW8+ukS7b0JLTNcZnnbCUEKJJFKaP25Wk0Wj7XyCEWff9sCn8KagxS597Poug1664NiI3zqVFYSD0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by VE1PR04MB7487.eurprd04.prod.outlook.com (2603:10a6:800:1a2::13) with
+ bh=db6bwX7jDfv+EKu4pIOtvEQGFdVmC8EilqoAb6TLfdQ=;
+ b=YZaWIhniWVAP3Ih8sotOrMJEBNLbyM5hzRUHV/g1mlkgWkNCvG6CHhiulktmG5vyissteY1+iONLluvCPD5QmXACvEm1v4Wh7oT3sJSBJmwanYFJZ47Sp7kllaqn7nEBZmOamRdZIhYqsxsvm3ola6P513LsUCXDaPEY/rEB4kU=
+Received: from MW3PR05CA0024.namprd05.prod.outlook.com (2603:10b6:303:2b::29)
+ by BL1PR12MB5126.namprd12.prod.outlook.com (2603:10b6:208:312::8) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.23; Tue, 30 Jan
- 2024 19:25:52 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::c8b4:5648:8948:e85c]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::c8b4:5648:8948:e85c%3]) with mapi id 15.20.7228.029; Tue, 30 Jan 2024
- 19:25:52 +0000
-Date: Tue, 30 Jan 2024 14:25:43 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Conor Dooley <conor@kernel.org>
-Cc: thinh.nguyen@synopsys.com, balbi@kernel.org, devicetree@vger.kernel.org,
-	gregkh@linuxfoundation.org, imx@lists.linux.dev,
-	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-	mark.rutland@arm.com, mathias.nyman@intel.com, pku.leo@gmail.com,
-	ran.wang_1@nxp.com, robh+dt@kernel.org,
-	sergei.shtylyov@cogentembedded.com
-Subject: Re: [PATCH v4 2/3] dt-bindings: usb: dwc3: Add
- snps,host-vbus-glitches-quirk avoid vbus glitch
-Message-ID: <ZblNN6SyuSKhconu@lizhi-Precision-Tower-5810>
-References: <20240124152525.3910311-1-Frank.Li@nxp.com>
- <20240124152525.3910311-3-Frank.Li@nxp.com>
- <20240130-eligible-barrette-5b2258e150f5@spud>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240130-eligible-barrette-5b2258e150f5@spud>
-X-ClientProxiedBy: BYAPR05CA0017.namprd05.prod.outlook.com
- (2603:10b6:a03:c0::30) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.34; Tue, 30 Jan
+ 2024 19:26:37 +0000
+Received: from MWH0EPF000971E7.namprd02.prod.outlook.com
+ (2603:10b6:303:2b:cafe::e6) by MW3PR05CA0024.outlook.office365.com
+ (2603:10b6:303:2b::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.23 via Frontend
+ Transport; Tue, 30 Jan 2024 19:26:37 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ MWH0EPF000971E7.mail.protection.outlook.com (10.167.243.75) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7249.19 via Frontend Transport; Tue, 30 Jan 2024 19:26:36 +0000
+Received: from AUS-P9-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Tue, 30 Jan
+ 2024 13:26:35 -0600
+From: Mario Limonciello <mario.limonciello@amd.com>
+To: <amd-gfx@lists.freedesktop.org>, Alex Deucher <alexander.deucher@amd.com>,
+	Harry Wentland <harry.wentland@amd.com>, "Rafael J . Wysocki"
+	<rafael@kernel.org>, Hans de Goede <hdegoede@redhat.com>
+CC: "open list:ACPI" <linux-acpi@vger.kernel.org>, open list
+	<linux-kernel@vger.kernel.org>, "open list:DRM DRIVERS"
+	<dri-devel@lists.freedesktop.org>, Melissa Wen <mwen@igalia.com>, "Mark
+ Pearson" <mpearson-lenovo@squebb.ca>, Mario Limonciello
+	<mario.limonciello@amd.com>
+Subject: [PATCH v2 0/4] Add support for fetching EDID from ACPI _DDC
+Date: Tue, 30 Jan 2024 13:26:04 -0600
+Message-ID: <20240130192608.11666-1-mario.limonciello@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|VE1PR04MB7487:EE_
-X-MS-Office365-Filtering-Correlation-Id: b32bbc3c-eee0-4fe9-a2a0-08dc21c945da
+X-MS-TrafficTypeDiagnostic: MWH0EPF000971E7:EE_|BL1PR12MB5126:EE_
+X-MS-Office365-Filtering-Correlation-Id: bb8bfb43-2b46-4bc9-7077-08dc21c96084
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	2e9cNboE4sHIZ7v7FLJWmiuJsOBo53KR0jyXI8TAxcCr1bv/PYC804V0l0lTG4APNTzBrYHCw9zS15qoDKsaMSY0bjlX4xGOsUv6olZpWP3EWlPYRsSHeEIRRxgt4xPXqi5rNZR6whGHF/1eFGX8HjkNVPowkn3Qj4FYCsEmQq7kEzoe+WICeZr10I/R2ZOIvyGUbX0/44dktB3utd7Aw5l/fVLBo88jyG7eEmzOFKaPkPrcA22jop3yU+o2+B6Eq5GYRzFQmqnOiXKqgmbhVMo30Go2ICbaXSDyGJT5EqgOwFkB8hebQxc+jl9ukK62niSIhoxb+qRrj37QtWozeg0E36pGrPapWt9Sj0Eq0oVItR01WASU9/dlHVuaTY9EwcKyyRr9FhuOFFvKCBFxnpGChfMpey1i4W0xkJn7HS4jzJS5BunB1UQAvgHoIsAc3OLLruYu+g9hD/PyjEh7wZcqhSGZo/apgzzXSIeEmIazCgMgNtItWHwU8/W+TNpZGjw/r9nOuX3zD0UDK0893Ee1YXAyCvqlMF76CAJ5d3EYdUYhogmLgTSwx4K0Gc5LzWxE3ujeVdep/WvdWPxCX65zDRK+X8FL6Tus9M2ViiC/sLLUoEaVJTztwpWMSmaPnwE6IVB7QpUBgjis0JBqyA==
+	mquWkRiRkZcSi2khJNb55Izfh1y6iIiAdlSWiP/EBVCoDICJsaA3/RCB1+15zCiPu3VZc/48QXLOrP1u4RCq4Tt4YofAE8uJWaiorzKMuMZRcQFqbtZcIfL3BLus1CEdv6v2propws9BQ7ff/GWDf7fuFE6MJ0EaJ1mvs7ED44VPM4tIC+UNe2wz8ediLcuPv0+blI3LYwR2MgiHxOR5mXQziOdsi6+TaAcro9jhpV7qC9h4PwxywJhVnBx41LVmeKO8isXHlwT6MoNZ6tGs0FLQj2z22pAY5QDR06vpM93HfTZYmUPiU4Yvoue8mR3NX/V6tIORWsbhe/loZ/QZMhVuyCOjUVXogfpeZ4UUgwmeUYybf+rbNN9oxoIipPIyXOyHYFNhInDKJYkfU0iw5unFXjJml/7P64bTUjPekDMEkMtknrbQE4AJI5/q9ZBpBMHZ8UoCKkkep59+GBeUmW7QBvXhizfy5c3Z8HFsP5BAA3BqpvbuT9MVLbqJ0isuT+hlO5PyTkzsn5INDzAmhwsi3b52ZWDQziZL1xN9eBev3A+x2IRjyQRJP5NkAaegR2+gRs/jvPXy5CR2piGGld8zOASu+tZ2z9xK7eaJMcgWmY27/N1fegnVGZnY6hilSH1G+Ml2/1EzTA7FE39v/jX0JLhZJfQNKF5CouIof4qnXDt7klazPJgb0At8MANVKwxgWPgNQqc9PvN5xLZlmdIrDJt6jIdTCkdHs/81PEdQD1AxtQfq/k3lEw6kN8do
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(396003)(346002)(376002)(136003)(39860400002)(230173577357003)(230922051799003)(230273577357003)(451199024)(186009)(1800799012)(64100799003)(5660300002)(41300700001)(7416002)(6506007)(38100700002)(6666004)(52116002)(9686003)(26005)(6512007)(83380400001)(966005)(6486002)(8936002)(8676002)(4326008)(478600001)(316002)(38350700005)(86362001)(2906002)(66556008)(66476007)(6916009)(66946007)(33716001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?6T1q9lNhmjpYSSfIh+zIeaTc4RQXSsFw/kH09y+xqM2AkghioafhQ2lpi4Bf?=
- =?us-ascii?Q?6RFYaZzqV/VZg6qpVtasMAdCGAH0PGjDyWemiKTkGAM17yawU/OBHjn9jZdD?=
- =?us-ascii?Q?NbHfkeCmT8eOSC/0Ry1UYx2dcCFtGDGJj/MDq/62puFPFcEngzQsxzLGMnvy?=
- =?us-ascii?Q?z781ubyg61zE0t/DBfL9ZalyMGMYilfHDi1YiWNXWCq+VO74x9k+z1RKDRzm?=
- =?us-ascii?Q?jg0vHIfRJzdmEoXzzEnQx4pzrzA8plo1BK1Y9BBIoSNTz7OwFGYP3Bt+zMbY?=
- =?us-ascii?Q?PYVevZVZpomMuyqlWdNZAY4OpfB6i+H1PPt2HHq/1ggaJ5nxidT18JB/7saZ?=
- =?us-ascii?Q?lrJIjlYFAoLMdrSBrgffuHfDlSI+aYuLo6kfblGHrOr5EcIHjflqTy1Ugd4B?=
- =?us-ascii?Q?so1kR4Af9ZoPf5MGyarLUk/dnMabU/jqYOXxDQi6rbmTz7gGfHKUSkSfNMe6?=
- =?us-ascii?Q?ucaKbAlrsiRX4Hp+Vb62yUoRKpXTPxXLm9u+qTghro/0KahzoY7OTy0lnQM9?=
- =?us-ascii?Q?Apmf38r3nJV+ckg2RFAiNsgORiliIeEOquBX+fFRewH9YFrBcJk7x9YHotOP?=
- =?us-ascii?Q?MapezWggpk7Rp32by+5UxYESJi+eCUdax1tBzusb/5ZyHhORsHGlqlQDkTV/?=
- =?us-ascii?Q?JAJw8BdZGr2qGgfzyP8YmdBMozyG/m/6nooBCktLkOtNX/BH9FmOss+9ATc+?=
- =?us-ascii?Q?3q/cj0bWHsYFTknA9pID0r3LBMwpXymUv52mWBWw0JG7L75EnNhcHaxxhHDw?=
- =?us-ascii?Q?6mdwXdYQQrUk/4/C5YpFp0xjqwlmqMSeQ8NqGzRA7SEw291rQl6dOa/WPdn7?=
- =?us-ascii?Q?QP5tRI6ByJQvLZDX2FUKaWARKEjTHhA342y60gce4oqSyJ6QJl7KZHXqtL2j?=
- =?us-ascii?Q?+VBJB/w3K4iqWGKAcNk5uf/rAwm1gFKlZ47tTxg+kviMKf3KgoWE7+q97Msk?=
- =?us-ascii?Q?dGTQDkBi3tQqwiIbq9G5nGywT4xIW7TCwatvpckzVXf7rgbazkPwC5vo/TvO?=
- =?us-ascii?Q?N9SO2toH7wqM+toEsr11okHaokLOtLwlsSS+GxQZ5lMy++4tzwHh/akUzDd0?=
- =?us-ascii?Q?CH1lOfS0VwjOQpMYMoqgifmxvVWzGtrcaZWtx7JR4pg3wrkt1v8c7DTJWYcQ?=
- =?us-ascii?Q?S8O6imUUl5VOxCY71oGPeA5WjCSSa9oI2JECmvMptGyKspB8FDBnGL0IbXQl?=
- =?us-ascii?Q?lSH3bp9umP3fxaI1Zy3j/j42G80dcNBi6obFS9KZ7OsMCjZtlOKaxMDZbd89?=
- =?us-ascii?Q?uYQWvQtLL3vf2dJaUXuvgPLOb4JCpmpHVZcvp6W1T76hlFoNha9n9DBD1SeN?=
- =?us-ascii?Q?HhcU6WD56ZTnGigYQ53wDxaYSKwriu9oeIbpNyn169MKBAlqbAht1cP3RiGZ?=
- =?us-ascii?Q?Act5/9oCvAd6XsvnJR9U5HtfbeTvIIG9MJK0FfkHxnc0itZSLDal/tSlPZo/?=
- =?us-ascii?Q?hkJopEWRG73/pPUh1wYmiOM129ru0c1ztvIrio6AsCvM1hDetw+1xmMBYqzl?=
- =?us-ascii?Q?uv0SZtsCT8YQztWTD59JNgTwJwM02nGANeIWzLO0PkQi3DiIUG2mTDYRxu7L?=
- =?us-ascii?Q?mn5vXYTmqARcNE20jdhEQBx5UaBULanTF85Y8rje?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b32bbc3c-eee0-4fe9-a2a0-08dc21c945da
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jan 2024 19:25:52.6194
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(376002)(346002)(136003)(230922051799003)(451199024)(82310400011)(186009)(1800799012)(64100799003)(36840700001)(40470700004)(46966006)(47076005)(36860700001)(966005)(83380400001)(36756003)(2616005)(70206006)(54906003)(8676002)(86362001)(70586007)(110136005)(316002)(7696005)(8936002)(478600001)(4326008)(2906002)(26005)(16526019)(1076003)(6666004)(336012)(44832011)(426003)(5660300002)(41300700001)(356005)(40460700003)(40480700001)(82740400003)(81166007)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jan 2024 19:26:36.9484
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: s8wzYKLa94XosgJ44eeYS4YBNy18aJEhCSczZaEEbL8JqTAT0Z20p5bADOlIVWp5IYWCP6J1/EhlMRQIojJ5pw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7487
+X-MS-Exchange-CrossTenant-Network-Message-Id: bb8bfb43-2b46-4bc9-7077-08dc21c96084
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	MWH0EPF000971E7.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5126
 
-On Tue, Jan 30, 2024 at 06:28:25PM +0000, Conor Dooley wrote:
-> Hey,
-> 
-> This version seems to be the lastest (v4) for this binding, but went out
-> prior to discussion actually finishing on the v1!! of this patch, even
-> ignoring Rob's comment today.
-> Please wait for conversations to resolve before sending new versions.
-> I, at least, do not get paid for what I do here, so I often need well
-> more than a day before I can get around to clearing my review queue.
-> On Wed, Jan 24, 2024 at 10:25:24AM -0500, Frank Li wrote:
-> 
-> > From: Ran Wang <ran.wang_1@nxp.com>
-> > 
-> > When DWC3 is set to host mode by programming register DWC3_GCTL, VBUS
-> > (or its control signal) will turn on immediately on related Root Hub
-> > ports. Then the VBUS will be de-asserted for a little while during xhci
-> > reset (conducted by xhci driver) for a little while and back to normal.
-> > 
-> > This VBUS glitch might cause some USB devices emuration fail if kernel
-> > boot with them connected. One SW workaround which can fix this is to
-> > program all PORTSC[PP] to 0 to turn off VBUS immediately after setting
-> > host mode in DWC3 driver(per signal measurement result, it will be too
-> > late to do it in xhci-plat.c or xhci.c).
-> > 
-> > Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
-> > Reviewed-by: Peter Chen <peter.chen@nxp.com>
-> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > ---
-> 
-> Where is your changelog?
+Some laptops ship an EDID in the BIOS encoded in the _DDC method that
+differs than the EDID directly on the laptop panel for $REASONS.
 
-Sorry forget add it this patch.
+This is the EDID that is used by the AMD Windows driver, and so sometimes
+different results are found in different operating systems.
 
-> 
-> >  Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-> > index 203a1eb66691f..8f5d250070c78 100644
-> > --- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-> > +++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-> > @@ -273,6 +273,13 @@ properties:
-> >        with an external supply.
-> >      type: boolean
-> >  
-> > +  snps,host-vbus-glitches-quirk:
-> 
-> I specifically recall saying no to adding "-quirk" here, but that
-> might've been after this patch was sent.
+This series adds a new DRM helper that will use acpi_video to fetch the
+EDID.
 
-Your comment is at v0 version. I told you there are v4. 
+On amdgpu when an eDP panel is found the BIOS
+is checked first for an EDID and that used as a preference if found.
 
-> 
-> > +    description:
-> > +      When set, power off all Root Hub ports immediately after
-> > +      setting host mode to avoid vbus (negative) glitch happen in later
-> > +      xhci reset. And the vbus will back to 5V automatically when reset done.
-> > +    type: boolean
-> 
-> Rob commented today on the v1 conversation:
-> https://lore.kernel.org/all/20240130181322.GA2079185-robh@kernel.org/
-> 
-> Please respond (there) to his comment.
+On nouveau it replaces the previous local function doing a similar role.
 
-Okay I will reply at v1 thread.
+This does *not* use struct drm_edid as this will require more involved
+amdgpu display driver work that will come separately as part of follow-ups
+to: https://lore.kernel.org/amd-gfx/20240126163429.56714-1-mwen@igalia.com/
 
-> 
-> Thanks,
-> Conor.
-> 
-> >    snps,is-utmi-l1-suspend:
-> >      description:
-> >        True when DWC3 asserts output signal utmi_l1_suspend_n, false when
-> > -- 
-> > 2.34.1
-> > 
+Mario Limonciello (4):
+  ACPI: video: Handle fetching EDID that is longer than 256 bytes
+  drm: Add drm_get_acpi_edid() helper
+  drm/amd: Fetch the EDID from _DDC if available for eDP
+  drm/nouveau: Use drm_get_acpi_edid() helper
 
+ drivers/acpi/acpi_video.c                     | 25 +++----
+ drivers/gpu/drm/Kconfig                       |  4 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu.h           |  1 +
+ .../gpu/drm/amd/amdgpu/amdgpu_connectors.c    |  4 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c       |  8 ++
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 10 ++-
+ .../amd/display/amdgpu_dm/amdgpu_dm_helpers.c |  9 ++-
+ drivers/gpu/drm/drm_edid.c                    | 73 +++++++++++++++++++
+ drivers/gpu/drm/nouveau/nouveau_acpi.c        | 27 -------
+ drivers/gpu/drm/nouveau/nouveau_acpi.h        |  2 -
+ drivers/gpu/drm/nouveau/nouveau_connector.c   |  2 +-
+ include/drm/drm_edid.h                        |  1 +
+ 12 files changed, 115 insertions(+), 51 deletions(-)
+
+-- 
+2.34.1
 
 
