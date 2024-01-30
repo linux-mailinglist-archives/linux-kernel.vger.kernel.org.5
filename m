@@ -1,211 +1,337 @@
-Return-Path: <linux-kernel+bounces-44470-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44466-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A62F884228C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:15:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 347FE842268
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:13:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 523FBB291A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:14:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E049F290EC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:13:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 394B467E74;
-	Tue, 30 Jan 2024 11:13:21 +0000 (UTC)
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0959F66B5F;
+	Tue, 30 Jan 2024 11:13:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="SDSghpIS";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9yr/rAM4";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qmPdSS5T";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+i24So+s"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6621E67748;
-	Tue, 30 Jan 2024 11:13:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E427F66B26
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 11:12:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706613200; cv=none; b=Ibn3RXibcmdpjj72FVcvc/IOeOxloY4jQYSCRJ5KlneYxpWzGaLzeaPtfsNPAUjA5HXjfJf5Rq+BIvIcA3cyuoj9HoJ2AfMmD41pmkSG2xh26W4LmCyrHWBBCwwM3y74Ylcx5QtHKLYvaPdT77ktf4Qswn+b7nWK345ngt3/Wz0=
+	t=1706613179; cv=none; b=DrRs+MSfZZRUlGtik4BVPRnUYjJpMybz7vX02aH+4A4KTCtmbupkKI93sX7X8AieLEXGeDCXSS1DugOkny5eFbgQjCbf2aJC+QJCcmEw97/pddt0NPKP41ltuMhyhTc3WTak/DU8DmrDDPfK1WLwnIrXW+gpDFpZFuNl09Z7fmw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706613200; c=relaxed/simple;
-	bh=tupRPT8v13/TtFaHOdEjRvt+jnR39S3ZzkN2bKcyr2c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MfewAZH/0wjLEJdYzvbY5W8DcX4QvmMTI5pF1SW8Bhx1b9kLUcUCFoufuRdBLLFYiQfcrzGpklNa+rEz1nTj9NwmaJSGr+aaa5zv2T0j6kiGG6UXpJ8mIHkRg9cdzsNAKgpp3I5JsBcVKjAJsfWHYovEVN3gzRwNrBP11CTDhKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-602cab8d7c9so41227417b3.0;
-        Tue, 30 Jan 2024 03:13:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706613197; x=1707217997;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FkhfesWc3cXNhR9I+0Gdhjj1m+D34LXlFioNPsh2mdQ=;
-        b=LP4Q2G8yKjxm1V23cchdw/AxqArU0By5PU8fqhQP+p0mCJqr8PKvbL+q6p3KlLVERN
-         occsI8aV01TqTnBa3u8xjCYh6ZWbmDu+P/0jmsYGU6FPqgSvM/I2Cdf/lYYB2nImiV1s
-         sadsA92fukCXx09ikmXC/XrgTZeKilMO2xMAyEZC/EqYgmC6c25QTkaOxHaEse2HO/4L
-         2j48+mAoZoEjAV+gi7pKC8o9/reWa2TYlPFmzusIDRPIgCk3+qhgZql/5pbSswrRh+Sq
-         D1YuOev1SUSWeXsgmykNrmbNp1/zf7EPtYpCe17WzixsC/Iin+NY1sQ8hYHCzZ94EgrZ
-         jbNg==
-X-Gm-Message-State: AOJu0YzcQNYMvb72P4BcYj1NdrDhGdMrZbldbAaonDnZCqcY8vf/VQd8
-	bxuQezvZHiImiClvTGbXukgYWIUqRXFPhSIISs+MtNHjK0tN27NldsNIeFIsM1Q=
-X-Google-Smtp-Source: AGHT+IFDBh3pHQ3m10EJEXl7Fy1Qfik51C6DyUKrBQ1PIZC7ZFRrGTR0oFzfDU8mnmZYFoLG5OIqSQ==
-X-Received: by 2002:a81:430c:0:b0:5fb:906b:548 with SMTP id q12-20020a81430c000000b005fb906b0548mr5289704ywa.14.1706613196969;
-        Tue, 30 Jan 2024 03:13:16 -0800 (PST)
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com. [209.85.128.179])
-        by smtp.gmail.com with ESMTPSA id w69-20020a0dd448000000b005f66a83db14sm3142296ywd.131.2024.01.30.03.13.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Jan 2024 03:13:16 -0800 (PST)
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-603edb4c126so8213327b3.3;
-        Tue, 30 Jan 2024 03:13:16 -0800 (PST)
-X-Received: by 2002:a0d:ff04:0:b0:5ff:a8da:5a5a with SMTP id
- p4-20020a0dff04000000b005ffa8da5a5amr5698698ywf.5.1706613196494; Tue, 30 Jan
- 2024 03:13:16 -0800 (PST)
+	s=arc-20240116; t=1706613179; c=relaxed/simple;
+	bh=3iEbLDOu9nt8iOdGf5LsQJCKQamAr4+HCLfGDWLOBvA=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=cOPLJD4fxuojc8ZxistPlymDtNshFmfl8nKUQOnORlVFs70AO4Ghi9tTeJ6doUPSmhzmxMmQHYQrrAlath5VcutQN/rJ+JhUUOtoaIqxEaBs6iyjHhLax1j382Hj0Bg9qCSJOYS6C3EX3D1nh2Zk41FWJDAUYcsAZrdKMD0TD1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=SDSghpIS; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9yr/rAM4; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qmPdSS5T; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+i24So+s; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id BE9B91F842;
+	Tue, 30 Jan 2024 11:12:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706613175; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type;
+	bh=Dxati+qBxOFlcNbXmMq5JTlEeeYaTlm8C204WS2tk6Y=;
+	b=SDSghpIS1VC6hue7r6ICL4g4GrlOkEvelRnj+OvyR51Yl2L7TUMk4r2Du3vDCmsWNkuo2w
+	GhxAYj9uQcyCzKAxg+L9A0Gx/Nnu2j+t2C0e1ZnZnLU86yFvEdAzo00Xgw/HAaxKRRNnxA
+	KAlzK9Xmz8g52TRvpoxgtNi+RK4x7Es=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706613175;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type;
+	bh=Dxati+qBxOFlcNbXmMq5JTlEeeYaTlm8C204WS2tk6Y=;
+	b=9yr/rAM4ph06CMsk3bDUI1rCGaBmqAOqVNtZfsW05i5BAihtixsuxdJ4C9KOu9Q65j56d4
+	Wbw1BS5nYLE5gNCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706613174; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type;
+	bh=Dxati+qBxOFlcNbXmMq5JTlEeeYaTlm8C204WS2tk6Y=;
+	b=qmPdSS5Tx5H3lAFbxyR3ESCpmaff0bUGmDdttAPE7U5RqVhvsJNEhN/U9/zKofQJ8L9XgF
+	oKvM0euzjcCv4nr/JdL2zAf73EuwpEjoxuJeevOFPfQSiJ9EIIPxFFG5BvRngTWM3gFU0/
+	CQHz8666joghY6VA3QwiC0d/b4fXoKU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706613174;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type;
+	bh=Dxati+qBxOFlcNbXmMq5JTlEeeYaTlm8C204WS2tk6Y=;
+	b=+i24So+s85ujDoaDcqYJMLNVGepWBiH2meklDrKvizTHucYoN9m9zybrbsQ0I5G3WDv5vv
+	79lvFPeXbMqkXUCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AD99212FF7;
+	Tue, 30 Jan 2024 11:12:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id WzRjKbbZuGXTPgAAD6G6ig
+	(envelope-from <chrubis@suse.cz>); Tue, 30 Jan 2024 11:12:54 +0000
+Date: Tue, 30 Jan 2024 12:13:11 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: ltp@lists.linux.it, linux-kernel@vger.kernel.org,
+	libc-alpha@sourceware.org
+Cc: lwn@lwn.net, akpm@linux-foundation.org, torvalds@linux-foundation.org
+Subject: [ANNOUNCE] The Linux Test Project has been released for JANUARY 2024
+Message-ID: <ZbjZxy4vbxoXUJ-i@yuki>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240129151618.90922-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240129151618.90922-2-prabhakar.mahadev-lad.rj@bp.renesas.com> <20240129-magical-unclaimed-e725e2491ccb@spud>
-In-Reply-To: <20240129-magical-unclaimed-e725e2491ccb@spud>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 30 Jan 2024 12:13:05 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVhXh_Cd8m00xfVRB9JA8Mfb9+qccu94iVpUMS2z5kmUQ@mail.gmail.com>
-Message-ID: <CAMuHMdVhXh_Cd8m00xfVRB9JA8Mfb9+qccu94iVpUMS2z5kmUQ@mail.gmail.com>
-Subject: Re: [PATCH 1/5] dt-bindings: interrupt-controller:
- renesas,rzg2l-irqc: Document RZ/Five SoC
-To: Prabhakar <prabhakar.csengg@gmail.com>
-Cc: Conor Dooley <conor@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Magnus Damm <magnus.damm@gmail.com>, linux-renesas-soc@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=qmPdSS5T;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=+i24So+s
+X-Spamd-Result: default: False [-4.81 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 TO_DN_NONE(0.00)[];
+	 RCPT_COUNT_FIVE(0.00)[6];
+	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_IN_DNSWL_HI(-1.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: BE9B91F842
+X-Spam-Level: 
+X-Spam-Score: -4.81
+X-Spam-Flag: NO
 
-Hi Prabhakar,
+Good news everyone,
 
-On Mon, Jan 29, 2024 at 6:30=E2=80=AFPM Conor Dooley <conor@kernel.org> wro=
-te:
-> On Mon, Jan 29, 2024 at 03:16:14PM +0000, Prabhakar wrote:
-> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> >
-> > Document RZ/Five (R9A07G043F) IRQC bindings. The IRQC block on RZ/Five =
-SoC
-> > is almost identical to one found on the RZ/G2L SoC with below differenc=
-es,
-> > * Additional BUS error interrupt
-> > * Additional ECCRAM error interrupt
-> > * Has additional mask control registers for NMI/IRQ/TINT
-> >
-> > Hence new compatible string "renesas,r9a07g043f-irqc" is added for RZ/F=
-ive
-> > SoC.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+the Linux Test Project test suite stable release for *January 2024* has been
+released.
 
-Thanks for your patch!
+Since the last release 315 patches by 34 authors were merged.
 
-> > --- a/Documentation/devicetree/bindings/interrupt-controller/renesas,rz=
-g2l-irqc.yaml
-> > +++ b/Documentation/devicetree/bindings/interrupt-controller/renesas,rz=
-g2l-irqc.yaml
-> > @@ -23,6 +23,7 @@ properties:
-> >    compatible:
-> >      items:
-> >        - enum:
-> > +          - renesas,r9a07g043f-irqc   # RZ/Five
-> >            - renesas,r9a07g043u-irqc   # RZ/G2UL
-> >            - renesas,r9a07g044-irqc    # RZ/G2{L,LC}
-> >            - renesas,r9a07g054-irqc    # RZ/V2L
-> > @@ -88,6 +89,12 @@ properties:
-> >        - description: GPIO interrupt, TINT30
-> >        - description: GPIO interrupt, TINT31
-> >        - description: Bus error interrupt
-> > +      - description: ECCRAM0 TIE1 interrupt
+Patch review is what most of the projects struggle with and LTP is no
+different. If you can spare some effort helping with the patch review is more
+than welcomed.
 
-ECCRAM0 1bit error interrupt?
+NOTABLE CHANGES
+===============
 
-> > +      - description: ECCRAM0 TIE2 interrupt
+* New tests
+  - splice07, accept03, readahead01:
 
-ECCRAM0 2bit error interrupt?
+    Tests that feeds the syscall all kinds of invalid file descriptors and
+    checks that the syscall fails properly.
 
-> > +      - description: ECCRAM0 overflow interrupt
+   - proc_sched_rt01 a regression test for:
 
-ECCRAM0 error overflow interrupt?
+     c1fc6484e1fb ("sched/rt: sysctl_sched_rr_timeslice show default timeslice after reset")
+     079be8fc6309 ("sched/rt: Disallow writing invalid values to sched_rt_period_us")
 
-> > +      - description: ECCRAM1 TIE1 interrupt
-> > +      - description: ECCRAM1 TIE2 interrupt
-> > +      - description: ECCRAM1 overflow interrupt
+  - ksm07 a test for KSM smart-scan.
 
-Likewise.
+  - pathconf02 negative testcases for pathconf()
 
-> >    interrupt-names:
-> >      minItems: 41
-> > @@ -134,6 +141,12 @@ properties:
-> >        - const: tint30
-> >        - const: tint31
-> >        - const: bus-err
-> > +      - const: eccram0-tie1
-> > +      - const: eccram0-tie2
-> > +      - const: eccram0-ovf
-> > +      - const: eccram1-tie1
-> > +      - const: eccram1-tie2
-> > +      - const: eccram1-ovf
+  - pipe15 A regresson test for:
 
-Why not use the naming from the docs (all 6 include "ti")?
-EC7TIE1_0, EC7TIE2_0, EC7TIOVF_0, EC7TIE1_1, EC7TIE2_1, EC7TIOVF_1
-=3D> ec7tie1-0, ec7tie2-0, ec7tiovf-0, ...?
+    46c4c9d1beb7 ("pipe: increase minimum default pipe size to 2 pages")
 
-> I think the restrictions already in the file become incorrect with this
-> patch:
->   - if:
->       properties:
->         compatible:
->           contains:
->             enum:
->               - renesas,r9a07g043u-irqc
->               - renesas,r9a08g045-irqc
->     then:
->       properties:
->         interrupts:
->           minItems: 42
->         interrupt-names:
->           minItems: 42
->       required:
->         - interrupt-names
->
-> This used to require all 42 interrupts for the two compatibles here
-> and at least the first 41 otherwise. Now you've increased the number of
-> interrupts to 48 thereby removing the upper limits on the existing
-> devices.
+  - nft02 A regression test for:
 
-I'm gonna repeat (and extend) my question from [1]: How come we thought
-RZ/G2L and RZ/V2L do not have the bus error and ECCRAM interrupts?
-Looks like most of the conditional handling can be removed (see below).
+     515ad530795c ("netfilter: nf_tables: do not ignore genmask when looking up chain by id") aka CVE-2023-31248
 
-> Given the commit message, I figure that providing 48 interrupts for
-> (at least some of) those devices would be incorrect?
+  - sched_setscheduler04 a test for SCHED_RESET_ON_FORK
 
-Looks like all of RZ/G2L{,C}, RZ/V2L, RZ/G2UL, and RZ/Five support
-all 48 interrupts.  RZ/G3S lacks the final three for ECCRAM1.
+  - setsockopt10 2c02d41d71f9 ("net/ulp: prevent ULP without clone op from entering the LISTEN status") aka CVE-2023-0461
 
-[1] "Re: [PATCH v3 8/9] dt-bindings: interrupt-controller:
-renesas,rzg2l-irqc: Document RZ/G3S"
-https://lore.kernel.org/r/CAMuHMdX88KRnvJchUwrWcgmPooAESOT2492Nr1Z_5UMng3q_=
-_Q@mail.gmail.com
+  - gettid02 A basic gettid02 test.
 
-Gr{oetje,eeting}s,
+  - splice06 A test that splicing from a /proc files works.
 
-                        Geert
+* Increased coverage
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+   - ioctl02 cover more modern termios ioctls() as well.
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+   - fanotify13 More test coverage for overlayfs.
+
+   - input* test now check UI_GET_NAME ioctl() too.
+
+* Removed tests
+
+   - fork12 Which was a naive fork bomb test, we do have other tests
+            (setrlimit01.c, ...) that better cover this scenario.
+
+   - mongo test framework
+
+     Which was test reiser, ext2 and jfs unmaintained for a decade.
+
+   - simple_tracer.c Tracing test from 2009 that does not compile anymore.
+
+   - runtest/fsx-linux This is consolidation of runtest files, since these test
+                       duplicated in ltp-aiodio.part3.
+
+   - testscripts/autofs{1,4}.sh, testscripts/sysfs.sh,
+     testscripts/ltp-scsi_debug.sh, testscripts/ltpdmmapper.sh
+
+     These were unmaintained and unused scripts.
+
+   - scsi/* A testsuite with a custom kernel module for kernel 2.5 that didn't
+            compile cleanly for decades.
+
+   - load_stress_all_kernel_modules.sh Broken for quite some time.
+
+* The LTP library now has a functions to iterate over different
+  file descriptors. That allows us to easily implement more comprehensive tests
+  that feed various syscalls all possible file descriptors and check that the
+  syscall fails properly with invalid combinations. Most notable use of this
+  library is the newly introduced splice07.c test.
+
+* The minimal size of the device for a few filesystem tests was increased to
+  1GB because modern filesystems, most notably Btrfs does not work properly on
+  smaller devices.
+
+* LTP now tests bcachefs if kernel support and bcache.mkfs is present
+
+* 30 testcases were converted to the new test library
+
++ The usual amount of fixes and cleanups
+
+NOTABLE CHANGES IN NETWORK TESTS
+================================
+brought to you by Petr Vorel
+
+The performance tests in net.features can be now skipped by setting
+LTP_NET_FEATURES_IGNORE_PERFORMANCE_FAILURE=1 which is useful when testing is
+executed on VMs on a overloaded host or if we are running tests with a
+background load.
+
+KIRK (previously RUNLTP-NG)
+===========================
+
+Kirk was updated to v1.2
+
+This version brings the following updates:
+
+ - show both stdout and stderr when executing tests on host
+ - support for external commands on different SUTs
+ - warning message when SUT doesn't support parallel execution
+ - more stable epoll() communication with LTX
+ - minor fixes
+ - updated documentation
+
+DOWNLOAD AND LINKS
+==================
+
+The latest version of the test-suite contains 3000+ tests for the Linux
+and can be downloaded at:
+
+https://github.com/linux-test-project/ltp/releases/tag/20240129
+
+The project pages as well as GIT repository are hosted on GitHub:
+
+https://github.com/linux-test-project/ltp
+http://linux-test-project.github.io/
+
+If you ever wondered how to write a LTP testcase, don't miss our developer
+documentation at:
+
+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
+
+https://github.com/linux-test-project/ltp/wiki/C-Test-API
+
+https://github.com/linux-test-project/ltp/wiki/C-Test-Network-API
+
+https://github.com/linux-test-project/ltp/wiki/Shell-Test-API
+
+https://github.com/linux-test-project/ltp/wiki/C-Test-Case-Tutorial
+
+https://github.com/linux-test-project/ltp/wiki/Build-System
+
+Patches, new tests, bugs, comments or questions should go to to our mailing
+list at ltp@lists.linux.it.
+
+CREDITS
+=======
+
+Many thanks to the people contributing to this release:
+
+git shortlog -s -e -n 20230929..
+
+   147  Petr Vorel <pvorel@suse.cz>
+    25  Yang Xu <xuyang2018.jy@fujitsu.com>
+    21  Andrea Cervesato <andrea.cervesato@suse.com>
+    18  Martin Doucha <mdoucha@suse.cz>
+    12  Cyril Hrubis <chrubis@suse.cz>
+    11  Marius Kittler <mkittler@suse.de>
+     8  Wei Gao <wegao@suse.com>
+     7  Amir Goldstein <amir73il@gmail.com>
+     7  Richard Palethorpe <rpalethorpe@suse.com>
+     6  Avinesh Kumar <akumar@suse.de>
+     6  Edward Liaw <edliaw@google.com>
+     6  Jan Kara <jack@suse.cz>
+     5  Jan Stancek <jstancek@redhat.com>
+     4  Hongchen Zhang <zhanghongchen@loongson.cn>
+     4  Kevin Brodsky <kevin.brodsky@arm.com>
+     4  Xiao Yang <yangx.jy@fujitsu.com>
+     3  Shiyang Ruan <ruansy.fnst@fujitsu.com>
+     2  Li Wang <liwang@redhat.com>
+     2  Li Zhijian <lizhijian@fujitsu.com>
+     2  Pengfei Xu <pengfei.xu@intel.com>
+     2  Stefan Roesch <shr@devkernel.io>
+     1  Alexander Kanavin <alex@linutronix.de>
+     1  Brennan Ashton <bashton@brennanashton.com>
+     1  Korobeynikov Gleb <mathkgd@mail.ru>
+     1  Marcos Paulo de Souza <mpdesouza@suse.com>
+     1  Mengchi Cheng <mengcc@amazon.com>
+     1  Murphy Zhou <jencce.kernel@gmail.com>
+     1  Shizhao Chen <shichen@redhat.com>
+     1  Shoukui Zhang <zhangshoukui@xiaomi.com>
+     1  Subramanya Swamy <subramanya.swamy.linux@gmail.com>
+     1  haopengxiang <haopengxiang@xiaomi.com>
+     1  nietingting <nietingting@xiaomi.com>
+     1  wangxuewen <wangxuewen@kylinos.cn>
+     1  ybonatakis <ybonatakis@suse.com>
+
+And also thanks to patch reviewers:
+
+git log 20230929.. | grep -Ei '(reviewed|acked)-by:' | sed 's/.*by: //' | sort | uniq -c | sort -n -r
+
+    111 Petr Vorel <pvorel@suse.cz>
+     70 Cyril Hrubis <chrubis@suse.cz>
+     47 Li Wang <liwang@redhat.com>
+     35 Richard Palethorpe <rpalethorpe@suse.com>
+     14 Martin Doucha <mdoucha@suse.cz>
+      8 Amir Goldstein <amir73il@gmail.com>
+      7 Xiao Yang <yangx.jy@fujitsu.com>
+      7 Marius Kittler <mkittler@suse.de>
+      6 Jan Kara <jack@suse.cz>
+      4 Avinesh Kumar <akumar@suse.de>
+      3 Andrea Cervesato <andrea.cervesato@suse.com>
+      3 Jan Stancek <jstancek@redhat.com>
+      2 Yang Xu <xuyang2018.jy@fujitsu.com>
+      1 Petr Vorel <petr.vorel@gmail.com>
+      1 Christian Brauner <brauner@kernel.org>
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
