@@ -1,108 +1,132 @@
-Return-Path: <linux-kernel+bounces-45168-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45170-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E4AB842C6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:10:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BFA1842C6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:10:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E3141F23FEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:10:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB79AB22767
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:10:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15C7C67C51;
-	Tue, 30 Jan 2024 19:10:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28CDF7AE49;
+	Tue, 30 Jan 2024 19:10:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="AZUgL6e7"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="NAabapWD"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEA8F7AE40
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 19:10:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBF906995A
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 19:10:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706641803; cv=none; b=pHPb08yoyz8nk3FLV0rt5yqku+0ge/gUbgbFJ1knJr2OiujqmB7UNsXECkyj2VsPOHVztw5yBC2oZAHZ/X6ifMH+SYhwqU9KVbCvCVjXZ7OovgFrQhN/RpWQt582YW1/F/L7/1gGCZg5QiCmPpiYbmb7UD3nN1DQTuAZ8wEh4JM=
+	t=1706641845; cv=none; b=bPGPQH+lA+HA58EKDzIxJ7M97CG4R6HigxnKi5YwZ6tRbncPo7KCcevBI6Elk2GRfq/aZMI8O9pWoC2eCpvNWfXJKuXTGzBgV4+jK0JtnvBDm5qtcGtdBOwd2eSnIikahFW91jorlKrS++3hWiFUZaiepOqFlJMW4DdRF3KWt0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706641803; c=relaxed/simple;
-	bh=4Wv7EMdZaXZPyCqV9RTBByX8RH6muWD20puuZEhAicQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BprBXA10nSs75jPCp13l9tMcaen8EYyOsMvIYXvUzWmpKyRXSa8YmUGEi6y7asu9Q9jzHPAgX6BmbHikBdhylwORiih30evKZA28zBXqcIxeZd1fHbgRidEYPUKT3aqdLX2oWbGC7FqJoQQDWXHuWPWsw1qIXnkPM3XcFsw1QAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=AZUgL6e7; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 4973F40E016C;
-	Tue, 30 Jan 2024 19:09:57 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 5DI3nXipE2Gi; Tue, 30 Jan 2024 19:09:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1706641794; bh=RTH1wsxLCCpTiC5DL2Utg7rZdMRnIA9+LdjTLXF1qHU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AZUgL6e7Qf80Liky3XdrojKCNDmXCKagEIFO3tHAyOUMXmbO8hkoWorr0rrYBA8Oh
-	 S3IkSYJTC6FBInJS4y39q8g6YOr3jlGOSxVIMxmkpehP7SwfnMoTXqhku3L97m3LZ7
-	 ojybgFcAE49EyzpkfxVm7XhjRKYWxcYfxLt6razd+o1/cusuq/LXtkXZUfoaeB6t8w
-	 MSR2NA1lTbbAdzu9Xqeuoy8zHOmXn65VxqJY45RyROGeEFPEe8bZ6AC76vvtkxArCZ
-	 RW5FYFq4GfCLgrwLbmANVKyfOcGy/nmLvT1E/p+EOykefxSfZc6d2wcjQovwyWtR7i
-	 wGQO+FhNrbZMA6tfC4465DPt+RcVCF5/AFEiIRr85mB9dLFnchBmGgoVNsXHY/0LSo
-	 aIBqjjJPiT7F0UN/h07Pi9OtYPXjvl07yf7+0v+CR13BF8CRNSuHV+x6iLAWfey2tf
-	 EYcy7TbNT/oJv7qauVHZr5RYodUjELwjguvknyGGnyCaqEJylTx9BxoPYtt7pele+3
-	 PLE69QdSEJb0x3lG2FQ8XOtbTZuCiNFjA5lUpTrUVy4kA+IGpqEloXAzUfp8RWAPUc
-	 NDM2c6xjvmbVF0GK7CGVd2r4oI9jyajKkvMnLdBCLATA6hNWsRlHK6JcbGj7aybNXt
-	 XLukxXLkZM3S1lMcAFbAe188=
-Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2128340E00B2;
-	Tue, 30 Jan 2024 19:09:35 +0000 (UTC)
-Date: Tue, 30 Jan 2024 20:09:29 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Andrew Cooper <andrew.cooper3@citrix.com>,
-	Arjan van de Ven <arjan@linux.intel.com>,
-	Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
-	Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-	Sohil Mehta <sohil.mehta@intel.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Zhang Rui <rui.zhang@intel.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Feng Tang <feng.tang@intel.com>,
-	Andy Shevchenko <andy@infradead.org>,
-	Michael Kelley <mhklinux@outlook.com>,
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: Re: [patch v5 04/19] x86/cpu: Use common topology code for Centaur
- and Zhaoxin
-Message-ID: <20240130190929.GDZblJaV66OM8NW8MO@fat_crate.local>
-References: <20240117115752.863482697@linutronix.de>
- <20240117115908.542473474@linutronix.de>
+	s=arc-20240116; t=1706641845; c=relaxed/simple;
+	bh=eBVjOwBzBXz+wIjzt1q65tjnnhsG8BpMMZrg4Z57nN8=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=bu5mJOmerFhlmHqrXn+OmoOJZVx6vOADBpUC1NMsJjymsjR/kMWSprs/0g5KNFKgTai+51m6Gc8Ou6Vb4ELINQgkVGzSPW8cUS6Z5oHJOJ/lobXYCqFVcyYkeC+lzwtK/8JG4tjTo0G4E5UqmVY9QiCiovZE25ejnkyBx/mXIHQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=NAabapWD; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d8cea8bb3bso13653625ad.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 11:10:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706641843; x=1707246643; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6Ih6aJQpYeudm4DH7GXDOkPsJAqGPh0tA+fMPoGsmAE=;
+        b=NAabapWDUOV40bv+6ZwqKfkgcp2rzUkefapK8A8r4GnPPi7tCfMJ4rsjkM21a9aiBP
+         6a46PvDrgFknr1KEufEs1lk4YTnSaNOBSJXWXUwc1IuoPQVGnYrPdAy2HiTmP+35mhER
+         ZWSd7zR1cJyfLPVb/h26BLDhk3GZUoHsG6r1Dwxm47z49an7e+bQS9YMaG2i1w0PEXJK
+         8RJ+1tedqD4WoXpV6CPlMCe7BbQyr01QADTQg0+qfcwsDb2UvZlroUidhEc6ur9L4NXW
+         Z0CVKrh0GV+fzPckYqQld4ADyu2p7p4Ou40Xf4TCh2KRc5zjxdH8w2pw6Uuu/BqOVZin
+         7qLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706641843; x=1707246643;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6Ih6aJQpYeudm4DH7GXDOkPsJAqGPh0tA+fMPoGsmAE=;
+        b=H0KwT0sPYNBuVPjJll8GQgPB2/HSvn/jKFv6cWtf8AQs9deQ9rVLm4Av2rqz7RsBA2
+         u4oyuxIr1r/C/A8qA4m4ApN8QxgQlGnqqQHVvWDOqsvWVbldc6UG2maOrX7OxJU6evAr
+         yiCQ5KOVyASxH5jc3nVVCIAyoL3FMla0FizEWzmK+Y2aWXofANBIA2O7Y2s2Lc8WIgw0
+         1F3OIgYiVJBwYkQimTRKNsvKBnXRttxYIDihXre5khyzMkKc/sk44uywQWBFQKCVA7BF
+         B0YHi11Xaer65a9omRCVmVRpQ1i+y4iQfR9b6m6AFx2XD5hj8ysec9KLN/WkoK6CGQ+8
+         z9Hg==
+X-Gm-Message-State: AOJu0YygIxTx5OG7e9lsfPf893uB18IS6cLL63gFgFtCclNZMXpTpV7Q
+	cGDekfFMR+k3h0fQZ/HLsr2aGZ/cMZNcagvq/Xw5EXnW2Ra0bVE/Tvdorz4lOFc=
+X-Google-Smtp-Source: AGHT+IFuOQ56M0BP8wcdrL0TKmyCJCLk2a3wcsCv//tTV80wCtl5ogSqVeOVepqLf89//Be6TCXAGA==
+X-Received: by 2002:a17:902:f689:b0:1d8:f7d2:a3ec with SMTP id l9-20020a170902f68900b001d8f7d2a3ecmr399698plg.61.1706641843104;
+        Tue, 30 Jan 2024 11:10:43 -0800 (PST)
+Received: from charlie.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id p16-20020a170902ebd000b001d91d515dffsm605340plg.156.2024.01.30.11.10.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jan 2024 11:10:42 -0800 (PST)
+From: Charlie Jenkins <charlie@rivosinc.com>
+Subject: [PATCH v5 0/2] lib: checksum: Fix issues with checksum tests
+Date: Tue, 30 Jan 2024 11:10:02 -0800
+Message-Id: <20240130-fix_sparse_errors_checksum_tests-v5-0-4d8a0a337e5e@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240117115908.542473474@linutronix.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAIpJuWUC/5XOQWrDMBAF0KsEratijWRZzqr3KMVYo3EtSqygc
+ UVL8N0rZxVKFsnyf5j35yKYciQWx8NFZCqRY1pqaF8OAudx+SQZQ80CGjCNUr2c4s/A5zEzDZR
+ zyjzgTPjF36dhJV5ZgvXOem1C54yozDlTvblOvH/UPEdeU/69Lha1t0/gRUklIegwORtcnXjLs
+ SSOC75iOondL3Bjgn7ABNlIrxvrLVIXxvaOqZ81dTVpIsRu6g303R3T3JrmAdPsfyJ4F0CPusV
+ /5rZtf7gqhQ/PAQAA
+To: Guenter Roeck <linux@roeck-us.net>, 
+ David Laight <David.Laight@aculab.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, Charlie Jenkins <charlie@rivosinc.com>, 
+ kernel test robot <lkp@intel.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1706641842; l=1332;
+ i=charlie@rivosinc.com; s=20231120; h=from:subject:message-id;
+ bh=eBVjOwBzBXz+wIjzt1q65tjnnhsG8BpMMZrg4Z57nN8=;
+ b=7sF2F1mP4h7BoqiMwL28dR/S3hgryYSg+PKK6R9aomtq9SivpE91yVhID2gujBmc4jLiPiEIl
+ YuEQKAxdEgzCSSz4JXwndteXr6YgurhPhiSJeM98NUfehlN86tmUzRv
+X-Developer-Key: i=charlie@rivosinc.com; a=ed25519;
+ pk=t4RSWpMV1q5lf/NWIeR9z58bcje60/dbtxxmoSfBEcs=
 
-On Tue, Jan 23, 2024 at 01:53:35PM +0100, Thomas Gleixner wrote:
-> From: Thomas Gleixner <tglx@linutronix.de>
-> 
-> Centaur and Zhaoxin CPUs use only the legacy SMP detection. Remove the
-> invocations from their 32bit path and exempt them from the call 64bit.
+The ip_fast_csum and csum_ipv6_magic tests did not have the data
+types properly casted, and improperly misaligned data.
 
-"... and exclude them from the 64-bit call path."
+Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+---
+Changes in v5:
+- Add Guenter's tested-by
+- CC Andrew Morton
+- Link to v4: https://lore.kernel.org/r/20240124-fix_sparse_errors_checksum_tests-v4-0-bc2b8d23a35c@rivosinc.com
 
+Changes in v4:
+- Pad test values with zeroes (David)
+- Link to v3: https://lore.kernel.org/r/20240123-fix_sparse_errors_checksum_tests-v3-0-efecc7f94297@rivosinc.com
+
+Changes in v3:
+- Don't read memory out of bounds
+- Link to v2: https://lore.kernel.org/r/20240123-fix_sparse_errors_checksum_tests-v2-0-b306b6ce7da5@rivosinc.com
+
+Changes in v2:
+- Add additional patch to fix alignment issues
+- Link to v1: https://lore.kernel.org/r/20240119-fix_sparse_errors_checksum_tests-v1-1-2d3df86d8d78@rivosinc.com
+
+---
+Charlie Jenkins (2):
+      lib: checksum: Fix type casting in checksum kunits
+      lib: checksum: Use aligned accesses for ip_fast_csum and csum_ipv6_magic tests
+
+ lib/checksum_kunit.c | 389 +++++++++++++++++----------------------------------
+ 1 file changed, 129 insertions(+), 260 deletions(-)
+---
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+change-id: 20240119-fix_sparse_errors_checksum_tests-26b86b34d784
 -- 
-Regards/Gruss,
-    Boris.
+- Charlie
 
-https://people.kernel.org/tglx/notes-about-netiquette
 
