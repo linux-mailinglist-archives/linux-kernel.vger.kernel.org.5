@@ -1,119 +1,110 @@
-Return-Path: <linux-kernel+bounces-44754-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44757-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DB638426FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:33:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0208842701
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:34:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AC7F5B28AA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:33:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BAD928791C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:34:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FD676A34B;
-	Tue, 30 Jan 2024 14:32:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12EFA7E571;
+	Tue, 30 Jan 2024 14:34:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=marliere.net header.i=@marliere.net header.b="hOx88CkY"
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="unimEILv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 272B474E17;
-	Tue, 30 Jan 2024 14:32:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54CF97CF37
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 14:34:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706625164; cv=none; b=bFNgB7tU3BXJzNvLnPPJ9Yt3swioCHI/Be28Nck7feRYsml99Uj8HRRvNNDZxe3b2MU0YrMyegd0mv2R4It+cWqCuCF/PLndM06pB1XrP/uQ0zZWY1Gg8xzifX89JjCaDGjn4DoiRXWTn+XLe39x/q7aXArpz+RMtfw/+VUrd8U=
+	t=1706625268; cv=none; b=LNAHNXs0DD8/D/SH2BIJ/mqUqIjo1OvvhoagqfHI36x5p7yC6Rg9asq/iTOWI6B/uUMbX8yZAAhg6matmSIO1flu62kyxNK7uCquuVlJm2xpp3GlFEPHIJE1ddaQ5dXQWLYO9S9IAeXxanr+ZjvMm9uDUhgVu3gVVd/C2Ss3n/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706625164; c=relaxed/simple;
-	bh=nuQGv1Jds4FtXlqqQLPGMEKmNz6TXTY7xb77Rn4Uis0=;
+	s=arc-20240116; t=1706625268; c=relaxed/simple;
+	bh=2190zxEd8Xhtvh4IrZjtdwgLMYVBXviRCIAWurSiB8A=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kK3sv2na5MkndJ/NgostJXD3Ih6xmg7HzaKWLGNkzg3fK3BlPBaKMwMqCWsxxPJdpJbYCC0MNaxfj1okwJX1to6X7knUDLLgW5MeNJDS8h4wv8TENxwzcNSvL2+v0uSJd4OkM93LwUeYx9b59NAhKAyW2Wy2aNGq21p/oylhcSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=fail (0-bit key) header.d=marliere.net header.i=@marliere.net header.b=hOx88CkY reason="key not found in DNS"; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5d4a1e66750so2137961a12.0;
-        Tue, 30 Jan 2024 06:32:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706625161; x=1707229961;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:dkim-signature:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=n1bRZI/oUopCNXOjXdeojE7GQGN2Uu9IDwrj3sROkxw=;
-        b=uDvRruN2hmj14UiOj9wn2SENQBCunpUvvuAPkPtj+QR7tUHB7MuEd63cWIQ92a9RtI
-         wXVsM4xJSNwdmOhS7cKSOuHgbUQ/3H0AxDu9j3SYrjtCObVk8tdCNEfA69KZUGHkbHVF
-         FZ2usNnPssIyZGP+llP6C0CwbD97VeTTzIGxsQ2pGs/no94TNiB0Gj/g8X5/ZIUVGwRg
-         xBnFsRLZHz61zXXScZ1Rzo5uJQcpUzcIpT1bCh5VLUR4KvegYBDkq0Ija8qDJ46lLJWW
-         FSgKuySRJLSOA7bsQ4afqcFZUC5xwahS3VvSFwv70WGBF/Mtzec7VEUlXlhgFfbz7ZDi
-         GkJA==
-X-Gm-Message-State: AOJu0Yx5ALVgnWHMY+CR0eHVN2wkmnaqhMBaYzoyH4kJSHmlkxnxKaGJ
-	+gs6h2G+4TXLqkJwO6+eCT5LiVf2yFRCiOkSwDmaG2jBhoEsHSJ2
-X-Google-Smtp-Source: AGHT+IFiv7dYpDESmpNj9u3X8FlcxqrpBMcMuVqkQU4azqWhgsppFKd2Eu2fF4hLHtoNgEOAQcofDQ==
-X-Received: by 2002:a05:6a20:6d91:b0:19c:7e49:495a with SMTP id gl17-20020a056a206d9100b0019c7e49495amr4123145pzb.57.1706625161337;
-        Tue, 30 Jan 2024 06:32:41 -0800 (PST)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id a8-20020a62d408000000b006dbdac1595esm8469877pfh.141.2024.01.30.06.32.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 06:32:40 -0800 (PST)
-Date: Tue, 30 Jan 2024 11:33:01 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2023; t=1706625158;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=n1bRZI/oUopCNXOjXdeojE7GQGN2Uu9IDwrj3sROkxw=;
-	b=hOx88CkYwmXA3RcMYHBDx+Zk6hEYtjKrKCCssw5Xw2NpUTGcVyGUl4Zm0c9U+9o9m+Xzf2
-	c5gLOskrGzneBORNFPToP+UcrXO4GYW5htTamgBgThdQdxYmY3QNX2GB5VGVcGPdVyNboB
-	hFp9tCXH9Clkx/swjh/olFBhA3wB7luaqeUxkyjdg0C/rwyJl2cPp2+plVTvQ77ob6mAcc
-	DPR9aqkkFsr71u0p1FYrrA8kdCmWtIMVWVEgzdZ1QK7hoAoboo90j2vHAnAOfBgb1O3mnk
-	SvT8bsdZH7j+ZOz+W9IL94QzWAeOh/BgB8vwaMjLUBFyGejuGmY2YwwDifbcJg==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, akpm@linux-foundation.org, 
-	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org, 
-	lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com, f.fainelli@gmail.com, 
-	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, 
-	allen.lkml@gmail.com
-Subject: Re: [PATCH 6.7 000/346] 6.7.3-rc1 review
-Message-ID: <pivme2beq4h7wrbmjt7s6s4jgihyh5y2tt5rjt3c2flvtto4ao@y5iflivhyz6u>
-References: <20240129170016.356158639@linuxfoundation.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=jUmVKOR3WSuIxdgtdQ+iJ5ckIObigcbYPRLFaWXCUVNL4uxplYXaud/tJl5f5vmLUcBx/MclmQ96ndsuKARDqiLCyNTRatAq0XlsYrRDntfyNLk2KVeIIT4QPkfPR9KyIwOeTqJC6B9bHyUSzkf6QLYAGjSHkADRiAGRhvZtgBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=unimEILv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8843BC433C7;
+	Tue, 30 Jan 2024 14:34:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706625267;
+	bh=2190zxEd8Xhtvh4IrZjtdwgLMYVBXviRCIAWurSiB8A=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=unimEILvQT0/gUU6fJdAnqZuexvD5RX9jtF5HLO6tJDbj7GL5corGyRLGRKhWPa0q
+	 pT3TIecnZ7+5IaUwmO+JJwldFzNUtuvDBNHnRGQN5bwJA1Zbx/MSUHWYf1LVyjMThD
+	 +Gp1M+xpxrQW/Nvt8UDsG4hPRApU4F+3kF7XzeTidXk8WztRcRpk1VcvE0RGsMxrB6
+	 b5WfUVhbZoXKFeA0oT9SLvHAdRpgQA1TC1Qf/AoaT9/I0J3kLE9QjqLjV67ETtb5Ab
+	 RyHmqRVdNhYsXmHnIX94wHPj/92zvJg0yfHmleORB3KDZtf0A1k/fpV4vqxlH7U/d1
+	 Gk8LNE2t2iVjA==
+Date: Tue, 30 Jan 2024 14:34:23 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Dave Martin <Dave.Martin@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Jackson Cooper-Driver <Jackson.Cooper-Driver@arm.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] arm64/sme: Restore SMCR_EL1.EZT0 on exit from suspend
+Message-ID: <ca380b64-3420-4817-b3b4-584b8640c0ac@sirena.org.uk>
+References: <20240130-arm64-sme-resume-v1-0-0e60ebba18df@kernel.org>
+ <20240130-arm64-sme-resume-v1-2-0e60ebba18df@kernel.org>
+ <ZbjVTigk0YlGd3mA@e133380.arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="VG4FkmmLh5EwClxi"
+Content-Disposition: inline
+In-Reply-To: <ZbjVTigk0YlGd3mA@e133380.arm.com>
+X-Cookie: 1 bulls, 3 cows.
+
+
+--VG4FkmmLh5EwClxi
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240129170016.356158639@linuxfoundation.org>
 
-On 29 Jan 09:00, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.7.3 release.
-> There are 346 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 31 Jan 2024 16:59:28 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.7.3-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
-> and the diffstat can be found below.
-> 
-> thanks,
+On Tue, Jan 30, 2024 at 10:54:06AM +0000, Dave Martin wrote:
+> On Tue, Jan 30, 2024 at 12:02:49AM +0000, Mark Brown wrote:
 
-Hi Greg,
+> > +	if (system_supports_sme2())
+> > +		smcr |= SMCR_ELx_EZT0;
 
-No noticeable regressions on my system.
-[    0.000000] Linux version 6.7.3-rc1-ktest-g7c05c677b6ca (rbmarliere@debian) (gcc (Debian 13.2.0-12) 13.2.0, GNU ld (GNU Binutils for Debian) 2.42) #2 SMP PREEMPT_DYNAMIC Mon Jan 29 22:13:17 -03 2024
+> Side question: since ZT0 is likely to be sporadically used, maybe it
+> is worth having separate lazy restore for it versus the main SME state?
+> (Not relevant for this series though, and probably best deferred until
+> there is hardware to benchmark on.  Also, ZT0 is small compared with
+> the SME state proper...)
 
-Tested-by: Ricardo B. Marliere <ricardo@marliere.net>
+One of the advantages SME has here is that we've got a clear indication
+if userspace is actively using the registers through SMSTART and SMSTOP.
+We only restore ZT0 at all whenever PSTATE.ZA is set and the strong
+recommendation is that should only be set when either ZA or ZT0 are in
+active use for power and performance reasons.  While it is likely that
+there will be code that uses ZA but doesn't touch ZT0 I would expect
+that the overhead of entering the kernel to do a lazy restore will be
+sufficiently high for it to be an unreasonable penalty on code that does
+touch it, as you say it's not *that* big compared to likely ZA sizes.
 
+--VG4FkmmLh5EwClxi
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thank you,
--	Ricardo.
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmW5CO4ACgkQJNaLcl1U
+h9B+7Af/SN40T6oVk2GhtivoOnp8totsJrKK6V8RelC14Ob1Mt+jzG5v3NjGPFHa
+bTkFF98KZowT2rECsOEwdt9wBwPV21FKaB3LWTZ0Ex4hjGohFfKfB7nxz30nDHCx
+4uFmtRLulE0UQ1giANwy94wfmUnzb3G2t1vpAa4tUliwejZdCQaRactxOuXBIQO0
+nwtq1kXYi1nmWWmMBhTNDQW2YtpFL/LZKpJQ60Z5doisyq1I+b4rVdGLtCO0VEpC
++SaGZoCmZI+eixiL7dxlkEQ8YonrR9p7mOO217Z+KueqOqtsflFa864abxADkn7y
+/keIoZmj8AtVYPFvKVtHN+ZCQx6ozA==
+=lbgD
+-----END PGP SIGNATURE-----
+
+--VG4FkmmLh5EwClxi--
 
