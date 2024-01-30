@@ -1,78 +1,78 @@
-Return-Path: <linux-kernel+bounces-44090-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44091-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0655841D38
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:09:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BA80841D39
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:10:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90A3C1F28646
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:09:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB4E528C4B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:10:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ACEB56745;
-	Tue, 30 Jan 2024 08:09:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2809757874;
+	Tue, 30 Jan 2024 08:09:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="c3+qteXU"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="D5hs1Re+"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2006256458
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 08:09:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B1B457864
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 08:09:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706602153; cv=none; b=PTwRQ5MZAbcVg9/BXO8nZv05+sT/Gs1pIoOkxqM8YruyrKaJ5/zhYZEZiyXrANAeXQp65pd9kuMMSVamjgiYOw8j5K78zKWyBrITSEPsOzXa1jznZpbkH80Fm16jD7fDZNkC4Q8MR9nh1XXt1+eWaIxIbY1S1qeIg38MCfv2c7k=
+	t=1706602196; cv=none; b=N/JcA+EkDa4HkdKR2e3cp2THCiRNoLCVpIe3FD///pHnjR1o/7KM706arKGZ5aFXBJ12BQa1Dt+QSb7p+B+YvoG7jT8kjANrSU18pCbIXZkukAok64dkeKmAEgg5g1unMHe31+3rwsKUzUnL711ybTkshgwLP3jn0tSXk+VYBX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706602153; c=relaxed/simple;
-	bh=2hdEfOzmfy/PAu/6/sRbuPHsG9WwBSuTwelhKhCYlSg=;
+	s=arc-20240116; t=1706602196; c=relaxed/simple;
+	bh=GZ1zBMtuXfkWL8BtLIPy5NgZc3G/0cKoG3zschPJYls=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=So/drT/8DHbEJu7PUabeJPzBcyjPLNZIFI9L4zZuV57ybznO5nVELIiNe0e+5kmE9aK+/sOd3VKFoDrXaFkuMv/XfWVDPP7/TN9FwqBW56OgWCc0FyGVf9Rjil7PXnL8qjkGGKzpSpxSKMeIbP535ERM0gIX4Tzh6uHD941dEFs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=c3+qteXU; arc=none smtp.client-ip=209.85.219.202
+	 To:Cc:Content-Type; b=DG8+YmPNKGd67okN4p7xGqzYdqkrn7ZDZvi/Qse4aBKUPZCMq9CRVk2TTVIRL4iTY5w5JkvMWtDkhC1Oz0e+5I/VboXhFO4H/P7Fuj5nJMmhOJgW469FsQLY1Qy3siX+wXxEfThBai/85y0jDL/TWBfhrNDljLN1Lttnl62J+qY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=D5hs1Re+; arc=none smtp.client-ip=209.85.128.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbf216080f5so6924477276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 00:09:11 -0800 (PST)
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-5ee22efe5eeso58920387b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 00:09:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706602151; x=1707206951; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1706602194; x=1707206994; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wadulOai/RifuJLDJH2jCf6SHw9z6KefnQWpuLynjGw=;
-        b=c3+qteXUABj+7gz4gqXGLEg/fbou5l3J3kg8Gq3OcOtH84tc5DKaWopWu5WDx1Iazn
-         EBrAYi5/K/IZyirrQt2D1cBLwJ+cLgrMqV37gQeecVwfZeo68OTQzGPnlN4V5gZdLG+j
-         teRBzxrymKV8quQpAZHozFp4yOd/n8RhZGCuIhC1CP0H3pbjc7u/VVHxiv5l8seqetpk
-         LUst0qasW74BOP+x0IAUiTzsDNH8MqP+OPgiicYlyD2s4i6qeEMAcy+ddbrw+ByaGPsz
-         2hBT+S7n/AxgBPrw24BDjrKFVeBYr9Pgj0HEQPa84o6gfye682rgU5u0DdC9RxiHyIHO
-         ffEQ==
+        bh=9yrsTLlhAyWR5XamY20PGjqLq3Kvs6JOukRf/8vhRqc=;
+        b=D5hs1Re+5AxRQw795aOmvBt4e/uhG62HB8vSJ0XotmrdVDhx8ijjlm3WtI5MKnl1rS
+         SETEArHgaLWFTkDHGD3h6WkQXbMQmtqv4E2fvp35U5WjrzcrXZlja1HAy4/7Rn6kKFFo
+         90TyvtTwdayMhDjghxY5XYpdWhrXVihXFgZ3qdbnYo32YmutYbLLTWPfl2jnlamhifmd
+         V95TrwxZsYB7waRmJd802lxuXYvKCuzgIZxEkbzAp8GVE5tGM+QZEpQEjxAGnWpZw/0R
+         Abv+NvbynO0X/PuHsoj79eb9ZTJEVOlcoPZUJ3gcqyG/nVSl8QqjzIU+FnBbExqyl16E
+         Cbxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706602151; x=1707206951;
+        d=1e100.net; s=20230601; t=1706602194; x=1707206994;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wadulOai/RifuJLDJH2jCf6SHw9z6KefnQWpuLynjGw=;
-        b=eshP93OMjyh3p4NsCLci6SQaRBSYrGeWwUO1SaOQYMiMJMEUfErgydqKKf0oUEkrXw
-         2fWVoxnCCp/2YMbHIntU6gBo/h/z73qadwughHbqNmcWNQ/q1iVmU2fFvdo98M0X0K3C
-         GXyP3GIUMqeyPittqZspiUOxJtNsup9Mo+jwMxUBvwcL9davFSPEQCwgCjoMIcYqo80C
-         ls5aad9HamIgPxdm4ncsBl0z8jpjpNsIJHlWkxCXpv3ckOTHfbYzwUQ+gF6EzkMtBMkC
-         K//d08x/kozWwaTjMlhz0DwwctqHobGiE+nAFc9rdztAN//S6Y16We2Wlmm5QXiLH/Rg
-         iZNw==
-X-Gm-Message-State: AOJu0Yxcu4H4fDiiUcfzSKc5BMraXHbXtvSpQImqk+7HvF02TV3zjqcr
-	o4hwf6nTwbwtV1jJ1ojUic22C69UUn6mw/azRtSmc5TlRJ10V/z5rdT4pQtbVbSwBSQ5nC/BRrA
-	KscRjZv9YU5eER+1+Dg==
-X-Google-Smtp-Source: AGHT+IHL/5Lz097nGM8zB4P1A/2LKJrP96zKj54PtSx7SVH3g6r9JXbeydvgbaKwh9g3E/qpgEaQb2wpe7WFLfQW
+        bh=9yrsTLlhAyWR5XamY20PGjqLq3Kvs6JOukRf/8vhRqc=;
+        b=duG1urgQzz6xTFDNUdmQmHZG7oLNSzuueMxM3lGfME9cSCDBCm3wUfiqwPyxvmxxqT
+         es2xgb5kL4HJ6RO00B6DW7Yz120JkSzzIhC4BuhPhPzU3AcpoOwpDsP6QWn+0VkxvbkF
+         rVqKGH7ga8n1n7T9Fz59QH8urF9jQqt2RMg01K4M21GUnTbRoQo0NkgYrTV68/61hT3l
+         YbgM8ttlUxX3jwBGR1GasGUVV+dOLb/m4C+thTTon+V1CGbZpS49mwLaTHDKs7BhrqZR
+         0ckcQAApS7oj1W2tCOf8dvQPIrIUTG9ebgAiaAU8GwqlYc+rolXrfxucg70WixFnkDLT
+         q67g==
+X-Gm-Message-State: AOJu0YxaUZQP38Mc1ZUghuGgI+g31ihYAtpaA6cjSw9615yZtmAr50GD
+	kfH+qZYuGkheO+qkCUPNAsmrKE9v9WQevFFAsQB4spigWrUcIm7DzrtNKnUHvTRIQDG3wkP5PPr
+	LeRcyPTUX951RyNiACw==
+X-Google-Smtp-Source: AGHT+IF0Wmhs7hw4HNJ/7j9vsnNmqU4IA+jjwW+yq7Ggm1nMDX4e3VXGmNz88WUmYYb9T8qYxcklrpqyuYXXa4i4
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:6902:118e:b0:dc2:550b:a4f4 with
- SMTP id m14-20020a056902118e00b00dc2550ba4f4mr2673421ybu.1.1706602151135;
- Tue, 30 Jan 2024 00:09:11 -0800 (PST)
-Date: Tue, 30 Jan 2024 08:09:09 +0000
-In-Reply-To: <20240130014208.565554-3-hannes@cmpxchg.org>
+ (user=yosryahmed job=sendgmr) by 2002:a81:a707:0:b0:5ff:f6eb:8916 with SMTP
+ id e7-20020a81a707000000b005fff6eb8916mr1533962ywh.9.1706602194115; Tue, 30
+ Jan 2024 00:09:54 -0800 (PST)
+Date: Tue, 30 Jan 2024 08:09:52 +0000
+In-Reply-To: <20240130014208.565554-4-hannes@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20240130014208.565554-1-hannes@cmpxchg.org> <20240130014208.565554-3-hannes@cmpxchg.org>
-Message-ID: <ZbiupWuqcdlpadqk@google.com>
-Subject: Re: [PATCH 02/20] mm: zswap: inline and remove zswap_entry_find_get()
+References: <20240130014208.565554-1-hannes@cmpxchg.org> <20240130014208.565554-4-hannes@cmpxchg.org>
+Message-ID: <Zbiu0KeH2fHLA609@google.com>
+Subject: Re: [PATCH 03/20] mm: zswap: move zswap_invalidate_entry() to related functions
 From: Yosry Ahmed <yosryahmed@google.com>
 To: Johannes Weiner <hannes@cmpxchg.org>
 Cc: Andrew Morton <akpm@linux-foundation.org>, Nhat Pham <nphamcs@gmail.com>, 
@@ -80,8 +80,8 @@ Cc: Andrew Morton <akpm@linux-foundation.org>, Nhat Pham <nphamcs@gmail.com>,
 	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 
-On Mon, Jan 29, 2024 at 08:36:38PM -0500, Johannes Weiner wrote:
-> There is only one caller and the function is trivial. Inline it.
+On Mon, Jan 29, 2024 at 08:36:39PM -0500, Johannes Weiner wrote:
+> Move it up to the other tree and refcounting functions.
 > 
 > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
