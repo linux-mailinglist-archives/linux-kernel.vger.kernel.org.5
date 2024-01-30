@@ -1,99 +1,139 @@
-Return-Path: <linux-kernel+bounces-45067-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45069-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B72F6842B56
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:59:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04310842B59
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:59:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CEC21F24C73
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:59:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 976AD1F248A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:59:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 683D2157E6F;
-	Tue, 30 Jan 2024 17:58:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B7C71586CA;
+	Tue, 30 Jan 2024 17:58:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B5dAbHzq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="na+L/uRN"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5685C14E2D1;
-	Tue, 30 Jan 2024 17:58:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4319157E84;
+	Tue, 30 Jan 2024 17:58:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706637519; cv=none; b=pbcs6CzPV4MwtDjTyHpTNl3r+qqQDdQPX5dMwBCoFaqdxLPJStSWuT1nvIe9rrIZdZ45xfqFd8RmRBVkmQtHqmObnWkjKmyuvrjyH+s+2AjWwQ8t7YLqlwFz/9LdYNoIEvs4A4YBPp7y+0FiY2rUhPkyzOmVn2Gv2cJu4IT9V6s=
+	t=1706637520; cv=none; b=K1qwggkm1VPz8t9NmXFbG9pwx2waCYdBuDsIa7dhrgZ2YwRqBIXyn96M/gZb1yClwU4m4Wy2ePlvuvc1HO6Aa9s+PUfP01usz142HCSafRl5F6m5guxp0O4SmwUhl6t9OHNL59RoXdnihaigHu75T3ibYH4PfUC/INt/NQmaYmk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706637519; c=relaxed/simple;
-	bh=eRO58rhLkDC3XGVDbdIcragPqA1KWB4/whLzh4oIseI=;
+	s=arc-20240116; t=1706637520; c=relaxed/simple;
+	bh=yXMMtnxUsKg0X6iL7HcedZmBBWU1t0iBPBqV3q7qVo0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D9GNVC01K0Apm/KKvLBV1BobxzWwHVfP00VraxsevVGnKupd9QMwCRlAgJrlQAOYriVa2UzP/LEPCPoqvdcQaPpMrjLmFy7pfphd8YSZV5ExZT8RXxpDdvsV3vtgF6FxJ7pjTKeF1ZDTf6+VgjUb3yxdXcUw9fxSEK51oD3/Qrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B5dAbHzq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6185AC433C7;
-	Tue, 30 Jan 2024 17:58:36 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=Wf9FgoWLpWKCJUFTkbSll+3Z3PEK3mi6cFSfx7AmeYJ4dpuscOraeuaKLzi7kR3VoQMqnKEezRUGeeDoEndHme3tgwMyjS7P3e2HqV7SMMTKCaJQKp/Jr/59MWZxw+FRm8HSVJKQhbdsat4q8XZIGlBNm4IkST5L4XmVIbWkCvM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=na+L/uRN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C444C4166C;
+	Tue, 30 Jan 2024 17:58:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706637518;
-	bh=eRO58rhLkDC3XGVDbdIcragPqA1KWB4/whLzh4oIseI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=B5dAbHzqxmhoTlyK9egPKCyXc5D9IJkcVjxVLzsvwumOCy+fmTd70T8BqBUcKBcxf
-	 bXLUphvCq5sUVr8q+gCuumt2latEVIbQHW24HnhUCJOC8mKNGE25dDINl/25e/JBSX
-	 7WFcb5SGyWTCp2swIobZJ+RWEbD4qspuLrdUcrtEFToO7K9FHqA32jLtP2RiJOBLgp
-	 bA2oLO4tHLjGd5bGxO/qJrpoRjGcz9WDr+IOn6ey3F5+UVA6EsGDeOGVMSIHHrai3l
-	 a5szKTjg60P4WUbQjyyEq/BjJrrU7GgBnFGioPiQ4by+dWj83zNbP69Dw4BEoZcrBS
-	 ubWb6JbvNzKtg==
-Date: Tue, 30 Jan 2024 17:58:34 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Stefan Eichenberger <eichest@gmail.com>
-Cc: gregkh@linuxfoundation.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	piyush.mehta@amd.com, michal.simek@amd.com,
-	francesco.dolcini@toradex.com, linux-usb@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Stefan Eichenberger <stefan.eichenberger@toradex.com>
-Subject: Re: [PATCH] dt-bindings: usb: microchip,usb5744: Remove peer-hub as
- requirement
-Message-ID: <20240130-blazing-jovial-8c15bbfd9ca1@spud>
-References: <20240130073505.8916-1-eichest@gmail.com>
+	s=k20201202; t=1706637520;
+	bh=yXMMtnxUsKg0X6iL7HcedZmBBWU1t0iBPBqV3q7qVo0=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=na+L/uRNaFh2JgRdTF3pQDaETM6d+oaE29FxkaizaKiEgPjyuL0AdGNi7Vw8YKIUX
+	 FxbvS3afblTtrhntqsndz+QpYU4Cp5h80pxx9MNnjPoMoMXoDFBd06UCSriPsR/jzZ
+	 fDX+zxxbgxqW4CAx6Yqmrt+XXE0WSJh1vlGyTsdaGPpWxbwcj8O7rrUsZngwZq4qVY
+	 hmoeLC0KvTFOa6shLX3fcqCn6pVc+MNHDhnPBfJP2zEPVvBv5u/QqSdfj0mL65mGr2
+	 Y/r84c+A+s1D+YT+vzwNpNLYTh4eZuaeQrfVM/cUPEx8dSRk+4WukEAe0ZiAM+E27c
+	 /2WkVxqLDbDMw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id DA76BCE0556; Tue, 30 Jan 2024 09:58:39 -0800 (PST)
+Date: Tue, 30 Jan 2024 09:58:39 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: linux-kernel@vger.kernel.org,
+	"E."@paulmck-thinkpad-p17-gen-1.smtp.subspace.kernel.org,
+	Alan Stern <stern@rowland.harvard.edu>,
+	Andrea Parri <parri.andrea@gmail.com>, Will Deacon <will@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	David Howells <dhowells@redhat.com>,
+	Jade Alglave <j.alglave@ucl.ac.uk>,
+	Luc Maranget <luc.maranget@inria.fr>,
+	Paul@paulmck-thinkpad-p17-gen-1.smtp.subspace.kernel.org,
+	Akira Yokosawa <akiyks@gmail.com>,
+	Daniel Lustig <dlustig@nvidia.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Jonathan Corbet <corbet@lwn.net>, linux-arch@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>
+Subject: Re: [PATCH doc] Emphasize that failed atomic operations give no
+ ordering
+Message-ID: <5feeddda-f000-4b83-9981-e422c0d04881@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <63d9d6f6-05e8-473d-9d09-ce8d3a33ca39@paulmck-laptop>
+ <Zbkt94Q8a-xFXrve@FVFF77S0Q05N>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="wUsBcy9YsbXTTG7j"
-Content-Disposition: inline
-In-Reply-To: <20240130073505.8916-1-eichest@gmail.com>
-
-
---wUsBcy9YsbXTTG7j
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <Zbkt94Q8a-xFXrve@FVFF77S0Q05N>
 
-On Tue, Jan 30, 2024 at 08:35:05AM +0100, Stefan Eichenberger wrote:
-> From: Stefan Eichenberger <stefan.eichenberger@toradex.com>
->=20
-> The peer-hub is used to model the relationship between the USB 2 and USB
-> 3 hub. However, it is possible to only connect USB 2 without having
-> USB 3. Therefore, the peer-hub property should not be marked as required.
->=20
-> Signed-off-by: Stefan Eichenberger <stefan.eichenberger@toradex.com>
+On Tue, Jan 30, 2024 at 05:12:23PM +0000, Mark Rutland wrote:
+> On Tue, Jan 30, 2024 at 06:53:38AM -0800, Paul E. McKenney wrote:
+> > The ORDERING section of Documentation/atomic_t.txt can easily be read as
+> > saying that conditional atomic RMW operations that fail are ordered when
+> > those operations have the _acquire() or _release() prefixes.  This is
+> > not the case, therefore update this section to make it clear that failed
+> > conditional atomic RMW operations provide no ordering.
+> > 
+> > Reported-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > Cc: Alan Stern <stern@rowland.harvard.edu>
+> > Cc: Andrea Parri <parri.andrea@gmail.com>
+> > Cc: Will Deacon <will@kernel.org>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Boqun Feng <boqun.feng@gmail.com>
+> > Cc: Nicholas Piggin <npiggin@gmail.com>
+> > Cc: David Howells <dhowells@redhat.com>
+> > Cc: Jade Alglave <j.alglave@ucl.ac.uk>
+> > Cc: Luc Maranget <luc.maranget@inria.fr>
+> > Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> > Cc: Akira Yokosawa <akiyks@gmail.com>
+> > Cc: Daniel Lustig <dlustig@nvidia.com>
+> > Cc: Joel Fernandes <joel@joelfernandes.org>
+> > Cc: Mark Rutland <mark.rutland@arm.com>
+> > Cc: Jonathan Corbet <corbet@lwn.net>
+> > Cc: <linux-arch@vger.kernel.org>
+> > Cc: <linux-doc@vger.kernel.org>
+> > 
+> > diff --git a/Documentation/atomic_t.txt b/Documentation/atomic_t.txt
+> > index d7adc6d543db4..bee3b1bca9a7b 100644
+> > --- a/Documentation/atomic_t.txt
+> > +++ b/Documentation/atomic_t.txt
+> > @@ -171,14 +171,14 @@ The rule of thumb:
+> >   - RMW operations that are conditional are unordered on FAILURE,
+> >     otherwise the above rules apply.
+> >  
+> > -Except of course when an operation has an explicit ordering like:
+> > +Except of course when a successful operation has an explicit ordering like:
+> >  
+> >   {}_relaxed: unordered
+> >   {}_acquire: the R of the RMW (or atomic_read) is an ACQUIRE
+> >   {}_release: the W of the RMW (or atomic_set)  is a  RELEASE
+> >  
+> >  Where 'unordered' is against other memory locations. Address dependencies are
+> > -not defeated.
+> > +not defeated.  Conditional operations are still unordered on FAILURE.
+> >  
+> >  Fully ordered primitives are ordered against everything prior and everything
+> >  subsequent. Therefore a fully ordered primitive is like having an smp_mb()
+> > 
+> 
+> FWIW:
+> 
+> Acked-by: Mark Rutland <mark.rutland@arm.com>
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Applied, thank you!
 
-Cheers,
-Conor.
-
---wUsBcy9YsbXTTG7j
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbk4ygAKCRB4tDGHoIJi
-0nQ7AQC2snoup2KWag8GoxVgNdDzgpVNDKIv6nxn8T1ciJa76AEAq9OtUNaVd1zk
-8GIFEffIl8Iyh/5I125yK0Ex4BScYgU=
-=6jsI
------END PGP SIGNATURE-----
-
---wUsBcy9YsbXTTG7j--
+							Thanx, Paul
 
