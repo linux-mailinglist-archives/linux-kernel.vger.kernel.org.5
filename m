@@ -1,188 +1,189 @@
-Return-Path: <linux-kernel+bounces-43875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43878-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 142A8841A4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 04:17:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67A39841A55
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 04:19:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BA6F1C2222B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 03:17:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF8B3B23B3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 03:19:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 733303717D;
-	Tue, 30 Jan 2024 03:17:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2100B374D1;
+	Tue, 30 Jan 2024 03:19:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="nDlLHJR+"
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="gzyK9Neo"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2085.outbound.protection.outlook.com [40.107.237.85])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A04DF37145
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 03:17:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706584657; cv=none; b=KD1E/zcrVCZvRmmvQGUjUaFWA/ABcjq09/JZ+OS/TWoz7FvJkbQY+C0eFXUUxdv/R2zlGM0K5aTAixAhDNwfNgGEl9ynfD8m3U7EEBGc0sW/+HsbA+55sYptD2xIml8oc5oGeTSlzoQkSzpUE3f3IZZ4zK2r8WR3azVaOC7UrYs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706584657; c=relaxed/simple;
-	bh=uVbohtlj7mu6cVDUW76JicilNRJfM5yB/HyXoIQ6x1Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CMghy+57sCssaKtA7Tx8tp8imOWnfWjZgw+ZhRmvzEApWUJQ1eX3SzGC7Cy3BBcL58Zn8cLRPmg+Ftyf0qaQKPGnrsF4QBMQUM3jm85Fa648jc/ZzHh34ZU7vasMDNS+R7Mp8I6NzjPBKFutS894L6sgKw/+0Y4ELe9qKjDUMQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=nDlLHJR+; arc=none smtp.client-ip=209.85.160.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-42a8a398cb2so32392501cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 19:17:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1706584653; x=1707189453; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2+uMvYuPMcW2/oEhpWE+vBu0Mu5fnqXnYf4zI++OU9M=;
-        b=nDlLHJR+CCl1Kgw8ONlCjZnjCZM/4t+D+YrHJU9ndvq/XeTYs3cLi6poi1kYyapXON
-         Ivy02PRQDJ/++aroONXy1flNBL2JgiUFw/uKBrTWwf01lMZbDhkHEucfs8wRTgO8z2MY
-         P9zFLKM+EUOxsPA4cP57iQE+aNh0aLs8WtPUXjoafiJH1Cn/3YW5bkn5BIVO+xhUIRl0
-         LmwDjGnBpsmaEyD8SQi9A6BgIn0a8SOOWIQWg18cZKvBkzDUb5HhoiY0Lji7sPC/p/q6
-         K9wLwtRbLRl0ei3KAv8rBAeINR+RFCHfGu+A8+P90urw90S1mO2plrLayy7C2Li9MLAy
-         2n6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706584653; x=1707189453;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2+uMvYuPMcW2/oEhpWE+vBu0Mu5fnqXnYf4zI++OU9M=;
-        b=mOzFB2cR98Zlia817ZubC/LtGSCzxTj2sUNpIaCMkLkxNpUsnhpLon2SW0KubEtOX2
-         k+PcR2RgYP2pXXierilV8C1lr1maJNJA+YrWH49xsN74Lf6CqqBbukGMPV000Op3/MhB
-         eySvNeJ4O2tC7IURSOPFciUgvn0/G90WcIyX1VyKILruxtb3E05arNFFQqxb9MioJtpE
-         Rv7RQHV1XNdymqYK3uFHFvZ+nl9HVtXSw3FK/YBuE+iYdDcczQ2pbYGqIJZNJA5iyjqf
-         oM+I4IqxCxlu0kheCOiF+jtRxKqCWCieq8lFxm5xduNrUMFJ/0VPJ1Q77RTlfLFIS3up
-         0EUg==
-X-Gm-Message-State: AOJu0YwmhrvGv6QI+aHZLwS27fTr5BZKXpWmPjKkBkI1EE41wTFIKvoG
-	m5nTXZTzeF5I9ituCrCc/8RerZSV/DMRY01mcHx1CCdy3mQJb37bzD5UkeDQXBw=
-X-Google-Smtp-Source: AGHT+IH2krtYpXrHWqQn8jUxf7oGQpxAVml/F9fI6Iv5KcFb1lopfNaMpnRwWqIrrTd1Htg3adZr+Q==
-X-Received: by 2002:ac8:5988:0:b0:42a:ad64:bc09 with SMTP id e8-20020ac85988000000b0042aad64bc09mr1790712qte.119.1706584653281;
-        Mon, 29 Jan 2024 19:17:33 -0800 (PST)
-Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id cf5-20020a05622a400500b0042aab8ca417sm1028836qtb.3.2024.01.29.19.17.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 19:17:33 -0800 (PST)
-Date: Mon, 29 Jan 2024 22:17:27 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Chengming Zhou <zhouchengming@bytedance.com>
-Cc: Yosry Ahmed <yosryahmed@google.com>, Nhat Pham <nphamcs@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Chris Li <chriscli@google.com>, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: Re: [PATCH v2 2/3] mm/zswap: fix race between lru writeback and
- swapoff
-Message-ID: <20240130031727.GA780575@cmpxchg.org>
-References: <20240126-zswap-writeback-race-v2-0-b10479847099@bytedance.com>
- <20240126-zswap-writeback-race-v2-2-b10479847099@bytedance.com>
- <ZbhBNkayw1hNlkpL@google.com>
- <527bd543-97a5-4262-be73-6a5d21c2f896@bytedance.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D137376E9;
+	Tue, 30 Jan 2024 03:19:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.85
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706584746; cv=fail; b=X4VXyzmsqWhDebK8TdfkpZEVI13pa5HhO4rBp9AZAYgiWGh5waF4Vip6dYm5ny32CMmWMJ/YUT0FFBqiUeCFDNTnJa5fXkxN6kKVhirc9EjlNYiioT6/zS60Bc3YKmYZE73IipfdOfXKtErShXlKQqDz2pKvd3Z+hqcZ9UzbslI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706584746; c=relaxed/simple;
+	bh=XPb07nikLN76Gsbj0GQ7in8HFSgJ5Ua6ET9kQqbLcLs=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=NN5xN52/hR11BrlogoR7p2jFkFAbzU7QDzMde5Ti2zTRNNgx54Nq1qdgkV6IBjfLGdnrjTnIYSj+/z+LAXWJh6xXJIkte47JJ0Fpolh4bz4exBlhS53yy21hEsbscmexAx/UX4ZZZa7rNujiMF3q0tyDLx1AvLePUaWohADdmhc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=gzyK9Neo; arc=fail smtp.client-ip=40.107.237.85
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SniUVrkik8MZlWpG7UjCpkCKXkV7YcESKmeQTtC+qOr6zYnrHx+8/WnsthcR9Zxmsmwo+owKqecQzFpLArugLQOJQL2wODrNqEPn5ZpifsZ5J4X2o/bSi7OF0g+A7q2wzQ2JQK2khT05+dVsotSDry02h/O+uV53gwmmeWlVTIP5cRLaR1Kntf+elXVU9HNcmt5CRLPPcOgAB2yTEKJBsrjxfsk0RCQzw+7sJ/o16g4jOIV0HmHB3pgQYCJfXC6/kE8O+sevR9vd8BfG2yZFejPWNQlB8GPNfDcxvYOqzkyUC6itY3/gdcs+X4nsZM9sTrP2twd78KF39/dDP1DHPA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Jl28IBS9BbZYQALlef26RCRomYENhhi/5tgiaiD180c=;
+ b=J/GO6NAm+ZQn3AnNvhAvH7zUgkdZ0+3O286qDFhKP2JJElu01+MFPxRrlXTeqfqZ/4aFNq3r+sTLx9II6nmu5ycGFnDWgcVbGHuYqRURGlTxu6NgElGRBHtUUqE71VU30GLeymCJ4l2zZHP/DaxLHzjcxZTMQn5A8821FSoqLqxAsO5A6h574nM0a5xbUCa8+dWe8K2iEzOxSQ8SDzcbj9IxYMOCuIOR/xcDM0064zBe5s7kQm5RyxSGIYplZ7SMCxWxl1NI3LXQTlnsJ6knumGzF4HVzOO53kwEjszdw+AclrCWWE0awbD07vnr4+ICIF+28bCym/317X7mFdJ1Ww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Jl28IBS9BbZYQALlef26RCRomYENhhi/5tgiaiD180c=;
+ b=gzyK9NeoXrWx5WvcWyrElAcwG/RNL7WQNY3+GLxPAFWkfN1MBt32YSmu8t25IW1ely+zTwQv1zh7mWuI3Orfnd8EN7uco4oRNwl2wgVBoeCBzNBS/ldd0AxOy24YsFb7hv9IWjfY47H87Dh7Qnfv7YDiqpVCw+nxmgc1prulOEA=
+Received: from CY5PR19CA0081.namprd19.prod.outlook.com (2603:10b6:930:69::27)
+ by SN7PR12MB8170.namprd12.prod.outlook.com (2603:10b6:806:32c::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.33; Tue, 30 Jan
+ 2024 03:19:00 +0000
+Received: from CY4PEPF0000E9D5.namprd05.prod.outlook.com
+ (2603:10b6:930:69:cafe::b8) by CY5PR19CA0081.outlook.office365.com
+ (2603:10b6:930:69::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.34 via Frontend
+ Transport; Tue, 30 Jan 2024 03:19:00 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CY4PEPF0000E9D5.mail.protection.outlook.com (10.167.241.76) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7249.19 via Frontend Transport; Tue, 30 Jan 2024 03:19:00 +0000
+Received: from pyuan-Chachani-VN.amd.com (10.180.168.240) by
+ SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Mon, 29 Jan 2024 21:18:56 -0600
+From: Perry Yuan <perry.yuan@amd.com>
+To: <rafael.j.wysocki@intel.com>, <Mario.Limonciello@amd.com>,
+	<Borislav.Petkov@amd.com>, <viresh.kumar@linaro.org>, <Ray.Huang@amd.com>,
+	<gautham.shenoy@amd.com>
+CC: <Alexander.Deucher@amd.com>, <Xinmei.Huang@amd.com>,
+	<Xiaojian.Du@amd.com>, <Li.Meng@amd.com>, <linux-pm@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/8] enable x86_energy_perf_policy for AMD CPU
+Date: Tue, 30 Jan 2024 11:18:28 +0800
+Message-ID: <cover.1706583551.git.perry.yuan@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <527bd543-97a5-4262-be73-6a5d21c2f896@bytedance.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D5:EE_|SN7PR12MB8170:EE_
+X-MS-Office365-Filtering-Correlation-Id: 001c5276-29f5-43e2-fc62-08dc2142340c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	VjcAe6OjEAp6QLhrLKVxVjy/xZPwjHFOoSxSP6JlpXpPVp0kGCtZuhZ0I02eXHM0fJA2hsUVx+vm56GxNHrtPYxaU9Dh4rlkk5GQUoQihV+9u8LbUyaWqLHcne0Jc2Taba5ymQOlRxIqrINfOKiVkEaVUGJZW59w6Ud9zRA4mGELZFMGPuZOdUBEf1J3KH1AD8lF5N3I5W3QrkShGFlchXwSUCZKAuaBdUlKwjxUnOfZ2aWUPw+8Oh1YoCJ6fAZaN50VcCe+dHO2kmFHyvChP3o86/rq5DFPgQk25pFl2JPoir0p9iw4Uhumj3HB7I1jRGCsxkiPt+PkGQPXSWeMsgjB6jT6vSeSWevonG20oFXQcpC5GB5lHWMCkRSj0l4j5Q9vOLcVUxV1Shv6NFZzhWd/bpQb+B80Chrj9vfV6gbKR98Mpo5jJa3aO4eADD1djhgZh+0AqSbQpOG6FMJRG+Q7RT9aLwLCJ6rs/u/f40w1a2qo9GVbSvLYoHyxVlaeAIk9MO3Yr8/M4Ah6g+4fGmUo0lwsGmBPGA+eSBEflJQBg/otWugDPXGuWcsAmwAvwnd7bCKx6MXe4UMtkpSIfwuRlJsbM8IEQkHzOMkIGHMcpg2nl1cp+/aCye1RWta8VCTMaED/WcnFqZpg+tRRByqjPrafqpI4pTRQizgZ0Ns3Kc8MvEI2cJGn8ANUAj0Uwk75mE9whH0HyFOmgecPcLMBOS9JbsELOxiT/GGIaNHZ7uJBWHhSAAtGyzIjnk51TLhpYvPeo+lqjQX/8Mg0fA==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(376002)(396003)(136003)(346002)(230922051799003)(64100799003)(82310400011)(451199024)(1800799012)(186009)(40470700004)(46966006)(36840700001)(4326008)(336012)(426003)(36860700001)(47076005)(478600001)(41300700001)(36756003)(86362001)(82740400003)(83380400001)(81166007)(356005)(8936002)(2616005)(110136005)(6636002)(316002)(70206006)(44832011)(70586007)(26005)(54906003)(2906002)(7696005)(6666004)(8676002)(16526019)(5660300002)(40480700001)(40460700003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jan 2024 03:19:00.3498
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 001c5276-29f5-43e2-fc62-08dc2142340c
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CY4PEPF0000E9D5.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB8170
 
-On Tue, Jan 30, 2024 at 10:30:20AM +0800, Chengming Zhou wrote:
-> On 2024/1/30 08:22, Yosry Ahmed wrote:
-> > On Sun, Jan 28, 2024 at 01:28:50PM +0000, Chengming Zhou wrote:
-> >> @@ -860,40 +839,47 @@ static enum lru_status shrink_memcg_cb(struct list_head *item, struct list_lru_o
-> >>  {
-> >>  	struct zswap_entry *entry = container_of(item, struct zswap_entry, lru);
-> >>  	bool *encountered_page_in_swapcache = (bool *)arg;
-> >> -	struct zswap_tree *tree;
-> >> -	pgoff_t swpoffset;
-> >> +	swp_entry_t swpentry;
-> >>  	enum lru_status ret = LRU_REMOVED_RETRY;
-> >>  	int writeback_result;
-> >>  
-> >> +	/*
-> >> +	 * Rotate the entry to the tail before unlocking the LRU,
-> >> +	 * so that in case of an invalidation race concurrent
-> >> +	 * reclaimers don't waste their time on it.
-> >> +	 *
-> >> +	 * If writeback succeeds, or failure is due to the entry
-> >> +	 * being invalidated by the swap subsystem, the invalidation
-> >> +	 * will unlink and free it.
-> >> +	 *
-> >> +	 * Temporary failures, where the same entry should be tried
-> >> +	 * again immediately, almost never happen for this shrinker.
-> >> +	 * We don't do any trylocking; -ENOMEM comes closest,
-> >> +	 * but that's extremely rare and doesn't happen spuriously
-> >> +	 * either. Don't bother distinguishing this case.
-> >> +	 *
-> >> +	 * But since they do exist in theory, the entry cannot just
-> >> +	 * be unlinked, or we could leak it. Hence, rotate.
-> > 
-> > The entry cannot be unlinked because we cannot get a ref on it without
-> > holding the tree lock, and we cannot deref the tree before we acquire a
-> > swap cache ref in zswap_writeback_entry() -- or if
-> > zswap_writeback_entry() fails. This should be called out explicitly
-> > somewhere. Perhaps we can describe this whole deref dance with added
-> > docs to shrink_memcg_cb().
-> 
-> Maybe we should add some comments before or after zswap_writeback_entry()?
-> Or do you have some suggestions? I'm not good at this. :)
 
-I agree with the suggestion of a central point to document this.
+Hi all,
+This patch series introduces support for the x86_energy_perf_policy utility on AMD processors that
+utilize the CPPC (Collaborative Processor Performance Control) interface for frequency scaling,
+using the amd_pstate driver module. AMD processors already support various
+Energy Performance Preference (EPP) profiles. With this utility, users can now seamlessly
+switch between these EPP profiles using the provided commands. And check the CPPC capabilities
+with this tool.
+This enhancement aims to improve power efficiency and performance management for AMD processors,
+providing users with more control over their system's energy-performance behavior.
 
-How about something like this:
+There are some EPP profile already support by AMD processors, user can
+switch EPP profile listed below with the utility commands.
 
-/*
- * As soon as we drop the LRU lock, the entry can be freed by
- * a concurrent invalidation. This means the following:
- *
- * 1. We extract the swp_entry_t to the stack, allowing
- *    zswap_writeback_entry() to pin the swap entry and
- *    then validate the zwap entry against that swap entry's
- *    tree using pointer value comparison. Only when that
- *    is successful can the entry be dereferenced.
- *
- * 2. Usually, objects are taken off the LRU for reclaim. In
- *    this case this isn't possible, because if reclaim fails
- *    for whatever reason, we have no means of knowing if the
- *    entry is alive to put it back on the LRU.
- *
- *    So rotate it before dropping the lock. If the entry is
- *    written back or invalidated, the free path will unlink
- *    it. For failures, rotation is the right thing as well.
- *
- *    Temporary failures, where the same entry should be tried
- *    again immediately, almost never happen for this shrinker.
- *    We don't do any trylocking; -ENOMEM comes closest,
- *    but that's extremely rare and doesn't happen spuriously
- *    either. Don't bother distinguishing this case.
- */
+User can change EPP profile like this:
+$ sudo x86_energy_perf_policy --hwp-epp performance
+$ sudo x86_energy_perf_policy --hwp-epp balance-performance
+$ sudo x86_energy_perf_policy --hwp-epp balance_power
+$ sudo x86_energy_perf_policy --hwp-epp power
 
-> > We could also use a comment in zswap_writeback_entry() (or above it) to
-> > state that we only deref the tree *after* we get the swapcache ref.
-> 
-> I just notice there are some comments in zswap_writeback_entry(), should
-> we add more comments here?
-> 
-> 	/*
-> 	 * folio is locked, and the swapcache is now secured against
-> 	 * concurrent swapping to and from the slot. Verify that the
-> 	 * swap entry hasn't been invalidated and recycled behind our
-> 	 * backs (our zswap_entry reference doesn't prevent that), to
-> 	 * avoid overwriting a new swap folio with old compressed data.
-> 	 */
+0 performance
+128 balance_performance (default)
+192 balance_power
+255 power
 
-The bit in () is now stale, since we're not even holding a ref ;)
 
-Otherwise, a brief note that entry can not be dereferenced until
-validation would be helpful in zswap_writeback_entry(). The core of
-the scheme I'd probably describe in shrink_memcg_cb(), though.
+It also supports to check CPPC capabilities and change EPP profiles
+at runtime.
 
-Can I ask a favor, though?
+$ sudo x86_energy_perf_policy
+cpu0: [AMD HWP_REQ]: lowest 13 highest 166 desired 0 epp 128 window 0x7829a7d0 (80*10^7us) use_pkg 87
+cpu0: [AMD HWP_CAP]: low 13 lowest_non 68 nominal 77 highest 166
 
-For non-critical updates to this patch, can you please make them
-follow-up changes? I just sent out 20 cleanup patches on top of this
-patch which would be super painful and error prone to rebase. I'd like
-to avoid that if at all possible.
+cpu1: [AMD HWP_REQ]: lowest 13 highest 166 desired 0 epp 128 window 0x7829a7d0 (80*10^7us) use_pkg 87
+cpu1: [AMD HWP_CAP]: low 13 lowest_non 68 nominal 77 highest 166
+
+cpu2: [AMD HWP_REQ]: lowest 13 highest 166 desired 0 epp 128 window 0x7829a7d0 (80*10^7us) use_pkg 87
+cpu2: [AMD HWP_CAP]: low 13 lowest_non 68 nominal 77 highest 166
+
+cpu3: [AMD HWP_REQ]: lowest 13 highest 166 desired 0 epp 128 window 0x7829a7d0 (80*10^7us) use_pkg 87
+cpu3: [AMD HWP_CAP]: low 13 lowest_non 68 nominal 77 highest 166
+
+cpu4: [AMD HWP_REQ]: lowest 13 highest 166 desired 0 epp 128 window 0x7829a7d0 (80*10^7us) use_pkg 87
+cpu4: [AMD HWP_CAP]: low 13 lowest_non 68 nominal 77 highest 166
+
+
+Any feedback are apprea
+
+Perry Yuan (8):
+  tools/power x86_energy_perf_policy: add info show support for AMD
+    Pstate EPP driver
+  tools/power x86_energy_perf_policy: enable AMD pstate EPP profile
+    switching on MSR based system
+  tools/power x86_energy_perf_policy: rename get_msr() and put_msr()
+    with intel prefix
+  tools/power x86_energy_perf_policy: rename get_cpuid_or_exit() with
+    intel prefix
+  tools/power x86_energy_perf_policy: add nominal and lowest nonlinear
+    perf values showing support
+  tools/power x86_energy_perf_policy: remove the invalid feature options
+    for AMD processors
+  tools/power x86_energy_perf_policy: rename some perf output strings
+    for AMD processors
+  tools/power x86_energy_perf_policy: change intel msr functions to be
+    static
+
+ .../x86_energy_perf_policy                    | Bin 0 -> 50808 bytes
+ .../x86_energy_perf_policy.c                  | 355 +++++++++++++-----
+ 2 files changed, 271 insertions(+), 84 deletions(-)
+ create mode 100755 tools/power/x86/x86_energy_perf_policy/x86_energy_perf_policy
+
+-- 
+2.34.1
+
 
