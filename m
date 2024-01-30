@@ -1,92 +1,199 @@
-Return-Path: <linux-kernel+bounces-44099-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44100-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C89BD841D47
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:12:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED994841D51
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:14:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 75B501F23574
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:12:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E960B25717
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:13:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F30C57302;
-	Tue, 30 Jan 2024 08:12:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CNAAiCYG"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3532856B7E
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 08:12:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCC445577A;
+	Tue, 30 Jan 2024 08:13:48 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C23D54730;
+	Tue, 30 Jan 2024 08:13:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706602360; cv=none; b=VaPX6aTB0C5nXHO7mkmpLGi7kEfqe34byh6LbFn7E+2dB6Qa3CZiWUkP6HXbmg3/GzmHCLeRJwos8UuzxdCaGWrX9UWPJwUM506u3MoYIVTnSoK+w5V7TWwxif82hTU/I9pjxRzQ6aQ3CvcEsfewdWxbEw5um8YetKVDAIYYeK4=
+	t=1706602428; cv=none; b=D9yB4jwcjVMAtZWRQIv7bjFaDTMuamtnb3SK47wrPx+IXNcEjqFA3NZQQ8sceKDRRjtxZ49be3yhU7aj4SKpFpI9LLjby6rY2n295R4v9u2s8pHJ8xxjWrwJiTj8e3Yvawk3LDgETbWlsLwRQcmqWYbzSH07TULboH5kpEe1uHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706602360; c=relaxed/simple;
-	bh=+9KixsXhJbFgsR1R6Jk8tcgYUTRD+kHFPGe9rg9KqZE=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=gSfs/oMpx/5n8eOh1X5AdZP5KgnRk2Y/b4mJI7YdVbi/HTbvYrVk95wnqx8baErNmGXxmADgCBYTuIg2mNs8W2AomMa9oO/lp7180QgMruUZn3ncf+GEZBfRiRRhkQLfkCadYcPhlsbHIf9eU87e4DYupzy4A/quCvIT1CMLMTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CNAAiCYG; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc2470bc0bdso6325657276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 00:12:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706602358; x=1707207158; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AIFgjiuxwRuK6BHQq+omF6J4YBG6WwTGzt+ObEmxSXA=;
-        b=CNAAiCYGyXAG42esBUZ2peu4tHKWaMmOA3/rIcuREKNpXnlPJZUYfivmA1tkAir0wP
-         98guc66GVBGEBWoNgT1gKiUseiyVPfyOk897p+1rkVl42UqfZduHQp+JMBkq8TBRkRFO
-         1k+gKpBoI1TyYykj68sW2cJIXuIcdRFtL+6u3uSVHP4xil3OB1IqWicOysUxqbLMnAAd
-         2rPrhWGkgScN6sEvPhZLPmxuvYm5e7O1amPBh+rwmNUS30Epgt4DeMwYqnFZRZ1OLA7b
-         avNg4bc788X8tWpE3CF72sfW5durEFdrV3uc/+dBW2uclzyDSVAtAVM9W7Uw+FWmBOOa
-         40SA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706602358; x=1707207158;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AIFgjiuxwRuK6BHQq+omF6J4YBG6WwTGzt+ObEmxSXA=;
-        b=V/jE09gNzBjfBhrr8e+Y4Q6GlgNchw71nSLHTv7HqIdmwkV6ea63BRaT2TajbNl1y4
-         QYI15oT2wpSkMj9Ox+gP7Xb56Y2LxD8k39lLbktXKWfKLTbN/wUHepuKbSrR+nGNHK7G
-         yiB9/hMxvWfMqKHY5+VgqVE9lFdHtyDSlO2zvoUGfM2A9Cio0/PfB5qmNvTFAECgwUQy
-         hm6sucKBk7bdQzJHnOiGGPs8ntrtvYEt4NflU/jMhakdpIUwBaEAT+Q/mBOCcGGc28Qm
-         irIQiqNJ24f3SRDQX4LcbaqHiUpGcGAPEkI5wgfQ7jdrfx2f9VBiYU+y93Qi2DQD0yK3
-         axug==
-X-Gm-Message-State: AOJu0Ywu716eguOpMBmeUunbMblCNT7cjjpsYvZr2PrykfltYGd967MO
-	Gp2XKEySL3AFo7od9GgGVPvHvBxQR4ksVcJ9HRXO6E+Vzlf4tydIcHFjv7vgl6sh+DNLuAIYnwI
-	ZhRS8TI83pOGrCVj/5Q==
-X-Google-Smtp-Source: AGHT+IHvew4TiPu39aPMVPJ/xg1WbVfx9ZUC7tvmWTT6gWc2ZU8GFDvPJF34JVHQdfYQ1kuzlvjOeqk/piqEK/CT
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:6902:2501:b0:dc2:57c9:b462 with
- SMTP id dt1-20020a056902250100b00dc257c9b462mr494232ybb.9.1706602358253; Tue,
- 30 Jan 2024 00:12:38 -0800 (PST)
-Date: Tue, 30 Jan 2024 08:12:36 +0000
-In-Reply-To: <20240130014208.565554-10-hannes@cmpxchg.org>
+	s=arc-20240116; t=1706602428; c=relaxed/simple;
+	bh=hoXZ+7t4/9iqisEcsZ0owVBriVlaMkcKhjK2xwCBTc8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GZ0jGYwfKAZL2NQYn3SplCk5VOQADeKkra8IID7LSy/HwRJ0fdZBhDzJi7iOv3iMRE15OxRr5HEqzvNuooEeIwktqnpnJazHIZLa3JYD+UOe2CSRbuI3zOlLjbJNhFfxHERfehMlBexHyPoxg+nT7Xc1TaNVUa43VMcRrmu91Hw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 02A1DDA7;
+	Tue, 30 Jan 2024 00:14:28 -0800 (PST)
+Received: from [10.57.79.54] (unknown [10.57.79.54])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2A6013F738;
+	Tue, 30 Jan 2024 00:13:39 -0800 (PST)
+Message-ID: <40e87333-4da9-4497-a117-9885986e376a@arm.com>
+Date: Tue, 30 Jan 2024 08:13:38 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240130014208.565554-1-hannes@cmpxchg.org> <20240130014208.565554-10-hannes@cmpxchg.org>
-Message-ID: <ZbivdLXQc_PgWa0c@google.com>
-Subject: Re: [PATCH 09/20] mm: zswap: simplify zswap_invalidate()
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Nhat Pham <nphamcs@gmail.com>, 
-	Chengming Zhou <zhouchengming@bytedance.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/9] mm/memory: factor out zapping of present pte into
+ zap_present_pte()
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+ Nick Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
+ linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-s390@vger.kernel.org
+References: <20240129143221.263763-1-david@redhat.com>
+ <20240129143221.263763-2-david@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240129143221.263763-2-david@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 29, 2024 at 08:36:45PM -0500, Johannes Weiner wrote:
-> The branching is awkward and duplicates code. The comment about
-> writeback is also misleading: yes, the entry might have been written
-> back. Or it might have never been stored in zswap to begin with due to
-> a rejection - zswap_invalidate() is called on all exiting swap entries.
+On 29/01/2024 14:32, David Hildenbrand wrote:
+> Let's prepare for further changes by factoring out processing of present
+> PTEs.
 > 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  mm/memory.c | 92 ++++++++++++++++++++++++++++++-----------------------
+>  1 file changed, 52 insertions(+), 40 deletions(-)
+> 
+> diff --git a/mm/memory.c b/mm/memory.c
+> index b05fd28dbce1..50a6c79c78fc 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -1532,13 +1532,61 @@ zap_install_uffd_wp_if_needed(struct vm_area_struct *vma,
+>  	pte_install_uffd_wp_if_needed(vma, addr, pte, pteval);
+>  }
+>  
+> +static inline void zap_present_pte(struct mmu_gather *tlb,
+> +		struct vm_area_struct *vma, pte_t *pte, pte_t ptent,
+> +		unsigned long addr, struct zap_details *details,
+> +		int *rss, bool *force_flush, bool *force_break)
+> +{
+> +	struct mm_struct *mm = tlb->mm;
+> +	bool delay_rmap = false;
+> +	struct folio *folio;
 
-Acked-by: Yosry Ahmed <yosryahmed@google.com>
+You need to init this to NULL otherwise its a random value when calling
+should_zap_folio() if vm_normal_page() returns NULL.
+
+> +	struct page *page;
+> +
+> +	page = vm_normal_page(vma, addr, ptent);
+> +	if (page)
+> +		folio = page_folio(page);
+> +
+> +	if (unlikely(!should_zap_folio(details, folio)))
+> +		return;
+> +	ptent = ptep_get_and_clear_full(mm, addr, pte, tlb->fullmm);
+> +	arch_check_zapped_pte(vma, ptent);
+> +	tlb_remove_tlb_entry(tlb, pte, addr);
+> +	zap_install_uffd_wp_if_needed(vma, addr, pte, details, ptent);
+> +	if (unlikely(!page)) {
+> +		ksm_might_unmap_zero_page(mm, ptent);
+> +		return;
+> +	}
+> +
+> +	if (!folio_test_anon(folio)) {
+> +		if (pte_dirty(ptent)) {
+> +			folio_mark_dirty(folio);
+> +			if (tlb_delay_rmap(tlb)) {
+> +				delay_rmap = true;
+> +				*force_flush = true;
+> +			}
+> +		}
+> +		if (pte_young(ptent) && likely(vma_has_recency(vma)))
+> +			folio_mark_accessed(folio);
+> +	}
+> +	rss[mm_counter(folio)]--;
+> +	if (!delay_rmap) {
+> +		folio_remove_rmap_pte(folio, page, vma);
+> +		if (unlikely(page_mapcount(page) < 0))
+> +			print_bad_pte(vma, addr, ptent, page);
+> +	}
+> +	if (unlikely(__tlb_remove_page(tlb, page, delay_rmap))) {
+> +		*force_flush = true;
+> +		*force_break = true;
+> +	}
+> +}
+> +
+>  static unsigned long zap_pte_range(struct mmu_gather *tlb,
+>  				struct vm_area_struct *vma, pmd_t *pmd,
+>  				unsigned long addr, unsigned long end,
+>  				struct zap_details *details)
+>  {
+> +	bool force_flush = false, force_break = false;
+>  	struct mm_struct *mm = tlb->mm;
+> -	int force_flush = 0;
+>  	int rss[NR_MM_COUNTERS];
+>  	spinlock_t *ptl;
+>  	pte_t *start_pte;
+> @@ -1565,45 +1613,9 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+>  			break;
+>  
+>  		if (pte_present(ptent)) {
+> -			unsigned int delay_rmap;
+> -
+> -			page = vm_normal_page(vma, addr, ptent);
+> -			if (page)
+> -				folio = page_folio(page);
+> -
+> -			if (unlikely(!should_zap_folio(details, folio)))
+> -				continue;
+> -			ptent = ptep_get_and_clear_full(mm, addr, pte,
+> -							tlb->fullmm);
+> -			arch_check_zapped_pte(vma, ptent);
+> -			tlb_remove_tlb_entry(tlb, pte, addr);
+> -			zap_install_uffd_wp_if_needed(vma, addr, pte, details,
+> -						      ptent);
+> -			if (unlikely(!page)) {
+> -				ksm_might_unmap_zero_page(mm, ptent);
+> -				continue;
+> -			}
+> -
+> -			delay_rmap = 0;
+> -			if (!folio_test_anon(folio)) {
+> -				if (pte_dirty(ptent)) {
+> -					folio_mark_dirty(folio);
+> -					if (tlb_delay_rmap(tlb)) {
+> -						delay_rmap = 1;
+> -						force_flush = 1;
+> -					}
+> -				}
+> -				if (pte_young(ptent) && likely(vma_has_recency(vma)))
+> -					folio_mark_accessed(folio);
+> -			}
+> -			rss[mm_counter(folio)]--;
+> -			if (!delay_rmap) {
+> -				folio_remove_rmap_pte(folio, page, vma);
+> -				if (unlikely(page_mapcount(page) < 0))
+> -					print_bad_pte(vma, addr, ptent, page);
+> -			}
+> -			if (unlikely(__tlb_remove_page(tlb, page, delay_rmap))) {
+> -				force_flush = 1;
+> +			zap_present_pte(tlb, vma, pte, ptent, addr, details,
+> +					rss, &force_flush, &force_break);
+> +			if (unlikely(force_break)) {
+>  				addr += PAGE_SIZE;
+>  				break;
+>  			}
+
 
