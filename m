@@ -1,145 +1,116 @@
-Return-Path: <linux-kernel+bounces-44131-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44132-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A12DC841DB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:27:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37136841DB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:27:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 560CF2840BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:27:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 635DA1C27C67
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:27:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DEBB5645A;
-	Tue, 30 Jan 2024 08:27:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="LQs2gxg3"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DC3855E52;
-	Tue, 30 Jan 2024 08:27:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24C615787F;
+	Tue, 30 Jan 2024 08:27:29 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0B295786C;
+	Tue, 30 Jan 2024 08:27:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706603239; cv=none; b=UtijZQzgtxO8yk/T1wYeY9xzNsLzXFk+xUcwJ8/3iQHAw6IbSCrG2mgvYj9A120qSooOHqpdoHAAPd8gaoOamYlAvCZ2u7lSEcYZyldQYAKl2Da6JzympO+y//io41h2TtT40Poe8jQSv2VbIHlc25dH1I4UWEHsy1LpIBpsErM=
+	t=1706603248; cv=none; b=TdcZpAdqJ4BoTb/mryXbYcNbNXlaeck1g/qK4b0RiHfyenHP35GFjtC89C0M80UV7AJVcAqvkxPUAKur6DgKikBAPjuNKx2lTtG6Jk7Q3VeE1USWxLfyn3Sz0VmIrg7TcRlUab7C7hmPCY8WHjGQFqHD1t87y9i1xqOjy750Mv8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706603239; c=relaxed/simple;
-	bh=y/tOK4kKubOxMCb3R8YpgrR6A+4VGvjHaSVjdAE5tOo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=gWu+xYRceLbTkgE5NenXaUdkBlxQZdXMAqb9Djz2/86E3cbYcodD6fYlYnxZ7dkvNgHvdxhNtscMajdBirowNAk3OEwC5tMmisU2EzCS3t4rBoek3WWexy+TScvgX8VIkRwaszMXafUmZD0ROIuQeCggd4yzxapisXKcvzkN2VE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=LQs2gxg3; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40U6dSR2012565;
-	Tue, 30 Jan 2024 08:27:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=BgZ1iZOYhcZCeI2JkhX8IJ0qmAvDNFqA67+unrC01Nk=; b=LQ
-	s2gxg3bbO9/7q9JDD9CAiWu6zJfsZCiG30wtIjFGzBH74UT26Bd4Konx/b+wSjBl
-	7gXhuE/Wop1vSN4EZi0fpCxcMWkQpanMviGYk5xumX03Z+khz7SvoqgIKXs4N4zb
-	Ljal4xa/AADiIzC1WyipokPdtxgWezQOta5fvGRDYZiAUt1bNYJdXmzuOhpV77LO
-	0g+P4NMnwESb3HXoVwbyws+73X5FNPW7rk7xMHjDhLR4I+zrPIr413DJqz9T7/6Y
-	Wlk5TXv3k421yiiP6JdEjf/+ZxBltWUey7aoJL3DUKy9qgh9Az2ojni5nhe/muW0
-	i33/QE7XBlIxRTcKVcEA==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vxsc40fng-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Jan 2024 08:27:09 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40U8R8Sl025543
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Jan 2024 08:27:08 GMT
-Received: from [10.206.101.41] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 30 Jan
- 2024 00:27:03 -0800
-Message-ID: <ecd2ffa0-b2b2-3b09-5799-6f7d4d4054c9@quicinc.com>
-Date: Tue, 30 Jan 2024 13:56:59 +0530
+	s=arc-20240116; t=1706603248; c=relaxed/simple;
+	bh=qL7hORQYeSREqK7YSRmECZja3+xBXa6/EVKUPw8ODts=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BAPKysRNGcqVNAtKYIxN7W3TkjPHvmVxc3XWBnyNGuVvtPg0mcMtCUkDiusHhgFIrmGvcNY0nQGLunEhCxFC7oNx8FGA/dLHg6gY16rUiDRzI0qqdyZFnvoTcNwbreyfEGqc2J7ZEydQhqhjpU3ddzwr6eeLWGyReyeVKKfjIF4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.2.5.213])
+	by gateway (Coremail) with SMTP id _____8DxbOnrsrhlYEEIAA--.15198S3;
+	Tue, 30 Jan 2024 16:27:23 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.2.5.213])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8AxHs_qsrhl4KcnAA--.23872S2;
+	Tue, 30 Jan 2024 16:27:22 +0800 (CST)
+From: Bibo Mao <maobibo@loongson.cn>
+To: Huacai Chen <chenhuacai@kernel.org>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Sergey Shtylyov <s.shtylyov@omp.ru>,
+	lvjianmin@loongson.cn
+Subject: [PATCH v5 0/3] irqchip/loongson-eiointc: Refine irq affinity setting during resume
+Date: Tue, 30 Jan 2024 16:27:19 +0800
+Message-Id: <20240130082722.2912576-1-maobibo@loongson.cn>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] media: dt-bindings: qcom,sc7280-venus: Allow one IOMMU
- entry
-Content-Language: en-US
-To: Luca Weiss <luca.weiss@fairphone.com>, Conor Dooley <conor@kernel.org>
-CC: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Stanimir Varbanov
-	<stanimir.k.varbanov@gmail.com>,
-        Bryan O'Donoghue
-	<bryan.odonoghue@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob
- Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <~postmarketos/upstreaming@lists.sr.ht>, <phone-devel@vger.kernel.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240129-sc7280-venus-bindings-v1-1-20a9ba194c60@fairphone.com>
- <20240129-numerate-brought-4660c2a89719@spud>
- <CYRVI1IQ2UKE.15ZGCYLRT3ND3@fairphone.com>
-From: Vikash Garodia <quic_vgarodia@quicinc.com>
-In-Reply-To: <CYRVI1IQ2UKE.15ZGCYLRT3ND3@fairphone.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Xv8y1pP61jrbaPJVNBCBn_IPG2vNeojm
-X-Proofpoint-ORIG-GUID: Xv8y1pP61jrbaPJVNBCBn_IPG2vNeojm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-30_02,2024-01-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=805 spamscore=0 suspectscore=0 impostorscore=0
- lowpriorityscore=0 mlxscore=0 priorityscore=1501 clxscore=1011
- adultscore=0 phishscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2401190000 definitions=main-2401300060
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8AxHs_qsrhl4KcnAA--.23872S2
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7tFW8Aw4kKw4fCF1UXFy3Jrc_yoW8XFW3p3
+	yfCasIkr4DAryI9a4fGw10qw1fZrsYvrZrJws5K3yxA3s8u34DKr4rtF1rZrW7CrW7Ja12
+	qFW5uF48uFs8C3XCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUU9Fb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+	XVWUAwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7V
+	AKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v2
+	6r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
+	CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF
+	0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIx
+	AIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2
+	KfnxnUUI43ZEXa7IU8CksDUUUUU==
 
-Hello,
+During suspend and resume, other CPUs except CPU0 are hot-unpluged and
+IRQs are migrated to CPU0. So it is not necessary to restore irq
+affinity for eiointc irq controller.
 
-On 1/30/2024 1:17 PM, Luca Weiss wrote:
-> On Mon Jan 29, 2024 at 6:37 PM CET, Conor Dooley wrote:
->> On Mon, Jan 29, 2024 at 08:48:54AM +0100, Luca Weiss wrote:
->>> Some SC7280-based boards crash when providing the "secure_non_pixel"
->>> context bank, so allow only one iommu in the bindings also.
->>>
->>> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
->>
->> Do we have any idea why this happens? How is someone supposed to know
->> whether or not their system requires you to only provide one iommu?
->> Yes, a crash might be the obvious answer, but is there a way of knowing
->> without the crashes?
-> 
-> +CC Vikash Garodia
-> 
-> Unfortunately I don't really have much more information than this
-> message here:
-> https://lore.kernel.org/linux-arm-msm/ff021f49-f81b-0fd1-bd2c-895dbbb03d56@quicinc.com/
-> 
-> And see also the following replies for a bit more context, like this
-> one:
-> https://lore.kernel.org/linux-arm-msm/a4e8b531-49f9-f4a1-51cb-e422c56281cc@quicinc.com/
-> 
-> Maybe Vikash can add some more info regarding this.
+Also there is small optimization for the interrupt dispatch function
+eiointc_irq_dispatch(). For example there are 256 IRQs supported for
+eiointc on Loongson Loongson-3A5000 and Loongson-2K2000 system, 128 IRQs
+on Loongson-2K0500 platform, eiointc irq handler reads the bitmap and find
+pending irqs when irq happens. So there are four times of consecutive
+iocsr_read64 operations for all the bits to find all pending irqs. If the
+pending bitmap is zero, it means that there is no pending irq for the this
+irq bitmap range, we can skip handling to avoid some useless operations
+such as clearing hw ISR.
 
-0x2184 is a secure SID i.e any transactions with that ID would be access
-controlled by trustzone (TZ). SC7280 (chromebook) was designed without TZ, while
-some other DT deriving from SC7280 (like qcm6490) might have TZ. Hence it is
-good to move the iommu entry from SC7280 to chrome-common.
+---
+ Changes in v5:
+  1. Refine changlog
 
-Regards,
-Vikash
+ Changes in v4:
+  1. Adjust order of the patch and put the simple patch as first one.
+  2. Modify comments in function eiointc_irq_dispatch() suitable for all
+hw platforms.
+
+ Changes in v3:
+   Split the patch into three small patches
+
+ Changes in v2:
+   Modify changelog and comments
+---
+
+Bibo Mao (3):
+  irqchip/loongson-eiointc: Typo fix in function eiointc_domain_alloc
+  irqchip/loongson-eiointc: Skip handling if there is no pending irq
+  irqchip/loongson-eiointc: Refine irq affinity setting during resume
+
+ drivers/irqchip/irq-loongson-eiointc.c | 24 +++++++-----------------
+ 1 file changed, 7 insertions(+), 17 deletions(-)
+
+
+base-commit: 41bccc98fb7931d63d03f326a746ac4d429c1dd3
+-- 
+2.39.3
+
 
