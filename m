@@ -1,507 +1,210 @@
-Return-Path: <linux-kernel+bounces-44897-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44898-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 565618428AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:03:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7300D8428BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:05:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7AB3F1C25FF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:03:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2854D284795
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:05:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC9B382D93;
-	Tue, 30 Jan 2024 16:03:08 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65A41605A6;
+	Tue, 30 Jan 2024 16:05:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bY2JjupC"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AEE786AEB
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 16:03:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDC7186129
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 16:05:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706630587; cv=none; b=usijF7mF8jp3e0L2awuflpZttpwxagKjCy98rqX7dfLMTHBhsspbypjqrFQC4TZb7tW6cxuhr5Vmr7g+6cUHNyt0a51rKhSLtmDkhtSj8stRULC6iOBTVr+LA9vwFoGcOmzqq5aOd27dU2AYiO8S0ZzeduS6g+zXNY8ni2iRQNc=
+	t=1706630715; cv=none; b=qZiWIZ1e8BHP8m6q6trQ4OQxjsu3PJN2pRAcBDTemEHfug/1dEY+Ti/qRaFN2lw3Ted6JqpfVgdRHiVrCXLo4RfTei/e9XloKYzoQSmmDPblr+i3pXo4lfY+luu87MjBgLzaQ+JVydB0ab0ZRu5LG0gsyAqw4l1Fd57VP3gbJao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706630587; c=relaxed/simple;
-	bh=avby7nCDpL1C/rCDU9NnOvoYqDV5ui9SzsxkCMg/yzA=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=e8bwgyBr/5E835HZYVyF0gE3Bxu+z5KhY8+aFFEFVLnzug9SC05dWCj8V7QJtLzB8KRQEvl8zUmdwhzroTyaFaVkWQOqAA9Yyrfzk73YY9zuG0AHFb2m3pMjypYzRrD2U5qh3+hXINRO//R3GxkjEUX6SVTYSktS2uTOPa6wxrI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-35fc6976630so26232165ab.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 08:03:04 -0800 (PST)
+	s=arc-20240116; t=1706630715; c=relaxed/simple;
+	bh=unh5iIZOG1QtDQYkC1HtT7urjlgqmEQq3IudvN2ogOk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DLgyH97qC0+yEQpqhpLQPDp8tlPeEsjwFdw34WM+cY8rlWxG5LJoBeZ6CrjPx+e0TDaH1LoVOrW3bQZ3KIoJojKQJ41T5hdFkvbtPd/U9XOQ1/Mk/zL7FY0Qa5OSrsO2PT81OulXXQ8/2oKOnEp43wrnhpJ1ZTw1G/t69PYWy4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bY2JjupC; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a28fb463a28so492747966b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 08:05:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706630711; x=1707235511; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7VDh4iDFXXue5I/l6Y1wqSIUFQdASHvv7bgRaIo08RQ=;
+        b=bY2JjupCgZUxdtDOjWqYdKrzrIYi8nNYbAsAz0LhP7mnD2XNiIIA2PlAVAD8ZJvw+g
+         RSMOMqwXqPetuOgJvnXyL9G3WQPfEABLUW9CcH78ENb3keJJMjeOLkh4/2d1Dn5o6cdc
+         65PVlopkBJY3NwuvVEuhj5r6GlTRWZGPCGyKK737ygAz7s5lDO/ojyiBccYfcpIkzoS/
+         pcwNGKWVEM+0PJMeJeOD2Z66Gkbt0ANncmYNMi3r7lSZ8JL4WUNuewM2k5v5TjvobK/y
+         QLhCToH1uYHMBTPkmfTTnGUbpR1/TuZxxJwxNEAmRZ6CbykRDnUCc4Tl6hEFxFi3PhwP
+         0M1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706630584; x=1707235384;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20230601; t=1706630711; x=1707235511;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=N3Tq/fVAuyXThv1r/542mNzWM71O2DAdAgXn/fYRAU0=;
-        b=klXQXieOcDVq7ysX7jWv3Rxmhb9Uymx8xPr1LYmuozDxobsOkA932jm+3civpiMbEA
-         CnDnvK3HSxKseHkl2/paPkUoCKs1XUyupiRHI5R87nkPuLoJNRQuUOX461DitcD9o8HA
-         iagHgIKZo+dS8Tjm3+otkdUpySnDyxC/SUpq7cA6AYltYfmxXMz5FSo2pOtrdaFI2XeB
-         r47iUFQU6b4E+CVL7YGe+9Tgj8v81+Fs/UwEeLIYr9KmU2K5Ov58+ReHnPNsj5dc/Mps
-         +M9pTDV5QKXw4XIUGQipzvMGVMULJlAREg0y+H8lvyUqpQVK0PY5ydWLXHhDXTCNAUh3
-         ZgZw==
-X-Gm-Message-State: AOJu0YxxXi8iT7f0ttroCg4d9O4zCk7K8JRk7qQR+70PmxnVPCMrdjHc
-	ReTyzAqLP9eJ5YP1cAK7urxUuhNTvE50fDFicTLCi5CPnrbGElU+BH2tm6PRerrWifcdiUZkkEp
-	wpZ/CaiAlqL46Sj2nm+BWlc8BEKpoQuz4D0Z/IuLsDq8obD6fd0+XNbA=
-X-Google-Smtp-Source: AGHT+IEUt0e/uKLOd6N7pew3MM57ClvUSYLTOfvbo4K6X1WqtqQau6CyETpKpn5cM2GfJQxX14dErlujcmQYdU2FRmaYZNXfUJ6h
+        bh=7VDh4iDFXXue5I/l6Y1wqSIUFQdASHvv7bgRaIo08RQ=;
+        b=TxXqQEMPpld2GSC2OpRNt/myF1VYWvbD48fhHbDUGCyohdf9JBs7uz3p1IQmA3KR+C
+         mWxOeP3xu2sT0GGmE1iDyg3Z2fUcQo/hmoVUNZlHDKTAXCxxmXiNSI85NBIMtK1Q7MBd
+         V9DlB4IrjnRhknatTYqFzeo0FsybjygT0Dlgl9gbRNwgmsh+tWRyRXs7wA9nkKdyUeW1
+         v+fbKawKLykX4IGpw6FJKbWEaDHszhBXZ3Lz9U7bpXN4v2QqODFBe1ZFhuetvpjG6AJ4
+         R8/0oEs4sg8i58j1mV5GpffMLZhHv51/w18AbIFrqzkKZwz7AVMrNaFXP63fIFh2z3Uu
+         8+4w==
+X-Gm-Message-State: AOJu0YwuSuQtzaXK5ffVWJP3CWh2RYZ29zRuFgR0JnroPun1ZdPOZ69I
+	Gl508RR4R/h/KkbnxyN5M51an2txobFb+pNDFH+jIOtu808s2b9sN6VnOytZBfE=
+X-Google-Smtp-Source: AGHT+IEttDPY67Gj0M8Wg0MEFDrc2M7fmw+GWrrPNiUYvlM+dBE4LqXHiYWn8V/vBm0G6hMfomELuA==
+X-Received: by 2002:a17:906:f208:b0:a35:2ee1:b953 with SMTP id gt8-20020a170906f20800b00a352ee1b953mr6383969ejb.26.1706630711165;
+        Tue, 30 Jan 2024 08:05:11 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUEUEkig/baHmI5ejySEZr/n0F5q99g9miAQm0roSRF9DW50Li2aldG0TSo+h9Z1Uj7T05yM3Fa0pN+rJDCi7q1KMPcGqJC9OVObKBwjNc/oarDB1OmhqlwDkyw+GpTBgQrfnw4vKjEWE6f+lsnEJ9HJFtEwV+hfyN6rsaZNp2AbS7mn2KGwtqMAnTQDUMBxdbFjScpWbJaioHwlw8/YRM6bx8plINYceIqPHS+/nenIadsYQfYWp3vadhtiTsGnjjTuoadcZOMw2VeHvFBOPQRho9PIzeZG1tDF9eEZBCgdjOZ8er999dxaDJRJWm36LBFDWfnV9Oy1ZBmmZvR8wIH4txLn1jV1aXPDDPPjwsWrens
+Received: from [192.168.1.20] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id tb11-20020a1709078b8b00b00a35f9df7768sm1421990ejc.182.2024.01.30.08.05.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jan 2024 08:05:10 -0800 (PST)
+Message-ID: <32669bc7-90b5-48d9-8845-2e072a477c6e@linaro.org>
+Date: Tue, 30 Jan 2024 17:05:06 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1524:b0:363:8b04:6e01 with SMTP id
- i4-20020a056e02152400b003638b046e01mr262431ilu.3.1706630584369; Tue, 30 Jan
- 2024 08:03:04 -0800 (PST)
-Date: Tue, 30 Jan 2024 08:03:04 -0800
-In-Reply-To: <tencent_74C670C985EED9EEF68C8927DA06EDD2DD06@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000be8c1906102be5fe@google.com>
-Subject: Re: [syzbot] [block?] [trace?] INFO: task hung in blk_trace_remove (2)
-From: syzbot <syzbot+2373f6be3e6de4f92562@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] dt-bindings: fpga: xlnx,fpga-slave-selectmap: add DT
+ schema
+Content-Language: en-US
+To: Charles Perry <charles.perry@savoirfairelinux.com>
+Cc: mdf@kernel.org, hao wu <hao.wu@intel.com>, yilun xu <yilun.xu@intel.com>,
+ trix@redhat.com, krzysztof kozlowski+dt <krzysztof.kozlowski+dt@linaro.org>,
+ Brian CODY <bcody@markem-imaje.com>,
+ Allen VANDIVER <avandiver@markem-imaje.com>, linux-fpga@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240129225602.3832449-1-charles.perry@savoirfairelinux.com>
+ <20240129225602.3832449-2-charles.perry@savoirfairelinux.com>
+ <f3cfffa0-5089-4bf7-b424-d5e949e36d67@linaro.org>
+ <1489222458.382780.1706629544559.JavaMail.zimbra@savoirfairelinux.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <1489222458.382780.1706629544559.JavaMail.zimbra@savoirfairelinux.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hello,
+On 30/01/2024 16:45, Charles Perry wrote:
+> 
+>>> +
+>>> +  reg:
+>>> +    description:
+>>> +      At least 1 byte of memory mapped IO
+>>> +    maxItems: 1
+>>> +
+>>> +  prog_b-gpios:
+>>
+>>
+>> No underscores in names.
+>>
+> 
+> This is heavily based on "xlnx,fpga-slave-serial.yaml" which uses an underscore.
+> I can use a dash instead but that would make things inconsistent across the two schemas. 
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-INFO: task hung in blk_trace_setup
+Inconsistency is not a problem. Duplicating technical debt is.
 
-INFO: task syz-executor.4:5650 blocked for more than 143 seconds.
-      Not tainted 6.8.0-rc2-syzkaller-g861c0981648f-dirty #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.4  state:D stack:27776 pid:5650  tgid:5649  ppid:5434   flags:0x00000006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5400 [inline]
- __schedule+0xf12/0x5c00 kernel/sched/core.c:6727
- __schedule_loop kernel/sched/core.c:6802 [inline]
- schedule+0xe9/0x270 kernel/sched/core.c:6817
- schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6874
- __mutex_lock_common kernel/locking/mutex.c:684 [inline]
- __mutex_lock+0x5b9/0x9d0 kernel/locking/mutex.c:752
- blk_trace_setup+0x33/0x60 kernel/trace/blktrace.c:647
- sg_ioctl_common drivers/scsi/sg.c:1118 [inline]
- sg_ioctl+0x669/0x2760 drivers/scsi/sg.c:1160
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd3/0x250 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f406fc7cda9
-RSP: 002b:00007f4070a040c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007f406fdabf80 RCX: 00007f406fc7cda9
-RDX: 0000000020000040 RSI: 00000000c0481273 RDI: 0000000000000003
-RBP: 00007f406fcc947a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f406fdabf80 R15: 00007ffc9ad00358
- </TASK>
-INFO: task syz-executor.4:5651 blocked for more than 143 seconds.
-      Not tainted 6.8.0-rc2-syzkaller-g861c0981648f-dirty #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.4  state:D stack:28480 pid:5651  tgid:5649  ppid:5434   flags:0x00000006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5400 [inline]
- __schedule+0xf12/0x5c00 kernel/sched/core.c:6727
- __schedule_loop kernel/sched/core.c:6802 [inline]
- schedule+0xe9/0x270 kernel/sched/core.c:6817
- schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6874
- __mutex_lock_common kernel/locking/mutex.c:684 [inline]
- __mutex_lock+0x5b9/0x9d0 kernel/locking/mutex.c:752
- blk_trace_remove+0x1f/0x40 kernel/trace/blktrace.c:405
- sg_ioctl_common drivers/scsi/sg.c:1126 [inline]
- sg_ioctl+0x9ac/0x2760 drivers/scsi/sg.c:1160
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd3/0x250 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f406fc7cda9
-RSP: 002b:00007f40709e30c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007f406fdac050 RCX: 00007f406fc7cda9
-RDX: 0000000000000000 RSI: 0000000000001276 RDI: 0000000000000003
-RBP: 00007f406fcc947a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000006e R14: 00007f406fdac050 R15: 00007ffc9ad00358
- </TASK>
-INFO: task syz-executor.1:5653 blocked for more than 144 seconds.
-      Not tainted 6.8.0-rc2-syzkaller-g861c0981648f-dirty #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.1  state:D stack:27776 pid:5653  tgid:5652  ppid:5428   flags:0x00000006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5400 [inline]
- __schedule+0xf12/0x5c00 kernel/sched/core.c:6727
- __schedule_loop kernel/sched/core.c:6802 [inline]
- schedule+0xe9/0x270 kernel/sched/core.c:6817
- schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6874
- __mutex_lock_common kernel/locking/mutex.c:684 [inline]
- __mutex_lock+0x5b9/0x9d0 kernel/locking/mutex.c:752
- blk_trace_setup+0x33/0x60 kernel/trace/blktrace.c:647
- sg_ioctl_common drivers/scsi/sg.c:1118 [inline]
- sg_ioctl+0x669/0x2760 drivers/scsi/sg.c:1160
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd3/0x250 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f76ba07cda9
-RSP: 002b:00007f76baed70c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007f76ba1abf80 RCX: 00007f76ba07cda9
-RDX: 0000000020000040 RSI: 00000000c0481273 RDI: 0000000000000003
-RBP: 00007f76ba0c947a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f76ba1abf80 R15: 00007fffb67c90d8
- </TASK>
-INFO: task syz-executor.1:5655 blocked for more than 144 seconds.
-      Not tainted 6.8.0-rc2-syzkaller-g861c0981648f-dirty #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.1  state:D stack:29536 pid:5655  tgid:5652  ppid:5428   flags:0x00000006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5400 [inline]
- __schedule+0xf12/0x5c00 kernel/sched/core.c:6727
- __schedule_loop kernel/sched/core.c:6802 [inline]
- schedule+0xe9/0x270 kernel/sched/core.c:6817
- schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6874
- __mutex_lock_common kernel/locking/mutex.c:684 [inline]
- __mutex_lock+0x5b9/0x9d0 kernel/locking/mutex.c:752
- blk_trace_remove+0x1f/0x40 kernel/trace/blktrace.c:405
- sg_ioctl_common drivers/scsi/sg.c:1126 [inline]
- sg_ioctl+0x9ac/0x2760 drivers/scsi/sg.c:1160
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd3/0x250 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f76ba07cda9
-RSP: 002b:00007f76baeb60c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007f76ba1ac050 RCX: 00007f76ba07cda9
-RDX: 0000000000000000 RSI: 0000000000001276 RDI: 0000000000000003
-RBP: 00007f76ba0c947a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000006e R14: 00007f76ba1ac050 R15: 00007fffb67c90d8
- </TASK>
-INFO: task syz-executor.2:5662 blocked for more than 145 seconds.
-      Not tainted 6.8.0-rc2-syzkaller-g861c0981648f-dirty #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.2  state:D stack:27776 pid:5662  tgid:5660  ppid:5443   flags:0x00000006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5400 [inline]
- __schedule+0xf12/0x5c00 kernel/sched/core.c:6727
- __schedule_loop kernel/sched/core.c:6802 [inline]
- schedule+0xe9/0x270 kernel/sched/core.c:6817
- schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6874
- __mutex_lock_common kernel/locking/mutex.c:684 [inline]
- __mutex_lock+0x5b9/0x9d0 kernel/locking/mutex.c:752
- blk_trace_setup+0x33/0x60 kernel/trace/blktrace.c:647
- sg_ioctl_common drivers/scsi/sg.c:1118 [inline]
- sg_ioctl+0x669/0x2760 drivers/scsi/sg.c:1160
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd3/0x250 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7efebe87cda9
-RSP: 002b:00007efebf5ca0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007efebe9abf80 RCX: 00007efebe87cda9
-RDX: 0000000020000040 RSI: 00000000c0481273 RDI: 0000000000000003
-RBP: 00007efebe8c947a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007efebe9abf80 R15: 00007ffd09f13438
- </TASK>
-INFO: task syz-executor.2:5663 blocked for more than 145 seconds.
-      Not tainted 6.8.0-rc2-syzkaller-g861c0981648f-dirty #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.2  state:D stack:29536 pid:5663  tgid:5660  ppid:5443   flags:0x00000006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5400 [inline]
- __schedule+0xf12/0x5c00 kernel/sched/core.c:6727
- __schedule_loop kernel/sched/core.c:6802 [inline]
- schedule+0xe9/0x270 kernel/sched/core.c:6817
- schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6874
- __mutex_lock_common kernel/locking/mutex.c:684 [inline]
- __mutex_lock+0x5b9/0x9d0 kernel/locking/mutex.c:752
- blk_trace_remove+0x1f/0x40 kernel/trace/blktrace.c:405
- sg_ioctl_common drivers/scsi/sg.c:1126 [inline]
- sg_ioctl+0x9ac/0x2760 drivers/scsi/sg.c:1160
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd3/0x250 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7efebe87cda9
-RSP: 002b:00007efebf5a90c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007efebe9ac050 RCX: 00007efebe87cda9
-RDX: 0000000000000000 RSI: 0000000000001276 RDI: 0000000000000003
-RBP: 00007efebe8c947a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000006e R14: 00007efebe9ac050 R15: 00007ffd09f13438
- </TASK>
-INFO: task syz-executor.0:5665 blocked for more than 145 seconds.
-      Not tainted 6.8.0-rc2-syzkaller-g861c0981648f-dirty #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.0  state:D stack:27776 pid:5665  tgid:5664  ppid:5435   flags:0x00000006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5400 [inline]
- __schedule+0xf12/0x5c00 kernel/sched/core.c:6727
- __schedule_loop kernel/sched/core.c:6802 [inline]
- schedule+0xe9/0x270 kernel/sched/core.c:6817
- schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6874
- __mutex_lock_common kernel/locking/mutex.c:684 [inline]
- __mutex_lock+0x5b9/0x9d0 kernel/locking/mutex.c:752
- blk_trace_setup+0x33/0x60 kernel/trace/blktrace.c:647
- sg_ioctl_common drivers/scsi/sg.c:1118 [inline]
- sg_ioctl+0x669/0x2760 drivers/scsi/sg.c:1160
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd3/0x250 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f640727cda9
-RSP: 002b:00007f640802c0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007f64073abf80 RCX: 00007f640727cda9
-RDX: 0000000020000040 RSI: 00000000c0481273 RDI: 0000000000000003
-RBP: 00007f64072c947a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f64073abf80 R15: 00007fff0e30aa68
- </TASK>
-INFO: task syz-executor.0:5667 blocked for more than 146 seconds.
-      Not tainted 6.8.0-rc2-syzkaller-g861c0981648f-dirty #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.0  state:D stack:29536 pid:5667  tgid:5664  ppid:5435   flags:0x00000006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5400 [inline]
- __schedule+0xf12/0x5c00 kernel/sched/core.c:6727
- __schedule_loop kernel/sched/core.c:6802 [inline]
- schedule+0xe9/0x270 kernel/sched/core.c:6817
- schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6874
- __mutex_lock_common kernel/locking/mutex.c:684 [inline]
- __mutex_lock+0x5b9/0x9d0 kernel/locking/mutex.c:752
- blk_trace_remove+0x1f/0x40 kernel/trace/blktrace.c:405
- sg_ioctl_common drivers/scsi/sg.c:1126 [inline]
- sg_ioctl+0x9ac/0x2760 drivers/scsi/sg.c:1160
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd3/0x250 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f640727cda9
-RSP: 002b:00007f640800b0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007f64073ac050 RCX: 00007f640727cda9
-RDX: 0000000000000000 RSI: 0000000000001276 RDI: 0000000000000003
-RBP: 00007f64072c947a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000006e R14: 00007f64073ac050 R15: 00007fff0e30aa68
- </TASK>
+> 
+>>
+>>> +    description:
+>>> +      config pin (referred to as PROGRAM_B in the manual)
+>>> +    maxItems: 1
+>>> +
+>>> +  done-gpios:
+>>> +    description:
+>>> +      config status pin (referred to as DONE in the manual)
+>>> +    maxItems: 1
+>>> +
+>>> +  init-b-gpios:
+>>
+>> Is there init-a? Open other bindings and look how these are called there.
+>>
+> 
+> No, the "-b" is there to denote that the signal is active low. I think its shorthand
+> for "bar" which is the overline (‾) that electronic engineer put on top of the name of the
+> signal on schematics. It comes from the datasheet.
 
-Showing all locks held in the system:
-1 lock held by khungtaskd/29:
- #0: ffffffff8d1acbe0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
- #0: ffffffff8d1acbe0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:750 [inline]
- #0: ffffffff8d1acbe0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x75/0x340 kernel/locking/lockdep.c:6614
-2 locks held by kworker/u4:2/38:
-3 locks held by kworker/0:2/922:
- #0: ffff888029122d38 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: process_one_work+0x789/0x15d0 kernel/workqueue.c:2608
- #1: ffffc90004167d80 ((work_completion)(&(&ifa->dad_work)->work)){+.+.}-{0:0}, at: process_one_work+0x7eb/0x15d0 kernel/workqueue.c:2609
- #2: ffffffff8ecc25a8 (rtnl_mutex){+.+.}-{3:3}, at: addrconf_dad_work+0xcf/0x14b0 net/ipv6/addrconf.c:4129
-5 locks held by kworker/u5:1/4459:
- #0: ffff88802168a538 ((wq_completion)hci8){+.+.}-{0:0}, at: process_one_work+0x789/0x15d0 kernel/workqueue.c:2608
- #1: ffffc9000d8f7d80 ((work_completion)(&hdev->cmd_sync_work)){+.+.}-{0:0}, at: process_one_work+0x7eb/0x15d0 kernel/workqueue.c:2609
- #2: ffff8882053c5060 (&hdev->req_lock){+.+.}-{3:3}, at: hci_cmd_sync_work+0x170/0x410 net/bluetooth/hci_sync.c:305
- #3: ffff8882053c4078 (&hdev->lock){+.+.}-{3:3}, at: hci_abort_conn_sync+0x150/0xb50 net/bluetooth/hci_sync.c:5337
- #4: ffffffff8d1b8438 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:324 [inline]
- #4: ffffffff8d1b8438 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x3ff/0x800 kernel/rcu/tree_exp.h:995
-2 locks held by getty/4816:
- #0: ffff888029b910a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x24/0x80 drivers/tty/tty_ldisc.c:243
- #1: ffffc90002f062f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0xfc6/0x1490 drivers/tty/n_tty.c:2201
-2 locks held by kworker/0:5/5076:
- #0: ffff88801308a938 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: process_one_work+0x789/0x15d0 kernel/workqueue.c:2608
- #1: ffffc900042e7d80 ((work_completion)(&rew->rew_work)){+.+.}-{0:0}, at: process_one_work+0x7eb/0x15d0 kernel/workqueue.c:2609
-3 locks held by kworker/1:7/5518:
- #0: ffff888029122d38 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: process_one_work+0x789/0x15d0 kernel/workqueue.c:2608
- #1: ffffc900097a7d80 ((work_completion)(&(&ifa->dad_work)->work)){+.+.}-{0:0}, at: process_one_work+0x7eb/0x15d0 kernel/workqueue.c:2609
- #2: ffffffff8ecc25a8 (rtnl_mutex){+.+.}-{3:3}, at: addrconf_dad_work+0xcf/0x14b0 net/ipv6/addrconf.c:4129
-3 locks held by syz-executor.5/5642:
-1 lock held by syz-executor.4/5650:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_setup+0x33/0x60 kernel/trace/blktrace.c:647
-1 lock held by syz-executor.4/5651:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_remove+0x1f/0x40 kernel/trace/blktrace.c:405
-1 lock held by syz-executor.1/5653:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_setup+0x33/0x60 kernel/trace/blktrace.c:647
-1 lock held by syz-executor.1/5655:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_remove+0x1f/0x40 kernel/trace/blktrace.c:405
-1 lock held by syz-executor.2/5662:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_setup+0x33/0x60 kernel/trace/blktrace.c:647
-1 lock held by syz-executor.2/5663:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_remove+0x1f/0x40 kernel/trace/blktrace.c:405
-1 lock held by syz-executor.0/5665:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_setup+0x33/0x60 kernel/trace/blktrace.c:647
-1 lock held by syz-executor.0/5667:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_remove+0x1f/0x40 kernel/trace/blktrace.c:405
-1 lock held by syz-executor.3/5951:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_setup+0x33/0x60 kernel/trace/blktrace.c:647
-1 lock held by syz-executor.3/5952:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_remove+0x1f/0x40 kernel/trace/blktrace.c:405
-1 lock held by syz-executor.5/5979:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_setup+0x33/0x60 kernel/trace/blktrace.c:647
-1 lock held by syz-executor.5/5980:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_remove+0x1f/0x40 kernel/trace/blktrace.c:405
-1 lock held by syz-executor.1/5983:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_setup+0x33/0x60 kernel/trace/blktrace.c:647
-1 lock held by syz-executor.1/5986:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_remove+0x1f/0x40 kernel/trace/blktrace.c:405
-1 lock held by syz-executor.4/5993:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_setup+0x33/0x60 kernel/trace/blktrace.c:647
-1 lock held by syz-executor.4/5994:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_remove+0x1f/0x40 kernel/trace/blktrace.c:405
-1 lock held by syz-executor.0/5997:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_setup+0x33/0x60 kernel/trace/blktrace.c:647
-1 lock held by syz-executor.0/5998:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_remove+0x1f/0x40 kernel/trace/blktrace.c:405
-1 lock held by syz-executor.2/6000:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_setup+0x33/0x60 kernel/trace/blktrace.c:647
-1 lock held by syz-executor.2/6001:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_remove+0x1f/0x40 kernel/trace/blktrace.c:405
-1 lock held by syz-executor.3/6019:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_setup+0x33/0x60 kernel/trace/blktrace.c:647
-1 lock held by syz-executor.3/6020:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_remove+0x1f/0x40 kernel/trace/blktrace.c:405
-1 lock held by syz-executor.5/6093:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_setup+0x33/0x60 kernel/trace/blktrace.c:647
-1 lock held by syz-executor.5/6094:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_remove+0x1f/0x40 kernel/trace/blktrace.c:405
-1 lock held by syz-executor.1/6105:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_setup+0x33/0x60 kernel/trace/blktrace.c:647
-1 lock held by syz-executor.1/6106:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_remove+0x1f/0x40 kernel/trace/blktrace.c:405
-1 lock held by syz-executor.4/6109:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_setup+0x33/0x60 kernel/trace/blktrace.c:647
-1 lock held by syz-executor.4/6110:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_remove+0x1f/0x40 kernel/trace/blktrace.c:405
-1 lock held by syz-executor.2/6120:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_setup+0x33/0x60 kernel/trace/blktrace.c:647
-1 lock held by syz-executor.2/6121:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_remove+0x1f/0x40 kernel/trace/blktrace.c:405
-1 lock held by syz-executor.0/6127:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_setup+0x33/0x60 kernel/trace/blktrace.c:647
-1 lock held by syz-executor.0/6128:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_remove+0x1f/0x40 kernel/trace/blktrace.c:405
-1 lock held by syz-executor.3/6138:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_setup+0x33/0x60 kernel/trace/blktrace.c:647
-1 lock held by syz-executor.3/6139:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_remove+0x1f/0x40 kernel/trace/blktrace.c:405
-1 lock held by syz-executor.1/6165:
- #0: ffffffff8ecc25a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:79 [inline]
- #0: ffffffff8ecc25a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x372/0xe00 net/core/rtnetlink.c:6612
-1 lock held by syz-executor.4/6168:
- #0: ffffffff8ecc25a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:79 [inline]
- #0: ffffffff8ecc25a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x372/0xe00 net/core/rtnetlink.c:6612
-1 lock held by syz-executor.2/6184:
- #0: ffffffff8ecc25a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:79 [inline]
- #0: ffffffff8ecc25a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x372/0xe00 net/core/rtnetlink.c:6612
-2 locks held by syz-executor.0/6187:
- #0: ffffffff8ecc25a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:79 [inline]
- #0: ffffffff8ecc25a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x372/0xe00 net/core/rtnetlink.c:6612
- #1: ffffffff8d1b8438 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:324 [inline]
- #1: ffffffff8d1b8438 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x3ff/0x800 kernel/rcu/tree_exp.h:995
-1 lock held by syz-executor.5/6191:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_setup+0x33/0x60 kernel/trace/blktrace.c:647
-1 lock held by syz-executor.5/6192:
- #0: ffff88801f9a1070 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_remove+0x1f/0x40 kernel/trace/blktrace.c:405
-1 lock held by syz-executor.3/6199:
- #0: ffffffff8ecc25a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:79 [inline]
- #0: ffffffff8ecc25a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x372/0xe00 net/core/rtnetlink.c:6612
+Then just "init-gpios"
 
-=============================================
+..
 
-NMI backtrace for cpu 1
-CPU: 1 PID: 29 Comm: khungtaskd Not tainted 6.8.0-rc2-syzkaller-g861c0981648f-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- nmi_cpu_backtrace+0x277/0x390 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x299/0x300 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
- watchdog+0xf87/0x1210 kernel/hung_task.c:379
- kthread+0x2c6/0x3a0 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
- </TASK>
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 PID: 59 Comm: kworker/u4:4 Not tainted 6.8.0-rc2-syzkaller-g861c0981648f-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-Workqueue: bat_events batadv_nc_worker
-RIP: 0010:check_preemption_disabled+0x2/0xe0 lib/smp_processor_id.c:13
-Code: ac 04 85 c0 74 1a 65 8b 05 b3 22 74 75 85 c0 75 0f 65 8b 05 bc 1f 74 75 85 c0 74 04 90 0f 0b 90 e9 83 fc ff ff 0f 1f 00 41 54 <55> 53 48 83 ec 08 65 8b 1d cd 59 75 75 65 8b 05 c2 59 75 75 a9 ff
-RSP: 0018:ffffc900015a7a48 EFLAGS: 00000082
-RAX: 0000000000000001 RBX: 1ffff920002b4f4d RCX: 00000000154dd6e4
-RDX: 0000000000000001 RSI: ffffffff8accb300 RDI: ffffffff8b2fdc00
-RBP: 0000000000000200 R08: 0000000000000000 R09: fffffbfff242afe8
-R10: ffffffff92157f47 R11: 0000000000000002 R12: 0000000000000000
-R13: 0000000000000000 R14: ffffffff8d1acbe0 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055ae8684eb68 CR3: 000000006b120000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <NMI>
- </NMI>
- <TASK>
- lockdep_recursion_finish kernel/locking/lockdep.c:467 [inline]
- lock_acquire kernel/locking/lockdep.c:5756 [inline]
- lock_acquire+0x1be/0x520 kernel/locking/lockdep.c:5719
- rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
- rcu_read_lock include/linux/rcupdate.h:750 [inline]
- batadv_nc_process_nc_paths.part.0+0xe4/0x3e0 net/batman-adv/network-coding.c:687
- batadv_nc_process_nc_paths net/batman-adv/network-coding.c:679 [inline]
- batadv_nc_worker+0xded/0x10e0 net/batman-adv/network-coding.c:735
- process_one_work+0x886/0x15d0 kernel/workqueue.c:2633
- process_scheduled_works kernel/workqueue.c:2706 [inline]
- worker_thread+0x8b9/0x1290 kernel/workqueue.c:2787
- kthread+0x2c6/0x3a0 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
- </TASK>
+>>> +required:
+>>> +  - compatible
+>>> +  - reg
+>>> +  - prog_b-gpios
+>>> +  - done-gpios
+>>> +  - init-b-gpios
+>>> +
+>>> +additionalProperties: true
+>>
+>> Nope, this cannot bue true.
+>>
+> 
+> Ok, I'll put this to false but I'm not quite sure I understand the implications.
+> 
+> My reasoning behind assigning this to true was that the FPGA is an external
+> device on a bus that needs to be configured by a bus controller. The bus controller
+> would be the parent of the fpga DT node and the later would contain properties
+> parsed by the bus controller driver.
 
+Which bus controller? MMIO bus does not parse children properties.
+Anyway, if that's the case you miss $ref to respective
+peripheral-props.yaml matching your bus and then "unevaluatedProperties:
+false".
 
-Tested on:
-
-commit:         861c0981 Merge tag 'jfs-6.8-rc3' of github.com:kleikam..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=175259dfe80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b168fa511db3ca08
-dashboard link: https://syzkaller.appspot.com/bug?extid=2373f6be3e6de4f92562
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=17cf4860180000
+Best regards,
+Krzysztof
 
 
