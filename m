@@ -1,72 +1,85 @@
-Return-Path: <linux-kernel+bounces-44185-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44186-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B7B5841E7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:56:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BE8A841E7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:57:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 305BE1F291FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:56:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA6041C24F25
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:57:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96AE759160;
-	Tue, 30 Jan 2024 08:55:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 269BE58120;
+	Tue, 30 Jan 2024 08:57:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b="LSJoA0a0";
-	dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b="n58TGot3"
-Received: from gofer.mess.org (gofer.mess.org [88.97.38.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RsgVOy9r"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7D8858AB4;
-	Tue, 30 Jan 2024 08:55:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=88.97.38.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D58A57866;
+	Tue, 30 Jan 2024 08:56:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706604940; cv=none; b=A1xEqetSXhQzb3ZpyQTECDWVmOiBHZym7pixIipfaEkeC1VZlKjRDKrcyOOfy3xzGOWbP17A3YY/BDOiG1idcNac+nmjM3cHcJc8XTWyGkMPRHRXcgUqzBS61QAVP5p7THQzDPrDbfeB5PZaokioPiX8F4XxWfoNdcvvCW3w1QE=
+	t=1706605020; cv=none; b=kY6m0DKzd/n5MxRbVC3yCXpn6I+6y3jEA8GJyGxAUNDA4RY6jtM6gKh8UFbLLspUqbkh1Dd/aI3z0pd5ZmJKqKniLfqsxO2x23JPKNdYUBa6Mu3+/i7Pu1j+/HkFqm/5WadjJbNyXe4WZvasFy5tw+rIMko+vDfwzQZ6+J8eBcw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706604940; c=relaxed/simple;
-	bh=VaUtochClCSBzwjeApM8D3I4o77tKUb0XFdxMvcCM/g=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qZsz/LQfIXqXVi31DaSlzsH5UaaUjEgriXd7dT4JpIHSfq9PJ2u74HhKuaCCi44giccpBVW+oWgaCnQuISy7BUXiUETBvLyDxnwjx9Rs+uv3SHvTkZ8Yk4ISkL2KzBhEUARp+S03hfFHNNj8PKJWiR+amxjG3mOOkJmuSeEZ6A0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mess.org; spf=pass smtp.mailfrom=mess.org; dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b=LSJoA0a0; dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b=n58TGot3; arc=none smtp.client-ip=88.97.38.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mess.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mess.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-	t=1706604931; bh=VaUtochClCSBzwjeApM8D3I4o77tKUb0XFdxMvcCM/g=;
-	h=From:To:Cc:Subject:Date:From;
-	b=LSJoA0a0B8QRvFgO0YvWpKpbMywLfEyCUDBw844ZHPqG036b4Eu7buaFIErJsNrxY
-	 OhI+zzHkKPNDhymXj4zCQ2WnL8dMCsTKNBDMtwCKYQcTi5fXwC2R0muSHieNfq0eGz
-	 L8yVO8Aw/omJuSs/r8qZk/zCfxtP6Mk6Yfw13aUmVDB2j1DNpOiBbHLMzGP/aYBmJ5
-	 X57J87yzQq8mm0sk9kteUyxstvGlqykJd0icq9VSBBDdA3pPk6xmk21nzEpRat8tIx
-	 NAA6SJiYARtZF7ofZGFVWVrhXZK2GbDnVAdHMdAa3YGL4KDi6+6Gw/0V0t7ufdf55c
-	 wKzVm2TrHH/ew==
-Received: by gofer.mess.org (Postfix, from userid 501)
-	id 2DE2D100741; Tue, 30 Jan 2024 08:55:31 +0000 (GMT)
-X-Spam-Level: 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-	t=1706604929; bh=VaUtochClCSBzwjeApM8D3I4o77tKUb0XFdxMvcCM/g=;
-	h=From:To:Cc:Subject:Date:From;
-	b=n58TGot3ClKZ9/J0KKiVpvlsiXlE+utSyizWm3JGYP/MNVQTJJYSgTF91cW0woE5L
-	 2OfPTV2GQEqFjPHxtrUdUooimGYP8qPlGx4A3bHduguZJj4m+ffsn2JL94378khiCB
-	 NklzzO4l2t/NYYtZliSSuYWUYNsHf+WXz+RpGWtIhVFtsM+dZ+j7uy4r+2VRObBE5B
-	 8BQxkNYg25Z/fNjnUByAYyYEikx8VnzaAjT6LJS8364pcAE8dM2Pg/bqvpe2iwwXsd
-	 An3a3rq1C0tJu/cMz14GKpmiUZ/4tIonRq/lbZqTDg9OReWKSBvwYPdX1DP8ucfY9x
-	 aPberFDx8qoow==
-Received: from bigcore.mess.org (bigcore.local [IPv6:2a02:8011:d000:212:bc3c:1b4a:a6fa:362f])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by gofer.mess.org (Postfix) with ESMTPSA id CC6691000B2;
-	Tue, 30 Jan 2024 08:55:29 +0000 (GMT)
-From: Sean Young <sean@mess.org>
-To: Sean Young <sean@mess.org>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>
-Cc: linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] media: pwm-ir-tx: Depend on CONFIG_HIGH_RES_TIMERS
-Date: Tue, 30 Jan 2024 08:55:25 +0000
-Message-ID: <20240130085525.6222-1-sean@mess.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1706605020; c=relaxed/simple;
+	bh=Vj6SzlkAD5KT+wFwS+h9MR3mauREpPgWpqHN84lJoaw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oCAxC3SfRvUcWSc4lacxRCZcnYMYeaslbyuORAHvMPDibH7PpQizL7qQSyTFqu5jcb85x5o8BAWiKhKV+G5NCRs/HvraEOWLXynNx0/JhVFJhX65bT1D1sPStaDIEFM8hv0NvNlaXnA2/e4Th/y/0aAFnPy9DhCp4veRejTI9PE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RsgVOy9r; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6da202aa138so2243289b3a.2;
+        Tue, 30 Jan 2024 00:56:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706605018; x=1707209818; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=csHtYc18T35qzB25mdonMqPpqm2KB0P8ynV8OZQpVBc=;
+        b=RsgVOy9rDstRcMzC2svkowaacejgwjVf/ZK8TUv1egYexU1RcFVcaGIcxWcp2te8Fh
+         gm9SDhPS8TtIlePAMQXlhoLOkQSJx4UEmAVcOKwBTL+xEnM+m1e06K3aH91EMoatK6YY
+         FNOTaqbpnVoUD8dxGGRXRABzTsJN5DHtwfHmp7Rwrgd+K4I2vZvs5Ea7cFqA5DDfYk4X
+         moetf9nkPMz5CLOfbvGpBHdXs0mo3bshSR/PVgucEh2iKognejo3spwOaT+9KZI8xltL
+         g8ytZWUjS6yYZkbwl+HSMEaDquP+PR1722JOenMUBBD2C64E+X9vpf7gxyZg4AWaT1EU
+         XowA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706605018; x=1707209818;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=csHtYc18T35qzB25mdonMqPpqm2KB0P8ynV8OZQpVBc=;
+        b=C4vKNn1SMMpCRRe6vkY5DEcJ1zUTRJQbBtY3dMDfeWqT4n7p/t6E0L2mG++2BKEZlc
+         +/SrSPzeBmV8hLP7OD65Ou2x1LMUJJd4bIJ+uuHS9RU/q0wUYCUvfhL4XKWqlteqdMQQ
+         miSwmW0aoWvNoVbiKDXFI+z1uRskaTBF6twfJuCp5jNCds2URnyjM76zhTORIPRl1AAC
+         H4vxqBc5PjppVGhMHpq48Ivx34xDjOCMxVcyqjWSC5ku1vlGQpM90KVhbVatA4rPPo2c
+         rewbYcm8bcG9fDWMVUsHFudNlnyNbi9rEXp1pDtzLfCMiBYlxZesfQxbOu1SRHNTJD11
+         P2Mw==
+X-Gm-Message-State: AOJu0Yyzg6ayPKFCSGA7Jz4sRouF4ChdAVX9//78jShTLPzM7PXxgFiT
+	64uDbofFuodRpuWHFOBzcMnGU3PKWHnrC0GdvRvmd18qE49rtXfg
+X-Google-Smtp-Source: AGHT+IEeEh9/BgmgK6L5VDqDZJ/c+zKQ+BgD48oiN1HRyxWZSnWDQGOjvUOykG0CouswggmIuzdQRw==
+X-Received: by 2002:a05:6a00:2d05:b0:6db:cd50:a716 with SMTP id fa5-20020a056a002d0500b006dbcd50a716mr7165222pfb.1.1706605018330;
+        Tue, 30 Jan 2024 00:56:58 -0800 (PST)
+Received: from localhost.localdomain ([124.218.12.74])
+        by smtp.gmail.com with ESMTPSA id gx20-20020a056a001e1400b006dde04c10dasm7188623pfb.217.2024.01.30.00.56.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jan 2024 00:56:57 -0800 (PST)
+From: Kelly Hung <ppighouse@gmail.com>
+X-Google-Original-From: Kelly Hung <Kelly_Hung@asus.com>
+To: robh+dt@kernel.org
+Cc: krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	joel@jms.id.au,
+	andrew@codeconstruct.com.au,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-aspeed@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org,
+	kelly_hung@asus.com,
+	Kelly Hung <Kelly_Hung@asus.com>
+Subject: [PATCH] ARM: dts: aspeed: asus: Add ASUS X4TF BMC
+Date: Tue, 30 Jan 2024 16:56:51 +0800
+Message-Id: <20240130085652.198010-1-Kelly_Hung@asus.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,30 +88,27 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Since commit 363d0e56285e ("media: pwm-ir-tx: Trigger edges from
-hrtimer interrupt context"), pwm-ir-tx uses high resolution timers
-for IR signal generation when the pwm can be used from atomic context.
-Ensure they are available.
+This initial device-tree provides the necessary configuration for
+basic BMC functionality and work on ASUS X4TF production.
 
-Fixes: 363d0e56285e ("media: pwm-ir-tx: Trigger edges from hrtimer interrupt context")
-Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Kelly Hung <Kelly_Hung@asus.com>
 ---
- drivers/media/rc/Kconfig | 1 +
+ Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/media/rc/Kconfig b/drivers/media/rc/Kconfig
-index 2afe67ffa285e..74d69ce22a33e 100644
---- a/drivers/media/rc/Kconfig
-+++ b/drivers/media/rc/Kconfig
-@@ -319,6 +319,7 @@ config IR_PWM_TX
- 	tristate "PWM IR transmitter"
- 	depends on LIRC
- 	depends on PWM
-+	depends on HIGH_RES_TIMERS
- 	depends on OF
- 	help
- 	   Say Y if you want to use a PWM based IR transmitter. This is
+diff --git a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml b/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
+index 749ee54a3ff8..80009948e14a 100644
+--- a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
++++ b/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
+@@ -74,6 +74,7 @@ properties:
+               - ampere,mtmitchell-bmc
+               - aspeed,ast2600-evb
+               - aspeed,ast2600-evb-a1
++              - asus,x4tf
+               - facebook,bletchley-bmc
+               - facebook,cloudripper-bmc
+               - facebook,elbert-bmc
 -- 
-2.43.0
+2.25.1
 
 
