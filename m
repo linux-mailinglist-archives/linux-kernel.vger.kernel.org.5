@@ -1,245 +1,196 @@
-Return-Path: <linux-kernel+bounces-43832-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43838-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5338A841952
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 03:32:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 755DE841966
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 03:39:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8231B2813E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 02:32:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0B8C1F29442
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 02:39:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49F9B364DB;
-	Tue, 30 Jan 2024 02:30:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AD33364DF;
+	Tue, 30 Jan 2024 02:39:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="apwh97E/"
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="hNx5bJ5+"
+Received: from out203-205-221-235.mail.qq.com (out203-205-221-235.mail.qq.com [203.205.221.235])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D834634545
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 02:30:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA76C36102;
+	Tue, 30 Jan 2024 02:39:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.235
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706581830; cv=none; b=Af9V0wpUnJe2LKF440OJx7GjLopVixrS3Wk2Y7+0ngrc/TxrkX3YoERyFztXTmDxUX/VUV0/3JvPieCq+45tImZ70JkV7OWWWSJ1igcgiccaFRwDcyK6zxbC/IBFiHV8FvereERDYpMsQZ83lfRBhmhMPzi2XpTuFDEPvcjyjHc=
+	t=1706582369; cv=none; b=aFUkcw7tUpiHAmjvJeh8q1JHND3EvoMa2qr/kRSbBlRw7XMMqoK1JHxfwVOd8BkTFKun8H/nLxBIIDoQRM79lRMRXi37KebI0hXr5giuvDKNu3TlkAYK08ITb3kp8Zn7SpofMD0JMIKs98hGEF1Om2D+Vh2q2TL2tXQthdzO6vM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706581830; c=relaxed/simple;
-	bh=1tK65aq00w5a7+LD2l+YbH1nPbkudjM7sj+WjCAda40=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NfKeQKgqEjKjACHmxGyBWT5RlSdgYAQSsZuXH0mftPPgl1VHesc1YLt+ZNJ4Gc5xXqVQ/v7hglSvSEHazv6prTcFoQlBGb6qYXSAF58jAAcgrJAWky9T7UsHQ8lT79oufuqdk+dCH87yTfpIGAaQ3GWV3SYvKho9cvA9oezMsgM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=apwh97E/; arc=none smtp.client-ip=209.85.167.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3bbc649c275so1306575b6e.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 18:30:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1706581827; x=1707186627; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8iMbOMhcDQigHMHzkBs9cWL7KAKUIeL4mt5OHwh9D/M=;
-        b=apwh97E/5RY68f3Gz4gnWHURSt+2PolBOSzxo7Usdr1ymaKsxzTKdHhVi1/spkRHe3
-         LDS02K0sXX09HlTmQg0V6SOMb03Ta6sMrwvp6OFlcya7TOtDf1DMETBA8QNEg67Fv+Ie
-         TY4QQzVKKoWkIFScUyw04pL1oIJcQ19CAwhQi2By5YTMUydCg9mobI3oSAKFaoAOfF9Y
-         qofS8T93zFL+mxwkRMSKNrx5AZVjBT8G89wryYrSDFNWl+OHNr1YVttLDcagL2L5Jmeu
-         t7lkT3aAo6wDfStcX4SD3naJoKZct1zSdUFy6iy3HBAiUY13eMTAH3fi3knjvllaH0lf
-         kxHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706581827; x=1707186627;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8iMbOMhcDQigHMHzkBs9cWL7KAKUIeL4mt5OHwh9D/M=;
-        b=I+zrfMW90g6C7Iz/ATKqoMoX6dnzuyMxtxBGN9xamHfVxvNrbBtDjhWfA+r3oEJEKs
-         scxn1UA5ESVlUacNA64lSjdJ2N95L65X4F4T95Xt/l+WJP3+5fXzWQT4q27A3eb0m7+G
-         +lrFsTjqnzpKghx18H2BsxNQ0baK1odYFdVYJZIkl216e1PLmWZ4dvfjNFejs3qwMibF
-         2TjEjMSFtnKsjOynKu8lP7xti9Gim4s3R+JKBgRTFaHcAbCqhBoYNbMoTBoB8v1lY7Aw
-         ifZRw5b6jNl5sWcjwfl+3fLERFd3IkysgOHmWX8/8bF6OwBdcslvRVXcWGdOKjZYkccm
-         aiXg==
-X-Gm-Message-State: AOJu0YzoO/kBhHLXS7KI1oT25mrR6bK6l8wRfWvXbEMfkXK9lH22J/Wu
-	tIe4PHL/9+BDFnNBfE9w+UrpMScTn38sAn1Ce2sdQzCdfCFRCDU8elEp6/agPu0=
-X-Google-Smtp-Source: AGHT+IEvSdbiqmuh7AWgwFm2qdhPatu2kGGze+C55YwdpehzzqNdsBcjfaMKO33rjkjSvRL9wgNtFQ==
-X-Received: by 2002:a05:6808:3009:b0:3bd:c26a:f803 with SMTP id ay9-20020a056808300900b003bdc26af803mr4394813oib.14.1706581826570;
-        Mon, 29 Jan 2024 18:30:26 -0800 (PST)
-Received: from [10.4.207.234] ([139.177.225.234])
-        by smtp.gmail.com with ESMTPSA id n28-20020a635c5c000000b005cfba3c84b7sm6054282pgm.81.2024.01.29.18.30.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jan 2024 18:30:26 -0800 (PST)
-Message-ID: <527bd543-97a5-4262-be73-6a5d21c2f896@bytedance.com>
-Date: Tue, 30 Jan 2024 10:30:20 +0800
+	s=arc-20240116; t=1706582369; c=relaxed/simple;
+	bh=mLIHH2Kvrz2ktWktDgk4SLJ9bsUAEwSpmycE93omaYE=;
+	h=Message-ID:Content-Type:Mime-Version:Subject:From:In-Reply-To:
+	 Date:Cc:References:To; b=FtiowyCTa6o1ceDUvUtQbrEqsgDj7wljcAVCamROTyuMmBKtsDhQehG/FH6wmqinoUvtO3OH8rv+3/xjTSUszJ2NVxiQsU96YhT+B+hSrGnBjKQvRhgHMWrgYRo0HRix0s72p0NmthrKSddvd5wRyuE+lg1YZgEjm4gKBOyJXGY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=hNx5bJ5+; arc=none smtp.client-ip=203.205.221.235
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1706582057; bh=8E/e8D3rKgg6BW9Nd4UCl+YuxiR1gxvHcsdFPnL3EdQ=;
+	h=Subject:From:In-Reply-To:Date:Cc:References:To;
+	b=hNx5bJ5+SpHw5tdiee02HyZWtP19kF9j847pn/nwBcR6Z7o3RrYgOBjvMc2ftRj9v
+	 gEmEG405XbEujdsNy1yk0RT6+84IKAM27dSljldg6u+z2RrANzhy3h11FcJbrK1Vec
+	 qZw4xMHRNEMRuteM6fRKRFML5FYlx2cNv366R1IU=
+Received: from smtpclient.apple ([2409:8934:22a2:1426:2cc9:5406:8a0:e7c])
+	by newxmesmtplogicsvrsza1-0.qq.com (NewEsmtp) with SMTP
+	id 88D8D4CC; Tue, 30 Jan 2024 10:34:13 +0800
+X-QQ-mid: xmsmtpt1706582053t6s5d0gw2
+Message-ID: <tencent_F34C3BC7F1077728A62E84A7D183EF5BF005@qq.com>
+X-QQ-XMAILINFO: NMiAo2azIaDAi/rSxKp8KRcmxf09H6ettD8ShiQpLNA1dpvHLxgnxVFZigU4i3
+	 W3/Uj4QWneeWSrLx+HXIPnlVmO5QOmhKVgpheBN1/EwGlccRybQRtyPKJ5IWHh7DGaSVXLDeZMPk
+	 zvC21+DUIouTcg9O2V/eCfUR3m+KdERxmSFvXbVgmDlSVZJYkd0oJl0HU0m/gKVd4WoAmKTDKGyl
+	 mvZoA8QU16dF7RRDIXymDQ6Yque6O4oHsZitO7qgXjPN7ytF1zqmQYYCF0ua8L8XAyHHStc6+1fS
+	 l/S245vc1dmc8hhOWBufdOp1y79Dd78+2zKXxQlp1TJ5vDHMIV5zESGxnIbGq16nBL905VKV6cvP
+	 /lSL7OqHLZnawePU/UbCnSDAAfU6Csb3pwKbkczi3dIldg7fXMzpAonRjpYzJ2jcMFlSCgeXNOaL
+	 HHEPiLF3ODOp/qSWNpxIK0pzURKAOjoVdw4iNVw1iSi5ol4D9HhgRnAc+FHhT1iENTEhYTDYD00E
+	 JTNG208rTRxwb3v+60Ggmnl+JCrDZCr8OKbqe6UaahuFQUpNstnCG+pWudLmO3Tpra8jzFPGqJZu
+	 DtGx67UmKlKqdtojlDYJsKDYkbYBoPi/xp+0VKz0b55QKwz889hw9Ar/jHV3fLB/y4CCZwmT596f
+	 4ipQBbZC/U8Of7xavaLb0JZ+JFrHmlPnQMmnWPunYya1XE5hDZVL/nVAkXA2Tc2p1Fg9EwFG/DsG
+	 QqPE+ju9I2NZDSz//a6Km1ljbH7c0jaD3M5UGqamhHy35C3uX5n/jHPL5Ec/mR2QQ3d1Ww0e26rk
+	 7KgtAM2NdDBed/hZYV9VnsK5dzVVmM+BDx23gDeRUIhRuu2ylss5ZrjrG/F5bDEeNb0ESXQNADB1
+	 6SN4ZJUaXnrsfQEMxGPf89ZLpi6YWFTA2Xcb2P+9J3MDCbfv+VwpjSWXWpjW6aoXTNAlWHfAHubp
+	 k87IMYHS1wlATanpqVhuptShejVuS4HyWb9EwoZX3+wHkrEfzCYagAOAq+MnnP
+X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/3] mm/zswap: fix race between lru writeback and
- swapoff
-Content-Language: en-US
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>, Chris Li <chriscli@google.com>,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20240126-zswap-writeback-race-v2-0-b10479847099@bytedance.com>
- <20240126-zswap-writeback-race-v2-2-b10479847099@bytedance.com>
- <ZbhBNkayw1hNlkpL@google.com>
-From: Chengming Zhou <zhouchengming@bytedance.com>
-In-Reply-To: <ZbhBNkayw1hNlkpL@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.300.61.1.2\))
+Subject: Re: [PATCH 1/3] riscv: mm: Use hint address in mmap if available
+From: Yangyu Chen <cyy@cyyself.name>
+In-Reply-To: <20240129-use_mmap_hint_address-v1-1-4c74da813ba1@rivosinc.com>
+Date: Tue, 30 Jan 2024 10:34:03 +0800
+Cc: Alexandre Ghiti <alexghiti@rivosinc.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>,
+ Shuah Khan <shuah@kernel.org>,
+ Jonathan Corbet <corbet@lwn.net>,
+ linux-riscv@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org,
+ linux-doc@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+X-OQ-MSGID: <D622ED9C-FADE-4E26-A095-AC959E588543@cyyself.name>
+References: <20240129-use_mmap_hint_address-v1-0-4c74da813ba1@rivosinc.com>
+ <20240129-use_mmap_hint_address-v1-1-4c74da813ba1@rivosinc.com>
+To: Charlie Jenkins <charlie@rivosinc.com>
+X-Mailer: Apple Mail (2.3774.300.61.1.2)
 
-On 2024/1/30 08:22, Yosry Ahmed wrote:
-> On Sun, Jan 28, 2024 at 01:28:50PM +0000, Chengming Zhou wrote:
->> LRU writeback has race problem with swapoff, as spotted by Yosry [1]:
->>
->> CPU1			CPU2
->> shrink_memcg_cb		swap_off
->>   list_lru_isolate	  zswap_invalidate
->> 			  zswap_swapoff
->> 			    kfree(tree)
->>   // UAF
->>   spin_lock(&tree->lock)
->>
->> The problem is that the entry in lru list can't protect the tree from
->> being swapoff and freed, and the entry also can be invalidated and freed
->> concurrently after we unlock the lru lock.
->>
->> We can fix it by moving the swap cache allocation ahead before
->> referencing the tree, then check invalidate race with tree lock,
->> only after that we can safely deref the entry. Note we couldn't
->> deref entry or tree anymore after we unlock the folio, since we
->> depend on this to hold on swapoff.
->>
->> So this patch moves all tree and entry usage to zswap_writeback_entry(),
->> we only use the copied swpentry on the stack to allocate swap cache
->> and if returned with folio locked we can reference the tree safely.
->> Then we can check invalidate race with tree lock, the following things
->> is much the same like zswap_load().
->>
->> Since we can't deref the entry after zswap_writeback_entry(), we
->> can't use zswap_lru_putback() anymore, instead we rotate the entry
->> in the beginning. And it will be unlinked and freed when invalidated
->> if writeback success.
-> 
-> You are also removing one redundant lookup from the zswap writeback path
-> to check for the invalidation race, and simplifying the code. Give
-> yourself full credit :)
 
-Ah right, forgot to mention it, I will add this part in the commit message.
-Thanks for your reminder!
+> On Jan 30, 2024, at 08:37, Charlie Jenkins <charlie@rivosinc.com> =
+wrote:
+>=20
+> On riscv it is guaranteed that the address returned by mmap is less =
+than
+> the hint address. Allow mmap to return an address all the way up to
+> addr, if provided, rather than just up to the lower address space.
+>=20
+> This provides a performance benefit as well, allowing mmap to exit =
+after
+> checking that the address is in range rather than searching for a =
+valid
+> address.
+>=20
+> It is possible to provide an address that uses at most the same number
+> of bits, however it is significantly more computationally expensive to
+> provide that number rather than setting the max to be the hint =
+address.
+> There is the instruction clz/clzw in Zbb that returns the highest set =
+bit
+> which could be used to performantly implement this, but it would still
+> be slower than the current implementation. At worst case, half of the
+> address would not be able to be allocated when a hint address is
+> provided.
+>=20
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> ---
+> arch/riscv/include/asm/processor.h | 21 ++++++++-------------
+> 1 file changed, 8 insertions(+), 13 deletions(-)
+>=20
+> diff --git a/arch/riscv/include/asm/processor.h =
+b/arch/riscv/include/asm/processor.h
+> index f19f861cda54..f3ea5166e3b2 100644
+> --- a/arch/riscv/include/asm/processor.h
+> +++ b/arch/riscv/include/asm/processor.h
+> @@ -22,14 +22,11 @@
+> ({ \
+> unsigned long mmap_end; \
+> typeof(addr) _addr =3D (addr); \
+> - if ((_addr) =3D=3D 0 || (IS_ENABLED(CONFIG_COMPAT) && =
+is_compat_task())) \
+> - mmap_end =3D STACK_TOP_MAX; \
+> - else if ((_addr) >=3D VA_USER_SV57) \
+> - mmap_end =3D STACK_TOP_MAX; \
+> - else if ((((_addr) >=3D VA_USER_SV48)) && (VA_BITS >=3D =
+VA_BITS_SV48)) \
+> - mmap_end =3D VA_USER_SV48; \
+> + if ((_addr) =3D=3D 0 || \
+> + (IS_ENABLED(CONFIG_COMPAT) && is_compat_task()) || \
+> + ((_addr + len) > BIT(VA_BITS - 1))) \
 
-> 
->>
->> Another change is we don't update the memcg nr_zswap_protected in
->> the -ENOMEM and -EEXIST cases anymore. -EEXIST case means we raced
->> with swapin or concurrent shrinker action, since swapin already
->> have memcg nr_zswap_protected updated, don't need double counts here.
->> For concurrent shrinker, the folio will be writeback and freed anyway.
->> -ENOMEM case is extremely rare and doesn't happen spuriously either,
->> so don't bother distinguishing this case.
->>
->> [1] https://lore.kernel.org/all/CAJD7tkasHsRnT_75-TXsEe58V9_OW6m3g6CF7Kmsvz8CKRG_EA@mail.gmail.com/
->>
->> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
->> Acked-by: Nhat Pham <nphamcs@gmail.com>
->> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
->> ---
->>  mm/zswap.c | 114 ++++++++++++++++++++++++++-----------------------------------
->>  1 file changed, 49 insertions(+), 65 deletions(-)
->>
->> diff --git a/mm/zswap.c b/mm/zswap.c
->> index 81cb3790e0dd..f5cb5a46e4d7 100644
->> --- a/mm/zswap.c
->> +++ b/mm/zswap.c
->> @@ -277,7 +277,7 @@ static inline struct zswap_tree *swap_zswap_tree(swp_entry_t swp)
->>  		 zpool_get_type((p)->zpools[0]))
->>  
->>  static int zswap_writeback_entry(struct zswap_entry *entry,
->> -				 struct zswap_tree *tree);
->> +				 swp_entry_t swpentry);
->>  static int zswap_pool_get(struct zswap_pool *pool);
->>  static void zswap_pool_put(struct zswap_pool *pool);
->>  
->> @@ -445,27 +445,6 @@ static void zswap_lru_del(struct list_lru *list_lru, struct zswap_entry *entry)
->>  	rcu_read_unlock();
->>  }
->>  
->> -static void zswap_lru_putback(struct list_lru *list_lru,
->> -		struct zswap_entry *entry)
->> -{
->> -	int nid = entry_to_nid(entry);
->> -	spinlock_t *lock = &list_lru->node[nid].lock;
->> -	struct mem_cgroup *memcg;
->> -	struct lruvec *lruvec;
->> -
->> -	rcu_read_lock();
->> -	memcg = mem_cgroup_from_entry(entry);
->> -	spin_lock(lock);
->> -	/* we cannot use list_lru_add here, because it increments node's lru count */
->> -	list_lru_putback(list_lru, &entry->lru, nid, memcg);
->> -	spin_unlock(lock);
->> -
->> -	lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(entry_to_nid(entry)));
->> -	/* increment the protection area to account for the LRU rotation. */
->> -	atomic_long_inc(&lruvec->zswap_lruvec_state.nr_zswap_protected);
->> -	rcu_read_unlock();
->> -}
->> -
->>  /*********************************
->>  * rbtree functions
->>  **********************************/
->> @@ -860,40 +839,47 @@ static enum lru_status shrink_memcg_cb(struct list_head *item, struct list_lru_o
->>  {
->>  	struct zswap_entry *entry = container_of(item, struct zswap_entry, lru);
->>  	bool *encountered_page_in_swapcache = (bool *)arg;
->> -	struct zswap_tree *tree;
->> -	pgoff_t swpoffset;
->> +	swp_entry_t swpentry;
->>  	enum lru_status ret = LRU_REMOVED_RETRY;
->>  	int writeback_result;
->>  
->> +	/*
->> +	 * Rotate the entry to the tail before unlocking the LRU,
->> +	 * so that in case of an invalidation race concurrent
->> +	 * reclaimers don't waste their time on it.
->> +	 *
->> +	 * If writeback succeeds, or failure is due to the entry
->> +	 * being invalidated by the swap subsystem, the invalidation
->> +	 * will unlink and free it.
->> +	 *
->> +	 * Temporary failures, where the same entry should be tried
->> +	 * again immediately, almost never happen for this shrinker.
->> +	 * We don't do any trylocking; -ENOMEM comes closest,
->> +	 * but that's extremely rare and doesn't happen spuriously
->> +	 * either. Don't bother distinguishing this case.
->> +	 *
->> +	 * But since they do exist in theory, the entry cannot just
->> +	 * be unlinked, or we could leak it. Hence, rotate.
-> 
-> The entry cannot be unlinked because we cannot get a ref on it without
-> holding the tree lock, and we cannot deref the tree before we acquire a
-> swap cache ref in zswap_writeback_entry() -- or if
-> zswap_writeback_entry() fails. This should be called out explicitly
-> somewhere. Perhaps we can describe this whole deref dance with added
-> docs to shrink_memcg_cb().
+How about replacing BIT(VA_BITS-1) to DEFAULT_MAP_WINDOW to make the =
+code
+more general.
 
-Maybe we should add some comments before or after zswap_writeback_entry()?
-Or do you have some suggestions? I'm not good at this. :)
+> else \
+> - mmap_end =3D VA_USER_SV39; \
+> + mmap_end =3D (_addr + len); \
+> mmap_end; \
+> })
+>=20
+> @@ -39,14 +36,12 @@
+> typeof(addr) _addr =3D (addr); \
+> typeof(base) _base =3D (base); \
+> unsigned long rnd_gap =3D DEFAULT_MAP_WINDOW - (_base); \
+> - if ((_addr) =3D=3D 0 || (IS_ENABLED(CONFIG_COMPAT) && =
+is_compat_task())) \
+> + if ((_addr) =3D=3D 0 || \
+> +    (IS_ENABLED(CONFIG_COMPAT) && is_compat_task()) || \
+> +    ((_addr + len) > BIT(VA_BITS - 1))) \
 
-> 
-> We could also use a comment in zswap_writeback_entry() (or above it) to
-> state that we only deref the tree *after* we get the swapcache ref.
+Same here.
 
-I just notice there are some comments in zswap_writeback_entry(), should
-we add more comments here?
+> mmap_base =3D (_base); \
+> - else if (((_addr) >=3D VA_USER_SV57) && (VA_BITS >=3D VA_BITS_SV57)) =
+\
+> - mmap_base =3D VA_USER_SV57 - rnd_gap; \
+> - else if ((((_addr) >=3D VA_USER_SV48)) && (VA_BITS >=3D =
+VA_BITS_SV48)) \
+> - mmap_base =3D VA_USER_SV48 - rnd_gap; \
+> else \
+> - mmap_base =3D VA_USER_SV39 - rnd_gap; \
+> + mmap_base =3D (_addr + len) - rnd_gap; \
+> mmap_base; \
+> })
+>=20
+>=20
 
-	/*
-	 * folio is locked, and the swapcache is now secured against
-	 * concurrent swapping to and from the slot. Verify that the
-	 * swap entry hasn't been invalidated and recycled behind our
-	 * backs (our zswap_entry reference doesn't prevent that), to
-	 * avoid overwriting a new swap folio with old compressed data.
-	 */
+What about not setting the upper bound as x86/arm/powerpc as [1] did?
+In this case, user space can directly pass a constant hint address >
+BIT(47) to get a mapping in sv57. If you want this, this code also =
+allows
+user-space to pass any address larger than TASK_SIZE. You should also
+limit the mmap_base to (base) + TASK_SIZE - DEFAULT_MAP_WINDOW.
+
+I=E2=80=99m also aware of the rnd_gap if it is not 0, then we will not =
+get
+address mapped to VA_USER_SV39 - rnd_gap.
+
+[1]. =
+https://lore.kernel.org/linux-riscv/tencent_2683632BEE438C6D4854E30BDF9CA0=
+843606@qq.com/
+
+> --=20
+> 2.43.0
+>=20
 
 
