@@ -1,182 +1,141 @@
-Return-Path: <linux-kernel+bounces-45267-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45268-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B74AF842DE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 21:30:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA41E842DE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 21:31:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6ECB628B720
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:30:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF5371C252F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:31:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4167B1DDD6;
-	Tue, 30 Jan 2024 20:30:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 940EB79DDE;
+	Tue, 30 Jan 2024 20:31:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="m5Si2kil"
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2075.outbound.protection.outlook.com [40.107.20.75])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Q+fMadDJ"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F4A879DBC;
-	Tue, 30 Jan 2024 20:30:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.75
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706646642; cv=fail; b=hXnxKCsoxTcCM41Dj0k5bE8faA3TTVMCbNOH9Ie0tCXKNpkOdiyqFn9y5pLtSN0I1jWlhWAovdREBf6/QyZp7S7Zdl91zihpHaspFNezbDejr5IVuBRD/MOa+pDu6eAzwAr8GR+6rRu3WUDyes7RVvdEhoDAF+iUh428otgQJUE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706646642; c=relaxed/simple;
-	bh=Uz65AO1E2ya58u4tHufjPJ/ZxOjDyGBD9UtOTxF7jRI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=euRfw1IrZuxglFL+uaep9hNwJG9zvwrp8dmyaYC5oEhYatANyYA51pBd3QF5kuI0Yi1fwvA9dLkVVG+rNsdw7cmQGRLfvpjYpvYVhGWaJIf/GHJxSYPJYdlyzDD/FDIJuUkKQqlTEku+hmHsT1oAS/aQFl/bWwboZGR6wIN+t5A=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=m5Si2kil; arc=fail smtp.client-ip=40.107.20.75
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Wbqen98KyVsM3aWQv89uO5xgWqieGhT6FjeyKU6/DpYJ3GP8uSgrBH/Ne/z21la2JaPqxIrwD9hX1lqJ0//pfAu4jGearJRM4KhKi6xRODlVtsKu5r61O7bwHkqTi7CIgh1voam2Ash1b/vC6Lpy2fjHmPjWGmqF1LOaWJwpSU68+EK1wUbPoYXk3yz7Lz+7HExrehDdE24W2TQn4j1UuM/9wnqRFS/tj3OtJ9uAjT7ucAAS6giMu+iiResG5urSrXLUwwYzvfQJCpPZj0t5yXttxnhnY6zA83IshAoRPrBQR68YXQP3lWQHMBQBsFnu2+JRFy7OIN64iwQJ83vulg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cEEglG1DZF0kxyMfyBjQnyZz+O+yfijdSxbIckbAGqw=;
- b=SCuIMNEln+UfQPxB+DPMZcySyQ+wiEPh67WmeJfkvkNMLH3noRdIFaRmIsDl07S1W8hst7yaWoze3q2xTvLYWswaFE5A/8kKIGSC5ioEAuEZqT49r3UcwHacewPGYtybTsc1kINakb8JwMPQwzwETtsXr3c8M/lZN/gIw8RzBKjvrU0o7iPeO+96DnBgz7kwyHdKBDHv4+XB78biLEIc4ALqy4ja+2UeuAXRQkbh+n+3LcD2USB7iWPTJ3A9a1oC13xHvVo2DmlQ+I1xwjwwfyivzXv2MSBRePiQ3tv7TrhwkvynVWSiseR23tC3M22K7ji2oyuBFwvIdrbiowEZ6w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cEEglG1DZF0kxyMfyBjQnyZz+O+yfijdSxbIckbAGqw=;
- b=m5Si2kilq6KveU/eTo9li2vCieKf75rVUr1No+tqioIF9lk6sz9tMqPChs0J31KpxH3b1JsvB0DtQ+0Xh1s9MdDsfNkA6dZJPhEGM/SOXlo1r0rXgGkXFj4hEsejYkvpNxFgCoFT8lPZzvrKl4FZ/0TMZtIUQIz/7AzeHwFDREM=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by PA4PR04MB7661.eurprd04.prod.outlook.com (2603:10a6:102:e3::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.32; Tue, 30 Jan
- 2024 20:30:37 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::c8b4:5648:8948:e85c]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::c8b4:5648:8948:e85c%3]) with mapi id 15.20.7228.029; Tue, 30 Jan 2024
- 20:30:37 +0000
-Date: Tue, 30 Jan 2024 15:30:30 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Niklas Cassel <cassel@kernel.org>
-Cc: mani@kernel.org, allenbh@gmail.com, bhelgaas@google.com,
-	dave.jiang@intel.com, imx@lists.linux.dev, jdmason@kudzu.us,
-	kishon@kernel.org, kw@linux.com, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org, lpieralisi@kernel.org,
-	ntb@lists.linux.dev
-Subject: Re: [PATCH v4 1/1] PCI: endpoint: pci-epf-vntb: Fix transfer failure
- for fixed size BARs
-Message-ID: <ZblcZnfUD7ZcEI8z@lizhi-Precision-Tower-5810>
-References: <20240108151015.2030469-1-Frank.Li@nxp.com>
- <ZbJ/P5ldcrSs16q8@lizhi-Precision-Tower-5810>
- <ZblRXOabZWzRRWoT@x1-carbon>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZblRXOabZWzRRWoT@x1-carbon>
-X-ClientProxiedBy: SJ0PR03CA0019.namprd03.prod.outlook.com
- (2603:10b6:a03:33a::24) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D909B79DD4;
+	Tue, 30 Jan 2024 20:30:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706646661; cv=none; b=CpsRxbxnibiyl2nN1akrCAghgaNz2Rr+l2sHcOCitSjbgmkLK5c4NMsDvs976mAEqjgZzYt35TeP+aWHo9vTDg58aAz42MrneOkQ7Yo5F+hktwKIeytEUeS3bXwDUhVj+MdefPvmtoK9IKJZ8Imd1lPJarADIZj/vcsA5Dx3sXU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706646661; c=relaxed/simple;
+	bh=2/KBwsPO3whpyFBvrCj3xnlg42ijgGLiSwxQ8/wfXis=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MwOaMrs4mBf64d2h3BhAJqvmzHmBMcfdJA7QB8nrlH4Ab0tsVCeKZCI1xCWYGYAwVYvV7o1PZmUh9DRR84zzv5q6dj+3HGuj9h44VJAnkZqqbiTVL/U1b7nm+Z2nqpbs+TMtnvGJZ3yfHvjofok5m7wPvRs7/fy254FqGo2hiw8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Q+fMadDJ; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706646660; x=1738182660;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=2/KBwsPO3whpyFBvrCj3xnlg42ijgGLiSwxQ8/wfXis=;
+  b=Q+fMadDJe8YwP3xy0vXz7mMKZnRZK+2qvMJQnVR7NYvZ+FoT12z4wksz
+   uXakEQ+Ijco4foHOK9xahKmGOJVB4GZ5u5p8sJ3BgevL3uE7TfsDgTR6i
+   5zH284/xPTwVRNRrZrAuSkKPSWpcpMpCQRDvHkP/p+mOmQfWtuZBY5PCk
+   TBDzqcKc6sfu0i6OKTOVbmc7xKo9ftiXYwOUFFmOVsDVp5EM/XdQrFW1R
+   bJL4Zf7PkL2a1TTJAIMRl7OhQTgbP9tm8+0xymUzQ+ZxezKNLeoH+ZyPl
+   3lh11iyz+9lV7uRlyzFGqcgYM0GHZ1BTY2Qh2lAJ4keOq3xy8VB77iado
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="10493952"
+X-IronPort-AV: E=Sophos;i="6.05,230,1701158400"; 
+   d="scan'208";a="10493952"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 12:30:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="907617882"
+X-IronPort-AV: E=Sophos;i="6.05,230,1701158400"; 
+   d="scan'208";a="907617882"
+Received: from anjishnu-mobl1.amr.corp.intel.com (HELO [10.212.150.19]) ([10.212.150.19])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 12:30:56 -0800
+Message-ID: <388be136-f91c-403a-99e1-7a10c5bf9691@intel.com>
+Date: Tue, 30 Jan 2024 12:30:56 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|PA4PR04MB7661:EE_
-X-MS-Office365-Filtering-Correlation-Id: ff5b604d-726b-41ef-c1af-08dc21d2515e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	slG1w8dEmAivpWbSEnUrjll7Hlu7QMyWljw+v1AHf5JuxsWWj1VFK9AQ7RHwenid5H5zjT/LVZcm1p3BhiVGWShxKdU15OhoqrrdGuFIYTUbyphMRdoSwW08PCvA0Rah+2Gp0c3eR05WwvfUkhFUcqg4q0Cd93xs2ViRP+YTE8M1vU+fEYnjNbpwHFvglToCKn7ziLxyU0Mtnv0HWcpFAEVkQvaRLR/dq1Fq138W3oSsmbF8l7yJbnavJDvRoEubvp/mAfAIY0i+aHDLCXe3DCtkOLlz+Aq43p78Q75mjMhPVdyorAv3bP07qoblPHw3dCNOW1XXZd1/lNyYNTTOXbpo0E6iPzgnadLTD3YAHoMsYkTsmwNITh7B6JM/efWbu9FZRAgwVwHHs6GKw07ocVDB1oZ37d7iOizO0ZdS/xKkAVq+Uz43gK18euh/600Am9LFbAWIP3hXLwbkfDbCikR11QnjxOK7rQyxQSFfqLHbZ11FjUu86DSUmzfg+9oZuq8m07drBooYTiSFWuBNpZHZqw61oBcjHiCWJk+6nxl9uxghBRKhS22ELGRq43h861Loj72CxmzkrCb48rNMQS617x+hNkjIEj3a4jdUHFo=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(346002)(376002)(39860400002)(396003)(366004)(136003)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(33716001)(41300700001)(26005)(52116002)(38350700005)(316002)(6916009)(478600001)(9686003)(6512007)(6506007)(6486002)(6666004)(66946007)(38100700002)(66476007)(966005)(66556008)(2906002)(7416002)(86362001)(5660300002)(8676002)(8936002)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?MGa+lxQGuVU3cWVj4E/iflPFxO1jq4XWMsjszdBb/mPSCZ8CgT0RKIbEjueR?=
- =?us-ascii?Q?VXGLnvY5O0ONTrxBkfYdlb1IanDD/mOEwRg09EWXODCxoWO+1ZBV59nTfvt3?=
- =?us-ascii?Q?UAN6ULsvJhunRV1hnYjdeJRkOXye2Pl2lS1m2eahFfyYkXkKo7VOZTbklh9O?=
- =?us-ascii?Q?WEkJUVLaUqK4qc3UtXqTXmuUZJeaDyyZU7fIGQGt8RiFL4eb2oAL4kjqE7mk?=
- =?us-ascii?Q?d2g8vATlb1gBXKm7pn6ux2gI4gJAGqNLrvY6pqSh7DA2kSBUV4WujC1ILW9o?=
- =?us-ascii?Q?SPZMZq1bQZ6gPPq8t6Icg5yR0U0soiUMH1KOe3GqTdawgxMxzAzqsQ/5XhXP?=
- =?us-ascii?Q?bZNom/2UdbNHAp0TlZl7lcMYcxkhRGBKYKKDbV0taC958Sc8WqZbatD84CRN?=
- =?us-ascii?Q?m3n8URM3Mqm44vniWoeuHK5rLJM5FOyiVBx9LF+GgB/LzTdlPpDYRcOzBP9X?=
- =?us-ascii?Q?zTecJJaVY+4UcOFnlg+xNILAIJT6wr6xqOS0SPxkiIpcMRO92HXnYd3dxxIo?=
- =?us-ascii?Q?Evv0tNKgpBc7lQjEiGsIBrW+YVcJhc4IAtaQnP0Z7YKrPV7KKbm6I9b65xgr?=
- =?us-ascii?Q?QVACRMviOBQQAAJri8vFpnpCbofGGhygY499+MNMOBwSWWPMA+w5LJ56AI6q?=
- =?us-ascii?Q?OUtK4SmrWdewVdAOmxfFUAbKHk3c2CL5bvH4bVpeMFMX+0FZ7wNVOVvbSnfW?=
- =?us-ascii?Q?xQVUC36ERQAhuEuJfgS25pqnV/6i/wW+wmjFE6AaUTqvFc4w59lQJP9vFOsD?=
- =?us-ascii?Q?fnKmS77WgBAWaLZXMVekBA6QH2o68CyGmC2yB4JQJ2gkUHs5kbJ+EIYf4isI?=
- =?us-ascii?Q?q3BzEA6ceFocJYtXWNZ1ltMNIqVwozfArkRsGQWYxksgsuYeSjqeZMPLfsmX?=
- =?us-ascii?Q?0/e9pVl5DdS8hzJKIArKYaG264YO/P75WnI5GmZyGFuSjKE8WAN4iE0CHip3?=
- =?us-ascii?Q?ZzpoatFWuzYDh6TbTKaujsHiCGXd0V9MCtuKYYQ+/hV1UJAg13YtyAxhr8zj?=
- =?us-ascii?Q?6F/M2+I0V0g+i9IHmnW7sIAowt/uTBccXXxVhjPf6cR6uEksfr62SFOyICeD?=
- =?us-ascii?Q?iuFShXUz/2f9r6L9ucU6SGkTitWy8RhiLydb9561fy3XrYZAJU/PQkK0DqPq?=
- =?us-ascii?Q?/a5lMgqwu/2Ril5Gb5dBVdHzjSD02U01BNBwAQYabt07Rzy7qjnG2Gveobwa?=
- =?us-ascii?Q?c/u3smcmWxkWSx8cjNMAX598CGxmSsFIKy9cLd+lZtLFNPpOoD4nShz35mn+?=
- =?us-ascii?Q?nyjZQ5m9z95jC5s8Joje3C7cqd+SYZLklzjkrdMFYldwSNKTIZ2f4nwr+L/E?=
- =?us-ascii?Q?FZPaOq/COim/EOE803oHDFGnM3Or7rK31483iHqY/C6ZvtV47EtCiM1izHiu?=
- =?us-ascii?Q?H9oFZiwkwYERM5ZMjsilAsr1D3FY05NTdH95njyGeiO5jPLc+z1uInTAwko4?=
- =?us-ascii?Q?9xOIzGq6zHo3un03Z/qYTCNeVs6Q6bv1fqH6uEDDoFEajZJxNZkhL1NAPTV/?=
- =?us-ascii?Q?tjcOTkzKltNBJGNs1J3oyFxiZsxaMPb384ovwwH16zP5+SXKOKoZ5BR+WoT9?=
- =?us-ascii?Q?ZJuJKRR/GDX4KUSMxqzDJuPFw64WKepFu4Uh9JE0?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ff5b604d-726b-41ef-c1af-08dc21d2515e
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jan 2024 20:30:37.5332
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pW2TJHbPzb9RZ9/32p+uPFHAO9nPo2xhe717GOXzj4Fao/g9OKkPLrhMsOYyzze4QxYPPsTChmYHYK5rn7VeBw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB7661
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dmaengine: idxd: Change wmb() to smp_wmb() when copying
+ completion record to user space
+Content-Language: en-US
+To: Boqun Feng <boqun.feng@gmail.com>, Mark Rutland <mark.rutland@arm.com>
+Cc: Fenghua Yu <fenghua.yu@intel.com>, Vinod Koul <vkoul@kernel.org>,
+ Dave Jiang <dave.jiang@intel.com>, dmaengine@vger.kernel.org,
+ linux-kernel <linux-kernel@vger.kernel.org>,
+ Nikhil Rao <nikhil.rao@intel.com>, Tony Zhu <tony.zhu@intel.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org
+References: <20240130025806.2027284-1-fenghua.yu@intel.com>
+ <Zbk4wGNcB-g91Vr0@FVFF77S0Q05N> <ZblTystHpVkvjbkv@boqun-archlinux>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <ZblTystHpVkvjbkv@boqun-archlinux>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jan 30, 2024 at 08:43:24PM +0100, Niklas Cassel wrote:
-> On Thu, Jan 25, 2024 at 10:33:19AM -0500, Frank Li wrote:
-> > On Mon, Jan 08, 2024 at 10:10:15AM -0500, Frank Li wrote:
-> > > For the inbound MEM/IO TLPs, iATU on the endpoint expects the target
-> > > address to be aligned to the size of the BAR. For configurable BARs, there
-> > > is no issue because both host and endpoint will know the exact size of the
-> > > BAR region. But for fixed size BARs available in some controllers, if the
-> > > BAR size advertised by the endpoint is not same as of the actual BAR size
-> > > used in the controller, then the MEM/IO TLPs generated by the host will not
-> > > be translated properly by the endpoint iATU.
-> > > 
-> > > So if the fixed size BARs are available in endpoint controllers, always use
-> > > the actual BAR size.
-> > > 
-> > > This only fixes doorbell (DB) BAR. A similar fix is needed for memory map
-> > > windows(MW) BARs.
-> > > 
-> > > Fixes: e35f56bb0330 ("PCI: endpoint: Support NTB transfer between RC and EP")
-> > > Cc: stable@vger.kernel.org
-> > > Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > > ---
-> > 
-> > @lpieralisi:
-> > 
-> > 	Could you please pick this fix patch?
+On 1/30/24 11:53, Boqun Feng wrote:
+>>> Fixes: b022f59725f0 ("dmaengine: idxd: add idxd_copy_cr() to copy user completion record during page fault handling")
+>>> Suggested-by: Nikhil Rao <nikhil.rao@intel.com>
+>>> Tested-by: Tony Zhu <tony.zhu@intel.com>
+> Since it has a "Fixes" tag and a "Tested-by" tag, I'd assume there has
+> been a test w/ and w/o this patch showing it can resolve a real issue
+> *constantly*? If so, I think x86 might be broken somewhere.
 > 
-> 
-> Hello Frank, Lorenzo, Mani,
-> 
-> 
-> Frank, sorry for not seeing this patch earlier.
-> 
-> Could you please see if this series fixes your issue:
-> https://lore.kernel.org/linux-pci/20240130193214.713739-1-cassel@kernel.org/T/#t
-> 
-> I think it is nicer since:
-> 1) It doesn't add copy pasted code from pci-epf-test.c to pci-epf-vntb.c.
-> 2) I would expect it to handle both the doorbell BAR and the MW BARs.
+> [Cc x86 maintainers]
 
-Agree! Thanks
-
-Frank
-> 
-> 
-> Kind regards,
-> Niklas
+Fenghua, could you perhaps explain how this problem affects end users?
+What symptom was observed that made it obvious something was broken and
+what changes with this patch?
 
