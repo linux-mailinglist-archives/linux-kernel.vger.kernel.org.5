@@ -1,43 +1,45 @@
-Return-Path: <linux-kernel+bounces-44595-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44596-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D94EE8424C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:24:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE62B8424CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:24:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 666D928A498
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:24:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A817289E21
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:24:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 371E56A022;
-	Tue, 30 Jan 2024 12:23:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA78B6A32E;
+	Tue, 30 Jan 2024 12:24:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="Lv6jdOaQ"
+	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="uStG4m2O"
 Received: from aposti.net (aposti.net [89.234.176.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA9FE67E78;
-	Tue, 30 Jan 2024 12:23:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B206167E9C;
+	Tue, 30 Jan 2024 12:23:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.234.176.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706617431; cv=none; b=h6regi1/XPvrPhPPJpCOvturimTqch0OgD64dZykkyufOvGrDtKKLcnzd50ddUkoLparghLcxPt9AGlrlKpW/MHld67h4+fk01QsvjWIhWJFALVIp6YaaVJuNfYMMWLuwWJ+wQPAeA5iB7tpD3dPgHm9nWfMkv4GfU6nm2X7Qdg=
+	t=1706617440; cv=none; b=NUOu7lHQqmJnEjS3w+D5AajlHIkzFLD1IsrzkVVLdCUe2//MQRZN9aiv6AE0kJHohR5Egx8uhMGWTKXpeKzvZQj3spmE50n8urcDlAUfrHBHg6v3HEumh3vd/u46elOpejjIqqGj3DO8FQllhbQrgWnuUjH37KZsj2b/54SwMzc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706617431; c=relaxed/simple;
-	bh=ZDNJjmcuzyAag0Kxso0ulWjGOYHJ6K6MtOrAMvsl3KI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=X8vSA6nCya1w4nZ83U/Hbm1pkgIhacHrWuytUvtt5K/9XGkTuuX0LudEzaR3wm1r7IUZdLRVx8ObQv2cXI56m3S3+NT6jibBQWIMX4jWnNePgsLp24dT3V6K5KHYetdAkniI17IbkQAKD/RWUV3aRbOSfU+C8o/Igi6Qsexx5P8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net; spf=pass smtp.mailfrom=crapouillou.net; dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b=Lv6jdOaQ; arc=none smtp.client-ip=89.234.176.197
+	s=arc-20240116; t=1706617440; c=relaxed/simple;
+	bh=66FzAt7nJpAY9ka7VMdHoplxE2iQOAZv1WQkaTZVLTI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=jNYstDiDeY2lAtcY3BsXlFC2k6xw59IVAIq3RgQ9Bh9kXP2KIyQY7heV35BMYFGZ2ynhKPKI/RsJb0DLN/Vsk2BJkID+yRDYLND1vQeNZbOb6Z0/VUpdbrWfMg1Xl2hBH/1vf0wofzciBj5mTk1S9cbJ7oNADKHBqeU7ilEX7es=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net; spf=pass smtp.mailfrom=crapouillou.net; dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b=uStG4m2O; arc=none smtp.client-ip=89.234.176.197
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-	s=mail; t=1706617427;
+	s=mail; t=1706617428;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=+n8ItVGKEntF1q4atKJJA2NJbdTS+Zf0wFw3L1mGo3s=;
-	b=Lv6jdOaQdchyQWN4DHxAvoCnvj0/mzDrE8k+Dr5pJcsLTiEG+reSL3O6QPCwhLeaDszKCu
-	cRzpOCW4TQFqmEXaAJ1pHsu1AjJNjx6+Ip6LyAVCeCT9jhrt/vkvzf4TFcfPZVANebtntU
-	EjtFP7R0OwxikAVSeQNnRvnGl431PHg=
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SqXbfp61fzBHWNEqVrElLd46cr7HG/1wYVIvKKSn5jY=;
+	b=uStG4m2OiYDXjAnbZhvlePwi6RCL5a65XfVMHf3kIDQFND4jkC6cwEBz0jaA9AW1MZbf1/
+	2u/o3/68rPjN5owEZJ5rGx2hINs1wO31bHkjYDAEEB8LZF+afk4mDgWOr+EQfngv9sqZL3
+	QFrIivxNGWeocp6JrbECrSQlqQxE4YQ=
 From: Paul Cercueil <paul@crapouillou.net>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Jonathan Corbet <corbet@lwn.net>,
@@ -53,64 +55,75 @@ Cc: =?UTF-8?q?Nuno=20S=C3=A1?= <noname.nuno@gmail.com>,
 	dri-devel@lists.freedesktop.org,
 	linaro-mm-sig@lists.linaro.org,
 	Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH v6 0/4] usb: gadget: functionfs: DMABUF import interface
-Date: Tue, 30 Jan 2024 13:23:36 +0100
-Message-ID: <20240130122340.54813-1-paul@crapouillou.net>
+Subject: [PATCH v6 1/4] usb: gadget: Support already-mapped DMA SGs
+Date: Tue, 30 Jan 2024 13:23:37 +0100
+Message-ID: <20240130122340.54813-2-paul@crapouillou.net>
+In-Reply-To: <20240130122340.54813-1-paul@crapouillou.net>
+References: <20240130122340.54813-1-paul@crapouillou.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Hi,
+Add a new 'sg_was_mapped' field to the struct usb_request. This field
+can be used to indicate that the scatterlist associated to the USB
+transfer has already been mapped into the DMA space, and it does not
+have to be done internally.
 
-This is the v6 of my patchset that adds a new DMABUF import interface to
-FunctionFS.
-
-Given that the cache coherency issue that has been discussed after my
-v5 is a tangential problem and not directly related to this new
-interface, I decided to drop the dma_buf_begin/end_access() functions
-for now - but I'm open to the idea of re-introducing them in a
-subsequent patchset.
-
-The patchset was rebased on next-20240129.
-
-Cheers,
--Paul
-
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 ---
-Changelog:
-* Drop v5's patches [1/6] and [2/6].
-* [3/4]: 
-  - Drop use of dma_buf_begin/end_access(). We now make the assumption
-    that the devices attached to the DMABUFs must be coherent between
-    themselves. The cache coherency issue is a tangential problem, and
-    those functions can be re-introduced in a subsequent patchset.
-  - Unqueue pending requests on detach. Otherwise, when closing the data
-    endpoint the DMABUF will never be signaled.
-  - Use list_for_each_entry_safe() in ffs_dmabuf_detach(), because there
-    is a list_del() in there.
-  - use pr_vdebug() instead of pr_debug()
-  - Rename ffs_dmabuf_unmap_work() -> ffs_dmabuf_cleanup()
+ drivers/usb/gadget/udc/core.c | 7 ++++++-
+ include/linux/usb/gadget.h    | 2 ++
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
----
-Paul Cercueil (4):
-  usb: gadget: Support already-mapped DMA SGs
-  usb: gadget: functionfs: Factorize wait-for-endpoint code
-  usb: gadget: functionfs: Add DMABUF import interface
-  Documentation: usb: Document FunctionFS DMABUF API
-
- Documentation/usb/functionfs.rst    |  36 ++
- drivers/usb/gadget/Kconfig          |   1 +
- drivers/usb/gadget/function/f_fs.c  | 513 ++++++++++++++++++++++++++--
- drivers/usb/gadget/udc/core.c       |   7 +-
- include/linux/usb/gadget.h          |   2 +
- include/uapi/linux/usb/functionfs.h |  41 +++
- 6 files changed, 579 insertions(+), 21 deletions(-)
-
+diff --git a/drivers/usb/gadget/udc/core.c b/drivers/usb/gadget/udc/core.c
+index d59f94464b87..9d4150124fdb 100644
+--- a/drivers/usb/gadget/udc/core.c
++++ b/drivers/usb/gadget/udc/core.c
+@@ -903,6 +903,11 @@ int usb_gadget_map_request_by_dev(struct device *dev,
+ 	if (req->length == 0)
+ 		return 0;
+ 
++	if (req->sg_was_mapped) {
++		req->num_mapped_sgs = req->num_sgs;
++		return 0;
++	}
++
+ 	if (req->num_sgs) {
+ 		int     mapped;
+ 
+@@ -948,7 +953,7 @@ EXPORT_SYMBOL_GPL(usb_gadget_map_request);
+ void usb_gadget_unmap_request_by_dev(struct device *dev,
+ 		struct usb_request *req, int is_in)
+ {
+-	if (req->length == 0)
++	if (req->length == 0 || req->sg_was_mapped)
+ 		return;
+ 
+ 	if (req->num_mapped_sgs) {
+diff --git a/include/linux/usb/gadget.h b/include/linux/usb/gadget.h
+index a771ccc038ac..c529e4e06997 100644
+--- a/include/linux/usb/gadget.h
++++ b/include/linux/usb/gadget.h
+@@ -52,6 +52,7 @@ struct usb_ep;
+  * @short_not_ok: When reading data, makes short packets be
+  *     treated as errors (queue stops advancing till cleanup).
+  * @dma_mapped: Indicates if request has been mapped to DMA (internal)
++ * @sg_was_mapped: Set if the scatterlist has been mapped before the request
+  * @complete: Function called when request completes, so this request and
+  *	its buffer may be re-used.  The function will always be called with
+  *	interrupts disabled, and it must not sleep.
+@@ -111,6 +112,7 @@ struct usb_request {
+ 	unsigned		zero:1;
+ 	unsigned		short_not_ok:1;
+ 	unsigned		dma_mapped:1;
++	unsigned		sg_was_mapped:1;
+ 
+ 	void			(*complete)(struct usb_ep *ep,
+ 					struct usb_request *req);
 -- 
 2.43.0
 
