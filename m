@@ -1,281 +1,238 @@
-Return-Path: <linux-kernel+bounces-44057-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44058-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C252841CC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:39:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 880A6841CCA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:40:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C57AE28B440
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:39:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A70AE1C2587B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:40:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 384D954666;
-	Tue, 30 Jan 2024 07:38:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3E0953E3D;
+	Tue, 30 Jan 2024 07:40:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nATXN0NI"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vk+NtIjN"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41C8553803;
-	Tue, 30 Jan 2024 07:38:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.9
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706600336; cv=fail; b=EIxb6ssw9UTJmvmkkK9piFk2iKhqKvZlWdp6YHpy94PtaYUMtFfC2f9v4qqkqSR4jw0xy1BIZrlIaUbSUDEeAaAsToIYGIl0Hoy52yp7iLGlo0kPTq5toi/9bye2SjmrXPjbjn8xiFJREN9ZOEnhg9fH3wz0OFTeJSQAw0YL72U=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706600336; c=relaxed/simple;
-	bh=NUBJ021WZWy3ibD1umDy+uZijVTaX+jkL3q1AB4StCc=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=V/vGyuMEAnPIDoId2DfEcERO/1ogMaZ5GKO2UbGNFMO2herYU/1tJ9Xt68sIcuPenwMo7n0EShl3XIpTGy0MY4XCTe3QDFj3GEyWyo21RDT4dVCVAF+tEIdL7R6Ey8lk84jlWTCruFMSZOYnYpnLnw1F7Ol141yAnNm1lnb3aFc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nATXN0NI; arc=fail smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706600334; x=1738136334;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=NUBJ021WZWy3ibD1umDy+uZijVTaX+jkL3q1AB4StCc=;
-  b=nATXN0NIOLRbryei43LOwSrdwcYmVRFM6xFVynsVXWFWVw2CSTw2qhG7
-   b3rmLjvyEaiy7L4mMyV7qQegeDQYl6AllaR3jKBqrzIktOTw4QItfSr3K
-   hPIetc1jSlj/2CRPb4VY6+CSaf/DBbqIX1FTC09+lcjJYPqpsVK5EBZJa
-   noDZ4efG7VSJeYBUUXeNgiV/C6z1LOrsrDkSTkHjc92yGjDugx3Aeu3TO
-   t2gE8V1pcLOem1eZ2oApHFKTk4vM5Xw4pcN2FGZJkx5l+axcjqQSMY56/
-   qepXSb5PJFHCcbhH8/l/oDTG+djslaxirfWJYnp60cvvcg0xvU5thGt9T
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="21713814"
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="21713814"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 23:38:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="1119169635"
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="1119169635"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Jan 2024 23:38:53 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 29 Jan 2024 23:38:52 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 29 Jan 2024 23:38:52 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 29 Jan 2024 23:38:52 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=keWb5dQ5Dk1UY614GAelB7cY9OOazR/4YlcFAh5QDDP2/R2oY9jPbXAm6UjW0XfpnkXE+oLpaO+TnkIRuxG59G5UuigSXGCihwuq+w6RNqkWLGp9BpgQKVfGyg6gNvZ1/nAKRcS+5ZURiCaOzezfwHX0qfgaIc2a5iXqKx+7ZduZK5msW7AAxXtovxCDK4FbAQB8MW5FjLj4h4HpJxkspNSBX5BlBmHiGU9MWLDwWt4DgYRH3l1fRQKXG6o7vHr0VQr9GrOIvxKjgtjoEVKhG5U9ZJteDhe1XdLpUdutF18Qvx9rzj4RXzFBXJnoJMYqFKcrBtqTXb4Udw5Gyzi7qQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=L2SHxYIc1gegGA/mOiHhXbOO4B+RpfCMAZC38NLlRz8=;
- b=cs6SqQVHuqtCmr4gQSnRdBrFoUIGFc4Aaer401+c2sSEPbM1QZuXdFPorIslQYF9cMWCcS7O/RrGhk+gP3ZBjnRKuHb3/Gom15/vhLhFCkMBmhhreCWOB6R+FZ5vzJkhYasB4uHhRN9vLfVn0IZNzj1tOaqx8x+/1rzJeA/y7G7Rt/wNnOyGflclwR/rC0InyB/Sg4c+wRua4FwWwYpZ4ArAB8T8n0A/egBqikh5M9MFsd0FOO7po5MJ2yhlSjSKdBzmnfbXMR1NRCGl2tUVcqt+CFK0QbwD5J4uOpTMOLtbWFM7YesJF52VvUX2DJmIYWfNsODVvlYcr8GoSdbbQw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH0PR11MB4965.namprd11.prod.outlook.com (2603:10b6:510:34::7)
- by DS7PR11MB6269.namprd11.prod.outlook.com (2603:10b6:8:97::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.22; Tue, 30 Jan
- 2024 07:38:50 +0000
-Received: from PH0PR11MB4965.namprd11.prod.outlook.com
- ([fe80::5d67:24d8:8c3d:acba]) by PH0PR11MB4965.namprd11.prod.outlook.com
- ([fe80::5d67:24d8:8c3d:acba%5]) with mapi id 15.20.7228.029; Tue, 30 Jan 2024
- 07:38:50 +0000
-Message-ID: <073cc3da-63ef-4913-9c20-f4fa090751cd@intel.com>
-Date: Tue, 30 Jan 2024 15:38:36 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 26/27] KVM: nVMX: Enable CET support for nested guest
-To: Chao Gao <chao.gao@intel.com>
-CC: <seanjc@google.com>, <pbonzini@redhat.com>, <dave.hansen@intel.com>,
-	<kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
-	<yuan.yao@linux.intel.com>, <peterz@infradead.org>,
-	<rick.p.edgecombe@intel.com>, <mlevitsk@redhat.com>, <john.allen@amd.com>
-References: <20240124024200.102792-1-weijiang.yang@intel.com>
- <20240124024200.102792-27-weijiang.yang@intel.com>
- <ZbdOB5YWX8CGsEHC@chao-email>
-Content-Language: en-US
-From: "Yang, Weijiang" <weijiang.yang@intel.com>
-In-Reply-To: <ZbdOB5YWX8CGsEHC@chao-email>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SI2PR01CA0021.apcprd01.prod.exchangelabs.com
- (2603:1096:4:192::19) To PH0PR11MB4965.namprd11.prod.outlook.com
- (2603:10b6:510:34::7)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F610524BB
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 07:40:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706600434; cv=none; b=LjCTRPp7ySwkXuwVMO2Pvz+EerrhOMStytrC+MCoGZTd7urr9zlLYthxdmKOCwfLSwwLb3/c2VUJXYxgX7wEelNeudGWZKptmrimFQJg/v0vRfmw5lmHlNRMC2C7IwPYPGa7XqMCB+1meigHsJc2a9zx5fzTri0OkY3KwybHwdk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706600434; c=relaxed/simple;
+	bh=X8V9pvpV0JNRuDhoPRdTK4TGozcDMk3G0rZ4Q7XMqic=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=l9v/8d1Ow9SgzLjrUuh8Thri/IsI030euNEB0Hd3RvEMiH6dEnnOnv/eQr3hdEhxcfUr6svMhTfnkZsq5+KxAg615xWnG6dLeENh3+sHcZznzqnqQpHboFCjOpI2MPgUZbU9z2gBTBtAFRMoiIbs7y1VmLiKlV7bXkd3R9wrixo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vk+NtIjN; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a2d7e2e7fe0so672892166b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 23:40:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706600431; x=1707205231; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uPe60IzTNRhQ8xdKXhrI1YkRrC86QmovGAq/H+j7848=;
+        b=vk+NtIjN+424w+N92139h8KhT8HBQ/8yTi3vrGJwq01a/6Y7BpF8Q3R3229TSm2WLZ
+         knwYwGosb+O4DvdHXuIMjt7qEkncwa6nuz9ZOGKGeNPOUKiVf1rYCgJjTWnW0u/8qzzb
+         /jp04m99871RNPRZM1KRKEfY01Dt11bq0/f0G2TjG4doYfWEQWQSZd6aew6dEx6IUFw/
+         vXelMLculQEeO6bvCf1i78UqRVE/2VmeUHE2K1UVXAPCRu1+vDPMmfBbZoBHeVtU1X0Q
+         zb8+00+QfT448vrHapS+mqhnDeM6qcqJlumH4hgfKYYWbZff0XUfkNuxxxoY0CYEGW8/
+         y+Og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706600431; x=1707205231;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uPe60IzTNRhQ8xdKXhrI1YkRrC86QmovGAq/H+j7848=;
+        b=CgxupZ1ZJD2q5SeFeo/hJrcCyk6kQUvjQ5Appva9QeBiCihF0uC9IdDK4D+WlhhFeB
+         tpuuA9U8/ziJ4Iu0iRSKMcFMdeOJXqSQlfSLeJ+Z5KIJPc7a7hT995ODJ1BO/NL/LmS9
+         UIiwXRroswaUv4icD90n9o9sbfeZQINifwwiIlHzM3N8Fh4cYKE0EgnIK/ti33aS+eDE
+         jy44ARIJcFnk3uRuxYQLvKuYZDM/Au+QyV5ggZ3jIFamC2/C3MEQE5hLA7KloZ4AzXtL
+         /4bjw40MACaVc8Iw3te+z1e91Fq7ucnt0AiRxcyZwCQLHFBT5fVerKj7Fl8CjAtz2Ub7
+         2KPw==
+X-Gm-Message-State: AOJu0YwzdrcCx1zP3RULXPUhPZdGom8tWfRboRwTiZfeK81WtVQYi1da
+	k8ughFVjNedl7scidV7Kk3CxyeBp44dJOLdIguWQXqfZUPy/Mcfy8xVOKOpfE7Q=
+X-Google-Smtp-Source: AGHT+IFOW1yMVhj72oFmD37Hzaqe45ko6oyFddynA0fudFTsS0/WukBC5Pbd5ko3gKlDIwPzaYErdA==
+X-Received: by 2002:a17:906:d110:b0:a35:991e:5085 with SMTP id b16-20020a170906d11000b00a35991e5085mr737177ejz.30.1706600431327;
+        Mon, 29 Jan 2024 23:40:31 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id sf5-20020a1709078a8500b00a353bfdd411sm3690334ejc.59.2024.01.29.23.40.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jan 2024 23:40:30 -0800 (PST)
+Message-ID: <f3811c1f-eff2-4c7b-8cea-6d3115525235@linaro.org>
+Date: Tue, 30 Jan 2024 08:40:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR11MB4965:EE_|DS7PR11MB6269:EE_
-X-MS-Office365-Filtering-Correlation-Id: 728c258e-b963-4376-7233-08dc21667ff7
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VlN3Kopctm6eoAhpLRQZ7Zx0sW09T+gQ+ZYFIrKnRks5KpiHUOtIRhgNenXvsH+a0ac8rqpYZxQYV69Kp+kqXSrJSnhera2goDqqAqbQHIhwiV4gA7TtcYjwsx8/oaa1LaYlCsTCGXwORZqMxBxdX59Wk1d7Urr/rCBKu2KLgHeRa/d1iIfI/lSJbGZ2NxsfWge2LYyyrWcbMvHbu9Im01p37mxSXoogtF4P31HRO9DFSJj6fT8g0KC+0jPdU8De+ERQvrvI9u1dqWDzac0K/XFKr2XPYsynUxtxMrJYqoo4IS9Vf9ge2gpGiCYUqgCUEyaPTRD52TxEh6yiC7UqZCMidunc3PK7yR7iXu7mH2ebOXbrztPmcUNP+xkY5/O4BB48+9IbKIjVaaabI987Trcqaa/vEuB14fT1csMi3cPY6Px8OBQD+8vRqqDAZ4qHrQC7m0QpzjKGQaGlvD0ihi54HCpik+9/jhPAL8DPVc+AdzGM4h6i0S3rUOPW+yb+mc+Nj1PLjnhAqjCtE1QikfQ5ytI2Wyf5pAHEodgQgdltxsn2XzB1DtQNJ+7dZWNDKWfbZ7fIRz9++9faY5dirZaraoh/rEWvfhwCo9qdt61oWyN7jk1zlb3f150tsvPwECnOKCyCEEh9X1/uXWqOQg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4965.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(366004)(346002)(396003)(136003)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(8676002)(6862004)(4326008)(8936002)(86362001)(2906002)(5660300002)(31696002)(66476007)(66946007)(66556008)(37006003)(6636002)(316002)(36756003)(38100700002)(82960400001)(53546011)(6506007)(6486002)(6512007)(478600001)(6666004)(83380400001)(26005)(2616005)(41300700001)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ajM4Z092end2YkNXcXU1dUs1RENZVnRHaDVvUDMyTFVsb1h2Q2JzNGR4VVpY?=
- =?utf-8?B?eWZQaUlhK09scGtib0VHbi81UWRGK2ZoalVZelVsd0dPanNOR2RUWDFNeGVh?=
- =?utf-8?B?K2puSjlnTmtzZHkrbDJGMjFleEZXcXVDbHF2Sm9RbXRCUGlUaURRVWtBN0xL?=
- =?utf-8?B?SHloZlcwOVAza21CN1I4TkpxcDZRYUFjQnRWaXVCOGpNZUVxR2dJUmhFQ3ZJ?=
- =?utf-8?B?aGJTWFo0eTFDSW0wN2YyWDIyUkxOYjhCbzlISkQya0M1NGVkVnJRenFHcVZ2?=
- =?utf-8?B?dHl4OVBkWE1KVjNsZ3lGUE9idzU4V3NFZTJqTy9Wc2Q5UjltdWhleXVReVhx?=
- =?utf-8?B?WmdWQlIzTlU1U3hlUEg1Y0JycG5JQ0tVcGpZRWdYUWp6endqY2c5alM4ODhC?=
- =?utf-8?B?OFZqS2ZyRGdvaTdUVklFWVE4UERRbGZyKzFJUDc2V1ZxQ2xJZG1qeDIwcDRT?=
- =?utf-8?B?cGEwc25xblgxaWRkbUZzTVA2QU80a1ZJTzBsYmRHcmVYN011WXV2VzhzTDBL?=
- =?utf-8?B?bFNuc0lyWFNVMVgwOEI3K0hJTmdKR3hBc0o0QUhHYjNEQ2pLT0RBcUxJUTRE?=
- =?utf-8?B?TGtoOUt3Z3FEOXdqRGtFUVRpaWFtVmlwMy9SK1JZemlrekxrZ29IZVpZdkZ1?=
- =?utf-8?B?MmNzSzEybDBYQUtmdkxmQVZNa2FQK1pRbDZsb3BSNjdJSXBWTjZXRVdKMXFC?=
- =?utf-8?B?dnZHbGh2ZmNndnlvVjZzL3BZSnB6Z0dFUmVKOVFuclhiSjVxa09GQW1MdW9Z?=
- =?utf-8?B?bFF3bVN5UFlaYTlLWGpaTFgzNWpkclpQRWEyTi9MUngxSXRkS3IxMlRmUG04?=
- =?utf-8?B?djB6S2JydkU4a1Rxc2JZNGFIL3hpQW1YaEsxSlQ3N3ZwV0cyeEdtVllNZndp?=
- =?utf-8?B?NkhJZ3U1S2xxN29EZHBNMFIvWU9WYnZIOTRrR2FhTEtXbXQ5UjlTL29xY0p6?=
- =?utf-8?B?WEFoZzJvUmRhOElSN2dLSlZRZUI0eTBqWWxMVjNrWTNoNDdOMjF3eEV6L0JD?=
- =?utf-8?B?RzdxTXA4ZkhJVGtMNHFlOE43V01HSkhEUWtBUjNZdkc2TGNrdzdTNnNzQldy?=
- =?utf-8?B?WFpzU2NnbG9lZk9vRVU4MHRuS1pTTWZKQUEwSjlpUG1nNDV4NUFkT2VhTHBv?=
- =?utf-8?B?NXJSTXZlLzVLL1NaR1ZReHFkZDk0dDlBZlRKK0FIZVQvaVorT2ZtQkIrUkx2?=
- =?utf-8?B?VGU5OU9Dckl2aXdaMzZBRDcybmM1OTI4ZlQwdkFIVy9mNHRMUC94NlBpL0k5?=
- =?utf-8?B?eUtsQnFHYktINDlVRGRrcE93VGxRaFhmMjY3VEdwNjI3YzJQcUFVM3Yxa1pt?=
- =?utf-8?B?NUk0L2laaTZkZkpPZUw3TGg2Qm5OWFhjTzBrYitFVW5SK0ZieWhmd2NtSHBx?=
- =?utf-8?B?UGhZaG9jQ2xidEhteE5aRDQyYTYxTFNzbzFINHdSMWN5cHp5MXd6OG5qVzRa?=
- =?utf-8?B?SmYxZG05ckx2U0tvNTVQeXhOdFJNQVo3QjVYNmZwaktjYkVtNkRjc2NLSk5B?=
- =?utf-8?B?dzNBYWdDVmR4cTNDQ0hwKzVmdzdqN0d4VG45VmV0TXp1aWdjS2JIcWhZZGtT?=
- =?utf-8?B?VisyN045MnV4b21VOVlSVGlZKytWRDd4c3ZMVmxCT3lpdGJ6SGFMZllha1dt?=
- =?utf-8?B?TEw3YTJFYnVMSHpQbUdvSlhLNThnNUg3TTllNDRzTWVoTFdmdGdhbEFSUDM1?=
- =?utf-8?B?NVdqbEtsNWx1KzcyK0lyc1FRV28wQ09MZXVlOGMzZmpTQUlkeUo3a0xNV0R6?=
- =?utf-8?B?WEx1c0tNUit1eUNzdE9mRGw2YXVjbVRSNDdvWGpMdERER0JrWXBnM3p0dFps?=
- =?utf-8?B?TXFXMXlSUjB3Uis1NVg1VGg1by9EMk42RmI4R01MbFk2b1JJbGovaGQyNGV0?=
- =?utf-8?B?WFJFSlZFdGNTSE1xaGdvU3NlcVEzSXNtc1BKMjZCMW5MaldiK2I5MTB3bWxa?=
- =?utf-8?B?d1hnRXN1RVpwK1M5cEhoMjRPNVk3enovU2tNREJhUUtFV1QyclFVankrMmxH?=
- =?utf-8?B?ZElrdHdzNkwvZzBveWxFQ0k1eVdFQTlrU0czSnFHQmttWnBsbkRZdFA0OEND?=
- =?utf-8?B?aXdhOVJsSG1kQmlxNGJyU21DOXJBc3dZU3hBT2JONnNxbndlRkZ5ZllLUExC?=
- =?utf-8?B?U291T09GK21Da25FVVNpUEZOb0luSi9Xd0ozekFibnVxdElYWlI0a3RNSjlN?=
- =?utf-8?B?R2c9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 728c258e-b963-4376-7233-08dc21667ff7
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4965.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jan 2024 07:38:50.0266
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +s3sz6E1cNvb651If1kl2NAillTEaH3Rq2UZfwHmQubP6CUtc6oWPU/C4kYOIQ4q6HkKgv2QkuHueosesIvdhg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR11MB6269
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: usb: dwc3: Add system bus request info
+Content-Language: en-US
+To: Frank Li <Frank.li@nxp.com>, Conor Dooley <conor@kernel.org>
+Cc: thinh.nguyen@synopsys.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, balbi@kernel.org,
+ devicetree@vger.kernel.org, gregkh@linuxfoundation.org, imx@lists.linux.dev,
+ linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+ mark.rutland@arm.com, mathias.nyman@intel.com, pku.leo@gmail.com,
+ sergei.shtylyov@cogentembedded.com
+References: <20240123-poking-geography-33be2b5ae578@spud>
+ <Za/8J8MDJaZEPEKO@lizhi-Precision-Tower-5810>
+ <20240123-anew-lilly-0d645bdbfb30@spud>
+ <Za//LX9U6QG5A5NW@lizhi-Precision-Tower-5810>
+ <20240123-nanometer-atlantic-6465b270043a@spud>
+ <ZbAR/NQvjUnf2At+@lizhi-Precision-Tower-5810>
+ <46781012-2678-4f6c-9aee-b020cabcbb28@linaro.org>
+ <ZbA8ea9Ex+hMdDDZ@lizhi-Precision-Tower-5810>
+ <ZbfB/KT+fzO/F2e5@lizhi-Precision-Tower-5810>
+ <20240129-encode-catchable-f5712d561a47@spud>
+ <ZbfjZoHiH7BsKyzl@lizhi-Precision-Tower-5810>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <ZbfjZoHiH7BsKyzl@lizhi-Precision-Tower-5810>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 1/29/2024 3:04 PM, Chao Gao wrote:
-> On Tue, Jan 23, 2024 at 06:41:59PM -0800, Yang Weijiang wrote:
->> Set up CET MSRs, related VM_ENTRY/EXIT control bits and fixed CR4 setting
->> to enable CET for nested VM.
+On 29/01/2024 18:41, Frank Li wrote:
+> On Mon, Jan 29, 2024 at 04:49:21PM +0000, Conor Dooley wrote:
+>> On Mon, Jan 29, 2024 at 10:19:24AM -0500, Frank Li wrote:
+>>> On Tue, Jan 23, 2024 at 05:23:53PM -0500, Frank Li wrote:
+>>>> On Tue, Jan 23, 2024 at 10:46:39PM +0100, Krzysztof Kozlowski wrote:
+>>>>> On 23/01/2024 20:22, Frank Li wrote:
+>>>>>> On Tue, Jan 23, 2024 at 06:42:27PM +0000, Conor Dooley wrote:
+>>>>>>> On Tue, Jan 23, 2024 at 01:02:21PM -0500, Frank Li wrote:
+>>>>>>>> On Tue, Jan 23, 2024 at 05:51:48PM +0000, Conor Dooley wrote:
+>>>>>>>>> On Tue, Jan 23, 2024 at 12:49:27PM -0500, Frank Li wrote:
+>>>>>>>>>> On Tue, Jan 23, 2024 at 05:27:13PM +0000, Conor Dooley wrote:
+>>>>>>>>>>> On Tue, Jan 23, 2024 at 12:02:05PM -0500, Frank Li wrote:
+>>>>>>>>>>>> Add device tree binding allow platform overwrite default value of *REQIN in
+>>>>>>>>>>>> GSBUSCFG0.
+>>>>>>>>>>>
+>>>>>>>>>>> Why might a platform actually want to do this? Why does this need to be
+>>>>>>>>>>> set at the board level and being aware of which SoC is in use is not
+>>>>>>>>>>> sufficient for the driver to set the correct values?
+>>>>>>>>>>
+>>>>>>>>>> In snps,dwc3.yaml, there are already similary proptery, such as
+>>>>>>>>>> snps,incr-burst-type-adjustment. Use this method can keep whole dwc3 usb
+>>>>>>>>>> driver keep consistent. And not all platform try enable hardware
+>>>>>>>>>> dma_cohenrence. It is configable for difference platform.
+>>>>>>>>>
+>>>>>>>>> When you say "platform", what do you mean? I understand that term to
+>>>>>>>>> mean a combination of board, soc and firmware.
+>>>>>>>>
+>>>>>>>> In my company's environment, "platform" is "board". I will use "board" in
+>>>>>>>> future. Is it big difference here?
+>>>>>>>
+>>>>>>> Nah, that's close enough that it makes no difference here.
+>>>>>>>
+>>>>>>> I'd still like an explanation for why a platform would need to actually
+>>>>>>> set these properties though, and why information about coherency cannot
+>>>>>>> be determined from whether or not the boss the usb controller is on is
+>>>>>>> communicated to be dma coherent via the existing devicetree properties
+>>>>>>> for that purpose.
+>>>>>>
+>>>>>> Actually, I am not very clear about reason. I guest maybe treat off power
+>>>>>> consumption and performance.
+>>>>>>
+>>>>>> What's your judgement about proptery, which should be in dts. Such as
+>>>>>> reg, clk, reset, dma and irq, which is tighted with SOC. It is the fixed
+>>>>>> value for every SOC. The board dts never change these.
+>>>>>
+>>>>> Then it can be deduced from the compatible and there is no need for new
+>>>>> properties.
+>>>>
+>>>> Okay, I think "*reqinfo" match this. When new Soc(using compatible dwc usb
+>>>> controller) appear regardless dma-cohorence or not, connect by AXI3 or
+>>>> AXI4, needn't add new propterties. 
+>>>
+>>> Anyone have objection? I will prepare v2 to fix rob's bot error.
 >>
->> vmcs12 and vmcs02 needs to be synced when L2 exits to L1 or when L1 wants
->> to resume L2, that way correct CET states can be observed by one another.
->>
->> Suggested-by: Chao Gao <chao.gao@intel.com>
->> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
->> Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
->> ---
->> arch/x86/kvm/vmx/nested.c | 57 +++++++++++++++++++++++++++++++++++++--
->> arch/x86/kvm/vmx/vmcs12.c |  6 +++++
->> arch/x86/kvm/vmx/vmcs12.h | 14 +++++++++-
->> arch/x86/kvm/vmx/vmx.c    |  2 ++
->> 4 files changed, 76 insertions(+), 3 deletions(-)
->>
->> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
->> index 468a7cf75035..e330897a7e5e 100644
->> --- a/arch/x86/kvm/vmx/nested.c
->> +++ b/arch/x86/kvm/vmx/nested.c
->> @@ -691,6 +691,28 @@ static inline bool nested_vmx_prepare_msr_bitmap(struct kvm_vcpu *vcpu,
->> 	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
->> 					 MSR_IA32_FLUSH_CMD, MSR_TYPE_W);
->>
->> +	/* Pass CET MSRs to nested VM if L0 and L1 are set to pass-through. */
->> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
->> +					 MSR_IA32_U_CET, MSR_TYPE_RW);
->> +
->> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
->> +					 MSR_IA32_S_CET, MSR_TYPE_RW);
->> +
->> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
->> +					 MSR_IA32_PL0_SSP, MSR_TYPE_RW);
->> +
->> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
->> +					 MSR_IA32_PL1_SSP, MSR_TYPE_RW);
->> +
->> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
->> +					 MSR_IA32_PL2_SSP, MSR_TYPE_RW);
->> +
->> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
->> +					 MSR_IA32_PL3_SSP, MSR_TYPE_RW);
->> +
->> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
->> +					 MSR_IA32_INT_SSP_TAB, MSR_TYPE_RW);
->> +
->> 	kvm_vcpu_unmap(vcpu, &vmx->nested.msr_bitmap_map, false);
->>
->> 	vmx->nested.force_msr_bitmap_recalc = false;
->> @@ -2506,6 +2528,17 @@ static void prepare_vmcs02_rare(struct vcpu_vmx *vmx, struct vmcs12 *vmcs12)
->> 		if (kvm_mpx_supported() && vmx->nested.nested_run_pending &&
->> 		    (vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS))
->> 			vmcs_write64(GUEST_BNDCFGS, vmcs12->guest_bndcfgs);
->> +
->> +		if (vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE) {
->> +			if (guest_can_use(&vmx->vcpu, X86_FEATURE_SHSTK)) {
->> +				vmcs_writel(GUEST_SSP, vmcs12->guest_ssp);
->> +				vmcs_writel(GUEST_INTR_SSP_TABLE,
->> +					    vmcs12->guest_ssp_tbl);
->> +			}
->> +			if (guest_can_use(&vmx->vcpu, X86_FEATURE_SHSTK) ||
->> +			    guest_can_use(&vmx->vcpu, X86_FEATURE_IBT))
->> +				vmcs_writel(GUEST_S_CET, vmcs12->guest_s_cet);
->> +		}
-> I think you need to move this hunk outside the outmost if-statement, i.e.,
->
-> 	if (!hv_evmcs || !(hv_evmcs->hv_clean_fields &
-> 			   HV_VMX_ENLIGHTENED_CLEAN_FIELD_GUEST_GRP1)) {
+>> I'm not sure what you want me to object to/not object to.
+>> Your last message said "needn't add new propterties", seemingly in
+>> agreement with Krzysztoff saying that it can be deduced from the
+>> compatible. That seems like a good way forward for me.
+> 
+> Okay, let me clear it again. dwc usb is quite common IP. The below is
+> what reason why need "*reginfo* instead of using compatible string.
+> 
+> 1. *reginfo* property is decscript hardware behevior, which will be changed
+> at difference SOC.
+> 2. it may change at board level according to if enable dma coherence.
 
-Yes, I should move them to the  end of the function, will do it, thanks!
+dma coherence is not a board property. Anyway, you said it will never
+change in the board.
 
->
-> otherwise, the whole block may be skipped (e.g., when evmcs is enabled and
-> GUEST_GRP1 is clean), leaving CET state not context-switched.
->
-> And if VM_ENTRY_LOAD_CET_STATE of vmcs12 is cleared, L1's values should be
-> propagated to vmcs02 on nested VMenter; see pre_vmenter_debugctl in struct
-> nested_vmx. I believe we need similar handling for the three CET fields.
+> 3. dwc core part is quite common, all SOC using common "snps, dwc3" as
+> core-part, all soc specific "nxp, dwc3 *", "qcom, dwc3*" is used for glue
+> logic part.
 
-The code used to be there, but I thought it's not the valid usage model, so removed them.
-After a second thought, I think I shouldn't assume L1's CET usage, just check the flags and
-sync CET states between L2<-->L1. Will add the handling, thanks!
+And all should be having dedicated compatibles.
 
->
->> 	}
->>
->> 	if (nested_cpu_has_xsaves(vmcs12))
->> @@ -4344,6 +4377,15 @@ static void sync_vmcs02_to_vmcs12_rare(struct kvm_vcpu *vcpu,
->> 	vmcs12->guest_pending_dbg_exceptions =
->> 		vmcs_readl(GUEST_PENDING_DBG_EXCEPTIONS);
->>
->> +	if (guest_can_use(&vmx->vcpu, X86_FEATURE_SHSTK)) {
->> +		vmcs12->guest_ssp = vmcs_readl(GUEST_SSP);
->> +		vmcs12->guest_ssp_tbl = vmcs_readl(GUEST_INTR_SSP_TABLE);
->> +	}
->> +	if (guest_can_use(&vmx->vcpu, X86_FEATURE_SHSTK) ||
->> +	    guest_can_use(&vmx->vcpu, X86_FEATURE_IBT)) {
->> +		vmcs12->guest_s_cet = vmcs_readl(GUEST_S_CET);
->> +	}
-> unnecessary braces.
+> 4. using *reginfo* can reduce add more strange compatible string such as
+> "nxp, dwc3-core" ...
+> 5. *reginfo* property likes "reg", "clk", and align what Kryzystoff said.
+> "reg", "clk" is fixed for specfic SOC. These can help reduce "compatible"
+> string number. "reginfo" do the same work as "reg", "clk" ..
 
-Will remove it.
+So again, reginfo is fixed for specific SoC? So it can be deduced from
+compatible.
 
+I don't know what to say more here... so let's be clear that you
+understood me:
+
+NAK
+
+Best regards,
+Krzysztof
 
 
