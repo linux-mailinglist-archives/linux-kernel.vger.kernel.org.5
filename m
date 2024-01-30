@@ -1,305 +1,102 @@
-Return-Path: <linux-kernel+bounces-44362-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44361-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86FB28420E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:14:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5614A8420E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:13:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC2DF1C277BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:14:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB6E71F25650
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:13:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29C6760885;
-	Tue, 30 Jan 2024 10:13:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5846860BAB;
+	Tue, 30 Jan 2024 10:13:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="QU4E3btk"
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Nd+UIPQc"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C46A160B89
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 10:13:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1869760885;
+	Tue, 30 Jan 2024 10:13:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706609624; cv=none; b=scrxnxV27F+bSLq0pLPr1Y8OTHiJTczFbYBses0ucj0K12g+aOjRDmfFRuFgwS/bUCHlAVQStDxjV0cip9bWNC1te5TzjwbTDh0CYmGbLqWyOJ8XDdxWNo5qlxDZpG4Pw7kyuwy5JAUCXGxZSqrUg2S4UALrvAiNEPbgzT+sCNQ=
+	t=1706609621; cv=none; b=r0EtmyxDyOlGMiwJyRK1IXG79+PAOI52cL5RUPjLNqre4CgXAymcrFV9rq3uKJ/O6ZD3wNl6riVs/tBAQM0tx4wNFH6hUL9HxGKxEH01B0W3deUSjfLn7b7x/yUTXy55fw26u2MqMefEHDPTtFYkhu6Eqqw6JgEFrpmRSM8/wD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706609624; c=relaxed/simple;
-	bh=scB2FdmBjKkbeOplu19PUYJYLuMuxCHsFXDQdu+5fQo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZVaibfxb5fxicG+cjpclMl2sU6+aKQiMBVlPX0D7ENOZJVFo5+SyT6Waxq1OtFvSnV5u09Y6wrbSmeqjvoFfxYHf8qnEOHaxpJ7xeYUfIfmvoXAvLyTJma4YaHOjfh4k4SHm3cSPHMfru5oB/Wzl8RaQKs2T8bmfZcBmo8F5FLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=QU4E3btk; arc=none smtp.client-ip=209.85.215.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5d8b887bb0cso2307627a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 02:13:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1706609621; x=1707214421; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VxTtON4PVo+c9WCEwVJ0oOsjiZtQePHz4oSFGA3kW9c=;
-        b=QU4E3btknYrGnekLCXlhBMOPvuAQG2f691tKjTRTv+O88ZfwTEIa7eEV7ahhpV4OfU
-         hF4ho6T82/yptUfW6LaEQtg9AHBucRHmoKHH14B9k0eU3PnZLf1QTr3z9Se+8aKuuwsS
-         A8c089kPBYAjMZdNk9HZUTVh23RqBbmtAs0J9G84+gjPCt1pNynMv89yFhdbyZv7nA6a
-         ZX2C8O16oQ3Y3muYVFH8EWiJuXRREEboBC/KfYJacfPqwBYaRrO3xqdW5Us/VIk/3WdC
-         fzNWzJGp69YSMWpzv5c3kYW1zfFeM+q+S2D0LAFfn50MWfDbvFIqvNulsaqYfH0d5cNX
-         lrMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706609621; x=1707214421;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VxTtON4PVo+c9WCEwVJ0oOsjiZtQePHz4oSFGA3kW9c=;
-        b=SSADB/p0JwiRurri0F0sMeEio3Q+ACTR/Kcy/V8znaeDrH63iE1j8t9p8S5fjtySd8
-         UOwoZDKKJmdoDdrPXZ92T6baj426gjKOLwN27pUODzqOdE1hrU8dLNXUOMOqqUtOq2Xc
-         0OB8DYtftiKeoChHIe6INc/VG5n3I2n6QVyYESAW2PxCef4t/2ipAWx7k/cYTYOMfwaX
-         s2BIXHNz/buzL7/KQIgF0mZMnCewAoQNPM38wR8Ba63uDykyUiILjiTaXlxjAqYAW66d
-         eXtbUcrF+UHspnKr+kW6QRehA4Gac84qrwfUIR1Z4D/1exGd+FMWuVA3aeLMhQ8JdVRs
-         a71w==
-X-Gm-Message-State: AOJu0Yy1F8Z85x+/9pWkLtxYaYZ4/JyFWa8ltJROYDgDqt4KWPfe9V2l
-	75PtS5rjsow/1v2d/vJe3qmNqxd849FXWvH1f2UFj6kssWlBe07o4Nq5GPRmBp4=
-X-Google-Smtp-Source: AGHT+IEdFljC+YKO74kElAreCYCVMkc643DwUc9I7HOevlRTo+WjM0qRw4jXh65HY0zCTKTQq8gGEA==
-X-Received: by 2002:a17:90a:8d0b:b0:295:311f:c67e with SMTP id c11-20020a17090a8d0b00b00295311fc67emr4617486pjo.11.1706609620803;
-        Tue, 30 Jan 2024 02:13:40 -0800 (PST)
-Received: from [10.84.155.124] ([203.208.167.153])
-        by smtp.gmail.com with ESMTPSA id ev18-20020a17090aead200b00295c86a5d36sm96505pjb.25.2024.01.30.02.13.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Jan 2024 02:13:40 -0800 (PST)
-Message-ID: <23cbb613-c8a2-4f07-b83b-fa3104bef642@bytedance.com>
-Date: Tue, 30 Jan 2024 18:13:32 +0800
+	s=arc-20240116; t=1706609621; c=relaxed/simple;
+	bh=PBHyE/70hNgy03hBgSuUnxkVHspsZdCRdFN/IU+Qe0U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TduT4+so9qkdc44DQYPWf52bRIpajJJfAxFkbRhpSpGzlAsBXDsnTxuIJjvdqyP89JtJk2OReH04ATBR3ezogeIxGv7msvA+xbzZY1GTRtqO158lOXg7iQm1C+iwXFLc0XV3hEc6JBagihOM8X8qM3+vD7CCAVhIqcgc+1UcN5k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Nd+UIPQc; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706609620; x=1738145620;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=PBHyE/70hNgy03hBgSuUnxkVHspsZdCRdFN/IU+Qe0U=;
+  b=Nd+UIPQcaw0QGlsDhF8RWVCua0RcB+4FL2LnZEQzbjNhB6l3dLSP5msG
+   wJE48E0boCAaEyygo3PRjWLthEroC6ONFY03yiet29e9Big6KqzuB6cPw
+   N6nt0DvBRviRckFV6Q+OkCkQhzb4MK4YkmhRq6ZHzeCULLQZE59rTPH5F
+   cjlI/bbAPyKSal1GP37KXQTdrqgFoPOhm6CMUeeV8X03Qocy+CBabyIHo
+   N9jyCVK+fJWqZc5TJCC4+WEXIHixWPgjRarqU0Vfic3tAcf8OoTwR1rRc
+   k8KMKUWhIdwGrnSTwRgQUNc4WJ8R0TQNA8Q0tIs87DN5fwNJTVr87yQcL
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="9903473"
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="9903473"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 02:13:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="931396166"
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="931396166"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 30 Jan 2024 02:13:36 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+	id 3B759DE; Tue, 30 Jan 2024 12:13:35 +0200 (EET)
+Date: Tue, 30 Jan 2024 12:13:35 +0200
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Jian-Hong Pan <jhp@endlessos.org>
+Cc: David Box <david.e.box@linux.intel.com>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Niklas Cassel <cassel@kernel.org>,
+	Nirmal Patel <nirmal.patel@linux.intel.com>,
+	Jonathan Derrick <jonathan.derrick@linux.dev>,
+	linux-ide@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux@endlessos.org
+Subject: Re: [PATCH 1/2] ata: ahci: Add force LPM policy quirk for ASUS
+ B1400CEAE
+Message-ID: <20240130101335.GU2543524@black.fi.intel.com>
+References: <20240130095933.14158-1-jhp@endlessos.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [linus:master] [sched/eevdf] 2227a957e1:
- BUG:kernel_NULL_pointer_dereference,address
-To: kernel test robot <oliver.sang@intel.com>
-Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org,
- Peter Zijlstra <peterz@infradead.org>, aubrey.li@linux.intel.com,
- yu.c.chen@intel.com, Tiwei Bie <tiwei.btw@antgroup.com>
-References: <202401301012.2ed95df0-oliver.sang@intel.com>
-Content-Language: en-US
-From: Abel Wu <wuyun.abel@bytedance.com>
-In-Reply-To: <202401301012.2ed95df0-oliver.sang@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240130095933.14158-1-jhp@endlessos.org>
 
-On 1/30/24 3:24 PM, kernel test robot Wrote:
-> 
-> 
-> Hello,
-> 
-> (besides a previous performance report),
-> kernel test robot noticed "BUG:kernel_NULL_pointer_dereference,address" on:
-> 
-> commit: 2227a957e1d5b1941be4e4207879ec74f4bb37f8 ("sched/eevdf: Sort the rbtree by virtual deadline")
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> 
-> [test failed on linus/master 3a5879d495b226d0404098e3564462d5f1daa33b]
-> [test failed on linux-next/master 01af33cc9894b4489fb68fa35c40e9fe85df63dc]
-> 
-> in testcase: trinity
-> version: trinity-i386-abe9de86-1_20230429
-> with following parameters:
-> 
-> 	runtime: 300s
-> 	group: group-03
-> 	nr_groups: 5
-> 
-> test-description: Trinity is a linux system call fuzz tester.
-> test-url: http://codemonkey.org.uk/projects/trinity/
-> 
-> 
-> compiler: clang-17
-> test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
-> 
-> (please refer to attached dmesg/kmsg for entire log/backtrace)
-> 
-> 
-> 
-> we found this issue happens in very random way (23 out of 999 runs).
-> but keeps clean on parent.
+Hi,
 
-Thanks for reporting, I will try to reproduce the issue. Does the 'parent'
-mean the same code branch without this commit?
+On Tue, Jan 30, 2024 at 05:59:33PM +0800, Jian-Hong Pan wrote:
+> Some systems, like ASUS B1400CEAE equipped with the SATA controller
+> [8086:a0d3] can use LPM policy to save power, especially for s2idle.
+> 
+> However, the same controller may be failed on other platforms. So,
+> commit (ata: ahci: Revert "ata: ahci: Add Tiger Lake UP{3,4} AHCI
+> controller") drops LPM policy for [8086:a0d3]. But, this blocks going
+> to deeper CPU Package C-state when s2idle with enabled Intel VMD.
 
-> 
-> 84db47ca7146d7bd 2227a957e1d5b1941be4e420787
-> ---------------- ---------------------------
->         fail:runs  %reproduction    fail:runs
->             |             |             |
->             :999          2%          23:999   dmesg.BUG:kernel_NULL_pointer_dereference,address
->             :999          2%          23:999   dmesg.Kernel_panic-not_syncing:Fatal_exception
->             :999          2%          23:999   dmesg.Oops:#[##]
-> 
-> 
-> 
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <oliver.sang@intel.com>
-> | Closes: https://lore.kernel.org/oe-lkp/202401301012.2ed95df0-oliver.sang@intel.com
-> 
-> 
-> sorry for below parse failure which caused no real line numbers.
-> we will follow further. the orgial dmesg could be fetch from below link.
-> 
-> 
-> [  512.079810][ T8305] BUG: kernel NULL pointer dereference, address: 0000002c
-> [  512.080897][ T8305] #PF: supervisor read access in kernel mode
-> [  512.081636][ T8305] #PF: error_code(0x0000) - not-present page
-> [  512.082337][ T8305] *pde = 00000000
-> [  512.082829][ T8305] Oops: 0000 [#1] PREEMPT SMP
-> [  512.083407][ T8305] CPU: 1 PID: 8305 Comm: watchdog Tainted: G        W        N 6.7.0-rc1-00006-g2227a957e1d5 #1 819e6d1a8b887f5f97adb4aed77d98b15504c836
-> [  512.084986][ T8305] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-> [ 512.086203][ T8305] EIP: set_next_entity (fair.c:?)
+Tiger Lake really should support this with no issues (as are the
+generations after it). I suggest trying to figure out what was the root
+cause of the original problem that triggered the revert, if possible at
+all, perhaps it is is something not related to LPM and that would allow
+us to enable this unconditionally on all Tiger Lake.
 
-There was actually a NULL-test in pick_eevdf() before this commit,
-but I removed it by intent as I found it impossible to be NULL after
-examining 'all' the cases.
-
-Also cc Tiwei who once proposed to add this check back.
-https://lore.kernel.org/all/20231208112100.18141-1-tiwei.btw@antgroup.com/
-
-Thanks,
-	Abel
-
-> [ 512.086881][ T8305] Code: 89 d6 89 cf 85 d2 74 22 39 77 58 75 1d 89 f0 90 90 90 90 90 8b 48 70 39 41 58 75 0e c7 41 58 00 00 00 00 8b 40 6c 85 c0 75 ea <83> 7e 2c 00 74 28 3e 8d 74 26 00 89 f9 89 f2 e8 36 59 00 00 89 f9
-> All code
-> ========
->     0:	89 d6                	mov    %edx,%esi
->     2:	89 cf                	mov    %ecx,%edi
->     4:	85 d2                	test   %edx,%edx
->     6:	74 22                	je     0x2a
->     8:	39 77 58             	cmp    %esi,0x58(%rdi)
->     b:	75 1d                	jne    0x2a
->     d:	89 f0                	mov    %esi,%eax
->     f:	90                   	nop
->    10:	90                   	nop
->    11:	90                   	nop
->    12:	90                   	nop
->    13:	90                   	nop
->    14:	8b 48 70             	mov    0x70(%rax),%ecx
->    17:	39 41 58             	cmp    %eax,0x58(%rcx)
->    1a:	75 0e                	jne    0x2a
->    1c:	c7 41 58 00 00 00 00 	movl   $0x0,0x58(%rcx)
->    23:	8b 40 6c             	mov    0x6c(%rax),%eax
->    26:	85 c0                	test   %eax,%eax
->    28:	75 ea                	jne    0x14
->    2a:*	83 7e 2c 00          	cmpl   $0x0,0x2c(%rsi)		<-- trapping instruction
->    2e:	74 28                	je     0x58
->    30:	3e 8d 74 26 00       	lea    %ds:0x0(%rsi,%riz,1),%esi
->    35:	89 f9                	mov    %edi,%ecx
->    37:	89 f2                	mov    %esi,%edx
->    39:	e8 36 59 00 00       	callq  0x5974
->    3e:	89 f9                	mov    %edi,%ecx
-> 
-> Code starting with the faulting instruction
-> ===========================================
->     0:	83 7e 2c 00          	cmpl   $0x0,0x2c(%rsi)
->     4:	74 28                	je     0x2e
->     6:	3e 8d 74 26 00       	lea    %ds:0x0(%rsi,%riz,1),%esi
->     b:	89 f9                	mov    %edi,%ecx
->     d:	89 f2                	mov    %esi,%edx
->     f:	e8 36 59 00 00       	callq  0x594a
->    14:	89 f9                	mov    %edi,%ecx
-> [  512.089261][ T8305] EAX: 00000000 EBX: e75ff100 ECX: e75ff100 EDX: 00000000
-> [  512.090180][ T8305] ESI: 00000000 EDI: e75ff100 EBP: ed229dd0 ESP: ed229dc0
-> [  512.091097][ T8305] DS: 007b ES: 007b FS: 00d8 GS: 0033 SS: 0068 EFLAGS: 00010046
-> [  512.092138][ T8305] CR0: 80050033 CR2: 0000002c CR3: 0a508000 CR4: 000406d0
-> [  512.093076][ T8305] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-> [  512.094004][ T8305] DR6: fffe0ff0 DR7: 00000400
-> [  512.094643][ T8305] Call Trace:
-> [ 512.095145][ T8305] ? __die_body (dumpstack.c:?)
-> [ 512.095755][ T8305] ? __die (??:?)
-> [ 512.096309][ T8305] ? page_fault_oops (fault.c:?)
-> [ 512.096994][ T8305] ? __lock_acquire (lockdep.c:?)
-> [ 512.097677][ T8305] ? kmemleak_alloc (??:?)
-> [ 512.098343][ T8305] ? kernelmode_fixup_or_oops (fault.c:?)
-> [ 512.099085][ T8305] ? __bad_area_nosemaphore (fault.c:?)
-> [ 512.099839][ T8305] ? bad_area_nosemaphore (fault.c:?)
-> [ 512.100579][ T8305] ? do_user_addr_fault (fault.c:?)
-> [ 512.101325][ T8305] ? exc_page_fault (??:?)
-> [ 512.101992][ T8305] ? pvclock_clocksource_read_nowd (??:?)
-> [ 512.102799][ T8305] ? handle_exception (init_task.c:?)
-> [ 512.103492][ T8305] ? yield_to_task_fair (fair.c:?)
-> [ 512.104166][ T8305] ? pvclock_clocksource_read_nowd (??:?)
-> [ 512.104975][ T8305] ? set_next_entity (fair.c:?)
-> [ 512.105655][ T8305] ? pvclock_clocksource_read_nowd (??:?)
-> [ 512.106447][ T8305] ? set_next_entity (fair.c:?)
-> [ 512.107106][ T8305] pick_next_task_fair (??:?)
-> [ 512.107788][ T8305] ? put_prev_task_rt (build_policy.c:?)
-> [ 512.108460][ T8305] __pick_next_task_fair (fair.c:?)
-> [ 512.109162][ T8305] __schedule (core.c:?)
-> [ 512.109753][ T8305] schedule (??:?)
-> [ 512.110284][ T8305] do_nanosleep (hrtimer.c:?)
-> [ 512.110900][ T8305] hrtimer_nanosleep (??:?)
-> [ 512.111581][ T8305] ? __remove_hrtimer (hrtimer.c:?)
-> [ 512.112264][ T8305] common_nsleep (posix-timers.c:?)
-> [ 512.112891][ T8305] __ia32_sys_clock_nanosleep (??:?)
-> [ 512.113657][ T8305] ? syscall_enter_from_user_mode_work (??:?)
-> [ 512.114486][ T8305] __do_fast_syscall_32 (common.c:?)
-> [ 512.115180][ T8305] ? irqentry_exit_to_user_mode (??:?)
-> [ 512.115936][ T8305] ? irqentry_exit_to_user_mode (??:?)
-> [ 512.116690][ T8305] do_fast_syscall_32 (??:?)
-> [ 512.117386][ T8305] do_SYSENTER_32 (??:?)
-> [ 512.118022][ T8305] entry_SYSENTER_32 (??:?)
-> [  512.118645][ T8305] EIP: 0xb7edf539
-> [ 512.119172][ T8305] Code: 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 0f 1f 00 58 b8 77 00 00 00 cd 80 90 0f 1f
-> All code
-> ========
->     0:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
->     4:	10 07                	adc    %al,(%rdi)
->     6:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
->     a:	10 08                	adc    %cl,(%rax)
->     c:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
-> 	...
->    20:	00 51 52             	add    %dl,0x52(%rcx)
->    23:	55                   	push   %rbp
->    24:*	89 e5                	mov    %esp,%ebp		<-- trapping instruction
->    26:	0f 34                	sysenter
->    28:	cd 80                	int    $0x80
->    2a:	5d                   	pop    %rbp
->    2b:	5a                   	pop    %rdx
->    2c:	59                   	pop    %rcx
->    2d:	c3                   	retq
->    2e:	90                   	nop
->    2f:	90                   	nop
->    30:	90                   	nop
->    31:	90                   	nop
->    32:	0f 1f 00             	nopl   (%rax)
->    35:	58                   	pop    %rax
->    36:	b8 77 00 00 00       	mov    $0x77,%eax
->    3b:	cd 80                	int    $0x80
->    3d:	90                   	nop
->    3e:	0f                   	.byte 0xf
->    3f:	1f                   	(bad)
-> 
-> Code starting with the faulting instruction
-> ===========================================
->     0:	5d                   	pop    %rbp
->     1:	5a                   	pop    %rdx
->     2:	59                   	pop    %rcx
->     3:	c3                   	retq
->     4:	90                   	nop
->     5:	90                   	nop
->     6:	90                   	nop
->     7:	90                   	nop
->     8:	0f 1f 00             	nopl   (%rax)
->     b:	58                   	pop    %rax
->     c:	b8 77 00 00 00       	mov    $0x77,%eax
->    11:	cd 80                	int    $0x80
->    13:	90                   	nop
->    14:	0f                   	.byte 0xf
->    15:	1f                   	(bad)
-> 
-> 
-> The kernel config and materials to reproduce are available at:
-> https://download.01.org/0day-ci/archive/20240130/202401301012.2ed95df0-oliver.sang@intel.com
-> 
-> 
-> 
+I'm pretty sure the platform where this was reported suffers the same
+s2idle issue you are seeing without this patch.
 
