@@ -1,134 +1,105 @@
-Return-Path: <linux-kernel+bounces-44788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44787-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21BB2842769
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:00:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A6AC842766
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:00:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 236011C26C5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:00:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17BAB28401D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:00:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 424AD7CF1B;
-	Tue, 30 Jan 2024 15:00:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A0807E766;
+	Tue, 30 Jan 2024 15:00:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="T/qAWyz2"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="hdAwoaf1"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B18D37CF08;
-	Tue, 30 Jan 2024 15:00:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E43E77CF08
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 15:00:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706626833; cv=none; b=U1rjDTwT2f3pfbmBSeybHJaGv4DZB1+rjiLueiKDKh2PROnQjxZ88UYIFd8XKqV2mRU9raA/yvhVMDt/1W1KWuvLakcHRMxCsE+ndi+EAtb4nzvz16B4aIMDqttTPQuKVpwqJoK7JojvvxqcV5P2p8ca/0mGmg6MHhB8pppQ3mY=
+	t=1706626827; cv=none; b=fBX/3Yh/ikXaBvrX6hrcN0O13Trw6K3ZMxwoXuM+pJ5IcYojpejG1HpXbVjTWuIjJzZU7daLdPwAWMQeAJiwEVzBswtJyUWGUZqRWd75hZf/GvVxu6HAaQADiocZyb17S1VSw0/uucmS6i0axuVlYa9t8vIxWHpKkjfeBQSWnw0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706626833; c=relaxed/simple;
-	bh=yf/E+KrZm1v3DbFb8PD3BM4OlyyFjS4+n1tQ1b2z4Lk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Ljv3ypSs+0b7tnSS995OzDo2xLcCR+C63iOkr9iPDU5W4eeKS2kVMN9IehSMor29sKNvpya/i62W8Z1Q/k3YXlr/sY6XlpXFpL/KcNT5+wnsHG+Jzti7m8F6PrdpRTdyAJ4lkofGUW/5tJZ16YpCoOXdgLvve3Le++T+PXK0ytQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=T/qAWyz2; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40UF039E005424;
-	Tue, 30 Jan 2024 09:00:03 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706626803;
-	bh=cLew7QEnbGPCJQBzmHXkmCYYlM0RwNdCJ9orZc+7ESg=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=T/qAWyz2n4znNZBy/rurIjG4AgjwQjl8Ci0wQii/S/bySa4NSLuX+6dh5mjGvZTWp
-	 k/uxK1zbXdJaICGbIL8YmHzp0h6BmiPs5gW1Y5z6/42PznGuZHhb+R/cDPpPmiaOOV
-	 pxpk2jZMHRLFiZkwsyitZps6rn3x7t1ujjar3smM=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40UF03AD115946
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 30 Jan 2024 09:00:03 -0600
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 30
- Jan 2024 09:00:02 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 30 Jan 2024 09:00:02 -0600
-Received: from [10.249.42.149] ([10.249.42.149])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40UF02vC014189;
-	Tue, 30 Jan 2024 09:00:02 -0600
-Message-ID: <2a373360-9bf2-411c-a9aa-0a7451b9ba38@ti.com>
-Date: Tue, 30 Jan 2024 09:00:01 -0600
+	s=arc-20240116; t=1706626827; c=relaxed/simple;
+	bh=efSG7SSvYuTZmaIZe1rT07IPTrpLnxs1P3jW8v0XLtI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=sm4/zTCpdLaD/QAp+d9PhKj9+fR44kfQXwMbIjfkp6+v5iuy2nQOvUv6vOQd93TTEY/jIIvgF2gPILSILStUjFMkmav1O313Ii121QEAXBZch8I4YiJcoTOnvrx3RFCWBZjDnTipoP/eRBtQeDRGzdwcEv/85wapzXQ1qvDWY4w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=hdAwoaf1; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 5F1BA1C000F;
+	Tue, 30 Jan 2024 15:00:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1706626823;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=efSG7SSvYuTZmaIZe1rT07IPTrpLnxs1P3jW8v0XLtI=;
+	b=hdAwoaf1yqqfueCdiJ3rQuvOKterIxAoxcJRv529yjB24HPJCGH+LfD0Yakjqi7IophcKc
+	H2mb0uKAUpNsHQlFYha8G+8l7326TVVPXdueWR7FTeGag8a6QdlzkspgjyoEKua7c9CzlS
+	KAvOTp47z2/j7VHMRmBpa4cgm7DkguDBaOOVD/SYA/aXhfCboQRpLhO0w7OBdkIyPq9wBU
+	lB4HllvFP5Z0UJ9yG09ZDbb4HtKqlWxArB09xio/mW/NHtCsIC6toDyJfnSlYQFQ1b3alU
+	SSjXwjt7/e4/y3POEZlpw4UYJopVsvBd86drrjDDLEeLSEfHRU76FA05yoK1Xg==
+Date: Tue, 30 Jan 2024 16:00:21 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: POPESCU Catalin <catalin.popescu@leica-geosystems.com>
+Cc: "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
+ "michael@walle.cc" <michael@walle.cc>, "rafal@milecki.pl"
+ <rafal@milecki.pl>, "robh@kernel.org" <robh@kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ GEO-CHHER-bsp-development <bsp-development.geo@leica-geosystems.com>,
+ "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+ "luca.ceresoli@bootlin.com" <luca.ceresoli@bootlin.com>
+Subject: Re: [PATCH] nvmem: core: add fixed-layout declaration
+Message-ID: <20240130160021.70ddef92@xps-13>
+In-Reply-To: <d568b3e2-0305-4041-9f6a-8375b5c497b2@leica-geosystems.com>
+References: <20240111152849.3649549-1-catalin.popescu@leica-geosystems.com>
+	<20240111164145.39255eac@xps-13>
+	<d568b3e2-0305-4041-9f6a-8375b5c497b2@leica-geosystems.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] PCI: j721e: Extend j721e_pcie_ctrl_init() for non syscon
- nodes
-To: Siddharth Vadapalli <s-vadapalli@ti.com>
-CC: <bhelgaas@google.com>, <lpieralisi@kernel.org>, <kw@linux.com>,
-        <robh@kernel.org>, <vigneshr@ti.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <srk@ti.com>
-References: <20240129104958.1139787-1-s-vadapalli@ti.com>
- <077682de-7789-4f1f-8dcc-aa47f4fb2dff@ti.com>
- <792c972b-052e-4e24-a85f-9415fe02aa01@ti.com>
-Content-Language: en-US
-From: Andrew Davis <afd@ti.com>
-In-Reply-To: <792c972b-052e-4e24-a85f-9415fe02aa01@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
 
-On 1/29/24 10:50 PM, Siddharth Vadapalli wrote:
-> Hello Andrew,
-> 
-> On 29/01/24 20:49, Andrew Davis wrote:
->> On 1/29/24 4:49 AM, Siddharth Vadapalli wrote:
-> 
-> ...
-> 
->>>        int ret;
->>>    -    syscon = syscon_regmap_lookup_by_phandle(node, "ti,syscon-pcie-ctrl");
->>> +    scm_conf = of_parse_phandle(node, "ti,syscon-pcie-ctrl", 0);
->>> +    if (!scm_conf) {
->>> +        dev_err(dev, "unable to get System Controller node\n");
->>> +        return -ENODEV;
->>> +    }
->>> +
->>> +    syscon = device_node_to_regmap(scm_conf);
->>
->> Turning the entire "simple-bus" region into a regmap using this
->> function is just as broken as having it as a "syscon". The core
->> problem we are solving by getting rid of the blanket syscon nodes
->> is that it causes multiple mappings of the same register. This
->> can cause issues with regmap caching, read–modify–write, etc..
->>
->> What you want to do is add a subnode to the simple-bus, have that
->> encapsulate just the registers used for PCIe, and have the PCIe
->> node point to that. Then this patch isn't needed.
->>
->> For an example, see how it's done for DSS[0].
-> 
-> Thank you for reviewing the patch. I will implement it similar to what's done
-> for DSS as you pointed out. However, what about the existing SoCs which make use
-> of the "ti,syscon-pcie-ctrl" property? Do you suggest that I add another
-> device-tree property for pointing to the PCIE_CTRL register within the CTRL_MMR
-> region, or do you suggest that I reuse the existing "ti,syscon-pcie-ctrl"
-> property differently in the SoCs like J784S4 where the scm_conf node is a
-> "simple-bus"?
-> 
-> The "ti,syscon-pcie-ctrl" property as defined in the device-tree bindings has
-> two elements with the first being the phandle to the scm_conf node and the
-> second being the offset of the PCIE_CTRL register. The newer implementation you
-> are suggesting will either require a new property which accepts only one element
-> namely the phandle to the node within scm_conf corresponding to the PCIE_CTRL
-> register. Will adding a new property be acceptable?
-> 
+Hi Catalin,
 
-Why would you need a new property? If there is no offset to the PCIE_CTRL register
-in the new syscon space then just set the offset = 0x0, easy.
+catalin.popescu@leica-geosystems.com wrote on Mon, 29 Jan 2024 15:29:31
++0000:
 
-Andrew
+> Hi Miquel,
+>=20
+> Now, that "specific" layouts are considered like drivers and rely on=20
+> NVMEM_LAYOUTS to populate the nvmem cells (layouts.c), I guess it's not=20
+> possible anymore to consider "fixed-layout" as a normal layout that=20
+> should be treated the same way than any layout. Unless, we move=20
+> "fixed-layout" under drivers/nvmem/layouts.
+
+That would be the relevant approach, yes.
+
+> But, this also means that=20
+> "fixed-layout" won't be supported anymore out-of-the-box (by nvmem core)=
+=20
+
+That would not be acceptable indeed.
+
+> and will require additional kernel configuration change.
+
+This would presumably be manageable however.
+
+No pressure if you don't feel like you could carry that task, it's not
+longer trivial.
+
+Thanks,
+Miqu=C3=A8l
 
