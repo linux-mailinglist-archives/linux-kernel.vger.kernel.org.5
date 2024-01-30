@@ -1,160 +1,135 @@
-Return-Path: <linux-kernel+bounces-44396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DA5684217D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:38:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A48E84215C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:35:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A98528E1C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:38:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B30611F26460
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:35:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37DFC679EE;
-	Tue, 30 Jan 2024 10:36:58 +0000 (UTC)
-Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5AFA65BB0;
+	Tue, 30 Jan 2024 10:35:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="UT9V2KKN"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6361E65BD0;
-	Tue, 30 Jan 2024 10:36:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.236.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C905465BA9
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 10:35:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706611017; cv=none; b=CGBHKdYH16Q8B5AoXX/reeEljk2gAMjA5RJazqPtdAL1meaN8b+wJgSuzVdBuis0Oqc+2kFDeW6dmH42+iNs8TkHF7l2VjSss0Zmn6AFH3Yw5ToqvIBci1eIFWtOFyQk6qadGrD9dcp2vemiheD/IVydxkTLsnP2P2UJkxvsJPo=
+	t=1706610914; cv=none; b=BeoNRECQJC+ygsaoRksQAQD0cO9dvmOOL/yucJ86rDIsHSQqW2K9v90tJEytGmlTxAmOfNUBv8MxYj+lYzV/TG/4zPa2ZTY6ngXH0lVnAX3sGuPPFnQdRjTJjN1YXPGkKGsksDq32xYXguxKaf63qNfeO7ILV+gmYSKb12ODrWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706611017; c=relaxed/simple;
-	bh=joW5f5HSLrWZ5GQmf1rXby/U2dLAlVL7zEy3NPVkAVA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=h72O2DjmaOCsSTQ8/zeE5YZskrIrHYUMRSlrB63eGs3KIXOS0RUJHdyty6lwXxyh14V6xXgOrpC6ijbgWW6KIJEg5c7ABiD/qqIdeI5RUsSXd0yGwhHkeDF/ACpCAYVRz0XCM2awJAe0E14xFrHXsepHV9UiS3oYlnKnCPdJtGM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.236.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-	by localhost (Postfix) with ESMTP id 4TPM6B2Rk2z9t5l;
-	Tue, 30 Jan 2024 11:36:34 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-	by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id bWlRn__eVLko; Tue, 30 Jan 2024 11:36:34 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-	by pegase1.c-s.fr (Postfix) with ESMTP id 4TPM4b0x0Nz9sbF;
-	Tue, 30 Jan 2024 11:35:11 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 16E428B763;
-	Tue, 30 Jan 2024 11:35:11 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-	with ESMTP id W3NGrQMVAtQf; Tue, 30 Jan 2024 11:35:11 +0100 (CET)
-Received: from PO20335.idsi0.si.c-s.fr (unknown [192.168.232.134])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 9D00E8B76C;
-	Tue, 30 Jan 2024 11:35:09 +0100 (CET)
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Kees Cook <keescook@chromium.org>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Russell King <linux@armlinux.org.uk>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org,
-	linux-mm@kvack.org,
-	steven.price@arm.com,
-	Phong Tran <tranmanphong@gmail.com>,
-	mark.rutland@arm.com,
-	Greg KH <greg@kroah.com>
-Subject: [PATCH v2 5/5] mm: ptdump: add check_wx_pages debugfs attribute
-Date: Tue, 30 Jan 2024 11:34:36 +0100
-Message-ID: <e947fb1a9f3f5466344823e532d343ff194ae03d.1706610398.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1706610398.git.christophe.leroy@csgroup.eu>
-References: <cover.1706610398.git.christophe.leroy@csgroup.eu>
+	s=arc-20240116; t=1706610914; c=relaxed/simple;
+	bh=G7bEbM+6G6zhv5LuuaLS4NxChHuaEq6KtsqwNawbqiM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bqxYCDOUcvGh+frqTpDKb7Mg1BPE18POhHsAjQEOfK34u+6LT1yODbGpEyycaOLC79vA9JMLLs2fFz0NNeKhHYNyVSMnd0LQ83lwZNjjiAlZ25XMi23GUrpeEO/eEnnzKEyqCND/SvKCsqrCPl7QOyhHYerZEK3QAS4RaUOtNAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=UT9V2KKN; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 9ABD540E016C;
+	Tue, 30 Jan 2024 10:35:03 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id EgdsOWZ6UCia; Tue, 30 Jan 2024 10:35:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1706610900; bh=VAuQUnzM/72jSaj2tSW3pX+i7RKL9aWDv2EoU9nXZ1o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UT9V2KKNtzpdgMYu3Fe2bWRugEVYzWtF0qmRhkIgyjEMqdwz5ze1TZfLYmCz+V+rY
+	 gWjXKZtxMybZBzjtTHZDX0pJV35LBf6kwObdkhXtbo6q+naKqoUmMRBF0ol1uFBY0M
+	 cruDe5trkJvmXW5PnkPUpL/wdQaESYxQ13kJWRZiUzktyuHRAuSc8fHq68kIeY1EcC
+	 /gH+mswM/yRDtKCsbUdBkeycIhpussz54mpm0V+6iO0zSX92oviKERchyPK33I/521
+	 /NIEbtUU5MSim4o6jYfpO9UNFY82AYjATREaNlsnyvlTz7i6k6bQctGvFGDc6uyLDH
+	 ndRxBWWXCag34TFEYak2XarxZH0ELTLidIac5oytJ+WpebJyvDeeKF+JCfCJCZUzZG
+	 YK9pgeC3C7Dw0IiSnljfB44LG4JU8287uTBNySYkS8Hy9xM78OyeE6aMIOm5KOywtq
+	 k93E6aaCwMLVTKLkWC/jB1T0Jepn33b17pDhOdJ1UdMGQU5fVCLCcVW8uxpaZhhCit
+	 YD97LYAWERq24ZRF6zXhELRSbOJ3HZm6enFCqoTGSATUyePKNDJRIcXx1a5wNXBS7N
+	 x2GSK1oXioAiZVzwGtfzGc2XbrfBDi652qOuDBL0uLE8FZxZN712oqDTuic28OKP7n
+	 XsdM+KHHv2BXPDJ+rBg31JUo=
+Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7A73840E00C5;
+	Tue, 30 Jan 2024 10:34:50 +0000 (UTC)
+Date: Tue, 30 Jan 2024 11:34:45 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Xin Li <xin3.li@intel.com>
+Cc: linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+	luto@kernel.org, ravi.v.shankar@intel.com,
+	andrew.cooper3@citrix.com
+Subject: Re: [PATCH v1A 1/2] x86/fred: Fix build with clang
+Message-ID: <20240130103445.GCZbjQxax5LqINdtf6@fat_crate.local>
+References: <882e400f-913b-4ed5-9611-ef87cd8b58b2@zytor.com>
+ <20240129064521.5168-1-xin3.li@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1706610876; l=1389; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=joW5f5HSLrWZ5GQmf1rXby/U2dLAlVL7zEy3NPVkAVA=; b=sNgiUjWR0Fhosv8enaHSXqsDx5ggf6VAZ13c2rbebUX4KZyQTgf7zPLtHsJdwuYc6lV39bCGn 7Ww4MoEZLHXBCZISIB9MHxmZP08gTQfzYa0f+uOXeeMWzGpYGg6D3St
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240129064521.5168-1-xin3.li@intel.com>
 
-Add a readable attribute in debugfs to trigger a
-W^X pages check at any time.
+On Sun, Jan 28, 2024 at 10:45:21PM -0800, Xin Li wrote:
+> Remove the .fill statement that referneces asm_fred_entrypoint_kernel()
+> before it's defined, which breaks clang build.
+> 
+> Use the .org directive instead to fill "int3" into the memory between
+> asm_fred_entrypoint_user() and asm_fred_entrypoint_kernel().
+> 
+> Fixes: 5e0636a41485 ("x86/fred: FRED entry/exit and dispatch code")
+> Reported-by: Borislav Petkov (AMD) <bp@alien8.de>
+> Link: https://lore.kernel.org/lkml/20240126100050.GAZbOC0g3Rlr6otZcT@fat_crate.local/
+> Signed-off-by: Xin Li <xin3.li@intel.com>
+> ---
+> 
+> Change since v1:
+> * Use ".org ..., 0xcc" to fill "int3" into memory (H. Peter Anvin).
+> ---
+>  arch/x86/entry/entry_64_fred.S | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/entry/entry_64_fred.S b/arch/x86/entry/entry_64_fred.S
+> index eedf98de7538..a02bc6f3d2e6 100644
+> --- a/arch/x86/entry/entry_64_fred.S
+> +++ b/arch/x86/entry/entry_64_fred.S
+> @@ -43,14 +43,12 @@ SYM_INNER_LABEL(asm_fred_exit_user, SYM_L_GLOBAL)
+>  	_ASM_EXTABLE_TYPE(1b, asm_fred_entrypoint_user, EX_TYPE_ERETU)
+>  SYM_CODE_END(asm_fred_entrypoint_user)
+>  
+> -.fill asm_fred_entrypoint_kernel - ., 1, 0xcc
+> -
+>  /*
+>   * The new RIP value that FRED event delivery establishes is
+>   * (IA32_FRED_CONFIG & ~FFFH) + 256 for events that occur in
+>   * ring 0, i.e., asm_fred_entrypoint_user + 256.
+>   */
+> -	.org asm_fred_entrypoint_user + 256
+> +	.org asm_fred_entrypoint_user + 256, 0xcc
+>  SYM_CODE_START_NOALIGN(asm_fred_entrypoint_kernel)
+>  	FRED_ENTER
+>  	call	fred_entry_from_kernel
+> -- 
 
-To trigger the test, just read /sys/kernel/debug/check_wx_pages
-It will report FAILED if the test failed, SUCCESS otherwise.
+Considering how we're still very early in the game, I'm going to fold
+those into the respective patches and rebase so that we have as clean
+a branch as possible.
 
-Detailed result is provided into dmesg.
+Thx.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v2: Make it a read attribute which reports SUCCESS/FAILED instead of only relying on kernel message log.
----
- mm/ptdump.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
-
-diff --git a/mm/ptdump.c b/mm/ptdump.c
-index 03c1bdae4a43..106e1d66e9f9 100644
---- a/mm/ptdump.c
-+++ b/mm/ptdump.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- 
- #include <linux/pagewalk.h>
-+#include <linux/debugfs.h>
- #include <linux/ptdump.h>
- #include <linux/kasan.h>
- 
-@@ -163,3 +164,24 @@ void ptdump_walk_pgd(struct ptdump_state *st, struct mm_struct *mm, pgd_t *pgd)
- 	/* Flush out the last page */
- 	st->note_page(st, 0, -1, 0);
- }
-+
-+static int check_wx_show(struct seq_file *m, void *v)
-+{
-+	if (ptdump_check_wx())
-+		seq_puts(m, "SUCCESS\n");
-+	else
-+		seq_puts(m, "FAILED\n");
-+
-+	return 0;
-+}
-+
-+DEFINE_SHOW_ATTRIBUTE(check_wx);
-+
-+static int ptdump_debugfs_init(void)
-+{
-+	debugfs_create_file("check_wx_pages", 0400, NULL, NULL, &check_wx_fops);
-+
-+	return 0;
-+}
-+
-+device_initcall(ptdump_debugfs_init);
 -- 
-2.43.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
