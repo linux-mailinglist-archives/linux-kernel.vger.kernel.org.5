@@ -1,124 +1,115 @@
-Return-Path: <linux-kernel+bounces-44703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44706-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3A7584263A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:34:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83A3A84264B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:41:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DE5428965F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:34:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40611289B0C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:41:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 713FE6D1AA;
-	Tue, 30 Jan 2024 13:34:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="LDp/nUkr"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F7446D1B8;
+	Tue, 30 Jan 2024 13:41:06 +0000 (UTC)
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD9636BB4A;
-	Tue, 30 Jan 2024 13:34:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F09796BB54;
+	Tue, 30 Jan 2024 13:41:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706621653; cv=none; b=PGTCKUQgnPtacDu4zAYjaAkmqWdqHVLJBRgCr+AGH2aoikD2QsmSkI1K6+KOkxfPp6VJHaJuKS2kOf6t4MBcqM+P9TQwe2FUT6QJ9/eWKW493vTiO31xwRIFsH4iCr6+r0NGOSQUcks87pcCL1dnFYKXO4COnsIo3gxerMvMLqw=
+	t=1706622065; cv=none; b=reTrB8BEMGxGe3BjfJXQk19ulA71A6qBjGNi7aIEeuURG5Xy1UtHuLIS2/dED/Zs9D8v8O2yvAHpYptPmOY3E/+Csx6yJ3IBaqzrQXCrJWmyTULe00mXNXEdy76EUnG/u5v9+25fxV1eJFzPaGWFT5vRvzIx+gTB7JUEFiAIoQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706621653; c=relaxed/simple;
-	bh=Gn1q7ktiWdbyhy7s2NQWRHwEjdB1UjSxc8vIDzzfCTU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Od7tybP7RZ5+aTIIVEjYL8oxkWp+j2WZOE9VoQNjX2AZxVob51skodR6QpKQO6FdTv/tHAwAycnCHpYfHTB33uIUnfb3tfaW9bbKk5TMboHmp/KfHaE2IKfm/Kkrc/7wPMgxNflV0x0AFQgME3XBUPREuxUI88xRi7Z6zgBsldk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=LDp/nUkr; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=8E4zlUNFez7CfCq5HUwawJjAHyI/J1BFW/vD4LLyEY4=; b=LDp/nUkrRorBTsaU6y3pB7B1c+
-	Prwvnky7EgbzOj3XVCjksKb9bmfeXE2bMpQdotuW5RZnHYBml/AmqhW1PgJoVWf5ajPLva3RvoK1Q
-	Yo8X5aqAEZ8brDT0l+x19kFUy2X8n1Zt4hq8/kzK6EwVRcLj1/uvsKU3XUHD65cKZ8Bk=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rUoFU-006Uhd-9M; Tue, 30 Jan 2024 14:34:00 +0100
-Date: Tue, 30 Jan 2024 14:34:00 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Bastien Curutchet <bastien.curutchet@bootlin.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Herve Codina <herve.codina@bootlin.com>
-Subject: Re: [PATCH 1/2] dt-bindings: net: Add TI DP83640
-Message-ID: <dc81a307-3541-47e2-9c72-d661e76889bf@lunn.ch>
-References: <20240130085935.33722-1-bastien.curutchet@bootlin.com>
- <20240130085935.33722-2-bastien.curutchet@bootlin.com>
+	s=arc-20240116; t=1706622065; c=relaxed/simple;
+	bh=RiNHswsYrPk3kor4Gr8r0ain5u5aP5cCPnQ3TBQxNew=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HUdlv6pfrfUr9Tg/zVSlu0qiKVeqoLb+ZOSE436MlgE/wawsBmtVdgUrAX6qdm8Le4s/Qwtdwk0uZiYng4E8s0/oXBY6+i+SOyub+lLhK67nYeFxKP+uv4Tngmk6r8wDczF5wboyopcJK+QyXU9u4kzVVmId5VZ6JYCcK99ZG3s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ddd19552e6so1922685b3a.1;
+        Tue, 30 Jan 2024 05:41:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706622063; x=1707226863;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=frJDUedpI3YTH8Ki9s8KdkIUfyDUhvcxZMMZkPB9gtA=;
+        b=F25CRAbFZaKg0ABrkpkG4pGRGalgtMoPBOM1itxRvfF2t0VBJLJxta35g/K97lHr5v
+         EPrdPp9cDG8COz7kd/Hf31zCCAoudv9fB+mO0Jkc6lEBMZ1jxuhaPVJnkH96eKDIJiyQ
+         RJ+iDfDWUDBos2+xhet5htR736OjvMdkZAl+FxT+CPEBUDCP9zPT5kVKw9wq8AUPA27V
+         IZUM/mXi3SGfwm3L5N8MnxMqc7W+a+NyWPjGqUJhHXXReFVBkD8iY7fUa8kXRlNiHJ+s
+         GIXUZjdsQEZvSvCEn/itQNwFOZnmL2/UnflioVLDeey8xPFF37FxCGX3C3ZqH+KbozJs
+         IrLw==
+X-Gm-Message-State: AOJu0YzMIB1Wi8VfnEZCp5jtv/SVxVMe8OYn1j6XvwcF+/RmGj8qXj/D
+	Ef7UK2bKf5bFH0N1y6zCO2atRSgof1nGnpqMr5Ec2KxDga4HiiDIbXGYZ+ixk08=
+X-Google-Smtp-Source: AGHT+IHHJCN/DA5nDwh/W1iGS9pLTv+8/BwgtjewsS/JVnv80HpaGXOBEGUKUqWzXskzFujFpvaFKg==
+X-Received: by 2002:a05:6a00:1805:b0:6db:cf34:8a96 with SMTP id y5-20020a056a00180500b006dbcf348a96mr8296734pfa.26.1706622062919;
+        Tue, 30 Jan 2024 05:41:02 -0800 (PST)
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com. [209.85.215.182])
+        by smtp.gmail.com with ESMTPSA id w18-20020a639352000000b005b458aa0541sm8089838pgm.15.2024.01.30.05.41.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jan 2024 05:41:02 -0800 (PST)
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5cfd95130c6so2224411a12.1;
+        Tue, 30 Jan 2024 05:41:02 -0800 (PST)
+X-Received: by 2002:a25:b20c:0:b0:dc3:78d1:c5a3 with SMTP id
+ i12-20020a25b20c000000b00dc378d1c5a3mr5877288ybj.13.1706621652312; Tue, 30
+ Jan 2024 05:34:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240130085935.33722-2-bastien.curutchet@bootlin.com>
+References: <20240130111250.185718-1-angelogioacchino.delregno@collabora.com> <20240130111250.185718-7-angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20240130111250.185718-7-angelogioacchino.delregno@collabora.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 30 Jan 2024 14:34:01 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXgT0g=0uky9FYDXk=KuC1HjkGEX8sCQdKbUMoBFQKDqQ@mail.gmail.com>
+Message-ID: <CAMuHMdXgT0g=0uky9FYDXk=KuC1HjkGEX8sCQdKbUMoBFQKDqQ@mail.gmail.com>
+Subject: Re: [PATCH v1 06/18] thermal/drivers/rcar: Migrate to thermal_zone_device_register()
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: daniel.lezcano@linaro.org, miquel.raynal@bootlin.com, rafael@kernel.org, 
+	rui.zhang@intel.com, lukasz.luba@arm.com, support.opensource@diasemi.com, 
+	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, 
+	festevam@gmail.com, linux-imx@nxp.com, andersson@kernel.org, 
+	konrad.dybcio@linaro.org, amitk@kernel.org, thara.gopinath@gmail.com, 
+	niklas.soderlund@ragnatech.se, srinivas.pandruvada@linux.intel.com, 
+	baolin.wang@linux.alibaba.com, u.kleine-koenig@pengutronix.de, 
+	hayashi.kunihiko@socionext.com, d-gole@ti.com, linus.walleij@linaro.org, 
+	DLG-Adam.Ward.opensource@dm.renesas.com, error27@gmail.com, heiko@sntech.de, 
+	hdegoede@redhat.com, jernej.skrabec@gmail.com, f.fainelli@gmail.com, 
+	bchihi@baylibre.com, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, kernel@collabora.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> +  ti,led-config:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [1, 2, 3]
-> +    description: |
-> +      If present, configures the LED Mode (values defined in
-> +      dt-bindings/net/ti-dp83640.h).
-> +      LED configuration can also be strapped. If the strap pin is not set
-> +      correctly or not set at all then this can be used to configure it.
-> +       - 1     = Mode 1
-> +        LED_LINK = ON for Good Link, OFF for No Link
-> +        LED_SPEED = ON in 100 Mb/s, OFF in 10 Mb/s
-> +        LED_ACT = ON for Activity, OFF for No Activity
-> +       - 2     = Mode 2
-> +        LED_LINK = ON for Good Link, BLINK for Activity
-> +        LED_SPEED = ON in 100 Mb/s, OFF in 10 Mb/s
-> +        LED_ACT = ON for Collision, OFF for No Collision
-> +       - 3     = Mode 3
-> +        LED_LINK = ON for Good Link, BLINK for Activity
-> +        LED_SPEED = ON in 100 Mb/s, OFF in 10 Mb/s
-> +        LED_ACT = ON for Full Duplex, OFF for Half Duplex
-> +       - unset = Configured by straps
+On Tue, Jan 30, 2024 at 12:15=E2=80=AFPM AngeloGioacchino Del Regno
+<angelogioacchino.delregno@collabora.com> wrote:
+> The thermal API has a new thermal_zone_device_register() function which
+> is deprecating the older thermal_zone_device_register_with_trips() and
+> thermal_tripless_zone_device_register().
+>
+> Migrate to the new thermal zone device registration function.
+>
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@coll=
+abora.com>
 
-Please look at have the Marvell PHY driver supports LEDs via
-/sys/class/leds. Now we have a generic way to supports LEDs, DT
-properties like this will not be accepted.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-> +
-> +  ti,phy-control-frames:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [0, 1]
-> +    description: |
-> +      If present, enables or disables the PHY control frames.
-> +      PHY Control Frames support can also be strapped. If the strap pin is not
-> +      set correctly or not set at all then this can be used to configure it.
-> +       - 0     = PHY Control Frames disabled
-> +       - 1     = PHY Control Frames enabled
-> +       - unset = Configured by straps
+Gr{oetje,eeting}s,
 
-What is a control frame?
+                        Geert
 
-> +
-> +  ti,energy-detect-en:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description: |
-> +      If present, Energy Detect Mode is enabled. If not present, Energy Detect
-> +      Mode is disabled. This feature can not be strapped.
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
 
-Please use the phy tunable ETHTOOL_PHY_EDPD. There are a few examples
-you can copy.
-
-    Andrew
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
