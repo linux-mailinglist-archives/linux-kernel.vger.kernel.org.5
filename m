@@ -1,142 +1,161 @@
-Return-Path: <linux-kernel+bounces-44494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44495-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6A508422CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:21:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 156478422D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:22:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 821DB29724D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:21:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C528E29746C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:22:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80DED67746;
-	Tue, 30 Jan 2024 11:18:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E733679E4;
+	Tue, 30 Jan 2024 11:19:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b="gN5nViwy"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="UES6Peze"
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4F7666B3F
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 11:18:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A43FB66B29;
+	Tue, 30 Jan 2024 11:19:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706613522; cv=none; b=IA8jgroIXi7U365RAn0Xn/8lnqGt6zGEST2ujath/IBf54jFD6X6r58gTM5EkPkbVcGpsKxaKAINvHO+fC5LQitFWndFxFad8wNj3ijFF24oHkNsXJ5TTEId0/AO4N++f6bVzas1yi3+PXCtm8J1Q+i6z2DAsHgxt0a7+t0ztoc=
+	t=1706613575; cv=none; b=Eu813VhJ3wDdY5GJXSEoQGUYlvsS2lgY6pWu1AGB80h/FHE2guv350E0BxdjmPsDrgU/E+2o1JP/8GoaxF6X3AbDA1fCQoPGYNheIs3b0C9zixkErP5+2+xoJuffDQbj4nmRtUYJ5t95VLO9nrrwhRdR+jDy/5WX1KzOsM/0z54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706613522; c=relaxed/simple;
-	bh=kGS2YlYpwkaMeLuYA2ZJo9VryN5LNnd/3OS8jgCksRU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=C3V9QBh9xslfaZ1GC76YNZsEihy5cGf1G9BFVfYiBgqQXRw1hC6nQtGPHgLX1owc2DZgL3mhmEruWH6ajvxmKbDxxUAFW4fMqPolliAIwwDku4aZ67vjpH0mUZMpPBvPrJRwH4z+MPQWE7cPNgpsiB0SJQ5yQPYhHVXT0NfrWak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com; spf=pass smtp.mailfrom=9elements.com; dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b=gN5nViwy; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=9elements.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a363961b96aso34780666b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 03:18:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1706613519; x=1707218319; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FOtNl4cKe7GBawJQPo+KdaP0XIGpVVB++fTiPzkFZX0=;
-        b=gN5nViwyIq+mAad0AUgZIWiljRPN7K0k1UbDJ9u8WH6WZjj6luj3ynXhHB5CdB2Pgz
-         +7qeAFesteomf5lysPqhVXl6Qk4hUyVUUBUPQINMso0AsWlVxO/koPk6dBvCFQ+1D7Pw
-         nMlKJrq4ogmajAi0yynsCeMe6Zv58+4pKzT26BHMYGZ2XHRAQZsffftTGrlvEIVOVdBM
-         NTxmb/eiTa/Bc9tx9mo02bdEFPlyAOk38jfErBl2ayqn8w2GxMZaMR1kx3fBBy54e6z8
-         BYpm78YD5dIYTg/XCSR88aU4O+2gZQb7vj1ILZl5ZQ2WuGXoOT8CZ1ZTzisfTDYWRVPo
-         oWxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706613519; x=1707218319;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FOtNl4cKe7GBawJQPo+KdaP0XIGpVVB++fTiPzkFZX0=;
-        b=dC0S2/P4sri3iLMj0wYlbhreY/tqehEOruGzwSiWVzd5Gs50dS1EnF+1DoSNv0afEp
-         IlYCIlIdLAfV8flYxV8cLfWvQ1179Copc35wUAmfUtPyaMQKu/IDOm1X30KzvZ8tcp8i
-         lCKsgBFQpMvARYb/p/2of1Mxh+V9qxU2RwaD5v389NUb6307OQxF3CfHOgJ33nmMVN+1
-         ZNie3qG6HLwCHQ9+J9RNwnEkfE6mH8PqdIOmOVGpdBd5p47Hc7lfZ+lkOQx3Cr1XgXhj
-         bRnHJzJ+a6i+T20lA/Qq9ez0/y/dZAZNO6MI2Dz3ClVZDa2UZclAkEjehvJxgvsMT/hr
-         nsoQ==
-X-Gm-Message-State: AOJu0YwZdVnh7z0SAcAp7l1py7YLdeL8hzkp9mYEUpUtQrVLLywyo2If
-	/sVhShzITAc4U/9ukY8n2HuljM/VEZ4ECmNJJW0gRtY+4zTX1fvL3FiNrCHpVMA=
-X-Google-Smtp-Source: AGHT+IH/ny2CqOMsS25PWFkZVT2GcF7qm5uWsJ1Y+uwbTDUyS9YsNWk+xyeJG3SSE0spkJqW8yAFog==
-X-Received: by 2002:a17:906:6882:b0:a36:3d9d:59e4 with SMTP id n2-20020a170906688200b00a363d9d59e4mr392530ejr.64.1706613518942;
-        Tue, 30 Jan 2024 03:18:38 -0800 (PST)
-Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
-        by smtp.gmail.com with ESMTPSA id h14-20020a17090634ce00b00a35a11fd795sm2559079ejb.129.2024.01.30.03.18.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 03:18:38 -0800 (PST)
-From: Naresh Solanki <naresh.solanki@9elements.com>
-To: Peter Rosin <peda@axentia.se>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: mazziesaccount@gmail.com,
-	Naresh Solanki <naresh.solanki@9elements.com>,
-	linux-iio@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] dt-bindings: iio: afe: voltage-divider: Add io-channel-cells
-Date: Tue, 30 Jan 2024 16:48:29 +0530
-Message-ID: <20240130111830.4016002-1-naresh.solanki@9elements.com>
-X-Mailer: git-send-email 2.42.0
+	s=arc-20240116; t=1706613575; c=relaxed/simple;
+	bh=s70PcDfdKXIabz66bTOUuUFV2uNNbNxl1c/riZr0MiQ=;
+	h=From:To:CC:References:In-Reply-To:Subject:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Cs+VhR8VpjZw+k2od27kUpHdvBIYJl7RVunWShvW2n2jgrAsdj029/7iEJUZgruep33M0H5eZcOianuQ93CqNZfchl3Ma+0NldQ9D5GcRvvNczkjvmoSMCr8z/gGFx13N19D2hzL/dkgwOn+UeDyCJu31S+vibm0b/ixPOrhsq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=UES6Peze; arc=none smtp.client-ip=67.231.152.168
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40U6iRsK012474;
+	Tue, 30 Jan 2024 05:19:19 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:references:in-reply-to:subject:date:message-id
+	:mime-version:content-type:content-transfer-encoding; s=
+	PODMain02222019; bh=Ukr1kR4PFuuto5kMeCHeJHaq5ynfZ1UT2dmL/7dyb4k=; b=
+	UES6PezeE76ROxOmmxDiwBhE2hq3PdiS2dOR1RgbbD7snLVIEjpAEnIe038MG4CS
+	EEMB7feNI4IaZTgMVTyd468BE5CU19w9FPFc2k13QuKlFLPSHbh2wHQIikU6uIQ/
+	BlNGCE91LjNvSww2/NhX5dVcN31H+dGTzF7jBabFe3l4fgxejWe+bGHVYUvX6/c/
+	hG2fJKVIwl22PRVONIMYWNBneYzUAQscTz9XDQCcJEqbkdykFuUa0VT4kQmEcE75
+	kiOxpAHQ/TibXwPOdcemDVTlliQHmYLh9ZxJ3eguZ41CS/axqCy5J7JCGJG8ZGh6
+	0hO1Dv3UKR4JSBo4bLhIdA==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3vvy4nu8bs-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 30 Jan 2024 05:19:18 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 30 Jan
+ 2024 11:19:17 +0000
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40 via Frontend Transport; Tue, 30 Jan 2024 11:19:17 +0000
+Received: from LONN2DGDQ73 (LONN2DGDQ73.ad.cirrus.com [198.61.65.148])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 0CD31820241;
+	Tue, 30 Jan 2024 11:19:17 +0000 (UTC)
+From: Stefan Binding <sbinding@opensource.cirrus.com>
+To: 'Takashi Iwai' <tiwai@suse.de>, 'Kenzo Gomez' <kenzo.sgomez@gmail.com>
+CC: <alsa-devel@alsa-project.org>, <david.rhodes@cirrus.com>,
+        <james.schulman@cirrus.com>, <linux-kernel@vger.kernel.org>,
+        <linux-sound@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        <perex@perex.cz>, <rf@opensource.cirrus.com>, <tiwai@suse.com>
+References: <874jfdwsfg.wl-tiwai@suse.de>	<20240127164621.26431-1-kenzo.sgomez@gmail.com> <87jznr3wvs.wl-tiwai@suse.de>
+In-Reply-To: <87jznr3wvs.wl-tiwai@suse.de>
+Subject: RE: [PATCH v3] ALSA: hda: cs35l41: Support additional ASUS Zenbook UX3402VA
+Date: Tue, 30 Jan 2024 11:19:16 +0000
+Message-ID: <001401da536e$29b9a070$7d2ce150$@opensource.cirrus.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: en-gb
+Thread-Index: AQMwSTp61jXDtCjZqGhsSN60gQXN/ADh2+gYAkptiTOuLOdmIA==
+X-Proofpoint-ORIG-GUID: FiXCtoKUHx4eaglYTZ9jVRv6zeFZnGXQ
+X-Proofpoint-GUID: FiXCtoKUHx4eaglYTZ9jVRv6zeFZnGXQ
+X-Proofpoint-Spam-Reason: safe
 
-voltage-divider is always an iio consumer at the same time it is
-optionally an iio provider.
-Hence add #io-channel-cells
-Also update example.
+Hi,
 
-Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
----
- .../bindings/iio/afe/voltage-divider.yaml          | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+> -----Original Message-----
+> From: Takashi Iwai <tiwai@suse.de>
+> Sent: Tuesday, January 30, 2024 11:05 AM
+> To: Kenzo Gomez <kenzo.sgomez@gmail.com>
+> Cc: alsa-devel@alsa-project.org; david.rhodes@cirrus.com;
+> james.schulman@cirrus.com; linux-kernel@vger.kernel.org; linux-
+> sound@vger.kernel.org; patches@opensource.cirrus.com;
+> perex@perex.cz; rf@opensource.cirrus.com;
+> sbinding@opensource.cirrus.com; tiwai@suse.com
+> Subject: Re: [PATCH v3] ALSA: hda: cs35l41: Support additional ASUS
+> Zenbook UX3402VA
+> 
+> On Sat, 27 Jan 2024 17:46:21 +0100,
+> Kenzo Gomez wrote:
+> >
+> > Add new model entry into configuration table.
+> >
+> > Signed-off-by: Kenzo Gomez <kenzo.sgomez@gmail.com>
+> 
+> Cirrus people, could you take a look?
+> I'm inclined to take as is, unless you have any objections.
 
-diff --git a/Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml b/Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml
-index dddf97b50549..09f10d7c4e02 100644
---- a/Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml
-+++ b/Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml
-@@ -39,6 +39,13 @@ properties:
-     description: |
-       Channel node of a voltage io-channel.
- 
-+  '#io-channel-cells':
-+    description:
-+      In addition to consuming the measurement services of an ADC,
-+      the voltage divider can act as an provider of measurement
-+      services to other devices.
-+    const: 1
-+
-   output-ohms:
-     description:
-       Resistance Rout over which the output voltage is measured. See full-ohms.
-@@ -75,12 +82,17 @@ examples:
-             spi-max-frequency = <1000000>;
-         };
-     };
--    sysv {
-+    p12v_vd: sysv {
-         compatible = "voltage-divider";
-         io-channels = <&maxadc 1>;
-+        #io-channel-cells = <1>;
- 
-         /* Scale the system voltage by 22/222 to fit the ADC range. */
-         output-ohms = <22>;
-         full-ohms = <222>; /* 200 + 22 */
-     };
-+    iio-hwmon {
-+        compatible = "iio-hwmon";
-+        io-channels = <&p12v_vd 0>;
-+    };
- ...
+Looks good to me.
 
-base-commit: 861c0981648f5b64c86fd028ee622096eb7af05a
--- 
-2.42.0
+Thanks,
+Stefan
+
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> > ---
+> >  sound/pci/hda/cs35l41_hda_property.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/sound/pci/hda/cs35l41_hda_property.c
+> b/sound/pci/hda/cs35l41_hda_property.c
+> > index 35277ce890a4..59504852adc6 100644
+> > --- a/sound/pci/hda/cs35l41_hda_property.c
+> > +++ b/sound/pci/hda/cs35l41_hda_property.c
+> > @@ -76,6 +76,7 @@ static const struct cs35l41_config
+> cs35l41_config_table[] = {
+> >  	{ "10431533", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0,
+> 0 }, 0, 1, -1, 1000, 4500, 24 },
+> >  	{ "10431573", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0,
+> 0 }, 1, 2, 0, 1000, 4500, 24 },
+> >  	{ "10431663", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0,
+> 0 }, 1, -1, 0, 1000, 4500, 24 },
+> > +	{ "104316A3", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0,
+> 0 }, 1, 2, 0, 0, 0, 0 },
+> >  	{ "104316D3", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0,
+> 0 }, 1, 2, 0, 0, 0, 0 },
+> >  	{ "104316F3", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0,
+> 0 }, 1, 2, 0, 0, 0, 0 },
+> >  	{ "104317F3", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0,
+> 0 }, 0, 1, -1, 1000, 4500, 24 },
+> > @@ -410,6 +411,7 @@ static const struct cs35l41_prop_model
+> cs35l41_prop_model_table[] = {
+> >  	{ "CSC3551", "10431533", generic_dsd_config },
+> >  	{ "CSC3551", "10431573", generic_dsd_config },
+> >  	{ "CSC3551", "10431663", generic_dsd_config },
+> > +	{ "CSC3551", "104316A3", generic_dsd_config },
+> >  	{ "CSC3551", "104316D3", generic_dsd_config },
+> >  	{ "CSC3551", "104316F3", generic_dsd_config },
+> >  	{ "CSC3551", "104317F3", generic_dsd_config },
+> > --
+> > 2.43.0
+> >
+
 
 
