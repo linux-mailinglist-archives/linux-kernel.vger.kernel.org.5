@@ -1,151 +1,152 @@
-Return-Path: <linux-kernel+bounces-44502-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44504-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2325A8422E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:24:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CD0E8422EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:25:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3C13291454
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:24:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C62B1F22FA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:25:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5381366B38;
-	Tue, 30 Jan 2024 11:24:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8512C59B7C;
+	Tue, 30 Jan 2024 11:24:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mPQJOgpy"
-Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="GyqDZ84M"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4409F66B29
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 11:24:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64D1B66B5F;
+	Tue, 30 Jan 2024 11:24:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706613843; cv=none; b=VMjT4mfnCarVGehATCLZhPshvY0RI1Y9B0UvebCyeqA8+J5cRr2uMgmV0rBscJI8g15PCO3MQq9ZpwIoh+/C7T0uCtXNL1FUwWr2ymmI0ynuBEDq4jYuQ0RkAl19ZfO8JvYSDDZRknJP0ofd6QwYgoyT7eDWdDrSsVgYnE0zu7o=
+	t=1706613872; cv=none; b=HOciMSD2Zmuz0hZ/CO1K0nM/ddUhYNyO9pFa4GaF49OeXaLTU6WVxgleWxE8E++JRI5b2FglT7XIreIPFwEX4WT5a+HWtEMKEvwDnCojmWwBB8Ouidvw5gkgdZRhloPNmzrnm3o+lK14iYSInWr8JLlGh0FjiMcy7C01Evf8se4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706613843; c=relaxed/simple;
-	bh=lv43hevcTa+64J0GxwrbWW7IYyzTy2+TvNR2spRRFog=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ebtDJS8jV27dOIA/2vovL51eoeRloJE9Xyj2W+e3BvK95mYIM7Hcdz//yKsQjLDW/OA26AdW7r0tsC0FFiQnCyhWS9lz0K6u8M4wY9sunlCi0GhearA98HscxuMLBMvb5t98LCdeVn2kJ1+UjX41cwJdQYV7kQXKy1EtP3/Lt8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mPQJOgpy; arc=none smtp.client-ip=209.85.166.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-36379bc5d93so5653475ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 03:24:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706613840; x=1707218640; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1F5K1w5ptPpWVbrzL69kxVWikdQT589qSufOOrLNvyk=;
-        b=mPQJOgpy+wTYbwtDum+aQq7oz33hTL0GIglFPB5vs6lUOtuhGEcrHVMimZokGK8tBx
-         KF0JU3vrYL5ATdAjFhbZ+IO82dHUMseNkIGO00lfVnBIrNQRBNHQ5NN8FOe/2bk5Cprz
-         8iwK0Zc074HVHEjE7jHvWpxD4X8tpr9VxKPi9BvHSK5ty1WzgXsLOMmcx/SDXOOC3+P+
-         ljMpkur++avK9FnO7/9lIjR/UzaBh1A+dxNErNA4XwxnIQLT16p6/stsM2KsszYa791c
-         WciaTYjFxQ3uJDHRe2+N2clevGyAP6aHS1qiIR9Rh4STySrbCbkrGg2N0qTz12Yq258N
-         X8dQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706613840; x=1707218640;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1F5K1w5ptPpWVbrzL69kxVWikdQT589qSufOOrLNvyk=;
-        b=uLY/MLRUF/aVPkRBC2/3FhMMgd8VPdKWy+gFNmZ9hNTQAVWIvk0KxZCG8Mpm+/zGxt
-         ZuO2vq503WsuCj3tuZvENqmt9aofbYrvBhZSNNLtGtaiFvEs6fVXy25nXWnL9PehR84l
-         tRsx9etjyQqNDNIe7n71MkpQVUEoTEBapek29nWwO8x0WxrS92Nu7FugQfpeESJFTBll
-         UZBtLMFSjEYVNMwjiyI10QiZVgy5zsSh4jCb2XAKjBY38CN1s4+O4ehhrDuF9iHs6xTS
-         PH+hJSmzEdBKKj7l32aiPFWDchqfc5lSTYP6G+YLwW5cJEpt5epQgtUtybAiaY4RYsKw
-         qW6Q==
-X-Gm-Message-State: AOJu0YxxaMPhnSSD7+H3bc/ZpLFhgnj7lx57kFYcLvqAQsnTysf0+/0Z
-	ICp17V5PG6zVfMoXt841BP0BtoLxfNvMiTSe3Xozr21qW2E0M27A+ZZ/A+Zx3JY=
-X-Google-Smtp-Source: AGHT+IHKdQCanZI5XXVDCMtb7vhvgINd+abU2YHqtb5E0Q9PMHdFUkLdkHUE23F69+B0bNtzNBk0pg==
-X-Received: by 2002:a92:c14b:0:b0:363:8559:edf with SMTP id b11-20020a92c14b000000b0036385590edfmr3200068ilh.1.1706613840424;
-        Tue, 30 Jan 2024 03:24:00 -0800 (PST)
-Received: from [172.22.22.28] (c-98-61-227-136.hsd1.mn.comcast.net. [98.61.227.136])
-        by smtp.gmail.com with ESMTPSA id e16-20020a92d750000000b00362902d6818sm2787085ilq.62.2024.01.30.03.23.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Jan 2024 03:23:59 -0800 (PST)
-Message-ID: <b5ae6fd2-1dee-47e4-b7e4-ebd8a2aea472@linaro.org>
-Date: Tue, 30 Jan 2024 05:23:58 -0600
+	s=arc-20240116; t=1706613872; c=relaxed/simple;
+	bh=s9YWx0niqq/0hb6eo0iRhIrN+Gm4N4nnCpUXz+Ce8zM=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=V5krBxMpEjO1uAfUWVqA9HEQtNmJvGRUj0qR3evRDAtHstLz/u5LYYugqH1ssB/Oax+4un26v/OD3huMoV+HmFSJCQGUvXHeVDYPWyTQLFAmkNS0K2dwqeSLzEHuK7KOsUtbcYNfuSVcCTqpR6mgjpPZjqZW+ttGVkQYjKuCD7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=GyqDZ84M; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40UATqTk004958;
+	Tue, 30 Jan 2024 11:24:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	qcppdkim1; bh=19/E3FYg6etQ1bcM7OtOpZ5QOGxHV/AWg0H8PpSM8FA=; b=Gy
+	qDZ84MLyhSN1m/EYlxbWJM7b+0h+A+/gDkizI8xfzDdomosS3QIGiZ82Hj42SjSr
+	km1y2Am4K6AktAwNeUJpjgrdPM+B1AX6DDGrDgc46Cy14NTkrEoJO2Hx9ZvcqsKK
+	1JDCRSB853Tx5F1aHgFA3egnJ6HBLOW/ZIYkfLEUVXxqtYaG8Wuxk2Yd5R1CwAu3
+	C9QLCp8/JhLIGRZ2B/QKH1oGdXr7o4SV0lJXVRn8M1ka5drX+PtBSZEFKVPX9RB4
+	7jfPDUomJMLlRNGMPwYBgBwRpEXLjJA036hO2payrfqYiHgmBM/s3xKCXVtSoRV2
+	j3EkjZ5zpyAo2hMpBQKg==
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vxydh03fn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 30 Jan 2024 11:24:26 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40UBOQsg020891
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 30 Jan 2024 11:24:26 GMT
+Received: from hu-sachinku-hyd.qualcomm.com (10.80.80.8) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 30 Jan 2024 03:24:22 -0800
+From: Sachin Kumar Garg <quic_sachinku@quicinc.com>
+To: <hverkuil-cisco@xs4all.nl>, Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+        Vikash Garodia
+	<quic_vgarodia@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+CC: Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>
+Subject: [PATCH v2 1/2] media: v4l2-ctrls: add encoder maximum bitrate control
+Date: Tue, 30 Jan 2024 16:53:59 +0530
+Message-ID: <20240130112400.2636143-2-quic_sachinku@quicinc.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240130112400.2636143-1-quic_sachinku@quicinc.com>
+References: <20240130112400.2636143-1-quic_sachinku@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] bus: mhi: ep: Use kcalloc() instead of kzalloc()
-To: Erick Archer <erick.archer@gmx.com>,
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
- Jeffrey Hugo <quic_jhugo@quicinc.com>, "Rafael J. Wysocki"
- <rafael@kernel.org>, Dan Carpenter <error27@gmail.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, mhi@lists.linux.dev,
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20240128112722.4334-1-erick.archer@gmx.com>
-Content-Language: en-US
-From: Alex Elder <elder@linaro.org>
-In-Reply-To: <20240128112722.4334-1-erick.archer@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: EwQWnUDYolg4O80HRohGrAu06qJPOck8
+X-Proofpoint-GUID: EwQWnUDYolg4O80HRohGrAu06qJPOck8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-30_05,2024-01-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
+ mlxscore=0 malwarescore=0 clxscore=1011 spamscore=0 impostorscore=0
+ lowpriorityscore=0 suspectscore=0 priorityscore=1501 mlxlogscore=771
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401190000 definitions=main-2401300083
 
-On 1/28/24 5:27 AM, Erick Archer wrote:
-> This is an effort to get rid of all multiplications from allocation
-> functions in order to prevent integer overflows [1].
-> 
-> Here the multiplication is obviously safe because the "event_rings"
-> member never can have a value greater than 255 (8 bits). This member
-> is set twice using always FIELD_GET:
-> 
-> mhi_cntrl->event_rings = FIELD_GET(MHICFG_NER_MASK, regval);
-> mhi_cntrl->event_rings = FIELD_GET(MHICFG_NER_MASK, regval);
-> 
-> And the MHICFG_NER_MASK macro defines the 8 bits mask that guarantees
-> a maximum value of 255.
-> 
-> However, using kcalloc() is more appropriate [1] and improves
-> readability. This patch has no effect on runtime behavior.
-> 
-> Link: https://github.com/KSPP/linux/issues/162 [1]
-> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
-> Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Signed-off-by: Erick Archer <erick.archer@gmx.com>
-> ---
-> Changes in v2:
-> - Add more info in the commit message to better explain the change.
->    (Dan Carpenter)
-> - Add the "Reviewed-by:" tag.
+Introduce V4L2_MPEG_VIDEO_BITRATE_MODE_MBR rate control to
+limit the frame level maximum bit rate.
+Encoder will choose appropriate quantization parameter and
+do the smart bit allocation to set the frame maximum bitrate
+level as per the Bitrate value configured.
 
-Looks good.
+Signed-off-by: Sachin Kumar Garg <quic_sachinku@quicinc.com>
+---
+ Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 2 ++
+ drivers/media/v4l2-core/v4l2-ctrls-defs.c                 | 1 +
+ include/uapi/linux/v4l2-controls.h                        | 1 +
+ 3 files changed, 4 insertions(+)
 
-Reviewed-by: Alex Elder <elder@linaro.org>
-
-> 
-> Previous versions:
-> v1 - https://lore.kernel.org/linux-hardening/20240120152518.13006-1-erick.archer@gmx.com/
-> ---
->   drivers/bus/mhi/ep/main.c | 5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/bus/mhi/ep/main.c b/drivers/bus/mhi/ep/main.c
-> index 65fc1d738bec..8d7a4102bdb7 100644
-> --- a/drivers/bus/mhi/ep/main.c
-> +++ b/drivers/bus/mhi/ep/main.c
-> @@ -1149,8 +1149,9 @@ int mhi_ep_power_up(struct mhi_ep_cntrl *mhi_cntrl)
->   	mhi_ep_mmio_mask_interrupts(mhi_cntrl);
->   	mhi_ep_mmio_init(mhi_cntrl);
-> 
-> -	mhi_cntrl->mhi_event = kzalloc(mhi_cntrl->event_rings * (sizeof(*mhi_cntrl->mhi_event)),
-> -					GFP_KERNEL);
-> +	mhi_cntrl->mhi_event = kcalloc(mhi_cntrl->event_rings,
-> +				       sizeof(*mhi_cntrl->mhi_event),
-> +				       GFP_KERNEL);
->   	if (!mhi_cntrl->mhi_event)
->   		return -ENOMEM;
-> 
-> --
-> 2.25.1
-> 
+diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+index 2a165ae063fb..05ef4a70e3f5 100644
+--- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
++++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+@@ -576,6 +576,8 @@ enum v4l2_mpeg_video_bitrate_mode -
+       - Constant bitrate
+     * - ``V4L2_MPEG_VIDEO_BITRATE_MODE_CQ``
+       - Constant quality
++    * - ``V4L2_MPEG_VIDEO_BITRATE_MODE_MBR``
++      - Maximum bitrate
+ 
+ 
+ 
+diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+index 8696eb1cdd61..e0597b61ffb9 100644
+--- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
++++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+@@ -154,6 +154,7 @@ const char * const *v4l2_ctrl_get_menu(u32 id)
+ 		"Variable Bitrate",
+ 		"Constant Bitrate",
+ 		"Constant Quality",
++		"Maximum Bitrate",
+ 		NULL
+ 	};
+ 	static const char * const mpeg_stream_type[] = {
+diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+index 99c3f5e99da7..7c74d6c417d1 100644
+--- a/include/uapi/linux/v4l2-controls.h
++++ b/include/uapi/linux/v4l2-controls.h
+@@ -393,6 +393,7 @@ enum v4l2_mpeg_video_bitrate_mode {
+ 	V4L2_MPEG_VIDEO_BITRATE_MODE_VBR = 0,
+ 	V4L2_MPEG_VIDEO_BITRATE_MODE_CBR = 1,
+ 	V4L2_MPEG_VIDEO_BITRATE_MODE_CQ  = 2,
++	V4L2_MPEG_VIDEO_BITRATE_MODE_MBR = 3,
+ };
+ #define V4L2_CID_MPEG_VIDEO_BITRATE		(V4L2_CID_CODEC_BASE+207)
+ #define V4L2_CID_MPEG_VIDEO_BITRATE_PEAK	(V4L2_CID_CODEC_BASE+208)
+-- 
+2.34.1
 
 
