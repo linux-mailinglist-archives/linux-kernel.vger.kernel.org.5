@@ -1,34 +1,34 @@
-Return-Path: <linux-kernel+bounces-44936-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44937-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F6E1842937
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:29:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EC0084293B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:30:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B61F285F2B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:29:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 067A2286329
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:29:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77CD012F598;
-	Tue, 30 Jan 2024 16:26:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD89312FF69;
+	Tue, 30 Jan 2024 16:26:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="tOwHBaff";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ukcV1/gE"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="A1cSkPbf";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="avqzJu1O"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B8C312CD8D;
-	Tue, 30 Jan 2024 16:26:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 669B512CDB0;
+	Tue, 30 Jan 2024 16:26:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706631972; cv=none; b=LyCt/9Qbtp9qy9JvzXxWviHAoQYqlJkBCOOh7fMz/TEekpLzSJVlm7U+hrMA81rW7ux46jwwtabT3F8kaNX+taorTCqJjAhSSpW7jy7TYPr4kXkAlf2o6FlvpKw0cUBUdHui+caH6HmCc2vhubMc6NY112oSGYONpDQ5ZB1QWmw=
+	t=1706631973; cv=none; b=hGiu1GZv10fY8dRJUflnyHkAzfzmeoYORDWUncIpTYAQVrS+MhBC0N7gAKs6Afnff3rE3xbhXHcIuuxdXhbFWiUMbM1EydyYns7Q79XFlNOHBawwSq3PMSg5kZbGTyb4D2LmnWHKYoIjV9fm64PIep5H27Jkl2yPWMugAQpAZJc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706631972; c=relaxed/simple;
-	bh=WADDM1H92wETD+9wiEl2YfbHXXl8A+FMqf1KJYev7uk=;
+	s=arc-20240116; t=1706631973; c=relaxed/simple;
+	bh=vFe5JVUm77KdHRpyYdzV+lNo2hjIlqeiOjaKMoo88y0=;
 	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=stDHiC4DDngyy7IN/1UQaHwPs4wTkS5MkNJ6qGae/51Q/X3aracb4RIDu77u2HRxz58H4RilDxSPzcIX4bHp9Dpyi3VWvPFrbs3rp9sHD59Afxl1vv4NXR+WdjOCSUt70iNvOIRlm03NdIEhUH1C+CQx8Y9nrsEkjkzB3lqlqzg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=tOwHBaff; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ukcV1/gE; arc=none smtp.client-ip=193.142.43.55
+	 Message-ID:Content-Type; b=Q9+jvnOD9dkp2L+aJO2B5o0b+e/lFSmZaRGX3dskDkYLZimXDLWvZL3PYVkmmeMEo2wZAwdqMqrXqH/SfUyc6oOuWnhsEu9rNMsloJzg382k+7rU+mUePrEHDs3RF/3IfJ9kwxFNjSGydFOw9H3g1QfYG0DEZJL3a7SqJM40qyI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=A1cSkPbf; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=avqzJu1O; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Date: Tue, 30 Jan 2024 16:26:08 -0000
@@ -39,12 +39,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=AGPmg3bM0K0ziuVF/bpOWtTuv50Na0x4WowzmqJ4PB8=;
-	b=tOwHBaffiUlFO5kIuXr//hbLLmbnz6Ef+a2Fb8S8dzGgdB0SolG6VRtfR0GIM3XqHKZDKp
-	b4rXn/YHKOpgarsgraTIIEK1Yny6ecpGzNAXQ0F30cfRGhK0tfrD5QokfkGHmpiJA7YesQ
-	gtv6k6rNZf8CbRIpOw4a9uRzWJp9iDsJWvDtwar6CE5GqTPue+TiSuPng5N8GytcIPEvfp
-	N4K+7qDRpkZnm39GKeGhjJ4AP4zylSpNA4ipNJ2fT+9MMP3mF9b5Tlb0eWbkvDwa3QLVwX
-	KkuzrSBhV6nXneXAAijeHg1iFLyPUq9pQmK31LBEYiRQVWBESyNFmV5Q62sigQ==
+	bh=SCTo04sk1wsU4KOT3MJcifNoYqtBHsWzx0mOZ/gkacU=;
+	b=A1cSkPbfkdR0OhXTbVRSLxok6wvLYleR9+ODWlfpsYlaFqMxYNUus4NrGeFyUcrnQJg38o
+	jr4QbttB5CrLU2OsqkgFbL9aeUqmMXCHdA0NjHF9z2sCvUwdGoJZ0V0f7Yu98W/q064ojs
+	f3k02skywzcbCuCaZMwxzspMi6dI3PwS/8CVEnKABVdrayFt/9YWwtqszCrCMP+kJ/C1k0
+	NYN39dbyyZjbrX1Xp2n9h6FPpBz0RSnpbjPKl4oMmylckn75DqvHBJEswBBJunWeA0PfR1
+	O//nTmczadOg3c0HFzqmfDfZtU4AEDuccpgYz63td/rWamFICAxSMzfPPm4GSQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020e; t=1706631969;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -52,26 +52,26 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=AGPmg3bM0K0ziuVF/bpOWtTuv50Na0x4WowzmqJ4PB8=;
-	b=ukcV1/gEqMWEBII8uTbHIDJibiA837km17WChHzxaxGd5hy8S4dMG8R9/44J2aaSGEgiUk
-	wTbgUp0BTNqR8UDQ==
+	bh=SCTo04sk1wsU4KOT3MJcifNoYqtBHsWzx0mOZ/gkacU=;
+	b=avqzJu1OUDXpfksXv/gI0qjoRMDbXDvfvij+APc8ngYMDfmmvvar/g2Yg8Zf1SzchfbDZa
+	RwXIYNXNLm0RuKDA==
 From: "tip-bot2 for Brijesh Singh" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/sev] x86/traps: Define RMP violation #PF error code
-Cc: Brijesh Singh <brijesh.singh@amd.com>, Michael Roth <michael.roth@amd.com>,
- "Borislav Petkov (AMD)" <bp@alien8.de>, Dave Hansen <dave.hansen@intel.com>,
+Subject: [tip: x86/sev] x86/fault: Add helper for dumping RMP entries
+Cc: Brijesh Singh <brijesh.singh@amd.com>, Ashish Kalra <ashish.kalra@amd.com>,
+ Michael Roth <michael.roth@amd.com>, "Borislav Petkov (AMD)" <bp@alien8.de>,
  x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240126041126.1927228-9-michael.roth@amd.com>
-References: <20240126041126.1927228-9-michael.roth@amd.com>
+In-Reply-To: <20240126041126.1927228-8-michael.roth@amd.com>
+References: <20240126041126.1927228-8-michael.roth@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170663196817.398.3820994161857678840.tip-bot2@tip-bot2>
+Message-ID: <170663196883.398.18077552190870723071.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -81,80 +81,159 @@ Content-Transfer-Encoding: 7bit
 
 The following commit has been merged into the x86/sev branch of tip:
 
-Commit-ID:     54055344b232c917a9e492a8bf5864fed99ad6b8
-Gitweb:        https://git.kernel.org/tip/54055344b232c917a9e492a8bf5864fed99ad6b8
+Commit-ID:     1f568d36361b4891696280b719ca4b142db872ba
+Gitweb:        https://git.kernel.org/tip/1f568d36361b4891696280b719ca4b142db872ba
 Author:        Brijesh Singh <brijesh.singh@amd.com>
-AuthorDate:    Thu, 25 Jan 2024 22:11:08 -06:00
+AuthorDate:    Thu, 25 Jan 2024 22:11:07 -06:00
 Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Mon, 29 Jan 2024 17:26:56 +01:00
+CommitterDate: Mon, 29 Jan 2024 17:26:30 +01:00
 
-x86/traps: Define RMP violation #PF error code
+x86/fault: Add helper for dumping RMP entries
 
-Bit 31 in the page fault-error bit will be set when processor encounters
-an RMP violation.
+This information will be useful for debugging things like page faults
+due to RMP access violations and RMPUPDATE failures.
 
-While at it, use the BIT() macro.
+  [ mdr: move helper to standalone patch, rework dump logic as suggested
+    by Boris. ]
 
 Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
 Signed-off-by: Michael Roth <michael.roth@amd.com>
 Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Acked-by: Dave Hansen <dave.hansen@intel.com>
-Link: https://lore.kernel.org/r/20240126041126.1927228-9-michael.roth@amd.com
+Link: https://lore.kernel.org/r/20240126041126.1927228-8-michael.roth@amd.com
 ---
- arch/x86/include/asm/trap_pf.h | 20 ++++++++++++--------
- arch/x86/mm/fault.c            |  1 +
- 2 files changed, 13 insertions(+), 8 deletions(-)
+ arch/x86/include/asm/sev.h |   2 +-
+ arch/x86/virt/svm/sev.c    |  99 ++++++++++++++++++++++++++++++++----
+ 2 files changed, 91 insertions(+), 10 deletions(-)
 
-diff --git a/arch/x86/include/asm/trap_pf.h b/arch/x86/include/asm/trap_pf.h
-index afa5243..a23a7b7 100644
---- a/arch/x86/include/asm/trap_pf.h
-+++ b/arch/x86/include/asm/trap_pf.h
-@@ -2,6 +2,8 @@
- #ifndef _ASM_X86_TRAP_PF_H
- #define _ASM_X86_TRAP_PF_H
+diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
+index 01ce61b..2c53e3d 100644
+--- a/arch/x86/include/asm/sev.h
++++ b/arch/x86/include/asm/sev.h
+@@ -247,9 +247,11 @@ static inline u64 sev_get_status(void) { return 0; }
+ #ifdef CONFIG_KVM_AMD_SEV
+ bool snp_probe_rmptable_info(void);
+ int snp_lookup_rmpentry(u64 pfn, bool *assigned, int *level);
++void snp_dump_hva_rmpentry(unsigned long address);
+ #else
+ static inline bool snp_probe_rmptable_info(void) { return false; }
+ static inline int snp_lookup_rmpentry(u64 pfn, bool *assigned, int *level) { return -ENODEV; }
++static inline void snp_dump_hva_rmpentry(unsigned long address) {}
+ #endif
  
-+#include <linux/bits.h>
-+
- /*
-  * Page fault error code bits:
-  *
-@@ -13,16 +15,18 @@
-  *   bit 5 ==				1: protection keys block access
-  *   bit 6 ==				1: shadow stack access fault
-  *   bit 15 ==				1: SGX MMU page-fault
-+ *   bit 31 ==				1: fault was due to RMP violation
+ #endif
+diff --git a/arch/x86/virt/svm/sev.c b/arch/x86/virt/svm/sev.c
+index 7669b2f..c74266e 100644
+--- a/arch/x86/virt/svm/sev.c
++++ b/arch/x86/virt/svm/sev.c
+@@ -35,16 +35,21 @@
+  * Family 19h Model 01h, Rev B1 processor.
   */
- enum x86_pf_error_code {
--	X86_PF_PROT	=		1 << 0,
--	X86_PF_WRITE	=		1 << 1,
--	X86_PF_USER	=		1 << 2,
--	X86_PF_RSVD	=		1 << 3,
--	X86_PF_INSTR	=		1 << 4,
--	X86_PF_PK	=		1 << 5,
--	X86_PF_SHSTK	=		1 << 6,
--	X86_PF_SGX	=		1 << 15,
-+	X86_PF_PROT	=		BIT(0),
-+	X86_PF_WRITE	=		BIT(1),
-+	X86_PF_USER	=		BIT(2),
-+	X86_PF_RSVD	=		BIT(3),
-+	X86_PF_INSTR	=		BIT(4),
-+	X86_PF_PK	=		BIT(5),
-+	X86_PF_SHSTK	=		BIT(6),
-+	X86_PF_SGX	=		BIT(15),
-+	X86_PF_RMP	=		BIT(31),
- };
+ struct rmpentry {
+-	u64	assigned	: 1,
+-		pagesize	: 1,
+-		immutable	: 1,
+-		rsvd1		: 9,
+-		gpa		: 39,
+-		asid		: 10,
+-		vmsa		: 1,
+-		validated	: 1,
+-		rsvd2		: 1;
+-	u64 rsvd3;
++	union {
++		struct {
++			u64 assigned	: 1,
++			    pagesize	: 1,
++			    immutable	: 1,
++			    rsvd1	: 9,
++			    gpa		: 39,
++			    asid	: 10,
++			    vmsa	: 1,
++			    validated	: 1,
++			    rsvd2	: 1;
++		};
++		u64 lo;
++	};
++	u64 hi;
+ } __packed;
  
- #endif /* _ASM_X86_TRAP_PF_H */
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index 679b09c..8805e2e 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -547,6 +547,7 @@ show_fault_oops(struct pt_regs *regs, unsigned long error_code, unsigned long ad
- 		 !(error_code & X86_PF_PROT) ? "not-present page" :
- 		 (error_code & X86_PF_RSVD)  ? "reserved bit violation" :
- 		 (error_code & X86_PF_PK)    ? "protection keys violation" :
-+		 (error_code & X86_PF_RMP)   ? "RMP violation" :
- 					       "permissions violation");
- 
- 	if (!(error_code & X86_PF_USER) && user_mode(regs)) {
+ /*
+@@ -263,3 +268,77 @@ int snp_lookup_rmpentry(u64 pfn, bool *assigned, int *level)
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(snp_lookup_rmpentry);
++
++/*
++ * Dump the raw RMP entry for a particular PFN. These bits are documented in the
++ * PPR for a particular CPU model and provide useful information about how a
++ * particular PFN is being utilized by the kernel/firmware at the time certain
++ * unexpected events occur, such as RMP faults.
++ */
++static void dump_rmpentry(u64 pfn)
++{
++	u64 pfn_i, pfn_end;
++	struct rmpentry *e;
++	int level;
++
++	e = __snp_lookup_rmpentry(pfn, &level);
++	if (IS_ERR(e)) {
++		pr_err("Failed to read RMP entry for PFN 0x%llx, error %ld\n",
++		       pfn, PTR_ERR(e));
++		return;
++	}
++
++	if (e->assigned) {
++		pr_info("PFN 0x%llx, RMP entry: [0x%016llx - 0x%016llx]\n",
++			pfn, e->lo, e->hi);
++		return;
++	}
++
++	/*
++	 * If the RMP entry for a particular PFN is not in an assigned state,
++	 * then it is sometimes useful to get an idea of whether or not any RMP
++	 * entries for other PFNs within the same 2MB region are assigned, since
++	 * those too can affect the ability to access a particular PFN in
++	 * certain situations, such as when the PFN is being accessed via a 2MB
++	 * mapping in the host page table.
++	 */
++	pfn_i = ALIGN_DOWN(pfn, PTRS_PER_PMD);
++	pfn_end = pfn_i + PTRS_PER_PMD;
++
++	pr_info("PFN 0x%llx unassigned, dumping non-zero entries in 2M PFN region: [0x%llx - 0x%llx]\n",
++		pfn, pfn_i, pfn_end);
++
++	while (pfn_i < pfn_end) {
++		e = __snp_lookup_rmpentry(pfn_i, &level);
++		if (IS_ERR(e)) {
++			pr_err("Error %ld reading RMP entry for PFN 0x%llx\n",
++			       PTR_ERR(e), pfn_i);
++			pfn_i++;
++			continue;
++		}
++
++		if (e->lo || e->hi)
++			pr_info("PFN: 0x%llx, [0x%016llx - 0x%016llx]\n", pfn_i, e->lo, e->hi);
++		pfn_i++;
++	}
++}
++
++void snp_dump_hva_rmpentry(unsigned long hva)
++{
++	unsigned long paddr;
++	unsigned int level;
++	pgd_t *pgd;
++	pte_t *pte;
++
++	pgd = __va(read_cr3_pa());
++	pgd += pgd_index(hva);
++	pte = lookup_address_in_pgd(pgd, hva, &level);
++
++	if (!pte) {
++		pr_err("Can't dump RMP entry for HVA %lx: no PTE/PFN found\n", hva);
++		return;
++	}
++
++	paddr = PFN_PHYS(pte_pfn(*pte)) | (hva & ~page_level_mask(level));
++	dump_rmpentry(PHYS_PFN(paddr));
++}
 
