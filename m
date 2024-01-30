@@ -1,143 +1,145 @@
-Return-Path: <linux-kernel+bounces-44915-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44916-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F22A842906
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:24:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94CA584290C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:25:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1525283F9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:24:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7ACF1C24B79
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:25:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5D2D1272CA;
-	Tue, 30 Jan 2024 16:24:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2756A1272C7;
+	Tue, 30 Jan 2024 16:25:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SaBLD1//"
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="TpeOY9Xw"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F9928612D
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 16:24:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE6A0823A7;
+	Tue, 30 Jan 2024 16:25:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706631861; cv=none; b=hBb/Ix8nJthMMjnkzg/IEl9baEDDgCerrqvHEp4MeWxlMsAx1LNu1eiOpGkI9l/jpvQZJq1YcxHYjmTYD8/Eev65fW6PuFhWElFhuwGfwt4vnpX1j4qp55wG9ISZ0nsNDfPOqJEaTaeFfxIHBaSk4oWrj8BosZTMF+ZQyU4Kqf8=
+	t=1706631909; cv=none; b=XA5uMQKH/ocBBRNGzr2Uv2dDuDtL24WRPLZsOzlKdSEbuZBTHbxEQPRG8NxXDBPwuBaq1GNdwXHDqkxhrvp4bw+TzbslFkjq5tDFrwNk0Q5YfcuzzbDei/jK6V0c5OnHDBm0LOzzrYcOHyQYpjXU0NEf/qaa6TCnF6Dwq65+a0E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706631861; c=relaxed/simple;
-	bh=lV6EKe1I+XkO7pZy2o93mHyRnJfNobhhVULqs638RuA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JdROG+icR8Lr/4AbNW6kJBoyzoTLH0oplcHjD+y7Vns+iRg6kH2IcoYY79ksxWFBMPscW07zEIHSnLDhrO9Mgoilfq41AF84F3vMdjTuytmbMYPPmn2kMnwJkPkZTm/T5FXwIX6f68qTu9FjJzz2ui6nXqaRJZJUX6smo5ZjF6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SaBLD1//; arc=none smtp.client-ip=209.85.166.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-363890b20dfso5358325ab.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 08:24:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706631858; x=1707236658; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Dba6uelI/Pt12oWUnYeD+Bi5QPsgCSQU0LSONHBBbbA=;
-        b=SaBLD1//o+MomKY/gQm8iryKE6hiiuXttn63Z7nvjqJD3PtSK4T4rNhAKbY17i4z2/
-         AZZKFh7ShqaTixdMMuOnRW3QvIMrC/PP4e2Mu3dtpXtjIagP+pL/FYYf3zdaMuqcC+61
-         e6J+cvMqz0IttxTxBU+HBe2IP+pns1rPiI3wDDgujMNKUR+XqusbdraW+MU9aYc9nPXt
-         xQdB+a+vEUjZcqkyStpWi1xKfpGauhF404c35g5PT6k1GnUTRVrsBe9AfI9G+siNNkMz
-         /0e2Qx1nPrimklaZsmcwQHfFcNubVc3ZiqYHcelX7zOjg7LoKYXrKyX/glnHi0bhE0VZ
-         A43w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706631858; x=1707236658;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Dba6uelI/Pt12oWUnYeD+Bi5QPsgCSQU0LSONHBBbbA=;
-        b=jzXccLON1OLef4WpSMGbMktl1I++aLztlr0nMblSwX5R03nO5OgvBTUgS1BUPKmD5Q
-         piGSeQLw1iMhqudIF17nOhxgaO/n1opkO/o082Q/IZRwgMzAlvEVuslT3T+X0zcylD6r
-         aZexSGfhKO3Feqlgv00U1vWLPJ8X6XaCAyUhhiIinJxw4G1qxZVLTfns0Vgq6WaoGWQh
-         CNCIXys9BnFaI1/piO3zlvvXX8tH5kRnmBtZ2fTcvTiQEuJ3ZdpiLixL3KSn4bjREbd7
-         tE7KLzryPoxIAvJUvv1H2BLPimCQSLC7A0gWpnFrW2cdErOkX3VfDQe+r4a67wrKpbum
-         7anQ==
-X-Gm-Message-State: AOJu0Yzk8Jz+/WLgz7wnX1iToOiCQ7RnsBPIqMuVJg8d3tjgsKhb/GYa
-	hNgXQWoizanJLpasSasKfo/ulttjBtCANWAjTWd+xcI8m/hG2FWMbTD/LpIOxgADogpT9U+yVrM
-	liMLmmMTiPSt9Yh6MNuq6UnKdKtY=
-X-Google-Smtp-Source: AGHT+IGpe7HgiUvf/Lj799SoBnc5h/K070DePQI0aL08WWLNad0H/Pod83NcS7YC2j8iLS1GaKYNcUbZJVD+Wkt6vlE=
-X-Received: by 2002:a05:6e02:1d8a:b0:363:7d74:a780 with SMTP id
- h10-20020a056e021d8a00b003637d74a780mr8678717ila.23.1706631858553; Tue, 30
- Jan 2024 08:24:18 -0800 (PST)
+	s=arc-20240116; t=1706631909; c=relaxed/simple;
+	bh=pXwScWKaKoX+opoHur9ak2s0rrsf9s6RpeqRH1p4uY0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=h047Y5VlMWm/v8ah/eC6ZZNlhzdIElOywBo9JlFf0yXv3Im4TIK+CHRRyv5U2pABE2oVje7gGcYOoIFrE1f819qgP8Y20ob2dkHsIbiiiLWZ8FhdxNf2C6exEEQVCvcUD2Zp35NdRPJzbyslpoJAbIGXI2qblkzFCoc8rC2DO8c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=TpeOY9Xw; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 88403E000D;
+	Tue, 30 Jan 2024 16:24:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1706631898;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZHkqbFk+Vk9oWvO+zXaPrJlPTtbdOjauegS4Logzkxc=;
+	b=TpeOY9XwHjybi7vDlZoSJEubrDKOD/C/3lglkP7G//elDe4lrK1vGTAozuHEZQ4rEQV0QV
+	Flx7pENaAQoeA8SoDLt8PcmYicrAAYXYxAwigTNFzdysIb6ahwei1RdWUttg8DFN1sgRAM
+	/4ND8G2IK8g3pUY6JUog/Z663HyHWnERZ78rVtSngvqy1auUeQ9cuNc/dchqwh0ajmF21u
+	MlLLlH0YmN0lWfTOALXCw+P5h5FZpk6iaKN1xwF4Zi1wLWV5Qw7o46kY5TxQTzcrd4HLMb
+	z2AKrPREptUMw40VXgqsoTS2IOZJbW29lc787rqvmYUVxdFmpR+Q6ad7tGQpEg==
+Message-ID: <344da0db-55ef-4445-8e14-9c2f53e0c33c@bootlin.com>
+Date: Tue, 30 Jan 2024 17:24:55 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130014208.565554-1-hannes@cmpxchg.org> <20240130014208.565554-3-hannes@cmpxchg.org>
-In-Reply-To: <20240130014208.565554-3-hannes@cmpxchg.org>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Tue, 30 Jan 2024 08:24:07 -0800
-Message-ID: <CAKEwX=OcjhqjjZ9yYd38oNgk56q41qUt8_gJMjyRw=VCqveReA@mail.gmail.com>
-Subject: Re: [PATCH 02/20] mm: zswap: inline and remove zswap_entry_find_get()
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Yosry Ahmed <yosryahmed@google.com>, 
-	Chengming Zhou <zhouchengming@bytedance.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 04/15] mux: add mux_chip_resume() function
+Content-Language: en-US
+To: Peter Rosin <peda@axentia.se>, Linus Walleij <linus.walleij@linaro.org>,
+ Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>,
+ Tony Lindgren <tony@atomide.com>, Haojian Zhuang
+ <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>,
+ Aaro Koskinen <aaro.koskinen@iki.fi>,
+ Janusz Krzysztofik <jmkrzyszt@gmail.com>, Andi Shyti
+ <andi.shyti@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+ Kishon Vijay Abraham I <kishon@kernel.org>,
+ Philipp Zabel <p.zabel@pengutronix.de>, Tom Joseph <tjoseph@cadence.com>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+ linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
+ linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
+ theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com, u-kumar1@ti.com
+References: <20240102-j7200-pcie-s2r-v2-0-8e4f7d228ec2@bootlin.com>
+ <20240102-j7200-pcie-s2r-v2-4-8e4f7d228ec2@bootlin.com>
+ <6568893d-13c7-ef1f-9c3f-88de0701c7aa@axentia.se>
+From: Thomas Richard <thomas.richard@bootlin.com>
+In-Reply-To: <6568893d-13c7-ef1f-9c3f-88de0701c7aa@axentia.se>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: thomas.richard@bootlin.com
 
-On Mon, Jan 29, 2024 at 5:42=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
->
-> There is only one caller and the function is trivial. Inline it.
->
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> ---
->  mm/zswap.c | 17 ++---------------
->  1 file changed, 2 insertions(+), 15 deletions(-)
->
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index 173f2e6657de..cf864aaa214d 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -559,19 +559,6 @@ static void zswap_entry_put(struct zswap_entry *entr=
-y)
->         }
->  }
->
-> -/* caller must hold the tree lock */
-> -static struct zswap_entry *zswap_entry_find_get(struct rb_root *root,
-> -                               pgoff_t offset)
-> -{
-> -       struct zswap_entry *entry;
-> -
-> -       entry =3D zswap_rb_search(root, offset);
-> -       if (entry)
-> -               zswap_entry_get(entry);
-> -
-> -       return entry;
-> -}
-> -
->  /*********************************
->  * shrinker functions
->  **********************************/
-> @@ -1708,13 +1695,13 @@ bool zswap_load(struct folio *folio)
->
->         VM_WARN_ON_ONCE(!folio_test_locked(folio));
->
-> -       /* find */
->         spin_lock(&tree->lock);
-> -       entry =3D zswap_entry_find_get(&tree->rbroot, offset);
-> +       entry =3D zswap_rb_search(&tree->rbroot, offset);
->         if (!entry) {
->                 spin_unlock(&tree->lock);
->                 return false;
->         }
-> +       zswap_entry_get(entry);
+On 1/30/24 09:25, Peter Rosin wrote:
+> Hi!
+> 
+> 2024-01-26 at 15:36, Thomas Richard wrote:
+>> The mux_chip_resume() function restores a mux_chip using the cached state
+>> of each mux.
+>>
+>> Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
+>> ---
+>>  drivers/mux/core.c         | 27 +++++++++++++++++++++++++++
+>>  include/linux/mux/driver.h |  1 +
+>>  2 files changed, 28 insertions(+)
+>>
+>> diff --git a/drivers/mux/core.c b/drivers/mux/core.c
+>> index 775816112932..896f74b34eb8 100644
+>> --- a/drivers/mux/core.c
+>> +++ b/drivers/mux/core.c
+>> @@ -215,6 +215,33 @@ void mux_chip_free(struct mux_chip *mux_chip)
+>>  }
+>>  EXPORT_SYMBOL_GPL(mux_chip_free);
+>>  
+>> +/**
+>> + * mux_chip_resume() - restores the mux-chip state
+>> + * @mux_chip: The mux-chip to resume.
+>> + *
+>> + * Restores the mux-chip state.
+>> + *
+>> + * Return: Zero on success or a negative errno on error.
+>> + */
+>> +int mux_chip_resume(struct mux_chip *mux_chip)
+>> +{
+>> +	int ret, i;
+>> +
+>> +	for (i = 0; i < mux_chip->controllers; ++i) {
+>> +		struct mux_control *mux = &mux_chip->mux[i];
+>> +
+>> +		if (mux->cached_state != MUX_CACHE_UNKNOWN) {
+>> +			ret = mux_control_set(mux, mux->cached_state);
+>> +			if (ret < 0) {
+>> +				dev_err(&mux_chip->dev, "unable to restore state\n");
+>> +				return ret;
+> 
+> I'm don't know what is expected of the core resume code on error,
+> but is it ok to return on first failure? Is it not better to try
+> to restore all muxes and return zero if all is well or the first
+> failure when something is up?
+> 
+> But maybe the resume is completely dead anyway if there is any
+> failure? In that case the above early return is fine, I guess...
+> 
 
-Neat.
-Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+In the first iteration of this series (when it was done in mmio driver),
+it restored all muxes and returned zero or the first failure.
+I don't know why I changed the behaviour.
+For me it's better to try to restores all muxes.
 
->         spin_unlock(&tree->lock);
->
->         if (entry->length)
-> --
-> 2.43.0
->
+-- 
+Thomas Richard, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
 
