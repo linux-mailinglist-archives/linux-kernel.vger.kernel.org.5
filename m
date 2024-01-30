@@ -1,137 +1,198 @@
-Return-Path: <linux-kernel+bounces-45029-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45030-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6D45842AA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:18:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 33213842AAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:19:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 258FC1C24EDC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:18:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 65FFE1C250B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:19:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 023541292DB;
-	Tue, 30 Jan 2024 17:18:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9FF6129A8F;
+	Tue, 30 Jan 2024 17:19:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="a7s2um2L"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NpLjzPUW"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A3F5128388
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 17:18:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 219A41292D6;
+	Tue, 30 Jan 2024 17:19:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706635094; cv=none; b=r0utei1IfQOQJxeztOesn1jb84fyMA3+d6DAXEw77UVdoBGpsTC2a2J3xOI4qwhWY+n47iGmn8lseWkfPBhAlv741CZRWI/y4QoMTPTDIhgfpR4oltDMc5pWdPeenJOWrxVxvvKoVO7R6i/Rn4rn5M8u0GC1VazZ0ChP9Sz++6A=
+	t=1706635151; cv=none; b=as8MDToy9YyJu+DFnSknJfZDS3JOweNP3Y8B3xVdyLE7aherVGjja+pO3zOsGV2bU+LAX+3fRIUkk0FHyaDUG0ssrn0pWadApKk+urhsffFp9i59t4SyAzAEYNUZvS3K2aps708D3WgV69DPin7IHmtf3zWY4Zq2NYZoesLmRDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706635094; c=relaxed/simple;
-	bh=bSH0ASnXZjcDVpolqCxHH09VljozYJWnQ2GDWK1l+uI=;
+	s=arc-20240116; t=1706635151; c=relaxed/simple;
+	bh=y4IszyoidWFXzhNhDY2c9NDxcMcu1lKzZ3vPlfsqW38=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UXLWhYpwvIrdaF1mko2U6fOX6902xh3ErtA15ULAs+22Bqsnt6asV5JsKcrL3yG9YDkDqgq4C8R7ef5DkvUVFfw/X31wiJ5W8pSKqC3a5boHUSFGEaLGi8pIc9iLSQHjvpHTz5srI7Aq4S+hVgMnq/3wKyMTbJu+Ewjdf+6Y29E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=a7s2um2L; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id D099E40E01BB;
-	Tue, 30 Jan 2024 17:18:08 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id E5CUda0pWPF4; Tue, 30 Jan 2024 17:18:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1706635086; bh=NNImHxXmQ5ulkndnBxd7GFovliEMcYjuVkrw8tLfCA8=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=s3CMu204px1xN/sRajQlcBFUFvOu0uu3ruHTVAaAjq7syO3uninJdyGB3CV+q9dJ8lt5DG0PfuVmwEbXaiv7HnMaIfL6gQWdl8OQ7KHlhNHfOsmzFY7nrSi5MSlzCgUHnUOzHutQrKxB7Iqm07rCPe6WKZJJvf5SwheEPxbEn/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NpLjzPUW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C14E4C433C7;
+	Tue, 30 Jan 2024 17:19:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706635151;
+	bh=y4IszyoidWFXzhNhDY2c9NDxcMcu1lKzZ3vPlfsqW38=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=a7s2um2Lj/MjtzcHX/h/ESf2v8CerKa0Vof+l0TCEJCdU72vUnNGcEUyclENaMLUJ
-	 EPGW2aIFQBWPEeCEsd2qF47kh+V6gPJb2Kwjal+DqBa9b0KMR2LbGfvSmZahyWFw1e
-	 Vwu9AkMN2UDLY1DyOFHNOl94lwRgrghJC+YauyeOTJXImVDB/tXxfNuB3TsIpKjVDv
-	 4NthZ6csJ9lEAcUNpT8wLf1Fvxn+O8IpPLJi4FsVtxfefdDEzyKpqzoW4kMeysHv8Y
-	 3I2kk2WTyGcNM3sqsHPoxtb6eBLii71++Ch7jcnOErsAZ2AWDgDOgnJ4zl7KTjnh8D
-	 wwlCCKkTg6X9JiA3Zj+gqMUUP5L024YGZLMSZqg6qxJcdtMSJVAW6HMvaI9hfjK+Z0
-	 Gl4ROyZIAb0YMtqSxcGRG+c8w80ynytYzAaTB/JtdXBQXW/RhoHrSpfHaqcxHoOIEu
-	 2jgcVVPLQsuzRdfBBNEWKcslqbEIES/2OVCDVxeKeIeMWiqzSG4KMzv+KhyUda3O/C
-	 bG0cKJMk/hMuq+4lCSXxcMGH9NLN9n0LxLbkKX2NVjyQv903+hhUpv3goAmNUhyQn5
-	 MEYoewbgesGdkEkrKjDkxp6SdIy4jN+V42SFpJ/DmtWVjG0ilx7Kc2mbwH7jnPlSXc
-	 nZSftqWeglhEmzUDJEQSev40=
-Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B529040E0177;
-	Tue, 30 Jan 2024 17:17:56 +0000 (UTC)
-Date: Tue, 30 Jan 2024 18:17:51 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: "Li, Xin3" <xin3.li@intel.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"mingo@redhat.com" <mingo@redhat.com>,
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-	"x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-	"luto@kernel.org" <luto@kernel.org>,
-	"Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-	"andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>
-Subject: Re: [PATCH 2/2] x86/fred: Fix build with CONFIG_IA32_EMULATION=n
-Message-ID: <20240130171751.GIZbkvP2yfHF4vBt4g@fat_crate.local>
-References: <20240127093728.1323-1-xin3.li@intel.com>
- <20240127093728.1323-3-xin3.li@intel.com>
- <20240130124816.GCZbjwEFrZS55FLxb8@fat_crate.local>
- <SA1PR11MB6734A226858F6030C86AE2E5A87D2@SA1PR11MB6734.namprd11.prod.outlook.com>
+	b=NpLjzPUWXqKV54fhDJhAYBoggAWgle3OxuN85QdeHkEbaDgS22ahV8cnmW+CwRNpO
+	 SIAcp+xgeFPt0rW4GBFx8d6u498AvJg6rfEbJf8z4srNRDx55/CEL4DGy3YDE4RHw0
+	 p6I4x5rFA7NMe73dKX7X3Q7xbPNBDhcfToS0rULHyT+XIvusI7y5jsOkAl6awCK9/F
+	 7LXkHo2wZT1wdYmcDT1qXwIaTSaXpCbkCjoDyqVmYiFFh3dAjVbYKJpRxr6jVUbLnV
+	 jVSuPZlSkOwnYqsRkbr8lSgJXzuS+IsycbymTehgrvqM88w9IsW5p+v3thCgAynqZL
+	 65iP3i0p/mhNA==
+Date: Tue, 30 Jan 2024 11:19:08 -0600
+From: Rob Herring <robh@kernel.org>
+To: Petlozu Pravareshwar <petlozup@nvidia.com>
+Cc: thierry.reding@gmail.com, jonathanh@nvidia.com,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	p.zabel@pengutronix.de, dmitry.osipenko@collabora.com,
+	ulf.hansson@linaro.org, kkartik@nvidia.com, cai.huoqing@linux.dev,
+	spatra@nvidia.com, linux-tegra@vger.kernel.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH V2 2/3] dt-bindings: tegra: pmc: Update scratch as an
+ optional aperture
+Message-ID: <20240130171908.GA1964535-robh@kernel.org>
+References: <20240117202504.943476-1-petlozup@nvidia.com>
+ <20240117202504.943476-2-petlozup@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <SA1PR11MB6734A226858F6030C86AE2E5A87D2@SA1PR11MB6734.namprd11.prod.outlook.com>
+In-Reply-To: <20240117202504.943476-2-petlozup@nvidia.com>
 
-On Tue, Jan 30, 2024 at 03:22:01PM +0000, Li, Xin3 wrote:
-> diff --git a/arch/x86/include/asm/ia32.h b/arch/x86/include/asm/ia32.h
-> index c7ef6ea2fa99..01342d343c19 100644
-> --- a/arch/x86/include/asm/ia32.h
-> +++ b/arch/x86/include/asm/ia32.h
-> @@ -81,7 +81,7 @@ static inline void ia32_disable(void)
+On Wed, Jan 17, 2024 at 08:25:03PM +0000, Petlozu Pravareshwar wrote:
+> Scratch address space register is used to store reboot reason. For
+> some Tegra234 systems, the scratch space is not available to store
+> the reboot reason. This is because scratch region on these systems
+> is not accessible by the kernel as restricted by the Hypervisor.
+> Such systems would delist scratch aperture from PMC DT node.
 > 
->  #else /* !CONFIG_IA32_EMULATION */
+> Accordingly, this change makes "scratch" as an optional aperture for
+> Tegra234 in PMC dt-binding document.
 > 
-> -static inline bool ia32_enabled(void)
-> +static __always_inline bool ia32_enabled(void)
->  {
->  	return IS_ENABLED(CONFIG_X86_32);
+> Signed-off-by: Petlozu Pravareshwar <petlozup@nvidia.com>
+> ---
+> Changes in v2:
+> - Fix dt_binding_check indentation warning.
+> - Update 'reg-names' property items list.
+> 
+>  .../arm/tegra/nvidia,tegra186-pmc.yaml        | 78 ++++++++++++++-----
+>  1 file changed, 58 insertions(+), 20 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/tegra/nvidia,tegra186-pmc.yaml b/Documentation/devicetree/bindings/arm/tegra/nvidia,tegra186-pmc.yaml
+> index 0faa403f68c8..79928824005d 100644
+> --- a/Documentation/devicetree/bindings/arm/tegra/nvidia,tegra186-pmc.yaml
+> +++ b/Documentation/devicetree/bindings/arm/tegra/nvidia,tegra186-pmc.yaml
+> @@ -27,7 +27,7 @@ properties:
+>        - const: pmc
+>        - const: wake
+>        - const: aotag
+> -      - const: scratch
+> +      - enum: [ scratch, misc ]
+>        - const: misc
+>  
+>    interrupt-controller: true
+> @@ -41,25 +41,63 @@ properties:
+>      description: If present, inverts the PMU interrupt signal.
+>      $ref: /schemas/types.yaml#/definitions/flag
+>  
+> -if:
+> -  properties:
+> -    compatible:
+> -      contains:
+> -        const: nvidia,tegra186-pmc
+> -then:
+> -  properties:
+> -    reg:
+> -      maxItems: 4
+> -
+> -    reg-names:
+> -      maxItems: 4
+> -else:
+> -  properties:
+> -    reg:
+> -      minItems: 5
+> -
+> -    reg-names:
+> -      minItems: 5
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: nvidia,tegra186-pmc
+> +    then:
+> +      properties:
+> +        reg:
+> +          maxItems: 4
+> +        reg-names:
+> +          items:
+> +            - const: pmc
+> +            - const: wake
+> +            - const: aotag
+> +            - const: scratch
 
-So I always-inlined both versions since they're small enough, see diff
-below. That works with this .config, I'll run some more overnight to
-make sure...
+There is no need to define the names and order again. Just this is 
+sufficient:
 
-Thx.
+maxItems: 4
+contains:
+  const: scratch
 
-diff --git a/arch/x86/include/asm/ia32.h b/arch/x86/include/asm/ia32.h
-index c7ef6ea2fa99..4212c00c9708 100644
---- a/arch/x86/include/asm/ia32.h
-+++ b/arch/x86/include/asm/ia32.h
-@@ -69,7 +69,7 @@ extern void ia32_pick_mmap_layout(struct mm_struct *mm);
- 
- extern bool __ia32_enabled;
- 
--static inline bool ia32_enabled(void)
-+static __always_inline bool ia32_enabled(void)
- {
- 	return __ia32_enabled;
- }
-@@ -81,7 +81,7 @@ static inline void ia32_disable(void)
- 
- #else /* !CONFIG_IA32_EMULATION */
- 
--static inline bool ia32_enabled(void)
-+static __always_inline bool ia32_enabled(void)
- {
- 	return IS_ENABLED(CONFIG_X86_32);
- }
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: nvidia,tegra194-pmc
+> +    then:
+> +      properties:
+> +        reg:
+> +          minItems: 5
+> +        reg-names:
+> +          items:
+> +            - const: pmc
+> +            - const: wake
+> +            - const: aotag
+> +            - const: scratch
+> +            - const: misc
 
--- 
-Regards/Gruss,
-    Boris.
+Just 'minItems: 5' is sufficient here.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: nvidia,tegra234-pmc
+> +    then:
+> +      properties:
+> +        reg:
+> +          minItems: 4
+> +          maxItems: 5
+
+That should already be the top-level constraint.
+
+> +        reg-names:
+> +          anyOf:
+> +            - items:
+> +                - const: pmc
+> +                - const: wake
+> +                - const: aotag
+> +                - const: misc
+> +            - items:
+> +                - const: pmc
+> +                - const: wake
+> +                - const: aotag
+> +                - const: scratch
+> +                - const: misc
+
+Only need:
+
+contains:
+  const: misc
 
