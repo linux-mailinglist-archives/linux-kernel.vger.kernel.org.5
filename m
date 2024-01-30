@@ -1,180 +1,197 @@
-Return-Path: <linux-kernel+bounces-45349-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45350-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9A97842F22
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 22:52:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F036842F24
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 22:52:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90DED281B85
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 21:52:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 549A51C243DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 21:52:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F233179929;
-	Tue, 30 Jan 2024 21:50:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17CD37D414;
+	Tue, 30 Jan 2024 21:51:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ax/R6xWL";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wBvBemPg";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ax/R6xWL";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wBvBemPg"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="uwQqg/dH"
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 898A178666;
-	Tue, 30 Jan 2024 21:50:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83F087D40D
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 21:51:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706651420; cv=none; b=mqmDmAohh/Cn/huoKUSTw73KrTM5v6dy66qJFJVCx++2BavHDATwQ0Z6m0vL4ZHZOCfxwMU2KrxfjHOipNvT/yXxo9I8UK8nUZGzH1LEXrTHbRJhpcCLT+v4PHg7smXZB6DWHZesPNrT1SqstUEphHkme1wuc8yZaXBJEy+xLRs=
+	t=1706651493; cv=none; b=mNYb1sWajzFqLo6XyQNQvGb+1SIRkJktuwg3z+xqS3BnCeSbqLwfbFeUgoDoQN+pZbv90Xhu1raTSfEjlZY3McDK3CjWm/OtJtNlKDHnjIV3D1P39eErOTUFKaiTolN++6zMxJAbQq83UmLJx823dWNymOpvjjvNQnnhM6rR4+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706651420; c=relaxed/simple;
-	bh=yja1D0oSsszcKToijHhcoFUhArBQ8Uv08OOMC3YY7Nk=;
+	s=arc-20240116; t=1706651493; c=relaxed/simple;
+	bh=rR8SVv800/kqryt7JwIAYqxwWBoFBi/ay/0m7ds4vus=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VkisovZG2/mvuBR4aTbRGVB0ymg+FkumVQpEExMqlmdaX+AHFveoELhhEmdnfq7rv8VUEburwirveFms1zI4r7LuQyZjsA0uNH3M+i4hZVL7A7GDo9vH5cx//kDqQueXZJXDHnxCUkzEeBdhPbukXGJywIHHnNoSzxZXMf85ntU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ax/R6xWL; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=wBvBemPg; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ax/R6xWL; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=wBvBemPg; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C0FB521D08;
-	Tue, 30 Jan 2024 21:50:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706651416; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=R6BGLwQfV4ZTDY8KhVPKQs2ZMupmIejtEZwLRmq2W/Q=;
-	b=ax/R6xWLZiZ+LLZIot0FIJap/K3XocOIEdWYTAgipJY3DbamIVrdTZvBRU6mhXqSxRWyEk
-	uiUMzteWYYRhSd+pbEMGzqh4bwVP5nO3XbD+X83ph8lWoHnIfHgNQHYtiRrVL988xpL2BK
-	E+SGzRjhfugHG18/12sn6pD4chdu+v8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706651416;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=R6BGLwQfV4ZTDY8KhVPKQs2ZMupmIejtEZwLRmq2W/Q=;
-	b=wBvBemPgd4P/xuIZtaQYVn+AQruP/OcHBtLyY+zEf5+yRDftUFexYI6LrsGJlhP9dep7VK
-	NS8LhV9VcMMwG6Cg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706651416; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=R6BGLwQfV4ZTDY8KhVPKQs2ZMupmIejtEZwLRmq2W/Q=;
-	b=ax/R6xWLZiZ+LLZIot0FIJap/K3XocOIEdWYTAgipJY3DbamIVrdTZvBRU6mhXqSxRWyEk
-	uiUMzteWYYRhSd+pbEMGzqh4bwVP5nO3XbD+X83ph8lWoHnIfHgNQHYtiRrVL988xpL2BK
-	E+SGzRjhfugHG18/12sn6pD4chdu+v8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706651416;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=R6BGLwQfV4ZTDY8KhVPKQs2ZMupmIejtEZwLRmq2W/Q=;
-	b=wBvBemPgd4P/xuIZtaQYVn+AQruP/OcHBtLyY+zEf5+yRDftUFexYI6LrsGJlhP9dep7VK
-	NS8LhV9VcMMwG6Cg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id AE46C13462;
-	Tue, 30 Jan 2024 21:50:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id jdmDKhhvuWWxHAAAn2gu4w
-	(envelope-from <jack@suse.cz>); Tue, 30 Jan 2024 21:50:16 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 1E75FA07F9; Tue, 30 Jan 2024 22:50:16 +0100 (CET)
-Date: Tue, 30 Jan 2024 22:50:16 +0100
-From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jan Kara <jack@suse.cz>, linux-mm@kvack.org,
-	Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.com>,
-	David Howells <dhowells@redhat.com>,
-	Brian Foster <bfoster@redhat.com>,
-	Christian Brauner <brauner@kernel.org>,
-	"Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 19/19] writeback: simplify writeback iteration
-Message-ID: <20240130215016.npofgza5nmoxuw6m@quack3>
-References: <20240125085758.2393327-1-hch@lst.de>
- <20240125085758.2393327-20-hch@lst.de>
- <20240130104605.2i6mmdncuhwwwfin@quack3>
- <20240130141601.GA31330@lst.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=SaHYFQJORcjQh8YlM6SX8CooMvixIGu7btx0HaAPpYbE73TWR6T2uueLBJIO/YLCOFcu8CfeGEsasoKaOhG3Z8ZyhFQMN2OEqGX7pKYeE10W56oYtMMYE3jJcnic/9pRGb7pxYyvtZRZ1EtWwuRAak5EOkiWDQ4d5HteO8wfC50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=uwQqg/dH; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2906bcae4feso2074233a91.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 13:51:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706651490; x=1707256290; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Np9jYGYfYb8N8NYn/XtRXhSjDUyxZMfM0XTBuDl+Ozs=;
+        b=uwQqg/dHdGjr6VWkl+6Jgp6oEXjBon0K1PHQ+N8W89+pZ+QFOVgR04fKC62QKjr3Ek
+         V3uWMjHFNEmuOeLoHD9iITvbYaYQsV7GYXe1F2k2IK14Ixh34wOlcJgTQl7Yn9ZSmQr2
+         6ud7FGJu8UibFqQvYHVeeWGQas7L86ZqIYA3LlVFIIJ5LQLCpA0f1oIzdz3bVDH7VBXJ
+         gXEwu5KvETqkZaHp9DTqtfTwcPI/DhtPb37HVdlZaN2aGLSojkdb5NmDnBKB482C+k41
+         /7zfm79zjeY4uJ4V0LkfLpASH3C+3f3TwrVm93gbisnMRxVDsPexyECrcDTCreQ0mthc
+         RwdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706651490; x=1707256290;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Np9jYGYfYb8N8NYn/XtRXhSjDUyxZMfM0XTBuDl+Ozs=;
+        b=Y82hjCTbJ1twlAj1uI1oSagFkXVUFDYCchOr1Td+6AIOgnyE4Lml/atQXP7DPwpTsY
+         cnCuvy2ePIDUiSpQMA+Jmp6xUf77skfM7zOd+NWz3oQ6F2HiHqV/VGiEzdLWT2yXrDCR
+         Xpdg4I8WbVB5z2XHODHHhbJde7fLOfXVambOJ/9vcT8WGtYgnzZhypIgaD0PeYFw5l5E
+         NKVZVINu590Aju3JBRberijYqjZ7AGwcuhHH2fyJhjPnkMS7Nvnz77xK7Qit6k5MJ7Fo
+         H2W/U7fWPcDn9rFGbcS4v8Zxx8Z3GKHQWqL0p5ZR4j4Igo3G2IiqHtPd1D22ZWbvrwWu
+         HipQ==
+X-Gm-Message-State: AOJu0Yx6exLh/VuandAJLKjUxqfG8OH+YjAATr2GaUYbudMaXiT/YWyW
+	8RRMAlTmgi85q3w5zdDiL0eluJeZQprLj5A9pZBEbMywolZzfFmJcPKCaB+egQY=
+X-Google-Smtp-Source: AGHT+IEwtwQoylWlOGq8TqPSvs3bul1pVTRd8p25SneMALbfVbul/65KMmvpPziXy2wknL2Wg6OzKg==
+X-Received: by 2002:a17:90a:17a2:b0:28f:f1c0:3d21 with SMTP id q31-20020a17090a17a200b0028ff1c03d21mr5388368pja.41.1706651490637;
+        Tue, 30 Jan 2024 13:51:30 -0800 (PST)
+Received: from ghost ([12.44.203.122])
+        by smtp.gmail.com with ESMTPSA id nb5-20020a17090b35c500b0029464b5fcdbsm8657589pjb.42.2024.01.30.13.51.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jan 2024 13:51:30 -0800 (PST)
+Date: Tue, 30 Jan 2024 13:51:28 -0800
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Yangyu Chen <cyy@cyyself.name>
+Cc: Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Shuah Khan <shuah@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>, linux-mm@kvack.org,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] riscv: mm: Use hint address in mmap if available
+Message-ID: <ZblvYH3NLfhZQt9g@ghost>
+References: <20240130-use_mmap_hint_address-v2-0-f34ebfd33053@rivosinc.com>
+ <20240130-use_mmap_hint_address-v2-1-f34ebfd33053@rivosinc.com>
+ <tencent_34680F3AAAE356C4A485103556F3F909C60A@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240130141601.GA31330@lst.de>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [0.17 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.23)[72.65%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: 0.17
+In-Reply-To: <tencent_34680F3AAAE356C4A485103556F3F909C60A@qq.com>
 
-On Tue 30-01-24 15:16:01, Christoph Hellwig wrote:
-> On Tue, Jan 30, 2024 at 11:46:05AM +0100, Jan Kara wrote:
-> > Looking at it now I'm thinking whether we would not be better off to
-> > completely dump the 'error' argument of writeback_iter() /
-> > writeback_iter_next() and just make all .writepage implementations set
-> > wbc->err directly. But that means touching all the ~20 writepage
-> > implementations we still have...
-> 
-> Heh.  I actually had an earlier version that looked at wbc->err in
-> the ->writepages callers.  But it felt a bit too ugly.
-
-OK.
-
-> > > +		 */
-> > > +		if (wbc->sync_mode == WB_SYNC_NONE &&
-> > > +		    (wbc->err || wbc->nr_to_write <= 0))
-> > > +			goto finish;
+On Wed, Jan 31, 2024 at 03:15:16AM +0800, Yangyu Chen wrote:
+> On Tue, 2024-01-30 at 11:04 -0800, Charlie Jenkins wrote:
+> > On riscv it is guaranteed that the address returned by mmap is less
+> > than
+> > the hint address. Allow mmap to return an address all the way up to
+> > addr, if provided, rather than just up to the lower address space.
 > > 
-> > I think it would be a bit more comprehensible if we replace the goto with:
-> > 			folio_batch_release(&wbc->fbatch);
-> > 			if (wbc->range_cyclic)
-> > 				mapping->writeback_index =
-> > 					folio->index + folio_nr_pages(folio);
-> > 			*error = wbc->err;
-> > 			return NULL;
+> > This provides a performance benefit as well, allowing mmap to exit
+> > after
+> > checking that the address is in range rather than searching for a
+> > valid
+> > address.
+> > 
+> > It is possible to provide an address that uses at most the same
+> > number
+> > of bits, however it is significantly more computationally expensive
+> > to
+> > provide that number rather than setting the max to be the hint
+> > address.
+> > There is the instruction clz/clzw in Zbb that returns the highest set
+> > bit
+> > which could be used to performantly implement this, but it would
+> > still
+> > be slower than the current implementation. At worst case, half of the
+> > address would not be able to be allocated when a hint address is
+> > provided.
+> > 
+> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> > ---
+> >  arch/riscv/include/asm/processor.h | 22 +++++++++-------------
+> >  1 file changed, 9 insertions(+), 13 deletions(-)
+> > 
+> > diff --git a/arch/riscv/include/asm/processor.h
+> > b/arch/riscv/include/asm/processor.h
+> > index f19f861cda54..5d966ae81a58 100644
+> > --- a/arch/riscv/include/asm/processor.h
+> > +++ b/arch/riscv/include/asm/processor.h
+> > @@ -22,14 +22,12 @@
+> >  ({								\
+> >  	unsigned long
+> > mmap_end;					\
+> >  	typeof(addr) _addr = (addr);				\
+> > -	if ((_addr) == 0 || (IS_ENABLED(CONFIG_COMPAT) &&
+> > is_compat_task())) \
+> > -		mmap_end = STACK_TOP_MAX;			\
+> > -	else if ((_addr) >= VA_USER_SV57)			\
+> > -		mmap_end = STACK_TOP_MAX;			\
+> > -	else if ((((_addr) >= VA_USER_SV48)) && (VA_BITS >=
+> > VA_BITS_SV48)) \
+> > -		mmap_end = VA_USER_SV48;			\
+> > +	if ((_addr) == 0 ||					\
+> > +	    (IS_ENABLED(CONFIG_COMPAT) && is_compat_task()) ||	\
+> > +	    ((_addr + len) > BIT(VA_BITS -
+> > 1)))			\
+> > +		mmap_end = STACK_TOP_MAX			\
+> >  	else							\
+> > -		mmap_end = VA_USER_SV39;			\
+> > +		mmap_end = (_addr + len);			\
+> >  	mmap_end;						\
+> >  })
+> >  
+> > @@ -39,14 +37,12 @@
+> >  	typeof(addr) _addr = (addr);				\
+> >  	typeof(base) _base = (base);				\
+> >  	unsigned long rnd_gap = DEFAULT_MAP_WINDOW - (_base);	\
+> > -	if ((_addr) == 0 || (IS_ENABLED(CONFIG_COMPAT) &&
+> > is_compat_task())) \
+> > +	if ((_addr) == 0 ||					\
+> > +	    (IS_ENABLED(CONFIG_COMPAT) && is_compat_task()) ||	\
+> > +	    ((_addr + len) > BIT(VA_BITS -
+> > 1)))			\
+> >  		mmap_base = (_base);				\
+> > -	else if (((_addr) >= VA_USER_SV57) && (VA_BITS >=
+> > VA_BITS_SV57)) \
+> > -		mmap_base = VA_USER_SV57 - rnd_gap;		\
+> > -	else if ((((_addr) >= VA_USER_SV48)) && (VA_BITS >=
+> > VA_BITS_SV48)) \
+> > -		mmap_base = VA_USER_SV48 - rnd_gap;		\
+> >  	else							\
+> > -		mmap_base = VA_USER_SV39 - rnd_gap;		\
+> > +		mmap_base = (_addr + len) - rnd_gap;		\
 > 
-> I agree that keeping the logic on when to break and when to set the
-> writeback_index is good, but duplicating the batch release and error
-> assignment seems a bit suboptimal.  Let me know what you think of the
-> alternatÑ–ve variant below.
+> Please mind that rnd_gap can be non-zero, in this case, the map will
+> fail. It will be better to let mmap_base = min((_addr + len), (base) +
+> TASK_SIZE - DEFAULT_MAP_WINDOW) .
 
-Well, batch release needs to be only here because if writeback_get_folio()
-returns NULL, the batch has been already released by it. So what would be
-duplicated is only the error assignment. But I'm fine with the version in
-the following email and actually somewhat prefer it compared the yet
-another variant you've sent.
+Why would an rnd_gap that is non-zero cause mmap to fail? mmap will fail
+if rnd_gap is greater than (_addr + len). That is expected and should be
+interpreted as no address was available in the requested address space.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+mmap_base is used if the hint address is not available.
+
+I do see that I fumbled the test cases in this patch so I will fix that
+in a v3.
+
+- Charlie
+
+> 
+> >  	mmap_base;						\
+> >  })
+> >  
+> > 
+> 
 
