@@ -1,130 +1,109 @@
-Return-Path: <linux-kernel+bounces-44370-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44371-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D14484210B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:20:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83CE984210D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:20:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F3E81F263E9
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1198628962E
 	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:20:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED58560EC4;
-	Tue, 30 Jan 2024 10:20:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03D3360ED2;
+	Tue, 30 Jan 2024 10:20:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="joRP6Hu5"
-Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="dbeFUlKH";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="RmMuECqy"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B86F18E25
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 10:20:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B019260B8D;
+	Tue, 30 Jan 2024 10:20:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706610022; cv=none; b=EmD8N8gdgaUVLVScQ9WB9eaJHcVve9LblL3J6F8hUTnDc8jYMjKgvXv5LJOZe+g7PnpZ7HY023quVGPd8KpHrLoyUL0Vb3mEiLfqebrjDFSElrc4pbH3CYt4OS0Ux3bMVMVKV/Mwdh83L4USte6Hlt2MDYVYN90oXnrnm+1x5nA=
+	t=1706610022; cv=none; b=dmKU2ink7UJ5bAfSH9KVRPm2YJDbt904E0L9trkqCKyvt/ryE+G0FKIW0M7bRSvq+LqEu5Y2KwbY1zhmLeqQ2aBHX9Wz7qYPNJs1is3XFIx22NnNbCtxRok1U7SyXg82Tbzds/6r/x200uI10Mx3sUga6nb0/MuUJB1Jc6xnLII=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706610022; c=relaxed/simple;
-	bh=iHbQQ3MLCCcjMAInoY2a1a8pyT2oDcS0vQnY2cfXPv4=;
-	h=Subject:To:Cc:References:In-Reply-To:From:Message-ID:Date:
-	 MIME-Version:Content-Type; b=mcD/n2zZGaPdjhWrB1wM1e5aTU0LJJ5ZoxBv9/rVDhYwYFskrhFx3pkGQq4AhNADCsKT84SocOwjsN/uI0dVglEOVgr7zua4vD05eJ6Djj+iaTrqHU6OorO5h2U4NChp4Bmhu/wMYFE2LMWPR8JyjY2EtxlvsLiD+q23HLsWopc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net; spf=pass smtp.mailfrom=w6rz.net; dkim=pass (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b=joRP6Hu5; arc=none smtp.client-ip=35.89.44.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
-Received: from eig-obgw-6006a.ext.cloudfilter.net ([10.0.30.182])
-	by cmsmtp with ESMTPS
-	id UhqfrNY2TMVQiUlDxrthFX; Tue, 30 Jan 2024 10:20:13 +0000
-Received: from box5620.bluehost.com ([162.241.219.59])
-	by cmsmtp with ESMTPS
-	id UlDwructHYjq0UlDwrznFc; Tue, 30 Jan 2024 10:20:12 +0000
-X-Authority-Analysis: v=2.4 cv=afxyIDkt c=1 sm=1 tr=0 ts=65b8cd5c
- a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
- a=IkcTkHD0fZMA:10 a=dEuoMetlWLkA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
- a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
-	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=QDmJc+5Q+8ZglzAdl2BcnLkXPCIgoF/fTkzgIRxIZk4=; b=joRP6Hu54MNNifryzWu3Xy4rOi
-	XQQUmYkYX36/zGnAiAXN+joan8AbUP7d/TLcT7iGP6AKz6Ohi9Jkml6K9Xnp5VsbsViDkkUwVtsQo
-	4dnIFm4Ry5vRAoiqkUHIrzsLaKV44kTZ6KcN047a1j2+2/agGw1G+V7A7aOEtZQmZYcKGC2zU4072
-	JzxH7zIS5BDPCWzPceeeqaKsXx0K7xeiQrhuDqdwWUuxNlM5LbKn7hblFccNAcubLytXWXgPm0e1+
-	P7bt5wfmgPj2luTquSn+EBgrhmrR/h9JbeWzUjW+ClNaFIMgvSFP+NR+lkZWvkZUkxnPPciPIYDYy
-	lq5Z9yOA==;
-Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:37536 helo=[10.0.1.47])
-	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <re@w6rz.net>)
-	id 1rUlDt-001IsC-2q;
-	Tue, 30 Jan 2024 03:20:09 -0700
-Subject: Re: [PATCH 6.7 000/346] 6.7.3-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-References: <20240129170016.356158639@linuxfoundation.org>
-In-Reply-To: <20240129170016.356158639@linuxfoundation.org>
-From: Ron Economos <re@w6rz.net>
-Message-ID: <180be0f0-7b95-73e0-45a4-0c5fec11b487@w6rz.net>
-Date: Tue, 30 Jan 2024 02:20:07 -0800
-User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+	bh=Vu3/rb2+o9A3xavD6zhieunf/6dYSlSau376+ZTpvg0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=N+nHkcKbfCsxZ7bKvT/Iw0TRXEask8woEHkbzuCJViu4CMkHNTQCMCudM4riomvJR0vz+aVffuQRxvKTWAd1Nr08IVWU1x1aKD+BJia0xTRSCLJsknV86zq3EH4VEdrtqif/G3LG1Oul48DflOlQDM2MNZSJhq9TjTAWVtY/69A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=dbeFUlKH; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=RmMuECqy; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 30 Jan 2024 11:20:11 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1706610013;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=33I6KUptN215uQ8/TCY4CSKquwhpzQOMErJY2s/Iee0=;
+	b=dbeFUlKHES4fesoAHnLXHJ+VSYqlpTZw1eJPWS31UM8nLcj3mswTX5ykMcL2FtN/QiNDD2
+	fYKdSvcPQLz33oL+y/Xj3PL2IBBqzAZq0GCAIOMAvIn0vHHkERJMr3BCoCvCB/bLp/cRFn
+	8hPmIJKDqlDM82IvxIlTSu39xkFreBDnB/Jl4+B5Y1YoIVRHTIR2yGonu4WdLUvmrDV1xq
+	GuHgWKh2dDJw77bwgVlUPXd56YEPBJyq1rRRTG+0U9w+Am3AdqiUynzZog8cejZDYibWmC
+	aSSFol7cgwyOHlyoL+iX5KN0uj7Y2A/njaw2KtTYqMxPrSpV5bCSFeq0NsF1Lw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1706610013;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=33I6KUptN215uQ8/TCY4CSKquwhpzQOMErJY2s/Iee0=;
+	b=RmMuECqyH8DIcdQfe7Trm2myMgd3pEznT6Bm+Y1jq2PCdSuiRKCXyvehmLz1jJDFtmE4Av
+	KcY1D98rUSikL6DA==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Tejun Heo <tj@kernel.org>
+Cc: torvalds@linux-foundation.org, mpatocka@redhat.com,
+	linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev,
+	msnitzer@redhat.com, ignat@cloudflare.com, damien.lemoal@wdc.com,
+	bob.liu@oracle.com, houtao1@huawei.com, peterz@infradead.org,
+	mingo@kernel.org, netdev@vger.kernel.org, allen.lkml@gmail.com,
+	kernel-team@meta.com, tglx@linutronix.de
+Subject: Re: [PATCHSET wq/for-6.9] workqueue: Implement BH workqueue and
+ convert several tasklet users
+Message-ID: <20240130102011.rX9Qjnp1@linutronix.de>
+References: <20240130091300.2968534-1-tj@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box5620.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - w6rz.net
-X-BWhitelist: no
-X-Source-IP: 98.207.139.8
-X-Source-L: No
-X-Exim-ID: 1rUlDt-001IsC-2q
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:37536
-X-Source-Auth: re@w6rz.net
-X-Email-Count: 4
-X-Org: HG=bhshared;ORG=bluehost;
-X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfBzy21jzT3//0kEE/k5aE8EiBzZJGuaoU2h8dxAodt+23xCkdQZ/aWXB4+VAcPgA7LtHKOMa0N3+bQoFnhLiLGiL+jqfdj6jwFDgc0MGFOsV8190KTZ1
- 3UmtVAftfArQjdvaw6GPFde+XT+bxS+iWx59biURmC1rEYaGKtHVwySerK6SZ5eXN8e9xdZNjuoIbN2njkVoYLfc6GmUisBXRps=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240130091300.2968534-1-tj@kernel.org>
 
-On 1/29/24 9:00 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.7.3 release.
-> There are 346 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 31 Jan 2024 16:59:28 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.7.3-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 2024-01-29 23:11:47 [-1000], Tejun Heo wrote:
+> Hello,
+Hi,
 
-Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+> As suggested, this patchset implements BH workqueues which are like regular
+> workqueues but executes work items in the BH (softirq) context and converts
+> several tasklet users.
+> 
+> - The name bh is used instead of the suggested atomic as it's more in line
+>   with widely used execution context interface - local_bh_enable/disable()
+>   and friends.
+> 
+> - The system default BH workqueues - system_bh_wq and system_bh_highpri_wq -
+>   are provided. As queue-wide flushing doesn't exist in tasklet, all
+>   existing tasklet users should be able to use the system BH workqueues
+>   without creating their own.
+> 
+> - BH workqueues currently use tasklet to run the work items to avoid
+>   priority inversions involving tasklet_hi and WQ_BH | WQ_HIGHPRI. Once all
+>   tasklet users are converted, tasklet code can be removed and BH workqueues
+>   can take over its softirqs.
 
-Tested-by: Ron Economos <re@w6rz.net>
+If one context creates multiple work item which are then moved to
+tasklet I don't see the difference vs workqueue with a bh_disable()
+around it.
+Looking at the USB changes, I would prefer to see it converted to
+threaded interrupts instead of using tasklet or workqueue. Both
+approaches (current tasklet, suggested workqueue) lose the original
+context where the request was created. Having threaded interrupts would
+allow to keep everything in the same "context" so you could prioritize
+according to your needs.
 
+Sebastian
 
