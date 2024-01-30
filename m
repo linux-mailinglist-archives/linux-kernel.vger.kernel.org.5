@@ -1,39 +1,72 @@
-Return-Path: <linux-kernel+bounces-44256-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44258-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE3AB841F9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:34:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B837841F82
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:29:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 56910B281D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:28:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A06121C24BCA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:29:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5383C59B4E;
-	Tue, 30 Jan 2024 09:27:57 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B09A57891;
-	Tue, 30 Jan 2024 09:27:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A09465F86C;
+	Tue, 30 Jan 2024 09:29:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b="LTC8vNC5"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F36D59150
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:29:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706606876; cv=none; b=oZgReyCPQcdqKQcxR9pSS37YgQh1hQqIf9nghKeX50WgeINV6rjos60RHojcoKHDpHrT1sVGrwR1YfhpqBKkGfoVAMZZUm8F84LtfdlHVWtp3y6scW+2A0QW4Gnba2ROgzdHyKgqDjnV5y9SeAKjWh7Qxb/eUFmggReKNmokGuQ=
+	t=1706606956; cv=none; b=UBfEJeqLuEac+taNs1CBpBvlDtRpSFnkXHpS7r40nIyD67h+lSqs01pA1NkxO03rAl6lUpt57XxuJr/h5mce6LBmkMc4Lg8e/qcuuXiau7/s73Gbo1dEAh8/3xUx2NMlKRPveZYSPNwIY5QFJQ1rArw9SAnGOtRKj6dqX8Tz86I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706606876; c=relaxed/simple;
-	bh=cQyNKX5SJGiHTCO+KmEdO+MwVWTOKOVYyLhPuY+O8bk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=PerSJ6mUZkwDjqEZSmkDGRIqBex0nPo8JtpkGN085RstRIwHvv0VHkanuMwWjrh9Y2D4E6WDrWih9Eey9MNS8OKmxohH+i36JxOEikT9JhCLIPQN1qrUgYSZCVBtt3o/T5hc+ppBcnybpoZuOoYlUvIZerJXqr+yZT97qae+NDE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [112.20.112.150])
-	by gateway (Coremail) with SMTP id _____8CxrusYwbhlN0oIAA--.25346S3;
-	Tue, 30 Jan 2024 17:27:52 +0800 (CST)
-Received: from [192.168.100.8] (unknown [112.20.112.150])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8BxLs8WwbhlWL8nAA--.23412S3;
-	Tue, 30 Jan 2024 17:27:51 +0800 (CST)
-Message-ID: <e45bd402-0c39-4075-a730-1dd5f4fc2208@loongson.cn>
-Date: Tue, 30 Jan 2024 17:27:49 +0800
+	s=arc-20240116; t=1706606956; c=relaxed/simple;
+	bh=g7/Tw40iurYfKeZa/xZvbogA0Dz7AsysUvBEQywxNgM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EXNJmCOrqmzEEnN5bB+3VtR98HZ7pVLyUmXrPSR8jCh30EsfMwDQbAzF77IlwBty1epYeURVQnV7C7xPqAeVyjw3C9oooA9gbswdZqyW2pRXcaWsDrHzklismnJOVANPpUSCfsmsHITwfGTEtiMZo0wl4huxNq339VGFcuaAaBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org; spf=none smtp.mailfrom=blackwall.org; dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b=LTC8vNC5; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=blackwall.org
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51030ce36fbso3755340e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:29:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1706606953; x=1707211753; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CvgkqrVhgwAp9eomtc6oUrzhXKUHKI4dKXoGY8fDTwo=;
+        b=LTC8vNC55UBhWEq0pXzMViaOEpxTBpx8oevdKBkPJ7Qu8z/+2W8LRUwCLydB8VDgwK
+         bjI0VtiE5T2L/gJIeXW7k568DO5qvCfX9BDFs5EU23bqX8XqnoASkGRPxmEILQioai98
+         vK+Vl2oAfeo7mArQm3Y9/hXsr+s4R64INoOb25dv46J36C54TRSs2hqfyyjmo5kzl5ZK
+         i3wJOshkeYy1sunnO78ZPQhPq2KBhDrdBG1QhasqcvXY4zfDn8ylQ4Rqku3z75vTUjid
+         W/KdktUGfXR+3hyLm6pbe9tjg+2FlwD7fbbrzvoqVynVm9u2ityoCeVjrvbp7VUHVb6H
+         iokg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706606953; x=1707211753;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CvgkqrVhgwAp9eomtc6oUrzhXKUHKI4dKXoGY8fDTwo=;
+        b=Wfghl+n8gXoujfGNwFzsNG0+4uiGuI1HR8k1iJqb5CjjhZcBrUeTUYbyTia/paWBGY
+         UfggGzdqEY36uEWe0i8Z1NvnU3sQzG+951IHjEwlysqGsxDveFIk4kZWnapCCezKazyZ
+         TSBNNJ/GxSbDi+n8wiE/pEPA7NsCKL6la/ypmfd+tYRnVaB16K8+EfGCaoClnISJynyv
+         n2esdKJgL9DokX+5KLMjb0fCfcNNwciwnt4kQbHqmvH9lMsNFExtx3njM2N736efyQkR
+         m7mkU5jE+VtzHZtZbnpe4Rel/DWkFSF2eWPHRJPDmzcqnjUvVHfRXL+9fk8mVMYxahCR
+         0uWg==
+X-Gm-Message-State: AOJu0Yx5MsuMnG2lOfIc+VajE3gqOO4XB8WS9+F+IaMK/LJjlRlrBsUe
+	CG1o8CJS0zgx3okjmiBQHZI6n4TWWBDoxa+YXTvLU3H+3aP49ca8Op0OAS7PTgg=
+X-Google-Smtp-Source: AGHT+IFKOierXNs5R8QtY/OftsfX1IkVkKVPMFcsF71RjOLl9Nbv1Fck3f+sLCr3SUy88diadJDN8Q==
+X-Received: by 2002:a05:6512:34d2:b0:50e:af9d:9b1 with SMTP id w18-20020a05651234d200b0050eaf9d09b1mr4522166lfr.14.1706606952959;
+        Tue, 30 Jan 2024 01:29:12 -0800 (PST)
+Received: from [192.168.0.161] ([62.73.69.208])
+        by smtp.gmail.com with ESMTPSA id u16-20020a05600c19d000b0040e4733aecbsm12370438wmq.15.2024.01.30.01.29.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jan 2024 01:29:12 -0800 (PST)
+Message-ID: <4c073b12-c1b7-44fd-8f46-d901a4cd403c@blackwall.org>
+Date: Tue, 30 Jan 2024 11:29:11 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,95 +74,47 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] sched/doc: Update EM API em_pd_energy to em_cpu_energy
-To: Chenggang Wang <wangchenggang@vivo.com>, Jonathan Corbet
- <corbet@lwn.net>, Alex Shi <alexs@kernel.org>,
- Pierre Gondois <Pierre.Gondois@arm.com>, Bjorn Helgaas
- <bhelgaas@google.com>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Lukasz Luba <lukasz.luba@arm.com>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <TY0PR06MB5470E30E86989E8CD84FCE0DC47D2@TY0PR06MB5470.apcprd06.prod.outlook.com>
- <1706585531-24072-1-git-send-email-wangchenggang@vivo.com>
+Subject: Re: [PATCH net-next] net: bridge: Use KMEM_CACHE instead of
+ kmem_cache_create
 Content-Language: en-US
-From: Yanteng Si <siyanteng@loongson.cn>
-In-Reply-To: <1706585531-24072-1-git-send-email-wangchenggang@vivo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8BxLs8WwbhlWL8nAA--.23412S3
-X-CM-SenderInfo: pvl1t0pwhqwqxorr0wxvrqhubq/
-X-Coremail-Antispam: 1Uk129KBj93XoWxGFyfWF4DuFW3ZF4UtF1xXrc_yoW5Xr1xpF
-	ykKr4xtF1fAFn8KryxAw1UXrWrXw4fCayUGFs8t3saqrs5ArW0yw13t343Grs7ZrySyFZr
-	XryYg3s2yw12vwcCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUU9Yb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVWxJr0_GcWln4kS14v26r1Y6r17M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
-	xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y
-	6r17McIj6I8E87Iv67AKxVWxJVW8Jr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
-	8JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r1Y
-	6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7
-	AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE
-	2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcV
-	C2z280aVAFwI0_Cr0_Gr1UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIev
-	Ja73UjIFyTuYvjxU7PrcDUUUU
+To: Kunwu Chan <chentao@kylinos.cn>, roopa@nvidia.com, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+Cc: bridge@lists.linux.dev, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240130092536.73623-1-chentao@kylinos.cn>
+From: Nikolay Aleksandrov <razor@blackwall.org>
+In-Reply-To: <20240130092536.73623-1-chentao@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Chenggang,
-
-在 2024/1/30 11:32, Chenggang Wang 写道:
-> The em_pd_energy function name is obsolete and non-existent now.
+On 30/01/2024 11:25, Kunwu Chan wrote:
+> commit 0a31bd5f2bbb ("KMEM_CACHE(): simplify slab cache creation")
+> introduces a new macro.
+> Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
+> to simplify the creation of SLAB caches.
+> 
+> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
 > ---
+>  net/bridge/br_fdb.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/net/bridge/br_fdb.c b/net/bridge/br_fdb.c
+> index c622de5eccd0..c77591e63841 100644
+> --- a/net/bridge/br_fdb.c
+> +++ b/net/bridge/br_fdb.c
+> @@ -35,10 +35,7 @@ static struct kmem_cache *br_fdb_cache __read_mostly;
+>  
+>  int __init br_fdb_init(void)
+>  {
+> -	br_fdb_cache = kmem_cache_create("bridge_fdb_cache",
+> -					 sizeof(struct net_bridge_fdb_entry),
+> -					 0,
+> -					 SLAB_HWCACHE_ALIGN, NULL);
+> +	br_fdb_cache = KMEM_CACHE(net_bridge_fdb_entry, SLAB_HWCACHE_ALIGN);
+>  	if (!br_fdb_cache)
+>  		return -ENOMEM;
+>  
 
-It is not a complete patch, at least it is missing a Signed of by; Then, 
-could you please explain
-
-the reason for sending again in a short period of time? Perhaps this 
-email should be used as
-
-patch v2. see .../Documentation/translations/zh_CN/process/5.Posting.rst
-
-
-You can also execute this command:
-
-  $:./scripts/checkpatch.pl
-
-Then silence all warnings and errors.
-
-
-Thanks,
-
-Yanteng
-
->   Documentation/scheduler/sched-energy.rst                    | 2 +-
->   Documentation/translations/zh_CN/scheduler/sched-energy.rst | 2 +-
->   2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/scheduler/sched-energy.rst b/Documentation/scheduler/sched-energy.rst
-> index 70e2921..84b37a2 100644
-> --- a/Documentation/scheduler/sched-energy.rst
-> +++ b/Documentation/scheduler/sched-energy.rst
-> @@ -141,7 +141,7 @@ in its previous activation.
->   find_energy_efficient_cpu() uses compute_energy() to estimate what will be the
->   energy consumed by the system if the waking task was migrated. compute_energy()
->   looks at the current utilization landscape of the CPUs and adjusts it to
-> -'simulate' the task migration. The EM framework provides the em_pd_energy() API
-> +'simulate' the task migration. The EM framework provides the em_cpu_energy() API
->   which computes the expected energy consumption of each performance domain for
->   the given utilization landscape.
->   
-> diff --git a/Documentation/translations/zh_CN/scheduler/sched-energy.rst b/Documentation/translations/zh_CN/scheduler/sched-energy.rst
-> index fdbf6cf..03dedc6 100644
-> --- a/Documentation/translations/zh_CN/scheduler/sched-energy.rst
-> +++ b/Documentation/translations/zh_CN/scheduler/sched-energy.rst
-> @@ -119,7 +119,7 @@ EAS覆盖了CFS的任务唤醒平衡代码。在唤醒平衡时，它使用平
->   
->   如果唤醒的任务被迁移，find_energy_efficient_cpu()使用compute_energy()来估算
->   系统将消耗多少能量。compute_energy()检查各CPU当前的利用率情况，并尝试调整来
-> -“模拟”任务迁移。EM框架提供了API em_pd_energy()计算每个性能域在给定的利用率条件
-> +“模拟”任务迁移。EM框架提供了API em_cpu_energy()计算每个性能域在给定的利用率条件
->   下的预期能量消耗。
->   
->   下面详细介绍一个优化能量消耗的任务放置决策的例子。
+Acked-by: Nikolay Aleksandrov <razor@blackwall.org>
 
 
