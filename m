@@ -1,124 +1,167 @@
-Return-Path: <linux-kernel+bounces-45143-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45144-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6524B842C21
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:53:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 69D74842C24
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:54:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81B9E1C23DA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:53:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CE4A1C2424A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:54:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1F617992D;
-	Tue, 30 Jan 2024 18:53:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B34457992A;
+	Tue, 30 Jan 2024 18:54:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="wFlWAKE8"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pEucG/Bl"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49D2A79922;
-	Tue, 30 Jan 2024 18:53:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8651979928
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 18:54:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706640793; cv=none; b=fkbHjz3vWiYelKixOZNdJpAluuHDLomw252xHbFxjolUQVfF/nb0qlieBrRhruCQ436/xRFvR98whlVcRpx6ZN1B6yxo21nb2XoU+fwF2HpX/5rSZFAAGI9125jJQ8cUeuuC5/6JUpdTpVGiTA/L66OtXG3kkUTHRFeFwQc0uNc=
+	t=1706640876; cv=none; b=dm2CGVxHTiVTNS5Yq9HOp9s/tA0S1rq4Ii3VkZSzP+Jv2QTlpWiFqmXsiN3rEi6yE4ADE6iE3Djm38ZzXzWxlFaiSl1LQqVT57yKlO+o+r4KUaVszLAQ7uSqj7MnG4j/D4nqrlpsR5ELuVl5UqOrbOwLhrsa5AR8NLb+dDsUFYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706640793; c=relaxed/simple;
-	bh=yeETa2MvQKXw1GBXppudQevIMedsrx9cZNqswDyepSM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=GnQdUc6kjVsuU35/bJ6UjeU0/Hzwc89nCuhJkXbERu2xAKbDaDJiz8Pb/QJSQrqT8du0sWtH9HloGp7KsIcx5L76UvGmg6KWbhbV2ulvvo3f0rD6LZAjayJdP7UzuvcbUT3a3BJbtt15EZQtO/y1idbOWDI68GqPegAQU3/AoGA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=wFlWAKE8; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40UIqsi4068495;
-	Tue, 30 Jan 2024 12:52:54 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706640774;
-	bh=Ovt1YfG0aoQ5gOJqOMhtkx8exf2ExGlg716uesnayg0=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=wFlWAKE87po47qOSIC65JXpdmgjSX/lkBsaCUx5/bENPayQhEzbnG+KN1Gt7/c5dK
-	 f19gOxHqmrKoAciqYIFgGKandoej4U8WkTw97324YkCHxZXl3dj9juPuonqQ6LIe6B
-	 X9cGgapvZhxKmdiqU7rt7xBXV4tlQZLV/9CtdoX0=
-Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40UIqrQn002762
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 30 Jan 2024 12:52:54 -0600
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 30
- Jan 2024 12:52:53 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 30 Jan 2024 12:52:53 -0600
-Received: from [10.249.42.149] ([10.249.42.149])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40UIqreX090285;
-	Tue, 30 Jan 2024 12:52:53 -0600
-Message-ID: <e2d254cf-090e-403a-a445-6cd4f6e1a184@ti.com>
-Date: Tue, 30 Jan 2024 12:52:52 -0600
+	s=arc-20240116; t=1706640876; c=relaxed/simple;
+	bh=KaYqtwvhZkPpAlQK4G8JayCcItXB2wokKct2Y23TGIA=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=psgwTawZjUtz2BoJoEqa75NHjg7Sb4mKaYNZ+T55VStJtp/3kDHXnXVHhoDeoyZWGdie5jbC2VC/pRAEBfQtAK+IrBDNVhYXruYqSgpMGXn7YyghYwD7uZrCL33w0QTLQh10/7ZknmBUS4MW33L98X967v4zA/wNzOv6VN9wX/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pEucG/Bl; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc2358dce6bso5913909276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 10:54:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706640873; x=1707245673; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1hlck0SDOI53RH9ro1d/oaoEWA7eb7Oo/rrMeo05lWA=;
+        b=pEucG/Bl6H/Xyn2Ts31jZRtLam8Gj0DZUmsO3NJjMRR/ibABUu8Ns7HYeh89rhyCqj
+         CgyLDul2P0L/V9FtUGrl3H3a5fgbZBXczZbaNcFkbKWYS3tVZwm531Ho4O1E3Swk/C49
+         DZUrpUzWijwSZVnAsrEIgkyEeOumVVVJfxQ42/2wFxon9I7gnIaglOy2+Jjcrtukh1U+
+         dEmTNz3t0QY6wbRbRge1A5+ZjunGuuLErwUoM2wfqC/S0B41AFKJFWWfisg4WN0/1De8
+         EyfeJeHnhCraecEeNbFZXP6jCvSyn6JFKq9p9huibgJNQCvYGjedwgHIyTXS1bzC70K6
+         zkbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706640873; x=1707245673;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=1hlck0SDOI53RH9ro1d/oaoEWA7eb7Oo/rrMeo05lWA=;
+        b=J2vrfuEgJ8kFxu0uGY31COFkK4TgnbQx1NaVXA6GGyvMTBjc3x9xwKPPapy4rCMc6C
+         1teMdwaXwxVKZ+R4jz0igMHaumhlveCimHX4F7RDbn7xJTL6UWQumF1MwE7ndnxRkuFh
+         pxDAFXjj10Fjx6spPiSMdxqHo2mpKMuoIee1+qMuuolgmogQeOPQve6p3DkeJfZiUCRb
+         GTLQdl0Nur91qCYjpKNLmCWNMwqjJVGM1FzylOeaHDJ603cn4jakQ9gme9/oEXROfMkM
+         /23G2Tpwh3aM9r/ZveKM15H2Qk/vJvWGTOlRhvA6ccix9ipGTkTKiesUs3Oc6JDDRyg6
+         o4yQ==
+X-Gm-Message-State: AOJu0YznvbabxlY6V7ZsX90Y3ftRQPXN42w8yA4LY9OYFlIn1DdwSL2z
+	eiSQxlzFaRYLy6PNdWV7LFynVgc55mVodlx3uwzP6/YU3eH4/0aye8YuE0ndq39q2yOyfLecveh
+	C5+8O8/e+WkY4d3WisQ==
+X-Google-Smtp-Source: AGHT+IGkAvVn8Mmr3dy++eKOOGQiEGQjnS5RHrgdsd6QmPtWfbsuMCKcf4YEWnY1RKKIg+sA0Vjc2FJQc9D75VEc
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a05:6902:2191:b0:dc2:6605:f6ba with
+ SMTP id dl17-20020a056902219100b00dc26605f6bamr606ybb.2.1706640873582; Tue,
+ 30 Jan 2024 10:54:33 -0800 (PST)
+Date: Tue, 30 Jan 2024 18:54:31 +0000
+In-Reply-To: <CAKEwX=Pj+ncE=wZTOBVzT8E-=YVbqr-1CtsMNuZWLAhuaf7wAg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/11] arm64: dts: ti: k3-am65: Convert serdes_mux node
- into reg-mux
-Content-Language: en-US
-To: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero
- Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>
-CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20240124184722.150615-1-afd@ti.com>
- <20240124184722.150615-2-afd@ti.com>
-From: Andrew Davis <afd@ti.com>
-In-Reply-To: <20240124184722.150615-2-afd@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Mime-Version: 1.0
+References: <20240129224542.162599-1-nphamcs@gmail.com> <20240129224542.162599-4-nphamcs@gmail.com>
+ <ZbhP0JkEe39g3yqk@google.com> <CAKEwX=Pj+ncE=wZTOBVzT8E-=YVbqr-1CtsMNuZWLAhuaf7wAg@mail.gmail.com>
+Message-ID: <ZblF54ZpiUzzsbbf@google.com>
+Subject: Re: [PATCH 3/3] selftests: add test for zswapin
+From: Yosry Ahmed <yosryahmed@google.com>
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: akpm@linux-foundation.org, shuah@kernel.org, hannes@cmpxchg.org, 
+	tj@kernel.org, lizefan.x@bytedance.com, linux-mm@kvack.org, 
+	kernel-team@meta.com, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 1/24/24 12:47 PM, Andrew Davis wrote:
-> This removes a dependency on the parent node being a syscon node.
-> Convert from mmio-mux to reg-mux adjusting node name and properties
-> as needed.
-> 
-> Signed-off-by: Andrew Davis <afd@ti.com>
-> ---
+On Tue, Jan 30, 2024 at 10:31:24AM -0800, Nhat Pham wrote:
+> On Mon, Jan 29, 2024 at 5:24=E2=80=AFPM Yosry Ahmed <yosryahmed@google.co=
+m> wrote:
+> >
+[..]
+> > > -static int allocate_bytes(const char *cgroup, void *arg)
+> > > +static int allocate_bytes_and_read(const char *cgroup, void *arg, bo=
+ol read)
+> > >  {
+> > >       size_t size =3D (size_t)arg;
+> > >       char *mem =3D (char *)malloc(size);
+> > > +     int ret =3D 0;
+> > >
+> > >       if (!mem)
+> > >               return -1;
+> > >       for (int i =3D 0; i < size; i +=3D 4095)
+> > >               mem[i] =3D 'a';
+> > > +
+> > > +     if (read) {
+> > > +             /* cycle through the allocated memory to (z)swap in and=
+ out pages */
+> > > +             for (int t =3D 0; t < 5; t++) {
+> >
+> > What benefit does the iteration serve here? I would guess one iteration
+> > is enough to swap everything in at least once, no?
+>=20
+> There might be data races etc. that might not appear in one iteration.
+> Running multiple iterations increases the probability of these bugs
+> cropping up.
 
-This one patch is not needed, I'm going to fix this for AM65 in
-a slightly different way. The rest of the series is still fine.
+Hmm this is a test running in a single process, and I assume the rest of
+the system would be idle (at least from a zswap perspective). Did the
+iterations actually catch problems in this scenario (not specifically in
+this test, but generally in similar testing)?
 
-Andrew
+>=20
+> Admittedly, the same effect could, perhaps, also be achieved by
+> running the same test multiple times, so this is not a hill I will die
+> on :) This is just a bit more convenient - CI infra often runs these
+> tests once every time a new kernel is built.
+>=20
+[..]
+> > > +
+> > > +static int test_swapin(const char *root)
+> > > +{
+> > > +     return test_zswapin_size(root, "0");
+> > > +}
+> >
+> > Why are we testing the no zswap case? I am all for testing but it seems
+> > out of scope here. It would have been understandable if we are testing
+> > memory.zswap.max itself, but we are not doing that.
+>=20
+> Eh it's just by convenience. We already have the workload - any test
+> for zswap can pretty much be turned into a test for swap by disabling
+> zswap (and enabling swap), so I was trying to kill two birds with one
+> stone and cover a bit more of the codebase.
 
->   arch/arm64/boot/dts/ti/k3-am65-main.dtsi | 9 +++++----
->   1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-> index fcea544656360..a18edd34283c7 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-> @@ -492,11 +492,12 @@ serdes1_clk: clock@4090 {
->   			reg = <0x00004090 0x4>;
->   		};
->   
-> -		serdes_mux: mux-controller {
-> -			compatible = "mmio-mux";
-> +		serdes_mux: mux-controller@4080 {
-> +			compatible = "reg-mux";
-> +			reg = <0x4080 0x14>;
->   			#mux-control-cells = <1>;
-> -			mux-reg-masks = <0x4080 0x3>, /* SERDES0 lane select */
-> -					<0x4090 0x3>; /* SERDES1 lane select */
-> +			mux-reg-masks = <0x0 0x3>, /* SERDES0 lane select */
-> +					<0x10 0x3>; /* SERDES1 lane select */
->   		};
->   
->   		dss_oldi_io_ctrl: dss-oldi-io-ctrl@41e0 {
+We can check that no data is actually in zswap after
+test_zswapin_size(root, "0"), in which case it becomes more of a zswap
+test and we get a sanity check for memory.zswap.max =3D=3D 0. WDYT?
+
+Perhaps we can rename it to test_swpain_nozswap() or so.
+
+>=20
+> >
+> > FWIW, I think the tests here should really be separated from cgroup
+> > tests, but I understand why they were added here. There is a lot of
+> > testing for memcg interface and control for zswap, and a lot of nice
+> > helpers present.
+>=20
+> Yeah FWIW, I agree :) I wonder if there's an easy way to inherit
+> helpers from one test suite to another. Some sort of kselftest
+> dependency? Or maybe move these cgroup helpers up the hierarchy (so
+> that it can be shared by multiple selftest suites).
+
+I am not fluent in kselftest so I can't claim to know the answer here.
+There are a lot of things to do testing-wise for zswap, but I am not
+asking anyone to do it because I don't have the time to do it myself. It
+would be nice though :)
 
