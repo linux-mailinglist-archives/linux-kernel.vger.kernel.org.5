@@ -1,341 +1,184 @@
-Return-Path: <linux-kernel+bounces-44902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44901-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E9858428DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:09:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8D0A8428D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:09:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D80D728A1FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:09:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76BED1F29F35
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:09:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 455CB86AD2;
-	Tue, 30 Jan 2024 16:09:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7354C86AC9;
+	Tue, 30 Jan 2024 16:09:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WZ3HiJGH"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="o7SgwyRX"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6157B86AC9;
-	Tue, 30 Jan 2024 16:09:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED6F8605A6
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 16:09:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706630974; cv=none; b=GhWXYTULUWKdBgy1RGHqF04cQ5DzaKtVWEivUERl+RyutidNTqgAnEBLulRPaG9t1qehPlN4ROsfjMCmv3Dgd5qqk257JfVyyXWsM8uojuq2qp8ovlUgkulpb8uwKyO50KakD31SLJBJoJ4N9EBQqjBzcyQa/j+mih0IctI8PhA=
+	t=1706630954; cv=none; b=UFUoUvLxHebd/GSBE0+rKKBBgc27mridu7wB9apdZJaKy+WUxKJ70mO+5FbVdQeclh80G9S3woCm8uakaQOQ+HY7Z0QBXB5m4kix4h1f9wP47P1oOOm1GTGtWXVyNojIi8fw9v9ID4sntMrNzfdPtD6hYFQGQK5ecRlf3h745hM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706630974; c=relaxed/simple;
-	bh=qgYFI1B3Pdjuc0Arvki6y0tzVdOLmU/7dKfsCaUoa8s=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RYvLHS7+YJGhvmxAfvVXShyDXSUxO1mhPw9ESXOMv4zm6ZjRSOxMHYaLfIQolVyo33E6xbGePefJzWYgQ+PiZrGaXp6SkKE6dSpSHobRYGkJ/jJ9zVkHAOv27/uNYjwRILMsLFfqNXm55Jabekr4tNPhVznMSj76l63CCteX0iQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WZ3HiJGH; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40e5afc18f5so44468655e9.3;
-        Tue, 30 Jan 2024 08:09:32 -0800 (PST)
+	s=arc-20240116; t=1706630954; c=relaxed/simple;
+	bh=XL3vQnpbYTlHEIia1p72Dxk+/Pv7y5c3/EuxSugjJns=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FOsydVk6BZfcOf+bdtjDnWFbWglVWWkwhkI7b8JvGf6weZh+Hv7ymBjaH0eYmMFnMcnVCcpxzJhYwdT1dbqVLIYWoVGblHXLdqdlvxoKTMB8SUXaUSMvMshyhD3icIkge08o7/39tRFn9F+Nc8BGwIDPzboN6O+cCNeC5EfvhYU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=o7SgwyRX; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-55c2cf644f3so4204103a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 08:09:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706630970; x=1707235770; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=uGdpIQ3h7USVCYzxg0c4UgIyLi+Uz0SXFUiMKfQCYHM=;
-        b=WZ3HiJGHn3sV636PVkLzFmjmblg9Bg5NCuzbo7vpvlSWMLj0S9mbLV+v1cpRa4IDNX
-         EJDjjD3fOY8Wajh3S21ZH1Ne0uDjOd2nN043OB6TwI2w8UBhEOfN/KbIHrN7NSgf5AVD
-         0V9RJzW/KSRsX0WZTYs7qghkPXcElZTUTI0ZFvw7TDH0Wv2SpaF5mvZRR4MZ4YSkSUF0
-         QbN6Iybuca4Z971cU7QHLWC7rh9bDZfXozAg9GZZRQS6x3RwysUT6Slcv7QBJueAdnev
-         YvUn2RqXe6Uvfm45xF2QBX8ZJ/EfR0mDg4viBUYW8eUxVm1bkZvBDG1gtZUn7YIoyxR/
-         QtxA==
+        d=linaro.org; s=google; t=1706630951; x=1707235751; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7sV5Z5NkseIugmJChnfpVQKK4FrMg6qPR+jRzi0C4ec=;
+        b=o7SgwyRXRPLk65PDHaldkFNMEV/ZJO2Nhn0N6G3lXQNC1UM914eZ4W6kmJ5JFAWGN7
+         pXkVm9DWLbVxvu6M8uMpg/nOHdQRWmLQme6jKxZ0UWvDDOa5uUJbC8+9lGOSAEOl3K5c
+         lrORpDNz9aCj1+VqP50re2c8CodZJ7oZTxGF1j4J/y9TwlJIh2kYI+f3zFYNdp2uRxtd
+         ZUIuf2gB/EcZM9GSSC+N5aEdnLK5AW+iLocmmrMvXQgy7Xwl3gbGQfRWLamtxv2VhZGR
+         IRCpIQ8RYPOeg5QOhJpDZyzCePqoG2c3QGK6vlWyu7daj2SoV6pzx/vRRTiLIUuzuSsp
+         /SLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706630970; x=1707235770;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uGdpIQ3h7USVCYzxg0c4UgIyLi+Uz0SXFUiMKfQCYHM=;
-        b=gcJ8jLAeZEO45pT39ZpjZV138I+0SeddEZWrBYPR6jPksy+T/wtISJJb8/+WGPtqvZ
-         2khDCu3LFFrh5DSVdyKkkXWXq1XshY+JDkxJhiBwh4xq5DsJjfdapWI4mmALymenfsfN
-         BMvepG4nWitCjDXwAHYpHtS0KU7myLAIGVYBHNEdU0a2cAFhN7Bn/jalTMQzr+pjgObd
-         aipYiqwFnq3Hkb/y2JuoEHlLIZLE+5HzV1syuhWqOmp1NJCoa8769mY9AAsSVL9WM+mv
-         8N4ALz+c7gAxPH5giZAEXPj5KQ86fKWH/yL336lw9o83pM307ZqmvMX71F0G+EIIYToG
-         18cg==
-X-Gm-Message-State: AOJu0YwS+ZHr1o2y1dK9/u6nZjq3FA856mlQCkgnERffp/mAViE7ijfk
-	2a7LwqRJCQGbZ9XdU1XpvxzMhojWxv/tzDkl/tlDHJJfatM9Yo+y
-X-Google-Smtp-Source: AGHT+IGWFnJrRxLBHumfHhI1WBj7sgb0ex91I19YCMtOUFEnhpMWS9ZsJLWMPQLIEI5GPzONDB11wA==
-X-Received: by 2002:a1c:4b19:0:b0:40e:46b6:bc48 with SMTP id y25-20020a1c4b19000000b0040e46b6bc48mr7040329wma.41.1706630970210;
-        Tue, 30 Jan 2024 08:09:30 -0800 (PST)
-Received: from localhost.localdomain ([176.230.105.209])
-        by smtp.gmail.com with ESMTPSA id n4-20020a5d4c44000000b0033aeda49732sm5725756wrt.33.2024.01.30.08.09.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 08:09:29 -0800 (PST)
-From: Elad Yifee <eladwf@gmail.com>
-To: 
-Cc: eladwf@gmail.com,
-	Felix Fietkau <nbd@nbd.name>,
-	Sean Wang <sean.wang@mediatek.com>,
-	Mark Lee <Mark-MC.Lee@mediatek.com>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Russell King <linux@armlinux.org.uk>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: [PATCH RFC] net: ethernet: mtk_eth_soc: ppe: add support for multiple PPEs
-Date: Tue, 30 Jan 2024 18:08:49 +0200
-Message-ID: <20240130160854.5221-1-eladwf@gmail.com>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1706630951; x=1707235751;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7sV5Z5NkseIugmJChnfpVQKK4FrMg6qPR+jRzi0C4ec=;
+        b=mDcucWpK4LP+1zByZKPSqjfT8RY7/3/y9vcS+KphMXByz1NWhGNduHu1Tjb2HCxwhS
+         Py3R6hEgUpFwyTXL3PxLqrmjsK0GnSH1WV1oiKTJ0d9JlRTA31vR+y0bUDPc4vqc8pEg
+         HQ8AbFgbGZ3f3eQU1Nj781nOjwa70r3pJJ7kOe4opkEhTSDO6+1Y0aOiVmMZQScMPIb5
+         bvomQE3fNbNaN+X54s9CVJxue4tR/tdt3u33OGqubefyR7fu1p1s0RngRr8Ks9dYyzqu
+         i7p5eaYQJtx/sVjnobuZqVQqnAwPEgTvCz0Avcp9/diqK3yxRrlNGD3A/8BFKhbKNFRh
+         7clw==
+X-Gm-Message-State: AOJu0YzwXemAlwBQpn7J5qxA1aSOL9GH4qEDL3yJCuX8in71SuFFTebM
+	0A2gyZoy7wSeTqa/tDEJX0ibshTseM2fDIyU0Jih+3l1M7GL8ep7u1WeYVNCsPM=
+X-Google-Smtp-Source: AGHT+IG32zAykB2w2M5SNxicGdKq0vPl2xbms+AJ8dBhfx7ycQgibKojhX/9r+bWyY3DdFJ2QMCk+A==
+X-Received: by 2002:a05:6402:3594:b0:55d:2ecf:eb1b with SMTP id y20-20020a056402359400b0055d2ecfeb1bmr7271257edc.1.1706630951236;
+        Tue, 30 Jan 2024 08:09:11 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXT52O/6SYqanaIQA8bDs7wERtGDZ3J/0WYQ9+EkYPIiwR/yC8K5SBAvjIdfLkt8LbkogQnkDB+7bQaEgcSUP3r7Q3nCiNzkpeUdvX+La+JHKrZ6PcjpVd30PKUUJy+691laGJEUZZnfn2QxYpblqy/FaQ/T65ZThWlesrGn7innE4la5GUUTBjV/dNqd7zFW3JzVfz1TG2G06T2DI6iRUpV3TlxDJGUAozvpK6EaGH6Boq4vUDD5plY0olefADxE0wb9Hme1EZtbH4Qxu4jzJnh9n69U9X5VYVVddJjm0RTqKa9nFTdmPMivavSM2HybgFDkCUauuQ/aYOPdeVgNB7X1Ku4S5ZJOas65cEfd8KErDWZSkYYqB6ItxF3qepD3s6RvwY+o0=
+Received: from [192.168.1.20] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id h1-20020a0564020e0100b0055d312732dbsm5002208edh.5.2024.01.30.08.09.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jan 2024 08:09:10 -0800 (PST)
+Message-ID: <9b0680b6-1952-41d3-82f4-88c60469dc3a@linaro.org>
+Date: Tue, 30 Jan 2024 17:09:09 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] dt-bindings: fpga: xlnx,fpga-slave-selectmap: add DT
+ schema
+Content-Language: en-US
+To: Charles Perry <charles.perry@savoirfairelinux.com>, mdf@kernel.org,
+ "michal.simek@amd.com" <michal.simek@amd.com>
+Cc: hao.wu@intel.com, yilun.xu@intel.com, trix@redhat.com,
+ krzysztof.kozlowski+dt@linaro.org, bcody@markem-imaje.com,
+ avandiver@markem-imaje.com, linux-fpga@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240129225602.3832449-1-charles.perry@savoirfairelinux.com>
+ <20240129225602.3832449-2-charles.perry@savoirfairelinux.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240129225602.3832449-2-charles.perry@savoirfairelinux.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Add the missing pieces to allow multiple PPEs units, one for each GMAC.
-mtk_gdm_config has been modified to work on targted mac ID,
-the inner loop moved outside of the function to allow unrelated
-operations like setting the MAC's PPE index.
+On 29/01/2024 23:56, Charles Perry wrote:
+> Document the slave SelectMAP interface of Xilinx 7 series FPGA.
+> 
+> Signed-off-by: Charles Perry <charles.perry@savoirfairelinux.com>
+> ---
+>  .../fpga/xlnx,fpga-slave-selectmap.yaml       | 85 +++++++++++++++++++
+>  1 file changed, 85 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/fpga/xlnx,fpga-slave-selectmap.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/fpga/xlnx,fpga-slave-selectmap.yaml b/Documentation/devicetree/bindings/fpga/xlnx,fpga-slave-selectmap.yaml
+> new file mode 100644
+> index 0000000000000..20cea24e3e39a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/fpga/xlnx,fpga-slave-selectmap.yaml
+> @@ -0,0 +1,85 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/fpga/xlnx,fpga-slave-selectmap.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Xilinx Slave SelectMAP FPGA
 
-Signed-off-by: Elad Yifee <eladwf@gmail.com>
----
- drivers/net/ethernet/mediatek/mtk_eth_soc.c   | 79 +++++++++++--------
- drivers/net/ethernet/mediatek/mtk_eth_soc.h   | 15 +++-
- .../net/ethernet/mediatek/mtk_ppe_offload.c   |  6 +-
- 3 files changed, 62 insertions(+), 38 deletions(-)
+https://elixir.bootlin.com/linux/v6.8-rc2/source/Documentation/process/coding-style.rst#L338
 
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-index a6e91573f8da..ba4e54977f34 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-@@ -2176,7 +2176,7 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
- 		}
- 
- 		if (reason == MTK_PPE_CPU_REASON_HIT_UNBIND_RATE_REACHED)
--			mtk_ppe_check_skb(eth->ppe[0], skb, hash);
-+			mtk_ppe_check_skb(eth->ppe[eth->mac[mac]->ppe_idx], skb, hash);
- 
- 		skb_record_rx_queue(skb, 0);
- 		napi_gro_receive(napi, skb);
-@@ -3267,37 +3267,27 @@ static int mtk_start_dma(struct mtk_eth *eth)
- 	return 0;
- }
- 
--static void mtk_gdm_config(struct mtk_eth *eth, u32 config)
-+static void mtk_gdm_config(struct mtk_eth *eth, u32 id, u32 config)
- {
--	int i;
-+	u32 val;
- 
- 	if (MTK_HAS_CAPS(eth->soc->caps, MTK_SOC_MT7628))
- 		return;
- 
--	for (i = 0; i < MTK_MAX_DEVS; i++) {
--		u32 val;
--
--		if (!eth->netdev[i])
--			continue;
-+	val = mtk_r32(eth, MTK_GDMA_FWD_CFG(id));
- 
--		val = mtk_r32(eth, MTK_GDMA_FWD_CFG(i));
-+	/* default setup the forward port to send frame to PDMA */
-+	val &= ~0xffff;
- 
--		/* default setup the forward port to send frame to PDMA */
--		val &= ~0xffff;
-+	/* Enable RX checksum */
-+	val |= MTK_GDMA_ICS_EN | MTK_GDMA_TCS_EN | MTK_GDMA_UCS_EN;
- 
--		/* Enable RX checksum */
--		val |= MTK_GDMA_ICS_EN | MTK_GDMA_TCS_EN | MTK_GDMA_UCS_EN;
-+	val |= config;
- 
--		val |= config;
-+	if (eth->netdev[id] && netdev_uses_dsa(eth->netdev[id]))
-+		val |= MTK_GDMA_SPECIAL_TAG;
- 
--		if (netdev_uses_dsa(eth->netdev[i]))
--			val |= MTK_GDMA_SPECIAL_TAG;
--
--		mtk_w32(eth, val, MTK_GDMA_FWD_CFG(i));
--	}
--	/* Reset and enable PSE */
--	mtk_w32(eth, RST_GL_PSE, MTK_RST_GL);
--	mtk_w32(eth, 0, MTK_RST_GL);
-+	mtk_w32(eth, val, MTK_GDMA_FWD_CFG(id));
- }
- 
- 
-@@ -3369,6 +3359,7 @@ static int mtk_open(struct net_device *dev)
- 	/* we run 2 netdevs on the same dma ring so we only bring it up once */
- 	if (!refcount_read(&eth->dma_refcnt)) {
- 		const struct mtk_soc_data *soc = eth->soc;
-+		const u32 ppe_num = mtk_get_ppe_num(eth);
- 		u32 gdm_config;
- 		int i;
- 
-@@ -3381,17 +3372,36 @@ static int mtk_open(struct net_device *dev)
- 		for (i = 0; i < ARRAY_SIZE(eth->ppe); i++)
- 			mtk_ppe_start(eth->ppe[i]);
- 
--		gdm_config = soc->offload_version ? soc->reg_map->gdma_to_ppe
--						  : MTK_GDMA_TO_PDMA;
--		mtk_gdm_config(eth, gdm_config);
-+		for (i = 0; i < MTK_MAX_DEVS; i++) {
-+			if (!eth->netdev[i])
-+				break;
-+			struct mtk_mac *target_mac = netdev_priv(eth->netdev[i]);
-+
-+			if (!soc->offload_version) {
-+				target_mac->ppe_idx = 0;
-+				gdm_config = MTK_GDMA_TO_PDMA;
-+			} else if (ppe_num >= 3 && target_mac->id == 2) {
-+				target_mac->ppe_idx = 2;
-+				gdm_config = MTK_GDMA_TO_PPE2;
-+			} else if (ppe_num >= 2 && target_mac->id == 1) {
-+				target_mac->ppe_idx = 1;
-+				gdm_config = MTK_GDMA_TO_PPE1;
-+			} else {
-+				target_mac->ppe_idx = 0;
-+				gdm_config = soc->reg_map->gdma_to_ppe;
-+			}
-+			mtk_gdm_config(eth, target_mac->id, gdm_config);
-+		}
-+		/* Reset and enable PSE */
-+		mtk_w32(eth, RST_GL_PSE, MTK_RST_GL);
-+		mtk_w32(eth, 0, MTK_RST_GL);
- 
- 		napi_enable(&eth->tx_napi);
- 		napi_enable(&eth->rx_napi);
- 		mtk_tx_irq_enable(eth, MTK_TX_DONE_INT);
- 		mtk_rx_irq_enable(eth, soc->txrx.rx_irq_done_mask);
- 		refcount_set(&eth->dma_refcnt, 1);
--	}
--	else
-+	} else
- 		refcount_inc(&eth->dma_refcnt);
- 
- 	phylink_start(mac->phylink);
-@@ -3469,7 +3479,8 @@ static int mtk_stop(struct net_device *dev)
- 	if (!refcount_dec_and_test(&eth->dma_refcnt))
- 		return 0;
- 
--	mtk_gdm_config(eth, MTK_GDMA_DROP_ALL);
-+	for (i = 0; i < MTK_MAX_DEVS; i++)
-+		mtk_gdm_config(eth, i, MTK_GDMA_DROP_ALL);
- 
- 	mtk_tx_irq_disable(eth, MTK_TX_DONE_INT);
- 	mtk_rx_irq_disable(eth, eth->soc->txrx.rx_irq_done_mask);
-@@ -4945,11 +4956,11 @@ static int mtk_probe(struct platform_device *pdev)
- 	}
- 
- 	if (eth->soc->offload_version) {
--		u32 num_ppe = mtk_is_netsys_v2_or_greater(eth) ? 2 : 1;
-+		u32 num_ppe = mtk_get_ppe_num(eth);
- 
- 		num_ppe = min_t(u32, ARRAY_SIZE(eth->ppe), num_ppe);
- 		for (i = 0; i < num_ppe; i++) {
--			u32 ppe_addr = eth->soc->reg_map->ppe_base + i * 0x400;
-+			u32 ppe_addr = eth->soc->reg_map->ppe_base + (i == 2 ? 0xC00 : i * 0x400);
- 
- 			eth->ppe[i] = mtk_ppe_init(eth, eth->base + ppe_addr, i);
- 
-@@ -4957,11 +4968,11 @@ static int mtk_probe(struct platform_device *pdev)
- 				err = -ENOMEM;
- 				goto err_deinit_ppe;
- 			}
--		}
-+			err = mtk_eth_offload_init(eth, i);
- 
--		err = mtk_eth_offload_init(eth);
--		if (err)
--			goto err_deinit_ppe;
-+			if (err)
-+				goto err_deinit_ppe;
-+		}
- 	}
- 
- 	for (i = 0; i < MTK_MAX_DEVS; i++) {
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.h b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-index 9ae3b8a71d0e..7654fa74e7fc 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-@@ -124,6 +124,8 @@
- #define MTK_GDMA_UCS_EN		BIT(20)
- #define MTK_GDMA_STRP_CRC	BIT(16)
- #define MTK_GDMA_TO_PDMA	0x0
-+#define MTK_GDMA_TO_PPE1	0x4444
-+#define MTK_GDMA_TO_PPE2	0xcccc
- #define MTK_GDMA_DROP_ALL       0x7777
- 
- /* GDM Egress Control Register */
-@@ -1286,7 +1288,7 @@ struct mtk_eth {
- 
- 	struct metadata_dst		*dsa_meta[MTK_MAX_DSA_PORTS];
- 
--	struct mtk_ppe			*ppe[2];
-+	struct mtk_ppe			*ppe[3];
- 	struct rhashtable		flow_table;
- 
- 	struct bpf_prog			__rcu *prog;
-@@ -1311,6 +1313,7 @@ struct mtk_eth {
- struct mtk_mac {
- 	int				id;
- 	phy_interface_t			interface;
-+	unsigned int			ppe_idx;
- 	int				speed;
- 	struct device_node		*of_node;
- 	struct phylink			*phylink;
-@@ -1421,6 +1424,14 @@ static inline u32 mtk_get_ib2_multicast_mask(struct mtk_eth *eth)
- 	return MTK_FOE_IB2_MULTICAST;
- }
- 
-+static inline u32 mtk_get_ppe_num(struct mtk_eth *eth)
-+{
-+	if (!eth->soc->offload_version)
-+		return 0;
-+
-+	return eth->soc->version;
-+}
-+
- /* read the hardware status register */
- void mtk_stats_update_mac(struct mtk_mac *mac);
- 
-@@ -1432,7 +1443,7 @@ int mtk_gmac_sgmii_path_setup(struct mtk_eth *eth, int mac_id);
- int mtk_gmac_gephy_path_setup(struct mtk_eth *eth, int mac_id);
- int mtk_gmac_rgmii_path_setup(struct mtk_eth *eth, int mac_id);
- 
--int mtk_eth_offload_init(struct mtk_eth *eth);
-+int mtk_eth_offload_init(struct mtk_eth *eth, int id);
- int mtk_eth_setup_tc(struct net_device *dev, enum tc_setup_type type,
- 		     void *type_data);
- int mtk_flow_offload_cmd(struct mtk_eth *eth, struct flow_cls_offload *cls,
-diff --git a/drivers/net/ethernet/mediatek/mtk_ppe_offload.c b/drivers/net/ethernet/mediatek/mtk_ppe_offload.c
-index fbb5e9d5af13..220685f6daaa 100644
---- a/drivers/net/ethernet/mediatek/mtk_ppe_offload.c
-+++ b/drivers/net/ethernet/mediatek/mtk_ppe_offload.c
-@@ -570,7 +570,7 @@ mtk_eth_setup_tc_block_cb(enum tc_setup_type type, void *type_data, void *cb_pri
- 	if (type != TC_SETUP_CLSFLOWER)
- 		return -EOPNOTSUPP;
- 
--	return mtk_flow_offload_cmd(eth, cls, 0);
-+	return mtk_flow_offload_cmd(eth, cls, mac->ppe_idx);
- }
- 
- static int
-@@ -633,7 +633,9 @@ int mtk_eth_setup_tc(struct net_device *dev, enum tc_setup_type type,
- 	}
- }
- 
--int mtk_eth_offload_init(struct mtk_eth *eth)
-+int mtk_eth_offload_init(struct mtk_eth *eth, int id)
- {
-+	if (!eth->ppe[id] || !eth->ppe[id]->foe_table)
-+		return 0;
- 	return rhashtable_init(&eth->flow_table, &mtk_flow_ht_params);
- }
--- 
-2.43.0
+Everywhere: compatible, title, filename, descriptions.
+
+> +
+> +description: |
+> +  Xilinx 7 Series FPGAs support a method of loading the bitstream over a
+> +  parallel port named the slave SelectMAP interface in the documentation. Only
+> +  the x8 mode is supported where data is loaded at one byte per rising edge of
+> +  the clock, with the MSB of each byte presented to the D0 pin.
+> +
+> +  Datasheets:
+> +    https://www.xilinx.com/support/documentation/user_guides/ug470_7Series_Config.pdf
+
+I am surprised that AMD/Xilinx still did not update the document to
+modern naming (slave->secondary).
+
++Cc Michal,
+Maybe that's something you could push it.
+
+Best regards,
+Krzysztof
 
 
