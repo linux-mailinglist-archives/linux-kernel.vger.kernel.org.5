@@ -1,107 +1,105 @@
-Return-Path: <linux-kernel+bounces-44953-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44955-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 504D784295E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:34:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C4806842961
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:34:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5CD31F2884C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:34:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 527AB1F298FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:34:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CD9E1272AF;
-	Tue, 30 Jan 2024 16:33:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F2FC6A02A;
+	Tue, 30 Jan 2024 16:34:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K95DzjwF"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="GLS41lND"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44A1638DDF;
-	Tue, 30 Jan 2024 16:33:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E95F33C09F
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 16:34:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706632402; cv=none; b=A/AhCHqTgv1XFs50GV9Bxmq6waOWEggEbbAVEZNHRhOEydLTBlyijAdaUMG6IUdIRpDcZJjMmAzyIV+mLMfl0WbbfFKS7Y6hxL4bo5o4AKexLSTQSGm1evxv37wYWLo85kDGagMr/jJKWYhaloUnh3IiI512CXeWk5VuMUFgVW0=
+	t=1706632476; cv=none; b=R/qVT4qlz+DUEMw/Z1atq0Lbi8HlRFiUKd+7c/PaaIFOSvdMs88YXMG9lS7WXRvYhc9Mn8wWLEKhyFL0CZneqfnwfSm5NZhA2r2Ot/Ux6u4TUQ4wQcmHwnLgwU0uMlENuNg6aMohrKb9bP947cBLVUxkAIU3LXrEVcLUnYq3qHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706632402; c=relaxed/simple;
-	bh=7lcXGcjnNomt+i2x6M1dhs33eS+R8FWYGL8TkfLV164=;
+	s=arc-20240116; t=1706632476; c=relaxed/simple;
+	bh=cLW3TYnQ+UQStnoofBMZmHXvKOH1jxXp2MdItUiAV0k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f60AhquwWo7KUhYLjPFMh5XTZnEL6gVeJgYeMOjjnMfoebo7qXeLPFMRyNWrYkzwj0b8AkKuKwo0wq4IQi/o0ZHgJ+xT2Iv+mts5gCQoMmoWEsOJhh7a29Fc5e3fb67Aj322S0cuXdNciLx8cJZ5KI6uc6Ty3u/z9OENpAuCxF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K95DzjwF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B22BFC433F1;
-	Tue, 30 Jan 2024 16:33:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706632401;
-	bh=7lcXGcjnNomt+i2x6M1dhs33eS+R8FWYGL8TkfLV164=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=K95DzjwFeGX+F/y1ok9451Ib5LX5ZEJ4E0D+ZjuWleALpCIE99fi41NAKHj9en2NJ
-	 U5FmJ4e7R9SPvgRO9UpMYC0FnSlPxSYr5QNk8tao0YmswsccE/Vl+rHAK0X4AM7+zv
-	 w+WWKlwsAQ9kQ4bZmzCCmWpJwlYiZ5bxnArZsciBJPudRelHCtZXEfb+owvFN3mOO5
-	 Wnp6/fiKK0egb1O1NW0nmzC1CY2OPog7wPVXXfN/3N1Shgcv2aquiT72aMGNDVBh7U
-	 mnEXz8gU1Xvu213BsRH5Cvcicvwj6r3FElH/WtLuqCP+4bNSM1XmDmTtnMujAmDP4n
-	 +PAfg5gfC7gkA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 3E4A2CE14F0; Tue, 30 Jan 2024 08:33:21 -0800 (PST)
-Date: Tue, 30 Jan 2024 08:33:21 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Andrea Parri <parri.andrea@gmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	"E."@paulmck-thinkpad-p17-gen-1.smtp.subspace.kernel.org,
-	Alan Stern <stern@rowland.harvard.edu>,
-	Will Deacon <will@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	David Howells <dhowells@redhat.com>,
-	Jade Alglave <j.alglave@ucl.ac.uk>,
-	Luc Maranget <luc.maranget@inria.fr>,
-	Paul@paulmck-thinkpad-p17-gen-1.smtp.subspace.kernel.org,
-	Akira Yokosawa <akiyks@gmail.com>,
-	Daniel Lustig <dlustig@nvidia.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Jonathan Corbet <corbet@lwn.net>, linux-arch@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: Re: [PATCH doc] Emphasize that failed atomic operations give no
- ordering
-Message-ID: <db3d2a7e-a459-46e1-9c79-2b4e1d503ce5@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <63d9d6f6-05e8-473d-9d09-ce8d3a33ca39@paulmck-laptop>
- <ZbkdqYFlFOdcZ63m@andrea>
+	 Content-Type:Content-Disposition:In-Reply-To; b=A4aDuwcK1adPcJBEyeOmhy7MNBhZ0ebTIUmcs+f+kT+mY0pQboPF3odv9rLqjfFL7SJxpYfwUs/CTpKjwdknr/KiLk2wUPfHoqgMHM5/zcriIgHC1Lmf4pc2MWeRmm8PMB6oFlxEWz17jE1DlzH3ww5jg952kU4KhnSMl0xVDmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=GLS41lND; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 4691940E01BB;
+	Tue, 30 Jan 2024 16:34:32 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id GIIfi_ELwrvH; Tue, 30 Jan 2024 16:34:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1706632470; bh=671jtj68uxhyk+sXY3zn0M0IF1JJHiVY4EKi6W0gTLk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GLS41lNDXfP5LCvI9mo7vxz1UinLqfyVmg7q33O6KWK3VICw/KFdu/y4eQEU2mZ3l
+	 Y+6A/1x9P05wfiX1a49hD45r3NLoKBMsm0YpB3EqqPvtgwxMQP7Xrb1lHDz1XsW+77
+	 jRWRInMbR8xkS4wHdTHvWKPmWCmdzCpau60htHUPPRVItZXqvexKjHdND2t0PfaFlF
+	 XKiWlxK6Euk9NbjcplklEcfkAjSjOcObqXnQ2ISpOhN568Tyu29KXcWC6uRN38/T0t
+	 oRNd3u2PqtXjoWz24kU0swBRWxKm/uzlXjXxr/BRfsgjPtiFbF27neW4sK9Z4MsVTJ
+	 9cMlInkSu+mOLUf0WR8h1chYcq8IgB9La0jpYxvIYVKH0m0KyrHeewGyCrcXSOSe7X
+	 Ott1HuoNnl2oxKU9C+KOh8TBj3WwhhZ4J7ZVkfH5t27SMVaKDOTAMZUUvHXYkCwBcZ
+	 UE1PGJU3kkgDyd75Xx4QIcwL44+rojFctUQAW6lbf8DJgyAhTCDMozYw4EDhycnNDl
+	 2MNVIOdI+hHrACco5zdh0X/llrs/gZJBGzm5ksA+UPybOtKylK2SDGj7FkzC9lbCtA
+	 3Fa4rgdo1uenYe7ptBq+uuiXpzNAeTcMcTfMZccFarF0kprWmznP7YU3b9NTolpVwI
+	 0sx7BReln/ejn8xJY67tXztE=
+Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DE4FA40E00C5;
+	Tue, 30 Jan 2024 16:34:18 +0000 (UTC)
+Date: Tue, 30 Jan 2024 17:34:18 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: "Li, Xin3" <xin3.li@intel.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"mingo@redhat.com" <mingo@redhat.com>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+	"x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+	"luto@kernel.org" <luto@kernel.org>,
+	"Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+	"andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
+	Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 2/2] x86/fred: Fix build with CONFIG_IA32_EMULATION=n
+Message-ID: <20240130163418.GGZbklCltPHmo2Z1NB@fat_crate.local>
+References: <20240127093728.1323-1-xin3.li@intel.com>
+ <20240127093728.1323-3-xin3.li@intel.com>
+ <20240130124816.GCZbjwEFrZS55FLxb8@fat_crate.local>
+ <SA1PR11MB6734A226858F6030C86AE2E5A87D2@SA1PR11MB6734.namprd11.prod.outlook.com>
+ <20240130153141.GEZbkWXQt2H3JHHGHx@fat_crate.local>
+ <SA1PR11MB67344899D3BCCD4165249D8DA87D2@SA1PR11MB6734.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZbkdqYFlFOdcZ63m@andrea>
+In-Reply-To: <SA1PR11MB67344899D3BCCD4165249D8DA87D2@SA1PR11MB6734.namprd11.prod.outlook.com>
 
-On Tue, Jan 30, 2024 at 05:02:49PM +0100, Andrea Parri wrote:
-> On Tue, Jan 30, 2024 at 06:53:38AM -0800, Paul E. McKenney wrote:
-> > The ORDERING section of Documentation/atomic_t.txt can easily be read as
-> > saying that conditional atomic RMW operations that fail are ordered when
-> > those operations have the _acquire() or _release() prefixes.  This is
-> 
-> s/prefixes/suffixes
+On Tue, Jan 30, 2024 at 04:30:34PM +0000, Li, Xin3 wrote:
+> Even more interesting, gcc doesn't complain it with the attached config
+> File in which CONFIG_X86_FRED=y and CONFIG_IA32_EMULATION not set.
 
-Good catch, fixed.
+Yes, CONFIG_IA32_EMULATION=n alone is not enough. That .config which
+triggers it has something else which is causing this but I'm not sure
+I want to go chase down what it is...
 
-> > not the case, therefore update this section to make it clear that failed
-> > conditional atomic RMW operations provide no ordering.
-> > 
-> > Reported-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> You may want to add a "subsystem" to the subject line, git-log suggests
-> "Documentation/atomic_t".  Anyway,
+-- 
+Regards/Gruss,
+    Boris.
 
-Good point, done.
-
-> Acked-by: Andrea Parri <parri.andrea@gmail.com>
-
-Thank you!
-
-							Thanx, Paul
+https://people.kernel.org/tglx/notes-about-netiquette
 
