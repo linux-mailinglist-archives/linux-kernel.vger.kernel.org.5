@@ -1,217 +1,91 @@
-Return-Path: <linux-kernel+bounces-43729-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF82984186E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 02:38:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C58D6841884
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 02:42:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FBAE1C228DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 01:38:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 046EB1C22B76
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 01:42:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BE79383A1;
-	Tue, 30 Jan 2024 01:36:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11ED236135;
+	Tue, 30 Jan 2024 01:42:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AMLXVbn3"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="nDVlW2aU"
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64CC4381CD;
-	Tue, 30 Jan 2024 01:36:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D0EF36114
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:42:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706578563; cv=none; b=AVD+zP9tq4hsX2RZxWG8FEEqT2Ign/Oz2OkWLJppoNif1fKNvaS7WGqtc+m9A9u0vlMGIkfQwUM/gSZp6n7xZlw+971Wd43h+JDp/17wy7XMXQ7bm01fhXA3AFlSeMVY9YrAebRnYaKcBPZ+Hs+2nNU8JUXFLwSa+o5+heptQg8=
+	t=1706578938; cv=none; b=LNvd6ert1XJ1EeOj053SHPui5eZlB3urxpYSAehwrQmA1HQx4Oz3VuZjgkGf3bGWQvtzQGZ5RutRieiYhLYtav8paUfQG6nfTpoCxYda8AkAv3KctfLG5NBKYBLZPErYQSpgNNQM7l6LNpEWoGuoJFnF2kldFg4iL7tFy2H2IrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706578563; c=relaxed/simple;
-	bh=7bWBPmCSHdznVFxRyJOlll8Hcrn56ik2cXlXDedGAEE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=G7+tMMFuxB/QLO9wFMTyuUuxUpROUnFbcZP7HG0xwVbz+ihiAio7q9hsgyrntBquez7RDypwU51qL6inP5c1HaFMqp1ZcWJ10MZtDAsygkQzcZr4ODaHH52kZAL6g29SUl/9r+CEIzYlG91+HO6cuQTY+RHy/gunduyeDK5Mzmg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AMLXVbn3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F719C433C7;
-	Tue, 30 Jan 2024 01:36:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706578562;
-	bh=7bWBPmCSHdznVFxRyJOlll8Hcrn56ik2cXlXDedGAEE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AMLXVbn3ikYp3m99vFuBEfXugsLp/lFqkGEhNptQNvOhTNQW87unjfKJvX8DrujH5
-	 RxrCI6TC5M9lJ4qMyyMwzuq4h6fxlRUnMW1nkvwNbdmezIHH9eRDnKhn4wsTvjl0wR
-	 VVeDyZdTcnRWdWZokAXliSsehfMY6kDl+BZxyQElXe8/JjexD4ihBeaIdzxrr+VhP0
-	 hfkwY+4kDPPkMjQ0Q1WSEEYEgCF/pd3AF1mO4WXlBts6/3Cg9jlw2EC9iGCPArcpAa
-	 f+v0NUYK0rrGl6SZF7nqnX4RwBSet0dGeI5tMTaXvuFL4gZBsvdLzRn8+5CkaJehky
-	 U1FmAQQYOUocA==
-From: SeongJae Park <sj@kernel.org>
+	s=arc-20240116; t=1706578938; c=relaxed/simple;
+	bh=irGILLtZ+B4v/jX46BOE8oPtbTKGTNQJoE3QMc3gHIs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eR5d5nZUK9w5qU0a3iZPTkwRTvtEe0oMHLTSJMe4urjNvwVvGmMYsFbNJNO8+boxL15zK/0/Q8CchZRw7MJNzztPTHWArcb8OnWG2Pe0HY+iT548hYwSFqJD+kDjWhXYD4MDg3M89FVW2tysDoNm3LQmBWXAjb0Jkq7b2sEhJzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=nDVlW2aU; arc=none smtp.client-ip=209.85.222.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-783e22a16d4so159868185a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 17:42:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1706578934; x=1707183734; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=irGILLtZ+B4v/jX46BOE8oPtbTKGTNQJoE3QMc3gHIs=;
+        b=nDVlW2aU8IsgJfnxkmTL+FjojkVIVcMr6WXI1i5jAFmAe6XYLVXiQFkmUeg+2iq1FV
+         pIzER7FDxDNoxzzJVnwBa6eFE0bxdmlWf0V7e5PsMnXSHYjIyDPU0EGV1vXkSS9FXByv
+         kPcfkF9tcd1btft2hSpI/2+8FVIKDwdQ+WWzVlMZ7lCxXyRUFFo/6lQxMor9POEJbCiC
+         /UAx7veeHEA63xO4MnvvvZeVorP2tQmgao461YarVZZ4/xyvL6B/8BwISZTpMEdf9Mgi
+         8e/JUC3YiKpfg6p4zIi21M3j0jRGDXGS0b4m731IWqaK+iNXdNg35KKPL4BIiBPVW/d5
+         Nz2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706578934; x=1707183734;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=irGILLtZ+B4v/jX46BOE8oPtbTKGTNQJoE3QMc3gHIs=;
+        b=PLLcN6PWkfz4iftU/2JvdiyVDB5bKRvkOpcJdEbwCeWi93DwH8jtzCzLBYO/AprfuJ
+         oxntEWB/I/N3lf9honzonnXqQ+e4lJL51RS3gwuC5014TJ//5OXkxon6RAmTGw4c9HWS
+         a4ZHRZ1f1vjDqreapulp2dlxcnQiVj5ZZG+BjS9bfekpFaValejFo+S4E5wjBKMDhWsx
+         HF2j86nI6MVuyvAoRJR+KesVj2ab3j8An6gmVaLayD5zeG008UrbiZsEEBcfojtPPlyu
+         dfpyKqC0jkauOlQClmmW1c5zSyIRHiiVUIkQm9HjMHWBiYgr33R+i41V50vLb0jr6seR
+         t8Ng==
+X-Gm-Message-State: AOJu0YxCp/ZA6KgOhwIOvDveZETrAIfDBs65sTHO3Tj73/e/7s0YKjg0
+	qLoJEVAhSbA4xBGa5VtBzzQjD0Sg7JfvOtoIvmw89eLl/GreXEmwbFx0W7s71mU=
+X-Google-Smtp-Source: AGHT+IEX8Cke0DmVSl+0NJn936xSvz0Om3dfqXiFMnqrScdLh1V+u80AKZlKzzeHYwJUjRaAxUhXuA==
+X-Received: by 2002:a05:6214:2aae:b0:681:97f5:7e9a with SMTP id js14-20020a0562142aae00b0068197f57e9amr276487qvb.47.1706578934096;
+        Mon, 29 Jan 2024 17:42:14 -0800 (PST)
+Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with ESMTPSA id c25-20020a056214071900b006869dae6ef2sm2407584qvz.106.2024.01.29.17.42.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 17:42:13 -0800 (PST)
+From: Johannes Weiner <hannes@cmpxchg.org>
 To: Andrew Morton <akpm@linux-foundation.org>
-Cc: SeongJae Park <sj@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Alex Shi <alexs@kernel.org>,
-	Yanteng Si <siyanteng@loongson.cn>,
-	Hu Haowen <2023002089@link.tyut.edu.cn>,
-	linux-doc@vger.kernel.org,
+Cc: Nhat Pham <nphamcs@gmail.com>,
+	Yosry Ahmed <yosryahmed@google.com>,
+	Chengming Zhou <zhouchengming@bytedance.com>,
+	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 9/9] Docs/translations/damon/usage: update for monitor_on renaming
-Date: Mon, 29 Jan 2024 17:35:48 -0800
-Message-Id: <20240130013549.89538-10-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240130013549.89538-1-sj@kernel.org>
-References: <20240130013549.89538-1-sj@kernel.org>
+Subject: [PATCH 00/20] mm: zswap: cleanups
+Date: Mon, 29 Jan 2024 20:36:36 -0500
+Message-ID: <20240130014208.565554-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Update DAMON debugfs interface sections on the translated usage
-documents to reflect the fact that 'monitor_on' file has renamed to
-'monitor_on_DEPRECATED'.
+Cleanups and maintenance items that accumulated while reviewing zswap
+patches. Based on akpm/mm-unstable + the UAF fix I sent just now.
 
-Signed-off-by: SeongJae Park <sj@kernel.org>
----
- .../zh_CN/admin-guide/mm/damon/usage.rst      | 20 +++++++++----------
- .../zh_TW/admin-guide/mm/damon/usage.rst      | 20 +++++++++----------
- 2 files changed, 20 insertions(+), 20 deletions(-)
-
-diff --git a/Documentation/translations/zh_CN/admin-guide/mm/damon/usage.rst b/Documentation/translations/zh_CN/admin-guide/mm/damon/usage.rst
-index 17b9949d9b43..da2745464ece 100644
---- a/Documentation/translations/zh_CN/admin-guide/mm/damon/usage.rst
-+++ b/Documentation/translations/zh_CN/admin-guide/mm/damon/usage.rst
-@@ -344,7 +344,7 @@ debugfs接口
-   :ref:`sysfs接口<sysfs_interface>`。
- 
- DAMON导出了八个文件, ``attrs``, ``target_ids``, ``init_regions``,
--``schemes``, ``monitor_on``, ``kdamond_pid``, ``mk_contexts`` 和
-+``schemes``, ``monitor_on_DEPRECATED``, ``kdamond_pid``, ``mk_contexts`` 和
- ``rm_contexts`` under its debugfs directory, ``<debugfs>/damon/``.
- 
- 
-@@ -521,15 +521,15 @@ DAMON导出了八个文件, ``attrs``, ``target_ids``, ``init_regions``,
- 开关
- ----
- 
--除非你明确地启动监测，否则如上所述的文件设置不会产生效果。你可以通过写入和读取 ``monitor_on``
-+除非你明确地启动监测，否则如上所述的文件设置不会产生效果。你可以通过写入和读取 ``monitor_on_DEPRECATED``
- 文件来启动、停止和检查监测的当前状态。写入 ``on`` 该文件可以启动对有属性的目标的监测。写入
- ``off`` 该文件则停止这些目标。如果每个目标进程被终止，DAMON也会停止。下面的示例命令开启、关
- 闭和检查DAMON的状态::
- 
-     # cd <debugfs>/damon
--    # echo on > monitor_on
--    # echo off > monitor_on
--    # cat monitor_on
-+    # echo on > monitor_on_DEPRECATED
-+    # echo off > monitor_on_DEPRECATED
-+    # cat monitor_on_DEPRECATED
-     off
- 
- 请注意，当监测开启时，你不能写到上述的debugfs文件。如果你在DAMON运行时写到这些文件，将会返
-@@ -543,11 +543,11 @@ DAMON通过一个叫做kdamond的内核线程来进行请求监测。你可以
- 得该线程的 ``pid`` 。当监测被 ``关闭`` 时，读取该文件不会返回任何信息::
- 
-     # cd <debugfs>/damon
--    # cat monitor_on
-+    # cat monitor_on_DEPRECATED
-     off
-     # cat kdamond_pid
-     none
--    # echo on > monitor_on
-+    # echo on > monitor_on_DEPRECATED
-     # cat kdamond_pid
-     18594
- 
-@@ -574,7 +574,7 @@ DAMON通过一个叫做kdamond的内核线程来进行请求监测。你可以
-     # ls foo
-     # ls: cannot access 'foo': No such file or directory
- 
--注意， ``mk_contexts`` 、 ``rm_contexts`` 和 ``monitor_on`` 文件只在根目录下。
-+注意， ``mk_contexts`` 、 ``rm_contexts`` 和 ``monitor_on_DEPRECATED`` 文件只在根目录下。
- 
- 
- 监测结果的监测点
-@@ -583,9 +583,9 @@ DAMON通过一个叫做kdamond的内核线程来进行请求监测。你可以
- DAMON通过一个tracepoint ``damon:damon_aggregated`` 提供监测结果.  当监测开启时，你可
- 以记录追踪点事件，并使用追踪点支持工具如perf显示结果。比如说::
- 
--    # echo on > monitor_on
-+    # echo on > monitor_on_DEPRECATED
-     # perf record -e damon:damon_aggregated &
-     # sleep 5
-     # kill 9 $(pidof perf)
--    # echo off > monitor_on
-+    # echo off > monitor_on_DEPRECATED
-     # perf script
-diff --git a/Documentation/translations/zh_TW/admin-guide/mm/damon/usage.rst b/Documentation/translations/zh_TW/admin-guide/mm/damon/usage.rst
-index 6dee719a32ea..7464279f9b7d 100644
---- a/Documentation/translations/zh_TW/admin-guide/mm/damon/usage.rst
-+++ b/Documentation/translations/zh_TW/admin-guide/mm/damon/usage.rst
-@@ -344,7 +344,7 @@ debugfs接口
-   :ref:`sysfs接口<sysfs_interface>`。
- 
- DAMON導出了八個文件, ``attrs``, ``target_ids``, ``init_regions``,
--``schemes``, ``monitor_on``, ``kdamond_pid``, ``mk_contexts`` 和
-+``schemes``, ``monitor_on_DEPRECATED``, ``kdamond_pid``, ``mk_contexts`` 和
- ``rm_contexts`` under its debugfs directory, ``<debugfs>/damon/``.
- 
- 
-@@ -521,15 +521,15 @@ DAMON導出了八個文件, ``attrs``, ``target_ids``, ``init_regions``,
- 開關
- ----
- 
--除非你明確地啓動監測，否則如上所述的文件設置不會產生效果。你可以通過寫入和讀取 ``monitor_on``
-+除非你明確地啓動監測，否則如上所述的文件設置不會產生效果。你可以通過寫入和讀取 ``monitor_on_DEPRECATED``
- 文件來啓動、停止和檢查監測的當前狀態。寫入 ``on`` 該文件可以啓動對有屬性的目標的監測。寫入
- ``off`` 該文件則停止這些目標。如果每個目標進程被終止，DAMON也會停止。下面的示例命令開啓、關
- 閉和檢查DAMON的狀態::
- 
-     # cd <debugfs>/damon
--    # echo on > monitor_on
--    # echo off > monitor_on
--    # cat monitor_on
-+    # echo on > monitor_on_DEPRECATED
-+    # echo off > monitor_on_DEPRECATED
-+    # cat monitor_on_DEPRECATED
-     off
- 
- 請注意，當監測開啓時，你不能寫到上述的debugfs文件。如果你在DAMON運行時寫到這些文件，將會返
-@@ -543,11 +543,11 @@ DAMON通過一個叫做kdamond的內核線程來進行請求監測。你可以
- 得該線程的 ``pid`` 。當監測被 ``關閉`` 時，讀取該文件不會返回任何信息::
- 
-     # cd <debugfs>/damon
--    # cat monitor_on
-+    # cat monitor_on_DEPRECATED
-     off
-     # cat kdamond_pid
-     none
--    # echo on > monitor_on
-+    # echo on > monitor_on_DEPRECATED
-     # cat kdamond_pid
-     18594
- 
-@@ -574,7 +574,7 @@ DAMON通過一個叫做kdamond的內核線程來進行請求監測。你可以
-     # ls foo
-     # ls: cannot access 'foo': No such file or directory
- 
--注意， ``mk_contexts`` 、 ``rm_contexts`` 和 ``monitor_on`` 文件只在根目錄下。
-+注意， ``mk_contexts`` 、 ``rm_contexts`` 和 ``monitor_on_DEPRECATED`` 文件只在根目錄下。
- 
- 
- 監測結果的監測點
-@@ -583,10 +583,10 @@ DAMON通過一個叫做kdamond的內核線程來進行請求監測。你可以
- DAMON通過一個tracepoint ``damon:damon_aggregated`` 提供監測結果.  當監測開啓時，你可
- 以記錄追蹤點事件，並使用追蹤點支持工具如perf顯示結果。比如說::
- 
--    # echo on > monitor_on
-+    # echo on > monitor_on_DEPRECATED
-     # perf record -e damon:damon_aggregated &
-     # sleep 5
-     # kill 9 $(pidof perf)
--    # echo off > monitor_on
-+    # echo off > monitor_on_DEPRECATED
-     # perf script
- 
--- 
-2.39.2
+ mm/zswap.c | 1961 +++++++++++++++++++++++++++++-----------------------------
+ 1 file changed, 971 insertions(+), 990 deletions(-)
 
 
