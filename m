@@ -1,200 +1,185 @@
-Return-Path: <linux-kernel+bounces-44532-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44530-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61F9B842357
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:40:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1DC7842351
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:40:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DA421C2495F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:40:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C7632892A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:40:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7D406D1B5;
-	Tue, 30 Jan 2024 11:38:16 +0000 (UTC)
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7477E6A34D;
-	Tue, 30 Jan 2024 11:38:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A55C46BB40;
+	Tue, 30 Jan 2024 11:38:13 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 005506A01E;
+	Tue, 30 Jan 2024 11:38:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706614696; cv=none; b=uydxcr4y3XluQm8uDuh0vepnXyzSPm5gEFtiw7CuMmQy54emyusKtxOxCUixvc3F4f7HwK0MfgfHNQrWxi2Kbjzn2Is79y9ApWB0VenLWEaTc2Ys+j4Wq1B+nQV3bWORjjg71pooxuVfwlWA5p6+zsJ8yTEzZ8qnlC0zhnTNCl4=
+	t=1706614693; cv=none; b=DPPlGDJh0TjlAAwwHM06nLNXg+zeqL9sduAEhJTWFbEOiN2+qxEVqb+QsXfOTb0VC1Qgwx+cVTvGs9mZ2H86MUryW/CM7Lecq3Du+QJwfIn48UGmekXsX5GaMob08P8qOL0v2jdhA1o6NErNJ5tUHZ0H5k8Y3WXi/zl453I123o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706614696; c=relaxed/simple;
-	bh=p8c/mHTXGGnT4oXtWTCZLHq7kKnl6GsnEVgDNwo1j3I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NMOp82Ic2cvGgpCQMdRN+yAUTEavgm//hRZ3qCnmZ9LgF0vZQVTXJlHmVGq1dpAZBLBfpNefnAtmv/UxAuNBIqP5qvX7q0KJnzB4+SNO7npchDhS0YywwkFRRacqLGovfTfpY+k8Mt5F4HagPA5mGEInif2muZUdTfL7OWvpNbc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-603e370790cso17193437b3.3;
-        Tue, 30 Jan 2024 03:38:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706614693; x=1707219493;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vMem4Wnyl/FAVyRvXWDBiw17T/CYF02xtBqauVXYuOA=;
-        b=I1RrN5VypJQL0NRdmr8v63pFpWRgJM6OW+GK5cNhCEkyZwkeK6pyX4aVR/xm6vlB/s
-         Y5HqVxkeNh3NomYRWGV4NM8C9Vz3TR+RSq90IyOrvCNxpL332PS8Y3+i/FcpGzbvk46P
-         nmyi7kwnDo9sOCIUhJkjPt7gtAGFAx/6Sk0zyLLvI4qYgF6rZvuskdpV1dW8O4+Yj4R4
-         7f+9eCkBwBVs70jP6daCAK/EIPAegMZ7GHVglaf+7/6sEcPUr2nWqQQ199FUahX8JhOl
-         /I4wfEgUY0vz5FUymf8f/CKULnNzKXmUTWCXCIJGXD22wRbC7AJsyQmGHqZIi14rLoUu
-         gKvA==
-X-Gm-Message-State: AOJu0YzLoR1ScAPAXLzwcJ41dXfZqV0wfNIjT4wnDotc12+p2dvhymcK
-	qcwUTxLMHCSM93Ajub7q8xctea+hhSCnJvwrV1yiaLMtScFj+TyJ7rQHPKVRnaY=
-X-Google-Smtp-Source: AGHT+IFk04bMlmsesF16iNPJrpvyojRPlSgTAPbgkzCsXQbLHtU/bXJQCOAUXCZvduiJRkE4wQvpxg==
-X-Received: by 2002:a25:2d08:0:b0:dc2:43d0:6e05 with SMTP id t8-20020a252d08000000b00dc243d06e05mr5203578ybt.50.1706614693083;
-        Tue, 30 Jan 2024 03:38:13 -0800 (PST)
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
-        by smtp.gmail.com with ESMTPSA id 63-20020a250a42000000b00dc2324b3cddsm2908270ybk.37.2024.01.30.03.38.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Jan 2024 03:38:12 -0800 (PST)
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dc24ead4428so2829314276.1;
-        Tue, 30 Jan 2024 03:38:12 -0800 (PST)
-X-Received: by 2002:a05:6902:14e:b0:dc2:35c1:7d9c with SMTP id
- p14-20020a056902014e00b00dc235c17d9cmr4871757ybh.60.1706614692403; Tue, 30
- Jan 2024 03:38:12 -0800 (PST)
+	s=arc-20240116; t=1706614693; c=relaxed/simple;
+	bh=/DsBAHX8HTlca+Vpy4zDg5DsZ5AAjetwE7nEWjeRix8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=psG7XgZC/QZh+3TWfF6WlwUnle3O6N5nNOWS6ZaT5EgH7ZJi98iLDHnMqtOqLJXN9uTW5nxVUR53EgA/dhTpaP5REhbX7ZVvU4xPeKvIIWwzmGRIOKimtrI1312qj/p75kHv+83+8KM4MzIVD0RjK21dVsTE8ODeZqccmekg4PM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2F6CEDA7;
+	Tue, 30 Jan 2024 03:38:54 -0800 (PST)
+Received: from raptor (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 070733F5A1;
+	Tue, 30 Jan 2024 03:38:04 -0800 (PST)
+Date: Tue, 30 Jan 2024 11:38:02 +0000
+From: Alexandru Elisei <alexandru.elisei@arm.com>
+To: Peter Collingbourne <pcc@google.com>
+Cc: catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
+	maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
+	yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
+	mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
+	rppt@kernel.org, hughd@google.com, steven.price@arm.com,
+	anshuman.khandual@arm.com, vincenzo.frascino@arm.com,
+	david@redhat.com, eugenis@google.com, kcc@google.com,
+	hyesoo.yu@samsung.com, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
+	linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC v3 23/35] arm64: mte: Try to reserve tag storage in
+ arch_alloc_page()
+Message-ID: <ZbjfmqpYex4C8Uhm@raptor>
+References: <20240125164256.4147-1-alexandru.elisei@arm.com>
+ <20240125164256.4147-24-alexandru.elisei@arm.com>
+ <CAMn1gO5pGVRCErVF+Ca-4JgHRKEcq9sDGyEe--gEjj5ZLrB8sA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240129151618.90922-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20240129151618.90922-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20240129151618.90922-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 30 Jan 2024 12:38:01 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdV7Q4kMv1pFVNBf5oYF=_W_snp=5GKLpr9+OxeqxywhBw@mail.gmail.com>
-Message-ID: <CAMuHMdV7Q4kMv1pFVNBf5oYF=_W_snp=5GKLpr9+OxeqxywhBw@mail.gmail.com>
-Subject: Re: [PATCH 2/5] irqchip/renesas-rzg2l: Add support for RZ/Five SoC
-To: Prabhakar <prabhakar.csengg@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Magnus Damm <magnus.damm@gmail.com>, linux-renesas-soc@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMn1gO5pGVRCErVF+Ca-4JgHRKEcq9sDGyEe--gEjj5ZLrB8sA@mail.gmail.com>
 
-Hi Prabhakar,
+Hi Peter,
 
-On Mon, Jan 29, 2024 at 4:16=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.c=
-om> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> The IX45 block has additional mask registers (NMSK/IMSK/TMSK) as compared
-> to the RZ/G2L (family) SoC.
->
-> Introduce masking/unmasking support for IRQ and TINT interrupts in IRQC
-> controller driver. Two new registers, IMSK and TMSK, are defined to
-> handle masking on RZ/Five SoC. The implementation utilizes a new data
-> structure, `struct rzg2l_irqc_data`, to determine mask support for a
-> specific controller instance.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On Mon, Jan 29, 2024 at 04:04:18PM -0800, Peter Collingbourne wrote:
+> On Thu, Jan 25, 2024 at 8:45 AM Alexandru Elisei
+> <alexandru.elisei@arm.com> wrote:
+> >
+> > Reserve tag storage for a page that is being allocated as tagged. This
+> > is a best effort approach, and failing to reserve tag storage is
+> > allowed.
+> >
+> > When all the associated tagged pages have been freed, return the tag
+> > storage pages back to the page allocator, where they can be used again for
+> > data allocations.
+> >
+> > Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
+> > ---
+> >
+> > Changes since rfc v2:
+> >
+> > * Based on rfc v2 patch #16 ("arm64: mte: Manage tag storage on page
+> > allocation").
+> > * Fixed calculation of the number of associated tag storage blocks (Hyesoo
+> > Yu).
+> > * Tag storage is reserved in arch_alloc_page() instead of
+> > arch_prep_new_page().
+> >
+> >  arch/arm64/include/asm/mte.h             |  16 +-
+> >  arch/arm64/include/asm/mte_tag_storage.h |  31 +++
+> >  arch/arm64/include/asm/page.h            |   5 +
+> >  arch/arm64/include/asm/pgtable.h         |  19 ++
+> >  arch/arm64/kernel/mte_tag_storage.c      | 234 +++++++++++++++++++++++
+> >  arch/arm64/mm/fault.c                    |   7 +
+> >  fs/proc/page.c                           |   1 +
+> >  include/linux/kernel-page-flags.h        |   1 +
+> >  include/linux/page-flags.h               |   1 +
+> >  include/trace/events/mmflags.h           |   3 +-
+> >  mm/huge_memory.c                         |   1 +
+> >  11 files changed, 316 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
+> > index 8034695b3dd7..6457b7899207 100644
+> > --- a/arch/arm64/include/asm/mte.h
+> > +++ b/arch/arm64/include/asm/mte.h
+> > @@ -40,12 +40,24 @@ void mte_free_tag_buf(void *buf);
+> >  #ifdef CONFIG_ARM64_MTE
+> >
+> >  /* track which pages have valid allocation tags */
+> > -#define PG_mte_tagged  PG_arch_2
+> > +#define PG_mte_tagged          PG_arch_2
+> >  /* simple lock to avoid multiple threads tagging the same page */
+> > -#define PG_mte_lock    PG_arch_3
+> > +#define PG_mte_lock            PG_arch_3
+> > +/* Track if a tagged page has tag storage reserved */
+> > +#define PG_tag_storage_reserved        PG_arch_4
+> > +
+> > +#ifdef CONFIG_ARM64_MTE_TAG_STORAGE
+> > +DECLARE_STATIC_KEY_FALSE(tag_storage_enabled_key);
+> > +extern bool page_tag_storage_reserved(struct page *page);
+> > +#endif
+> >
+> >  static inline void set_page_mte_tagged(struct page *page)
+> >  {
+> > +#ifdef CONFIG_ARM64_MTE_TAG_STORAGE
+> > +       /* Open code mte_tag_storage_enabled() */
+> > +       WARN_ON_ONCE(static_branch_likely(&tag_storage_enabled_key) &&
+> > +                    !page_tag_storage_reserved(page));
+> > +#endif
+> >         /*
+> >          * Ensure that the tags written prior to this function are visible
+> >          * before the page flags update.
+> > diff --git a/arch/arm64/include/asm/mte_tag_storage.h b/arch/arm64/include/asm/mte_tag_storage.h
+> > index 7b3f6bff8e6f..09f1318d924e 100644
+> > --- a/arch/arm64/include/asm/mte_tag_storage.h
+> > +++ b/arch/arm64/include/asm/mte_tag_storage.h
+> > @@ -5,6 +5,12 @@
+> >  #ifndef __ASM_MTE_TAG_STORAGE_H
+> >  #define __ASM_MTE_TAG_STORAGE_H
+> >
+> > +#ifndef __ASSEMBLY__
+> > +
+> > +#include <linux/mm_types.h>
+> > +
+> > +#include <asm/mte.h>
+> > +
+> >  #ifdef CONFIG_ARM64_MTE_TAG_STORAGE
+> >
+> >  DECLARE_STATIC_KEY_FALSE(tag_storage_enabled_key);
+> > @@ -15,6 +21,15 @@ static inline bool tag_storage_enabled(void)
+> >  }
+> >
+> >  void mte_init_tag_storage(void);
+> > +
+> > +static inline bool alloc_requires_tag_storage(gfp_t gfp)
+> > +{
+> > +       return gfp & __GFP_TAGGED;
+> > +}
+> > +int reserve_tag_storage(struct page *page, int order, gfp_t gfp);
+> > +void free_tag_storage(struct page *page, int order);
+> > +
+> > +bool page_tag_storage_reserved(struct page *page);
+> >  #else
+> >  static inline bool tag_storage_enabled(void)
+> >  {
+> > @@ -23,6 +38,22 @@ static inline bool tag_storage_enabled(void)
+> >  static inline void mte_init_tag_storage(void)
+> >  {
+> >  }
+> > +static inline bool alloc_requires_tag_storage(struct page *page)
+> 
+> This function should take a gfp_t to match the
+> CONFIG_ARM64_MTE_TAG_STORAGE case.
 
-Thanks for your patch!
+Ah, yes, it should, nice catch, the compiler didn't throw an error. Will
+fix, thanks!
 
-> --- a/drivers/irqchip/irq-renesas-rzg2l.c
-> +++ b/drivers/irqchip/irq-renesas-rzg2l.c
-> @@ -66,15 +68,25 @@ struct rzg2l_irqc_reg_cache {
->         u32     titsr[2];
->  };
->
-> +/**
-> + * struct rzg2l_irqc_data - OF data structure
-> + * @mask_supported: Indicates if mask registers are available
-> + */
-> +struct rzg2l_irqc_data {
-
-This structure has the same name as the single static struct
-rzg2l_irqc_priv instance, which is confusing.
-
-> +       bool    mask_supported;
-> +};
-> +
->  /**
->   * struct rzg2l_irqc_priv - IRQ controller private data structure
->   * @base:      Controller's base address
-> + * @data:      OF data pointer
->   * @fwspec:    IRQ firmware specific data
->   * @lock:      Lock to serialize access to hardware registers
->   * @cache:     Registers cache for suspend/resume
->   */
->  static struct rzg2l_irqc_priv {
->         void __iomem                    *base;
-> +       const struct rzg2l_irqc_data    *data;
-
-Replacing this by a bool would avoid a pointer dereference in each user,
-and allows you to make rzg2l_irqc_data etc. __initconst.
-
->         struct irq_fwspec               fwspec[IRQC_NUM_IRQ];
->         raw_spinlock_t                  lock;
->         struct rzg2l_irqc_reg_cache     cache;
-
-> @@ -371,9 +475,23 @@ static int rzg2l_irqc_parse_interrupts(struct rzg2l_=
-irqc_priv *priv,
->         return 0;
->  }
->
-> +static const struct rzg2l_irqc_data rzfive_irqc_data =3D {
-> +       .mask_supported =3D true,
-> +};
-> +
-> +static const struct rzg2l_irqc_data rzg2l_irqc_default_data =3D {
-> +       .mask_supported =3D false,
-> +};
-> +
-> +static const struct of_device_id rzg2l_irqc_matches[] =3D {
-> +       { .compatible =3D "renesas,r9a07g043f-irqc", .data =3D &rzfive_ir=
-qc_data },
-> +       { }
-> +};
-> +
->  static int rzg2l_irqc_init(struct device_node *node, struct device_node =
-*parent)
->  {
->         struct irq_domain *irq_domain, *parent_domain;
-> +       const struct of_device_id *match;
->         struct platform_device *pdev;
->         struct reset_control *resetn;
->         int ret;
-> @@ -392,6 +510,12 @@ static int rzg2l_irqc_init(struct device_node *node,=
- struct device_node *parent)
->         if (!rzg2l_irqc_data)
->                 return -ENOMEM;
->
-> +       match =3D of_match_node(rzg2l_irqc_matches, node);
-> +       if (match)
-> +               rzg2l_irqc_data->data =3D match->data;
-> +       else
-> +               rzg2l_irqc_data->data =3D &rzg2l_irqc_default_data;
-
-Instead of matching a second time, I'd rather add a second
-IRQCHIP_MATCH() entry with a different init function, passing the
-actual rzg2l_irqc_data pointer.
-
-> +
->         rzg2l_irqc_data->base =3D devm_of_iomap(&pdev->dev, pdev->dev.of_=
-node, 0, NULL);
->         if (IS_ERR(rzg2l_irqc_data->base))
->                 return PTR_ERR(rzg2l_irqc_data->base);
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Alex
 
