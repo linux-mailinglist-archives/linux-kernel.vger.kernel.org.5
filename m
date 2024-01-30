@@ -1,59 +1,60 @@
-Return-Path: <linux-kernel+bounces-44360-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44366-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A5FC8420E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:13:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 642248420F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:15:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 14BE71F2513D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:13:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93E781C27D65
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:15:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B222260B9A;
-	Tue, 30 Jan 2024 10:13:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="upKCdCbW"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E30B60DC9;
+	Tue, 30 Jan 2024 10:15:18 +0000 (UTC)
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0167860885;
-	Tue, 30 Jan 2024 10:13:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15F736089A;
+	Tue, 30 Jan 2024 10:15:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706609590; cv=none; b=PQUbpaeCGfq4w96Ay7OZRQBHMkwjMxczGa8IkTbvLKtqGBz9qpzv9yX62ubjKejbQ1RB/vZE3/f4T5v8Kt3gN+ZQfi0AnJyc7VN5FzOtpe0nLwRzPM247SrlpwZSBPfyP/B/cd6EmuDl/R8rlk5Big1ne+CntRgaIaBygdmeDA8=
+	t=1706609717; cv=none; b=HyOzxP5HWZJ7Qr6COqRFGnKBUULITTH+n4bvPAhAZkQ2waN3th7obcx+jMTKiczqzk+jYb+lxJxhvxuEW2az1ZIrlj6iq4xz040UzdiotMDxt5NBZRfj2U7bQuzfuZpJ29SW1GbLk0pcR9TMb9Ta6+Zmcwe8lQ28L3OtGY8yl9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706609590; c=relaxed/simple;
-	bh=bHjhb7ec4V/9qFcEdq9saB1TdkNyxZJVjbB3yRsYgO8=;
+	s=arc-20240116; t=1706609717; c=relaxed/simple;
+	bh=9fYioI8dC2iBxcG6AmP63IOk32XJP98pHndMcV1dzEQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tbEDKV0z/DKd7glaQDKNhejN0IOFlotJ0c9F7Q3L+mTbEKiA9bSAlY4OiTQwICHyT/PlZbSeSXxrowoMkFTmbUZMLSE4JlJRJpm2xdhoFSObOYUE1ZviBkzPRbKrnjCjXTgAUyMieuVy1UlUXDJxu2HjQol909ioeIKc2T0TxCs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=upKCdCbW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAC36C433C7;
-	Tue, 30 Jan 2024 10:13:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706609589;
-	bh=bHjhb7ec4V/9qFcEdq9saB1TdkNyxZJVjbB3yRsYgO8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=upKCdCbWCMu6O2DUujUu6FBWxFmraU34DJSlkckJglsaVtY2vGvNCUgqq/ruhWPEU
-	 7yG5bFI/JA8WSY6IQJr2+ZFhYZIK/6CAFmUGgc5b70uZNaoT/TROi6HpO4mXFZB4rF
-	 gq9tb+y/o8sWjDTbBAO+YB3QfbWaw7GETtqUW3P9uBS4s9KzupPAfP6/yJQ/Q/D6TY
-	 lONw0wgWvp3+t/A/Ba7Mh1N149xbXO4XJac3pONPXFbFPQu0M/b5cwtGMx0SJwONob
-	 GC56e4pqUpZLsOh4Dwr5l6vSkIrgIFs3icQ8zdCYuTbi0yVOrsVg1PUJLs7KJExID8
-	 wUtDi4MEfa6Pg==
-Date: Tue, 30 Jan 2024 10:11:34 +0000
-From: Simon Horman <horms@kernel.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
-	edumazet@google.com, Vladimir Oltean <vladimir.oltean@nxp.com>,
-	Claudiu Manoil <claudiu.manoil@nxp.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	UNGLinuxDriver@microchip.com, dsahern@kernel.org, weiwan@google.com,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: Re: [PATCH net 02/10] net: fill in MODULE_DESCRIPTION()s for ocelot
-Message-ID: <20240130101134.GG349047@kernel.org>
-References: <20240125193420.533604-1-leitao@debian.org>
- <20240125193420.533604-3-leitao@debian.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=cCSqYjGIN7b4321OuvyZRdgMT80JGvXSQKB/rW9yuzGEch/7jf9VnuPlMylI/H0Y9xhsLFcMzGdQkfYM22CmWY6ZoFPScY2aUyID6RPEyHD43Ugz+acET1CeQWtbTJ+n4e/rwER5e/y1KQ4//6P6Am93clmceJEQlph4zsQhYzI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gnumonks.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gnumonks.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
+Received: from uucp by ganesha.gnumonks.org with local-bsmtp (Exim 4.94.2)
+	(envelope-from <laforge@gnumonks.org>)
+	id 1rUl90-00F0vY-2G; Tue, 30 Jan 2024 11:15:06 +0100
+Received: from laforge by localhost.localdomain with local (Exim 4.97)
+	(envelope-from <laforge@gnumonks.org>)
+	id 1rUl5f-0000000FnQK-1I97;
+	Tue, 30 Jan 2024 11:11:39 +0100
+Date: Tue, 30 Jan 2024 11:11:39 +0100
+From: Harald Welte <laforge@gnumonks.org>
+To: Marcin Szycik <marcin.szycik@linux.intel.com>
+Cc: takeru hayasaka <hayatake396@gmail.com>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+	vladimir.oltean@nxp.com, linux-kernel@vger.kernel.org,
+	intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+	mailhol.vincent@wanadoo.fr
+Subject: Re: [Intel-wired-lan] [PATCH net-next RESENT v3] ethtool: ice:
+ Support for RSS settings to GTP from ethtool
+Message-ID: <ZbjLWwG8m-FdyxMH@nataraja>
+References: <20240127140747.905552-1-hayatake396@gmail.com>
+ <154f979e-a335-461b-b72e-5e9c54fe940c@linux.intel.com>
+ <CADFiAcJShbgBLXdVgs1vK1jqDFopkRcw-se4b4h0V3Yd60xLVw@mail.gmail.com>
+ <92958c7b-7e5f-4e25-819f-4e52f9ffcf7b@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,39 +63,33 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240125193420.533604-3-leitao@debian.org>
+In-Reply-To: <92958c7b-7e5f-4e25-819f-4e52f9ffcf7b@linux.intel.com>
 
-On Thu, Jan 25, 2024 at 11:34:12AM -0800, Breno Leitao wrote:
-> W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
-> Add descriptions to the Ocelot SoCs (VSC7514) helpers driver.
+hi Marcin,
+
+Disclaimer: I have no understanding of the proposed implementation here, just commenting
+on this from a 3GPP protocol architecture point of view.
+
+On Tue, Jan 30, 2024 at 10:59:40AM +0100, Marcin Szycik wrote:
+> >> gtpc(4|6) doesn't include TEID, so what is its purpose?
+> > In GTPC communication, there is no TEID in the CSR (Create Session Request).
+> > Therefore, there are cases of GTPC that do not include TEID.
 > 
-> Signed-off-by: Breno Leitao <leitao@debian.org>
-> Reviewed-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> ---
->  drivers/net/ethernet/mscc/ocelot.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/net/ethernet/mscc/ocelot.c b/drivers/net/ethernet/mscc/ocelot.c
-> index 56ccbd4c37fe..2194f2a7ab27 100644
-> --- a/drivers/net/ethernet/mscc/ocelot.c
-> +++ b/drivers/net/ethernet/mscc/ocelot.c
-> @@ -3078,4 +3078,5 @@ void ocelot_deinit_port(struct ocelot *ocelot, int port)
->  }
->  EXPORT_SYMBOL(ocelot_deinit_port);
->  
-> +MODULE_DESCRIPTION("Microsemi Ocelot (VSC7514) Switch driver");
+> The way I understand it now, this patch (and the ethtool one) adds hashing on
+> TEID field in GTP* headers. So I wanted to ask why do we have a case (gtpc(4|6))
+> that doesn't include TEID? Do we hash on other fields in this header?
 
-Hi Breno,
+There are many differen GTPv2C messages, most of which contain a TEID.  So it does
+in general still make sense to be able to use RSS for all those other messages.
 
-I really appreciate your work in this area.
+The CSR (Create Session Request) will not be able to benfit from it, but
+it's just the first message initiating a dialogue between two elements
+(think of it like a TCP SYN).  All the follow-up messages in that
+dialogue contain TEIDs and hence can benefit from RSS.
 
-WRT this patch, I could well be wrong, but I think this code is also used
-by Felix (VSC9959). If so the description might want tweaking.
-
-Vladimir, can you shed some light on this?
-
->  MODULE_LICENSE("Dual MIT/GPL");
-> -- 
-> 2.39.3
-> 
+-- 
+- Harald Welte <laforge@gnumonks.org>          https://laforge.gnumonks.org/
+============================================================================
+"Privacy in residential applications is a desirable marketing option."
+                                                  (ETSI EN 300 175-7 Ch. A6)
 
