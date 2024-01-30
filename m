@@ -1,80 +1,135 @@
-Return-Path: <linux-kernel+bounces-45119-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45125-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE593842BE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:36:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14AB2842BEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:38:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E9071F219AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:36:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9576B274D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:37:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E32E878B53;
-	Tue, 30 Jan 2024 18:36:28 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FEC578B7E;
+	Tue, 30 Jan 2024 18:37:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ggc7RK4A"
+Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76FFF78B42;
-	Tue, 30 Jan 2024 18:36:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECE1878B49;
+	Tue, 30 Jan 2024 18:37:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706639788; cv=none; b=u1lMsLoTJltUuwhldH6ca2zwv6SLfQfJPm8E9PmrKYL5fEn85IrDCoH25T0e13KTWC3OAfC0/sA8tAlIHnN9mHSTJLkioliGf4D3lH1+p23DCBpFGUpN3pcqnW+Mug2kyTie1eVMqfYzHsNSOSks9zcn2RKn4ZHSbIROrZT0mjk=
+	t=1706639848; cv=none; b=WkCqo+dc7TgPXYUZG9UeV6+VjARwib6tVKjHiiOSjp7yFNbspu33M9xwTp/ymSSxVy+3LGM3px/3SpDywoTuOPf8rix4dXhW2DxBBGSEDghlKYuDTuVkaZFYKonctVlh+XKrV5gXX0u61s56pSQsyBPaa4+8oi7S95qdkhZ4hcI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706639788; c=relaxed/simple;
-	bh=MAq6UTzZ5I8FQRIOgfrKTJJAi0lX50HQeuJa1ZfmREE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CcFDtGonmY5Wg5iMvJ95fPbUjPmeJGAL9wm6lixOeYoD4T+iuwcMVB/AmYaz4usZiloT/CeJWTIDBu2BaCzIaKJ5r9ZRq7bmcKvnTrUw9eUDftfPPsULEwCxle+reLU/XKFrT/nmiVCIOuDdK8LjpaqA7peF6tKhBSNbo98jOlU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B028DC433C7;
-	Tue, 30 Jan 2024 18:36:26 +0000 (UTC)
-Date: Tue, 30 Jan 2024 13:36:38 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
- lkp@intel.com, linux-kernel@vger.kernel.org, Masami Hiramatsu
- <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>, Christian Brauner
- <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, Ajay Kaher
- <ajay.kaher@broadcom.com>, linux-trace-kernel@vger.kernel.org
-Subject: Re: [linus:master] [eventfs] 852e46e239:
- BUG:unable_to_handle_page_fault_for_address
-Message-ID: <20240130133638.2c268b6d@gandalf.local.home>
-In-Reply-To: <CAHk-=wh97AkwaOkXoBgf0z8EP88ePffLnTcmmQXcY+AhFaFrnA@mail.gmail.com>
-References: <202401291043.e62e89dc-oliver.sang@intel.com>
-	<CAHk-=wh0M=e8R=ZXxa4vesLTtvGmYWJ-w1VmXxW5Mva=Nimk4Q@mail.gmail.com>
-	<20240129120125.605e97af@gandalf.local.home>
-	<CAHk-=wghx8Abyx_jcSrCDuNj96SuWS0NvNMhfU8VjFGg9bgm_g@mail.gmail.com>
-	<CAHk-=whb91PWEaEJpRGsuWaQpYZGj98ji8HC2vvHD4xb_TqhJw@mail.gmail.com>
-	<CAHk-=wgp7UkG31=cCcbSdhMv6-vBJ=orktUOUdiLzw4tQ4gDLg@mail.gmail.com>
-	<20240129152600.7587d1aa@gandalf.local.home>
-	<CAHk-=wghobf5qCqNUsafkQzNAZBJiS0=7CRjNXNChpoAvTbvUw@mail.gmail.com>
-	<20240129172200.1725f01b@gandalf.local.home>
-	<CAHk-=wjV6+U1FQ8wzQ5ASmqGgby+GZ6wpdh0NrJgA43mc+TEwA@mail.gmail.com>
-	<CAHk-=wgOxTeTi02C=kOXsHzuD6XCrV0L1zk1XP9t+a4Wx--xvA@mail.gmail.com>
-	<20240129174950.5a17a86c@gandalf.local.home>
-	<CAHk-=wjbzw3=nwR5zGH9jqXgB8jj03wxWfdFDn=oAVCoymQQJg@mail.gmail.com>
-	<20240129193549.265f32c8@gandalf.local.home>
-	<CAHk-=whRxcmjvGNBKi9_x59cAedh8SO8wsNDNrEQbAQfM5A8CQ@mail.gmail.com>
-	<CAHk-=wh97AkwaOkXoBgf0z8EP88ePffLnTcmmQXcY+AhFaFrnA@mail.gmail.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706639848; c=relaxed/simple;
+	bh=ZsZ4CSEEReHodm5XT1/IpDGk1NZ+OdsfN9HrhiTiSkI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QFoT6acVVwpqEEX3/u9zIWaOMOycDPp+Te+p8Fv8mpCtkc9ezeCXLHnePKvi2z5tnGo0GheIbUq0Utp+AO+zwDAEdGLGMfrdK7E5OPUXqigO4oTWKB3oESilSruMUuRXZdreyZkfAzF3zapz17MDCpe273xyMs4r7sH4Y6LRYcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ggc7RK4A; arc=none smtp.client-ip=209.85.166.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-7bfd5eeffefso150577139f.1;
+        Tue, 30 Jan 2024 10:37:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706639846; x=1707244646; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hM9ej9K+8Z1VJp/yGHaHZXuJOYSDyYzm2GNeYFRuOio=;
+        b=ggc7RK4AzqB5CGmU6/v/l+uga4A8OixXr4IPje5DIXtqGR4DabhEGv1oSaJ/SwJQW+
+         x7rbBxvOyUhcn02AKFVSKOOa8ODXZN8cj0rkBkMvHYD2N1bw9XLhdUBi8ZspUUYzY09f
+         y0KsekUgj13Y+SLvV2KJ8vMcTARndIdv15EiPv6tLDtfV11SlQR5HDMMXMWQ9KNlD5yR
+         /k2Zb/o9/gbkbsKRSRYSokkdgVAeimi21INEiKTNtQTlXts2P1eB9GAq3M7QvpEw/Dx4
+         Ffhh2Ke+TLg7/ZZ/pMLx4/NgwQUoftOgO2HTcJ5ep3usOf3VBYc0noIleJii4VbgBCGT
+         naWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706639846; x=1707244646;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hM9ej9K+8Z1VJp/yGHaHZXuJOYSDyYzm2GNeYFRuOio=;
+        b=S7aCRfhvUMcGbeA/V7bsrjxUcxXNWGQQvyKDUVsjnMIDMgX63Nhj5t1roYZb47fb9G
+         qqPD5gfpYAdAvB0wPLtLdiHNlVkwIk2eUaR8xUb6ROdkPEBcyh/Sb91xh+uUw9bl6iDr
+         fa1ihUbmH5aX8pddtkw9TB5filyxsKEVaCXMYcSTGKDvWRfnwcWmdHn24ZyHPJ/E9mQ7
+         KY7WXySS1WNz0Wyh0e81xoy5K5l/mxPgZM3U2T6Enn4puz5Z9zjZbRlebew4+0OsXNzT
+         gOpI7NaQrEcGja35XS6iimtwEpzwr0d0DCuSkMcs7qon6kDr0sdm4HIwBu4p3xRfgeOB
+         R7dg==
+X-Gm-Message-State: AOJu0YyZYpOAdKj1pDk6zsPabdWvLTRid3aWtd8+mp6E1vkNbpAz5dzi
+	roXS9Cd/jkU+iwIb/CGYGX8Wn1rd//mzJglNc2LG8Vi1vs607/p/Oo95ymr4okXT6FgNtICZvum
+	bRQQzegD+BvGWUIA/ocVtq2dkSAo=
+X-Google-Smtp-Source: AGHT+IERoa1G5FtsZFo/vtPsaqg2DfIVxKvUU5JLdo3L/X1OxY9spoX0SrOT+0nfO/bBF0zz61CYZCV1tV831AGsjD0=
+X-Received: by 2002:a92:d5c8:0:b0:363:900b:fa50 with SMTP id
+ d8-20020a92d5c8000000b00363900bfa50mr1933229ilq.2.1706639845877; Tue, 30 Jan
+ 2024 10:37:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240129224542.162599-1-nphamcs@gmail.com> <20240129224542.162599-2-nphamcs@gmail.com>
+ <ZbhKoJ5BcP_RhMt4@google.com>
+In-Reply-To: <ZbhKoJ5BcP_RhMt4@google.com>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Tue, 30 Jan 2024 10:37:15 -0800
+Message-ID: <CAKEwX=OwsEcSnw5V_zivdFzGLLVA_PC+Acv+5sozkCJU1NHpeg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] selftests: zswap: add zswap selftest file to zswap
+ maintainer entry
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: akpm@linux-foundation.org, shuah@kernel.org, hannes@cmpxchg.org, 
+	tj@kernel.org, lizefan.x@bytedance.com, linux-mm@kvack.org, 
+	kernel-team@meta.com, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 29 Jan 2024 19:56:52 -0800
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+On Mon, Jan 29, 2024 at 5:02=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
+ wrote:
+>
+> On Mon, Jan 29, 2024 at 02:45:40PM -0800, Nhat Pham wrote:
+> > Make it easier for contributors to find the zswap maintainers when they
+> > update the zswap tests.
+> >
+> > Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+>
+> I guess I had to check the zswap tests at some point :)
 
-> [0001-tracefs-avoid-using-the-ei-dentry-pointer-unnecessar.patch  text/x-patch (3561 bytes)] 
-> 
-> [0002-eventfsfs-initialize-the-tracefs-inode-properly.patch  text/x-patch (2548 bytes)] 
+We sorely need more zswap tests :)
 
-Ah these two are new.
+I'm one of the offenders of adding new features without including
+tests, so no judging anyone of course, and admittedly zswap is quite
+intertwined with other parts of MM, so it's kinda hard to write
+unit-ish tests for zswap only. I often had to resort to scripting
+stress tests to iron out bugs.
 
--- Steve
+But there are still tests that we can write to verify public API
+(cgroup's zswap options come to mind), simple tests that cover crucial
+code paths, etc. that we should probably add in. At the very least
+this can be a quick/sanity check for developing and backporting
+patches into the production system.
+
+>
+> Acked-by: Yosry Ahmed <yosryahmed@google.com>
+>
+> > ---
+> >  MAINTAINERS | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index fecebfc4c0dc..5f60faaefaf2 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -24396,6 +24396,7 @@ F:    include/linux/zpool.h
+> >  F:   include/linux/zswap.h
+> >  F:   mm/zpool.c
+> >  F:   mm/zswap.c
+> > +F:   tools/testing/selftests/cgroup/test_zswap.c
+> >
+> >  THE REST
+> >  M:   Linus Torvalds <torvalds@linux-foundation.org>
+> > --
+> > 2.39.3
+> >
 
