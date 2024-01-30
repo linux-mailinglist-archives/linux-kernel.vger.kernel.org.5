@@ -1,105 +1,107 @@
-Return-Path: <linux-kernel+bounces-44246-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44247-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 294AB841F4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:23:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23B79841F88
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:31:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C4CC1C24BDD
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:23:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25C50B323A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:23:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5EAC59B7C;
-	Tue, 30 Jan 2024 09:23:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="XiSz3zCO"
-Received: from mail-lj1-f201.google.com (mail-lj1-f201.google.com [209.85.208.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26836605C1;
+	Tue, 30 Jan 2024 09:23:10 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A20659148
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:22:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D935F6086F;
+	Tue, 30 Jan 2024 09:23:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706606580; cv=none; b=a6+9aLqjz7gzh/PJsUF4+2upw6Y6DkpqVYY89E2k3fQebXUmI3MssWJ3TlGgGvBC7M6V3kypoljNGnSUnvroGBX2fUpwpsXwcgArcSYjMKStOFPkfwzI6/QkFXTuWMDRLl1P9nZN+Ftwqw91NMsfFW/96PpPUuwze3GLEDxE9KI=
+	t=1706606589; cv=none; b=WLdsnhygTQS/fJk85EEZ3BaWFDhydq3CFyrEC+Ut8XX+m/xw4Out/CirYrJS0jSRap0E6jut33yE4Pn1F0LMqQxUHFfHXlIJMsVN+kjKqEgUY3LuYr0rvtEJLcY7M97MYzXFAhjdyAjnqAZXNl3sgjKoH2hvbo7DwrgcfJNBqu4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706606580; c=relaxed/simple;
-	bh=u8E/DAzdM4BDv+M4rE/6UY3tXIFTWYYORwwsXK8NW1Q=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=ii0S0uu0A6VF3b/9+tn+/YFDwDxAF8WH2qPYV9OeL6//8KJdNsLdwl+0wL6vFKPWASVEr7qzYf5wwSeh2/xduDcdazgKN/OSRUPAgIut9LVWgrlUokZ9UCt86Iqs7H427cZ4xEbrhsMZ3oMVit9T9gCOuwX6QvZHVlGO7uqIofk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=XiSz3zCO; arc=none smtp.client-ip=209.85.208.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
-Received: by mail-lj1-f201.google.com with SMTP id 38308e7fff4ca-2cf3f998869so33128031fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:22:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706606576; x=1707211376; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OqLMO+WcsA+qHzDqK7CtF5QEfkhWOqOfu9v7+ZVhskE=;
-        b=XiSz3zCOefqwkTmBq9+h/pKYiuDQ0oDreYkg4yBCyqFFPH75qp8Rj1i17gpjnW33uD
-         9Y9G6Mn+ClJsYXQMWxVlGhjjoarsQgiTKM+7O6uOBPTKXQ7i/Hh8ejd0h257J/THo0aE
-         nfhVRUHy+5Zyzhuu19vH+27txyM6fLmjqktikAYqiD3bHuVy+ZKUaMBkCbop34FeA8P3
-         HJFfeE28XAK0BUWXR+VUajgSwYogu2eANY3O7OM5QvDw9cO8JN3nnrkOd45k8ZpWN7dA
-         3TQlgsxUfShCe4ruqS/8KujqPmNkwqJIW/TbcdHW6rWwu2Tm9dZq1Qk8abMf8ay09UNk
-         lOSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706606576; x=1707211376;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OqLMO+WcsA+qHzDqK7CtF5QEfkhWOqOfu9v7+ZVhskE=;
-        b=VLRrvyqGpSs2d/JX2id46lCAY8I6aKK7B6PVV4kYVA8R4UWUv5jX7anhB3k/qWJYLg
-         veBay3pg172wk7tpvDDlQ0j4bWNAmFzMkNj7HmhPO1ZdU1/Adtb7dvzMv71RhIPb3n2o
-         B6mS2b0xED7bdF6xED+XYX/R194K7YWwJ5rgsTCUKBrZHr3y0MFmwMZY7aEES1RFERUF
-         zgqDzdHmX7t+IsoWlkeJ0L3TVTw/JB3t73Y+IG7JYjbul2SapJIlPozHaTJHhY6Aw2C+
-         CX9Sq9U+K58M2oFVm9l6tDqGRMEgKH8VYb+RxoVtPpfWhpOXyKGTMzg0T0CNvvQUD13z
-         gxxg==
-X-Gm-Message-State: AOJu0YyaQf18O+rPlfzAtDjesigTXnKi8hYReteEIxKdVSSxvGddpJPj
-	1OyANTUiEjK98sswdsgeK3/HSRhnIDJr2iyqwacIOmZEFDn/q3+BgbMAwiBwt+F+1DpBDW544KH
-	eZJ32m1BNy/PJJQ==
-X-Google-Smtp-Source: AGHT+IF87NQ812vMFotO2i42XCkp9U2cUqOajgaKofrGlkuAmbQh0g7jvgwQO8Z70Yi76a7LPw7Yradv/DUgloU=
-X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:a2e:a370:0:b0:2cf:3298:3ddc with SMTP id
- i16-20020a2ea370000000b002cf32983ddcmr10644ljn.7.1706606576260; Tue, 30 Jan
- 2024 01:22:56 -0800 (PST)
-Date: Tue, 30 Jan 2024 09:22:52 +0000
-In-Reply-To: <20240123150112.124084-1-kernel@valentinobst.de>
+	s=arc-20240116; t=1706606589; c=relaxed/simple;
+	bh=RR2Ok8eBu0hx7ryrpW9iLq2RX/x8Hk8b0Su0iAg7OxQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jcht5U9nzprNf37L20fXCMVOOekr//Gm4NsM37kMeu5aBZeHCimy2Kow16pLUG70lBXCCJk+J8+iFw2n5jYXE4d3Ax8bOamCbpmwqeDdOygEjlWkCoxb4MEOvbJGoftCou+alXqrMun7Ba1Ld0GilOaRuE0tiHwLtSXLhrPl5mQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 96f56ac84e1d4b7fb233b844da02fedb-20240130
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:a29a4ccd-7f3f-4b35-ad67-a1ff0bb61347,IP:10,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:-5
+X-CID-INFO: VERSION:1.1.35,REQID:a29a4ccd-7f3f-4b35-ad67-a1ff0bb61347,IP:10,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:-5
+X-CID-META: VersionHash:5d391d7,CLOUDID:4eef6983-8d4f-477b-89d2-1e3bdbef96d1,B
+	ulkID:240130172300JBAW41TA,BulkQuantity:0,Recheck:0,SF:24|17|19|44|66|38|1
+	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
+	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 96f56ac84e1d4b7fb233b844da02fedb-20240130
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
+	(envelope-from <chentao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 1225308110; Tue, 30 Jan 2024 17:22:59 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+	by mail.kylinos.cn (NSMail) with SMTP id 021C6E000EB9;
+	Tue, 30 Jan 2024 17:22:59 +0800 (CST)
+X-ns-mid: postfix-65B8BFF2-8629861024
+Received: from kernel.. (unknown [172.20.15.213])
+	by mail.kylinos.cn (NSMail) with ESMTPA id 108B0E000EB9;
+	Tue, 30 Jan 2024 17:22:57 +0800 (CST)
+From: Kunwu Chan <chentao@kylinos.cn>
+To: davem@davemloft.net,
+	dsahern@kernel.org,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Kunwu Chan <chentao@kylinos.cn>
+Subject: [PATCH net-next] net: ipv4: Simplify the allocation of slab caches in inet_initpeers
+Date: Tue, 30 Jan 2024 17:22:55 +0800
+Message-Id: <20240130092255.73078-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240123150112.124084-1-kernel@valentinobst.de>
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-Message-ID: <20240130092252.1610582-1-aliceryhl@google.com>
-Subject: Re: [PATCH v2 00/12] rust: kernel: documentation improvements
-From: Alice Ryhl <aliceryhl@google.com>
-To: kernel@valentinobst.de
-Cc: alex.gaynor@gmail.com, fraunhofer@valentinobst.de, 
-	linux-kernel@vger.kernel.org, ojeda@kernel.org, 
-	rust-for-linux@vger.kernel.org, wedsonaf@gmail.com, 
-	Alice Ryhl <aliceryhl@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 
-Valentin Obst <kernel@valentinobst.de> writes:
-> This patch set aims to make small improvements to the documentation of
-> the kernel crate. It engages in a few different activities:
-> - fixing trivial typos (commit #1),
-> - updating code examples to better reflect an idiomatic coding style
->   (commits #2,6),
-> - increasing the consistency within the crate's documentation as a whole
->   (commits #3,5,7,8,9,11,12),
-> - adding more intra-doc links as well as srctree-relative links to C
->   header files (commits #4,10).
+commit 0a31bd5f2bbb ("KMEM_CACHE(): simplify slab cache creation")
+introduces a new macro.
+Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
+to simplify the creation of SLAB caches.
 
-I left one comment [1] on the last patch. With that fixed, you may add:
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+---
+ net/ipv4/inetpeer.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+diff --git a/net/ipv4/inetpeer.c b/net/ipv4/inetpeer.c
+index e9fed83e9b3c..5bd759963451 100644
+--- a/net/ipv4/inetpeer.c
++++ b/net/ipv4/inetpeer.c
+@@ -81,10 +81,7 @@ void __init inet_initpeers(void)
+=20
+ 	inet_peer_threshold =3D clamp_val(nr_entries, 4096, 65536 + 128);
+=20
+-	peer_cachep =3D kmem_cache_create("inet_peer_cache",
+-			sizeof(struct inet_peer),
+-			0, SLAB_HWCACHE_ALIGN | SLAB_PANIC,
+-			NULL);
++	peer_cachep =3D KMEM_CACHE(inet_peer, SLAB_HWCACHE_ALIGN | SLAB_PANIC);
+ }
+=20
+ /* Called with rcu_read_lock() or base->lock held */
+--=20
+2.39.2
 
-to all of the patches.
-
-(I responded on v1 by accident, but it was v2 that I have reviewed.)
-
-[1]: https://lore.kernel.org/rust-for-linux/CAH5fLghSaorRgDDuqNCN-BhQ86ysX96b=nKM_cZAN0_E6Ai04A@mail.gmail.com/
 
