@@ -1,191 +1,198 @@
-Return-Path: <linux-kernel+bounces-43857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43856-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 494C4841999
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 03:51:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A9DF841993
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 03:50:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B1119B220F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 02:51:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD8EE1F23A4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 02:50:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7981836B0D;
-	Tue, 30 Jan 2024 02:50:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0A3136AFD;
+	Tue, 30 Jan 2024 02:50:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TVKMemRU"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="jWzdlt8t"
+Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B4FC3716E
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 02:50:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3749A364DA
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 02:50:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706583058; cv=none; b=SsUnqZ+rLI5A8xel+u0DWeZsh3iJuYOW8uyi0I8Hwg9xo/Hp8fZ2wzJn48eauvM5R9afbww8yL2WZSJOIRKuJgrp/00pBIct4uR/HiMiCKw0tEyUlQogH4GdTjGmQwLB2z5HimuXyckGlryJnnoVyIT7Z9gIv6pyyB2cLn5VzW0=
+	t=1706583049; cv=none; b=f0foVyhHaS+NZpFUWBRCX5/OkPF/Qm5eTwqJGPFv9pYfA+nUgJHfnFqQfHnkV0u+W9T0vFwf6JRgPM3kym1lxAFRMK2kH6iAZZHT2qcB1INkG5oKXr3DFRaLZzMBamv35GpYquhxLigCwFqsl3V1OGBAOpoTRhEynfujOqr97eA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706583058; c=relaxed/simple;
-	bh=7/4OOmT0P01j47RMj7+gCYaiskBPgI0I+DKiyvwAdv0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Zy6jyMtugfAd81RnA5BXnwkM1z6584HpA10CjJNZ8C0iRGD8Vf/F7dNQsUbFy/9g7LyBYgoPcU99ap2wT1zq3LCYLQZVjBgN5/Ojgn3FwBwlifuKw19RAaeoKnAOf/bEmDKXzHGXDC1XvHuxycquI4V3x9w8MVNY5TS0K2oXLpU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TVKMemRU; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706583056;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PCU7cgSJXt8eqbIH0viYPN7vEYcJ8K/tx6HHt1Qm1ig=;
-	b=TVKMemRUzNprPYtG6pIhGlUoiWX9YULfvzt3/SV0uoUyvVFQ7WJmJYaR4GkwqVmG8Z7suZ
-	Hgh4mCzEnI5vRFVVaVuhVQT47shZdY2NDsJt3pCTJXBwScSce7UvR8sfLWxNWOJnBNRckL
-	8ATnnbT/qkPiGnfzz5FuFdN0slWKidY=
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
- [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-53-GsZ3WZ_bNAGUtJLDRjnOIw-1; Mon, 29 Jan 2024 21:50:54 -0500
-X-MC-Unique: GsZ3WZ_bNAGUtJLDRjnOIw-1
-Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-6dde04e1c67so2224642b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 18:50:53 -0800 (PST)
+	s=arc-20240116; t=1706583049; c=relaxed/simple;
+	bh=0TEm3/crCtPyfYZL8bXJs3aeXPqJ01LKo32QgDLoJlQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Vd3sU8Gm772whP+9MUwxmj/3KS88aAVyIi9pz2LdXYYr223iALT4oWMZoAEKtR5iA6KvqZQV+MLc4lgzWUOi2hAxDwZChE7b/aozOTa9rGCFLOTaZHEVT1Is+sAMKiR0TNyiT+sH8JPu6LsoxZp9C+4PtK9KIzVsDY/DHiIPoBs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=jWzdlt8t; arc=none smtp.client-ip=209.85.161.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-59a146e8c85so1777096eaf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 18:50:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706583046; x=1707187846; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=I4kmLD/ZHgJFQzacfvJ5aXtIPI3Q8g9U5l7cj/1gwss=;
+        b=jWzdlt8toQ2FsBo3S6a7Q7ROpdRBxUH1g9DN0DBiw+5bcGPLcII1V+07/+MAJPh/as
+         IdyJDSHpNjy9CnoruaeuvomdWmsnHlVcss8HoFDnG9y06nzI5K96t7oI1OlpWtDJx1p9
+         d7+7fti71HITHzK9uF0il7X6GyhEtrxo0nelCqvva5bsTP9AsVJifDhdBjU76nelvukU
+         4UJ+IAfgXm27CjvELFIJJZadv+r8lIESAbNtUgpH04BcX+L9yzjQyqZbvt67EuksbThd
+         /gR2I1yC+Eoo2aDo9Qh4gFvwggNM2+eJ+L42h7TGiamq96bqn9Ho/G+keTithdhdFb5p
+         6hVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706583053; x=1707187853;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PCU7cgSJXt8eqbIH0viYPN7vEYcJ8K/tx6HHt1Qm1ig=;
-        b=ToCS8V43G7O63T+oBSGkW7hP/qcoDOzJ1A5cAlpPsCU+aRTBRcOMVh3lVa/cLVS4qc
-         PVuOHvHMRcT2Gp9vfo8r54zm1ZSHcPIWY3+EcAGX6fQU1piLOlRylIupk9/6e/bX3/AO
-         tzN7gPnL9CoN9eO2jp39sJ+1L+RWvY8AoYvr0zgnkHkpxbKIhgdV36sIiMswl395JLed
-         tDoQXKyd9GBHqWpmW0VJAc+F5da1YZG571SZ9eTBNf9CnL/UVtYMmk7EUfkqF+d0wlIm
-         Ntb715PjWXDBwhKcBam+RHqdwwGwVcMWRAW60ZYKtpBV4Op0LTQbIXgDfxFP5vpmmSMY
-         cjlQ==
-X-Gm-Message-State: AOJu0YypXLY6bqGXop+K1YqLabKLGypt1X9Dwvir2Rx42LU915a6UyL7
-	3IrX9wo0uMSWTOkAZBaKGtYHsO7z3kKqFxwPrtqSY4V/IRT0SxEFetNPrxPtQDA9t4m0/X8QFRC
-	RA/rP3bFgrweX8edFXU4zW4vDU/b6Zokg54hVI1vs2W2aDr2xMo7JuTgYhl2AJ/rdxi4Ky9vF31
-	dgMBJLwA3M77/AWi4m8wUb2ebQ69Xf9JNAWKGK
-X-Received: by 2002:a05:6a00:be4:b0:6db:7073:f845 with SMTP id x36-20020a056a000be400b006db7073f845mr3665894pfu.18.1706583053108;
-        Mon, 29 Jan 2024 18:50:53 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGm5Itgw8YJiSPgIZ0ocMlecuXm83mHLHvX+aoPWUkQQ+32MJb0boVV1sfx4sU6lrRD47v7bJs7prWQkWvVf4w=
-X-Received: by 2002:a05:6a00:be4:b0:6db:7073:f845 with SMTP id
- x36-20020a056a000be400b006db7073f845mr3665879pfu.18.1706583052830; Mon, 29
- Jan 2024 18:50:52 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706583046; x=1707187846;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=I4kmLD/ZHgJFQzacfvJ5aXtIPI3Q8g9U5l7cj/1gwss=;
+        b=d8rWB9RzrPCDubqNgopxVq7/RZwPtKDFEnG5T339A2UJmTiHeQ7+0Ip+dGOpeER5JW
+         wTkzoKewpd/wrIRThk49hv1sDG7SR1ZTfA/wT+X2LjBCt52srUDyFwVzshheI32Ac3/D
+         15WmyB/vDll1u8h5rB1dacEUYhIagU8KEzkNVtVWIr2PgHk2Hbb+fZFvI/5BwryNCr9l
+         U00RTRYPgeTYVzKDltNgh9KkvChUOmZ7gUzsymT/h4dFqJ8LgTygUixPQxUyIvwtvFWW
+         5A4+pmwoPd7qSqV3zpY0fBQWXYDtG4U/Hfe8Khq2X4utBTYbtwiaEgBwzX6SMA9SHIH0
+         39jw==
+X-Gm-Message-State: AOJu0Ywndu812Arg0L6dxuIlAAsbalsz3CLYIoSGLrF1/+nBBLBbGGBf
+	iGkcbvYWuYj4X1hDEto1SN2rdD7hBrZdNs4UacEcVuFMy6TD5bic4omxVlppm94=
+X-Google-Smtp-Source: AGHT+IHVIhbQGSEna5MN4n3vgllTv+oL5jn7aTe6nq6Ie2BpSyHZw7jYc/tSHXwtTS+M7cDDGwEHmw==
+X-Received: by 2002:a05:6358:796:b0:178:76b3:58d8 with SMTP id n22-20020a056358079600b0017876b358d8mr3227466rwj.38.1706583046256;
+        Mon, 29 Jan 2024 18:50:46 -0800 (PST)
+Received: from ghost (mobile-166-137-160-039.mycingular.net. [166.137.160.39])
+        by smtp.gmail.com with ESMTPSA id y12-20020aa7854c000000b006dbd3aec001sm6794293pfn.146.2024.01.29.18.50.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 18:50:45 -0800 (PST)
+Date: Mon, 29 Jan 2024 18:50:41 -0800
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Yangyu Chen <cyy@cyyself.name>
+Cc: Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Shuah Khan <shuah@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-doc@vger.kernel.org
+Subject: Re: [PATCH 1/3] riscv: mm: Use hint address in mmap if available
+Message-ID: <ZbhkAUf+h7sK71Rs@ghost>
+References: <20240129-use_mmap_hint_address-v1-0-4c74da813ba1@rivosinc.com>
+ <20240129-use_mmap_hint_address-v1-1-4c74da813ba1@rivosinc.com>
+ <tencent_F34C3BC7F1077728A62E84A7D183EF5BF005@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1706089075-16084-1-git-send-email-wangyunjian@huawei.com>
- <CACGkMEu5PaBgh37X4KysoF9YB8qy6jM5W4G6sm+8fjrnK36KXA@mail.gmail.com>
- <ad74a361d5084c62a89f7aa276273649@huawei.com> <CACGkMEvvdfBhNXPSxEgpPGAaTrNZr83nyw35bvuZoHLf+k85Yg@mail.gmail.com>
- <0141ea1c5b834503837df5db6aa5c92a@huawei.com>
-In-Reply-To: <0141ea1c5b834503837df5db6aa5c92a@huawei.com>
-From: Jason Wang <jasowang@redhat.com>
-Date: Tue, 30 Jan 2024 10:50:41 +0800
-Message-ID: <CACGkMEsyvgnezk2DXX-Z7Wt9zHV9o=w_wcN8z+dyoZ9LB1qqjA@mail.gmail.com>
-Subject: Re: [PATCH net-next 2/2] tun: AF_XDP Rx zero-copy support
-To: wangyunjian <wangyunjian@huawei.com>
-Cc: "mst@redhat.com" <mst@redhat.com>, 
-	"willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>, "kuba@kernel.org" <kuba@kernel.org>, 
-	"davem@davemloft.net" <davem@davemloft.net>, 
-	"magnus.karlsson@intel.com" <magnus.karlsson@intel.com>, 
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
-	"virtualization@lists.linux.dev" <virtualization@lists.linux.dev>, xudingke <xudingke@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <tencent_F34C3BC7F1077728A62E84A7D183EF5BF005@qq.com>
 
-On Mon, Jan 29, 2024 at 7:40=E2=80=AFPM wangyunjian <wangyunjian@huawei.com=
-> wrote:
->
-> > -----Original Message-----
-> > From: Jason Wang [mailto:jasowang@redhat.com]
-> > Sent: Monday, January 29, 2024 11:03 AM
-> > To: wangyunjian <wangyunjian@huawei.com>
-> > Cc: mst@redhat.com; willemdebruijn.kernel@gmail.com; kuba@kernel.org;
-> > davem@davemloft.net; magnus.karlsson@intel.com; netdev@vger.kernel.org;
-> > linux-kernel@vger.kernel.org; kvm@vger.kernel.org;
-> > virtualization@lists.linux.dev; xudingke <xudingke@huawei.com>
-> > Subject: Re: [PATCH net-next 2/2] tun: AF_XDP Rx zero-copy support
-> >
-> > On Thu, Jan 25, 2024 at 8:54=E2=80=AFPM wangyunjian <wangyunjian@huawei=
-com>
-> > wrote:
-> > >
-> > >
-> > >
-> > > > -----Original Message-----
-> > > > From: Jason Wang [mailto:jasowang@redhat.com]
-> > > > Sent: Thursday, January 25, 2024 12:49 PM
-> > > > To: wangyunjian <wangyunjian@huawei.com>
-> > > > Cc: mst@redhat.com; willemdebruijn.kernel@gmail.com;
-> > > > kuba@kernel.org; davem@davemloft.net; magnus.karlsson@intel.com;
-> > > > netdev@vger.kernel.org; linux-kernel@vger.kernel.org;
-> > > > kvm@vger.kernel.org; virtualization@lists.linux.dev; xudingke
-> > > > <xudingke@huawei.com>
-> > > > Subject: Re: [PATCH net-next 2/2] tun: AF_XDP Rx zero-copy support
-> > > >
-> > > > On Wed, Jan 24, 2024 at 5:38=E2=80=AFPM Yunjian Wang
-> > > > <wangyunjian@huawei.com>
-> > > > wrote:
-> > > > >
-> > > > > Now the zero-copy feature of AF_XDP socket is supported by some
-> > > > > drivers, which can reduce CPU utilization on the xdp program.
-> > > > > This patch set allows tun to support AF_XDP Rx zero-copy feature.
-> > > > >
-> > > > > This patch tries to address this by:
-> > > > > - Use peek_len to consume a xsk->desc and get xsk->desc length.
-> > > > > - When the tun support AF_XDP Rx zero-copy, the vq's array maybe =
-empty.
-> > > > > So add a check for empty vq's array in vhost_net_buf_produce().
-> > > > > - add XDP_SETUP_XSK_POOL and ndo_xsk_wakeup callback support
-> > > > > - add tun_put_user_desc function to copy the Rx data to VM
-> > > >
-> > > > Code explains themselves, let's explain why you need to do this.
-> > > >
-> > > > 1) why you want to use peek_len
-> > > > 2) for "vq's array", what does it mean?
-> > > > 3) from the view of TUN/TAP tun_put_user_desc() is the TX path, so =
-I
-> > > > guess you meant TX zerocopy instead of RX (as I don't see codes for
-> > > > RX?)
-> > >
-> > > OK, I agree and use TX zerocopy instead of RX zerocopy. I meant RX
-> > > zerocopy from the view of vhost-net.
-> >
-> > Ok.
-> >
-> > >
-> > > >
-> > > > A big question is how could you handle GSO packets from
-> > userspace/guests?
-> > >
-> > > Now by disabling VM's TSO and csum feature.
-> >
-> > Btw, how could you do that?
->
-> By set network backend-specific options:
-> <driver name=3D'vhost'>
->         <host csum=3D'off' gso=3D'off' tso4=3D'off' tso6=3D'off' ecn=3D'o=
-ff' ufo=3D'off' mrg_rxbuf=3D'off'/>
->     <guest csum=3D'off' tso4=3D'off' tso6=3D'off' ecn=3D'off' ufo=3D'off'=
-/>
-> </driver>
+On Tue, Jan 30, 2024 at 10:34:03AM +0800, Yangyu Chen wrote:
+> 
+> > On Jan 30, 2024, at 08:37, Charlie Jenkins <charlie@rivosinc.com> wrote:
+> > 
+> > On riscv it is guaranteed that the address returned by mmap is less than
+> > the hint address. Allow mmap to return an address all the way up to
+> > addr, if provided, rather than just up to the lower address space.
+> > 
+> > This provides a performance benefit as well, allowing mmap to exit after
+> > checking that the address is in range rather than searching for a valid
+> > address.
+> > 
+> > It is possible to provide an address that uses at most the same number
+> > of bits, however it is significantly more computationally expensive to
+> > provide that number rather than setting the max to be the hint address.
+> > There is the instruction clz/clzw in Zbb that returns the highest set bit
+> > which could be used to performantly implement this, but it would still
+> > be slower than the current implementation. At worst case, half of the
+> > address would not be able to be allocated when a hint address is
+> > provided.
+> > 
+> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> > ---
+> > arch/riscv/include/asm/processor.h | 21 ++++++++-------------
+> > 1 file changed, 8 insertions(+), 13 deletions(-)
+> > 
+> > diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
+> > index f19f861cda54..f3ea5166e3b2 100644
+> > --- a/arch/riscv/include/asm/processor.h
+> > +++ b/arch/riscv/include/asm/processor.h
+> > @@ -22,14 +22,11 @@
+> > ({ \
+> > unsigned long mmap_end; \
+> > typeof(addr) _addr = (addr); \
+> > - if ((_addr) == 0 || (IS_ENABLED(CONFIG_COMPAT) && is_compat_task())) \
+> > - mmap_end = STACK_TOP_MAX; \
+> > - else if ((_addr) >= VA_USER_SV57) \
+> > - mmap_end = STACK_TOP_MAX; \
+> > - else if ((((_addr) >= VA_USER_SV48)) && (VA_BITS >= VA_BITS_SV48)) \
+> > - mmap_end = VA_USER_SV48; \
+> > + if ((_addr) == 0 || \
+> > + (IS_ENABLED(CONFIG_COMPAT) && is_compat_task()) || \
+> > + ((_addr + len) > BIT(VA_BITS - 1))) \
+> 
+> How about replacing BIT(VA_BITS-1) to DEFAULT_MAP_WINDOW to make the code
+> more general.
+> 
+> > else \
+> > - mmap_end = VA_USER_SV39; \
+> > + mmap_end = (_addr + len); \
+> > mmap_end; \
+> > })
+> > 
+> > @@ -39,14 +36,12 @@
+> > typeof(addr) _addr = (addr); \
+> > typeof(base) _base = (base); \
+> > unsigned long rnd_gap = DEFAULT_MAP_WINDOW - (_base); \
+> > - if ((_addr) == 0 || (IS_ENABLED(CONFIG_COMPAT) && is_compat_task())) \
+> > + if ((_addr) == 0 || \
+> > +    (IS_ENABLED(CONFIG_COMPAT) && is_compat_task()) || \
+> > +    ((_addr + len) > BIT(VA_BITS - 1))) \
+> 
+> Same here.
+> 
+> > mmap_base = (_base); \
+> > - else if (((_addr) >= VA_USER_SV57) && (VA_BITS >= VA_BITS_SV57)) \
+> > - mmap_base = VA_USER_SV57 - rnd_gap; \
+> > - else if ((((_addr) >= VA_USER_SV48)) && (VA_BITS >= VA_BITS_SV48)) \
+> > - mmap_base = VA_USER_SV48 - rnd_gap; \
+> > else \
+> > - mmap_base = VA_USER_SV39 - rnd_gap; \
+> > + mmap_base = (_addr + len) - rnd_gap; \
+> > mmap_base; \
+> > })
+> > 
+> > 
+> 
+> What about not setting the upper bound as x86/arm/powerpc as [1] did?
+> In this case, user space can directly pass a constant hint address >
+> BIT(47) to get a mapping in sv57. If you want this, this code also allows
+> user-space to pass any address larger than TASK_SIZE. You should also
+> limit the mmap_base to (base) + TASK_SIZE - DEFAULT_MAP_WINDOW.
 
-This is the mgmt work, but the problem is what happens if GSO is not
-disabled in the guest, or is there a way to:
+No. This suggestion causes a random address to be used if the hint
+address is not available. That is why I didn't simply go with your
+patch.
 
-1) forcing the guest GSO to be off
-2) a graceful fallback
+This patch both gives your application the benefit of being able to use
+a hint address in the hopes that the address is available, as well as
+continuing to support the guarantee that an address using more bits than
+the hint address is not returned.
 
-Thanks
+- Charlie
 
->
-> Thanks
->
-> >
-> > Thanks
-> >
->
-
+> 
+> I’m also aware of the rnd_gap if it is not 0, then we will not get
+> address mapped to VA_USER_SV39 - rnd_gap.
+> 
+> [1]. https://lore.kernel.org/linux-riscv/tencent_2683632BEE438C6D4854E30BDF9CA0843606@qq.com/
+> 
+> > -- 
+> > 2.43.0
+> > 
+> 
 
