@@ -1,164 +1,206 @@
-Return-Path: <linux-kernel+bounces-45373-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45375-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6A03842F69
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:10:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C87B842F6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:11:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EB9E28507F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 22:10:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59A7C1C22C5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 22:11:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8F8114AAA;
-	Tue, 30 Jan 2024 22:10:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8A837D40A;
+	Tue, 30 Jan 2024 22:11:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="BhYM4fuS"
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ebptkNaT"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E333B7D402
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 22:10:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2415A7D3FE;
+	Tue, 30 Jan 2024 22:11:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706652614; cv=none; b=kjE1q5Mi/L8H5p0ZwigDoMEH0C8GyV6neYYo/wDR8IBIDN/suj0YoxItdxZIjTivQjYVd6bq7jganZg20JGSvoufkbPaUBNoCpwFUHcsZi8J9LR8wrZz8SW8oW2iUkwTF8mD618OXoTWCr/rbk4LFhocGTCkonVrpc94Uv2MTAE=
+	t=1706652675; cv=none; b=JhWF83+QNv+8UIB+FSEd7v70WE8Fs8nGLKl6Uq9Ovqin3hdNO3/DXduwoDi6/C3F+GOjXgZc5ytpOUYZCr3/M909jcvMJuO/r7PiwbMsXMe+/lycqMcCN1MWtxSNJWDYrjMjMB4Lcpbjp6gkrc6H/gV9nM2g7sKSNm33MYSAIK8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706652614; c=relaxed/simple;
-	bh=BbwoA8VEagIWr1NfNJqugPJ+q3NLA6lFHpUPeLk62RI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fPcFothFN0gYm5SMAsV8j/EHEpHyLB49ZLkBUzA5DsS633qTw0el7bNUasPtVYB+cs0neBbLLlc88nt/jpqDAu8fIdDDQwhTj4F0h8jZFZG5vcj0YBOF/lHIBvVUKz6RnU8QDUj3YOAHCtI+0/FT0PdctCesXCKE/2RPPjBpZcs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=BhYM4fuS; arc=none smtp.client-ip=209.85.215.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5d8b70b39efso2326536a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 14:10:10 -0800 (PST)
+	s=arc-20240116; t=1706652675; c=relaxed/simple;
+	bh=oSqyi3mVU7QS7x2jYdyUrY+3NHGEMVnwrT6hR/v/aRM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KUocElNqwB1hBlwt8h247DGtd8gINspLjxgeEIRtfHhbnbZR53nlItbIz8HwFa+VP4jR812XXllk+z9M5dp7lBho0nbHUI3TpVqL0qk/kOAuZzZHzgsai0CPnHf/OJrfLuEBD+G2X5dHVdZkRkGuAD75R8KBKudWyYRO3xogF9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ebptkNaT; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a3604697d63so266956166b.3;
+        Tue, 30 Jan 2024 14:11:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706652610; x=1707257410; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+NalAEpBOXm2rq7TuoQxf0lFmytzH/73qgpQl7PiKxE=;
-        b=BhYM4fuSgsiTQssJdeC9+p5gC2AWzbZ2bh6XARddS+Ho1YGqm70I7gGUYA36sAxoro
-         48dCZfxS0fon1G9eXQ6PRVVYgbUb9Kkxzq4zoFV8v/X5MRiMSIt9DvOo7Lfd8o2D08ve
-         PQ87zjwedtC96DijGFFE6n9zm4VPaaSWcuTTGF6pELFlS1Bt9XKMLrSFtmGOxgoVdR2O
-         IzVRESY/5SzO5ahCMbaa9mHrOHfZKNiOyZdxbYjB2oR6uSGdiC940kjIRuPLeuiqlLuO
-         nOq55Bvllm7fUKJNvQZby2ak2+Zqs7bT5JpexylDW+jvCY2MT/ipu8npxzGePoahXr8A
-         U3aQ==
+        d=gmail.com; s=20230601; t=1706652672; x=1707257472; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QUnCuHfqCBV79IBZ5Lp4urGXCgccRoBnaSQQzC74PU0=;
+        b=ebptkNaTzp77P8bhvkYxqqGDkvMqiBm1SUIJR420iwl1U7qXN/qKFNVwATUo2nVk11
+         +UPX0ldO4EKkmGEALcsCh8IPi6Y3+ECBcUZqEtpSWArB+vtJASyw15OwzMVyxT6lp+zt
+         3PuwkxDboFJ2whEld6pJ1MK++HiuoPJY09DHArodFAi8TwtTCCL3Njj3QyO23w+FDuhq
+         ZUxxy0Tm/H6Tki91LpAz9ohjvJTjbpiaPET1FvqrL8znqeo/jqch83+fZhygcCvz3LXS
+         z3uAN1zRU3mrha+bPxM9ajzwpC6PAuUiyuLP0tQMLFFeRgagpe51lO1NcvWUU0FRn2La
+         PV3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706652610; x=1707257410;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+NalAEpBOXm2rq7TuoQxf0lFmytzH/73qgpQl7PiKxE=;
-        b=spd+HTz+VTmzNy+zCXzi/ojSO0R+5Df5RnsqSRVLw2VGa3H6FoQARDdR80bQf2q3xO
-         FUAC0NLupFwZDZcnBvI1n8/BRpsl7G60+ZRuwxTHYuTVZOaiKHDapSfSFNFetkIns6UB
-         jPd/jVxaQQZZgpukY/5TnmNLcz7Mj/eXy3ZdP9cX2HsRMF9eHkz3Icp947LzrpKsZNaw
-         o+Q+aYlre7M1N+7I81fuFJbjzjFyZ7w3Mvu3T35MlRBHPuLPkHpU7V6qyzhI44wexxlj
-         iNvSEFynJCy0vDr91lEjfzovNpez/tcac+Ue/TNGkfqCIKSbhx6Bt+TQu75ssTIykmTn
-         o5xQ==
-X-Gm-Message-State: AOJu0Yx02wE1r2+YmKyIF71lf7sSbzMszGNx1FgNqfCkJ05HUk2/OARt
-	DUUbe92xJgvj64ztGb//nbzcBG9vMaTSg68lqZ5imOZu9DO75Or7r2j5zGCMK/c=
-X-Google-Smtp-Source: AGHT+IG0TEzaW4Z3tywTe2xwATbdanx5HuSgB7lDcqkiSgyWa4yxiZlDC4+9TLpHCznT/n5rvfzkJQ==
-X-Received: by 2002:a05:6a20:d819:b0:19c:a0f0:b167 with SMTP id iv25-20020a056a20d81900b0019ca0f0b167mr6839305pzb.3.1706652610266;
-        Tue, 30 Jan 2024 14:10:10 -0800 (PST)
-Received: from ghost ([12.44.203.122])
-        by smtp.gmail.com with ESMTPSA id jw3-20020a056a00928300b006d9b4303f9csm8274107pfb.71.2024.01.30.14.10.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 14:10:09 -0800 (PST)
-Date: Tue, 30 Jan 2024 14:10:07 -0800
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Stefan O'Rear <sorear@fastmail.com>
-Cc: Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Shuah Khan <shuah@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>, Yangyu Chen <cyy@cyyself.name>,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH 0/3] riscv: mm: Use hint address in mmap if available
-Message-ID: <Zblzv0KqlIZQ0wbF@ghost>
-References: <20240129-use_mmap_hint_address-v1-0-4c74da813ba1@rivosinc.com>
- <5fd69812-f07b-4079-a871-7e0ee857aaca@app.fastmail.com>
- <ZbhbNYLR9kh5dtFU@ghost>
- <6352ff7f-1e69-4f7a-b793-f69d223d4684@app.fastmail.com>
+        d=1e100.net; s=20230601; t=1706652672; x=1707257472;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QUnCuHfqCBV79IBZ5Lp4urGXCgccRoBnaSQQzC74PU0=;
+        b=ryaaHFX7bHH2xkb0wUC3pBtN5aflggJWY/+lNq6P8FT6F6XTe7WmemaUfbiaDs9Jq5
+         NFThHnjYT7OxpKAboZPr2cCAhoAy5Ulc+Bag3aRxxj0CFIWKcsy2yNjwxVMnX5bVFu3n
+         THYR8M3iLUGKU+9F3/opgmd/W+6a6QJjWDaPsn/rpVupbFYziWKiNdKucXmG04SDqlxO
+         MGOq9ARt2RE+irDlPyWHA5CNy3Lfu9+lqaIc7o4kCTlE7Mao6SxIa/18RDdOZNpAAHyd
+         RR+cMk8DCb0hb7xYHj06/4WksplLXk/4/VhoyYp1dp2FXXkG7yT3arIOQc3yh174drx5
+         fR4Q==
+X-Gm-Message-State: AOJu0Yw574BMokV9zO/MbgYPhGe6uHVOa/hniSGpP35dD4nmC0L3SCjp
+	jwQTSZAYOnGgEWZNDIDHbqRrssjRMm4IXWbiL8G9bL4XDyjGKhlrBGy5HAHF+nYvig==
+X-Google-Smtp-Source: AGHT+IFwBEq2SN1TkzJhORjzTidgitEvGlR+ee3NWHMI5YMKUAgWABFG0sQru6oK7k3oWKV61P4n3g==
+X-Received: by 2002:a17:906:6712:b0:a35:2f7a:385b with SMTP id a18-20020a170906671200b00a352f7a385bmr7230560ejp.23.1706652671994;
+        Tue, 30 Jan 2024 14:11:11 -0800 (PST)
+Received: from ?IPV6:2a02:8389:41cf:e200:7400:ff68:7ab4:4169? (2a02-8389-41cf-e200-7400-ff68-7ab4-4169.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:7400:ff68:7ab4:4169])
+        by smtp.gmail.com with ESMTPSA id vu2-20020a170907a64200b00a35a9745910sm2988697ejc.137.2024.01.30.14.11.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jan 2024 14:11:11 -0800 (PST)
+Message-ID: <7d7382d6-4999-4519-86c5-34f6c175e83f@gmail.com>
+Date: Tue, 30 Jan 2024 23:11:09 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6352ff7f-1e69-4f7a-b793-f69d223d4684@app.fastmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] Input: bcm5974 - check endpoint type before starting
+ traffic
+Content-Language: en-US
+To: Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+ John Horan <knasher@gmail.com>, Henrik Rydberg <rydberg@bitmath.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+ syzbot+348331f63b034f89b622@syzkaller.appspotmail.com
+References: <20231007-topic-bcm5974_bulk-v3-1-d0f38b9d2935@gmail.com>
+From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+In-Reply-To: <20231007-topic-bcm5974_bulk-v3-1-d0f38b9d2935@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jan 30, 2024 at 05:04:55PM -0500, Stefan O'Rear wrote:
-> On Mon, Jan 29, 2024, at 9:13 PM, Charlie Jenkins wrote:
-> > On Mon, Jan 29, 2024 at 09:04:50PM -0500, Stefan O'Rear wrote:
-> >> On Mon, Jan 29, 2024, at 7:36 PM, Charlie Jenkins wrote:
-> >> > On riscv, mmap currently returns an address from the largest address
-> >> > space that can fit entirely inside of the hint address. This makes it
-> >> > such that the hint address is almost never returned. This patch raises
-> >> > the mappable area up to and including the hint address. This allows mmap
-> >> > to often return the hint address, which allows a performance improvement
-> >> > over searching for a valid address as well as making the behavior more
-> >> > similar to other architectures.
-> >> 
-> >> This means that if an application or library opts in to Sv48 support by
-> >> passing a nonzero hint, it will lose the benefits of ASLR.
-> >
-> > sv48 is default. However your statement stands for opting into sv57.
-> > If they always pass the same hint address, only the first address will
-> > be deterministic though, correct?
+On 14.10.23 12:20, Javier Carrasco wrote:
+> syzbot has found a type mismatch between a USB pipe and the transfer
+> endpoint, which is triggered by the bcm5974 driver[1].
 > 
-> I think this is correct.
+> This driver expects the device to provide input interrupt endpoints and
+> if that is not the case, the driver registration should terminate.
 > 
-> >> 
-> >> Allowing applications to opt in to a VA space smaller than the
-> >> architectural minimum seems like an independently useful feature.
-> >> Is there a reason to only add it for riscv64?
-> >> 
-> >
-> > If there is interest, it can be added to other architectures as well.
+> Repros are available to reproduce this issue with a certain setup for
+> the dummy_hcd, leading to an interrupt/bulk mismatch which is caught in
+> the USB core after calling usb_submit_urb() with the following message:
+> "BOGUS urb xfer, pipe 1 != type 3"
 > 
-> I meant as opposed to riscv32.
+> Some other device drivers (like the appletouch driver bcm5974 is mainly
+> based on) provide some checking mechanism to make sure that an IN
+> interrupt endpoint is available. In this particular case the endpoint
+> addresses are provided by a config table, so the checking can be
+> targeted to the provided endpoints.
+> 
+> Add some basic checking to guarantee that the endpoints available match
+> the expected type for both the trackpad and button endpoints.
+> 
+> This issue was only found for the trackpad endpoint, but the checking
+> has been added to the button endpoint as well for the same reasons.
+> 
+> Given that there was never a check for the endpoint type, this bug has
+> been there since the first implementation of the driver (f89bd95c5c94).
+> 
+> [1] https://eur04.safelinks.protection.outlook.com/?url=https%3A%2F%2Fsyzkaller.appspot.com%2Fbug%3Fextid%3D348331f63b034f89b622&data=05%7C01%7Cjavier.carrasco%40wolfvision.net%7C1880f48b0ac1493b40ff08dbcc9f2ea8%7Ce94ec9da9183471e83b351baa8eb804f%7C1%7C0%7C638328756279240780%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=IOsiHpWoIkog8HHkYIY8Ljh762bPZiqgm5xd5oAbK3s%3D&reserved=0
+> 
+> Fixes: f89bd95c5c94 ("Input: bcm5974 - add driver for Macbook Air and Pro Penryn touchpads")
+> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+> Reported-and-tested-by: syzbot+348331f63b034f89b622@syzkaller.appspotmail.com
+> ---
+> Changes in v3:
+> - Use usb_check_int_endpoints() to validate the endpoints.
+> - Link to v2: https://eur04.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Fr%2F20231007-topic-bcm5974_bulk-v2-1-021131c83efb%40gmail.com&data=05%7C01%7Cjavier.carrasco%40wolfvision.net%7C1880f48b0ac1493b40ff08dbcc9f2ea8%7Ce94ec9da9183471e83b351baa8eb804f%7C1%7C0%7C638328756279240780%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=vqLE9mUP0ehBIgtI%2F52ONRsF1wOrikc0VVLrp6MMjqQ%3D&reserved=0
+> 
+> Changes in v2:
+> - Keep error = -ENOMEM for the rest of the probe and return -ENODEV if
+>   the endpoint check fails.
+> - Check function returns now bool and was renamed (_is_ for
+>   bool-returning functions).
+> - Link to v1: https://eur04.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Fr%2F20231007-topic-bcm5974_bulk-v1-1-355be9f8ad80%40gmail.com&data=05%7C01%7Cjavier.carrasco%40wolfvision.net%7C1880f48b0ac1493b40ff08dbcc9f2ea8%7Ce94ec9da9183471e83b351baa8eb804f%7C1%7C0%7C638328756279240780%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=Qf6kg4M2AvwSEpkwClGPpVdo1PO96WfUfTsiy6z28UI%3D&reserved=0
+> ---
+>  drivers/input/mouse/bcm5974.c | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+> 
+> diff --git a/drivers/input/mouse/bcm5974.c b/drivers/input/mouse/bcm5974.c
+> index ca150618d32f..953992b458e9 100644
+> --- a/drivers/input/mouse/bcm5974.c
+> +++ b/drivers/input/mouse/bcm5974.c
+> @@ -19,6 +19,7 @@
+>   * Copyright (C) 2006	   Nicolas Boichat (nicolas@boichat.ch)
+>   */
+>  
+> +#include "linux/usb.h"
+>  #include <linux/kernel.h>
+>  #include <linux/errno.h>
+>  #include <linux/slab.h>
+> @@ -193,6 +194,8 @@ enum tp_type {
+>  
+>  /* list of device capability bits */
+>  #define HAS_INTEGRATED_BUTTON	1
+> +/* maximum number of supported endpoints (currently trackpad and button) */
+> +#define MAX_ENDPOINTS	2
+>  
+>  /* trackpad finger data block size */
+>  #define FSIZE_TYPE1		(14 * sizeof(__le16))
+> @@ -891,6 +894,18 @@ static int bcm5974_resume(struct usb_interface *iface)
+>  	return error;
+>  }
+>  
+> +static bool bcm5974_check_endpoints(struct usb_interface *iface,
+> +				    const struct bcm5974_config *cfg)
+> +{
+> +	u8 ep_addr[MAX_ENDPOINTS + 1] = {0};
+> +
+> +	ep_addr[0] = cfg->tp_ep;
+> +	if (cfg->tp_type == TYPE1)
+> +		ep_addr[1] = cfg->bt_ep;
+> +
+> +	return usb_check_int_endpoints(iface, ep_addr);
+> +}
+> +
+>  static int bcm5974_probe(struct usb_interface *iface,
+>  			 const struct usb_device_id *id)
+>  {
+> @@ -903,6 +918,11 @@ static int bcm5974_probe(struct usb_interface *iface,
+>  	/* find the product index */
+>  	cfg = bcm5974_get_config(udev);
+>  
+> +	if (!bcm5974_check_endpoints(iface, cfg)) {
+> +		dev_err(&iface->dev, "Unexpected non-int endpoint\n");
+> +		return -ENODEV;
+> +	}
+> +
+>  	/* allocate memory for our device state and initialize it */
+>  	dev = kzalloc(sizeof(struct bcm5974), GFP_KERNEL);
+>  	input_dev = input_allocate_device();
+> 
+> ---
+> base-commit: 401644852d0b2a278811de38081be23f74b5bb04
+> change-id: 20231007-topic-bcm5974_bulk-c66b743ba7ba
+> 
+> Best regards,
 
-That is a good point. I can include rv32 as well.
+Gentle reminder: this bug keeps on being found by syzbot and it was
+included in the last monthly input report (Jan 2024):
 
-- Charlie
+https://lore.kernel.org/all/0000000000001df937060f20c585@google.com/T/
 
-> 
-> -s
-> 
-> > - Charlie
-> >
-> >> -s
-> >> 
-> >> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> >> > ---
-> >> > Charlie Jenkins (3):
-> >> >       riscv: mm: Use hint address in mmap if available
-> >> >       selftests: riscv: Generalize mm selftests
-> >> >       docs: riscv: Define behavior of mmap
-> >> >
-> >> >  Documentation/arch/riscv/vm-layout.rst           | 16 ++--
-> >> >  arch/riscv/include/asm/processor.h               | 21 ++----
-> >> >  tools/testing/selftests/riscv/mm/mmap_bottomup.c | 20 +----
-> >> >  tools/testing/selftests/riscv/mm/mmap_default.c  | 20 +----
-> >> >  tools/testing/selftests/riscv/mm/mmap_test.h     | 93 +++++++++++++-----------
-> >> >  5 files changed, 66 insertions(+), 104 deletions(-)
-> >> > ---
-> >> > base-commit: 556e2d17cae620d549c5474b1ece053430cd50bc
-> >> > change-id: 20240119-use_mmap_hint_address-f9f4b1b6f5f1
-> >> > -- 
-> >> > - Charlie
-> >> >
-> >> >
-> >> > _______________________________________________
-> >> > linux-riscv mailing list
-> >> > linux-riscv@lists.infradead.org
-> >> > http://lists.infradead.org/mailman/listinfo/linux-riscv
-> >
-> > _______________________________________________
-> > linux-riscv mailing list
-> > linux-riscv@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-riscv
+Best regards,
+Javier Carrasco
+
+
 
