@@ -1,102 +1,123 @@
-Return-Path: <linux-kernel+bounces-44552-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44551-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B506084241E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:51:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7657884241D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:51:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 468D01F219CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:51:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31250284AAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:51:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE86F679E4;
-	Tue, 30 Jan 2024 11:51:34 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1E6D679F0;
+	Tue, 30 Jan 2024 11:51:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bU/5/7L5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 932D066B5F
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 11:51:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F41B46773C;
+	Tue, 30 Jan 2024 11:51:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706615494; cv=none; b=EM0iuNleMeBkUHGFkRnVmy/WUMZiEf5WMTmjySC0gloV21Z5VGzw7lsxQWuwvV+xx/Bv/dP1GdXqOKLJp7+4ItGPre3Snqm+7IQWCKv2M368xcQgVXOMMpxsHO50XJlytvj/Y/sInc034pa6rsYIkSXTK6dwVf7a1J/ptKBNdqA=
+	t=1706615473; cv=none; b=n27x13tc7+wGm5lS11v5pcQh1Vs1INAlea0pbsf34gOw6Tp+r1L/Q8ErfNMAKJOYVOKQbQaAmQDjN+znnzZkq3FewEQJ0Tyd2NraOvUwDDco5nI055vGOpDy5+533CdjHiWstwwEbka60TB+fvT0wgtBdCvQ009ZuYuw+Bk6Ivc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706615494; c=relaxed/simple;
-	bh=30nEctjwaKxxAswJg2GaQfi9q6VRb2fckRavbZGSWPk=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=TcIcv0KD/QoF6GLw7tq8aSDVBXs+oEInvZ61H5TZsQJwGaVSlrIlf4vX/8l1+o46/k9k7GwIPxYYbLDINvch6+np8OJRd0P7Fdih+i7FLzIDlHoQ94OJ60UDAbbopI40BgsIZavDmDCiYT8raH5x6Kp2NVpmXghnKBGW+OJxifU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-241-VzaTdC0ENPqj-j_pQMBvdA-1; Tue, 30 Jan 2024 11:51:24 +0000
-X-MC-Unique: VzaTdC0ENPqj-j_pQMBvdA-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 30 Jan
- 2024 11:51:05 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Tue, 30 Jan 2024 11:51:05 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Jisheng Zhang' <jszhang@kernel.org>
-CC: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
-	<palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Matteo Croce
-	<mcroce@microsoft.com>, kernel test robot <lkp@intel.com>
-Subject: RE: [PATCH 2/3] riscv: optimized memmove
-Thread-Topic: [PATCH 2/3] riscv: optimized memmove
-Thread-Index: AQHaUdxjAvIJPrdYsUmtWfJZGIT/drDvKbzwgAMSEICAAAQ2IA==
-Date: Tue, 30 Jan 2024 11:51:05 +0000
-Message-ID: <2391e924440d4e59b7859b8ede8f0954@AcuMS.aculab.com>
-References: <20240128111013.2450-1-jszhang@kernel.org>
- <20240128111013.2450-3-jszhang@kernel.org>
- <59bed43df37b4361a8a1cb31b8582e9b@AcuMS.aculab.com>
- <Zbjd43y3s6PDfQE0@xhacker>
-In-Reply-To: <Zbjd43y3s6PDfQE0@xhacker>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1706615473; c=relaxed/simple;
+	bh=GzyZ6i9wOU8mgt3dmogPm1nmvgCFBIMDOc3j03O/1Fc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FRZNIMdCRqpLmwbxygbEVAIIIK/7+l2949z9C+WT0z54LpBEPt740iaV1Op0gD1xTrYP/m82T8xrR1sAKkNMEcAiAVFMRxhFWh95XjS/eJVAtKvfJi84vjyx45iYJ1ul6/HAmWZi93J8IlndykCJ1IixrcxOlPdmBcqZeF0IQL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bU/5/7L5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C4DCC433F1;
+	Tue, 30 Jan 2024 11:51:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706615472;
+	bh=GzyZ6i9wOU8mgt3dmogPm1nmvgCFBIMDOc3j03O/1Fc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bU/5/7L5ypIxbzkvi0inJ1C5X4qPFJfwKdrZzUOJji+S1+afxqmJzhU4alZpNhViW
+	 FcA5tW2WIhot2EU6cKqqW+U/rTk4XWia54IOfaTJXPgendq7QPWuAV4i9fBee3vwJ8
+	 VjE2oW6jtOXTklX7ZHhERJb1NnVLqYM6kct0RlkNogydWacV0R9q1Ulirb6JmyJbGK
+	 d3EBfIklvWgqtfTKbVNS320tT1QMzDfq/apJBsmTTUZz6mBC8wP24+LDCMtgvcUtrm
+	 ChoGH0Ra9h/O3vYbakSoQM6jbj+MXLxQKmMK1so6JoXR1qy53kBwuZy8x+8duGQMeq
+	 t3jaw7+3NrlkA==
+Date: Tue, 30 Jan 2024 11:51:07 +0000
+From: Will Deacon <will@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Dave Martin <dave.martin@arm.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH] arm64/signal: Don't assume that TIF_SVE means we saved
+ SVE state
+Message-ID: <20240130115107.GB13551@willie-the-truck>
+References: <20240119-arm64-sve-signal-regs-v1-1-b9fd61b0289a@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240119-arm64-sve-signal-regs-v1-1-b9fd61b0289a@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-RnJvbTogSmlzaGVuZyBaaGFuZw0KPiBTZW50OiAzMCBKYW51YXJ5IDIwMjQgMTE6MzENCj4gDQo+
-IE9uIFN1biwgSmFuIDI4LCAyMDI0IGF0IDEyOjQ3OjAwUE0gKzAwMDAsIERhdmlkIExhaWdodCB3
-cm90ZToNCj4gPiBGcm9tOiBKaXNoZW5nIFpoYW5nDQo+ID4gPiBTZW50OiAyOCBKYW51YXJ5IDIw
-MjQgMTE6MTANCj4gPiA+DQo+ID4gPiBXaGVuIHRoZSBkZXN0aW5hdGlvbiBidWZmZXIgaXMgYmVm
-b3JlIHRoZSBzb3VyY2Ugb25lLCBvciB3aGVuIHRoZQ0KPiA+ID4gYnVmZmVycyBkb2Vzbid0IG92
-ZXJsYXAsIGl0J3Mgc2FmZSB0byB1c2UgbWVtY3B5KCkgaW5zdGVhZCwgd2hpY2ggaXMNCj4gPiA+
-IG9wdGltaXplZCB0byB1c2UgYSBiaWdnZXIgZGF0YSBzaXplIHBvc3NpYmxlLg0KPiA+ID4NCj4g
-PiAuLi4NCj4gPiA+ICsgKiBTaW1wbHkgY2hlY2sgaWYgdGhlIGJ1ZmZlciBvdmVybGFwcyBhbiBj
-YWxsIG1lbWNweSgpIGluIGNhc2UsDQo+ID4gPiArICogb3RoZXJ3aXNlIGRvIGEgc2ltcGxlIG9u
-ZSBieXRlIGF0IHRpbWUgYmFja3dhcmQgY29weS4NCj4gPg0KPiA+IEknZCBhdCBsZWFzdCBkbyBh
-IDY0Yml0IGNvcHkgbG9vcCBpZiB0aGUgYWRkcmVzc2VzIGFyZSBhbGlnbmVkLg0KPiA+DQo+ID4g
-VGhpbmtzIGEgYml0IG1vcmUuLi4uDQo+ID4NCj4gPiBQdXQgdGhlIGNvcHkgNjQgYnl0ZXMgY29k
-ZSAodGhlIGJvZHkgb2YgdGhlIG1lbWNweSgpIGxvb3ApDQo+ID4gaW50byBpdCBhbiBpbmxpbmUg
-ZnVuY3Rpb24gYW5kIGNhbGwgaXQgd2l0aCBpbmNyZWFzaW5nIGFkZHJlc3Nlcw0KPiA+IGluIG1l
-bWNweSgpIGFyZSBkZWNyZW1lbnRpbmcgYWRkcmVzc2VzIGluIG1lbW1vdmUuDQo+IA0KPiBIaSBE
-YXZpZCwNCj4gDQo+IEJlc2lkZXMgdGhlIDY0IGJ5dGVzIGNvcHksIHRoZXJlJ3MgYW5vdGhlciBv
-cHRpbWl6YXRpb24gaW4gX19tZW1jcHk6DQo+IHdvcmQtYnktd29yZCBjb3B5IGV2ZW4gaWYgcyBh
-bmQgZCBhcmUgbm90IGFsaWduZWQuDQo+IFNvIGlmIHdlIG1ha2UgdGhlIHR3byBvcHRpbWl6ZCBj
-b3B5IGFzIGlubGluZSBmdW5jdGlvbnMgYW5kIGNhbGwgdGhlbQ0KPiBpbiBtZW1tb3ZlKCksIHdl
-IGFsbW9zdCBkdXBsaWNhdGUgdGhlIF9fbWVtY3B5IGNvZGUsIHNvIEkgdGhpbmsNCj4gZGlyZWN0
-bHkgY2FsbGluZyBfX21lbWNweSBpcyBhIGJpdCBiZXR0ZXIuDQoNCklmIGEgZm9yd2FyZHMgY29w
-eSBpcyB2YWxpZCBjYWxsIG1lbWNweSgpIC0gd2hpY2ggSSB0aGluayB5b3UgZG8uDQpJZiBub3Qg
-eW91IGNhbiBzdGlsbCB1c2UgdGhlIHNhbWUgJ2NvcHkgOCByZWdpc3RlcicgY29kZQ0KdGhhdCBt
-ZW1jcHkoKSB1c2VzIC0ganVzdCB3aXRoIGEgZGVjcmVtZW50aW5nIGJsb2NrIGFkZHJlc3MuDQoN
-CglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwg
-TW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzog
-MTM5NzM4NiAoV2FsZXMpDQo=
+On Fri, Jan 19, 2024 at 12:29:13PM +0000, Mark Brown wrote:
+> When we are in a syscall we will only save the FPSIMD subset even though
+> the task still has access to the full register set, and on context switch
+> we will only remove TIF_SVE when loading the register state. This means
+> that the signal handling code should not assume that TIF_SVE means that
+> the register state is stored in SVE format, it should instead check the
+> format that was recorded during save.
+> 
+> Fixes: 8c845e273104 ("arm64/sve: Leave SVE enabled on syscall if we don't context switch")
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> Cc:  <stable@vger.kernel.org>
+> ---
+>  arch/arm64/kernel/fpsimd.c | 2 +-
+>  arch/arm64/kernel/signal.c | 4 ++--
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/fpsimd.c b/arch/arm64/kernel/fpsimd.c
+> index 1559c706d32d..80133c190136 100644
+> --- a/arch/arm64/kernel/fpsimd.c
+> +++ b/arch/arm64/kernel/fpsimd.c
+> @@ -1626,7 +1626,7 @@ void fpsimd_preserve_current_state(void)
+>  void fpsimd_signal_preserve_current_state(void)
+>  {
+>  	fpsimd_preserve_current_state();
+> -	if (test_thread_flag(TIF_SVE))
+> +	if (current->thread.fp_type == FP_STATE_SVE)
+>  		sve_to_fpsimd(current);
+>  }
 
+I don't think this hunk applies on -rc2 ^^.
+
+> diff --git a/arch/arm64/kernel/signal.c b/arch/arm64/kernel/signal.c
+> index 0e8beb3349ea..425b1bc17a3f 100644
+> --- a/arch/arm64/kernel/signal.c
+> +++ b/arch/arm64/kernel/signal.c
+> @@ -242,7 +242,7 @@ static int preserve_sve_context(struct sve_context __user *ctx)
+>  		vl = task_get_sme_vl(current);
+>  		vq = sve_vq_from_vl(vl);
+>  		flags |= SVE_SIG_FLAG_SM;
+> -	} else if (test_thread_flag(TIF_SVE)) {
+> +	} else if (current->thread.fp_type == FP_STATE_SVE) {
+>  		vq = sve_vq_from_vl(vl);
+>  	}
+>  
+> @@ -878,7 +878,7 @@ static int setup_sigframe_layout(struct rt_sigframe_user_layout *user,
+>  	if (system_supports_sve() || system_supports_sme()) {
+>  		unsigned int vq = 0;
+>  
+> -		if (add_all || test_thread_flag(TIF_SVE) ||
+> +		if (add_all || current->thread.fp_type == FP_STATE_SVE ||
+>  		    thread_sm_enabled(&current->thread)) {
+>  			int vl = max(sve_max_vl(), sme_max_vl());
+
+I think this code is preemptible, so I'm struggling to understand what
+happens if the fp_type changes under our feet as a result of a context
+switch.
+
+Will
 
