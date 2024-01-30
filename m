@@ -1,125 +1,185 @@
-Return-Path: <linux-kernel+bounces-43770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5559C8418B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 02:51:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D3CD8418B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 02:54:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8816C1C23BAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 01:51:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B5477B212E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 01:54:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F68736AE4;
-	Tue, 30 Jan 2024 01:51:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9659F364AB;
+	Tue, 30 Jan 2024 01:54:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jLi2+pDT"
-Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=fastmail.com header.i=@fastmail.com header.b="DhbXJuXu";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="kXNeMn+g"
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ECCC364AD;
-	Tue, 30 Jan 2024 01:50:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98FA933CD0;
+	Tue, 30 Jan 2024 01:54:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706579460; cv=none; b=bmyWg3uopPacCpN08Sk2IFJmoiT8qu7kbsEt2QK7W2js7fdMVJ2qIvzy79Y6HKWsNMHKbclw/gp9PM9m5PPa2UsCgNMpFmyMJiWVLQ4kYqq5UnuYc8PEdwpo1nVzrk3B9Xlb76c/sfRXWAnFP8P2VJccksbYkjXeA7UWaJFrh8w=
+	t=1706579672; cv=none; b=P2ZzUJytSkJms2EudQngkMTVvGEudf0MVuWvk8ihMVpJCmV+8M40uuYoMua3w4js8LIS/WTRespgxU/KaRjKF+LTUu4KkNyqiXjQhDCd7nAgIJqANYp2irqSQrodVTTdjWPdMse1ezA+ET6369tn/jR/a0AQLL7HsSewjC087Lw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706579460; c=relaxed/simple;
-	bh=2DTJRKZZGjYCcXa3T36ACsw67WzQbjbiVOF8FynEqdI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=fLh9+K7c1ySCAm+vZ9j+hodIrdMChylFS79ASCUmzeL5KxRZs+AcY+nX72pWGC3+nJN+ri2XGOwfVLWFCgvGV0dEfWe/0yVyfakm0HJHxJy9aciojcKtzIKJcHruZixpA7pJYznEh4uzHdkYjYDeDZ7wI84NVE2g1zfyyBT7UXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jLi2+pDT; arc=none smtp.client-ip=209.85.167.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3bb9b28acb4so2454152b6e.2;
-        Mon, 29 Jan 2024 17:50:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706579458; x=1707184258; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H+xiQxZglnWq+tBqbd5E5R9p1VheyL290G3NA4mMGp4=;
-        b=jLi2+pDTihOUWrgQa9P5yyB1vdOTlDyV9VXrmWKz6vjGp/lo01zJQHObmpDB4boz1H
-         B21ALWIgXTfFdO65s+Y+SDVLRfsz/En6qb1/bW7k3HaRsFlrqoE+lImFLMX00uIZziVo
-         GYWwS9zWgmThRqbCuP8dgzsLjdVhw81B0s2Spmj2Liek0lj1+XdP4Enl7XAL2rI4gWkU
-         cdb5wlusw6eD55ZVEkxB05vclZw3lrCBDvOCLONjr59S9YAZUOMGaqF9vpAxXeohWyeZ
-         Ro9Bjl2fdTJd722p9cY5FvKP0StIDfUGb5fIU17xRo8GgRfPagub+mtPC9n3sbuBEX5Z
-         sOGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706579458; x=1707184258;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=H+xiQxZglnWq+tBqbd5E5R9p1VheyL290G3NA4mMGp4=;
-        b=MeybnuCKQWVs0ROSOkFBn/HWqkxe7YWvW/CsIZLaITAMYwvzCJ48cdj7xUjV901bcA
-         0QLefHotqKPfmMU2Ds7fqG8/FDcxuRFlpfkv0nciOadKVaOnvTo3QA/OspDUqEFZGCJj
-         cIe378l817Ysj6cjoofXLiiyGTDVELSvtHpgr6EnhLTeSrlYQKYixOITaZ24J42niWvG
-         sP+orfob+eaPEHiCcWGieGupcmevjvkzOCSIJYpxraYmAMML++9KriRGgRLg2nqbxVar
-         6Vs+szETxFbvf7e4+gQ+FsOWqbqJDrDrrd31jfMiF95b9YZABegX/VtJnRqlWRw6UwJT
-         Ut8w==
-X-Gm-Message-State: AOJu0YzB5uLavu3aQcmDBuhp/eqAsj3kPZzJPl3IFqXqT3fIsaLouUBU
-	HOUuDPVlYFiJg0oeU9PImcfWK+DRJR9NqWHFTwhrnU1nJ/aVwSGe
-X-Google-Smtp-Source: AGHT+IEVngsUvnKfoP7Yv/9NQbRGtKkZWpQCRP18wKnnkXaseqw/Yc9oW8LGCQ23D3g9qIEVcgYDbw==
-X-Received: by 2002:a05:6808:1b21:b0:3be:9565:d4e4 with SMTP id bx33-20020a0568081b2100b003be9565d4e4mr235702oib.24.1706579458391;
-        Mon, 29 Jan 2024 17:50:58 -0800 (PST)
-Received: from localhost.localdomain ([122.8.183.87])
-        by smtp.gmail.com with ESMTPSA id cz13-20020a056808404d00b003bdb8b1f964sm1652754oib.21.2024.01.29.17.50.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 17:50:58 -0800 (PST)
-From: Chen Wang <unicornxw@gmail.com>
-To: aou@eecs.berkeley.edu,
-	chao.wei@sophgo.com,
-	conor@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	palmer@dabbelt.com,
-	paul.walmsley@sifive.com,
-	p.zabel@pengutronix.de,
-	robh+dt@kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	haijiao.liu@sophgo.com,
-	xiaoguang.xing@sophgo.com,
-	guoren@kernel.org,
-	jszhang@kernel.org,
-	inochiama@outlook.com
-Cc: Chen Wang <unicorn_wang@outlook.com>
-Subject: [PATCH v3 4/4] riscv: dts: add resets property for uart node
-Date: Tue, 30 Jan 2024 09:50:51 +0800
-Message-Id: <807f75e433a0f900da40ebb6a448349c98580072.1706577450.git.unicorn_wang@outlook.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1706577450.git.unicorn_wang@outlook.com>
-References: <cover.1706577450.git.unicorn_wang@outlook.com>
+	s=arc-20240116; t=1706579672; c=relaxed/simple;
+	bh=eIeYLq9/742SiWiUw4IIOlMxueZ84oQHFavPtxby0bs=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=Fkb39RfL/j2b5KzIa+/tPKFpbg78+rDiGtjSChFs7I6FBnDT8yyjG5FMb/08pQcVddZV+I8sUKLzehF2wPcAtyTpFmE8BCAAUhh3qApF59py0/OEoHS5g/tNJbwsRC9JEkh1O5wQYTc7YcdKfY7JK4RAgL22/JBMXE8CtB7TEOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.com; spf=pass smtp.mailfrom=fastmail.com; dkim=pass (2048-bit key) header.d=fastmail.com header.i=@fastmail.com header.b=DhbXJuXu; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=kXNeMn+g; arc=none smtp.client-ip=66.111.4.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.com
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailout.nyi.internal (Postfix) with ESMTP id B0B195C008E;
+	Mon, 29 Jan 2024 20:54:29 -0500 (EST)
+Received: from imap50 ([10.202.2.100])
+  by compute3.internal (MEProxy); Mon, 29 Jan 2024 20:54:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com; h=
+	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1706579669; x=1706666069; bh=mMpNTLFWFB
+	+c+/GqlSqqj8inaaP0ntBJTMndPE1dOMg=; b=DhbXJuXuirbal3flctgFLnEDMY
+	NVV90NGALz4rFUD+jhVjdOPnm9O1a/Z8Cqj182nL6o0fQ1583n+uaLdPbVyN8S4M
+	kJ7KtlaTJcuIlHk96FfWq/2B6lpWE+SCIuKgfLlo/y2Q/aUrknQwdWuosJl8WWzV
+	BguoRjRYMAtQYncU8/4S6s4dIAdSyv3hEJ4eOcMph0S2EQIND86VZv9HdumZZXX1
+	zvAIKBi7Xn4J7hGkGZHa90NEewHFJI3+YEWgOGT5zuyFwE+ukDmwTknR5EJMei3Q
+	blre5Y+f31bvwkO30v0lWYZ4gHDsdDHrGGjzqihyfU9p1lhcNHyHrOo7ZvPQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1706579669; x=1706666069; bh=mMpNTLFWFB+c+/GqlSqqj8inaaP0
+	ntBJTMndPE1dOMg=; b=kXNeMn+gqMZDHn5/MRv1MlFQLB7P4lJvgo/HQFt22TxG
+	EbQll0ypr4fVfX8hSBY76VsXMttudPwTFqCYQpYUrIkmLU5BOo8tSbxepMhFYa37
+	O39tmRZS2LXLZlaRUJb1sajC8ZMtvOA5/mk4LgODWKhEtsgpwJ85cpRtj5LfHrBn
+	3KNNddQ9vh61s7naxyBn5vwTPoU1Yg3zE/l6JE5Nu27n0ypq9vRZLbkFMdCrWxVr
+	71+SWNyMS4GKx+W2rVoHomY5EEIGEqX4faD5FpUh2QEOQ2QF9VNxu1I+IVUx8WNQ
+	+aNJZ6IrZtY9byS/BhWszHijVEMax6byne2kludvfQ==
+X-ME-Sender: <xms:1Va4Zch97yQW2uZHhRP3aVO1GyaW8fGNG-fZkc_enBgKyb6_OWUDuA>
+    <xme:1Va4ZVBaUJG9ZqQAFuUQqTJMVIftV-CP40drOQf8-pAf4p5enN2DOWpuU-50lacRW
+    pDQDl8uwvAJkTJPrw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedthedggeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedfufht
+    vghfrghnucfqkdftvggrrhdfuceoshhorhgvrghrsehfrghsthhmrghilhdrtghomheqne
+    cuggftrfgrthhtvghrnhepjeeuheegtdeuteeghfehjeejiefghfeifeejheduvdeugedt
+    hfehvefggefgkedtnecuffhomhgrihhnpehinhhfrhgruggvrggurdhorhhgnecuvehluh
+    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshhorhgvrghrsehf
+    rghsthhmrghilhdrtghomh
+X-ME-Proxy: <xmx:1Va4ZUGseqlASZF7QeeiKcjbmesx_chOdeWTawBf1ffzzBaiSov5AQ>
+    <xmx:1Va4ZdQpzc4y7-9nZ2i9a9L8AdhHDlW5VH8ooA50yJsM7qzJeq8e7Q>
+    <xmx:1Va4ZZwLowROqck9Rq2H9wRJTggRNAII88JP7-tjL0QFzntH88vqmg>
+    <xmx:1Va4ZZdnkK2W4JBOV-1A5EKgpvCdqdWALiFkOrL2fPoyoXhciqvzjg>
+Feedback-ID: i84414492:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id F40761700096; Mon, 29 Jan 2024 20:54:28 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-Id: <46b90dbc-3b5f-4f52-8539-0f6fa7e28ce9@app.fastmail.com>
+In-Reply-To: <20240129-use_mmap_hint_address-v1-1-4c74da813ba1@rivosinc.com>
+References: <20240129-use_mmap_hint_address-v1-0-4c74da813ba1@rivosinc.com>
+ <20240129-use_mmap_hint_address-v1-1-4c74da813ba1@rivosinc.com>
+Date: Mon, 29 Jan 2024 20:53:31 -0500
+From: "Stefan O'Rear" <sorear@fastmail.com>
+To: "Charlie Jenkins" <charlie@rivosinc.com>,
+ "Alexandre Ghiti" <alexghiti@rivosinc.com>,
+ "Paul Walmsley" <paul.walmsley@sifive.com>,
+ "Palmer Dabbelt" <palmer@dabbelt.com>, "Albert Ou" <aou@eecs.berkeley.edu>,
+ "Shuah Khan" <shuah@kernel.org>, "Jonathan Corbet" <corbet@lwn.net>,
+ "Yangyu Chen" <cyy@cyyself.name>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH 1/3] riscv: mm: Use hint address in mmap if available
+Content-Type: text/plain
 
-From: Chen Wang <unicorn_wang@outlook.com>
+On Mon, Jan 29, 2024, at 7:37 PM, Charlie Jenkins wrote:
+> On riscv it is guaranteed that the address returned by mmap is less than
+> the hint address. Allow mmap to return an address all the way up to
+> addr, if provided, rather than just up to the lower address space.
+>
+> This provides a performance benefit as well, allowing mmap to exit after
+> checking that the address is in range rather than searching for a valid
+> address.
+>
+> It is possible to provide an address that uses at most the same number
+> of bits, however it is significantly more computationally expensive to
+> provide that number rather than setting the max to be the hint address.
+> There is the instruction clz/clzw in Zbb that returns the highest set bit
+> which could be used to performantly implement this, but it would still
+> be slower than the current implementation. At worst case, half of the
+> address would not be able to be allocated when a hint address is
+> provided.
+>
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> ---
+>  arch/riscv/include/asm/processor.h | 21 ++++++++-------------
+>  1 file changed, 8 insertions(+), 13 deletions(-)
+>
+> diff --git a/arch/riscv/include/asm/processor.h 
+> b/arch/riscv/include/asm/processor.h
+> index f19f861cda54..f3ea5166e3b2 100644
+> --- a/arch/riscv/include/asm/processor.h
+> +++ b/arch/riscv/include/asm/processor.h
+> @@ -22,14 +22,11 @@
+>  ({								\
+>  	unsigned long mmap_end;					\
+>  	typeof(addr) _addr = (addr);				\
+> -	if ((_addr) == 0 || (IS_ENABLED(CONFIG_COMPAT) && is_compat_task())) \
+> -		mmap_end = STACK_TOP_MAX;			\
 
-Add resets property for uart0 for completeness, although it is
-deasserted by default.
+Setting mmap_end in the no-hint case seems to have been lost?
 
-Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
----
- arch/riscv/boot/dts/sophgo/sg2042.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+-s
 
-diff --git a/arch/riscv/boot/dts/sophgo/sg2042.dtsi b/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-index eeb341e16bfd..81fda312f988 100644
---- a/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-+++ b/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-@@ -343,6 +343,7 @@ uart0: serial@7040000000 {
- 			clock-frequency = <500000000>;
- 			reg-shift = <2>;
- 			reg-io-width = <4>;
-+			resets = <&rstgen RST_UART0>;
- 			status = "disabled";
- 		};
- 	};
--- 
-2.25.1
-
+> -	else if ((_addr) >= VA_USER_SV57)			\
+> -		mmap_end = STACK_TOP_MAX;			\
+> -	else if ((((_addr) >= VA_USER_SV48)) && (VA_BITS >= VA_BITS_SV48)) \
+> -		mmap_end = VA_USER_SV48;			\
+> +	if ((_addr) == 0 ||					\
+> +		(IS_ENABLED(CONFIG_COMPAT) && is_compat_task()) ||	\
+> +		((_addr + len) > BIT(VA_BITS - 1)))		\
+>  	else							\
+> -		mmap_end = VA_USER_SV39;			\
+> +		mmap_end = (_addr + len);			\
+>  	mmap_end;						\
+>  })
+> 
+> @@ -39,14 +36,12 @@
+>  	typeof(addr) _addr = (addr);				\
+>  	typeof(base) _base = (base);				\
+>  	unsigned long rnd_gap = DEFAULT_MAP_WINDOW - (_base);	\
+> -	if ((_addr) == 0 || (IS_ENABLED(CONFIG_COMPAT) && is_compat_task())) \
+> +	if ((_addr) == 0 ||					\
+> +	    (IS_ENABLED(CONFIG_COMPAT) && is_compat_task()) ||	\
+> +	    ((_addr + len) > BIT(VA_BITS - 1)))			\
+>  		mmap_base = (_base);				\
+> -	else if (((_addr) >= VA_USER_SV57) && (VA_BITS >= VA_BITS_SV57)) \
+> -		mmap_base = VA_USER_SV57 - rnd_gap;		\
+> -	else if ((((_addr) >= VA_USER_SV48)) && (VA_BITS >= VA_BITS_SV48)) \
+> -		mmap_base = VA_USER_SV48 - rnd_gap;		\
+>  	else							\
+> -		mmap_base = VA_USER_SV39 - rnd_gap;		\
+> +		mmap_base = (_addr + len) - rnd_gap;		\
+>  	mmap_base;						\
+>  })
+> 
+>
+> -- 
+> 2.43.0
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
