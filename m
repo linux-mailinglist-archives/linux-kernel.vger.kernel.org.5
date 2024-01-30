@@ -1,139 +1,178 @@
-Return-Path: <linux-kernel+bounces-44456-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44458-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41949842237
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:05:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8120B84223B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:06:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D7A491F2E4EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:05:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18DFE282A8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:06:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 889D267741;
-	Tue, 30 Jan 2024 11:05:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9F4C66B47;
+	Tue, 30 Jan 2024 11:05:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KxOJjVm6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="IADt+4EB";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="JxOUfGh2";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="IADt+4EB";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="JxOUfGh2"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C554967744;
-	Tue, 30 Jan 2024 11:05:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50F29664BB;
+	Tue, 30 Jan 2024 11:05:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706612706; cv=none; b=Ybsn7zVgGSQ0EU4ned0wPMGXvI3A7fyMJt26W3JACXXB990FEEebCjrUy0si1l9dukEMz+0kfcoGB1xuNJbXPLi7EGsphfWuQt3zx8mfy3HRa6uu0JIiomshEWb4JsWKZMsLUqRxw4h98NYtDZ1LDRo3H6rcmvvNI7XZgMvHOSQ=
+	t=1706612737; cv=none; b=Rnk9JaI42KrRnajWGkHD5rghan0xD18mvMupAZgjZf2R/sf+hJuqtC/ybZ1jjeVdS4RBpfWGM+CRhXzPGmT15Ie1NTdKqI7bG+02XLx61G3skU+SF7igdI6fz1ZQ56xktnLMtpCu3tNUHbY+evpoDM5HP/zUhvcpjCpCbq6Ulk0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706612706; c=relaxed/simple;
-	bh=FPjSOL02faexuB1BXgC53k3A0QdD2xtS7r/hZoVFvuc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=iIkNsLkOa5IUa4dsLHBitktWXRobRDX3LLOd7adTjrKucBQEvZidRVbIQXxRIzblE3jcQO55vQ0klUlZe0H0jF6SJaSxMBWy990hxzyyQUHXUn+y4AVdIX7d93z0PTvbim/uI89yd8+iRA9ME/DtsTxAjmestdlERrI7clSuswM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KxOJjVm6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BADE6C43390;
-	Tue, 30 Jan 2024 11:05:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706612706;
-	bh=FPjSOL02faexuB1BXgC53k3A0QdD2xtS7r/hZoVFvuc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=KxOJjVm6NHVWWyv4OU761WsEmvvTaK6AOVZGXGhBf9XEa1cDPvJyCzSF9QIN48pTV
-	 aLj2ji8j9E/eLnA/qq2NSzICbbhzCx+ODRyqZeuDTzL8ccCSqldHmOL/Q15HHJmEPB
-	 3mrR4IrUI9LC9loqptLEpno3boG4XmZgTabp+w5k//pwoSjP1Z0hCW0SrXjsbg1upV
-	 bkDtprS0umWUo2av/zR8GIqlruORVPB/KwALEup+/cdEWpoFinhVOnFLcmmq5q7c4C
-	 6PaMOashVJ4kIUTYzBZgsNoTvhz3YDfKF4dqXSpF1RyxX9dMVYeutQp5m0z7jg4Keu
-	 H6Piw0AEBelAg==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Anup Patel <apatel@ventanamicro.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley
- <paul.walmsley@sifive.com>, Thomas Gleixner <tglx@linutronix.de>, Rob
- Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand
- <frowand.list@gmail.com>, Conor Dooley <conor+dt@kernel.org>,
- devicetree@vger.kernel.org, Saravana Kannan <saravanak@google.com>, Marc
- Zyngier <maz@kernel.org>, Anup Patel <anup@brainfault.org>,
- linux-kernel@vger.kernel.org, Atish Patra <atishp@atishpatra.org>,
- linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- Andrew Jones <ajones@ventanamicro.com>
-Subject: Re: [PATCH v12 00/25] Linux RISC-V AIA Support
-In-Reply-To: <CAK9=C2U2mGzTLaXDqyD86bEM4XRc3UmBxRtrd3=+QXXwMK3hjg@mail.gmail.com>
-References: <20240127161753.114685-1-apatel@ventanamicro.com>
- <87r0hzuw87.fsf@all.your.base.are.belong.to.us>
- <87le87uulb.fsf@all.your.base.are.belong.to.us>
- <CAK9=C2U2mGzTLaXDqyD86bEM4XRc3UmBxRtrd3=+QXXwMK3hjg@mail.gmail.com>
-Date: Tue, 30 Jan 2024 12:05:03 +0100
-Message-ID: <87le87w080.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1706612737; c=relaxed/simple;
+	bh=bA6oiIJ/ZMUKaMCF87cC9UASHPrEnY7xDEMlpEbuvbI=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qIWrSwKsugHZvaTP5MsnxR3RSxbgSPfhYE6fckz2W7Wyy2L8pr+d4QeaLVXh8qn5/MubNv5u+Sh3AC/Z2dQsboWTnxtOCMIgnPhVO1sr+ANJmktu6K1x7CMUj1Hpu47jUfkCNF7PUTlEZ2hrlyqAPpo18DXg1BHf9Z+GSpc6HWE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=IADt+4EB; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=JxOUfGh2; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=IADt+4EB; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=JxOUfGh2; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 520DF222DE;
+	Tue, 30 Jan 2024 11:05:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1706612733; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XHa2+/RV9Q49g5mVEupkk6ydWd6AuIwK8lzXmqDcRUc=;
+	b=IADt+4EBl2bU99+MBfsG1F076DnSP2i7/qOLQsgO+2dFTS5lRId2vQq97ZY5XAeOk24EZc
+	Kf4ti75J7cVnpyznvYLqS8ovdoHEiudEwYaJhMrm3T86BmSvMgxOCubsyxHmI+uJA2S+JC
+	waJIYyYCG1ZFZqu5nSnwoLg20avckk4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1706612733;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XHa2+/RV9Q49g5mVEupkk6ydWd6AuIwK8lzXmqDcRUc=;
+	b=JxOUfGh2RNH48wOpvh20XKRzZv+tDKCa7oHUoJu8FM1/ESIiDGJZIgM6JRMhVoBtyCFlXP
+	Te6H7rCo3dYdl5AQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1706612733; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XHa2+/RV9Q49g5mVEupkk6ydWd6AuIwK8lzXmqDcRUc=;
+	b=IADt+4EBl2bU99+MBfsG1F076DnSP2i7/qOLQsgO+2dFTS5lRId2vQq97ZY5XAeOk24EZc
+	Kf4ti75J7cVnpyznvYLqS8ovdoHEiudEwYaJhMrm3T86BmSvMgxOCubsyxHmI+uJA2S+JC
+	waJIYyYCG1ZFZqu5nSnwoLg20avckk4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1706612733;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XHa2+/RV9Q49g5mVEupkk6ydWd6AuIwK8lzXmqDcRUc=;
+	b=JxOUfGh2RNH48wOpvh20XKRzZv+tDKCa7oHUoJu8FM1/ESIiDGJZIgM6JRMhVoBtyCFlXP
+	Te6H7rCo3dYdl5AQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EFFE512FF7;
+	Tue, 30 Jan 2024 11:05:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id MP7/OPzXuGVfPQAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Tue, 30 Jan 2024 11:05:32 +0000
+Date: Tue, 30 Jan 2024 12:05:32 +0100
+Message-ID: <87il3b3wub.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Chhayly Leang <clw.leang@gmail.com>
+Cc: Stefan Binding <sbinding@opensource.cirrus.com>,
+	Takashi Iwai <tiwai@suse.com>,
+	patches@opensource.cirrus.com,
+	James Schulman <james.schulman@cirrus.com>,
+	David Rhodes <david.rhodes@cirrus.com>,
+	Richard Fitzgerald <rf@opensource.cirrus.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: hda: cs35l41: Support ASUS Zenbook UM3402YAR
+In-Reply-To: <20240126080912.87422-1-clw.leang@gmail.com>
+References: <20240126080912.87422-1-clw.leang@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -1.80
+X-Spamd-Result: default: False [-1.80 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 FREEMAIL_TO(0.00)[gmail.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Flag: NO
 
-Anup Patel <apatel@ventanamicro.com> writes:
+On Fri, 26 Jan 2024 09:09:12 +0100,
+Chhayly Leang wrote:
+> 
+> Adds sound support for ASUS Zenbook UM3402YAR with missing DSD
+> 
+> Signed-off-by: Chhayly Leang <clw.leang@gmail.com>
 
-> On Tue, Jan 30, 2024 at 1:22=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@kern=
-el.org> wrote:
->>
->> Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
->>
->> > Anup Patel <apatel@ventanamicro.com> writes:
->> >
->> >> The RISC-V AIA specification is ratified as-per the RISC-V internatio=
-nal
->> >> process. The latest ratified AIA specifcation can be found at:
->> >> https://github.com/riscv/riscv-aia/releases/download/1.0/riscv-interr=
-upts-1.0.pdf
->> >>
->> >> At a high-level, the AIA specification adds three things:
->> >> 1) AIA CSRs
->> >>    - Improved local interrupt support
->> >> 2) Incoming Message Signaled Interrupt Controller (IMSIC)
->> >>    - Per-HART MSI controller
->> >>    - Support MSI virtualization
->> >>    - Support IPI along with virtualization
->> >> 3) Advanced Platform-Level Interrupt Controller (APLIC)
->> >>    - Wired interrupt controller
->> >>    - In MSI-mode, converts wired interrupt into MSIs (i.e. MSI genera=
-tor)
->> >>    - In Direct-mode, injects external interrupts directly into HARTs
->> >>
->> >> For an overview of the AIA specification, refer the AIA virtualization
->> >> talk at KVM Forum 2022:
->> >> https://static.sched.com/hosted_files/kvmforum2022/a1/AIA_Virtualizat=
-ion_in_KVM_RISCV_final.pdf
->> >> https://www.youtube.com/watch?v=3Dr071dL8Z0yo
->> >>
->> >> To test this series, use QEMU v7.2 (or higher) and OpenSBI v1.2 (or h=
-igher).
->> >>
->> >> These patches can also be found in the riscv_aia_v12 branch at:
->> >> https://github.com/avpatel/linux.git
->> >>
->> >> Changes since v11:
->> >>  - Rebased on Linux-6.8-rc1
->> >>  - Included kernel/irq related patches from "genirq, irqchip: Convert=
- ARM
->> >>    MSI handling to per device MSI domains" series by Thomas.
->> >>    (PATCH7, PATCH8, PATCH9, PATCH14, PATCH16, PATCH17, PATCH18, PATCH=
-19,
->> >>     PATCH20, PATCH21, PATCH22, PATCH23, and PATCH32 of
->> >>     https://lore.kernel.org/linux-arm-kernel/20221121135653.208611233=
-@linutronix.de/)
->> >>  - Updated APLIC MSI-mode driver to use the new WIRED_TO_MSI mechanis=
-m.
->> >>  - Updated IMSIC driver to support per-device MSI domains for PCI and
->> >>    platform devices.
->> >
->> > Thanks for working on this, Anup! I'm still reviewing the patches.
->> >
->> > I'm hitting a boot hang in text patching, with this series applied on
->> > 6.8-rc2. IPI issues?
->>
->> Not text patching! One cpu spinning in smp_call_function_many_cond() and
->> the others are in cpu_relax(). Smells like IPI...
->
-> Can you share the complete bootlog ?
+Yet another missing entry; can Cirrus people review this before I
+merge?
 
-Here: https://gist.github.com/bjoto/04a580568378f3b5483af07cd9d22501
 
+thanks,
+
+Takashi
+
+> ---
+>  sound/pci/hda/cs35l41_hda_property.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
+> index 35277ce890a..2af083183d8 100644
+> --- a/sound/pci/hda/cs35l41_hda_property.c
+> +++ b/sound/pci/hda/cs35l41_hda_property.c
+> @@ -76,6 +76,7 @@ static const struct cs35l41_config cs35l41_config_table[] = {
+>  	{ "10431533", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
+>  	{ "10431573", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
+>  	{ "10431663", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1, 0, 1000, 4500, 24 },
+> +	{ "10431683", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
+>  	{ "104316D3", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
+>  	{ "104316F3", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
+>  	{ "104317F3", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
+> @@ -410,6 +411,7 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
+>  	{ "CSC3551", "10431533", generic_dsd_config },
+>  	{ "CSC3551", "10431573", generic_dsd_config },
+>  	{ "CSC3551", "10431663", generic_dsd_config },
+> +	{ "CSC3551", "10431683", generic_dsd_config },
+>  	{ "CSC3551", "104316D3", generic_dsd_config },
+>  	{ "CSC3551", "104316F3", generic_dsd_config },
+>  	{ "CSC3551", "104317F3", generic_dsd_config },
+> -- 
+> 2.42.0
+> 
 
