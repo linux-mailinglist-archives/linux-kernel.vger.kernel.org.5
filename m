@@ -1,205 +1,109 @@
-Return-Path: <linux-kernel+bounces-45036-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45037-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04E53842AD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:23:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F3C3842ADA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:25:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4E72282AC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:23:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3E49B258FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:25:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCFC912A147;
-	Tue, 30 Jan 2024 17:23:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35B7912BEAA;
+	Tue, 30 Jan 2024 17:25:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="faZH3sia"
-Received: from aposti.net (aposti.net [89.234.176.197])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="TOn1Lcre"
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A0F51292DB;
-	Tue, 30 Jan 2024 17:23:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.234.176.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E15BA1292DC
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 17:25:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706635424; cv=none; b=a6YS80yO9Fpne4k7aSC7cu2k+SjbuViZzycbzSEQVj7RajDB56tbK8hJNcLJTGk9YSv10aCoH4pnR2PiPqyRP7dYqHrGTaIvPxYK+qLUDxSlxvSrfwyzAkZ/GH2AyGYdiOuZ5Z035OqxnjZ3qYtnzyMvqt1qdp38KSFLANC9EPY=
+	t=1706635539; cv=none; b=sTPXG890t9gIxjFPAC2c1lBgTQwzfvYyC8VsZz2dNG6jsIRs8m79ZZ1rWwUI+//QfEocx7XoDmMkm8hhy557/qnvnAuLOtL7z4ZFNit/89vjkpptfxaSSgTmzjerMXucWdO1K1E7hZCgUUBoNYdzv1oAFYQKoe9duukTNQzDPrs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706635424; c=relaxed/simple;
-	bh=WVZMJ2S0EugNJB6BTz7XzKnB3cgJOgtM05Qu3n6r5dg=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=GtQFSyWJ/e/0oPyBH2LU/Ql7T6RIcNRGErl+9CitIIqsC9cArr+at6r7rFd+JxJHRSNO0XOXrxwN8phpjSGNRa+YQ9OSCb51rxEZao7qgOPNJSE5i/QvIuowF01TgUIL49OdGcChqrmHeKogi1qS4X+sq8M7FengOk0RzKWfMjg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net; spf=pass smtp.mailfrom=crapouillou.net; dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b=faZH3sia; arc=none smtp.client-ip=89.234.176.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-	s=mail; t=1706635413;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=5yttsGv/nZzm8P4I37O+sbjW65Bb56qxCJ5ApCblXiM=;
-	b=faZH3siafi9jEi315A2HIps30mZcyIsINRLU55uymIvXMB5fB98He1hDz67Ccd+M0kvtEM
-	1P9kAwCBxym7GHnLVrowoWysHJFkzjEI6d0v+0a+ThZomANVbwAxP3yndvdPm247qwjdQX
-	2Z7gnNBfPsjBkxG2zNvElx2YtbwW6sw=
-Message-ID: <fcf3e49cae178b18c0b15e12c69f9f2a84e8312e.camel@crapouillou.net>
-Subject: Re: [PATCH v6 1/6] dmaengine: Add API function
- dmaengine_prep_slave_dma_vec()
-From: Paul Cercueil <paul@crapouillou.net>
-To: Vinod Koul <vkoul@kernel.org>
-Cc: Jonathan Cameron <jic23@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
-	Lars-Peter Clausen
-	 <lars@metafoo.de>, Sumit Semwal <sumit.semwal@linaro.org>, Christian
-	=?ISO-8859-1?Q?K=F6nig?=
-	 <christian.koenig@amd.com>, Daniel Vetter <daniel@ffwll.ch>, Nuno Sa
-	 <nuno.sa@analog.com>, Michael Hennerich <Michael.Hennerich@analog.com>, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	dmaengine@vger.kernel.org, linux-iio@vger.kernel.org, 
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	linaro-mm-sig@lists.linaro.org
-Date: Tue, 30 Jan 2024 18:23:31 +0100
-In-Reply-To: <ZbkfC31eWBUQ3kSl@matsya>
-References: <20240129170201.133785-1-paul@crapouillou.net>
-	 <20240129170201.133785-2-paul@crapouillou.net> <ZbkfC31eWBUQ3kSl@matsya>
-Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
- keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZMLQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5UzFZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtNz8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe+rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIPdlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7Urf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KFlBwgAhlGy6nqP7O3u7q23hRW5AQ0EXQqFwQEIAMo+MgvYHsyjX3Ja4Oolg1Txzm8woj30ch2nACFCqaO0R/1kLj2VVeLrDyQUOlXx9PD6IQI4M8wy8m0sR4wV2p/g/paw7k65cjzYYLh+FdLNyO7IW
-	YXndJO+wDPi3aK/YKUYepqlP+QsmaHNYNdXEQDRKqNfJg8t0f5rfzp9ryxd1tCnbV+tG8VHQWiZXNqN7062DygSNXFUfQ0vZ3J2D4oAcIAEXTymRQ2+hr3Hf7I61KMHWeSkCvCG2decTYsHlw5Erix/jYWqVOtX0roOOLqWkqpQQJWtU+biWrAksmFmCp5fXIg1Nlg39v21xCXBGxJkxyTYuhdWyu1yDQ+LSIUAEQEAAYkBNgQYAQoAIBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsMAAoJEHPua9InSr1B4wsH/Az767YCT0FSsMNt1jkkdLCBi7nY0GTW+PLP1a4zvVqFMo/vD6uz1ZflVTUAEvcTi3VHYZrlgjcxmcGu239oruqUS8Qy/xgZBp9KF0NTWQSl1iBfVbIU5VV1vHS6r77W5x0qXgfvAUWOH4gmN3MnF01SH2zMcLiaUGF+mcwl15rHbjnT3Nu2399aSE6cep86igfCAyFUOXjYEGlJy+c6UyT+DUylpjQg0nl8MlZ/7Whg2fAU9+FALIbQYQzGlT4c71SibR9T741jnegHhlmV4WXXUD6roFt54t0MSAFSVxzG8mLcSjR2cLUJ3NIPXixYUSEn3tQhfZj07xIIjWxAYZo=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1706635539; c=relaxed/simple;
+	bh=FcwkWgQyZxHw0vq0MR9FTO1uQCeqns6oU7XSsrjb7aE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ucavaf4N2bkj1x8S/IJ0ljua5Ecob/MCCXDuVK0MTSf2o5RSx1gtR/ATW1wjp7h0hJR+PRjVO+tXXMlqu73Nu40fTEZNLU7NEex36xACuiMx8p5VuNRXFxAv53UUVXmUmYmHcMJh0gGEyfEj54+7L7Fz/EXHwEo5Yf8Ag8DIFqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=none smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=TOn1Lcre; arc=none smtp.client-ip=209.85.208.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linuxfoundation.org
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2cf42ca9bb2so50164191fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:25:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1706635536; x=1707240336; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=3M0wWn2WcqB5JyFL/iZZPD7cHnf4NTD7VpnGyg3ebus=;
+        b=TOn1LcreSMIM6/zFLzh4cG5qTx+j3gS42S7jY7daQlEKRMEXTFX5dTUwH1HQo+bhlG
+         xa7deIbmurGZi/QjEqzH/VtXqNqAECJXK/E2mT2hzt6095S0qg7HxSjMKrB4AmTbV3o5
+         XNW/tAikyUj7pX/1ejL4o6+uz3TBWzrQkhQrI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706635536; x=1707240336;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3M0wWn2WcqB5JyFL/iZZPD7cHnf4NTD7VpnGyg3ebus=;
+        b=IZyyfrRYHt/a0XMjxm7F+5BgLmUxOE32WzBxsevvlcR66DDtgq0u3ZheOT+RYtZZ4m
+         QKyLOCICtOzyiy2yscGSg1MzqSscoKyeuYavb+ILM9RZqHnEo7/zPT1hg2h5CLb9pdlS
+         J+ssswkTALjPfpRoTQJL6hk34Fu1iyrSDnszUjJnC7GI6NPBWbEqaEFqAAR8YpCI2mVD
+         jRB2lY8rDTlyi4lVnhO4PgAJc3ixJ+iVulJcap/2J56isSMLU0EzU8ZnpM3nLopaf3F8
+         gNrs0OPejeQCtAukqj1T7PoIhaH2yMtHELLEMd3Br3dX9SQjPtmXH2jylIOTO0t6Nu0E
+         B0Mw==
+X-Gm-Message-State: AOJu0YyuSF8xn2Vyul2m398ScT7v+NkwIwPcfGNHYryRhhCPhikSa9pS
+	ghHNdX4/dmCyEZbnJ2Os5fH4+IKd3mcpzHyX5eCSDvWSyKS4KKm55diF01swVDiwSyl06+DJp2/
+	WtTM=
+X-Google-Smtp-Source: AGHT+IGaMamlDa1w2BQcSCYowXLm3mqLObyVo0H6OVj96UmK+2LcC2cCL0T/kkvEpVjs41pN5HHSuQ==
+X-Received: by 2002:a2e:960d:0:b0:2cc:6fe2:4ddc with SMTP id v13-20020a2e960d000000b002cc6fe24ddcmr6246933ljh.3.1706635535717;
+        Tue, 30 Jan 2024 09:25:35 -0800 (PST)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id f24-20020a2eb5b8000000b002d05fe442f4sm173149ljn.50.2024.01.30.09.25.34
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jan 2024 09:25:35 -0800 (PST)
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-5100cb238bcso7646447e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:25:34 -0800 (PST)
+X-Received: by 2002:a2e:8417:0:b0:2cf:36b:9abb with SMTP id
+ z23-20020a2e8417000000b002cf036b9abbmr5802206ljg.44.1706635533757; Tue, 30
+ Jan 2024 09:25:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240130091300.2968534-1-tj@kernel.org> <20240130091300.2968534-4-tj@kernel.org>
+In-Reply-To: <20240130091300.2968534-4-tj@kernel.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 30 Jan 2024 09:25:17 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whyr9jtwpiF8=es3j+D3tFF_338nJqdUq3f3oc=oJAPMA@mail.gmail.com>
+Message-ID: <CAHk-=whyr9jtwpiF8=es3j+D3tFF_338nJqdUq3f3oc=oJAPMA@mail.gmail.com>
+Subject: Re: [PATCH 3/8] workqueue: Implement BH workqueues to eventually
+ replace tasklets
+To: Tejun Heo <tj@kernel.org>
+Cc: mpatocka@redhat.com, linux-kernel@vger.kernel.org, 
+	dm-devel@lists.linux.dev, msnitzer@redhat.com, ignat@cloudflare.com, 
+	damien.lemoal@wdc.com, bob.liu@oracle.com, houtao1@huawei.com, 
+	peterz@infradead.org, mingo@kernel.org, netdev@vger.kernel.org, 
+	allen.lkml@gmail.com, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Vinod,
+On Tue, 30 Jan 2024 at 01:13, Tejun Heo <tj@kernel.org> wrote:
+>
+> This patch implements BH workqueues which share the same semantics and
+> features of regular workqueues but execute their work items in the softirq
+> context.
 
-Le mardi 30 janvier 2024 =C3=A0 21:38 +0530, Vinod Koul a =C3=A9crit=C2=A0:
-> On 29-01-24, 18:01, Paul Cercueil wrote:
-> > This function can be used to initiate a scatter-gather DMA
-> > transfer,
-> > where the address and size of each segment is located in one entry
-> > of
-> > the dma_vec array.
-> >=20
-> > The major difference with dmaengine_prep_slave_sg() is that it
-> > supports
-> > specifying the lengths of each DMA transfer; as trying to override
-> > the
-> > length of the transfer with dmaengine_prep_slave_sg() is a very
-> > tedious
-> > process. The introduction of a new API function is also justified
-> > by the
-> > fact that scatterlists are on their way out.
-> >=20
-> > Note that dmaengine_prep_interleaved_dma() is not helpful either in
-> > that
-> > case, as it assumes that the address of each segment will be higher
-> > than
-> > the one of the previous segment, which we just cannot guarantee in
-> > case
-> > of a scatter-gather transfer.
-> >=20
-> > Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> >=20
-> > ---
-> > v3: New patch
-> >=20
-> > v5: Replace with function dmaengine_prep_slave_dma_vec(), and
-> > struct
-> > =C2=A0=C2=A0=C2=A0 'dma_vec'.
-> > =C2=A0=C2=A0=C2=A0 Note that at some point we will need to support cycl=
-ic
-> > transfers
-> > =C2=A0=C2=A0=C2=A0 using dmaengine_prep_slave_dma_vec(). Maybe with a n=
-ew "flags"
-> > =C2=A0=C2=A0=C2=A0 parameter to the function?
->=20
-> that would be better
+Thanks for doing this. Honestly, while I felt this was a natural thing
+to do and would clean things up, every time I look at the workqueue
+code I just shudder and go "I'm sure Tejun can work this out".
 
-Ok, I think it'd be better that I add a new "flags" parameter now -
-even if it means passing 0 until we actually have flags for it.
+Patches look fine to me - I'd love to actually have the dm-crypt
+people (and networking people, for that matter) verify that there are
+no performance gotchas from the slightly heavier (but more generic)
+workqueue interfaces.
 
->=20
-> > ---
-> > =C2=A0include/linux/dmaengine.h | 25 +++++++++++++++++++++++++
-> > =C2=A01 file changed, 25 insertions(+)
-> >=20
-> > diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
-> > index 3df70d6131c8..ee5931ddb42f 100644
-> > --- a/include/linux/dmaengine.h
-> > +++ b/include/linux/dmaengine.h
-> > @@ -160,6 +160,16 @@ struct dma_interleaved_template {
-> > =C2=A0	struct data_chunk sgl[];
-> > =C2=A0};
-> > =C2=A0
-> > +/**
-> > + * struct dma_vec - DMA vector
-> > + * @addr: Bus address of the start of the vector
-> > + * @len: Length in bytes of the DMA vector
-> > + */
-> > +struct dma_vec {
-> > +	dma_addr_t addr;
-> > +	size_t len;
-> > +};
-> > +
-> > =C2=A0/**
-> > =C2=A0 * enum dma_ctrl_flags - DMA flags to augment operation
-> > preparation,
-> > =C2=A0 *=C2=A0 control completion, and communicate status.
-> > @@ -910,6 +920,10 @@ struct dma_device {
-> > =C2=A0	struct dma_async_tx_descriptor
-> > *(*device_prep_dma_interrupt)(
-> > =C2=A0		struct dma_chan *chan, unsigned long flags);
-> > =C2=A0
-> > +	struct dma_async_tx_descriptor
-> > *(*device_prep_slave_dma_vec)(
-> > +		struct dma_chan *chan, const struct dma_vec *vecs,
-> > +		size_t nents, enum dma_transfer_direction
-> > direction,
-> > +		unsigned long flags);
->=20
-> s/slave/peripheral
->=20
-> I had requested it a bit while ago as well
-
-You did. Sorry, I forgot about it when working on the v6.
-
-Cheers,
--Paul
-
-> > =C2=A0	struct dma_async_tx_descriptor *(*device_prep_slave_sg)(
-> > =C2=A0		struct dma_chan *chan, struct scatterlist *sgl,
-> > =C2=A0		unsigned int sg_len, enum dma_transfer_direction
-> > direction,
-> > @@ -972,6 +986,17 @@ static inline struct dma_async_tx_descriptor
-> > *dmaengine_prep_slave_single(
-> > =C2=A0						=C2=A0 dir, flags,
-> > NULL);
-> > =C2=A0}
-> > =C2=A0
-> > +static inline struct dma_async_tx_descriptor
-> > *dmaengine_prep_slave_dma_vec(
-> > +	struct dma_chan *chan, const struct dma_vec *vecs, size_t
-> > nents,
-> > +	enum dma_transfer_direction dir, unsigned long flags)
-> > +{
-> > +	if (!chan || !chan->device || !chan->device-
-> > >device_prep_slave_dma_vec)
-> > +		return NULL;
-> > +
-> > +	return chan->device->device_prep_slave_dma_vec(chan, vecs,
-> > nents,
-> > +						=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dir,
-> > flags);
-> > +}
-> > +
-> > =C2=A0static inline struct dma_async_tx_descriptor
-> > *dmaengine_prep_slave_sg(
-> > =C2=A0	struct dma_chan *chan, struct scatterlist
-> > *sgl,	unsigned int sg_len,
-> > =C2=A0	enum dma_transfer_direction dir, unsigned long flags)
-> > --=20
-> > 2.43.0
->=20
-
+                   Linus
 
