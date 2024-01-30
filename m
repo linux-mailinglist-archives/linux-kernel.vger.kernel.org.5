@@ -1,115 +1,129 @@
-Return-Path: <linux-kernel+bounces-44144-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44145-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDDCE841DE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:35:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FC98841DE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:36:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F02171C25319
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:35:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BCF128B47B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:36:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 339945789A;
-	Tue, 30 Jan 2024 08:35:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 292C656B71;
+	Tue, 30 Jan 2024 08:35:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Elw8/dTC"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="stIGp61e"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65FAC56B71;
-	Tue, 30 Jan 2024 08:35:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60A683F9E7;
+	Tue, 30 Jan 2024 08:35:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706603711; cv=none; b=nRcmiiKsmQ5LxgFAa3A73Dzwg+I/hdYw/KiBZv+yjS5G0YFz1Ss7Twzho6boMFhdZlMrvTd2n07H9YBJR2PDi3IVnUTueV9QRdU5aCiEVSQywv1kDZiHGhUe3+50COfCUwrCrLTHJRysEsB9LogaJ8n8r8SPjjoQ7IB2g4zHKUI=
+	t=1706603742; cv=none; b=XLI5qXr8NjnAvSpN0hnKdb443mDfW+8WUo46anBGgvgN8bpQrLSD5qzhDbh1D8UxZNbeh5VFA5axPyiBPcIAahXafJMRR66AZjOhAoEEPXZQynOTHf07OS9ajk3r8YbA9afWFfdnmF22nP6r9bUlN29nssbwdbSo1HNhaE9yqOk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706603711; c=relaxed/simple;
-	bh=ipSQZFRis56pggEB+mlu51XG4bdnhA2PgLn++wV8MzI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DzNiTHasvKYKXLIWKGXBy4N8BpX+NnfO9584tupO14Lk97pmoo4FPD12q4eSNoaJZARuM7zlm4Tc9ZgvJ0HY0nSCNPRL+QqSrw65AV6H/KSHZj4Qq0ZJYyPK9GVPIgSwSpLURg1H1uO/TF5x/Y8PFntR/CEsbK74fV/vApoO1nM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Elw8/dTC; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706603701;
-	bh=ipSQZFRis56pggEB+mlu51XG4bdnhA2PgLn++wV8MzI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Elw8/dTCiBK6tty1acjgrWaZ2rIZZW7BW8zKxbcM1J91nyz7izwXaKaFacPdD1KdH
-	 Vu5D1uxLKbB4pjtPJcxy5XcoMgtxFIPm0fwy/Az6SjbD1swppW4J6DzK1+43e5M2yK
-	 a9Hkg3K4r2EWmEgNet2ha6Ma1nlA5KQTSsYmFwM6cYES9AMCx39Ef7u+4cAFaCKdd8
-	 fS/uAZZ94Oxy1cyppzAerYSUW++15B8fURFxS6kXUPlHRRyt0Hdva0OcK8S2gVWS0Y
-	 Y12Gy62x8cKWywo9z3fupNx313PfLhwiwW6LVrMRsuxszJ8lN6i8sghhX7Rgl6dM94
-	 Q+ArkV8ouIVKQ==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id D33A23782076;
-	Tue, 30 Jan 2024 08:35:00 +0000 (UTC)
-Message-ID: <2a918b33-eb95-40d2-9a96-8799e86c66bc@collabora.com>
-Date: Tue, 30 Jan 2024 09:35:00 +0100
+	s=arc-20240116; t=1706603742; c=relaxed/simple;
+	bh=N0kg3YjJSti8U3lrmYd2PIZvWMjVDyjRAbAKeR5/VQI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WIiw0lR3SVF2oMvgnlikhPPZt9eaU3zmG67COdptYXclJ9WI18AB00UQvb9QDNYlafkeivBeIYR33vP4FTdbRVBGJjhe0aktbXi9fZMS7Qlo7pQu1yQz6HDLkAIG0/lfDazyLYYtvEbWOV9Bi4F28HDYCveJULb5ZzPkYMZUZOE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=stIGp61e; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D69BC433C7;
+	Tue, 30 Jan 2024 08:35:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706603741;
+	bh=N0kg3YjJSti8U3lrmYd2PIZvWMjVDyjRAbAKeR5/VQI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=stIGp61ecKDJCp1aKRrgyOnjdbW+DOKiNvEnjoYFJMS3mAwrPVRuj/Y9kajPVMGmf
+	 TR6tosqeQN0mmn/BsIWJvq69h6P937eA+qeluljHRzp/yik8a/kiiXPx+0eipPTHji
+	 9cAQ8Mv+DpGyjxnJI9UQIms/uGRXSjIdpnggugM//gmoGIQCV8ZcAJwtjnWl2h7zXI
+	 zRDs2FwSPcer4UfsteWT/XqwWQidtlDu/DXJ77yYe6miDSvUmD2OZ2VDw1IZVj7UVI
+	 160/yowj4poODko5QTeP0qaC9TE4u9bcCcDDI0ZzIcx56f/KCu8J/9kJESmmmOP+R1
+	 UnzJlR/YtXBaQ==
+Date: Tue, 30 Jan 2024 14:05:33 +0530
+From: Manivannan Sadhasivam <mani@kernel.org>
+To: Erick Archer <erick.archer@gmx.com>
+Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Jeffrey Hugo <quic_jhugo@quicinc.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Dan Carpenter <error27@gmail.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Alex Elder <elder@linaro.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	linux-arm-msm@vger.kernel.org, mhi@lists.linux.dev,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2] bus: mhi: ep: Use kcalloc() instead of kzalloc()
+Message-ID: <20240130083533.GN32821@thinkpad>
+References: <20240128112722.4334-1-erick.archer@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/2] dt-bindings: media: mediatek-jpeg-encoder: change
- max iommus count
-Content-Language: en-US
-To: Matthias Brugger <matthias.bgg@gmail.com>, tiffany.lin@mediatek.com,
- andrew-ct.chen@mediatek.com, linux-mediatek@lists.infradead.org,
- Eugen Hristev <eugen.hristev@collabora.com>, linux-media@vger.kernel.org,
- devicetree@vger.kernel.org, bin.liu@mediatek.com
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- robh+dt@kernel.org, kernel@collabora.com
-References: <20240127084258.68302-1-eugen.hristev@collabora.com>
- <170652472373.127352.5854831299483160743.b4-ty@collabora.com>
- <bf79f44f-5fa7-4341-8deb-605503d33c7c@gmail.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <bf79f44f-5fa7-4341-8deb-605503d33c7c@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240128112722.4334-1-erick.archer@gmx.com>
 
-Il 29/01/24 16:46, Matthias Brugger ha scritto:
+On Sun, Jan 28, 2024 at 12:27:22PM +0100, Erick Archer wrote:
+> This is an effort to get rid of all multiplications from allocation
+> functions in order to prevent integer overflows [1].
 > 
+> Here the multiplication is obviously safe because the "event_rings"
+> member never can have a value greater than 255 (8 bits). This member
+> is set twice using always FIELD_GET:
 > 
-> On 29/01/2024 11:41, AngeloGioacchino Del Regno wrote:
->>
->> On Sat, 27 Jan 2024 10:42:57 +0200, Eugen Hristev wrote:
->>> MT8186 has 4 iommus in the list, to cope with this situation, adjust
->>> the maxItems to 4 (instead of previous 2).
->>> Add also minItems as 2 to keep compatibility with current devices.
->>>
->>>
->>
->> Applied to v6.4-next/dts64, thanks!
->>
->> [1/2] dt-bindings: media: mediatek-jpeg-encoder: change max iommus count
->>        commit: b824b32dd5e98221cbe2e8bcccc6fb4134e35fc1
+> mhi_cntrl->event_rings = FIELD_GET(MHICFG_NER_MASK, regval);
+> mhi_cntrl->event_rings = FIELD_GET(MHICFG_NER_MASK, regval);
 > 
-> Hm, not sure why you took this one, as DT-Bindings normally go through the 
-> subsystem maintainer trees. Otherwise merge conflicts can occur. Just saying.
+> And the MHICFG_NER_MASK macro defines the 8 bits mask that guarantees
+> a maximum value of 255.
+> 
+> However, using kcalloc() is more appropriate [1] and improves
+> readability. This patch has no effect on runtime behavior.
+> 
+> Link: https://github.com/KSPP/linux/issues/162 [1]
+> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
+> Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Signed-off-by: Erick Archer <erick.archer@gmx.com>
+
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+- Mani
+
+> ---
+> Changes in v2:
+> - Add more info in the commit message to better explain the change.
+>   (Dan Carpenter)
+> - Add the "Reviewed-by:" tag.
+> 
+> Previous versions:
+> v1 - https://lore.kernel.org/linux-hardening/20240120152518.13006-1-erick.archer@gmx.com/
+> ---
+>  drivers/bus/mhi/ep/main.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/bus/mhi/ep/main.c b/drivers/bus/mhi/ep/main.c
+> index 65fc1d738bec..8d7a4102bdb7 100644
+> --- a/drivers/bus/mhi/ep/main.c
+> +++ b/drivers/bus/mhi/ep/main.c
+> @@ -1149,8 +1149,9 @@ int mhi_ep_power_up(struct mhi_ep_cntrl *mhi_cntrl)
+>  	mhi_ep_mmio_mask_interrupts(mhi_cntrl);
+>  	mhi_ep_mmio_init(mhi_cntrl);
+> 
+> -	mhi_cntrl->mhi_event = kzalloc(mhi_cntrl->event_rings * (sizeof(*mhi_cntrl->mhi_event)),
+> -					GFP_KERNEL);
+> +	mhi_cntrl->mhi_event = kcalloc(mhi_cntrl->event_rings,
+> +				       sizeof(*mhi_cntrl->mhi_event),
+> +				       GFP_KERNEL);
+>  	if (!mhi_cntrl->mhi_event)
+>  		return -ENOMEM;
+> 
+> --
+> 2.25.1
 > 
 
-That was done so that we don't get devicetree validation issues on our branch;
-eventually, there were no driver changes to support that binding change, and
-it's there just to validate commit 2/2.
-
-Of course the media maintainers do know about this so there will be no merge
-conflict - but yes next time I'll let them pick these instead, it's probably
-easier for everyone, besides simply being the proper thing to do.
-
-Angelo
-
-> Matthias
-> 
-> 
->> [2/2] arm64: dts: mediatek: mt8186: Add jpgenc node
->>        commit: 4c5b46fbf52d52b0f392f0fc3913560bad438e49
->>
->> Best regards,
-
+-- 
+மணிவண்ணன் சதாசிவம்
 
