@@ -1,109 +1,166 @@
-Return-Path: <linux-kernel+bounces-44496-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44497-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 021DC8422D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:22:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC3A68422D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:22:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95CA51F22A05
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:22:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19FAD1C21A50
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:22:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E2266A35B;
-	Tue, 30 Jan 2024 11:19:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55F426BB50;
+	Tue, 30 Jan 2024 11:19:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Qafc92t5"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="DGLz/eeY"
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9D61664D3
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 11:19:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E74206BB34;
+	Tue, 30 Jan 2024 11:19:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706613576; cv=none; b=TZo0ncA3v1Eag5p/JCt2p5Bp503/mWL+gQ8XSeErNh0PhpHQ4aetUrnUF9Is5sNgadfDT5/rdGNfB0K9CGV0njlPIJHz4buuvBs0ZQP/xLWbcRi6DckqmA0SzlAoG78WCn7NKZkZrW2/k88hBbQTSLHXx2msY8u40Bf424baU7k=
+	t=1706613588; cv=none; b=h6keGb3pQ2xtTVI0Pl+wJ1cXg+aA7+xrXjZDjBMpXkrV7dGMTZt4F/sfqsFk86nFTfIKimb1nlHwohSDdAhIzlcL1CI3C6QGot5unktkBror4/AlR1lXsuqiIkKqfYzF5r5VeNJ83oHLD+aX5Qhiwo/1hR5aALhk71iJ5ApSto8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706613576; c=relaxed/simple;
-	bh=QsmMvdygEzykc/sigoFHqJXzg33HVkZ+pgYlsBhHams=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ekrfw3V33HLDMqvOtFNb5nyLGAOVRuAvte4Y3Nz88eDId9ZRMJlP69j4T2Fz0VZrNfh54sJ2hryml5Sq1/xF74FCyLgVqJSFA5YqYpqCPuaGK+S47iWPNzPUkpNkXk+k3QlciaUQucfeGihVjkOIYnArAKPa8B8m5m0nW4qPTzY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Qafc92t5; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706613573;
-	bh=QsmMvdygEzykc/sigoFHqJXzg33HVkZ+pgYlsBhHams=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Qafc92t5mUfWNoHkO4pzlKcIqlcsJSEfVnIvGZCqMXYCTHgibJYm/XEGYWztFAtz4
-	 H23b7iwyyg3hrRS/UWcKZTt3mhs2kAAwzMcNZjPaKqCTSPRwoYCPT2pox0pujSH63i
-	 bupyE3ezU/ylG/r8jQV4f57N29GqleERwqh9ocn+Y0QeamVWFyMkPVNi7kr2oEXvsV
-	 Ssj3B406/aGsy402OJsC1hDkkNXn0xyQ/nSzqk4PU6sDk+OOGTLmboyIwMUOK6/0CJ
-	 eHCgvsn3EPZDgakogJil9lWDCEYlix1alHZlHyn/N9MQVCMaiVphqTeRdyZtAW+C1W
-	 URIHohc3FZ7VQ==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8DCDE3782051;
-	Tue, 30 Jan 2024 11:19:32 +0000 (UTC)
-Message-ID: <98c8da0f-efe8-4ce0-8534-106114141cba@collabora.com>
-Date: Tue, 30 Jan 2024 12:19:31 +0100
+	s=arc-20240116; t=1706613588; c=relaxed/simple;
+	bh=eVKTN5aZD14ysRn5DdnFUUMpDWXE/AboMcyV1o2Xpbc=;
+	h=From:To:CC:References:In-Reply-To:Subject:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ApNTNDBmNWiyE3Fvc5nG3b4nfWil/D/+QhlaL7FzTbAyZNPsqet6SSFJZyAH0wqsD/CGFeRw0+9E+cgKbZn6rAZj3TBXNeW30Pj/dybDODdaz3CuxjqiuD4gQxkPCyeqy6L7O7y/94WyoMf0zBiG4Xrq37ZuYagfwY+eQBi9K24=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=DGLz/eeY; arc=none smtp.client-ip=67.231.152.168
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40U5tDAh019737;
+	Tue, 30 Jan 2024 05:19:39 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:references:in-reply-to:subject:date:message-id
+	:mime-version:content-type:content-transfer-encoding; s=
+	PODMain02222019; bh=1md0/+DFGXhuMmn6zyLi7ooEyZ2b5ftMM6ksvLmC2To=; b=
+	DGLz/eeY5rCTJkdzi5q+jBvaQSoWVMx3Wwm+a7LXEGppX1VSabD0AAk2OXr10cM5
+	26YVJ3fjGbXF1Ri4Gdi+KVeZknYyUM7WHuv5Gzpg450WgQ46ikcYxqk8MCO8lZWM
+	kbPD5QcKYzjHr/wDOt3R6HstuVwwdX+Hrc3SXK4MReNeFY4bo1IgtxRTLF43SF+K
+	7pwfd/eHq1u9M/ros7DpRm+SPJbEkgyqKTLLBNp4Wcp7XfCOtj+ZaNTaPnJL3Dim
+	WWPRp9p0hNWT2MoK9F4nkxl+kDuwHa8ITDWtLs/zBWyK20Z61azJctzyjJBQkHBC
+	6rTUBTF3O0rvF+5VfTOA/Q==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3vvy4nu8bx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 30 Jan 2024 05:19:38 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 30 Jan
+ 2024 11:19:37 +0000
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40 via Frontend Transport; Tue, 30 Jan 2024 11:19:37 +0000
+Received: from LONN2DGDQ73 (LONN2DGDQ73.ad.cirrus.com [198.61.65.148])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 1279B820241;
+	Tue, 30 Jan 2024 11:19:37 +0000 (UTC)
+From: Stefan Binding <sbinding@opensource.cirrus.com>
+To: 'Takashi Iwai' <tiwai@suse.de>, 'Chhayly Leang' <clw.leang@gmail.com>
+CC: 'Takashi Iwai' <tiwai@suse.com>, <patches@opensource.cirrus.com>,
+        "'James
+ Schulman'" <james.schulman@cirrus.com>,
+        'David Rhodes'
+	<david.rhodes@cirrus.com>,
+        'Richard Fitzgerald' <rf@opensource.cirrus.com>,
+        'Jaroslav Kysela' <perex@perex.cz>, <linux-sound@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20240126080912.87422-1-clw.leang@gmail.com> <87il3b3wub.wl-tiwai@suse.de>
+In-Reply-To: <87il3b3wub.wl-tiwai@suse.de>
+Subject: RE: [PATCH] ALSA: hda: cs35l41: Support ASUS Zenbook UM3402YAR
+Date: Tue, 30 Jan 2024 11:19:36 +0000
+Message-ID: <001601da536e$35a56270$a0f02750$@opensource.cirrus.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] soc: mediatek: mtk-socinfo: Add extra entry for
- MT8183
-Content-Language: en-US
-To: Chen-Yu Tsai <wenst@chromium.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- William-tw Lin <william-tw.lin@mediatek.com>
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org,
- William-tw Lin <william-tw.lin@mediatek.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-References: <20240130095656.3712469-1-wenst@chromium.org>
- <20240130095656.3712469-3-wenst@chromium.org>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20240130095656.3712469-3-wenst@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: en-gb
+Thread-Index: AQJ251DEbDtU4Ub6108ES0yN5WkQpgKO1N6zr6SXE5A=
+X-Proofpoint-ORIG-GUID: qHlTe7WycikxKQhWyfkSCMseqP5ak77C
+X-Proofpoint-GUID: qHlTe7WycikxKQhWyfkSCMseqP5ak77C
+X-Proofpoint-Spam-Reason: safe
 
-Il 30/01/24 10:56, Chen-Yu Tsai ha scritto:
-> The MT8183 has another socinfo match, with the second cell only
-> differing by one bit. Add it to the driver.
+Hi,
+
+> -----Original Message-----
+> From: Takashi Iwai <tiwai@suse.de>
+> Sent: Tuesday, January 30, 2024 11:06 AM
+> To: Chhayly Leang <clw.leang@gmail.com>
+> Cc: Stefan Binding <sbinding@opensource.cirrus.com>; Takashi Iwai
+> <tiwai@suse.com>; patches@opensource.cirrus.com; James Schulman
+> <james.schulman@cirrus.com>; David Rhodes
+> <david.rhodes@cirrus.com>; Richard Fitzgerald
+> <rf@opensource.cirrus.com>; Jaroslav Kysela <perex@perex.cz>; linux-
+> sound@vger.kernel.org; linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH] ALSA: hda: cs35l41: Support ASUS Zenbook
+> UM3402YAR
 > 
-> Fixes: 423a54da3c7e ("soc: mediatek: mtk-socinfo: Add driver for getting chip information")
-> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
-> ---
->   drivers/soc/mediatek/mtk-socinfo.c | 1 +
->   1 file changed, 1 insertion(+)
+> On Fri, 26 Jan 2024 09:09:12 +0100,
+> Chhayly Leang wrote:
+> >
+> > Adds sound support for ASUS Zenbook UM3402YAR with missing DSD
+> >
+> > Signed-off-by: Chhayly Leang <clw.leang@gmail.com>
 > 
-> diff --git a/drivers/soc/mediatek/mtk-socinfo.c b/drivers/soc/mediatek/mtk-socinfo.c
-> index 3909d22062ce..42572e8c1520 100644
-> --- a/drivers/soc/mediatek/mtk-socinfo.c
-> +++ b/drivers/soc/mediatek/mtk-socinfo.c
-> @@ -45,6 +45,7 @@ static const char *cell_names[MAX_CELLS] = {"socinfo-data1", "socinfo-data2"};
->   static struct socinfo_data socinfo_data_table[] = {
->   	MTK_SOCINFO_ENTRY("MT8173", "MT8173V/AC", "MT8173", 0x6CA20004, 0x10000000),
->   	MTK_SOCINFO_ENTRY("MT8183", "MT8183V/AZA", "Kompanio 500", 0x00010043, 0x00000840),
-> +	MTK_SOCINFO_ENTRY("MT8183", "MT8183V/AZA", "Kompanio 500", 0x00010043, 0x00000940),
+> Yet another missing entry; can Cirrus people review this before I
+> merge?
 
-Are you sure that 0x940 is the same MT8183V/AZA?
-
-Added William-tw to the loop; MediaTek, can you please confirm, and please say why,
-there are two MT8183V/AZA with two different ChipIDs?
+Looks good to me.
 
 Thanks,
-Angelo
+Stefan
 
->   	MTK_SOCINFO_ENTRY("MT8186", "MT8186GV/AZA", "Kompanio 520", 0x81861001, CELL_NOT_USED),
->   	MTK_SOCINFO_ENTRY("MT8186T", "MT8186TV/AZA", "Kompanio 528", 0x81862001, CELL_NOT_USED),
->   	MTK_SOCINFO_ENTRY("MT8188", "MT8188GV/AZA", "Kompanio 830", 0x81880000, 0x00000010),
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> > ---
+> >  sound/pci/hda/cs35l41_hda_property.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/sound/pci/hda/cs35l41_hda_property.c
+> b/sound/pci/hda/cs35l41_hda_property.c
+> > index 35277ce890a..2af083183d8 100644
+> > --- a/sound/pci/hda/cs35l41_hda_property.c
+> > +++ b/sound/pci/hda/cs35l41_hda_property.c
+> > @@ -76,6 +76,7 @@ static const struct cs35l41_config
+> cs35l41_config_table[] = {
+> >  	{ "10431533", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
+> }, 0, 1, -1, 1000, 4500, 24 },
+> >  	{ "10431573", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
+> }, 1, 2, 0, 1000, 4500, 24 },
+> >  	{ "10431663", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
+> }, 1, -1, 0, 1000, 4500, 24 },
+> > +	{ "10431683", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
+> }, 0, 1, -1, 0, 0, 0 },
+> >  	{ "104316D3", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
+> }, 1, 2, 0, 0, 0, 0 },
+> >  	{ "104316F3", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
+> }, 1, 2, 0, 0, 0, 0 },
+> >  	{ "104317F3", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
+> }, 0, 1, -1, 1000, 4500, 24 },
+> > @@ -410,6 +411,7 @@ static const struct cs35l41_prop_model
+> cs35l41_prop_model_table[] = {
+> >  	{ "CSC3551", "10431533", generic_dsd_config },
+> >  	{ "CSC3551", "10431573", generic_dsd_config },
+> >  	{ "CSC3551", "10431663", generic_dsd_config },
+> > +	{ "CSC3551", "10431683", generic_dsd_config },
+> >  	{ "CSC3551", "104316D3", generic_dsd_config },
+> >  	{ "CSC3551", "104316F3", generic_dsd_config },
+> >  	{ "CSC3551", "104317F3", generic_dsd_config },
+> > --
+> > 2.42.0
+> >
 
 
 
