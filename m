@@ -1,98 +1,65 @@
-Return-Path: <linux-kernel+bounces-45173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5810842C71
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:11:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78820842C74
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:13:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 049951C2460A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:11:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E4F81F23BFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:13:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDE6A6995A;
-	Tue, 30 Jan 2024 19:10:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62E8B7AE55;
+	Tue, 30 Jan 2024 19:12:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="NmYN9gGL";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="CHWphIxE"
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HEcaIkvC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 002BA7AE58
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 19:10:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B8A27AE45;
+	Tue, 30 Jan 2024 19:12:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706641849; cv=none; b=XTIz5VGdyJNwwRGsM47aQ3iKT6MFUSABRBsAbKJIev6N49U3qnDn9Bo4U9wPC7bnCM3vuX21HbRHZVGPk33pL/IlnoKX6zbqKeJD4YKzlJ2dCbYDj+FiwUHaVF/ISQJcPZS/oN+SOCkKdxTKWlgicERaQC92XdJcGzT5x6dWPSA=
+	t=1706641978; cv=none; b=Lvrvl7glBGV4J0I+Joony2D2+bi+3wPE6SeajzGOZTW3X/bMZaZsf6w2Jw+8rvvlFxah4SWaconVmSDpEXo8AaRYzD53N3V72ty/AOGILhNL37HLsTdUBZ9LOw6mPfH5ZVSjQl5fryXDE9uezPm24SsFmw01m4bJpJv/R3i5PgI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706641849; c=relaxed/simple;
-	bh=sZv4hZ59DmUixucPnWeXqZ6a7oFZ896iY95SEZQmMEw=;
+	s=arc-20240116; t=1706641978; c=relaxed/simple;
+	bh=nEH6/Gsz/g0ZkEX+gtrP7lVR/DRDDEnivsf7uhE+Q3g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qO+bvjiDxj06H3mzOtjvE+17Cjo1QFiinHeXcM/5//umCU0OVGDj3hoa6xgP94xx9T7OOinhV8+5e1cRYsL+uO0IUWKhZxryk5K309R0LRk5fcKo+dFWyT11u1PWjPxqigIPS4qAyZjZbRPlnHuu+BZxy9DlO8JMesufGyNuEyE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=NmYN9gGL; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=CHWphIxE; arc=none smtp.client-ip=64.147.123.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailout.west.internal (Postfix) with ESMTP id BF4213200B6F;
-	Tue, 30 Jan 2024 14:10:45 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Tue, 30 Jan 2024 14:10:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:cc:content-type:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm3; t=1706641845; x=
-	1706728245; bh=+gJh8ZcSY4aL5gFs6qPyGXcGkB9f/lwBzjFZBMTljRQ=; b=N
-	mYN9gGLmOYjRAN+BQ3ASsuLiYWHhM7vKyuUaTJdaHrbfjfWtqDakhhCWRrbJ+0fU
-	q02qgiFG3E3VzMjCIIT7aku4XU9vOe/5k6cGRlfbE2qQuZvGuwBZq37jCPKIfVPZ
-	xE3cVPc21yxG1f+2rmg9JX0ssML52PnU7q7ele6T0Ja1J/o6CedvsLGPVLpNTEbl
-	Ki+FpeCjFm3YYkXDWwgoUiB0f9rYR8YB+5HCJohemRDsasz5pSqI0oP6ZVSizC7M
-	gvz8w9LXNq6shgE4EvTVQs5O9VnYXG//9gxswN8kFIJQmR9WvoV89KPTSFqK68ca
-	2IrdDuiozmlgjuZMG0zxg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1706641845; x=1706728245; bh=+gJh8ZcSY4aL5gFs6qPyGXcGkB9f
-	/lwBzjFZBMTljRQ=; b=CHWphIxER++1SfPEXD67bf1ELZKQ6YOftuQhf/WLlV3X
-	9xdBKlvMzzfyuFSNQAVxZAwIpWtmUs0nCJca5xjS/k5j7XRgJN3Q/dyAdJ1vOTlR
-	JskNMqRflQ+3WDDbVR4u3PE0hN+3glMolle2US33lN6GjGB7YGPEpegnB8Ihm6zH
-	23EjpaJMyRLq7zQxMB+dh2J4T+/Gcqs6ZdJHUP9xDVDrjp6LN1xuTn+gkrXB0SAD
-	eLp4qVMypTo8zZtCdwoMVJfC/5bBWX2rOLkGGJysIjj4AqsaDjYEmr+8CuIJ8ipf
-	Ur2b7yDdUWoxb/8kXwneYXuHdnHQMX499C7LkToiNQ==
-X-ME-Sender: <xms:tEm5ZWzj_nukIFsyQsXbUUEicKwed1DtERHGAKXSs58nFVZh6uGoTw>
-    <xme:tEm5ZST5X2M9VyVb2FIOFI1vd4TtUfmLvDawIxqGWht2D-9qz4V778V7q6V0Jg7xg
-    4NLCQixHOvSd2Sv3Cw>
-X-ME-Received: <xmr:tEm5ZYXEQ2aXvYWUR36cE5C34jRO9mlym6xw9qqQeY_wsjZRnRThh_9fH0IbhakiHIXlvyLhqfFg5CWL1cjhGWqID50ijG8O>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtjedgheegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgr
-    shhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhird
-    hjpheqnecuggftrfgrthhtvghrnhepveeilefhudekffehkeffudduvedvfeduleelfeeg
-    ieeljeehjeeuvdeghfetvedvnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlh
-    hushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghs
-    hhhisehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:tUm5ZciW6TKa6yWDiBeqIbO8gHU7D8v7sVAwy0vFsGNZZBqFutU0fg>
-    <xmx:tUm5ZYCnkDe4PSZj182yzm0pjUxW5b-9ijGFilNJmk-lKNr3hxDI3Q>
-    <xmx:tUm5ZdLt-omORLz4l55szDVqstZU_1Rz8lauWjviKPUWAm1b_LzFlQ>
-    <xmx:tUm5ZR6zAcN2BD_BVFcHsLLkQQ2VC_RmuYu6oH_tD4M9Ty__hbI71g>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 30 Jan 2024 14:10:43 -0500 (EST)
-Date: Wed, 31 Jan 2024 04:10:40 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Adam Goldman <adamg@pobox.com>
-Cc: linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] firewire: core: mask previous entry's type bits when
- looking for leaf
-Message-ID: <20240130191040.GA35237@workstation.local>
-Mail-Followup-To: Adam Goldman <adamg@pobox.com>,
-	linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-References: <ZbJQ0JdbGixJouvn@iguana.24-8.net>
- <20240126011705.GA22564@workstation.local>
- <ZbNyHg3TTWpjiieI@iguana.24-8.net>
- <20240126121917.GA99160@workstation.local>
- <ZbSMVdOZB1zusXmo@iguana.24-8.net>
+	 Content-Type:Content-Disposition:In-Reply-To; b=urpFEXcIGBgvqlBME77JDwC4i+YDuu8QFcCbzllBkcf+aZ+a7A8jZMHsSVuESrLybqp0m/EnnK+RkCpDWKAd0VKKmcFBP8PP/b4duqDLlOHANSvsKhfuywBIe36mMsZ82RlzeoGgsMtnDWrQ1sQcQvlKCpn98aMOzdOSwBLrqUg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HEcaIkvC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3008C433F1;
+	Tue, 30 Jan 2024 19:12:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706641978;
+	bh=nEH6/Gsz/g0ZkEX+gtrP7lVR/DRDDEnivsf7uhE+Q3g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HEcaIkvCbfbc6JFGId2VCmGC1tw1Hh6yB4i9KzHCCy53Ki1Lg/77lQY5WqUOwCrKf
+	 2Gzm+RmhcKoFO1A0uQ/mMkjhErF5N/5db2CBJptWzB2nRNMSZM6ZqKCX973Bmci/Vx
+	 ijTfGoJ4HWZBwH04NR7+F8dDlKmsT47vaJjG31gl3R1VHm9AU9ANbIyHDH/I0Ehq5a
+	 WFXyFHHw6yXPUrQp/O0pD/h+SbWqVmWjhREwqg7WprbvZXHV4991vODsjdjBEc5sQL
+	 J6K7nzcD7/XNlQ2NZ4a9AmHrz3RvdfjmP8gkFcmuMqBh9d4k74w+FEvjAr7mNrV2gP
+	 lGESch3GpRfLA==
+Date: Tue, 30 Jan 2024 13:12:55 -0600
+From: Rob Herring <robh@kernel.org>
+To: Dharma.B@microchip.com
+Cc: conor@kernel.org, krzk@kernel.org, Manikandan.M@microchip.com,
+	andrzej.hajda@intel.com, neil.armstrong@linaro.org,
+	rfoss@kernel.org, Laurent.pinchart@ideasonboard.com,
+	jonas@kwiboo.se, jernej.skrabec@gmail.com, airlied@gmail.com,
+	daniel@ffwll.ch, maarten.lankhorst@linux.intel.com,
+	mripard@kernel.org, tzimmermann@suse.de,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Linux4Microchip@microchip.com
+Subject: Re: [PATCH 1/3] dt-bindings: display: bridge: add sam9x7-lvds
+ compatible
+Message-ID: <20240130191255.GA2164257-robh@kernel.org>
+References: <20240122082947.21645-1-dharma.b@microchip.com>
+ <20240122082947.21645-2-dharma.b@microchip.com>
+ <10a88fc6-2c4c-4f77-850f-f15b21a8ed49@kernel.org>
+ <20240122-privacy-preschool-27dc7dcc5529@spud>
+ <01c4fc05-9b3f-4007-9216-444a4306efd7@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -101,44 +68,78 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZbSMVdOZB1zusXmo@iguana.24-8.net>
+In-Reply-To: <01c4fc05-9b3f-4007-9216-444a4306efd7@microchip.com>
 
-Hi,
-
-On Fri, Jan 26, 2024 at 08:53:42PM -0800, Adam Goldman wrote:
-> On Fri, Jan 26, 2024 at 09:19:17PM +0900, Takashi Sakamoto wrote:
-> > I think we can handle the quirk of configuration ROM without changing
-> > the kernel API. Would you test the following patch? (not tested in my
-> > side).
-> > 
-> > ======== 8< --------
-> > 
-> > >From 83bf1e04d308ea89c76c64e3168b9701f9d9191b Mon Sep 17 00:00:00 2001
-> > From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-> > Date: Fri, 26 Jan 2024 20:37:21 +0900
-> > Subject: [PATCH] firewire: search descriptor leaf just after vendor directory
-> >  entry in root directory
+On Tue, Jan 23, 2024 at 03:39:13AM +0000, Dharma.B@microchip.com wrote:
+> Hi Conor,
 > 
-> Hi Takashi,
+> On 22/01/24 10:07 pm, Conor Dooley wrote:
+> > On Mon, Jan 22, 2024 at 04:51:16PM +0100, Krzysztof Kozlowski wrote:
+> >> On 22/01/2024 09:29, Dharma Balasubiramani wrote:
+> >>> Add the 'sam9x7-lvds' compatible binding, which describes the
+> >>> Low Voltage Differential Signaling (LVDS) Controller found on Microchip's
+> >>> sam9x7 series System-on-Chip (SoC) devices. This binding will be used to
+> >>> define the properties and configuration for the LVDS Controller in DT.
+> >>>
+> >>> Signed-off-by: Dharma Balasubiramani<dharma.b@microchip.com>
+> >>> ---
+> >>>   .../display/bridge/microchip,sam9x7-lvds.yaml | 59 +++++++++++++++++++
+> >>>   1 file changed, 59 insertions(+)
+> >>>   create mode 100644 Documentation/devicetree/bindings/display/bridge/microchip,sam9x7-lvds.yaml
+> >>>
+> >>> diff --git a/Documentation/devicetree/bindings/display/bridge/microchip,sam9x7-lvds.yaml b/Documentation/devicetree/bindings/display/bridge/microchip,sam9x7-lvds.yaml
+> >>> new file mode 100644
+> >>> index 000000000000..8c2c5b858c85
+> >>> --- /dev/null
+> >>> +++ b/Documentation/devicetree/bindings/display/bridge/microchip,sam9x7-lvds.yaml
+> >>> @@ -0,0 +1,59 @@
+> >>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> >>> +%YAML 1.2
+> >>> +---
+> >>> +$id:http://devicetree.org/schemas/display/bridge/microchip,sam9x7-lvds.yaml#
+> >>> +$schema:http://devicetree.org/meta-schemas/core.yaml#
+> >>> +
+> >>> +title: Microchip SAM9X7 LVDS Controller
+> >> What is the "X"?
+> >>
+> >>> +
+> >>> +maintainers:
+> >>> +  - Dharma Balasubiramani<dharma.b@microchip.com>
+> >>> +
+> >>> +description: |
+> >> Do not need '|' unless you need to preserve formatting.
+> >>
+> >>> +  The Low Voltage Differential Signaling Controller (LVDSC) manages data
+> >>> +  format conversion from the LCD Controller internal DPI bus to OpenLDI
+> >>> +  LVDS output signals. LVDSC functions include bit mapping, balanced mode
+> >>> +  management, and serializer.
+> >>> +
+> >>> +properties:
+> >>> +  compatible:
+> >>> +    const: microchip,sam9x7-lvds
+> >> What is "x"? Wildcard? Then no, don't use it and instead use proper SoC
+> >> version number.
+> > These SoCs actually do have an x in their name. However, and I do always
+> > get confused here, the sam9x7 is a series of SoCs (the cover letter does
+> > say this) rather than a specific device.
+> > I think the series current consists of a sam9x70 sam9x72 and a sam9x75.
+> > The devices are largely similar, but I am not sure if the sam9x70
+> > supports LVDS at all. Having a compatible for the series does not seem
+> > correct to me.
+> Yes, you are correct. Only sam9x72 and sam9x75 have LVDS support, while 
+> sam9x70 does not. I will revise the compatibility to include both 
+> sam9x72 and sam9x75, as outlined below:
 > 
-> I tested your patch with the DVMC-DA1. I also tested it with another 
-> device with normal placement of the leaf entry. In both cases, it works.
+> properties:
+>    compatible:
+>      enum:
+>        - microchip,sam9x72-lvds
+>        - microchip,sam9x75-lvds
 
-Thanks for your test. I reposted the patch in the series of changes for
-v6.8-rc3[1].
+I would presume these 2 are the same, but the above implies they 
+aren't. I think what you had is fine assuming these are all 
+fundamentally the same part with just packaging or fused off h/w 
+differences.
 
-The behaviour change of kernel API is not preferable within the same
-version of kernel once the release candidates is public, while we need to
-handle it as the series of changes to support the legacy layout of
-configuration ROM. So I'll apply my version to for-linus branch and send
-it to him.
-
-Anyway thanks for your work and suggestion.
-
-[1] https://lore.kernel.org/lkml/20240130100409.30128-1-o-takashi@sakamocchi.jp/
-
-
-Thanks
-
-Takashi Sakamoto
+Rob
 
