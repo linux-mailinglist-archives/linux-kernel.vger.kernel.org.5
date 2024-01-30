@@ -1,72 +1,72 @@
-Return-Path: <linux-kernel+bounces-43903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEA9D841A99
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 04:36:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2F85841A9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 04:37:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 479A0B21CE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 03:36:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 75464B20E31
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 03:37:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B083374F8;
-	Tue, 30 Jan 2024 03:36:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12B92374D2;
+	Tue, 30 Jan 2024 03:37:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="VIyNPG9w"
-Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="VKX4E6h3"
+Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E19B374C2
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 03:36:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E78623FDF
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 03:37:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706585803; cv=none; b=D4DNdzAUbcFRZQTW9btWXZrt0cKJ1tkaL13XNCGNmtt2IXipEbHOrf+PKw9oTQHaGXTauDwH3FHzvViKOb7efBb6OpB2KQeRrUHlIGWDiZvDuF6KSFmc6//1+03lOU5KnGxFHxQK/YyxLHmesE8mxGRunS4IcaWxHoPke9NcVV8=
+	t=1706585866; cv=none; b=Zlyy06lY62IacU21BUc2CO6io6DhMunPDgQvUianlMtHWQzdtXZY86Il5TTzJLAptV67tYX+zxM7HS7qC9YvaWIYKuTniAqYBAiz9IZJhNjhTia6DOn7HjzkTMtQZ1lv3vnQLXH8rhocvUhFU3zn9/1kjJF6eDMfokxKss7QXws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706585803; c=relaxed/simple;
-	bh=zj0nZQlVM5cwdz68bsEI8QIya8LQBEd905LxUX+p478=;
+	s=arc-20240116; t=1706585866; c=relaxed/simple;
+	bh=PuFbQiWSXT6tGLZr8NJjjwWhB08RIkHxrhNYlXm/4Xc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=L67v4oj2jqHFgrcHavwHpR3LNYTfsat/27XVeqwNILMWNEzttPiiNfdRhz0oPtWKcabH+j+m9Ti/2yedLJG/Z1T07rqQDVVfwJtqfZIQXKzCe/yKOJHUhlzmu0YdL/Ke/un9ggwscJ6nysPs3ukt/CmdhkGPsWxLewA/e5Kmb4s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=VIyNPG9w; arc=none smtp.client-ip=209.85.160.42
+	 In-Reply-To:Content-Type; b=sWflSZh3Utd4IU3QMGkMsokhMhJa+w5Fcvz7UvwF3JNldNfJNeUwpWBljgyq97fDWSDYIQLZOHpLBLRZJ0aYUuVClYjZsIbuQCMQgi5pZtQPpVdxxxAbV5QE0WoK/IHzhotgJW/wzjnn6SV5ragIhW+KG+6zXtX7NkNcA6fKd1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=VKX4E6h3; arc=none smtp.client-ip=209.85.160.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-21499c9650cso1224477fac.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 19:36:42 -0800 (PST)
+Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-204f50f305cso2586556fac.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 19:37:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1706585801; x=1707190601; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1706585864; x=1707190664; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=jkSLJRp1f0GwczdGFgnBAEqAFYQupxf3SUPmnpRy8AM=;
-        b=VIyNPG9wUka1B4OMBxwCuNgyp/ojHH5/qekfC3/3Hojk4stHV23o3axAUP1/HQUnrO
-         t6NB9moG1Wc58UTg0nnB3SD4U3G4WSGLVjQC6Cn3l5KFPBpnRnHnwhjdYH9hjRkmtGOI
-         F6WZpTrDwoZ75hUIv4wHhjixyMy4zDQUbjcPf/GefekzcnlKgQFFou65aZA0/iY6dHdQ
-         O3WYdBH4y1F7aMJk+mwY419B3w3Z8076M+XknmFKPxMp4IX34vkhxMfvCNI6fVjpdBcp
-         Qht1wIlAuUl17aT6iqPWfDBKlDSj7sRtf7zDncLUgUJPMBFAbWEnow8/wgE/4bec5R7E
-         CHBg==
+        bh=JzebWaKZk+94ZRx2c2YdGPDF8CZwvmTVymWHqzMMxBc=;
+        b=VKX4E6h3+4SFtFZqTQSirX6I6cZehCuFQWy8xige5t71LrvlrXdZcez3MNUn8PGq8i
+         4S7gc76l//KGXvScQIJXhYCbbzxk/+ifiYDVNuzwr5sH2xSic81SGCWPs8cJZHx1a+1E
+         sAN+CZqPn68opzAGq/TE7rERojBcDwzOJV46D1CLI/9QNANNTe75eFRG0SLSW6N3MVPi
+         nqfA6NlFd0eCfsrPM3shkKf+QEjh15WuVIA45L3FlhzMH6kWxZ34FwQndAttYcY3w0op
+         5odmg21h+ocye8mC+919FO2QKNSJ9wM6eS31PX+RX8ePHMubBQQEmyxRwTg7bressHEC
+         yXJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706585801; x=1707190601;
+        d=1e100.net; s=20230601; t=1706585864; x=1707190664;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jkSLJRp1f0GwczdGFgnBAEqAFYQupxf3SUPmnpRy8AM=;
-        b=Ofi8pBmng9Ba/gV2HDkYJNE4sk6QF8jCTZIWYXJQP6KAp1Nk+xkn2A41bbvZNbeIIL
-         kyHC43LJ1+O5++6I2TlLxCd8Ewz1Ry3cILB52H6nyJM10WMUwEYgEFVjtzoX9TqvhiHe
-         kEzXAL60CpMEXTvPMg8G0fCoGNZ67Xj8c+GJTZPK1hkeCX3aB1Qp4O5x+37rbgQCYHAP
-         /8h48GT1tFDEk/Cs6YcUFR822xCyUnNEQCIzQxE2AOxU2HBvH2KCOVWN7joI3lZGmltH
-         bjsJ3f/8Te1mkwCR0To0k4P2XBGo2hJH6HJtw0vZq6RHjA8mRPPf8hFdzBlHRM0GgSg5
-         kXrQ==
-X-Gm-Message-State: AOJu0YyDtzWIVUswr+r1WD9bhj04S8A7cMLAMasrTOob0Vj8f03QGQKa
-	0IfyZetdcjxChj8PkbCOwWcA+nSqkPfkaDapjSGGWQZa29VibDISxeFLKZnXgqM=
-X-Google-Smtp-Source: AGHT+IGhejiwxqUrfIq7Qwbr9y9UAsaa9m0NcDmC3zPYmk95tMEjPTt/WMFF2//2tHkkjTICnb2+uQ==
-X-Received: by 2002:a05:6870:47a4:b0:206:a798:8d88 with SMTP id c36-20020a05687047a400b00206a7988d88mr3337698oaq.29.1706585801353;
-        Mon, 29 Jan 2024 19:36:41 -0800 (PST)
+        bh=JzebWaKZk+94ZRx2c2YdGPDF8CZwvmTVymWHqzMMxBc=;
+        b=nZJpK+E2hmFuFJJZOUQliUD1xNTRk+koVz5O1L6aq6Ruj9pVuNnivLyz6c8kpQMVdy
+         Ojuun5Ty/4k7YhLdbyr3jQAguYnfeeqpmdMKqvxqRroudEgn5/0v3IE+qQfnsL5FQupT
+         +g1TlW9Rr+5N5t9uOjzlJSlQvEeEO3M3KpAgtPxm75Ljus2VOnBOujxcYekC93L/7tBz
+         tSgsRWArHfZK7QZs6keQ8oYWwNfX6iOInC6N8JhqUQei90hB2Abbmc6nNQ1Hv0Z8q79S
+         KNm6R7RkZ52IkxRiM4HxgOevlxY30ne3sfLOcLx9Jk9OVuyg7ZvTAT/WVh2Ai6M2EUQJ
+         7qAg==
+X-Gm-Message-State: AOJu0Yx1/S2mwGXOvfdMBA1S/J4TdYCzGT53HeWJhP6z/spvpzb/MVNp
+	syoKwRdztSliRKO37GLuak0i/9BxM/uX4H0LOpnVfgZ6ZSzMLaU4ILFcH2jzkR4=
+X-Google-Smtp-Source: AGHT+IEVWupfuhowGp0+yx9osJSBEspj8CvQktKmSZlvjG1elawu5cahWZXPJ90uuRxiYk4IBk/5QQ==
+X-Received: by 2002:a05:6870:1254:b0:214:2886:705b with SMTP id 20-20020a056870125400b002142886705bmr6895796oao.11.1706585864169;
+        Mon, 29 Jan 2024 19:37:44 -0800 (PST)
 Received: from [10.4.207.234] ([139.177.225.234])
-        by smtp.gmail.com with ESMTPSA id y17-20020a63b511000000b005d8b481c4d3sm5561909pge.87.2024.01.29.19.36.38
+        by smtp.gmail.com with ESMTPSA id y17-20020a63b511000000b005d8b481c4d3sm5561909pge.87.2024.01.29.19.37.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jan 2024 19:36:41 -0800 (PST)
-Message-ID: <a5a69097-9ebd-4d97-b32c-301628d914d3@bytedance.com>
-Date: Tue, 30 Jan 2024 11:36:38 +0800
+        Mon, 29 Jan 2024 19:37:43 -0800 (PST)
+Message-ID: <fa7112d5-b20d-429a-b083-426d605c3354@bytedance.com>
+Date: Tue, 30 Jan 2024 11:37:40 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,51 +74,68 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/20] mm: zswap: rename zswap_free_entry to
- zswap_entry_free
+Subject: Re: [PATCH 02/20] mm: zswap: inline and remove zswap_entry_find_get()
 Content-Language: en-US
 To: Johannes Weiner <hannes@cmpxchg.org>,
  Andrew Morton <akpm@linux-foundation.org>
 Cc: Nhat Pham <nphamcs@gmail.com>, Yosry Ahmed <yosryahmed@google.com>,
  linux-mm@kvack.org, linux-kernel@vger.kernel.org
 References: <20240130014208.565554-1-hannes@cmpxchg.org>
- <20240130014208.565554-2-hannes@cmpxchg.org>
+ <20240130014208.565554-3-hannes@cmpxchg.org>
 From: Chengming Zhou <zhouchengming@bytedance.com>
-In-Reply-To: <20240130014208.565554-2-hannes@cmpxchg.org>
+In-Reply-To: <20240130014208.565554-3-hannes@cmpxchg.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 2024/1/30 09:36, Johannes Weiner wrote:
-> There is a zswap_entry_ namespace with multiple functions already.
+> There is only one caller and the function is trivial. Inline it.
 > 
 > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
 Reviewed-by: Chengming Zhou <zhouchengming@bytedance.com>
 
 > ---
->  mm/zswap.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  mm/zswap.c | 17 ++---------------
+>  1 file changed, 2 insertions(+), 15 deletions(-)
 > 
 > diff --git a/mm/zswap.c b/mm/zswap.c
-> index 7f88b3a77e4a..173f2e6657de 100644
+> index 173f2e6657de..cf864aaa214d 100644
 > --- a/mm/zswap.c
 > +++ b/mm/zswap.c
-> @@ -520,7 +520,7 @@ static struct zpool *zswap_find_zpool(struct zswap_entry *entry)
->   * Carries out the common pattern of freeing and entry's zpool allocation,
->   * freeing the entry itself, and decrementing the number of stored pages.
->   */
-> -static void zswap_free_entry(struct zswap_entry *entry)
-> +static void zswap_entry_free(struct zswap_entry *entry)
->  {
->  	if (!entry->length)
->  		atomic_dec(&zswap_same_filled_pages);
-> @@ -555,7 +555,7 @@ static void zswap_entry_put(struct zswap_entry *entry)
->  	WARN_ON_ONCE(refcount < 0);
->  	if (refcount == 0) {
->  		WARN_ON_ONCE(!RB_EMPTY_NODE(&entry->rbnode));
-> -		zswap_free_entry(entry);
-> +		zswap_entry_free(entry);
+> @@ -559,19 +559,6 @@ static void zswap_entry_put(struct zswap_entry *entry)
 >  	}
 >  }
 >  
+> -/* caller must hold the tree lock */
+> -static struct zswap_entry *zswap_entry_find_get(struct rb_root *root,
+> -				pgoff_t offset)
+> -{
+> -	struct zswap_entry *entry;
+> -
+> -	entry = zswap_rb_search(root, offset);
+> -	if (entry)
+> -		zswap_entry_get(entry);
+> -
+> -	return entry;
+> -}
+> -
+>  /*********************************
+>  * shrinker functions
+>  **********************************/
+> @@ -1708,13 +1695,13 @@ bool zswap_load(struct folio *folio)
+>  
+>  	VM_WARN_ON_ONCE(!folio_test_locked(folio));
+>  
+> -	/* find */
+>  	spin_lock(&tree->lock);
+> -	entry = zswap_entry_find_get(&tree->rbroot, offset);
+> +	entry = zswap_rb_search(&tree->rbroot, offset);
+>  	if (!entry) {
+>  		spin_unlock(&tree->lock);
+>  		return false;
+>  	}
+> +	zswap_entry_get(entry);
+>  	spin_unlock(&tree->lock);
+>  
+>  	if (entry->length)
 
