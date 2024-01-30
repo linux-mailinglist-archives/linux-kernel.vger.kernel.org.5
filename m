@@ -1,213 +1,153 @@
-Return-Path: <linux-kernel+bounces-44066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44065-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A64B4841CE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:48:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49A15841CE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:48:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 330CE1F22975
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:48:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C2DC1C23740
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:48:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8233855E63;
-	Tue, 30 Jan 2024 07:48:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99CCF55E64;
+	Tue, 30 Jan 2024 07:47:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="fjFncHmm"
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="c1ISUHC/"
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EA0C5472A
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 07:47:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 216AC53E26
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 07:47:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706600880; cv=none; b=jty0k5UEaa3ril52VcLgmPSA2Vs77gCXplImCClWMK0EQlHpF+1DTGEa1m8rc/hF0V/IwIn7tZdZ5mQfQ3dZf5SFUF8oeJ0Ho0BoAPolVYv04lV5SjBB/n0qWWu5fthi7uKcqnE0y3Sx/LTQulFTuHK9Qwcrt0CgbR4A/gwqhQ4=
+	t=1706600878; cv=none; b=Imno02ox71/frM8TXinVxncAp0VAiFbU63Z401jhnLcKDQh5Ip4Slkv7XQGhgGrPHWiMuLXGPOE5BuzAbth+vuXsSdeIpqeWZFHL1Dou/5dQ9EHkOrrWB2R4uAh4BI+nVFJk6i7L62U72MJ40EzrilPCupN9BNqtzwWj0MRzpLk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706600880; c=relaxed/simple;
-	bh=WNc1vqtl8qrc5VHlrt8bIH1/roSANP20mJxgjJlkyPQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QgSVylLnLSKSzYzqtDlsmZQAdTVlNnM1sUKZmeIrEi+8PCLfHaqXapYno3JfYJlFwDxZkZQOEzBZ9iVYRHEaLgo71bymxzzsKMlSWt7/yIzEFqJRYBSMscZku97XR83KqCA6Notnd6CwuJYuaXEmI6ghWgCJXxAPeeKfKI+l93c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=fjFncHmm; arc=none smtp.client-ip=115.124.30.97
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1706600874; h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
-	bh=FoXv3w40wsSUWTbNLnNIoOwk9fD4Xnl+gY/XoASdjQI=;
-	b=fjFncHmmpm5PITeCSxorX1obcYsNgA4VNQFfFcoiYv+GFsBUv7TPZlFEitv8oPcFjgr2DKfCL8fLOS0tzEWsS//1IdLs/JBGxXJZyyp/h8W9rALRHeERBVWQjlmauLpU/HVro6wGL/PZo9byNFhGRF0wxcf0XWPtO1qtQY8Dgng=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R781e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0W.fTvah_1706600870;
-Received: from localhost.localdomain(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W.fTvah_1706600870)
-          by smtp.aliyun-inc.com;
-          Tue, 30 Jan 2024 15:47:53 +0800
-From: Bitao Hu <yaoma@linux.alibaba.com>
-To: dianders@chromium.org,
-	akpm@linux-foundation.org,
-	pmladek@suse.com,
-	lecopzer.chen@mediatek.com,
-	kernelfans@gmail.com,
-	liusong@linux.alibaba.com
-Cc: linux-kernel@vger.kernel.org,
-	yaoma@linux.alibaba.com
-Subject: [PATCHv2 1/2] watchdog/softlockup: low-overhead detection of interrupt storm
-Date: Tue, 30 Jan 2024 15:47:43 +0800
-Message-Id: <20240130074744.45759-2-yaoma@linux.alibaba.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
-In-Reply-To: <20240130074744.45759-1-yaoma@linux.alibaba.com>
-References: <20240130074744.45759-1-yaoma@linux.alibaba.com>
+	s=arc-20240116; t=1706600878; c=relaxed/simple;
+	bh=fe9RoJ7uIEL7hCMIEw33xQ4RK3TqAFvgh1skAFVlC+M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RvlOm3x18k3j0tACfyKIqk5k5DIzsDsvKSuMMsIjjWRFDKPQMFdNBjI6WZCmAW254Fc058taJIK0tlbyhPWjNOuiuHi3WOTaPxfy/blcDrje0DxEBemNxoDXlOrMbKiZEjMDXCOHtEuvbVAaX7x0EednEAFyVg4NbpFx39TDioE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=c1ISUHC/; arc=none smtp.client-ip=209.85.208.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d057003864so7588361fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 23:47:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706600875; x=1707205675; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yrrtCIWXL3eiBU/IKZjiGTOMDFzcQj7B56yYFQBrFdY=;
+        b=c1ISUHC/CAOMlQULakPGmdjoDYkECksEWpDpMafZBc/2gDLcssChTWGTLpKqQoO0H3
+         l7AG4z+4NKSSCwTN5rpfPrtP0oVCRWdA27+AZTQU10+mFDEZ3gUBn0T4fFmubkC8VGzZ
+         BpSLVqfc6taYpXNLo+9meQOEVoEFCRpn/PxCo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706600875; x=1707205675;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yrrtCIWXL3eiBU/IKZjiGTOMDFzcQj7B56yYFQBrFdY=;
+        b=VBQJVgRL/nO/tYlLuONTBzqDgXocFtoefxeNxZpB7wOQtq46AjIjK2kuFWqUxj396E
+         R4AQse42byGacm1OU2LAp4c7YxVJ7GXFvetfX5ahoZRU+FlwEp+qltX8LhCY06ww2UWE
+         6UYN9bXmb3K9cT2u2ap35HWwCK2zuP61HN37J4t3W1pbC2LVVg65fWKBk/Fx4IOdJuui
+         kKvKP+4KMJOF6DYe5sh4sJ9bJdKCQb66OGHA0QdYvmFSXfUEbakC91LA1bo/FDHWjbfI
+         0yV/8DjpF3Q5XCBgfjn3VOUW86v4p1OeTRnpBmzGfdfL+hL1cSIcYsbgl8ccvSi0c5+p
+         d9ew==
+X-Gm-Message-State: AOJu0Yzcxj+2fPnoV1zZxXvU9tyVejwBBuhQm/W7YYOK1UQpEGMla1zl
+	squhZauQOCZCnetUcFjxaQTneOhWAyhKFILenME1R6mcmpEoIErMlx13OEykraMeubLi9jAk2ho
+	n1HBmEjVeMF7ICdiouPC4imAql1hqbPPcp3NM
+X-Google-Smtp-Source: AGHT+IFXKjnS+us0d6V3OrZKd3SFgNJjm8Z8sdbBJxjxbvtvtuMmj6Rg5rbxK84S2bRJqhxRvRxcNPSPjSDkjD+diCE=
+X-Received: by 2002:a05:651c:b07:b0:2cf:4c49:a8fc with SMTP id
+ b7-20020a05651c0b0700b002cf4c49a8fcmr6437489ljr.22.1706600875032; Mon, 29 Jan
+ 2024 23:47:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240126063500.2684087-1-wenst@chromium.org> <20240126063500.2684087-2-wenst@chromium.org>
+ <74b9f249-fcb4-4338-bf7b-8477de6c935c@linaro.org> <CAGXv+5Hu+KsTBd1JtnKcaE3qUzPhHbunoVaH2++yfNopHtFf4g@mail.gmail.com>
+ <21568334-b21f-429e-81cd-5ce77accaf3c@linaro.org> <CAGXv+5HxXzjigN3Bp96vkv71WfTJ1S2b7Wgafc4GxLmhu6+jMg@mail.gmail.com>
+ <a4324473-e0c6-4d53-8de0-03b69480e40b@linaro.org>
+In-Reply-To: <a4324473-e0c6-4d53-8de0-03b69480e40b@linaro.org>
+From: Chen-Yu Tsai <wenst@chromium.org>
+Date: Tue, 30 Jan 2024 15:47:43 +0800
+Message-ID: <CAGXv+5HAqmUizXztMH_nY6e+6oQh01hCtxEJXKtCn3_74-sOsQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: net: bluetooth: Add MediaTek MT7921S
+ SDIO Bluetooth
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+	Sean Wang <sean.wang@mediatek.com>, linux-bluetooth@vger.kernel.org, 
+	netdev@vger.kernel.org, linux-mediatek@lists.infradead.org, 
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The following softlockup is caused by interrupt storm, but it cannot be
-identified from the call tree. Because the call tree is just a snapshot
-and doesn't fully capture the behavior of the CPU during the soft lockup.
-  watchdog: BUG: soft lockup - CPU#28 stuck for 23s! [fio:83921]
-  ...
-  Call trace:
-    __do_softirq+0xa0/0x37c
-    __irq_exit_rcu+0x108/0x140
-    irq_exit+0x14/0x20
-    __handle_domain_irq+0x84/0xe0
-    gic_handle_irq+0x80/0x108
-    el0_irq_naked+0x50/0x58
+On Tue, Jan 30, 2024 at 3:37=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 30/01/2024 04:32, Chen-Yu Tsai wrote:
+> > On Mon, Jan 29, 2024 at 3:34=E2=80=AFPM Krzysztof Kozlowski
+> > <krzysztof.kozlowski@linaro.org> wrote:
+> >>
+> >> On 29/01/2024 04:38, Chen-Yu Tsai wrote:
+> >>
+> >>>>> +allOf:
+> >>>>> +  - $ref: bluetooth-controller.yaml#
+> >>>>> +
+> >>>>> +properties:
+> >>>>> +  compatible:
+> >>>>> +    enum:
+> >>>>> +      - mediatek,mt7921s-bluetooth
+> >>>>
+> >>>> Can it be also WiFi on separate bus? How many device nodes do you ne=
+ed
+> >>>> for this device?
+> >>>
+> >>> For the "S" variant, WiFi is also on SDIO. For the other two variants=
+,
+> >>> "U" and "E", WiFi goes over USB and PCIe respectively. On both those
+> >>> variants, Bluetooth can either go over USB or UART. That is what I
+> >>> gathered from the pinouts. There are a dozen GPIO pins which don't
+> >>> have detailed descriptions though. If you want a comprehensive
+> >>> binding of the whole chip and all its variants, I suggest we ask
+> >>> MediaTek to provide it instead. My goal with the binding is to docume=
+nt
+> >>> existing usage and allow me to upstream new device trees.
+> >>>
+> >>> For now we only need the Bluetooth node. The WiFi part is perfectly
+> >>> detectable, and the driver doesn't seem to need the WiFi reset pin.
+> >>> The Bluetooth driver only uses its reset pin to reset a hung controll=
+er.
+> >>
+> >> Then suffix "bluetooth" seems redundant.
+> >
+> > I think keeping the suffix makes more sense though. The chip is a two
+> > function piece, and this only targets one of the functions. Also, the
+>
+> That's why I asked and you said there is only one interface: SDIO.
 
-Therefore，I think it is necessary to report CPU utilization during the
-softlockup_thresh period (report once every sample_period, for a total
-of 5 reportings), like this:
-  watchdog: BUG: soft lockup - CPU#28 stuck for 23s! [fio:83921]
-  CPU#28 Utilization every 4s during lockup:
-    #1: 0% system, 0% softirq, 100% hardirq, 0% idle
-    #2: 0% system, 0% softirq, 100% hardirq, 0% idle
-    #3: 0% system, 0% softirq, 100% hardirq, 0% idle
-    #4: 0% system, 0% softirq, 100% hardirq, 0% idle
-    #5: 0% system, 0% softirq, 100% hardirq, 0% idle
-  ...
+There's only one interface, SDIO, but two SDIO functions. The two
+functions, if both were to be described in the device tree, would
+be two separate nodes. We just don't have any use for the WiFi one
+right now. Does that make sense to keep the suffix?
 
-This would be helpful in determining whether an interrupt storm has
-occurred or in identifying the cause of the softlockup. The criteria for
-determination are as follows:
-  a. If the hardirq utilization is high, then interrupt storm should be
-  considered and the root cause cannot be determined from the call tree.
-  b. If the softirq utilization is high, then we could analyze the call
-  tree but it may cannot reflect the root cause.
-  c. If the system utilization is high, then we could analyze the root
-  cause from the call tree.
+> > compatible string is already used in an existing driver [1] and
+> > soon-to-be in-tree device tree [2].
+>
+> That's not the way to upstream compatible. You cannot send it bypassing
+> bindings and review and later claim that's an ABI.
 
-Signed-off-by: Bitao Hu <yaoma@linux.alibaba.com>
----
- kernel/watchdog.c | 72 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 72 insertions(+)
+I get that. I can fix up the existing users where necessary. A proper
+binding would make the driver lookup be more efficient as well.
 
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index 81a8862295d6..0efe9604c3c2 100644
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -23,6 +23,8 @@
- #include <linux/sched/debug.h>
- #include <linux/sched/isolation.h>
- #include <linux/stop_machine.h>
-+#include <linux/kernel_stat.h>
-+#include <linux/math64.h>
- 
- #include <asm/irq_regs.h>
- #include <linux/kvm_para.h>
-@@ -441,6 +443,73 @@ static int is_softlockup(unsigned long touch_ts,
- 	return 0;
- }
- 
-+#ifdef CONFIG_IRQ_TIME_ACCOUNTING
-+#define NUM_STATS_GROUPS	5
-+#define STATS_SYSTEM		0
-+#define STATS_SOFTIRQ		1
-+#define STATS_HARDIRQ		2
-+#define STATS_IDLE		3
-+#define NUM_STATS_PER_GROUP	4
-+static DEFINE_PER_CPU(u16, cpustat_old[NUM_STATS_PER_GROUP]);
-+static DEFINE_PER_CPU(u8, cpustat_utilization[NUM_STATS_GROUPS][NUM_STATS_PER_GROUP]);
-+static DEFINE_PER_CPU(u8, cpustat_tail);
-+static enum cpu_usage_stat idx_to_stat[NUM_STATS_PER_GROUP] = {
-+	CPUTIME_SYSTEM, CPUTIME_SOFTIRQ, CPUTIME_IRQ, CPUTIME_IDLE
-+};
-+
-+static void update_cpustat(void)
-+{
-+	u8 i;
-+	u16 *old = this_cpu_ptr(cpustat_old);
-+	u8 (*utilization)[NUM_STATS_PER_GROUP] = this_cpu_ptr(cpustat_utilization);
-+	u8 tail = this_cpu_read(cpustat_tail);
-+	struct kernel_cpustat kcpustat;
-+	u64 *cpustat = kcpustat.cpustat;
-+	u16 sample_period_ms = sample_period >> 24LL; /* 2^24ns ~= 16.8ms */
-+
-+	kcpustat_cpu_fetch(&kcpustat, smp_processor_id());
-+	for (i = STATS_SYSTEM; i < NUM_STATS_PER_GROUP; i++) {
-+		/*
-+		 * We don't need nanosecond resolution. A granularity of 16ms is
-+		 * sufficient for our precision, allowing us to use u16 to store
-+		 * cpustats, which will roll over roughly every ~1000 seconds.
-+		 * 2^24 ~= 16 * 10^6
-+		 */
-+		cpustat[idx_to_stat[i]] = lower_16_bits(cpustat[idx_to_stat[i]] >> 24LL);
-+		utilization[tail][i] = 100 * (u16)(cpustat[idx_to_stat[i]] - old[i])
-+					/ sample_period_ms;
-+		old[i] = cpustat[idx_to_stat[i]];
-+	}
-+	this_cpu_write(cpustat_tail, (tail + 1) % NUM_STATS_GROUPS);
-+}
-+
-+static void print_cpustat(void)
-+{
-+	u8 i, j;
-+	u8 (*utilization)[NUM_STATS_PER_GROUP] = this_cpu_ptr(cpustat_utilization);
-+	u8 tail = this_cpu_read(cpustat_tail);
-+	u64 sample_period_second = sample_period;
-+
-+	do_div(sample_period_second, NSEC_PER_SEC);
-+	/*
-+	 * We do not want the "watchdog: " prefix on every line,
-+	 * hence we use "printk" instead of "pr_crit".
-+	 */
-+	printk(KERN_CRIT "CPU#%d Utilization every %llus during lockup:\n",
-+		smp_processor_id(), sample_period_second);
-+	for (j = STATS_SYSTEM, i = tail; j < NUM_STATS_GROUPS;
-+		j++, i = (i + 1) % NUM_STATS_GROUPS) {
-+		printk(KERN_CRIT "\t#%d: %3u%% system,\t%3u%% softirq,\t"
-+			"%3u%% hardirq,\t%3u%% idle\n", j+1,
-+			utilization[i][STATS_SYSTEM], utilization[i][STATS_SOFTIRQ],
-+			utilization[i][STATS_HARDIRQ], utilization[i][STATS_IDLE]);
-+	}
-+}
-+#else
-+static inline void update_cpustat(void) { }
-+static inline void print_cpustat(void) { }
-+#endif
-+
- /* watchdog detector functions */
- static DEFINE_PER_CPU(struct completion, softlockup_completion);
- static DEFINE_PER_CPU(struct cpu_stop_work, softlockup_stop_work);
-@@ -504,6 +573,8 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 	 */
- 	period_ts = READ_ONCE(*this_cpu_ptr(&watchdog_report_ts));
- 
-+	update_cpustat();
-+
- 	/* Reset the interval when touched by known problematic code. */
- 	if (period_ts == SOFTLOCKUP_DELAY_REPORT) {
- 		if (unlikely(__this_cpu_read(softlockup_touch_sync))) {
-@@ -539,6 +610,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 		pr_emerg("BUG: soft lockup - CPU#%d stuck for %us! [%s:%d]\n",
- 			smp_processor_id(), duration,
- 			current->comm, task_pid_nr(current));
-+		print_cpustat();
- 		print_modules();
- 		print_irqtrace_events(current);
- 		if (regs)
--- 
-2.37.1 (Apple Git-137.1)
 
+Thanks
+ChenYu
 
