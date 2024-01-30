@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-43981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70727841BD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:18:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0112C841BD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:18:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27286286C8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 06:18:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABE2E285EA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 06:18:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFED339FC1;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9598738F9D;
 	Tue, 30 Jan 2024 06:17:40 +0000 (UTC)
 Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D85B38385
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FCDF38387
 	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 06:17:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706595460; cv=none; b=PfTvjY1rGib+KTQPc0ujGkURk9Dhw98KBnPg+xIFtbXve+asgJVMvcTahzu+9y8Yg6tGnRswtxjZssqNsDGSZ7zFgqXp3ownNeagswWpqfxitBSfj61fdbA4ZxHTfZblxbE1BvuUIjmCoXOXii897SW0r/K63y8sGBQruNUb4ac=
+	t=1706595460; cv=none; b=DcdtIrfQM10+YDEn+1//CIgrQyiFWQfG9ygVfQ92XCSuHVi69An2dJuTytJ9nVc25Yo0QV3pBn9VYa5pOyTWLoNBaXoES/NoBQCR79xW4Hz/u/AkytaihpMhK6y3I+2flKEn55G+wDn7qfDXHU5m34IE+ZhsppF1H3IiE1kD5p4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706595460; c=relaxed/simple;
-	bh=bm9V6FiKni2N61SXl2NkAxJKRFwmCgonvXqiRg7quzc=;
+	bh=PWe3VKMGmFc/X53ABV1MfMql4/FLcOy0IPL4W64ZiII=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CRM7Sxy6cGWmH6BB12cPcQxVblVhDNebWahXfNb1GZdItv6r4EVGtmboRI7qfCrulRyRPnnj6Imx0+ZOKtmhiyukedfzGyF8gjYNFC2jUvhkv3T0E1e9JksowZs0K8htwOheBym5m9UhwEzIAmUozShF4J8foA46TaH97lFKQR8=
+	 MIME-Version; b=C9ffMxeX5TE4/bZsUG46wiskPGTsGAbn5crvgURxOrn4GLv/X8YD/d8nDQc92N83gM3OrhtL8qQMaPskEg5CE+O1a/Hk5bwEywTLlJ8TmhQO3uAAFuz5Nu3q6Xf8ePWUiQX2GeAJluui59zDdVP6y6jLTzKGtlUc57hdrSqp7iI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
 Received: from loongson.cn (unknown [113.200.148.30])
-	by gateway (Coremail) with SMTP id _____8DxWPCAlLhlDjYIAA--.25183S3;
+	by gateway (Coremail) with SMTP id _____8AxqvCAlLhlDzYIAA--.25579S3;
 	Tue, 30 Jan 2024 14:17:36 +0800 (CST)
 Received: from linux.localdomain (unknown [113.200.148.30])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8BxnhN7lLhlYXQnAA--.34034S6;
-	Tue, 30 Jan 2024 14:17:35 +0800 (CST)
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8BxnhN7lLhlYXQnAA--.34034S7;
+	Tue, 30 Jan 2024 14:17:36 +0800 (CST)
 From: Tiezhu Yang <yangtiezhu@loongson.cn>
 To: Josh Poimboeuf <jpoimboe@kernel.org>,
 	Peter Zijlstra <peterz@infradead.org>,
 	Huacai Chen <chenhuacai@kernel.org>
 Cc: loongarch@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v6 4/8] objtool/LoongArch: Enable orc to be built
-Date: Tue, 30 Jan 2024 14:17:26 +0800
-Message-ID: <20240130061730.21118-5-yangtiezhu@loongson.cn>
+Subject: [PATCH v6 5/8] objtool: Check local label in add_dead_ends()
+Date: Tue, 30 Jan 2024 14:17:27 +0800
+Message-ID: <20240130061730.21118-6-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20240130061730.21118-1-yangtiezhu@loongson.cn>
 References: <20240130061730.21118-1-yangtiezhu@loongson.cn>
@@ -51,343 +51,177 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8BxnhN7lLhlYXQnAA--.34034S6
+X-CM-TRANSID:AQAAf8BxnhN7lLhlYXQnAA--.34034S7
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxuw1ruF15Cw1ktFykZrWDGFX_yoWfJFyDpF
-	1UC3yDJr48XF13Aw1xKa1fWrW5Kws7WF1vyrnxu34jyrWIqw1rJrs7KryqqF98Wws3W3y7
-	ZFWYgF4Y9a1DJabCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+X-Coremail-Antispam: 1Uk129KBj93XoW3XFy7WF1kKF1xtFy3Zr1kZwc_yoW7GF45pF
+	47C347Kr4jvr13Zw12yF1xWasxWws7WrnrJ39rGryrAFy2vFsIgw1ayw13Zas0grWav3y5
+	XayYgry5ur1UA3gCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
 	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
 	0xBIdaVrnRJUUU9Fb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1a6r1DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r126r13M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
 	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
 	xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
 	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
 	tVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7V
 	AKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v2
 	6r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
-	CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r4j6ryUMIIF
+	CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26ryj6F1UMIIF
 	0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIx
 	AIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2
-	KfnxnUUI43ZEXa7IU1xpnPUUUUU==
+	KfnxnUUI43ZEXa7IU8XyCJUUUUU==
 
-Implement arch-specific init_orc_entry(), write_orc_entry(), reg_name(),
-orc_type_name(), print_reg() and orc_print_dump(), then set BUILD_ORC as
-y to build the orc related files.
+When update the latest upstream gcc and binutils, it generates more
+objtool warnings on LoongArch, like this:
 
-Co-developed-by: Jinyang He <hejinyang@loongson.cn>
-Signed-off-by: Jinyang He <hejinyang@loongson.cn>
-Co-developed-by: Youling Tang <tangyouling@loongson.cn>
-Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+  init/main.o: warning: objtool: unexpected relocation symbol type in .rela.discard.unreachable
+
+We can see that the reloc sym name is local label instead of section
+in relocation section '.rela.discard.unreachable', in this case, the
+reloc sym type is STT_NOTYPE instead of STT_SECTION.
+
+As suggested by Peter Zijlstra, add "local_label" member in struct
+symbol, then set it as true if symbol type is STT_NOTYPE and symbol
+name starts with ".L" string in classify_symbols().
+
+Let us check reloc->sym->local_label to not return -1, and also use
+reloc->sym->offset instead of reloc addend which is 0 to find the
+corresponding instruction. At the same time, replace the variable
+"addend" with "offset" to reflect the reality.
+
+Here are some detailed info:
+[fedora@linux 6.8.test]$ gcc --version
+gcc (GCC) 14.0.1 20240129 (experimental)
+[fedora@linux 6.8.test]$ as --version
+GNU assembler (GNU Binutils) 2.42.50.20240129
+[fedora@linux 6.8.test]$ readelf -r init/main.o | grep -A 2 "rela.discard.unreachable"
+Relocation section '.rela.discard.unreachable' at offset 0x6028 contains 1 entry:
+  Offset          Info           Type           Sym. Value    Sym. Name + Addend
+000000000000  00d900000063 R_LARCH_32_PCREL  00000000000002c4 .L500^B1 + 0
+
 Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- tools/arch/loongarch/include/asm/orc_types.h |  58 +++++++
- tools/objtool/Makefile                       |   4 +
- tools/objtool/arch/loongarch/Build           |   1 +
- tools/objtool/arch/loongarch/decode.c        |  16 ++
- tools/objtool/arch/loongarch/orc.c           | 171 +++++++++++++++++++
- 5 files changed, 250 insertions(+)
- create mode 100644 tools/arch/loongarch/include/asm/orc_types.h
- create mode 100644 tools/objtool/arch/loongarch/orc.c
+ tools/objtool/check.c               | 40 +++++++++++++++++------------
+ tools/objtool/include/objtool/elf.h |  1 +
+ 2 files changed, 24 insertions(+), 17 deletions(-)
 
-diff --git a/tools/arch/loongarch/include/asm/orc_types.h b/tools/arch/loongarch/include/asm/orc_types.h
-new file mode 100644
-index 000000000000..caf1f71a1057
---- /dev/null
-+++ b/tools/arch/loongarch/include/asm/orc_types.h
-@@ -0,0 +1,58 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+#ifndef _ORC_TYPES_H
-+#define _ORC_TYPES_H
-+
-+#include <linux/types.h>
-+
-+/*
-+ * The ORC_REG_* registers are base registers which are used to find other
-+ * registers on the stack.
-+ *
-+ * ORC_REG_PREV_SP, also known as DWARF Call Frame Address (CFA), is the
-+ * address of the previous frame: the caller's SP before it called the current
-+ * function.
-+ *
-+ * ORC_REG_UNDEFINED means the corresponding register's value didn't change in
-+ * the current frame.
-+ *
-+ * The most commonly used base registers are SP and FP -- which the previous SP
-+ * is usually based on -- and PREV_SP and UNDEFINED -- which the previous FP is
-+ * usually based on.
-+ *
-+ * The rest of the base registers are needed for special cases like entry code
-+ * and GCC realigned stacks.
-+ */
-+#define ORC_REG_UNDEFINED		0
-+#define ORC_REG_PREV_SP			1
-+#define ORC_REG_SP			2
-+#define ORC_REG_FP			3
-+#define ORC_REG_MAX			4
-+
-+#define ORC_TYPE_UNDEFINED		0
-+#define ORC_TYPE_END_OF_STACK		1
-+#define ORC_TYPE_CALL			2
-+#define ORC_TYPE_REGS			3
-+#define ORC_TYPE_REGS_PARTIAL		4
-+
-+#ifndef __ASSEMBLY__
-+/*
-+ * This struct is more or less a vastly simplified version of the DWARF Call
-+ * Frame Information standard.  It contains only the necessary parts of DWARF
-+ * CFI, simplified for ease of access by the in-kernel unwinder.  It tells the
-+ * unwinder how to find the previous SP and FP (and sometimes entry regs) on
-+ * the stack for a given code address.  Each instance of the struct corresponds
-+ * to one or more code locations.
-+ */
-+struct orc_entry {
-+	s16		sp_offset;
-+	s16		fp_offset;
-+	s16		ra_offset;
-+	unsigned int	sp_reg:4;
-+	unsigned int	fp_reg:4;
-+	unsigned int	ra_reg:4;
-+	unsigned int	type:3;
-+	unsigned int	signal:1;
-+};
-+#endif /* __ASSEMBLY__ */
-+
-+#endif /* _ORC_TYPES_H */
-diff --git a/tools/objtool/Makefile b/tools/objtool/Makefile
-index 83b100c1e7f6..bf7f7f84ac62 100644
---- a/tools/objtool/Makefile
-+++ b/tools/objtool/Makefile
-@@ -57,6 +57,10 @@ ifeq ($(SRCARCH),x86)
- 	BUILD_ORC := y
- endif
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 548ec3cd7c00..d0e82c729dd9 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -20,6 +20,7 @@
+ #include <linux/hashtable.h>
+ #include <linux/kernel.h>
+ #include <linux/static_call_types.h>
++#include <linux/string.h>
  
-+ifeq ($(SRCARCH),loongarch)
-+	BUILD_ORC := y
-+endif
-+
- export BUILD_ORC
- export srctree OUTPUT CFLAGS SRCARCH AWK
- include $(srctree)/tools/build/Makefile.include
-diff --git a/tools/objtool/arch/loongarch/Build b/tools/objtool/arch/loongarch/Build
-index d24d5636a5b8..1d4b784b6887 100644
---- a/tools/objtool/arch/loongarch/Build
-+++ b/tools/objtool/arch/loongarch/Build
-@@ -1,2 +1,3 @@
- objtool-y += decode.o
- objtool-y += special.o
-+objtool-y += orc.o
-diff --git a/tools/objtool/arch/loongarch/decode.c b/tools/objtool/arch/loongarch/decode.c
-index ff0b53144d12..aee479d2191c 100644
---- a/tools/objtool/arch/loongarch/decode.c
-+++ b/tools/objtool/arch/loongarch/decode.c
-@@ -3,6 +3,8 @@
- #include <objtool/check.h>
- #include <objtool/warn.h>
- #include <asm/inst.h>
-+#include <asm/orc_types.h>
-+#include <linux/objtool_types.h>
+ struct alternative {
+ 	struct alternative *next;
+@@ -584,7 +585,7 @@ static int add_dead_ends(struct objtool_file *file)
+ 	struct section *rsec;
+ 	struct reloc *reloc;
+ 	struct instruction *insn;
+-	s64 addend;
++	unsigned long offset;
  
- #ifndef EM_LOONGARCH
- #define EM_LOONGARCH	258
-@@ -42,6 +44,20 @@ bool arch_callee_saved_reg(unsigned char reg)
+ 	/*
+ 	 * Check for manually annotated dead ends.
+@@ -594,27 +595,28 @@ static int add_dead_ends(struct objtool_file *file)
+ 		goto reachable;
  
- int arch_decode_hint_reg(u8 sp_reg, int *base)
- {
-+	switch (sp_reg) {
-+	case ORC_REG_UNDEFINED:
-+		*base = CFI_UNDEFINED;
-+		break;
-+	case ORC_REG_SP:
-+		*base = CFI_SP;
-+		break;
-+	case ORC_REG_FP:
-+		*base = CFI_FP;
-+		break;
-+	default:
-+		return -1;
-+	}
-+
- 	return 0;
- }
+ 	for_each_reloc(rsec, reloc) {
+-
+-		if (reloc->sym->type != STT_SECTION) {
++		if (reloc->sym->type == STT_SECTION) {
++			offset = reloc_addend(reloc);
++		} else if (reloc->sym->local_label) {
++			offset = reloc->sym->offset;
++		} else {
+ 			WARN("unexpected relocation symbol type in %s", rsec->name);
+ 			return -1;
+ 		}
  
-diff --git a/tools/objtool/arch/loongarch/orc.c b/tools/objtool/arch/loongarch/orc.c
-new file mode 100644
-index 000000000000..873536d009d9
---- /dev/null
-+++ b/tools/objtool/arch/loongarch/orc.c
-@@ -0,0 +1,171 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+#include <linux/objtool_types.h>
-+#include <asm/orc_types.h>
+-		addend = reloc_addend(reloc);
+-
+-		insn = find_insn(file, reloc->sym->sec, addend);
++		insn = find_insn(file, reloc->sym->sec, offset);
+ 		if (insn)
+ 			insn = prev_insn_same_sec(file, insn);
+-		else if (addend == reloc->sym->sec->sh.sh_size) {
++		else if (offset == reloc->sym->sec->sh.sh_size) {
+ 			insn = find_last_insn(file, reloc->sym->sec);
+ 			if (!insn) {
+ 				WARN("can't find unreachable insn at %s+0x%" PRIx64,
+-				     reloc->sym->sec->name, addend);
++				     reloc->sym->sec->name, offset);
+ 				return -1;
+ 			}
+ 		} else {
+ 			WARN("can't find unreachable insn at %s+0x%" PRIx64,
+-			     reloc->sym->sec->name, addend);
++			     reloc->sym->sec->name, offset);
+ 			return -1;
+ 		}
+ 
+@@ -633,27 +635,28 @@ static int add_dead_ends(struct objtool_file *file)
+ 		return 0;
+ 
+ 	for_each_reloc(rsec, reloc) {
+-
+-		if (reloc->sym->type != STT_SECTION) {
++		if (reloc->sym->type == STT_SECTION) {
++			offset = reloc_addend(reloc);
++		} else if (reloc->sym->local_label) {
++			offset = reloc->sym->offset;
++		} else {
+ 			WARN("unexpected relocation symbol type in %s", rsec->name);
+ 			return -1;
+ 		}
+ 
+-		addend = reloc_addend(reloc);
+-
+-		insn = find_insn(file, reloc->sym->sec, addend);
++		insn = find_insn(file, reloc->sym->sec, offset);
+ 		if (insn)
+ 			insn = prev_insn_same_sec(file, insn);
+-		else if (addend == reloc->sym->sec->sh.sh_size) {
++		else if (offset == reloc->sym->sec->sh.sh_size) {
+ 			insn = find_last_insn(file, reloc->sym->sec);
+ 			if (!insn) {
+ 				WARN("can't find reachable insn at %s+0x%" PRIx64,
+-				     reloc->sym->sec->name, addend);
++				     reloc->sym->sec->name, offset);
+ 				return -1;
+ 			}
+ 		} else {
+ 			WARN("can't find reachable insn at %s+0x%" PRIx64,
+-			     reloc->sym->sec->name, addend);
++			     reloc->sym->sec->name, offset);
+ 			return -1;
+ 		}
+ 
+@@ -2522,6 +2525,9 @@ static int classify_symbols(struct objtool_file *file)
+ 	struct symbol *func;
+ 
+ 	for_each_sym(file, func) {
++		if (func->type == STT_NOTYPE && strstarts(func->name, ".L"))
++			func->local_label = true;
 +
-+#include <objtool/check.h>
-+#include <objtool/orc.h>
-+#include <objtool/warn.h>
-+#include <objtool/endianness.h>
-+
-+int init_orc_entry(struct orc_entry *orc, struct cfi_state *cfi, struct instruction *insn)
-+{
-+	struct cfi_reg *fp = &cfi->regs[CFI_FP];
-+	struct cfi_reg *ra = &cfi->regs[CFI_RA];
-+
-+	memset(orc, 0, sizeof(*orc));
-+
-+	if (!cfi) {
-+		/*
-+		 * This is usually either unreachable nops/traps (which don't
-+		 * trigger unreachable instruction warnings), or
-+		 * STACK_FRAME_NON_STANDARD functions.
-+		 */
-+		orc->type = ORC_TYPE_UNDEFINED;
-+		return 0;
-+	}
-+
-+	switch (cfi->type) {
-+	case UNWIND_HINT_TYPE_UNDEFINED:
-+		orc->type = ORC_TYPE_UNDEFINED;
-+		return 0;
-+	case UNWIND_HINT_TYPE_END_OF_STACK:
-+		orc->type = ORC_TYPE_END_OF_STACK;
-+		return 0;
-+	case UNWIND_HINT_TYPE_CALL:
-+		orc->type = ORC_TYPE_CALL;
-+		break;
-+	case UNWIND_HINT_TYPE_REGS:
-+		orc->type = ORC_TYPE_REGS;
-+		break;
-+	case UNWIND_HINT_TYPE_REGS_PARTIAL:
-+		orc->type = ORC_TYPE_REGS_PARTIAL;
-+		break;
-+	default:
-+		WARN_INSN(insn, "unknown unwind hint type %d", cfi->type);
-+		return -1;
-+	}
-+
-+	orc->signal = cfi->signal;
-+
-+	switch (cfi->cfa.base) {
-+	case CFI_SP:
-+		orc->sp_reg = ORC_REG_SP;
-+		break;
-+	case CFI_FP:
-+		orc->sp_reg = ORC_REG_FP;
-+		break;
-+	default:
-+		WARN_INSN(insn, "unknown CFA base reg %d", cfi->cfa.base);
-+		return -1;
-+	}
-+
-+	switch (fp->base) {
-+	case CFI_UNDEFINED:
-+		orc->fp_reg = ORC_REG_UNDEFINED;
-+		orc->fp_offset = 0;
-+		break;
-+	case CFI_CFA:
-+		orc->fp_reg = ORC_REG_PREV_SP;
-+		orc->fp_offset = fp->offset;
-+		break;
-+	case CFI_FP:
-+		orc->fp_reg = ORC_REG_FP;
-+		break;
-+	default:
-+		WARN_INSN(insn, "unknown FP base reg %d", fp->base);
-+		return -1;
-+	}
-+
-+	switch (ra->base) {
-+	case CFI_UNDEFINED:
-+		orc->ra_reg = ORC_REG_UNDEFINED;
-+		orc->ra_offset = 0;
-+		break;
-+	case CFI_CFA:
-+		orc->ra_reg = ORC_REG_PREV_SP;
-+		orc->ra_offset = ra->offset;
-+		break;
-+	case CFI_FP:
-+		orc->ra_reg = ORC_REG_FP;
-+		break;
-+	default:
-+		WARN_INSN(insn, "unknown RA base reg %d", ra->base);
-+		return -1;
-+	}
-+
-+	orc->sp_offset = cfi->cfa.offset;
-+
-+	return 0;
-+}
-+
-+int write_orc_entry(struct elf *elf, struct section *orc_sec,
-+		    struct section *ip_sec, unsigned int idx,
-+		    struct section *insn_sec, unsigned long insn_off,
-+		    struct orc_entry *o)
-+{
-+	struct orc_entry *orc;
-+
-+	/* populate ORC data */
-+	orc = (struct orc_entry *)orc_sec->data->d_buf + idx;
-+	memcpy(orc, o, sizeof(*orc));
-+
-+	/* populate reloc for ip */
-+	if (!elf_init_reloc_text_sym(elf, ip_sec, idx * sizeof(int), idx,
-+				     insn_sec, insn_off))
-+		return -1;
-+
-+	return 0;
-+}
-+
-+static const char *reg_name(unsigned int reg)
-+{
-+	switch (reg) {
-+	case ORC_REG_SP:
-+		return "sp";
-+	case ORC_REG_FP:
-+		return "fp";
-+	case ORC_REG_PREV_SP:
-+		return "prevsp";
-+	default:
-+		return "?";
-+	}
-+}
-+
-+static const char *orc_type_name(unsigned int type)
-+{
-+	switch (type) {
-+	case UNWIND_HINT_TYPE_CALL:
-+		return "call";
-+	case UNWIND_HINT_TYPE_REGS:
-+		return "regs";
-+	case UNWIND_HINT_TYPE_REGS_PARTIAL:
-+		return "regs (partial)";
-+	default:
-+		return "?";
-+	}
-+}
-+
-+static void print_reg(unsigned int reg, int offset)
-+{
-+	if (reg == ORC_REG_UNDEFINED)
-+		printf(" (und) ");
-+	else
-+		printf("%s + %3d", reg_name(reg), offset);
-+
-+}
-+
-+void orc_print_dump(struct elf *dummy_elf, struct orc_entry *orc, int i)
-+{
-+	printf("type:%s", orc_type_name(orc[i].type));
-+
-+	printf(" sp:");
-+	print_reg(orc[i].sp_reg, orc[i].sp_offset);
-+
-+	printf(" fp:");
-+	print_reg(orc[i].fp_reg, orc[i].fp_offset);
-+
-+	printf(" ra:");
-+	print_reg(orc[i].ra_reg, orc[i].ra_offset);
-+
-+	printf(" signal:%d\n", orc[i].signal);
-+}
+ 		if (func->bind != STB_GLOBAL)
+ 			continue;
+ 
+diff --git a/tools/objtool/include/objtool/elf.h b/tools/objtool/include/objtool/elf.h
+index 9f71e988eca4..2b8a69de4db8 100644
+--- a/tools/objtool/include/objtool/elf.h
++++ b/tools/objtool/include/objtool/elf.h
+@@ -67,6 +67,7 @@ struct symbol {
+ 	u8 profiling_func    : 1;
+ 	u8 warned	     : 1;
+ 	u8 embedded_insn     : 1;
++	u8 local_label       : 1;
+ 	struct list_head pv_target;
+ 	struct reloc *relocs;
+ };
 -- 
 2.42.0
 
