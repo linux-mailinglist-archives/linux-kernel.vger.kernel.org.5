@@ -1,115 +1,115 @@
-Return-Path: <linux-kernel+bounces-44706-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44712-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83A3A84264B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:41:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D608784265F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:44:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40611289B0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:41:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 356BAB2FDC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:44:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F7446D1B8;
-	Tue, 30 Jan 2024 13:41:06 +0000 (UTC)
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D47D6D1CB;
+	Tue, 30 Jan 2024 13:43:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="x78imm00"
+Received: from out203-205-221-239.mail.qq.com (out203-205-221-239.mail.qq.com [203.205.221.239])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F09796BB54;
-	Tue, 30 Jan 2024 13:41:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11B8D6D1B8
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 13:43:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.239
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706622065; cv=none; b=reTrB8BEMGxGe3BjfJXQk19ulA71A6qBjGNi7aIEeuURG5Xy1UtHuLIS2/dED/Zs9D8v8O2yvAHpYptPmOY3E/+Csx6yJ3IBaqzrQXCrJWmyTULe00mXNXEdy76EUnG/u5v9+25fxV1eJFzPaGWFT5vRvzIx+gTB7JUEFiAIoQs=
+	t=1706622231; cv=none; b=Ifv5j6hZuruG3eMNRApU+JQvlWkEV8wEr8gJlLmsloSv5PhnGAznKnQkiFRkiiPfybOafUITjZ2hgJ6KiCxRKG9Kpc4t2PSHWgQU5XAsx0ImCbhe4InGzU+743lsBV81KZbdlbjEGfRBls3gItfazMfWzKPpLonX7TxkCqmmRDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706622065; c=relaxed/simple;
-	bh=RiNHswsYrPk3kor4Gr8r0ain5u5aP5cCPnQ3TBQxNew=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HUdlv6pfrfUr9Tg/zVSlu0qiKVeqoLb+ZOSE436MlgE/wawsBmtVdgUrAX6qdm8Le4s/Qwtdwk0uZiYng4E8s0/oXBY6+i+SOyub+lLhK67nYeFxKP+uv4Tngmk6r8wDczF5wboyopcJK+QyXU9u4kzVVmId5VZ6JYCcK99ZG3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ddd19552e6so1922685b3a.1;
-        Tue, 30 Jan 2024 05:41:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706622063; x=1707226863;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=frJDUedpI3YTH8Ki9s8KdkIUfyDUhvcxZMMZkPB9gtA=;
-        b=F25CRAbFZaKg0ABrkpkG4pGRGalgtMoPBOM1itxRvfF2t0VBJLJxta35g/K97lHr5v
-         EPrdPp9cDG8COz7kd/Hf31zCCAoudv9fB+mO0Jkc6lEBMZ1jxuhaPVJnkH96eKDIJiyQ
-         RJ+iDfDWUDBos2+xhet5htR736OjvMdkZAl+FxT+CPEBUDCP9zPT5kVKw9wq8AUPA27V
-         IZUM/mXi3SGfwm3L5N8MnxMqc7W+a+NyWPjGqUJhHXXReFVBkD8iY7fUa8kXRlNiHJ+s
-         GIXUZjdsQEZvSvCEn/itQNwFOZnmL2/UnflioVLDeey8xPFF37FxCGX3C3ZqH+KbozJs
-         IrLw==
-X-Gm-Message-State: AOJu0YzMIB1Wi8VfnEZCp5jtv/SVxVMe8OYn1j6XvwcF+/RmGj8qXj/D
-	Ef7UK2bKf5bFH0N1y6zCO2atRSgof1nGnpqMr5Ec2KxDga4HiiDIbXGYZ+ixk08=
-X-Google-Smtp-Source: AGHT+IHHJCN/DA5nDwh/W1iGS9pLTv+8/BwgtjewsS/JVnv80HpaGXOBEGUKUqWzXskzFujFpvaFKg==
-X-Received: by 2002:a05:6a00:1805:b0:6db:cf34:8a96 with SMTP id y5-20020a056a00180500b006dbcf348a96mr8296734pfa.26.1706622062919;
-        Tue, 30 Jan 2024 05:41:02 -0800 (PST)
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com. [209.85.215.182])
-        by smtp.gmail.com with ESMTPSA id w18-20020a639352000000b005b458aa0541sm8089838pgm.15.2024.01.30.05.41.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Jan 2024 05:41:02 -0800 (PST)
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5cfd95130c6so2224411a12.1;
-        Tue, 30 Jan 2024 05:41:02 -0800 (PST)
-X-Received: by 2002:a25:b20c:0:b0:dc3:78d1:c5a3 with SMTP id
- i12-20020a25b20c000000b00dc378d1c5a3mr5877288ybj.13.1706621652312; Tue, 30
- Jan 2024 05:34:12 -0800 (PST)
+	s=arc-20240116; t=1706622231; c=relaxed/simple;
+	bh=cML7n0Acv9i1mQUGfL55SfRBzqVfYzjR7WkF1hYtOvI=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=qwuK9L7kmiooUNFaoYvJqw88nwOtD4WERfSnFcpwNvDfkMldppcWRBkVf4qjNca0Mghw/IbAVHRHt4YNGNeknU66LTPQk5GROdl1o+hmXknjM+GE+A6P2UQIUjYaPNTBlzrtNa3b3LAcFTSSZ7y5q8pKghMVN9QbRf57bpH70gg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=x78imm00; arc=none smtp.client-ip=203.205.221.239
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1706621926; bh=JsgY4MxkN5m+T5v4xcV9gMeJIdFm8kpH80Dby4G1UQ4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=x78imm00T940Y2Zy0sQRXojhP40MeYzEDjWoKie94a9uOkLCMEeESnwhhZ3k9ZH8f
+	 BivipT024JfrGM4deY3bUHMc1x27K02WipPLUrq1zhWqO8WbJwfuWBYJ35eWlehueb
+	 jTi1jNdbEIGTh1dSfl4tia6ZH0W9utj/NIP6F9jk=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrsza1-0.qq.com (NewEsmtp) with SMTP
+	id 9ACA3826; Tue, 30 Jan 2024 21:38:44 +0800
+X-QQ-mid: xmsmtpt1706621924tilf4hzbw
+Message-ID: <tencent_74C670C985EED9EEF68C8927DA06EDD2DD06@qq.com>
+X-QQ-XMAILINFO: Mdc3TkmnJyI/VlmtfTzmjpixqnIsK75wDTAzOtw5ohOytE4LLjB2GwPejbTlYn
+	 +8LLjX0I4wVV68KunRshsLedNhfG8pNm3pFNKllHfcqYKwGuKuCjm+YbeTyOI2vkroHCycHtfMbY
+	 nbIkG+5XsO0MfwdxKeNa+DIrOXtgQBUgAH7CPxvAWqOt3v40A6B1qH+cmK/ECN2B/MF0kehwTaX6
+	 s4oq4dKOxGehLlWPxS5aaCDd7I91rgVeAH4opnRCPnr6EaOKZthlUuXOQla20hWZ4IJA+OlFM6zS
+	 CChXLDhXV05pucurXrmiOeFT3qdzzGkSNs6cz20geMQwooUQqTXNVt1iK77jWaGhNaz8SdaXx2Pk
+	 dlb4nXqD22o2jzxZsoqvX5eyZAH3o1RMH38XAgO320/1sSxenaFyhYJIhLOw1kgM6UBpQPi0sdSU
+	 MDuImTXVZzWujOqNzb/8c50jCukIzSBY5yXj8VJfARojhenOWpki1U4KLdEhhX2XN5MZ0vCK86Ik
+	 fC3/xybWoits14Kmx6+/Et8k7z+dtBHQKDyKlqxXQUYUAmne4m4I5J/zHqmdIMmoVxXza5DcVlhh
+	 nVcnOxl8DfSI02pdVIqBsYGR3GX3Gt1KJocJ9MxndGbdzP3MHh1YgSomth97CkVTkP2tdN/cMR8F
+	 BOeRwAhWv2hC5b0ZE6fyoYilbcSDU1VHHvxrRXewuUYkGzaFiapOo9/s/f0It3IXA0YKV/PIY96V
+	 hB4z2qPE4bEaeI/IEbfulVv5tc1t72uskVnYKqeKEhKul1vFqACi0Oq0gTQHpUyOlsyG9IWFviLL
+	 UnW4U5eqog8mxSK8UVDllAoojMrcD7I7NzJco9w16PTUlh8P6vMzFqrNpRW09qTntgMr6P3/iVQ/
+	 hUjZtndrCJv/vlZGNNyzJqC8xnbPwSs+w+r9eXYdm9ht6163rCpYE7N4xOGdsYEjhpR5fVwzGI7l
+	 xXYGTrSYc=
+X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+2373f6be3e6de4f92562@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [block?] [trace?] INFO: task hung in blk_trace_remove (2)
+Date: Tue, 30 Jan 2024 21:38:45 +0800
+X-OQ-MSGID: <20240130133844.4105103-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <0000000000002b1fc7060fca3adf@google.com>
+References: <0000000000002b1fc7060fca3adf@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130111250.185718-1-angelogioacchino.delregno@collabora.com> <20240130111250.185718-7-angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20240130111250.185718-7-angelogioacchino.delregno@collabora.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 30 Jan 2024 14:34:01 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXgT0g=0uky9FYDXk=KuC1HjkGEX8sCQdKbUMoBFQKDqQ@mail.gmail.com>
-Message-ID: <CAMuHMdXgT0g=0uky9FYDXk=KuC1HjkGEX8sCQdKbUMoBFQKDqQ@mail.gmail.com>
-Subject: Re: [PATCH v1 06/18] thermal/drivers/rcar: Migrate to thermal_zone_device_register()
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: daniel.lezcano@linaro.org, miquel.raynal@bootlin.com, rafael@kernel.org, 
-	rui.zhang@intel.com, lukasz.luba@arm.com, support.opensource@diasemi.com, 
-	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, 
-	festevam@gmail.com, linux-imx@nxp.com, andersson@kernel.org, 
-	konrad.dybcio@linaro.org, amitk@kernel.org, thara.gopinath@gmail.com, 
-	niklas.soderlund@ragnatech.se, srinivas.pandruvada@linux.intel.com, 
-	baolin.wang@linux.alibaba.com, u.kleine-koenig@pengutronix.de, 
-	hayashi.kunihiko@socionext.com, d-gole@ti.com, linus.walleij@linaro.org, 
-	DLG-Adam.Ward.opensource@dm.renesas.com, error27@gmail.com, heiko@sntech.de, 
-	hdegoede@redhat.com, jernej.skrabec@gmail.com, f.fainelli@gmail.com, 
-	bchihi@baylibre.com, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, kernel@collabora.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 30, 2024 at 12:15=E2=80=AFPM AngeloGioacchino Del Regno
-<angelogioacchino.delregno@collabora.com> wrote:
-> The thermal API has a new thermal_zone_device_register() function which
-> is deprecating the older thermal_zone_device_register_with_trips() and
-> thermal_tripless_zone_device_register().
->
-> Migrate to the new thermal zone device registration function.
->
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@coll=
-abora.com>
+please test task hung in blk_trace_remove
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
-Gr{oetje,eeting}s,
+diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
+index d5d94510afd3..81e48f841764 100644
+--- a/kernel/trace/blktrace.c
++++ b/kernel/trace/blktrace.c
+@@ -327,7 +327,7 @@ static void blk_trace_free(struct request_queue *q, struct blk_trace *bt)
+ 	}
+ 	free_percpu(bt->sequence);
+ 	free_percpu(bt->msg_data);
+-	kfree(bt);
++	kfree_rcu(bt, rcu);
+ }
+ 
+ static void get_probe_ref(void)
+@@ -380,7 +380,6 @@ static int blk_trace_stop(struct blk_trace *bt)
+ static void blk_trace_cleanup(struct request_queue *q, struct blk_trace *bt)
+ {
+ 	blk_trace_stop(bt);
+-	synchronize_rcu();
+ 	blk_trace_free(q, bt);
+ 	put_probe_ref();
+ }
+diff --git a/include/linux/blktrace_api.h b/include/linux/blktrace_api.h
+index 122c62e561fc..5f927328b7e6 100644
+--- a/include/linux/blktrace_api.h
++++ b/include/linux/blktrace_api.h
+@@ -26,6 +26,7 @@ struct blk_trace {
+ 	struct dentry *dir;
+ 	struct list_head running_list;
+ 	atomic_t dropped;
++	struct rcu_head rcu;
+ };
+ 
+ extern int blk_trace_ioctl(struct block_device *, unsigned, char __user *);
 
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
