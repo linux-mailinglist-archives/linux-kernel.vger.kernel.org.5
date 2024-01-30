@@ -1,161 +1,156 @@
-Return-Path: <linux-kernel+bounces-44358-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44359-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3239E8420DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:12:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE60B8420D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:11:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F1E9B24AEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:10:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7CD0E1F29885
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:11:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4CA860882;
-	Tue, 30 Jan 2024 10:10:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7805960B89;
+	Tue, 30 Jan 2024 10:11:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Bwt9Vxx7"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cfne4MM+"
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 618BE605B4
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 10:10:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5212E605B1;
+	Tue, 30 Jan 2024 10:11:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706609440; cv=none; b=NQPbIFIXFzKJtfOPTrREsF17FE+MySqut90E1qxNgjqVegQeAI4oA64Vl5frj14LcnqT/tOhMIYyIuI4tbml9089pQHxcyNktqes02NaLXouh6nPKu/s9kt1S7pcgOAOCkbAWdRfT3NHkI7DhakFbi0nT8TvyA6rKrdZQHjUouA=
+	t=1706609499; cv=none; b=j0cnNUd3noPqF0geQ8edyaCMFWRVuDY/bkJ4qCZoZc+/gY6GCrCa43u6/4yiW1CeBQCS3+dQjgi7JT16BKkyAqHZycj4o4MZ+NdB9u+8jgnUE5CdNQaUnHGI4uccFnnYwZZFVoyNhqXDLKQoJvdAAQSykmgyyeTeDSUYMORtviM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706609440; c=relaxed/simple;
-	bh=pvTVYZQvoWE9TYRSfVKQhlX6lvtPW1b9pCFx1Xl/zbk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OtmsNn351yqPxOttVyJx+evAgEaVu/eqibAeE+O77gYLLqVaOBMKPve/hws9uPcc1ucNFpl8R3Ca1Px9Zd1R6W1C79oeqk9DVBxWGQuFub/q2A6bgK3fexFzWsedAL4YeCRUuNUxLmw3s+Dqx7VAYmsyzdep8sga/T6UD2wj7xs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Bwt9Vxx7; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706609436;
-	bh=pvTVYZQvoWE9TYRSfVKQhlX6lvtPW1b9pCFx1Xl/zbk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Bwt9Vxx7XAVrOtbWrBb7G+/IYQ+vog5Ze2jE+wOBgZQqlI16QYW4m05otZWBw0KP4
-	 Ttk7ggDeV4kKwQo5xwNFYvHFY/3i6ODDbOIHxDzOi8W2QiQmK1q9k+iApJq8PHTvac
-	 paw++6waKYNiQP3WNaq4FUI8O5zXgRcDvaBsLSH/hbPV4QLmTNLK8Mu0kim5lw1ogQ
-	 5iSnDI2LlwRH6mzYyj6nAUfwWwgtAsgO9EOmtyUnFRUqThSQR/uPEqfYh6BCtbgxGn
-	 JfUXMxjE+RcNb2GlDKzpPHOpQK+fA3NnZx7GfJE/yPO2xRdzDq1hx5PqnHWTAaZ9HQ
-	 /DExCDuRUIJIA==
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bbrezillon)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4F68D3782079;
-	Tue, 30 Jan 2024 10:10:35 +0000 (UTC)
-Date: Tue, 30 Jan 2024 11:10:33 +0100
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Daniel Vetter <daniel@ffwll.ch>
-Cc: Dmitry Osipenko <dmitry.osipenko@collabora.com>, David Airlie
- <airlied@gmail.com>, Gerd Hoffmann <kraxel@redhat.com>, Gurchetan Singh
- <gurchetansingh@chromium.org>, Chia-I Wu <olvaffe@gmail.com>, Maarten
- Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
- <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, Christian
- =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>, Qiang Yu
- <yuq825@gmail.com>, Steven Price <steven.price@arm.com>, Emma Anholt
- <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v19 09/30] drm/shmem-helper: Add and use lockless
- drm_gem_shmem_get_pages()
-Message-ID: <20240130111033.5c01054b@collabora.com>
-In-Reply-To: <Zbi0lQG15vz6iHJK@phenom.ffwll.local>
-References: <20240105184624.508603-1-dmitry.osipenko@collabora.com>
-	<20240105184624.508603-10-dmitry.osipenko@collabora.com>
-	<ZbKZNCbZoV4ovWTH@phenom.ffwll.local>
-	<20240126111827.70f8726c@collabora.com>
-	<d467e5a4-6b61-4cad-8e38-c4495836a0d6@collabora.com>
-	<Zbi0lQG15vz6iHJK@phenom.ffwll.local>
-Organization: Collabora
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1706609499; c=relaxed/simple;
+	bh=lmOeyMwWYgVH9cF8GPIvshL3MIJRZ/YHOwbCDZdOR50=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RQ7enoLGZIaBozYThipx8GP604w5cEU7iq9JmU259HeJvSoWUEOvQwRWW5YtMWhiKFB9tWHGz9rIs6IfK4iNScYAIZ7ww3ax4mvmtgAPDzDxtwc5Plz74dZlMHxTFKZsoSgCpCHtGCYP7T54JCRSOfasrfHOhZ9NRfzPiifoM7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cfne4MM+; arc=none smtp.client-ip=209.85.219.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dbed0710c74so3896562276.1;
+        Tue, 30 Jan 2024 02:11:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706609497; x=1707214297; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lmOeyMwWYgVH9cF8GPIvshL3MIJRZ/YHOwbCDZdOR50=;
+        b=cfne4MM+gEwiBpnK+Oyx5nisbmWmrfMRXUTm4stwzNrOy3+xmEXllUFRcpaw9FIyAZ
+         1nvx4Tgs3/gZlbI+UOLmWtX6e33q+mW/gPlfgNcq230CuPeZHdN+Pic6dCQ2jmZ0nVdY
+         kSID51gRQC5j58FNnBE8R1j2OGjMjDMElwhTByRL2wZIVX9gnPs1S1Vh+XoPnFCr5rtw
+         Mw6Ki97WZMMtQlqiKxafUDtwsZ/ZOfQh81RlUaoFD5yRDwglQ7NbdxgmdaGtaN0uvbS7
+         il5XgDIW2l5+jMQJmAUNO31BNQRSWa4TRr99L+CC4DPIDzDwFiWlcQwq/+SQ0JCioBLm
+         zs9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706609497; x=1707214297;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lmOeyMwWYgVH9cF8GPIvshL3MIJRZ/YHOwbCDZdOR50=;
+        b=Q+T7wMG/4QOEPVmNXAA28lv0ir5+7JMyB9txeOE71dsrYgAdgZQu6wzEV3hAk0xms4
+         NZ+UT3V0XsVFyVpupWjTaHXZfJQT8wvhXwWseTOsNCpJCsC8TlXvtaa3Tr69nPOOl8BC
+         mdEhgFGfQCHeAu5FiiRq2Kk47LN+jQ/koPf7feJv18sAEy1IrJfwNpag2hKmneTa7yui
+         qPuJ2qKgHKTYwlFkrt+pISLQH9JHdssY56VlO5E4OlMHbv5fi24CkP/S1AIQOjbPxR51
+         uyPjFA7fjX1FRmWkbhgTClKQl3tBOIRxBM50yGv0amdApAOeMoIe7Igfbv8GMFAwTjli
+         HlAA==
+X-Gm-Message-State: AOJu0Yzb0PDdMd7bHm5jICH5Lg9004MuerRA7Jgbr0LAOW6BhpamKgVb
+	Tg72mj8ZjKuM7HUU8j0Hp4GN31OxqNSLjiSGCpDTzUV9Ctw6oiW7A3FLQyv+ldkbIcGmV+s53Tk
+	9x64/r5PxTrEHP1Abs3DflwQVnX0=
+X-Google-Smtp-Source: AGHT+IFRK4YrafkFlOPeBC9SYD6/OCZjylW/dLDByDsvbyNSUSM6fgkeRBu+0v3hZktbmcW8jzax9bO7QB1UvHQI25I=
+X-Received: by 2002:a25:9b44:0:b0:dc6:9c4f:9e7f with SMTP id
+ u4-20020a259b44000000b00dc69c4f9e7fmr1139552ybo.18.1706609497124; Tue, 30 Jan
+ 2024 02:11:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240127140747.905552-1-hayatake396@gmail.com>
+ <154f979e-a335-461b-b72e-5e9c54fe940c@linux.intel.com> <CADFiAcJShbgBLXdVgs1vK1jqDFopkRcw-se4b4h0V3Yd60xLVw@mail.gmail.com>
+ <92958c7b-7e5f-4e25-819f-4e52f9ffcf7b@linux.intel.com>
+In-Reply-To: <92958c7b-7e5f-4e25-819f-4e52f9ffcf7b@linux.intel.com>
+From: takeru hayasaka <hayatake396@gmail.com>
+Date: Tue, 30 Jan 2024 19:11:26 +0900
+Message-ID: <CADFiAc+0G2ncXKDQ+p8aZ98HtfsqNBHoSZVTYhgXUHu+=dof+A@mail.gmail.com>
+Subject: Re: [Intel-wired-lan] [PATCH net-next RESENT v3] ethtool: ice:
+ Support for RSS settings to GTP from ethtool
+To: Marcin Szycik <marcin.szycik@linux.intel.com>
+Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
+	linux-doc@vger.kernel.org, vladimir.oltean@nxp.com, 
+	linux-kernel@vger.kernel.org, laforge@gnumonks.org, 
+	intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org, 
+	mailhol.vincent@wanadoo.fr
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 30 Jan 2024 09:34:29 +0100
-Daniel Vetter <daniel@ffwll.ch> wrote:
+Hi Marcin-san
+Thank you for your comment:)
 
-> On Fri, Jan 26, 2024 at 07:43:29PM +0300, Dmitry Osipenko wrote:
-> > On 1/26/24 13:18, Boris Brezillon wrote:  
-> > > On Thu, 25 Jan 2024 18:24:04 +0100
-> > > Daniel Vetter <daniel@ffwll.ch> wrote:
-> > >   
-> > >> On Fri, Jan 05, 2024 at 09:46:03PM +0300, Dmitry Osipenko wrote:  
-> > >>> Add lockless drm_gem_shmem_get_pages() helper that skips taking reservation
-> > >>> lock if pages_use_count is non-zero, leveraging from atomicity of the
-> > >>> refcount_t. Make drm_gem_shmem_mmap() to utilize the new helper.
-> > >>>
-> > >>> Acked-by: Maxime Ripard <mripard@kernel.org>
-> > >>> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-> > >>> Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
-> > >>> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-> > >>> ---
-> > >>>  drivers/gpu/drm/drm_gem_shmem_helper.c | 19 +++++++++++++++----
-> > >>>  1 file changed, 15 insertions(+), 4 deletions(-)
-> > >>>
-> > >>> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> > >>> index cacf0f8c42e2..1c032513abf1 100644
-> > >>> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
-> > >>> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> > >>> @@ -226,6 +226,20 @@ void drm_gem_shmem_put_pages_locked(struct drm_gem_shmem_object *shmem)
-> > >>>  }
-> > >>>  EXPORT_SYMBOL_GPL(drm_gem_shmem_put_pages_locked);
-> > >>>  
-> > >>> +static int drm_gem_shmem_get_pages(struct drm_gem_shmem_object *shmem)
-> > >>> +{
-> > >>> +	int ret;    
-> > >>
-> > >> Just random drive-by comment: a might_lock annotation here might be good,
-> > >> or people could hit some really interesting bugs that are rather hard to
-> > >> reproduce ...  
-> > > 
-> > > Actually, being able to acquire a ref in a dma-signalling path on an
-> > > object we know for sure already has refcount >= 1 (because we previously
-> > > acquired a ref in a path where dma_resv_lock() was allowed), was the
-> > > primary reason I suggested moving to this atomic-refcount approach.
-> > > 
-> > > In the meantime, drm_gpuvm has evolved in a way that allows me to not
-> > > take the ref in the dma-signalling path (the gpuvm_bo object now holds
-> > > the ref, and it's acquired/released outside the dma-signalling path).
-> > > 
-> > > Not saying we shouldn't add this might_lock(), but others might have
-> > > good reasons to have this function called in a path where locking
-> > > is not allowed.  
-> > 
-> > For Panthor the might_lock indeed won't be a appropriate, thanks for
-> > reminding about it. I'll add explanatory comment to the code.  
-> 
-> Hm these kind of tricks feel very dangerous to me. I think it would be
-> good to split up the two cases into two functions:
-> 
-> 1. first one does only the atomic_inc and splats if the refcount is zero.
-> I think something in the name that denotes that we're incrementing a
-> borrowed pages reference would be good here, so like get_borrowed_pages
-> (there's not really a naming convention for these in the kernel).
-> Unfortunately no rust so we can't enforce that you provide the right kind
-> of borrowed reference at compile time.
+> The way I understand it now, this patch (and the ethtool one) adds hashin=
+g on
+> TEID field in GTP* headers. So I wanted to ask why do we have a case (gtp=
+c(4|6))
+> that doesn't include TEID? Do we hash on other fields in this header?
 
-Yeah, I also considered adding a dedicated function for that use case
-at some point, instead of abusing get_pages(). Given I no longer need
-it, we can probably add this might_lock() and defer the addition of this
-get_borrowed_pages() helper until someone actually needs it.
+I understand your question to be asking why it is necessary to have
+the option to select gtpc(4|6) for RSS when it doesn't include the
+TEID.
 
-> 
-> 2. second one has the might_lock.
-> 
-> This way you force callers to think what they're doing and ideally
-> document where the borrowed reference is from, and ideally document that
-> in the code. Otherwise we'll end up with way too much "works in testing,
-> but is a nice CVE" code :-/
+When hashing in cases where TEID is not included, it can be done with
+the IMSI (telephone number) or the SeqNum of the GTPC in this header.
+Essentially, it depends on the implementation, but there is a reason
+for differentiation as the context is different between cases where
+GTPC includes TEID and those where it does not.
 
-Totally agree with you on that point.
+Thanks,
+Takeru
+
+2024=E5=B9=B41=E6=9C=8830=E6=97=A5(=E7=81=AB) 18:59 Marcin Szycik <marcin.s=
+zycik@linux.intel.com>:
+>
+>
+>
+> On 30.01.2024 07:39, takeru hayasaka wrote:
+> > Hi Marcin-san
+> > Thanks for your review!
+> >
+> >> Do I understand correctly that all gtpu* include TEID? Maybe write it =
+here.
+> > Yes, that's correct.
+> >
+> >> It would be nice to see a link to the patch that added GTP and 'e' fla=
+g support
+> > to ethtool itself ("ethtool: add support for rx-flow-hash gtp").
+> > I will send you the link.
+> > The one I sent earlier was outdated, so I've updated it to match this p=
+atch.
+> > https://lore.kernel.org/netdev/20240130053742.946517-1-hayatake396@gmai=
+l.com/
+> >
+> >> gtpc(4|6) doesn't include TEID, so what is its purpose?
+> > In GTPC communication, there is no TEID in the CSR (Create Session Requ=
+est).
+> > Therefore, there are cases of GTPC that do not include TEID.
+>
+> The way I understand it now, this patch (and the ethtool one) adds hashin=
+g on
+> TEID field in GTP* headers. So I wanted to ask why do we have a case (gtp=
+c(4|6))
+> that doesn't include TEID? Do we hash on other fields in this header?
+>
+> >
+> >> s/TEID(4byte)/TEID (4bytes)/
+> >> Also, I think two newlines should remain here.
+> > I will correct the TEID notation in the next patch!
+>
+> Thanks,
+> Marcin
+>
+> ---8<---
 
