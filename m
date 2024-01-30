@@ -1,109 +1,122 @@
-Return-Path: <linux-kernel+bounces-44254-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44253-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29786841F60
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:26:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 053BB841F5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:26:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77F4E1F232E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:26:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98F041F2257B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:26:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4003B605C3;
-	Tue, 30 Jan 2024 09:26:01 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88F426086B;
+	Tue, 30 Jan 2024 09:25:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="usqM2Erd"
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63D4C59165;
-	Tue, 30 Jan 2024 09:25:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D50E538DEC
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:25:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706606758; cv=none; b=qFpWU07/70jXDkdgfRXux9gHgG5PUuH3XApbhn+LsIwVC9GhTDy9as8M4hCwFh5ciiyBMYzL8F8n/zZLzeLNg38/TxYX6qpLQzb1MtrARCaRkRix+ybph6Pn2198umM3HnxFpnrPrbexC0AsXdKWF0cH6Fl/m5YLw358EzdIiI8=
+	t=1706606754; cv=none; b=mU3Kwug3QtL3iL0eRDzNLwMY1oHmW1qL8PyrrU0Q+6SPQLvORjXRe6NO+gR43kiFOhsO/afrSoapyYFcJ7KryVXIxmdVXeKhHHdRX2z0X+lgdXcAkXf3ypxu2MgmyHOXM3sUAVavCVjuv0Hc2LBw6kGALlY8unPXsTL0X5iG1bU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706606758; c=relaxed/simple;
-	bh=Q1D2Qua3GXjBcUCsDMqOLa6GLF12L1EvbvlN/oSCpQ4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gl9UZ9ByicC0xg9R6UZYUOh/jxSRXDtRjE7wSPBHoJbYs2U1MvKS2Oq2c9dSxO6W122l7Oul6X31eZFmGQbG/d29QXZqdtzc/Er7HDQNGgBavt5xN7Q1VuMFJ3qsnDFlWlhJBpUv5k2i3hW9gSUPF0RWYdmwhX/PLcg63V9zKh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 0bf179d996444cc293d435d5babfbdee-20240130
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:d687b045-17cd-48e7-8110-96ada6d493ec,IP:20,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:5
-X-CID-INFO: VERSION:1.1.35,REQID:d687b045-17cd-48e7-8110-96ada6d493ec,IP:20,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:5
-X-CID-META: VersionHash:5d391d7,CLOUDID:191bea7f-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:240130172548ZPLOI4XG,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
-	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
-	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 0bf179d996444cc293d435d5babfbdee-20240130
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 1661973547; Tue, 30 Jan 2024 17:25:47 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id F413BE000EB9;
-	Tue, 30 Jan 2024 17:25:46 +0800 (CST)
-X-ns-mid: postfix-65B8C09A-7931421039
-Received: from kernel.. (unknown [172.20.15.213])
-	by mail.kylinos.cn (NSMail) with ESMTPA id 93986E000EB9;
-	Tue, 30 Jan 2024 17:25:43 +0800 (CST)
-From: Kunwu Chan <chentao@kylinos.cn>
-To: roopa@nvidia.com,
-	razor@blackwall.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: bridge@lists.linux.dev,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH net-next] net: bridge: Use KMEM_CACHE instead of kmem_cache_create
-Date: Tue, 30 Jan 2024 17:25:36 +0800
-Message-Id: <20240130092536.73623-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1706606754; c=relaxed/simple;
+	bh=SDrIhhk0216kuinfVjYExBnLEatSwxttoaR1lucHHbQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YAux4r9Qs9E7hgpgFnoEEMhaQZebyhUmq+HMZSduEr5cZSxH4RephmHi6RUPSqUtpLlZ/fH3T3HOVBn4xpO9fkR0TtgqWuh5GCmdsT/XiESf6931MvlrZTgMy+EdmOCsYVDW2P1KJ91bLbU8N6Zt0fvfQK4azffzlTw7OLV3CTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=usqM2Erd; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <d5f27642-e3e2-c5c9-f9d8-a688512ce945@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1706606749;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RSk7it6b1JMh823m6ptl66Jh5MU45iWziHAMy2DNJmA=;
+	b=usqM2Erdea00X8HzNmACoAbCZnm5HDokXtXhSQv93VoOKGqRQmjhulO7Qm5tXIJioBb77K
+	X/au/eifMwJTdv6qjZiGAQ/vGDjqQZnXf4koQw7QhnQx9yEuRve1G1dMB4z5SOo1P9M4ox
+	02JkUv6XSszcfGxXCzoq/Dmmi6Y6A0U=
+Date: Tue, 30 Jan 2024 17:25:41 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] mm/mmap: use SZ_{8M, 128M} helper macro
+Content-Language: en-US
+To: Mike Rapoport <rppt@kernel.org>
+Cc: akpm@linux-foundation.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20240126085905.2835513-1-yajun.deng@linux.dev>
+ <Zbi9OyG9kcldGyJ1@kernel.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yajun Deng <yajun.deng@linux.dev>
+In-Reply-To: <Zbi9OyG9kcldGyJ1@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-commit 0a31bd5f2bbb ("KMEM_CACHE(): simplify slab cache creation")
-introduces a new macro.
-Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
-to simplify the creation of SLAB caches.
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
- net/bridge/br_fdb.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/net/bridge/br_fdb.c b/net/bridge/br_fdb.c
-index c622de5eccd0..c77591e63841 100644
---- a/net/bridge/br_fdb.c
-+++ b/net/bridge/br_fdb.c
-@@ -35,10 +35,7 @@ static struct kmem_cache *br_fdb_cache __read_mostly;
-=20
- int __init br_fdb_init(void)
- {
--	br_fdb_cache =3D kmem_cache_create("bridge_fdb_cache",
--					 sizeof(struct net_bridge_fdb_entry),
--					 0,
--					 SLAB_HWCACHE_ALIGN, NULL);
-+	br_fdb_cache =3D KMEM_CACHE(net_bridge_fdb_entry, SLAB_HWCACHE_ALIGN);
- 	if (!br_fdb_cache)
- 		return -ENOMEM;
-=20
---=20
-2.39.2
-
+On 2024/1/30 17:11, Mike Rapoport wrote:
+> On Fri, Jan 26, 2024 at 04:59:05PM +0800, Yajun Deng wrote:
+>> Use SZ_{8M, 128M} macro intead of the number in init_user_reserve and
+>> reserve_mem_notifier.
+>>
+>> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+>> ---
+>>   mm/mmap.c | 8 ++++----
+>>   1 file changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/mm/mmap.c b/mm/mmap.c
+>> index 476de5daf598..f90924b2a6d2 100644
+>> --- a/mm/mmap.c
+>> +++ b/mm/mmap.c
+>> @@ -3845,7 +3845,7 @@ static int init_user_reserve(void)
+>>   
+>>   	free_kbytes = K(global_zone_page_state(NR_FREE_PAGES));
+>>   
+>> -	sysctl_user_reserve_kbytes = min(free_kbytes / 32, 1UL << 17);
+>> +	sysctl_user_reserve_kbytes = min(free_kbytes / 32, SZ_128M);
+> (1UL << 17) != SZ_128M
+I am sorry for this, I didn't realize that the unit was kbyte.
+>
+>>   	return 0;
+>>   }
+>>   subsys_initcall(init_user_reserve);
+>> @@ -3866,7 +3866,7 @@ static int init_admin_reserve(void)
+>>   
+>>   	free_kbytes = K(global_zone_page_state(NR_FREE_PAGES));
+>>   
+>> -	sysctl_admin_reserve_kbytes = min(free_kbytes / 32, 1UL << 13);
+>> +	sysctl_admin_reserve_kbytes = min(free_kbytes / 32, SZ_8M);
+>>   	return 0;
+>>   }
+>>   subsys_initcall(init_admin_reserve);
+>> @@ -3898,12 +3898,12 @@ static int reserve_mem_notifier(struct notifier_block *nb,
+>>   	case MEM_ONLINE:
+>>   		/* Default max is 128MB. Leave alone if modified by operator. */
+>>   		tmp = sysctl_user_reserve_kbytes;
+>> -		if (0 < tmp && tmp < (1UL << 17))
+>> +		if (tmp > 0 && tmp < SZ_128M)
+>>   			init_user_reserve();
+>>   
+>>   		/* Default max is 8MB.  Leave alone if modified by operator. */
+>>   		tmp = sysctl_admin_reserve_kbytes;
+>> -		if (0 < tmp && tmp < (1UL << 13))
+>> +		if (tmp > 0 && tmp < SZ_8M)
+> (1UL << 13) != SZ_8M
+>
+>>   			init_admin_reserve();
+>>   
+>>   		break;
+>> -- 
+>> 2.25.1
+>>
+>>
 
