@@ -1,174 +1,229 @@
-Return-Path: <linux-kernel+bounces-44707-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44708-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA6D284264F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:41:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DFDA842653
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:42:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 094CD1C27502
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:41:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AAE92B25095
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:42:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D81E56D1A9;
-	Tue, 30 Jan 2024 13:41:37 +0000 (UTC)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE1066D1B8;
+	Tue, 30 Jan 2024 13:42:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="K1ohGfaW"
+Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5843C6BB24
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 13:41:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EE186BB36
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 13:41:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706622097; cv=none; b=g95ycuq6J2ft2FuafkyGP+vYu4IcMddTJzLXJZTrHIQMsS1jQsaHUVmrDI3+9XWNNA1hjjsIILP2R2i9RXovADFg3UsO50GPuFroh6tXw9+Mdmg6Z62fHjx/khye9N5dGh/1GzrBH1hgTzLBELb7icQbQj2qO95MEPb4VLCQzuI=
+	t=1706622121; cv=none; b=FzH4GtBpbF737qsJ4/Q3JDgQJgjEjzB9hCJ3nN28w6iqulpmWnqUQp5qGtzNOSZq18AS+ckHtl2Y9BuFu/2IWpwAzcs2e6O7Ic3+ah6Aj17Wcq93Qovh52V6GPvb1lOyT5WZ3QPLuuNwlGxklMaZKuQkjurv+uU3AUPXX1w9ljw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706622097; c=relaxed/simple;
-	bh=TxMQzRnGQAh/kU243abLE8BjbwkcyiMJR581wTcweZc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=lLw85mYZFtUfkb7oNcXpsiIex2eS57PeM9f3zZ9YrLM0PY78hOWHOpfraToycCCWPxbrY5aeVFju/66rlVAMEtgTtobJO5QNELMuF1+a0dq+/gqC6lzEMKeBM22YHk/jg7GcqPfuMiRG/3iMl6zjC6S0RTLQqqKRQBINi2fAzc4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4TPRBS0vRFzJpQM;
-	Tue, 30 Jan 2024 21:40:32 +0800 (CST)
-Received: from kwepemm600017.china.huawei.com (unknown [7.193.23.234])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8B07B1400FF;
-	Tue, 30 Jan 2024 21:41:31 +0800 (CST)
-Received: from [10.174.179.234] (10.174.179.234) by
- kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 30 Jan 2024 21:41:29 +0800
-Message-ID: <d8cb8cec-5530-c0e7-3bd3-bcd47e9bf4e1@huawei.com>
-Date: Tue, 30 Jan 2024 21:41:28 +0800
+	s=arc-20240116; t=1706622121; c=relaxed/simple;
+	bh=0BeGZI2lfjCwg/wzly1hzEkL+SQ37NX3sQSXaRiSC/Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VX1ISi+t4X0EAMQ+kKVL3/WK+9m7BZr7geW38wM5sxdMTnGdI7UV1mt3o5XfE0AuJ8fh1770216wuoMKxec3XyuQXY6vCy3IjraDYjTDRztrRZ/XFxkFt7XvKBvDLM6uof1z6WxuOlBXuI/PBfQ53KEIwi/K92Fn30MToMid2qA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=K1ohGfaW; arc=none smtp.client-ip=209.85.166.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-3638bd37107so192585ab.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 05:41:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706622118; x=1707226918; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EbgyJimBDL2xlM1FoVUE3T9sFVvozDsEdx2g1TNsrH8=;
+        b=K1ohGfaWtW9fnSR1o1Y5YWNOvXogVL9sK7bZ2uPuNMJ2JOkOXqzMWCLe0C0hpRvm5J
+         859OqDhlBmX+o8uy367x6oamtJdIo+X6bhzfT/ahZF60Xv3QoteS409g/NCMLYp+BGYR
+         nlg6tEG62Pe6KJ8Cil+K6otY8x4cNFD7w5M3GC7j/eYsv3sOqYjaAxKzOUivcMJtYq9i
+         YtjZAxB6QO2Tqd+X0eN+pCW36TfyM8vaHTZqYzVjnOkI7NUbFczxLQSt9qFsqHZ65tMX
+         yUgxNelp6/AksrW1N4OubufGQkgAArwsg6/jUw7fWJhyg2Cm9sd1Ctk8m8oEXUtnSa44
+         eZpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706622118; x=1707226918;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EbgyJimBDL2xlM1FoVUE3T9sFVvozDsEdx2g1TNsrH8=;
+        b=PruD0PvBI5ZwYZ6FLxSQigYyVK+6xTZkgBllcrdAFLBKxXWLAD3kF2gU8GbiTNZJ+N
+         VWf21RJ6odDeIwIL464mIxelaG+1Cma3Pu6TSidVcgmzNNS/veeUugsC5sFb6P2om4Qu
+         MQRLtx2HGCLX4/5IGlWtipA85Byl+LkhL7rNHWuq/quGjhxmLa6thCopmtLoT8FE9siR
+         785jSlut1oueZjYr8ReDlMO9GcMKv4yxTny9Ynl2tS0D2PoWCHc9k40qriM8Kq4suNUJ
+         7MrQOmA+cRR2Mq5P8RXaH4AycKnQ3elc7Fqz65BnEvq5lcLOC5Eu8TvZvCct5nURI6ug
+         Hu9g==
+X-Gm-Message-State: AOJu0YwmdTSm4VIPswXc9TALEGV+WzmpM2TfhsKyaFaM8GLXc26wfV8B
+	KTBMrwThb4Xh5TZEN2UQUokOcZbpNRap4K/5lpBsaXdqvZAAb9Tr1CvG4FcwA3WqruAA9DkaAEk
+	M9pokDLKoP4LNitaGpO7w4IWs9am6mfOmav9b
+X-Google-Smtp-Source: AGHT+IFTttrH0F0yFcNDAhaFz/OUEZdWofrsyIOjQ2cUIUV60IsTbFRJFPYibEwh47w8FBbLvqod5S8rXW+N2rbJZEA=
+X-Received: by 2002:a92:d483:0:b0:363:7b27:283b with SMTP id
+ p3-20020a92d483000000b003637b27283bmr183068ilg.11.1706622118267; Tue, 30 Jan
+ 2024 05:41:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH v10 3/6] arm64: add uaccess to machine check safe
-To: Mark Rutland <mark.rutland@arm.com>
-CC: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
-	James Morse <james.morse@arm.com>, Robin Murphy <robin.murphy@arm.com>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>, Alexander Potapenko
-	<glider@google.com>, Alexander Viro <viro@zeniv.linux.org.uk>, Andrey
- Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
-	Vincenzo Frascino <vincenzo.frascino@arm.com>, Andrew Morton
-	<akpm@linux-foundation.org>, Michael Ellerman <mpe@ellerman.id.au>, Nicholas
- Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Aneesh Kumar K.V <aneesh.kumar@kernel.org>, "Naveen N. Rao"
-	<naveen.n.rao@linux.ibm.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo
- Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
-	<dave.hansen@linux.intel.com>, <x86@kernel.org>, "H. Peter Anvin"
-	<hpa@zytor.com>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-mm@kvack.org>, <linuxppc-dev@lists.ozlabs.org>,
-	<linux-kernel@vger.kernel.org>, <kasan-dev@googlegroups.com>,
-	<wangkefeng.wang@huawei.com>, Guohanjun <guohanjun@huawei.com>
-References: <20240129134652.4004931-1-tongtiangen@huawei.com>
- <20240129134652.4004931-4-tongtiangen@huawei.com>
- <ZbfjvD1_yKK6IVVY@FVFF77S0Q05N>
- <23795738-b86e-7709-bc2b-5abba2e77b68@huawei.com>
- <ZbjlFXVC_ZPYbKhR@FVFF77S0Q05N>
-From: Tong Tiangen <tongtiangen@huawei.com>
-In-Reply-To: <ZbjlFXVC_ZPYbKhR@FVFF77S0Q05N>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600017.china.huawei.com (7.193.23.234)
+References: <20240125231840.1647951-1-irogers@google.com> <CAEf4BzamUW+O35hfj-SctPo0Z-oZk5u-96fvD0cFPDZTwFyiMg@mail.gmail.com>
+In-Reply-To: <CAEf4BzamUW+O35hfj-SctPo0Z-oZk5u-96fvD0cFPDZTwFyiMg@mail.gmail.com>
+From: Ian Rogers <irogers@google.com>
+Date: Tue, 30 Jan 2024 05:41:47 -0800
+Message-ID: <CAP-5=fWd3U4VTU7Quj+EjdU8F_o3VwprUz18PeAGfphgUS7vPg@mail.gmail.com>
+Subject: Re: [PATCH v3] libbpf: Add some details for BTF parsing failures
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alan Maguire <alan.maguire@oracle.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Jan 29, 2024 at 4:43=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Jan 25, 2024 at 3:18=E2=80=AFPM Ian Rogers <irogers@google.com> w=
+rote:
+> >
+> > As CONFIG_DEBUG_INFO_BTF is default off the existing "failed to find
+> > valid kernel BTF" message makes diagnosing the kernel build issue some
+> > what cryptic. Add a little more detail with the hope of helping users.
+> >
+> > Before:
+> > ```
+> > libbpf: failed to find valid kernel BTF
+> > libbpf: Error loading vmlinux BTF: -3
+> > ```
+> >
+> > After not accessible:
+> > ```
+> > libbpf: access to canonical vmlinux (/sys/kernel/btf/vmlinux) to load B=
+TF failed: No such file or directory
+> > libbpf: was CONFIG_DEBUG_INFO_BTF enabled?
+> > libbpf: failed to find valid kernel BTF
+> > libbpf: Error loading vmlinux BTF: -3
+> > ```
+> >
+> > After not readable:
+> > ```
+> > libbpf: unable to read canonical vmlinux (/sys/kernel/btf/vmlinux): Per=
+mission denied
+> > libbpf: failed to find valid kernel BTF
+> > libbpf: Error loading vmlinux BTF: -3
+> > ```
+> >
+> > Closes: https://lore.kernel.org/bpf/CAP-5=3DfU+DN_+Y=3DY4gtELUsJxKNDDCO=
+vJzPHvjUVaUoeFAzNnig@mail.gmail.com/
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> >
+> > ---
+> > v3. Try to address review comments from Andrii Nakryiko.
+>
+> I did some further simplifications and clean ups while applying.
+>
+> I dropped an extra faccessat(R_OK) check for /sys/kernel/btf/vmlinux
+> and instead if F_OK passes, just go ahead and try to parse
+> /sys/kernel/btf/vmlinux. If we have no access, we should get -EPERM or
+> -EACCESS (I didn't check which), otherwise we'll either parse or won't
+> find any BTF, both are errors. If /sys/kernel/btf/vmlinux exists,
+> there seems to be little point nowadays to try fallback locations,
+> kernel clearly is modern enough to generate /sys/kernel/btf/vmlinux,
+> so we just bail out with error.
+>
+> Please check the landed commit in bpf-next and let me know if it
+> doesn't cover your use case properly.
 
+It does, thanks Andrii!
 
-在 2024/1/30 20:01, Mark Rutland 写道:
-> On Tue, Jan 30, 2024 at 07:14:35PM +0800, Tong Tiangen wrote:
->> 在 2024/1/30 1:43, Mark Rutland 写道:
->>> On Mon, Jan 29, 2024 at 09:46:49PM +0800, Tong Tiangen wrote:
->>> Further, this change will also silently fixup unexpected kernel faults if we
->>> pass bad kernel pointers to copy_{to,from}_user, which will hide real bugs.
->>
->> I think this is better than the panic kernel, because the real bugs
->> belongs to the user process. Even if the wrong pointer is
->> transferred, the page corresponding to the wrong pointer has a memroy
->> error.
-> 
-> I think you have misunderstood my point; I'm talking about the case of a bad
-> kernel pointer *without* a memory error.
-> 
-> For example, consider some buggy code such as:
-> 
-> 	void __user *uptr = some_valid_user_pointer;
-> 	void *kptr = NULL; // or any other bad pointer
-> 
-> 	ret = copy_to_user(uptr, kptr, size);
-> 	if (ret)
-> 		return -EFAULT;
-> 
-> Before this patch, when copy_to_user() attempted to load from NULL it would
-> fault, there would be no fixup handler for the LDR, and the kernel would die(),
-> reporting the bad kernel access.
-> 
-> After this patch (which adds fixup handlers to all the LDR*s in
-> copy_to_user()), the fault (which is *not* a memory error) would be handled by
-> the fixup handler, and copy_to_user() would return an error without *any*
-> indication of the horrible kernel bug.
-> 
-> This will hide kernel bugs, which will make those harder to identify and fix,
-> and will also potentially make it easier to exploit the kernel: if the user
-> somehow gains control of the kernel pointer, they can rely on the fixup handler
-> returning an error, and can scan through memory rather than dying as soon as
-> they pas a bad pointer.
+Ian
 
-I should understand what you mean. I'll think about this and reply.
-
-Many thanks.
-Tong.
-
-> 
->> In addition, the panic information contains necessary information
->> for users to check.
-> 
-> There is no panic() in the case I am describing.
-> 
->>> So NAK to this change as-is; likewise for the addition of USER() to other ldr*
->>> macros in copy_from_user.S and the addition of USER() str* macros in
->>> copy_to_user.S.
->>>
->>> If we want to handle memory errors on some kaccesses, we need a new EX_TYPE_*
->>> separate from the usual EX_TYPE_KACESS_ERR_ZERO that means "handle memory
->>> errors, but treat other faults as fatal". That should come with a rationale and
->>> explanation of why it's actually useful.
->>
->> This makes sense. Add kaccess types that can be processed properly.
->>
->>>
->>> [...]
->>>
->>>> diff --git a/arch/arm64/mm/extable.c b/arch/arm64/mm/extable.c
->>>> index 478e639f8680..28ec35e3d210 100644
->>>> --- a/arch/arm64/mm/extable.c
->>>> +++ b/arch/arm64/mm/extable.c
->>>> @@ -85,10 +85,10 @@ bool fixup_exception_mc(struct pt_regs *regs)
->>>>    	if (!ex)
->>>>    		return false;
->>>> -	/*
->>>> -	 * This is not complete, More Machine check safe extable type can
->>>> -	 * be processed here.
->>>> -	 */
->>>> +	switch (ex->type) {
->>>> +	case EX_TYPE_UACCESS_ERR_ZERO:
->>>> +		return ex_handler_uaccess_err_zero(ex, regs);
->>>> +	}
->>>
->>> Please fold this part into the prior patch, and start ogf with *only* handling
->>> errors on accesses already marked with EX_TYPE_UACCESS_ERR_ZERO. I think that
->>> change would be relatively uncontroversial, and it would be much easier to
->>> build atop that.
->>
->> OK, the two patches will be merged in the next release.
-> 
-> Thanks.
-> 
-> Mark.
-> .
+> > ---
+> >  tools/lib/bpf/btf.c | 35 +++++++++++++++++++++++++++--------
+> >  1 file changed, 27 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> > index ec92b87cae01..45983f42aba9 100644
+> > --- a/tools/lib/bpf/btf.c
+> > +++ b/tools/lib/bpf/btf.c
+> > @@ -4932,10 +4932,9 @@ static int btf_dedup_remap_types(struct btf_dedu=
+p *d)
+> >   */
+> >  struct btf *btf__load_vmlinux_btf(void)
+> >  {
+> > +       const char *canonical_vmlinux =3D "/sys/kernel/btf/vmlinux";
+> > +       /* fall back locations, trying to find vmlinux on disk */
+> >         const char *locations[] =3D {
+> > -               /* try canonical vmlinux BTF through sysfs first */
+> > -               "/sys/kernel/btf/vmlinux",
+> > -               /* fall back to trying to find vmlinux on disk otherwis=
+e */
+> >                 "/boot/vmlinux-%1$s",
+> >                 "/lib/modules/%1$s/vmlinux-%1$s",
+> >                 "/lib/modules/%1$s/build/vmlinux",
+> > @@ -4946,14 +4945,34 @@ struct btf *btf__load_vmlinux_btf(void)
+> >         };
+> >         char path[PATH_MAX + 1];
+> >         struct utsname buf;
+> > -       struct btf *btf;
+> > +       struct btf *btf =3D NULL;
+> >         int i, err;
+> >
+> > -       uname(&buf);
+> > +       /* is canonical sysfs location accessible? */
+> > +       err =3D faccessat(AT_FDCWD, canonical_vmlinux, F_OK, AT_EACCESS=
+);
+> > +       if (err) {
+> > +               pr_warn("access to canonical vmlinux (%s) to load BTF f=
+ailed: %s\n",
+> > +                       canonical_vmlinux, strerror(errno));
+> > +               pr_warn("was CONFIG_DEBUG_INFO_BTF enabled?\n");
+> > +       } else {
+> > +               err =3D faccessat(AT_FDCWD, canonical_vmlinux, R_OK, AT=
+_EACCESS);
+> > +               if (err) {
+> > +                       pr_warn("unable to read canonical vmlinux (%s):=
+ %s\n",
+> > +                               canonical_vmlinux, strerror(errno));
+> > +               }
+> > +       }
+> > +       if (!err) {
+> > +               /* load canonical and return any parsing failures */
+> > +               btf =3D btf__parse(canonical_vmlinux, NULL);
+> > +               err =3D libbpf_get_error(btf);
+> > +               pr_debug("loading kernel BTF '%s': %d\n", canonical_vml=
+inux, err);
+> > +               return btf;
+> > +       }
+> >
+> > +       /* try fallback locations */
+> > +       uname(&buf);
+> >         for (i =3D 0; i < ARRAY_SIZE(locations); i++) {
+> >                 snprintf(path, PATH_MAX, locations[i], buf.release);
+> > -
+> >                 if (faccessat(AT_FDCWD, path, R_OK, AT_EACCESS))
+> >                         continue;
+> >
+> > @@ -4965,9 +4984,9 @@ struct btf *btf__load_vmlinux_btf(void)
+> >
+> >                 return btf;
+> >         }
+> > -
+> >         pr_warn("failed to find valid kernel BTF\n");
+> > -       return libbpf_err_ptr(-ESRCH);
+> > +       /* return the last error or ESRCH if no fallback locations were=
+ found */
+> > +       return btf ?: libbpf_err_ptr(-ESRCH);
+> >  }
+> >
+> >  struct btf *libbpf_find_kernel_btf(void) __attribute__((alias("btf__lo=
+ad_vmlinux_btf")));
+> > --
+> > 2.43.0.429.g432eaa2c6b-goog
+> >
 
