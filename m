@@ -1,110 +1,125 @@
-Return-Path: <linux-kernel+bounces-44108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44104-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66350841D65
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:16:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66FFE841D5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:15:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 226CC28FBA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:16:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BAA81F28CFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:15:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 070A260B8C;
-	Tue, 30 Jan 2024 08:14:35 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5533B5914D;
+	Tue, 30 Jan 2024 08:14:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="b4kF8FIm"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A5F1605D8;
-	Tue, 30 Jan 2024 08:14:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4282F5823A;
+	Tue, 30 Jan 2024 08:14:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.88
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706602474; cv=none; b=W7q1ijeZQs7R2y4m9m6lHn2FLdDG19nKSTQFJJT3lsSJdXthbGp06wISvjsWRlhzmwCWz+zldvz+Ac2cr2PEL9raqx4+aOvEUVdeCgKLYOzei5LHHydnq5wM/11LxXP2B2nGJinR6RyK7tPRaVNr3KIAI4/r0aYPUrdcDol3uGU=
+	t=1706602463; cv=none; b=ixOfQtJXoL36vAqlxTjK7qIYNI2mC6GNNPwR59U0CTYrVCVxBE68i0rjTm8UNijChRCUJXqp54fCW6U0XSiY1lGqFLk/iqxXEDpd6VeeGmmtu1qZfMG5pt5Gl5QdvEbI/WbfCREi3zW5t72Vqn+UaSnQGXGmwXqmeRBpXOltz8g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706602474; c=relaxed/simple;
-	bh=2X8SIWoitl+VKVgntwPYWRKMalIKKPmqONWJZDOtlBc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WbJPcDi3+Rxogbpg/x45k4W92TFWQzNcN6ynHS6GcUq9D+1/45BN4XAZDvn2+5RDuXyN8EL8zeomHhPcjYhXJvCb+eVgdALMuGRnlfWgL9LslC90IkCr4Ov/mpA9l9UHqgaD5S2sKooqV/oi3dWm4zSwcd660XPxVRwDUou1ekU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 8038e5d20ca848c3927a7be67658d64c-20240130
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:f1c4e82b-a40f-43e6-aa2a-683b630f6be4,IP:10,
-	URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
-	ION:release,TS:-10
-X-CID-INFO: VERSION:1.1.35,REQID:f1c4e82b-a40f-43e6-aa2a-683b630f6be4,IP:10,UR
-	L:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:-10
-X-CID-META: VersionHash:5d391d7,CLOUDID:5f136983-8d4f-477b-89d2-1e3bdbef96d1,B
-	ulkID:240130161419ZQQNJ2TK,BulkQuantity:0,Recheck:0,SF:24|17|19|44|66|38|1
-	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
-	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 8038e5d20ca848c3927a7be67658d64c-20240130
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 409578972; Tue, 30 Jan 2024 16:14:17 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id 8CD10E000EBB;
-	Tue, 30 Jan 2024 16:14:17 +0800 (CST)
-X-ns-mid: postfix-65B8AFD9-367288681
-Received: from kernel.. (unknown [172.20.15.213])
-	by mail.kylinos.cn (NSMail) with ESMTPA id 1A722E000EB9;
-	Tue, 30 Jan 2024 16:14:13 +0800 (CST)
-From: Kunwu Chan <chentao@kylinos.cn>
-To: steffen.klassert@secunet.com,
-	herbert@gondor.apana.org.au,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH ipsec-next] xfrm: Simplify the allocation of slab caches in xfrm_policy_init
-Date: Tue, 30 Jan 2024 16:14:11 +0800
-Message-Id: <20240130081411.58246-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1706602463; c=relaxed/simple;
+	bh=E8RAqBrguK3vR29UWlT3SGFAVHtLTsrLAzb3l9M3J3c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=S5iU6cCkWPNUwlXqcgA1Yez1WTRn/ssH6MrtLOje1AjmCQvg6u6U6LM5YCDExp5TqA3Xg6CfIg8w9+p56q+uzaHBFc4OnrySP7DPQ28RXFakXkpL5Q05YAxoWp2qTfanw4s3mBWjKPquhfMwB0UYwlkuTEZdABToY0WO3S5ZpZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=b4kF8FIm; arc=none smtp.client-ip=192.55.52.88
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706602462; x=1738138462;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=E8RAqBrguK3vR29UWlT3SGFAVHtLTsrLAzb3l9M3J3c=;
+  b=b4kF8FImrRrTh1q251wn+SXmyA2zx10jvILfUixAmHrRe1isx5PsBN13
+   wmCAQcV55nWVy68LrbvIYtqz0T98vhIizU90ZBsroMb7XmE67rFQztcD2
+   5FxPdRp70SpmQpm7FHhNP/UYp+D2iIHt9OU5VaEVSRMWRG+pF+m5iaQPp
+   52KZq7sj+xDhLmEj/NMo2ciUISE2V0OQFiLb5Qt5fnm7x1M62c0PG83hH
+   2sQ6gT2TTDVCdQFzsoBMxy3Cyj/PL3DilwkHXVgjVo8y4TKwFpWg3/hnY
+   +tL3lWi7Ud/FZChgegv3VGMazCro4i6NAQrculGpyCFCrvdnxopzaGfZQ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="434376209"
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="434376209"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 00:14:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="36420080"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.49]) ([10.238.10.49])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 00:14:18 -0800
+Message-ID: <3ef50211-7746-4054-84b6-6861d6a91341@linux.intel.com>
+Date: Tue, 30 Jan 2024 16:14:15 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v18 050/121] KVM: x86/tdp_mmu: Sprinkle __must_check
+To: isaku.yamahata@intel.com
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+ erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+ Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+ chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
+References: <cover.1705965634.git.isaku.yamahata@intel.com>
+ <8f7d5a1b241bf5351eaab828d1a1efe5c17699ca.1705965635.git.isaku.yamahata@intel.com>
+From: Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <8f7d5a1b241bf5351eaab828d1a1efe5c17699ca.1705965635.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-commit 0a31bd5f2bbb ("KMEM_CACHE(): simplify slab cache creation")
-introduces a new macro.
-Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
-to simplify the creation of SLAB caches.
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
- net/xfrm/xfrm_policy.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
-index 7351f32052dc..6ac97e0b66cb 100644
---- a/net/xfrm/xfrm_policy.c
-+++ b/net/xfrm/xfrm_policy.c
-@@ -4025,10 +4025,7 @@ static int __net_init xfrm_policy_init(struct net =
-*net)
- 	int dir, err;
-=20
- 	if (net_eq(net, &init_net)) {
--		xfrm_dst_cache =3D kmem_cache_create("xfrm_dst_cache",
--					   sizeof(struct xfrm_dst),
--					   0, SLAB_HWCACHE_ALIGN|SLAB_PANIC,
--					   NULL);
-+		xfrm_dst_cache =3D KMEM_CACHE(xfrm_dst, SLAB_HWCACHE_ALIGN | SLAB_PANI=
-C);
- 		err =3D rhashtable_init(&xfrm_policy_inexact_table,
- 				      &xfrm_pol_inexact_params);
- 		BUG_ON(err);
---=20
-2.39.2
+On 1/23/2024 7:53 AM, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+>
+> TDP MMU allows tdp_mmu_set_spte_atomic() and tdp_mmu_zap_spte_atomic() to
+> return -EBUSY or -EAGAIN error.  The caller must check the return value and
+> retry.  Sprinkle __must_check to guarantee it.
+
+Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
+
+>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> ---
+>   arch/x86/kvm/mmu/tdp_mmu.c | 10 +++++-----
+>   1 file changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index fdc6e2221c33..2aacfab25e93 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -507,9 +507,9 @@ static void handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+>    *            no side-effects other than setting iter->old_spte to the last
+>    *            known value of the spte.
+>    */
+> -static inline int tdp_mmu_set_spte_atomic(struct kvm *kvm,
+> -					  struct tdp_iter *iter,
+> -					  u64 new_spte)
+> +static inline int __must_check tdp_mmu_set_spte_atomic(struct kvm *kvm,
+> +						       struct tdp_iter *iter,
+> +						       u64 new_spte)
+>   {
+>   	u64 *sptep = rcu_dereference(iter->sptep);
+>   
+> @@ -539,8 +539,8 @@ static inline int tdp_mmu_set_spte_atomic(struct kvm *kvm,
+>   	return 0;
+>   }
+>   
+> -static inline int tdp_mmu_zap_spte_atomic(struct kvm *kvm,
+> -					  struct tdp_iter *iter)
+> +static inline int __must_check tdp_mmu_zap_spte_atomic(struct kvm *kvm,
+> +						       struct tdp_iter *iter)
+>   {
+>   	int ret;
+>   
 
 
