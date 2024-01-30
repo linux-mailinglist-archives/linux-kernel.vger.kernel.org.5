@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-44413-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44414-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49F148421C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:45:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8E7E8421C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:46:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6C1D29351F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:45:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1119A1C27EB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:46:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF88E6A01F;
-	Tue, 30 Jan 2024 10:44:00 +0000 (UTC)
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B1E16A33E;
+	Tue, 30 Jan 2024 10:44:02 +0000 (UTC)
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6A6467E72;
-	Tue, 30 Jan 2024 10:43:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F05A6A016;
+	Tue, 30 Jan 2024 10:44:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706611440; cv=none; b=IZN6AWlfK+rxNYrPhiZr+PQtxENPFwGJSc7E8RbWKSaCF3oj0RmHaGAQ/fZ8SvRsuaElAJXqeV7hAkm0DsqBo3zb857XyITIF4/B2+WRTkDRuFGaTkb+Ez+OQUjfNRccXJnXbwJ8kEOFEJ3AoRUYDMi45KShKj9Y6Fmgg+Eo+T4=
+	t=1706611442; cv=none; b=JntdLfw2SNsk3Mc8lALo/NhErBpwB5IzPhHPS8+YTv/fdxf5B+DkXj6qxEPpeEDtqpggeWtocqL1UfzCJvw5rjsRyVaItASmkbX0WDq9l6xr4BO/QJYsqKP9/hJN1yK547vHUhbeL0aTKIi1RBLonyPAtZFwBbJ+rkBxLTIv1G0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706611440; c=relaxed/simple;
-	bh=QDnvM4oA4H854uqga3nFwXcmRbbdDA1nmmcnqXKuWBg=;
+	s=arc-20240116; t=1706611442; c=relaxed/simple;
+	bh=bddUoh0vrzJAC62VpMem/mVGELq2exyvym8+mursGMw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=dA1123ekYOhXy2ryx6gsxAw6NceZZws/TZDCmdCHqIyYjS2T53zPJae+I3ZkAikmFek3+yPMKi7K2citIYvxHrog3gxPxt3cchAbOl5ehVWQAkjZ+RHSgdWgajqOZxj94DnitcSiGIg0N8vYGcraFrgGg0aGk14gi7rMQacjFR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.53
+	 MIME-Version; b=fpoU7glZL+3dtPlK5qEFZj1l6jHNvVyyFRslYQo2X4qiOrTH+VjOesPXtTodHiWN/IvVAjxDAecJTjJzJnc4HRWhTCYLN+eGWQQOG7y3pktHna3A8xenyIB9iuf9z8KCU279L0p/bIXN0avhY+4R4bDROTwq6ulOaxA+dy6bEzc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a3510d79ae9so409378066b.0;
-        Tue, 30 Jan 2024 02:43:58 -0800 (PST)
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2cf328885b4so43818121fa.3;
+        Tue, 30 Jan 2024 02:44:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706611437; x=1707216237;
+        d=1e100.net; s=20230601; t=1706611438; x=1707216238;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=O1yUomGVGxW+ZJ/xuPk5u23oKYZV6/4kQ1dwGrkBW8Y=;
-        b=NNXovl/mfwBRKIGDanxQYtmgPfiiWNUhtfhRb0EFiGoEJepIeGnjYE3C9Cxu41JDB4
-         2ranWDzktoKjGyKgJ5elvsuMfgkzpTEm9/PXAF4fGGtMkdDHJzrUazYHmRt4vZoqCgpw
-         Xl22oP24oIQRzlcVhL8NNwWCVMI9Q3Yk6bzr51e1318KExRJk73oOTm2z414n/B622PF
-         IV5pDNKdNSuRz0BYb89JOCsa62KRKdHqiei4kqs5jLGuL/yY6R9iqsMcQrrOOZnaVDdo
-         Qmy5Ba4IDZd5aEITq9WYjsNw2yMX3aja+UXYDne/i5DJk/zgTJQq8Jv8DEDjTlhn7aIt
-         aa1A==
-X-Gm-Message-State: AOJu0Yz5BV+Kv5bNMr16YMu53NFoY7zMj4uh5ZLKgWdjnnuNhyh1R7l0
-	Kr1YubJL3XGEfHDlA8BZY4hVrOH11vVf5mYMLlA+UgVKNel7nHZv
-X-Google-Smtp-Source: AGHT+IFPAznZ9OF+Rpfm2bv4z2kmctthlYlYZURZnZenl4Z93ahd7bGLWBtKdZBCk/AwhfUSfOzPlg==
-X-Received: by 2002:a17:906:2b0c:b0:a36:393d:6caf with SMTP id a12-20020a1709062b0c00b00a36393d6cafmr394051ejg.48.1706611436772;
-        Tue, 30 Jan 2024 02:43:56 -0800 (PST)
-Received: from localhost (fwdproxy-lla-117.fbsv.net. [2a03:2880:30ff:75::face:b00c])
-        by smtp.gmail.com with ESMTPSA id rs10-20020a170907036a00b00a316a652c6csm4962734ejb.70.2024.01.30.02.43.56
+        bh=g2hIslwX7zDUitnZgFr4A5pcX7VA5sGMR+7J+Ts8dJU=;
+        b=gC775Np1/uBrJbAoFrcIgocnzg4N9pEH6xZIFWEJwo2DsBGlgNDB2pzFYVEiyTqJMC
+         HVj4bPTTXgCy4l+mCtMlbJ5zsl7DcA5RTLNi0f8M4/nEKN+NYGlb9LBqpdqnRSblTBRs
+         p8SrSrquHZtaQuFxwGQ5fhnjhGNsMYsydm58qyD+Plxic7sRZAX7lVnsDc4cjjhufXPW
+         572OjP6grRg+CHInSSam5xIb/+LCDpfCLcdXVRsQJNrS2TJub1PRvebIX5UTU1H84GGn
+         gpAYHfocwLuqz4+eeWmk/qt+ynzr1oD/O0aEZFx5de2BEycNgSglNUnQ+tbb0RxeIPlI
+         IkIQ==
+X-Gm-Message-State: AOJu0YxDciblotf4MixCgS7rvVn9wrt6oIEh2e2NyHsD8sRYzX9nOKtS
+	LqbjQqv7bo5kMT6lfiGq7MggeBJb/vdjPTs64vt07jo/rwLZCgF8
+X-Google-Smtp-Source: AGHT+IE2naGw7VHTuOXM5Ylli8b7HfsG5qtzq1mUFoP9fuAA5DPWBFa5swHLxY6GdVV43oBJhz0a+g==
+X-Received: by 2002:a2e:b8d1:0:b0:2cf:457e:61fa with SMTP id s17-20020a2eb8d1000000b002cf457e61famr6529905ljp.37.1706611438514;
+        Tue, 30 Jan 2024 02:43:58 -0800 (PST)
+Received: from localhost (fwdproxy-lla-111.fbsv.net. [2a03:2880:30ff:6f::face:b00c])
+        by smtp.gmail.com with ESMTPSA id d15-20020a056402400f00b0055eebd3db08sm2452144eda.66.2024.01.30.02.43.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 02:43:56 -0800 (PST)
+        Tue, 30 Jan 2024 02:43:58 -0800 (PST)
 From: Breno Leitao <leitao@debian.org>
 To: kuba@kernel.org,
 	davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
-	Loic Poulain <loic.poulain@linaro.org>,
+	Christian Lamparter <chunkeey@googlemail.com>,
 	Kalle Valo <kvalo@kernel.org>
 Cc: dsahern@kernel.org,
 	weiwan@google.com,
@@ -65,11 +65,10 @@ Cc: dsahern@kernel.org,
 	horms@kernel.org,
 	andrew@lunn.ch,
 	leit@fb.com,
-	wcn36xx@lists.infradead.org (open list:QUALCOMM WCN36XX WIRELESS DRIVER),
-	linux-wireless@vger.kernel.org (open list:NETWORKING DRIVERS (WIRELESS))
-Subject: [PATCH net 5/9] wifi: fill in MODULE_DESCRIPTION()s for wcn36xx
-Date: Tue, 30 Jan 2024 02:42:39 -0800
-Message-Id: <20240130104243.3025393-6-leitao@debian.org>
+	linux-wireless@vger.kernel.org (open list:P54 WIRELESS DRIVER)
+Subject: [PATCH net 6/9] wifi: fill in MODULE_DESCRIPTION()s for p54spi
+Date: Tue, 30 Jan 2024 02:42:40 -0800
+Message-Id: <20240130104243.3025393-7-leitao@debian.org>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20240130104243.3025393-1-leitao@debian.org>
 References: <20240130104243.3025393-1-leitao@debian.org>
@@ -82,25 +81,25 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
-Add descriptions to the Qualcomm Atheros WCN3660/3680 wireless driver.
+Add descriptions to the Prism54 SPI wireless driver.
 
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- drivers/net/wireless/ath/wcn36xx/main.c | 1 +
+ drivers/net/wireless/intersil/p54/p54spi.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/ath/wcn36xx/main.c b/drivers/net/wireless/ath/wcn36xx/main.c
-index 41119fb177e3..4e6b4df8562f 100644
---- a/drivers/net/wireless/ath/wcn36xx/main.c
-+++ b/drivers/net/wireless/ath/wcn36xx/main.c
-@@ -1685,6 +1685,7 @@ static struct platform_driver wcn36xx_driver = {
+diff --git a/drivers/net/wireless/intersil/p54/p54spi.c b/drivers/net/wireless/intersil/p54/p54spi.c
+index ce0179b8ab36..0073b5e0f9c9 100644
+--- a/drivers/net/wireless/intersil/p54/p54spi.c
++++ b/drivers/net/wireless/intersil/p54/p54spi.c
+@@ -700,6 +700,7 @@ static struct spi_driver p54spi_driver = {
  
- module_platform_driver(wcn36xx_driver);
+ module_spi_driver(p54spi_driver);
  
-+MODULE_DESCRIPTION("Qualcomm Atheros WCN3660/3680 wireless driver");
- MODULE_LICENSE("Dual BSD/GPL");
- MODULE_AUTHOR("Eugene Krasnikov k.eugene.e@gmail.com");
- MODULE_FIRMWARE(WLAN_NV_FILE);
++MODULE_DESCRIPTION("Prism54 SPI wireless driver");
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Christian Lamparter <chunkeey@web.de>");
+ MODULE_ALIAS("spi:cx3110x");
 -- 
 2.39.3
 
