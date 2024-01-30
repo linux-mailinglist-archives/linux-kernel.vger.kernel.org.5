@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-43917-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43918-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91FDD841AB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 04:52:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12D1A841ABA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 04:52:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1EFAA1F26250
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 03:52:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC91D287A5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 03:52:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78E8D381B0;
-	Tue, 30 Jan 2024 03:52:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3852838396;
+	Tue, 30 Jan 2024 03:52:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b="DKBNEd5N"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b="QbuIqwei"
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE8CC376EA
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 03:52:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 723513770A
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 03:52:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706586724; cv=none; b=Ur8BqXEf2A65mnyBGMj0h4ROG7D3tDQTIVlV3sRWd3V8k8D0pA0f/j3SvyH2AV2OopQiubzPRRneNFSfku5NCYnIBwQDQm1C8k1QPqYU74SLaqHJMgSnJ0KPJwrJkGUIneTsouMS7Zp8BknicbHYRhG8UTepfanuNmHf1gMhRpc=
+	t=1706586726; cv=none; b=EH/HOq/OZzqj8rn2pDo2Q5ZlczDukb9RIIwX+S70Q37nSMrjrudIxbzrfDK/DBARBhDi/y2Y338NlO/RQPxWWu1gMHp648rw4N5sbI+bLcSyadOMi4Tmt6S58nB9AFkcnG7D3ewV9QAfofCUPJqoZTvjCVX4I5IIovhKJvyqSe8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706586724; c=relaxed/simple;
-	bh=g3LZEPq6heJ2PjzSdX/5RGenjQC82aVAzQinn15OdBU=;
+	s=arc-20240116; t=1706586726; c=relaxed/simple;
+	bh=QZKaym8nFiRV9Re87RifRE/NGc2FIS+/ruqdmA8E/9Y=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JEBdQ7RP/cnecnx/JvRkjNI2e9vu1xk2GtZ3HzH4peVlkvvNS9Ty5+o/SHpLC122jcZ4J+BbRU6OCyYju0hLXXypLSDNHiGHma8aaANTHxB/inItrJimJP1jVkQfVSy6zQttBvN0bV6Rtpd5JOjwaYiWDQmZ4DyVpxCRR900B9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com; spf=pass smtp.mailfrom=arista.com; dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b=DKBNEd5N; arc=none smtp.client-ip=209.85.128.45
+	 MIME-Version:Content-Type; b=MBbXTukEFiC4g5o+del0M9UNZuHsMS/fEDHRvg3W+aF1L4v4LeKYYBg6tyerrgCql5w/+KeiISAnf5w1oZE/mOPUewK1mXaexIB9V5J9g9rDDKAYfqT2G5v7HzZmHbXyMjioVuyQSY7VS6uzm/Ix0m34aMI95xk1X09Du9o3jVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com; spf=pass smtp.mailfrom=arista.com; dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b=QbuIqwei; arc=none smtp.client-ip=209.85.221.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arista.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40f02b8d176so1215175e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 19:52:02 -0800 (PST)
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-33929364bdaso2440290f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 19:52:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1706586721; x=1707191521; darn=vger.kernel.org;
+        d=arista.com; s=google; t=1706586722; x=1707191522; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IBB0GD/+gXda5aeiB3X+LkFjStia1JqAQuf0Qc5+FME=;
-        b=DKBNEd5NyO1LzWKUkgp61coQZ+2+d7CTpQzs5a/uQEuxa21S3RdpMKuffZ1yCeHRWS
-         htCLIEgjwpvKgOrsggpt6cW+ia5bREhdbEdA66U3QIG+P4JB8tWSDv5MZLbs7LWCtaSj
-         IBIJ6fQ7liOBIdr0F3pGQUSv3LpbLECJsNiRTLlvXLf0kCw5ijDJQOJvE7FZEAbly7Gu
-         NEf05K/gCCqpC9lna5sePVq1HpRW1lMfXnH7aYMTm6nflmQvef95oVDuLm4TbX4H8dK3
-         rIAO6nk5maVdWmceQ0IOIP02xTtdtYt8CD157KY4O3nDOFx/jX9VThQW62aHHtaQhf+Q
-         xwfQ==
+        bh=QfduzUl6xeBtvtYJDyMTI1tDFj6QysY3Ss5eP9VLuq4=;
+        b=QbuIqweiBvAxHH3buU1sieBkx34MzaaUZSKSUo0wR8eV8fSpSlvXyn1Te8sFcVzQIF
+         lRW9EzuEJoRJmddAae+Ikv2tuFwcIIezKZ/LhZ23Ct6eHwOfuY84nnnWT4k73x3MTF2q
+         8Vxnx+HpvGg+kLC9PJBrAGZFJ8lbYVeDVDe2rbtNgWedyfZb0n+F05Z66TAskmfxGBa8
+         CMttysAiEevRvbdH2iJvyoQPKKAsZ6gaccVdGMJvfvSOIIsFPLWMHOcD3YdY0BBc1on8
+         XuwkN3Mj6eDhcAjRyI5voAjJ7BJmSxaVyOif5Sj53Hc7Ki25dHwBNPO09skd1fj3iXce
+         1tiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706586721; x=1707191521;
+        d=1e100.net; s=20230601; t=1706586722; x=1707191522;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IBB0GD/+gXda5aeiB3X+LkFjStia1JqAQuf0Qc5+FME=;
-        b=KMB8jNuZCPzxLPTdh7wUuU/7zvclboallpoMjkGy+ReYQocROFw27ImD56b4/UjVML
-         bLO05IJEevWIjIN0rBMXtCYEwpMXNFFPJ2n2o/jf6anvxdxWGe7YUwd/aYo4vf+3rm10
-         kUDXTm3iVEatXd8UB1FpMrRzwKg5WsBaF61Q67CSA2ia7y/nqcgrV83O/RNDWr1HmxLF
-         umotvLHxeRpkXDcUFOinsFPFbgyvyLsUGCtF9jIygUpSYMh/sVGoIlDIGdyrdyzxHjuW
-         mo7uttuL1JOfUlWHCtTHz2baCmohFThwYZ1d9lQOEuTLprdEhO8dDjlMXhJcrRLpjBYu
-         zhWg==
-X-Gm-Message-State: AOJu0Yx1FAyGrirCau5ROTNKq3it44a4HRD2L4w0NOOukCT7lyo11yZI
-	cPMkKUZg+gRFn5T8ZYPd00cRKlDuhEQVRn2/mVrWsa1F/bd95GrJQgEPT5kQEA==
-X-Google-Smtp-Source: AGHT+IFltZVkqklBjWCImfIKZmnuL//3dK2NohBsMAZhtTrRR64UxLbjxRfLFy3PgEbCWICzKFexwQ==
-X-Received: by 2002:a5d:64e3:0:b0:33a:e9cc:69b0 with SMTP id g3-20020a5d64e3000000b0033ae9cc69b0mr4114355wri.11.1706586721013;
-        Mon, 29 Jan 2024 19:52:01 -0800 (PST)
+        bh=QfduzUl6xeBtvtYJDyMTI1tDFj6QysY3Ss5eP9VLuq4=;
+        b=bOyUGjZnmGF0InAdiJOq+nYdvWz65B/9iUBDTdKqgWhOUvpQ/rcdMGdZ5Ug5LpVyZ9
+         kmmdaxiivApu9mSmKxXHuHkcK2hkMJxtKfZMBFRkEgPE0l+iQ2XVa6NUPoAhfjfg6sWQ
+         qwGnQ+VT9a4i9/P8oqJs5K1RReLqJc9Llv7ADW1wzFQB61kuCSNn6nUsRxMv+3DA4a+X
+         oPjCQx6ByWwC/F1Fx2PZSVha4JBM8R5l/2Y5GlSaGsvypAr6q0zGlWtPLbk4fvbgpNOw
+         ymNTsWfhHvhb2uJq1408cawulDrVIZliRHYOOhXjcYyctazo9mFrfDuO05lItA3UpN0s
+         tVCQ==
+X-Gm-Message-State: AOJu0YygQgR6aPLoNKgJ/qpzN1WZPjdB9w6vDVUKvJjErK7KmYMkZ8hF
+	45b0rvjxuE1n2PjKm9X7luIm54yQnYtYQPTK5zSon2ls3q9hvjIAniWCwy69Bw==
+X-Google-Smtp-Source: AGHT+IEWkeLhdP7cYXdSo5d/XhFN67shLx8ETOlkaxq4ILoIYMlWFY5uN73f1sNTJ96Wm61lIXuUkQ==
+X-Received: by 2002:adf:ea02:0:b0:337:2940:ab7b with SMTP id q2-20020adfea02000000b003372940ab7bmr5253230wrm.1.1706586722579;
+        Mon, 29 Jan 2024 19:52:02 -0800 (PST)
 Received: from Mindolluin.ire.aristanetworks.com ([217.173.96.166])
-        by smtp.gmail.com with ESMTPSA id ay13-20020a5d6f0d000000b00337d6aa3912sm9513207wrb.10.2024.01.29.19.51.59
+        by smtp.gmail.com with ESMTPSA id ay13-20020a5d6f0d000000b00337d6aa3912sm9513207wrb.10.2024.01.29.19.52.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 19:52:00 -0800 (PST)
+        Mon, 29 Jan 2024 19:52:01 -0800 (PST)
 From: Dmitry Safonov <dima@arista.com>
 To: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -78,9 +78,9 @@ Cc: Dmitry Safonov <dima@arista.com>,
 	netdev@vger.kernel.org,
 	linux-kselftest@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/3] selftests/net: Argument value mismatch when calling verify_counters()
-Date: Tue, 30 Jan 2024 03:51:52 +0000
-Message-ID: <20240130-tcp-ao-test-key-mgmt-v2-1-d190430a6c60@arista.com>
+Subject: [PATCH v2 2/3] selftests/net: Rectify key counters checks
+Date: Tue, 30 Jan 2024 03:51:53 +0000
+Message-ID: <20240130-tcp-ao-test-key-mgmt-v2-2-d190430a6c60@arista.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240130-tcp-ao-test-key-mgmt-v2-0-d190430a6c60@arista.com>
 References: <20240130-tcp-ao-test-key-mgmt-v2-0-d190430a6c60@arista.com>
@@ -92,44 +92,139 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.13-dev-b6b4b
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1706586711; l=1578; i=dima@arista.com; s=20231212; h=from:subject:message-id; bh=oDDbsLWpXr1cc2nzkZ+D8Lfqh5gwTIMhKVDrcVIHxuQ=; b=wOh80+80UVdeb8USEOeN8k210twHOJCkW6S4WeORL7Duxc0gwL3jIHLaEP1GvAkoXjSqJR4Na lIWOvijjVxnDjPY1gZnOmWexs8GlGDerBeQ8uimxPHJH2DCcgQRSp8y
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1706586711; l=5702; i=dima@arista.com; s=20231212; h=from:subject:message-id; bh=QZKaym8nFiRV9Re87RifRE/NGc2FIS+/ruqdmA8E/9Y=; b=A7UG9vGwH7vWayZbiEoyzrefAGgWlQNbFZPFq30bO+ymDMD8J1nOVvUsafhss4d6gzAdQWgTV GEn70c1m+qYC2y5aqfFVrTcAjYJgStAkrkFm1TFbfmK87csLr/nJJHg
 X-Developer-Key: i=dima@arista.com; a=ed25519; pk=hXINUhX25b0D/zWBKvd6zkvH7W2rcwh/CH6cjEa3OTk=
 Content-Transfer-Encoding: 8bit
 
-From: Mohammad Nassiri <mnassiri@ciena.com>
+As the names of (struct test_key) members didn't reflect whether the key
+was used for TX or RX, the verification for the counters was done
+incorrectly for asymmetrical selftests.
 
-The end_server() function only operates in the server thread
-and always takes an accept socket instead of a listen socket as
-its input argument. To align with this, invert the boolean values
-used when calling verify_counters() within the end_server() function.
+Rename these with _tx appendix and fix checks in verify_counters().
+While at it, as the checks are now correct, introduce skip_counters_checks,
+which is intended for tests where it's expected that a key that was set
+with setsockopt(sk, IPPROTO_TCP, TCP_AO_INFO, ...) might had no chance
+of getting used on the wire.
 
-As a result of this typo, the test didn't correctly check for
-the non-symmetrical scenario, where i.e. peer-A uses a key <100:200>
-to send data, but peer-B uses another key <105:205> to send its data.
-So, in simple words, different keys for TX and RX.
+Fixes the following failures, exposed by the previous commit:
+> not ok 51 server: Check current != rnext keys set before connect(): Counter pkt_good was expected to increase 0 => 0 for key 132:5
+> not ok 52 server: Check current != rnext keys set before connect(): Counter pkt_good was not expected to increase 0 => 21 for key 137:10
+>
+> not ok 63 server: Check current flapping back on peer's RnextKey request: Counter pkt_good was expected to increase 0 => 0 for key 132:5
+> not ok 64 server: Check current flapping back on peer's RnextKey request: Counter pkt_good was not expected to increase 0 => 40 for key 137:10
 
+Cc: Mohammad Nassiri <mnassiri@ciena.com>
 Fixes: 3c3ead555648 ("selftests/net: Add TCP-AO key-management test")
-Signed-off-by: Mohammad Nassiri <mnassiri@ciena.com>
-Link: https://lore.kernel.org/all/934627c5-eebb-4626-be23-cfb134c01d1a@arista.com/
-[amended 'Fixes' tag, added the issue description and carried-over to lkml]
 Signed-off-by: Dmitry Safonov <dima@arista.com>
 ---
- tools/testing/selftests/net/tcp_ao/key-management.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../testing/selftests/net/tcp_ao/key-management.c  | 44 ++++++++++++----------
+ 1 file changed, 25 insertions(+), 19 deletions(-)
 
 diff --git a/tools/testing/selftests/net/tcp_ao/key-management.c b/tools/testing/selftests/net/tcp_ao/key-management.c
-index c48b4970ca17..f6a9395e3cd7 100644
+index f6a9395e3cd7..24e62120b792 100644
 --- a/tools/testing/selftests/net/tcp_ao/key-management.c
 +++ b/tools/testing/selftests/net/tcp_ao/key-management.c
-@@ -843,7 +843,7 @@ static void end_server(const char *tst_name, int sk,
- 	synchronize_threads(); /* 4: verified => closed */
- 	close(sk);
+@@ -417,9 +417,9 @@ struct test_key {
+ 		matches_vrf		: 1,
+ 		is_current		: 1,
+ 		is_rnext		: 1,
+-		used_on_handshake	: 1,
+-		used_after_accept	: 1,
+-		used_on_client		: 1;
++		used_on_server_tx	: 1,
++		used_on_client_tx	: 1,
++		skip_counters_checks	: 1;
+ };
  
--	verify_counters(tst_name, true, false, begin, &end);
-+	verify_counters(tst_name, false, true, begin, &end);
- 	synchronize_threads(); /* 5: counters */
+ struct key_collection {
+@@ -609,16 +609,14 @@ static int key_collection_socket(bool server, unsigned int port)
+ 				addr = &this_ip_dest;
+ 			sndid = key->client_keyid;
+ 			rcvid = key->server_keyid;
+-			set_current = key->is_current;
+-			set_rnext = key->is_rnext;
++			key->used_on_client_tx = set_current = key->is_current;
++			key->used_on_server_tx = set_rnext = key->is_rnext;
+ 		}
+ 
+ 		if (test_add_key_cr(sk, key->password, key->len,
+ 				    *addr, vrf, sndid, rcvid, key->maclen,
+ 				    key->alg, set_current, set_rnext))
+ 			test_key_error("setsockopt(TCP_AO_ADD_KEY)", key);
+-		if (set_current || set_rnext)
+-			key->used_on_handshake = 1;
+ #ifdef DEBUG
+ 		test_print("%s [%u/%u] key: { %s, %u:%u, %u, %u:%u:%u:%u (%u)}",
+ 			   server ? "server" : "client", i, collection.nr_keys,
+@@ -640,22 +638,22 @@ static void verify_counters(const char *tst_name, bool is_listen_sk, bool server
+ 	for (i = 0; i < collection.nr_keys; i++) {
+ 		struct test_key *key = &collection.keys[i];
+ 		uint8_t sndid, rcvid;
+-		bool was_used;
++		bool rx_cnt_expected;
+ 
++		if (key->skip_counters_checks)
++			continue;
+ 		if (server) {
+ 			sndid = key->server_keyid;
+ 			rcvid = key->client_keyid;
+-			if (is_listen_sk)
+-				was_used = key->used_on_handshake;
+-			else
+-				was_used = key->used_after_accept;
++			rx_cnt_expected = key->used_on_client_tx;
+ 		} else {
+ 			sndid = key->client_keyid;
+ 			rcvid = key->server_keyid;
+-			was_used = key->used_on_client;
++			rx_cnt_expected = key->used_on_server_tx;
+ 		}
+ 
+-		test_tcp_ao_key_counters_cmp(tst_name, a, b, was_used,
++		test_tcp_ao_key_counters_cmp(tst_name, a, b,
++					     rx_cnt_expected ? TEST_CNT_KEY_GOOD : 0,
+ 					     sndid, rcvid);
+ 	}
+ 	test_tcp_ao_counters_free(a);
+@@ -916,9 +914,8 @@ static int run_client(const char *tst_name, unsigned int port,
+ 		current_index = nr_keys - 1;
+ 	if (rnext_index < 0)
+ 		rnext_index = nr_keys - 1;
+-	collection.keys[current_index].used_on_handshake = 1;
+-	collection.keys[rnext_index].used_after_accept = 1;
+-	collection.keys[rnext_index].used_on_client = 1;
++	collection.keys[current_index].used_on_client_tx = 1;
++	collection.keys[rnext_index].used_on_server_tx = 1;
+ 
+ 	synchronize_threads(); /* 3: accepted => send data */
+ 	if (test_client_verify(sk, msg_sz, msg_nr, TEST_TIMEOUT_SEC)) {
+@@ -1059,7 +1056,16 @@ static void check_current_back(const char *tst_name, unsigned int port,
+ 		test_error("Can't change the current key");
+ 	if (test_client_verify(sk, msg_len, nr_packets, TEST_TIMEOUT_SEC))
+ 		test_fail("verify failed");
+-	collection.keys[rotate_to_index].used_after_accept = 1;
++	/* There is a race here: between setting the current_key with
++	 * setsockopt(TCP_AO_INFO) and starting to send some data - there
++	 * might have been a segment received with the desired
++	 * RNext_key set. In turn that would mean that the first outgoing
++	 * segment will have the desired current_key (flipped back).
++	 * Which is what the user/test wants. As it's racy, skip checking
++	 * the counters, yet check what are the resulting current/rnext
++	 * keys on both sides.
++	 */
++	collection.keys[rotate_to_index].skip_counters_checks = 1;
+ 
+ 	end_client(tst_name, sk, nr_keys, current_index, rnext_index, &tmp);
  }
- 
+@@ -1089,7 +1095,7 @@ static void roll_over_keys(const char *tst_name, unsigned int port,
+ 		}
+ 		verify_current_rnext(tst_name, sk, -1,
+ 				     collection.keys[i].server_keyid);
+-		collection.keys[i].used_on_client = 1;
++		collection.keys[i].used_on_server_tx = 1;
+ 		synchronize_threads(); /* verify current/rnext */
+ 	}
+ 	end_client(tst_name, sk, nr_keys, current_index, rnext_index, &tmp);
 
 -- 
 2.43.0
