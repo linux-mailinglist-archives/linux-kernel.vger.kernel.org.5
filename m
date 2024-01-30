@@ -1,162 +1,158 @@
-Return-Path: <linux-kernel+bounces-44376-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44378-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1083C842118
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:21:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 333AD842125
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:22:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBDA9283EC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:21:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EBD2BB2A9D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:22:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F006664C1;
-	Tue, 30 Jan 2024 10:21:06 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B339A6280D;
+	Tue, 30 Jan 2024 10:21:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="PQtfvQ4H"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5759E65BC9
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 10:21:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38CF865BB9;
+	Tue, 30 Jan 2024 10:21:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706610065; cv=none; b=mZVSV/mwxS91mU28Az/PRYBfwhdaGCpNCYNavrpJHgFyAGm275lpqoUk7RU/sf7pdbfQkB8xaQngYgNwjWtRQ7uWkaAaRX7D4Aj5sZQEwpL5TwA74GPo64qMkTHKqLs43qn7O864h5EAI14S/1ksXJ/mq/NQ4eF+Si+QtF2UPD8=
+	t=1706610111; cv=none; b=t8DK+EbUIawK/tpheXEUh4DFsUhS7Ty2NUm4CIqbrLasqUOPV6zUJ97E8tudcZEDllhKgasrwxSWFMhNZZBO8MX2IWye3A7pynEMuGWdCrxYS6eOZ3CWmSeNHcG9EflsQvMOpfRdnr3EU0AKmz3cEWQoezAI3S/S9zlntYDDgE8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706610065; c=relaxed/simple;
-	bh=jlMithfBQN2il3NmDRMtmTVMqafgBvkA/hDL4DDaPOo=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=GpvXXMWP0cnzvcL2ZF2j1bdRDA+hynYDrVZsctfLOx08gXn13UpbuGpTKPJmrzpDu7kL9hLXqZnw8MfxBqiupGD2dezEhEmvh7Wq8SzBkHMV0yZoeSXEC18Ujk6Y7eZB61XBSbdQPlFcREQ+3Z0s7dcihT7rPdlasDvUsg8YzE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3637bd89021so13923915ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 02:21:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706610063; x=1707214863;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/vfDa5JQ/AdHkO4ZL51SEZ9o+lBjrfJ+IPVxYzinO1Y=;
-        b=kv/OL/TM+dH0986VTIIPuhX0CvbWIomABQo7aOT8ElyYhcX24T12VXCMIH3mwlU/fY
-         XxtKVA2+/QlLW/0uQts+eySKEC2qDY5GqvbXQJsR51ZRejztJ5itNcKC67QVQIf7Ar5T
-         LbC4a6aUsxRnajpQYyALKoQqQemr87gDUBjpEqJKCfGG0/5+SYjZA2jwKWpKnNEPz6U/
-         KhaG4qXFV0H5xqkR2ac4MRz7vioKWsg/o0Mz/6mArT6CeQnwK0VTzmyFFDE08A7WMG5k
-         FmwC9j4NFDJt/wR0bspUS4RK4ZneG63dApoZDHxYhRMNs8YtJO1ChjDNKr8u8/mqlDmd
-         oSRw==
-X-Gm-Message-State: AOJu0YxCaVLI0TxlANuAZffoku6n87WLw2KPpLf9/A0RqlWD/y8JJ+eR
-	CogLPb5CpFetIIEALFNzeA+p27RePuywk/swejfNFiD4bE3kEZ3F4AYxGekb/7+32Y2PQNfWCQB
-	kWTLN+Ka2v5rDxVoeaivC6QRS3ElLNSfMqC7sUutUqsW7/6pIPc2htlU=
-X-Google-Smtp-Source: AGHT+IENZWVgoKVJ4kzJao7he1rHHIUhU3JOsvifcrH2L8ZLwOaIBU3y9Xy1AThTyf9i25nqHWOATlhYRwje/ukEDZZIc/EzqAdw
+	s=arc-20240116; t=1706610111; c=relaxed/simple;
+	bh=a2BTL8SBv7QBEt7tWzfKlIFmC4VJGefkz7RX3H6+xX0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=o4+MD4WLSzHymd/K9pYKPqdSMr7tT2kJXyB1AHUGWkmUVzdzFRVQ7Derv3MWU4RKJaJjgQqKATtcbYxDwi8Lfuh66KM4FbQBzVxEbYqE7HiW0ADsk6PQVJS+gmVmXdRLX/Hcm0CTK3i2hVmvulbMdNN55j3aFUHyM4bVcNcifFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=PQtfvQ4H; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=7X7nyoTob837kWWS4ii2spbXx6qHIsfIrrozaG7eBhw=; b=PQtfvQ4HPrhtLZf/ky6DE1d/mi
+	6rP+Gbp9/1EAYGUkkbwtIZhlLo3uejAakSHk6CQ5XHEKMmMyxahazloEQ20EE9kr9pgS1kIexNHZi
+	m9iC2HgVg9isgFgr/9myEHDJaLrZk40tsCi4Rj9RRQiNfeLqkRno8n5yAXQD8XWCkUuAnfo+v8QEK
+	k6kxpsbXuoYnCAUZf7kkwCD9JUMZ+V6vD9ONzN32HmSYdOnQ4qLmzwn/gQGlh+WajsWlWnOXO6bnK
+	gV5Biuqx40A9fITUM64AFjqn4F2CRpCgtR/KsRTT88VIcXwmXeMcaBMdH17IFtp6lg2MRlDscceiD
+	8ccWrW5w==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:50698)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rUlF6-0001dH-2d;
+	Tue, 30 Jan 2024 10:21:25 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rUlF1-0005Ql-Cp; Tue, 30 Jan 2024 10:21:19 +0000
+Date: Tue, 30 Jan 2024 10:21:19 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Choong Yong Liang <yong.liang.choong@linux.intel.com>
+Cc: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+	David E Box <david.e.box@linux.intel.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Mark Gross <markgross@kernel.org>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <Jose.Abreu@synopsys.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Andrew Halaney <ahalaney@redhat.com>,
+	Simon Horman <simon.horman@corigine.com>,
+	Serge Semin <fancer.lancer@gmail.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
+	bpf@vger.kernel.org, Voon Wei Feng <weifeng.voon@intel.com>,
+	Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+	Lai Peter Jun Ann <jun.ann.lai@intel.com>,
+	Abdul Rahim Faizal <faizal.abdul.rahim@intel.com>
+Subject: Re: [PATCH net-next v4 06/11] net: stmmac: resetup XPCS according to
+ the new interface mode
+Message-ID: <ZbjNn+C/VHegH2t7@shell.armlinux.org.uk>
+References: <20240129130253.1400707-1-yong.liang.choong@linux.intel.com>
+ <20240129130253.1400707-7-yong.liang.choong@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1545:b0:363:9252:ed47 with SMTP id
- j5-20020a056e02154500b003639252ed47mr21521ilu.1.1706610063546; Tue, 30 Jan
- 2024 02:21:03 -0800 (PST)
-Date: Tue, 30 Jan 2024 02:21:03 -0800
-In-Reply-To: <tencent_26AF244CD76BD77646CD337D636D49720305@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009ba03b0610271e68@google.com>
-Subject: Re: [syzbot] [block?] [trace?] INFO: task hung in blk_trace_remove (2)
-From: syzbot <syzbot+2373f6be3e6de4f92562@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240129130253.1400707-7-yong.liang.choong@linux.intel.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-Hello,
+On Mon, Jan 29, 2024 at 09:02:48PM +0800, Choong Yong Liang wrote:
+> XPCS creation will map the configuration for the provided interface mode.
+> Then XPCS will operate according to the interface mode.
+> 
+> When the interface mode changes, XPCS is required to map the configuration
+> to the new interface mode and destroy the old interface mode where it
+> is not in use.
+> 
+> Signed-off-by: Choong Yong Liang <yong.liang.choong@linux.intel.com>
+> ---
+>  drivers/net/ethernet/stmicro/stmmac/stmmac.h      |  2 +-
+>  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 13 +++++++++++--
+>  drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c |  7 +++----
+>  3 files changed, 15 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> index f155e4841c62..886efd26991e 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> @@ -357,7 +357,7 @@ enum stmmac_state {
+>  int stmmac_mdio_unregister(struct net_device *ndev);
+>  int stmmac_mdio_register(struct net_device *ndev);
+>  int stmmac_mdio_reset(struct mii_bus *mii);
+> -int stmmac_xpcs_setup(struct mii_bus *mii);
+> +int stmmac_xpcs_setup(struct mii_bus *mii, phy_interface_t interface);
+>  void stmmac_set_ethtool_ops(struct net_device *netdev);
+>  
+>  int stmmac_init_tstamp_counter(struct stmmac_priv *priv, u32 systime_flags);
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> index 00af5a4195fd..50429c985441 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> @@ -941,8 +941,17 @@ static struct phylink_pcs *stmmac_mac_select_pcs(struct phylink_config *config,
+>  {
+>  	struct stmmac_priv *priv = netdev_priv(to_net_dev(config->dev));
+>  
+> -	if (priv->hw->xpcs)
+> +	if (priv->hw->xpcs) {
+> +		if (interface != PHY_INTERFACE_MODE_NA &&
+> +		    interface != priv->plat->phy_interface) {
+> +			/* When there are major changes, we reconfigure
+> +			 * the setup for xpcs according to the interface.
+> +			 */
+> +			xpcs_destroy(priv->hw->xpcs);
+> +			stmmac_xpcs_setup(priv->mii, interface);
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-BUG: sleeping function called from invalid context in put_probe_ref
+NAK. Absolutely not. You haven't read the phylink documentation, nor
+understood how phylink works.
 
-BUG: sleeping function called from invalid context at kernel/locking/mutex.c:585
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 16, name: ksoftirqd/0
-preempt_count: 100, expected: 0
-RCU nest depth: 0, expected: 0
-1 lock held by ksoftirqd/0/16:
- #0: ffffffff8d1acac0 (rcu_callback){....}-{0:0}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
- #0: ffffffff8d1acac0 (rcu_callback){....}-{0:0}, at: rcu_do_batch kernel/rcu/tree.c:2184 [inline]
- #0: ffffffff8d1acac0 (rcu_callback){....}-{0:0}, at: rcu_core+0x7bd/0x1680 kernel/rcu/tree.c:2465
-Preemption disabled at:
-[<ffffffff8a922753>] softirq_handle_begin kernel/softirq.c:394 [inline]
-[<ffffffff8a922753>] __do_softirq+0x123/0x8de kernel/softirq.c:529
-CPU: 0 PID: 16 Comm: ksoftirqd/0 Not tainted 6.8.0-rc2-syzkaller-g861c0981648f-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
- __might_resched+0x3c3/0x5e0 kernel/sched/core.c:10176
- __mutex_lock_common kernel/locking/mutex.c:585 [inline]
- __mutex_lock+0xe2/0x9d0 kernel/locking/mutex.c:752
- put_probe_ref+0x14/0x1b0 kernel/trace/blktrace.c:350
- blk_trace_rcu_free+0x71/0x90 kernel/trace/blktrace.c:394
- rcu_do_batch kernel/rcu/tree.c:2190 [inline]
- rcu_core+0x819/0x1680 kernel/rcu/tree.c:2465
- __do_softirq+0x21a/0x8de kernel/softirq.c:553
- run_ksoftirqd kernel/softirq.c:921 [inline]
- run_ksoftirqd+0x31/0x60 kernel/softirq.c:913
- smpboot_thread_fn+0x660/0xa10 kernel/smpboot.c:164
- kthread+0x2c6/0x3a0 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
- </TASK>
+Since you haven't read the phylink documentation, I'm not going to
+waste any more time reviewing this series since you haven't done your
+side of the bargin here.
 
-=============================
-[ BUG: Invalid wait context ]
-6.8.0-rc2-syzkaller-g861c0981648f-dirty #0 Tainted: G        W         
------------------------------
-ksoftirqd/0/16 is trying to lock:
-ffffffff8d22fa28 (blk_probe_mutex){+.+.}-{3:3}, at: put_probe_ref+0x14/0x1b0 kernel/trace/blktrace.c:350
-other info that might help us debug this:
-context-{2:2}
-1 lock held by ksoftirqd/0/16:
- #0: ffffffff8d1acac0 (rcu_callback){....}-{0:0}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
- #0: ffffffff8d1acac0 (rcu_callback){....}-{0:0}, at: rcu_do_batch kernel/rcu/tree.c:2184 [inline]
- #0: ffffffff8d1acac0 (rcu_callback){....}-{0:0}, at: rcu_core+0x7bd/0x1680 kernel/rcu/tree.c:2465
-stack backtrace:
-CPU: 0 PID: 16 Comm: ksoftirqd/0 Tainted: G        W          6.8.0-rc2-syzkaller-g861c0981648f-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_lock_invalid_wait_context kernel/locking/lockdep.c:4751 [inline]
- check_wait_context kernel/locking/lockdep.c:4821 [inline]
- __lock_acquire+0x821/0x3b30 kernel/locking/lockdep.c:5087
- lock_acquire kernel/locking/lockdep.c:5754 [inline]
- lock_acquire+0x1ae/0x520 kernel/locking/lockdep.c:5719
- __mutex_lock_common kernel/locking/mutex.c:608 [inline]
- __mutex_lock+0x175/0x9d0 kernel/locking/mutex.c:752
- put_probe_ref+0x14/0x1b0 kernel/trace/blktrace.c:350
- blk_trace_rcu_free+0x71/0x90 kernel/trace/blktrace.c:394
- rcu_do_batch kernel/rcu/tree.c:2190 [inline]
- rcu_core+0x819/0x1680 kernel/rcu/tree.c:2465
- __do_softirq+0x21a/0x8de kernel/softirq.c:553
- run_ksoftirqd kernel/softirq.c:921 [inline]
- run_ksoftirqd+0x31/0x60 kernel/softirq.c:913
- smpboot_thread_fn+0x660/0xa10 kernel/smpboot.c:164
- kthread+0x2c6/0x3a0 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
- </TASK>
-BUG: scheduling while atomic: ksoftirqd/0/16/0x00000101
-INFO: lockdep is turned off.
-Modules linked in:
-Preemption disabled at:
-[<ffffffff8a922753>] softirq_handle_begin kernel/softirq.c:394 [inline]
-[<ffffffff8a922753>] __do_softirq+0x123/0x8de kernel/softirq.c:529
-
-
-Tested on:
-
-commit:         861c0981 Merge tag 'jfs-6.8-rc3' of github.com:kleikam..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=121ea1fde80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b168fa511db3ca08
-dashboard link: https://syzkaller.appspot.com/bug?extid=2373f6be3e6de4f92562
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=13151c40180000
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
