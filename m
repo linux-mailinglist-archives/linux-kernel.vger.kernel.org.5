@@ -1,165 +1,131 @@
-Return-Path: <linux-kernel+bounces-44554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44557-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB22D842424
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:53:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8134484242F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:55:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A1431F2C2AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:53:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06B72B23F57
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:55:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC416679EF;
-	Tue, 30 Jan 2024 11:53:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60B1467749;
+	Tue, 30 Jan 2024 11:54:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="f7jz4KrY"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=futuring-girl-com.20230601.gappssmtp.com header.i=@futuring-girl-com.20230601.gappssmtp.com header.b="ItHmt0V5"
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26BDC6773C;
-	Tue, 30 Jan 2024 11:53:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CE4067E67
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 11:54:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706615594; cv=none; b=dvgO9XD7zp/DlFAlIJKQJUbntSjezzJyDAVbgK+Qx/PLP/Z5iGCB9FGtAvf+S4oa+nzRuvBtLIx97f34Ve6L7bBIu+CdPlw9RXL6YHCpLjpTVMDK+nCoN+zAq3x7OUQwwf0I8nGil1B+lVZFtfjJJZBQnzRUg0ebJCneXaPYIWs=
+	t=1706615682; cv=none; b=aAHBveF8pLJiFNC8pclVfvgfnFxSlzSQ6FmZ6A8Dwhyf0rqf/vuTwV0jjzp2/9C3ucq5MpSvNiYuU4bzA3xS33oGailn3ak1LNGD11ljf3y+k8lo1D6c/FQb9TBabVq2siTVAaJ5f2VVD0BTL04exDDBr0TlLlssuLzwErahwxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706615594; c=relaxed/simple;
-	bh=CiBDXOMbsf4fXKRpaWeY7ZHWwrT44E4KCMxjUpnuUHU=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=cmnEtQURv2vdCRw99AehgxlSH43DcHp/RnxHT5FyYG1cSNZBT53F0TOYDsw/RlWzYzGOCGx36xsnrdwqg2GAB72Z9xK9+CYMKOi8n2mfJNxVX4WMgOo9R5bW28/k2NZ0A1F4jBAIVxgcc9AAAqqS4iW/sevy7tkP/Z5ea+ZvOLY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=f7jz4KrY; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706615592; x=1738151592;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=CiBDXOMbsf4fXKRpaWeY7ZHWwrT44E4KCMxjUpnuUHU=;
-  b=f7jz4KrY8DbagkyZ3SbouvSFkwpwye6PbgWCf3aaMHGxphbq8GEgoggq
-   ftBRLFFs8vldVQPg4UJ6nohUsKZ9zoC5f9Gk3HrHNDqsYswQ1FquXO1qT
-   6i5m+5vAwC/rePAWCCNCe3PF2WSyDUcuygtMokdCK0vpGh64Gt/+gahhh
-   IQFt2WEEfPFEMtf+dqxhdi8IXSzUzrK/yfXBSj2wrHGJ+5DktwYojhjO3
-   C2t7jWNvXo7e2t45IFpNCuR0WS7dV9FToZXjZjAOZHvlz+4yJsuTThdb3
-   dMt+zbd/Z1v38xa2NbMOnfzXXkc9OIWqbTMTAmlUaI6obv+Xxv2ODfmrx
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="16640094"
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="16640094"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 03:53:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="22414275"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.34.252])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 03:53:09 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Tue, 30 Jan 2024 13:53:04 +0200 (EET)
-To: Bjorn Helgaas <helgaas@kernel.org>
-cc: linux-pci@vger.kernel.org, "Maciej W. Rozycki" <macro@orcam.me.uk>, 
-    LKML <linux-kernel@vger.kernel.org>, 
-    Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: Re: [PATCH 1/2] PCI: Clear LBMS on resume to avoid Target Speed
- quirk
-In-Reply-To: <20240129184354.GA470131@bhelgaas>
-Message-ID: <aa2d1c4e-9961-d54a-00c7-ddf8e858a9b0@linux.intel.com>
-References: <20240129184354.GA470131@bhelgaas>
+	s=arc-20240116; t=1706615682; c=relaxed/simple;
+	bh=vNdnIux1xX62xc2eKT/WMUKc9JQEqx7tiep7+FUX95I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TLMPIgb8DnRg/Z2gJMqMatmJD55cMU7jasz4SZGeW3tQfTeW630NCIhyCBRPxLQ87C7fJsRvWpJO3C5yMhJxXqM0C0rCtkF9gqG+3O2T7/Sj0UFwIeiw2qWTUkifpA5c6EgTkJzOdKFPnzmyjaz5RVjIVFztyla8J/ZgQGSvFf0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=futuring-girl.com; spf=pass smtp.mailfrom=futuring-girl.com; dkim=pass (2048-bit key) header.d=futuring-girl-com.20230601.gappssmtp.com header.i=@futuring-girl-com.20230601.gappssmtp.com header.b=ItHmt0V5; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=futuring-girl.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=futuring-girl.com
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-29036dc3a63so1964287a91.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 03:54:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=futuring-girl-com.20230601.gappssmtp.com; s=20230601; t=1706615680; x=1707220480; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DWvxEqM2sAiMA41B2v7Y3h0SQJvpGs9/4DqAKQgags4=;
+        b=ItHmt0V5q7JLG9KagljCoZK0mymRJXBl0424EjvO5JWt5Ubif18K182kpm6L4J6uGH
+         2dltNAhjmv/P70t/WpIOfq0hWsKp5iR249LfpOz3bPQuZDvGHYzZdtI1eFkvas6FzZEv
+         wiPcTsfHK7JTbmk9jJCzsmOF77vgEV1EBiIOlwMXNIWYQclqZbVgXPNliScg8iRa1hbz
+         m83HOkioD8LdGD4JFTEugogf0ebWYwffI4tAFU57wWaCDq9G5I0WRxo4owhWx0kigDF/
+         s3H9uR5ATp39n/txt9K0npUASQpQw04W4cH4yKJMF3XEkK/QVfIWpFJAA30EdLSvnGXm
+         2wpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706615680; x=1707220480;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DWvxEqM2sAiMA41B2v7Y3h0SQJvpGs9/4DqAKQgags4=;
+        b=BPAB+0yLtbVwCLJlTYtHNli9eyeYSg0Onrv+7HWJdDQQy473OQZx7rECugyJPHKkMA
+         aveRa+o+gwrULhmaLbeQc0SMIQQBshqYF0uZ7h96Q/J5p3GR4ZbuS/oH86Vi6spmuyZ1
+         W+P7TC7nyqWX3zPlbxIpFtrIytE7DkjU+jJM4fEl83c6dI713rgV51+G8SD9/9dxEk8i
+         eH6X9JeQDVXoL9baVe5Jh10jJ+wrGmFgrANLSLUk23FeMQIzhfA6OjgWoYy4yaIPw7YT
+         AD5FTLi+2wJC8hylDrrAGVLphVeP5N+Tbfavg3OgIsiaQ0edPZ3HcEKFt9tXFOPKwcy4
+         MbMw==
+X-Gm-Message-State: AOJu0YwJEOGVNqENxZ8C6nkHFyLdKabDHTgxrDHwCfeBONm5CvYqwGUL
+	ckDFv1xq6ufNZnjnc4UH/bJ45kOF+NaQb3xkumYKVMV6YewrUVwqShUdookdxhlOZDoaV4b3IdA
+	aMLneIdSOYdYKo3w68SYp4dJa4m02ZiRCwvkLkw==
+X-Google-Smtp-Source: AGHT+IH9c3sIo7Ld5jc0z4sK97HzRMshtPUDQAZ0vZw+NLsRxgD8BOaqACZQUS5hFwA6GvRwGajwBgs7ZIKruDMHNBQ=
+X-Received: by 2002:a17:90a:bb12:b0:290:304f:e651 with SMTP id
+ u18-20020a17090abb1200b00290304fe651mr4886258pjr.39.1706615680339; Tue, 30
+ Jan 2024 03:54:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-1875071770-1706615584=:1000"
+References: <20240129170014.969142961@linuxfoundation.org>
+In-Reply-To: <20240129170014.969142961@linuxfoundation.org>
+From: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
+Date: Tue, 30 Jan 2024 20:54:29 +0900
+Message-ID: <CAKL4bV6poHN0WqBN7Z=TZ9E3uaLz=h=5Ovn9xHm8y6E-mabKfA@mail.gmail.com>
+Subject: Re: [PATCH 6.6 000/331] 6.6.15-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Hi Greg
 
---8323328-1875071770-1706615584=:1000
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+On Tue, Jan 30, 2024 at 2:22=E2=80=AFAM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.6.15 release.
+> There are 331 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 31 Jan 2024 16:59:28 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.6.15-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.6.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-On Mon, 29 Jan 2024, Bjorn Helgaas wrote:
+6.6.15-rc1 tested.
 
-> On Mon, Jan 29, 2024 at 01:27:09PM +0200, Ilpo J=C3=A4rvinen wrote:
-> > While a device is runtime suspended along with its PCIe hierarchy, the
-> > device could get disconnected. Because of the suspend, the device
-> > disconnection cannot be detected until portdrv/hotplug have resumed. On
-> > runtime resume, pcie_wait_for_link_delay() is called:
-> >=20
-> >   pci_pm_runtime_resume()
-> >     pci_pm_bridge_power_up_actions()
-> >       pci_bridge_wait_for_secondary_bus()
-> >         pcie_wait_for_link_delay()
-> >=20
-> > Because the device is already disconnected, this results in cascading
-> > failures:
-> >=20
-> >   1. pcie_wait_for_link_status() returns -ETIMEDOUT.
-> >=20
-> >   2. After the commit a89c82249c37 ("PCI: Work around PCIe link
-> >      training failures"),
->=20
-> I this this also depends on the merge resolution in 1abb47390350
-> ("Merge branch 'pci/enumeration'").  Just looking at a89c82249c37 in
-> isolation suggests that pcie_wait_for_link_status() returning
-> -ETIMEDOUT would not cause pcie_wait_for_link_delay() to call
-> pcie_failed_link_retrain().
+Build successfully completed.
+Boot successfully completed.
+No dmesg regressions.
+Video output normal.
+Sound output normal.
 
-I was aware of the merge but I seem to have somehow misanalyzed the return=
-=20
-values earlier since I cannot anymore reach my earlier conclusion and now
-ended up agreeing with your analysis that 1abb47390350 broke it.
+Lenovo ThinkPad X1 Carbon Gen10(Intel i7-1260P(x86_64) arch linux)
 
-That would imply there is a logic error in 1abb47390350 in addition to=20
-the LBMS-logic problem in a89c82249c37 my patch is fixing... However, I=20
-cannot pinpoint a single error because there seems to be more than one in=
-=20
-the whole code.
+[    0.000000] Linux version 6.6.15-rc1rv
+(takeshi@ThinkPadX1Gen10J0764) (gcc (GCC) 13.2.1 20230801, GNU ld (GNU
+Binutils) 2.41.0) #1 SMP PREEMPT_DYNAMIC Tue Jan 30 20:22:49 JST 2024
 
-First of all, this is not true for pcie_failed_link_retrain():
- * Return TRUE if the link has been successfully retrained, otherwise FALSE=
-=2E
-If LBMS is not set, the Target Speed quirk is not applied but the function=
-=20
-still returns true. I think that should be changed to early return false
-when no LBMS is present.
+Thanks
 
-But if I make that change, then pcie_wait_for_link_delay() will do=20
-msleep() + return true, and pci_bridge_wait_for_secondary_bus() will call=
-=20
-long ~60s pci_dev_wait().
-
-I'll try to come up another patch to cleanup all that return logic so that=
-=20
-it actually starts to make some sense.
-
-> >      pcie_failed_link_retrain() spuriously detects
-> >      this failure as a Link Retraining failure and attempts the Target
-> >      Speed trick, which also fails.
->=20
-> Based on the comment below, I guess "Target Speed trick" probably
-> refers to the "retrain at 2.5GT/s, then remove the speed restriction
-> and retrain again" part of pcie_failed_link_retrain() (which I guess
-> is basically the entire point of the function)?
-
-Yes. I'll change the wording slightly to make it more obvious and put=20
-(Target Speed quirk) into parenthesis so I can use it below.
-
-> >   3. pci_bridge_wait_for_secondary_bus() then calls pci_dev_wait() whic=
-h
-> >      cannot succeed (but waits ~1 minute, delaying the resume).
-> >=20
-> > The Target Speed trick (in step 2) is only used if LBMS bit (PCIe r6.1
-> > sec 7.5.3.8) is set. For links that have been operational before
-> > suspend, it is well possible that LBMS has been set at the bridge and
-> > remains on. Thus, after resume, LBMS does not indicate the link needs
-> > the Target Speed quirk. Clear LBMS on resume for bridges to avoid the
-> > issue.
-
-
---=20
- i.
-
---8323328-1875071770-1706615584=:1000--
+Tested-by: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
 
