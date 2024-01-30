@@ -1,136 +1,196 @@
-Return-Path: <linux-kernel+bounces-45477-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45478-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29C3484313C
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 00:28:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BBF584313E
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 00:28:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA4F6282353
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:28:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BEEE9B22DAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:28:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BA507D3FD;
-	Tue, 30 Jan 2024 23:27:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23AC779DB1;
+	Tue, 30 Jan 2024 23:27:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ACEWrIRw"
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="AX2A6ypD"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 349747995B
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 23:27:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8CA579943
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 23:27:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706657247; cv=none; b=YIoy4M8NzoLrjiQhuZWmfqLfIi53TPF3Mz2kMmmDuK3mRb1WMsZdM1k6gxTfFy3BgmAX5dnpYI8plzppvFxYFQtNPcePKllO9+zL3LrQ054tBoPWaL5I2PhRM4+zhwkc+wxNn4EZn9aoAVrl4Xps0NIlW8LMPS5pGGTYrXiHc64=
+	t=1706657273; cv=none; b=u7+G1rRnt5zuf2E/gsS0OynnHesvbR0rhwB2qRu7DdUQvjJKuNf1swULZp/eAaW6URHIIx1DUZYLi5E740yvVE8cJi2oy/3m8VifzoeYDi4I4YI1o5x5J4CA3FnVoBef7hApKXCy+Fr1iqf/+NpfbECWobxr1uv1WoaV58hB7fc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706657247; c=relaxed/simple;
-	bh=sOCwHJ8Q2pYqaViGMIp5ahANU0cmFlFhu0ydQtm2Glk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OR863OGSjaNezIKvXMSlVeOMJL4jgwe+xblj6Mvuz/aoZ4xIGHxfpj6WIkcBwWKDU8sxSwqjdhZPea1HOIpRl7a4DGyMqbbPfxLJMcLGaeboAz0atzyJJd2l53re1TcF19Ds+HbyllS32YtVgS8Z00P2dOwcvDlpYgGGcysn7Mw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ACEWrIRw; arc=none smtp.client-ip=209.85.215.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5ce6b5e3c4eso2594582a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 15:27:26 -0800 (PST)
+	s=arc-20240116; t=1706657273; c=relaxed/simple;
+	bh=KfTemhN3MAvuoqt6yf5Kxs1pawxGT8UvKf0mXE649a4=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=AFAm739HokbCPpwV8cFX+2tYVt78mAeqljz6nzWycoQk79y327unUNyBi4o26rMHIZaxKPc9CE1y17LRFRlijc+wt4Ov2CNZdndY5Yf3Bb2uj/lAL/J6/oEsoO1YCAtChqFvotnWI7/svEcr3M5zsbbdFvh3OP5jmn40tWpg3Ho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=AX2A6ypD; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-603f93acd7cso13043447b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 15:27:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706657245; x=1707262045; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nTXXsmwzTjPyQq0o9yr9KqNZv5QrGu6RUP3Khobjfp4=;
-        b=ACEWrIRwGv6nXMKTzmkIjh31/SKyfkyTGjGBnuH3/lktt0Tl3GSBGpLDmoBWTpd/bN
-         yK/Hb13sXMN/4c/GWpgQfbKGKGDa2iTSmYb62vS30LhnlyeQXLNpXCKhDyS9eJn8uoti
-         TxIg+52E3x4SjcXv6q2L6KRQTfzZB/+XumgfU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706657245; x=1707262045;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=google.com; s=20230601; t=1706657270; x=1707262070; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=nTXXsmwzTjPyQq0o9yr9KqNZv5QrGu6RUP3Khobjfp4=;
-        b=X14bhDZI/38gPDGMy0VhXJFqU5hN0YlmNGDiL/1YEhDjvAHxC/VREVG2JcRCy4j+Wo
-         BD5fOrLf8YWGzg3i0EmvEtGKzHqfiKPSzelrbCs4+Jpqz3Zv16FqPMIinBbA3T52mgUV
-         erODhhvYx4VJkARzS/dBpaL9WAoarU3QwD536cUDg/eDjm7UHXd8YBGhIkhOXx0QjOhD
-         mEPAqLzFAeXcNkcdFYhrD0nMCwsJyRPk+5y80YAZpQhXAPvjyivSunuQ8+izUqC3UuNC
-         wB3+CCTI1XN4EiV8Yw09nbTy11PTsgvg5e5F/qQuDoAB9oaukE5gXqqmkpNh9nrBMlu6
-         LXIg==
-X-Gm-Message-State: AOJu0YzhHFAE70evtQMRato84pcECFcMSovRnxdlwH2ASMF528Bvb99h
-	WWGq6u3xnT5ntQL40YNXYDmrhj/LzQuAV6rkA0pir/B6KhR6bui/0pl1Sle/OQ==
-X-Google-Smtp-Source: AGHT+IGCwsMMiN0BtC8YHTfKJ6KWrH0Lo33ohm42Z2CFNJgfmm1TAWJROBMu2J7IWq6ySVlvYEa6tw==
-X-Received: by 2002:a05:6a20:4d93:b0:19a:508a:7f70 with SMTP id gj19-20020a056a204d9300b0019a508a7f70mr5160379pzb.30.1706657245557;
-        Tue, 30 Jan 2024 15:27:25 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXXjT7jAns/aN2p87T+txOMPmldkeF5dTU38Qoz/OnAQZBVKzp+ZEKsoHBXtNdK8V91h3dl3e0v73W9fr4Iig+Ay1d/qEszLvBbBFPFaerwIgEqYYeZhGB76+WUcGf4jTC5SbQBG2cyIRYNoN64XJwHtqDWSO0x7ZDK3+bGOTfeOYsKKqeIyZPnQi7yIxO1IoerDlshlkFQNJkWVmu5QjLz1hl41VzqLRA3x9hnh/GzcNie2j5f+bs28Ei2Z1+ul9g8hpKywRWIEqBYsAp3SI74Q3h5jL9kXhUUIHpZdZ992XWmG6qqo/HrRkIhNw==
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id b13-20020a170902b60d00b001d75c26e857sm7646222pls.288.2024.01.30.15.27.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 15:27:25 -0800 (PST)
-From: Kees Cook <keescook@chromium.org>
-To: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Kees Cook <keescook@chromium.org>,
-	kernel test robot <lkp@intel.com>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nicolas Schier <n.schier@avm.de>,
-	linux-sh@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH] sh: Fix build with CONFIG_UBSAN=y
-Date: Tue, 30 Jan 2024 15:27:23 -0800
-Message-Id: <20240130232717.work.088-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        bh=4LUZBTwgQWOqcUDdzUzVaclv3cSncxEYBiXIU8rhjPo=;
+        b=AX2A6ypDaChfkgaj23qrbsy+YKRTa+OHCweeTH8CB7Zb1fNKwkOXSufQ316+JU3+kJ
+         4yvtd+gcam1mo7tVJNJ9tC1y0gGB9lY1JwOSMf+5fgLTbQ2A6jGXAkKeVuisKefq59xM
+         MJ/kjG/Z7y8I6/I6Vjdwz6sILPcYQ9NI8n37k6y5dIV0T7+uIWxSsq+qTjov3X6Tzm09
+         cOn5HsqxQ2CK/YexloGxySgma737AzyVxk9qNmfKTixRs4+koaTegJGntBBDDoyeKoCP
+         6c1wN0wuabD8yO+MOzwec8bzKgmV5l3mutFvWMgi6TWTYLXYFOAs+2Udiu+BtCKH6GqD
+         nRag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706657270; x=1707262070;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=4LUZBTwgQWOqcUDdzUzVaclv3cSncxEYBiXIU8rhjPo=;
+        b=SeCdp99XFUEGzZEFJ7ut4ksxI+tEmvX/t/TTdvPRf+2FNYgpFCThF56RuP+CrLoZQF
+         xM1xeewyWfrqwoRjQ/mGslEfUUNlMSApptlAPaEg5V/UR10oN1T2B+5aGD7dmX+MUJ5Z
+         pZR+y9iAGKyc+PlQUkK/ODwXDQGeXP3221H3GQ7fX4sllKQcyBdxdPi+5uJIIU0YSsaS
+         V4LVC8wdCrX/Iy4y12NuwGr7MEG7iy48cBOvikyW6gK3XM1I53c7c467fFvjZDcmGZ68
+         rMa2hDtlTSq30P5Wp+1rBenPkc1tJbMGhDNWzRapM37y4tBSIIJnZwUWVvh6WTGgpvZZ
+         qXRw==
+X-Gm-Message-State: AOJu0YxCQwgf0Bey19hwGVHU9m8aChWR+y/JlE/wduw+S6FjK0l7a7U0
+	Fegr9xulWZyg7u0cVn8ScN7oe/WhvoOXltdtNpnKEsqbjgXhZnmTWK5X/8IBU3ElqFjsFHQ/bRL
+	EkQ==
+X-Google-Smtp-Source: AGHT+IGSOgtoOGUWy8KSdhTU0rJMoKxy/AeQnKMPIP2EYsFE4hLAMhJ/aHErXLGnJf88ZCIpOSHUxuMe89A=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:1b10:b0:dc6:9e4a:f950 with SMTP id
+ eh16-20020a0569021b1000b00dc69e4af950mr14836ybb.3.1706657270711; Tue, 30 Jan
+ 2024 15:27:50 -0800 (PST)
+Date: Tue, 30 Jan 2024 15:27:49 -0800
+In-Reply-To: <cce0483f-539b-4be3-838d-af0ec91db8f0@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1307; i=keescook@chromium.org;
- h=from:subject:message-id; bh=sOCwHJ8Q2pYqaViGMIp5ahANU0cmFlFhu0ydQtm2Glk=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBluYXbYzMwvQzdjb4LcQVxPeQiFyjaVT+WJc4sp
- l/6tgT3hKuJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZbmF2wAKCRCJcvTf3G3A
- JnubEAC1rdcv4mXd5Kmfw9RTR96KqhlOzXKsoSCQanjkimlERYXY9Zbr7+F0nO7Rcy+HL0sN42L
- HxNNvF1WpJM9Id4eCbxOBP6rPWCXAt+FsD47sETq/ckp9EnQESMOKNIamMkvOfh1gnNU7JMaEMF
- WJP0uxTKNN+FDY7QBq7khT1XfluHcDmSsBKn6XxS9sfkzb2JOkbGyYZ+eJx7+pP9THs04Pv8jLt
- GlLswu6HU6Je8vHJlkGH6oNFzjVLjOUVSspo7i0AwOt//pb13qzn3sb1G6TQMK96GJRZgbeEDQK
- +P9Cu47L3h2il/lpLq43gLCdV9HRCL8dROb8gTH84U+UXMM/7jvTsLrCbWJIC3UUeEAGP/WHHlu
- W8c8dYNIi8OX9D+63rGA6LHv287P1n3wOcMRxI3tAJIpTNd4THib8DIomIjO9esIEvBGaUnuEm/
- Iv6FV0LbnN8Cbhk7YcovFlcr3gg7uz+GX5J6UJUiaPcUj2/P7F4xvVgASCF1cgkCBHJLW4VNEAg
- R2w8HW7UYVD3JT5hvmVlpzAo13D5SC9Xyd3vFqex7KMcT5QP0Q2e2OL8rS4jrx2p2I/OEvtC6kU
- TCSal4XF0gQfvR5J+xOtJDdv9vuQUOmIBYFg4SlcZGqYI+bFAMcp8hKhTKVJ4l+naLk8sDL2IAA
- 0JimCo7 8nxXvC9w==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20240109230250.424295-1-seanjc@google.com> <20240109230250.424295-17-seanjc@google.com>
+ <5f51fda5-bc07-42ac-a723-d09d90136961@linux.intel.com> <ZaGxNsrf_pUHkFiY@google.com>
+ <cce0483f-539b-4be3-838d-af0ec91db8f0@linux.intel.com>
+Message-ID: <ZbmF9eM84cQhdvGf@google.com>
+Subject: Re: [PATCH v10 16/29] KVM: selftests: Test Intel PMU architectural
+ events on gp counters
+From: Sean Christopherson <seanjc@google.com>
+To: Dapeng Mi <dapeng1.mi@linux.intel.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Kan Liang <kan.liang@linux.intel.com>, Jim Mattson <jmattson@google.com>, 
+	Jinrong Liang <cloudliang@tencent.com>, Aaron Lewis <aaronlewis@google.com>, 
+	Like Xu <likexu@tencent.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-The early boot stub for sh had UBSan instrumentation present where it is
-not supported. Disable it for this part of the build.
+On Mon, Jan 15, 2024, Dapeng Mi wrote:
+>=20
+> On 1/13/2024 5:37 AM, Sean Christopherson wrote:
+> > On Fri, Jan 12, 2024, Dapeng Mi wrote:
+> > > On 1/10/2024 7:02 AM, Sean Christopherson wrote:
+> > > > +/*
+> > > > + * If an architectural event is supported and guaranteed to genera=
+te at least
+> > > > + * one "hit, assert that its count is non-zero.  If an event isn't=
+ supported or
+> > > > + * the test can't guarantee the associated action will occur, then=
+ all bets are
+> > > > + * off regarding the count, i.e. no checks can be done.
+> > > > + *
+> > > > + * Sanity check that in all cases, the event doesn't count when it=
+'s disabled,
+> > > > + * and that KVM correctly emulates the write of an arbitrary value=
+.
+> > > > + */
+> > > > +static void guest_assert_event_count(uint8_t idx,
+> > > > +				     struct kvm_x86_pmu_feature event,
+> > > > +				     uint32_t pmc, uint32_t pmc_msr)
+> > > > +{
+> > > > +	uint64_t count;
+> > > > +
+> > > > +	count =3D _rdpmc(pmc);
+> > > > +	if (!this_pmu_has(event))
+> > > > +		goto sanity_checks;
+> > > > +
+> > > > +	switch (idx) {
+> > > > +	case INTEL_ARCH_INSTRUCTIONS_RETIRED_INDEX:
+> > > > +		GUEST_ASSERT_EQ(count, NUM_INSNS_RETIRED);
+> > > > +		break;
+> > > > +	case INTEL_ARCH_BRANCHES_RETIRED_INDEX:
+> > > > +		GUEST_ASSERT_EQ(count, NUM_BRANCHES);
+> > > > +		break;
+> > > > +	case INTEL_ARCH_CPU_CYCLES_INDEX:
+> > > > +	case INTEL_ARCH_REFERENCE_CYCLES_INDEX:
+> > > Since we already support slots event in below guest_test_arch_event()=
+, we
+> > > can add check for INTEL_ARCH_TOPDOWN_SLOTS_INDEX here.
+> > Can that actually be tested at this point, since KVM doesn't support
+> > X86_PMU_FEATURE_TOPDOWN_SLOTS, i.e. this_pmu_has() above should always =
+fail, no?
+>=20
+> I suppose X86_PMU_FEATURE_TOPDOWN_SLOTS has been supported in KVM.=C2=A0 =
+The
+> following output comes from a guest with latest kvm-x86 code on the Sapph=
+ire
+> Rapids platform.
+>=20
+> sudo cpuid -l 0xa
+> CPU 0:
+> =C2=A0=C2=A0 Architecture Performance Monitoring Features (0xa):
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 version ID=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ =3D 0x2 (2)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 number of counters per logical processor =
+=3D 0x8 (8)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bit width of counter=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 =3D 0x30 (48)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 length of EBX bit vector=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 =3D 0x8 (8)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 core cycle event=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =3D available
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 instruction retired event=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ =3D available
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 reference cycles event=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 =3D available
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 last-level cache ref event=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =3D a=
+vailable
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 last-level cache miss event=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =3D availab=
+le
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 branch inst retired event=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ =3D available
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 branch mispred retired event=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =3D available
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 top-down slots event=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 =3D available
+>=20
+> Current KVM doesn't support fixed counter 3 and pseudo slots event yet, b=
+ut
+> the architectural slots event is supported and can be programed on a GP
+> counter. Current test code can cover this case, so I think we'd better ad=
+d
+> the check for the slots count.
 
-  sh4-linux-ld: arch/sh/boot/compressed/misc.o: in function `zlib_inflate_table':
-  misc.c:(.text+0x670): undefined reference to `__ubsan_handle_shift_out_of_bounds'
-
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202401310416.s8HLiLnC-lkp@intel.com/
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Rich Felker <dalias@libc.org>
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Nicolas Schier <n.schier@avm.de>
-Cc: linux-sh@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- arch/sh/boot/compressed/Makefile | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/sh/boot/compressed/Makefile b/arch/sh/boot/compressed/Makefile
-index b5e29f99c02c..6c6c791a1d06 100644
---- a/arch/sh/boot/compressed/Makefile
-+++ b/arch/sh/boot/compressed/Makefile
-@@ -12,6 +12,7 @@ targets := vmlinux vmlinux.bin vmlinux.bin.gz vmlinux.bin.bz2 \
-            vmlinux.bin.lzma vmlinux.bin.xz vmlinux.bin.lzo $(OBJECTS)
- 
- GCOV_PROFILE := n
-+UBSAN_SANITIZE := n
- 
- #
- # IMAGE_OFFSET is the load offset of the compression loader
--- 
-2.34.1
-
+Can you submit a patch on top, with a changelog that includes justification=
+ that
+that explains exactly what assertions can be made on the top-down slots eve=
+nt
+given the "workload" being measured?  I'm definitely not opposed to adding =
+coverage
+for top-down slots, but at this point, I don't want to respin this series, =
+nor do
+I want to make that change when applying on the fly.
 
