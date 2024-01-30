@@ -1,68 +1,67 @@
-Return-Path: <linux-kernel+bounces-43708-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43709-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97C9A841818
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 02:06:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1024784181A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 02:08:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBE5C1C21A6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 01:06:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0BFF284BA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 01:08:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBDBD2EAF7;
-	Tue, 30 Jan 2024 01:05:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4D6E2E821;
+	Tue, 30 Jan 2024 01:07:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kK6TgkVG"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mh/wCZ7k"
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2378D1DFD9
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:05:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58E37339AD
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:07:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706576759; cv=none; b=ZKRQc1QGkjrZ/os1mqVPR8V9IlM2dOEI4kUtkHeS2Qs2rkatYCbAcDZzpUBeUdAsTwFOD9VQ5VP2u2GXcKJyUFLBuj+9ZOMyP1DTbRMSu6UKd9xQT2t2em1GCiCtN0+AFg/UMOuPqtmtMpQgCYscjmryU5gWLu7++YMqrwIw6lQ=
+	t=1706576875; cv=none; b=Vm3CUqn5CvWZBGGJN1J4Td/ePQakJ4LE2EQWpRJO0D8vLrQc+J/+awbODucdhssyD4R1RwCGpzlUDR9qDUlMOo4c4uXYJbqgu/121KqVM/BzAI4WeeoNfjOIP/Bug0+Gb6RKmBK0tmb+X6cvBpfziQlukOp2Y9SA3a5R3ZBUAO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706576759; c=relaxed/simple;
-	bh=3dyYYkxqXJWSPm5pu+EkoQMQVWxpezoFsFJNhuGoCIs=;
+	s=arc-20240116; t=1706576875; c=relaxed/simple;
+	bh=w1h0N16WUcapd8TAoWs7Im7ROcbBWsE65mlOKFZZNAM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ivROLDIr5wuSDbsvCwls3aGvzDwesAG5ZjQ1S74UGDHJMG3ixcGCEqoJpd/dYv1jLoWBj0CJHvNQ0+W/9bpsJyfxymhXEQE29pRCOhjB5DE6l4dx0xwY+mzWdPPlm3DLD3xUJ99aDkvt+oMsXC6qnfdQZkC8QWzVBWNeVAgOMF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kK6TgkVG; arc=none smtp.client-ip=209.85.167.52
+	 To:Cc:Content-Type; b=VpFJgQOdExe6EDDPZ34dids35/MF/qjMk8rnguYSb7CUiRXKhl3t82vqOBxj45gnq5QQH2pEZ1k1JGHKRdsg4sxmRn/d6EY6O/OwCfNRqdeWxh8srTMvt89KIgLsillB7sBz8bB81DlNZIyTzvF3XCewUXDoD9T5FVjRRo2yFP0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Mh/wCZ7k; arc=none smtp.client-ip=209.85.167.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-510221ab3ebso4598207e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 17:05:56 -0800 (PST)
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-510322d5363so3449863e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 17:07:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706576755; x=1707181555; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706576871; x=1707181671; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=utPiESSNDR+AI47TC84EhLaybxmywBIeykLJp3N7b/8=;
-        b=kK6TgkVG7qNunPxUTn2MbsvSzIMZFk6GRA/GU2wqDbCzGC6b1XscxIN34Njgmwk2d4
-         0aT30iyiI1i6CS2MbJexD/5NoNzBf2us3vQRsc2Yp+pkGkkuhJ2N9mCOYB7pS1hlWXNf
-         bOpD+RhPYuswplX7RWLjkDzZMsXExv4djPCNNlpeWAV1RtXJ+yS0znErmmD/WsUXCz6w
-         Qu8wNQWccNLzhCPNEg8TyUXFtu47q00SamThC1aj3m/i13l+rWl7dDw5auD1ZzMHtdTp
-         Vm3v1n5SMoIaz+d3dstIhE6d5XoKmQgG5KybPGFY7WK4WiM3DJIJJ+Xhl9EF2FWKbznX
-         pFug==
+        bh=+XdaeecGW0oQf3cb0p/gxE71D3OQbZDICKx8BTb0+2M=;
+        b=Mh/wCZ7k8XDTYVZbeauqevRR8HrjeuFaSGXOtVMQF1vGi1wVzs1bjhWnJCHJzL8wTK
+         YFKcJx8PNzzx9JzFwh1c3h/+5MKG7WXt5E82FYSUpglzBproJoTriA6VaFg21veKBFrr
+         j06UehE0MLpYDy7wLQTn4CLx35MZvY/WhI489ygR9LH6RZE/KsPyDVdSsR9rRXuEfx0p
+         oNMQlmMdgquF/1NdM8ht/dqr0EdDaKh91qqB3BZHLTOLg8Xteh09/7cuber2PMI8TuGm
+         V7KYeGlnd4I75M22SjdArYIpXMko7c6O/QuXC8CkaUmoAl0Sh2XiDFBODmz2/uASaCNt
+         kQJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706576755; x=1707181555;
+        d=1e100.net; s=20230601; t=1706576871; x=1707181671;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=utPiESSNDR+AI47TC84EhLaybxmywBIeykLJp3N7b/8=;
-        b=lHSkogcrf/6XCtOM9odUU7xbMuFNf4WTMcpcjFTLIrbmuKUiiNnh+duA0LNR+2h1mZ
-         4aG8ZiqyAWOM/clxCXNnjdVV0Qhc8GzyCj1rgvccokZrLIzpd4L12ULwgrZ+Uk3KMfqm
-         ryOEn7gdGWhcn7kPcsefP8V4RzuYOUahCQNdaC7sgHFJy0X0HIXd1C13YH3XZg1d5Tjw
-         22hhHlOtNdxurcSp+5sV/4gOUkR6zZhPg9cU0mK1z/io3D64L7UntbG1m5p9dT4LVTlG
-         kh6uwtTf/WFnZxYxAzg5hyFlKTWM0l2F64fspJA7WEtrNMNVVy93CkN+sJZMzDWUk/LP
-         WArg==
-X-Gm-Message-State: AOJu0Yx+LNZRDnrkBUnEODesO8K5tONQo6GblncFTXexjJZPtA48tOMn
-	arB53OowhYto9PuU9nMtexaIBWygLOx/J9+6QYmfGDppQK7DwT/zuPX6RqDeOKVo+M9B5oPcJH4
-	LxbYBOczUeVfmcd6n/BbJghrYnHM=
-X-Google-Smtp-Source: AGHT+IEN1tQ9S5IOdm+qmGt+etuGABXHJCkeBOCMHd7t8G9FGNh0YipjMQzXu53+lJf/Yr40gE+/K1jIGrE2j7eq5IQ=
-X-Received: by 2002:ac2:519a:0:b0:511:1b89:1a30 with SMTP id
- u26-20020ac2519a000000b005111b891a30mr74110lfi.63.1706576754843; Mon, 29 Jan
- 2024 17:05:54 -0800 (PST)
+        bh=+XdaeecGW0oQf3cb0p/gxE71D3OQbZDICKx8BTb0+2M=;
+        b=aS6eeGRf+zGw5n+L1r5uzWJSNYTG1nX8uQr8xB/JlOVoYT0Tu1PyQ4gI+7MpOn0juK
+         q4Bnj8DQ9gaJk6z1RG9Uu/S5HmFgH68/b2jSvGTYJwkNXNpVJ3eklPLCazrwqMMz8Ttg
+         qG5FPgzfbi0fdzWjdo1jYRCGIyrVVPnKwkDMNA/7RoELjxc5i7ziJjUOiHCQ/00BgYOB
+         02wyYFHywv8vboNttiurf7FHPEHhuopVkRin4vas14BerCICVtZkLta6nLPGjb7TnzEP
+         +zaXEjwN32CcizUVJvRJdO1F+mG7FIY0Jvbo0ky5ZQAwsZ4xPRCAOiq97OsZD5K85mTP
+         IDZw==
+X-Gm-Message-State: AOJu0Yws81UVVY1/cfJHmbMzToeLH5VDVkhLiycT6VQiJNxqK2TKx7rc
+	kQVjUfXC6nCWamiKrEEdNi3erEuKAQhnaBa+uWB9l3r13hwlkzGlBIMYiSztFge9GTk7z+47eEp
+	ohKHiG7k3hqdaGCyhcZcEsOFEQyg=
+X-Google-Smtp-Source: AGHT+IFsgG9FObPN/wblpnKndRJFW5tL/xEfSRGC7qtD0er79TFifrki5HvcerMcno8no9tOL5ncD0ozhMFy2bX1eW4=
+X-Received: by 2002:a2e:beab:0:b0:2d0:5925:75 with SMTP id a43-20020a2ebeab000000b002d059250075mr346788ljr.37.1706576870869;
+ Mon, 29 Jan 2024 17:07:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,13 +69,11 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20240124025947.2110659-1-nunes.erico@gmail.com>
- <20240124025947.2110659-6-nunes.erico@gmail.com> <CAKGbVbsjNdnoNW2JnxCiyZg-wjU0UK+jgsG18OFaHjdkdOWRQA@mail.gmail.com>
- <CAK4VdL1RYHc11_bP785FYWtT7pqJzJf44QXi2kzXK=uPGwjY2g@mail.gmail.com>
-In-Reply-To: <CAK4VdL1RYHc11_bP785FYWtT7pqJzJf44QXi2kzXK=uPGwjY2g@mail.gmail.com>
+In-Reply-To: <20240124025947.2110659-1-nunes.erico@gmail.com>
 From: Qiang Yu <yuq825@gmail.com>
-Date: Tue, 30 Jan 2024 09:05:42 +0800
-Message-ID: <CAKGbVbumNMYXTCDoSbWBj3NnODPZuWi4mV1QgqoadnV-X1PVBA@mail.gmail.com>
-Subject: Re: [PATCH v2 5/8] drm/lima: handle spurious timeouts due to high irq latency
+Date: Tue, 30 Jan 2024 09:07:36 +0800
+Message-ID: <CAKGbVbtAe5jnAwb7O8epq3g4FqLC-ggof3D=5gO9hJf5OuH0OQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/8] drm/lima: fixes and improvements to error recovery
 To: Erico Nunes <nunes.erico@gmail.com>
 Cc: anarsoul@gmail.com, christian.koenig@amd.com, 
 	dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org, 
@@ -86,94 +83,60 @@ Cc: anarsoul@gmail.com, christian.koenig@amd.com,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 30, 2024 at 6:55=E2=80=AFAM Erico Nunes <nunes.erico@gmail.com>=
- wrote:
->
-> On Wed, Jan 24, 2024 at 1:38=E2=80=AFPM Qiang Yu <yuq825@gmail.com> wrote=
-:
-> >
-> > On Wed, Jan 24, 2024 at 11:00=E2=80=AFAM Erico Nunes <nunes.erico@gmail=
-com> wrote:
-> > >
-> > > There are several unexplained and unreproduced cases of rendering
-> > > timeouts with lima, for which one theory is high IRQ latency coming f=
-rom
-> > > somewhere else in the system.
-> > > This kind of occurrence may cause applications to trigger unnecessary
-> > > resets of the GPU or even applications to hang if it hits an issue in
-> > > the recovery path.
-> > > Panfrost already does some special handling to account for such
-> > > "spurious timeouts", it makes sense to have this in lima too to reduc=
-e
-> > > the chance that it hit users.
-> > >
-> > > Signed-off-by: Erico Nunes <nunes.erico@gmail.com>
-> > > ---
-> > >  drivers/gpu/drm/lima/lima_sched.c | 31 ++++++++++++++++++++++++++++-=
---
-> > >  1 file changed, 28 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/drivers/gpu/drm/lima/lima_sched.c b/drivers/gpu/drm/lima=
-/lima_sched.c
-> > > index c3bf8cda8498..814428564637 100644
-> > > --- a/drivers/gpu/drm/lima/lima_sched.c
-> > > +++ b/drivers/gpu/drm/lima/lima_sched.c
-> > > @@ -1,6 +1,7 @@
-> > >  // SPDX-License-Identifier: GPL-2.0 OR MIT
-> > >  /* Copyright 2017-2019 Qiang Yu <yuq825@gmail.com> */
-> > >
-> > > +#include <linux/hardirq.h>
-> > >  #include <linux/iosys-map.h>
-> > >  #include <linux/kthread.h>
-> > >  #include <linux/slab.h>
-> > > @@ -401,9 +402,35 @@ static enum drm_gpu_sched_stat lima_sched_timedo=
-ut_job(struct drm_sched_job *job
-> > >         struct lima_sched_pipe *pipe =3D to_lima_pipe(job->sched);
-> > >         struct lima_sched_task *task =3D to_lima_task(job);
-> > >         struct lima_device *ldev =3D pipe->ldev;
-> > > +       struct lima_ip *ip =3D pipe->processor[0];
-> > > +       int i;
-> > > +
-> > > +       /*
-> > > +        * If the GPU managed to complete this jobs fence, the timeou=
-t is
-> > > +        * spurious. Bail out.
-> > > +        */
-> > > +       if (dma_fence_is_signaled(task->fence)) {
-> > > +               DRM_WARN("%s spurious timeout\n", lima_ip_name(ip));
-> > > +               return DRM_GPU_SCHED_STAT_NOMINAL;
-> > > +       }
-> > > +
-> > > +       /*
-> > > +        * Lima IRQ handler may take a long time to process an interr=
-upt
-> > > +        * if there is another IRQ handler hogging the processing.
-> > > +        * In order to catch such cases and not report spurious Lima =
-job
-> > > +        * timeouts, synchronize the IRQ handler and re-check the fen=
-ce
-> > > +        * status.
-> > > +        */
-> > > +       for (i =3D 0; i < pipe->num_processor; i++)
-> > > +               synchronize_irq(pipe->processor[i]->irq);
-> > > +
-> > I have a question, this timeout handler will be called when GP/PP error=
- IRQ.
-> > If we call synchronize_irq() in the IRQ handler, will we block ourselve=
-s here?
->
-> If I understand correctly, this handler is only called by drm_sched in
-> a workqueue, not by gp or pp IRQ and it also does not run in any IRQ
-> context.
-> So I think this sort of lockup can't happen here.
->
-Oh, right. I miss understand the drm_sched_fault() which still call the tim=
-eout
-handler in work queue instead of caller thread.
+Serial is Reviewed-by: QIang Yu <yuq825@gmail.com>
 
-> I ran some additional tests with both timeouts and actual error IRQs
-> (locally modified Mesa to produce some errored jobs) and was not able
-> to cause any lockup related to this.
+On Wed, Jan 24, 2024 at 11:00=E2=80=AFAM Erico Nunes <nunes.erico@gmail.com=
+> wrote:
 >
-> Erico
+> v1 reference:
+> https://patchwork.kernel.org/project/dri-devel/cover/20240117031212.11040=
+34-1-nunes.erico@gmail.com/
+>
+> Changes v1 -> v2:
+> - Dropped patch 1 which aimed to fix
+> https://gitlab.freedesktop.org/mesa/mesa/-/issues/8415 .
+> That will require more testing and an actual fix to the irq/timeout
+> handler race. It can be solved separately so I am deferring it to a
+> followup patch and keeping that issue open.
+>
+> - Added patches 2 and 4 to cover "reset time out" and bus stop bit to
+> hard reset in gp as well.
+>
+> - Added handling of all processors in synchronize_irq in patch 5 to
+> cover multiple pp. Dropped unnecessary duplicate fence in patch 5.
+>
+> - Added patch 7 in v2. After some discussion in patch 4 (v1), it seems
+> to be reasonable to bump our timeout value so that we further decrease
+> the chance of users actually hitting any of these timeouts by default.
+>
+> - Reworked patch 8 in v2. Since I broadened the work to not only focus
+> in pp anymore, I also included the change to the other blocks as well.
+>
+> - Collected some reviews and acks in unmodified patches.
+>
+>
+> Erico Nunes (8):
+>   drm/lima: reset async_reset on pp hard reset
+>   drm/lima: reset async_reset on gp hard reset
+>   drm/lima: set pp bus_stop bit before hard reset
+>   drm/lima: set gp bus_stop bit before hard reset
+>   drm/lima: handle spurious timeouts due to high irq latency
+>   drm/lima: remove guilty drm_sched context handling
+>   drm/lima: increase default job timeout to 10s
+>   drm/lima: standardize debug messages by ip name
+>
+>  drivers/gpu/drm/lima/lima_ctx.c      |  2 +-
+>  drivers/gpu/drm/lima/lima_ctx.h      |  1 -
+>  drivers/gpu/drm/lima/lima_gp.c       | 39 +++++++++++++++++++++-------
+>  drivers/gpu/drm/lima/lima_l2_cache.c |  6 +++--
+>  drivers/gpu/drm/lima/lima_mmu.c      | 18 ++++++-------
+>  drivers/gpu/drm/lima/lima_pmu.c      |  3 ++-
+>  drivers/gpu/drm/lima/lima_pp.c       | 37 ++++++++++++++++++++------
+>  drivers/gpu/drm/lima/lima_sched.c    | 38 ++++++++++++++++++++++-----
+>  drivers/gpu/drm/lima/lima_sched.h    |  3 +--
+>  9 files changed, 107 insertions(+), 40 deletions(-)
+>
+> --
+> 2.43.0
+>
 
