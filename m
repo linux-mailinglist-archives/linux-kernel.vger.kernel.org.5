@@ -1,205 +1,120 @@
-Return-Path: <linux-kernel+bounces-44017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44018-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23BCB841C43
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:01:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 554DA841C45
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:02:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 478791C22F4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:01:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87BBC1C22BE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:02:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A94DF45006;
-	Tue, 30 Jan 2024 07:01:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A32045006;
+	Tue, 30 Jan 2024 07:02:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IiyLNfU2"
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kVztop2m"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CF203D393
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 07:01:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 525DB537E0;
+	Tue, 30 Jan 2024 07:02:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706598101; cv=none; b=PEuZilUfvDhQnzb0IcLeKmGdMxT+1m7ktNWl0ykFMXeWSMkG4Vte9zbj3KLfZR+y0lpoQsbG3DzceL41RorDIdjb4iWA1Old5VaL1/NJp19ompvM6nzmg69ExhyYiHSWJqvr2VEIjidAicdCsrW7S7Uf9Zn3kShP9kYdD0IETBQ=
+	t=1706598145; cv=none; b=q/PTmREzEUc71FY5c/oJrCqs0yXLvAhCZ2TwiuqcC1qWFso6v4IMQydni9McrOTgznChzf/A3mok6bYQNtF06Mn/8rGtNQ1jpHPJvCW9giPennhLrMC3gCXmq4NHXyt+mUxGrvNuebzAabiuoJKevvwQQsy5txMR8dWiUi7gJx4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706598101; c=relaxed/simple;
-	bh=7eSCJY8cwbuk6cq40TPiIxJx23JeEYA5nQHbWt/ogAc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ek5TaD2I3hOYfqWASFz4tnLcTnIsLf5quKCx6e7zqnJDKIWDnf6mhoFWLTUcP+aBDwHuNCtxIo1lGnYUwiCRaAaqfovcA1OxLOIPuG/StL7p1VpsOGqI945Sn7UwYAvtmyNeRlfIgoVIiyhRyZRv7vofheZrWYehcuoXHmskIQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IiyLNfU2; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2cf45305403so34200281fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 23:01:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706598098; x=1707202898; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FOcr0/zytsqYYa9EmZhgnI5xTH3X0lz+GqOcsR1oGH0=;
-        b=IiyLNfU2ufHBNaXc8ipQNr+ok94MqK8de48ULuhq5txRcWc0ntUjwOtSZ+VJopzHOh
-         87a834nCWOcB5gBGHB6kGIuF0iYH9wViLbmnYCzsRAPBEev7kifrOXISgrn9Cz10zuDF
-         caql7utpzj91QjKB8TI5bbOBw6loI85T3+syiZpyYLp/ye+qDP1sHzGri647GgPN6bCa
-         YMaE+lZV8KfxotmJvIrwO7ET5XpSkRKL5aK5yvrd8d6jIuQki2+qP5vB4HP0nS2lLnqp
-         rS/AMCzBkPQJ5VSeBWK2TqdPoKDt8UDzwRp+rxxB5j+2qzCRYaAykQZRtvbgXbhtfWJa
-         8JxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706598098; x=1707202898;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FOcr0/zytsqYYa9EmZhgnI5xTH3X0lz+GqOcsR1oGH0=;
-        b=ULpdm26ZP7Z3/h/288ljwJhEWQwHH2DfHlFUvZ56iwLQU7x7Xv6d+FypNIkHS8q0as
-         Ts5NjqeQYNADpV4Yfl/L2tT6VDM96O+bXJp2z3KlsVaOecIEUroC+v9HgLAfV6TBGcs1
-         LL8sVD20Ivfw8I7TJUUPPbxMFUWRyp1ldCphSSqUZ8d9cveyxDD7puSz8Pm6MTpsoHwQ
-         bKNYa5qh9mGhmvaUp5zC9wn2YNHhoOGqC5YoYndxYcT4aIs7jSs+bfFL8sFlNmnuWir0
-         bjX6EfNQtqm5aKylEW+PFMxozjVHz9+s4HmwZM1BM+qpRmkX7axys38cD3uJB5Q3r5oE
-         e/sg==
-X-Gm-Message-State: AOJu0YyIA4/yiFzzuPnzWc7ipiefr91Z02FYnNo3WPQeJiN0+ubMBoe9
-	EwpL5qMFWFbSVBqRFotfHCr4IT0qHZ3EjxHQVWRGnaBhgY8g688ifsSXux8HnyTazz/VYaQHUEO
-	bsgMQU7/uZ0ANgJKu7/pBXk8juAI=
-X-Google-Smtp-Source: AGHT+IFCMFLmoHrPCGUWiRvRoNh1CqYnql8wz3vSCot8F+nrDokESSEpzx5qasJqkWZKkJUy/zxKred38mjbt1wpfiQ=
-X-Received: by 2002:a2e:7c08:0:b0:2cf:1be6:70f4 with SMTP id
- x8-20020a2e7c08000000b002cf1be670f4mr4723552ljc.44.1706598097823; Mon, 29 Jan
- 2024 23:01:37 -0800 (PST)
+	s=arc-20240116; t=1706598145; c=relaxed/simple;
+	bh=FT1jnfuKqKM3F718W+//e/OcgVZxuXQALNqZiQba8qE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jVvpiKr0RHXHhpj+GZsrbBPQrzwCwce7dUT9kOs9OrpbIqHV5mjv22nEvwmOr5q6yRw2cb+wJ7vXhASohdl9fsfbBZ/t+jn9Dgr0wLZVI008Ryfk09hhO7UO4p4P6RybgMzf6PpGkQ6QyljSvN3X+yrcqbqeaPEe5YmjgEdFUYk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kVztop2m; arc=none smtp.client-ip=192.55.52.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706598142; x=1738134142;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=FT1jnfuKqKM3F718W+//e/OcgVZxuXQALNqZiQba8qE=;
+  b=kVztop2mTUYi5IlEweHbjthplAzB5j/gp2r/OzHukWHQzSgULrHGixvw
+   iys2FhtoBZ/QlHEdunFp1WElpRCW0D6sgEOe/8hnKdogoKyrdM++RpVqu
+   9RaWn0EejEa2YS8V+GwOdkv7DpQiOFoiD8XFZpZ9p5Ei+5n260BL3Sh+e
+   JepuIgRHmGr8bvkst5q7W2tBsOpEWpDr9aLhP1Nw/IHhLt7PZwUC0CMNE
+   f8GQcjZbYN4b5xMGMi5UZjUahGPdJxqHNBYrNvA7Xye76H7aGrFeg64YA
+   M98BO3Y8iDLISnYlcZaAg73CBfQHn4yUax/puOqs3hwP5XuwATg5FPThT
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="402059455"
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="402059455"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 23:02:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="3714656"
+Received: from sgruszka-mobl.ger.corp.intel.com (HELO localhost) ([10.252.42.115])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 23:02:20 -0800
+Date: Tue, 30 Jan 2024 08:02:17 +0100
+From: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Linux PM <linux-pm@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH v2 02/10] PM: sleep: stats: Use an array of step failure
+ counters
+Message-ID: <Zbie+bepNv1xob3J@linux.intel.com>
+References: <5770175.DvuYhMxLoT@kreacher>
+ <2192653.irdbgypaU6@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240129175423.1987-1-ryncsn@gmail.com> <20240129175423.1987-4-ryncsn@gmail.com>
- <87sf2fgxi5.fsf@yhuang6-desk2.ccr.corp.intel.com>
-In-Reply-To: <87sf2fgxi5.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From: Kairui Song <ryncsn@gmail.com>
-Date: Tue, 30 Jan 2024 15:01:20 +0800
-Message-ID: <CAMgjq7D-YG406WeSGuDzaQ1=ZJ8DpO99JCcMdaptrhqLdtuRkg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/7] mm/swap: always account swapped in page into
- current memcg
-To: "Huang, Ying" <ying.huang@intel.com>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
-	Chris Li <chrisl@kernel.org>, Hugh Dickins <hughd@google.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Matthew Wilcox <willy@infradead.org>, Michal Hocko <mhocko@suse.com>, 
-	Yosry Ahmed <yosryahmed@google.com>, David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2192653.irdbgypaU6@kreacher>
 
-On Tue, Jan 30, 2024 at 2:14=E2=80=AFPM Huang, Ying <ying.huang@intel.com> =
-wrote:
->
-> Kairui Song <ryncsn@gmail.com> writes:
->
-> > From: Kairui Song <kasong@tencent.com>
-> >
-> > Currently, mem_cgroup_swapin_charge_folio is always called with
-> > mm =3D=3D NULL, except in swapin_direct.
-> >
-> > swapin_direct is only used when swapin should skip readahead
-> > and swapcache (SWP_SYNCHRONOUS_IO). All other callers of
-> > mem_cgroup_swapin_charge_folio are for swapin that should
-> > not skip readahead and cache.
-> >
-> > This could cause swapin charging to behave differently depending
-> > on swap device, which is unexpected.
-> >
-> > This is currently not happening because the only caller of
-> > swapin_direct is the direct anon page fault path, where mm always
-> > equals to current->mm, but will no longer be true if swapin_direct
-> > is shared and have other callers (eg, swapoff) to share the
-> > readahead skipping logic.
-> >
-> > So make swapin_direct also pass NULL for mm, so swpain charge
-> > will behave consistently and not effected by type of swapin device
-> > or readahead policy.
-> >
-> > After this, the second param of mem_cgroup_swapin_charge_folio is
-> > never used now, so it can be safely dropped.
-> >
-> > Signed-off-by: Kairui Song <kasong@tencent.com>
-> > ---
-> >  include/linux/memcontrol.h | 4 ++--
-> >  mm/memcontrol.c            | 5 ++---
-> >  mm/swap_state.c            | 7 +++----
-> >  3 files changed, 7 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index 20ff87f8e001..540590d80958 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -693,7 +693,7 @@ static inline int mem_cgroup_charge(struct folio *f=
-olio, struct mm_struct *mm,
-> >  int mem_cgroup_hugetlb_try_charge(struct mem_cgroup *memcg, gfp_t gfp,
-> >               long nr_pages);
-> >
-> > -int mem_cgroup_swapin_charge_folio(struct folio *folio, struct mm_stru=
-ct *mm,
-> > +int mem_cgroup_swapin_charge_folio(struct folio *folio,
-> >                                 gfp_t gfp, swp_entry_t entry);
-> >  void mem_cgroup_swapin_uncharge_swap(swp_entry_t entry);
-> >
-> > @@ -1281,7 +1281,7 @@ static inline int mem_cgroup_hugetlb_try_charge(s=
-truct mem_cgroup *memcg,
-> >  }
-> >
-> >  static inline int mem_cgroup_swapin_charge_folio(struct folio *folio,
-> > -                     struct mm_struct *mm, gfp_t gfp, swp_entry_t entr=
-y)
-> > +             gfp_t gfp, swp_entry_t entry)
-> >  {
-> >       return 0;
-> >  }
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index e4c8735e7c85..5852742df958 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -7306,8 +7306,7 @@ int mem_cgroup_hugetlb_try_charge(struct mem_cgro=
-up *memcg, gfp_t gfp,
-> >   *
-> >   * Returns 0 on success. Otherwise, an error code is returned.
-> >   */
-> > -int mem_cgroup_swapin_charge_folio(struct folio *folio, struct mm_stru=
-ct *mm,
-> > -                               gfp_t gfp, swp_entry_t entry)
-> > +int mem_cgroup_swapin_charge_folio(struct folio *folio, gfp_t gfp, swp=
-_entry_t entry)
-> >  {
-> >       struct mem_cgroup *memcg;
-> >       unsigned short id;
-> > @@ -7320,7 +7319,7 @@ int mem_cgroup_swapin_charge_folio(struct folio *=
-folio, struct mm_struct *mm,
-> >       rcu_read_lock();
-> >       memcg =3D mem_cgroup_from_id(id);
-> >       if (!memcg || !css_tryget_online(&memcg->css))
-> > -             memcg =3D get_mem_cgroup_from_mm(mm);
-> > +             memcg =3D get_mem_cgroup_from_current();
->
-> The behavior of get_mem_cgroup_from_mm(NULL) and
-> get_mem_cgroup_from_current() isn't same exactly.  Are you sure that
-> this is OK?
+On Mon, Jan 29, 2024 at 05:11:57PM +0100, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> Instead of using a set of individual struct suspend_stats fields
+> representing suspend step failure counters, use an array of counters
+> indexed by enum suspend_stat_step for this purpose, which allows
+> dpm_save_failed_step() to increment the appropriate counter
+> automatically, so that its callers don't need to do that directly.
+> 
+> It also allows suspend_stats_show() to carry out a loop over the
+> counters array to print their values.
+> 
+> Because the counters cannot become negative, use unsigned int for
+> representing them.
+> 
+> The only user-observable impact of this change is a different
+> ordering of entries in the suspend_stats debugfs file which is not
+> expected to matter.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+> 
+> v1 -> v2:
+>    * Use one cell less in suspend_stats.step_failures[] to avoid
+>      introducing an unused array cell (Stanislaw).
+> 
+> @Stanislaw: This is different from setting SUSPEND_FREEZE to 0, because
+> that would complicate printing in the sysfs attributes and the debugfs
+> code, so I've not added the R-by.
 
-Hi Ying, thank you very much for the careful review.
+LGTM.
 
-IIUC, usually get_mem_cgroup_from_mm(NULL) is for allocations without
-mm context (after set_active_memcg), so remote charging cgroup is used
-first.
+Reviewed-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
 
-But for swap cases it's a bit special, all swapin are issued from
-userspace, so remote charging isn't useful. Not sure if it even may
-potentially lead to charging into the wrong cgroup.
+> +	for (step = SUSPEND_FREEZE; step <= SUSPEND_NR_STEPS; step++)
+> +		seq_printf(s, "failed_%s: %u\n", suspend_step_names[step],
+> +			   suspend_stats.step_failures[step-1]);
 
-And for this callsite, it's called only when `if (!memcg ||
-!css_tryget_online(&memcg->css))` is true, only case I know is swapoff
-(and the memcg is dead) case, or there are some leaks. The behaviour
-of swapoff case has been discussed previously, so currently we just
-charge it into the current task's memcg.
+Consider (in separate patch) removing SUSPEND_NONE from suspend_step_names[]
+and use step-1 for it as well.
 
-This is indeed a potential behaviour change though, I can change it
-back to get_mem_cgroup_from_mm(NULL), and post another patch later for
-this and discuss in more details.
-
->
-> --
-> Best Regards,
-> Huang, Ying
+Regards
+Stanislaw
 
