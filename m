@@ -1,70 +1,92 @@
-Return-Path: <linux-kernel+bounces-44019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2EC2841C48
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:03:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C42E841C49
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:03:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9A7B1C24341
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:03:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3EFB71C24D81
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:03:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 536434C60E;
-	Tue, 30 Jan 2024 07:02:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA7F05380F;
+	Tue, 30 Jan 2024 07:03:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iRPxINLe"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NUcF3ZIo"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39ECD4F1EA;
-	Tue, 30 Jan 2024 07:02:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FA0952F6F
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 07:03:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706598177; cv=none; b=aid86MKNdRmSGucBBvsCK+baWUzZu/0vwRZKr/LnYZMJnzu71odvc1KZFj5gcH8M6Esi8KVydhNHPYJmMB/k4zU38fMJ6BQp5Xx/Z8UEfDY45S0JW9xdLsG59ohmqNDxM64XAu6Dm1hhy4pPWmY4nyFQZ0ghgg/uDia5xFtmCtM=
+	t=1706598193; cv=none; b=ANRRNjnswjq6KbS9zWs42AQCGeRHJ/2DYXWPDoWuVXeXITEh8y3QyURJZRROmiDFUtzCY4jJXCPxe+k4saRFYd3dZebxBTHEWH0s54pCgE5P7ax1LXDfJEwqSUmOczZzinLJikmVseCj2sBJoV1Pbb3OioceI0QaFraHOk2sLCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706598177; c=relaxed/simple;
-	bh=AEZ7a4tJowAP2F0Ky8MCjN2LuXRMiR/y3YCMbr8vtYQ=;
+	s=arc-20240116; t=1706598193; c=relaxed/simple;
+	bh=Td4wMLwtaAM1BcTb9dHxlFHMFlK9bEegT/g6so9iTTM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iaCuAl7kO1Whuh/KdJSLaToJtZLqhcvY72IOePJDDKxF/mnbs3p/SGbjiybVTMm+DVLJHOiv+w7C3X4Tyu3ieiYuNd27to1rtKhdY6KhpquftmsgxjQVFcby82hPKJi8CCgTc4FfnAEJ56aVzCbesJFUr9FTHUO5aVtgUkp2cEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iRPxINLe; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706598176; x=1738134176;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=AEZ7a4tJowAP2F0Ky8MCjN2LuXRMiR/y3YCMbr8vtYQ=;
-  b=iRPxINLe81FXk8Dh6UVEFqecR3g9/K4ppJ8EK/P3avpXUTBbnYT3hfqc
-   HgS8rncAyFJJC32yCj5luV8UNsi6qidSVPrXiafTdqDrQszDWuvxbtdAe
-   5C2bak6SivP7lG6T6TsY+Dd69NlRc5wEnqXSJkbZqeBwJnDH9GlkLulrQ
-   /mnJP50Nt1xXtKt87k/GwZKZBNc93Ya+FnrCBNRj952zUCKc6ncaGJY1R
-   75R1Hyh7keuTuoPFlTLrqfI9dfWOwHuJddqqUBj2mA9KFtUTcNVaUmK7b
-   l7Hyjr3osQ1YBpZQzPrrpp8sM2p+TPoiA0INFuYolmlsRjtAHohQ87MTM
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="3064200"
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="3064200"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 23:02:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="737679411"
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="737679411"
-Received: from sgruszka-mobl.ger.corp.intel.com (HELO localhost) ([10.252.42.115])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 23:02:53 -0800
-Date: Tue, 30 Jan 2024 08:02:51 +0100
-From: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: Linux PM <linux-pm@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH v2 03/10] PM: sleep: stats: Use unsigned int for success
- and failure counters
-Message-ID: <ZbifGzqpXauGyGwc@linux.intel.com>
-References: <5770175.DvuYhMxLoT@kreacher>
- <2941406.e9J7NaK4W3@kreacher>
+	 Content-Type:Content-Disposition:In-Reply-To; b=SvWVpjkBfNnOHz872VZwQ4b1MyWAN7KsdvFOdMexptCYGbsb8bEV1ItWeGpeQ1S+347OeWNmOJNUcAnrf/Y5tU76f76+2IXOCSl7n9FoNIT2dh7UNEgSwOxo+ngRZ7TOq0BxJ1qflZ9190MQi+zYNmh9c3s+ZolMRAVTGVZVCSI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NUcF3ZIo; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40e80046246so19227945e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 23:03:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706598190; x=1707202990; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pTUETpTJenxWl+VtgzWBaNr9s4KsWn5wef5pbRbJgpM=;
+        b=NUcF3ZIoFrGDdigwU6xbaALniYLAzFhBF757BadI2Kq2CCL3qfWAhZp3hPYs3JdvOp
+         FnnSUkeefpeOJozE+dJ+KtsJJ78iXmvMeyNIf8qpNkc21zKw4QokPenweTU9t/mPDyx4
+         mrB38Uq+Esgz+2N+M/zqkSG16NmaGgwVp1jLUPJ4AQB7FSbapNWPOQSk8uR/bxYD3udO
+         de55tcep3aCQjlZF4C2VroIkUWus435Q4A6SnoEhW/QnDJLWDHFQqTcZNIrF4SMXPL8m
+         xJOSSpglw6CQc20NMBBbjo65SQ6nqz4BYJmkejjEVWD82klcLtwk7PGoE0OvFTr5jRcS
+         WTMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706598190; x=1707202990;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pTUETpTJenxWl+VtgzWBaNr9s4KsWn5wef5pbRbJgpM=;
+        b=BYmWpTfYaGkfs4CPIETT1a1Px3t6zWLZkM65sjUZYewVQnNWqOvk47u4VaKlobKZ88
+         AyHW2kJsn0lB1jJCFVJn2fUdSKlfz4QoLgl5Rm9H6KDyMRpwTtC0a8weUvIfbIaj8MrR
+         +ZmfM9eu/iBQDQCFdJtCIQri3wP2wT6jN3HwLCWS9NRryGnJ/a5BuMl/ZQDzeI7q0VGp
+         NUayRKWiLtZVhk/MIISI5rSddYQRe93lRx+Tg8cGciv6sHt6f/CpFpCX3KVmY9kLKEY8
+         Qw6T1DxC+dOb/rJmH9uFguAL2QmuH02p7XOdjf2vUNAg9Nr7xzAM8NlKs7ZfI+4b1WbX
+         1tSA==
+X-Gm-Message-State: AOJu0YxbGCiuyFLqzRfEk66QZU0VSHeN2sNhxjzxDfyVk1qF92alEPlW
+	SpAh/kCvO0v0HlrLQE1SwhK5V5epzFPs30ztcECofYWQfGXZecdImpiroh/eOtk=
+X-Google-Smtp-Source: AGHT+IHbCCX5DQ9Y2Dy7lH1GSPWxYoUn+4UQGO+6fgTIAYSzXOlfPa6yFbgtqHrSBqsTJXSwy4N8oQ==
+X-Received: by 2002:a05:600c:4fd0:b0:40e:f972:9901 with SMTP id o16-20020a05600c4fd000b0040ef9729901mr643965wmq.4.1706598189546;
+        Mon, 29 Jan 2024 23:03:09 -0800 (PST)
+Received: from eldamar.lan (c-82-192-242-114.customer.ggaweb.ch. [82.192.242.114])
+        by smtp.gmail.com with ESMTPSA id n20-20020a05600c3b9400b0040eee852a3dsm8839236wms.10.2024.01.29.23.03.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 23:03:08 -0800 (PST)
+Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
+Received: by eldamar.lan (Postfix, from userid 1000)
+	id 09541BE2DE0; Tue, 30 Jan 2024 08:03:08 +0100 (CET)
+Date: Tue, 30 Jan 2024 08:03:07 +0100
+From: Salvatore Bonaccorso <carnil@debian.org>
+To: Linux regressions mailing list <regressions@lists.linux.dev>
+Cc: Patrice Duroux <patrice.duroux@gmail.com>,
+	Lewis Huang <lewis.huang@amd.com>,
+	Daniel Wheeler <daniel.wheeler@amd.com>,
+	Phil Hsieh <phil.hsieh@amd.com>,
+	Rodrigo Siqueira <rodrigo.siqueira@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Mario Limonciello <mario.limonciello@amd.com>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: Bug#1061449: linux-image-6.7-amd64: a boot message from amdgpu
+Message-ID: <ZbifK8M99hTDIsD4@eldamar.lan>
+References: <170612149675.7169.757906919183146487.reportbug@kos-moceratops.home>
+ <ZbUB0YWxEET3Y0xA@eldamar.lan>
+ <acf203a8-b612-437c-a464-228f45e1c694@leemhuis.info>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,69 +95,40 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2941406.e9J7NaK4W3@kreacher>
+In-Reply-To: <acf203a8-b612-437c-a464-228f45e1c694@leemhuis.info>
 
-On Mon, Jan 29, 2024 at 05:13:14PM +0100, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> Change the type of the "success" and "fail" fields in struct
-> suspend_stats to unsigned int, because they cannot be negative.
-> 
-> No intentional functional impact.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Reviewed-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+Hi,
 
-> ---
+[for this reply dropping the Debian bugreport to avoid later followups
+sending the ack to the mailinglist and adding noise]
+
+On Sun, Jan 28, 2024 at 11:44:59AM +0100, Linux regression tracking (Thorsten Leemhuis) wrote:
+> On 27.01.24 14:14, Salvatore Bonaccorso wrote:
+> >
+> > In Debian (https://bugs.debian.org/1061449) we got the following
+> > quotred report:
+> > 
+> > On Wed, Jan 24, 2024 at 07:38:16PM +0100, Patrice Duroux wrote:
+> >>
+> >> Giving a try to 6.7, here is a message extracted from dmesg:
+> >> [    4.177226] ------------[ cut here ]------------
+> >> [    4.177227] WARNING: CPU: 6 PID: 248 at
+> >> drivers/gpu/drm/amd/amdgpu/../display/dc/link/link_factory.c:387
+> >> construct_phy+0xb26/0xd60 [amdgpu]
+> > [...]
 > 
-> v1 -> v2: New patch.
+> Not my area of expertise, but looks a lot like a duplicate of
+> https://gitlab.freedesktop.org/drm/amd/-/issues/3122#note_2252835
 > 
-> ---
->  include/linux/suspend.h |    4 ++--
->  kernel/power/main.c     |    6 +++---
->  2 files changed, 5 insertions(+), 5 deletions(-)
-> 
-> Index: linux-pm/include/linux/suspend.h
-> ===================================================================
-> --- linux-pm.orig/include/linux/suspend.h
-> +++ linux-pm/include/linux/suspend.h
-> @@ -56,8 +56,8 @@ enum suspend_stat_step {
->  
->  struct suspend_stats {
->  	unsigned int step_failures[SUSPEND_NR_STEPS];
-> -	int	success;
-> -	int	fail;
-> +	unsigned int success;
-> +	unsigned int fail;
->  #define	REC_FAILED_NUM	2
->  	int	last_failed_dev;
->  	char	failed_devs[REC_FAILED_NUM][40];
-> Index: linux-pm/kernel/power/main.c
-> ===================================================================
-> --- linux-pm.orig/kernel/power/main.c
-> +++ linux-pm/kernel/power/main.c
-> @@ -339,8 +339,8 @@ static ssize_t _name##_show(struct kobje
->  }								\
->  static struct kobj_attribute _name = __ATTR_RO(_name)
->  
-> -suspend_attr(success, "%d\n");
-> -suspend_attr(fail, "%d\n");
-> +suspend_attr(success, "%u\n");
-> +suspend_attr(fail, "%u\n");
->  suspend_attr(last_hw_sleep, "%llu\n");
->  suspend_attr(total_hw_sleep, "%llu\n");
->  suspend_attr(max_hw_sleep, "%llu\n");
-> @@ -458,7 +458,7 @@ static int suspend_stats_show(struct seq
->  	last_step = suspend_stats.last_failed_step + REC_FAILED_NUM - 1;
->  	last_step %= REC_FAILED_NUM;
->  
-> -	seq_printf(s, "success: %d\nfail: %d\n",
-> +	seq_printf(s, "success: %u\nfail: %u\n",
->  		   suspend_stats.success, suspend_stats.fail);
->  
->  	for (step = SUSPEND_FREEZE; step <= SUSPEND_NR_STEPS; step++)
-> 
-> 
-> 
-> 
+> Mario (now CCed) already prepared a patch for that issue that seems to work.
+
+#regzbot link: https://gitlab.freedesktop.org/drm/amd/-/issues/3122
+
+Thanks. Indeed the reporter confirmed in
+https://bugs.debian.org/1061449#55 that the patch fixes the issue.
+
+So a duplicate of the above.
+
+Regards,
+Salvatore
 
