@@ -1,57 +1,58 @@
-Return-Path: <linux-kernel+bounces-45281-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45282-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FC5D842E05
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 21:39:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63AF6842E07
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 21:40:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 002421F25802
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:39:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F800283FCB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:40:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5110E6E2AA;
-	Tue, 30 Jan 2024 20:39:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 359C755E57;
+	Tue, 30 Jan 2024 20:39:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uoX5hB+p"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aodd4YZu"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8740E69E1A;
-	Tue, 30 Jan 2024 20:39:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 738B455E63;
+	Tue, 30 Jan 2024 20:39:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706647164; cv=none; b=eH9pQ1aNKcWE5Rbdw52Gg7DsKHS3bdlGToxiVi/9Sbm1PNVXhMi6LiEh5XecJaEqNUKBw3fYTzE1VZLaQWaom2MvyVzssJ6EVmoLTMOMQj7KtbfwZGz+C9vlOMS4YPmdXfcT+t/qDE+pT1Ofqz87tDMvZgnb+ZO8V3YwHD+W9eQ=
+	t=1706647195; cv=none; b=M0xCrHqB78dpUZXXeocXFXqFf8BBwZUejDOxEgZN+OOuVzLoTFfNxt58qtYRx7Q/8UGmwkuIiYkx07XJjxJj+nDXy54aiqfYXZzI2vEPEFDgTFOWuBuu5eufwAg12jIFiCibglPosb4UwLX7/pu2MlJfa9Zecg3El9FyXsIlIis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706647164; c=relaxed/simple;
-	bh=K5vOyDAZH33Lnu4vDYurahA8ZLJkazz+ZavXy0qdlzw=;
+	s=arc-20240116; t=1706647195; c=relaxed/simple;
+	bh=GNVwHJNHT1SMuiGtMBj4haZpGb2M+rvd7V+k57yQTSk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rNNcBFTWKU+J7YxaKjIhWIMb0GaDggV5S8HBD/2LGzYtbiTjPZZB7ecKZ7y/YIRPBKAEe7LE2SMJPlrVVyhDJ+hPd3e8xGHlF6BKwwDs2DYNcjrF9uu6SpR1QAvWMc+jZEjLqVQM8v1eBuJ5rJZIpcBOX7mezP3pgDI38lmxecc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uoX5hB+p; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B83E2C433C7;
-	Tue, 30 Jan 2024 20:39:23 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=u2hzLWgubScmxgTma3CFta7PMqd6hXf4C3kchpeO0Ugf4nMQwkkDBeWz2zdh94eJxsoQ/9hmrtegq58rQW0s8g7pautSSB2JthF7oFMgPoBjhB+SpeY79zSsV/xTO4G1rijcg/KFiQGAa2pfhJ9SIC0WkM0hii27n/55pHWJyso=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aodd4YZu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5F0EC433F1;
+	Tue, 30 Jan 2024 20:39:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706647164;
-	bh=K5vOyDAZH33Lnu4vDYurahA8ZLJkazz+ZavXy0qdlzw=;
+	s=k20201202; t=1706647195;
+	bh=GNVwHJNHT1SMuiGtMBj4haZpGb2M+rvd7V+k57yQTSk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uoX5hB+p4SSfKQGPNSa0c86H8hkuAvHqMuN1ovtOhzbNn19U3HQrINYCfHeBGxl57
-	 lJYh+tXBR2EULslL/VGNQ6o9oM+loW/HYDKC3r1t5IV+MGXXhefzuzGOurJ1tI9hMT
-	 axJxHKVLIpllO8Cu3DHv4TLQ31tdd+BkcCBswm099isd+OdthJfRJtUcjZZnITmNyA
-	 HTz5w17vnEldTbnOZDc01BvmzZRCkAh3xqV+LWsfhlBG/9bQikPzxssVrqMtSQHlIA
-	 qqqoTjm1DXpYwjeqZCwYbdeiSF6xBIdmXvLe7Bdwf4DGfLqwOQZA6qkxaFiP1U3Ap/
-	 Yg0uAga/DcCjQ==
-Date: Tue, 30 Jan 2024 14:39:21 -0600
+	b=aodd4YZu7hJfofXdzBOuSJXMv0wZiW5QJhTA4RUvtMZxxiAnHfHQmLdUMKX3sOj+P
+	 rohQ7kDpG3M98T71q3/HdHpdlqdm2P132b6b4WKywQbV8Hpm8Y+iP9mAqhU2+SGwaU
+	 XqirU8yqI/i4siKT+CSyaJMQNbDo49NZU191eXNhn0dnfD5SgL+lIYdvPBZ88xOA5P
+	 tW98SYXhunD6+en5jL4TrDTH+3b4MBRGUrEd14jV4sij0NvNhYPZl2RdfXa+txRFRw
+	 +P2rb8bIg5ADgjq/OR2dSvNKd+gQ8NrlUtLjBv1VAUuJD1xfQv0c7EqvxBJPk9qa6I
+	 9kVQelinw2iSQ==
+Date: Tue, 30 Jan 2024 14:39:52 -0600
 From: Rob Herring <robh@kernel.org>
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
+Cc: Marc Zyngier <maz@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Marc Zyngier <maz@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] dt-bindings: timer: narrow regex for unit address to hex
  numbers
-Message-ID: <20240130203921.GA2300248-robh@kernel.org>
+Message-ID: <170664719175.2303984.18174512878854689922.robh@kernel.org>
 References: <20240123083312.20808-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -63,7 +64,8 @@ Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20240123083312.20808-1-krzysztof.kozlowski@linaro.org>
 
-On Tue, Jan 23, 2024 at 09:33:12AM +0100, Krzysztof Kozlowski wrote:
+
+On Tue, 23 Jan 2024 09:33:12 +0100, Krzysztof Kozlowski wrote:
 > Regular expression used to match the unit address part should not allow
 > non-hex numbers.
 > 
@@ -72,17 +74,7 @@ On Tue, Jan 23, 2024 at 09:33:12AM +0100, Krzysztof Kozlowski wrote:
 >  .../devicetree/bindings/timer/arm,arch_timer_mmio.yaml          | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/timer/arm,arch_timer_mmio.yaml b/Documentation/devicetree/bindings/timer/arm,arch_timer_mmio.yaml
-> index 7a4a6ab85970..5b9fda2a81e0 100644
-> --- a/Documentation/devicetree/bindings/timer/arm,arch_timer_mmio.yaml
-> +++ b/Documentation/devicetree/bindings/timer/arm,arch_timer_mmio.yaml
-> @@ -60,7 +60,7 @@ properties:
->        be implemented in an always-on power domain."
->  
->  patternProperties:
-> -  '^frame@[0-9a-z]*$':
-> +  '^frame@[0-9a-f]*$':
 
-Technically, it should be '+' rather than '*'. But I'm pretty sure 
-generically we check that node name can't end with '@'.
+Acked-by: Rob Herring <robh@kernel.org>
+
 
