@@ -1,169 +1,193 @@
-Return-Path: <linux-kernel+bounces-44365-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 024098420F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:15:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FAC884219B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:40:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 55749B2A2FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:15:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43F7A1C24F7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:40:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB7BC60B8D;
-	Tue, 30 Jan 2024 10:14:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D1A766B3E;
+	Tue, 30 Jan 2024 10:39:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="aTLvInhO"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=westermo.com header.i=@westermo.com header.b="4SpROWlw";
+	dkim=pass (1024-bit key) header.d=beijerelectronicsab.onmicrosoft.com header.i=@beijerelectronicsab.onmicrosoft.com header.b="hDVA+daS"
+Received: from mx07-0057a101.pphosted.com (mx07-0057a101.pphosted.com [205.220.184.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF80C6089B;
-	Tue, 30 Jan 2024 10:14:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706609683; cv=none; b=FlKVzI8T3yY45ONBHEbPslHkaYPsxes+orGWnLXT6GoQ2ViDy6zC+fihfluSIrZytZpooI0mIzmU8nj3jUJ1yBz3RujKrnAZriMyyiL9PEB80x+0f1EqOLx+IOxCm76MI4OvUBypOd3Y5f9NtirKFdvS3aUNvq6SyBNzFlim1J4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706609683; c=relaxed/simple;
-	bh=4OenpZVY4dbk5nXvN+goEJzBtcGnmrWCa+AaSJWh1NA=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=ZfHUdpJKY+Qvhnl0QemOZyRxl5af3NpxlMg5FD9Y5wPuKDhtUp6TVK63M1M11MAumdyYgI5bcIrIvzZ9XSvu0sKkY0g/lFrJH6Wuu8TLtnLTFwIRobnc2Ye90yM9gp7XMe1UxbHoBnrF9zmBO1xG49QKFNC98a0brVkzgwPeSJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=aTLvInhO; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40UA9WOL004459;
-	Tue, 30 Jan 2024 10:12:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=upER89UEQid8jme3NrL4nYMZx1b2Ukd4Ox1S4tv0K6E=;
- b=aTLvInhOgDFtWo+hahWtXRW09lRICEdOe3b6Q91S9mNs/doIfakYKAP0nELHZTabo3Xg
- emX1+QOw8fLbkvWGYH1yxzvaV8W6LTEfZPvgpYGm9wDsoakTbsfI5RY7ar2PCYMBSOPq
- m3eyJCkFL1IA8GOsm9jgpa3/xVeFB3E20CbVwqmKV9WZkAds106b3Cof77cRTc2banBx
- 1+isQ3N2tZrLrNX7J20FGlaR0GskVO5Q734Ry6t2XXfx3PjB0jAHNhiIxbqGRkxohIa6
- KhvS9S/a9P+JocfuHX+35v9aXyKGeuTW0ba+qYmYiHaKe8alZWRIUFWeXpOFlSPTMg9y SQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vxy40g1q3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Jan 2024 10:12:07 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40UAAtYa007474;
-	Tue, 30 Jan 2024 10:12:06 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vxy40g1pp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Jan 2024 10:12:06 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40U7Z93l007979;
-	Tue, 30 Jan 2024 10:12:05 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vwdnkwxkq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Jan 2024 10:12:05 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40UAC20W12386846
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 30 Jan 2024 10:12:02 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 33E5D20065;
-	Tue, 30 Jan 2024 10:12:02 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 652AC2005A;
-	Tue, 30 Jan 2024 10:12:01 +0000 (GMT)
-Received: from [9.179.18.183] (unknown [9.179.18.183])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 30 Jan 2024 10:12:01 +0000 (GMT)
-Message-ID: <eacbf3b3-b004-4086-8db1-82e75407bbaa@linux.ibm.com>
-Date: Tue, 30 Jan 2024 11:12:01 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: Several tst-robust* tests time out with recent Linux kernel
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37BFD66B25;
+	Tue, 30 Jan 2024 10:39:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.184.10
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706611194; cv=fail; b=oDhdTOpaiU6Y2aWDYu+vjU1Kdll3H7MjRVfohsi1Ig4xdhI78Q2SeT/yB/cdqMkYr+sF0LOGbodIxQbKgdlTFYgyx1Nk1cUZw52tamoVBSYeSrXojewHhQiVDM5LXy3QRp+cWz7CpEwUyytuela6UN+3SJNC/Iz0f4YbJT8DX6k=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706611194; c=relaxed/simple;
+	bh=gT+mykw0A6J4UHCY9490XGK14k5J1LC752VfrhidBsI=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=Q1s39vSXH6HZj4KqpMvSRgqw7FmdSrPeI5mK9XyFOyLK3rIQQigTJpl2R3TLouMKijtrPEiUiiAZbjdlqTIKaTb6d1XHvDkVR90msysbglViMmaOujsKNJEWnW9ooeOCzrZn4RnYPVdq1tf+DZ/EXN1EBz3ft7a2dKuGq71lwtg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=westermo.com; spf=pass smtp.mailfrom=westermo.com; dkim=pass (2048-bit key) header.d=westermo.com header.i=@westermo.com header.b=4SpROWlw; dkim=pass (1024-bit key) header.d=beijerelectronicsab.onmicrosoft.com header.i=@beijerelectronicsab.onmicrosoft.com header.b=hDVA+daS; arc=fail smtp.client-ip=205.220.184.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=westermo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=westermo.com
+Received: from pps.filterd (m0214197.ppops.net [127.0.0.1])
+	by mx07-0057a101.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40U6Db8R032053;
+	Tue, 30 Jan 2024 11:12:21 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=westermo.com; h=
+	from:to:cc:subject:date:message-id:content-type
+	:content-transfer-encoding:mime-version; s=12052020; bh=gT+mykw0
+	A6J4UHCY9490XGK14k5J1LC752VfrhidBsI=; b=4SpROWlwsUJUpdtBlM2C+0M7
+	kIhCaCoJBE2yZjDqXSIm4PAITSo2UzSWAk38s4nXe8NLg/vZXKNgQuUc6CX4RU2P
+	9ucw1lfgZyK9OHOtuSwuIMrmutSTJ+nhJ/r08ps+rTQOQHFe2EWKPymlGvwARSlL
+	XclLKOAAd6Ey5R7i2lDnZv7KODV0FvRfiyuOYD09n8k7wAr3zQ+MeHsHWen2DUFj
+	Z0usimbO2PnWeG0oUs1yXoF3ImNRGYrYXbs2j+wMZMuSlNR1ldlBX1V84r4kZ9ux
+	8oj9UWOfg/vuUiQB2Lxxx4y1Gb0AwSE4oKCtR/ijj8TiF7bQ2kvfWsoFA2DRSQ==
+Received: from mail.beijerelectronics.com ([195.67.87.131])
+	by mx07-0057a101.pphosted.com (PPS) with ESMTPS id 3vvq2ck0xc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+	Tue, 30 Jan 2024 11:12:21 +0100 (CET)
+Received: from EX01GLOBAL.beijerelectronics.com (10.101.10.25) by
+ EX01GLOBAL.beijerelectronics.com (10.101.10.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
+ 15.1.2375.17; Tue, 30 Jan 2024 11:12:20 +0100
+Received: from EUR03-AM7-obe.outbound.protection.outlook.com (104.47.51.233)
+ by EX01GLOBAL.beijerelectronics.com (10.101.10.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
+ 15.1.2375.17 via Frontend Transport; Tue, 30 Jan 2024 11:12:20 +0100
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=j3G8DYy11ujb0BiMzvU3aQsKonDapB8cKHuOG0UafyXdaoXlJsNXCeZBGdMGor4ONMPUQD7LY0OtCRPwBEIP2rUnZlhBhspY15Qh4F4OISwadpYAP7oBPdDEGRuB2VIZFPHZ4c76ROtb43VpJ91pR46a/P1vMYM323UJSncAarlVW1uVT61Drjm1domcKsvQA/9Pq3zfbVC7CoENZe72EBLzmcUY/GCS2G1F4s7C+vd//aILfqZcfjKj71ON0B1cVt/jZQ0/rtcEzFFC2uqUu3fUn7WR6fe9YxK5/v9uzmDHyq4ZlqIdySiLS1eg783Xk8AZOkgLl9eL1EYbH8wiFA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gT+mykw0A6J4UHCY9490XGK14k5J1LC752VfrhidBsI=;
+ b=iRjJQ3HlaWpSobbsyAuBNirsRbBXx4HUVDNBV3oGklqC+BeWHdTeR1Gq8IcHoYl1Vy4CbjsCkbKMg22qzztNz/2dNMwnWfBfFECXi+gmKVn7N2AEnuy7o0uDu9zyrduNFvvasiRjgMfJ+UMXrrKm90poDAANzGoFpT5T+s4I+L8MyEBbn45jsa79IUwF6EtP9NqbJ9qfXzZdgQExCe/Qnn+FcujiGd9HKqeJiAK1ui6b2bIbOszB7PwEDjsd5NH49odYwCJpqTnkWUperdE/0ljRqSM4LARC4eiy479jGhYqSFmYHW/5lRTkdzv5MphX+FelcOreflCTG4XqMTJM7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=westermo.com; dmarc=pass action=none header.from=westermo.com;
+ dkim=pass header.d=westermo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=beijerelectronicsab.onmicrosoft.com;
+ s=selector1-beijerelectronicsab-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gT+mykw0A6J4UHCY9490XGK14k5J1LC752VfrhidBsI=;
+ b=hDVA+daS4Zog4ZqA+Oucuc1WCmOrJ9ykOyoa8avZWp4Y7wxGt5I9wixkK2uuWpB1a3hXEmCPD8h5eQ9rh9BhP7ivv+9Ly3B4g4Pxf+LP6k4Ul4ZR8DSPfB0XQpZB8uc/Gb5kxMbd4KXTDII6X/IbqIg3TZ7SNeKsN1/2Wr8vRu0=
+Received: from DB9P192MB1388.EURP192.PROD.OUTLOOK.COM (2603:10a6:10:296::18)
+ by PAXP192MB1168.EURP192.PROD.OUTLOOK.COM (2603:10a6:102:1aa::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.34; Tue, 30 Jan
+ 2024 10:12:18 +0000
+Received: from DB9P192MB1388.EURP192.PROD.OUTLOOK.COM
+ ([fe80::f1b7:52d5:fa2e:39e1]) by DB9P192MB1388.EURP192.PROD.OUTLOOK.COM
+ ([fe80::f1b7:52d5:fa2e:39e1%5]) with mapi id 15.20.7228.029; Tue, 30 Jan 2024
+ 10:12:18 +0000
+From: Matthias May <Matthias.May@westermo.com>
+To: "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com"
+	<edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "shuah@kernel.org"
+	<shuah@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC: Matthias May <Matthias.May@westermo.com>
+Subject: [PATCH net-next] selftests: net: add missing config for GENEVE
+Thread-Topic: [PATCH net-next] selftests: net: add missing config for GENEVE
+Thread-Index: AQHaU2TOWj8kZ0pbL0S72Tlve6fkGw==
+Date: Tue, 30 Jan 2024 10:12:18 +0000
+Message-ID: <20240130101157.196006-1-matthias.may@westermo.com>
+Accept-Language: de-CH, en-US
 Content-Language: en-US
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "peterz@infradead.org" <peterz@infradead.org>
-Cc: "xry111@xry111.site" <xry111@xry111.site>,
-        "hca@linux.ibm.com" <hca@linux.ibm.com>,
-        "andrealmeid@igalia.com" <andrealmeid@igalia.com>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "svens@linux.ibm.com" <svens@linux.ibm.com>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
-References: <4bda9f2e06512e375e045f9e72edb205104af19c.camel@xry111.site>
- <d69d50445284a5e0d98a64862877c1e6ec22a9a8.camel@xry111.site>
- <20231114153100.GY8262@noisy.programming.kicks-ass.net>
- <20231114154017.GI4779@noisy.programming.kicks-ass.net>
- <87ttpowajb.fsf@oldenburg.str.redhat.com>
- <20231114201402.GA25315@noisy.programming.kicks-ass.net>
- <822f3a867e5661ce61cea075a00ce04a4e4733f3.camel@intel.com>
- <20231115085102.GY3818@noisy.programming.kicks-ass.net>
- <564119521b61b5a38f9bdfe6c7a41fcbb07049c9.camel@intel.com>
- <158f6a47727a40c163e3fa6041a24388549c68f2.camel@intel.com>
- <fc3fd07a-218d-406c-918b-e7f701968eb0@linux.ibm.com>
- <eeb6d178dff61dfebf5a3ce9675486a3271b748c.camel@intel.com>
-From: Stefan Liebler <stli@linux.ibm.com>
-In-Reply-To: <eeb6d178dff61dfebf5a3ce9675486a3271b748c.camel@intel.com>
-Content-Type: text/plain; charset=UTF-8
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: zAaT6FhW-QCX8Kl-edW71T0vd8GHnCfD
-X-Proofpoint-GUID: QnaFMkxqxQUKrl7I6Cwi0p6BjCr660eX
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: git-send-email 2.39.2
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DB9P192MB1388:EE_|PAXP192MB1168:EE_
+x-ms-office365-filtering-correlation-id: a8650639-e497-46ce-d97b-08dc217bf0fc
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 7vZnGo2ucjoxKu+d9+QQmNeaKQ9rBFE7VxJjBm62MGeGmExAra1u5LvFqyOKlIf7JJamZJGRNDppkSXcMoTwPS2DjYafltgQEUzLdi8+j820+BUoljWl8AhzFJUuG/lU8ndAP0T5VxVqR5pGRfOHfxYdOMvJfYEaXNJiZ0jzfZ+d+ecKTYVHNvBvWLpddkKtv4K4/UlAIYFLd0m+zZaTKE9yz0xfy7SVmNFeqsaClzQzc4Qozhjl8ukypn+wMJtHfnZXIKLWZXW3r1bPwlegFJawsUVW/G5lanlfHdUPFUjIMw2PAzwShfB5q2e21fG7/DhQgUNUxn3Zhf+ela2qOmSQB4Er8dSzDROW6WwnMU0z7F+06vDAjhb239mzQEKWHsJw51+KSbbHGJoR9fE9mzfwiTm62QSQ92Zv7fC8wY70hL0twiMPcF87v7C8IumtCfNw3zbqEhTBAxVekyAZ3g3Dg/9xzyZvFEfQyJxT7Ur46Krh3bFq22Dhsd+q0HhrkSRILGHn44EoA/GkOxM4V0Mq1Y2kIHV4wyeN3Pt02zGorD8Ec0hKqhmHIxx7ZtrGmLpqblLWmS3T1M4JJoN5/Za/dU/lz/2WY+0LknV9Bzn4JNDVM9DVC0bTMlks1FsF
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9P192MB1388.EURP192.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(366004)(396003)(39850400004)(346002)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(38070700009)(2906002)(107886003)(1076003)(6506007)(64756008)(71200400001)(5660300002)(6512007)(2616005)(66476007)(66946007)(6486002)(110136005)(76116006)(8676002)(8936002)(4326008)(316002)(4744005)(66556008)(66446008)(26005)(122000001)(38100700002)(478600001)(41300700001)(86362001)(36756003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?hnaozibKPVOY5Ug8GPY56lum0aDJS/48ysoOV8tx9eyfjg7XwJ/5vcUhU9?=
+ =?iso-8859-1?Q?HNHCWqwJdLfXcUv/ZmPUaaPxUejNGxvSPRMCb9lNIA/smQ8CdtLks8ahgW?=
+ =?iso-8859-1?Q?INs03BwR6AgapZ5LoeeviasaC8zPTzQkFi7niLFOOLGVGs7ig6+RU7cm61?=
+ =?iso-8859-1?Q?v7krABRnLqfuyxxrj4+o5QQmAEmEIjJ8U/w3uMelYQUMqv/eD74m/hSulH?=
+ =?iso-8859-1?Q?Rpzk73SbDC0IGm8SOKnAAJdiJ+JyCOeIO0bwWx6uJXY33VOrM29IkXYjfQ?=
+ =?iso-8859-1?Q?HxEUTXPNlM8PoUrHO5j/yJzR2W1dTMWgcqwIq2DF15947rv4By/rVj4JgM?=
+ =?iso-8859-1?Q?FkBTw0xa3DVGxwYmyYNFMZA8AdLHVarpUNftRk/y6igzdqsA6cLVQhMJo4?=
+ =?iso-8859-1?Q?a+7JoJYjK3Oq/BCRxfUEkMrqvZtxYzcuLFbGZWaxZ58/5VHgvAYJ5fQrzS?=
+ =?iso-8859-1?Q?PcT/ULp8p6oQm0v4JDOyiHNj82/q4cFY4xt8yjCosxcHWZsfKFhb3u7jxz?=
+ =?iso-8859-1?Q?ByRhHQ1CX2lHcfw/UdyO3bUevEQqr0ZKGNSiS/kG4OENa6xmEWAHjAeJNO?=
+ =?iso-8859-1?Q?uwfSjAQ9+tWZevOzNsb4313hSaC/l3yK0kYCMW47ixVILSkgbfm8a3h4nX?=
+ =?iso-8859-1?Q?v65vetfQ8t3yqNJ1WRqrFF0SYtuMcwZ9IfN29ZsS4sn4Jgml5ISwvOMS//?=
+ =?iso-8859-1?Q?uECoLc8ecCgtFA8seHnR/LjxtRYsmXBEJ6TUTKUdK4sEMef2dnTfNke56Z?=
+ =?iso-8859-1?Q?5p4GutcpUloaB+yvROOLD6gw1L2FYwn0KddZKhD9jPqMIMvBDt+2QHDnK6?=
+ =?iso-8859-1?Q?Vm0hOu1xtG3fhiQGsyCWcFuR7hO23BBsNoZ8UmGzy2t39KoR+sgg/F8gBL?=
+ =?iso-8859-1?Q?iIB3ydbPelaHHm+vFqPgQUIY+EuUN+0ifLjDdDmUsq7WcR62iDDRA10oja?=
+ =?iso-8859-1?Q?nErpqsJvIymVQ6o8voOz3qkUI8qKCdcEE1EBOaf/TtunUoHSTJQZgoaGMQ?=
+ =?iso-8859-1?Q?H9yokmQuh5JiOXniL1Zg1nkB/LVIsqj/IZZz0OwRHGCQQGe8nMbbig+4vQ?=
+ =?iso-8859-1?Q?Um+N6h+hz1CRTmSuVIP564jgMc853/SD12e3gwARJh6oXzzVzUOVFTEiZ9?=
+ =?iso-8859-1?Q?Avw3AHCrxgO35quupBimVknZbJrsmXcSkRNMPb9mzDqyjmZL/Zp/2q+iR9?=
+ =?iso-8859-1?Q?ihcTo/q6Fosoog/Lmne90VOVpj0NUg2j8WTgkzp+ZLrBPMHwelGg146O5r?=
+ =?iso-8859-1?Q?6NZBOot7R54z+jRfP0j95dX0gO9u0MmleJQQEitTCiFBnncBCobMH/0zYf?=
+ =?iso-8859-1?Q?I+LdhfzcqEcRu4sb+8sIp7vIPYAZOoWrwB3qy9053sBfSKETrIeUWiqMQn?=
+ =?iso-8859-1?Q?0RPF8bpX+yDGH9vQ7KvV/kB9fWKLcplxLrppkawr28vrmNYwVl3W5qeZFh?=
+ =?iso-8859-1?Q?kjyL1WUAV3NoHhTtJYOHwZ9uEEwXAFYA7hZLOrWthQ4MdDjssMUULN8NrB?=
+ =?iso-8859-1?Q?ix4U+R9ISPewj/hPGjCpqp6eFfZUnu4BFPs1YFXY/J0SUEe5AssK4Y0Fk5?=
+ =?iso-8859-1?Q?iv9VJ/2/w27VjmZe0j/t8+TpWGnQHd1iP3GnTfiiH8jFQa9V6R8AdOPJ1B?=
+ =?iso-8859-1?Q?193sPxFn9L81QDVt/p+EOZRT7W6r4lDoap?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-30_05,2024-01-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 malwarescore=0 suspectscore=0 adultscore=0 clxscore=1015
- impostorscore=0 mlxscore=0 mlxlogscore=999 spamscore=0 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401300074
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB9P192MB1388.EURP192.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: a8650639-e497-46ce-d97b-08dc217bf0fc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jan 2024 10:12:18.7266
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4b2e9b91-de77-4ca7-8130-c80faee67059
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Zm9l1YP7aErW5Uev5NxuROgvTjfZeuJ7gZP2hpmHT3rD6aWCB8pdrmH5ggjWtrUWvV7am7Hvq1PGCgO2ZfIT/Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXP192MB1168
+X-OrganizationHeadersPreserved: PAXP192MB1168.EURP192.PROD.OUTLOOK.COM
+X-CrossPremisesHeadersPromoted: EX01GLOBAL.beijerelectronics.com
+X-CrossPremisesHeadersFiltered: EX01GLOBAL.beijerelectronics.com
+X-OriginatorOrg: westermo.com
+X-Proofpoint-GUID: V2ZDgzUHueQdlI4ZAnBfvyfKVoxLRTV5
+X-Proofpoint-ORIG-GUID: V2ZDgzUHueQdlI4ZAnBfvyfKVoxLRTV5
 
-On 29.01.24 23:23, Edgecombe, Rick P wrote:
-> On Fri, 2024-01-19 at 14:56 +0100, Stefan Liebler wrote:
->> I've reduced the test (see attachement) and now have only one process
->> with three threads.
-> 
-> This tests fails on my setup as well:
-> main: start 3 threads.
-> #0: started: fct=1
-> #1: started: fct=1
-> #2: started: fct=1
-> #2: mutex_timedlock failed with 22 (round=28772)
-> 
-> But, after this patch:
-> https://lore.kernel.org/all/20240116130810.ji1YCxpg@linutronix.de/
-> 
-> ...the attached test hangs.
-> 
-> However, the glibc test that was failing for me "nptl/tst-robustpi8"
-> passes with the linked patch applied. So I think that patch fixes the
-> issue I hit.
-> 
-> What is passing supposed to look like on the attached test?
+l2_tos_ttl_inherit.sh verifies the inheritance of tos and ttl
+for GRETAP, VXLAN and GENEVE.
+Before testing it checks if the required module is available
+and if not skips the tests accordingly.
+Currently only GRETAP and VXLAN are tested because the GENEVE
+module is missing.
 
-kernel commit "futex: Prevent the reuse of stale pi_state"
-https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/patch/?id=e626cb02ee8399fd42c415e542d031d185783903
+Signed-off-by: Matthias May <matthias.may@westermo.com>
+---
+ tools/testing/selftests/net/config | 1 +
+ 1 file changed, 1 insertion(+)
 
-fixes the issue on s390x.
-
-With this commit, the test runs to the end:
-main: start 3 threads.
-#0: started: fct=1
-#1: started: fct=1
-#2: started: fct=1
-#2: REACHED round 100000000. => exit
-#0: REACHED round 100000000. => exit
-#1: REACHED round 100000000. => exit
-main: end.
-
-If you want you can reduce the number of rounds by compiling with
--DROUNDS=XYZ or manually adjusting the ROUNDS macro define.
+diff --git a/tools/testing/selftests/net/config b/tools/testing/selftests/n=
+et/config
+index 19ff75051660..8d79c024bebf 100644
+--- a/tools/testing/selftests/net/config
++++ b/tools/testing/selftests/net/config
+@@ -76,6 +76,7 @@ CONFIG_CRYPTO_SM4_GENERIC=3Dy
+ CONFIG_AMT=3Dm
+ CONFIG_TUN=3Dy
+ CONFIG_VXLAN=3Dm
++CONFIG_GENEVE=3Dm
+ CONFIG_IP_SCTP=3Dm
+ CONFIG_NETFILTER_XT_MATCH_POLICY=3Dm
+ CONFIG_CRYPTO_ARIA=3Dy
+--=20
+2.39.2
 
