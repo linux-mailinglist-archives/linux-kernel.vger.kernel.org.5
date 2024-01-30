@@ -1,56 +1,77 @@
-Return-Path: <linux-kernel+bounces-45292-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45293-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB13D842E23
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 21:47:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BB61E842E27
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 21:48:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A808A2856C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:47:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77530283F76
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:48:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46B2B71B56;
-	Tue, 30 Jan 2024 20:47:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="sMwovpyW"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 311F8762D3;
+	Tue, 30 Jan 2024 20:48:42 +0000 (UTC)
+Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4299671B52;
-	Tue, 30 Jan 2024 20:47:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 342A079DD0
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 20:48:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706647641; cv=none; b=nGvucdk+dpKTLonQlz+/2gtf5KB1vSGnCZkyJ6jSr0mKyrk7vsq38De5tntNJCHjIgMpDqFJttajji6rk/7C64AggdGQlt4a6yeJPVT1QHtlcA0pqZSdRO9s9xArPNBTPTueLCt2iFRDUi69OgrZeBAKOY474u3p9/3wLWUgVZw=
+	t=1706647721; cv=none; b=kKmzkjVzI/bSoiDfK+j15PCs76T5VLkyDT5xOdWsAaoU+PKCNijHQJA3ULxnkt2bIYJq8jszFlHK/ekKEBEOa1ZSCH5cup3Gi1/X6mIaSb3/0Qs0R/sHcQDxaLKbzpO5x6XtZ3RieEZcMF/ZxxpVw7ZpFrzRmE7BmkwM4hF/Kjo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706647641; c=relaxed/simple;
-	bh=cHPCGyt+KrZk5VCGXZ1+oIB0HxHmQMG2D925MBo7pRs=;
+	s=arc-20240116; t=1706647721; c=relaxed/simple;
+	bh=lML9QmyIv+LUMOg/iT47sri/G1/loRasVQk342qZgN0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LM6/rlyGQ83xxKg1K8gUGavvNzNe+h7DrTNPChw4JFgu0Ssgag/hhlN6GeZLuCGdgtcxwspvM+OuEAWACYBKrcGBxQhWgo2Q1ZgmQ/oHDkVeO0L7dx+KMW2RvFpsy9omM8LrY+/RSRCwpL7m0iNHwH1lSu/JtvaVIBHU6fAkeUg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=sMwovpyW; arc=none smtp.client-ip=198.137.202.133
+	 Content-Type:Content-Disposition:In-Reply-To; b=CJUnXpcW1P6ItUoRCC1PU0tUMbZ6b5JRaQPKXt47b+h5Y3+wBEPvGIzFkfALkz99jF6YvvLpT1sbqmja+14p3MqaQALHDtQxiQn8pIvkjBaihLktA8NrTE8AweE4WUiXnTs/g3YM52LE0qL1H0iEghIjNlosAV0ndG6FBjDp7VM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=redhat.com; arc=none smtp.client-ip=209.85.160.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=mcM6EuKiC3PBnN3pomFJtPETtxYW50FEofYHj2SjpCE=; b=sMwovpyWAef1DSNFeKhzCxMtZC
-	DoseHGxVC5FLC8iUVL4fsLGlXIFuxcJNt4s09RpCiJ5fddfKScNsWQAlxPbF8xoadTRK8jWt6mqWi
-	uz2cYy+U0UQevsFq2iUx/LNWzNXS1vHP+TCdo9bPItONjmc42bdOYGhaZCn8KRUmYhHVfskzm6f04
-	kqq1frt2oQxIBm0MNLdr01IU50+ZzZaPs7n5iIT6PHtDOdV6G7kfIi7TmFauHo2qh+dZsXZfbBDUg
-	BiC/306Kclpzvmo76haLYjBf5PZdSaEreUPIFIEmCnXBh7Y3wnU6IQ6i6LpxMuPuainWUfBSrNCVf
-	qYlwCjbg==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rUv0p-00000000XL3-2vsS;
-	Tue, 30 Jan 2024 20:47:19 +0000
-Date: Tue, 30 Jan 2024 12:47:19 -0800
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Marco Pagani <marpagan@redhat.com>
-Cc: linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] kernel/module: add a safer implementation of
- try_module_get()
-Message-ID: <ZblgV0ApD-9cQWwl@bombadil.infradead.org>
-References: <20240130193614.49772-1-marpagan@redhat.com>
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-42aa4a9d984so28857171cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 12:48:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706647719; x=1707252519;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5wxvZziXbUhtUP1Y9zXw54fZ6cDdnya/SKk+UDHGEFo=;
+        b=Ief6lS+27ZskYkJL3wxt72IV3MHf8vGSbno7SeFtsuficRcG/Ep1w6b1Kib2a1PfcZ
+         2IgyVFgU4GQyQPIttB3n2nOb/aafVGNQxsECosUaBUg2DHBKjGdDYiNoCF6jPDh1/2r4
+         3jB3f7ZcwG75alTNzquCzG6PsAJzLsV2upbIZ4Jht1Gkq9eJGZE9z2rKSMAuUxqSbV76
+         Eahh/SnKLVJCFjIcW89eLqHVEywdvJgvGiAwI3+2Ss5B5ndTpeOAHqeDmG08sx1fHjaX
+         pUC2J313t+c59jzEh/zJKuZWuSwH67Q0t85iev7pkGhsuw+bi4ltXfO8HqqZixRiEjWJ
+         JgTw==
+X-Gm-Message-State: AOJu0YzYOLbJoAMlbdSvu43NW6cjZO2YCb6q/NEWCd/sdHCVSRs+dN85
+	GW1Ofzxb0eFvphdEjCk1GT+joeOHBNJ4Q9mc/hx0WVvEZBAv4wkTCshUSQAxGQ==
+X-Google-Smtp-Source: AGHT+IH5S9pyQeSM2K6WGjuq7LBNmUE3HoawjAO33JauM5M9qFYAUZROQj6Nk22MOXOq+8oUsCH3ng==
+X-Received: by 2002:ac8:7f8a:0:b0:42a:b37f:4a75 with SMTP id z10-20020ac87f8a000000b0042ab37f4a75mr3021041qtj.16.1706647719211;
+        Tue, 30 Jan 2024 12:48:39 -0800 (PST)
+Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
+        by smtp.gmail.com with ESMTPSA id x4-20020ac81204000000b00429bd898838sm4160126qti.47.2024.01.30.12.48.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jan 2024 12:48:38 -0800 (PST)
+Date: Tue, 30 Jan 2024 15:48:37 -0500
+From: Mike Snitzer <snitzer@kernel.org>
+To: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc: Damien Le Moal <dlemoal@kernel.org>,
+	Naohiro Aota <naohiro.aota@wdc.com>,
+	Johannes Thumshirn <jth@kernel.org>,
+	Alasdair Kergon <agk@redhat.com>,
+	Mikulas Patocka <mpatocka@redhat.com>, dm-devel@lists.linux.dev,
+	Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+	Chao Yu <chao@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+	Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
+	Chaitanya Kulkarni <kch@nvidia.com>, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net, linux-block@vger.kernel.org,
+	linux-nvme@lists.infradead.org
+Subject: Re: [PATCH v3 2/5] dm: dm-zoned: guard blkdev_zone_mgmt with noio
+ scope
+Message-ID: <ZblgpVdHZqPaq7xD@redhat.com>
+References: <20240128-zonefs_nofs-v3-0-ae3b7c8def61@wdc.com>
+ <20240128-zonefs_nofs-v3-2-ae3b7c8def61@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,78 +80,15 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240130193614.49772-1-marpagan@redhat.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+In-Reply-To: <20240128-zonefs_nofs-v3-2-ae3b7c8def61@wdc.com>
 
-On Tue, Jan 30, 2024 at 08:36:14PM +0100, Marco Pagani wrote:
-> The current implementation of try_module_get() requires the module to
-> exist and be live as a precondition. While this may seem intuitive at
-> first glance, enforcing the precondition can be tricky, considering that
-> modules can be unloaded at any time if not previously taken. For
-> instance, the caller could be preempted just before calling
-> try_module_get(), and while preempted, the module could be unloaded and
-> freed. More subtly, the module could also be unloaded at any point while
-> executing try_module_get() before incrementing the refount with
-> atomic_inc_not_zero().
+On Mon, Jan 29 2024 at  2:52P -0500,
+Johannes Thumshirn <johannes.thumshirn@wdc.com> wrote:
+
+> Guard the calls to blkdev_zone_mgmt() with a memalloc_noio scope.
+> This helps us getting rid of the GFP_NOIO argument to blkdev_zone_mgmt();
 > 
-> Neglecting the precondition that the module must exist and be live can
-> cause unexpected race conditions that can lead to crashes. However,
-> ensuring that the precondition is met may require additional locking
-> that increases the complexity of the code and can make it more
-> error-prone.
-> 
-> This patch adds a slower yet safer implementation of try_module_get()
-> that checks if the module is valid by looking into the mod_tree before
-> taking the module's refcount. This new function can be safely called on
-> stale and invalid module pointers, relieving developers from the burden
-> of ensuring that the module exists and is live before attempting to take
-> it.
-> 
-> The tree lookup and refcount increment are executed after taking the
-> module_mutex to prevent the module from being unloaded after looking up
-> the tree.
-> 
-> Signed-off-by: Marco Pagani <marpagan@redhat.com>
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-It very much sounds like there is a desire to have this but without a
-user, there is no justification.
-
-> +bool try_module_get_safe(struct module *module)
-> +{
-> +	struct module *mod;
-> +	bool ret = true;
-> +
-> +	if (!module)
-> +		goto out;
-> +
-> +	mutex_lock(&module_mutex);
-
-If a user comes around then this should be mutex_lock_interruptible(),
-and add might_sleep()
-
-> +
-> +	/*
-> +	 * Check if the address points to a valid live module and take
-> +	 * the refcount only if it points to the module struct.
-> +	 */
-> +	mod = __module_address((unsigned long)module);
-> +	if (mod && mod == module && module_is_live(mod))
-> +		__module_get(mod);
-> +	else
-> +		ret = false;
-> +
-> +	mutex_unlock(&module_mutex);
-> +
-> +out:
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(try_module_get_safe);
-
-And EXPORT_SYMBOL_GPL() would need to be used.
-
-I'd also expect selftests to be expanded for this case, but again,
-without a user, this is just trying to resolve a problem which does not
-exist.
-
-  Luis
+Reviewed-by: Mike Snitzer <snitzer@kernel.org>
 
