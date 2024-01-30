@@ -1,152 +1,121 @@
-Return-Path: <linux-kernel+bounces-45381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA353842F81
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:19:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5994D842F83
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:20:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7ED07286BFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 22:19:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 170311F25E4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 22:20:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E13F7D419;
-	Tue, 30 Jan 2024 22:19:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3440414AAA;
+	Tue, 30 Jan 2024 22:20:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dyPOPKRU"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="a8LvVCX5"
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CB1E38DDA
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 22:19:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F145138DDA;
+	Tue, 30 Jan 2024 22:20:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706653169; cv=none; b=mg7g+A25VEoEy6Qd6p37zc84o8eptKRiPUfBTszQ2xO3jGXEs0ymkIJieYt6Wk2WG3rYa1rcKn8ygy2dRE70cGIkbfBAqyBYR0gwoNbh3DEDVxd8RqetPh/NhGR5CIzGfhGsBL3ZFglVU5xm7R0dpmvTREn7UecRs0EEuo2jAUc=
+	t=1706653210; cv=none; b=d2oYgY4YeHmuc2GN1ze9uHiACgAF9SAZetQlnay8q+JD94J2cr9lAsQSBfJJ9IlGR38tw6SPqkCBncbHKcJtV8lvDddMB692dJIXZXtk7ThZMUjhtrJiBlHzADMHLonGjBh//1JMWurmlRiZrePdae95ghXogoJKCm64ClO0144=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706653169; c=relaxed/simple;
-	bh=IC3p5zH5zXXM8bR+woCqmXd7yYe1yCTFkea4aKMs4wQ=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PA50Hj6QX9lKdDxP78/5B0CJtM3iSFupRmSGX7kw/W2mzsukTKHIbtkaEIUbPC0zhFC/ErzyA7HgjQ1f1sMHi0YdJKqBzexO1p5uYQQtLpBb4ec46WhM6E+V+v4+ojjbYKWjS72AZ7xbJGfHgE38xsvql07dF1IDZ5TCISSq9+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dyPOPKRU; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d8d08f9454so19545ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 14:19:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706653167; x=1707257967; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vQl8EgXpJK3C8wCH3PL/CVofTbAYU7lTGBdvfNGQY7M=;
-        b=dyPOPKRUwf4mAl858V4jYESVWUPy185wBMTJaFf6TVj1QeAkIQ1hN5UORup3mGLzDW
-         rc6+mUzX/TIZNHgkrTHHNW9ChIx3X+jQ4bDcG0kMonjcmAEhjsBCg3mvD1N/NoIwuXVq
-         3I++X7db05TBqWCfjvpTcJOKw4S437LeTbpQQnpjkngz4Vu2AWVCxVoT+uueU9slFUWZ
-         f3K8BWCux3hPhsx3yATvDBKgGk3dl4XK0bbmHjVZSAL5cMTjtNgSj46/iXE+Vo+XDHZ0
-         CMhALcXfXM8XDwEE6X47dUxHkCr0tSuJllI/kMmjw9DmJtZ3DuRd+6d3Zkaxdcu5GM3B
-         rs/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706653167; x=1707257967;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vQl8EgXpJK3C8wCH3PL/CVofTbAYU7lTGBdvfNGQY7M=;
-        b=hW9oOpog7LCz3pstO3SKL27J99F7WQ766l2RJAPLWex26t53zfEgmZj2Qxkw6klA9v
-         3uFQpRlsdWCZUpOiLi/BSQxFerO99F+5EDaWHo8HIQRWA2PC+y78Tyo5ACJ/72UIRKTo
-         wJYUwj9hHoDAcYjdfRqrnO/iVj8tNjQ2DQvFZBQHzlHmu6dw9HXqzt6CCscOA1FxQzXy
-         kQ7hUNum7UaCWyxxz1q9mWkw6y5M0c4xvhNE1NmyfA3pXAyxwIZGuRTBVUGa6oCaHgmk
-         fYdbHW5fHA+/5glVpdmEUYxfy3zmRbmtCyMcWB9rYVDvkfTwyGgjIAAJ8GtvYB1PT8Ec
-         jSaA==
-X-Gm-Message-State: AOJu0YzEV3QfvNpDQLWTMdk4bTaCe0JJnyfhPzx4Yj8HDouddfIoOa8d
-	uciqdUcFYqwJwuoKAjO0s/okKheNUTFjF9gihUs6p1vwvJ68AzN4KgJPoS5gFQ==
-X-Google-Smtp-Source: AGHT+IFwLv+eKGqrkCeOjgMbEoehzCvXoH+cbPDe2PL0I9RdXrlE78Tt/rrzBUHv78ajXUWMaQtqow==
-X-Received: by 2002:a17:902:e547:b0:1d8:d225:699d with SMTP id n7-20020a170902e54700b001d8d225699dmr383866plf.16.1706653167019;
-        Tue, 30 Jan 2024 14:19:27 -0800 (PST)
-Received: from google.com (69.8.247.35.bc.googleusercontent.com. [35.247.8.69])
-        by smtp.gmail.com with ESMTPSA id y11-20020a056a00190b00b006da8f6650a2sm8241626pfi.155.2024.01.30.14.19.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 14:19:26 -0800 (PST)
-Date: Tue, 30 Jan 2024 14:19:23 -0800
-From: William McVicker <willmcvicker@google.com>
-To: Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
-	Dwaipayan Ray <dwaipayanray1@gmail.com>,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-	linux-kbuild@vger.kernel.org, kernel-team@android.com,
+	s=arc-20240116; t=1706653210; c=relaxed/simple;
+	bh=Ai/F6ftEvXWlQXBk8weCfDnPkKREoC2bED/lhryfJ7k=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Fu6zDBbXyS+1ieXI1zTLEuM/2dBl0eA5gTkvNbLIBYnD3ySgyGe9AtJdtU31rAJ2fDwvvNfpgjUA7xXxAlDmuGL+moegqbgaxcJYROFiA7VWlegXgS94nGc3TG9P293fwXleh+58/rKI8xc4ansTqOUE+e0ryn75ls9PD+U1lAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=a8LvVCX5; arc=none smtp.client-ip=212.227.15.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+	t=1706653196; x=1707257996; i=w_armin@gmx.de;
+	bh=Ai/F6ftEvXWlQXBk8weCfDnPkKREoC2bED/lhryfJ7k=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+	b=a8LvVCX5hXAHrMgHjdOKkBKaUG82OTyBOoBxfzzXT8xh2H2Ylupo9taLV4kq1h2n
+	 Y83/aPQPuX0wrTMKsIHdn7jt4QPi9I231AMM6spudrXdL3bYaYRj5WK3w8S0teBBg
+	 Yas+bymRoJ7kypWC+meaaP1/O2BH26pNjO2Yzsp0XfhJ1LjgEY5mgDsC/clURgHzx
+	 bRly9udJjX5xdNYhVuWu07J+ewUBIXD8jvqldGPSNfuuqSAnxU9Sc5tXJ6nj8FIYb
+	 n2XHjDcuiUt+/4yMy+5P9U3oc/FQrtfmigE/Py647vYa+ki0Wo4oijpzuA/d0rHug
+	 cgCY6PjHFCRx+lOPFw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from mx-inspiron.fritz.box ([91.137.126.34]) by mail.gmx.net
+ (mrgmx005 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1MTiPv-1rcGk23ylp-00U6X1; Tue, 30 Jan 2024 23:19:56 +0100
+From: Armin Wolf <W_Armin@gmx.de>
+To: hdegoede@redhat.com,
+	ilpo.jarvinen@linux.intel.com
+Cc: rafael@kernel.org,
+	platform-driver-x86@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] checkpatch: allow build files to reference other
- build files
-Message-ID: <Zbl165bfizOauIlf@google.com>
-References: <20240112221947.1950503-1-willmcvicker@google.com>
- <ZbduU15kw5R42awj@buildd.core.avm.de>
+Subject: [PATCH v2] platform/x86: wmi: Stop using ACPI device class
+Date: Tue, 30 Jan 2024 23:19:42 +0100
+Message-Id: <20240130221942.2770-1-W_Armin@gmx.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZbduU15kw5R42awj@buildd.core.avm.de>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:7XpWIQuxAtEdpGy4JF0mFDM9uvHU5ZdOWhOBBRfU3oM5qJqgtDB
+ K8xZU0L+xJtJmh8O2jz6VNhLoMAwsbndRgSGVQCPOznEo/Y00S4WqX0iTNdsDS674R3RCGZ
+ WB5kcESVietCwvYLfNMi/E58pDWvqr2MesvF44qPgBY7n8DAH4fJgiHgUwVZ0I3Uw6+RxXH
+ FZS3FQzy4kGw325MMOAGA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:byHVV0hqOlo=;gkamHTI1BXHLF3DtYphf9ZDRgeZ
+ sFNT3TkkJncnTo6jfDGsrCIqzi8psfQHv0wYXpZjKoC6vL+B1II6rmF9VGxeXZ6STWzAENZdz
+ 1piOC0QgftyFqZdi/2dkWoeIlhKmrDCjasgVfhwuyZSc14iwfQY3Zksf5OI2xhNbkXPBHvFet
+ 9vbvLwBJv9JEU1CsXhYzmWL6jajfRnLbwjdJWkl9m1J7qJUX0u7Q33bdvKW8KD2zyENs/Hgdf
+ Mjb2UpiwPxVGa8coEcxZ1DRLF9UXvSz1CzG7CMXkW1VbBBKP4aYa8zIIy8KQN6WStAT4QZS2M
+ VU3REkixMxL3jTfsJAt8pRtCcHLAhqJXclMH0DP/RrH2Bj9dhrD6EYOvk7XLFiJvWTzqyT7Db
+ pX9yt11JIx9vrBBPbMfdZkf8VGAPbNzBDd9RBl16FgVKZo6pjkj74b5a6v8RO2vVudjNbWrYX
+ P4qsF+SbWpnG/zUhu/F+LJImdyFJnCmPW0PlYJaWHFK77Z0qodAroIpskYBMwcorNeGiDyQnL
+ XAEO1PG/xFD2/Ryji47EUGokGisxxWikZn/Q8z3VBB3hAlkX5hqNqsiBSIL2oWjdvupU8VvPu
+ 2jrSqLYohEDIfDWIqWV5Mi3Mk+G4uLTyzz5N6s5Y0NsHFYRZ5n91Yeq1o72vyNZw5qE57Hsy6
+ RsJghPfC+BXQ56SfNFIberWixzLhx74jGPJYaYx+QG87uNqnGGmIZwaKSm+TuoLjz8u8QHtZq
+ NW/OtP95cE81LgjWzdkNU9WhKRJsh8TpnYqFiavrciLUrRPM3T1oSmLW1EIr5awQ94X5i5R3p
+ 7kGV6nI3rNXQXD8kdlLM2SiFLX8YrVt86z7ju9P3whvinbnKTQtvrTI84VcRJfGs24R/OtuP/
+ Bc1Kd/RYWKdyWbevgLfWpr+Tf7r0f46DVxgg9WOvTBHHBCtmgerwVJFsdm2TYPMj6lBOWNliW
+ Qe4nwR5qCCrHR+0BcmUIT8GyY6Q=
 
-On 01/29/2024, Nicolas Schier wrote:
-> On Fri, Jan 12, 2024 at 02:19:46PM -0800, Will McVicker wrote:
-> > Add an exception to the EMBEDDED_FILENAME warning for build files. This
-> 
-> As far as I can see, your patch fixes only the checkpatch warnings for
-> top-level Makefile and Kconfig (and leaving out top-level Kbuild).
-> Other build files are not affected, right?
+When an ACPI netlink event is received by acpid, the ACPI device
+class is passed as its first argument. But since the class string
+is not initialized during probe, an empty string is being passed:
 
-Since $realfile includes the full path, I wasn't able to find a case where this
-issue happens outside of the top-level build files. The same goes for Kbuild
-files -- the top-level Kbuild file doesn't include other Kbuild files and the
-other Kbuild files don't include other Kbuild files within the same directory.
-If you prefer to protect against this warning in the future, I can include
-Kbuild as well if you want.
+	netlink:  PNP0C14:01 000000d0 00000000
 
-Thanks,
-Will
+Fix this by passing a static string instead.
 
-> 
-> Kind regards,
-> Nicolas
-> 
-> 
-> > fixes the below warnings where the Kconfig and Makefile files reference
-> > other similarly named build files.
-> > 
-> >   WARNING:EMBEDDED_FILENAME: It's generally not useful to have the filename in the file
-> >   #24: FILE: Kconfig:34:
-> >   +source "drivers/willmcvicker/Kconfig"
-> > 
-> >   WARNING:EMBEDDED_FILENAME: It's generally not useful to have the filename in the file
-> >   #36: FILE: Makefile:667:
-> >   +	} > Makefile
-> > 
-> > Signed-off-by: Will McVicker <willmcvicker@google.com>
-> > ---
-> >  scripts/checkpatch.pl | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > v2:
-> > - Unwrap commit message lines
-> > - Align and update regex
-> > 
-> > 
-> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> > index f8343b34a28b..c2869803e545 100755
-> > --- a/scripts/checkpatch.pl
-> > +++ b/scripts/checkpatch.pl
-> > @@ -3785,7 +3785,8 @@ sub process {
-> >  		}
-> >  
-> >  # check for embedded filenames
-> > -		if ($rawline =~ /^\+.*\b\Q$realfile\E\b/) {
-> > +		if ($rawline =~ /^\+.*\b\Q$realfile\E\b/ &&
-> > +		    $realfile !~ /(?:Kconfig|Makefile)/) {
-> >  			WARN("EMBEDDED_FILENAME",
-> >  			     "It's generally not useful to have the filename in the file\n" . $herecurr);
-> >  		}
-> > 
-> > base-commit: 70d201a40823acba23899342d62bc2644051ad2e
-> > -- 
-> > 2.43.0.275.g3460e3d667-goog
-> > 
+Tested on a Dell Inspiron 3505.
+
+Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+=2D--
+Note: This patch is based on commit 3f399b5d7189 ("platform/x86: wmi: Use =
+ACPI device name in netlink event")
+=2D--
+ drivers/platform/x86/wmi.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
+index 7ef1e82dc61c..3335de4e32b2 100644
+=2D-- a/drivers/platform/x86/wmi.c
++++ b/drivers/platform/x86/wmi.c
+@@ -1202,8 +1202,7 @@ static int wmi_notify_device(struct device *dev, voi=
+d *data)
+ 		wblock->handler(*event, wblock->handler_data);
+ 	}
+
+-	acpi_bus_generate_netlink_event(wblock->acpi_device->pnp.device_class,
+-					acpi_dev_name(wblock->acpi_device), *event, 0);
++	acpi_bus_generate_netlink_event("wmi", acpi_dev_name(wblock->acpi_device=
+), *event, 0);
+
+ 	return -EBUSY;
+ }
+=2D-
+2.39.2
+
 
