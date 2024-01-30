@@ -1,149 +1,180 @@
-Return-Path: <linux-kernel+bounces-44285-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44286-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99BBE841FE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:42:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97D1B841FF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:44:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD7761C267C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:42:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F0C80B2CE16
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:43:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C23E5B5CE;
-	Tue, 30 Jan 2024 09:42:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1658760B8D;
+	Tue, 30 Jan 2024 09:43:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="b7tyjvqF"
-Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TvvvnK8M"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F227059B4E
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:42:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4968660884;
+	Tue, 30 Jan 2024 09:43:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706607724; cv=none; b=ufl29aPloMfQoV8cA2fdlnCkvxBjurJd1nJ3ldbq4LMBgnuhctenpjgOaIbxeWmLtt+OLAILZX0IF/I69XEb13yn1wsJfE8qLEst3KAOZppT9uKQ8+ukWxqqtTCAc9MfW2Jo+3xqmOfu//jSekq3AnYBajYl92i5zpfl/XFO0Pw=
+	t=1706607784; cv=none; b=tV0ZF4bayWCHsFr8dWJDXglGL82yqVpAVMMw+/+/5gwVmdE7DxtCaGlq8VwaCpbrQuJzwNldFMQ0gnBhCbacbS5E7dtmf5BcnL1BFokBeAb0HgntGg1HNV+5QLram+H2THKEPl1hFrAorj6Nu6xXqouX1jaHinCnMJB11zeX2Gg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706607724; c=relaxed/simple;
-	bh=1akIZWOlcQz+syP6eJskDVtQ9hEJTF7i2yELwffJV9s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ngecqcx4Law8L3j2D4IX5HUg4j9a7HnpzBqUHeTw0SFPLzW6pAEnUO/80hM2LzKqbzflG0BLES07Qzxs1lUV3ri3fdaSUV7533VX3b1d2vmfjvS1ZL4UW5PkfmGkg1A0fzf2sCNrUrp1qY74UyB92nF7vrxB0H/EijohjYHJvP0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=b7tyjvqF; arc=none smtp.client-ip=209.85.210.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6e132fef7baso689139a34.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:42:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706607722; x=1707212522; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=rk9FqAfnyxQRqiMY/FDbYczS/XhnGrLCQVOaYWAXTPo=;
-        b=b7tyjvqFWrK9u+IEahyXrteOTwYngvzn19NLvnyZhEC43kaE3Ys7yZTMYIBuzXLYW9
-         4ZL4dPALnjrkTnLMUNnqzqXH5bBFLUQZjxR9nqYkEW72NpAcU+TI3HmrMo/VsTNRrz/p
-         8M6tiaDTAMBcwXGiuesXIYfNmQEl4TZHbS7BDItkSXP6y+WNApNTzpzGoIlIWmmmRrkg
-         uZJR1ha74mzrR6c2bw08fRfo4xawveSD+ZHQLmBgdeBQCTNhh1Zs12SH1ThCMLmMTqyK
-         SYSWTQ23M5a56xqLPwIgV+Db9lmRMrDqHX/NbXBOScKPdCZNS3NCpk+YSuC3IbrWltVe
-         zJiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706607722; x=1707212522;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rk9FqAfnyxQRqiMY/FDbYczS/XhnGrLCQVOaYWAXTPo=;
-        b=r5Px/biwLqBQeM/21PwPvO1ad/CKItXhFNVS2UY/U5ZX0VEZTik8P4TiZx8++Eqq2J
-         3AdRBBHf6OhoXB3Z87dWVTUh/OslokwtZftuqifzRcMvQUGg7/p/ed94d7w9UUHVaQ1y
-         7WyKKasaBwJZzzi7JSMpxVpXaw2ejoS1CMmnRIkZVnziJB45PNgEGzPgzGhxG38+QK47
-         bTrrVHuaA0u3g4RUIv6+CHqIJFlC/XgRynYrXFF4J8JTndSR1bHiCjjGa90U9qPoWQH7
-         vgztlkesOndLiytcYCQ6DLAuusu9VhBBIm/xahocXf+ldGzxd6SuXiCx3hpjtyHwTNSY
-         ggLA==
-X-Gm-Message-State: AOJu0YzSFDCwf2riEXM1+HdNZgGp2JVvP7+4K40+tTgiXAGGHotfjlL2
-	brCJ7M2Ur5FUppT5mWI0wnyNgaFC/8pDzfGMkl3jW+Se/0lHe/q4BatX2gUKvTwpdDWKrKRO1zR
-	5siJAP+0mXWLTMmmLCa1IOsSn0becMljGrctctbfDKZJ0XI9F
-X-Google-Smtp-Source: AGHT+IEucuHNcABzoWSUH7+Zyp8HMepM//ptGnXltSWttspTAjrBy3yEPl8QDcLljQGO34yyCbNhb6T3DHCfrvJNldI=
-X-Received: by 2002:a05:6808:ec1:b0:3bd:9a58:c6e3 with SMTP id
- q1-20020a0568080ec100b003bd9a58c6e3mr6908381oiv.52.1706607722045; Tue, 30 Jan
- 2024 01:42:02 -0800 (PST)
+	s=arc-20240116; t=1706607784; c=relaxed/simple;
+	bh=ldrlgKcrWSPBN/HSbuJTM+glXjW0wkDulQn6qoVjgNQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=l8jBNpbEF1bmQzzVFxItfTPXz9CpzbtYtILh5rPl6rC8YfkaXEyfzCmj4DDgED51jqB82hbsogJf+yk+GFOq73AUg5rpqmx5JSN5apQdub3a8hBmaRXaDDB38eEPGATbag/wpW/zDyQnSzSRhn7zPGFD6duA2CvdwkLeuyP2ohw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TvvvnK8M; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0FD4C433F1;
+	Tue, 30 Jan 2024 09:43:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706607783;
+	bh=ldrlgKcrWSPBN/HSbuJTM+glXjW0wkDulQn6qoVjgNQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TvvvnK8M//BQMdjyfgNqe0NVXQyupwifsm7Gw4xTWob7fSp3IRxVz0aBGvzazjMtY
+	 0JVeNxfwhRcomwW/zCTgB1vThCBPzePW/pSpo7P2cBvQ7BkJ1B0KHJnkbXjSqfcXE0
+	 5Y8a5tQ9mRTSKXvcw9gRtFmSR3GJ4uGdsGLSodNDG9Asyi4R49qKJUP4gXeebAl/NP
+	 /SueJccH0u82j0fPsq9baa7XkdOyHtPJRxLGt+LCNKwu0v6tyulpwvnb1yfjFCMSP9
+	 v4jyAjcZXnYB/eI+6RzkbRXyUOZEqDxy/thGd69zsI4Ie+4dyND1Bte9R8ymdPIVMH
+	 lnBt+sH4XNRXg==
+Date: Tue, 30 Jan 2024 10:42:57 +0100
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Viken Dadhaniya <quic_vdadhani@quicinc.com>, andersson@kernel.org, 
+	konrad.dybcio@linaro.org, linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, vkoul@kernel.org, quic_bjorande@quicinc.com, 
+	manivannan.sadhasivam@linaro.org, quic_msavaliy@quicinc.com, quic_vtanuku@quicinc.com
+Subject: Re: [V2] i2c: i2c-qcom-geni: Correct I2C TRE sequence
+Message-ID: <txbi7hpta26tdncbjyyyxmayos7kw7qbo6y5lcxp2nfk3hogxv@pddv45eqyc2b>
+References: <20240129061003.4085-1-quic_vdadhani@quicinc.com>
+ <CAA8EJpr_KXsjTUYha7OVg4HLLJLqMRvJun9DnMkBFvq3R2nk=Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240105222014.1025040-1-qyousef@layalina.io> <20240105222014.1025040-2-qyousef@layalina.io>
- <CAKfTPtBYcVWxYOhWZjzcQUB1ebUBA-B30hvToqGBq6JnfRUZNg@mail.gmail.com>
- <20240124222959.ikwnbxkcjaxuiqp2@airbuntu> <CAKfTPtDxqcrf0kaBQG_zpFx-DEZTMKfyxBu_bzCuZ_UZhJwOnA@mail.gmail.com>
- <20240126014602.wdcro3ajffpna4fp@airbuntu> <CAKfTPtDqABnPDmt0COqyRpYSuj_WWwLrqL+Tbfa8J8b5u5eQtQ@mail.gmail.com>
- <20240128235005.txztdbdq2obyi4n6@airbuntu>
-In-Reply-To: <20240128235005.txztdbdq2obyi4n6@airbuntu>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Tue, 30 Jan 2024 10:41:50 +0100
-Message-ID: <CAKfTPtC0=MH7bCypeY1QFxt=pFbPxY9YLuuS8_dhkF31nR6ZWQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] sched/fair: Check a task has a fitting cpu when
- updating misfit
-To: Qais Yousef <qyousef@layalina.io>
-Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, linux-kernel@vger.kernel.org, 
-	Pierre Gondois <Pierre.Gondois@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA8EJpr_KXsjTUYha7OVg4HLLJLqMRvJun9DnMkBFvq3R2nk=Q@mail.gmail.com>
 
-On Mon, 29 Jan 2024 at 00:50, Qais Yousef <qyousef@layalina.io> wrote:
->
-> On 01/26/24 15:08, Vincent Guittot wrote:
->
-> > > TBH I had a bit of confirmation bias that this is a problem based on the fix
-> > > (0ae78eec8aa6) that we had in the past. So on verification I looked at
-> > > balance_interval and this reproducer which is a not the same as the original
-> > > one and it might be exposing another problem and I didn't think twice about it.
+Hi Dmitry,
+
+thanks a lot for your review!
+
+On Tue, Jan 30, 2024 at 01:49:57AM +0200, Dmitry Baryshkov wrote:
+> On Mon, 29 Jan 2024 at 08:10, Viken Dadhaniya <quic_vdadhani@quicinc.com> wrote:
 > >
-> > I checked the behavior more deeply and I confirm that I don't see
-> > improvement for the use case described above. I would say that it's
-> > even worse as I can see some runs where the task stays on little
-> > whereas a big core has been added in the affinity. Having in mind that
-> > my system is pretty idle which means that there is almost no other
-> > reason to trigger an ilb than the misfit task, the change in
-> > check_misfit_status() is probably the reason for never kicking an ilb
-> > for such case
->
-> It seems I reproduced another problem while trying to reproduce the original
-> issue, eh.
->
-> I did dig more and from what I see the issue is that the rd->overload is not
-> being set correctly. Which I believe what causes the delays (see attached
-> picture how rd.overloaded is 0 with some spikes). Only when CPU7
-> newidle_balance() coincided with rd->overload being 1 that the migration
-> happens. With the below hack I can see that rd->overload is 1 all the time
+> > For i2c read operation, we are getting gsi mode timeout due
+> > to malformed TRE(Transfer Ring Element). Currently we are
+> > configuring incorrect TRE sequence in gpi driver
+> > (drivers/dma/qcom/gpi.c) as below
+> >
+> > - Sets up CONFIG
+> > - Sets up DMA tre
+> > - Sets up GO tre
+> >
+> > As per HPG(Hardware programming guide), We should configure TREs in below
+> > sequence for any i2c transfer
+> >
+> > - Sets up CONFIG tre
+> > - Sets up GO tre
+> > - Sets up DMA tre
+> 
+> It is not clear how this is relevant and/or affected by swapping
+> I2C_WRITE and I2C_READ gpi calls.
+> 
+> >
+> > For only write operation or write followed by read operation,
+> > existing software sequence is correct.
+> >
+> > for only read operation, TRE sequence need to be corrected.
+> > Hence, we have changed the sequence to submit GO tre before DMA tre.
+> >
+> > Tested covering i2c read/write transfer on QCM6490 RB3 board.
+> 
+> Please read Documentation/process/submitting-patches.rst, understand
+> it and write a proper commit message.
+> 
+> >
+> > Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
+> > Fixes: commit d8703554f4de ("i2c: qcom-geni: Add support for GPI DMA")
+> 
+> As it was pointed out, this line shows ignorance of the mentioned file
+> and of the existing community practices.
 
-But here you rely on another activity happening in CPU7 whereas the
-misfit should trigger by itself the load balance and not expect
-another task waking up then sleeping on cpu7 to trigger a newidle
-balance. We want a normal idle load balance not a newidle_balance
+If the issue is only in the commit message Viken can propose a
+proper commit message as reply to this e-mail and I can fix it
+before merging the change.
 
-> (even after the move as we still trigger a misfit on the big CPU). With my
-> patch only rd->overload is set to 1 (because of this task) only for a short
-> period after we change affinity.
->
->         diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->         index df348aa55d3c..86069fe527f9 100644
->         --- a/kernel/sched/fair.c
->         +++ b/kernel/sched/fair.c
->         @@ -9707,8 +9707,8 @@ static inline void update_sg_lb_stats(struct lb_env *env,
->                                 continue;
->                         }
->
->         -               if (local_group)
->         -                       continue;
->         +               /* if (local_group) */
->         +                       /* continue; */
->
->                         if (env->sd->flags & SD_ASYM_CPUCAPACITY) {
->                                 /* Check for a misfit task on the cpu */
->
-> I am not sure what the right fix is, but it seems this condition is required
-> for the 2nd leg of this if condition when we compare with load? I don't think
-> we should skip the misfit check.
->
->
-> Thanks
->
-> --
-> Qais Yousef
+Important is that no issue is seen in the code.
+
+Please, Viken, can you either send a v3 with a proper commit
+message or write it in the reply to this e-mail with the changes
+that Dmitry suggested.
+
+> > ---
+> > v1 -> v2:
+> > - Remove redundant check.
+> > - update commit log.
+> > - add fix tag.
+> > ---
+> > ---
+> >  drivers/i2c/busses/i2c-qcom-geni.c | 14 +++++++-------
+> >  1 file changed, 7 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
+> > index 0d2e7171e3a6..da94df466e83 100644
+> > --- a/drivers/i2c/busses/i2c-qcom-geni.c
+> > +++ b/drivers/i2c/busses/i2c-qcom-geni.c
+> > @@ -613,20 +613,20 @@ static int geni_i2c_gpi_xfer(struct geni_i2c_dev *gi2c, struct i2c_msg msgs[], i
+> >
+> >                 peripheral.addr = msgs[i].addr;
+> >
+> > +               ret =  geni_i2c_gpi(gi2c, &msgs[i], &config,
+> > +                                   &tx_addr, &tx_buf, I2C_WRITE, gi2c->tx_c);
+> > +               if (ret)
+> > +                       goto err;
+> > +
+> >                 if (msgs[i].flags & I2C_M_RD) {
+> >                         ret =  geni_i2c_gpi(gi2c, &msgs[i], &config,
+> >                                             &rx_addr, &rx_buf, I2C_READ, gi2c->rx_c);
+> >                         if (ret)
+> >                                 goto err;
+> > -               }
+> > -
+> > -               ret =  geni_i2c_gpi(gi2c, &msgs[i], &config,
+> > -                                   &tx_addr, &tx_buf, I2C_WRITE, gi2c->tx_c);
+> > -               if (ret)
+> > -                       goto err;
+> >
+> > -               if (msgs[i].flags & I2C_M_RD)
+> >                         dma_async_issue_pending(gi2c->rx_c);
+> > +               }
+> > +
+> >                 dma_async_issue_pending(gi2c->tx_c);
+> >
+> >                 timeout = wait_for_completion_timeout(&gi2c->done, XFER_TIMEOUT);
+> > --
+> > QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> > of Code Aurora Forum, hosted by The Linux Foundation
+
+If you are going to submit again, please make also sure that the
+e-mail is formatted properly.
+
+I'm not sure that this footer will be accepted by git.
+
+Thanks,
+Andi
+
+> >
+> >
+> 
+> 
+> -- 
+> With best wishes
+> Dmitry
 
