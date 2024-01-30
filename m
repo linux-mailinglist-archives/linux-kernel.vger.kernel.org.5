@@ -1,91 +1,243 @@
-Return-Path: <linux-kernel+bounces-44096-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44097-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCE32841D42
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:11:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 535B1841D44
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:12:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E61AB1C239D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:11:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCCB61F25884
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:12:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 771A455C2D;
-	Tue, 30 Jan 2024 08:11:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CD045577A;
+	Tue, 30 Jan 2024 08:12:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zkPBm0bH"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zws7NfIT"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A4F454736
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 08:11:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5026F5786C;
+	Tue, 30 Jan 2024 08:12:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706602301; cv=none; b=haGu8DfDX9pJ/aJdQkFAo3aYza/hL+yd8wAj8lsL0moXDCLhcHZ4T7SUGZA4em06oFjEmz40pjp7U/xTtRlXHwe1Nm+Twg00Y3Ytd/paHOb8R8v0AUzYk9p0YGC/G/g+B+cGJkyvu5y9FS5wAQOMilL6P71XnEZlpqTVdTzW9XE=
+	t=1706602321; cv=none; b=LsiKZlEIjM6ljkma2pdrmyLT4hYAhevxbQ52V25LyTn+bBW4J6UYHZuovtrx6cDvCzsZfpElbQ0n46i4GJ54MDWVV2vcsAj2P3OiPyg+I6H4kK/aPVGDirkTKwd38cIcLDEsYc8rFf2zDCrrUnoT/vHKO3xC8pP1yPLViRUQGg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706602301; c=relaxed/simple;
-	bh=tJcfkRLSec8V90fDBMcC8fu9LjoS7gBQvD2cDv827co=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=WMLx94W6UJjFRvbWKqcJEjFUxYVAQWYvYlsI9tLaJ6H4UBh9im2q1zQyf21rHx25Z4RjDMulH2NEqzEPr1+n0ALuz+PZdOfaZhixL+yAHyGwBqyp4sWNRFoByCzoSI44nI87kVivFfRAr/Ooed+nUhybUez/yFVG/w5+p879CLQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zkPBm0bH; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-602d22a54caso53284047b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 00:11:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706602299; x=1707207099; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MB0zSqc4v6QJWm2r+bwmMTwgDhYEDBQW95gH3tHtSso=;
-        b=zkPBm0bHIAFekSK2nebDKPGlNGrpwG/t87B4Z9sENt7ja5wrRUlJdC1U8SNaPwkEoi
-         +/1ml8+NEeKzesTeBTi3tCWwNvQEcnVaW4roaK6akHLX/BGJ8WSV/0UUbDqMZ2Ijd+98
-         NAN9L5aec5DETBgu0ucCkRiY03SiosRn9EjY8r+AG/KK39LOgx6iV7gFkv+bYEKPZkd5
-         A6dVJkcko2GO4ZWS0v4obSXl52gm6vUtWxX3iGwLBvZAij4aTrgk1U+ouAxYA9XJ0Pas
-         bA4ubkNylKA8xDYRzWcs6CM4aFmqvtddHaWYVgAkCUL1ADZGCtFwc2yylkZsdkJFjNHv
-         PzXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706602299; x=1707207099;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MB0zSqc4v6QJWm2r+bwmMTwgDhYEDBQW95gH3tHtSso=;
-        b=EEwJ9TiS5POr/3wsFE3V2Ho7a6N7S9yWzlnDB1DhMOgQzb73KQNZ8UTIvXqySSd6y3
-         IDzcfV0efcZLVk4bI1X4VCGGy8klhP6gIi0eyBVRvoyzFCfazDpb+YuAnMrt2VyV2FhH
-         dZ0fRIsojP5q59tR2RmRXYw1N47PH1K2EsrLFje/bQJk+iwNZxDQp7S6khGo5yX1AqxB
-         ZhTPCm3X4vFm1+t+nDMtU/biljdy6cqK7SvqItgVVwGxiCfhiRcL/k/aU8jxp4HnRZ9v
-         DMDvYuvWt985mq8icCN7H2Q/mqlfoBv2OcdFbS3De1K0XrtFY8KREzEpZoAruj3rKGJd
-         xhtg==
-X-Gm-Message-State: AOJu0Yw0gGaFe9nm4OkAKWd/cS07lzjeg/hmaChTpczN0EFNDS2/5Ch+
-	Y5Anzno7F9pNOgsyyI0wSXd2+KvtYfmCPm6fK7CohYqjIso8AU8D+QYWQ1CWbeeN7qK7SDjjJas
-	BEi2fIJ0pDJEKNfwPbg==
-X-Google-Smtp-Source: AGHT+IG0hPSxQYojBv+Xj8kRktpRrQ4U3YvHXIcSLB7tnNj1gmueIH4ClhDGo4I0UT3fna01dETT0yi6RlfT9Weq
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:690c:f91:b0:5ff:80cb:23c7 with SMTP
- id df17-20020a05690c0f9100b005ff80cb23c7mr1764515ywb.1.1706602299330; Tue, 30
- Jan 2024 00:11:39 -0800 (PST)
-Date: Tue, 30 Jan 2024 08:11:37 +0000
-In-Reply-To: <20240130014208.565554-8-hannes@cmpxchg.org>
+	s=arc-20240116; t=1706602321; c=relaxed/simple;
+	bh=8mFKFjYSUuOIu6xh7rNa3DzWL/XzU+Q5rtoh7P3ST+g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Pjr0TurKivak7dyMuFkqDYi/j83JSIqakR4WAbXvz1tmiRMJcOoZTbKj4HufVpCxTM40fMax9jx+1Vs0oCTKp/1AMqTKBTzc4kgUDQD46pGa3PQra9y93la4rtXAbCRZ1MeGUsxphVO6sD+lV3OI6buaVgim2+VyUAeeMHsiAmw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zws7NfIT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1B26C433F1;
+	Tue, 30 Jan 2024 08:11:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706602320;
+	bh=8mFKFjYSUuOIu6xh7rNa3DzWL/XzU+Q5rtoh7P3ST+g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Zws7NfITdtoBVI2DvHJmPPMvFvvGeg0CSOceSvNai57g0PBFHC4SMN3uNBvo3vwge
+	 /ReLfUwc9B4I6TvMFLDMCk+YuCfkEVdxjVG4EKaGXjqXr50Pp1fHdGi+x0l5rwdSYp
+	 InMpucqq63wWnrep6OKyQrcfGgEU0luOO9fK0ljc6xlvomqYZVDTOmG2WKJmAk41YU
+	 d2o8jLz8P5XRVY2zDA2C8i3z0kMuRAgzl0A4i5KIsffrSkB9rBycy17uimJGCoWX/c
+	 /hfFXib1ooW+GM/PPrKahrzq4MNkGrcbo2rUFhRoisoluDNjMonwAhzPpTr/qTEFnK
+	 qi9Q8TQ3LcBkA==
+Date: Tue, 30 Jan 2024 13:41:52 +0530
+From: Manivannan Sadhasivam <mani@kernel.org>
+To: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
+	linux-arm-msm@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	quic_vbadigan@quicinc.com, quic_ramkri@quicinc.com,
+	quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
+	quic_parass@quicinc.com
+Subject: Re: [PATCH v9] bus: mhi: host: Add tracing support
+Message-ID: <20240130081152.GH32821@thinkpad>
+References: <20240105-ftrace_support-v9-1-a2dca64cc6ea@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240130014208.565554-1-hannes@cmpxchg.org> <20240130014208.565554-8-hannes@cmpxchg.org>
-Message-ID: <ZbivOWCrcPb2B81f@google.com>
-Subject: Re: [PATCH 07/20] mm: zswap: break out zwap_compress()
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Nhat Pham <nphamcs@gmail.com>, 
-	Chengming Zhou <zhouchengming@bytedance.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240105-ftrace_support-v9-1-a2dca64cc6ea@quicinc.com>
 
-On Mon, Jan 29, 2024 at 08:36:43PM -0500, Johannes Weiner wrote:
-> zswap_store() is long and mixes work at the zswap layer with work at
-> the backend and compression layer. Move compression & backend work to
-> zswap_compress(), mirroring zswap_decompress().
+On Fri, Jan 05, 2024 at 05:53:03PM +0530, Krishna chaitanya chundru wrote:
+> This change adds ftrace support for following functions which
+> helps in debugging the issues when there is Channel state & MHI
+> state change and also when we receive data and control events:
+> 1. mhi_intvec_mhi_states
+> 2. mhi_process_data_event_ring
+> 3. mhi_process_ctrl_ev_ring
+> 4. mhi_gen_tre
+> 5. mhi_update_channel_state
+> 6. mhi_tryset_pm_state
+> 7. mhi_pm_st_worker
 > 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> Change the implementation of the arrays which has enum to strings mapping
+> to make it consistent in both trace header file and other files.
+> 
+> Where ever the trace events are added, debug messages are removed.
+> 
+> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
 
-Acked-by: Yosry Ahmed <yosryahmed@google.com>
+Few nitpicks below.
+
+> Reviewed-by: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> ---
+> Changes in v9:
+> - Change the implementations of some array so that the strings to enum mapping
+> - is same in both trace header and other files as suggested by steve.
+> - Link to v8: https://lore.kernel.org/r/20231207-ftrace_support-v8-1-7f62d4558555@quicinc.com
+> 
+> Changes in v8:
+> - Pass the structure and derefernce the variables in TP_fast_assign as suggested by steve
+> - Link to v7: https://lore.kernel.org/r/20231206-ftrace_support-v7-1-aca49a04268b@quicinc.com
+> 
+> Changes in v7:
+> - change log format as pointed by mani.
+> - Link to v6: https://lore.kernel.org/r/20231204-ftrace_support-v6-1-9b206546dac2@quicinc.com
+> 
+> Changes in v6:
+> - use 'rp' directly as suggested by jeffrey.
+> - Link to v5: https://lore.kernel.org/r/20231127-ftrace_support-v5-1-eb67daead4f1@quicinc.com
+> 
+> Changes in v5:
+> - Use DECLARE_EVENT_CLASS for multiple events as suggested by steve.
+> - Instead of converting to u64 to print address, use %px to print the address to avoid
+> - warnings in some platforms.
+> - Link to v4: https://lore.kernel.org/r/20231111-ftrace_support-v4-1-c83602399461@quicinc.com
+> 
+> Changes in v4:
+> - Fix compilation issues in previous patch which happended due to rebasing.
+> - In the defconfig FTRACE config is not enabled due to that the compilation issue is not
+> - seen in my workspace.
+> - Link to v3: https://lore.kernel.org/r/20231111-ftrace_support-v3-1-f358d2911a74@quicinc.com
+> 
+> Changes in v3:
+> - move trace header file from include/trace/events to drivers/bus/mhi/host/ so that
+> - we can include driver header files.
+> - Use macros directly in the trace events as suggested Jeffrey Hugo.
+> - Reorder the structure in the events as suggested by steve to avoid holes in the buffer.
+> - removed the mhi_to_physical function as this can give security issues.
+> - removed macros to define strings as we can get those from driver headers.
+> - Link to v2: https://lore.kernel.org/r/20231013-ftrace_support-v2-1-6e893ce010b5@quicinc.com
+> 
+> Changes in v2:
+> - Passing the raw state into the trace event and using  __print_symbolic() as suggested by bjorn.
+> - Change mhi_pm_st_worker to mhi_pm_st_transition as suggested by bjorn.
+> - Fixed the kernel test rebot issues.
+> - Link to v1: https://lore.kernel.org/r/20231005-ftrace_support-v1-1-23a2f394fa49@quicinc.com
+> ---
+>  drivers/bus/mhi/common.h        |  38 +++---
+>  drivers/bus/mhi/host/init.c     |  63 +++++----
+>  drivers/bus/mhi/host/internal.h |  40 ++++++
+>  drivers/bus/mhi/host/main.c     |  19 ++-
+>  drivers/bus/mhi/host/pm.c       |   7 +-
+>  drivers/bus/mhi/host/trace.h    | 275 ++++++++++++++++++++++++++++++++++++++++
+>  6 files changed, 378 insertions(+), 64 deletions(-)
+> 
+
+[...]
+
+> +TRACE_EVENT(mhi_gen_tre,
+> +
+> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
+> +		 struct mhi_ring_element *mhi_tre),
+> +
+> +	TP_ARGS(mhi_cntrl, mhi_chan, mhi_tre),
+> +
+> +	TP_STRUCT__entry(
+> +		__string(name, mhi_cntrl->mhi_dev->name)
+> +		__field(int, ch_num)
+> +		__field(void *, wp)
+> +		__field(__le64, tre_ptr)
+> +		__field(__le32, dword0)
+> +		__field(__le32, dword1)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
+> +		__entry->ch_num = mhi_chan->chan;
+> +		__entry->wp = mhi_tre;
+> +		__entry->tre_ptr = mhi_tre->ptr;
+> +		__entry->dword0 = mhi_tre->dword[0];
+> +		__entry->dword1 = mhi_tre->dword[1];
+> +	),
+> +
+> +	TP_printk("%s: Chan: %d Tre: 0x%p Tre buf: 0x%llx dword0: 0x%08x dword1: 0x%08x\n",
+
+Use caps for printing the acronyms everywhere. Like TRE, DWORD etc...
+
+> +		  __get_str(name), __entry->ch_num, __entry->wp, __entry->tre_ptr,
+> +		  __entry->dword0, __entry->dword1)
+> +);
+> +
+> +TRACE_EVENT(mhi_intvec_states,
+> +
+> +	TP_PROTO(struct mhi_controller *mhi_cntrl, int dev_ee, int dev_state),
+> +
+> +	TP_ARGS(mhi_cntrl, dev_ee, dev_state),
+> +
+> +	TP_STRUCT__entry(
+> +		__string(name, mhi_cntrl->mhi_dev->name)
+> +		__field(int, local_ee)
+> +		__field(int, state)
+> +		__field(int, dev_ee)
+> +		__field(int, dev_state)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
+> +		__entry->local_ee = mhi_cntrl->ee;
+> +		__entry->state = mhi_cntrl->dev_state;
+> +		__entry->dev_ee = dev_ee;
+> +		__entry->dev_state = dev_state;
+> +	),
+> +
+> +	TP_printk("%s: local ee: %s state: %s device ee: %s state: %s\n",
+
+"Local EE... State:...Device EE.."
+
+> +		  __get_str(name),
+> +		  __print_symbolic(__entry->local_ee, MHI_EE_LIST),
+> +		  __print_symbolic(__entry->state, MHI_STATE_LIST),
+> +		  __print_symbolic(__entry->dev_ee, MHI_EE_LIST),
+> +		  __print_symbolic(__entry->state, MHI_STATE_LIST))
+> +);
+> +
+
+[...]
+
+> +DECLARE_EVENT_CLASS(mhi_update_channel_state,
+> +
+> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan, int state),
+> +
+> +	TP_ARGS(mhi_cntrl, mhi_chan, state),
+> +
+> +	TP_STRUCT__entry(
+> +		__string(name, mhi_cntrl->mhi_dev->name)
+> +		__field(int, ch_num)
+> +		__field(int, state)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
+> +		__entry->ch_num = mhi_chan->chan;
+> +		__entry->state = state;
+> +	),
+> +
+> +	TP_printk("%s: chan%d: Updating state to: %s\n",
+> +		  __get_str(name), __entry->ch_num,
+> +		  __print_symbolic(__entry->state, MHI_CH_STATE_TYPE_LIST))
+
+So same trace will get printed for both mhi_channel_command_start() and
+mhi_channel_command_end()?
+
+- Mani
+
+-- 
+மணிவண்ணன் சதாசிவம்
 
