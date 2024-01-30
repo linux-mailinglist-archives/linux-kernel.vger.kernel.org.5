@@ -1,160 +1,162 @@
-Return-Path: <linux-kernel+bounces-44688-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44689-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 519408425F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:15:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C07EE8425FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:16:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07F671F2491E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:15:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76B26291AA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:16:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73BB56D1B8;
-	Tue, 30 Jan 2024 13:15:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D8736BB29;
+	Tue, 30 Jan 2024 13:16:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DX9tCY39"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="kuipvvRH";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="TVaiJwa/";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LQQqIBom";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yMtdf8av"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C057460874;
-	Tue, 30 Jan 2024 13:15:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.93
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 892606A00C
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 13:16:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706620527; cv=none; b=OGgc+sW/TmDe7mo/hAMgvSWiWI+GlyWUzZTA8YkU6Vo4fGQXxNQjmQTE1vGATWps4jzd6D9sFw7b9VV+gDPKm5G7URElGyk3eU92500GqOwxxzIqdqdUKIYoqQh+i/Wjcxh1QHHUGmYrEEwJTiZXVd0dSuizkWGt4xM7DjY5Yg8=
+	t=1706620572; cv=none; b=JZgHGFb5sEWdpjmFYCHr2DQan687Vr36I6vSIqr8ohGGhqY6KIWcWx1fVl7I8ahf7/sfX7LKWnV5P4luyi1XLkuOCceHzu5F4qF5aHofy4+8PJJ2/qJyKvJJr/kOkMt12rHRt6VVUCK6csrDb3Uzq/22u3w5Xx79ejcwIkCFBiU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706620527; c=relaxed/simple;
-	bh=YqZzIcojda4nyn+FMMQhoHdEpUzR5h93PZGcwzJyjac=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=FXLGD7HWxpAJzywr+dHFokValGm8njkrVoYm4q/4/b7taTK0eMcxo60bO5zqbf0xn/Ngc1kBNtAwudgDyzduBa3Cajqo9GouQxjkTGFkLoeN+tzn2NDPldr2es6etlSDXBs1Z2m5HB6B4lgZUmSeZ7MibUzEfkQzqN7DTKuXY2U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DX9tCY39; arc=none smtp.client-ip=192.55.52.93
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706620525; x=1738156525;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=YqZzIcojda4nyn+FMMQhoHdEpUzR5h93PZGcwzJyjac=;
-  b=DX9tCY39w4M1QuS0D/1KtNHbhz4M38NCDfHtDdYEjlsJxIkeaZ6PyrGI
-   MjfbtrqRJIUr9ePkD9nTi3udyNxfEl4ahonqer0tMFuc/XqAnzSB84MU6
-   YuNbMINZZK8gaLnex9NtOMukEeZBJWjMHB6BD/qZb3AuUilZLuZ/MLi95
-   EtrGSpA4Hw2v/CLd0ZNJ5Hrt7VDhKeqfnE/E4RL5MLqrFntclB+4awYsC
-   xU0NrG7PuIO8mvayj2iQztXpMWzgL/dEK2VLqIFIk8NZrEf/sTZy4FiDK
-   CqugLfmu+B7vL17Z39M59hLTYxe3dUYLkcv7uSzYhb+xGS+r9QrltFWj1
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="400413381"
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="400413381"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 05:15:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="3689802"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.34.252])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 05:15:22 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Tue, 30 Jan 2024 15:15:18 +0200 (EET)
-To: Bjorn Helgaas <helgaas@kernel.org>
-cc: Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, 
-    "Maciej W. Rozycki" <macro@orcam.me.uk>, 
-    LKML <linux-kernel@vger.kernel.org>, 
-    Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: Re: [PATCH 2/2] PCI: Do not wait for disconnected devices when
- resuming
-In-Reply-To: <20240129185544.GA471021@bhelgaas>
-Message-ID: <964b697f-a412-2fd5-a649-036e9f6b596e@linux.intel.com>
-References: <20240129185544.GA471021@bhelgaas>
+	s=arc-20240116; t=1706620572; c=relaxed/simple;
+	bh=YiNWA5mVJlv6bd2w7OgoxKxdc6mVSEXQGz66b8oomzw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Zvah6rNqqwd6/+68hY4mbsaZ8GlT3kjEiSRgmmpUodR8khwX8oYRqyTBR1Cnv8PXMVC0rKLRGEGYqTGYog33xR3VzLnBqG61X88IQzLWX5j2ISrAAyxoLzO9uFL/jB/SstvJXgmUCvo8a7ip0EGnKcCAwfGZPz6AF40MUlBVpq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=kuipvvRH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=TVaiJwa/; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=LQQqIBom; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=yMtdf8av; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 855201F84A;
+	Tue, 30 Jan 2024 13:16:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706620568; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wCNq95+0rNCD2kp/hKAX5Oke9fUmnEml0yRbLl6Ruxw=;
+	b=kuipvvRHAvzTQ+A7AvAZFcMzriCKYKUNWAgTzhiX0PZRFcWd2bTgx7ZtBzvU+9dbz5F+Kk
+	mhnzHuG9R4iWzBLwsdXgqbqRO+MpGUVlh2kr7sQmHLMFy3iFuEKtAOAwVqzhD2QFpgTWlV
+	WEWRYER3uq+kInX+h3u4TA1nG4uvfEU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706620568;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wCNq95+0rNCD2kp/hKAX5Oke9fUmnEml0yRbLl6Ruxw=;
+	b=TVaiJwa/GeGS1+L9+5/rTFN1xODWweM9oYSvxK8EHMANFo7NUjVqK+66RXbX86q7GAfxn4
+	N/+x3sDWfg8K3nCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706620567; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wCNq95+0rNCD2kp/hKAX5Oke9fUmnEml0yRbLl6Ruxw=;
+	b=LQQqIBomU7yb+znQm6ltiLwJDTZoN+kYWf42c8yxRV4tqANHD6Mc7Qq2g2WgM/1FSeVW//
+	mzfTywwSLaiFpVJAChjXvkqf7386B2OUxbJQ/bxC2WLrcal6mut/69JxCf1KZk0N9oN092
+	k+HHB/rGM5lm1kPdPoecmcKbBbIhILQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706620567;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wCNq95+0rNCD2kp/hKAX5Oke9fUmnEml0yRbLl6Ruxw=;
+	b=yMtdf8avSWT2b/snjWyDhLsFTO2qRHbMubYXCu+rcJNR9UtTc5FBThLtGpkJnqP5Rj7ige
+	2kijJP3Wfvby7SDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6CCC712FF7;
+	Tue, 30 Jan 2024 13:16:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id g9UkGpf2uGURWgAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Tue, 30 Jan 2024 13:16:07 +0000
+Message-ID: <e57c86b6-aa5e-4680-b146-5eb5dfb53bf8@suse.cz>
+Date: Tue, 30 Jan 2024 14:16:07 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-1132523681-1706620518=:1000"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm/slub: remove parameter 'flags' in
+ create_kmalloc_caches()
+Content-Language: en-US
+To: Zheng Yejian <zhengyejian1@huawei.com>, cl@linux.com, penberg@kernel.org,
+ rientjes@google.com, iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
+ roman.gushchin@linux.dev, 42.hyeyoo@gmail.com
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240130014107.1262373-1-zhengyejian1@huawei.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20240130014107.1262373-1-zhengyejian1@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=LQQqIBom;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=yMtdf8av
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.00 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FREEMAIL_TO(0.00)[huawei.com,linux.com,kernel.org,google.com,lge.com,linux-foundation.org,linux.dev,gmail.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 BAYES_HAM(-0.00)[11.35%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,huawei.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_IN_DNSWL_HI(-1.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: -2.00
+X-Rspamd-Queue-Id: 855201F84A
+X-Spam-Flag: NO
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On 1/30/24 02:41, Zheng Yejian wrote:
+> After commit 16a1d968358a ("mm/slab: remove mm/slab.c and slab_def.h"),
+> parameter 'flags' is only passed as 0 in create_kmalloc_caches(), and
+> then it is only passed to new_kmalloc_cache().
+> 
+> So we can change parameter 'flags' to be a local variable with
+> initial value 0 in new_kmalloc_cache() and remove parameter 'flags'
+> in create_kmalloc_caches(). Also make new_kmalloc_cache() static
+> due to it is only used in mm/slab_common.c.
+> 
+> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
 
---8323328-1132523681-1706620518=:1000
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Thanks, merged for 6.9
 
-On Mon, 29 Jan 2024, Bjorn Helgaas wrote:
-
-> On Mon, Jan 29, 2024 at 01:27:10PM +0200, Ilpo J=C3=A4rvinen wrote:
-> > On runtime resume, pci_dev_wait() is called:
-> >   pci_pm_runtime_resume()
-> >     pci_pm_bridge_power_up_actions()
-> >       pci_bridge_wait_for_secondary_bus()
-> >         pci_dev_wait()
-> >=20
-> > While a device is runtime suspended along with its PCIe hierarchy, the
-> > device could get disconnected. In such case, the link will not come up
-> > no matter how log pci_dev_wait() waits for it.
->=20
-> s/PCIe/PCI/ (unless this is a PCIe-specific thing)
-> s/log/long/
->=20
-> > Besides the above mentioned case, there could be other ways to get the
-> > device disconnected while pci_dev_wait() is waiting for the link to
-> > come up.
-> >=20
-> > Make pci_dev_wait() to exit if the device is already disconnected to
-> > avoid unnecessary delay. As disconnected device is not really even a
-> > failure in the same sense as link failing to come up for whatever
-> > reason, return 0 instead of errno.
->=20
-> The device being disconnected is not the same as a link failure.
-
-This we agree and it's what I tried to write above.
-
-> Do
-> all the callers do the right thing if pci_dev_wait() returns success
-> when there's no device there?
-
-It's a bit complicated. I honestly don't know what is the best approach=20
-here so I'm very much open to your suggestion what would be preferrable.
-
-There are two main use cases (more than two callers but they seem boil=20
-down to two use cases).
-
-One use case is reset related functions and those would probably prefer to=
-=20
-have error returned if the wait, and thus reset, failed.
-
-Then the another is wait for buses, that is,=20
-pci_bridge_wait_for_secondary_bus() which return 0 if there's no device=20
-(wait successful). For it, it would make sense to return 0 also when=20
-device is disconnected because it seems analoguous to the case where=20
-there's no device in the first place.
-
-Perhaps it would be better to return -ENOTTY from pci_dev_wait() and check=
-=20
-for that disconnected condition inside=20
-pci_bridge_wait_for_secondary_bus()? To further complicate things,=20
-however, DPC also depends on the return value of=20
-pci_bridge_wait_for_secondary_bus() and from its perspective, returning=20
-error when there is a device that is disconnected might be the desirable=20
-alternative (but I'm not fully sure how everything in DPC works but I=20
-highly suspect I'm correct here).
-
-Either way, the fix itself does care and seemed to work regardless of the=
-=20
-actual value returned by pci_dev_wait().
-
-> > Also make sure compiler does not become too clever with
-> > dev->error_state and use READ_ONCE() to force a fetch for the
-> > up-to-date value.
->=20
-> I think we should have a comment there to say why READ_ONCE() is
-> needed.  Otherwise it's hard to know whether a future change might
-> make it unnecessary.
-
-Sure, I'll add a comment there.
-
---=20
- i.
-
---8323328-1132523681-1706620518=:1000--
 
