@@ -1,149 +1,101 @@
-Return-Path: <linux-kernel+bounces-44238-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3E5A841F38
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:20:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8426F841F34
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:19:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F6BD295787
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:20:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 246361F28C61
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:19:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63EF560DE2;
-	Tue, 30 Jan 2024 09:18:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01C1160B9F;
+	Tue, 30 Jan 2024 09:18:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="ES2iWGBB"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xVuD7ujF"
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 925ED6089C;
-	Tue, 30 Jan 2024 09:18:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C76BD5B211
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:18:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706606334; cv=none; b=ofZcUOuPvnv9SFivnRezsGOWl7sCNfQ74ZhHpKmXSTXaLGVIE3oEuhYLrNoYyCB+ZKxZ+iN2vC+kmU2PkTNgokoIwNoJr/yVMzk5y5XYYqYnUlfv+c69yLWu8nt48Lxs2PhG9lIGiSepGqUl/+FLV6FeCq0fu2TolgGk78EnIMc=
+	t=1706606332; cv=none; b=AIGUkbWypzoO6dqjGTZhdZtfhvT7lEJNKVPTr8lEp+zEsZc0uD+EIYXtnzZ2NhplDSkX48IHhcqux2WHdaV6ShtEB0mRVJH8wfZgtjrPHmx48CvU+SpPUZvV5J87tcbA5fXJSHmfFFRR6xjRUCCTv0Wo26t+C72JA64DKhJyhbY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706606334; c=relaxed/simple;
-	bh=T+QgwgampQETDJNda5F9UsxgSzpjEdFNDMDizKY4OZA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lZh8TXUwI5NwYkkFBKDBCpo8PH1pW8uA2SfOyifwXRrGb4F0MXYkFmA8W89HHR7AGLanvoxzpkaLNmtT9Ybgnb24k+mu5bRhGcOzatNgmaAR+L2hDdocFmQjZAF3g7Hdu6iBvdGf9sJDaK38ieNrCKF7lTtssfUm17mjgqkRT3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=ES2iWGBB; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=ppSRHczfCYqsFW0Z83JIkYK4TUwJET7+q/2wnNCsxN4=; b=ES2iWGBBKIXFheif3vyFDRwFaI
-	T+JgoPdEQ+xg6FZ7obnV/wVxh1g5kqHi7DhXtTYkH8EdOHsadZ3+dE984LC30O9sSLDJPUYrWH2H5
-	Vjs0yxNsuIQgCc7D9/xdp4o9ZGhFRvRVwKCRk5+1h43Tnp5qxJqnQTqpdu0staoJFIV2Ph71ZA5ed
-	xmJ+G37a7Pe7yR7YbXScjeldXLYM+fOhadRlScQszsYvJZJVy4KY7CT/Co5d+MTw4f3miSqZ83f70
-	oo5ZZ0FVK+wWf7uHkJnK6ra48cjLuRRZFFW6e4d3mBIM3TTF6WfVkNyu4q6cSq2zfTrguyV/qVZU1
-	4hrYbGlg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35996)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rUkGJ-0001Uj-1t;
-	Tue, 30 Jan 2024 09:18:35 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rUkGG-0005OD-2R; Tue, 30 Jan 2024 09:18:32 +0000
-Date: Tue, 30 Jan 2024 09:18:31 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Dimitri Fedrau <dima.fedrau@gmail.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jean Delvare <jdelvare@suse.com>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Stefan Eichenberger <eichest@gmail.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH v5 net-next 08/13] net: phy: marvell-88q2xxx: add support
- for temperature sensor
-Message-ID: <Zbi+5ymzbL9sckdi@shell.armlinux.org.uk>
-References: <20240122212848.3645785-1-dima.fedrau@gmail.com>
- <20240122212848.3645785-9-dima.fedrau@gmail.com>
+	s=arc-20240116; t=1706606332; c=relaxed/simple;
+	bh=F/cTM4VSLKcMhFnMv4L77ZMGQE1ijg1rGP30sPQqzyU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cNFpF4Fkm+q462zo7VpO9ijGZs+lIPQri1K0G7FvVpJAZDB1yNLP128C8krxmNDFW5u74QHb+55n005Go1FoPQbDEjbM6bU0rr00zWh7CDRgdJGkA/oiUfqvWtjTQG7D0Lops/dgIlVfkY64bj3nCrFi9/uqXah7cyfvWF4HPCk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xVuD7ujF; arc=none smtp.client-ip=209.85.222.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-7ce3c7566e0so1309021241.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:18:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706606329; x=1707211129; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/pJoui15436YDNlZShmKGvqb7ZMmNypRm9KPXDZ5Kug=;
+        b=xVuD7ujFH5WIw2eAF+D/ACPQloKaFP6wXO4VlLT49mIttteMTKyjYmVXAAxO5Iu3I8
+         CFRUVs+bNWIoKbOSfgLBVHNfUGaB/790UAmXvnO/LwJC5mVISgHk96VgDAa3js/5YGhV
+         iXV3cT85pYZ58m/uDveEDP9J388FZ3r4cZoha6YhC5CnBHfAOH8zt18HoIPn3E+JBba6
+         +T4jRzVVqUBCG/uWZx32xoIk5t7ty5OCuO7ZE8QKeUd/RwPSmds+mqbCH+KsjjXj0khl
+         4gUp9hoerDm0mlRlUl25HL83tdG3kkw/DaUZKOTVSAPAPqTnTzfS0ac8GgZSCUGKlNcF
+         pzTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706606329; x=1707211129;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/pJoui15436YDNlZShmKGvqb7ZMmNypRm9KPXDZ5Kug=;
+        b=hcL8UDMcVngfX+h3dO20v23mH4kti6Mr6h23zN7YTM2NWKTD/ZqYLql6odjjyp/j83
+         jcYVZp6p6wQtBKpwLLxZeHz0mkrn6tJmopar3ujmlCk4PL8uD7jej4pUi1frrcJeeb/l
+         ddKSARLd2wLMkXKa4vUUsgktzea25tdSmVh6gWXIgKXRm96B5jDZjbX5d0MD8kvWFgeA
+         eNEa/5LyMFgc3anYyS6iKs0YM0LXsBJvp+AwD7TsstjKADT745hqieWMaWt/VcEs2bVB
+         xRUT6G7mta8PkcizIf4qhp1b24UKK0telGXquvTlWp79WKrcw6EG5lacUwu2JFzrLn2C
+         5lDA==
+X-Gm-Message-State: AOJu0YyzyqMreLp9edi/m2zbIRHchSc2n4fuHc2mZqnUsojzsK3rGC7s
+	NtZE+USgShTZ24zOc1IqHpeJfhdX7yFTFJcNLqJFq5+cv+MKw0Lm1ymJ3q0FgmwH5Iy/vdNwxrp
+	evUOin2tpVE/cWBD7Ke3quewjWRkCQYqdbOKz
+X-Google-Smtp-Source: AGHT+IGL9TpDEm0usJlZsZmrnrDFEOo/OkF5iOfjXZgDhZOEsbrsnK1HFGwr55WJnyuQ51NnWN6Kq8QwZ+tboOoBO9M=
+X-Received: by 2002:a05:6102:66f:b0:466:e5d2:4d7a with SMTP id
+ z15-20020a056102066f00b00466e5d24d7amr2462740vsf.28.1706606329521; Tue, 30
+ Jan 2024 01:18:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240122212848.3645785-9-dima.fedrau@gmail.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+References: <20240116160141.165951-1-kernel@valentinobst.de> <20240117001613.169177-1-kernel@valentinobst.de>
+In-Reply-To: <20240117001613.169177-1-kernel@valentinobst.de>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Tue, 30 Jan 2024 10:18:38 +0100
+Message-ID: <CAH5fLghSaorRgDDuqNCN-BhQ86ysX96b=nKM_cZAN0_E6Ai04A@mail.gmail.com>
+Subject: Re: [PATCH 13/13] rust: locked_by: shorten doclink preview
+To: Valentin Obst <kernel@valentinobst.de>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 22, 2024 at 10:28:41PM +0100, Dimitri Fedrau wrote:
+On Wed, Jan 17, 2024 at 1:16=E2=80=AFAM Valentin Obst <kernel@valentinobst.=
+de> wrote:
+>  /// In most cases, data protected by a lock is wrapped by the appropriat=
+e lock type, e.g.,
+> -/// [`super::Mutex`] or [`super::SpinLock`]. [`LockedBy`] is meant for c=
+ases when this is not
+> +/// [`Mutex`] or [`SpinLock`]. [`LockedBy`] is meant for cases when this=
+ is not
+>  /// possible. For example, if a container has a lock and some data in th=
+e contained elements needs
+>  /// to be protected by the same lock.
 
-	int tmp;
-
-> +	switch (attr) {
-> +	case hwmon_temp_input:
-> +		ret = phy_read_mmd(phydev, MDIO_MMD_PCS,
-> +				   MDIO_MMD_PCS_MV_TEMP_SENSOR3);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		*val = ((ret & MDIO_MMD_PCS_MV_TEMP_SENSOR3_MASK) - 75) * 1000;
-
-		tmp = FIELD_GET(MDIO_MMD_PCS_MV_TEMP_SENSOR3_MASK, ret);
-		*val = (tmp - 75) * 1000;
-
-> +		return 0;
-> +	case hwmon_temp_max:
-> +		ret = phy_read_mmd(phydev, MDIO_MMD_PCS,
-> +				   MDIO_MMD_PCS_MV_TEMP_SENSOR3);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		*val = (((ret & MDIO_MMD_PCS_MV_TEMP_SENSOR3_INT_THRESH_MASK) >>
-> +			MDIO_MMD_PCS_MV_TEMP_SENSOR3_INT_THRESH_SHIFT) - 75) *
-> +			1000;
-
-		tmp = FIELD_GET(MDIO_MMD_PCS_MV_TEMP_SENSOR3_INT_THRESH_MASK,
-				ret);
-		*val = (tmp - 75) * 1000;
-
-> +		return 0;
-> +	case hwmon_temp_alarm:
-> +		ret = phy_read_mmd(phydev, MDIO_MMD_PCS,
-> +				   MDIO_MMD_PCS_MV_TEMP_SENSOR1);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		*val = !!(ret & MDIO_MMD_PCS_MV_TEMP_SENSOR1_RAW_INT);
-> +		return 0;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +}
-> +
-> +static int mv88q2xxx_hwmon_write(struct device *dev,
-> +				 enum hwmon_sensor_types type, u32 attr,
-> +				 int channel, long val)
-> +{
-> +	struct phy_device *phydev = dev_get_drvdata(dev);
-> +
-> +	switch (attr) {
-> +	case hwmon_temp_max:
-> +		if (val < -75000 || val > 180000)
-> +			return -EINVAL;
-> +
-> +		val = ((val / 1000) + 75) <<
-> +		       MDIO_MMD_PCS_MV_TEMP_SENSOR3_INT_THRESH_SHIFT;
-
-		val = (val / 1000) + 75;
-		val = FIELD_PREP(MDIO_MMD_PCS_MV_TEMP_SENSOR3_INT_THRESH_MASK,
-				 val);
-
-.. and therefore no need for the _SHIFT constants.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+It looks like the text should be reflowed here. The "possible" word
+fits on the previous line.
 
