@@ -1,187 +1,227 @@
-Return-Path: <linux-kernel+bounces-45323-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45325-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C4A6842E83
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 22:13:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12AC4842E86
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 22:14:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82E0EB235DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 21:13:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F158B24510
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 21:13:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D16A762DD;
-	Tue, 30 Jan 2024 21:13:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42F68762D7;
+	Tue, 30 Jan 2024 21:13:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="TEyb964F"
-Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JJCyDFs4"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 262DD71B52;
-	Tue, 30 Jan 2024 21:13:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B3C178B76
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 21:13:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706649198; cv=none; b=B8OjHumpc2O6u5hEzhoS/ApyTlOSJkS83HdHBOxyZLcXEHLMa6rzpq/ugI/Q/jQB8vh1esDxJYCZpELgwpYA5ckSem8YSkaDUkPUXOFVAH1a9aDbo79ZFANzdtWroowg3UzJBID0TYnBpOu4k8GIqzQlA/9cRrcoOzr7WZKzDGw=
+	t=1706649209; cv=none; b=eKdnpGenhCp6ZokPYt10UBcD6+POgWIw7Wd2IVr4nf1nGEI3cAfuWr1vasyyuKvvwTUWq/laZOjt0ldgca92FfiuCuxA7LyAEWu8C5neoVCZikJ95IBc16K07ZFggMrVCQIZuOByY5wD9EsW08P5LjZW1kd6uG6zjKXJt6OVrNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706649198; c=relaxed/simple;
-	bh=MdH8VV32E2JfAoYXD93UT+Rz70qQW7+Nb94p5dLwPFg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=llQSupjPZHZ7K7JYJJmZkIj41bdSDZHb7h2GtKQOxpyV0tYUQXzTXgTlujQ5YOBHjD2L8JiXoG84bsEEc6caIddmvlnuPT8uhoQBTuTiKHX1E2EZkZ6YIBSUQNVj9JcLfHzPp+VOKZeGLzAzr/90oBVd8Eo6H0W2xLyxEpIK8Zs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=TEyb964F; arc=none smtp.client-ip=195.181.215.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
-	t=1706649186; bh=MdH8VV32E2JfAoYXD93UT+Rz70qQW7+Nb94p5dLwPFg=;
-	h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
-	b=TEyb964F4BMcL4Pby1aJRBS7c6WOLeqkCxrBZiILRJH2UCM79tvKDZBl5NKeXs93u
-	 QnWEyuq4Ugd5PcaIjm3efQbmrsO2hUka21Gb9aFgh4wVhIb7NIR1gNB3KyEpiA2mWE
-	 MxuCcvCYvJnZC9Q91G1b2ty/6G1aV08XovjC2N9c=
-Date: Tue, 30 Jan 2024 22:13:06 +0100
-From: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
-To: Aren Moynihan <aren@peacevolution.org>
-Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Hans de Goede <j.w.r.degoede@gmail.com>, Aidan MacDonald <aidanmacdonald.0x0@gmail.com>, 
-	Chen-Yu Tsai <wens@csie.org>, Quentin Schulz <quentin.schulz@bootlin.com>, 
-	Sebastian Reichel <sre@kernel.org>
-Subject: Re: [PATCH v2 5/5] power: supply: axp20x_usb_power: set input
- current limit in probe
-Message-ID: <6nf7h3nc4q7fwrnm4spmgv2sdkczowkfpietcv2tyv4mixkq3b@svxgzkdqnzlq>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
-	Aren Moynihan <aren@peacevolution.org>, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Hans de Goede <j.w.r.degoede@gmail.com>, Aidan MacDonald <aidanmacdonald.0x0@gmail.com>, 
-	Chen-Yu Tsai <wens@csie.org>, Quentin Schulz <quentin.schulz@bootlin.com>, 
-	Sebastian Reichel <sre@kernel.org>
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
-References: <20240130203714.3020464-1-aren@peacevolution.org>
- <20240130203714.3020464-6-aren@peacevolution.org>
+	s=arc-20240116; t=1706649209; c=relaxed/simple;
+	bh=ZHJXHXKGQq4QT0JPJKhL8rGU8iGOmKQJzj/3a5PEg1s=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=Xcx4f7nnmorF8nKrJshjE90S3USwtxjsa2RUCy2zqX9xv7FqS52Ya2K4F73fsifQUrj4iKIp6UkIBZri8DqQ6fxAO8AaLN/YWgTAQu7USxPhl1Ee+WIarKAQa43gXRVL6CQ5crQFRwPYcAWqzuLrADZdsL9c3YzPCovNQyIJsJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JJCyDFs4; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so632261466b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 13:13:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706649206; x=1707254006; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ZHJXHXKGQq4QT0JPJKhL8rGU8iGOmKQJzj/3a5PEg1s=;
+        b=JJCyDFs4oXYPcbdjw9sgHl/WwIq0NvytDTX0q2zRhtOnUB5ogKIHiDJsPohov1T/Av
+         SMAR0rG7x0j669OyO8Dqj/NZy2HrGWmdOloM9twoSXkToQkjDI1iZBaVkqYsLdAzTwaG
+         juARaVmRuGgzYb9fWMEstwIH0oI4AI8k0vLou7umr5Rf1zbWeVlhyjX0W3IXqSaxRnax
+         80xDLdFizbjVvmI33YobQWcrDdSICt16np78bcZtQU72t+DlVtcU/TgK1TkrMpqaYrtf
+         2HMOV3RSX4rYTVHltDaYHsMgR55ySnhCzNvfY6/X+4uxv3+LoX10exxthNK/gaY1g7jt
+         NNlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706649206; x=1707254006;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZHJXHXKGQq4QT0JPJKhL8rGU8iGOmKQJzj/3a5PEg1s=;
+        b=HsUVh0MeY+JqYtUhw2pyeyudsh5YTA+aThD7035S2ewhaQCGuRxmQr5yTJ21J1FMl+
+         fejCDtkLbvL3IZ0nqr0uPOM9UZHH2yQWvJ2t3Cs9/slTfaUx5J2hIDzdiFP4sIZEoWNN
+         8BwTXaDg6feqCZlB+tbsag7QWZGfIGyyAdvtYXGnTqUFrtirwDIn1/KcnzvsTyeBR+9f
+         LTnCIU68u9qfyyFMOPP8c81TymCu5MFay5+3d78gI3ho+/6G2GtyjLZfeR31Qo6r+uD9
+         VznJ3bB3qrYT2WMG/ZyO+qUA7UmWmdbi7ReZUd8BI+LBh/eRQ/G/kGrvvsZarCaxRRjq
+         Nyrg==
+X-Gm-Message-State: AOJu0Yx2F7r4v/Rktlq07ryEuWfkS1AzntzL02qZs39sOjq3T8DWFOCU
+	gJEJC8rLQmIiD0nZu1XefwvPws8HyPFhZKBRcyYFxeG5n5Yb44ISIIzx8lGAhLDqpyYBeusuBfv
+	xGTgAX8cegmTy1STXXtj26hwMTwvOJ+/ZWdG/
+X-Google-Smtp-Source: AGHT+IEIMbG/KTe2t6nK37Tse+oNOBKr/g6AT7XHSJbUcz+/TVUnRu5ry7THJn3wsgnzMmKUVfzg8VzGOO8Sxa/Evn8=
+X-Received: by 2002:a17:906:ac8:b0:a36:4031:6d28 with SMTP id
+ z8-20020a1709060ac800b00a3640316d28mr1343374ejf.74.1706649205558; Tue, 30 Jan
+ 2024 13:13:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240130203714.3020464-6-aren@peacevolution.org>
+From: Pranav Prasad <pranavpp@google.com>
+Date: Tue, 30 Jan 2024 13:13:14 -0800
+Message-ID: <CACkwYU2PqXouAe9QPSMkE3he9magn2hDfLiKSOC7FBJT6QDPWw@mail.gmail.com>
+Subject: Can ETIME be returned instead of EBUSY in the kernel suspend flow?
+To: rafael@kernel.org, pavel@ucw.cz, len.brown@intel.com, 
+	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Kelly Rossmoyer <krossmo@google.com>, John Stultz <jstultz@google.com>
+Content-Type: multipart/mixed; boundary="000000000000a825b70610303b56"
 
-On Tue, Jan 30, 2024 at 03:28:01PM -0500, Aren Moynihan wrote:
-> axp803 sets the current limit to 3A by default if it doesn't detect a
-> battery. The datasheet says that register 0x2D bit 6 is used to indicate
-> first power on status. According to it, if that bit is 0 and the battery
-> is not detected, it will set the input current limit to 3A, however
-> setting that bit to 1 doesn't to prevent the pmic from setting the
-> current limit to 3A.
-> 
-> Waiting for USB BC detection doesn't work either, because (as far as I
-> can tell) USB BC detection isn't performed when there isn't a battery
-> detected.
-> 
-> Fixes: c279adafe6ab ("power: supply: axp20x_usb_power: add support for AXP813")
+--000000000000a825b70610303b56
+Content-Type: text/plain; charset="UTF-8"
 
-Breaks: ;)
+Hi!
 
-Last time you wrote:
+I am proposing a patch in which I want to return the errno code ETIME instead of
+EBUSY in enter_state() in the kernel suspend flow. Currently, EBUSY is returned
+when an imminent alarm is pending which is checked in alarmtimer_suspend() in
+alarmtimer.c. The proposed patch series moves the check to enter_state() in
+suspend.c to catch a potential suspend failure early in the suspend
+flow. I want to
+replace EBUSY with ETIME to make it more diagnosable in userspace, and may
+be more appropriate considering a timer is about to expire.
 
-> Unfortunately BC 1.2 detection doesn't seem to be performed without a
-> battery, at least I wasn't able to trigger it.
->
-> This will be worth revising once we have a driver that can provide a
-> signal that USB-PD is in progress and/or finished, but until then I'd
-> prefer not take on that complexity.
+I am reaching out to get an opinion from the suspend maintainers if this would
+act as any potential risk in the suspend flow which only has EBUSY, EAGAIN, and
+EINVAL as return error codes currently. The patch of interest is attached with
+this email. Thank you!
 
-This patch adds complexity and will lead to hard to debug issues for some
-people. It certainly did cause issues for me, when I had similar patch in
-my tree a while ago, forcing me to drop it.
+Regards,
+Pranav Prasad
 
-There are other situations you're not considering. Like battery being
-very discharged and unable to provide power, while still being detected
-and BC1.2 running correctly and successfully when the device is powered
-up by being plugged into DCP port (only option of powerup in such a 
-scenario).
+--000000000000a825b70610303b56
+Content-Type: application/octet-stream; name="Proposed_ETIME_Solution.patch"
+Content-Disposition: attachment; filename="Proposed_ETIME_Solution.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_ls0uhw3c0>
+X-Attachment-Id: f_ls0uhw3c0
 
-Battery is detected at 2.2V and certainly it will not provide any power
-if OCV of the battery is anywhere below 3V. See "9.4.5 Battery detection"
-in AXP803 datasheet. So you have about 1V range of possible battery voltage
-where BC1.2 will work, but you'll force lower the correctly detected current
-limit and break boot, because 2.5W is too low for the boot time power surge.
-
-The phone will just randomly die halfthrough boot for apparently no reason,
-despite being connected to DCP.
-
-And also forget Pinephone, there may also be batteryless SBCs using this PMIC
-with battery as an option (similar to Quartz64-A - Rockchip SBC, but exactly
-this setup with battery capable PMIC in the power path on a normal SBC, with
-battery being optional), where this patch will break boot on them, too. I'm
-quite confident PMIC relaxing the limit without a battery is meant for such use
-cases.
-
-If you insist on adding this, at least add dev_warn() about forcing lower
-limit than detected by the PMIC, so that people who'll do cursory debugging
-via serial console will know why's their device failing to boot on a strong
-enough power supply, or why their SBC is suddenly failing when used without
-battery.
-
-As for me, this patch should not be applied at all.
-
-Kind regards,
-        o.
-
-> Signed-off-by: Aren Moynihan <aren@peacevolution.org>
-> ---
-> I'm not sure if the pmic simply ignores the first power on field, or if
-> it needs to be set in a specific way / at a specific time. I tried
-> setting it in arm-trusted-firmware, and the pmic still set the input
-> current limit to 3A.
-> 
-> The datasheet for axp813 says it has the same first power on bit, but I
-> don't have hardware to test if it behaves the same way. This driver uses
-> the same platform data for axp803 and axp813.
-> 
-> (no changes since v1)
-> 
->  drivers/power/supply/axp20x_usb_power.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
-> 
-> diff --git a/drivers/power/supply/axp20x_usb_power.c b/drivers/power/supply/axp20x_usb_power.c
-> index dae7e5cfc54e..751b9f02d36f 100644
-> --- a/drivers/power/supply/axp20x_usb_power.c
-> +++ b/drivers/power/supply/axp20x_usb_power.c
-> @@ -51,6 +51,7 @@ struct axp_data {
->  	unsigned int			num_irq_names;
->  	const int			*curr_lim_table;
->  	int				curr_lim_table_size;
-> +	int				force_curr_lim;
->  	struct reg_field		curr_lim_fld;
->  	struct reg_field		vbus_valid_bit;
->  	struct reg_field		vbus_mon_bit;
-> @@ -545,6 +546,7 @@ static const struct axp_data axp813_data = {
->  	.curr_lim_table = axp813_usb_curr_lim_table,
->  	.curr_lim_table_size = ARRAY_SIZE(axp813_usb_curr_lim_table),
->  	.curr_lim_fld	= REG_FIELD(AXP22X_CHRG_CTRL3, 4, 7),
-> +	.force_curr_lim = 500000,
->  	.usb_bc_en_bit	= REG_FIELD(AXP288_BC_GLOBAL, 0, 0),
->  	.usb_bc_det_fld = REG_FIELD(AXP288_BC_DET_STAT, 5, 7),
->  	.vbus_disable_bit = REG_FIELD(AXP20X_VBUS_IPSOUT_MGMT, 7, 7),
-> @@ -726,6 +728,17 @@ static int axp20x_usb_power_probe(struct platform_device *pdev)
->  			return ret;
->  	}
->  
-> +	if (power->axp_data->force_curr_lim) {
-> +		/*
-> +		 * Some chips set the input current limit to 3A when there is no
-> +		 * battery connected. Normally the default is 500mA.
-> +		 */
-> +		ret = axp20x_usb_power_set_input_current_limit(power,
-> +				power->axp_data->force_curr_lim);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
->  	if (power->usb_bc_en_bit) {
->  		/* Enable USB Battery Charging specification detection */
->  		ret = regmap_field_write(power->usb_bc_en_bit, 1);
-> -- 
-> 2.43.0
-> 
+RnJvbSA5NWM1YWYwNTNmNWVhMzYzMDMzYTY1YTNkMDA3ZWE4NGIxMGZjMzEzIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBQcmFuYXYgUHJhc2FkIDxwcmFuYXZwcEBnb29nbGUuY29tPgpE
+YXRlOiBNb24sIDI5IEphbiAyMDI0IDIxOjMxOjQ4ICswMDAwClN1YmplY3Q6IFtQQVRDSCAyLzNd
+IGFsYXJtdGltZXIsIFBNOiBzdXNwZW5kOiBFeHBvc2UgYSBmdW5jdGlvbiBmcm9tCiBhbGFybXRp
+bWVyIHRvIHBlcmZvcm0gY2hlY2sgYXQgdGhlIGJlZ2lubmluZyBvZiB0aGUgc3VzcGVuZCBmbG93
+IGluCiBlbnRlcl9zdGF0ZSgpCgpUaGUgYWxhcm10aW1lciBkcml2ZXIgY3VycmVudGx5IGZhaWxz
+IHN1c3BlbmQgYXR0ZW1wdHMgd2hlbiB0aGVyZSBpcyBhbgphbGFybSBwZW5kaW5nIHdpdGhpbiB0
+aGUgbmV4dCBzdXNwZW5kX2NoZWNrX2R1cmF0aW9uX25zIG5hbm9zZWNvbmRzLCBzaW5jZSB0aGUK
+c3lzdGVtIGlzIGV4cGVjdGVkIHRvIHdha2UgdXAgc29vbiBhbnl3YXkuIFRoZSBlbnRpcmUgc3Vz
+cGVuZCBwcm9jZXNzIGlzIGluaXRpYXRlZApldmVuIHRob3VnaCB0aGUgc3lzdGVtIHdpbGwgaW1t
+ZWRpYXRlbHkgYXdha2VuLiBUaGlzIHByb2Nlc3MgaW5jbHVkZXMgc3Vic3RhbnRpYWwKd29yayBi
+ZWZvcmUgdGhlIHN1c3BlbmQgZmFpbHMgYW5kIGFkZGl0aW9uYWwgd29yayBhZnRlcndhcmRzIHRv
+IHVuZG8gdGhlIGZhaWxlZApzdXNwZW5kIHRoYXQgd2FzIGF0dGVtcHRlZC4gVGhlcmVmb3JlIG9u
+IGJhdHRlcnktcG93ZXJlZCBkZXZpY2VzIHRoYXQgaW5pdGlhdGUKc3VzcGVuZCBhdHRlbXB0cyBm
+cm9tIHVzZXJzcGFjZSwgaXQgbWF5IGJlIGFkdmFudGFnZW91cyB0byBiZSBhYmxlIHRvIGZhaWwg
+dGhlCnN1c3BlbmQgZWFybGllciBpbiB0aGUgc3VzcGVuZCBmbG93IHRvIGF2b2lkIHBvd2VyIGNv
+bnN1bXB0aW9uIGluc3RlYWQgb2YKdW5uZWNlc3NhcmlseSBkb2luZyBleHRyYSB3b3JrLiBBcyBv
+bmUgZGF0YSBwb2ludCwgYW4gYW5hbHlzaXMgb2YgYSBzdWJzZXQgb2YKQW5kcm9pZCBkZXZpY2Vz
+IHNob3dlZCB0aGF0IGltbWluZW50IGFsYXJtcyBhY2NvdW50IGZvciByb3VnaGx5IDQwJSBvZiBh
+bGwgc3VzcGVuZApmYWlsdXJlcyBvbiBhdmVyYWdlIGxlYWRpbmcgdG8gdW5uZWNlc3NhcnkgcG93
+ZXIgd2FzdGFnZS4KClRvIGZhY2lsaXRhdGUgdGhpcywgZXhwb3NlIGZ1bmN0aW9uIHRpbWVfY2hl
+Y2tfc3VzcGVuZF9mYWlsKCkgZnJvbSBhbGFybXRpbWVyCnRvIGJlIHVzZWQgYnkgdGhlIHBvd2Vy
+IHN1YnN5c3RlbSB0byBwZXJmb3JtIHRoZSBjaGVjayBlYXJsaWVyIGluIHRoZSBzdXNwZW5kCmZs
+b3cuIFBlcmZvcm0gdGhlIGNoZWNrIGluIGVudGVyX3N0YXRlKCkgYW5kIHJldHVybiBlYXJseSBp
+ZiBhbiBhbGFybSBpcwp0byBiZSBmaXJlZCBpbiB0aGUgbmV4dCBzdXNwZW5kX2NoZWNrX2R1cmF0
+aW9uX25zIG5hbm9zZWNvbmRzLCBmYWlsaW5nCnN1c3BlbmQuCgpDaGFuZ2UtSWQ6IEkwMmQ3ODUz
+ZDBiMDVkOTNiMTIxOTg4ODE4ZjhhODA0NjFiNGEzNThjClNpZ25lZC1vZmYtYnk6IFByYW5hdiBQ
+cmFzYWQgPHByYW5hdnBwQGdvb2dsZS5jb20+ClNpZ25lZC1vZmYtYnk6IEtlbGx5IFJvc3Ntb3ll
+ciA8a3Jvc3Ntb0Bnb29nbGUuY29tPgotLS0KIGluY2x1ZGUvbGludXgvdGltZS5oICAgICB8ICAg
+MSArCiBrZXJuZWwvcG93ZXIvc3VzcGVuZC5jICAgfCAgIDMgKysKIGtlcm5lbC90aW1lL2FsYXJt
+dGltZXIuYyB8IDExMyArKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0KIDMg
+ZmlsZXMgY2hhbmdlZCwgODcgaW5zZXJ0aW9ucygrKSwgMzAgZGVsZXRpb25zKC0pCgpkaWZmIC0t
+Z2l0IGEvaW5jbHVkZS9saW51eC90aW1lLmggYi9pbmNsdWRlL2xpbnV4L3RpbWUuaAppbmRleCAx
+NmNmNDUyMmQ2ZjMuLmFhYjdjNGU1MWUxMSAxMDA2NDQKLS0tIGEvaW5jbHVkZS9saW51eC90aW1l
+LmgKKysrIGIvaW5jbHVkZS9saW51eC90aW1lLmgKQEAgLTU2LDYgKzU2LDcgQEAgc3RydWN0IHRt
+IHsKIH07CiAKIHZvaWQgdGltZTY0X3RvX3RtKHRpbWU2NF90IHRvdGFsc2VjcywgaW50IG9mZnNl
+dCwgc3RydWN0IHRtICpyZXN1bHQpOworaW50IHRpbWVfY2hlY2tfc3VzcGVuZF9mYWlsKHZvaWQp
+OwogCiAjIGluY2x1ZGUgPGxpbnV4L3RpbWUzMi5oPgogCmRpZmYgLS1naXQgYS9rZXJuZWwvcG93
+ZXIvc3VzcGVuZC5jIGIva2VybmVsL3Bvd2VyL3N1c3BlbmQuYwppbmRleCBmYTNiZjE2MWQxM2Yu
+LjdhMDE3NWRhZTBkOSAxMDA2NDQKLS0tIGEva2VybmVsL3Bvd2VyL3N1c3BlbmQuYworKysgYi9r
+ZXJuZWwvcG93ZXIvc3VzcGVuZC5jCkBAIC0yNiw2ICsyNiw3IEBACiAjaW5jbHVkZSA8bGludXgv
+c3VzcGVuZC5oPgogI2luY2x1ZGUgPGxpbnV4L3N5c2NvcmVfb3BzLmg+CiAjaW5jbHVkZSA8bGlu
+dXgvc3dhaXQuaD4KKyNpbmNsdWRlIDxsaW51eC90aW1lLmg+CiAjaW5jbHVkZSA8bGludXgvZnRy
+YWNlLmg+CiAjaW5jbHVkZSA8dHJhY2UvZXZlbnRzL3Bvd2VyLmg+CiAjaW5jbHVkZSA8bGludXgv
+Y29tcGlsZXIuaD4KQEAgLTU2NCw2ICs1NjUsOCBAQCBzdGF0aWMgaW50IGVudGVyX3N0YXRlKHN1
+c3BlbmRfc3RhdGVfdCBzdGF0ZSkKICNlbmRpZgogCX0gZWxzZSBpZiAoIXZhbGlkX3N0YXRlKHN0
+YXRlKSkgewogCQlyZXR1cm4gLUVJTlZBTDsKKwl9IGVsc2UgaWYgKHRpbWVfY2hlY2tfc3VzcGVu
+ZF9mYWlsKCkpIHsKKwkJcmV0dXJuIC1FVElNRTsKIAl9CiAJaWYgKCFtdXRleF90cnlsb2NrKCZz
+eXN0ZW1fdHJhbnNpdGlvbl9tdXRleCkpCiAJCXJldHVybiAtRUJVU1k7CmRpZmYgLS1naXQgYS9r
+ZXJuZWwvdGltZS9hbGFybXRpbWVyLmMgYi9rZXJuZWwvdGltZS9hbGFybXRpbWVyLmMKaW5kZXgg
+ZTVkMmU1NjBiNGMxLi4wODViMWFjZTBjMzEgMTAwNjQ0Ci0tLSBhL2tlcm5lbC90aW1lL2FsYXJt
+dGltZXIuYworKysgYi9rZXJuZWwvdGltZS9hbGFybXRpbWVyLmMKQEAgLTExNSw2ICsxMTUsODQg
+QEAgc3RhdGljIGludCBhbGFybXRpbWVyX3N5c2ZzX2FkZCh2b2lkKQogCXJldHVybiByZXQ7CiB9
+CiAKKy8qKgorICogYWxhcm10aW1lcl9pbml0X3Nvb25lc3QgLSBJbml0aWFsaXplcyBwYXJhbWV0
+ZXJzIHRvIGZpbmQgc29vbmVzdCBhbGFybS4KKyAqIEBtaW46IHB0ciB0byByZWxhdGl2ZSB0aW1l
+IHRvIHRoZSBzb29uZXN0IGFsYXJtIHRvIGV4cGlyZQorICogQGV4cGlyZXM6IHB0ciB0byBhYnNv
+bHV0ZSB0aW1lIG9mIHRoZSBzb29uZXN0IGFsYXJtIHRvIGV4cGlyZQorICogQHR5cGU6IHB0ciB0
+byBhbGFybSB0eXBlCisgKgorICovCitzdGF0aWMgdm9pZCBhbGFybXRpbWVyX2luaXRfc29vbmVz
+dChrdGltZV90ICptaW4sIGt0aW1lX3QgKmV4cGlyZXMsIGludCAqdHlwZSkKK3sKKwl1bnNpZ25l
+ZCBsb25nIGZsYWdzOworCisJc3Bpbl9sb2NrX2lycXNhdmUoJmZyZWV6ZXJfZGVsdGFfbG9jaywg
+ZmxhZ3MpOworCSptaW4gPSBmcmVlemVyX2RlbHRhOworCSpleHBpcmVzID0gZnJlZXplcl9leHBp
+cmVzOworCSp0eXBlID0gZnJlZXplcl9hbGFybXR5cGU7CisJZnJlZXplcl9kZWx0YSA9IDA7CisJ
+c3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmZnJlZXplcl9kZWx0YV9sb2NrLCBmbGFncyk7Cit9CisK
+Ky8qKgorICogYWxhcm10aW1lcl9nZXRfc29vbmVzdCAtIEZpbmRzIHRoZSBzb29uZXN0IGFsYXJt
+IHRvIGV4cGlyZSBhbW9uZyB0aGUgYWxhcm0gYmFzZXMuCisgKiBAbWluOiBwdHIgdG8gcmVsYXRp
+dmUgdGltZSB0byB0aGUgc29vbmVzdCBhbGFybSB0byBleHBpcmUKKyAqIEBleHBpcmVzOiBwdHIg
+dG8gYWJzb2x1dGUgdGltZSBvZiB0aGUgc29vbmVzdCBhbGFybSB0byBleHBpcmUKKyAqIEB0eXBl
+OiBwdHIgdG8gYWxhcm0gdHlwZQorICoKKyAqLworc3RhdGljIHZvaWQgYWxhcm10aW1lcl9nZXRf
+c29vbmVzdChrdGltZV90ICptaW4sIGt0aW1lX3QgKmV4cGlyZXMsIGludCAqdHlwZSkKK3sKKwlp
+bnQgaTsKKwl1bnNpZ25lZCBsb25nIGZsYWdzOworCisJLyogRmluZCB0aGUgc29vbmVzdCB0aW1l
+ciB0byBleHBpcmUgKi8KKwlmb3IgKGkgPSAwOyBpIDwgQUxBUk1fTlVNVFlQRTsgaSsrKSB7CisJ
+CXN0cnVjdCBhbGFybV9iYXNlICpiYXNlID0gJmFsYXJtX2Jhc2VzW2ldOworCQlzdHJ1Y3QgdGlt
+ZXJxdWV1ZV9ub2RlICpuZXh0OworCQlrdGltZV90IGRlbHRhOworCisJCXNwaW5fbG9ja19pcnFz
+YXZlKCZiYXNlLT5sb2NrLCBmbGFncyk7CisJCW5leHQgPSB0aW1lcnF1ZXVlX2dldG5leHQoJmJh
+c2UtPnRpbWVycXVldWUpOworCQlzcGluX3VubG9ja19pcnFyZXN0b3JlKCZiYXNlLT5sb2NrLCBm
+bGFncyk7CisJCWlmICghbmV4dCkKKwkJCWNvbnRpbnVlOworCQlkZWx0YSA9IGt0aW1lX3N1Yihu
+ZXh0LT5leHBpcmVzLCBiYXNlLT5nZXRfa3RpbWUoKSk7CisJCWlmICghKCptaW4pIHx8IChkZWx0
+YSA8ICptaW4pKSB7CisJCQkqZXhwaXJlcyA9IG5leHQtPmV4cGlyZXM7CisJCQkqbWluID0gZGVs
+dGE7CisJCQkqdHlwZSA9IGk7CisJCX0KKwl9Cit9CisKKy8qKgorICogdGltZV9jaGVja19zdXNw
+ZW5kX2ZhaWwgLSBDaGVjayBpZiBzdXNwZW5kIHNob3VsZCBiZSBmYWlsZWQgZHVlIHRvIGFuCisg
+KiBhbGFybSB3aXRoaW4gdGhlIG5leHQgc3VzcGVuZF9jaGVja19kdXJhdGlvbiBuYW5vc2Vjb25k
+cy4KKyAqCisgKiBSZXR1cm5zIGVycm9yIGlmIHN1c3BlbmQgc2hvdWxkIGJlIGZhaWxlZCwgZWxz
+ZSByZXR1cm5zIDAuCisgKi8KK2ludCB0aW1lX2NoZWNrX3N1c3BlbmRfZmFpbCh2b2lkKQorewor
+CWt0aW1lX3QgbWluLCBleHBpcmVzOworCWludCB0eXBlOworCisJLyogSW5pdGlhbGl6ZSBwYXJh
+bWV0ZXJzIHRvIGZpbmQgc29vbmVzdCB0aW1lciAqLworCWFsYXJtdGltZXJfaW5pdF9zb29uZXN0
+KCZtaW4sICZleHBpcmVzLCAmdHlwZSk7CisKKwkvKiBGaW5kIHRoZSBzb29uZXN0IHRpbWVyIHRv
+IGV4cGlyZSAqLworCWFsYXJtdGltZXJfZ2V0X3Nvb25lc3QoJm1pbiwgJmV4cGlyZXMsICZ0eXBl
+KTsKKworCWlmIChtaW4gPT0gMCkKKwkJcmV0dXJuIDA7CisKKwlpZiAoa3RpbWVfdG9fbnMobWlu
+KSA8IHN1c3BlbmRfY2hlY2tfZHVyYXRpb25fbnMpCisJCXJldHVybiAtRUJVU1k7CisKKwlyZXR1
+cm4gMDsKK30KK0VYUE9SVF9TWU1CT0wodGltZV9jaGVja19zdXNwZW5kX2ZhaWwpOworCiAvKioK
+ICAqIGFsYXJtdGltZXJfZ2V0X3J0Y2RldiAtIFJldHVybiBzZWxlY3RlZCBydGNkZXZpY2UKICAq
+CkBAIC0yOTYsNDkgKzM3NCwyNCBAQCBFWFBPUlRfU1lNQk9MX0dQTChhbGFybV9leHBpcmVzX3Jl
+bWFpbmluZyk7CiBzdGF0aWMgaW50IGFsYXJtdGltZXJfc3VzcGVuZChzdHJ1Y3QgZGV2aWNlICpk
+ZXYpCiB7CiAJa3RpbWVfdCBtaW4sIG5vdywgZXhwaXJlczsKLQlpbnQgaSwgcmV0LCB0eXBlOwor
+CWludCByZXQsIHR5cGU7CiAJc3RydWN0IHJ0Y19kZXZpY2UgKnJ0YzsKLQl1bnNpZ25lZCBsb25n
+IGZsYWdzOwogCXN0cnVjdCBydGNfdGltZSB0bTsKIAotCXNwaW5fbG9ja19pcnFzYXZlKCZmcmVl
+emVyX2RlbHRhX2xvY2ssIGZsYWdzKTsKLQltaW4gPSBmcmVlemVyX2RlbHRhOwotCWV4cGlyZXMg
+PSBmcmVlemVyX2V4cGlyZXM7Ci0JdHlwZSA9IGZyZWV6ZXJfYWxhcm10eXBlOwotCWZyZWV6ZXJf
+ZGVsdGEgPSAwOwotCXNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJmZyZWV6ZXJfZGVsdGFfbG9jaywg
+ZmxhZ3MpOworCS8qIEluaXRpYWxpemUgcGFyYW1ldGVycyB0byBmaW5kIHNvb25lc3QgdGltZXIg
+Ki8KKwlhbGFybXRpbWVyX2luaXRfc29vbmVzdCgmbWluLCAmZXhwaXJlcywgJnR5cGUpOwogCiAJ
+cnRjID0gYWxhcm10aW1lcl9nZXRfcnRjZGV2KCk7CiAJLyogSWYgd2UgaGF2ZSBubyBydGNkZXYs
+IGp1c3QgcmV0dXJuICovCiAJaWYgKCFydGMpCiAJCXJldHVybiAwOwogCi0JLyogRmluZCB0aGUg
+c29vbmVzdCB0aW1lciB0byBleHBpcmUqLwotCWZvciAoaSA9IDA7IGkgPCBBTEFSTV9OVU1UWVBF
+OyBpKyspIHsKLQkJc3RydWN0IGFsYXJtX2Jhc2UgKmJhc2UgPSAmYWxhcm1fYmFzZXNbaV07Ci0J
+CXN0cnVjdCB0aW1lcnF1ZXVlX25vZGUgKm5leHQ7Ci0JCWt0aW1lX3QgZGVsdGE7CisJLyogRmlu
+ZCB0aGUgc29vbmVzdCB0aW1lciB0byBleHBpcmUgKi8KKwlhbGFybXRpbWVyX2dldF9zb29uZXN0
+KCZtaW4sICZleHBpcmVzLCAmdHlwZSk7CiAKLQkJc3Bpbl9sb2NrX2lycXNhdmUoJmJhc2UtPmxv
+Y2ssIGZsYWdzKTsKLQkJbmV4dCA9IHRpbWVycXVldWVfZ2V0bmV4dCgmYmFzZS0+dGltZXJxdWV1
+ZSk7Ci0JCXNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJmJhc2UtPmxvY2ssIGZsYWdzKTsKLQkJaWYg
+KCFuZXh0KQotCQkJY29udGludWU7Ci0JCWRlbHRhID0ga3RpbWVfc3ViKG5leHQtPmV4cGlyZXMs
+IGJhc2UtPmdldF9rdGltZSgpKTsKLQkJaWYgKCFtaW4gfHwgKGRlbHRhIDwgbWluKSkgewotCQkJ
+ZXhwaXJlcyA9IG5leHQtPmV4cGlyZXM7Ci0JCQltaW4gPSBkZWx0YTsKLQkJCXR5cGUgPSBpOwot
+CQl9Ci0JfQogCWlmIChtaW4gPT0gMCkKIAkJcmV0dXJuIDA7CiAKLQlpZiAoa3RpbWVfdG9fbnMo
+bWluKSA8IHN1c3BlbmRfY2hlY2tfZHVyYXRpb25fbnMpIHsKLQkJcG1fd2FrZXVwX2V2ZW50KGRl
+diwgc3VzcGVuZF9jaGVja19kdXJhdGlvbl9ucy9OU0VDX1BFUl9NU0VDKTsKLQkJcmV0dXJuIC1F
+QlVTWTsKLQl9Ci0KIAl0cmFjZV9hbGFybXRpbWVyX3N1c3BlbmQoZXhwaXJlcywgdHlwZSk7CiAK
+IAkvKiBTZXR1cCBhbiBydGMgdGltZXIgdG8gZmlyZSB0aGF0IGZhciBpbiB0aGUgZnV0dXJlICov
+Ci0tIAoyLjQzLjAuNDI5Lmc0MzJlYWEyYzZiLWdvb2cKCg==
+--000000000000a825b70610303b56--
 
