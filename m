@@ -1,108 +1,162 @@
-Return-Path: <linux-kernel+bounces-44513-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44512-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30639842317
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:30:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 782E9842312
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:30:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA49E1F2B081
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:30:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36D591F2B30B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:30:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 933E96775E;
-	Tue, 30 Jan 2024 11:30:36 +0000 (UTC)
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCC6466B5B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91B6266B54;
 	Tue, 30 Jan 2024 11:30:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gr01gI3J"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D040F66B2B;
+	Tue, 30 Jan 2024 11:30:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706614236; cv=none; b=czSbpQ6s1w+OcII2dDmnHcKfHNTk6a2ED/fnkTxaR9N+3EF3F9YmLEfVT3iBycLoqB4v0qnmuef4+MemVKRgf+EvWbqyXsQFgsXZDS9XwY1bYN3eiPujrZ7kR+QolMJrfzyt7YOMaSjqKpOQssyexB8R8Sj5KINJQ5pvZNbOWPY=
+	t=1706614233; cv=none; b=j7o2QEinwUDrY2YIWp+Oe4x35h/EVR8D8rr8O8/EKFB6m1r/RKkKvAnb1yZb2zZcqUIYEAOKdiWM43TEWJtTeTFMFIPvP097QWfz3FxGMB+j/L3DAi+3fTxePrJbku9g2DXUoeFpVCCOJEqg8Qys8Rs42Jwwn3Kj6kqqNM/KoX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706614236; c=relaxed/simple;
-	bh=aPwVSdgNb2lpDjxd5+qOm/0CKHj0VgtsG12CFe8DFSA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bM/+cRjiVVx8bxtmd3fxJqriiwwavALg7nogWXs6wtt59+CoGHRhnM2vLjjeeo82PtVTbUuBquff06790FRvjyAgNIubTAunoPkAaY+9yagVCk34mf6GlJLyRBLHR0OdITgmyaFoe29k4Oz3+19muYK927LDyIDifiMbYot19NI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5ff7a8b5e61so35940347b3.2;
-        Tue, 30 Jan 2024 03:30:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706614233; x=1707219033;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4jUIV76EfqiSCLTOlQ3xpsNr/TvqMGBmwC/ORazdxeY=;
-        b=i7/ahYAAXHRobtTNdtQr8jbarcgJqm6WZm8BTPSfWc7LziNlkYD+Mjz/+NSB9wjbf4
-         EAGqaHT9k/yt6W3kpfCFXCfQU+0lZNX0FZs/SKEXePmP66rUt1QU+xTW72uZ6a7FEMI0
-         aoyc71ubmvjiM3d5sEsv1IoW4vgNEm1wwG+bZgjxk/BfaSBZP6iNtTgtKhm+BYJjxXLQ
-         r9zsrA/YdptxkmDC58GzyTaT1qcWyEa9jh5af1WbPdCvnLWya4FN+5bCH5R5G5KfTlXA
-         tkSoXMKgSTNMegSk3X5c86PlcC8KFF1tgVg9H+KphB9etWligqCKy26uMgB95IV6fSgG
-         iG1g==
-X-Gm-Message-State: AOJu0YwXZ+PO65maBD5J3uiuMfhWRxV/guznQA8rBjt9HocHfDLjT0zM
-	hM+bGPtf0+yKgMKyJ3Rv+xFxA9vZqt2QaMgAzfo5BQtP/mKxMsce0ho3xpR6ba4=
-X-Google-Smtp-Source: AGHT+IE0hsCBR+luoDJu9Adz5yctBeT2ENjb0RIa0H0x2PlwQnlP3M1CLf+nNcxfRVdX3f7AY4setQ==
-X-Received: by 2002:a81:431b:0:b0:5e7:ae43:e90f with SMTP id q27-20020a81431b000000b005e7ae43e90fmr5343520ywa.3.1706614233384;
-        Tue, 30 Jan 2024 03:30:33 -0800 (PST)
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com. [209.85.128.179])
-        by smtp.gmail.com with ESMTPSA id d142-20020a0ddb94000000b005e7d8d6e446sm3173958ywe.93.2024.01.30.03.30.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Jan 2024 03:30:33 -0800 (PST)
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-602d0126e80so35786117b3.3;
-        Tue, 30 Jan 2024 03:30:33 -0800 (PST)
-X-Received: by 2002:a81:af21:0:b0:600:2710:1e51 with SMTP id
- n33-20020a81af21000000b0060027101e51mr5585278ywh.13.1706614232794; Tue, 30
- Jan 2024 03:30:32 -0800 (PST)
+	s=arc-20240116; t=1706614233; c=relaxed/simple;
+	bh=9OMcTfbqDWp8yh7PIGJwzemNavrPJGabvoRiA7Mzr1k=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=pP4yqHbH0fONMdH5EesPSFQF1qCuXntzyyCgtt72ilW4IahPwLIsAcjpUNYFXnG6jHvR08/mf9JccxwO/hUFtRz9SqK42yAxJY43Qa6YUoQl3jWG6c6/eTPlFADOOITNbgDNCzg46XDw0kAo0aR6ayIvHPb/6ac9X9ZfIpf/kK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gr01gI3J; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA5C0C433C7;
+	Tue, 30 Jan 2024 11:30:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706614233;
+	bh=9OMcTfbqDWp8yh7PIGJwzemNavrPJGabvoRiA7Mzr1k=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Gr01gI3JYz5XYMk4rbnDzVsmBHGKnjEHBYvPqo8B+5nZqzZSKrbGfOKTKEzQuMhGz
+	 RSc+XS/krLBGGYIQxZyQXkLT/CgY6zkI98Ed9xqcU3qbnq4+bWN/rZMRTcm5bpMntN
+	 VdEvzFm+FI15md6QaQWi1EXJVNw/yfUGmMQlap5TCJSJTqwucriUu+QYxZtO0RI8Zg
+	 wlQkNaq0RR6cfMM9JKYmWH5q6yqzunbxmCRnU5r0EpyXN2x2VMcH0/G4Vn+nw2bYQZ
+	 U1eFQuBjYLM1jp2MRZxIF0FgSpE4RFKKnbxOIT58vNQWuR0b3XVphSMojOjsn9qVP6
+	 E9MhggPfj+M2w==
+Date: Tue, 30 Jan 2024 20:30:28 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Jinghao Jia <jinghao7@illinois.edu>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra
+ <peterz@infradead.org>, linux-trace-kernel@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/2] x86/kprobes: Prohibit kprobing on INT and UD
+Message-Id: <20240130203028.320df28af0bcaf9ce8c91d4d@kernel.org>
+In-Reply-To: <15690bf4-a803-4ce0-87bc-ec21727fa38e@illinois.edu>
+References: <20240127044124.57594-1-jinghao7@illinois.edu>
+	<20240127044124.57594-2-jinghao7@illinois.edu>
+	<20240128101912.5ad6717347bd66089ecea03a@kernel.org>
+	<8c29d66d-b17d-4185-988c-de078566d0da@illinois.edu>
+	<20240130104414.4548b70ada33ea3180047423@kernel.org>
+	<15690bf4-a803-4ce0-87bc-ec21727fa38e@illinois.edu>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240129151618.90922-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20240129151618.90922-6-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20240129151618.90922-6-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 30 Jan 2024 12:30:21 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXAuvR55NZtq-0N32kh-W9X5V30mA4bzkqER=kGdsb_eA@mail.gmail.com>
-Message-ID: <CAMuHMdXAuvR55NZtq-0N32kh-W9X5V30mA4bzkqER=kGdsb_eA@mail.gmail.com>
-Subject: Re: [PATCH 5/5] riscv: dts: renesas: rzfive-smarc-som: Drop deleting
- interrupt properties from ETH0/1 nodes
-To: Prabhakar <prabhakar.csengg@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Magnus Damm <magnus.damm@gmail.com>, linux-renesas-soc@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 29, 2024 at 4:16=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.c=
-om> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> Now that we have enabled IRQC support for RZ/Five SoC switch to interrupt
-> mode for ethernet0/1 PHYs instead of polling mode.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On Mon, 29 Jan 2024 20:50:39 -0600
+Jinghao Jia <jinghao7@illinois.edu> wrote:
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> On 1/29/24 19:44, Masami Hiramatsu (Google) wrote:
+> > On Sun, 28 Jan 2024 15:25:59 -0600
+> > Jinghao Jia <jinghao7@illinois.edu> wrote:
+> > 
+> >>>>  /* Check if paddr is at an instruction boundary */
+> >>>>  static int can_probe(unsigned long paddr)
+> >>>>  {
+> >>>> @@ -294,6 +310,16 @@ static int can_probe(unsigned long paddr)
+> >>>>  #endif
+> >>>>  		addr += insn.length;
+> >>>>  	}
+> >>>> +	__addr = recover_probed_instruction(buf, addr);
+> >>>> +	if (!__addr)
+> >>>> +		return 0;
+> >>>> +
+> >>>> +	if (insn_decode_kernel(&insn, (void *)__addr) < 0)
+> >>>> +		return 0;
+> >>>> +
+> >>>> +	if (is_exception_insn(&insn))
+> >>>> +		return 0;
+> >>>> +
+> >>>
+> >>> Please don't put this outside of decoding loop. You should put these in
+> >>> the loop which decodes the instruction from the beginning of the function.
+> >>> Since the x86 instrcution is variable length, can_probe() needs to check
+> >>> whether that the address is instruction boundary and decodable.
+> >>>
+> >>> Thank you,
+> >>
+> >> If my understanding is correct then this is trying to decode the kprobe
+> >> target instruction, given that it is after the main decoding loop.  Here I
+> >> hoisted the decoding logic out of the if(IS_ENABLED(CONFIG_CFI_CLANG))
+> >> block so that we do not need to decode the same instruction twice.  I left
+> >> the main decoding loop unchanged so it is still decoding the function from
+> >> the start and should handle instruction boundaries. Are there any caveats
+> >> that I missed?
+> > 
+> > Ah, sorry I misread the patch. You're correct!
+> > This is a good place to do that.
+> > 
+> > But hmm, I think we should add another patch to check the addr == paddr
+> > soon after the loop so that we will avoid decoding.
+> > 
+> > Thank you,
+> > 
+> 
+> Yes, that makes sense to me. At the same time, I'm also thinking about
+> changing the return type of can_probe() to bool, since we are just using
+> int as bool in this context.
 
-Gr{oetje,eeting}s,
+Yes, that is also a good change :)
 
-                        Geert
+Thank you,
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+> 
+> --Jinghao
+> 
+> >>
+> >> --Jinghao
+> >>
+> >>>
+> >>>>  	if (IS_ENABLED(CONFIG_CFI_CLANG)) {
+> >>>>  		/*
+> >>>>  		 * The compiler generates the following instruction sequence
+> >>>> @@ -308,13 +334,6 @@ static int can_probe(unsigned long paddr)
+> >>>>  		 * Also, these movl and addl are used for showing expected
+> >>>>  		 * type. So those must not be touched.
+> >>>>  		 */
+> >>>> -		__addr = recover_probed_instruction(buf, addr);
+> >>>> -		if (!__addr)
+> >>>> -			return 0;
+> >>>> -
+> >>>> -		if (insn_decode_kernel(&insn, (void *)__addr) < 0)
+> >>>> -			return 0;
+> >>>> -
+> >>>>  		if (insn.opcode.value == 0xBA)
+> >>>>  			offset = 12;
+> >>>>  		else if (insn.opcode.value == 0x3)
+> >>>> -- 
+> >>>> 2.43.0
+> >>>>
+> >>>
+> >>>
+> > 
+> > 
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
