@@ -1,163 +1,194 @@
-Return-Path: <linux-kernel+bounces-44692-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44693-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D71B484260A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:18:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A4F0842610
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:19:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 166EE1C2466C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:18:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F0D71C22C99
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:19:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A5CA6BB2C;
-	Tue, 30 Jan 2024 13:18:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 426F06BB54;
+	Tue, 30 Jan 2024 13:19:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e+sAd1sG"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="mYl2brf5"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A35A60874
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 13:18:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0F8160874;
+	Tue, 30 Jan 2024 13:19:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706620718; cv=none; b=hxT0sK3wmspTu4mT4S+2cj3j6q/o7zDMrLJj0vGfyJuLLf8VoQym6jjKASwxiU12zB8sa80eUBwnXdpbu8j0U92VV7Ljagb/cWpmZUfbpqXzb78QbNWaxwKecK69995Iixy968v4J7SGFQ0FduyZStD2+dKNCNPVPN7/aG392/s=
+	t=1706620767; cv=none; b=WyIhxKsArkI68fYFtikOexX8trqpwimyDdg6gmWwIsxWbqc+DtoVWlutDT0NMMvYXT78z0FEdM5rtP5Vkk5AFSYO6axsrwv/WGiVS66EVb/siWQo2JqGyzf2nGVIeF0UUYWUI3uber6VEjMpLEhTD9mCSQgXlA2tqUoGo3lcznI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706620718; c=relaxed/simple;
-	bh=vD9IsLTsDmZDtBNXBUMQvvlMs8VuldFZdEYPTu/lHNw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=exA/gqIZBwtQ71FGUnz8KRQ1VWlUtVMzUgGiw91B+C7wBgO1GZTpG3d0l5S31CQmWm6ET/cd/vAUz/v1QdvM7LCssb2OsjTeeFXtuSv1UfbDFFalvApC/xWfjgZK9Be+jkPj4KjWSEqbJGXRP2j1YRx5+bpAvoW5TsKSx8q9Dko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e+sAd1sG; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d746ce7d13so32792505ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 05:18:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706620716; x=1707225516; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nZSzrHwZT0cUCH166tCfR7sNZHASOuItLrNgK3kvuqI=;
-        b=e+sAd1sGpQRw+zijDjnyx13tusTJO4FcOGkYEuTUoE4JvZGZfxU12QaXCFxr9UIAs6
-         aKxRcRIjgsWlo0GqfVOL48io0okzmUUqiJksZd4Lexs/mmHi87B14gYVeEiPPb4KxmRM
-         /t8uRA/+/MBKCbz9BKfvI5AuNvPmUyIcieEEoLLjCRCyCRgy5pe57tJvnByNDmdpFVTr
-         +2pKPz/Dljdw1yiL8poSl8WRhPCXS6rfCEP7gB7C1obdXmXV4Csd2vmcfxO1C107CoJH
-         VoBhxOyGWgjRg6hWzEv4K7z5QNUQ84mPg3T2c+sOVh1yt7Scw16gq4VbHd12/3CW6Kr0
-         hYiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706620716; x=1707225516;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nZSzrHwZT0cUCH166tCfR7sNZHASOuItLrNgK3kvuqI=;
-        b=R42o98SO7JXkft2V7BZq6Xa1dx3D2f0byqBj5LYRMqGvi+NcwPH8MXXYsY/O+VdRYo
-         oFJHVl/k5yRFg5185O82o7tjE4M2s0rabLRBh88JeLaQhbGgrBajT+sOfc9FIwscOTZf
-         qsQrkU6elU1BsSc4NnoYRwOaoqWjIhgVC9d8470el2n4pfIhHxOGf7cQIEPOi9t2BEDL
-         rTDezW+Tt1B/B230K+PPQy1k9ELClN7xcqz0BHH1/G2Es0N1ljm1Pa+WpvhnMm7nnPSU
-         Wtj1smfZz/BzUiIPUlLi7VIJAmf0evZDkQ5kQ4Hsq1OY4hzw3Ewb43Kt1eVXofmTqqks
-         Tjog==
-X-Gm-Message-State: AOJu0YxJPNZwiMhX9983oGANWBDzfHVfQ8kxHxRo+5nZ5fRh6dL2zW83
-	BNj7nsiqgrWo4vPP6X+KU5Y4V84XJkUReKX1QUeCcrNBXSemN0dM
-X-Google-Smtp-Source: AGHT+IHLq+9akx25pQgd1KUDRwbbA1HqOfwVzGCIyYXWyHRjLLcIgvDip9Psyc79vi7FYkJU/hpLyw==
-X-Received: by 2002:a17:902:d488:b0:1d8:ae30:eddd with SMTP id c8-20020a170902d48800b001d8ae30edddmr9647806plg.23.1706620716009;
-        Tue, 30 Jan 2024 05:18:36 -0800 (PST)
-Received: from [192.168.255.10] ([43.132.141.21])
-        by smtp.gmail.com with ESMTPSA id ju4-20020a170903428400b001d8cc3bfee8sm4500837plb.273.2024.01.30.05.18.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Jan 2024 05:18:35 -0800 (PST)
-Message-ID: <60f6d4e7-5718-4c7a-a3a7-9bd1ac088cae@gmail.com>
-Date: Tue, 30 Jan 2024 21:18:30 +0800
+	s=arc-20240116; t=1706620767; c=relaxed/simple;
+	bh=4A4P0uoIH22Pj/8ZZK68o4PUetBKhjiM5+2BHQM5qS0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=dYVcCyTgCBAdO8WmCt4Qe1xb4utPzidajJ4FUimOhSvwiqdLveh/0+IR0pL5MOTXqxnC7ZEuoIOdiDKfZWBGT0QRuRsvTflhkFDcjSMwBamf0T35iOQT4rhDJ8E4Q7ImMZYEmj6D2xv2p/nIjW0uiZMOjK00UH27N29M/Ze/zD4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=mYl2brf5; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40UAUcOC006626;
+	Tue, 30 Jan 2024 13:19:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=zSn8G5clqP1F5joA8rvlouwTo37FDpDga5azQ0UnSMk=; b=mY
+	l2brf5Cx4WhCsBKsnmQBNJnwSkycyNZUaElWNe4QA6cmfNcyJ8RqVEWMk4S60N/d
+	M/PKd6QcifD74ko5+jwcz2Tg4ZrdMk6ZbfKuEI6lCsPfHt82zNajMCvhv2kFnjga
+	syZyAJiiMwqsNsJm4i/bnNJv2CfFRq/N/eebCKswwiOHYaNGMqF2x4+S8Acyk8hV
+	JTkjxoDS+By5q2FTGiYMO9ps9J22G8lmc9iJ69mzJsemcvPfujYZqd8WrFFGnxPS
+	7zIcJU+0H2jvC0hgkvuOoJAxfSzkaGlT2m0RKF2WBv4L0TTtsI/WJs/LE8I/+B89
+	tga1sQ3r/8C31+WuMbvQ==
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vxydh0cee-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 30 Jan 2024 13:19:06 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40UDJ5mg016445
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 30 Jan 2024 13:19:05 GMT
+Received: from [10.218.10.86] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 30 Jan
+ 2024 05:18:57 -0800
+Message-ID: <9daddb2a-e20c-6189-f319-e343eb918248@quicinc.com>
+Date: Tue, 30 Jan 2024 18:48:35 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/5] sched/fair: narrow the sched_use_asym_prio checking
- scenario
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v1 5/6] PCI: qcom-ep: Provide number of read/write channel
+ for HDMA
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+CC: <vkoul@kernel.org>, <jingoohan1@gmail.com>, <conor+dt@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <quic_shazhuss@quicinc.com>, <quic_nitegupt@quicinc.com>,
+        <quic_ramkri@quicinc.com>, <quic_nayiluri@quicinc.com>,
+        <dmitry.baryshkov@linaro.org>, <quic_krichai@quicinc.com>,
+        <quic_vbadigan@quicinc.com>, <quic_parass@quicinc.com>,
+        <quic_schintav@quicinc.com>, <quic_shijjose@quicinc.com>,
+        Gustavo Pimentel
+	<gustavo.pimentel@synopsys.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Rob Herring
+	<robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        "Kishon Vijay Abraham
+ I" <kishon@kernel.org>,
+        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <mhi@lists.linux.dev>
+References: <1705669223-5655-1-git-send-email-quic_msarkar@quicinc.com>
+ <1705669223-5655-6-git-send-email-quic_msarkar@quicinc.com>
+ <20240130085301.GB83288@thinkpad>
 Content-Language: en-US
-To: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Cc: Shrikanth Hegde <sshegde@linux.ibm.com>, alexs@kernel.org,
- Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira
- <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>,
- linux-kernel@vger.kernel.org
-References: <20240117085715.2614671-1-alexs@kernel.org>
- <20240117085715.2614671-5-alexs@kernel.org>
- <dd4e5498-3e21-4ac1-b65a-fd132c2a7206@linux.ibm.com>
- <e5b4eb14-c8e4-4888-b555-4b959cda8efe@gmail.com>
- <20240126000609.GC17237@ranerica-svr.sc.intel.com>
-From: kuiliang Shi <seakeel@gmail.com>
-In-Reply-To: <20240126000609.GC17237@ranerica-svr.sc.intel.com>
-Content-Type: text/plain; charset=UTF-8
+From: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+In-Reply-To: <20240130085301.GB83288@thinkpad>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 8GmV8PNkEEBYkv4MFnp5j7xycW1G7OpK
+X-Proofpoint-GUID: 8GmV8PNkEEBYkv4MFnp5j7xycW1G7OpK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-30_07,2024-01-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
+ mlxscore=0 malwarescore=0 clxscore=1015 spamscore=0 impostorscore=0
+ lowpriorityscore=0 suspectscore=0 priorityscore=1501 mlxlogscore=876
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401190000 definitions=main-2401300098
 
 
-
-On 1/26/24 8:06 AM, Ricardo Neri wrote:
-> On Thu, Jan 25, 2024 at 05:35:32PM +0800, kuiliang Shi wrote:
+On 1/30/2024 2:23 PM, Manivannan Sadhasivam wrote:
+> On Fri, Jan 19, 2024 at 06:30:21PM +0530, Mrinmay Sarkar wrote:
+>> There is no standard way to auto detect the number of available
+>> read/write channels in a platform. So adding this change to provide
+>> read/write channels count and also provide "EDMA_MF_HDMA_NATIVE"
+>> flag to support HDMA for 8775 platform.
 >>
+>> 8775 has IP version 1.34.0 so intruduce a new cfg(cfg_1_34_0) for
+>> this platform. Add struct qcom_pcie_ep_cfg as match data. Assign
+>> hdma_supported flag into struct qcom_pcie_ep_cfg and set it true
+>> in cfg_1_34_0.
 >>
->> On 1/23/24 4:47 PM, Shrikanth Hegde wrote:
->>>
->>>
->>> On 1/17/24 2:27 PM, alexs@kernel.org wrote:
->>>> From: Alex Shi <alexs@kernel.org>
->>>>
->>>> Current function doesn't match it's comments, in fact, core_idle
->>>> checking is only meaningful with non-SMT.
->>>> So make the function right.
->>>>
->>>> Signed-off-by: Alex Shi <alexs@kernel.org>
->>>> To: Valentin Schneider <vschneid@redhat.com>
->>>> To: Vincent Guittot <vincent.guittot@linaro.org>
->>>> To: Peter Zijlstra <peterz@infradead.org>
->>>> To: Ingo Molnar <mingo@redhat.com>
->>>> ---
->>>>  kernel/sched/fair.c | 4 ++--
->>>>  1 file changed, 2 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->>>> index 96163ab69ae0..0a321f639c79 100644
->>>> --- a/kernel/sched/fair.c
->>>> +++ b/kernel/sched/fair.c
->>>> @@ -9741,8 +9741,8 @@ group_type group_classify(unsigned int imbalance_pct,
->>>>   */
->>>>  static bool sched_use_asym_prio(struct sched_domain *sd, int cpu)
->>>>  {
->>>> -	return (!sched_smt_active()) ||
->>>> -		(sd->flags & SD_SHARE_CPUCAPACITY) || is_core_idle(cpu);
->>>> +	return	(sd->flags & SD_SHARE_CPUCAPACITY) ||
->>>> +		(!sched_smt_active() && is_core_idle(cpu));
->>>>  }
->>>
->>> This seems wrong. This would always return false for higher than SMT domains 
->>> if smt is active. 
->>>
+>> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+>> ---
+>>   drivers/pci/controller/dwc/pcie-qcom-ep.c | 19 ++++++++++++++++++-
+>>   1 file changed, 18 insertions(+), 1 deletion(-)
 >>
->> yes, thanks for point out.
->>
->>> Was this meant to be sched_smt_active() && is_core_idle(cpu)? 
->>
->> In theory, yes, it should like this. But I have no ASYM device to test. :(
-> 
-> This would not work with !SMT and asym_packing.
-> 
-> I can test your patches on asym_packing + SMT systems if you post a new
-> version.
-> 
+>> diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
+>> index 45008e0..8d56435 100644
+>> --- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
+>> +++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
+>> @@ -149,6 +149,10 @@ enum qcom_pcie_ep_link_status {
+>>   	QCOM_PCIE_EP_LINK_DOWN,
+>>   };
+>>   
+> Add kdoc comment please as like the below struct.
+>
+>> +struct qcom_pcie_ep_cfg {
+>> +	bool hdma_supported;
+>> +};
+>> +
+>>   /**
+>>    * struct qcom_pcie_ep - Qualcomm PCIe Endpoint Controller
+>>    * @pci: Designware PCIe controller struct
+>> @@ -167,6 +171,7 @@ enum qcom_pcie_ep_link_status {
+>>    * @num_clks: PCIe clocks count
+>>    * @perst_en: Flag for PERST enable
+>>    * @perst_sep_en: Flag for PERST separation enable
+>> + * @cfg: PCIe EP config struct
+>>    * @link_status: PCIe Link status
+>>    * @global_irq: Qualcomm PCIe specific Global IRQ
+>>    * @perst_irq: PERST# IRQ
+>> @@ -194,6 +199,7 @@ struct qcom_pcie_ep {
+>>   	u32 perst_en;
+>>   	u32 perst_sep_en;
+>>   
+>> +	const struct qcom_pcie_ep_cfg *cfg;
+>>   	enum qcom_pcie_ep_link_status link_status;
+>>   	int global_irq;
+>>   	int perst_irq;
+>> @@ -511,6 +517,10 @@ static void qcom_pcie_perst_assert(struct dw_pcie *pci)
+>>   	pcie_ep->link_status = QCOM_PCIE_EP_LINK_DISABLED;
+>>   }
+>>   
+>> +static const struct qcom_pcie_ep_cfg cfg_1_34_0 = {
+>> +	.hdma_supported = true,
+>> +};
+>> +
+>>   /* Common DWC controller ops */
+>>   static const struct dw_pcie_ops pci_ops = {
+>>   	.link_up = qcom_pcie_dw_link_up,
+>> @@ -816,6 +826,13 @@ static int qcom_pcie_ep_probe(struct platform_device *pdev)
+>>   	pcie_ep->pci.ops = &pci_ops;
+>>   	pcie_ep->pci.ep.ops = &pci_ep_ops;
+>>   	pcie_ep->pci.edma.nr_irqs = 1;
+>> +
+>> +	pcie_ep->cfg = of_device_get_match_data(dev);
+> Why do you want to cache "cfg" since it is only used in probe()?
 
-Hi Neri,
+Yes Mani, no need to cache "cfg" we can use directly here .
 
-Thanks a lot for generous offer! I don't know if my understanding right, but I try my best to have a best guessing in V2 patch for you. :)
-
-Many thanks for the help!
-
-Best regards
-Alex 
+>> +	if (pcie_ep->cfg && pcie_ep->cfg->hdma_supported) {
+>> +		pcie_ep->pci.edma.ll_wr_cnt = 1;
+>> +		pcie_ep->pci.edma.ll_rd_cnt = 1;
+> Is the platform really has a single r/w channel?
+the platform has 8 r/w channels. but as per the use case we need to use 
+single r/w channel.
+> - Mani
+Thanks,
+Mrinmay
 
