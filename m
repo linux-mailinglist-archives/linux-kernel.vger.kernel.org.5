@@ -1,72 +1,72 @@
-Return-Path: <linux-kernel+bounces-44079-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44082-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 118CE841D11
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:56:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 834B6841D1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:00:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD80E282798
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:56:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E448DB24688
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:00:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAC0354668;
-	Tue, 30 Jan 2024 07:56:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 287C25472A;
+	Tue, 30 Jan 2024 08:00:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jabtirok"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="J/6nv7pp"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DBBF53E29
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 07:56:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D37355E64
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 08:00:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706601367; cv=none; b=aEuxO6NtAmYaDSS11x9pbrfmPXmhQjyj8CcyVh9lywN1U3q2bnQ+5pjGoZecdPR1uG7ad6FNzGdLagxlmyTT2IpHLitJBdfQGThSB/TOcWnPKq+pc1x1CK5H5FDMwzFjhDfulLfrPjp4y6ewVh1HlTar/uP1A/E1zQFvr2MdhqE=
+	t=1706601607; cv=none; b=qQ4b3gkaK7pYoE8++G+J8ufzwmzTmYmWFdMaf6N8WIuaoFwdQy8shEO7+Q0g3zkFXR3vz+lC17NQsyk1QIimBKfsXNWXnm3Df47+IkbaNI5AaPbPIGYwiBR6bBPZLCc47kjYocSuzBY8LLD9sZ/Rlei3QyKdOWEJ3KMUrFFAWRw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706601367; c=relaxed/simple;
-	bh=wHR2CwdXVam+dMxen82xzir/2gKlgyfk9KNbt22I+O0=;
+	s=arc-20240116; t=1706601607; c=relaxed/simple;
+	bh=prwXKEAfpMsarqn1FR+YN2/OFbqwi8HRsfCkWF3MtDo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NUNXJK2RzEsAJ80h4+Ph+/RrcyPXW8Go3KM8xKgaQdze/+8a84Y5yOOOaAmzOhmnfZc/P46AFVuH9UHffIaV8TkVZ78cypZFhveFhnIiQFAd4vv+JHv04FUufHnZecmuH2sQNUFUCyL9l2zyOPoQQWvjrzH/XvjwR2+T6ww8iig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jabtirok; arc=none smtp.client-ip=209.85.208.54
+	 In-Reply-To:Content-Type; b=O/NrHu4pk5DEqVx8g6KJsnNgMdKCQ33q5VhWObq4g3zzdVolI478C87cXXO6+D1L8b8aSkfzC7vBTTVHuo87iKECxyJZdJ/gfD4UyAsEDWn13hYGbY9jvgGwoncJa83kwKL4QVzfhxfIVBaB7rlKIQffIAALppYEZDVnolQhCyI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=J/6nv7pp; arc=none smtp.client-ip=209.85.167.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-556c3f0d6c5so3705147a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 23:56:04 -0800 (PST)
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51025cafb51so5159170e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 00:00:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706601363; x=1707206163; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1706601603; x=1707206403; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ngybv8O9iGjxqt6rcpROCs4pkncSLIQiKAAur4B+yfo=;
-        b=jabtirokNvFgtX1HOVMrgGHwJH+0S7lxe9NZTn1DjRFO4gecjR3R2pZSYoHJPloYNU
-         CdyGlgaPWP6eqQ4sRNSrfysD3OA3RR9pvA3GAbuq1yC9+da4/ZNImwEozpXd1wjaHEpV
-         WdLyCrJmy4bn6tyngxgS0DTuVv6GhyoeRuSJ4DwVTWBdmjRAKWq8/RLuik5nflLPXUuB
-         llEpwZetew2YJ0YlsgTYTdvMpciTxFH7tW5OqYVkSY1slDkskcJUQEQqGcNhxLDFimZs
-         S4dg3urJafwTRY4jbxLaTFLlanzNYTv1kLRHI9Sy2//51chJ/ZT1iUWxgae7UmiAM5+x
-         zTGQ==
+        bh=+HkH4XQMR2Fb/ctwAmYb0jzkl/3spUTrWnMDkagnUdU=;
+        b=J/6nv7pp4ZBD1b5+O18qrfeMblq15x+q+RyRUMbe70SOL487qWxogs6HSDS0B8cwMW
+         lWzbaF+o6sdRkVAuJc/acUQ1aUi0InGp6BLmmWSNgHsM/4ES1GN/xCgksSs3+ppHE2UG
+         Q3+8s+K+4KP32pd6vjjuVHlkaQ8RAS7r0aEZfUOm9D3Nkyeez/jtSo7zgN8nEldQrjUr
+         tB3UU8KnrSo2av/CXsSboa4kkrZiGvBlJtG0eIoN4CY9bnCE0v+kbRhgfCrbhwZb2Klf
+         RBG0EZTGEtpaIW474EW2VEGbhlj07JiplSDBZUcpzDGi+6y/HRf238qe2rB5aSd68jNx
+         Dl5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706601363; x=1707206163;
+        d=1e100.net; s=20230601; t=1706601603; x=1707206403;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ngybv8O9iGjxqt6rcpROCs4pkncSLIQiKAAur4B+yfo=;
-        b=PpBQZqPQt10VAUJHU5qxymZClu8C1XVgrip5SCqrTTmRqc4egCvvo2Q0bJOJluBxLz
-         4XB/yKBmuFtHzfvYgzjpwiKHGE9qgDAPgPllel7HIU0DTID5hatChL1kwtwesgFL1v4r
-         g/epGE8RMj+imigZ8JwpR64EutAaypbMkwO+4LxUevbErY8niCWAIjrRtkFUjFBA6jHO
-         qMjSKIHOYHGQ0qduh9MGAScEM7FcGdp4d/CmsnMPmKj5Rb4i0vpq2l7Smj+b6Zc+kpfV
-         S7avlmz/+Vlh44Ptk8+ZjthXEgzfeE7xrnqQ8AVQbyTJiqFRl8+jmMrZHuZnuzNicgjK
-         suiA==
-X-Gm-Message-State: AOJu0YyqQzYLnR+Klo+0kx3dvl9sIgyf4nRNcufl4e1CbefzfQgCQUaZ
-	80+XB3lmgXKNAzpmJ87Nx0pHQKqaYPpE9Euj8hRsWXvxcsnUgJQ4D77aDt4znyA=
-X-Google-Smtp-Source: AGHT+IE46CauFpE6SAwlaWiivSPbB1RSG4Kax6PdpZuyNZjKAXh2tKtWGWtZ6rkn7MrohhkAUxxV+Q==
-X-Received: by 2002:a05:6402:17ce:b0:55f:1ae8:2f1d with SMTP id s14-20020a05640217ce00b0055f1ae82f1dmr2044451edy.11.1706601363429;
-        Mon, 29 Jan 2024 23:56:03 -0800 (PST)
+        bh=+HkH4XQMR2Fb/ctwAmYb0jzkl/3spUTrWnMDkagnUdU=;
+        b=QqIYcOxsJaVn+XcFH2wmxMpElzOMXm42DUYEq4oAp9lHvkaQIsmzL+HmS2vEWj/rsb
+         IR5NRPJzHHn0Qcf5VU9Msm4zhqEsrcKnBaMmtlqu/fJULkwQqzPkyePiY7wJZbv+n7kC
+         B4NIZhKRELec2Fw9YflfHp/XdipvC0vjBjzJWmK2say8GoywrZWbu74kJN1qNzm0tioj
+         F1UcdmJonJAeFHQVz4hu/6TH+GkWgK9cWNa0rwuHvFDRKpf0etx8UcfQpnXfWv4QJKZ4
+         PaJUyiZbOK0QGn7CRnPzREpFq3dkiWulg2MRGgExYMNiPy5gELyEc+Vih4/uQQ0AlXKQ
+         sQQQ==
+X-Gm-Message-State: AOJu0Yy26qxjP1NA0jRR5qD4TJecK6bQRYjj7tZ9HWUfe+0qNkp9fhJc
+	TBUNd9m2S3ctNXT0YFtDTuv8NgnFOBl1l/O5ymJE4E2QKktNNqxMoVjyFpPKnJU=
+X-Google-Smtp-Source: AGHT+IFuPg9GW35NCszZH+DhM+lLv9BCNrTEafYzWSWwdeVr6ZfYv4zy+S40oJYAS+lHGsoDq5uojQ==
+X-Received: by 2002:a05:6512:1082:b0:50e:75ee:ec4c with SMTP id j2-20020a056512108200b0050e75eeec4cmr6389637lfg.11.1706601603441;
+        Tue, 30 Jan 2024 00:00:03 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id d15-20020a056402000f00b0055f1af929c2sm1205360edu.28.2024.01.29.23.56.02
+        by smtp.gmail.com with ESMTPSA id s15-20020a170906354f00b00a3186c2c254sm4797333eja.213.2024.01.30.00.00.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jan 2024 23:56:03 -0800 (PST)
-Message-ID: <4c6a7898-d300-468c-9e2f-13f639ca4407@linaro.org>
-Date: Tue, 30 Jan 2024 08:56:01 +0100
+        Tue, 30 Jan 2024 00:00:02 -0800 (PST)
+Message-ID: <37dae8b0-4e23-4325-810c-e7f555894964@linaro.org>
+Date: Tue, 30 Jan 2024 09:00:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,15 +74,25 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] fpga: xilinx-selectmap: add new driver
+Subject: Re: [PATCH 2/5] dt-bindings: display/msm: Document the DPU for
+ X1E80100
 Content-Language: en-US
-To: Charles Perry <charles.perry@savoirfairelinux.com>, mdf@kernel.org
-Cc: hao.wu@intel.com, yilun.xu@intel.com, trix@redhat.com,
- krzysztof.kozlowski+dt@linaro.org, bcody@markem-imaje.com,
- avandiver@markem-imaje.com, linux-fpga@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240129225602.3832449-1-charles.perry@savoirfairelinux.com>
- <20240129225602.3832449-3-charles.perry@savoirfairelinux.com>
+To: Abel Vesa <abel.vesa@linaro.org>, Rob Clark <robdclark@gmail.com>,
+ Abhinav Kumar <quic_abhinavk@quicinc.com>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Sean Paul <sean@poorly.run>,
+ Marijn Suijten <marijn.suijten@somainline.org>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Neil Armstrong <neil.armstrong@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240129-x1e80100-display-v1-0-0d9eb8254df0@linaro.org>
+ <20240129-x1e80100-display-v1-2-0d9eb8254df0@linaro.org>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -128,103 +138,37 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240129225602.3832449-3-charles.perry@savoirfairelinux.com>
+In-Reply-To: <20240129-x1e80100-display-v1-2-0d9eb8254df0@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 29/01/2024 23:56, Charles Perry wrote:
-> Xilinx 7 series FPGA can be programmed using a slave parallel port named
-> the SelectMAP interface in the datasheet. This slave interface is
-> compatible with the i.MX6 EIM bus controller but other types of external
-> memory mapped parallel bus might work.
+On 29/01/2024 14:18, Abel Vesa wrote:
+> Document the DPU for Qualcomm X1E80100 platform in the SM8650 schema, as
+> they are similar.
 > 
-> xilinx-selectmap currently only supports the x8 mode where data is loaded
-> at one byte per rising edge of the clock, with the MSb of each byte
-> presented to the D0 pin.
-> 
-> The following DT fragment shows a valid configuration on a custom i.MX6
-> board (pinctrl not shown for readability):
-> 
-> &weim {
->     status = "okay";
->     ranges = <0 0 0x08000000 0x04000000>;
-> 
->     fpga_mgr: fpga_programmer@0,0 {
->         compatible = "xlnx,fpga-slave-selectmap";
->         reg = <0 0 0x4000000>;
->         fsl,weim-cs-timing = <0x00070031 0x00000142
->                               0x00020000 0x00000000
->                               0x0c000645 0x00000000>;
->         prog_b-gpios = <&gpio5 5 GPIO_ACTIVE_LOW>;
->         init-b-gpios = <&gpio5 8 GPIO_ACTIVE_LOW>;
->         done-gpios = <&gpio2 30 GPIO_ACTIVE_HIGH>;
->         csi-b-gpios = <&gpio3 19 GPIO_ACTIVE_LOW>;
->         rdwr-b-gpios = <&gpio3 10 GPIO_ACTIVE_LOW>;
->     };
-> };
-
-Drop that example. First, it is not correct. Second, a correct one in
-bindings is enough.
-
-> 
-> Signed-off-by: Charles Perry <charles.perry@savoirfairelinux.com>
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
 > ---
+>  Documentation/devicetree/bindings/display/msm/qcom,sm8650-dpu.yaml | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/display/msm/qcom,sm8650-dpu.yaml b/Documentation/devicetree/bindings/display/msm/qcom,sm8650-dpu.yaml
+> index a01d15a03317..f84fa6d5e6a2 100644
+> --- a/Documentation/devicetree/bindings/display/msm/qcom,sm8650-dpu.yaml
+> +++ b/Documentation/devicetree/bindings/display/msm/qcom,sm8650-dpu.yaml
+> @@ -13,7 +13,10 @@ $ref: /schemas/display/msm/dpu-common.yaml#
+>  
+>  properties:
+>    compatible:
+> -    const: qcom,sm8650-dpu
+> +    items:
 
-..
+Drop items, it's just "enum :"
 
-> +static int xilinx_selectmap_probe(struct platform_device *pdev)
-> +{
-> +	struct xilinx_selectmap_conf *conf;
-> +	struct resource *r;
-> +	void __iomem *base;
-> +
-> +	conf = devm_kzalloc(&pdev->dev, sizeof(*conf), GFP_KERNEL);
-> +	if (!conf)
-> +		return -ENOMEM;
-> +
-> +	base = devm_platform_get_and_ioremap_resource(pdev, 0, &r);
-> +	if (IS_ERR(base))
-> +		return dev_err_probe(&pdev->dev, PTR_ERR(base), "ioremap error\n");
-> +	conf->base = base;
-> +
-> +	/* CSI_B is active low */
-> +	conf->csi_b = devm_gpiod_get_optional(&pdev->dev, "csi-b", GPIOD_OUT_HIGH);
-> +	if (IS_ERR(conf->csi_b))
-> +		return dev_err_probe(&pdev->dev, PTR_ERR(conf->csi_b),
-> +				     "Failed to get CSI_B gpio\n");
-> +
-> +	/* RDWR_B is active low */
-> +	conf->rdwr_b = devm_gpiod_get_optional(&pdev->dev, "rdwr-b", GPIOD_OUT_HIGH);
-> +	if (IS_ERR(conf->rdwr_b))
-> +		return dev_err_probe(&pdev->dev, PTR_ERR(conf->rdwr_b),
-> +				     "Failed to get RDWR_B gpio\n");
-> +
-> +	return xilinx_core_probe(&conf->core, &pdev->dev,
-> +							xilinx_selectmap_write,
-> +							xilinx_selectmap_apply_padding);
+> +      - enum:
+> +          - qcom,sm8650-dpu
+> +          - qcom,x1e80100-dpu
 
-Totally messed indentation. Please run scripts/checkpatch.pl and fix
-reported warnings. Some warnings can be ignored, but the code here looks
-like it needs a fix. Feel free to get in touch if the warning is not clear.
 
-> +}
-> +
-> +static const struct of_device_id xlnx_selectmap_of_match[] = {
-> +		{ .compatible = "xlnx,fpga-slave-selectmap", },
-> +		{}
-> +};
-> +MODULE_DEVICE_TABLE(of, xlnx_selectmap_of_match);
-> +
-> +static struct platform_driver xilinx_slave_selectmap_driver = {
-> +	.driver = {
-> +		.name = "xilinx-slave-selectmap",
-> +		.of_match_table = of_match_ptr(xlnx_selectmap_of_match),
-
-Drop of_match_ptr, it leads to warnings.
-
-> +	},
-> +	.probe  = xilinx_selectmap_probe,
-> +};
 
 Best regards,
 Krzysztof
