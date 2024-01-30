@@ -1,100 +1,171 @@
-Return-Path: <linux-kernel+bounces-45439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AA348430CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 00:01:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 778C28430D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 00:01:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D1A81C23EFE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:01:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D85C28804B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:01:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E76C67EF15;
-	Tue, 30 Jan 2024 23:01:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A84D14F61;
+	Tue, 30 Jan 2024 23:01:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D/4bDsru"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RpRd5lvT"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26DB77EF06;
-	Tue, 30 Jan 2024 23:01:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60A9D7EF08
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 23:01:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706655693; cv=none; b=O2p8wKuQsIBEbglnWyhtTaTr2l65jvfdeZB/1xeMuSn/ttExredTjEM5b4oO5If91IVvWRV8dNd2CoPCXTKdq7HSB99XLSyrsbn/3mZwJezhnY7iiOjSab0MUIDRte3TjRd5/a2l5OlIk6qkOsfSwHJlcDI2wlH14MaNR7y8zeI=
+	t=1706655705; cv=none; b=CggNlZy+AVWpLtRrHY9pc5gnzJD4wrYhYRr4eGZy5AIh7OBYv3IZ3pIxM8Mrw9ywpkwG827LR8x6uunX4WgwKB++tDwKXBebPEZVfcH1iheQZ4pkcZ53sClQrUS03IpGXok1F4hZQ2wh+pPBNF8iec1CFYIhlf3U0U6Jh2xW/d0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706655693; c=relaxed/simple;
-	bh=ku1C/ZkbKX+29BRUe76r+E2vI8ZO7+6hPMyFCOiFLQQ=;
+	s=arc-20240116; t=1706655705; c=relaxed/simple;
+	bh=BhXfGyAPv4SiBtMKJ3yf878gVc2hoptHT3pniLDIM20=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FiizZ2rotWRU+zfJ/KgqSuBZ1NSw+erq9SNQtm/OY0aYGZ1RokU0ENAeZ16REWD5kVooijriEEhAsDQkHoPCFQcc4NqCdLj8Z1ntNhHVfRj0agvFrLmPlj3Zw7lA2nZkvjmAkNTJSTF5PMhapEjYzL5RIQrI/YyvRywluXqF5eY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D/4bDsru; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 673B8C433C7;
-	Tue, 30 Jan 2024 23:01:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706655692;
-	bh=ku1C/ZkbKX+29BRUe76r+E2vI8ZO7+6hPMyFCOiFLQQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=D/4bDsruR054m2eZrmHx9bopxrE7FZ6qZLIETLGBtVSr1Klv3+vKCOGaLfD09IpK0
-	 QLusj9nMEU2zhFJOCloZsME3p6H6Spz5WOKFVCxl3P3/ZD2H9x12Tqj3rTiVKWKRd8
-	 lZcWgUru/vix1hPpGdIJ8NB73EQt/naxYOkPhg9bAhHsCXkCvNvQE0rhZ42ClEKlc/
-	 Lu1RKry+swCBJqxifi5fcxiNo+WLIg57pt+r1SmviioOBT8i+25XBxjwyYctAkG/1q
-	 HxUkrLvVa5R9Yv6kyWTpej5genuaZfEIr/1QucvIONqt0EouWdoMwzyDTFRJFrK2ac
-	 6OCK/MK1Kl7YQ==
-Date: Tue, 30 Jan 2024 18:01:31 -0500
-From: Sasha Levin <sashal@kernel.org>
-To: Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Luca Weiss <luca.weiss@fairphone.com>, andersson@kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-	Johan Hovold <johan+linaro@kernel.org>
-Subject: Re: [PATCH AUTOSEL 6.7 15/39] power: supply: qcom_battmgr: Register
- the power supplies after PDR is up
-Message-ID: <Zbl_y-KmQhCnN7Tu@sashalap>
-References: <20240128161130.200783-1-sashal@kernel.org>
- <20240128161130.200783-15-sashal@kernel.org>
- <rtghydsz532x6atjeshexkgevqlfxmw5owjexmnczwepeefvlb@gxinnf23tzij>
+	 Content-Type:Content-Disposition:In-Reply-To; b=PX3WOKQ6OI452UsUd29+sxn1lApOtuzwB7THh3OW/Z+zhBMywzNnp7+aOYVdtpaLXG7QELgzINpyQjCij3MkNg4OQ3vbyxkZSiuURq537zdl5XwgEfcCF8PjQdlcPyoNfS+b8xsDtiwSMSZJrS5P0mWLZqk5+AHbBF1BrVtYqXg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=RpRd5lvT; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d8d08f9454so29055ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 15:01:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706655704; x=1707260504; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=InqSXSTpbT1eiS6unjbH+Gd3bGvOKOKvltW4HzECThc=;
+        b=RpRd5lvTS00wy3JtmBLu9dGD33xQ6OX28VGFno/GYwlLFxiLuQIkSCk0GMHBNkZVWY
+         VOUBK2wbqtwbt/1DQQAd0h37ksNJRlAW0BXFCENY8yUlLx405/7aIOwP0HwWADBv6ATm
+         +/fb11FDGSXR1tadTGuhoKPHajzkGNjR5rb4UOIg7dlLhZTJXdpDcI8WdL4R1eo5+XbU
+         0VFyToz6gWr9sP9VZMXVykIKxgcoVbt9rdzpHs2yxSX5aLaXK2Sz8+6RdWO1vXz9TaEI
+         25HaovjgmSdPOCeddIFnsJHneNDXJMATFcjaSxYzZo4T6v9rbAkyn1ThlH3ebBHI716C
+         /GVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706655704; x=1707260504;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=InqSXSTpbT1eiS6unjbH+Gd3bGvOKOKvltW4HzECThc=;
+        b=khgO6a9/9oUeAy2V2cZ2Cb+g074n9mNge8kK/z+HuIAvbNkjYEIVnlOKj91batNSWl
+         lZH5YteAaSkKMLHH7zKcvBHGn3P2zAeQ+4V5wNn1cxNErLPWvtDczBgoQMkeAYMs624C
+         58fGG3p5CjaZL4T9b2WPr9+DRl90X4q2Diu/s4z9Ez2fZxaYHhznBo0mLHaBQ0RaZGOc
+         FVCypIr/OlPp0T4TepgE+w8NFsKU7sDiKA6T6pZoYbicEcq1jJDhcF/yucbE06fjcZTE
+         avIATPxN3HEIlJR1TQXw29WgMkQMGLOO1tgoW8rpDikSLb/+Q8zMRzxSOpTta+uP7IxA
+         +dkA==
+X-Gm-Message-State: AOJu0Yzf+ytLVtoPn5mhIjkh0F2m6iKRnOY8wjSNCMwt0aRRrxIdNzSY
+	+N0cYkECuY7aoJkQDkl3domK9Axh+5KOtCuoz7eeag7N5M1zt6OTTuLL5dBJtA==
+X-Google-Smtp-Source: AGHT+IHHlfMmJN3TbbAqe9NgDhqGhzDl2uuy1MggUp8v8ebeUy6kOFXJOYClhwrKxKJuMakJW6TItQ==
+X-Received: by 2002:a17:902:c943:b0:1d5:78d5:760b with SMTP id i3-20020a170902c94300b001d578d5760bmr389018pla.10.1706655703427;
+        Tue, 30 Jan 2024 15:01:43 -0800 (PST)
+Received: from google.com (69.8.247.35.bc.googleusercontent.com. [35.247.8.69])
+        by smtp.gmail.com with ESMTPSA id iz3-20020a170902ef8300b001d8e974ed2fsm3827918plb.284.2024.01.30.15.01.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jan 2024 15:01:42 -0800 (PST)
+Date: Tue, 30 Jan 2024 15:01:39 -0800
+From: William McVicker <willmcvicker@google.com>
+To: =?iso-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
+Cc: peter.griffin@linaro.org, mturquette@baylibre.com, sboyd@kernel.org,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, linux-kernel@vger.kernel.org,
+	kernel-team@android.com, tudor.ambarus@linaro.org,
+	semen.protsenko@linaro.org, alim.akhtar@samsung.com,
+	s.nawrocki@samsung.com, tomasz.figa@gmail.com,
+	cw00.choi@samsung.com, linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 6/7] arm64: dts: exynos: gs101: define USI12 with I2C
+ configuration
+Message-ID: <Zbl_01J_T6FoNZPy@google.com>
+References: <20240129174703.1175426-1-andre.draszik@linaro.org>
+ <20240129174703.1175426-7-andre.draszik@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <rtghydsz532x6atjeshexkgevqlfxmw5owjexmnczwepeefvlb@gxinnf23tzij>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240129174703.1175426-7-andre.draszik@linaro.org>
 
-On Mon, Jan 29, 2024 at 02:03:14PM +0100, Sebastian Reichel wrote:
->Hi,
->
->On Sun, Jan 28, 2024 at 11:10:35AM -0500, Sasha Levin wrote:
->> From: Konrad Dybcio <konrad.dybcio@linaro.org>
->>
->> [ Upstream commit b43f7ddc2b7a5a90447d96cb4d3c6d142dd4a810 ]
->>
->> Currently, a not-yet-entirely-initialized battmgr (e.g. with pd-mapper
->> not having yet started or ADSP not being up etc.) results in a couple of
->> zombie power supply devices hanging around.
->>
->> This is particularly noticeable when trying to suspend the device (even
->> s2idle): the PSY-internal thermal zone is inaccessible and returns
->> -ENODEV, which causes log spam.
->>
->> Register the power supplies only after we received some notification
->> indicating battmgr is ready to take off.
->>
->> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->> Tested-by: Luca Weiss <luca.weiss@fairphone.com>
->> Link: https://lore.kernel.org/r/20231218-topic-battmgr_fixture_attempt-v1-1-6145745f34fe@linaro.org
->> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->> ---
->
->Please drop it, I have a patch queued reverting this patch.
+Hi Andre,
 
-Dropped, thanks!
+On 01/29/2024, André Draszik wrote:
+> On the gs101-oriole board, i2c bus 12 has various USB-related
+> controllers attached to it.
+> 
+> Note the selection of the USI protocol is intentionally left for the
+> board dts file.
+> 
+> Signed-off-by: André Draszik <andre.draszik@linaro.org>
+> Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+> 
+> ---
+> v2:
+> * reorder pinctrl-0 & pinctrl-names
+> * collect Reviewed-by: tags
+> ---
+>  arch/arm64/boot/dts/exynos/google/gs101.dtsi | 30 ++++++++++++++++++++
+>  1 file changed, 30 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/exynos/google/gs101.dtsi b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
+> index e1bcf490309a..9876ecae0ad8 100644
+> --- a/arch/arm64/boot/dts/exynos/google/gs101.dtsi
+> +++ b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
+> @@ -451,6 +451,36 @@ pinctrl_peric1: pinctrl@10c40000 {
+>  			interrupts = <GIC_SPI 644 IRQ_TYPE_LEVEL_HIGH 0>;
+>  		};
+>  
+> +		usi12: usi@10d500c0 {
+> +			compatible = "google,gs101-usi",
+> +				     "samsung,exynos850-usi";
+> +			reg = <0x10d500c0 0x20>;
+> +			ranges;
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +			clocks = <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_5>,
+> +				 <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_5>;
+> +			clock-names = "pclk", "ipclk";
+> +			samsung,sysreg = <&sysreg_peric1 0x1010>;
+> +			samsung,mode = <USI_V2_NONE>;
+> +			status = "disabled";
+> +
+> +			hsi2c_12: i2c@10d50000 {
+> +				compatible = "google,gs101-hsi2c",
+> +					     "samsung,exynosautov9-hsi2c";
+> +				reg = <0x10d50000 0xc0>;
+> +				interrupts = <GIC_SPI 655 IRQ_TYPE_LEVEL_HIGH 0>;
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +				pinctrl-0 = <&hsi2c12_bus>;
+> +				pinctrl-names = "default";
+> +				clocks = <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_5>,
+> +					 <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_5>;
+> +				clock-names = "hsi2c", "hsi2c_pclk";
+> +				status = "disabled";
+> +			};
 
--- 
+Can you include the i2c aliases for hsi2c_12 and hsi2c_8 (added by Tudor
+previously)? This will ensure userspace compatibility with the existing Pixel
+userspace builds.
+
+Feel free to do so in a follow-up patch, but I'd prefer the aliases get
+included in the same kernel release that these devices were added in (v6.9).
+
 Thanks,
-Sasha
+Will
+
+> +		};
+> +
+>  		pinctrl_hsi1: pinctrl@11840000 {
+>  			compatible = "google,gs101-pinctrl";
+>  			reg = <0x11840000 0x00001000>;
+> -- 
+> 2.43.0.429.g432eaa2c6b-goog
+> 
 
