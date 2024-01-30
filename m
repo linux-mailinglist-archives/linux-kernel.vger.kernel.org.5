@@ -1,296 +1,212 @@
-Return-Path: <linux-kernel+bounces-44067-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44069-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B510F841CE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:48:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D049841CEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:49:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44EE61F22CCC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:48:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8DD51F27D8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:49:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31FF55786D;
-	Tue, 30 Jan 2024 07:48:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 040EC53E3A;
+	Tue, 30 Jan 2024 07:49:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="LLEDZpsc"
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gLAI3Ozq"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 823CD5477C
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 07:47:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6100E55E54
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 07:49:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706600881; cv=none; b=sGGgjHVUR6Ku8P2O9ivMY/gecSOIh2a5ML/Oqgw4mYOm/M/fck23wUcxmI0UWNJnu0zBiW4VIAnNlCZ7z3i6u6Z9ln4Rf3nLMzMruMj9KFXdQGPbuAHQYRXlZQ1UbHHxOOn96JChPqRjD46jNF550t25AJzv/SjEmM6uPPjTzDg=
+	t=1706600963; cv=none; b=stzN0JCabnUKUfwknnY4IiL8i/QcmLllVRWGziQ1Mvy26IrprE9NWvt7NSCbPyfGXOM6aRcAt/zyZBwRNR7oshgjQv40b+p4VLhMVUH+sCtwQwe1ZR/I5Pal5z1ajOKjQy67Utenkd/1dffowk18VtQv1fT00yAqlHXDeM5ZkqI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706600881; c=relaxed/simple;
-	bh=P40AWZnIMfAe79apwlrCNlsMdNUznsPqMxrTgzPvmF4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=erD3nyJvm+zwX5fVYNOSL5lSXMmtslILYkH+dBcYANKCGmiEoWwY+Ge4PiPZpxufDGAqQxFiAlhxhhTDuWO/3TBvBqdc4smS0q59BOwmmtRhYCiSYuEU1rH0OvNktxYWJAd+4dq3wu8a7JbaTj9TCJFf+ZIIF7xuJVFvsUo/gCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=LLEDZpsc; arc=none smtp.client-ip=115.124.30.97
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1706600876; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=jxEQopJGdzQZWNbL3DL8o7X/qrGyOjoHI79VdE+/YrA=;
-	b=LLEDZpscNFtDixQfRtVzxSWhWcAB5LVSbxCk+krEF8INtjG1K/wWOcBxQNU52OxdAhReCfjG8iCoLRoSo9IZroTIy1HlyyMKdV4CY/LW7SLyCYvYCVYdE/ZtAFEHnebECQsTWHNzAzLZkTmgsbvQUp5r0nrm5vv4C6eEUfL85Cs=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R421e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0W.fTvc0_1706600873;
-Received: from localhost.localdomain(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W.fTvc0_1706600873)
-          by smtp.aliyun-inc.com;
-          Tue, 30 Jan 2024 15:47:55 +0800
-From: Bitao Hu <yaoma@linux.alibaba.com>
-To: dianders@chromium.org,
-	akpm@linux-foundation.org,
-	pmladek@suse.com,
-	lecopzer.chen@mediatek.com,
-	kernelfans@gmail.com,
-	liusong@linux.alibaba.com
-Cc: linux-kernel@vger.kernel.org,
-	yaoma@linux.alibaba.com
-Subject: [PATCHv2 2/2] watchdog/softlockup: report the most frequent interrupts
-Date: Tue, 30 Jan 2024 15:47:44 +0800
-Message-Id: <20240130074744.45759-3-yaoma@linux.alibaba.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
-In-Reply-To: <20240130074744.45759-1-yaoma@linux.alibaba.com>
-References: <20240130074744.45759-1-yaoma@linux.alibaba.com>
+	s=arc-20240116; t=1706600963; c=relaxed/simple;
+	bh=W7EdgnKkjMwfQrVjMkuKi/Np1ROI0dXe8/JY64Hyjnw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CQ/Vycon9XPCypuz5JPMmcm/uFD5XOK8FxOTa4MLMIohO2f5OI8fSgdMuL1y+CDeVdxt3zOHFoS9mPUdPe7tEIPX72yDzxju2t7MD5izZyuslGtPUkkyMj/1bAM9S7Yce5Sc1R0m3lPNI5NOnt0IU+T05PmlhMBZgyWNT6Wt8Q0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gLAI3Ozq; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-55790581457so4166280a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 23:49:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706600959; x=1707205759; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Uxspv7T9EX1JvzDaKvkxxJalTAmoTENXDL7KG2k5zvk=;
+        b=gLAI3OzqufLCU0iMF/nuv1F5M8xRMOLml0GmmeH3KaXcGZMhVI/Yb3fS1YsHFlbtXS
+         lXK3BFY4P7H7MbVM+T9vVbPbkjY/QKSm0muidPbFVlNHW0wnBuQl3ImicLsX87Ff3Ldk
+         H1ZdhCTQnv25zKwIz1s+nuYlNvv3oKTgWY+bo69SmEVVTyhs4dQzv9mfDcogreLtI1ky
+         R23XI7o8zguOTJVE2XrHNWU9uN77xvRYLTu8eF6SVC4dd/DJjvyrjStX3GCFhx3kB4mR
+         5IoQwEUcJwIVX5RsCE/boaMYo33q6kR/Dib2nJdoa6EGAy9+n828V7xIz9XvUxelfKtj
+         VaxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706600959; x=1707205759;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Uxspv7T9EX1JvzDaKvkxxJalTAmoTENXDL7KG2k5zvk=;
+        b=maXp99Vrm0A7gfQAQUyE82lGKSczsdPiHUiguxNq9wxdcHsxc87xTb+NMyVlgf/Ibn
+         bUA0sc+UAnmXz8Fsri6FcJCCQDh79FgJbFyW1nT+wVZH7R7ZnooaHEQJEFCtG029YNsI
+         AR77uQxvHnbig3ZQzyK++K5vqDW5GnweX/ZrLifK1AcLWgyYea5TfXmnqGLiYdHQChiR
+         XYL/pwy8oqpxLb1bnlJGVfRP7IAxZGGNbJSu/+qCmPmZZEsC3LcjKCIqlpE5s8rAr6sP
+         Yd5D93p0IrY1KvsE3qjoEceM6tRgSLMzlc/+iuV1pAW+6y/Q5XbKGy7RW68BBb3Jlwyw
+         dpIw==
+X-Gm-Message-State: AOJu0YwobKDdAAkt34noO7lr6T2fb4jmcVtSRtycXxzFWt8uKlAmxNxq
+	Im8buM8CLRkKecxdvNfVBdrewo8Hxff+EHJBur6r1AAZV8TrYDrLUrsLHZ3vhE4=
+X-Google-Smtp-Source: AGHT+IG1xXX60P1E9wvgTOwUcYJgL8esE8Tn4P1CwLs2NJhb1wxXIfMRpHq7hOsXi2L9gkTKKPCiCA==
+X-Received: by 2002:a05:6402:27d1:b0:55f:1311:bebb with SMTP id c17-20020a05640227d100b0055f1311bebbmr3059008ede.26.1706600959660;
+        Mon, 29 Jan 2024 23:49:19 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id fj11-20020a0564022b8b00b0055c69e0751fsm4501758edb.3.2024.01.29.23.49.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jan 2024 23:49:19 -0800 (PST)
+Message-ID: <97ff8fd2-14b7-427e-8ca2-8da42bfcb53e@linaro.org>
+Date: Tue, 30 Jan 2024 08:49:17 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] ARM: dts: qcom: msm8960: Add gsbi3 node
+Content-Language: en-US
+To: guptarud@gmail.com, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240129-expressatt_mxt224s_touchscreen-v1-0-fb8552e1c32c@gmail.com>
+ <20240129-expressatt_mxt224s_touchscreen-v1-1-fb8552e1c32c@gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240129-expressatt_mxt224s_touchscreen-v1-1-fb8552e1c32c@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-When the watchdog determines that the current soft lockup is due
-to an interrupt storm based on CPU utilization, reporting the
-most frequent interrupts could be good enough for further
-troubleshooting.
+On 30/01/2024 03:43, Rudraksha Gupta via B4 Relay wrote:
+> From: Rudraksha Gupta <guptarud@gmail.com>
+> 
+> Copy gsbi3 node from qcom-apq8064.dtsi and set appropriate properties
+> 
+> Signed-off-by: Rudraksha Gupta <guptarud@gmail.com>
+> ---
+>  arch/arm/boot/dts/qcom/qcom-msm8960-pins.dtsi | 29 +++++++++++++++++++++++++++
+>  arch/arm/boot/dts/qcom/qcom-msm8960.dtsi      | 27 +++++++++++++++++++++++++
+>  2 files changed, 56 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/qcom/qcom-msm8960-pins.dtsi b/arch/arm/boot/dts/qcom/qcom-msm8960-pins.dtsi
+> new file mode 100644
+> index 000000000000..c74c6625d276
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/qcom/qcom-msm8960-pins.dtsi
+> @@ -0,0 +1,29 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +
+> +&msmgpio {
+> +	i2c3_pins: i2c3 {
+> +		mux {
+> +			pins = "gpio16", "gpio17";
+> +			function = "gsbi3";
+> +		};
+> +
+> +		pinconf {
+> +			pins = "gpio16", "gpio17";
+> +			drive-strength = <8>;
+> +			bias-disable;
+> +		};
+> +	};
+> +
+> +	i2c3_pins_sleep: i2c3_pins_sleep {
 
-Below is an example of interrupt storm. The call tree does not
-provide useful information, but we can analyze which interrupt
-caused the soft lockup by comparing the counts of interrupts.
 
-[ 2987.488075] watchdog: BUG: soft lockup - CPU#9 stuck for 23s! [kworker/9:1:214]
-[ 2987.488607] CPU#9 Utilization every 4s during lockup:
-[ 2987.488941]  #1:   0% system,          0% softirq,   100% hardirq,     0% idle
-[ 2987.489357]  #2:   0% system,          0% softirq,   100% hardirq,     0% idle
-[ 2987.489771]  #3:   0% system,          0% softirq,   100% hardirq,     0% idle
-[ 2987.490186]  #4:   0% system,          0% softirq,   100% hardirq,     0% idle
-[ 2987.490601]  #5:   0% system,          0% softirq,   100% hardirq,     0% idle
-[ 2987.491034] CPU#9 Detect HardIRQ Time exceeds 50%. Most frequent HardIRQs:
-[ 2987.491493]  #1: 330985      irq#7(IPI)
-[ 2987.491743]  #2: 5000        irq#10(arch_timer)
-[ 2987.492039]  #3: 9           irq#91(nvme0q2)
-[ 2987.492318]  #4: 3           irq#118(virtio1-output.12)
-..
-[ 2987.492728] Call trace:
-[ 2987.492729]  __do_softirq+0xa8/0x364
+No underscores in node names.
 
-Signed-off-by: Bitao Hu <yaoma@linux.alibaba.com>
----
- kernel/watchdog.c | 150 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 150 insertions(+)
+It does not look like you tested the DTS against bindings. Please run
+`make dtbs_check W=1` (see
+Documentation/devicetree/bindings/writing-schema.rst or
+https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
+for instructions).
 
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index 0efe9604c3c2..38fb18e17d71 100644
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -25,6 +25,9 @@
- #include <linux/stop_machine.h>
- #include <linux/kernel_stat.h>
- #include <linux/math64.h>
-+#include <linux/irq.h>
-+#include <linux/bitops.h>
-+#include <linux/irqdesc.h>
- 
- #include <asm/irq_regs.h>
- #include <linux/kvm_para.h>
-@@ -431,11 +434,15 @@ void touch_softlockup_watchdog_sync(void)
- 	__this_cpu_write(watchdog_report_ts, SOFTLOCKUP_DELAY_REPORT);
- }
- 
-+static void set_potential_softlockup(unsigned long now, unsigned long touch_ts);
-+
- static int is_softlockup(unsigned long touch_ts,
- 			 unsigned long period_ts,
- 			 unsigned long now)
- {
- 	if ((watchdog_enabled & WATCHDOG_SOFTOCKUP_ENABLED) && watchdog_thresh) {
-+		/* Softlockup may occur in the current period */
-+		set_potential_softlockup(now, period_ts);
- 		/* Warn about unreasonable delays. */
- 		if (time_after(now, period_ts + get_softlockup_thresh()))
- 			return now - touch_ts;
-@@ -457,6 +464,8 @@ static enum cpu_usage_stat idx_to_stat[NUM_STATS_PER_GROUP] = {
- 	CPUTIME_SYSTEM, CPUTIME_SOFTIRQ, CPUTIME_IRQ, CPUTIME_IDLE
- };
- 
-+static void print_hardirq_counts(void);
-+
- static void update_cpustat(void)
- {
- 	u8 i;
-@@ -504,10 +513,150 @@ static void print_cpustat(void)
- 			utilization[i][STATS_SYSTEM], utilization[i][STATS_SOFTIRQ],
- 			utilization[i][STATS_HARDIRQ], utilization[i][STATS_IDLE]);
- 	}
-+	print_hardirq_counts();
-+}
-+
-+#define HARDIRQ_PERCENT_THRESH		50
-+#define NUM_HARDIRQ_REPORT		5
-+static DECLARE_BITMAP(softlockup_hardirq_cpus, CONFIG_NR_CPUS);
-+static DEFINE_PER_CPU(u32 *, hardirq_counts);
-+
-+static void find_counts_top(u32 *irq_counts, int *irq, u32 perirq_counts, int perirq_id, int range)
-+{
-+	unsigned int i, j;
-+
-+	for (i = 0; i < range; i++) {
-+		if (perirq_counts > irq_counts[i]) {
-+			for (j = range - 1; j > i; j--) {
-+				irq_counts[j] = irq_counts[j - 1];
-+				irq[j] = irq[j - 1];
-+			}
-+			irq_counts[j] = perirq_counts;
-+			irq[j] = perirq_id;
-+			break;
-+		}
-+	}
-+}
-+
-+/*
-+ * If the proportion of time spent handling irq exceeds HARDIRQ_PERCENT_THRESH%
-+ * during sample_period, then it is necessary to record the counts of each irq.
-+ */
-+static inline bool need_record_irq_counts(int type)
-+{
-+	int tail = this_cpu_read(cpustat_tail);
-+	u8 utilization;
-+
-+	if (--tail == -1)
-+		tail = 4;
-+	utilization = this_cpu_read(cpustat_utilization[tail][type]);
-+	return utilization > HARDIRQ_PERCENT_THRESH;
- }
-+
-+/*
-+ * Mark softlockup as potentially caused by hardirq
-+ */
-+static void set_potential_softlockup_hardirq(void)
-+{
-+	u32 i;
-+	u32 *counts = __this_cpu_read(hardirq_counts);
-+	int cpu = smp_processor_id();
-+	struct irq_desc *desc;
-+
-+	if (!need_record_irq_counts(STATS_HARDIRQ))
-+		return;
-+
-+	if (!test_bit(cpu, softlockup_hardirq_cpus)) {
-+		counts = kmalloc_array(nr_irqs, sizeof(u32), GFP_ATOMIC);
-+		if (!counts)
-+			return;
-+		for_each_irq_desc(i, desc) {
-+			if (!desc)
-+				continue;
-+			counts[i] = desc->kstat_irqs ?
-+				*this_cpu_ptr(desc->kstat_irqs) : 0;
-+		}
-+		__this_cpu_write(hardirq_counts, counts);
-+		set_bit(cpu, softlockup_hardirq_cpus);
-+	}
-+}
-+
-+static void clear_potential_softlockup_hardirq(void)
-+{
-+	u32 *counts = __this_cpu_read(hardirq_counts);
-+	int cpu = smp_processor_id();
-+
-+	if (test_bit(cpu, softlockup_hardirq_cpus)) {
-+		kfree(counts);
-+		counts = NULL;
-+		__this_cpu_write(hardirq_counts, counts);
-+		clear_bit(cpu, softlockup_hardirq_cpus);
-+	}
-+}
-+
-+/*
-+ * Mark that softlockup may occur
-+ */
-+static void set_potential_softlockup(unsigned long now, unsigned long period_ts)
-+{
-+	if (time_after_eq(now, period_ts + get_softlockup_thresh() / 5))
-+		set_potential_softlockup_hardirq();
-+}
-+
-+static void clear_potential_softlockup(void)
-+{
-+	clear_potential_softlockup_hardirq();
-+}
-+
-+static void print_hardirq_counts(void)
-+{
-+	u32 i;
-+	struct irq_desc *desc;
-+	u32 counts_diff;
-+	u32 *counts = __this_cpu_read(hardirq_counts);
-+	int cpu = smp_processor_id();
-+	u32 hardirq_counts_top[NUM_HARDIRQ_REPORT] = {0, 0, 0, 0, 0};
-+	int hardirq_top[NUM_HARDIRQ_REPORT] = {-1, -1, -1, -1, -1};
-+
-+	if (test_bit(cpu, softlockup_hardirq_cpus)) {
-+		/* Find the top NUM_HARDIRQ_REPORT most frequent interrupts */
-+		for_each_irq_desc(i, desc) {
-+			if (!desc)
-+				continue;
-+			counts_diff = desc->kstat_irqs ?
-+				*this_cpu_ptr(desc->kstat_irqs) - counts[i] : 0;
-+			find_counts_top(hardirq_counts_top, hardirq_top,
-+					counts_diff, i, NUM_HARDIRQ_REPORT);
-+		}
-+		/*
-+		 * We do not want the "watchdog: " prefix on every line,
-+		 * hence we use "printk" instead of "pr_crit".
-+		 */
-+		printk(KERN_CRIT "CPU#%d Detect HardIRQ Time exceeds %d%%. Most frequent HardIRQs:\n",
-+			smp_processor_id(), HARDIRQ_PERCENT_THRESH);
-+		for (i = 0; i < NUM_HARDIRQ_REPORT; i++) {
-+			if (hardirq_top[i] == -1)
-+				break;
-+			desc = irq_to_desc(hardirq_top[i]);
-+			if (desc && desc->action)
-+				printk(KERN_CRIT "\t#%u: %-10u\tirq#%d(%s)\n",
-+					i+1, hardirq_counts_top[i],
-+					hardirq_top[i], desc->action->name);
-+			else
-+				printk(KERN_CRIT "\t#%u: %-10u\tirq#%d\n",
-+					i+1, hardirq_counts_top[i],
-+					hardirq_top[i]);
-+		}
-+		if (!need_record_irq_counts(STATS_HARDIRQ))
-+			clear_potential_softlockup_hardirq();
-+	}
-+}
-+
- #else
- static inline void update_cpustat(void) { }
- static inline void print_cpustat(void) { }
-+static inline void set_potential_softlockup(unsigned long now, unsigned long period_ts) { }
-+static inline void clear_potential_softlockup(void) { }
- #endif
- 
- /* watchdog detector functions */
-@@ -525,6 +674,7 @@ static DEFINE_PER_CPU(struct cpu_stop_work, softlockup_stop_work);
- static int softlockup_fn(void *data)
- {
- 	update_touch_ts();
-+	clear_potential_softlockup();
- 	complete(this_cpu_ptr(&softlockup_completion));
- 
- 	return 0;
--- 
-2.37.1 (Apple Git-137.1)
+
+> +		mux {
+> +			pins = "gpio16", "gpio17";
+> +			function = "gpio";
+> +		};
+> +
+> +		pinconf {
+> +			pins = "gpio16", "gpio17";
+> +			drive-strength = <2>;
+> +			bias-bus-hold;
+> +		};
+> +	};
+> +};
+> diff --git a/arch/arm/boot/dts/qcom/qcom-msm8960.dtsi b/arch/arm/boot/dts/qcom/qcom-msm8960.dtsi
+> index f420740e068e..62a5a9622e82 100644
+> --- a/arch/arm/boot/dts/qcom/qcom-msm8960.dtsi
+> +++ b/arch/arm/boot/dts/qcom/qcom-msm8960.dtsi
+> @@ -359,5 +359,32 @@ usb_hs1_phy: phy {
+>  				};
+>  			};
+>  		};
+> +
+> +		gsbi3: gsbi@16200000 {
+> +			status = "disabled";
+
+Please order the properties according to DTS coding style:
+https://www.kernel.org/doc/html/latest/devicetree/bindings/dts-coding-style.html#order-of-properties-in-device-node
+
+
+Best regards,
+Krzysztof
 
 
