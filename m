@@ -1,108 +1,126 @@
-Return-Path: <linux-kernel+bounces-44986-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44987-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F25418429FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:52:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D9938429FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:52:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE85928364B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:52:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54A491F2952E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:52:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67EBE128395;
-	Tue, 30 Jan 2024 16:51:30 +0000 (UTC)
-Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05073129A82;
+	Tue, 30 Jan 2024 16:51:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="D/7vVAYS"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ECD6823AA;
-	Tue, 30 Jan 2024 16:51:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 768421292DC
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 16:51:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706633490; cv=none; b=c8/3HazJcFJJD/v3gOvH0N/YSgSaRaEBqW0K/8PDfNP0Z/28MMm3sh69O/1k0GnjnuMG/HrmXrm0aRtsupi9zn5bv3TteLmR8SrqykAVf2Gs1XgEYQC3Vsw3WhD/u4xWkwMl/QAOPdDfVoamr3FKSxISqy7Kycg89CzXfLjvUIE=
+	t=1706633508; cv=none; b=PikqG7dtpb8GNpaeuVeGakEJblNIxE4ip0hhtgAXzph5uWL+YFi0MYxL/cOvoQaE6nicoh/4O1wbtES+W/klR/XLzpPVVBSIeYiMmbQjOnK3gp09DrfLJwcPU6bMoGcWEy55qfALE54iCBVhdobfI6dpeaL5NtTjF2iuu2Kg2+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706633490; c=relaxed/simple;
-	bh=0zXEGBe3rQJRJDJY4/A0JzycUKo8LnyAQtgIFKQ5uxs=;
+	s=arc-20240116; t=1706633508; c=relaxed/simple;
+	bh=6pk4EMPwM/GZJqfsyNUfNAyQZvIdX3nzBLZMjB+WaU0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=R7wV68dvk25aPJLbiN5610YrCNOVN+cej1Htt2t1zx594M9uYHn+q9rtwHHpSJgqfOSKPRKsf6HNbzITAoYTnYjdS9+1AyHLs0rs3n+DgqOONMXrRa2tuqApGbCqwHMpgXfMHPaxeRNIPuN8k6VOKlTs8xZ5znLVroaJ0z7u7Rc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-206689895bfso2531037fac.1;
-        Tue, 30 Jan 2024 08:51:28 -0800 (PST)
+	 To:Cc:Content-Type; b=d3VUL6qH6lfnZ0lzlkODyhIlrVLmTtwgvpZ15ZCGLjNZH9kfUUReuWClA3ePgtRnyVFpqBIsbT+2t8Unjh7VKk5w3iRXpJgpfVfM0wv0d0BtoQTJt3nN50ovs9nF/389p2p/w2magHeMILR8SH4GoOxa3bsLGnRC6OTUqzk0qes=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=D/7vVAYS; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a3604697d63so220548566b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 08:51:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1706633504; x=1707238304; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=9RgrDb4wmHhcjvdDxKDrDt4lCtyY1QCJi2L90SuDuf4=;
+        b=D/7vVAYSsfbaDpRQk0LwDFFa3ivzsSwReBaXQdYBkOmNEaChjEdE20v0FHPKJ4xTwU
+         xfyvBl2mG2RaNDjAMKWVdgrjYa1mMHEv5rakgZTUHDgXXagFk8/ms2w4duOL/PgGstNI
+         3ykngGJXXEZw4x/NamVy9j8cy2brQahcIp3YU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706633487; x=1707238287;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vlXDkIv8FQPmQiZACdJ6n4cEenWV3IxjFKgRVnotTlw=;
-        b=WoKr5MbEqSYdtezlBfhDDDYnSAczTNjpcvGzXtt84QGoJVdm+EezcsLfzMuEcO5cSQ
-         UfXlsxA15Ms48Nd70qo2Ld5Z9OwELhMtbDP6RSol4z43KxOs5bm3e4fr1DlP6n1fPOLr
-         +bg1S8YcXzp27Xvi7hKkWnq+2SeA6VBsmyjIfNQGjSCY2ThbqdSf5rC0BJNFtstRoYLv
-         cGZbWObm7N8ABrMCmyTCEuQRONALgNyNsv8PJiKMszlHlqYRO9uSndQ14wcOFIcNgXTq
-         MrOLfpu48iS30B0YFCNey/pgiFlLSnit+TZKt98WOPMHncvAyUTJyw/igOJZ9e6dv1O6
-         K0tA==
-X-Gm-Message-State: AOJu0YxlYTtyTewH8vVhG9zU5gtbf5urg1SG0FrSO1wGChuyjTd8FUzt
-	7liE4nhureF4Q1Wipve/1gJJSiSvbpIwK0RaFM+qR65ek3ZV5TJp10hN3H7XXLc=
-X-Google-Smtp-Source: AGHT+IEK1O3EQD0WgpQ495P+a9PyCS3vV3DXDRSHWuuwOHNYtYmcaDgtEv92zz+A/LnIx7H7lG6VEQ==
-X-Received: by 2002:a05:6870:3c16:b0:218:45ca:ff78 with SMTP id gk22-20020a0568703c1600b0021845caff78mr7042228oab.18.1706633487436;
-        Tue, 30 Jan 2024 08:51:27 -0800 (PST)
-Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com. [209.85.210.52])
-        by smtp.gmail.com with ESMTPSA id ry11-20020a056871208b00b002149bb5d09asm2596541oab.56.2024.01.30.08.51.26
+        d=1e100.net; s=20230601; t=1706633504; x=1707238304;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9RgrDb4wmHhcjvdDxKDrDt4lCtyY1QCJi2L90SuDuf4=;
+        b=QC82V3U5ijaJQDtZER7fVbHoPYEjEyhyhJcPtqCyWM5WEU0Yjmv6wfddo0AKkowjLp
+         RkzMw21KPcKcB8VLzyHc9G/c8iE69FYUpjeWbdd581UwojYtRVAZdnsdOu3rU+AsueyQ
+         K+p+yi0d+vufPCiDo09y+SOdN743y/Ey9U3tSrSr6sOmH19+6zwj8H2/drzTLJX5Sa7P
+         J83EWKtzaE+8tHjysKfOyzWODA23uDlub34Cv8gGrmx4SAzcisvY3ybkd6o6JMPYF+XF
+         WP7PkkLeUnJgryloXqErLOqePjcBPL6bHgw9HUjAQu6PYUoMIPAc/U6GToEuCP27YREr
+         zjww==
+X-Gm-Message-State: AOJu0YwPN5HQn4ZlydLi/6FN0Bc72ZkFKCH+EakibztwM7bqQFauFnme
+	FNA3Duv3Y0XWWAoaq21YU1SzHbDxfSBJ6crXbICk8mE6kq+W73zX25n0MlCD+pOnpNM8Iz5SS3s
+	u9ZSEBQ==
+X-Google-Smtp-Source: AGHT+IEy6cxtaUzHbnJ51cgzh/f5xK97cz+waeUzuC6xM70++QeSPr09wbd4PhENDekcG8a/Li+INg==
+X-Received: by 2002:a17:906:f2d6:b0:a31:5941:4f7 with SMTP id gz22-20020a170906f2d600b00a31594104f7mr6626993ejb.39.1706633504290;
+        Tue, 30 Jan 2024 08:51:44 -0800 (PST)
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com. [209.85.208.42])
+        by smtp.gmail.com with ESMTPSA id tl10-20020a170907c30a00b00a3554bb5d22sm3882462ejc.69.2024.01.30.08.51.43
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Jan 2024 08:51:26 -0800 (PST)
-Received: by mail-ot1-f52.google.com with SMTP id 46e09a7af769-6e13c6e6093so589415a34.1;
-        Tue, 30 Jan 2024 08:51:26 -0800 (PST)
-X-Received: by 2002:a05:6359:c24:b0:176:915a:c7b7 with SMTP id
- gn36-20020a0563590c2400b00176915ac7b7mr4654489rwb.31.1706633486345; Tue, 30
- Jan 2024 08:51:26 -0800 (PST)
+        Tue, 30 Jan 2024 08:51:43 -0800 (PST)
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-557dcb0f870so4487458a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 08:51:43 -0800 (PST)
+X-Received: by 2002:a05:6402:b76:b0:55e:f3ce:c621 with SMTP id
+ cb22-20020a0564020b7600b0055ef3cec621mr4340740edb.2.1706633503394; Tue, 30
+ Jan 2024 08:51:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122111115.2861835-1-claudiu.beznea.uj@bp.renesas.com> <20240122111115.2861835-10-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20240122111115.2861835-10-claudiu.beznea.uj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 30 Jan 2024 17:51:15 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUmp4ndAk5emKEj_NxwpKH3A5HG+B4gO4CPGxRvgJzXQg@mail.gmail.com>
-Message-ID: <CAMuHMdUmp4ndAk5emKEj_NxwpKH3A5HG+B4gO4CPGxRvgJzXQg@mail.gmail.com>
-Subject: Re: [PATCH 09/10] arm64: dts: renesas: r9a08g045: Add watchdog node
-To: Claudiu <claudiu.beznea@tuxon.dev>
-Cc: wim@linux-watchdog.org, linux@roeck-us.net, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	geert+renesas@glider.be, magnus.damm@gmail.com, mturquette@baylibre.com, 
-	sboyd@kernel.org, p.zabel@pengutronix.de, biju.das.jz@bp.renesas.com, 
-	linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
-	linux-clk@vger.kernel.org, Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <202401291043.e62e89dc-oliver.sang@intel.com> <CAHk-=whb91PWEaEJpRGsuWaQpYZGj98ji8HC2vvHD4xb_TqhJw@mail.gmail.com>
+ <CAHk-=wgp7UkG31=cCcbSdhMv6-vBJ=orktUOUdiLzw4tQ4gDLg@mail.gmail.com>
+ <20240129152600.7587d1aa@gandalf.local.home> <CAHk-=wghobf5qCqNUsafkQzNAZBJiS0=7CRjNXNChpoAvTbvUw@mail.gmail.com>
+ <20240129172200.1725f01b@gandalf.local.home> <CAHk-=wjV6+U1FQ8wzQ5ASmqGgby+GZ6wpdh0NrJgA43mc+TEwA@mail.gmail.com>
+ <CAHk-=wgOxTeTi02C=kOXsHzuD6XCrV0L1zk1XP9t+a4Wx--xvA@mail.gmail.com>
+ <20240129174950.5a17a86c@gandalf.local.home> <CAHk-=wjbzw3=nwR5zGH9jqXgB8jj03wxWfdFDn=oAVCoymQQJg@mail.gmail.com>
+ <20240129193549.265f32c8@gandalf.local.home> <CAHk-=whRxcmjvGNBKi9_x59cAedh8SO8wsNDNrEQbAQfM5A8CQ@mail.gmail.com>
+ <CAHk-=wh97AkwaOkXoBgf0z8EP88ePffLnTcmmQXcY+AhFaFrnA@mail.gmail.com>
+ <CAHk-=wi6m7d-nivx10Lo=aGhbdk2qg-8SzjtDd9XW01LxGgAMA@mail.gmail.com>
+ <CAHk-=wi+WbXZcc2Sx1i-MGV2DfG4eS4Ci+mrqi-PBSLSnww6qA@mail.gmail.com> <20240130093942.56206ff1@gandalf.local.home>
+In-Reply-To: <20240130093942.56206ff1@gandalf.local.home>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 30 Jan 2024 08:51:25 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whe_qeQVrz9=pVjCNVva8+OOJjmrpCj5CiHW3QStUf+6w@mail.gmail.com>
+Message-ID: <CAHk-=whe_qeQVrz9=pVjCNVva8+OOJjmrpCj5CiHW3QStUf+6w@mail.gmail.com>
+Subject: Re: [linus:master] [eventfs] 852e46e239: BUG:unable_to_handle_page_fault_for_address
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev, lkp@intel.com, 
+	linux-kernel@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Christian Brauner <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
+	Ajay Kaher <ajay.kaher@broadcom.com>, linux-trace-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 22, 2024 at 12:11=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.dev>=
- wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+On Tue, 30 Jan 2024 at 06:39, Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> Add the DT node for the watchdog IP accessible by Cortex-A of RZ/G3S
-> SoC (R9108G045).
+> On Tue, 30 Jan 2024 01:12:05 -0800
+> >
+> > I suspect the solution is to make eventfs_create_dir() do the same as
+> > the events directory case does, and actually pin the directory dentry
+> > and save it off.
 >
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> I rather not have the create do that because that happens for every event
+> directory.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel for v6.9.
+I wasn't thinking straight yesterday - the real fix is to just do a
+"d_revalidate()". It's literally why that thing exists: check whether
+a dentry is still valid.
 
-Gr{oetje,eeting}s,
+In fact, that trivially gets rid of the 'events' subdirectory issues
+too, so we can stop doing that horrendous simple_recursive_removal()
+too.
 
-                        Geert
+Let me reboot into the trivial fix. I just needed to think about this
+the right way.
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+None of this is anything that the VFS layer has any problems with.
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+               Linus
 
