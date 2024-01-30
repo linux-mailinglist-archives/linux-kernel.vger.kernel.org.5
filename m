@@ -1,225 +1,279 @@
-Return-Path: <linux-kernel+bounces-44841-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECAE484280A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:27:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 654FB842805
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:26:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2F3728D72A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:26:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C948282033
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:26:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46D96823D6;
-	Tue, 30 Jan 2024 15:26:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE20985C61;
+	Tue, 30 Jan 2024 15:26:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="p9Ot7I7o"
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2067.outbound.protection.outlook.com [40.107.104.67])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="cVlpZwFC"
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF178612C;
-	Tue, 30 Jan 2024 15:26:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.104.67
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706628380; cv=fail; b=byl9r52xhMWvm5WzqzU1BMlt6PhEFFHxD2x9hhbsteVEqlJkyy6/Mw0wjKvv5LZpq/Z4+xzh5jBWMOeclpwPDHy2mQBrNS6RDSHC8z87UssQIm/J1HaTVyVCCHzzZat1wydfkDsTEBv36iZHg6VPZRlIlm9AJDykU1330FfDc6s=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706628380; c=relaxed/simple;
-	bh=depocyL5MN7gKXi1Em/s+C9MAMu3IhUZ8bz5EqUPirU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=JSOjQsDYXI0Fgcv4wiT5z/zmIHfbtyhN6LY80PLfJKOrSd88tk5ngjkk0Q/kt+COzYcOMCit0pKZap6CTg7i0NftaFXj2uux9mUSUoGDBpK5eJADEgHhC8WD9Sfu5ri/CTASQBjZaujdMu1GI6PpbFofnWgIhuyuE3Hc7yjbkfY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=p9Ot7I7o; arc=fail smtp.client-ip=40.107.104.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XQXLXNuDsXQqcoI/gO98Z/BlYimxMNK0izMulE6qgIJsLdwdM+7bd+/9oVhgMezafV9bKpxlz0c9cdLkpX22tHmCwURWgVLvFYDpD0y3ukjpcsCYR2LPzXqBh6+zcK6JfLK1J/TnOS9O+SOs5si/tQbQ13NMvGWzhv8BOzDxFOYq8hvoW0LVb6LuCfHKsApvUYZMHZDiUMSycX4NrxWdpD8UKb5zyh+qZMkAVRw5oYaQJb5pS3S43SivTUs3hd4bx5qjlBYlnE9MscLfWK1pypOardwcG8FfyEBqzioGsA+DNHht+cPZ64uo79n5DNJILZ/SlPD0bbJihn7EWY+OEA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rECQuZ1CkMOYrIviGMRG55Dxi8zKcdngiPiD06WbAcc=;
- b=j7pucnquMdd05gmFlropG/fS1NuYS6RWoaQHGi5nE7xFb0TFJpkXZMs1/CjWsJC8RjNtbQtAxZpd5AjOvuYZxI3TofqBDARG1jGoqMKWmtNpmsHqaG2rL5Cg30wl6xzeyYcaSmjumP4JqQ3WFd1uSOvCzYvTxAHjodI1ZReCShW4tWPiax8Ib7SgCWZ2h9Mf04qlM3Wt0BSOo+g7KGtqEK9YsLWk7zLLVBu6kMOQ3I3KoKzjplJbSrs7kKwPsoxAMSDok0ePbKBaTO8e/6++UoDNTSxf6Rp3LZgDSHwahyxwh+MLQLncJmRAvDbrRoeO+t+YeJknEucodOLMOWwxZg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rECQuZ1CkMOYrIviGMRG55Dxi8zKcdngiPiD06WbAcc=;
- b=p9Ot7I7o4bwjz/ZfVKFpb4Cnvrj30S4lA16aWq7HCG6Qk30smrsSFzResfLbiqOT93EYtRBukh0W6XzzgZ2NLXqJwE6dB4JLK71PDtpY4nGfVVI9juIMBh0LZq1MHPA5FdbeAd+4ZO77pt4aNSNWmVD5oc419eIJfk8edGtP0+I=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by GVXPR04MB9902.eurprd04.prod.outlook.com (2603:10a6:150:116::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.32; Tue, 30 Jan
- 2024 15:26:12 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::c8b4:5648:8948:e85c]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::c8b4:5648:8948:e85c%3]) with mapi id 15.20.7228.029; Tue, 30 Jan 2024
- 15:26:11 +0000
-From: Frank Li <Frank.Li@nxp.com>
-To: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS),
-	linux-arm-kernel@lists.infradead.org (moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE),
-	linux-kernel@vger.kernel.org (open list)
-Cc: imx@lists.linux.dev
-Subject: [PATCH v2 3/3] arm64: dts: imx8dxl-evk: add flexcan2 and flecan3
-Date: Tue, 30 Jan 2024 10:25:47 -0500
-Message-Id: <20240130152547.272125-3-Frank.Li@nxp.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240130152547.272125-1-Frank.Li@nxp.com>
-References: <20240130152547.272125-1-Frank.Li@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR05CA0024.namprd05.prod.outlook.com
- (2603:10b6:a03:33b::29) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CB3E82D99
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 15:26:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706628375; cv=none; b=W0GOot6571CjKmohuuoaPd67su/FT8MuTpcQ4p0wn+wjVFxRY/XRzhlccZg3tCRJrE4B03wYxmC7o6ujsLfe0Cd30oEkkoLxPrjpMeTxCsFmyeYoo3TLSeYX7utLY/+/tpc1jr6WW6CQYz4kQuF2+mWtMebKusHAqc2y0mZfwIc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706628375; c=relaxed/simple;
+	bh=GHF4NqZwHNH3Y3ly+JA8/+ebgBt+hbUmLRmHoNhqTcw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JLk15BaOw2WkZnF25bh+ZT+M71GH6MsFmK+YIK6UkyH4Mrjq50+whtWwSRNUH0zz1lmC3ZOM+zjy+v3gIZU2pAMfsqXYFUIns2YIBbdEDRFH5JBmNgEClDcme0AAN7MR5RXW8gipa0T923tzgcpPEgHDgrdOn4PjXgELhEihsOY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=cVlpZwFC; arc=none smtp.client-ip=209.85.210.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6e12db57fedso698410a34.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 07:26:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1706628373; x=1707233173; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=95YNzZjCqGewVDFVw5GKEmL/AtttRslbuWoSQwc+WxQ=;
+        b=cVlpZwFCq1bnyE/vyrFfJEQTC3gWS2TvfdscqutSGeSBANETT/xy51spPYcM/OKlHJ
+         b8NlJuDqYsWMkvcLtqMH6GI4Y+MtS7yyTCJ+0bJ+FNwuI2npcBYzbXtQAeNgzhyRCtA1
+         M5ANbxaG2YQ5pC7w+D/H8VTc+RD5q+1iTTLU0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706628373; x=1707233173;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=95YNzZjCqGewVDFVw5GKEmL/AtttRslbuWoSQwc+WxQ=;
+        b=VTTHnL5oRQh/8M+j0KDwv/oV0pTGLPK3ZF+wF66MaqTZUDF6RMMHvILgoN2uWHSo3c
+         onAhHBOvaMrTpzOwIsgBnWxAiElVVYJ3kjnldoSBwaJhQ0DYp1PpFjSGEg7RBPPhlzJp
+         TYKVMRosQdI7HqGMOhIwASooNrOgQ8NDg0P8A/7irfGIsqYGaBwY9mxBx1bFV9A42wSr
+         MZXefQsdqnc1tcOYs/GC15+EovytALc55FwQ8x9bOGoGNhvzxzrctr+rYUqrzmnl6wr5
+         QCFNEC9wE3xHNV6Vo7AKRxsyUqZslU88Xy+YCrDttKRoMwqL3p83IK9PWcUheacP9Miu
+         E6bw==
+X-Gm-Message-State: AOJu0Yx6FjIb9mD/IzDhDFeJ/Qrz9j2H9WIGbv6yvwR3v0F9iPMexJ7t
+	uxLtVuWmiuN9fhMjIhG4DLLIKCgAyYLYOXoNu1myLRckAIzcBROJD5efzR/24maSQ4IaHMSLP03
+	LQYQ+FlnAdsB/9G26ycZZ89+DPaCOCRQsY4m9
+X-Google-Smtp-Source: AGHT+IGxupdNP2xsZcONaEVK9pBDWAZoEpyT4Mf6wBGn0beMJ4mbFUcYnLGv1oPi93SgfM34G5xlbX33j7bnRaqzaDQ=
+X-Received: by 2002:a05:6830:3141:b0:6dc:6a8f:df1 with SMTP id
+ c1-20020a056830314100b006dc6a8f0df1mr522768ots.13.1706628372905; Tue, 30 Jan
+ 2024 07:26:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|GVXPR04MB9902:EE_
-X-MS-Office365-Filtering-Correlation-Id: 616c2dbc-17c6-4eee-859c-08dc21a7c9a2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	BOqME16j9ilUcPFlc9aen1LAEEMotQg3rjMo0Fppuh+8xchVgq5w0LtT7ZTgT6pGpmYPEZEV26PjiUjnfgqp7/aMvFI2TewxHkdxbEfQsmRQv48wRsbvF/xb0ny2kR/R/ZTC4kWq+ZqyeRUYXFzmE4L39XCVhkGBmy9fY39MTTRLLkWErjr+h83M99grN+Udy7D1v/yFaUu9FM9OVUcQZtmH3t3tXxAn2GX29iRDTWXlliRWeghCmbO6ZbgK1YGU1MGQJsESOhcvqV1Ad8e6JYjNIPVVbKJHEdBPT+lr9vcy1ZYPMIsKFexskXoJngZmdIzoDZuxnTqVMiA8sjK1mtU7uO3EH2Dslk4qKeZOg2vMrZnVowG2m291QzhpV56B1AouYByxG9fomwBrBah4nUf3M73S2YWzU5OcBjQRQN3tnJFrIWs2XapNCjRCXe0NXGVL5SnIgKlU5VuC1Vo1lfKUGMHK53G2JhYmcImcgz6pUhjbZ4zpu5HJoKaLyrhbPjrvVHezhhHuP/uHgS9XzJF+VS9TbuoICIbpUVjV3T/pZpAS04N8gOBJ/2C678ljsuZ3tx8+IIlLOLOqzsb9CEAl38yV8tI8H/hRAN4z4yVNwfHofXuE5Y6aawVClh2Tp7qWteuqtzBIUMG+NVd9zN2tIVeAtBMT3/OvebS5nN2tuBQVvzHv+xVQM6eBSz8FWN9Dtq+AlwhnJ5pRgBp44g==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(136003)(396003)(346002)(39860400002)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(41300700001)(6506007)(52116002)(2616005)(6512007)(6666004)(83380400001)(26005)(4326008)(5660300002)(8936002)(1076003)(8676002)(66476007)(478600001)(6486002)(316002)(110136005)(86362001)(66946007)(66556008)(38100700002)(7416002)(38350700005)(921011)(2906002)(36756003)(32563001)(414714003)(473944003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?aKDnlUNsK68PENLZ8G15TnfnGnFOFK9bTkWJyfS/vUsmEl0QVgN94ZM5jhUt?=
- =?us-ascii?Q?sxb5BgitjZ72C8Ww6ekchWBDr6maJrSUvNiZBHjUwZakZh8md/uxvwQ5Pelv?=
- =?us-ascii?Q?dtJSLp5JLJJdAVBueZs49Qbt4TVp1VKLO6Wg76Mw9+KseM/FLk6Rqm7mNJBv?=
- =?us-ascii?Q?Oqln3WEe9EDnNxqjlBcXOT/m3xEWY8ZeUuTh2Pp6fVwy8Nir+hE1k/crSUpP?=
- =?us-ascii?Q?diCO+3c5PDmAz0/TZHZixxrqypfVvCxMHKqIFW+Yj7zsOgCay/QO3liU5HI3?=
- =?us-ascii?Q?0BzFFxf3YC9c2v3QfHt4m0FxG9/W0QCj0zDfKgFo0nd0pETUgkCn1tT5t96f?=
- =?us-ascii?Q?HfB1kpnNW0aw6sKlv9VqtPFx3QsdYDc5StBBCeHVaNte0rgY0HoXMAHqNTg8?=
- =?us-ascii?Q?MiUnMthqMRBdj+FkSFl6wQvmvtCnaMOUW89kflT2kk2AjnOJAXDEjPmLBoHY?=
- =?us-ascii?Q?tOHX8oURWXq9/yp+Ko/xKJ75ZAEumfTzgEU6hbXujDClik4yga9vq3DkdJFd?=
- =?us-ascii?Q?9s5YIGe8TkhTWyvgVutM8AALylZ5Xde2icvgWnsmmtWS4VkQp6HZhWFDvy8T?=
- =?us-ascii?Q?FwXJN84cgjlkJ54pG8aFa1EvdSQ/tFlZ+Vl1uo8Khj6shNICKFSSPQvJxjfW?=
- =?us-ascii?Q?OhTS2zs9uvIilmPtQS8DYK3n5ZSU6Cv38NMf63I7gMGWjN2ZyO+iIbDt9qNN?=
- =?us-ascii?Q?ZrkukKOhMb3aFAd8Izoy2CLVrgRyaP8Xu6KrftKCQGTBBhW2pxAVmkHoCv4E?=
- =?us-ascii?Q?hOVh3wEOq/Uq93o7VIfIcpHwOEcpF/UJ3KI2sLHVoQ/zwJMU5LzJ3aTlIcfp?=
- =?us-ascii?Q?E6XI7OV2YKIB+sx/jDIzDJlTf5rqLtX/64kMmVhpPi3EG+HzEcFnVeT857dp?=
- =?us-ascii?Q?C1lof9m5gTmC3sSZcuySHX1vsT/w4RboNStDA0Qa7fWpluY6IRxn3TMICEZY?=
- =?us-ascii?Q?2LJ+cKzoFyQwewCLhPbTgauLAUvAQlMDXU0faWzIIGPYYsEQoe9R8TQh/AxD?=
- =?us-ascii?Q?tVU0Qc6WbiJeqAnteVKxhdjXC2hfFGQy3d9XSpT/rJBBFHxIhhM0BLzaisU+?=
- =?us-ascii?Q?ZZ9KsDASaLlr/uLcP+BDm8ZT4Im0dstbgA0/b1Q2fTvjRx4R+AceuiPWgTS9?=
- =?us-ascii?Q?I2zCNUpsHuMhMinnweEyC++zT/P9tFuHwx6rDoY+wd5YjcBbAHAY7ma4zpvz?=
- =?us-ascii?Q?tgYkVuT14R+febpJ5PyYzvLWVQX6slMPAey91N8wK8tv/qy/cBw5MnpFCtIG?=
- =?us-ascii?Q?V+k2ATKYPhAv/GGCR9EjJJz5BVezoHhKpvtT/CMPsC74xz+QZOaLtWtZDamc?=
- =?us-ascii?Q?6/exfdf4Q4LZgJluws6LCmIMPu9WJgxzWU9GNFGl0hwo9g4VlOn/jPlmirTd?=
- =?us-ascii?Q?YpbbUo2R71RtCUns7A9+tDuwR7vJHxxQKZyZ/XYiz/vdGm3DNSLSci3QymzJ?=
- =?us-ascii?Q?DoZ98FQQpTOc8IQ1yp/EYQ5klC1WDWSXQpBXbExv2OoxP9eeo9mNC4/X59dT?=
- =?us-ascii?Q?wD3K+FXuuU3zgoNo4iP7ylyG2BLdSNYLy1V87zJOUWubxaReDmy5kxdSa2bx?=
- =?us-ascii?Q?LQGPBfZryb4J/tj8/gB/qpHSRKBy0xteWLXG/Uf0?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 616c2dbc-17c6-4eee-859c-08dc21a7c9a2
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jan 2024 15:26:10.8022
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Ajb+madTiW+we/ZUxJkqZkQV5qijfi0211LOOlMxlbXSSu0UHWhUmzGguim2/ET+7xU+9bP418FZbzaLbUALjQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVXPR04MB9902
+References: <20240124030458.98408-1-dregan@broadcom.com> <20240124030458.98408-11-dregan@broadcom.com>
+ <20240124184027.712b1e47@xps-13> <CAA_RMS42FaiN+Za1iY12o0YUANH9rJarBTBa=9jNn8x6_g-Fng@mail.gmail.com>
+ <20240126071913.699c3795@xps-13> <CAA_RMS5gX88v_Qt1csgSL_ffMNsqo2G8B164EB_Hg=hXd620eg@mail.gmail.com>
+ <20240129115228.06dc2292@xps-13> <2a3edcf5-7afc-410c-a402-3d8cd3feb1da@broadcom.com>
+ <20240130120155.3cb6feed@xps-13>
+In-Reply-To: <20240130120155.3cb6feed@xps-13>
+From: David Regan <dregan@broadcom.com>
+Date: Tue, 30 Jan 2024 07:26:02 -0800
+Message-ID: <CAA_RMS577vw=QWN9_NHfmWqt+_cDG22tA01aU019CPNjAgHqJQ@mail.gmail.com>
+Subject: Re: [PATCH v3 10/10] mtd: rawnand: brcmnand: allow for on-die ecc
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: William Zhang <william.zhang@broadcom.com>, David Regan <dregan@broadcom.com>, dregan@mail.com, 
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	computersforpeace@gmail.com, kdasu.kdev@gmail.com, 
+	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Joel Peshkin <joel.peshkin@broadcom.com>, 
+	Tomer Yacoby <tomer.yacoby@broadcom.com>, Dan Beygelman <dan.beygelman@broadcom.com>, 
+	Anand Gore <anand.gore@broadcom.com>, Kursad Oney <kursad.oney@broadcom.com>, 
+	Florian Fainelli <florian.fainelli@broadcom.com>, rafal@milecki.pl, 
+	bcm-kernel-feedback-list@broadcom.com, andre.przywara@arm.com, 
+	baruch@tkos.co.il, linux-arm-kernel@lists.infradead.org, 
+	Dan Carpenter <dan.carpenter@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add flexcan2 and flexcan3 for imx8dxl-evk board.
+Hi Miquel,
 
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
----
+On Tue, Jan 30, 2024 at 3:01=E2=80=AFAM Miquel Raynal <miquel.raynal@bootli=
+n.com> wrote:
+>
+> Hi William,
+>
+> william.zhang@broadcom.com wrote on Tue, 30 Jan 2024 00:11:32 -0800:
+>
+> > Hi Miquel,
+> >
+> > On 1/29/24 02:52, Miquel Raynal wrote:
+> > > Hi David,
+> > >
+> > > dregan@broadcom.com wrote on Fri, 26 Jan 2024 11:57:39 -0800:
+> > >
+> > >> Hi Miqu=C3=A8l,
+> > >>
+> > >> On Thu, Jan 25, 2024 at 10:19=E2=80=AFPM Miquel Raynal
+> > >> <miquel.raynal@bootlin.com> wrote:
+> > >>>
+> > >>> Hi David,
+> > >>>
+> > >>> dregan@broadcom.com wrote on Thu, 25 Jan 2024 11:47:46 -0800:
+> > >>>   >>>> Hi Miqu=C3=A8l,
+> > >>>>
+> > >>>> On Wed, Jan 24, 2024 at 9:40=E2=80=AFAM Miquel Raynal <miquel.rayn=
+al@bootlin.com> wrote:
+> > >>>>>
+> > >>>>> Hi David,
+> > >>>>>
+> > >>>>> dregan@broadcom.com wrote on Tue, 23 Jan 2024 19:04:58 -0800:
+> > >>>>>   >>>>>> Allow settings for on-die ecc such that if on-die ECC is=
+ selected
+> > >>>>>> don't error out but require ECC strap setting of zero
+> > >>>>>>
+> > >>>>>> Signed-off-by: David Regan <dregan@broadcom.com>
+> > >>>>>> Reviewed-by: William Zhang <william.zhang@broadcom.com>
+> > >>>>>> ---
+> > >>>>>> Changes in v3: None
+> > >>>>>> ---
+> > >>>>>> Changes in v2:
+> > >>>>>> - Added to patch series
+> > >>>>>> ---
+> > >>>>>>   drivers/mtd/nand/raw/brcmnand/brcmnand.c | 14 ++++++++++----
+> > >>>>>>   1 file changed, 10 insertions(+), 4 deletions(-)
+> > >>>>>>
+> > >>>>>> diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/=
+mtd/nand/raw/brcmnand/brcmnand.c
+> > >>>>>> index a4e311b6798c..42526f3250c9 100644
+> > >>>>>> --- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+> > >>>>>> +++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+> > >>>>>> @@ -2727,9 +2727,11 @@ static int brcmnand_setup_dev(struct brcm=
+nand_host *host)
+> > >>>>>>        cfg->blk_adr_bytes =3D get_blk_adr_bytes(mtd->size, mtd->=
+writesize);
+> > >>>>>>
+> > >>>>>>        if (chip->ecc.engine_type !=3D NAND_ECC_ENGINE_TYPE_ON_HO=
+ST) {
+> > >>>>>> -             dev_err(ctrl->dev, "only HW ECC supported; selecte=
+d: %d\n",
+> > >>>>>> -                     chip->ecc.engine_type);
+> > >>>>>> -             return -EINVAL;
+> > >>>>>> +             if (chip->ecc.strength) {
+> > >>>>>> +                     dev_err(ctrl->dev, "ERROR!!! HW ECC must b=
+e set to zero for non-hardware ECC; selected: %d\n",
+> > >>>>>> +                             chip->ecc.strength);
+> > >>>>>
+> > >>>>> Can you use a more formal string? Also clarify it because I don't
+> > >>>>> really understand what it leads to.
+> > >>>>
+> > >>>> How about:
+> > >>>>
+> > >>>> dev_err(ctrl->dev, "HW ECC set to %d, must be zero for on-die ECC\=
+n",
+> > >>>
+> > >>> Actually I am wondering how legitimate this is. Just don't enable t=
+he
+> > >>> on host ECC engine if it's not in use. No need to check the core's
+> > >>> choice.
+> > >>
+> > >> Our chip ECC engine will either be on if it's needed or off if it's =
+not.
+> > >> Either I can do that in one place or put checks in before each
+> > >> read/write to turn on/off the ECC engine, which seems a lot more
+> > >> work and changes and possible issues/problems.
+> > >> Turning it on/off as needed has not been explicitly tested and
+> > >> could cause unforeseen consequences. This
+> > >> is a minimal change which should have minimal impact.
+> > >>
+> > >>>   >>>>   >>>>>   >>>>>> +                     return -EINVAL;
+> > >>>>>> +             }
+> > >>>>>>        }
+> > >>>>>>
+> > >>>>>>        if (chip->ecc.algo =3D=3D NAND_ECC_ALGO_UNKNOWN) {
+> > >>>>>> @@ -2797,7 +2799,11 @@ static int brcmnand_setup_dev(struct brcm=
+nand_host *host)
+> > >>>>>>        if (ret)
+> > >>>>>>                return ret;
+> > >>>>>>
+> > >>>>>> -     brcmnand_set_ecc_enabled(host, 1);
+> > >>>>>> +     if (chip->ecc.engine_type =3D=3D NAND_ECC_ENGINE_TYPE_ON_D=
+IE) {
+> > >>>>>> +             dev_dbg(ctrl->dev, "Disable HW ECC for on-die ECC\=
+n");
+> > >>>>>
+> > >>>>> Not needed.
+> > >>>>
+> > >>>> Will remove.
+> > >>>>   >>>>>   >>>>>> +             brcmnand_set_ecc_enabled(host, 0);
+> > >>>>>> +     } else
+> > >>>>>> +             brcmnand_set_ecc_enabled(host, 1);
+> > >>>>>
+> > >>>>> Style is wrong, but otherwise I think ECC should be kept disabled=
+ while
+> > >>>>> not in active use, so I am a bit surprised by this line.
+> > >>>>
+> > >>>> This is a double check to turn on/off our hardware ECC.
+> > >>>
+> > >>> I expect the engine to be always disabled. Enable it only when you
+> > >>> need (may require an additional patch before this one).
+> > >>
+> > >> We are already turning on the ECC enable at this point,
+> > >> this is just adding the option to turn it off if the NAND chip
+> > >> itself will be doing the ECC instead of our controller.
+> > >
+> > > Sorry if I have not been clear.
+> > >
+> > > This sequence:
+> > > - init
+> > > - enable hw ECC engine
+> > > Is broken.
+> > >
+> > ECC engine is not enabled for all the cases. Here we only intended to e=
+nable it for the nand chip that is set to use NAND_ECC_ENGINE_TYPE_ON_HOST.=
+ The logic here should better change to:
+> > if (chip->ecc.engine_type =3D=3D NAND_ECC_ENGINE_TYPE_ON_HOST)
+> >      brcmnand_set_ecc_enabled(host, 1);
+> > else
+> >      brcmnand_set_ecc_enabled(host, 0);
+> >
+> > > It *cannot* work as any operation going through exec_op now may
+> > > perform page reads which should be unmodified by the ECC engine. You =
+> driver *must* follow the following sequence:
+> > > - init and disable (or keep disabled) the hw ECC engine
+> > > - when you perform a page operation with correction you need to
+> > >     - enable the engine
+> > >     - perform the operation
+> > >     - disable the engine
+> > > Maybe I am missing something here but are you saying the exec_op can =
+have different ecc type for page read/write at run time on the same nand ch=
+ip? I don't see the op instr structure has the ecc type field and thought i=
+t is only bind to the nand chip and won't change at run time. So looks to m=
+e the init time setting to the engine based on ecc.engine_type should be su=
+fficient.
+> >
+> > What you described here can work for the hw.ecc read path (ecc.read_pag=
+e =3D brcmnand_read_page) which always assumes ecc is enabled. Although it =
+is probably not too bad with these two extra operation, it would be better =
+if we don't have to add anything as our current code does. For the brcmnand=
+_read_page_raw,  we currently disable the engine and then re-enable it(but =
+we need to fix it to only enable it with hw ecc engine type).  So it is jus=
+t opposite of you logic but works the same with no impact on the most perfo=
+rmance critical path.
+>
+> This is not "my" logic, this is the "core's" logic. I am saying: your
+> approach is broken because that is not how the API is supposed to work,
+> but it mostly works in the standard case.
 
-Notes:
-    Change from v1 to v2
-    -none
+In the interest of minimizing register writes, would it be acceptable to
+enable/disable ECC at the beginning of a standard
+path transfer but not, after the transfer, turn off the ECC? This should no=
+t
+affect other standard path operations nor affect the exec_op path as those
+are low level transfers which our ECC engine would not touch and the NAND
+device driver should be responsible for turning on/off its own ECC.
 
- arch/arm64/boot/dts/freescale/imx8dxl-evk.dts | 46 +++++++++++++++++++
- 1 file changed, 46 insertions(+)
+>
+> Thanks,
+> Miqu=C3=A8l
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8dxl-evk.dts b/arch/arm64/boot/dts/freescale/imx8dxl-evk.dts
-index 44da3cc331d84..2123d431e0613 100644
---- a/arch/arm64/boot/dts/freescale/imx8dxl-evk.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8dxl-evk.dts
-@@ -81,6 +81,24 @@ reg_fec1_io: regulator-2 {
- 		status = "disabled";
- 	};
- 
-+	reg_can0_stby: regulator-4 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "can0-stby";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		gpio = <&pca6416_3 0 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+	};
-+
-+	reg_can1_stby: regulator-5 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "can1-stby";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		gpio = <&pca6416_3 1 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+	};
-+
- 	reg_usdhc2_vmmc: regulator-3 {
- 		compatible = "regulator-fixed";
- 		regulator-name = "SD1_SPWR";
-@@ -322,6 +340,20 @@ &lpuart0 {
- 	status = "okay";
- };
- 
-+&flexcan2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_flexcan2>;
-+	xceiver-supply = <&reg_can0_stby>;
-+	status = "okay";
-+};
-+
-+&flexcan3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_flexcan3>;
-+	xceiver-supply = <&reg_can1_stby>;
-+	status = "okay";
-+};
-+
- &lsio_gpio4 {
- 	status = "okay";
- };
-@@ -491,6 +523,20 @@ IMX8DXL_QSPI0B_SS0_B_LSIO_QSPI0B_SS0_B     0x06000021
- 		>;
- 	};
- 
-+	pinctrl_flexcan2: flexcan2grp {
-+		fsl,pins = <
-+			IMX8DXL_UART2_TX_ADMA_FLEXCAN1_TX	0x00000021
-+			IMX8DXL_UART2_RX_ADMA_FLEXCAN1_RX	0x00000021
-+		>;
-+	};
-+
-+	pinctrl_flexcan3: flexcan3grp {
-+		fsl,pins = <
-+			IMX8DXL_FLEXCAN2_TX_ADMA_FLEXCAN2_TX	0x00000021
-+			IMX8DXL_FLEXCAN2_RX_ADMA_FLEXCAN2_RX	0x00000021
-+		>;
-+	};
-+
- 	pinctrl_fec1: fec1grp {
- 		fsl,pins = <
- 			IMX8DXL_COMP_CTL_GPIO_1V8_3V3_ENET_ENETB0_PAD		0x000014a0
--- 
-2.34.1
+Thanks!
 
+-Dave
 
