@@ -1,74 +1,77 @@
-Return-Path: <linux-kernel+bounces-45362-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45365-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDE15842F57
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:06:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 266F0842F5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:07:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAD18286B6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 22:06:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 901531F25627
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 22:07:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85F6E7D3FD;
-	Tue, 30 Jan 2024 22:06:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AEB27869F;
+	Tue, 30 Jan 2024 22:06:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="XraSWegW"
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="MhAo+yD3"
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 226787D400
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 22:06:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E384F762EB
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 22:06:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706652377; cv=none; b=JnKg3P3FV4C8FlMW/W0XatJU7iSYlGFIHVgVgPhF+4PDHtsGWUWsgzotiOvj/fGoIGhDmXRwruMA5/zWcO+byotq/G5p3qRmhN86rht/wOX+6Twtb36h43Ch9NeJVnF+DxFewt/HyutRnn45fdprSOQDzHTBlhcTEy6FRum2Bcc=
+	t=1706652380; cv=none; b=FTtWD5PhFAckqmK+BAODPiVdUbSCr09+UmEq45WtPy4NtvECUnz6yJQYWZrpoGXkOs0F9e8OqIqipSoEhqEcTeh7Nbvp/YJPcd6p4IG8m8mpm4DyOtLn1eQSnpVFQ9JxdjpUWF9L4gHGKtKNpx2jmTdMN+wXC/fJ/WIJg/IwPg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706652377; c=relaxed/simple;
-	bh=gn0dvTcLJa7mfVKsNhKm9Zlhn7EMdhhcckPZdnAEyDc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cDmYJO/jmCycudvMeu5wGWlO4bauvxQgQsKa4JgV6s2BGYRGcgP4zCHCYlIQOZy57hlOCSStV8BvNT/lw9o+5Pkao5BImwORNUAdAOhyitVi7OVbcdXf8iN1kdnGircShoM2vXmP/6GR4k4/tXxnMspal7dvTnowvhw7mX1udfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=XraSWegW; arc=none smtp.client-ip=209.85.216.49
+	s=arc-20240116; t=1706652380; c=relaxed/simple;
+	bh=mjbhQQsJHZNHQElAJyka1am+OsaRRifuj4xn9QRfLGM=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=l8NEfrPsLCYQ03ewSKnsw0SBjao/+ylHCXhcrw93ahnBCA6hDitEWPwI7FVkagnW5FJW9hlWyFjiNnb3MZgFDGz+FxsO0PPDvZXARN740AhDL4dExYWdBmIdJVbijb9K/+U9SPWiQyEVNDhCsYxLymw0kgDm5eACOD5dmFT20/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=MhAo+yD3; arc=none smtp.client-ip=209.85.210.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2909978624eso2590222a91.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 14:06:15 -0800 (PST)
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6d9f94b9186so3400251b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 14:06:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706652375; x=1707257175; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=EpcTNftNmXXiGzifaQkJ3S/DIHivihv6EGVVCNRvMGk=;
-        b=XraSWegW464e8BC3XRTaJk3dE7mKxO6K2KUK1gZYYccuiJM6x2hbTtYtUaY/o2j4iw
-         mpcAtgDpRMMu59JS+GwbpXsWPuRANaZSFGzG+Tl1jXzA1cqHw3ogLefsciBNQzHIK7sx
-         kLuSrtGnpyevBd1Yxw8ETfiUC9e3Ke1qhg7oo=
+        d=chromium.org; s=google; t=1706652378; x=1707257178; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TXEWZ+ijn2Mktyo3GgFFo1opylml2uwjVnLpw+L5S/k=;
+        b=MhAo+yD3yaTWH8UHw3ebbIh/luRgWzh6Pnhtrm+K8yG7sVe892qUaYABmE4jmoPlOd
+         5m02QtNfy57NU8uQEFV1sR8TTIC1NK66Z0jtp3DFcHk0JZF17PnnVS3mzE4x74Ll8b7A
+         4OrIp5OlKlVWa9UOSjcLknmAlb9tvlz48jvK4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706652375; x=1707257175;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EpcTNftNmXXiGzifaQkJ3S/DIHivihv6EGVVCNRvMGk=;
-        b=qIQlU8OIZY4k0jPHQ+SMO0bEUnZL7bb+vGhkW2AMFDSl+TfKjxG0pzz0BnpVcxO8j6
-         x3hJp/CIPoWBFtURMfUFxGpEySKZn/aZm5VTKrUTFLvjrDSsXXxoA3B3ZCN7+hR32Gij
-         vs0CEebZItSWVFyfgUcxIEQ83Fs/5o7dmJD87mthlXcyrQhMBpBiFMFtKtimx7+QdZXo
-         v9jayIFZ00IOTUpzwUVc5b9657doaXeT1WAchXwiwe2hhyZ3rF1CQVi325H9jTkvgOGO
-         RO2+McXRB/sS/uFnS3JNiibnarKE511SC3G3xUBOHqtOwZyYQh17mvS616MiYAUfflUB
-         lS6w==
-X-Gm-Message-State: AOJu0YzcX2Cx55TC0sOqVbi79IbYFfc3aIY43xQ+avG3KGQoBwHJjRW+
-	rlQlcIfSVguqjKdIWYJHYfLz7DFn4BOqtVIT821Ozcx/dVr5uj1FV1cl8bj73w==
-X-Google-Smtp-Source: AGHT+IHHJoa4a2zVyNjNx2GD+zQa7608axdnMQUamIHrlynGd7AyzpXh5cMXkqaU+GSW4C/fHqpsfQ==
-X-Received: by 2002:a17:90a:ac0d:b0:294:1261:6412 with SMTP id o13-20020a17090aac0d00b0029412616412mr6543170pjq.9.1706652375445;
-        Tue, 30 Jan 2024 14:06:15 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706652378; x=1707257178;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TXEWZ+ijn2Mktyo3GgFFo1opylml2uwjVnLpw+L5S/k=;
+        b=p7BcVUNKXU4dDS0+AcZGN91kRQ6tXfuTVtOufupUahKaQski6gruITpGtx7+O+Tgsk
+         oXcrO77tUlLvZaIy2/Mwen06NJzTJm1JxnSIcUQLewXvyg28Kpo8QrpTY+MroedyLAS7
+         prsNoD5/mxfCcn2wm8VbQquyEANYvLZlm9BFNILJAPlCz8BlVnn/CooQfkJGAW0w0Wuk
+         SspF1KTTnroWFN6Df40Xwdp4pV855GkHb/Vf7YI/U5aYQ+ZB6Gz6pJ6BeqnBELYZC/SI
+         yAR8a/Kfqb/uVn4LtiQnsfRPm2CKaDBw4QsOTXm0g78kNtCTRKC2FFFBvPBpaumJU1Ub
+         bRww==
+X-Gm-Message-State: AOJu0YyUuTVwY+UJ1Gv4/NBFVQxjyNHIEHDPgJOY0S2w90SSecHcVLLa
+	LCoL+BqYoIyEjoAl9raYc4GX/pd/N61jaMgpacJ8JRpkwJYDQH9eT2RxetLAVQ==
+X-Google-Smtp-Source: AGHT+IEd3zXlvSGgZ0mXCE1XjkvID5hcRbGGUrHAh6e87yThPodvIALQNu/8HwwxXls7VIkIq6gj+w==
+X-Received: by 2002:a05:6a20:c411:b0:19a:360c:75d8 with SMTP id en17-20020a056a20c41100b0019a360c75d8mr8249397pzb.14.1706652378406;
+        Tue, 30 Jan 2024 14:06:18 -0800 (PST)
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id oh11-20020a17090b3a4b00b0029051dad730sm9160474pjb.26.2024.01.30.14.06.14
+        by smtp.gmail.com with ESMTPSA id r11-20020a170903014b00b001d8dedeb0casm4331642plc.180.2024.01.30.14.06.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 14:06:14 -0800 (PST)
+        Tue, 30 Jan 2024 14:06:17 -0800 (PST)
 From: Kees Cook <keescook@chromium.org>
 To: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
 Cc: Kees Cook <keescook@chromium.org>,
 	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Justin Stitt <justinstitt@google.com>,
+	linux-hardening@vger.kernel.org,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Nathan Chancellor <nathan@kernel.org>,
 	Nick Desaulniers <ndesaulniers@google.com>,
 	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
 	Mark Rutland <mark.rutland@arm.com>,
 	Miguel Ojeda <ojeda@kernel.org>,
 	Marco Elver <elver@google.com>,
@@ -76,72 +79,96 @@ Cc: Kees Cook <keescook@chromium.org>,
 	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
 	Masahiro Yamada <masahiroy@kernel.org>,
 	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
 	llvm@lists.linux.dev
-Subject: [PATCH v2 0/5] overflow: Introduce wrapping helpers
-Date: Tue, 30 Jan 2024 14:06:05 -0800
-Message-Id: <20240130220218.it.154-kees@kernel.org>
+Subject: [PATCH v2 1/5] overflow: Adjust check_*_overflow() kern-doc to reflect results
+Date: Tue, 30 Jan 2024 14:06:06 -0800
+Message-Id: <20240130220614.1154497-1-keescook@chromium.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240130220218.it.154-kees@kernel.org>
+References: <20240130220218.it.154-kees@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1585; i=keescook@chromium.org;
- h=from:subject:message-id; bh=gn0dvTcLJa7mfVKsNhKm9Zlhn7EMdhhcckPZdnAEyDc=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBluXLRRnzyI6fI6v0nKvBOwzf6BxD/SzagDz7I/
- NuQhNGUexqJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZbly0QAKCRCJcvTf3G3A
- JoJyD/0Zaz7khw8rvEjl+ViRwJDZukx9DH9xCEPCJ2x1JZfinl2G4QysCjDd4MiRMmAUypVYeOs
- OYmwV/ZO4kJq8Zp5hps0k9/JnMFZcXR9PQEnQfqml3c674pt5bPjVRMKbwIG9rmjaMgaFsBlmsR
- kichU4kPdmgCImcDhwyYoYbC1FbwId7ylVWnEC00t2dxW08xzfIj2pongtfe9rTBcML5+5KOStu
- Xp21F2Ca8ZV034R6GBFhk6fqOZlQGhtvSlUMit3DALF1PsYATJsjjxltZ6WacTj6geLcdgzLiC8
- sttFAWk4F+VlO3EB7UPwxoXdeK2Ce7vX0pgLl6nPA/HeXAXtZIfqbynHTbsLwEbBDNEQuzbUHZA
- o7KKMEbd1LRjGdr/Axku+hw0FDzmCHDSgzTFSxQPTf0I4vJi5+QLUWirWZ9wEFvbuatVTOFn87l
- zPRN/9U+i6IqWwj8WiROByaKMehkN0vN99Fcwy5oTaWmDj3/MQ3/wHstmic8A5EAkITQkQFcMTD
- 55Yh5ixwFtyG+0Ujnz/RLvdR94CBkqDz2klsSjn4Xk351lIkxP7kB7mH5RE/gZoHDjgxjpd1/FP
- qxWu6FcNBX2irtQC1VHVGrdgjaDqfyQtmKi5QiuhIzit7numZ5cc0fJRIHYgKnqUuU7LrPq5Stv
- Zuw71ws tLjJok1A==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2716; i=keescook@chromium.org;
+ h=from:subject; bh=mjbhQQsJHZNHQElAJyka1am+OsaRRifuj4xn9QRfLGM=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBluXLRXPWpxbxWBABUSnq7LV3ZR63LVVosG/CRP
+ 5ZzpJGG3mKJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZbly0QAKCRCJcvTf3G3A
+ JsZ3D/47FGhmdQqxJrZ9wW+IfjOj5Z+/JJdT4A88xjMViD8m2y+sZ66ET8cpz0UxvZb8wc5ydbm
+ kKGJkwmx2MxOImy/n06QpmWo+Jj6Hcb2x4MhjJrvG7QbIC8no338Da90doAljPBJQardE1fF7BX
+ TAwaqrSw+31TcmCP/J6CJ3Zy1M7SMmYp0HdBNg7mIDikbW2FYa3oKBphdZXiLt38fjJJQf2jUFd
+ CBKnBPtpk2Q42oSJwkvv0+WZj3zuvoFhIgRyLYf0i9QuXdQFK8IfVBZQi3UUcyJRTHJDYshhaTS
+ yfLfrJ6F0nr8PdL9h2/IqewAUyNk+YiE0J1j+Ds70hYy9YypS/JaeNCvKq9n42FWNRatqLbtMEs
+ HweyCRNsTPMccrf/ZSHVhW83m0QZP3tZ00lVm3rgNhL2Q/oa/pqerx8fp8YgQ/JgLeRgJt1eK2R
+ ino8gJHkQp7HkP+owrvPQZBSFUjFFBc+7ZHhkOiOYDQ/1v7RZHuIH1CYRNyhzUdlSU+QrcgUX9F
+ XfRFoAkuBd8qYpVccYsV+1/zKrZDgEW72okrPtTNzp1Rjo+eXk5QFw9bDTl/qo/CClNbY1F0PxT
+ LKPYm7R9P1tk0jtAkCFen/ejWNEp8jvYos5ar8T5/53t/xYMN7kEw1Cj4gw2iJwJ5U7ELiklaKW B5/Vgg5InWPF4Aw==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 
-Hi,
+The check_*_overflow() helpers will return results with potentially
+wrapped-around values. These values have always been checked by the
+selftests, so avoid the confusing language in the kern-doc. The idea of
+"safe for use" was relative to the expectation of whether or not the
+caller wants a wrapped value -- the calculation itself will always follow
+arithmetic wrapping rules.
 
-v2:
- - Define inc/dec_wrap() in terms of add/sub_wrap() and avoid side-effects (Rasmus)
- - Fix various typos (Rasmus)
- - Add selftests for all the new helpers
-v1: https://lore.kernel.org/lkml/20240129182845.work.694-kees@kernel.org/
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Justin Stitt <justinstitt@google.com>
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ include/linux/overflow.h | 18 ++++++------------
+ 1 file changed, 6 insertions(+), 12 deletions(-)
 
-In preparation for gaining instrumentation for signed[1], unsigned[2], and
-pointer[3] wrap-around, expand the overflow header to include wrap-around
-helpers that can be used to annotate arithmetic where wrapped calculations
-are expected (e.g. atomics).
-
-After spending time getting the unsigned integer wrap-around sanitizer
-running warning-free on a basic x86_64 boot[4], I think the *_wrap()
-helpers first argument being the output type makes the most sense (as
-suggested by Rasmus).
-
--Kees
-
-Link: https://github.com/KSPP/linux/issues/26 [1]
-Link: https://github.com/KSPP/linux/issues/27 [2]
-Link: https://github.com/KSPP/linux/issues/344 [3]
-Link: https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/log/?h=devel/overflow/enable-unsigned-sanitizer [4]
-
-Kees Cook (5):
-  overflow: Adjust check_*_overflow() kern-doc to reflect results
-  overflow: Expand check_add_overflow() for pointer addition
-  overflow: Introduce add_would_overflow()
-  overflow: Introduce add_wrap(), sub_wrap(), and mul_wrap()
-  overflow: Introduce inc_wrap() and dec_wrap()
-
- include/linux/compiler_types.h |  10 +++
- include/linux/overflow.h       | 160 ++++++++++++++++++++++++++++++---
- lib/overflow_kunit.c           | 132 ++++++++++++++++++++++++---
- 3 files changed, 277 insertions(+), 25 deletions(-)
-
+diff --git a/include/linux/overflow.h b/include/linux/overflow.h
+index 7b5cf4a5cd19..4e741ebb8005 100644
+--- a/include/linux/overflow.h
++++ b/include/linux/overflow.h
+@@ -57,11 +57,9 @@ static inline bool __must_check __must_check_overflow(bool overflow)
+  * @b: second addend
+  * @d: pointer to store sum
+  *
+- * Returns 0 on success.
++ * Returns 0 on success, 1 on wrap-around.
+  *
+- * *@d holds the results of the attempted addition, but is not considered
+- * "safe for use" on a non-zero return value, which indicates that the
+- * sum has overflowed or been truncated.
++ * *@d holds the results of the attempted addition, which may wrap-around.
+  */
+ #define check_add_overflow(a, b, d)	\
+ 	__must_check_overflow(__builtin_add_overflow(a, b, d))
+@@ -72,11 +70,9 @@ static inline bool __must_check __must_check_overflow(bool overflow)
+  * @b: subtrahend; value to subtract from @a
+  * @d: pointer to store difference
+  *
+- * Returns 0 on success.
++ * Returns 0 on success, 1 on wrap-around.
+  *
+- * *@d holds the results of the attempted subtraction, but is not considered
+- * "safe for use" on a non-zero return value, which indicates that the
+- * difference has underflowed or been truncated.
++ * *@d holds the results of the attempted subtraction, which may wrap-around.
+  */
+ #define check_sub_overflow(a, b, d)	\
+ 	__must_check_overflow(__builtin_sub_overflow(a, b, d))
+@@ -87,11 +83,9 @@ static inline bool __must_check __must_check_overflow(bool overflow)
+  * @b: second factor
+  * @d: pointer to store product
+  *
+- * Returns 0 on success.
++ * Returns 0 on success, 1 on wrap-around.
+  *
+- * *@d holds the results of the attempted multiplication, but is not
+- * considered "safe for use" on a non-zero return value, which indicates
+- * that the product has overflowed or been truncated.
++ * *@d holds the results of the attempted multiplication, which may wrap-around.
+  */
+ #define check_mul_overflow(a, b, d)	\
+ 	__must_check_overflow(__builtin_mul_overflow(a, b, d))
 -- 
 2.34.1
 
