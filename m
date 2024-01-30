@@ -1,114 +1,205 @@
-Return-Path: <linux-kernel+bounces-43712-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B2A484183D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 02:22:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 241B1841840
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 02:24:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 470372858E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 01:22:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD89D28596E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 01:24:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBB2A34CFF;
-	Tue, 30 Jan 2024 01:22:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D368D360AE;
+	Tue, 30 Jan 2024 01:24:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kFgcvbx8"
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bIFPOvKO"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0F9A2E40E
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:22:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FAEB339AD
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:24:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706577757; cv=none; b=HqoI3e7QfJF6VlwAqUUyeiAAV6xUtAf3cK6Hq31Fw0EjrXVzTMgHTZeXcRpB7YULOiMfS7HaECIAb8c1VuvIConRe7Hlgt27/CKCqXWHrs9OtBb6syF2n5/bFd4VQ2Zoek98oYeRheCJpSYvFRFuhDQGkcvlDcdDqbNNHT7SiwU=
+	t=1706577879; cv=none; b=RpOpTBpWrvljoGamaS7vrKrWNTdsoJgkKxCz7Ng+r3Kbnn8oAZFL6+D6XZjJKheopUJXBvwlkRha8E1AUEtJAVfcY9PNM2s3Iyxuhu88WflOfqs9WMerU5OOsMhg0D+1fN4mSVrWGBt4NmbguJzQPL7oy6QZpKMn6L7UZ1eUNhc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706577757; c=relaxed/simple;
-	bh=bIJb+jgCgGliZshmoei+sz4nV6oBQLlhMTwPO0A/Nuw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fwIX/P17tzDEm3uv0D27ZhuwVrzYeOfIQ8YY+oSlYYD1SfwJWXZptmqvYTJ0WmGLf9LNMUyoMmNaFIA5PSAYekgPlrF0eWeqpp92LRcjAAYyTAvsnNATABmcUNX+DvP6zdMmnt9gLkH0Epw++ZjyxeQKrI2PX2Vl7/t7N0eUeQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kFgcvbx8; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6d9b37f4804so3048577b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 17:22:35 -0800 (PST)
+	s=arc-20240116; t=1706577879; c=relaxed/simple;
+	bh=j+GJVbuTueC426ARuRfLk+gzmDWC3BNHlZo/pA4JSTo=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=sjhZgd3TfeLY8uTQP2mEru3XXErMVVGkg0SeBP0ShOPi/YHulpS63EnHgGdrjtJuSUly+YsmZ9v7b846uHVxtdbr5PtXIZj5dsLmn8IGhdm6SGlf5ViYs3Du8KMqPyfDp6TcchDAIimXUAu4/chBERLK0HOtBZ9jcYTtYkOx2pI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bIFPOvKO; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-602d563287cso53516337b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 17:24:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706577755; x=1707182555; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wMqd69DzckDwNLFqdbiaLgONDOqgBjB7CTh3HmI3dKY=;
-        b=kFgcvbx8+paa2yKimA2Jp50X5a6whisgtiKy7JICf/L9w715WdwB95F4TMxTvFIUK3
-         7o4c0UCPRBuK08trAKfDUgKu9eHe+w7YPf/mE2XWoNUiRPr3sykVAdXtzr2xJVCIPNX5
-         Kiqd2NGC3/gB58Mq5h23KPAbXF2ibIHhMmb9wapYYbEH7dO5436ERU/6JAkXtk74hFzy
-         sl9II7RgMZDbAWfAr7kllSDWSSj76Ug2PbHmWMrbQBH3gHpebSknsjfgguAYV0EA6bb9
-         ufEC5KVN+6LKNiqlAY7C/DQFnGChpKZZ9K/8OOGXxplw/WMqMkFPpLGqAu8SsQf8Y4B/
-         uTvw==
+        d=google.com; s=20230601; t=1706577874; x=1707182674; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kKsXe4d9eEU7eWHhf0dKSX3npO3wX+Yxof1zu2c6dBc=;
+        b=bIFPOvKO/PiGZUcCID68Ss+DeTwpL7G42Yj9IOWzUpnWzbUnffpvjnjcnf5dapJbCO
+         Zhhp+fAyoVXQkFLQ+xlHiwt0JM1IQPC7pKbM0cCVJyygcofGsvlNjEUdjzVRHv7/nKmA
+         r3Wcl3ShXMR3a9qFs7or8bRAzVFyzTK6G1kRM9pZ0zICtJiJioYf3fyF2QkgHFWL7kMT
+         mfSuk5Nnf9HFoUqq4d/D3YhjFYjT39RpDn2pLs23CZSB1vjE+NkEoNs0Sg9x9rJlH0up
+         8uFUjNsgro/YWHB9mmasLzaiDXAX2efhNTYLyHnTQoq7bHyA/9R8FtfvTtMdEMTsYVwZ
+         Ui9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706577755; x=1707182555;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wMqd69DzckDwNLFqdbiaLgONDOqgBjB7CTh3HmI3dKY=;
-        b=dPxByqLVNu9VYkQtsK0/uarlqDQCi2LynvsfnZzsGlIdGIcoCEvya1faVBibkKxuMx
-         PKUdL7rdZojYekBi5OY3RLSrrCNSHJJNjpZwc5Mw9K21HJ+IyJJ7ZM4NpnZIQVN7ZEsu
-         Kqg0IO2UmzggIbj3sQnvFi6YlTpepHnp2yfciPpQfiuQkSYEH5jcC5LDPDoKO8Fh0Xgp
-         WoOR41+LUUk4vju1epXZITZa2JxuAz2v3vgzpTB1zKCcqb/fvNJkh56YnzPhco+496PU
-         GuLzOZi9Ow5r3GXnB5ThvcfJiIQPzFuyin+0itL5ASqjBoYUqbGb0gjak7v7ekt+e4dW
-         h4zw==
-X-Gm-Message-State: AOJu0YxYP1AKXLlTGyVkrL+BD9Oz3/eODqUUHmqBIJy9It3CMitvJJ+M
-	GVBAxHs/D0N0NDkxpc0kVzd5B/PTu2dnVmSdNKsvmKYgSXhQyQOH
-X-Google-Smtp-Source: AGHT+IEqgtQKTycPCPiPnX6aN2K5nqtfZP3rkWSgwwwniuC9C6qnH7a6CcC72HRgKWbYO2WbmFp8Og==
-X-Received: by 2002:a05:6a00:26c8:b0:6db:7038:fc04 with SMTP id p8-20020a056a0026c800b006db7038fc04mr237282pfw.10.1706577754726;
-        Mon, 29 Jan 2024 17:22:34 -0800 (PST)
-Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
-        by smtp.gmail.com with ESMTPSA id f16-20020a056a001ad000b006de09d94723sm5813995pfv.17.2024.01.29.17.22.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 17:22:34 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Mon, 29 Jan 2024 15:22:33 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Leonardo Bras <leobras@redhat.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>, linux-kernel@vger.kernel.org,
-	Junyao Zhao <junzhao@redhat.com>
-Subject: Re: [PATCH v2 1/1] wq: Avoid using isolated cpus' timers on
- queue_delayed_work
-Message-ID: <ZbhPWSWAZZo8gk-a@slm.duckdns.org>
-References: <20240130010046.2730139-2-leobras@redhat.com>
+        d=1e100.net; s=20230601; t=1706577874; x=1707182674;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kKsXe4d9eEU7eWHhf0dKSX3npO3wX+Yxof1zu2c6dBc=;
+        b=B6GaK72B/Avk+KYDVk2IaiYcHnNaP3feAeQ1dnEIWVmgKjrUKxEAHKmHjUfNGG2aJV
+         Wvv07OgXjlka8ZNwu3NyxywhwFTxL6CcmlCWH+eIgqqsfGOnt6qBO3qWZM/stEZRvzeJ
+         zYBVykNghhYohCMp5/R2p47eQ4geKULJev8kOF8XgcDGlGJ7gkiPFdHmonLKVgOGJEGs
+         /NCkmJNXA/+79KmJLuOGazGxc+j/vyHMgYb51+UrI9kHibEL2qEc6K10BOHk3nxpJLRX
+         GuOv8dfKGwFAtDHU7pvUSQEHS8ovYAu5EHzEflrYdwqKMb/avmm5FbymiFWoAYWrA4G8
+         1/lA==
+X-Gm-Message-State: AOJu0YydnBQa6rDMTLa8+knPEBr/rgSI65bE+jyhVRqmbqLkRFuJFd9+
+	0cifA9LV5F/u4nPHWlPlmjIrGu2i9DP4rxWGAKqdSp3TM0GLK7yIXVYC0h9efpsHJ9nsbQl8k6E
+	wbSk+a0ubpQZqV8Cm4g==
+X-Google-Smtp-Source: AGHT+IGZLdTuoOjw1Nr7qvD+0vkkEzceltDuyoLOLKxYHKXc2jfBWkBY2f8WOz+VnouBav8ifONTd0ShyTcuOUOT
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a05:690c:10d:b0:5ff:96b6:8ee1 with SMTP
+ id bd13-20020a05690c010d00b005ff96b68ee1mr2302301ywb.7.1706577874343; Mon, 29
+ Jan 2024 17:24:34 -0800 (PST)
+Date: Tue, 30 Jan 2024 01:24:32 +0000
+In-Reply-To: <20240129224542.162599-4-nphamcs@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240130010046.2730139-2-leobras@redhat.com>
+Mime-Version: 1.0
+References: <20240129224542.162599-1-nphamcs@gmail.com> <20240129224542.162599-4-nphamcs@gmail.com>
+Message-ID: <ZbhP0JkEe39g3yqk@google.com>
+Subject: Re: [PATCH 3/3] selftests: add test for zswapin
+From: Yosry Ahmed <yosryahmed@google.com>
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: akpm@linux-foundation.org, shuah@kernel.org, hannes@cmpxchg.org, 
+	tj@kernel.org, lizefan.x@bytedance.com, linux-mm@kvack.org, 
+	kernel-team@meta.com, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-On Mon, Jan 29, 2024 at 10:00:46PM -0300, Leonardo Bras wrote:
-> When __queue_delayed_work() is called, it chooses a cpu for handling the
-> timer interrupt. As of today, it will pick either the cpu passed as
-> parameter or the last cpu used for this.
-> 
-> This is not good if a system does use CPU isolation, because it can take
-> away some valuable cpu time to:
-> 1 - deal with the timer interrupt,
-> 2 - schedule-out the desired task,
-> 3 - queue work on a random workqueue, and
-> 4 - schedule the desired task back to the cpu.
-> 
-> So to fix this, during __queue_delayed_work(), if cpu isolation is in
-> place, pick a random non-isolated cpu to handle the timer interrupt.
-> 
-> As an optimization, if the current cpu is not isolated, use it instead
-> of looking for another candidate.
-> 
-> Signed-off-by: Leonardo Bras <leobras@redhat.com>
+On Mon, Jan 29, 2024 at 02:45:42PM -0800, Nhat Pham wrote:
+> We recently encountered a kernel crash on the zswapin path in our
+> internal kernel, which went undetected because of a lack of test
+> coverage for this path. Add a selftest to cover this code path,
+> allocating more memories than the cgroup limit to trigger
 
-Applied to wq/for-6.9.
+s/memories/memory
 
-Thanks.
+> swapout/zswapout, then reading the pages back in memories several times.
+> 
+> Also add a variant of this test that runs with zswap disabled, to verify
+> swapin correctness as well.
+> 
+> Suggested-by: Rik van Riel <riel@surriel.com>
+> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+> ---
+>  tools/testing/selftests/cgroup/test_zswap.c | 67 ++++++++++++++++++++-
+>  1 file changed, 65 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/selftests/cgroup/test_zswap.c
+> index 32ce975b21d1..86231c86dc89 100644
+> --- a/tools/testing/selftests/cgroup/test_zswap.c
+> +++ b/tools/testing/selftests/cgroup/test_zswap.c
+> @@ -60,17 +60,39 @@ static long get_zswpout(const char *cgroup)
+>  	return cg_read_key_long(cgroup, "memory.stat", "zswpout ");
+>  }
+>  
+> -static int allocate_bytes(const char *cgroup, void *arg)
+> +static int allocate_bytes_and_read(const char *cgroup, void *arg, bool read)
+>  {
+>  	size_t size = (size_t)arg;
+>  	char *mem = (char *)malloc(size);
+> +	int ret = 0;
+>  
+>  	if (!mem)
+>  		return -1;
+>  	for (int i = 0; i < size; i += 4095)
+>  		mem[i] = 'a';
+> +
+> +	if (read) {
+> +		/* cycle through the allocated memory to (z)swap in and out pages */
+> +		for (int t = 0; t < 5; t++) {
 
--- 
-tejun
+What benefit does the iteration serve here? I would guess one iteration
+is enough to swap everything in at least once, no?
+
+> +			for (int i = 0; i < size; i += 4095) {
+> +				if (mem[i] != 'a')
+> +					ret = -1;
+> +			}
+> +		}
+> +	}
+> +
+>  	free(mem);
+> -	return 0;
+> +	return ret;
+> +}
+> +
+> +static int allocate_bytes(const char *cgroup, void *arg)
+> +{
+> +	return allocate_bytes_and_read(cgroup, arg, false);
+> +}
+> +
+> +static int read_bytes(const char *cgroup, void *arg)
+> +{
+> +	return allocate_bytes_and_read(cgroup, arg, true);
+>  }
+
+I don't like how we reuse allocate_bytes_and_read(), we are not saving
+much. Let's keep allocate_bytes() as-is and add a separate helper. Also,
+I think allocate_and_read_bytes() is easier to read.
+
+>  
+>  static char *setup_test_group_1M(const char *root, const char *name)
+> @@ -133,6 +155,45 @@ static int test_zswap_usage(const char *root)
+>  	return ret;
+>  }
+>  
+> +/* Simple test to verify the (z)swapin code paths */
+> +static int test_zswapin_size(const char *root, char *zswap_size)
+> +{
+> +	int ret = KSFT_FAIL;
+> +	char *test_group;
+> +
+> +	/* Set up */
+> +	test_group = cg_name(root, "zswapin_test");
+> +	if (!test_group)
+> +		goto out;
+> +	if (cg_create(test_group))
+> +		goto out;
+> +	if (cg_write(test_group, "memory.max", "8M"))
+> +		goto out;
+> +	if (cg_write(test_group, "memory.zswap.max", zswap_size))
+> +		goto out;
+> +
+> +	/* Allocate and read more than memory.max to trigger (z)swap in */
+> +	if (cg_run(test_group, read_bytes, (void *)MB(32)))
+> +		goto out;
+> +
+> +	ret = KSFT_PASS;
+> +
+> +out:
+> +	cg_destroy(test_group);
+> +	free(test_group);
+> +	return ret;
+> +}
+> +
+> +static int test_swapin(const char *root)
+> +{
+> +	return test_zswapin_size(root, "0");
+> +}
+
+Why are we testing the no zswap case? I am all for testing but it seems
+out of scope here. It would have been understandable if we are testing
+memory.zswap.max itself, but we are not doing that.
+
+FWIW, I think the tests here should really be separated from cgroup
+tests, but I understand why they were added here. There is a lot of
+testing for memcg interface and control for zswap, and a lot of nice
+helpers present.
+
 
