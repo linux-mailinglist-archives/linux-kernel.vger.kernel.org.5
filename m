@@ -1,169 +1,127 @@
-Return-Path: <linux-kernel+bounces-44228-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44217-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8267C841F20
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:16:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B524841EEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:12:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2194D1F2BD09
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:16:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30F9A1F22A76
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:12:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66A5B5F849;
-	Tue, 30 Jan 2024 09:13:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5669160869;
+	Tue, 30 Jan 2024 09:12:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V6Pe6k+U"
-Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GlJnblv7"
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11580679EC;
-	Tue, 30 Jan 2024 09:13:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36A5A5917F
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:12:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706605999; cv=none; b=GkDTpyxZi27W9n9AQDn+KqvktuXLyqFrRQjNgf0Xz81EANEftCpI6zkeO+/mzBVXgEEKLw8vC50O+RRfCf7KsKmwHUwuBYiKnubQ03zIS8pU6LLvneYhzwycCuEsri4Nai2uJNg0guSHgLajdgh9EEDwWT8xLFliDT3yvc/PA1M=
+	t=1706605931; cv=none; b=jDtYmCodtqnw7Y6N3bWsCOpTuhrmDdhhac9UOUZWABtadKNTI6/O7ONWAKbWFIgcnExW69ES+JJTs3U0WHJb+ku5ZwV8J9MV8ZYH2GlX3ouVQUwd+m/LbUE8zlz9qhc7WMm4PbgJ4rx1cjzSVHhep5vkpu18Se9jsX3ikwIp4Y4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706605999; c=relaxed/simple;
-	bh=yxd9IHSWjzcBrPuUDO7+SCI1N0zvICZf05uTKbbfPXA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AvGxjly5iM+H29jokXv6wgFDDUN6c7XxxYyyTis9zougPD3eHiWFy1LpwYNrZhG+mhVTzlezvzGGO7MnJc8zRjFN6N+UuU3sMymfJN1n6pxUMJFx1WlPw4yVd6go6veHfPswnSl85hjr+e4dNFEumlRauUtvGvOq0mpnxKqW6vU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V6Pe6k+U; arc=none smtp.client-ip=209.85.210.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	s=arc-20240116; t=1706605931; c=relaxed/simple;
+	bh=c1F5HUyDS9pz9g1srZVHjwRjPe2I54aJjAWOf32bJAE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TERuYKRoG+F6MSImVSyhpP1fOoHvrogHlVW6Xwb0+0jYe4Dk/Qg2myoa9x35HWnHj6CzbhnslZHei8bK/H0BgO5ibuDpElAABEJTqT2UU27+9DDLRuFLZflo+t5WDjs/UZtJXoZzYY77BwCKHLYShBeBHlZngun/kMK7m/hM/0w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GlJnblv7; arc=none smtp.client-ip=209.85.166.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6e1214ae9d4so1189040a34.3;
-        Tue, 30 Jan 2024 01:13:17 -0800 (PST)
+Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-7bed9fb159fso128334539f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:12:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706605997; x=1707210797; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1706605929; x=1707210729; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kP7G/zPUbEjcGqCRjgaQMWAAf9wDrODicb4k9l2g++8=;
-        b=V6Pe6k+UGrgqV7xqpVrcPSh4/WagxZcW6mVw87SxgkRJqAjxyXUfuq2csLKHoPFYOA
-         wbEWNj/drHXX/UXtPMGayfKC3QAjqL4BkL6SvcXYHK1gUBvDzisitzOiU8/EluqgcxAU
-         yM3wcUZ9bG1xzuosC4eeY1cI5pXwhlprp2M8yYW0nDZeXwOK9dtuHLVM3ys2zeLCCwrt
-         WMoTZp6CKUqK9y7noEWv+KxA0ekazZqNWanG2o8HAMSQIgocy4ipIfENpe+ggCd8bSys
-         vDvkGo0HvH+JYn10rcnvBpFvOk+8aPh7hO8Io8e6fokvd1IPZnQknoZhpICYsZDms35i
-         04wg==
+        bh=wnbgnwm8mX0qqmyFdPhMbkalXQKPaabeF8Z9Wu1HI/4=;
+        b=GlJnblv7K9itJppI5DFAQPUj8tLNOPMtIxFOs1S6zvVT1+XKaMYp1Dej3owmlnNHkI
+         zXCu7Pqtr4llUDAL/ipYPTk9nYklVymyvUK/KgxezQKpiztX1LBxUeaCeMXW6mQrNPcX
+         KBdKa/iCMKszk8/XOi//PQHbcUgg16tMQ86mpJwyW7JpIigdt/5HxFmBxTVRYADjclfB
+         IXulyb6F0LiKZb088g/IAgFCJ1w9xaemWMjE35GJALMSFxuH1zKEu5fvdQaOTTGCnJ0w
+         jKkDJ/26SIyvEE8vMPpWHAYuiK4R+/G1XP7767lX19tnFaL0zj/Cp6r0dfl4xyU4hWj7
+         8oeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706605997; x=1707210797;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=kP7G/zPUbEjcGqCRjgaQMWAAf9wDrODicb4k9l2g++8=;
-        b=pSkpwMqZzWGQgELxlm9IEkN8M4GHSQMYjjnlCDZCHyMpI2LtV3I7++gKkfjSzo+0FZ
-         FsASvyi1TYC0aKhRLC0qpXJOb/UTMa2f0eQ5PhhY6K0yyNBm3T39vy4fWgUixuDaUTeD
-         RgDyeWSOk5+aWpupZCFLVm7fM87kZyyUqqISZ8KAVe2wS952yj3XByeUU338SFTU3lyD
-         kSdHXdwHRN+LuirjVKDSCCasyJjsYAXuoGyzHFxk1Oc0Y2SY5kzLJ8noAb0FpR6JlQ6y
-         i8ihZWm6mkwMYUhcpekAcN2eZSKwieAGEdwkr87vGkXOnobKKytsfEPwqKEN+o5eVvRA
-         btjw==
-X-Gm-Message-State: AOJu0Yw7CM89QiNGnN+7I/mM+wrBryMcw5P9ScZW0wew9y6om/UiX2ft
-	zDU1i6h+u3f+m8E3N2QdDEiqE6Endj6QXS/1KLTE2whcaI3jGNtV
-X-Google-Smtp-Source: AGHT+IE8Q4KG3NbeQFqt34/6WaZTRJSkgwKNvSafvHvYRaM+fZtDCLEugDIup6U8STh4gXX2K2JK/g==
-X-Received: by 2002:a05:6358:7e83:b0:178:7f7d:91a6 with SMTP id o3-20020a0563587e8300b001787f7d91a6mr2601345rwn.46.1706605997066;
-        Tue, 30 Jan 2024 01:13:17 -0800 (PST)
-Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
-        by smtp.gmail.com with ESMTPSA id b4-20020a056a000a8400b006dde023cce8sm7211721pfl.57.2024.01.30.01.13.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 01:13:16 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-From: Tejun Heo <tj@kernel.org>
-To: torvalds@linux-foundation.org,
-	mpatocka@redhat.com
-Cc: linux-kernel@vger.kernel.org,
-	dm-devel@lists.linux.dev,
-	msnitzer@redhat.com,
-	ignat@cloudflare.com,
-	damien.lemoal@wdc.com,
-	bob.liu@oracle.com,
-	houtao1@huawei.com,
-	peterz@infradead.org,
-	mingo@kernel.org,
-	netdev@vger.kernel.org,
-	allen.lkml@gmail.com,
-	kernel-team@meta.com,
-	Tejun Heo <tj@kernel.org>,
-	Alasdair Kergon <agk@redhat.com>,
-	Mike Snitzer <snitzer@kernel.org>
-Subject: [PATCH 8/8] dm-verity: Convert from tasklet to BH workqueue
-Date: Mon, 29 Jan 2024 23:11:55 -1000
-Message-ID: <20240130091300.2968534-9-tj@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240130091300.2968534-1-tj@kernel.org>
-References: <20240130091300.2968534-1-tj@kernel.org>
+        d=1e100.net; s=20230601; t=1706605929; x=1707210729;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wnbgnwm8mX0qqmyFdPhMbkalXQKPaabeF8Z9Wu1HI/4=;
+        b=tdV4ObMnkLqVUeg7bJ7kmAlDIh5gBsqlQ+D5Jc3Nych+LC/9Euy/yrJfVFsi1au2VM
+         sEPuHj6Kl3DASIveLw8LgVnW+trZHgFmgdbvIBByxc076SHQZXyQdUPNwuu/zsO4A7DL
+         XpOiaBVRsJkUz1O7K+3UJHZz5UGYSHjzJoRVBQ6jZe7gy3fe15KrJDVFzA4HTyEwyF6K
+         7/inWPVB30ayNiUxFcnE5lOm80MnMkhrPyE2YyXpJ4srFDjcvKQHX0waR1qaepIob97q
+         fkuU8NVk/RnUgnzm5/kZFFN7rXf9X8TSk6Wo1ShY/SsVjpdDAxUfQPi5kp9mDOGDHCA0
+         M++A==
+X-Gm-Message-State: AOJu0Yx06MMJFkU9LTz2eZQY1MlZVXhQ1K11aLZFiyPAuyzhtGqib5aZ
+	6TcEaXaj9FkoTOM4QaIlz+qDynxw7PRyVltoR/buVivv/LvxWUHMLhPN6xDOHYjH1DkjAdnUS+2
+	bHa+ktsj7u2jiSl6DcwfoQc8Gd3ZxGM3/Lfk=
+X-Google-Smtp-Source: AGHT+IGSqOqPVind6OqnxzJZZaJI3aTGoi16WEMWn2uwjgvCzSlAT9qvLAwCLqQKFmhSa7LYAzgKAM+8cOvA2cbx3uc=
+X-Received: by 2002:a05:6602:29b2:b0:7bf:fa4a:990f with SMTP id
+ u18-20020a05660229b200b007bffa4a990fmr4054925ios.10.1706605929213; Tue, 30
+ Jan 2024 01:12:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240130014208.565554-1-hannes@cmpxchg.org> <20240130014208.565554-2-hannes@cmpxchg.org>
+In-Reply-To: <20240130014208.565554-2-hannes@cmpxchg.org>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Tue, 30 Jan 2024 01:11:58 -0800
+Message-ID: <CAKEwX=P7Qsz1TdKjOYpw7E5U1VFJ2gWWPTMfBrvKdet0ZsA3Eg@mail.gmail.com>
+Subject: Re: [PATCH 01/20] mm: zswap: rename zswap_free_entry to zswap_entry_free
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Yosry Ahmed <yosryahmed@google.com>, 
+	Chengming Zhou <zhouchengming@bytedance.com>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The only generic interface to execute asynchronously in the BH context is
-tasklet; however, it's marked deprecated and has some design flaws. To
-replace tasklets, BH workqueue support was recently added. A BH workqueue
-behaves similarly to regular workqueues except that the queued work items
-are executed in the BH context.
+On Mon, Jan 29, 2024 at 5:42=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
+> wrote:
+>
+> There is a zswap_entry_ namespace with multiple functions already.
+>
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-This patch converts dm-verity from tasklet to BH workqueue.
+Acked-by: Nhat Pham <nphamcs@gmail.com>
 
-This is a minimal conversion which doesn't rename the related names
-including the "try_verify_in_tasklet" option. If this patch is applied, a
-follow-up patch would be necessary. I couldn't decide whether the option
-name would need to be updated too.
-
-Only compile tested. I don't know how to verity.
-
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Cc: Alasdair Kergon <agk@redhat.com>
-Cc: Mike Snitzer <snitzer@kernel.org>
-Cc: Mikulas Patocka <mpatocka@redhat.com>
-Cc: dm-devel@lists.linux.dev
----
- drivers/md/dm-verity-target.c | 8 ++++----
- drivers/md/dm-verity.h        | 2 +-
- 2 files changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/md/dm-verity-target.c b/drivers/md/dm-verity-target.c
-index 14e58ae70521..911261de2d08 100644
---- a/drivers/md/dm-verity-target.c
-+++ b/drivers/md/dm-verity-target.c
-@@ -645,9 +645,9 @@ static void verity_work(struct work_struct *w)
- 	verity_finish_io(io, errno_to_blk_status(verity_verify_io(io)));
- }
- 
--static void verity_tasklet(unsigned long data)
-+static void verity_bh_work(struct work_struct *w)
- {
--	struct dm_verity_io *io = (struct dm_verity_io *)data;
-+	struct dm_verity_io *io = container_of(w, struct dm_verity_io, bh_work);
- 	int err;
- 
- 	io->in_tasklet = true;
-@@ -675,8 +675,8 @@ static void verity_end_io(struct bio *bio)
- 	}
- 
- 	if (static_branch_unlikely(&use_tasklet_enabled) && io->v->use_tasklet) {
--		tasklet_init(&io->tasklet, verity_tasklet, (unsigned long)io);
--		tasklet_schedule(&io->tasklet);
-+		INIT_WORK(&io->bh_work, verity_bh_work);
-+		queue_work(system_bh_wq, &io->bh_work);
- 	} else {
- 		INIT_WORK(&io->work, verity_work);
- 		queue_work(io->v->verify_wq, &io->work);
-diff --git a/drivers/md/dm-verity.h b/drivers/md/dm-verity.h
-index f9d522c870e6..7c16f834f31a 100644
---- a/drivers/md/dm-verity.h
-+++ b/drivers/md/dm-verity.h
-@@ -83,7 +83,7 @@ struct dm_verity_io {
- 	struct bvec_iter iter;
- 
- 	struct work_struct work;
--	struct tasklet_struct tasklet;
-+	struct work_struct bh_work;
- 
- 	/*
- 	 * Three variably-size fields follow this struct:
--- 
-2.43.0
-
+> ---
+>  mm/zswap.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/mm/zswap.c b/mm/zswap.c
+> index 7f88b3a77e4a..173f2e6657de 100644
+> --- a/mm/zswap.c
+> +++ b/mm/zswap.c
+> @@ -520,7 +520,7 @@ static struct zpool *zswap_find_zpool(struct zswap_en=
+try *entry)
+>   * Carries out the common pattern of freeing and entry's zpool allocatio=
+n,
+>   * freeing the entry itself, and decrementing the number of stored pages=
+.
+>   */
+> -static void zswap_free_entry(struct zswap_entry *entry)
+> +static void zswap_entry_free(struct zswap_entry *entry)
+>  {
+>         if (!entry->length)
+>                 atomic_dec(&zswap_same_filled_pages);
+> @@ -555,7 +555,7 @@ static void zswap_entry_put(struct zswap_entry *entry=
+)
+>         WARN_ON_ONCE(refcount < 0);
+>         if (refcount =3D=3D 0) {
+>                 WARN_ON_ONCE(!RB_EMPTY_NODE(&entry->rbnode));
+> -               zswap_free_entry(entry);
+> +               zswap_entry_free(entry);
+>         }
+>  }
+>
+> --
+> 2.43.0
+>
 
