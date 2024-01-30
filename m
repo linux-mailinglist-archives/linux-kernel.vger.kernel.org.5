@@ -1,149 +1,121 @@
-Return-Path: <linux-kernel+bounces-44472-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44465-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADF0684227F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:14:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4E0B842267
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:13:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1A811C26CD3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:14:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85FEA1F245FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:13:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3667F6A011;
-	Tue, 30 Jan 2024 11:13:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E01B664D5;
+	Tue, 30 Jan 2024 11:12:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="sqhLf9jG"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KoUzgfh9"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C64B46772E;
-	Tue, 30 Jan 2024 11:13:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02F4E66B20;
+	Tue, 30 Jan 2024 11:12:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706613202; cv=none; b=Elje3v4VWVNvGCRgdoMP+5xkvopBH3xB50kshXwdBFKnBp8YSqC7yYI5uC1WWKftonHkXGuBF8lD4eUxLR2d4iy7rFVivx0sTmSGCLOBg1Hlkvv3/wPdfuc9K3rIdFSyl4Xc35InscJw5y3l07KhXOsF6tWcjD51HKyhmq9kUTs=
+	t=1706613176; cv=none; b=IRwttsR/wEoNlGkSdddJcgmHBOAm6lZhB+yBOsV9iKYTIUM4uTOl2Fup848hqeQ4A5PVcKvx2hNzXVGiZMLOf8xMquQ+lH1RHfXqgmbcMXs02XuzW/ZqXsr+RyH1cQ7dAtBXw7laUjQyezg/hRXwptduxhE+nsQVEtVgl0jCzb4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706613202; c=relaxed/simple;
-	bh=mEtrz7xMtfcpY7sT1iZb5MnMblxKwwvnwtCVasYjkwk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OUC7sXZshlbygV2lAcoCd0GkEHnJJ+2Vb9tpD9T9ZQ53cZyTp1luf8CiHi97fdKwqzzCH7uKvTCgCIgtxg3NSLv4Zkn69jjUYQAe3oJbSomAe8/emPVGWH2ye3obBb1bMU/QGukXqlO1Ex0ZAaZwbpczl9DmwcZjkWe4+KWRhhc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=sqhLf9jG; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706613198;
-	bh=mEtrz7xMtfcpY7sT1iZb5MnMblxKwwvnwtCVasYjkwk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sqhLf9jG5O6CWF4it6D6pVYOJQpzWwzFvcinU7Zeft6hwYnwmfrXbf+2t1IwFk8Q4
-	 Jf/DV2lzIq8TtyVOjDcTp0VVAG5qi+hTTzkbRf0QyKwjIok6ThM8pHvLWnpvNsRgFk
-	 9p1JDJ62axfSYIM9ZYQ+ZAEDWL4LY4Cuce8GziRGSHzF5hJKHD+X7u9jZEsW6Uo+Ym
-	 9IHotLcKMgZG1zEBtur32SaJD1Kn9v7az07C6sw75agJ6vTBfVRNRLMyzYC4Rxsr6v
-	 HVzu1FoMLTL+swrjIii3lAKVuukF8AM/JeqT8ISdofcYKLc9AwLhlvVJEhkut3blLY
-	 QnEwj6svk9TLA==
-Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B3B10378208F;
-	Tue, 30 Jan 2024 11:13:16 +0000 (UTC)
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-To: daniel.lezcano@linaro.org
-Cc: miquel.raynal@bootlin.com,
-	rafael@kernel.org,
-	rui.zhang@intel.com,
-	lukasz.luba@arm.com,
-	support.opensource@diasemi.com,
-	shawnguo@kernel.org,
-	s.hauer@pengutronix.de,
-	kernel@pengutronix.de,
-	festevam@gmail.com,
-	linux-imx@nxp.com,
-	andersson@kernel.org,
-	konrad.dybcio@linaro.org,
-	amitk@kernel.org,
-	thara.gopinath@gmail.com,
-	niklas.soderlund@ragnatech.se,
-	srinivas.pandruvada@linux.intel.com,
-	angelogioacchino.delregno@collabora.com,
-	baolin.wang@linux.alibaba.com,
-	u.kleine-koenig@pengutronix.de,
-	hayashi.kunihiko@socionext.com,
-	d-gole@ti.com,
-	linus.walleij@linaro.org,
-	DLG-Adam.Ward.opensource@dm.renesas.com,
-	error27@gmail.com,
-	heiko@sntech.de,
-	hdegoede@redhat.com,
-	jernej.skrabec@gmail.com,
-	f.fainelli@gmail.com,
-	bchihi@baylibre.com,
-	linux-pm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	kernel@collabora.com
-Subject: [PATCH v1 04/18] thermal/drivers/da9062: Migrate to thermal_zone_device_register()
+	s=arc-20240116; t=1706613176; c=relaxed/simple;
+	bh=M0lpIKLgHsHcpNnO2aKdjqw9uhZZRpl1IB/C3sBX9co=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PPNZhvvftTEWEl1WmyD4vThAivgCkvIPthvCbw1DyG0nYw/I2zZ8o3CAuYTIZ/t13Q9zRq9TTYr9q5Bp4atpERLhZpqiT5S4WJBOigXthEmFpieb1yNYZ7WlyNX2crNSEOFpObUOya0QxOadl2EWzXpquXEoYT5E8B18K+pkguw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KoUzgfh9; arc=none smtp.client-ip=134.134.136.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706613175; x=1738149175;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=M0lpIKLgHsHcpNnO2aKdjqw9uhZZRpl1IB/C3sBX9co=;
+  b=KoUzgfh9n8A2B8Ev1opiuLvvxA/A14oG+L2zWA6sgDIJ2vgLrhO7lC7D
+   t6Gf15bj/59NoFqmVCfG+7XxcmEAtmpiAYsuqdtoCKSai2iqYUzm1G7Lr
+   sQ9wcOMnv4h5lmQF76647gGThtUoz00hEcyeTV0CvSPfTgGdmq2OQSaMq
+   7t9n0aFvkdjUwVZz1QNsEEZ2JnhfJgS4c45Yp9kp5CxB8/rBwrCx+tD6w
+   VtMRxJjDTpyBSJxpxd5G5fwYBKLrwzCfOWtGpnrUR7he862KhB5qZhq6K
+   aU9ShgOZrjvYZubc7EBn4lsZOjN84Qn/WetcSLH+3Jm+neLBsJRmlKovz
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="467503953"
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="467503953"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 03:12:54 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="29873042"
+Received: from aravikum-mobl1.amr.corp.intel.com (HELO [10.209.88.191]) ([10.209.88.191])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 03:12:53 -0800
+Message-ID: <11280dec-cf3d-1694-d837-2bf263ad148a@linux.intel.com>
 Date: Tue, 30 Jan 2024 12:12:36 +0100
-Message-ID: <20240130111250.185718-5-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240130111250.185718-1-angelogioacchino.delregno@collabora.com>
-References: <20240130111250.185718-1-angelogioacchino.delregno@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH 08/18] ASoC: cs35l56: Fix default SDW TX mixer registers
+To: Richard Fitzgerald <rf@opensource.cirrus.com>, broonie@kernel.org,
+ tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+References: <20240129162737.497-1-rf@opensource.cirrus.com>
+ <20240129162737.497-9-rf@opensource.cirrus.com>
+ <4f54a12c-c8a3-414c-b4df-3f7b25e6d524@linux.intel.com>
+ <a8432725-6dc6-4765-831f-178dcee8b829@opensource.cirrus.com>
+Content-Language: en-US
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <a8432725-6dc6-4765-831f-178dcee8b829@opensource.cirrus.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The thermal API has a new thermal_zone_device_register() function which
-is deprecating the older thermal_zone_device_register_with_trips() and
-thermal_tripless_zone_device_register().
 
-Migrate to the new thermal zone device registration function.
+>>> CS35L56 is designed for SDCA and a generic SDCA driver would
+>>> know nothing about these chip-specific registers. So the
+>>> firmware sets up the SDW TX mixer registers to whatever audio
+>>> is relevant on a specific system.
+>>>
+>>> This means that the driver cannot assume the initial values
+>>> of these registers. But Linux has ALSA controls to configure
+>>> routing, so the registers can be patched to silicon default and
+>>> the ALSA controls used to select what audio to feed back to the
+>>> host capture path.
+>>
+>> humm, which has the precedence then?
+>> a) the values set by firmware
+>> b) the default values set by the driver?
+>>
+>> Also if the firmware touches those registers shouldn't they be marked as
+>> 'volatile'?
+>>
+> 
+> The firmware was designed to work with Windows, so it looks a bit
+> strange if you are coming at it from ALSA. There's not really any
+> defined 'precedence'. The firmware will setup the feedback monitor paths
+> to something that satisfies SDCA and Windows expectations.
+> 
+> We don't care about that in Linux, the firmware on the Intel DSP
+> probably isn't running the same algorithms for Linux, and we have ALSA
+> controls to configure those paths. So we patch the mixers back to their
+> silicon defaults and take over complete control of them.
+> 
+> The firmware only writes them during its power-up sequence so they
+> will only change when we are rebooting the firmware or coming out of
+> low-power standby, which is under the control of the driver. When that
+> happens regmap will re-apply the patch and then sync up the registers
+> again. The firmware won't touch them after boot, so we can avoid having
+> to mark them volatile (which would mean implementing our own manual
+> caching of the settings).
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- drivers/thermal/da9062-thermal.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/thermal/da9062-thermal.c b/drivers/thermal/da9062-thermal.c
-index 160d64913057..13c7a6bc36c4 100644
---- a/drivers/thermal/da9062-thermal.c
-+++ b/drivers/thermal/da9062-thermal.c
-@@ -158,6 +158,13 @@ MODULE_DEVICE_TABLE(of, da9062_compatible_reg_id_table);
- 
- static int da9062_thermal_probe(struct platform_device *pdev)
- {
-+	struct thermal_zone_device_params tzdp = {
-+		.tzp = {
-+			.ops = &da9062_thermal_ops,
-+			.trips = trips,
-+			.num_trips = ARRAY_SIZE(trips),
-+		}
-+	};
- 	struct da9062 *chip = dev_get_drvdata(pdev->dev.parent);
- 	struct da9062_thermal *thermal;
- 	const struct of_device_id *match;
-@@ -196,10 +203,11 @@ static int da9062_thermal_probe(struct platform_device *pdev)
- 	INIT_DELAYED_WORK(&thermal->work, da9062_thermal_poll_on);
- 	mutex_init(&thermal->lock);
- 
--	thermal->zone = thermal_zone_device_register_with_trips(thermal->config->name,
--								trips, ARRAY_SIZE(trips), 0, thermal,
--								&da9062_thermal_ops, NULL, pp_tmp,
--								0);
-+	tzdp.tzp.type = thermal->config->name;
-+	tzdp.tzp.devdata = thermal;
-+	tzdp.tzp.passive_delay = pp_tmp;
-+
-+	thermal->zone = thermal_zone_device_register(&tzdp);
- 	if (IS_ERR(thermal->zone)) {
- 		dev_err(&pdev->dev, "Cannot register thermal zone device\n");
- 		ret = PTR_ERR(thermal->zone);
--- 
-2.43.0
+ok, thanks for the explanations.
 
 
