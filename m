@@ -1,60 +1,39 @@
-Return-Path: <linux-kernel+bounces-43956-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43957-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23709841B8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 06:44:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55097841B92
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 06:51:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 986371F2618F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 05:44:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EEE18B24530
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 05:51:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2767381C5;
-	Tue, 30 Jan 2024 05:44:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KffBaLEd"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D854438385;
-	Tue, 30 Jan 2024 05:44:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA7BC381D9;
+	Tue, 30 Jan 2024 05:51:16 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30DA9381B6;
+	Tue, 30 Jan 2024 05:51:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706593445; cv=none; b=vCqiaQEvpd2pJ0XPfr7m5mlqSXvrO+m5r41ELAaaoZzGQmqnY8xUF9JMmFjEg5ceekE7nm30OX7cdpgqn74mKYLMglIINrvCpBgwXn/4Hy/kdWYs7IaF6+g5KZydD32NGk1gO7pxbMiWIs4TODxduj87owQWGaPcSJJXWG4xTmU=
+	t=1706593876; cv=none; b=XtENmQdl9Y2IlUsMdRubQggyKpR9I9yfn7cqE2sWYtI+rbCTJ54ubJ9pugVPnTrY65hhkBCxDqfztf+SSDBgMj3SKdhQl1d63xN+Ewxiar2tjD8CNd1lBzGoOAI+1kxn7PESm7XgQ6XQ4c7pmr+jQ9k9Aw6Zpqi4pkPYqo1z45Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706593445; c=relaxed/simple;
-	bh=2MihMSUV1KZty6KaBSKGV4CSIGIOSbuQNquwReYMTPI=;
+	s=arc-20240116; t=1706593876; c=relaxed/simple;
+	bh=8K9UnuvMcRu/4phSXWdkX2JClt3ysuFpTGp94GiiMvo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=i8etrTmuch6CjiKeSog/sjHg/MulQFbpZ7C1jvka54Z609bFwM/0NPTcakr6dvK9MZV8DZFeLexIqCR3rpuZSKtz6CaTMO/wdzJ+uwWIbd0xrbox3UAmhRC+oMYOjv/WE+V46AgG96r0nI1AHrv7gn0dNtCzen0WXez3wo5UrDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KffBaLEd; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706593444; x=1738129444;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=2MihMSUV1KZty6KaBSKGV4CSIGIOSbuQNquwReYMTPI=;
-  b=KffBaLEddpx1UzteEubaNr0Ifmwase6xhg9aENkGODAviGMAX4iFLPfM
-   qZpwwpXlSQfjWbMD3ucfSS3tHBkJxjmzfV/7JrumgREI8JO6gFfHAcErf
-   UDtZEl2PQjk8glHngeUznxVaQ/WDR3Hoqh5ODZaE6RvNHiFZQZO4hRshL
-   cknXe7llZw6Tt84KyIOL9CHLk9eTkL6HhNqAyp3LK3ZMsI58VkLppHnOP
-   kh11/ZoYOab34iHkL11vB2WIF6qrBq2gVcxHVjlU4uHgJrIwqZanGuw7n
-   ZQbHgPVWXTUxalyk04DJRJ0M4mjeylPdBYmzUl4fWDY1vCsFcuzut7Qun
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="3035408"
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="3035408"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 21:44:03 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="22328960"
-Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.238.130.190]) ([10.238.130.190])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 21:44:00 -0800
-Message-ID: <34237bc1-732c-46ef-a27a-a787381abd2d@linux.intel.com>
-Date: Tue, 30 Jan 2024 13:43:58 +0800
+	 In-Reply-To:Content-Type; b=tTF6bWCJ5ght04NB6+fL4TUw6mw/tjYIThNu6T+AN/vHyeeCmPTrk1sYuAm3rHa3vUa40inIRJjgRyIjYbRc3yn8zLC7VmC5zatoOLKxRME7C83guQq2fGqCBlyGxTXLCrM0zMyzci4aDxUMmaRBg9as/eZe1M8tQlMLl30hLso=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3B643DA7;
+	Mon, 29 Jan 2024 21:51:57 -0800 (PST)
+Received: from [10.163.41.110] (unknown [10.163.41.110])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5F9903F762;
+	Mon, 29 Jan 2024 21:51:00 -0800 (PST)
+Message-ID: <830691cf-cb96-443e-b6eb-2adfe2edd587@arm.com>
+Date: Tue, 30 Jan 2024 11:20:56 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,312 +41,145 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 3/5] iommu/vt-d: simplify parameters of
- qi_submit_sync() ATS invalidation callers
-To: Yi Liu <yi.l.liu@intel.com>, baolu.lu@linux.intel.com,
- bhelgaas@google.com, robin.murphy@arm.com, jgg@ziepe.ca
-Cc: kevin.tian@intel.com, dwmw2@infradead.org, will@kernel.org,
- lukas@wunner.de, iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
- linux-pci@vger.kernel.org
-References: <20240129034924.817005-1-haifeng.zhao@linux.intel.com>
- <20240129034924.817005-4-haifeng.zhao@linux.intel.com>
- <b7a8ee11-7fa7-4240-9d52-651f17bfe213@intel.com>
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-In-Reply-To: <b7a8ee11-7fa7-4240-9d52-651f17bfe213@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH RFC v3 09/35] mm: cma: Introduce cma_remove_mem()
+Content-Language: en-US
+To: Alexandru Elisei <alexandru.elisei@arm.com>, catalin.marinas@arm.com,
+ will@kernel.org, oliver.upton@linux.dev, maz@kernel.org,
+ james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com,
+ arnd@arndb.de, akpm@linux-foundation.org, mingo@redhat.com,
+ peterz@infradead.org, juri.lelli@redhat.com, vincent.guittot@linaro.org,
+ dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+ mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+ mhiramat@kernel.org, rppt@kernel.org, hughd@google.com
+Cc: pcc@google.com, steven.price@arm.com, vincenzo.frascino@arm.com,
+ david@redhat.com, eugenis@google.com, kcc@google.com, hyesoo.yu@samsung.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+ linux-arch@vger.kernel.org, linux-mm@kvack.org,
+ linux-trace-kernel@vger.kernel.org
+References: <20240125164256.4147-1-alexandru.elisei@arm.com>
+ <20240125164256.4147-10-alexandru.elisei@arm.com>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <20240125164256.4147-10-alexandru.elisei@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
 
-On 1/29/2024 5:37 PM, Yi Liu wrote:
-> On 2024/1/29 11:49, Ethan Zhao wrote:
->> fold parameters back to struct device_domain_info *info instead of 
->> extract
->> and pass them, thus decrease the number of the parameter passed for
->> following functions
->>
->> qi_flush_dev_iotlb()
->> qi_flush_dev_iotlb_pasid()
->> quirk_extra_dev_tlb_flush()
->>
->> no function change.
->>
->> Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
->> ---
->>   drivers/iommu/intel/dmar.c   | 26 ++++++++++++++++++++++----
->>   drivers/iommu/intel/iommu.c  | 29 +++++++----------------------
->>   drivers/iommu/intel/iommu.h  | 17 ++++++++---------
->>   drivers/iommu/intel/nested.c |  9 ++-------
->>   drivers/iommu/intel/pasid.c  |  9 ++-------
->>   drivers/iommu/intel/svm.c    | 17 ++++++++---------
->>   6 files changed, 49 insertions(+), 58 deletions(-)
->>
->> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
->> index 23cb80d62a9a..ab5e1760bd59 100644
->> --- a/drivers/iommu/intel/dmar.c
->> +++ b/drivers/iommu/intel/dmar.c
->> @@ -1517,11 +1517,20 @@ void qi_flush_iotlb(struct intel_iommu 
->> *iommu, u16 did, u64 addr,
->>       qi_submit_sync(iommu, &desc, 1, 0);
->>   }
->>   -void qi_flush_dev_iotlb(struct intel_iommu *iommu, u16 sid, u16 
->> pfsid,
->> -            u16 qdep, u64 addr, unsigned mask)
->> +void qi_flush_dev_iotlb(struct intel_iommu *iommu,
->> +            struct device_domain_info *info, u64 addr,
->
-> If you want to fold the parameters, why iommu is left? info also includes
-> iommu pointer.
 
-Good catch.
+On 1/25/24 22:12, Alexandru Elisei wrote:
+> Memory is added to CMA with cma_declare_contiguous_nid() and
+> cma_init_reserved_mem(). This memory is then put on the MIGRATE_CMA list in
+> cma_init_reserved_areas(), where the page allocator can make use of it.
 
-No reason to leave it there.
+cma_declare_contiguous_nid() reserves memory in memblock and marks the
+for subsequent CMA usage, where as cma_init_reserved_areas() activates
+these memory areas through init_cma_reserved_pageblock(). Standard page
+allocator only receives these memory via free_reserved_page() - only if
+the page block activation fails.
 
+> 
+> If a device manages multiple CMA areas, and there's an error when one of
+> the areas is added to CMA, there is no mechanism for the device to prevent
 
-Thanks,
+What kind of error ? init_cma_reserved_pageblock() fails ? But that will
+not happen until cma_init_reserved_areas().
 
-Ethan
+> the rest of the areas, which were added before the error occured, from
+> being later added to the MIGRATE_CMA list.
 
->
->> +            unsigned int mask)
->>   {
->> +    u16 sid, qdep, pfsid;
->>       struct qi_desc desc;
->>   +    if (!info || !info->ats_enabled)
->> +        return;
->> +
->> +    sid = info->bus << 8 | info->devfn;
->> +    qdep = info->ats_qdep;
->> +    pfsid = info->pfsid;
->> +
->>       /*
->>        * VT-d spec, section 4.3:
->>        *
->> @@ -1590,11 +1599,20 @@ void qi_flush_piotlb(struct intel_iommu 
->> *iommu, u16 did, u32 pasid, u64 addr,
->>   }
->>     /* PASID-based device IOTLB Invalidate */
->> -void qi_flush_dev_iotlb_pasid(struct intel_iommu *iommu, u16 sid, 
->> u16 pfsid,
->> -                  u32 pasid,  u16 qdep, u64 addr, unsigned int 
->> size_order)
->> +void qi_flush_dev_iotlb_pasid(struct intel_iommu *iommu,
->> +                  struct device_domain_info *info, u64 addr, u32 pasid,
->> +                  unsigned int size_order)
->>   {
->>       unsigned long mask = 1UL << (VTD_PAGE_SHIFT + size_order - 1);
->>       struct qi_desc desc = {.qw1 = 0, .qw2 = 0, .qw3 = 0};
->> +    u16 sid, qdep, pfsid;
->> +
->> +    if (!info || !dev_is_pci(info->dev))
->> +        return;
->> +
->> +    sid = info->bus << 8 | info->devfn;
->> +    qdep = info->ats_qdep;
->> +    pfsid = info->pfsid;
->>         /*
->>        * VT-d spec, section 4.3:
->> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
->> index 6fb5f6fceea1..e5902944b3db 100644
->> --- a/drivers/iommu/intel/iommu.c
->> +++ b/drivers/iommu/intel/iommu.c
->> @@ -1310,16 +1310,11 @@ static void iommu_disable_pci_caps(struct 
->> device_domain_info *info)
->>   static void __iommu_flush_dev_iotlb(struct device_domain_info *info,
->>                       u64 addr, unsigned int mask)
->>   {
->> -    u16 sid, qdep;
->> -
->>       if (!info || !info->ats_enabled)
->>           return;
->>   -    sid = info->bus << 8 | info->devfn;
->> -    qdep = info->ats_qdep;
->> -    qi_flush_dev_iotlb(info->iommu, sid, info->pfsid,
->> -               qdep, addr, mask);
->> -    quirk_extra_dev_tlb_flush(info, addr, mask, IOMMU_NO_PASID, qdep);
->> +    qi_flush_dev_iotlb(info->iommu, info, addr, mask);
->> +    quirk_extra_dev_tlb_flush(info, addr, IOMMU_NO_PASID, mask);
->>   }
->>     static void iommu_flush_dev_iotlb(struct dmar_domain *domain,
->> @@ -1342,11 +1337,7 @@ static void iommu_flush_dev_iotlb(struct 
->> dmar_domain *domain,
->>           if (!info->ats_enabled)
->>               continue;
->>   -        qi_flush_dev_iotlb_pasid(info->iommu,
->> -                     PCI_DEVID(info->bus, info->devfn),
->> -                     info->pfsid, dev_pasid->pasid,
->> -                     info->ats_qdep, addr,
->> -                     mask);
->> +        qi_flush_dev_iotlb_pasid(info->iommu, info, addr, 
->> dev_pasid->pasid, mask);
->>       }
->>       spin_unlock_irqrestore(&domain->lock, flags);
->>   }
->> @@ -4990,22 +4981,16 @@ static void __init check_tylersburg_isoch(void)
->>    *
->>    * As a reminder, #6 will *NEED* this quirk as we enable nested 
->> translation.
->>    */
->> -void quirk_extra_dev_tlb_flush(struct device_domain_info *info,
->> -                   unsigned long address, unsigned long mask,
->> -                   u32 pasid, u16 qdep)
->> +void quirk_extra_dev_tlb_flush(struct device_domain_info *info, u32 
->> pasid,
->> +                   unsigned long address, unsigned long mask)
->>   {
->> -    u16 sid;
->> -
->>       if (likely(!info->dtlb_extra_inval))
->>           return;
->>   -    sid = PCI_DEVID(info->bus, info->devfn);
->>       if (pasid == IOMMU_NO_PASID) {
->> -        qi_flush_dev_iotlb(info->iommu, sid, info->pfsid,
->> -                   qdep, address, mask);
->> +        qi_flush_dev_iotlb(info->iommu, info, address, mask);
->>       } else {
->> -        qi_flush_dev_iotlb_pasid(info->iommu, sid, info->pfsid,
->> -                     pasid, qdep, address, mask);
->> +        qi_flush_dev_iotlb_pasid(info->iommu, info, address, pasid, 
->> mask);
->>       }
->>   }
->>   diff --git a/drivers/iommu/intel/iommu.h b/drivers/iommu/intel/iommu.h
->> index d02f916d8e59..f68f17476d85 100644
->> --- a/drivers/iommu/intel/iommu.h
->> +++ b/drivers/iommu/intel/iommu.h
->> @@ -1037,18 +1037,17 @@ void qi_flush_context(struct intel_iommu 
->> *iommu, u16 did,
->>                 u16 sid, u8 fm, u64 type);
->>   void qi_flush_iotlb(struct intel_iommu *iommu, u16 did, u64 addr,
->>               unsigned int size_order, u64 type);
->> -void qi_flush_dev_iotlb(struct intel_iommu *iommu, u16 sid, u16 pfsid,
->> -            u16 qdep, u64 addr, unsigned mask);
->> -
->> +void qi_flush_dev_iotlb(struct intel_iommu *iommu,
->> +            struct device_domain_info *info, u64 addr,
->> +            unsigned int mask);
->>   void qi_flush_piotlb(struct intel_iommu *iommu, u16 did, u32 pasid, 
->> u64 addr,
->>                unsigned long npages, bool ih);
->>   -void qi_flush_dev_iotlb_pasid(struct intel_iommu *iommu, u16 sid, 
->> u16 pfsid,
->> -                  u32 pasid, u16 qdep, u64 addr,
->> -                  unsigned int size_order);
->> -void quirk_extra_dev_tlb_flush(struct device_domain_info *info,
->> -                   unsigned long address, unsigned long pages,
->> -                   u32 pasid, u16 qdep);
->> +void qi_flush_dev_iotlb_pasid(struct intel_iommu *iommu,
->> +                  struct device_domain_info *info, u64 addr,
->> +                  u32 pasid, unsigned int size_order);
->> +void quirk_extra_dev_tlb_flush(struct device_domain_info *info, u32 
->> pasid,
->> +                   unsigned long address, unsigned long mask);
->>   void qi_flush_pasid_cache(struct intel_iommu *iommu, u16 did, u64 
->> granu,
->>                 u32 pasid);
->>   diff --git a/drivers/iommu/intel/nested.c 
->> b/drivers/iommu/intel/nested.c
->> index f26c7f1c46cc..d15f72b55940 100644
->> --- a/drivers/iommu/intel/nested.c
->> +++ b/drivers/iommu/intel/nested.c
->> @@ -78,18 +78,13 @@ static void nested_flush_dev_iotlb(struct 
->> dmar_domain *domain, u64 addr,
->>   {
->>       struct device_domain_info *info;
->>       unsigned long flags;
->> -    u16 sid, qdep;
->>         spin_lock_irqsave(&domain->lock, flags);
->>       list_for_each_entry(info, &domain->devices, link) {
->>           if (!info->ats_enabled)
->>               continue;
->> -        sid = info->bus << 8 | info->devfn;
->> -        qdep = info->ats_qdep;
->> -        qi_flush_dev_iotlb(info->iommu, sid, info->pfsid,
->> -                   qdep, addr, mask);
->> -        quirk_extra_dev_tlb_flush(info, addr, mask,
->> -                      IOMMU_NO_PASID, qdep);
->> +        qi_flush_dev_iotlb(info->iommu, info, addr, mask);
->> +        quirk_extra_dev_tlb_flush(info, IOMMU_NO_PASID, addr, mask);
->>       }
->>       spin_unlock_irqrestore(&domain->lock, flags);
->>   }
->> diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
->> index 953592125e4a..5dacdea3cab7 100644
->> --- a/drivers/iommu/intel/pasid.c
->> +++ b/drivers/iommu/intel/pasid.c
->> @@ -208,7 +208,6 @@ devtlb_invalidation_with_pasid(struct intel_iommu 
->> *iommu,
->>                      struct device *dev, u32 pasid)
->>   {
->>       struct device_domain_info *info;
->> -    u16 sid, qdep, pfsid;
->>         info = dev_iommu_priv_get(dev);
->>       if (!info || !info->ats_enabled)
->> @@ -217,10 +216,6 @@ devtlb_invalidation_with_pasid(struct 
->> intel_iommu *iommu,
->>       if (pci_dev_is_disconnected(to_pci_dev(dev)))
->>           return;
->>   -    sid = info->bus << 8 | info->devfn;
->> -    qdep = info->ats_qdep;
->> -    pfsid = info->pfsid;
->> -
->>       /*
->>        * When PASID 0 is used, it indicates RID2PASID(DMA request w/o 
->> PASID),
->>        * devTLB flush w/o PASID should be used. For non-zero PASID under
->> @@ -228,9 +223,9 @@ devtlb_invalidation_with_pasid(struct intel_iommu 
->> *iommu,
->>        * efficient to flush devTLB specific to the PASID.
->>        */
->>       if (pasid == IOMMU_NO_PASID)
->> -        qi_flush_dev_iotlb(iommu, sid, pfsid, qdep, 0, 64 - 
->> VTD_PAGE_SHIFT);
->> +        qi_flush_dev_iotlb(iommu, info, 0, 64 - VTD_PAGE_SHIFT);
->>       else
->> -        qi_flush_dev_iotlb_pasid(iommu, sid, pfsid, pasid, qdep, 0, 
->> 64 - VTD_PAGE_SHIFT);
->> +        qi_flush_dev_iotlb_pasid(iommu, info, 0, pasid, 64 - 
->> VTD_PAGE_SHIFT);
->>   }
->>     void intel_pasid_tear_down_entry(struct intel_iommu *iommu, 
->> struct device *dev,
->> diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
->> index 40edd282903f..89168b31bf31 100644
->> --- a/drivers/iommu/intel/svm.c
->> +++ b/drivers/iommu/intel/svm.c
->> @@ -181,11 +181,10 @@ static void __flush_svm_range_dev(struct 
->> intel_svm *svm,
->>         qi_flush_piotlb(sdev->iommu, sdev->did, svm->pasid, address, 
->> pages, ih);
->>       if (info->ats_enabled) {
->> -        qi_flush_dev_iotlb_pasid(sdev->iommu, sdev->sid, info->pfsid,
->> -                     svm->pasid, sdev->qdep, address,
->> +        qi_flush_dev_iotlb_pasid(sdev->iommu, info, address, 
->> svm->pasid,
->>                        order_base_2(pages));
->> -        quirk_extra_dev_tlb_flush(info, address, order_base_2(pages),
->> -                      svm->pasid, sdev->qdep);
->> +        quirk_extra_dev_tlb_flush(info, svm->pasid, address,
->> +                      order_base_2(pages));
->>       }
->>   }
->>   @@ -227,11 +226,11 @@ static void intel_flush_svm_all(struct 
->> intel_svm *svm)
->>             qi_flush_piotlb(sdev->iommu, sdev->did, svm->pasid, 0, 
->> -1UL, 0);
->>           if (info->ats_enabled) {
->> -            qi_flush_dev_iotlb_pasid(sdev->iommu, sdev->sid, 
->> info->pfsid,
->> -                         svm->pasid, sdev->qdep,
->> -                         0, 64 - VTD_PAGE_SHIFT);
->> -            quirk_extra_dev_tlb_flush(info, 0, 64 - VTD_PAGE_SHIFT,
->> -                          svm->pasid, sdev->qdep);
->> +            qi_flush_dev_iotlb_pasid(sdev->iommu, info, 0,
->> +                         svm->pasid,
->> +                         64 - VTD_PAGE_SHIFT);
->> +            quirk_extra_dev_tlb_flush(info, svm->pasid, 0,
->> +                          64 - VTD_PAGE_SHIFT);
->>           }
->>       }
->>       rcu_read_unlock();
->
+Why is this mechanism required ? cma_init_reserved_areas() scans over all
+CMA areas and try and activate each of them sequentially. Why is not this
+sufficient ?
+
+> 
+> Add cma_remove_mem() which allows a previously reserved CMA area to be
+> removed and thus it cannot be used by the page allocator.
+
+Successfully activated CMA areas do not get used by the buddy allocator.
+
+> 
+> Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
+> ---
+> 
+> Changes since rfc v2:
+> 
+> * New patch.
+> 
+>  include/linux/cma.h |  1 +
+>  mm/cma.c            | 30 +++++++++++++++++++++++++++++-
+>  2 files changed, 30 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/cma.h b/include/linux/cma.h
+> index e32559da6942..787cbec1702e 100644
+> --- a/include/linux/cma.h
+> +++ b/include/linux/cma.h
+> @@ -48,6 +48,7 @@ extern int cma_init_reserved_mem(phys_addr_t base, phys_addr_t size,
+>  					unsigned int order_per_bit,
+>  					const char *name,
+>  					struct cma **res_cma);
+> +extern void cma_remove_mem(struct cma **res_cma);
+>  extern struct page *cma_alloc(struct cma *cma, unsigned long count, unsigned int align,
+>  			      bool no_warn);
+>  extern int cma_alloc_range(struct cma *cma, unsigned long start, unsigned long count,
+> diff --git a/mm/cma.c b/mm/cma.c
+> index 4a0f68b9443b..2881bab12b01 100644
+> --- a/mm/cma.c
+> +++ b/mm/cma.c
+> @@ -147,8 +147,12 @@ static int __init cma_init_reserved_areas(void)
+>  {
+>  	int i;
+>  
+> -	for (i = 0; i < cma_area_count; i++)
+> +	for (i = 0; i < cma_area_count; i++) {
+> +		/* Region was removed. */
+> +		if (!cma_areas[i].count)
+> +			continue;
+
+Skip previously added CMA area (now zeroed out) ?
+
+>  		cma_activate_area(&cma_areas[i]);
+> +	}
+>  
+>  	return 0;
+>  }
+
+cma_init_reserved_areas() gets called via core_initcall(). Some how
+platform/device needs to call cma_remove_mem() before core_initcall()
+gets called ? This might be time sensitive.
+
+> @@ -216,6 +220,30 @@ int __init cma_init_reserved_mem(phys_addr_t base, phys_addr_t size,
+>  	return 0;
+>  }
+>  
+> +/**
+> + * cma_remove_mem() - remove cma area
+> + * @res_cma: Pointer to the cma region.
+> + *
+> + * This function removes a cma region created with cma_init_reserved_mem(). The
+> + * ->count is set to 0.
+> + */
+> +void __init cma_remove_mem(struct cma **res_cma)
+> +{
+> +	struct cma *cma;
+> +
+> +	if (WARN_ON_ONCE(!res_cma || !(*res_cma)))
+> +		return;
+> +
+> +	cma = *res_cma;
+> +	if (WARN_ON_ONCE(!cma->count))
+> +		return;
+> +
+> +	totalcma_pages -= cma->count;
+> +	cma->count = 0;
+> +
+> +	*res_cma = NULL;
+> +}
+> +
+>  /**
+>   * cma_declare_contiguous_nid() - reserve custom contiguous area
+>   * @base: Base address of the reserved area optional, use 0 for any
+
+But first please do explain what are the errors device or platform might
+see on a previously marked CMA area so that removing them on way becomes
+necessary preventing their activation via cma_init_reserved_areas().
 
