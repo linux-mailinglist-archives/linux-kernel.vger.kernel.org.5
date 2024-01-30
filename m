@@ -1,146 +1,146 @@
-Return-Path: <linux-kernel+bounces-44813-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44814-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BBA18427BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:14:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B9968427BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:15:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E821DB22731
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:14:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50DA91F26A67
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:15:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D15F81AA5;
-	Tue, 30 Jan 2024 15:14:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D2127CF2D;
+	Tue, 30 Jan 2024 15:14:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eQa56v56"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="Y9S9PIym"
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D43D7F7CF;
-	Tue, 30 Jan 2024 15:14:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A09B27A73C;
+	Tue, 30 Jan 2024 15:14:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706627670; cv=none; b=Hfn8zWnqN/eepNq0rOKxlDAuWVCIvyKzZjphMxnDAGfOrmArOtbaIJEL/2CvftIIDcCJQmbAMVMyduiFmjot7Q2hRHVmoH5yJkiwjxrCtlgTCT8IFp1C0okm/BcdVzh+abTPgxhRX0d0yBOjqdDj8Mx8eAXruYKH95bObJv7qto=
+	t=1706627691; cv=none; b=GfV3K0ODvcz8MOiRViuhk+XHFnZ/vscuDbEKTVRTUJkjIIJQ4zHO85V00uk4jH8n50lh0Ngd1WimwiSzyQEExLpyjfTPrFTbAlJrGxtEjQWe/tAe6WonVd+NIwbo487aJtjIicZ4fHidCLqzfBcxdPGzEA+B0tb7ru/qKnRUVQo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706627670; c=relaxed/simple;
-	bh=gAg8cpP+XJBiM4/rqOBN5Esq/wRJ9lIQmGQX2ctCfRU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pjPXrayYOjyBHdSUM2ByY1Alcju7VVlo+uoBfNmJKx7CPoAhReQGZu7cRYrAmCZArJUkc+ikdy28KSHTOTG5pjnekqsYXRAI50Yt7ZHfqUrqWd63wKVZ6liJEzVRCn3z1JibFKI9WXes28k1Fbjz9AVpD5EL2qucfrvoYHKIYt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eQa56v56; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 454D2C43390;
-	Tue, 30 Jan 2024 15:14:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706627670;
-	bh=gAg8cpP+XJBiM4/rqOBN5Esq/wRJ9lIQmGQX2ctCfRU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eQa56v56VzaqeY0atCPHBrESYKWr6KaJO9cgg4jX+INNfhWltGeJgTb6pfBKMR+9L
-	 1MQFzeinTyMzvOw6v0hynWEEXlwLh5AfZgxdm41piwc6nrS5pI8Crks9spKnw4j48y
-	 cwNI2BVFkjxHyoR/7GuikRJLfrE07Wj0fnNg86n3Z2U2JfddcUJjLqK6E68nAfK6Si
-	 AS72I8/FPYSNtnVQ/x3cVBJQ3kjN4MYAZT8SMCsn8eNRJkDtIkDmc1aJoexnt35VMp
-	 a0dO16WknmiyTRXbjTtPW4jZlgEG42y3tr+Q8lgNs+oRaDcIIKZ3MTnZsp0gBb1rZI
-	 Qce9UWtyh1Rng==
-Date: Tue, 30 Jan 2024 09:14:28 -0600
-From: Rob Herring <robh@kernel.org>
-To: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Cc: linux-kernel@vger.kernel.org,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Conor Dooley <conor+dt@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
-	David Airlie <airlied@gmail.com>,
-	Jessica Zhang <quic_jesszhan@quicinc.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>, devicetree@vger.kernel.org,
-	dri-devel@lists.freedesktop.org
-Subject: Re: [drm-drm-misc:drm-misc-next] dt-bindings: nt35510: document
- 'port' property
-Message-ID: <20240130151428.GA1629184-robh@kernel.org>
-References: <20240127152821.65744-1-dario.binacchi@amarulasolutions.com>
+	s=arc-20240116; t=1706627691; c=relaxed/simple;
+	bh=h5FQ47qXuTnmiZi7uPNXxphsw2Z8nkL44QsJTo8DKRI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IGxwmnImeFblo3j99SG8glcCxBgrL+YnGy03+yFPVfOS7LULs1I9Oot5bCFqmJ3pUv9qU8t062/xGy7+T+2+6jO86IBZ20aitpxxuoEU/i0mXfD7qBu7wQbQugWq/lXJ/su450L3f1Q6Zd7qnq5uO1LgdbWB8LW16ANSPF0kBOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=Y9S9PIym; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1706627688;
+	bh=h5FQ47qXuTnmiZi7uPNXxphsw2Z8nkL44QsJTo8DKRI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Y9S9PIymVF4suOMYwobbgiBkRbKBBpk+lSnLQgDi5x0UZQnEHvkB2GbNcpIsxHIl9
+	 zt4Ov/FW+piBKUXcQsoIw1lRpiOvLwI3Srw9Iy6vOf+6/5Oc4fb+oNjV1FcCO//FNH
+	 SiBzGEkDMAIX5xX1HV4RVe9HVq+ecKqbxt8MG03uhxg7sjyA7FTVxrDkdqL81qSJcB
+	 3cDn/r7Y+FYLN8CLkAJ3X69mcH32qOpZwineik64Gbgyb3NBIAA7njWqW3bxsB23Hz
+	 swS2z0WS2yz6PmT55k/kMJ8SBqkjnlxd38S6u0LS2R/uAD5DKpeZdGh7+BR12WcCV4
+	 Nsu4VHJnlGPVQ==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TPTHD1wnPzVgJ;
+	Tue, 30 Jan 2024 10:14:48 -0500 (EST)
+Message-ID: <f84c48ec-2963-4754-9b6a-8eb0c473d7d0@efficios.com>
+Date: Tue, 30 Jan 2024 10:14:48 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240127152821.65744-1-dario.binacchi@amarulasolutions.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/7] Introduce cache_is_aliasing() to fix DAX
+ regression
+Content-Language: en-US
+To: Dan Williams <dan.j.williams@intel.com>,
+ Vishal Verma <vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>, linux-mm@kvack.org,
+ linux-arch@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+ linux-cxl@vger.kernel.org, nvdimm@lists.linux.dev,
+ Linux-Fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20240129210631.193493-1-mathieu.desnoyers@efficios.com>
+ <65b8173160ec8_59028294b3@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <65b8173160ec8_59028294b3@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sat, Jan 27, 2024 at 04:28:08PM +0100, Dario Binacchi wrote:
-> Allow 'port' property (coming from panel-common.yaml) to be used in DTS:
+On 2024-01-29 16:22, Dan Williams wrote:
+> Mathieu Desnoyers wrote:
+>> This commit introduced in v5.13 prevents building FS_DAX on 32-bit ARM,
+>> even on ARMv7 which does not have virtually aliased dcaches:
+>>
+>> commit d92576f1167c ("dax: does not work correctly with virtual aliasing caches")
+>>
+>> It used to work fine before: I have customers using dax over pmem on
+>> ARMv7, but this regression will likely prevent them from upgrading their
+>> kernel.
+>>
+>> The root of the issue here is the fact that DAX was never designed to
+>> handle virtually aliased dcache (VIVT and VIPT with aliased dcache). It
+>> touches the pages through their linear mapping, which is not consistent
+>> with the userspace mappings on virtually aliased dcaches.
+>>
+>> This patch series introduces cache_is_aliasing() with new Kconfig
+>> options:
+>>
+>>    * ARCH_HAS_CACHE_ALIASING
+>>    * ARCH_HAS_CACHE_ALIASING_DYNAMIC
+>>
+>> and implements it for all architectures. The "DYNAMIC" implementation
+>> implements cache_is_aliasing() as a runtime check, which is what is
+>> needed on architectures like 32-bit ARMV6 and ARMV6K.
+>>
+>> With this we can basically narrow down the list of architectures which
+>> are unsupported by DAX to those which are really affected.
+>>
+>> Feedback is welcome,
 > 
->   st/stm32f769-disco-mb1166-reva09.dtb: panel@0: 'port' does not match any of the regexes: 'pinctrl-[0-9]+'
-> 
-> Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-> Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
-> 
-> ---
-> 
->  .../display/panel/novatek,nt35510.yaml        | 34 +++++++++++++++++++
->  1 file changed, 34 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml b/Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml
-> index a4afaff483b7..72913719df23 100644
-> --- a/Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml
-> +++ b/Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml
-> @@ -31,6 +31,22 @@ properties:
->    vddi-supply:
->      description: regulator that supplies the vddi voltage
->    backlight: true
-> +  port:
-> +    $ref: /schemas/graph.yaml#/properties/port
+> Hi Mathieu, this looks good overall, just some quibbling about the
+> ordering.
 
-Just 'port: true'
+Thanks for having a look !
 
-> +
-> +if:
-> +  properties:
-> +    compatible:
-> +      contains:
-> +        enum:
-> +          - frida,frd400b25025
-> +then:
-> +  required:
-> +    - port
-> +
-> +else:
-> +  properties:
-> +    port: false
-
-No need for this. 'port' should be allowed for everyone.
-
->  
->  required:
->    - compatible
-> @@ -54,5 +70,23 @@ examples:
->              backlight = <&gpio_bl>;
->          };
->      };
-> +  - |
-> +    dsi {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        panel@0 {
-> +            compatible = "frida,frd400b25025", "novatek,nt35510";
-> +            vddi-supply = <&vcc_3v3>;
-> +            vdd-supply = <&vcc_3v3>;
-> +            reg = <0>; /* dsi virtual channel (0..3) */
-> +            reset-gpios = <&gpioj 15 GPIO_ACTIVE_LOW>;
->  
-> +            port {
-> +                dsi_panel_in: endpoint {
-> +                    remote-endpoint = <&dsi_out>;
-> +                };
-> +            };
-> +        };
-> +    };
->  ...
-> -- 
-> 2.43.0
 > 
+> I would introduce dax_is_supported() with the current overly broad
+> interpretation of "!(ARM || MIPS || SPARC)" using IS_ENABLED(), then
+> fixup the filesystems to use the new helper, and finally go back and
+> convert dax_is_supported() to use cache_is_aliasing() internally.
+
+Will do.
+
+> 
+> Separately, it is not clear to me why ARCH_HAS_CACHE_ALIASING_DYNAMIC
+> needs to exist. As long as all paths that care are calling
+> cache_is_aliasing() then whether it is dynamic or not is something only
+> the compiler cares about. If those dynamic archs do not want to pay the
+> .text size increase they can always do CONFIG_FS_DAX=n, right?
+
+Good point. It will help reduce complexity and improve test coverage.
+
+I also intend to rename "cache_is_aliasing()" to "dcache_is_aliasing()",
+so if we introduce an "icache_is_aliasing()" in the future, it won't be
+confusing. Having aliasing icache-dcache but not dcache-dcache seems to
+be fairly common.
+
+So basically:
+
+If an arch selects ARCH_HAS_CACHE_ALIASING, it implements
+dcache_is_aliasing() (for now), and eventually we can implement
+icache_is_aliasing() as well.
+
+Thanks,
+
+Mathieu
+
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
 
