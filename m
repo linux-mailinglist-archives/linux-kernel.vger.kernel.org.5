@@ -1,205 +1,197 @@
-Return-Path: <linux-kernel+bounces-43713-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43714-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 241B1841840
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 02:24:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7136841845
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 02:29:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD89D28596E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 01:24:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 502821F238E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 01:29:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D368D360AE;
-	Tue, 30 Jan 2024 01:24:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D52736126;
+	Tue, 30 Jan 2024 01:29:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bIFPOvKO"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bLEnBP+y"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FAEB339AD
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:24:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706577879; cv=none; b=RpOpTBpWrvljoGamaS7vrKrWNTdsoJgkKxCz7Ng+r3Kbnn8oAZFL6+D6XZjJKheopUJXBvwlkRha8E1AUEtJAVfcY9PNM2s3Iyxuhu88WflOfqs9WMerU5OOsMhg0D+1fN4mSVrWGBt4NmbguJzQPL7oy6QZpKMn6L7UZ1eUNhc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706577879; c=relaxed/simple;
-	bh=j+GJVbuTueC426ARuRfLk+gzmDWC3BNHlZo/pA4JSTo=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=sjhZgd3TfeLY8uTQP2mEru3XXErMVVGkg0SeBP0ShOPi/YHulpS63EnHgGdrjtJuSUly+YsmZ9v7b846uHVxtdbr5PtXIZj5dsLmn8IGhdm6SGlf5ViYs3Du8KMqPyfDp6TcchDAIimXUAu4/chBERLK0HOtBZ9jcYTtYkOx2pI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bIFPOvKO; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-602d563287cso53516337b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 17:24:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706577874; x=1707182674; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kKsXe4d9eEU7eWHhf0dKSX3npO3wX+Yxof1zu2c6dBc=;
-        b=bIFPOvKO/PiGZUcCID68Ss+DeTwpL7G42Yj9IOWzUpnWzbUnffpvjnjcnf5dapJbCO
-         Zhhp+fAyoVXQkFLQ+xlHiwt0JM1IQPC7pKbM0cCVJyygcofGsvlNjEUdjzVRHv7/nKmA
-         r3Wcl3ShXMR3a9qFs7or8bRAzVFyzTK6G1kRM9pZ0zICtJiJioYf3fyF2QkgHFWL7kMT
-         mfSuk5Nnf9HFoUqq4d/D3YhjFYjT39RpDn2pLs23CZSB1vjE+NkEoNs0Sg9x9rJlH0up
-         8uFUjNsgro/YWHB9mmasLzaiDXAX2efhNTYLyHnTQoq7bHyA/9R8FtfvTtMdEMTsYVwZ
-         Ui9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706577874; x=1707182674;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kKsXe4d9eEU7eWHhf0dKSX3npO3wX+Yxof1zu2c6dBc=;
-        b=B6GaK72B/Avk+KYDVk2IaiYcHnNaP3feAeQ1dnEIWVmgKjrUKxEAHKmHjUfNGG2aJV
-         Wvv07OgXjlka8ZNwu3NyxywhwFTxL6CcmlCWH+eIgqqsfGOnt6qBO3qWZM/stEZRvzeJ
-         zYBVykNghhYohCMp5/R2p47eQ4geKULJev8kOF8XgcDGlGJ7gkiPFdHmonLKVgOGJEGs
-         /NCkmJNXA/+79KmJLuOGazGxc+j/vyHMgYb51+UrI9kHibEL2qEc6K10BOHk3nxpJLRX
-         GuOv8dfKGwFAtDHU7pvUSQEHS8ovYAu5EHzEflrYdwqKMb/avmm5FbymiFWoAYWrA4G8
-         1/lA==
-X-Gm-Message-State: AOJu0YydnBQa6rDMTLa8+knPEBr/rgSI65bE+jyhVRqmbqLkRFuJFd9+
-	0cifA9LV5F/u4nPHWlPlmjIrGu2i9DP4rxWGAKqdSp3TM0GLK7yIXVYC0h9efpsHJ9nsbQl8k6E
-	wbSk+a0ubpQZqV8Cm4g==
-X-Google-Smtp-Source: AGHT+IGZLdTuoOjw1Nr7qvD+0vkkEzceltDuyoLOLKxYHKXc2jfBWkBY2f8WOz+VnouBav8ifONTd0ShyTcuOUOT
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:690c:10d:b0:5ff:96b6:8ee1 with SMTP
- id bd13-20020a05690c010d00b005ff96b68ee1mr2302301ywb.7.1706577874343; Mon, 29
- Jan 2024 17:24:34 -0800 (PST)
-Date: Tue, 30 Jan 2024 01:24:32 +0000
-In-Reply-To: <20240129224542.162599-4-nphamcs@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21F3236114;
+	Tue, 30 Jan 2024 01:29:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.10
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706578180; cv=fail; b=gRQ16JscT8pU+gmli6rlzR78fqQKpZyORadpalPUIpdMenLmOje71M/3t7sV6Gm+vEIZMjnHhGG67p5RKBx4SgrfmbW26saW7BgYiYM3OzYnTJDRNcJ3iXCIlGM8TAS11gzEPLBg+fdFnirzDpJeZYiY8nGJqP40Ok+j7DLJYmU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706578180; c=relaxed/simple;
+	bh=GD4XRL9MGUiNVbIo02y+3gUW3nhWg3ddIpouVvUhqrY=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=nHsEXjEupw/7uUrUAQYyQfpMWdqjHQ/S2bot2FLUkvWOOxMbG/QrykQ2XbXJ6WbMrwK1258WkxiuxZemFh6qTLaCodxoLwchnpRSyAeKErf1Vah3SoTkaDnzgMk16dFo2BAzZKvxMl60iPWcpGsDWRWNSwmUzsUJQ3Z62W91rfc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bLEnBP+y; arc=fail smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706578178; x=1738114178;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=GD4XRL9MGUiNVbIo02y+3gUW3nhWg3ddIpouVvUhqrY=;
+  b=bLEnBP+yeEU9zjZPPc815pIsj2s7DVi0+frRg737KO6l+jQTTsaI5yjj
+   ZqqFax5v3T4ppGHW56NQRcp45bZmmSXJxSKVG5oRLSPhWUzA8147IxPXG
+   d02mRH3sjWv2Zk12RFN56yMsCUm93ndUJePmzHAGgfmJBR8iqIF/vTJXO
+   fIh4qpD1VMB5kGf0SlXrtBQT4SCzC2wXdiqjIvXYBylREdVaRRKK21Xe2
+   fswgHFMI8KLj5WBaLKiOj0amhl5CJnbUrtXpRCXRAv7WoH/8Gucg8hpAp
+   UWopBkHbi/sPnxpkFj4g5cypiPRobwKoN8l/zBmragjUnRZT0LwGbVnOA
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="10527050"
+X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
+   d="scan'208";a="10527050"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 17:29:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
+   d="scan'208";a="29723626"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Jan 2024 17:29:37 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 29 Jan 2024 17:29:35 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 29 Jan 2024 17:29:35 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 29 Jan 2024 17:29:35 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 29 Jan 2024 17:29:34 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=T8SvF4+z7DSU5LRDDYczdKz7kYDTNfOZ+Ftwb7Uh6WY/lN12MVOV5VVisRS+2yrzOdppME+VaIVD3o65eMZNbe0ZiyXDGmmlqtLjnHL3xsvA4VtfaFI5/Ah/boJXuk1loA+b60+tMb42EAwTmODsdgq+De9L80scfQ3j1p7IQ7WIw21TlzFnb0eFv7bfTafOPx5kS+Vg3ZEXwClcSvgJ09rGmRGpXvIku8Qs/tzwRDxqC+YDYGb2fQDapmz3mSPn79vUjRLAeZOEBSVEfIVo1K3XjsYBmwPxsJs2wFqhSRzIxsWaychoU3b0M4BIUW4jCMiNo9/k7lh5RKNIgOgznQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GD4XRL9MGUiNVbIo02y+3gUW3nhWg3ddIpouVvUhqrY=;
+ b=m8+PI72K4NbJ4gK1X0Nucd+zVt4lN6fWkmcycBHquoq4KHy6eom4b2gmY+gUZv2VL2SAyM/Y9lqS7i+v6Vno+vf9UNj4CuIP6C3sj1ltW2LFwM5lNDe7fm0Z7+Lw0y4Ah1rcY+9x/zVi/lgG6Zq/BZxiurpAEWTDgLvPGimU083ZGuyErqpwVC/h+VJT+z9RawqLVj1chtih3102i0FDPbQX7KzFUiQyJsyDwZ4PCDEMS81gjn5EEVayfqqCGJ13Lk6ehG8ju1nMTNYlLJl6EDid5mIZd/K1qy9ulIZcm11WsgnTh75roOXXTZi0OEyGkZHahCzeh0/t1h+Utq/YGQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
+ by CH3PR11MB7894.namprd11.prod.outlook.com (2603:10b6:610:12c::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.34; Tue, 30 Jan
+ 2024 01:29:33 +0000
+Received: from MN0PR11MB5963.namprd11.prod.outlook.com
+ ([fe80::5d40:83fd:94ac:d409]) by MN0PR11MB5963.namprd11.prod.outlook.com
+ ([fe80::5d40:83fd:94ac:d409%7]) with mapi id 15.20.7228.029; Tue, 30 Jan 2024
+ 01:29:33 +0000
+From: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+To: "Yang, Weijiang" <weijiang.yang@intel.com>, "Hansen, Dave"
+	<dave.hansen@intel.com>, "seanjc@google.com" <seanjc@google.com>,
+	"x86@kernel.org" <x86@kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "yuan.yao@linux.intel.com"
+	<yuan.yao@linux.intel.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>
+CC: "john.allen@amd.com" <john.allen@amd.com>, "peterz@infradead.org"
+	<peterz@infradead.org>, "Gao, Chao" <chao.gao@intel.com>,
+	"mlevitsk@redhat.com" <mlevitsk@redhat.com>
+Subject: Re: [PATCH v9 01/27] x86/fpu/xstate: Always preserve non-user
+ xfeatures/flags in __state_perm
+Thread-Topic: [PATCH v9 01/27] x86/fpu/xstate: Always preserve non-user
+ xfeatures/flags in __state_perm
+Thread-Index: AQHaTm7+ZRu25JLtD0WU2RaxQCOTtbDxmq4A
+Date: Tue, 30 Jan 2024 01:29:33 +0000
+Message-ID: <77ccb09bd946fd27f17f530ed8fb4484afa46a00.camel@intel.com>
+References: <20240124024200.102792-1-weijiang.yang@intel.com>
+	 <20240124024200.102792-2-weijiang.yang@intel.com>
+In-Reply-To: <20240124024200.102792-2-weijiang.yang@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Evolution 3.44.4-0ubuntu2 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|CH3PR11MB7894:EE_
+x-ms-office365-filtering-correlation-id: a84cf52c-3554-4eab-530f-08dc2132e9a6
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ga8dpeDbo6RgihD+Zd/gHoTTZLsHenvze7HHIH13mrnzRarVeMQEgAPXpgnzN0nO06O5AYlr18CWOwBOowkeCgGhQ589qpKj8eBBERPoPADYs6c/KtKxkZDmLTuEja144vDf2LVOpZ9oa4zribFa3W1sPhH9Zp9lcXXzf4OrjPA/wNoPdHqNXpCxRbD+Uvfd9w/CNSLQrOl0lMEOiemF9uEojXEdUaftRy0zETV862yAjUeuRygU+HZ3d3CY8sGkPsmF0A1flqsdb5E9wYPgU9vKD6sy8HblV4Pd2VSPN2di+hhl/+OzYnqi9T9hOIH8eT24S+8tdAMnTYXGju7LuVGsCoBIm4wloJF/0kB0cyjLsdzE6HOMxKiS+D9JKdXKo9eLWRZ9EMVYk7/PqrIQMej5FJK/EgoMkzIswnCzwJPkqRI6PHwkIkI6Gyo5MHQvtGL+95cmRiPQISCz93mBX3MAFVGcdgXyCuMjnSDFjS7gYmpaX2pl4tbXpsfplvvY55RLvx5KrE5YNKLO1lBpt1ITNyFbVOF9s3xKSnzktSG6pT9JtnimSbMRQXVmiXZUkKCo2WANK6zaFlyBkSUwMNQQtxjsAf5xAY8n5qGJsh+/txWELs15D5bY7TDYGWu6Mirmga5mBQAZ7ofqzVgRDg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(136003)(39860400002)(396003)(376002)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(6506007)(26005)(2616005)(6512007)(71200400001)(5660300002)(4744005)(122000001)(2906002)(41300700001)(54906003)(66946007)(4326008)(478600001)(64756008)(316002)(66446008)(110136005)(921011)(8676002)(66476007)(8936002)(66556008)(6486002)(76116006)(82960400001)(86362001)(38100700002)(36756003)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Q3YrNUZBUDRXMXdHTVJnOS94MHE5ZVN2N2NDODljbnQzUTI2dlZ6eDhGRGMr?=
+ =?utf-8?B?UnhtNVk3MlBwV1B5SEY4bWFWeVlYZUcrLzhEWmJXWWFkaTd3Y0FuMUNPb1RH?=
+ =?utf-8?B?RmNYWEYrbGJJZlUxTDY1WUNTVFl5dVI1cWlveDNBejdRQ3RIYitUejJoR0px?=
+ =?utf-8?B?M1VUL1U3WU4xODNJSHVJbW9KbVpDL2hwcHZYaG9JUkxONU9aWS84eGJ1REY2?=
+ =?utf-8?B?Y0pWYlQyL1BWZmdka2VFNGo4S1pRV2NoaUNLSk5JRTNkY0N1ekFVMEJ5cXRH?=
+ =?utf-8?B?ZHRhejhQK2pSRWNSeVBVZ3dhZXFkb2FxNUpBbVVvWGkvVnhmb2p6cnl2VWo4?=
+ =?utf-8?B?WmUrNjZ5Q0htemhCS1p3VHhrUzVYZytqYmpvQXVHNlNZbml6WDdMa1ZvMnlu?=
+ =?utf-8?B?UFQyQ0dnZThRYnRoZVNteWtjVXhQb1ZGQkhoWGF2UG1WcmFlNDRGMlNYcFJE?=
+ =?utf-8?B?OU5XTHp6T3A2QjZtQ0VwSmJQVG1Ra28wVUtyRkdjLzJZYjhrOWJWMmpTengr?=
+ =?utf-8?B?SDdrK3JaU1g1QjEvR0J0L1RYamIrdHJrd01iTnErM0FzSzhwUmd4akV1eXJF?=
+ =?utf-8?B?VmFvZ3BZK1laM2g5NnJKZWEzZ0E0bkNPdmtHMkc4bk1uOUZabERaNytHaGlV?=
+ =?utf-8?B?Z2VoWTU5akNWZ1B4VjBueTlpYkxFajRYS1dCQWJhV3dlQmhYRmNFYVZoK2lB?=
+ =?utf-8?B?WkdOOFAxbTVkZWF1MzVkZkkycUFFbSt4bWdqZHdTNlVCcTE4a0p3S3RVUXk2?=
+ =?utf-8?B?b29qc2Zzc0FlRDFiVlFMdmdBWUpwakZ1c3pxdWM1dlR6K1g0U0p2bVNjTTR4?=
+ =?utf-8?B?Yll1Z1k5QVd4NWhrK3ppQlhkei9uRjJLMFZKWk5BY0ppandzWXA0RWxVY3ZG?=
+ =?utf-8?B?YUM1a3lpTGhPRGM5T3NEUTdEOUVmcnRTRnUwczk2NjhPL2d6S0tucmJoNG1j?=
+ =?utf-8?B?Ri9oSU1ESmJTbTlid2FXU3BFT0lUaEh5NDJWN2dXbGtzSHBUMlRJa0pBeHZx?=
+ =?utf-8?B?bG54aWJMcFpSWGNsblo2OE5yd2ZFRmRtSEZtTnlzOW1TN0lqWm9CMHZ4cCt1?=
+ =?utf-8?B?bFZwc2xjRERrQmlrdTZySHFxMzVPNUU1M3pHdXJKVFhxMXloWXQzVGpSN0Y1?=
+ =?utf-8?B?aXRjc1p4UnVQR0ZWNFZlR0ZaeTJlWk80WUNTL01Tdm9GUTJyUXI5UzJId1Iw?=
+ =?utf-8?B?WitwRUdoTUxXZzRVN1g5UVJJbXBwazZVcERMdTJSem5zOStVY0U3MUwxN1lj?=
+ =?utf-8?B?WUVoTXFjMm9rL1VzWTF3a05kWHQ1Nk1YazJqMkRraDlMTmNtMWtuem9FVGRR?=
+ =?utf-8?B?MFVuYys4cEFoVzBzdW1rWkVOUjlsc1g1Z0pVcE0yUnZwbUVCaHVmcXZUZmta?=
+ =?utf-8?B?eWQ1TG1nUTRTMWsxdFRjM2RuWnZhKzNTUXFYNjZ4aXhHeWxJWk5XdFJ1Q0Zx?=
+ =?utf-8?B?MVZIalNHVkYrektGVDg1UmFnOVJab0dQVGZUdmczRUhiVk01RmZ0aFJYV1J1?=
+ =?utf-8?B?TnpST1NYbDF2R0tUTUs1L2RhUllrcU42V25ZOERCamJKdkE2ZjFiai9tL2U1?=
+ =?utf-8?B?Wms5SE1rc2pyaEl6RGFjZHJ3Kzk1V0FYc0YwSDFPeHFNVzJEVm5CU3RyQ1Z4?=
+ =?utf-8?B?TkcwZVhBMmxGMUtNZS91dFFncHBBWVp0N0lRZHNhK01mRXVabytpeUN6b2xQ?=
+ =?utf-8?B?UXhBRUZkbm1IZXdyRnRtejIxeDh1ZW5NYUlnakJVZURQRURMamkybE8ybkcw?=
+ =?utf-8?B?U0kwMW5uSytSVTlmeXk5Y1hkNkNYRmo2VUJJK3p1aG9vNWU5NzFzY0lPTThN?=
+ =?utf-8?B?ak4wcWtUNEdEa0FCWGlGaTNEWC92WHR5VWlrbjZIZzMxdXZiTXZsL1pMdkhz?=
+ =?utf-8?B?ZGVKQjRjaVVHclkyd2Y0VndySnRPRVZRemplREFPdmFRYTJhLy9Yd0NhSjNy?=
+ =?utf-8?B?VjV2NkdiaWhkUHdZekdQbXVjejc4ektqMm5lTW9RZmdTNHZkMTFBVXo2TWZG?=
+ =?utf-8?B?bHIrSzdtUHhWVDBZOHBJbjl5ZWRRektLODY0WVM5bkxqL1h3QXVDQWMxK0JU?=
+ =?utf-8?B?WkUrdFM4M2s2TnlVdmkxY0lsY0JmNDhOaTR0S3V5UjhFMVhWekxTRDYyOXBV?=
+ =?utf-8?B?RzRDZ0lwMVhtWnhXUnpnT3dqdDFwa3hEU0ZEK0NUUDh3N2xPdWFkVXA1RG9v?=
+ =?utf-8?B?WXc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <D80AF0B06C79AE498013D3CBDD99C5CD@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240129224542.162599-1-nphamcs@gmail.com> <20240129224542.162599-4-nphamcs@gmail.com>
-Message-ID: <ZbhP0JkEe39g3yqk@google.com>
-Subject: Re: [PATCH 3/3] selftests: add test for zswapin
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: akpm@linux-foundation.org, shuah@kernel.org, hannes@cmpxchg.org, 
-	tj@kernel.org, lizefan.x@bytedance.com, linux-mm@kvack.org, 
-	kernel-team@meta.com, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a84cf52c-3554-4eab-530f-08dc2132e9a6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jan 2024 01:29:33.1486
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: YBwkfuu6OY1J9/ncp0/fmAlss78kMk11CkQItsPg0YCF9IbmTN8Oq9uQWOrarkmkBdTyzMIyG4kxfASIxgzpejD7PGT6wqYMmQlMU4dkags=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB7894
+X-OriginatorOrg: intel.com
 
-On Mon, Jan 29, 2024 at 02:45:42PM -0800, Nhat Pham wrote:
-> We recently encountered a kernel crash on the zswapin path in our
-> internal kernel, which went undetected because of a lack of test
-> coverage for this path. Add a selftest to cover this code path,
-> allocating more memories than the cgroup limit to trigger
-
-s/memories/memory
-
-> swapout/zswapout, then reading the pages back in memories several times.
-> 
-> Also add a variant of this test that runs with zswap disabled, to verify
-> swapin correctness as well.
-> 
-> Suggested-by: Rik van Riel <riel@surriel.com>
-> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
-> ---
->  tools/testing/selftests/cgroup/test_zswap.c | 67 ++++++++++++++++++++-
->  1 file changed, 65 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/selftests/cgroup/test_zswap.c
-> index 32ce975b21d1..86231c86dc89 100644
-> --- a/tools/testing/selftests/cgroup/test_zswap.c
-> +++ b/tools/testing/selftests/cgroup/test_zswap.c
-> @@ -60,17 +60,39 @@ static long get_zswpout(const char *cgroup)
->  	return cg_read_key_long(cgroup, "memory.stat", "zswpout ");
->  }
->  
-> -static int allocate_bytes(const char *cgroup, void *arg)
-> +static int allocate_bytes_and_read(const char *cgroup, void *arg, bool read)
->  {
->  	size_t size = (size_t)arg;
->  	char *mem = (char *)malloc(size);
-> +	int ret = 0;
->  
->  	if (!mem)
->  		return -1;
->  	for (int i = 0; i < size; i += 4095)
->  		mem[i] = 'a';
-> +
-> +	if (read) {
-> +		/* cycle through the allocated memory to (z)swap in and out pages */
-> +		for (int t = 0; t < 5; t++) {
-
-What benefit does the iteration serve here? I would guess one iteration
-is enough to swap everything in at least once, no?
-
-> +			for (int i = 0; i < size; i += 4095) {
-> +				if (mem[i] != 'a')
-> +					ret = -1;
-> +			}
-> +		}
-> +	}
-> +
->  	free(mem);
-> -	return 0;
-> +	return ret;
-> +}
-> +
-> +static int allocate_bytes(const char *cgroup, void *arg)
-> +{
-> +	return allocate_bytes_and_read(cgroup, arg, false);
-> +}
-> +
-> +static int read_bytes(const char *cgroup, void *arg)
-> +{
-> +	return allocate_bytes_and_read(cgroup, arg, true);
->  }
-
-I don't like how we reuse allocate_bytes_and_read(), we are not saving
-much. Let's keep allocate_bytes() as-is and add a separate helper. Also,
-I think allocate_and_read_bytes() is easier to read.
-
->  
->  static char *setup_test_group_1M(const char *root, const char *name)
-> @@ -133,6 +155,45 @@ static int test_zswap_usage(const char *root)
->  	return ret;
->  }
->  
-> +/* Simple test to verify the (z)swapin code paths */
-> +static int test_zswapin_size(const char *root, char *zswap_size)
-> +{
-> +	int ret = KSFT_FAIL;
-> +	char *test_group;
-> +
-> +	/* Set up */
-> +	test_group = cg_name(root, "zswapin_test");
-> +	if (!test_group)
-> +		goto out;
-> +	if (cg_create(test_group))
-> +		goto out;
-> +	if (cg_write(test_group, "memory.max", "8M"))
-> +		goto out;
-> +	if (cg_write(test_group, "memory.zswap.max", zswap_size))
-> +		goto out;
-> +
-> +	/* Allocate and read more than memory.max to trigger (z)swap in */
-> +	if (cg_run(test_group, read_bytes, (void *)MB(32)))
-> +		goto out;
-> +
-> +	ret = KSFT_PASS;
-> +
-> +out:
-> +	cg_destroy(test_group);
-> +	free(test_group);
-> +	return ret;
-> +}
-> +
-> +static int test_swapin(const char *root)
-> +{
-> +	return test_zswapin_size(root, "0");
-> +}
-
-Why are we testing the no zswap case? I am all for testing but it seems
-out of scope here. It would have been understandable if we are testing
-memory.zswap.max itself, but we are not doing that.
-
-FWIW, I think the tests here should really be separated from cgroup
-tests, but I understand why they were added here. There is a lot of
-testing for memcg interface and control for zswap, and a lot of nice
-helpers present.
-
+T24gVHVlLCAyMDI0LTAxLTIzIGF0IDE4OjQxIC0wODAwLCBZYW5nIFdlaWppYW5nIHdyb3RlOg0K
+PiArwqDCoMKgwqDCoMKgwqAvKg0KPiArwqDCoMKgwqDCoMKgwqAgKiBDYWxjdWxhdGUgdGhlIHJl
+c3VsdGluZyBrZXJuZWwgc3RhdGUgc2l6ZS7CoCBOb3RlLA0KPiBAcGVybWl0dGVkIGFsc28NCj4g
+K8KgwqDCoMKgwqDCoMKgICogY29udGFpbnMgc3VwZXJ2aXNvciB4ZmVhdHVyZXMgZXZlbiB0aG91
+Z2ggc3VwZXJ2aXNvciBhcmUNCj4gYWx3YXlzDQo+ICvCoMKgwqDCoMKgwqDCoCAqIHBlcm1pdHRl
+ZCBmb3Iga2VybmVsIGFuZCBndWVzdCBGUFVzLCBhbmQgbmV2ZXIgcGVybWl0dGVkDQo+IGZvciB1
+c2VyDQo+ICvCoMKgwqDCoMKgwqDCoCAqIEZQVXMuDQo+ICvCoMKgwqDCoMKgwqDCoCAqLw0KDQpJ
+IHN0aWxsIGZpbmQgdGhpcyB2ZXJiaWFnZSBjb25mdXNpbmcsIGJ1dCBtYXliZSBpdCdzIGp1c3Qg
+bWUuDQoNClJldmlld2VkLWJ5OiBSaWNrIEVkZ2Vjb21iZSA8cmljay5wLmVkZ2Vjb21iZUBpbnRl
+bC5jb20+DQo=
 
