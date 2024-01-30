@@ -1,81 +1,181 @@
-Return-Path: <linux-kernel+bounces-44250-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44251-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 614DF841F53
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:24:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AA9B841F56
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:25:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16F121F23015
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:24:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 51B0B1F21E28
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:25:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B724605B7;
-	Tue, 30 Jan 2024 09:23:31 +0000 (UTC)
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E6DA605D8;
+	Tue, 30 Jan 2024 09:24:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VnwWbdZn"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FD1960DDB;
-	Tue, 30 Jan 2024 09:23:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B52FD59155
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:24:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706606610; cv=none; b=Tk1fzszdgKYrUVDV3glKNW2AcqOioh8nYelJcUZ5qsvVrGfW0UDY7c34FYJ1V6/NOpn1OKy2VJkAw5fs8EqxPcf5LB1lfi+1Ms0w7ZeY291iZbRbHGWz/Hp3B2LaR9JPjQaQsWsNmyaDKGMfVFkJvFtfE0w8TUfNi6EmB8czHcI=
+	t=1706606646; cv=none; b=Xjs4DyFz2C3Rgx/azxwUN5Id4+bASP6Non/jYKH/S1opHG+JLfBHVQXEPR8/MsyWvY9RhGpTRNq11qU6EYaSDY+CS/Z5Clt+Q++bpoueEB5TKSK1OiHJ+gaTZVY3UoGkHIYCfib5j5GnmAuHC0OP4f+jTEgPIPCQTkn6qzMnM6c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706606610; c=relaxed/simple;
-	bh=040hBLi3fQefc6K0iLapGpAkzbEy3B35S845VusT4+A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HhKwDPSJ/15aGyhecbJjUfwacCHK9OR4WnZpnGvmpG+DKNMpfTGNivEpr6QZhmfmJt1SN4SRLtLPK8k29KpchkrSTgGq/dYGcj8N5N9Ptzt/D7CD0+2sI1W0Cqri+53eeu6N3rKSlrBZ3dlzzu/UBjLVddxCD8EH92eub3/SG+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a354408e6bfso456341066b.1;
-        Tue, 30 Jan 2024 01:23:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706606607; x=1707211407;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OuijeB7kTKzPg88klh5RjExAWGmk5spjFKXjDZFHLFg=;
-        b=au3MXECgu+yARaByLeIonZbfHR/MruwGzjGiH8QUNKZV4E9nmRd53O7o8FUzCtQBFc
-         XmIygZPJOr9G64yVWtIYp+tg8sXGQqb1AoXu2N2Bx8i0R5DpM2gFesRmgmt/6+qstBI+
-         +JHsOX83vgokWnXt9Mu5ogOQo39AordnVGOTpAzyJXGXlEqdw44ehLa3UEUFsN6BFWE3
-         6AjydEA3iNjczO7NKtE4NZ/z3yqb3A8vP3VxPI7WcQczXPjj86m1pre18MGL0FguekBX
-         i5h/46r4Ck9vHxo3yG7lmRDHmedOBsFtNCK+4ObYxxzFCecAANqDlb/sFihcblBmUI1O
-         uJyA==
-X-Gm-Message-State: AOJu0Yy6rJ9S3inhYRFYyYVTvDyHikwCX9iLjtklfHMxQzKugFlpPXvv
-	2xd91bGrCRyC7ENcMJP2uwjvN+TsS83iLTvURfxx6dxTfR/qFbIj
-X-Google-Smtp-Source: AGHT+IELrXSVw+jDlDFKwJDA0VRFGH1LN4bAe38E5hOcm0xV2g9VuCNZHBnVvD4or/Q3DSewnlwObA==
-X-Received: by 2002:a17:906:1d42:b0:a35:15ea:3cc0 with SMTP id o2-20020a1709061d4200b00a3515ea3cc0mr874790ejh.26.1706606607259;
-        Tue, 30 Jan 2024 01:23:27 -0800 (PST)
-Received: from gmail.com (fwdproxy-cln-016.fbsv.net. [2a03:2880:31ff:10::face:b00c])
-        by smtp.gmail.com with ESMTPSA id ku17-20020a170907789100b00a32fb8e79e1sm4876258ejc.65.2024.01.30.01.23.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 01:23:27 -0800 (PST)
-Date: Tue, 30 Jan 2024 01:23:25 -0800
-From: Breno Leitao <leitao@debian.org>
-To: Matthew Wood <thepacketgeek@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 1/8] net: netconsole: cleanup formatting lints
-Message-ID: <ZbjADdVvfHH2/yBa@gmail.com>
-References: <20240126231348.281600-1-thepacketgeek@gmail.com>
- <20240126231348.281600-2-thepacketgeek@gmail.com>
+	s=arc-20240116; t=1706606646; c=relaxed/simple;
+	bh=WTPD0u8lNCTsfkYlNmFQbgM3oe0GIKson6ZShvZ71kw=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=MX3wWGr38afQx4KY/6TVULiYdg8HS3DUeD8teNtsI+7M2tizgKrk4asQqWYEagxH3/ZfjkoPKywAMW19vplQW0DPX2kpTfcSrcmzZhWHpqkvRRNXfrde1kZCpYuRQS/xY3vFqVyVrk/2lBWOc0bD/ZQdYNQzKIrz0j2f79HPZho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VnwWbdZn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72015C43390;
+	Tue, 30 Jan 2024 09:24:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706606646;
+	bh=WTPD0u8lNCTsfkYlNmFQbgM3oe0GIKson6ZShvZ71kw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=VnwWbdZnWEdUqlcs1nDlVIFBIRrbma+J9F81Qf9TjbfM3GTI4/Ltn0hn/bjFbbXto
+	 xfMGOo3Cl7eIQQfodxaGE5D0m5gKrbhIkFJE4bxUOdjGYo2F3JN0vLAdvvmhNiziOk
+	 hlqZMKDZG5lZ0AdIagtzaWNVmWEkli9NdCb4wB16Z2WW+LA0aVOuo0tjHNZAcA1dwb
+	 0dE95dOy+teCDMIjKQUm5VkyBrZJ2LrFL0h1HLNQ1FAkPfYHTeIWDtlx4VrR3lVPth
+	 krAJuIKYQhA3KHzwyODPPmz4a6UmwwVf9Gja8ih/Y0s94zSoc/Axg9RmQQCEee5rzC
+	 ObS0JSRS9ihIA==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240126231348.281600-2-thepacketgeek@gmail.com>
+Date: Tue, 30 Jan 2024 10:24:00 +0100
+From: Michael Walle <mwalle@kernel.org>
+To: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Cc: Dave Airlie <airlied@gmail.com>, Dmitry Osipenko
+ <dmitry.osipenko@collabora.com>, Inki Dae <daeinki@gmail.com>, Neil
+ Armstrong <neil.armstrong@linaro.org>, Laurent Pinchart
+ <Laurent.pinchart@ideasonboard.com>, Robert Foss <rfoss@kernel.org>, Frieder
+ Schrempf <frieder.schrempf@kontron.de>, Jagan Teki
+ <jagan@amarulasolutions.com>, Andrzej Hajda <andrzej.hajda@intel.com>, Marek
+ Szyprowski <m.szyprowski@samsung.com>, Jonas Karlman <jonas@kwiboo.se>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>, Tim Harvey
+ <tharvey@gateworks.com>, Alexander Stein <alexander.stein@ew.tq-group.com>,
+ linux-kernel@vger.kernel.org, DRI mailing list
+ <dri-devel@lists.freedesktop.org>, Daniel Vetter <daniel@ffwll.ch>, Michael
+ Trimarchi <michael@amarulasolutions.com>
+Subject: Re: [PATCH] drm: bridge: samsung-dsim: Don't use FORCE_STOP_STATE
+In-Reply-To: <CABGWkvp5Xx61h+sfKotb=jsQE3jPXP0bJfTtb1k9_OCH-TzTvQ@mail.gmail.com>
+References: <20231113164344.1612602-1-mwalle@kernel.org>
+ <631fe35a2a3b00781231e4f3f5094fae@kernel.org>
+ <1ef3dad2-5f55-40e5-bba7-3c71d71c12e4@kontron.de>
+ <CAAQKjZMccDwa63_PNJCP0rNOaHjTwcOz8AbKa=JXLQi-b0QVVw@mail.gmail.com>
+ <2400535875c353ff7208be2d86d4556f@kernel.org>
+ <ZZ1BBO2nNSp3g-gT@phenom.ffwll.local>
+ <CAAQKjZNnJQDn_r1+WNmsxM-2O48O0+yWAUAqpjZRjMYMT3xGwg@mail.gmail.com>
+ <CAPM=9tytMB9frxNeD08hu1qsusY=wEE3bJOFmUgA1rSpabwDpg@mail.gmail.com>
+ <b18d88302acfca001a6693d78909bc2a@kernel.org>
+ <31e1a38a1d012a32d6f7bc8372b6360e@kernel.org>
+ <CABGWkvp5Xx61h+sfKotb=jsQE3jPXP0bJfTtb1k9_OCH-TzTvQ@mail.gmail.com>
+Message-ID: <25f0cdf7305eac946629895179be8f2b@kernel.org>
+X-Sender: mwalle@kernel.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Jan 26, 2024 at 03:13:36PM -0800, Matthew Wood wrote:
-> Address checkpatch lint suggestions in preparation for later changes
+Hi Dario,
+
+>> >> Just FYI this conflictted pretty heavily with drm-misc-next changes in
+>> >> the same area, someone should check drm-tip has the correct
+>> >> resolution, I'm not really sure what is definitely should be.
+>> >
+>> > FWIW, this looks rather messy now. The drm-tip doesn't build.
+>> >
+>> > There was a new call to samsung_dsim_set_stop_state() introduced
+>> > in commit b2fe2292624ac (drm: bridge: samsung-dsim: enter display
+>> > mode in the enable() callback).
+>> 
+>> I had a closer look at the latest linux-next (where somehow my patch
+>> made it into) and tried to apply commit b2fe2292624ac (drm: bridge:
+>> samsung-dsim: enter display mode in the enable() callback). It looks
+>> like only the following hunk is still needed from that patch. 
+>> Everything
+>> else is covered by this fixes patch.
+>> 
+>> Dario, could you rebase your commit onto this patch? I had a quick 
+>> test
+>> with this change and it seems to work fine for our case.
+>> 
+>> --snip--
+>> diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c
+>> b/drivers/gpu/drm/bridge/samsung-dsim.c
+>> index 63a1a0c88be4..92755c90e7d2 100644
+>> --- a/drivers/gpu/drm/bridge/samsung-dsim.c
+>> +++ b/drivers/gpu/drm/bridge/samsung-dsim.c
+>> @@ -1498,6 +1498,8 @@ static void samsung_dsim_atomic_disable(struct
+>> drm_bridge *bridge,
+>>          if (!(dsi->state & DSIM_STATE_ENABLED))
+>>                  return;
+>> 
+>> +       samsung_dsim_set_display_enable(dsi, false);
+>> +
+>>          dsi->state &= ~DSIM_STATE_VIDOUT_AVAILABLE;
+>>   }
+>> 
+>> @@ -1506,8 +1508,6 @@ static void
+>> samsung_dsim_atomic_post_disable(struct drm_bridge *bridge,
+>>   {
+>>          struct samsung_dsim *dsi = bridge_to_dsi(bridge);
+>> 
+>> -       samsung_dsim_set_display_enable(dsi, false);
+>> -
+>>          dsi->state &= ~DSIM_STATE_ENABLED;
+>>          pm_runtime_put_sync(dsi->dev);
+>>   }
+>> --snip--
+>> 
+>> -michael
 > 
-> Signed-off-by: Matthew Wood <thepacketgeek@gmail.com>
+> I'm sorry, but I didn't understand well what I have to do.
 
-Reviewed-by: Breno Leitao <leitao@debian.org>
+Basically, just rebase your patch (drm: bridge: samsung-dsim:
+enter display mode in the enable() callback) on top of
+linux-next.
+
+> This is what I have done:
+> 
+> git clone 
+> https://kernel.googlesource.com/pub/scm/linux/kernel/git/next/linux-next.git
+> cd linux-next
+> # add your changes, the ones of the emails
+> git am --reject 
+> 0001-drm-bridge-samsung-dsim-enter-display-mode-in-the-en.patch
+> 
+> diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c
+> b/drivers/gpu/drm/bridge/samsung-dsim.c
+> index 92755c90e7d2..b47929072583 100644
+> --- a/drivers/gpu/drm/bridge/samsung-dsim.c
+> +++ b/drivers/gpu/drm/bridge/samsung-dsim.c
+> @@ -1508,6 +1508,9 @@ static void
+> samsung_dsim_atomic_post_disable(struct drm_bridge *bridge,
+>  {
+>         struct samsung_dsim *dsi = bridge_to_dsi(bridge);
+> 
+> +       if (!samsung_dsim_hw_is_exynos(dsi->plat_data->hw_type))
+> +               samsung_dsim_set_stop_state(dsi, true);
+> +
+
+This one should be removed. There is no stop state anymore.
+With that hunk, it doesn't compile anyway.
+
+>         dsi->state &= ~DSIM_STATE_ENABLED;
+>         pm_runtime_put_sync(dsi->dev);
+>  }
+> 
+> And then test the driver for my use case.
+
+Yes. The hunk I've posted above, should be all what's left
+of your patch, because as far as I see it, most of your changes
+are already contained in my fixes patch. What's left is that
+you disable the video mode in .disable() and not in
+post_disable().
+
+-michael
 
