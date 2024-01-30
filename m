@@ -1,92 +1,130 @@
-Return-Path: <linux-kernel+bounces-43932-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43935-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D14C3841AFE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 05:26:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60482841B0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 05:34:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8404E1F259CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 04:26:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 008D01F2721D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 04:34:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE70F381AF;
-	Tue, 30 Jan 2024 04:26:29 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B74593770A;
-	Tue, 30 Jan 2024 04:26:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C17EE381D1;
+	Tue, 30 Jan 2024 04:34:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VLPlyD1L"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64376381A2;
+	Tue, 30 Jan 2024 04:34:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706588789; cv=none; b=PzLr9SHLrYjg573GOjr6XRR6i6C1pSxIAROa6MvpLEZLvwncH4B1npOre0tyVQlxwZDcdMQahvl64tCmI+ptmI18Zsz0ljMboRCI8anPFgbXoRWlouo7wekX/LO6TVhmBne4VvNTVZBxvb1UkC/xtdsT5sPF9oGvefqxoItXw3Y=
+	t=1706589275; cv=none; b=VkPvLLBV9IXN7o072Bhi0gPjH2wWjTKTeEM+sfu+tb6vOKgTnM4lhiNj9uEORbFBCRkPyBcOLSmXEOtL9NL6h0S2PrASqO9rCS2Z/LPsvZodSvO9U4e99bt4io2hKGcOpNfWgWdEeGivCfJSZqxf/6JSWxAgfzQJbLKtLfstAtI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706588789; c=relaxed/simple;
-	bh=OmsH5cVGc67ZoutoHVLZlyvRi+VnnD7tEU5XBBF9WIU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jBsMLQjTnM78Q0EYcSC5zuK//NZTY5Vcacyj51FIDgVmJzOXv+/C++KNp19F1quNFVq9fmaKUKTYXiC6aOf5BvKm3hyXfm3dyjOkswwFEjMhXV1eWBfJfyy7Rw0HqwXvxJBX6jEbwleoVItDf1oZRcx2wqCWqxpjUGxC7fR7xv0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C3D28DA7;
-	Mon, 29 Jan 2024 20:27:10 -0800 (PST)
-Received: from [10.163.41.110] (unknown [10.163.41.110])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 31CBB3F762;
-	Mon, 29 Jan 2024 20:26:13 -0800 (PST)
-Message-ID: <3fbfb5fc-83a4-49da-ba75-9b671ffe0569@arm.com>
-Date: Tue, 30 Jan 2024 09:56:10 +0530
+	s=arc-20240116; t=1706589275; c=relaxed/simple;
+	bh=xriwrT8PK5ZnMFWSAiOQ0+sQh4cRZ169864/lire6Kw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YegMJT1XXxuWrjpp8mrYe6EupJ8MblTFLS0TqewLiLdzfP1bMGD3Fux8z59PGZmogLA0JHcOi7O8gC5r1om9g0TU5yXVSHHMMGP39Ut97If9oyzXCIbnaIsS3FD19NnJ6PsYM5pnRLIigpznDVvb172LYooFQRHl5rKByLP1/oU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VLPlyD1L; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706589273; x=1738125273;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xriwrT8PK5ZnMFWSAiOQ0+sQh4cRZ169864/lire6Kw=;
+  b=VLPlyD1LSzMSQed3d83ih9aHEWWGMSz16eiNeUKZvWNIXkc/7uNI/px/
+   MWuGqArH2pBrmCdn+R1vxFsk01eSFlYUV7r28mKxau4rdaW62UlCkVwJc
+   /2QzW0iXwRe95Ihdr5sZc7eDI9gHTFDOxaPWRyy3p8v9FSzIXAd18c/JJ
+   IjeE95Z5SW0FUqtq3mZ7b8/KBVpMCnxXp8AXark5GKcDY6tvqCgH7IKnA
+   nhmbyOwe5efOZUM4NZepo2aLr2CjgNMJXcHxD/ie5pox2eT8IBnceWaGD
+   7aavG403yYpTOtjR2LgFt6zP3QvqVcJIkDd99mt7djUbTqH/tzVNUKap9
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="3042805"
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="3042805"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 20:34:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="30022513"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by fmviesa001.fm.intel.com with ESMTP; 29 Jan 2024 20:34:29 -0800
+Date: Tue, 30 Jan 2024 12:31:04 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Marco Pagani <marpagan@redhat.com>
+Cc: Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+	Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Alan Tull <atull@opensource.altera.com>,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-fpga@vger.kernel.org
+Subject: Re: [RFC PATCH v5 1/1] fpga: add an owner and use it to take the
+ low-level module's refcount
+Message-ID: <Zbh7iO9wlm9ekzB7@yilunxu-OptiPlex-7050>
+References: <20240111160242.149265-1-marpagan@redhat.com>
+ <20240111160242.149265-2-marpagan@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v3 01/35] mm: page_alloc: Add gfp_flags parameter to
- arch_alloc_page()
-Content-Language: en-US
-To: Alexandru Elisei <alexandru.elisei@arm.com>
-Cc: catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
- maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
- yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
- mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
- vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
- bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
- vschneid@redhat.com, mhiramat@kernel.org, rppt@kernel.org, hughd@google.com,
- pcc@google.com, steven.price@arm.com, vincenzo.frascino@arm.com,
- david@redhat.com, eugenis@google.com, kcc@google.com, hyesoo.yu@samsung.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-mm@kvack.org,
- linux-trace-kernel@vger.kernel.org
-References: <20240125164256.4147-1-alexandru.elisei@arm.com>
- <20240125164256.4147-2-alexandru.elisei@arm.com>
- <de0c74b3-0c7d-4f21-8454-659e8b616ea7@arm.com> <ZbePA2dGE6Vs-58t@raptor>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <ZbePA2dGE6Vs-58t@raptor>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240111160242.149265-2-marpagan@redhat.com>
 
+> +#define fpga_mgr_register_full(parent, info) \
+> +	__fpga_mgr_register_full(parent, info, THIS_MODULE)
+>  struct fpga_manager *
+> -fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *info);
+> +__fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *info,
+> +			 struct module *owner);
+>  
+> +#define fpga_mgr_register(parent, name, mops, priv) \
+> +	__fpga_mgr_register(parent, name, mops, priv, THIS_MODULE)
+>  struct fpga_manager *
+> -fpga_mgr_register(struct device *parent, const char *name,
+> -		  const struct fpga_manager_ops *mops, void *priv);
+> +__fpga_mgr_register(struct device *parent, const char *name,
+> +		    const struct fpga_manager_ops *mops, void *priv, struct module *owner);
+> +
+>  void fpga_mgr_unregister(struct fpga_manager *mgr);
+>  
+> +#define devm_fpga_mgr_register_full(parent, info) \
+> +	__devm_fpga_mgr_register_full(parent, info, THIS_MODULE)
+>  struct fpga_manager *
+> -devm_fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *info);
+> +__devm_fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *info,
+> +			      struct module *owner);
 
+Add a line here. I can do it myself if you agree.
 
-On 1/29/24 17:11, Alexandru Elisei wrote:
-> Hi,
+There is still a RFC prefix for this patch. Are you ready to get it merged?
+If yes, Acked-by: Xu Yilun <yilun.xu@intel.com>
+
+Next time if you think patches are ready for serious review and merge, drop
+the RFC prefix. That avoids an extra query.
+
+Thanks,
+Yilun
+
+> +#define devm_fpga_mgr_register(parent, name, mops, priv) \
+> +	__devm_fpga_mgr_register(parent, name, mops, priv, THIS_MODULE)
+>  struct fpga_manager *
+> -devm_fpga_mgr_register(struct device *parent, const char *name,
+> -		       const struct fpga_manager_ops *mops, void *priv);
+> +__devm_fpga_mgr_register(struct device *parent, const char *name,
+> +			 const struct fpga_manager_ops *mops, void *priv,
+> +			 struct module *owner);
+>  
+>  #endif /*_LINUX_FPGA_MGR_H */
+> -- 
+> 2.43.0
 > 
-> On Mon, Jan 29, 2024 at 11:18:59AM +0530, Anshuman Khandual wrote:
->> On 1/25/24 22:12, Alexandru Elisei wrote:
->>> Extend the usefulness of arch_alloc_page() by adding the gfp_flags
->>> parameter.
->> Although the change here is harmless in itself, it will definitely benefit
->> from some additional context explaining the rationale, taking into account
->> why-how arch_alloc_page() got added particularly for s390 platform and how
->> it's going to be used in the present proposal.
-> arm64 will use it to reserve tag storage if the caller requested a tagged
-> page. Right now that means that __GFP_ZEROTAGS is set in the gfp mask, but
-> I'll rename it to __GFP_TAGGED in patch #18 ("arm64: mte: Rename
-> __GFP_ZEROTAGS to __GFP_TAGGED") [1].
 > 
-> [1] https://lore.kernel.org/lkml/20240125164256.4147-19-alexandru.elisei@arm.com/
-
-Makes sense, but please do update the commit message explaining how
-new gfp mask argument will be used to detect tagged page allocation
-requests, further requiring tag storage allocation.
 
