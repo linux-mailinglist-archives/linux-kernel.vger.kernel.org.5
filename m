@@ -1,867 +1,180 @@
-Return-Path: <linux-kernel+bounces-43943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43940-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68C43841B54
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 06:13:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F18CD841B41
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 06:09:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D2F71C24072
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 05:13:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B1BC1F24BD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 05:09:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3A00381DD;
-	Tue, 30 Jan 2024 05:13:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O35Y8tbo"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D810F3771C;
+	Tue, 30 Jan 2024 05:09:47 +0000 (UTC)
+Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2046.outbound.protection.partner.outlook.cn [139.219.146.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA86C37701;
-	Tue, 30 Jan 2024 05:13:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706591584; cv=none; b=lmkWlgx8UTeln69n3MMbIEX8B0q4+6PUxVNcnJnXSQZUJVRrBYYc9xqqSpfBNUM7djz65iCjdww3W91oUfOG+mFZtl8yzfUnR/M2/qVn+lxME8fRof8BNqrLA/cOoRkN8jfXMu5PiVxdcXCyA8PC+uBLJpWYrvGBrWHikm+WePE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706591584; c=relaxed/simple;
-	bh=txT7cY6A8eX50UqdfauJs6fnkbjqK0EbdJsvIGFKQa8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IguwONL7enVumddi6HSWObEscVzJ6wEgv5CPHptNgyj+0+iWfliKUPsZwm6rsyJrIEPi8/x+4xJCf84qpU7DKxHXfOyH4W+YyyR0n4PYgO2prKBpZakj4+sDvXt4J9hj2e3rCwyKt8Ka0hYkFyoYS+l8dTtJgLwzvlkaJPnqeWQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O35Y8tbo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 476DEC433F1;
-	Tue, 30 Jan 2024 05:13:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706591584;
-	bh=txT7cY6A8eX50UqdfauJs6fnkbjqK0EbdJsvIGFKQa8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=O35Y8tborgreq/AxXC5/f8lmFvSNfUGpk2pvCTZK2h+FBb4ILWfrnbyhuXQuiLKNG
-	 I/yBuu8bZQlTkoGaFY66q/7Rs/f+5szyT+JZYy/L85FtAi6iSHdjbBeIi7rYOhmiQ+
-	 N3Kc75rjEdS+Bl5lpB0Sb7wtl/U0aGBB9fcSKF18fTAC2tMuP08DWD8gm5JdT0nWCk
-	 i+L7L6YkRRTj9eKhM087nc1At3Hj1EScpNNEf8smIFLKHub1QStD+3SRjnwpfEElmm
-	 JTgpgl5XQWlnsxD8W6t8v3Rc02Y02KEijeEC4Dy3DR9fyd5Y394hjpV4Ci8SzYztXs
-	 hEp2T9BxK1+eQ==
-Date: Tue, 30 Jan 2024 13:00:10 +0800
-From: Jisheng Zhang <jszhang@kernel.org>
-To: Petr Tesarik <petr@tesarici.cz>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	"open list:STMMAC ETHERNET DRIVER" <netdev@vger.kernel.org>,
-	"moderated list:ARM/STM32 ARCHITECTURE" <linux-stm32@st-md-mailman.stormreply.com>,
-	"moderated list:ARM/STM32 ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	"open list:ARM/Allwinner sunXi SoC support" <linux-sunxi@lists.linux.dev>,
-	Marc Haber <mh+netdev@zugschlus.de>, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>, stable@vger.kernel.org
-Subject: Re: [PATCH net v2] net: stmmac: protect updates of 64-bit statistics
- counters
-Message-ID: <ZbiCWtY8ODrroHIq@xhacker>
-References: <20240128193529.24677-1-petr@tesarici.cz>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE40C376F2
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 05:09:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.146.46
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706591387; cv=fail; b=RtCWNC+yLkckBrVJEUqk8XB4j2TubE/PXaZWiAvaoHa+a2HnkCMUjTnxVi9xfaI1Mt49axaiFRrL3qlQDT/KGjt3IkQvFJRfl4HPUeVJOrcE0foRkfJJs1PO/jNNABCQYQqbtr1giaCgZh3ChvolhbJpF/JVCpJcMoQkex2KL0Q=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706591387; c=relaxed/simple;
+	bh=J8Adtm6qYkz1gxVFf7RME346Fpr5ToV9FIp+5yWXGbo=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=n35Wnmao7YpijSqbLIoPRLBReDUPN2/Buwy7flrTTecHbJ1hIyOBuhSUAAHmKzCpXcLUAXRengt8GNxbOrYDWpHciHxsuUjtExBsWcjxNByCYh2Vs5DWpYtGM4dpthAxU+MCZmK7vjkRH60wX3wgjoSc4jNI1HzNh+87ep+BspU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.146.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XcyJ1H/MmNrX01oR7cV2pCatJRU8JDWBJp/bRX+Iu6T/8/mg/c5IL0Nr1o4pw8Gwjxic+RD0HumxSedWNPlwf13vy1gmkfmKE8wiDxQvHIodxXzgavGInw720qF1uUXa8/WlKeVe5IKNIfYA3XUWEE04W6j0VitTWCtiaWRZutETFxm3sdvwU8RRECPiIGlLcqyo+KNkmmvnseOBuFbFWYrrlkNkZB5sYuOaZ2wuqolt0slQHfx/xhnOw8DLPFOhVTrNQcrfa50JUf7VFrNBU7lrmGYwo5ikjsRl3BKRLY0NLrSVRlJHdrKcObW6lpg++hlxSZwOKkptCwz513CwCA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=IEPtxa0ROSusAr+5Ulo7JJUMZJ11e3YOqNyD3r7bGUk=;
+ b=MwO/Xhjn0jC/MF+Un1PkhC3TmG634tqvIWxH/3FnV7GVczLSYN94Z3YOoWuj0/612YyXyzyD3u7MCWYIpxNrPUSvP4ynXX7AsXHSZUn3CP9EsJBvNmPSDwntL/N3gvywH0K0FrTQG5x+ZJX4itrv5NaaKpqWu6n3N8FIcspyOEM6LHVYBOxDm1RsT2dXuxDK8afVnIGyGfHim+KTcQGnAgQBRdB1MLTqqgUkjsXo97Mpa3+f7SJF5Y+UyZoCMfd6ktlWGwrLFONTy5Ult5E6ukzLZEisCUHaLYeeXQFmS/G7+nbnOUTMhPDpA5vBimacXpcjG3YrPgrSvQwpOJvOOA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Received: from BJSPR01MB0561.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c211:f::16) by BJSPR01MB0834.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c211:1c::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.37; Tue, 30 Jan
+ 2024 05:09:32 +0000
+Received: from BJSPR01MB0561.CHNPR01.prod.partner.outlook.cn
+ ([fe80::3862:65b4:c857:c4a6]) by
+ BJSPR01MB0561.CHNPR01.prod.partner.outlook.cn ([fe80::3862:65b4:c857:c4a6%4])
+ with mapi id 15.20.7228.029; Tue, 30 Jan 2024 05:09:32 +0000
+From: JeeHeng Sia <jeeheng.sia@starfivetech.com>
+To: Conor Dooley <conor@kernel.org>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+	"paul.walmsley@sifive.com" <paul.walmsley@sifive.com>, "palmer@dabbelt.com"
+	<palmer@dabbelt.com>, "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+	"sudeep.holla@arm.com" <sudeep.holla@arm.com>, "robh@kernel.org"
+	<robh@kernel.org>, "conor.dooley@microchip.com" <conor.dooley@microchip.com>,
+	"suagrfillet@gmail.com" <suagrfillet@gmail.com>
+Subject: RE: [RFC v1 0/2] riscv: Cache Population Code Refactoring for ACPI
+ and DT Support
+Thread-Topic: [RFC v1 0/2] riscv: Cache Population Code Refactoring for ACPI
+ and DT Support
+Thread-Index: AQHaUokvDmoQ0eJwi0KkFvpqCqpN+7DwrYAAgAEgxTA=
+Date: Tue, 30 Jan 2024 05:09:32 +0000
+Message-ID:
+ <BJSPR01MB0561CC865A63D6E84DF0CFB69C7DA@BJSPR01MB0561.CHNPR01.prod.partner.outlook.cn>
+References: <20240129075957.116033-1-jeeheng.sia@starfivetech.com>
+ <20240129-disburse-plug-9f4a37c550f3@spud>
+In-Reply-To: <20240129-disburse-plug-9f4a37c550f3@spud>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BJSPR01MB0561:EE_|BJSPR01MB0834:EE_
+x-ms-office365-filtering-correlation-id: 44b10dfc-2238-4af4-cff1-08dc2151a555
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ 4BgjlgEdRt705iKzq3hQxHAMTzljmm9j55rfH3sZ+gmmxuuw0cfeQLs9Bk+h6zC7ID6Fq7+I/NkNwHiTLtZDjXn22WjL6gOUEh8PWExw32Wzyf7ybVHkHck0ncLjz20GXmq+3wFhKKwr8QeHpikhz+lKxvw5Z1pnTrL5xvU9ZoQ6n7lpuUGJBt8Zz6uvyUw72an8Myi5E+M1gkFaMdaafraSzQV9uJcNE7E6OOZ80IhqpShyJMP/3y5jRKNm9PCF3ArVv4jgLMGAGYRebyNqnLr96U8ckaQkkFnidiNboLJIg8K4V44qGnH6uiOP7O05uVI7zEAx6ficMQyoJyVQVuKaK08pzeWE44cIKP6BjKdwiWKcSSs586LcASJJz6dJV4lwWMGgh2U7Vg/X3phds46YI5gQE4gnKi8N8pSlFXR7iy2saGtePg4Z/fJ8vugYmj/5h6z9wQpo7dvdZw9OhdV+u8+os3fI4AGv1Z84NUVCYfK8wDca+TyHDdPBjfy13wU3I0t/AnUDrKapJLX1/aY7mf6qqhwUXnJy1KTONbOjKRIRYtlT7zLlOivDK+z8
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BJSPR01MB0561.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(346002)(39830400003)(366004)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(122000001)(26005)(4326008)(83380400001)(33656002)(40180700001)(8676002)(38100700002)(966005)(508600001)(54906003)(7416002)(66946007)(76116006)(8936002)(64756008)(71200400001)(5660300002)(66556008)(6916009)(55016003)(2906002)(66446008)(66476007)(86362001)(41320700001)(9686003)(40160700002)(41300700001)(7696005)(53546011)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?GcqjPLsBOsD0vYTYtI4y9JPd0dWlMYMusFdUCd1+yEbHAJRddgEO28qh4hry?=
+ =?us-ascii?Q?esSq6PtOiZEdo1aVMtzj+mpKOpwuibRoQuZQ74kqWDCR1WVrenkWoKDAtKCi?=
+ =?us-ascii?Q?ee2l75cJCo5SXXKgINeKMCFJruQ2TqOnb7AisbRHs3FHc+xUeWhfZ36uvgQa?=
+ =?us-ascii?Q?/C8HQI894a7TcLggfBUynoKPpdCP/4Jm8TAwkzYUbDLdijhhiil0drpHgyxw?=
+ =?us-ascii?Q?5kruNz8AlLZzbDO2AtKQ2ferLa21TvU81iHncH1CMNisgBtEF5IxvX2C/6wD?=
+ =?us-ascii?Q?kVWDdGXCEjUTUNlJ3v04c7dfGvRulgA7BYDQbVppAOnSvFEtZzOA9kxSB87R?=
+ =?us-ascii?Q?GZq0kQ+IIBOlEdniEi8EKVcWv0qRmKS66CRbR1Z0qiNrMvigtmvYfrOMjd4z?=
+ =?us-ascii?Q?KQ9l6oyeHuJcXFrD3nbjhKUXmm9EVNHSRM3FTUu/+nJWMqgG/aVNXyaNfXwO?=
+ =?us-ascii?Q?WPqNk+TJ8pQh4N6Tn41kjGxsosM58g+4c0VSRi1T24avNhKbyVh95OqmBhts?=
+ =?us-ascii?Q?2hZy9ZbQtnrXfgnEG/FgBwofsR+3lhi+qnQqy/2C8lAHhqIAmirpxBsOyyBv?=
+ =?us-ascii?Q?hz1Z9Ei6fpRHggpLcLX0EnUlmPmzWCw8nvr40O741r/xF0mNIJOXFLy9yaA8?=
+ =?us-ascii?Q?csIeQ9GUbSmAqb6tUS0/11RB51Kyac5NHztlrhX5REGfIYVszdpdysN5mtE0?=
+ =?us-ascii?Q?qXiGTrPRAekUc31k97KohIyRnSqJZXavFNtyp2w5wMezugACJychbi2ydoHk?=
+ =?us-ascii?Q?+P5TQoqCKgECt9tubarW2e+fYjkMnAkqTPUE0TBGnz6r9YmQ/qHAFlsoQu8y?=
+ =?us-ascii?Q?3Rr9Ff+9ZYS53GZwg328aSCu5paTfkz5AyfAvg0QReFTymdVEsN0KkUbMz8L?=
+ =?us-ascii?Q?0auuPsdGnNs9TajRVFSoOU7c++KeYiMj4Von4Y6UEF6zotmrMZEGoStF7iQ1?=
+ =?us-ascii?Q?dEsL5QsFNmMnz/cuUT0q1mEFzxng1JTthl0t/krxC1WD2sF88M4ru/tBzB4o?=
+ =?us-ascii?Q?shH9cQ+lAbY6C1RxeZeX8cUnfjavyQaoLNpnrOA8sm8pxBATQUzHHjllib/J?=
+ =?us-ascii?Q?PJAIxjJfhfQU3M1sideX5rlY/e43OzAr15vn/l+W8O9KUIM9BpbyzNV8KTdV?=
+ =?us-ascii?Q?AepzwS287ZSq3DNbiJqmSfnclWOj367VsJPSBZx75Xbq4GaCyHu5LrGzuNtE?=
+ =?us-ascii?Q?pwlRWjDMC7G27G3GdgM5dpuP7ylRRZNWTB+1N7MipqtAojxt+cFZPf2goWtk?=
+ =?us-ascii?Q?1vVmr7UxnIntynJn/8/RvlcbaC7QrkOlzAFC+eHDBEYENgKdURIYc20BrWbV?=
+ =?us-ascii?Q?FXWTp8C7VaVAIYKXdAzLviIUzvGBTvmg7b8h/nToiU/yzRQH0iRsseX5z5Td?=
+ =?us-ascii?Q?e/MQwOo9bY3LAfLOvQYAoujdmwztdRZHp7CVKde7uRihrCERKSMJGUlPvIm5?=
+ =?us-ascii?Q?doom1Ba5DFun15cFgmGYnhx/qKjNqT6U0G192nAiYxafZ961UrT71b5radva?=
+ =?us-ascii?Q?JqqDhTw1WFa1JTRlPzM/Ww0KcjEupObYbNg+mYDw1htrps7kXPTnP1BjuOKB?=
+ =?us-ascii?Q?6SuStM84JXf7g3qvJoLFQ6pRQyaPuY1d9hJ2sLmLEjXbHaeVEM8e9BqBSiNW?=
+ =?us-ascii?Q?ng=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240128193529.24677-1-petr@tesarici.cz>
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BJSPR01MB0561.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-Network-Message-Id: 44b10dfc-2238-4af4-cff1-08dc2151a555
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jan 2024 05:09:32.9149
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: t6Y59SPceRv48FGIUMNT+mw3CrObSTJXScD4eZBY/PBcwkdz68XFEOC/YvGvVUy7GwkCkEChHS/HI/PhOTWUPvf4dGp5nyMIw7Q2KE+MUlI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BJSPR01MB0834
 
-On Sun, Jan 28, 2024 at 08:35:29PM +0100, Petr Tesarik wrote:
-> As explained by a comment in <linux/u64_stats_sync.h>, write side of struct
-> u64_stats_sync must ensure mutual exclusion, or one seqcount update could
-> be lost on 32-bit platforms, thus blocking readers forever. Such lockups
-> have been observed in real world after stmmac_xmit() on one CPU raced with
-> stmmac_napi_poll_tx() on another CPU.
-> 
-> To fix the issue without introducing a new lock, split the statics into
-> three parts:
-> 
-> 1. fields updated only under the tx queue lock,
-> 2. fields updated only during NAPI poll,
-> 3. fields updated only from interrupt context,
-> 
-> Updates to fields in the first two groups are already serialized through
-> other locks. It is sufficient to split the existing struct u64_stats_sync
-> so that each group has its own.
-> 
-> Note that tx_set_ic_bit is updated from both contexts. Split this counter
-> so that each context gets its own, and calculate their sum to get the total
-> value in stmmac_get_ethtool_stats().
-> 
-> For the third group, multiple interrupts may be processed by different CPUs
-> at the same time, but interrupts on the same CPU will not nest. Move fields
-> from this group to a newly created per-cpu struct stmmac_pcpu_stats.
-> 
-> Fixes: 133466c3bbe1 ("net: stmmac: use per-queue 64 bit statistics where necessary")
-> Link: https://lore.kernel.org/netdev/Za173PhviYg-1qIn@torres.zugschlus.de/t/
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Petr Tesarik <petr@tesarici.cz>
 
-Thanks for the fix patch. One trivial improviement below
-s/netdev_alloc_pcpu_stats/devm_netdev_alloc_pcpu_stats to simplify
-error and exit code path.
 
-With that:
-Reviewed-by: Jisheng Zhang <jszhang@kernel.org>
-
-PS: when I sent the above "net: stmmac: use per-queue 64 bit statistics
-where necessary", I had an impression: there are too much statistics in
-stmmac driver, I didn't see so many statistics in other eth drivers, is
-it possible to remove some useless or not that useful statistic members?
-
-> ---
->  drivers/net/ethernet/stmicro/stmmac/common.h  |  56 +++++--
->  .../net/ethernet/stmicro/stmmac/dwmac-sun8i.c |  15 +-
->  .../net/ethernet/stmicro/stmmac/dwmac4_lib.c  |  15 +-
->  .../net/ethernet/stmicro/stmmac/dwmac_lib.c   |  15 +-
->  .../ethernet/stmicro/stmmac/dwxgmac2_dma.c    |  15 +-
->  .../ethernet/stmicro/stmmac/stmmac_ethtool.c  | 129 ++++++++++------
->  .../net/ethernet/stmicro/stmmac/stmmac_main.c | 141 +++++++++---------
->  7 files changed, 227 insertions(+), 159 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
-> index 721c1f8e892f..4aca20feb4b7 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/common.h
-> +++ b/drivers/net/ethernet/stmicro/stmmac/common.h
-> @@ -59,28 +59,51 @@
->  #undef FRAME_FILTER_DEBUG
->  /* #define FRAME_FILTER_DEBUG */
->  
-> +struct stmmac_q_tx_stats {
-> +	u64_stats_t tx_bytes;
-> +	u64_stats_t tx_set_ic_bit;
-> +	u64_stats_t tx_tso_frames;
-> +	u64_stats_t tx_tso_nfrags;
-> +};
-> +
-> +struct stmmac_napi_tx_stats {
-> +	u64_stats_t tx_packets;
-> +	u64_stats_t tx_pkt_n;
-> +	u64_stats_t poll;
-> +	u64_stats_t tx_clean;
-> +	u64_stats_t tx_set_ic_bit;
-> +};
-> +
->  struct stmmac_txq_stats {
-> -	u64 tx_bytes;
-> -	u64 tx_packets;
-> -	u64 tx_pkt_n;
-> -	u64 tx_normal_irq_n;
-> -	u64 napi_poll;
-> -	u64 tx_clean;
-> -	u64 tx_set_ic_bit;
-> -	u64 tx_tso_frames;
-> -	u64 tx_tso_nfrags;
-> -	struct u64_stats_sync syncp;
-> +	/* Updates protected by tx queue lock. */
-> +	struct u64_stats_sync q_syncp;
-> +	struct stmmac_q_tx_stats q;
-> +
-> +	/* Updates protected by NAPI poll logic. */
-> +	struct u64_stats_sync napi_syncp;
-> +	struct stmmac_napi_tx_stats napi;
->  } ____cacheline_aligned_in_smp;
->  
-> +struct stmmac_napi_rx_stats {
-> +	u64_stats_t rx_bytes;
-> +	u64_stats_t rx_packets;
-> +	u64_stats_t rx_pkt_n;
-> +	u64_stats_t poll;
-> +};
-> +
->  struct stmmac_rxq_stats {
-> -	u64 rx_bytes;
-> -	u64 rx_packets;
-> -	u64 rx_pkt_n;
-> -	u64 rx_normal_irq_n;
-> -	u64 napi_poll;
-> -	struct u64_stats_sync syncp;
-> +	/* Updates protected by NAPI poll logic. */
-> +	struct u64_stats_sync napi_syncp;
-> +	struct stmmac_napi_rx_stats napi;
->  } ____cacheline_aligned_in_smp;
->  
-> +/* Updates on each CPU protected by not allowing nested irqs. */
-> +struct stmmac_pcpu_stats {
-> +	struct u64_stats_sync syncp;
-> +	u64_stats_t rx_normal_irq_n[MTL_MAX_TX_QUEUES];
-> +	u64_stats_t tx_normal_irq_n[MTL_MAX_RX_QUEUES];
-> +};
-> +
->  /* Extra statistic and debug information exposed by ethtool */
->  struct stmmac_extra_stats {
->  	/* Transmit errors */
-> @@ -205,6 +228,7 @@ struct stmmac_extra_stats {
->  	/* per queue statistics */
->  	struct stmmac_txq_stats txq_stats[MTL_MAX_TX_QUEUES];
->  	struct stmmac_rxq_stats rxq_stats[MTL_MAX_RX_QUEUES];
-> +	struct stmmac_pcpu_stats __percpu *pcpu_stats;
->  	unsigned long rx_dropped;
->  	unsigned long rx_errors;
->  	unsigned long tx_dropped;
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-> index 137741b94122..b21d99faa2d0 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-> @@ -441,8 +441,7 @@ static int sun8i_dwmac_dma_interrupt(struct stmmac_priv *priv,
->  				     struct stmmac_extra_stats *x, u32 chan,
->  				     u32 dir)
->  {
-> -	struct stmmac_rxq_stats *rxq_stats = &priv->xstats.rxq_stats[chan];
-> -	struct stmmac_txq_stats *txq_stats = &priv->xstats.txq_stats[chan];
-> +	struct stmmac_pcpu_stats *stats = this_cpu_ptr(priv->xstats.pcpu_stats);
->  	int ret = 0;
->  	u32 v;
->  
-> @@ -455,9 +454,9 @@ static int sun8i_dwmac_dma_interrupt(struct stmmac_priv *priv,
->  
->  	if (v & EMAC_TX_INT) {
->  		ret |= handle_tx;
-> -		u64_stats_update_begin(&txq_stats->syncp);
-> -		txq_stats->tx_normal_irq_n++;
-> -		u64_stats_update_end(&txq_stats->syncp);
-> +		u64_stats_update_begin(&stats->syncp);
-> +		u64_stats_inc(&stats->tx_normal_irq_n[chan]);
-> +		u64_stats_update_end(&stats->syncp);
->  	}
->  
->  	if (v & EMAC_TX_DMA_STOP_INT)
-> @@ -479,9 +478,9 @@ static int sun8i_dwmac_dma_interrupt(struct stmmac_priv *priv,
->  
->  	if (v & EMAC_RX_INT) {
->  		ret |= handle_rx;
-> -		u64_stats_update_begin(&rxq_stats->syncp);
-> -		rxq_stats->rx_normal_irq_n++;
-> -		u64_stats_update_end(&rxq_stats->syncp);
-> +		u64_stats_update_begin(&stats->syncp);
-> +		u64_stats_inc(&stats->rx_normal_irq_n[chan]);
-> +		u64_stats_update_end(&stats->syncp);
->  	}
->  
->  	if (v & EMAC_RX_BUF_UA_INT)
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c
-> index 9470d3fd2ded..0d185e54eb7e 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c
-> @@ -171,8 +171,7 @@ int dwmac4_dma_interrupt(struct stmmac_priv *priv, void __iomem *ioaddr,
->  	const struct dwmac4_addrs *dwmac4_addrs = priv->plat->dwmac4_addrs;
->  	u32 intr_status = readl(ioaddr + DMA_CHAN_STATUS(dwmac4_addrs, chan));
->  	u32 intr_en = readl(ioaddr + DMA_CHAN_INTR_ENA(dwmac4_addrs, chan));
-> -	struct stmmac_rxq_stats *rxq_stats = &priv->xstats.rxq_stats[chan];
-> -	struct stmmac_txq_stats *txq_stats = &priv->xstats.txq_stats[chan];
-> +	struct stmmac_pcpu_stats *stats = this_cpu_ptr(priv->xstats.pcpu_stats);
->  	int ret = 0;
->  
->  	if (dir == DMA_DIR_RX)
-> @@ -201,15 +200,15 @@ int dwmac4_dma_interrupt(struct stmmac_priv *priv, void __iomem *ioaddr,
->  	}
->  	/* TX/RX NORMAL interrupts */
->  	if (likely(intr_status & DMA_CHAN_STATUS_RI)) {
-> -		u64_stats_update_begin(&rxq_stats->syncp);
-> -		rxq_stats->rx_normal_irq_n++;
-> -		u64_stats_update_end(&rxq_stats->syncp);
-> +		u64_stats_update_begin(&stats->syncp);
-> +		u64_stats_inc(&stats->rx_normal_irq_n[chan]);
-> +		u64_stats_update_end(&stats->syncp);
->  		ret |= handle_rx;
->  	}
->  	if (likely(intr_status & DMA_CHAN_STATUS_TI)) {
-> -		u64_stats_update_begin(&txq_stats->syncp);
-> -		txq_stats->tx_normal_irq_n++;
-> -		u64_stats_update_end(&txq_stats->syncp);
-> +		u64_stats_update_begin(&stats->syncp);
-> +		u64_stats_inc(&stats->tx_normal_irq_n[chan]);
-> +		u64_stats_update_end(&stats->syncp);
->  		ret |= handle_tx;
->  	}
->  
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac_lib.c b/drivers/net/ethernet/stmicro/stmmac/dwmac_lib.c
-> index 7907d62d3437..85e18f9a22f9 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac_lib.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac_lib.c
-> @@ -162,8 +162,7 @@ static void show_rx_process_state(unsigned int status)
->  int dwmac_dma_interrupt(struct stmmac_priv *priv, void __iomem *ioaddr,
->  			struct stmmac_extra_stats *x, u32 chan, u32 dir)
->  {
-> -	struct stmmac_rxq_stats *rxq_stats = &priv->xstats.rxq_stats[chan];
-> -	struct stmmac_txq_stats *txq_stats = &priv->xstats.txq_stats[chan];
-> +	struct stmmac_pcpu_stats *stats = this_cpu_ptr(priv->xstats.pcpu_stats);
->  	int ret = 0;
->  	/* read the status register (CSR5) */
->  	u32 intr_status = readl(ioaddr + DMA_STATUS);
-> @@ -215,16 +214,16 @@ int dwmac_dma_interrupt(struct stmmac_priv *priv, void __iomem *ioaddr,
->  			u32 value = readl(ioaddr + DMA_INTR_ENA);
->  			/* to schedule NAPI on real RIE event. */
->  			if (likely(value & DMA_INTR_ENA_RIE)) {
-> -				u64_stats_update_begin(&rxq_stats->syncp);
-> -				rxq_stats->rx_normal_irq_n++;
-> -				u64_stats_update_end(&rxq_stats->syncp);
-> +				u64_stats_update_begin(&stats->syncp);
-> +				u64_stats_inc(&stats->rx_normal_irq_n[chan]);
-> +				u64_stats_update_end(&stats->syncp);
->  				ret |= handle_rx;
->  			}
->  		}
->  		if (likely(intr_status & DMA_STATUS_TI)) {
-> -			u64_stats_update_begin(&txq_stats->syncp);
-> -			txq_stats->tx_normal_irq_n++;
-> -			u64_stats_update_end(&txq_stats->syncp);
-> +			u64_stats_update_begin(&stats->syncp);
-> +			u64_stats_inc(&stats->tx_normal_irq_n[chan]);
-> +			u64_stats_update_end(&stats->syncp);
->  			ret |= handle_tx;
->  		}
->  		if (unlikely(intr_status & DMA_STATUS_ERI))
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
-> index 3cde695fec91..dd2ab6185c40 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
-> @@ -337,8 +337,7 @@ static int dwxgmac2_dma_interrupt(struct stmmac_priv *priv,
->  				  struct stmmac_extra_stats *x, u32 chan,
->  				  u32 dir)
->  {
-> -	struct stmmac_rxq_stats *rxq_stats = &priv->xstats.rxq_stats[chan];
-> -	struct stmmac_txq_stats *txq_stats = &priv->xstats.txq_stats[chan];
-> +	struct stmmac_pcpu_stats *stats = this_cpu_ptr(priv->xstats.pcpu_stats);
->  	u32 intr_status = readl(ioaddr + XGMAC_DMA_CH_STATUS(chan));
->  	u32 intr_en = readl(ioaddr + XGMAC_DMA_CH_INT_EN(chan));
->  	int ret = 0;
-> @@ -367,15 +366,15 @@ static int dwxgmac2_dma_interrupt(struct stmmac_priv *priv,
->  	/* TX/RX NORMAL interrupts */
->  	if (likely(intr_status & XGMAC_NIS)) {
->  		if (likely(intr_status & XGMAC_RI)) {
-> -			u64_stats_update_begin(&rxq_stats->syncp);
-> -			rxq_stats->rx_normal_irq_n++;
-> -			u64_stats_update_end(&rxq_stats->syncp);
-> +			u64_stats_update_begin(&stats->syncp);
-> +			u64_stats_inc(&stats->rx_normal_irq_n[chan]);
-> +			u64_stats_update_end(&stats->syncp);
->  			ret |= handle_rx;
->  		}
->  		if (likely(intr_status & (XGMAC_TI | XGMAC_TBU))) {
-> -			u64_stats_update_begin(&txq_stats->syncp);
-> -			txq_stats->tx_normal_irq_n++;
-> -			u64_stats_update_end(&txq_stats->syncp);
-> +			u64_stats_update_begin(&stats->syncp);
-> +			u64_stats_inc(&stats->tx_normal_irq_n[chan]);
-> +			u64_stats_update_end(&stats->syncp);
->  			ret |= handle_tx;
->  		}
->  	}
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-> index 42d27b97dd1d..ec44becf0e2d 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-> @@ -549,44 +549,79 @@ stmmac_set_pauseparam(struct net_device *netdev,
->  	}
->  }
->  
-> +static u64 stmmac_get_rx_normal_irq_n(struct stmmac_priv *priv, int q)
-> +{
-> +	u64 total;
-> +	int cpu;
-> +
-> +	total = 0;
-> +	for_each_possible_cpu(cpu) {
-> +		struct stmmac_pcpu_stats *pcpu;
-> +		unsigned int start;
-> +		u64 irq_n;
-> +
-> +		pcpu = per_cpu_ptr(priv->xstats.pcpu_stats, cpu);
-> +		do {
-> +			start = u64_stats_fetch_begin(&pcpu->syncp);
-> +			irq_n = u64_stats_read(&pcpu->rx_normal_irq_n[q]);
-> +		} while (u64_stats_fetch_retry(&pcpu->syncp, start));
-> +		total += irq_n;
-> +	}
-> +	return total;
-> +}
-> +
-> +static u64 stmmac_get_tx_normal_irq_n(struct stmmac_priv *priv, int q)
-> +{
-> +	u64 total;
-> +	int cpu;
-> +
-> +	total = 0;
-> +	for_each_possible_cpu(cpu) {
-> +		struct stmmac_pcpu_stats *pcpu;
-> +		unsigned int start;
-> +		u64 irq_n;
-> +
-> +		pcpu = per_cpu_ptr(priv->xstats.pcpu_stats, cpu);
-> +		do {
-> +			start = u64_stats_fetch_begin(&pcpu->syncp);
-> +			irq_n = u64_stats_read(&pcpu->tx_normal_irq_n[q]);
-> +		} while (u64_stats_fetch_retry(&pcpu->syncp, start));
-> +		total += irq_n;
-> +	}
-> +	return total;
-> +}
-> +
->  static void stmmac_get_per_qstats(struct stmmac_priv *priv, u64 *data)
->  {
->  	u32 tx_cnt = priv->plat->tx_queues_to_use;
->  	u32 rx_cnt = priv->plat->rx_queues_to_use;
->  	unsigned int start;
-> -	int q, stat;
-> -	char *p;
-> +	int q;
->  
->  	for (q = 0; q < tx_cnt; q++) {
->  		struct stmmac_txq_stats *txq_stats = &priv->xstats.txq_stats[q];
-> -		struct stmmac_txq_stats snapshot;
-> +		u64 pkt_n;
->  
->  		do {
-> -			start = u64_stats_fetch_begin(&txq_stats->syncp);
-> -			snapshot = *txq_stats;
-> -		} while (u64_stats_fetch_retry(&txq_stats->syncp, start));
-> +			start = u64_stats_fetch_begin(&txq_stats->napi_syncp);
-> +			pkt_n = u64_stats_read(&txq_stats->napi.tx_pkt_n);
-> +		} while (u64_stats_fetch_retry(&txq_stats->napi_syncp, start));
->  
-> -		p = (char *)&snapshot + offsetof(struct stmmac_txq_stats, tx_pkt_n);
-> -		for (stat = 0; stat < STMMAC_TXQ_STATS; stat++) {
-> -			*data++ = (*(u64 *)p);
-> -			p += sizeof(u64);
-> -		}
-> +		*data++ = pkt_n;
-> +		*data++ = stmmac_get_tx_normal_irq_n(priv, q);
->  	}
->  
->  	for (q = 0; q < rx_cnt; q++) {
->  		struct stmmac_rxq_stats *rxq_stats = &priv->xstats.rxq_stats[q];
-> -		struct stmmac_rxq_stats snapshot;
-> +		u64 pkt_n;
->  
->  		do {
-> -			start = u64_stats_fetch_begin(&rxq_stats->syncp);
-> -			snapshot = *rxq_stats;
-> -		} while (u64_stats_fetch_retry(&rxq_stats->syncp, start));
-> +			start = u64_stats_fetch_begin(&rxq_stats->napi_syncp);
-> +			pkt_n = u64_stats_read(&rxq_stats->napi.rx_pkt_n);
-> +		} while (u64_stats_fetch_retry(&rxq_stats->napi_syncp, start));
->  
-> -		p = (char *)&snapshot + offsetof(struct stmmac_rxq_stats, rx_pkt_n);
-> -		for (stat = 0; stat < STMMAC_RXQ_STATS; stat++) {
-> -			*data++ = (*(u64 *)p);
-> -			p += sizeof(u64);
-> -		}
-> +		*data++ = pkt_n;
-> +		*data++ = stmmac_get_rx_normal_irq_n(priv, q);
->  	}
->  }
->  
-> @@ -645,39 +680,49 @@ static void stmmac_get_ethtool_stats(struct net_device *dev,
->  	pos = j;
->  	for (i = 0; i < rx_queues_count; i++) {
->  		struct stmmac_rxq_stats *rxq_stats = &priv->xstats.rxq_stats[i];
-> -		struct stmmac_rxq_stats snapshot;
-> +		struct stmmac_napi_rx_stats snapshot;
-> +		u64 n_irq;
->  
->  		j = pos;
->  		do {
-> -			start = u64_stats_fetch_begin(&rxq_stats->syncp);
-> -			snapshot = *rxq_stats;
-> -		} while (u64_stats_fetch_retry(&rxq_stats->syncp, start));
-> -
-> -		data[j++] += snapshot.rx_pkt_n;
-> -		data[j++] += snapshot.rx_normal_irq_n;
-> -		normal_irq_n += snapshot.rx_normal_irq_n;
-> -		napi_poll += snapshot.napi_poll;
-> +			start = u64_stats_fetch_begin(&rxq_stats->napi_syncp);
-> +			snapshot = rxq_stats->napi;
-> +		} while (u64_stats_fetch_retry(&rxq_stats->napi_syncp, start));
-> +
-> +		data[j++] += u64_stats_read(&snapshot.rx_pkt_n);
-> +		n_irq = stmmac_get_rx_normal_irq_n(priv, i);
-> +		data[j++] += n_irq;
-> +		normal_irq_n += n_irq;
-> +		napi_poll += u64_stats_read(&snapshot.poll);
->  	}
->  
->  	pos = j;
->  	for (i = 0; i < tx_queues_count; i++) {
->  		struct stmmac_txq_stats *txq_stats = &priv->xstats.txq_stats[i];
-> -		struct stmmac_txq_stats snapshot;
-> +		struct stmmac_napi_tx_stats napi_snapshot;
-> +		struct stmmac_q_tx_stats q_snapshot;
-> +		u64 n_irq;
->  
->  		j = pos;
->  		do {
-> -			start = u64_stats_fetch_begin(&txq_stats->syncp);
-> -			snapshot = *txq_stats;
-> -		} while (u64_stats_fetch_retry(&txq_stats->syncp, start));
-> -
-> -		data[j++] += snapshot.tx_pkt_n;
-> -		data[j++] += snapshot.tx_normal_irq_n;
-> -		normal_irq_n += snapshot.tx_normal_irq_n;
-> -		data[j++] += snapshot.tx_clean;
-> -		data[j++] += snapshot.tx_set_ic_bit;
-> -		data[j++] += snapshot.tx_tso_frames;
-> -		data[j++] += snapshot.tx_tso_nfrags;
-> -		napi_poll += snapshot.napi_poll;
-> +			start = u64_stats_fetch_begin(&txq_stats->q_syncp);
-> +			q_snapshot = txq_stats->q;
-> +		} while (u64_stats_fetch_retry(&txq_stats->q_syncp, start));
-> +		do {
-> +			start = u64_stats_fetch_begin(&txq_stats->napi_syncp);
-> +			napi_snapshot = txq_stats->napi;
-> +		} while (u64_stats_fetch_retry(&txq_stats->napi_syncp, start));
-> +
-> +		data[j++] += u64_stats_read(&napi_snapshot.tx_pkt_n);
-> +		n_irq = stmmac_get_tx_normal_irq_n(priv, i);
-> +		data[j++] += n_irq;
-> +		normal_irq_n += n_irq;
-> +		data[j++] += u64_stats_read(&napi_snapshot.tx_clean);
-> +		data[j++] += u64_stats_read(&q_snapshot.tx_set_ic_bit) +
-> +			u64_stats_read(&napi_snapshot.tx_set_ic_bit);
-> +		data[j++] += u64_stats_read(&q_snapshot.tx_tso_frames);
-> +		data[j++] += u64_stats_read(&q_snapshot.tx_tso_nfrags);
-> +		napi_poll += u64_stats_read(&napi_snapshot.poll);
->  	}
->  	normal_irq_n += priv->xstats.rx_early_irq;
->  	data[j++] = normal_irq_n;
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> index a0e46369ae15..530ee7ccae9a 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> @@ -2482,7 +2482,6 @@ static bool stmmac_xdp_xmit_zc(struct stmmac_priv *priv, u32 queue, u32 budget)
->  	struct xdp_desc xdp_desc;
->  	bool work_done = true;
->  	u32 tx_set_ic_bit = 0;
-> -	unsigned long flags;
->  
->  	/* Avoids TX time-out as we are sharing with slow path */
->  	txq_trans_cond_update(nq);
-> @@ -2566,9 +2565,9 @@ static bool stmmac_xdp_xmit_zc(struct stmmac_priv *priv, u32 queue, u32 budget)
->  		tx_q->cur_tx = STMMAC_GET_ENTRY(tx_q->cur_tx, priv->dma_conf.dma_tx_size);
->  		entry = tx_q->cur_tx;
->  	}
-> -	flags = u64_stats_update_begin_irqsave(&txq_stats->syncp);
-> -	txq_stats->tx_set_ic_bit += tx_set_ic_bit;
-> -	u64_stats_update_end_irqrestore(&txq_stats->syncp, flags);
-> +	u64_stats_update_begin(&txq_stats->napi_syncp);
-> +	u64_stats_add(&txq_stats->napi.tx_set_ic_bit, tx_set_ic_bit);
-> +	u64_stats_update_end(&txq_stats->napi_syncp);
->  
->  	if (tx_desc) {
->  		stmmac_flush_tx_descriptors(priv, queue);
-> @@ -2616,7 +2615,6 @@ static int stmmac_tx_clean(struct stmmac_priv *priv, int budget, u32 queue,
->  	unsigned int bytes_compl = 0, pkts_compl = 0;
->  	unsigned int entry, xmits = 0, count = 0;
->  	u32 tx_packets = 0, tx_errors = 0;
-> -	unsigned long flags;
->  
->  	__netif_tx_lock_bh(netdev_get_tx_queue(priv->dev, queue));
->  
-> @@ -2782,11 +2780,11 @@ static int stmmac_tx_clean(struct stmmac_priv *priv, int budget, u32 queue,
->  	if (tx_q->dirty_tx != tx_q->cur_tx)
->  		*pending_packets = true;
->  
-> -	flags = u64_stats_update_begin_irqsave(&txq_stats->syncp);
-> -	txq_stats->tx_packets += tx_packets;
-> -	txq_stats->tx_pkt_n += tx_packets;
-> -	txq_stats->tx_clean++;
-> -	u64_stats_update_end_irqrestore(&txq_stats->syncp, flags);
-> +	u64_stats_update_begin(&txq_stats->napi_syncp);
-> +	u64_stats_add(&txq_stats->napi.tx_packets, tx_packets);
-> +	u64_stats_add(&txq_stats->napi.tx_pkt_n, tx_packets);
-> +	u64_stats_inc(&txq_stats->napi.tx_clean);
-> +	u64_stats_update_end(&txq_stats->napi_syncp);
->  
->  	priv->xstats.tx_errors += tx_errors;
->  
-> @@ -4210,7 +4208,6 @@ static netdev_tx_t stmmac_tso_xmit(struct sk_buff *skb, struct net_device *dev)
->  	struct stmmac_tx_queue *tx_q;
->  	bool has_vlan, set_ic;
->  	u8 proto_hdr_len, hdr;
-> -	unsigned long flags;
->  	u32 pay_len, mss;
->  	dma_addr_t des;
->  	int i;
-> @@ -4375,13 +4372,13 @@ static netdev_tx_t stmmac_tso_xmit(struct sk_buff *skb, struct net_device *dev)
->  		netif_tx_stop_queue(netdev_get_tx_queue(priv->dev, queue));
->  	}
->  
-> -	flags = u64_stats_update_begin_irqsave(&txq_stats->syncp);
-> -	txq_stats->tx_bytes += skb->len;
-> -	txq_stats->tx_tso_frames++;
-> -	txq_stats->tx_tso_nfrags += nfrags;
-> +	u64_stats_update_begin(&txq_stats->q_syncp);
-> +	u64_stats_add(&txq_stats->q.tx_bytes, skb->len);
-> +	u64_stats_inc(&txq_stats->q.tx_tso_frames);
-> +	u64_stats_add(&txq_stats->q.tx_tso_nfrags, nfrags);
->  	if (set_ic)
-> -		txq_stats->tx_set_ic_bit++;
-> -	u64_stats_update_end_irqrestore(&txq_stats->syncp, flags);
-> +		u64_stats_inc(&txq_stats->q.tx_set_ic_bit);
-> +	u64_stats_update_end(&txq_stats->q_syncp);
->  
->  	if (priv->sarc_type)
->  		stmmac_set_desc_sarc(priv, first, priv->sarc_type);
-> @@ -4480,7 +4477,6 @@ static netdev_tx_t stmmac_xmit(struct sk_buff *skb, struct net_device *dev)
->  	struct stmmac_tx_queue *tx_q;
->  	bool has_vlan, set_ic;
->  	int entry, first_tx;
-> -	unsigned long flags;
->  	dma_addr_t des;
->  
->  	tx_q = &priv->dma_conf.tx_queue[queue];
-> @@ -4650,11 +4646,11 @@ static netdev_tx_t stmmac_xmit(struct sk_buff *skb, struct net_device *dev)
->  		netif_tx_stop_queue(netdev_get_tx_queue(priv->dev, queue));
->  	}
->  
-> -	flags = u64_stats_update_begin_irqsave(&txq_stats->syncp);
-> -	txq_stats->tx_bytes += skb->len;
-> +	u64_stats_update_begin(&txq_stats->q_syncp);
-> +	u64_stats_add(&txq_stats->q.tx_bytes, skb->len);
->  	if (set_ic)
-> -		txq_stats->tx_set_ic_bit++;
-> -	u64_stats_update_end_irqrestore(&txq_stats->syncp, flags);
-> +		u64_stats_inc(&txq_stats->q.tx_set_ic_bit);
-> +	u64_stats_update_end(&txq_stats->q_syncp);
->  
->  	if (priv->sarc_type)
->  		stmmac_set_desc_sarc(priv, first, priv->sarc_type);
-> @@ -4918,12 +4914,11 @@ static int stmmac_xdp_xmit_xdpf(struct stmmac_priv *priv, int queue,
->  		set_ic = false;
->  
->  	if (set_ic) {
-> -		unsigned long flags;
->  		tx_q->tx_count_frames = 0;
->  		stmmac_set_tx_ic(priv, tx_desc);
-> -		flags = u64_stats_update_begin_irqsave(&txq_stats->syncp);
-> -		txq_stats->tx_set_ic_bit++;
-> -		u64_stats_update_end_irqrestore(&txq_stats->syncp, flags);
-> +		u64_stats_update_begin(&txq_stats->q_syncp);
-> +		u64_stats_inc(&txq_stats->q.tx_set_ic_bit);
-> +		u64_stats_update_end(&txq_stats->q_syncp);
->  	}
->  
->  	stmmac_enable_dma_transmission(priv, priv->ioaddr);
-> @@ -5073,7 +5068,6 @@ static void stmmac_dispatch_skb_zc(struct stmmac_priv *priv, u32 queue,
->  	unsigned int len = xdp->data_end - xdp->data;
->  	enum pkt_hash_types hash_type;
->  	int coe = priv->hw->rx_csum;
-> -	unsigned long flags;
->  	struct sk_buff *skb;
->  	u32 hash;
->  
-> @@ -5103,10 +5097,10 @@ static void stmmac_dispatch_skb_zc(struct stmmac_priv *priv, u32 queue,
->  	skb_record_rx_queue(skb, queue);
->  	napi_gro_receive(&ch->rxtx_napi, skb);
->  
-> -	flags = u64_stats_update_begin_irqsave(&rxq_stats->syncp);
-> -	rxq_stats->rx_pkt_n++;
-> -	rxq_stats->rx_bytes += len;
-> -	u64_stats_update_end_irqrestore(&rxq_stats->syncp, flags);
-> +	u64_stats_update_begin(&rxq_stats->napi_syncp);
-> +	u64_stats_inc(&rxq_stats->napi.rx_pkt_n);
-> +	u64_stats_add(&rxq_stats->napi.rx_bytes, len);
-> +	u64_stats_update_end(&rxq_stats->napi_syncp);
->  }
->  
->  static bool stmmac_rx_refill_zc(struct stmmac_priv *priv, u32 queue, u32 budget)
-> @@ -5188,7 +5182,6 @@ static int stmmac_rx_zc(struct stmmac_priv *priv, int limit, u32 queue)
->  	unsigned int desc_size;
->  	struct bpf_prog *prog;
->  	bool failure = false;
-> -	unsigned long flags;
->  	int xdp_status = 0;
->  	int status = 0;
->  
-> @@ -5343,9 +5336,9 @@ static int stmmac_rx_zc(struct stmmac_priv *priv, int limit, u32 queue)
->  
->  	stmmac_finalize_xdp_rx(priv, xdp_status);
->  
-> -	flags = u64_stats_update_begin_irqsave(&rxq_stats->syncp);
-> -	rxq_stats->rx_pkt_n += count;
-> -	u64_stats_update_end_irqrestore(&rxq_stats->syncp, flags);
-> +	u64_stats_update_begin(&rxq_stats->napi_syncp);
-> +	u64_stats_add(&rxq_stats->napi.rx_pkt_n, count);
-> +	u64_stats_update_end(&rxq_stats->napi_syncp);
->  
->  	priv->xstats.rx_dropped += rx_dropped;
->  	priv->xstats.rx_errors += rx_errors;
-> @@ -5383,7 +5376,6 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
->  	unsigned int desc_size;
->  	struct sk_buff *skb = NULL;
->  	struct stmmac_xdp_buff ctx;
-> -	unsigned long flags;
->  	int xdp_status = 0;
->  	int buf_sz;
->  
-> @@ -5643,11 +5635,11 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
->  
->  	stmmac_rx_refill(priv, queue);
->  
-> -	flags = u64_stats_update_begin_irqsave(&rxq_stats->syncp);
-> -	rxq_stats->rx_packets += rx_packets;
-> -	rxq_stats->rx_bytes += rx_bytes;
-> -	rxq_stats->rx_pkt_n += count;
-> -	u64_stats_update_end_irqrestore(&rxq_stats->syncp, flags);
-> +	u64_stats_update_begin(&rxq_stats->napi_syncp);
-> +	u64_stats_add(&rxq_stats->napi.rx_packets, rx_packets);
-> +	u64_stats_add(&rxq_stats->napi.rx_bytes, rx_bytes);
-> +	u64_stats_add(&rxq_stats->napi.rx_pkt_n, count);
-> +	u64_stats_update_end(&rxq_stats->napi_syncp);
->  
->  	priv->xstats.rx_dropped += rx_dropped;
->  	priv->xstats.rx_errors += rx_errors;
-> @@ -5662,13 +5654,12 @@ static int stmmac_napi_poll_rx(struct napi_struct *napi, int budget)
->  	struct stmmac_priv *priv = ch->priv_data;
->  	struct stmmac_rxq_stats *rxq_stats;
->  	u32 chan = ch->index;
-> -	unsigned long flags;
->  	int work_done;
->  
->  	rxq_stats = &priv->xstats.rxq_stats[chan];
-> -	flags = u64_stats_update_begin_irqsave(&rxq_stats->syncp);
-> -	rxq_stats->napi_poll++;
-> -	u64_stats_update_end_irqrestore(&rxq_stats->syncp, flags);
-> +	u64_stats_update_begin(&rxq_stats->napi_syncp);
-> +	u64_stats_inc(&rxq_stats->napi.poll);
-> +	u64_stats_update_end(&rxq_stats->napi_syncp);
->  
->  	work_done = stmmac_rx(priv, budget, chan);
->  	if (work_done < budget && napi_complete_done(napi, work_done)) {
-> @@ -5690,13 +5681,12 @@ static int stmmac_napi_poll_tx(struct napi_struct *napi, int budget)
->  	struct stmmac_txq_stats *txq_stats;
->  	bool pending_packets = false;
->  	u32 chan = ch->index;
-> -	unsigned long flags;
->  	int work_done;
->  
->  	txq_stats = &priv->xstats.txq_stats[chan];
-> -	flags = u64_stats_update_begin_irqsave(&txq_stats->syncp);
-> -	txq_stats->napi_poll++;
-> -	u64_stats_update_end_irqrestore(&txq_stats->syncp, flags);
-> +	u64_stats_update_begin(&txq_stats->napi_syncp);
-> +	u64_stats_inc(&txq_stats->napi.poll);
-> +	u64_stats_update_end(&txq_stats->napi_syncp);
->  
->  	work_done = stmmac_tx_clean(priv, budget, chan, &pending_packets);
->  	work_done = min(work_done, budget);
-> @@ -5726,17 +5716,16 @@ static int stmmac_napi_poll_rxtx(struct napi_struct *napi, int budget)
->  	struct stmmac_rxq_stats *rxq_stats;
->  	struct stmmac_txq_stats *txq_stats;
->  	u32 chan = ch->index;
-> -	unsigned long flags;
->  
->  	rxq_stats = &priv->xstats.rxq_stats[chan];
-> -	flags = u64_stats_update_begin_irqsave(&rxq_stats->syncp);
-> -	rxq_stats->napi_poll++;
-> -	u64_stats_update_end_irqrestore(&rxq_stats->syncp, flags);
-> +	u64_stats_update_begin(&rxq_stats->napi_syncp);
-> +	u64_stats_inc(&rxq_stats->napi.poll);
-> +	u64_stats_update_end(&rxq_stats->napi_syncp);
->  
->  	txq_stats = &priv->xstats.txq_stats[chan];
-> -	flags = u64_stats_update_begin_irqsave(&txq_stats->syncp);
-> -	txq_stats->napi_poll++;
-> -	u64_stats_update_end_irqrestore(&txq_stats->syncp, flags);
-> +	u64_stats_update_begin(&txq_stats->napi_syncp);
-> +	u64_stats_inc(&txq_stats->napi.poll);
-> +	u64_stats_update_end(&txq_stats->napi_syncp);
->  
->  	tx_done = stmmac_tx_clean(priv, budget, chan, &tx_pending_packets);
->  	tx_done = min(tx_done, budget);
-> @@ -7062,10 +7051,13 @@ static void stmmac_get_stats64(struct net_device *dev, struct rtnl_link_stats64
->  		u64 tx_bytes;
->  
->  		do {
-> -			start = u64_stats_fetch_begin(&txq_stats->syncp);
-> -			tx_packets = txq_stats->tx_packets;
-> -			tx_bytes   = txq_stats->tx_bytes;
-> -		} while (u64_stats_fetch_retry(&txq_stats->syncp, start));
-> +			start = u64_stats_fetch_begin(&txq_stats->q_syncp);
-> +			tx_bytes   = u64_stats_read(&txq_stats->q.tx_bytes);
-> +		} while (u64_stats_fetch_retry(&txq_stats->q_syncp, start));
-> +		do {
-> +			start = u64_stats_fetch_begin(&txq_stats->napi_syncp);
-> +			tx_packets = u64_stats_read(&txq_stats->napi.tx_packets);
-> +		} while (u64_stats_fetch_retry(&txq_stats->napi_syncp, start));
->  
->  		stats->tx_packets += tx_packets;
->  		stats->tx_bytes += tx_bytes;
-> @@ -7077,10 +7069,10 @@ static void stmmac_get_stats64(struct net_device *dev, struct rtnl_link_stats64
->  		u64 rx_bytes;
->  
->  		do {
-> -			start = u64_stats_fetch_begin(&rxq_stats->syncp);
-> -			rx_packets = rxq_stats->rx_packets;
-> -			rx_bytes   = rxq_stats->rx_bytes;
-> -		} while (u64_stats_fetch_retry(&rxq_stats->syncp, start));
-> +			start = u64_stats_fetch_begin(&rxq_stats->napi_syncp);
-> +			rx_packets = u64_stats_read(&rxq_stats->napi.rx_packets);
-> +			rx_bytes   = u64_stats_read(&rxq_stats->napi.rx_bytes);
-> +		} while (u64_stats_fetch_retry(&rxq_stats->napi_syncp, start));
->  
->  		stats->rx_packets += rx_packets;
->  		stats->rx_bytes += rx_bytes;
-> @@ -7474,9 +7466,15 @@ int stmmac_dvr_probe(struct device *device,
->  	priv->dev = ndev;
->  
->  	for (i = 0; i < MTL_MAX_RX_QUEUES; i++)
-> -		u64_stats_init(&priv->xstats.rxq_stats[i].syncp);
-> -	for (i = 0; i < MTL_MAX_TX_QUEUES; i++)
-> -		u64_stats_init(&priv->xstats.txq_stats[i].syncp);
-> +		u64_stats_init(&priv->xstats.rxq_stats[i].napi_syncp);
-> +	for (i = 0; i < MTL_MAX_TX_QUEUES; i++) {
-> +		u64_stats_init(&priv->xstats.txq_stats[i].q_syncp);
-> +		u64_stats_init(&priv->xstats.txq_stats[i].napi_syncp);
-> +	}
-> +
-> +	priv->xstats.pcpu_stats = netdev_alloc_pcpu_stats(struct stmmac_pcpu_stats);
-
-devm_netdev_alloc_pcpu_stats to simplify error and exit code path.
-
-> +	if (!priv->xstats.pcpu_stats)
-> +		return -ENOMEM;
->  
->  	stmmac_set_ethtool_ops(ndev);
->  	priv->pause = pause;
-> @@ -7505,8 +7503,10 @@ int stmmac_dvr_probe(struct device *device,
->  	stmmac_verify_args();
->  
->  	priv->af_xdp_zc_qps = bitmap_zalloc(MTL_MAX_TX_QUEUES, GFP_KERNEL);
-> -	if (!priv->af_xdp_zc_qps)
-> -		return -ENOMEM;
-> +	if (!priv->af_xdp_zc_qps) {
-> +		ret = -ENOMEM;
-> +		goto error_xdp_init;
-> +	}
->  
->  	/* Allocate workqueue */
->  	priv->wq = create_singlethread_workqueue("stmmac_wq");
-> @@ -7762,6 +7762,8 @@ int stmmac_dvr_probe(struct device *device,
->  	destroy_workqueue(priv->wq);
->  error_wq_init:
->  	bitmap_free(priv->af_xdp_zc_qps);
-> +error_xdp_init:
-> +	free_percpu(priv->xstats.pcpu_stats);
->  
->  	return ret;
->  }
-> @@ -7800,6 +7802,7 @@ void stmmac_dvr_remove(struct device *dev)
->  	destroy_workqueue(priv->wq);
->  	mutex_destroy(&priv->lock);
->  	bitmap_free(priv->af_xdp_zc_qps);
-> +	free_percpu(priv->xstats.pcpu_stats);
->  
->  	pm_runtime_disable(dev);
->  	pm_runtime_put_noidle(dev);
-> -- 
-> 2.43.0
-> 
+> -----Original Message-----
+> From: Conor Dooley <conor@kernel.org>
+> Sent: Monday, January 29, 2024 7:50 PM
+> To: JeeHeng Sia <jeeheng.sia@starfivetech.com>
+> Cc: linux-kernel@vger.kernel.org; linux-riscv@lists.infradead.org; paul.w=
+almsley@sifive.com; palmer@dabbelt.com;
+> aou@eecs.berkeley.edu; sudeep.holla@arm.com; robh@kernel.org; conor.doole=
+y@microchip.com; suagrfillet@gmail.com
+> Subject: Re: [RFC v1 0/2] riscv: Cache Population Code Refactoring for AC=
+PI and DT Support
+>=20
+> On Sun, Jan 28, 2024 at 11:59:55PM -0800, Sia Jee Heng wrote:
+> > This series of patches refactors the cache population function to
+> > seamlessly accommodate both DT and ACPI-based platforms. Additionally,
+> > to streamline the code, the unused parameter in the ci_leaf_init()
+> > function has been removed.
+>=20
+> Why's this an RFC? I don't see any mention of why.
+My bad, I should have mentioned the reason in the cover letter.
+Btw, the reason treating this as RFC patch is because I am seeking for more
+opinions as it is the first try for riscv acpi based cacheinfo.
+>=20
+> Thanks,
+> Conor.
+>=20
+> >
+> > Sia Jee Heng (2):
+> >   riscv: cacheinfo: Remove unused parameter
+> >   riscv: cacheinfo: Refactor populate_cache_leaves()
+> >
+> >  arch/riscv/kernel/cacheinfo.c | 50 ++++++++++++++---------------------
+> >  1 file changed, 20 insertions(+), 30 deletions(-)
+> >
+> >
+> > base-commit: 41bccc98fb7931d63d03f326a746ac4d429c1dd3
+> > --
+> > 2.34.1
+> >
+> >
+> > _______________________________________________
+> > linux-riscv mailing list
+> > linux-riscv@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-riscv
 
