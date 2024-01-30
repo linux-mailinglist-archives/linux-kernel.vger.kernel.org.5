@@ -1,61 +1,62 @@
-Return-Path: <linux-kernel+bounces-44412-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2ECC8421C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:45:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49F148421C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:45:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F4E9292FE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:45:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6C1D29351F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:45:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F92867E82;
-	Tue, 30 Jan 2024 10:43:59 +0000 (UTC)
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF88E6A01F;
+	Tue, 30 Jan 2024 10:44:00 +0000 (UTC)
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31B0B67E6F;
-	Tue, 30 Jan 2024 10:43:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6A6467E72;
+	Tue, 30 Jan 2024 10:43:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706611438; cv=none; b=baZraTDbhl6cfhJk9R7Joj4Obx67o7Hj/dXQzLaEuXlNtcxYdE+K5r314MveK8m8O8vEroLb2W5HvvGMdrVxbD99AB1PNcxS4nqijkVend7O/CwvhwZHDrE57r+smGUUYchaauyJtyRQCtQu+mRONqVlxCoCnIcB4D5Xii7WrhA=
+	t=1706611440; cv=none; b=IZN6AWlfK+rxNYrPhiZr+PQtxENPFwGJSc7E8RbWKSaCF3oj0RmHaGAQ/fZ8SvRsuaElAJXqeV7hAkm0DsqBo3zb857XyITIF4/B2+WRTkDRuFGaTkb+Ez+OQUjfNRccXJnXbwJ8kEOFEJ3AoRUYDMi45KShKj9Y6Fmgg+Eo+T4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706611438; c=relaxed/simple;
-	bh=VIjszJsbF2GDzmdLEhRHO/hbtloJjxsbJ0cwUfkqGyM=;
+	s=arc-20240116; t=1706611440; c=relaxed/simple;
+	bh=QDnvM4oA4H854uqga3nFwXcmRbbdDA1nmmcnqXKuWBg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=sRBfKXuzyAJbWDdCNYcu1XdGyE2a9LW6aPExIJsh3I4W9Ud546DQWY8Pi6oT8orE/b/eTpgADzbpNp3x0Zrgr3kheDwVkK9H8Crkda7N1ESJ10Pp1seME09XBcMUp2tdWWUOF6ltbCKL8qn43sUEHePt6ZQgXJEqeOMG7to2bqw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.46
+	 MIME-Version; b=dA1123ekYOhXy2ryx6gsxAw6NceZZws/TZDCmdCHqIyYjS2T53zPJae+I3ZkAikmFek3+yPMKi7K2citIYvxHrog3gxPxt3cchAbOl5ehVWQAkjZ+RHSgdWgajqOZxj94DnitcSiGIg0N8vYGcraFrgGg0aGk14gi7rMQacjFR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-55f50cf2021so248984a12.1;
-        Tue, 30 Jan 2024 02:43:56 -0800 (PST)
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a3510d79ae9so409378066b.0;
+        Tue, 30 Jan 2024 02:43:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706611435; x=1707216235;
+        d=1e100.net; s=20230601; t=1706611437; x=1707216237;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=76e9uPIeXCxDiA3pMJxXyMeHe9zGOP/nmo8UuctdYG8=;
-        b=cAQISUL+tQA8iR+jf86mREVBxRoj4uf0yIA85ZOE2Ip78n3n/WTd6H1r0/e79qcN53
-         u5wAXkPliPp7IWe/sA67Ybs2GzoyOKQkD/fuapPkIkTBPKwwSySY1GTXT/405lKND4AH
-         JA/EO0ElAG5ll5EyvQvEcidcbR1V9eVv6SlS3AKjULz521UtImesp4u0+3vb/3oc8bbu
-         ZMyedvhNC7qAOh/ETpQSgHcva0lISxmNPNT+8tujYbgDejsuuhN5jO5tLYFOKWDG6EP6
-         +Y7GEV0nO1R4JiXy0GOOp0zZ077XYrTFkNB5gNDLDvpj+dUGFhzXiukRUx667MB80HRj
-         IY6A==
-X-Gm-Message-State: AOJu0YwvKMWOeqhqRZWLvDzTecgYmKR81RjEL1EDBjYfQHmXJOX5dXao
-	GLSzwNxmyZ541Hpsm/AhC3Ao+VA91sYc3I0R3dt+E9vYYNIBttRW4El/R9UtjDJslA==
-X-Google-Smtp-Source: AGHT+IE5DBnCKLOmnlpPsk6kJYKBKsXojDbNbaLqKAdFzfUBd0dnr+0ErjJTmFBd1dRKqkOqjjJ9jw==
-X-Received: by 2002:aa7:d904:0:b0:55f:11cf:ee56 with SMTP id a4-20020aa7d904000000b0055f11cfee56mr3292534edr.28.1706611435126;
-        Tue, 30 Jan 2024 02:43:55 -0800 (PST)
-Received: from localhost (fwdproxy-lla-007.fbsv.net. [2a03:2880:30ff:7::face:b00c])
-        by smtp.gmail.com with ESMTPSA id n16-20020aa7d050000000b0055f0f643ebcsm1604211edo.96.2024.01.30.02.43.54
+        bh=O1yUomGVGxW+ZJ/xuPk5u23oKYZV6/4kQ1dwGrkBW8Y=;
+        b=NNXovl/mfwBRKIGDanxQYtmgPfiiWNUhtfhRb0EFiGoEJepIeGnjYE3C9Cxu41JDB4
+         2ranWDzktoKjGyKgJ5elvsuMfgkzpTEm9/PXAF4fGGtMkdDHJzrUazYHmRt4vZoqCgpw
+         Xl22oP24oIQRzlcVhL8NNwWCVMI9Q3Yk6bzr51e1318KExRJk73oOTm2z414n/B622PF
+         IV5pDNKdNSuRz0BYb89JOCsa62KRKdHqiei4kqs5jLGuL/yY6R9iqsMcQrrOOZnaVDdo
+         Qmy5Ba4IDZd5aEITq9WYjsNw2yMX3aja+UXYDne/i5DJk/zgTJQq8Jv8DEDjTlhn7aIt
+         aa1A==
+X-Gm-Message-State: AOJu0Yz5BV+Kv5bNMr16YMu53NFoY7zMj4uh5ZLKgWdjnnuNhyh1R7l0
+	Kr1YubJL3XGEfHDlA8BZY4hVrOH11vVf5mYMLlA+UgVKNel7nHZv
+X-Google-Smtp-Source: AGHT+IFPAznZ9OF+Rpfm2bv4z2kmctthlYlYZURZnZenl4Z93ahd7bGLWBtKdZBCk/AwhfUSfOzPlg==
+X-Received: by 2002:a17:906:2b0c:b0:a36:393d:6caf with SMTP id a12-20020a1709062b0c00b00a36393d6cafmr394051ejg.48.1706611436772;
+        Tue, 30 Jan 2024 02:43:56 -0800 (PST)
+Received: from localhost (fwdproxy-lla-117.fbsv.net. [2a03:2880:30ff:75::face:b00c])
+        by smtp.gmail.com with ESMTPSA id rs10-20020a170907036a00b00a316a652c6csm4962734ejb.70.2024.01.30.02.43.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 02:43:54 -0800 (PST)
+        Tue, 30 Jan 2024 02:43:56 -0800 (PST)
 From: Breno Leitao <leitao@debian.org>
 To: kuba@kernel.org,
 	davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
+	Loic Poulain <loic.poulain@linaro.org>,
 	Kalle Valo <kvalo@kernel.org>
 Cc: dsahern@kernel.org,
 	weiwan@google.com,
@@ -64,12 +65,11 @@ Cc: dsahern@kernel.org,
 	horms@kernel.org,
 	andrew@lunn.ch,
 	leit@fb.com,
-	Wu Yunchuan <yunchuan@nfschina.com>,
-	Kalle Valo <quic_kvalo@quicinc.com>,
-	linux-wireless@vger.kernel.org (open list:USB AR5523 WIRELESS DRIVER)
-Subject: [PATCH net 4/9] wifi: fill in MODULE_DESCRIPTION()s for ar5523
-Date: Tue, 30 Jan 2024 02:42:38 -0800
-Message-Id: <20240130104243.3025393-5-leitao@debian.org>
+	wcn36xx@lists.infradead.org (open list:QUALCOMM WCN36XX WIRELESS DRIVER),
+	linux-wireless@vger.kernel.org (open list:NETWORKING DRIVERS (WIRELESS))
+Subject: [PATCH net 5/9] wifi: fill in MODULE_DESCRIPTION()s for wcn36xx
+Date: Tue, 30 Jan 2024 02:42:39 -0800
+Message-Id: <20240130104243.3025393-6-leitao@debian.org>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20240130104243.3025393-1-leitao@debian.org>
 References: <20240130104243.3025393-1-leitao@debian.org>
@@ -82,24 +82,25 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
-Add descriptions to the Atheros AR5523 wireless driver.
+Add descriptions to the Qualcomm Atheros WCN3660/3680 wireless driver.
 
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- drivers/net/wireless/ath/ar5523/ar5523.c | 1 +
+ drivers/net/wireless/ath/wcn36xx/main.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/ath/ar5523/ar5523.c b/drivers/net/wireless/ath/ar5523/ar5523.c
-index 43e0db78d42b..a742cec44e3d 100644
---- a/drivers/net/wireless/ath/ar5523/ar5523.c
-+++ b/drivers/net/wireless/ath/ar5523/ar5523.c
-@@ -1803,5 +1803,6 @@ static struct usb_driver ar5523_driver = {
+diff --git a/drivers/net/wireless/ath/wcn36xx/main.c b/drivers/net/wireless/ath/wcn36xx/main.c
+index 41119fb177e3..4e6b4df8562f 100644
+--- a/drivers/net/wireless/ath/wcn36xx/main.c
++++ b/drivers/net/wireless/ath/wcn36xx/main.c
+@@ -1685,6 +1685,7 @@ static struct platform_driver wcn36xx_driver = {
  
- module_usb_driver(ar5523_driver);
+ module_platform_driver(wcn36xx_driver);
  
-+MODULE_DESCRIPTION("Atheros AR5523 wireless driver");
++MODULE_DESCRIPTION("Qualcomm Atheros WCN3660/3680 wireless driver");
  MODULE_LICENSE("Dual BSD/GPL");
- MODULE_FIRMWARE(AR5523_FIRMWARE_FILE);
+ MODULE_AUTHOR("Eugene Krasnikov k.eugene.e@gmail.com");
+ MODULE_FIRMWARE(WLAN_NV_FILE);
 -- 
 2.39.3
 
