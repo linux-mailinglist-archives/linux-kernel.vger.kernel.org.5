@@ -1,170 +1,112 @@
-Return-Path: <linux-kernel+bounces-44315-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44317-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F36D84202A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:54:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C30DB84202C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:55:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A45A28D222
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:54:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FEDC28E191
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:55:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0A726775F;
-	Tue, 30 Jan 2024 09:50:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFEC260DD4;
+	Tue, 30 Jan 2024 09:51:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="oQ2Mz5KK";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="T6CtLH/W";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="oQ2Mz5KK";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="T6CtLH/W"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uYnXincS"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E19866B47
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:49:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A07960BBA
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:51:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706608200; cv=none; b=MjmVi+jyTY6EpUH8mtRRsB1x7ffsHA9o3S/3CmSdg+51dG9IIuk/9hi7AKkxdaUDZyuOrTM8HakGhfijA8V+r6o+BbVaQWh1sC/GK1roy3JoiL1S16Zz3HNBs4z/z4zg9Xi/fzLSNtBoI1SEESRy0iHy9WltNWhm+bz3eBEyGWg=
+	t=1706608318; cv=none; b=Bgi38cRqWB6nH/pIjLRUXhpqAQfWgAIvtL/iFrfljExgXcdDZJHiqwaRwm30k1XACA+gRLtOna4bG1iDCjsBprdIQyBzWYjbQhc6L+OPiaxSX0aShv68LQhCQhfL3h1GacremLo3BypuCEkT3mZxrvmgexo8n/5ZTR7jR1PvrXo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706608200; c=relaxed/simple;
-	bh=L3d1pt2sdWH3XCLQ+uXhn01xc68tnmI7IKiuyc7FeiM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Kt8X8lnBaK9k4wxnDd3GiJAs8tJGedXOjM2ZLiT4dk4jii+DA3wMSbKy0kMYs/q46lRl3QAEXuL91ZJI5A3553AzJ/DPC5BULOfkRmsR5+uOH+vg8YINxaSMLy+Gf03WhtBWbUYfwFOciD/999s9HI1UTSL+6LiTqPYl7RIeh4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=oQ2Mz5KK; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=T6CtLH/W; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=oQ2Mz5KK; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=T6CtLH/W; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9BFC021FBC;
-	Tue, 30 Jan 2024 09:49:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1706608195; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LBhSlwz3AB0ajCmtnMnq+5bz4kW5cELOvagoWwjrYtM=;
-	b=oQ2Mz5KK8Hm8cTq6JIDP3ucb8DjETD2xzytgiDe0+mhMtTl3tZGBKJyn4zPyY81nsqyAnq
-	8TMrh1PU+ZvrF7nAa7lqKlmM5aFvSH5SRLyWX0Y5/nDoSYEqVlo62rWXotUXLKMy4UYWHt
-	XnjQOdi4XwIRnFe2GdSwk6I9uGKb9kk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1706608195;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LBhSlwz3AB0ajCmtnMnq+5bz4kW5cELOvagoWwjrYtM=;
-	b=T6CtLH/WAgliFsMQtpfhv2UJDZSXhtvAFlotxenj46M29yJfI12gecosBHvCYBDs5dHpxT
-	FOqhSL68x8BX5iCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1706608195; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LBhSlwz3AB0ajCmtnMnq+5bz4kW5cELOvagoWwjrYtM=;
-	b=oQ2Mz5KK8Hm8cTq6JIDP3ucb8DjETD2xzytgiDe0+mhMtTl3tZGBKJyn4zPyY81nsqyAnq
-	8TMrh1PU+ZvrF7nAa7lqKlmM5aFvSH5SRLyWX0Y5/nDoSYEqVlo62rWXotUXLKMy4UYWHt
-	XnjQOdi4XwIRnFe2GdSwk6I9uGKb9kk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1706608195;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LBhSlwz3AB0ajCmtnMnq+5bz4kW5cELOvagoWwjrYtM=;
-	b=T6CtLH/WAgliFsMQtpfhv2UJDZSXhtvAFlotxenj46M29yJfI12gecosBHvCYBDs5dHpxT
-	FOqhSL68x8BX5iCw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 88DF913462;
-	Tue, 30 Jan 2024 09:49:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id Wqn3H0PGuGWlbwAAn2gu4w
-	(envelope-from <dwagner@suse.de>); Tue, 30 Jan 2024 09:49:55 +0000
-From: Daniel Wagner <dwagner@suse.de>
-To: James Smart <james.smart@broadcom.com>
-Cc: Keith Busch <kbusch@kernel.org>,
-	Christoph Hellwig <hch@lst.de>,
-	Hannes Reinecke <hare@suse.de>,
-	linux-nvme@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH v4 12/12] nvmet-fc: use RCU list iterator for assoc_list
-Date: Tue, 30 Jan 2024 10:49:38 +0100
-Message-ID: <20240130094938.1575-13-dwagner@suse.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240130094938.1575-1-dwagner@suse.de>
-References: <20240130094938.1575-1-dwagner@suse.de>
+	s=arc-20240116; t=1706608318; c=relaxed/simple;
+	bh=sUNr3myzPwzcEzPZLydh/Sxr+xAwn5eWM0IALXoUSC8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LpRNgEjoaXo9rEovLzXevJNxXSR4n4Y6zFnlpPzhARG2xjXuPmLYTiBuoHC12Dw5ilMzu6dIURypTPV4vcMhe1ubeHVCsWRHcEzvk/qThmPWGL3hE6MUdlXPq1KES9eCqg6IlFRDq9QKTvWxxxs2mH/hH719s4WRwqsifYMZzeE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uYnXincS; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40e80046264so47084455e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:51:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706608314; x=1707213114; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=UHvebLwHuRfKrhRhx4zUZc+osrZ3cO5ITZcXKlhy5f4=;
+        b=uYnXincSowyG+p9UEdPDnvxIzmU9GOBSzNhyzKWgWRsHxYxJsgmlN8l73pqeqMgJiH
+         W3FLzDp9V1a4NogDlV5H1k248SFmxfaAhFaGXvy+2xX1w0ghHvdHtyUoKilqpwW0kimv
+         irpXAEmjuNAD4/StG/16/I9RtqUQBH7xybZf4x+8WvJiIjR03h7Mg+Ju0ipADKFW0o6Y
+         UtGo5chTuX8tks8DceGJ2nErQ0g305MQvJkl4lTc3CXnzi2Dpd+8g0LSqtlkfRvLQBTa
+         h9yp2/x5R1D6Yus6NsAKqqqL9V7/KOfcBuEEQOWlRt+BxIoW2oB/IMNTXqdGY51W90E5
+         IVaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706608314; x=1707213114;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UHvebLwHuRfKrhRhx4zUZc+osrZ3cO5ITZcXKlhy5f4=;
+        b=jji/81bCnJNmCwpg/OAXuKKFnf/lybuiZ0xhzJujKFNCHRUufSSn7un08Ib+BZrkOt
+         dSbDOAlY5gO85OmDJ/kcqN0ajKPZd4C30fB+JKeIkvb+KGLr2DrsoVo3UkqABntD7ORk
+         bZKt91OdGd1P7uTz04PlQWljGwmQB5gZaLIxJbH3PKKBCPUGzTGhD5yFS7W4g0xLhrgl
+         F0DJu7PnZSWT32PDllfNB+0jHlpQG8LWQSsMl14LNTkYp/I0QgFlFAZunPjFs3fFVeBl
+         pM/DOkt39S/u+YnqK5xwdKYKx8Jj5wirMhI/IY0mW432vKSlW49XydvGzaRk3HY2ii4C
+         TERw==
+X-Gm-Message-State: AOJu0YyoVPNkUodn5I0hgoxklKF+m1LBKUfX7fwUrZ17lrtSi+BW1RgY
+	31O+j7suoEj51ahuYOG9SJLgLlieIy3pNB313jyBTEpmch73KLs6fmiA+fmNHG8=
+X-Google-Smtp-Source: AGHT+IF38u7/UMq2Ehe06B1hdRlnUG7cUccj6aYmXDUSxOCpUZXxCEPO+lNn+j1151l0KXe8fxwwHw==
+X-Received: by 2002:a05:600c:4d96:b0:40e:d319:4792 with SMTP id v22-20020a05600c4d9600b0040ed3194792mr6064680wmp.22.1706608314364;
+        Tue, 30 Jan 2024 01:51:54 -0800 (PST)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id u7-20020a05600c138700b0040d8ff79fd8sm12646748wmf.7.2024.01.30.01.51.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jan 2024 01:51:54 -0800 (PST)
+Message-ID: <57a5ca95-9d79-45cb-89dd-fa7a3a6ad228@linaro.org>
+Date: Tue, 30 Jan 2024 10:51:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] thermal/drivers/mediatek/lvts_thermal: Fix a memory leak
+ in an error handling path
+Content-Language: en-US
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
+ Lukasz Luba <lukasz.luba@arm.com>, Matthias Brugger
+ <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Balsam CHIHI <bchihi@baylibre.com>
+Cc: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, linux-pm@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+References: <481d345233862d58c3c305855a93d0dbc2bbae7e.1706431063.git.christophe.jaillet@wanadoo.fr>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <481d345233862d58c3c305855a93d0dbc2bbae7e.1706431063.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [0.90 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLY(-4.00)[];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 R_RATELIMIT(0.00)[to_ip_from(RL7u6ok1g4a6hhe6aduz96x8er)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[38.88%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: 0.90
 
-The assoc_list is a RCU protected list, thus use the RCU flavor of list
-functions.
+On 28/01/2024 09:38, Christophe JAILLET wrote:
+> If devm_krealloc() fails, then 'efuse' is leaking.
+> So free it to avoid a leak.
+> 
+> Fixes: f5f633b18234 ("thermal/drivers/mediatek: Add the Low Voltage Thermal Sensor driver")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
 
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
----
- drivers/nvme/target/fc.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Applied, thanks
 
-diff --git a/drivers/nvme/target/fc.c b/drivers/nvme/target/fc.c
-index 671d096745a5..b8d3e30f2ddb 100644
---- a/drivers/nvme/target/fc.c
-+++ b/drivers/nvme/target/fc.c
-@@ -1151,7 +1151,9 @@ nvmet_fc_alloc_target_assoc(struct nvmet_fc_tgtport *tgtport, void *hosthandle)
- 
- 		spin_lock_irqsave(&tgtport->lock, flags);
- 		needrandom = false;
--		list_for_each_entry(tmpassoc, &tgtport->assoc_list, a_list) {
-+		rcu_read_lock();
-+		list_for_each_entry_rcu(tmpassoc, &tgtport->assoc_list, a_list) {
-+
- 			if (ran == tmpassoc->association_id) {
- 				needrandom = true;
- 				break;
-@@ -1161,6 +1163,7 @@ nvmet_fc_alloc_target_assoc(struct nvmet_fc_tgtport *tgtport, void *hosthandle)
- 			assoc->association_id = ran;
- 			list_add_tail_rcu(&assoc->a_list, &tgtport->assoc_list);
- 		}
-+		rcu_read_unlock();
- 		spin_unlock_irqrestore(&tgtport->lock, flags);
- 	}
- 
 -- 
-2.43.0
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
 
 
