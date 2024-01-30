@@ -1,116 +1,104 @@
-Return-Path: <linux-kernel+bounces-44690-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44681-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E89D6842601
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:16:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D15D7842619
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:22:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88F481F2C392
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:16:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77593B23D22
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:14:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D9C06BB4A;
-	Tue, 30 Jan 2024 13:16:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAC0E6BB2B;
+	Tue, 30 Jan 2024 13:14:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rU5q95vO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kO/mGNHP"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56B606A34B;
-	Tue, 30 Jan 2024 13:16:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DFFF6A337
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 13:14:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706620598; cv=none; b=cBXqHgi3w8fkRaSxh9ysevJz0mflmhqv2TMABPHhKUwXY5hJpquwaWvXYs0pbOJNEo/9cpGJzVuUeMvyGlXFxsHqWMfOMT9pz3dejIhSgnelJTgfBsqztN+7GnX7kxB79++I4RIz8M0/P9cyD67xtkiQ/Dm8qyHtgcLF/2HrKTQ=
+	t=1706620456; cv=none; b=hwqyyOVUDRhjL9AN6IREGHn1jJliwnLlKdJUUzJC0w23jhryliSJU8d95KlrCeIVzHye+lQR/fSM2HJOMed3IkQd/EcOPYGs0emIDhF9gj/0UIL88VgXYCXbmGyN7v5JpftyFcdzJ7J1FoGlVCsbowTvcgwVMa0LOOA0awty8kA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706620598; c=relaxed/simple;
-	bh=v489qvkgYg0wbgSdIMBu2Bfp4yEzx5Cxzf30sjZ8BqQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jKNPjCPv1zQwFtJOfuaaW6ystsS51pEF0Ks5ElmCxaTdcnowZbMZcgMhdD7/unCgSXsdyw+WSOfccXMukHfLY/eo8OQGZuylkvF2WbEoxr6SFsV+LMuWtb2idCSPgvQivtSWOrHk+jKcHm+3x3CuvQHDRW5cGU3fF0gSTwHlk7U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rU5q95vO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17FDCC433C7;
-	Tue, 30 Jan 2024 13:16:30 +0000 (UTC)
+	s=arc-20240116; t=1706620456; c=relaxed/simple;
+	bh=igel0xrDbniIkaaDmTpoNc96gkHdCdCHSRZ68ZZFEe0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rIEqFyRpzVg2I0A4eJmEJ87a/Tb30bvbke6b6CgVd8MaUKLNfQt+ZVpwv9sGXxSXxEGyOF/lwqmh6jwhe18XyKGVZZbhzEfAypmIGaQjxo3n7h5ibkZIeFwgKlftZbTmTfq1xkXPzuremmmxwuIBioSoFBNks1w1EXBuRukv9EQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kO/mGNHP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3BC6C433C7;
+	Tue, 30 Jan 2024 13:14:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706620597;
-	bh=v489qvkgYg0wbgSdIMBu2Bfp4yEzx5Cxzf30sjZ8BqQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rU5q95vOkv05SN8BwXNBW8vlDKa37YodUmFyb78ag5MwtIzrQUaxEZQ09x2ztsqDr
-	 slw63v/+K4BR24NBZ9O0eYd5cvKxJgmVwpf3A9ROebbQb3ydOx0J8Z7Zekhj/yeQS2
-	 HF+SwApnW2cw7nvhh5p5n8feTR67Jd3YqrpKZfN0SR+fna9I7s+Z8Y9/LYBhkCGLt0
-	 xRFE2I8R4CntHeH03iKl2S+uZxswQD8rXCk+l7Un8AlLD0HPLmJa8x/MDOjW457neu
-	 x4AX2LxJQBNf2KgUICUZ23WMIcU4+rF5zSjkNNjVtptUj7VcmDRl5K5YERHo2IIReq
-	 btUbSfulr7/MQ==
-Date: Tue, 30 Jan 2024 18:46:25 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Viresh Kumar <viresh.kumar@linaro.org>
-Cc: Manivannan Sadhasivam <mani@kernel.org>,
-	Krishna chaitanya chundru <quic_krichai@quicinc.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Brian Masney <bmasney@redhat.com>,
-	Georgi Djakov <djakov@kernel.org>, linux-arm-msm@vger.kernel.org,
-	vireshk@kernel.org, quic_vbadigan@quicinc.com,
-	quic_skananth@quicinc.com, quic_nitegupt@quicinc.com,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 5/6] arm64: dts: qcom: sm8450: Add opp table support
- to PCIe
-Message-ID: <20240130131625.GA2554@thinkpad>
-References: <20240112-opp_support-v6-0-77bbf7d0cc37@quicinc.com>
- <20240112-opp_support-v6-5-77bbf7d0cc37@quicinc.com>
- <20240129160420.GA27739@thinkpad>
- <20240130061111.eeo2fzaltpbh35sj@vireshk-i7>
- <20240130071449.GG32821@thinkpad>
- <20240130083619.lqbj47fl7aa5j3k5@vireshk-i7>
- <20240130094804.GD83288@thinkpad>
- <20240130095508.zgufudflizrpxqhy@vireshk-i7>
+	s=k20201202; t=1706620455;
+	bh=igel0xrDbniIkaaDmTpoNc96gkHdCdCHSRZ68ZZFEe0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=kO/mGNHPhKqQWzL8j0hqH3l5sXFFbDogLO41f5djOqMxCipaBrG0h4rBODXPevz9/
+	 qW6XeRZybwxQw70VKy53GVtMppl2Pz2RDUtwDV8JnqpEg1ji0rIRMBaRhuKNIpCZco
+	 y4fSSK37mcprJR7eTlU0Gm2R9JldtM5zfi+9gXXLlpPZIZDPjbze+0qVt6AW2ONvjZ
+	 XvjbBnwiW0DqmN7HnNxOjT7jRA5djDlrIenDZQtWn0X7eqWHKe3gjSInyz8bQMxdqu
+	 dniLjoe6QWjEQPgt7NB4eeHrC78gL5NK8JXfrc2DOS/2y7QLvwtSmLpyzH1j0x6eKG
+	 dZmQUBsVgapYA==
+From: alexs@kernel.org
+To: Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	linux-kernel@vger.kernel.org,
+	ricardo.neri-calderon@linux.intel.com,
+	sshegde@linux.ibm.com
+Cc: Alex Shi <alexs@kernel.org>
+Subject: [PATCH v2 1/6] sched/fair: add SD_CLUSTER in comments
+Date: Tue, 30 Jan 2024 21:17:03 +0800
+Message-ID: <20240130131708.429425-1-alexs@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240130095508.zgufudflizrpxqhy@vireshk-i7>
 
-On Tue, Jan 30, 2024 at 03:25:08PM +0530, Viresh Kumar wrote:
-> On 30-01-24, 15:18, Manivannan Sadhasivam wrote:
-> > So you are saying that the ICC core itself should get the bw values from DT
-> > instead of hardcoding in the driver? If so, I'd like to get the opinion from
-> > Georgi/Bjorn.
-> 
-> Not really. The drivers or the ICC core doesn't need to do anything I
-> guess. Since the values are coming via the OPP, we must just use it to
-> hide all these details.
-> 
-> Why is the ICC core required to get into this here ? ICC core should
-> be ready to get the information from DT (may or may not via the OPP
-> core), or from driver.
-> 
+From: Alex Shi <alexs@kernel.org>
 
-Agree. But what I'm saying is, right now there is no DT property in the
-interconnect consumer nodes to specificy the bw requirements. This is all
-hardcoded in the respective ICC consumer drivers.
+The SD_CLUSTER omitted in following TOPOLOGY_SD_FLAGS explaination, add
+it to fill the absent.
 
-But when we use OPP to control bw, the bw requirements come from DT. This is
-what I see as a difference. Because, only nodes making use of OPP will specify
-bw in DT and other nodes making use of just ICC will not.
+Signed-off-by: Alex Shi <alexs@kernel.org>
+To: linux-kernel@vger.kernel.org
+To: Daniel Bristot de Oliveira <bristot@redhat.com>
+To: Ben Segall <bsegall@google.com>
+To: Steven Rostedt <rostedt@goodmis.org>
+To: Dietmar Eggemann <dietmar.eggemann@arm.com>
+To: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To: Valentin Schneider <vschneid@redhat.com>
+To: Vincent Guittot <vincent.guittot@linaro.org>
+To: Juri Lelli <juri.lelli@redhat.com>
+To: Peter Zijlstra <peterz@infradead.org>
+To: Ingo Molnar <mingo@redhat.com>
+---
+ kernel/sched/topology.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Maybe I'm worrying too much about these details... But it looks like
-inconsistency to me.
-
-- Mani
-
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index 10d1391e7416..c342c52b1f34 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -1554,6 +1554,7 @@ static struct cpumask		***sched_domains_numa_masks;
+  * function:
+  *
+  *   SD_SHARE_CPUCAPACITY   - describes SMT topologies
++ *   SD_CLUSTER		    - describes Cluster topologies
+  *   SD_SHARE_PKG_RESOURCES - describes shared caches
+  *   SD_NUMA                - describes NUMA topologies
+  *
 -- 
-மணிவண்ணன் சதாசிவம்
+2.43.0
+
 
