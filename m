@@ -1,102 +1,149 @@
-Return-Path: <linux-kernel+bounces-44284-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44285-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3607C841FE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:42:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99BBE841FE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:42:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 696BC1C267ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:42:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD7761C267C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:42:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BCC760B93;
-	Tue, 30 Jan 2024 09:41:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C23E5B5CE;
+	Tue, 30 Jan 2024 09:42:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="PM033RNt"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="b7tyjvqF"
+Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBE6960BA8
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:41:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F227059B4E
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:42:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706607669; cv=none; b=JleGPkp1nWwZj0KGiYlxNy81yM3AhCIpH1zw6s20O24EjkYlbqeDYjFACPMfOTSsUR4OHioQyrwOdWSjx4arb+1o1VXOK0DmdgkAZIw62rhthwlCvrPAE5gnN5yL0mTayfQ4p6/ZxIBnp9z+SIpP/bGmoVJs38r9naote6eVZHo=
+	t=1706607724; cv=none; b=ufl29aPloMfQoV8cA2fdlnCkvxBjurJd1nJ3ldbq4LMBgnuhctenpjgOaIbxeWmLtt+OLAILZX0IF/I69XEb13yn1wsJfE8qLEst3KAOZppT9uKQ8+ukWxqqtTCAc9MfW2Jo+3xqmOfu//jSekq3AnYBajYl92i5zpfl/XFO0Pw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706607669; c=relaxed/simple;
-	bh=2OHLsZS4PsJMPwjOKM6F0kv6fbGghDQNdDA7mW+z63U=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VYHLCa0P0hEYJDaubAfdlojutJG3/pH7FQ65KyXDUI8GdR66tbFfkUEHepUE1Dla4r4L8IJiTC5oH7ftM5juZMyi/UaLR9RH3bEK+HIFERZYs+G7uwaOJG63Q2x/rVwSn9YRnsU3A6HgyVDpyI93ZNsBvMF8/PIBIjE66QuFTB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=PM033RNt; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=from:to:cc:subject:date:message-id
-	:mime-version:content-transfer-encoding; s=k1; bh=AzSdhb1EFgr8m9
-	GCPzSJauJkFDRxOixnrXfrfcPby5k=; b=PM033RNtlmu+MGufEY5zm5sFAYMUyh
-	jGBh4rzolkWqBQre7/9t4OI+XsEPVYVlGZBfnT8+O1jtgJm36T0MnQRKDVxpoQf+
-	lr9ufsjd1RSLGQx9x4OaRGVZBnxDI1iJWvXr+LeKEcIPH5/u48jPDKYcyzPvhfg6
-	JzSCHoV7eJVbfuJRKEPPtOESzWyeBpQf/upvVLNUjfS4hMFjVOqaPmhMZLqlap4h
-	GeIOZMfODM2UjMpwdnj386or9JvL5vSmYBOUqk36mH2pMIFD82MmIrd+3XBrFvUy
-	12l1Du0TU7fVPUgUKwdkuZq6zFXj0TmSOCVC3LaIhi5a6wGqlzzJvqlg==
-Received: (qmail 2783205 invoked from network); 30 Jan 2024 10:41:00 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 30 Jan 2024 10:41:00 +0100
-X-UD-Smtp-Session: l3s3148p1@lKVcjyYQVJlehhtJ
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: linux-renesas-soc@vger.kernel.org
-Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Mark Brown <broonie@kernel.org>,
-	linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] spi: sh-msiof: avoid integer overflow in constants
-Date: Tue, 30 Jan 2024 10:40:53 +0100
-Message-Id: <20240130094053.10672-1-wsa+renesas@sang-engineering.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1706607724; c=relaxed/simple;
+	bh=1akIZWOlcQz+syP6eJskDVtQ9hEJTF7i2yELwffJV9s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ngecqcx4Law8L3j2D4IX5HUg4j9a7HnpzBqUHeTw0SFPLzW6pAEnUO/80hM2LzKqbzflG0BLES07Qzxs1lUV3ri3fdaSUV7533VX3b1d2vmfjvS1ZL4UW5PkfmGkg1A0fzf2sCNrUrp1qY74UyB92nF7vrxB0H/EijohjYHJvP0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=b7tyjvqF; arc=none smtp.client-ip=209.85.210.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6e132fef7baso689139a34.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:42:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706607722; x=1707212522; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=rk9FqAfnyxQRqiMY/FDbYczS/XhnGrLCQVOaYWAXTPo=;
+        b=b7tyjvqFWrK9u+IEahyXrteOTwYngvzn19NLvnyZhEC43kaE3Ys7yZTMYIBuzXLYW9
+         4ZL4dPALnjrkTnLMUNnqzqXH5bBFLUQZjxR9nqYkEW72NpAcU+TI3HmrMo/VsTNRrz/p
+         8M6tiaDTAMBcwXGiuesXIYfNmQEl4TZHbS7BDItkSXP6y+WNApNTzpzGoIlIWmmmRrkg
+         uZJR1ha74mzrR6c2bw08fRfo4xawveSD+ZHQLmBgdeBQCTNhh1Zs12SH1ThCMLmMTqyK
+         SYSWTQ23M5a56xqLPwIgV+Db9lmRMrDqHX/NbXBOScKPdCZNS3NCpk+YSuC3IbrWltVe
+         zJiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706607722; x=1707212522;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rk9FqAfnyxQRqiMY/FDbYczS/XhnGrLCQVOaYWAXTPo=;
+        b=r5Px/biwLqBQeM/21PwPvO1ad/CKItXhFNVS2UY/U5ZX0VEZTik8P4TiZx8++Eqq2J
+         3AdRBBHf6OhoXB3Z87dWVTUh/OslokwtZftuqifzRcMvQUGg7/p/ed94d7w9UUHVaQ1y
+         7WyKKasaBwJZzzi7JSMpxVpXaw2ejoS1CMmnRIkZVnziJB45PNgEGzPgzGhxG38+QK47
+         bTrrVHuaA0u3g4RUIv6+CHqIJFlC/XgRynYrXFF4J8JTndSR1bHiCjjGa90U9qPoWQH7
+         vgztlkesOndLiytcYCQ6DLAuusu9VhBBIm/xahocXf+ldGzxd6SuXiCx3hpjtyHwTNSY
+         ggLA==
+X-Gm-Message-State: AOJu0YzSFDCwf2riEXM1+HdNZgGp2JVvP7+4K40+tTgiXAGGHotfjlL2
+	brCJ7M2Ur5FUppT5mWI0wnyNgaFC/8pDzfGMkl3jW+Se/0lHe/q4BatX2gUKvTwpdDWKrKRO1zR
+	5siJAP+0mXWLTMmmLCa1IOsSn0becMljGrctctbfDKZJ0XI9F
+X-Google-Smtp-Source: AGHT+IEucuHNcABzoWSUH7+Zyp8HMepM//ptGnXltSWttspTAjrBy3yEPl8QDcLljQGO34yyCbNhb6T3DHCfrvJNldI=
+X-Received: by 2002:a05:6808:ec1:b0:3bd:9a58:c6e3 with SMTP id
+ q1-20020a0568080ec100b003bd9a58c6e3mr6908381oiv.52.1706607722045; Tue, 30 Jan
+ 2024 01:42:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240105222014.1025040-1-qyousef@layalina.io> <20240105222014.1025040-2-qyousef@layalina.io>
+ <CAKfTPtBYcVWxYOhWZjzcQUB1ebUBA-B30hvToqGBq6JnfRUZNg@mail.gmail.com>
+ <20240124222959.ikwnbxkcjaxuiqp2@airbuntu> <CAKfTPtDxqcrf0kaBQG_zpFx-DEZTMKfyxBu_bzCuZ_UZhJwOnA@mail.gmail.com>
+ <20240126014602.wdcro3ajffpna4fp@airbuntu> <CAKfTPtDqABnPDmt0COqyRpYSuj_WWwLrqL+Tbfa8J8b5u5eQtQ@mail.gmail.com>
+ <20240128235005.txztdbdq2obyi4n6@airbuntu>
+In-Reply-To: <20240128235005.txztdbdq2obyi4n6@airbuntu>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Tue, 30 Jan 2024 10:41:50 +0100
+Message-ID: <CAKfTPtC0=MH7bCypeY1QFxt=pFbPxY9YLuuS8_dhkF31nR6ZWQ@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] sched/fair: Check a task has a fitting cpu when
+ updating misfit
+To: Qais Yousef <qyousef@layalina.io>
+Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, linux-kernel@vger.kernel.org, 
+	Pierre Gondois <Pierre.Gondois@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 
-cppcheck rightfully warned:
+On Mon, 29 Jan 2024 at 00:50, Qais Yousef <qyousef@layalina.io> wrote:
+>
+> On 01/26/24 15:08, Vincent Guittot wrote:
+>
+> > > TBH I had a bit of confirmation bias that this is a problem based on the fix
+> > > (0ae78eec8aa6) that we had in the past. So on verification I looked at
+> > > balance_interval and this reproducer which is a not the same as the original
+> > > one and it might be exposing another problem and I didn't think twice about it.
+> >
+> > I checked the behavior more deeply and I confirm that I don't see
+> > improvement for the use case described above. I would say that it's
+> > even worse as I can see some runs where the task stays on little
+> > whereas a big core has been added in the affinity. Having in mind that
+> > my system is pretty idle which means that there is almost no other
+> > reason to trigger an ilb than the misfit task, the change in
+> > check_misfit_status() is probably the reason for never kicking an ilb
+> > for such case
+>
+> It seems I reproduced another problem while trying to reproduce the original
+> issue, eh.
+>
+> I did dig more and from what I see the issue is that the rd->overload is not
+> being set correctly. Which I believe what causes the delays (see attached
+> picture how rd.overloaded is 0 with some spikes). Only when CPU7
+> newidle_balance() coincided with rd->overload being 1 that the migration
+> happens. With the below hack I can see that rd->overload is 1 all the time
 
- drivers/spi/spi-sh-msiof.c:792:28: warning: Signed integer overflow for expression '7<<29'. [integerOverflow]
- sh_msiof_write(p, SIFCTR, SIFCTR_TFWM_1 | SIFCTR_RFWM_1);
+But here you rely on another activity happening in CPU7 whereas the
+misfit should trigger by itself the load balance and not expect
+another task waking up then sleeping on cpu7 to trigger a newidle
+balance. We want a normal idle load balance not a newidle_balance
 
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
----
- drivers/spi/spi-sh-msiof.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/spi/spi-sh-msiof.c b/drivers/spi/spi-sh-msiof.c
-index cfc3b1ddbd22..6f12e4fb2e2e 100644
---- a/drivers/spi/spi-sh-msiof.c
-+++ b/drivers/spi/spi-sh-msiof.c
-@@ -136,14 +136,14 @@ struct sh_msiof_spi_priv {
- 
- /* SIFCTR */
- #define SIFCTR_TFWM_MASK	GENMASK(31, 29)	/* Transmit FIFO Watermark */
--#define SIFCTR_TFWM_64		(0 << 29)	/*  Transfer Request when 64 empty stages */
--#define SIFCTR_TFWM_32		(1 << 29)	/*  Transfer Request when 32 empty stages */
--#define SIFCTR_TFWM_24		(2 << 29)	/*  Transfer Request when 24 empty stages */
--#define SIFCTR_TFWM_16		(3 << 29)	/*  Transfer Request when 16 empty stages */
--#define SIFCTR_TFWM_12		(4 << 29)	/*  Transfer Request when 12 empty stages */
--#define SIFCTR_TFWM_8		(5 << 29)	/*  Transfer Request when 8 empty stages */
--#define SIFCTR_TFWM_4		(6 << 29)	/*  Transfer Request when 4 empty stages */
--#define SIFCTR_TFWM_1		(7 << 29)	/*  Transfer Request when 1 empty stage */
-+#define SIFCTR_TFWM_64		(0UL << 29)	/*  Transfer Request when 64 empty stages */
-+#define SIFCTR_TFWM_32		(1UL << 29)	/*  Transfer Request when 32 empty stages */
-+#define SIFCTR_TFWM_24		(2UL << 29)	/*  Transfer Request when 24 empty stages */
-+#define SIFCTR_TFWM_16		(3UL << 29)	/*  Transfer Request when 16 empty stages */
-+#define SIFCTR_TFWM_12		(4UL << 29)	/*  Transfer Request when 12 empty stages */
-+#define SIFCTR_TFWM_8		(5UL << 29)	/*  Transfer Request when 8 empty stages */
-+#define SIFCTR_TFWM_4		(6UL << 29)	/*  Transfer Request when 4 empty stages */
-+#define SIFCTR_TFWM_1		(7UL << 29)	/*  Transfer Request when 1 empty stage */
- #define SIFCTR_TFUA_MASK	GENMASK(26, 20) /* Transmit FIFO Usable Area */
- #define SIFCTR_TFUA_SHIFT	20
- #define SIFCTR_TFUA(i)		((i) << SIFCTR_TFUA_SHIFT)
--- 
-2.39.2
-
+> (even after the move as we still trigger a misfit on the big CPU). With my
+> patch only rd->overload is set to 1 (because of this task) only for a short
+> period after we change affinity.
+>
+>         diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>         index df348aa55d3c..86069fe527f9 100644
+>         --- a/kernel/sched/fair.c
+>         +++ b/kernel/sched/fair.c
+>         @@ -9707,8 +9707,8 @@ static inline void update_sg_lb_stats(struct lb_env *env,
+>                                 continue;
+>                         }
+>
+>         -               if (local_group)
+>         -                       continue;
+>         +               /* if (local_group) */
+>         +                       /* continue; */
+>
+>                         if (env->sd->flags & SD_ASYM_CPUCAPACITY) {
+>                                 /* Check for a misfit task on the cpu */
+>
+> I am not sure what the right fix is, but it seems this condition is required
+> for the 2nd leg of this if condition when we compare with load? I don't think
+> we should skip the misfit check.
+>
+>
+> Thanks
+>
+> --
+> Qais Yousef
 
