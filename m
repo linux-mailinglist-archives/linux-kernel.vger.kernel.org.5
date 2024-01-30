@@ -1,239 +1,144 @@
-Return-Path: <linux-kernel+bounces-43954-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43955-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F8DF841B7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 06:40:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68CF8841B8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 06:42:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E88DAB236DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 05:40:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80EE31C23174
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 05:42:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCD0E381B0;
-	Tue, 30 Jan 2024 05:40:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35A31381CE;
+	Tue, 30 Jan 2024 05:42:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I5ggNoNw"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tMNwa+Sn"
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F75F1EA95
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 05:40:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12A62381AC
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 05:42:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706593210; cv=none; b=Km/jDMWoX1mYu8ZjmwsKiEVBFmW2z+gT49u7cObmAs945qXILl3r92gmIBYO+p7fCyOGcfmz1MeB1IZCHIZXjlQHlJXOs2/0F7Aiy8ZH6c91MBlzJP6+S6skL1LGoNDcZzlXRJELaulBVe6evE74vFoJRCyrjHLLT4W9xjDva9k=
+	t=1706593360; cv=none; b=dP0N3J8FWwXBu4gGxFqD4UX3eeVf2xuc9Mgj4pGh0cGw3UvJdf1czUVRgoB27z9zLTuEq8mGeXdtvIGSX6h48opM9hxuVxSypMHNtdo5LMRowwr4VgXx6L5Ba98SdwFm5PU0fE1u+RFyN4k8uTj4PnyRzBXokqJ8yKCS3lCCONE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706593210; c=relaxed/simple;
-	bh=raXv4XJU6Keo6Id4IdBdWVCma99ORpdHFZIYcKh33o8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=mLTB/WCItau2CCCq1ANXZdq1a/YlXyyVwv/0F+YXe13vMmA+luKfdJMAgthMq8TvLsQin23fWpoPovV66+HLmQsmkp63q9hF5edVRqHfVLYz3bIYzfykUMTf4ZWcLykKzEIWTP+0idA5J17enP2rOGSfioAuSK1WmTJCjzlIhIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=I5ggNoNw; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706593208; x=1738129208;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=raXv4XJU6Keo6Id4IdBdWVCma99ORpdHFZIYcKh33o8=;
-  b=I5ggNoNwlDGlNJ3Rh6s4AKvCtqQlFqbHBJt2h/h4m8MVrkm5rEGbx6Zn
-   yH9159+CB1DYgmQr/NjeGDwzrjPRpvS87zxIDpEDcCJclyyXhOLgg64qu
-   UnHUx/ZBua9ppSqQuAz2XaNAiDwoLgAqswEP/uU98Oh8nldS6jqUgJqKS
-   kKu0qEg5MWgkaS8iFairlVykmDE3hkfktSkFEIw1gNYxVvGbO5zGeCkJz
-   2w+EYUcynKHDLQH998RiT7zurozmOhTL2AtpZntL/6Grn1m6EPP0wUgJ4
-   tzQ0lEJx0VfCyF5wRA8XPPpMMkvYMtXY1kQyBGV7Df5hHTlyjQABbdnsM
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="3034756"
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="3034756"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 21:40:07 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="22327568"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 21:40:03 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Kairui Song <ryncsn@gmail.com>
-Cc: linux-mm@kvack.org,  Kairui Song <kasong@tencent.com>,  Andrew Morton
- <akpm@linux-foundation.org>,  Chris Li <chrisl@kernel.org>,  Hugh Dickins
- <hughd@google.com>,  Johannes Weiner <hannes@cmpxchg.org>,  Matthew Wilcox
- <willy@infradead.org>,  Michal Hocko <mhocko@suse.com>,  Yosry Ahmed
- <yosryahmed@google.com>,  David Hildenbrand <david@redhat.com>,
-  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/7] mm/swap: move no readahead swapin code to a
- stand-alone helper
-In-Reply-To: <20240129175423.1987-3-ryncsn@gmail.com> (Kairui Song's message
-	of "Tue, 30 Jan 2024 01:54:17 +0800")
-References: <20240129175423.1987-1-ryncsn@gmail.com>
-	<20240129175423.1987-3-ryncsn@gmail.com>
-Date: Tue, 30 Jan 2024 13:38:07 +0800
-Message-ID: <87wmrrgz40.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1706593360; c=relaxed/simple;
+	bh=gNj8qIHubEkiZhyq4ZoFmK//jaqpllZV/Xcsy1eISt8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LngBxl9HmuYC4XlSoOYWieyQw4cXMPsoNB7N6g69MPikZMoaZ5TpF9VqrcTfJInqAXu8YV+OkN6aOb1vo7ytZ/U1BWiQ2gZZBXjAqTb9PvKFisWMFXoE9iL/i50GRCwT7IMVCnR8rUdPPL2Nc2eCTXuWQo/fLDbC9P0sCG6Ggps=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tMNwa+Sn; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-295b34cea31so122298a91.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 21:42:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706593358; x=1707198158; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=EaGh7h3BGqQZB3IHcQXh7OenR9j1kWQcR4glI4guQgk=;
+        b=tMNwa+Sn0GnCCk9/4Qc+FRXFvXfOjGGiMsVrdSUpzulxPo6Y/FC25uRc/IQl3pKvlM
+         22U0wPVqp4MdOemII7lw9sLOuUltcMl36oBHHRbUDzq3R0CQthXqXfmVKWCgw5mvNE8e
+         RxCB+pkyC2m7Rrqzh4yo8sqOo6+4JoGrUwCwDksidqmRpL5rXPCvS8tAaZI/WMojKDws
+         DQ+yftN72VMXcu98Q9m037YDyuAYY2Zg8QoIW5J5x+eoI+JTTGgNcjezddUqn0Zk8gd1
+         b0ndqTMRL/olxAiUaNmYnGzPktVvH9GR4+f09fmqupm0pscWOqvzJj+3r4+TuRUoeDzf
+         MAdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706593358; x=1707198158;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EaGh7h3BGqQZB3IHcQXh7OenR9j1kWQcR4glI4guQgk=;
+        b=t8M7XgkopI5ZbvTyPT2/n+Pj6hMbSiK8dbKzlvC9Wp9Vr8VD2EynYaQ08gD5JdzvlL
+         4Oqpi9YXJoXLpEEMwt512W+xc2Shb54vl7J9r4mowDCsHnP9aCMpiEQ62eCdV7FO9pn7
+         PhaOOxyATlfw42exRbwIWYwPVgR/BbYdMwIA4IdIAi3p5/PwjSz7fTrywpeDx6x3XHSk
+         lTA2lfPSaKDzS/6uyGtcOVSkkJD5GQcToi/wAL8XMSS2sQUBVzn6tzfueC5QCF2OAu6X
+         OxAsObyC6RWt+ZpAggJv2aHrl2VWev2bLG0vare2GOS1ES9xZIHyeukApR7uAoRhTuAQ
+         d4uw==
+X-Gm-Message-State: AOJu0Yx6NPE8tuOCHllfsCY/Pqz5gmdv5StowBdSbasUJHA8hBxQ7me7
+	ife7fuRarHwsPmDDN0mLf3mMQYOJxbuEXPNXdRsHAcRTgKZW6acz7lhI1jzldw==
+X-Google-Smtp-Source: AGHT+IGDWCuMGRFNMFSJzTY56VhwusGGUfj3M38AIIT43nX842A00uaHih5hNYmfU65ZCPxhfo0GQA==
+X-Received: by 2002:a17:90a:eb07:b0:295:b6b5:302f with SMTP id j7-20020a17090aeb0700b00295b6b5302fmr271969pjz.45.1706593358200;
+        Mon, 29 Jan 2024 21:42:38 -0800 (PST)
+Received: from thinkpad ([117.202.188.6])
+        by smtp.gmail.com with ESMTPSA id pq6-20020a17090b3d8600b00294eeb58e59sm6455101pjb.15.2024.01.29.21.42.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 21:42:37 -0800 (PST)
+Date: Tue, 30 Jan 2024 11:12:24 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Andrew Halaney <ahalaney@redhat.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Avri Altman <avri.altman@wdc.com>,
+	Bart Van Assche <bvanassche@acm.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Andy Gross <agross@kernel.org>,
+	Andy Gross <andy.gross@linaro.org>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] scsi: ufs: qcom: Clarify the comment of core_reset
+ property
+Message-ID: <20240130054224.GA32821@thinkpad>
+References: <20240129-ufs-core-reset-fix-v1-0-7ac628aa735f@linaro.org>
+ <20240129-ufs-core-reset-fix-v1-2-7ac628aa735f@linaro.org>
+ <hm2h3uniy75vkjlnk62k3y4bz44khrdwxlk47t3lndc6c3yd2x@sbwcuvrjar5n>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <hm2h3uniy75vkjlnk62k3y4bz44khrdwxlk47t3lndc6c3yd2x@sbwcuvrjar5n>
 
-Kairui Song <ryncsn@gmail.com> writes:
+On Mon, Jan 29, 2024 at 02:57:20PM -0600, Andrew Halaney wrote:
+> On Mon, Jan 29, 2024 at 01:22:05PM +0530, Manivannan Sadhasivam wrote:
+> > core_reset is not an optional property for the platforms supported in
+> > upstream. Only for the non-upstreamed legacy platforms it is optional.
+> > But somehow a few of the upstreamed platforms do not pass this property
+> > by mistake.
+> > 
+> > So clarify the comment to make it clear that even though core_reset is
+> > required, it is kept as optional to support the DTs that do not pass this
+> > property.
+> > 
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
+> >  drivers/ufs/host/ufs-qcom.c | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+> > index 39eef470f8fa..32760506dfeb 100644
+> > --- a/drivers/ufs/host/ufs-qcom.c
+> > +++ b/drivers/ufs/host/ufs-qcom.c
+> > @@ -1027,7 +1027,11 @@ static int ufs_qcom_init(struct ufs_hba *hba)
+> >  	host->hba = hba;
+> >  	ufshcd_set_variant(hba, host);
+> >  
+> > -	/* Setup the optional reset control of HCI */
+> > +	/*
+> > +	 * Even though core_reset is required on all platforms, some DTs never
+> > +	 * passed this property. So we have to keep it optional for supporting
+> > +	 * them.
+> > +	 */
+> 
+> Any desire to print a warning if !host->core_reset? I'll defer to
+> Qualcomm to review since they can confirm the accuracy past Can's
+> comment, but this looks good to me for what its worth.
+> 
 
-> From: Kairui Song <kasong@tencent.com>
->
-> No feature change, simply move the routine to a standalone function to
-> be re-used later. The error path handling is copied from the "out_page"
-> label, to make the code change minimized for easier reviewing.
+My only worry is that the existing users of the legacy DTs will get annoyed by
+the warning. And I'm not sure if we can do that.
 
-The error processing for mem_cgroup_swapin_charge_folio() failure is
-changed a little.  That looks OK for me.  But you need to make it
-explicit in change log.  Especially, it's not "no feature change"
-strictly.
+- Mani
 
---
-Best Regards,
-Huang, Ying
-
-> Signed-off-by: Kairui Song <kasong@tencent.com>
-> ---
->  mm/memory.c     | 32 ++++----------------------------
->  mm/swap.h       |  8 ++++++++
->  mm/swap_state.c | 47 +++++++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 59 insertions(+), 28 deletions(-)
->
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 7e1f4849463a..81dc9d467f4e 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -3803,7 +3803,6 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->  	swp_entry_t entry;
->  	pte_t pte;
->  	vm_fault_t ret = 0;
-> -	void *shadow = NULL;
->  
->  	if (!pte_unmap_same(vmf))
->  		goto out;
-> @@ -3867,33 +3866,10 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->  	if (!folio) {
->  		if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
->  		    __swap_count(entry) == 1) {
-> -			/* skip swapcache */
-> -			folio = vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0,
-> -						vma, vmf->address, false);
-> -			page = &folio->page;
-> -			if (folio) {
-> -				__folio_set_locked(folio);
-> -				__folio_set_swapbacked(folio);
-> -
-> -				if (mem_cgroup_swapin_charge_folio(folio,
-> -							vma->vm_mm, GFP_KERNEL,
-> -							entry)) {
-> -					ret = VM_FAULT_OOM;
-> -					goto out_page;
-> -				}
-> -				mem_cgroup_swapin_uncharge_swap(entry);
-> -
-> -				shadow = get_shadow_from_swap_cache(entry);
-> -				if (shadow)
-> -					workingset_refault(folio, shadow);
-> -
-> -				folio_add_lru(folio);
-> -
-> -				/* To provide entry to swap_read_folio() */
-> -				folio->swap = entry;
-> -				swap_read_folio(folio, true, NULL);
-> -				folio->private = NULL;
-> -			}
-> +			/* skip swapcache and readahead */
-> +			folio = swapin_direct(entry, GFP_HIGHUSER_MOVABLE, vmf);
-> +			if (folio)
-> +				page = &folio->page;
->  		} else {
->  			page = swapin_readahead(entry, GFP_HIGHUSER_MOVABLE,
->  						vmf);
-> diff --git a/mm/swap.h b/mm/swap.h
-> index 758c46ca671e..83eab7b67e77 100644
-> --- a/mm/swap.h
-> +++ b/mm/swap.h
-> @@ -56,6 +56,8 @@ struct folio *swap_cluster_readahead(swp_entry_t entry, gfp_t flag,
->  		struct mempolicy *mpol, pgoff_t ilx);
->  struct page *swapin_readahead(swp_entry_t entry, gfp_t flag,
->  			      struct vm_fault *vmf);
-> +struct folio *swapin_direct(swp_entry_t entry, gfp_t flag,
-> +			    struct vm_fault *vmf);
->  
->  static inline unsigned int folio_swap_flags(struct folio *folio)
->  {
-> @@ -86,6 +88,12 @@ static inline struct folio *swap_cluster_readahead(swp_entry_t entry,
->  	return NULL;
->  }
->  
-> +struct folio *swapin_direct(swp_entry_t entry, gfp_t flag,
-> +			struct vm_fault *vmf)
-> +{
-> +	return NULL;
-> +}
-> +
->  static inline struct page *swapin_readahead(swp_entry_t swp, gfp_t gfp_mask,
->  			struct vm_fault *vmf)
->  {
-> diff --git a/mm/swap_state.c b/mm/swap_state.c
-> index e671266ad772..645f5bcad123 100644
-> --- a/mm/swap_state.c
-> +++ b/mm/swap_state.c
-> @@ -861,6 +861,53 @@ static struct folio *swap_vma_readahead(swp_entry_t targ_entry, gfp_t gfp_mask,
->  	return folio;
->  }
->  
-> +/**
-> + * swapin_direct - swap in a folio skipping swap cache and readahead
-> + * @entry: swap entry of this memory
-> + * @gfp_mask: memory allocation flags
-> + * @vmf: fault information
-> + *
-> + * Returns the struct folio for entry and addr after the swap entry is read
-> + * in.
-> + */
-> +struct folio *swapin_direct(swp_entry_t entry, gfp_t gfp_mask,
-> +			    struct vm_fault *vmf)
-> +{
-> +	struct vm_area_struct *vma = vmf->vma;
-> +	struct folio *folio;
-> +	void *shadow = NULL;
-> +
-> +	/* skip swapcache */
-> +	folio = vma_alloc_folio(gfp_mask, 0,
-> +				vma, vmf->address, false);
-> +	if (folio) {
-> +		__folio_set_locked(folio);
-> +		__folio_set_swapbacked(folio);
-> +
-> +		if (mem_cgroup_swapin_charge_folio(folio,
-> +					vma->vm_mm, GFP_KERNEL,
-> +					entry)) {
-> +			folio_unlock(folio);
-> +			folio_put(folio);
-> +			return NULL;
-> +		}
-> +		mem_cgroup_swapin_uncharge_swap(entry);
-> +
-> +		shadow = get_shadow_from_swap_cache(entry);
-> +		if (shadow)
-> +			workingset_refault(folio, shadow);
-> +
-> +		folio_add_lru(folio);
-> +
-> +		/* To provide entry to swap_read_folio() */
-> +		folio->swap = entry;
-> +		swap_read_folio(folio, true, NULL);
-> +		folio->private = NULL;
-> +	}
-> +
-> +	return folio;
-> +}
-> +
->  /**
->   * swapin_readahead - swap in pages in hope we need them soon
->   * @entry: swap entry of this memory
+-- 
+மணிவண்ணன் சதாசிவம்
 
