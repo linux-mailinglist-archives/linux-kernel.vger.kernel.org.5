@@ -1,141 +1,102 @@
-Return-Path: <linux-kernel+bounces-45268-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45269-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA41E842DE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 21:31:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBF3E842DE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 21:31:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF5371C252F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:31:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE8041C23E94
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:31:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 940EB79DDE;
-	Tue, 30 Jan 2024 20:31:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19D4379DDC;
+	Tue, 30 Jan 2024 20:31:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Q+fMadDJ"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="FY8eqXAx"
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D909B79DD4;
-	Tue, 30 Jan 2024 20:30:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1032479DCA;
+	Tue, 30 Jan 2024 20:31:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706646661; cv=none; b=CpsRxbxnibiyl2nN1akrCAghgaNz2Rr+l2sHcOCitSjbgmkLK5c4NMsDvs976mAEqjgZzYt35TeP+aWHo9vTDg58aAz42MrneOkQ7Yo5F+hktwKIeytEUeS3bXwDUhVj+MdefPvmtoK9IKJZ8Imd1lPJarADIZj/vcsA5Dx3sXU=
+	t=1706646711; cv=none; b=L9GvrxUW0OYVEKP+yA4x3hdkNIkyoCfqHdjF4w3O9hUyupFK03aA6unLV6tQv+vXEDN+uiAv8SoDUnVn3REqokxK1ToWUc8fGGWQzuGq0NYr6BTz/xSg1dMtGCwk2Uw9sCUVNEjHsxUuQxAr1feZwcZK9E33FPtTclhlL1+HvuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706646661; c=relaxed/simple;
-	bh=2/KBwsPO3whpyFBvrCj3xnlg42ijgGLiSwxQ8/wfXis=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MwOaMrs4mBf64d2h3BhAJqvmzHmBMcfdJA7QB8nrlH4Ab0tsVCeKZCI1xCWYGYAwVYvV7o1PZmUh9DRR84zzv5q6dj+3HGuj9h44VJAnkZqqbiTVL/U1b7nm+Z2nqpbs+TMtnvGJZ3yfHvjofok5m7wPvRs7/fy254FqGo2hiw8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Q+fMadDJ; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706646660; x=1738182660;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=2/KBwsPO3whpyFBvrCj3xnlg42ijgGLiSwxQ8/wfXis=;
-  b=Q+fMadDJe8YwP3xy0vXz7mMKZnRZK+2qvMJQnVR7NYvZ+FoT12z4wksz
-   uXakEQ+Ijco4foHOK9xahKmGOJVB4GZ5u5p8sJ3BgevL3uE7TfsDgTR6i
-   5zH284/xPTwVRNRrZrAuSkKPSWpcpMpCQRDvHkP/p+mOmQfWtuZBY5PCk
-   TBDzqcKc6sfu0i6OKTOVbmc7xKo9ftiXYwOUFFmOVsDVp5EM/XdQrFW1R
-   bJL4Zf7PkL2a1TTJAIMRl7OhQTgbP9tm8+0xymUzQ+ZxezKNLeoH+ZyPl
-   3lh11iyz+9lV7uRlyzFGqcgYM0GHZ1BTY2Qh2lAJ4keOq3xy8VB77iado
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="10493952"
-X-IronPort-AV: E=Sophos;i="6.05,230,1701158400"; 
-   d="scan'208";a="10493952"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 12:30:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="907617882"
-X-IronPort-AV: E=Sophos;i="6.05,230,1701158400"; 
-   d="scan'208";a="907617882"
-Received: from anjishnu-mobl1.amr.corp.intel.com (HELO [10.212.150.19]) ([10.212.150.19])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 12:30:56 -0800
-Message-ID: <388be136-f91c-403a-99e1-7a10c5bf9691@intel.com>
-Date: Tue, 30 Jan 2024 12:30:56 -0800
+	s=arc-20240116; t=1706646711; c=relaxed/simple;
+	bh=LOP+6Gd8XzSZncwRf7uGMAG0j2Ql64OEcnAO+AqFH8M=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=KHs26priTw032ZQks6zeD5XnamxGAhH1miQqjdY7CWvzARglp0u78MD+bwN670f2htTl7zoUR4Q/t3B/3OXdOkjzJFKRRupCf2QG1s1puuYctCtYio6kB12lUgdyS4m+BwE/XpL2TlorjBHklG84CgW3f6r6pnUoQQNrUyEtil4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=FY8eqXAx; arc=none smtp.client-ip=45.79.88.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 33FB641A47
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+	t=1706646709; bh=EDJoJIFoiaWQo8LexHsdvIE4pZPld1QgS2DhtQSIQ2Q=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=FY8eqXAxH813hKcE8MPW5zA9a5xhZm0OSkdFqVn+CrIE21aVr4ep3/5/bbLPbwm5K
+	 rUj0ALrqZx0pKXMes1WafO/n2enLXwkfYlrwzCIZVpkSqw53liR5FnPxRd3VRTfEzd
+	 4SbNbJ7ikXRYqV/0c8yVXzrxxw4zuElC6cmDqvgnkcTp+nuN8ajcgdlPGrsObS4j9X
+	 jPixq8zKDm0RH6qtBGsFn/MZk9sZiSCfI4a7Onin9aZqY/0w2Zl0+QjHdheLdy5/j0
+	 ybLvrlEsO0ac39xiSTXDlcLCJWQmUkO+KeMfqMAUbLnmkL7M0xC9qIs1i1r4+s3IEk
+	 NAkpQ66r2uH4A==
+Received: from localhost (unknown [IPv6:2601:280:5e00:7e19::646])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by ms.lwn.net (Postfix) with ESMTPSA id 33FB641A47;
+	Tue, 30 Jan 2024 20:31:49 +0000 (UTC)
+From: Jonathan Corbet <corbet@lwn.net>
+To: Daniel Vetter <daniel.vetter@ffwll.ch>, Randy Dunlap
+ <rdunlap@infradead.org>
+Cc: linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2] doc-guide: kernel-doc: tell about object-like macros
+In-Reply-To: <CAKMK7uGQqH7Y7bnNb=zeKkLyavtoJBpGJxwptBBUSqsYGdFEtA@mail.gmail.com>
+References: <20240107012400.32587-1-rdunlap@infradead.org>
+ <CAKMK7uGQqH7Y7bnNb=zeKkLyavtoJBpGJxwptBBUSqsYGdFEtA@mail.gmail.com>
+Date: Tue, 30 Jan 2024 13:31:48 -0700
+Message-ID: <875xzabm17.fsf@meer.lwn.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dmaengine: idxd: Change wmb() to smp_wmb() when copying
- completion record to user space
-Content-Language: en-US
-To: Boqun Feng <boqun.feng@gmail.com>, Mark Rutland <mark.rutland@arm.com>
-Cc: Fenghua Yu <fenghua.yu@intel.com>, Vinod Koul <vkoul@kernel.org>,
- Dave Jiang <dave.jiang@intel.com>, dmaengine@vger.kernel.org,
- linux-kernel <linux-kernel@vger.kernel.org>,
- Nikhil Rao <nikhil.rao@intel.com>, Tony Zhu <tony.zhu@intel.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org
-References: <20240130025806.2027284-1-fenghua.yu@intel.com>
- <Zbk4wGNcB-g91Vr0@FVFF77S0Q05N> <ZblTystHpVkvjbkv@boqun-archlinux>
-From: Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <ZblTystHpVkvjbkv@boqun-archlinux>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-On 1/30/24 11:53, Boqun Feng wrote:
->>> Fixes: b022f59725f0 ("dmaengine: idxd: add idxd_copy_cr() to copy user completion record during page fault handling")
->>> Suggested-by: Nikhil Rao <nikhil.rao@intel.com>
->>> Tested-by: Tony Zhu <tony.zhu@intel.com>
-> Since it has a "Fixes" tag and a "Tested-by" tag, I'd assume there has
-> been a test w/ and w/o this patch showing it can resolve a real issue
-> *constantly*? If so, I think x86 might be broken somewhere.
-> 
-> [Cc x86 maintainers]
+Daniel Vetter <daniel.vetter@ffwll.ch> writes:
 
-Fenghua, could you perhaps explain how this problem affects end users?
-What symptom was observed that made it obvious something was broken and
-what changes with this patch?
+> On Sun, 7 Jan 2024 at 02:24, Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>> Since 2014 kernel-doc has supported describing object-like macros
+>> but it is not documented anywhere. I should have required some
+>> documentation for it when I merged the patch. :(
+>>
+>> There are currently only 3 uses of this (all in DRM headers, in
+>> include/drm/*.h).
+>>
+>> Add object-like macro kernel-doc documentation now so that more may
+>> know about it and use it.
+>>
+>> Fixes: cbb4d3e6510b ("scripts/kernel-doc: handle object-like macros")
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Cc: Jonathan Corbet <corbet@lwn.net>
+>> Cc: linux-doc@vger.kernel.org
+>> ---
+>> v2: Previous attempts to use kernel-doc were for data definitions,
+>>     not macros, so remove that comment.
+>>     Remove a duplicate word in the patch description.
+>>     Add examples.
+>
+> Randy pointed to this in another thread and also mentioned that
+> function-like macros are already documented, so this also has my
+>
+> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+
+OK, I'm slowly catching up with the world...I've applied this in favor
+of Daniel's version.
+
+Thanks,
+
+jon
 
