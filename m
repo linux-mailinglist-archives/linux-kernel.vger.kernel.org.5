@@ -1,137 +1,153 @@
-Return-Path: <linux-kernel+bounces-44218-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44219-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C176841EF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:13:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2720841EF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:13:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3EEFC1C24860
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:13:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A0C51F22A76
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:13:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2389159157;
-	Tue, 30 Jan 2024 09:12:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DB2F60B93;
+	Tue, 30 Jan 2024 09:12:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="GkrVVWPA"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jvCc+JWa"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7842C58120
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:12:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B643605B7
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:12:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706605946; cv=none; b=XAmTqIRBki0Vve1LJ3qisDueD6Vsu51uZfNrPK8W+0H3FSTsjyaTRCGt5QqA1xfTmdyEu0O/CB5kPAz4IfZAtFbJVwnFy4h/Xp1lbA5JmL2RlHj/9HTsQodjzE2ifhZ62fr5i9D9dTtsXrWtjPS0P7N5tLnrWPLlxOshRBOJto0=
+	t=1706605951; cv=none; b=KcnGODJHA7osy89rghJO/knN0/in3AgOxreHNj6Hnl1Ml4npS+Cgv5EppjZdESyvOAgtYtpEnZy7DuMYaQQlnkXWdMqdaxEysxBnUT+XWPa5Ak+vRpMQ50dl8b0jDORCe6k+XKUU4D2paHUoRKMYL16PCMtFWLIGfo8K7ypdekY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706605946; c=relaxed/simple;
-	bh=2DIY+lL0JwPloAko6mVPmoNJ4C898Ios+yVnwFsSQws=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sT6/BXsDXx3Yh0eoLaFCyftJSs/mhlaKXWLS+fKbaqr/7vfhhDwZUP0hZ5M3Hgc2cTuHH5NUicpUJ91jBnLyMq+eHGAUTDsG5wpAyNxVd/BRb88YDzbSoh8mqEPTwAAPqsnadvfvtysJ8/4x0uxUP5u7EYx8WdDLIFWSG3tWaak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=GkrVVWPA; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a35b32bd055so232647666b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:12:24 -0800 (PST)
+	s=arc-20240116; t=1706605951; c=relaxed/simple;
+	bh=rKhHZGSb+Y6aNJ+cXifm6W5LIoIisj9pyI6bNCYAugc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sKH3UyJUj4N3/ux8dDjGta5WIGJ+4uXDOC7MjRqHPmOp12e0MGzuoS42N12b1uABDn5CS3SQSh1+bAFCHz54ljPFFEN+rpPPnMTTyKCYBUFtvE/ONyFXUdmt1M1c9PRZnHGcn2eghD3/yEH3ROoH8qD+AJPWoqQfJUs9UvPayKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jvCc+JWa; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-55f1102b300so1989542a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:12:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1706605942; x=1707210742; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=OJ62OXvXVngPLK5bvC/N3snsj6IMt9f3ZjXYsKK3MQk=;
-        b=GkrVVWPAxbFsA5AVK5QorWQHRXNCGAII1WphO9xhgOeLgNvqlYYU/SlMyj4DcHI8eK
-         Iz91k83HOd4PeLX7fW6vrWBRRTQul9VlCEUk3z8mQXx1Ooa4MwE9ZgFGpjXZZc+X9BQi
-         DFbjmcxxzqCLH0EJlyfWF6xsVIMuaVIqHoylc=
+        d=linaro.org; s=google; t=1706605948; x=1707210748; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dIk06W/m1toDs3ZlWZXYAsOHgljm2ZVOiVWudPYtTEg=;
+        b=jvCc+JWat5DDimHXr1Yowksm8Qho2qnuIVHpjEkrMg5msithX5x+h/8OnPKIReulG7
+         QzA+TEquRGYh5tFzqEhVgfhSerfu39i9qxdBj7hrYQMgeCfE8l2kBPL79c7HNxu31c95
+         wuDY2LiK/scSwAG+fNbF7oFr7DJRtc2Aru0l4rA/WfXnE8MZ0DQXT6s2Vq6Lgh0DUrvd
+         3QYLNHQmuq9kKPmNYi5g/5E2a/YuGrSV1uxPir24DbKCy9qkI47u+J3PflLYtLZaKyS9
+         V4JTnNgB4QGWKCDQUrXKK0AKAgiE9tXHJmAtISb26Zyz3x9opxTa0L63TOjGaysYwXX6
+         s08A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706605942; x=1707210742;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OJ62OXvXVngPLK5bvC/N3snsj6IMt9f3ZjXYsKK3MQk=;
-        b=CEhTT0YLADOHdwWbq87O32xQnbRrBtjBZJFGRLf+a7IqSLJvH/tyViUqCd5l9K5K6l
-         ZS6/jWbCPkBsdMj8ukJ6jp2fE/2dx0Oe7HqknEgfpbmwWccpJPBX+PUAFZ1eOj3WxfAa
-         qj5EdeKX0pTZmJPTDxtFcuPTwgeeNKEoPfRakrKmjq1pljSAxiCrHNz/VTqc6qFtCIZI
-         6Ih6ZouP55jy59SwJ1jqEFsuG6zgeTgTPf2hFMcs7YFgNgPz7HfwfFrssCrzfmvUrH3m
-         SOH+5amoHHllL74IQbv8ED52pLMRBS3AJpPzfeWFg206esekCw9IrZYOxCjux2XjLmXR
-         tHOQ==
-X-Gm-Message-State: AOJu0Yz4Bm0S1Y0csp/N21Bz4jrEdlibyD5JOfj/XeBk/95v0/Ixe7NS
-	SQv2w49biZpph5AzCb8MHdI+6agUmh5Ts4YZdLTnicUSoRD3W38W7pvswqBy28zvC27Xh8D40im
-	0r0g=
-X-Google-Smtp-Source: AGHT+IH7ZE6AUdgRytNb/lhU3D7sQupLz6wV67KxLPeEdmjXL78K1DlcouI/q8OxMGG0LhuA/qXX1Q==
-X-Received: by 2002:a17:906:1453:b0:a28:de33:9e6a with SMTP id q19-20020a170906145300b00a28de339e6amr5421904ejc.47.1706605942578;
-        Tue, 30 Jan 2024 01:12:22 -0800 (PST)
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com. [209.85.208.43])
-        by smtp.gmail.com with ESMTPSA id cx8-20020a170907168800b00a358fda40d5sm2709686ejd.140.2024.01.30.01.12.21
-        for <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20230601; t=1706605948; x=1707210748;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dIk06W/m1toDs3ZlWZXYAsOHgljm2ZVOiVWudPYtTEg=;
+        b=FuLZdX6ROI00RyG/CGMMni+VghnO7y7iUFWoDOkBd23iT8umbqC9Vi+HuqN/JUXIAT
+         0NRcLTsHdiBVb/aozuuN3nV/KKLvpXBXmKDMQKpyp8alkx5wWR6KNzAqf+al4OBb/2OC
+         JxJ7es1O1CpN+SGS78dsFG7IMOPFMtcUosM72ePzuXfMXPFPMnlXok8k+CiRPdIsyFAD
+         dajwLums3++t7IPStW5EWrAS9ZZ2UdARB4ECx9n+QAYmwCO4QTgTY7wkVy0y3oxNvJf4
+         ObPOn4x51MgWAPVmzsFNVsgdkIW8+F2t6fL7vfNm6JJuKoGfbEY2xpQAA9TyGKQJcRpa
+         oxUQ==
+X-Gm-Message-State: AOJu0Yz8LRoj2f/IsH4LW2ExN1o4ZrTLkczjRtiGBMzuAodrfuOm5pCc
+	CEEdR5hCl3CcuZZ61/6rirfBFPb1MKgmYjW7yEeqwUzmm3PO1cI/cX8U5DUkCno=
+X-Google-Smtp-Source: AGHT+IGyVMf2OkueT1e2jkuy8V6uo08rZuNEronGpcRFfv+SAzH/npoMxojClmBxEorK0G3C/NJ1Jg==
+X-Received: by 2002:a17:906:e53:b0:a31:1b72:9efd with SMTP id q19-20020a1709060e5300b00a311b729efdmr6023698eji.66.1706605948445;
+        Tue, 30 Jan 2024 01:12:28 -0800 (PST)
+Received: from [192.168.2.107] ([79.115.63.202])
+        by smtp.gmail.com with ESMTPSA id ss6-20020a170907c00600b00a3535b76c42sm3958064ejc.15.2024.01.30.01.12.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Jan 2024 01:12:21 -0800 (PST)
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55f50cf2021so84764a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:12:21 -0800 (PST)
-X-Received: by 2002:a05:6402:1910:b0:55e:f740:4f39 with SMTP id
- e16-20020a056402191000b0055ef7404f39mr4388911edz.22.1706605941604; Tue, 30
- Jan 2024 01:12:21 -0800 (PST)
+        Tue, 30 Jan 2024 01:12:28 -0800 (PST)
+Message-ID: <338efca2-d1fe-4adb-8275-5f570ab445d8@linaro.org>
+Date: Tue, 30 Jan 2024 09:12:26 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <202401291043.e62e89dc-oliver.sang@intel.com> <CAHk-=wh0M=e8R=ZXxa4vesLTtvGmYWJ-w1VmXxW5Mva=Nimk4Q@mail.gmail.com>
- <20240129120125.605e97af@gandalf.local.home> <CAHk-=wghx8Abyx_jcSrCDuNj96SuWS0NvNMhfU8VjFGg9bgm_g@mail.gmail.com>
- <CAHk-=whb91PWEaEJpRGsuWaQpYZGj98ji8HC2vvHD4xb_TqhJw@mail.gmail.com>
- <CAHk-=wgp7UkG31=cCcbSdhMv6-vBJ=orktUOUdiLzw4tQ4gDLg@mail.gmail.com>
- <20240129152600.7587d1aa@gandalf.local.home> <CAHk-=wghobf5qCqNUsafkQzNAZBJiS0=7CRjNXNChpoAvTbvUw@mail.gmail.com>
- <20240129172200.1725f01b@gandalf.local.home> <CAHk-=wjV6+U1FQ8wzQ5ASmqGgby+GZ6wpdh0NrJgA43mc+TEwA@mail.gmail.com>
- <CAHk-=wgOxTeTi02C=kOXsHzuD6XCrV0L1zk1XP9t+a4Wx--xvA@mail.gmail.com>
- <20240129174950.5a17a86c@gandalf.local.home> <CAHk-=wjbzw3=nwR5zGH9jqXgB8jj03wxWfdFDn=oAVCoymQQJg@mail.gmail.com>
- <20240129193549.265f32c8@gandalf.local.home> <CAHk-=whRxcmjvGNBKi9_x59cAedh8SO8wsNDNrEQbAQfM5A8CQ@mail.gmail.com>
- <CAHk-=wh97AkwaOkXoBgf0z8EP88ePffLnTcmmQXcY+AhFaFrnA@mail.gmail.com> <CAHk-=wi6m7d-nivx10Lo=aGhbdk2qg-8SzjtDd9XW01LxGgAMA@mail.gmail.com>
-In-Reply-To: <CAHk-=wi6m7d-nivx10Lo=aGhbdk2qg-8SzjtDd9XW01LxGgAMA@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 30 Jan 2024 01:12:05 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wi+WbXZcc2Sx1i-MGV2DfG4eS4Ci+mrqi-PBSLSnww6qA@mail.gmail.com>
-Message-ID: <CAHk-=wi+WbXZcc2Sx1i-MGV2DfG4eS4Ci+mrqi-PBSLSnww6qA@mail.gmail.com>
-Subject: Re: [linus:master] [eventfs] 852e46e239: BUG:unable_to_handle_page_fault_for_address
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev, lkp@intel.com, 
-	linux-kernel@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Christian Brauner <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Ajay Kaher <ajay.kaher@broadcom.com>, linux-trace-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 7/7] arm64: dts: exynos: gs101: enable i2c bus 12 on
+ gs101-oriole
+Content-Language: en-US
+To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
+ peter.griffin@linaro.org, mturquette@baylibre.com, sboyd@kernel.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc: linux-kernel@vger.kernel.org, kernel-team@android.com,
+ willmcvicker@google.com, semen.protsenko@linaro.org,
+ alim.akhtar@samsung.com, s.nawrocki@samsung.com, tomasz.figa@gmail.com,
+ cw00.choi@samsung.com, linux-arm-kernel@lists.infradead.org,
+ linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+ devicetree@vger.kernel.org
+References: <20240129174703.1175426-1-andre.draszik@linaro.org>
+ <20240129174703.1175426-8-andre.draszik@linaro.org>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20240129174703.1175426-8-andre.draszik@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, 30 Jan 2024 at 00:43, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> I'll go back to bed, but I think the fix is something trivial like this:
 
-Almost.
 
->   +     result = ERR_PTR(ENOENT);
+On 1/29/24 17:46, André Draszik wrote:
+> This bus has three USB-related devices attached to it:
+>     0x25: Maxim 77759 Type-C port controller
+>     0x35: Maxim 20339EWB Surge protection IC
+>     0x36: Maxim 77759 Fuel gauge
+>     0x57: NXP PCA9468 Battery charger
+>     0x66: Maxim 77759 PMIC
+>     0x69: Maxim 77759 Charger
+> where the Maxim 77759 has multiple i2c slave addresses.
+> 
+> These don't have (upstream) Linux drivers yet, but nevertheless we can
+> enable the bus so as to allow working on them (and to make i2cdetect /
+> i2cdump / etc. work).
+> 
+> Signed-off-by: André Draszik <andre.draszik@linaro.org>
+> Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
 
-That needs a '-' in front of the ENOENT, otherwise you have a positive
-error number and things go wrong very quickly.
-
-And that does indeed fix the lookup problem, but you end up with the
-same problem later when you do the eventfs_remove_dir(). Again the
-eventfs data structure changes, but we don't have a reliable dentry
-that we can invalidate.
-
-The dentry cache is just very good at caching those old dentries, and
-the interface for eventfs_create_dir() and eventfs_remove_dir() is
-just not great.
-
-If those did an actual path lookup (like eventfs_create_events_dir()
-does), we'd have the dentry, and it's trivial to get from dentry to
-eventfs_inode.
-
-But going the other way is the broken thing because of how the
-dentries are just temporary caches.
-
-I suspect the solution is to make eventfs_create_dir() do the same as
-the events directory case does, and actually pin the directory dentry
-and save it off.
-
-Oh well. At least I understand what the problem is. Now I'm going to
-try to go back to sleep.
-
-              Linus
+Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> 
+> ---
+> v2:
+> * add short summary of devices attached to this bus & add TODO
+> * collect Reviewed-by: tags
+> ---
+>  arch/arm64/boot/dts/exynos/google/gs101-oriole.dts | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts b/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
+> index cb4d17339b6b..6ccade2c8cb4 100644
+> --- a/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
+> +++ b/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
+> @@ -72,6 +72,11 @@ eeprom: eeprom@50 {
+>  	};
+>  };
+>  
+> +&hsi2c_12 {
+> +	status = "okay";
+> +	/* TODO: add the devices once drivers exist */
+> +};
+> +
+>  &pinctrl_far_alive {
+>  	key_voldown: key-voldown-pins {
+>  		samsung,pins = "gpa7-3";
+> @@ -113,6 +118,11 @@ &usi8 {
+>  	status = "okay";
+>  };
+>  
+> +&usi12 {
+> +	samsung,mode = <USI_V2_I2C>;
+> +	status = "okay";
+> +};
+> +
+>  &watchdog_cl0 {
+>  	timeout-sec = <30>;
+>  	status = "okay";
 
