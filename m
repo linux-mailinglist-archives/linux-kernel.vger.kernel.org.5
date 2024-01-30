@@ -1,70 +1,71 @@
-Return-Path: <linux-kernel+bounces-43750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43751-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18CAC841891
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 02:44:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CD57841893
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 02:45:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C3E81F289B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 01:44:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4235C286B08
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 01:45:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB78B38DFA;
-	Tue, 30 Jan 2024 01:42:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F16B83C498;
+	Tue, 30 Jan 2024 01:42:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="0e5cKCip"
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="z3i79o8n"
+Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5510738393
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:42:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 753FB383B1
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:42:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706578950; cv=none; b=unjdyYhAkgRuywN/p8AHdh0FrPJ4KZfNBOGGNr7KeR5xbn0M9OHVSVJk903QYmuIxivMv2hJtdqLIuCTQtBx2ipnMgVWe6EfC7Bb6XjQ/QRlZSKQ6MQ6CNy4hSCmj0akj+wcYN4BaXPt938T+Wd1nMy7IfTFR2HCPvwtl8vG1xk=
+	t=1706578951; cv=none; b=REhr7txdjstltC/4GowZNPj7bUdYCSvLfmu1UvjaWALz0FKtSGe1sALapdP4X83QR2wz+eUgeZDToJxwFM36JQi6xix5Vhd/xrNBWvABIF3CEWqCZAqAm4KoB/gNcX1Yo+EfsD1ZqTy6lIM6s+xT8/3xNjHYgI2/v4KSUnPs06I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706578950; c=relaxed/simple;
-	bh=9xw/W03ukpr/L6i7AIbF53T7wElpUaGJf2hRLuUR5ws=;
+	s=arc-20240116; t=1706578951; c=relaxed/simple;
+	bh=Buqaio9vCxFs4jxwDb/cl7MtdsrmjbRE2WvaIIBaHdo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GzOpBQoc9ArjqXpZeh4BRLC2qL3sCX9ULwGRuLCOERl9nn95VFraiE9N5xHkHuY8SRD0LIeZsbjkDVmfQZfLHejn1DseopksO9zLlm4hiwd8DfT1h+cR1SCOcY3RDUGJCuz/OVLwWRveQfhQMcECZ+FcpCj+ETzNrO7EuY8gQWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=0e5cKCip; arc=none smtp.client-ip=209.85.219.50
+	 MIME-Version; b=rPuCNpyO/we+3UaFKKF9C+KeYCshCSZUyn5q4bmu6Uq5iFXiXuCP+vr9u/FukglXXbgV8EbEJH8lijhY8FxswCHCjKZEGzyXJ/1Hml95q2gWc59RQZTxK+2r/dZTXs4yVZ9H6V2iKRMPxOy6yA+8NTyu09Cks7P5cgenj+e1HKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=z3i79o8n; arc=none smtp.client-ip=209.85.222.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-68c444f9272so14319546d6.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 17:42:28 -0800 (PST)
+Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-783f27300b1so177391485a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 17:42:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1706578947; x=1707183747; darn=vger.kernel.org;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1706578948; x=1707183748; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nW+93M2Q9nWxSPgR21ybfgSivHJtX7f76WUEXvkAumg=;
-        b=0e5cKCipbmAbU9orMkEXr3CPe36KKB1C+HdJ0pnKiwUkkDGfvKsujIvPdVx4UIRCfp
-         xN3glyGGe6wLu9Ww0AzCkrY+ebAEBEGTVcQG177fl/OoqIIJuQ4HB2zPQRrj+WLh/96s
-         RQB0QwuNO5fbojE8HAdOousipxB6IZPBTvXeboIRhlFdYb4gsOKVugoiH+fmRwetgfFZ
-         O7IFFSvIrlgvrUu6Gi9fTm4RbDNEmvbJb2zsE2r6B5i4Uiu4/SCrND5DZ2105HPfOoFm
-         fLrJQOSh5pmr5NI6cvQ3TTSR1YXHMcqNgPd85v+SL8OEGV6PTLCOrb/QqSFX4s0CpVqv
-         nsjQ==
+        bh=6SQ/aPKt2RcQwCRNk0SkwceZy4++62pAYToaUxPVif8=;
+        b=z3i79o8nEJUB6l4W4nAwTvXxdxY32XVqrTRRbBxjXfrIA3vU7LpxTlc5BPPJYF+9f1
+         F2gangf9C+CkScZi0XH+iaoNnXUAMcye/6n4k2JpYQO3xH+qHug3HyABV6J+cDPplu8c
+         xIQiJfEPic9Vvel8CaNFXe4C92Z8F3PvNNHhHe0GNqiwLHB2/invZRpfRQ38tKvDhQPP
+         4xz3s70UmzvgVmyGZZsNR+xIHh7hcnswn//i6mJy14M3iIiU6EsnHxUU/GaU1m0/gOlk
+         QQalqxkyfVRV31bD3+3g1118sxQ+YtxeP2WbLDt4vMJVR7NO4gEnEgNgOo5+zrKk34mJ
+         kuCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706578947; x=1707183747;
+        d=1e100.net; s=20230601; t=1706578948; x=1707183748;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nW+93M2Q9nWxSPgR21ybfgSivHJtX7f76WUEXvkAumg=;
-        b=AM+L5tTCzS4LyYRikW55QS1fjsJVDC3EfSulBfY6IVQZLLe0pfbe/08nh610xr9OTj
-         dCycLbZ8aaLra2HbxUG3Zsx6b/sj30snq9b0nWBJQi+21Eu9676TMAOa3jXsbrXwtauV
-         sfyrk9H5hSxAWfl0HjPxOt/Qu8ZdlG9xoTmL7KjeoVpcRbLRHLnVN3IOy7MeGshtCteS
-         PkR7lTQk88KLvCfOnaNRsaQzaSYE0zHvWWc3tjqoFeVeaFtuQJsfFO0pFCA/NhZbKaPG
-         cI6PGAr1uKJA8vf7qbB3uyNcvm5CK6qBMagzrkIXpAW0TxDXFxcYO26fL0J+wYrWMTVU
-         1TDQ==
-X-Gm-Message-State: AOJu0Yx4r6VCDCYtgd6Q0MUltSWeESH/yLt2uty4icq3pIqg9xXEDtlZ
-	TKfP/xQocnTBMJDAB5TJu8FuCagoU5s2Hbi+j+MFC/vJZKl/CRMlDFyjzs1V3II=
-X-Google-Smtp-Source: AGHT+IGbQQQZq+kfQrrdhSmxdR44XoO3pzuQK7Yh8fRiEenD92oHac9H3b2LTsWjU2hqhbKGsaWTag==
-X-Received: by 2002:a05:6214:cab:b0:686:9441:ac30 with SMTP id s11-20020a0562140cab00b006869441ac30mr8699046qvs.22.1706578947264;
-        Mon, 29 Jan 2024 17:42:27 -0800 (PST)
+        bh=6SQ/aPKt2RcQwCRNk0SkwceZy4++62pAYToaUxPVif8=;
+        b=QlGVRB4Z4isW7727lOf7Q3Njb/n3qTFpzBrPgvy4F7O+bsfKZYT18jiUkZopoVtncX
+         P1kRM2e8RYtW9ICs8zspmvtP5Et3TAN/mSvhFnDNTVtnO4OWMEjEm8oYfVaSEoCjaJZP
+         VeZC+l2G4kNLHUo4EPaZJqz8wC6cjPmWBoNRi0Dr/gqteluAmdfCjiCsnOEh6I7+NdIu
+         KbOXP6fTtor0G9ulN2xfY9k49J7bUdQVvPc/WQlXYG2YiZElKBJaAWkv14NJcLEXIap9
+         59ZGXJBF3ZcSguGceHF8EexQeoMbbfAf32D7y6ASmzEe4GukRaMT0c/OwatHKiWPU0tZ
+         PDXA==
+X-Gm-Message-State: AOJu0Yz6kVCGVRyz4BKRerNMzqhLmf+4u6OYjK7K6mSQ4RcC1OSTu7rr
+	5EPWtSkRCuqKDT/vZm+eHexFY+Rejf/IYbqfE3TGG57qaf/osHeR78Yl0hm7DkQynk4his5iI+P
+	B
+X-Google-Smtp-Source: AGHT+IHN9SfcdSpe35E+NdhAeZAJBp2Tlz+ZnOTskDGGlYQh7cy5auJKHnbJEqJ5ObxjfCI7Rxu3Cw==
+X-Received: by 2002:ac8:5994:0:b0:42a:b152:c0fe with SMTP id e20-20020ac85994000000b0042ab152c0femr1228897qte.31.1706578948436;
+        Mon, 29 Jan 2024 17:42:28 -0800 (PST)
 Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id lr9-20020a0562145bc900b006819bb31533sm3993392qvb.99.2024.01.29.17.42.26
+        by smtp.gmail.com with ESMTPSA id ie7-20020a05622a698700b00427fabefe3bsm4023363qtb.52.2024.01.29.17.42.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 17:42:26 -0800 (PST)
+        Mon, 29 Jan 2024 17:42:28 -0800 (PST)
 From: Johannes Weiner <hannes@cmpxchg.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Nhat Pham <nphamcs@gmail.com>,
@@ -72,9 +73,9 @@ Cc: Nhat Pham <nphamcs@gmail.com>,
 	Chengming Zhou <zhouchengming@bytedance.com>,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 11/20] mm: zswap: function ordering: pool refcounting
-Date: Mon, 29 Jan 2024 20:36:47 -0500
-Message-ID: <20240130014208.565554-12-hannes@cmpxchg.org>
+Subject: [PATCH 12/20] mm: zswap: function ordering: zswap_pools
+Date: Mon, 29 Jan 2024 20:36:48 -0500
+Message-ID: <20240130014208.565554-13-hannes@cmpxchg.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240130014208.565554-1-hannes@cmpxchg.org>
 References: <20240130014208.565554-1-hannes@cmpxchg.org>
@@ -86,140 +87,182 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Move pool refcounting functions into the pool section. First the
-destroy functions, then the get and put which uses them.
-
-__zswap_pool_empty() has an upward reference to the global
-zswap_pools, to sanity check it's not the currently active pool that's
-being freed. That gets the forward decl for zswap_pool_cuyrrent().
-
-This puts the get and put function above all callers, so kill the
-forward decls as well.
+Move the operations against the global zswap_pools list (current pool,
+last, find) to the pool section.
 
 Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 ---
- mm/zswap.c | 94 +++++++++++++++++++++++++++---------------------------
- 1 file changed, 47 insertions(+), 47 deletions(-)
+ mm/zswap.c | 150 ++++++++++++++++++++++++++---------------------------
+ 1 file changed, 73 insertions(+), 77 deletions(-)
 
 diff --git a/mm/zswap.c b/mm/zswap.c
-index 805d9a35f633..33775f2224b7 100644
+index 33775f2224b7..168afd6767b3 100644
 --- a/mm/zswap.c
 +++ b/mm/zswap.c
-@@ -278,8 +278,6 @@ static inline struct zswap_tree *swap_zswap_tree(swp_entry_t swp)
- 
- static int zswap_writeback_entry(struct zswap_entry *entry,
- 				 swp_entry_t swpentry);
--static int zswap_pool_get(struct zswap_pool *pool);
--static void zswap_pool_put(struct zswap_pool *pool);
- 
- static bool zswap_is_full(void)
- {
-@@ -472,6 +470,53 @@ static void zswap_pool_destroy(struct zswap_pool *pool)
- 	kfree(pool);
+@@ -517,6 +517,79 @@ static void zswap_pool_put(struct zswap_pool *pool)
+ 	kref_put(&pool->kref, __zswap_pool_empty);
  }
  
-+static void __zswap_pool_release(struct work_struct *work)
-+{
-+	struct zswap_pool *pool = container_of(work, typeof(*pool),
-+						release_work);
-+
-+	synchronize_rcu();
-+
-+	/* nobody should have been able to get a kref... */
-+	WARN_ON(kref_get_unless_zero(&pool->kref));
-+
-+	/* pool is now off zswap_pools list and has no references. */
-+	zswap_pool_destroy(pool);
-+}
-+
-+static struct zswap_pool *zswap_pool_current(void);
-+
-+static void __zswap_pool_empty(struct kref *kref)
++static struct zswap_pool *__zswap_pool_current(void)
 +{
 +	struct zswap_pool *pool;
 +
-+	pool = container_of(kref, typeof(*pool), kref);
++	pool = list_first_or_null_rcu(&zswap_pools, typeof(*pool), list);
++	WARN_ONCE(!pool && zswap_has_pool,
++		  "%s: no page storage pool!\n", __func__);
 +
-+	spin_lock(&zswap_pools_lock);
-+
-+	WARN_ON(pool == zswap_pool_current());
-+
-+	list_del_rcu(&pool->list);
-+
-+	INIT_WORK(&pool->release_work, __zswap_pool_release);
-+	schedule_work(&pool->release_work);
-+
-+	spin_unlock(&zswap_pools_lock);
++	return pool;
 +}
 +
-+static int __must_check zswap_pool_get(struct zswap_pool *pool)
++static struct zswap_pool *zswap_pool_current(void)
 +{
-+	if (!pool)
-+		return 0;
++	assert_spin_locked(&zswap_pools_lock);
 +
-+	return kref_get_unless_zero(&pool->kref);
++	return __zswap_pool_current();
 +}
 +
-+static void zswap_pool_put(struct zswap_pool *pool)
++static struct zswap_pool *zswap_pool_current_get(void)
 +{
-+	kref_put(&pool->kref, __zswap_pool_empty);
++	struct zswap_pool *pool;
++
++	rcu_read_lock();
++
++	pool = __zswap_pool_current();
++	if (!zswap_pool_get(pool))
++		pool = NULL;
++
++	rcu_read_unlock();
++
++	return pool;
++}
++
++static struct zswap_pool *zswap_pool_last_get(void)
++{
++	struct zswap_pool *pool, *last = NULL;
++
++	rcu_read_lock();
++
++	list_for_each_entry_rcu(pool, &zswap_pools, list)
++		last = pool;
++	WARN_ONCE(!last && zswap_has_pool,
++		  "%s: no page storage pool!\n", __func__);
++	if (!zswap_pool_get(last))
++		last = NULL;
++
++	rcu_read_unlock();
++
++	return last;
++}
++
++/* type and compressor must be null-terminated */
++static struct zswap_pool *zswap_pool_find_get(char *type, char *compressor)
++{
++	struct zswap_pool *pool;
++
++	assert_spin_locked(&zswap_pools_lock);
++
++	list_for_each_entry_rcu(pool, &zswap_pools, list) {
++		if (strcmp(pool->tfm_name, compressor))
++			continue;
++		/* all zpools share the same type */
++		if (strcmp(zpool_get_type(pool->zpools[0]), type))
++			continue;
++		/* if we can't get it, it's about to be destroyed */
++		if (!zswap_pool_get(pool))
++			continue;
++		return pool;
++	}
++
++	return NULL;
 +}
 +
  /* should be called under RCU */
  #ifdef CONFIG_MEMCG
  static inline struct mem_cgroup *mem_cgroup_from_entry(struct zswap_entry *entry)
-@@ -1122,51 +1167,6 @@ static void shrink_worker(struct work_struct *w)
- 	zswap_pool_put(pool);
+@@ -938,83 +1011,6 @@ static int zswap_cpu_comp_dead(unsigned int cpu, struct hlist_node *node)
+ 	return 0;
  }
  
--static int __must_check zswap_pool_get(struct zswap_pool *pool)
--{
--	if (!pool)
--		return 0;
+-/*********************************
+-* pool functions
+-**********************************/
 -
--	return kref_get_unless_zero(&pool->kref);
--}
--
--static void __zswap_pool_release(struct work_struct *work)
--{
--	struct zswap_pool *pool = container_of(work, typeof(*pool),
--						release_work);
--
--	synchronize_rcu();
--
--	/* nobody should have been able to get a kref... */
--	WARN_ON(kref_get_unless_zero(&pool->kref));
--
--	/* pool is now off zswap_pools list and has no references. */
--	zswap_pool_destroy(pool);
--}
--
--static void __zswap_pool_empty(struct kref *kref)
+-static struct zswap_pool *__zswap_pool_current(void)
 -{
 -	struct zswap_pool *pool;
 -
--	pool = container_of(kref, typeof(*pool), kref);
+-	pool = list_first_or_null_rcu(&zswap_pools, typeof(*pool), list);
+-	WARN_ONCE(!pool && zswap_has_pool,
+-		  "%s: no page storage pool!\n", __func__);
 -
--	spin_lock(&zswap_pools_lock);
--
--	WARN_ON(pool == zswap_pool_current());
--
--	list_del_rcu(&pool->list);
--
--	INIT_WORK(&pool->release_work, __zswap_pool_release);
--	schedule_work(&pool->release_work);
--
--	spin_unlock(&zswap_pools_lock);
+-	return pool;
 -}
 -
--static void zswap_pool_put(struct zswap_pool *pool)
+-static struct zswap_pool *zswap_pool_current(void)
 -{
--	kref_put(&pool->kref, __zswap_pool_empty);
+-	assert_spin_locked(&zswap_pools_lock);
+-
+-	return __zswap_pool_current();
 -}
 -
- /*********************************
- * param callbacks
- **********************************/
+-static struct zswap_pool *zswap_pool_current_get(void)
+-{
+-	struct zswap_pool *pool;
+-
+-	rcu_read_lock();
+-
+-	pool = __zswap_pool_current();
+-	if (!zswap_pool_get(pool))
+-		pool = NULL;
+-
+-	rcu_read_unlock();
+-
+-	return pool;
+-}
+-
+-static struct zswap_pool *zswap_pool_last_get(void)
+-{
+-	struct zswap_pool *pool, *last = NULL;
+-
+-	rcu_read_lock();
+-
+-	list_for_each_entry_rcu(pool, &zswap_pools, list)
+-		last = pool;
+-	WARN_ONCE(!last && zswap_has_pool,
+-		  "%s: no page storage pool!\n", __func__);
+-	if (!zswap_pool_get(last))
+-		last = NULL;
+-
+-	rcu_read_unlock();
+-
+-	return last;
+-}
+-
+-/* type and compressor must be null-terminated */
+-static struct zswap_pool *zswap_pool_find_get(char *type, char *compressor)
+-{
+-	struct zswap_pool *pool;
+-
+-	assert_spin_locked(&zswap_pools_lock);
+-
+-	list_for_each_entry_rcu(pool, &zswap_pools, list) {
+-		if (strcmp(pool->tfm_name, compressor))
+-			continue;
+-		/* all zpools share the same type */
+-		if (strcmp(zpool_get_type(pool->zpools[0]), type))
+-			continue;
+-		/* if we can't get it, it's about to be destroyed */
+-		if (!zswap_pool_get(pool))
+-			continue;
+-		return pool;
+-	}
+-
+-	return NULL;
+-}
+-
+ static enum lru_status shrink_memcg_cb(struct list_head *item, struct list_lru_one *l,
+ 				       spinlock_t *lock, void *arg)
+ {
 -- 
 2.43.0
 
