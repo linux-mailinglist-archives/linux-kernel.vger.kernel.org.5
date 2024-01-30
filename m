@@ -1,206 +1,174 @@
-Return-Path: <linux-kernel+bounces-45375-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45376-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C87B842F6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:11:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D03D7842F6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:12:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59A7C1C22C5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 22:11:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF1891C22046
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 22:12:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8A837D40A;
-	Tue, 30 Jan 2024 22:11:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B48B514F61;
+	Tue, 30 Jan 2024 22:12:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ebptkNaT"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mBWaUsRs"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2415A7D3FE;
-	Tue, 30 Jan 2024 22:11:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 311EC7D402;
+	Tue, 30 Jan 2024 22:12:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706652675; cv=none; b=JhWF83+QNv+8UIB+FSEd7v70WE8Fs8nGLKl6Uq9Ovqin3hdNO3/DXduwoDi6/C3F+GOjXgZc5ytpOUYZCr3/M909jcvMJuO/r7PiwbMsXMe+/lycqMcCN1MWtxSNJWDYrjMjMB4Lcpbjp6gkrc6H/gV9nM2g7sKSNm33MYSAIK8=
+	t=1706652764; cv=none; b=uJ/vn11O8Txto3Jo2pC4odixfYdJ5aI8K9mS51k4CUhiCR7AcqhL+I4pFlLakaG0cZm81MQzdFcgMfqEH9B7ZxQsBDMXcWb3lHgxenA2OGZsMGCf5YqaRtopAWjYwqOiF2IZAvZA+2fTrVjQyl8xlh6viJTFUN/FDW/GPvh7hQ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706652675; c=relaxed/simple;
-	bh=oSqyi3mVU7QS7x2jYdyUrY+3NHGEMVnwrT6hR/v/aRM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KUocElNqwB1hBlwt8h247DGtd8gINspLjxgeEIRtfHhbnbZR53nlItbIz8HwFa+VP4jR812XXllk+z9M5dp7lBho0nbHUI3TpVqL0qk/kOAuZzZHzgsai0CPnHf/OJrfLuEBD+G2X5dHVdZkRkGuAD75R8KBKudWyYRO3xogF9E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ebptkNaT; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a3604697d63so266956166b.3;
-        Tue, 30 Jan 2024 14:11:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706652672; x=1707257472; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QUnCuHfqCBV79IBZ5Lp4urGXCgccRoBnaSQQzC74PU0=;
-        b=ebptkNaTzp77P8bhvkYxqqGDkvMqiBm1SUIJR420iwl1U7qXN/qKFNVwATUo2nVk11
-         +UPX0ldO4EKkmGEALcsCh8IPi6Y3+ECBcUZqEtpSWArB+vtJASyw15OwzMVyxT6lp+zt
-         3PuwkxDboFJ2whEld6pJ1MK++HiuoPJY09DHArodFAi8TwtTCCL3Njj3QyO23w+FDuhq
-         ZUxxy0Tm/H6Tki91LpAz9ohjvJTjbpiaPET1FvqrL8znqeo/jqch83+fZhygcCvz3LXS
-         z3uAN1zRU3mrha+bPxM9ajzwpC6PAuUiyuLP0tQMLFFeRgagpe51lO1NcvWUU0FRn2La
-         PV3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706652672; x=1707257472;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QUnCuHfqCBV79IBZ5Lp4urGXCgccRoBnaSQQzC74PU0=;
-        b=ryaaHFX7bHH2xkb0wUC3pBtN5aflggJWY/+lNq6P8FT6F6XTe7WmemaUfbiaDs9Jq5
-         NFThHnjYT7OxpKAboZPr2cCAhoAy5Ulc+Bag3aRxxj0CFIWKcsy2yNjwxVMnX5bVFu3n
-         THYR8M3iLUGKU+9F3/opgmd/W+6a6QJjWDaPsn/rpVupbFYziWKiNdKucXmG04SDqlxO
-         MGOq9ARt2RE+irDlPyWHA5CNy3Lfu9+lqaIc7o4kCTlE7Mao6SxIa/18RDdOZNpAAHyd
-         RR+cMk8DCb0hb7xYHj06/4WksplLXk/4/VhoyYp1dp2FXXkG7yT3arIOQc3yh174drx5
-         fR4Q==
-X-Gm-Message-State: AOJu0Yw574BMokV9zO/MbgYPhGe6uHVOa/hniSGpP35dD4nmC0L3SCjp
-	jwQTSZAYOnGgEWZNDIDHbqRrssjRMm4IXWbiL8G9bL4XDyjGKhlrBGy5HAHF+nYvig==
-X-Google-Smtp-Source: AGHT+IFwBEq2SN1TkzJhORjzTidgitEvGlR+ee3NWHMI5YMKUAgWABFG0sQru6oK7k3oWKV61P4n3g==
-X-Received: by 2002:a17:906:6712:b0:a35:2f7a:385b with SMTP id a18-20020a170906671200b00a352f7a385bmr7230560ejp.23.1706652671994;
-        Tue, 30 Jan 2024 14:11:11 -0800 (PST)
-Received: from ?IPV6:2a02:8389:41cf:e200:7400:ff68:7ab4:4169? (2a02-8389-41cf-e200-7400-ff68-7ab4-4169.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:7400:ff68:7ab4:4169])
-        by smtp.gmail.com with ESMTPSA id vu2-20020a170907a64200b00a35a9745910sm2988697ejc.137.2024.01.30.14.11.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Jan 2024 14:11:11 -0800 (PST)
-Message-ID: <7d7382d6-4999-4519-86c5-34f6c175e83f@gmail.com>
-Date: Tue, 30 Jan 2024 23:11:09 +0100
+	s=arc-20240116; t=1706652764; c=relaxed/simple;
+	bh=SdLU3sGcmj4oZljBiGm2nYM+yKHs1TV50H1uosJASlU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s7jgMADJ+EyT3cspD8QPwIHkpHqeBS+DRDVFd99e5eaG+UTDgP/O0KiZuRMC4MowxWouIai9zRUQIjWCxw5B/su9Z8i34DyB1oBrNBjcv2De2kMkPi0Ot9rGlW0IVfIYD/EjxTKJN5WD5zWbXJ5BpGfc2CFCXZBrVihJlSNUfcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mBWaUsRs; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706652763; x=1738188763;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=SdLU3sGcmj4oZljBiGm2nYM+yKHs1TV50H1uosJASlU=;
+  b=mBWaUsRsIeJczFFsdSlxEzBj+cklkUgXoJ3WhX4rQW6AYJieU1xo9QsD
+   xMJgk/rZ+DlJgCajHIG2jADIUYXg1p+3UxeL2qdmKN5Bp5vdONHPy6W+p
+   VgBipJGmTV6Z4HutFCLv2BBiO+65mlwF0eiCbRa/5LVBsZEhCrcp4ihDw
+   41j8isoukHxKArQk1YhT2lxD4gaC8eekDsprxNWRXu0AyWMBUo1lqM/Db
+   TC6azlJDuJEHdTjIjTji5T7YbMrifOZDHLp9BySJ7jOJB6smI9nW2iXjD
+   M523pUa4DTsvdCfohExusi9pNxBdGwBWkPESCYztWm1ycxf7JYiHF0PIa
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="10802454"
+X-IronPort-AV: E=Sophos;i="6.05,230,1701158400"; 
+   d="scan'208";a="10802454"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 14:12:42 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,230,1701158400"; 
+   d="scan'208";a="3848620"
+Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
+  by orviesa003.jf.intel.com with ESMTP; 30 Jan 2024 14:12:38 -0800
+Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rUwLL-0000s1-2r;
+	Tue, 30 Jan 2024 22:12:35 +0000
+Date: Wed, 31 Jan 2024 06:12:22 +0800
+From: kernel test robot <lkp@intel.com>
+To: Charlie Jenkins <charlie@rivosinc.com>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Jonathan Corbet <corbet@lwn.net>, Yangyu Chen <cyy@cyyself.name>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
+	Charlie Jenkins <charlie@rivosinc.com>
+Subject: Re: [PATCH 1/3] riscv: mm: Use hint address in mmap if available
+Message-ID: <202401310513.lub8Ilwm-lkp@intel.com>
+References: <20240129-use_mmap_hint_address-v1-1-4c74da813ba1@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] Input: bcm5974 - check endpoint type before starting
- traffic
-Content-Language: en-US
-To: Javier Carrasco <javier.carrasco.cruz@gmail.com>,
- John Horan <knasher@gmail.com>, Henrik Rydberg <rydberg@bitmath.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
- syzbot+348331f63b034f89b622@syzkaller.appspotmail.com
-References: <20231007-topic-bcm5974_bulk-v3-1-d0f38b9d2935@gmail.com>
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-In-Reply-To: <20231007-topic-bcm5974_bulk-v3-1-d0f38b9d2935@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240129-use_mmap_hint_address-v1-1-4c74da813ba1@rivosinc.com>
 
-On 14.10.23 12:20, Javier Carrasco wrote:
-> syzbot has found a type mismatch between a USB pipe and the transfer
-> endpoint, which is triggered by the bcm5974 driver[1].
-> 
-> This driver expects the device to provide input interrupt endpoints and
-> if that is not the case, the driver registration should terminate.
-> 
-> Repros are available to reproduce this issue with a certain setup for
-> the dummy_hcd, leading to an interrupt/bulk mismatch which is caught in
-> the USB core after calling usb_submit_urb() with the following message:
-> "BOGUS urb xfer, pipe 1 != type 3"
-> 
-> Some other device drivers (like the appletouch driver bcm5974 is mainly
-> based on) provide some checking mechanism to make sure that an IN
-> interrupt endpoint is available. In this particular case the endpoint
-> addresses are provided by a config table, so the checking can be
-> targeted to the provided endpoints.
-> 
-> Add some basic checking to guarantee that the endpoints available match
-> the expected type for both the trackpad and button endpoints.
-> 
-> This issue was only found for the trackpad endpoint, but the checking
-> has been added to the button endpoint as well for the same reasons.
-> 
-> Given that there was never a check for the endpoint type, this bug has
-> been there since the first implementation of the driver (f89bd95c5c94).
-> 
-> [1] https://eur04.safelinks.protection.outlook.com/?url=https%3A%2F%2Fsyzkaller.appspot.com%2Fbug%3Fextid%3D348331f63b034f89b622&data=05%7C01%7Cjavier.carrasco%40wolfvision.net%7C1880f48b0ac1493b40ff08dbcc9f2ea8%7Ce94ec9da9183471e83b351baa8eb804f%7C1%7C0%7C638328756279240780%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=IOsiHpWoIkog8HHkYIY8Ljh762bPZiqgm5xd5oAbK3s%3D&reserved=0
-> 
-> Fixes: f89bd95c5c94 ("Input: bcm5974 - add driver for Macbook Air and Pro Penryn touchpads")
-> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-> Reported-and-tested-by: syzbot+348331f63b034f89b622@syzkaller.appspotmail.com
-> ---
-> Changes in v3:
-> - Use usb_check_int_endpoints() to validate the endpoints.
-> - Link to v2: https://eur04.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Fr%2F20231007-topic-bcm5974_bulk-v2-1-021131c83efb%40gmail.com&data=05%7C01%7Cjavier.carrasco%40wolfvision.net%7C1880f48b0ac1493b40ff08dbcc9f2ea8%7Ce94ec9da9183471e83b351baa8eb804f%7C1%7C0%7C638328756279240780%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=vqLE9mUP0ehBIgtI%2F52ONRsF1wOrikc0VVLrp6MMjqQ%3D&reserved=0
-> 
-> Changes in v2:
-> - Keep error = -ENOMEM for the rest of the probe and return -ENODEV if
->   the endpoint check fails.
-> - Check function returns now bool and was renamed (_is_ for
->   bool-returning functions).
-> - Link to v1: https://eur04.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Fr%2F20231007-topic-bcm5974_bulk-v1-1-355be9f8ad80%40gmail.com&data=05%7C01%7Cjavier.carrasco%40wolfvision.net%7C1880f48b0ac1493b40ff08dbcc9f2ea8%7Ce94ec9da9183471e83b351baa8eb804f%7C1%7C0%7C638328756279240780%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=Qf6kg4M2AvwSEpkwClGPpVdo1PO96WfUfTsiy6z28UI%3D&reserved=0
-> ---
->  drivers/input/mouse/bcm5974.c | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
-> 
-> diff --git a/drivers/input/mouse/bcm5974.c b/drivers/input/mouse/bcm5974.c
-> index ca150618d32f..953992b458e9 100644
-> --- a/drivers/input/mouse/bcm5974.c
-> +++ b/drivers/input/mouse/bcm5974.c
-> @@ -19,6 +19,7 @@
->   * Copyright (C) 2006	   Nicolas Boichat (nicolas@boichat.ch)
->   */
->  
-> +#include "linux/usb.h"
->  #include <linux/kernel.h>
->  #include <linux/errno.h>
->  #include <linux/slab.h>
-> @@ -193,6 +194,8 @@ enum tp_type {
->  
->  /* list of device capability bits */
->  #define HAS_INTEGRATED_BUTTON	1
-> +/* maximum number of supported endpoints (currently trackpad and button) */
-> +#define MAX_ENDPOINTS	2
->  
->  /* trackpad finger data block size */
->  #define FSIZE_TYPE1		(14 * sizeof(__le16))
-> @@ -891,6 +894,18 @@ static int bcm5974_resume(struct usb_interface *iface)
->  	return error;
->  }
->  
-> +static bool bcm5974_check_endpoints(struct usb_interface *iface,
-> +				    const struct bcm5974_config *cfg)
-> +{
-> +	u8 ep_addr[MAX_ENDPOINTS + 1] = {0};
-> +
-> +	ep_addr[0] = cfg->tp_ep;
-> +	if (cfg->tp_type == TYPE1)
-> +		ep_addr[1] = cfg->bt_ep;
-> +
-> +	return usb_check_int_endpoints(iface, ep_addr);
-> +}
-> +
->  static int bcm5974_probe(struct usb_interface *iface,
->  			 const struct usb_device_id *id)
->  {
-> @@ -903,6 +918,11 @@ static int bcm5974_probe(struct usb_interface *iface,
->  	/* find the product index */
->  	cfg = bcm5974_get_config(udev);
->  
-> +	if (!bcm5974_check_endpoints(iface, cfg)) {
-> +		dev_err(&iface->dev, "Unexpected non-int endpoint\n");
-> +		return -ENODEV;
-> +	}
-> +
->  	/* allocate memory for our device state and initialize it */
->  	dev = kzalloc(sizeof(struct bcm5974), GFP_KERNEL);
->  	input_dev = input_allocate_device();
-> 
-> ---
-> base-commit: 401644852d0b2a278811de38081be23f74b5bb04
-> change-id: 20231007-topic-bcm5974_bulk-c66b743ba7ba
-> 
-> Best regards,
+Hi Charlie,
 
-Gentle reminder: this bug keeps on being found by syzbot and it was
-included in the last monthly input report (Jan 2024):
+kernel test robot noticed the following build errors:
 
-https://lore.kernel.org/all/0000000000001df937060f20c585@google.com/T/
+[auto build test ERROR on 556e2d17cae620d549c5474b1ece053430cd50bc]
 
-Best regards,
-Javier Carrasco
+url:    https://github.com/intel-lab-lkp/linux/commits/Charlie-Jenkins/riscv-mm-Use-hint-address-in-mmap-if-available/20240130-084208
+base:   556e2d17cae620d549c5474b1ece053430cd50bc
+patch link:    https://lore.kernel.org/r/20240129-use_mmap_hint_address-v1-1-4c74da813ba1%40rivosinc.com
+patch subject: [PATCH 1/3] riscv: mm: Use hint address in mmap if available
+config: riscv-allnoconfig (https://download.01.org/0day-ci/archive/20240131/202401310513.lub8Ilwm-lkp@intel.com/config)
+compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project fdac7d0b6f74f919d319b31a0680c77f66732586)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240131/202401310513.lub8Ilwm-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401310513.lub8Ilwm-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> mm/mmap.c:1703:33: error: expected expression
+    1703 |         const unsigned long mmap_end = arch_get_mmap_end(addr, len, flags);
+         |                                        ^
+   arch/riscv/include/asm/processor.h:28:2: note: expanded from macro 'arch_get_mmap_end'
+      28 |         else                                                    \
+         |         ^
+   mm/mmap.c:1751:33: error: expected expression
+    1751 |         const unsigned long mmap_end = arch_get_mmap_end(addr, len, flags);
+         |                                        ^
+   arch/riscv/include/asm/processor.h:28:2: note: expanded from macro 'arch_get_mmap_end'
+      28 |         else                                                    \
+         |         ^
+   2 errors generated.
 
 
+vim +1703 mm/mmap.c
+
+f6795053dac8d4d Steve Capper           2018-12-06  1683  
+^1da177e4c3f415 Linus Torvalds         2005-04-16  1684  /* Get an address range which is currently unmapped.
+^1da177e4c3f415 Linus Torvalds         2005-04-16  1685   * For shmat() with addr=0.
+^1da177e4c3f415 Linus Torvalds         2005-04-16  1686   *
+^1da177e4c3f415 Linus Torvalds         2005-04-16  1687   * Ugly calling convention alert:
+^1da177e4c3f415 Linus Torvalds         2005-04-16  1688   * Return value with the low bits set means error value,
+^1da177e4c3f415 Linus Torvalds         2005-04-16  1689   * ie
+^1da177e4c3f415 Linus Torvalds         2005-04-16  1690   *	if (ret & ~PAGE_MASK)
+^1da177e4c3f415 Linus Torvalds         2005-04-16  1691   *		error = ret;
+^1da177e4c3f415 Linus Torvalds         2005-04-16  1692   *
+^1da177e4c3f415 Linus Torvalds         2005-04-16  1693   * This function "knows" that -ENOMEM has the bits set.
+^1da177e4c3f415 Linus Torvalds         2005-04-16  1694   */
+^1da177e4c3f415 Linus Torvalds         2005-04-16  1695  unsigned long
+4b439e25e29ec33 Christophe Leroy       2022-04-09  1696  generic_get_unmapped_area(struct file *filp, unsigned long addr,
+4b439e25e29ec33 Christophe Leroy       2022-04-09  1697  			  unsigned long len, unsigned long pgoff,
+4b439e25e29ec33 Christophe Leroy       2022-04-09  1698  			  unsigned long flags)
+^1da177e4c3f415 Linus Torvalds         2005-04-16  1699  {
+^1da177e4c3f415 Linus Torvalds         2005-04-16  1700  	struct mm_struct *mm = current->mm;
+1be7107fbe18eed Hugh Dickins           2017-06-19  1701  	struct vm_area_struct *vma, *prev;
+db4fbfb9523c935 Michel Lespinasse      2012-12-11  1702  	struct vm_unmapped_area_info info;
+2cb4de085f383cb Christophe Leroy       2022-04-09 @1703  	const unsigned long mmap_end = arch_get_mmap_end(addr, len, flags);
+^1da177e4c3f415 Linus Torvalds         2005-04-16  1704  
+f6795053dac8d4d Steve Capper           2018-12-06  1705  	if (len > mmap_end - mmap_min_addr)
+^1da177e4c3f415 Linus Torvalds         2005-04-16  1706  		return -ENOMEM;
+^1da177e4c3f415 Linus Torvalds         2005-04-16  1707  
+06abdfb47ee745a Benjamin Herrenschmidt 2007-05-06  1708  	if (flags & MAP_FIXED)
+06abdfb47ee745a Benjamin Herrenschmidt 2007-05-06  1709  		return addr;
+06abdfb47ee745a Benjamin Herrenschmidt 2007-05-06  1710  
+^1da177e4c3f415 Linus Torvalds         2005-04-16  1711  	if (addr) {
+^1da177e4c3f415 Linus Torvalds         2005-04-16  1712  		addr = PAGE_ALIGN(addr);
+1be7107fbe18eed Hugh Dickins           2017-06-19  1713  		vma = find_vma_prev(mm, addr, &prev);
+f6795053dac8d4d Steve Capper           2018-12-06  1714  		if (mmap_end - len >= addr && addr >= mmap_min_addr &&
+1be7107fbe18eed Hugh Dickins           2017-06-19  1715  		    (!vma || addr + len <= vm_start_gap(vma)) &&
+1be7107fbe18eed Hugh Dickins           2017-06-19  1716  		    (!prev || addr >= vm_end_gap(prev)))
+^1da177e4c3f415 Linus Torvalds         2005-04-16  1717  			return addr;
+^1da177e4c3f415 Linus Torvalds         2005-04-16  1718  	}
+^1da177e4c3f415 Linus Torvalds         2005-04-16  1719  
+db4fbfb9523c935 Michel Lespinasse      2012-12-11  1720  	info.flags = 0;
+db4fbfb9523c935 Michel Lespinasse      2012-12-11  1721  	info.length = len;
+4e99b02131b280b Heiko Carstens         2013-11-12  1722  	info.low_limit = mm->mmap_base;
+f6795053dac8d4d Steve Capper           2018-12-06  1723  	info.high_limit = mmap_end;
+db4fbfb9523c935 Michel Lespinasse      2012-12-11  1724  	info.align_mask = 0;
+09ef5283fd96ac4 Jaewon Kim             2020-04-10  1725  	info.align_offset = 0;
+db4fbfb9523c935 Michel Lespinasse      2012-12-11  1726  	return vm_unmapped_area(&info);
+^1da177e4c3f415 Linus Torvalds         2005-04-16  1727  }
+4b439e25e29ec33 Christophe Leroy       2022-04-09  1728  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
