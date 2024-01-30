@@ -1,142 +1,158 @@
-Return-Path: <linux-kernel+bounces-44574-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 295DD842466
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:06:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8434B842471
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:07:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D51491F25852
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:06:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 25C8B1F21F96
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:07:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBAE467A08;
-	Tue, 30 Jan 2024 12:05:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B14367E78;
+	Tue, 30 Jan 2024 12:06:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NM8G3Afo"
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="Rkx4k3O6"
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7417567751
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 12:05:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CE30679E5;
+	Tue, 30 Jan 2024 12:06:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706616324; cv=none; b=Beq9Bhsh9Lf0uDimp2vpbtP79rAthfEZ6N/BcT01KHYKI2qABE7isWdC1QwU/wExnXhdJ3f0Xlu9VjQr4TNvt8ZRPhD0Y49J0OeGIQ4htnDcFl8FZuUIqiMMlmySZwqC8QxAcvP7d5GK4skgKUH8zuZNYSak26mIbCH7IYjiRJY=
+	t=1706616416; cv=none; b=fDKyHQ8cZAVNBcNQHK+jZiIaunZJ/p01pVAl4X9odLYHiugRRwfztFTEMyBRDWcTWUequIPIVb+gkWrVb7PHn3uEQtlTB7M0q8a9EzEjIOTOIG0LUzkAjpsjThkB6AqWsQN9AcMkXft2bC9+8s5oZ8wSeY4fZNKyI7OLXWCtuOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706616324; c=relaxed/simple;
-	bh=34lAr/f6hcj4owT9SrqMJGvWlqsHvE6OdEw+4hom4kE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=i4TL8r4xkN29uYQPmkmigvnux0AP+HiH9TC8KYD7gB5ol9HHvX95rpFco0DLiEjKEE1M9fTR+Qywv96ksg57vyJU8f/oXxz/3PUFmNLhNuSAQQ9mXzh3OWPqbqABpBul6LmfgPLGoRGiVbP50X9yM8jAQSYT5Ab7Foo3J04S1/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NM8G3Afo; arc=none smtp.client-ip=209.85.128.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-603e370790cso17451307b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 04:05:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706616320; x=1707221120; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=qubJ1YPqAKPOck4mRrIO3V8EJvvCUM+3Ty6ScGXxBl8=;
-        b=NM8G3AfoegSmYm9qiUyQXUfy6dlc+H5bugGEwwisrQn2dc2y3nPGbqPasv/Jqb7PPx
-         xlh3RGbaLBGO+ijxjNZD1dS3sBgFceRAnU5mtb1vcxp7Rfpj7JU3rM45Pa8F8GbZIe3a
-         NXq+npDdNwXkwyu4h3I6AjPbQN9z0pEt0xvcIvqWPeNlD450CZew3fO9eI8iFPKVxTeu
-         ut6Wzu6hAI91ry0sPjF5+ors1c3Jc6F7FGo/ekGOxhi2OW5XtrDlznvlLRbhVod4zQMk
-         igHTEeZv2E+AMPm4kUWrfzp8j4S4VdCgHDx2RkIr5BSVA/PR5vhPupz3E5q8AZW1ZwZk
-         tk1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706616320; x=1707221120;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qubJ1YPqAKPOck4mRrIO3V8EJvvCUM+3Ty6ScGXxBl8=;
-        b=lg67Wcec8BpxgLVl7sa25RBETPnp9sdF1w8ZsJn5zJvX2Rdb86E29va49yq0FfTBnQ
-         LwtHCyis+Wt3+kxQI84VL9q7hWy3g0Jnl6V1l7/dCE0Aih5Fr/lE7OnAbw8J37FN+6/v
-         S5FRLnKXSDXfP6gyCtU4Ccq+6m2a3LAjp40tQCLDwVkOfoem943T3CnFMZdI28xWPh6o
-         5tB8XpXWlF7QXBOQBg5wdjtmB8cs++ZfcwBhbDa2HW9tyLjEVncG+H7Zp6y/+v3LytWC
-         sfg9K9XbLEXwycYAhs6CXFzf7eNf3B2uBpyu2Im1jU8HPBx3zps3IX3OJI11wjK9WhyR
-         3avA==
-X-Gm-Message-State: AOJu0Yxyir0JVmqq+e5fCnDO5TzVEpK3XPzBrjSD9xk8kN3odD5LlwvA
-	O/ZRKWC3iHf1VbuGbOVZIcQwiQawDY0hYF8iN6ru9O6NHmY0Jl/AeXgALYCBEycnEyCKsmGg0yT
-	CQKeOFcat42rzG0eP0c3qAaDiy/9etqDmsCtYwQ==
-X-Google-Smtp-Source: AGHT+IEvdQML9EzKRohvbXSDGQ2AJM4jpPokotXmgSlDhQ0/ChFy4HuK8Hm/woeKoy3AWIJDiaRSBqz+jWTjDsfRGPA=
-X-Received: by 2002:a81:6c87:0:b0:5ff:7f31:1bce with SMTP id
- h129-20020a816c87000000b005ff7f311bcemr7755757ywc.30.1706616320353; Tue, 30
- Jan 2024 04:05:20 -0800 (PST)
+	s=arc-20240116; t=1706616416; c=relaxed/simple;
+	bh=adWxji5JCkpeR4Tg54o4IjDz9Q6/P4r5JmGOGBT7y6E=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=CAPHFnqGJdrr0HJQPQyDWKrGIFDJWDHJf5STOY8DYPnRXozuggEJBztsDdzzoA8GRSXKfwaSoh+UApzxJkGnD7Hy9AmK1WH4w9d0MDblKKPiI72mBx7hFA1YlyT5N6bMrXARDoN4vWEvEddD7BmWWim7UFZObL/z2TXraLb1kgs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=Rkx4k3O6; arc=none smtp.client-ip=67.231.148.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40UAorfc027107;
+	Tue, 30 Jan 2024 04:06:24 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type; s=
+	pfpt0220; bh=62dZ6GBkhNBWzuByxFX6B3fDWKM6s7akNOoK7y5IauE=; b=Rkx
+	4k3O66nkmPsiMnpVgijMgB9TTffnq0n875iCkn3usKxsay/j/PjxkibBUYAClpPJ
+	Q98IvxSr5+ghm5Al+M6pFzEDZRSh8yhWfKcZkok9RWEIN9M1znEcT3eoztGjjSyg
+	Jpzjc/Hex5Y2AX3jMgMtCy7ZvmzzUgzlS42CEUK8VOvbUqby97fFDWwxKtpSx9PO
+	w/YX5QItwokG3rZ4jYiMUKpcfkmPhoUboBpHxeX9Z0Qsw9tpBVr9uUFaf1ql7v4F
+	hSkrRuXRMBbTstzCU/Rhowz0HhH27HSIgQXX9cHN62x/q2lUUBD1iBQW7iISGQqw
+	AD4xGS1iIgBYNLO0dfw==
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3vx4vre4k5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+	Tue, 30 Jan 2024 04:06:23 -0800 (PST)
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 30 Jan
+ 2024 04:06:22 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Tue, 30 Jan 2024 04:06:22 -0800
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+	by maili.marvell.com (Postfix) with ESMTP id 937CF3F70BD;
+	Tue, 30 Jan 2024 04:06:16 -0800 (PST)
+From: Geetha sowjanya <gakula@marvell.com>
+To: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+CC: <kuba@kernel.org>, <davem@davemloft.net>, <pabeni@redhat.com>,
+        <edumazet@google.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <hawk@kernel.org>, <john.fastabend@gmail.com>, <sgoutham@marvell.com>,
+        <gakula@marvell.com>, <sbhatta@marvell.com>, <hkelam@marvell.com>
+Subject: [net PATCH] octeontx2-pf: Remove xdp queues on program detach
+Date: Tue, 30 Jan 2024 17:36:10 +0530
+Message-ID: <20240130120610.16673-1-gakula@marvell.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240126190110.148599-1-afd@ti.com>
-In-Reply-To: <20240126190110.148599-1-afd@ti.com>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Tue, 30 Jan 2024 13:04:44 +0100
-Message-ID: <CAPDyKFpc38-CFrzhnhutS7c78tZTLM6Bg6XsTKENP8oVT6SQXg@mail.gmail.com>
-Subject: Re: [PATCH] mmc: pwrseq: Use proper reboot notifier path
-To: Andrew Davis <afd@ti.com>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>, Yangtao Li <frank.li@vivo.com>, 
-	linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: VlQYAd3mFYDWfMeXr004MyGsqQWC6c5B
+X-Proofpoint-GUID: VlQYAd3mFYDWfMeXr004MyGsqQWC6c5B
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-30_05,2024-01-30_01,2023-05-22_02
 
-On Fri, 26 Jan 2024 at 20:01, Andrew Davis <afd@ti.com> wrote:
->
-> This driver registers itself as a reboot handler, which means it claims
-> it can reboot the system. It does this so it is called during the system
-> reboot sequence. The correct way to be notified during the reboot
-> sequence is to register a notifier with register_reboot_notifier().
-> Do this here.
->
-> Note this will be called during normal reboots but not emergency reboots.
-> This is the expected behavior, emergency reboot means emergency, not go
-> do some cleanup with emmc pins.. The reboot notifiers are intentionally
-> not called in the emergency path for a reason and working around that by
-> pretending to be a reboot handler is a hack.
+XDP queues are created/destroyed when a XDP program
+is attached/detached. In current driver xdp_queues are not
+getting destroyed on program exit due to incorrect xdp_queue
+and tot_tx_queue count values.
 
-I understand the reason for the $subject patch, but it will not work,
-unfortunately.
+This patch fixes the issue by setting tot_tx_queue and xdp_queue
+count to correct values. It also fixes xdp.data_hard_start address.
 
-For eMMC we need to manage emergency reboots too. The fiddling with
-GPIOs isn't a "cleanup", but tries to move the eMMC into a clean reset
-state. This is needed on some platforms with broken bootloaders (ROM
-code), that is expecting the eMMC to always start in a clean reset
-state.
+Fixes: 06059a1a9a4a ("octeontx2-pf: Add XDP support to netdev PF")
+Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+---
+ drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c | 1 -
+ drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c      | 3 +--
+ drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c    | 7 +++----
+ 3 files changed, 4 insertions(+), 7 deletions(-)
 
-So, we need both parts, as was discussed here [1] too.
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
+index 2928898c7f8d..7f786de61014 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
+@@ -314,7 +314,6 @@ static int otx2_set_channels(struct net_device *dev,
+ 	pfvf->hw.tx_queues = channel->tx_count;
+ 	if (pfvf->xdp_prog)
+ 		pfvf->hw.xdp_queues = channel->rx_count;
+-	pfvf->hw.non_qos_queues =  pfvf->hw.tx_queues + pfvf->hw.xdp_queues;
+ 
+ 	if (if_up)
+ 		err = dev->netdev_ops->ndo_open(dev);
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+index a57455aebff6..e5fe67e73865 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+@@ -1744,6 +1744,7 @@ int otx2_open(struct net_device *netdev)
+ 	/* RQ and SQs are mapped to different CQs,
+ 	 * so find out max CQ IRQs (i.e CINTs) needed.
+ 	 */
++	pf->hw.non_qos_queues =  pf->hw.tx_queues + pf->hw.xdp_queues;
+ 	pf->hw.cint_cnt = max3(pf->hw.rx_queues, pf->hw.tx_queues,
+ 			       pf->hw.tc_tx_queues);
+ 
+@@ -2643,8 +2644,6 @@ static int otx2_xdp_setup(struct otx2_nic *pf, struct bpf_prog *prog)
+ 		xdp_features_clear_redirect_target(dev);
+ 	}
+ 
+-	pf->hw.non_qos_queues += pf->hw.xdp_queues;
+-
+ 	if (if_up)
+ 		otx2_open(pf->netdev);
+ 
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+index 4d519ea833b2..f828d32737af 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+@@ -1403,7 +1403,7 @@ static bool otx2_xdp_rcv_pkt_handler(struct otx2_nic *pfvf,
+ 				     struct otx2_cq_queue *cq,
+ 				     bool *need_xdp_flush)
+ {
+-	unsigned char *hard_start, *data;
++	unsigned char *hard_start;
+ 	int qidx = cq->cq_idx;
+ 	struct xdp_buff xdp;
+ 	struct page *page;
+@@ -1417,9 +1417,8 @@ static bool otx2_xdp_rcv_pkt_handler(struct otx2_nic *pfvf,
+ 
+ 	xdp_init_buff(&xdp, pfvf->rbsize, &cq->xdp_rxq);
+ 
+-	data = (unsigned char *)phys_to_virt(pa);
+-	hard_start = page_address(page);
+-	xdp_prepare_buff(&xdp, hard_start, data - hard_start,
++	hard_start = (unsigned char *)phys_to_virt(pa);
++	xdp_prepare_buff(&xdp, hard_start, OTX2_HEAD_ROOM,
+ 			 cqe->sg.seg_size, false);
+ 
+ 	act = bpf_prog_run_xdp(prog, &xdp);
+-- 
+2.25.1
 
-Kind regards
-Uffe
-
-[1]
-https://lore.kernel.org/all/1445440540-21525-1-git-send-email-javier@osg.samsung.com/
-
->
-> Signed-off-by: Andrew Davis <afd@ti.com>
-> ---
->  drivers/mmc/core/pwrseq_emmc.c | 8 +-------
->  1 file changed, 1 insertion(+), 7 deletions(-)
->
-> diff --git a/drivers/mmc/core/pwrseq_emmc.c b/drivers/mmc/core/pwrseq_emmc.c
-> index 3b6d69cefb4eb..d5045fd1a02c1 100644
-> --- a/drivers/mmc/core/pwrseq_emmc.c
-> +++ b/drivers/mmc/core/pwrseq_emmc.c
-> @@ -70,14 +70,8 @@ static int mmc_pwrseq_emmc_probe(struct platform_device *pdev)
->                 return PTR_ERR(pwrseq->reset_gpio);
->
->         if (!gpiod_cansleep(pwrseq->reset_gpio)) {
-> -               /*
-> -                * register reset handler to ensure emmc reset also from
-> -                * emergency_reboot(), priority 255 is the highest priority
-> -                * so it will be executed before any system reboot handler.
-> -                */
->                 pwrseq->reset_nb.notifier_call = mmc_pwrseq_emmc_reset_nb;
-> -               pwrseq->reset_nb.priority = 255;
-> -               register_restart_handler(&pwrseq->reset_nb);
-> +               register_reboot_notifier(&pwrseq->reset_nb);
->         } else {
->                 dev_notice(dev, "EMMC reset pin tied to a sleepy GPIO driver; reset on emergency-reboot disabled\n");
->         }
-> --
-> 2.39.2
->
 
