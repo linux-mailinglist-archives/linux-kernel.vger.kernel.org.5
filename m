@@ -1,211 +1,162 @@
-Return-Path: <linux-kernel+bounces-44374-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44376-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28B4B842115
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:21:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1083C842118
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:21:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D2C91C276B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:21:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBDA9283EC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:21:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9B0565BD4;
-	Tue, 30 Jan 2024 10:21:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="tbWT3Gsn"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F006664C1;
+	Tue, 30 Jan 2024 10:21:06 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2234A60DCB;
-	Tue, 30 Jan 2024 10:21:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5759E65BC9
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 10:21:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706610064; cv=none; b=Ym6YK3XY/9qHg2amlUgVoDmQgZJI0mXqXheqS+bONfV9TmCSr/GOvWfMOAavUlchPm/rIw73hPkzrq3rPP8rpPsO2IuOsrQLKnX9m9GMm4o3zcO9zhqNCDB/y5/Fjq6gmrqWu5P+utoTCIo0gNaZPwXECcuHZcQSE6NhBGpaqII=
+	t=1706610065; cv=none; b=mZVSV/mwxS91mU28Az/PRYBfwhdaGCpNCYNavrpJHgFyAGm275lpqoUk7RU/sf7pdbfQkB8xaQngYgNwjWtRQ7uWkaAaRX7D4Aj5sZQEwpL5TwA74GPo64qMkTHKqLs43qn7O864h5EAI14S/1ksXJ/mq/NQ4eF+Si+QtF2UPD8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706610064; c=relaxed/simple;
-	bh=vk+ZJi4fIM6CcYRiuC+wYAKqqIvdK/4Q4UzYq1kb3WU=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=laI5QKaLpo/hzacYG6Vk8iB9M5V6erQWrJZYYxyv1q9ns/mbTQziMNk4Cb4pUdDoChs//voL5EashS45HEytOfXGxP2krMgUmjhu9pUIOZfuKXLvoDo3mOuneAPG77Cf0480nuSmrVlfGWKuAWZnjlix8ywyk/nPWMCsmFrp+qY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=tbWT3Gsn; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40UAKoQg037532;
-	Tue, 30 Jan 2024 04:20:50 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706610050;
-	bh=7KtrsNB3Qo53QsHHGjsvqWeZjt3XmDHwVLvllgU1U2U=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=tbWT3GsnyP6tMj8hknqIyMgeIQXCeFe8FCer8fu6gZb3Q3xqKw7CagQ55MiCK1k7S
-	 NRK+ZI8IbodDhgWxTL8wPi26+JngyzNvRT7VCbD7qB7yMP1DsUJVQQ8AgII+hrY92r
-	 hZyhMzkLMog9Kpze8EhnvpW5hzsIBrHpLWYR1ZNA=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40UAKoeG102454
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 30 Jan 2024 04:20:50 -0600
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 30
- Jan 2024 04:20:50 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 30 Jan 2024 04:20:50 -0600
-Received: from localhost (a0498981-hp-z2-tower-g5-workstation.dhcp.ti.com [10.24.68.216])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40UAKnnh048061;
-	Tue, 30 Jan 2024 04:20:49 -0600
-From: Bhavya Kapoor <b-kapoor@ti.com>
-To: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC: <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <b-kapoor@ti.com>
-Subject: [PATCH 3/3] arm64: dts: ti: k3-j7200: Add support for multiple CAN instances
-Date: Tue, 30 Jan 2024 15:50:44 +0530
-Message-ID: <20240130102044.120483-4-b-kapoor@ti.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240130102044.120483-1-b-kapoor@ti.com>
-References: <20240130102044.120483-1-b-kapoor@ti.com>
+	s=arc-20240116; t=1706610065; c=relaxed/simple;
+	bh=jlMithfBQN2il3NmDRMtmTVMqafgBvkA/hDL4DDaPOo=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=GpvXXMWP0cnzvcL2ZF2j1bdRDA+hynYDrVZsctfLOx08gXn13UpbuGpTKPJmrzpDu7kL9hLXqZnw8MfxBqiupGD2dezEhEmvh7Wq8SzBkHMV0yZoeSXEC18Ujk6Y7eZB61XBSbdQPlFcREQ+3Z0s7dcihT7rPdlasDvUsg8YzE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3637bd89021so13923915ab.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 02:21:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706610063; x=1707214863;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/vfDa5JQ/AdHkO4ZL51SEZ9o+lBjrfJ+IPVxYzinO1Y=;
+        b=kv/OL/TM+dH0986VTIIPuhX0CvbWIomABQo7aOT8ElyYhcX24T12VXCMIH3mwlU/fY
+         XxtKVA2+/QlLW/0uQts+eySKEC2qDY5GqvbXQJsR51ZRejztJ5itNcKC67QVQIf7Ar5T
+         LbC4a6aUsxRnajpQYyALKoQqQemr87gDUBjpEqJKCfGG0/5+SYjZA2jwKWpKnNEPz6U/
+         KhaG4qXFV0H5xqkR2ac4MRz7vioKWsg/o0Mz/6mArT6CeQnwK0VTzmyFFDE08A7WMG5k
+         FmwC9j4NFDJt/wR0bspUS4RK4ZneG63dApoZDHxYhRMNs8YtJO1ChjDNKr8u8/mqlDmd
+         oSRw==
+X-Gm-Message-State: AOJu0YxCaVLI0TxlANuAZffoku6n87WLw2KPpLf9/A0RqlWD/y8JJ+eR
+	CogLPb5CpFetIIEALFNzeA+p27RePuywk/swejfNFiD4bE3kEZ3F4AYxGekb/7+32Y2PQNfWCQB
+	kWTLN+Ka2v5rDxVoeaivC6QRS3ElLNSfMqC7sUutUqsW7/6pIPc2htlU=
+X-Google-Smtp-Source: AGHT+IENZWVgoKVJ4kzJao7he1rHHIUhU3JOsvifcrH2L8ZLwOaIBU3y9Xy1AThTyf9i25nqHWOATlhYRwje/ukEDZZIc/EzqAdw
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Received: by 2002:a05:6e02:1545:b0:363:9252:ed47 with SMTP id
+ j5-20020a056e02154500b003639252ed47mr21521ilu.1.1706610063546; Tue, 30 Jan
+ 2024 02:21:03 -0800 (PST)
+Date: Tue, 30 Jan 2024 02:21:03 -0800
+In-Reply-To: <tencent_26AF244CD76BD77646CD337D636D49720305@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009ba03b0610271e68@google.com>
+Subject: Re: [syzbot] [block?] [trace?] INFO: task hung in blk_trace_remove (2)
+From: syzbot <syzbot+2373f6be3e6de4f92562@syzkaller.appspotmail.com>
+To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-CAN instances 0 and 1 in the mcu domain are brought on the common
-processor board through headers J30 and J31 respectively. Thus, add
-their respective transceivers 1 and 2 dt nodes to add support for
-these CAN instances.
+Hello,
 
-CAN instance 3 in the main domain is brought on the common
-processor board through header J27. The CAN High and Low lines
-from the SoC are routed through a mux on the SoM. The select lines need
-to be set for the CAN signals to get connected to the transceiver 3 on
-the common processor board. Therefore, add transceiver dt nodes to add
-support for this CAN instance.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+BUG: sleeping function called from invalid context in put_probe_ref
 
-Signed-off-by: Bhavya Kapoor <b-kapoor@ti.com>
----
- .../dts/ti/k3-j7200-common-proc-board.dts     | 83 +++++++++++++++++++
- 1 file changed, 83 insertions(+)
+BUG: sleeping function called from invalid context at kernel/locking/mutex.c:585
+in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 16, name: ksoftirqd/0
+preempt_count: 100, expected: 0
+RCU nest depth: 0, expected: 0
+1 lock held by ksoftirqd/0/16:
+ #0: ffffffff8d1acac0 (rcu_callback){....}-{0:0}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
+ #0: ffffffff8d1acac0 (rcu_callback){....}-{0:0}, at: rcu_do_batch kernel/rcu/tree.c:2184 [inline]
+ #0: ffffffff8d1acac0 (rcu_callback){....}-{0:0}, at: rcu_core+0x7bd/0x1680 kernel/rcu/tree.c:2465
+Preemption disabled at:
+[<ffffffff8a922753>] softirq_handle_begin kernel/softirq.c:394 [inline]
+[<ffffffff8a922753>] __do_softirq+0x123/0x8de kernel/softirq.c:529
+CPU: 0 PID: 16 Comm: ksoftirqd/0 Not tainted 6.8.0-rc2-syzkaller-g861c0981648f-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
+ __might_resched+0x3c3/0x5e0 kernel/sched/core.c:10176
+ __mutex_lock_common kernel/locking/mutex.c:585 [inline]
+ __mutex_lock+0xe2/0x9d0 kernel/locking/mutex.c:752
+ put_probe_ref+0x14/0x1b0 kernel/trace/blktrace.c:350
+ blk_trace_rcu_free+0x71/0x90 kernel/trace/blktrace.c:394
+ rcu_do_batch kernel/rcu/tree.c:2190 [inline]
+ rcu_core+0x819/0x1680 kernel/rcu/tree.c:2465
+ __do_softirq+0x21a/0x8de kernel/softirq.c:553
+ run_ksoftirqd kernel/softirq.c:921 [inline]
+ run_ksoftirqd+0x31/0x60 kernel/softirq.c:913
+ smpboot_thread_fn+0x660/0xa10 kernel/smpboot.c:164
+ kthread+0x2c6/0x3a0 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+ </TASK>
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-index cee2b4b0eb87..63b03dc326fa 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-@@ -88,6 +88,34 @@ vdd_sd_dv: gpio-regulator-TLV71033 {
- 		states = <1800000 0x0>,
- 			 <3300000 0x1>;
- 	};
-+
-+	transceiver1: can-phy1 {
-+		compatible = "ti,tcan1043";
-+		#phy-cells = <0>;
-+		max-bitrate = <5000000>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&mcu_mcan0_gpio_pins_default>;
-+		standby-gpios = <&wkup_gpio0 58 GPIO_ACTIVE_LOW>;
-+		enable-gpios = <&wkup_gpio0 0 GPIO_ACTIVE_HIGH>;
-+	};
-+
-+	transceiver2: can-phy2 {
-+		compatible = "ti,tcan1042";
-+		#phy-cells = <0>;
-+		max-bitrate = <5000000>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&mcu_mcan1_gpio_pins_default>;
-+		standby-gpios = <&wkup_gpio0 2 GPIO_ACTIVE_HIGH>;
-+	};
-+
-+	transceiver3: can-phy3 {
-+		compatible = "ti,tcan1043";
-+		#phy-cells = <0>;
-+		max-bitrate = <5000000>;
-+		standby-gpios = <&exp2 7 GPIO_ACTIVE_LOW>;
-+		enable-gpios = <&exp2 6 GPIO_ACTIVE_HIGH>;
-+		mux-states = <&mux0 1>;
-+	};
- };
- 
- &wkup_pmx0 {
-@@ -138,6 +166,33 @@ J721E_WKUP_IOPAD(0x0034, PIN_OUTPUT, 0) /* (L1) MCU_MDIO0_MDC */
- 			J721E_WKUP_IOPAD(0x0030, PIN_INPUT, 0) /* (L4) MCU_MDIO0_MDIO */
- 		>;
- 	};
-+
-+	mcu_mcan0_pins_default: mcu-mcan0-default-pins {
-+		pinctrl-single,pins = <
-+			J721E_WKUP_IOPAD(0x54, PIN_INPUT, 0) /* (A17) MCU_MCAN0_RX */
-+			J721E_WKUP_IOPAD(0x50, PIN_OUTPUT, 0) /* (A16) MCU_MCAN0_TX */
-+		>;
-+	};
-+
-+	mcu_mcan1_pins_default: mcu-mcan1-default-pins {
-+		pinctrl-single,pins = <
-+			J721E_WKUP_IOPAD(0x6c, PIN_INPUT, 0) /* (B16) WKUP_GPIO0_5.MCU_MCAN1_RX */
-+			J721E_WKUP_IOPAD(0x68, PIN_OUTPUT, 0) /* (D13) WKUP_GPIO0_4.MCU_MCAN1_TX */
-+		>;
-+	};
-+
-+	mcu_mcan0_gpio_pins_default: mcu-mcan0-gpio-default-pins {
-+		pinctrl-single,pins = <
-+			J721E_WKUP_IOPAD(0x58, PIN_INPUT, 7) /* (B18) WKUP_GPIO0_0 */
-+			J721E_WKUP_IOPAD(0x40, PIN_INPUT, 7) /* (B17) MCU_SPI0_D1 */
-+		>;
-+	};
-+
-+	mcu_mcan1_gpio_pins_default: mcu-mcan1-gpio-default-pins {
-+		pinctrl-single,pins = <
-+			J721E_WKUP_IOPAD(0x60, PIN_INPUT, 7) /* (D14) WKUP_GPIO0_2 */
-+		>;
-+	};
- };
- 
- &main_pmx0 {
-@@ -189,6 +244,13 @@ vdd_sd_dv_pins_default: vdd-sd-dv-default-pins {
- 			J721E_IOPAD(0xd0, PIN_OUTPUT, 7) /* (T5) SPI0_D1.GPIO0_55 */
- 		>;
- 	};
-+
-+	main_mcan3_pins_default: main-mcan3-default-pins {
-+		pinctrl-single,pins = <
-+			J721E_IOPAD(0x3c, PIN_INPUT, 0) /* (W16) MCAN3_RX */
-+			J721E_IOPAD(0x38, PIN_OUTPUT, 0) /* (Y21) MCAN3_TX */
-+		>;
-+	};
- };
- 
- &main_pmx1 {
-@@ -394,3 +456,24 @@ &pcie1_ep {
- 	num-lanes = <2>;
- 	status = "disabled";
- };
-+
-+&mcu_mcan0 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mcu_mcan0_pins_default>;
-+	phys = <&transceiver1>;
-+};
-+
-+&mcu_mcan1 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mcu_mcan1_pins_default>;
-+	phys = <&transceiver2>;
-+};
-+
-+&main_mcan3 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&main_mcan3_pins_default>;
-+	phys = <&transceiver3>;
-+};
--- 
-2.34.1
+=============================
+[ BUG: Invalid wait context ]
+6.8.0-rc2-syzkaller-g861c0981648f-dirty #0 Tainted: G        W         
+-----------------------------
+ksoftirqd/0/16 is trying to lock:
+ffffffff8d22fa28 (blk_probe_mutex){+.+.}-{3:3}, at: put_probe_ref+0x14/0x1b0 kernel/trace/blktrace.c:350
+other info that might help us debug this:
+context-{2:2}
+1 lock held by ksoftirqd/0/16:
+ #0: ffffffff8d1acac0 (rcu_callback){....}-{0:0}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
+ #0: ffffffff8d1acac0 (rcu_callback){....}-{0:0}, at: rcu_do_batch kernel/rcu/tree.c:2184 [inline]
+ #0: ffffffff8d1acac0 (rcu_callback){....}-{0:0}, at: rcu_core+0x7bd/0x1680 kernel/rcu/tree.c:2465
+stack backtrace:
+CPU: 0 PID: 16 Comm: ksoftirqd/0 Tainted: G        W          6.8.0-rc2-syzkaller-g861c0981648f-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_lock_invalid_wait_context kernel/locking/lockdep.c:4751 [inline]
+ check_wait_context kernel/locking/lockdep.c:4821 [inline]
+ __lock_acquire+0x821/0x3b30 kernel/locking/lockdep.c:5087
+ lock_acquire kernel/locking/lockdep.c:5754 [inline]
+ lock_acquire+0x1ae/0x520 kernel/locking/lockdep.c:5719
+ __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+ __mutex_lock+0x175/0x9d0 kernel/locking/mutex.c:752
+ put_probe_ref+0x14/0x1b0 kernel/trace/blktrace.c:350
+ blk_trace_rcu_free+0x71/0x90 kernel/trace/blktrace.c:394
+ rcu_do_batch kernel/rcu/tree.c:2190 [inline]
+ rcu_core+0x819/0x1680 kernel/rcu/tree.c:2465
+ __do_softirq+0x21a/0x8de kernel/softirq.c:553
+ run_ksoftirqd kernel/softirq.c:921 [inline]
+ run_ksoftirqd+0x31/0x60 kernel/softirq.c:913
+ smpboot_thread_fn+0x660/0xa10 kernel/smpboot.c:164
+ kthread+0x2c6/0x3a0 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+ </TASK>
+BUG: scheduling while atomic: ksoftirqd/0/16/0x00000101
+INFO: lockdep is turned off.
+Modules linked in:
+Preemption disabled at:
+[<ffffffff8a922753>] softirq_handle_begin kernel/softirq.c:394 [inline]
+[<ffffffff8a922753>] __do_softirq+0x123/0x8de kernel/softirq.c:529
+
+
+Tested on:
+
+commit:         861c0981 Merge tag 'jfs-6.8-rc3' of github.com:kleikam..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=121ea1fde80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b168fa511db3ca08
+dashboard link: https://syzkaller.appspot.com/bug?extid=2373f6be3e6de4f92562
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=13151c40180000
 
 
