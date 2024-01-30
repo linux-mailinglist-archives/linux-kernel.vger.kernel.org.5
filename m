@@ -1,64 +1,92 @@
-Return-Path: <linux-kernel+bounces-44457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44455-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 611B584223A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:05:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98D50842234
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:05:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E274B1F2E523
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:05:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC8021C26C2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:05:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA39D66B37;
-	Tue, 30 Jan 2024 11:05:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 424A5664D3;
+	Tue, 30 Jan 2024 11:05:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="EwcKsWm7"
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="upl+k7v2";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="bA274UEq";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="upl+k7v2";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="bA274UEq"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E14AE66B36;
-	Tue, 30 Jan 2024 11:05:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E07066B4C;
+	Tue, 30 Jan 2024 11:04:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706612717; cv=none; b=p78aaRyf9UVwZI0lgp+/VXkE0KKL0m0A0r3G7SJ5wv2hxvN4wVzgLFm1pvBwuCAoGm85ogbUgVzNwx+zdi17aAPBYOCjsQM8RG0BhUazqDx30JwOd5Vi0NBAQqnqseBRwsUBB/QzDNpPuhhWtYtjoKPPJMu2fqoM/l0NjCjbgs0=
+	t=1706612701; cv=none; b=ZXcb+SM8NsXLvJe0WRkLHKlsQ6YcEFryNUR28JmOjo0tFoPozgCMUrxJ52A0SYekPZ9nBrl93zljvUsm2IadbNjCu6Ghfi40bf9DOQ0eGhVMeodBW+MNisa6SYm/f4q6bz1dIzN45OUj+anRpRdAt34WqGK6Sp/24Sl2SJl/Lzc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706612717; c=relaxed/simple;
-	bh=YWoRr++LtmqrklpXT4FN730vpyGR9Vt9NvXbQgTv6DA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=eaUHTxT+z5/88NuX4JqLnS9yl08Yr8VuekQyRFq+85aO2NMvtKxHR31lchYnBgKCkQlqwoXtlWBVHAAVq8bxx2jdVYKMsuOnKL6Y4sZzizS4Pv6IMIzzxl7WtqkWywJhlRQDCYOkGHD3dH/YsGLimrMLR43tX59W1vpWowuV9mg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=EwcKsWm7; arc=none smtp.client-ip=67.231.149.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40U6m6fK015755;
-	Tue, 30 Jan 2024 05:04:56 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	PODMain02222019; bh=7fkoap6tDn5V09KItRc07wxlB0r/CaVc096KyiaEmTw=; b=
-	EwcKsWm7Xv5RXOP9O+rQrFl4ul+uzXVB0OJTT3xwOV6klHLMs2dGIgCByBaFSHZC
-	TnbzGFdvLP9CKEw2DPjacbeYvpB7fG4KHRZZSfTFtITvqkyOEI/eHViWDi+rf/oZ
-	soEXABvXy1qbsmy5IA0q5DBoynwKcsAwfTAMKXV5erT2BSNs2NlRcTNom9BrtxS5
-	+RelvvnNHudCp6XyH6Fn7Io3/FWtGWeUNEpgB5jNnkMov1rQhHKGIsws3s+8VuTg
-	uIJ+fliAEobFWKx/rzA5gNMhywqZwvDSbUhMIFDj0H/JLieIXXwFeaCVHXCADUnW
-	ICAtk2fZjF8CGglzOLYQmQ==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3vw043u6s6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Jan 2024 05:04:56 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 30 Jan
- 2024 11:04:54 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.40 via Frontend Transport; Tue, 30 Jan 2024 11:04:54 +0000
-Received: from [198.90.208.18] (ediswws06.ad.cirrus.com [198.90.208.18])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 5F753820247;
-	Tue, 30 Jan 2024 11:04:54 +0000 (UTC)
-Message-ID: <a8432725-6dc6-4765-831f-178dcee8b829@opensource.cirrus.com>
-Date: Tue, 30 Jan 2024 11:04:54 +0000
+	s=arc-20240116; t=1706612701; c=relaxed/simple;
+	bh=PdeoMiYgUER3iysKvji/sSX8mFKzGpxS1nsIZk+d188=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=dfHVzTKq/eFwrO3w/58It+v/I+2bEf016Va8qwYDg6J94/NI/UR3sAwhONucvjilSFhsIc55KTL75/9BYI/i2IcFkoYyiV6I8cGvCorheWniy0bdFRXuO1gN+iJPHIy72ES8iE4T49TC1yRHUlINSMMhpHwiDMyD5sH+bng677E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=upl+k7v2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=bA274UEq; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=upl+k7v2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=bA274UEq; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 98AFC1F842;
+	Tue, 30 Jan 2024 11:04:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706612697; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UKC3VT/yxm8QuquH0mJbFZHi45tefg50JMHGoP/3fP8=;
+	b=upl+k7v2jgC8e/LOcqed3oJ7nMEKZZwBBVVFePzAUZivut0SOR3ayyCUaQEkqeOtEU2wlN
+	EBECpioeOmWyyQ9aYCJ1GVRZDjTtNrEhDbND7YGNXMzI1rFjXrKUwRXZDhIbx8XMzjYOOU
+	FJ3AJS2RJq+ToBlBmw7fxgdaMHJy/SI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706612697;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UKC3VT/yxm8QuquH0mJbFZHi45tefg50JMHGoP/3fP8=;
+	b=bA274UEqLWuoPqTyOiMkMod8zh206bkz2t3SI/Lg/j24OKwKuIzwxprbxrwonjFXWwe5qr
+	bOS/gUc8alVD1JCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706612697; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UKC3VT/yxm8QuquH0mJbFZHi45tefg50JMHGoP/3fP8=;
+	b=upl+k7v2jgC8e/LOcqed3oJ7nMEKZZwBBVVFePzAUZivut0SOR3ayyCUaQEkqeOtEU2wlN
+	EBECpioeOmWyyQ9aYCJ1GVRZDjTtNrEhDbND7YGNXMzI1rFjXrKUwRXZDhIbx8XMzjYOOU
+	FJ3AJS2RJq+ToBlBmw7fxgdaMHJy/SI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706612697;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UKC3VT/yxm8QuquH0mJbFZHi45tefg50JMHGoP/3fP8=;
+	b=bA274UEqLWuoPqTyOiMkMod8zh206bkz2t3SI/Lg/j24OKwKuIzwxprbxrwonjFXWwe5qr
+	bOS/gUc8alVD1JCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6F88012FF7;
+	Tue, 30 Jan 2024 11:04:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id pETmGtnXuGVMPQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Tue, 30 Jan 2024 11:04:57 +0000
+Message-ID: <8fc59462-2940-4e60-95f1-2955a8c24ea0@suse.cz>
+Date: Tue, 30 Jan 2024 12:04:57 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,95 +94,135 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 08/18] ASoC: cs35l56: Fix default SDW TX mixer registers
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        <broonie@kernel.org>, <tiwai@suse.com>
-CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
-References: <20240129162737.497-1-rf@opensource.cirrus.com>
- <20240129162737.497-9-rf@opensource.cirrus.com>
- <4f54a12c-c8a3-414c-b4df-3f7b25e6d524@linux.intel.com>
-Content-Language: en-GB
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-In-Reply-To: <4f54a12c-c8a3-414c-b4df-3f7b25e6d524@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Subject: Re: [PATCH RFC 1/4] fs/locks: Fix file lock cache accounting, again
+From: Vlastimil Babka <vbabka@suse.cz>
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+ Shakeel Butt <shakeelb@google.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>,
+ Josh Poimboeuf <jpoimboe@kernel.org>, Jeff Layton <jlayton@kernel.org>,
+ Chuck Lever <chuck.lever@oracle.com>, Johannes Weiner <hannes@cmpxchg.org>,
+ Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org,
+ Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
+ Vasily Averin <vasily.averin@linux.dev>, Michal Koutny <mkoutny@suse.com>,
+ Waiman Long <longman@redhat.com>, Muchun Song <muchun.song@linux.dev>,
+ Jiri Kosina <jikos@kernel.org>, cgroups@vger.kernel.org, linux-mm@kvack.org,
+ Howard McLauchlan <hmclauchlan@fb.com>, bpf <bpf@vger.kernel.org>
+References: <cover.1705507931.git.jpoimboe@kernel.org>
+ <ac84a832feba5418e1b58d1c7f3fe6cc7bc1de58.1705507931.git.jpoimboe@kernel.org>
+ <6667b799702e1815bd4e4f7744eddbc0bd042bb7.camel@kernel.org>
+ <20240117193915.urwueineol7p4hg7@treble>
+ <CAHk-=wg_CoTOfkREgaQQA6oJ5nM9ZKYrTn=E1r-JnvmQcgWpSg@mail.gmail.com>
+ <CALvZod6LgX-FQOGgNBmoRACMBK4GB+K=a+DYrtExcuGFH=J5zQ@mail.gmail.com>
+ <ZahSlnqw9yRo3d1v@P9FQF9L96D.corp.robot.car>
+ <CALvZod4V3QTULTW5QxgqCbDpNtVO6fXzta33HR7GN=L2LUU26g@mail.gmail.com>
+ <CAHk-=whYOOdM7jWy5jdrAm8LxcgCMFyk2bt8fYYvZzM4U-zAQA@mail.gmail.com>
+ <6d5bb852-8703-4abf-a52b-90816bccbd7f@suse.cz>
+Content-Language: en-US
+In-Reply-To: <6d5bb852-8703-4abf-a52b-90816bccbd7f@suse.cz>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: oet1IvvhAV8hsmYkbAJ3mUff-NWRGpf-
-X-Proofpoint-GUID: oet1IvvhAV8hsmYkbAJ3mUff-NWRGpf-
-X-Proofpoint-Spam-Reason: safe
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-3.09 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[20];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -3.09
 
-On 29/01/2024 17:15, Pierre-Louis Bossart wrote:
+On 1/26/24 10:50, Vlastimil Babka wrote:
+> On 1/22/24 06:10, Linus Torvalds wrote:
+>> On Wed, 17 Jan 2024 at 14:56, Shakeel Butt <shakeelb@google.com> wrote:
+>>> >
+>>> > So I don't see how we can make it really cheap (say, less than 5% overhead)
+>>> > without caching pre-accounted objects.
+>>>
+>>> Maybe this is what we want. Now we are down to just SLUB, maybe such
+>>> caching of pre-accounted objects can be in SLUB layer and we can
+>>> decide to keep this caching per-kmem-cache opt-in or always on.
+>> 
+>> So it turns out that we have another case of SLAB_ACCOUNT being quite
+>> a big expense, and it's actually the normal - but failed - open() or
+>> execve() case.
+>> 
+>> See the thread at
+>> 
+>>     https://lore.kernel.org/all/CAHk-=whw936qzDLBQdUz-He5WK_0fRSWwKAjtbVsMGfX70Nf_Q@mail.gmail.com/
+>> 
+>> and to see the effect in profiles, you can use this EXTREMELY stupid
+>> test program:
+>> 
+>>     #include <fcntl.h>
+>> 
+>>     int main(int argc, char **argv)
+>>     {
+>>         for (int i = 0; i < 10000000; i++)
+>>                 open("nonexistent", O_RDONLY);
+>>     }
 > 
+> This reminded me I can see should_failslab() in the profiles (1.43% plus the
+> overhead in its caller) even if it does nothing at all, and it's completely
+> unconditional since commit 4f6923fbb352 ("mm: make should_failslab always
+> available for fault injection").
 > 
-> On 1/29/24 17:27, Richard Fitzgerald wrote:
->> Patch the SDW TX mixer registers to silicon defaults.
->>
->> CS35L56 is designed for SDCA and a generic SDCA driver would
->> know nothing about these chip-specific registers. So the
->> firmware sets up the SDW TX mixer registers to whatever audio
->> is relevant on a specific system.
->>
->> This means that the driver cannot assume the initial values
->> of these registers. But Linux has ALSA controls to configure
->> routing, so the registers can be patched to silicon default and
->> the ALSA controls used to select what audio to feed back to the
->> host capture path.
+> We discussed it briefly when Jens tried to change it in [1] to depend on
+> CONFIG_FAILSLAB again. But now I think it should be even possible to leave
+> it always available, but behind a static key. BPF or whoever else uses these
+> error injection hooks would have to track how many users of them are active
+> and manage the static key accordingly. Then it could be always available,
+> but have no overhead when there's no active user? Other similars hooks could
+> benefit from such an approach too?
 > 
-> humm, which has the precedence then?
-> a) the values set by firmware
-> b) the default values set by the driver?
-> 
-> Also if the firmware touches those registers shouldn't they be marked as
-> 'volatile'?
->
+> [1]
+> https://lore.kernel.org/all/e01e5e40-692a-519c-4cba-e3331f173c82@kernel.dk/#t
 
-The firmware was designed to work with Windows, so it looks a bit
-strange if you are coming at it from ALSA. There's not really any
-defined 'precedence'. The firmware will setup the feedback monitor paths
-to something that satisfies SDCA and Windows expectations.
+Just for completeness, with the hunk below I've seen some 2% improvement on
+the test program from Linus.
+Of course something needs to operate the static key and I'm not familiar
+enough with bpf and related machinery whether it's tracking users of the
+injection points already where the static key toggling could be hooked.
 
-We don't care about that in Linux, the firmware on the Intel DSP
-probably isn't running the same algorithms for Linux, and we have ALSA
-controls to configure those paths. So we patch the mixers back to their
-silicon defaults and take over complete control of them.
+diff --git a/mm/slub.c b/mm/slub.c
+index 2ef88bbf56a3..da07b358d092 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -3750,6 +3750,8 @@ noinline int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
+ }
+ ALLOW_ERROR_INJECTION(should_failslab, ERRNO);
+ 
++static DEFINE_STATIC_KEY_FALSE(failslab_enabled);
++
+ static __fastpath_inline
+ struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s,
+                                       struct list_lru *lru,
+@@ -3760,8 +3762,10 @@ struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s,
+ 
+        might_alloc(flags);
+ 
+-       if (unlikely(should_failslab(s, flags)))
+-               return NULL;
++       if (static_branch_unlikely(&failslab_enabled)) {
++               if (unlikely(should_failslab(s, flags)))
++                       return NULL;
++       }
+ 
+        if (unlikely(!memcg_slab_pre_alloc_hook(s, lru, objcgp, size, flags)))
+                return NULL;
 
-The firmware only writes them during its power-up sequence so they
-will only change when we are rebooting the firmware or coming out of
-low-power standby, which is under the control of the driver. When that
-happens regmap will re-apply the patch and then sync up the registers
-again. The firmware won't touch them after boot, so we can avoid having
-to mark them volatile (which would mean implementing our own manual
-caching of the settings).
 
-> 
->> Backport note:
->> This won't apply to kernels older than v6.6.
->>
->> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
->> Fixes: e49611252900 ("ASoC: cs35l56: Add driver for Cirrus Logic CS35L56")
->> ---
->>   sound/soc/codecs/cs35l56-shared.c | 9 +++++++++
->>   1 file changed, 9 insertions(+)
->>
->> diff --git a/sound/soc/codecs/cs35l56-shared.c b/sound/soc/codecs/cs35l56-shared.c
->> index 35789ffc63af..a812abf90836 100644
->> --- a/sound/soc/codecs/cs35l56-shared.c
->> +++ b/sound/soc/codecs/cs35l56-shared.c
->> @@ -12,6 +12,15 @@
->>   #include "cs35l56.h"
->>   
->>   static const struct reg_sequence cs35l56_patch[] = {
->> +	/*
->> +	 * Firmware can change these to non-defaults to satisfy SDCA.
->> +	 * Ensure that they are at known defaults.
->> +	 */
->> +	{ CS35L56_SWIRE_DP3_CH1_INPUT,		0x00000018 },
->> +	{ CS35L56_SWIRE_DP3_CH2_INPUT,		0x00000019 },
->> +	{ CS35L56_SWIRE_DP3_CH3_INPUT,		0x00000029 },
->> +	{ CS35L56_SWIRE_DP3_CH4_INPUT,		0x00000028 },
->> +
->>   	/* These are not reset by a soft-reset, so patch to defaults. */
->>   	{ CS35L56_MAIN_RENDER_USER_MUTE,	0x00000000 },
->>   	{ CS35L56_MAIN_RENDER_USER_VOLUME,	0x00000000 },
 
 
