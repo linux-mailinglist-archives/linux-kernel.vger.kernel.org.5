@@ -1,87 +1,78 @@
-Return-Path: <linux-kernel+bounces-44649-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C815842574
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:54:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 014D784257D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:55:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F87E1C27DB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:54:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E6DE1C23A57
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:55:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C0AD12A166;
-	Tue, 30 Jan 2024 12:49:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 630106A350;
+	Tue, 30 Jan 2024 12:51:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="DUZqnO4K"
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RLfW5RQM"
+Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5998F1292F8
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 12:49:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F37C16A03D
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 12:51:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706618943; cv=none; b=SbfCsmqK3yOgAfHYUKTpcEPV2QuyhRgoica3IdR5exCo2JEMO4n+XwFUtcng6M4D0ODbZIb8T0Ti2n7kGtMM7G8NlzLX9NCEYVvZGUv+9AB6aQLhvWCWbOYxHMZvTR86sT9TruWmYvin2bG9XZqicgusjX9kjFghgelwsFWHa7c=
+	t=1706619086; cv=none; b=OsKHPkb6qc8jKcUUXV8nCK/+mQ3OQ73ix+wRs5hFn+r7/J9aEYl2UxleScRnH6x6A5x9T6tZaJ9o8H/FDLSW0h/5R4I5bxHrVwtDruBYguR+UEPMYXY6vyXBz/3M3n/22rPga3gPMAgFiWz0g0hw1CTDTpYrU6e66Rt/iUxoMBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706618943; c=relaxed/simple;
-	bh=p9qFxfRDRuKahCeEITtAp/nZTu9vev5Cmk1NVuQ7PFc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=DYMrMIMUoevIFlVEoCczaEmBu3WGmnYDINbA67P+/seLeIdpxuOxvo32ZLk70g0xISSV7s0n8w1qkomCBQs+7grJXb80xIBybYGV4gbjJB/VjDQxR0JLMV893QTcAV8dlcDcZy3ZFzmOBpMuYX+SdEh1qUkyOZpT8zwN5sYvy98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=DUZqnO4K; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-33ae7ae1c32so1714657f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 04:49:01 -0800 (PST)
+	s=arc-20240116; t=1706619086; c=relaxed/simple;
+	bh=rTnKuH15SuMnXR29rgvNOa2casFDsER5RRZy8dJX2Pw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HUOHvf9NEerAdQtk6medC/V1SDHMhNzA/8Zq4uSE4WDd+CdFkI7d+6Z3onuRxvNM6cBq7u0Ir8ZJclvH4VKa/WATYbEBPZ/V02FCSrwLOOOb/1LM/D8l7CvmdumbsAMj9jQrvwPFLpFFhPpsUAeNo2hyfUenuQbnzJYDqelCCA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RLfW5RQM; arc=none smtp.client-ip=209.85.167.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3be6df6bc9bso961449b6e.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 04:51:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1706618940; x=1707223740; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3mlp9NoRNWG5wkw0gnE37vvJcfWnX6lVcfqfuQVzAw4=;
-        b=DUZqnO4KCNJgb4pBBA8CSjJuCPOyuE5s5ZjBXIF8c9XkSAI+3UYiRx+9uW8F4jNf6v
-         6SwOc8D2sxT4Gd6tYe6aahVcH7qt0vNZwdHZX+hdwJG/BLPX4yAzLSyKmwhhSmX+oSve
-         KWD1TDGzEJCcu1Zg64tiytwBXoVOCF6w0QonbyBkiTKOmEW3CQJT0wxIIwBhKNwoy4yb
-         TsjFmBn5rch2ha6S9FDlspKMx+OP80LQ98PIYMQvtNeKK3ug4Wb+/eGPeGWcrhwCgwzk
-         nIGNMMXUTk0ML20ZXWlqpvLpJyTPitbof+A7sfSHijHFF3J41o/B12Pu1ETEPz8uG+0a
-         ozJA==
+        d=gmail.com; s=20230601; t=1706619084; x=1707223884; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wgKJFJ/3GGLxSM/jtfTq8LlETbTPciEFuAYV4rAipow=;
+        b=RLfW5RQMbbdYyFDPpX3+odJWf2WjZnsb9KkyskT0YxoTYLOJDTVa3kliA4913mZ9ZE
+         Rc86TRtumJ8WTWKciWFlL3bFTy15RLFXS9BbSZKQbt0FgwQWEzAheczrSBQgTEmFKg3/
+         kmGrWt4M00mx9CDtQP24Ke5pWMr2T/7VRBMW3K2G6gLEV22MqbPeqvbsdctDoUv+K1Ch
+         7udGOccEM5bZRNVjjnYRhtko0/WqvoU76i0ZsJYFUcfP/yI9v1GWD3FjNlRGeDOSKq0W
+         6R/JiwYphYhdeeo51c9WZMHi9H3FrKd4Svr2qB5kCY0ddZRuKAQC98X+ZtRBSvi7Db0D
+         fUVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706618940; x=1707223740;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3mlp9NoRNWG5wkw0gnE37vvJcfWnX6lVcfqfuQVzAw4=;
-        b=OTAu1SHi1iN4ketxIMwFX7yxh5sbbuDlmO3brHyWbi1UdBFFF2ZLm6LKjgODNXi3WG
-         T8JUZAF7fwpzxcXblZ5OiKgSY+mtS9jLWBcItUMJM4uMkOVriC7K3w1AfUnfuWftMy5J
-         BPI7aDaiWSyiVIrNQQrsHWp5UWAPqnhmH5N2wkFrNlp1KvCrT80a8LVR8bsWYpJeIPe8
-         4DlSoqShPE0JcmpckKa/ie+m1VCjY5wqyAuHAdAAqc2P2OTxg5ecOUraMFx6uExsXlS0
-         2AGppewhWlwMB3z477YPVtl1I64Eb0P3/FMmasWDdjqvA2DuQzQlu/qWpZ66uIcTZhCm
-         0shw==
-X-Gm-Message-State: AOJu0YwozoGq4NOfJpTXXOTo83T2+58ai3kpVnGqU7sp80nubPPaOSqm
-	zEp0euP2Y/ioQmDgwNLIfLz21uihhiUUMAIsSuB5kHkZWn+uD2HuDq/ll3iNXHo=
-X-Google-Smtp-Source: AGHT+IGDWA2iBJpdCn+igJe5tAk5amog3d34nSIBkescrm60Rf5It6dm8S+wfa5Hoowj22tI2nU+Ng==
-X-Received: by 2002:a5d:588b:0:b0:33a:f4d6:613 with SMTP id n11-20020a5d588b000000b0033af4d60613mr3528661wrf.69.1706618939847;
-        Tue, 30 Jan 2024 04:48:59 -0800 (PST)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:abc8:f77e:abeb:129c])
-        by smtp.gmail.com with ESMTPSA id en8-20020a056000420800b0033940016d6esm6625337wrb.93.2024.01.30.04.48.59
+        d=1e100.net; s=20230601; t=1706619084; x=1707223884;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wgKJFJ/3GGLxSM/jtfTq8LlETbTPciEFuAYV4rAipow=;
+        b=jX+/jcoSTTHBmr8fV+GgHuhua4oJwl1hpl93Qub6YQUSzG31FSDj+wlxIrVMSVXXtR
+         b9LFr/D+qv5HUsn/ab5RBglywX2eHCVjhqzjn2sftDz3E8JBO3i9yLC6D3qfkuDAnkCC
+         BXLSLG0nv0vMULqVmmRMqqzaV4tle+Ilw48iyOgg0HNw7S9Ere1q1b7RdSGSORrvJmia
+         nwAUCw6T08ABhRITZLoqAute4et08lRHf2Wjq7QdMhNYdkjakFP/6KiShi6J5KZsBjZO
+         G1Ufy9/alr8rH+vo9tcDx5Tc2oKJVMHXx8Au17e6nvLmpJ/q/5Zces8BIwOy2NYbajWC
+         Dv1A==
+X-Gm-Message-State: AOJu0Yxo/tuHCukQZ3Pdtj4FmSLmT3Df2NFNeU2j0FQxxz9cvtECcBqZ
+	erWqjsA29SsQTw+qhUWHE5Ycap20/L+dtAPTqF1A6tqqxxhZqD46
+X-Google-Smtp-Source: AGHT+IGNfdUcohP4BKiAK7V+W7bLsZz3PVad76EolQPKCaFm9MaSgHAVqJlH0BBBDLiis3lSHk1ieA==
+X-Received: by 2002:a05:6808:128e:b0:3bd:c1b2:b1d5 with SMTP id a14-20020a056808128e00b003bdc1b2b1d5mr7640905oiw.46.1706619083954;
+        Tue, 30 Jan 2024 04:51:23 -0800 (PST)
+Received: from mi.mioffice.cn ([2408:8607:1b00:8:8eec:4bff:fe94:a95d])
+        by smtp.gmail.com with ESMTPSA id j12-20020a056a00234c00b006d9b35b2602sm7606311pfj.3.2024.01.30.04.51.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 04:48:59 -0800 (PST)
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-To: Linus Walleij <linus.walleij@linaro.org>,
-	Kent Gibson <warthog618@gmail.com>,
-	Alex Elder <elder@linaro.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Wolfram Sang <wsa@the-dreams.de>
-Cc: linux-gpio@vger.kernel.org,
+        Tue, 30 Jan 2024 04:51:23 -0800 (PST)
+From: liujinbao1 <jinbaoliu365@gmail.com>
+To: jaegeuk@kernel.org,
+	chao@kernel.org
+Cc: linux-f2fs-devel@lists.sourceforge.net,
 	linux-kernel@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH 22/22] gpio: mark unsafe gpio_chip manipulators as deprecated
-Date: Tue, 30 Jan 2024 13:48:28 +0100
-Message-Id: <20240130124828.14678-23-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240130124828.14678-1-brgl@bgdev.pl>
-References: <20240130124828.14678-1-brgl@bgdev.pl>
+	liujinbao1 <liujinbao1@xiaomi.corp-partner.google.com>
+Subject: [PATCH] UPSTREAM: f2fs: sysfs: support gc_io_aware
+Date: Tue, 30 Jan 2024 20:51:13 +0800
+Message-ID: <20240130125113.14081-1-jinbaoliu365@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,43 +81,127 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+From: liujinbao1 <liujinbao1@xiaomi.corp-partner.google.com>
 
-We still have some functions that return the address of the GPIO chip
-associated with the GPIO device. This is dangerous and the users should
-find a better solution. Let's add appropriate comments to the kernel
-docs.
+Currently, IO can only be ignored when GC_URGENT_HIGH is set,
+ and the default algorithm used for GC_URGENT_HIGH is greedy.
+It gives a way to enable/disable IO aware feature for background
+gc, so that we can tune background gc more precisely. e.g.
+force to disable IO aware and choose more suitable algorithm
+if there are large number of dirty segments.
 
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Change-Id: Ic0ea1bf8fb6602f0dd88b924088f1c1b33fcd809
+Signed-off-by: liujinbao1 <liujinbao1@xiaomi.corp-partner.google.com>
 ---
- drivers/gpio/gpiolib.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ Documentation/ABI/testing/sysfs-fs-f2fs | 6 ++++++
+ fs/f2fs/f2fs.h                          | 6 ++++++
+ fs/f2fs/gc.c                            | 3 ++-
+ fs/f2fs/gc.h                            | 1 +
+ fs/f2fs/sysfs.c                         | 9 +++++++++
+ 5 files changed, 24 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index 5741bbfdc178..7ecdd8cc39c5 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -211,6 +211,11 @@ EXPORT_SYMBOL_GPL(desc_to_gpio);
- /**
-  * gpiod_to_chip - Return the GPIO chip to which a GPIO descriptor belongs
-  * @desc:	descriptor to return the chip of
-+ *
-+ * *DEPRECATED*
-+ * This function is unsafe and should not be used. Using the chip address
-+ * without taking the SRCU read lock may result in dereferencing a dangling
-+ * pointer.
-  */
- struct gpio_chip *gpiod_to_chip(const struct gpio_desc *desc)
- {
-@@ -275,6 +280,7 @@ EXPORT_SYMBOL(gpio_device_get_label);
-  * Returns:
-  * Address of the GPIO chip backing this device.
-  *
-+ * *DEPRECATED*
-  * Until we can get rid of all non-driver users of struct gpio_chip, we must
-  * provide a way of retrieving the pointer to it from struct gpio_device. This
-  * is *NOT* safe as the GPIO API is considered to be hot-unpluggable and the
+diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+index 36c3cb547901..47f02fa471fe 100644
+--- a/Documentation/ABI/testing/sysfs-fs-f2fs
++++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+@@ -16,6 +16,12 @@ Contact:	"Namjae Jeon" <namjae.jeon@samsung.com>
+ Description:	Controls the default sleep time for gc_thread. Time
+ 		is in milliseconds.
+ 
++What:		/sys/fs/f2fs/<disk>/gc_io_aware
++Date:		January 2024
++Contact:	"Jinbao Liu" <liujinbao1@xiaomi.com>
++Description:	It controls to enable/disable IO aware feature for background gc.
+++		By default, the value is 1 which indicates IO aware is on.
++
+ What:		/sys/fs/f2fs/<disk>/gc_idle
+ Date:		July 2013
+ Contact:	"Namjae Jeon" <namjae.jeon@samsung.com>
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 214fdd590fdf..ebe953e7459e 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -374,6 +374,12 @@ enum {
+ 	MAX_DPOLICY,
+ };
+ 
++enum {
++	GC_IO_AWARE_DISABLE,	/* force to not be aware of IO */
++	GC_IO_AWARE_ENABLE,	/* force to be aware of IO */
++	GC_IO_AWARE_MAX,
++};
++
+ struct discard_policy {
+ 	int type;			/* type of discard */
+ 	unsigned int min_interval;	/* used for candidates exist */
+diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
+index 309da3d0faff..34a1e6b35af6 100644
+--- a/fs/f2fs/gc.c
++++ b/fs/f2fs/gc.c
+@@ -109,7 +109,7 @@ static int gc_thread_func(void *data)
+ 			goto next;
+ 		}
+ 
+-		if (!is_idle(sbi, GC_TIME)) {
++		if (gc_th->io_aware && !is_idle(sbi, GC_TIME)) {
+ 			increase_sleep_time(gc_th, &wait_ms);
+ 			f2fs_up_write(&sbi->gc_lock);
+ 			stat_io_skip_bggc_count(sbi);
+@@ -182,6 +182,7 @@ int f2fs_start_gc_thread(struct f2fs_sb_info *sbi)
+ 	gc_th->min_sleep_time = DEF_GC_THREAD_MIN_SLEEP_TIME;
+ 	gc_th->max_sleep_time = DEF_GC_THREAD_MAX_SLEEP_TIME;
+ 	gc_th->no_gc_sleep_time = DEF_GC_THREAD_NOGC_SLEEP_TIME;
++	gc_th->io_aware = GC_IO_AWARE_ENABLE;
+ 
+ 	gc_th->gc_wake = false;
+ 
+diff --git a/fs/f2fs/gc.h b/fs/f2fs/gc.h
+index 28a00942802c..51d6ad26b76a 100644
+--- a/fs/f2fs/gc.h
++++ b/fs/f2fs/gc.h
+@@ -41,6 +41,7 @@ struct f2fs_gc_kthread {
+ 	unsigned int min_sleep_time;
+ 	unsigned int max_sleep_time;
+ 	unsigned int no_gc_sleep_time;
++	bool io_aware;
+ 
+ 	/* for changing gc mode */
+ 	bool gc_wake;
+diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+index 417fae96890f..95409cfc48f4 100644
+--- a/fs/f2fs/sysfs.c
++++ b/fs/f2fs/sysfs.c
+@@ -516,6 +516,13 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
+ 		return count;
+ 	}
+ 
++	if (!strcmp(a->attr.name, "gc_io_aware")) {
++		if (t >= GC_IO_AWARE_MAX)
++			return -EINVAL;
++		*ui = t;
++		return count;
++	}
++
+ 	if (!strcmp(a->attr.name, "migration_granularity")) {
+ 		if (t == 0 || t > sbi->segs_per_sec)
+ 			return -EINVAL;
+@@ -906,6 +913,7 @@ GC_THREAD_RW_ATTR(gc_urgent_sleep_time, urgent_sleep_time);
+ GC_THREAD_RW_ATTR(gc_min_sleep_time, min_sleep_time);
+ GC_THREAD_RW_ATTR(gc_max_sleep_time, max_sleep_time);
+ GC_THREAD_RW_ATTR(gc_no_gc_sleep_time, no_gc_sleep_time);
++GC_THREAD_RW_ATTR(gc_io_aware, io_aware);
+ 
+ /* SM_INFO ATTR */
+ SM_INFO_RW_ATTR(reclaim_segments, rec_prefree_segments);
+@@ -1061,6 +1069,7 @@ static struct attribute *f2fs_attrs[] = {
+ 	ATTR_LIST(gc_min_sleep_time),
+ 	ATTR_LIST(gc_max_sleep_time),
+ 	ATTR_LIST(gc_no_gc_sleep_time),
++	ATTR_LIST(gc_io_aware),
+ 	ATTR_LIST(gc_idle),
+ 	ATTR_LIST(gc_urgent),
+ 	ATTR_LIST(reclaim_segments),
 -- 
-2.40.1
+2.39.0
 
 
