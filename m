@@ -1,87 +1,184 @@
-Return-Path: <linux-kernel+bounces-45039-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45040-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05EB2842AE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:27:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4BE3842AE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:28:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B66372869A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:27:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 643D528B8C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:28:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A84C512A145;
-	Tue, 30 Jan 2024 17:27:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0695012A147;
+	Tue, 30 Jan 2024 17:28:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O6GYPm23"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KvoKLUts"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDC9D1292CD;
-	Tue, 30 Jan 2024 17:27:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 278901292D0;
+	Tue, 30 Jan 2024 17:28:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706635668; cv=none; b=dnZEEHf7l0rd77lSvfBDrqkgIUONK9DUNBIo0yihaKieVktExAdBrYLuPPlRcH1563BCWvf8Iz6aj9KotBa/nLvtRfHK3krWnHciHCl2YG5ULJAl0nnND26BGdGlrg0ONd4pdd+eo6Or7382x7sM9F80117yi/fQfxeOilNAlAk=
+	t=1706635684; cv=none; b=i7EC29L3CdsisaWliKNA37ZGxkpzo0YPoWit/u7eE91Khq80PYjwrQhXTE6yK9g6dv0xFp/7JDJoJlKx59Wpwn25X01FNgTHOUQbQ16PTsLYF6heto28HiUvHeOWJqzfSuBkukUm1nIzhoFPwRTys7JE+5IuHWQeBJF16+WrhxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706635668; c=relaxed/simple;
-	bh=ExHtMHFhc8+GQs5GVCQvMdASt/COJfq1w+DGLLm9XZ4=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=BDrQA4EWoODL2j+lGrgrXcfpTPp1VbMrnTbLQbLGlA7z9hXZB35eMB8DtGfA6+gyDp+2akkP26ddtZXxnq8EOH9RP/ZwKuUD3Pub6VOCyNJkl/oUfQjjN6s6YvoqJ+aWUZhDNxzan4kyetNSPu4YvEV2klzjOhjIVYhGZfXUH28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O6GYPm23; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BE39C433C7;
-	Tue, 30 Jan 2024 17:27:46 +0000 (UTC)
+	s=arc-20240116; t=1706635684; c=relaxed/simple;
+	bh=28S1L4bBFK8hBbbAvq3VNr8X9WWe5HGCxwCf29i8V1s=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=Nyop9XKyGxI83TEBX/awvhPxoLUUsw4tXDezLRVvJUKQzFJoaw2eiP/DSosqIBP+J1NbTE5dAj2YXaLyEL0E9ic6mampMD7rHc1/pkFNYukvQ4QlJj7MR4o5dPBG3bL3QfCUSAkp6bOuakJn9jU8h1X8XoFza9q+BhEKDZf3jvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KvoKLUts; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42B2EC433C7;
+	Tue, 30 Jan 2024 17:28:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706635667;
-	bh=ExHtMHFhc8+GQs5GVCQvMdASt/COJfq1w+DGLLm9XZ4=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=O6GYPm23K0wHcpG9+FscQZSa3zkVBqEKNKkUgCVD0J/eW2tS4hAj3N8LzFf06jlYj
-	 54ALyOQKZIRTk34+IUTE0FNqYdzwaGqy2RnCLb10oNijhs5CP+iKUzlqQHM/73RkU+
-	 Mo5ALXyFCSWnRraFJxUDICDfKhJvGUiiktoPoG7Xtfpu4+c+Nh8lCQJXxE8/WTu9Pt
-	 ajbeBE6ZG7PL8TVT+lPxjsU0p2gCoQ1lAmG2hrhDW4AjvuZ16bovvuA0DN1wBMX1Sw
-	 Bv38Il+WtB8A5xYTAHqufan1SiMLWS+6yd1ff8Ezf3PHL0sgG81oFsCciUeLcjj53r
-	 2AUt/nHbYoKsA==
+	s=k20201202; t=1706635683;
+	bh=28S1L4bBFK8hBbbAvq3VNr8X9WWe5HGCxwCf29i8V1s=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=KvoKLUtsIhLo2iMrs/tk4Fs3ck6VQ5kxNc+ZJ1x4OAoe+Xu+1Xp9EI6O7jz6m4POn
+	 0EpF+zc2ffFd6iFqslbBTpCRtfKvng58DEEix/QDAPO7LFy1u5jiDnHS85U5E6PrMg
+	 54HPIQfzeLPLPzfxwnCtR+V13T600V2YKsnk22rqiGbEJ6JhJ0qalSUUOgjl5rQ9oU
+	 +1DF1ZJI0x3l+BpE/9x431FqlOaxvqt91LahCdbmAARYTkK5IhNrrkIixVYvThYnWk
+	 dro5+5Ob8zwzJM1sqhSSUrAdUT++UeofSTsHiAxj+Xum7b0zcbjk+tyTXIUrVehb+a
+	 LGZNtqVALhhOw==
+Date: Tue, 30 Jan 2024 11:28:01 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Jian-Hong Pan <jhp@endlessos.org>
+Cc: Mika Westerberg <mika.westerberg@linux.intel.com>,
+	David Box <david.e.box@linux.intel.com>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Niklas Cassel <cassel@kernel.org>,
+	Nirmal Patel <nirmal.patel@linux.intel.com>,
+	Jonathan Derrick <jonathan.derrick@linux.dev>,
+	linux-ide@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux@endlessos.org,
+	Johan Hovold <johan+linaro@kernel.org>
+Subject: Re: [PATCH 2/2] PCI: vmd: enable PCI PM's L1 substates of remapped
+ PCIe port and NVMe
+Message-ID: <20240130172801.GA525128@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 30 Jan 2024 19:27:44 +0200
-Message-Id: <CYS7UOQQ3L7P.2V7HDL1U2VOD4@suppilovahvero>
-Cc: <keyrings@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] keys: update key quotas in key_put()
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Luis Henriques" <lhenriques@suse.de>, "David Howells"
- <dhowells@redhat.com>, "Eric Biggers" <ebiggers@kernel.org>
-X-Mailer: aerc 0.15.2
-References: <20240130101344.28936-1-lhenriques@suse.de>
-In-Reply-To: <20240130101344.28936-1-lhenriques@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240130163519.GA521777@bhelgaas>
 
-On Tue Jan 30, 2024 at 12:13 PM EET, Luis Henriques wrote:
-> Delaying key quotas update when key's refcount reaches 0 in key_put() has
-> been causing some issues in fscrypt testing, specifically in fstest
-> generic/581.  This commit fixes this test flakiness by dealing with the
-> quotas immediately, and leaving all the other clean-ups to the key garbag=
-e
-> collector.
->
-> This is done by moving the updates to the qnkeys and qnbytes fields in
-> struct key_user from key_gc_unused_keys() into key_put().  Unfortunately,
-> this also means that we need to switch to the irq-version of the spinlock
-> that protects these fields and use spin_lock_{irqsave,irqrestore} in all =
-the
-> code that touches these fields.
->
-> Signed-off-by: Luis Henriques <lhenriques@suse.de>
+[+cc Johan since qcom has similar code]
 
-OK this is great. I mean in this commit it is pretty essentiual to
-document that there is an ownership change. Such changes have by
-far the biggest impact to kernel semantics, and thus very useful
-to mark such commits for e.g. bisection.
+On Tue, Jan 30, 2024 at 10:35:19AM -0600, Bjorn Helgaas wrote:
+> On Tue, Jan 30, 2024 at 06:00:51PM +0800, Jian-Hong Pan wrote:
+> > The remmapped PCIe port and NVMe have PCI PM L1 substates capability on
+> > ASUS B1400CEAE, but they are disabled originally:
+> >
+> > Capabilities: [900 v1] L1 PM Substates
+> >         L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1- L1_PM_Substates+
+> >                   PortCommonModeRestoreTime=32us PortTPowerOnTime=10us
+> >         L1SubCtl1: PCI-PM_L1.2- PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
+> >                    T_CommonMode=0us LTR1.2_Threshold=0ns
+> >         L1SubCtl2: T_PwrOn=10us
+> > 
+> > Power on all of the VMD remapped PCI devices before enable PCI-PM L1 PM
+> > Substates by following "Section 5.5.4 of PCIe Base Spec Revision 5.0
+> > Version 0.1". Then, PCI PM's L1 substates control are enabled
+> > accordingly.
+> > 
+> > Link: https://bugzilla.kernel.org/show_bug.cgi?id=218394
+> > Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+> > ---
+> >  drivers/pci/controller/vmd.c | 13 +++++++++++++
+> >  1 file changed, 13 insertions(+)
+> > 
+> > diff --git a/drivers/pci/controller/vmd.c b/drivers/pci/controller/vmd.c
+> > index 87b7856f375a..b1bbe8e6075a 100644
+> > --- a/drivers/pci/controller/vmd.c
+> > +++ b/drivers/pci/controller/vmd.c
+> > @@ -738,6 +738,12 @@ static void vmd_copy_host_bridge_flags(struct pci_host_bridge *root_bridge,
+> >  	vmd_bridge->native_dpc = root_bridge->native_dpc;
+> >  }
+> >  
+> > +static int vmd_power_on_pci_device(struct pci_dev *pdev, void *userdata)
+> > +{
+> > +	pci_set_power_state(pdev, PCI_D0);
+> > +	return 0;
+> > +}
+> > +
+> >  /*
+> >   * Enable ASPM and LTR settings on devices that aren't configured by BIOS.
+> >   */
+> > @@ -928,6 +934,13 @@ static int vmd_enable_domain(struct vmd_dev *vmd, unsigned long features)
+> >  	vmd_acpi_begin();
+> >  
+> >  	pci_scan_child_bus(vmd->bus);
+> > +
+> > +	/*
+> > +	 * Make PCI devices at D0 when enable PCI-PM L1 PM Substates from
+> > +	 * Section 5.5.4 of PCIe Base Spec Revision 5.0 Version 0.1
+> > +	 */
+> > +	pci_walk_bus(vmd->bus, vmd_power_on_pci_device, NULL);
+> 
+> Sec 5.5.4 indeed says "If setting either or both of the enable bits
+> for PCI-PM L1 PM Substates, both ports must be configured ... while in
+> D0."
+> 
+> This applies to *all* PCIe devices, not just those below a VMD bridge,
+> so I'm not sure this is the right place to do this.  Is there anything
+> that prevents a similar issue for non-VMD hierarchies?
+> 
+> I guess the bridges (Root Ports and Switch Ports) must already be in
+> D0, or we wouldn't be able to enumerate anything below them, right?
+> 
+> It would be nice to connect this more closely with the L1 PM Substates
+> configuration.  I don't quite see the connection here.  The only path
+> I see for L1SS configuration is this:
+> 
+>   pci_scan_slot
+>     pcie_aspm_init_link_state
+>       pcie_aspm_cap_init
+> 	aspm_l1ss_init
+> 
+> which of course is inside pci_scan_child_bus(), which happens *before*
+> this patch puts the devices in D0.  Where does the L1SS configuration
+> happen after this vmd_power_on_pci_device()?
 
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+I think I found it; a more complete call tree is like this, where the
+L1SS configuration is inside the pci_enable_link_state_locked() done
+by the vmd_pm_enable_quirk() bus walk:
 
-BR, Jarkko
+  vmd_enable_domain
+    pci_scan_child_bus
+      ...
+        pci_scan_slot
+          pcie_aspm_init_link_state
+            pcie_aspm_cap_init
+              aspm_l1ss_init
++   pci_walk_bus(vmd->bus, vmd_power_on_pci_device, NULL)
+    ...
+    pci_walk_bus(vmd->bus, vmd_pm_enable_quirk, &features)
+      vmd_pm_enable_quirk
+        pci_enable_link_state_locked(PCIE_LINK_STATE_ALL)
+          __pci_enable_link_state
+            link->aspm_default |= ...
+            pcie_config_aspm_link
+              pcie_config_aspm_l1ss
+                pci_clear_and_set_config_dword(PCI_L1SS_CTL1)  # <--
+              pcie_config_aspm_dev
+                pcie_capability_clear_and_set_word(PCI_EXP_LNKCTL)
+
+qcom_pcie_enable_aspm() does a similar pci_set_power_state(PCI_D0)
+before calling pci_enable_link_state_locked().  I would prefer to
+avoid the D0 precondition, but at the very least, I think we should
+add a note to the pci_enable_link_state_locked() kernel-doc saying the
+caller must ensure the device is in D0.
+
+I think vmd_pm_enable_quirk() is also problematic because it
+configures the LTR Capability *after* calling
+pci_enable_link_state_locked(PCIE_LINK_STATE_ALL).
+
+The pci_enable_link_state_locked() will enable ASPM L1.2, but sec
+5.5.4 says LTR_L1.2_THRESHOLD must be programmed *before* ASPM L1.2
+Enable is set.
+
+Bjorn
 
