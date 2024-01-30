@@ -1,170 +1,220 @@
-Return-Path: <linux-kernel+bounces-43819-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43804-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2118841931
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 03:27:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDDB88418FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 03:21:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EC2528362B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 02:27:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C1191F222FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 02:21:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D81D15AACA;
-	Tue, 30 Jan 2024 02:23:15 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 712ED364C6;
+	Tue, 30 Jan 2024 02:21:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gJw4hoZQ"
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F9A554746;
-	Tue, 30 Jan 2024 02:23:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19AF5364BE
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 02:21:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706581395; cv=none; b=oOw+P9H78tnNMRWBUPNvnTvUmRC62toQOfw7LtcE0jFloJvrHXTKADZ+VBY5pJkCKFBGuTmxXzVm0Dxd/d36uC7b0rKnY+ZD0Q+VtTSi3X25Nc3sZ1ASbDlwVXsQfKT/BM0eq4HBVDHxD7upZgM5Eyg+YqhooClBpdPSe7iqOAE=
+	t=1706581276; cv=none; b=GDai6fn6k9sxcHP0z8KWVxFsUHFUsWxcY98RBWzxxE4mQ1UVs8kE8wFOWFBoGlXPQQXbYGyYb4dsf50014a/q94PVrl7ntKoQt9L8Mc7M3s7QHx+64PbDjG/UBe+4J0TIpOod3reAHyRZpq+NqqeOcT0DkMlrrxaGYq5R7+mksY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706581395; c=relaxed/simple;
-	bh=lt3pNMtDHV/r0zFHslB52IvlGb8ZyJ3dbmeLd5B+QBE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jzlccQ0Et0JEmlTBp64nQY0r2bUvFRbNPFt6i9yyG9vbR1oM2v9ioX98JP7lrMfg86kVM2zG6ofDqWyCNMdFVeqQq6mojA99H4Vlql5uD5flJWOXQjbXdWl4c7bMK4xFRADfRNrJxdbCBoyofMG93EN4d4txhGlqGY06HIh+V6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TP88p1PG5z4f3lwP;
-	Tue, 30 Jan 2024 10:23:06 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 4D25E1A016E;
-	Tue, 30 Jan 2024 10:23:10 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgBHGBGBXbhlrAigCQ--.55484S18;
-	Tue, 30 Jan 2024 10:23:10 +0800 (CST)
-From: Yu Kuai <yukuai1@huaweicloud.com>
-To: mpatocka@redhat.com,
-	heinzm@redhat.com,
-	xni@redhat.com,
-	agk@redhat.com,
-	snitzer@kernel.org,
-	dm-devel@lists.linux.dev,
-	song@kernel.org,
-	yukuai3@huawei.com,
-	jbrassow@f14.redhat.com,
-	neilb@suse.de,
-	shli@fb.com,
-	akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-raid@vger.kernel.org,
-	yukuai1@huaweicloud.com,
-	yi.zhang@huawei.com,
-	yangerkun@huawei.com
-Subject: [PATCH v4 RFC 14/14] dm-raid: remove mddev_suspend/resume()
-Date: Tue, 30 Jan 2024 10:18:43 +0800
-Message-Id: <20240130021843.3608859-15-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240130021843.3608859-1-yukuai1@huaweicloud.com>
-References: <20240130021843.3608859-1-yukuai1@huaweicloud.com>
+	s=arc-20240116; t=1706581276; c=relaxed/simple;
+	bh=MUQAOvrbAp0fEVzj2B/cPGawpmUwfk6DPhQbUpZGMO8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PbtErIm3oAo0NsYRG1LnaBW67ZtPfuF/1BEwQk4MjSrc4XXAqYmbD+X1Pl/G7nLPlJw1xyuKDioxlq8UPPOkjZ0Ng4GQwvbKwg6Gez7FgVO0ZEOZIZG7WYQfFr/KRnx7AaOLekcueEiPE5wn0cdLakwISlF3R70Ofggbvf2NMPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gJw4hoZQ; arc=none smtp.client-ip=209.85.219.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so3098160276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 18:21:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706581274; x=1707186074; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SqvvkgNcia++P3J4vObWaZUkkmBWvOpjfl4ds6Ix2cQ=;
+        b=gJw4hoZQMRDNhWeDvrCQ5LoUCbfCx0f0Tv7WbZ0OcyueKXyp7pUntZjVO7kiuBoO4Y
+         UNZtUTwQxC/n4n06dBcrUZxdOLwlcDsxYA2SGYxxrzsJGyZpLa7Bekc4TUpZPekF7qU6
+         VZGG8JDWQpDf1mpZLknoFWvwBlGozbNuiVHB/WB8iQfCWG2yiZonPaPGlEtVOTntL5zK
+         1+MqYqThO+qjP/M/HZTP0TeaWTb/7x+UcLm82IxOVfLJ24yA4jk6y27k8abAoS1g8X+6
+         R7WX7D4xCvBNiFcWEqFWQvzlOYEuOO+p8aoPI5brJUp0hZKSHvx5wUnEravyk1fINCAF
+         r9Ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706581274; x=1707186074;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SqvvkgNcia++P3J4vObWaZUkkmBWvOpjfl4ds6Ix2cQ=;
+        b=LbLOD44LZy0hoy88bVGN4b9Ay/POQtlevqglb0fQaLeed3GLL514NnuwgqKQ5j7YQ5
+         ftVOaAAj66wP9Tn+SUe0jA5TrJZSrdjMZujboEst2ec/9Q9VjhtLergXjw76/z5gAdqj
+         RrqJpF5NRkuRWidmmKRh0mfL/ssm/F6mFnYNDBDlpgnTSWWq6/quprNSO7Fd3dh5PNBj
+         e3ROFTGimyXbWuHKJrgIC40bK2aFSJb4S7IsKyevHfk2Cw+S5Z8jEiDTARDWFhZve7Rf
+         vb09gv8Ww4xoBeYrb6xw53W9qfU8T4ICA2wh5fFXUZmZ4FYwqtMk3etgbc/bIjj3E6+0
+         rKhw==
+X-Gm-Message-State: AOJu0YyG2xvNZJMTCxXeI6jny0TbtgmcgXAFTI485GgnQ5XdLRhQ7gh8
+	F8Y7ggglYK5PdKsxlqSjO+mr8kN60FsFUWGgcS2Cyqd91GQzCXT2UhYKcg0e6yfL08h8iU+SKMm
+	VngZAPwb+TPuhMMkjFvadZwyjOaE=
+X-Google-Smtp-Source: AGHT+IGPUm2g3mX53rCNExa6/35IeYTMYeLrmrsnYIT9kHR/YEO91YNEXMJovx3BPc4Dn2EWGw+mQS97dvaKkzoOGFg=
+X-Received: by 2002:a05:6902:218a:b0:dc3:696f:167e with SMTP id
+ dl10-20020a056902218a00b00dc3696f167emr3985908ybb.64.1706581273948; Mon, 29
+ Jan 2024 18:21:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgBHGBGBXbhlrAigCQ--.55484S18
-X-Coremail-Antispam: 1UD129KBjvJXoW7CF4fCw4fWryruryfZr1UZFb_yoW8Kw4rpw
-	4IgFWYyw1UJFZrXw4DA3Z2gFy5twn5KrWqkrZxW34fW3W3Gr13Wr18GayUXFWDKFWfAF1D
-	Aa15tw4UuryIgrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-	4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-	3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-	IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-	M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-	kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
-	14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIx
-	kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAF
-	wI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr
-	0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUQ
-	SdkUUUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+References: <20240129054551.57728-1-ioworker0@gmail.com> <CAHbLzkqrTPZD_Fz_a5LYa49Tum_Za=J9dX_SRyTr=kVZA26RAg@mail.gmail.com>
+In-Reply-To: <CAHbLzkqrTPZD_Fz_a5LYa49Tum_Za=J9dX_SRyTr=kVZA26RAg@mail.gmail.com>
+From: Lance Yang <ioworker0@gmail.com>
+Date: Tue, 30 Jan 2024 10:21:00 +0800
+Message-ID: <CAK1f24m=KBZnG1acd5dp+A+8F3DXXvAHK4W8+8Kr3f6w3bTzLQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm/khugepaged: bypassing unnecessary scans with
+ MMF_DISABLE_THP check
+To: Yang Shi <shy828301@gmail.com>
+Cc: akpm@linux-foundation.org, mhocko@suse.com, zokeefe@google.com, 
+	david@redhat.com, songmuchun@bytedance.com, peterx@redhat.com, 
+	minchan@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Yu Kuai <yukuai3@huawei.com>
+Hey Yang,
 
-dm_suspend() already make sure that no new IO can be issued and will
-wait for all dispatched IO to be done. There is no need to call
-mddev_suspend() to make sure that again.
+Thanks for taking time to review!
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- drivers/md/dm-raid.c |  8 +++-----
- drivers/md/md.c      | 11 +++++++++++
- 2 files changed, 14 insertions(+), 5 deletions(-)
+thp_vma_allowable_order and hugepage_vma_revalidate
+do check whether MMF_DISABLE_THP is set. IIRC, even if
+MMF_DISABLE_THP is set, khugepaged will still continue to
+scan the address space.
 
-diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
-index 5f78cc19d6f3..ed8c28952b14 100644
---- a/drivers/md/dm-raid.c
-+++ b/drivers/md/dm-raid.c
-@@ -3241,7 +3241,7 @@ static int raid_ctr(struct dm_target *ti, unsigned int argc, char **argv)
- 	rs->md.in_sync = 1;
- 
- 	/* Has to be held on running the array */
--	mddev_suspend_and_lock_nointr(&rs->md);
-+	mddev_lock_nointr(&rs->md);
- 
- 	/* Keep array frozen until resume. */
- 	md_frozen_sync_thread(&rs->md);
-@@ -3829,11 +3829,9 @@ static void raid_postsuspend(struct dm_target *ti)
- {
- 	struct raid_set *rs = ti->private;
- 
--	if (!test_and_set_bit(RT_FLAG_RS_SUSPENDED, &rs->runtime_flags)) {
-+	if (!test_and_set_bit(RT_FLAG_RS_SUSPENDED, &rs->runtime_flags))
- 		/* Writes have to be stopped before suspending to avoid deadlocks. */
- 		md_stop_writes(&rs->md);
--		mddev_suspend(&rs->md, false);
--	}
- }
- 
- static void attempt_restore_of_faulty_devices(struct raid_set *rs)
-@@ -4091,7 +4089,7 @@ static void raid_resume(struct dm_target *ti)
- 		mddev->ro = 0;
- 		mddev->in_sync = 0;
- 		md_unfrozen_sync_thread(mddev);
--		mddev_unlock_and_resume(mddev);
-+		mddev_unlock(mddev);
- 	}
- }
- 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 093abf3ce27b..e3a56a958b47 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -437,6 +437,10 @@ int mddev_suspend(struct mddev *mddev, bool interruptible)
- {
- 	int err = 0;
- 
-+	/* Array is supended from dm_suspend() for dm-raid. */
-+	if (!mddev->gendisk)
-+		return 0;
-+
- 	/*
- 	 * hold reconfig_mutex to wait for normal io will deadlock, because
- 	 * other context can't update super_block, and normal io can rely on
-@@ -488,6 +492,13 @@ EXPORT_SYMBOL_GPL(mddev_suspend);
- 
- static void __mddev_resume(struct mddev *mddev, bool recovery_needed)
- {
-+	/*
-+	 * Array is supended from dm_suspend() and resumed from dm_resume() for
-+	 * dm-raid.
-+	 */
-+	if (!mddev->gendisk)
-+		return;
-+
- 	lockdep_assert_not_held(&mddev->reconfig_mutex);
- 
- 	mutex_lock(&mddev->suspend_mutex);
--- 
-2.39.2
+BR,
+Lance
 
+On Tue, Jan 30, 2024 at 2:53=E2=80=AFAM Yang Shi <shy828301@gmail.com> wrot=
+e:
+>
+> On Sun, Jan 28, 2024 at 9:46=E2=80=AFPM Lance Yang <ioworker0@gmail.com> =
+wrote:
+> >
+> > khugepaged scans the entire address space in the
+> > background for each given mm, looking for
+> > opportunities to merge sequences of basic pages
+> > into huge pages. However, when an mm is inserted
+> > to the mm_slots list, and the MMF_DISABLE_THP flag
+> > is set later, this scanning process becomes
+> > unnecessary for that mm and can be skipped to avoid
+> > redundant operations, especially in scenarios with
+> > a large address space.
+> >
+> > This commit introduces a check before each scanning
+> > process to test the MMF_DISABLE_THP flag for the
+> > given mm; if the flag is set, the scanning process
+> > is bypassed, thereby improving the efficiency of
+> > khugepaged.
+> >
+> > Signed-off-by: Lance Yang <ioworker0@gmail.com>
+> > ---
+> >  mm/khugepaged.c | 18 ++++++++++++------
+> >  1 file changed, 12 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+> > index 2b219acb528e..d6a700834edc 100644
+> > --- a/mm/khugepaged.c
+> > +++ b/mm/khugepaged.c
+> > @@ -410,6 +410,12 @@ static inline int hpage_collapse_test_exit(struct =
+mm_struct *mm)
+> >         return atomic_read(&mm->mm_users) =3D=3D 0;
+> >  }
+> >
+> > +static inline int hpage_collapse_test_exit_or_disable(struct mm_struct=
+ *mm)
+> > +{
+> > +       return hpage_collapse_test_exit(mm) ||
+> > +              test_bit(MMF_DISABLE_THP, &mm->flags);
+> > +}
+> > +
+> >  void __khugepaged_enter(struct mm_struct *mm)
+> >  {
+> >         struct khugepaged_mm_slot *mm_slot;
+> > @@ -1422,7 +1428,7 @@ static void collect_mm_slot(struct khugepaged_mm_=
+slot *mm_slot)
+> >
+> >         lockdep_assert_held(&khugepaged_mm_lock);
+> >
+> > -       if (hpage_collapse_test_exit(mm)) {
+> > +       if (hpage_collapse_test_exit_or_disable(mm)) {
+> >                 /* free mm_slot */
+> >                 hash_del(&slot->hash);
+> >                 list_del(&slot->mm_node);
+> > @@ -2360,7 +2366,7 @@ static unsigned int khugepaged_scan_mm_slot(unsig=
+ned int pages, int *result,
+> >                 goto breakouterloop_mmap_lock;
+> >
+> >         progress++;
+> > -       if (unlikely(hpage_collapse_test_exit(mm)))
+> > +       if (unlikely(hpage_collapse_test_exit_or_disable(mm)))
+> >                 goto breakouterloop;
+> >
+> >         vma_iter_init(&vmi, mm, khugepaged_scan.address);
+> > @@ -2368,7 +2374,7 @@ static unsigned int khugepaged_scan_mm_slot(unsig=
+ned int pages, int *result,
+> >                 unsigned long hstart, hend;
+> >
+> >                 cond_resched();
+> > -               if (unlikely(hpage_collapse_test_exit(mm))) {
+> > +               if (unlikely(hpage_collapse_test_exit_or_disable(mm))) =
+{
+>
+> The later thp_vma_allowable_order() does check whether MMF_DISABLE_THP
+> is set or not. And the hugepage_vma_revalidate() after re-acquiring
+> mmap_lock does the same check too. The checking in khugepaged should
+> be already serialized with prctl, which takes mmap_lock in write.
+>
+> >                         progress++;
+> >                         break;
+> >                 }
+> > @@ -2390,7 +2396,7 @@ static unsigned int khugepaged_scan_mm_slot(unsig=
+ned int pages, int *result,
+> >                         bool mmap_locked =3D true;
+> >
+> >                         cond_resched();
+> > -                       if (unlikely(hpage_collapse_test_exit(mm)))
+> > +                       if (unlikely(hpage_collapse_test_exit_or_disabl=
+e(mm)))
+> >                                 goto breakouterloop;
+> >
+> >                         VM_BUG_ON(khugepaged_scan.address < hstart ||
+> > @@ -2408,7 +2414,7 @@ static unsigned int khugepaged_scan_mm_slot(unsig=
+ned int pages, int *result,
+> >                                 fput(file);
+> >                                 if (*result =3D=3D SCAN_PTE_MAPPED_HUGE=
+PAGE) {
+> >                                         mmap_read_lock(mm);
+> > -                                       if (hpage_collapse_test_exit(mm=
+))
+> > +                                       if (hpage_collapse_test_exit_or=
+_disable(mm))
+> >                                                 goto breakouterloop;
+> >                                         *result =3D collapse_pte_mapped=
+_thp(mm,
+> >                                                 khugepaged_scan.address=
+, false);
+> > @@ -2450,7 +2456,7 @@ static unsigned int khugepaged_scan_mm_slot(unsig=
+ned int pages, int *result,
+> >          * Release the current mm_slot if this mm is about to die, or
+> >          * if we scanned all vmas of this mm.
+> >          */
+> > -       if (hpage_collapse_test_exit(mm) || !vma) {
+> > +       if (hpage_collapse_test_exit_or_disable(mm) || !vma) {
+> >                 /*
+> >                  * Make sure that if mm_users is reaching zero while
+> >                  * khugepaged runs here, khugepaged_exit will find
+> > --
+> > 2.33.1
+> >
 
