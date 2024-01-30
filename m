@@ -1,126 +1,138 @@
-Return-Path: <linux-kernel+bounces-45001-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45002-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DF11842A32
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:56:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68460842A35
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:57:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43C061F260EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:56:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C48B2282711
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:57:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CE35128385;
-	Tue, 30 Jan 2024 16:56:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB36E128386;
+	Tue, 30 Jan 2024 16:57:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="ITxhwscC"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tu7noY8c"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC3A31272AE
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 16:56:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 284D986AD3;
+	Tue, 30 Jan 2024 16:57:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706633772; cv=none; b=RVWuC3seQtRbKEry3lFrQUFkAPoZU280KmAB6FnPqBhh9V7aepy5sJLk3SmYMDK9OkXKMaYhunmtsO6fCeP2zMiDJ58iI003NY79JZ6TNjSavdcVqBIxNeFVUDnvkVNRR0CGNSN/T0CVWJxLvEwbyVwLJFP1/RR43Cin/g6ouX4=
+	t=1706633845; cv=none; b=fme9tS67ZyZBoNVwbRn6MN92krNx6aWOUjAwhyU/3bebaX2UImvhOFoYZJun3lINmy1ms1bSDmxaCAVrinPXe2Pz7MZ0k27/087O2gU/8VNWI0vi/DEpYYtRTF7himoAX8yWfktnP0C4OT4hprRpuJZIaMRlyZLDlDxWexkjwO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706633772; c=relaxed/simple;
-	bh=ypmOqj/q+NNTyaOgW1vO3SUeOqeEi21Zhohn4esARF4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VNhm28LTxPBzPnf29SbHhauJP0/JOf/3EJKpztn7/Y8YKn52729aykFG/x57fXUH7pXjTt+eSnRlpqMk+tug0mem0tpcp9Y2WoZe1hw1fsatxW4YepPDhKtra7X6Vxe2iT9K2plVRvbBP9DW4MzNJ1/7lDRj+dIMpMpswHgaFfU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=ITxhwscC; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2cf1288097aso55989911fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 08:56:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1706633768; x=1707238568; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=LAAKLjZaHiiD7rj2ZPOdCI2v+5OE83poGDSWqAYQSrc=;
-        b=ITxhwscCw1PO/+9hvmk8jTOXUIsM87fE++zbJeCTcL81Fx72qSmUYWN9LxVv61AO6K
-         0WfPZwT4hQ05rh1Z2IcRurN0XNuUtCpuQSujaxRTyamsOTY8oOa8x6WJYNbj5qwPvsJt
-         TDHKsJcWQG/KbqRZGXk9Ha44shgx03QWKxizA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706633768; x=1707238568;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LAAKLjZaHiiD7rj2ZPOdCI2v+5OE83poGDSWqAYQSrc=;
-        b=b0BzbpJOfbAnxebM/OiU/Efl1p5DugNoZ1iY9GKvKCrv055SYsr3UieHg+amBb6NNx
-         UrPdLhkSK0i9zvZ+osvePbhfCFT/hBpgEvKTJOJnNEabXwqSBuZmUjd69VKY4y26TEm7
-         Th8m2pWnAeWoKzTCAE6Ymlgl6+FhWp5fp0LWCfEG8r7Jh16xJv9gAo+zf5KlpZ3Eeasb
-         BhshW4XIx/edwGRbu0Ski2HCd1Jnxx5SB5UZzFKCxo+ElTao1jMrPjAQGa2rB/7YYUka
-         wjGFHMQimeU0E4z5kO5b8X59Pnp9XF51w3d4gEervYS1DDHFtYa0iyNdG2ZhgWsIWWvL
-         3Q7A==
-X-Gm-Message-State: AOJu0YzYj2gnp6rRecZvOaerCsP1HPYQqO30pLVX5fQKBjzfMKgxUtP4
-	p87IhisYHVmomp8DvA9WoQ+AW1uXnXNOSV7/tORd65h+8zuyFTcr/5dT6Ss4LZABSD5mHew+yuY
-	IwfaxDw==
-X-Google-Smtp-Source: AGHT+IFxhdwrHfolYd4w7ATscDwDaUOueNY+DcLZL/RhL567qdSEP8SZy/7P610FUMS5+Lbqysdc4A==
-X-Received: by 2002:a2e:3218:0:b0:2d0:5925:83 with SMTP id y24-20020a2e3218000000b002d059250083mr1606792ljy.19.1706633768669;
-        Tue, 30 Jan 2024 08:56:08 -0800 (PST)
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
-        by smtp.gmail.com with ESMTPSA id y1-20020a2e95c1000000b002cd7a4a2611sm1602675ljh.35.2024.01.30.08.56.07
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Jan 2024 08:56:07 -0800 (PST)
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2cf33035d1dso44028871fa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 08:56:07 -0800 (PST)
-X-Received: by 2002:a2e:b8d1:0:b0:2cf:334f:a7f9 with SMTP id
- s17-20020a2eb8d1000000b002cf334fa7f9mr8159344ljp.27.1706633767505; Tue, 30
- Jan 2024 08:56:07 -0800 (PST)
+	s=arc-20240116; t=1706633845; c=relaxed/simple;
+	bh=v6l/aG3NuOvMx+KE2ZGqqEitQ+bqDRcCIoxDPA17aW8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lm6Frzs8EoTRewxGoWS+zkMNMz4cjXZC7PRLWQ1juwvxsRLcKoXmyK5th9uN/+InlV4XWu/r5eFCyes/4J3WhH3ExAe4geMahKFS5gmgKo4OJ30Oxse5GOj6uZGbd5kKAZM8iOCJi75B+5fxrxPYRaNPAwHOZ65E6WJhKPD19qM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tu7noY8c; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6336DC433F1;
+	Tue, 30 Jan 2024 16:57:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706633844;
+	bh=v6l/aG3NuOvMx+KE2ZGqqEitQ+bqDRcCIoxDPA17aW8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Tu7noY8c+IFPsiF36V5S+RIPZAWazbwU+INC8AF6IRytGfbOaRgdP7eV7fEuOiSEz
+	 16MCGGFAXqNUO9HGsKY+D3Xjn5Rj8hjT43PcxjWPI0+Xbe+ZOw+L4hT0Ph8wCiD9nL
+	 UAwtfzv5hcEZ70A90MokXgfH+U+XfE3nQ2VxJK3DHTa9BXvsgpgJ14atFYZJ9uiOEk
+	 PVLrjq6oPoc9MXFJmsCJDiDA7UbWdp//B9cFJAUXiP3tfZJV0E8ApKOgcbzDyTkqDv
+	 bUX05ju+IfdeI1r7ZTkSjzxpx/T8ZfwwXvNXxoPT0n5LXBg6arFB5zsbFSgjF43AEN
+	 30moqVI0S1kNw==
+Date: Tue, 30 Jan 2024 16:57:18 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Dharma.B@microchip.com
+Cc: sam@ravnborg.org, bbrezillon@kernel.org,
+	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+	tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, Nicolas.Ferre@microchip.com,
+	alexandre.belloni@bootlin.com, claudiu.beznea@tuxon.dev,
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	lee@kernel.org, thierry.reding@gmail.com,
+	u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v4 0/3] Convert Microchip's HLCDC Text based DT bindings
+ to JSON schema
+Message-ID: <20240130-unveiling-subplot-c4ccf0488439@spud>
+References: <20240124100019.290120-1-dharma.b@microchip.com>
+ <20240124-portal-sputter-f5207ac206ee@spud>
+ <6eb0a63e-8619-40d0-b76e-4bcf7094a9ab@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <202401291043.e62e89dc-oliver.sang@intel.com> <CAHk-=whb91PWEaEJpRGsuWaQpYZGj98ji8HC2vvHD4xb_TqhJw@mail.gmail.com>
- <CAHk-=wgp7UkG31=cCcbSdhMv6-vBJ=orktUOUdiLzw4tQ4gDLg@mail.gmail.com>
- <20240129152600.7587d1aa@gandalf.local.home> <CAHk-=wghobf5qCqNUsafkQzNAZBJiS0=7CRjNXNChpoAvTbvUw@mail.gmail.com>
- <20240129172200.1725f01b@gandalf.local.home> <CAHk-=wjV6+U1FQ8wzQ5ASmqGgby+GZ6wpdh0NrJgA43mc+TEwA@mail.gmail.com>
- <CAHk-=wgOxTeTi02C=kOXsHzuD6XCrV0L1zk1XP9t+a4Wx--xvA@mail.gmail.com>
- <20240129174950.5a17a86c@gandalf.local.home> <CAHk-=wjbzw3=nwR5zGH9jqXgB8jj03wxWfdFDn=oAVCoymQQJg@mail.gmail.com>
- <20240129193549.265f32c8@gandalf.local.home> <CAHk-=whRxcmjvGNBKi9_x59cAedh8SO8wsNDNrEQbAQfM5A8CQ@mail.gmail.com>
- <CAHk-=wh97AkwaOkXoBgf0z8EP88ePffLnTcmmQXcY+AhFaFrnA@mail.gmail.com>
- <CAHk-=wi6m7d-nivx10Lo=aGhbdk2qg-8SzjtDd9XW01LxGgAMA@mail.gmail.com>
- <CAHk-=wi+WbXZcc2Sx1i-MGV2DfG4eS4Ci+mrqi-PBSLSnww6qA@mail.gmail.com>
- <20240130093942.56206ff1@gandalf.local.home> <20240130114947.5bc856b0@gandalf.local.home>
-In-Reply-To: <20240130114947.5bc856b0@gandalf.local.home>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 30 Jan 2024 08:55:51 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiNY3W1QKveFnH=dJtRNW7kA1Nbn6Ua49EbM6AC+Rx8wg@mail.gmail.com>
-Message-ID: <CAHk-=wiNY3W1QKveFnH=dJtRNW7kA1Nbn6Ua49EbM6AC+Rx8wg@mail.gmail.com>
-Subject: Re: [linus:master] [eventfs] 852e46e239: BUG:unable_to_handle_page_fault_for_address
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev, lkp@intel.com, 
-	linux-kernel@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Christian Brauner <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Ajay Kaher <ajay.kaher@broadcom.com>, linux-trace-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="g66pnY2bvE7LgXvi"
+Content-Disposition: inline
+In-Reply-To: <6eb0a63e-8619-40d0-b76e-4bcf7094a9ab@microchip.com>
 
-On Tue, 30 Jan 2024 at 08:49, Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> - On removal, I got rid of the SRCU callback and the work queue.
->   Instead, I find the dentry of the current eventfs_inode that is being
->   deleted by walking the ei->parent until I find the events inode that has
->   a dentry. I then use that to do a lookup walking back down to the
->   eventfs_inode I want to delete. This gives me the dentry that I can call
->   d_invalidate() on.
 
-Yes, that works.
+--g66pnY2bvE7LgXvi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-However, I have a patch that is *much* smaller and simpler, and
-doesn't need that walk.
+On Tue, Jan 30, 2024 at 06:42:04AM +0000, Dharma.B@microchip.com wrote:
+> Hi Conor,
+>=20
+> On 24/01/24 10:10 pm, Conor Dooley wrote:
+> > On Wed, Jan 24, 2024 at 03:30:16PM +0530, Dharma Balasubiramani wrote:
+> >> Converted the text bindings to YAML and validated them individually us=
+ing following commands
+> >>
+> >> $ make dt_binding_check DT_SCHEMA_FILES=3DDocumentation/devicetree/bin=
+dings/
+> >> $ make dtbs_check DT_SCHEMA_FILES=3DDocumentation/devicetree/bindings/
+> >>
+> >> changelogs are available in respective patches.
+> >>
+> >> As Sam suggested I'm sending the PWM binding as it is in this patch se=
+ries, clean up patch
+> >> will be sent as separate patch.
+> > Please give discussion on the previous version some time to complete
+> > before sending a new one. I've still got questions about the clocks
+> > there.
+>=20
+> Could you please give a green signal to proceed with the v5 patch series=
+=20
+> with the following changes only in PATCH 3/3?
 
-The VFS layer already has a good interface for "should I still use
-this dentry", which is needed for various network filesystems etc that
-want to time out caches (or check explicitly whether the file still
-exists etc): it's the dentry d_revalidate() check.
+Didn't we just decide on what to do on the v3 thread yesterday?
+Go with that.
 
-Let me just reboot into it to test that I got all the cases.
+> +  clocks:
+> +    minItems: 3
+> +
+> +  clock-names:
+> +    items:
+> +      - const: periph_clk
+> +      - const: sys_clk
+> +      - const: slow_clk
+> +      - const: lvds_pll_clk
+>=20
+> >=20
+> > Thanks,
+> > Conor.
+>=20
+> --=20
+> With Best Regards,
+> Dharma B.
+>=20
 
-It makes the code even more obvious, and avoids all the complexity.
+--g66pnY2bvE7LgXvi
+Content-Type: application/pgp-signature; name="signature.asc"
 
-           Linus
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbkqbgAKCRB4tDGHoIJi
+0oiGAQCmzQ3c9h8KMcrP86fszRphmHgkRDFrSIntbabTD/m2HgD/Q3abC7mhzZpR
+S4WKR6QUxtxsR7PdbFJQPRjftcEnlwY=
+=EK8F
+-----END PGP SIGNATURE-----
+
+--g66pnY2bvE7LgXvi--
 
