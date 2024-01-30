@@ -1,85 +1,80 @@
-Return-Path: <linux-kernel+bounces-45430-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45431-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E83E843067
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:51:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30A2E84306B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:52:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24AE5B210B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 22:51:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D92961F23BDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 22:52:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 092977EEFE;
-	Tue, 30 Jan 2024 22:51:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98C627EEFD;
+	Tue, 30 Jan 2024 22:52:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ns9OFMOM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DjaOInZf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 454FC7EEE3;
-	Tue, 30 Jan 2024 22:51:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF12078661;
+	Tue, 30 Jan 2024 22:52:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706655066; cv=none; b=dNotqgnFc+m6RcUv0/41feeHr+C99fIl5ehGTQCm7Jt1zHAjAPGvsgCihEUmaTdFi/DqFG70/OlhRmX6HpXkEIcP7PLVlZQIfkNr5VWnJaSzhikuV4RRU4BZ9jyazvENdP9umoa5A39kBIxvCPeIx0LAhAJcewClhFcsw+RSlP0=
+	t=1706655124; cv=none; b=aFyPru0iBvhPONl5IpIVXsoDVeY44YzVbqC+Nci3lRiUlSF4vE3FguK6Ssg36gRD4bpRaHhO6WE1lRlri+TsCnKNOgKe+5pJf8/wIHPFskY05wEJXN5GXcCNQkrGKGKrXP9JI9hIB62Yh4q5z6wiSVjG7FQvS69QsWzanpAbC3U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706655066; c=relaxed/simple;
-	bh=bIrBrbX48HIWDuxq8XoOFI3Dqwa8CFXd3p8UGpUs+hQ=;
+	s=arc-20240116; t=1706655124; c=relaxed/simple;
+	bh=Z9JSOZJwv4veo8nEmqZ3zyrn1RuKLDCF57K2KTf6Gdk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WDJMMH8YC1a2u5uC6wQu9vO31Te3UDXDRaDgkZtVE3yUq83SipY2LhlVxx23S2Pzivg/TOm51dRXEdIxFjqn3AcCG9bnBOkEQKwcDDM+abDk8kH+OWXl20XMlhFz8q9UDau3jyIgxHBFvi0Wq1FphUnJYROKt4Q/o23ExPwDsvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ns9OFMOM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BB1DC433C7;
-	Tue, 30 Jan 2024 22:51:05 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=nxWPqAC5I2aL8JKbSZDBjzoJ7C++fdve/ezhSY3MOsIpk2H7idy6OFYWhTknUy124ExWInI2B5MTWSS438f0wquEFi5v1K16QeoMW7k54wVJJizWViSEURZ9+oi0HQBSS0+sbO348nqDdQ0V7K2wrFkbGRVd7kJ+vdFMQrOQSxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DjaOInZf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09B38C433C7;
+	Tue, 30 Jan 2024 22:52:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706655065;
-	bh=bIrBrbX48HIWDuxq8XoOFI3Dqwa8CFXd3p8UGpUs+hQ=;
+	s=k20201202; t=1706655124;
+	bh=Z9JSOZJwv4veo8nEmqZ3zyrn1RuKLDCF57K2KTf6Gdk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ns9OFMOMvY4m35RdXyZZwO5clfUmNSQQD/3O7Gn7YKHhGxm9ANHX2Fy4MKhPosx+d
-	 DCdL+z/O5vcvwWiKWOd0IZSVU4T2Zv80+lfnEDuIXeOfGGu1DS0Hq0GSIHd/mq5Yyx
-	 d4CXaYcheXxYhOKHRQOlzt4mT0C3ZAgLl1yK7oF407NxGoufqRfX4pUXlXDc+bLhhm
-	 j6WLCH82X4Nxw13/73+o+bYO7ViW249SAckIGkF0YH9FKdqgNeKqcuKVPUx2cit0Ji
-	 6WLz8Tdz6sOxVVIi6l2D58JGDVvKK3/1nm2Mx5Bq/ldj5Wnbno/pBlt+88atebJZC/
-	 53FOgkz6Eno6w==
-Date: Tue, 30 Jan 2024 17:51:04 -0500
-From: Sasha Levin <sashal@kernel.org>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	duanqiangwen <duanqiangwen@net-swift.com>, jiawenwu@trustnetic.com,
-	mengyuanlou@net-swift.com, davem@davemloft.net, edumazet@google.com,
-	pabeni@redhat.com, andrew@lunn.ch, bhelgaas@google.com,
-	maciej.fijalkowski@intel.com, horms@kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 6.7 050/108] net: wangxun: fix changing mac
- failed when running
-Message-ID: <Zbl9WNs5qfcRD3nK@sashalap>
-References: <20240116194225.250921-1-sashal@kernel.org>
- <20240116194225.250921-50-sashal@kernel.org>
- <20240116173955.57ba27f3@kernel.org>
+	b=DjaOInZfp82KjVrjgPjw4ZXqGcMp2+fZJdVaHZTK/8E+4+c87wYUZlAjbKt1O0vOf
+	 dfN1npQ76k5AFv4vFmqARwCW5hVB97FsbHD42hwdPCMo4FVQu7y6aqEFeAxueoE2PQ
+	 RcfOLmb0oDpHhIiQRW3dx/0eQf/6NrV5Wtw0raO+CqetuVIpUJusFRYTe3vCXbih89
+	 f9uuir4h5RHOeXkyW3z599Ia5W787tgp1Mobyp1ryLle2rDRN/FFcwx7wpXUcVBpBO
+	 DNECB6qyMEawqKM2cXwsf1Y0+CCWZ/zSKOCFHC+tHMTprs5elV/vHv1g8bSV4G9NGm
+	 Yo7Hz6+n2vTmg==
+Date: Tue, 30 Jan 2024 16:52:02 -0600
+From: Rob Herring <robh@kernel.org>
+To: Christoph Winklhofer <cj.winklhofer@gmail.com>
+Cc: Jiri Slaby <jirislaby@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	linux-serial@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	linux-doc@vger.kernel.org
+Subject: Re: [PATCH v5 1/3] dt-bindings: w1: UART 1-Wire bus
+Message-ID: <170665512145.2562941.4940727869669470030.robh@kernel.org>
+References: <20240126-w1-uart-v5-0-1d82bfdc2ae9@gmail.com>
+ <20240126-w1-uart-v5-1-1d82bfdc2ae9@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240116173955.57ba27f3@kernel.org>
+In-Reply-To: <20240126-w1-uart-v5-1-1d82bfdc2ae9@gmail.com>
 
-On Tue, Jan 16, 2024 at 05:39:55PM -0800, Jakub Kicinski wrote:
->On Tue, 16 Jan 2024 14:39:16 -0500 Sasha Levin wrote:
->> in some bonding mode, service need to change mac when
->> netif is running. Wangxun netdev add IFF_LIVE_ADDR_CHANGE
->> priv_flag to support it.
->
->Not really a fix, more of a feature ennoblement.
->Let's drop it, we don't know what it may uncover.
->
->We should probably start complaining when people use
->the word "fix" for non-fixes :(
 
-I'll drop it :)
+On Fri, 26 Jan 2024 16:42:03 +0100, Christoph Winklhofer wrote:
+> Add device tree binding for UART 1-Wire bus.
+> 
+> Signed-off-by: Christoph Winklhofer <cj.winklhofer@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/w1/w1-uart.yaml | 60 +++++++++++++++++++++++
+>  1 file changed, 60 insertions(+)
+> 
 
--- 
-Thanks,
-Sasha
+Reviewed-by: Rob Herring <robh@kernel.org>
+
 
