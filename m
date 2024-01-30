@@ -1,178 +1,144 @@
-Return-Path: <linux-kernel+bounces-45169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69178842C6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:10:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5810842C71
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:11:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC2AE1F21490
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:10:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 049951C2460A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:11:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B8B77AE4C;
-	Tue, 30 Jan 2024 19:10:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDE6A6995A;
+	Tue, 30 Jan 2024 19:10:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="nzZ6vMMM"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2044.outbound.protection.outlook.com [40.107.244.44])
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="NmYN9gGL";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="CHWphIxE"
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D194071B23;
-	Tue, 30 Jan 2024 19:10:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.44
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706641817; cv=fail; b=pf8OJqFrGpWgAsXFo7js+XdfP7dHXxl/wgGABy48ayJSPpYuM5QoBNHpgqt/GkreFgx52+cHdqSSGpzwJFahWZ/RG8U1ssxA7G6CRuKcm+HELsaRYsHZ4kaCI6Vn/Cxex5SEx7mz8C1Av1BVxvA48e5xWGJnAl7jp/gWqXYrAFg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706641817; c=relaxed/simple;
-	bh=RNMdBNWGRB9aozbl66V1Yjg1u7DDI2ivCHxYCVnPS88=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=uV5QYpJ8JBXqpwMJh0TRvV+AufhlQW8eLSurMo0c2/V6DkkaCfWIae8tf1SrTk+Prh5PvFgAb+1IvW1TzIBXBiFIGkbVHSRhKr18KL8UQ0x+U31omPumbKsHvyywZ+suBvnpophhcAJ8VqWnteEVK7NZYV/pWXplgBeTVTxwedY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=nzZ6vMMM; arc=fail smtp.client-ip=40.107.244.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oTn93XM1G4V7A05dkXkYyW5YlTHqt4YvkH8mvcs+jXj1xwiNDQXurFEBT8ei2uof0EtGKK/rKSuAf8DZ+8kz3UqN6NNZbIQ8xaHw2mUJvlDKWYRRdA2v9lp+3JBT3bM2cZAbUjCeJW047FcALFZx8O/UZWKGlcxKaoAVYEOaDVMV7GBx9gma4pLjRm9o/zOFbKKbpaPFIxThcgOkGkGmmTWPJk9qh1ZGnQpURj9AVI9eUxXtqJl0DZiY3SnI8ZPkvNGndF8EC/RG+f5PetMkllvNBNOac0sBHKu3C6yg1bz9ADbbm3sCGY+gpkyZBzrFW2+gH1PnnoifNEkjy3bOGQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=z28FGx7ELDyjyyzEPNk1nCypG88n6mEYl5VCOR55GhA=;
- b=ExGYIAsVWh7p3+tSGfI9sfdpFhlFo04TzivEtCbFyvyDkjfkJSJCQ7wF2/2UwKAC0i9CZKxkPxHA5zN1YYxEh7AVIxqpJc6SEmzIQ4fjmyK3cQrUoAIYdT1Io53n1sMPXUeAOMUrc+stRoZxoy0MxGPxeWmKIyx4NtOugKRqI8I30B+eiNUsLdtJqo4fLnbeMF5o/Lz6rmE7Zvm8QX4KExa/6KxadEee7WvDrU1f/dmgpHLiwSHxDWD/nfWitP5RLGMedfOc9pgBQZW7CrkN4rP9cMlOcteWLUUaozd1/FcFcRnvqam+gvbGBCajcXipvVs2exUBmgh7rZYssHzqBg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=z28FGx7ELDyjyyzEPNk1nCypG88n6mEYl5VCOR55GhA=;
- b=nzZ6vMMM0l4sxbUm50ZNKr5CKkNSM33wdGEr/BRlLhPIXVt0y6JP1P511D2Tv7jgU9MWkY2PdbU0SMDdqU1y/Xz/aIHkNjRhTIlkPcEtsXdqsgHHeKukbqKio7jMnMtj3uWZ5CC7yUlmXGoR84RoNcS/2rGmJajc2VZwnhPoLPc=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by MN0PR12MB5883.namprd12.prod.outlook.com (2603:10b6:208:37b::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.34; Tue, 30 Jan
- 2024 19:10:12 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::c30:614f:1cbd:3c64]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::c30:614f:1cbd:3c64%4]) with mapi id 15.20.7228.029; Tue, 30 Jan 2024
- 19:10:11 +0000
-Message-ID: <4478a4b0-fd17-4d5f-b11c-ba4a867bf92b@amd.com>
-Date: Tue, 30 Jan 2024 13:10:09 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] PCI: Disable D3cold on Asus B1400 PCI-NVMe bridge
-Content-Language: en-US
-To: Daniel Drake <drake@endlessos.org>
-Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
- dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
- linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
- bhelgaas@google.com, david.e.box@linux.intel.com,
- Jian-Hong Pan <jhp@endlessos.org>
-References: <20240130183124.19985-1-drake@endlessos.org>
- <7a8f3595-3efc-428a-852a-d9edc8ebb01b@amd.com>
- <CAD8Lp45ycrY-hkKVZGEQdeYmODauaShgFp2tj=QtEXK_C2tcYA@mail.gmail.com>
-From: Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <CAD8Lp45ycrY-hkKVZGEQdeYmODauaShgFp2tj=QtEXK_C2tcYA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: DM6PR21CA0008.namprd21.prod.outlook.com
- (2603:10b6:5:174::18) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 002BA7AE58
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 19:10:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.20
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706641849; cv=none; b=XTIz5VGdyJNwwRGsM47aQ3iKT6MFUSABRBsAbKJIev6N49U3qnDn9Bo4U9wPC7bnCM3vuX21HbRHZVGPk33pL/IlnoKX6zbqKeJD4YKzlJ2dCbYDj+FiwUHaVF/ISQJcPZS/oN+SOCkKdxTKWlgicERaQC92XdJcGzT5x6dWPSA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706641849; c=relaxed/simple;
+	bh=sZv4hZ59DmUixucPnWeXqZ6a7oFZ896iY95SEZQmMEw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qO+bvjiDxj06H3mzOtjvE+17Cjo1QFiinHeXcM/5//umCU0OVGDj3hoa6xgP94xx9T7OOinhV8+5e1cRYsL+uO0IUWKhZxryk5K309R0LRk5fcKo+dFWyT11u1PWjPxqigIPS4qAyZjZbRPlnHuu+BZxy9DlO8JMesufGyNuEyE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=NmYN9gGL; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=CHWphIxE; arc=none smtp.client-ip=64.147.123.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailout.west.internal (Postfix) with ESMTP id BF4213200B6F;
+	Tue, 30 Jan 2024 14:10:45 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Tue, 30 Jan 2024 14:10:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm3; t=1706641845; x=
+	1706728245; bh=+gJh8ZcSY4aL5gFs6qPyGXcGkB9f/lwBzjFZBMTljRQ=; b=N
+	mYN9gGLmOYjRAN+BQ3ASsuLiYWHhM7vKyuUaTJdaHrbfjfWtqDakhhCWRrbJ+0fU
+	q02qgiFG3E3VzMjCIIT7aku4XU9vOe/5k6cGRlfbE2qQuZvGuwBZq37jCPKIfVPZ
+	xE3cVPc21yxG1f+2rmg9JX0ssML52PnU7q7ele6T0Ja1J/o6CedvsLGPVLpNTEbl
+	Ki+FpeCjFm3YYkXDWwgoUiB0f9rYR8YB+5HCJohemRDsasz5pSqI0oP6ZVSizC7M
+	gvz8w9LXNq6shgE4EvTVQs5O9VnYXG//9gxswN8kFIJQmR9WvoV89KPTSFqK68ca
+	2IrdDuiozmlgjuZMG0zxg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1706641845; x=1706728245; bh=+gJh8ZcSY4aL5gFs6qPyGXcGkB9f
+	/lwBzjFZBMTljRQ=; b=CHWphIxER++1SfPEXD67bf1ELZKQ6YOftuQhf/WLlV3X
+	9xdBKlvMzzfyuFSNQAVxZAwIpWtmUs0nCJca5xjS/k5j7XRgJN3Q/dyAdJ1vOTlR
+	JskNMqRflQ+3WDDbVR4u3PE0hN+3glMolle2US33lN6GjGB7YGPEpegnB8Ihm6zH
+	23EjpaJMyRLq7zQxMB+dh2J4T+/Gcqs6ZdJHUP9xDVDrjp6LN1xuTn+gkrXB0SAD
+	eLp4qVMypTo8zZtCdwoMVJfC/5bBWX2rOLkGGJysIjj4AqsaDjYEmr+8CuIJ8ipf
+	Ur2b7yDdUWoxb/8kXwneYXuHdnHQMX499C7LkToiNQ==
+X-ME-Sender: <xms:tEm5ZWzj_nukIFsyQsXbUUEicKwed1DtERHGAKXSs58nFVZh6uGoTw>
+    <xme:tEm5ZST5X2M9VyVb2FIOFI1vd4TtUfmLvDawIxqGWht2D-9qz4V778V7q6V0Jg7xg
+    4NLCQixHOvSd2Sv3Cw>
+X-ME-Received: <xmr:tEm5ZYXEQ2aXvYWUR36cE5C34jRO9mlym6xw9qqQeY_wsjZRnRThh_9fH0IbhakiHIXlvyLhqfFg5CWL1cjhGWqID50ijG8O>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtjedgheegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgr
+    shhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhird
+    hjpheqnecuggftrfgrthhtvghrnhepveeilefhudekffehkeffudduvedvfeduleelfeeg
+    ieeljeehjeeuvdeghfetvedvnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlh
+    hushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghs
+    hhhisehsrghkrghmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:tUm5ZciW6TKa6yWDiBeqIbO8gHU7D8v7sVAwy0vFsGNZZBqFutU0fg>
+    <xmx:tUm5ZYCnkDe4PSZj182yzm0pjUxW5b-9ijGFilNJmk-lKNr3hxDI3Q>
+    <xmx:tUm5ZdLt-omORLz4l55szDVqstZU_1Rz8lauWjviKPUWAm1b_LzFlQ>
+    <xmx:tUm5ZR6zAcN2BD_BVFcHsLLkQQ2VC_RmuYu6oH_tD4M9Ty__hbI71g>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 30 Jan 2024 14:10:43 -0500 (EST)
+Date: Wed, 31 Jan 2024 04:10:40 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Adam Goldman <adamg@pobox.com>
+Cc: linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] firewire: core: mask previous entry's type bits when
+ looking for leaf
+Message-ID: <20240130191040.GA35237@workstation.local>
+Mail-Followup-To: Adam Goldman <adamg@pobox.com>,
+	linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+References: <ZbJQ0JdbGixJouvn@iguana.24-8.net>
+ <20240126011705.GA22564@workstation.local>
+ <ZbNyHg3TTWpjiieI@iguana.24-8.net>
+ <20240126121917.GA99160@workstation.local>
+ <ZbSMVdOZB1zusXmo@iguana.24-8.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|MN0PR12MB5883:EE_
-X-MS-Office365-Filtering-Correlation-Id: c1e84227-1c1b-4aea-a10b-08dc21c7152d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	lcpTlnfxNJT6B3kxhfVOwV52/uSEk0kxIzHH51wp91XBZt1TdgNK6i/LBdjfqgdlrpgtaiDLO7IR1cZ8c0mJ+OWCkxX+9BOuEqTHuvZse9eV15C3+143skPTY4IgfXgOhFLlcJvj3I8yEoUuoRqdimZXXTwUWShBUNscOpePreiwED6nkmJRmzBZjL0kPDE/lzAVUNmg0zdbgpwJHLmmhCIgMUZLnMTtQgrKByGQRtLyTcXGJBEceAGsHXWka7VQdbDt26ZKloi3lwzQASW7RJ8n/3nGcOvs7uIarIThIGQlQOVS45jLGP970bFuDE3yNdZ7z0dZUlcMrvhR6ObpQo1IySfcaribi8h2EQ4MW4pR8yMXeDBDxTIOxAB+zNnaGJbNAMH+VzA/7OqXlPtlVcbTFjNnjBUWx1/Hbqk+i04eb8oWOUY2/Ak9W7S6g6brMyPDH6w1DWjPxZHT51XuTPhp9znuZAXZlfcv4q6x/heq0bQ/EecRFxfTDIxdXRfxLBx8MGSMyCVNGQ5TnyeXWDDxVSezRSCn5L9AU286pTuwE93MYircP5E5P5cDlwHd9AtzBSHltknM6EEit3Szawud9Gq5HbmTca+zm7C+3D+Bt+Fr/herc0QmTqL/Uv5SHWZUeVWxC3mga46ozrmYxfErp0tUVtkKnofqUAVtAWc=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(136003)(366004)(346002)(396003)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(83380400001)(6506007)(6512007)(53546011)(478600001)(66946007)(38100700002)(2616005)(316002)(8936002)(41300700001)(44832011)(5660300002)(4326008)(7416002)(2906002)(8676002)(66476007)(6486002)(6916009)(66556008)(36756003)(31696002)(86362001)(31686004)(26005)(32563001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?WEpWbVB2M3JxQkNPc2RtU056M2RTV0VKV2l4NmRFcFRYVFQ0M1pzZEd2NCs4?=
- =?utf-8?B?d05malFvOEova3lNckFLQzhIY25RZU1ZeDVpMjRadVFVcUdtWDJMSUJYSkUv?=
- =?utf-8?B?S3hVdG1oZHRqSzlqK2w5RDFGei9ZcFhQMlg4KzI4OW5vWnJ4cGJObFZ2ekRv?=
- =?utf-8?B?dlFSalh4TE9jSHgwQVZhbmFiMnd0eTJKRmxITytNUzNMc1kyTVhLNUlRRkRk?=
- =?utf-8?B?NCtsNTJ3UGZxRmttWUIvUHRaVGVyaVlxTzNkdFVHTEs0cmpHWlR1aVlxb0RW?=
- =?utf-8?B?WFhWMVg2cVlnektTMXZNSE9uOE1uVnVMdEdHOS9WLzZyMzhVV3ZoN1paeHAz?=
- =?utf-8?B?NEI5UkZTRldNU2NrN0RoR2dvb01NWXN0ajVOcUxER25xWnZ3RnRvZ1orSEcw?=
- =?utf-8?B?NXlFT2h1K3pVOEt5WkdiQWVEUkpaL0x5Z2N5anhiazZaOGExaHJMd2o0dWVn?=
- =?utf-8?B?aWN2V2llem1ucGxiVndRQ1RkWGV5MVhGN09JUk9XbHhqdVkvd0h6V1pmSTIw?=
- =?utf-8?B?aE1pTzMxNi9PWW1lWDc4eGpxaUc0cjkxKzJUeUFPME1IZWxnNE02cHlPTHFD?=
- =?utf-8?B?OXlsNTNLTUdMN0E1cC8vQ0M0MUZldHBMNzBBR1dsNEUwbzlVeFpENnM0bExC?=
- =?utf-8?B?ZHVrbnZ4Zkdzb3UxcWRnSnhSaEZVUDVzbEx2dkNvd082T05vWVZuSGNlbVFL?=
- =?utf-8?B?dmcvbGlBUHhoREZ5TnFzSllDSmVzdHcxL0gzYnpLTklKa2tHamh3NytmSGpN?=
- =?utf-8?B?RGthT1QzaEpFdWcvRFp3aU83aHRPbXZWb012UDc1MkV5RWJYMmg1Tm5QRkRu?=
- =?utf-8?B?a0NQYndlZUVqMGhpY0VEZ2hZZlNDSmlpVlVpYnl2a2ZRZDdPcG5Ib3QrOXJ1?=
- =?utf-8?B?ckVjdEtpK3pNS0pCS1VYL1pna3A0cFZ4YUNzTHBBY2VWSjYwT0FmajZ3YnFP?=
- =?utf-8?B?RXBoTjhpd0xaZjY3ditqTUMweUhGWWM3eUlvWU1NK0FZYy9lOFBBa0RkOUFG?=
- =?utf-8?B?VGZEZ211b1FSWnluRFlxY0xKWXdwSU9RYjZIaFYxYXBGZThTSXVaSW51d0o5?=
- =?utf-8?B?c0M3ZlBWL2orT3lscEwvUVgxVThKdFZFSEpMTDdjdTdENnVMdS8rNFVsWUow?=
- =?utf-8?B?eE8wS2ZaenpSSmE4eE92c1psMmorQkl1czlKcEpwMCtzWEVkMzN5djFWUXkz?=
- =?utf-8?B?OHgxREpqcVNHcGdHTlBWa2pzTGprdm91VmhMRW5Ya2ZKRUFhQ3lSMy9ibWhv?=
- =?utf-8?B?dU50b0lnQ1BOL0NDd0l5YkNybngwSXVRaDBlWmhPRGlIZEVsWVZUSVdrNXQ5?=
- =?utf-8?B?Q0xmOUxGS3FQK0VSU2NwZWg2RG1FSXh0M0JuMWxhZTBSTC9OZCtPZ2ZJajdt?=
- =?utf-8?B?RGdtTXo0YWZFK2toL2FUWEtBb2xETFlIQlNkUnNYUjVLbFBwekZlbUxmbmNX?=
- =?utf-8?B?S1Q0MHZnQzBKU204cENZUEt5Uk00Tk9Id1B2UDFiOWJ5MlJiTHJFM2FWMkx5?=
- =?utf-8?B?T2ZmMXA3dWR4Rmx2QTZLQXljNlZqTkhMZ3JyWnBRVjNRbzdwbUdySEx1eC9C?=
- =?utf-8?B?TlpLcU1acDhiU2hWSVYrZFFkNGFORHBOQS9DMjBzbFFuQnducmF5czlST3B2?=
- =?utf-8?B?WDJpMVk4V0FkNFJUVFdDZHJKY1FTVXVKQjB5aXVEdUgvemNPTnN5OVhSREVZ?=
- =?utf-8?B?RUl0ZVdkZjdZU0V0SSs2Rm8ycXE0cFpzQXVNMldBRHJuOEEzRE04dGV5RlBy?=
- =?utf-8?B?eHBiRE9OZFg4V3pva0laUHRqdGdDS1BiTEhORVBqQURrNnhUKzBmUEx1amZn?=
- =?utf-8?B?R3hxT25Nc1p0WjZCOFpabnIrZDBIaDR1RS91MWlBcFFpVEZGZ0FvWlN6TUdD?=
- =?utf-8?B?YnBkOE02UEw0UU5zYWJuNlBTVWNqL29zcExZRkJBYnBaOUcyb0QzaG53cUZ1?=
- =?utf-8?B?OVdyaThYc2VUVG5ocWtQMkgzQ0p0YTNPbml2Q09uUU0vQ2lNU0lSSUlvYnll?=
- =?utf-8?B?aWh6NlFzazFGWkpQeG5UMVo2K21KV0VwanQyT0hpRVJKVThqQUszVHg4d3lR?=
- =?utf-8?B?ZHRpTXhQNUhIUGs0ZEtrbHNIRVBwYUF4TDRyTW4xSHJkSUg0S2tGS244OFI2?=
- =?utf-8?Q?8pEMd79LK7zGIx5ZD15TCWPrQ?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c1e84227-1c1b-4aea-a10b-08dc21c7152d
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jan 2024 19:10:11.8925
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xohErMHQbTN284rUqFpD7GUWuOZdNjFwEXhcylpjfIMg76Dp9n/UUAONFSoJvu6fezsapjHIciB/pUYbht8Khw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5883
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZbSMVdOZB1zusXmo@iguana.24-8.net>
 
-On 1/30/2024 13:00, Daniel Drake wrote:
-> On Tue, Jan 30, 2024 at 2:47 PM Mario Limonciello
-> <mario.limonciello@amd.com> wrote:
->> Has there already been a check done whether any newer firmware is
->> available from ASUS that doesn't suffer the deficiency described below?
+Hi,
+
+On Fri, Jan 26, 2024 at 08:53:42PM -0800, Adam Goldman wrote:
+> On Fri, Jan 26, 2024 at 09:19:17PM +0900, Takashi Sakamoto wrote:
+> > I think we can handle the quirk of configuration ROM without changing
+> > the kernel API. Would you test the following patch? (not tested in my
+> > side).
+> > 
+> > ======== 8< --------
+> > 
+> > >From 83bf1e04d308ea89c76c64e3168b9701f9d9191b Mon Sep 17 00:00:00 2001
+> > From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+> > Date: Fri, 26 Jan 2024 20:37:21 +0900
+> > Subject: [PATCH] firewire: search descriptor leaf just after vendor directory
+> >  entry in root directory
 > 
-> The latest firmware does flip StorageD3Enable to 0, which has the side
-> effect of never putting the NVMe device or the parent bridge into
-> D3cold.
-> However, we have shipped hundreds of these devices with the original
-> production BIOS version to first time computer users, so it is not
-> feasible to ask the end user to upgrade. And there is no
-> Linux-compatible online firmware update for this product range. Hence
-> a Linux-level workaround for this issue would be highly valuable.
-
-Sure; it makes sense to me why to put a workaround in Linux with your 
-above explanation.
-
-Perhaps it make sense to limit the quirk to only the DMI version strings 
-of the initial production firmware?
-
+> Hi Takashi,
 > 
->> Is this the only problem blocking s2idle from working effectively on
->> this platform?  If so, I would think you want to just do the revert in
->> the same series if it's decided this patch needs to spin again for any
->> reason.
-> 
-> Yes these could be combined into the same series, with agreement from
-> the drivers/acpi/ maintainers for the S3 revert.
-> 
-> Thanks
-> Daniel
+> I tested your patch with the DVMC-DA1. I also tested it with another 
+> device with normal placement of the leaf entry. In both cases, it works.
 
+Thanks for your test. I reposted the patch in the series of changes for
+v6.8-rc3[1].
+
+The behaviour change of kernel API is not preferable within the same
+version of kernel once the release candidates is public, while we need to
+handle it as the series of changes to support the legacy layout of
+configuration ROM. So I'll apply my version to for-linus branch and send
+it to him.
+
+Anyway thanks for your work and suggestion.
+
+[1] https://lore.kernel.org/lkml/20240130100409.30128-1-o-takashi@sakamocchi.jp/
+
+
+Thanks
+
+Takashi Sakamoto
 
