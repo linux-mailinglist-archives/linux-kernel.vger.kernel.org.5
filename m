@@ -1,204 +1,126 @@
-Return-Path: <linux-kernel+bounces-43678-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43679-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 916A8841793
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 01:37:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1401F841796
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 01:37:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46E0B2843A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 00:37:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A79811F23C20
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 00:37:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BC06208AF;
-	Tue, 30 Jan 2024 00:36:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB6E333CE9;
+	Tue, 30 Jan 2024 00:37:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="anqXGWUU"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="G/NsDgZN"
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71DC71E497
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 00:36:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E213A1E497
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 00:37:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706575002; cv=none; b=VoXn0Ustmw4ILNsSPx/qs4lY1KckuPEkuv3SowX/jdwTSqMzosxKHHsTid2r8kXuPklLP1nV3MePxWEz0R7lRB+wcxc9PPMt9knNWGdlb2scsEg4/bs6hDvPuo4Fku2roAiQU9rBmKACv98L/JQ0S6+96U4NlhyU2Y4nEd8oH70=
+	t=1706575025; cv=none; b=Xqd2KATaZgHbCqLtjwXOOAuEBrmnb9+dHwvu4JWR/Eyja90P9A7bpgzzebQifAXXvnkw3lt/XTbOiHl/HKE0SOxcNtB1KjdGsMhkwUkE9s61V1tVLQfomUt8w0oIqtK/J8Kk5FmGagh+mghUCLOk3AcfBzBzR7KPCCN/bjCCxTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706575002; c=relaxed/simple;
-	bh=TqR2eUglEQwdjXW91rVEcJp8ImbPKiEAgBGAh46CadI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mB/XYZ538eLtXxXt3A8rGD7P3GIj1uhXHrpE4hyIs4VKnv/2QmOZuTsEcFoKVBf8lC239TaTgD1YqFfGFQgt4SY+3uAVv8rHJT08iK888nWWdBucLEgPUp9WjofBnGCPE79z7sOJB6V939CMTpTXlm+MyDt9Ax07EoNnLSJEDvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=anqXGWUU; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33aef64f702so790130f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 16:36:39 -0800 (PST)
+	s=arc-20240116; t=1706575025; c=relaxed/simple;
+	bh=MBqHVwDGuAF644QBUmaFqas8tYpxSS6yi6tIOOSWm10=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=KHfHdwPB7LgPES7vC/Kx9bfcFo/W6gPNSGDM/4pcTagpfxgsT2YzosGBokfLLiURtURBlXp+JwFVkz41k+4J2PsZHDKnfXKHWdSl5qfUHwDhM+BekOLHY0jwQmj2HFGAB1YNs3uMB96nPKEsIxsQbwQ+4YRe49jQEX3MepVla00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=G/NsDgZN; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d746ce7d13so28884025ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 16:37:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1706574998; x=1707179798; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bqKM6STmm52HJ2nwWL/mUa9wVvNf8Up7PtiKbmg/qtQ=;
-        b=anqXGWUUeLiRCQzPE7pl3Adlb0q9Bg3sXa+FVL4SKsj/7s1FJLAW4R8IrAmUCaVx7c
-         BpxwFhQwaE5rgw8Jw63BNrYi+B3tCaukASUS4NJCNDrX+PBY1fxBDNITamRaoywZ8aOI
-         B6axdZ4EjtROeQM7/YpDlgj43ePMxHfM41XiidtxdzdLm0RktCZpn7ahXdFejpMkpoka
-         JYnsT57KK3NkvGzTxO5I+TREkM0t1miGwphtVOCcUCPEjP4yGsz24n/pNVHkV379s9eB
-         6vnYteOugHyiuHSV5VWLZBiCPdWR4xnNtvpgrjf6TgSup0ngfIuI44PdXII17ZyaX68P
-         mD4Q==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706575023; x=1707179823; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5TFMd8ZeRyjiOalUt16J2vr2THoaCcjjHoXH9jXrtYQ=;
+        b=G/NsDgZNq30UuAi/oFkJjQ/haLvqpxbAHgp/v7ZLdS2+GxaIa3USkq5AVrWMjYllA0
+         EAmATKC86nsdaZkyFQguS2RqjZ2pNXnZXolc8AcrA421uHxA5EUp9GH4dq4nWe/H27g2
+         /rOVjxe/LoDakebx5aw9GXedxvIDYsCH81hPLGo9KkSqmV/U733Z3nP2QiAzDu44KjeI
+         HAyGZxxcvMLQ6rTY2/BisqXw465METRfz/OFDOPP4IFF0wlpJz67Sc2r3dxXJzZ5BhnR
+         s4yEX2xtt1Q004S5EH7Db+qlPzlnon77JaVOmpvI9FavYOTPVd92iOk2CpgvAidPJqaV
+         LVHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706574998; x=1707179798;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bqKM6STmm52HJ2nwWL/mUa9wVvNf8Up7PtiKbmg/qtQ=;
-        b=jRDeCPCUz4b4Wn1yzU/f4+ht0VK0oD6RyJS9PJqMoBoe72M042njViw66Sk08qYKcf
-         48t6eqA8KE/biVha3Bm197gd670YtYy72dMTtWU/Tjwta7LIpG4CxocD/97YBXZ0sg1K
-         AL3fmmKynjTP8xQTRoj6rs7XaWm6RKBVfazOx0v6YKSQWkWwBh7RXHNISM8eyjfVYaIl
-         LO63z0OxbSiWdyUaMbGE6oWlSoceCg4xT87Ae7RQTkLkBZ4XilvanqhMawqIIf6iMjnA
-         w/0HZhq/A25OxnkZU+ymUI7Wbxj6oQx5W9T+UnS+T8gqp1dAax0cvlkBDbZw9VMXzQbM
-         Tr/Q==
-X-Gm-Message-State: AOJu0YyX1YdBC1RkOLCs+1X/tFDsIgHv7c/YkEq6rA+qPBvKnvvgi9ya
-	Y/CU50Vqu7l8kHoDz8Kdz2VnpWZSew0iaBOSL3nMjmWvuYuuvwnCcZKOnXum/iE=
-X-Google-Smtp-Source: AGHT+IHFRGkHKlZdVXlzOHtFexmDPQmMqF+AK8Fq0HHOoKcjqOrnWynGemLhYlr7ZVzURH6Al81GBw==
-X-Received: by 2002:a05:6000:930:b0:337:c872:7153 with SMTP id cx16-20020a056000093000b00337c8727153mr5001577wrb.46.1706574997649;
-        Mon, 29 Jan 2024 16:36:37 -0800 (PST)
-Received: from airbuntu ([213.122.231.14])
-        by smtp.gmail.com with ESMTPSA id d5-20020adffbc5000000b0033aedaea1b2sm3763339wrs.30.2024.01.29.16.36.36
+        d=1e100.net; s=20230601; t=1706575023; x=1707179823;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5TFMd8ZeRyjiOalUt16J2vr2THoaCcjjHoXH9jXrtYQ=;
+        b=UvqC9SK80irTpTndxTEAYPEY1pjdHC6l+tNFFyYi00JKUYEYxHM7a6dV0HSVYQr6be
+         QabzTn2+zwJapq345WZ9sVP6GipCQYEJJtVps3JotC8vHRcJufIkLL7a+2KNrtU+xSUZ
+         nWwguczWBsi4uAWqFz5u7uLO+L//r/lh+7A34ZidXLGKLymR6eO27PVt85NrSv7OlNQC
+         gGyMreel4AyLv6HBtawY0OZZcpNq9zpl3PV1hP9JfWVYp8E4xGEjnNaJzxy8sGC3cwX0
+         HcHH+8sAyepSSi96xKkI+HVdpZGeCvVq5iX8Ws6rysUlvWdMHcWv4SDXeJg67g3NjHGJ
+         p/wA==
+X-Gm-Message-State: AOJu0YzGpaW8KZKkyhynEQLog70LKJpgzVyHrWVI+6utUfKah+/1awyz
+	AHyryg1mufr1BQn7OJaYKc4pvfddYolkF8CGbV/MDkCrGhxSp4VOMdnpx90JkcI=
+X-Google-Smtp-Source: AGHT+IHouZt2X6rfsHSDuKVQG7Dio6bVc//7RWirBkJAX25H0ZFFwPSk8rVRv3/4TN3qfd8Wnl5X5w==
+X-Received: by 2002:a17:902:784e:b0:1d7:8cae:a5dc with SMTP id e14-20020a170902784e00b001d78caea5dcmr5649574pln.62.1706575023239;
+        Mon, 29 Jan 2024 16:37:03 -0800 (PST)
+Received: from charlie.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id jb9-20020a170903258900b001d8ca3f5e3fsm3406375plb.295.2024.01.29.16.37.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 16:36:37 -0800 (PST)
-Date: Tue, 30 Jan 2024 00:36:35 +0000
-From: Qais Yousef <qyousef@layalina.io>
-To: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
-	sudeep.holla@arm.com, rafael@kernel.org, viresh.kumar@linaro.org,
-	agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-	mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-	lukasz.luba@arm.com, rui.zhang@intel.com, mhiramat@kernel.org,
-	daniel.lezcano@linaro.org, amit.kachhap@gmail.com, corbet@lwn.net,
-	gregkh@linuxfoundation.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org
-Subject: Re: [PATCH v4 5/5] sched/pelt: Remove shift of thermal clock
-Message-ID: <20240130003635.anipjhfdfld3xcil@airbuntu>
-References: <20240109164655.626085-1-vincent.guittot@linaro.org>
- <20240109164655.626085-6-vincent.guittot@linaro.org>
+        Mon, 29 Jan 2024 16:37:02 -0800 (PST)
+From: Charlie Jenkins <charlie@rivosinc.com>
+Subject: [PATCH 0/3] riscv: mm: Use hint address in mmap if available
+Date: Mon, 29 Jan 2024 16:36:59 -0800
+Message-Id: <20240129-use_mmap_hint_address-v1-0-4c74da813ba1@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240109164655.626085-6-vincent.guittot@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAKtEuGUC/3WNQQ6CMBBFr0JmbQ3TYBVX3sMQAmUqs6AlHWw0h
+ LtbiVuX7yX//RWEIpPAtVghUmLh4DPgoQA7dv5BiofMoEtdlYi1egq109TN7ch+abthiCSiXO2
+ qHnvjTg4hb+dIjl97995kHlmWEN/7TcKv/RW1/lNMqFAZY3u6nF1VG7pFTkHY26MNEzTbtn0AV
+ UJcAr0AAAA=
+To: Alexandre Ghiti <alexghiti@rivosinc.com>, 
+ Paul Walmsley <paul.walmsley@sifive.com>, 
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+ Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
+ Yangyu Chen <cyy@cyyself.name>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org, 
+ Charlie Jenkins <charlie@rivosinc.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1706575021; l=1216;
+ i=charlie@rivosinc.com; s=20231120; h=from:subject:message-id;
+ bh=MBqHVwDGuAF644QBUmaFqas8tYpxSS6yi6tIOOSWm10=;
+ b=SN9b/QxznrtxHxm3ihKTSgB4jNcs+2+HV3KevBEHBaKKAz4WEk+1+qsuWzkp9ngsCRMawSo8o
+ YPZH/hcRVIDBnn80q9dZ2Jvt9xuRib+yzFFyol5U3cR2ZUpagkqq9Ib
+X-Developer-Key: i=charlie@rivosinc.com; a=ed25519;
+ pk=t4RSWpMV1q5lf/NWIeR9z58bcje60/dbtxxmoSfBEcs=
 
-On 01/09/24 17:46, Vincent Guittot wrote:
-> The optional shift of the clock used by thermal/hw load avg has been
-> introduced to handle case where the signal was not always a high frequency
-> hw signal. Now that cpufreq provides a signal for firmware and
-> SW pressure, we can remove this exception and always keep this PELT signal
-> aligned with other signals.
-> Mark sysctl_sched_migration_cost boot parameter as deprecated
-> 
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> ---
+On riscv, mmap currently returns an address from the largest address
+space that can fit entirely inside of the hint address. This makes it
+such that the hint address is almost never returned. This patch raises
+the mappable area up to and including the hint address. This allows mmap
+to often return the hint address, which allows a performance improvement
+over searching for a valid address as well as making the behavior more
+similar to other architectures.
 
-Better without it, yes.
+Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+---
+Charlie Jenkins (3):
+      riscv: mm: Use hint address in mmap if available
+      selftests: riscv: Generalize mm selftests
+      docs: riscv: Define behavior of mmap
 
-Reviewed-by: Qais Yousef <qyousef@layalina.io>
+ Documentation/arch/riscv/vm-layout.rst           | 16 ++--
+ arch/riscv/include/asm/processor.h               | 21 ++----
+ tools/testing/selftests/riscv/mm/mmap_bottomup.c | 20 +----
+ tools/testing/selftests/riscv/mm/mmap_default.c  | 20 +----
+ tools/testing/selftests/riscv/mm/mmap_test.h     | 93 +++++++++++++-----------
+ 5 files changed, 66 insertions(+), 104 deletions(-)
+---
+base-commit: 556e2d17cae620d549c5474b1ece053430cd50bc
+change-id: 20240119-use_mmap_hint_address-f9f4b1b6f5f1
+-- 
+- Charlie
 
->  .../admin-guide/kernel-parameters.txt          |  1 +
->  kernel/sched/core.c                            |  2 +-
->  kernel/sched/fair.c                            | 10 ++--------
->  kernel/sched/sched.h                           | 18 ------------------
->  4 files changed, 4 insertions(+), 27 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 65731b060e3f..2ee15522b15d 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -5722,6 +5722,7 @@
->  			but is useful for debugging and performance tuning.
->  
->  	sched_thermal_decay_shift=
-> +			[Deprecated]
->  			[KNL, SMP] Set a decay shift for scheduler thermal
->  			pressure signal. Thermal pressure signal follows the
->  			default decay period of other scheduler pelt
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index a6f084bdf1c5..c68e47bfd5ae 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -5670,7 +5670,7 @@ void scheduler_tick(void)
->  
->  	update_rq_clock(rq);
->  	hw_pressure = arch_scale_hw_pressure(cpu_of(rq));
-> -	update_hw_load_avg(rq_clock_hw(rq), rq, hw_pressure);
-> +	update_hw_load_avg(rq_clock_task(rq), rq, hw_pressure);
->  	curr->sched_class->task_tick(rq, curr, 0);
->  	if (sched_feat(LATENCY_WARN))
->  		resched_latency = cpu_resched_latency(rq);
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index f1c3d600d6d6..d5ba6cdb141c 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -78,15 +78,9 @@ static unsigned int normalized_sysctl_sched_base_slice	= 750000ULL;
->  
->  const_debug unsigned int sysctl_sched_migration_cost	= 500000UL;
->  
-> -int sched_hw_decay_shift;
->  static int __init setup_sched_thermal_decay_shift(char *str)
->  {
-> -	int _shift = 0;
-> -
-> -	if (kstrtoint(str, 0, &_shift))
-> -		pr_warn("Unable to set scheduler thermal pressure decay shift parameter\n");
-> -
-> -	sched_hw_decay_shift = clamp(_shift, 0, 10);
-> +	pr_warn("Ignoring the deprecated sched_thermal_decay_shift= option\n");
->  	return 1;
->  }
->  __setup("sched_thermal_decay_shift=", setup_sched_thermal_decay_shift);
-> @@ -9247,7 +9241,7 @@ static bool __update_blocked_others(struct rq *rq, bool *done)
->  
->  	decayed = update_rt_rq_load_avg(now, rq, curr_class == &rt_sched_class) |
->  		  update_dl_rq_load_avg(now, rq, curr_class == &dl_sched_class) |
-> -		  update_hw_load_avg(rq_clock_hw(rq), rq, hw_pressure) |
-> +		  update_hw_load_avg(now, rq, hw_pressure) |
->  		  update_irq_load_avg(rq, 0);
->  
->  	if (others_have_blocked(rq))
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 677d24202eec..6fc6718a1060 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -1520,24 +1520,6 @@ static inline u64 rq_clock_task(struct rq *rq)
->  	return rq->clock_task;
->  }
->  
-> -/**
-> - * By default the decay is the default pelt decay period.
-> - * The decay shift can change the decay period in
-> - * multiples of 32.
-> - *  Decay shift		Decay period(ms)
-> - *	0			32
-> - *	1			64
-> - *	2			128
-> - *	3			256
-> - *	4			512
-> - */
-> -extern int sched_hw_decay_shift;
-> -
-> -static inline u64 rq_clock_hw(struct rq *rq)
-> -{
-> -	return rq_clock_task(rq) >> sched_hw_decay_shift;
-> -}
-> -
->  static inline void rq_clock_skip_update(struct rq *rq)
->  {
->  	lockdep_assert_rq_held(rq);
-> -- 
-> 2.34.1
-> 
 
