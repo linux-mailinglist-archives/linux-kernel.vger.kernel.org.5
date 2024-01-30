@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-45457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45458-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C75268430F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 00:16:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4694A8430FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 00:16:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F16FDB24C2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:16:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B47C71F23F78
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:16:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C11282880;
-	Tue, 30 Jan 2024 23:14:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D75A83CA4;
+	Tue, 30 Jan 2024 23:14:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P1lwVjVJ"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FtjDk2IZ"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D117D7AE78;
-	Tue, 30 Jan 2024 23:14:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4624382894;
+	Tue, 30 Jan 2024 23:14:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706656470; cv=none; b=dAfuDRlwtg5kfLuMrDr/qby7DeizgtvIdKgbZmorsyQphicPAcqY8yNEDqU6u0FjxtamAGLCLEfXy5vY4vuvy1UPYpqeb7R0oZ/5w0F6Jf5SThtrAmzvw95cPTXtzDHzUBtF/VqwnfXW87GGfK0kuLpqqsdBV5dqWHMwP85Eb4c=
+	t=1706656474; cv=none; b=hnv0owVbxcrw0XvYe+XVKCNB7vWE3iBdgSlWdkHOirBH17HYSJVhrqCHXo6tCn4D5ufTodSTe/eBxhmHtZG4PH+w85JZFioJ8/w2plqlJmj6z5YhNbQhLO4J4hewz0QL+3L3y4VvigArv5kTpzB5h+GOFl1PoIDOZc90KaNYAK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706656470; c=relaxed/simple;
-	bh=rr8xQvtJixOVQM1jIrzeBaNMkqLLFdYjxxibLVAJQxg=;
+	s=arc-20240116; t=1706656474; c=relaxed/simple;
+	bh=4IV+dPdI08zimBNVCA9zvFgCo39imZ7Pxgsk7JpWdaY=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=aftYDvW/1w0rHSRnKylotYMhamoUrvsZinTZiY9ED7L4pkFYFzxHtteiA9qWOC8YWWIWuU7gRTC2gbZRnhGK9BkcmZ1FlIV1X1zQS52VZzeKmSj4o6qh7C64skYYSKeGncJ3DrMcEBabq/JlpC+4LB/cb2K66nAOleySu8oBErI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P1lwVjVJ; arc=none smtp.client-ip=209.85.214.170
+	 In-Reply-To:To:Cc; b=W/e2IuNPdHJSIWkksWT9Mli8mAMZ/0h4OHBgkPI4HQ28FbPYjgsheB0S82gPPWbHOTLOwd1bW6t5dzUF439yJMo6jz8Jnpj7UnmSJSrOP2cP+dr38LFW5Hzn2Ofr3S6OttqOmqNPTUTjWkc/hcUFv0euau6f+PEVa+aNT25C1ok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FtjDk2IZ; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d7881b1843so37899435ad.3;
-        Tue, 30 Jan 2024 15:14:28 -0800 (PST)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d7232dcb3eso23771775ad.2;
+        Tue, 30 Jan 2024 15:14:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706656468; x=1707261268; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706656472; x=1707261272; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=N1mjFuPg/MxcVhVNj/JxV8kjGLlrUjAjAv4TnVDkwZs=;
-        b=P1lwVjVJesHh/EuehLL9U+qIi4jVm/7Atr3Raq9BTOiqJGPgALevy7HMpn0+/NpftD
-         KUo52yf6FrPUFED9kCrzVDrfxtXmu0z7nCoaf1skucyWBf7CWtlZLtq0YlcazMB6slGY
-         AL/ohSHDfn7sYHud0fWwE3Gg2xhXbgXLCnCr0MrTRHz7gPcKlmMMttBQSGd4HuWL1LI2
-         LkdG89aOxCYJf5636wH9wHBm2Tn9sUbJ3A60yFhzfeN06OBlCKx6BDfp3TQkz9QTC0my
-         jfAPb2ow8TtH2Xkl6JqLbrkpqHVct1gOLmFlKin4L/RgFzSvm2mf4Zz+iNu3esFMCwbu
-         XEAg==
+        bh=JzlkUZ88PnE68OAhgmXxQkn/nQs2BjH2k5xb3I1hQhI=;
+        b=FtjDk2IZZjZN4bwzBNx+DWF8eu5VxfkHW1E1ntsjcznbwhcp6TtKAzGXQxSldTMENy
+         h9i0HMYKMnk/EV2xnT0lKPlY40JE22ozfiRNcikr8A5NAyMUe02tf896971K7UicM2WU
+         qccbVNJTrmWSn7IzMWlQYneKhWD7+qhjyzdPuztuvZ4vVD8vz0JNObVRxxorOzb9M2Ea
+         ST/MwhHvrx+M6hbg095EJnv2HudTr4CgarPjgBx0M5OBCh7/P9ZcEIHK0p9iceNHxV75
+         0LRK9kQMptReZewROX96fNqIehejNGDhVJi+vncAbJ71c7DKyNP79caGDQxAdew+kCxR
+         uqvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706656468; x=1707261268;
+        d=1e100.net; s=20230601; t=1706656472; x=1707261272;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=N1mjFuPg/MxcVhVNj/JxV8kjGLlrUjAjAv4TnVDkwZs=;
-        b=GA3shKIPlWLpZRJwWEFxNpvlBNqlbkCHDCzd5zX6uDEH2/jxPgEMU1JbKRcw+Gdg5e
-         lqaLB/qAsEE2+gDzKtuJSctTSpOs61waaqWBlSUoTmEI6n5H2C/Og7XxwKGmT7MvUCxC
-         SHkJMYdOA1ezNlJ3T0X48M0TixbX1afPlnKHfYiRYUpCxV2JeWL2zGsgIMbAP0TGnsPH
-         +sUShXi2qybY1cekyq0SPinuIftJZNRFK+j4TKNlOzVn7qREJX5J0NkeSY6Qf4Mb5EYn
-         5QWlxoGdns0CdsZx7CcxxPEfIwEMcPEpJDCXsdCvLh86WLPXr+PuVWaKQg74kxfyRcZA
-         KyHQ==
-X-Gm-Message-State: AOJu0Yx309zYY1mW19cXfcRau8P5dKtJvJ83Y8oI3hCpt+PHc9TKQyVc
-	EJImDmK+y5plLeGXHo+uG+++ejKCNameGW+vQFmXNzHB/D7ahFmS
-X-Google-Smtp-Source: AGHT+IFwsB44AjkMQAkl+d4Omih8JQMHbN4EsYOJHjZIuvF393B38+zqMNJDRVQWZ+TsrWV/Qks0xw==
-X-Received: by 2002:a17:903:124a:b0:1d8:f06a:9d68 with SMTP id u10-20020a170903124a00b001d8f06a9d68mr21517plh.33.1706656468108;
-        Tue, 30 Jan 2024 15:14:28 -0800 (PST)
+        bh=JzlkUZ88PnE68OAhgmXxQkn/nQs2BjH2k5xb3I1hQhI=;
+        b=jg0iZGgIHEF2Qwz9cpD2vfdWxMUiVgVJqGPoVFEmLfXZQS3lufX8OexLebLI0PBdrd
+         JPX+LnuV8NUjkaJuyys26kAjs3RqCbo3vHIVhdzirZucoKPWEIlA3mako92RcTFRY4UJ
+         ye32OBElKB22ejsA06SKgSepm6x+x42CKfQ8vgA9mUMZe2GIbkIcWFlwKM10FITI/Yop
+         55+kZd1v9saWW7R5DKmDgoYXkBrngguXvn1acFS3W6LzrNoG+Yvd3BiAQSVk8kHCcvY8
+         olbwUXb5iofh8FB6Hw8lbd99HAZDN+T1PA5bLqY61xGnZr0V3twtWpDavDXtQrN1Brd5
+         mIEQ==
+X-Gm-Message-State: AOJu0YwLIGI+3i8q35sehq0rmcAvmPiEnJouaWDNayXF7+gFHJca5MOt
+	Av2m/I1LDQL4XuI7DGBqOSw/+FpCVBiC8uWfOSvXotyGuFuARJ3f
+X-Google-Smtp-Source: AGHT+IHwke5/slfTVBoO8650FSGkXRYSWkhvOrcp35baPXhjlrXRNagNwOXTIs1vYb6mmUcBPvVdSA==
+X-Received: by 2002:a17:902:6507:b0:1d8:a75c:2dd6 with SMTP id b7-20020a170902650700b001d8a75c2dd6mr63483plk.15.1706656472615;
+        Tue, 30 Jan 2024 15:14:32 -0800 (PST)
 Received: from tresc054937.tre-sc.gov.br ([2804:c:204:200:2be:43ff:febc:c2fb])
-        by smtp.gmail.com with ESMTPSA id jx2-20020a170903138200b001d8f251c8b2sm3473203plb.221.2024.01.30.15.14.24
+        by smtp.gmail.com with ESMTPSA id jx2-20020a170903138200b001d8f251c8b2sm3473203plb.221.2024.01.30.15.14.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 15:14:27 -0800 (PST)
+        Tue, 30 Jan 2024 15:14:31 -0800 (PST)
 From: Luiz Angelo Daros de Luca <luizluca@gmail.com>
-Date: Tue, 30 Jan 2024 20:13:26 -0300
-Subject: [PATCH net-next v5 07/11] net: dsa: realtek: get internal MDIO
- node by name
+Date: Tue, 30 Jan 2024 20:13:27 -0300
+Subject: [PATCH net-next v5 08/11] net: dsa: realtek: clean user_mii_bus
+ setup
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,7 +77,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240130-realtek_reverse-v5-7-ecafd9283a07@gmail.com>
+Message-Id: <20240130-realtek_reverse-v5-8-ecafd9283a07@gmail.com>
 References: <20240130-realtek_reverse-v5-0-ecafd9283a07@gmail.com>
 In-Reply-To: <20240130-realtek_reverse-v5-0-ecafd9283a07@gmail.com>
 To: Linus Walleij <linus.walleij@linaro.org>, 
@@ -88,50 +88,97 @@ To: Linus Walleij <linus.walleij@linaro.org>,
  Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
  Russell King <linux@armlinux.org.uk>
 Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Luiz Angelo Daros de Luca <luizluca@gmail.com>, 
- Florian Fainelli <florian.fainelli@broadcom.com>
+ Luiz Angelo Daros de Luca <luizluca@gmail.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1279; i=luizluca@gmail.com;
- h=from:subject:message-id; bh=rr8xQvtJixOVQM1jIrzeBaNMkqLLFdYjxxibLVAJQxg=;
- b=owEBbQGS/pANAwAIAbsR27rRBztWAcsmYgBluYKxzQADkmpv2X0xDHsziofDV4WDLhdy6ZrAy
- JP+c7hDHHqJATMEAAEIAB0WIQQRByhHhc1bOhL6L/i7Edu60Qc7VgUCZbmCsQAKCRC7Edu60Qc7
- Vq02B/9PguUEnNSYkD5vsKNSR8mJdqvBvuAqwQiGRt5o5zcB33liUOGpFk4DNO8ZeS20SSr2ka3
- 4ajaD1xMA5bq2FQSerZW3a2+ujlg0Yu1sGPPAr8mFpGhloyGK4ZoXUO9occIO9uEfkTShEeu8Zt
- U+W42Nq/4E/YXHTsRwBWe4Av6a4eksSxIKQ/jLi4ALD1VOtVWuNXc0U1dYusSTOTJzkwkGYibki
- 3ySg6MXQ3FccleZRv4zTOBDgGnMEICuPoVXt6sG+ON7OaLrzc6fNN0j7Qr/M09qwMgZSnXO6gl5
- kSjRav9WlXI5+5wF1pXf10LmHcBY4O3uEUzarpGgbKXfh2g5
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2718; i=luizluca@gmail.com;
+ h=from:subject:message-id; bh=4IV+dPdI08zimBNVCA9zvFgCo39imZ7Pxgsk7JpWdaY=;
+ b=owEBbQGS/pANAwAIAbsR27rRBztWAcsmYgBluYKxsocLt6Ost9igjJjs9XSOU6LhVTUi1iHyj
+ 5sR8nP2n5eJATMEAAEIAB0WIQQRByhHhc1bOhL6L/i7Edu60Qc7VgUCZbmCsQAKCRC7Edu60Qc7
+ Vj9nB/9USXIGEXOjj0uJiEgniJ5zjV7cxQBufC7TqiqSvCUfivQgxLJZJCzn/emzAbwCCQ6ndg2
+ +Nbj0JkR3T1HV+wFPc5J8gMU6PngbSUbWPQXF2F3DH7Sjg9MuUnvKqShI4sFSLbr6qvNjLRTlLU
+ V9KnuHEFjUc0odKkXFCiIVesgyVNrGLGUedKS+drLMUZNFk9B0duU8Bnz6jo7FD/eu5n52z9S7i
+ o1G/kQTNfzaWuG6b/iyyod3pZJTBhKwUrvE6l2BSInd9x/qyKNNDW+SNxi2b/CqyI7uU2J5Jl+O
+ vUFPFo3xsipO0555+Vv2XFtH0NzftvAN3XCxfZ1JqHvP6Vrj
 X-Developer-Key: i=luizluca@gmail.com; a=openpgp;
  fpr=1107284785CD5B3A12FA2FF8BB11DBBAD1073B56
 
-The binding docs requires for SMI-connected devices that the switch
-must have a child node named "mdio" and with a compatible string of
-"realtek,smi-mdio". Meanwile, for MDIO-connected switches, the binding
-docs only requires a child node named "mdio".
+Remove the line assigning dev.of_node in mdio_bus as subsequent
+of_mdiobus_register will always overwrite it.
 
-This patch changes the driver to use the common denominator for both
-interfaces, looking for the MDIO node by name, ignoring the compatible
-string.
+As discussed in [1], allow the DSA core to be simplified, by not
+assigning ds->user_mii_bus when the MDIO bus is described in OF, as it
+is unnecessary.
+
+Since commit 3b73a7b8ec38 ("net: mdio_bus: add refcounting for fwnodes
+to mdiobus"), we can put the "mdio" node just after the MDIO bus
+registration.
+
+[1] https://lkml.kernel.org/netdev/20231213120656.x46fyad6ls7sqyzv@skbuf/T/#u
 
 Signed-off-by: Luiz Angelo Daros de Luca <luizluca@gmail.com>
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
 ---
- drivers/net/dsa/realtek/realtek-smi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/dsa/realtek/realtek-smi.c | 13 +++----------
+ 1 file changed, 3 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/net/dsa/realtek/realtek-smi.c b/drivers/net/dsa/realtek/realtek-smi.c
-index 67bdad7ac910..ad47dcbbd2b2 100644
+index ad47dcbbd2b2..b84df4564c15 100644
 --- a/drivers/net/dsa/realtek/realtek-smi.c
 +++ b/drivers/net/dsa/realtek/realtek-smi.c
-@@ -333,7 +333,7 @@ static int realtek_smi_setup_mdio(struct dsa_switch *ds)
+@@ -331,7 +331,7 @@ static int realtek_smi_setup_mdio(struct dsa_switch *ds)
+ {
+ 	struct realtek_priv *priv =  ds->priv;
  	struct device_node *mdio_np;
- 	int ret;
+-	int ret;
++	int ret = 0;
  
--	mdio_np = of_get_compatible_child(priv->dev->of_node, "realtek,smi-mdio");
-+	mdio_np = of_get_child_by_name(priv->dev->of_node, "mdio");
+ 	mdio_np = of_get_child_by_name(priv->dev->of_node, "mdio");
  	if (!mdio_np) {
- 		dev_err(priv->dev, "no MDIO bus node\n");
- 		return -ENODEV;
+@@ -344,15 +344,14 @@ static int realtek_smi_setup_mdio(struct dsa_switch *ds)
+ 		ret = -ENOMEM;
+ 		goto err_put_node;
+ 	}
++
+ 	priv->user_mii_bus->priv = priv;
+ 	priv->user_mii_bus->name = "SMI user MII";
+ 	priv->user_mii_bus->read = realtek_smi_mdio_read;
+ 	priv->user_mii_bus->write = realtek_smi_mdio_write;
+ 	snprintf(priv->user_mii_bus->id, MII_BUS_ID_SIZE, "SMI-%d",
+ 		 ds->index);
+-	priv->user_mii_bus->dev.of_node = mdio_np;
+ 	priv->user_mii_bus->parent = priv->dev;
+-	ds->user_mii_bus = priv->user_mii_bus;
+ 
+ 	ret = devm_of_mdiobus_register(priv->dev, priv->user_mii_bus, mdio_np);
+ 	if (ret) {
+@@ -361,8 +360,6 @@ static int realtek_smi_setup_mdio(struct dsa_switch *ds)
+ 		goto err_put_node;
+ 	}
+ 
+-	return 0;
+-
+ err_put_node:
+ 	of_node_put(mdio_np);
+ 
+@@ -422,8 +419,7 @@ EXPORT_SYMBOL_NS_GPL(realtek_smi_probe, REALTEK_DSA);
+  * @pdev: platform_device to be removed.
+  *
+  * This function should be used as the .remove_new in a platform_driver. First
+- * it unregisters the DSA switch and cleans internal data. Finally, it calls
+- * the common remove function.
++ * it unregisters the DSA switch and then it calls the common remove function.
+  *
+  * Context: Can sleep.
+  * Return: Nothing.
+@@ -437,9 +433,6 @@ void realtek_smi_remove(struct platform_device *pdev)
+ 
+ 	rtl83xx_unregister_switch(priv);
+ 
+-	if (priv->user_mii_bus)
+-		of_node_put(priv->user_mii_bus->dev.of_node);
+-
+ 	rtl83xx_remove(priv);
+ }
+ EXPORT_SYMBOL_NS_GPL(realtek_smi_remove, REALTEK_DSA);
 
 -- 
 2.43.0
