@@ -1,191 +1,468 @@
-Return-Path: <linux-kernel+bounces-45213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD994842D20
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:42:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B97A6842D33
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:43:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9440E286D17
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:42:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7127A286E7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:43:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 944DD67C51;
-	Tue, 30 Jan 2024 19:42:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 365E569E0B;
+	Tue, 30 Jan 2024 19:43:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=seagate.com header.i=@seagate.com header.b="M1PAtR9n";
-	dkim=pass (1024-bit key) header.d=seagate.com header.i=@seagate.com header.b="F2ghRAEP"
-Received: from esa.hc4959-67.iphmx.com (esa.hc4959-67.iphmx.com [216.71.153.94])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sSDbgjF0"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6475C7B3C3;
-	Tue, 30 Jan 2024 19:42:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.153.94
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706643752; cv=fail; b=UdimOPd9y5vH8Ha2SkcfwPfvj7F2An/EuioeM68UEmwCWvOM9WIjAAifrcuXS+AlWrBkWeZgmZRXTWorDS0n8+QqtsIx0Vh+K2MLwkcZf/Fi8nt2BxoJ67++ccnGxx9gvsMfQruNivR5ySt8iIjEYMxYIqGc2rbhsEI6buInrag=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706643752; c=relaxed/simple;
-	bh=5mVaZWfSTElDdOKpzteEbgITXk/2ed9rLYo3BAy505U=;
-	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=S51kK56zp8pEHSfNFh9/dY2oHKQmnIeKeWczR1rBa3tHR2uO8D5m3uU5HimIwuOeqHaR1qe/Q1Pnw+i1v3Mtx3qQuhXNB+bLSWdyA5uFrLtwr1jOLZvTZ0M/JPeNBjR2bo5DK+oxRvfPSJPFiA/i+BFX7tWk70ssb6M8590Pya4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=seagate.com; spf=pass smtp.mailfrom=seagate.com; dkim=pass (1024-bit key) header.d=seagate.com header.i=@seagate.com header.b=M1PAtR9n; dkim=pass (1024-bit key) header.d=seagate.com header.i=@seagate.com header.b=F2ghRAEP; arc=fail smtp.client-ip=216.71.153.94
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=seagate.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=seagate.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=seagate.com; i=@seagate.com; q=dns/txt; s=stxiport;
-  t=1706643750; x=1738179750;
-  h=from:to:cc:subject:date:message-id:
-   content-transfer-encoding:mime-version;
-  bh=5mVaZWfSTElDdOKpzteEbgITXk/2ed9rLYo3BAy505U=;
-  b=M1PAtR9nZqmuq/5lx7tncfORUMdesDAWwy+n8nQQPMzXeT5Nd0QRYLbJ
-   eyTIj3Tsgp/jLLJjcBBLh2KGYM7N58MRT7ShOrsBDy8wz4c2XRVz74uZX
-   hwVmssGYHLSOgOx1Bi6Ax64TRig1imwq0z0so3m2ViLn6P9d+1DMhsbjc
-   M=;
-Received: from mail-mw2nam10lp2101.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.101])
-  by ob1.hc4959-67.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 11:42:22 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Hx1V/mPeM3nkqcv1Aq5cttmge8oicQdAMJZHA0Xozp6Bru4V5aHHAF9vkcvyMnG5e3EpuwTS05BL8H7/7hQi5ab852Cyqwyx+7XEhaU1PlP/TN7Ww6/sZ8y3uV6wMqTFpM49AtF7PiJpW9XlLIax507CyJKRDzN7hj+QoTACOxp3mYIOu4BvL1Bo1It9NfcrzF2nzC8/fQVM1QMVS0xC5Bt7Kswdz1RtSuMY8gtU/dmjdcDyr0C3FTyV+RiUcQjzkzdOhlzcOz1q4artChSNOO2ITshxDQ0yz6Kp5Q5tdGSd/vXHDjozr6EYYK4WZbn5GripxJjIz/QFx9jiMRIqxw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=35J1objnJeiVsjOHgWg/nuKLOdLeNODCyexDiqAbmJw=;
- b=WnFkcxuhkXBdjG9oyEtjk6pwEonyo/qeoSL8/qdIDILO88WV864ssSbhRL1zXhuVvo1HTCSrX3BEIAk7/DvGiAA4pS/25luSzokHKu5RCPFnxxCp2BLEVZEzOpZJXiK83c99su0JPMieWdG5IJS3ixPcxf3DsgKPIJrDRFq6hp1UGP2Vv6SbMeQDGZdJYk1oaxG80OH67/OtwjFAHya/mI+HSj+aWFWiDT6zGgs1bi9DJd+ynqaKgiXwUHtM4mC5wEWS7MKXURJqBfpUl9wCHcOl6ETHHtV6Dae1v6aCiZ3/Nn1zAvc57LqVUobWRiPKWVm+rCptYAcEk6MBNX0hrg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=seagate.com; dmarc=pass action=none header.from=seagate.com;
- dkim=pass header.d=seagate.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seagate.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=35J1objnJeiVsjOHgWg/nuKLOdLeNODCyexDiqAbmJw=;
- b=F2ghRAEPvFhjZD/irNEDmfGy3stz3t6ZK73ghRM8RkWH53F8L2jtjP+9U7XT2ovhmpQZteStJD/d5dgNqZEEGufl235OdUlwgb5BD+gFUc7EpAQ/QHGjPQBUqtGSelrkvhPZIGVyAIEM/FDYxdKRmLtT3QHgCdt8XDPczEf0Dps=
-Received: from CH0PR20MB3818.namprd20.prod.outlook.com (2603:10b6:610:d9::9)
- by CH3PR20MB7114.namprd20.prod.outlook.com (2603:10b6:610:1ab::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.32; Tue, 30 Jan
- 2024 19:42:18 +0000
-Received: from CH0PR20MB3818.namprd20.prod.outlook.com
- ([fe80::f72f:8a31:57b9:b6f7]) by CH0PR20MB3818.namprd20.prod.outlook.com
- ([fe80::f72f:8a31:57b9:b6f7%7]) with mapi id 15.20.7249.017; Tue, 30 Jan 2024
- 19:42:18 +0000
-From: Nick Spooner <nicholas.spooner@seagate.com>
-To: "rafal@milecki.pl" <rafal@milecki.pl>, "srinivas.kandagatla@linaro.org"
-	<srinivas.kandagatla@linaro.org>, Dan Carpenter <dan.carpenter@linaro.org>
-CC: Evan Burgess <evan.burgess@seagate.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "kernel-janitors@vger.kernel.org"
-	<kernel-janitors@vger.kernel.org>
-Subject: [PATCH v2] nvmem: u-boot-env: improve error checking
-Thread-Topic: [PATCH v2] nvmem: u-boot-env: improve error checking
-Thread-Index: AdpTmMVIZ6aACCM1RuCdZRDh2RTdLg==
-Date: Tue, 30 Jan 2024 19:42:17 +0000
-Message-ID:
- <CH0PR20MB38183679A4F4229A419A9EB29C7D2@CH0PR20MB3818.namprd20.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_10398c1c-5e94-454c-bbc4-eb8a4a50b8b0_ActionId=0ea55728-07e3-4514-a34e-709864adb6f5;MSIP_Label_10398c1c-5e94-454c-bbc4-eb8a4a50b8b0_ContentBits=0;MSIP_Label_10398c1c-5e94-454c-bbc4-eb8a4a50b8b0_Enabled=true;MSIP_Label_10398c1c-5e94-454c-bbc4-eb8a4a50b8b0_Method=Privileged;MSIP_Label_10398c1c-5e94-454c-bbc4-eb8a4a50b8b0_Name=Public;MSIP_Label_10398c1c-5e94-454c-bbc4-eb8a4a50b8b0_SetDate=2024-01-30T16:23:01Z;MSIP_Label_10398c1c-5e94-454c-bbc4-eb8a4a50b8b0_SiteId=d466216a-c643-434a-9c2e-057448c17cbe;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=seagate.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CH0PR20MB3818:EE_|CH3PR20MB7114:EE_
-x-ms-office365-filtering-correlation-id: 6a8652a7-5f9c-4280-47a9-08dc21cb9155
-stx-hosted-ironport-oubound: True
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- tK/f/JRdINO7ZeZpzoq4X7G0MxI/RpiaVGwaPGES33Ffo5Bc++sbpV0RK1fi3jy1eNnS91jZ58k48L0DGuPR9+pJZia/d1FRWY4jRnQ84ELVzPgO1iRTjmNcNDvlq95m2eCTOuCdRNZsozwrZMGjyFzvmeQHTKphQTFXZCziVbyweSRKB/B8wPFySK3g5BrcD1YjmlxN2+zmayr0x6u34+LSdqAntFcTE2q7B+MIGVbHea+xrhw6Ttd7f4VVlWS9RWm2MVpk1jQCJMzrzueOxjqGLkJiuhXOE9a9ucqZKYMYrH8rwQ+KTZX1Fd03yu3jvs04Iap7ZhoWWnHMhEHXLHjNZ25Kz6C13zK0HSCPtOIfnIJuVgJf7v+oFxf6dKa/UPG567ajmn++vzO3iEjcluvxBvv1SsEMff0UqqzEv/sG8kfOE8rbH/vUwD3SNUYkyXfTYZgRqAvtHXW4oSqZ1k+mB8p03PRnTvY4fcBreWbGdBOToryh0gLzgGud74FSreXgtbUPrcPsXZg0RpDVXr09gtr5RtpH2w2laZ4ZJXVl40nOzvBAtX+bWIE2x0icVL7F2JSdfpwHkFJHx5VwsevghPY6t8JBZkUBBmNIZQxJVXtanOorGUIcuxDsH/oi
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR20MB3818.namprd20.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(136003)(346002)(396003)(366004)(230922051799003)(186009)(1800799012)(451199024)(64100799003)(54906003)(41300700001)(33656002)(9686003)(71200400001)(7696005)(478600001)(6506007)(26005)(8936002)(4326008)(4744005)(76116006)(2906002)(83380400001)(55016003)(64756008)(5660300002)(66446008)(66476007)(66946007)(66556008)(316002)(52536014)(8676002)(122000001)(38100700002)(110136005)(86362001)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?7Td6SW5CwZQ0Hy3hkuo/1TcrZvMoS4A5OAtXqLMWAwQxmRKlmrTKwZ6Cu+HW?=
- =?us-ascii?Q?wUgMdhSm3Mbp9Ag6cDqo9kpqbarT979RYNwF3IW8vTbX/RgA+1JctTwWVYmL?=
- =?us-ascii?Q?nKDoEuoOIkdQOm6+vin5FoKuVj803D8jwAoaRvY5YwFQ+Y1dfMo+fLh/ovtz?=
- =?us-ascii?Q?whFI/ShEVi9V8BPc6LuTcAAtUWE/5fmNKgKT++6bRdssPqhRomE+dLn9NVge?=
- =?us-ascii?Q?mMA1qedpVc0/4ViHVzDdUSvbF7wJRMsdT9/HgTfrPScyCYAVP1d45c6Pix7b?=
- =?us-ascii?Q?n1JWigkFGUDRtw4UtRuMWPgUjhZ5z1RfZhtjUQ3hIltnniXMD0cqjhZaS7bd?=
- =?us-ascii?Q?Z8gs4Xw6MHiQxPX4IyA1y/3w0AyCR5+22lXN2KNoMrD8Q7zMbeqj2gWKrdm+?=
- =?us-ascii?Q?Zkzkcm8fs1OmanPR1gpGVV/C/C4i5Hm59I6lDAcN9tacxy+/EQo3T5VYKPMm?=
- =?us-ascii?Q?yCgdELNVK0pfOUS4XC2QGplBtaLkgDkOCJqJ1MvN4kMGemLRENwHegI0wyhV?=
- =?us-ascii?Q?m6FUj0RLJFV6beZxZ7u7qbzdh1tF8+0JhC4E1HPN4RIC74Xw+3oiFlbMp8gQ?=
- =?us-ascii?Q?mgnIXQnY9ohQzoUwuEBFn9b0lzpjwUFibK4v7SKrmhaBhh0jO8iO3NmJu6R0?=
- =?us-ascii?Q?hAhgXxLt75kXBk5z2mDzyLwKuQ7b/tUIph0yzo7d2XVAy80oFdjU8xjzUxmN?=
- =?us-ascii?Q?92LFaW5KFoCeohPu7j5/Lk8OGdtnpwOj1m8t1XPA7YBdaylVh33TYYdzavo7?=
- =?us-ascii?Q?Q8GwFNPRnAqjEgSym3Sa5sUTQcvhpWcPwrQUnq7W3SMu8NTUg1hXJDPdMmmR?=
- =?us-ascii?Q?5kNI8VqiXNXgafIVWb5tdoP8SPwCWdw+r4G/hHoIAXeWd3FcOTbpD1KdzS9g?=
- =?us-ascii?Q?lEKrMzfi1f1s8Wv/rwFK3Oy88G3LP7esawTTTOhreCQ3rz+2TaOI9WZdLs0s?=
- =?us-ascii?Q?IQz4hQ0JI9QcIUB8+qedlD8ij9vpT//99HlZFnXob1DnvKR8ULigd7ndOeN3?=
- =?us-ascii?Q?1aOtor1lwHxYcNYasvlqlfjzRKh0k96OAgcoSyIk0i/HHomMysymJzIRVp9B?=
- =?us-ascii?Q?6y3MCJDdfGZT/81kGFBe59AdGiGIiWfr8gO8TWz0TXqDhvNPmp5ty8pyIElV?=
- =?us-ascii?Q?NfOBpK+JQdTkAI5/ESOrSDMOhz3iIYn58fPXpKlUo0Zu43Pxq9GmHvX4VBEE?=
- =?us-ascii?Q?R4moBycw7r7ue5CwlM7tZqIVSbz0Oj7oQp1a734ANxC+GsEyQ/5trdsXvZ/O?=
- =?us-ascii?Q?T3GnzH3e6RBmnWnLyNX8ygeah4A0PTIa1AJEy0USPM9dq8dkICKW07029WIS?=
- =?us-ascii?Q?ujrC8d8jSjXPeNlly1TOzUwkHPGllWJaTihPW0iwC2NIjuho0R3ZL65Iv+va?=
- =?us-ascii?Q?GrYkayiB4enJ3VI+kfe8uwN18IYThB/aDhX1usPa2KQ4VeBOei+opKsj6pUP?=
- =?us-ascii?Q?44xN1DzHVIh8AF/qnCGQ4AtxxStGBWWR2ATKzlZUE4ldJg++NH68Jtp0dqOq?=
- =?us-ascii?Q?2doO5kL1JgxwqZ8JipY6GdG18QmPx/qNBWTe6gwi+GEb6fKfcwLZK5w7YXPD?=
- =?us-ascii?Q?1h1vSYkgRfdkF/QVCeRVPSwnZ4tH/YvcbrGmU3sMtQVbiJo/5QA3wxv99VZ7?=
- =?us-ascii?Q?Vg=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF59C7B3FD;
+	Tue, 30 Jan 2024 19:43:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706643806; cv=none; b=c5W8YZxMlsKlrVjO/oAYA8zxL8OLoPqjFnLwAiROvI0CUGLBfP1iH42JCrnmSElLHPzDhzKOdAOLJhr69rg8ae4LDbdxEg8MOFahBQp5l11bQMzUNnbYeJQLEnwcUDeeXfHsM2BkBONEQrkJXvgHyyW7jJYJttS0xH3243h62Mo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706643806; c=relaxed/simple;
+	bh=3Ug59DhsbWtaDECOUP7MC980BUbagoeBB9DWV2TKW0Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=cqFwGc828gdmZRpkMFZlljxLlksu5nnb52dJ8Eu6qwbCROBDtJkH3FWze6X96IoZ5QGhUxcW4s1Ezf3Ac6FVNZHXLwg2+QBfXyCGseXlZastqMEnkQJeM6R+vfVSJWeLlXxDcwidCdRGiPT0NNe2+z0X+YgydBnfZux2j9qMZOY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sSDbgjF0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23D96C433F1;
+	Tue, 30 Jan 2024 19:43:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706643805;
+	bh=3Ug59DhsbWtaDECOUP7MC980BUbagoeBB9DWV2TKW0Q=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=sSDbgjF0W89p/dcFPgm6mKD97ZFchWjPBuDxEkvuSpSHPxDJN/iiS33YnOj85WDC4
+	 HBqS8uVeBKVAoHZ1SIltT4H+zvW6ES7lmODpbcVDOgQXM4cKHiiwdO1xgQq4whm/to
+	 sot91kYUd5kUjchvfPzaaHu0jplIHO71ohZ3K9p+ZkIazvqxRpuG1xj9ozXcYuOU6y
+	 Xw/ACEHvQYZsSO0v8QQkGJTqEDiB8w6XoeLTgHKEG7uXvj24MKc5Cn00OKdZILGbyX
+	 SQbHdInjTrz1TC6PQMHfg1kPcFdJqzSomYJx/qJVV/XyQ71Pi/8AzvCKICkIzqB1ZP
+	 I3DO+uVMVfqyw==
+Date: Tue, 30 Jan 2024 13:43:23 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Johan Hovold <johan+linaro@kernel.org>
+Cc: Bjorn Helgaas <bhelgaas@google.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH] PCI: qcom: Fix another deadlock when enabling ASPM
+Message-ID: <20240130194323.GA530736@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	SM4eHCAVNvBKxmOtrkDPsz/mNdhj6COKAMYtfh9m0yxvz1sbhlD4t+1T08lnq08Zop60i6zsDSvVQlDYNXh7C61UNvf1kuUFJUV/YqybTtHNK4qjuT6VKwU7N9xtsigQsryeP71BydPLKeKyog4QXz+LCZj2RQ8ZP7Waw2c0AWCi1WlZ281XQGt6EeylaXPNlycUsET2wjtimW9OKxaLCZJAby8oLOSg0smGwD/5ZWoIEhvF/kVn7v6fLpRFNbuVAqUCk/LglAM8PXDwB2TonYvCX6a1zFsGrUebpv7kNRFLEfS7/1gZgyh2qUUj02v4MaaYknyJGxDIdrlggpEHg5R0X1Hc+7a4SIIs6MjrpL3tGb/nkA9UvULh26w1Z3YU4TCOXTm2/hvceWmXy7iVsNeXQHwfELIYYUVMCNB5neCDIS4Zk9ABBAhUgpjRQj6e7Epv12wEYOunJTqNBeee7IigqgirfikH/fVvP795nhot6YrqOEOE9rGc42Z4DTd7Spo8UeHTaMpbQ7eeelVwwWNlz/lfW2IxmHAIY7XSzpbLsdKYGZAdH7qm58xuEXw5DQ20qadrMLuCFLKKK30hUN9iLXhk17jwWNGBO8qnzSi75ttN0LEYI7g60ULaUAIb
-X-OriginatorOrg: seagate.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR20MB3818.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6a8652a7-5f9c-4280-47a9-08dc21cb9155
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jan 2024 19:42:17.9892
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: d466216a-c643-434a-9c2e-057448c17cbe
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: k5qPVzHfu4CQOjw27H8s6a0qW2libJx2w9HUi18h2cTE++2JVtf5cctsEgipEKDQShs9EP6dCxqJcVy9jA6fQoF2RrMDCTuFwuWzmDsAX1Y=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR20MB7114
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240130100243.11011-1-johan+linaro@kernel.org>
 
-Coverity scan reported CID 1575482: error handling issues; this patch
-addresses this by adding error handling to u_boot_env_add_cells.
+On Tue, Jan 30, 2024 at 11:02:43AM +0100, Johan Hovold wrote:
+> A last minute revert in 6.7-final introduced a potential deadlock when
+> enabling ASPM during probe of Qualcomm PCIe controllers as reported by
+> lockdep:
+> 
+>    ============================================
+>    WARNING: possible recursive locking detected
+>    6.7.0 #40 Not tainted
+>    --------------------------------------------
+>    kworker/u16:5/90 is trying to acquire lock:
+>    ffffacfa78ced000 (pci_bus_sem){++++}-{3:3}, at: pcie_aspm_pm_state_change+0x58/0xdc
+> 
+>                but task is already holding lock:
+>    ffffacfa78ced000 (pci_bus_sem){++++}-{3:3}, at: pci_walk_bus+0x34/0xbc
+> 
+>                other info that might help us debug this:
+>     Possible unsafe locking scenario:
+> 
+>           CPU0
+>           ----
+>      lock(pci_bus_sem);
+>      lock(pci_bus_sem);
+> 
+>                 *** DEADLOCK ***
+> 
+>    Call trace:
+>     print_deadlock_bug+0x25c/0x348
+>     __lock_acquire+0x10a4/0x2064
+>     lock_acquire+0x1e8/0x318
+>     down_read+0x60/0x184
+>     pcie_aspm_pm_state_change+0x58/0xdc
+>     pci_set_full_power_state+0xa8/0x114
+>     pci_set_power_state+0xc4/0x120
+>     qcom_pcie_enable_aspm+0x1c/0x3c [pcie_qcom]
+>     pci_walk_bus+0x64/0xbc
+>     qcom_pcie_host_post_init_2_7_0+0x28/0x34 [pcie_qcom]
+> 
+> The deadlock can easily be reproduced on machines like the Lenovo
+> ThinkPad X13s by adding a delay to increase the race window during
+> asynchronous probe where another thread can take a write lock.
+> 
+> Add a new pci_set_power_state_locked() and associated helper functions
+> that can be called with the PCI bus semaphore held to avoid taking the
+> read lock twice.
+> 
+> Fixes: f93e71aea6c6 ("Revert "PCI/ASPM: Remove pcie_aspm_pm_state_change()"")
+> Cc: stable@vger.kernel.org	# 6.7
+> Link: https://lore.kernel.org/r/ZZu0qx2cmn7IwTyQ@hovoldconsulting.com
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 
-Signed-off-by: Nick Spooner <nicholas.spooner@seagate.com>
----
-v2:
-    Fix whitespace issues in previous version
+Applied to for-linus for v6.8, thanks!
 
- drivers/nvmem/u-boot-env.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/nvmem/u-boot-env.c b/drivers/nvmem/u-boot-env.c
-index befbab156cda..c15de5f7fd99 100644
---- a/drivers/nvmem/u-boot-env.c
-+++ b/drivers/nvmem/u-boot-env.c
-@@ -95,6 +95,7 @@ static int u_boot_env_add_cells(struct u_boot_env *priv, =
-uint8_t *buf,
- 	struct device *dev =3D priv->dev;
- 	char *data =3D buf + data_offset;
- 	char *var, *value, *eq;
-+	int rval;
-
- 	for (var =3D data;
- 	     var < data + data_len && *var;
-@@ -119,7 +120,9 @@ static int u_boot_env_add_cells(struct u_boot_env *priv=
-, uint8_t *buf,
- 			info.read_post_process =3D u_boot_env_read_post_process_ethaddr;
- 		}
-
--		nvmem_add_one_cell(nvmem, &info);
-+		rval =3D nvmem_add_one_cell(nvmem, &info);
-+		if (rval)
-+			return rval;
- 	}
-
- 	return 0;
---
-2.34.1
+> ---
+>  drivers/pci/bus.c                      | 50 +++++++++++------
+>  drivers/pci/controller/dwc/pcie-qcom.c |  2 +-
+>  drivers/pci/pci.c                      | 78 +++++++++++++++++---------
+>  drivers/pci/pci.h                      |  4 +-
+>  drivers/pci/pcie/aspm.c                | 13 +++--
+>  include/linux/pci.h                    |  5 ++
+>  6 files changed, 102 insertions(+), 50 deletions(-)
+> 
+> diff --git a/drivers/pci/bus.c b/drivers/pci/bus.c
+> index 9c2137dae429..116415f91195 100644
+> --- a/drivers/pci/bus.c
+> +++ b/drivers/pci/bus.c
+> @@ -386,21 +386,8 @@ void pci_bus_add_devices(const struct pci_bus *bus)
+>  }
+>  EXPORT_SYMBOL(pci_bus_add_devices);
+>  
+> -/** pci_walk_bus - walk devices on/under bus, calling callback.
+> - *  @top      bus whose devices should be walked
+> - *  @cb       callback to be called for each device found
+> - *  @userdata arbitrary pointer to be passed to callback.
+> - *
+> - *  Walk the given bus, including any bridged devices
+> - *  on buses under this bus.  Call the provided callback
+> - *  on each device found.
+> - *
+> - *  We check the return of @cb each time. If it returns anything
+> - *  other than 0, we break out.
+> - *
+> - */
+> -void pci_walk_bus(struct pci_bus *top, int (*cb)(struct pci_dev *, void *),
+> -		  void *userdata)
+> +static void __pci_walk_bus(struct pci_bus *top, int (*cb)(struct pci_dev *, void *),
+> +			   void *userdata, bool locked)
+>  {
+>  	struct pci_dev *dev;
+>  	struct pci_bus *bus;
+> @@ -408,7 +395,8 @@ void pci_walk_bus(struct pci_bus *top, int (*cb)(struct pci_dev *, void *),
+>  	int retval;
+>  
+>  	bus = top;
+> -	down_read(&pci_bus_sem);
+> +	if (!locked)
+> +		down_read(&pci_bus_sem);
+>  	next = top->devices.next;
+>  	for (;;) {
+>  		if (next == &bus->devices) {
+> @@ -431,10 +419,38 @@ void pci_walk_bus(struct pci_bus *top, int (*cb)(struct pci_dev *, void *),
+>  		if (retval)
+>  			break;
+>  	}
+> -	up_read(&pci_bus_sem);
+> +	if (!locked)
+> +		up_read(&pci_bus_sem);
+> +}
+> +
+> +/**
+> + *  pci_walk_bus - walk devices on/under bus, calling callback.
+> + *  @top      bus whose devices should be walked
+> + *  @cb       callback to be called for each device found
+> + *  @userdata arbitrary pointer to be passed to callback.
+> + *
+> + *  Walk the given bus, including any bridged devices
+> + *  on buses under this bus.  Call the provided callback
+> + *  on each device found.
+> + *
+> + *  We check the return of @cb each time. If it returns anything
+> + *  other than 0, we break out.
+> + *
+> + */
+> +void pci_walk_bus(struct pci_bus *top, int (*cb)(struct pci_dev *, void *), void *userdata)
+> +{
+> +	__pci_walk_bus(top, cb, userdata, false);
+>  }
+>  EXPORT_SYMBOL_GPL(pci_walk_bus);
+>  
+> +void pci_walk_bus_locked(struct pci_bus *top, int (*cb)(struct pci_dev *, void *), void *userdata)
+> +{
+> +	lockdep_assert_held(&pci_bus_sem);
+> +
+> +	__pci_walk_bus(top, cb, userdata, true);
+> +}
+> +EXPORT_SYMBOL_GPL(pci_walk_bus_locked);
+> +
+>  struct pci_bus *pci_bus_get(struct pci_bus *bus)
+>  {
+>  	if (bus)
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> index 10f2d0bb86be..2ce2a3bd932b 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> @@ -972,7 +972,7 @@ static int qcom_pcie_enable_aspm(struct pci_dev *pdev, void *userdata)
+>  	 * Downstream devices need to be in D0 state before enabling PCI PM
+>  	 * substates.
+>  	 */
+> -	pci_set_power_state(pdev, PCI_D0);
+> +	pci_set_power_state_locked(pdev, PCI_D0);
+>  	pci_enable_link_state_locked(pdev, PCIE_LINK_STATE_ALL);
+>  
+>  	return 0;
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index d8f11a078924..9ab9b1008d8b 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -1354,6 +1354,7 @@ int pci_power_up(struct pci_dev *dev)
+>  /**
+>   * pci_set_full_power_state - Put a PCI device into D0 and update its state
+>   * @dev: PCI device to power up
+> + * @locked: whether pci_bus_sem is held
+>   *
+>   * Call pci_power_up() to put @dev into D0, read from its PCI_PM_CTRL register
+>   * to confirm the state change, restore its BARs if they might be lost and
+> @@ -1363,7 +1364,7 @@ int pci_power_up(struct pci_dev *dev)
+>   * to D0, it is more efficient to use pci_power_up() directly instead of this
+>   * function.
+>   */
+> -static int pci_set_full_power_state(struct pci_dev *dev)
+> +static int pci_set_full_power_state(struct pci_dev *dev, bool locked)
+>  {
+>  	u16 pmcsr;
+>  	int ret;
+> @@ -1399,7 +1400,7 @@ static int pci_set_full_power_state(struct pci_dev *dev)
+>  	}
+>  
+>  	if (dev->bus->self)
+> -		pcie_aspm_pm_state_change(dev->bus->self);
+> +		pcie_aspm_pm_state_change(dev->bus->self, locked);
+>  
+>  	return 0;
+>  }
+> @@ -1428,10 +1429,22 @@ void pci_bus_set_current_state(struct pci_bus *bus, pci_power_t state)
+>  		pci_walk_bus(bus, __pci_dev_set_current_state, &state);
+>  }
+>  
+> +static void __pci_bus_set_current_state(struct pci_bus *bus, pci_power_t state, bool locked)
+> +{
+> +	if (!bus)
+> +		return;
+> +
+> +	if (locked)
+> +		pci_walk_bus_locked(bus, __pci_dev_set_current_state, &state);
+> +	else
+> +		pci_walk_bus(bus, __pci_dev_set_current_state, &state);
+> +}
+> +
+>  /**
+>   * pci_set_low_power_state - Put a PCI device into a low-power state.
+>   * @dev: PCI device to handle.
+>   * @state: PCI power state (D1, D2, D3hot) to put the device into.
+> + * @locked: whether pci_bus_sem is held
+>   *
+>   * Use the device's PCI_PM_CTRL register to put it into a low-power state.
+>   *
+> @@ -1442,7 +1455,7 @@ void pci_bus_set_current_state(struct pci_bus *bus, pci_power_t state)
+>   * 0 if device already is in the requested state.
+>   * 0 if device's power state has been successfully changed.
+>   */
+> -static int pci_set_low_power_state(struct pci_dev *dev, pci_power_t state)
+> +static int pci_set_low_power_state(struct pci_dev *dev, pci_power_t state, bool locked)
+>  {
+>  	u16 pmcsr;
+>  
+> @@ -1496,29 +1509,12 @@ static int pci_set_low_power_state(struct pci_dev *dev, pci_power_t state)
+>  				     pci_power_name(state));
+>  
+>  	if (dev->bus->self)
+> -		pcie_aspm_pm_state_change(dev->bus->self);
+> +		pcie_aspm_pm_state_change(dev->bus->self, locked);
+>  
+>  	return 0;
+>  }
+>  
+> -/**
+> - * pci_set_power_state - Set the power state of a PCI device
+> - * @dev: PCI device to handle.
+> - * @state: PCI power state (D0, D1, D2, D3hot) to put the device into.
+> - *
+> - * Transition a device to a new power state, using the platform firmware and/or
+> - * the device's PCI PM registers.
+> - *
+> - * RETURN VALUE:
+> - * -EINVAL if the requested state is invalid.
+> - * -EIO if device does not support PCI PM or its PM capabilities register has a
+> - * wrong version, or device doesn't support the requested state.
+> - * 0 if the transition is to D1 or D2 but D1 and D2 are not supported.
+> - * 0 if device already is in the requested state.
+> - * 0 if the transition is to D3 but D3 is not supported.
+> - * 0 if device's power state has been successfully changed.
+> - */
+> -int pci_set_power_state(struct pci_dev *dev, pci_power_t state)
+> +static int __pci_set_power_state(struct pci_dev *dev, pci_power_t state, bool locked)
+>  {
+>  	int error;
+>  
+> @@ -1542,7 +1538,7 @@ int pci_set_power_state(struct pci_dev *dev, pci_power_t state)
+>  		return 0;
+>  
+>  	if (state == PCI_D0)
+> -		return pci_set_full_power_state(dev);
+> +		return pci_set_full_power_state(dev, locked);
+>  
+>  	/*
+>  	 * This device is quirked not to be put into D3, so don't put it in
+> @@ -1556,16 +1552,16 @@ int pci_set_power_state(struct pci_dev *dev, pci_power_t state)
+>  		 * To put the device in D3cold, put it into D3hot in the native
+>  		 * way, then put it into D3cold using platform ops.
+>  		 */
+> -		error = pci_set_low_power_state(dev, PCI_D3hot);
+> +		error = pci_set_low_power_state(dev, PCI_D3hot, locked);
+>  
+>  		if (pci_platform_power_transition(dev, PCI_D3cold))
+>  			return error;
+>  
+>  		/* Powering off a bridge may power off the whole hierarchy */
+>  		if (dev->current_state == PCI_D3cold)
+> -			pci_bus_set_current_state(dev->subordinate, PCI_D3cold);
+> +			__pci_bus_set_current_state(dev->subordinate, PCI_D3cold, locked);
+>  	} else {
+> -		error = pci_set_low_power_state(dev, state);
+> +		error = pci_set_low_power_state(dev, state, locked);
+>  
+>  		if (pci_platform_power_transition(dev, state))
+>  			return error;
+> @@ -1573,8 +1569,38 @@ int pci_set_power_state(struct pci_dev *dev, pci_power_t state)
+>  
+>  	return 0;
+>  }
+> +
+> +/**
+> + * pci_set_power_state - Set the power state of a PCI device
+> + * @dev: PCI device to handle.
+> + * @state: PCI power state (D0, D1, D2, D3hot) to put the device into.
+> + *
+> + * Transition a device to a new power state, using the platform firmware and/or
+> + * the device's PCI PM registers.
+> + *
+> + * RETURN VALUE:
+> + * -EINVAL if the requested state is invalid.
+> + * -EIO if device does not support PCI PM or its PM capabilities register has a
+> + * wrong version, or device doesn't support the requested state.
+> + * 0 if the transition is to D1 or D2 but D1 and D2 are not supported.
+> + * 0 if device already is in the requested state.
+> + * 0 if the transition is to D3 but D3 is not supported.
+> + * 0 if device's power state has been successfully changed.
+> + */
+> +int pci_set_power_state(struct pci_dev *dev, pci_power_t state)
+> +{
+> +	return __pci_set_power_state(dev, state, false);
+> +}
+>  EXPORT_SYMBOL(pci_set_power_state);
+>  
+> +int pci_set_power_state_locked(struct pci_dev *dev, pci_power_t state)
+> +{
+> +	lockdep_assert_held(&pci_bus_sem);
+> +
+> +	return __pci_set_power_state(dev, state, true);
+> +}
+> +EXPORT_SYMBOL(pci_set_power_state_locked);
+> +
+>  #define PCI_EXP_SAVE_REGS	7
+>  
+>  static struct pci_cap_saved_state *_pci_find_saved_cap(struct pci_dev *pci_dev,
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index 2336a8d1edab..e9750b1b19ba 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -571,12 +571,12 @@ int pcie_retrain_link(struct pci_dev *pdev, bool use_lt);
+>  #ifdef CONFIG_PCIEASPM
+>  void pcie_aspm_init_link_state(struct pci_dev *pdev);
+>  void pcie_aspm_exit_link_state(struct pci_dev *pdev);
+> -void pcie_aspm_pm_state_change(struct pci_dev *pdev);
+> +void pcie_aspm_pm_state_change(struct pci_dev *pdev, bool locked);
+>  void pcie_aspm_powersave_config_link(struct pci_dev *pdev);
+>  #else
+>  static inline void pcie_aspm_init_link_state(struct pci_dev *pdev) { }
+>  static inline void pcie_aspm_exit_link_state(struct pci_dev *pdev) { }
+> -static inline void pcie_aspm_pm_state_change(struct pci_dev *pdev) { }
+> +static inline void pcie_aspm_pm_state_change(struct pci_dev *pdev, bool locked) { }
+>  static inline void pcie_aspm_powersave_config_link(struct pci_dev *pdev) { }
+>  #endif
+>  
+> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+> index 5a0066ecc3c5..bc0bd86695ec 100644
+> --- a/drivers/pci/pcie/aspm.c
+> +++ b/drivers/pci/pcie/aspm.c
+> @@ -1003,8 +1003,11 @@ void pcie_aspm_exit_link_state(struct pci_dev *pdev)
+>  	up_read(&pci_bus_sem);
+>  }
+>  
+> -/* @pdev: the root port or switch downstream port */
+> -void pcie_aspm_pm_state_change(struct pci_dev *pdev)
+> +/*
+> + * @pdev: the root port or switch downstream port
+> + * @locked: whether pci_bus_sem is held
+> + */
+> +void pcie_aspm_pm_state_change(struct pci_dev *pdev, bool locked)
+>  {
+>  	struct pcie_link_state *link = pdev->link_state;
+>  
+> @@ -1014,12 +1017,14 @@ void pcie_aspm_pm_state_change(struct pci_dev *pdev)
+>  	 * Devices changed PM state, we should recheck if latency
+>  	 * meets all functions' requirement
+>  	 */
+> -	down_read(&pci_bus_sem);
+> +	if (!locked)
+> +		down_read(&pci_bus_sem);
+>  	mutex_lock(&aspm_lock);
+>  	pcie_update_aspm_capable(link->root);
+>  	pcie_config_aspm_path(link);
+>  	mutex_unlock(&aspm_lock);
+> -	up_read(&pci_bus_sem);
+> +	if (!locked)
+> +		up_read(&pci_bus_sem);
+>  }
+>  
+>  void pcie_aspm_powersave_config_link(struct pci_dev *pdev)
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index add9368e6314..7ab0d13672da 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -1422,6 +1422,7 @@ int pci_load_and_free_saved_state(struct pci_dev *dev,
+>  				  struct pci_saved_state **state);
+>  int pci_platform_power_transition(struct pci_dev *dev, pci_power_t state);
+>  int pci_set_power_state(struct pci_dev *dev, pci_power_t state);
+> +int pci_set_power_state_locked(struct pci_dev *dev, pci_power_t state);
+>  pci_power_t pci_choose_state(struct pci_dev *dev, pm_message_t state);
+>  bool pci_pme_capable(struct pci_dev *dev, pci_power_t state);
+>  void pci_pme_active(struct pci_dev *dev, bool enable);
+> @@ -1625,6 +1626,8 @@ int pci_scan_bridge(struct pci_bus *bus, struct pci_dev *dev, int max,
+>  
+>  void pci_walk_bus(struct pci_bus *top, int (*cb)(struct pci_dev *, void *),
+>  		  void *userdata);
+> +void pci_walk_bus_locked(struct pci_bus *top, int (*cb)(struct pci_dev *, void *),
+> +			 void *userdata);
+>  int pci_cfg_space_size(struct pci_dev *dev);
+>  unsigned char pci_bus_max_busnr(struct pci_bus *bus);
+>  void pci_setup_bridge(struct pci_bus *bus);
+> @@ -2025,6 +2028,8 @@ static inline int pci_save_state(struct pci_dev *dev) { return 0; }
+>  static inline void pci_restore_state(struct pci_dev *dev) { }
+>  static inline int pci_set_power_state(struct pci_dev *dev, pci_power_t state)
+>  { return 0; }
+> +static inline int pci_set_power_state_locked(struct pci_dev *dev, pci_power_t state)
+> +{ return 0; }
+>  static inline int pci_wake_from_d3(struct pci_dev *dev, bool enable)
+>  { return 0; }
+>  static inline pci_power_t pci_choose_state(struct pci_dev *dev,
+> -- 
+> 2.43.0
+> 
 
