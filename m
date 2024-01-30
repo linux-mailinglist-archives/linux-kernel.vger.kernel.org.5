@@ -1,136 +1,152 @@
-Return-Path: <linux-kernel+bounces-44150-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44166-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A39E841DFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:38:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51E54841E37
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:45:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DA891F2C620
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:38:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08D5E28D050
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:45:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFFFF5813B;
-	Tue, 30 Jan 2024 08:38:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E31660896;
+	Tue, 30 Jan 2024 08:44:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DPdwzMVf"
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="uAB2rvgF"
+Received: from out203-205-221-235.mail.qq.com (out203-205-221-235.mail.qq.com [203.205.221.235])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2A04381B4;
-	Tue, 30 Jan 2024 08:38:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42B7459147
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 08:43:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.235
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706603892; cv=none; b=ARTl5NUhMZbCw7lxYQG43GVbXi0GIRsi/lSYuXTDZS0xjCe57jr0zwQb5E7VCV1f5CSpwJPP913zAneQWDMfqLdsUpz4T1dUOece/ScTkfU9dmEqxO8+xvmi6AkruR444dAiR83ZEyQxKmg2g/K3UPxtTGmNAzq50C9qeQP+e/A=
+	t=1706604239; cv=none; b=YBv1kjAPeb7SkBixr3idR3TqXgDMg9dk7Klu64ROFrfzdwY7cre7wTXdRWkg/Qbqdp4xjhVf5bI43W/xOFO2gfjohz5OJ+4QCvAPnaGxbbTYuzebFnBEkpvK55l2igx+QBHGHuKSPrl/jfzyN5smiFGt0/mcA1eRUCsDz7GKWDI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706603892; c=relaxed/simple;
-	bh=OH4l3l+PiVerAo7bJ29F5CDHx+9RNN4LLhE2EUaq0/o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=d8TecrDxI8zrbV0FQjzYQahKVH6jSUB7layyxRcrHBKO+XJeF3bI+xQKsv+jnDL6syVmcbcF3uSRa4tu+RS4jb1FyB3poLld71Ba99qOwAYiZedCEj5qbTe7Z9Bu5Z3aocgGOHzJJfjPxhJpMKnoizCuPe7vxGJxQeVwcF3bA64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DPdwzMVf; arc=none smtp.client-ip=209.85.208.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d057003864so8108501fa.3;
-        Tue, 30 Jan 2024 00:38:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706603889; x=1707208689; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xDU/2MwbFRllUTNWUINgIIfQ9WlIfROwCcs26QMTgo4=;
-        b=DPdwzMVfR+GilX4dx8lFm1KucgtHzrmOS7RT01lxWODOAf9x0Y0sbHQph3vXDvBY1s
-         9EKWL6OIrx54nNdKyPgU+hYluaSQskYet4APeSA6MJ1tgeuDt43SNeovhvjx/SfgdKKx
-         L+qspfg2w6pVs+0qW4gf5LPq8brnwbuPgxRSej6Z2wLdWySjuPDALXDifhuH+55G85Ar
-         szbTjC/Ed+HzlwuwYfbQMVLhzxdn/XhuPtQNxYlf1CO0wlbU7rpCxjJXJUVSYGz3ZFPj
-         tK0pFFJoPJrs6wpRun+D3PMTSvVKP/hA4hL3qisphgEf3OnpQmFKSP/s3H4E+pa3gJfX
-         MMHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706603889; x=1707208689;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xDU/2MwbFRllUTNWUINgIIfQ9WlIfROwCcs26QMTgo4=;
-        b=cBHwsvPfM+F/Ku+kvakQb+AwQ+Rndekfyt8MNKEyY97WuQll8nR1TQDsV3DLK9KTG0
-         uHVJiY3S4neJay5SWrCZIDe4mWTikkwd7BsGPxdLCfUAjKEqSCgKx/QWw3TOPPVDtjVz
-         gWXVj/0u6goAr2xhcBdrl0OQYe8m9ZPOpcJPG0UyrKKphbfElfK9kmkE+Iwcjn3M9vwh
-         NA4EP9zSnLWp1L4rPLk5aLA5mlyQGfezVbchUmRfoEbfMgWA4y34PXMa++MQjpPImgdB
-         Cmo/G5TQyUWhF00fu7upDDEr/znA9KRuw+gfrw+DZPHzNjbAWpm8rEyguMj3x9VsBsmv
-         vmeA==
-X-Gm-Message-State: AOJu0YzRYZSwJpXA3zyS1PYmCYP/1WPQfDUX/uNiQqnBhTAUDVikps67
-	WmzA2Wq3doMvqDL619M1IFSpcIW8TgNabhlAeB4YF+cJwFinXpQvKZ5u8Py8Pn2QnLJqmame3UZ
-	19lnK4mnT1uuzdWmtxu0PKCBXjNQ=
-X-Google-Smtp-Source: AGHT+IHu0HanyunsHlgYEqJQJkb6JsQMDMYRKggdaYtUb1d24h//flk1b8/XUBsfJ1tJjUmeHUbxDJxWMCKp612sy4o=
-X-Received: by 2002:a2e:a278:0:b0:2d0:4c36:8cbf with SMTP id
- k24-20020a2ea278000000b002d04c368cbfmr2772545ljm.16.1706603888667; Tue, 30
- Jan 2024 00:38:08 -0800 (PST)
+	s=arc-20240116; t=1706604239; c=relaxed/simple;
+	bh=a/doanRbOKE9y+h32FzGqbaLaL/blaSzrUB9qFpcO1s=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=k83Y4ObpSPAy4ZYQz0AMqUK6eqmTH65U/8ZbuO8D40NbRvKmqDkFObmtNWKx2JLhFxm1uepj8OxkCynMXYcex0mS7d7t47xdBvpQOFkAJ5VEOD/KOWxszRK18VQYWgSoT/Q98huMqo57pOaGUddkBE6D2v4nh92hQpePBMKK/pg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=uAB2rvgF; arc=none smtp.client-ip=203.205.221.235
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1706604235; bh=7+2/BakBVH30cf5o74KBg5/QyuphreIoa2HNDmJDki8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=uAB2rvgFQ68v3dnlWVSh/hcV2wR8FfdloIgC2Z0s1lqjPuWDH60BVGN7eLQ0D7jWr
+	 ercDkjJX6Epxb9MHSWc/mGPtxRV94zQBp998T4L1i0sKHWqc3PLZRItubKHIaR51id
+	 Tt/7k3HGtpdU/phI86bRA0A5DPoH3h1yhAtsytjA=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
+	id 97038E05; Tue, 30 Jan 2024 16:37:48 +0800
+X-QQ-mid: xmsmtpt1706603868trena0m28
+Message-ID: <tencent_C16C982E616C44951CE80EEF46CD707B820A@qq.com>
+X-QQ-XMAILINFO: NDgMZBR9sMmaP+1mcOH883vPeZzBnKYBWWgdNLkSMZHEAobah0jl9oXTYD9hVp
+	 2T9uQPc9bqUnH5dlW6XgA3ib+sUf+VhUseeLTADNCJ99T1G9yLhxS5x3aqffeWJaMeWvl0LXtp/Y
+	 Dk38L48K8luGIRiuom/6drCZpwKT5nArSHU4tFgDgMDtUNRWk12IInEopBaVytS6HobalTjZ2unF
+	 PIUoz+TkmCnC2EX2Z4iLl6LSb36H/FB4wjDasMBeleZubwXOIdOXXoqlgZJ3GTldhWhfkIzRVzG4
+	 cp/uSOcldGZseYrlcPGonn26+r+nHeJJnvPX7cjujI8viqmKa5yK/Skk8m/I5WHRJx7nHXTw/vPb
+	 xocwUhpR9IB3K8z754M8GzR+RghK9fvNSfjNK4Pu23HAqucRVqJpyJYgZ+KI80Hy3AMa3dO7NItA
+	 yAOQu8KARF4A8I4YpN333OYM5Wt4AI5pWG1j29v83eK7Ku7ibMWZhp1LEoq5fJ/2++9X+dc3T9/0
+	 Uy4kpaFdme3gO4GoROngTC+NBpxZvVRjhDh8u9kW7SrMdxrHNR3YGbwLxSPgaf1QqWeonUNZ1vz6
+	 fZF8o1R7QqcjpnlDCHJrrREL2+SeGUaC0FyAtp/XZObWrrCYRossXIAfLmX+0jfDfw3GEOCdkQg9
+	 wFpyFrr/MgiInpZtLlm7wuNMGxa8IM8Cfiuejr6kuVCxch3Z6MhdFcrfrZTlhB5CTLGS79lY//Nn
+	 2E0JD11qH4yF/U+mMqT3YwSkBNPbklxg3/gh6h4xuvyYX5N458bNOjqH2z67v6SdP8XDwJdXVIIY
+	 9UnsHd4C6RUtgVPkvDWHRKC18OwNfqbzMdfKohS+oYGUSkw2yHvK9rDdpbOoUFADRtBxP1xgRYBN
+	 yja8rIbA/6IKU3PLZzgrn/tA1KM+RfSFSFKd+Q7doA9Jf0C88Muud2D90jUs7RUUARWMraJMpx
+X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+2373f6be3e6de4f92562@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [block?] [trace?] INFO: task hung in blk_trace_remove (2)
+Date: Tue, 30 Jan 2024 16:37:49 +0800
+X-OQ-MSGID: <20240130083748.3760265-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <0000000000002b1fc7060fca3adf@google.com>
+References: <0000000000002b1fc7060fca3adf@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240126120800.3410349-1-zhaoyang.huang@unisoc.com> <ZbPAjGJr7hrOvNOo@casper.infradead.org>
-In-Reply-To: <ZbPAjGJr7hrOvNOo@casper.infradead.org>
-From: Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date: Tue, 30 Jan 2024 16:37:46 +0800
-Message-ID: <CAGWkznGSFi9thfuauMtRy6o9YxQV_CiWtFzuxkrTPtvpJrnsiw@mail.gmail.com>
-Subject: Re: [PATCHv4 1/1] block: introduce content activity based ioprio
-To: Matthew Wilcox <willy@infradead.org>
-Cc: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Jens Axboe <axboe@kernel.dk>, Yu Zhao <yuzhao@google.com>, Damien Le Moal <dlemoal@kernel.org>, 
-	Niklas Cassel <niklas.cassel@wdc.com>, "Martin K . Petersen" <martin.petersen@oracle.com>, 
-	Hannes Reinecke <hare@suse.de>, Linus Walleij <linus.walleij@linaro.org>, linux-mm@kvack.org, 
-	linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, steve.kang@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jan 26, 2024 at 10:24=E2=80=AFPM Matthew Wilcox <willy@infradead.or=
-g> wrote:
->
-> On Fri, Jan 26, 2024 at 08:08:00PM +0800, zhaoyang.huang wrote:
-> > +#ifdef CONFIG_CONTENT_ACT_BASED_IOPRIO
-> > +#define bio_add_page(bio, page, len, offset) \
-> > +     ({                                      \
-> > +             int class, level, hint, activity;       \
-> > +             int ret =3D 0;                            \
-> > +             ret =3D bio_add_page(bio, page, len, offset);            =
- \
-> > +             if (ret > 0) {                                          \
-> > +                     class =3D IOPRIO_PRIO_CLASS(bio->bi_ioprio);     =
- \
-> > +                     level =3D IOPRIO_PRIO_LEVEL(bio->bi_ioprio);     =
- \
-> > +                     hint =3D IOPRIO_PRIO_HINT(bio->bi_ioprio);       =
- \
-> > +                     activity =3D IOPRIO_PRIO_ACTIVITY(bio->bi_ioprio)=
-;                \
-> > +                     activity +=3D (bio->bi_vcnt + 1 <=3D IOPRIO_NR_AC=
-TIVITY &&          \
-> > +                             PageWorkingset(&folio->page)) ? 1 : 0;   =
-               \
->
-> I know you didn't even compile this version.
-sorry for forgetting to enable corresponding fs, it will be corrected
-in the next patchset. The correct version is compiled and verified by
-including act_ioprio.h in the below files in the same android
-environment as the previous version.
+please test task hung in blk_trace_remove
 
-modified:   fs/erofs/zdata.c
-modified:   fs/ext4/page-io.c
-modified:   fs/ext4/readpage.c
-modified:   fs/f2fs/data.c
-modified:   fs/mpage.c
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
->
-> More importantly, conceptually it doesn't work.  All kinds of pages
-> get added to bios, and not all of them are file/anon pages.  That
-> PageWorkingset bit might well be reused for other purposes.  Only
-> the caller knows if this is file/anon memory.  You can't do this here.
->
-I noticed the none-file bio's you mentioned such as the one in
-xfs_rw_bdev() and fscrypt_zeroout_range(). That's also the reason I
-don't define the macro in common fs's header file. It should be up to
-fs to decide which bio_add_xxx should be replaced by the activity
-based one while keeping others as legacy versions.
+diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
+index d5d94510afd3..9575f19d390d 100644
+--- a/kernel/trace/blktrace.c
++++ b/kernel/trace/blktrace.c
+@@ -330,6 +330,23 @@ static void blk_trace_free(struct request_queue *q, struct blk_trace *bt)
+ 	kfree(bt);
+ }
+ 
++static void blk_trace_free_rcu(struct blk_trace *bt)
++{
++	/*
++	 * If 'bt->dir' is not set, then both 'dropped' and 'msg' are created
++	 * under 'q->debugfs_dir', thus lookup and remove them.
++	 */
++	if (!bt->dir) {
++		debugfs_lookup_and_remove("dropped", bt->debugfs_dir);
++		debugfs_lookup_and_remove("msg", bt->debugfs_dir);
++	} else {
++		debugfs_remove(bt->dir);
++	}
++	free_percpu(bt->sequence);
++	free_percpu(bt->msg_data);
++	kfree(bt);
++}
++
+ static void get_probe_ref(void)
+ {
+ 	mutex_lock(&blk_probe_mutex);
+@@ -377,12 +394,26 @@ static int blk_trace_stop(struct blk_trace *bt)
+ 	return 0;
+ }
+ 
++static void blk_trace_rcu_free(struct rcu_head *rcu)
++{
++	struct blk_trace *bt;
++
++	bt = container_of(rcu, struct blk_trace, rcu);
++	if (bt) {
++		blk_trace_free_rcu(bt);
++		put_probe_ref();
++	}
++}
++
+ static void blk_trace_cleanup(struct request_queue *q, struct blk_trace *bt)
+ {
+ 	blk_trace_stop(bt);
+-	synchronize_rcu();
+-	blk_trace_free(q, bt);
+-	put_probe_ref();
++	if (!bt->dir)
++		bt->debugfs_dir = q->debugfs_dir;
++	mutex_unlock(&q->debugfs_mutex);
++	relay_close(bt->rchan);
++	call_rcu(&bt->rcu, blk_trace_rcu_free);
++	mutex_lock(&q->debugfs_mutex);
+ }
+ 
+ static int __blk_trace_remove(struct request_queue *q)
+diff --git a/include/linux/blktrace_api.h b/include/linux/blktrace_api.h
+index 122c62e561fc..4920c201bd12 100644
+--- a/include/linux/blktrace_api.h
++++ b/include/linux/blktrace_api.h
+@@ -26,6 +26,8 @@ struct blk_trace {
+ 	struct dentry *dir;
+ 	struct list_head running_list;
+ 	atomic_t dropped;
++	struct dentry  *debugfs_dir;
++	struct rcu_head rcu;
+ };
+ 
+ extern int blk_trace_ioctl(struct block_device *, unsigned, char __user *);
+
 
