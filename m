@@ -1,77 +1,114 @@
-Return-Path: <linux-kernel+bounces-45299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A5C8842E3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 21:51:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 586C5842E3C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 21:51:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A206B1F281F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:51:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CE151F28622
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:51:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A76E7AE54;
-	Tue, 30 Jan 2024 20:50:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E1EB7AE51;
+	Tue, 30 Jan 2024 20:50:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="cFQwocNa"
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="blU4rVWv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A649762F2;
-	Tue, 30 Jan 2024 20:50:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71BEA433A7;
+	Tue, 30 Jan 2024 20:50:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706647828; cv=none; b=KWOIM+7WSk9S23pOsYnHBWs2qsMXl8oR+80FXOQOguJ1GZwTmA9RnOAibMbkm2X3a+5lyga3eDcRrGRl+1kD3kNlNcEqSdEJTU9cM+YBMEqvnw5YumI9uHW/a88RDGEWNaNp7C0nqrV89midDKDWjT0rW+fB2jSIrF3TgQ3v/IM=
+	t=1706647835; cv=none; b=JJerRHQs0ypMUY/nf85FaIeRRnGdDV8gUbF+8RfFAy6LssaTjXl9jOcufZfQGfsUZSfyHK0zZRAblIJJEtwWp0mQNE693/A7gqPqq4Py08wSExjWk4IN8IdhcnKM8yWxnn5Hpmu73PDaYtpSmzA5/lb1sFPItFVpscodg5JzNlc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706647828; c=relaxed/simple;
-	bh=6Tedb7Dj+/odnHs4h8iRSDGO1llbomw/c2z4zGiG7ZE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ubdDE2T54LwDuWpuLT1vVoxUkSj7IsnfE5I2oUxKy7fXzKPgb8w4CDolx/qwPGS+LE+gY0SBouxCKVd6t0cYDa5ZjH86TiUOSlWtup267VoUev00ZwBFUr3lTOkAABob80N7vdspF6u2SOunY4fW0f/ZO95FQ78LBYEYFaUof2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=cFQwocNa; arc=none smtp.client-ip=45.79.88.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net D0C1141A47
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1706647827; bh=6Tedb7Dj+/odnHs4h8iRSDGO1llbomw/c2z4zGiG7ZE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=cFQwocNaSvgU4kMXJA9nACpCV9oIQcGJtYhaFInXCd3Y8swcnxihbC+uzB6ZdvZ28
-	 pGk4swOVNhaKYzw3n9JZFaOE0ulj23uUZCsexZ+zxN0UnGHdVmR3lkYL83BLZ7aaHo
-	 Dn3Q/zHd883/JPUBwV/4fFUgjFjMj0pCKWzbIcBDfqeRIqb3SxhevmwBJbpoKQ3fOu
-	 UrIH61SemDyMGmeaoHb4rjMlT+n+9YZzr0/uxWS8bVYvbf1aFbhvbE1g0beR2do0R/
-	 k54tzOFWAazLWxG71QaxUgWELXr30sJGIGot/edDrTW3uvRepoGj+jl3prTyYeS0i7
-	 LLzRVr1KouYwQ==
-Received: from localhost (unknown [IPv6:2601:280:5e00:7e19::646])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id D0C1141A47;
-	Tue, 30 Jan 2024 20:50:26 +0000 (UTC)
-From: Jonathan Corbet <corbet@lwn.net>
-To: Federico Vaga <federico.vaga@vaga.pv.it>
-Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] doc:it_IT: first translation for locking/
-In-Reply-To: <20240130202340.tmppiux5oiwvrtij@numero-86.vaga.pv.it>
-References: <20240106233820.30454-1-federico.vaga@vaga.pv.it>
- <20240130202340.tmppiux5oiwvrtij@numero-86.vaga.pv.it>
-Date: Tue, 30 Jan 2024 13:50:26 -0700
-Message-ID: <87ttmua6lp.fsf@meer.lwn.net>
+	s=arc-20240116; t=1706647835; c=relaxed/simple;
+	bh=w9NLzrTM/ZNQdeUtz6mFY9vTDHy+fyJKBU197/0Hf7k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t4l49lJGmjK6+1curW4qbw/JghRqSrRt16Sh4fTSi4XS3gX9iiCoGcAPJbtBniqpBQ7y5IDkajOonjSU+m+6P1ryuNGu2WbmuRwMj8zvAo0DAZ38guo12aonHMNvSwWp8AK6QqlZTtdC4zmFNBOBx7S95qp3q7NRu+5PyfEUBG8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=blU4rVWv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3BD8C433C7;
+	Tue, 30 Jan 2024 20:50:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706647835;
+	bh=w9NLzrTM/ZNQdeUtz6mFY9vTDHy+fyJKBU197/0Hf7k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=blU4rVWv41GeBB7mP7toDLtLIDYa9yqHoqttAImt2T8BIKIR1KUUXXRpmCKDwnKTu
+	 qL+pTlhREufV1oR0c5VWYx6g9hYaoR/JDt2KE/4wiUybO+vGPJO7Ia9NyK37urhTJ+
+	 fWpYqSo/5f6NfOL1ufbwlHm1qlTNhap3CX7KDRGk2e10hSG8BQNbfDNY0PxprP1msv
+	 iZlmiUQ+C9K1kQDbNClIf1duSVQJgoz2nCjXwP2zDcpfiA5NtwCsxVrnmZe4PZn/wP
+	 6r8Wxt3TOa2bObPNjCOBHNkMpqxzhDTT4km49rJ16xDqj0NfYMaS9zSq3QLEqEXI86
+	 nRhviCaA4OaOA==
+Date: Tue, 30 Jan 2024 14:50:32 -0600
+From: Rob Herring <robh@kernel.org>
+To: Michal Simek <michal.simek@amd.com>
+Cc: monstr@monstr.eu,
+	"moderated list:ARM/ZYNQ ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
+	Rob Herring <robh+dt@kernel.org>, git@xilinx.com,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org,
+	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
+	michal.simek@xilinx.com
+Subject: Re: [PATCH v3] dt-bindings: soc: xilinx: Add support for K26 rev2
+ SOMs
+Message-ID: <170664783217.2318601.17333972700012679424.robh@kernel.org>
+References: <90e1a393154c3d87e8ee7dc9eef07fc937c1eaf7.1706019397.git.michal.simek@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <90e1a393154c3d87e8ee7dc9eef07fc937c1eaf7.1706019397.git.michal.simek@amd.com>
 
-Federico Vaga <federico.vaga@vaga.pv.it> writes:
 
-> Hi Jon,
->
-> I hope you are doing well. I do not want to disturbe you too much, I'm pinging
-> you just in case this patch got lost.
+On Tue, 23 Jan 2024 15:16:44 +0100, Michal Simek wrote:
+> Revision 2 is SW compatible with revision 1 but it is necessary to reflect
+> it in model and compatible properties which are parsed by user space.
+> Rev 2 has improved a power on boot reset and MIO34 shutdown glich
+> improvement done via an additional filter in the GreenPak chip.
+> 
+> Signed-off-by: Michal Simek <michal.simek@amd.com>
+> ---
+> 
+> Changes in v3:
+> - use allOf contains structure to avoid random chars caused by
+>   additionalItems: true
+> 
+> Changes in v2:
+> - Support older combinations
+> 
+> I want to support all versions we created:
+> All of them:
+> -rev2, -rev1, -revB, -revA, "xlnx,zynqmp-smk-k26", "xlnx,zynqmp"
+> 
+> rev1:
+> -rev1, -revB, -revA, "xlnx,zynqmp-smk-k26", "xlnx,zynqmp"
+> 
+> revB:
+> -revB, -revA, "xlnx,zynqmp-smk-k26", "xlnx,zynqmp"
+> 
+> revA:
+> -revA, "xlnx,zynqmp-smk-k26", "xlnx,zynqmp"
+> 
+> And also single one are permitted:
+> -revB, "xlnx,zynqmp-smk-k26", "xlnx,zynqmp"
+> -rev1, "xlnx,zynqmp-smk-k26", "xlnx,zynqmp"
+> -rev2, "xlnx,zynqmp-smk-k26", "xlnx,zynqmp"
+> 
+> I didn't find a way to pretty much all the time force that there must be
+> both "xlnx,zynqmp-smk-k26", "xlnx,zynqmp" that's why there is only
+> requested to have xlnx,zynqmp. If you find a way how to encode it please
+> let me know.
+> 
+> ---
+>  .../bindings/soc/xilinx/xilinx.yaml           | 36 +++++++++++++------
+>  1 file changed, 26 insertions(+), 10 deletions(-)
+> 
 
-Nope, just finally catching up after the merge window; I think I was
-applying it exactly as you were writing :)
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-jon
 
