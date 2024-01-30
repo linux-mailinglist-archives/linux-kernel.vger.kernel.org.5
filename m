@@ -1,145 +1,206 @@
-Return-Path: <linux-kernel+bounces-44889-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44891-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C483B842893
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:01:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 051CC842899
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:01:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 654061F28D7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:01:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 74553B25EDB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:01:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E96386AD6;
-	Tue, 30 Jan 2024 16:00:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA42D82D93;
+	Tue, 30 Jan 2024 16:01:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=timschumi@gmx.de header.b="bEVyglh2"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="en0V3sYq"
+Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com [209.85.222.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C74D85C5C;
-	Tue, 30 Jan 2024 16:00:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41EF885C5C;
+	Tue, 30 Jan 2024 16:01:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706630437; cv=none; b=e/3AirslNDj9Vg/JGYmDC3gCqmyv/G2W/w7k/kpvX0xibN2ksQXuNSrsOARjR4GiK6cWkGirWQ5/ubHjjQgUd4l3e9+AxccFGbmodSY2Ub3CcHIzkv5ElJ4WOpNIpv6F2di18QIT6Z7McyNjWA8xojH+4LmKgEZSPP/2hCQ4gJw=
+	t=1706630463; cv=none; b=QYI31vxDIcOxOMJEHIU3cAY/E9BFzZhqlQsKygLWBqfm4OE6Kc03gRKiJOjjrrxK6IaSMbXep5JwpuZjDVdBWniVwMKw1pOhMtTJI/XGfk1HFecSO34oq8rsFgwikeqfLMWWhGhoUVGl0MRCDmWzxkWQ4S3RX75qbXSzi0XsBkU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706630437; c=relaxed/simple;
-	bh=Sd2TBz8i472kEAnJMWJEafNr6Q7/YeKh7j8vwLAbrOw=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=ONj669aMwioBY5ZB/9WZe12o3SC50+37w2Uf53/gbw2I/OO7qgE3+qga4Yl175Uu2fwmCekacIVijM6hk0Uyxf2T84IiZKM8+cfMTsSz4jzglIFTbonK0Tt4t66zVUbleLAlf7EBk6LJ0S3rCfKuX6sZJUzIqzY9olUBLByalO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=timschumi@gmx.de header.b=bEVyglh2; arc=none smtp.client-ip=212.227.15.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1706630422; x=1707235222; i=timschumi@gmx.de;
-	bh=Sd2TBz8i472kEAnJMWJEafNr6Q7/YeKh7j8vwLAbrOw=;
-	h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:
-	 In-Reply-To;
-	b=bEVyglh2XyIm2kVWdb8o8PI1YI9jWaTs5mtwxYrAIMgkLVZ8gfta+PXE/SL58PCV
-	 +zJ9HHvEz6eP8+VjdgY3jpePGHGoB/ZGIclw/ux9m+C7/071+LgLBHV74G/s0EOdk
-	 zq849hWGc91fhBLyhQ88DCKLm0OgD7zGHcSlANWcJdRT9mA8SOJ3+rNZeWNlbY1bj
-	 cXu85DcOkZhEGH9MTOpkcXyouI1ycn0bGSlHU3ag8WjbSFOQeb5PzUaON5PPjDl2g
-	 W4BjJKEzIoA8IF66p/+D6jCN2fccjq8QOu1U5zhEPsJ2NUUbU2MjcR7dawcukmXC8
-	 CQhDxMpL9bTVVc6R1A==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [10.222.0.4] ([93.218.111.23]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Md6Mj-1qw3wj2azz-00aByq; Tue, 30
- Jan 2024 17:00:22 +0100
-Message-ID: <8caa916b-5b40-446a-9a80-68a4cf0fc75f@gmx.de>
-Date: Tue, 30 Jan 2024 17:00:16 +0100
+	s=arc-20240116; t=1706630463; c=relaxed/simple;
+	bh=psNUlzFWuQDc4vT0Ty8fJRic+D51qPm8Vrjk3S58n+E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=i1j+JLAtBTWRLefmx7to+EqmUssZ/d1b58zwz+yq7OP0Z4MoydnnRwPqkTjLprFovPwcrbqxlT/MSiwFJ3Q+Fq31Bps1UsBnAkcQxoTl2Sbnu3jP7aqu6wwCF0A2LOvXiHiKDarN43+nG1Ydn1xkdXKvTAVDEfc3HTsff7N1p3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=en0V3sYq; arc=none smtp.client-ip=209.85.222.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f44.google.com with SMTP id a1e0cc1a2514c-7d317aafbd1so1651730241.2;
+        Tue, 30 Jan 2024 08:01:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706630461; x=1707235261; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D8xU4bZ3PfIAed/M9W8X66NuCwYyPT1QQmLa1y80Xgc=;
+        b=en0V3sYq70CZRKvKaMxj4utU2dCvIFtch0czgBZvT3m+gAgxQaewpX4OEEJxZDzV3y
+         w/MjkfrsutEOI1UEqJjd5UHGuO8weoep3VMwTEFeoiRf4IzUzXOZtdzMgkdUm9GCoRtO
+         PdX3axWZv/mrNxwxLA66fhlpUlb2roRVOu2pIeAsRVRnwKe4NU/Da+8MS5iwuiddd64R
+         iEci5plcbm3adUU5TlJInIKPL2vjrSWWJoAe1W85PMN8SyFkO/XHzBoKk3YR/Qh2PyNs
+         ElD7ZGW8ONGYYy299bzeIajEL9N2zZKCQ+uneBwc1Xr+uWTYWGWuyhhK4lGzO59H1P5/
+         De4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706630461; x=1707235261;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=D8xU4bZ3PfIAed/M9W8X66NuCwYyPT1QQmLa1y80Xgc=;
+        b=iLFbT4P6rE7bdw7afSFwOyLbz+2BzHyWFMw9AV6kk3aWecgyY9KWJ+HLAVUDZ06BRq
+         9tSLCq+mjD4beh/VuCz/20r6yf3g+lIcEyUtaRLi6p4CM1N3o6/wruG9OwaoadEykvLa
+         D+6KdZsEFdlNdKE6+HGid/8k9ELg/hH+oz4mFqkTGebQpkQCDtsiTdPH8OknOB2253/o
+         SM8Db9ZgrZN2DQgwfekRs3HSZz7KBS7SY4Ct3qxH8i10fj9PbOn5L/oM3JU7v9TmX6rH
+         MgZkptCaUwmhXxneDXXQ59m+RYpBbKaGa9rGasb539hlQbDop+PguJAwktRHflB1lydz
+         0oJg==
+X-Gm-Message-State: AOJu0YyzeYET8nLHm/YbX8Q1+r8xsCykvfVYREGKGGBCLJZZYMEg78IL
+	ZIgpU1VMYt3YUTJDZdyjWc4iUcGNLG5KlD93LgFYmZYtUdPOX/FuSm7+EnZFEg5cpUNR44nppx9
+	YNw4UICm/SoQBdpmIlXWJGeHE1T0=
+X-Google-Smtp-Source: AGHT+IFxY/bjVN7x1nzWnlimAtCL47cP/CvQzpmRUgU9h7PfNyufHAQiBN6nyFGDIyEPsMFy8AJAN4wg/4Ve7rcZrUk=
+X-Received: by 2002:a05:6122:4b1b:b0:4b6:c3ae:97f6 with SMTP id
+ fc27-20020a0561224b1b00b004b6c3ae97f6mr4553861vkb.0.1706630460417; Tue, 30
+ Jan 2024 08:01:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] efivarfs: Request at most 512 bytes for variable names
-From: Tim Schumacher <timschumi@gmx.de>
-To: Ard Biesheuvel <ardb@kernel.org>
-Cc: linux-efi@vger.kernel.org, jk@ozlabs.org, mjg59@srcf.ucam.org,
- pjones@redhat.com, linux-kernel@vger.kernel.org
-References: <20240123202743.1591165-1-timschumi@gmx.de>
- <20240126162524.52051-1-timschumi@gmx.de>
- <CAMj1kXGOzk4OnsxL8T7Finx8RzNu23SriY7QokAvKD=BkEvpjw@mail.gmail.com>
- <00d699b5-bf2f-4411-af3b-30ca6fadf66a@gmx.de>
-Content-Language: en-US
-In-Reply-To: <00d699b5-bf2f-4411-af3b-30ca6fadf66a@gmx.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+References: <20240129151618.90922-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20240129151618.90922-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20240129-magical-unclaimed-e725e2491ccb@spud> <CAMuHMdVhXh_Cd8m00xfVRB9JA8Mfb9+qccu94iVpUMS2z5kmUQ@mail.gmail.com>
+ <CA+V-a8v0tdr-xh__5rcK=xL-yYG1qLtSrAUjPcS_-ZVYy8p9pQ@mail.gmail.com> <CAMuHMdVu+VNW56VYkJs2w-S=1372_ZL6K2LQGKoR9vugpR+Z-w@mail.gmail.com>
+In-Reply-To: <CAMuHMdVu+VNW56VYkJs2w-S=1372_ZL6K2LQGKoR9vugpR+Z-w@mail.gmail.com>
+From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date: Tue, 30 Jan 2024 16:00:29 +0000
+Message-ID: <CA+V-a8vtqUP0M0A-UP1dXBb8Hwejyn39Ah_zd1bRKpEQreuLDw@mail.gmail.com>
+Subject: Re: [PATCH 1/5] dt-bindings: interrupt-controller:
+ renesas,rzg2l-irqc: Document RZ/Five SoC
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Conor Dooley <conor@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Magnus Damm <magnus.damm@gmail.com>, linux-renesas-soc@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>, 
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:RFKXXIB4a7gJGtoO1i8sCB8yePbDkdI6XSo5oE61lZoJU5FSGXZ
- ZynBgkm/Q9to5KRmWR052kbA3BvMfbqHkZUxagJjzKMVqoRtM9iZEPkpu4m6K/V8p9bY+yv
- rXdTxulEnODL79WIKEstrFHDDNBBIuJZSd9l7BQggGOowXjJMliGR1Dwj/EfBpLVHrqNgLu
- 5jPhKf0qEDT5SWuAJzMBg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:oN/akEBlZSc=;MYQObOQFeHrQeESuRMkIkqIDGwd
- lxQMShDsLXlB22mX3nii2XX2PU360S9lotNhJOQm3YC9whvOhOJTqtk52ahEf4tGfNVlkvYgq
- eEpL39XWfU0b4YH8k9YlOCTAOqVbF0y5otsNJui9U9Nb1RSQ07rij5HgR2i5787qfgceJItck
- RpyYS4vi0zGxVsh7XbcoKeHsK0hQHDVIguHAdKYcz4fOZqYj+nW+ap0H0HKAeSVqxLxc7/O1a
- B0yF3kFLM+nB5vjBP5my5hYq7Ps4oymRgr7gUAzXu6/foBmR4TFQcH1XeKjCX67ZR6UlPC1eG
- XZtqCB+rQ0A4zBz8Wv9cxACEO0CAt+cK0CkE7k3Dk6X7IiTRHJ/He7kQt3x0B8uolRE0UPoUm
- uN3XgzC+YJKw63UnB/96/OuYqY7UwaahC6HrhZFCjh8Wd3Z2hXPu0ABb9VXYW/Zy5haJJ4KYx
- FlrLXZjQJv0pm0ZtA7yr8OVxSYBFImu6yMkZSS62+emO6F/NFnSlvrowKT9SmAjRAYSkK0WQc
- k0vHpwE1g66QkYNZ/yIhJ6ZzBrlzu4UO3L9e12AD14lh9nhj2FDrD3Rq76qqGs9GE3cWWo2vG
- SXMle/+8sVtK9iWj65sk8X0HYduOs+8vL0iCufmD0pjClT6uE72vuoVC2WZnzsC987VGN852T
- Sq3+y/ZxaGCK1yPgrax0yLWgJKPHcsKIP0Kkd0/vfd66+RkrAusipTPJs5zIca0Kf2KtfX3cG
- PRKJLnBd6HRqohV4oxgKEktjUeeY51bXCTTd2KpKevgKsYemgfjZEMPkyegMn59sjW4zmir9G
- BcGnCxr9YcHWAQVatqnKmf3Dx3KZYw5UZxOdgfVrqE4gk=
 
-On 26.01.24 19:02, Tim Schumacher wrote:
-> On 26.01.24 17:35, Ard Biesheuvel wrote:
->> On Fri, 26 Jan 2024 at 17:25, Tim Schumacher <timschumi@gmx.de> wrote:
->>
->>> One thing that I just recently noticed is that properly processing
->>> variables above 512 bytes in size is currently meaningless anyways,
->>> since the VFS layer only allows file name sizes of up to 255 bytes,
->>> and 512 bytes of UCS2 will end up being at least 256 bytes of
->>> UTF-8.
->>>
->>
->> Interesting. Let's add this to the commit log - it makes the case much
->> stronger, given that it proves that it is impossible for anyone to be
->> relying on the current maximum being over 512 bytes.
+Hi Geert,
+
+On Tue, Jan 30, 2024 at 1:06=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68=
+k.org> wrote:
 >
-> It makes the case much stronger for why one wouldn't be able to _create_
-> variables of that length from Linux userspace, creating dentries interna=
-lly
-> seems to have different restrictions (or at least their name size seems
-> unlimited to me). Therefore, anything external could have still created
-> such variables, and such a variable will also affect any variable that
-> follows, not just itself. They don't have to be processed properly, but
-> they still need to be processed (and they currently aren't processed at =
-all).
+> Hi Prabhakar,
 >
+> On Tue, Jan 30, 2024 at 1:59=E2=80=AFPM Lad, Prabhakar
+> <prabhakar.csengg@gmail.com> wrote:
+> > On Tue, Jan 30, 2024 at 11:13=E2=80=AFAM Geert Uytterhoeven
+> > <geert@linux-m68k.org> wrote:
+> > > On Mon, Jan 29, 2024 at 6:30=E2=80=AFPM Conor Dooley <conor@kernel.or=
+g> wrote:
+> > > > On Mon, Jan 29, 2024 at 03:16:14PM +0000, Prabhakar wrote:
+> > > > > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > > > >
+> > > > > Document RZ/Five (R9A07G043F) IRQC bindings. The IRQC block on RZ=
+/Five SoC
+> > > > > is almost identical to one found on the RZ/G2L SoC with below dif=
+ferences,
+> > > > > * Additional BUS error interrupt
+> > > > > * Additional ECCRAM error interrupt
+> > > > > * Has additional mask control registers for NMI/IRQ/TINT
+> > > > >
+> > > > > Hence new compatible string "renesas,r9a07g043f-irqc" is added fo=
+r RZ/Five
+> > > > > SoC.
+> > > > >
+> > > > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas=
+com>
+> > >
+> > > > > --- a/Documentation/devicetree/bindings/interrupt-controller/rene=
+sas,rzg2l-irqc.yaml
+> > > > > +++ b/Documentation/devicetree/bindings/interrupt-controller/rene=
+sas,rzg2l-irqc.yaml
+> > > > > @@ -134,6 +141,12 @@ properties:
+> > > > >        - const: tint30
+> > > > >        - const: tint31
+> > > > >        - const: bus-err
+> > > > > +      - const: eccram0-tie1
+> > > > > +      - const: eccram0-tie2
+> > > > > +      - const: eccram0-ovf
+> > > > > +      - const: eccram1-tie1
+> > > > > +      - const: eccram1-tie2
+> > > > > +      - const: eccram1-ovf
+> > >
+> > > Why not use the naming from the docs (all 6 include "ti")?
+> > > EC7TIE1_0, EC7TIE2_0, EC7TIOVF_0, EC7TIE1_1, EC7TIE2_1, EC7TIOVF_1
+> > > =3D> ec7tie1-0, ec7tie2-0, ec7tiovf-0, ...?
+> > >
+> > Agreed.
+> >
+> > > > I think the restrictions already in the file become incorrect with =
+this
+> > > > patch:
+> > > >   - if:
+> > > >       properties:
+> > > >         compatible:
+> > > >           contains:
+> > > >             enum:
+> > > >               - renesas,r9a07g043u-irqc
+> > > >               - renesas,r9a08g045-irqc
+> > > >     then:
+> > > >       properties:
+> > > >         interrupts:
+> > > >           minItems: 42
+> > > >         interrupt-names:
+> > > >           minItems: 42
+> > > >       required:
+> > > >         - interrupt-names
+> > > >
+> > > > This used to require all 42 interrupts for the two compatibles here
+> > > > and at least the first 41 otherwise. Now you've increased the numbe=
+r of
+> > > > interrupts to 48 thereby removing the upper limits on the existing
+> > > > devices.
+> > >
+> > > I'm gonna repeat (and extend) my question from [1]: How come we thoug=
+ht
+> > > RZ/G2L and RZ/V2L do not have the bus error and ECCRAM interrupts?
+> > >
+> > Hmm not sure how this was missed earlier.
+> >
+> > > Looks like most of the conditional handling can be removed (see below=
+).
+> > >
+> > > > Given the commit message, I figure that providing 48 interrupts for
+> > > > (at least some of) those devices would be incorrect?
+> > >
+> > > Looks like all of RZ/G2L{,C}, RZ/V2L, RZ/G2UL, and RZ/Five support
+> > > all 48 interrupts.  RZ/G3S lacks the final three for ECCRAM1.
+> > >
+> > Agreed for RZ/G2L{,C}, RZ/V2L, RZ/G2UL, and RZ/Five, but for RZ/G3S it
+> > becomes tricky the interrupts for ECCRAM0/1 are combined hence they
+> > have just 3 interrupts. How do you propose the above interrupt naming?
+>
+> I guess it doesn't hurt to have an index 0 on a part that has only a
+> single set?
+>
+Let's go with this option...
 
-I was able to experimentally confirm that creating dentries internally is
-_not_ restricted by the value of NAME_MAX. The test setup was as follows:
+> Alternatives would be to
+>   1. Drop the index completely on RZ/G3S, complicating bindings and
+>      driver,
+>   1. Drop the index for the first set, and use index 2 for the second set=
+,
+>      causing the names to differ even more on parts with 2 sets.
+>
+..instead of complicating.
 
-- Build and boot a kernel with NAME_MAX bumped to an artificially high
-   value (e.g. 1024). This is supposed to simulate an external user.
-- Create an UEFI variable with a name of length 254 (ends up at length 291
-   with the appended GUID, which is above the normal NAME_MAX limit).
-- Create a "sentinel" UEFI variable with a non-critical name size (e.g. 32=
-)
-   to determine whether iteration has been stopped early during the next b=
-oot.
-- Reboot into the same kernel but with an unmodified NAME_MAX limit (i.e. =
-255).
-- Observe that not only the sentinel variable shows up (i.e. iteration
-   hasn't stopped early), but that even the variable with a file name leng=
-th of
-   291 shows up and continues to be readable and writable from userspace.
-
-Notably (and unexpectedly), only the _creation_ of efivarfs files with len=
-gth
-larger than NAME_MAX (from inside userspace) seems to abide by the NAME_MA=
-X
-limit, and ends up bailing out with "File name too long" / ENAMETOOLONG.
-Therefore, please disregard my earlier statement about "processing such
-entries properly is meaningless" that I put into the patch-accompanying me=
-ssage.
-I assumed it would be enforced across all/most common file operations inst=
-ead
-of just when creating files.
-
+Cheers,
+Prabhakar
 
