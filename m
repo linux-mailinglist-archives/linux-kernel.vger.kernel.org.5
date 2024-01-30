@@ -1,140 +1,285 @@
-Return-Path: <linux-kernel+bounces-43893-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43894-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23388841A7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 04:23:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF75F841A7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 04:23:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2D92283393
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 03:23:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F33571C222E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 03:23:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8C7C374D1;
-	Tue, 30 Jan 2024 03:23:35 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EE0337171;
-	Tue, 30 Jan 2024 03:23:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A280B374C6;
+	Tue, 30 Jan 2024 03:23:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="Bwj6HASa"
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0723376F4
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 03:23:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706585015; cv=none; b=EO5BTrYfqQyrVQYvfXlQmTSNlKnkOdafk2v97Wiv5H83jWx2vfqtGlqreScwdwMks9zq50QSnoYw7YeK5yQg8DnI/AYOoeECEdB61+u/6C1IsmB8OrX9dUeg0A8LqfzgVQ+xQs5RrFr3/xRLMzpP/nvgYWVkEojFXBDm1zbKy3E=
+	t=1706585021; cv=none; b=Dvzfx5Wzn7dlxy4RNYfV/OXDjrPK1Rynf6q/iMgn8/VPzYEWhXAsR0HUHjZHwwoUknwRY7PUaw7Yir3WwPltizrdm4VlzxyWwwtS9SLuDUo+2TOB9Jnz7Sz6hUuuUKu1BsWUXvEL5IPQZSytAm3h3jaqM/QN7Wh31vq9vgruAWw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706585015; c=relaxed/simple;
-	bh=JixfZLRBAcL76btxusE3CiEUz0Lzxhmpuqg1wOtqKLQ=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=WFF9y2ISgVrOMmJ66UoVKp1rEdGV2lTFNlsfIOxK3xQdE3+6+4Lq7YYEmIeg9NCZWLapNueYSvLFcBxsTcJYn7fVIBmj1dDOhNoxesnKYgMmYwPItBHXLo1uOvKAbYXB8NvqigzYlVvjvB+y+EWDoOuDtinNZExeKNvnBrSB0R4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.20.42.173])
-	by gateway (Coremail) with SMTP id _____8CxifCza7hlNyoIAA--.25382S3;
-	Tue, 30 Jan 2024 11:23:31 +0800 (CST)
-Received: from [10.20.42.173] (unknown [10.20.42.173])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8CxZMyxa7hlQzsnAA--.28908S3;
-	Tue, 30 Jan 2024 11:23:29 +0800 (CST)
-Subject: Re: [PATCH v4 2/3] irqchip/loongson-eiointc: Skip handling if there
- is no pending irq
-To: Huacai Chen <chenhuacai@kernel.org>
-Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>,
- Thomas Gleixner <tglx@linutronix.de>, linux-mips@vger.kernel.org,
- linux-kernel@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omp.ru>,
- lvjianmin@loongson.cn
-References: <20240125113623.2043061-1-maobibo@loongson.cn>
- <20240125113623.2043061-3-maobibo@loongson.cn>
- <CAAhV-H7wBBx-8fVfRoujMUJuLbQWW2oKDbW6A52G2S_pqmTK6A@mail.gmail.com>
-From: maobibo <maobibo@loongson.cn>
-Message-ID: <3d8cdc3a-415c-0f5a-d8d5-3fd2084926fc@loongson.cn>
-Date: Tue, 30 Jan 2024 11:23:29 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+	s=arc-20240116; t=1706585021; c=relaxed/simple;
+	bh=TKueyDbu0dNmd8p9ZImYWs+ZqKPqYbXpn8u6zVPUfjA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=A124FHeSU+PWvoCmw4hBq+JJwivhMHYJ4AVlQq1XjO1zr49BzJ7hONlJ0+2H1RQz2ZpBMPlujwsIuWteF+GlDH3xeCYLtDbNLdPLv180pq1xiJKKLZISGJsO4/0sqdbbyPhqrVa/WY9q+VH9ISJ+Vh1ku7n6iMx5w7QLtQhqzXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=Bwj6HASa; arc=none smtp.client-ip=209.85.215.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5d8b887bb0cso2111612a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 19:23:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1706585019; x=1707189819; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8o03jrNzbU+C4x/9AR7e489filXEU2KmXfLu3Qo3xNs=;
+        b=Bwj6HASaV6pB88NoEtyWrxJWI3siHBp/BELp3KDHwI070JuNocA6KVOep0jF6N2YWn
+         E7ylBAlPE1gZEq4rXtXZqhHQYkk/rQEK3jR5oIbJlN1AqEgvV2Ve6+QH/FuG32wkeYRd
+         AY6IK/4KGCjyYmOE4R7YIDb4GOXflG7rOhZP8sT8mnf0rIKlTPhKDSKuh16TC18TVdSF
+         kS1D57U7gDVN4/LLDYs1UYDEkE71HOJetKl0ta3a0nf4I136/X4Kh8QZlr2HYM9DJoco
+         rRww3syIF4B1ERC7CgxL3JTsO0FW97svA8gBGYBgM5EnZMprSJWsLQsvMM6MldH/blNl
+         fnHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706585019; x=1707189819;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8o03jrNzbU+C4x/9AR7e489filXEU2KmXfLu3Qo3xNs=;
+        b=LKY8N1XMmgGkDv8snJ8e2xmaQ7/LYnXhMWOFRfqT2+W+5tmtCI4rySz4rPOT1J8tuZ
+         WZvMcZy3RAqJ2ZSj5zfliAqije3Y6l7XJbVTAX5whXeF/mH/p2FyxNS5GGH1OUmtHKA8
+         IFZK6jj8UxqOPYCsQLN9xrj18/n25Ak5lTja3YX++/fwQO9dQeQIp2J/ssDwX9y8RVUb
+         xW6CcJ8mszEFooCTKOnqohcr9YK0gDNKAaPFp/jycFM+/gKTEQdghAvVIf6QOTr2isCE
+         lSmWWs1OUKQMO2ZMTXdh/NzUxEbEKnOIHYQIZJIwY6onIL2A8H5kAFta7B2VoeiKIkcj
+         yy6A==
+X-Gm-Message-State: AOJu0YxlB0+z2hWbg2Fl9Cul5NprJO9Ks4lF5n5029Z9ppx0flrYdHz9
+	b6WHprFSvSkExAaVsiIlVUMz68MF4qzkv6YUcJ7SPJBx0O5smK9aNdjzf599Mog=
+X-Google-Smtp-Source: AGHT+IEZPHn9b0J452ClQ28tIEzvfdbzPN22cAJ3grLOGVVgcS6aMI1fyNw3wPYf8LsUEMpcVung0g==
+X-Received: by 2002:a05:6a21:144f:b0:19c:5b32:9504 with SMTP id oc15-20020a056a21144f00b0019c5b329504mr5875020pzb.49.1706585019014;
+        Mon, 29 Jan 2024 19:23:39 -0800 (PST)
+Received: from [10.4.207.234] ([139.177.225.234])
+        by smtp.gmail.com with ESMTPSA id y19-20020a170902ed5300b001d8b0750940sm4871845plb.175.2024.01.29.19.23.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jan 2024 19:23:38 -0800 (PST)
+Message-ID: <22d6a7be-be44-419f-9b01-24cd4f584b09@bytedance.com>
+Date: Tue, 30 Jan 2024 11:23:34 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAAhV-H7wBBx-8fVfRoujMUJuLbQWW2oKDbW6A52G2S_pqmTK6A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 07/20] mm: zswap: break out zwap_compress()
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8CxZMyxa7hlQzsnAA--.28908S3
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoW7Kw1rWr15JrWrXFWkKw4Utrc_yoW8Zw18p3
-	yUCa1qkF4DJryUCFnIqr18JF1YvwsYgFWDCa1kG3y3Z3s8JwnYkF4Fk3Wqvrs7Cr1fGa12
-	vF4YgF1Uua15C3cCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUB2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-	tVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
-	8JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
-	Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0
-	cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8V
-	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E
-	14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU4AhLUUUUU
+To: Johannes Weiner <hannes@cmpxchg.org>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Nhat Pham <nphamcs@gmail.com>, Yosry Ahmed <yosryahmed@google.com>,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240130014208.565554-1-hannes@cmpxchg.org>
+ <20240130014208.565554-8-hannes@cmpxchg.org>
+From: Chengming Zhou <zhouchengming@bytedance.com>
+In-Reply-To: <20240130014208.565554-8-hannes@cmpxchg.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-
-
-On 2024/1/29 下午8:27, Huacai Chen wrote:
-> Hi, Bibo,
+On 2024/1/30 09:36, Johannes Weiner wrote:
+> zswap_store() is long and mixes work at the zswap layer with work at
+> the backend and compression layer. Move compression & backend work to
+> zswap_compress(), mirroring zswap_decompress().
 > 
-> As commented in another patch, you can use eiointc_irq_dispatch(),
-> iocsr_read64() to describe functions, and it is better to use
-> Loongson-3A5000, Loongson-2K2000, Loongson-2K0500 rather than 3A5000,
-> 2K2000, 2K0500. Besides, please always use IRQs rather than IRQS.
-Huacai,
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-Thanks for reviewing.
+Reviewed-by: Chengming Zhou <zhouchengming@bytedance.com>
 
-Will do in next patch.
-
-Regards
-Bibo Mao
+> ---
+>  mm/zswap.c | 145 ++++++++++++++++++++++++++++-------------------------
+>  1 file changed, 77 insertions(+), 68 deletions(-)
 > 
-> With these modifications,
-> 
-> Acked-by: Huacai Chen <chenhuacai@loongson.cn>
-> 
-> On Thu, Jan 25, 2024 at 7:36 PM Bibo Mao <maobibo@loongson.cn> wrote:
->>
->> It is one simple optimization in the interrupt dispatch function
->> eiointc_irq_dispatch. There are 256 IRQs supported for eiointc on
->> 3A5000 and 2K2000 platform, 128 IRQS on 2K0500 platform, eiointc irq
->> handler reads the bitmap and find pending irqs when irq happens. So
->> there are several consecutive iocsr_read64 operations for the all
->> bits to find all pending irqs. If the pending bitmap is zero, it
->> means that there is no pending irq for the this irq bitmap range,
->> we can skip handling to avoid some useless operations such as
->> clearing hw ISR.
->>
->> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
->> ---
->>   drivers/irqchip/irq-loongson-eiointc.c | 6 ++++++
->>   1 file changed, 6 insertions(+)
->>
->> diff --git a/drivers/irqchip/irq-loongson-eiointc.c b/drivers/irqchip/irq-loongson-eiointc.c
->> index b3736bdd4b9f..6a71a8c29ac7 100644
->> --- a/drivers/irqchip/irq-loongson-eiointc.c
->> +++ b/drivers/irqchip/irq-loongson-eiointc.c
->> @@ -198,6 +198,12 @@ static void eiointc_irq_dispatch(struct irq_desc *desc)
->>
->>          for (i = 0; i < eiointc_priv[0]->vec_count / VEC_COUNT_PER_REG; i++) {
->>                  pending = iocsr_read64(EIOINTC_REG_ISR + (i << 3));
->> +
->> +               /* Skip handling if pending bitmap is zero */
->> +               if (!pending)
->> +                       continue;
->> +
->> +               /* Clear the IRQs */
->>                  iocsr_write64(pending, EIOINTC_REG_ISR + (i << 3));
->>                  while (pending) {
->>                          int bit = __ffs(pending);
->> --
->> 2.39.3
->>
-
+> diff --git a/mm/zswap.c b/mm/zswap.c
+> index bdc9f82fe4b9..f9b9494156ba 100644
+> --- a/mm/zswap.c
+> +++ b/mm/zswap.c
+> @@ -1316,6 +1316,79 @@ static int zswap_enabled_param_set(const char *val,
+>  	return ret;
+>  }
+>  
+> +static bool zswap_compress(struct folio *folio, struct zswap_entry *entry)
+> +{
+> +	struct crypto_acomp_ctx *acomp_ctx;
+> +	struct scatterlist input, output;
+> +	unsigned int dlen = PAGE_SIZE;
+> +	unsigned long handle;
+> +	struct zpool *zpool;
+> +	char *buf;
+> +	gfp_t gfp;
+> +	int ret;
+> +	u8 *dst;
+> +
+> +	acomp_ctx = raw_cpu_ptr(entry->pool->acomp_ctx);
+> +
+> +	mutex_lock(&acomp_ctx->mutex);
+> +
+> +	dst = acomp_ctx->buffer;
+> +	sg_init_table(&input, 1);
+> +	sg_set_page(&input, &folio->page, PAGE_SIZE, 0);
+> +
+> +	/*
+> +	 * We need PAGE_SIZE * 2 here since there maybe over-compression case,
+> +	 * and hardware-accelerators may won't check the dst buffer size, so
+> +	 * giving the dst buffer with enough length to avoid buffer overflow.
+> +	 */
+> +	sg_init_one(&output, dst, PAGE_SIZE * 2);
+> +	acomp_request_set_params(acomp_ctx->req, &input, &output, PAGE_SIZE, dlen);
+> +
+> +	/*
+> +	 * it maybe looks a little bit silly that we send an asynchronous request,
+> +	 * then wait for its completion synchronously. This makes the process look
+> +	 * synchronous in fact.
+> +	 * Theoretically, acomp supports users send multiple acomp requests in one
+> +	 * acomp instance, then get those requests done simultaneously. but in this
+> +	 * case, zswap actually does store and load page by page, there is no
+> +	 * existing method to send the second page before the first page is done
+> +	 * in one thread doing zwap.
+> +	 * but in different threads running on different cpu, we have different
+> +	 * acomp instance, so multiple threads can do (de)compression in parallel.
+> +	 */
+> +	ret = crypto_wait_req(crypto_acomp_compress(acomp_ctx->req), &acomp_ctx->wait);
+> +	dlen = acomp_ctx->req->dlen;
+> +	if (ret) {
+> +		zswap_reject_compress_fail++;
+> +		goto unlock;
+> +	}
+> +
+> +	zpool = zswap_find_zpool(entry);
+> +	gfp = __GFP_NORETRY | __GFP_NOWARN | __GFP_KSWAPD_RECLAIM;
+> +	if (zpool_malloc_support_movable(zpool))
+> +		gfp |= __GFP_HIGHMEM | __GFP_MOVABLE;
+> +	ret = zpool_malloc(zpool, dlen, gfp, &handle);
+> +	if (ret == -ENOSPC) {
+> +		zswap_reject_compress_poor++;
+> +		goto unlock;
+> +	}
+> +	if (ret) {
+> +		zswap_reject_alloc_fail++;
+> +		goto unlock;
+> +	}
+> +
+> +	buf = zpool_map_handle(zpool, handle, ZPOOL_MM_WO);
+> +	memcpy(buf, dst, dlen);
+> +	zpool_unmap_handle(zpool, handle);
+> +
+> +	entry->handle = handle;
+> +	entry->length = dlen;
+> +
+> +unlock:
+> +	mutex_unlock(&acomp_ctx->mutex);
+> +	return ret == 0;
+> +}
+> +
+>  static void zswap_decompress(struct zswap_entry *entry, struct page *page)
+>  {
+>  	struct zpool *zpool = zswap_find_zpool(entry);
+> @@ -1472,18 +1545,11 @@ bool zswap_store(struct folio *folio)
+>  	struct page *page = &folio->page;
+>  	struct zswap_tree *tree = swap_zswap_tree(swp);
+>  	struct zswap_entry *entry, *dupentry;
+> -	struct scatterlist input, output;
+> -	struct crypto_acomp_ctx *acomp_ctx;
+>  	struct obj_cgroup *objcg = NULL;
+>  	struct mem_cgroup *memcg = NULL;
+>  	struct zswap_pool *pool;
+> -	struct zpool *zpool;
+> -	unsigned int dlen = PAGE_SIZE;
+> -	unsigned long handle, value;
+> -	char *buf;
+> -	u8 *src, *dst;
+> -	gfp_t gfp;
+> -	int ret;
+> +	unsigned long value;
+> +	u8 *src;
+>  
+>  	VM_WARN_ON_ONCE(!folio_test_locked(folio));
+>  	VM_WARN_ON_ONCE(!folio_test_swapcache(folio));
+> @@ -1568,65 +1634,10 @@ bool zswap_store(struct folio *folio)
+>  		mem_cgroup_put(memcg);
+>  	}
+>  
+> -	/* compress */
+> -	acomp_ctx = raw_cpu_ptr(entry->pool->acomp_ctx);
+> -
+> -	mutex_lock(&acomp_ctx->mutex);
+> -
+> -	dst = acomp_ctx->buffer;
+> -	sg_init_table(&input, 1);
+> -	sg_set_page(&input, &folio->page, PAGE_SIZE, 0);
+> +	if (!zswap_compress(folio, entry))
+> +		goto put_pool;
+>  
+> -	/*
+> -	 * We need PAGE_SIZE * 2 here since there maybe over-compression case,
+> -	 * and hardware-accelerators may won't check the dst buffer size, so
+> -	 * giving the dst buffer with enough length to avoid buffer overflow.
+> -	 */
+> -	sg_init_one(&output, dst, PAGE_SIZE * 2);
+> -	acomp_request_set_params(acomp_ctx->req, &input, &output, PAGE_SIZE, dlen);
+> -	/*
+> -	 * it maybe looks a little bit silly that we send an asynchronous request,
+> -	 * then wait for its completion synchronously. This makes the process look
+> -	 * synchronous in fact.
+> -	 * Theoretically, acomp supports users send multiple acomp requests in one
+> -	 * acomp instance, then get those requests done simultaneously. but in this
+> -	 * case, zswap actually does store and load page by page, there is no
+> -	 * existing method to send the second page before the first page is done
+> -	 * in one thread doing zwap.
+> -	 * but in different threads running on different cpu, we have different
+> -	 * acomp instance, so multiple threads can do (de)compression in parallel.
+> -	 */
+> -	ret = crypto_wait_req(crypto_acomp_compress(acomp_ctx->req), &acomp_ctx->wait);
+> -	dlen = acomp_ctx->req->dlen;
+> -
+> -	if (ret) {
+> -		zswap_reject_compress_fail++;
+> -		goto put_dstmem;
+> -	}
+> -
+> -	/* store */
+> -	zpool = zswap_find_zpool(entry);
+> -	gfp = __GFP_NORETRY | __GFP_NOWARN | __GFP_KSWAPD_RECLAIM;
+> -	if (zpool_malloc_support_movable(zpool))
+> -		gfp |= __GFP_HIGHMEM | __GFP_MOVABLE;
+> -	ret = zpool_malloc(zpool, dlen, gfp, &handle);
+> -	if (ret == -ENOSPC) {
+> -		zswap_reject_compress_poor++;
+> -		goto put_dstmem;
+> -	}
+> -	if (ret) {
+> -		zswap_reject_alloc_fail++;
+> -		goto put_dstmem;
+> -	}
+> -	buf = zpool_map_handle(zpool, handle, ZPOOL_MM_WO);
+> -	memcpy(buf, dst, dlen);
+> -	zpool_unmap_handle(zpool, handle);
+> -	mutex_unlock(&acomp_ctx->mutex);
+> -
+> -	/* populate entry */
+>  	entry->swpentry = swp;
+> -	entry->handle = handle;
+> -	entry->length = dlen;
+>  
+>  insert_entry:
+>  	entry->objcg = objcg;
+> @@ -1663,8 +1674,6 @@ bool zswap_store(struct folio *folio)
+>  
+>  	return true;
+>  
+> -put_dstmem:
+> -	mutex_unlock(&acomp_ctx->mutex);
+>  put_pool:
+>  	zswap_pool_put(entry->pool);
+>  freepage:
 
