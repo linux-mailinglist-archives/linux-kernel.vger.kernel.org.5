@@ -1,148 +1,231 @@
-Return-Path: <linux-kernel+bounces-44175-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44179-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66D45841E60
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:51:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9690E841E6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:52:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34F7DB2E132
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:48:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E6BC1F2724C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:52:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D29E257866;
-	Tue, 30 Jan 2024 08:48:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 179345822C;
+	Tue, 30 Jan 2024 08:52:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yFBVUY5M"
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AhAJ79Ld"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AE9559161
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 08:48:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08F4A57867;
+	Tue, 30 Jan 2024 08:52:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706604498; cv=none; b=CdwYdcn4gdhBZ8Y1hEgjcZ+5WgesOIeMv7pANGI6fLh9YAbFAo3OBjT8vziR9DZJPOdmuau4ESi/lP8uVc04PIaLfwMmz2LGnCONBwZRStyVsEcOVLX6VRMHDW5AKXY6ZgtMs+D7rt2NkvSjxpRMRXAk7GnWCke0WJ63vBw6p8s=
+	t=1706604756; cv=none; b=bD/EmtqHiEItGbw122ss8AwbTTiDjs23YE3dqXbMcFDvZRRDdCoUMqVpPU4e3KEriNRZrab0w8N7BVxdGVLOsVQ8oHNogGaVx5Rvn2GDU4NLfcjFMomaJmqa+EwwoCdMMxoi5IdOs87K+9UU7hk8fryAJHjKu1K7m8XwR8MSSSo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706604498; c=relaxed/simple;
-	bh=OTwo8h1r/HNa/CiLlIhtm61CfaQXTQtYUzvR2httRas=;
+	s=arc-20240116; t=1706604756; c=relaxed/simple;
+	bh=2h2lKDVDe0Qt6DafrcvNa34Fl+qhtWodrVVJ81QUTO0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PqdTx7jVDYy5OjlqELqKtOLWOi44yUOe4opuaMwOR1A6UImIgvaSJCc4zwQe1kaCMUHwY0nYNWsynsRiJCJoxkhpIO81DRcZMBi9ITEA9UJ8FLlsfepLGRyYLFeHte2CxjyQdgP0+h8w/1YNYfdKNZhDLgIxzChgohVlR1vm+r4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yFBVUY5M; arc=none smtp.client-ip=209.85.167.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3be78c26850so817388b6e.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 00:48:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706604495; x=1707209295; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ZYqm9+PdfliMcUPhu/XhOrYgIKmn3e//lFHUo82Q1J0=;
-        b=yFBVUY5M5PJznZXXUoI9QF0l1pvmA01vHxgzQE9fmP34C7v4Yt//W2LXStTS2O23sM
-         W6Lrtw6l/Czds4I/4hJv7k2ScEUNXQMKXbNzGWR5tB/uYOLoeqesWQWSk8girbrmy3LV
-         LXtDVa1UCM3GOw5KCpyKXilzVO/B3chZA9okugeMrbWXYKBDiiG5oCtYBB+2ZjxqNVQJ
-         uqYr7aprpZ+MCJVY2Ua++WiOTroR3B5G7IRbbag19uE0NoVFqEMKWes6oQ+YTL4jqn/u
-         3+nUh+DBaw5KxoCvNNIZpDkD8EmhIbyUUqmzhk1fycfwHW2YThQadxVKnZRTqsQfLDwz
-         JK4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706604495; x=1707209295;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZYqm9+PdfliMcUPhu/XhOrYgIKmn3e//lFHUo82Q1J0=;
-        b=Jqtr9+wYDLEt98ie1iSWMpqc1JSDsGnkI7VxteAoiutglvUvRG18iSph/gcoawaNFp
-         0Z3nOOqj+lluThpZquD1RxL6HcRy/7+qW68DbACq+H5Pl2NeJXzhqGF+pehLXhbBx/O7
-         N2TtyvNRWBVo82Q7swDqBXkk47fzc6CsF3pGr7SHM5j7MbpMhnRWcNE5uay59NKnr9MD
-         mbYHh2c69R09j3ZncXu0f7SPqXzIwB6wYi9ZiJ3TLnkSepYinxDyrseVLI8WhetBzqFr
-         PBcJYOZ3bQEOwuTs7BVZMChEIa2FKrbvbOHRABm+rcxhCHv1rFKjcxH1r3xcebv5cpxi
-         tLmw==
-X-Gm-Message-State: AOJu0YydS7tiBcBmXab6IkYqoHfPrHxy0x2fODMdKiMBh9wxX3AqG/Q3
-	DnIA1tBFDnDHDHsm/5vVgfT4I3u0vMaTFibdI0MJ4K0xDJKyEoWCaZcC6syXtQ==
-X-Google-Smtp-Source: AGHT+IH71sIX/2pyKvffdPLMRveRZzkZyOEOtO+a5eNkPZVGWZQUlduVZZ+zglJ0uCa6g/1z9Tuwng==
-X-Received: by 2002:a05:6808:1144:b0:3bd:c710:760 with SMTP id u4-20020a056808114400b003bdc7100760mr6316837oiu.51.1706604495567;
-        Tue, 30 Jan 2024 00:48:15 -0800 (PST)
-Received: from thinkpad ([117.202.188.6])
-        by smtp.gmail.com with ESMTPSA id e7-20020aa79807000000b006da96503d9fsm7207700pfl.109.2024.01.30.00.48.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 00:48:15 -0800 (PST)
-Date: Tue, 30 Jan 2024 14:18:03 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Mrinmay Sarkar <quic_msarkar@quicinc.com>, vkoul@kernel.org,
-	jingoohan1@gmail.com, conor+dt@kernel.org, konrad.dybcio@linaro.org,
-	robh+dt@kernel.org, quic_shazhuss@quicinc.com,
-	quic_nitegupt@quicinc.com, quic_ramkri@quicinc.com,
-	quic_nayiluri@quicinc.com, quic_krichai@quicinc.com,
-	quic_vbadigan@quicinc.com, quic_parass@quicinc.com,
-	quic_schintav@quicinc.com, quic_shijjose@quicinc.com,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Serge Semin <fancer.lancer@gmail.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	mhi@lists.linux.dev
-Subject: Re: [PATCH v1 2/6] dmaengine: dw-edma: Introduce helpers for getting
- the eDMA/HDMA max channel count
-Message-ID: <20240130084803.GA83288@thinkpad>
-References: <1705669223-5655-1-git-send-email-quic_msarkar@quicinc.com>
- <1705669223-5655-3-git-send-email-quic_msarkar@quicinc.com>
- <CAA8EJprWHiShFpZdb+pWsCoxNvNEoP+3By2x4u8rq+ek37hJXw@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Be16AEyTrFS4cPh9mATSqZ3oiGoK4oD9aUfaWeqrvAJ9SiRCfdXrAat0a3ESzvFIeIPNoYojwwnqDjRweMN7wndH3jWOGOgf81zBBzaachc03BvYHxjD12ahl84t+VJYfrjCLIFo2nSXnBFGIV0ThAlilf8RTBIAiYaz+Fn5gME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AhAJ79Ld; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706604754; x=1738140754;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=2h2lKDVDe0Qt6DafrcvNa34Fl+qhtWodrVVJ81QUTO0=;
+  b=AhAJ79LdFf6ZfRnWl5RZxjS/sEAauHD6ktHX10zQ4DhS3Ruvy++ZbdzE
+   h7yc8E4dr5V9owfHInxwLvNVt7stIUN0GXxyzI5ZCMTak9dSYckrt7frG
+   QwBUrz0i9DPwM4WOuCyWRMPhMgclPkJTy+MkZaeCqWj+f4NPJ9kHdJleh
+   /8Ib1QKVRT3idN1R7o9fCJR6oZz1mST3svFIdrWejT6R0BPg7TMsMaJGd
+   TkHgLj20RQIxsZa8X/YM4Sikn91n9fQOHHLCWE0aQapPSnGHSsrGYfXgd
+   Cl05RGkX1ZQgG4GXcmGmUInlaHNTSN6IBybZ+bBjK9fc8cwjAsipj98ik
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="10602345"
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="10602345"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 00:52:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="788126949"
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="788126949"
+Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 30 Jan 2024 00:52:17 -0800
+Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rUjou-00009I-0m;
+	Tue, 30 Jan 2024 08:50:34 +0000
+Date: Tue, 30 Jan 2024 16:48:06 +0800
+From: kernel test robot <lkp@intel.com>
+To: Choong Yong Liang <yong.liang.choong@linux.intel.com>,
+	Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+	David E Box <david.e.box@linux.intel.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Mark Gross <markgross@kernel.org>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <Jose.Abreu@synopsys.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Paul Gazzillo <paul@pgazz.com>,
+	Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+	oe-kbuild-all@lists.linux.dev, Andrew Halaney <ahalaney@redhat.com>,
+	Simon Horman <simon.horman@corigine.com>,
+	Serge Semin <fancer.lancer@gmail.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH net-next v4 08/11] stmmac: intel: configure SerDes
+ according to the interface mode
+Message-ID: <202401301610.XVvNEdG4-lkp@intel.com>
+References: <20240129130253.1400707-9-yong.liang.choong@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAA8EJprWHiShFpZdb+pWsCoxNvNEoP+3By2x4u8rq+ek37hJXw@mail.gmail.com>
+In-Reply-To: <20240129130253.1400707-9-yong.liang.choong@linux.intel.com>
 
-On Fri, Jan 19, 2024 at 03:26:56PM +0200, Dmitry Baryshkov wrote:
-> On Fri, 19 Jan 2024 at 15:00, Mrinmay Sarkar <quic_msarkar@quicinc.com> wrote:
-> >
-> > From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> >
-> > Add common helpers for getting the eDMA/HDMA max channel count.
-> >
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
-> > ---
-> >  drivers/dma/dw-edma/dw-edma-core.c           | 18 ++++++++++++++++++
-> >  drivers/pci/controller/dwc/pcie-designware.c |  6 +++---
-> >  include/linux/dma/edma.h                     | 14 ++++++++++++++
-> >  3 files changed, 35 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/dma/dw-edma/dw-edma-core.c b/drivers/dma/dw-edma/dw-edma-core.c
-> > index 7fe1c19..2bd6e43 100644
-> > --- a/drivers/dma/dw-edma/dw-edma-core.c
-> > +++ b/drivers/dma/dw-edma/dw-edma-core.c
-> > @@ -902,6 +902,24 @@ static int dw_edma_irq_request(struct dw_edma *dw,
-> >         return err;
-> >  }
-> >
-> > +static u32 dw_edma_get_max_ch(enum dw_edma_map_format mf, enum dw_edma_dir dir)
-> > +{
-> > +       if (mf == EDMA_MF_HDMA_NATIVE)
-> > +               return HDMA_MAX_NR_CH;
-> 
-> This will break unless patch 5 is applied.
+Hi Choong,
 
-I believe you are referring to patch 4.
+kernel test robot noticed the following build warnings:
 
-> Please move the
-> corresponding definition to this path.
->
+[auto build test WARNING on net-next/main]
 
-Right. But it can be fixed by reordering the patches.
+url:    https://github.com/intel-lab-lkp/linux/commits/Choong-Yong-Liang/net-phylink-publish-ethtool-link-modes-that-supported-and-advertised/20240129-211219
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20240129130253.1400707-9-yong.liang.choong%40linux.intel.com
+patch subject: [PATCH net-next v4 08/11] stmmac: intel: configure SerDes according to the interface mode
+config: x86_64-kismet-CONFIG_INTEL_PMC_IPC-CONFIG_DWMAC_INTEL-0-0 (https://download.01.org/0day-ci/archive/20240130/202401301610.XVvNEdG4-lkp@intel.com/config)
+reproduce: (https://download.01.org/0day-ci/archive/20240130/202401301610.XVvNEdG4-lkp@intel.com/reproduce)
 
-Mrinmay, please move patch 4/6 ahead of this one.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401301610.XVvNEdG4-lkp@intel.com/
 
-- Mani
- 
+kismet warnings: (new ones prefixed by >>)
+>> kismet: WARNING: unmet direct dependencies detected for INTEL_PMC_IPC when selected by DWMAC_INTEL
+   .config:21:warning: symbol value 'n' invalid for AIC79XX_DEBUG_MASK
+   .config:51:warning: symbol value 'n' invalid for BLK_DEV_LOOP_MIN_COUNT
+   .config:114:warning: symbol value 'n' invalid for SQUASHFS_FRAGMENT_CACHE_SIZE
+   .config:205:warning: symbol value 'n' invalid for FB_OMAP2_NUM_FBS
+   .config:209:warning: symbol value 'n' invalid for CMA_SIZE_MBYTES
+   .config:254:warning: symbol value 'n' invalid for SATA_MOBILE_LPM_POLICY
+   .config:337:warning: symbol value 'n' invalid for CFAG12864B_RATE
+   .config:351:warning: symbol value 'n' invalid for PSTORE_BLK_MAX_REASON
+   .config:355:warning: symbol value 'n' invalid for AIC79XX_CMDS_PER_DEVICE
+   .config:437:warning: symbol value 'n' invalid for PANEL_LCD_PIN_SDA
+   .config:459:warning: symbol value 'n' invalid for KFENCE_SAMPLE_INTERVAL
+   .config:574:warning: symbol value 'n' invalid for AIC7XXX_DEBUG_MASK
+   .config:646:warning: symbol value 'n' invalid for CRYPTO_DEV_QCE_SW_MAX_LEN
+   .config:653:warning: symbol value 'n' invalid for DRM_XE_JOB_TIMEOUT_MIN
+   .config:690:warning: symbol value 'n' invalid for FAT_DEFAULT_CODEPAGE
+   .config:752:warning: symbol value 'n' invalid for PANEL_LCD_CHARSET
+   .config:838:warning: symbol value 'n' invalid for SND_AC97_POWER_SAVE_DEFAULT
+   .config:868:warning: symbol value 'n' invalid for MAGIC_SYSRQ_DEFAULT_ENABLE
+   .config:885:warning: symbol value 'n' invalid for DRM_I915_MAX_REQUEST_BUSYWAIT
+   .config:919:warning: symbol value 'n' invalid for SND_AT73C213_TARGET_BITRATE
+   .config:957:warning: symbol value 'n' invalid for DRM_XE_PREEMPT_TIMEOUT_MIN
+   .config:969:warning: symbol value 'n' invalid for VMCP_CMA_SIZE
+   .config:1154:warning: symbol value 'n' invalid for NODES_SHIFT
+   .config:1224:warning: symbol value 'n' invalid for RCU_CPU_STALL_TIMEOUT
+   .config:1253:warning: symbol value 'n' invalid for MTDRAM_ERASE_SIZE
+   .config:1327:warning: symbol value 'n' invalid for SERIAL_UARTLITE_NR_UARTS
+   .config:1492:warning: symbol value 'n' invalid for INPUT_MOUSEDEV_SCREEN_Y
+   .config:1506:warning: symbol value 'n' invalid for LEGACY_PTY_COUNT
+   .config:1667:warning: symbol value 'n' invalid for AIC7XXX_RESET_DELAY_MS
+   .config:1833:warning: symbol value 'n' invalid for USB_GADGET_STORAGE_NUM_BUFFERS
+   .config:1883:warning: symbol value 'n' invalid for IBM_EMAC_POLL_WEIGHT
+   .config:1951:warning: symbol value 'n' invalid for PANEL_PROFILE
+   .config:1967:warning: symbol value 'n' invalid for DRM_I915_STOP_TIMEOUT
+   .config:2289:warning: symbol value 'n' invalid for SND_HDA_PREALLOC_SIZE
+   .config:2301:warning: symbol value 'n' invalid for PANEL_LCD_PIN_E
+   .config:2336:warning: symbol value 'n' invalid for SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST_NUM
+   .config:2339:warning: symbol value 'n' invalid for RCU_FANOUT_LEAF
+   .config:2443:warning: symbol value 'n' invalid for DRM_XE_TIMESLICE_MAX
+   .config:2500:warning: symbol value 'n' invalid for PANEL_LCD_BWIDTH
+   .config:2763:warning: symbol value 'n' invalid for PANEL_PARPORT
+   .config:2773:warning: symbol value 'n' invalid for PSTORE_BLK_CONSOLE_SIZE
+   .config:2860:warning: symbol value 'n' invalid for NOUVEAU_DEBUG_DEFAULT
+   .config:2938:warning: symbol value 'n' invalid for BOOKE_WDT_DEFAULT_TIMEOUT
+   .config:3061:warning: symbol value 'n' invalid for KCSAN_REPORT_ONCE_IN_MS
+   .config:3171:warning: symbol value 'n' invalid for KCSAN_UDELAY_INTERRUPT
+   .config:3194:warning: symbol value 'n' invalid for PANEL_LCD_PIN_BL
+   .config:3216:warning: symbol value 'n' invalid for DEBUG_OBJECTS_ENABLE_DEFAULT
+   .config:3223:warning: symbol value 'n' invalid for INITRAMFS_ROOT_GID
+   .config:3345:warning: symbol value 'n' invalid for ATM_FORE200E_TX_RETRY
+   .config:3389:warning: symbol value 'n' invalid for FB_OMAP2_DSS_MIN_FCK_PER_PCK
+   .config:3450:warning: symbol value 'n' invalid for AIC79XX_RESET_DELAY_MS
+   .config:3538:warning: symbol value 'n' invalid for KCSAN_UDELAY_TASK
+   .config:3574:warning: symbol value 'n' invalid for STACK_MAX_DEFAULT_SIZE_MB
+   .config:3759:warning: symbol value 'n' invalid for MMC_BLOCK_MINORS
+   .config:3806:warning: symbol value 'n' invalid for SCSI_NCR53C8XX_SYNC
+   .config:3894:warning: symbol value 'n' invalid for SERIAL_MCF_BAUDRATE
+   .config:3936:warning: symbol value 'n' invalid for UCLAMP_BUCKETS_COUNT
+   .config:3963:warning: symbol value 'n' invalid for X86_AMD_PSTATE_DEFAULT_MODE
+   .config:3985:warning: symbol value 'n' invalid for DE2104X_DSL
+   .config:3993:warning: symbol value 'n' invalid for BLK_DEV_RAM_COUNT
+   .config:4233:warning: symbol value 'n' invalid for IP_VS_SH_TAB_BITS
+   .config:4347:warning: symbol value 'n' invalid for SERIAL_ALTERA_UART_BAUDRATE
+   .config:4385:warning: symbol value 'n' invalid for USBIP_VHCI_HC_PORTS
+   .config:4492:warning: symbol value 'n' invalid for CMA_AREAS
+   .config:4493:warning: symbol value 'n' invalid for DUMMY_CONSOLE_ROWS
+   .config:4551:warning: symbol value 'n' invalid for INPUT_MOUSEDEV_SCREEN_X
+   .config:4670:warning: symbol value 'n' invalid for RIONET_RX_SIZE
+   .config:4736:warning: symbol value 'n' invalid for RADIO_TYPHOON_PORT
+   .config:4854:warning: symbol value 'n' invalid for SERIAL_TXX9_NR_UARTS
+   .config:4899:warning: symbol value 'n' invalid for MTRR_SANITIZER_SPARE_REG_NR_DEFAULT
+   .config:5001:warning: symbol value 'n' invalid for IBM_EMAC_TXB
+   .config:5148:warning: symbol value 'n' invalid for FTRACE_RECORD_RECURSION_SIZE
+   .config:5510:warning: symbol value 'n' invalid for DRM_I915_FENCE_TIMEOUT
+   .config:5532:warning: symbol value 'n' invalid for TTY_PRINTK_LEVEL
+   .config:5585:warning: symbol value 'n' invalid for CRYPTO_DEV_FSL_CAAM_INTC_TIME_THLD
+   .config:5701:warning: symbol value 'n' invalid for MIPS_EJTAG_FDC_KGDB_CHAN
+   .config:5772:warning: symbol value 'n' invalid for PPC_EARLY_DEBUG_EHV_BC_HANDLE
+   .config:5796:warning: symbol value 'n' invalid for KDB_DEFAULT_ENABLE
+   .config:5816:warning: symbol value 'n' invalid for SERIAL_ALTERA_UART_MAXPORTS
+   .config:5933:warning: symbol value 'n' invalid for IP_VS_MH_TAB_INDEX
+   .config:6101:warning: symbol value 'n' invalid for PANEL_LCD_HWIDTH
+   .config:6131:warning: symbol value 'n' invalid for LOCKDEP_CHAINS_BITS
+   .config:6230:warning: symbol value 'n' invalid for DRM_I915_HEARTBEAT_INTERVAL
+   .config:6236:warning: symbol value 'n' invalid for KCSAN_SKIP_WATCH
+   .config:6244:warning: symbol value 'n' invalid for EFI_MAX_FAKE_MEM
+   .config:6260:warning: symbol value 'n' invalid for PSTORE_BLK_KMSG_SIZE
+   .config:6358:warning: symbol value 'n' invalid for PANEL_LCD_PIN_RW
+   .config:6481:warning: symbol value 'n' invalid for SERIAL_8250_RUNTIME_UARTS
+   .config:6517:warning: symbol value 'n' invalid for KVM_MAX_NR_VCPUS
+   .config:6584:warning: symbol value 'n' invalid for ARCH_MMAP_RND_COMPAT_BITS
+   .config:6633:warning: symbol value 'n' invalid for SERIAL_SH_SCI_NR_UARTS
+   .config:6766:warning: symbol value 'n' invalid for RADIO_TRUST_PORT
+   .config:6852:warning: symbol value 'n' invalid for SND_MAX_CARDS
+   .config:7006:warning: symbol value 'n' invalid for RCU_BOOST_DELAY
+   .config:7177:warning: symbol value 'n' invalid for DVB_MAX_ADAPTERS
+   .config:7180:warning: symbol value 'n' invalid for SCSI_NCR53C8XX_MAX_TAGS
+   .config:7187:warning: symbol value 'n' invalid for CMA_SIZE_PERCENTAGE
+   .config:7213:warning: symbol value 'n' invalid for SCSI_SYM53C8XX_DMA_ADDRESSING_MODE
+   .config:7257:warning: symbol value 'n' invalid for ZSMALLOC_CHAIN_SIZE
+   .config:7354:warning: symbol value 'n' invalid for DRM_XE_TIMESLICE_MIN
+
 -- 
-மணிவண்ணன் சதாசிவம்
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
