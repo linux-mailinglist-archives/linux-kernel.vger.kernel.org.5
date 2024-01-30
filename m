@@ -1,139 +1,168 @@
-Return-Path: <linux-kernel+bounces-44821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44832-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 023858427DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:20:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B2B08427F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:24:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3565F1C25973
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:20:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB76028D9EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:23:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C06B82D7B;
-	Tue, 30 Jan 2024 15:20:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86E7012BF01;
+	Tue, 30 Jan 2024 15:21:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="JPxN6dTK"
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="IZTMGvJa"
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8D6481AD7;
-	Tue, 30 Jan 2024 15:19:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E55ED12BE9E
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 15:21:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706628001; cv=none; b=M2QdieCFNK20fQxHwd3wC3HW7VFIZDTclXTHHKsT5HnRkKryr92yS0SJiLDKn+1bMkUDGKsb+3RVFoqKzyPETnE468uZ1+EXk3yGq12M4LFHCf8RDrjPWv1GzyHCcJblbbGEQ/NLv4asDJJsQHF8ISAtzHtUtFjLOhIYQOtczxc=
+	t=1706628069; cv=none; b=aQmLmiakiN+VkGNuYFLdp2EoH3B+X8Luc1Suyv3KhEau3XAEv0DZsyp6pueLYga9ZcJj/1ZVPopz7eJxGvSsKScxblEXU4vGPaa4D890Vbk5DCg2HzQJi+hzKpu1UczDSe0gSgZHNdSQzHBfjk/m9lPXWMEGTNM7m3kOCci7mSE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706628001; c=relaxed/simple;
-	bh=JcOCpUNYX78olAmn5ygAlWF9kq291PrVVIR9mH3wcsw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=c6PH7obHgvDcEDwtRaKfoulunFERNEQIYOGU478oGbgW9ti8usbhYxC4UjiF69sbdR3fcHAUIOuPV2pwBR9AG29L1corbWCuUsATOu9uWQY57/+pT4oTz+s2k/w30JqqeVeExf6tJTACfv9mCvp4IXQ7I0sWIktWCS/witAcE/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=JPxN6dTK; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1706627999;
-	bh=JcOCpUNYX78olAmn5ygAlWF9kq291PrVVIR9mH3wcsw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=JPxN6dTK5Q/bxQsHTEY7XK3l9oczuiVZ8vLxKQcJxa2mwxLnyRXFfZ0eMzcgww5Xf
-	 18w3qMdFKykJmcWmlvPKFEkJKtpjVu543M1cpvx+Q62f5ni7hbSq213PHQfS2Ijoue
-	 yyGSjYKH/spBUmO+wADEcwcyKcVGmEG4aGWcaMg7iQENaKg4UU6p1UOfGPMJwz2Z5t
-	 xpS+TLWvlBjCul4Sh2Ewv7LTPEOaPlaluyTeYEqnBosrSALyZWaBpqztSwsGuS7Ss2
-	 gR4PHzgCZc20LNxisnTqnLhEtlcIkgleQSh4X+V5fRCoYhl6ul2Ar/s8mKocJiey7O
-	 5Jg5oRgFCWEGA==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TPTPB6JR9zVj1;
-	Tue, 30 Jan 2024 10:19:58 -0500 (EST)
-Message-ID: <c60044d2-4b61-45db-9036-6383b1677d20@efficios.com>
-Date: Tue, 30 Jan 2024 10:19:51 -0500
+	s=arc-20240116; t=1706628069; c=relaxed/simple;
+	bh=fnaHevZn3AnWviCVrRshdG83k6cks6roj4RtEKpfX24=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=T7sq1OzPvPbiN/tRcb1A8WIOeq+x1pTG+TNrJy/T9ABUGn122BPXTX8012vy2yAE0iSooCe58y5cPLCgvbHx1FEY+rGSfXPXFm/Fg2uaaLCbX+BeO8zsekhOgqzf/urc6VOG/qTh/CsBDIJSrQk63z3Q3p3utPd6Qy5SAiVUfrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=fail (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=IZTMGvJa reason="signature verification failed"; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [127.0.0.1] ([76.133.66.138])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 40UFKPTL2866718
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Tue, 30 Jan 2024 07:20:25 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 40UFKPTL2866718
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2024011201; t=1706628026;
+	bh=1ilVVk8Q8DP7NWzjjOV5yV70ZqlWK9unRMrjNDIK6u0=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=IZTMGvJa3wcmHi53UyzRx5CifOcNPjraHJfs5CMoswcufrmNCCKj0oQZ5iEt/NPo9
+	 8Uv8TCEAF6xMJYqBXkt9tkxUqWfkHmeUIMrCFhQgdX4hzYp7Eu6/CiK4e9fmNTiTxf
+	 FyQ1qrDdP7N9aVGDlrc5Hy4Sfxze7Dkt2GMrlx5pr6PlJlEUMqTXQDcu/j38hsPIet
+	 uOw2BFjESMFE98xBEiKEtLm9FM4jUCx1AoWjlX8L8AtaGJfKP/GXL00PUwskj6854R
+	 GP4yNV48PAc49ySYNkL3oK5M+VZe0Gy0SeYatRx+TtTAbW++KxSTNjqH1dhA9Erk/l
+	 5blYBbE1adaWQ==
+Date: Tue, 30 Jan 2024 07:20:23 -0800
+From: "H. Peter Anvin" <hpa@zytor.com>
+To: "Reshetova, Elena" <elena.reshetova@intel.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+CC: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>, "Theodore Ts'o" <tytso@mit.edu>,
+        Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Kalra, Ashish" <ashish.kalra@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 1/2] x86/random: Retry on RDSEED failure
+User-Agent: K-9 Mail for Android
+In-Reply-To: <DM8PR11MB5750E38A8B2BCE66AF7F9812E77D2@DM8PR11MB5750.namprd11.prod.outlook.com>
+References: <20240130083007.1876787-1-kirill.shutemov@linux.intel.com> <CAHmME9pOt=uEmuBzBpgUHw9DqAD2FZTZ3v53AOZbQ3Cd2p97xQ@mail.gmail.com> <DM8PR11MB5750E38A8B2BCE66AF7F9812E77D2@DM8PR11MB5750.namprd11.prod.outlook.com>
+Message-ID: <1C8939C0-BC58-4BE9-95B8-4B6F4A36115D@zytor.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 7/7] xfs: Use dax_is_supported()
-Content-Language: en-US
-To: Dave Chinner <david@fromorbit.com>
-Cc: Dan Williams <dan.j.williams@intel.com>,
- Vishal Verma <vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>,
- linux-kernel@vger.kernel.org, Chandan Babu R <chandan.babu@oracle.com>,
- "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
- Andrew Morton <akpm@linux-foundation.org>,
- Linus Torvalds <torvalds@linux-foundation.org>, linux-mm@kvack.org,
- linux-arch@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
- nvdimm@lists.linux.dev, linux-cxl@vger.kernel.org
-References: <20240129210631.193493-1-mathieu.desnoyers@efficios.com>
- <20240129210631.193493-8-mathieu.desnoyers@efficios.com>
- <ZbhhNnQ+fqd4Hda+@dread.disaster.area>
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <ZbhhNnQ+fqd4Hda+@dread.disaster.area>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 2024-01-29 21:38, Dave Chinner wrote:
-> On Mon, Jan 29, 2024 at 04:06:31PM -0500, Mathieu Desnoyers wrote:
->> Use dax_is_supported() to validate whether the architecture has
->> virtually aliased caches at mount time.
->>
->> This is relevant for architectures which require a dynamic check
->> to validate whether they have virtually aliased data caches
->> (ARCH_HAS_CACHE_ALIASING_DYNAMIC=y).
-> 
-> Where's the rest of this patchset? I have no idea what
-> dax_is_supported() actually does, how it interacts with
-> CONFIG_FS_DAX, etc.
-> 
-> If you are changing anything to do with FSDAX, the cc-ing the
-> -entire- patchset to linux-fsdevel is absolutely necessary so the
-> entire patchset lands in our inboxes and not just a random patch
-> from the middle of a bigger change.
+On January 30, 2024 5:10:20 AM PST, "Reshetova, Elena" <elena=2Ereshetova@i=
+ntel=2Ecom> wrote:
+>=20
+>> Hi Kirill,
+>>=20
+>> I've been following the other discussion closely thinking about the
+>> matter, but I suppose I'll jump in here directly on this patch, if
+>> this is the approach the discussion is congealing around=2E
+>>=20
+>> A comment below:
+>>=20
+>> On Tue, Jan 30, 2024 at 9:30=E2=80=AFAM Kirill A=2E Shutemov
+>> <kirill=2Eshutemov@linux=2Eintel=2Ecom> wrote:
+>> >  static inline bool __must_check rdseed_long(unsigned long *v)
+>> >  {
+>> > +       unsigned int retry =3D RDRAND_RETRY_LOOPS;
+>> >         bool ok;
+>> > -       asm volatile("rdseed %[out]"
+>> > -                    CC_SET(c)
+>> > -                    : CC_OUT(c) (ok), [out] "=3Dr" (*v));
+>> > -       return ok;
+>> > +
+>> > +       do {
+>> > +               asm volatile("rdseed %[out]"
+>> > +                            CC_SET(c)
+>> > +                            : CC_OUT(c) (ok), [out] "=3Dr" (*v));
+>> > +
+>> > +               if (ok)
+>> > +                       return true;
+>> > +       } while (--retry);
+>> > +
+>> > +       return false;
+>> >  }
+>>=20
+>> So, my understanding of RDRAND vs RDSEED -- deliberately leaving out
+>> any cryptographic discussion here -- is roughly that RDRAND will
+>> expand the seed material for longer, while RDSEED will mostly always
+>> try to sample more bits from the environment=2E AES is fast, while
+>> sampling is slow, so RDRAND gives better performance and is less
+>> likely to fail, whereas RDSEED always has to wait on the hardware to
+>> collect some bits, so is more likely to fail=2E
+>
+>The internals of Intel DRBG behind RDRAND/RDSEED has been publicly
+>documented, so the structure is no secret=2E Please see [1] for overall
+>structure and other aspects=2E So, yes, your overall understanding is cor=
+rect
+>(there are many more details though)=2E=20
+>
+>[1] https://www=2Eintel=2Ecom/content/www/us/en/developer/articles/guide/=
+intel-digital-random-number-generator-drng-software-implementation-guide=2E=
+html
+>
+>
+>>=20
+>> For that reason, most of the usage of RDRAND and RDSEED inside of
+>> random=2Ec is something to the tune of `if (!rdseed(out)) rdrand(out);`=
+,
+>> first trying RDSEED but falling back to RDRAND if it's busy=2E That
+>> still seems to me like a reasonable approach, which this patch would
+>> partly undermine (in concert with the next patch, which I'll comment
+>> on in a follow up email there)=2E
+>
+>I agree that for the purpose of extracting entropy for Linux RNG falling
+>back to RDRAND (current behavior) is perfectly ok, so I think you are doi=
+ng
+>the right thing=2E However, in principle it is not always the case, there=
+ are
+>situations when a fallback to RDRAND should not be used, but it is also
+>true that the user of this interface should know/understand this situatio=
+n=2E=20
+>
+>>=20
+>> So maybe this patch #1 (of 2) can be dropped?
+>
+>Before we start debating this patchset, what is your opinion on the origi=
+nal
+>problem we raised for CoCo VMs when both RDRAND/RDSEED are made to
+>fail deliberately?=20
+>
+>Best Regards,
+>Elena=2E
+>
+>
 
-Sorry, I will Cc linux-fsdevel on all patches for the next round.
-
-Meanwhile you can find the whole series on lore:
-
-https://lore.kernel.org/lkml/20240129210631.193493-1-mathieu.desnoyers@efficios.com/
-
-[...]
-
-> 
-> Assuming that I understand what dax_is_supported() is doing, this
-> change isn't right.  We're just setting the DAX configuration flags
-> from the mount options here, we don't validate them until
-> we've parsed all options and eliminated conflicts and rejected
-> conflicting options. We validate whether the options are
-> appropriate for the underlying hardware configuration later in the
-> mount process.
-> 
-> dax=always suitability is check in xfs_setup_dax_always() called
-> later in the mount process when we have enough context and support
-> to open storage devices and check them for DAX support. If the
-> hardware does not support DAX then we simply we turn off DAX
-> support, we do not reject the mount as this change does.
-> 
-> dax=inode and dax=never are valid options on all configurations,
-> even those with without FSDAX support or have hardware that is not
-> capable of using DAX. dax=inode only affects how an inode is
-> instantiated in cache - if the inode has a flag that says "use DAX"
-> and dax is suppoortable by the hardware, then the turn on DAX for
-> that inode. Otherwise we just use the normal non-dax IO paths.
-> 
-> Again, we don't error out the filesystem if DAX is not supported,
-> we just don't turn it on. This check is done in
-> xfs_inode_should_enable_dax() and I think all you need to do is
-> replace the IS_ENABLED(CONFIG_FS_DAX) with a dax_is_supported()
-> call...
-
-Thanks a lot for the detailed explanation. You are right, I will
-move the dax_is_supported() check to xfs_inode_should_enable_dax().
-
-Mathieu
-
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+I have a real concern with this=2E We already have the option to let the e=
+ntropy pool fill before the boot can proceed=2E This would have the risk of=
+ massively increasing the interrupt latency for what will be retried anyway=
+=2E
 
