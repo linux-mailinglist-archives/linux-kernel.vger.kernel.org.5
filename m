@@ -1,197 +1,145 @@
-Return-Path: <linux-kernel+bounces-45350-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45351-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F036842F24
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 22:52:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31FA0842F26
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 22:52:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 549A51C243DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 21:52:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F0C5B209CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 21:52:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17CD37D414;
-	Tue, 30 Jan 2024 21:51:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4700914AAA;
+	Tue, 30 Jan 2024 21:52:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="uwQqg/dH"
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="DCtrMZ7b"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83F087D40D
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 21:51:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FD257D3E3
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 21:52:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706651493; cv=none; b=mNYb1sWajzFqLo6XyQNQvGb+1SIRkJktuwg3z+xqS3BnCeSbqLwfbFeUgoDoQN+pZbv90Xhu1raTSfEjlZY3McDK3CjWm/OtJtNlKDHnjIV3D1P39eErOTUFKaiTolN++6zMxJAbQq83UmLJx823dWNymOpvjjvNQnnhM6rR4+8=
+	t=1706651546; cv=none; b=OgSMUYKwc15jLYY46FI0P5ZSTaBLJUIknVN9pX2an/4T00mJJxICGTwHcfAZoG0wMgjN2GTTU/kKccUzyvoaTNFbhnTkZPY+h4gj3GJhvkEiqzGi1x0gzdyWnn6AqPJbPpE01IWNDvyT/nElmPxFFLkrzKkM0k7qXUF42T/NsSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706651493; c=relaxed/simple;
-	bh=rR8SVv800/kqryt7JwIAYqxwWBoFBi/ay/0m7ds4vus=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SaHYFQJORcjQh8YlM6SX8CooMvixIGu7btx0HaAPpYbE73TWR6T2uueLBJIO/YLCOFcu8CfeGEsasoKaOhG3Z8ZyhFQMN2OEqGX7pKYeE10W56oYtMMYE3jJcnic/9pRGb7pxYyvtZRZ1EtWwuRAak5EOkiWDQ4d5HteO8wfC50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=uwQqg/dH; arc=none smtp.client-ip=209.85.216.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2906bcae4feso2074233a91.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 13:51:31 -0800 (PST)
+	s=arc-20240116; t=1706651546; c=relaxed/simple;
+	bh=+qk4vgKPY6g/M0jnFj6arXo9HY1VFRhgbxgqYyNRIGA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qeldLi/S6OaQP2li8Xo0gU/O3SO6BbBTmYaXUUr2piZpXwwON8vcQlDowkyEX1vPqUGkumNWTU+cVcja+ePR8oIqRSLlh5R4S9gD35kx22+MLbBCkZJcyr6fU0+YM0oggTpbBEM3khEIufXleOWnskvHKSE5B4ppPO+y+x34JAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=DCtrMZ7b; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a30e445602cso59983566b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 13:52:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706651490; x=1707256290; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Np9jYGYfYb8N8NYn/XtRXhSjDUyxZMfM0XTBuDl+Ozs=;
-        b=uwQqg/dHdGjr6VWkl+6Jgp6oEXjBon0K1PHQ+N8W89+pZ+QFOVgR04fKC62QKjr3Ek
-         V3uWMjHFNEmuOeLoHD9iITvbYaYQsV7GYXe1F2k2IK14Ixh34wOlcJgTQl7Yn9ZSmQr2
-         6ud7FGJu8UibFqQvYHVeeWGQas7L86ZqIYA3LlVFIIJ5LQLCpA0f1oIzdz3bVDH7VBXJ
-         gXEwu5KvETqkZaHp9DTqtfTwcPI/DhtPb37HVdlZaN2aGLSojkdb5NmDnBKB482C+k41
-         /7zfm79zjeY4uJ4V0LkfLpASH3C+3f3TwrVm93gbisnMRxVDsPexyECrcDTCreQ0mthc
-         RwdA==
+        d=linux-foundation.org; s=google; t=1706651542; x=1707256342; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=z/besbXOlWgDfiLFxKbwW3KTuDEF1myzGGPgRYrtdjU=;
+        b=DCtrMZ7bDmdjTtllWpRZ2+7nKAB2lObHXYuNPzu2HexW1SwamGtKyFCLTquLgJTWze
+         WtWHyPNuJ0r6T16e+MB+2k34o3UNwY1jPaOPcRYnJaP2mGLHMs9KwuPdvix7m1DEw9W/
+         aZiDc98W/IowygrbijqDFifkTe5oa4XmxgBy4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706651490; x=1707256290;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Np9jYGYfYb8N8NYn/XtRXhSjDUyxZMfM0XTBuDl+Ozs=;
-        b=Y82hjCTbJ1twlAj1uI1oSagFkXVUFDYCchOr1Td+6AIOgnyE4Lml/atQXP7DPwpTsY
-         cnCuvy2ePIDUiSpQMA+Jmp6xUf77skfM7zOd+NWz3oQ6F2HiHqV/VGiEzdLWT2yXrDCR
-         Xpdg4I8WbVB5z2XHODHHhbJde7fLOfXVambOJ/9vcT8WGtYgnzZhypIgaD0PeYFw5l5E
-         NKVZVINu590Aju3JBRberijYqjZ7AGwcuhHH2fyJhjPnkMS7Nvnz77xK7Qit6k5MJ7Fo
-         H2W/U7fWPcDn9rFGbcS4v8Zxx8Z3GKHQWqL0p5ZR4j4Igo3G2IiqHtPd1D22ZWbvrwWu
-         HipQ==
-X-Gm-Message-State: AOJu0Yx6exLh/VuandAJLKjUxqfG8OH+YjAATr2GaUYbudMaXiT/YWyW
-	8RRMAlTmgi85q3w5zdDiL0eluJeZQprLj5A9pZBEbMywolZzfFmJcPKCaB+egQY=
-X-Google-Smtp-Source: AGHT+IEwtwQoylWlOGq8TqPSvs3bul1pVTRd8p25SneMALbfVbul/65KMmvpPziXy2wknL2Wg6OzKg==
-X-Received: by 2002:a17:90a:17a2:b0:28f:f1c0:3d21 with SMTP id q31-20020a17090a17a200b0028ff1c03d21mr5388368pja.41.1706651490637;
-        Tue, 30 Jan 2024 13:51:30 -0800 (PST)
-Received: from ghost ([12.44.203.122])
-        by smtp.gmail.com with ESMTPSA id nb5-20020a17090b35c500b0029464b5fcdbsm8657589pjb.42.2024.01.30.13.51.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 13:51:30 -0800 (PST)
-Date: Tue, 30 Jan 2024 13:51:28 -0800
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Yangyu Chen <cyy@cyyself.name>
-Cc: Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Shuah Khan <shuah@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>, linux-mm@kvack.org,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] riscv: mm: Use hint address in mmap if available
-Message-ID: <ZblvYH3NLfhZQt9g@ghost>
-References: <20240130-use_mmap_hint_address-v2-0-f34ebfd33053@rivosinc.com>
- <20240130-use_mmap_hint_address-v2-1-f34ebfd33053@rivosinc.com>
- <tencent_34680F3AAAE356C4A485103556F3F909C60A@qq.com>
+        d=1e100.net; s=20230601; t=1706651542; x=1707256342;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=z/besbXOlWgDfiLFxKbwW3KTuDEF1myzGGPgRYrtdjU=;
+        b=LJGiIF00AWLHX7orpvcw1M7fRQUnjh7y19SfneQ82r6nbNiIV9JwdoyVRKeqxKecGE
+         WJGR+ivkZlZMGKIQoa5qRqMyA86j1rJQXxGgAJ3BMUwW8wWLQOGvBMqC1I2LC+uIaP6a
+         3Lh1xfvx8DjUc0FTBZn/IyS9+9Fygz4wZX5mzYvqDzhp5b1XajGmkOThBApsPOhTuwnA
+         psiAx0EXVHr2HR7g+Bc7C0aqv6IHbGXj71xxesGkCAzDyvtvzOZXllCcvaEeKit/E/BP
+         zv2e7tZGKfKFig1jegD+Ssi1lZa3ThSt+B3qEtqt6lY29p/aDLbpv+e0VkRrWfTK+7Xi
+         QglA==
+X-Gm-Message-State: AOJu0YwXGH+uVg7ywXv2mxQSUrgien0rQjpVVyN8oRZuskfoZzO8sZo9
+	5AZy+Ffg5p5I7DJ/n37tFGSI0OnBjkQUEyl5VA9vJVmIFKi7E0tj8KYZBx6hH/NbqNUPOdSuQwK
+	v2GxxhA==
+X-Google-Smtp-Source: AGHT+IG9ofX1g0X726rsv1HNP05a54ky0ooZiHH5oQu7IfYARRhYwXuuR5SvTzxW8ccJjatu0WUxQQ==
+X-Received: by 2002:a17:906:2714:b0:a36:5924:77e0 with SMTP id z20-20020a170906271400b00a36592477e0mr697926ejc.10.1706651542689;
+        Tue, 30 Jan 2024 13:52:22 -0800 (PST)
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com. [209.85.208.43])
+        by smtp.gmail.com with ESMTPSA id cw1-20020a170907160100b00a359558648esm3218804ejd.24.2024.01.30.13.52.22
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jan 2024 13:52:22 -0800 (PST)
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55f19a3ca7aso465007a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 13:52:22 -0800 (PST)
+X-Received: by 2002:a50:ee12:0:b0:55f:2ef8:7fec with SMTP id
+ g18-20020a50ee12000000b0055f2ef87fecmr2373087eds.21.1706651541820; Tue, 30
+ Jan 2024 13:52:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <tencent_34680F3AAAE356C4A485103556F3F909C60A@qq.com>
+References: <20240130190355.11486-1-torvalds@linux-foundation.org>
+ <20240130190355.11486-5-torvalds@linux-foundation.org> <20240130155550.4881d558@gandalf.local.home>
+In-Reply-To: <20240130155550.4881d558@gandalf.local.home>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 30 Jan 2024 13:52:05 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whD=9qTfhYVhH+d44KbwefC_vnRAjqz-pthcSn1p5zZLA@mail.gmail.com>
+Message-ID: <CAHk-=whD=9qTfhYVhH+d44KbwefC_vnRAjqz-pthcSn1p5zZLA@mail.gmail.com>
+Subject: Re: [PATCH 5/6] eventfs: get rid of dentry pointers without refcounts
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Jan 31, 2024 at 03:15:16AM +0800, Yangyu Chen wrote:
-> On Tue, 2024-01-30 at 11:04 -0800, Charlie Jenkins wrote:
-> > On riscv it is guaranteed that the address returned by mmap is less
-> > than
-> > the hint address. Allow mmap to return an address all the way up to
-> > addr, if provided, rather than just up to the lower address space.
-> > 
-> > This provides a performance benefit as well, allowing mmap to exit
-> > after
-> > checking that the address is in range rather than searching for a
-> > valid
-> > address.
-> > 
-> > It is possible to provide an address that uses at most the same
-> > number
-> > of bits, however it is significantly more computationally expensive
-> > to
-> > provide that number rather than setting the max to be the hint
-> > address.
-> > There is the instruction clz/clzw in Zbb that returns the highest set
-> > bit
-> > which could be used to performantly implement this, but it would
-> > still
-> > be slower than the current implementation. At worst case, half of the
-> > address would not be able to be allocated when a hint address is
-> > provided.
-> > 
-> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> > ---
-> >  arch/riscv/include/asm/processor.h | 22 +++++++++-------------
-> >  1 file changed, 9 insertions(+), 13 deletions(-)
-> > 
-> > diff --git a/arch/riscv/include/asm/processor.h
-> > b/arch/riscv/include/asm/processor.h
-> > index f19f861cda54..5d966ae81a58 100644
-> > --- a/arch/riscv/include/asm/processor.h
-> > +++ b/arch/riscv/include/asm/processor.h
-> > @@ -22,14 +22,12 @@
-> >  ({								\
-> >  	unsigned long
-> > mmap_end;					\
-> >  	typeof(addr) _addr = (addr);				\
-> > -	if ((_addr) == 0 || (IS_ENABLED(CONFIG_COMPAT) &&
-> > is_compat_task())) \
-> > -		mmap_end = STACK_TOP_MAX;			\
-> > -	else if ((_addr) >= VA_USER_SV57)			\
-> > -		mmap_end = STACK_TOP_MAX;			\
-> > -	else if ((((_addr) >= VA_USER_SV48)) && (VA_BITS >=
-> > VA_BITS_SV48)) \
-> > -		mmap_end = VA_USER_SV48;			\
-> > +	if ((_addr) == 0 ||					\
-> > +	    (IS_ENABLED(CONFIG_COMPAT) && is_compat_task()) ||	\
-> > +	    ((_addr + len) > BIT(VA_BITS -
-> > 1)))			\
-> > +		mmap_end = STACK_TOP_MAX			\
-> >  	else							\
-> > -		mmap_end = VA_USER_SV39;			\
-> > +		mmap_end = (_addr + len);			\
-> >  	mmap_end;						\
-> >  })
-> >  
-> > @@ -39,14 +37,12 @@
-> >  	typeof(addr) _addr = (addr);				\
-> >  	typeof(base) _base = (base);				\
-> >  	unsigned long rnd_gap = DEFAULT_MAP_WINDOW - (_base);	\
-> > -	if ((_addr) == 0 || (IS_ENABLED(CONFIG_COMPAT) &&
-> > is_compat_task())) \
-> > +	if ((_addr) == 0 ||					\
-> > +	    (IS_ENABLED(CONFIG_COMPAT) && is_compat_task()) ||	\
-> > +	    ((_addr + len) > BIT(VA_BITS -
-> > 1)))			\
-> >  		mmap_base = (_base);				\
-> > -	else if (((_addr) >= VA_USER_SV57) && (VA_BITS >=
-> > VA_BITS_SV57)) \
-> > -		mmap_base = VA_USER_SV57 - rnd_gap;		\
-> > -	else if ((((_addr) >= VA_USER_SV48)) && (VA_BITS >=
-> > VA_BITS_SV48)) \
-> > -		mmap_base = VA_USER_SV48 - rnd_gap;		\
-> >  	else							\
-> > -		mmap_base = VA_USER_SV39 - rnd_gap;		\
-> > +		mmap_base = (_addr + len) - rnd_gap;		\
-> 
-> Please mind that rnd_gap can be non-zero, in this case, the map will
-> fail. It will be better to let mmap_base = min((_addr + len), (base) +
-> TASK_SIZE - DEFAULT_MAP_WINDOW) .
+On Tue, 30 Jan 2024 at 12:55, Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> I'm going to be putting back the ei->name pointer as the above actually
+> adds more memory usage.
 
-Why would an rnd_gap that is non-zero cause mmap to fail? mmap will fail
-if rnd_gap is greater than (_addr + len). That is expected and should be
-interpreted as no address was available in the requested address space.
+I did it mainly because I hate having multiple different allocation
+sites that then have to do that kref_init() etc individually, and once
+there was a single site the "name" thing really looked lik ean obvious
+simplification.
 
-mmap_base is used if the hint address is not available.
+That said, I think you're confused about the memory usage.
 
-I do see that I fumbled the test cases in this patch so I will fix that
-in a v3.
+Sure, 'kstrdup_const()' optimizes away the allocation for static
+constant strings, but what it does *not* do is to optimize away the
+pointer.
 
-- Charlie
+In contrast, allocating them together gets rid of the pointer itself,
+because now the name is just an offset in the structure.
 
-> 
-> >  	mmap_base;						\
-> >  })
-> >  
-> > 
-> 
+And the pointer is 8 bytes right there.
+
+So allocating the string _with_ the ei will always save at least 8 bytes.
+
+So whenever the string is less than that in length it's *always* a win.
+
+And even when it's not an absolute win, it will take advantage of the
+kmalloc() quantized sizes too, and generally not be a loss even with
+longer names.
+
+So I'm pretty sure you are simply entirely wrong on the memory usage.
+Not counting the size of the pointer is overlooking a big piece of the
+puzzle.
+
+Btw, you can look at name lengths in tracefs with something stupid like this:
+
+    find . | sed 's:^.*/::' | tr -c '\n' . | sort | uniq -c
+
+and you will see that (at least in my case) names of lengths 1..7 are
+dominating it all:
+
+      1 .
+   2189 ..
+     34 ...
+   2229 ....
+    207 .....
+   6833 ......
+   2211 .......
+
+with the rest being insignificant in comparison.
+
+The reason? There's a *lot* of those 'filter' and 'enable' and 'id'
+files. All of which are better off without a 'const char *name' taking
+8 bytes.
+
+              Linus
 
