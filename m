@@ -1,164 +1,171 @@
-Return-Path: <linux-kernel+bounces-44561-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44563-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 460CA84243C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:57:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DCD51842444
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:58:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1DDD286870
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:57:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91A4D28E507
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:58:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B67A67A0C;
-	Tue, 30 Jan 2024 11:57:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JhjC5B7R"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFC58679E4
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 11:57:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D34267A0C;
+	Tue, 30 Jan 2024 11:58:25 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A2BC67749;
+	Tue, 30 Jan 2024 11:58:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706615850; cv=none; b=IkzX0j3KnqaiTCxPniYh8hCTb3efoxAigSP6UctGkBCzj+oS95J0nT22//kwN9uRZNEam9qn/QBFXOxFXTxgdcBNSdjrPrxlrC7jNXFpwtq/EGaZiWzslzM9UkHuRXNJnLk68GwDkSRUQXIBye/up0OKRlregVINvrHn95Ai7cs=
+	t=1706615904; cv=none; b=dec0yUD+lXfpx+6f+FvjHPL3gHbtCGumeBef8kKLl/soEj1lxFobnhES+P2MW8IqDQNFpBvQMS3ssNTy3cy3RUaawZ8imRLvCk8gxxbs6qSviPPnisluwzvEZDrWfmVAtrdt5nx5C+eXpyKWzc5x78/vVuVj9VePjWLLfqdfo1o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706615850; c=relaxed/simple;
-	bh=lNDEbS0L1aK+WLlskcr9fEx2WP60RvRbgDqk1mGHees=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=unZgF7cZ9n9lg+5GzvF7PgFkOf+bh9HFT3QuMAykbyqn9NXlEPcThSGqP3qJcURSl+zvj1sYw3iZpaOiDCqopPdwzfE1swhL3BxTq/GO0xlLQNECEz7hwtQP/V1ivi645+PlEo+z3uPR7oOerwbqFcT+DJkBB75jRsVprhfB4s8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JhjC5B7R; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-55ee686b5d5so3111353a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 03:57:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706615847; x=1707220647; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RxgM5kktWvhN2w25/56fYWOdVFlRlmsv8vzO6AkG6kw=;
-        b=JhjC5B7R7WJdfIXD1xCVywxjtRzosj3zCiZQUzwPG4abmDbTUdeck9VMDVwWFbObXz
-         uHhQ8Rldyvz3Dn+QKYH0z/+XvF4lXAMHZgQ4/EEzVJE1yXdPu8OasTw6mdhmid4g9u3V
-         ZdLz/RWC6SzMcGKQEp3TjlAJKi73KwYte3hL85TOUfvnuws0yvj9Pn0j6oFEjhAp0tQO
-         TO4+e/zYURoIzl3hPk/A1CSkVQ8QJXhesdPiAgRUJGUfKTMWMXIi152at87zET9LlKBf
-         KZS9IaGITKtKGe1YxxXIlTjaeiGXwKoCny98uWwpA23wEe+XG4+jEMtjwdzgoS4MJpVy
-         8wkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706615847; x=1707220647;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RxgM5kktWvhN2w25/56fYWOdVFlRlmsv8vzO6AkG6kw=;
-        b=gcrq/STdZKAYOfYrH/l2RZ864FMdhydrWUkWYNgX/tB+JSGeI0+tqEt74qSbmuFN07
-         7f21cnAA8AaDMjjFuK87zwXfMmNbYTAfxd68rDDIihY+FKi8VMaybIGQe10e1pL98d7n
-         PqaMBk3XB6pLJM6Idbp2lKhI+O+IUs/A7ZhkVjIsL+k0NXcnMedFay/xJ61A6G8jxa/i
-         7W+DToOBnTGM2T45qgMElauindtQeFWWOKlnQ98OP6AyBu4ejK25H82WtOxvuBp+05y8
-         /WLBMcrl5LoSYG8462fellehapqile1+qEjgtpMdQTgfIDkGs3utOBApnbXczfkCfkMO
-         fZ2g==
-X-Gm-Message-State: AOJu0YyXGHR6+Ndx7PLtjVPAy+lh73MeCk0Q16Z8dXBP3jC9nPYF7P6O
-	8cvt6iYnHwwvxnSu2/dLOfwZD5wRg8ZJJxwMrYHY0xYnlD4pkArc+6hOvIivUKo=
-X-Google-Smtp-Source: AGHT+IF1F08ZntrtXaFyxdA7jLj1HYHz9j6xcKeHsk/iufbTeHvIh16YPQZeHOgI712uzqcJ/DBARA==
-X-Received: by 2002:a17:907:7656:b0:a36:2df:5ded with SMTP id kj22-20020a170907765600b00a3602df5dedmr2008663ejc.72.1706615847139;
-        Tue, 30 Jan 2024 03:57:27 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXZUJtUyQ/vL5MwD2eZitFUhCNH2NI+X6Xk21ahRksW64edPD4h4r94tUKPG8BUKsPKk7PCyoO4mQbRc8EkYokE2fiLECIHdCpVOOuEwm/vtrLQWMPVNkdjjF/4JUtiwgakbTOH2kFdJFF2CX4jZWX3cuNGtZ/caT3DFIQOjTMWLIRJQ0qf5g+plhozootZ74W/nyjeKYC3pY9zXoisCB2OQPKE130BawTFyv1eKy4sCXOXeOEjMf6VVZkckF1xumHzrlTvo5ecfNUXnhabQOpTddI3utxgt1PflrX2VZy3ltI5UsB89AZDZ4YT/UQW90siib8VQEkcPffrReyo3GBPPtNycLptLiXq4UwEwo8xPlzIwneOiUIRHDVcTMe2eF5tt0g6g+PiwAv4WPiPaosEbIatM2mgCBl+H0tEgubZ/xYeX/UFWaTqC5Dpa2SvYQOiYPe+YO6hV6uLZ2CvCHulV8CxskAPvavJ45jWTevTlGPHh6rRa3uZ8HzuwIv24ct+QsIz5pdrJVZhxpQ6huyvD5M8akfJSHQSapbjMZf3W1QXC4mVcapMyyFKkCesHDYpabqDIo7ySliGZtptp9xCLuUYZFBkK7V4VZE+7pFiXPw1S8XCBAXB5sOBpWQuB7i3Gr8jrse6mcv/PQB4YAmbz/wDPH+FyWo0FpRKEfpwAMYCH4+4VDSn9ytVFyRJtxZD8UJEWgxsuTQA8qmYXaCC+yPOAImPUcGIAKEVGPvBmrUYeDKCn8cHneVbAwnlu+8GMfUvaKYerIyr6Q==
-Received: from [192.168.1.20] ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id pw18-20020a17090720b200b00a35c1d11621sm2016372ejb.131.2024.01.30.03.57.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Jan 2024 03:57:26 -0800 (PST)
-Message-ID: <a03839a4-7f5e-44dc-a719-149795ed952b@linaro.org>
-Date: Tue, 30 Jan 2024 12:57:24 +0100
+	s=arc-20240116; t=1706615904; c=relaxed/simple;
+	bh=jNHQrdd2Z4gnAKa15AMBURkRQv5zNH5s6N2REXaxEKA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q+OwI1oo1gwbxsV/fUGtpYEaQ40BGt1fiB5HCEo0EA0ShVhEibnKkJHdu6ii86kyPZLh//RWcsoyR6tvGkhkibfaGm1D5LqCectbU1xuAF5Ud93WhNRR4rEBnC5sHi7m71C+iw3lqHUCUfmoFwjQL5oMRNTtE09d6D5k9CEg+UY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7E04CDA7;
+	Tue, 30 Jan 2024 03:59:05 -0800 (PST)
+Received: from raptor (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 878FB3F762;
+	Tue, 30 Jan 2024 03:58:15 -0800 (PST)
+Date: Tue, 30 Jan 2024 11:58:04 +0000
+From: Alexandru Elisei <alexandru.elisei@arm.com>
+To: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
+	maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
+	yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
+	mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
+	rppt@kernel.org, hughd@google.com, pcc@google.com,
+	steven.price@arm.com, vincenzo.frascino@arm.com, david@redhat.com,
+	eugenis@google.com, kcc@google.com, hyesoo.yu@samsung.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-mm@kvack.org,
+	linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC v3 06/35] mm: cma: Make CMA_ALLOC_SUCCESS/FAIL count
+ the number of pages
+Message-ID: <ZbjkTFEvSvyHNqmu@raptor>
+References: <20240125164256.4147-1-alexandru.elisei@arm.com>
+ <20240125164256.4147-7-alexandru.elisei@arm.com>
+ <0a71c87a-ae2c-4a61-8adb-3a51d6369b99@arm.com>
+ <ZbeRQpGNnfXnjayQ@raptor>
+ <2cb8288c-5378-4968-a75b-8462b41998c6@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v11 2/3] arm64: dts: qcom: sa8775p: enable safety
- IRQ
-Content-Language: en-US
-To: Suraj Jaiswal <quic_jsuraj@quicinc.com>, Vinod Koul <vkoul@kernel.org>,
- Bhupesh Sharma <bhupesh.sharma@linaro.org>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Jose Abreu <joabreu@synopsys.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- Prasad Sodagudi <psodagud@quicinc.com>, Andrew Halaney
- <ahalaney@redhat.com>, Rob Herring <robh@kernel.org>
-Cc: kernel@quicinc.com
-References: <20240130114102.4116046-1-quic_jsuraj@quicinc.com>
- <20240130114102.4116046-3-quic_jsuraj@quicinc.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240130114102.4116046-3-quic_jsuraj@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2cb8288c-5378-4968-a75b-8462b41998c6@arm.com>
 
-On 30/01/2024 12:41, Suraj Jaiswal wrote:
-> Add changes to support safety IRQ handling
-> support for ethernet.
+Hi,
+
+On Tue, Jan 30, 2024 at 10:22:11AM +0530, Anshuman Khandual wrote:
 > 
-> Signed-off-by: Suraj Jaiswal <quic_jsuraj@quicinc.com>
-> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
+> 
+> On 1/29/24 17:21, Alexandru Elisei wrote:
+> > Hi,
+> > 
+> > On Mon, Jan 29, 2024 at 02:54:20PM +0530, Anshuman Khandual wrote:
+> >>
+> >>
+> >> On 1/25/24 22:12, Alexandru Elisei wrote:
+> >>> The CMA_ALLOC_SUCCESS, respectively CMA_ALLOC_FAIL, are increased by one
+> >>> after each cma_alloc() function call. This is done even though cma_alloc()
+> >>> can allocate an arbitrary number of CMA pages. When looking at
+> >>> /proc/vmstat, the number of successful (or failed) cma_alloc() calls
+> >>> doesn't tell much with regards to how many CMA pages were allocated via
+> >>> cma_alloc() versus via the page allocator (regular allocation request or
+> >>> PCP lists refill).
+> >>>
+> >>> This can also be rather confusing to a user who isn't familiar with the
+> >>> code, since the unit of measurement for nr_free_cma is the number of pages,
+> >>> but cma_alloc_success and cma_alloc_fail count the number of cma_alloc()
+> >>> function calls.
+> >>>
+> >>> Let's make this consistent, and arguably more useful, by having
+> >>> CMA_ALLOC_SUCCESS count the number of successfully allocated CMA pages, and
+> >>> CMA_ALLOC_FAIL count the number of pages the cma_alloc() failed to
+> >>> allocate.
+> >>>
+> >>> For users that wish to track the number of cma_alloc() calls, there are
+> >>> tracepoints for that already implemented.
+> >>>
+> >>> Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
+> >>> ---
+> >>>  mm/cma.c | 4 ++--
+> >>>  1 file changed, 2 insertions(+), 2 deletions(-)
+> >>>
+> >>> diff --git a/mm/cma.c b/mm/cma.c
+> >>> index f49c95f8ee37..dbf7fe8cb1bd 100644
+> >>> --- a/mm/cma.c
+> >>> +++ b/mm/cma.c
+> >>> @@ -517,10 +517,10 @@ struct page *cma_alloc(struct cma *cma, unsigned long count,
+> >>>  	pr_debug("%s(): returned %p\n", __func__, page);
+> >>>  out:
+> >>>  	if (page) {
+> >>> -		count_vm_event(CMA_ALLOC_SUCCESS);
+> >>> +		count_vm_events(CMA_ALLOC_SUCCESS, count);
+> >>>  		cma_sysfs_account_success_pages(cma, count);
+> >>>  	} else {
+> >>> -		count_vm_event(CMA_ALLOC_FAIL);
+> >>> +		count_vm_events(CMA_ALLOC_FAIL, count);
+> >>>  		if (cma)
+> >>>  			cma_sysfs_account_fail_pages(cma, count);
+> >>>  	}
+> >>
+> >> Without getting into the merits of this patch - which is actually trying to do
+> >> semantics change to /proc/vmstat, wondering how is this even related to this
+> >> particular series ? If required this could be debated on it's on separately.
+> > 
+> > Having the number of CMA pages allocated and the number of CMA pages freed
+> > allows someone to infer how many tagged pages are in use at a given time:
+> 
+> That should not be done in CMA which is a generic multi purpose allocator.
 
-NAK.
+Ah, ok. Let me rephrase that: Having the number of CMA pages allocated, the
+number of failed CMA page allocations and the number of freed CMA pages
+allows someone to infer how many CMA pages are in use at a given time.
+That's valuable information for software designers and system
+administrators, as it allows them to tune the number of CMA pages available
+in a system.
 
-Read the replies you got. This was applied and anyway it is not
-next-next material. Please do not send DTS patches to net-next.
+Or put another way: what would you consider to be more useful?  Knowing the
+number of cma_alloc()/cma_release() calls, or knowing the number of pages
+that cma_alloc()/cma_release() allocated or freed?
 
-Best regards,
-Krzysztof
+> 
+> > (allocated CMA pages - CMA pages allocated by drivers* - CMA pages
+> > released) * 32. That is valuable information for software and hardware
+> > designers.
+> > 
+> > Besides that, for every iteration of the series, this has proven invaluable
+> > for discovering bugs with freeing and/or reserving tag storage pages.
+> 
+> I am afraid that might not be enough justification for getting something
+> merged mainline.
+> 
+> > 
+> > *that would require userspace reading cma_alloc_success and
+> > cma_release_success before any tagged allocations are performed.
+> 
+> While assuming that no other non-memory-tagged CMA based allocation amd free
+> call happens in the meantime ? That would be on real thin ice.
+> 
+> I suppose arm64 tagged memory specific allocation or free related counters
+> need to be created on the caller side, including arch_free_pages_prepare().
 
+I'll think about this. At the very least, I can add tracepoints.
+
+Thanks,
+Alex
 
