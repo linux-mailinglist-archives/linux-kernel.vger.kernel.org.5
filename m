@@ -1,197 +1,244 @@
-Return-Path: <linux-kernel+bounces-43837-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43834-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25AA7841964
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 03:39:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 454E084195D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 03:37:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18C06B226B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 02:39:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A83271F28078
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 02:37:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 167FE1E49D;
-	Tue, 30 Jan 2024 02:38:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92DFD14F7F;
+	Tue, 30 Jan 2024 02:37:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ue6PF6IV"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D+U/yqOO"
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 655F8364BF
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 02:38:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19C11364BF
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 02:37:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706582333; cv=none; b=h3JA2cYv7HtSZnuTg+4gqb2njLvPdTEY3V2WmYRjwcgEhJ0RUzPJteCaGY0ljf2UX8swjFfbj7rqizBeeLYKasvgRnFq4rYwQj+XV1vM00phov5pQXQ3B83WBC5ujrptShZA1k2JfVq2L79PQQ3RHEjVl9M88Uj7gMcImlWE9xc=
+	t=1706582263; cv=none; b=UvUNjYtu2CzmjmgUOUrgl2+lRwStba2J5q/J4IL3drYHBF0xpmMIVEULSc/vHDsbY85oy0rT6qY17Z2kp9MqEklzoojcqLD/EyjVIGjxqig4t4SD5nR795LwmbD4CV7hUj2tCAgqCTSWPl+UuL+rIN9usUCJ9WMHJBOihEyb6T8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706582333; c=relaxed/simple;
-	bh=8NFkxLjfDsMYKBVX/2CVn4EMmha53R183167AkLrZ2s=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=imzYZWsSmhofJ79UyZ1+R3PsMsVTnGBQ2Kj/qXYVBHYUCdfUwUmQLRhZahxAnViEK6aVUJ0b+KX+xVbl29qmGKlbotn7pvM6rXFQfcNm6CJRyLvz5qynWgjDg8UALNBKHxqq2T/YuvPLw8rvvNeJU1BEuj7qgxJCYNXY9VYbkeg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ue6PF6IV; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706582330;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=Da1Kai79LDMmtf1ru1K3D52dA9E7Gwnh/kl6V6/IJ3k=;
-	b=Ue6PF6IVxrl+3qIItXpXndttGjjkoM4SK65WrrfyVI55P2G+0fvxEwQOOTpuan40Fg8KbZ
-	GasI8PGsTirEYytgJOwm3rcwcGGS0Wx1KRSCX60d/9F5Sj7soWC4x6soV/Iz7zawa8sGrj
-	qLHR7wsQYY9WG8PqwqoxtMxcm7Jwkl4=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-389-Fcs0CYXaPW2-ini3LQrffw-1; Mon, 29 Jan 2024 21:38:48 -0500
-X-MC-Unique: Fcs0CYXaPW2-ini3LQrffw-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a357c92f241so103593566b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 18:38:48 -0800 (PST)
+	s=arc-20240116; t=1706582263; c=relaxed/simple;
+	bh=z9bBDJTIQyCBFfcB8DtDInc+WWmR0DvpkieJF1S1aGY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=H3IT7b5cyV1LNPfFdnUbPxngwBQs4pDCCZEPWcZUH6o2V/Gqn1xdZkfF3G8WKKY6IwK4jOaMjL1awtwPys1CA4EBLo3pMg98l0yEwYEZkcRDEaI0Ah/NVOd6jwTlTFckArnubgm2xJqo+J1JBVM74vkigm2eg518hMIGQBqBXw8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D+U/yqOO; arc=none smtp.client-ip=209.85.219.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dc6a2e63203so90818276.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 18:37:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706582261; x=1707187061; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1Nf7ZAE4lUdPHPJYVXVTuVeF2gxZD1vrM/mMUbDvf/w=;
+        b=D+U/yqOO3gQgCf+VZHAQal1dByeUSnKma9UI7AK+avep/20rF6RptZzbSqbXQ8Wn8v
+         ZgqFJ1h5NPztaAMQWRNdgKCZj2f4ufNZeC9V2KRHAs8azRWEGwccbD3ZjyfjBUyCGX3E
+         YlN5LG1BwZ7rNYtkSBPyBrKMYZfcU6YytOXtUDNdZTZ3UWuiIBb38RPokSJcJVw8MfdW
+         l5MbZtp68pjJPHLxJcPJ2LdptMtDZtTjY97bWwkBzMvd8aKGnVT5kg+1kmIjmeIvq4gZ
+         bNwjfHkz4FkNSoi60NK5EJnDlKSQ98tGIx7B52bb3HqQfxVAR9lDU/K4icCYVBx19mzx
+         poiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706582327; x=1707187127;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Da1Kai79LDMmtf1ru1K3D52dA9E7Gwnh/kl6V6/IJ3k=;
-        b=hdxU8KRuuHZFS6TEzzCjZYEXbVKMTtivy1FX7zYt105xS46wgzXxBADvWfEGLObMy5
-         z//TvLFTbfDRVk7LXQegl+On1c+yuxWiT5ge3dJcQMqkrkjcIll1je3hDUnpS1iPOQZM
-         ZYW7XJYIZHU9OOzoAmEaxfrzG6P8pFQBrrsnyRwTy12IsjnovLH+aZw1Df/TN2IqKsgF
-         k00Rd7koWKinpVpZij6FCtAvuIYCdK3DgZNVMfOdb3rsn0M0uIlyntvuq4+YjmdgeUiw
-         QNlk8iL0wanxM2vuwkc6oYamgr8k0sLPRiQN4ld1QHdjaWk0mv6rD35M97wymb6rckHi
-         dUug==
-X-Gm-Message-State: AOJu0YxesDIK50scs04j7NyZf0F2xpw/Ob7gWJmbHbenKL04doU021H+
-	jGnXRN9F6KXQztdiwYPX9l7UWTpxRa4nyGGy3pPuz5kRhZQudPwbDYAjPq4Vt3I8ZSIi36SsbUQ
-	JLiTBYAkBjH8oeoR1leMFcnahmTgW1Sgsgo4rYMs6pfSWRlcf172gqZgOv/2u/w==
-X-Received: by 2002:a17:906:81d5:b0:a31:49a1:4d5e with SMTP id e21-20020a17090681d500b00a3149a14d5emr5643881ejx.24.1706582327375;
-        Mon, 29 Jan 2024 18:38:47 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHV3Puy+toKVntNBLPCBVKA8P9s0vfikb8UxH9LYr4Idft4CPH4iGMWXhgCD6yu6FxA1NsNvA==
-X-Received: by 2002:a17:906:81d5:b0:a31:49a1:4d5e with SMTP id e21-20020a17090681d500b00a3149a14d5emr5643876ejx.24.1706582327099;
-        Mon, 29 Jan 2024 18:38:47 -0800 (PST)
-Received: from cassiopeiae.. ([2a02:810d:4b3f:ee94:642:1aff:fe31:a19f])
-        by smtp.gmail.com with ESMTPSA id fj18-20020a1709069c9200b00a3496fa1f7fsm4591092ejc.91.2024.01.29.18.38.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 18:38:46 -0800 (PST)
-From: Danilo Krummrich <dakr@redhat.com>
-To: ojeda@kernel.org,
-	alex.gaynor@gmail.com,
-	wedsonaf@gmail.com,
-	boqun.feng@gmail.com,
-	gary@garyguo.net,
-	bjorn3_gh@protonmail.com,
-	benno.lossin@proton.me,
-	a.hindborg@samsung.com,
-	aliceryhl@google.com
-Cc: rust-for-linux@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Danilo Krummrich <dakr@redhat.com>
-Subject: [PATCH v2] rust: str: add {make,to}_{upper,lower}case() to CString
-Date: Tue, 30 Jan 2024 03:35:39 +0100
-Message-ID: <20240130023843.11512-1-dakr@redhat.com>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1706582261; x=1707187061;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1Nf7ZAE4lUdPHPJYVXVTuVeF2gxZD1vrM/mMUbDvf/w=;
+        b=TJFWlKIKrMnDBu7D0ufr/B7u/rYmPoDMptKnNPeWzkYLluDHQcofJf4fxihAmFlz6n
+         xhXDVN4nQqJupEgh8c8NZ7ox+m3dfZYZq1r9Lk12CgfZ1wge1OVt+AWHwKV+/y/MYGyI
+         Wen/JoHjkf5scayt+g1NPhIuE1jCryYK0wwcCOBxkscR1e7bApvOXNPvvDdaOZz9HYkT
+         9UE3fSp9g+VQm8NbZgVD0FPv8V8B9oqX89JbcanG1tKtsLxNLEeI1A8hDyjbveSoKLLy
+         VuC8xf2E1xAxpTDQf1BZ534NVX1ToyE6XB06UTHnJlSRUl0k5y7LwjZ/bYmYbyALoaKs
+         KD1Q==
+X-Gm-Message-State: AOJu0YzDTefBu/EcjXkkzfbLwJ7yxa4ifVqkPLS1Zgz7Fojv5soxuF9g
+	16PAA0cqklls1kdTZX53hXYTYiwsfjxN+UDKZfbj5Y3yv20lDFThwDfa+9p65CjGe9eeQkuAkXV
+	X3lV0vs0pYwPJ0YTmPX11pCDUf5msgrJjL55kufYMIMs=
+X-Google-Smtp-Source: AGHT+IEAXhI5XMsUEZlfm8ZJ9kk+bnWCQ4wvDsNOoWmuR6EdN6gc+DKb+xIyNimqPRxtbyMJ/SJtg1F5mRRyfsomJtI=
+X-Received: by 2002:a25:abc3:0:b0:dc6:7156:d2cc with SMTP id
+ v61-20020a25abc3000000b00dc67156d2ccmr2857608ybi.82.1706582261010; Mon, 29
+ Jan 2024 18:37:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240129054551.57728-1-ioworker0@gmail.com> <CAHbLzkqrTPZD_Fz_a5LYa49Tum_Za=J9dX_SRyTr=kVZA26RAg@mail.gmail.com>
+ <CAAa6QmSSKFjzdG62MZ5bSrhP19AjPEr339WXaWY=OCLsGWVE8w@mail.gmail.com>
+In-Reply-To: <CAAa6QmSSKFjzdG62MZ5bSrhP19AjPEr339WXaWY=OCLsGWVE8w@mail.gmail.com>
+From: Lance Yang <ioworker0@gmail.com>
+Date: Tue, 30 Jan 2024 10:37:26 +0800
+Message-ID: <CAK1f24mFmqTmBcx2YqQ=TwD0xhA1DhLwPhONp18yzqKdC--K=w@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm/khugepaged: bypassing unnecessary scans with
+ MMF_DISABLE_THP check
+To: "Zach O'Keefe" <zokeefe@google.com>
+Cc: Yang Shi <shy828301@gmail.com>, akpm@linux-foundation.org, mhocko@suse.com, 
+	david@redhat.com, songmuchun@bytedance.com, peterx@redhat.com, 
+	minchan@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add functions to convert a CString to upper- / lowercase, either
-in-place or by creating a copy of the original CString.
+Hey Zach,
 
-Naming followes the one from the Rust stdlib, where functions starting
-with 'to' create a copy and functions starting with 'make' perform an
-in-place conversion.
+Thanks for taking time to review!
 
-This is required by the Nova project (GSP only Rust successor of
-Nouveau) to convert stringified enum values (representing different GPU
-chipsets) to strings in order to generate the corresponding firmware
-paths. See also [1].
+On Tue, Jan 30, 2024 at 3:04=E2=80=AFAM Zach O'Keefe <zokeefe@google.com> w=
+rote:
+[...]
+> IIUC, there really isn't any correctness race. Claim is just that we
 
-[1] https://rust-for-linux.zulipchat.com/#narrow/stream/288089-General/topic/String.20manipulation.20in.20kernel.20Rust
+Yes, there is indeed no correctness race.
 
-Signed-off-by: Danilo Krummrich <dakr@redhat.com>
----
-Changes in V2:
-  - expand commit message mentioning the use case
-  - expand function doc comments to match the ones from Rust's stdlib
-  - rename to_* to make_* and add the actual to_* implementations
----
- rust/kernel/str.rs | 60 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 60 insertions(+)
+> can avoid a number of per-vma checks. AFAICT, any task w/
+> MMF_DISABLE_THP set will always have each and every vma checked
+> (albeit, with a very inexpensive ->vm_mm->flags check)
+[...]
 
-diff --git a/rust/kernel/str.rs b/rust/kernel/str.rs
-index 7d848b83add4..758bb70d98e9 100644
---- a/rust/kernel/str.rs
-+++ b/rust/kernel/str.rs
-@@ -581,6 +581,66 @@ pub fn try_from_fmt(args: fmt::Arguments<'_>) -> Result<Self, Error> {
-         // exist in the buffer.
-         Ok(Self { buf })
-     }
-+
-+    /// Converts this CString to its ASCII lower case equivalent in-place.
-+    ///
-+    /// ASCII letters 'A' to 'Z' are mapped to 'a' to 'z',
-+    /// but non-ASCII letters are unchanged.
-+    ///
-+    /// To return a new lowercased value without modifying the existing one, use
-+    /// [`to_ascii_lowercase()`].
-+    ///
-+    /// [`to_ascii_lowercase()`]: #method.to_ascii_lowercase
-+    pub fn make_ascii_lowercase(&mut self) {
-+        self.buf.make_ascii_lowercase();
-+    }
-+
-+    /// Converts this CString to its ASCII upper case equivalent in-place.
-+    ///
-+    /// ASCII letters 'a' to 'z' are mapped to 'A' to 'Z',
-+    /// but non-ASCII letters are unchanged.
-+    ///
-+    /// To return a new uppercased value without modifying the existing one, use
-+    /// [`to_ascii_uppercase()`].
-+    ///
-+    /// [`to_ascii_uppercase()`]: #method.to_ascii_uppercase
-+    pub fn make_ascii_uppercase(&mut self) {
-+        self.buf.make_ascii_uppercase();
-+    }
-+
-+    /// Returns a copy of this CString where each character is mapped to its
-+    /// ASCII lower case equivalent.
-+    ///
-+    /// ASCII letters 'A' to 'Z' are mapped to 'a' to 'z',
-+    /// but non-ASCII letters are unchanged.
-+    ///
-+    /// To lowercase the value in-place, use [`make_ascii_lowercase`].
-+    ///
-+    /// [`make_ascii_lowercase`]: str::make_ascii_lowercase
-+    pub fn to_ascii_lowercase(&self) -> Result<CString, AllocError> {
-+        let mut s = (*self).to_cstring()?;
-+
-+        s.make_ascii_lowercase();
-+
-+        return Ok(s);
-+    }
-+
-+    /// Returns a copy of this CString where each character is mapped to its
-+    /// ASCII upper case equivalent.
-+    ///
-+    /// ASCII letters 'a' to 'z' are mapped to 'A' to 'Z',
-+    /// but non-ASCII letters are unchanged.
-+    ///
-+    /// To uppercase the value in-place, use [`make_ascii_uppercase`].
-+    ///
-+    /// [`make_ascii_uppercase`]: str::make_ascii_uppercase
-+    pub fn to_ascii_uppercase(&self) -> Result<CString, AllocError> {
-+        let mut s = (*self).to_cstring()?;
-+
-+        s.make_ascii_uppercase();
-+
-+        return Ok(s);
-+    }
- }
- 
- impl Deref for CString {
+IMO, for any task with MMF_DISABLE_THP set, the check
+for each VMA can be skipped to avoid redundant operations,
+(with a very inexpensive ->mm->flags check)
+especially in scenarios with a large address space.
 
-base-commit: 41bccc98fb7931d63d03f326a746ac4d429c1dd3
--- 
-2.43.0
+BR,
+Lance
 
+On Tue, Jan 30, 2024 at 3:04=E2=80=AFAM Zach O'Keefe <zokeefe@google.com> w=
+rote:
+>
+> On Mon, Jan 29, 2024 at 10:53=E2=80=AFAM Yang Shi <shy828301@gmail.com> w=
+rote:
+> >
+> > On Sun, Jan 28, 2024 at 9:46=E2=80=AFPM Lance Yang <ioworker0@gmail.com=
+> wrote:
+> > >
+> > > khugepaged scans the entire address space in the
+> > > background for each given mm, looking for
+> > > opportunities to merge sequences of basic pages
+> > > into huge pages. However, when an mm is inserted
+> > > to the mm_slots list, and the MMF_DISABLE_THP flag
+> > > is set later, this scanning process becomes
+> > > unnecessary for that mm and can be skipped to avoid
+> > > redundant operations, especially in scenarios with
+> > > a large address space.
+> > >
+> > > This commit introduces a check before each scanning
+> > > process to test the MMF_DISABLE_THP flag for the
+> > > given mm; if the flag is set, the scanning process
+> > > is bypassed, thereby improving the efficiency of
+> > > khugepaged.
+> > >
+> > > Signed-off-by: Lance Yang <ioworker0@gmail.com>
+> > > ---
+> > >  mm/khugepaged.c | 18 ++++++++++++------
+> > >  1 file changed, 12 insertions(+), 6 deletions(-)
+> > >
+> > > diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+> > > index 2b219acb528e..d6a700834edc 100644
+> > > --- a/mm/khugepaged.c
+> > > +++ b/mm/khugepaged.c
+> > > @@ -410,6 +410,12 @@ static inline int hpage_collapse_test_exit(struc=
+t mm_struct *mm)
+> > >         return atomic_read(&mm->mm_users) =3D=3D 0;
+> > >  }
+> > >
+> > > +static inline int hpage_collapse_test_exit_or_disable(struct mm_stru=
+ct *mm)
+> > > +{
+> > > +       return hpage_collapse_test_exit(mm) ||
+> > > +              test_bit(MMF_DISABLE_THP, &mm->flags);
+> > > +}
+> > > +
+> > >  void __khugepaged_enter(struct mm_struct *mm)
+> > >  {
+> > >         struct khugepaged_mm_slot *mm_slot;
+> > > @@ -1422,7 +1428,7 @@ static void collect_mm_slot(struct khugepaged_m=
+m_slot *mm_slot)
+> > >
+> > >         lockdep_assert_held(&khugepaged_mm_lock);
+> > >
+> > > -       if (hpage_collapse_test_exit(mm)) {
+> > > +       if (hpage_collapse_test_exit_or_disable(mm)) {
+> > >                 /* free mm_slot */
+> > >                 hash_del(&slot->hash);
+> > >                 list_del(&slot->mm_node);
+> > > @@ -2360,7 +2366,7 @@ static unsigned int khugepaged_scan_mm_slot(uns=
+igned int pages, int *result,
+> > >                 goto breakouterloop_mmap_lock;
+> > >
+> > >         progress++;
+> > > -       if (unlikely(hpage_collapse_test_exit(mm)))
+> > > +       if (unlikely(hpage_collapse_test_exit_or_disable(mm)))
+> > >                 goto breakouterloop;
+> > >
+> > >         vma_iter_init(&vmi, mm, khugepaged_scan.address);
+> > > @@ -2368,7 +2374,7 @@ static unsigned int khugepaged_scan_mm_slot(uns=
+igned int pages, int *result,
+> > >                 unsigned long hstart, hend;
+> > >
+> > >                 cond_resched();
+> > > -               if (unlikely(hpage_collapse_test_exit(mm))) {
+> > > +               if (unlikely(hpage_collapse_test_exit_or_disable(mm))=
+) {
+> >
+> > The later thp_vma_allowable_order() does check whether MMF_DISABLE_THP
+> > is set or not. And the hugepage_vma_revalidate() after re-acquiring
+> > mmap_lock does the same check too. The checking in khugepaged should
+> > be already serialized with prctl, which takes mmap_lock in write.
+>
+> IIUC, there really isn't any correctness race. Claim is just that we
+> can avoid a number of per-vma checks. AFAICT, any task w/
+> MMF_DISABLE_THP set will always have each and every vma checked
+> (albeit, with a very inexpensive ->vm_mm->flags check)
+>
+> Thanks,
+> Zach
+>
+> > >                         progress++;
+> > >                         break;
+> > >                 }
+> > > @@ -2390,7 +2396,7 @@ static unsigned int khugepaged_scan_mm_slot(uns=
+igned int pages, int *result,
+> > >                         bool mmap_locked =3D true;
+> > >
+> > >                         cond_resched();
+> > > -                       if (unlikely(hpage_collapse_test_exit(mm)))
+> > > +                       if (unlikely(hpage_collapse_test_exit_or_disa=
+ble(mm)))
+> > >                                 goto breakouterloop;
+> > >
+> > >                         VM_BUG_ON(khugepaged_scan.address < hstart ||
+> > > @@ -2408,7 +2414,7 @@ static unsigned int khugepaged_scan_mm_slot(uns=
+igned int pages, int *result,
+> > >                                 fput(file);
+> > >                                 if (*result =3D=3D SCAN_PTE_MAPPED_HU=
+GEPAGE) {
+> > >                                         mmap_read_lock(mm);
+> > > -                                       if (hpage_collapse_test_exit(=
+mm))
+> > > +                                       if (hpage_collapse_test_exit_=
+or_disable(mm))
+> > >                                                 goto breakouterloop;
+> > >                                         *result =3D collapse_pte_mapp=
+ed_thp(mm,
+> > >                                                 khugepaged_scan.addre=
+ss, false);
+> > > @@ -2450,7 +2456,7 @@ static unsigned int khugepaged_scan_mm_slot(uns=
+igned int pages, int *result,
+> > >          * Release the current mm_slot if this mm is about to die, or
+> > >          * if we scanned all vmas of this mm.
+> > >          */
+> > > -       if (hpage_collapse_test_exit(mm) || !vma) {
+> > > +       if (hpage_collapse_test_exit_or_disable(mm) || !vma) {
+> > >                 /*
+> > >                  * Make sure that if mm_users is reaching zero while
+> > >                  * khugepaged runs here, khugepaged_exit will find
+> > > --
+> > > 2.33.1
+> > >
 
