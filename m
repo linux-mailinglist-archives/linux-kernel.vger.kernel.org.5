@@ -1,169 +1,199 @@
-Return-Path: <linux-kernel+bounces-44671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 794F88425BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:05:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F06F842600
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:16:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ACDDA1C256C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:05:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B766B2D81C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:06:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C30706A355;
-	Tue, 30 Jan 2024 13:05:33 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 195946A347;
+	Tue, 30 Jan 2024 13:06:03 +0000 (UTC)
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2CD24C66;
-	Tue, 30 Jan 2024 13:05:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAF6B629EF;
+	Tue, 30 Jan 2024 13:06:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706619933; cv=none; b=b2f0b8WJ6OfS+hGRc5y3n0y2k8dZ3UkKyEjiiZMthSu5H+qHghhdKfpOaEynRCq6mTx6nAaC1l+2XlxCBavtB2YVNxmfQhwiQL3Q8x7hyR7hVx7JnpbQN+EScbomHzdHGf+YMAiosN/kKmwHNp6F55tAWdnFJY9V+IDlEXZTRwQ=
+	t=1706619962; cv=none; b=hpavb38NQm1fnmneaDVwFLAuiTRoKaTY0baO5lWLFi124Pg7pWToty1yh57m8moaHlKrALj+JC2xZ5aXD2r/xIJ3WIbUF8tpStjUXazHWttX7i/1qMXKXKomDAV4xVw7L1r1Kga0pV7AA16AI/Cp0xivNXMb1cYNaYB+ml8/wig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706619933; c=relaxed/simple;
-	bh=5pKt9gawZv7V3M8KB+8lfendOF6qiXRbOvon5VS3kOk=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=lbFK6fL45qFELWG3vsZ9TPazsPd4gicw39Abliqy/auR4eu3iLeSJbxGOMhNfT/xmlG5tgpJOMPH2g7pljIOu3ZNAkVufR1AgEUw1GyOSdH78tNsbH7WfW+LNSxrKqCPr2GycCHzaIShJTYXnuETlXPvvkseF2GwQ1FxvmLxJcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TPQPr6Sx6z4f3lfy;
-	Tue, 30 Jan 2024 21:05:20 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 61FAB1A0199;
-	Tue, 30 Jan 2024 21:05:27 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgBnOBEV9LhlrAXNCQ--.25794S3;
-	Tue, 30 Jan 2024 21:05:27 +0800 (CST)
-Subject: Re: [PATCH RFC v4 13/14] dm: wait for IO completion before removing
- dm device
-To: Mikulas Patocka <mpatocka@redhat.com>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc: heinzm@redhat.com, xni@redhat.com, agk@redhat.com, snitzer@kernel.org,
- dm-devel@lists.linux.dev, song@kernel.org, jbrassow@f14.redhat.com,
- neilb@suse.de, shli@fb.com, akpm@osdl.org, linux-kernel@vger.kernel.org,
- linux-raid@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
- "yukuai (C)" <yukuai3@huawei.com>
-References: <20240130021843.3608859-1-yukuai1@huaweicloud.com>
- <20240130021843.3608859-14-yukuai1@huaweicloud.com>
- <fa4cd2f8-d0e8-5b6d-2ac6-1c5f1710a5ee@redhat.com>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <bdeac016-f57d-f917-d605-342fe9856ccf@huaweicloud.com>
-Date: Tue, 30 Jan 2024 21:05:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	s=arc-20240116; t=1706619962; c=relaxed/simple;
+	bh=PbCHZcIyhii7jUjytA/R2ikPEP1nf0FwBryJQ3Kd/+E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=vCx9oQomXMyDhb87mnq+KfO+VXDywpwPpaj8pu9wEBJrGjJW9bAYBVUjerwhjCKGGg4er1SzokFB2lyiBPQM3geYDF9PeFhA6uTwoqPUGwoEEJSqw+zT6CBG32as47po3Dc+F+D4Ec6e1IMLY5Scbph/9zuQLnPt+ES/vaXMniI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-6029b5946f5so34726577b3.1;
+        Tue, 30 Jan 2024 05:06:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706619959; x=1707224759;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xQ8MCplEFGaJPsYTH50sxtg3Pn4u8Wq5BnVFPQWC7E8=;
+        b=gtelW1D4Q9qVyDdacdrJuNvlpq/5kqqL0QA9t8aSxxErqf229/4o9ekXa0uXj2wyWd
+         CYUecQit7VAXKX2jFZq2bxZT+ApSnm1k/sBHovHb0V/o2r+7PIT23RHDOgpTsHRgWMdz
+         3OxL+7sJi+z1xTrCaswTMZZi2oViLgB6X1ja9uUEroMUiEe6VfsYmt03LUapQP7cfv7z
+         JfzpVgJ/+SbYY5CgP4lSgP1/vWjAo6qjOd0bI1AMbrR7aT1xAVRZ9pOp4hhPdgadfyON
+         D46/MdnaT9uM/DiUhKg3z4GEHWNitUiwHP34NtD3+4NWGerSCXIzOIdz2aip0+7vu/6+
+         66Ig==
+X-Gm-Message-State: AOJu0YzE1M58DXJJ1IJfG8rtvO/NNCqqw2+IixA3GvVN9vzaI+uj9FiX
+	IKPL7cSfI+2Fj9mKy3I8221vJrcVsvvNxyVFnXwP5BbEKimHVD1d+O+x/FeUKOY=
+X-Google-Smtp-Source: AGHT+IEeAqJ7et+ueferyTqQK4rTNaqkOMk8NOrl92nn1vm+JrzXan2G/j7x2ofskOSGLurvXMvZWg==
+X-Received: by 2002:a81:b141:0:b0:601:eaa6:9d1e with SMTP id p62-20020a81b141000000b00601eaa69d1emr657189ywh.11.1706619959585;
+        Tue, 30 Jan 2024 05:05:59 -0800 (PST)
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com. [209.85.128.173])
+        by smtp.gmail.com with ESMTPSA id bp1-20020a05690c068100b005ffaa097a67sm3125293ywb.47.2024.01.30.05.05.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jan 2024 05:05:59 -0800 (PST)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-5ffcb478512so28400847b3.0;
+        Tue, 30 Jan 2024 05:05:59 -0800 (PST)
+X-Received: by 2002:a81:b3c7:0:b0:602:a429:72d2 with SMTP id
+ r190-20020a81b3c7000000b00602a42972d2mr740057ywh.22.1706619959106; Tue, 30
+ Jan 2024 05:05:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <fa4cd2f8-d0e8-5b6d-2ac6-1c5f1710a5ee@redhat.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgBnOBEV9LhlrAXNCQ--.25794S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxAr1DuFW5ur4rWF1kJw13urg_yoW5Cr4DpF
-	Wftay3tFZ8Zr13Kw4jqa1UKF1FyF4SqryfGryIvw1fA3Zxur98JF48tFWrtFWUCFyUWF13
-	AF1DXas5Gr4DJ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
-	c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
-	AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
-	17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
-	IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
-	3wCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcS
-	sGvfC2KfnxnUUI43ZEXa7VUbQVy7UUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+References: <20240129151618.90922-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20240129151618.90922-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20240129-magical-unclaimed-e725e2491ccb@spud> <CAMuHMdVhXh_Cd8m00xfVRB9JA8Mfb9+qccu94iVpUMS2z5kmUQ@mail.gmail.com>
+ <CA+V-a8v0tdr-xh__5rcK=xL-yYG1qLtSrAUjPcS_-ZVYy8p9pQ@mail.gmail.com>
+In-Reply-To: <CA+V-a8v0tdr-xh__5rcK=xL-yYG1qLtSrAUjPcS_-ZVYy8p9pQ@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 30 Jan 2024 14:05:47 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVu+VNW56VYkJs2w-S=1372_ZL6K2LQGKoR9vugpR+Z-w@mail.gmail.com>
+Message-ID: <CAMuHMdVu+VNW56VYkJs2w-S=1372_ZL6K2LQGKoR9vugpR+Z-w@mail.gmail.com>
+Subject: Re: [PATCH 1/5] dt-bindings: interrupt-controller:
+ renesas,rzg2l-irqc: Document RZ/Five SoC
+To: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc: Conor Dooley <conor@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Magnus Damm <magnus.damm@gmail.com>, linux-renesas-soc@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>, 
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Hi Prabhakar,
 
-ÔÚ 2024/01/30 19:46, Mikulas Patocka Ð´µÀ:
-> 
-> 
-> On Tue, 30 Jan 2024, Yu Kuai wrote:
-> 
->> From: Yu Kuai <yukuai3@huawei.com>
->>
->> __dm_destroy() guarantee that device openers is zero, and then
->> only call 'presuspend' and 'postsuspend' for the target. For
->> request-based dm, 'md->holders' will be grabbed for each rq and
->> __dm_destroy() will wait for 'md->holders' to be zero. However, for
->> bio-based device, __dm_destroy() doesn't wait for all bios to be done.
->>
->> Fix this problem by calling dm_wait_for_completion() to wail for all
->> inflight IO to be done, like what dm_suspend() does.
-> 
-> If the number of openers is zero, it is guaranteed that there are no bios
-> in flight. Therefore, we don't have to wait for them.
-> 
-> If there are bios in flight, it is a bug in the code that issues the bios.
-> You can put WARN_ON(dm_in_flight_bios(md)) there.
+On Tue, Jan 30, 2024 at 1:59=E2=80=AFPM Lad, Prabhakar
+<prabhakar.csengg@gmail.com> wrote:
+> On Tue, Jan 30, 2024 at 11:13=E2=80=AFAM Geert Uytterhoeven
+> <geert@linux-m68k.org> wrote:
+> > On Mon, Jan 29, 2024 at 6:30=E2=80=AFPM Conor Dooley <conor@kernel.org>=
+ wrote:
+> > > On Mon, Jan 29, 2024 at 03:16:14PM +0000, Prabhakar wrote:
+> > > > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > > >
+> > > > Document RZ/Five (R9A07G043F) IRQC bindings. The IRQC block on RZ/F=
+ive SoC
+> > > > is almost identical to one found on the RZ/G2L SoC with below diffe=
+rences,
+> > > > * Additional BUS error interrupt
+> > > > * Additional ECCRAM error interrupt
+> > > > * Has additional mask control registers for NMI/IRQ/TINT
+> > > >
+> > > > Hence new compatible string "renesas,r9a07g043f-irqc" is added for =
+RZ/Five
+> > > > SoC.
+> > > >
+> > > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.c=
+om>
+> >
+> > > > --- a/Documentation/devicetree/bindings/interrupt-controller/renesa=
+s,rzg2l-irqc.yaml
+> > > > +++ b/Documentation/devicetree/bindings/interrupt-controller/renesa=
+s,rzg2l-irqc.yaml
+> > > > @@ -134,6 +141,12 @@ properties:
+> > > >        - const: tint30
+> > > >        - const: tint31
+> > > >        - const: bus-err
+> > > > +      - const: eccram0-tie1
+> > > > +      - const: eccram0-tie2
+> > > > +      - const: eccram0-ovf
+> > > > +      - const: eccram1-tie1
+> > > > +      - const: eccram1-tie2
+> > > > +      - const: eccram1-ovf
+> >
+> > Why not use the naming from the docs (all 6 include "ti")?
+> > EC7TIE1_0, EC7TIE2_0, EC7TIOVF_0, EC7TIE1_1, EC7TIE2_1, EC7TIOVF_1
+> > =3D> ec7tie1-0, ec7tie2-0, ec7tiovf-0, ...?
+> >
+> Agreed.
+>
+> > > I think the restrictions already in the file become incorrect with th=
+is
+> > > patch:
+> > >   - if:
+> > >       properties:
+> > >         compatible:
+> > >           contains:
+> > >             enum:
+> > >               - renesas,r9a07g043u-irqc
+> > >               - renesas,r9a08g045-irqc
+> > >     then:
+> > >       properties:
+> > >         interrupts:
+> > >           minItems: 42
+> > >         interrupt-names:
+> > >           minItems: 42
+> > >       required:
+> > >         - interrupt-names
+> > >
+> > > This used to require all 42 interrupts for the two compatibles here
+> > > and at least the first 41 otherwise. Now you've increased the number =
+of
+> > > interrupts to 48 thereby removing the upper limits on the existing
+> > > devices.
+> >
+> > I'm gonna repeat (and extend) my question from [1]: How come we thought
+> > RZ/G2L and RZ/V2L do not have the bus error and ECCRAM interrupts?
+> >
+> Hmm not sure how this was missed earlier.
+>
+> > Looks like most of the conditional handling can be removed (see below).
+> >
+> > > Given the commit message, I figure that providing 48 interrupts for
+> > > (at least some of) those devices would be incorrect?
+> >
+> > Looks like all of RZ/G2L{,C}, RZ/V2L, RZ/G2UL, and RZ/Five support
+> > all 48 interrupts.  RZ/G3S lacks the final three for ECCRAM1.
+> >
+> Agreed for RZ/G2L{,C}, RZ/V2L, RZ/G2UL, and RZ/Five, but for RZ/G3S it
+> becomes tricky the interrupts for ECCRAM0/1 are combined hence they
+> have just 3 interrupts. How do you propose the above interrupt naming?
 
-I add this patch because while testing, there is a problem that is
-hard to reporduce, as I mentioned in the other thread. I'll add BUG_ON()
-and try if I can still reporduce this problem without triggering it.
+I guess it doesn't hurt to have an index 0 on a part that has only a
+single set?
 
-Thanks,
-Kuai
+Alternatives would be to
+  1. Drop the index completely on RZ/G3S, complicating bindings and
+     driver,
+  1. Drop the index for the first set, and use index 2 for the second set,
+     causing the names to differ even more on parts with 2 sets.
 
-[12504.959682] BUG bio-296 (Not tainted): Object already free
-[12504.960239] 
------------------------------------------------------------------------------
-[12504.960239]
-[12504.961209] Allocated in mempool_alloc+0xe8/0x270 age=30 cpu=1 pid=203288
-[12504.961905]  kmem_cache_alloc+0x36a/0x3b0
-[12504.962324]  mempool_alloc+0xe8/0x270
-[12504.962712]  bio_alloc_bioset+0x3b5/0x920
-[12504.963129]  bio_alloc_clone+0x3e/0x160
-[12504.963533]  alloc_io+0x3d/0x1f0
-[12504.963876]  dm_submit_bio+0x12f/0xa30
-[12504.964267]  __submit_bio+0x9c/0xe0
-[12504.964639]  submit_bio_noacct_nocheck+0x25a/0x570
-[12504.965136]  submit_bio_wait+0xc2/0x160
-[12504.965535]  blkdev_issue_zeroout+0x19b/0x2e0
-[12504.965991]  ext4_init_inode_table+0x246/0x560
-[12504.966462]  ext4_lazyinit_thread+0x750/0xbe0
-[12504.966922]  kthread+0x1b4/0x1f0
-> 
-> Mikulas
-> 
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->> ---
->>   drivers/md/dm.c | 3 +++
->>   1 file changed, 3 insertions(+)
->>
->> diff --git a/drivers/md/dm.c b/drivers/md/dm.c
->> index 8dcabf84d866..2c0eae67d0f1 100644
->> --- a/drivers/md/dm.c
->> +++ b/drivers/md/dm.c
->> @@ -58,6 +58,7 @@ static DEFINE_IDR(_minor_idr);
->>   static DEFINE_SPINLOCK(_minor_lock);
->>   
->>   static void do_deferred_remove(struct work_struct *w);
->> +static int dm_wait_for_completion(struct mapped_device *md, unsigned int task_state);
->>   
->>   static DECLARE_WORK(deferred_remove_work, do_deferred_remove);
->>   
->> @@ -2495,6 +2496,8 @@ static void __dm_destroy(struct mapped_device *md, bool wait)
->>   	if (!dm_suspended_md(md)) {
->>   		dm_table_presuspend_targets(map);
->>   		set_bit(DMF_SUSPENDED, &md->flags);
->> +		if (wait)
->> +			dm_wait_for_completion(md, TASK_UNINTERRUPTIBLE);
->>   		set_bit(DMF_POST_SUSPENDING, &md->flags);
->>   		dm_table_postsuspend_targets(map);
->>   	}
->> -- 
->> 2.39.2
->>
-> 
-> .
-> 
+Gr{oetje,eeting}s,
 
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
