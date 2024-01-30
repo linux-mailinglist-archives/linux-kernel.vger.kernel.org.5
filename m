@@ -1,117 +1,117 @@
-Return-Path: <linux-kernel+bounces-44046-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44047-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 249DD841C94
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:30:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFBB4841C98
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:31:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7803B2458F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:30:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E4431F245DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:31:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DCDF524CC;
-	Tue, 30 Jan 2024 07:30:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EB5353805;
+	Tue, 30 Jan 2024 07:31:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A+uQvlLt"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="ifDWtsGR"
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 408E94D583;
-	Tue, 30 Jan 2024 07:30:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2FA7524CC
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 07:31:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706599847; cv=none; b=QeNrtp7EHkDKx6JivBO+tTYhrioc2eYBTj1zHTtpwNiSQ8TACp6ocrTNl6ba6Osk0B4ooWred39f6si/WrpcVOrudPfJB3HUq5jwM2jKZ9+7kKXxTwCNVEsDF6KXy+l1709TIDC/A1pHoJD3PCYqMGGKTRp9HTn+XCiXUnJHVIE=
+	t=1706599871; cv=none; b=ILDl6PlNoXnVeOrUban1tAzkllNco1CWDSeNGCrMEsMUxC1/xtVCz17UBhnBkFZPKNJLPH2C5p7pg5ypVyA4ocERHPc2RRryjyAOfyKtKQJ6kV9D826BdvotHzQ6NiKV1HpTd6HwUQfuUD7QiZmXP7FPIkzmiYnsQmnjEbPTv58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706599847; c=relaxed/simple;
-	bh=foOvR8njiSdEDNybt1uvmEL+bBp2j5RmuiwsLhRfcE8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QOR0OR3g40y3unNVw1lgYPcxsS07nS1ucc6r5RsxhzHJP9GP6zwiEzMXyuIyqX01x6W6uwBdvgnexttYISe0iyTqhrKb7C2PpzRpl00CR58PWHsH28Z5pHiEgzvruaTBMKAf1DpWBUk1rMJ7CFloqzB/sFXnaURemdn44R/hs2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=A+uQvlLt; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706599846; x=1738135846;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=foOvR8njiSdEDNybt1uvmEL+bBp2j5RmuiwsLhRfcE8=;
-  b=A+uQvlLtHwGlNOMpjlM3NlUcmhAMhzSaexY2fKLoUwjSv/mEcjNeTy7C
-   zn1xZetU7vhMBVJr9Sl72z60iSJwaFd6dh5nBQPPoMYj3l/jLkZWZw5zT
-   FiLJuRHv8u/T116DwBzqZiRZIfNgqgZeDGcL1mNeUvLs/n5v8eQuQ9t3q
-   DO+S/F4Wu5K72EN9Q2yUlhGXmC0rfK7fm91oFZETP5kjeWHyCql6CcRaP
-   s5pcWzFxpjUqkpVfdlRRYGUO3YmWXqfZfshUyOViWZQnLVRvL+PSAKbmg
-   ZxDuKdB3MbbWHF8788ZzijE3awvX3JoWx6L34oBLxNMZdPtIp9ksUXbBg
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="3029061"
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="3029061"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 23:30:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="931352719"
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="931352719"
-Received: from hexu1-mobl1.ccr.corp.intel.com (HELO [10.249.174.131]) ([10.249.174.131])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 23:30:42 -0800
-Message-ID: <b3af83cf-b6c7-4543-b793-f2a9547ca9d2@linux.intel.com>
-Date: Tue, 30 Jan 2024 15:30:39 +0800
+	s=arc-20240116; t=1706599871; c=relaxed/simple;
+	bh=+AboSCxXz2/lxMmny6wb2Q4v9oABMrH5i1uxlA1QTz0=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cJ3S9j1Pl+UYlr6YBTVlztt9wjcl5DtBIGa91DKPTMYFFNfA1m5ol+Rzic27GNnvxHNh/Gvl+Lj23EufaYSYDfzPwqFdOGqt9+/aQ5QmmzKYCx/be/ZeCvwQuo0pIUdngTWbr/O5dGMhSWI2EyOKnsLo2aCsi9FCOaQSGB0+7Vs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=ifDWtsGR; arc=none smtp.client-ip=194.117.254.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=date:from:to:subject:message-id
+	:references:mime-version:content-type:in-reply-to; s=k1; bh=YAlE
+	6Y6T9E3XlAqyeFE3riY9S6rXQeiWA0mk6RgZ6t8=; b=ifDWtsGRUqC4rAPmAvDT
+	pMZ5tPbbHfn6H4dGutoC9LVvZ4mvYw8L+pAMTu7+P1PgH7VHlfC9sjMBOFIHOcCB
+	ZO/5MlBTnDfBEz3eLm3WxqZPagHQCnJl12ss+OTw00X279lPtIx89x/DozgLPC+u
+	E+k/6IymLjAUM7Q2FckZ44famzqGHK2Rh0/l+dLY65+/g4fnT8ul+mtRhGjHyFpM
+	0blfuYGR4NfV3WlTA6l5WkfKOVpitKRDBiWLUHszAIja6dqLV029vnBAbQKbpbdM
+	Orx2ztzM4KsjkN3uT99K43REvoDNmu3wllnR5nsM6v47oY0Zp1sIZl8CenOW0Atz
+	fA==
+Received: (qmail 2745126 invoked from network); 30 Jan 2024 08:31:07 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 30 Jan 2024 08:31:07 +0100
+X-UD-Smtp-Session: l3s3148p1@finiviQQzpRehhtJ
+Date: Tue, 30 Jan 2024 08:31:07 +0100
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: claudiu beznea <claudiu.beznea@tuxon.dev>, ulf.hansson@linaro.org,
+	takeshi.saito.xv@renesas.com, masaharu.hayakawa.ry@renesas.com,
+	yoshihiro.shimoda.uh@renesas.com, linux-mmc@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Subject: Re: [PATCH v2] mmc: renesas_sdhi: Fix change point of data handling
+Message-ID: <Zbilu9u9Z3MeeOb9@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	claudiu beznea <claudiu.beznea@tuxon.dev>, ulf.hansson@linaro.org,
+	takeshi.saito.xv@renesas.com, masaharu.hayakawa.ry@renesas.com,
+	yoshihiro.shimoda.uh@renesas.com, linux-mmc@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240117110646.1317843-1-claudiu.beznea.uj@bp.renesas.com>
+ <ZbeEPg1jc5qWJa5m@ninjato>
+ <345bc392-cf28-479a-9453-5bc89f635759@tuxon.dev>
+ <ZbikovLbujyGS1ub@ninjato>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 4/5] iommu/vt-d: pass pdev parameter for
- qi_check_fault() and refactor callers
-To: "Tian, Kevin" <kevin.tian@intel.com>,
- "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
- "bhelgaas@google.com" <bhelgaas@google.com>,
- "robin.murphy@arm.com" <robin.murphy@arm.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>
-Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "will@kernel.org" <will@kernel.org>, "lukas@wunner.de" <lukas@wunner.de>,
- "Liu, Yi L" <yi.l.liu@intel.com>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
-References: <20240129034924.817005-1-haifeng.zhao@linux.intel.com>
- <20240129034924.817005-5-haifeng.zhao@linux.intel.com>
- <BN9PR11MB5276BAB9620D3A7B07B24F328C7E2@BN9PR11MB5276.namprd11.prod.outlook.com>
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-In-Reply-To: <BN9PR11MB5276BAB9620D3A7B07B24F328C7E2@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="GQRaf8k/U09nYrq6"
+Content-Disposition: inline
+In-Reply-To: <ZbikovLbujyGS1ub@ninjato>
 
 
-On 1/29/2024 4:58 PM, Tian, Kevin wrote:
->> From: Ethan Zhao <haifeng.zhao@linux.intel.com>
->> Sent: Monday, January 29, 2024 11:49 AM
->>
->> to check state of ATS capable pci device in qi_check_fault() for surprise
->> removal case, we need to pass the target pci device of ATS invalidation
->> request to qi_check_fault(). if pdev is valid, means current request is for
->> ATS invalidation, vice vesa.
->>
->> no function change.
-> qi_submit_sync() is used for all kinds of iotlb/cache/devtlb invalidations.
-> it's a bit weird to see a device pointer (even being NULL) in places where
-> a device doesn't even matter.
->
-> having a new qi_submit_sync_devtlb() wrapper sounds cleaner to me,
-> with an internal __qi_submit_sync() helper to accept a device pointer.
->
-> qi_submit_sync() calls __qi_submit_sync() with a null device pointer then
-> non-devtlb paths are intact.
+--GQRaf8k/U09nYrq6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Make sense !
 
-That way, could keep about 10 qi_submit_sync() calling intact, while
+> But isn't it equal to the current code then? (Except for one thing: the
+> smpcmp bit is only set when there is no cmd error. I need to double
+> check but I think I like that.)
 
-only 2-3 qi_submit_sync_devtlb() wrapper calling needed.
+I double checked, I really like it. I'd just invert the logic. Pseudo
+code:
 
-Thanks,
+if (!cmd_error)
+	if (SMPCMP == 0) set_bit
+else
+	mmc_abort_tuning()
 
-Ethan
 
+
+--GQRaf8k/U09nYrq6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmW4pbsACgkQFA3kzBSg
+KbZIbQ//Y36zPSqNnCfwh8mVJf6212a3SsOGiuFkR6GYcAlchDw2ofadF0ts7fL8
+H7CNwSQ/13NSNE7BD/jRdzszu5Q+FUAha7+R/MJccwR5Z+an0b2AhC98geyGkm3+
+LJWPMx+8YflXxxkJgy2DvkIK+dTHc5rX1sT/8hCtFqAsWs98QAPt6l+1tk65bM7e
+QY10mKytTr9qetUbw/60NnlIuU43jMizHaa7/dvh0vob67qA5BDF+WDBPpUUOz/p
+T96t2EvqB10E7oOX3n75ZUnXY+j4zTnUohdPlXuc34HmoFf/eGeNNYOmdj7gNhIN
+EqkfFNTZt9ZtqntVkEuWV8kwDUjhxhWDjSAsUuLEvzP80cHJiys1Orj1StOzT34X
+dSosnhGFNSnTogkkKaJ8L3c/xBFSwfS9IxsAa+4BPev9ABcilA/v2ibkfUqyzQcm
+TNyYg3N9EuwHjNe2r2bMDmbFVy9KNdqjiw1YPNOC5kF6s33CAJfAWUWcXcsPjYJk
+/ui/GRp6kiIJuAz9JQ7g3V3ziQZOaWtJd7dL3yB7RgGNL5lt1y9gHLrZD16m9/67
+qnz9qj8Mg3Q/aSP8+vLRVSkcfrC5Y8eWkuPm8e5dlI9TennnMrKw49EwmuQPXUDX
+oudYdpBPDLXLigpAMq0ASDLg9oHhpG2KarT+Z4PLO+yDrhT7404=
+=CXPW
+-----END PGP SIGNATURE-----
+
+--GQRaf8k/U09nYrq6--
 
