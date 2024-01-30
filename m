@@ -1,189 +1,183 @@
-Return-Path: <linux-kernel+bounces-44178-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44180-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C213841E5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:50:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B21FD841E6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:53:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 75B991F2446A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:50:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2848E1F26D78
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:53:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBFC45914F;
-	Tue, 30 Jan 2024 08:50:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBCEF5786C;
+	Tue, 30 Jan 2024 08:53:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="nrqHLF4Y"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="v1u6GWIY"
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87A8658ABC;
-	Tue, 30 Jan 2024 08:50:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 597C35914F
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 08:53:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706604627; cv=none; b=RfG7naT1WQkaGGdNhhGKDlQwHU5RRfIu2xRkXFAe4DdSrPyZ3W+OzJ9XECgAi3B8K7vLx/J/XutS9wjyqOyaw2pDC8vvZ2sJV/YJu/uA6/DMFhZGjLPWuz2J8A0gf7PMvNTVr0N/CIsgTzb1u2HU1lKUfoXo0v7fUrPkPt3JkYY=
+	t=1706604794; cv=none; b=sjleM3exVTFcUut8owxoBYna5hVzNwEh9rzNNswOmD3xaDDG/e5HF+UnANdle7lN1JI7t9XXGXyZ5H3HjS1wTpqWodxHyiM2yRLnHrhnpYl7nBGozOa/LV+Mq2mCvlidgKBr2djm/L8FoPYe0eGFKO+E8GBjGGTI4oKYx1Ndbnw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706604627; c=relaxed/simple;
-	bh=L7g7UHjKNr5SvQAGpzc9mh21hs6JnAcMjRSyUdwAxPo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mE1hnHM4dV9zVZk5sHr0zSvIcnaHAZZK4wlC4I+fJy8F6RMtB2PUPAwK9/mnsqIfCKmXkNqyZbMovr88YgLWpCCZKh8zXh8VkZi+zru6wEe5oFiQVmSnI9JHcCnCdAQALpynOmZkYI+jGiG8Cx0mAX742uTyoWiBsQSPly2c/lo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=nrqHLF4Y; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706604623;
-	bh=L7g7UHjKNr5SvQAGpzc9mh21hs6JnAcMjRSyUdwAxPo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=nrqHLF4Y2RIFvV3i1CagzTPMXnxRu8+Xec++UFZsM9uNUN0z1WjrHKVf4UrYt+sjF
-	 lpcqovqRbqjlmPeYKMlWMRfnb4QlLUz+znUbVbd5nLwENsRhgipQVvd+ElXcYvdQvG
-	 I7gwY7+k2ehLl86TGjghkWdIjrqrRwJ0W/IZG6LiWBR+uwwHCX06JrYXirg7nyEfWx
-	 xdUSydKlIsgHe+uzkethfqub9itVdFEjI/wGVaWmwMhHVWDN1SNUoQgOO2TFBBNN0m
-	 iMpqa+JPM57QDE5QdLjz0iFNw4iXIGJ0CJDseKKoq2FSt9g4MSPfimH2ApQQFJwNp0
-	 EZZVxjpXk6Y1A==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 99F213782076;
-	Tue, 30 Jan 2024 08:50:22 +0000 (UTC)
-Message-ID: <20fc5f3f-3c52-448c-979f-4b1fdcef10f3@collabora.com>
-Date: Tue, 30 Jan 2024 09:50:21 +0100
+	s=arc-20240116; t=1706604794; c=relaxed/simple;
+	bh=uwmEmEVy0Kx70knw/kmKnAvju629yO2leUrWM8MOq/k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=h2rbkf9PHDMWCdoLr6DF6lmTDvUYdPDTUJbbW+Vr/57cFnCOdpLXMHLE5WlC+kkfn1mq+QjEyDOxZcNq7o9ysynZ+t3C4hefUCZk1lmeAgm8igdSzcNdNPDM+FKYlJgLnb9MNrI2da1iWAsFsgMOp+H/lPzC+NG65mqLe2SZibo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=v1u6GWIY; arc=none smtp.client-ip=209.85.219.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dc238cb1b17so4102396276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 00:53:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706604791; x=1707209591; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=NWbHSmMZcbcTPFNjHs15M83nAeyP7oSVXTG00tGkv3M=;
+        b=v1u6GWIYq6Hgxrk5f9TxLCFfPJHtquvT8V2pUIbrNQDu+5PHbbQhQ9XNztKl2s4E/l
+         RXwASjzJz1gkPV9lI9Eaz/+lC8lrA77EGFd3srFuxcplH5vDLZ9vuJ3j71S9k9kUduus
+         r1HM/Prwy1C0YiPlCVeT5cRt8uSn/6mYXoSCJtbopcKD90GTfpoIxcpD6DJxGHTW7lkB
+         DdVJ89ISf6TpgmzL2nHfV21h5pkFrclavbeYMhlFF2j/otX0oRTIkZFtXFfeafaCQvrU
+         twBPKwr7u291JuDdQp9y2WKK9Sw2BbT8mHCytq6w0dPmwV3uaJzETUiQMVNFoTI0/5mr
+         TVWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706604791; x=1707209591;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NWbHSmMZcbcTPFNjHs15M83nAeyP7oSVXTG00tGkv3M=;
+        b=FVctbhYAIplWbcpq8cqblNLZ0ykJqYmUIEsqLXcVkOf3cMvVS9D1ToV5bAR4uQUigo
+         QY/HVRSJzr3etPifArrUU9oSNYmCNeIdp0OolxYNd9wX2R/q8L6STKtUP3gsqkVeMknr
+         sW5KxejD8Qin8dfZdYaf0L7EiNf6wezbdR2Z7iUTNgXt7KCTG6B6+NgkzRw0sB5XJgFh
+         ql/zWgJgFzKiaxjXDv/CeaAySjHF3J5AD1ZmaHHHMyhFmz1F6sCWrhV+xMHJZY5NPtGS
+         IerC7MRS4Wm9IMCPGF3kT1uSLZ65AkPkZYsByFllk5lbTuo641arwPAxAtQkkgJg+gOn
+         SkCQ==
+X-Gm-Message-State: AOJu0YxaKBIqwOSCbbJp7/A6zvjR1f6oyNtUgt2DWXRH0E/0P8zjdqFS
+	F6F9uq1RR7TUnqqE5Yo55NKOVXQvkx1IJJ2hgsdE/p52QuIUf4jiwoE0S/ploA==
+X-Google-Smtp-Source: AGHT+IFkWEI9cID3V5CUdGoq4dc1LLz6pv4GAVkkwfsUOjz7PyOVGVwlb9boqiHu4tXoVvXyKiLrmw==
+X-Received: by 2002:a05:6902:10b:b0:dc2:398b:fa08 with SMTP id o11-20020a056902010b00b00dc2398bfa08mr4421170ybh.31.1706604791207;
+        Tue, 30 Jan 2024 00:53:11 -0800 (PST)
+Received: from thinkpad ([117.202.188.6])
+        by smtp.gmail.com with ESMTPSA id r14-20020a63ec4e000000b005c19c586cb7sm7520170pgj.33.2024.01.30.00.53.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jan 2024 00:53:10 -0800 (PST)
+Date: Tue, 30 Jan 2024 14:23:01 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+Cc: vkoul@kernel.org, jingoohan1@gmail.com, conor+dt@kernel.org,
+	konrad.dybcio@linaro.org, robh+dt@kernel.org,
+	quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
+	quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
+	dmitry.baryshkov@linaro.org, quic_krichai@quicinc.com,
+	quic_vbadigan@quicinc.com, quic_parass@quicinc.com,
+	quic_schintav@quicinc.com, quic_shijjose@quicinc.com,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Serge Semin <fancer.lancer@gmail.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	mhi@lists.linux.dev
+Subject: Re: [PATCH v1 5/6] PCI: qcom-ep: Provide number of read/write
+ channel for HDMA
+Message-ID: <20240130085301.GB83288@thinkpad>
+References: <1705669223-5655-1-git-send-email-quic_msarkar@quicinc.com>
+ <1705669223-5655-6-git-send-email-quic_msarkar@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2,1/2] media: mediatek: vcodec: adding lock to protect
- decoder context list
-Content-Language: en-US
-To: =?UTF-8?B?WXVuZmVpIERvbmcgKOiRo+S6kemjnik=?= <Yunfei.Dong@mediatek.com>,
- "nhebert@chromium.org" <nhebert@chromium.org>,
- "benjamin.gaignard@collabora.com" <benjamin.gaignard@collabora.com>,
- "nfraprado@collabora.com" <nfraprado@collabora.com>,
- "nicolas.dufresne@collabora.com" <nicolas.dufresne@collabora.com>,
- "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
- =?UTF-8?B?SXJ1aSBXYW5nICjnjovnkZ4p?= <Irui.Wang@mediatek.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
- "frkoenig@chromium.org" <frkoenig@chromium.org>,
- "stevecho@chromium.org" <stevecho@chromium.org>,
- "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "daniel@ffwll.ch" <daniel@ffwll.ch>,
- Project_Global_Chrome_Upstream_Group
- <Project_Global_Chrome_Upstream_Group@mediatek.com>,
- "hsinyi@chromium.org" <hsinyi@chromium.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-References: <20240129023153.28521-1-yunfei.dong@mediatek.com>
- <df6c8b2b-df56-46c5-933d-e56bf704525f@collabora.com>
- <b0b32ef4fb6edb979840b49a3de0278089088f14.camel@mediatek.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <b0b32ef4fb6edb979840b49a3de0278089088f14.camel@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <1705669223-5655-6-git-send-email-quic_msarkar@quicinc.com>
 
-Il 30/01/24 07:29, Yunfei Dong (董云飞) ha scritto:
-> Hi AngeloGioacchino,
+On Fri, Jan 19, 2024 at 06:30:21PM +0530, Mrinmay Sarkar wrote:
+> There is no standard way to auto detect the number of available
+> read/write channels in a platform. So adding this change to provide
+> read/write channels count and also provide "EDMA_MF_HDMA_NATIVE"
+> flag to support HDMA for 8775 platform.
 > 
-> Thanks for your reviewing.
-> On Mon, 2024-01-29 at 12:19 +0100, AngeloGioacchino Del Regno wrote:
->> Il 29/01/24 03:31, Yunfei Dong ha scritto:
->>> The ctx_list will be deleted when scp getting unexpected behavior,
->>> then the
->>> ctx_list->next will be NULL, the kernel driver maybe access NULL
->>> pointer in
->>> function vpu_dec_ipi_handler when going through each context, then
->>> reboot.
->>>
->>> Need to add lock to protect the ctx_list to make sure the ctx_list-
->>>> next isn't
->>> NULL pointer.
->>>
->>> Hardware name: Google juniper sku16 board (DT)
->>> pstate: 20400005 (nzCv daif +PAN -UAO -TCO BTYPE=--)
->>> pc : vpu_dec_ipi_handler+0x58/0x1f8 [mtk_vcodec_dec]
->>> lr : scp_ipi_handler+0xd0/0x194 [mtk_scp]
->>> sp : ffffffc0131dbbd0
->>> x29: ffffffc0131dbbd0 x28: 0000000000000000
->>> x27: ffffff9bb277f348 x26: ffffff9bb242ad00
->>> x25: ffffffd2d440d3b8 x24: ffffffd2a13ff1d4
->>> x23: ffffff9bb7fe85a0 x22: ffffffc0133fbdb0
->>> x21: 0000000000000010 x20: ffffff9b050ea328
->>> x19: ffffffc0131dbc08 x18: 0000000000001000
->>> x17: 0000000000000000 x16: ffffffd2d461c6e0
->>> x15: 0000000000000242 x14: 000000000000018f
->>> x13: 000000000000004d x12: 0000000000000000
->>> x11: 0000000000000001 x10: fffffffffffffff0
->>> x9 : ffffff9bb6e793a8 x8 : 0000000000000000
->>> x7 : 0000000000000000 x6 : 000000000000003f
->>> x5 : 0000000000000040 x4 : fffffffffffffff0
->>> x3 : 0000000000000020 x2 : ffffff9bb6e79080
->>> x1 : 0000000000000010 x0 : ffffffc0131dbc08
->>> Call trace:
->>> vpu_dec_ipi_handler+0x58/0x1f8 [mtk_vcodec_dec (HASH:6c3f 2)]
->>> scp_ipi_handler+0xd0/0x194 [mtk_scp (HASH:7046 3)]
->>> mt8183_scp_irq_handler+0x44/0x88 [mtk_scp (HASH:7046 3)]
->>> scp_irq_handler+0x48/0x90 [mtk_scp (HASH:7046 3)]
->>> irq_thread_fn+0x38/0x94
->>> irq_thread+0x100/0x1c0
->>> kthread+0x140/0x1fc
->>> ret_from_fork+0x10/0x30
->>> Code: 54000088 f94ca50a eb14015f 54000060 (f9400108)
->>> ---[ end trace ace43ce36cbd5c93 ]---
->>> Kernel panic - not syncing: Oops: Fatal exception
->>> SMP: stopping secondary CPUs
->>> Kernel Offset: 0x12c4000000 from 0xffffffc010000000
->>> PHYS_OFFSET: 0xffffffe580000000
->>> CPU features: 0x08240002,2188200c
->>> Memory Limit: none
->>>
->>> 'Fixes: 655b86e52eac ("media: mediatek: vcodec: Fix possible
->>> invalid memory access for decoder")'
->>
->> Hello Yunfei,
->>
->> You've sent two patches as a v2, but:
->>    - The two patches are identical (!) apart from the commit message?!
->>    - It's Fixes: xxxx , not 'Fixes: xxxx' (please remove the quotes!)
->>    - There's no changelog from v1, so, what changed in v2?!
->>
-> 1> These two patch used to fix the same issue, just used to separate
-> encoder with decoder;
-
-I just noticed that - I'm sorry.
-
-> 2> Will fix in next patch;
-> 3> patch 1 are the same for v1 and v2, just the patch 2 (encoder)
-> change something.
+> 8775 has IP version 1.34.0 so intruduce a new cfg(cfg_1_34_0) for
+> this platform. Add struct qcom_pcie_ep_cfg as match data. Assign
+> hdma_supported flag into struct qcom_pcie_ep_cfg and set it true
+> in cfg_1_34_0.
 > 
-Next time, can you please add a cover letter to your series?
+> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+> ---
+>  drivers/pci/controller/dwc/pcie-qcom-ep.c | 19 ++++++++++++++++++-
+>  1 file changed, 18 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
+> index 45008e0..8d56435 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
+> @@ -149,6 +149,10 @@ enum qcom_pcie_ep_link_status {
+>  	QCOM_PCIE_EP_LINK_DOWN,
+>  };
+>  
 
-I think it would be easier for people to see what changed in the entire series,
-even if it is just two or three patches, as you'd be writing the changelog in
-there instead of writing it in each patch :-)
+Add kdoc comment please as like the below struct.
 
+> +struct qcom_pcie_ep_cfg {
+> +	bool hdma_supported;
+> +};
+> +
+>  /**
+>   * struct qcom_pcie_ep - Qualcomm PCIe Endpoint Controller
+>   * @pci: Designware PCIe controller struct
+> @@ -167,6 +171,7 @@ enum qcom_pcie_ep_link_status {
+>   * @num_clks: PCIe clocks count
+>   * @perst_en: Flag for PERST enable
+>   * @perst_sep_en: Flag for PERST separation enable
+> + * @cfg: PCIe EP config struct
+>   * @link_status: PCIe Link status
+>   * @global_irq: Qualcomm PCIe specific Global IRQ
+>   * @perst_irq: PERST# IRQ
+> @@ -194,6 +199,7 @@ struct qcom_pcie_ep {
+>  	u32 perst_en;
+>  	u32 perst_sep_en;
+>  
+> +	const struct qcom_pcie_ep_cfg *cfg;
+>  	enum qcom_pcie_ep_link_status link_status;
+>  	int global_irq;
+>  	int perst_irq;
+> @@ -511,6 +517,10 @@ static void qcom_pcie_perst_assert(struct dw_pcie *pci)
+>  	pcie_ep->link_status = QCOM_PCIE_EP_LINK_DISABLED;
+>  }
+>  
+> +static const struct qcom_pcie_ep_cfg cfg_1_34_0 = {
+> +	.hdma_supported = true,
+> +};
+> +
+>  /* Common DWC controller ops */
+>  static const struct dw_pcie_ops pci_ops = {
+>  	.link_up = qcom_pcie_dw_link_up,
+> @@ -816,6 +826,13 @@ static int qcom_pcie_ep_probe(struct platform_device *pdev)
+>  	pcie_ep->pci.ops = &pci_ops;
+>  	pcie_ep->pci.ep.ops = &pci_ep_ops;
+>  	pcie_ep->pci.edma.nr_irqs = 1;
+> +
+> +	pcie_ep->cfg = of_device_get_match_data(dev);
 
-> Best Regards,
-> Yunfei Dong
->> Cheers,
->> Angelo
->>
->>> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
->>> ---
->>>    .../platform/mediatek/vcodec/common/mtk_vcodec_fw_vpu.c      | 4
->>> ++--
->>>    .../platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c    | 5
->>> +++++
->>>    .../platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.h    | 2
->>> ++
->>>    drivers/media/platform/mediatek/vcodec/decoder/vdec_vpu_if.c | 2
->>> ++
->>>    4 files changed, 11 insertions(+), 2 deletions(-)
->>>
->>
->>
+Why do you want to cache "cfg" since it is only used in probe()?
 
+> +	if (pcie_ep->cfg && pcie_ep->cfg->hdma_supported) {
+> +		pcie_ep->pci.edma.ll_wr_cnt = 1;
+> +		pcie_ep->pci.edma.ll_rd_cnt = 1;
+
+Is the platform really has a single r/w channel?
+
+- Mani
+
+-- 
+மணிவண்ணன் சதாசிவம்
 
