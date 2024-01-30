@@ -1,207 +1,118 @@
-Return-Path: <linux-kernel+bounces-44845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44846-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7F4E842815
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:32:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 959F8842817
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:32:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 476351F2509B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:32:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D5CC1F2648A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:32:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA582823D6;
-	Tue, 30 Jan 2024 15:31:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE46D82D94;
+	Tue, 30 Jan 2024 15:32:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IBD5wgfq"
-Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="HPpvSE07"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57B2F823D3
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 15:31:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 981C182D85
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 15:32:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706628710; cv=none; b=cwFvMjqtUtc8bJPhGci2N6r+wkW0DXQ9tUzuP61H7m5IUvOjPDhRZ79okR3yTsBJB75/ZGMS6m8oAkbc73X8A3vaOFkbWxGymMmvpgAc6UJl0PE1w6fyphUlyWh4SQ4bk4KS52NfwIuFVKJs8hBfOfL4AJZmyf2i+CbJgFkUlPg=
+	t=1706628724; cv=none; b=CYbD5xDKxUBqzhkc4KOJqMhDZJ9Z09IQdy2x6cPx14QrsCfjLHWemytCFgVEdlmGWMvfycK0+a/JAWLpcuuFUOKfqCmjOUShM/vP20Hvfp+UZ2RfvyqCCuzGAl6tOyJAC/ln9IAcJEgE8FFJrrbJVNohSs9IOW4Ri1lKf4v86Kg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706628710; c=relaxed/simple;
-	bh=BiSnpof6s0wfNf9+A13iFmx1FmKZ23viaAe7Jyf69kw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WDtj7al5zOOnjr4ZP3Z0YdI3SHaJvGTG8aM7ZDNrxl1+U1XZLaSKgWmIqFR9IP5MNQmimEQR6OCRqoG9oT66qTaP74BDrlwxbI8RrCJxEQjWC6zyuIHLb0+Gs5QJlrOCNNXUtSLqWknxkm8S4BJlL7Bmsk5tJxOr5/zLtZmOtT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IBD5wgfq; arc=none smtp.client-ip=209.85.219.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-6818aa07d81so28313866d6.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 07:31:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706628707; x=1707233507; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UyFAq1Eg2RJvLWqRzFuQdXmR0HpMNogzZgkepdLa9/U=;
-        b=IBD5wgfqKNqMaAgeh42HPplmoOZhKFJSddBoWdURM8oi6MZwhWi+Tyql1VcnolE4FK
-         YUdM4cAitKRBJ533N+6uB+gaf7mql7JihSXliyJ44o6TSiHBi9YEa4CAZWS+uFVk/j3h
-         /7dWWMrdUJnkQA0NiKGpzs0jtJq2cbVTTBliyRf/20qwAHDi42bB3tPS74AyO0F+/oAh
-         FVNQHouDjxxEkffjf39d/pWeWxwdNzNdRvdnTxGeJrYTw5KRDyIOSVYLE6qWzm1QMt68
-         JdEKzU1GYe6ZQoAiRz8aw4ouEzlDskfVdLIj84exdvWSecpWSU7hqhyiJqnfhh7KMX4x
-         62fQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706628707; x=1707233507;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UyFAq1Eg2RJvLWqRzFuQdXmR0HpMNogzZgkepdLa9/U=;
-        b=jU0mWpk/wvoAXT1YDQ6sTmvJrZDmOdb7jPcgPD5yJhgO2UzBsRa6Lc25+hZt2ya2EZ
-         X3J53UBrRoXmxF33JiCUiw/Jy/RbsgII7XRc8OaIplVNpi1s6296QpWAdHz7FFElFVpL
-         j/u84DxSdArQKrWUraYSfSAZckG4edFejIojIigfJL0RPLk+VN5hQRGa9qg54w51GbD8
-         kgHhXM0dpc2jRh1MgrPGqgR2TSBFPDZ9V0Wh1ycyVVnULCMkNQoGcGFS7pm1wDpuqVCd
-         kh6DU6LElpnNrLq8NO2XoZAHXKkIMmwkJWntw+54RglWaV1qZijkqt8oLtRikvg0+7HD
-         Du1A==
-X-Gm-Message-State: AOJu0Yx4XdiJF6MwvqXK9qczc4A7IZwDBAaqeOxsZZJyaIbk7N0IqsmY
-	1yl/XromrLZwfhYi7xq0fnxK3picVwGGuxhpjfKpum+37dgr3Rp+9InBbdJFXy/NVAHKnS6PX/m
-	1akZ7BvOCNmnobB3IhKKwIqwZ8u3ZFW4VRuhRrg==
-X-Google-Smtp-Source: AGHT+IE9wCsA8OMUwsAtj9eouk/XJiMtJxIGPk+xD0QUnQxHNQz4KNhObmSuHuPnZPemueo0vMoDgt9lN4w74OWnQkc=
-X-Received: by 2002:a05:6214:248e:b0:68c:499f:f803 with SMTP id
- gi14-20020a056214248e00b0068c499ff803mr7669302qvb.30.1706628707108; Tue, 30
- Jan 2024 07:31:47 -0800 (PST)
+	s=arc-20240116; t=1706628724; c=relaxed/simple;
+	bh=/mb0FlNJsasGY09t2fVBMH3IJJ17htS6caWYWfCl6nY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WxVrJY6ANaalwkbCmPUQEIaSdZ/fcNEFgZEFtryIJEDY7rQ63WZfDqIBqYirvFv7mqVRmNhJZ6AHKq1vPrW7X4MMNu8WUz/WCzSsjH07vxDRQxXoK6EQ/MjLyCd2rOaywxtrFNjDjNe9/EnnREr2jEf/q5L0L6r5ccoF3rg5D44=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=HPpvSE07; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 3CAD740E016C;
+	Tue, 30 Jan 2024 15:31:59 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id gPMgD9ziwYsG; Tue, 30 Jan 2024 15:31:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1706628716; bh=QBO0DN0ipIKH7sKZQJ7hGPJ0BINXkDod39T7fhCWYlA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HPpvSE07XxIN+63fjfGCnA4yTxw27SQoLz1KMeIYbyYSzL4ZB0RLpy1Odj6b+pxHD
+	 p4YKH6wb4t76jCHVRyOisLbzvHkD3hTvsBPH5GhHQSkfo/RBDuVlLyxe1ty9I7bTiY
+	 pbrnMUZj0zYAqp4inRN91mp6jRWGOEhNJWAvWcEanByIBAojcxP6fpxdQTpl1zuP7Y
+	 JERt2A4s9kdoR5SqKNnCY78Qy+oesLxGGb98hQAxUkLOLYTy74Yv6LhX9D2lu9bGHV
+	 ZKvs/K6jBumTZtpJox6dxM3lAiF5OJqe4aCot19fpE7rLN6fZqwBFStecyKG0oy6Ip
+	 l0iN3KHxpYAVH0eLyFPhUbPXQKzmIIQIpE2b3IfZ2gAflulAnQ7GXK0prhASL1cNip
+	 vbNd8YbF8DDiDJ4RCejLwYArKzlDLfSbl5j5yEoYwIpv8693DXbGfRBCiYid4QzZp+
+	 oKNwcBmetiS1rPCAHoEfJm3WhnJQVGmeObujwsSN+dpo84nUnDX/qkQiYlNwl+XZNc
+	 XpOlLIjuKlO6KdKJEYBsAAf62Uk9L0FbXY/OndOoakgyj6GfZ34uh/tPFOsmLdtIVZ
+	 TW/ygqrgxNaRH1eVwEA2/1F/LO5CuVEHv45s2iiDdCyOP7KhNdA+hY2LDu9EVv9vgq
+	 AoAgcPpjXCoj+QtjKnNbOOmA=
+Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6146640E00C5;
+	Tue, 30 Jan 2024 15:31:46 +0000 (UTC)
+Date: Tue, 30 Jan 2024 16:31:41 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: "Li, Xin3" <xin3.li@intel.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"mingo@redhat.com" <mingo@redhat.com>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+	"x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+	"luto@kernel.org" <luto@kernel.org>,
+	"Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+	"andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>
+Subject: Re: [PATCH 2/2] x86/fred: Fix build with CONFIG_IA32_EMULATION=n
+Message-ID: <20240130153141.GEZbkWXQt2H3JHHGHx@fat_crate.local>
+References: <20240127093728.1323-1-xin3.li@intel.com>
+ <20240127093728.1323-3-xin3.li@intel.com>
+ <20240130124816.GCZbjwEFrZS55FLxb8@fat_crate.local>
+ <SA1PR11MB6734A226858F6030C86AE2E5A87D2@SA1PR11MB6734.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240129211912.3068411-1-peter.griffin@linaro.org>
- <20240129211912.3068411-3-peter.griffin@linaro.org> <CAGETcx8UsseQAHc76QaMxgMUe7cwajZVdYLA2uwpZxF90RLjJQ@mail.gmail.com>
- <CAPLW+4mG2RkUgDbBBzrgCAW3covbr9eCQEFje1pYxj2hzVykug@mail.gmail.com>
-In-Reply-To: <CAPLW+4mG2RkUgDbBBzrgCAW3covbr9eCQEFje1pYxj2hzVykug@mail.gmail.com>
-From: Peter Griffin <peter.griffin@linaro.org>
-Date: Tue, 30 Jan 2024 15:31:35 +0000
-Message-ID: <CADrjBPr0HjympgaC+eiVdTJuFbNes26gPEMJfdiLYFDUAjpU3w@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] watchdog: s3c2410_wdt: use exynos_get_pmu_regmap_by_phandle()
- for PMU regs
-To: Sam Protsenko <semen.protsenko@linaro.org>
-Cc: Saravana Kannan <saravanak@google.com>, arnd@arndb.de, krzysztof.kozlowski@linaro.org, 
-	linux@roeck-us.net, wim@linux-watchdog.org, alim.akhtar@samsung.com, 
-	jaewon02.kim@samsung.com, kernel-team@android.com, tudor.ambarus@linaro.org, 
-	andre.draszik@linaro.org, willmcvicker@google.com, linux-fsd@tesla.com, 
-	linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <SA1PR11MB6734A226858F6030C86AE2E5A87D2@SA1PR11MB6734.namprd11.prod.outlook.com>
 
-Hi Sam & Saravana,
+On Tue, Jan 30, 2024 at 03:22:01PM +0000, Li, Xin3 wrote:
+> How do you think?
 
-On Tue, 30 Jan 2024 at 03:38, Sam Protsenko <semen.protsenko@linaro.org> wr=
-ote:
->
-> On Mon, Jan 29, 2024 at 4:25=E2=80=AFPM Saravana Kannan <saravanak@google=
-com> wrote:
-> >
-> > On Mon, Jan 29, 2024 at 1:19=E2=80=AFPM Peter Griffin <peter.griffin@li=
-naro.org> wrote:
-> > >
-> > > Obtain the PMU regmap using the new API added to exynos-pmu driver ra=
-ther
-> > > than syscon_regmap_lookup_by_phandle(). As this driver no longer depe=
-nds
-> > > on mfd syscon remove that header and Kconfig dependency.
-> > >
-> > > Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
-> > > ---
-> > >  drivers/watchdog/Kconfig       | 1 -
-> > >  drivers/watchdog/s3c2410_wdt.c | 9 +++++----
-> > >  2 files changed, 5 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-> > > index 7d22051b15a2..d78fe7137799 100644
-> > > --- a/drivers/watchdog/Kconfig
-> > > +++ b/drivers/watchdog/Kconfig
-> > > @@ -512,7 +512,6 @@ config S3C2410_WATCHDOG
-> > >         tristate "S3C6410/S5Pv210/Exynos Watchdog"
-> > >         depends on ARCH_S3C64XX || ARCH_S5PV210 || ARCH_EXYNOS || COM=
-PILE_TEST
-> > >         select WATCHDOG_CORE
-> > > -       select MFD_SYSCON if ARCH_EXYNOS
->
-> That reminds me: now that exynos-pmu driver uses regmap API, does it
-> make sense to add something like "select REGMAP" to EXYNOS_PMU option?
+Interesting. For some reason gcc doesn't constant-fold it away like
+clang does.
 
-Good point, I will add that in v3.
+> diff --git a/arch/x86/include/asm/ia32.h b/arch/x86/include/asm/ia32.h
+> index c7ef6ea2fa99..01342d343c19 100644
+> --- a/arch/x86/include/asm/ia32.h
+> +++ b/arch/x86/include/asm/ia32.h
+> @@ -81,7 +81,7 @@ static inline void ia32_disable(void)
+> 
+>  #else /* !CONFIG_IA32_EMULATION */
+> 
+> -static inline bool ia32_enabled(void)
+> +static __always_inline bool ia32_enabled(void)
+>  {
+>  	return IS_ENABLED(CONFIG_X86_32);
+>  }
 
->
-> > >         help
-> > >           Watchdog timer block in the Samsung S3C64xx, S5Pv210 and Ex=
-ynos
-> > >           SoCs. This will reboot the system when the timer expires wi=
-th
-> > > diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c241=
-0_wdt.c
-> > > index 349d30462c8c..a1e2682c7e57 100644
-> > > --- a/drivers/watchdog/s3c2410_wdt.c
-> > > +++ b/drivers/watchdog/s3c2410_wdt.c
-> > > @@ -24,9 +24,9 @@
-> > >  #include <linux/slab.h>
-> > >  #include <linux/err.h>
-> > >  #include <linux/of.h>
-> > > -#include <linux/mfd/syscon.h>
-> > >  #include <linux/regmap.h>
-> > >  #include <linux/delay.h>
-> > > +#include <linux/soc/samsung/exynos-pmu.h>
-> > >
-> > >  #define S3C2410_WTCON          0x00
-> > >  #define S3C2410_WTDAT          0x04
-> > > @@ -699,11 +699,12 @@ static int s3c2410wdt_probe(struct platform_dev=
-ice *pdev)
-> > >                 return ret;
-> > >
-> > >         if (wdt->drv_data->quirks & QUIRKS_HAVE_PMUREG) {
-> > > -               wdt->pmureg =3D syscon_regmap_lookup_by_phandle(dev->=
-of_node,
-> > > -                                               "samsung,syscon-phand=
-le");
-> > > +
-> > > +               wdt->pmureg =3D exynos_get_pmu_regmap_by_phandle(dev-=
->of_node,
-> > > +                                                "samsung,syscon-phan=
-dle");
-> >
->
-> This looks so much better than approach taken in v1, as for my taste.
-> For this patch:
->
-> Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+Looks good to me. Lemme try it here.
 
-Thanks!
->
-> > IIUC, the exynos PMU driver is registering a regmap interface with
-> > regmap framework. So, can't we get the remap from the framework
-> > instead of directly talking to the PMU driver?
-> >
+Thx.
 
-I'm not aware of any existing regmap API that does that. A quick look
-through regmap code I can't see any global state that is stored on a
-regmap_init() for example of all the regmaps created in the system.
+-- 
+Regards/Gruss,
+    Boris.
 
-As Sam mentions below, prior to these patches the syscon device would
-be creating the PMU mmio regmap and consumers drivers would be
-obtaining the regmap by going through the syscon driver. After this
-series we instead talk to the exynos-pmu driver to obtain the pmu
-regmap which can either be one with overridden operations for issuing
-SMC calls to do the register accesses or still a mmio regmap.
-
-Folks tried in the past to add a SMC backend to regmap similar to
-regmap_mmio and add support for it into syscon driver but this was
-nacked (see here
-https://lore.kernel.org/lkml/20210723163759.GI5221@sirena.org.uk/T/)
-
->
-> Peter is basically re-implementing syscon driver with overridden
-> operations, as a part of exynos-pmu driver, in previous patch. Which
-> means syscon API can't be used anymore to obtain the regmap. Do you
-> have particular API in mind that allows getting a random regmap
-> registered with devm_regmap_init()?
-
-Thanks,
-
-Peter
+https://people.kernel.org/tglx/notes-about-netiquette
 
