@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-45501-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45502-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC3DD843198
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 00:54:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AACA7843199
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 00:54:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DCEE1F258AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:54:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E72751C235DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:54:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8778479DB2;
-	Tue, 30 Jan 2024 23:54:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 661F179DBE;
+	Tue, 30 Jan 2024 23:54:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ShsKa0Qi"
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="z3S11V0n"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D3A77EEFD;
-	Tue, 30 Jan 2024 23:54:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00E6879953
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 23:54:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706658851; cv=none; b=NTVeeEDju0JuPfIKotpewPkiiwVAOh09W9zMi+KoGK/MlWDjUp6UFpJn5LolfoolmIZVbK7PG6Hli8A5hoxWmgTAbBiiWE6Zmx6Ye9yWYNAjObOtGfY2x/v/BFG1ZTwXVzFncbveMym840z4HcrFKKS2/acp4O67N0Sl+eekTdA=
+	t=1706658880; cv=none; b=bEX7uk+4W7VAuVUGvaWZd6JQHrg4npd0P2hk5CTZrtLC6vZ/XCiegKLlXhjUWoC+JA9vnzDZkE5mMSKi1RhlojZ5IO4o/kIcueUnjLYLxPBe/vg9rlwNa5YxMcVEfW36YbtmdK9M16idYkm47zBhhJ+qSM1voph+2KIayH7X3y0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706658851; c=relaxed/simple;
-	bh=OmptIwhlgwDDdmhkFqgoAUMwqihSVOSlH9BzTj4os4k=;
+	s=arc-20240116; t=1706658880; c=relaxed/simple;
+	bh=lY6EOxWIqskA4az3sm8VaAY7CgrmET2UjRxY9QCkAas=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eEPwPlsGmoC4kMpEESl4ek0bKwWtFUk+JBXk3IfiXQDvE4cuAswxtObWkTiAjZScOkXn+WoL6lo3jrsSGujBMdNi6Nt3Dz81jD8WQxunV6kMbuR9fVaTfe3oj1yJ1EjhHpMgk0Qxpp/+35M5j2fHC2kBCob6B9vIlUTqdXlWfJs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ShsKa0Qi; arc=none smtp.client-ip=209.85.128.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-603c5d7997aso32200167b3.1;
-        Tue, 30 Jan 2024 15:54:10 -0800 (PST)
+	 To:Cc:Content-Type; b=t6zs7dgCQApAhdxoXakgzLvshDgCXKtLIC+7jjcXGkdVTF6Rc2NaEeC+L1P8YXuJE2NzMjZf+jvcX8aVGeNrc47grTIeVXCz+YU66Q8A4vK1RxbBzuQI7ADItT/BYyvB5wVy3bQwr5XJUjgju2rhb9MOFuuXJ6IbbUZ3nCWGsEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=z3S11V0n; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-55818b7053eso6964a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 15:54:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706658849; x=1707263649; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1706658877; x=1707263677; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OmptIwhlgwDDdmhkFqgoAUMwqihSVOSlH9BzTj4os4k=;
-        b=ShsKa0Qi2A9zq+L3PHXvzYBtJXO0SYtRlmflJ2UbtthpQFQwE4p6OsXikwLEn3whiN
-         Rgwm4VDINXrWdAh1T2wXArp488KfFAAdBmzWJ3bSfjXASReNVOUTK7vGEJZkjCktT6Vs
-         t1f5fUft8J7hLjDJJc2ILqigODbcu/FilrD22EAAkn3iM79aQtYFYVvFzTPlRNRJkeTG
-         YZ4KV0FI65MAcRIWA/5f7b57Vwhxjgz+aQjm35Xmx014WmUIhrjTTSAyjRV+sHG20Zo5
-         muH+pR6uylESK45l296Il730tdSRMCXHAKJbFxF5xmMnTNtj/zedzYISkHCfNFHXfcJK
-         U2Dw==
+        bh=wvbPhhaL7km4G7kmsFhV1xne1sVsO1kQUeWmVLy5H6s=;
+        b=z3S11V0nrUIex2rU59kOE/INuX/qBX/v5OONR0OCD+SjGQG4Jg2yJb65scwjr4Rgde
+         mEZEcZjyPyPHsN7IFwyCM606GoZao9GMN+E882mKeZcPkTYNaYLnuDEB5UCzca2VH4UV
+         cHbbpc7iANk0yBCOQoeUaiLNzBVgTwsRPWuqhRlesip1I1wgyH5tuimwMRnHLYQPqjJT
+         8PEB356hhkJcujs6qih8YdDj/W8jSt7pacANhNjD4BAQ3+LaHP57Xm4h4V6rOMm99XVR
+         YcXt9UF9iiwsTnKAHh3SbJ0huIQhXiRxL7BFYLU1F0NPBxZhVSePSn81QkwsYVCoNcXC
+         gsiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706658849; x=1707263649;
+        d=1e100.net; s=20230601; t=1706658877; x=1707263677;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OmptIwhlgwDDdmhkFqgoAUMwqihSVOSlH9BzTj4os4k=;
-        b=Ffebo45VMCsSEEpkOPinqO/KfFSTHcJjLljWgtwqKALDewDVR7L8c/Ztf41WsbHCmb
-         qv6q9ce7ot5jQw/blylPGRV+xA7GXQ0VDIn2iXmd6M7mkeiVXF1bFvklO5lhz0te8W6U
-         CoCRL9cUzfXjzpRe0WiENVMxfAOaO+BnCMd5udnEfBFFlSzUVUxp34WRXullm2yP1H+o
-         9r/bLlX+QVtltEGoPQ33Re2kVBTvhHzkVSfHE9uogHkaCUwhgi+jOOYQA8a3Bun3U9hv
-         xcUxun16jDcO0TzDa/IQJJ8XH2wcnxk5lJMqPv+pwkejpFaWWIgUtUaUc9iL38odfcDB
-         Lcug==
-X-Gm-Message-State: AOJu0YxhWY3Ao7ulWPuY6Y+XMx2ildqn0jmAPbkoPSF6uXIAtKC9UT/t
-	5WMtFD9kIDga+jcRrRt5T9NhjUrtFbKq5p/sPBSE1LOrE0oupVImUQ4d98rFx8aOdmPRo14TC+a
-	iH9BL15/4shxy0qYE6gtAofyJvJM=
-X-Google-Smtp-Source: AGHT+IHKhinxJu3Fsc/6EFnC05xYxRpIJI5hfm5RLDPm+j5XOEJ1d/OO7naRToqOEkmp2cnObTWbzLw6rsEwa21X8u4=
-X-Received: by 2002:a25:dccc:0:b0:dc2:2799:981a with SMTP id
- y195-20020a25dccc000000b00dc22799981amr134346ybe.18.1706658849249; Tue, 30
- Jan 2024 15:54:09 -0800 (PST)
+        bh=wvbPhhaL7km4G7kmsFhV1xne1sVsO1kQUeWmVLy5H6s=;
+        b=vi5sFKAnDHYWzkBgUPNbUH1N6MBvy8dJVjfwiXqUj/JRCRoXaUBVpAdvEij1+b3s7V
+         rlPZVz+9Xtw/Yzpd95i4ki//gFwLYoDlvzQSvnU7uZdyOatOsv76IYc2V1EYnua5gAHi
+         Bik2OOBd9VGHxKFcSt0uOl0gYEGYBZ7EbQf+MIY7ZbgKEMBRU+PEbH86L1Q7pD5Z4mB4
+         +vYwfcylaALJktBWQodfJpIDOd7MPzEh/ze2lrkc23EWSMdWlBnmU1W1EVzm88Rt0a/Q
+         P37g3TDKYTKukIpaK4l2OSQAl0uVv5QJTAMCZP95PZPGzgYffIXQFKHkKcaPjHq6MNnx
+         GM3g==
+X-Gm-Message-State: AOJu0YwL7EyAmrvMteDaMsUf8phbZsUmbOfwCppg80TKswWieDBdLmFP
+	XM4Q3NBgKg141f7RmAX7mmimftGkbh6wDwDTcipgsm2hfV/behpPsBnwp0Y7i1RRwUc9Wn7jckl
+	0WBgtuIhLbobPyuiZ3zZrQZd4LxQqOk5z0czBcMsjQJC3aL3/zym8
+X-Google-Smtp-Source: AGHT+IFw7KH/Xi74azpntqPhGPADZbvfe3A04kD2nzhHBvAI97+xmChcD+tE4X9GMJICMvQpHey4OmP9A0DAyAHGns8=
+X-Received: by 2002:a05:6402:37a:b0:55e:bbe1:a288 with SMTP id
+ s26-20020a056402037a00b0055ebbe1a288mr334055edw.6.1706658876933; Tue, 30 Jan
+ 2024 15:54:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,12 +72,12 @@ MIME-Version: 1.0
 References: <20231215194828.2611213-1-mmaurer@google.com> <CANiq72musVZbNW5MuhrRJEmA8G_D3D7Ms0pTYu16WrqhFx2pXg@mail.gmail.com>
  <f17ce61b-7f4f-4851-aa23-b8489686b840@intel.com>
 In-Reply-To: <f17ce61b-7f4f-4851-aa23-b8489686b840@intel.com>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Wed, 31 Jan 2024 00:53:58 +0100
-Message-ID: <CANiq72kPfDt83AxhO1c9N2Ua+cLCA7xvag7T4N=z+pZUom1evA@mail.gmail.com>
+From: Matthew Maurer <mmaurer@google.com>
+Date: Tue, 30 Jan 2024 15:54:25 -0800
+Message-ID: <CAGSQo01SLbT2rb8CnXx1hk-17-HHQzVNBqszAa4qMbpa-BbQfQ@mail.gmail.com>
 Subject: Re: [PATCH] x86: rust: Disable entry padding with Rust
 To: Dave Hansen <dave.hansen@intel.com>
-Cc: Matthew Maurer <mmaurer@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
+Cc: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, 
 	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
 	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
 	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
@@ -89,16 +89,48 @@ Cc: Matthew Maurer <mmaurer@google.com>, Thomas Gleixner <tglx@linutronix.de>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 31, 2024 at 12:46=E2=80=AFAM Dave Hansen <dave.hansen@intel.com=
-> wrote:
+On Tue, Jan 30, 2024 at 3:46=E2=80=AFPM Dave Hansen <dave.hansen@intel.com>=
+ wrote:
+>
+> On 1/28/24 09:48, Miguel Ojeda wrote:
+> > On Fri, Dec 15, 2023 at 8:48=E2=80=AFPM Matthew Maurer <mmaurer@google.=
+com> wrote:
+> >> rustc-1.73.0 used by Linux does not support entry padding. Mark entry
+> >> padding support as explicitly incompatible with Rust.
+> > We are now at 1.74.1 and moving to 1.75.0 for the next cycle, which
+> > does not support it yet, in case whoever applies the patch wants to
+> > update it in the description.
+> >
+> >> Signed-off-by: Matthew Maurer <mmaurer@google.com>
+> > x86: are you picking this one up through your tree? Thanks!
 >
 > Do we need a 'rust-option' equivalent of 'cc-option', like:
+>
+> config CC_HAS_ENTRY_PADDING
+>         def_bool $(cc-option,-fpatchable-function-entry=3D16,16)
+>
+> That way this doesn't become a temporary option at all.  We just do:
+>
+> config RUST_HAS_ENTRY_PADDING
+>         def_bool $(rust-option,-fpatchable-function-entry) # or whatever
+>
+> and:
+>
+> config HAVE_ENTRY_PADDING
+>         def_bool CC_HAS_ENTRY_PADDING
+>         depends on !RUST || RUST_HAS_ENTRY_PADDING
+>
+> and never have to touch this again.
+I agree that we'll want something like that in the long term (my
+original version of this patch did use something like `rs-option`),
+but in this particular case the main thing still being bikeshedded in
+the RFC[1] *is* how the option will be specified to the Rust compiler.
 
-No, at least until we start supporting several versions of the Rust
-compiler (and the current version will not be in that set, so there is
-no need to add complexity and spawning extra processes during the
-build).
+We could assume the current form of the RFC which is nearly signed off
+on is what will happen, in which case we could add `rs-option` and
+test for `-C patchable-function-entry=3Dtotal_nops=3D16,prefix_nops=3D16`,
+but there's a chance we could still have to update it until the flag
+form is finalized.
 
-Cheers,
-Miguel
+Link: https://github.com/rust-lang/rfcs/pull/3543 [1]
 
