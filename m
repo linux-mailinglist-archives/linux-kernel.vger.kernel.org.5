@@ -1,192 +1,195 @@
-Return-Path: <linux-kernel+bounces-44023-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44081-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B10AA841C50
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:04:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F6DF841D1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:59:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E4C01F26A2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:04:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45F2F289C36
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:59:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E78955E57;
-	Tue, 30 Jan 2024 07:03:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F9F95467E;
+	Tue, 30 Jan 2024 07:59:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="CEybdmyF"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="AE8VCBBn"
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BC755466D
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 07:03:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 667AD54668
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 07:59:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706598229; cv=none; b=dqODRzZLvtNrA7n8Nmr+bmlcW5C/6iR65Kqt4IBDJaUUHeAkcyhdO57UHqwD/SzpSBRph+3WcOgUU4zN507uiMIcog49rqDdiAmSTaJeJYQHL3f6UssrvfKQ4aXHViUwvFsjBuLOEqbbo6tFkrX/N8/PD7Tcdy3dNkpPUi2aWfk=
+	t=1706601573; cv=none; b=cV+Lthy7JPjYbrAO7xOVNlqbzZHPLEWrofEzGZ7IvZsS4dcZBs4VZVvKMWj5KidHJRzqPcOLT6gw+SeBoLn6P+00WWknd8eJUNrb051tpbI+ck1fz8Wm7QkCv7k7j4iSIYyRJhWnq6Bh/1EPlubKAlKeF03msCr5UptwoEptpQY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706598229; c=relaxed/simple;
-	bh=vZf6m7RI1eROTzwOQTlH8TlWjwZoOveQcIvorFpjbgw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=kuZLiCKyiLH0CyrQOBf11TIOeFLpxX76t/IaMneIPMKVA+I7Dxb4AU0XiMYzF31YvSKaNTnGsHOIVhu0FCpwrsv5kqILCMI2ewoNCR2mylpbVUnPlc9zRSN/AOIaw3wSsJxucD2D77K2IN9YU8myM8vocnKfchrrUpB/TGrXCX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=CEybdmyF; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-55f082c2c92so2256830a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 23:03:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1706598225; x=1707203025; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=R3uX+Nzh7GD/qkGDd2hkrqkUgxPvy6pwsK/SiuinutU=;
-        b=CEybdmyFev54cg3wEbAo1PAZ2L8O3tucAkD5JSJKHqLPgiZTtH2ukGUZOE2pT9CmO/
-         Xy3qPFRVVJ7GdABkCPHL4s3nLFzOfxfwDOaOmfj8rNzHkqsoFAWPqSN+iuzgG02s7R9X
-         cA2K1Xxkywfn5LhfAFF3PKbABfJ9vpSfEdEEfzLClct7rTaouiAbaU6T0WjcOg1DVsvj
-         cJNliUqKLUernQp6etn9Nzz57EQvr5HYGGXnuc2vLZ5qon59GH12qNLsd5kidwQ0OA19
-         ptHzF6cQ2rzRc/MrI+DgzdSaUsOjlTXESTgIy/qMOBYva9D61B3mMe07dhcaKRVbqvGm
-         DYJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706598225; x=1707203025;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=R3uX+Nzh7GD/qkGDd2hkrqkUgxPvy6pwsK/SiuinutU=;
-        b=nCovEo5/EaEy6k5+lxqFCLjxSkaCLDNuzrX+5ZGGogta/F8w8tIY6xt3AZ7U365qix
-         cId9ZPKZk56mDBVjkjBelemmKI4ru0G402zE/eZFm1ifoVxrzciltbU0LL2zHyQtQlIS
-         88B503cMoEf1/UEavJuQ09QJ3zeihau/LUkiaDv8+mEJopnFi7TQQnaeDiWYcndmdE0f
-         LzPxdxl3qAcSMzXpsRpkc33OxNfDBZRzzSFyEK28cIijIoln98VejspfgVd+an0eR2bG
-         4PL8kU52wcH3NRmHBYqi30L32c+NCSth1QlwvlEHXzOCNNh1YOE1atzgXWvEkYdKtRyJ
-         acGg==
-X-Gm-Message-State: AOJu0YxFH1qWAsY1LY0R7JK90T58jGJuymNNRLddbFAkQ80fIbCYu3vQ
-	/42FNZhNIihPN0+8eYR97+x1i3DceLxcVTKH2T8+dDxzqcrQfCY9ZVVcEinVazA=
-X-Google-Smtp-Source: AGHT+IF32AfkB/h3vblysAegHlLs+WOawjFp8f423iOnx9b8d8IDG3ZpuywWvYTwN4QZvJHwVwcuag==
-X-Received: by 2002:a17:906:1b0b:b0:a35:965d:5988 with SMTP id o11-20020a1709061b0b00b00a35965d5988mr4193192ejg.11.1706598225229;
-        Mon, 29 Jan 2024 23:03:45 -0800 (PST)
-Received: from [192.168.50.4] ([82.78.167.87])
-        by smtp.gmail.com with ESMTPSA id vb5-20020a170907d04500b00a351d62309esm4109108ejc.39.2024.01.29.23.03.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jan 2024 23:03:44 -0800 (PST)
-Message-ID: <345bc392-cf28-479a-9453-5bc89f635759@tuxon.dev>
-Date: Tue, 30 Jan 2024 09:03:43 +0200
+	s=arc-20240116; t=1706601573; c=relaxed/simple;
+	bh=pb/LnA0yM9eURb/c2PSjDZQPoCZrE6NsMFcH1GbD9Bo=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:MIME-Version:
+	 Content-Type:References; b=PVFI+LyMcpr8s8B00J8jw1BbRpIQnKNWk4y0LmU3sr2hTk2x/4dsz+LtuwjHJqG6n+8dz45MxpJMYAV7bfGLijmTRYJdpnmNRgfPyJi2/v7xIoAxuLu2qYTvc789JIBNCcF8j3rBHFqzzqkSfObXyqOD2inCnO8k7No7yHAUc18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=AE8VCBBn; arc=none smtp.client-ip=203.254.224.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+	by mailout1.samsung.com (KnoxPortal) with ESMTP id 20240130075225epoutp01f85fd1129120053e7d80948525a5efd0~vELMRVJrt1107511075epoutp01W
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 07:52:25 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20240130075225epoutp01f85fd1129120053e7d80948525a5efd0~vELMRVJrt1107511075epoutp01W
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1706601145;
+	bh=4GusHRVSl/jPvRw8MbBdoLjJ+enCGbBslEdWi0taXsE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=AE8VCBBnaISokPMzZcplUb+LVI/SgK4DiA1ISBZ1FQffyeWaCWoyhuXxdSgDy6KaO
+	 N3J7F4emTp5i9QDkE9HbQPCvlCRuNyczwf33ffiLbaWaa5etKDVnzlh6xSQlEBujZr
+	 iKn94s5o+NhohiHeCr3sj6M1MILx+LD2OVByqJTo=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+	epcas5p1.samsung.com (KnoxPortal) with ESMTP id
+	20240130075224epcas5p1a99b7f76986370fb610abf88792969c8~vELL12u3n1098810988epcas5p12;
+	Tue, 30 Jan 2024 07:52:24 +0000 (GMT)
+Received: from epsmges5p2new.samsung.com (unknown [182.195.38.182]) by
+	epsnrtp3.localdomain (Postfix) with ESMTP id 4TPHSk5XDGz4x9Q3; Tue, 30 Jan
+	2024 07:52:22 +0000 (GMT)
+Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
+	epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	03.6F.10009.6BAA8B56; Tue, 30 Jan 2024 16:52:22 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+	epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+	20240130055554epcas5p2ad9d28f1e6c256db540ce985c4351461~vCld8z7hm2990729907epcas5p24;
+	Tue, 30 Jan 2024 05:55:54 +0000 (GMT)
+Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
+	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+	20240130055554epsmtrp28e51d871603fc187bd3212b2bbf72b87~vCld75MH_2750927509epsmtrp2j;
+	Tue, 30 Jan 2024 05:55:54 +0000 (GMT)
+X-AuditID: b6c32a4a-261fd70000002719-27-65b8aab6cfd0
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+	epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
+	6B.3B.18939.A6F88B56; Tue, 30 Jan 2024 14:55:54 +0900 (KST)
+Received: from AHRE124.. (unknown [109.105.118.124]) by epsmtip2.samsung.com
+	(KnoxPortal) with ESMTPA id
+	20240130055553epsmtip268f856ca6e9327b68145bb173a734122~vClcpXhPU3025130251epsmtip21;
+	Tue, 30 Jan 2024 05:55:52 +0000 (GMT)
+From: Xiaobing Li <xiaobing.li@samsung.com>
+To: asml.silence@gmail.com
+Cc: axboe@kernel.dk, linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+	kun.dou@samsung.com, peiwei.li@samsung.com, joshi.k@samsung.com,
+	kundan.kumar@samsung.com, wenwen.chen@samsung.com, ruyi.zhang@samsung.com,
+	xiaobing.li@samsung.com
+Subject: Re: Re: [PATCH v7] io_uring: Statistics of the true utilization of
+ sq threads.
+Date: Tue, 30 Jan 2024 13:47:42 +0800
+Message-Id: <20240130054742.417610-1-xiaobing.li@samsung.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <3044a700-252c-4e87-a0cf-a1fec6e83f8f@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] mmc: renesas_sdhi: Fix change point of data handling
-Content-Language: en-US
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>, ulf.hansson@linaro.org,
- takeshi.saito.xv@renesas.com, masaharu.hayakawa.ry@renesas.com,
- yoshihiro.shimoda.uh@renesas.com, linux-mmc@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
- Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20240117110646.1317843-1-claudiu.beznea.uj@bp.renesas.com>
- <ZbeEPg1jc5qWJa5m@ninjato>
-From: claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <ZbeEPg1jc5qWJa5m@ninjato>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrAJsWRmVeSWpSXmKPExsWy7bCmlu62VTtSDXp3aFnMWbWN0WL13X42
+	i3et51gsjv5/y2bxq/suo8XWL19ZLS7vmsNm8Wwvp8WXw9/ZLc5O+MBqMXXLDiaLjpbLjA48
+	Hjtn3WX3uHy21KNvyypGj8+b5AJYorJtMlITU1KLFFLzkvNTMvPSbZW8g+Od403NDAx1DS0t
+	zJUU8hJzU22VXHwCdN0yc4AOU1IoS8wpBQoFJBYXK+nb2RTll5akKmTkF5fYKqUWpOQUmBTo
+	FSfmFpfmpevlpZZYGRoYGJkCFSZkZ7y+/Ja1oEm44ufumewNjM38XYwcHBICJhK7ujO6GDk5
+	hAR2M0qs++jYxcgFZH9ilDjYtp4Jznn6uI0FpAqk4eeLq4wQiZ2MEpNeHGaBcF4ySpzduwes
+	ik1AW+L6ui5WkBUiAlISv+9ygNQwC3xjlHi/fg0zSI2wQKTEgo8z2EBsFgFViedfVoL18grY
+	Ssw6eRVqm7zE/oNnmUHmcALFF98pgCgRlDg58wlYCTNQSfPW2cwg8yUE/rJLzL71lhmi10Wi
+	c+ldVghbWOLV8S3sELaUxOd3e9kg7GKJIz3fWSGaGxglpt++ClVkLfHvCsgzHEAbNCXW79KH
+	CMtKTD21jgliMZ9E7+8nTBBxXokd82BsVYnVlx5C3S8t8brhN1TcQ+Luq6dMkLCewCjxtTFz
+	AqPCLCT/zELyzyyEzQsYmVcxSqYWFOempxabFhjlpZbD4zg5P3cTIzipanntYHz44IPeIUYm
+	DsZDjBIczEoivD81t6YK8aYkVlalFuXHF5XmpBYfYjQFhvdEZinR5HxgWs8riTc0sTQwMTMz
+	M7E0NjNUEud93To3RUggPbEkNTs1tSC1CKaPiYNTqoHJav1yBwVp06ONNmsCfpRbrtnldcrU
+	o3+2pXHg87MTrllYBCZdcKz2TNaY1jMtc1eTnVKN/ZnZpwO4si5oix3ePauLWXPWz/Ifbo4X
+	z6XzFtlsMpms/XLeYu0VNvlOTa/7W6omP6nr7Sjw4CoXXukXmZsWe9Xap9tXcav+vV9H/7x9
+	9Mbx9aom1+meNoLebfePT9Aw59tbuWOd595kgXvvX1e9af/3O5LvXdClKbdce3W9DCa2zyr9
+	m7ZF9o2WYPwyh5TC+YEzKpuWHLs2u4dhcxr75v2PVrk1s8u2ZTzQXXy6YY/u+4Lft4zj54Wq
+	3P2+5kt858WWB5GH4455n2RpniDF3S7b4jbvqNSa18pKLMUZiYZazEXFiQAUqbNvMwQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrMLMWRmVeSWpSXmKPExsWy7bCSvG5W/45Ug0m35S3mrNrGaLH6bj+b
+	xbvWcywWR/+/ZbP41X2X0WLrl6+sFpd3zWGzeLaX0+LL4e/sFmcnfGC1mLplB5NFR8tlRgce
+	j52z7rJ7XD5b6tG3ZRWjx+dNcgEsUVw2Kak5mWWpRfp2CVwZry+/ZS1oEq74uXsmewNjM38X
+	IyeHhICJxM8XVxm7GLk4hAS2M0pcunmUpYuRAyghLfHnTzlEjbDEyn/P2SFqnjNK/Ho3hRkk
+	wSagLXF9XRcrSL2IgJTE77scIDXMAk1MEn2PGhlBaoQFwiVWHvzBBGKzCKhKPP+ykgXE5hWw
+	lZh18ioLxAJ5if0HzzKDzOEEii++UwASFhKwkXizbiJUuaDEyZlPwGxmoPLmrbOZJzAKzEKS
+	moUktYCRaRWjaGpBcW56bnKBoV5xYm5xaV66XnJ+7iZGcLhrBe1gXLb+r94hRiYOxkOMEhzM
+	SiK8PzW3pgrxpiRWVqUW5ccXleakFh9ilOZgURLnVc7pTBESSE8sSc1OTS1ILYLJMnFwSjUw
+	CV3tcArVDpt+6rfts9jOCaV/+AREru3b3BeSIvJ8yQzF3vWsUgnxO294cNZx5j+4ls3uWlP6
+	+7LNGtHQP5mfS+UlO2PcY13nX2m6+qaU1eBxtQSHklHTTU0rq4qqr/ddpsm4CvfdjN/ttfdX
+	avjFup7jfJWbS+v2Lfs6Q6Y4Z6bImlj3qcaBOgFbWlq+Zh59quBcbvXld69NGGdB67e28n01
+	lrmO6nHxl7dqHup4vKVwmtZbTVYjA4+qyK2tvy8xNSawaJXM38XEtETPxKtG5piq5jt1vdSs
+	CJ+bBbfmzpY4fI5va8VHwz9KG5yF1Y907tpxxX6TwqNTSd8MnrftmSbHOcVvnfZOVq+MdCWW
+	4oxEQy3mouJEAI9lcAXmAgAA
+X-CMS-MailID: 20240130055554epcas5p2ad9d28f1e6c256db540ce985c4351461
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20240130055554epcas5p2ad9d28f1e6c256db540ce985c4351461
+References: <3044a700-252c-4e87-a0cf-a1fec6e83f8f@gmail.com>
+	<CGME20240130055554epcas5p2ad9d28f1e6c256db540ce985c4351461@epcas5p2.samsung.com>
 
-Hi, Wolfram,
+On 1/29/24 15:01, Pavel Begunkov wrote:
+>On 1/29/24 07:18, Xiaobing Li wrote:
+>> On 1/18/24 19:34, Jens Axboe wrote:
+>>>> diff --git a/io_uring/sqpoll.h b/io_uring/sqpoll.h
+>>>> index 8df37e8c9149..c14c00240443 100644
+>>>> --- a/io_uring/sqpoll.h
+>>>> +++ b/io_uring/sqpoll.h
+>>>> @@ -16,6 +16,7 @@ struct io_sq_data {
+>>>>   	pid_t			task_pid;
+>>>>   	pid_t			task_tgid;
+>>>>   
+>>>> +	long long			work_time;
+>>>>   	unsigned long		state;
+>>>>   	struct completion	exited;
+>>>>   };
+>>>
+>>> Probably just make that an u64.
+>>>
+>>> As Pavel mentioned, I think we really need to consider if fdinfo is the
+>>> appropriate API for this. It's fine if you're running stuff directly and
+>>> you're just curious, but it's a very cumbersome API in general as you
+>>> need to know the pid of the task holding the ring, the fd of the ring,
+>>> and then you can get it as a textual description. If this is something
+>>> that is deemed useful, would it not make more sense to make it
+>>> programatically available in addition, or even exclusively?
+>> 
+>> Hi, Jens and Pavel
+>> sorry for the late reply.
+>> 
+>> I've tried some other methods, but overall, I haven't found a more suitable
+>> method than fdinfo.
+>
+>I wouldn't mind if it's fdinfo only for now, that can be changed later
+>if needed. I'm more concerned that reading fdinfo and then parsing it
+>is incompatible with the word performance, which you mentioned in the
+>context of using 1 vs 2 syscalls to get the stats.
+>
+>That can be left to be resolved later, however. Let's just be clear
+>in docs that stats could be 0, which means the feature is not
+>working/disabled.
+>
+>Another question I raised in my reply (v6 thread), why it's using
+>ktime_get(), which same as jiffies but more precise, instead of a
+>task time?
 
-On 29.01.2024 12:55, Wolfram Sang wrote:
-> Hi Claudiu,
-> 
-> but one thing I can ask already:
-> 
->> Investigating it on RZ/G3S lead to the conclusion that every time the issue
->> is reproduced all the probed TAPs are OK. According to datasheet, when this
->> happens the change point of data need to be considered for tuning.
-> 
-> Yes, "considered" means here it should be *avoided*.
+Sorry, I forgot to reply to you.
+I was thinking wrong. you are right,  we can use "getrusage" to statistics 
+the work_time of sqpoll in the ring.
 
-My understanding was the other way around from this statement found in
-RZ/G3S hw manual:
+>
+>
+>> If you think it is troublesome to obtain the PID,  then I can provide
+>
+>I missed the context, where do we need to know PIDs?
 
-"If all of the TAP [i] is OK, the sampling clock position is selected by
-identifying the change point of data.
- Change point of the data can be found in the value of SCC_SMPCMP register.
-Usage example is Section 33.8.3, Change
- point of the input data."
-
-> 
->> Previous code considered the change point of data happens when the content
->> of the SMPCMP register is zero. According to RZ/V2M hardware manual,
-> 
-> When SMPCMP is zero, there is *no* change point. Which is good.
-
-That was my understanding, too.
-
-> 
->> chapter "Change Point of the Input Data" (as this is the most clear
->> description that I've found about change point of the input data and all
->> RZ hardware manual are similar on this chapter),
-> 
-> I also have a chapter named like this. If you check the diagram, change
-> point is between TAP2 and 3, so the suggested TAP to use is 6 or 7. As
-> far away as possible from the change point.
-
-My understanding was different here as of the following hw manual statement:
-
-"As the width of the input data is 1 (UI), select TAP6 or TAP7 which is
-
-*the median* of next TAP3 from TAP3"
-
-I understand from this that the median value should be considered here.
-
-> 
->> at the time of tuning,
->> data is captured by the previous and next TAPs and the result is stored in
->> the SMPCMP register (previous TAP in bits 22..16, next TAP in bits 7..0).
->> If there is a mismatch b/w the previous and the next TAPs, it indicates
->> that there is a change point of the input data.
-> 
-> This is correct.
-> 
->> To comply with this, the code checks if this mismatch is present and
->> updates the priv->smpcmp mask.
-> 
-> That means you select the "change point" instead of avoiding it?
-> 
->> This change has been checked on the devices with the following DTSes by
->> doing 50 consecutive reboots and checking for the tuning failure message:
-> 
-> Okay, you might not have a failure message, but you might have selected
-> the worst TAP. Or?
-> 
->> +			if (cmpngu_data != cmpngd_data)
->> +				set_bit(i, priv->smpcmp);
-> 
-> Really looks like you select the change point instead of avoiding it.
-
-Looking again at it and digesting what you said about the tuning here, yes
-it seems I did it this way.
-
-> 
-> However, with some SD cards, I also see the EIO error you see. So, there
-> might be room to improve TAP selection when all TAPs are good. I need to
-> check if this is really is the same case for the SD cards in question.
-
-Maybe better would be to change this condition:
-
-			if (cmpngu_data != cmpngd_data)
-				set_bit(i, priv->smpcmp);
-
-like this:
-			if (cmpngu_data == cmpngd_data)
-				set_bit(i, priv->smpcmp);
-
-?
-
-I need to check it, though.
-
-Thanks for your input,
-Claudiu Beznea
-
-> 
-> Happy hacking,
-> 
->    Wolfram
-> 
+Since obtaining the fdinfo content of sqpoll requires finding the corresponding 
+PID first, I guess Jens thinks it is troublesome to manually obtain the PID of 
+each sqpoll thread when there are many sqpoll threads.
+Therefore, I want to write a script that can automatically output all sqpoll
+ statistics.
+ 
+--
+Xiaobing Li
 
