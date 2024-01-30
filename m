@@ -1,139 +1,128 @@
-Return-Path: <linux-kernel+bounces-45081-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45082-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD15B842B7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:10:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD058842B80
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:13:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 172161C210EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:10:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40EA01F26170
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:13:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9300156968;
-	Tue, 30 Jan 2024 18:09:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38743157031;
+	Tue, 30 Jan 2024 18:13:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b="oXUr4SUt"
-Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qgkb0wBW"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A02678612D;
-	Tue, 30 Jan 2024 18:09:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=157.90.84.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 725991292DB;
+	Tue, 30 Jan 2024 18:13:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706638198; cv=none; b=I7atQSvj26W7S7RtgkvnyWDm+K0JolAzz4mdqJ89idd3kZdS8l21O7ctusCTmDw/4EAJMAyVuVyDp2Jy+CbNTdS98jT10zNso++Yxc7Q0nZpus8RzoEZ0yM2Qc5sFUWPKYxlNa4O4kS17Q8ySJvjwVqqQXrRTwfAI7XbB3/5IHc=
+	t=1706638405; cv=none; b=VfHkn6H6yzUneDE/TUQVDOPF7cMNUtYfyL4u2qH9iscTo+NKsqUnJRi+6nDT/FJnGFtutxKyubbU/IEjfspUshCkCyYl9PyRDUX3pprFgoQo4s+IWQSVSpCGNL3E3h9HofN7vVVhTisLr02k7aToKJhKEcikP0es+EXCo1ooW0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706638198; c=relaxed/simple;
-	bh=m87LuxG5SlcKEZJiG44L5Eg1MueyoN2vTGz62/+gQhM=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=jfUiZbcwIFm25B3JijfkjBy/tw0NOUsgiahrKoo48KMEuGC7mmebBMGhwXkBtK7hl11NzYZr0PV+vKeP2bfgwRcw6lMfW/Dz8dnXJOqu6YEOzoSfbIuJpEvbr5SXG/BNIxlVt1SlcXjmUQfkMgdCZPkCefPEWEg+cAkxGdOakRE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com; spf=pass smtp.mailfrom=tuxedocomputers.com; dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b=oXUr4SUt; arc=none smtp.client-ip=157.90.84.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxedocomputers.com
-Received: from [192.168.42.20] (p5de453e7.dip0.t-ipconnect.de [93.228.83.231])
-	(Authenticated sender: wse@tuxedocomputers.com)
-	by mail.tuxedocomputers.com (Postfix) with ESMTPSA id 2AA442FC004A;
-	Tue, 30 Jan 2024 19:09:52 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
-	s=default; t=1706638192;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yt5XmcRwrc6b3h54Zz6Vh2inuJB9pyPk7T4/qPJrHe0=;
-	b=oXUr4SUtxCpBwyI+wvB3hhhVwpbRHVJlKIdgP9iwrS3sIV/8miYDVzgfiRh4TxnqK2Z6JK
-	HYx9o3mSmxmpVGnXN/ceoezdXa0FMUU6DXEcU5bz5cFFX1904+XV4T+2xsGWx7wg8Ixgay
-	i12V14VEKexLjH9vn3EHB50UkIdywas=
-Authentication-Results: mail.tuxedocomputers.com;
-	auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
-Message-ID: <9851a06d-956e-4b57-be63-e10ff1fce8b4@tuxedocomputers.com>
-Date: Tue, 30 Jan 2024 19:09:51 +0100
+	s=arc-20240116; t=1706638405; c=relaxed/simple;
+	bh=tvb6k0t50n+XwnKfJ0/ZnnU9tJS9kWB+9f5a4l0aPGo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KHbChy9MLi8phvUevQIxXkSndEVHSjlL/oZCYi8hCkeoI+SjA1M7/EAAVSNlxoKysHgBl87ZaGqzZ22WGPCJLo3Ak53kCkcyRErHBwDPcslxCtIaEIxxkhJwcPbRMwl/O5O9sBg/bQaiC7HCY3oJXJqUyey6A/4Iyl4VlBHekr8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qgkb0wBW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89652C433C7;
+	Tue, 30 Jan 2024 18:13:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706638404;
+	bh=tvb6k0t50n+XwnKfJ0/ZnnU9tJS9kWB+9f5a4l0aPGo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qgkb0wBW35JPQhOvoprJ5i6MGC1/cO6mUu0OQ8i3/IjxgmeSsZ2XgUgiDPAWFDORX
+	 fllBj2iiO0Li0X2xPRTsGuoG11bFoSupI2HHRbQxVvLTjBA+TbfZ8s1cCKHZviI0ca
+	 lYQ1gedydbSDG8JDt/cuWMC3FsfEQtLK0LbOMcAPp2aFVJXC4S4EMYMUTAUdLAJxMp
+	 Jwc4eFUTYdUKF6jjpBPF7zTYfhd0WhEAg1PnrJzeMLMtUNE5sZFFbmGTEF0ovlFSd5
+	 +SfwoidLU5nO0+f9TyS9WZfhQhIKHYKX5M3j9aaIVmGV79zUO//1g12+nz+VahY3cb
+	 iiX6foTCrwqOw==
+Date: Tue, 30 Jan 2024 12:13:22 -0600
+From: Rob Herring <robh@kernel.org>
+To: Conor Dooley <conor@kernel.org>, Frank Li <Frank.li@nxp.com>
+Cc: ran.wang_1@nxp.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Felipe Balbi <balbi@kernel.org>,
+	"open list:USB SUBSYSTEM" <linux-usb@vger.kernel.org>,
+	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>, mark.rutland@arm.com,
+	pku.leo@gmail.com, sergei.shtylyov@cogentembedded.com
+Subject: Re: [PATCH 1/2] dt-bindings: usb: dwc3: Add snps,host-vbus-glitches
+ avoiding vbus glitch
+Message-ID: <20240130181322.GA2079185-robh@kernel.org>
+References: <20240119213130.3147517-1-Frank.Li@nxp.com>
+ <20240124-unclothed-dodgy-c78b1fffa752@spud>
+ <ZbFNIvEaAJCxC2VB@lizhi-Precision-Tower-5810>
+ <20240124-video-lumpiness-178c4e317f5a@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Werner Sembach <wse@tuxedocomputers.com>
-Subject: Re: Implement per-key keyboard backlight as auxdisplay?
-To: Hans de Goede <hdegoede@redhat.com>, Pavel Machek <pavel@ucw.cz>
-Cc: Jani Nikula <jani.nikula@linux.intel.com>, jikos@kernel.org,
- Jelle van der Waa <jelle@vdwaa.nl>,
- Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, Lee Jones <lee@kernel.org>,
- linux-kernel@vger.kernel.org,
- "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- linux-input@vger.kernel.org, ojeda@kernel.org, linux-leds@vger.kernel.org
-References: <aac81702-df1e-43a2-bfe9-28e9cb8d2282@tuxedocomputers.com>
- <ZSmg4tqXiYiX18K/@duo.ucw.cz>
- <CANiq72mfP+dOLFR352O0UNVF8m8yTi_VmOY1zzQdTBjPWCRowg@mail.gmail.com>
- <87sf61bm8t.fsf@intel.com> <ZVvHG/Q+V6kCnfKZ@duo.ucw.cz>
- <f4137e34-c7fb-4f21-bc93-1496cbf61fdf@tuxedocomputers.com>
- <8096a042-83bd-4b9f-b633-79e86995c9b8@redhat.com>
- <f416fbca-589b-4f6a-aad6-323b66398273@tuxedocomputers.com>
- <4222268b-ff44-4b7d-bf11-e350594bbe24@redhat.com>
- <ac02143c-d417-49e5-9c6e-150cbda71ba7@tuxedocomputers.com>
- <ZaljwLe7P+dXHEHb@duo.ucw.cz>
- <6bbfdd62-e663-4a45-82f4-445069a8d690@redhat.com>
- <0cdb78b1-7763-4bb6-9582-d70577781e61@tuxedocomputers.com>
- <7228f2c6-fbdd-4e19-b703-103b8535d77d@redhat.com>
- <730bead8-6e1d-4d21-90d2-4ee73155887a@tuxedocomputers.com>
- <952409e1-2f0e-4d7a-a7a9-3b78f2eafec7@redhat.com>
-Content-Language: en-US, de-DE
-In-Reply-To: <952409e1-2f0e-4d7a-a7a9-3b78f2eafec7@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240124-video-lumpiness-178c4e317f5a@spud>
 
-Hi Hans,
+On Wed, Jan 24, 2024 at 05:59:00PM +0000, Conor Dooley wrote:
+> On Wed, Jan 24, 2024 at 12:47:14PM -0500, Frank Li wrote:
+> > On Wed, Jan 24, 2024 at 05:36:42PM +0000, Conor Dooley wrote:
+> > > On Fri, Jan 19, 2024 at 04:31:28PM -0500, Frank Li wrote:
+> > > > From: Ran Wang <ran.wang_1@nxp.com>
+> > > > 
+> > > > When DWC3 is set to host mode by programming register DWC3_GCTL, VBUS
+> > > > (or its control signal) will turn on immediately on related Root Hub
+> > > > ports. Then the VBUS will be de-asserted for a little while during xhci
+> > > > reset (conducted by xhci driver) for a little while and back to normal.
+> > > > 
+> > > > This VBUS glitch might cause some USB devices emuration fail if kernel
+> > > > boot with them connected. One SW workaround which can fix this is to
+> > > > program all PORTSC[PP] to 0 to turn off VBUS immediately after setting
+> > > > host mode in DWC3 driver(per signal measurement result, it will be too
+> > > > late to do it in xhci-plat.c or xhci.c).
+> > > > 
+> > > > Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
+> > > > Reviewed-by: Peter Chen <peter.chen@nxp.com>
+> > > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > > ---
+> > > >  Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 7 +++++++
+> > > >  1 file changed, 7 insertions(+)
+> > > > 
+> > > > diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+> > > > index 203a1eb66691f..dbf272b76e0b5 100644
+> > > > --- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+> > > > +++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+> > > > @@ -273,6 +273,13 @@ properties:
+> > > >        with an external supply.
+> > > >      type: boolean
+> > > >  
+> > > > +  snps,host-vbus-glitches:
+> > > > +    description:
+> > > > +      When set, power off all Root Hub ports immediately after
+> > > > +      setting host mode to avoid vbus (negative) glitch happen in later
+> > > > +      xhci reset. And the vbus will back to 5V automatically when reset done.
+> 
+> nit: "will return to"
+> 
+> > > > +    type: boolean
+> > > 
+> > > Why do we want to have a property for this at all? The commit message
+> > > seems to describe a problem that's limited to specific configurations
+> > > and appears to be somethng the driver should do unconditionally.
+> > > 
+> > > Could you explain why this cannot be done unconditionally please?
+> > 
+> > It depends on board design, not all system vbus can be controller by root
+> > hub port. If it is always on, it will not trigger this issue.
+> 
+> Okay, that seems reasonable to have a property for. Can you add that
+> info to the commit message please?
 
-resend because Thunderbird htmlified the mail :/
+But if vbus is always on, then applying the work-around would be a NOP, 
+right? So you could just apply this unconditionally.
 
-Am 30.01.24 um 18:10 schrieb Hans de Goede:
-> Hi Werner,
->
-> On 1/30/24 12:12, Werner Sembach wrote:
->> Hi Hans,
->>
->> Am 29.01.24 um 14:24 schrieb Hans de Goede:
-<snip>
->> I think that are mostly external keyboards, so in theory a possible cut could also between built-in and external devices.
-> IMHO it would be better to limit /dev/rgbledstring use to only
-> cases where direct userspace control is not possible and thus
-> have the cut be based on whether direct userspace control
-> (e.g. /dev/hidraw access) is possible or not.
-
-Ack
-
-<snip>
-
->> So also no basic driver? Or still the concept from before with a basic 1 zone only driver via leds subsystem to have something working, but it is unregistered by userspace, if open rgb wants to take over for fine granular support?
-> Ah good point, no I think that a basic driver just for kbd backlight
-> brightness support which works with the standard desktop environment
-> controls for this makes sense.
->
-> Combined with some mechanism for e.g. openrgb to fully take over
-> control as discussed. It is probably a good idea to file a separate
-> issue with the openrgb project to discuss the takeover API.
-
-I think the OpenRGB maintainers are pretty flexible at that point, after all 
-it's similar to enable commands a lot of rgb devices need anyway. I would 
-include it in a full api proposal.
-
-On this note: Any particular reason you suggested an ioctl interface instead of 
-a sysfs one? (Open question as, for example, I have no idea what performance 
-implications both have)
-
-<snip>
-
->> I opened an issue regarding this:https://gitlab.com/CalcProgrammer1/OpenRGB/-/issues/3916
-> Great, thank you.
-First replies are in.
-> Regards,
->
-> Hans
-
-Kind regards,
-
-Werner
-
+Rob
 
