@@ -1,149 +1,160 @@
-Return-Path: <linux-kernel+bounces-44687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44688-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7801C8425F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:15:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 519408425F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:15:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A3FB2934D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:15:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07F671F2491E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:15:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F17B36BB54;
-	Tue, 30 Jan 2024 13:15:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73BB56D1B8;
+	Tue, 30 Jan 2024 13:15:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="j7p6M2rS";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="fcbkxqsP";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="j7p6M2rS";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="fcbkxqsP"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DX9tCY39"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A352274E0D;
-	Tue, 30 Jan 2024 13:15:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C057460874;
+	Tue, 30 Jan 2024 13:15:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.93
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706620504; cv=none; b=LN0aYNDPT0GaZcAe/YRQbAL2npY8LG6e3ITTrTVswtb3auxu+CtupSp/CtANAI0parmmp5z/lczM/vuqvCo0AW/ILxc8uvujBpMMD+tqmY2zKfAWFgp5cGtNrviW2GHgbQ/PEHv/N4NaOdotRWbK/tJ86noXkH6+2omGPhVmglM=
+	t=1706620527; cv=none; b=OGgc+sW/TmDe7mo/hAMgvSWiWI+GlyWUzZTA8YkU6Vo4fGQXxNQjmQTE1vGATWps4jzd6D9sFw7b9VV+gDPKm5G7URElGyk3eU92500GqOwxxzIqdqdUKIYoqQh+i/Wjcxh1QHHUGmYrEEwJTiZXVd0dSuizkWGt4xM7DjY5Yg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706620504; c=relaxed/simple;
-	bh=XzgL+n4cnmh65E3tupGX/Y9mODh/MkIzXKMo80VVDsM=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=J2pTI2O3KsnM1rV/+yyldk44xxaqIohn8GBfhkn1v3c/mRITxYdSLzXjc/mNIcW/7gAIYrCl9yU7cINCb8aEukKUfCZOeYNZ6eH9kg4SUY3ftzvu+e+I3D8DFfMy3/O8x/JibSY3sEeie89QTDd4u/63DA4sd+mOb8sY1+PWEzU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=j7p6M2rS; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=fcbkxqsP; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=j7p6M2rS; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=fcbkxqsP; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E4EA91F84B;
-	Tue, 30 Jan 2024 13:15:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1706620500; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=C20JTUPpSyGGJZB6BpIGKouuM36f4VjdkcvrYvd2OG8=;
-	b=j7p6M2rSxY1fqRrfGnnEUjHSyodlEuP1g/51oxlwIP3MVG1mUZ8I4JRaSSQbJNOBvl6Jaf
-	67W1wKvZXIq2I77CSXO0E9jS7CxYUpCOEG5n29l4QPltP4JfItm8iWAY1pwrmPHhYUiInT
-	/ioE7bdZPCAo87tcaAB6ReoWHwPXbOg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1706620500;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=C20JTUPpSyGGJZB6BpIGKouuM36f4VjdkcvrYvd2OG8=;
-	b=fcbkxqsP011Fc7c4WBBUKhvmV16eMMTLcJADCcgw5CCmc/ojHQm+s5pnkZxXiQurPTL+i3
-	lKm/+Y190oo+XEAA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1706620500; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=C20JTUPpSyGGJZB6BpIGKouuM36f4VjdkcvrYvd2OG8=;
-	b=j7p6M2rSxY1fqRrfGnnEUjHSyodlEuP1g/51oxlwIP3MVG1mUZ8I4JRaSSQbJNOBvl6Jaf
-	67W1wKvZXIq2I77CSXO0E9jS7CxYUpCOEG5n29l4QPltP4JfItm8iWAY1pwrmPHhYUiInT
-	/ioE7bdZPCAo87tcaAB6ReoWHwPXbOg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1706620500;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=C20JTUPpSyGGJZB6BpIGKouuM36f4VjdkcvrYvd2OG8=;
-	b=fcbkxqsP011Fc7c4WBBUKhvmV16eMMTLcJADCcgw5CCmc/ojHQm+s5pnkZxXiQurPTL+i3
-	lKm/+Y190oo+XEAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AD88F12FF7;
-	Tue, 30 Jan 2024 13:15:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id FL7DKFT2uGW5WQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Tue, 30 Jan 2024 13:15:00 +0000
-Date: Tue, 30 Jan 2024 14:15:00 +0100
-Message-ID: <87wmrr2ca3.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Ivan Orlov <ivan.orlov0322@gmail.com>
-Cc: perex@perex.cz,
-	tiwai@suse.com,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] ALSA: pcm: Add missing formats to formats list
-In-Reply-To: <20240125223522.1122765-1-ivan.orlov0322@gmail.com>
-References: <20240125223522.1122765-1-ivan.orlov0322@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	s=arc-20240116; t=1706620527; c=relaxed/simple;
+	bh=YqZzIcojda4nyn+FMMQhoHdEpUzR5h93PZGcwzJyjac=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=FXLGD7HWxpAJzywr+dHFokValGm8njkrVoYm4q/4/b7taTK0eMcxo60bO5zqbf0xn/Ngc1kBNtAwudgDyzduBa3Cajqo9GouQxjkTGFkLoeN+tzn2NDPldr2es6etlSDXBs1Z2m5HB6B4lgZUmSeZ7MibUzEfkQzqN7DTKuXY2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DX9tCY39; arc=none smtp.client-ip=192.55.52.93
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706620525; x=1738156525;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=YqZzIcojda4nyn+FMMQhoHdEpUzR5h93PZGcwzJyjac=;
+  b=DX9tCY39w4M1QuS0D/1KtNHbhz4M38NCDfHtDdYEjlsJxIkeaZ6PyrGI
+   MjfbtrqRJIUr9ePkD9nTi3udyNxfEl4ahonqer0tMFuc/XqAnzSB84MU6
+   YuNbMINZZK8gaLnex9NtOMukEeZBJWjMHB6BD/qZb3AuUilZLuZ/MLi95
+   EtrGSpA4Hw2v/CLd0ZNJ5Hrt7VDhKeqfnE/E4RL5MLqrFntclB+4awYsC
+   xU0NrG7PuIO8mvayj2iQztXpMWzgL/dEK2VLqIFIk8NZrEf/sTZy4FiDK
+   CqugLfmu+B7vL17Z39M59hLTYxe3dUYLkcv7uSzYhb+xGS+r9QrltFWj1
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="400413381"
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="400413381"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 05:15:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="3689802"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.34.252])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 05:15:22 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Tue, 30 Jan 2024 15:15:18 +0200 (EET)
+To: Bjorn Helgaas <helgaas@kernel.org>
+cc: Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, 
+    "Maciej W. Rozycki" <macro@orcam.me.uk>, 
+    LKML <linux-kernel@vger.kernel.org>, 
+    Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: Re: [PATCH 2/2] PCI: Do not wait for disconnected devices when
+ resuming
+In-Reply-To: <20240129185544.GA471021@bhelgaas>
+Message-ID: <964b697f-a412-2fd5-a649-036e9f6b596e@linux.intel.com>
+References: <20240129185544.GA471021@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: 0.30
-X-Spamd-Result: default: False [0.30 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FREEMAIL_TO(0.00)[gmail.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.90)[86.07%];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="8323328-1132523681-1706620518=:1000"
 
-On Thu, 25 Jan 2024 23:35:19 +0100,
-Ivan Orlov wrote:
-> 
-> Add 4 missing formats to 'snd_pcm_format_names' array in order to be
-> able to get their names with 'snd_pcm_format_name' function.
-> 
-> Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Now applied all three patches.  This first one is to for-linus, while
-the rest two are to for-next for 6.9 kernel.
+--8323328-1132523681-1706620518=:1000
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-For further improvements (e.g. Amadeusz suggested), let's apply on top
-of that.
+On Mon, 29 Jan 2024, Bjorn Helgaas wrote:
 
+> On Mon, Jan 29, 2024 at 01:27:10PM +0200, Ilpo J=C3=A4rvinen wrote:
+> > On runtime resume, pci_dev_wait() is called:
+> >   pci_pm_runtime_resume()
+> >     pci_pm_bridge_power_up_actions()
+> >       pci_bridge_wait_for_secondary_bus()
+> >         pci_dev_wait()
+> >=20
+> > While a device is runtime suspended along with its PCIe hierarchy, the
+> > device could get disconnected. In such case, the link will not come up
+> > no matter how log pci_dev_wait() waits for it.
+>=20
+> s/PCIe/PCI/ (unless this is a PCIe-specific thing)
+> s/log/long/
+>=20
+> > Besides the above mentioned case, there could be other ways to get the
+> > device disconnected while pci_dev_wait() is waiting for the link to
+> > come up.
+> >=20
+> > Make pci_dev_wait() to exit if the device is already disconnected to
+> > avoid unnecessary delay. As disconnected device is not really even a
+> > failure in the same sense as link failing to come up for whatever
+> > reason, return 0 instead of errno.
+>=20
+> The device being disconnected is not the same as a link failure.
 
-thanks,
+This we agree and it's what I tried to write above.
 
-Takashi
+> Do
+> all the callers do the right thing if pci_dev_wait() returns success
+> when there's no device there?
+
+It's a bit complicated. I honestly don't know what is the best approach=20
+here so I'm very much open to your suggestion what would be preferrable.
+
+There are two main use cases (more than two callers but they seem boil=20
+down to two use cases).
+
+One use case is reset related functions and those would probably prefer to=
+=20
+have error returned if the wait, and thus reset, failed.
+
+Then the another is wait for buses, that is,=20
+pci_bridge_wait_for_secondary_bus() which return 0 if there's no device=20
+(wait successful). For it, it would make sense to return 0 also when=20
+device is disconnected because it seems analoguous to the case where=20
+there's no device in the first place.
+
+Perhaps it would be better to return -ENOTTY from pci_dev_wait() and check=
+=20
+for that disconnected condition inside=20
+pci_bridge_wait_for_secondary_bus()? To further complicate things,=20
+however, DPC also depends on the return value of=20
+pci_bridge_wait_for_secondary_bus() and from its perspective, returning=20
+error when there is a device that is disconnected might be the desirable=20
+alternative (but I'm not fully sure how everything in DPC works but I=20
+highly suspect I'm correct here).
+
+Either way, the fix itself does care and seemed to work regardless of the=
+=20
+actual value returned by pci_dev_wait().
+
+> > Also make sure compiler does not become too clever with
+> > dev->error_state and use READ_ONCE() to force a fetch for the
+> > up-to-date value.
+>=20
+> I think we should have a comment there to say why READ_ONCE() is
+> needed.  Otherwise it's hard to know whether a future change might
+> make it unnecessary.
+
+Sure, I'll add a comment there.
+
+--=20
+ i.
+
+--8323328-1132523681-1706620518=:1000--
 
