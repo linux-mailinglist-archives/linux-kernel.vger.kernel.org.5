@@ -1,118 +1,129 @@
-Return-Path: <linux-kernel+bounces-44355-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFEAD8420AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:07:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92D07842091
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:06:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F1471C27270
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:07:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 419DB1F2BF32
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:06:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 113E960DC9;
-	Tue, 30 Jan 2024 10:06:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEB0D60885;
+	Tue, 30 Jan 2024 10:04:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fRKZFTlX"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="P+3lV22C";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="dBO9EM4Y"
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F389E6089B;
-	Tue, 30 Jan 2024 10:06:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FA6057867
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 10:04:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706609202; cv=none; b=DnTZqNEOX9n242TQxmWvSO96iI7I5X12X14uj7uuuN7i2leQro6eO/HhASGzIwS5RjlRi+lADu/k0uh1S2mqEozp+NJLPf/dkTpsolsLTEi7bM9JVW+TVk2vj+8mDkq+UE0tVASVg5Z3EXL+EPH2yLyK2qrVw+MI0SHnwJbJ44I=
+	t=1706609059; cv=none; b=MyilJukOesmzGJ969j2TN1/MyHjsCtGNo0SJtKVICJ5b62inaBVoHg+/eOKb/vGaU1ijCTAqCcjIy5mrg319Xj7F9elWV6z/PolmCZpg5DfwJTz6AMtEv33e2gqUtzgK2oFLWO5XP33MeFQFZjBFXDOzlXlKoK0srVRN4kxYdkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706609202; c=relaxed/simple;
-	bh=33yxRTwJsY9+vLQ1tvEYDMF6ElkJnKd+wgSpP79NvCE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D+jgrz++8Lzr66MZb5K/W7CYI9/IaJlCmA6TXE+AhCVxCZbGAK3OOyE5lCwrDfu0oKzxFy1ToB4c2GC7A3dhK7VG4kFrgw907vRgSQ4Xh4nZxiInUOkr5VlYubupqXgj+2LcxwSv72D9EoukKhWPrZp4Iv7hQspxbh6yLPQ9W8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fRKZFTlX; arc=none smtp.client-ip=134.134.136.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706609200; x=1738145200;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=33yxRTwJsY9+vLQ1tvEYDMF6ElkJnKd+wgSpP79NvCE=;
-  b=fRKZFTlXbPAC4KtEH7IxKJfOErLIVNCyJCnJJdk2XhYxAa76jzxfzAX4
-   7T4oQXVGMn4Ma+iDO3qObm9nl3y9o+Pi4q+Y5Gnkem176cqzd3MM3ZRlt
-   /KzFBFVwPATBTxSYaPFIWJX0Z5PY5sygJBzOE4GqBU0vPsNJMkzifRwVh
-   yJUskODaJWeTC7e66FtkakUjY9edPJ0TMpusnzKLymXk5fzTWZgJAfyKZ
-   nsI9V0VFQZNzV08iu7vhfodfSq5/qt5USGzVHAoDiBh+s5RjyUmyw/InT
-   XeFTjkjdD7LzOWOAvYIuBfZQVjX7mWxE5wZ9Zr9CiAjzWDdRLF6Xq53GX
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="467486605"
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="467486605"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 02:06:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="1119213778"
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="1119213778"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by fmsmga005.fm.intel.com with ESMTP; 30 Jan 2024 02:06:37 -0800
-Date: Tue, 30 Jan 2024 18:03:12 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Markus Elfring <Markus.Elfring@web.de>
-Cc: linux-fpga@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Luwei Kang <luwei.kang@intel.com>, Moritz Fischer <mdf@kernel.org>,
-	Tom Rix <trix@redhat.com>, Wu Hao <hao.wu@intel.com>,
-	Xu Yilun <yilun.xu@intel.com>, LKML <linux-kernel@vger.kernel.org>,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: Re: [PATCH] fpga: dfl: fme: Return directly after a failed
- devm_kasprintf() call in fme_perf_pmu_register()
-Message-ID: <ZbjJYMlDifIv0WId@yilunxu-OptiPlex-7050>
-References: <d94376b6-12e8-45bb-a9be-4887bb316d35@web.de>
+	s=arc-20240116; t=1706609059; c=relaxed/simple;
+	bh=3w8BIDNYwmsOMQgds+zKKQvqmE+c39tBnyoZ0jKXAuE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fPZ/gYKZeO2b4t6kwQ5TjKfjQ2phWa74452cxz1JN83KloV7lS7iFEBrrndLZkbJuTMrrtt/RF2TTvz7eIa1aKcugz307nEt9P97IzrP4vLbIUW4oE5gjoniRQL1Xk266YF/mlyRsuElWhkQFeSrrJzZi/rOSsYO0lKReVL/YWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=P+3lV22C; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=dBO9EM4Y; arc=none smtp.client-ip=64.147.123.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailout.west.internal (Postfix) with ESMTP id 441433200B3B;
+	Tue, 30 Jan 2024 05:04:15 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute7.internal (MEProxy); Tue, 30 Jan 2024 05:04:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+	 h=cc:cc:content-transfer-encoding:content-type:date:date:from
+	:from:in-reply-to:message-id:mime-version:reply-to:subject
+	:subject:to:to; s=fm3; t=1706609054; x=1706695454; bh=vkYxaFes1o
+	ZgW4Bo/+u9h7Rx+x8nZ07dK3dg7jhwa6E=; b=P+3lV22CLGLfCDfpvDORyKC7Hc
+	QoBR3AGzjqhAPXOKM28UfXvq7hR+uHFl5HUiKR97N9slT02UbDp2aWjDNsy+sBqE
+	mNfBcjMmLEZxjnQWeCBL7L/iBDr3IkOpUQdtUDRiHumnLFaRjtx9N+hHtq/Xd+tp
+	6uSGldMzuoZWkzKxk+/VfqXqC/7xcxx+f2tID4LNXDrOFjPh5IrB6GRvkzo7JHjw
+	lNgAiZvE3yT18PcnUpyFiQ+0HxcCWf8LV1IkV2iN8CVMWyDK2UNBTebwcfA3TA9G
+	qNMji/VDodSLSUF00aQa3+e4Chb571joenbA0ewd3PDaB4Z+pDDcLuSvbX/g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1706609054; x=1706695454; bh=vkYxaFes1oZgW4Bo/+u9h7Rx+x8n
+	Z07dK3dg7jhwa6E=; b=dBO9EM4YWxLTID2Y2gGjFNZi5YJ/s/tWtZ+afCI5RhLP
+	YAxoGO6bqgNb2uKsV0zaRnHL//DT+BWT9hmw1kablSuk54H6igXWodPP1fN+WoVc
+	j/FeXrgjspA1wa0nX8kMVTFOtbPmmRB9pc3pIJzS8DxptowSnWXHTUU+o70YSMaK
+	foXZhioTC/daH0BITGocVwVt5+Sxm1xRXTWaY7HRxdsx0u0PoIQ55TM+AdypnnmI
+	9E+Sk/3QN8su/dS3i8JPgfWBACQGO10FpTpCzBeI6Pijkw43HwXNuzRCIKcswpPK
+	EC0gXoEFjOXR0/kC35ZM10d02nuab0MFt3pu6U0EDg==
+X-ME-Sender: <xms:nsm4ZQ2KvezJle_DV1wnbtNS0X828sTDVWclf3iblOOLRtFmKn3Rdg>
+    <xme:nsm4ZbGRregntRQjEhM2HBcZ9obCYGE5nzMdtGlU5TWQ-426THhSnDoqL2HwrCW27
+    Fb8W5ZakwmJmVswcBg>
+X-ME-Received: <xmr:nsm4ZY5mWMe1gxKjBoWc2CKG3buiY5cIG8ZAHCtlVc5mZ49441uFtti--KVnML9RCDAfxrRUzYPXNVAd8uzddiiK07asUxzd_Cjdp44PHo62>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtiedgudduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertd
+    ertddtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghkrghs
+    hhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeeukeegvefgie
+    ehfefhtdethfevjefghfeileehffefgedugeeigfduhfekgeehueenucffohhmrghinhep
+    khgvrhhnvghlrdhorhhgpdgrrhgthhhivhgvrdhorhhgpddufeelgehtrgdrohhrghenuc
+    evlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghk
+    rghshhhisehsrghkrghmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:nsm4ZZ2qkkB5vbHucH_cT4PcnDwwn-v1C2pE4Cl495yUv6JPk4Jwig>
+    <xmx:nsm4ZTF3u-6yPlSZB0DewHpeLt-2UBc-vBWHoo1bI8_rBVlWNqcYfQ>
+    <xmx:nsm4ZS9i-vIq869PDhPNBzR3SAx0kKtP0BgYRvdCJkLpCOWfFvsVgA>
+    <xmx:nsm4ZZOM57Hq8kVZ_8P_nHbMk5kSQ_z-ecBHkocf1Ba3R3c7SAu_vw>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 30 Jan 2024 05:04:13 -0500 (EST)
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: linux1394-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org
+Cc: adamg@pobox.com
+Subject: [PATCH 0/2] firewire: core: optimization for the quirk of Sony DVMC-DA1
+Date: Tue, 30 Jan 2024 19:04:07 +0900
+Message-Id: <20240130100409.30128-1-o-takashi@sakamocchi.jp>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <d94376b6-12e8-45bb-a9be-4887bb316d35@web.de>
 
-On Sat, Jan 27, 2024 at 03:55:19PM +0100, Markus Elfring wrote:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Sat, 27 Jan 2024 15:43:42 +0100
-> 
-> The result from a call of the function “devm_kasprintf” was passed to
-> a subsequent function call without checking for a null pointer before
-> (according to a memory allocation failure).
-> This issue was detected by using the Coccinelle software.
-> 
-> Thus return directly after a failed devm_kasprintf() call.
-> 
-> Fixes: 724142f8c42a7 ("fpga: dfl: fme: add performance reporting support")
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+Hi,
 
-Acked-by: Xu Yilun <yilun.xu@intel.com>
+A quirk was reported that Sony DVMC-DA1 has a quirk in its configuration
+ROM[1]. It has the legacy layout of configuration ROM[2] with the quirk
+that the descriptor leaf entry locates just after the vendor directory
+entry in its root directory. It is not the layout in the documentation
+since the usual descriptor leaf entry locates just after the vendor
+immediate entry. Current implementation of firewire-core fail to pick up
+the content of descriptor leaf for vendor name. 
 
-> ---
->  drivers/fpga/dfl-fme-perf.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/fpga/dfl-fme-perf.c b/drivers/fpga/dfl-fme-perf.c
-> index 7422d2bc6f37..db56d52411ef 100644
-> --- a/drivers/fpga/dfl-fme-perf.c
-> +++ b/drivers/fpga/dfl-fme-perf.c
-> @@ -925,6 +925,8 @@ static int fme_perf_pmu_register(struct platform_device *pdev,
->  				PERF_PMU_CAP_NO_EXCLUDE;
-> 
->  	name = devm_kasprintf(priv->dev, GFP_KERNEL, "dfl_fme%d", pdev->id);
-> +	if (!name)
-> +		return -ENOMEM;
-> 
->  	ret = perf_pmu_register(pmu, name, -1);
->  	if (ret)
-> --
-> 2.43.0
-> 
-> 
+This series of changes is to optimize for the quirk, including a slight
+correction of documentation for the relevant kernel API. The changes
+are written to be accepted to the release candidates of v6.8 so that
+they don't conflict to the changes in for-next branch[3], thus they
+do not necessarily have a good look.
+
+[1] https://lore.kernel.org/lkml/20240126011705.GA22564@workstation.local/
+[2] Configuration ROM for AV/C Devices 1.0 (1394 Trading Association, Dec
+2000, TA Document 1999027)
+https://web.archive.org/web/20210216003030/http://1394ta.org/wp-content/uploads/2015/07/1999027.pdf
+[3] https://git.kernel.org/pub/scm/linux/kernel/git/ieee1394/linux1394.git/log/?h=for-next
+
+Takashi Sakamoto (2):
+  firewire: core: correct documentation of fw_csr_string() kernel API
+  firewire: core: search descriptor leaf just after vendor directory
+    entry in root directory
+
+ drivers/firewire/core-device.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
+
+-- 
+2.40.1
+
 
