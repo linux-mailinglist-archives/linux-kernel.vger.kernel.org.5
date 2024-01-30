@@ -1,140 +1,197 @@
-Return-Path: <linux-kernel+bounces-45482-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47A9D843149
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 00:31:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08A0D84314C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 00:32:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02C6B288BF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:31:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC77C2883E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:32:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 955527994C;
-	Tue, 30 Jan 2024 23:31:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DFBA79957;
+	Tue, 30 Jan 2024 23:32:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="SfZjkkMG"
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com header.b="XbUNHyDS"
+Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com [208.88.110.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B0AA7EEFD
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 23:31:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ED6E7EEFD;
+	Tue, 30 Jan 2024 23:32:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=208.88.110.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706657504; cv=none; b=QOBIfASgD2PXHKL1eOv+0cw8XuX257FCRLvL0l8cMHYG0BBV1F+KJ3TJuZz7EmewsYhPGxav6g9A3B9SlnjOJNf5GNY/bP34SFYZ64XkLkyzInylkAXXfmTHbqj7PtHzitLQEe2s5n4oHk3PKcEM2xYzxpCg/0b5nOBd3lb5vug=
+	t=1706657543; cv=none; b=bX4JFNjJFaQckUDPFWtSawUkjqIq098gRBqNRsEHmTLgK9eSnaXsrBqneJctCYVDKq1jO+HOwQ32Dr7MlyHcxKbjl9U18R2mHwpZxcek1D3CznRCgRYu/4eJkKgtSO/yTvxro8sMWMA4ByyhwiAbycpckOzIxzOc4gY8cFrgMdk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706657504; c=relaxed/simple;
-	bh=tjgkJWJHJ1m0/YqTb/xcrpYoub6gZSwUTnxfXo0y8mM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YRPGbdX01zdnm65ntY1lSptCw9d3LgFvqfmrHlEB1vwCsxkfSMkVA4TebYCj0XjWesM2NRUu6mqopsrc/P9KVTPe349PafmSbG4FiAuwZ/MGFqNEP0eEOQV6JOM9nCT/R20JePm0X/y4SxY5ZxVk5gDoNIDKnYYnJlxjKtPUOv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=SfZjkkMG; arc=none smtp.client-ip=209.85.210.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6e13cfc0b2fso756684a34.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 15:31:43 -0800 (PST)
+	s=arc-20240116; t=1706657543; c=relaxed/simple;
+	bh=LNLe7G+sUEBgyWggG7WM7RWLo2yZedbsnX7Ohqrkqa4=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 MIME-Version:Content-Type; b=mq469gZV+yYE/+U39hFMkTY5/j9BBfvGQ26ZzV8cOTr8UJQAuWsj53yl6Ol6qwkw6Tc+catinJ8Sn2OU/XqM747PszteM4RLvaEasUhqPwMMdbtkzOomNmBP44ub7TI6zYKTg2KGoPMmyyCQjUos8+axpL+6jjqVbmYoPZdladg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=savoirfairelinux.com; spf=pass smtp.mailfrom=savoirfairelinux.com; dkim=pass (2048-bit key) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com header.b=XbUNHyDS; arc=none smtp.client-ip=208.88.110.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=savoirfairelinux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=savoirfairelinux.com
+Received: from localhost (localhost [127.0.0.1])
+	by mail.savoirfairelinux.com (Postfix) with ESMTP id BED8A9C47A8;
+	Tue, 30 Jan 2024 18:32:12 -0500 (EST)
+Received: from mail.savoirfairelinux.com ([127.0.0.1])
+ by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10032)
+ with ESMTP id ihIR16aTfH4Y; Tue, 30 Jan 2024 18:32:12 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+	by mail.savoirfairelinux.com (Postfix) with ESMTP id 0B4FF9C47AB;
+	Tue, 30 Jan 2024 18:32:12 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.savoirfairelinux.com 0B4FF9C47AB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706657502; x=1707262302; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=PiOXMkAilXSlADbFG8aS86y0I95Of2JWiczoVplHqlw=;
-        b=SfZjkkMG9tP/l3XQiSN5vSGU8PfTGIUC2iFrsS1/9HT444LCCYAZdj1yhc9KdiRyk8
-         hv7LIw2hwe2ZcTbNZKxa28/lCtf5LeZUGUDBM8MfclY85w3dIXb8SwN9uUrrdHd5wVzQ
-         yqvwCLU/4JdtD3cUcZYVbqUfJgBFVmk0w2KSk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706657502; x=1707262302;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PiOXMkAilXSlADbFG8aS86y0I95Of2JWiczoVplHqlw=;
-        b=d5U2a6G7rvIZbQpn68PkiMDJUO7/770JsdNxHIvwlFYsqAbNYc/B5HWMP4FgVReI2U
-         sF3cm5BZwOal7W1Xz0+zUQFz1YblbEiDlERq88RdUj0+nf9RZ/FKbfuv6XHi36UrPxmu
-         tJgjqWinI/tZ0jsWvbQBc6Vpv56dXkaworICvMIC+dB2E5qGKVzaR2giafvkXsl84rj8
-         9FJGMAVqVvVTdBklBFq1rgrr8Vt6K6LVuX+jyuNJxgnlsaXga0x9iw1ko1aiwyBkbXag
-         MBEBIvdwRoQieVVCojCgnNBTC0/cwfVmappCrup0x4Osp/xDbO+vhY9zydehFLDSFfG5
-         CWow==
-X-Gm-Message-State: AOJu0Yy8HjTKPQuUANjcoUG/4K9F5jIDBaUpzmZC9XsSrIfj5jFd7U9D
-	A8SwJLavvaPKqN8jGujek9k/fMCNiV44F5amfiIMEHYzyc9m1Coq00FtQkn2Qw==
-X-Google-Smtp-Source: AGHT+IGGp57sIuxTKTDCF6nyyO91maNOKuzeOvSumXmlWoy42j5hwEgcNPzAvuL4+x+S4cRxfQM9KQ==
-X-Received: by 2002:a05:6358:ee4b:b0:176:503b:937c with SMTP id ik11-20020a056358ee4b00b00176503b937cmr11351112rwb.21.1706657502506;
-        Tue, 30 Jan 2024 15:31:42 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id e17-20020a656491000000b005d67862799asm4122554pgv.44.2024.01.30.15.31.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 15:31:42 -0800 (PST)
-From: Kees Cook <keescook@chromium.org>
-To: Huacai Chen <chenhuacai@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>,
-	kernel test robot <lkp@intel.com>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Vincenzo Frascino <vincenzo.frascino@arm.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Fangrui Song <maskray@google.com>,
-	loongarch@lists.linux.dev,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Qing Zhang <zhangqing@loongson.cn>,
-	Feiyang Chen <chenfeiyang@loongson.cn>,
-	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH] LoongArch: vDSO: Disable UBSAN instrumentation
-Date: Tue, 30 Jan 2024 15:31:40 -0800
-Message-Id: <20240130233140.work.887-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+	d=savoirfairelinux.com; s=DFC430D2-D198-11EC-948E-34200CB392D2;
+	t=1706657532; bh=BA4JQridKzT3Qj0Bblif/Dl05zQNFxAGDsMmT6xiiWA=;
+	h=Date:From:To:Message-ID:MIME-Version;
+	b=XbUNHyDSl0gBsr4cCsjFR4BlqmGJ5WErUDf2j384p7TLk7L0IPzhdQldARfor5h3B
+	 xOCshe42bzEydP0Yyl4VZpsUedUnQxI8Cl/T+h/LQLABxp2OipfJw04WMssHnzULPj
+	 7QwtEDEZuU7n+tfXVG5HPRklYF80zhVFpor2xyTSGGSb9iSrIP53Q8/ogWUzzJEFN0
+	 EoVfgVqJdq/oLkLTZ5CMgySGNht7JuRJ6MzEhq4dpR3bwenCJvFgLI48h6/aHbJQYx
+	 7EOB6VTMzn3AI9Ir6l+bpwk6PBQXM8o7tQTOPv4qo3zL8uuEXujtbYkUV4GFq9Q/kD
+	 mv/BF4CVMwTrQ==
+X-Virus-Scanned: amavis at mail.savoirfairelinux.com
+Received: from mail.savoirfairelinux.com ([127.0.0.1])
+ by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10026)
+ with ESMTP id VukIkSh6H6CV; Tue, 30 Jan 2024 18:32:11 -0500 (EST)
+Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com [192.168.48.237])
+	by mail.savoirfairelinux.com (Postfix) with ESMTP id D49819C47A8;
+	Tue, 30 Jan 2024 18:32:11 -0500 (EST)
+Date: Tue, 30 Jan 2024 18:32:11 -0500 (EST)
+From: Charles Perry <charles.perry@savoirfairelinux.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: mdf <mdf@kernel.org>, hao wu <hao.wu@intel.com>, 
+	yilun xu <yilun.xu@intel.com>, trix <trix@redhat.com>, 
+	krzysztof kozlowski+dt <krzysztof.kozlowski+dt@linaro.org>, 
+	Brian CODY <bcody@markem-imaje.com>, 
+	Allen VANDIVER <avandiver@markem-imaje.com>, 
+	linux-fpga <linux-fpga@vger.kernel.org>, 
+	devicetree <devicetree@vger.kernel.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <1723200717.393172.1706657531814.JavaMail.zimbra@savoirfairelinux.com>
+In-Reply-To: <cee1ca11-03bf-4a0b-9ff3-490457f9fbe8@linaro.org>
+References: <20240129225602.3832449-1-charles.perry@savoirfairelinux.com> <20240129225602.3832449-2-charles.perry@savoirfairelinux.com> <f3cfffa0-5089-4bf7-b424-d5e949e36d67@linaro.org> <1489222458.382780.1706629544559.JavaMail.zimbra@savoirfairelinux.com> <32669bc7-90b5-48d9-8845-2e072a477c6e@linaro.org> <154341320.386005.1706634341891.JavaMail.zimbra@savoirfairelinux.com> <cee1ca11-03bf-4a0b-9ff3-490457f9fbe8@linaro.org>
+Subject: Re: [PATCH 2/3] dt-bindings: fpga: xlnx,fpga-slave-selectmap: add
+ DT schema
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1243; i=keescook@chromium.org;
- h=from:subject:message-id; bh=tjgkJWJHJ1m0/YqTb/xcrpYoub6gZSwUTnxfXo0y8mM=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBluYbcRNRE8eUz6tYFQAladg8P+XLUdL7e+q6Ay
- HNwzQiW6pGJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZbmG3AAKCRCJcvTf3G3A
- JqrGD/9KqwEPh/D8NLTeQy/ro72FzTNk6eJ4UoWbJyVz54451QNtyI8Oc+aW7x5mwjheN6IuiBH
- NQWBKFcgrqimUJYO3XbnPOZ9OHF6ipf8Fx5/YGLbDOW/LvRGhQlfhhM/BrARH1xALcZOIemiMq+
- NuU7tiZ/mCDZ/F642nIKE0HNndm4/hc5n2O6qywD9fGxto65WqauLwprzk8bha2cGSgza57ugq0
- skX/qRMKo3j1tE/w2RqvkSBY3+GQpzZagNc3svK67YbiehX9F/OmhGV4MwHgq14GA+cdGeq7RqE
- yDvPvSSAzv53zimYkjmzf1J1SJu0JGr1Z1oN1hp+9nCi0ERF7nII2Iuqrwg80fVRF1XcH1NbC4e
- nNwMv8Y+SxYvohvqCUv7PPh7jG9px5qJckUoUTf4WfuvKS7YU2vOMXpjjfENAh8x25CZV8hgM7w
- 9GsO/XTLRiPR1AHlUG8WmqX9X8WYkLGiJrQDYNfJfzURwyRzrE6DYCVqHFnF7biS08v15rdi/kK
- uGO36RfIGaYGeB9X43uygcIWgMx8nAEyT7HAs65yjqtAQPXCwSN7dsKqUZ8MbVbqmfpULI8mwwN
- cigKOOdVwkeauhMdkb25S1LXaQl0LOqZcCgvjDThmUbYmdv9piaEe9qYh7seS8iF/mJGyg/+e2Q
- 1zZB3C8 wXNNI0+w==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Zimbra 8.8.15_GA_4581 (ZimbraWebClient - FF120 (Linux)/8.8.15_GA_4581)
+Thread-Topic: dt-bindings: fpga: xlnx,fpga-slave-selectmap: add DT schema
+Thread-Index: bDEku0F6XFcq/uoMeZdjacG4xvsqgA==
 
-The vDSO executes in userspace, so the kernel's UBSAN should not
-instrument it. Solves these kind of build errors:
 
-  loongarch64-linux-ld: arch/loongarch/vdso/vgettimeofday.o: in function `vdso_shift_ns':
-  lib/vdso/gettimeofday.c:23:(.text+0x3f8): undefined reference to `__ubsan_handle_shift_out_of_bounds'
+----- On Jan 30, 2024, at 12:58 PM, Krzysztof Kozlowski krzysztof.kozlowski=
+@linaro.org wrote:
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202401310530.lZHCj1Zl-lkp@intel.com/
-Cc: Huacai Chen <chenhuacai@kernel.org>
-Cc: WANG Xuerui <kernel@xen0n.name>
-Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Fangrui Song <maskray@google.com>
-Cc: loongarch@lists.linux.dev
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- arch/loongarch/vdso/Makefile | 1 +
- 1 file changed, 1 insertion(+)
+> On 30/01/2024 18:05, Charles Perry wrote:
+>>=20
+>>=20
+>> ----- On Jan 30, 2024, at 11:05 AM, Krzysztof Kozlowski
+>> krzysztof.kozlowski@linaro.org wrote:
+>>=20
+>>> On 30/01/2024 16:45, Charles Perry wrote:
+>>>>
+>>>>>> +
+>>>>>> +  reg:
+>>>>>> +    description:
+>>>>>> +      At least 1 byte of memory mapped IO
+>>>>>> +    maxItems: 1
+>>>>>> +
+>>>>>> +  prog_b-gpios:
+>>>>>
+>>>>>
+>>>>> No underscores in names.
+>>>>>
+>>>>
+>>>> This is heavily based on "xlnx,fpga-slave-serial.yaml" which uses an u=
+nderscore.
+>>>> I can use a dash instead but that would make things inconsistent acros=
+s the two
+>>>> schemas.
+>>>
+>>> Inconsistency is not a problem. Duplicating technical debt is.
+>>>
+>>>>
+>>>>>
+>>>>>> +    description:
+>>>>>> +      config pin (referred to as PROGRAM_B in the manual)
+>>>>>> +    maxItems: 1
+>>>>>> +
+>>>>>> +  done-gpios:
+>>>>>> +    description:
+>>>>>> +      config status pin (referred to as DONE in the manual)
+>>>>>> +    maxItems: 1
+>>>>>> +
+>>>>>> +  init-b-gpios:
+>>>>>
+>>>>> Is there init-a? Open other bindings and look how these are called th=
+ere.
+>>>>>
+>>>>
+>>>> No, the "-b" is there to denote that the signal is active low. I think=
+ its
+>>>> shorthand
+>>>> for "bar" which is the overline (=E2=80=BE) that electronic engineer p=
+ut on top of the
+>>>> name of the
+>>>> signal on schematics. It comes from the datasheet.
+>>>
+>>> Then just "init-gpios"
+>>>
+>>> ...
+>>>
+>>>>>> +required:
+>>>>>> +  - compatible
+>>>>>> +  - reg
+>>>>>> +  - prog_b-gpios
+>>>>>> +  - done-gpios
+>>>>>> +  - init-b-gpios
+>>>>>> +
+>>>>>> +additionalProperties: true
+>>>>>
+>>>>> Nope, this cannot bue true.
+>>>>>
+>>>>
+>>>> Ok, I'll put this to false but I'm not quite sure I understand the imp=
+lications.
+>>>>
+>>>> My reasoning behind assigning this to true was that the FPGA is an ext=
+ernal
+>>>> device on a bus that needs to be configured by a bus controller. The b=
+us
+>>>> controller
+>>>> would be the parent of the fpga DT node and the later would contain pr=
+operties
+>>>> parsed by the bus controller driver.
+>>>
+>>> Which bus controller? MMIO bus does not parse children properties.
+>>> Anyway, if that's the case you miss $ref to respective
+>>> peripheral-props.yaml matching your bus and then "unevaluatedProperties=
+:
+>>> false".
+>>=20
+>> This one:
+>> https://elixir.bootlin.com/linux/v6.8-rc2/source/Documentation/devicetre=
+e/bindings/bus/imx-weim.txt#L56
+>=20
+> Eh, ok, so after fast check WEIM looks like some memory interface bus,
+> so the bus bindings should be moved to memory-controllers and converted
+> to YAML. Then you add child node properties to own schema and reference
+> in mc-peripheral-props, which is then referenced in your binding here,
+> as I mentioned.
+>=20
+> Best regards,
+> Krzysztof
 
-diff --git a/arch/loongarch/vdso/Makefile b/arch/loongarch/vdso/Makefile
-index c74c9921304f..f597cd08a96b 100644
---- a/arch/loongarch/vdso/Makefile
-+++ b/arch/loongarch/vdso/Makefile
-@@ -2,6 +2,7 @@
- # Objects to go into the VDSO.
- 
- KASAN_SANITIZE := n
-+UBSAN_SANITIZE := n
- KCOV_INSTRUMENT := n
- 
- # Include the generic Makefile to check the built vdso.
--- 
-2.34.1
+Thank you for pointing that out, mc-peripheral-props.yaml seems to be
+exactly what I was looking for.
 
+Regards,
+Charles
 
