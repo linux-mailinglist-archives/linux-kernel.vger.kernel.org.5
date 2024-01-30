@@ -1,121 +1,121 @@
-Return-Path: <linux-kernel+bounces-44612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF913842508
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:36:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1472784250C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:38:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 706371F26F96
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:36:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0B4DB23B5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:38:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45FA86A032;
-	Tue, 30 Jan 2024 12:35:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84CDE6A032;
+	Tue, 30 Jan 2024 12:37:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b="Z6bu652y"
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="hYzYuHIU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 529EF45BE7
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 12:35:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC4146A00B
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 12:37:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706618155; cv=none; b=MEkYwr7DeGUpfCSSxo+P6xUNROXIz39YpeCaIQl5aBGH5CKmH11UE3QziPIAeBnQ19NRTeTddXrhdFFCOa9tAShp2cnXsRI3Wg5teIXlgM+7kPsxoposm44Ts8gEk2kA2WWOVwgSXlzT6Hzp4YxwqfS232qWDTRio9hvFHTaQYk=
+	t=1706618274; cv=none; b=QkVzreSum/VjNuciU4+32zLnD/UBlltDGTHpL2x60z3bQowIV3nAEiXg8bf+4Foltx79+0epvRmkqUuhS5uTIlaNkebDX/gsg7YTuK0uMiGfoBVxADBQRJoqkUppn6oRhihakjLjvIVxZkM5iLPpx50BMH4UWpqdPeXIzn9OWnw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706618155; c=relaxed/simple;
-	bh=Jm2FDGHXPVRHJOF8piPCWJ0CqfEu1McE3XNfHaO8bUU=;
+	s=arc-20240116; t=1706618274; c=relaxed/simple;
+	bh=6IHRkEmE4K1gcHHdKvlNY7t2E1DSF1/hzSyoIXXO6/U=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KpmSdJk8LdpwwMVKLLN5LjBpm8CAO/u1PcybFvjAAgBF1IcFQVQ5qZx/Li9mkRB5dwb34JfIR5ZbR0Xs1G2ROxKfj4p8iqMitLzMrVhxb7X05S0Q8eQSUl3SqzE1ij6n1HNRirPsKvp4tgMF0Yj5YhfCGz/BZw1GDD2EFYPgvAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com; spf=pass smtp.mailfrom=9elements.com; dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b=Z6bu652y; arc=none smtp.client-ip=209.85.215.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=9elements.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5ceb3fe708eso2266404a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 04:35:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1706618154; x=1707222954; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jm2FDGHXPVRHJOF8piPCWJ0CqfEu1McE3XNfHaO8bUU=;
-        b=Z6bu652yHBhhXOTfT6Wvz5u6tJn6ZambO1VRxlZ13o218Fq6+nJ/hDO52WkGU11AIS
-         T+1it4IkayEjltyHJQJVh/XVrhDAAQVw8HVs/pgYISClpBexfktEVhxa2XsgiD93EGHK
-         KRN4s5aAVdroOMIywhHpAeZ3z7eYeb45A3zgTrSnE/IbD8LJW6U0ous2b5HL7O2+CbZv
-         SWniBDS4xzvjG6E7av5cDN2e/DJ9hrhnCl3/7Bg3RH+kQ9oZcr82Z5W2u0jWEtSShO/t
-         3rO5QbWTqsGGw8BpBzBkb/bfqmuxmPOHcOZ410817QCyeTQVF3WdouR5CFgoZiyO4Syc
-         iV4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706618154; x=1707222954;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Jm2FDGHXPVRHJOF8piPCWJ0CqfEu1McE3XNfHaO8bUU=;
-        b=IdkTfHOTNXBIspdvY2Fbs9ts+/JzAF2M07KxSPVcvjJ2iZgg2dSiZgZLQw4knndWTg
-         x2dY7asdXBWR5ng7kayPZ0zrUJdifWcHpLoswqNpn7SALDnvn6VqybyfNAXQkMdevESb
-         b9CT4PyYssWos47vbDyIgcuqdc++/9yX2Z+c1EBey4HebrRaG7R78w1KcMs96mpXxRJw
-         H/+aTe7Mnekmwl6borfUpzBPGLtIrXCqm49DCYEoXSA1/Yee9amYrpErPJbs94HCR+Sw
-         kteANzVePkr8ucK9ZftyjKyYd4zjUyQjT2dk153rYaIDBP7/xJTWk+CwRusgXM6aVDsJ
-         cwnw==
-X-Gm-Message-State: AOJu0YxeYy/76hWNRg+trrGQ/tCD030/oaP7/is9kQUlnGpE1KWcmkR9
-	LIvt0WXY2WVIqGbmSBP5GBPmxle0F6+zF9DcJaZ5M62FJBasw+jcmSiQHbBREIPDEUqWrOENN6x
-	rMbCRFD2Ik3tM/cMnqM7xaGVReXJ65Msou6kiJQ==
-X-Google-Smtp-Source: AGHT+IGTntxKoODjjTYzwLT4wkEHukDXHu/Nu8uelZIezqzzyxOclRiJPwjXhhWa15k0cE0hIoEazKVknNcv9YOqK+Y=
-X-Received: by 2002:a17:90a:ac0d:b0:294:1261:6412 with SMTP id
- o13-20020a17090aac0d00b0029412616412mr5245189pjq.9.1706618153744; Tue, 30 Jan
- 2024 04:35:53 -0800 (PST)
+	 To:Cc:Content-Type; b=bnWzjJ+bguzv2Bjc9PXaYuBoiCrLJp4y3j6+AH/ezUenyLabDrNjA/tEa+CjWDNtU4jYIYJQ2rpdJbaEUxO/ka3Q4Rmm9XvD46w+/mm2ZIRt2DBDIBL0SMAzbi/RvHAlqC+9nl6gUUsVyq6qVqsOkl0fRV5ClGss+K6JZ/Iqj/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=hYzYuHIU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0883AC433C7
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 12:37:53 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="hYzYuHIU"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+	t=1706618272;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6IHRkEmE4K1gcHHdKvlNY7t2E1DSF1/hzSyoIXXO6/U=;
+	b=hYzYuHIUipaBQUDTXnXawPwvPm7JYdqZN9UUMxYF7dafjApyRFLXN+TnsR3e8S3jarLqCZ
+	JRXdrEv5O/02H7JGXarvzMZH/IVkXva4XwktDMP4QK+eowuQ/MmV1ASPPT/7n3SQhr3oUN
+	l/Jlx9+iWkHwXWWqyqQ6jDHIPdyD++g=
+Received: 
+	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 57bcf050 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO)
+	for <linux-kernel@vger.kernel.org>;
+	Tue, 30 Jan 2024 12:37:52 +0000 (UTC)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-5ffb07bed9bso34293567b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 04:37:51 -0800 (PST)
+X-Gm-Message-State: AOJu0YxcSaTjnVKFZILA4hDVyNd4hPWCKnNZkjSkd4T4wvUUPMW7/4qk
+	UJcwjpVOqyUZ30nmDPCd9dW45siwHPsUnnNjZrzEIg21eqdKSk9S2+PdmvdEQnDh7Y+3mFNLh3z
+	lIq1oZkTptAYWEdcT5aUHBkatWf8=
+X-Google-Smtp-Source: AGHT+IGpW1R6n9OB/RMM2BkjSFsTFy6GK1jwie10aznulWsl553h+j3LheE0aS6i4WnG/IJvNzQca9ThJE4adCkvKUc=
+X-Received: by 2002:a0d:f4c7:0:b0:600:adb:99fd with SMTP id
+ d190-20020a0df4c7000000b006000adb99fdmr5798960ywf.43.1706618270864; Tue, 30
+ Jan 2024 04:37:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130120807.460335-1-naresh.solanki@9elements.com>
- <b305291e-199d-4a0b-b24e-09910f1eed37@linaro.org> <CABqG17in2+0eHMRBvyunWKizgSBpYPq+CGsMO7FQo13pApPvaw@mail.gmail.com>
- <021f3f6f-0aa9-41c2-a220-b1e6efad2880@linaro.org>
-In-Reply-To: <021f3f6f-0aa9-41c2-a220-b1e6efad2880@linaro.org>
-From: Naresh Solanki <naresh.solanki@9elements.com>
-Date: Tue, 30 Jan 2024 18:05:43 +0530
-Message-ID: <CABqG17jKri5DL4mTpf-DqueyW28rFk_XpxF3M1gauxYEBvMv-A@mail.gmail.com>
-Subject: Re: [PATCH v2] dt-bindings: pinctrl: cy8x95x0: Minor fix & update
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Patrick Rudolph <patrick.rudolph@9elements.com>, mazziesaccount@gmail.com, 
-	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+References: <20240130083007.1876787-1-kirill.shutemov@linux.intel.com> <20240130083007.1876787-2-kirill.shutemov@linux.intel.com>
+In-Reply-To: <20240130083007.1876787-2-kirill.shutemov@linux.intel.com>
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date: Tue, 30 Jan 2024 13:37:38 +0100
+X-Gmail-Original-Message-ID: <CAHmME9qsfOdOEHHw_MOBmt6YAtncbbqP9LPK2dRjuOp1CrHzRA@mail.gmail.com>
+Message-ID: <CAHmME9qsfOdOEHHw_MOBmt6YAtncbbqP9LPK2dRjuOp1CrHzRA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] x86/random: Issue a warning if RDRAND or RDSEED fails
+To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, 
+	"Theodore Ts'o" <tytso@mit.edu>, 
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, 
+	Elena Reshetova <elena.reshetova@intel.com>, Jun Nakajima <jun.nakajima@intel.com>, 
+	Tom Lendacky <thomas.lendacky@amd.com>, "Kalra, Ashish" <ashish.kalra@amd.com>, 
+	Sean Christopherson <seanjc@google.com>, linux-coco@lists.linux.dev, 
 	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Krzysztof,
+Hi Kirill,
 
+Picking up from my last email on patch 1/2:
 
-On Tue, 30 Jan 2024 at 18:01, Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
+On Tue, Jan 30, 2024 at 9:30=E2=80=AFAM Kirill A. Shutemov
+<kirill.shutemov@linux.intel.com> wrote:
+> RDRAND and RDSEED instructions rarely fail. Ten retries should be
+> sufficient to account for occasional failures.
 >
-> On 30/01/2024 13:26, Naresh Solanki wrote:
-> > Hi Krzysztof,
-> >
-> > On Tue, 30 Jan 2024 at 17:49, Krzysztof Kozlowski
-> > <krzysztof.kozlowski@linaro.org> wrote:
-> >>
-> >> On 30/01/2024 13:08, Naresh Solanki wrote:
-> >>> Update maxItems to 60 for gpio-reserved-ranges to allow multiple gpio
-> >>> reserved ranges.
-> >>> Add input-enable property to allow configuring a pin as input.
-> >>> Rearrange allOf
-> >>
-> >> Why?
-> > allOf is aligned with other implementations.
->
-> Which ones? example-schema and other implementations have it in
-> different place. If you align some parts of the code, please align to
-> match the correct code, not other incorrect. How to find it?
-> example-schema is the reference, recent commits are also sometimes good
-> indication.
-Yes your right. Will align with example-schema. Thanks.
+> If the instruction fails more than ten times, it is likely that the
+> hardware is broken or someone is attempting to exceed the rate at which
+> the random number generator hardware can provide random numbers.
 
-Regards,
-Naresh
->
-> Best regards,
-> Krzysztof
->
+You're the Intel employee so you can find out about this with much
+more assurance than me, but I understand the sentence above to be _way
+more_ true for RDRAND than for RDSEED. If your informed opinion is,
+"RDRAND failing can only be due to totally broken hardware" then a
+WARN_ON seems like an appropriate solution, consistent with what other
+drivers do for totally broken hardware. I'm less convinced that this
+is the case also for RDSEED, but you know better than me.
+
+However, there's one potentially concerning aspect to consider: if the
+statement is "RDRAND only fails when the hardware fails", that's fine,
+but if the statement is "RDRAND only fails when the hardware fails or
+a user hammers on RDRAND in a busy loop," then this seems like a
+potential DoS vector from userspace, since RDRAND is not a privileged
+instruction. Unless there's different pools and rate limiting and
+hardware and such depending on which ring the instruction is called
+from? But I've never read about that. What's your feeling on this
+concern?
+
+And if the DoS thing _is_ a concern, and the use case for this WARN_ON
+in the first place is the trusted computing scenario, so we basically
+only care about early boot, then one addendum would be to only warn if
+we're in early boot, which would work because seeding via RDRAND is
+attempted pretty early on in init.c.
+
+Jason
 
