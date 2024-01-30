@@ -1,121 +1,163 @@
-Return-Path: <linux-kernel+bounces-45018-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45017-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19C17842A83
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:10:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 054A5842A7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:10:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F3F4B25727
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:10:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 705DA1F2105E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:10:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8C8B129A8F;
-	Tue, 30 Jan 2024 17:10:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAD2F1292F0;
+	Tue, 30 Jan 2024 17:09:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="J+6Fj07r"
-Received: from mout.web.de (mout.web.de [217.72.192.78])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wKkhS5YE"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8FD967A0F;
-	Tue, 30 Jan 2024 17:10:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E25A1292D0
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 17:09:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706634626; cv=none; b=YIebvrXXZDEHyDiA6qnYqz89RCmEL8vmPsAWmxNLfnxHbZ45N/LfB118o/5a0MLYpqI2rRaFWsbg3M6wVFW5OjY6q0VqaFXBevO0U3X/qcHxdkoK22UMFp48WJ010pawYKzRQWjw7rzu+Ba15ps1p5JnMt43O/2421z1rFfW8VU=
+	t=1706634590; cv=none; b=ED7EvFayV1dRZcVIV/kvKmPwPzPR6+CXuMY1mZGAOKwnRr3ZU+3rEvtgaNRxDEmf/QD3vqjnLEkR4z4809mzhCGLNeMmeoN7Tn9A3jW6Lt2mFkZtbWO5BZUweq15SvjA2IDw9Sg91bJ0hnUPWc00tDwJMxSJNmlIBQnBb2zvdtU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706634626; c=relaxed/simple;
-	bh=QOE3n4Szn+LSvifyAKQARBkvfKb6ykLiCedZCr70OAc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dG+Aih0qDVjW1iL1Bv6pIQRkW70fyrdbq6oSkKxFehIPDWy5rIUiu5/IIvRpkbg5+2m4/OIeKm0u3FetPhX+5cPwedFZetqxOOlX9PO4irqfewK7jun3swJn3QefjohsMqiPuc7vwACtGknJjIExMj1bWHRY8tcgB3uF+l/KiV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=J+6Fj07r; arc=none smtp.client-ip=217.72.192.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1706634579; x=1707239379; i=markus.elfring@web.de;
-	bh=QOE3n4Szn+LSvifyAKQARBkvfKb6ykLiCedZCr70OAc=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=J+6Fj07r4h5QMBXDL3yWwpiIA4YuvymFHWYwCxF/fzliYafXYoOq3aQtKLmhjf0D
-	 bqX39felXEEv+IP0w3LMd51AMFBFbMm68ZYjTA4rFJ/Y+bIkojaWxHgbH0b1gsmBV
-	 4FMCqe1u0IeT84V+o0nPlPU1zn79Y0R2Aljqwqd1K0UQSbNT07Ns4FJx8G1gcVJAr
-	 ZYgrZnZAbW5LhqBB60wsFsQ3NUH2wEkJ+HXdM2l1tpoxjgPseDdcFQPDQXnwVPXNx
-	 e1YyzasYf+LFyKbvYztTq2wCkfJXpQyuUgCDqgndpNFtIJB4QQ7uilxtfgHmE+ORX
-	 1OnoxGHdYQBpRyCGHQ==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.81.95]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MPrLN-1riQNs2kRX-00N4Bk; Tue, 30
- Jan 2024 18:09:39 +0100
-Message-ID: <e760bd1b-30bf-489f-b745-128d05397feb@web.de>
-Date: Tue, 30 Jan 2024 18:09:14 +0100
+	s=arc-20240116; t=1706634590; c=relaxed/simple;
+	bh=ozTRL504Xs+y38dN7hpmz9/MkdUYy3m28oZBq7+GDso=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=hnHYw/RsfdIddm978vjAKNN5etY7J8+S0nX9uePf2DuOPmnvg81uusa12JN4MgOdOtRF+vmg9CyYlElz3thcVcP1OvsCrys9UI9Yb50PNwYTUKmzighjH2r1AV9/Ziy6n834QZNcq16rq855iSl3f+lulhtpJqFsDpcg2XpyyT8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wKkhS5YE; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6b267bf11so238469276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:09:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706634586; x=1707239386; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3gUAiVWxsdrX9MXtJSqjLmwRv/f/RgRmiC76ruk/jsk=;
+        b=wKkhS5YEBpDt2vlodWszox39LdIEj/oQawgXls48TNYPNr2H3xLWYxya9j9/nuabio
+         DlCnL00V2utLyUp0KD7KBriB2PIauPUTMJD1zIC2B1hHHlCwWoYUnuAruGudf77YNdJp
+         FFXBZ0zwIhIQY51K/8d1GrHwRaG9PIipGkMCV46ZjJfICXxJwgTPTH/wyFAYHEqlhttu
+         FuGm7sc4MkxLhj/fUDAFAPbwQMLfEEnZDRofI/PC+jCfCsO62vIMCQi4fKnGofN4c1Vw
+         0VE5CjEc6/h8BJI82bIrunv8c0JCyCZNB72XqjjVI/hzpOLma3a+94OCROr92xed2qOM
+         pjLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706634586; x=1707239386;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3gUAiVWxsdrX9MXtJSqjLmwRv/f/RgRmiC76ruk/jsk=;
+        b=O+8uyKSv6QE0yi0QgDKCDTD4hBJkMM0ZrF+8NrMUt9loYfLsHF3rOwDFwhQbMUK4WK
+         LPcKsqTmukP/bDsAUNazJTThwlRm0cEdJkQg/3Flm+hxunRWVDFos+Vci3ObJ/da0Di8
+         hFuqF4UdYWLlOkmPHkl6uKGHOjOlEYp7HEiOCkbVn/XMKA8HiluVrh0W4EkGezQLV7JF
+         FdLa1dwFiPxmkfcTm/9ucAcPGG8cBPmk9Np+ZRcuLzy3yT69mycAg57mMLaT22134E0C
+         /GCCNhdL+tujUFw8HEIWg6OnXU/rS4gEpvUv0Vy9BwiyfK0ztzQQ2xXxa6MC+QbGDKRn
+         EjVw==
+X-Gm-Message-State: AOJu0YzH6vSm5Qh50vAX/TI+wXXWqk+wTSIMplQrfa1pdzmLU8MnMh79
+	NsxExwchshY9Fnuz8tzJq6gwF8sd9v3Dw4jlmgc7CcyW8qRMgJcng4E2ne5kioKV5pUchju9kP9
+	afC4mmIgdfXAcRZf9HQ==
+X-Google-Smtp-Source: AGHT+IGSAt/cicvuYR+6VzSMEHyc1YMNmMpNIIn+3acHabrN/cjKOm187soaitREtOeSDbJEryRDFwsxRAXg741d
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a05:6902:e05:b0:dc6:207d:7797 with SMTP
+ id df5-20020a0569020e0500b00dc6207d7797mr458648ybb.3.1706634586391; Tue, 30
+ Jan 2024 09:09:46 -0800 (PST)
+Date: Tue, 30 Jan 2024 17:09:44 +0000
+In-Reply-To: <2024012948-hungry-tibia-5345@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: fpga: dfl: fme: Return directly after a failed devm_kasprintf()
- call in fme_perf_pmu_register()
-To: Dan Carpenter <dan.carpenter@linaro.org>, linux-fpga@vger.kernel.org,
- kernel-janitors@vger.kernel.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Moritz Fischer <mdf@kernel.org>, Tom Rix <trix@redhat.com>,
- Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Kunwu Chan <chentao@kylinos.cn>
-References: <d94376b6-12e8-45bb-a9be-4887bb316d35@web.de>
- <b7e2e9d1-5e3e-44b2-a4b7-327d334b776d@moroto.mountain>
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <b7e2e9d1-5e3e-44b2-a4b7-327d334b776d@moroto.mountain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:s0VR/FQjS8xqSh6FSezEsTEJZaJ+Kbc9lwjc4qySvtM5vk5B9d5
- 1A86barTpJ5n2bgZDN5MoVCNBa80vBQkveD0xtfiR8zwKgJK17Fbiykcsn92243jpl5F1Sa
- yKrRaZrlnO42TK+fXz8ihIQJc4X+NNA8iDTgt+nMs9/N19uQrJ2SwdTalhBVDuYNLgtKltC
- b67oz431eomL1htQGsTZA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:0Ig/6CYNJlQ=;YAvJJnUV3C50hnqV3RKw+y4p40z
- HRPxUrOm3NJcdxxv7ApPGPAiGPdYFa0TTdcXTYuT5M6ULSPUCcAdxaqLgxfOQ0YzyOh5NVpdk
- H7LqAPx3y9n3IUWIwhjJ5AofSXgatsrCYpUvZguDkQyhakpEtbiQJ8P1CN1KT721GpgRBs0hq
- HbB2mElLGM9EDcKw39u9UJyF3K+pknXdh6nh67D1O7bgsk0/HlPFjvnZY9FA6FgQg0M8QhsLt
- qPYzcvIwKOu0xzX6fcu15F3VlUK2Y2gut0MsuNGj7u2GIfgRjN056xO9sApZPoFen+T3MUgB4
- 70YdYfnJ+dq0q1pmfNjn0Dzh9Cc6QVGav3hYGfl5PtK/3nZ4KH/LiqZNb4zXLksOCOcanfQL+
- owOBCvM7lPv3gT7NP5cQ+DkeNoM32nRQOowc2LPzLuJjwf5lxC3zh6HnIH9oY+xhOSEwBxcIm
- rEOrosjz/LVz1Njifyoqayk01llh8mR5eXS1J6IjCSFUM3WbhlXi9nX3hh2YVpnsOpj7Ri/tT
- 7+ZD2L3VN8L5muWAcFWoaiS810RbMWNwtOeh7q7kR1cVb5wiFaEnhoRVBPnr18b6hoSgO+Tlm
- 6IZn/fwhMPi9lGyAMMHJMERQWFbMZbImjOgEyrGcVvDO8S3WN8x3YMXhqewLX5SUG5TLSnht7
- hi5fe+wCBTod7q+ft761AHmHUlO1b8Jec+vubhCQukeNunFE73Y0yS/ufAh1liv/XeoD4fjYd
- Y2tTa26NoK7l2OhHIIUyJ1X3bvg28A1bH41xx1vGpVTLwLejIHe2rvAkN5QmicoKkAwOQZpbT
- oL2IPYYLf9peo0nWNXD7M3Egz1Dc5i1tQkpyiKlv8AgTQutwpW0lpn5E++rrixJiiplUXNCdB
- rR/Se+9eXfFZdcJDM9Bdg54bZ3sGtG15+AAq4Mc2WISzEJPrAceGnMgufWE6O/Zqb0adxZYPJ
- hCOolA==
+Mime-Version: 1.0
+References: <20240129224204.1812062-1-souravpanda@google.com>
+ <20240129224204.1812062-2-souravpanda@google.com> <2024012948-hungry-tibia-5345@gregkh>
+Message-ID: <ZbktWLMYBqNVfFZc@google.com>
+Subject: Re: [PATCH v7 1/1] mm: report per-page metadata information
+From: Yosry Ahmed <yosryahmed@google.com>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Sourav Panda <souravpanda@google.com>, corbet@lwn.net, rafael@kernel.org, 
+	akpm@linux-foundation.org, mike.kravetz@oracle.com, muchun.song@linux.dev, 
+	rppt@kernel.org, david@redhat.com, rdunlap@infradead.org, 
+	chenlinxuan@uniontech.com, yang.yang29@zte.com.cn, tomas.mudrunka@gmail.com, 
+	bhelgaas@google.com, ivan@cloudflare.com, pasha.tatashin@soleen.com, 
+	hannes@cmpxchg.org, shakeelb@google.com, kirill.shutemov@linux.intel.com, 
+	wangkefeng.wang@huawei.com, adobriyan@gmail.com, vbabka@suse.cz, 
+	Liam.Howlett@oracle.com, surenb@google.com, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, linux-mm@kvack.org, 
+	willy@infradead.org, weixugc@google.com
+Content-Type: text/plain; charset="us-ascii"
 
->> Thus return directly after a failed devm_kasprintf() call.
->>
->> Fixes: 724142f8c42a7 ("fpga: dfl: fme: add performance reporting suppor=
-t")
->
-> This basically doesn't affect runtime because perf_pmu_register() checks
-> for NULL so no need for a Fixes tag.
+On Mon, Jan 29, 2024 at 02:52:23PM -0800, Greg KH wrote:
+> On Mon, Jan 29, 2024 at 02:42:04PM -0800, Sourav Panda wrote:
+> > Adds two new per-node fields, namely nr_page_metadata and
+> > nr_page_metadata_boot, to /sys/devices/system/node/nodeN/vmstat
+> > and a global PageMetadata field to /proc/meminfo. This information can
+> > be used by users to see how much memory is being used by per-page
+> > metadata, which can vary depending on build configuration, machine
+> > architecture, and system use.
+> > 
+> > Per-page metadata is the amount of memory that Linux needs in order to
+> > manage memory at the page granularity. The majority of such memory is
+> > used by "struct page" and "page_ext" data structures. In contrast to
+> > most other memory consumption statistics, per-page metadata might not
+> > be included in MemTotal. For example, MemTotal does not include memblock
+> > allocations but includes buddy allocations. In this patch, exported
+> > field nr_page_metadata in /sys/devices/system/node/nodeN/vmstat would
+> > exclusively track buddy allocations while nr_page_metadata_boot would
+> > exclusively track memblock allocations. Furthermore, PageMetadata in
+> > /proc/meminfo would exclusively track buddy allocations allowing it to
+> > be compared against MemTotal.
+> > 
+> > This memory depends on build configurations, machine architectures, and
+> > the way system is used:
+> > 
+> > Build configuration may include extra fields into "struct page",
+> > and enable / disable "page_ext"
+> > Machine architecture defines base page sizes. For example 4K x86,
+> > 8K SPARC, 64K ARM64 (optionally), etc. The per-page metadata
+> > overhead is smaller on machines with larger page sizes.
+> > System use can change per-page overhead by using vmemmap
+> > optimizations with hugetlb pages, and emulated pmem devdax pages.
+> > Also, boot parameters can determine whether page_ext is needed
+> > to be allocated. This memory can be part of MemTotal or be outside
+> > MemTotal depending on whether the memory was hot-plugged, booted with,
+> > or hugetlb memory was returned back to the system.
+> > 
+> > Suggested-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+> > Signed-off-by: Sourav Panda <souravpanda@google.com>
+> > ---
+> >  Documentation/filesystems/proc.rst |  3 +++
+> >  fs/proc/meminfo.c                  |  4 ++++
+> >  include/linux/mmzone.h             |  4 ++++
+> >  include/linux/vmstat.h             |  4 ++++
+> >  mm/hugetlb_vmemmap.c               | 19 ++++++++++++++----
+> >  mm/mm_init.c                       |  3 +++
+> >  mm/page_alloc.c                    |  1 +
+> >  mm/page_ext.c                      | 32 +++++++++++++++++++++---------
+> >  mm/sparse-vmemmap.c                |  8 ++++++++
+> >  mm/sparse.c                        |  7 ++++++-
+> >  mm/vmstat.c                        | 26 +++++++++++++++++++++++-
+> >  11 files changed, 96 insertions(+), 15 deletions(-)
+> > 
+> > diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
+> > index 49ef12df631b..d5901d04e082 100644
+> > --- a/Documentation/filesystems/proc.rst
+> > +++ b/Documentation/filesystems/proc.rst
+> > @@ -993,6 +993,7 @@ Example output. You may not have all of these fields.
+> >      AnonPages:       4654780 kB
+> >      Mapped:           266244 kB
+> >      Shmem:              9976 kB
+> > +    PageMetadata:     513419 kB
+> >      KReclaimable:     517708 kB
+> >      Slab:             660044 kB
+> >      SReclaimable:     517708 kB
+> 
+> Why are you adding it to the middle of the file?  Are you sure the
+> userspace tools that parse this file today can handle an unknown field
+> here, and not just at the end of the file?
 
-I suggest to clarify this view a bit more also according to statements
-like the following.
-
-1. https://elixir.bootlin.com/linux/v6.8-rc2/source/kernel/events/core.c#L=
-11532
-   perf_pmu_register:
-   =E2=80=A6
-	pmu->name =3D name;
-   =E2=80=A6
-
-2. https://elixir.bootlin.com/linux/v6.8-rc2/source/kernel/events/core.c#L=
-11472
-   pmu_dev_alloc:
-   =E2=80=A6
-	ret =3D dev_set_name(pmu->dev, "%s", pmu->name);
-   =E2=80=A6
-
-
-Regards,
-Markus
+FWIW, looking at git blame for fs/proc/meminfo.c, it seems like people
+have generally been adding items where it makes sense semantically, not
+at the end of the file. So maybe that's okay for userspace tools.
 
