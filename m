@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-45114-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45112-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BDDE842BD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:34:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFB95842BD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:34:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DA3F1C23B8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:34:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F8E228614A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:34:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0B1B762C5;
-	Tue, 30 Jan 2024 18:34:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E819762DE;
+	Tue, 30 Jan 2024 18:34:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZQdKKw8w"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="N1P/12Gm"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EE13762D0
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 18:34:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51DB1762CE
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 18:33:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706639643; cv=none; b=nOc1xR6V6jJV9J11pGAA/s9YHwU555T/LJ/jSNVIZ4iDVrfKSR4K6a2RaL9QMv7zuFx5M7XjyEmL+14KCd3ek6pZw8blO8vsY2kO8N/eLSc5ihCWqG3eIJUzVHihUwqBf2xdXIZXHDRbqshD3BgMS4XuxW5drWefRy5eruv70Lc=
+	t=1706639641; cv=none; b=ptk0n2KCozO+eYd7r8IL3WqWvzTkx48XLywK/qlNQdlfpHu17MkIc3SCtj0K+ITxiuJqXgt1OUQBnQUqK5HZBwF/piZPGLH71btb2XwrqU80c2Wj7b5/6HyJiHXM1n2WyI9wHEw8UvS9eERgyOM13M++nFpIi2Pg+38R7rJzazA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706639643; c=relaxed/simple;
-	bh=Aa3cym5mjG1BHlHIUMCHX33rDI7Y6taSaQCcsrAKHSI=;
+	s=arc-20240116; t=1706639641; c=relaxed/simple;
+	bh=lL5qdWL2PB4mhrehemlKORG0nbLblNVPf8HOOqtCxN4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=H/P4sNRqsBTamz2Q4sMRw8Wew9pKIKsVuhEd3ejY+EZuxOj1Fsw5dba0lpCW08lGXF7+7S8OShSn7ULESCsGJFYs3uPThlLaPTvZ7C41E6K9jz0djspaw4XyPbfn8+RfRz5qYtuWhkiSqF+rx7Nl4fjeAEA0xCwkPKD1KUCKxho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZQdKKw8w; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=Pvp5F4qSWIcMqZYjSfYx3HEB8fvt21FcQrb+Kn/c0YlevCPCJFDEdFWaH7FVocs8+BT1Pl6DcOw9YklohtSGbDmkWMaAJCSvDh+iYEnlVzoxya0XWrLfu/jBwPZrf9R35/rbjyng7alyOJrgaRHdJTNOQ4g/BWc2CGAMc5U3ZrM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=N1P/12Gm; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706639640;
+	s=mimecast20190719; t=1706639639;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=2zEEimyOdTkcF6f/u66KBqEEbATKOuXf1jTOu6zU+Ug=;
-	b=ZQdKKw8ww81lmCy+fgFkxYo6IvIr2rPt4FOFP3e/6GjOOnFgALiYF58RQy6a51dJITqjs1
-	9V7U2rlqCjmgom7BZ1QkbBuWynBnAc4q35V6+zOoCVHhUPPuyxK2Mtz660HF0TaFQwr9p0
-	33M00qE5JTIIuB1QqySQH1617XtGGWY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-529-3y4lfYFJNYGkuFMrPlx6XQ-1; Tue, 30 Jan 2024 13:33:56 -0500
-X-MC-Unique: 3y4lfYFJNYGkuFMrPlx6XQ-1
+	bh=pPefEzI7IPB8Pl2sd/W5lhgO3NwL39dr5Md44erL9pY=;
+	b=N1P/12GmAJRt5gbJ9ND3JoCYoGaDo0gzkMhMI04MZRgeJ5r87TOq+ExnBxNAmy8jidFCUQ
+	QzCwjB54+lSilqtkEfnLKXERijSvkRoEVFhFppzOSLQ9DBX2SOPXo3d/pT8i3mqoGh/dMj
+	n4qe7jq2S1o0lTSmTz2PuNTkdIiV00s=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-661-ndeUQeKQNOqMBNfJxAS7pw-1; Tue,
+ 30 Jan 2024 13:33:57 -0500
+X-MC-Unique: ndeUQeKQNOqMBNfJxAS7pw-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8DA5710665A0;
-	Tue, 30 Jan 2024 18:33:56 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 091EA38562CA;
+	Tue, 30 Jan 2024 18:33:57 +0000 (UTC)
 Received: from llong.com (unknown [10.22.8.207])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 2B47040CD14D;
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 9BC2640CD14B;
 	Tue, 30 Jan 2024 18:33:56 +0000 (UTC)
 From: Waiman Long <longman@redhat.com>
 To: Tejun Heo <tj@kernel.org>,
@@ -62,9 +62,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Cestmir Kalina <ckalina@redhat.com>,
 	Alex Gladkov <agladkov@redhat.com>,
 	Waiman Long <longman@redhat.com>
-Subject: [RFC PATCH 1/3] workqueue: Skip __WQ_DESTROYING workqueues when updating global unbound cpumask
-Date: Tue, 30 Jan 2024 13:33:34 -0500
-Message-Id: <20240130183336.511948-2-longman@redhat.com>
+Subject: [RFC PATCH 2/3] workqueue: Break out __queue_work_rcu_locked() from __queue_work()
+Date: Tue, 30 Jan 2024 13:33:35 -0500
+Message-Id: <20240130183336.511948-3-longman@redhat.com>
 In-Reply-To: <20240130183336.511948-1-longman@redhat.com>
 References: <20240130183336.511948-1-longman@redhat.com>
 Precedence: bulk
@@ -76,27 +76,86 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-Skip updating workqueues with __WQ_DESTROYING bit set when updating
-global unbound cpumask to avoid unnecessary work and other complications.
+Break out the core __queue_work() code into a __queue_work_rcu_locked
+helper to be used by later patches.
+
+There is no functional change.
 
 Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- kernel/workqueue.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/workqueue.c | 46 ++++++++++++++++++++++++++--------------------
+ 1 file changed, 26 insertions(+), 20 deletions(-)
 
 diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 76e60faed892..350179382667 100644
+index 350179382667..98c741eb43af 100644
 --- a/kernel/workqueue.c
 +++ b/kernel/workqueue.c
-@@ -5784,7 +5784,7 @@ static int workqueue_apply_unbound_cpumask(const cpumask_var_t unbound_cpumask)
- 	lockdep_assert_held(&wq_pool_mutex);
+@@ -1702,32 +1702,14 @@ static int wq_select_unbound_cpu(int cpu)
+ 	return new_cpu;
+ }
  
- 	list_for_each_entry(wq, &workqueues, list) {
--		if (!(wq->flags & WQ_UNBOUND))
-+		if (!(wq->flags & WQ_UNBOUND) || (wq->flags & __WQ_DESTROYING))
- 			continue;
+-static void __queue_work(int cpu, struct workqueue_struct *wq,
+-			 struct work_struct *work)
++static void __queue_work_rcu_locked(int cpu, struct workqueue_struct *wq,
++				    struct work_struct *work)
+ {
+ 	struct pool_workqueue *pwq;
+ 	struct worker_pool *last_pool, *pool;
+ 	unsigned int work_flags;
+ 	unsigned int req_cpu = cpu;
  
- 		/* creating multiple pwqs breaks ordering guarantee */
+-	/*
+-	 * While a work item is PENDING && off queue, a task trying to
+-	 * steal the PENDING will busy-loop waiting for it to either get
+-	 * queued or lose PENDING.  Grabbing PENDING and queueing should
+-	 * happen with IRQ disabled.
+-	 */
+-	lockdep_assert_irqs_disabled();
+-
+-
+-	/*
+-	 * For a draining wq, only works from the same workqueue are
+-	 * allowed. The __WQ_DESTROYING helps to spot the issue that
+-	 * queues a new work item to a wq after destroy_workqueue(wq).
+-	 */
+-	if (unlikely(wq->flags & (__WQ_DESTROYING | __WQ_DRAINING) &&
+-		     WARN_ON_ONCE(!is_chained_work(wq))))
+-		return;
+-	rcu_read_lock();
+ retry:
+ 	/* pwq which will be used unless @work is executing elsewhere */
+ 	if (req_cpu == WORK_CPU_UNBOUND) {
+@@ -1808,6 +1790,30 @@ static void __queue_work(int cpu, struct workqueue_struct *wq,
+ 
+ out:
+ 	raw_spin_unlock(&pool->lock);
++}
++
++static void __queue_work(int cpu, struct workqueue_struct *wq,
++			 struct work_struct *work)
++{
++	/*
++	 * While a work item is PENDING && off queue, a task trying to
++	 * steal the PENDING will busy-loop waiting for it to either get
++	 * queued or lose PENDING.  Grabbing PENDING and queueing should
++	 * happen with IRQ disabled.
++	 */
++	lockdep_assert_irqs_disabled();
++
++	/*
++	 * For a draining wq, only works from the same workqueue are
++	 * allowed. The __WQ_DESTROYING helps to spot the issue that
++	 * queues a new work item to a wq after destroy_workqueue(wq).
++	 */
++	if (unlikely(wq->flags & (__WQ_DESTROYING | __WQ_DRAINING) &&
++		     WARN_ON_ONCE(!is_chained_work(wq))))
++		return;
++
++	rcu_read_lock();
++	__queue_work_rcu_locked(cpu, wq, work);
+ 	rcu_read_unlock();
+ }
+ 
 -- 
 2.39.3
 
