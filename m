@@ -1,72 +1,61 @@
-Return-Path: <linux-kernel+bounces-44219-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2720841EF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:13:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C75E841F89
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:31:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A0C51F22A76
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:13:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72764B2E969
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:17:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DB2F60B93;
-	Tue, 30 Jan 2024 09:12:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC70A605C1;
+	Tue, 30 Jan 2024 09:13:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jvCc+JWa"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gbt/b/Wl"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B643605B7
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:12:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 643B460241;
+	Tue, 30 Jan 2024 09:13:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.93
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706605951; cv=none; b=KcnGODJHA7osy89rghJO/knN0/in3AgOxreHNj6Hnl1Ml4npS+Cgv5EppjZdESyvOAgtYtpEnZy7DuMYaQQlnkXWdMqdaxEysxBnUT+XWPa5Ak+vRpMQ50dl8b0jDORCe6k+XKUU4D2paHUoRKMYL16PCMtFWLIGfo8K7ypdekY=
+	t=1706606016; cv=none; b=Az2HceFHfstJh0YQkiPs/UpYhPMqk5OvAfCt/TrUyv/SSFnkUQ5vdiTkXb3fyTd+DJSh5PTQShrdTe47w9egH/iOpDJRSKCfOVMmgpBHV3NcEJMu5YUoPDE3zaRR9oYjyYpJGPUXCZAOnvVZHGLfIKj+S/3AIYpEsKat33qZBm0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706605951; c=relaxed/simple;
-	bh=rKhHZGSb+Y6aNJ+cXifm6W5LIoIisj9pyI6bNCYAugc=;
+	s=arc-20240116; t=1706606016; c=relaxed/simple;
+	bh=Y4nDFYjUZfzurJ80YZ+gps4Y0inJ3LqS/yvK9HXgBPo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sKH3UyJUj4N3/ux8dDjGta5WIGJ+4uXDOC7MjRqHPmOp12e0MGzuoS42N12b1uABDn5CS3SQSh1+bAFCHz54ljPFFEN+rpPPnMTTyKCYBUFtvE/ONyFXUdmt1M1c9PRZnHGcn2eghD3/yEH3ROoH8qD+AJPWoqQfJUs9UvPayKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jvCc+JWa; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-55f1102b300so1989542a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:12:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706605948; x=1707210748; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dIk06W/m1toDs3ZlWZXYAsOHgljm2ZVOiVWudPYtTEg=;
-        b=jvCc+JWat5DDimHXr1Yowksm8Qho2qnuIVHpjEkrMg5msithX5x+h/8OnPKIReulG7
-         QzA+TEquRGYh5tFzqEhVgfhSerfu39i9qxdBj7hrYQMgeCfE8l2kBPL79c7HNxu31c95
-         wuDY2LiK/scSwAG+fNbF7oFr7DJRtc2Aru0l4rA/WfXnE8MZ0DQXT6s2Vq6Lgh0DUrvd
-         3QYLNHQmuq9kKPmNYi5g/5E2a/YuGrSV1uxPir24DbKCy9qkI47u+J3PflLYtLZaKyS9
-         V4JTnNgB4QGWKCDQUrXKK0AKAgiE9tXHJmAtISb26Zyz3x9opxTa0L63TOjGaysYwXX6
-         s08A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706605948; x=1707210748;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dIk06W/m1toDs3ZlWZXYAsOHgljm2ZVOiVWudPYtTEg=;
-        b=FuLZdX6ROI00RyG/CGMMni+VghnO7y7iUFWoDOkBd23iT8umbqC9Vi+HuqN/JUXIAT
-         0NRcLTsHdiBVb/aozuuN3nV/KKLvpXBXmKDMQKpyp8alkx5wWR6KNzAqf+al4OBb/2OC
-         JxJ7es1O1CpN+SGS78dsFG7IMOPFMtcUosM72ePzuXfMXPFPMnlXok8k+CiRPdIsyFAD
-         dajwLums3++t7IPStW5EWrAS9ZZ2UdARB4ECx9n+QAYmwCO4QTgTY7wkVy0y3oxNvJf4
-         ObPOn4x51MgWAPVmzsFNVsgdkIW8+F2t6fL7vfNm6JJuKoGfbEY2xpQAA9TyGKQJcRpa
-         oxUQ==
-X-Gm-Message-State: AOJu0Yz8LRoj2f/IsH4LW2ExN1o4ZrTLkczjRtiGBMzuAodrfuOm5pCc
-	CEEdR5hCl3CcuZZ61/6rirfBFPb1MKgmYjW7yEeqwUzmm3PO1cI/cX8U5DUkCno=
-X-Google-Smtp-Source: AGHT+IGyVMf2OkueT1e2jkuy8V6uo08rZuNEronGpcRFfv+SAzH/npoMxojClmBxEorK0G3C/NJ1Jg==
-X-Received: by 2002:a17:906:e53:b0:a31:1b72:9efd with SMTP id q19-20020a1709060e5300b00a311b729efdmr6023698eji.66.1706605948445;
-        Tue, 30 Jan 2024 01:12:28 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id ss6-20020a170907c00600b00a3535b76c42sm3958064ejc.15.2024.01.30.01.12.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Jan 2024 01:12:28 -0800 (PST)
-Message-ID: <338efca2-d1fe-4adb-8275-5f570ab445d8@linaro.org>
-Date: Tue, 30 Jan 2024 09:12:26 +0000
+	 In-Reply-To:Content-Type; b=CdrHSGp4w5RybjEhaBREThxQ29w4WawOWYR5OyyepH5YrxsFhRjcThpC9BHMN53vuTwEXoCXaU4Eo3YJKzsHmZmaAdzz2Uw0z8+SGmXe1eFz0BmQTQ7jjfWhcUs389ekPCTdmhvPOYzMcS5cpxlPGzkwikd8dXTSOiMp94Nym+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gbt/b/Wl; arc=none smtp.client-ip=192.55.52.93
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706606015; x=1738142015;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Y4nDFYjUZfzurJ80YZ+gps4Y0inJ3LqS/yvK9HXgBPo=;
+  b=gbt/b/WloVmYr9ROvIJHlmxfeeGLge8uZR6emF/tk4s/JJbM49xKk7kx
+   /kxoKkmcgD40Tn04tuwLq21dkZM+64wDqNL6Sg3VG59ASdhZXAe+kOnnz
+   GcghLZsuqsvb3snh6LpH012HnaICGJDx4SRgjbDrl+f4xD08P0aKhLw5f
+   LFTJZvLLmgTrbgoc3oAUKCWlS9i8SMi1MwcSn9QX0w9WxxDIMEvCa+ZvF
+   LASI8eLKtacIOdkfAQhLknCAvRMumbO8DlY74BGl+Y5BbS7a+6VKpVdqR
+   IFNZaabwQTSRy5Qm087K00xpegnAOXG2w+oZkB798eyFtqsVjBdbl2x0G
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="400356512"
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="400356512"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 01:13:34 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="858412928"
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="858412928"
+Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.249.174.131]) ([10.249.174.131])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 01:13:31 -0800
+Message-ID: <56a9971e-7015-4584-89c7-80056b7ec547@linux.intel.com>
+Date: Tue, 30 Jan 2024 17:13:29 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,80 +63,129 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 7/7] arm64: dts: exynos: gs101: enable i2c bus 12 on
- gs101-oriole
-Content-Language: en-US
-To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
- peter.griffin@linaro.org, mturquette@baylibre.com, sboyd@kernel.org,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@android.com,
- willmcvicker@google.com, semen.protsenko@linaro.org,
- alim.akhtar@samsung.com, s.nawrocki@samsung.com, tomasz.figa@gmail.com,
- cw00.choi@samsung.com, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org
-References: <20240129174703.1175426-1-andre.draszik@linaro.org>
- <20240129174703.1175426-8-andre.draszik@linaro.org>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20240129174703.1175426-8-andre.draszik@linaro.org>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH v12 5/5] iommu/vt-d: improve ITE fault handling if target
+ device isn't present
+To: "Tian, Kevin" <kevin.tian@intel.com>, "Liu, Yi L" <yi.l.liu@intel.com>,
+ "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+ "bhelgaas@google.com" <bhelgaas@google.com>,
+ "robin.murphy@arm.com" <robin.murphy@arm.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>
+Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "will@kernel.org" <will@kernel.org>, "lukas@wunner.de" <lukas@wunner.de>,
+ "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
+References: <20240129034924.817005-1-haifeng.zhao@linux.intel.com>
+ <20240129034924.817005-6-haifeng.zhao@linux.intel.com>
+ <BN9PR11MB52761CC3E5F08D4B7BAD7F918C7E2@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <7adec292-9d38-41ab-a982-bd840b24f3ab@intel.com>
+ <0aee453c-e98f-4b72-8107-31d4731abcdb@linux.intel.com>
+ <BN9PR11MB5276D3372267CE9246170FA78C7D2@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <500c4582-ec05-4a9e-9b68-d2ae19aed49b@linux.intel.com>
+ <BN9PR11MB527674172BBA9BDC49A004D08C7D2@BN9PR11MB5276.namprd11.prod.outlook.com>
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+In-Reply-To: <BN9PR11MB527674172BBA9BDC49A004D08C7D2@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
+On 1/30/2024 4:43 PM, Tian, Kevin wrote:
+>> From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+>> Sent: Tuesday, January 30, 2024 4:16 PM
+>>
+>> On 1/30/2024 2:22 PM, Tian, Kevin wrote:
+>>> Here we need consider two situations.
+>>>
+>>> One is that the device is not bound to a driver or bound to a driver
+>>> which doesn't do active work to the device when it's removed. In
+>>> that case one may observe the timeout situation only in the removal
+>>> path as the stack dump in your patch02 shows.
+>> When iommu_bus_notifier() got called for hotplug removal cases to
+>> flush devTLB (ATS invalidation), driver was already unloaded.
+>> whatever safe removal or surprise removal. so in theory no active
+>> driver working there.
+>>
+>> pciehp_ist()
+>>    pciehp_disable_slot()
+>>     remove_board()
+>>      pciehp_unconfigure_device()
+>>       pci_stop_and_remove_bus_device()
+>>        pci_stop_bus_device()--->here unload driver
+>>        pci_remove_bus_device()->here qi_flush_dev_iotlb() got called.
+> yes, so patch02 can fix this case.
+>
+>>> patch02 can fix that case by checking whether the device is present
+>>> to skip sending the invalidation requests. So the logic being discussed
+>>> here doesn't matter.
+>>>
+>>> The 2nd situation is more tricky. The device might be bound to
+>>> a driver which is doing active work to the device with in-fly
+>>> ATS invalidation requests. In this case in-fly requests must be aborted
+>>> before the driver can be detached from the removed device. Conceptually
+>>> a device is removed from the bus only after its driver is detached.
+>> Some tricky situations:
+>>
+>> 1. The ATS invalidation request is issued from driver driver, while it is
+>> in handling, device is removed. this momment, the device instance still
+>> exists in the bus list. yes, if searching it by BDF, could get it.
+> it's searchable between the point where the device is removed and the
+> point where the driver is unloaded:
+>
+>          CPU0                                CPU1
+>    (Driver is active)                    (pciehp handler)
+>    qi_submit_sync()                      pciehp_ist()
+>      ...                                   ...
+>      loop for completion() {               pciehp_unconfigure_device()
+>        ...                                   pci_dev_set_disconnected()
+>        if (ITE) {                            ...
+>          //find pci_dev from sid             pci_remove_bus_device()
+>          if (pci_dev_is_connected())           device_del()
+>            break;                                bus_remove_device()
+>        }                                           device_remove_driver()
 
-On 1/29/24 17:46, André Draszik wrote:
-> This bus has three USB-related devices attached to it:
->     0x25: Maxim 77759 Type-C port controller
->     0x35: Maxim 20339EWB Surge protection IC
->     0x36: Maxim 77759 Fuel gauge
->     0x57: NXP PCA9468 Battery charger
->     0x66: Maxim 77759 PMIC
->     0x69: Maxim 77759 Charger
-> where the Maxim 77759 has multiple i2c slave addresses.
-> 
-> These don't have (upstream) Linux drivers yet, but nevertheless we can
-> enable the bus so as to allow working on them (and to make i2cdetect /
-> i2cdump / etc. work).
-> 
-> Signed-off-by: André Draszik <andre.draszik@linaro.org>
-> Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
+If the device was hot plugin or re-scanned, the device has a PCI_DEV_ADDED flag,
+if so the driver unloading work isn't defered to the tail of device_del(), it
+is unloaded before pci_remove_bus_device()->device_del(), in pci_stop_dev
 
-Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-> 
-> ---
-> v2:
-> * add short summary of devices attached to this bus & add TODO
-> * collect Reviewed-by: tags
-> ---
->  arch/arm64/boot/dts/exynos/google/gs101-oriole.dts | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts b/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
-> index cb4d17339b6b..6ccade2c8cb4 100644
-> --- a/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
-> +++ b/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
-> @@ -72,6 +72,11 @@ eeprom: eeprom@50 {
->  	};
->  };
->  
-> +&hsi2c_12 {
-> +	status = "okay";
-> +	/* TODO: add the devices once drivers exist */
-> +};
-> +
->  &pinctrl_far_alive {
->  	key_voldown: key-voldown-pins {
->  		samsung,pins = "gpa7-3";
-> @@ -113,6 +118,11 @@ &usi8 {
->  	status = "okay";
->  };
->  
-> +&usi12 {
-> +	samsung,mode = <USI_V2_I2C>;
-> +	status = "okay";
-> +};
-> +
->  &watchdog_cl0 {
->  	timeout-sec = <30>;
->  	status = "okay";
+pci_stop_bus_device()
+  pci_stop_dev()
+  {
+   if (pci_dev_is_added(dev)) {
+       device_release_driver(&dev->dev);
+  }
+
+So the interval the device is searchable, only applied to those devices
+not hot plugged, or never be scanned.
+
+
+Thanks,
+Ethan
+
+>        ..                                            //wait for driver unload
+>      }
+>      ..
+>      return;
+>
+>                                                    BUS_NOTIFY_REMOVED_DEVICE;
+>                                                list_del(&dev->bus_list);
+>
+> (I didn’t draw the full calling stack on the right hand side)
+
+>
+>> 2. The ATS invalidation request is issued from iommu_bus_notifier()
+>> for surprise removal reason, as shown in above calltrace, device was
+>> already removed from bus list. if searching it by BDF, return NULL.
+>>
+>> 3. The ATS invlidation request is issued from iommu_bus_notifier()
+>> for safe removal, when is in handling, device is removed or link
+>> is down. also as #2, device was already removed from bus list.
+>> if searching it by BDF. got NULL.
+>> ...
+>>
+>> so, searching device by BDF, only works for the ATS invalidation
+>> request is from device driver.
+>>
+> anything related to bus notifier has been fixed by patch02.
+>
+> the remaining logic is really for fixing the race invalidation from
+> device driver.
 
