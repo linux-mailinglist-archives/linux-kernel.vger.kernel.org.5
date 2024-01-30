@@ -1,231 +1,203 @@
-Return-Path: <linux-kernel+bounces-44179-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44176-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9690E841E6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:52:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 678E4841E62
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:51:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E6BC1F2724C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:52:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 58E28B2B635
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:49:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 179345822C;
-	Tue, 30 Jan 2024 08:52:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0EA557874;
+	Tue, 30 Jan 2024 08:49:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AhAJ79Ld"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GTnbSySg"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08F4A57867;
-	Tue, 30 Jan 2024 08:52:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 631EB38DEC
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 08:49:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706604756; cv=none; b=bD/EmtqHiEItGbw122ss8AwbTTiDjs23YE3dqXbMcFDvZRRDdCoUMqVpPU4e3KEriNRZrab0w8N7BVxdGVLOsVQ8oHNogGaVx5Rvn2GDU4NLfcjFMomaJmqa+EwwoCdMMxoi5IdOs87K+9UU7hk8fryAJHjKu1K7m8XwR8MSSSo=
+	t=1706604547; cv=none; b=WXQV+VVJdnLdPLveAQXYjS4UCdaa4nXp3/tOv8ibMGUoCHXgwhks9jzq86M8RwiOLlmehGeP639nxDbp7/uSr1PB4+Ka6peS+Bcnp5e1ejod7FVvetKR7687+ICccxMJOZLYDbSIo+w+tS/Rss8mJAhleft2BJaSEkuGWWpBuc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706604756; c=relaxed/simple;
-	bh=2h2lKDVDe0Qt6DafrcvNa34Fl+qhtWodrVVJ81QUTO0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Be16AEyTrFS4cPh9mATSqZ3oiGoK4oD9aUfaWeqrvAJ9SiRCfdXrAat0a3ESzvFIeIPNoYojwwnqDjRweMN7wndH3jWOGOgf81zBBzaachc03BvYHxjD12ahl84t+VJYfrjCLIFo2nSXnBFGIV0ThAlilf8RTBIAiYaz+Fn5gME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AhAJ79Ld; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706604754; x=1738140754;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2h2lKDVDe0Qt6DafrcvNa34Fl+qhtWodrVVJ81QUTO0=;
-  b=AhAJ79LdFf6ZfRnWl5RZxjS/sEAauHD6ktHX10zQ4DhS3Ruvy++ZbdzE
-   h7yc8E4dr5V9owfHInxwLvNVt7stIUN0GXxyzI5ZCMTak9dSYckrt7frG
-   QwBUrz0i9DPwM4WOuCyWRMPhMgclPkJTy+MkZaeCqWj+f4NPJ9kHdJleh
-   /8Ib1QKVRT3idN1R7o9fCJR6oZz1mST3svFIdrWejT6R0BPg7TMsMaJGd
-   TkHgLj20RQIxsZa8X/YM4Sikn91n9fQOHHLCWE0aQapPSnGHSsrGYfXgd
-   Cl05RGkX1ZQgG4GXcmGmUInlaHNTSN6IBybZ+bBjK9fc8cwjAsipj98ik
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="10602345"
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="10602345"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 00:52:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="788126949"
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="788126949"
-Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 30 Jan 2024 00:52:17 -0800
-Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rUjou-00009I-0m;
-	Tue, 30 Jan 2024 08:50:34 +0000
-Date: Tue, 30 Jan 2024 16:48:06 +0800
-From: kernel test robot <lkp@intel.com>
-To: Choong Yong Liang <yong.liang.choong@linux.intel.com>,
-	Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-	David E Box <david.e.box@linux.intel.com>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Mark Gross <markgross@kernel.org>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <Jose.Abreu@synopsys.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Paul Gazzillo <paul@pgazz.com>,
-	Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-	oe-kbuild-all@lists.linux.dev, Andrew Halaney <ahalaney@redhat.com>,
-	Simon Horman <simon.horman@corigine.com>,
-	Serge Semin <fancer.lancer@gmail.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH net-next v4 08/11] stmmac: intel: configure SerDes
- according to the interface mode
-Message-ID: <202401301610.XVvNEdG4-lkp@intel.com>
-References: <20240129130253.1400707-9-yong.liang.choong@linux.intel.com>
+	s=arc-20240116; t=1706604547; c=relaxed/simple;
+	bh=lDHvUzDGp0g80avCSIGF2BmOR0m3AH/F2DgYJLL1Bv8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KGS6sDplvGILV3JC9ioBxq+5395wSYh2CGCiUlCWVd49EG66/ONJZQUb+JvZTe9nYsp6MgxCKKVrEK/wIpF8587/ARCQkZUWzFhQ2/G7Tez5/VDdOK3HswGZM79X6LAzwgmOYxD+xl4lu84z9KxGaxzVZyNN6gBJSHIhdFTRv84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GTnbSySg; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706604545;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=tLfZl+fldZUWURuuVV8KM4xVht5va0e9XkE00pk9Viw=;
+	b=GTnbSySgyjpb/ZWAY6Nah1En/OiFKQCLyQT/oLade4MPnbu8Tj1S+s9atShnLHssv3R3K6
+	T7l0zN//pGJViFY+/sxqNZHLF8vPO65z+UjGBw/qu06utYLj5742H/kE8HvYK+okiv47On
+	GlvUFGFNf//fU2nwlPvwbgalrxP6pqI=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-461-3fCT5OgqOwaUTjE7AMacdw-1; Tue, 30 Jan 2024 03:49:02 -0500
+X-MC-Unique: 3fCT5OgqOwaUTjE7AMacdw-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40fa6610ddfso535135e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 00:49:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706604542; x=1707209342;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tLfZl+fldZUWURuuVV8KM4xVht5va0e9XkE00pk9Viw=;
+        b=WdLuO9AxraZ2jzZa2a4WPMkItjDLX159ttpIy/VZCBljsIzcWLWPscEFoMjNFNicjk
+         ggfjPh2oDdUEcrEJDJA+AmZ/X+ljuufEKCraVuowbXb7aD8MQhnjlAjj313GrUh1b82d
+         yH2grrY3o0bMs7jKxilPFjXNZBcAed95nsp1CjBCE6cFdnnSlhOMpmhPT7lEE722J6T5
+         xfmVt4eK358cdn7USdDGIhRxM4+pBPID7VINTT2Y0JhhHM1ceufmHLIeWnFIskezh+FX
+         yMdLn636TMTO9PAd/rcDj+/+hNTzdkSuelAYn181RQWax00NS3+BoS2JuEY5JokmfgvU
+         ZTfw==
+X-Gm-Message-State: AOJu0YwzYiTUA6aRG2Ew1/pGw9mdSFdCo+rCylu99mmGE83Ra0bBTL4j
+	I7Yk8UP48iPYUp1lPgwRCURcllxfNgm3SoNHHy0zdldnJRrnYURnk/ZYCeyQYQknVmgLvpCdnva
+	pf8Xu21BCk4jMVAUAUK+5RE0mVnuDAyTGJ0AD7MUwJJmrVI6k618r+KWxRIkCksApRYMaLQ==
+X-Received: by 2002:a05:600c:450a:b0:40e:fc1e:5e18 with SMTP id t10-20020a05600c450a00b0040efc1e5e18mr2015994wmo.29.1706604541733;
+        Tue, 30 Jan 2024 00:49:01 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHIADSFu/VLFBneg+ablqaQ3sRSUSEyd5TXfS8n4CC9eUA/qPPKEbmU+QH7A9IQuAIWoIz5GQ==
+X-Received: by 2002:a05:600c:450a:b0:40e:fc1e:5e18 with SMTP id t10-20020a05600c450a00b0040efc1e5e18mr2015977wmo.29.1706604541358;
+        Tue, 30 Jan 2024 00:49:01 -0800 (PST)
+Received: from ?IPV6:2003:cb:c708:2700:bdf6:739b:9f9d:862f? (p200300cbc7082700bdf6739b9f9d862f.dip0.t-ipconnect.de. [2003:cb:c708:2700:bdf6:739b:9f9d:862f])
+        by smtp.gmail.com with ESMTPSA id r15-20020adfe68f000000b0033af51eafc6sm2538195wrm.104.2024.01.30.00.49.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jan 2024 00:49:00 -0800 (PST)
+Message-ID: <5ee757bd-c940-4cb7-a113-f4501330896e@redhat.com>
+Date: Tue, 30 Jan 2024 09:49:00 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240129130253.1400707-9-yong.liang.choong@linux.intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/9] mm/memory: factor out zapping of present pte into
+ zap_present_pte()
+Content-Language: en-US
+To: Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+ Nick Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
+ linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-s390@vger.kernel.org
+References: <20240129143221.263763-1-david@redhat.com>
+ <20240129143221.263763-2-david@redhat.com>
+ <40e87333-4da9-4497-a117-9885986e376a@arm.com>
+ <8d19d635-2f55-4c0d-958b-0640f99ff0ce@redhat.com>
+ <cae11a08-2f5c-43ca-92fc-a78e9acf4dd8@arm.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <cae11a08-2f5c-43ca-92fc-a78e9acf4dd8@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi Choong,
+On 30.01.24 09:46, Ryan Roberts wrote:
+> On 30/01/2024 08:41, David Hildenbrand wrote:
+>> On 30.01.24 09:13, Ryan Roberts wrote:
+>>> On 29/01/2024 14:32, David Hildenbrand wrote:
+>>>> Let's prepare for further changes by factoring out processing of present
+>>>> PTEs.
+>>>>
+>>>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>>>> ---
+>>>>    mm/memory.c | 92 ++++++++++++++++++++++++++++++-----------------------
+>>>>    1 file changed, 52 insertions(+), 40 deletions(-)
+>>>>
+>>>> diff --git a/mm/memory.c b/mm/memory.c
+>>>> index b05fd28dbce1..50a6c79c78fc 100644
+>>>> --- a/mm/memory.c
+>>>> +++ b/mm/memory.c
+>>>> @@ -1532,13 +1532,61 @@ zap_install_uffd_wp_if_needed(struct vm_area_struct
+>>>> *vma,
+>>>>        pte_install_uffd_wp_if_needed(vma, addr, pte, pteval);
+>>>>    }
+>>>>    +static inline void zap_present_pte(struct mmu_gather *tlb,
+>>>> +        struct vm_area_struct *vma, pte_t *pte, pte_t ptent,
+>>>> +        unsigned long addr, struct zap_details *details,
+>>>> +        int *rss, bool *force_flush, bool *force_break)
+>>>> +{
+>>>> +    struct mm_struct *mm = tlb->mm;
+>>>> +    bool delay_rmap = false;
+>>>> +    struct folio *folio;
+>>>
+>>> You need to init this to NULL otherwise its a random value when calling
+>>> should_zap_folio() if vm_normal_page() returns NULL.
+>>
+>> Right, and we can stop setting it to NULL in the original function. Patch #2
+>> changes these checks, which is why it's only a problem in this patch.
+> 
+> Yeah I only noticed that after sending out this reply and moving to the next
+> patch. Still worth fixing this intermediate state I think.
 
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on net-next/main]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Choong-Yong-Liang/net-phylink-publish-ethtool-link-modes-that-supported-and-advertised/20240129-211219
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20240129130253.1400707-9-yong.liang.choong%40linux.intel.com
-patch subject: [PATCH net-next v4 08/11] stmmac: intel: configure SerDes according to the interface mode
-config: x86_64-kismet-CONFIG_INTEL_PMC_IPC-CONFIG_DWMAC_INTEL-0-0 (https://download.01.org/0day-ci/archive/20240130/202401301610.XVvNEdG4-lkp@intel.com/config)
-reproduce: (https://download.01.org/0day-ci/archive/20240130/202401301610.XVvNEdG4-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401301610.XVvNEdG4-lkp@intel.com/
-
-kismet warnings: (new ones prefixed by >>)
->> kismet: WARNING: unmet direct dependencies detected for INTEL_PMC_IPC when selected by DWMAC_INTEL
-   .config:21:warning: symbol value 'n' invalid for AIC79XX_DEBUG_MASK
-   .config:51:warning: symbol value 'n' invalid for BLK_DEV_LOOP_MIN_COUNT
-   .config:114:warning: symbol value 'n' invalid for SQUASHFS_FRAGMENT_CACHE_SIZE
-   .config:205:warning: symbol value 'n' invalid for FB_OMAP2_NUM_FBS
-   .config:209:warning: symbol value 'n' invalid for CMA_SIZE_MBYTES
-   .config:254:warning: symbol value 'n' invalid for SATA_MOBILE_LPM_POLICY
-   .config:337:warning: symbol value 'n' invalid for CFAG12864B_RATE
-   .config:351:warning: symbol value 'n' invalid for PSTORE_BLK_MAX_REASON
-   .config:355:warning: symbol value 'n' invalid for AIC79XX_CMDS_PER_DEVICE
-   .config:437:warning: symbol value 'n' invalid for PANEL_LCD_PIN_SDA
-   .config:459:warning: symbol value 'n' invalid for KFENCE_SAMPLE_INTERVAL
-   .config:574:warning: symbol value 'n' invalid for AIC7XXX_DEBUG_MASK
-   .config:646:warning: symbol value 'n' invalid for CRYPTO_DEV_QCE_SW_MAX_LEN
-   .config:653:warning: symbol value 'n' invalid for DRM_XE_JOB_TIMEOUT_MIN
-   .config:690:warning: symbol value 'n' invalid for FAT_DEFAULT_CODEPAGE
-   .config:752:warning: symbol value 'n' invalid for PANEL_LCD_CHARSET
-   .config:838:warning: symbol value 'n' invalid for SND_AC97_POWER_SAVE_DEFAULT
-   .config:868:warning: symbol value 'n' invalid for MAGIC_SYSRQ_DEFAULT_ENABLE
-   .config:885:warning: symbol value 'n' invalid for DRM_I915_MAX_REQUEST_BUSYWAIT
-   .config:919:warning: symbol value 'n' invalid for SND_AT73C213_TARGET_BITRATE
-   .config:957:warning: symbol value 'n' invalid for DRM_XE_PREEMPT_TIMEOUT_MIN
-   .config:969:warning: symbol value 'n' invalid for VMCP_CMA_SIZE
-   .config:1154:warning: symbol value 'n' invalid for NODES_SHIFT
-   .config:1224:warning: symbol value 'n' invalid for RCU_CPU_STALL_TIMEOUT
-   .config:1253:warning: symbol value 'n' invalid for MTDRAM_ERASE_SIZE
-   .config:1327:warning: symbol value 'n' invalid for SERIAL_UARTLITE_NR_UARTS
-   .config:1492:warning: symbol value 'n' invalid for INPUT_MOUSEDEV_SCREEN_Y
-   .config:1506:warning: symbol value 'n' invalid for LEGACY_PTY_COUNT
-   .config:1667:warning: symbol value 'n' invalid for AIC7XXX_RESET_DELAY_MS
-   .config:1833:warning: symbol value 'n' invalid for USB_GADGET_STORAGE_NUM_BUFFERS
-   .config:1883:warning: symbol value 'n' invalid for IBM_EMAC_POLL_WEIGHT
-   .config:1951:warning: symbol value 'n' invalid for PANEL_PROFILE
-   .config:1967:warning: symbol value 'n' invalid for DRM_I915_STOP_TIMEOUT
-   .config:2289:warning: symbol value 'n' invalid for SND_HDA_PREALLOC_SIZE
-   .config:2301:warning: symbol value 'n' invalid for PANEL_LCD_PIN_E
-   .config:2336:warning: symbol value 'n' invalid for SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST_NUM
-   .config:2339:warning: symbol value 'n' invalid for RCU_FANOUT_LEAF
-   .config:2443:warning: symbol value 'n' invalid for DRM_XE_TIMESLICE_MAX
-   .config:2500:warning: symbol value 'n' invalid for PANEL_LCD_BWIDTH
-   .config:2763:warning: symbol value 'n' invalid for PANEL_PARPORT
-   .config:2773:warning: symbol value 'n' invalid for PSTORE_BLK_CONSOLE_SIZE
-   .config:2860:warning: symbol value 'n' invalid for NOUVEAU_DEBUG_DEFAULT
-   .config:2938:warning: symbol value 'n' invalid for BOOKE_WDT_DEFAULT_TIMEOUT
-   .config:3061:warning: symbol value 'n' invalid for KCSAN_REPORT_ONCE_IN_MS
-   .config:3171:warning: symbol value 'n' invalid for KCSAN_UDELAY_INTERRUPT
-   .config:3194:warning: symbol value 'n' invalid for PANEL_LCD_PIN_BL
-   .config:3216:warning: symbol value 'n' invalid for DEBUG_OBJECTS_ENABLE_DEFAULT
-   .config:3223:warning: symbol value 'n' invalid for INITRAMFS_ROOT_GID
-   .config:3345:warning: symbol value 'n' invalid for ATM_FORE200E_TX_RETRY
-   .config:3389:warning: symbol value 'n' invalid for FB_OMAP2_DSS_MIN_FCK_PER_PCK
-   .config:3450:warning: symbol value 'n' invalid for AIC79XX_RESET_DELAY_MS
-   .config:3538:warning: symbol value 'n' invalid for KCSAN_UDELAY_TASK
-   .config:3574:warning: symbol value 'n' invalid for STACK_MAX_DEFAULT_SIZE_MB
-   .config:3759:warning: symbol value 'n' invalid for MMC_BLOCK_MINORS
-   .config:3806:warning: symbol value 'n' invalid for SCSI_NCR53C8XX_SYNC
-   .config:3894:warning: symbol value 'n' invalid for SERIAL_MCF_BAUDRATE
-   .config:3936:warning: symbol value 'n' invalid for UCLAMP_BUCKETS_COUNT
-   .config:3963:warning: symbol value 'n' invalid for X86_AMD_PSTATE_DEFAULT_MODE
-   .config:3985:warning: symbol value 'n' invalid for DE2104X_DSL
-   .config:3993:warning: symbol value 'n' invalid for BLK_DEV_RAM_COUNT
-   .config:4233:warning: symbol value 'n' invalid for IP_VS_SH_TAB_BITS
-   .config:4347:warning: symbol value 'n' invalid for SERIAL_ALTERA_UART_BAUDRATE
-   .config:4385:warning: symbol value 'n' invalid for USBIP_VHCI_HC_PORTS
-   .config:4492:warning: symbol value 'n' invalid for CMA_AREAS
-   .config:4493:warning: symbol value 'n' invalid for DUMMY_CONSOLE_ROWS
-   .config:4551:warning: symbol value 'n' invalid for INPUT_MOUSEDEV_SCREEN_X
-   .config:4670:warning: symbol value 'n' invalid for RIONET_RX_SIZE
-   .config:4736:warning: symbol value 'n' invalid for RADIO_TYPHOON_PORT
-   .config:4854:warning: symbol value 'n' invalid for SERIAL_TXX9_NR_UARTS
-   .config:4899:warning: symbol value 'n' invalid for MTRR_SANITIZER_SPARE_REG_NR_DEFAULT
-   .config:5001:warning: symbol value 'n' invalid for IBM_EMAC_TXB
-   .config:5148:warning: symbol value 'n' invalid for FTRACE_RECORD_RECURSION_SIZE
-   .config:5510:warning: symbol value 'n' invalid for DRM_I915_FENCE_TIMEOUT
-   .config:5532:warning: symbol value 'n' invalid for TTY_PRINTK_LEVEL
-   .config:5585:warning: symbol value 'n' invalid for CRYPTO_DEV_FSL_CAAM_INTC_TIME_THLD
-   .config:5701:warning: symbol value 'n' invalid for MIPS_EJTAG_FDC_KGDB_CHAN
-   .config:5772:warning: symbol value 'n' invalid for PPC_EARLY_DEBUG_EHV_BC_HANDLE
-   .config:5796:warning: symbol value 'n' invalid for KDB_DEFAULT_ENABLE
-   .config:5816:warning: symbol value 'n' invalid for SERIAL_ALTERA_UART_MAXPORTS
-   .config:5933:warning: symbol value 'n' invalid for IP_VS_MH_TAB_INDEX
-   .config:6101:warning: symbol value 'n' invalid for PANEL_LCD_HWIDTH
-   .config:6131:warning: symbol value 'n' invalid for LOCKDEP_CHAINS_BITS
-   .config:6230:warning: symbol value 'n' invalid for DRM_I915_HEARTBEAT_INTERVAL
-   .config:6236:warning: symbol value 'n' invalid for KCSAN_SKIP_WATCH
-   .config:6244:warning: symbol value 'n' invalid for EFI_MAX_FAKE_MEM
-   .config:6260:warning: symbol value 'n' invalid for PSTORE_BLK_KMSG_SIZE
-   .config:6358:warning: symbol value 'n' invalid for PANEL_LCD_PIN_RW
-   .config:6481:warning: symbol value 'n' invalid for SERIAL_8250_RUNTIME_UARTS
-   .config:6517:warning: symbol value 'n' invalid for KVM_MAX_NR_VCPUS
-   .config:6584:warning: symbol value 'n' invalid for ARCH_MMAP_RND_COMPAT_BITS
-   .config:6633:warning: symbol value 'n' invalid for SERIAL_SH_SCI_NR_UARTS
-   .config:6766:warning: symbol value 'n' invalid for RADIO_TRUST_PORT
-   .config:6852:warning: symbol value 'n' invalid for SND_MAX_CARDS
-   .config:7006:warning: symbol value 'n' invalid for RCU_BOOST_DELAY
-   .config:7177:warning: symbol value 'n' invalid for DVB_MAX_ADAPTERS
-   .config:7180:warning: symbol value 'n' invalid for SCSI_NCR53C8XX_MAX_TAGS
-   .config:7187:warning: symbol value 'n' invalid for CMA_SIZE_PERCENTAGE
-   .config:7213:warning: symbol value 'n' invalid for SCSI_SYM53C8XX_DMA_ADDRESSING_MODE
-   .config:7257:warning: symbol value 'n' invalid for ZSMALLOC_CHAIN_SIZE
-   .config:7354:warning: symbol value 'n' invalid for DRM_XE_TIMESLICE_MIN
+Absolutely, I didn't do path-by-patch compilation yet (I suspect the 
+compiler would complain).
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Cheers,
+
+David / dhildenb
+
 
