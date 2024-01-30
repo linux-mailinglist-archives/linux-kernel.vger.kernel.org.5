@@ -1,281 +1,133 @@
-Return-Path: <linux-kernel+bounces-44439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0231E84220F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:57:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79116842221
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:02:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E0631F29F0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:57:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A92DB2D4A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:59:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4EE3664A0;
-	Tue, 30 Jan 2024 10:57:38 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07CDD664A6;
+	Tue, 30 Jan 2024 10:59:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="YKHZJLE7";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="U2ctUQWI"
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1204657DC
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 10:57:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1099657DD;
+	Tue, 30 Jan 2024 10:59:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706612258; cv=none; b=gQBjdoBGW70IiKtjtWZJcJlxIJwTQgnnpQhs/K6mc6dm6i+CVFR6CfEBsvlt5vhZYG++XzWTjCEWVl3MVAii6z5T1KOejBrdzjz6VwIGGOUM1aLOAsLcin/Z/LgdcG1TYaxNt+9+BuJzXzEZP0Y2qYNNhQjgTeayaCfe3ZWTkVs=
+	t=1706612370; cv=none; b=t7busj1WgdWeZW/dmUW4DOYUjUGpfXXZpmHbyf8JxNjoO6XfgGSaT0LYRsPzrsuigCgU382oxV0fhiVQW92N+Iy8meTPwtOWSnSPxqi+aBleInjmUeU6XRdXqA2cKYtEnX/PRcW3ysOOr1Wt3pca3vY3kAE3sMfVDJj/2t5SIUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706612258; c=relaxed/simple;
-	bh=WuuIYrJs4mXDs4Xkz4rRqUD+xA+XGputIdfKrip9PII=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=AWO/+g7YFuYy3H1/3U8eGA41FRbiDPm3/df6mFbXHmVirxLJsQYQlr5j4YXuhcbFbUtvNfYd6ung5ZQFmBOEgbRr5EczaiJTUwnyQYUUPmdQE7ukZIn8Lj93oeh3AcOJyZkdv6DHc8oyU4NT5aSospwNl01O5ZL7NGMLZa54RyM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TPMXB10ljz29krw;
-	Tue, 30 Jan 2024 18:55:38 +0800 (CST)
-Received: from kwepemm600017.china.huawei.com (unknown [7.193.23.234])
-	by mail.maildlp.com (Postfix) with ESMTPS id AB70B1404D7;
-	Tue, 30 Jan 2024 18:57:27 +0800 (CST)
-Received: from [10.174.179.234] (10.174.179.234) by
- kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 30 Jan 2024 18:57:25 +0800
-Message-ID: <eb78caf9-ac03-1030-4e32-b614e73c0f62@huawei.com>
-Date: Tue, 30 Jan 2024 18:57:24 +0800
+	s=arc-20240116; t=1706612370; c=relaxed/simple;
+	bh=hriKEi3Sv4gStp1lVTHTabtn0IF1x30Yrbw88AS+yh8=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=NsxHfxgevDFtK1qYNuWa20WgK9B/I8PSR695ZoPCjJ1yl6DpdYRzDPyWDnCoczIpq5VLFW+20+Vxizi76LEaVfNwJ/9RpI8CPepCh/DmvcBa48lQBbCRS0lPVrgA17Sy7/5cwNErxR2BMCqgQdSN0nVnow/EEvrwvJQWbFWH++s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=YKHZJLE7; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=U2ctUQWI; arc=none smtp.client-ip=64.147.123.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id EE7093200A24;
+	Tue, 30 Jan 2024 05:59:25 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Tue, 30 Jan 2024 05:59:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1706612365; x=1706698765; bh=vLH/ZiLStC
+	joOoUQcobS4Maaw1gFmNEZ5FBewuBPXDY=; b=YKHZJLE7i7nCO3EFdLtd80Zbev
+	NydOk1DEef4ovG2Ly7T4TDvLYBhd1qM35bkT2KrDVMwAZ12eM6I+hIXC7l92CgWl
+	2CWS3lslkUERO6nkLeYh2ZW8IIf0Z7iMCndzfx4p/cb8v0SGDmyb9y5fWkH0dA3o
+	GqZZQ6iXu6+EZ5mvanCkFVG7mSXI2qjxXWGpkW55q9SSp/kVX6Lrf+mHacoFWA1B
+	DsmW7OP3N49ckMMzCJmlqsmZuqHIG6AC1KXvag3GOt/ZuNg80zR7ftjb/GXtvIMj
+	kSgNAo+dl1nuBS3ty+U34jK//U0JxAuXM/T/703Dwzeoy4I3+csSZMHOKToQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1706612365; x=1706698765; bh=vLH/ZiLStCjoOoUQcobS4Maaw1gF
+	mNEZ5FBewuBPXDY=; b=U2ctUQWI6ZUgHoJMJCBghSLKPyOFmCGVbsgvBtI5Q3+/
+	957ENDoE5+tTGqRuS350ajieBaPh3XlGWrXocoowk1iErAnZE70vz54QtipZQyKz
+	tAL2qpN8LKdYk3Sdo+8Os9R93vgtkfqYFSKRkadGlFfkV6HthlAdntVvdY9zI9s/
+	6A08YaSxv8stQ0EqUFu5zLACGLZnRKOOpG9CULZZOxwCQzbvZclvSqDrBCVoKNxi
+	2Tvvt7OnCZYJD+wz7Rohs2mdCXtRUpRkZZ3dKf68ou74leByONqG465nSBxm3hv/
+	A5GemgFE+mJhzvy147L5AtWdgK8sleei7QoAu64S+A==
+X-ME-Sender: <xms:jNa4ZfkvUAtD9JiWq5HpTZCDzz_qMSBF0ERmNs3-T2Rk6lLelE4KKA>
+    <xme:jNa4ZS0_wEtXTIIBZcWVpHtYVB4vk177YbnlMd1769_f_YpCgLvhzh6WwpS5a-T3E
+    ZO-oKBwYZ1YDqBtlAQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtiedgvdefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepvefhffeltdegheeffffhtdegvdehjedtgfekueevgfduffettedtkeekueef
+    hedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:jNa4ZVqseTSV4jiA_GL9AYgBHoivoB7y9a7L2ICz0w5RWoafrKoKdg>
+    <xmx:jNa4ZXmqgtzCNtKKEmOtJE3aHk264EzTz8cdZJ4NPiYIhLqlFaw_wQ>
+    <xmx:jNa4Zd0Pm5r0wRlQujCh8Q9KPW_M7oz4FdnerbKAyUxu8z-LtdBtcA>
+    <xmx:jda4ZV9ilBtQlH-f5dl3EqyleztOaSdrUmCVsDZgCGgHgQafMkYUTw>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 4F22DB6008D; Tue, 30 Jan 2024 05:59:24 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH v10 2/6] arm64: add support for machine check error safe
-To: Mark Rutland <mark.rutland@arm.com>
-CC: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
-	James Morse <james.morse@arm.com>, Robin Murphy <robin.murphy@arm.com>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>, Alexander Potapenko
-	<glider@google.com>, Alexander Viro <viro@zeniv.linux.org.uk>, Andrey
- Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
-	Vincenzo Frascino <vincenzo.frascino@arm.com>, Andrew Morton
-	<akpm@linux-foundation.org>, Michael Ellerman <mpe@ellerman.id.au>, Nicholas
- Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Aneesh Kumar K.V <aneesh.kumar@kernel.org>, "Naveen N. Rao"
-	<naveen.n.rao@linux.ibm.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo
- Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
-	<dave.hansen@linux.intel.com>, <x86@kernel.org>, "H. Peter Anvin"
-	<hpa@zytor.com>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-mm@kvack.org>, <linuxppc-dev@lists.ozlabs.org>,
-	<linux-kernel@vger.kernel.org>, <kasan-dev@googlegroups.com>,
-	<wangkefeng.wang@huawei.com>, Guohanjun <guohanjun@huawei.com>
-References: <20240129134652.4004931-1-tongtiangen@huawei.com>
- <20240129134652.4004931-3-tongtiangen@huawei.com>
- <ZbflpQV7aVry0qPz@FVFF77S0Q05N>
-From: Tong Tiangen <tongtiangen@huawei.com>
-In-Reply-To: <ZbflpQV7aVry0qPz@FVFF77S0Q05N>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm600017.china.huawei.com (7.193.23.234)
+Message-Id: <dafa2fb5-276d-4c87-b003-4b7f30d44f0a@app.fastmail.com>
+In-Reply-To: <61e8b6ae-fd30-4443-8473-6429f6de8768@nvidia.com>
+References: <20240129143030.16647483@canb.auug.org.au>
+ <d0e1a7c1-06a2-4fa4-b4f8-df149af8eccb@infradead.org>
+ <61e8b6ae-fd30-4443-8473-6429f6de8768@nvidia.com>
+Date: Tue, 30 Jan 2024 11:59:03 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Jon Hunter" <jonathanh@nvidia.com>,
+ "Randy Dunlap" <rdunlap@infradead.org>,
+ "Stephen Rothwell" <sfr@canb.auug.org.au>,
+ linux-next <linux-next@vger.kernel.org>, Kartik <kkartik@nvidia.com>
+Cc: "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+ "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+ "Thierry Reding" <treding@nvidia.com>
+Subject: Re: linux-next: Tree for Jan 29 (soc/tegra/fuse/fuse-tegra30.c)
+Content-Type: text/plain
 
+On Tue, Jan 30, 2024, at 11:46, Jon Hunter wrote:
+> On 30/01/2024 04:06, Randy Dunlap wrote:
 
+> Looks like we are missing the following ...
+>
+> diff --git a/drivers/soc/tegra/fuse/fuse-tegra30.c 
+> b/drivers/soc/tegra/fuse/fuse-tegra30.c
+> index 2070d36c510d..eb14e5ff5a0a 100644
+> --- a/drivers/soc/tegra/fuse/fuse-tegra30.c
+> +++ b/drivers/soc/tegra/fuse/fuse-tegra30.c
+> @@ -38,7 +38,8 @@
+>       defined(CONFIG_ARCH_TEGRA_210_SOC) || \
+>       defined(CONFIG_ARCH_TEGRA_186_SOC) || \
+>       defined(CONFIG_ARCH_TEGRA_194_SOC) || \
+> -    defined(CONFIG_ARCH_TEGRA_234_SOC)
+> +    defined(CONFIG_ARCH_TEGRA_234_SOC) || \
+> +    defined(CONFIG_ARCH_TEGRA_241_SOC)
+>   static u32 tegra30_fuse_read_early(struct tegra_fuse *fuse, unsigned 
+> int offset)
+>
+>
+> Kartik, can you send a fix for this?
 
-在 2024/1/30 1:51, Mark Rutland 写道:
-> On Mon, Jan 29, 2024 at 09:46:48PM +0800, Tong Tiangen wrote:
->> For the arm64 kernel, when it processes hardware memory errors for
->> synchronize notifications(do_sea()), if the errors is consumed within the
->> kernel, the current processing is panic. However, it is not optimal.
->>
->> Take uaccess for example, if the uaccess operation fails due to memory
->> error, only the user process will be affected. Killing the user process and
->> isolating the corrupt page is a better choice.
->>
->> This patch only enable machine error check framework and adds an exception
->> fixup before the kernel panic in do_sea().
->>
->> Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
->> ---
->>   arch/arm64/Kconfig               |  1 +
->>   arch/arm64/include/asm/extable.h |  1 +
->>   arch/arm64/mm/extable.c          | 16 ++++++++++++++++
->>   arch/arm64/mm/fault.c            | 29 ++++++++++++++++++++++++++++-
->>   4 files changed, 46 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
->> index aa7c1d435139..2cc34b5e7abb 100644
->> --- a/arch/arm64/Kconfig
->> +++ b/arch/arm64/Kconfig
->> @@ -20,6 +20,7 @@ config ARM64
->>   	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if PGTABLE_LEVELS > 2
->>   	select ARCH_ENABLE_THP_MIGRATION if TRANSPARENT_HUGEPAGE
->>   	select ARCH_HAS_CACHE_LINE_SIZE
->> +	select ARCH_HAS_COPY_MC if ACPI_APEI_GHES
->>   	select ARCH_HAS_CURRENT_STACK_POINTER
->>   	select ARCH_HAS_DEBUG_VIRTUAL
->>   	select ARCH_HAS_DEBUG_VM_PGTABLE
->> diff --git a/arch/arm64/include/asm/extable.h b/arch/arm64/include/asm/extable.h
->> index 72b0e71cc3de..f80ebd0addfd 100644
->> --- a/arch/arm64/include/asm/extable.h
->> +++ b/arch/arm64/include/asm/extable.h
->> @@ -46,4 +46,5 @@ bool ex_handler_bpf(const struct exception_table_entry *ex,
->>   #endif /* !CONFIG_BPF_JIT */
->>   
->>   bool fixup_exception(struct pt_regs *regs);
->> +bool fixup_exception_mc(struct pt_regs *regs);
->>   #endif
->> diff --git a/arch/arm64/mm/extable.c b/arch/arm64/mm/extable.c
->> index 228d681a8715..478e639f8680 100644
->> --- a/arch/arm64/mm/extable.c
->> +++ b/arch/arm64/mm/extable.c
->> @@ -76,3 +76,19 @@ bool fixup_exception(struct pt_regs *regs)
->>   
->>   	BUG();
->>   }
->> +
->> +bool fixup_exception_mc(struct pt_regs *regs)
-> 
-> Can we please replace 'mc' with something like 'memory_error' ?
-> 
-> There's no "machine check" on arm64, and 'mc' is opaque regardless.
+If I get an Ack for my original patch, I can pick that
+up into the soc tree directly:
 
-OK, It's more appropriate to use "memory_error" on arm64.
+https://lore.kernel.org/all/20240103102654.3779458-1-arnd@kernel.org/
 
-> 
->> +{
->> +	const struct exception_table_entry *ex;
->> +
->> +	ex = search_exception_tables(instruction_pointer(regs));
->> +	if (!ex)
->> +		return false;
->> +
->> +	/*
->> +	 * This is not complete, More Machine check safe extable type can
->> +	 * be processed here.
->> +	 */
->> +
->> +	return false;
->> +}
-> 
-> As with my comment on the subsequenty patch, I'd much prefer that we handle
-> EX_TYPE_UACCESS_ERR_ZERO from the outset.
-
-OK, In the next version, the two patches will be merged.
-
-> 
-> 
-> 
->> diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
->> index 55f6455a8284..312932dc100b 100644
->> --- a/arch/arm64/mm/fault.c
->> +++ b/arch/arm64/mm/fault.c
->> @@ -730,6 +730,31 @@ static int do_bad(unsigned long far, unsigned long esr, struct pt_regs *regs)
->>   	return 1; /* "fault" */
->>   }
->>   
->> +static bool arm64_do_kernel_sea(unsigned long addr, unsigned int esr,
->> +				     struct pt_regs *regs, int sig, int code)
->> +{
->> +	if (!IS_ENABLED(CONFIG_ARCH_HAS_COPY_MC))
->> +		return false;
->> +
->> +	if (user_mode(regs))
->> +		return false;
-> 
-> This function is called "arm64_do_kernel_sea"; surely the caller should *never*
-> call this for a SEA taken from user mode?
-
-In do_sea(), the processing logic is as follows:
-   do_sea()
-   {
-     [...]
-     if (user_mode(regs) && apei_claim_sea(regs) == 0) {
-        return 0;
-     }
-     [...]
-     //[1]
-     if (!arm64_do_kernel_sea()) {
-        arm64_notify_die();
-     }
-   }
-
-[1] user_mode() is still possible to go here,If user_mode() goes here,
-  it indicates that the impact caused by the memory error cannot be
-  processed correctly by apei_claim_sea().
-
-
-In this case, only arm64_notify_die() can be used, This also maintains
-the original logic of user_mode()'s processing.
-
-> 
->> +
->> +	if (apei_claim_sea(regs) < 0)
->> +		return false;
->> +
->> +	if (!fixup_exception_mc(regs))
->> +		return false;
->> +
->> +	if (current->flags & PF_KTHREAD)
->> +		return true;
-> 
-> I think this needs a comment; why do we allow kthreads to go on, yet kill user
-> threads? What about helper threads (e.g. for io_uring)?
-
-If a memroy error occurs in the kernel thread, the problem is more
-serious than that of the user thread. As a result, related kernel
-functions, such as khugepaged, cannot run properly. kernel panic should
-be a better choice at this time.
-
-Therefore, the processing scope of this framework is limited to the user 
-  thread.
-
-> 
->> +
->> +	set_thread_esr(0, esr);
-> 
-> Why do we set the ESR to 0?
-
-The purpose is to reuse the logic of arm64_notify_die() and set the 
-following parameters before sending signals to users:
-   current->thread.fault_address = 0;
-   current->thread.fault_code = err;
-
-I looked at the git log and found that the logic was added by this
-commit:
-
-
-9141300a5884 （“arm64: Provide read/write fault information in compat 
-signal handlers”）
-
-According to the description of commit message, the purpose seems to be
-for aarch32.
-
-Many thanks.
-Tong.
-
-
-> 
-> Mark.
-> 
->> +	arm64_force_sig_fault(sig, code, addr,
->> +		"Uncorrected memory error on access to user memory\n");
->> +
->> +	return true;
->> +}
->> +
->>   static int do_sea(unsigned long far, unsigned long esr, struct pt_regs *regs)
->>   {
->>   	const struct fault_info *inf;
->> @@ -755,7 +780,9 @@ static int do_sea(unsigned long far, unsigned long esr, struct pt_regs *regs)
->>   		 */
->>   		siaddr  = untagged_addr(far);
->>   	}
->> -	arm64_notify_die(inf->name, regs, inf->sig, inf->code, siaddr, esr);
->> +
->> +	if (!arm64_do_kernel_sea(siaddr, esr, regs, inf->sig, inf->code))
->> +		arm64_notify_die(inf->name, regs, inf->sig, inf->code, siaddr, esr);
->>   
->>   	return 0;
->>   }
->> -- 
->> 2.25.1
->>
-> .
+    Arnd
 
