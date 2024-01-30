@@ -1,117 +1,217 @@
-Return-Path: <linux-kernel+bounces-45248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45270-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98BC6842D8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 21:15:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DD01842DE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 21:32:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAE671C2258D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:15:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 726251C251CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:32:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5940471B4F;
-	Tue, 30 Jan 2024 20:15:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=svenjoac@gmx.de header.b="uWMEorml"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEB8479DCA;
+	Tue, 30 Jan 2024 20:32:04 +0000 (UTC)
+Received: from brightrain.aerifal.cx (brightrain.aerifal.cx [104.156.224.86])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5689771B32;
-	Tue, 30 Jan 2024 20:15:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E56B269E19
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 20:32:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.156.224.86
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706645741; cv=none; b=KR4BxtDRsAXoduea7gzME2PmICNhpnk0nb+FjHllF6lpbNV8EZGgPlB/R+OkaOONXi7KGt/4FUtXsTL+8dK2lxp9ugE6xDHZLo/mIEpSEtRuGEhbli6hsNSN9JVAKbdVD7pSViKNCg/HYgQ4wEQVHKVF/GDumcL06fw4O/7l+x8=
+	t=1706646724; cv=none; b=nz9jzds3amQLGaJmebD6/H4i4cq0bSuvpJs8Qrjk6dqq+a9at5T5Svu42C8Ioq2cT/jekoa5XeiChg+6WSSSb73F375oD+sPcCeE+5cudPcN19yxl5NA/TtOJM0EA0rWj7w0cAuQhVtvsZwKW8bQJwuM6Tmu21iJ4tUEufG1jWk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706645741; c=relaxed/simple;
-	bh=qF0LHiAbtVxxFWy/i7EP+gADimSNgL/R6tCnG0ux6K8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=B+44SipOfY8YjqyivHyb6SZSN+fa2WasI7SAMe/kzElWFw8bhZPZx+U+Ln6W9z03ECtT0s7TiIvmKbXlo0jNRnxl1QTwCTp43Fjnh2N+0DsQt4JcNfZbdRQi+SSaR6ZSdrZm9KqsSCxuQwBlzG3ivk1A5nmpJfusX9dgT7GGswE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=svenjoac@gmx.de header.b=uWMEorml; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1706645714; x=1707250514; i=svenjoac@gmx.de;
-	bh=qF0LHiAbtVxxFWy/i7EP+gADimSNgL/R6tCnG0ux6K8=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:In-Reply-To:References:
-	 Date;
-	b=uWMEormlo9y5Z9yrFtScMh04LDQAUJr92eA1YfUDG0PnpYd7CkF3tTj3h3XgUbw7
-	 IZS3xGwEZyoDYbOjQ8mXr+5aNNQSWFIH0B3QzApqjqWUC1CF0KZplKz9GkQeWvryF
-	 TSDdPZjB3AYjW57F6rOz10V51XwDkMule/oiV35cB8/RZdzBh6f6ZX+jk08RfgJqj
-	 fgTdps0O5o/xXP2aTFrw9asEYRGzodZOpOsxhZ1dRYp3G5T6d6OmgF8JAvsU3jSPU
-	 u7HR8MjgvsG4p03K1ao4pwsfPWXwp8EcxfXfoFq0FZEA71wUtqYaxO3zpCyOuGmvV
-	 /RRgqlqmT5He9/7VtQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from localhost.localdomain ([79.203.86.131]) by mail.gmx.net
- (mrgmx105 [212.227.17.168]) with ESMTPSA (Nemesis) id
- 1MBDnC-1rLarE0cEo-00CeKc; Tue, 30 Jan 2024 21:15:14 +0100
-Received: by localhost.localdomain (Postfix, from userid 1000)
-	id 9A91D80110; Tue, 30 Jan 2024 21:15:11 +0100 (CET)
-From: Sven Joachim <svenjoac@gmx.de>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org,  patches@lists.linux.dev,
-  linux-kernel@vger.kernel.org,  torvalds@linux-foundation.org,
-  akpm@linux-foundation.org,  linux@roeck-us.net,  shuah@kernel.org,
-  patches@kernelci.org,  lkft-triage@lists.linaro.org,  pavel@denx.de,
-  jonathanh@nvidia.com,  f.fainelli@gmail.com,  sudipm.mukherjee@gmail.com,
-  srw@sladewatkins.net,  rwarsow@gmx.de,  conor@kernel.org,
-  allen.lkml@gmail.com
-Subject: Re: [PATCH 6.1 000/185] 6.1.76-rc1 review
-In-Reply-To: <20240129165958.589924174@linuxfoundation.org> (Greg
-	Kroah-Hartman's message of "Mon, 29 Jan 2024 09:03:20 -0800")
-References: <20240129165958.589924174@linuxfoundation.org>
-Date: Tue, 30 Jan 2024 21:15:11 +0100
-Message-ID: <87cyti4lyo.fsf@turtle.gmx.de>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1706646724; c=relaxed/simple;
+	bh=UB7BQcsJs2vQ3jKIDJCT4WdO5D5ZedyE0DSP+eaeJ4Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LcrPoca+O/duZYt1wWR9A+kD57ALcTPQyzqGUx8C+kx3IBoYq7z2x4qzxrK9T4j03wXcPuS8c3+Ta3M3E0A3IEbqggSfWRcevVSfQewcnhPmrB+QTESDm2d5zuABUImGP8wk/BnQ9bLeIheyg09d6qJXIvzYFckJcXYC91t1kH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=libc.org; spf=pass smtp.mailfrom=libc.org; arc=none smtp.client-ip=104.156.224.86
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=libc.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=libc.org
+Date: Tue, 30 Jan 2024 15:17:03 -0500
+From: Rich Felker <dalias@libc.org>
+To: musl@lists.openwall.com
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Fixing ELF loader for systems with oversized pages [was: Re: [musl]
+ Segmentation fault musl 1.2.4]
+Message-ID: <20240130201701.GT4163@brightrain.aerifal.cx>
+References: <20240111170323.GP1427497@port70.net>
+ <CAFj3ykeFLLS0VAo9xd70SC+6Rqt1H8nV+4u8CURcgPE_zEtj-w@mail.gmail.com>
+ <20240112185713.GQ1427497@port70.net>
+ <CAFj3ykddo8asH9udkxmybeKzeAP2Xt1QDHjZOOHafTitdU2sgg@mail.gmail.com>
+ <20240115223008.GR1427497@port70.net>
+ <CAFj3ykeCHGiT1SH9MJTEf65jxZjjrpuHxn95u2O=KN+cPkZCPA@mail.gmail.com>
+ <20240116182918.GS1427497@port70.net>
+ <20240116204552.GV4163@brightrain.aerifal.cx>
+ <20240130104338.GD1254592@port70.net>
+ <20240130153730.GS4163@brightrain.aerifal.cx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Provags-ID: V03:K1:QcvQmzEyCles02lS8o7pqH6JGpABMgHLojmyeXih92ZDAoTm0B3
- fAPfWXwWdVYDlk6FsPBsF+yo+PDARFfTwpnaZSh/sA3VrTOnFRod0V7FVJR2Ep2yenioGjn
- PdZWX7puK/YYpQJ/N5ERhuqNYxDExIV9aYYLZzAWG+wOowBAtMuiU8ml2qOCdkF2CTp9Wm7
- C+xeBuLm0voXzjd5cpBgg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:h6Gspw9SZOo=;tbWGYlzFam6OQQvyxCWTuzFzAHw
- SiiKYT4Hc2m9P/hmkAWj1E7hjxOoYDkcJYsgHkhbrSL2PbKdH2YT4h95r+tQFT6RqrhHZxetF
- NeG1j+faKnLl/Pwpb2KIwNrKS01B2IYFekX7bfC/GvqT3W0wmjYyTEAKgVECwPQv4C+FjsY1x
- kuda4aXd3VdQPiLPb1YHkAIm3nI/iZIEy37X6eSZO6OPS+X/4NcLPF+CrzL7rMclfesotJY7K
- +O06/lTsaO0DkBmNcgsueFCVk9YMlker3rAD1gZ4BDYfMUdFp+y0bzzl3B9YgwjlwTKMAvlXt
- QPnHIfybTOVjHFLg0noxXsRSDWpDno8ZRvZRXq27H9lam4899fHNs0U1T0hAiAcgj3jFS/jFK
- m0B/BxS7/LzuKrQFIRCHmKFjemiPqlsQFJoQgKBxVF45ivtOrk0eOXZ8BJBHna4V6JNxyihYQ
- oyQ/mOJevqtr2O1OJYe3qIv8eYGpTOhNIaBI/VyYq17QDyqwhQ2jqmYuPu3adDAFWfSga+gMD
- 0FkgxixmWes5hesJiIcRysq2jtr+sswuL2CNxgOwHKDn2gHKp+7FaQ31t47o5hKEbtx5muRI7
- 4z5t9KbiCkm+nzK+qRibYqma8uV+wt/BKPk3maPft3WJXgZYx3R0rmXITT+hqsOtYLq5NSR1P
- UgNYAUaD/260NHVPJDfp4ntPOwypIo1sXjbTs0eg7aIzNbNfGtboZa5Edw2SyVlgR1Id2Bp/p
- M0ZbhrZpb8A90Vx91MQqbfsks66/aB9Bcypls7JkN1yevtOgG5E0Or56O5Fekrs9aQKYXza6f
- bWNfwYgF2lGjmJepvh7NJ83VLMXbI9EG6M4eIjRbnr/rh7DY5TNwPjp6zzItRm8W57kPj1KfR
- ncTezcT+z7/UY3LWOUffDdOR+SnDcv7qGlxKyu3+/N9cXcNSD0j6XQuDToQWrMNkhHGFJVxK7
- vQT23v/sLjotewPGlC48hWIbOxU=
+Content-Type: multipart/mixed; boundary="5G+Imvfxoe+o1e80"
+Content-Disposition: inline
+In-Reply-To: <20240130153730.GS4163@brightrain.aerifal.cx>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On 2024-01-29 09:03 -0800, Greg Kroah-Hartman wrote:
 
-> This is the start of the stable review cycle for the 6.1.76 release.
-> There are 185 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 31 Jan 2024 16:59:28 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.76-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
+--5G+Imvfxoe+o1e80
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Works fine here on x86_64.  No Mellanox hardware, so I was not affected
-by the build failures which lead to -rc2.
+On Tue, Jan 30, 2024 at 10:37:30AM -0500, Rich Felker wrote:
+> On Tue, Jan 30, 2024 at 11:43:38AM +0100, Szabolcs Nagy wrote:
+> > * Rich Felker <dalias@libc.org> [2024-01-16 15:45:52 -0500]:
+> > 
+> > > On Tue, Jan 16, 2024 at 07:29:18PM +0100, Szabolcs Nagy wrote:
+> > > > * Cody Wetzel <codyawetzel@gmail.com> [2024-01-16 09:21:05 -0600]:
+> > > > > Here is the output for the old
+> > > > > ....
+> > > > > >
+> > > > > > / # /tmp/ld-musl-armhf.so.1 /usr/bin/readelf -lW /tmp/ld-musl-armhf.so.1
+> > > > > >
+> > > > > > Elf file type is DYN (Shared object file)
+> > > > > > Entry point 0x359cd
+> > > > > > There are 6 program headers, starting at offset 52
+> > > > > >
+> > > > > > Program Headers:
+> > > > > >   Type           Offset   VirtAddr   PhysAddr   FileSiz MemSiz  Flg Align
+> > > > > >   EXIDX          0x07acec 0x0007acec 0x0007acec 0x00008 0x00008 R   0x4
+> > > > > >   LOAD           0x000000 0x00000000 0x00000000 0x7acf4 0x7acf4 R E 0x10000
+> > > > > >   LOAD           0x07fd6c 0x0008fd6c 0x0008fd6c 0x0054a 0x02258 RW  0x10000
+> > > > 
+> > > > this load segment is 64k aligned.
+> > > > 
+> > > > > >   DYNAMIC        0x07febc 0x0008febc 0x0008febc 0x000c0 0x000c0 RW  0x4
+> > > > > >   GNU_STACK      0x000000 0x00000000 0x00000000 0x00000 0x00000 RW  0x10
+> > > > > >   GNU_RELRO      0x07fd6c 0x0008fd6c 0x0008fd6c 0x00294 0x00294 R   0x1
+> > > > > >
+> > > > > >  Section to Segment mapping:
+> > > > > >   Segment Sections...
+> > > > > >    00     .ARM.exidx
+> > > > > >    01     .hash .gnu.hash .dynsym .dynstr .rel.dyn .rel.plt .plt .text
+> > > > > > .rodata .ARM.exidx
+> > > > > >    02     .data.rel.ro .dynamic .got .data .bss
+> > > > > >    03     .dynamic
+> > > > > >    04
+> > > > > >    05     .data.rel.ro .dynamic .got
+> > > > > >
+> > > > > 
+> > > > > And the new...
+> > > > > 
+> > > > > / # /tmp/ld-musl-armhf.so.1 /usr/bin/readelf -lW /lib/ld-musl-armhf.so.1
+> > > > > >
+> > > > > > Elf file type is DYN (Shared object file)
+> > > > > > Entry point 0x362f1
+> > > > > > There are 6 program headers, starting at offset 52
+> > > > > >
+> > > > > > Program Headers:
+> > > > > >   Type           Offset   VirtAddr   PhysAddr   FileSiz MemSiz  Flg Align
+> > > > > >   EXIDX          0x07b81c 0x0007b81c 0x0007b81c 0x00008 0x00008 R   0x4
+> > > > > >   LOAD           0x000000 0x00000000 0x00000000 0x7b824 0x7b824 R E 0x1000
+> > > > > >   LOAD           0x07bd74 0x0007cd74 0x0007cd74 0x0054a 0x0225c RW  0x1000
+> > > > 
+> > > > this load segment is 4k aligned and offset vs addr is not congruent
+> > > > modulo 64k, or 32k, so won't work on systems with such page size.
+> > > > 
+> > > > > >   DYNAMIC        0x07bebc 0x0007cebc 0x0007cebc 0x000c0 0x000c0 RW  0x4
+> > > > > >   GNU_STACK      0x000000 0x00000000 0x00000000 0x00000 0x00000 RW  0x10
+> > > > > >   GNU_RELRO      0x07bd74 0x0007cd74 0x0007cd74 0x0028c 0x0028c R   0x1
+> > > > > >
+> > > > > >  Section to Segment mapping:
+> > > > > >   Segment Sections...
+> > > > > >    00     .ARM.exidx
+> > > > > >    01     .hash .gnu.hash .dynsym .dynstr .rel.dyn .rel.plt .plt .text
+> > > > > > .rodata .ARM.exidx
+> > > > > >    02     .data.rel.ro .dynamic .got .data .bss
+> > > > > >    03     .dynamic
+> > > > > >    04
+> > > > > >    05     .data.rel.ro .dynamic .got
+> > > > > 
+> > > > > 
+> > > > > I hope that helps.
+> > > > 
+> > > > yes, this is a linking issue, not musl libc.
+> > > > 
+> > > > alpine linux links binaries for 4k pagesize only.
+> > > > 
+> > > > arm linkers were updated at some point to create binaries supporting
+> > > > up to 64k pagesize.  i suspect some ppl ran into issues in practice
+> > > > and decided the larger binaries are not worth it, if they dont work
+> > > > reliably and forced 4k page size at link time.
+> > > > 
+> > > > you have to raise an issue with alpine linux, if you think 32k
+> > > > oage size is useful and reliably supportable.
+> > > 
+> > > Are they using -Wl,-z,separate-code? That incurs a large
+> > > binary-size-on-disk penalty when supporting oversized pages, and IIRC
+> > > something was done to make the linker default to not supporting
+> > > oversized pages when that's used. It might be the reason, if arm
+> > > linking is normally expected to use a larger max pagesize.
+> > 
+> > i looked at this now, turns out they just changed the
+> > pagesize back to 4k (i missed this change):
+> > 
+> > https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=1a26a53a0dee39106ba58fcb15496c5f13074652
+> 
+> This doesn't help immediately, but a major ingredient to fix this
+> situation would be getting the kernel to stop doing the wrong thing.
+> Right now, it's ignoring the fact that the ELF program header
+> constraints are incompatible with mmap given the oversized system
+> pagesize, and just incorrectly mapping the executable and trying to
+> run it anyway, whereby it blows up.
+> 
+> The right thing to do would be either to fail with ENOEXEC in this
+> case, or when mmap with the required offset constraint fails, falling
+> back to making an anonymous map and copying the whole content of the
+> loadable segment into that (no COW sharing). The latter is really not
+> all that bad for got/data/etc. mappings which you expect will be dirty
+> (modified) anyway.
+> 
+> BTW the former choice (ENOEXEC) would allow doing the latter in
+> userspace with a binfmt_misc loader.
 
-Tested-by: Sven Joachim <svenjoac@gmx.de>
+Completely untested draft patch showing the concept is attached.
 
-Cheers,
-       Sven
+Rich
+
+--5G+Imvfxoe+o1e80
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="fix_elf_loader_with_oversized_pages.diff"
+
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index f8c7f26f1fbb..45c50f379377 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -861,6 +861,12 @@ static int load_elf_binary(struct linux_binprm *bprm)
+ 	if (!elf_phdata)
+ 		goto out;
+ 
++	elf_ppnt = elf_phdata;
++	for (i = 0; i < elf_ex->e_phnum; i++, elf_ppnt++) {
++		if (elf_ppnt->p_type != PT_LOAD) continue;
++		if (ELF_PAGEOFFSET(elf_ppnt->p_vaddr - elf_ppnt->p_offset))
++			goto out;
++	}
+ 	elf_ppnt = elf_phdata;
+ 	for (i = 0; i < elf_ex->e_phnum; i++, elf_ppnt++) {
+ 		char *elf_interpreter;
+@@ -962,6 +968,13 @@ static int load_elf_binary(struct linux_binprm *bprm)
+ 		if (!interp_elf_phdata)
+ 			goto out_free_dentry;
+ 
++		elf_ppnt = interp_elf_phdata;
++		for (i = 0; i < elf_ex->e_phnum; i++, elf_ppnt++) {
++			if (elf_ppnt->p_type != PT_LOAD) continue;
++			if (ELF_PAGEOFFSET(elf_ppnt->p_vaddr - elf_ppnt->p_offset))
++				goto out_free_dentry;
++		}
++
+ 		/* Pass PT_LOPROC..PT_HIPROC headers to arch code */
+ 		elf_property_phdata = NULL;
+ 		elf_ppnt = interp_elf_phdata;
+
+--5G+Imvfxoe+o1e80--
 
