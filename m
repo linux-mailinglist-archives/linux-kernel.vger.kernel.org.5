@@ -1,149 +1,163 @@
-Return-Path: <linux-kernel+bounces-45166-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45167-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B153842C5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:07:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D917C842C67
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:08:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8DAA91C2474D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:07:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 797331F21B82
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:08:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3E827AE7C;
-	Tue, 30 Jan 2024 19:06:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ED9A7AE4C;
+	Tue, 30 Jan 2024 19:08:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EMh2DS97"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b="eblZUCnp"
+Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 013D97AE71;
-	Tue, 30 Jan 2024 19:06:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAE5B7AE44;
+	Tue, 30 Jan 2024 19:08:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=157.90.84.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706641590; cv=none; b=SgbFjvH4L8i9QkDn5FpzT1ofVIbryx4hcCv/coeoP09bE7iOLxRWWOKIOuCZbTh6rwhw2nXGc07pi9EXtn9vVsNa73/flAS6VFra2bbSGZ2VXwzzRkHEtIIrrclqDBytRNHm+0Zk8w4YamC2xgBMMFueIEPayY10wVDsdZg19kw=
+	t=1706641727; cv=none; b=QIzmUzAGiM5GOKXI/R1zj8RfXASfsWzAAKoFKPVMyfgqgKDaPeae8o4EjXiBpAEGlFNNQdynC1mQ0NwRGKG7BQyfkIyUe1dTolb/P7TAne9KQqoTZjbKREBK3cVKJIYavokMnXPvZ9qKb37GPoIN0AlV7sqpk5PIN9EAuhO9SaA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706641590; c=relaxed/simple;
-	bh=VksIfXIm5eursDB7QN4BdU+LKTo1rpEED6YZzJNhrl0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qNvISC6ogYgJYubonVn9u0Ld7EVK3THEssIcWA4QqwSJ5ARPmp/5RUaT1IKVdpj8zEBU1HqfJutxN5u/XRPj2YgeAx9/Ww6vfrCQyJRkU8y3NntYTqWG26p/ze/yO71y8Ro3hgdkP4BXO0xrkgumPGBdODMkHojLq66ekOyNkqI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EMh2DS97; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d0600551ebso8541301fa.2;
-        Tue, 30 Jan 2024 11:06:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706641586; x=1707246386; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kz5R8751++TIGV14CPH1BLDMs2sQzf7EuaPw8ShjZjA=;
-        b=EMh2DS97//CiG1KD19JajsI7D7a3QGjCioQYJiNq/Xwj6pENiz+SoyesqfL2+4kIUN
-         seDkGzwR7de7DBjMB4J35Gp2eUqZLIAR3qzsrzG46HxUgMGkryUXHAaqQ6VJV/TJQOVi
-         I99TYc/i1dYRVx4scl48ttj/+dREX7UiCOR0QYert/Mr82lM6z1lzU+rf5V00p++6XCc
-         kLQYeQRaALueGdgxGwyes/HevEpb8kdEimt3mvspqD6yWyEDCc6iZEGlDwX5tGOhtnJK
-         WKo8QijNdH6x2IsXB0fu8I7h6mR0CBYQHKNNym9izV51d43yG7pPujyebruubrY6RuzZ
-         siYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706641586; x=1707246386;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kz5R8751++TIGV14CPH1BLDMs2sQzf7EuaPw8ShjZjA=;
-        b=TGKhA/xOpC8X0sOmssaACE7cZRS/qml3GduEh6ltFD1/c+t/2RSGk34ewoZKNpEj9z
-         2B169M14lI8+y+TZKoPmlTlg4tfFLUBOh+sW6u8ZTbHrQ+HSNc2jgSaePad3zzMYVpUB
-         auCRo2Ko9sx1k/8UYDHQgrW06gWJx3jM8BSRHi/nYy7BsgPPFKFEKQX2can0pB/SJw4+
-         GhGUeGQ7SmFk0iVaA3HHV6cCcW5SLrnU4AM2b+zNZYpxyhOmjtI2THER14unDoy2IDH+
-         815AvrGKbL2Hy88GPj75Sa9De//qAVZJm5PoxCgOZt6ITjdyyn5BLoCCdniD3f/0CEkD
-         uRXg==
-X-Gm-Message-State: AOJu0YxKmPqseggLujk6qVfd93i7PEpsr9P3EYMld2IXOCahpxKp8Ivr
-	2TA13Fdvffi4JLXd7vVODi1oG82uCUHLpWvIvHKlmV9ta3OP83OLV4VJ+84/
-X-Google-Smtp-Source: AGHT+IGq/0kkkMjJWaJGc/t19XDj/mXpEbDzhvS8RC7I4fDvALCvvgcCU8OYgpxN47xLUWQCljOBdA==
-X-Received: by 2002:a2e:5c88:0:b0:2d0:5925:7e with SMTP id q130-20020a2e5c88000000b002d05925007emr1970000ljb.32.1706641585969;
-        Tue, 30 Jan 2024 11:06:25 -0800 (PST)
-Received: from jernej-laptop.localnet (86-58-14-70.dynamic.telemach.net. [86.58.14.70])
-        by smtp.gmail.com with ESMTPSA id g6-20020a056402320600b0055eec69a5cbsm2979933eda.71.2024.01.30.11.06.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 11:06:25 -0800 (PST)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: linux-kernel@vger.kernel.org, Aren Moynihan <aren@peacevolution.org>
-Cc: Miles Alan <m@milesalan.com>, Ondrej Jirman <megi@xff.cz>,
- Aren Moynihan <aren@peacevolution.org>, Chen-Yu Tsai <wens@csie.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Rob Herring <robh+dt@kernel.org>, Samuel Holland <samuel@sholland.org>,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-sunxi@lists.linux.dev
-Subject:
- Re: [PATCH 2/4] arm64: dts: sun50i-a64-pinephone: Retain leds state in
- suspend
-Date: Tue, 30 Jan 2024 20:06:24 +0100
-Message-ID: <4892315.31r3eYUQgx@jernej-laptop>
-In-Reply-To: <20240128204740.2355092-2-aren@peacevolution.org>
-References:
- <20240128204740.2355092-1-aren@peacevolution.org>
- <20240128204740.2355092-2-aren@peacevolution.org>
+	s=arc-20240116; t=1706641727; c=relaxed/simple;
+	bh=oUIdLXEYaWSKNLi2jOEFBtoL4WM7Kh/0wZWmDFhoNLM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CiPVS9bXCqI5zyBGuIO9S7MPToHuko/r84+T/ztRLQutBopSD+3cQqdcaKY36yx3bwhD1UM5GX+fjLt/9CYLDTfqKBkP9CpaDeiVZODzg0UW9BbKila5oGD9H0wgqQbbyxU5v3VxMghvAZYfV5rfkJb1HatEwUmfmOBFV95g94s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com; spf=pass smtp.mailfrom=tuxedocomputers.com; dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b=eblZUCnp; arc=none smtp.client-ip=157.90.84.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxedocomputers.com
+Received: from [192.168.42.20] (p5de453e7.dip0.t-ipconnect.de [93.228.83.231])
+	(Authenticated sender: wse@tuxedocomputers.com)
+	by mail.tuxedocomputers.com (Postfix) with ESMTPSA id 23BFC2FC004A;
+	Tue, 30 Jan 2024 20:08:42 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
+	s=default; t=1706641722;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LbhUeHVixZ6fHRGYU1VVwvcn9Vo4T6Wzvv+6eidxVh0=;
+	b=eblZUCnpERjN7epF9d579T4ea980hdkcfbiNS7lWSKcEn66+MJOtJ9uQNaJZvn5qfRt4X9
+	1Z6fJamdKuUtzJ7grIAplzCNz/t9/k6nP5gEunaN544POJRg62gA93IRcMfyAWqWRrCyKx
+	H+dD1Gh4Ul1iX0LWZj4tlRq4K2g+z9Y=
+Authentication-Results: mail.tuxedocomputers.com;
+	auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
+Message-ID: <b70b2ea8-abfd-4d41-b336-3e34e5bdb8c6@tuxedocomputers.com>
+Date: Tue, 30 Jan 2024 20:08:41 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+User-Agent: Mozilla Thunderbird
+Subject: Re: Implement per-key keyboard backlight as auxdisplay?
+Content-Language: en-US
+To: Hans de Goede <hdegoede@redhat.com>, Pavel Machek <pavel@ucw.cz>
+Cc: Jani Nikula <jani.nikula@linux.intel.com>, jikos@kernel.org,
+ Jelle van der Waa <jelle@vdwaa.nl>,
+ Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, Lee Jones <lee@kernel.org>,
+ linux-kernel@vger.kernel.org,
+ "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ linux-input@vger.kernel.org, ojeda@kernel.org, linux-leds@vger.kernel.org
+References: <aac81702-df1e-43a2-bfe9-28e9cb8d2282@tuxedocomputers.com>
+ <ZSmg4tqXiYiX18K/@duo.ucw.cz>
+ <CANiq72mfP+dOLFR352O0UNVF8m8yTi_VmOY1zzQdTBjPWCRowg@mail.gmail.com>
+ <87sf61bm8t.fsf@intel.com> <ZVvHG/Q+V6kCnfKZ@duo.ucw.cz>
+ <f4137e34-c7fb-4f21-bc93-1496cbf61fdf@tuxedocomputers.com>
+ <8096a042-83bd-4b9f-b633-79e86995c9b8@redhat.com>
+ <f416fbca-589b-4f6a-aad6-323b66398273@tuxedocomputers.com>
+ <4222268b-ff44-4b7d-bf11-e350594bbe24@redhat.com>
+ <ac02143c-d417-49e5-9c6e-150cbda71ba7@tuxedocomputers.com>
+ <ZaljwLe7P+dXHEHb@duo.ucw.cz>
+ <6bbfdd62-e663-4a45-82f4-445069a8d690@redhat.com>
+ <0cdb78b1-7763-4bb6-9582-d70577781e61@tuxedocomputers.com>
+ <7228f2c6-fbdd-4e19-b703-103b8535d77d@redhat.com>
+ <730bead8-6e1d-4d21-90d2-4ee73155887a@tuxedocomputers.com>
+ <952409e1-2f0e-4d7a-a7a9-3b78f2eafec7@redhat.com>
+ <9851a06d-956e-4b57-be63-e10ff1fce8b4@tuxedocomputers.com>
+ <1bc6d6f0-a13d-4148-80cb-9c13dec7ed32@redhat.com>
+From: Werner Sembach <wse@tuxedocomputers.com>
+In-Reply-To: <1bc6d6f0-a13d-4148-80cb-9c13dec7ed32@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Dne nedelja, 28. januar 2024 ob 21:45:08 CET je Aren Moynihan napisal(a):
-> From: Miles Alan <m@milesalan.com>
-> 
-> Allows user to set a led before entering suspend to know that
-> the phone is still on (or could be used for notifications etc.)
-> 
-> Signed-off-by: Miles Alan <m@milesalan.com>
-> Signed-off-by: Ondrej Jirman <megi@xff.cz>
-> Signed-off-by: Aren Moynihan <aren@peacevolution.org>
+Hi,
 
-Where is patch 1 and possibly cover letter? Please resend with all patches.
+Am 30.01.24 um 19:35 schrieb Hans de Goede:
+> Hi,
+>
+> On 1/30/24 19:09, Werner Sembach wrote:
+>> Hi Hans,
+>>
+>> resend because Thunderbird htmlified the mail :/
+> I use thunderbird too. If you right click on the server name
+> and then go to "Settings" -> "Composition & Addressing"
+> and then uncheck "Compose messages in HTML format"
+> I think that should do the trick.
+Can't set this globally or other people will complain that my replies delete 
+company logos in signatures xD. But usually the auto detection of Thunderbird works.
+>
+>> Am 30.01.24 um 18:10 schrieb Hans de Goede:
+>>> Hi Werner,
+>>>
+>>> On 1/30/24 12:12, Werner Sembach wrote:
+>>>> Hi Hans,
+>>>>
+>>>> Am 29.01.24 um 14:24 schrieb Hans de Goede:
+>> <snip>
+>>>> I think that are mostly external keyboards, so in theory a possible cut could also between built-in and external devices.
+>>> IMHO it would be better to limit /dev/rgbledstring use to only
+>>> cases where direct userspace control is not possible and thus
+>>> have the cut be based on whether direct userspace control
+>>> (e.g. /dev/hidraw access) is possible or not.
+>> Ack
+>>
+>> <snip>
+>>
+>>>> So also no basic driver? Or still the concept from before with a basic 1 zone only driver via leds subsystem to have something working, but it is unregistered by userspace, if open rgb wants to take over for fine granular support?
+>>> Ah good point, no I think that a basic driver just for kbd backlight
+>>> brightness support which works with the standard desktop environment
+>>> controls for this makes sense.
+>>>
+>>> Combined with some mechanism for e.g. openrgb to fully take over
+>>> control as discussed. It is probably a good idea to file a separate
+>>> issue with the openrgb project to discuss the takeover API.
+>> I think the OpenRGB maintainers are pretty flexible at that point, after all it's similar to enable commands a lot of rgb devices need anyway. I would include it in a full api proposal.
+> Ack.
+>
+>> On this note: Any particular reason you suggested an ioctl interface instead of a sysfs one? (Open question as, for example, I have no idea what performance implications both have)
+> sysfs APIs typically have a one file per setting approach,
+> so for effects with speed and multiple-color settings you
+> would need a whole bunch of different files and then you
+> would either need to immediately apply every setting,
+> needing multiple writes to the hw for a single effect
+> update, or have some sort of "commit" sysfs attribute.
+>
+> With ioctls you can simply provide all the settings
+> in one call, which is why I suggested using ioctls.
 
-However, this particular patch is:
-Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Ack
 
-Best regards,
-Jernej
+If the static mode update is fast enough to have userspace controlled 
+animations, OpenRGB is calling that direct mode. Is it feasible to send 30 or 
+more ioctls per second for such an direct mode? Or should this spawn a special 
+purpose sysfs file that is kept open by userspace to continuously update the 
+keyboard?
 
-> ---
-> 
->  arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-> index 87847116ab6d..ad2476ee01e4 100644
-> --- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-> @@ -43,18 +43,21 @@ led-0 {
->  			function = LED_FUNCTION_INDICATOR;
->  			color = <LED_COLOR_ID_BLUE>;
->  			gpios = <&pio 3 20 GPIO_ACTIVE_HIGH>; /* PD20 */
-> +			retain-state-suspended;
->  		};
->  
->  		led-1 {
->  			function = LED_FUNCTION_INDICATOR;
->  			color = <LED_COLOR_ID_GREEN>;
->  			gpios = <&pio 3 18 GPIO_ACTIVE_HIGH>; /* PD18 */
-> +			retain-state-suspended;
->  		};
->  
->  		led-2 {
->  			function = LED_FUNCTION_INDICATOR;
->  			color = <LED_COLOR_ID_RED>;
->  			gpios = <&pio 3 19 GPIO_ACTIVE_HIGH>; /* PD19 */
-> +			retain-state-suspended;
->  		};
->  	};
->  
-> 
+>
+> Regards,
+>
+> Hans
+>
+>
+>
+Regards,
 
-
-
+Werner
 
 
