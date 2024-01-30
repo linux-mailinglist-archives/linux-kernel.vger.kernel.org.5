@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-44924-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44925-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBAEA84291F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:27:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4D45842920
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:27:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 837F828625F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:27:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDAA11C25CCD
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:27:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B94E1272D4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EEF6128370;
 	Tue, 30 Jan 2024 16:26:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="pMPsn8SW";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gCPR+LmA"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="09v267q4";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="lIVzCSx6"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A07811292D9;
-	Tue, 30 Jan 2024 16:26:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98AF8129A8D;
+	Tue, 30 Jan 2024 16:26:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706631964; cv=none; b=WAZiA9IDcxELRvklLJ8r6rK5tnu3niBtwHMQmk2OAPlWabxClt/B/n/9/cZ7ig6UPvzI7ce9iQ63P7/WLF6vbGcHs3fWd3WZBbRBHBGDFbZwNAKn3Lh6BuQlu+vR7iFH3/zJmgqy7+GD2oKsr+zFXZtIj47K5R9A7dMgjmdl1ik=
+	t=1706631964; cv=none; b=Kw/sgH2zRwF/ATHqe/25PsmkNJOi1l1mxueM51EpHxBcjgCVkRI8DRHAPNtG39MjO+pG6+Hq1vk9H2wBSDp7EFThEp48vD/7wufLeHsTOiNK+Tr1C9nT9TzSaiiSMquaIlwlXFzKQ1U0f6ZnTLxxq5X0QJ+bAqWWesdszU6WfvU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706631964; c=relaxed/simple;
-	bh=jV+OKSYlKt+uq4G2Z4yn86j/0AP8zKFQ5VxdRau6TTQ=;
+	bh=Os4ryinEinc50/BtViFYrMICnC5xmSK4lS7Ps0j0nrI=;
 	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=hAT+yYWzExojYudxS7BNPNnbJ+IvSri00o17L4hMG6LNCBV1Gony47XOAg390xk5vdps104d2fAxO0bjD0Rew+n4GLbd3nU3fjQDySmqupNAVnXwqqvf2iTamoZPBq5p8GvjEVtLbB/TimPO+dzs7pb5yGXekn+GjOPCQiutIc8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=pMPsn8SW; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=gCPR+LmA; arc=none smtp.client-ip=193.142.43.55
+	 Message-ID:Content-Type; b=kD7y9j2fXjp/mH/eZ1qRg+XMt+sV9Wl9fbCHp7eK1Kp0SLzD6f0E8pjmam2hfhg1gpV46u8ZvIP1HEl99ZtLTxS/230YZqI+MFkRaF9/MwvvObaQKYQqk/NkYQklISkxGJ509mJ4QMshlT41yBHj90a6nK0v2aM8aySiZLxco44=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=09v267q4; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=lIVzCSx6; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 30 Jan 2024 16:25:59 -0000
+Date: Tue, 30 Jan 2024 16:26:00 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020; t=1706631960;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -39,12 +39,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=OHou+VM3bwJKOMT8dPSiBhSY0qKJvGj+I9IMfSaJM1w=;
-	b=pMPsn8SWW/opwBTCj2leLOXiON1dIJtoQxt8fJwHB/wc7FofiehACGuMKcXkpH9JLcAy6L
-	dGbRnHmuJDiIn2kvQ5DOUMzbadEfdZPCMM4uWkxg/VNM5erduUPEgKlYYHKa6uliDVvXkO
-	g9/HRNPPAO70sfiUxzJ7NFL2gQPHwd/qnceM318ahar80eOiYRiyFe7/aenm6z0d1bwWtZ
-	G+PgZ5Zr4j1C4AJL/9BNdkZ1zIcdkaSPCsOc7aMWYrqbDCLqBXaFsBN/06EN5DwnGyTr19
-	lrHqpPjL0dzz6cPy2mm/LiuxeZEvxWKZ1oCxPKos+m7hPOABuANScsgg2RvMHQ==
+	bh=HDUkZmo2Oxvbd781H9C01N70Gewtk18YVxhikUkhYXw=;
+	b=09v267q4ezm6gQeW7sWSDYpIHRvUb7occuzMtRkRDXTCYDH67C3A+7KZnCAVp5lrW9ONqa
+	GMkq51TqqPnEi/1A7JlToKbylNc4goBzlsIXHhRPzlAqfTYtwal9dDlcAShRykX8MtQt4d
+	0V8j23v1n4P62Jm80ei5Ey8YCfFokR5ZKJ9amipe67nK8Y9jb+myGtoyCB93jkr6/eCdAT
+	yT4xrTUdptxBlxQn0Zym6cnsTjvI1XRAnEBiB4QYHJGvWmtGcRI7/7iyUn/Z1ukQIalO0o
+	+UajVSD6+uwoo6ijkttnkP9SBiO9+ugNX7pKsVSxbd2gHViLqciryKlz4VlefQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020e; t=1706631960;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -52,27 +52,27 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=OHou+VM3bwJKOMT8dPSiBhSY0qKJvGj+I9IMfSaJM1w=;
-	b=gCPR+LmAzT8zHQVnEx04ClYY0GG1VewZ3YbAx+b9YcVtP6KGxkDkdaRCWvwvKuGerU2JhN
-	4ld5VYxrgRRxP1BQ==
+	bh=HDUkZmo2Oxvbd781H9C01N70Gewtk18YVxhikUkhYXw=;
+	b=lIVzCSx6SvYQbgQOL3TAzWbmJ7xtjk8lKzyKRefSrgCVhAa+PalrOMgydvHJiYDh3z164k
+	PxOoz4ospHN+ZlDw==
 From: "tip-bot2 for Ashish Kalra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/sev] crypto: ccp: Add panic notifier for SEV/SNP firmware
- shutdown on kdump
+Subject: [tip: x86/sev] iommu/amd: Clean up RMP entries for IOMMU pages during
+ SNP shutdown
 Cc: Ashish Kalra <ashish.kalra@amd.com>, Michael Roth <michael.roth@amd.com>,
  "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
  linux-kernel@vger.kernel.org
-In-Reply-To: <20240126041126.1927228-21-michael.roth@amd.com>
-References: <20240126041126.1927228-21-michael.roth@amd.com>
+In-Reply-To: <20240126041126.1927228-20-michael.roth@amd.com>
+References: <20240126041126.1927228-20-michael.roth@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170663195929.398.15152793063246216245.tip-bot2@tip-bot2>
+Message-ID: <170663196010.398.12784351404486075245.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -82,311 +82,175 @@ Content-Transfer-Encoding: 7bit
 
 The following commit has been merged into the x86/sev branch of tip:
 
-Commit-ID:     8ef979584ea86c247b768f4420148721a842835f
-Gitweb:        https://git.kernel.org/tip/8ef979584ea86c247b768f4420148721a842835f
+Commit-ID:     f366a8dac1b8fef28a470d4e67b9843ebb8e2a1f
+Gitweb:        https://git.kernel.org/tip/f366a8dac1b8fef28a470d4e67b9843ebb8e2a1f
 Author:        Ashish Kalra <ashish.kalra@amd.com>
-AuthorDate:    Thu, 25 Jan 2024 22:11:20 -06:00
+AuthorDate:    Thu, 25 Jan 2024 22:11:19 -06:00
 Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Mon, 29 Jan 2024 20:34:19 +01:00
+CommitterDate: Mon, 29 Jan 2024 20:34:18 +01:00
 
-crypto: ccp: Add panic notifier for SEV/SNP firmware shutdown on kdump
+iommu/amd: Clean up RMP entries for IOMMU pages during SNP shutdown
 
-Add a kdump safe version of sev_firmware_shutdown() and register it as a
-crash_kexec_post_notifier so it will be invoked during panic/crash to do
-SEV/SNP shutdown. This is required for transitioning all IOMMU pages to
-reclaim/hypervisor state, otherwise re-init of IOMMU pages during
-crashdump kernel boot fails and panics the crashdump kernel.
-
-This panic notifier runs in atomic context, hence it ensures not to
-acquire any locks/mutexes and polls for PSP command completion instead
-of depending on PSP command completion interrupt.
-
-  [ mdr: Remove use of "we" in comments. ]
+Add a new IOMMU API interface amd_iommu_snp_disable() to transition
+IOMMU pages to Hypervisor state from Reclaim state after SNP_SHUTDOWN_EX
+command. Invoke this API from the CCP driver after SNP_SHUTDOWN_EX
+command.
 
 Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
 Signed-off-by: Michael Roth <michael.roth@amd.com>
 Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20240126041126.1927228-21-michael.roth@amd.com
+Link: https://lore.kernel.org/r/20240126041126.1927228-20-michael.roth@amd.com
 ---
- arch/x86/include/asm/sev.h   |   2 +-
- arch/x86/kernel/crash.c      |   3 +-
- arch/x86/kernel/sev.c        |  10 +++-
- arch/x86/virt/svm/sev.c      |   6 ++-
- drivers/crypto/ccp/sev-dev.c | 111 ++++++++++++++++++++++++----------
- 5 files changed, 102 insertions(+), 30 deletions(-)
+ drivers/crypto/ccp/sev-dev.c | 20 +++++++++-
+ drivers/iommu/amd/init.c     | 79 +++++++++++++++++++++++++++++++++++-
+ include/linux/amd-iommu.h    |  6 +++-
+ 3 files changed, 105 insertions(+)
 
-diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
-index 60de1b4..bed95e1 100644
---- a/arch/x86/include/asm/sev.h
-+++ b/arch/x86/include/asm/sev.h
-@@ -227,6 +227,7 @@ int snp_issue_guest_request(u64 exit_code, struct snp_req_data *input, struct sn
- void snp_accept_memory(phys_addr_t start, phys_addr_t end);
- u64 snp_get_unsupported_features(u64 status);
- u64 sev_get_status(void);
-+void kdump_sev_callback(void);
- #else
- static inline void sev_es_ist_enter(struct pt_regs *regs) { }
- static inline void sev_es_ist_exit(void) { }
-@@ -255,6 +256,7 @@ static inline int snp_issue_guest_request(u64 exit_code, struct snp_req_data *in
- static inline void snp_accept_memory(phys_addr_t start, phys_addr_t end) { }
- static inline u64 snp_get_unsupported_features(u64 status) { return 0; }
- static inline u64 sev_get_status(void) { return 0; }
-+static inline void kdump_sev_callback(void) { }
- #endif
- 
- #ifdef CONFIG_KVM_AMD_SEV
-diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
-index b6b0443..d184c29 100644
---- a/arch/x86/kernel/crash.c
-+++ b/arch/x86/kernel/crash.c
-@@ -40,6 +40,7 @@
- #include <asm/intel_pt.h>
- #include <asm/crash.h>
- #include <asm/cmdline.h>
-+#include <asm/sev.h>
- 
- /* Used while preparing memory map entries for second kernel */
- struct crash_memmap_data {
-@@ -59,6 +60,8 @@ static void kdump_nmi_callback(int cpu, struct pt_regs *regs)
- 	 */
- 	cpu_emergency_stop_pt();
- 
-+	kdump_sev_callback();
-+
- 	disable_local_APIC();
- }
- 
-diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-index 1ec7533..002af6c 100644
---- a/arch/x86/kernel/sev.c
-+++ b/arch/x86/kernel/sev.c
-@@ -2265,3 +2265,13 @@ static int __init snp_init_platform_device(void)
- 	return 0;
- }
- device_initcall(snp_init_platform_device);
-+
-+void kdump_sev_callback(void)
-+{
-+	/*
-+	 * Do wbinvd() on remote CPUs when SNP is enabled in order to
-+	 * safely do SNP_SHUTDOWN on the local CPU.
-+	 */
-+	if (cpu_feature_enabled(X86_FEATURE_SEV_SNP))
-+		wbinvd();
-+}
-diff --git a/arch/x86/virt/svm/sev.c b/arch/x86/virt/svm/sev.c
-index 0dffbf3..cffe115 100644
---- a/arch/x86/virt/svm/sev.c
-+++ b/arch/x86/virt/svm/sev.c
-@@ -216,6 +216,12 @@ skip_enable:
- 
- 	cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "x86/rmptable_init:online", __snp_enable, NULL);
- 
-+	/*
-+	 * Setting crash_kexec_post_notifiers to 'true' to ensure that SNP panic
-+	 * notifier is invoked to do SNP IOMMU shutdown before kdump.
-+	 */
-+	crash_kexec_post_notifiers = true;
-+
- 	return 0;
- 
- nosnp:
 diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-index 605c6bf..504a221 100644
+index a70f8b1..605c6bf 100644
 --- a/drivers/crypto/ccp/sev-dev.c
 +++ b/drivers/crypto/ccp/sev-dev.c
-@@ -21,6 +21,7 @@
- #include <linux/hw_random.h>
- #include <linux/ccp.h>
- #include <linux/firmware.h>
-+#include <linux/panic_notifier.h>
- #include <linux/gfp.h>
- #include <linux/cpufeature.h>
+@@ -26,6 +26,7 @@
  #include <linux/fs.h>
-@@ -143,6 +144,25 @@ static int sev_wait_cmd_ioc(struct sev_device *sev,
- {
- 	int ret;
+ #include <linux/fs_struct.h>
+ #include <linux/psp.h>
++#include <linux/amd-iommu.h>
+ 
+ #include <asm/smp.h>
+ #include <asm/cacheflush.h>
+@@ -1655,6 +1656,25 @@ static int __sev_snp_shutdown_locked(int *error)
+ 		return ret;
+ 	}
  
 +	/*
-+	 * If invoked during panic handling, local interrupts are disabled,
-+	 * so the PSP command completion interrupt can't be used. Poll for
-+	 * PSP command completion instead.
++	 * SNP_SHUTDOWN_EX with IOMMU_SNP_SHUTDOWN set to 1 disables SNP
++	 * enforcement by the IOMMU and also transitions all pages
++	 * associated with the IOMMU to the Reclaim state.
++	 * Firmware was transitioning the IOMMU pages to Hypervisor state
++	 * before version 1.53. But, accounting for the number of assigned
++	 * 4kB pages in a 2M page was done incorrectly by not transitioning
++	 * to the Reclaim state. This resulted in RMP #PF when later accessing
++	 * the 2M page containing those pages during kexec boot. Hence, the
++	 * firmware now transitions these pages to Reclaim state and hypervisor
++	 * needs to transition these pages to shared state. SNP Firmware
++	 * version 1.53 and above are needed for kexec boot.
 +	 */
-+	if (irqs_disabled()) {
-+		unsigned long timeout_usecs = (timeout * USEC_PER_SEC) / 10;
-+
-+		/* Poll for SEV command completion: */
-+		while (timeout_usecs--) {
-+			*reg = ioread32(sev->io_regs + sev->vdata->cmdresp_reg);
-+			if (*reg & PSP_CMDRESP_RESP)
-+				return 0;
-+
-+			udelay(10);
-+		}
-+		return -ETIMEDOUT;
++	ret = amd_iommu_snp_disable();
++	if (ret) {
++		dev_err(sev->dev, "SNP IOMMU shutdown failed\n");
++		return ret;
 +	}
 +
- 	ret = wait_event_timeout(sev->int_queue,
- 			sev->int_rcvd, timeout * HZ);
- 	if (!ret)
-@@ -1338,17 +1358,6 @@ static int __sev_platform_shutdown_locked(int *error)
- 	return ret;
+ 	sev->snp_initialized = false;
+ 	dev_dbg(sev->dev, "SEV-SNP firmware shutdown\n");
+ 
+diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
+index 3a4eeb2..88bb08a 100644
+--- a/drivers/iommu/amd/init.c
++++ b/drivers/iommu/amd/init.c
+@@ -30,6 +30,7 @@
+ #include <asm/io_apic.h>
+ #include <asm/irq_remapping.h>
+ #include <asm/set_memory.h>
++#include <asm/sev.h>
+ 
+ #include <linux/crash_dump.h>
+ 
+@@ -3797,3 +3798,81 @@ int amd_iommu_pc_set_reg(struct amd_iommu *iommu, u8 bank, u8 cntr, u8 fxn, u64 
+ 
+ 	return iommu_pc_get_set_reg(iommu, bank, cntr, fxn, value, true);
  }
- 
--static int sev_platform_shutdown(int *error)
--{
--	int rc;
--
--	mutex_lock(&sev_cmd_mutex);
--	rc = __sev_platform_shutdown_locked(NULL);
--	mutex_unlock(&sev_cmd_mutex);
--
--	return rc;
--}
--
- static int sev_get_platform_state(int *state, int *error)
- {
- 	struct sev_user_data_status data;
-@@ -1624,7 +1633,7 @@ fw_err:
- 	return ret;
- }
- 
--static int __sev_snp_shutdown_locked(int *error)
-+static int __sev_snp_shutdown_locked(int *error, bool panic)
- {
- 	struct sev_device *sev = psp_master->sev_data;
- 	struct sev_data_snp_shutdown_ex data;
-@@ -1637,7 +1646,16 @@ static int __sev_snp_shutdown_locked(int *error)
- 	data.len = sizeof(data);
- 	data.iommu_snp_shutdown = 1;
- 
--	wbinvd_on_all_cpus();
-+	/*
-+	 * If invoked during panic handling, local interrupts are disabled
-+	 * and all CPUs are stopped, so wbinvd_on_all_cpus() can't be called.
-+	 * In that case, a wbinvd() is done on remote CPUs via the NMI
-+	 * callback, so only a local wbinvd() is needed here.
-+	 */
-+	if (!panic)
-+		wbinvd_on_all_cpus();
-+	else
-+		wbinvd();
- 
- 	ret = __sev_do_cmd_locked(SEV_CMD_SNP_SHUTDOWN_EX, &data, error);
- 	/* SHUTDOWN may require DF_FLUSH */
-@@ -1681,17 +1699,6 @@ static int __sev_snp_shutdown_locked(int *error)
- 	return ret;
- }
- 
--static int sev_snp_shutdown(int *error)
--{
--	int rc;
--
--	mutex_lock(&sev_cmd_mutex);
--	rc = __sev_snp_shutdown_locked(error);
--	mutex_unlock(&sev_cmd_mutex);
--
--	return rc;
--}
--
- static int sev_ioctl_do_pek_import(struct sev_issue_cmd *argp, bool writable)
- {
- 	struct sev_device *sev = psp_master->sev_data;
-@@ -2139,19 +2146,28 @@ e_err:
- 	return ret;
- }
- 
--static void sev_firmware_shutdown(struct sev_device *sev)
-+static void __sev_firmware_shutdown(struct sev_device *sev, bool panic)
- {
- 	int error;
- 
--	sev_platform_shutdown(NULL);
-+	__sev_platform_shutdown_locked(NULL);
- 
- 	if (sev_es_tmr) {
--		/* The TMR area was encrypted, flush it from the cache */
--		wbinvd_on_all_cpus();
-+		/*
-+		 * The TMR area was encrypted, flush it from the cache.
-+		 *
-+		 * If invoked during panic handling, local interrupts are
-+		 * disabled and all CPUs are stopped, so wbinvd_on_all_cpus()
-+		 * can't be used. In that case, wbinvd() is done on remote CPUs
-+		 * via the NMI callback, and done for this CPU later during
-+		 * SNP shutdown, so wbinvd_on_all_cpus() can be skipped.
-+		 */
-+		if (!panic)
-+			wbinvd_on_all_cpus();
- 
- 		__snp_free_firmware_pages(virt_to_page(sev_es_tmr),
- 					  get_order(sev_es_tmr_size),
--					  false);
-+					  true);
- 		sev_es_tmr = NULL;
- 	}
- 
-@@ -2167,7 +2183,14 @@ static void sev_firmware_shutdown(struct sev_device *sev)
- 		snp_range_list = NULL;
- 	}
- 
--	sev_snp_shutdown(&error);
-+	__sev_snp_shutdown_locked(&error, panic);
++
++#ifdef CONFIG_KVM_AMD_SEV
++static int iommu_page_make_shared(void *page)
++{
++	unsigned long paddr, pfn;
++
++	paddr = iommu_virt_to_phys(page);
++	/* Cbit maybe set in the paddr */
++	pfn = __sme_clr(paddr) >> PAGE_SHIFT;
++
++	if (!(pfn % PTRS_PER_PMD)) {
++		int ret, level;
++		bool assigned;
++
++		ret = snp_lookup_rmpentry(pfn, &assigned, &level);
++		if (ret)
++			pr_warn("IOMMU PFN %lx RMP lookup failed, ret %d\n",
++				pfn, ret);
++
++		if (!assigned)
++			pr_warn("IOMMU PFN %lx not assigned in RMP table\n",
++				pfn);
++
++		if (level > PG_LEVEL_4K) {
++			ret = psmash(pfn);
++			if (ret) {
++				pr_warn("IOMMU PFN %lx had a huge RMP entry, but attempted psmash failed, ret: %d, level: %d\n",
++					pfn, ret, level);
++			}
++		}
++	}
++
++	return rmp_make_shared(pfn, PG_LEVEL_4K);
 +}
 +
-+static void sev_firmware_shutdown(struct sev_device *sev)
++static int iommu_make_shared(void *va, size_t size)
 +{
-+	mutex_lock(&sev_cmd_mutex);
-+	__sev_firmware_shutdown(sev, false);
-+	mutex_unlock(&sev_cmd_mutex);
- }
- 
- void sev_dev_destroy(struct psp_device *psp)
-@@ -2185,6 +2208,29 @@ void sev_dev_destroy(struct psp_device *psp)
- 	psp_clear_sev_irq_handler(psp);
- }
- 
-+static int snp_shutdown_on_panic(struct notifier_block *nb,
-+				 unsigned long reason, void *arg)
-+{
-+	struct sev_device *sev = psp_master->sev_data;
++	void *page;
++	int ret;
 +
-+	/*
-+	 * If sev_cmd_mutex is already acquired, then it's likely
-+	 * another PSP command is in flight and issuing a shutdown
-+	 * would fail in unexpected ways. Rather than create even
-+	 * more confusion during a panic, just bail out here.
-+	 */
-+	if (mutex_is_locked(&sev_cmd_mutex))
-+		return NOTIFY_DONE;
++	if (!va)
++		return 0;
 +
-+	__sev_firmware_shutdown(sev, true);
++	for (page = va; page < (va + size); page += PAGE_SIZE) {
++		ret = iommu_page_make_shared(page);
++		if (ret)
++			return ret;
++	}
 +
-+	return NOTIFY_DONE;
++	return 0;
 +}
 +
-+static struct notifier_block snp_panic_notifier = {
-+	.notifier_call = snp_shutdown_on_panic,
-+};
++int amd_iommu_snp_disable(void)
++{
++	struct amd_iommu *iommu;
++	int ret;
 +
- int sev_issue_cmd_external_user(struct file *filep, unsigned int cmd,
- 				void *data, int *error)
- {
-@@ -2222,6 +2268,8 @@ void sev_pci_init(void)
- 	dev_info(sev->dev, "SEV%s API:%d.%d build:%d\n", sev->snp_initialized ?
- 		"-SNP" : "", sev->api_major, sev->api_minor, sev->build);
- 
-+	atomic_notifier_chain_register(&panic_notifier_list,
-+				       &snp_panic_notifier);
- 	return;
- 
- err:
-@@ -2236,4 +2284,7 @@ void sev_pci_exit(void)
- 		return;
- 
- 	sev_firmware_shutdown(sev);
++	if (!amd_iommu_snp_en)
++		return 0;
 +
-+	atomic_notifier_chain_unregister(&panic_notifier_list,
-+					 &snp_panic_notifier);
- }
++	for_each_iommu(iommu) {
++		ret = iommu_make_shared(iommu->evt_buf, EVT_BUFFER_SIZE);
++		if (ret)
++			return ret;
++
++		ret = iommu_make_shared(iommu->ppr_log, PPR_LOG_SIZE);
++		if (ret)
++			return ret;
++
++		ret = iommu_make_shared((void *)iommu->cmd_sem, PAGE_SIZE);
++		if (ret)
++			return ret;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(amd_iommu_snp_disable);
++#endif
+diff --git a/include/linux/amd-iommu.h b/include/linux/amd-iommu.h
+index 7365be0..2b90c48 100644
+--- a/include/linux/amd-iommu.h
++++ b/include/linux/amd-iommu.h
+@@ -85,4 +85,10 @@ int amd_iommu_pc_get_reg(struct amd_iommu *iommu, u8 bank, u8 cntr, u8 fxn,
+ 		u64 *value);
+ struct amd_iommu *get_amd_iommu(unsigned int idx);
+ 
++#ifdef CONFIG_KVM_AMD_SEV
++int amd_iommu_snp_disable(void);
++#else
++static inline int amd_iommu_snp_disable(void) { return 0; }
++#endif
++
+ #endif /* _ASM_X86_AMD_IOMMU_H */
 
