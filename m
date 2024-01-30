@@ -1,155 +1,242 @@
-Return-Path: <linux-kernel+bounces-45107-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8132842BC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:28:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D125842BD1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:31:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5E3A282B63
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:28:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34B25288DCF
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:31:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B166157E7B;
-	Tue, 30 Jan 2024 18:28:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C77015B989;
+	Tue, 30 Jan 2024 18:31:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u9lFyD3o"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lZqUTkyy"
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94E9981AD5;
-	Tue, 30 Jan 2024 18:28:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE4C915B31C;
+	Tue, 30 Jan 2024 18:31:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706639310; cv=none; b=LbG+hMmyzzdAJt2LKBV+He4uNU3QynVDD7F5t1qHDTxnC8GrNTZoJMZ2vBKHrXor4TuQzL7ivQPc9I57jsaf2nMMsHqZkYIuiB8Dw2Vct7TlI5o906iXiONRipmPT3JT3fqTJLqQqecTls7xafWqJ59UQGjPLPzWBMulqv/gWoQ=
+	t=1706639498; cv=none; b=gvnA7f9JbeMrZkKCln/iqaPZLLOSRFSLPnjh/gRuDH7aT3X+S8LiBOdzt4x0Wq4x+5qmoQ2L+hXjbWbDQ6lGRcyuIYyPN+f9SzfaJeEW/YwxTjT8emRBl/BTUNztTN3nf5jyW2Y7TuB5MbxvAFlLxhRUeXa/Hvjx+A3l/CMpaPU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706639310; c=relaxed/simple;
-	bh=422yXU7d3Zx33jspR2LuYeo1DwySHZURHM0VRf+DRa4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NUeneSML1yaTcytRcsIRbkd/eNJRxujgY6cVOEEICp7ZkmXHu6cT5I1wPWATwWQFu9yuyuTXUl3JFrZmtG9bY3wnOCLaAr19Ag3sOjvEcKAqe61D+kud7F/W+tvjNUyrp8qKvnMYhihD/keDzbgR50TTP9h5Egj/Quc39GtML8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u9lFyD3o; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F712C433C7;
-	Tue, 30 Jan 2024 18:28:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706639310;
-	bh=422yXU7d3Zx33jspR2LuYeo1DwySHZURHM0VRf+DRa4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=u9lFyD3ooZqaMx+b4i2ZPoDYhF30yE+/ALvSe24+tvUan8r/9lR3p+xDu0wlvcrw2
-	 Wa67DZZwa6j47D26r/LWjWxapkB0rgGpU5NAxaAT9XRoyh/RS7ZLnqlnWlngFceuqh
-	 gENljd/TdUuSezTYbTY+ekn/KY3FE6kA1cPDfYlcFjQQ4vPoW9E+e4bLbh6Yp7GrHc
-	 fV6F0tnB0rhSrF46/lnMYKZVQRRR4z4WymIzhPV+hMblLK89LbhVXLYvuyn9WQ//DV
-	 sw46U9cgLV/xJ4ukfXlI4+MpFkqvbSVPaPz60qZsA6+joYRoEMnceHwdbj2RR4UVdb
-	 9suVmd05pT9sA==
-Date: Tue, 30 Jan 2024 18:28:25 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: thinh.nguyen@synopsys.com, balbi@kernel.org, devicetree@vger.kernel.org,
-	gregkh@linuxfoundation.org, imx@lists.linux.dev,
-	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-	mark.rutland@arm.com, mathias.nyman@intel.com, pku.leo@gmail.com,
-	ran.wang_1@nxp.com, robh+dt@kernel.org,
-	sergei.shtylyov@cogentembedded.com
-Subject: Re: [PATCH v4 2/3] dt-bindings: usb: dwc3: Add
- snps,host-vbus-glitches-quirk avoid vbus glitch
-Message-ID: <20240130-eligible-barrette-5b2258e150f5@spud>
-References: <20240124152525.3910311-1-Frank.Li@nxp.com>
- <20240124152525.3910311-3-Frank.Li@nxp.com>
+	s=arc-20240116; t=1706639498; c=relaxed/simple;
+	bh=wmW5J1Tj/wtLsyHHDLI8FB1VAG3iyVs+j/yeBcTZHdw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HuY0ASqCBUBaHBrlzycdkh6fGNipcWRn7H/h0LWfx5mDX07FITlI3ZWy0AoLAh9irdlYtOgYQPIIMMz1lj6YY2T1zUtzooEFZ6ddxm82kFvqGr0qGX2Vp0y7TJAHpIoc7f4pT4NnMuWetZJSRPaIS2u+VMYT+jS2+bDYLne7+tw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lZqUTkyy; arc=none smtp.client-ip=209.85.166.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-7baa8da5692so229109039f.0;
+        Tue, 30 Jan 2024 10:31:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706639496; x=1707244296; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=w4BTRkkumRWS7a29JYn1bsYyn8iQweTdqX0+5Jq8L/I=;
+        b=lZqUTkyyUSAKj8mnLWNmRc4QSufDFiUzs9LjAea63JvpLwZKta34rczHEzsz49G+bb
+         MCEj9lseb8z36A4tn30hiBUYHisJp2kqVTwzJ14uGx1P968ADCkPOEwUcBU9In2oUPhb
+         985kxqvRlAQDtql6NDBAxE7rt3OPdMpEWtPumWwW9u8XHT+BIgIfKeiPAVBWSnPKaeI0
+         fMhND4pvFCS28uXte9O8Ni9+t1cKbHc8a0EJGhJOlAlxsmUSp4fDTzbgqzFTGyiKESew
+         d8kdjDdwphSM9yGyK8J7aO5hErJ41MPYt+PDp2eNoz1M0oyG9rI6/kmXL+9yn+1YXFOZ
+         Ft5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706639496; x=1707244296;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=w4BTRkkumRWS7a29JYn1bsYyn8iQweTdqX0+5Jq8L/I=;
+        b=qz5ipVyBdMedoCt9WVGfQAw3PTAFBY2dq+c+jVrQ1TyGK4/V6bZHxiuacOt8NE5c1e
+         JFsJWIJWZ1Gdl7QraxioamxanZmUwaa1195kCWjP9PH7ZOxDVNkShFqqxzpp29UPmDFj
+         Ii0SfIiJx3fwuAVc6zk44qDEAFIEpcoFf9MSgOr8EOlPfVyE1fOhtqnnwchOAt0E09UE
+         SqWpc/ynHvdiTCE5KxVyKMeAyt77IDtXSBBBSrRaM8U5tNrPMXCr1hg1GY+nijlk2Jdy
+         wORbTNrh0YGILQAN4yUBmUJovOwHpLrRovN8lNt8f47SL8k8jDl5V3hRs0CiaCSBnqNd
+         g87w==
+X-Gm-Message-State: AOJu0Yzt2tuvzEJHGNecug5G95mr9sYEPpjGaawKOXdSPvVotGi1FX7E
+	D3+/sqOzA920vOaAN4v3qChkd3jdTynzxEGSduIb1ZvWUbmj3mzZKeFa/bpQdazfDjJJDgNlVO2
+	kPpB43fnWJ1nynvuAVoBeK/JtCXJxPeLOMrQ6Zg==
+X-Google-Smtp-Source: AGHT+IGhQVQ3vc88KQYAMP/He0t9hm5odiWA9YrIXE2nGn/Cmcw+/qEXsVaCQBpT8FK5MgL1cc2PvU8T/ZJi5gRZ+sc=
+X-Received: by 2002:a05:6602:2f14:b0:7be:d961:6b0a with SMTP id
+ q20-20020a0566022f1400b007bed9616b0amr14660719iow.18.1706639495901; Tue, 30
+ Jan 2024 10:31:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ougxCNZc1E/5Y4RR"
-Content-Disposition: inline
-In-Reply-To: <20240124152525.3910311-3-Frank.Li@nxp.com>
-
-
---ougxCNZc1E/5Y4RR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240129224542.162599-1-nphamcs@gmail.com> <20240129224542.162599-4-nphamcs@gmail.com>
+ <ZbhP0JkEe39g3yqk@google.com>
+In-Reply-To: <ZbhP0JkEe39g3yqk@google.com>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Tue, 30 Jan 2024 10:31:24 -0800
+Message-ID: <CAKEwX=Pj+ncE=wZTOBVzT8E-=YVbqr-1CtsMNuZWLAhuaf7wAg@mail.gmail.com>
+Subject: Re: [PATCH 3/3] selftests: add test for zswapin
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: akpm@linux-foundation.org, shuah@kernel.org, hannes@cmpxchg.org, 
+	tj@kernel.org, lizefan.x@bytedance.com, linux-mm@kvack.org, 
+	kernel-team@meta.com, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hey,
+On Mon, Jan 29, 2024 at 5:24=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
+ wrote:
+>
+> On Mon, Jan 29, 2024 at 02:45:42PM -0800, Nhat Pham wrote:
+> > We recently encountered a kernel crash on the zswapin path in our
+> > internal kernel, which went undetected because of a lack of test
+> > coverage for this path. Add a selftest to cover this code path,
+> > allocating more memories than the cgroup limit to trigger
+>
+> s/memories/memory
+>
+> > swapout/zswapout, then reading the pages back in memories several times=
+.
+> >
+> > Also add a variant of this test that runs with zswap disabled, to verif=
+y
+> > swapin correctness as well.
+> >
+> > Suggested-by: Rik van Riel <riel@surriel.com>
+> > Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+> > ---
+> >  tools/testing/selftests/cgroup/test_zswap.c | 67 ++++++++++++++++++++-
+> >  1 file changed, 65 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testin=
+g/selftests/cgroup/test_zswap.c
+> > index 32ce975b21d1..86231c86dc89 100644
+> > --- a/tools/testing/selftests/cgroup/test_zswap.c
+> > +++ b/tools/testing/selftests/cgroup/test_zswap.c
+> > @@ -60,17 +60,39 @@ static long get_zswpout(const char *cgroup)
+> >       return cg_read_key_long(cgroup, "memory.stat", "zswpout ");
+> >  }
+> >
+> > -static int allocate_bytes(const char *cgroup, void *arg)
+> > +static int allocate_bytes_and_read(const char *cgroup, void *arg, bool=
+ read)
+> >  {
+> >       size_t size =3D (size_t)arg;
+> >       char *mem =3D (char *)malloc(size);
+> > +     int ret =3D 0;
+> >
+> >       if (!mem)
+> >               return -1;
+> >       for (int i =3D 0; i < size; i +=3D 4095)
+> >               mem[i] =3D 'a';
+> > +
+> > +     if (read) {
+> > +             /* cycle through the allocated memory to (z)swap in and o=
+ut pages */
+> > +             for (int t =3D 0; t < 5; t++) {
+>
+> What benefit does the iteration serve here? I would guess one iteration
+> is enough to swap everything in at least once, no?
 
-This version seems to be the lastest (v4) for this binding, but went out
-prior to discussion actually finishing on the v1!! of this patch, even
-ignoring Rob's comment today.
-Please wait for conversations to resolve before sending new versions.
-I, at least, do not get paid for what I do here, so I often need well
-more than a day before I can get around to clearing my review queue.
-On Wed, Jan 24, 2024 at 10:25:24AM -0500, Frank Li wrote:
+There might be data races etc. that might not appear in one iteration.
+Running multiple iterations increases the probability of these bugs
+cropping up.
 
-> From: Ran Wang <ran.wang_1@nxp.com>
->=20
-> When DWC3 is set to host mode by programming register DWC3_GCTL, VBUS
-> (or its control signal) will turn on immediately on related Root Hub
-> ports. Then the VBUS will be de-asserted for a little while during xhci
-> reset (conducted by xhci driver) for a little while and back to normal.
->=20
-> This VBUS glitch might cause some USB devices emuration fail if kernel
-> boot with them connected. One SW workaround which can fix this is to
-> program all PORTSC[PP] to 0 to turn off VBUS immediately after setting
-> host mode in DWC3 driver(per signal measurement result, it will be too
-> late to do it in xhci-plat.c or xhci.c).
->=20
-> Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
-> Reviewed-by: Peter Chen <peter.chen@nxp.com>
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
+Admittedly, the same effect could, perhaps, also be achieved by
+running the same test multiple times, so this is not a hill I will die
+on :) This is just a bit more convenient - CI infra often runs these
+tests once every time a new kernel is built.
 
-Where is your changelog?
+>
+> > +                     for (int i =3D 0; i < size; i +=3D 4095) {
+> > +                             if (mem[i] !=3D 'a')
+> > +                                     ret =3D -1;
+> > +                     }
+> > +             }
+> > +     }
+> > +
+> >       free(mem);
+> > -     return 0;
+> > +     return ret;
+> > +}
+> > +
+> > +static int allocate_bytes(const char *cgroup, void *arg)
+> > +{
+> > +     return allocate_bytes_and_read(cgroup, arg, false);
+> > +}
+> > +
+> > +static int read_bytes(const char *cgroup, void *arg)
+> > +{
+> > +     return allocate_bytes_and_read(cgroup, arg, true);
+> >  }
+>
+> I don't like how we reuse allocate_bytes_and_read(), we are not saving
+> much. Let's keep allocate_bytes() as-is and add a separate helper. Also,
+> I think allocate_and_read_bytes() is easier to read.
 
->  Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 7 +++++++
->  1 file changed, 7 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Docum=
-entation/devicetree/bindings/usb/snps,dwc3.yaml
-> index 203a1eb66691f..8f5d250070c78 100644
-> --- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-> +++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-> @@ -273,6 +273,13 @@ properties:
->        with an external supply.
->      type: boolean
-> =20
-> +  snps,host-vbus-glitches-quirk:
+Fair!
 
-I specifically recall saying no to adding "-quirk" here, but that
-might've been after this patch was sent.
+>
+> >
+> >  static char *setup_test_group_1M(const char *root, const char *name)
+> > @@ -133,6 +155,45 @@ static int test_zswap_usage(const char *root)
+> >       return ret;
+> >  }
+> >
+> > +/* Simple test to verify the (z)swapin code paths */
+> > +static int test_zswapin_size(const char *root, char *zswap_size)
+> > +{
+> > +     int ret =3D KSFT_FAIL;
+> > +     char *test_group;
+> > +
+> > +     /* Set up */
+> > +     test_group =3D cg_name(root, "zswapin_test");
+> > +     if (!test_group)
+> > +             goto out;
+> > +     if (cg_create(test_group))
+> > +             goto out;
+> > +     if (cg_write(test_group, "memory.max", "8M"))
+> > +             goto out;
+> > +     if (cg_write(test_group, "memory.zswap.max", zswap_size))
+> > +             goto out;
+> > +
+> > +     /* Allocate and read more than memory.max to trigger (z)swap in *=
+/
+> > +     if (cg_run(test_group, read_bytes, (void *)MB(32)))
+> > +             goto out;
+> > +
+> > +     ret =3D KSFT_PASS;
+> > +
+> > +out:
+> > +     cg_destroy(test_group);
+> > +     free(test_group);
+> > +     return ret;
+> > +}
+> > +
+> > +static int test_swapin(const char *root)
+> > +{
+> > +     return test_zswapin_size(root, "0");
+> > +}
+>
+> Why are we testing the no zswap case? I am all for testing but it seems
+> out of scope here. It would have been understandable if we are testing
+> memory.zswap.max itself, but we are not doing that.
 
-> +    description:
-> +      When set, power off all Root Hub ports immediately after
-> +      setting host mode to avoid vbus (negative) glitch happen in later
-> +      xhci reset. And the vbus will back to 5V automatically when reset =
-done.
-> +    type: boolean
+Eh it's just by convenience. We already have the workload - any test
+for zswap can pretty much be turned into a test for swap by disabling
+zswap (and enabling swap), so I was trying to kill two birds with one
+stone and cover a bit more of the codebase.
 
-Rob commented today on the v1 conversation:
-https://lore.kernel.org/all/20240130181322.GA2079185-robh@kernel.org/
+>
+> FWIW, I think the tests here should really be separated from cgroup
+> tests, but I understand why they were added here. There is a lot of
+> testing for memcg interface and control for zswap, and a lot of nice
+> helpers present.
 
-Please respond (there) to his comment.
+Yeah FWIW, I agree :) I wonder if there's an easy way to inherit
+helpers from one test suite to another. Some sort of kselftest
+dependency? Or maybe move these cgroup helpers up the hierarchy (so
+that it can be shared by multiple selftest suites).
 
-Thanks,
-Conor.
-
->    snps,is-utmi-l1-suspend:
->      description:
->        True when DWC3 asserts output signal utmi_l1_suspend_n, false when
-> --=20
-> 2.34.1
->=20
-
---ougxCNZc1E/5Y4RR
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbk/yAAKCRB4tDGHoIJi
-0pt+AQDsmO50jZctRQ5aLsZ+yZXzF35f1dAw2pYzWZrQbVmSrQEA+njvKcH8sqh0
-goQW0F0wsLP4GIBXvfKmqvu2YaSz0Ac=
-=Xqh1
------END PGP SIGNATURE-----
-
---ougxCNZc1E/5Y4RR--
+>
 
