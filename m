@@ -1,111 +1,123 @@
-Return-Path: <linux-kernel+bounces-45443-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45444-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDDA78430D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 00:06:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EF818430DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 00:07:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A40CC1F24BAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:06:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2864B281C16
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:07:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 941EA7EF1C;
-	Tue, 30 Jan 2024 23:06:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 583C4762E7;
+	Tue, 30 Jan 2024 23:07:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="D/64/Do8"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	dkim=pass (1024-bit key) header.d=iwanders.net header.i=@iwanders.net header.b="EQKtjL97"
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFB277EF11
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 23:06:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C15B7EEFA
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 23:07:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706655994; cv=none; b=HNsDgqgwZLEbHKO9mCKUNLsPZPCvbAiO4KRd3q9H/PxK1tw172ov3y0fNdfLjQ13gKE26f8n+9A2wpRz6MaFrFMixPH4ODyALm64+GnjAHPevyQPMIIkFhooVL8N1yOX0JJcq+zHbkKmLUZVO0hUhcw9lGWvwIFnLVRz7ut6I2Y=
+	t=1706656029; cv=none; b=UAuJY4VXgJXgnNpmu5iKJlQtMk9bte1Q7YEnGTByDV0N1MswG1HDocPtaSG5hWZwfc3TVjgmpQxVuTMLw9Vl7XM4OtOA63FBTYK2ziBbBYRAMwRm2xDDWrCV3QeWtgR5VQgK9+TiXRn1tiTq+vpxG1w/7hp3REOKF6GPJL3So/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706655994; c=relaxed/simple;
-	bh=XHfQdT5xppI0sxHBN2lXjiAv8/rSbOiPYsD4DbY6//I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rE2ghUUx6fqfinUF4LV+aSod9bE9PIQUGozP520EBixlm6nyHheam/ePguOV7NwdC6aT/fM7RD6ZdvYsLwSRJULWZWfAj1sq3EXVcQ2nYldpg98XfiP1BCTSk9OUQU0UDodUz5qZCPnV7FMml25RPs/dQDzD660Wxent72blbD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=D/64/Do8; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-51124e08565so162472e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 15:06:32 -0800 (PST)
+	s=arc-20240116; t=1706656029; c=relaxed/simple;
+	bh=Quzl4oZDEPNpjQL8yEy8YSM4ZcrJbwUZ4aOuRk5Xgpk=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=MutxHkAzBJVigHRcj3spW/qjkfvRFXq0KcakjKn1PBMQ5P4h4w7oR1tTRTnosq9MK9ItgnzlQwZNR3w7kgg60qSqCtFNuc8VrNYi5hFaXwMPwddgx/RZaV6pIeyN4peUZK7ZvGay0MNxWDZnvz7XxL+fyJPYoezdUmMKqcG+xYA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iwanders.net; spf=pass smtp.mailfrom=iwanders.net; dkim=pass (1024-bit key) header.d=iwanders.net header.i=@iwanders.net header.b=EQKtjL97; arc=none smtp.client-ip=209.85.222.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iwanders.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iwanders.net
+Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-783ced0216aso318411285a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 15:07:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1706655990; x=1707260790; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=DsAQvVSaSL32A30A6uQETKC8YhkCEz/oSK87u+lSg5M=;
-        b=D/64/Do81E/DpaWxPWjTFqUGeqlRy077VCdwonWLcyZtGJdzVPHza0DnieLXJ+FxGb
-         jFtl1gpH36pKJm4a3CbuBc4M+z1553D/0ry4vjK7ZjUGms6VwggZaLoEqMokWSSTCDAl
-         9fg54NfWpr79zIN2eJKuHcihcHaV+elSTXIOs=
+        d=iwanders.net; s=google; t=1706656026; x=1707260826; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2Epf2KC/FEpd6pon/LPvJu29mO0Kvpnb2m/NzsfdKN4=;
+        b=EQKtjL97eC2GGb+Q4kXM/CDYwMs3dgQ0DBL7c3uZH8aTsgawm4OSRw8A/ujxmv1G1P
+         6EyzDIRiV8/NCemW5scYphWsDx1L7ZwtF28wP8syXF9JHErqKqccsn24zI6uO7o/TM9l
+         PlW7cB68QGJoE+5x/KE/ryxEWqXD1PdYtqzYE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706655990; x=1707260790;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DsAQvVSaSL32A30A6uQETKC8YhkCEz/oSK87u+lSg5M=;
-        b=kfqBLZLjiPp2XjUsDLPFhsdbSA7NT6PSEAa4ZD9JyYiPx/a2bZ5JAoGeHZGhJ11fjQ
-         1qCLRIaS3I8egvfR8/sQcwZFhNiTmxmhJ5kLwjXeLlHdSVll0tVfk6bMZyNNLUd/M1Uh
-         OS25obN81YKhfpuwHDtrTOfFAIXAp6l5xLHYbpaOp26SUwhkgZE5JTewbOyxnkW8qksb
-         bx1t3GrcFpIIesrxNEulEhJ9JYTEb8G1MNPw/AuOCLyXmhelXh+5s1tYD9rEprKwpvze
-         4onV6khWKxyQwyL0Wama1PL5lGlvivcOP47etS4ryUaQxUXDdvwyYnsXnck1bBMqJf0B
-         bCrw==
-X-Gm-Message-State: AOJu0YwHxftfSdG+Y2lE13gSMRVzKIlY2V7/CqRM6OogpNquc3drO4qj
-	4XT/7MKQlWdpi5vQ6yULT+jKXZg1l7681FcVA8XLS+Y0GkRsaKLeW89iVhEhZ7cR7/vi2hlIntX
-	P4Nk/YA==
-X-Google-Smtp-Source: AGHT+IFYnV72+xor1dDRxChBzpOfgj2fo4/s355HiIAwnfc9KHkR54B48DJhVc2gFR1eJTGHJzlb+g==
-X-Received: by 2002:ac2:4dbc:0:b0:50e:3082:1afe with SMTP id h28-20020ac24dbc000000b0050e30821afemr61968lfe.22.1706655990554;
-        Tue, 30 Jan 2024 15:06:30 -0800 (PST)
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
-        by smtp.gmail.com with ESMTPSA id vh5-20020a170907d38500b00a3517d26918sm5050027ejc.107.2024.01.30.15.06.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Jan 2024 15:06:30 -0800 (PST)
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-55a8fd60af0so5028844a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 15:06:29 -0800 (PST)
-X-Received: by 2002:a05:6402:17c7:b0:55f:7b91:cbd5 with SMTP id
- s7-20020a05640217c700b0055f7b91cbd5mr234469edy.8.1706655989651; Tue, 30 Jan
- 2024 15:06:29 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706656026; x=1707260826;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2Epf2KC/FEpd6pon/LPvJu29mO0Kvpnb2m/NzsfdKN4=;
+        b=v3xJ8XKJr5uC5QR/suSHxc2KUzkCvU1ZeFgunc3UasbyqnZn85znzmhWAokKmJL6+K
+         ZUyvBWoq3gmBJG9KcKY7+qzsAmGWMgwlMjNwmAgt+WCLEwymbXKMoYx8H1fhl7Rv8C2V
+         uQTtZ8QpRrfNov1tVsQM4MDLFCjVwU5h3r6SVbEp/5C8fTcjRiYQtbWnTedPrnUalUS0
+         51aH+1Tjt0JEFVNJPgEzsf4Ifhkkzblkb8KphpZSGX98HrYfJF8C7wSCd0g/NX/aECRM
+         HLJ9l7JU9/8eQAeKtIkHU3iTMDoOVFHMlJzoRzRGDd5oaAsBjs10U38thPho2+xNe+t3
+         pTIg==
+X-Gm-Message-State: AOJu0YzZUNooDjrt1RHOW1YdhgAtjwuoKgxA8IqNDiE8J5tosye98ett
+	+SS6LcE9wrusI96tyNwBZ0r7+61wd+7TNg6PhW8prvQYmv12X6MpMadl6OxRfgw=
+X-Google-Smtp-Source: AGHT+IHjoLRRl7FtA9PjjP07nRCgbztT5Y+p53GUCQOoyhIcXVUPH4zHFCSvlvg8WWGngx/oVuljCA==
+X-Received: by 2002:a05:6214:1d0a:b0:68c:360e:ca with SMTP id e10-20020a0562141d0a00b0068c360e00camr10305479qvd.57.1706656026093;
+        Tue, 30 Jan 2024 15:07:06 -0800 (PST)
+Received: from eagle.lan (24-246-30-234.cable.teksavvy.com. [24.246.30.234])
+        by smtp.gmail.com with ESMTPSA id di8-20020ad458e8000000b0068c47832171sm3081275qvb.65.2024.01.30.15.07.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jan 2024 15:07:05 -0800 (PST)
+From: Ivor Wanders <ivor@iwanders.net>
+To: Jean Delvare <jdelvare@suse.com>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Maximilian Luz <luzmaximilian@gmail.com>,
+	Ivor Wanders <ivor@iwanders.net>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Mark Gross <markgross@kernel.org>
+Cc: linux-hwmon@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	platform-driver-x86@vger.kernel.org
+Subject: [PATCH v4 0/2] Surface fan monitoring driver
+Date: Tue, 30 Jan 2024 18:06:52 -0500
+Message-Id: <20240130230654.4218-1-ivor@iwanders.net>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240130190355.11486-1-torvalds@linux-foundation.org>
- <20240130190355.11486-5-torvalds@linux-foundation.org> <20240130155550.4881d558@gandalf.local.home>
- <CAHk-=whD=9qTfhYVhH+d44KbwefC_vnRAjqz-pthcSn1p5zZLA@mail.gmail.com> <CAHk-=wg=tFFTep3dDTVHKYZBdNj0+PV4a0-UR1sVR3K7RHPGFg@mail.gmail.com>
-In-Reply-To: <CAHk-=wg=tFFTep3dDTVHKYZBdNj0+PV4a0-UR1sVR3K7RHPGFg@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 30 Jan 2024 15:06:13 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiPWaiD5fwyXXHX-qgk6t2+0NM_KHzwiecvCBiNWZacHA@mail.gmail.com>
-Message-ID: <CAHk-=wiPWaiD5fwyXXHX-qgk6t2+0NM_KHzwiecvCBiNWZacHA@mail.gmail.com>
-Subject: Re: [PATCH 5/6] eventfs: get rid of dentry pointers without refcounts
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 30 Jan 2024 at 14:56, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> With that, the base size of 'struct eventfs_inode' actually becomes 96
-> bytes for me.
+Fourth version of a hwmon driver to monitor the fan's rpm on Microsoft 
+Surface devices, originally submitted in [1], v2 at [2], v3 at [3]. Changes
+since v3 are two minor code changes based on feedback.
 
-It can be shrunk some more.
+Changes in v4:
+  - Return 0 from surface_fan_hwmon_read instead of ret.
+  - Use PTR_ERR_OR_ZERO in probe instead of if statement.
+Changes in v3:
+  - Removed type and attr checks in read and is_visible.
+  - Removed assigning sdev to ssam_device drvdata.
+  - Propagate return from __ssam_fan_rpm_get.
+  - Renamed hwmon chip name from 'fan' to 'surface_fan'.
+  - Removed unnecessary platform_device header.
+Changes in v2:
+  - Removed all unsupported sysfs attributes from the hwmon driver, leaving
+    the fan input as the only supported attribute.
 
-The field ordering is suboptimal. Pointers are 8 bytes and 8-byte
-aligned, but 'struct kref' is just 4 bytes, and 'struct eventfs_attr'
-is 12 bytes and 4-byte aligned.
+[1] https://lore.kernel.org/linux-hwmon/20231220234415.5219-1-ivor@iwanders.net/T/
+[2] https://lore.kernel.org/linux-hwmon/20231228003444.5580-1-ivor@iwanders.net/T/
+[3] https://lore.kernel.org/linux-hwmon/20240113183306.9566-1-ivor@iwanders.net/T/
 
-So if you pack all the 8-byte-aligned fields at the beginning, and the
-4-byte-aligned ones at the end, you get 88 bytes.
+Ivor Wanders (2):
+  platform/surface: aggregator_registry: add entry for fan speed
+  hwmon: add fan speed monitoring driver for Surface devices
 
-At which point a name pointer would *just* fit in 96 bytes.
+ Documentation/hwmon/index.rst                 |  1 +
+ Documentation/hwmon/surface_fan.rst           | 25 +++++
+ MAINTAINERS                                   |  8 ++
+ drivers/hwmon/Kconfig                         | 13 +++
+ drivers/hwmon/Makefile                        |  1 +
+ drivers/hwmon/surface_fan.c                   | 91 +++++++++++++++++++
+ .../surface/surface_aggregator_registry.c     |  7 ++
+ 7 files changed, 146 insertions(+)
+ create mode 100644 Documentation/hwmon/surface_fan.rst
+ create mode 100644 drivers/hwmon/surface_fan.c
 
-..  and then some debug option is enabled, and it all goes to hell again.
+-- 
+2.17.1
 
-              Linus
 
