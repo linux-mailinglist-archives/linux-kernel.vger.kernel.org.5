@@ -1,179 +1,173 @@
-Return-Path: <linux-kernel+bounces-45110-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45111-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B555D842BD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:32:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41D50842BD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:33:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 728BA289083
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:32:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA96B1F2434B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:33:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 342C115DBDC;
-	Tue, 30 Jan 2024 18:32:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A86A669974;
+	Tue, 30 Jan 2024 18:33:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="TG4zboBz"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="uJ8MSHSC"
+Received: from omta040.useast.a.cloudfilter.net (omta040.useast.a.cloudfilter.net [44.202.169.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 565C215EA86
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 18:32:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 169B669E0E
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 18:33:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706639520; cv=none; b=GCL+wUZ9DbIIx3kb6JqEOxm953jB/YyiUrycjAPP5Y6Yq9MA/Q3RmWrX4D09VF71d4kl59vlNiWzFFZzNtcqIwxFjSBslULxm8ViFrgm1pyemxwR8kwgp5izy8PGLTMC35cp+ubCn49nJD8MM5Kq1eRiipQQVaDgg2/zyXiRIaE=
+	t=1706639619; cv=none; b=g83lUqsik45xw/LeCHuEsvcIGchENMi9C6dHh6Cq2oznZ2myXT2p1aZdl3/kpWdZ00Y+trU7LkvpuWqx2Bb8Wa95a5CMOEWF9Jsb4pr2cbWKD3xvyv9kS3cfhE+nnYH19qvynI9OxArtRY0D3pyb70w2UoN054tvVfV4c/6n1zo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706639520; c=relaxed/simple;
-	bh=iRpgRmHarH60GRDB5jVlAFnXl1prqJyytsKoq7Cs4Z8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=t8aDVVEQzhcTG/B/8mTqToHcSwZMbCi1jvDM3IUagmB0tJkIDSSicYlJTlOwMrFFTRMMgZ7HhqilwhIxAAYILOBNaqV4Hi4iG98SOfbXJSfu7QACff5/fXZfEGUdBTbIUh0cgJNLCFmRCqL8CmnxJOqk7GQExqVxGBHHvMoJ9zA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=TG4zboBz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D180C43390
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 18:31:59 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="TG4zboBz"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-	t=1706639516;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tG7DptqGlrQotRRCL+fVetrdXEbeDlcaTep4/MHs0M8=;
-	b=TG4zboBzZKgvM2qVC9xqBRHPMsOz/xvuoWaqhoBU/X49AAAZqEdPmaSHEOk6rGb15KweKt
-	iLxP3dmIN/CWoIN0mRYjd0PMiy+Khc/CpFUxcgDvEWsHPn8ZI9c2IrTwxNAQDKif3lkKYr
-	lyu8qdZXh6HXcUdqEmGiKCFubG1m2as=
-Received: 
-	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 7a764878 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO)
-	for <linux-kernel@vger.kernel.org>;
-	Tue, 30 Jan 2024 18:31:56 +0000 (UTC)
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dbed179f0faso68012276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 10:31:55 -0800 (PST)
-X-Gm-Message-State: AOJu0YwEEXVvQmVYZmGrMh64+pLTNl2F2jbrPOS96utDVvZByH3t0Yvx
-	DkZP7AHj6SFL4gV6f1NMbNy2oFrhqWXY7ViaYiG6DtUehB7+m7jn3Uuo+kOQRtY3GXE8gisTzYH
-	A6f1Kbiss5YWLRtqYSBaHm2JZQ84=
-X-Google-Smtp-Source: AGHT+IGRHdsBprwo6nL35R9Sk+xZZnX67yX7st+CY86TGoFFpkZ7BZtaClGjk3oFJVouonid2cvJWPfU8amnWFLjXAk=
-X-Received: by 2002:a25:c5c8:0:b0:dc3:6b67:9341 with SMTP id
- v191-20020a25c5c8000000b00dc36b679341mr1497437ybe.37.1706639514684; Tue, 30
- Jan 2024 10:31:54 -0800 (PST)
+	s=arc-20240116; t=1706639619; c=relaxed/simple;
+	bh=e6Em/YoU24DzfrgG1I3MeTPrdt0H0Tda436ZQlrVs44=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Q8hqabd+mbpYMudOp3gbnP8BLjrFhChJZbn4VZBMlysO5ulKy3PESg4kf2IvjNu7pCexxThovQB+x33/evbtSLQk4hrL5N8TBJNGUd79np8N/HRwuNuKZKS2vIYfEjcKi/YUf4Lj/c2JWk6ICgGBx7L9VB+vOAqt0b+YfPrXcwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=uJ8MSHSC; arc=none smtp.client-ip=44.202.169.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-5008a.ext.cloudfilter.net ([10.0.29.246])
+	by cmsmtp with ESMTPS
+	id UqblrV7cRTHHuUsvNrtWDe; Tue, 30 Jan 2024 18:33:33 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id UsvMrAvw5L3AmUsvMrKkDm; Tue, 30 Jan 2024 18:33:33 +0000
+X-Authority-Analysis: v=2.4 cv=Sdrky9du c=1 sm=1 tr=0 ts=65b940fd
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
+ a=IkcTkHD0fZMA:10 a=dEuoMetlWLkA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
+ a=VwQbUJbxAAAA:8 a=7YfXLusrAAAA:8 a=WIj-IPmD8QUj2RxniLMA:9 a=QEXdDO2ut3YA:10
+ a=9cHFzqQdt-sA:10 a=PUnBvhIW4WwA:10 a=AjGcO6oz07-iQ99wixmX:22
+ a=SLz71HocmBbuEhFRYD3r:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=dwMBQhKAPrdpeG07deWR0oT84VH23ARprvDaD8J62YM=; b=uJ8MSHSCsIUsxGqykVEA55n+V3
+	6mCCY8tYHJbdm9YTHC5fNd6sP8dvh31H/NILFDuLOJDnI6jvXxq0hP2VfSPmv7AADYm5pRpZxyMFw
+	UeypA0zLbJi9UxTXSBlnQDSnFTJWyYpcaD8pet80lVr3/rPueJiR1fnFMxFqkbWl+PWSG40xQ3aPf
+	ZEl2sVXOoVASg6qC5bdaRKlUdszbFa/f+6whfGbz+vNOgDNqufYKBMa6Uj+ApsZUxZ2oRHYT5GNk3
+	ws2lKbFPLtp7vH2jk/9sc7VytpiZPLO7jfCrdTOH1F0I99eHhasGDG1tXk2ne97Brn4366suqAszH
+	DBbmewqQ==;
+Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:52948 helo=[192.168.15.10])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1rUsvL-0030Gq-2d;
+	Tue, 30 Jan 2024 12:33:31 -0600
+Message-ID: <114074ef-7021-4ca0-a5f7-b0ea37948f5d@embeddedor.com>
+Date: Tue, 30 Jan 2024 12:33:30 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130083007.1876787-1-kirill.shutemov@linux.intel.com>
- <20240130083007.1876787-2-kirill.shutemov@linux.intel.com>
- <CAHmME9qsfOdOEHHw_MOBmt6YAtncbbqP9LPK2dRjuOp1CrHzRA@mail.gmail.com>
- <DM8PR11MB57507611D651E6D7CBC2A2F3E77D2@DM8PR11MB5750.namprd11.prod.outlook.com>
- <88a72370-e300-4bbc-8077-acd1cc831fe7@intel.com> <CAHmME9oSQbd3V8+qR0e9oPb7ppO=E7GrCW-a2RN8QNdY_ARbSQ@mail.gmail.com>
- <Zbk6h0ogqeInLa_1@redhat.com>
-In-Reply-To: <Zbk6h0ogqeInLa_1@redhat.com>
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date: Tue, 30 Jan 2024 19:31:42 +0100
-X-Gmail-Original-Message-ID: <CAHmME9p3AT+MYXD9G0NL0Ge+-eh4cOc7HVQmk4uzi7ZjXH3hww@mail.gmail.com>
-Message-ID: <CAHmME9p3AT+MYXD9G0NL0Ge+-eh4cOc7HVQmk4uzi7ZjXH3hww@mail.gmail.com>
-Subject: Re: [PATCH 2/2] x86/random: Issue a warning if RDRAND or RDSEED fails
-To: =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>
-Cc: Dave Hansen <dave.hansen@intel.com>, "Reshetova, Elena" <elena.reshetova@intel.com>, 
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
-	"x86@kernel.org" <x86@kernel.org>, "Theodore Ts'o" <tytso@mit.edu>, 
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, 
-	"Nakajima, Jun" <jun.nakajima@intel.com>, Tom Lendacky <thomas.lendacky@amd.com>, 
-	"Kalra, Ashish" <ashish.kalra@amd.com>, Sean Christopherson <seanjc@google.com>, 
-	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dmaengine: pl08x: Use kcalloc() instead of kzalloc()
+Content-Language: en-US
+To: Erick Archer <erick.archer@gmx.com>, Vinod Koul <vkoul@kernel.org>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org
+References: <20240128115236.4791-1-erick.archer@gmx.com>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20240128115236.4791-1-erick.archer@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.21.192
+X-Source-L: No
+X-Exim-ID: 1rUsvL-0030Gq-2d
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.10]) [187.162.21.192]:52948
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 2
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfD60vF061QhTTMEdLo1m+I0nldcoi2uR93Q2rTFCwtROWLlaY3HrtP3qEPjmGNnyvS0rHUoDUDbaYSKShnaOuc8qSvRCMmoGFHoZwqJN0Tn4WO00e4Rv
+ WP+3BcD7o4YAYYzIANFl9h/th/eNkBRrOgjiADrzvdHkHFVpnrDTD1ZKZ/uNLsPxYePKv9p1B6/ASIW3cXvQPfRlFjCY5rczwcb64HKgk5MO5x5MfOHVCHKs
 
-On Tue, Jan 30, 2024 at 7:06=E2=80=AFPM Daniel P. Berrang=C3=A9 <berrange@r=
-edhat.com> wrote:
->
-> On Tue, Jan 30, 2024 at 06:49:15PM +0100, Jason A. Donenfeld wrote:
-> > On Tue, Jan 30, 2024 at 6:32=E2=80=AFPM Dave Hansen <dave.hansen@intel.=
-com> wrote:
-> > >
-> > > On 1/30/24 05:45, Reshetova, Elena wrote:
-> > > >> You're the Intel employee so you can find out about this with much
-> > > >> more assurance than me, but I understand the sentence above to be =
-_way
-> > > >> more_ true for RDRAND than for RDSEED. If your informed opinion is=
-,
-> > > >> "RDRAND failing can only be due to totally broken hardware"
-> > > > No, this is not the case per Intel SDM. I think we can live under a=
- simple
-> > > > assumption that both of these instructions can fail not just due to=
- broken
-> > > > HW, but also due to enough pressure put into the whole DRBG constru=
-ction
-> > > > that supplies random numbers via RDRAND/RDSEED.
-> > >
-> > > I don't think the SDM is the right thing to look at for guidance here=
-.
-> > >
-> > > Despite the SDM allowing it, we (software) need RDRAND/RDSEED failure=
-s
-> > > to be exceedingly rare by design.  If they're not, we're going to get
-> > > our trusty torches and pitchforks and go after the folks who built th=
-e
-> > > broken hardware.
-> > >
-> > > Repeat after me:
-> > >
-> > >         Regular RDRAND/RDSEED failures only occur on broken hardware
-> > >
-> > > If it's nice hardware that's gone bad, then we WARN() and try to make
-> > > the best of it.  If it turns out that WARN() was because of a broken
-> > > hardware _design_ then we go sharpen the pitchforks.
-> > >
-> > > Anybody disagree?
-> >
-> > Yes, I disagree. I made a trivial test that shows RDSEED breaks easily
-> > in a busy loop. So at the very least, your statement holds true only
-> > for RDRAND.
-> >
-> > But, anyway, if the statement "RDRAND failures only occur on broken
-> > hardware" is true, then a WARN() in the failure path there presents no
-> > DoS potential of any kind, and so that's a straightforward conclusion
-> > to this discussion. However, that really hinges on  "RDRAND failures
-> > only occur on broken hardware" being a true statement.
->
-> There's a useful comment here from an Intel engineer
->
-> https://web.archive.org/web/20190219074642/https://software.intel.com/en-=
-us/blogs/2012/11/17/the-difference-between-rdrand-and-rdseed
->
->   "RDRAND is, indeed, faster than RDSEED because it comes
->    from a hardware-based pseudorandom number generator.
->    One seed value (effectively, the output from one RDSEED
->    command) can provide up to 511 128-bit random values
->    before forcing a reseed"
->
-> We know we can exhaust RDSEED directly pretty trivially. Making your
-> test program run in parallel across 20 cpus, I got a mere 3% success
-> rate from RDSEED.
->
-> If RDRAND is reseeding every 511 values, RDRAND output would have
-> to be consumed significantly faster than RDSEED in order that the
-> reseed will happen frequently enough to exhaust the seeds.
->
-> This looks pretty hard, but maybe with a large enough CPU count
-> this will be possible in extreme load ?
 
-So what this suggests is that the guest-guest DoS caused by looping
-forever (or panic-on-warn'ing) is at least possible on large enough
-hardware for some non-zero amount of time, depending on whatever hard
-to hit environmental factors.
 
-Another approach would be to treat this as a hardware flaw, in that
-the RDRAND does not provide a universally reliable interface, and so
-something like CoCo doesn't work with the current design, and so Intel
-should issue some microcode updates that gives some separated pools
-and separated rate limiting on a per-VMX ring 0 basis. Or something
-like that. I dunno; maybe it's unrealistic to hope Intel will repair
-their interface. But I think we've got to acknowledge that it's sort
-of broken/irreliable.
+On 1/28/24 05:52, Erick Archer wrote:
+> This is an effort to get rid of all multiplications from allocation
+> functions in order to prevent integer overflows [1].
+> 
+> Here the multiplication is obviously safe because the "channels"
+> member can only be 8 or 2. This value is set when the "vendor_data"
+> structs are initialized.
+> 
+> static struct vendor_data vendor_pl080 = {
+> 	[...]
+> 	.channels = 8,
+> 	[...]
+> };
+> 
+> static struct vendor_data vendor_nomadik = {
+> 	[...]
+> 	.channels = 8,
+> 	[...]
+> };
+> 
+> static struct vendor_data vendor_pl080s = {
+> 	[...]
+> 	.channels = 8,
+> 	[...]
+> };
+> 
+> static struct vendor_data vendor_pl081 = {
+> 	[...]
+> 	.channels = 2,
+> 	[...]
+> };
+> 
+> However, using kcalloc() is more appropriate [1] and improves
+> readability. This patch has no effect on runtime behavior.
+> 
+> Link: https://github.com/KSPP/linux/issues/162 [1]
+> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
+> Signed-off-by: Erick Archer <erick.archer@gmx.com>
 
-Jason
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+
+Thanks!
+-- 
+Gustavo
+
+> ---
+>   drivers/dma/amba-pl08x.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/dma/amba-pl08x.c b/drivers/dma/amba-pl08x.c
+> index eea8bd33b4b7..e40766108787 100644
+> --- a/drivers/dma/amba-pl08x.c
+> +++ b/drivers/dma/amba-pl08x.c
+> @@ -2855,8 +2855,8 @@ static int pl08x_probe(struct amba_device *adev, const struct amba_id *id)
+>   	}
+> 
+>   	/* Initialize physical channels */
+> -	pl08x->phy_chans = kzalloc((vd->channels * sizeof(*pl08x->phy_chans)),
+> -			GFP_KERNEL);
+> +	pl08x->phy_chans = kcalloc(vd->channels, sizeof(*pl08x->phy_chans),
+> +				   GFP_KERNEL);
+>   	if (!pl08x->phy_chans) {
+>   		ret = -ENOMEM;
+>   		goto out_no_phychans;
+> --
+> 2.25.1
+> 
 
