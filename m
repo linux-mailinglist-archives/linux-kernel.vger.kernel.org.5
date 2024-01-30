@@ -1,138 +1,117 @@
-Return-Path: <linux-kernel+bounces-44049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 776E3841CA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:35:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4F72841CAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:35:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A88561C252E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:35:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A7BA1F22F93
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:35:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01A0C537E8;
-	Tue, 30 Jan 2024 07:34:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5FE953805;
+	Tue, 30 Jan 2024 07:35:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fUH9ODaA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KcmEs+dH"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44E7050A70;
-	Tue, 30 Jan 2024 07:34:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A096450A70;
+	Tue, 30 Jan 2024 07:35:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706600095; cv=none; b=UUNrq/+7OcKYmnGBtap52mjjaLgNfdur8tQH8kEPjPcli9VJveWM8YfcmgHjCAG7lHKzRvPTeCsCDjz1o6I3CrmtpwgbMYeds3jWNj4feKZkBExduVMd5GJ1E2ZBmynPXAOFgvjqg1xAuNe/d90SVOxnOALpCWaqxn57k7K+XQg=
+	t=1706600141; cv=none; b=W7TK4fEHDnB/pCZaH2aI/3ScpHF8iHHktOwkV9I+zLfBYtfKwxcYqvqcrV34xmxWUzGcgEn3zmFA2nJR3fjAJNnSqNIDTsI2sCs8FaEIf8aiN0sSiNUeJMinT+7foqhhM2O4Uy4E9Zi/9rcVTtP0gV3qVozVpkXZR2D2184FC5A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706600095; c=relaxed/simple;
-	bh=+IitaL70UEF1t6zrG6EiCU/A4cZoDZjvNxzIBHHtxwU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pXSNqKsuKUtFd0VGg7YjgQJq046mh8KgwhSxVOt+ePEHfx+QRpnnyKUrc8ZA6nY9kLXpTVqREBa1rW0sLRxzjSRGcYKcIe6pA8VbjwhKpwHDWvktLdbHGf+PRQ0KEglXwr+01yaDfY6bDpjRYlRU0VoAiFmYAvXF3mBhbzIATBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fUH9ODaA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF28DC433C7;
-	Tue, 30 Jan 2024 07:34:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706600094;
-	bh=+IitaL70UEF1t6zrG6EiCU/A4cZoDZjvNxzIBHHtxwU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=fUH9ODaA6KMFHk8ZZMI2XMd6FeBC0koIc9yyrKMr8ds1sD5HpL2o+ni7OhzTgmzxj
-	 4LmTg8+6YLvG2F+KQuzAO8N/LLiVqwgTri5EHIIxiaYiAyzfgQw75nQQAJp16JCGRG
-	 QzdkyK3FzH76ZqI+vQY5ZdCjqkMaS26ivTUf4wAYjvWd96OKGsEI8GGI36qVIs8JRg
-	 ja87hmrw5++mWUGRZNHzwzbX/EEj4jjdjzyIW3SlIDVJTw1FWOuTbWkyEnVwWtKlES
-	 Fxpb7OKsVYqBydClN22VNLGAxNS7sbuBrEEXSh4rhuXlqcLFQfOFlBbXtsO9aezdMD
-	 Yg0b3Pf2gtoQg==
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2cf33b909e8so46732271fa.0;
-        Mon, 29 Jan 2024 23:34:54 -0800 (PST)
-X-Gm-Message-State: AOJu0Ywv6cDDu2/CApvL1DgIW73PlKxUgc+0jmmw+w6OY5pA+VzhVr1a
-	PDxZaaX18u7IbTCAVNCDa9j2sCxPC+zTeio3+1TNv11MkhO5hPoAQa05s7miiS73JghzIfdpKci
-	/Cdv3QL4C0KlUhfDP2lvM+qktxyI=
-X-Google-Smtp-Source: AGHT+IEqner9VzfT/ruq28vxshs7jIKd4pqYd+oRUq4i5ox81Xer+2MlL7LWieqQzZXE7Rdj4UvhvutRLtH9rf5oQWw=
-X-Received: by 2002:a05:651c:2db:b0:2ce:fc69:47fd with SMTP id
- f27-20020a05651c02db00b002cefc6947fdmr281501ljo.16.1706600092822; Mon, 29 Jan
- 2024 23:34:52 -0800 (PST)
+	s=arc-20240116; t=1706600141; c=relaxed/simple;
+	bh=2/Aw873mS/QOuUxr2ZroaN2HZUVyp/VGd9nT01Q/P+8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pHEidbhumU/5nkDXOWWz4Fpm/Aq3+IYWPmYsDLjf0MRqq3DmYhVmXwofTPM8gTEdhZSQENbpNJFz8R9r9CZ0T5eWkhgwOL+WSkjZ6EeoQxgH1FMcJT+BVR8sJ67JjOZ2ImuZ65Yt9/WVDObDEM6SwfV9BspmdQvuG8IQljaZpjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KcmEs+dH; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40ed3101ce3so50033395e9.2;
+        Mon, 29 Jan 2024 23:35:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706600138; x=1707204938; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TTqUzOyKBgD15tUKZFCKN9Jxdu54AkjHcxdnWoZg554=;
+        b=KcmEs+dH0lIL2WAVmO/h8EOzjstJpROHvKAg01rf0BALFVICeQk422yz27Rv1ccd7g
+         zxCXMEkqQS2/l2wen52zJFvLY0mgH6d2lXCdOxWoAvxXDOKArQ+cFg9HoUu1Xs6SsfKg
+         lDzIrlIRMoSHw0SOuxxRIuHCIK4EOqcL39dEyVrpUhro9RJYECZ+OdIOjtP2hNLko0V4
+         TmOzKO5iyv2DGD6SpbIxJ/Ie5Hr4Im6/Xrbuwpuh4IfEVSjDBxNAAHmvq7jd5ttE15HH
+         XZh3GxR06TSoo/UEiwzo9GuVVAkj0RvlWkVecgu6Vlaly+ZX5+Nrli6nfeh4ZDqJmy+3
+         jSDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706600138; x=1707204938;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TTqUzOyKBgD15tUKZFCKN9Jxdu54AkjHcxdnWoZg554=;
+        b=PReAuvt4OBIfoKtSUhMt7edP8djzdsdhog5xqN/SJ0tC0pRgkFX3b0FFFOviLWNneI
+         cyNujj82IINf1czpABYOlhdq0cE8yGI4fRZQwgN7qylKgm5kPJUoi6qQGhS1/u/uk9VH
+         yijHaAPw45fWSRRCJ2ehglF/gS7DWqMg9cFb5+5ENCWff99D98JBr6/mMewucgePoBro
+         frpyBtxHdbZHISrNee5aQOzez9uPUuKXIfmoxA1HROAIjxXm7t79/RTQ643vc9c1/gEW
+         F8QCPvJYZPNN/4o1WFu94DBEQBIcRX2DitvK9FFtYyPGjNMP3MvanTaIzd1CccDOD3/h
+         6CoA==
+X-Gm-Message-State: AOJu0YzLD3c9oVczHd+zE3IXzxVljLkdblX08MjJe+11LFfhXbmi/YgU
+	/uVUJkED+sT+dBndj5/JVFpl4EcbC+vJAQrTjVN/FCJ9XRZf31hY
+X-Google-Smtp-Source: AGHT+IFhUQGSy7+OWJvqQ8x5euHaIzeajkd5zop8vgndzZO8XpM+Pu1PaDxuEJATLwktV26PUMZ/1A==
+X-Received: by 2002:a05:600c:314a:b0:40d:8bc2:6059 with SMTP id h10-20020a05600c314a00b0040d8bc26059mr7392928wmo.36.1706600137533;
+        Mon, 29 Jan 2024 23:35:37 -0800 (PST)
+Received: from eichest-laptop.lan ([2a02:168:af72:0:ff96:97a4:5bcc:1958])
+        by smtp.gmail.com with ESMTPSA id i5-20020a05600c354500b0040efb8f7158sm2964828wmq.15.2024.01.29.23.35.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 23:35:37 -0800 (PST)
+From: Stefan Eichenberger <eichest@gmail.com>
+To: gregkh@linuxfoundation.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	piyush.mehta@amd.com,
+	michal.simek@amd.com
+Cc: francesco.dolcini@toradex.com,
+	linux-usb@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Stefan Eichenberger <stefan.eichenberger@toradex.com>
+Subject: [PATCH] dt-bindings: usb: microchip,usb5744: Remove peer-hub as requirement
+Date: Tue, 30 Jan 2024 08:35:05 +0100
+Message-Id: <20240130073505.8916-1-eichest@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231228125553.2697765-1-yukuai1@huaweicloud.com>
- <20231228125553.2697765-4-yukuai1@huaweicloud.com> <CAPhsuW5ck33wdFznkpXzZmyW3ux3gCf-yhQnevdirjVJkmzmEA@mail.gmail.com>
- <864b3e44-ba1b-3bfe-c17e-3e6048fbea01@huaweicloud.com>
-In-Reply-To: <864b3e44-ba1b-3bfe-c17e-3e6048fbea01@huaweicloud.com>
-From: Song Liu <song@kernel.org>
-Date: Mon, 29 Jan 2024 23:34:41 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW5-Rg8F2R-zkA5YWbjdz7TcNUsXUivDMwH+s-PxjKjAcg@mail.gmail.com>
-Message-ID: <CAPhsuW5-Rg8F2R-zkA5YWbjdz7TcNUsXUivDMwH+s-PxjKjAcg@mail.gmail.com>
-Subject: Re: [PATCH -next 3/3] md: use interruptible apis in idle/frozen_sync_thread()
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: neilb@suse.de, linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jan 29, 2024 at 11:04=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> =
-wrote:
->
-> Hi,
->
-> =E5=9C=A8 2024/01/30 14:37, Song Liu =E5=86=99=E9=81=93:
-> > Hi,
-> >
-> > Sorry for the late reply.
-> >
-> > The first two patches of the set look good, so I applied them to
-> > md-tmp-6.9 branch. However, this one needs a respin.
->
-> We are fixing dm-raid regressions, so I'll not send a new version until
-> that work is done. :)
+From: Stefan Eichenberger <stefan.eichenberger@toradex.com>
 
-Sure. Fixing the regression is more urgent.
+The peer-hub is used to model the relationship between the USB 2 and USB
+3 hub. However, it is possible to only connect USB 2 without having
+USB 3. Therefore, the peer-hub property should not be marked as required.
 
-> >
-> > On Thu, Dec 28, 2023 at 4:58=E2=80=AFAM Yu Kuai <yukuai1@huaweicloud.co=
-m> wrote:
-> >>
-> >> From: Yu Kuai <yukuai3@huawei.com>
-[...]
-> > I found prepare_to_stop_sync_thread very hard to reason. Please try to
-> > rephrase the comment or refactor the code. Maybe it makes sense to put
-> > the following logic and its variations to a separate function:
-> >
-> >          if (prepare_to_stop_sync_thread(mddev, false)) {
-> >                  wait_event(resync_wait, sync_thread_stopped(mddev, NUL=
-L));
-> >                  mddev_lock_nointr(mddev);
-> >          }
->
-> I can do this, but there are 5 callers and only two of them can use the
-> separate caller. Pehaps something like this?
->
-> void stop_sync_thread(struct mddev *mddev, bool wait_sb)
-> {
->         if (prepare_to_stop_sync_thread(mddev, wait_sb)) {
->                 wait_event(resync_wait, ...);
->                 if (!wait_sb) {
->                         mddev_lock_nointr(mddev);
->                         return;
->                 }
->         }
->
->         if (wait_sb) {
->                 wait_event(sb_wait, ...);
->                 mddev_lock_nointr(mddev);
->         }
-> }
+Signed-off-by: Stefan Eichenberger <stefan.eichenberger@toradex.com>
+---
+ Documentation/devicetree/bindings/usb/microchip,usb5744.yaml | 2 --
+ 1 file changed, 2 deletions(-)
 
-I don't really like this version either. Let's think more about this
-after fixing the dm-raid regressions.
+diff --git a/Documentation/devicetree/bindings/usb/microchip,usb5744.yaml b/Documentation/devicetree/bindings/usb/microchip,usb5744.yaml
+index 6d4cfd943f58..14dbb70b08fa 100644
+--- a/Documentation/devicetree/bindings/usb/microchip,usb5744.yaml
++++ b/Documentation/devicetree/bindings/usb/microchip,usb5744.yaml
+@@ -71,8 +71,6 @@ allOf:
+         i2c-bus: false
+     else:
+       $ref: /schemas/usb/usb-device.yaml
+-      required:
+-        - peer-hub
+ 
+ additionalProperties: false
+ 
+-- 
+2.40.1
 
-Thanks,
-Song
-
->
-> int stop_sync_thread_interruptible(struct mddev *mddev, bool check_sync_s=
-eq)
-> {
-> ...
-> }
 
