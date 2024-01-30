@@ -1,73 +1,62 @@
-Return-Path: <linux-kernel+bounces-44028-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44029-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15310841C65
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:15:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF5A7841C6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:16:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5B092885A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:15:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 008561C234A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:16:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B5774F1F5;
-	Tue, 30 Jan 2024 07:15:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E61414EB49;
+	Tue, 30 Jan 2024 07:16:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tQUzVE32"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AkNCOetc"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E3D045006;
-	Tue, 30 Jan 2024 07:15:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22F164C60E;
+	Tue, 30 Jan 2024 07:16:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706598902; cv=none; b=LdMPMJ4CEM3oeDvc11KP+e8lGLj0XbXKz9U+z/Em0zRlEVG/GiC7c3MpC+WDfuLWK5e0W9EwZrxeAw7fald65avp3+q9uyDItA6iH9Slwu30NziyWm1qvMykpizvAxOOIf2PGYWzfhMl4lg+1FTY4mmbKjFKI19rqZKJWTeN+yk=
+	t=1706599004; cv=none; b=TgZ2c5eD/62we/+QI3F9cE/ss2adFDXiOb2GZzIRN244oK1QrdVAozBXzgf9oDi7GBtt1qY7LIz1KaX6eu+CIFf7vWirT1k1iEaFwaj9VcvNaPJ9QyPiq4tUhDV8XzaP/zx/XrlZ5qKyCDXAKM8uAHpilgEJFj/dihr604s1A8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706598902; c=relaxed/simple;
-	bh=3O2f3C735+i3w3e95T2JFKr5hUPP5tDZtu+rWvTmjuY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d+GPi7OSLEbT8I1LPymYNfJcdDJKTUAdNrD9+O8IQYEcsKNYezOLzBfweGVgB0duWclWvvPT2UUeeA4eKsL/8nmvhA5lq8HPxj0K6ZeX1HX6V7jU9arosD3o7GQYq9OBmbaUUYP7WngHln0FoJYUVycSS/9uniiE6aH8NUJRInw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tQUzVE32; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F7E5C433C7;
-	Tue, 30 Jan 2024 07:14:53 +0000 (UTC)
+	s=arc-20240116; t=1706599004; c=relaxed/simple;
+	bh=ARcz4USU8r0bRTopPYmnEjrWA2aM7F+R+t/FlFe8cxA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Utrl1YWp7TL3PjEU3fCa4Wn2y+uh9GEx6pByBByZaowmAJL6zUsy77A3r7weF44bmVzcyp/wb7+hFRNp69YJUP7n3BxySnA+qua3OmMkpMLF2wniW2UlTtZ+QPRdmxTjejy5a5lHVCD3+V513x6QEgekqsyMTAmf7/6sRf9y5Io=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AkNCOetc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60E2CC433F1;
+	Tue, 30 Jan 2024 07:16:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706598901;
-	bh=3O2f3C735+i3w3e95T2JFKr5hUPP5tDZtu+rWvTmjuY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tQUzVE32pRfeLHULf0XVo2M0xQIfe8i4jvnS8c2seESF4a9Uwx+lGrzKu/FLDdNXS
-	 Zk3inblB2vJfluBo6SBAYsbGf6rbjFM7kV2IhN3cR09JMjXi2Dc/zxAx6O1itT9Os2
-	 mpfxSjZjTcw4cuHQ9vUdvxwrbeJ+Kzfb8MFkQnGgNKT4mlQMcmjQx8CFZb4J65BK1c
-	 jvXq0zFxhESchT72bs03+YznWaPr5Cndpnphex39hCYFpShT85x64J9QQodCDlM6ND
-	 fYcwZ+QeUdDkSg7g098MdLFezdzVVgTGoRKN3hQGnYQbFF4GArgSo25LLYOiU4dsxj
-	 25v2pDD0LeViw==
-Date: Tue, 30 Jan 2024 12:44:49 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Viresh Kumar <viresh.kumar@linaro.org>
-Cc: Manivannan Sadhasivam <mani@kernel.org>,
-	Krishna chaitanya chundru <quic_krichai@quicinc.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Brian Masney <bmasney@redhat.com>,
-	Georgi Djakov <djakov@kernel.org>, linux-arm-msm@vger.kernel.org,
-	vireshk@kernel.org, quic_vbadigan@quicinc.com,
-	quic_skananth@quicinc.com, quic_nitegupt@quicinc.com,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 5/6] arm64: dts: qcom: sm8450: Add opp table support
- to PCIe
-Message-ID: <20240130071449.GG32821@thinkpad>
-References: <20240112-opp_support-v6-0-77bbf7d0cc37@quicinc.com>
- <20240112-opp_support-v6-5-77bbf7d0cc37@quicinc.com>
- <20240129160420.GA27739@thinkpad>
- <20240130061111.eeo2fzaltpbh35sj@vireshk-i7>
+	s=k20201202; t=1706599004;
+	bh=ARcz4USU8r0bRTopPYmnEjrWA2aM7F+R+t/FlFe8cxA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=AkNCOetcPQd/Ss2HAxzXim17RcJFMDQvHN4QdOlOPN6s+/8ptoinzsCrStflmHeoQ
+	 lMNxXo4ox70cTmfL3P2Rxz1He1sLBAOhdwGB2jxxztRWg6hWHjKmLXdCZ5TM+JONwe
+	 Y6q4S2iAcbkoyplDUboaXJq4n4nJ+u6pm6kSI64VvjykVFBOR1OFnJlm/pkuMtXGf7
+	 1+16nZOL1MV8YOhUNss5ZyRyH2Q8CaXeVGf412n269FBrGp9tb+A1jZb1TxryvRoNk
+	 BhfNxjsocrlh7+QEN6OTIdDC/5BfQ8LHTmH88RySf/Gxwou7hcwVo6jNgnTZe0Uj2+
+	 fMorUxt4KrQMg==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Anup Patel <apatel@ventanamicro.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, Thomas
+ Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand
+ <frowand.list@gmail.com>, Conor Dooley <conor+dt@kernel.org>
+Cc: Anup Patel <apatel@ventanamicro.com>, devicetree@vger.kernel.org,
+ Saravana Kannan <saravanak@google.com>, Marc Zyngier <maz@kernel.org>,
+ Anup Patel <anup@brainfault.org>, linux-kernel@vger.kernel.org, Atish
+ Patra <atishp@atishpatra.org>, linux-riscv@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, Andrew Jones
+ <ajones@ventanamicro.com>
+Subject: Re: [PATCH v12 00/25] Linux RISC-V AIA Support
+In-Reply-To: <20240127161753.114685-1-apatel@ventanamicro.com>
+References: <20240127161753.114685-1-apatel@ventanamicro.com>
+Date: Tue, 30 Jan 2024 08:16:40 +0100
+Message-ID: <87r0hzuw87.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,76 +64,114 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240130061111.eeo2fzaltpbh35sj@vireshk-i7>
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 30, 2024 at 11:41:11AM +0530, Viresh Kumar wrote:
-> On 29-01-24, 21:34, Manivannan Sadhasivam wrote:
-> > On Fri, Jan 12, 2024 at 07:52:04PM +0530, Krishna chaitanya chundru wrote:
-> > > PCIe needs to choose the appropriate performance state of RPMH power
-> > > domain and interconnect bandwidth based up on the PCIe gen speed.
-> > > 
-> > > Add the OPP table support to specify RPMH performance states and
-> > > interconnect peak bandwidth.
-> > > 
-> > > Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-> > > ---
-> > >  arch/arm64/boot/dts/qcom/sm8450.dtsi | 74 ++++++++++++++++++++++++++++++++++++
-> > >  1 file changed, 74 insertions(+)
-> > > 
-> > > diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
-> > > index 6b1d2e0d9d14..eab85ecaeff0 100644
-> > > --- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
-> > > +++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
-> > > @@ -1827,7 +1827,32 @@ pcie0: pcie@1c00000 {
-> > >  			pinctrl-names = "default";
-> > >  			pinctrl-0 = <&pcie0_default_state>;
-> > >  
-> > > +			operating-points-v2 = <&pcie0_opp_table>;
-> > > +
-> > >  			status = "disabled";
-> > > +
-> > > +			pcie0_opp_table: opp-table {
-> > > +				compatible = "operating-points-v2";
-> > > +
-> > > +				opp-2500000 {
-> > > +					opp-hz = /bits/ 64 <2500000>;
-> > > +					required-opps = <&rpmhpd_opp_low_svs>;
-> > > +					opp-peak-kBps = <250000 250000>;
-> > 
-> > This is a question for Viresh: We already have macros in the driver to derive
-> > the bandwidth based on link speed. So if OPP core exposes a callback to allow
-> > the consumers to set the bw on its own, we can get rid of this entry.
-> > 
-> > Similar to config_clks()/config_regulators(). Is that feasible?
-> 
-> I don't have any issues with a new callback for bw. But, AFAIU, the DT
-> is required to represent the hardware irrespective of what any OS
-> would do with it. So DT should ideally have these values here, right ?
-> 
+Anup Patel <apatel@ventanamicro.com> writes:
 
-Not necessarily. Because, right now the bandwidth values of the all peripherals
-are encoded within the drivers. Only OPP has the requirement to define the
-values in DT.
+> The RISC-V AIA specification is ratified as-per the RISC-V international
+> process. The latest ratified AIA specifcation can be found at:
+> https://github.com/riscv/riscv-aia/releases/download/1.0/riscv-interrupts=
+-1.0.pdf
+>
+> At a high-level, the AIA specification adds three things:
+> 1) AIA CSRs
+>    - Improved local interrupt support
+> 2) Incoming Message Signaled Interrupt Controller (IMSIC)
+>    - Per-HART MSI controller
+>    - Support MSI virtualization
+>    - Support IPI along with virtualization
+> 3) Advanced Platform-Level Interrupt Controller (APLIC)
+>    - Wired interrupt controller
+>    - In MSI-mode, converts wired interrupt into MSIs (i.e. MSI generator)
+>    - In Direct-mode, injects external interrupts directly into HARTs
+>
+> For an overview of the AIA specification, refer the AIA virtualization
+> talk at KVM Forum 2022:
+> https://static.sched.com/hosted_files/kvmforum2022/a1/AIA_Virtualization_=
+in_KVM_RISCV_final.pdf
+> https://www.youtube.com/watch?v=3Dr071dL8Z0yo
+>
+> To test this series, use QEMU v7.2 (or higher) and OpenSBI v1.2 (or highe=
+r).
+>
+> These patches can also be found in the riscv_aia_v12 branch at:
+> https://github.com/avpatel/linux.git
+>
+> Changes since v11:
+>  - Rebased on Linux-6.8-rc1
+>  - Included kernel/irq related patches from "genirq, irqchip: Convert ARM
+>    MSI handling to per device MSI domains" series by Thomas.
+>    (PATCH7, PATCH8, PATCH9, PATCH14, PATCH16, PATCH17, PATCH18, PATCH19,
+>     PATCH20, PATCH21, PATCH22, PATCH23, and PATCH32 of
+>     https://lore.kernel.org/linux-arm-kernel/20221121135653.208611233@lin=
+utronix.de/)
+>  - Updated APLIC MSI-mode driver to use the new WIRED_TO_MSI mechanism.
+>  - Updated IMSIC driver to support per-device MSI domains for PCI and
+>    platform devices.
 
-> Also, the driver has already moved away from using those macros now
-> and depend on the OPP core to do the right thing. It only uses the
-> macro for the cases where the DT OPP table isn't available. And as
-> said by few others as well already, the driver really should try to
-> add OPPs dynamically in that case to avoid multiple code paths and
-> stick to a single OPP based solution.
-> 
+Thanks for working on this, Anup! I'm still reviewing the patches.
 
-Still I prefer to use OPP for bandwidth control because both the voltage and
-bandwidth values need to be updated at the same time. My only point here is, if
-OPP exposes a callback for bw, then we can keep the DT behavior consistent.
+I'm hitting a boot hang in text patching, with this series applied on
+6.8-rc2. IPI issues?
 
-- Mani
+I'm booting with U-boot UEFI.
 
-> -- 
-> viresh
+kernel config:
+https://gist.github.com/bjoto/bac563e6dcaab68dba1a5eaf675d51aa
 
--- 
-மணிவண்ணன் சதாசிவம்
+QEMU 8.2.0/OpenSBI 1.4:
+  | qemu-system-riscv64 \
+  | 	-machine virt,acpi=3Doff,aia=3Daplic-imsic \
+  | 	-cpu rv64,v=3Dtrue,vlen=3D256,elen=3D64,h=3Dtrue,zbkb=3Don,zbkc=3Don,z=
+bkx=3Don,zkr=3Don,zkt=3Don,svinval=3Don,svnapot=3Don,svpbmt=3Don \
+  | 	-smp 4 \
+  | 	-object rng-random,filename=3D/dev/urandom,id=3Drng0 \
+  | 	-device virtio-rng-device,rng=3Drng0 \
+  | 	-append "root=3D/dev/vda2 rw earlycon console=3Dtty0 console=3DttyS0 p=
+anic=3D-1 oops=3Dpanic sysctl.vm.panic_on_oom=3D1" \
+  |     -m 4G \
+  |     ...
+
+Last lines from the kernel:
+  | ...
+  | goldfish_rtc 101000.rtc: registered as rtc0=20=20=20=20=20=20=20=20=20=
+=20=20=20=20
+  | goldfish_rtc 101000.rtc: setting system clock to 2024-01-30T06:39:28 UT=
+C (1706596768)=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+
+Same kernel boots w/ "-machine virt,acpi=3Doff" (AIA is *not* enabled).
+
+Related or not, I got this splat (once) a ftrace kselftest:
+  | # selftests: ftrace: ftracetest-ktap
+  | Unable to handle kernel paging request at virtual address 5a5a5a5a5a5a5=
+ac2
+  | Oops [#1]
+  | Modules linked in: drm fuse i2c_core drm_panel_orientation_quirks backl=
+ight dm_mod configfs ip_tables x_tables [last unloaded: trace_printk]
+  | CPU: 2 PID: 19691 Comm: ls Tainted: G        W          6.8.0-rc2-kself=
+test_plain #1
+  | Hardware name: riscv-virtio,qemu (DT)
+  | epc : set_top_events_ownership+0x14/0x5c
+  |  ra : eventfs_get_attr+0x2e/0x50
+  | epc : ffffffff80533aa4 ra : ffffffff80533b1a sp : ff20000001cebc70
+  |  gp : ffffffff8258b860 tp : ff6000008623e240 t0 : ffffffff80533a98
+  |  t1 : ffffffff825b6b60 t2 : 0000000000000008 s0 : ff20000001cebc80
+  |  s1 : ffffffff8233c000 a0 : ff6000009224e9b8 a1 : ff20000001cebd28
+  |  a2 : ff20000001cebd98 a3 : 000000000000025e a4 : ffffffff80000000
+  |  a5 : 5a5a5a5a5a5a5a5a a6 : 0000000000000000 a7 : 0000000000735049
+  |  s2 : 000000000000025e s3 : ff20000001cebd98 s4 : ff6000009224e9b8
+  |  s5 : ff20000001cebd28 s6 : ffffffffffffff9c s7 : ff6000008ac6a1c0
+  |  s8 : 00007fff9f685d80 s9 : 0000000000000000 s10: 00007fffd4550ef0
+  |  s11: 0000000000000000 t3 : 0000000000000001 t4 : 0000000000000016
+  |  t5 : ffffffff818145be t6 : ff6000009233d77e
+  | status: 0000000200000120 badaddr: 5a5a5a5a5a5a5ac2 cause: 0000000000000=
+00d
+  | [<ffffffff80533aa4>] set_top_events_ownership+0x14/0x5c
+  | Code: b297 ffad 82e7 d302 1141 e422 0800 3783 ff85 cb89 (57b8) 8b09=20
+  | ---[ end trace 0000000000000000 ]---
+
+This might be unrelated, but the hang above is on every boot.
+
+
+Bj=C3=B6rn
 
