@@ -1,84 +1,134 @@
-Return-Path: <linux-kernel+bounces-44762-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F527842709
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:39:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AF9784270A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:39:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBB0A28EC06
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:39:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E47081F27FE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:39:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9E407C0AE;
-	Tue, 30 Jan 2024 14:39:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GW9hb5eW"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A34D7C0B9;
+	Tue, 30 Jan 2024 14:39:33 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1567C59165;
-	Tue, 30 Jan 2024 14:39:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEDD27C08A;
+	Tue, 30 Jan 2024 14:39:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706625560; cv=none; b=adBsX1uwnyNHfkeCfQYBaxR+RUzUo2xEWZ+uIOgxYcVpxyxTTrjxTpQqDwOjlL5cJd4ggRsYlEaDYwsidFAao8rjdL3n0+FVC9Y3K5i/CeuE9ZNPrOeryEoKQKBTCEJ0XgVw2MdSKeWtlUK6r5xhwsEtJtsRiWVS/f0JEg6e9Lo=
+	t=1706625572; cv=none; b=I0KwcYdQazS3s7I8A76XQJIl2z+1oY30f56NJEPBuLRufPvTX8DPaP7CIIJmcIXZFPQDZUg+ReRkiE5zijMM5LuSR8Mem+dtDv8Z76ISQJnAZue3TlnB4L4cRkxa928e9sONeJBkJMFwOvmaNnpMQqPXXDy7hfHnFlQzJzhu7rA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706625560; c=relaxed/simple;
-	bh=twhlpP4bEJB8a4B8B+SAN5xVLlCuRCkzWmOyPl3lKBQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=US+Euvl2e/px+4omCtOGBiWW7dTUko8EfUDZ5C4fzIJEpxMsdF4YQ4WEqSdRiVQbPbzZhH9R3/1+J2mEWxcq0fCbDSPxC5yb9kmbSZZlekqcNXV4SHy2tNQhSgvWtBU8LeDyRxsfeK8iWivYRflAslai7Hj73NOQePSWHHOqs/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GW9hb5eW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70600C433C7;
-	Tue, 30 Jan 2024 14:39:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706625559;
-	bh=twhlpP4bEJB8a4B8B+SAN5xVLlCuRCkzWmOyPl3lKBQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GW9hb5eWTHFKkNMehSN3kpb61L0gCba1Xdp+Wg+v6n3vODwU9v9e9ntXqYNstHq8v
-	 i2GThP++ZnL/pgQF1iKty42By8Gt5k5qp6fLVDKstHP8vH8xJok8Ya7p3TcbWtqAVN
-	 pW1Myqb5cuL+xQGMb4D1+a3JTsnAiPSzrQuLtU9090G4R3ehgBO2fvz58lT95qlBSf
-	 5COmUHdWPO0XCptIU+tQk64bq2lTY7O+p7n0hynaM1G/lp/nL0gnZ2wADfXZzaWWxm
-	 WBH1q4aepvi/u9sfUzHwVIU4se77Fit4AHqvx5KAQoUflhP46axIZ/4tXXtctzB5v2
-	 Wrj6+OqSTbGiA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-	id 0A47940441; Tue, 30 Jan 2024 11:39:17 -0300 (-03)
-Date: Tue, 30 Jan 2024 11:39:16 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: James Clark <james.clark@arm.com>
-Cc: linux-perf-users@vger.kernel.org, irogers@google.com,
-	namhyung@kernel.org, Kan Liang <kan.liang@linux.intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Yang Jihong <yangjihong1@huawei.com>,
-	Changbin Du <changbin.du@huawei.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] perf evlist: Fix evlist__new_default() for > 1 core
- PMU
-Message-ID: <ZbkKFHsdOJOnzmdF@kernel.org>
-References: <20240124094358.489372-1-james.clark@arm.com>
+	s=arc-20240116; t=1706625572; c=relaxed/simple;
+	bh=wqSBbOtqTFhUjK2zJYRQVHTlBD4gJby8xLhIvN0PEhA=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=FZoZuhQ3lXQLkqRL+ZCCLIs90QdQ59UzWTOYVPyvTUb4oyFRuilDYTKy2HeoZfx1D0/2bq9h90P8wXwWGa4GO2SHTPYQLyib5fqPL6BTL2gkGpMzwfNP+HnTCgvzkzhICKHwTaeFKGH4dI7OB6FL6/EipnvKiYcio/DdWv2HBik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33BA7C433C7;
+	Tue, 30 Jan 2024 14:39:31 +0000 (UTC)
+Date: Tue, 30 Jan 2024 09:39:42 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
+ lkp@intel.com, linux-kernel@vger.kernel.org, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mathieu
+ Desnoyers <mathieu.desnoyers@efficios.com>, Christian Brauner
+ <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, Ajay Kaher
+ <ajay.kaher@broadcom.com>, linux-trace-kernel@vger.kernel.org
+Subject: Re: [linus:master] [eventfs] 852e46e239:
+ BUG:unable_to_handle_page_fault_for_address
+Message-ID: <20240130093942.56206ff1@gandalf.local.home>
+In-Reply-To: <CAHk-=wi+WbXZcc2Sx1i-MGV2DfG4eS4Ci+mrqi-PBSLSnww6qA@mail.gmail.com>
+References: <202401291043.e62e89dc-oliver.sang@intel.com>
+	<CAHk-=whb91PWEaEJpRGsuWaQpYZGj98ji8HC2vvHD4xb_TqhJw@mail.gmail.com>
+	<CAHk-=wgp7UkG31=cCcbSdhMv6-vBJ=orktUOUdiLzw4tQ4gDLg@mail.gmail.com>
+	<20240129152600.7587d1aa@gandalf.local.home>
+	<CAHk-=wghobf5qCqNUsafkQzNAZBJiS0=7CRjNXNChpoAvTbvUw@mail.gmail.com>
+	<20240129172200.1725f01b@gandalf.local.home>
+	<CAHk-=wjV6+U1FQ8wzQ5ASmqGgby+GZ6wpdh0NrJgA43mc+TEwA@mail.gmail.com>
+	<CAHk-=wgOxTeTi02C=kOXsHzuD6XCrV0L1zk1XP9t+a4Wx--xvA@mail.gmail.com>
+	<20240129174950.5a17a86c@gandalf.local.home>
+	<CAHk-=wjbzw3=nwR5zGH9jqXgB8jj03wxWfdFDn=oAVCoymQQJg@mail.gmail.com>
+	<20240129193549.265f32c8@gandalf.local.home>
+	<CAHk-=whRxcmjvGNBKi9_x59cAedh8SO8wsNDNrEQbAQfM5A8CQ@mail.gmail.com>
+	<CAHk-=wh97AkwaOkXoBgf0z8EP88ePffLnTcmmQXcY+AhFaFrnA@mail.gmail.com>
+	<CAHk-=wi6m7d-nivx10Lo=aGhbdk2qg-8SzjtDd9XW01LxGgAMA@mail.gmail.com>
+	<CAHk-=wi+WbXZcc2Sx1i-MGV2DfG4eS4Ci+mrqi-PBSLSnww6qA@mail.gmail.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240124094358.489372-1-james.clark@arm.com>
-X-Url: http://acmel.wordpress.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Em Wed, Jan 24, 2024 at 09:43:57AM +0000, James Clark escreveu:
-> Fixes: 251aa040244a ("perf parse-events: Wildcard most "numeric" events")
-> Closes: https://lore.kernel.org/lkml/CAP-5=fWVQ-7ijjK3-w1q+k2WYVNHbAcejb-xY0ptbjRw476VKA@mail.gmail.com/
-> Tested-by: Ian Rogers <irogers@google.com>
-> Reviewed-by: Ian Rogers <irogers@google.com>
-> Tested-by: Kan Liang <kan.liang@linux.intel.com>
-> Signed-off-by: James Clark <james.clark@arm.com>
+On Tue, 30 Jan 2024 01:12:05 -0800
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-Thanks, applied to perf-tools.
+> On Tue, 30 Jan 2024 at 00:43, Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > I'll go back to bed, but I think the fix is something trivial like this:  
+> 
+> Almost.
+> 
+> >   +     result = ERR_PTR(ENOENT);  
+> 
+> That needs a '-' in front of the ENOENT, otherwise you have a positive
+> error number and things go wrong very quickly.
+> 
+> And that does indeed fix the lookup problem, but you end up with the
+> same problem later when you do the eventfs_remove_dir(). Again the
+> eventfs data structure changes, but we don't have a reliable dentry
+> that we can invalidate.
+> 
+> The dentry cache is just very good at caching those old dentries, and
+> the interface for eventfs_create_dir() and eventfs_remove_dir() is
+> just not great.
+> 
+> If those did an actual path lookup (like eventfs_create_events_dir()
+> does), we'd have the dentry, and it's trivial to get from dentry to
+> eventfs_inode.
+> 
+> But going the other way is the broken thing because of how the
+> dentries are just temporary caches.
+> 
+> I suspect the solution is to make eventfs_create_dir() do the same as
+> the events directory case does, and actually pin the directory dentry
+> and save it off.
 
-- Arnaldo
+I rather not have the create do that because that happens for every event
+directory. On my machine that's:
 
+  # find events -type d | wc -l
+  2102
+
+And that's regardless if tracefs is mounted or not. And that's how many are
+also created with every instance creation. And doesn't pinning the dentry
+also require it to be positive? That is, have a full inode allocated with
+it?
+
+I may try something that will still let me get rid of the ei->dentry.
+
+> 
+> Oh well. At least I understand what the problem is.
+
+
+ Yep!
+
+
+> Now I'm going to try to go back to sleep.
+
+Hope you sleep better than I did. We just bought a new mattress, which felt
+great in the store, but now after 4 or 5 hours sleeping in it, I wake up
+with a sore back and have to sleep on the couch. And we bought the most
+expensive "best" mattress in the store :-p
+
+Oh, and NY State law has it that you can't return in once it is delivered.
+
+-- Steve
 
