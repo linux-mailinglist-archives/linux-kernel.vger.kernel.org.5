@@ -1,362 +1,174 @@
-Return-Path: <linux-kernel+bounces-45115-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45116-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3774A842BD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:34:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D5CD842BDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:35:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0510C1C21760
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:34:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22DC6B2345B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:35:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A051B69DFC;
-	Tue, 30 Jan 2024 18:34:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3661578B4F;
+	Tue, 30 Jan 2024 18:35:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NUf3U2Mw"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IV1A8e7l"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD8D1762C6
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 18:34:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFBD378B42
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 18:35:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706639643; cv=none; b=mEcIzLQLi95J2y2Bo/swU+UTh1tJIQZOk6oqmDpNFnlZoKmVCa5BBeCaC9W5m0BPFj3AvGaUwUsi2E0WUwe9fA5d7YtZn7Nw7TTv7rRE4trTA3FnTOGZ7CgA3TgmZUzy0g59HQfyy9Ol1N3TROqSovRxa2l/IOZ5dRsowZx/OdA=
+	t=1706639730; cv=none; b=jVQDWv9BWbb+499aeC9daMrXb1qm2Nna4wIvo9/s5CgJH9xWhP7F20Bv9/3zG7g5OqQ+be7VkFksovqML1JH0LAv/NQWoSLeQLx9NzCI6k7VoUHi0EamReWMBC1Q5JG0zjJwwZg14wXiOo6AFAvD8OQYxmSVEvtYKVi3mUInlIc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706639643; c=relaxed/simple;
-	bh=VQCexM6e++RY+6jzM1DaC5wChCDVDeV0eB8BVjKjVgY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=HO1rtQ82vG8Z5Llpiyo0YRYCIbpMeLtVsR5XSIXIcERVS51HqGiKMPS7VPJGBFd7ZPnRn0/ZZBdhmL2azi4TBuMJF1gJzKpx9kiBsPX0E0WDScY/A+uHnpRFDackyzGfooCifsxJJytJcaeHKEe247YCvOp0BdPMyBnftea3VWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NUf3U2Mw; arc=none smtp.client-ip=170.10.129.124
+	s=arc-20240116; t=1706639730; c=relaxed/simple;
+	bh=L+aLgJvaj3T4etR2vnjdTfpWxiYKCUhJ3FdQIpZAMho=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LafzbFM9p6jm7gM+Gzk71uvVVtEsyiEI92zpY9Ta2chTThvW4dLxBqbzYaRPFKDGVWJ6ZXmcx4KsEwTA2JWu9mZzuUa0gWl8ybxLG7dyMZmxGFmoGHtWHFeQB5rq9FmYSF4Bt/CaqZvji0cIWSpbJL3Mouyx8R2Zkarf/SimiLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IV1A8e7l; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706639640;
+	s=mimecast20190719; t=1706639727;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=n0l50zp4DV93ToPjoT6lIoiAHIsdSlkpo+6laKp6mmI=;
-	b=NUf3U2MwoS3/G0R8SKk5wkcEJ9yCTxi7eu3tsRs7GR5PEHj05wGZzg0bjxxKFrmWjYDYqI
-	+H8/rjq0k8c29WZnfn4wl+T6bN+crGQoVWxYuKI997M3tTnLsEXcO9rdmYDxKqLNVtrfbM
-	jVKRdyoA//l3dNaJRk8yLjo/CZWZsyQ=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=IOdYfwIYC5N4y+doDXlGO/PH5vC47bZ8gY5CXDn+WTw=;
+	b=IV1A8e7lta+V+Fibzja2y2xdYEWsh0PNZ8uayBYlkOUBHDldkZWbyclk4gZLElqEgH7tpn
+	i9He1UAdmG41C4LTijsNqgQrSKxIjo7qcpYP0qp7LEpcGQP569KYmhIsw9BBLdRgy4ssTp
+	Oxtuu4IH8zPzPIxYHI+NfcbAA34ksLg=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-537-IKjcfz2fNZWmlSRedM76xg-1; Tue, 30 Jan 2024 13:33:59 -0500
-X-MC-Unique: IKjcfz2fNZWmlSRedM76xg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 795C284A298;
-	Tue, 30 Jan 2024 18:33:57 +0000 (UTC)
-Received: from llong.com (unknown [10.22.8.207])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 19B3740CD14B;
-	Tue, 30 Jan 2024 18:33:57 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Tejun Heo <tj@kernel.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Cestmir Kalina <ckalina@redhat.com>,
-	Alex Gladkov <agladkov@redhat.com>,
-	Waiman Long <longman@redhat.com>
-Subject: [RFC PATCH 3/3] workqueue: Enable unbound cpumask update on ordered workqueues
-Date: Tue, 30 Jan 2024 13:33:36 -0500
-Message-Id: <20240130183336.511948-4-longman@redhat.com>
-In-Reply-To: <20240130183336.511948-1-longman@redhat.com>
-References: <20240130183336.511948-1-longman@redhat.com>
+ us-mta-190-I0iOX9uoMKaGVyUUV90DuA-1; Tue, 30 Jan 2024 13:35:26 -0500
+X-MC-Unique: I0iOX9uoMKaGVyUUV90DuA-1
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-5101e12059aso3552935e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 10:35:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706639724; x=1707244524;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IOdYfwIYC5N4y+doDXlGO/PH5vC47bZ8gY5CXDn+WTw=;
+        b=psR/DsteptHuH2/XtrGHYNbjIyfLCrg8Sdgk5UGWTmBmhH79ZMXnfD1PrSeKZRv2NN
+         7Jk/nQD/Ya7Ufu9+SXLWDBn5X0GiE6sYIXOxik8j1FKYm4B3VVMs5oYTbetg+U03Aesr
+         MMoJVh5i0llH7k9fesEdpyECBuTP0Nfpww0h1JEZxeTcJeq7mTaP/8rDYhlbgamwZK9j
+         38Penebi9mYm4K2CqFCS8vpxOpvxQj6VN+6mdGiLKOH4vOCi5gzzF9pPQ0O8r6nQCk/v
+         h85f8Knc2EyG8bJMoKl80i7wU+jsCfFURK3/dqtnbJRsMgsZpB3CRKWMAdfeVnWJBB26
+         KdQA==
+X-Gm-Message-State: AOJu0YwdVVqzKftO/hZoCZGY2FsaESp2c0ErVJvPRyRAKLO0fPnEjGty
+	rxSGQIkIcebqSYqimWagemU7+whUM1LVtXex6FCqscocjsAVhg8lGX1WiAleQxHSxAjA562sUEc
+	Enhu/n16+H1gZ2bbOKGvm9TPFLtiKXF5Nb2tZgjuG6UFJiK/pNWhyPX1fk3BwIwhlLuwG+A==
+X-Received: by 2002:a05:6512:3118:b0:50e:937e:b00e with SMTP id n24-20020a056512311800b0050e937eb00emr6754055lfb.46.1706639724462;
+        Tue, 30 Jan 2024 10:35:24 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG0lPG90dR+JaL7x5rEP1i/zj5JCA86gd1b2bt/YA8OReAEDomZA4lkHoV4BguYPqMnadNhaQ==
+X-Received: by 2002:a05:6512:3118:b0:50e:937e:b00e with SMTP id n24-20020a056512311800b0050e937eb00emr6754042lfb.46.1706639723972;
+        Tue, 30 Jan 2024 10:35:23 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id md5-20020a170906ae8500b00a318d32ac79sm5433103ejb.146.2024.01.30.10.35.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jan 2024 10:35:22 -0800 (PST)
+Message-ID: <1bc6d6f0-a13d-4148-80cb-9c13dec7ed32@redhat.com>
+Date: Tue, 30 Jan 2024 19:35:21 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+User-Agent: Mozilla Thunderbird
+Subject: Re: Implement per-key keyboard backlight as auxdisplay?
+To: Werner Sembach <wse@tuxedocomputers.com>, Pavel Machek <pavel@ucw.cz>
+Cc: Jani Nikula <jani.nikula@linux.intel.com>, jikos@kernel.org,
+ Jelle van der Waa <jelle@vdwaa.nl>,
+ Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, Lee Jones <lee@kernel.org>,
+ linux-kernel@vger.kernel.org,
+ "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ linux-input@vger.kernel.org, ojeda@kernel.org, linux-leds@vger.kernel.org
+References: <aac81702-df1e-43a2-bfe9-28e9cb8d2282@tuxedocomputers.com>
+ <ZSmg4tqXiYiX18K/@duo.ucw.cz>
+ <CANiq72mfP+dOLFR352O0UNVF8m8yTi_VmOY1zzQdTBjPWCRowg@mail.gmail.com>
+ <87sf61bm8t.fsf@intel.com> <ZVvHG/Q+V6kCnfKZ@duo.ucw.cz>
+ <f4137e34-c7fb-4f21-bc93-1496cbf61fdf@tuxedocomputers.com>
+ <8096a042-83bd-4b9f-b633-79e86995c9b8@redhat.com>
+ <f416fbca-589b-4f6a-aad6-323b66398273@tuxedocomputers.com>
+ <4222268b-ff44-4b7d-bf11-e350594bbe24@redhat.com>
+ <ac02143c-d417-49e5-9c6e-150cbda71ba7@tuxedocomputers.com>
+ <ZaljwLe7P+dXHEHb@duo.ucw.cz>
+ <6bbfdd62-e663-4a45-82f4-445069a8d690@redhat.com>
+ <0cdb78b1-7763-4bb6-9582-d70577781e61@tuxedocomputers.com>
+ <7228f2c6-fbdd-4e19-b703-103b8535d77d@redhat.com>
+ <730bead8-6e1d-4d21-90d2-4ee73155887a@tuxedocomputers.com>
+ <952409e1-2f0e-4d7a-a7a9-3b78f2eafec7@redhat.com>
+ <9851a06d-956e-4b57-be63-e10ff1fce8b4@tuxedocomputers.com>
+Content-Language: en-US, nl
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <9851a06d-956e-4b57-be63-e10ff1fce8b4@tuxedocomputers.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Ordered workqueues does not currently follow changes made to the
-global unbound cpumask because per-pool workqueue changes may break
-the ordering guarantee. IOW, a work function in an ordered workqueue
-may run on a cpuset isolated CPU.
+Hi,
 
-This patch enables ordered workqueues to follow changes made to the
-global unbound cpumask by temporaily saving the work items in an
-internal queue until the old pwq has been properly flushed and to be
-freed. At that point, those work items, if present, are queued back to
-the new pwq to be executed.
+On 1/30/24 19:09, Werner Sembach wrote:
+> Hi Hans,
+> 
+> resend because Thunderbird htmlified the mail :/
 
-This enables ordered workqueues to follow the unbound cpumask changes
-like other unbound workqueues at the expense of some delay in execution
-of work functions during the transition period.
+I use thunderbird too. If you right click on the server name
+and then go to "Settings" -> "Composition & Addressing"
+and then uncheck "Compose messages in HTML format"
+I think that should do the trick.
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- kernel/workqueue.c | 169 +++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 156 insertions(+), 13 deletions(-)
+> Am 30.01.24 um 18:10 schrieb Hans de Goede:
+>> Hi Werner,
+>>
+>> On 1/30/24 12:12, Werner Sembach wrote:
+>>> Hi Hans,
+>>>
+>>> Am 29.01.24 um 14:24 schrieb Hans de Goede:
+> <snip>
+>>> I think that are mostly external keyboards, so in theory a possible cut could also between built-in and external devices.
+>> IMHO it would be better to limit /dev/rgbledstring use to only
+>> cases where direct userspace control is not possible and thus
+>> have the cut be based on whether direct userspace control
+>> (e.g. /dev/hidraw access) is possible or not.
+> 
+> Ack
+> 
+> <snip>
+> 
+>>> So also no basic driver? Or still the concept from before with a basic 1 zone only driver via leds subsystem to have something working, but it is unregistered by userspace, if open rgb wants to take over for fine granular support?
+>> Ah good point, no I think that a basic driver just for kbd backlight
+>> brightness support which works with the standard desktop environment
+>> controls for this makes sense.
+>>
+>> Combined with some mechanism for e.g. openrgb to fully take over
+>> control as discussed. It is probably a good idea to file a separate
+>> issue with the openrgb project to discuss the takeover API.
+> 
+> I think the OpenRGB maintainers are pretty flexible at that point, after all it's similar to enable commands a lot of rgb devices need anyway. I would include it in a full api proposal.
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 98c741eb43af..0ecbeecc74f2 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -320,11 +320,30 @@ struct workqueue_struct {
- 	 */
- 	struct rcu_head		rcu;
- 
-+	/*
-+	 * For orderly transition from old pwq to new pwq in ordered workqueues.
-+	 *
-+	 * During transition, queue_work() will queue the work items in a
-+	 * temporary o_list. Once the old pwq is properly flushed and to be
-+	 * freed, the pending work items in o_list will be queued to the new
-+	 * pwq to start execution.
-+	 */
-+	raw_spinlock_t		o_lock;	 /* for protecting o_list & o_state */
-+	atomic_t		o_nr_qw; /* queue_work() in progress count */
-+	int			o_state; /* pwq transition state */
-+	struct list_head	o_list;	 /* pending ordered work items */
-+
- 	/* hot fields used during command issue, aligned to cacheline */
- 	unsigned int		flags ____cacheline_aligned; /* WQ: WQ_* flags */
- 	struct pool_workqueue __percpu __rcu **cpu_pwq; /* I: per-cpu pwqs */
- };
- 
-+enum ordered_wq_states {
-+	ORD_NORMAL = 0,	/* default normal working state */
-+	ORD_QUEUE,	/* queue works in o_list */
-+	ORD_WAIT,	/* busy waiting */
-+};
-+
- static struct kmem_cache *pwq_cache;
- 
- /*
-@@ -1425,8 +1444,24 @@ static void get_pwq(struct pool_workqueue *pwq)
- static void put_pwq(struct pool_workqueue *pwq)
- {
- 	lockdep_assert_held(&pwq->pool->lock);
-+	lockdep_assert_irqs_disabled();
- 	if (likely(--pwq->refcnt))
- 		return;
-+
-+	/*
-+	 * If pwq transition is in progress for ordered workqueue and
-+	 * there is no pending work in wq->o_list, we can end this
-+	 * transition period here.
-+	 */
-+	if (READ_ONCE(pwq->wq->o_state)) {
-+		struct workqueue_struct *wq = pwq->wq;
-+
-+		raw_spin_lock(&wq->o_lock);
-+		if (list_empty(&wq->o_list))
-+			WRITE_ONCE(wq->o_state, ORD_NORMAL);
-+		raw_spin_unlock(&wq->o_lock);
-+	}
-+
- 	/*
- 	 * @pwq can't be released under pool->lock, bounce to a dedicated
- 	 * kthread_worker to avoid A-A deadlocks.
-@@ -1795,6 +1830,8 @@ static void __queue_work_rcu_locked(int cpu, struct workqueue_struct *wq,
- static void __queue_work(int cpu, struct workqueue_struct *wq,
- 			 struct work_struct *work)
- {
-+	bool owq = wq->flags & __WQ_ORDERED_EXPLICIT;
-+
- 	/*
- 	 * While a work item is PENDING && off queue, a task trying to
- 	 * steal the PENDING will busy-loop waiting for it to either get
-@@ -1813,7 +1850,35 @@ static void __queue_work(int cpu, struct workqueue_struct *wq,
- 		return;
- 
- 	rcu_read_lock();
-+	if (owq) {
-+		/* Provide an acquire barrier */
-+		atomic_inc_return_acquire(&wq->o_nr_qw);
-+		for (;;) {
-+			int ostate = READ_ONCE(wq->o_state);
-+
-+			if (!ostate)
-+				break;
-+			if (ostate == ORD_QUEUE) {
-+				int new_ostate;
-+
-+				raw_spin_lock(&wq->o_lock);
-+				new_ostate = READ_ONCE(wq->o_state);
-+				if (unlikely(new_ostate != ostate)) {
-+					raw_spin_unlock(&wq->o_lock);
-+					continue;
-+				}
-+				list_add_tail(&work->entry, &wq->o_list);
-+				raw_spin_unlock(&wq->o_lock);
-+				goto unlock_out;
-+			} else {	/* ostate == ORD_WAIT */
-+				cpu_relax();
-+			}
-+		}
-+	}
- 	__queue_work_rcu_locked(cpu, wq, work);
-+unlock_out:
-+	if (owq)
-+		atomic_dec(&wq->o_nr_qw);
- 	rcu_read_unlock();
- }
- 
-@@ -4107,6 +4172,57 @@ static void rcu_free_pwq(struct rcu_head *rcu)
- 			container_of(rcu, struct pool_workqueue, rcu));
- }
- 
-+/* requeue the work items stored in wq->o_list */
-+static void requeue_ordered_works(struct workqueue_struct *wq)
-+{
-+	LIST_HEAD(head);
-+	struct work_struct *work, *next;
-+
-+	raw_spin_lock_irq(&wq->o_lock);
-+	if (list_empty(&wq->o_list))
-+		goto unlock_out;	/* No requeuing is needed */
-+
-+	list_splice_init(&wq->o_list, &head);
-+	raw_spin_unlock_irq(&wq->o_lock);
-+
-+	/*
-+	 * Requeue the first batch of work items. Since it may take a while
-+	 * to drain the old pwq and update the workqueue attributes, there
-+	 * may be a rather long list of work items to process. So we allow
-+	 * queue_work() callers to continue putting their work items in o_list.
-+	 */
-+	list_for_each_entry_safe(work, next, &head, entry) {
-+		list_del_init(&work->entry);
-+		local_irq_disable();
-+		__queue_work_rcu_locked(WORK_CPU_UNBOUND, wq, work);
-+		local_irq_enable();
-+	}
-+
-+	/*
-+	 * Now check if there are more work items queued, if so set ORD_WAIT
-+	 * and force incoming queue_work() callers to busy wait until the 2nd
-+	 * batch of work items have been properly requeued. It is assumed
-+	 * that the 2nd batch should be much smaller.
-+	 */
-+	raw_spin_lock_irq(&wq->o_lock);
-+	if (list_empty(&wq->o_list))
-+		goto unlock_out;
-+	WRITE_ONCE(wq->o_state, ORD_WAIT);
-+	list_splice_init(&wq->o_list, &head);
-+	raw_spin_unlock(&wq->o_lock);	/* Leave interrupt disabled */
-+	list_for_each_entry_safe(work, next, &head, entry) {
-+		list_del_init(&work->entry);
-+		__queue_work_rcu_locked(WORK_CPU_UNBOUND, wq, work);
-+	}
-+	WRITE_ONCE(wq->o_state, ORD_NORMAL);
-+	local_irq_enable();
-+	return;
-+
-+unlock_out:
-+	WRITE_ONCE(wq->o_state, ORD_NORMAL);
-+	raw_spin_unlock_irq(&wq->o_lock);
-+}
-+
- /*
-  * Scheduled on pwq_release_worker by put_pwq() when an unbound pwq hits zero
-  * refcnt and needs to be destroyed.
-@@ -4123,6 +4239,9 @@ static void pwq_release_workfn(struct kthread_work *work)
- 	 * When @pwq is not linked, it doesn't hold any reference to the
- 	 * @wq, and @wq is invalid to access.
- 	 */
-+	if (READ_ONCE(wq->o_state) && !WARN_ON_ONCE(list_empty(&pwq->pwqs_node)))
-+		requeue_ordered_works(wq);
-+
- 	if (!list_empty(&pwq->pwqs_node)) {
- 		mutex_lock(&wq->mutex);
- 		list_del_rcu(&pwq->pwqs_node);
-@@ -4389,6 +4508,17 @@ apply_wqattrs_prepare(struct workqueue_struct *wq,
- 	cpumask_copy(new_attrs->__pod_cpumask, new_attrs->cpumask);
- 	ctx->attrs = new_attrs;
- 
-+	/*
-+	 * For initialized ordered workqueues, start the pwq transition
-+	 * sequence of setting o_state to ORD_QUEUE and wait until there
-+	 * is no outstanding queue_work() caller in progress.
-+	 */
-+	if (!list_empty(&wq->pwqs) && (wq->flags & __WQ_ORDERED_EXPLICIT)) {
-+		smp_store_mb(wq->o_state, ORD_QUEUE);
-+		while (atomic_read(&wq->o_nr_qw))
-+			cpu_relax();
-+	}
-+
- 	ctx->wq = wq;
- 	return ctx;
- 
-@@ -4429,13 +4559,8 @@ static int apply_workqueue_attrs_locked(struct workqueue_struct *wq,
- 	if (WARN_ON(!(wq->flags & WQ_UNBOUND)))
- 		return -EINVAL;
- 
--	/* creating multiple pwqs breaks ordering guarantee */
--	if (!list_empty(&wq->pwqs)) {
--		if (WARN_ON(wq->flags & __WQ_ORDERED_EXPLICIT))
--			return -EINVAL;
--
-+	if (!list_empty(&wq->pwqs) && !(wq->flags & __WQ_ORDERED_EXPLICIT))
- 		wq->flags &= ~__WQ_ORDERED;
--	}
- 
- 	ctx = apply_wqattrs_prepare(wq, attrs, wq_unbound_cpumask);
- 	if (IS_ERR(ctx))
-@@ -4713,6 +4838,9 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
- 	INIT_LIST_HEAD(&wq->flusher_queue);
- 	INIT_LIST_HEAD(&wq->flusher_overflow);
- 	INIT_LIST_HEAD(&wq->maydays);
-+	INIT_LIST_HEAD(&wq->o_list);
-+	atomic_set(&wq->o_nr_qw, 0);
-+	raw_spin_lock_init(&wq->o_lock);
- 
- 	wq_init_lockdep(wq);
- 	INIT_LIST_HEAD(&wq->list);
-@@ -5793,11 +5921,27 @@ static int workqueue_apply_unbound_cpumask(const cpumask_var_t unbound_cpumask)
- 		if (!(wq->flags & WQ_UNBOUND) || (wq->flags & __WQ_DESTROYING))
- 			continue;
- 
--		/* creating multiple pwqs breaks ordering guarantee */
-+		/*
-+		 * We does not support changing attrs of ordered workqueue
-+		 * again before the previous attrs change is completed.
-+		 * Sleep up to 100ms in 10ms interval to allow previous
-+		 * operation to complete and skip it if not done by then.
-+		 */
- 		if (!list_empty(&wq->pwqs)) {
--			if (wq->flags & __WQ_ORDERED_EXPLICIT)
--				continue;
--			wq->flags &= ~__WQ_ORDERED;
-+			if (!(wq->flags & __WQ_ORDERED_EXPLICIT))
-+				wq->flags &= ~__WQ_ORDERED;
-+			else if (READ_ONCE(wq->o_state)) {
-+				int i, ostate;
-+
-+				for (i = 0; i < 10; i++) {
-+					msleep(10);
-+					ostate = READ_ONCE(wq->o_state);
-+					if (!ostate)
-+						break;
-+				}
-+				if (WARN_ON_ONCE(ostate))
-+					continue;
-+			}
- 		}
- 
- 		ctx = apply_wqattrs_prepare(wq, wq->unbound_attrs, unbound_cpumask);
-@@ -6313,9 +6457,8 @@ int workqueue_sysfs_register(struct workqueue_struct *wq)
- 	int ret;
- 
- 	/*
--	 * Adjusting max_active or creating new pwqs by applying
--	 * attributes breaks ordering guarantee.  Disallow exposing ordered
--	 * workqueues.
-+	 * Adjusting max_active breaks ordering guarantee.  Disallow exposing
-+	 * ordered workqueues.
- 	 */
- 	if (WARN_ON(wq->flags & __WQ_ORDERED_EXPLICIT))
- 		return -EINVAL;
--- 
-2.39.3
+Ack.
+
+> On this note: Any particular reason you suggested an ioctl interface instead of a sysfs one? (Open question as, for example, I have no idea what performance implications both have)
+
+sysfs APIs typically have a one file per setting approach,
+so for effects with speed and multiple-color settings you
+would need a whole bunch of different files and then you
+would either need to immediately apply every setting,
+needing multiple writes to the hw for a single effect
+update, or have some sort of "commit" sysfs attribute.
+
+With ioctls you can simply provide all the settings
+in one call, which is why I suggested using ioctls.
+
+Regards,
+
+Hans
+
+
 
 
