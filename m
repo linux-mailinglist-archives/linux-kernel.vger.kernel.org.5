@@ -1,127 +1,137 @@
-Return-Path: <linux-kernel+bounces-44217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44218-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B524841EEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:12:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C176841EF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:13:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30F9A1F22A76
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:12:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3EEFC1C24860
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:13:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5669160869;
-	Tue, 30 Jan 2024 09:12:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2389159157;
+	Tue, 30 Jan 2024 09:12:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GlJnblv7"
-Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="GkrVVWPA"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36A5A5917F
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:12:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7842C58120
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:12:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706605931; cv=none; b=jDtYmCodtqnw7Y6N3bWsCOpTuhrmDdhhac9UOUZWABtadKNTI6/O7ONWAKbWFIgcnExW69ES+JJTs3U0WHJb+ku5ZwV8J9MV8ZYH2GlX3ouVQUwd+m/LbUE8zlz9qhc7WMm4PbgJ4rx1cjzSVHhep5vkpu18Se9jsX3ikwIp4Y4=
+	t=1706605946; cv=none; b=XAmTqIRBki0Vve1LJ3qisDueD6Vsu51uZfNrPK8W+0H3FSTsjyaTRCGt5QqA1xfTmdyEu0O/CB5kPAz4IfZAtFbJVwnFy4h/Xp1lbA5JmL2RlHj/9HTsQodjzE2ifhZ62fr5i9D9dTtsXrWtjPS0P7N5tLnrWPLlxOshRBOJto0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706605931; c=relaxed/simple;
-	bh=c1F5HUyDS9pz9g1srZVHjwRjPe2I54aJjAWOf32bJAE=;
+	s=arc-20240116; t=1706605946; c=relaxed/simple;
+	bh=2DIY+lL0JwPloAko6mVPmoNJ4C898Ios+yVnwFsSQws=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TERuYKRoG+F6MSImVSyhpP1fOoHvrogHlVW6Xwb0+0jYe4Dk/Qg2myoa9x35HWnHj6CzbhnslZHei8bK/H0BgO5ibuDpElAABEJTqT2UU27+9DDLRuFLZflo+t5WDjs/UZtJXoZzYY77BwCKHLYShBeBHlZngun/kMK7m/hM/0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GlJnblv7; arc=none smtp.client-ip=209.85.166.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-7bed9fb159fso128334539f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:12:09 -0800 (PST)
+	 To:Cc:Content-Type; b=sT6/BXsDXx3Yh0eoLaFCyftJSs/mhlaKXWLS+fKbaqr/7vfhhDwZUP0hZ5M3Hgc2cTuHH5NUicpUJ91jBnLyMq+eHGAUTDsG5wpAyNxVd/BRb88YDzbSoh8mqEPTwAAPqsnadvfvtysJ8/4x0uxUP5u7EYx8WdDLIFWSG3tWaak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=GkrVVWPA; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a35b32bd055so232647666b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:12:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706605929; x=1707210729; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wnbgnwm8mX0qqmyFdPhMbkalXQKPaabeF8Z9Wu1HI/4=;
-        b=GlJnblv7K9itJppI5DFAQPUj8tLNOPMtIxFOs1S6zvVT1+XKaMYp1Dej3owmlnNHkI
-         zXCu7Pqtr4llUDAL/ipYPTk9nYklVymyvUK/KgxezQKpiztX1LBxUeaCeMXW6mQrNPcX
-         KBdKa/iCMKszk8/XOi//PQHbcUgg16tMQ86mpJwyW7JpIigdt/5HxFmBxTVRYADjclfB
-         IXulyb6F0LiKZb088g/IAgFCJ1w9xaemWMjE35GJALMSFxuH1zKEu5fvdQaOTTGCnJ0w
-         jKkDJ/26SIyvEE8vMPpWHAYuiK4R+/G1XP7767lX19tnFaL0zj/Cp6r0dfl4xyU4hWj7
-         8oeA==
+        d=linux-foundation.org; s=google; t=1706605942; x=1707210742; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=OJ62OXvXVngPLK5bvC/N3snsj6IMt9f3ZjXYsKK3MQk=;
+        b=GkrVVWPAxbFsA5AVK5QorWQHRXNCGAII1WphO9xhgOeLgNvqlYYU/SlMyj4DcHI8eK
+         Iz91k83HOd4PeLX7fW6vrWBRRTQul9VlCEUk3z8mQXx1Ooa4MwE9ZgFGpjXZZc+X9BQi
+         DFbjmcxxzqCLH0EJlyfWF6xsVIMuaVIqHoylc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706605929; x=1707210729;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wnbgnwm8mX0qqmyFdPhMbkalXQKPaabeF8Z9Wu1HI/4=;
-        b=tdV4ObMnkLqVUeg7bJ7kmAlDIh5gBsqlQ+D5Jc3Nych+LC/9Euy/yrJfVFsi1au2VM
-         sEPuHj6Kl3DASIveLw8LgVnW+trZHgFmgdbvIBByxc076SHQZXyQdUPNwuu/zsO4A7DL
-         XpOiaBVRsJkUz1O7K+3UJHZz5UGYSHjzJoRVBQ6jZe7gy3fe15KrJDVFzA4HTyEwyF6K
-         7/inWPVB30ayNiUxFcnE5lOm80MnMkhrPyE2YyXpJ4srFDjcvKQHX0waR1qaepIob97q
-         fkuU8NVk/RnUgnzm5/kZFFN7rXf9X8TSk6Wo1ShY/SsVjpdDAxUfQPi5kp9mDOGDHCA0
-         M++A==
-X-Gm-Message-State: AOJu0Yx06MMJFkU9LTz2eZQY1MlZVXhQ1K11aLZFiyPAuyzhtGqib5aZ
-	6TcEaXaj9FkoTOM4QaIlz+qDynxw7PRyVltoR/buVivv/LvxWUHMLhPN6xDOHYjH1DkjAdnUS+2
-	bHa+ktsj7u2jiSl6DcwfoQc8Gd3ZxGM3/Lfk=
-X-Google-Smtp-Source: AGHT+IGSqOqPVind6OqnxzJZZaJI3aTGoi16WEMWn2uwjgvCzSlAT9qvLAwCLqQKFmhSa7LYAzgKAM+8cOvA2cbx3uc=
-X-Received: by 2002:a05:6602:29b2:b0:7bf:fa4a:990f with SMTP id
- u18-20020a05660229b200b007bffa4a990fmr4054925ios.10.1706605929213; Tue, 30
- Jan 2024 01:12:09 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706605942; x=1707210742;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OJ62OXvXVngPLK5bvC/N3snsj6IMt9f3ZjXYsKK3MQk=;
+        b=CEhTT0YLADOHdwWbq87O32xQnbRrBtjBZJFGRLf+a7IqSLJvH/tyViUqCd5l9K5K6l
+         ZS6/jWbCPkBsdMj8ukJ6jp2fE/2dx0Oe7HqknEgfpbmwWccpJPBX+PUAFZ1eOj3WxfAa
+         qj5EdeKX0pTZmJPTDxtFcuPTwgeeNKEoPfRakrKmjq1pljSAxiCrHNz/VTqc6qFtCIZI
+         6Ih6ZouP55jy59SwJ1jqEFsuG6zgeTgTPf2hFMcs7YFgNgPz7HfwfFrssCrzfmvUrH3m
+         SOH+5amoHHllL74IQbv8ED52pLMRBS3AJpPzfeWFg206esekCw9IrZYOxCjux2XjLmXR
+         tHOQ==
+X-Gm-Message-State: AOJu0Yz4Bm0S1Y0csp/N21Bz4jrEdlibyD5JOfj/XeBk/95v0/Ixe7NS
+	SQv2w49biZpph5AzCb8MHdI+6agUmh5Ts4YZdLTnicUSoRD3W38W7pvswqBy28zvC27Xh8D40im
+	0r0g=
+X-Google-Smtp-Source: AGHT+IH7ZE6AUdgRytNb/lhU3D7sQupLz6wV67KxLPeEdmjXL78K1DlcouI/q8OxMGG0LhuA/qXX1Q==
+X-Received: by 2002:a17:906:1453:b0:a28:de33:9e6a with SMTP id q19-20020a170906145300b00a28de339e6amr5421904ejc.47.1706605942578;
+        Tue, 30 Jan 2024 01:12:22 -0800 (PST)
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com. [209.85.208.43])
+        by smtp.gmail.com with ESMTPSA id cx8-20020a170907168800b00a358fda40d5sm2709686ejd.140.2024.01.30.01.12.21
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jan 2024 01:12:21 -0800 (PST)
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55f50cf2021so84764a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:12:21 -0800 (PST)
+X-Received: by 2002:a05:6402:1910:b0:55e:f740:4f39 with SMTP id
+ e16-20020a056402191000b0055ef7404f39mr4388911edz.22.1706605941604; Tue, 30
+ Jan 2024 01:12:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130014208.565554-1-hannes@cmpxchg.org> <20240130014208.565554-2-hannes@cmpxchg.org>
-In-Reply-To: <20240130014208.565554-2-hannes@cmpxchg.org>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Tue, 30 Jan 2024 01:11:58 -0800
-Message-ID: <CAKEwX=P7Qsz1TdKjOYpw7E5U1VFJ2gWWPTMfBrvKdet0ZsA3Eg@mail.gmail.com>
-Subject: Re: [PATCH 01/20] mm: zswap: rename zswap_free_entry to zswap_entry_free
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Yosry Ahmed <yosryahmed@google.com>, 
-	Chengming Zhou <zhouchengming@bytedance.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
+References: <202401291043.e62e89dc-oliver.sang@intel.com> <CAHk-=wh0M=e8R=ZXxa4vesLTtvGmYWJ-w1VmXxW5Mva=Nimk4Q@mail.gmail.com>
+ <20240129120125.605e97af@gandalf.local.home> <CAHk-=wghx8Abyx_jcSrCDuNj96SuWS0NvNMhfU8VjFGg9bgm_g@mail.gmail.com>
+ <CAHk-=whb91PWEaEJpRGsuWaQpYZGj98ji8HC2vvHD4xb_TqhJw@mail.gmail.com>
+ <CAHk-=wgp7UkG31=cCcbSdhMv6-vBJ=orktUOUdiLzw4tQ4gDLg@mail.gmail.com>
+ <20240129152600.7587d1aa@gandalf.local.home> <CAHk-=wghobf5qCqNUsafkQzNAZBJiS0=7CRjNXNChpoAvTbvUw@mail.gmail.com>
+ <20240129172200.1725f01b@gandalf.local.home> <CAHk-=wjV6+U1FQ8wzQ5ASmqGgby+GZ6wpdh0NrJgA43mc+TEwA@mail.gmail.com>
+ <CAHk-=wgOxTeTi02C=kOXsHzuD6XCrV0L1zk1XP9t+a4Wx--xvA@mail.gmail.com>
+ <20240129174950.5a17a86c@gandalf.local.home> <CAHk-=wjbzw3=nwR5zGH9jqXgB8jj03wxWfdFDn=oAVCoymQQJg@mail.gmail.com>
+ <20240129193549.265f32c8@gandalf.local.home> <CAHk-=whRxcmjvGNBKi9_x59cAedh8SO8wsNDNrEQbAQfM5A8CQ@mail.gmail.com>
+ <CAHk-=wh97AkwaOkXoBgf0z8EP88ePffLnTcmmQXcY+AhFaFrnA@mail.gmail.com> <CAHk-=wi6m7d-nivx10Lo=aGhbdk2qg-8SzjtDd9XW01LxGgAMA@mail.gmail.com>
+In-Reply-To: <CAHk-=wi6m7d-nivx10Lo=aGhbdk2qg-8SzjtDd9XW01LxGgAMA@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 30 Jan 2024 01:12:05 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wi+WbXZcc2Sx1i-MGV2DfG4eS4Ci+mrqi-PBSLSnww6qA@mail.gmail.com>
+Message-ID: <CAHk-=wi+WbXZcc2Sx1i-MGV2DfG4eS4Ci+mrqi-PBSLSnww6qA@mail.gmail.com>
+Subject: Re: [linus:master] [eventfs] 852e46e239: BUG:unable_to_handle_page_fault_for_address
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev, lkp@intel.com, 
+	linux-kernel@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Christian Brauner <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
+	Ajay Kaher <ajay.kaher@broadcom.com>, linux-trace-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 29, 2024 at 5:42=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
+On Tue, 30 Jan 2024 at 00:43, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> There is a zswap_entry_ namespace with multiple functions already.
->
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> I'll go back to bed, but I think the fix is something trivial like this:
 
-Acked-by: Nhat Pham <nphamcs@gmail.com>
+Almost.
 
-> ---
->  mm/zswap.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index 7f88b3a77e4a..173f2e6657de 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -520,7 +520,7 @@ static struct zpool *zswap_find_zpool(struct zswap_en=
-try *entry)
->   * Carries out the common pattern of freeing and entry's zpool allocatio=
-n,
->   * freeing the entry itself, and decrementing the number of stored pages=
-.
->   */
-> -static void zswap_free_entry(struct zswap_entry *entry)
-> +static void zswap_entry_free(struct zswap_entry *entry)
->  {
->         if (!entry->length)
->                 atomic_dec(&zswap_same_filled_pages);
-> @@ -555,7 +555,7 @@ static void zswap_entry_put(struct zswap_entry *entry=
-)
->         WARN_ON_ONCE(refcount < 0);
->         if (refcount =3D=3D 0) {
->                 WARN_ON_ONCE(!RB_EMPTY_NODE(&entry->rbnode));
-> -               zswap_free_entry(entry);
-> +               zswap_entry_free(entry);
->         }
->  }
->
-> --
-> 2.43.0
->
+>   +     result = ERR_PTR(ENOENT);
+
+That needs a '-' in front of the ENOENT, otherwise you have a positive
+error number and things go wrong very quickly.
+
+And that does indeed fix the lookup problem, but you end up with the
+same problem later when you do the eventfs_remove_dir(). Again the
+eventfs data structure changes, but we don't have a reliable dentry
+that we can invalidate.
+
+The dentry cache is just very good at caching those old dentries, and
+the interface for eventfs_create_dir() and eventfs_remove_dir() is
+just not great.
+
+If those did an actual path lookup (like eventfs_create_events_dir()
+does), we'd have the dentry, and it's trivial to get from dentry to
+eventfs_inode.
+
+But going the other way is the broken thing because of how the
+dentries are just temporary caches.
+
+I suspect the solution is to make eventfs_create_dir() do the same as
+the events directory case does, and actually pin the directory dentry
+and save it off.
+
+Oh well. At least I understand what the problem is. Now I'm going to
+try to go back to sleep.
+
+              Linus
 
