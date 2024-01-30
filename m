@@ -1,180 +1,169 @@
-Return-Path: <linux-kernel+bounces-45077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34EB7842B71
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:05:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66F7A842B72
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:06:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C69E71F25C1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:05:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E47341F24262
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:06:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 605D6157E6B;
-	Tue, 30 Jan 2024 18:05:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36BF6155A4D;
+	Tue, 30 Jan 2024 18:06:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="BCuWEm9r"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 391F315697D;
-	Tue, 30 Jan 2024 18:05:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bkIyaz+F"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E3E186AEB
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 18:06:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706637922; cv=none; b=HO0cHsoAmhS8z/+JN/6/XScnbN7d9Unpk4V19XLXOPKsgPRaeXm+iKVw+xk/3OaDNQMLfE1WEsp1WhWVZWfxqshKYS2M8mRqkuPv4n/c0inhg7helWhQiJjqZjBx8WsbBoBJfZJg1PMkkvwB15ampuiMp7AzwzOLrAzVU500KXM=
+	t=1706637975; cv=none; b=awi2QdxQDM2ci5Xo3nJC2vLy658ximGPBxoFPeu/lyIt/IQ+gPgKJSuC9+s3lRjfGWULT4+4rwLryS7LHdsz7a7fM577fDrI6FR8gUfYVNqc0hkIqj1uKAw9Kqlid1OUvTXxSh2/leXTenzzAIh5fIZ0FUHA/nh8R6GE9LUEyJ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706637922; c=relaxed/simple;
-	bh=2AnwKBuZ0705w+TINWEJJ6bBO3TvbIc1slGogNTWOwg=;
+	s=arc-20240116; t=1706637975; c=relaxed/simple;
+	bh=zkh4gbx/89GnNbOgA+ve9IJXox6oRxmTjSJ398w+CDo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Qq/FbHLo8Q+flmOkSlE0sijNBKjgokri+jyV3+OSaHucpIt5CDqaWlP+7DJsvfeXxZUcTGlG8+eyRhR9XO3dMlNDf+I6+SNr1oclzsjPGz/H9d6zgvIb8DaOgFQ4ErwX9SAHEzzysSLU5eoyXz21OdHLQ+3JcUxOUmw4AZREvyM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=BCuWEm9r; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from DESKTOP-4OLSCEK. (c-76-135-27-212.hsd1.wa.comcast.net [76.135.27.212])
-	by linux.microsoft.com (Postfix) with ESMTPSA id ACDD42057C07;
-	Tue, 30 Jan 2024 10:05:20 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com ACDD42057C07
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1706637920;
-	bh=MlNI8Snl+eLb0sO9+P8R2IgXBUmpuvIfc8yNSJ1AUYY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BCuWEm9rrx+Ivy2BRBPHaAgnS38Luq/1oEnsC9/znmbypJPR+FvWxc4upfbdY3+Ti
-	 8vdFroHAR3Fau3phiDjKoyxkbuIu8OHG19SDQv3K4nDQ1Nm2geXPkaK/alxEIgtlLw
-	 NJG+wesQCsSxvF/gagJo/8Dsj22YzMhhloEOxA4Y=
-Date: Tue, 30 Jan 2024 10:05:15 -0800
-From: Beau Belgrave <beaub@linux.microsoft.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com
-Subject: Re: [PATCH 2/4] tracing/user_events: Introduce multi-format events
-Message-ID: <20240130180515.GA827-beaub@linux.microsoft.com>
-References: <20240123220844.928-1-beaub@linux.microsoft.com>
- <20240123220844.928-3-beaub@linux.microsoft.com>
- <20240127000104.7c98b34d295747ab1b084bd2@kernel.org>
- <20240126191007.GA456-beaub@linux.microsoft.com>
- <20240126150445.71c5d426@gandalf.local.home>
- <20240129172907.GA444-beaub@linux.microsoft.com>
- <20240129212407.157a5533@gandalf.local.home>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ihLgACZp2VGjGioVgzS1BJT0d8hT2C6xOaNZxD0dKct9vKQIfdS5EX58jFPs53qImRS0UDRiwxCAIIU13NbW+hDB7fa7Axx4acYmyynWq7xiA8h332SAFV7ZUWEIFVgkw8ggDro8xMlG/4VZNTj0PBjGBjUBUwFYW6/ALiSP4As=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bkIyaz+F; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706637972;
+	h=from:from:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J6NBBIOV0mk2VOcCkKd1idr5TUMKX7QhfRR0ebMmJ3Y=;
+	b=bkIyaz+FogO8emnnMnEXY0vuqJAyaJp8hYt0R5BUB7Z9YbEm5Yb8rLqUgyLfrwOklp4QUN
+	WVc6VmWY2qZM9Nh796YKoYEPjMlETLOqrVzhLULB6+ua+7heEKrwFdeeiR7RY/s7bZudvV
+	FO8Wba1+FTdEy1kxVoZV0iw/mBCILcc=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-118-aQRKw9BIOK-k7XQnCGSVeg-1; Tue, 30 Jan 2024 13:06:09 -0500
+X-MC-Unique: aQRKw9BIOK-k7XQnCGSVeg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5A5D1185A787;
+	Tue, 30 Jan 2024 18:06:08 +0000 (UTC)
+Received: from redhat.com (unknown [10.42.28.52])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 28B4A1C060B1;
+	Tue, 30 Jan 2024 18:06:02 +0000 (UTC)
+Date: Tue, 30 Jan 2024 18:05:59 +0000
+From: Daniel =?utf-8?B?UC4gQmVycmFuZ8Op?= <berrange@redhat.com>
+To: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc: Dave Hansen <dave.hansen@intel.com>,
+	"Reshetova, Elena" <elena.reshetova@intel.com>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	"Nakajima, Jun" <jun.nakajima@intel.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	"Kalra, Ashish" <ashish.kalra@amd.com>,
+	Sean Christopherson <seanjc@google.com>,
+	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] x86/random: Issue a warning if RDRAND or RDSEED fails
+Message-ID: <Zbk6h0ogqeInLa_1@redhat.com>
+Reply-To: Daniel =?utf-8?B?UC4gQmVycmFuZ8Op?= <berrange@redhat.com>
+References: <20240130083007.1876787-1-kirill.shutemov@linux.intel.com>
+ <20240130083007.1876787-2-kirill.shutemov@linux.intel.com>
+ <CAHmME9qsfOdOEHHw_MOBmt6YAtncbbqP9LPK2dRjuOp1CrHzRA@mail.gmail.com>
+ <DM8PR11MB57507611D651E6D7CBC2A2F3E77D2@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <88a72370-e300-4bbc-8077-acd1cc831fe7@intel.com>
+ <CAHmME9oSQbd3V8+qR0e9oPb7ppO=E7GrCW-a2RN8QNdY_ARbSQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240129212407.157a5533@gandalf.local.home>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHmME9oSQbd3V8+qR0e9oPb7ppO=E7GrCW-a2RN8QNdY_ARbSQ@mail.gmail.com>
+User-Agent: Mutt/2.2.12 (2023-09-09)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-On Mon, Jan 29, 2024 at 09:24:07PM -0500, Steven Rostedt wrote:
-> On Mon, 29 Jan 2024 09:29:07 -0800
-> Beau Belgrave <beaub@linux.microsoft.com> wrote:
+On Tue, Jan 30, 2024 at 06:49:15PM +0100, Jason A. Donenfeld wrote:
+> On Tue, Jan 30, 2024 at 6:32 PM Dave Hansen <dave.hansen@intel.com> wrote:
+> >
+> > On 1/30/24 05:45, Reshetova, Elena wrote:
+> > >> You're the Intel employee so you can find out about this with much
+> > >> more assurance than me, but I understand the sentence above to be _way
+> > >> more_ true for RDRAND than for RDSEED. If your informed opinion is,
+> > >> "RDRAND failing can only be due to totally broken hardware"
+> > > No, this is not the case per Intel SDM. I think we can live under a simple
+> > > assumption that both of these instructions can fail not just due to broken
+> > > HW, but also due to enough pressure put into the whole DRBG construction
+> > > that supplies random numbers via RDRAND/RDSEED.
+> >
+> > I don't think the SDM is the right thing to look at for guidance here.
+> >
+> > Despite the SDM allowing it, we (software) need RDRAND/RDSEED failures
+> > to be exceedingly rare by design.  If they're not, we're going to get
+> > our trusty torches and pitchforks and go after the folks who built the
+> > broken hardware.
+> >
+> > Repeat after me:
+> >
+> >         Regular RDRAND/RDSEED failures only occur on broken hardware
+> >
+> > If it's nice hardware that's gone bad, then we WARN() and try to make
+> > the best of it.  If it turns out that WARN() was because of a broken
+> > hardware _design_ then we go sharpen the pitchforks.
+> >
+> > Anybody disagree?
 > 
-> > Thanks, yeah ideally we wouldn't use special characters.
-> > 
-> > I'm not picky about this. However, I did want something that clearly
-> > allowed a glob pattern to find all versions of a given register name of
-> > user_events by user programs that record. The dot notation will pull in
-> > more than expected if dotted namespace style names are used.
-> > 
-> > An example is "Asserts" and "Asserts.Verbose" from different programs.
-> > If we tried to find all versions of "Asserts" via glob of "Asserts.*" it
-> > will pull in "Asserts.Verbose.1" in addition to "Asserts.0".
+> Yes, I disagree. I made a trivial test that shows RDSEED breaks easily
+> in a busy loop. So at the very least, your statement holds true only
+> for RDRAND.
 > 
-> Do you prevent brackets in names?
-> 
+> But, anyway, if the statement "RDRAND failures only occur on broken
+> hardware" is true, then a WARN() in the failure path there presents no
+> DoS potential of any kind, and so that's a straightforward conclusion
+> to this discussion. However, that really hinges on  "RDRAND failures
+> only occur on broken hardware" being a true statement.
 
-No. However, since brackets have a start and end token that are distinct
-finding all versions of your event is trivial compared to a single dot.
+There's a useful comment here from an Intel engineer
 
-Imagine two events:
-Asserts
-Asserts[MyCoolIndex]
+https://web.archive.org/web/20190219074642/https://software.intel.com/en-us/blogs/2012/11/17/the-difference-between-rdrand-and-rdseed
 
-Resolves to tracepoints of:
-Asserts:[0]
-Asserts[MyCoolIndex]:[1]
+  "RDRAND is, indeed, faster than RDSEED because it comes
+   from a hardware-based pseudorandom number generator.
+   One seed value (effectively, the output from one RDSEED
+   command) can provide up to 511 128-bit random values
+   before forcing a reseed"
 
-Regardless of brackets in the names, a simple glob of Asserts:\[*\] only
-finds Asserts:[0]. This is because we have that end bracket in the glob
-and the full event name including the start bracket.
+We know we can exhaust RDSEED directly pretty trivially. Making your
+test program run in parallel across 20 cpus, I got a mere 3% success
+rate from RDSEED.
 
-If I register another "version" of Asserts, thne I'll have:
-Asserts:[0]
-Asserts[MyCoolIndex]:[1]
-Asserts:[2]
+If RDRAND is reseeding every 511 values, RDRAND output would have
+to be consumed significantly faster than RDSEED in order that the
+reseed will happen frequently enough to exhaust the seeds.
 
-The glob of Asserts:\[*\] will return both:
-Asserts:[0]
-Asserts:[2]
+This looks pretty hard, but maybe with a large enough CPU count
+this will be possible in extreme load ?
 
-At this point the program can either record all versions or scan further
-to find which version of Asserts is wanted.
+So I'm not convinced we can blindly wave away RDRAND failures as
+guaranteed to mean broken hardware.
 
-> > 
-> > While a glob of "Asserts.[0-9]" works when the unique ID is 0-9, it
-> > doesn't work if the number is higher, like 128. If we ever decide to
-> > change the ID from an integer to say hex to save space, these globs
-> > would break.
-> > 
-> > Is there some scheme that fits the C-variable name that addresses the
-> > above scenarios? Brackets gave me a simple glob that seemed to prevent a
-> > lot of this ("Asserts.\[*\]" in this case).
-> 
-> Prevent a lot of what? I'm not sure what your example here is.
-> 
+With regards,
+Daniel
+-- 
+|: https://berrange.com      -o-    https://www.flickr.com/photos/dberrange :|
+|: https://libvirt.org         -o-            https://fstop138.berrange.com :|
+|: https://entangle-photo.org    -o-    https://www.instagram.com/dberrange :|
 
-I'll try again :)
-
-We have 2 events registered via user_events:
-Asserts
-Asserts.Verbose
-
-Using dot notation these would result in tracepoints of:
-user_events_multi/Asserts.0
-user_events_multi/Asserts.Verbose.1
-
-Using bracket notation these would result in tracepoints of:
-user_events_multi/Asserts:[0]
-user_events_multi/Asserts.Verbose:[1]
-
-A recording program only wants to enable the Asserts tracepoint. It does
-not want to record the Asserts.Verbose tracepoint.
-
-The program must find the right tracepoint by scanning tracefs under the
-user_events_multi system.
-
-A single dot suffix does not allow a simple glob to be used. The glob
-Asserts.* will return both Asserts.0 and Asserts.Verbose.1.
-
-A simple glob of Asserts:\[*\] will only find Asserts:[0], it will not
-find Asserts.Verbose:[1].
-
-We could just use brackets and not have the colon (Asserts[0] in this
-case). But brackets are still special for bash.
-
-> > 
-> > Are we confident that we always want to represent the ID as a base-10
-> > integer vs a base-16 integer? The suffix will be ABI to ensure recording
-> > programs can find their events easily.
-> 
-> Is there a difference to what we choose?
-> 
-
-If a simple glob of event_name:\[*\] cannot be used, then we must document
-what the suffix format is, so an appropriate regex can be created. If we
-start with base-10 then later move to base-16 we will break existing regex
-patterns on the recording side.
-
-I prefer, and have in this series, a base-16 output since it saves on
-the tracepoint name size.
-
-Either way we go, we need to define how recording programs should find
-the events they care about. So we must be very clear, IMHO, about the
-format of the tracepoint names in our documentation.
-
-I personally think recording programs are likely to get this wrong
-without proper guidance.
-
-Thanks,
--Beau
-
-> -- Steve
 
