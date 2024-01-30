@@ -1,59 +1,77 @@
-Return-Path: <linux-kernel+bounces-44721-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44756-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2249842682
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:55:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A7C12842700
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:34:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D77D61C221B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:55:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9D4C1C25597
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:34:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27CAF6D1C7;
-	Tue, 30 Jan 2024 13:55:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C89D37C08A;
+	Tue, 30 Jan 2024 14:34:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WwwXtS8o"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cWGtrYEx"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AD0F6D1BF
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 13:55:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D10476901
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 14:34:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706622934; cv=none; b=RXNs41HQCR+zTsKUnOuVvmEuqdHG0rnVLpyuyKipLlEFfVuJBb5NlpjAxgEeqKdWTtNtOQROKy5g1m0QP3RAoimOPd51Y1tRj8isI9LjQ8sdChEvUUXvk/jTqLqEcOebbG9+7df4CE2OdL7dxLQQO5JavbWeeDDreCBEpvrkyw0=
+	t=1706625265; cv=none; b=ImnBQ6Nk3vw/sQ1na99iiObAbiCHojrl4T+MIknq+8IdF/U3uMElRMIsS24eQIq7WoU1UK8FIC/orG/ma3U+bncB4ZIJ3us1c7TMvPM5FdlaQTTTOlj/nbZfhXFkcp782CkZ7Vi7ztZ0vBfWxej5EoOBfoP3xO5kaIEhWr/p4I8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706622934; c=relaxed/simple;
-	bh=seN8zsI4AwKDuO3jFUMBIanLEvBBqPj86SY27vXvh28=;
+	s=arc-20240116; t=1706625265; c=relaxed/simple;
+	bh=eXnTC9Z2V42A4QwsNLM6X9tA1dlLLPk9DhFjZa7uZJw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZDqIXgHPshfHAfb8IONo5b1FDlDU5xKAhV+odx/3io7dBTk1cnbAvJilfjBbIGiJqEH9a4JlNma3LX1ga/haBrx99L7DqFGuxqGzqyCSvL57FbKDd6rkmp2vW8BkViPKEC8nlz95d5Z0AtJeapy351Imeww9YKEds8wVj7uW2Js=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WwwXtS8o; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE824C433C7;
-	Tue, 30 Jan 2024 13:55:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706622933;
-	bh=seN8zsI4AwKDuO3jFUMBIanLEvBBqPj86SY27vXvh28=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=WwwXtS8o+6jSFyRZSGOdA9LSYtgTkKlotMToV2nAp4JSP4FLWGSKy73412pYXsURu
-	 o9qzT9RJFIU3EQANRtbT0wfTg1VeyjDpGACAGLPF4KlE1WPFg5FTI3aM32wAQyWP83
-	 +90ysmDLPIR2oLLUIgS3DwUTmVTRs3+IXRZlY46yGYByBiXjx+VCmuDwLYko5z1k7e
-	 Bqq/+cNGTDu+w7/Kw4y60DpWPpStaIyhfCyW0TNVeqxHKV31wd72TTOV3o53kQB9/i
-	 x4cesJy9W0+NyP4wFn8UlFv3+Ln5vKHAF571mbq51KoFWiZ1EKC6a0SRGmJcfYKv5m
-	 F67kzpcxkltng==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 51BBDCE0975; Tue, 30 Jan 2024 05:55:33 -0800 (PST)
-Date: Tue, 30 Jan 2024 05:55:33 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Feng Tang <feng.tang@intel.com>
-Cc: John Stultz <jstultz@google.com>, Thomas Gleixner <tglx@linutronix.de>,
-	Stephen Boyd <sboyd@kernel.org>, Waiman Long <longman@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
-	Jin Wang <jin1.wang@intel.com>
-Subject: Re: [PATCH v3] clocksource: Scale the max retry number of watchdog
- read according to CPU numbers
-Message-ID: <b25b8060-af20-41e0-b54d-ba1403d23396@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240129134505.961208-1-feng.tang@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fdr8qMpXqOGBw4Z1Pzc3OLovsN6k2vhfDzCgmm9Fo38PSbfatRHEKXgRLv/QBCdF0ZpjImuNh1uYtFHKusAZwqzYKjAtpayzHpjp9s8xmybJPtXGp+NSkTbqS6RwVwS9ql9fp80heNlUUoXio+jx1U1ht2CiwlV1UQSGzhhyWNk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cWGtrYEx; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706625263; x=1738161263;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=eXnTC9Z2V42A4QwsNLM6X9tA1dlLLPk9DhFjZa7uZJw=;
+  b=cWGtrYEx9VY5b11GQNdY0gB42o0HbBg852PcjeiToDCXF5g+jbEPhaHp
+   kkmH6kdfUS9gu20tX1S3fyJlLHP3j7DPccqfcvoYZwJEx5W9ET11gMgpa
+   6wVP4lBqUzoIDEtv5+1hszyB7JYF2YNm7izzPbBUAcOyJgyeEjBvOXVm2
+   Kt9Am6cCOOtEqXWngePlwEu3MQx2iWkOMjceYtJU8Cag0Akf02dXrC8o6
+   GYw237g9bTHTnNwotMzTvtf9FL06bvO2gx5XzaU+UeTNxYkWgCmbALO5n
+   jwlkChRVGAhTJqNnZI7KBdlt+Z1cKAMArakS/493P/0iBezXSm319KrTx
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="2231359"
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="2231359"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 06:34:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="961297757"
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="961297757"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga005.jf.intel.com with ESMTP; 30 Jan 2024 06:34:10 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id 59D49E6; Tue, 30 Jan 2024 15:55:57 +0200 (EET)
+Date: Tue, 30 Jan 2024 15:55:57 +0200
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, 
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, Elena Reshetova <elena.reshetova@intel.com>, 
+	Jun Nakajima <jun.nakajima@intel.com>, Rick Edgecombe <rick.p.edgecombe@intel.com>, 
+	Tom Lendacky <thomas.lendacky@amd.com>, "Kalra, Ashish" <ashish.kalra@amd.com>, 
+	Sean Christopherson <seanjc@google.com>, "Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>, 
+	kexec@lists.infradead.org, linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv6 00/16] x86/tdx: Add kexec support
+Message-ID: <g7jh422ild6c23hjxvf7q2xtygkumbpynz4hcops7nvg5izvpp@r3oyhvssph2o>
+References: <20240124125557.493675-1-kirill.shutemov@linux.intel.com>
+ <3f44458f-2b4a-4464-a3df-cb791298dafc@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,168 +80,30 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240129134505.961208-1-feng.tang@intel.com>
+In-Reply-To: <3f44458f-2b4a-4464-a3df-cb791298dafc@redhat.com>
 
-On Mon, Jan 29, 2024 at 09:45:05PM +0800, Feng Tang wrote:
-> There was a bug on one 8-socket server that the TSC is wrongly marked as
-> 'unstable' and disabled during boot time (reproduce rate is about every
-> 120 rounds of reboot tests), with log:
+On Tue, Jan 30, 2024 at 02:43:15PM +0100, Paolo Bonzini wrote:
+> On 1/24/24 13:55, Kirill A. Shutemov wrote:
+> > The patchset adds bits and pieces to get kexec (and crashkernel) work on
+> > TDX guest.
+> > 
+> > The last patch implements CPU offlining according to the approved ACPI
+> > spec change poposal[1]. It unlocks kexec with all CPUs visible in the target
+> > kernel. It requires BIOS-side enabling. If it missing we fallback to booting
+> > 2nd kernel with single CPU.
+> > 
+> > Please review. I would be glad for any feedback.
 > 
->     clocksource: timekeeping watchdog on CPU227: wd-tsc-wd excessive read-back delay of 153560ns vs. limit of 125000ns,
->     wd-wd read-back delay only 11440ns, attempt 3, marking tsc unstable
->     tsc: Marking TSC unstable due to clocksource watchdog
->     TSC found unstable after boot, most likely due to broken BIOS. Use 'tsc=unstable'.
->     sched_clock: Marking unstable (119294969739, 159204297)<-(125446229205, -5992055152)
->     clocksource: Checking clocksource tsc synchronization from CPU 319 to CPUs 0,99,136,180,210,542,601,896.
->     clocksource: Switched to clocksource hpet
+> Hi Kirill,
 > 
-> The reason is for platform with lots of CPU, there are sporadic big or huge
-> read latency of read watchog/clocksource during boot or when system is under
-> stress work load, and the frequency and maximum value of the latency goes up
-> with the increasing of CPU numbers. Current code already has logic to detect
-> and filter such high latency case by reading 3 times of watchdog, and check
-> the 2 deltas. Due to the randomness of the latency, there is a low possibility
-> situation that the first delta (latency) is big, but the second delta is small
-> and looks valid, which can escape from the check, and there is a
-> 'max_cswd_read_retries' for retrying that check covering this case, whose
-> default value is only 2 and may be not enough for machines with huge number
-> of CPUs.
-> 
-> So scale and enlarge the max retry number according to CPU number to better
-> filter those latency noise for large systems, which has been verified fine
-> in 4 days and 670 rounds of reboot test on the 8-socket machine.
-> 
-> Also add sanity check for user input value for 'max_cswd_read_retries', make
-> it self-adaptive by default, and provide a general helper for getting this
-> max retry number as suggested by Paul and Waiman.
-> 
-> Cc: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Waiman Long <longman@redhat.com>
-> Signed-off-by: Feng Tang <feng.tang@intel.com>
-> Tested-by: Jin Wang <jin1.wang@intel.com>
+> I have a very basic question: is there a reason why this series does not
+> revert commit cb8eb06d50fc, "x86/virt/tdx: Disable TDX host support when
+> kexec is enabled"?
 
-Tested-by: Paul E. McKenney <paulmck@kernel.org>
+My patchset enables kexec for TDX guest. The commit you refer blocks kexec
+for host. TDX host and guest have totally different problems with handling
+kexec. Kai looks on how to get host kexec functional.
 
-> ---
-> Changelog:
-> 
->     since v2:
->       * Fix the unexported symbol of helper function being used by
->         kernel module issue (Waiman)
-> 
->     since v1:
->       * Add santity check for user input value of 'max_cswd_read_retries'
->         and a helper function for getting max retry nubmer (Paul)
->       * Apply the same logic to watchdog test code (Waiman)
-> 
->  include/linux/clocksource.h      | 18 +++++++++++++++++-
->  kernel/time/clocksource-wdtest.c | 12 +++++++-----
->  kernel/time/clocksource.c        | 10 ++++++----
->  3 files changed, 30 insertions(+), 10 deletions(-)
-> 
-> diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
-> index 1d42d4b17327..0483f7dd66a3 100644
-> --- a/include/linux/clocksource.h
-> +++ b/include/linux/clocksource.h
-> @@ -291,7 +291,23 @@ static inline void timer_probe(void) {}
->  #define TIMER_ACPI_DECLARE(name, table_id, fn)		\
->  	ACPI_DECLARE_PROBE_ENTRY(timer, name, table_id, 0, NULL, 0, fn)
->  
-> -extern ulong max_cswd_read_retries;
-> +extern long max_cswd_read_retries;
-> +
-> +static inline long clocksource_max_watchdog_read_retries(void)
-> +{
-> +	long max_retries = max_cswd_read_retries;
-> +
-> +	if (max_cswd_read_retries <= 0) {
-> +		/* santity check for user input value */
-> +		if (max_cswd_read_retries != -1)
-> +			pr_warn_once("max_cswd_read_retries was set with an invalid number: %ld\n",
-> +				max_cswd_read_retries);
-> +
-> +		max_retries = ilog2(num_online_cpus()) + 1;
-> +	}
-> +	return max_retries;
-> +}
-> +
->  void clocksource_verify_percpu(struct clocksource *cs);
->  
->  #endif /* _LINUX_CLOCKSOURCE_H */
-> diff --git a/kernel/time/clocksource-wdtest.c b/kernel/time/clocksource-wdtest.c
-> index df922f49d171..c70cea3c44a1 100644
-> --- a/kernel/time/clocksource-wdtest.c
-> +++ b/kernel/time/clocksource-wdtest.c
-> @@ -106,6 +106,7 @@ static int wdtest_func(void *arg)
->  	unsigned long j1, j2;
->  	char *s;
->  	int i;
-> +	long max_retries;
->  
->  	schedule_timeout_uninterruptible(holdoff * HZ);
->  
-> @@ -139,18 +140,19 @@ static int wdtest_func(void *arg)
->  	WARN_ON_ONCE(time_before(j2, j1 + NSEC_PER_USEC));
->  
->  	/* Verify tsc-like stability with various numbers of errors injected. */
-> -	for (i = 0; i <= max_cswd_read_retries + 1; i++) {
-> -		if (i <= 1 && i < max_cswd_read_retries)
-> +	max_retries = clocksource_max_watchdog_read_retries();
-> +	for (i = 0; i <= max_retries + 1; i++) {
-> +		if (i <= 1 && i < max_retries)
->  			s = "";
-> -		else if (i <= max_cswd_read_retries)
-> +		else if (i <= max_retries)
->  			s = ", expect message";
->  		else
->  			s = ", expect clock skew";
-> -		pr_info("--- Watchdog with %dx error injection, %lu retries%s.\n", i, max_cswd_read_retries, s);
-> +		pr_info("--- Watchdog with %dx error injection, %ld retries%s.\n", i, max_retries, s);
->  		WRITE_ONCE(wdtest_ktime_read_ndelays, i);
->  		schedule_timeout_uninterruptible(2 * HZ);
->  		WARN_ON_ONCE(READ_ONCE(wdtest_ktime_read_ndelays));
-> -		WARN_ON_ONCE((i <= max_cswd_read_retries) !=
-> +		WARN_ON_ONCE((i <= max_retries) !=
->  			     !(clocksource_wdtest_ktime.flags & CLOCK_SOURCE_UNSTABLE));
->  		wdtest_ktime_clocksource_reset();
->  	}
-> diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-> index c108ed8a9804..2e5a1d6c6712 100644
-> --- a/kernel/time/clocksource.c
-> +++ b/kernel/time/clocksource.c
-> @@ -208,8 +208,8 @@ void clocksource_mark_unstable(struct clocksource *cs)
->  	spin_unlock_irqrestore(&watchdog_lock, flags);
->  }
->  
-> -ulong max_cswd_read_retries = 2;
-> -module_param(max_cswd_read_retries, ulong, 0644);
-> +long max_cswd_read_retries = -1;
-> +module_param(max_cswd_read_retries, long, 0644);
->  EXPORT_SYMBOL_GPL(max_cswd_read_retries);
->  static int verify_n_cpus = 8;
->  module_param(verify_n_cpus, int, 0644);
-> @@ -225,8 +225,10 @@ static enum wd_read_status cs_watchdog_read(struct clocksource *cs, u64 *csnow,
->  	unsigned int nretries;
->  	u64 wd_end, wd_end2, wd_delta;
->  	int64_t wd_delay, wd_seq_delay;
-> +	long max_retries;
->  
-> -	for (nretries = 0; nretries <= max_cswd_read_retries; nretries++) {
-> +	max_retries = clocksource_max_watchdog_read_retries();
-> +	for (nretries = 0; nretries <= max_retries; nretries++) {
->  		local_irq_disable();
->  		*wdnow = watchdog->read(watchdog);
->  		*csnow = cs->read(cs);
-> @@ -238,7 +240,7 @@ static enum wd_read_status cs_watchdog_read(struct clocksource *cs, u64 *csnow,
->  		wd_delay = clocksource_cyc2ns(wd_delta, watchdog->mult,
->  					      watchdog->shift);
->  		if (wd_delay <= WATCHDOG_MAX_SKEW) {
-> -			if (nretries > 1 || nretries >= max_cswd_read_retries) {
-> +			if (nretries > 1 || nretries >= max_retries) {
->  				pr_warn("timekeeping watchdog on CPU%d: %s retried %d times before success\n",
->  					smp_processor_id(), watchdog->name, nretries);
->  			}
-> -- 
-> 2.34.1
-> 
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
 
