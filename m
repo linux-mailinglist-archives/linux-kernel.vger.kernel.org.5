@@ -1,77 +1,85 @@
-Return-Path: <linux-kernel+bounces-45138-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45139-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECFDA842C14
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:48:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 630E8842C17
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:48:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1DB7285CBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:48:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 555491C2451B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:48:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C07F7994D;
-	Tue, 30 Jan 2024 18:47:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65A2C762CE;
+	Tue, 30 Jan 2024 18:47:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="OidC0m1F"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2061.outbound.protection.outlook.com [40.107.237.61])
+	dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b="yeelb3OS"
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2052.outbound.protection.outlook.com [40.107.6.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A80B79946;
-	Tue, 30 Jan 2024 18:47:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.61
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0EF3762C0;
+	Tue, 30 Jan 2024 18:47:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.6.52
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706640428; cv=fail; b=kkySfbBqr0r9/tuZ9xVdzIjoZp4s9HKwpe5j8krWNxiiOLKVYPg9rWzU44WsDYMZhYnXzXHni2U9mrM7dooLLjwciIO22HtGc5ZzIRKVYPB8wDFnW+ZyGSsL8EVaCWAuHNJk9pBEV+IaKgzN0GQR3NSEv4BIBtYhqCs77DEttiA=
+	t=1706640446; cv=fail; b=TIJy3nsNfaB8DHTfG+RO3GhRZeFn7grwcNZ9Etk+VyHtotN3ZxRNy+tiDTRaVPpfPIn6HOUI+d+/sK6mMuyjQ8VDmWojcIj8pt14daTE/lJ/reK90n4Seifh1a7TMbvjPVxhpEKnoRkTdL69OwXbnDoNvozlZ+PLDlkoyY6HLSY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706640428; c=relaxed/simple;
-	bh=H2GibEL824akgEZ3+8lBgL4EhrZXhIp2ODD+AwubvUw=;
+	s=arc-20240116; t=1706640446; c=relaxed/simple;
+	bh=HpBBY2K190BjQs/M73ocrACa/+i6MpJpuNmgsivMtaA=;
 	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=afDv1p7oSpcYFXsPuQ8X/2WwQs6j1ysNQhCCidMeKVXq+Exgd/mVsFE+pr7FlHZ1F1quB6qcANWA5CUzyIkqGfI0erXjk/itPXjzvcFnZtoBy8WAz9aLXwfv4umAnLpaD7l0I+iQ45dKe+7KmmiLJDbQmgrQOzl182mb0Yr0tiY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=OidC0m1F; arc=fail smtp.client-ip=40.107.237.61
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+	 Content-Type:MIME-Version; b=uelhgyTYq4qTVbdBAiz2D0NzNyRqVKs0uusKTuoQSBmNPEUCBBwgTyEmdFmNHgmKXyvu8KnU2QP6FXHYcI0Apxhx08lkzNYpiGYk191t9qzv/7V0oV5AhcJ8ioBpMo0DjEPYaElaA16N+Bkwu/Sdwhjlaa9B5lkuqkm1vtIKPtk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net; spf=pass smtp.mailfrom=wolfvision.net; dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b=yeelb3OS; arc=fail smtp.client-ip=40.107.6.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wolfvision.net
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eHiwCZ+TwynzsGsTC6VXFrPO44FYQXCT7hGL/laSWlLZdvGIgrp32NEl/rGOx5t4vD8lSS4iybFYecujvN9Ttxsf8W8MMQfqmx6Wg7IuYnuNW8qsIQUNMh5gFEufxWwqbqzu6D6RghA7RxHPCOQM6b2Xpig8iuwBsb8nQHeK7nQdYHkzKX75jt8BB6uc9ZNmqY5TpwqQF2zGhMAzvh8iTl7n0NUg3HUsofSJdd2iuNh1uhIUcnfBddz4K/z0O8QR1HBE8F7s+08rAl//HDwz7aN3L/Gklua9IeK3E6oq5zTBWh+f32VdjXq54puMOFwhWjyfHWJk3E0k1t/eTdozaA==
+ b=QuDpobiic/ykCq1qgwhjHIGBjNYQfmrXyU2yceev1WJBYZPzfGhxzONv4pLydVUE7yJp/AdfJk9QPRf2QekHK8RzvAw03vfbIJ+EnvTXwIn5ZJR0RsD0ex2i1Vqz4NyXI4kVlQv3ioN4Ge8ds3eXvbVe/j8QBViX1tufa68A8XaQwMKVLm1RdW4F6fEcxLUFJknlGXXNSOnadHgNle+oWqoJnM6o5ZsbTPVIGuiwbmROYveo4XJyFErILW5SjqeWvaTayHI5OLNzoNjIt60w/OSEqFFYvl+y3U0WvXKd5Eq/IoPDwpOv4vQTtykCDxPGu7iEtKkWS1KPJkQVjmEtWA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WU27zGLwTk14Ld71GC6gr5w9JUe+y9dKrewjtBw8Q18=;
- b=P0uZzELKPHNyAqsuqoZHYbR7Qu4cAQi8FKGuFZbxRJIaZ3zpBLe9o56j4EUeI2abdjKUeAFU42VCYHu3lffmpQolsDLOakZAgD52tjU74o3aQB03jBNc+hEWxenmpuunOscaged/pHUhIWIV1uujRk/WguCrTlc2Kxu/h4T35Ne9tmT2oNqfBvaiexBV9EVmJdweTh23qX20d6KLWl3t8/CWWJc/Kuw6TZtXM6hiG8FXIYgZoGdujLZ78fBWtzJv7tWA5orTisFUdKlnp1T7UIskGeTDoQnHyfdQDDapsK2GaRETf4AKk8GCnaQYoRHmEG81eU+QSh+NfJdnPq4+Bw==
+ bh=KcdtC12bNWrNYeV7PUILagdiHRWNbV/VJliOjsTZeEo=;
+ b=J2dkG8c2bE0OL8awYg2knf14Jqaz7/1xawPriX4UHRSIBoVvLP+Wd1+uzulUE+LrKvq9VMtZWbE340vwpMdZC052GQV6dI1/MDrCM+NMZWiW3dZrtsBL/NYL43WTaOhUtOquZ/2I+dkDQzqSn6svX+sAeyZL82BXIEf1fy9PyVr47lhRZrVLqdZcz5k4XMxl4H+3DhIbIk55WWnolqEUINF6IsDFinfIUZNGHbIivb5zws/OaJNiwunzETT85ulfslQ2jghH2WVeeMtA8z+7YqwMAQfLjat4uHQXwL/xzPJvqjOmWEmQosQoqRpEh0+sVQ7MKCpiW0U5MKfmeY2nFA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=wolfvision.net; dmarc=pass action=none
+ header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WU27zGLwTk14Ld71GC6gr5w9JUe+y9dKrewjtBw8Q18=;
- b=OidC0m1Fm8QVyGPeghyICNOc8ijbLUvpagOeL2YBuTiqgifkibMO/cPt3oJYisiFdk8YngtejdZbgkgJGAVfidG3htN4276wNAEWLw67vPhLUEXaPOclWPtOa0c9TLErf7zNDK6Ygec5AXzmiQt7iqUsexTZb/VyYSHUf6eOPzA=
+ bh=KcdtC12bNWrNYeV7PUILagdiHRWNbV/VJliOjsTZeEo=;
+ b=yeelb3OSr1m+65TnVD6GDyfgNCM8CJHvW4zp4i5iZLXZC81eIf26A2wMg75cfUWZgpPUrpcUlx8Y4KvJUEpvznfn/B6pKTG9YxBlnhO0n1OfdbGPJNgF/3s/TSTxzoWzw37xvIRSKEUQ5K+ABMSsrkcptRDlIjlT9ggmxByhTRQ=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by CH2PR12MB4970.namprd12.prod.outlook.com (2603:10b6:610:67::9) with
+ header.d=none;dmarc=none action=none header.from=wolfvision.net;
+Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
+ by PAVPR08MB9795.eurprd08.prod.outlook.com (2603:10a6:102:31f::12) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.34; Tue, 30 Jan
- 2024 18:47:03 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::c30:614f:1cbd:3c64]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::c30:614f:1cbd:3c64%4]) with mapi id 15.20.7228.029; Tue, 30 Jan 2024
- 18:47:03 +0000
-Message-ID: <7a8f3595-3efc-428a-852a-d9edc8ebb01b@amd.com>
-Date: Tue, 30 Jan 2024 12:47:00 -0600
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.32; Tue, 30 Jan
+ 2024 18:47:20 +0000
+Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
+ ([fe80::c8ee:9414:a0c6:42ab]) by VE1PR08MB4974.eurprd08.prod.outlook.com
+ ([fe80::c8ee:9414:a0c6:42ab%7]) with mapi id 15.20.7228.029; Tue, 30 Jan 2024
+ 18:47:20 +0000
+Message-ID: <4413be17-467f-4c3e-9cba-2bcb51371799@wolfvision.net>
+Date: Tue, 30 Jan 2024 19:47:17 +0100
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] PCI: Disable D3cold on Asus B1400 PCI-NVMe bridge
+Subject: Re: [PATCH 2/2] usb: misc: onboard_hub: add support for XMOS XVF3500
+To: Matthias Kaehlcke <mka@chromium.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, linux-sound@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-usb@vger.kernel.org
+References: <20240130-onboard_xvf3500-v1-0-51b5398406cb@wolfvision.net>
+ <20240130-onboard_xvf3500-v1-2-51b5398406cb@wolfvision.net>
+ <ZbkfsVr-1pOTa1ic@google.com> <2024013024-borax-enjoying-beb5@gregkh>
+ <ZbkxUlFSKlUkcHaC@google.com>
 Content-Language: en-US
-To: Daniel Drake <drake@endlessos.org>, tglx@linutronix.de, mingo@redhat.com,
- bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org
-Cc: hpa@zytor.com, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
- bhelgaas@google.com, david.e.box@linux.intel.com
-References: <20240130183124.19985-1-drake@endlessos.org>
-From: Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <20240130183124.19985-1-drake@endlessos.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Javier Carrasco <javier.carrasco@wolfvision.net>
+In-Reply-To: <ZbkxUlFSKlUkcHaC@google.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA1P222CA0010.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:806:22c::12) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
+X-ClientProxiedBy: FR4P281CA0203.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:e5::6) To VE1PR08MB4974.eurprd08.prod.outlook.com
+ (2603:10a6:803:111::15)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,152 +87,127 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|CH2PR12MB4970:EE_
-X-MS-Office365-Filtering-Correlation-Id: 895835bb-4770-46ad-b2bd-08dc21c3d962
+X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|PAVPR08MB9795:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2e091281-0308-465e-1892-08dc21c3e389
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	lrWw/tZGvtPFfR/Izce1yNl8OyNXsec0raIyYH6X7+IaqFOUd98XSog2ec64PwWeZogEQalsG9SSA2eAKrNs85cLYfkjDyXONUXmp3eJsljnuDBaT79PnrKzFpAGWRyp3nzR/XTBjVN6DM+9lGylOocwW9AO6/J6kq0CzpN5NBDyyUXqCO7k6advKTq4ScPr6hkZpQaRbxz28fSLs/Mc+gv74cPRNmUQd+it1lVVYzGZePW0RPv5RgwSMrvPA8uZVRrLUdubI5AOAjgkHnUaJbX6fcJMpbHd9zVnS6i+2F973MV5XnKSC4CmmyVpdjo/D//VhHOqt+Tp1ytN54C6nNLbZH13Qrn8ddFHNPZXlslvNnArBugqg0tk/nUBuLMXeiOXO7oSmYOAfBkjF5ylpSZukMtwM3PEgIHz6qHhSSEd+3bbA4GbtD0UF42Krodh8dWl2cX/NaiBEW7l6l5gm4rWJkyRux9UXv0pcHLRmEo+SBdU0VNeM1yNscSs0Y3D7FOEFrfWkRAIkZkFLG07ARdbYr+NDeduKKIL2xsEP6wdPpuzivM7ki9P4QhDK2e70H65ACN8FNTO7OSPIAIKyQN/g3jLNW+DcikmWxr3dnZ1ZzmzWLV3ipITg1FE/SiiS5THdE4be6LFFp9eN7/38lcakZg3IiuuZRmCubSQq30=
+	NQwktNw15T7Ljsem842BSYZu3uzYVn6RTZD1sN3u3ytuMOybmMiJ58L+04L5j1u7aOnttLi/0HtYDnsYQuIYtV6DjOVVoQTRzvGIFHBpE+xjdUXvzM9g/jb4dOh3ZHBFQz3EkS4wa0raJKAFftH5PZQP541MA/qAdKQ6VrScV/8Ro8Sc42uVPodtIAbecHG+to7VdxCNkWYwC+TlJt4jUh+qYjHhNbFfAP69I6720XO8Zb9vYuvg1BmD8GNhiG13Qq1rrzffRJhvio/FyCHvxc++9hZX6kO2KvZhZLFlvGeqfCXDO6FjVoSssYLyeRiV3JOwN3WQfIPS8lFqzCyqwjA8yJfosq2z1AaWAWg9pl+eu3PCrpYMMd3f7LgphXYW8/FaLae7t7L2c92MnSqWjuu5tE5tx7i0UAvf+ZP4BnSwywlNHYFiSk5mbL8nHP7lpakwnpVrh3VbyWlfKnU4lEtcVpp3Ald1laOJZVUk1EA0+K9aI0q2g1W4ZG5CdOiqb9uevlP5y87YeJzJpXr2GulE3b1ULMjMT2C7oHlsL0U5b8aaE4t8f2vgYtz5qohodCc6lhYsq5bm8XVq2XgkJGSPZE+5CEnrwdn/ZbmaALQBgqCXtXsoqd7IZUkDLgcbP+e1m0GuTpAWrMQdRsv6Og==
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(366004)(136003)(39860400002)(376002)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(66556008)(31696002)(7416002)(83380400001)(41300700001)(36756003)(86362001)(38100700002)(478600001)(44832011)(8676002)(316002)(4326008)(66946007)(66476007)(966005)(2616005)(26005)(6486002)(2906002)(6512007)(53546011)(6506007)(5660300002)(8936002)(31686004)(32563001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(396003)(366004)(376002)(136003)(346002)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(41300700001)(2616005)(31686004)(316002)(66476007)(6512007)(54906003)(36756003)(6666004)(110136005)(6506007)(6486002)(53546011)(83380400001)(478600001)(38100700002)(66556008)(8936002)(86362001)(2906002)(31696002)(4326008)(44832011)(66946007)(5660300002)(7416002)(8676002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?amc4ZFdIVEZ1Y0JjeHZpdjBxTzhOMzRnZ1REcjB4OEtGTm96RGtvSytVaEd3?=
- =?utf-8?B?R3djU3BGc2xPaVRsMG01T1R4ZUFEWWpVMFJvNTFOVVZ6SGxtY25SaDM0enk5?=
- =?utf-8?B?b0lqY25tSEdwT0RrTjg5WFcwRjJCb0pLbTdTYmU1V21kN0dPOHZDTXNiQzc0?=
- =?utf-8?B?OWMvVlNUY1FJcUVpMk5CMnNma3B1bk4yVTA0NllDS2hKMVpZWUlDRFFONDRn?=
- =?utf-8?B?SzN1N2tZMmpBTkY1elpLTngxeGUzQmVONjc4SklwNVh1YWI2R05XWnNJYTk2?=
- =?utf-8?B?bXJCb1F1cTFpN1BnVG5iWTdrc2grVVV5REptNnU3NVFLVGMrVENYdjBOd21I?=
- =?utf-8?B?QXBuRUNVM2RsNWNXd2hrODlqYVdWdEFQYkt1Yk9WRXA5SzVaVi9zMVJiQUFM?=
- =?utf-8?B?eXZqdGZCUGRYcnZHV3NPWkphNlZ6Qy84SFVFcEx0dWJkZFdvdTRLaVR0UnBa?=
- =?utf-8?B?dmJkZG4rdThhZVFvUHVQSFFCZmtWbG1OWnhsUWtiT1BoWkJDY3NvbldaNUpa?=
- =?utf-8?B?U2tZZ1VmeStiNHdGMlFSUk8yVWJ5TytHb3BSeW9aajJDSTVZOXpmQWJISERS?=
- =?utf-8?B?VUdiUDNCL2lGcGNmWkZKaVo4b1ZRY0kyYzBKKzNrbk00emYrTGV0amdPYmht?=
- =?utf-8?B?L0VlRGtXUEF1RDFLM2w5V1lQV3Q0T1g2Tk5tMHJXNW9IMlJDSXlyR2dmU1Ra?=
- =?utf-8?B?WEkvWEhjcm15NDFRRkdmS2RKNjhZWnRtcTNyUlhrSnViSmNHWEVSS3lGODdp?=
- =?utf-8?B?QzdIaUlFN1QyK2RKd09TMVlIRFJtRlNRUWFmWC9RUXBZcXdUTUJzWUtRaDRP?=
- =?utf-8?B?dzB1MFV3aEUvbkRYbkluR1EwSjlHcmowZDlod1R2MFo2ckx4S0p3ak9GVVAz?=
- =?utf-8?B?c1Izb2trV1YvbjZyQllFSXlPdkJQL2tvMTM4RExXcnZ2YWNBMnUxM2w4dU00?=
- =?utf-8?B?K1FMNXNhRnZ2cVk3dEFGeHN6dnBkVDhlOWo5ckpXZkM2NzlIT2tMYlJEb3kz?=
- =?utf-8?B?RWN5RnJoVGVMcU9ncGhOMjBCNzBxMGNZdUo5eDdGTllNQzk5cDA3eWxobzBT?=
- =?utf-8?B?LzlWL2JJaytOTWd6NjVKR0tEQWJFdUIzVGVGa2ZhMm8rRVNsbTdRd0Z1RmV1?=
- =?utf-8?B?SVZvdHhDdGdTSXRwa3ZNbkNsNEhZOGZ4b1J4YnFCUTFzYXB0RkpuampNMVJz?=
- =?utf-8?B?L1hNNkRCY1RkazZxTXZTN2VSRGc5eFJnM3UzaVJyU2lDWGphaWhPRjIyT21F?=
- =?utf-8?B?Zjk1aUhNWEp4eWd6M0JhUDNDWTB6Z1pJaHpxU2t6M21rZHp1QndxTGNuakx2?=
- =?utf-8?B?RncwQllWQkZGV2ZKVUUwNUpVdlgwVlJ2MkUvN3R5SHFYT2FTYm93SW04Nzdu?=
- =?utf-8?B?U1pWN3plbm5HVE5SMXBsS3Rmbk1rdkhpeFd4c1Y4WUNROGVIem9kVmFPVkhS?=
- =?utf-8?B?aTNERHNUa3B5Nll5NmVjaWZCRGU2YjRFY3VGSk9WRWQ3VzZBdXEyREtObTZO?=
- =?utf-8?B?Y0VqWWJrWDdtRnczUG1wbzFIZnhUQ0gwQ3V5U3B1QmFueTc1S01sVStyTnlr?=
- =?utf-8?B?ZkE4U2NtWmFqNWpaS3RQSEhwMkNSSWpkWEg5dXF3ZExBdGFPU0xmd3c5OHZr?=
- =?utf-8?B?VWUzQlU3RlFSME5MY2lrWXh4MUpPVVdOekxZVUd0Y3U5T21rc3hkNWZXMmJF?=
- =?utf-8?B?a3AyVzlzUjd0NkMvR1FTeWtMb05GUzNzc3dCSHduTWorc0cwRy9tdFpQdFB6?=
- =?utf-8?B?dkYxc0dxVGlUcUhpV3dVcEtTMytnVlRwcGs3Z283eVdxZGJHSllVZmNDcmhX?=
- =?utf-8?B?WkczTDVUanh3N1NsMXdjcms3VFBXNEFZTDl1MTZjS2F3RHVXeCt3R2ZvMktL?=
- =?utf-8?B?UElQZVR6d0hxWTg0Zi96bksvaEx1NVpFc1k3MlkzVjFta25qVWJ2dFBLdm1G?=
- =?utf-8?B?RXhSeVN2dnB3b1R2QmczUk9VMzQvbjdveDBqT1hsTHZiMmF1V0hSQVFaL2My?=
- =?utf-8?B?dzlRcHV6aXFwTklEdVBWMzhxRlorK2doWGJDMjdwb29HRG93Y1UyNlVWeWRN?=
- =?utf-8?B?djZ5UCs2KzQ3QXFjM2hPbUFYaStaeWZ5TFdMa2VGL1dqUk9Wcy9MY3M2cEVR?=
- =?utf-8?Q?a9x+YijE9ul65v/qo7xAKMf4F?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 895835bb-4770-46ad-b2bd-08dc21c3d962
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+	=?utf-8?B?MjJBMGlaSnZPYzEvMkVhVjRJRDRrM0dKZlBZMDhWZ2c4NkJ5eGlKcFp1Z3ZE?=
+ =?utf-8?B?UHI0MnFzMnYzRmJEbWZhUis0TDhVd3YrSnVKY1ZZaGFzNXNLdWI5N2daREZh?=
+ =?utf-8?B?SHpKS1lMNlh6UVY2Szl4ZEJpTURmd1ZINXZMUzAxM3dkK3JlVFBOT1Z4THBh?=
+ =?utf-8?B?R1dsVVpXT1BCR256YnN2akV2VFFHemlTdHNBaDlKU2NXcUVJMFR3VXlUbktt?=
+ =?utf-8?B?SEV4TDV3Zml6SFBQRVR5L1ZXTTNJaVcyUkpXNlZUYnRaZDEzZ2h1RmZRWnpC?=
+ =?utf-8?B?ZEJPWmJQeC9LdUhUa3AzNXJjM25MNTM1ZGpNL0hKM25aa0ZhdHlvSDdmbFNs?=
+ =?utf-8?B?dS9wUHdsamQ1bmNoU1R3UjZzbDBuRTdhMW5yVjNXWXRjQXdaclJQelBKbk81?=
+ =?utf-8?B?czY3SExiOEg2aGN0K2p3TEFjVmZUVEhCTXhaS1hjRytpcWhqVVY1NDd3eHIw?=
+ =?utf-8?B?cmhUWGNVaWdVRkhlemZuZmhBUUF3N2NwaElsV2pQTXdnbjR2KzVoSlQrQW5J?=
+ =?utf-8?B?Q3NNTGdzVlpTWWhvRUJsVjlmc1RmejZRSHJ6TnlUNHpXbWVSZEZuRWdxT2hD?=
+ =?utf-8?B?MEtmQTczbFlkSlc4NThNK1hJeWQ1OUgxTEZubmlaeUFhaWhvVUJoV2doZGZC?=
+ =?utf-8?B?Mnd1RGE0azBPV1d2Qm1EYk1MNEFVWHYxSFRHZCs2TGpwNVh4T201a00wZ0FP?=
+ =?utf-8?B?OTRwaXkyR1BZVUJsY0o1UGxDN3hVTlAwVWlHYVpqSi9TcGFlQTlIakxIZzVH?=
+ =?utf-8?B?R1JPZ2NNYVU0VXY3QVc3RnREdEhycUpHME9EYWU0emtLdWR2Y1VON01hbVZm?=
+ =?utf-8?B?ejJTekJIRllraE9vL3FVbE1mKzFYSXA1MVExWDZzenhHN2J4OHJzdWswbmpW?=
+ =?utf-8?B?Qk53NnVCSDJJQk1JY1pkMWMySGhneWMrcjY4Zkx5NTlxY1VEMzZqRVh3RVZN?=
+ =?utf-8?B?eWJHcEtDRkVvb2pOeE1aQzZJSVR1RWJQeS83bkNDN2FUekM1WEVZdm8xVzlT?=
+ =?utf-8?B?Y0NjNHF1TG8rK3BHS3d2Vjl5VzNFWFltS0U0WC85TzcybXhpSEZab3BjUWJt?=
+ =?utf-8?B?S1Vpc1RwdCsrVmY5eGROTUQ0Nm93VHA2amVqMFg1c003M1R2dTZMYlBPcDFx?=
+ =?utf-8?B?OVo3ek5jRjY3dlhXem1mZkxuUFAyQi8vMjlUSzRZUCtoUDh2WWxvbk1DbWUy?=
+ =?utf-8?B?L3B5TCtWSVpQNUZDQnllM0g2c0gvRllBaFdCOVBYTnhQUkRQV0R5M0JWeDNq?=
+ =?utf-8?B?VndEZEI1RnNhSUcxS0pieTRyT0xSYkFGZDZHRzg3YW1DQ0YvNHNxS1lndEZs?=
+ =?utf-8?B?UFdObE4wU3h3Q3lMUk9IS0VaMC96UWFHeGFGdTVmbGE3SDhFR2Jqam1ubUpw?=
+ =?utf-8?B?VnJKbCtydC92QXZqcThrdXBob3pkQjRnbzlZcENRZmtsaG1lNHJ6NURNK0Zj?=
+ =?utf-8?B?ZXMzeTVDdFUxT1BBa28ybG82VnhwMEFiaVlHUGlldWlHNUxHS0c4QTM3Umcv?=
+ =?utf-8?B?Rlp4S0Jlc1o0bVJKVllMdzZZazdhV1ZwN1VhQSsvNkczQldBQ3BpellWaVhB?=
+ =?utf-8?B?OGlBYzZGSDBKUnJtZVBrWFRScTd2ZUN5K08rZitGWjlYODJuelQ4WTlzMlNZ?=
+ =?utf-8?B?Y0p6cS9mbHU4bmlFNHN1VHJHaEZSVGNnRnNTbEdScEdWVVAxZFJPVGJyZnND?=
+ =?utf-8?B?N3RlOHNHT0JFS25kdk54T3F6WU8xMzdZSzNvQTNpbTFBSDBNYk1Vd2srMGtj?=
+ =?utf-8?B?QTFyZkV6MzhlQml6VmpzNytsUmFlUWY0aHFyRkNXT1hqRERwQzVFUlJvbXpN?=
+ =?utf-8?B?SjNwalJzK3VPUHBvMS9QRUtUWUxoWENFR3k0Snp6WTl2RTBFNlNlZTRta2ta?=
+ =?utf-8?B?VzJXaVdLbTN6Nk9uU25ta0tzZDUyYzI1UlR6YVhJZVZRemlSMUVWbVFnb0JG?=
+ =?utf-8?B?cnRNRVpjUnRsT2ZvZnZNOTNaallDOHNqQ25iRHpKQ1BzRzRwbjFzazArUEc0?=
+ =?utf-8?B?Tk14UjJWQW56NklCVHNXSkliTXIvS1JxNmp5Rnpudkx1ODIxTzhTT2NxV0tH?=
+ =?utf-8?B?S0wvNkFtdnJieGhtZklKQUVKZDRUOWhRRDZtU0hlT2dJZGtpQi84L0lCU3dn?=
+ =?utf-8?B?bHB6V2taakxYQm1TbU1WaWJnTCt4NldHcGpaYmFUNzZ5NkhZZE5rc3ZvNkFw?=
+ =?utf-8?B?UTlpWjBMa3JLQ0R4NGlmYWRienZXNXI0T3daUkR3M0UyRlBDUFpCRWplMUdZ?=
+ =?utf-8?Q?QvdJjBm2WpQW3RbtPnQeXQJfP8wf2GydqTgOoiJT5Y=3D?=
+X-OriginatorOrg: wolfvision.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2e091281-0308-465e-1892-08dc21c3e389
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jan 2024 18:47:03.0520
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jan 2024 18:47:20.1310
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DMxjsgyt6k+PHcruF+EYBTVLxpxkeA3ar0qC3w/4IAQiPJytVXpIve6f6sWAxy/IVsoyb01gZXb0MeprA9qh3w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4970
+X-MS-Exchange-CrossTenant-UserPrincipalName: lOQKQ8A/YTgDzlomlYClKq/HphR0mVU3mJlvJ8ieRjuKP+Q6uzzZFvVCAjo6d5yh1PVWPlCqZhI9jaRK/bcYUKBKeOdnZtW23fRz6cssDtM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAVPR08MB9795
 
-On 1/30/2024 12:31, Daniel Drake wrote:
-> The Asus B1400 with production shipped firmware version 304 and VMD
-> disabled cannot resume from suspend: the NVMe device becomes unresponsive
-> and inaccessible.
+On 30.01.24 18:26, Matthias Kaehlcke wrote:
+> On Tue, Jan 30, 2024 at 08:19:40AM -0800, Greg Kroah-Hartman wrote:
+>> On Tue, Jan 30, 2024 at 04:11:29PM +0000, Matthias Kaehlcke wrote:
+>>> Hi Javier,
+>>>
+>>> I understand your motivation for using the onboard_usb_hub driver
+>>> for powering up a non-hub device, it feels a bit hacky to use it
+>>> as is though. Re-using the driver might be the right thing to do,
+>>> but then it should probably be renamed to onboard_usb_dev (or
+>>> similar) and do the hub specific bits as special case.
+>>>
+>>> Greg, do you have any thoughts on this?
+>>
+>> Yeah, this worries me, adding non-hub support to this driver feels odd.
+> 
+> It is odd as long as this driver claims to be hub-specific, but truth
+> is that the hub-specific bits are a small part of the driver, I think
+> it might be worthwhile to consider adapting the driver to other devices
+> if there is no clear better solution.
 
-Has there already been a check done whether any newer firmware is 
-available from ASUS that doesn't suffer the deficiency described below?
+The driver was programmed for hubs from the beginning, and that makes
+non-hub additions look weird, but I wonder if the other way round would
+have been seen less odd: a generic onboard_usb_dev that ended up being
+extended to support hub-specific capabilities. As Matthias pointed out,
+most of the driver is generic, but I have to admit that adding a non-hub
+device directly (without any renaming) does not look 100% right.
 
+> A possible alternative could be a separate onboard_usb_dev driver for
+> non-hub devices, with a similar structure as the onboard_hub driver,
+> but without the hub-specific bits.
 > 
-> This is because the NVMe device and parent PCI bridge get put into D3cold
-> during suspend, and this PCI bridge cannot be recovered from D3cold mode:
-> 
->    echo "0000:01:00.0" > /sys/bus/pci/drivers/nvme/unbind
->    echo "0000:00:06.0" > /sys/bus/pci/drivers/pcieport/unbind
->    setpci -s 00:06.0 CAP_PM+4.b=03 # D3hot
->    acpidbg -b "execute \_SB.PC00.PEG0.PXP._OFF"
->    acpidbg -b "execute \_SB.PC00.PEG0.PXP._ON"
->    setpci -s 00:06.0 CAP_PM+4.b=0 # D0
->    echo "0000:00:06.0" > /sys/bus/pci/drivers/pcieport/bind
->    echo "0000:01:00.0" > /sys/bus/pci/drivers/nvme/bind
->    # NVMe probe fails here with -ENODEV
-> 
-> This appears to be an untested D3cold transition by the vendor; Intel
-> socwatch shows that Windows leaves the NVMe device and parent bridge in D0
-> during suspend, even though this firmware version has StorageD3Enable=1.
-> 
-> Experimenting with the DSDT, the _OFF method calls DL23() which sets a L23E
-> bit at offset 0xe2 into the PCI configuration space for this root port.
-> This is the specific write that the _ON routine is unable to recover from.
-> This register is not documented in the public chipset datasheet.
-> 
-> Disallow D3cold on the PCI bridge to enable successful suspend/resume.
-> 
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=215742
-> Signed-off-by: Daniel Drake <drake@endlessos.org>
-> ---
->   arch/x86/pci/fixup.c | 26 ++++++++++++++++++++++++++
->   1 file changed, 26 insertions(+)
-> 
-> There's an existing quirk for this product that selects S3 instead of
-> s2idle because of this failure. However, after extensive testing,
-> we've found that S3 cannot reliably wake up from suspend (firmware issue).
-> We need to get s2idle working again; I'll revert the original quirk
-> once we have solved this D3cold issue.
 
-Is this the only problem blocking s2idle from working effectively on 
-this platform?  If so, I would think you want to just do the revert in 
-the same series if it's decided this patch needs to spin again for any 
-reason.
+I was thinking about that possibility too, but the new driver would be a
+renamed onboard_usb_hub with less functionality. Its only added value
+would be that it keeps onboard_usb_hub only for hubs. But if that is
+exactly the goal, I have nothing against an onboard_usb_dev driver for
+the next patch version. Adding a device-specific driver for such a
+generic power sequence and resume/suspend support might not be the best
+approach, though, especially if more USB devices with similar needs arise.
 
+>> Why can't this all just be done in an individual driver for this device
+>> itself?
 > 
-> diff --git a/arch/x86/pci/fixup.c b/arch/x86/pci/fixup.c
-> index f347c20247d30..c486d86bb678b 100644
-> --- a/arch/x86/pci/fixup.c
-> +++ b/arch/x86/pci/fixup.c
-> @@ -907,6 +907,32 @@ static void chromeos_fixup_apl_pci_l1ss_capability(struct pci_dev *dev)
->   DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x5ad6, chromeos_save_apl_pci_l1ss_capability);
->   DECLARE_PCI_FIXUP_RESUME(PCI_VENDOR_ID_INTEL, 0x5ad6, chromeos_fixup_apl_pci_l1ss_capability);
->   
-> +/*
-> + * Disable D3cold on Asus B1400 PCIe bridge at 00:06.0.
-> + *
-> + * On this platform with VMD off, the NVMe's parent PCI bridge cannot
-> + * successfully power back on from D3cold, resulting in unresponsive NVMe on
-> + * resume. This appears to be an untested transition by the vendor: Windows
-> + * leaves the NVMe and parent bridge in D0 during suspend, even though
-> + * StorageD3Enable=1 is set on the production shipped firmware version 304.
-> + */
-> +static const struct dmi_system_id asus_nvme_broken_d3cold_table[] = {
-> +	{
-> +		.matches = {
-> +				DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-> +				DMI_MATCH(DMI_PRODUCT_NAME, "ASUS EXPERTBOOK B1400CEAE"),
-> +		},
-> +	},
-> +	{}
-> +};
-> +
-> +static void asus_disable_nvme_d3cold(struct pci_dev *pdev)
-> +{
-> +	if (dmi_check_system(asus_nvme_broken_d3cold_table) > 0)
-> +		pci_d3cold_disable(pdev);
-> +}
-> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x9a09, asus_disable_nvme_d3cold);
-> +
->   #ifdef CONFIG_SUSPEND
->   /*
->    * Root Ports on some AMD SoCs advertise PME_Support for D3hot and D3cold, but
+> I suppose the reason is the good old chicken-egg situation that the (USB)
+> driver is only instantiated after the device has bee powered on, which is
+> what the driver is supposed to take care of. For the onboard_hub driver
+> this was solved by having a platform driver that is instantiated by the
+> parent hub if the onboard hub has a device tree entry. Probably something
+> similar would be needed for an individual driver, and the generic hub
+> driver would have to call the equivalent of onboard_hub_create_pdevs()
+> for all drivers of this type (or a wrapper that does this).
+> 
+> m.
 
+The XVF3500 does not have kernel support so far, and once it reaches
+normal operation and registers itself as a USB device, the communication
+is achieved in userspace. What this device needs from a driver is only
+the power sequence and eventually the resume/suspend support, which
+makes it a good candidate for generic implementations.
+
+Best regards,
+Javier Carrasco
 
