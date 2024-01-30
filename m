@@ -1,136 +1,169 @@
-Return-Path: <linux-kernel+bounces-44546-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44547-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FE8C84240C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:49:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A2DA184240D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:49:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5432282C0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:49:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 496DE28748C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:49:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15F1A6A00F;
-	Tue, 30 Jan 2024 11:46:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A635B6BB38;
+	Tue, 30 Jan 2024 11:46:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iWzCyAlT"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GueB1uq5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E11A26773C
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 11:46:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E526BB2C;
+	Tue, 30 Jan 2024 11:46:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706615175; cv=none; b=I+paSmgdbhlZGTrsrUoRP1egfkDOy9dCeQ8venPsUxrfU6H74ntGVYSz/dk1kZykkCDExQu8rJt2aVW4WkO7Jgu+9OrfaFtHRtqoNwVvGaGf4iCUNwZG211PWgZl95sZFLRNwP93kUk7I1RV+1WJrrvIwrzMqFjKjZCITcWhqXI=
+	t=1706615180; cv=none; b=I1U4FqpLzarprCW03wiRa0oqhseUSO6reuU2miZm+36mlPfE0kxHMhRG6c0Qd20KwsXXXbSkx/W/dHNDoqlEJnRq303DHd04ZKHIkt0fbNtJrPyEVmxsofyBpG+D7Ht322IHMWnbwe0xYcjzQN+mVgarW8LgmbwiXWvlHD4vQBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706615175; c=relaxed/simple;
-	bh=s6N1gkYvyY3hDBDbP8HT9EefNkFyTfoHZIbsaI0LxsY=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=tKSyRuUVdVQfcts+5On/G/wHdhcOrgQIgXrX3sF/46dZWS+SlVY3NtZJHQxUcpbXDYq0KBa0j/YpF7hHJQArC4sfjxB1kV3ckQnUEqiEQGVdT2bHNSinpqEEEU4T2gcq8AmZefwM5H7Cqv31oT2uZBcYxeOVFf2Itw8D+dDt4Zs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iWzCyAlT; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706615172;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XNC4RnR1LP3JLZK3mU2j4+a+R8GFkfNE9wD4WslHeU4=;
-	b=iWzCyAlTyj5JgZAdW+17FtvMeEXORatJuRd1yIJgRivdElGaE9IGMup65eBIqCe9GZnJGU
-	LT2dh9vioQrzgfEy+gExN187K/zXUieZB+FpBp6py8IW3OTJbzaDmVZvA6KFN/ZiwVkM9/
-	2EIaq8mGWbDlXz7kXaumzjFNKhs0+mw=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-571-1fs-sfDbNryD18DHM1ANyA-1; Tue, 30 Jan 2024 06:46:09 -0500
-X-MC-Unique: 1fs-sfDbNryD18DHM1ANyA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 04E9B85A599;
-	Tue, 30 Jan 2024 11:46:09 +0000 (UTC)
-Received: from file1-rdu.file-001.prod.rdu2.dc.redhat.com (unknown [10.11.5.21])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 9C01640C95AD;
-	Tue, 30 Jan 2024 11:46:08 +0000 (UTC)
-Received: by file1-rdu.file-001.prod.rdu2.dc.redhat.com (Postfix, from userid 12668)
-	id 7F56B30C14EB; Tue, 30 Jan 2024 11:46:08 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-	by file1-rdu.file-001.prod.rdu2.dc.redhat.com (Postfix) with ESMTP id 7A9C13FB4E;
-	Tue, 30 Jan 2024 12:46:08 +0100 (CET)
-Date: Tue, 30 Jan 2024 12:46:08 +0100 (CET)
-From: Mikulas Patocka <mpatocka@redhat.com>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-cc: heinzm@redhat.com, xni@redhat.com, agk@redhat.com, snitzer@kernel.org, 
-    dm-devel@lists.linux.dev, song@kernel.org, yukuai3@huawei.com, 
-    jbrassow@f14.redhat.com, neilb@suse.de, shli@fb.com, akpm@osdl.org, 
-    linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org, 
-    yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH RFC v4 13/14] dm: wait for IO completion before removing
- dm device
-In-Reply-To: <20240130021843.3608859-14-yukuai1@huaweicloud.com>
-Message-ID: <fa4cd2f8-d0e8-5b6d-2ac6-1c5f1710a5ee@redhat.com>
-References: <20240130021843.3608859-1-yukuai1@huaweicloud.com> <20240130021843.3608859-14-yukuai1@huaweicloud.com>
+	s=arc-20240116; t=1706615180; c=relaxed/simple;
+	bh=06r+eoDIdb0wUNK9nK1o7FDcwKFdTlsuHuRKweLT1c4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=TP1WCV2mqilf35Y8LGnCFcXHh/DLBOR2L72iiLQMsgvQZc4EzZv3C9CKO9Bh4/0y9BBc9SIlW5qO5eu3gMSiostjPt2uRiX65JrdnQxucCUg96360oifWSOs11N7VgeLxiKSmnvLkHxdMMWqpDuVJj3nORGsDyyWyEu5BzdeKos=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GueB1uq5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08963C43390;
+	Tue, 30 Jan 2024 11:46:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706615179;
+	bh=06r+eoDIdb0wUNK9nK1o7FDcwKFdTlsuHuRKweLT1c4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=GueB1uq5VGej0m02UI0z6szNNF68tqP4GszcsjFOcw63xgdIneA5HtrM61SmR5G1N
+	 qktGiqME3S+1Y0PEjqFDj2Zvdm79wGhhUtSSuFxc0uoOpNSKAND8GN5r5D6VctVrr6
+	 FtcA34kp6rgV7zHn510vSmqNLGCns4S6qh6Jb27so0QrVL+oYtx4Bi2IOGBAa8qA6q
+	 +kWsj9IQAi9WRO0/wSuiQrI/c+QXXREzkPQW5h/Qffj00WPpkb0+WNxE2omlQE1qU8
+	 T3KZuavUIGgRulenfQ+iDBYvihanGQ9iUUVyG4mjOMkxyMD5HuylFg899ls+EkKVg2
+	 yxxXuoVZgb60A==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Anup Patel <apatel@ventanamicro.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley
+ <paul.walmsley@sifive.com>, Thomas Gleixner <tglx@linutronix.de>, Rob
+ Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand
+ <frowand.list@gmail.com>, Conor Dooley <conor+dt@kernel.org>,
+ devicetree@vger.kernel.org, Saravana Kannan <saravanak@google.com>, Marc
+ Zyngier <maz@kernel.org>, Anup Patel <anup@brainfault.org>,
+ linux-kernel@vger.kernel.org, Atish Patra <atishp@atishpatra.org>,
+ linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ Andrew Jones <ajones@ventanamicro.com>
+Subject: Re: [PATCH v12 00/25] Linux RISC-V AIA Support
+In-Reply-To: <CAK9=C2UYCKUBKggtM606orH2mBu_AbTdB5-R5AP1M0t-LsEbEQ@mail.gmail.com>
+References: <20240127161753.114685-1-apatel@ventanamicro.com>
+ <87r0hzuw87.fsf@all.your.base.are.belong.to.us>
+ <87le87uulb.fsf@all.your.base.are.belong.to.us>
+ <CAK9=C2UYCKUBKggtM606orH2mBu_AbTdB5-R5AP1M0t-LsEbEQ@mail.gmail.com>
+Date: Tue, 30 Jan 2024 12:46:16 +0100
+Message-ID: <87cytjvybb.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+Anup Patel <apatel@ventanamicro.com> writes:
+
+> On Tue, Jan 30, 2024 at 1:22=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@kern=
+el.org> wrote:
+>>
+>> Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
+>>
+>> > Anup Patel <apatel@ventanamicro.com> writes:
+>> >
+>> >> The RISC-V AIA specification is ratified as-per the RISC-V internatio=
+nal
+>> >> process. The latest ratified AIA specifcation can be found at:
+>> >> https://github.com/riscv/riscv-aia/releases/download/1.0/riscv-interr=
+upts-1.0.pdf
+>> >>
+>> >> At a high-level, the AIA specification adds three things:
+>> >> 1) AIA CSRs
+>> >>    - Improved local interrupt support
+>> >> 2) Incoming Message Signaled Interrupt Controller (IMSIC)
+>> >>    - Per-HART MSI controller
+>> >>    - Support MSI virtualization
+>> >>    - Support IPI along with virtualization
+>> >> 3) Advanced Platform-Level Interrupt Controller (APLIC)
+>> >>    - Wired interrupt controller
+>> >>    - In MSI-mode, converts wired interrupt into MSIs (i.e. MSI genera=
+tor)
+>> >>    - In Direct-mode, injects external interrupts directly into HARTs
+>> >>
+>> >> For an overview of the AIA specification, refer the AIA virtualization
+>> >> talk at KVM Forum 2022:
+>> >> https://static.sched.com/hosted_files/kvmforum2022/a1/AIA_Virtualizat=
+ion_in_KVM_RISCV_final.pdf
+>> >> https://www.youtube.com/watch?v=3Dr071dL8Z0yo
+>> >>
+>> >> To test this series, use QEMU v7.2 (or higher) and OpenSBI v1.2 (or h=
+igher).
+>> >>
+>> >> These patches can also be found in the riscv_aia_v12 branch at:
+>> >> https://github.com/avpatel/linux.git
+>> >>
+>> >> Changes since v11:
+>> >>  - Rebased on Linux-6.8-rc1
+>> >>  - Included kernel/irq related patches from "genirq, irqchip: Convert=
+ ARM
+>> >>    MSI handling to per device MSI domains" series by Thomas.
+>> >>    (PATCH7, PATCH8, PATCH9, PATCH14, PATCH16, PATCH17, PATCH18, PATCH=
+19,
+>> >>     PATCH20, PATCH21, PATCH22, PATCH23, and PATCH32 of
+>> >>     https://lore.kernel.org/linux-arm-kernel/20221121135653.208611233=
+@linutronix.de/)
+>> >>  - Updated APLIC MSI-mode driver to use the new WIRED_TO_MSI mechanis=
+m.
+>> >>  - Updated IMSIC driver to support per-device MSI domains for PCI and
+>> >>    platform devices.
+>> >
+>> > Thanks for working on this, Anup! I'm still reviewing the patches.
+>> >
+>> > I'm hitting a boot hang in text patching, with this series applied on
+>> > 6.8-rc2. IPI issues?
+>>
+>> Not text patching! One cpu spinning in smp_call_function_many_cond() and
+>> the others are in cpu_relax(). Smells like IPI...
+>
+> I tried bootefi from U-Boot multiple times but can't reproduce the
+> issue you are seeing.
+
+Thanks! I can reproduce without EFI, and simpler command-line:
+
+qemu-system-riscv64 \
+  -bios /path/to/fw_dynamic.bin \
+  -kernel /path/to/Image \
+  -append 'earlycon console=3Dtty0 console=3DttyS0' \
+  -machine virt,aia=3Daplic-imsic \
+  -no-reboot -nodefaults -nographic \
+  -smp 4 \
+  -object rng-random,filename=3D/dev/urandom,id=3Drng0 \
+  -device virtio-rng-device,rng=3Drng0 \
+  -m 4G -chardev stdio,id=3Dchar0 -serial chardev:char0
+
+I can reproduce with your upstream riscv_aia_v12 plus the config in the
+gist [1], and all latest QEMU/OpenSBI:
+
+QEMU: 11be70677c70 ("Merge tag 'pull-vfio-20240129' of https://github.com/l=
+egoater/qemu into staging")
+OpenSBI: bb90a9ebf6d9 ("lib: sbi: Print number of debug triggers found")
+Linux: d9b9d6eb987f ("MAINTAINERS: Add entry for RISC-V AIA drivers")
+
+Removing ",aia=3Daplic-imsic" from the CLI above completes the boot (i.e.
+panicking about missing root mount ;-))
 
 
+Bj=C3=B6rn
 
-On Tue, 30 Jan 2024, Yu Kuai wrote:
+[1] https://gist.githubusercontent.com/bjoto/bac563e6dcaab68dba1a5eaf675d51=
+aa/raw/ff6208fb17f27819dbe97ace7d034f385d2db657/gistfile1.txt
 
-> From: Yu Kuai <yukuai3@huawei.com>
-> 
-> __dm_destroy() guarantee that device openers is zero, and then
-> only call 'presuspend' and 'postsuspend' for the target. For
-> request-based dm, 'md->holders' will be grabbed for each rq and
-> __dm_destroy() will wait for 'md->holders' to be zero. However, for
-> bio-based device, __dm_destroy() doesn't wait for all bios to be done.
-> 
-> Fix this problem by calling dm_wait_for_completion() to wail for all
-> inflight IO to be done, like what dm_suspend() does.
-
-If the number of openers is zero, it is guaranteed that there are no bios 
-in flight. Therefore, we don't have to wait for them.
-
-If there are bios in flight, it is a bug in the code that issues the bios. 
-You can put WARN_ON(dm_in_flight_bios(md)) there.
-
-Mikulas
-
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->  drivers/md/dm.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/md/dm.c b/drivers/md/dm.c
-> index 8dcabf84d866..2c0eae67d0f1 100644
-> --- a/drivers/md/dm.c
-> +++ b/drivers/md/dm.c
-> @@ -58,6 +58,7 @@ static DEFINE_IDR(_minor_idr);
->  static DEFINE_SPINLOCK(_minor_lock);
->  
->  static void do_deferred_remove(struct work_struct *w);
-> +static int dm_wait_for_completion(struct mapped_device *md, unsigned int task_state);
->  
->  static DECLARE_WORK(deferred_remove_work, do_deferred_remove);
->  
-> @@ -2495,6 +2496,8 @@ static void __dm_destroy(struct mapped_device *md, bool wait)
->  	if (!dm_suspended_md(md)) {
->  		dm_table_presuspend_targets(map);
->  		set_bit(DMF_SUSPENDED, &md->flags);
-> +		if (wait)
-> +			dm_wait_for_completion(md, TASK_UNINTERRUPTIBLE);
->  		set_bit(DMF_POST_SUSPENDING, &md->flags);
->  		dm_table_postsuspend_targets(map);
->  	}
-> -- 
-> 2.39.2
-> 
 
 
