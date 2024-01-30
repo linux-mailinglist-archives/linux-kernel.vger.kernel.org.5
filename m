@@ -1,174 +1,160 @@
-Return-Path: <linux-kernel+bounces-44220-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44215-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5C4F841EF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:13:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 310AB841F21
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:16:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52C301F21D4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:13:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A74ADB2A1AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:12:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFF7C605D0;
-	Tue, 30 Jan 2024 09:13:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFDD160241;
+	Tue, 30 Jan 2024 09:11:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RtE0a1N/"
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rNwNUHtP"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6676059147;
-	Tue, 30 Jan 2024 09:13:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A786605B2
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:11:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706605986; cv=none; b=usI73/VpF7iB/I+nAhco3O7RuHEl25K8AfP46j5Hg3JBXYs8u+HGdrMn6b3/YFmB2XLpkL7iUzcFhciixarJkPhwlSqvUYvJcneMwh+RrUG7qolC/gmdpI33LD13YdUIIwvkEGpMqq+hXEgdvaG2FF9HWgrBACk23evlISPA73U=
+	t=1706605915; cv=none; b=PSq7JZcW3ff0/02ZrOvPzyyr9NRiY558drMn3AfzbaAsfjqnoQ1iJYQPAwRFXzLWrY+LpeqYrjC//62VvjZJ3Vr1lSloBkrwTG2it31UoiyW1n8g9HhmIpP0hUIUaoUW+5MyvBDbYj8yZ2IW+tjS+2dRWl7n/7wn0lPbV0cCq2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706605986; c=relaxed/simple;
-	bh=BQgMw4kft6HibyH5hZoeL9BrKIi7CbOCh2ArBtsepu4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ITriVkw1t4r8/JIorABrVRpqDecz0m6TE/ui/AEucMuJQvencbq18NVzL67Iw8eXlcn64FCtjstmU71siV8MkwHbJFvg5tpvLE/kWHKYjtFPhgLi1WE7yc70XEjy+VdUwwc+aZkKgDLf19RgGq6NejZKSIr+Gc3fkqfJo+2Loa8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RtE0a1N/; arc=none smtp.client-ip=209.85.215.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5d7005ea1d0so2355016a12.1;
-        Tue, 30 Jan 2024 01:13:05 -0800 (PST)
+	s=arc-20240116; t=1706605915; c=relaxed/simple;
+	bh=mg13l6GoIYbaIsT206+Ed4s9MWuDP+u3gPMxCKTqenA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mAZgD7nuKPfil4LyxZTbY3J5PXfrnFTfMsR1ndRBx+7/67xFtvU7wtPkmBdvLbRXaeQOkq7lSrNTayv5tePgEQDvbSZEnAOvv8epMQAKcOrNYo8rwAUw6HCxk1422f/7h+wPjKUwlfk5HjaSFw7C14zPx2uKXRwY588lM6iKt0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rNwNUHtP; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a2d7e2e7fe0so688344866b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:11:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706605985; x=1707210785; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=2419AmMRLK1a8gM2JjFp9RCfwyGRI0AG4Y0NxPY7Sr8=;
-        b=RtE0a1N/54VEvNzmEZNZLV8yLQlDx1X6FzFS/vp0fxTMT0xNDcwDXwqcfalSXH8DDw
-         n6ERRQVjaro6D/hNYW4Oc/tAzmnAlH4QSNxStRi7xQkIaALoCbX6pjjUzYFI+hj+rfCw
-         3SlqvNXMsYHIfwdWzJwMxySXVdiYmA8T0mDEPsAjFQyhr/cNbD/s+Tq6rg1KAJ5Gi4hT
-         aLtvTfYNxSuWd5WjNNAFPgN65fyvZiKpUwA9DoR7FbuzMJwIVtdglFU1v5bIfp/cZPzj
-         A9EHtphULYREXt0I/w0+mp6bWo0KGzPBm480vnA8rVhrGoIEmKTbbgrnLquy2Y0H6PLo
-         km6A==
+        d=linaro.org; s=google; t=1706605911; x=1707210711; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=P0uzspMxyTAe1K1El4yqw3UnGLBxlhUfh6vxmuD6SvI=;
+        b=rNwNUHtPt5sl998s0l65eQmK0XyBmwRtK3J9yrLWt+za4NqWmwxlrF0SPArOr3uC/P
+         GkYsEAGM/iSn3EEwAk1ZRhFIjn23Kh+w6WfRwI3BmwDouMK3F8qClM/yEtTd+EXbvG2j
+         ZnMGSWO9qW/QT0KPuU0koS6FQWD2+LID2RoGFnNHYzn1iYujzkd9VN7IxSYUfv2Cbt6G
+         pn+CAS5mb7ui0nQ01woeOp8xf5bY+C1LZXstUiaNvrW/VrGGuwnKLDwWt+NujDlpi7N/
+         OEZjHmEoPkbryBhaYVvVnm1kBaXZcwDolk5pAGaGPB2W38BKZ94KoHcB6gvuC6FSPtHP
+         CePg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706605985; x=1707210785;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2419AmMRLK1a8gM2JjFp9RCfwyGRI0AG4Y0NxPY7Sr8=;
-        b=FNlp0+SryZbhUeUkWHJaUDzmsy1Bv6C+J9NHCsC14p1l+n9ZlRw4NDKYUtklgdoSwq
-         GW32FPZBeQE0JP8kgAWzZuOPM6ta3oN5PWRelr9BDPV00aCRVoquQtn10XrYtNHCaQLG
-         uxM2ckjFGzQuYPdLQ0lfD20GPZvRn8NX6OuONcnyI5IbJp7bOh18KGxnQepXTF5xMlaT
-         WccSP75Sl8ppwzw/nPxpnjGKkxGRUMAvGuLI/Q0jJ97/dRfI6axrZDsAhHrqNCH3/M8s
-         woFtlSCxOVSs87q2dNrvtyiHudKMagfa7ZGP7cHjmrIaak/unhIWZm+Y8N/1KL0TaOUY
-         2pwQ==
-X-Gm-Message-State: AOJu0YxRNLSfdZWtuRymqW0CCnHFzjOVzKcklAuvXH3zf9kIdFl1w+9h
-	WpT3QgTpY6+a5QVC83+CaFJlorIIEX7v7isrG7g9xV5lrY+AUIt7s/h0SgkL
-X-Google-Smtp-Source: AGHT+IF+ENnioD53E4T34dqSWY4jx2ydBtNwJkgOEgDkPE6BjYRC7VhcjnQWsA29LbzRUKq+5ffnDA==
-X-Received: by 2002:a05:6a21:2d8c:b0:19a:2b15:2a2f with SMTP id ty12-20020a056a212d8c00b0019a2b152a2fmr686345pzb.28.1706605984525;
-        Tue, 30 Jan 2024 01:13:04 -0800 (PST)
-Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
-        by smtp.gmail.com with ESMTPSA id gu2-20020a056a004e4200b006dde1781800sm7491336pfb.94.2024.01.30.01.13.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 01:13:04 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-From: Tejun Heo <tj@kernel.org>
-To: torvalds@linux-foundation.org,
-	mpatocka@redhat.com
-Cc: linux-kernel@vger.kernel.org,
-	dm-devel@lists.linux.dev,
-	msnitzer@redhat.com,
-	ignat@cloudflare.com,
-	damien.lemoal@wdc.com,
-	bob.liu@oracle.com,
-	houtao1@huawei.com,
-	peterz@infradead.org,
-	mingo@kernel.org,
-	netdev@vger.kernel.org,
-	allen.lkml@gmail.com,
-	kernel-team@meta.com
-Subject: [PATCHSET wq/for-6.9] workqueue: Implement BH workqueue and convert several tasklet users
-Date: Mon, 29 Jan 2024 23:11:47 -1000
-Message-ID: <20240130091300.2968534-1-tj@kernel.org>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1706605911; x=1707210711;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=P0uzspMxyTAe1K1El4yqw3UnGLBxlhUfh6vxmuD6SvI=;
+        b=jMWKieZF2h3Uwb3+XMH8+iNM3DYrU1yigIgUg2OSEt1kgPw+nZaQJ/JA5+vN2Hrp/7
+         A1Icdo7+NOsuLagZ7qE4P0PXxpYbVqUxLEs2RW6eTWXGLRk1P95L50WtLQbfTXlX8MDX
+         Xxb2IceLUhBauLSBeQuB9Q4wmqLoHS1bPP8/cMcn739+zK2/d1f2r4j/C8h8KA2bVEN6
+         dWx64stWpBrhZEWQNW7Pz8lQBIxT/K2sWDm84+R7FLRK/CtYwof3IaNGNTeunPJWvJ3r
+         wHJcY4mcYPtFk5Jmf3nSRZSJrnpO4SyOpHLNSMB3nVobp/fxMDNDlHtWRJ0CcIwf12N8
+         6kQw==
+X-Gm-Message-State: AOJu0YzuYokPTOiEHN5hlUECGUhraMzFb/sMv/7wpSSJ5A2BZod+EofW
+	GEcMUnlZ19VY1zqFZHsHfTBy6tRRpiekh6iO0ZuobNXL70gRyOP0E0QUafPSPMc=
+X-Google-Smtp-Source: AGHT+IHY75lv43WV7NtMQ5xrm3xMVd5ZHPUbyq3NYqVsdgPeWfMSMy1jjyvDwAwa/OPcCY10VkSgAg==
+X-Received: by 2002:a17:907:a091:b0:a36:416:a365 with SMTP id hu17-20020a170907a09100b00a360416a365mr736648ejc.5.1706605911217;
+        Tue, 30 Jan 2024 01:11:51 -0800 (PST)
+Received: from [192.168.2.107] ([79.115.63.202])
+        by smtp.gmail.com with ESMTPSA id ss6-20020a170907c00600b00a3535b76c42sm3958064ejc.15.2024.01.30.01.11.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jan 2024 01:11:50 -0800 (PST)
+Message-ID: <354b72d7-ea53-4686-bfa6-023c632d8edd@linaro.org>
+Date: Tue, 30 Jan 2024 09:11:48 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 6/7] arm64: dts: exynos: gs101: define USI12 with I2C
+ configuration
+Content-Language: en-US
+To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
+ peter.griffin@linaro.org, mturquette@baylibre.com, sboyd@kernel.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc: linux-kernel@vger.kernel.org, kernel-team@android.com,
+ willmcvicker@google.com, semen.protsenko@linaro.org,
+ alim.akhtar@samsung.com, s.nawrocki@samsung.com, tomasz.figa@gmail.com,
+ cw00.choi@samsung.com, linux-arm-kernel@lists.infradead.org,
+ linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+ devicetree@vger.kernel.org
+References: <20240129174703.1175426-1-andre.draszik@linaro.org>
+ <20240129174703.1175426-7-andre.draszik@linaro.org>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20240129174703.1175426-7-andre.draszik@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Hello,
 
-The only generic interface to execute asynchronously in the BH context is
-tasklet; however, it's marked deprecated and has some design flaws such as
-the execution code accessing the tasklet item after the execution is
-complete which can lead to subtle use-after-free in certain usage scenarios
-and less-developed flush and cancel mechanisms.
 
-Mikulas Patocka recently reported that dm-crypt and dm-crypt are affected by
-the access-after-completion issue and suggested adding TASKLET_STATE_ONESHOT
-flag which selectively removes post-completion access while significantly
-limiting how the tasklet can be used in the following thread:
+On 1/29/24 17:46, André Draszik wrote:
+> On the gs101-oriole board, i2c bus 12 has various USB-related
+> controllers attached to it.
+> 
+> Note the selection of the USI protocol is intentionally left for the
+> board dts file.
+> 
+> Signed-off-by: André Draszik <andre.draszik@linaro.org>
+> Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
 
- http://lkml.kernel.org/r/82b964f0-c2c8-a2c6-5b1f-f3145dc2c8e5@redhat.com
+Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 
-Linus didn't like the approach and suggested extending workqueue to support
-execution from atomic context:
-
- http://lkml.kernel.org/r/CAHk-=wjDW53w4-YcSmgKC5RruiRLHmJ1sXeYdp_ZgVoBw=5byA@mail.gmail.com
-
-As suggested, this patchset implements BH workqueues which are like regular
-workqueues but executes work items in the BH (softirq) context and converts
-several tasklet users.
-
-- The name bh is used instead of the suggested atomic as it's more in line
-  with widely used execution context interface - local_bh_enable/disable()
-  and friends.
-
-- The system default BH workqueues - system_bh_wq and system_bh_highpri_wq -
-  are provided. As queue-wide flushing doesn't exist in tasklet, all
-  existing tasklet users should be able to use the system BH workqueues
-  without creating their own.
-
-- BH workqueues currently use tasklet to run the work items to avoid
-  priority inversions involving tasklet_hi and WQ_BH | WQ_HIGHPRI. Once all
-  tasklet users are converted, tasklet code can be removed and BH workqueues
-  can take over its softirqs.
-
-This patchset is on top of wq/for-6.9 (aae17ebb53c ("workqueue: Avoid using
-isolated cpus' timers on queue_delayed_work")) and contains the following
-eight patches.
-
- 0001-workqueue-Update-lock-debugging-code.patch
- 0002-workqueue-Factor-out-init_cpu_worker_pool.patch
- 0003-workqueue-Implement-BH-workqueues-to-eventually-repl.patch
- 0004-backtracetest-Convert-from-tasklet-to-BH-workqueue.patch
- 0005-usb-core-hcd-Convert-from-tasklet-to-BH-workqueue.patch
- 0006-net-tcp-tsq-Convert-from-tasklet-to-BH-workqueue.patch
- 0007-dm-crypt-Convert-from-tasklet-to-BH-workqueue.patch
- 0008-dm-verity-Convert-from-tasklet-to-BH-workqueue.patch
-
-0001-0003 prepare and implement BH workqueues.
-
-0004-0008 convert some tasklet users to BH workqueue. The conversions are
-relatively straightforward but are in descending order of confidence.
-
-The patchset is also available in the following git branch.
-
- git://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git wq-bh-v1
-
-diffstat follows. Thanks.
-
- Documentation/core-api/workqueue.rst |   29 ++++-
- drivers/md/dm-crypt.c                |   36 -------
- drivers/md/dm-verity-target.c        |    8 -
- drivers/md/dm-verity.h               |    2
- drivers/usb/core/hcd.c               |   23 ++--
- include/linux/usb/hcd.h              |    2
- include/linux/workqueue.h            |    9 +
- include/net/tcp.h                    |    2
- kernel/backtracetest.c               |   18 +--
- kernel/workqueue.c                   |  312 ++++++++++++++++++++++++++++++++++++++++++++++++--------------
- kernel/workqueue_internal.h          |    3
- net/ipv4/tcp.c                       |    2
- net/ipv4/tcp_output.c                |   36 +++----
- tools/workqueue/wq_dump.py           |   11 +-
- 14 files changed, 335 insertions(+), 158 deletions(-)
-
---
-tejun
+> 
+> ---
+> v2:
+> * reorder pinctrl-0 & pinctrl-names
+> * collect Reviewed-by: tags
+> ---
+>  arch/arm64/boot/dts/exynos/google/gs101.dtsi | 30 ++++++++++++++++++++
+>  1 file changed, 30 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/exynos/google/gs101.dtsi b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
+> index e1bcf490309a..9876ecae0ad8 100644
+> --- a/arch/arm64/boot/dts/exynos/google/gs101.dtsi
+> +++ b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
+> @@ -451,6 +451,36 @@ pinctrl_peric1: pinctrl@10c40000 {
+>  			interrupts = <GIC_SPI 644 IRQ_TYPE_LEVEL_HIGH 0>;
+>  		};
+>  
+> +		usi12: usi@10d500c0 {
+> +			compatible = "google,gs101-usi",
+> +				     "samsung,exynos850-usi";
+> +			reg = <0x10d500c0 0x20>;
+> +			ranges;
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +			clocks = <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_5>,
+> +				 <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_5>;
+> +			clock-names = "pclk", "ipclk";
+> +			samsung,sysreg = <&sysreg_peric1 0x1010>;
+> +			samsung,mode = <USI_V2_NONE>;
+> +			status = "disabled";
+> +
+> +			hsi2c_12: i2c@10d50000 {
+> +				compatible = "google,gs101-hsi2c",
+> +					     "samsung,exynosautov9-hsi2c";
+> +				reg = <0x10d50000 0xc0>;
+> +				interrupts = <GIC_SPI 655 IRQ_TYPE_LEVEL_HIGH 0>;
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +				pinctrl-0 = <&hsi2c12_bus>;
+> +				pinctrl-names = "default";
+> +				clocks = <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_5>,
+> +					 <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_5>;
+> +				clock-names = "hsi2c", "hsi2c_pclk";
+> +				status = "disabled";
+> +			};
+> +		};
+> +
+>  		pinctrl_hsi1: pinctrl@11840000 {
+>  			compatible = "google,gs101-pinctrl";
+>  			reg = <0x11840000 0x00001000>;
 
