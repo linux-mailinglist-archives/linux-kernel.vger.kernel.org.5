@@ -1,222 +1,246 @@
-Return-Path: <linux-kernel+bounces-44873-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44872-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1F2784285F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:49:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C15A584285D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:49:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 128961C238B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:49:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74942285CA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:49:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37FA285C62;
-	Tue, 30 Jan 2024 15:49:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BC2A86AC8;
+	Tue, 30 Jan 2024 15:49:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="C0qDyFNe"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="mfi3HOOZ"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5694D86AE8;
-	Tue, 30 Jan 2024 15:49:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.41
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706629768; cv=fail; b=sx1nhLTGht5WfAWbiDuVD6JMG5d25rH2jDqZK8/R3MTMF0AJ75r3itfcBQGV8yeNCO+fZU5wZocnKzIsIvC/OwS9XTAOmJkUOO5OkBVXZ00crz/tiMBDXTMEuLccgspsAFn8nlOwDFkwTqWyuCG1xWCkHNky+VKkSonyvsh4/DQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706629768; c=relaxed/simple;
-	bh=2/L3CMIpD2Q6WTee3CeIHz3X6PEST7CYI3j9OqQiozU=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=k7Z9CAbERyFYB9i6CopTZqjWN1ujgBewmcmVKIuDyb9FgvBoZavzGyihdWXoIbRuv6kCoXdZLnPgMmcU4P1WrshNBhX8ATbJHGLwliprye6AYKe5jzvIX7VxmE6xJDIe0DyL4nYoLB1tFMXoNGV1W87BHvJuDZ1i0nY81kzkx2A=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=C0qDyFNe; arc=fail smtp.client-ip=40.107.236.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oc/gzXyAc/D2cJ0LnZVt1Xfy+kLKIfcimLSZ8+NU6VNV8fCsd7IMG+Npi6BAHkbh86HvaDSHzY2JqfcSuvb8b9bcO/dWiBGXEouEHQ9K5OnuFK6lTI3qJj3HqFSMWWuHJQ0QrkLuUHPiSGlIw06xxyi/E8Tg6UwiUEawscERKSOGE9FttJsTaDtZrorSy6nQzo033PpPA5Szu4tkampkKkp83Umi/lXCfNCksAyYIUrK326DfWS5LecsyP0K/RteoEAAvnoDVIFLN25EySIaw5qfeS0us4JaXABvAXBj30JorVBFGH/hbJm99b2XYCAmZUw7puPYFTmkpQuAJJQEtA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5BsRx+5Ng7RgJdjezWuHPR+PBFBF/orE+c2CGbsv9hA=;
- b=Y0+TvSpAH3aZwZVk5xwCRsrrqvaWNIc1avbQeZJ1B8t/zBQcTvLtjaLYY06mUn0UjbFMz5XLTXWbfArYHz6JIUzbEOf5OT7lCzZJZuRoEW2DTlK0pEXqhAK22NdhCrEc2qpg2dnSDmXUGszWUyF681HgqAi+1Tmeh0QkZl4ZzEh8hMXhQAE/mNjJd1+qwgFngdCmBczmYOQtdvpvVTF3JiHgYx4mSkv6lAt/WQ8azcV1buWj6xRFxTByLbldQ4XpRzI+RrAVazhaexNyvC/onpbGuhwf9nFzMqyu5Jrv7+uiccox3+oiiYH0zi1eTn1VmJYncy5c7hj/md67W7Q63g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5BsRx+5Ng7RgJdjezWuHPR+PBFBF/orE+c2CGbsv9hA=;
- b=C0qDyFNe8TPABDNcq32empr29Y3EmGlWIqwtAFIHRI6FkA3G+fiC6F7TS29rLSE2Nq1YdUtaVHoN+VoN+Ezyj/afHJI3EF5jd08A3Sqb/t55rAPiI79NXQbj3bRpfl6dZd3U5/W4/lqCswsq8oTkJz+b14pw/by9EpQk2YZ0WSU=
-Received: from BN8PR07CA0002.namprd07.prod.outlook.com (2603:10b6:408:ac::15)
- by DM8PR12MB5397.namprd12.prod.outlook.com (2603:10b6:8:38::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7249.22; Tue, 30 Jan 2024 15:49:23 +0000
-Received: from BN3PEPF0000B069.namprd21.prod.outlook.com
- (2603:10b6:408:ac:cafe::e4) by BN8PR07CA0002.outlook.office365.com
- (2603:10b6:408:ac::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.22 via Frontend
- Transport; Tue, 30 Jan 2024 15:49:23 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- BN3PEPF0000B069.mail.protection.outlook.com (10.167.243.68) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7270.0 via Frontend Transport; Tue, 30 Jan 2024 15:49:23 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Tue, 30 Jan
- 2024 09:49:23 -0600
-Received: from xsjtanmays50.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
- Transport; Tue, 30 Jan 2024 09:49:22 -0600
-From: Tanmay Shah <tanmay.shah@amd.com>
-To: <andersson@kernel.org>, <mathieu.poirier@linaro.org>
-CC: <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Ben
- Levinsky" <ben.levinsky@xilinx.com>, Tarak Reddy <tarak.reddy@amd.com>,
-	"Tanmay Shah" <tanmay.shah@amd.com>
-Subject: [PATCH v5] remoteproc: Make rproc_get_by_phandle() work for clusters
-Date: Tue, 30 Jan 2024 07:48:49 -0800
-Message-ID: <20240130154849.1018666-1-tanmay.shah@amd.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 919F585C5C
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 15:49:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706629751; cv=none; b=AjUMuIQU3E7f0yocpwSvy1TrEpVaaKFgqHgoamzMz1ijJKqf9QXGRUaedYOcnhKHXfK5MffKBPzKL3EszluJX30LjwLZQOGNf/IigKn07B5SlL5PmNIpp9hv2ocJ3iO0GqPZRwA45xyDzR90tiH9FXoLxL5E3COhgJONXU+ikic=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706629751; c=relaxed/simple;
+	bh=zxQFHyd6H4G9GEuw0WgtvSA1wLWGGTDbXAzS/4EfNGI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nmT4o9s1baUgLwOFauDFMKLveDiPm3aWBSxAJB/VZz0h1s9CJOt7DSZ4Epsgjp+XrfGvoCwwdqsJRZOJoJEhm4QEre2LZNw4oYs2cpTUkz5lunMaOXctVx4Q8Hw78WtUEWYhvQJiGZfJC0VC9ZbfeDNgsHBEOQBLG2z5uecpvDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=mfi3HOOZ; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-5111e3b03dfso592286e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 07:49:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1706629747; x=1707234547; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=c+iAX+0XDAGKyg/OxoIHj98F7+KIoOryAf80+ApbDSI=;
+        b=mfi3HOOZeBaHvmJuAeKxi8NvNVNysxu3HzDaTk72U8bE4znsKhUu/HIJGlyJCvlEKU
+         gfPF8Z96puj1j+xDlyX+ShZL3hY5laWFucBOwm6HGL6zm4k3pvB+YW8ScFKlaKLJiTWk
+         sM8BD2iDXMaey6VljXyysY7b4tIFEabh0ICVv+sz03vNV8mG/dFAouDkN+d0cw83+pu9
+         uKrbPNRt2CEMOyfsy/w0M5IWK6yuotJL+5diW1SJd3PTJiUdlv5EyS++aTjbfQhVz+dN
+         CiY4skuRYlczQoldV1+5IWiroHF8Nl3JbmVMlnDNcGC8aaAkwQcTokjv07AmRaXYjC6n
+         lmZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706629747; x=1707234547;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=c+iAX+0XDAGKyg/OxoIHj98F7+KIoOryAf80+ApbDSI=;
+        b=vXv6RHly/6E0WDadJSnx62rzC+yBWTgdN2k5V4lCN/hQQS5LZwjeyC95pvEk5ru1FJ
+         5tw1SjRbI3qHIuC1KL+DjIh+NNQjmGogVTCpFAZ1tFA78Txq64oV+byBdDWUctgv2bfj
+         n2BdyiHMqlgoKFbMz28cVUAOs6ss8TSjLxAzdvluk6nFepjbs0FPOn3hhSnVjt1pBwA9
+         ZWKZRcoCL8EQLipSm8nddViSMxzAZNzvs9ZxDdkb3DunKHaXP2SBgRHrG6EJaB+OmtGf
+         1R9fNlx9KCrQj9hHLi566ERu8TKT78TRkrXLWVKWgxzmWYhnDfx1r3n59fbDrj5AZcqC
+         OCZw==
+X-Gm-Message-State: AOJu0Yyu/QTjmD+fDkg4qAVGFRZ9GosRb0ANdS4ddcPzZ6P5mzkL8tuq
+	5R9VRyXF6rV0yMgd2TJoJQHUIDZj8l4zw4t+NWWIDc9sg057NDkrCwOakLu8ZPh24kTwI+WEjzt
+	FWVL+D+/BJ0lBZr/nrz+S0nsu9ouqknIA/Ib2yw==
+X-Google-Smtp-Source: AGHT+IE8Aaq5BozdnokEQjokD/RT3HrTukjrHMTtCG2uwBHyTSoKgNcaMZilJknQTuf0dWoeasaBCIJhUzTmByVLbKo=
+X-Received: by 2002:a19:e049:0:b0:510:e09:4518 with SMTP id
+ g9-20020a19e049000000b005100e094518mr789410lfj.3.1706629747416; Tue, 30 Jan
+ 2024 07:49:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN3PEPF0000B069:EE_|DM8PR12MB5397:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7c4eadac-ab17-4353-4501-08dc21ab07fc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	z7P33WArlmURc0lD5x0jq+BPbMEwBKBPb+gmDaUKestaQ1R4CgS+IuDdJDFfpW1kudHER+K8KlGQG6u3rfi+5fNh8IZmfU9JrN1Japws2yCVLyXKfYODwt4Oe78JNHQ3vFlL8CN+rCK8VFSrhjDcRqRB6+gqzOWZDBqxotVaoNKhwZgSDRsNCwaK3o2b1XmHBjrXjlo+uRIzwxnueam6/4wWhlq+KQXH5dwYQpCeIeZF5GIpq7v93oMq7Vq2XCnf5xrf3zLTT2eaFZYSfT0ahfUli/q9D8BCvUuKfJdL3bcPrANOdRuoVEJ2z0QCptqoGCPTnK88yQTNs1R5yZzHs2W4eFq6O7UgaF0hIK7rqOSEcECdRGSPqy1AXuVLoUEo5jxaHDH9YjR4XEi3zAYrfE/+i/pL3zgQzxm0x2DzMwtsOrKE1oaaAEylJGvwuQxglvyjDumsqdxZPDKr/rC+eV/CgfCklLGOoL2b15pw9Lg4HDBSKd2yYy+ghlUodn5G3f4vJYBgFQGwa57CTLsPcyxzgl0yOzuqVO0ylXZ7k3uLHiJ6IxPn/cUlDuqiadESBb3rQBvaCkBqQ5uS9Br1EzQIHMNfw10yFCDrA78uZ0/gyzxbS0qgj9Qmzd5vuzF9lOtfdFEKVbRtk1zF3icpVxmKsBNDW+xyp0QUj/OhM+zkgu+uXfwo3UPaUDdgYkdtasuHN2B+sKQhJ75AZiztigimTfUESqzQHyzhnyF34RZ5VO3OpNS2pDa2F8VmBZMQ0sMvs/Je9zPXnc9JXe6e7g==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(346002)(396003)(39860400002)(376002)(230922051799003)(1800799012)(186009)(82310400011)(451199024)(64100799003)(46966006)(40470700004)(36840700001)(426003)(336012)(2616005)(1076003)(41300700001)(40460700003)(40480700001)(36756003)(47076005)(36860700001)(110136005)(26005)(6666004)(478600001)(83380400001)(81166007)(82740400003)(356005)(54906003)(86362001)(2906002)(5660300002)(4326008)(70206006)(316002)(44832011)(70586007)(8676002)(8936002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jan 2024 15:49:23.6396
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7c4eadac-ab17-4353-4501-08dc21ab07fc
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN3PEPF0000B069.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR12MB5397
+References: <20240127161753.114685-1-apatel@ventanamicro.com>
+ <87r0hzuw87.fsf@all.your.base.are.belong.to.us> <87le87uulb.fsf@all.your.base.are.belong.to.us>
+ <CAK9=C2UYCKUBKggtM606orH2mBu_AbTdB5-R5AP1M0t-LsEbEQ@mail.gmail.com>
+ <87cytjvybb.fsf@all.your.base.are.belong.to.us> <87ttmuq3m7.fsf@all.your.base.are.belong.to.us>
+In-Reply-To: <87ttmuq3m7.fsf@all.your.base.are.belong.to.us>
+From: Anup Patel <apatel@ventanamicro.com>
+Date: Tue, 30 Jan 2024 21:18:56 +0530
+Message-ID: <CAK9=C2UEpbd+pHAMg-AuP-fTPZVho16u69oSjOHhsR11HTwiew@mail.gmail.com>
+Subject: Re: [PATCH v12 00/25] Linux RISC-V AIA Support
+To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand <frowand.list@gmail.com>, 
+	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org, 
+	Saravana Kannan <saravanak@google.com>, Marc Zyngier <maz@kernel.org>, Anup Patel <anup@brainfault.org>, 
+	linux-kernel@vger.kernel.org, Atish Patra <atishp@atishpatra.org>, 
+	linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+	Andrew Jones <ajones@ventanamicro.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Mathieu Poirier <mathieu.poirier@linaro.org>
+On Tue, Jan 30, 2024 at 8:18=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@kernel=
+org> wrote:
+>
+> Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
+>
+> > Anup Patel <apatel@ventanamicro.com> writes:
+> >
+> >> On Tue, Jan 30, 2024 at 1:22=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@k=
+ernel.org> wrote:
+> >>>
+> >>> Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
+> >>>
+> >>> > Anup Patel <apatel@ventanamicro.com> writes:
+> >>> >
+> >>> >> The RISC-V AIA specification is ratified as-per the RISC-V interna=
+tional
+> >>> >> process. The latest ratified AIA specifcation can be found at:
+> >>> >> https://github.com/riscv/riscv-aia/releases/download/1.0/riscv-int=
+errupts-1.0.pdf
+> >>> >>
+> >>> >> At a high-level, the AIA specification adds three things:
+> >>> >> 1) AIA CSRs
+> >>> >>    - Improved local interrupt support
+> >>> >> 2) Incoming Message Signaled Interrupt Controller (IMSIC)
+> >>> >>    - Per-HART MSI controller
+> >>> >>    - Support MSI virtualization
+> >>> >>    - Support IPI along with virtualization
+> >>> >> 3) Advanced Platform-Level Interrupt Controller (APLIC)
+> >>> >>    - Wired interrupt controller
+> >>> >>    - In MSI-mode, converts wired interrupt into MSIs (i.e. MSI gen=
+erator)
+> >>> >>    - In Direct-mode, injects external interrupts directly into HAR=
+Ts
+> >>> >>
+> >>> >> For an overview of the AIA specification, refer the AIA virtualiza=
+tion
+> >>> >> talk at KVM Forum 2022:
+> >>> >> https://static.sched.com/hosted_files/kvmforum2022/a1/AIA_Virtuali=
+zation_in_KVM_RISCV_final.pdf
+> >>> >> https://www.youtube.com/watch?v=3Dr071dL8Z0yo
+> >>> >>
+> >>> >> To test this series, use QEMU v7.2 (or higher) and OpenSBI v1.2 (o=
+r higher).
+> >>> >>
+> >>> >> These patches can also be found in the riscv_aia_v12 branch at:
+> >>> >> https://github.com/avpatel/linux.git
+> >>> >>
+> >>> >> Changes since v11:
+> >>> >>  - Rebased on Linux-6.8-rc1
+> >>> >>  - Included kernel/irq related patches from "genirq, irqchip: Conv=
+ert ARM
+> >>> >>    MSI handling to per device MSI domains" series by Thomas.
+> >>> >>    (PATCH7, PATCH8, PATCH9, PATCH14, PATCH16, PATCH17, PATCH18, PA=
+TCH19,
+> >>> >>     PATCH20, PATCH21, PATCH22, PATCH23, and PATCH32 of
+> >>> >>     https://lore.kernel.org/linux-arm-kernel/20221121135653.208611=
+233@linutronix.de/)
+> >>> >>  - Updated APLIC MSI-mode driver to use the new WIRED_TO_MSI mecha=
+nism.
+> >>> >>  - Updated IMSIC driver to support per-device MSI domains for PCI =
+and
+> >>> >>    platform devices.
+> >>> >
+> >>> > Thanks for working on this, Anup! I'm still reviewing the patches.
+> >>> >
+> >>> > I'm hitting a boot hang in text patching, with this series applied =
+on
+> >>> > 6.8-rc2. IPI issues?
+> >>>
+> >>> Not text patching! One cpu spinning in smp_call_function_many_cond() =
+and
+> >>> the others are in cpu_relax(). Smells like IPI...
+> >>
+> >> I tried bootefi from U-Boot multiple times but can't reproduce the
+> >> issue you are seeing.
+> >
+> > Thanks! I can reproduce without EFI, and simpler command-line:
+> >
+> > qemu-system-riscv64 \
+> >   -bios /path/to/fw_dynamic.bin \
+> >   -kernel /path/to/Image \
+> >   -append 'earlycon console=3Dtty0 console=3DttyS0' \
+> >   -machine virt,aia=3Daplic-imsic \
+> >   -no-reboot -nodefaults -nographic \
+> >   -smp 4 \
+> >   -object rng-random,filename=3D/dev/urandom,id=3Drng0 \
+> >   -device virtio-rng-device,rng=3Drng0 \
+> >   -m 4G -chardev stdio,id=3Dchar0 -serial chardev:char0
+> >
+> > I can reproduce with your upstream riscv_aia_v12 plus the config in the
+> > gist [1], and all latest QEMU/OpenSBI:
+> >
+> > QEMU: 11be70677c70 ("Merge tag 'pull-vfio-20240129' of https://github.c=
+om/legoater/qemu into staging")
+> > OpenSBI: bb90a9ebf6d9 ("lib: sbi: Print number of debug triggers found"=
+)
+> > Linux: d9b9d6eb987f ("MAINTAINERS: Add entry for RISC-V AIA drivers")
+> >
+> > Removing ",aia=3Daplic-imsic" from the CLI above completes the boot (i.=
+e.
+> > panicking about missing root mount ;-))
+>
+> More context; The hang is during a late initcall, where an ftrace direct
+> (register_ftrace_direct()) modification is done.
+>
+> Stop machine is used to call into __ftrace_modify_call(). Then into the
+> arch specific patch_text_nosync(), where flush_icache_range() hangs in
+> flush_icache_all(). From "on_each_cpu(ipi_remote_fence_i, NULL, 1);" to
+> on_each_cpu_cond_mask() "smp_call_function_many_cond(mask, func, info,
+> scf_flags, cond_func);" which never returns from "csd_lock_wait(csd)"
+> right before the end of the function.
+>
+> Any ideas? Disabling CONFIG_HID_BPF, that does the early ftrace code
+> patching fixes the boot hang, but it does seem related to IPI...
+>
+Looks like flush_icache_all() does not use the IPIs (on_each_cpu()
+and friends) correctly.
 
-Multi-cluster remoteproc designs typically have the following DT
-declaration:
+On other hand, the flush_icache_mm() does the right thing by
+doing local flush on the current CPU and IPI based flush on other
+CPUs.
 
-        remoteproc-cluster {
-                compatible = "soc,remoteproc-cluster";
+Can you try the following patch ?
 
-                core0: core0 {
-                        compatible = "soc,remoteproc-core"
-                        memory-region;
-                        sram;
-                };
+diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
+index 55a34f2020a8..a3dfbe4de832 100644
+--- a/arch/riscv/mm/cacheflush.c
++++ b/arch/riscv/mm/cacheflush.c
+@@ -19,12 +19,18 @@ static void ipi_remote_fence_i(void *info)
 
-                core1: core1 {
-                        compatible = "soc,remoteproc-core"
-                        memory-region;
-                        sram;
-                }
-        };
-
-A driver exists for the cluster rather than the individual cores
-themselves so that operation mode and HW specific configurations
-applicable to the cluster can be made.
-
-Because the driver exists at the cluster level and not the individual
-core level, function rproc_get_by_phandle() fails to return the
-remoteproc associated with the phandled it is called for.
-
-This patch enhances rproc_get_by_phandle() by looking for the cluster's
-driver when the driver for the immediate remoteproc's parent is not
-found.
-
-Reported-by: Ben Levinsky <ben.levinsky@xilinx.com>
-Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Co-developed-by: Tarak Reddy <tarak.reddy@amd.com>
-Signed-off-by: Tarak Reddy <tarak.reddy@amd.com>
-Co-developed-by: Tanmay Shah <tanmay.shah@amd.com>
-Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
----
- drivers/remoteproc/remoteproc_core.c | 29 ++++++++++++++++++++++++++--
- 1 file changed, 27 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-index 695cce218e8c..f276956f2c5c 100644
---- a/drivers/remoteproc/remoteproc_core.c
-+++ b/drivers/remoteproc/remoteproc_core.c
-@@ -33,6 +33,7 @@
- #include <linux/idr.h>
- #include <linux/elf.h>
- #include <linux/crc32.h>
-+#include <linux/of_platform.h>
- #include <linux/of_reserved_mem.h>
- #include <linux/virtio_ids.h>
- #include <linux/virtio_ring.h>
-@@ -2112,6 +2113,7 @@ EXPORT_SYMBOL(rproc_detach);
- struct rproc *rproc_get_by_phandle(phandle phandle)
+ void flush_icache_all(void)
  {
- 	struct rproc *rproc = NULL, *r;
-+	struct device_driver *driver;
- 	struct device_node *np;
- 
- 	np = of_find_node_by_phandle(phandle);
-@@ -2122,7 +2124,26 @@ struct rproc *rproc_get_by_phandle(phandle phandle)
- 	list_for_each_entry_rcu(r, &rproc_list, node) {
- 		if (r->dev.parent && device_match_of_node(r->dev.parent, np)) {
- 			/* prevent underlying implementation from being removed */
--			if (!try_module_get(r->dev.parent->driver->owner)) {
++    cpumask_t others;
 +
-+			/*
-+			 * If the remoteproc's parent has a driver, the
-+			 * remoteproc is not part of a cluster and we can use
-+			 * that driver.
-+			 */
-+			driver = r->dev.parent->driver;
+     local_flush_icache_all();
+
++    cpumask_andnot(&others, cpu_online_mask, cpumask_of(smp_processor_id()=
+));
++    if (cpumask_empty(&others))
++        return;
 +
-+			/*
-+			 * If the remoteproc's parent does not have a driver,
-+			 * look for the driver associated with the cluster.
-+			 */
-+			if (!driver) {
-+				if (r->dev.parent->parent)
-+					driver = r->dev.parent->parent->driver;
-+				if (!driver)
-+					break;
-+			}
-+
-+			if (!try_module_get(driver->owner)) {
- 				dev_err(&r->dev, "can't get owner\n");
- 				break;
- 			}
-@@ -2533,7 +2554,11 @@ EXPORT_SYMBOL(rproc_free);
-  */
- void rproc_put(struct rproc *rproc)
- {
--	module_put(rproc->dev.parent->driver->owner);
-+	if (rproc->dev.parent->driver)
-+		module_put(rproc->dev.parent->driver->owner);
-+	else
-+		module_put(rproc->dev.parent->parent->driver->owner);
-+
- 	put_device(&rproc->dev);
+     if (IS_ENABLED(CONFIG_RISCV_SBI) && !riscv_use_ipi_for_rfence())
+-        sbi_remote_fence_i(NULL);
++        sbi_remote_fence_i(&others);
+     else
+-        on_each_cpu(ipi_remote_fence_i, NULL, 1);
++        on_each_cpu_mask(&others, ipi_remote_fence_i, NULL, 1);
  }
- EXPORT_SYMBOL(rproc_put);
+ EXPORT_SYMBOL(flush_icache_all);
 
-base-commit: 99f59b148871dadb9104366e3d25b120a97f897b
--- 
-2.25.1
 
+Regards,
+Anup
 
