@@ -1,248 +1,183 @@
-Return-Path: <linux-kernel+bounces-45097-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45098-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89099842BB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:23:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD918842BB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:23:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ACFFE1C23C6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:23:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F05CD1C24A25
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:23:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C2CF15A4BE;
-	Tue, 30 Jan 2024 18:21:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gtaOnWp0"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEEDC157E74;
+	Tue, 30 Jan 2024 18:23:05 +0000 (UTC)
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DD3515A4A0;
-	Tue, 30 Jan 2024 18:21:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EDDC15696D;
+	Tue, 30 Jan 2024 18:22:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706638908; cv=none; b=ErIAaTk9vYStOIu4MZLNwBM7sf1oeaKjuFKvIFduWXOr1tHCk4hJxFB+TIQYRYViJBvvZylG/sBEuSFl47vnce2tr4wlBOQqrvsCYKCmJBf5N9hOVu1QUf6dLzuPSBc1TcgozplMy3oqHwqPL0Ry9Kk3E4KzTV11ojNRoT0zjVI=
+	t=1706638985; cv=none; b=PxGa2nnejFr9QzTk5ivYAPTzaBtCPlVPiokZvXYhmSuaaJu1LG5H8rCQByCqG7dWEUqc35JOtkRQdljS/Ff/AQr52gwOE+MCZdDLmGhmImBcSNgFxiGQ/oYM1C2UfKVsXidDz7LFWdgYiFgMMXPKWKGu0VbiEz5+o9SMdRUFkWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706638908; c=relaxed/simple;
-	bh=aJBlbBzLk35xluhYDDqKkPd7JghGWbRpRxQd2L86Bv0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=lVflgGaNFTsZH1L8HY8scOu7jl65TpVbjZeC/f3PGg/TE0+TtOtU1z0dZGAGSQDyebdQOA79PtiZoytR6dLkh6darVe1Hu6BZO7+zPhMTUrwpAV9lM9VgdwfQMJl2e95nhs7XzFhnBmsLKHLuD5zQj3zLwxiKpra0gvLdHwzqBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gtaOnWp0; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40e913e3f03so47211825e9.3;
-        Tue, 30 Jan 2024 10:21:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706638905; x=1707243705; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TCgr8fam0PZwcsY4iS5GHvHyFYZQiFYZ6P//7dIPCFI=;
-        b=gtaOnWp01fk5DF9qfQY2jX5n5WF3xOpa3asi6FPf5S1OIFEext8qhCi4i+KNYv2IUA
-         h234GUCfDVl5tL7KjdhTxFZGE+QyekuptAFiW5fdn9ByFJ7lov2f6giMC4Q/+Jc7zdo/
-         7pnrLnMY128+PJn1pRu4eqIfg9y1CkSDPecSGgfsc5RQDn8ObfE4dVeyMfR+GwCK4+mn
-         JNKCmzT1GkLnTxQfBOErWhC7DjneLXvJkPY+CTbxRr8EqnVLxVSc7O4R+BqF8h5DB3X+
-         h4bJO8Mr0GkkgjqSt8frcfM3TzRTtKNcKLdLdohekbK7MjHMRL/w1OphWHjfNDEcBxg4
-         DLmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706638905; x=1707243705;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TCgr8fam0PZwcsY4iS5GHvHyFYZQiFYZ6P//7dIPCFI=;
-        b=RJmoo6VyVI9kbnXKC2xefhrvTluzrqVzvxrpdAKQU6Otn0WJhoYdCP8rV7RrJNja+I
-         Ym35PWw6G+VL5elMohswhSsTu6+o8ARdcFAooZ83qNZp+a+nMGmsZFh1pXJWTCnKB3ml
-         EzXOq/doYhMvL7oQorZ9QQ0PrNxf7NWhz40KV4fWsTBweyG8F3kUi6/nhNNe8z4lrjBd
-         xWQA7NTFGLWd9D24jMpAQ9tenF6/6ZwYzxTazatBRRk7uJRsWSeMUkbD1swoEbYp4RII
-         78QNubfLk0wbmolEayT+kjRQwXRL+8Bt53ZLm/DPdzOipJ675C2YfNdU2kRTSyUnVro8
-         g6pg==
-X-Gm-Message-State: AOJu0YzCqDhdhREywxwwinUWGouRo6yNBXrOMOkNAep5Yk44FVkbW0IF
-	FDkZwiTE9UrqNxjNVy6Q0XaJM/PMvI1/arym6IdwAvgFG2duBh9PP8xaN+ZuDh+xtQ==
-X-Google-Smtp-Source: AGHT+IEaGClGMCGaMap75kEkKgVtQ/kO1vzv7boK9OwuWCkBIx23u3amrCwLk/Im7kbuzD8yEt8yYQ==
-X-Received: by 2002:a5d:4048:0:b0:33a:f431:3489 with SMTP id w8-20020a5d4048000000b0033af4313489mr4002337wrp.56.1706638904893;
-        Tue, 30 Jan 2024 10:21:44 -0800 (PST)
-Received: from [172.30.32.188] ([2001:8f8:183b:50fb::d35])
-        by smtp.gmail.com with ESMTPSA id u18-20020a5d4352000000b003392b1ebf5csm11374254wrr.59.2024.01.30.10.21.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 10:21:44 -0800 (PST)
-From: Alexey Charkov <alchark@gmail.com>
-Date: Tue, 30 Jan 2024 22:21:16 +0400
-Subject: [PATCH v2 4/4] arm64: dts: rockchip: Add further granularity in
- RK3588 CPU OPPs
+	s=arc-20240116; t=1706638985; c=relaxed/simple;
+	bh=7WQHyByr3bWwXliRpuJSVJb6fnBv4p9vOXnA1S0acDg=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=Ej6+74BquawyGEahZbz8LkxmjkHLlIyKTdb/4ViEix4sG2WXLhw8bg+17wx2omj2Jx8mokO45CP6R7VZ9XWYdgtJGrJ7ixsOBVU4e4HlncaApJU8R7d7Z/X6bnq9PB9a3zgsqNDVnP1isyeaqRMiBb5Knl0/9r/dXbc58xQuxmY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.105] (178.176.75.73) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Tue, 30 Jan
+ 2024 21:22:49 +0300
+Subject: Re: [PATCH net-next v4 07/15] net: ravb: Move reference clock
+ enable/disable on runtime PM APIs
+To: claudiu beznea <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
+	<geert+renesas@glider.be>
+CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Claudiu Beznea
+	<claudiu.beznea.uj@bp.renesas.com>
+References: <20240123125829.3970325-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240123125829.3970325-8-claudiu.beznea.uj@bp.renesas.com>
+ <ec3f5d8a-ac38-1134-93a3-c4ceb8b944e0@omp.ru>
+ <6307da2b-aadf-4cd7-85e3-3032153544b5@tuxon.dev>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <9a6b25e5-af9f-2ee9-c587-d67fe49525b1@omp.ru>
+Date: Tue, 30 Jan 2024 21:22:49 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <6307da2b-aadf-4cd7-85e3-3032153544b5@tuxon.dev>
 Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240130-rk-dts-additions-v2-4-c6222c4c78df@gmail.com>
-References: <20240130-rk-dts-additions-v2-0-c6222c4c78df@gmail.com>
-In-Reply-To: <20240130-rk-dts-additions-v2-0-c6222c4c78df@gmail.com>
-To: Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>, 
- Dragan Simic <dsimic@manjaro.org>, Viresh Kumar <viresh.kumar@linaro.org>, 
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Alexey Charkov <alchark@gmail.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1706638888; l=4728;
- i=alchark@gmail.com; s=20240125; h=from:subject:message-id;
- bh=aJBlbBzLk35xluhYDDqKkPd7JghGWbRpRxQd2L86Bv0=;
- b=Wcw/w/Kf9x9YIWkZW/nCSxBwgCUVj9Q/t9fnjkvjyk30DG0la7ddy2b/FyVw3hAsYmpAVW46t
- JPdQ6dguXM1BgvVzctgFPWbpC0MaBl+PXUuTfTqB36+9z6OOdVTsKPy
-X-Developer-Key: i=alchark@gmail.com; a=ed25519;
- pk=xRO8VeD3J5jhwe0za0aHt2LDumQr8cm0Ls7Jz3YGimk=
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 01/30/2024 17:18:56
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 183058 [Jan 30 2024]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.75.73 in (user)
+ dbl.spamhaus.org}
+X-KSE-AntiSpam-Info:
+	git.kernel.org:7.1.1;omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.75.73
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 01/30/2024 17:23:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 1/30/2024 2:18:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-This introduces additional OPPs that share the same voltage as
-another OPP already present in the .dtsi but with lower frequency.
+On 1/29/24 4:53 PM, claudiu beznea wrote:
 
-The idea is to try and limit system throughput more gradually upon
-reaching the throttling condition for workloads that are close to
-sustainable power already, thus avoiding needless performance loss.
+[...]
 
-My limited synthetic benchmarking [1] showed around 3.8% performance
-benefit when these are in place, other things equal (not meant to
-be comprehensive though).
+>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>
+>>> Reference clock could be or not part of the power domain. If it is part of
+>>
+>>    Could be or not be, perhaps?
+>>
+>>> the power domain, the power domain takes care of propertly setting it. In
+>>
+>>    Properly. :-)
+>>
+>>> case it is not part of the power domain and full runtime PM support is
+>>> available in driver the clock will not be propertly disabled/enabled at
+>>> runtime. For this, keep the prepare/unprepare operations in the driver's
+>>> probe()/remove() functions and move the enable/disable in runtime PM
+>>> functions.
+>>>
+>>> Along with it, the other clock request operations were moved close to
+>>> reference clock request and prepare to have all the clock requests
+>>> specific code grouped together.
+>>>
+>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>> [...]
+>>
+>>> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+>>> index 9fc0e39e33c2..4673cc2faec0 100644
+>>> --- a/drivers/net/ethernet/renesas/ravb_main.c
+>>> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+>> [...]
+>>> @@ -3060,21 +3058,27 @@ static int ravb_resume(struct device *dev)
+>>>  	return ret;
+>>>  }
+>>>  
+>>> -static int ravb_runtime_nop(struct device *dev)
+>>> +static int ravb_runtime_suspend(struct device *dev)
+>>>  {
+>>> -	/* Runtime PM callback shared between ->runtime_suspend()
+>>> -	 * and ->runtime_resume(). Simply returns success.
+>>> -	 *
+>>> -	 * This driver re-initializes all registers after
+>>> -	 * pm_runtime_get_sync() anyway so there is no need
+>>> -	 * to save and restore registers here.
+>>> -	 */
+>>
+>>    I want to pull out the dummy {ravb|sh_eth}_runtime_nop() funcs --
+>> they don't seem to be necessary... Then we can implement your clock
 
-[1] https://lore.kernel.org/linux-rockchip/CABjd4YxqarUCbZ-a2XLe3TWJ-qjphGkyq=wDnctnEhdoSdPPpw@mail.gmail.com/T/#me92aa0ee25e6eeb1d1501ce85f5af4e58b3b13c5
+   The need to have the dummy RPM suspend/resume methods is gone since:
 
-Signed-off-by: Alexey Charkov <alchark@gmail.com>
----
- arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 87 +++++++++++++++++++++++++++++++
- 1 file changed, 87 insertions(+)
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=63d00be69348fda431ae59aba6af268a5cf5058e
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-index af8b932a04c1..506676985a7e 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-@@ -360,6 +360,21 @@ cluster0_opp_table: opp-table-cluster0 {
- 		compatible = "operating-points-v2";
- 		opp-shared;
- 
-+		opp-408000000 {
-+			opp-hz = /bits/ 64 <408000000>;
-+			opp-microvolt = <675000 675000 950000>;
-+			clock-latency-ns = <40000>;
-+		};
-+		opp-600000000 {
-+			opp-hz = /bits/ 64 <600000000>;
-+			opp-microvolt = <675000 675000 950000>;
-+			clock-latency-ns = <40000>;
-+		};
-+		opp-816000000 {
-+			opp-hz = /bits/ 64 <816000000>;
-+			opp-microvolt = <675000 675000 950000>;
-+			clock-latency-ns = <40000>;
-+		};
- 		opp-1008000000 {
- 			opp-hz = /bits/ 64 <1008000000>;
- 			opp-microvolt = <675000 675000 950000>;
-@@ -392,6 +407,27 @@ cluster1_opp_table: opp-table-cluster1 {
- 		compatible = "operating-points-v2";
- 		opp-shared;
- 
-+		opp-408000000 {
-+			opp-hz = /bits/ 64 <408000000>;
-+			opp-microvolt = <675000 675000 1000000>;
-+			clock-latency-ns = <40000>;
-+			opp-suspend;
-+		};
-+		opp-600000000 {
-+			opp-hz = /bits/ 64 <600000000>;
-+			opp-microvolt = <675000 675000 1000000>;
-+			clock-latency-ns = <40000>;
-+		};
-+		opp-816000000 {
-+			opp-hz = /bits/ 64 <816000000>;
-+			opp-microvolt = <675000 675000 1000000>;
-+			clock-latency-ns = <40000>;
-+		};
-+		opp-1008000000 {
-+			opp-hz = /bits/ 64 <1008000000>;
-+			opp-microvolt = <675000 675000 1000000>;
-+			clock-latency-ns = <40000>;
-+		};
- 		opp-1200000000 {
- 			opp-hz = /bits/ 64 <1200000000>;
- 			opp-microvolt = <675000 675000 1000000>;
-@@ -422,6 +458,21 @@ opp-2208000000 {
- 			opp-microvolt = <987500 987500 1000000>;
- 			clock-latency-ns = <40000>;
- 		};
-+		opp-2256000000 {
-+			opp-hz = /bits/ 64 <2256000000>;
-+			opp-microvolt = <1000000 1000000 1000000>;
-+			clock-latency-ns = <40000>;
-+		};
-+		opp-2304000000 {
-+			opp-hz = /bits/ 64 <2304000000>;
-+			opp-microvolt = <1000000 1000000 1000000>;
-+			clock-latency-ns = <40000>;
-+		};
-+		opp-2352000000 {
-+			opp-hz = /bits/ 64 <2352000000>;
-+			opp-microvolt = <1000000 1000000 1000000>;
-+			clock-latency-ns = <40000>;
-+		};
- 		opp-2400000000 {
- 			opp-hz = /bits/ 64 <2400000000>;
- 			opp-microvolt = <1000000 1000000 1000000>;
-@@ -433,6 +484,27 @@ cluster2_opp_table: opp-table-cluster2 {
- 		compatible = "operating-points-v2";
- 		opp-shared;
- 
-+		opp-408000000 {
-+			opp-hz = /bits/ 64 <408000000>;
-+			opp-microvolt = <675000 675000 1000000>;
-+			clock-latency-ns = <40000>;
-+			opp-suspend;
-+		};
-+		opp-600000000 {
-+			opp-hz = /bits/ 64 <600000000>;
-+			opp-microvolt = <675000 675000 1000000>;
-+			clock-latency-ns = <40000>;
-+		};
-+		opp-816000000 {
-+			opp-hz = /bits/ 64 <816000000>;
-+			opp-microvolt = <675000 675000 1000000>;
-+			clock-latency-ns = <40000>;
-+		};
-+		opp-1008000000 {
-+			opp-hz = /bits/ 64 <1008000000>;
-+			opp-microvolt = <675000 675000 1000000>;
-+			clock-latency-ns = <40000>;
-+		};
- 		opp-1200000000 {
- 			opp-hz = /bits/ 64 <1200000000>;
- 			opp-microvolt = <675000 675000 1000000>;
-@@ -463,6 +535,21 @@ opp-2208000000 {
- 			opp-microvolt = <987500 987500 1000000>;
- 			clock-latency-ns = <40000>;
- 		};
-+		opp-2256000000 {
-+			opp-hz = /bits/ 64 <2256000000>;
-+			opp-microvolt = <1000000 1000000 1000000>;
-+			clock-latency-ns = <40000>;
-+		};
-+		opp-2304000000 {
-+			opp-hz = /bits/ 64 <2304000000>;
-+			opp-microvolt = <1000000 1000000 1000000>;
-+			clock-latency-ns = <40000>;
-+		};
-+		opp-2352000000 {
-+			opp-hz = /bits/ 64 <2352000000>;
-+			opp-microvolt = <1000000 1000000 1000000>;
-+			clock-latency-ns = <40000>;
-+		};
- 		opp-2400000000 {
- 			opp-hz = /bits/ 64 <2400000000>;
- 			opp-microvolt = <1000000 1000000 1000000>;
+>> dance with freshly added ravb_runtime_{suspend|resume}()...
+> 
+> For this series, does it worth having a patch that removes ravb runtime
+> suspend/resume ops to then add a new patch that add it it again?
 
--- 
-2.43.0
+    Probably not, indeed... I just wanted to have 2 symmetric patches
+for sh_eth and ravb removing the dummy methods...
 
+> I can do it but it I see no reason in doing it in this series...
+> 
+> The dummy functions were there and the commit description explains the
+> reason they were updated.
+
+   Yet you don't say a word about the big comment in ravb_runtime_nop()
+that you remove. This comment doesn't really make much sense as this
+driver currently has the RPM calls and ndo_{open|stop}() methods decoupled...
+This stuff was copied from sh_eth.c verbatim -- I clearly overlooked it when
+prepping this driver for upstream... :-<
+   You can keep this patch as is (but not its description!) or have a separate
+patch that removes just the big comment not making much sense, both options
+would be fine by me. I will take care of sh_eth.c myself (not really sure
+whether you have targets having this IP)...
+
+> Thank you,
+> Claudiu Beznea
+
+MBR, Sergey
 
