@@ -1,154 +1,174 @@
-Return-Path: <linux-kernel+bounces-44679-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9BD18425D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:11:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2035A842626
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:25:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 747F0292921
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:11:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D01B528B4BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:24:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79D7D6BB26;
-	Tue, 30 Jan 2024 13:10:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9ED46BB36;
+	Tue, 30 Jan 2024 13:24:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="EQI8WiiL";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="WqzEqxZp";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="EQI8WiiL";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="WqzEqxZp"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uZaWbzdN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 475F36DCFB;
-	Tue, 30 Jan 2024 13:10:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E2D066B51
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 13:24:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706620242; cv=none; b=GtPC1DC88//ArBMwj4ZYg9hfRLcgS2jZs2e4+Kww+0kewJzZqms2bO+jNtB8WW4VlkKNA96T7JLv/8mQTQ7MNV/kDUoPChWZ+T5IZNU5fYAKTVyhrJLIEbjVM37tIRpLYgQexkNdsZXlJyItmLS+oTk/Wy9cKmW0Rjc2KGbdS9A=
+	t=1706621094; cv=none; b=Myx5g+DHeaYiiFp+/o6S9BsxiO1TvM5e0ricdNZfKfXw7c/CBDytZ9rqKTBiCDFlFmtCP27eyfnN0ystq2V15Q9ZEHZY4olppTM4pt1sV4SJxf/8Wijm7CkrLhdIVp8MGxAJjcHhFEXzi1xTqsFkoBFIw+ayPLkLgRcgrNeohrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706620242; c=relaxed/simple;
-	bh=IdFaHE5Ms+GEigRHXWpqWfKUWOfSZEiD+SvC+PEroMo=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=b9X8EH5NBaglE2mZEl8qk5WtXjezOvQ+WmGf9TxGtzxaYIGARVUGEvw/f25+vDLo+cKEfZH0TR/lv5c2aaszzwMjTTWcy7xu2uXzP28VzCzc1eUMI38zeK5lUyG+7L+ZEMlR1/4vw2xCvlbdIj6gClydImIGL7B4rPqVt5lIiNY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=EQI8WiiL; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=WqzEqxZp; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=EQI8WiiL; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=WqzEqxZp; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 666241F84B;
-	Tue, 30 Jan 2024 13:10:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1706620239; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sLVoZRDpJbfql9mrOgoOatUxVxP6A8SBP4rtVDrSFDQ=;
-	b=EQI8WiiLfAOqqLSP3EPB52W08BdAhRiKNI05dlBSVYJyByLZiAcTaVf1r7lcR4cu4b6Szg
-	23yu0rnzfzg035uF3J22Upqy+8Gsj61cGlXkd6RE6AcPXPDFyRD+q5fuzKLAnEdKHLia0t
-	YWYeLct41T2jAB7h2JmhzSXLfd9ySCM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1706620239;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sLVoZRDpJbfql9mrOgoOatUxVxP6A8SBP4rtVDrSFDQ=;
-	b=WqzEqxZpAHni5awvhZrQtIDycV2PsVJqug47hL9oeb09oQd9NoZ1FFLDnpN0KiX/KAeQMn
-	JVtC5e8zkBSQwSBg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1706620239; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sLVoZRDpJbfql9mrOgoOatUxVxP6A8SBP4rtVDrSFDQ=;
-	b=EQI8WiiLfAOqqLSP3EPB52W08BdAhRiKNI05dlBSVYJyByLZiAcTaVf1r7lcR4cu4b6Szg
-	23yu0rnzfzg035uF3J22Upqy+8Gsj61cGlXkd6RE6AcPXPDFyRD+q5fuzKLAnEdKHLia0t
-	YWYeLct41T2jAB7h2JmhzSXLfd9ySCM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1706620239;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sLVoZRDpJbfql9mrOgoOatUxVxP6A8SBP4rtVDrSFDQ=;
-	b=WqzEqxZpAHni5awvhZrQtIDycV2PsVJqug47hL9oeb09oQd9NoZ1FFLDnpN0KiX/KAeQMn
-	JVtC5e8zkBSQwSBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 157BC12FF7;
-	Tue, 30 Jan 2024 13:10:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id LUTEA0/1uGXHWAAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Tue, 30 Jan 2024 13:10:39 +0000
-Date: Tue, 30 Jan 2024 14:10:38 +0100
-Message-ID: <87y1c72chd.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Chhayly Leang <clw.leang@gmail.com>
-Cc: Stefan Binding <sbinding@opensource.cirrus.com>,
-	Takashi Iwai <tiwai@suse.com>,
-	patches@opensource.cirrus.com,
-	James Schulman <james.schulman@cirrus.com>,
-	David Rhodes <david.rhodes@cirrus.com>,
-	Richard Fitzgerald <rf@opensource.cirrus.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ALSA: hda: cs35l41: Support ASUS Zenbook UM3402YAR
-In-Reply-To: <20240126080912.87422-1-clw.leang@gmail.com>
-References: <20240126080912.87422-1-clw.leang@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	s=arc-20240116; t=1706621094; c=relaxed/simple;
+	bh=u2/EtGgKHfzM35W18xHX1KvyJ0d2ZoEG7yO9aWLn5E0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uyGDN8N8U3Bx0y01MX9Pqvtjs5XorL5+A+AnF+yHS1XnKY3/f1Z8R8rGDKGjnll7Q2aDIUJwtIg6cU9z9K32NxSF0Erh6fXswSs2ccqo1aiJJZExcUNcZTu0exGU+zlKm+JOoXfZijF3BweMKDLvUTlpl4U1/eHgewUbrhPFa70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uZaWbzdN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DC81C433F1;
+	Tue, 30 Jan 2024 13:24:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706621094;
+	bh=u2/EtGgKHfzM35W18xHX1KvyJ0d2ZoEG7yO9aWLn5E0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uZaWbzdNChbyXG+ahuq7EytUvzRdZGDvruqZR11EZP6KTpKu3lWN/qaKKHbKMmAac
+	 edrLPNAUV3JEw7LNJZYEtY41NODu+IuPpTTB+MXn0rcibGvRZZ6TSVZU/X1ajBNnK2
+	 yaVvQBdAQhPeoy2yJmanm0awSjpJSBJYJeMrGWBfDCsOmppHRgQBv927XnZtM62RLp
+	 H2qFTf/lKAOkPMRb027X03Vzmx9K2okqjDdgglg+LiVXFAEsmXtiA84jM77PTSXlvf
+	 fNrB4cxOyLO8nYqGR9iC8qKkkFJ35Eorggm/AWzX+Sd6Yb6jWtf6l2lS9tl6KuIveF
+	 M4SW6Z8UDW+ig==
+Date: Tue, 30 Jan 2024 21:12:03 +0800
+From: Jisheng Zhang <jszhang@kernel.org>
+To: Nick Kossifidis <mick@ics.forth.gr>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org, Matteo Croce <mcroce@microsoft.com>,
+	kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH 2/3] riscv: optimized memmove
+Message-ID: <Zbj1o6VAsk8Tn2ab@xhacker>
+References: <20240128111013.2450-1-jszhang@kernel.org>
+ <20240128111013.2450-3-jszhang@kernel.org>
+ <fa36b871-43d7-413c-82a2-0ecc0ebce9b4@ics.forth.gr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=EQI8WiiL;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=WqzEqxZp
-X-Spamd-Result: default: False [-2.16 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BAYES_HAM(-2.85)[99.38%];
-	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[10];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	 FREEMAIL_TO(0.00)[gmail.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:97:from];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 666241F84B
-X-Spam-Level: 
-X-Spam-Score: -2.16
-X-Spam-Flag: NO
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fa36b871-43d7-413c-82a2-0ecc0ebce9b4@ics.forth.gr>
 
-On Fri, 26 Jan 2024 09:09:12 +0100,
-Chhayly Leang wrote:
+On Tue, Jan 30, 2024 at 01:39:10PM +0200, Nick Kossifidis wrote:
+> On 1/28/24 13:10, Jisheng Zhang wrote:
+> > From: Matteo Croce <mcroce@microsoft.com>
+> > 
+> > When the destination buffer is before the source one, or when the
+> > buffers doesn't overlap, it's safe to use memcpy() instead, which is
+> > optimized to use a bigger data size possible.
+> > 
+> > Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 > 
-> Adds sound support for ASUS Zenbook UM3402YAR with missing DSD
+> I'd expect to have memmove handle both fw/bw copying and then memcpy being
+> an alias to memmove, to also take care when regions overlap and avoid
+> undefined behavior.
+
+Hi Nick,
+
+Here is somthing from man memcpy:
+
+"void *memcpy(void dest[restrict .n], const void src[restrict .n],
+                    size_t n);
+
+The  memcpy()  function copies n bytes from memory area src to memory area dest.
+The memory areas must not overlap.  Use memmove(3) if the memory areas do  over‐
+lap."
+
+IMHO, the "restrict" implies that there's no overlap. If overlap
+happens, the manual doesn't say what will happen.
+
+From another side, I have a concern: currently, other arch don't have
+this alias behavior, IIUC(at least, per my understanding of arm and arm64
+memcpy implementations)they just copy forward. I want to keep similar behavior
+for riscv.
+
+So I want to hear more before going towards alias-memcpy-to-memmove direction.
+
+Thanks
 > 
-> Signed-off-by: Chhayly Leang <clw.leang@gmail.com>
-
-Applied now.  Thanks.
-
-
-Takashi
+> 
+> > --- a/arch/riscv/lib/string.c
+> > +++ b/arch/riscv/lib/string.c
+> > @@ -119,3 +119,28 @@ void *memcpy(void *dest, const void *src, size_t count) __weak __alias(__memcpy)
+> >   EXPORT_SYMBOL(memcpy);
+> >   void *__pi_memcpy(void *dest, const void *src, size_t count) __alias(__memcpy);
+> >   void *__pi___memcpy(void *dest, const void *src, size_t count) __alias(__memcpy);
+> > +
+> > +/*
+> > + * Simply check if the buffer overlaps an call memcpy() in case,
+> > + * otherwise do a simple one byte at time backward copy.
+> > + */
+> > +void *__memmove(void *dest, const void *src, size_t count)
+> > +{
+> > +	if (dest < src || src + count <= dest)
+> > +		return __memcpy(dest, src, count);
+> > +
+> > +	if (dest > src) {
+> > +		const char *s = src + count;
+> > +		char *tmp = dest + count;
+> > +
+> > +		while (count--)
+> > +			*--tmp = *--s;
+> > +	}
+> > +	return dest;
+> > +}
+> > +EXPORT_SYMBOL(__memmove);
+> > +
+> 
+> Here is an approach for the backwards case to get things started...
+> 
+> static void
+> copy_bw(void *dst_ptr, const void *src_ptr, size_t len)
+> {
+> 	union const_data src = { .as_bytes = src_ptr + len };
+> 	union data dst = { .as_bytes = dst_ptr + len };
+> 	size_t remaining = len;
+> 	size_t src_offt = 0;
+> 
+> 	if (len < 2 * WORD_SIZE)
+> 		goto trailing_bw;
+> 
+> 	for(; dst.as_uptr & WORD_MASK; remaining--)
+> 		*--dst.as_bytes = *--src.as_bytes;
+> 
+> 	src_offt = src.as_uptr & WORD_MASK;
+> 	if (!src_offt) {
+> 		for (; remaining >= WORD_SIZE; remaining -= WORD_SIZE)
+> 			*--dst.as_ulong = *--src.as_ulong;
+> 	} else {
+> 		unsigned long cur, prev;
+> 		src.as_bytes -= src_offt;
+> 		for (; remaining >= WORD_SIZE; remaining -= WORD_SIZE) {
+> 			cur = *src.as_ulong;
+> 			prev = *--src.as_ulong;
+> 			*--dst.as_ulong = cur << ((WORD_SIZE - src_offt) * 8) |
+> 					  prev >> (src_offt * 8);
+> 		}
+> 		src.as_bytes += src_offt;
+> 	}
+> 
+>  trailing_bw:
+> 	while (remaining-- > 0)
+> 		*--dst.as_bytes = *--src.as_bytes;
+> }
+> 
+> Regards,
+> Nick
 
