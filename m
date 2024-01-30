@@ -1,175 +1,119 @@
-Return-Path: <linux-kernel+bounces-44792-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70A9B842777
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:02:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D16284277D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:03:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 028AEB25C55
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:02:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A211E1F210E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:03:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76AEF7CF3E;
-	Tue, 30 Jan 2024 15:02:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76C4E7CF1B;
+	Tue, 30 Jan 2024 15:03:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="b3TbaF8Z"
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+	dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b="Njl6Vr7N"
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F283C60ED9
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 15:02:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04A7D811E2
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 15:03:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706626928; cv=none; b=rrrbOlY+HCUM8WomIy2TYTNs9S5zSfqx3/KqlUIbpMvKwNPN449pQITPvA6OlpMRShS1yj9A7zkckUmpu7es3voN7LkvFN4y+42C97UygFwhDpKyb5W0ILh58D5zBh3whtQyxeSkmihUsDDilyxBigJErB4gVrxJpFgCZcprpKQ=
+	t=1706626984; cv=none; b=q/SsLomWip/j8yfU/xELXAGoYR6gusLLCHMmycEOm5f60Sq/AwUfhHRb+ntCjxZmlNC/llQnvquaShV3NdJVxv5vxIaaOXTV/e+KTiSCewyi2aiuZ/crFsXvVGS8z5bLwNM/ZPwedbNxEWcoDUQ01QtWvCJnMWEwDcxuB0SCQXI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706626928; c=relaxed/simple;
-	bh=xU89VXeOgdeVGO8ifM+y778gFYd1HxXjIaxrSD2so0U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=V7ynSzdZcC1sF3I/yAd1y/Shg4+iBZUpIAtK+oN4Ds8RKMHBmFOOQ2jV7WglrgriSxaxdx68tbZDUohaspBaMQ723GE5pXVs6N8CbTqwuObC8qq2847XNqxNLayeHLp0V2dJF9Y+wDeNbC4zQ+Sn6gD0CNZLv6qXt1lnpPULOAI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=b3TbaF8Z; arc=none smtp.client-ip=209.85.160.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-42a9c21f9ecso12766901cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 07:02:06 -0800 (PST)
+	s=arc-20240116; t=1706626984; c=relaxed/simple;
+	bh=e66UCmOx/jtyr6B4zzKxaiG4yuzE3yyOFRm+iNo6W9k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DNDMnNYUhcCGJGwbi+jEGVm6JxE+llomsLxABcw9fAcfLS0VurXd8bfX9199s7oVdh/38AWzJbZDYKP3EZtFUhzl0hYZNNE7L7ZA5sQSIEk5SlwrUzlHApSg3Lb3l6f1dRM6yOVzQQhRDzeS1yudQpviMmhXwgR5qi2qnYG5whQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com; spf=pass smtp.mailfrom=9elements.com; dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b=Njl6Vr7N; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=9elements.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-33af4b34e2cso1011670f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 07:03:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706626926; x=1707231726; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=MJ+gflKj48xYGvVtJjeC3SYWWp6ebgTpGb8GhCSAMwk=;
-        b=b3TbaF8ZtcGUUthTboJaZqv9R/A5e1fatSjJMg+ywDvd4IuKT3BPR19Ixy30zRtLpa
-         uaA/IIY45ZbTXnrGJph8CkdTrDC8afLYsrUGSyyZUuf1KPyeFfNWecyOM7BpFimRy/2B
-         R0BC3iaK+qad6AKRQm1KDrvl7LZKX+NwvGxG4ntgbJ3URz+wheDt/5ChOUcA+pn/avwY
-         RyJi9Q2AS9rO/KAp1PwnegvHqJWnZW9I1Y3+eXvI4xGpz6ZDZ1He5RU6mGLPW9NajTds
-         TFU8Ffyu9gac84ll2o7HWda7el+85V/azO5chfWihG+KK+NWrrio/RA3JXyn1WxVDrCa
-         kZBQ==
+        d=9elements.com; s=google; t=1706626981; x=1707231781; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YqgeOjLTrp275fXzSVIM2wvWsQ14s/UmjFxWLGZ8WQw=;
+        b=Njl6Vr7Nnc5i1YdAovMd6Q+tCyghoWem9DEDi1jVCKcevJPhENWi6lM01pvNZU4VZ2
+         H8hJYhg++7/iwjORbMA9Q4raTBgeIahHIFtHZYLhmzeKzskw+VP8AEkPPukGgYAERKqR
+         4mXe8RmEHMHMGUWcFSMx67MMJy636+qflTJWTr33+KXqC7NWKdByZiLHOloVtl+fG3iZ
+         JhsVpmeTNfYIvoyzO2O7cV4C4m+ej+dotmfNPwvQ1VovLRCdYJ6rz/GIvS6LM6+xJsaJ
+         NNahtqHZGlp5YwU23LnIoyuKvGxRzyPWnsINu5kHSzmvaK50UlkeoIwO/qmsaQmDnQmp
+         rD6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706626926; x=1707231726;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1706626981; x=1707231781;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=MJ+gflKj48xYGvVtJjeC3SYWWp6ebgTpGb8GhCSAMwk=;
-        b=skhlyb7xnHS4tE+8BvZ5FOR4veobw9kv+Wpub9KDoBW8392SlnJMK/uhUoOWvj+iJM
-         2xKcw8ztqS//mcFpA1JiPukL2NNxe8ijVXTokdZFOzFqZBPf4YuO9id7NJAlSb0egL5c
-         aMADUEQv4MRINxp/rpXjoYKloccjAoPLIqpGHd+mEHFyOxyGCA0dLXk4d3ZXbrKm1fcQ
-         mLiyK2+dQUFAmTtXUBIGAPwzhIJW0CI5gvQHdsbOgOx/FdrQkoTpMHNdcyj5u8fNoh5S
-         h9bV+qLILAAF5i5jPMzW2sT/edIiZTQIQS5fhr+aSIiQzfM/eW/EfJf30b1HbPNfMjBP
-         iCoA==
-X-Gm-Message-State: AOJu0Yy44+OZawsE0mkRcMfNdoQlJWS7E3CsHZBe7LqNUJElFjw6aIaO
-	CoKRWSjTU1pe0WHKsTaZQM/XWUlH/G0iAcH/pBTJsjsYRQn04E6naIC7m6kf96ilE9qHAZ6AzN0
-	W1SEZfMpeBP07+HWnezMvZ/k1roUprdBc7om8IQ==
-X-Google-Smtp-Source: AGHT+IHXg+32TKi5xcy+oIQz9oqU8rWRsJ2Fi4QgcBOniIyeMqG+ulFYU5PWZSXQm342RKVoD9XX/PYp3pIdBrV6//c=
-X-Received: by 2002:ac8:4e86:0:b0:42a:b809:7f95 with SMTP id
- 6-20020ac84e86000000b0042ab8097f95mr1371826qtp.8.1706626925869; Tue, 30 Jan
- 2024 07:02:05 -0800 (PST)
+        bh=YqgeOjLTrp275fXzSVIM2wvWsQ14s/UmjFxWLGZ8WQw=;
+        b=luFfvKhgnVu0j0iy8fb7DWd8LSk8+cqZrqNcCLpWJZdghVj/clZYxCgXwMcxaLt6Br
+         N1VZUPZfZ+GoIBFFqyatxrDNgtbZZXNRTYCHUZa3E8MBtSHU+dskhQjkGq5EPyM4xpAq
+         B73FsOSayyClpVZvh9XVLNs6Q8lnTL3exCk5BNc/HjRbF+xBWJjYI+UeyVaxThEUGOcy
+         vZ3RF+INXQVz7k7jE3WauRrZgOWZ5z8jfOuTYCsU2sL8hOTj0meAuafIeUOfM2avn5YY
+         7lLwZIrr6NEA3N6dXvZ3BpUgzQaaS4jJ8sxDxRrOfa2liqJ3ffrjo4J1N52S2TXopRC9
+         Y0Hg==
+X-Gm-Message-State: AOJu0YwIDujS9IHtPDM6Yluah8a6Q7JxtqIn0lh/FOIJZDLowLFXIXJ4
+	c3GQQtSHVj6UfKnAsdueMAnLpr7iVVcuQXi9a6pdHGWKBF75q5oHaxAvGaS8S7Y=
+X-Google-Smtp-Source: AGHT+IFo+3io9ZclStyElATZa5w58n+SAeQR84TgpCIKUN+3SM6EpTEAtZob0myXjD8k4EQcBeqsAg==
+X-Received: by 2002:adf:f851:0:b0:336:c79d:7504 with SMTP id d17-20020adff851000000b00336c79d7504mr1933342wrq.2.1706626980965;
+        Tue, 30 Jan 2024 07:03:00 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVgO+p/Ww+pfMBpy2xKoWUuxucwFbV6RFbhYbCrLIxA5rYhv/NFEf8PNNpeSIRgQpgg/SJDagPAhsXgbPd9QWzibhp42mMYNxNFRpGbtx6ZnfOwfRs90nj6agBukBpa2/qrQNpWVBl1Weyof/hUJ4YPHMJEAnQsj7bW4YTDhQrEsD23QhA3jBvOBYGLvKwiHxaDogLmPAvjlFs+HydV
+Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
+        by smtp.gmail.com with ESMTPSA id u17-20020adff891000000b0033ae55db108sm8395287wrp.20.2024.01.30.07.03.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jan 2024 07:03:00 -0800 (PST)
+From: Naresh Solanki <naresh.solanki@9elements.com>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>
+Cc: mazziesaccount@gmail.com,
+	Patrick Rudolph <patrick.rudolph@9elements.com>,
+	Naresh Solanki <naresh.solanki@9elements.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] regulator (max5970): Fix IRQ handler
+Date: Tue, 30 Jan 2024 20:32:56 +0530
+Message-ID: <20240130150257.3643657-1-naresh.solanki@9elements.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240129211912.3068411-1-peter.griffin@linaro.org>
- <20240129211912.3068411-2-peter.griffin@linaro.org> <b1798b8a-5794-4c79-a1d3-50259fa3ba81@roeck-us.net>
-In-Reply-To: <b1798b8a-5794-4c79-a1d3-50259fa3ba81@roeck-us.net>
-From: Peter Griffin <peter.griffin@linaro.org>
-Date: Tue, 30 Jan 2024 15:01:54 +0000
-Message-ID: <CADrjBPrr5t-ZbYH-agsfniztBCtf15UMMmUGTNuHTX3dm=Rkxw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] soc: samsung: exynos-pmu: Add regmap support for
- SoCs that protect PMU regs
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: arnd@arndb.de, krzysztof.kozlowski@linaro.org, wim@linux-watchdog.org, 
-	alim.akhtar@samsung.com, jaewon02.kim@samsung.com, semen.protsenko@linaro.org, 
-	kernel-team@android.com, tudor.ambarus@linaro.org, andre.draszik@linaro.org, 
-	saravanak@google.com, willmcvicker@google.com, linux-fsd@tesla.com, 
-	linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hi Guenter,
+From: Patrick Rudolph <patrick.rudolph@9elements.com>
 
-Thanks for the feedback.
+The max5970 datasheet gives the impression that IRQ status bits must
+be cleared by writing a one to set bits, as those are marked with 'R/C',
+however tests showed that a zero must be written.
 
-On Tue, 30 Jan 2024 at 06:26, Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 1/29/24 13:19, Peter Griffin wrote:
-> > Some Exynos based SoCs like Tensor gs101 protect the PMU registers for
-> > security hardening reasons so that they are only accessible in el3 via an
-> > SMC call.
-> >
-> > As most Exynos drivers that need to write PMU registers currently obtain a
-> > regmap via syscon (phys, pinctrl, watchdog). Support for the above usecase
-> > is implemented in this driver using a custom regmap similar to syscon to
-> > handle the SMC call. Platforms that don't secure PMU registers, get a mmio
-> > regmap like before. As regmaps abstract out the underlying register access
-> > changes to the leaf drivers are minimal.
-> >
-> > A new API exynos_get_pmu_regmap_by_phandle() is provided for leaf drivers
-> > that currently use syscon_regmap_lookup_by_phandle(). This also handles
-> > deferred probing.
-> >
-> > Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
-> > ---
-> [ ... ]
->
-> > +/**
-> > + * exynos_get_pmu_regmap
-> > + * Find the pmureg previously configured in probe() and return regmap property.
-> > + * Return: regmap if found or error if not found.
-> > + */
-> >   struct regmap *exynos_get_pmu_regmap(void)
-> >   {
-> >       struct device_node *np = of_find_matching_node(NULL,
-> >                                                     exynos_pmu_of_device_ids);
-> >       if (np)
-> > -             return syscon_node_to_regmap(np);
-> > +             return exynos_get_pmu_regmap_by_phandle(np, NULL);
-> >       return ERR_PTR(-ENODEV);
-> >   }
-> >   EXPORT_SYMBOL_GPL(exynos_get_pmu_regmap);
-> >
-> > +/**
-> > + * exynos_get_pmu_regmap_by_phandle
-> > + * Find the pmureg previously configured in probe() and return regmap property.
-> > + * Return: regmap if found or error if not found.
-> > + *
-> > + * @np: Pointer to device's Device Tree node
-> > + * @property: Device Tree property name which references the pmu
-> > + */
-> > +struct regmap *exynos_get_pmu_regmap_by_phandle(struct device_node *np,
-> > +                                             const char *property)
-> > +{
-> > +     struct device *dev;
-> > +     struct exynos_pmu_context *ctx;
-> > +     struct device_node *pmu_np;
-> > +
-> > +     if (property)
-> > +             pmu_np = of_parse_phandle(np, property, 0);
-> > +     else
-> > +             pmu_np = np;
-> > +
-> > +     if (!pmu_np)
-> > +             return ERR_PTR(-ENODEV);
-> > +
-> > +     dev = driver_find_device_by_of_node(&exynos_pmu_driver.driver,
-> > +                                         (void *)pmu_np);
-> > +     of_node_put(pmu_np);
-> > +     if (!dev)
-> > +             return ERR_PTR(-EPROBE_DEFER);
-> > +
-> > +     ctx = dev_get_drvdata(dev);
-> > +
-> > +     return ctx->pmureg;
-> > +}
-> > +EXPORT_SYMBOL_GPL(exynos_get_pmu_regmap_by_phandle);
-> > +
->
-> I think there should be a detailed comment explaining why the complexity
-> is necessary instead of just returning pmu_context->pmureg.
+Fixes an IRQ storm as the interrupt handler actually clears the IRQ
+status bits.
 
-Ok, I'll add a detailed comment for v3.
+Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
+---
+ drivers/regulator/max5970-regulator.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
+diff --git a/drivers/regulator/max5970-regulator.c b/drivers/regulator/max5970-regulator.c
+index bc88a40a88d4..830a1c4cd705 100644
+--- a/drivers/regulator/max5970-regulator.c
++++ b/drivers/regulator/max5970-regulator.c
+@@ -392,7 +392,7 @@ static int max597x_regmap_read_clear(struct regmap *map, unsigned int reg,
+ 		return ret;
+ 
+ 	if (*val)
+-		return regmap_write(map, reg, *val);
++		return regmap_write(map, reg, 0);
+ 
+ 	return 0;
+ }
 
-Peter
+base-commit: 861c0981648f5b64c86fd028ee622096eb7af05a
+-- 
+2.42.0
+
 
