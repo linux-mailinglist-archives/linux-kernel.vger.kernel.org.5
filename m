@@ -1,122 +1,123 @@
-Return-Path: <linux-kernel+bounces-44253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44257-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 053BB841F5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:26:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 804F1841F73
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:28:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98F041F2257B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:26:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30DCF1F2525B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:28:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88F426086B;
-	Tue, 30 Jan 2024 09:25:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACD5560868;
+	Tue, 30 Jan 2024 09:28:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="usqM2Erd"
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="CAJAYaog"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D50E538DEC
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:25:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C653605BE;
+	Tue, 30 Jan 2024 09:28:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706606754; cv=none; b=mU3Kwug3QtL3iL0eRDzNLwMY1oHmW1qL8PyrrU0Q+6SPQLvORjXRe6NO+gR43kiFOhsO/afrSoapyYFcJ7KryVXIxmdVXeKhHHdRX2z0X+lgdXcAkXf3ypxu2MgmyHOXM3sUAVavCVjuv0Hc2LBw6kGALlY8unPXsTL0X5iG1bU=
+	t=1706606887; cv=none; b=i5lTBulUTtyO/LhyoyoWIi+JLt18JeEJr77G5Xe5zEaQnZhFFI8NRFlP4uJl2Ui4C4M0Wt3mo2iwWSgmzAd72VFnw++DwuS50f3VNcNhDyYNj1mZn0gcEYwVMXyxuPQXYC/VHFHx/nIEFokyaFI1xIqbPVWWFzufRshMylyLLw0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706606754; c=relaxed/simple;
-	bh=SDrIhhk0216kuinfVjYExBnLEatSwxttoaR1lucHHbQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YAux4r9Qs9E7hgpgFnoEEMhaQZebyhUmq+HMZSduEr5cZSxH4RephmHi6RUPSqUtpLlZ/fH3T3HOVBn4xpO9fkR0TtgqWuh5GCmdsT/XiESf6931MvlrZTgMy+EdmOCsYVDW2P1KJ91bLbU8N6Zt0fvfQK4azffzlTw7OLV3CTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=usqM2Erd; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <d5f27642-e3e2-c5c9-f9d8-a688512ce945@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706606749;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RSk7it6b1JMh823m6ptl66Jh5MU45iWziHAMy2DNJmA=;
-	b=usqM2Erdea00X8HzNmACoAbCZnm5HDokXtXhSQv93VoOKGqRQmjhulO7Qm5tXIJioBb77K
-	X/au/eifMwJTdv6qjZiGAQ/vGDjqQZnXf4koQw7QhnQx9yEuRve1G1dMB4z5SOo1P9M4ox
-	02JkUv6XSszcfGxXCzoq/Dmmi6Y6A0U=
-Date: Tue, 30 Jan 2024 17:25:41 +0800
+	s=arc-20240116; t=1706606887; c=relaxed/simple;
+	bh=WeXsrjerVgdjp7ERsnWmrusKzZmU1eEbSH9QDZQMrwo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PCLivti3F77qlZTbNpmgrgaV76ASA4PXGuqXHblssPQQysbAAFLMmARQEtN0bSSwhDIGj8ejDedoABgWqZSaLNzgC8gX0OsJJ2yt9134WoXASP/0RcEkf3d+YulYEW6Rt4Ie/qo9i3eL9y8s4wwqO9dN4C028W1iWPTkkEh8/e4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=CAJAYaog; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=wBVJH31eVDzBpyupvBp7B4u8sfC8jD1DSOL/7C0GLE4=; b=CAJAYaogKroU2lJyjJipR7b8uy
+	+6k0mduJVPIEKPyCwBjAt72D44vvkyqqgwx/LuZV9D66NjKAIOEZqy04A3PSqNZawfNP5oiAx6Sk4
+	DuztLAxmu8Cjt/01yLc+BuMEBDb/T0XhppzZVslMM5vVy+0QD68VAnOl1U+4N2E+WjIPGlhCYsq/1
+	//v9869QKVkEJQ6lX6Y7ieG6OCziOncVZsVdAtQ1lwDzwS0oLQki0brLtUkNQL3Mce9N4LVnBCMyX
+	vg5NXQJDrsGxZ3rxYTz5psJXGH61lSehIaDitqzKVOyC45Db1jkwmiLDUMT0M65RYreibsYpRKRSi
+	WTA0Za9w==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:60964)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rUkP8-0001Vq-02;
+	Tue, 30 Jan 2024 09:27:42 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rUkP1-0005OV-T1; Tue, 30 Jan 2024 09:27:35 +0000
+Date: Tue, 30 Jan 2024 09:27:35 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Choong Yong Liang <yong.liang.choong@linux.intel.com>
+Cc: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+	David E Box <david.e.box@linux.intel.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Mark Gross <markgross@kernel.org>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <Jose.Abreu@synopsys.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Andrew Halaney <ahalaney@redhat.com>,
+	Simon Horman <simon.horman@corigine.com>,
+	Serge Semin <fancer.lancer@gmail.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
+	bpf@vger.kernel.org, Voon Wei Feng <weifeng.voon@intel.com>,
+	Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+	Lai Peter Jun Ann <jun.ann.lai@intel.com>,
+	Abdul Rahim Faizal <faizal.abdul.rahim@intel.com>
+Subject: Re: [PATCH net-next v4 01/11] net: phylink: publish ethtool link
+ modes that supported and advertised
+Message-ID: <ZbjBB81+Jh5uTqnz@shell.armlinux.org.uk>
+References: <20240129130253.1400707-1-yong.liang.choong@linux.intel.com>
+ <20240129130253.1400707-2-yong.liang.choong@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] mm/mmap: use SZ_{8M, 128M} helper macro
-Content-Language: en-US
-To: Mike Rapoport <rppt@kernel.org>
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240126085905.2835513-1-yajun.deng@linux.dev>
- <Zbi9OyG9kcldGyJ1@kernel.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yajun Deng <yajun.deng@linux.dev>
-In-Reply-To: <Zbi9OyG9kcldGyJ1@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240129130253.1400707-2-yong.liang.choong@linux.intel.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
+On Mon, Jan 29, 2024 at 09:02:43PM +0800, Choong Yong Liang wrote:
+> Adding the allow_switch_interface flag to publish all the ethtool
+> link modes that can be supported and advertised.
+> 
+> This will allow the interface switching based on different ethtool
+> link modes.
 
-On 2024/1/30 17:11, Mike Rapoport wrote:
-> On Fri, Jan 26, 2024 at 04:59:05PM +0800, Yajun Deng wrote:
->> Use SZ_{8M, 128M} macro intead of the number in init_user_reserve and
->> reserve_mem_notifier.
->>
->> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
->> ---
->>   mm/mmap.c | 8 ++++----
->>   1 file changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/mm/mmap.c b/mm/mmap.c
->> index 476de5daf598..f90924b2a6d2 100644
->> --- a/mm/mmap.c
->> +++ b/mm/mmap.c
->> @@ -3845,7 +3845,7 @@ static int init_user_reserve(void)
->>   
->>   	free_kbytes = K(global_zone_page_state(NR_FREE_PAGES));
->>   
->> -	sysctl_user_reserve_kbytes = min(free_kbytes / 32, 1UL << 17);
->> +	sysctl_user_reserve_kbytes = min(free_kbytes / 32, SZ_128M);
-> (1UL << 17) != SZ_128M
-I am sorry for this, I didn't realize that the unit was kbyte.
->
->>   	return 0;
->>   }
->>   subsys_initcall(init_user_reserve);
->> @@ -3866,7 +3866,7 @@ static int init_admin_reserve(void)
->>   
->>   	free_kbytes = K(global_zone_page_state(NR_FREE_PAGES));
->>   
->> -	sysctl_admin_reserve_kbytes = min(free_kbytes / 32, 1UL << 13);
->> +	sysctl_admin_reserve_kbytes = min(free_kbytes / 32, SZ_8M);
->>   	return 0;
->>   }
->>   subsys_initcall(init_admin_reserve);
->> @@ -3898,12 +3898,12 @@ static int reserve_mem_notifier(struct notifier_block *nb,
->>   	case MEM_ONLINE:
->>   		/* Default max is 128MB. Leave alone if modified by operator. */
->>   		tmp = sysctl_user_reserve_kbytes;
->> -		if (0 < tmp && tmp < (1UL << 17))
->> +		if (tmp > 0 && tmp < SZ_128M)
->>   			init_user_reserve();
->>   
->>   		/* Default max is 8MB.  Leave alone if modified by operator. */
->>   		tmp = sysctl_admin_reserve_kbytes;
->> -		if (0 < tmp && tmp < (1UL << 13))
->> +		if (tmp > 0 && tmp < SZ_8M)
-> (1UL << 13) != SZ_8M
->
->>   			init_admin_reserve();
->>   
->>   		break;
->> -- 
->> 2.25.1
->>
->>
+I don't think you need this at all. You seem to be suggesting that you
+have a PHY which switches between different interface modes on its host
+interface. We already support several PHYs with this capability.
+
+Generic support for this was added, and you need the PHY driver to
+fill in phydev->possible_interfaces so phylink knows which interface
+modes the PHY can switch between.
+
+Instead, you are modifying the legacy path, which eventually I want
+to get rid of.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
