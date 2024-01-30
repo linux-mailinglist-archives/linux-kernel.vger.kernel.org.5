@@ -1,115 +1,134 @@
-Return-Path: <linux-kernel+bounces-45045-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45046-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D814842AF6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:30:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D242842AFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:30:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F94C1C25DFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:30:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 381942870FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:30:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3894612BF03;
-	Tue, 30 Jan 2024 17:30:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5301512BF07;
+	Tue, 30 Jan 2024 17:30:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A7T8YvSe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PdJcxLPq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68B68128386;
-	Tue, 30 Jan 2024 17:30:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F5B01292D0;
+	Tue, 30 Jan 2024 17:30:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706635822; cv=none; b=uARTK/4zp1SyExbpjOASRSUuRoKM/nslL9KHB6cZZgDqDeTJXUoic24HUgYzeufA/TnPi2kj3pwtYcXzBbviVF0VdfIshooWYNYAON73/uNm7NYkOpAO3ZPVoAXSOnEQPokrKXk/TGVG3mP6OqQf/kY5wwuU2lyhMZ+bHJqEI4E=
+	t=1706635838; cv=none; b=b4c8fX4eJUQsSV2+LIH4Z5v4MougtnfaWZ6FvhNpTgin1F8FDBozIJOf/cAqTDU/P4Q91P9onR8hWR/w+VoKXaaGYE7lmiuiWRA6CAinf7rOAstwb1QP9Ryr879l/MjP+e282UiT8dONSIc4+ntuwjBI7/H1JHqJoyYVx0CdcxU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706635822; c=relaxed/simple;
-	bh=B0eFt1/iq1Q7kXHqs4cpK2Jx0vshTUBlv/sAKuFh1zY=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=Y1C+p3jrnJxGM+tNq8SNTS8M5Vs2/6w/bnRQHI7GX88INVG+ytQZfmiqdoC69jueLad1g2hsrYcZkba8bo7c4oXJ7ksA0fgsT7qxu0KPhywOb44t8pg2Cin0THZSC/VoromoC+IIidKSp/MVNpCE4gpP5jHX01DW8ogm0XmW6hA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A7T8YvSe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 461FCC433F1;
-	Tue, 30 Jan 2024 17:30:18 +0000 (UTC)
+	s=arc-20240116; t=1706635838; c=relaxed/simple;
+	bh=K5H8lNqf0NXGTNqIiI7ApohUf+7hqkgP4snlcKiOH60=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nUbCEoKwC+8FS/h6VTXqXy8iUgg+A45a83xArmIRwo8ryd+GL/LhYpu2YN7EwR5a8cpHidUKbtBHaSD4eUzg2EWXI0lEeOZhLydY+AuWXawMYC14/UqY30pSpSTgG84TZmHxuzs93lPMNpXeCW3wYb5bvWpaObRDW8omKvjd3G4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PdJcxLPq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D756C433C7;
+	Tue, 30 Jan 2024 17:30:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706635821;
-	bh=B0eFt1/iq1Q7kXHqs4cpK2Jx0vshTUBlv/sAKuFh1zY=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=A7T8YvSe6a/Uvc78h9y2l6LhBJRdJGTRVInE0cZN7k7I4vVCTLW5EFjS0NBiHDOa7
-	 x0kat5UwDrJW1vaTWLwU0MqrDJQTzDoePiY21lRirxLHoGEG8cxNMSV8jp0lZLvau0
-	 F/o98R7oFi9BY+md2KclDk8jAUy3MmkmIdtRgVb3xHWoYfUonolDcOpLCFiZdyWg5G
-	 /jFjeh+zCgBZoYYD3rB2hU/Cl6QHbsViSizk8kRK4l9/EFcfM2bWQtk3dAaKVGZCSU
-	 bRvinlDL3FMsgcth228saf9CNotJhF2xZGwjT2SnQ6dt3eClGPPGOuq01QZw4xtqNT
-	 1fazf7r6yGmEQ==
+	s=k20201202; t=1706635837;
+	bh=K5H8lNqf0NXGTNqIiI7ApohUf+7hqkgP4snlcKiOH60=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PdJcxLPqq73ugEiNpNePLGiZ7CyNDUCTKUpZplS17Q6QmEFfRsX5GwKm83LblhCiP
+	 MpHDAidJL7L5yQHwiBU5S7m/9xuexadiRgPPxaKYA0c2mD5QKB2uGIFK+97jH5EZzY
+	 W56bZPHSGAb/+tSQyjI6kYdN4YEDRE5wdRl6qNiuQ0TLu26mEAbxsp+Wj6InUnbnxr
+	 bDz7a9E5slyllDjibOaqKsBnjx6Qus6n4VljMfNqXPo7emE2G3/EZfapEhK6kpIdwR
+	 SG2L3uCsNPt3HWBXhVH7uRVdOUQiA/EvVnU3Ol9pYZEcDofYtp6dkcwGe0l5w9CESm
+	 utJLxAXMmkdDw==
+Date: Tue, 30 Jan 2024 17:30:32 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Vineeth Karumanchi <vineeth.karumanchi@amd.com>
+Cc: nicolas.ferre@microchip.com, claudiu.beznea@tuxon.dev,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	linux@armlinux.org.uk, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	git@amd.com
+Subject: Re: [PATCH net-next 2/3] dt-bindings: net: cdns,macb: Add
+ wol-arp-packet property
+Message-ID: <20240130-smartness-relish-d7f13adcb18d@spud>
+References: <20240130104845.3995341-1-vineeth.karumanchi@amd.com>
+ <20240130104845.3995341-3-vineeth.karumanchi@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="EQFIjccQL367rY1c"
+Content-Disposition: inline
+In-Reply-To: <20240130104845.3995341-3-vineeth.karumanchi@amd.com>
+
+
+--EQFIjccQL367rY1c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 30 Jan 2024 19:30:16 +0200
-Message-Id: <CYS7WMFLXNE1.35OBTKTONKNX3@suppilovahvero>
-Cc: "Jiang, Dave" <dave.jiang@intel.com>, "linux-integrity@vger.kernel.org"
- <linux-integrity@vger.kernel.org>, "linux-cxl@vger.kernel.org"
- <linux-cxl@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "Williams, Dan J"
- <dan.j.williams@intel.com>, "keyrings@vger.kernel.org"
- <keyrings@vger.kernel.org>, "linux-security-module@vger.kernel.org"
- <linux-security-module@vger.kernel.org>, "nvdimm@lists.linux.dev"
- <nvdimm@lists.linux.dev>
-Subject: Re: [PATCH] KEYS: encrypted: Add check for strsep
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Jarkko Sakkinen" <jarkko@kernel.org>, "Verma, Vishal L"
- <vishal.l.verma@intel.com>, "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
- "paul@paul-moore.com" <paul@paul-moore.com>, "dhowells@redhat.com"
- <dhowells@redhat.com>, "yaelt@google.com" <yaelt@google.com>,
- "serge@hallyn.com" <serge@hallyn.com>, "nichen@iscas.ac.cn"
- <nichen@iscas.ac.cn>, "sumit.garg@linaro.org" <sumit.garg@linaro.org>,
- "jmorris@namei.org" <jmorris@namei.org>
-X-Mailer: aerc 0.15.2
-References: <20231108073627.1063464-1-nichen@iscas.ac.cn>
- <4d3465b48b9c5a87deb385b15bf5125fc1704019.camel@intel.com>
- <e3275c0cfe21d75e0d71ea3fc24a31252efc9ad6.camel@linux.ibm.com>
- <e3b1a5e532ed86e674385abc4812c5a774f851d4.camel@intel.com>
- <49c48e3e96bf0f5ebef14e7328cc8a6ca6380e08.camel@linux.ibm.com>
- <50c2fa781e3266ee8151afdef5a8659d63ca952e.camel@intel.com>
- <CYS7QMYS8XAJ.2QPI3MS5KXK8E@suppilovahvero>
-In-Reply-To: <CYS7QMYS8XAJ.2QPI3MS5KXK8E@suppilovahvero>
 
-On Tue Jan 30, 2024 at 7:22 PM EET, Jarkko Sakkinen wrote:
-> On Wed Jan 24, 2024 at 11:10 PM EET, Verma, Vishal L wrote:
-> > On Wed, 2024-01-24 at 15:40 -0500, Mimi Zohar wrote:
-> > > On Wed, 2024-01-24 at 20:10 +0000, Verma, Vishal L wrote:
-> > > > >=20
-> > > > Ah, thanks for confirming! Would you like me to send a revert patch=
- or
-> > > > will you do it?
-> > >=20
-> > > Revert "KEYS: encrypted: Add check for strsep"
-> > > =C2=A0=C2=A0=C2=A0=20
-> > > This reverts commit b4af096b5df5dd131ab796c79cedc7069d8f4882.
-> > > =C2=A0=C2=A0=C2=A0=20
-> > > New encrypted keys are created either from kernel-generated random
-> > > numbers or user-provided decrypted data.=C2=A0 Revert the change requ=
-iring
-> > > user-provided decrypted data.
-> > >=20
-> > >=20
-> > > Can I add your Reported-by?
-> >
-> > Yes that works, Thank you.
->
-> This went totally wrong IMHO.
->
-> Priority should be to locate and fix the bug not revert useful stuff
-> when a bug is found that has limited scope.
+On Tue, Jan 30, 2024 at 04:18:44PM +0530, Vineeth Karumanchi wrote:
+> "wol-arp-packet" property enables WOL with ARP packet.
+> It is an extension to "magic-packet for WOL.
 
-By guidelines here the commit is also a bug fix and reverting
-such commit means seeding a bug to the mainline. Also the klog
-message alone is a bug fix here. So also by book it really has
-to come back as it was already commit because we cannot
-knowingly mount bugs to the mainline, right?
+If it is an extension to "magic-packet" why does it not depend on
+"magic-packet"? Are there systems that would only support the magic arp
+packet but a regular magic packet?
 
-BR, Jarkko
+>=20
+> Signed-off-by: Vineeth Karumanchi <vineeth.karumanchi@amd.com>
+> ---
+> 7c4a1d0cfdc1 net: macb: make magic-packet property generic
+> which added magic-property support and wol-arp-packet addition
+> is similar extension.
+> ---
+>  Documentation/devicetree/bindings/net/cdns,macb.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/net/cdns,macb.yaml b/Docum=
+entation/devicetree/bindings/net/cdns,macb.yaml
+> index bf8894a0257e..4bea177e85bc 100644
+> --- a/Documentation/devicetree/bindings/net/cdns,macb.yaml
+> +++ b/Documentation/devicetree/bindings/net/cdns,macb.yaml
+> @@ -144,6 +144,11 @@ patternProperties:
+>          description:
+>            Indicates that the hardware supports waking up via magic packe=
+t.
+> =20
+> +      wol-arp-packet:
+
+Bikeshedding perhaps, but why not call it "magic-arp-packet" if it has
+the same function as the other property here?
+
+Thanks,
+Conor.
+
+> +        type: boolean
+> +        description:
+> +          Indicates that the hardware supports waking up via ARP packet.
+> +
+>      unevaluatedProperties: false
+> =20
+>  required:
+> --=20
+> 2.34.1
+>=20
+
+--EQFIjccQL367rY1c
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbkyOAAKCRB4tDGHoIJi
+0oo5AP9+8f3eTTzNNIIo3eaheucJyON7brBcr27iDEngORZqpwEAvUO2xK7EO7Ig
+NRYYPZUGISKVyN/0Pf/kMbZSS0/ltwk=
+=dpDt
+-----END PGP SIGNATURE-----
+
+--EQFIjccQL367rY1c--
 
