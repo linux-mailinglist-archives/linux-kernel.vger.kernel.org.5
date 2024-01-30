@@ -1,279 +1,179 @@
-Return-Path: <linux-kernel+bounces-45487-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3765884315D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 00:37:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3243C843165
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 00:38:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A49421F23B91
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:37:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE69C2879B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:38:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D13E79DB1;
-	Tue, 30 Jan 2024 23:37:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E73B7F463;
+	Tue, 30 Jan 2024 23:37:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="qpXHPa3G"
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iGO7OyFc"
+Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com [209.85.221.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57631339AD
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 23:37:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BBC679947;
+	Tue, 30 Jan 2024 23:37:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706657846; cv=none; b=SOtGzXq0DKsL7AG87MkpCfFBwI9U9FmfPlzsVE9BfpFVTlMUr0z8aQ0osvlfMrAO3ZvpTQYqvxJ8xPsFN368PFAUO2GYdcc24mLOzZViQ4BH3z0SNj0MQeZdqpp1XQ4iJelEMUqLXGytp4UbAi46XFE/LPmfaL6vPWL+bqgfZtA=
+	t=1706657868; cv=none; b=eHGrhD6siARqraoqoXHUgNNirsot9gYHFbRHrEZ8ef9bjpQMat90Ou2jkboufn7bACuCJtku8ECboPqfCPfIOvIWCJ6Jf91KyHAJpRKceHdjDAPyEfqKwv+00Bm8iCYahJn0ur0RCVZEzE+BpTGj7b44702Bsjj/u6gy6DzOF3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706657846; c=relaxed/simple;
-	bh=nj26O4j2yRbE2IBzvkDQYVUr6PtJaGsOK/JobG7JKCA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HsWqRq0huhErgWCw0EsTmFxcbU0OlF+pN0TuiFIzns+/zJ6Yg/AqYrC7yWvD+6vPxtNKI++6kOQLYe4H2jDTiuKKSo+qCuzoY8f/vtComHhlkjAkEB63JQASD7wd7gCzFRczL+ybuIWGY7w+Wsjo/4yexNZcAXFmpa/JUkdQdpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=qpXHPa3G; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6de24201aa6so1955882b3a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 15:37:24 -0800 (PST)
+	s=arc-20240116; t=1706657868; c=relaxed/simple;
+	bh=5d0Rdm3ZZCAJql7eb29HYdgGbUh6X6aK/alnR6Wd/TQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=A51asJ/pa8Ro3zoApHFeij71kHPJJgYNzOZpSr+HrY9EUIWevQ2Iq1dmNIz4Gzu0fAZSXulHL32iJ5AB4PLvdvMnn2Fwy+ajoWrkvTV2GmCwWmqf3+BynarsgBptbzvr8UM1w0SZLUISEVYZiaA42Z1fLHckEdSH+E240oMo6y4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iGO7OyFc; arc=none smtp.client-ip=209.85.221.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-4bd84b96feeso1043666e0c.1;
+        Tue, 30 Jan 2024 15:37:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1706657843; x=1707262643; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=N/JCHM9AlyZpIdYvobl3nit5sSwfVrojdec2FUtAdqo=;
-        b=qpXHPa3Gft7GCz/acGdMa5l+S5L37lniLEPemR4nv5/HstrP6LSWK36oVJhGYFHBvt
-         qabbPD/Ns3gvmvVQSiE0opKN46F0VOiJeKwBoxctuVdJwEVz51HksoGRd86i2575ITxg
-         St7mEsotInX9IK6RW+VMMEfWmY2/7c/zKUAVDRHjwzD93Xt4VyiHynEpdiMtNS2VouEy
-         KkjmVBDy6OnzayH/3akeifePAZHJtqxGjRe6/PJpwQ7YgZg7sDOsqKuXyjON1zv7NwhZ
-         bJRHH1t1NP0SfRv5mlpNVqlutBFZgVavn3N9C/tmUB22xE+XbBpHOaxpighCPZS0C0bA
-         01iQ==
+        d=gmail.com; s=20230601; t=1706657866; x=1707262666; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=UlC58ozOMYV/8+rov/khdBbDz0WwZoFrGbm9VuvZG7Y=;
+        b=iGO7OyFcNT/wz+VmlQuY5eDhud9mLXyU848r1yXs+Ecr/AIrCWj0qauSB0Ci8HuBQN
+         Ae/DJmdauAl0OTDfzc/0SXoVGqivIA6kyDva1XW25Dkf7+UipUfXIl9afO1LlKw3E2RP
+         F/9+xhalq0b8Ct5q83bSvwu0TH2rq0ThpJ4XXuuZbLhRGEVi2fwhPpOayfd9JtwKXkgg
+         Ddtj+gKuCJAAUpjAgWNoyEUSOufYA95SS8GX3Ya1oi2XRlFBHQEhTZmuImNoOX8Wdd80
+         0kGtPRZtIyHHHimVRKY1ueHrVVIYIYnBqO9KoETIT0kj4kuL+RkBzc87S9r0G8ihTYHr
+         egww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706657843; x=1707262643;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N/JCHM9AlyZpIdYvobl3nit5sSwfVrojdec2FUtAdqo=;
-        b=Ym7xkHOAA0DI/Dnubz0tWjDkQQJS8v57OQ6PzSHNFkEbAyUF3s7bvqAd0hKgsUTw7a
-         zMe1rfVKLM752QfKWzL8XZ/nw728TLBHmzzw6bX8mgP+SqudC7w8d/jJhNmxWPduKwlV
-         vca7JzW1r1aNy3tooF+DoWz3MTdLtL6JVm8KwUZhuAKg89R7bmxkOL1pEQSdIMWgAWE7
-         p+Y4avcT6OZrsif8RysZTuG7H2T1RW0zmhMasb+NcIKLa7ZcRIprGg68rj6xkTe2CJeQ
-         UjMvx33LkRiqN57/MgO82KcAl8LOCYhhDuCQB3oAvU4hS9NK1e0eaQQSkgGIP7TaLvSL
-         aJYA==
-X-Gm-Message-State: AOJu0YyXbJN2B3MzeWt0zoTDrEhYh+5TuXRNVLCuGJQK+bF2PY6XWh0E
-	htVI02ghQLCKFxfbaUlI9EXKtVMSKuKFJ/p3WnTShle9ARF8AsoCvfDMCcOnA90=
-X-Google-Smtp-Source: AGHT+IGcq/2OsDs8b9lsvt9PoLIXEKFIsw+IbJJHa1NLbozM5MTkwkE1NzK9MWzN0rBVG9jZqfSPWQ==
-X-Received: by 2002:a17:902:820a:b0:1d8:dd64:ff2 with SMTP id x10-20020a170902820a00b001d8dd640ff2mr66646pln.88.1706657843171;
-        Tue, 30 Jan 2024 15:37:23 -0800 (PST)
-Received: from dread.disaster.area (pa49-181-38-249.pa.nsw.optusnet.com.au. [49.181.38.249])
-        by smtp.gmail.com with ESMTPSA id x13-20020a170902ea8d00b001d77a0e1374sm830681plb.151.2024.01.30.15.37.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 15:37:22 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1rUxfK-00HWCG-0P;
-	Wed, 31 Jan 2024 10:37:18 +1100
-Date: Wed, 31 Jan 2024 10:37:18 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: syzbot <syzbot+cdee56dbcdf0096ef605@syzkaller.appspotmail.com>
-Cc: adilger.kernel@dilger.ca, chandan.babu@oracle.com, jack@suse.com,
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Subject: current->journal_info got nested! (was Re: [syzbot] [xfs?] [ext4?]
- general protection fault in jbd2__journal_start)
-Message-ID: <ZbmILkfdGks57J4a@dread.disaster.area>
-References: <000000000000e98460060fd59831@google.com>
- <000000000000d6e06d06102ae80b@google.com>
+        d=1e100.net; s=20230601; t=1706657866; x=1707262666;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UlC58ozOMYV/8+rov/khdBbDz0WwZoFrGbm9VuvZG7Y=;
+        b=XvfAlhQTgyEwRAFCsSoXhJHRO1bOFuAJVLgiqHpmf3uIj4ZsHojxmzY3WfNSc1Oksm
+         YH9P6DfD9fVSQrByPxvKylidOc03Vs2V2cAkVFBPTttEMmimSrl1joqL9iBATUYqf0Qr
+         C8+b3zyjZFs4+cFDcqRzLTEzjWFHJqxy6CC4BFhhoRTzrM+8upM+1Xu6d5/feDHEsF9c
+         2Wl8Vb9gvJgMeS/8L04FmkFT6EuIpmtYxNT/UNRo6qaOBTahzLjaTLrmOGN8Mw43ONbN
+         9E5238qKSDLNlA9JCqpi+Roh1vE6+T+Dey7swru4pT4g6X293hJBdLp3CPutTE0nlE8e
+         nPCw==
+X-Gm-Message-State: AOJu0YwSDgWLPfI05/Hhz9SfxpRKALeifWo8FIGPrbKurdC/I0QcRm95
+	Argb94lrUvIcj9dP0CkINxb66qkoWEDlEOvSCgJU/y+UAOcKf1VkYP3oAaPHa8pNP26yztTraVi
+	gbxYIRfUtAzQ3UYpQI/oBxDGRiG8=
+X-Google-Smtp-Source: AGHT+IGyFCYK1juTehlFYSxnULd+i/m2IB7EGF0N0kW1HZsR3FGAWDKIq3BMMu0yyNYeF87k80TYBNDzaCHdOQYU540=
+X-Received: by 2002:a05:6122:3903:b0:4b7:2940:8fa2 with SMTP id
+ ep3-20020a056122390300b004b729408fa2mr5295982vkb.12.1706657865767; Tue, 30
+ Jan 2024 15:37:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000d6e06d06102ae80b@google.com>
+References: <20240130091300.2968534-1-tj@kernel.org>
+In-Reply-To: <20240130091300.2968534-1-tj@kernel.org>
+From: Allen <allen.lkml@gmail.com>
+Date: Tue, 30 Jan 2024 15:37:34 -0800
+Message-ID: <CAOMdWSJxQ4trkFeEtL1549kgnxmTN1ikWYH7r6bdD40FxbuNpw@mail.gmail.com>
+Subject: Re: [PATCHSET wq/for-6.9] workqueue: Implement BH workqueue and
+ convert several tasklet users
+To: Tejun Heo <tj@kernel.org>
+Cc: torvalds@linux-foundation.org, mpatocka@redhat.com, 
+	linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev, msnitzer@redhat.com, 
+	ignat@cloudflare.com, damien.lemoal@wdc.com, bob.liu@oracle.com, 
+	houtao1@huawei.com, peterz@infradead.org, mingo@kernel.org, 
+	netdev@vger.kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Jan 30, 2024 at 06:52:21AM -0800, syzbot wrote:
-> syzbot has found a reproducer for the following issue on:
-> 
-> HEAD commit:    861c0981648f Merge tag 'jfs-6.8-rc3' of github.com:kleikam..
-> git tree:       upstream
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=13ca8d97e80000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=b0b9993d7d6d1990
-> dashboard link: https://syzkaller.appspot.com/bug?extid=cdee56dbcdf0096ef605
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=104393efe80000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1393b90fe80000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/7c6cc521298d/disk-861c0981.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/6203c94955db/vmlinux-861c0981.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/17e76e12b58c/bzImage-861c0981.xz
-> mounted in repro: https://storage.googleapis.com/syzbot-assets/d31d4eed2912/mount_3.gz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+cdee56dbcdf0096ef605@syzkaller.appspotmail.com
-> 
-> general protection fault, probably for non-canonical address 0xdffffc000a8a4829: 0000 [#1] PREEMPT SMP KASAN
-> KASAN: probably user-memory-access in range [0x0000000054524148-0x000000005452414f]
-> CPU: 1 PID: 5065 Comm: syz-executor260 Not tainted 6.8.0-rc2-syzkaller-00031-g861c0981648f #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-> RIP: 0010:jbd2__journal_start+0x87/0x5d0 fs/jbd2/transaction.c:496
-> Code: 74 63 48 8b 1b 48 85 db 74 79 48 89 d8 48 c1 e8 03 42 80 3c 28 00 74 08 48 89 df e8 63 4d 8f ff 48 8b 2b 48 89 e8 48 c1 e8 03 <42> 80 3c 28 00 74 08 48 89 ef e8 4a 4d 8f ff 4c 39 65 00 0f 85 1a
-> RSP: 0018:ffffc900043265c8 EFLAGS: 00010203
-> RAX: 000000000a8a4829 RBX: ffff8880205fa3a8 RCX: ffff8880235dbb80
-> RDX: 0000000000000000 RSI: 0000000000000002 RDI: ffff88801c1a6000
-> RBP: 000000005452414e R08: 0000000000000c40 R09: 0000000000000001
-               ^^^^^^^^
-Hmmmm - TRAN. That's looks suspicious, I'll come back to that.
+> The only generic interface to execute asynchronously in the BH context is
+> tasklet; however, it's marked deprecated and has some design flaws such as
+> the execution code accessing the tasklet item after the execution is
+> complete which can lead to subtle use-after-free in certain usage scenarios
+> and less-developed flush and cancel mechanisms.
+>
+> Mikulas Patocka recently reported that dm-crypt and dm-crypt are affected by
+> the access-after-completion issue and suggested adding TASKLET_STATE_ONESHOT
+> flag which selectively removes post-completion access while significantly
+> limiting how the tasklet can be used in the following thread:
+>
+>  http://lkml.kernel.org/r/82b964f0-c2c8-a2c6-5b1f-f3145dc2c8e5@redhat.com
+>
+> Linus didn't like the approach and suggested extending workqueue to support
+> execution from atomic context:
+>
+>  http://lkml.kernel.org/r/CAHk-=wjDW53w4-YcSmgKC5RruiRLHmJ1sXeYdp_ZgVoBw=5byA@mail.gmail.com
+>
+> As suggested, this patchset implements BH workqueues which are like regular
+> workqueues but executes work items in the BH (softirq) context and converts
+> several tasklet users.
+>
+> - The name bh is used instead of the suggested atomic as it's more in line
+>   with widely used execution context interface - local_bh_enable/disable()
+>   and friends.
+>
+> - The system default BH workqueues - system_bh_wq and system_bh_highpri_wq -
+>   are provided. As queue-wide flushing doesn't exist in tasklet, all
+>   existing tasklet users should be able to use the system BH workqueues
+>   without creating their own.
+>
+> - BH workqueues currently use tasklet to run the work items to avoid
+>   priority inversions involving tasklet_hi and WQ_BH | WQ_HIGHPRI. Once all
+>   tasklet users are converted, tasklet code can be removed and BH workqueues
+>   can take over its softirqs.
+>
+> This patchset is on top of wq/for-6.9 (aae17ebb53c ("workqueue: Avoid using
+> isolated cpus' timers on queue_delayed_work")) and contains the following
+> eight patches.
+>
+>  0001-workqueue-Update-lock-debugging-code.patch
+>  0002-workqueue-Factor-out-init_cpu_worker_pool.patch
+>  0003-workqueue-Implement-BH-workqueues-to-eventually-repl.patch
+>  0004-backtracetest-Convert-from-tasklet-to-BH-workqueue.patch
+>  0005-usb-core-hcd-Convert-from-tasklet-to-BH-workqueue.patch
+>  0006-net-tcp-tsq-Convert-from-tasklet-to-BH-workqueue.patch
+>  0007-dm-crypt-Convert-from-tasklet-to-BH-workqueue.patch
+>  0008-dm-verity-Convert-from-tasklet-to-BH-workqueue.patch
+>
+> 0001-0003 prepare and implement BH workqueues.
+>
+> 0004-0008 convert some tasklet users to BH workqueue. The conversions are
+> relatively straightforward but are in descending order of confidence.
+>
+> The patchset is also available in the following git branch.
+>
+>  git://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git wq-bh-v1
+>
 
-> R10: dffffc0000000000 R11: ffffed1003834871 R12: ffff88801c1a6000
-> R13: dffffc0000000000 R14: 0000000000000c40 R15: 0000000000000002
-> FS:  0000555556f90380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000020020000 CR3: 0000000021fed000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  __ext4_journal_start_sb+0x215/0x5b0 fs/ext4/ext4_jbd2.c:112
->  __ext4_journal_start fs/ext4/ext4_jbd2.h:326 [inline]
->  ext4_dirty_inode+0x92/0x110 fs/ext4/inode.c:5969
->  __mark_inode_dirty+0x305/0xda0 fs/fs-writeback.c:2452
->  generic_update_time fs/inode.c:1905 [inline]
->  inode_update_time fs/inode.c:1918 [inline]
->  __file_update_time fs/inode.c:2106 [inline]
->  file_update_time+0x39b/0x3e0 fs/inode.c:2136
->  ext4_page_mkwrite+0x207/0xdf0 fs/ext4/inode.c:6090
->  do_page_mkwrite+0x197/0x470 mm/memory.c:2966
->  wp_page_shared mm/memory.c:3353 [inline]
->  do_wp_page+0x20e3/0x4c80 mm/memory.c:3493
->  handle_pte_fault mm/memory.c:5160 [inline]
->  __handle_mm_fault+0x26a3/0x72b0 mm/memory.c:5285
->  handle_mm_fault+0x27e/0x770 mm/memory.c:5450
->  do_user_addr_fault arch/x86/mm/fault.c:1415 [inline]
->  handle_page_fault arch/x86/mm/fault.c:1507 [inline]
->  exc_page_fault+0x2ad/0x870 arch/x86/mm/fault.c:1563
->  asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
+ Thank you for doing this work.
 
-EXt4 is triggering a BUG_ON:
+Tested the series, things look good. I am going to run LTP and Unixbench
+on the kernel.
 
-	handle_t *handle = journal_current_handle();
-	int err;
+Tested-by: Allen Pais <allen.lkml@gmail.com>
 
-	if (!journal)
-		return ERR_PTR(-EROFS);
+Thanks.
 
-	if (handle) {
->>>>>>>>>	J_ASSERT(handle->h_transaction->t_journal == journal);
-		handle->h_ref++;
-		return handle;
-	}
-
-via a journal assert failure. It appears that current->journal_info
-isn't what it is supposed to be. It's finding something with TRAN in
-it, I think. I'll come back to this.
-
-What syzbot is doing is creating a file on it's root filesystem and
-write()ing 0x208e24b bytes (zeroes from an anonymous mmap() region,
-I think) to it to initialise it's contents.
-
-Then it mmap()s the ext4 file for 0xb36000 bytes and copies the raw
-test filesystem image in the source code into it.  It then creates a
-memfd that it decompresses the data in the mapped ext4 file into and
-creates a loop device that points to that memfd. It then mounts the
-loop device and we get an XFS filesystem which doesn't appear to
-contain any corruptions in it at all.  It then runs a bulkstat pass
-on the the XFS filesystem.
-
-This is where it gets interesting. The user buffer that XFS
-copies the inode data into points to a memory address inside the
-range of the ext4 file that the filesystem image was copied to.
-It does not overlap with the filesystem image.
-
-Hence when XFS goes to copy the inodes into the user buffer, it
-triggers write page faults on the ext4 backing file.
-
-That's this part of the trace:
+> diffstat follows. Thanks.
+>
+>  Documentation/core-api/workqueue.rst |   29 ++++-
+>  drivers/md/dm-crypt.c                |   36 -------
+>  drivers/md/dm-verity-target.c        |    8 -
+>  drivers/md/dm-verity.h               |    2
+>  drivers/usb/core/hcd.c               |   23 ++--
+>  include/linux/usb/hcd.h              |    2
+>  include/linux/workqueue.h            |    9 +
+>  include/net/tcp.h                    |    2
+>  kernel/backtracetest.c               |   18 +--
+>  kernel/workqueue.c                   |  312 ++++++++++++++++++++++++++++++++++++++++++++++++--------------
+>  kernel/workqueue_internal.h          |    3
+>  net/ipv4/tcp.c                       |    2
+>  net/ipv4/tcp_output.c                |   36 +++----
+>  tools/workqueue/wq_dump.py           |   11 +-
+>  14 files changed, 335 insertions(+), 158 deletions(-)
+>
+> --
+> tejun
 
 
-> RIP: 0010:rep_movs_alternative+0x4a/0x70 arch/x86/lib/copy_user_64.S:71
-> Code: 75 f1 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 8b 06 48 89 07 48 83 c6 08 48 83 c7 08 83 e9 08 74 df 83 f9 08 73 e8 eb c9 <f3> a4 c3 48 89 c8 48 c1 e9 03 83 e0 07 f3 48 a5 89 c1 85 c9 75 b3
-> RSP: 0018:ffffc900043270f8 EFLAGS: 00050202
-> RAX: ffffffff848cda01 RBX: 0000000020020040 RCX: 0000000000000040
-> RDX: 0000000000000000 RSI: ffff8880131873b0 RDI: 0000000020020000
-> RBP: 1ffff92000864f26 R08: ffff8880131873ef R09: 1ffff11002630e7d
-> R10: dffffc0000000000 R11: ffffed1002630e7e R12: 00000000000000c0
-> R13: dffffc0000000000 R14: 000000002001ff80 R15: ffff888013187330
->  copy_user_generic arch/x86/include/asm/uaccess_64.h:112 [inline]
->  raw_copy_to_user arch/x86/include/asm/uaccess_64.h:133 [inline]
->  _copy_to_user+0x86/0xa0 lib/usercopy.c:41
->  copy_to_user include/linux/uaccess.h:191 [inline]
->  xfs_bulkstat_fmt+0x4f/0x120 fs/xfs/xfs_ioctl.c:744
->  xfs_bulkstat_one_int+0xd8b/0x12e0 fs/xfs/xfs_itable.c:161
->  xfs_bulkstat_iwalk+0x72/0xb0 fs/xfs/xfs_itable.c:239
->  xfs_iwalk_ag_recs+0x4c3/0x820 fs/xfs/xfs_iwalk.c:220
->  xfs_iwalk_run_callbacks+0x25b/0x490 fs/xfs/xfs_iwalk.c:376
->  xfs_iwalk_ag+0xad6/0xbd0 fs/xfs/xfs_iwalk.c:482
->  xfs_iwalk+0x360/0x6f0 fs/xfs/xfs_iwalk.c:584
->  xfs_bulkstat+0x4f8/0x6c0 fs/xfs/xfs_itable.c:308
->  xfs_ioc_bulkstat+0x3d0/0x450 fs/xfs/xfs_ioctl.c:867
->  xfs_file_ioctl+0x6a5/0x1980 fs/xfs/xfs_ioctl.c:1994
->  vfs_ioctl fs/ioctl.c:51 [inline]
->  __do_sys_ioctl fs/ioctl.c:871 [inline]
->  __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-What is interesting here is this is running in an empty XFS
-transaction context so that the bulkstat operation garbage collects
-all the buffers it accesses without us having to explicit cleanup -
-they all get released when we cancel the transaction context at the
-end of the process.
-
-But that means copy-out is running inside a transaction context, and
-that means current->journal_info contains a pointer to the current
-struct xfs_trans the bulkstat operation is using.
-
-Guess what we have as the first item in a struct xfs_trans? That's
-right, it's a magic number, and that magic number is:
-
-#define XFS_TRANS_HEADER_MAGIC  0x5452414e      /* TRAN */
-
-It should be obvious what has happened now -
-current->journal_info is not null, so ext4 thinks it owns the
-structure attached there and panics when it finds that it isn't an
-ext4 journal handle being held there.
-
-I don't think there are any clear rules as to how filesystems can
-and can't use current->journal_info. In general, a task can't jump
-from one filesystem to another inside a transaction context like
-this, so there's never been a serious concern about nested
-current->journal_info assignments like this in the past.
-
-XFS is doing nothing wrong - we're allowed to define transaction
-contexts however we want and use current->journal_info in this way.
-However, we have to acknowledge that ext4 has also done nothing
-wrong by assuming current->journal_info should below to it if it is
-not null. Indeed, XFS does the same thing.
-
-The question here is what to do about this? The obvious solution is
-to have save/restore semantics in the filesystem code that
-sets/clears current->journal_info, and then filesystems can also do
-the necessary "recursion into same filesystem" checks they need to
-ensure that they aren't nesting transactions in a way that can
-deadlock.
-
-Maybe there are other options - should filesystems even be allowed to
-trigger page faults when they have set current->journal_info?
-
-What other potential avenues are there that could cause this sort of
-transaction context nesting that we haven't realised exist? Does
-ext4 data=jounral have problems like this in the data copy-in path?
-What other filesystems allow page faults in transaction contexts?
-
-Cheers,
-
-Dave.
 -- 
-Dave Chinner
-david@fromorbit.com
+       - Allen
 
