@@ -1,77 +1,71 @@
-Return-Path: <linux-kernel+bounces-44715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44716-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1AE8842664
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:48:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2842842669
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:48:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BECAE1C24922
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:48:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73215289C7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:48:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 961D76D1C4;
-	Tue, 30 Jan 2024 13:48:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17CCD6D1D0;
+	Tue, 30 Jan 2024 13:48:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HrxWPEpJ"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="0EyaNAy3"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1818E6D1B3;
-	Tue, 30 Jan 2024 13:48:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A37376D1B5;
+	Tue, 30 Jan 2024 13:48:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706622485; cv=none; b=NvEV7+fP9f780h6n2wpDG4fTTqHF9yo5c+DrmK1BBCclChNICf8ORoGrNs0wtg5LcUkAD6kK3CCquXmg6TwCpsGoWH/ZrSIehggSVUjfh8JQ6VuS6QelmvXq3us/fySWXo0Rc1d4MOzN8sMDlpFaVuV8VJN3RTT6viiKnn4lCUw=
+	t=1706622523; cv=none; b=O6BNzHKvnPKm5ffaXIWSHgl2tmd3cWujsPqK4pIfhtqF69W9C8sDFu8BDzJgVbwolNILylywzCgrADwC+nwAPgMQ96vG9p5uxU746nJwCX4Tf4i6FsNpIJeSMhQeIDww9IJ3pJxF0indGyG6HyhA1TLCeMOdmPmEsd4RukkdF+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706622485; c=relaxed/simple;
-	bh=vPXRD0kobbKQ6/PiogGfGv7VlWsXztmXcP6TwDaNEpY=;
+	s=arc-20240116; t=1706622523; c=relaxed/simple;
+	bh=LX2Fic2UMf7KjX8p2W2+sSCjFDYmcP3OxJ1aZl3nnnY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iyb/xs1YHVWtMhx3DgB+VWFhVVfiqBP/NxMXNfEmV1yYNwuvjqSXX3qeDZ0Twcx1PYejovlSj8yI8Ad4wABOwbjc7Q0Obg7/aux7eAD4Zse6pUz2T6/u+o+q/CBZJ3qkrpYSBchaxOgpM3mGdNIWNFbunqulDRNi9jhuuTkURpw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HrxWPEpJ; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706622484; x=1738158484;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=vPXRD0kobbKQ6/PiogGfGv7VlWsXztmXcP6TwDaNEpY=;
-  b=HrxWPEpJOhN2/U9hEIpV9YHIriBDRAdkmhuHAuw50AKU0ws4KQqm/LUC
-   D0wI0Tl5pVQ8IePI2UkmDw4+P0zpVcwW++3L4BwGVezFUsNkmuCuD4NtO
-   WaVNnPES3tykgfJVhMHKcTdgLEuDfGxBhzQo1+wEIDPwxiOvRipfFPF6o
-   oNrJiMy5d1+UY2h/SK+eAQcqX5lglo/XW5fkQGu4iCkYjv207N88as8SM
-   a8oci3uBwx1/+HEZp2a44+r7DJgMN09Hb5MGrKE47aUZDYs0JcP1S+4Wq
-   4isUrw7Hjx1Vey9BZzJj9+Kxd+DAPUQHTRWvR0llsZ6OYe3BB+6VqGg14
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="24757088"
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="24757088"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 05:48:03 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="931459987"
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="931459987"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmsmga001.fm.intel.com with SMTP; 30 Jan 2024 05:47:58 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 30 Jan 2024 15:47:58 +0200
-Date: Tue, 30 Jan 2024 15:47:57 +0200
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Cc: linux-usb@vger.kernel.org, pmalani@chromium.org, jthies@google.com,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Prashanth K <quic_prashk@quicinc.com>,
-	Rajaram Regupathy <rajaram.regupathy@intel.com>,
-	Saranya Gopal <saranya.gopal@intel.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] usb: typec: ucsi: Limit read size on v1.2
-Message-ID: <Zbj+DWzfMURLKnLn@kuha.fi.intel.com>
-References: <20240126183930.1170845-1-abhishekpandit@chromium.org>
- <20240126103859.v3.1.Iacf5570a66b82b73ef03daa6557e2fc0db10266a@changeid>
+	 Content-Type:Content-Disposition:In-Reply-To; b=M0rAoKME5hVKoCoJirZswaCkp01Ozw8hfJxZQcqUxIcA20jIEmg30BchSq4qRMuJhP+j7I0drH8qa/0jz+rx60rYNgQRKkyL5k2cg2wpyX7Ahei8bqA262dBsWzJatpL3tPWdPPE9IuejT/S0qhxAQ6AJXX+lLIXpLjpX13AgSc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=0EyaNAy3; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=vd//V4XYtNdO2bVzPimQHhpuzy1TW7+TDVfUFwizcWs=; b=0EyaNAy3PN3WNXOZkObkKOnf7m
+	l+LjuYFxeSmhk3U5RzxxGCO0Ob/JJ5phV2UidjoFY6TDp/w1VAOw5GU0j/6w7dWlLI65z+naIqFmw
+	nV0n25zGIlwSGH0LXks3/JplBRPXEwI4GX7pzoZ7e+w37JMlEZfKniz/sYw3x4tI8BxM=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rUoTM-006UoM-Ti; Tue, 30 Jan 2024 14:48:20 +0100
+Date: Tue, 30 Jan 2024 14:48:20 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Jisheng Zhang <jszhang@kernel.org>
+Cc: Petr Tesarik <petr@tesarici.cz>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	"open list:STMMAC ETHERNET DRIVER" <netdev@vger.kernel.org>,
+	"moderated list:ARM/STM32 ARCHITECTURE" <linux-stm32@st-md-mailman.stormreply.com>,
+	"moderated list:ARM/STM32 ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:ARM/Allwinner sunXi SoC support" <linux-sunxi@lists.linux.dev>,
+	Marc Haber <mh+netdev@zugschlus.de>,
+	Florian Fainelli <f.fainelli@gmail.com>, stable@vger.kernel.org
+Subject: Re: [PATCH net v2] net: stmmac: protect updates of 64-bit statistics
+ counters
+Message-ID: <cd9ce78c-2761-4b87-af87-ed6ccb1206bb@lunn.ch>
+References: <20240128193529.24677-1-petr@tesarici.cz>
+ <ZbiCWtY8ODrroHIq@xhacker>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,116 +74,16 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240126103859.v3.1.Iacf5570a66b82b73ef03daa6557e2fc0db10266a@changeid>
+In-Reply-To: <ZbiCWtY8ODrroHIq@xhacker>
 
-On Fri, Jan 26, 2024 at 10:39:07AM -0800, Abhishek Pandit-Subedi wrote:
-> Between UCSI 1.2 and UCSI 2.0, the size of the MESSAGE_IN region was
-> increased from 16 to 256. In order to avoid overflowing reads for older
-> systems, add a mechanism to use the read UCSI version to truncate read
-> sizes on UCSI v1.2.
-> 
-> Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> PS: when I sent the above "net: stmmac: use per-queue 64 bit statistics
+> where necessary", I had an impression: there are too much statistics in
+> stmmac driver, I didn't see so many statistics in other eth drivers, is
+> it possible to remove some useless or not that useful statistic members?
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+These counters might be considered ABI. We don't want to cause
+regressions in somebodies testing, or even billing scripts because we
+remove a counter which somebody is using.
 
-> ---
-> Tested on 6.6 kernel. Dmesg output from this change:
-> [  105.058162] ucsi_um_test ucsi_um_test_device.0: Registered UCSI
-> interface with version 3.0.0
-> 
-> 
-> (no changes since v2)
-> 
-> Changes in v2:
->   - Changed log message to DEBUG
-> 
->  drivers/usb/typec/ucsi/ucsi.c | 26 ++++++++++++++++++++++++--
->  drivers/usb/typec/ucsi/ucsi.h | 11 +++++++++++
->  2 files changed, 35 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
-> index 5392ec698959..a35056ee3e96 100644
-> --- a/drivers/usb/typec/ucsi/ucsi.c
-> +++ b/drivers/usb/typec/ucsi/ucsi.c
-> @@ -36,6 +36,19 @@
->   */
->  #define UCSI_SWAP_TIMEOUT_MS	5000
->  
-> +static int ucsi_read_message_in(struct ucsi *ucsi, void *buf,
-> +					  size_t buf_size)
-> +{
-> +	/*
-> +	 * Below UCSI 2.0, MESSAGE_IN was limited to 16 bytes. Truncate the
-> +	 * reads here.
-> +	 */
-> +	if (ucsi->version <= UCSI_VERSION_1_2)
-> +		buf_size = min_t(size_t, 16, buf_size);
-> +
-> +	return ucsi->ops->read(ucsi, UCSI_MESSAGE_IN, buf, buf_size);
-> +}
-> +
->  static int ucsi_acknowledge_command(struct ucsi *ucsi)
->  {
->  	u64 ctrl;
-> @@ -72,7 +85,7 @@ static int ucsi_read_error(struct ucsi *ucsi)
->  	if (ret < 0)
->  		return ret;
->  
-> -	ret = ucsi->ops->read(ucsi, UCSI_MESSAGE_IN, &error, sizeof(error));
-> +	ret = ucsi_read_message_in(ucsi, &error, sizeof(error));
->  	if (ret)
->  		return ret;
->  
-> @@ -170,7 +183,7 @@ int ucsi_send_command(struct ucsi *ucsi, u64 command,
->  	length = ret;
->  
->  	if (data) {
-> -		ret = ucsi->ops->read(ucsi, UCSI_MESSAGE_IN, data, size);
-> +		ret = ucsi_read_message_in(ucsi, data, size);
->  		if (ret)
->  			goto out;
->  	}
-> @@ -1556,6 +1569,15 @@ int ucsi_register(struct ucsi *ucsi)
->  	if (!ucsi->version)
->  		return -ENODEV;
->  
-> +	/*
-> +	 * Version format is JJ.M.N (JJ = Major version, M = Minor version,
-> +	 * N = sub-minor version).
-> +	 */
-> +	dev_dbg(ucsi->dev, "Registered UCSI interface with version %x.%x.%x",
-> +		UCSI_BCD_GET_MAJOR(ucsi->version),
-> +		UCSI_BCD_GET_MINOR(ucsi->version),
-> +		UCSI_BCD_GET_SUBMINOR(ucsi->version));
-> +
->  	queue_delayed_work(system_long_wq, &ucsi->work, 0);
->  
->  	ucsi_debugfs_register(ucsi);
-> diff --git a/drivers/usb/typec/ucsi/ucsi.h b/drivers/usb/typec/ucsi/ucsi.h
-> index 6478016d5cb8..bec920fa6b8a 100644
-> --- a/drivers/usb/typec/ucsi/ucsi.h
-> +++ b/drivers/usb/typec/ucsi/ucsi.h
-> @@ -23,6 +23,17 @@ struct dentry;
->  #define UCSI_CONTROL			8
->  #define UCSI_MESSAGE_IN			16
->  #define UCSI_MESSAGE_OUT		32
-> +#define UCSIv2_MESSAGE_OUT		272
-> +
-> +/* UCSI versions */
-> +#define UCSI_VERSION_1_2	0x0120
-> +#define UCSI_VERSION_2_0	0x0200
-> +#define UCSI_VERSION_2_1	0x0210
-> +#define UCSI_VERSION_3_0	0x0300
-> +
-> +#define UCSI_BCD_GET_MAJOR(_v_)		(((_v_) >> 8) & 0xFF)
-> +#define UCSI_BCD_GET_MINOR(_v_)		(((_v_) >> 4) & 0x0F)
-> +#define UCSI_BCD_GET_SUBMINOR(_v_)	((_v_) & 0x0F)
->  
->  /* Command Status and Connector Change Indication (CCI) bits */
->  #define UCSI_CCI_CONNECTOR(_c_)		(((_c_) & GENMASK(7, 1)) >> 1)
-> -- 
-> 2.43.0.429.g432eaa2c6b-goog
-
--- 
-heikki
+       Andrew
 
