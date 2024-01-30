@@ -1,126 +1,153 @@
-Return-Path: <linux-kernel+bounces-44830-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44831-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E9688427ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:23:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22A6A8427F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:24:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 813CF1C24E5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:23:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84834B298BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:23:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2399912AAD5;
-	Tue, 30 Jan 2024 15:21:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A56712BEBA;
+	Tue, 30 Jan 2024 15:21:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PImc+K2x"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="hp+idUU/"
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B0AF86133;
-	Tue, 30 Jan 2024 15:20:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 035C612BEB4;
+	Tue, 30 Jan 2024 15:21:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706628057; cv=none; b=FyLFi334jq4PISjEHelspeFvTls9YCoaFSArt4wW65nwyDJhqvDaSZk7kJnNyOLMG0HXxHPQGdL2Mr4FyJXR3Bxagfyn/qFs6oyOU9PvSNoloCrKIs8O5YToS5WTPzfEf1yBJi+nd2KB5lj5DX7km/6lugkkk6LFP/U7KC/n/KM=
+	t=1706628069; cv=none; b=FLmW6sTB1/LwQ5XQYrpVM/H7b0x2jGQj3PfVO0IH3Ovu889lNzLTGHTtwVqgwOYdNM33a6jilbzbRi2w9vzoEz36m0Z/w0hZLc7YmOOk0fXAjJ2IPYj75pIqgIPnBAr/DrMbf8UpfW8IVnnGSC6OzlQacW/zeDKn/KU4mOWq+wI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706628057; c=relaxed/simple;
-	bh=BWFAhmyDn0dXC/zsLj0S9ZBcFvRqLWZWxXogBiUuX9g=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=NW7i/YDuA7sZgVHbIjuePpMSb8+feztP7VuxlL4+pKbbMsGBsvREXqP6yKAl13+hFEum/XfWXNw6rmZqhOMqJzM/oSSyYqVt0s2gpTc/Be8wlV5OgCQVVOeQuuHumugvnI70OHMcqrSPWsHLJ72JaslVPc8U7C4ViR94wT8tQOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PImc+K2x; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E2752C32785;
-	Tue, 30 Jan 2024 15:20:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706628056;
-	bh=BWFAhmyDn0dXC/zsLj0S9ZBcFvRqLWZWxXogBiUuX9g=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=PImc+K2xGIY3JI7K1VzqFSMwNhNDTd+mmgZRG5Dtu3FjvAy4u9y6Yhkrci4/zmRuF
-	 ofdhV+HG8+vNoCc94jYlN8SpfDUHdpqceg++Rip6HvePausq1+tGU8L1RU0hK2tA0h
-	 YXTZzoKtgt+9U9g5N68kVACh2ebgMieF/8AIZ6bL+KAGdre5S5BObNNLge0AhO7j9h
-	 p2A652nHe7YTytfYdKQmlWzf1F8ScQD9GjtyCoRNNb9fepcDW3RIHOUMFTxAIpX698
-	 luZcFgVGmw9KdJTovbZqwU6eV3JsyGFHN1Hnw0yVncKcM7N12ZVHRQWdi2AC2UL44F
-	 QWp6bYHabvSIw==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D147EC48285;
-	Tue, 30 Jan 2024 15:20:56 +0000 (UTC)
-From: =?utf-8?b?QXLEsW7DpyDDnE5BTA==?= via B4 Relay
- <devnull+arinc.unal.arinc9.com@kernel.org>
-Date: Tue, 30 Jan 2024 18:20:53 +0300
-Subject: [PATCH net-next v2 7/7] net: dsa: mt7530: do not clear
- config->supported_interfaces
+	s=arc-20240116; t=1706628069; c=relaxed/simple;
+	bh=jPyAa9WfdA8ROQgMJjeMeeC8xbDVD5scgsQuDyPrR/E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Svt9Z2mks3ung3WjVB6f/6U7FxZ7H/Je/CP3uyZ7ZofjHUOO3Y7wK5Wk+7pzP/c+sJK3lsArCsT10jqYi5bOMbp8+UNLkvIXT/gWulJf8lgnfK5Biwd9+cUa36FfqxVzhcyoF6nCplnF4pX9NEQRzPMRxiPjOa89gJPT/lWuOvs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=hp+idUU/; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1706628067;
+	bh=jPyAa9WfdA8ROQgMJjeMeeC8xbDVD5scgsQuDyPrR/E=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=hp+idUU/OYb8BUfLwfi8e2vK6zsG2zyiPmbiWXGtiQ6yT7Xli/fB5x+A4aoacjxBX
+	 AmOncQTD2Y1gQ4BUbfoikaPeKi1giCFmK9ayt/RSiDEfMcs2V5R9HFTcJ7EsqhrbD5
+	 V4YXlfUxRNxqJRnmW3dcclwuwvmnlYYBpXrpVqfyJGKcN+LlAQdYmXgRXfC6g3kldo
+	 yIJvyVfJ7XukuyD8Yf90+0fA9xWOjcRN2T3S8xZJsBgiAdL2ByWohNXlPa0baN1qlT
+	 KA4N4kTrimhzvyJZd4HLzpTFFvQyLGnAPKcuGg9rmdsL62J0gCVlLNn+E6+1REUU+m
+	 f1xyZbTxlMbfQ==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TPTQV5ylyzVj2;
+	Tue, 30 Jan 2024 10:21:06 -0500 (EST)
+Message-ID: <ec53d5ed-ac0f-4043-9df6-c37a03d1a73b@efficios.com>
+Date: Tue, 30 Jan 2024 10:21:04 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id:
- <20240130-for-netnext-mt7530-improvements-2-v2-7-ba06f5dd9eb0@arinc9.com>
-References:
- <20240130-for-netnext-mt7530-improvements-2-v2-0-ba06f5dd9eb0@arinc9.com>
-In-Reply-To:
- <20240130-for-netnext-mt7530-improvements-2-v2-0-ba06f5dd9eb0@arinc9.com>
-To: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>, 
- Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>, 
- Florian Fainelli <f.fainelli@gmail.com>, 
- Vladimir Oltean <olteanv@gmail.com>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Matthias Brugger <matthias.bgg@gmail.com>, 
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
- Russell King <linux@armlinux.org.uk>
-Cc: mithat.guner@xeront.com, erkin.bozoglu@xeront.com, 
- Bartel Eerdekens <bartel.eerdekens@constell8.be>, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-mediatek@lists.infradead.org, 
- =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1706628055; l=1237;
- i=arinc.unal@arinc9.com; s=arinc9-patatt; h=from:subject:message-id;
- bh=70kaAwqHDH0P1Gv6EzSD7mSiNMADYZJtk+fSkbKHmfQ=;
- b=TVVtN8mEHO79+KmnGvUmpew6seoWm0EKReP4aGo60q2n8tH+h0uxilLoOtvKujMITR2Roclq1
- 7txFrBKy1ZXC/IkCurmACM0cfdaxQ/GD9jjN++kpstZGGdCu3GugObA
-X-Developer-Key: i=arinc.unal@arinc9.com; a=ed25519;
- pk=VmvgMWwm73yVIrlyJYvGtnXkQJy9CvbaeEqPQO9Z4kA=
-X-Endpoint-Received:
- by B4 Relay for arinc.unal@arinc9.com/arinc9-patatt with auth_id=115
-X-Original-From: =?utf-8?b?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-Reply-To: <arinc.unal@arinc9.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 4/7] ext2: Use dax_is_supported()
+Content-Language: en-US
+To: Jan Kara <jack@suse.cz>
+Cc: Dan Williams <dan.j.williams@intel.com>,
+ Vishal Verma <vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+ linux-kernel@vger.kernel.org, Jan Kara <jack@suse.com>,
+ linux-ext4@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>, linux-mm@kvack.org,
+ linux-arch@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+ nvdimm@lists.linux.dev, linux-cxl@vger.kernel.org
+References: <20240129210631.193493-1-mathieu.desnoyers@efficios.com>
+ <20240129210631.193493-5-mathieu.desnoyers@efficios.com>
+ <20240130113337.frem6a3y5n2iibnh@quack3>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <20240130113337.frem6a3y5n2iibnh@quack3>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Arınç ÜNAL <arinc.unal@arinc9.com>
+On 2024-01-30 06:33, Jan Kara wrote:
+> On Mon 29-01-24 16:06:28, Mathieu Desnoyers wrote:
+>> Use dax_is_supported() to validate whether the architecture has
+>> virtually aliased caches at mount time.
+>>
+>> This is relevant for architectures which require a dynamic check
+>> to validate whether they have virtually aliased data caches
+>> (ARCH_HAS_CACHE_ALIASING_DYNAMIC=y).
+>>
+>> Fixes: d92576f1167c ("dax: does not work correctly with virtual aliasing caches")
+>> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>> Cc: Jan Kara <jack@suse.com>
+>> Cc: linux-ext4@vger.kernel.org
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+>> Cc: linux-mm@kvack.org
+>> Cc: linux-arch@vger.kernel.org
+>> Cc: Dan Williams <dan.j.williams@intel.com>
+>> Cc: Vishal Verma <vishal.l.verma@intel.com>
+>> Cc: Dave Jiang <dave.jiang@intel.com>
+>> Cc: Matthew Wilcox <willy@infradead.org>
+>> Cc: nvdimm@lists.linux.dev
+>> Cc: linux-cxl@vger.kernel.org
+> 
+> Looks good to me (although I share Dave's opinion it would be nice to CC
+> the whole series to fsdevel - luckily we have lore these days so it is not
+> that tedious to find the whole series :)). Feel free to add:
+> 
+> Acked-by: Jan Kara <jack@suse.cz>
 
-There's no need to clear the config->supported_interfaces bitmap before
-reporting the supported interfaces as all bits in the bitmap will already
-be initialized to zero when the phylink_config structure is allocated. The
-"config" pointer points to &dp->phylink_config, and "dp" is allocated by
-dsa_port_touch() with kzalloc(), so all its fields are filled with zeroes.
+Hi Jan,
 
-There's no code that would change the bitmap beforehand. Remove it.
+Thanks for looking at it! I will do significant changes for v2, so
+I will hold on before integrating your acked-by if it's OK with you.
 
-Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-Acked-by: Daniel Golle <daniel@makrotopia.org>
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
----
- drivers/net/dsa/mt7530.c | 2 --
- 1 file changed, 2 deletions(-)
+Thanks!
 
-diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index 638cd3f2a495..c6b40ca277f5 100644
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -2573,8 +2573,6 @@ static void mt7531_mac_port_get_caps(struct dsa_switch *ds, int port,
- static void mt7988_mac_port_get_caps(struct dsa_switch *ds, int port,
- 				     struct phylink_config *config)
- {
--	phy_interface_zero(config->supported_interfaces);
--
- 	switch (port) {
- 	/* Ports which are connected to switch PHYs. There is no MII pinout. */
- 	case 0 ... 3:
+Mathieu
+
+> 
+> 								Honza
+> 
+>> ---
+>>   fs/ext2/super.c | 14 +++++++-------
+>>   1 file changed, 7 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/fs/ext2/super.c b/fs/ext2/super.c
+>> index 01f9addc8b1f..0398e7a90eb6 100644
+>> --- a/fs/ext2/super.c
+>> +++ b/fs/ext2/super.c
+>> @@ -585,13 +585,13 @@ static int parse_options(char *options, struct super_block *sb,
+>>   			set_opt(opts->s_mount_opt, XIP);
+>>   			fallthrough;
+>>   		case Opt_dax:
+>> -#ifdef CONFIG_FS_DAX
+>> -			ext2_msg(sb, KERN_WARNING,
+>> -		"DAX enabled. Warning: EXPERIMENTAL, use at your own risk");
+>> -			set_opt(opts->s_mount_opt, DAX);
+>> -#else
+>> -			ext2_msg(sb, KERN_INFO, "dax option not supported");
+>> -#endif
+>> +			if (dax_is_supported()) {
+>> +				ext2_msg(sb, KERN_WARNING,
+>> +					 "DAX enabled. Warning: EXPERIMENTAL, use at your own risk");
+>> +				set_opt(opts->s_mount_opt, DAX);
+>> +			} else {
+>> +				ext2_msg(sb, KERN_INFO, "dax option not supported");
+>> +			}
+>>   			break;
+>>   
+>>   #if defined(CONFIG_QUOTA)
+>> -- 
+>> 2.39.2
+>>
 
 -- 
-2.40.1
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
 
