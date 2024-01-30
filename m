@@ -1,106 +1,196 @@
-Return-Path: <linux-kernel+bounces-44346-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44347-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B59984208C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:05:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABB16842090
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:05:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E8B21C23D75
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:05:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62FD928B2C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:05:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DD1667727;
-	Tue, 30 Jan 2024 10:03:05 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28D1A679F4;
+	Tue, 30 Jan 2024 10:03:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vVZFDbYX";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="n/MERs5t";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vVZFDbYX";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="n/MERs5t"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF85F60BBB;
-	Tue, 30 Jan 2024 10:02:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D2E8679E8;
+	Tue, 30 Jan 2024 10:03:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706608984; cv=none; b=Lz+t/vwqCJvD+Su3Jo32MjKDsC5FphQ0mcSM9hOjP+k6GPytIYe8OhxFiF3GHhrCabhGQJSwPiwbWEjRfbWl1u01iEaVSjMVMSIuEyfWvbDkOyftSkpJc302MHl9HNStEGdoh87npda829DzHZsi5LC6WJ8hR9bcbKzv1kNGFkQ=
+	t=1706608991; cv=none; b=YRh9vZWAAHFzXowcNDI0b5Js6FzuBVtEZ/tSqlxyENay1Wd07phzrwlog0NkeAl0I6EFda0/RDEoAnw0tHPmKohGg08BiuB78IZALgBOKOWB9Kp24mxy53eSM2t/V1rPe2SZmnJ9ujnN/oM06co2HiNyQyqf/9IbIAS0s+eeubc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706608984; c=relaxed/simple;
-	bh=chGWEln/xl2IgQzp0pg8bGFsb7zFOeDgHEalUKmpMWc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eXkhhrDnCFGaTPPBGqWpQrCOZJRD3S8zeyPlWqQ1Zzfwt1FKMgrKqRsd5gcg3e+A6DFdA92WZ0Uv8hteleMBxBv4kTFzoPXcYRWB86Ssdrk7TQvbueeOyFc/hZZwX1llHOUDHcp7V5Vbv/x29IJ7VTvNhVaG9dSUGwSnGpjT+/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: ece618e1cf814360862a7ff9215f02dc-20240130
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:aae264a8-4af7-494a-b93d-e5201429f6f8,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:-5
-X-CID-INFO: VERSION:1.1.35,REQID:aae264a8-4af7-494a-b93d-e5201429f6f8,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:-5
-X-CID-META: VersionHash:5d391d7,CLOUDID:8777ea7f-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:240130180251FTY18M0A,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
-	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil
-	,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_ULN,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,
-	TF_CID_SPAM_FSI
-X-UUID: ece618e1cf814360862a7ff9215f02dc-20240130
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 1033402814; Tue, 30 Jan 2024 18:02:50 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id 06041E000EB9;
-	Tue, 30 Jan 2024 18:02:50 +0800 (CST)
-X-ns-mid: postfix-65B8C949-7875361294
-Received: from kernel.. (unknown [172.20.15.213])
-	by mail.kylinos.cn (NSMail) with ESMTPA id 79CF4E000EB9;
-	Tue, 30 Jan 2024 18:02:49 +0800 (CST)
-From: Kunwu Chan <chentao@kylinos.cn>
-To: axboe@kernel.dk,
-	asml.silence@gmail.com
-Cc: io-uring@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH] io_uring: Simplify the allocation of slab caches
-Date: Tue, 30 Jan 2024 18:02:47 +0800
-Message-Id: <20240130100247.81460-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1706608991; c=relaxed/simple;
+	bh=IkKzQEXnXlwjhWZFN3oqHoe3HVv0pAR2z5vY4PVRLYg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MmBXAxkIqLap/Ad+V0hMIqf0WdC6/sDudtXtRmt4zIptrIyB+abma8toyuMdk33u51TTs9f6RrfuPlh1OQFivdskdjpmVq9PbLHT8rvFDwE+YETnKCRK1qNkbGL0Kn1aUyMkqYJTp4nEBhH6GW4kxbGsbi08MZxqULEpnYOGzjQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vVZFDbYX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=n/MERs5t; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vVZFDbYX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=n/MERs5t; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 9C9FD1F83F;
+	Tue, 30 Jan 2024 10:03:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706608987; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ypvJnXvVjmaayelrbx9cC9PI4eHdK+C4dtVzpiZqLQ4=;
+	b=vVZFDbYX2wN/3NIyMU5Mb/zYfjArt0R1NdLgrRwS3sMURrlNf2A37D82b9XAdKCmjs7wF4
+	wpLrRvpwHJSu4lLfIrm8JehI8cFJpQhC9lhShY4VVrSTceLWFs21FtoUAvS1Mlnv7uaNi3
+	qIJoFKAwnNja2OGNOKTCpSfrNzvvIa8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706608987;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ypvJnXvVjmaayelrbx9cC9PI4eHdK+C4dtVzpiZqLQ4=;
+	b=n/MERs5tRa7fMRqwi43Nhw143nMxUdTx1DsOb2d1LYDAMF2UgoTh1FS8GACB9h52YQ43a7
+	w6raW35bJ59zKIAA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706608987; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ypvJnXvVjmaayelrbx9cC9PI4eHdK+C4dtVzpiZqLQ4=;
+	b=vVZFDbYX2wN/3NIyMU5Mb/zYfjArt0R1NdLgrRwS3sMURrlNf2A37D82b9XAdKCmjs7wF4
+	wpLrRvpwHJSu4lLfIrm8JehI8cFJpQhC9lhShY4VVrSTceLWFs21FtoUAvS1Mlnv7uaNi3
+	qIJoFKAwnNja2OGNOKTCpSfrNzvvIa8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706608987;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ypvJnXvVjmaayelrbx9cC9PI4eHdK+C4dtVzpiZqLQ4=;
+	b=n/MERs5tRa7fMRqwi43Nhw143nMxUdTx1DsOb2d1LYDAMF2UgoTh1FS8GACB9h52YQ43a7
+	w6raW35bJ59zKIAA==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 7DABC13462;
+	Tue, 30 Jan 2024 10:03:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id Z7anHlvJuGXocgAAn2gu4w
+	(envelope-from <jack@suse.cz>); Tue, 30 Jan 2024 10:03:07 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 1C92CA0807; Tue, 30 Jan 2024 11:03:07 +0100 (CET)
+Date: Tue, 30 Jan 2024 11:03:07 +0100
+From: Jan Kara <jack@suse.cz>
+To: Christoph Hellwig <hch@lst.de>
+Cc: linux-mm@kvack.org, Matthew Wilcox <willy@infradead.org>,
+	Jan Kara <jack@suse.com>, David Howells <dhowells@redhat.com>,
+	Brian Foster <bfoster@redhat.com>,
+	Christian Brauner <brauner@kernel.org>,
+	"Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 18/19] iomap: Convert iomap_writepages() to use
+ for_each_writeback_folio()
+Message-ID: <20240130100307.5ub22s5ajanqstp6@quack3>
+References: <20240125085758.2393327-1-hch@lst.de>
+ <20240125085758.2393327-19-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240125085758.2393327-19-hch@lst.de>
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=vVZFDbYX;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="n/MERs5t"
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[11];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:email,suse.cz:dkim,suse.cz:email,infradead.org:email,suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Score: -4.01
+X-Rspamd-Queue-Id: 9C9FD1F83F
+X-Spam-Flag: NO
 
-commit 0a31bd5f2bbb ("KMEM_CACHE(): simplify slab cache creation")
-introduces a new macro.
-Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
-to simplify the creation of SLAB caches.
+On Thu 25-01-24 09:57:57, Christoph Hellwig wrote:
+> From: Matthew Wilcox <willy@infradead.org>
+> 
+> This removes one indirect function call per folio, and adds typesafety
+> by not casting through a void pointer.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
- io_uring/io_uring.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Looks good. Feel free to add:
 
-diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
-index cd9a137ad6ce..9a810b1169f2 100644
---- a/io_uring/io_uring.c
-+++ b/io_uring/io_uring.c
-@@ -4175,9 +4175,8 @@ static int __init io_uring_init(void)
- 				SLAB_ACCOUNT | SLAB_TYPESAFE_BY_RCU,
- 				offsetof(struct io_kiocb, cmd.data),
- 				sizeof_field(struct io_kiocb, cmd.data), NULL);
--	io_buf_cachep =3D kmem_cache_create("io_buffer", sizeof(struct io_buffe=
-r), 0,
--					  SLAB_HWCACHE_ALIGN | SLAB_PANIC | SLAB_ACCOUNT,
--					  NULL);
-+	io_buf_cachep =3D KMEM_CACHE(io_buffer,
-+					  SLAB_HWCACHE_ALIGN | SLAB_PANIC | SLAB_ACCOUNT);
-=20
- #ifdef CONFIG_SYSCTL
- 	register_sysctl_init("kernel", kernel_io_uring_disabled_table);
---=20
-2.39.2
+Reviewed-by: Jan Kara <jack@suse.cz>
 
+								Honza
+
+> ---
+>  fs/iomap/buffered-io.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index 093c4515b22a53..58b3661f5eac9e 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -1887,9 +1887,8 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
+>   * regular allocated space.
+>   */
+>  static int iomap_do_writepage(struct folio *folio,
+> -		struct writeback_control *wbc, void *data)
+> +		struct writeback_control *wbc, struct iomap_writepage_ctx *wpc)
+>  {
+> -	struct iomap_writepage_ctx *wpc = data;
+>  	struct inode *inode = folio->mapping->host;
+>  	u64 end_pos, isize;
+>  
+> @@ -1986,10 +1985,12 @@ iomap_writepages(struct address_space *mapping, struct writeback_control *wbc,
+>  		struct iomap_writepage_ctx *wpc,
+>  		const struct iomap_writeback_ops *ops)
+>  {
+> -	int			ret;
+> +	struct folio *folio;
+> +	int ret;
+>  
+>  	wpc->ops = ops;
+> -	ret = write_cache_pages(mapping, wbc, iomap_do_writepage, wpc);
+> +	for_each_writeback_folio(mapping, wbc, folio, ret)
+> +		ret = iomap_do_writepage(folio, wbc, wpc);
+>  	if (!wpc->ioend)
+>  		return ret;
+>  	return iomap_submit_ioend(wpc, wpc->ioend, ret);
+> -- 
+> 2.39.2
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
