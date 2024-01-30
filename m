@@ -1,120 +1,115 @@
-Return-Path: <linux-kernel+bounces-45043-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26440842AED
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:29:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D814842AF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:30:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBA111F25EF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:29:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F94C1C25DFC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:30:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A97912BF05;
-	Tue, 30 Jan 2024 17:29:29 +0000 (UTC)
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3894612BF03;
+	Tue, 30 Jan 2024 17:30:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A7T8YvSe"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F418586AC8;
-	Tue, 30 Jan 2024 17:29:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68B68128386;
+	Tue, 30 Jan 2024 17:30:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706635768; cv=none; b=QT/pH1v0LXrAeHnOeCNcGa9fZWA5l70ZSQBgZWKtFfmJHtqAdonxWmtssdMSgjjUSlmb2mT8enNKiCpPSEG8W4mL3/fg4WrOJ8vIeoQ+BQ327s1cfy/mubBC/6IFTLk7Rl8Vx2Ti2dc/wunr/6qRrRVd6rqMXHA85cBDTVAxWwo=
+	t=1706635822; cv=none; b=uARTK/4zp1SyExbpjOASRSUuRoKM/nslL9KHB6cZZgDqDeTJXUoic24HUgYzeufA/TnPi2kj3pwtYcXzBbviVF0VdfIshooWYNYAON73/uNm7NYkOpAO3ZPVoAXSOnEQPokrKXk/TGVG3mP6OqQf/kY5wwuU2lyhMZ+bHJqEI4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706635768; c=relaxed/simple;
-	bh=wQ5lyz2eBlx1PxsGXBAMIkd3YS8qNppoaChpsHFgeSA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ljFon+YermeneluwqqDzB6PiVIGSoYrSFh/bRdtF8LMTv0OCj7Rzp57aWFIC202F+/vjRFVOWRKPI7EtygTN4HADbQtv5LRjYtAqx/80YVeuKLt497QhXq/BexwP5J06PEnIrqQJAHJ8tckAvb7q/Qq6ZEWTbeZPwKhPRXN1vJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a29c4bbb2f4so445376266b.1;
-        Tue, 30 Jan 2024 09:29:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706635765; x=1707240565;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lX5j+4Pi5k+lrwe5c2LVQlx9bMQ0Yzg1CVxNcNnOwRU=;
-        b=nVIcyk/fobbLJV6cBWIKnD0wj2UZoOYgi6CemWDu+UageYZPZRN+fyR2uiGtkqVCmf
-         5DWML6lR0VuzqPlYgFT3MLx/d/V8y39VGY3RFAMFytZrSf5twpGa2zwp6b/v/qhminvK
-         rN4cDRWPTHmLArozwnIq3voZvB4CTHGhpczfJgHwKNGGBk5qFDh3EVABQm31gs0HPHUX
-         IB6yN7bG3l8XxnYXojeP9o1YkhcRbe1pWmf7Lo8CoIikucMkbYSxey1bIcIV6zK6/E44
-         q3voEOitGGFJu2YJ51iK22zyu/nHZ6lhTgstoSkis5cKaj6/oyTuwiatjfjYxP5nktE4
-         VvTg==
-X-Gm-Message-State: AOJu0Yz2HiLxFA8g4wySrjKD19C8qSCchDr9HZGG3Zzsk8fRSsrG6NbW
-	7a3D9/tUs3njGSaHRGl2pAQYDJMylHOQw050xQfQhzPzFcmUb5SM
-X-Google-Smtp-Source: AGHT+IHP0TNvHsKVfe06kCsdvC4yvJ2v+4V8iPbs6DfFMnJTk08qnmxaatQnOQvg5LTM0M+5jDtpvA==
-X-Received: by 2002:a17:906:250e:b0:a35:d943:b183 with SMTP id i14-20020a170906250e00b00a35d943b183mr3829613ejb.35.1706635764952;
-        Tue, 30 Jan 2024 09:29:24 -0800 (PST)
-Received: from gmail.com (fwdproxy-cln-116.fbsv.net. [2a03:2880:31ff:74::face:b00c])
-        by smtp.gmail.com with ESMTPSA id w24-20020a17090652d800b00a3193a5556csm5309049ejn.189.2024.01.30.09.29.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 09:29:24 -0800 (PST)
-Date: Tue, 30 Jan 2024 09:29:22 -0800
-From: Breno Leitao <leitao@debian.org>
-To: Vegard Nossum <vegard.nossum@oracle.com>
-Cc: Jonathan Corbet <corbet@lwn.net>,
-	Jani Nikula <jani.nikula@linux.intel.com>, kuba@kernel.org,
-	"David S. Miller" <davem@davemloft.net>, linux-doc@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	pabeni@redhat.com, edumazet@google.com
-Subject: Re: [PATCH v3] Documentation: Document each netlink family
-Message-ID: <Zbkx8vd+vzLvWuuF@gmail.com>
-References: <20231121114831.3033560-1-leitao@debian.org>
- <874jevjgvo.fsf@intel.com>
- <87jznqewa7.fsf@meer.lwn.net>
- <ZbkebMW+xLqNhsoB@gmail.com>
- <63304f6a-d26f-414a-8c92-14d740774379@oracle.com>
+	s=arc-20240116; t=1706635822; c=relaxed/simple;
+	bh=B0eFt1/iq1Q7kXHqs4cpK2Jx0vshTUBlv/sAKuFh1zY=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=Y1C+p3jrnJxGM+tNq8SNTS8M5Vs2/6w/bnRQHI7GX88INVG+ytQZfmiqdoC69jueLad1g2hsrYcZkba8bo7c4oXJ7ksA0fgsT7qxu0KPhywOb44t8pg2Cin0THZSC/VoromoC+IIidKSp/MVNpCE4gpP5jHX01DW8ogm0XmW6hA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A7T8YvSe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 461FCC433F1;
+	Tue, 30 Jan 2024 17:30:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706635821;
+	bh=B0eFt1/iq1Q7kXHqs4cpK2Jx0vshTUBlv/sAKuFh1zY=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=A7T8YvSe6a/Uvc78h9y2l6LhBJRdJGTRVInE0cZN7k7I4vVCTLW5EFjS0NBiHDOa7
+	 x0kat5UwDrJW1vaTWLwU0MqrDJQTzDoePiY21lRirxLHoGEG8cxNMSV8jp0lZLvau0
+	 F/o98R7oFi9BY+md2KclDk8jAUy3MmkmIdtRgVb3xHWoYfUonolDcOpLCFiZdyWg5G
+	 /jFjeh+zCgBZoYYD3rB2hU/Cl6QHbsViSizk8kRK4l9/EFcfM2bWQtk3dAaKVGZCSU
+	 bRvinlDL3FMsgcth228saf9CNotJhF2xZGwjT2SnQ6dt3eClGPPGOuq01QZw4xtqNT
+	 1fazf7r6yGmEQ==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <63304f6a-d26f-414a-8c92-14d740774379@oracle.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 30 Jan 2024 19:30:16 +0200
+Message-Id: <CYS7WMFLXNE1.35OBTKTONKNX3@suppilovahvero>
+Cc: "Jiang, Dave" <dave.jiang@intel.com>, "linux-integrity@vger.kernel.org"
+ <linux-integrity@vger.kernel.org>, "linux-cxl@vger.kernel.org"
+ <linux-cxl@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "Williams, Dan J"
+ <dan.j.williams@intel.com>, "keyrings@vger.kernel.org"
+ <keyrings@vger.kernel.org>, "linux-security-module@vger.kernel.org"
+ <linux-security-module@vger.kernel.org>, "nvdimm@lists.linux.dev"
+ <nvdimm@lists.linux.dev>
+Subject: Re: [PATCH] KEYS: encrypted: Add check for strsep
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Jarkko Sakkinen" <jarkko@kernel.org>, "Verma, Vishal L"
+ <vishal.l.verma@intel.com>, "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+ "paul@paul-moore.com" <paul@paul-moore.com>, "dhowells@redhat.com"
+ <dhowells@redhat.com>, "yaelt@google.com" <yaelt@google.com>,
+ "serge@hallyn.com" <serge@hallyn.com>, "nichen@iscas.ac.cn"
+ <nichen@iscas.ac.cn>, "sumit.garg@linaro.org" <sumit.garg@linaro.org>,
+ "jmorris@namei.org" <jmorris@namei.org>
+X-Mailer: aerc 0.15.2
+References: <20231108073627.1063464-1-nichen@iscas.ac.cn>
+ <4d3465b48b9c5a87deb385b15bf5125fc1704019.camel@intel.com>
+ <e3275c0cfe21d75e0d71ea3fc24a31252efc9ad6.camel@linux.ibm.com>
+ <e3b1a5e532ed86e674385abc4812c5a774f851d4.camel@intel.com>
+ <49c48e3e96bf0f5ebef14e7328cc8a6ca6380e08.camel@linux.ibm.com>
+ <50c2fa781e3266ee8151afdef5a8659d63ca952e.camel@intel.com>
+ <CYS7QMYS8XAJ.2QPI3MS5KXK8E@suppilovahvero>
+In-Reply-To: <CYS7QMYS8XAJ.2QPI3MS5KXK8E@suppilovahvero>
 
-On Tue, Jan 30, 2024 at 05:23:36PM +0100, Vegard Nossum wrote:
-> 
-> On 30/01/2024 17:06, Breno Leitao wrote:
-> > On Tue, Jan 30, 2024 at 07:22:08AM -0700, Jonathan Corbet wrote:
-> > > Jani Nikula <jani.nikula@linux.intel.com> writes:
-> > > 
-> > > > On Tue, 21 Nov 2023, Breno Leitao <leitao@debian.org> wrote:
-> > > > > This is a simple script that parses the Netlink YAML spec files
-> > > > > (Documentation/netlink/specs/), and generates RST files to be rendered
-> > > > > in the Network -> Netlink Specification documentation page.
-> > > > 
-> > > > First of all, my boilerplate complaint: All extra processing for Sphinx
-> > > > should really be done using Sphinx extensions instead of adding Makefile
-> > > > hacks. I don't think it's sustainable to keep adding this stuff. We
-> > > > chose Sphinx because it is extensible, and to avoid the Rube Goldberg
-> > > > machine that the previous documentation build system was.
-> > > 
-> > > So I feel like we've (me included) have kind of sent Breno around in
-> > > circles on this one.  This *was* implemented as an extension once:
-> > > 
-> > >    https://lore.kernel.org/netdev/20231103135622.250314-1-leitao@debian.org/
-> > > 
-> > > At that time it seemed too complex, and I thought that an external
-> > > script would lead to a simpler implementation overall.  Perhaps I was
-> > > wrong.
-> > 
-> > I think you are correct. I personally _think_ that the external script
-> > is better, mainly because it is self contained, thus, easier to
-> > maintain.
-> 
-> From a cursory look at the two versions, the actual Python code to read
-> the YAML and write the reST is the same in both cases. (Breno, please
-> correct me if I'm wrong.)
+On Tue Jan 30, 2024 at 7:22 PM EET, Jarkko Sakkinen wrote:
+> On Wed Jan 24, 2024 at 11:10 PM EET, Verma, Vishal L wrote:
+> > On Wed, 2024-01-24 at 15:40 -0500, Mimi Zohar wrote:
+> > > On Wed, 2024-01-24 at 20:10 +0000, Verma, Vishal L wrote:
+> > > > >=20
+> > > > Ah, thanks for confirming! Would you like me to send a revert patch=
+ or
+> > > > will you do it?
+> > >=20
+> > > Revert "KEYS: encrypted: Add check for strsep"
+> > > =C2=A0=C2=A0=C2=A0=20
+> > > This reverts commit b4af096b5df5dd131ab796c79cedc7069d8f4882.
+> > > =C2=A0=C2=A0=C2=A0=20
+> > > New encrypted keys are created either from kernel-generated random
+> > > numbers or user-provided decrypted data.=C2=A0 Revert the change requ=
+iring
+> > > user-provided decrypted data.
+> > >=20
+> > >=20
+> > > Can I add your Reported-by?
+> >
+> > Yes that works, Thank you.
+>
+> This went totally wrong IMHO.
+>
+> Priority should be to locate and fix the bug not revert useful stuff
+> when a bug is found that has limited scope.
 
-You are correct. They are similar because Sphinx was not bringing much
-value to what I was trying to do (or I was not able to explore all
-Sphinx benefit - It was my very first Sphinx plug-in).
+By guidelines here the commit is also a bug fix and reverting
+such commit means seeding a bug to the mainline. Also the klog
+message alone is a bug fix here. So also by book it really has
+to come back as it was already commit because we cannot
+knowingly mount bugs to the mainline, right?
 
-That said, the plug-in was basically a wrapper around "the Python code",
-that was re-used for the one-off script. So, moving from one to another
-was easy.
+BR, Jarkko
 
