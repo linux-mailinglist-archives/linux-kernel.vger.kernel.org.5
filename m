@@ -1,201 +1,169 @@
-Return-Path: <linux-kernel+bounces-44216-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44228-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63CC6841EEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:12:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8267C841F20
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:16:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8930E1C241BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:12:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2194D1F2BD09
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:16:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE2B45915B;
-	Tue, 30 Jan 2024 09:12:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66A5B5F849;
+	Tue, 30 Jan 2024 09:13:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="V9gbwDs+"
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V6Pe6k+U"
+Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52C2958AB8
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:12:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11580679EC;
+	Tue, 30 Jan 2024 09:13:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706605928; cv=none; b=FeuwaDCNwDHr3OJHfsGzxXyPX+qUoOhP0KfTPdX/vRel9G1OnK5hrYRCl9D4u03D4CpQrPM606BGzf+oemTJ5VFnXNNTi32PPC0EIaXlpzfzFyh9XanYmn5W75QL7u+SjDMaPkEnUvPc0X6TMdr2S052dsUw3XwReVLixoly3co=
+	t=1706605999; cv=none; b=GkDTpyxZi27W9n9AQDn+KqvktuXLyqFrRQjNgf0Xz81EANEftCpI6zkeO+/mzBVXgEEKLw8vC50O+RRfCf7KsKmwHUwuBYiKnubQ03zIS8pU6LLvneYhzwycCuEsri4Nai2uJNg0guSHgLajdgh9EEDwWT8xLFliDT3yvc/PA1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706605928; c=relaxed/simple;
-	bh=vZlHem6hzuG3LFpthbRM+SoNrdspQpN3rAyWGZtr6Is=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sR9H6pPamra10s8ezqaZNGMbN0kPM15Rl3T9DfdGlBT8NxceORfcKMewYlIGuITWZHoHY5QtToFq1OdKLbwfWt93pTWAMMVJ+iJOVqLqZah1o+sFPB/UChxovIq0q1/9PHg09G507VMTz7zf2JYw1zDiaSpA7d34p9gX2LlkxhQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com; spf=pass smtp.mailfrom=amarulasolutions.com; dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b=V9gbwDs+; arc=none smtp.client-ip=209.85.219.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dc261316b0dso3182140276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:12:07 -0800 (PST)
+	s=arc-20240116; t=1706605999; c=relaxed/simple;
+	bh=yxd9IHSWjzcBrPuUDO7+SCI1N0zvICZf05uTKbbfPXA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=AvGxjly5iM+H29jokXv6wgFDDUN6c7XxxYyyTis9zougPD3eHiWFy1LpwYNrZhG+mhVTzlezvzGGO7MnJc8zRjFN6N+UuU3sMymfJN1n6pxUMJFx1WlPw4yVd6go6veHfPswnSl85hjr+e4dNFEumlRauUtvGvOq0mpnxKqW6vU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V6Pe6k+U; arc=none smtp.client-ip=209.85.210.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6e1214ae9d4so1189040a34.3;
+        Tue, 30 Jan 2024 01:13:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1706605926; x=1707210726; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1706605997; x=1707210797; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UjMzYiCsE7PaNmy35UnbQyvsqa5heiYDi1xRNMyjnas=;
-        b=V9gbwDs+MRG/9Dmz3S1zl7jiwZtgiSowRAkiweiAwpnqrXJSeu5l/GKYJLhYXmeIf/
-         ufR/Deho1nkNTNMNO3giicpJJC+Kn+4SwXt3g6d6uVn2iitVWQ50OZtsXxZyNCFAgqTy
-         nXa2nAPsxILUv7/32uymRpR9fvcotmFTKm/fs=
+        bh=kP7G/zPUbEjcGqCRjgaQMWAAf9wDrODicb4k9l2g++8=;
+        b=V6Pe6k+UGrgqV7xqpVrcPSh4/WagxZcW6mVw87SxgkRJqAjxyXUfuq2csLKHoPFYOA
+         wbEWNj/drHXX/UXtPMGayfKC3QAjqL4BkL6SvcXYHK1gUBvDzisitzOiU8/EluqgcxAU
+         yM3wcUZ9bG1xzuosC4eeY1cI5pXwhlprp2M8yYW0nDZeXwOK9dtuHLVM3ys2zeLCCwrt
+         WMoTZp6CKUqK9y7noEWv+KxA0ekazZqNWanG2o8HAMSQIgocy4ipIfENpe+ggCd8bSys
+         vDvkGo0HvH+JYn10rcnvBpFvOk+8aPh7hO8Io8e6fokvd1IPZnQknoZhpICYsZDms35i
+         04wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706605926; x=1707210726;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UjMzYiCsE7PaNmy35UnbQyvsqa5heiYDi1xRNMyjnas=;
-        b=f2zlBNIe4Kb4Q9NgzEM9HOnhFjUguUjPgIoPy9/s7Ds6eZh3rfFqIYFSMRf1y7vdZ8
-         XXpBngCGWVGAMe4KSmuqzycYbaFLM3zygL01rHHvFw/k9pfCEY36JW1kZO1N4KH9Bz0n
-         pXRqCvuWOBkul/Dr5Gf89FSMJeufE2wofB3JVhGaVhqPtWtezPIleyxq8pOjPNrvd7Eo
-         FDEB6MWvDfeLjZGzPtKJ1RoomI+CicQC8U9s++5OvdOJuQOxOLibqQln2VItTdluNTzn
-         OLElJq3Rxk+6/pSLuxQJLpcl8XHpaR+ccz4BTYbE5wHuaFWn/FIvCTPSLIOwGPrzd3BV
-         wVfg==
-X-Gm-Message-State: AOJu0YxzohqWEgzydAby+t3w4kXYuoAckt2DAE3WdF5F1ZoBtVRZDV/j
-	yVXs3xKl/qQCO2dEETV+D8tf/tdacu4PA1bJlD/filLk3lFlWY2w93/xFASF9k8TkaDB/pYpjFp
-	JJHSFUaTRoEsSLDumMXAPnqiMzLPs002j8AD5CA==
-X-Google-Smtp-Source: AGHT+IE1Xtyo447bABZUIXxJVEHr3YoCy1sd7si+1fdu6stw64epBG2GA9tH9vg6XiVGO8+8xyGxBj+g/74LPW1Euz8=
-X-Received: by 2002:a25:854b:0:b0:dc2:3608:2b24 with SMTP id
- f11-20020a25854b000000b00dc236082b24mr4210395ybn.25.1706605926248; Tue, 30
- Jan 2024 01:12:06 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706605997; x=1707210797;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=kP7G/zPUbEjcGqCRjgaQMWAAf9wDrODicb4k9l2g++8=;
+        b=pSkpwMqZzWGQgELxlm9IEkN8M4GHSQMYjjnlCDZCHyMpI2LtV3I7++gKkfjSzo+0FZ
+         FsASvyi1TYC0aKhRLC0qpXJOb/UTMa2f0eQ5PhhY6K0yyNBm3T39vy4fWgUixuDaUTeD
+         RgDyeWSOk5+aWpupZCFLVm7fM87kZyyUqqISZ8KAVe2wS952yj3XByeUU338SFTU3lyD
+         kSdHXdwHRN+LuirjVKDSCCasyJjsYAXuoGyzHFxk1Oc0Y2SY5kzLJ8noAb0FpR6JlQ6y
+         i8ihZWm6mkwMYUhcpekAcN2eZSKwieAGEdwkr87vGkXOnobKKytsfEPwqKEN+o5eVvRA
+         btjw==
+X-Gm-Message-State: AOJu0Yw7CM89QiNGnN+7I/mM+wrBryMcw5P9ScZW0wew9y6om/UiX2ft
+	zDU1i6h+u3f+m8E3N2QdDEiqE6Endj6QXS/1KLTE2whcaI3jGNtV
+X-Google-Smtp-Source: AGHT+IE8Q4KG3NbeQFqt34/6WaZTRJSkgwKNvSafvHvYRaM+fZtDCLEugDIup6U8STh4gXX2K2JK/g==
+X-Received: by 2002:a05:6358:7e83:b0:178:7f7d:91a6 with SMTP id o3-20020a0563587e8300b001787f7d91a6mr2601345rwn.46.1706605997066;
+        Tue, 30 Jan 2024 01:13:17 -0800 (PST)
+Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
+        by smtp.gmail.com with ESMTPSA id b4-20020a056a000a8400b006dde023cce8sm7211721pfl.57.2024.01.30.01.13.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jan 2024 01:13:16 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+From: Tejun Heo <tj@kernel.org>
+To: torvalds@linux-foundation.org,
+	mpatocka@redhat.com
+Cc: linux-kernel@vger.kernel.org,
+	dm-devel@lists.linux.dev,
+	msnitzer@redhat.com,
+	ignat@cloudflare.com,
+	damien.lemoal@wdc.com,
+	bob.liu@oracle.com,
+	houtao1@huawei.com,
+	peterz@infradead.org,
+	mingo@kernel.org,
+	netdev@vger.kernel.org,
+	allen.lkml@gmail.com,
+	kernel-team@meta.com,
+	Tejun Heo <tj@kernel.org>,
+	Alasdair Kergon <agk@redhat.com>,
+	Mike Snitzer <snitzer@kernel.org>
+Subject: [PATCH 8/8] dm-verity: Convert from tasklet to BH workqueue
+Date: Mon, 29 Jan 2024 23:11:55 -1000
+Message-ID: <20240130091300.2968534-9-tj@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240130091300.2968534-1-tj@kernel.org>
+References: <20240130091300.2968534-1-tj@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231113164344.1612602-1-mwalle@kernel.org> <631fe35a2a3b00781231e4f3f5094fae@kernel.org>
- <1ef3dad2-5f55-40e5-bba7-3c71d71c12e4@kontron.de> <CAAQKjZMccDwa63_PNJCP0rNOaHjTwcOz8AbKa=JXLQi-b0QVVw@mail.gmail.com>
- <2400535875c353ff7208be2d86d4556f@kernel.org> <ZZ1BBO2nNSp3g-gT@phenom.ffwll.local>
- <CAAQKjZNnJQDn_r1+WNmsxM-2O48O0+yWAUAqpjZRjMYMT3xGwg@mail.gmail.com>
- <CAPM=9tytMB9frxNeD08hu1qsusY=wEE3bJOFmUgA1rSpabwDpg@mail.gmail.com>
- <b18d88302acfca001a6693d78909bc2a@kernel.org> <31e1a38a1d012a32d6f7bc8372b6360e@kernel.org>
-In-Reply-To: <31e1a38a1d012a32d6f7bc8372b6360e@kernel.org>
-From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Date: Tue, 30 Jan 2024 10:11:55 +0100
-Message-ID: <CABGWkvp5Xx61h+sfKotb=jsQE3jPXP0bJfTtb1k9_OCH-TzTvQ@mail.gmail.com>
-Subject: Re: [PATCH] drm: bridge: samsung-dsim: Don't use FORCE_STOP_STATE
-To: Michael Walle <mwalle@kernel.org>
-Cc: Dave Airlie <airlied@gmail.com>, Dmitry Osipenko <dmitry.osipenko@collabora.com>, 
-	Inki Dae <daeinki@gmail.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Robert Foss <rfoss@kernel.org>, 
-	Frieder Schrempf <frieder.schrempf@kontron.de>, Jagan Teki <jagan@amarulasolutions.com>, 
-	Andrzej Hajda <andrzej.hajda@intel.com>, Marek Szyprowski <m.szyprowski@samsung.com>, 
-	Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Tim Harvey <tharvey@gateworks.com>, Alexander Stein <alexander.stein@ew.tq-group.com>, 
-	linux-kernel@vger.kernel.org, 
-	DRI mailing list <dri-devel@lists.freedesktop.org>, Daniel Vetter <daniel@ffwll.ch>, 
-	Michael Trimarchi <michael@amarulasolutions.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Michael,
+The only generic interface to execute asynchronously in the BH context is
+tasklet; however, it's marked deprecated and has some design flaws. To
+replace tasklets, BH workqueue support was recently added. A BH workqueue
+behaves similarly to regular workqueues except that the queued work items
+are executed in the BH context.
 
-On Mon, Jan 29, 2024 at 5:06=E2=80=AFPM Michael Walle <mwalle@kernel.org> w=
-rote:
->
-> >> Just FYI this conflictted pretty heavily with drm-misc-next changes in
-> >> the same area, someone should check drm-tip has the correct
-> >> resolution, I'm not really sure what is definitely should be.
-> >
-> > FWIW, this looks rather messy now. The drm-tip doesn't build.
-> >
-> > There was a new call to samsung_dsim_set_stop_state() introduced
-> > in commit b2fe2292624ac (drm: bridge: samsung-dsim: enter display
-> > mode in the enable() callback).
->
-> I had a closer look at the latest linux-next (where somehow my patch
-> made it into) and tried to apply commit b2fe2292624ac (drm: bridge:
-> samsung-dsim: enter display mode in the enable() callback). It looks
-> like only the following hunk is still needed from that patch. Everything
-> else is covered by this fixes patch.
->
-> Dario, could you rebase your commit onto this patch? I had a quick test
-> with this change and it seems to work fine for our case.
->
-> --snip--
-> diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c
-> b/drivers/gpu/drm/bridge/samsung-dsim.c
-> index 63a1a0c88be4..92755c90e7d2 100644
-> --- a/drivers/gpu/drm/bridge/samsung-dsim.c
-> +++ b/drivers/gpu/drm/bridge/samsung-dsim.c
-> @@ -1498,6 +1498,8 @@ static void samsung_dsim_atomic_disable(struct
-> drm_bridge *bridge,
->          if (!(dsi->state & DSIM_STATE_ENABLED))
->                  return;
->
-> +       samsung_dsim_set_display_enable(dsi, false);
-> +
->          dsi->state &=3D ~DSIM_STATE_VIDOUT_AVAILABLE;
->   }
->
-> @@ -1506,8 +1508,6 @@ static void
-> samsung_dsim_atomic_post_disable(struct drm_bridge *bridge,
->   {
->          struct samsung_dsim *dsi =3D bridge_to_dsi(bridge);
->
-> -       samsung_dsim_set_display_enable(dsi, false);
-> -
->          dsi->state &=3D ~DSIM_STATE_ENABLED;
->          pm_runtime_put_sync(dsi->dev);
->   }
-> --snip--
->
-> -michael
+This patch converts dm-verity from tasklet to BH workqueue.
 
-I'm sorry, but I didn't understand well what I have to do.
-This is what I have done:
+This is a minimal conversion which doesn't rename the related names
+including the "try_verify_in_tasklet" option. If this patch is applied, a
+follow-up patch would be necessary. I couldn't decide whether the option
+name would need to be updated too.
 
-git clone https://kernel.googlesource.com/pub/scm/linux/kernel/git/next/lin=
-ux-next.git
-cd linux-next
-# add your changes, the ones of the emails
-git am --reject 0001-drm-bridge-samsung-dsim-enter-display-mode-in-the-en.p=
-atch
+Only compile tested. I don't know how to verity.
 
-diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c
-b/drivers/gpu/drm/bridge/samsung-dsim.c
-index 92755c90e7d2..b47929072583 100644
---- a/drivers/gpu/drm/bridge/samsung-dsim.c
-+++ b/drivers/gpu/drm/bridge/samsung-dsim.c
-@@ -1508,6 +1508,9 @@ static void
-samsung_dsim_atomic_post_disable(struct drm_bridge *bridge,
- {
-        struct samsung_dsim *dsi =3D bridge_to_dsi(bridge);
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Cc: Alasdair Kergon <agk@redhat.com>
+Cc: Mike Snitzer <snitzer@kernel.org>
+Cc: Mikulas Patocka <mpatocka@redhat.com>
+Cc: dm-devel@lists.linux.dev
+---
+ drivers/md/dm-verity-target.c | 8 ++++----
+ drivers/md/dm-verity.h        | 2 +-
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-+       if (!samsung_dsim_hw_is_exynos(dsi->plat_data->hw_type))
-+               samsung_dsim_set_stop_state(dsi, true);
-+
-        dsi->state &=3D ~DSIM_STATE_ENABLED;
-        pm_runtime_put_sync(dsi->dev);
+diff --git a/drivers/md/dm-verity-target.c b/drivers/md/dm-verity-target.c
+index 14e58ae70521..911261de2d08 100644
+--- a/drivers/md/dm-verity-target.c
++++ b/drivers/md/dm-verity-target.c
+@@ -645,9 +645,9 @@ static void verity_work(struct work_struct *w)
+ 	verity_finish_io(io, errno_to_blk_status(verity_verify_io(io)));
  }
+ 
+-static void verity_tasklet(unsigned long data)
++static void verity_bh_work(struct work_struct *w)
+ {
+-	struct dm_verity_io *io = (struct dm_verity_io *)data;
++	struct dm_verity_io *io = container_of(w, struct dm_verity_io, bh_work);
+ 	int err;
+ 
+ 	io->in_tasklet = true;
+@@ -675,8 +675,8 @@ static void verity_end_io(struct bio *bio)
+ 	}
+ 
+ 	if (static_branch_unlikely(&use_tasklet_enabled) && io->v->use_tasklet) {
+-		tasklet_init(&io->tasklet, verity_tasklet, (unsigned long)io);
+-		tasklet_schedule(&io->tasklet);
++		INIT_WORK(&io->bh_work, verity_bh_work);
++		queue_work(system_bh_wq, &io->bh_work);
+ 	} else {
+ 		INIT_WORK(&io->work, verity_work);
+ 		queue_work(io->v->verify_wq, &io->work);
+diff --git a/drivers/md/dm-verity.h b/drivers/md/dm-verity.h
+index f9d522c870e6..7c16f834f31a 100644
+--- a/drivers/md/dm-verity.h
++++ b/drivers/md/dm-verity.h
+@@ -83,7 +83,7 @@ struct dm_verity_io {
+ 	struct bvec_iter iter;
+ 
+ 	struct work_struct work;
+-	struct tasklet_struct tasklet;
++	struct work_struct bh_work;
+ 
+ 	/*
+ 	 * Three variably-size fields follow this struct:
+-- 
+2.43.0
 
-And then test the driver for my use case.
-
-Is everything I wrote correct, or am I making a mistake?
-
-Thanks and regards,
-Dario
-
---=20
-
-Dario Binacchi
-
-Senior Embedded Linux Developer
-
-dario.binacchi@amarulasolutions.com
-
-__________________________________
-
-
-Amarula Solutions SRL
-
-Via Le Canevare 30, 31100 Treviso, Veneto, IT
-
-T. +39 042 243 5310
-info@amarulasolutions.com
-
-www.amarulasolutions.com
 
