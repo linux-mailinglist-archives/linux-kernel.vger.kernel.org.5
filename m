@@ -1,113 +1,151 @@
-Return-Path: <linux-kernel+bounces-44948-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44949-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D662842951
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:32:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 727E5842953
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:33:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 332011F279F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:32:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0EE01F27D8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:33:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51F0B128379;
-	Tue, 30 Jan 2024 16:28:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41EC9129A8F;
+	Tue, 30 Jan 2024 16:30:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ijtKg/qp"
-Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="oee9L0w6"
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 447911272C2
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 16:28:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B577128382
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 16:30:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706632088; cv=none; b=L4zz22TZW4s7gNTE5FEqXxE79uH8IkpqQKqxoUoziREgKI6OBdGn05EfgZh8jbvfHRl7kjwDdueQLxlYegNcOq89SyKpxbl0Q1yxdAVAejaulPvkf3f3ZBHkNKtn9PR4O3i3aNZjA0OpzFNcGpURtdxz3JkmKoBoJbHM3JtrCQk=
+	t=1706632203; cv=none; b=IZyKRwpZhJdn4PoZv3GFUwTimLVfVMcDbG/sc2De9t96Op0SPPXQKQsR0iDIljlSeLrx9Z3ANESFYCaB6vnAOmGo93BlXeQ+hvs5DRb0J7dCKaqP0WF5Is4Il/Dv5i8EmrrLXIgaTlWYnfI+kBvJrfBPFQrftjdyF/nsIin9UT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706632088; c=relaxed/simple;
-	bh=lZ2QdKsKANiIGhW7Io639hVF2FfyxCTuzxzpjUE1bgM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=O3u3zGavGGbz4thGy9a/SBoKl06nCRsKyjjZF/I33bgeCmQjYwcUA9eNS6badheGNEesdJnG+6BvCVSw4dy334ZdJLdoY7V2wSEMQFXG2Z9s6gbajlW8rA/+ohlGlSZJeGfoAC8qCXNOcw2oiPV80FYNGIRD7f/0uLRmSnqnW8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ijtKg/qp; arc=none smtp.client-ip=209.85.166.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-3637849122dso7278105ab.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 08:28:07 -0800 (PST)
+	s=arc-20240116; t=1706632203; c=relaxed/simple;
+	bh=HGUrBCzw44fCvpMm/PJWRDlmh/Lag6HIgqKwNA9HrWw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qQK766U3kRZ5Mxx2nCvA/inPnulg/nJdPhTq2PeQG+lmJORlCayYLqV37RrStBw1XcMxPFIPLFxdRKCTHfL9kKjW2Dnn2tYxELfr06kjxdtXGK1n4N9oMOydKj6MG4DOzzDXZS/rAPVNaB/vEiME936M3oHroQ4UIG4SlkQ4uKg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=oee9L0w6; arc=none smtp.client-ip=209.85.160.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-42a4516ec46so34730321cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 08:30:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706632086; x=1707236886; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QGF9L+rs+xHCa+3li1td7rVlO9eeL6/0jDOgKgH81yc=;
-        b=ijtKg/qpz3lvMsZ8ACyJBH55mFbiygfsfZy77/G61N0QB+igWbjuPSZRIQw6QhRgV/
-         maZARUVes+Zf5hLTy+BXSISAHRxEDfUCfcsrNnXhst3rgB6Owy/oKzpImGH2vpK5deig
-         OZEFAFsTnR/xSsu0cAovhEcaYqXZyVKvFMmApA0qa7WH7hISYy+4hmubVDsKxq+ZgJ94
-         slP+7enIWn1aQjNY5pebIObhqC9u5iK1hcbxpNCOqMuIpCe6ZMnzPl1ydEkVvFEedJ4U
-         MRTf/YLhImLRpfKq/p4JhHbUsHMxgCiZtRlmlkWYT0H3EwPCg8sS8pb+4Ndx8TQmasjv
-         KUnQ==
+        d=ziepe.ca; s=google; t=1706632200; x=1707237000; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5Zcz0g1eKRHdqCkK9hAt9D66pTC6Kq1KClFa9gGBswE=;
+        b=oee9L0w6kTxb+TEBX1EaGVSqTUgLmvaM7W5MhZngj0CBv4NyMFZAXvoOS8DGUETRXE
+         1o2c+xEhFJN1AvQMGo9HUO4Byl6rVkehTmJRiXUqO390VwHVBNDz039b7sv0uPTQyalp
+         lQjpeiO9/z62r8x3lmOwKL0H0BqnQKSHaOY8ARY6aysr7MJej13TcgQS9KdysPF+UJC7
+         FYN5uMfxVC01Pmk5YmXR6tVRcZ/uz4xqpR3BTiwo6aHG3TCASM10C1EW/wQrX2WCtMMB
+         cC3gJ2A22niq56IWArJbmV4Lh9eLKMVOQ35yopowSIFO+ZdwmF2Oushel/sfRbo/0pxG
+         Venw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706632086; x=1707236886;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QGF9L+rs+xHCa+3li1td7rVlO9eeL6/0jDOgKgH81yc=;
-        b=ufIQ7ulSnNabrhKUmBNadz37/c/SmlGJ5VsJSPaU1Re6bqZQ9tMaDIydCqg+U10jQi
-         4B6hoSXESS5+AeY6HcyYkvGRVrdJq1ILpSWG0ENcUOu7R2M+27cBdRQ9muo0dRULJ+Eq
-         jG7r2/wYrkjWs6BPUTaPLcvZS/QBfHIPFonlESyx/hNRVnjVCwHqdtWz8hSiO1XxE1xX
-         F0lnm3yX36kgdonTAmk7DJBPTS+Xq9R4DRZze15/bK3NErkN4jUQOuLRCNEKBgaFKd0Y
-         23EBN0LurkL9iFZRS47vn2VSRgEGVP7z5DPPTeoL0CqhviCgoyD+og4P4Bb+ldDeekHV
-         mdyA==
-X-Gm-Message-State: AOJu0Yzw5KF+AtA6nRvzFfkQcNSoj1mAI8OrY7rZv4h+ktvwG1CNXHTx
-	7OJfmHQlBbdQ+Q8A2tYjyVjBJhKPbsmKJtMJejmB+DH5KY8Z3BlFO+tPlBIaXK2jpNAlDzNelDC
-	c6NMkriENuhOyzz5bArkrwLe6Z8M=
-X-Google-Smtp-Source: AGHT+IGJiL1hY/anTy3fqAxN3T5sfeCNfKYpqUFWVfQ4aoaVcIsjRXjxWAMglDZEw0Rw/T8zmBp8yOtng9mKS0YaiBM=
-X-Received: by 2002:a92:c74d:0:b0:363:812b:3d4b with SMTP id
- y13-20020a92c74d000000b00363812b3d4bmr5889525ilp.16.1706632086373; Tue, 30
- Jan 2024 08:28:06 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706632200; x=1707237000;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5Zcz0g1eKRHdqCkK9hAt9D66pTC6Kq1KClFa9gGBswE=;
+        b=f2ocL8wXVQU8KLO3wJWFNCZJOafcrbDpzka1abMWu8PjEACIxjgad2ecX6DCkIGBl/
+         IJxy/kDoxhzRj1g79Rhx2IJYEGA050qTaH/prdbQJn2qSl8Y0K8RCsvvpljTta1k27jz
+         DH3tnHqUG4ciX7UTGSTJydEVerkH7mL29t7uOnXs8f1zA0OTR96IekHEG6NwrXoThQt7
+         zI0yVr41mFG/DiKcKQsgt28qqe1ngT/u4NuiUnh3D/AiCDh04EaMWLAXNL2PicPqaTiJ
+         JirbY/May5f2wkW5s8cQ+FJafLfp+sLv3LJFUsbqn11JcfCAlENZqCFU/XQ/9RwH68IN
+         gvQw==
+X-Gm-Message-State: AOJu0Yx216k/BRQZbheztMnasKHfLolWcjRIVzg7wjHVzUMEg41nqM/N
+	TOo7guRKijEmYWepdEs67Ujs76qweT8wWNs41yvug0vj5hMQxwlb1fPaGlldXeg=
+X-Google-Smtp-Source: AGHT+IHJ22nh+Fe0GzCkeJR6CbigdX/oZbOW5Ogqo3y2IKf/Ji393IFIDhCodz601kwxWiAWl4jxrQ==
+X-Received: by 2002:a05:622a:1454:b0:42a:ad6b:cf92 with SMTP id v20-20020a05622a145400b0042aad6bcf92mr255081qtx.10.1706632200418;
+        Tue, 30 Jan 2024 08:30:00 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id fb21-20020a05622a481500b0042796ee2fb4sm4144162qtb.30.2024.01.30.08.29.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jan 2024 08:29:59 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rUqzm-00AJVf-T4;
+	Tue, 30 Jan 2024 12:29:58 -0400
+Date: Tue, 30 Jan 2024 12:29:58 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Ethan Zhao <haifeng.zhao@linux.intel.com>
+Cc: "Tian, Kevin" <kevin.tian@intel.com>, "Liu, Yi L" <yi.l.liu@intel.com>,
+	"baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+	"bhelgaas@google.com" <bhelgaas@google.com>,
+	"robin.murphy@arm.com" <robin.murphy@arm.com>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"will@kernel.org" <will@kernel.org>,
+	"lukas@wunner.de" <lukas@wunner.de>,
+	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
+Subject: Re: [PATCH v12 5/5] iommu/vt-d: improve ITE fault handling if target
+ device isn't present
+Message-ID: <20240130162958.GF50608@ziepe.ca>
+References: <20240129034924.817005-1-haifeng.zhao@linux.intel.com>
+ <20240129034924.817005-6-haifeng.zhao@linux.intel.com>
+ <BN9PR11MB52761CC3E5F08D4B7BAD7F918C7E2@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <7adec292-9d38-41ab-a982-bd840b24f3ab@intel.com>
+ <0aee453c-e98f-4b72-8107-31d4731abcdb@linux.intel.com>
+ <BN9PR11MB5276D3372267CE9246170FA78C7D2@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <500c4582-ec05-4a9e-9b68-d2ae19aed49b@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130014208.565554-1-hannes@cmpxchg.org> <20240130014208.565554-5-hannes@cmpxchg.org>
-In-Reply-To: <20240130014208.565554-5-hannes@cmpxchg.org>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Tue, 30 Jan 2024 08:27:55 -0800
-Message-ID: <CAKEwX=MjJRaHKJYELY7JtqPGxACMvpDp_bFx31zR68XeYZGsng@mail.gmail.com>
-Subject: Re: [PATCH 04/20] mm: zswap: warn when referencing a dead entry
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Yosry Ahmed <yosryahmed@google.com>, 
-	Chengming Zhou <zhouchengming@bytedance.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <500c4582-ec05-4a9e-9b68-d2ae19aed49b@linux.intel.com>
 
-On Mon, Jan 29, 2024 at 5:42=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
->
-> Put a standard sanity check on zswap_entry_get() for UAF scenario.
->
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> ---
->  mm/zswap.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index 9f05282efe3c..0c6adaf2fdb6 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -542,6 +542,7 @@ static void zswap_entry_free(struct zswap_entry *entr=
-y)
->  /* caller must hold the tree lock */
->  static void zswap_entry_get(struct zswap_entry *entry)
->  {
-> +       WARN_ON_ONCE(!entry->refcount);
->         entry->refcount++;
->  }
->
-> --
-> 2.43.0
->
+On Tue, Jan 30, 2024 at 04:15:33PM +0800, Ethan Zhao wrote:
+> Some tricky situations:
+> 
+> 1. The ATS invalidation request is issued from driver driver, while it is
+> in handling, device is removed. this momment, the device instance still
+> exists in the bus list. yes, if searching it by BDF, could get it.
+> 
+> 2. The ATS invalidation request is issued from iommu_bus_notifier()
+> for surprise removal reason, as shown in above calltrace, device was
+> already removed from bus list. if searching it by BDF, return NULL.
+> 
+> 3. The ATS invlidation request is issued from iommu_bus_notifier()
+> for safe removal, when is in handling, device is removed or link
+> is down. also as #2, device was already removed from bus list.
+> if searching it by BDF. got NULL.
+> ...
+> 
+> so, searching device by BDF, only works for the ATS invalidation
+> request is from device driver.
 
-Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+In the good path, where the hot removal is expected and this is about
+coordinating, the IOMMU driver should do an orderly shutdown of the
+ATS mechanism:
+
+ 1 Write to PCI config space to disable the ATS
+ 2 Make the IOMMU respond to ATS requests with UR and set it to BLOCKED
+ 3 Issue a flush of the ATC
+ 4 Wait for all outstanding ATC flushes to complete
+
+If it is a bad/surprise path where the device is already gone then:
+
+ 1 should automatically not do anything, possibly timing out
+ 2 must succeed
+ 3 should time out
+ 4 should "complete" in that the ATC flushes are all timed out
+
+IMHO all you need to do is not crash/lockup while processing the ATC
+timeouts. If this is a surprise path then the ATC timeout might
+already happened before the iommu driver remove notifier event happens.
+
+If the driver needs to translate from the IOMMU device table index
+into a struct device it is probably best to do that inside the driver.
+
+eg ARM maintains a rbtree in the iommu dev data. (see
+arm_smmu_insert_master)
+
+Jason
 
