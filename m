@@ -1,112 +1,132 @@
-Return-Path: <linux-kernel+bounces-44507-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44508-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C379F8422F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:27:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BECE4842321
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:32:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 028241C20ADE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:27:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7F33B2BB31
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:28:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9328866B34;
-	Tue, 30 Jan 2024 11:27:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D405366B4C;
+	Tue, 30 Jan 2024 11:27:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="M8/8T5fh"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="Zhe7aujY"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D9D066B29
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 11:27:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FE28664A4
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 11:27:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706614025; cv=none; b=GU3MeQnG0FbQHEiIpCRe5WFK7seReJVNm9OHzmvdFpbTmAPeJRPppexfrWWyPNR9aal8Pl7AXaCEc62nv28WmnVjPO8E638sAQrRMBHsk+bLL1dwOGELT5hs9+cqYR9ezXepI5uofTBllYmwfppIq4DXwSQ67cf73CwC8EXCUY8=
+	t=1706614079; cv=none; b=Zs0w514ZQekVXl87tH0BMbkdAVhmrr379izf6PZZwzS+A+arWDpJBDUUYYX2OGY0ejAGrD04g8Iz3/X9UnSpGteUvPRZSVPd/kHjho37TcDy9MJxcaaN2jg993lS4juaQo5vQCCYkbgbn+THfljThzUYs74V+P2LXuQ0sBmGLak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706614025; c=relaxed/simple;
-	bh=muX3YxseE2TzFY8Q79IfU61c+1oWD3bJbHYy41uJG1M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oTs+VY2zP4F3vk7HTeeXuR0n2vWGPcpmA+9JeQpgltdLjOVbqMlSGZ8ugYgbax8Ci2lp16/Oc3M8oSwi2e3+RnZLoPUnwQ9IvI4owMCjXQZhG73/LAP0fGs2h8JlWo0FLuD7dORfUv5uLDy3rrHXZC86iI7uT2jVXNpNQMySzfc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=M8/8T5fh; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=lNRA
-	8G85hsULgv0uGmfeJsSV2FBs2FxoeGapM1VIbhA=; b=M8/8T5fhB13dpgX9CeNE
-	ghKdyOTkUglY935KQRbHgrBsRzVitW3NhuONwFJN0OhH5fsCFvGeCcQZNRoYhYD/
-	s/yx5OtcVXLDoWV7oSiRXmb8u0dzNcrNgabX98mD4d/zYIL+Sa9+zSIfwa6KS4bY
-	gAlZ/ZjgmsPuTjgQt5kjxa8N+7IJaiM2ZJMjRpGfB3mtA/u09RL1joAbhLGfY7o4
-	1ibW7WpMQnC75CpM00jC1i8yC22ABTZ7ZHw5lEXlSmxOlEusYAExVnPQwGuuKgJ6
-	XZqxcnhfVEJ9QVXqQSDPqeVcl6ATxhcL/BqYR9CJomMYABWXGp96SrXRzMYH6dBW
-	Lg==
-Received: (qmail 2816817 invoked from network); 30 Jan 2024 12:26:54 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 30 Jan 2024 12:26:54 +0100
-X-UD-Smtp-Session: l3s3148p1@g1gbCigQqL5ehhtJ
-Date: Tue, 30 Jan 2024 12:26:54 +0100
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-renesas-soc@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-	linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi: sh-msiof: avoid integer overflow in constants
-Message-ID: <Zbjc_p_Pin7TAHw4@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-renesas-soc@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-	linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240130094053.10672-1-wsa+renesas@sang-engineering.com>
- <CAMuHMdUMeHCCiAkNyJMHTGUSTqewt=AWPUy+beA_kR26vcS8_Q@mail.gmail.com>
+	s=arc-20240116; t=1706614079; c=relaxed/simple;
+	bh=VJ3WxFyUH1QX/R2FezaIZrc9SHd0VxU+WMrUCCCzWbA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=E5W0CeLQ7cFLJidXSK9TZCct58eRIqmoIHjnYkQZIoG1CapqtBR9rhqsz3CaKUPcfkvt+lPrwKI18K8Kywf6VVWLoZS2EDaMH6HrQlFNFf0EeXfTEthMZuxp75uXefaITCLHMH11j45OAqs/zp+PaYBsMSTphqKseCOj0rCVHtE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=Zhe7aujY; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d71cb97937so20871575ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 03:27:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1706614076; x=1707218876; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=NFz/ioS5pMtmsywy9UOLGQH2uroA4Qw/qVk4L7fINX0=;
+        b=Zhe7aujYvlLHVtXJZ3kv02iCcmFKPV5YO9MbmC0Mk12po2UQlDHCIGXR+EjbhYwQLU
+         Wa6IatPOH2E73/nhTv8SCStzr8X58TvEgcnKDd9kOn4uVIIDtbH8NTdtR9Jg1WSEOhMh
+         rmJZuCyJ+qS9UDHBu/miZ/kDCu1+7+xbK8PwDsK5RqzJi1Jgb+ObXi8T9KnpdSewo0Uq
+         4eFeSd348K4Q3lRNCH9aQmZLwREmG6G534N/sQNvbyf7LgXMHkw/uhhHuKLErvmre5yg
+         /5WvLUMAgIZUhLxgmOf1gHazivLfcDnCp6wXI51bKvcgPiG8ons+6yNYHmK6VbAMQ7JL
+         bQqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706614076; x=1707218876;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NFz/ioS5pMtmsywy9UOLGQH2uroA4Qw/qVk4L7fINX0=;
+        b=Exs/RVrKvuc0bMQeEZH8f9/kZwxOaKSo9CGZiLsu61Qe07TwptyZR04a9QSbLFO8YM
+         1GSh8mgU1cRBE0GEehcSaf0MSf0iAUn2jWbQzOeY5CQC4hvS9VSdBitanIjtKFr+8f4o
+         V/F2ZmnbdBtwyjM3tijZf6MUuvAt+qCKN09ZVvyBpqkuqeoO0ztIZWzOQVf58NlmlKLt
+         iuyU9LNwsapD36bEN+jbN10l1ZO+PdSoQUEDQLAXXsx7KDPNrZUkEbW2XniabUqskd5l
+         1CLAAfe55vmxowttLWN4TQ+GNlcsHd0G1lIAmFqB1pWen/rhCQh89GuwSeFCB21KpHgp
+         4Nhw==
+X-Gm-Message-State: AOJu0YwBSJUJzSjWs0miKCP84roqxpS8GeLkaVUJ7IskgtZ1AsSOrC7s
+	F1mALiLHPpKu3Q/tCOD73g2tld2IOxFB60E/skpEzvB7HWvTU8ls6lTGaYnXbAA=
+X-Google-Smtp-Source: AGHT+IFxYQYsZlp0TH8j7NTAhzYbg+/UE/MPq1RYMFL1zOTZBo9xa9ES0Z1wEP85nypj79LLuQ20dw==
+X-Received: by 2002:a17:903:2692:b0:1d4:4e13:6b59 with SMTP id jf18-20020a170903269200b001d44e136b59mr4044993plb.45.1706614075892;
+        Tue, 30 Jan 2024 03:27:55 -0800 (PST)
+Received: from always-x1.bytedance.net ([139.177.225.226])
+        by smtp.gmail.com with ESMTPSA id jz6-20020a170903430600b001d74502d261sm7002041plb.115.2024.01.30.03.27.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jan 2024 03:27:55 -0800 (PST)
+From: zhenwei pi <pizhenwei@bytedance.com>
+To: arei.gonglei@huawei.com,
+	mst@redhat.com,
+	jasowang@redhat.com,
+	herbert@gondor.apana.org.au
+Cc: xuanzhuo@linux.alibaba.com,
+	virtualization@lists.linux.dev,
+	nathan@kernel.org,
+	linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	davem@davemloft.net,
+	zhenwei pi <pizhenwei@bytedance.com>
+Subject: [PATCH] crypto: virtio/akcipher - Fix stack overflow on memcpy
+Date: Tue, 30 Jan 2024 19:27:40 +0800
+Message-Id: <20240130112740.882183-1-pizhenwei@bytedance.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="tLJ2stAhg6obWp8F"
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdUMeHCCiAkNyJMHTGUSTqewt=AWPUy+beA_kR26vcS8_Q@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
+sizeof(struct virtio_crypto_akcipher_session_para) is less than
+sizeof(struct virtio_crypto_op_ctrl_req::u), copying more bytes from
+stack variable leads stack overflow. Clang reports this issue by
+commands:
+make -j CC=clang-14 mrproper >/dev/null 2>&1
+make -j O=/tmp/crypto-build CC=clang-14 allmodconfig >/dev/null 2>&1
+make -j O=/tmp/crypto-build W=1 CC=clang-14 drivers/crypto/virtio/
+  virtio_crypto_akcipher_algs.o
 
---tLJ2stAhg6obWp8F
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Fixes: 59ca6c93387d ("virtio-crypto: implement RSA algorithm")
+Link: https://lore.kernel.org/all/0a194a79-e3a3-45e7-be98-83abd3e1cb7e@roeck-us.net/
+Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
+---
+ drivers/crypto/virtio/virtio_crypto_akcipher_algs.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/crypto/virtio/virtio_crypto_akcipher_algs.c b/drivers/crypto/virtio/virtio_crypto_akcipher_algs.c
+index 2621ff8a9376..de53eddf6796 100644
+--- a/drivers/crypto/virtio/virtio_crypto_akcipher_algs.c
++++ b/drivers/crypto/virtio/virtio_crypto_akcipher_algs.c
+@@ -104,7 +104,8 @@ static void virtio_crypto_dataq_akcipher_callback(struct virtio_crypto_request *
+ }
+ 
+ static int virtio_crypto_alg_akcipher_init_session(struct virtio_crypto_akcipher_ctx *ctx,
+-		struct virtio_crypto_ctrl_header *header, void *para,
++		struct virtio_crypto_ctrl_header *header,
++		struct virtio_crypto_akcipher_session_para *para,
+ 		const uint8_t *key, unsigned int keylen)
+ {
+ 	struct scatterlist outhdr_sg, key_sg, inhdr_sg, *sgs[3];
+@@ -128,7 +129,7 @@ static int virtio_crypto_alg_akcipher_init_session(struct virtio_crypto_akcipher
+ 
+ 	ctrl = &vc_ctrl_req->ctrl;
+ 	memcpy(&ctrl->header, header, sizeof(ctrl->header));
+-	memcpy(&ctrl->u, para, sizeof(ctrl->u));
++	memcpy(&ctrl->u.akcipher_create_session.para, para, sizeof(*para));
+ 	input = &vc_ctrl_req->input;
+ 	input->status = cpu_to_le32(VIRTIO_CRYPTO_ERR);
+ 
+-- 
+2.34.1
 
-> What about unifying the individual SIFCTR_?FWM_[0-9]* definitions
-> into SIFCTR_xFWM_[0-9]* instead, and using the bitfield helpers in its
-> sole user?
-
-But they don't match, so we can't unify them?
-
-#define SIFCTR_TFWM_1           (7UL << 29)     /*  Transfer Request when 1 empty stage */
-
-vs
-
-#define SIFCTR_RFWM_1           (0 << 13)       /*  Transfer Request when 1 valid stages */
-
-Also, the steps don't match (1, 4, 8, 12..) vs (1, 4, 8, 16...).
-
-
---tLJ2stAhg6obWp8F
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmW43PoACgkQFA3kzBSg
-KbbsJg//UOga82uDR5hhkR6m2/6zD1GsGFvrFCFo1DhS+LdxOSzmsC7oxkP4AVSN
-w8VFjl/YnskkaUPsVhyaDpckse89Zm4cX1kp/FthiTYyp0Ne7406Bm0O6yAel3CF
-0O73CrW2gKmw3q6NG7v9tnsN8RI2RlSxIN59AMSAMryxod3dDI6dCkuJc1AHEmpn
-loiVN99PQTvhU3REby8hSTF44I3uiez0lsYQ8YQefE8Hbo0V43YYFD9SfEI8CyPM
-5+QYsscqp9WQQFwo5RpeW/5tk4nssSDpTe4DkQMfXY/JYt+51oWJPlR5xvrmqEEF
-jO0occLL+9YzF4S1QBxWA72DsQhNPM0hA0uW51I99RROef6b56GTgJN7BwzCLi7H
-zXoSstpBsgn0VdE5eqz+hR8ZZugxIFWRqWNskkMCMkQumXwA6kV+pmsk5XTndfVu
-S8emAMcGqMwcIGE4PYiB/IM92kC7r/kh8N4x5COk2PzNnsTD0TEWYzL2Q8/xNUJN
-EIe00Qd0ZL/pzvTCCS0jfmU6ByqXEpEAa+KCdDYqpIawJdWwSKcs+Y7a7DjS4SMC
-N/ewwerD/pBea7/c1LVMCXxCbYiUC6yi8Buv8Yy6ORV8BRxXKDz7DcRRE0IquCmI
-jNvLVYtn5yP/X0Q7oy7w/gaSq4gWg1M0STgq1boTxDn5uidb1JU=
-=/+Ku
------END PGP SIGNATURE-----
-
---tLJ2stAhg6obWp8F--
 
