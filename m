@@ -1,158 +1,202 @@
-Return-Path: <linux-kernel+bounces-43780-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43790-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74E328418CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 03:09:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34E098418E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 03:12:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3E3E2853F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 02:09:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A1E2F1F257EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 02:12:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DA2C364C7;
-	Tue, 30 Jan 2024 02:09:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AE7941C93;
+	Tue, 30 Jan 2024 02:09:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kCYneb/w"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fMM1xiKc"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78E2C364A9;
-	Tue, 30 Jan 2024 02:09:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78DD0381C4;
+	Tue, 30 Jan 2024 02:09:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706580577; cv=none; b=CkAbWTDAsHBvdRzIWHzuGfR8nDMC0N6y3o6as/1upZ+nwdxfnpn6TSNg7X7ohOiUzpnj/AA79QQeTid6pIt5wWmxXgMAj2TkhV9lm77HIAtWDJ/wxQp9+iWzwnw8qCbjOpLe+D8hHAieHcD+X41O7LUSaegzlIAEIY1fTIWQYE8=
+	t=1706580588; cv=none; b=C/m0gcuoM7NNOCMq3at7TIkJIfwPnFh9GAb1mwlZc6C+tBKHnDt72XmFPEu3S7+g1B0GzNIfVgxWBgPBbd4dm6GvsKmKfVBiRAAEAlNs+q3gShQ5wj1OsmuLXCtDGWcpEytFm06+0rqEMyzam+u0SF4j6MA7/x0WTNNp3BCNJUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706580577; c=relaxed/simple;
-	bh=AtIFfKEU50x8ic2rwnKi7D3UN2L2uDca9A0dr0cTcgA=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=nJLOOyrw6ue/OPL0zYfVoN2QFRK7GzLIGsRQMa7bwHs2S5ph+IRXdCopxwWCJ6trOOHMUpzjyFxAXIHVNc/jIuWjtCO1NtLR3WWr941LCgEolgq7xEXLW7fms//1ipS6Uoz6CT/rppsWd+0U+SWbzjKMPS87ZMOABGtyBtkvAR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kCYneb/w; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7E44C433F1;
-	Tue, 30 Jan 2024 02:09:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706580577;
-	bh=AtIFfKEU50x8ic2rwnKi7D3UN2L2uDca9A0dr0cTcgA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=kCYneb/wHH9FYwBKFArgINYa/RWHPpDkJmM7wHvq3Cd+ljtY35WXuv4iyOcgB+BQl
-	 CaGx3SS2OCg9Jj0VmjZJ0msbYtb0ar290s6Cr5XO0tRMeVFMT5dwXIjRrYQ/u7YvK5
-	 UkqpSmomg3teapn8jLCDoD5Xsb0EDpARpoAJEFRrjgrRTli2OBRYYioCIRMTVMKSZi
-	 JDF6/4qgTiHsoQ65YQs4jhxomdOB2ZZ6NQ+nx0m4V5acO8vOA6pwJ1qSR7Y/mEL+Nq
-	 GYvnMboCOU/EsvkBxLEMDBqXRs0m7tBE6oJNXXVgjTeyKaaxqKBgSR/iu2YQ/kGhwN
-	 8he8duUWCE2hQ==
-Date: Tue, 30 Jan 2024 11:09:33 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Beau Belgrave <beaub@linux.microsoft.com>
-Cc: rostedt@goodmis.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com
-Subject: Re: [PATCH 0/4] tracing/user_events: Introduce multi-format events
-Message-Id: <20240130110933.32c9aa0eceff2f0f917affd1@kernel.org>
-In-Reply-To: <20240123220844.928-1-beaub@linux.microsoft.com>
-References: <20240123220844.928-1-beaub@linux.microsoft.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706580588; c=relaxed/simple;
+	bh=u1DYsgZy13ZjtchvNGb7CEOtsk3gCdTnMR1cRDDMGJI=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Ki5TK2enmXFRV0uUYCaUK1kyAFfyiPcqom6H34A5+jZUraszF4SCMUXi6XMd5Mamws6YwU+TF/RvgYicxIr5QNx0x0xEpSiArtakcRHN2mYGAa+GL/FG5I5Jl2lw+6kpLiraoQASJQ8l9LcLjWDgl6ffW9MML1cPObU05ghegd0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fMM1xiKc; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706580587; x=1738116587;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=u1DYsgZy13ZjtchvNGb7CEOtsk3gCdTnMR1cRDDMGJI=;
+  b=fMM1xiKc0rqGC7NEn4HZsKv/1i5+vPJp3lYAtcO/gk0AtMtsb3io72TT
+   osaU5AaWQm6xl+A9yZqx/mVPHE5xx5W4B+eIsctdgZ8/2WehiZvbn2r77
+   N6DOaZ3wbuyX9d+SXlHAa2lmBvOvtwroR0vnu83Tnl6r/IARPv382anE3
+   XLGKq27oP3xQByp0y8uUYgRekI4BI4WokuW0NdTUMvj++R1WDicFeMNbG
+   I6MKbIsxgYh7bjkQpBFP3ipMty+7rKbT949r7+kFqI9wCJD0IQONIgUCa
+   NNdKvSxURISKy4pGCpCYNdmMnWnFITw6FNU+2wEto1GqY0eRJ3yOxnwDq
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="16530995"
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="16530995"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 18:09:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="822042348"
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="822042348"
+Received: from b4969161e530.jf.intel.com ([10.165.56.46])
+  by orsmga001.jf.intel.com with ESMTP; 29 Jan 2024 18:09:40 -0800
+From: Haitao Huang <haitao.huang@linux.intel.com>
+To: jarkko@kernel.org,
+	dave.hansen@linux.intel.com,
+	tj@kernel.org,
+	mkoutny@suse.com,
+	linux-kernel@vger.kernel.org,
+	linux-sgx@vger.kernel.org,
+	x86@kernel.org,
+	cgroups@vger.kernel.org,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	hpa@zytor.com,
+	sohil.mehta@intel.com
+Cc: zhiquan1.li@intel.com,
+	kristen@linux.intel.com,
+	seanjc@google.com,
+	zhanb@microsoft.com,
+	anakrish@microsoft.com,
+	mikko.ylinen@linux.intel.com,
+	yangjie@microsoft.com,
+	chrisyan@microsoft.com
+Subject: [PATCH v8 10/15] x86/sgx: Add EPC reclamation in cgroup try_charge()
+Date: Mon, 29 Jan 2024 18:09:33 -0800
+Message-Id: <20240130020938.10025-11-haitao.huang@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240130020938.10025-1-haitao.huang@linux.intel.com>
+References: <20240130020938.10025-1-haitao.huang@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Hi Beau,
+From: Kristen Carlson Accardi <kristen@linux.intel.com>
 
-On Tue, 23 Jan 2024 22:08:40 +0000
-Beau Belgrave <beaub@linux.microsoft.com> wrote:
+When the EPC usage of a cgroup is near its limit, the cgroup needs to
+reclaim pages used in the same cgroup to make room for new allocations.
+This is analogous to the behavior that the global reclaimer is triggered
+when the global usage is close to total available EPC.
 
-> Currently user_events supports 1 event with the same name and must have
-> the exact same format when referenced by multiple programs. This opens
-> an opportunity for malicous or poorly thought through programs to
-> create events that others use with different formats. Another scenario
-> is user programs wishing to use the same event name but add more fields
-> later when the software updates. Various versions of a program may be
-> running side-by-side, which is prevented by the current single format
-> requirement.
-> 
-> Add a new register flag (USER_EVENT_REG_MULTI_FORMAT) which indicates
-> the user program wishes to use the same user_event name, but may have
-> several different formats of the event in the future. When this flag is
-> used, create the underlying tracepoint backing the user_event with a
-> unique name per-version of the format. It's important that existing ABI
-> users do not get this logic automatically, even if one of the multi
-> format events matches the format. This ensures existing programs that
-> create events and assume the tracepoint name will match exactly continue
-> to work as expected. Add logic to only check multi-format events with
-> other multi-format events and single-format events to only check
-> single-format events during find.
+Add a Boolean parameter for sgx_epc_cgroup_try_charge() to indicate
+whether synchronous reclaim is allowed or not. And trigger the
+synchronous/asynchronous reclamation flow accordingly.
 
-Thanks for this work! This will allow many instance to use the same
-user-events at the same time.
+Note at this point, all reclaimable EPC pages are still tracked in the
+global LRU and per-cgroup LRUs are empty. So no per-cgroup reclamation
+is activated yet.
 
-BTW, can we force this flag set by default? My concern is if any user
-program use this user-event interface in the container (maybe it is
-possible if we bind-mount it). In this case, the user program can
-detect the other program is using the event if this flag is not set.
-Moreover, if there is a malicious program running in the container,
-it can prevent using the event name from other programs even if it
-is isolated by the name-space.
+Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
+Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+---
+V7:
+- Split this out from the big patch, #10 in V6. (Dave, Kai)
+---
+ arch/x86/kernel/cpu/sgx/epc_cgroup.c | 26 ++++++++++++++++++++++++--
+ arch/x86/kernel/cpu/sgx/epc_cgroup.h |  4 ++--
+ arch/x86/kernel/cpu/sgx/main.c       |  2 +-
+ 3 files changed, 27 insertions(+), 5 deletions(-)
 
-Steve suggested that if a user program which is running in a namespace
-uses user-event without this flag, we can reject that by default.
-
-What would you think about?
-
-Thank you,
-
-
-> 
-> Add a register_name (reg_name) to the user_event struct which allows for
-> split naming of events. We now have the name that was used to register
-> within user_events as well as the unique name for the tracepoint. Upon
-> registering events ensure matches based on first the reg_name, followed
-> by the fields and format of the event. This allows for multiple events
-> with the same registered name to have different formats. The underlying
-> tracepoint will have a unique name in the format of {reg_name}:[unique_id].
-> The unique_id is the time, in nanoseconds, of the event creation converted
-> to hex. Since this is done under the register mutex, it is extremely
-> unlikely for these IDs to ever match. It's also very unlikely a malicious
-> program could consistently guess what the name would be and attempt to
-> squat on it via the single format ABI.
-> 
-> For example, if both "test u32 value" and "test u64 value" are used with
-> the USER_EVENT_REG_MULTI_FORMAT the system would have 2 unique
-> tracepoints. The dynamic_events file would then show the following:
->   u:test u64 count
->   u:test u32 count
-> 
-> The actual tracepoint names look like this:
->   test:[d5874fdac44]
->   test:[d5914662cd4]
-> 
-> Deleting events via "!u:test u64 count" would only delete the first
-> tracepoint that matched that format. When the delete ABI is used all
-> events with the same name will be attempted to be deleted. If
-> per-version deletion is required, user programs should either not use
-> persistent events or delete them via dynamic_events.
-> 
-> Beau Belgrave (4):
->   tracing/user_events: Prepare find/delete for same name events
->   tracing/user_events: Introduce multi-format events
->   selftests/user_events: Test multi-format events
->   tracing/user_events: Document multi-format flag
-> 
->  Documentation/trace/user_events.rst           |  23 +-
->  include/uapi/linux/user_events.h              |   6 +-
->  kernel/trace/trace_events_user.c              | 224 +++++++++++++-----
->  .../testing/selftests/user_events/abi_test.c  | 134 +++++++++++
->  4 files changed, 325 insertions(+), 62 deletions(-)
-> 
-> 
-> base-commit: 610a9b8f49fbcf1100716370d3b5f6f884a2835a
-> -- 
-> 2.34.1
-> 
-
-
+diff --git a/arch/x86/kernel/cpu/sgx/epc_cgroup.c b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
+index cbcb7b0de3fe..127f515ffccf 100644
+--- a/arch/x86/kernel/cpu/sgx/epc_cgroup.c
++++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
+@@ -176,13 +176,35 @@ static void sgx_epc_cgroup_reclaim_work_func(struct work_struct *work)
+ /**
+  * sgx_epc_cgroup_try_charge() - try to charge cgroup for a single EPC page
+  * @epc_cg:	The EPC cgroup to be charged for the page.
++ * @reclaim:	Whether or not synchronous reclaim is allowed
+  * Return:
+  * * %0 - If successfully charged.
+  * * -errno - for failures.
+  */
+-int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg)
++int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg, bool reclaim)
+ {
+-	return misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg, PAGE_SIZE);
++	for (;;) {
++		if (!misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg,
++					PAGE_SIZE))
++			break;
++
++		if (sgx_epc_cgroup_lru_empty(epc_cg->cg))
++			return -ENOMEM;
++
++		if (signal_pending(current))
++			return -ERESTARTSYS;
++
++		if (!reclaim) {
++			queue_work(sgx_epc_cg_wq, &epc_cg->reclaim_work);
++			return -EBUSY;
++		}
++
++		if (!sgx_epc_cgroup_reclaim_pages(epc_cg->cg, false))
++			/* All pages were too young to reclaim, try again a little later */
++			schedule();
++	}
++
++	return 0;
+ }
+ 
+ /**
+diff --git a/arch/x86/kernel/cpu/sgx/epc_cgroup.h b/arch/x86/kernel/cpu/sgx/epc_cgroup.h
+index e3c6a08f0ee8..d061cd807b45 100644
+--- a/arch/x86/kernel/cpu/sgx/epc_cgroup.h
++++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.h
+@@ -23,7 +23,7 @@ static inline struct sgx_epc_cgroup *sgx_get_current_epc_cg(void)
+ 
+ static inline void sgx_put_epc_cg(struct sgx_epc_cgroup *epc_cg) { }
+ 
+-static inline int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg)
++static inline int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg, bool reclaim)
+ {
+ 	return 0;
+ }
+@@ -66,7 +66,7 @@ static inline void sgx_put_epc_cg(struct sgx_epc_cgroup *epc_cg)
+ 		put_misc_cg(epc_cg->cg);
+ }
+ 
+-int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg);
++int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg, bool reclaim);
+ void sgx_epc_cgroup_uncharge(struct sgx_epc_cgroup *epc_cg);
+ bool sgx_epc_cgroup_lru_empty(struct misc_cg *root);
+ void sgx_epc_cgroup_init(void);
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+index 51904f191b97..2279ae967707 100644
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -588,7 +588,7 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
+ 	int ret;
+ 
+ 	epc_cg = sgx_get_current_epc_cg();
+-	ret = sgx_epc_cgroup_try_charge(epc_cg);
++	ret = sgx_epc_cgroup_try_charge(epc_cg, reclaim);
+ 	if (ret) {
+ 		sgx_put_epc_cg(epc_cg);
+ 		return ERR_PTR(ret);
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.25.1
+
 
