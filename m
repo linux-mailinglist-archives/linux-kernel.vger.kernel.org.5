@@ -1,235 +1,118 @@
-Return-Path: <linux-kernel+bounces-44261-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44260-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 121A1841F90
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:33:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E48AF841F8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:31:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35D1D1C250E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:33:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BC262899E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:31:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 848FF5D8F7;
-	Tue, 30 Jan 2024 09:33:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B78EE59B68;
+	Tue, 30 Jan 2024 09:31:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dyC4SSIM"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FSNoKLvy"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FC0C58229;
-	Tue, 30 Jan 2024 09:33:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5038458229
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:31:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706607186; cv=none; b=JXrCCm78VG2DF/bcsiNyzthRS1hO4SIrAt5Xj8AYks8qQ2GYDaCs9AfuVG/ku+8zEQmNSkt8WD3IvaqfjJcc8Hr+pg+845mFw0pMdjbJsUNvUVlAaFt1L+JGfNbZ+SWEFcqumcItW30wwOgE4MQdl8L9t438Pxgz/SAlV3Lsr4o=
+	t=1706607087; cv=none; b=elXK9KBm4HtBMBRHASiruwCqMQCi3c4qho6Q8mTyMYNmEjX02As+nM+6i/OsDIm5Ji+Ri37f5JjKe/zRgnwn0jEEqjJ4eDfzRVScTiFi1WwbHiAKCJymAUnEkOq1HY/gZ3C7AbfPsb+5ul6+xwBgUOcTboHC5j4gkLQ/pcN82Lo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706607186; c=relaxed/simple;
-	bh=qDeRMvQdUfJcgUph7GolKPnOADCEdCP7zPIUislJRg4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NFndcoh/ViVv24OsyqT6HgJlCWyrn7Cb/8C47hVsmvfe+q+q5BMHp2YEPJdBjCsMRq5ZTs5PLlHQAO0oe3KX2Nfiqjhdp3QgYOL4aRe7MD9Ch76b8i9M4+vsv04CbRoOTGtpFa0Y4+qYNeGTzwou/UBwFcG9L4uSh/a2tu1HMrA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dyC4SSIM; arc=none smtp.client-ip=192.55.52.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706607185; x=1738143185;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=qDeRMvQdUfJcgUph7GolKPnOADCEdCP7zPIUislJRg4=;
-  b=dyC4SSIMls/DXTj8jka0QL8Sntjw3mQ1G8VqU9wm1C664ygN9gMS/Gof
-   ldGPAOV6c3u5pAmw7kNa4DAR5xybWS+V9TTimSqMqPPN8PwtRU0Y47EtP
-   DgQmqylMX5flZ/lHZ+oqkiYtDCT5FSPux3+R3SN8V7Mag+5i0RvPVvXrd
-   KoMgFGejxRIfd42ApByRchS18cRfs7Bfhr4UL7EfMdUIg3EJOtiTw/N79
-   QCJmEa9Bz/sBfG2HDloFsTmqZ1iXq4fHmlgKT+RRpao5OBuCTPuooaq/m
-   P7MZcJ/04h1livQQA7wQjXoZyNLttKbPhhkdBeyIBDUus+lJbwEP65hpA
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="402092267"
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="402092267"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 01:33:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="3680243"
-Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
-  by fmviesa004.fm.intel.com with ESMTP; 30 Jan 2024 01:33:02 -0800
-Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rUkT7-00009y-0s;
-	Tue, 30 Jan 2024 09:32:07 +0000
-Date: Tue, 30 Jan 2024 17:30:38 +0800
-From: kernel test robot <lkp@intel.com>
-To: Vincent Donnefort <vdonnefort@google.com>, rostedt@goodmis.org,
-	mhiramat@kernel.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, mathieu.desnoyers@efficios.com,
-	kernel-team@android.com, Vincent Donnefort <vdonnefort@google.com>
-Subject: Re: [PATCH v13 3/6] tracing: Add snapshot refcount
-Message-ID: <202401301740.qzZlpcYV-lkp@intel.com>
-References: <20240129142802.2145305-4-vdonnefort@google.com>
+	s=arc-20240116; t=1706607087; c=relaxed/simple;
+	bh=XYx0s0X4N57mkCoKTn7uq1S0HzyLcLKx4l9yG2NJoTw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=D0faTy9XME81qjnPLMAzr2Mg40V4Xrf9QWick0d074LkgUOH4kPq3kz4UxYydWTjOfNUSEpJp2kHZa9xHrKcQOcs9WlzvplcasQKETC4A4WtqSCGrR0uVnuTwHzXVxpepxQEgeNxAIlRDKTmvEixR63xFiu0+aMe/XIHO/cKE28=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=FSNoKLvy; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-510221ab3ebso5036077e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:31:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706607083; x=1707211883; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=XYx0s0X4N57mkCoKTn7uq1S0HzyLcLKx4l9yG2NJoTw=;
+        b=FSNoKLvye6bBhZZNYpBh/KbwH7uMI5bx7ZbW0Mn/GclqE5dUexRET+cs0kHa5efLvS
+         1C0EQIpnfAIAWAfyvLTy3k3u791A8woTVIGGZaRklDYlEmAWZ9xroApUcvdfGGDNG/Kx
+         uqqS2h9w0dAoc1IDVwxw+0DOSJxxi1xebKNN3lhVEiv46jqi4WTwKDCorfJAiTX3xgMT
+         Xpsq7NcY4/2NVaQ66KU0dwd/7ldVubWr0GJYzJXOkgfpspbq4YxRCNQeDftrDWS5Lovi
+         MNalSZMtqkO28hrFqr9uV0E6RX2GP5AXT3HYK+r5ApxYbSN4v+0u54g6QD4xefIIzMB8
+         3NDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706607083; x=1707211883;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XYx0s0X4N57mkCoKTn7uq1S0HzyLcLKx4l9yG2NJoTw=;
+        b=iOjaK7fg9rmc23/ydCVVRKPE9Q1ZpGLeStOA+bl2KDia+UQWo19BjnVcMptchnjPAx
+         wU1mNC5OzMLfMiCGR5f3vpUrwoq7jVbKn0/w5ezgzfN5jQlEshFMAEDtXl/DK55DMYX6
+         /6D1qy1I7WQiRqKRYtHsa4VzF7KY6lApHkYV8GB7ZWnb0StMOq/QTbAlrOQxea8B/37j
+         lb0tbtF9v3tz7CvLFakxlDAuio22kbZVgeSH/PlynFZst1MdyeAV0s7tPiZ/qvDF4lbF
+         8AVDs478YtKOuL9mlUnqrq7Nn6QSjP0dIdZJ0xHUnd+gYGEyst0Yzn3iZnF3yd9247H/
+         X0VA==
+X-Gm-Message-State: AOJu0Yw0lvq2mtax9wygkg0su8RxKKLLgMxchTQ3lt5WBR/kDmSAXIZe
+	AM5dZfHk8ZVaS3JOY71NT573iba05CD0T+mnGl7iLcDAwz06Qf6wkGDs71Kwyag=
+X-Google-Smtp-Source: AGHT+IH73ECOedOmbLboh50bSkCcm9bWbbIIdQpZY7C2yF6U75+RErqJaRRYI5LoY3XIRMWTRBDv2A==
+X-Received: by 2002:ac2:4208:0:b0:510:293e:83b with SMTP id y8-20020ac24208000000b00510293e083bmr4843330lfh.18.1706607083413;
+        Tue, 30 Jan 2024 01:31:23 -0800 (PST)
+Received: from [10.1.1.109] ([80.111.64.44])
+        by smtp.gmail.com with ESMTPSA id l22-20020a05600c1d1600b0040ef95e1c78sm4452775wms.3.2024.01.30.01.31.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jan 2024 01:31:23 -0800 (PST)
+Message-ID: <bbaab3addf958bc1f484a20ee0bdb65af05cf5da.camel@linaro.org>
+Subject: Re: [PATCH 5/5] clk: samsung: gs101: don't mark non-essential
+ clocks as critical
+From: =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
+To: Sam Protsenko <semen.protsenko@linaro.org>
+Cc: peter.griffin@linaro.org, robh+dt@kernel.org, 
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+ linux-kernel@vger.kernel.org, kernel-team@android.com,
+ tudor.ambarus@linaro.org,  willmcvicker@google.com,
+ alim.akhtar@samsung.com, s.nawrocki@samsung.com,  tomasz.figa@gmail.com,
+ cw00.choi@samsung.com, mturquette@baylibre.com,  sboyd@kernel.org,
+ linux-arm-kernel@lists.infradead.org,  linux-samsung-soc@vger.kernel.org,
+ linux-clk@vger.kernel.org,  devicetree@vger.kernel.org
+Date: Tue, 30 Jan 2024 09:31:22 +0000
+In-Reply-To: <CAPLW+4kSka+twSoZmQeMsh3RWermrGG-wyENrr14AmX3zZ2eqA@mail.gmail.com>
+References: <20240127003607.501086-1-andre.draszik@linaro.org>
+	 <20240127003607.501086-6-andre.draszik@linaro.org>
+	 <CAPLW+4mL1gb_R8PhKaMhwOUTa0GDqat_9W=348ScYj+hBarQJg@mail.gmail.com>
+	 <d45de3b2bb6b48653842cf1f74e58889ed6783ae.camel@linaro.org>
+	 <CAPLW+4kSka+twSoZmQeMsh3RWermrGG-wyENrr14AmX3zZ2eqA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1-1 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240129142802.2145305-4-vdonnefort@google.com>
 
-Hi Vincent,
+On Mon, 2024-01-29 at 13:16 -0600, Sam Protsenko wrote:
+> That sounds reasonable. But I wonder if that bit (about making this
+> clock CLK_IS_CRITICAL to make earlycon functional) can be documented
+> somewhere. Perhaps in the serial driver (earlycon function), or
+> somewhere in device tree bindings? Because otherwise it might remain
+> an arcane knowledge and people won't be able to use earlycon later.
+> Anyways, for this patch:
+>=20
+> Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+>=20
+> and if you think it makes sense to document the bit above, please do.
 
-kernel test robot noticed the following build errors:
+Will do on top of
+https://lore.kernel.org/all/20240119104526.1221243-6-tudor.ambarus@linaro.o=
+rg/
+once that is in.
 
-[auto build test ERROR on 29142dc92c37d3259a33aef15b03e6ee25b0d188]
+Cheers,
+Andre'
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Vincent-Donnefort/ring-buffer-Zero-ring-buffer-sub-buffers/20240129-223025
-base:   29142dc92c37d3259a33aef15b03e6ee25b0d188
-patch link:    https://lore.kernel.org/r/20240129142802.2145305-4-vdonnefort%40google.com
-patch subject: [PATCH v13 3/6] tracing: Add snapshot refcount
-config: arc-randconfig-002-20240130 (https://download.01.org/0day-ci/archive/20240130/202401301740.qzZlpcYV-lkp@intel.com/config)
-compiler: arceb-elf-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240130/202401301740.qzZlpcYV-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401301740.qzZlpcYV-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   kernel/trace/trace.c: In function 'tracing_set_tracer':
-   kernel/trace/trace.c:6644:17: error: implicit declaration of function 'tracing_disarm_snapshot_locked'; did you mean 'tracing_disarm_snapshot'? [-Werror=implicit-function-declaration]
-    6644 |                 tracing_disarm_snapshot_locked(tr);
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         |                 tracing_disarm_snapshot
->> kernel/trace/trace.c:6648:23: error: implicit declaration of function 'tracing_arm_snapshot_locked'; did you mean 'tracing_arm_snapshot'? [-Werror=implicit-function-declaration]
-    6648 |                 ret = tracing_arm_snapshot_locked(tr);
-         |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-         |                       tracing_arm_snapshot
-   cc1: some warnings being treated as errors
-
-
-vim +6648 kernel/trace/trace.c
-
-  6560	
-  6561	int tracing_set_tracer(struct trace_array *tr, const char *buf)
-  6562	{
-  6563		struct tracer *t;
-  6564	#ifdef CONFIG_TRACER_MAX_TRACE
-  6565		bool had_max_tr;
-  6566	#endif
-  6567		int ret = 0;
-  6568	
-  6569		mutex_lock(&trace_types_lock);
-  6570	
-  6571		if (!tr->ring_buffer_expanded) {
-  6572			ret = __tracing_resize_ring_buffer(tr, trace_buf_size,
-  6573							RING_BUFFER_ALL_CPUS);
-  6574			if (ret < 0)
-  6575				goto out;
-  6576			ret = 0;
-  6577		}
-  6578	
-  6579		for (t = trace_types; t; t = t->next) {
-  6580			if (strcmp(t->name, buf) == 0)
-  6581				break;
-  6582		}
-  6583		if (!t) {
-  6584			ret = -EINVAL;
-  6585			goto out;
-  6586		}
-  6587		if (t == tr->current_trace)
-  6588			goto out;
-  6589	
-  6590	#ifdef CONFIG_TRACER_SNAPSHOT
-  6591		if (t->use_max_tr) {
-  6592			local_irq_disable();
-  6593			arch_spin_lock(&tr->max_lock);
-  6594			if (tr->cond_snapshot)
-  6595				ret = -EBUSY;
-  6596			arch_spin_unlock(&tr->max_lock);
-  6597			local_irq_enable();
-  6598			if (ret)
-  6599				goto out;
-  6600		}
-  6601	#endif
-  6602		/* Some tracers won't work on kernel command line */
-  6603		if (system_state < SYSTEM_RUNNING && t->noboot) {
-  6604			pr_warn("Tracer '%s' is not allowed on command line, ignored\n",
-  6605				t->name);
-  6606			goto out;
-  6607		}
-  6608	
-  6609		/* Some tracers are only allowed for the top level buffer */
-  6610		if (!trace_ok_for_array(t, tr)) {
-  6611			ret = -EINVAL;
-  6612			goto out;
-  6613		}
-  6614	
-  6615		/* If trace pipe files are being read, we can't change the tracer */
-  6616		if (tr->trace_ref) {
-  6617			ret = -EBUSY;
-  6618			goto out;
-  6619		}
-  6620	
-  6621		trace_branch_disable();
-  6622	
-  6623		tr->current_trace->enabled--;
-  6624	
-  6625		if (tr->current_trace->reset)
-  6626			tr->current_trace->reset(tr);
-  6627	
-  6628	#ifdef CONFIG_TRACER_MAX_TRACE
-  6629		had_max_tr = tr->current_trace->use_max_tr;
-  6630	
-  6631		/* Current trace needs to be nop_trace before synchronize_rcu */
-  6632		tr->current_trace = &nop_trace;
-  6633	
-  6634		if (had_max_tr && !t->use_max_tr) {
-  6635			/*
-  6636			 * We need to make sure that the update_max_tr sees that
-  6637			 * current_trace changed to nop_trace to keep it from
-  6638			 * swapping the buffers after we resize it.
-  6639			 * The update_max_tr is called from interrupts disabled
-  6640			 * so a synchronized_sched() is sufficient.
-  6641			 */
-  6642			synchronize_rcu();
-  6643			free_snapshot(tr);
-  6644			tracing_disarm_snapshot_locked(tr);
-  6645		}
-  6646	
-  6647		if (t->use_max_tr) {
-> 6648			ret = tracing_arm_snapshot_locked(tr);
-  6649			if (ret)
-  6650				goto out;
-  6651		}
-  6652	#else
-  6653		tr->current_trace = &nop_trace;
-  6654	#endif
-  6655	
-  6656		if (t->init) {
-  6657			ret = tracer_init(t, tr);
-  6658			if (ret) {
-  6659	#ifdef CONFIG_TRACER_MAX_TRACE
-  6660				if (t->use_max_tr)
-  6661					tracing_disarm_snapshot_locked(tr);
-  6662	#endif
-  6663				goto out;
-  6664			}
-  6665		}
-  6666	
-  6667		tr->current_trace = t;
-  6668		tr->current_trace->enabled++;
-  6669		trace_branch_enable(tr);
-  6670	 out:
-  6671		mutex_unlock(&trace_types_lock);
-  6672	
-  6673		return ret;
-  6674	}
-  6675	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
