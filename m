@@ -1,72 +1,73 @@
-Return-Path: <linux-kernel+bounces-43913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43915-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6389841AAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 04:49:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B3F5C841AB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 04:50:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1604B1C238BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 03:49:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6BDC1C23F03
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 03:50:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 188D1374FE;
-	Tue, 30 Jan 2024 03:49:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BCED376F2;
+	Tue, 30 Jan 2024 03:50:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="moub1Ye5"
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="B9joya6E"
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAC41374F8;
-	Tue, 30 Jan 2024 03:49:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9412376F6
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 03:50:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706586575; cv=none; b=LOsi5OGQrSK9R29n/kYNGjLzijZd+Dls4mR2sXRZpQ/M9qEeTrnUqQHxfSmOeyi7gzWEnp9jAotiBDOeZpXgZIdjAmjNpXM1J09wA5Y+cVtTP0HAjJNo1NCLNta+uGKgsKONN2FZunLsV61TPAgMi0AnDSk/DarJdQKCIF7KRAY=
+	t=1706586645; cv=none; b=Yiu4hRNSfg5Ss7zkH42yFnrHTUkzm6dm/kF+pHFPheEPX4HW92cBzF5CinRox22N473qJL1sREyxK4NM6z2oCWfUaiJXt8lr9tCmxkpD/hvujYKy6fTxpi8n7f+azKLbrdSFe+gkvI5jZsoqC9F4pnDnh44tGPpTdbItjVdPW44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706586575; c=relaxed/simple;
-	bh=k5FKcViiW1KVZ/iqqnhvzAZzYcYxnU21fb3SEdDolM8=;
+	s=arc-20240116; t=1706586645; c=relaxed/simple;
+	bh=LsbCOdr3i3WGimdnP7Kyx3gh1Ae+29/6ZCJr5VU/mlE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LJZ9CV6vgCGc6iNOD60R6Pm4G0HEPOTO207GVMamxN6tAyAVnsiVxxTBE1QRDb0lnIw0erBrlpzZ26v6QhIUgbQdmLEPZrM8oq9C5W+9lB/8/8Di+A1LmlQzy7zL6bXHK+S81E1TPcm//ElEySd7KbxxOOL3xkqdxO1O0xHh3uk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=moub1Ye5; arc=none smtp.client-ip=209.85.160.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-42aabb1cdaaso10800741cf.2;
-        Mon, 29 Jan 2024 19:49:33 -0800 (PST)
+	 In-Reply-To:Content-Type; b=EXar1lRRKmTN4/9uaype2ZGlcifCXngkgCf19Qf/0d13QvkzrFVU9yqO7ryYmHXL4SC9VhGqpX8/nXEaBvdA5hwvIqNiz6/AFA+tE3CERZIj/JKy+MtktHGFWEamEFbaUwxkI+gSdmR8Ahy03KTlaeFIpe0gH4CFefySdkn102c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=B9joya6E; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6da9c834646so2696954b3a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 19:50:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706586573; x=1707191373; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=bytedance.com; s=google; t=1706586643; x=1707191443; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=0wqDIIGKeMd5Md178sCLoAs7RDnwq5OUMAf2FUqS9M0=;
-        b=moub1Ye5frCuM7IH15lj1A873drHX5aUPEuE96z6WgCWHr4RRzW1HHvXsdKV8CoOKt
-         sXZ+24nu7s5xFejH/rj3rDIVfydU//hbyYIJo5k97VFBS6W6gXcyJfKq3LhOPI4R8PPL
-         7eJcrHShBNtOu7U4oc+mgt17xgocYVvW5wev8jX30x6inFM7fLi4E8NrhAZ4FxxLheZy
-         50ucEoXnjrDYk/2rebTye773sOIL+7gvzPfOhwGGm1p43DgRS3l0M9h9SooQ0rAgnOHS
-         jjQksgoYydOSOQFvFXlvfmRAYTFip1hs7My8act460LKuaK+Ud+OLMipKZnIzJ3WLf9b
-         ytwA==
+        bh=AJ2f0pCFiDt+0//3KGocDBcR7ld42/5luGa3g6y5MNk=;
+        b=B9joya6EG1JiRpE9Tfz6i4S4R4Z29RavpTtTC6Akpob09sdSZIC7GuAvxgh65A2Rqn
+         3bujMTDGS4dCfeK7oZVLOapQUbhfzRiPhdjX8lrhSRgZ2pPTLNUOCT0dkraUsqJ4F89z
+         4jAHrhrIasfme41r9Fl6AYmubJ9bdR+oDQ/EK7CeFWLVy13IcAy2/VRgwi5Mya7AbStg
+         OaoK5w/XN0LjyOxsTYfXSB8X1ASaQlUYwavPEz/W0nPKiXmm4J84LLfUx0fQuOof2Duv
+         7lgHLPPGK9a4TIHH0woI+MBsAKwd7NMXgBdz5eIPN6oYpL4gb5/1by0yhT0yeYD+mwfu
+         Z1Fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706586573; x=1707191373;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1706586643; x=1707191443;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0wqDIIGKeMd5Md178sCLoAs7RDnwq5OUMAf2FUqS9M0=;
-        b=ffb4EzWiG2xS02tPYVgZrLAASoZfXfG7N0PAxCsafV+ks/naWU2N6SNOuVusp9kANr
-         EVHHzcpr535YVyJRMcyKeSno0ufDil//nnI6T5vM6NAUNUuWcL4/JLxfMTn/JA7NB8Sy
-         dLjSFqIYcHjAHj/IsFHq7QQOyZUnlXLOPiDA9CoQrs0wkOWF+rXkLUSosZJcPWEST8z/
-         GuTBnCnUFa0J+eb3Lv1k9BVuS/LQNCwfhDWUnYjtJ1+YzG2roWmuXZTi0krRXWf0wY/k
-         6cWrPFn2E6p5xA25hSWN0a08kny56ciQnt7y9blxb+7xVB2qcscyri1MM+RayQnmN3nQ
-         NtZw==
-X-Gm-Message-State: AOJu0Yw8WpwGYupwX3Xz4Ldn8SCO9g2eBWbr2nE3PgQnRp85I1wAfFaa
-	1qTCx42EfK4zWuIJHhC1cECzQuUPQIBM18aDULxcyEKM24z66po9
-X-Google-Smtp-Source: AGHT+IFrOLVASNDSFiBUO0ZTs78ql3AcvGGz5d4Y/A3E4+9XyAw8C0CikLM7+9AIpmTDYRuMUeAWmA==
-X-Received: by 2002:a05:6214:c4d:b0:686:aa92:1e5 with SMTP id r13-20020a0562140c4d00b00686aa9201e5mr7339200qvj.5.1706586572687;
-        Mon, 29 Jan 2024 19:49:32 -0800 (PST)
-Received: from [192.168.1.3] (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
-        by smtp.gmail.com with ESMTPSA id kv2-20020a056214534200b00684d2729709sm4068667qvb.85.2024.01.29.19.49.30
+        bh=AJ2f0pCFiDt+0//3KGocDBcR7ld42/5luGa3g6y5MNk=;
+        b=XHY003ATAjVi4r/ruzZynwGvsBlQpx+VppLGUP8QJO6ZkTueknWEFhngo7bie6Z2fS
+         nhDJKMkC+/dJQac8PCkLAHKAAKr5spWViryQ4t+FHXno1KaZ2mcSa/bC8P4OULs7uUyN
+         GVd0TXFiT0PNSEyclqrh9BqvuQmdHpMxe9yu7r7zpTX7fgrP73cqX8Ur5vXs9EtkB+Kn
+         F8j21lbzxY+VoYtEFJ8xlC8CeC9iFN2VK7xCuG53OEk5Q/5TTTLt70YUlSU35qXkahQG
+         qxwOORj8DH5naNqtp9rKI9rU5tmK8SKFu7g6sD0V9qoyEr3Lscjlmxc8r5Np8fpMjvBD
+         fyGQ==
+X-Gm-Message-State: AOJu0YyeNX2iPd+T3qGhyjMUGzCza/Al26SUHs+6QKOeR5i7vki9O2jz
+	m8GzvcFl+3Hus30U143frerU4g0rSl396HPGqv1qqH/oN5zJL/ctB/HNcvqa1ERP4bTwbnnSP51
+	M
+X-Google-Smtp-Source: AGHT+IHjKJHaEGyCRFlWeZ2gO0sRyYBcHtiZlegxw3A2Trji9IdvmGfHUSGZ2nqA97IYlY+RdddqAg==
+X-Received: by 2002:a05:6a00:1d92:b0:6de:448b:1196 with SMTP id z18-20020a056a001d9200b006de448b1196mr461150pfw.16.1706586642902;
+        Mon, 29 Jan 2024 19:50:42 -0800 (PST)
+Received: from [10.4.207.234] ([139.177.225.234])
+        by smtp.gmail.com with ESMTPSA id ka7-20020a056a00938700b006d9a38fe569sm6581702pfb.89.2024.01.29.19.50.38
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jan 2024 19:49:32 -0800 (PST)
-Message-ID: <7388e3c0-32bc-424b-9693-5059ddc9f826@gmail.com>
-Date: Mon, 29 Jan 2024 19:49:29 -0800
+        Mon, 29 Jan 2024 19:50:42 -0800 (PST)
+Message-ID: <4881a71a-2d40-44b7-ad13-0cf7ab62b463@bytedance.com>
+Date: Tue, 30 Jan 2024 11:50:36 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,79 +75,123 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.1 000/185] 6.1.76-rc1 review
+Subject: Re: [PATCH] mm/slub: remove parameter 'flags' in
+ create_kmalloc_caches()
 Content-Language: en-US
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
- conor@kernel.org, allen.lkml@gmail.com
-References: <20240129165958.589924174@linuxfoundation.org>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; keydata=
- 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
- HGuUuzv+GKZ6nsysJw==
-In-Reply-To: <20240129165958.589924174@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Zheng Yejian <zhengyejian1@huawei.com>, cl@linux.com, penberg@kernel.org,
+ rientjes@google.com, iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
+ vbabka@suse.cz, roman.gushchin@linux.dev, 42.hyeyoo@gmail.com
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240130014107.1262373-1-zhengyejian1@huawei.com>
+From: Chengming Zhou <zhouchengming@bytedance.com>
+In-Reply-To: <20240130014107.1262373-1-zhengyejian1@huawei.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-
-
-On 1/29/2024 9:03 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.76 release.
-> There are 185 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 2024/1/30 09:41, Zheng Yejian wrote:
+> After commit 16a1d968358a ("mm/slab: remove mm/slab.c and slab_def.h"),
+> parameter 'flags' is only passed as 0 in create_kmalloc_caches(), and
+> then it is only passed to new_kmalloc_cache().
 > 
-> Responses should be made by Wed, 31 Jan 2024 16:59:28 +0000.
-> Anything received after that time might be too late.
+> So we can change parameter 'flags' to be a local variable with
+> initial value 0 in new_kmalloc_cache() and remove parameter 'flags'
+> in create_kmalloc_caches(). Also make new_kmalloc_cache() static
+> due to it is only used in mm/slab_common.c.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.76-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+Reviewed-by: Chengming Zhou <zhouchengming@bytedance.com>
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+Thanks.
+
+> ---
+>  mm/slab.h        |  4 +---
+>  mm/slab_common.c | 13 +++++++------
+>  mm/slub.c        |  2 +-
+>  3 files changed, 9 insertions(+), 10 deletions(-)
+> 
+> diff --git a/mm/slab.h b/mm/slab.h
+> index 54deeb0428c6..09c673346ece 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -387,7 +387,7 @@ extern const struct kmalloc_info_struct {
+>  
+>  /* Kmalloc array related functions */
+>  void setup_kmalloc_cache_index_table(void);
+> -void create_kmalloc_caches(slab_flags_t);
+> +void create_kmalloc_caches(void);
+>  
+>  extern u8 kmalloc_size_index[24];
+>  
+> @@ -422,8 +422,6 @@ gfp_t kmalloc_fix_flags(gfp_t flags);
+>  int __kmem_cache_create(struct kmem_cache *, slab_flags_t flags);
+>  
+>  void __init kmem_cache_init(void);
+> -void __init new_kmalloc_cache(int idx, enum kmalloc_cache_type type,
+> -			      slab_flags_t flags);
+>  extern void create_boot_cache(struct kmem_cache *, const char *name,
+>  			unsigned int size, slab_flags_t flags,
+>  			unsigned int useroffset, unsigned int usersize);
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index 238293b1dbe1..61530df8b35b 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -853,9 +853,10 @@ static unsigned int __kmalloc_minalign(void)
+>  	return max(minalign, arch_slab_minalign());
+>  }
+>  
+> -void __init
+> -new_kmalloc_cache(int idx, enum kmalloc_cache_type type, slab_flags_t flags)
+> +static void __init
+> +new_kmalloc_cache(int idx, enum kmalloc_cache_type type)
+>  {
+> +	slab_flags_t flags = 0;
+>  	unsigned int minalign = __kmalloc_minalign();
+>  	unsigned int aligned_size = kmalloc_info[idx].size;
+>  	int aligned_idx = idx;
+> @@ -902,7 +903,7 @@ new_kmalloc_cache(int idx, enum kmalloc_cache_type type, slab_flags_t flags)
+>   * may already have been created because they were needed to
+>   * enable allocations for slab creation.
+>   */
+> -void __init create_kmalloc_caches(slab_flags_t flags)
+> +void __init create_kmalloc_caches(void)
+>  {
+>  	int i;
+>  	enum kmalloc_cache_type type;
+> @@ -913,7 +914,7 @@ void __init create_kmalloc_caches(slab_flags_t flags)
+>  	for (type = KMALLOC_NORMAL; type < NR_KMALLOC_TYPES; type++) {
+>  		for (i = KMALLOC_SHIFT_LOW; i <= KMALLOC_SHIFT_HIGH; i++) {
+>  			if (!kmalloc_caches[type][i])
+> -				new_kmalloc_cache(i, type, flags);
+> +				new_kmalloc_cache(i, type);
+>  
+>  			/*
+>  			 * Caches that are not of the two-to-the-power-of size.
+> @@ -922,10 +923,10 @@ void __init create_kmalloc_caches(slab_flags_t flags)
+>  			 */
+>  			if (KMALLOC_MIN_SIZE <= 32 && i == 6 &&
+>  					!kmalloc_caches[type][1])
+> -				new_kmalloc_cache(1, type, flags);
+> +				new_kmalloc_cache(1, type);
+>  			if (KMALLOC_MIN_SIZE <= 64 && i == 7 &&
+>  					!kmalloc_caches[type][2])
+> -				new_kmalloc_cache(2, type, flags);
+> +				new_kmalloc_cache(2, type);
+>  		}
+>  	}
+>  #ifdef CONFIG_RANDOM_KMALLOC_CACHES
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 2ef88bbf56a3..4f912f5ec11c 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -5663,7 +5663,7 @@ void __init kmem_cache_init(void)
+>  
+>  	/* Now we can use the kmem_cache to allocate kmalloc slabs */
+>  	setup_kmalloc_cache_index_table();
+> -	create_kmalloc_caches(0);
+> +	create_kmalloc_caches();
+>  
+>  	/* Setup random freelists for each cache */
+>  	init_freelist_randomization();
+
 
