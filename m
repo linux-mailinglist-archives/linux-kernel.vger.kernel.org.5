@@ -1,124 +1,158 @@
-Return-Path: <linux-kernel+bounces-44352-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44353-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96E9384209C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:07:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8618E84209E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:07:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C9F3F1C24A70
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:07:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF04F1F2D00A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:07:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C55A7664A9;
-	Tue, 30 Jan 2024 10:05:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 671E3664C6;
+	Tue, 30 Jan 2024 10:05:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="OQv7KNAy"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="wlMvbztG"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0F0057867
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 10:05:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 200ED664A2
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 10:05:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706609137; cv=none; b=uOXPQ1N7+KxNroXDPQjirfINsZtqAcvI3XF4sC01OaSlHnVVgJSMuJBqTehkcxBQMPjFOB8AFvjRILhcF20Gd8Fv0FariE5IXl6gtzx1FqmLvBC8UxKvGck7r95C+BiwX2jOn+iHjokvPgDWHJxJiXz8sNt+0h5CHwPsVsp10Xc=
+	t=1706609148; cv=none; b=EKdpiLIWnvMoKm8fxBFrgwf2KuBj2P2ZfqUjoDHqzc1d7lcREVD3+G+FXJMnYmDgIl26HzFFnjW4LA4GXvEu7KxUKD3guxC7y7AcKyqMwZMD7mJ+g1ylt9LNdES1FdzL9vYohjuWpaOsBWk21xIHaFrRIlwm+UnNIoXMGD3E648=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706609137; c=relaxed/simple;
-	bh=DRlRQXLhsU0+cKh3w23bLq1XFJxx5MrK/ImH2gQ3Op4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=j7h7mP+NthvPnCWCYKjPt2eTg6TeRdcSFWEM4TXw1HQ49wOlGTwc/UibUOLOJvtzsgH3HAlnqqbd+yV1TA371YK07j5uQdOymC0+UU3t9iLhs2xXBA6Ps4zOzICdSZP9XlCIy3VdA73Lkmx3WgukCOTs7eh1Dv5j2j6DbAMbs4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=OQv7KNAy; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-55ef011e934so2800491a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 02:05:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1706609132; x=1707213932; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vNUijCkfAL5sfK5WTVaGUY4h4o2ULqP8+6/IA0phaQk=;
-        b=OQv7KNAysFMWt3Z2bD4a7Dnjr/Z80w7sYgerEm9uhxdgv7J8nQB5MD/Rr8D9ulFRKY
-         TtMO8mK/69gSJLdOy8mtYI0L+t66erGKmw5zuGWcaFmt5ECiN4veuFS93q4cMJzusZQh
-         RL7N8qCNdj8m3517q8RsnE+4VpqkiqoHkEDET3i1QBewsVpS3F1AKeZwyaDmGV8Sm0VN
-         6nmL1MetEGT7NiwwOF1HRMM1unJ74MbRC3oZjgNtRq1oy23DRr3btqm7vNW2l+l5OR4V
-         dD5OsS1UMusbs6kXgHXBIosrW00KLCTdxnvzqXjcjg/uchAaJqJ6jpcbmzH33F2PJjOk
-         imwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706609132; x=1707213932;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vNUijCkfAL5sfK5WTVaGUY4h4o2ULqP8+6/IA0phaQk=;
-        b=O/CFlH8thu7iIjK4QeDUMTHQqMCYbrQokCvvbxhi0kMfs7PFE/kKZkGUFOEnLfjTki
-         0Avnd3E/EK3jfhLPhgVu6DDe3Qjfq/XpO32n9l+fXnvE6bdl6es2Gi3+1VAvHTNRg9AV
-         LCApNOjePEfxmxQeexmMBZAHzndJYkR0bcrNa5sUyk3fqhpZU1vRLAR+3xhIG8WSkiLP
-         vGRuut++hu5E2EN4MzS8ko6oDYSYh6diuNLQlR2BtSttpuokkM8LbFqCAeCqvtPlh1R/
-         tD0AbM2ezN5jX8mrFjQLpUmIObkf6zGYtVEFFHiUcd7xU/gnhDX16H+WKuEaDsXvLkYM
-         qH7Q==
-X-Gm-Message-State: AOJu0YwJpKaeXU1qeMGfDSCs0hJOzSz8nBshLHhEqzV1wqjmiES1suj+
-	JMVVHnFbMwAUXCNEWSPnUvuBVPhPunqgmStoAIyClgxlZ6gFkFb/c/PaAhmuonw=
-X-Google-Smtp-Source: AGHT+IHuiHgGkkgi9w9V6/5T2cGD46YnixDp6OWJTGuzWpVdpX0pdAoc5abTFOTwONmcrsmDfpovrw==
-X-Received: by 2002:a17:906:140a:b0:a33:b64f:48c1 with SMTP id p10-20020a170906140a00b00a33b64f48c1mr5919446ejc.21.1706609132502;
-        Tue, 30 Jan 2024 02:05:32 -0800 (PST)
-Received: from localhost ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id tl10-20020a170907c30a00b00a3554bb5d22sm3545686ejc.69.2024.01.30.02.05.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 02:05:31 -0800 (PST)
-Date: Tue, 30 Jan 2024 11:05:28 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: Kunwu Chan <chentao@kylinos.cn>
-Cc: davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] net: ipv4: Simplify the allocation of slab
- caches in inet_initpeers
-Message-ID: <ZbjJ6CB5NgMIfBwk@nanopsycho>
-References: <20240130092255.73078-1-chentao@kylinos.cn>
+	s=arc-20240116; t=1706609148; c=relaxed/simple;
+	bh=D+HHg4Wbbhz/mbS+lLu+znnL2uXDODc+rW4Ur5A3ss0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
+	 In-Reply-To:Content-Type; b=qiQMtSIpeiwg8eqnDMn77mk56wtD7fO3zKjmI0BH6k2Dr28IfA19n5fA2lxc3dYkED4YMb+z1hnP74uEprT3hxCQDVJ6i6r/ZheUgWzyiX98cUViwHTKmGyUZUq4oum/d/c2WLBpwcInMfvjRuFTDmguq8dA5t91nkXfaF2DVmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=wlMvbztG; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1706609145;
+	bh=D+HHg4Wbbhz/mbS+lLu+znnL2uXDODc+rW4Ur5A3ss0=;
+	h=Date:Subject:To:References:From:Cc:In-Reply-To:From;
+	b=wlMvbztGA0yA512ZlKIRcB6nX3f7p5ByeRR8ZKN+eBh2AixDxN3QzbFDOPyla6deg
+	 glnDFEENKA5QsselWolE9MYhuP1Qj+RwLtmnTxtVNZPdPEXxcr8UvCFI1K3s6Su80t
+	 TAiCRT6ybMXGiOKjNIBRDIHxOyXYMpxKq+RQ6j5kZNescOUzIGu45GpLxLh3eO6btZ
+	 kagAZmX+p6yCW+om2i8uZL3Z+eUBWY43f1xd81QM5i6EchBV773GHaMhRnoFORPjPn
+	 rVAEC5ZsunT5LVdbOkhr0VEo9yGS1SLZtSAwRo4QddYkNZcodEDgOyTKN0FfKYFxmd
+	 QGw1T3YvU+kfA==
+Received: from [100.109.49.129] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: dmitry.osipenko)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2B04437809D0;
+	Tue, 30 Jan 2024 10:05:44 +0000 (UTC)
+Message-ID: <7b284de7-f8e9-4b5a-96c5-a4e26193cd90@collabora.com>
+Date: Tue, 30 Jan 2024 13:05:44 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240130092255.73078-1-chentao@kylinos.cn>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v19 09/30] drm/shmem-helper: Add and use lockless
+ drm_gem_shmem_get_pages()
+Content-Language: en-US
+To: Boris Brezillon <boris.brezillon@collabora.com>,
+ Daniel Vetter <daniel@ffwll.ch>
+References: <20240105184624.508603-1-dmitry.osipenko@collabora.com>
+ <20240105184624.508603-10-dmitry.osipenko@collabora.com>
+ <ZbKZNCbZoV4ovWTH@phenom.ffwll.local> <20240126111827.70f8726c@collabora.com>
+ <d467e5a4-6b61-4cad-8e38-c4495836a0d6@collabora.com>
+ <Zbi0lQG15vz6iHJK@phenom.ffwll.local>
+From: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc: David Airlie <airlied@gmail.com>, Gerd Hoffmann <kraxel@redhat.com>,
+ Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
+ <olvaffe@gmail.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Qiang Yu <yuq825@gmail.com>, Steven Price <steven.price@arm.com>,
+ Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ kernel@collabora.com, virtualization@lists.linux-foundation.org
+In-Reply-To: <Zbi0lQG15vz6iHJK@phenom.ffwll.local>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Tue, Jan 30, 2024 at 10:22:55AM CET, chentao@kylinos.cn wrote:
->commit 0a31bd5f2bbb ("KMEM_CACHE(): simplify slab cache creation")
->introduces a new macro.
->Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
->to simplify the creation of SLAB caches.
->
->Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
->---
-> net/ipv4/inetpeer.c | 5 +----
-> 1 file changed, 1 insertion(+), 4 deletions(-)
->
->diff --git a/net/ipv4/inetpeer.c b/net/ipv4/inetpeer.c
->index e9fed83e9b3c..5bd759963451 100644
->--- a/net/ipv4/inetpeer.c
->+++ b/net/ipv4/inetpeer.c
->@@ -81,10 +81,7 @@ void __init inet_initpeers(void)
+On 1/30/24 11:34, Daniel Vetter wrote:
+> On Fri, Jan 26, 2024 at 07:43:29PM +0300, Dmitry Osipenko wrote:
+>> On 1/26/24 13:18, Boris Brezillon wrote:
+>>> On Thu, 25 Jan 2024 18:24:04 +0100
+>>> Daniel Vetter <daniel@ffwll.ch> wrote:
+>>>
+>>>> On Fri, Jan 05, 2024 at 09:46:03PM +0300, Dmitry Osipenko wrote:
+>>>>> Add lockless drm_gem_shmem_get_pages() helper that skips taking reservation
+>>>>> lock if pages_use_count is non-zero, leveraging from atomicity of the
+>>>>> refcount_t. Make drm_gem_shmem_mmap() to utilize the new helper.
+>>>>>
+>>>>> Acked-by: Maxime Ripard <mripard@kernel.org>
+>>>>> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+>>>>> Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
+>>>>> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+>>>>> ---
+>>>>>  drivers/gpu/drm/drm_gem_shmem_helper.c | 19 +++++++++++++++----
+>>>>>  1 file changed, 15 insertions(+), 4 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
+>>>>> index cacf0f8c42e2..1c032513abf1 100644
+>>>>> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
+>>>>> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
+>>>>> @@ -226,6 +226,20 @@ void drm_gem_shmem_put_pages_locked(struct drm_gem_shmem_object *shmem)
+>>>>>  }
+>>>>>  EXPORT_SYMBOL_GPL(drm_gem_shmem_put_pages_locked);
+>>>>>  
+>>>>> +static int drm_gem_shmem_get_pages(struct drm_gem_shmem_object *shmem)
+>>>>> +{
+>>>>> +	int ret;  
+>>>>
+>>>> Just random drive-by comment: a might_lock annotation here might be good,
+>>>> or people could hit some really interesting bugs that are rather hard to
+>>>> reproduce ...
+>>>
+>>> Actually, being able to acquire a ref in a dma-signalling path on an
+>>> object we know for sure already has refcount >= 1 (because we previously
+>>> acquired a ref in a path where dma_resv_lock() was allowed), was the
+>>> primary reason I suggested moving to this atomic-refcount approach.
+>>>
+>>> In the meantime, drm_gpuvm has evolved in a way that allows me to not
+>>> take the ref in the dma-signalling path (the gpuvm_bo object now holds
+>>> the ref, and it's acquired/released outside the dma-signalling path).
+>>>
+>>> Not saying we shouldn't add this might_lock(), but others might have
+>>> good reasons to have this function called in a path where locking
+>>> is not allowed.
+>>
+>> For Panthor the might_lock indeed won't be a appropriate, thanks for
+>> reminding about it. I'll add explanatory comment to the code.
 > 
-> 	inet_peer_threshold = clamp_val(nr_entries, 4096, 65536 + 128);
+> Hm these kind of tricks feel very dangerous to me. I think it would be
+> good to split up the two cases into two functions:
 > 
->-	peer_cachep = kmem_cache_create("inet_peer_cache",
->-			sizeof(struct inet_peer),
->-			0, SLAB_HWCACHE_ALIGN | SLAB_PANIC,
->-			NULL);
->+	peer_cachep = KMEM_CACHE(inet_peer, SLAB_HWCACHE_ALIGN | SLAB_PANIC);
-
-The name is going to be different. Could it be a source of some issue?
-My guess is not, just want to make sure.
-
-
-
-> }
+> 1. first one does only the atomic_inc and splats if the refcount is zero.
+> I think something in the name that denotes that we're incrementing a
+> borrowed pages reference would be good here, so like get_borrowed_pages
+> (there's not really a naming convention for these in the kernel).
+> Unfortunately no rust so we can't enforce that you provide the right kind
+> of borrowed reference at compile time.
 > 
-> /* Called with rcu_read_lock() or base->lock held */
->-- 
->2.39.2
->
->
+> 2. second one has the might_lock.
+> 
+> This way you force callers to think what they're doing and ideally
+> document where the borrowed reference is from, and ideally document that
+> in the code. Otherwise we'll end up with way too much "works in testing,
+> but is a nice CVE" code :-/
+
+We indeed can have both variants of the borrowed/non-borrowed functions.
+Thanks again for the suggestions
+
+-- 
+Best regards,
+Dmitry
+
 
