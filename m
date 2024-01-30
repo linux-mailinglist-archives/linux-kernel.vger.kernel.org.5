@@ -1,34 +1,34 @@
-Return-Path: <linux-kernel+bounces-44933-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44934-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D3D5842930
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:29:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 276E0842936
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:29:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FB7B1C25D6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:29:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C0381C25E66
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:29:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05D9612DD86;
-	Tue, 30 Jan 2024 16:26:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0433712DDBC;
+	Tue, 30 Jan 2024 16:26:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="dOgEIkRy";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="1TGlXe0Z"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="r8kfUcxk";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="BR3ZRU4n"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B771E12C523;
-	Tue, 30 Jan 2024 16:26:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D0DF12837D;
+	Tue, 30 Jan 2024 16:26:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706631970; cv=none; b=TIIkHNlfYFUps5tmzt0GdO7d8cffegXdzGRnSlVE1i+FxvxdHijsUSXpvTdZ3BoCEEGoaPxjaCGpgd9utUuC45jF/omUup2O7Wth16+unQWCFgthwfmOktWJkweCEKdqcQNIzprLXzjRw0jKn0v3GnDVG3bIZ6f2+61GBEbnxi0=
+	t=1706631971; cv=none; b=av+fyisCugo3ECENdQc/bdmEMHBiDa+U/edI4C55PSAiPaA1xyDbgR7JYpTXMnoQjHPuM+1gHIrPxE+uU/1rK0PSOi1CXMTiifaPWGzJMdc6oRPoK5H1vENTc/07YYVwkQueaXXItGbevvFn6kVUHrpneLVfzHVF9xzbwgEnSbE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706631970; c=relaxed/simple;
-	bh=7HkTS7ijHuI2zcj4sXdGdOSowZ6MyOtZb8vJTmoGWoE=;
+	s=arc-20240116; t=1706631971; c=relaxed/simple;
+	bh=sLy4E6DKd8D7+rCwgkqf4oLhWPS4ATr/5WPLXv65GBs=;
 	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=uQYZS2rBweefFHZ2vmV8a4hG/0WTa2awBxCwXQOAa7flNTw607OI5vAmEAsfe0CqhKYr3LG3WRdEW6xYjDwZ7eNUEZV7Hch8sZ1TLXq72F0z0pOmO+8NNlwsEO1S6LJm0nVONV6pGGnUeGXsScn3q3qWDprTosh/calQbc8Dpfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=dOgEIkRy; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=1TGlXe0Z; arc=none smtp.client-ip=193.142.43.55
+	 Message-ID:Content-Type; b=vCmaOe/ci5DT540zYPSPuC85T8r+D/7xtyXXA69tpSouQGSBvQaeyEjJKeTT9BvfOyz/mRLnjrqP+IKXvMPJBH83rg8d7LbbdDSRVDpluz43QZSN02kxClWEU/j9PjD6yRp0v7XZJZVLcsQSdruO2Rfs+8+lfYLLBJIIin9Hwk8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=r8kfUcxk; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=BR3ZRU4n; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Date: Tue, 30 Jan 2024 16:26:06 -0000
@@ -39,12 +39,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=pGxHlSXstFc19ImKtgH0AbzdI1XQF4C510NZnN7LI5o=;
-	b=dOgEIkRyhwDw3zrNYsNMlZ1OjnRm5Ap2TuehmCHRo5d6i8IV81WbbpxHvttKN/ju8/Bqtj
-	tgMr0qk2aZ+CjDPd85WndGpNxaFy3e5PYRDD+jv+/ULmhWZJqDeSeEYYfQmFDd9Rhtu7X6
-	glKGvVx/+K06A6q55FufZKlE5RfbfaXLZQtDGXPDIC4KEWmhocqiWDGBFv2UEpDuWdnj1D
-	W0AhLulvvzlZVWHZ08Ho9ytPX75bZ+SUXhS4kwhv8j3aCfTDL0HYum73pBZjxjsJiy246d
-	iG5I7LaUrIrzC8I8FUe0PQpGW8PDJAvWeXEw61/I8Vwx1xyuGRQesBuNBvoyqw==
+	bh=i9lKnbY6+TNZ8t5Y+8dClk+vxZwSottd+o6PRmwr4j8=;
+	b=r8kfUcxkVcjdI1aHH7dUMGyYU9L+QhMDF4VfGrIip9ueIAAaNWmJwsZYs8Fw/JmyXeC6kK
+	pAZSF76pSFUDAL2knGaSW0ulEVijsLnR6AoTCYuY8phYZhFwOecKhaWWMn+I4ytwmGIkI9
+	yH4sFuiszcJ68tuhwJ2Qbic8UoDxKYvlkX54UN3xYqN54dCAkVtQ6F6phm3jQ117T5XV4w
+	XocrUKuQSW8+QL7pW8fZKNqRuwDhmR1s1YSrg5lJ221lRhjOXrRj+9o56j37OBwA4y7s7m
+	qJw8VTQjQfxzn96zTzp8bkYE/Hu+UeBbC9Rr24gyEV9C9v9ZkbQfXNf9Tk3UOw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020e; t=1706631967;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -52,27 +52,28 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=pGxHlSXstFc19ImKtgH0AbzdI1XQF4C510NZnN7LI5o=;
-	b=1TGlXe0ZGxGZSkLkpd4nMw0SS9x6QGcv074oSn2z8Jktm+6OlmxQWVuLR1UO9+8JELAlfF
-	T9I8EBqR4IPbZMCg==
-From: "tip-bot2 for Michael Roth" <tip-bot2@linutronix.de>
+	bh=i9lKnbY6+TNZ8t5Y+8dClk+vxZwSottd+o6PRmwr4j8=;
+	b=BR3ZRU4nRMWZL9TPO0KC7I49uCBM1Lxeb0zOFj+a7mdOOYfwfg+tx4nBiZKKsjEpDV8gin
+	B+WFFZYGVvdNk4Dw==
+From: "tip-bot2 for Brijesh Singh" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
-Subject:
- [tip: x86/sev] x86/sev: Adjust the directmap to avoid inadvertent RMP faults
-Cc: Michael Roth <michael.roth@amd.com>,
- "Borislav Petkov (AMD)" <bp@alien8.de>, Vlastimil Babka <vbabka@suse.cz>,
- x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240126041126.1927228-12-michael.roth@amd.com>
-References: <20240126041126.1927228-12-michael.roth@amd.com>
+Subject: [tip: x86/sev] x86/sev: Add helper functions for RMPUPDATE and PSMASH
+ instruction
+Cc: Brijesh Singh <brijesh.singh@amd.com>, Ashish Kalra <ashish.kalra@amd.com>,
+ Michael Roth <michael.roth@amd.com>, "Borislav Petkov (AMD)" <bp@alien8.de>,
+ Liam Merwick <liam.merwick@oracle.com>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240126041126.1927228-11-michael.roth@amd.com>
+References: <20240126041126.1927228-11-michael.roth@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170663196627.398.8684786725959588137.tip-bot2@tip-bot2>
+Message-ID: <170663196694.398.14714826975788265209.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -82,167 +83,189 @@ Content-Transfer-Encoding: 7bit
 
 The following commit has been merged into the x86/sev branch of tip:
 
-Commit-ID:     661b1c6169e2b260753b850823d583d9f2c01be4
-Gitweb:        https://git.kernel.org/tip/661b1c6169e2b260753b850823d583d9f2c01be4
-Author:        Michael Roth <michael.roth@amd.com>
-AuthorDate:    Thu, 25 Jan 2024 22:11:11 -06:00
+Commit-ID:     2c35819ee00b8893626914b3384cdef2afea7dbd
+Gitweb:        https://git.kernel.org/tip/2c35819ee00b8893626914b3384cdef2afea7dbd
+Author:        Brijesh Singh <brijesh.singh@amd.com>
+AuthorDate:    Thu, 25 Jan 2024 22:11:10 -06:00
 Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Mon, 29 Jan 2024 20:34:18 +01:00
+CommitterDate: Mon, 29 Jan 2024 20:30:59 +01:00
 
-x86/sev: Adjust the directmap to avoid inadvertent RMP faults
+x86/sev: Add helper functions for RMPUPDATE and PSMASH instruction
 
-If the kernel uses a 2MB or larger directmap mapping to write to an
-address, and that mapping contains any 4KB pages that are set to private
-in the RMP table, an RMP #PF will trigger and cause a host crash.
+The RMPUPDATE instruction updates the access restrictions for a page via
+its corresponding entry in the RMP Table. The hypervisor will use the
+instruction to enforce various access restrictions on pages used for
+confidential guests and other specialized functionality. See APM3 for
+details on the instruction operations.
 
-SNP-aware code that owns the private PFNs will never attempt such
-a write, but other kernel tasks writing to other PFNs in the range may
-trigger these checks inadvertently due to writing to those other PFNs
-via a large directmap mapping that happens to also map a private PFN.
+The PSMASH instruction expands a 2MB RMP entry in the RMP table into a
+corresponding set of contiguous 4KB RMP entries while retaining the
+state of the validated bit from the original 2MB RMP entry. The
+hypervisor will use this instruction in cases where it needs to re-map a
+page as 4K rather than 2MB in a guest's nested page table.
 
-Prevent this by splitting any 2MB+ mappings that might end up containing
-a mix of private/shared PFNs as a result of a subsequent RMPUPDATE for
-the PFN/rmp_level passed in.
+Add helpers to make use of these instructions.
 
-Another way to handle this would be to limit the directmap to 4K
-mappings in the case of hosts that support SNP, but there is potential
-risk for performance regressions of certain host workloads.
+  [ mdr: add RMPUPDATE retry logic for transient FAIL_OVERLAP errors. ]
 
-Handling it as-needed results in the directmap being slowly split over
-time, which lessens the risk of a performance regression since the more
-the directmap gets split as a result of running SNP guests, the more
-likely the host is being used primarily to run SNP guests, where
-a mostly-split directmap is actually beneficial since there is less
-chance of TLB flushing and cpa_lock contention being needed to perform
-these splits.
-
-Cases where a host knows in advance it wants to primarily run SNP guests
-and wishes to pre-split the directmap can be handled by adding
-a tuneable in the future, but preliminary testing has shown this to not
-provide a signficant benefit in the common case of guests that are
-backed primarily by 2MB THPs, so it does not seem to be warranted
-currently and can be added later if a need arises in the future.
-
+Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
 Signed-off-by: Michael Roth <michael.roth@amd.com>
 Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-Link: https://lore.kernel.org/r/20240126041126.1927228-12-michael.roth@amd.com
+Reviewed-by: Liam Merwick <liam.merwick@oracle.com>
+Link: https://lore.kernel.org/r/20240126041126.1927228-11-michael.roth@amd.com
 ---
- arch/x86/virt/svm/sev.c | 85 +++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 83 insertions(+), 2 deletions(-)
+ arch/x86/include/asm/sev.h | 23 +++++++++-
+ arch/x86/virt/svm/sev.c    | 92 +++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 115 insertions(+)
 
+diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
+index 2c53e3d..57fd95a 100644
+--- a/arch/x86/include/asm/sev.h
++++ b/arch/x86/include/asm/sev.h
+@@ -87,10 +87,23 @@ extern bool handle_vc_boot_ghcb(struct pt_regs *regs);
+ /* Software defined (when rFlags.CF = 1) */
+ #define PVALIDATE_FAIL_NOUPDATE		255
+ 
++/* RMUPDATE detected 4K page and 2MB page overlap. */
++#define RMPUPDATE_FAIL_OVERLAP		4
++
+ /* RMP page size */
+ #define RMP_PG_SIZE_4K			0
+ #define RMP_PG_SIZE_2M			1
+ #define RMP_TO_PG_LEVEL(level)		(((level) == RMP_PG_SIZE_4K) ? PG_LEVEL_4K : PG_LEVEL_2M)
++#define PG_LEVEL_TO_RMP(level)		(((level) == PG_LEVEL_4K) ? RMP_PG_SIZE_4K : RMP_PG_SIZE_2M)
++
++struct rmp_state {
++	u64 gpa;
++	u8 assigned;
++	u8 pagesize;
++	u8 immutable;
++	u8 rsvd;
++	u32 asid;
++} __packed;
+ 
+ #define RMPADJUST_VMSA_PAGE_BIT		BIT(16)
+ 
+@@ -248,10 +261,20 @@ static inline u64 sev_get_status(void) { return 0; }
+ bool snp_probe_rmptable_info(void);
+ int snp_lookup_rmpentry(u64 pfn, bool *assigned, int *level);
+ void snp_dump_hva_rmpentry(unsigned long address);
++int psmash(u64 pfn);
++int rmp_make_private(u64 pfn, u64 gpa, enum pg_level level, u32 asid, bool immutable);
++int rmp_make_shared(u64 pfn, enum pg_level level);
+ #else
+ static inline bool snp_probe_rmptable_info(void) { return false; }
+ static inline int snp_lookup_rmpentry(u64 pfn, bool *assigned, int *level) { return -ENODEV; }
+ static inline void snp_dump_hva_rmpentry(unsigned long address) {}
++static inline int psmash(u64 pfn) { return -ENODEV; }
++static inline int rmp_make_private(u64 pfn, u64 gpa, enum pg_level level, u32 asid,
++				   bool immutable)
++{
++	return -ENODEV;
++}
++static inline int rmp_make_shared(u64 pfn, enum pg_level level) { return -ENODEV; }
+ #endif
+ 
+ #endif
 diff --git a/arch/x86/virt/svm/sev.c b/arch/x86/virt/svm/sev.c
-index dc18335..5566fb0 100644
+index c74266e..dc18335 100644
 --- a/arch/x86/virt/svm/sev.c
 +++ b/arch/x86/virt/svm/sev.c
-@@ -369,6 +369,81 @@ int psmash(u64 pfn)
- EXPORT_SYMBOL_GPL(psmash);
- 
- /*
-+ * If the kernel uses a 2MB or larger directmap mapping to write to an address,
-+ * and that mapping contains any 4KB pages that are set to private in the RMP
-+ * table, an RMP #PF will trigger and cause a host crash. Hypervisor code that
-+ * owns the PFNs being transitioned will never attempt such a write, but other
-+ * kernel tasks writing to other PFNs in the range may trigger these checks
-+ * inadvertently due a large directmap mapping that happens to overlap such a
-+ * PFN.
-+ *
-+ * Prevent this by splitting any 2MB+ mappings that might end up containing a
-+ * mix of private/shared PFNs as a result of a subsequent RMPUPDATE for the
-+ * PFN/rmp_level passed in.
-+ *
-+ * Note that there is no attempt here to scan all the RMP entries for the 2MB
-+ * physical range, since it would only be worthwhile in determining if a
-+ * subsequent RMPUPDATE for a 4KB PFN would result in all the entries being of
-+ * the same shared/private state, thus avoiding the need to split the mapping.
-+ * But that would mean the entries are currently in a mixed state, and so the
-+ * mapping would have already been split as a result of prior transitions.
-+ * And since the 4K split is only done if the mapping is 2MB+, and there isn't
-+ * currently a mechanism in place to restore 2MB+ mappings, such a check would
-+ * not provide any usable benefit.
-+ *
-+ * More specifics on how these checks are carried out can be found in APM
-+ * Volume 2, "RMP and VMPL Access Checks".
+@@ -342,3 +342,95 @@ void snp_dump_hva_rmpentry(unsigned long hva)
+ 	paddr = PFN_PHYS(pte_pfn(*pte)) | (hva & ~page_level_mask(level));
+ 	dump_rmpentry(PHYS_PFN(paddr));
+ }
++
++/*
++ * PSMASH a 2MB aligned page into 4K pages in the RMP table while preserving the
++ * Validated bit.
 + */
-+static int adjust_direct_map(u64 pfn, int rmp_level)
++int psmash(u64 pfn)
 +{
-+	unsigned long vaddr;
-+	unsigned int level;
-+	int npages, ret;
-+	pte_t *pte;
++	unsigned long paddr = pfn << PAGE_SHIFT;
++	int ret;
 +
-+	/*
-+	 * pfn_to_kaddr() will return a vaddr only within the direct
-+	 * map range.
-+	 */
-+	vaddr = (unsigned long)pfn_to_kaddr(pfn);
-+
-+	/* Only 4KB/2MB RMP entries are supported by current hardware. */
-+	if (WARN_ON_ONCE(rmp_level > PG_LEVEL_2M))
-+		return -EINVAL;
++	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
++		return -ENODEV;
 +
 +	if (!pfn_valid(pfn))
 +		return -EINVAL;
 +
-+	if (rmp_level == PG_LEVEL_2M &&
-+	    (!IS_ALIGNED(pfn, PTRS_PER_PMD) || !pfn_valid(pfn + PTRS_PER_PMD - 1)))
-+		return -EINVAL;
-+
-+	/*
-+	 * If an entire 2MB physical range is being transitioned, then there is
-+	 * no risk of RMP #PFs due to write accesses from overlapping mappings,
-+	 * since even accesses from 1GB mappings will be treated as 2MB accesses
-+	 * as far as RMP table checks are concerned.
-+	 */
-+	if (rmp_level == PG_LEVEL_2M)
-+		return 0;
-+
-+	pte = lookup_address(vaddr, &level);
-+	if (!pte || pte_none(*pte))
-+		return 0;
-+
-+	if (level == PG_LEVEL_4K)
-+		return 0;
-+
-+	npages = page_level_size(rmp_level) / PAGE_SIZE;
-+	ret = set_memory_4k(vaddr, npages);
-+	if (ret)
-+		pr_warn("Failed to split direct map for PFN 0x%llx, ret: %d\n",
-+			pfn, ret);
++	/* Binutils version 2.36 supports the PSMASH mnemonic. */
++	asm volatile(".byte 0xF3, 0x0F, 0x01, 0xFF"
++		      : "=a" (ret)
++		      : "a" (paddr)
++		      : "memory", "cc");
 +
 +	return ret;
 +}
++EXPORT_SYMBOL_GPL(psmash);
 +
 +/*
-  * It is expected that those operations are seldom enough so that no mutual
-  * exclusion of updaters is needed and thus the overlap error condition below
-  * should happen very rarely and would get resolved relatively quickly by
-@@ -384,11 +459,16 @@ EXPORT_SYMBOL_GPL(psmash);
- static int rmpupdate(u64 pfn, struct rmp_state *state)
- {
- 	unsigned long paddr = pfn << PAGE_SHIFT;
--	int ret;
-+	int ret, level;
- 
- 	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
- 		return -ENODEV;
- 
-+	level = RMP_TO_PG_LEVEL(state->pagesize);
++ * It is expected that those operations are seldom enough so that no mutual
++ * exclusion of updaters is needed and thus the overlap error condition below
++ * should happen very rarely and would get resolved relatively quickly by
++ * the firmware.
++ *
++ * If not, one could consider introducing a mutex or so here to sync concurrent
++ * RMP updates and thus diminish the amount of cases where firmware needs to
++ * lock 2M ranges to protect against concurrent updates.
++ *
++ * The optimal solution would be range locking to avoid locking disjoint
++ * regions unnecessarily but there's no support for that yet.
++ */
++static int rmpupdate(u64 pfn, struct rmp_state *state)
++{
++	unsigned long paddr = pfn << PAGE_SHIFT;
++	int ret;
 +
-+	if (adjust_direct_map(pfn, level))
++	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
++		return -ENODEV;
++
++	do {
++		/* Binutils version 2.36 supports the RMPUPDATE mnemonic. */
++		asm volatile(".byte 0xF2, 0x0F, 0x01, 0xFE"
++			     : "=a" (ret)
++			     : "a" (paddr), "c" ((unsigned long)state)
++			     : "memory", "cc");
++	} while (ret == RMPUPDATE_FAIL_OVERLAP);
++
++	if (ret) {
++		pr_err("RMPUPDATE failed for PFN %llx, ret: %d\n", pfn, ret);
++		dump_rmpentry(pfn);
++		dump_stack();
 +		return -EFAULT;
++	}
 +
- 	do {
- 		/* Binutils version 2.36 supports the RMPUPDATE mnemonic. */
- 		asm volatile(".byte 0xF2, 0x0F, 0x01, 0xFE"
-@@ -398,7 +478,8 @@ static int rmpupdate(u64 pfn, struct rmp_state *state)
- 	} while (ret == RMPUPDATE_FAIL_OVERLAP);
- 
- 	if (ret) {
--		pr_err("RMPUPDATE failed for PFN %llx, ret: %d\n", pfn, ret);
-+		pr_err("RMPUPDATE failed for PFN %llx, pg_level: %d, ret: %d\n",
-+		       pfn, level, ret);
- 		dump_rmpentry(pfn);
- 		dump_stack();
- 		return -EFAULT;
++	return 0;
++}
++
++/* Transition a page to guest-owned/private state in the RMP table. */
++int rmp_make_private(u64 pfn, u64 gpa, enum pg_level level, u32 asid, bool immutable)
++{
++	struct rmp_state state;
++
++	memset(&state, 0, sizeof(state));
++	state.assigned = 1;
++	state.asid = asid;
++	state.immutable = immutable;
++	state.gpa = gpa;
++	state.pagesize = PG_LEVEL_TO_RMP(level);
++
++	return rmpupdate(pfn, &state);
++}
++EXPORT_SYMBOL_GPL(rmp_make_private);
++
++/* Transition a page to hypervisor-owned/shared state in the RMP table. */
++int rmp_make_shared(u64 pfn, enum pg_level level)
++{
++	struct rmp_state state;
++
++	memset(&state, 0, sizeof(state));
++	state.pagesize = PG_LEVEL_TO_RMP(level);
++
++	return rmpupdate(pfn, &state);
++}
++EXPORT_SYMBOL_GPL(rmp_make_shared);
 
