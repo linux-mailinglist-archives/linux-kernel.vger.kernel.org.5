@@ -1,167 +1,107 @@
-Return-Path: <linux-kernel+bounces-44556-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44558-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2ED4784242B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:54:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AE0A842430
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:55:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2D27B26397
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:54:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EABC3286D87
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:55:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCA18679EF;
-	Tue, 30 Jan 2024 11:54:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 523AF67E69;
+	Tue, 30 Jan 2024 11:55:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="a1/K2Lja";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="o1pRKWzY";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bTJ6JEVv";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9bOvETPW"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="MxPXLMe+"
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D68167730;
-	Tue, 30 Jan 2024 11:54:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6702967E63
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 11:55:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706615676; cv=none; b=JLJyX56erIRwSqyvmF6W1MIElMjogiSUtj+PNtCC4S7tX2I0p2Y9+SxJTwnpmd0AcrqDetyLc+OChrVAI5Jrno/eLl+U0RZQllS2DmChSmQshrpTSPAthKY3k6SxGNJpCLnftS+l9s3EiGfPsvJzTCBdhcYOXG/oGZOW1w+z3fI=
+	t=1706615714; cv=none; b=rPe6mmxAexWIkwiAHFrfH4C4MUFmDKe80OhF+ztNkBIBCF9ImDn47/jpy1quyqj03pHNCgZ1OkE9s587XPR9M6MkEwKJwJgaZPj/T/SPIWV6I91NFT02qq+3t0NGcuMnRK0m/q7c4QlknkxkPkCaLV1TBCUt3EmBxbCeK0ED68M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706615676; c=relaxed/simple;
-	bh=uFzF0c7y0Xa5eSfpXQjqGeNrxWa15vZJgvwqZSw5274=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gQqXJtst+uodcEFAwQm4a2rnFHYMGzoT9NO5nKOtLu1Nq1t8MF4VwreQRE7jmDAMSqCUiGBz/8W85FwNRwCHnKl+yqSIzAHt0qSRRzFr9zrWRrr2jOTp5yGO1MwSFEGbluwU1HMb9yCv65JnnDR4efeXszt0V4S6g6lNErx00dc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=a1/K2Lja; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=o1pRKWzY; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bTJ6JEVv; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9bOvETPW; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 76A7A1F848;
-	Tue, 30 Jan 2024 11:54:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706615672; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DnqLZBlDKpe4vlipCmXXPECUe1oy+3ydvLI/2aiDEv8=;
-	b=a1/K2LjasCHk8VC1+Mv9MMio1D7f+pKVCjtL2QvlP4ud6ZJn/jrPzv1HW0lZw4nhyiE6OO
-	w8Mh25o1VAaeNHtbAPaiBgF3wrKuDeVvDWQv9MJnj1MDg5EQNoflnBYd2tcN86clPJF433
-	hu1jDRX/Ii9KMMGot0KKUUz9U44Bl00=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706615672;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DnqLZBlDKpe4vlipCmXXPECUe1oy+3ydvLI/2aiDEv8=;
-	b=o1pRKWzY/K2bnB4oa2+DxPSI9kNchKco4S3HJJKut0FnJlyV5nlQf9ch3GPYbyyj8+EYmB
-	WRpCMU/GfoxJPhAA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706615670; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DnqLZBlDKpe4vlipCmXXPECUe1oy+3ydvLI/2aiDEv8=;
-	b=bTJ6JEVvHTL1X4SldT6ke7pjLnJ03JzIPjm3+FdH/PZPETNwOsA3YMkmxfysIWSOo48ozg
-	XPJbtaljXB/+zCw0hCxFgefHm5bjr6Z+X2TaftOVjuTMHCfJvTVJzPkqZq3nYi9oWlhKQ2
-	1muuCC42T7KLL7Bpk8G9gcUi12qQy1M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706615670;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DnqLZBlDKpe4vlipCmXXPECUe1oy+3ydvLI/2aiDEv8=;
-	b=9bOvETPWQ8F6h2aztso666fLDiQVBQP4e0vjNNAhAyWRzfiXw3Zc86Y5EjZnR/47SVGohq
-	Q+WVAr8dJP7OTdDQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 6327A13462;
-	Tue, 30 Jan 2024 11:54:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id 9JcxGHbjuGWDFAAAn2gu4w
-	(envelope-from <jack@suse.cz>); Tue, 30 Jan 2024 11:54:30 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 1B758A0807; Tue, 30 Jan 2024 12:54:30 +0100 (CET)
-Date: Tue, 30 Jan 2024 12:54:30 +0100
-From: Jan Kara <jack@suse.cz>
-To: syzbot <syzbot+69b40dc5fd40f32c199f@syzkaller.appspotmail.com>
-Cc: akpm@linux-foundation.org, axboe@kernel.dk, brauner@kernel.org,
-	chenzhongjin@huawei.com, dchinner@redhat.com, hch@infradead.org,
-	hch@lst.de, jack@suse.cz, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, penguin-kernel@i-love.sakura.ne.jp,
-	syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
-	willy@infradead.org
-Subject: Re: [syzbot] [fs?] BUG: sleeping function called from invalid
- context in __getblk_gfp
-Message-ID: <20240130115430.rljjwjcji3vlrgyz@quack3>
-References: <0000000000000ccf9a05ee84f5b0@google.com>
- <0000000000000d130006101f7e0e@google.com>
+	s=arc-20240116; t=1706615714; c=relaxed/simple;
+	bh=o45m/mtm5VLmwqkGL2en//81iIvC/rh+THDkmb6twWo=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=t+kHOp3XcapTAtgUovM+a2yKgatXqq7cPb4/BHqxpFWrbQBM/JM7t88pOruiNbNKk0qZ92CwVC/XNg/pvm6u2cb2BkWGZ4DOf/7gVMxsxMheWQw6nyJWZlPH9ubxe++lmF0OVg3ijKDAGYrj5Qkgu/wYZq+ENQtWa3EudEMw+/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=MxPXLMe+; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-33aea66a31cso1176981f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 03:55:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706615711; x=1707220511; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=96xTLiCr7psVkkYjzXmoBovLDjznb7PjBA5px/xb+ds=;
+        b=MxPXLMe+ddh53GwafpLjWQe0+lbNq+ounMXH8yVRAsUI+aFvBA0bfNsyipTKDDIrO4
+         vMqYcLXihiamrw0QgPBvD3gwzP+GT/Y9dIcVwX1OHydIR33kHD2p2ZxY9bweqYgr241v
+         hGJsIw71Rg9aeb+Q5Ld96NovpdQlTfZAh0Q1uIzif6nVYaDRwdzSWq9pUNgKoUqF05Zu
+         SAOeyIDKH5SU9nva11FXWcIawSn4oOfJ1SqD0+wCt9JL+QqgbUFwE1Xemm4OVQ/jl8IK
+         bIZ9BiGI2NMsf0E9mDuL5sPwhNNFRULz5SWGicgR6I/bRENjjn5qre6nBqAaGs7phBwZ
+         lDGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706615711; x=1707220511;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=96xTLiCr7psVkkYjzXmoBovLDjznb7PjBA5px/xb+ds=;
+        b=bpbfL63t7QFQtObTio5lDnkv+f1wAheTFjCVF5bZiKLHemWoGC/qL46sTiHngH4NHv
+         kowkrLvmm/mGm17ESRG140EmDkR6Z8la2eQ83mwe1gWwc7x7MVsZvanGXhBWL1C/RjNY
+         kAIgxuRP+h0qM65BEMhIWGUxygndJn0eTc4lkquftBJ+47sSft6oSk5ZUCjza9H1uMoW
+         X10VKXW3Z6U+rngQS9rBrTXx4Pk2/g99Y4cJmpZg4stTapkTAT2JlRDX6UnXD3zlQRH2
+         meUmK9CzDXpdoex2yEuFxOGq3BitEaebF7Eg0YiITAt8CE6V3rLuAHaZYtOlXyIBeZod
+         jr1w==
+X-Gm-Message-State: AOJu0YxLp7cN7L7+C5osMzzsw0BlRBSrQizu5S8QCXzSZCXK7OfYWU7H
+	gklaheUG1U4rRMee0pM/BSEPzpHQu1MKhhs5MMrb5vMjTB2hkOaXDNfiR1zIGjg=
+X-Google-Smtp-Source: AGHT+IE88dSxF2s7rFZw1Sosf/6KlrIQmsVVf4dV1I57Dj+3ljlOoH1xXX4Lm+DFI884EUF261e+YQ==
+X-Received: by 2002:a5d:4a83:0:b0:33a:e403:dd91 with SMTP id o3-20020a5d4a83000000b0033ae403dd91mr6962974wrq.21.1706615710690;
+        Tue, 30 Jan 2024 03:55:10 -0800 (PST)
+Received: from alex-rivos.ba.rivosinc.com (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
+        by smtp.gmail.com with ESMTPSA id s18-20020a5d69d2000000b003393457afc2sm10502841wrw.95.2024.01.30.03.55.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jan 2024 03:55:10 -0800 (PST)
+From: Alexandre Ghiti <alexghiti@rivosinc.com>
+To: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Jisheng Zhang <jszhang@kernel.org>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH -fixes] riscv: Fix arch_tlbbatch_flush() by clearing the batch cpumask
+Date: Tue, 30 Jan 2024 12:55:08 +0100
+Message-Id: <20240130115508.105386-1-alexghiti@rivosinc.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000000d130006101f7e0e@google.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-0.10 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=174a257c5ae6b4fd];
-	 TAGGED_RCPT(0.00)[69b40dc5fd40f32c199f];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[15];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,syzkaller.appspot.com:url,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 SUBJECT_HAS_QUESTION(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -0.10
+Content-Transfer-Encoding: 8bit
 
-On Mon 29-01-24 17:15:05, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
-> 
-> commit 6f861765464f43a71462d52026fbddfc858239a5
-> Author: Jan Kara <jack@suse.cz>
-> Date:   Wed Nov 1 17:43:10 2023 +0000
-> 
->     fs: Block writes to mounted block devices
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=116642dfe80000
-> start commit:   d88520ad73b7 Merge tag 'pull-nfsd-fix' of git://git.kernel..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=174a257c5ae6b4fd
-> dashboard link: https://syzkaller.appspot.com/bug?extid=69b40dc5fd40f32c199f
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16a77593680000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1104a593680000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
-> 
-> #syz fix: fs: Block writes to mounted block devices
+We must clear the cpumask once we have flushed the batch, otherwise cpus
+get accumulated and we end sending IPIs to more cpus than needed.
 
-This doesn't look correct. The problem here really is that sysv is calling
-sb_bread() under a RWLOCK - pointers_lock - in get_block(). Which more or
-less shows nobody has run sysv in ages because otherwise the chances of
-sleeping in atomic context are really high? Perhaps another candidate for
-removal?
+Fixes: 54d7431af73e ("riscv: Add support for BATCHED_UNMAP_TLB_FLUSH")
+Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+---
+ arch/riscv/mm/tlbflush.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-								Honza
+diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+index 99c3e037f127..c8efc3f87a0f 100644
+--- a/arch/riscv/mm/tlbflush.c
++++ b/arch/riscv/mm/tlbflush.c
+@@ -240,4 +240,5 @@ void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch)
+ {
+ 	__flush_tlb_range(NULL, &batch->cpumask,
+ 			  0, FLUSH_TLB_MAX_SIZE, PAGE_SIZE);
++	cpumask_clear(&batch->cpumask);
+ }
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.39.2
+
 
