@@ -1,56 +1,67 @@
-Return-Path: <linux-kernel+bounces-45396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E7C5842FA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:27:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C6AA842FAC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:28:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 325931F24700
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 22:27:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C0541F245B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 22:28:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3C6B14AAA;
-	Tue, 30 Jan 2024 22:27:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAFDB7BAFA;
+	Tue, 30 Jan 2024 22:28:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Yf0nWzS7"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C78357BAE9;
-	Tue, 30 Jan 2024 22:27:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PBLqoJJ2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0DDD14F61;
+	Tue, 30 Jan 2024 22:28:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706653660; cv=none; b=Zq42yn41+m13CFPVqy6iiGXVnV5/StpsuqHTF4daELq9MLq5R+ZSUYOlFnwi4EvfcYQlIF6yi2Nptlau5eqmHTMQjko2BiyHubZSPgxVXl+kNA/GEMuCUAdwfO7ihvWUGEbWNsNfLsvJiA2B0u+KB0iBNMB8uc2NmBa8ynfT3Go=
+	t=1706653727; cv=none; b=HXLHxD/Vbpa+jyImwWsGCUIvsieO/Ffs1iIHDlqcUGHy0q/WH1RGLzq6krkKUdbklXIQIuU/lu4Zjnx7nCfApbYjTBedLeLjNZZ8mGNQfebfyh2TNc+CzzefLm9CR5Ty1ZVDhVp7kljHIjxwmVTdV3zy3Okw5blIL5M7CDKafPI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706653660; c=relaxed/simple;
-	bh=odsSJ8S5NvyFn0jzm7lpFj3fwWCNQzRHikQo4nA/s9E=;
+	s=arc-20240116; t=1706653727; c=relaxed/simple;
+	bh=gdgAHXKpH/gBF814iZyrFoZFRlxxElbbmfZ1pVF2jng=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uyvxyTIsdFWqNJo4egLTAOpFYNjjFiZjrwkLK6liozKnLsffQZ/SIMt7t5HaG534uIwzzxWDx/RO5477Dsf3gKBi/hKgb3hWanZSjtcZtcDT6rXM8GS/RsLrFba5c8dEe7dldHNPgJTx6NNUrUUVqN7/ox7UhWZM2k/Vwld9iFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=Yf0nWzS7; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1131)
-	id 759562057C0C; Tue, 30 Jan 2024 14:27:38 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 759562057C0C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1706653658;
-	bh=IhmYcp0Wl8WZQP/UXfniR1imHq1HIZ5hrN7R5uXfAL8=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=Lee4ja78ReY1ch2ZJWfUgH8vBbANvaSL0Wxm4W97ZinSI4Ce707JpTmaNy2sHS+67bkE0NE1eUkwe6GO6OLrK1GW2MMTaZo48aykoel2aU12eUa04OjI0T2/oW2oxflhHuzu20YjOFuh26XR7GlBR7p9OAOPaw7GDfBylzViuNY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PBLqoJJ2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CDFEC433C7;
+	Tue, 30 Jan 2024 22:28:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706653726;
+	bh=gdgAHXKpH/gBF814iZyrFoZFRlxxElbbmfZ1pVF2jng=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Yf0nWzS7bf9htQWKkZyl/ESjXAJ8z5Q1Y3PAJVc1unrzmlmIprbCpi/TxESii3seQ
-	 SsQLq7cFJqOQYnG9iiHYpWBERAD0pYjXesIyiYNQsp6rdTjXKIg1oOBNj0kpoKsyDv
-	 INrCgC9aLyjr9V31ufL+HbJzBSced6Y/1mGvxdHU=
-Date: Tue, 30 Jan 2024 14:27:38 -0800
-From: Kelsey Steele <kelseysteele@linux.microsoft.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-	jonathanh@nvidia.com, f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-	conor@kernel.org, allen.lkml@gmail.com
-Subject: Re: [PATCH 6.1 000/186] 6.1.76-rc2 review
-Message-ID: <20240130222738.GB14930@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <20240130183318.454044155@linuxfoundation.org>
+	b=PBLqoJJ2n5lA3yi7rrskf3Az4bDyF+HMkm0G2NfA+0hL+AFGrK9P3W0OSgM2R6V87
+	 Yqh/Ud+PBcJXQdeJyIgcY7ZRy7cHFcqLTZ7qElwMYl4YdntfVLLbIpZI2DZ1mM9HxO
+	 Jys2RIofNvCuzv06AbE/vmBek8q+feMjE+GDJ0J5GgX95Y0xSctjsD/2d01T+lOhZn
+	 RVO0hSVa9xvzbNseSsAOu4NEd92yYrTMsvLDuuntv1hWjo2pvOef3uFVED4E2eta8/
+	 uon9o/cZJUQsDr8Z3EwoSrtgFZkRQmty4HQT2YdYxmw8lua0icQdYSz/u2lWOj8TCI
+	 18PDppuADvdkw==
+Date: Tue, 30 Jan 2024 16:28:44 -0600
+From: Rob Herring <robh@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Kamel Bouhara <kamel.bouhara@bootlin.com>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Henrik Rydberg <rydberg@bitmath.org>, linux-input@vger.kernel.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	Marco Felsch <m.felsch@pengutronix.de>,
+	Jeff LaBundy <jeff@labundy.com>,
+	catalin.popescu@leica-geosystems.com,
+	mark.satterthwaite@touchnetix.com,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	bsp-development.geo@leica-geosystems.com
+Subject: Re: [PATCH v6 2/3] dt-bindings: input: Add TouchNetix axiom
+ touchscreen
+Message-ID: <20240130222844.GA2527859-robh@kernel.org>
+References: <20240125165823.996910-1-kamel.bouhara@bootlin.com>
+ <20240125165823.996910-3-kamel.bouhara@bootlin.com>
+ <2c8961ff-9fcc-402c-b048-744ae9473164@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,23 +70,28 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240130183318.454044155@linuxfoundation.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <2c8961ff-9fcc-402c-b048-744ae9473164@linaro.org>
 
-On Tue, Jan 30, 2024 at 10:47:38AM -0800, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.76 release.
-> There are 186 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Fri, Jan 26, 2024 at 12:46:16PM +0100, Krzysztof Kozlowski wrote:
+> On 25/01/2024 17:58, Kamel Bouhara wrote:
+> > +  reset-gpios:
+> > +    maxItems: 1
+> > +
+> > +  vdda-supply:
+> > +    description: Analog power supply regulator on VDDA pin
+> > +
+> > +  vddi-supply:
+> > +    description: I/O power supply regulator on VDDI pin
+> > +
+> > +  startup-time-ms:
+> > +    description: delay after power supply regulator is applied in ms
 > 
-> Responses should be made by Thu, 01 Feb 2024 18:32:32 +0000.
-> Anything received after that time might be too late.
+> That's a regulator property - ramp up time.
 
-No regressions found on WSL (x86 and arm64).
+I'm sure there's an existing property name that could be used.
 
-Built, booted, and reviewed dmesg.
+But why is it needed? Is it variable per board with the same device? If 
+not, it should be implied by the compatible.
 
-Thank you.
-
-Tested-by: Kelsey Steele <kelseysteele@linux.microsoft.com> 
+Rob
 
