@@ -1,209 +1,152 @@
-Return-Path: <linux-kernel+bounces-43929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D91C1841AF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 05:19:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D852841AF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 05:20:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A94A1C24EBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 04:19:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42ACA1C22FCB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 04:20:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58CAD374C6;
-	Tue, 30 Jan 2024 04:19:03 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA4E33771E;
+	Tue, 30 Jan 2024 04:20:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fCy8npqt"
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBBBA374C9;
-	Tue, 30 Jan 2024 04:19:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CCE537704;
+	Tue, 30 Jan 2024 04:20:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706588342; cv=none; b=VJYqkUkuJZX/s4Nx0+V3KlRsX7tGlMh+6BN1awUFahINJ6T+hOm/5Y77LjapG8Nqm9ffU0+SOS1t1UH72XiLRyLvbpSuBWDim3Sxow865u/I9WfYi8XlrFMY5bbIgALj/7Nq+KRafM7gKVy6slBBM+eQwZkfTF884tW4ew20WPk=
+	t=1706588405; cv=none; b=FgN4krA1AFwIZFIPBhVwGZISGxj7Vi2H9XQhI4qXFWIxgymx5Bg8Ca238YVtt2lhslu2s+qJUJ1UbGI4lFDSdf8VzVVpJZoroVAbGbOoNX/fYNiSG9BY9iXJoVnA94+OfueArVdYXSfI+m8JB1IS+tIi7AmCGPlgpVXY+fuwGjA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706588342; c=relaxed/simple;
-	bh=h6snNFdka27Mpzx+nJnLZ5KYtjZX57yK9AQSgiGflu4=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=HkAwhXURzI6rbr193HSUEwPIH2tW6oHrwrQbla3EAZHWfI2A5ztjpcFdLuMuuEQ54RQmwxYpxB1DcQA+p2e53xXyMfdwSjZkGQl7i8S1DAbKKXkoEv+ycZOtzFjJ5xZlHNXclje6Mm4lGOjHv439Ta2nunAw70AcLjYuyXIE+d0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TPBkM1VJBz4f3m7Z;
-	Tue, 30 Jan 2024 12:18:51 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id A7CFE1A0199;
-	Tue, 30 Jan 2024 12:18:57 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP1 (Coremail) with SMTP id cCh0CgBXdA2reLhluSSoCQ--.26777S2;
-	Tue, 30 Jan 2024 12:18:54 +0800 (CST)
-Subject: Re: [PATCH bpf v2 2/3] x86/mm: Disallow vsyscall page read for
- copy_from_kernel_nofault()
-To: Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org, bpf@vger.kernel.org
-Cc: Dave Hansen <dave.hansen@linux.intel.com>,
- Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, "H . Peter Anvin" <hpa@zytor.com>,
- linux-kernel@vger.kernel.org, xingwei lee <xrivendell7@gmail.com>,
- Jann Horn <jannh@google.com>, Yonghong Song <yonghong.song@linux.dev>,
- houtao1@huawei.com
-References: <20240126115423.3943360-1-houtao@huaweicloud.com>
- <20240126115423.3943360-3-houtao@huaweicloud.com>
- <51d92a32-3d0b-41c5-96ad-0739c6f80256@intel.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <930bbcfe-6697-e8e8-5198-8d9d57beb6b2@huaweicloud.com>
-Date: Tue, 30 Jan 2024 12:18:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1706588405; c=relaxed/simple;
+	bh=742/VpGYjp7JHCIumTanXkUEoDBtsIXsCzNYoB5RPbQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MCVGRQ4JfFH2EA0XlnHunehPaRFJnVJoSCc2x4SX3HmYdb/JKmviizTptcF+I3Eayjywxe9HSkQ7y7ps/fzqdf6yfXxjmgvzFi8jRiYW/Sp1XLYVOZxuhWSqX3McJAF51hCzKCcHHOhYR6MXsHTLTBSCYHe5cpheKIlC0G4ARjo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fCy8npqt; arc=none smtp.client-ip=209.85.215.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5ce07cf1e5dso1511488a12.2;
+        Mon, 29 Jan 2024 20:20:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706588403; x=1707193203; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gnk/T6fiYHvs+VQBGe7jQK5hs2AXrNttF5s8SmZgcU0=;
+        b=fCy8npqtsLOZx7/5FwA7ysRf1yUcVvQnzO5LK5MJPd+ac4oeGaZzNH4nVAYF7M823I
+         c3jqPB0EJc3pRYCkoTZcd/F2UpkSD42zaLxKbXxj2zr4XoEVBQvDKqDokQie9vwMsuyq
+         uvn2co18HfdscJfwcRlvBRVzjsw1h8nPgLTa21kxmSeyND2Zbl+ujAb4Q3gsYpaBai3U
+         Bx2C8Fw3aejNg96MX7hK66QXTZk7sZHj9mIKSn8C00d2iTcwWeQI/VoLid0oB1BhkEfZ
+         9CmxmhX/lIp5Vxz7ZXkJ781R1c86+d7dFYRXapZgKhBIjL7VGog4l90zQeKaGCMjhJPr
+         d3MA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706588403; x=1707193203;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gnk/T6fiYHvs+VQBGe7jQK5hs2AXrNttF5s8SmZgcU0=;
+        b=j+qFh6dK1xVDdVYCYmePYCbSfTSjZRY3Ru6ZHx7Gu1QyS2vL2jpE5/KzfszYRAbOLU
+         QxMOxBhD8dQTrAn/pFB7fkkkeyG66gvFA5ebQIW3RLUl89rdzrnER14jKiKf4KkNCIK2
+         NdjPSOrfBEH2aiJ2DzIeMiOoenaIvqrcSstG45hO70YuBvuESyj8WHsOUOu/eyDkBl96
+         ol2PkoMnrSaXBVQGsmsmZymRCnhs2FNG3NiBCAC5rnHMurxfn5S4z4DsSSX3b9youKNm
+         LZBIHngvitzTjKGsaxU+ZOx/ptsHvbC9L8eG5Sc7OZIv3uHZXkZeBQ3pdn7XP7M1cUdP
+         kcDQ==
+X-Gm-Message-State: AOJu0YwSOXbxKIEcJ56uFBdCM9hqHwNgSLvgGqMfaQqfNFK+qhAuVZGH
+	KUQdnI4M0g1F77M+v+U31+yVe2uZUwMko2HgZV4HxJLVsy/g2NlZ
+X-Google-Smtp-Source: AGHT+IEwCyP6BTwXAzKfR4p+e3++knD9hZ78q911dW4yV2i+Op16X/Mq6ifBw0z686XC0X/VcWARqg==
+X-Received: by 2002:a05:6a20:d390:b0:19c:a3a9:c317 with SMTP id iq16-20020a056a20d39000b0019ca3a9c317mr3801411pzb.15.1706588402758;
+        Mon, 29 Jan 2024 20:20:02 -0800 (PST)
+Received: from [192.168.1.3] (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
+        by smtp.gmail.com with ESMTPSA id jd20-20020a170903261400b001d8f6b95dcbsm1607715plb.20.2024.01.29.20.20.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jan 2024 20:20:02 -0800 (PST)
+Message-ID: <1a82d534-0518-4a70-88b9-0a7313e693aa@gmail.com>
+Date: Mon, 29 Jan 2024 20:20:00 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <51d92a32-3d0b-41c5-96ad-0739c6f80256@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.7 000/346] 6.7.3-rc1 review
 Content-Language: en-US
-X-CM-TRANSID:cCh0CgBXdA2reLhluSSoCQ--.26777S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxKF18tF1UWry8tr4rXw48Crg_yoW7Xryfpa
-	98Ca17KF4jkr18AanrX34v9ayrJa4ktF45WryvyFWrZ39IgFnIyrWDuas3XrZrtFnrKw4x
-	Xr43Aryqvw1DJaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UWE__UUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+ conor@kernel.org, allen.lkml@gmail.com
+References: <20240129170016.356158639@linuxfoundation.org>
+From: Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; keydata=
+ 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
+ HGuUuzv+GKZ6nsysJw==
+In-Reply-To: <20240129170016.356158639@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi,
 
-On 1/30/2024 7:50 AM, Sohil Mehta wrote:
-> Hi Hou Tao,
->
-> I agree to your approach in this patch. Please see some comments below.
->
-> On 1/26/2024 3:54 AM, Hou Tao wrote:
->> From: Hou Tao <houtao1@huawei.com>
->>
->> When trying to use copy_from_kernel_nofault() to read vsyscall page
->> through a bpf program, the following oops was reported:
 
-[SNIP]
->> It seems the occurrence of oops depends on SMAP feature of CPU. It
->> happens as follow: a bpf program uses bpf_probe_read_kernel() to read
->> from vsyscall page, bpf_probe_read_kernel() invokes
->> copy_from_kernel_nofault() in turn and then invokes __get_user_asm().
->> Because the vsyscall page address is not readable for kernel space,
->> a page fault exception is triggered accordingly, handle_page_fault()
->> considers the vsyscall page address as a userspace address instead of a
->> kernel space address, so the fix-up set-up by bpf isn't applied. Because
->> the CPU has SMAP feature and the access happens in kernel mode, so
->> page_fault_oops() is invoked and an oops happens. If these is no SMAP
->> feature, the fix-up set-up by bpf will be applied and
->> copy_from_kernel_nofault() will return -EFAULT instead.
->>
-> I find this paragraph to be a bit hard to follow. I think we can
-> minimize the reference to SMAP here since it is only helping detect
-> cross address space accesses.  How about something like the following:
->
-> The oops is triggered when:
->
-> 1) A bpf program uses bpf_probe_read_kernel() to read from the vsyscall
-> page and invokes copy_from_kernel_nofault() which in turn calls
-> __get_user_asm().
->
-> 2) Because the vsyscall page address is not readable from kernel space,
-> a page fault exception is triggered accordingly.
->
-> 3) handle_page_fault() considers the vsyscall page address as a user
-> space address instead of a kernel space address. This results in the
-> fix-up setup by bpf not being applied and a page_fault_oops() is invoked
-> due to SMAP.
+On 1/29/2024 9:00 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.7.3 release.
+> There are 346 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 31 Jan 2024 16:59:28 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.7.3-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Thanks for the rephrasing. It is much better now.
->> Considering handle_page_fault() has already considered the vsyscall page
->> address as a userspace address, fix the problem by disallowing vsyscall
->> page read for copy_from_kernel_nofault().
->>
-> I agree, following the same approach as handle_page_fault() seems
-> reasonable.
->
->> Originally-by: Thomas Gleixner <tglx@linutronix.de>
->> Reported-by: syzbot+72aa0161922eba61b50e@syzkaller.appspotmail.com
->> Closes: https://lore.kernel.org/bpf/CAG48ez06TZft=ATH1qh2c5mpS5BT8UakwNkzi6nvK5_djC-4Nw@mail.gmail.com
->> Reported-by: xingwei lee <xrivendell7@gmail.com>
->> Closes: https://lore.kernel.org/bpf/CABOYnLynjBoFZOf3Z4BhaZkc5hx_kHfsjiW+UWLoB=w33LvScw@mail.gmail.com
->> Signed-off-by: Hou Tao <houtao1@huawei.com>
->> ---
->>  arch/x86/mm/maccess.c | 9 +++++++++
->>  1 file changed, 9 insertions(+)
->>
->> diff --git a/arch/x86/mm/maccess.c b/arch/x86/mm/maccess.c
->> index 6993f026adec9..d9272e1db5224 100644
->> --- a/arch/x86/mm/maccess.c
->> +++ b/arch/x86/mm/maccess.c
->> @@ -3,6 +3,8 @@
->>  #include <linux/uaccess.h>
->>  #include <linux/kernel.h>
->>  
->> +#include <asm/vsyscall.h>
->> +
->>  #ifdef CONFIG_X86_64
->>  bool copy_from_kernel_nofault_allowed(const void *unsafe_src, size_t size)
->>  {
->> @@ -15,6 +17,13 @@ bool copy_from_kernel_nofault_allowed(const void *unsafe_src, size_t size)
->>  	if (vaddr < TASK_SIZE_MAX + PAGE_SIZE)
->>  		return false;
->>  
->> +	/* Also consider the vsyscall page as userspace address. Otherwise,
->> +	 * reading the vsyscall page in copy_from_kernel_nofault() may
->> +	 * trigger an oops due to an unhandled page fault.
->> +	 */
-> x86 prefers a slightly different style for multi-line comments. Please
-> refer to https://docs.kernel.org/process/maintainer-tip.html#comment-style.
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-I see. Will update.
->
-> How about rewording the above as:
->
-> /*
->  * Reading from the vsyscall page may cause an unhandled fault in
->  * certain cases.  Though it is at an address above TASK_SIZE_MAX, it is
->  * usually considered as a user space address.
->  */
-
-Thanks for the rewording. Will do in v3.
->
->> +	if (is_vsyscall_vaddr(vaddr))
->> +		return false;
->> +
-> It would have been convenient if we had a common check for whether a
-> particular address is a kernel address or not. fault_in_kernel_space()
-> serves that purpose to an extent in other places.
->
-> I thought we could rename fault_in_kernel_space() to
-> vaddr_in_kernel_space() and use it here. But the check in
-> copy_from_kernel_nofault_allowed() includes the user guard page as well.
-> So the checks wouldn't exactly be the same.
->
-> I am unsure of the implications if we get rid of that difference. Maybe
-> we can leave it as-is for now unless someone else chimes in.
-
-There is other difference between fault_in_kernel_space() and
-copy_from_kernel_nofault_allowed(). fault_in_kernel_space() uses address
->= TASK_SIZE_MAX to check the kernel space address, but
-copy_from_kernel_nofault_allowed() uses vaddr >= TASK_SIZE_MAX +
-PAGE_SIZE to check the kernel space address, so I prefer to keep it as-is.
->
-> Sohil
-
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
