@@ -1,180 +1,135 @@
-Return-Path: <linux-kernel+bounces-43899-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43898-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53D46841A92
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 04:32:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1EDC841A90
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 04:32:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0AB7C287113
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 03:32:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 964091F22613
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 03:32:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 819DC37704;
-	Tue, 30 Jan 2024 03:32:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DAE23770C;
+	Tue, 30 Jan 2024 03:32:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="D6otkuMi"
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2107.outbound.protection.outlook.com [40.107.117.107])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="PrBSYoKc"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8179137169;
-	Tue, 30 Jan 2024 03:32:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.117.107
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706585561; cv=fail; b=uSa3xeLmUaeWwz9E+rWbDFuKN2E8FsIi1rKsgTWt+ZlU73LKaF0iz9LNwiShgOAE0BkdPfYDWVnN9anM1D1cqgKizsUU30ga2FSXdLYVo6VYNJa6hblJlKFl5/Q0+i3tfHZ82OwLmaF7KBYMM0W/cQs+x+cFt37X88MY6aD9UVk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706585561; c=relaxed/simple;
-	bh=t2fuw6cIz3fW47nCOwUFFm7p4CyDcBp2gvMyOeo6Hlo=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=dn6tgQlnljh+PPdrLT1KLGvzWKmgtrsCU2zQ14bfJ9YjiRud2z11ykQCTxZ2ibIQkPSACFHKpgMNsOX5Ocr1uZCYy4GA1FxOczr5X+lTVi6ymvDT63juwI/qw3vLv9c3/BsKFLdxtcRnIxVGR//VlMv4z/QNq7CXWwMEueUF76s=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=D6otkuMi; arc=fail smtp.client-ip=40.107.117.107
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K0DPvNIZBblIemIjoa41Z91FHmz831KcoOv9nll1UYfaJkOY6kBhhhhnMrkOJl+4vUpS47xmLzhHf+I+tVRgAv0riZL8pwQoOaz0pikJRtvM4UQ5mWMgN+0PpA6LAceIhRN5pGBgdOHtFT6cQLfIFsV0MN/fekNbnMQoln3Ave4iFnSS4BvU3NKe7s69CiS8aw4vF1KG41t30vqb4bwZxFBXgfkymC4M7PgEFqbfR6aaOZky8jPksSF6F0aw3f24sU+V1L++sjYK23kFq51ej8bOvGl7JE80o1AOivQEprZxaCnMMEMpV+okUu1aDuz3dytMr4SMhbivU19q9bWIQg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TTTciFZWZ6p1TobMqmGz7s+9kkdKPuCltgFV97ItH5Q=;
- b=AzSnDJj/E3PDkIhTHJxf82InkswIw5JvmN2iOsA6+6w1tz8Ccc3jK/QxpGYurtj96vj6+niihND562Ypg7kqHAF+qs6Oeli2bM+13DBkWTaepjjHrCPMJxDZinuzYiBLFqNKz9N27oZm0Heb1d6XPbWcKZsexNOyUYHD19xkG8wvLv/LWy2LhCM567oktTHEIl/P5oPD+Cvt6btggXcE0/sI1cPUo1s7QiYD0b/DUE1xNG1mWjVzDbVlGVXFoZ9/90BRV3sZnw0cp72huUYD1h+YKN5M9U4bYgMoluQnTlYohafJbd6k8U4phMbe2MM5uSZJdvmwMhoqqmBZt88oFg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TTTciFZWZ6p1TobMqmGz7s+9kkdKPuCltgFV97ItH5Q=;
- b=D6otkuMiO5//7HUK9+wNxnabDRwQb3COByXY0QiaPmBJa/EZgjjDX4qC02trr8ARcx8K+zDwmyfj3NXyPhUmfV5hWjSIltTIqiQiG6lQOdWtdNcUSfZ0TEnidU4OQdwjVGem+lWXFooo20mHZgc7/Y1JI6m8/7gw2n0GyfqgmEJ9vxLd0GoG/s/OFVmHUWyOM3Rfk+2pkPpkHyWG9QYKwFZMU8U3l0uxA0BoOgrQdenBvTvsAEwU4ISdVaUSyKLfuvsmMlODkvAIvL9JYAq501kkUcV4FJxTfPHwRmg2Wip3/ATvX1k4BkkXJQmqwpf0uyJweKsShmUiKKBO2UGS9A==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from TY0PR06MB5470.apcprd06.prod.outlook.com (2603:1096:400:264::9)
- by KL1PR06MB6394.apcprd06.prod.outlook.com (2603:1096:820:99::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.32; Tue, 30 Jan
- 2024 03:32:34 +0000
-Received: from TY0PR06MB5470.apcprd06.prod.outlook.com
- ([fe80::adf8:c18e:5c1b:55d0]) by TY0PR06MB5470.apcprd06.prod.outlook.com
- ([fe80::adf8:c18e:5c1b:55d0%5]) with mapi id 15.20.7228.028; Tue, 30 Jan 2024
- 03:32:34 +0000
-From: Chenggang Wang <wangchenggang@vivo.com>
-To: Jonathan Corbet <corbet@lwn.net>,
-	Alex Shi <alexs@kernel.org>,
-	Yanteng Si <siyanteng@loongson.cn>,
-	Pierre Gondois <Pierre.Gondois@arm.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Lukasz Luba <lukasz.luba@arm.com>,
-	Chenggang Wang <wangchenggang@vivo.com>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] sched/doc: Update EM API em_pd_energy to em_cpu_energy
-Date: Tue, 30 Jan 2024 11:32:08 +0800
-Message-Id: <1706585531-24072-1-git-send-email-wangchenggang@vivo.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <TY0PR06MB5470E30E86989E8CD84FCE0DC47D2@TY0PR06MB5470.apcprd06.prod.outlook.com>
-References: <TY0PR06MB5470E30E86989E8CD84FCE0DC47D2@TY0PR06MB5470.apcprd06.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SGBP274CA0019.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b0::31)
- To TY0PR06MB5470.apcprd06.prod.outlook.com (2603:1096:400:264::9)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB2E437169
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 03:32:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706585544; cv=none; b=C/CszV1+zxck88HPzF4ftTrCog1rHrRbtvGvZsCIS/M7RSyVeDP/vvGKqSdJTTQYI1AFMmnvrFmC1wfmx7o6CxWiDAqoRy9LHiiZZ4/pWVI3sgiCmhCWweBZeZZwFLZzTbOXw5KBXj9QCfWpoIIGDv+e6TxcQmzujNa8ykp2vS4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706585544; c=relaxed/simple;
+	bh=ELYmV9fmW0xc+1ZcDD0YMB3ZtknbgobJp7j2bqTa+U4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=URUgD49MiqYW13DO99yRegasICZaEOt8JSyXfVn8uUl4Yg/qtL3sEya6/1nthMNyLENN8fh7jZ/bzrzTzCvqXmbZhgNMRwmCiTZtqeLFGLtVCYTxNRhALcKR5+j0BQJ2BV/u73+EglOoI3MkDJ6v4iK1fK26AeJPVi19KTCoXcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=PrBSYoKc; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2cf4fafa386so37298741fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 19:32:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706585541; x=1707190341; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HVSWuVPedMZ0hCiYeV6t6vWEzmV0Yu6IxhjiX+iJPeQ=;
+        b=PrBSYoKcl+2yXGVfHd9QXPj4LHFMHrXqGcqU6sb5a4ihQp+TV2fM+BCIuym/mXjN5B
+         LN6ZnvtahpuPr4J0CqRMglpaMbsZ/bk0ZGCp3IEU2xpJ/hSvjaRdRIN92/ckf6Sp8Mn9
+         L5Y5YXSl6Y/UhaINzAgNvl9NK5iECJjFqS7PA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706585541; x=1707190341;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HVSWuVPedMZ0hCiYeV6t6vWEzmV0Yu6IxhjiX+iJPeQ=;
+        b=q6pglsGAQ9Zwc+YdUIwad4gSXzxeYXKxu3kYZgYbMjYP6R5aK2cRgtg+zQg/X/rSMb
+         3qARtpiDlOqdrvXxK2tTJj5ldfFI57mYshJN8E7rkB7Y190+5LgqqWIRacTzDwVpB3aG
+         WQ/RtJT9HZJ2OZ1smM9lrmnb8U5kw1ZFyf79jOFHRk6EuMJWE69x8cwH+viwjb0JQGbJ
+         A3PpndBy9a5dOBo7XA0b+r0JqR3w0epXS7uRqXV9GJ6NP5ElAI8ZAYztbYiUTUgzm2lc
+         lpykRg9cK0RRMmdGdjsRCsDLQMSLW7EcQ+rJU6mLGxlEVw/IIQ71jTux7zmKdduUoTdK
+         hg5Q==
+X-Gm-Message-State: AOJu0YyTATzgMGHvkWGmeNrIQ4008UeZdtSdIZs0jhI8e9Tkdo0EL6bI
+	0TLeDa5m8NequN2XWRXN9cyzHmCY/cdf8MpSM0RIppSs44CFetOKm/IGk5RcmDxfOKiGuZPKe48
+	7QFSIsY/C5ooaMuOzWIcpc+R+cwm2kIF++8uY
+X-Google-Smtp-Source: AGHT+IHxJ9h0TpEGL+1arI5K15dK7ZMfTGGFT7sxI5crnwlEMm10GtDatZbLxi1ebhRtIB1BUsGi7EDALv4X9Wo6UoA=
+X-Received: by 2002:a2e:8496:0:b0:2cf:34b4:63de with SMTP id
+ b22-20020a2e8496000000b002cf34b463demr4704323ljh.35.1706585540108; Mon, 29
+ Jan 2024 19:32:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TY0PR06MB5470:EE_|KL1PR06MB6394:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3147b298-4560-426c-ce8a-08dc214418db
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	5ol35oxjq2CvZZOLpB37X5i/WD2V36mMhtimZk9fr0DnidbYzAQj+bSStYCs7wubEi1wNszaua/07yiluYg86xkXdwDSTbNAHR7Pff8L86FvirLf3vQbh27r5bW4PVkBsHMIzTt+mwq7/CN31tHL9Y4kWr42DrjSls6+k3oEVsg6ZKb9b+I63HPQCl9Y7sTVKusVHkcEwlrSoytdxK/YmPZuYWeqOErllDotQW0J0b6QioRABsLycpiqvpMvWCXwVpGPjubaYAt3JCulsw6L7vVC/TpR191P/HTMfMdd4yrovmwBbXUF0AinM5/l/jFVpZxgI6c8VAvM16IOZPkIg0RS9yEEuDb4RxW1m4HKJXdKzqn36XU5S73TCI4Qi9DV7rwtQh0NkgQpOEKO9NKuseL1MU0+AEhiyHBiq3QFykr89JbAaeRzlHNr18Dz9LcdWnn6qmft4tMsQIuYQSlyhVGTJEFi1JRiAifnvL0NNgB8WNiNmf7v2S/IHd71kn2rFwJGfFmkkelr1ToJGrz4XtbLMFoeNWogGz3ywnmTKh+cnAge4TgvFXlArbwud4U9jtPkFk3UYDuEx6IVEept2UHEL3kroPk+9y7W0Tk5bbOA6LuhHJ1qkmTuhBtUkVhvcCQsT9CCsh4iXjCpq8K3tw==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:zh-cn;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY0PR06MB5470.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(396003)(376002)(366004)(346002)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(921011)(41300700001)(26005)(2616005)(316002)(38350700005)(36756003)(6512007)(52116002)(478600001)(6506007)(6486002)(83380400001)(6666004)(66946007)(38100700002)(66476007)(66556008)(2906002)(110136005)(86362001)(5660300002)(8676002)(8936002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?NWVXbkNrRnFYN2FuUm94MWhsamRlYzByM2hOc1RKVUx0Zk1uR3ppTWdqbmNU?=
- =?utf-8?B?QXR3bUtwaEtWQ3AzckFBY2crcS9vREFhZXpmSDMzbXJJOEdwTHVjQWRCYlJG?=
- =?utf-8?B?V0oyMVlxWFhLVnBFNXI3M0ttUnpQVHA3SDBQWUx4QW9RYThUdHJST1dQWjc3?=
- =?utf-8?B?OFdldGUzeVFvTVRxaFAzR01MUTVlblJtZEpZZldVN2Q2UzlGcG1NV3Y1ZW9K?=
- =?utf-8?B?M1ROc3hjL1BjVWZDSVpsdW1PRVlaYnNXTlZoSGdTenFiUVlIRmNkRThLR0lZ?=
- =?utf-8?B?L2R4SXRtWW5zNmhYMnpsUGRoeXdyUjFZSlF3d0FNekdPZXQrRjJpenRBRUU0?=
- =?utf-8?B?cnROaVJsU0VjaFBHMDdPUXBWcGdyYkxXa3p5MElibEFORyszaURIbDh4ZnBB?=
- =?utf-8?B?RStITG85Z0JEdlIxRDJ0UnUzSXpMVXVud0svOUpwL0RoV3dUWk90ZDc4cEhr?=
- =?utf-8?B?cE55MnRQK1dJcjJvb2RvYlorQXU4VmZBTDVlTS8wVUl0WG1uZWlHRmZUMXZ6?=
- =?utf-8?B?RytjbHl3WFY4VWJRSjEveWhNQlA4UWdaRGhGVVdMK0dybnNrdEU4cjE2QlFo?=
- =?utf-8?B?NWJ2QXRTSENYMzBhS29pNzdGUlBkSm50cmZnRVp5d0ZxQytZVVZ3K1JPbkpR?=
- =?utf-8?B?NFNBSzZYWUM0bjlsN2RpSG52WDNYdzhUd2g1V05OMkwxaHlGT0c3SzBTalhU?=
- =?utf-8?B?NEQvd0dBb1FOZVpQdjBORGpxejJMdEMxYzFQS1M0QndyZnpEdzJodmVVK01Q?=
- =?utf-8?B?NDRhbmw1a1VZWFRJTnR3OHc4S3dQNWN3L0MySS9sSTFTRDdsUWtiT1dZK1ZR?=
- =?utf-8?B?bndGUDYvR29jNlNEM2xGQ29sSFY5aVU1cWY5WFc0TUxTeDIvTTdabndxc253?=
- =?utf-8?B?UnEvUTFLRzlSOHZYdFBiUXV2WC9YNE5jVGVwd2dmUS9QNlBqWUlLWVZDMUh0?=
- =?utf-8?B?ZE9CaVZFT2ZMcWx3Wmg2c3lONWFFUUJNU0lBaVVKMzZrMWNlT2U5bXdpbDdC?=
- =?utf-8?B?RzQ0Q2c4YmdGaHliUE5Ha2ZtUjJPUXEyaEt3STBnR2Vrc2doOFhjY0dmS3hx?=
- =?utf-8?B?Y0JQbzR6Z3RvUlR3ZFFLZ0ErbUNGYUNMR1laMzcxVEt2SVdtQUZDRVNsSXFn?=
- =?utf-8?B?WVNtbGJSKzlMRFpma0gvUG12MnpkakxRYjNOSytzdXB2R054MGFyclZYV0Rs?=
- =?utf-8?B?QTFpcGhqLytFdXV1WVMrS0hjaHM3OW5EVkVTWG81K2VNVzR4QmxUNks0RXFk?=
- =?utf-8?B?WTMwUVZzMURldkRpZUxjMHlLSGpEaHJSNlEyNHFXOHo4NXBNRFU5dlF4U2c1?=
- =?utf-8?B?SU1MQlVMU2pVV01XMVZJemh6S2xrQXR4RHBQTzQrczBibkxOT1VtMUIrTXVO?=
- =?utf-8?B?ZVBQaGl1QVhWZkliTlpwcnQ0MHlndGZkb2dNUjd5WURsWHZXVEduaU5hZVZa?=
- =?utf-8?B?NTBmODZDN2NJUWN2Z3BVclAzMkhYTHVCd2ppdFE0aGlFRUxRcGlzZnlKVG5Y?=
- =?utf-8?B?Ry92VkoxdXo0Wm51ZzRGa0diZndFTnN4dHJZajFSNGcwR29TYk1vZUZsbVAx?=
- =?utf-8?B?VHdnY1VKMXdyaTFDZktkR2M5bTJhY2UvZ28zRzlwSW1jOHRHZXhhMFJscGVZ?=
- =?utf-8?B?a2Z3N1k3UDk1YnNxVnpScUVrcllNOWVoT1FRNDBIOTNMUUd5ajRrcnlnNjJk?=
- =?utf-8?B?VUZwZjcyOStrVnJoWlJkWHAyZ3VSK2N5TGFSNHc1VkVvYTQrang1dmJzOGRC?=
- =?utf-8?B?d0VWaFJCekEwbmlkZlFBQWlQSmhMZTRzV05QYVozY1UwaUdvUHA5NzQ1WGts?=
- =?utf-8?B?eW9PdmdTNW5vSWR0eTEveHN5bVJRZDQxdVJXSTNvTFJKVytMU3lyNThxZ3V2?=
- =?utf-8?B?WTl3bUU3TkFObjRCb0tLS2NtZEswRnpPbCt1bGdzVGNoY1Y1eXpCTENyckF1?=
- =?utf-8?B?NGpyYUVTaUp5VzlEUGVoYVI5ZmZkQVA0WGJsakhPOWJXSEE2UmhjU1RKQ1JN?=
- =?utf-8?B?NEE2UnE0Nlh4S1FjNkp3QlFzdXNFajJOSEl4NExtbzdXdWpYaUJqU29TVU5K?=
- =?utf-8?B?YjN0WnMwN2NmaEJSQTZ1TzI2bW9NOWRydy9Tc2VlOXVxaU52eld4MXlKMWJj?=
- =?utf-8?Q?BrjeghbobxnaTy2dv/9UloSKi?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3147b298-4560-426c-ce8a-08dc214418db
-X-MS-Exchange-CrossTenant-AuthSource: TY0PR06MB5470.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jan 2024 03:32:34.0188
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Zo5zPmMz1ZMAjjlRRyrOXBbOqHbjwot86TMUPW7ht/Bkt8awm0VVxhJ7z4+/VAJomHemD3zth8u6IZJESZ3inQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR06MB6394
+References: <20240126063500.2684087-1-wenst@chromium.org> <20240126063500.2684087-2-wenst@chromium.org>
+ <74b9f249-fcb4-4338-bf7b-8477de6c935c@linaro.org> <CAGXv+5Hu+KsTBd1JtnKcaE3qUzPhHbunoVaH2++yfNopHtFf4g@mail.gmail.com>
+ <21568334-b21f-429e-81cd-5ce77accaf3c@linaro.org>
+In-Reply-To: <21568334-b21f-429e-81cd-5ce77accaf3c@linaro.org>
+From: Chen-Yu Tsai <wenst@chromium.org>
+Date: Tue, 30 Jan 2024 11:32:09 +0800
+Message-ID: <CAGXv+5HxXzjigN3Bp96vkv71WfTJ1S2b7Wgafc4GxLmhu6+jMg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: net: bluetooth: Add MediaTek MT7921S
+ SDIO Bluetooth
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+	Sean Wang <sean.wang@mediatek.com>, linux-bluetooth@vger.kernel.org, 
+	netdev@vger.kernel.org, linux-mediatek@lists.infradead.org, 
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The em_pd_energy function name is obsolete and non-existent now.
----
- Documentation/scheduler/sched-energy.rst                    | 2 +-
- Documentation/translations/zh_CN/scheduler/sched-energy.rst | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+On Mon, Jan 29, 2024 at 3:34=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 29/01/2024 04:38, Chen-Yu Tsai wrote:
+>
+> >>> +allOf:
+> >>> +  - $ref: bluetooth-controller.yaml#
+> >>> +
+> >>> +properties:
+> >>> +  compatible:
+> >>> +    enum:
+> >>> +      - mediatek,mt7921s-bluetooth
+> >>
+> >> Can it be also WiFi on separate bus? How many device nodes do you need
+> >> for this device?
+> >
+> > For the "S" variant, WiFi is also on SDIO. For the other two variants,
+> > "U" and "E", WiFi goes over USB and PCIe respectively. On both those
+> > variants, Bluetooth can either go over USB or UART. That is what I
+> > gathered from the pinouts. There are a dozen GPIO pins which don't
+> > have detailed descriptions though. If you want a comprehensive
+> > binding of the whole chip and all its variants, I suggest we ask
+> > MediaTek to provide it instead. My goal with the binding is to document
+> > existing usage and allow me to upstream new device trees.
+> >
+> > For now we only need the Bluetooth node. The WiFi part is perfectly
+> > detectable, and the driver doesn't seem to need the WiFi reset pin.
+> > The Bluetooth driver only uses its reset pin to reset a hung controller=
+.
+>
+> Then suffix "bluetooth" seems redundant.
 
-diff --git a/Documentation/scheduler/sched-energy.rst b/Documentation/scheduler/sched-energy.rst
-index 70e2921..84b37a2 100644
---- a/Documentation/scheduler/sched-energy.rst
-+++ b/Documentation/scheduler/sched-energy.rst
-@@ -141,7 +141,7 @@ in its previous activation.
- find_energy_efficient_cpu() uses compute_energy() to estimate what will be the
- energy consumed by the system if the waking task was migrated. compute_energy()
- looks at the current utilization landscape of the CPUs and adjusts it to
--'simulate' the task migration. The EM framework provides the em_pd_energy() API
-+'simulate' the task migration. The EM framework provides the em_cpu_energy() API
- which computes the expected energy consumption of each performance domain for
- the given utilization landscape.
- 
-diff --git a/Documentation/translations/zh_CN/scheduler/sched-energy.rst b/Documentation/translations/zh_CN/scheduler/sched-energy.rst
-index fdbf6cf..03dedc6 100644
---- a/Documentation/translations/zh_CN/scheduler/sched-energy.rst
-+++ b/Documentation/translations/zh_CN/scheduler/sched-energy.rst
-@@ -119,7 +119,7 @@ EAS覆盖了CFS的任务唤醒平衡代码。在唤醒平衡时，它使用平
- 
- 如果唤醒的任务被迁移，find_energy_efficient_cpu()使用compute_energy()来估算
- 系统将消耗多少能量。compute_energy()检查各CPU当前的利用率情况，并尝试调整来
--“模拟”任务迁移。EM框架提供了API em_pd_energy()计算每个性能域在给定的利用率条件
-+“模拟”任务迁移。EM框架提供了API em_cpu_energy()计算每个性能域在给定的利用率条件
- 下的预期能量消耗。
- 
- 下面详细介绍一个优化能量消耗的任务放置决策的例子。
--- 
-2.7.4
+I think keeping the suffix makes more sense though. The chip is a two
+function piece, and this only targets one of the functions. Also, the
+compatible string is already used in an existing driver [1] and
+soon-to-be in-tree device tree [2].
 
+
+ChenYu
+
+[1] https://elixir.bootlin.com/linux/latest/source/drivers/bluetooth/btmtks=
+dio.c#L1414
+[2] https://elixir.bootlin.com/linux/v6.8-rc1/source/arch/arm64/boot/dts/me=
+diatek/mt8183-kukui-jacuzzi-pico6.dts#L86
 
