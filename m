@@ -1,136 +1,108 @@
-Return-Path: <linux-kernel+bounces-43700-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAED68417F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 01:57:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6ECD8417F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 01:58:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E6042846BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 00:57:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 148FEB21E7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 00:58:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 827662E821;
-	Tue, 30 Jan 2024 00:57:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B71FF2C857;
+	Tue, 30 Jan 2024 00:58:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bjeY2UZ8"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bFrtjSpt"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EF4A22075;
-	Tue, 30 Jan 2024 00:57:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C8111E89A
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 00:58:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706576263; cv=none; b=FJbeeew2TRpQYLl9b+Odb0m5OgyuRqYfIKHxOz+wfi2nP59hcLCW/2jariezHAQJyf9Zbg9GR01KC9skBZfp6dJukhL9gvPsVBA84IXnrtrBjsUUJ9EAk88v038DEq42q+rVuCiEj0YYvzfJvvYRK3QWkbRujzYbr24JJCOwUj0=
+	t=1706576289; cv=none; b=SQnRCjVxAyKiXsSr2v2Lr6BvOZbMsMO6SaRmgNjfNgQwD2n6kukHx55UkSExnganX29t9gphOcD/WM+JRSmcHehw2+A4+098/JEm/2PtsHILYPdCDTGsBIfqoYKrKDWxgBZvwaJm4rGpjlMQuAZtk+ZYx9ggSIFdLnurf/iNsHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706576263; c=relaxed/simple;
-	bh=X9IYwZ0wAz7/0IuN+ro/CjSDJW1m3SVnz6v4s6j8Aho=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mYDeiU6vgQSGzgZR9lNDAhhJMCA10w4o/R0HFiobiaH1jErxcoR0i+wpr3SAd5N40Uy7DEeVhH3QEAE5DVq+LNA8l4TFUYkz3AMI0RcqWNmcBdgpEQOs6O/qvAEMxgkz22ZotIkAeyIehIlizc6AH9IsHHu6mRWFaWOTR8VCQwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bjeY2UZ8; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40e7e2e04f0so40236615e9.1;
-        Mon, 29 Jan 2024 16:57:41 -0800 (PST)
+	s=arc-20240116; t=1706576289; c=relaxed/simple;
+	bh=vehqthCnPjetgrYtj1oh6HOMUQNvBhhq4E/y9/quWI8=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=X9CPHi8tctz+zRQi89DyKIHFbuBUw7Xb7wdps2GfHsmcPxkcAk5kx81niD/DTUH3yHgoCeRhYHfsYifJ/kokkk2K+O846D3C2NZUsGv3y4C55LRKvLJq9kPWzItiCc3yMc5DjiGQLLy81kgEyE50mtVz/JtwL5C54tgQdKJRLd0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bFrtjSpt; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5eba564eb3fso70641737b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 16:58:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706576260; x=1707181060; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=GpsTXIvTwqLCIz6H2ZuuyCkCgL2s3BPFwpWqSogrCVY=;
-        b=bjeY2UZ8kOz+tGvCQM19pm0alERktC2PJayuwiX28ht1K4iX2Yi1LNWHWuB+vEuaJE
-         rS6OOgzHWLVTaQeTeI+mn36CF5lF1g/GwzOrIjsOJO6em0ZHfxyiqpPLPHkpZ6ux28aB
-         xIi0RgpH9f048UYJ6bVTyKDVfS6BNMvG67gtHb9O4nBVdiTnL82x9sMAwg06zISpVjRO
-         4ou1y8kjAaEoFc1hjOZLNMrhtj6NPeuXyAAInNEN/08lsfAcX87j5T1OBOIE96v0rfjk
-         5+I+Qn7bObN2g2JLHwimMjGew9bKQBA87+gWWIzMAo3YgyioIb2B6jTOSqJ3/A2HzEiI
-         hb1w==
+        d=google.com; s=20230601; t=1706576286; x=1707181086; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vehqthCnPjetgrYtj1oh6HOMUQNvBhhq4E/y9/quWI8=;
+        b=bFrtjSpt5UamRoEjZMFtgYUlBt3LCN/qxtpegnfoh1T6t58Zon7MA03q4ezavNNwX5
+         EeWab4NLbwcYiTLH1D+nAfAbTy3MGOHPf990PGXPzKSK2zvJ8QyOCS3L0KDGwS4kRKY4
+         zPjFc14Zt6JkZD9dMdR+jGUjwig+RA1luMfXIhQ1Y32KqCNztdy6MAKDIgU9dEt/Ntmv
+         pDsvPJPy9t1kWPu8LULxwR1yqggzrM4gPjzIu0HxtUy7f/f9Wtq8QrIf3RfvoiNtOmnA
+         dXbuOvsA+IlOzPgEbq2ZUQMmroU2eingzswY3bAFJixxWj0J370XJdMLinZhqYRovyEX
+         +urg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706576260; x=1707181060;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GpsTXIvTwqLCIz6H2ZuuyCkCgL2s3BPFwpWqSogrCVY=;
-        b=J9tJjN05/OThpEty4SmAFn7d8q/fHE9wdHjiMJSi/sePG+mXYZVXB/TBJnJ4Bsn9pi
-         RB3Bi6o0X65a+eNxnV3YqzLXdyw+g4CjT3Heq2oVM75c0lnLGJKWbm/E3QuxSaEeyqKW
-         sz0+xZ5VS1gP4ejNXYMQaz0M6GdL6sHMWRMMYuWwh1NyNa3rHqpfoSv8kP9Ok1lNWfgt
-         Yh86ak2KFihSy4i07UD3IFytIKObJJXZWvnaBeB5MVpkCSsY5wbkeuf9Evf4SRhx+7On
-         Z6s/DqgxkMih0V2CMnNwR+l25FbAdzk0+7YACXrcSiBbhuCMlYKbyDxVEGNZK+JYs7m4
-         pl8Q==
-X-Gm-Message-State: AOJu0YzNhBrBN6OsV00jnyjQoFXc46TKfNVKtgjivMMoSIMHT4pOzObq
-	voCHfATloz+c6jssMErPfvfFb8iiswWNzpioQPVHBF2Ij9Y0Bi+I
-X-Google-Smtp-Source: AGHT+IHNuWBvwe8RdtKWNm8iCzcE9pRwvjZMjE7snN8+YxvT2uoynXJ9A+bnnW33Zax6Z3tzVhIkRw==
-X-Received: by 2002:a05:600c:3547:b0:40e:fb50:94d8 with SMTP id i7-20020a05600c354700b0040efb5094d8mr1886121wmq.8.1706576260105;
-        Mon, 29 Jan 2024 16:57:40 -0800 (PST)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id u7-20020a05600c138700b0040d8ff79fd8sm11499241wmf.7.2024.01.29.16.57.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 16:57:39 -0800 (PST)
-Message-ID: <65b84983.050a0220.e1700.35fd@mx.google.com>
-X-Google-Original-Message-ID: <ZbhJgAI9pMeSGm4E@Ansuel-xps.>
-Date: Tue, 30 Jan 2024 01:57:36 +0100
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Robert Marko <robert.marko@sartura.hr>,
-	linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Jie Luo <quic_luoj@quicinc.com>
-Subject: Re: [net-next PATCH v2 3/3] arm64: dts: qcom: ipq8074: add
- clock-frequency to MDIO node
-References: <20240130003546.1546-1-ansuelsmth@gmail.com>
- <20240130003546.1546-4-ansuelsmth@gmail.com>
- <b1ff77bc-0833-493a-b099-884c727f0341@lunn.ch>
+        d=1e100.net; s=20230601; t=1706576286; x=1707181086;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=vehqthCnPjetgrYtj1oh6HOMUQNvBhhq4E/y9/quWI8=;
+        b=ENwwh2Ws/uUUoaFh5ASeMityyIebgVhlkWwMhxhYKDw4cVzeLbytJO4vEdWnwpyoQb
+         7r/2mv77LLGLMCBqgUsyGve5O/E2E0rXc0uYQ4kL5rmgPpHtAao+OeYmZIZUniyz1G/k
+         20lqQiVi6asRmsGhQv7rUy1+32k7U/8xImtzD/0S2tWnWagVOIDN4eVK/35WbNb0CfNJ
+         JYX3h4pF52JjFfm3KFOoManD03rfIzXjHZMV1zUVbepyyMGm1HNYcy9LWo6osHBCF7lB
+         dTU1lHitK3hWF7Tr4qgJQ7wMghn40RaT6tEdB4JwZuDl2mGrzvH4LsPNCAO+hfY/qJ4L
+         A8jQ==
+X-Gm-Message-State: AOJu0Yw3+OSgWRvwbYAUjPoWNz/gyl/ZApJZ9/r2j4gdKBEQxMH96L2i
+	LO5wAOn2No8DOd3M1bMqc0MgnNcdYGkd5kOrxXobunWJ97Y9s1ZEJouITyN9w6zlBceBmOYPZya
+	m0/tVgrs9qp5F5S1OEg==
+X-Google-Smtp-Source: AGHT+IGdAli7RtKs+PFrYkjZWruzcPcsuBDP1FgmOuBAndXpnE1k73fgPJtOJy0F2aOVgpwyHlBYZlAUCxWUrWET
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a05:690c:38a:b0:5de:9c9f:3ee4 with SMTP
+ id bh10-20020a05690c038a00b005de9c9f3ee4mr2266697ywb.6.1706576286454; Mon, 29
+ Jan 2024 16:58:06 -0800 (PST)
+Date: Tue, 30 Jan 2024 00:58:04 +0000
+In-Reply-To: <CAKEwX=MxRTupSoYbnr14wTurbBhJ7KipV3YuEofab2JJxsk3cg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b1ff77bc-0833-493a-b099-884c727f0341@lunn.ch>
+Mime-Version: 1.0
+References: <20240126-zswap-writeback-race-v2-0-b10479847099@bytedance.com>
+ <20240126-zswap-writeback-race-v2-1-b10479847099@bytedance.com>
+ <Zbg-INqi9oMUqJaW@google.com> <CAKEwX=MxRTupSoYbnr14wTurbBhJ7KipV3YuEofab2JJxsk3cg@mail.gmail.com>
+Message-ID: <ZbhJnIQRjTn9ME1k@google.com>
+Subject: Re: [PATCH v2 1/3] mm/zswap: don't return LRU_SKIP if we have dropped
+ lru lock
+From: Yosry Ahmed <yosryahmed@google.com>
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: Chengming Zhou <zhouchengming@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Chris Li <chriscli@google.com>, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 30, 2024 at 01:55:28AM +0100, Andrew Lunn wrote:
-> On Tue, Jan 30, 2024 at 01:35:22AM +0100, Christian Marangi wrote:
-> > Add clock-frequency to MDIO node to set the MDC rate to 6.25Mhz instead
-> > of using the default value of 390KHz from MDIO default divider.
-> > 
-> > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> > ---
-> >  arch/arm64/boot/dts/qcom/ipq8074.dtsi | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-> > index 2f275c84e566..08ddfeece043 100644
-> > --- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-> > @@ -264,6 +264,8 @@ mdio: mdio@90000 {
-> >  			clocks = <&gcc GCC_MDIO_AHB_CLK>;
-> >  			clock-names = "gcc_mdio_ahb_clk";
-> >  
-> > +			clock-frequency = <6250000>;
-> > +
-> >  			status = "disabled";
-> 
-> If we merge this via netdev, is a merge conflict likely? Any other
-> changes expected in this area, given the changes which might happen to
-> GCC soon, etc?
-> 
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
->
+On Mon, Jan 29, 2024 at 04:12:54PM -0800, Nhat Pham wrote:
+> On Mon, Jan 29, 2024 at 4:09=E2=80=AFPM Yosry Ahmed <yosryahmed@google.co=
+m> wrote:
+> >
+> > On Sun, Jan 28, 2024 at 01:28:49PM +0000, Chengming Zhou wrote:
+> > > LRU_SKIP can only be returned if we don't ever dropped lru lock, or
+> > > we need to return LRU_RETRY to restart from the head of lru list.
+> > >
+> > > Otherwise, the iteration might continue from a cursor position that
+> > > was freed while the locks were dropped.
+> >
+> > Does this warrant a stable backport?
+>=20
+> IUC, the zswap shrinker was merged in 6.8, and we're still in the RC's
+> for 6.8, right? If this patch goes into 6.8 then no need?
+> Otherwise, yeah it should go to 6.8 stable IMHO.
 
-Honestly I don't expect much to change here in the mdio node.
-
-If it's a problem I can submit in a separate patch in linux-msm.
-
--- 
-	Ansuel
+For some reason I thought the shrinker went into v6.7, my bad. Then I
+guess it should only go into v6.8.
 
