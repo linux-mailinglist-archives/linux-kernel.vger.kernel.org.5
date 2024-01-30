@@ -1,185 +1,175 @@
-Return-Path: <linux-kernel+bounces-44530-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44544-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1DC7842351
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:40:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47215842401
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:48:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C7632892A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:40:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F31D8287D71
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:48:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A55C46BB40;
-	Tue, 30 Jan 2024 11:38:13 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 005506A01E;
-	Tue, 30 Jan 2024 11:38:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5699A679F2;
+	Tue, 30 Jan 2024 11:45:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ics.forth.gr header.i=@ics.forth.gr header.b="bGzFyDI1"
+Received: from mailgate.ics.forth.gr (mailgate.ics.forth.gr [139.91.1.2])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55E1866B5B
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 11:45:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.91.1.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706614693; cv=none; b=DPPlGDJh0TjlAAwwHM06nLNXg+zeqL9sduAEhJTWFbEOiN2+qxEVqb+QsXfOTb0VC1Qgwx+cVTvGs9mZ2H86MUryW/CM7Lecq3Du+QJwfIn48UGmekXsX5GaMob08P8qOL0v2jdhA1o6NErNJ5tUHZ0H5k8Y3WXi/zl453I123o=
+	t=1706615109; cv=none; b=F3bdp7yYlXHYV60rGYHcEw0DcMgra4PalzrH/PT2/K648isvlNXWNg3UuMSaxxtri+8FpDqf7BLd3fyy6wIrOOLFamHtx+Gs07pdtwXuHg1KGDKO5tgZ+scKTzw1vnuiBFdFtps/fOxy78BG7DrkcLP6TDxX8N2eG6KR6gAz04w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706614693; c=relaxed/simple;
-	bh=/DsBAHX8HTlca+Vpy4zDg5DsZ5AAjetwE7nEWjeRix8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=psG7XgZC/QZh+3TWfF6WlwUnle3O6N5nNOWS6ZaT5EgH7ZJi98iLDHnMqtOqLJXN9uTW5nxVUR53EgA/dhTpaP5REhbX7ZVvU4xPeKvIIWwzmGRIOKimtrI1312qj/p75kHv+83+8KM4MzIVD0RjK21dVsTE8ODeZqccmekg4PM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2F6CEDA7;
-	Tue, 30 Jan 2024 03:38:54 -0800 (PST)
-Received: from raptor (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 070733F5A1;
-	Tue, 30 Jan 2024 03:38:04 -0800 (PST)
-Date: Tue, 30 Jan 2024 11:38:02 +0000
-From: Alexandru Elisei <alexandru.elisei@arm.com>
-To: Peter Collingbourne <pcc@google.com>
-Cc: catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
-	maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
-	yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
-	mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
-	rppt@kernel.org, hughd@google.com, steven.price@arm.com,
-	anshuman.khandual@arm.com, vincenzo.frascino@arm.com,
-	david@redhat.com, eugenis@google.com, kcc@google.com,
-	hyesoo.yu@samsung.com, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
-	linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC v3 23/35] arm64: mte: Try to reserve tag storage in
- arch_alloc_page()
-Message-ID: <ZbjfmqpYex4C8Uhm@raptor>
-References: <20240125164256.4147-1-alexandru.elisei@arm.com>
- <20240125164256.4147-24-alexandru.elisei@arm.com>
- <CAMn1gO5pGVRCErVF+Ca-4JgHRKEcq9sDGyEe--gEjj5ZLrB8sA@mail.gmail.com>
+	s=arc-20240116; t=1706615109; c=relaxed/simple;
+	bh=5S10mTZhZbQFsJIaNUVqS3Tw0Ln3OPHQISVKPpP1DH0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EYGnqMlZNDrLwh1pZtdxPhg5+f+/UvfEdHMFGzyMwrhPvuWlEl4J1KVr2rszC71jVgSIdKeBS4cBTQL6z041NfQeA1N685cYxIFTfWqWMf21XMbdCAz2/Z8PNP+DEswZEaNpFFVqsDsziXBFP9i73bYsr4vvi9UdqjYipQyU0pg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ics.forth.gr; spf=pass smtp.mailfrom=ics.forth.gr; dkim=pass (2048-bit key) header.d=ics.forth.gr header.i=@ics.forth.gr header.b=bGzFyDI1; arc=none smtp.client-ip=139.91.1.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ics.forth.gr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ics.forth.gr
+Received: from av3.ics.forth.gr (av3in.ics.forth.gr [139.91.1.77])
+	by mailgate.ics.forth.gr (8.15.2/ICS-FORTH/V10-1.8-GATE) with ESMTP id 40UBdFrK003642
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 13:39:20 +0200 (EET)
+DKIM-Signature: v=1; a=rsa-sha256; d=ics.forth.gr; s=av; c=relaxed/simple;
+	q=dns/txt; i=@ics.forth.gr; t=1706614760; x=1709206760;
+	h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=5S10mTZhZbQFsJIaNUVqS3Tw0Ln3OPHQISVKPpP1DH0=;
+	b=bGzFyDI1hgZjW/BNzyYMSkN6f7dy/0ICzqVsXoXa39feXN+oKyTNU65lm9rUh9E3
+	J8hcVp4VH9GZbUAonayFCSEG1wan8nT5WnsnYPPSqaWd5z342lTBpY5TQ/FAo0/o
+	GH8olK3wGaB0VZ9wJrGWUuae46+ZAvgGbH7vxLaQ5OxAkhGUj9iwJ+PD1cbTxoU9
+	qct0kmC3fSfgkya6UU8BopS+oXr78gFwBQgxkwGZ5mZeZCpXcXU0qkCtPQNT1L9i
+	hE8qaOFtNeF/2zAkE/Dz1awjXvtvoGe0qeT+mNZkFx6ztsDex69GcbnuB+RvR2m/
+	h9no2V6FOB21fo599aeV2A==;
+X-AuditID: 8b5b014d-a23ec70000002178-80-65b8dfe81b6b
+Received: from enigma.ics.forth.gr (webmail.ics.forth.gr [139.91.151.35])
+	by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id 71.91.08568.8EFD8B56; Tue, 30 Jan 2024 13:39:20 +0200 (EET)
+X-ICS-AUTH-INFO: Authenticated user: mick at ics.forth.gr
+Message-ID: <fa36b871-43d7-413c-82a2-0ecc0ebce9b4@ics.forth.gr>
+Date: Tue, 30 Jan 2024 13:39:10 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMn1gO5pGVRCErVF+Ca-4JgHRKEcq9sDGyEe--gEjj5ZLrB8sA@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] riscv: optimized memmove
+To: Jisheng Zhang <jszhang@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt
+ <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Matteo Croce <mcroce@microsoft.com>, kernel test robot <lkp@intel.com>
+References: <20240128111013.2450-1-jszhang@kernel.org>
+ <20240128111013.2450-3-jszhang@kernel.org>
+Content-Language: el-GR
+From: Nick Kossifidis <mick@ics.forth.gr>
+In-Reply-To: <20240128111013.2450-3-jszhang@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrCLMWRmVeSWpSXmKPExsXSHT1dWffF/R2pBru3KVps/T2L3aL52Ho2
+	i8u75rBZbPvcwmbxqvkRm8XfX/9ZLV5e7mG2aJvF78Dh8eblSxaPwx1f2D0W73nJ5LFpVSeb
+	x+Yl9R6tO/6ye1xqvs7u8XmTXABHFJdNSmpOZllqkb5dAlfGrO6ygjPCFb/fZTQwLufvYuTg
+	kBAwkXi726eLkYtDSOAoo8TR3g72LkZOoLilxOZPL1lAbF4Be4mWg9PZQGwWAVWJOWtPMUPE
+	BSVOznwCViMqIC9x/9YMdpCZwgKGErtvV4LMFBHYyiix9dVbdhCHWWASo8Tkr59YQYqEBJIl
+	Hn+3BellFhCXOHL+N9hMNgFNifmXDoLN5BQwl+ia8YAVosZMomtrFyOELS+x/e0c5gmMArOQ
+	nDELyahZSFpmIWlZwMiyilEgscxYLzO5WC8tv6gkQy+9aBMjOCIYfXcw3t78Vu8QIxMH4yFG
+	CQ5mJRHen5pbU4V4UxIrq1KL8uOLSnNSiw8xSnOwKInznrBdkCwkkJ5YkpqdmlqQWgSTZeLg
+	lGpgiv3TdzOY44tz/7NOfz9mpx7OT7wXiy0Df+YkaJ5TX3k0dNFhzUU9tT+bfrF1bJzuvmGL
+	xZuFjIKdxe9XblAWrTqwdNqWubLGgkJ7N6XzTKl32hKlLKJ1qObp5bctbkEP3zOnXti6+f5K
+	7ttLGtuetSUtUzzBEbbH6fZE3buHo+sffbRql9+TzVjSWZZ+e+HSj21rr7R6eWW6mP0OTFNy
+	PpH14c/NdXHF99h+z46TaD+05JB1Pau4yPmbTndS2Qr+5fdd/8XF0NB+PJ13ym8JE5e6ojUP
+	Vx73e3Bw4n6nb0ncvS/yXobPdrbqu+yhfM5znfrDbyH2l49cUlh5UP/JteOeVxmF1D78rDqi
+	mP4zSYmlOCPRUIu5qDgRAOLlaxz3AgAA
 
-Hi Peter,
-
-On Mon, Jan 29, 2024 at 04:04:18PM -0800, Peter Collingbourne wrote:
-> On Thu, Jan 25, 2024 at 8:45 AM Alexandru Elisei
-> <alexandru.elisei@arm.com> wrote:
-> >
-> > Reserve tag storage for a page that is being allocated as tagged. This
-> > is a best effort approach, and failing to reserve tag storage is
-> > allowed.
-> >
-> > When all the associated tagged pages have been freed, return the tag
-> > storage pages back to the page allocator, where they can be used again for
-> > data allocations.
-> >
-> > Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
-> > ---
-> >
-> > Changes since rfc v2:
-> >
-> > * Based on rfc v2 patch #16 ("arm64: mte: Manage tag storage on page
-> > allocation").
-> > * Fixed calculation of the number of associated tag storage blocks (Hyesoo
-> > Yu).
-> > * Tag storage is reserved in arch_alloc_page() instead of
-> > arch_prep_new_page().
-> >
-> >  arch/arm64/include/asm/mte.h             |  16 +-
-> >  arch/arm64/include/asm/mte_tag_storage.h |  31 +++
-> >  arch/arm64/include/asm/page.h            |   5 +
-> >  arch/arm64/include/asm/pgtable.h         |  19 ++
-> >  arch/arm64/kernel/mte_tag_storage.c      | 234 +++++++++++++++++++++++
-> >  arch/arm64/mm/fault.c                    |   7 +
-> >  fs/proc/page.c                           |   1 +
-> >  include/linux/kernel-page-flags.h        |   1 +
-> >  include/linux/page-flags.h               |   1 +
-> >  include/trace/events/mmflags.h           |   3 +-
-> >  mm/huge_memory.c                         |   1 +
-> >  11 files changed, 316 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
-> > index 8034695b3dd7..6457b7899207 100644
-> > --- a/arch/arm64/include/asm/mte.h
-> > +++ b/arch/arm64/include/asm/mte.h
-> > @@ -40,12 +40,24 @@ void mte_free_tag_buf(void *buf);
-> >  #ifdef CONFIG_ARM64_MTE
-> >
-> >  /* track which pages have valid allocation tags */
-> > -#define PG_mte_tagged  PG_arch_2
-> > +#define PG_mte_tagged          PG_arch_2
-> >  /* simple lock to avoid multiple threads tagging the same page */
-> > -#define PG_mte_lock    PG_arch_3
-> > +#define PG_mte_lock            PG_arch_3
-> > +/* Track if a tagged page has tag storage reserved */
-> > +#define PG_tag_storage_reserved        PG_arch_4
-> > +
-> > +#ifdef CONFIG_ARM64_MTE_TAG_STORAGE
-> > +DECLARE_STATIC_KEY_FALSE(tag_storage_enabled_key);
-> > +extern bool page_tag_storage_reserved(struct page *page);
-> > +#endif
-> >
-> >  static inline void set_page_mte_tagged(struct page *page)
-> >  {
-> > +#ifdef CONFIG_ARM64_MTE_TAG_STORAGE
-> > +       /* Open code mte_tag_storage_enabled() */
-> > +       WARN_ON_ONCE(static_branch_likely(&tag_storage_enabled_key) &&
-> > +                    !page_tag_storage_reserved(page));
-> > +#endif
-> >         /*
-> >          * Ensure that the tags written prior to this function are visible
-> >          * before the page flags update.
-> > diff --git a/arch/arm64/include/asm/mte_tag_storage.h b/arch/arm64/include/asm/mte_tag_storage.h
-> > index 7b3f6bff8e6f..09f1318d924e 100644
-> > --- a/arch/arm64/include/asm/mte_tag_storage.h
-> > +++ b/arch/arm64/include/asm/mte_tag_storage.h
-> > @@ -5,6 +5,12 @@
-> >  #ifndef __ASM_MTE_TAG_STORAGE_H
-> >  #define __ASM_MTE_TAG_STORAGE_H
-> >
-> > +#ifndef __ASSEMBLY__
-> > +
-> > +#include <linux/mm_types.h>
-> > +
-> > +#include <asm/mte.h>
-> > +
-> >  #ifdef CONFIG_ARM64_MTE_TAG_STORAGE
-> >
-> >  DECLARE_STATIC_KEY_FALSE(tag_storage_enabled_key);
-> > @@ -15,6 +21,15 @@ static inline bool tag_storage_enabled(void)
-> >  }
-> >
-> >  void mte_init_tag_storage(void);
-> > +
-> > +static inline bool alloc_requires_tag_storage(gfp_t gfp)
-> > +{
-> > +       return gfp & __GFP_TAGGED;
-> > +}
-> > +int reserve_tag_storage(struct page *page, int order, gfp_t gfp);
-> > +void free_tag_storage(struct page *page, int order);
-> > +
-> > +bool page_tag_storage_reserved(struct page *page);
-> >  #else
-> >  static inline bool tag_storage_enabled(void)
-> >  {
-> > @@ -23,6 +38,22 @@ static inline bool tag_storage_enabled(void)
-> >  static inline void mte_init_tag_storage(void)
-> >  {
-> >  }
-> > +static inline bool alloc_requires_tag_storage(struct page *page)
+On 1/28/24 13:10, Jisheng Zhang wrote:
+> From: Matteo Croce <mcroce@microsoft.com>
 > 
-> This function should take a gfp_t to match the
-> CONFIG_ARM64_MTE_TAG_STORAGE case.
+> When the destination buffer is before the source one, or when the
+> buffers doesn't overlap, it's safe to use memcpy() instead, which is
+> optimized to use a bigger data size possible.
+> 
+> Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 
-Ah, yes, it should, nice catch, the compiler didn't throw an error. Will
-fix, thanks!
+I'd expect to have memmove handle both fw/bw copying and then memcpy 
+being an alias to memmove, to also take care when regions overlap and 
+avoid undefined behavior.
 
-Alex
+
+> --- a/arch/riscv/lib/string.c
+> +++ b/arch/riscv/lib/string.c
+> @@ -119,3 +119,28 @@ void *memcpy(void *dest, const void *src, size_t count) __weak __alias(__memcpy)
+>   EXPORT_SYMBOL(memcpy);
+>   void *__pi_memcpy(void *dest, const void *src, size_t count) __alias(__memcpy);
+>   void *__pi___memcpy(void *dest, const void *src, size_t count) __alias(__memcpy);
+> +
+> +/*
+> + * Simply check if the buffer overlaps an call memcpy() in case,
+> + * otherwise do a simple one byte at time backward copy.
+> + */
+> +void *__memmove(void *dest, const void *src, size_t count)
+> +{
+> +	if (dest < src || src + count <= dest)
+> +		return __memcpy(dest, src, count);
+> +
+> +	if (dest > src) {
+> +		const char *s = src + count;
+> +		char *tmp = dest + count;
+> +
+> +		while (count--)
+> +			*--tmp = *--s;
+> +	}
+> +	return dest;
+> +}
+> +EXPORT_SYMBOL(__memmove);
+> +
+
+Here is an approach for the backwards case to get things started...
+
+static void
+copy_bw(void *dst_ptr, const void *src_ptr, size_t len)
+{
+	union const_data src = { .as_bytes = src_ptr + len };
+	union data dst = { .as_bytes = dst_ptr + len };
+	size_t remaining = len;
+	size_t src_offt = 0;
+
+	if (len < 2 * WORD_SIZE)
+		goto trailing_bw;
+
+	for(; dst.as_uptr & WORD_MASK; remaining--)
+		*--dst.as_bytes = *--src.as_bytes;
+
+	src_offt = src.as_uptr & WORD_MASK;
+	if (!src_offt) {
+		for (; remaining >= WORD_SIZE; remaining -= WORD_SIZE)
+			*--dst.as_ulong = *--src.as_ulong;
+	} else {
+		unsigned long cur, prev;
+		src.as_bytes -= src_offt;
+		for (; remaining >= WORD_SIZE; remaining -= WORD_SIZE) {
+			cur = *src.as_ulong;
+			prev = *--src.as_ulong;
+			*--dst.as_ulong = cur << ((WORD_SIZE - src_offt) * 8) |
+					  prev >> (src_offt * 8);
+		}
+		src.as_bytes += src_offt;
+	}
+
+  trailing_bw:
+	while (remaining-- > 0)
+		*--dst.as_bytes = *--src.as_bytes;
+}
+
+Regards,
+Nick
 
