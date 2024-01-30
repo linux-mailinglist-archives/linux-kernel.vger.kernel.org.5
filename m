@@ -1,162 +1,161 @@
-Return-Path: <linux-kernel+bounces-44566-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44567-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE6B184244A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:01:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7966184244C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:01:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80F991F25F87
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:01:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABCBD1C239DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:01:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 450B1679F0;
-	Tue, 30 Jan 2024 12:01:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="KS7dwp8z"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90FCB67749
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 12:01:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AAA667E78;
+	Tue, 30 Jan 2024 12:01:38 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5506067E6D
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 12:01:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706616081; cv=none; b=TAiA31EXa2TGRmLzkHOX7Z6mnZAAWILwoCms7i9Yu+gEY3i4f6lbghbZpIeuQEKGjxKRf/EmEoesnq/qO9zyT4JxVYtRA2h4ybVNhNMNEBCr9WzvPXCWo7KrZtVfSpCMST17EIk//h3TZbjHIq3++WDW3+BRzTIU3f4RRBUwDg8=
+	t=1706616098; cv=none; b=MsBq951J5L/uCFdhUsin56hfs1PJ+81xSKKX+evhX7dyvJmxQvXGZIGx4MSGYUsGB0OZx0Jfs7MAuoGaRL9iw7gEyQnMobw7oXD6WH2VzJwJOuvN8sKbKX9jKrnOFHWe82adSqRWGScNrTxxeruvW0e/FXFTrNUX2YZGp/HZCgo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706616081; c=relaxed/simple;
-	bh=MiwFLS45HdWVedOvpsLGeVeQVvF9T9P1qxXKz4V4K6w=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=h96mP7djWKTEqKIkEEO1AajFg8lPuDxYSz86wFPBy+KeRnYy0KzsUDLAv+CkkhMw3lQAEa3NjiGXfwcI8SB8E4JOw1zHmc8RyOCwp/VqvAkbIZfD4fzIdsQyEirPuEu9BGnAb7mbqpTtKqRHjVc0DG/ZCTPHA+43vmppdo7bBPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=KS7dwp8z; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d0512f6e32so19503261fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 04:01:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706616077; x=1707220877; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=rHZFoGtcJrlCRJilwMm607tqzIqnhBQPqkmzm1pT0lA=;
-        b=KS7dwp8zlCZyMwnmRsHAEB7ZK97h5LnkIj0wNN/5H9nZsSOzItsHdSzRDHhfFlVIMc
-         QkKvzqlgqU05Wo3zFwt+Fd276UbuBLd1/FSOx/w7IPRAI48/mT7+Wox33EjaU29GF3CX
-         z3uJnl1Wl6WBrtxF/Nx4z0kurIE+ZbRfgzjwVTX7lHakDOokZPfhK5aSi1BTdJ2HZs4p
-         ihvLTo49LxxMcskcmdhDt0KOatsRB8Sbcscll/Wk/brWshgulqcJdEEEf2Uj86QUadpW
-         rhuul1nsVzLgciQom7+DAGp0UkSQEHO9d+JFchXCxIO7+f6mR0/u7natKrE9g3WaL4YX
-         7ziQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706616077; x=1707220877;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rHZFoGtcJrlCRJilwMm607tqzIqnhBQPqkmzm1pT0lA=;
-        b=gpaNkxtiUXhFQYmXuQd2qRSscQQdq0IOVLQsw5q1j7xDCTLe+24URNSV5Jcnytm97d
-         Gu4ifvFQ7S1iwOkv69WAYd0uDDFKmfF7pnjwCxFQsK06irsh2w3FPOHroAatAnRLDiCn
-         knlyRB/6qL5d3LrueUguGUXFPiw2g7ikEdd54bG36w9yFdg7Qg0IoV1hpAC0vHEWZyJl
-         gls5g8uZBJn3n+FA/BASUa5P3YmkbhOPKCNwdmfDHbjSynhI18G/pxiZSmZT6xaipOOj
-         L5hLnu3ykxqwgKEX9FGvwN1pR97SnpXbg/0ixwsMVCUKx7k+giOYCE7VswKCymjGUywP
-         FmLQ==
-X-Gm-Message-State: AOJu0YyWzXPcLuywwGJcMliNw8JHydeLNGL2nT4NS6SBFV3S1lMAlWmX
-	a6rRri+Cji74GhXL4cq5YmEEH0WBsNDxctMz5fOzErJ4nG0+BqN6P869W28tnhg=
-X-Google-Smtp-Source: AGHT+IHKxTBCLOunly/kJxa7AZaFa9iq0AQuoHjYi4qoEZOLD43GcWUmIX9hlLSHYhq0NGwn7RPQ3w==
-X-Received: by 2002:a05:651c:1a21:b0:2d0:511e:741f with SMTP id by33-20020a05651c1a2100b002d0511e741fmr3473128ljb.48.1706616077377;
-        Tue, 30 Jan 2024 04:01:17 -0800 (PST)
-Received: from alex-rivos.ba.rivosinc.com (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
-        by smtp.gmail.com with ESMTPSA id w5-20020a2e9585000000b002cd97c7a029sm921538ljh.16.2024.01.30.04.01.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 04:01:16 -0800 (PST)
-From: Alexandre Ghiti <alexghiti@rivosinc.com>
-To: Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Qinglin Pan <panqinglin2020@iscas.ac.cn>,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Alexandre Ghiti <alexghiti@rivosinc.com>
-Subject: [PATCH -fixes] riscv: Fix arch_hugetlb_migration_supported() for NAPOT
-Date: Tue, 30 Jan 2024 13:01:14 +0100
-Message-Id: <20240130120114.106003-1-alexghiti@rivosinc.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1706616098; c=relaxed/simple;
+	bh=481BpRBp9cVKd8wrjM/xBAlEXnWqNi2ovI4ZoN7a6cY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SDjlWev52vsBpym+PPFjBsr3gAIOGHy78FpVFZIeCUeTNb6J/HKy7LmbjARaRuTF0T7ulZ/T4miu5v/BVl5fZeSv7nvy0GLbUOxOXXhMbLSHgFmVt7Gn2Mq+ZqEv/IfGcERPMn43mgvp2X2Q1wFpf/Lk5oudLy/d3HjrICu8jDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3DDFDDA7;
+	Tue, 30 Jan 2024 04:02:19 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.48.92])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 57FCA3F762;
+	Tue, 30 Jan 2024 04:01:31 -0800 (PST)
+Date: Tue, 30 Jan 2024 12:01:26 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Tong Tiangen <tongtiangen@huawei.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, James Morse <james.morse@arm.com>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	Alexander Potapenko <glider@google.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Andrey Konovalov <andreyknvl@gmail.com>,
+	Dmitry Vyukov <dvyukov@google.com>,
+	Vincenzo Frascino <vincenzo.frascino@arm.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+	kasan-dev@googlegroups.com, wangkefeng.wang@huawei.com,
+	Guohanjun <guohanjun@huawei.com>
+Subject: Re: [PATCH v10 3/6] arm64: add uaccess to machine check safe
+Message-ID: <ZbjlFXVC_ZPYbKhR@FVFF77S0Q05N>
+References: <20240129134652.4004931-1-tongtiangen@huawei.com>
+ <20240129134652.4004931-4-tongtiangen@huawei.com>
+ <ZbfjvD1_yKK6IVVY@FVFF77S0Q05N>
+ <23795738-b86e-7709-bc2b-5abba2e77b68@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <23795738-b86e-7709-bc2b-5abba2e77b68@huawei.com>
 
-arch_hugetlb_migration_supported() must be reimplemented to add support
-for NAPOT hugepages, which is done here.
+On Tue, Jan 30, 2024 at 07:14:35PM +0800, Tong Tiangen wrote:
+> 在 2024/1/30 1:43, Mark Rutland 写道:
+> > On Mon, Jan 29, 2024 at 09:46:49PM +0800, Tong Tiangen wrote:
+> > Further, this change will also silently fixup unexpected kernel faults if we
+> > pass bad kernel pointers to copy_{to,from}_user, which will hide real bugs.
+> 
+> I think this is better than the panic kernel, because the real bugs
+> belongs to the user process. Even if the wrong pointer is
+> transferred, the page corresponding to the wrong pointer has a memroy
+> error.
 
-Fixes: 82a1a1f3bfb6 ("riscv: mm: support Svnapot in hugetlb page")
-Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
----
- arch/riscv/include/asm/hugetlb.h |  3 +++
- arch/riscv/mm/hugetlbpage.c      | 16 +++++++++++++---
- 2 files changed, 16 insertions(+), 3 deletions(-)
+I think you have misunderstood my point; I'm talking about the case of a bad
+kernel pointer *without* a memory error.
 
-diff --git a/arch/riscv/include/asm/hugetlb.h b/arch/riscv/include/asm/hugetlb.h
-index 4c5b0e929890..20f9c3ba2341 100644
---- a/arch/riscv/include/asm/hugetlb.h
-+++ b/arch/riscv/include/asm/hugetlb.h
-@@ -11,6 +11,9 @@ static inline void arch_clear_hugepage_flags(struct page *page)
- }
- #define arch_clear_hugepage_flags arch_clear_hugepage_flags
- 
-+bool arch_hugetlb_migration_supported(struct hstate *h);
-+#define arch_hugetlb_migration_supported arch_hugetlb_migration_supported
-+
- #ifdef CONFIG_RISCV_ISA_SVNAPOT
- #define __HAVE_ARCH_HUGE_PTE_CLEAR
- void huge_pte_clear(struct mm_struct *mm, unsigned long addr,
-diff --git a/arch/riscv/mm/hugetlbpage.c b/arch/riscv/mm/hugetlbpage.c
-index 87406b26c3da..29c7606414d2 100644
---- a/arch/riscv/mm/hugetlbpage.c
-+++ b/arch/riscv/mm/hugetlbpage.c
-@@ -364,7 +364,7 @@ void huge_pte_clear(struct mm_struct *mm,
- 		pte_clear(mm, addr, ptep);
- }
- 
--static __init bool is_napot_size(unsigned long size)
-+static bool is_napot_size(unsigned long size)
- {
- 	unsigned long order;
- 
-@@ -392,7 +392,7 @@ arch_initcall(napot_hugetlbpages_init);
- 
- #else
- 
--static __init bool is_napot_size(unsigned long size)
-+static bool is_napot_size(unsigned long size)
- {
- 	return false;
- }
-@@ -409,7 +409,7 @@ int pmd_huge(pmd_t pmd)
- 	return pmd_leaf(pmd);
- }
- 
--bool __init arch_hugetlb_valid_size(unsigned long size)
-+static bool __hugetlb_valid_size(unsigned long size)
- {
- 	if (size == HPAGE_SIZE)
- 		return true;
-@@ -421,6 +421,16 @@ bool __init arch_hugetlb_valid_size(unsigned long size)
- 		return false;
- }
- 
-+bool __init arch_hugetlb_valid_size(unsigned long size)
-+{
-+	return __hugetlb_valid_size(size);
-+}
-+
-+bool arch_hugetlb_migration_supported(struct hstate *h)
-+{
-+	return __hugetlb_valid_size(huge_page_size(h));
-+}
-+
- #ifdef CONFIG_CONTIG_ALLOC
- static __init int gigantic_pages_init(void)
- {
--- 
-2.39.2
+For example, consider some buggy code such as:
 
+	void __user *uptr = some_valid_user_pointer;
+	void *kptr = NULL; // or any other bad pointer
+
+	ret = copy_to_user(uptr, kptr, size);
+	if (ret)
+		return -EFAULT;
+
+Before this patch, when copy_to_user() attempted to load from NULL it would
+fault, there would be no fixup handler for the LDR, and the kernel would die(),
+reporting the bad kernel access.
+
+After this patch (which adds fixup handlers to all the LDR*s in
+copy_to_user()), the fault (which is *not* a memory error) would be handled by
+the fixup handler, and copy_to_user() would return an error without *any*
+indication of the horrible kernel bug.
+
+This will hide kernel bugs, which will make those harder to identify and fix,
+and will also potentially make it easier to exploit the kernel: if the user
+somehow gains control of the kernel pointer, they can rely on the fixup handler
+returning an error, and can scan through memory rather than dying as soon as
+they pas a bad pointer.
+
+> In addition, the panic information contains necessary information
+> for users to check.
+
+There is no panic() in the case I am describing.
+
+> > So NAK to this change as-is; likewise for the addition of USER() to other ldr*
+> > macros in copy_from_user.S and the addition of USER() str* macros in
+> > copy_to_user.S.
+> > 
+> > If we want to handle memory errors on some kaccesses, we need a new EX_TYPE_*
+> > separate from the usual EX_TYPE_KACESS_ERR_ZERO that means "handle memory
+> > errors, but treat other faults as fatal". That should come with a rationale and
+> > explanation of why it's actually useful.
+> 
+> This makes sense. Add kaccess types that can be processed properly.
+> 
+> > 
+> > [...]
+> > 
+> > > diff --git a/arch/arm64/mm/extable.c b/arch/arm64/mm/extable.c
+> > > index 478e639f8680..28ec35e3d210 100644
+> > > --- a/arch/arm64/mm/extable.c
+> > > +++ b/arch/arm64/mm/extable.c
+> > > @@ -85,10 +85,10 @@ bool fixup_exception_mc(struct pt_regs *regs)
+> > >   	if (!ex)
+> > >   		return false;
+> > > -	/*
+> > > -	 * This is not complete, More Machine check safe extable type can
+> > > -	 * be processed here.
+> > > -	 */
+> > > +	switch (ex->type) {
+> > > +	case EX_TYPE_UACCESS_ERR_ZERO:
+> > > +		return ex_handler_uaccess_err_zero(ex, regs);
+> > > +	}
+> > 
+> > Please fold this part into the prior patch, and start ogf with *only* handling
+> > errors on accesses already marked with EX_TYPE_UACCESS_ERR_ZERO. I think that
+> > change would be relatively uncontroversial, and it would be much easier to
+> > build atop that.
+> 
+> OK, the two patches will be merged in the next release.
+
+Thanks.
+
+Mark.
 
