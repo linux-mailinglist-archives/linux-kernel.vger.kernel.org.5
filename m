@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-43816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43818-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7679D841929
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 03:26:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B990484192F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 03:27:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C2301C24E8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 02:26:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B570B24B9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 02:27:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47DE7376F9;
-	Tue, 30 Jan 2024 02:23:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25F2F15AABD;
+	Tue, 30 Jan 2024 02:23:15 +0000 (UTC)
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8C024C60E;
-	Tue, 30 Jan 2024 02:23:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B501A53E3B;
+	Tue, 30 Jan 2024 02:23:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706581393; cv=none; b=erjK2aNotzG6ZMkPcS903hm81ydFaE9U8DZjAHsTwplD7F3Xs9dzf+vB8D/L1oAW/NkU/lTnBzt9GQN+U28blhZuV91gEpkakulSVJc0SOTXlz+gtU1GzwVo7HpK5/YjrLYdo769g+UX6iOS1nZM7nKWnTv45VafdTa64mz0j3g=
+	t=1706581394; cv=none; b=e28vdG5VK5NTzg4wYD4v6qpm5bHwoRO4rVRlSlAcXlchQjEygwx65YyC6I2D16rkGDIj1vwK+/s6OM4F9iwfIFuPph5Xg1vW4oZ9kJVTWI2x9xXmI7oZuz3puKHy7ahQVt4df6Ra2iQ9S8FMyq0GWMrrtMMVI7YXd1ewjrSlEss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706581393; c=relaxed/simple;
-	bh=a7HDR2QZuFH8EpmOVAfdCFF1UeWbNCM4RUwmYnTBG/s=;
+	s=arc-20240116; t=1706581394; c=relaxed/simple;
+	bh=BcYpGvuVymYjsYzO5oAZoUEk24DPF79BmnHTgMndg6g=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mzrOYxH5sMUW4Yw6BGrfR/xjcC5oM9z7HhU0sl3xgZ/NjnRe5jG3NyaiWHvB4hV962zn/CpKK4YBT7WVrkW/qEp85QVkydIjC1ehBTulZEyKqyE2oII/ibrZ3NH8r9rxNW4y0o/GaG2X1R/HWyYtm/wEVKpz8u1Wck/SBjwOCMU=
+	 MIME-Version; b=X2SvmRzwslc2ZboWsx7VFY9MRtvzrMlEKsnGSZoZGaHqrZatDyBzKv/r7D6HVi4cdwR4wUQIzhyrclUZQ60c3bNrVGnzOcUR5fibwYfR5/9Xi/NNJXPOBY7Uu7sQiRVntm/ia94gSDbZPwraNXapFZPb54t1mZpmFPxVygrX9KU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TP88k4D4Nz4f3m7G;
-	Tue, 30 Jan 2024 10:23:02 +0800 (CST)
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TP88q1CxKz4f3kKY;
+	Tue, 30 Jan 2024 10:23:07 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 11C081A027B;
+	by mail.maildlp.com (Postfix) with ESMTP id AB8691A0232;
 	Tue, 30 Jan 2024 10:23:09 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgBHGBGBXbhlrAigCQ--.55484S16;
-	Tue, 30 Jan 2024 10:23:08 +0800 (CST)
+	by APP1 (Coremail) with SMTP id cCh0CgBHGBGBXbhlrAigCQ--.55484S17;
+	Tue, 30 Jan 2024 10:23:09 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: mpatocka@redhat.com,
 	heinzm@redhat.com,
@@ -55,9 +55,9 @@ Cc: linux-kernel@vger.kernel.org,
 	yukuai1@huaweicloud.com,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com
-Subject: [PATCH v4 12/14] dm-raid: fix lockdep waring in "pers->hot_add_disk"
-Date: Tue, 30 Jan 2024 10:18:41 +0800
-Message-Id: <20240130021843.3608859-13-yukuai1@huaweicloud.com>
+Subject: [PATCH RFC v4 13/14] dm: wait for IO completion before removing dm device
+Date: Tue, 30 Jan 2024 10:18:42 +0800
+Message-Id: <20240130021843.3608859-14-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240130021843.3608859-1-yukuai1@huaweicloud.com>
 References: <20240130021843.3608859-1-yukuai1@huaweicloud.com>
@@ -68,10 +68,10 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgBHGBGBXbhlrAigCQ--.55484S16
-X-Coremail-Antispam: 1UD129KBjvJXoW7Cr45Jw1UZF45JF13GFW5GFg_yoW8Jw4Up3
-	ZrK343Kw4DJr48Za1qvw1q9a45tan8K3ySy39xG395ZFy7ZrZI9ws8Ga1agFWDJFZaya98
-	AFW3J398Was5K3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:cCh0CgBHGBGBXbhlrAigCQ--.55484S17
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFy3tr1rGFWxAw4UGw1rZwb_yoW8Gw4xpF
+	4aqay5KrW5XrWjkw4Ut3yUCF1FyFs3K3yxCrW29w1fu3W5Gr9xXF48tFW3JrWUAFy5Arsx
+	ZF4Ut3s8Gw48JwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUPI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
 	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -90,38 +90,41 @@ X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-The lockdep assert is added by commit a448af25becf ("md/raid10: remove
-rcu protection to access rdev from conf") in print_conf(). And I didn't
-notice that dm-raid is calling "pers->hot_add_disk" without holding
-'reconfig_mutex'.
+__dm_destroy() guarantee that device openers is zero, and then
+only call 'presuspend' and 'postsuspend' for the target. For
+request-based dm, 'md->holders' will be grabbed for each rq and
+__dm_destroy() will wait for 'md->holders' to be zero. However, for
+bio-based device, __dm_destroy() doesn't wait for all bios to be done.
 
-"pers->hot_add_disk" read and write many fields that is protected by
-'reconfig_mutex', and raid_resume() already grab the lock in other
-contex. Hence fix this problem by protecting "pers->host_add_disk"
-with the lock.
-
-Fixes: 9092c02d9435 ("DM RAID: Add ability to restore transiently failed devices on resume")
-Fixes: a448af25becf ("md/raid10: remove rcu protection to access rdev from conf")
+Fix this problem by calling dm_wait_for_completion() to wail for all
+inflight IO to be done, like what dm_suspend() does.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/md/dm-raid.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/md/dm.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
-index 16d3348abfed..5f78cc19d6f3 100644
---- a/drivers/md/dm-raid.c
-+++ b/drivers/md/dm-raid.c
-@@ -4077,7 +4077,9 @@ static void raid_resume(struct dm_target *ti)
- 		 * Take this opportunity to check whether any failed
- 		 * devices are reachable again.
- 		 */
-+		mddev_lock_nointr(mddev);
- 		attempt_restore_of_faulty_devices(rs);
-+		mddev_unlock(mddev);
- 	}
+diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+index 8dcabf84d866..2c0eae67d0f1 100644
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -58,6 +58,7 @@ static DEFINE_IDR(_minor_idr);
+ static DEFINE_SPINLOCK(_minor_lock);
  
- 	if (test_and_clear_bit(RT_FLAG_RS_SUSPENDED, &rs->runtime_flags)) {
+ static void do_deferred_remove(struct work_struct *w);
++static int dm_wait_for_completion(struct mapped_device *md, unsigned int task_state);
+ 
+ static DECLARE_WORK(deferred_remove_work, do_deferred_remove);
+ 
+@@ -2495,6 +2496,8 @@ static void __dm_destroy(struct mapped_device *md, bool wait)
+ 	if (!dm_suspended_md(md)) {
+ 		dm_table_presuspend_targets(map);
+ 		set_bit(DMF_SUSPENDED, &md->flags);
++		if (wait)
++			dm_wait_for_completion(md, TASK_UNINTERRUPTIBLE);
+ 		set_bit(DMF_POST_SUSPENDING, &md->flags);
+ 		dm_table_postsuspend_targets(map);
+ 	}
 -- 
 2.39.2
 
