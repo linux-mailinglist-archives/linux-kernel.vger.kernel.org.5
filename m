@@ -1,105 +1,157 @@
-Return-Path: <linux-kernel+bounces-44955-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44956-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4806842961
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:34:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2E0C842967
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:35:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 527AB1F298FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:34:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADC5329363D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:35:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F2FC6A02A;
-	Tue, 30 Jan 2024 16:34:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D46DE86AE8;
+	Tue, 30 Jan 2024 16:35:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="GLS41lND"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fVGcVwzg"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E95F33C09F
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 16:34:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CE7F125DA;
+	Tue, 30 Jan 2024 16:35:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706632476; cv=none; b=R/qVT4qlz+DUEMw/Z1atq0Lbi8HlRFiUKd+7c/PaaIFOSvdMs88YXMG9lS7WXRvYhc9Mn8wWLEKhyFL0CZneqfnwfSm5NZhA2r2Ot/Ux6u4TUQ4wQcmHwnLgwU0uMlENuNg6aMohrKb9bP947cBLVUxkAIU3LXrEVcLUnYq3qHQ=
+	t=1706632522; cv=none; b=YAazW5wNUV6IEQdyVk5Wul2dwFG1iBp71OEJKM8crfAAYC9lMtfr6PuOCClcGYLlp4bBLlsnDzNiOXQhsV1meEBMGc5MKvi4xOO3G07AoZ0QUA6lu5pG0XTQx91JB3JAFr0sAkztNJa8nOJTYkSjLrRu93IGeJSJFutznW0KDKo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706632476; c=relaxed/simple;
-	bh=cLW3TYnQ+UQStnoofBMZmHXvKOH1jxXp2MdItUiAV0k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A4aDuwcK1adPcJBEyeOmhy7MNBhZ0ebTIUmcs+f+kT+mY0pQboPF3odv9rLqjfFL7SJxpYfwUs/CTpKjwdknr/KiLk2wUPfHoqgMHM5/zcriIgHC1Lmf4pc2MWeRmm8PMB6oFlxEWz17jE1DlzH3ww5jg952kU4KhnSMl0xVDmM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=GLS41lND; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 4691940E01BB;
-	Tue, 30 Jan 2024 16:34:32 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id GIIfi_ELwrvH; Tue, 30 Jan 2024 16:34:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1706632470; bh=671jtj68uxhyk+sXY3zn0M0IF1JJHiVY4EKi6W0gTLk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GLS41lNDXfP5LCvI9mo7vxz1UinLqfyVmg7q33O6KWK3VICw/KFdu/y4eQEU2mZ3l
-	 Y+6A/1x9P05wfiX1a49hD45r3NLoKBMsm0YpB3EqqPvtgwxMQP7Xrb1lHDz1XsW+77
-	 jRWRInMbR8xkS4wHdTHvWKPmWCmdzCpau60htHUPPRVItZXqvexKjHdND2t0PfaFlF
-	 XKiWlxK6Euk9NbjcplklEcfkAjSjOcObqXnQ2ISpOhN568Tyu29KXcWC6uRN38/T0t
-	 oRNd3u2PqtXjoWz24kU0swBRWxKm/uzlXjXxr/BRfsgjPtiFbF27neW4sK9Z4MsVTJ
-	 9cMlInkSu+mOLUf0WR8h1chYcq8IgB9La0jpYxvIYVKH0m0KyrHeewGyCrcXSOSe7X
-	 Ott1HuoNnl2oxKU9C+KOh8TBj3WwhhZ4J7ZVkfH5t27SMVaKDOTAMZUUvHXYkCwBcZ
-	 UE1PGJU3kkgDyd75Xx4QIcwL44+rojFctUQAW6lbf8DJgyAhTCDMozYw4EDhycnNDl
-	 2MNVIOdI+hHrACco5zdh0X/llrs/gZJBGzm5ksA+UPybOtKylK2SDGj7FkzC9lbCtA
-	 3Fa4rgdo1uenYe7ptBq+uuiXpzNAeTcMcTfMZccFarF0kprWmznP7YU3b9NTolpVwI
-	 0sx7BReln/ejn8xJY67tXztE=
-Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DE4FA40E00C5;
-	Tue, 30 Jan 2024 16:34:18 +0000 (UTC)
-Date: Tue, 30 Jan 2024 17:34:18 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: "Li, Xin3" <xin3.li@intel.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"mingo@redhat.com" <mingo@redhat.com>,
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-	"x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-	"luto@kernel.org" <luto@kernel.org>,
-	"Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-	"andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
-	Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 2/2] x86/fred: Fix build with CONFIG_IA32_EMULATION=n
-Message-ID: <20240130163418.GGZbklCltPHmo2Z1NB@fat_crate.local>
-References: <20240127093728.1323-1-xin3.li@intel.com>
- <20240127093728.1323-3-xin3.li@intel.com>
- <20240130124816.GCZbjwEFrZS55FLxb8@fat_crate.local>
- <SA1PR11MB6734A226858F6030C86AE2E5A87D2@SA1PR11MB6734.namprd11.prod.outlook.com>
- <20240130153141.GEZbkWXQt2H3JHHGHx@fat_crate.local>
- <SA1PR11MB67344899D3BCCD4165249D8DA87D2@SA1PR11MB6734.namprd11.prod.outlook.com>
+	s=arc-20240116; t=1706632522; c=relaxed/simple;
+	bh=LDQoCBJMt2yoZsgxzwkrnfxiZbMQ3oyQgxvBuZK6GWY=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=fEfFppVWlM9iv6LUsxvCp8arkg9fY0yQRQTjLlp/MT3xmdCsuQ5UAARNJ8ic1gPb8CGqY3TWe3LUmyUSae6SDd2gCJnWzCkRRJmVk3+lFfDF2/wdUVKuLser4hej29C7wKh2hoC9wB6O2WLknirn/QTS8HCpt3pDzKrHRzkATns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fVGcVwzg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D0FAC433F1;
+	Tue, 30 Jan 2024 16:35:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706632521;
+	bh=LDQoCBJMt2yoZsgxzwkrnfxiZbMQ3oyQgxvBuZK6GWY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=fVGcVwzg0pxo8gquIncbT0Sx/BRWRa7EPYa/RRpCWA0lwF2KGg40OQWpCKZVyawfv
+	 kKxInbOOe0MiCDSSGAS87NdnOe1apLgnjNbI4p5NjqJlOV3/13x/ThRSfxjQW6a568
+	 WHX4hlI/wDmX4yJTae4H8oqLsiBd/V9aqaRapdlX8mRusjjpEAUS0U0Z4YBX/xgB/U
+	 VhnHh29X+TFcSAiBpPq0BYS0uJ/2HtZ7ivWxDblLVDx6FaBu8SSmifuyuvKNAtMlXw
+	 /6o3o3xpthnzeY/l3//oF9UlvZawStm4m10Lc/e4vXoVKRwtXaRlHm8t2vNsq77C31
+	 qqYHWZRFFeSfQ==
+Date: Tue, 30 Jan 2024 10:35:19 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Jian-Hong Pan <jhp@endlessos.org>
+Cc: Mika Westerberg <mika.westerberg@linux.intel.com>,
+	David Box <david.e.box@linux.intel.com>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Niklas Cassel <cassel@kernel.org>,
+	Nirmal Patel <nirmal.patel@linux.intel.com>,
+	Jonathan Derrick <jonathan.derrick@linux.dev>,
+	linux-ide@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux@endlessos.org
+Subject: Re: [PATCH 2/2] PCI: vmd: enable PCI PM's L1 substates of remapped
+ PCIe port and NVMe
+Message-ID: <20240130163519.GA521777@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <SA1PR11MB67344899D3BCCD4165249D8DA87D2@SA1PR11MB6734.namprd11.prod.outlook.com>
+In-Reply-To: <20240130100050.14182-2-jhp@endlessos.org>
 
-On Tue, Jan 30, 2024 at 04:30:34PM +0000, Li, Xin3 wrote:
-> Even more interesting, gcc doesn't complain it with the attached config
-> File in which CONFIG_X86_FRED=y and CONFIG_IA32_EMULATION not set.
+Capitalize subject line to match history ("Enable PM L1 Substates ...")
 
-Yes, CONFIG_IA32_EMULATION=n alone is not enough. That .config which
-triggers it has something else which is causing this but I'm not sure
-I want to go chase down what it is...
+On Tue, Jan 30, 2024 at 06:00:51PM +0800, Jian-Hong Pan wrote:
+> The remmapped PCIe port and NVMe have PCI PM L1 substates capability on
+> ASUS B1400CEAE, but they are disabled originally:
 
--- 
-Regards/Gruss,
-    Boris.
+s/remmapped/remapped/
+s/PCIe port/PCIe Root Port/ (all devices with Links have Ports, so we
+can be a little more specific here)
 
-https://people.kernel.org/tglx/notes-about-netiquette
+I doubt "ASUS B1400CEAE" is relevant here.
+
+> Capabilities: [900 v1] L1 PM Substates
+>         L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1- L1_PM_Substates+
+>                   PortCommonModeRestoreTime=32us PortTPowerOnTime=10us
+>         L1SubCtl1: PCI-PM_L1.2- PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
+>                    T_CommonMode=0us LTR1.2_Threshold=0ns
+>         L1SubCtl2: T_PwrOn=10us
+> 
+> Power on all of the VMD remapped PCI devices before enable PCI-PM L1 PM
+> Substates by following "Section 5.5.4 of PCIe Base Spec Revision 5.0
+> Version 0.1". Then, PCI PM's L1 substates control are enabled
+> accordingly.
+
+Reference PCIe r6.0 or r6.1, since r5.0 is almost 5 years old now.
+
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=218394
+> Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+> ---
+>  drivers/pci/controller/vmd.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/vmd.c b/drivers/pci/controller/vmd.c
+> index 87b7856f375a..b1bbe8e6075a 100644
+> --- a/drivers/pci/controller/vmd.c
+> +++ b/drivers/pci/controller/vmd.c
+> @@ -738,6 +738,12 @@ static void vmd_copy_host_bridge_flags(struct pci_host_bridge *root_bridge,
+>  	vmd_bridge->native_dpc = root_bridge->native_dpc;
+>  }
+>  
+> +static int vmd_power_on_pci_device(struct pci_dev *pdev, void *userdata)
+> +{
+> +	pci_set_power_state(pdev, PCI_D0);
+> +	return 0;
+> +}
+> +
+>  /*
+>   * Enable ASPM and LTR settings on devices that aren't configured by BIOS.
+>   */
+> @@ -928,6 +934,13 @@ static int vmd_enable_domain(struct vmd_dev *vmd, unsigned long features)
+>  	vmd_acpi_begin();
+>  
+>  	pci_scan_child_bus(vmd->bus);
+> +
+> +	/*
+> +	 * Make PCI devices at D0 when enable PCI-PM L1 PM Substates from
+> +	 * Section 5.5.4 of PCIe Base Spec Revision 5.0 Version 0.1
+> +	 */
+> +	pci_walk_bus(vmd->bus, vmd_power_on_pci_device, NULL);
+
+Sec 5.5.4 indeed says "If setting either or both of the enable bits
+for PCI-PM L1 PM Substates, both ports must be configured ... while in
+D0."
+
+This applies to *all* PCIe devices, not just those below a VMD bridge,
+so I'm not sure this is the right place to do this.  Is there anything
+that prevents a similar issue for non-VMD hierarchies?
+
+I guess the bridges (Root Ports and Switch Ports) must already be in
+D0, or we wouldn't be able to enumerate anything below them, right?
+
+It would be nice to connect this more closely with the L1 PM Substates
+configuration.  I don't quite see the connection here.  The only path
+I see for L1SS configuration is this:
+
+  pci_scan_slot
+    pcie_aspm_init_link_state
+      pcie_aspm_cap_init
+	aspm_l1ss_init
+
+which of course is inside pci_scan_child_bus(), which happens *before*
+this patch puts the devices in D0.  Where does the L1SS configuration
+happen after this vmd_power_on_pci_device()?
+
+>  	vmd_domain_reset(vmd);
+>  
+>  	/* When Intel VMD is enabled, the OS does not discover the Root Ports
+> -- 
+> 2.43.0
+> 
 
