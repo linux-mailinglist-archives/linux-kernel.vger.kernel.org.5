@@ -1,167 +1,211 @@
-Return-Path: <linux-kernel+bounces-43941-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43942-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 810BE841B4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 06:12:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBA82841B4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 06:12:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2708B21397
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 05:12:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59CD11F23954
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 05:12:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5C89381AB;
-	Tue, 30 Jan 2024 05:12:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A725381AB;
+	Tue, 30 Jan 2024 05:12:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QmRJlS0H"
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lXMxQMcE"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB91237701
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 05:12:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 260FD381A2;
+	Tue, 30 Jan 2024 05:12:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706591526; cv=none; b=OXpSIW0xloDEDPJfAHJyecJ+fh9ImG3uX4aMBTKfqfmfrK4dRYPoHu7qhHXYw3ZeoMzKPl8Q+IVTqkQr7Bif5ygtQgXBUb4DNr7JyL9jFLoPQ3wUO9zRQeceNgKq7PXNJOSBGXaOlVmjqnQvqAiytxlY20oPQW0z4tTTItEwijc=
+	t=1706591569; cv=none; b=q8guHjR+vM6pm5DHFofhWXrwunlcX2IqDQsLqSzNhpbPwBgUliHnSz45oCZSDMIQGdmsjZ8xrWCDOU3QDmK3EELPX8KAtJf0rhqbjVVqSDiaBU92nLwvIKVFUOTJ0K6rUUF2EIZ2tPZKPQF7/md1FGKh9k0WSQ2N+agpHL7biPU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706591526; c=relaxed/simple;
-	bh=gRa6zDODoyhQ3+n0FAjSpIYjIVhjcGxZbfcryB4c7Fo=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=taxlq7G9WCv6UsBc4QQR0+TJF8nXRGFYJhDystiNEosxHq4NOWAzA21tUSUs8sh8i3DZoEGOmaC0JDNvD+dRui9usONJxwuR4GM67elFv7UrHXi2jZoP/k0f98Ljmri/2pBbU0qtEOoNHWUeg8Wyr6kMDMWhka1Wyw79qfz29rA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QmRJlS0H; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33ae4eb360aso2027489f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 21:12:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706591523; x=1707196323; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yFkJ8YEcx1vJ5tSiLYWZOmA0x6d7CoNNJ6/W8VFHiks=;
-        b=QmRJlS0H38DxlvDCzNU9bvCreG1rPs8fp9fAK04ViSq781AaN1z6TQLtmB9/5qsax8
-         3UrhCTax6VaORSxp3izXIVLmrXJVhtrtgxuqmfXLDPuF/uJZlnyVw3AV26dmPcCN6IJT
-         7C/zTntRjk6oAdq7wzsad32KAp7tUoZxKN2RiNs0/vAAdmWMtNGlH7BWtv38pLwb6T70
-         Zq/CPq0VWIS+wEv1JmDieOYUkJFHO8ktVX8H78Sa1PAoPd8gEoO03Btt8A+xJQpo3ZC0
-         H8CiYMsgsuunjIKlwHKlxkwc9Mdc+lbG2nM4VmPJ0XqDt7mdIRcS6GCNaJgWLIbksn1o
-         kyBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706591523; x=1707196323;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yFkJ8YEcx1vJ5tSiLYWZOmA0x6d7CoNNJ6/W8VFHiks=;
-        b=YcXOJpMIoo7cUdWMbsv0GrEl5Bra2DW++ljgS4iEWTnG4gLvmoERsLaC/VAiY5PNm5
-         fDQwONcl3flxjstuaX6ddL3gUIR8vncHGNKWqWj7GRRw1kVNLHFrBx5E50Y1KrpHxSZN
-         bw1zxt3Xadx+1a8rhYmPXM2xuwt931tjRZbTIu+clZnf/zJyMbZl/q6WQ5ZdQG99ZRiU
-         ETKEmwqcyBhUqxIHjCz/YhHI8hAD536PzUsbva2tRggXKsF//SsUwt4xO7O1RTfDTVQg
-         BMyGyUf/mbNo+63iwiFWIzMjmc8e6FM68TU9K1NeaRF/x0ulEWGwOz8ToIp13vV/7Vov
-         BcrA==
-X-Gm-Message-State: AOJu0Yz/FF8YyOAouJai339Vzu6fNDDuqeFXphnlQhQ2nD4vlyYRpld7
-	nyVT6hOf5go24DveJfi64V5hc6pBzouyzjkyh+NIg2efiVjfMW+K8to1/9MDkmU=
-X-Google-Smtp-Source: AGHT+IGKV6vXZKlzQvf+WVjlAtnlCBfj/HLfKNq4VXtrhVgXZCLSnPizN49taJaeWoeDjenPtNcpPg==
-X-Received: by 2002:adf:e2cc:0:b0:339:58fc:4934 with SMTP id d12-20020adfe2cc000000b0033958fc4934mr5190229wrj.2.1706591522842;
-        Mon, 29 Jan 2024 21:12:02 -0800 (PST)
-Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id e10-20020adfe38a000000b0033afcc069c3sm148033wrm.84.2024.01.29.21.12.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 21:12:02 -0800 (PST)
-Date: Tue, 30 Jan 2024 08:11:53 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: oe-kbuild@lists.linux.dev, Matthew Brost <matthew.brost@intel.com>
-Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-	linux-kernel@vger.kernel.org, Rodrigo Vivi <rodrigo.vivi@intel.com>
-Subject: drivers/gpu/drm/xe/tests/xe_migrate.c:224 xe_migrate_sanity_test()
- warn: passing zero to 'PTR_ERR'
-Message-ID: <d06df232-e96e-45aa-b749-21ef729a9463@moroto.mountain>
+	s=arc-20240116; t=1706591569; c=relaxed/simple;
+	bh=Ab2x+RjnadAuhoF56GiPfWyJFkxamyXXz4zU9qJcU7o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BrJup3p1jwsi1Z2UjqwgG8TBlobRcWrEU5uGCcqFiegBp2bUCZU+B/cWi+PvsdLMcd2tPmXiJVNCf41lStsVs8YAahDn+BF8n+lhnUQeztcfPUrhKUo5n/9EcU2V1tQIuzCVatxL//0ipdOP//Umy9+huohhF3UvEo9aWyD0i5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lXMxQMcE; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706591567; x=1738127567;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Ab2x+RjnadAuhoF56GiPfWyJFkxamyXXz4zU9qJcU7o=;
+  b=lXMxQMcEwOSU6WYKFhMnB+Zs0KpYH8Xn2LO07enS3sufs0o9jWPjMVCc
+   b+d1i3vq/Mbw1/LEPfsTXHA9GqK0bAy40TLmLiVl8CBTRQaRfV2ddyLvf
+   xEQL1yKr/V+uAYxRfVR2MYLkhWkm43zmYticBKkRjbSiaSxAYAoY4fYrL
+   Hm+P5BlGNTKN0Vh2/gL+x8akzCcmaVz3Y1zMkYYla0UAobmQdYG6QNOrU
+   7C5Qnb5tFY3bYzySVPG4sjmxB3s0ZLiS+IZ2P3dyARaVEuT0WFK5oVB6T
+   PBiIsc0UB9JjUjUd758j9YD+nUP0dYW5kImLUVhY7flfZjNFu62Zast9J
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="24650451"
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="24650451"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 21:12:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="737656154"
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="737656154"
+Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.238.130.190]) ([10.238.130.190])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 21:12:42 -0800
+Message-ID: <0aee453c-e98f-4b72-8107-31d4731abcdb@linux.intel.com>
+Date: Tue, 30 Jan 2024 13:12:39 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v12 5/5] iommu/vt-d: improve ITE fault handling if target
+ device isn't present
+To: Yi Liu <yi.l.liu@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
+ "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+ "bhelgaas@google.com" <bhelgaas@google.com>,
+ "robin.murphy@arm.com" <robin.murphy@arm.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>
+Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "will@kernel.org" <will@kernel.org>, "lukas@wunner.de" <lukas@wunner.de>,
+ "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
+References: <20240129034924.817005-1-haifeng.zhao@linux.intel.com>
+ <20240129034924.817005-6-haifeng.zhao@linux.intel.com>
+ <BN9PR11MB52761CC3E5F08D4B7BAD7F918C7E2@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <7adec292-9d38-41ab-a982-bd840b24f3ab@intel.com>
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+In-Reply-To: <7adec292-9d38-41ab-a982-bd840b24f3ab@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   41bccc98fb7931d63d03f326a746ac4d429c1dd3
-commit: dd08ebf6c3525a7ea2186e636df064ea47281987 drm/xe: Introduce a new DRM driver for Intel GPUs
-config: sparc-randconfig-r081-20240128 (https://download.01.org/0day-ci/archive/20240129/202401292346.V7E6rEzz-lkp@intel.com/config)
-compiler: sparc64-linux-gcc (GCC) 13.2.0
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-| Closes: https://lore.kernel.org/r/202401292346.V7E6rEzz-lkp@intel.com/
+On 1/29/2024 5:21 PM, Yi Liu wrote:
+> On 2024/1/29 17:06, Tian, Kevin wrote:
+>>> From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+>>> Sent: Monday, January 29, 2024 11:49 AM
+>>>
+>>> Because surprise removal could happen anytime, e.g. user could 
+>>> request safe
+>>> removal to EP(endpoint device) via sysfs and brings its link down to do
+>>> surprise removal cocurrently. such aggressive cases would cause ATS
+>>> invalidation request issued to non-existence target device, then deadly
+>>> loop to retry that request after ITE fault triggered in interrupt 
+>>> context.
+>>> this patch aims to optimize the ITE handling by checking the target 
+>>> device
+>>> presence state to avoid retrying the timeout request blindly, thus 
+>>> avoid
+>>> hard lockup or system hang.
+>>>
+>>> Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
+>>> ---
+>>>   drivers/iommu/intel/dmar.c | 18 ++++++++++++++++++
+>>>   1 file changed, 18 insertions(+)
+>>>
+>>> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+>>> index 814134e9aa5a..2e214b43725c 100644
+>>> --- a/drivers/iommu/intel/dmar.c
+>>> +++ b/drivers/iommu/intel/dmar.c
+>>> @@ -1272,6 +1272,7 @@ static int qi_check_fault(struct intel_iommu
+>>> *iommu, int index, int wait_index,
+>>>   {
+>>>       u32 fault;
+>>>       int head, tail;
+>>> +    u64 iqe_err, ite_sid;
+>>>       struct q_inval *qi = iommu->qi;
+>>>       int shift = qi_shift(iommu);
+>>>
+>>> @@ -1316,6 +1317,13 @@ static int qi_check_fault(struct intel_iommu
+>>> *iommu, int index, int wait_index,
+>>>           tail = readl(iommu->reg + DMAR_IQT_REG);
+>>>           tail = ((tail >> shift) - 1 + QI_LENGTH) % QI_LENGTH;
+>>>
+>>> +        /*
+>>> +         * SID field is valid only when the ITE field is Set in 
+>>> FSTS_REG
+>>> +         * see Intel VT-d spec r4.1, section 11.4.9.9
+>>> +         */
+>>> +        iqe_err = dmar_readq(iommu->reg + DMAR_IQER_REG);
+>>> +        ite_sid = DMAR_IQER_REG_ITESID(iqe_err);
+>>> +
+>>>           writel(DMA_FSTS_ITE, iommu->reg + DMAR_FSTS_REG);
+>>>           pr_info("Invalidation Time-out Error (ITE) cleared\n");
+>>>
+>>> @@ -1325,6 +1333,16 @@ static int qi_check_fault(struct intel_iommu
+>>> *iommu, int index, int wait_index,
+>>>               head = (head - 2 + QI_LENGTH) % QI_LENGTH;
+>>>           } while (head != tail);
+>>>
+>>> +        /*
+>>> +         * If got ITE, we need to check if the sid of ITE is the 
+>>> same as
+>>> +         * current ATS invalidation target device, if yes, don't 
+>>> try this
+>>> +         * request anymore if the target device isn't present.
+>>> +         * 0 value of ite_sid means old VT-d device, no ite_sid value.
+>>> +         */
+>>> +        if (pdev && ite_sid && !pci_device_is_present(pdev) &&
+>>> +            ite_sid == pci_dev_id(pci_physfn(pdev)))
+>>> +            return -ETIMEDOUT;
+>>> +
+>>
+>> since the hardware already reports source id leading to timeout, 
+>> can't we
+>> just find the pci_dev according to reported ite_sid? this is a slow 
+>> path (either
+>> due to device in bad state or removed) hence it's not necessary to 
+>> add more
+>> intelligence to pass the pci_dev in, leading to only a partial fix 
+>> can be backported.
+>>
+>> It's also more future-proof, say if one day the driver allows 
+>> batching invalidation
+>> requests for multiple devices then no need to pass in a list of devices.
+>>
+>> Then it's easier to backport a full fix.
+>
+> May consider pci_get_domain_bus_and_slot() or
+> pci_find_bus()/pci_get_slot(). But I doubt if the pci_dev is still 
+> tracked
+> in the bus or a kind of dev list in the device hot removal case. So Ethan
+> may need to check.
 
-New smatch warnings:
-drivers/gpu/drm/xe/tests/xe_migrate.c:224 xe_migrate_sanity_test() warn: passing zero to 'PTR_ERR'
+Perhaps it is too late to call pci_find_bus() or 
+pci_get_domain_bus_and_slot() to get the
 
-Old smatch warnings:
-drivers/gpu/drm/xe/tests/xe_migrate.c:254 xe_migrate_sanity_test() warn: passing zero to 'PTR_ERR'
+device instance from this notifier registered as BUS_NOTIFY_REMOVED_DEVICE
 
-vim +/PTR_ERR +224 drivers/gpu/drm/xe/tests/xe_migrate.c
+action. if the device is still there in bus list, *must* be a bug of 
+device subsystem as
 
-dd08ebf6c3525a Matthew Brost 2023-03-30  210  static void xe_migrate_sanity_test(struct xe_migrate *m, struct kunit *test)
-dd08ebf6c3525a Matthew Brost 2023-03-30  211  {
-dd08ebf6c3525a Matthew Brost 2023-03-30  212  	struct xe_gt *gt = m->gt;
-dd08ebf6c3525a Matthew Brost 2023-03-30  213  	struct xe_device *xe = gt_to_xe(gt);
-dd08ebf6c3525a Matthew Brost 2023-03-30  214  	struct xe_bo *pt, *bo = m->pt_bo, *big, *tiny;
-dd08ebf6c3525a Matthew Brost 2023-03-30  215  	struct xe_res_cursor src_it;
-dd08ebf6c3525a Matthew Brost 2023-03-30  216  	struct dma_fence *fence;
-dd08ebf6c3525a Matthew Brost 2023-03-30  217  	u64 retval, expected;
-dd08ebf6c3525a Matthew Brost 2023-03-30  218  	struct xe_bb *bb;
-dd08ebf6c3525a Matthew Brost 2023-03-30  219  	int err;
-dd08ebf6c3525a Matthew Brost 2023-03-30  220  	u8 id = gt->info.id;
-dd08ebf6c3525a Matthew Brost 2023-03-30  221  
-dd08ebf6c3525a Matthew Brost 2023-03-30  222  	err = xe_bo_vmap(bo);
-dd08ebf6c3525a Matthew Brost 2023-03-30  223  	if (err) {
-dd08ebf6c3525a Matthew Brost 2023-03-30 @224  		KUNIT_FAIL(test, "Failed to vmap our pagetables: %li\n",
-dd08ebf6c3525a Matthew Brost 2023-03-30  225  			   PTR_ERR(bo));
-                                                                   ^^^^^^^^^^^
-This should be "err".
+*removed* device.
 
-dd08ebf6c3525a Matthew Brost 2023-03-30  226  		return;
-dd08ebf6c3525a Matthew Brost 2023-03-30  227  	}
-dd08ebf6c3525a Matthew Brost 2023-03-30  228  
-dd08ebf6c3525a Matthew Brost 2023-03-30  229  	big = xe_bo_create_pin_map(xe, m->gt, m->eng->vm, SZ_4M,
-dd08ebf6c3525a Matthew Brost 2023-03-30  230  				   ttm_bo_type_kernel,
-dd08ebf6c3525a Matthew Brost 2023-03-30  231  				   XE_BO_CREATE_VRAM_IF_DGFX(m->gt) |
-dd08ebf6c3525a Matthew Brost 2023-03-30  232  				   XE_BO_CREATE_PINNED_BIT);
-dd08ebf6c3525a Matthew Brost 2023-03-30  233  	if (IS_ERR(big)) {
-dd08ebf6c3525a Matthew Brost 2023-03-30  234  		KUNIT_FAIL(test, "Failed to allocate bo: %li\n", PTR_ERR(big));
-dd08ebf6c3525a Matthew Brost 2023-03-30  235  		goto vunmap;
-dd08ebf6c3525a Matthew Brost 2023-03-30  236  	}
-dd08ebf6c3525a Matthew Brost 2023-03-30  237  
-dd08ebf6c3525a Matthew Brost 2023-03-30  238  	pt = xe_bo_create_pin_map(xe, m->gt, m->eng->vm, GEN8_PAGE_SIZE,
-dd08ebf6c3525a Matthew Brost 2023-03-30  239  				  ttm_bo_type_kernel,
-dd08ebf6c3525a Matthew Brost 2023-03-30  240  				  XE_BO_CREATE_VRAM_IF_DGFX(m->gt) |
-dd08ebf6c3525a Matthew Brost 2023-03-30  241  				  XE_BO_CREATE_PINNED_BIT);
-dd08ebf6c3525a Matthew Brost 2023-03-30  242  	if (IS_ERR(pt)) {
-dd08ebf6c3525a Matthew Brost 2023-03-30  243  		KUNIT_FAIL(test, "Failed to allocate fake pt: %li\n",
-dd08ebf6c3525a Matthew Brost 2023-03-30  244  			   PTR_ERR(pt));
-dd08ebf6c3525a Matthew Brost 2023-03-30  245  		goto free_big;
-dd08ebf6c3525a Matthew Brost 2023-03-30  246  	}
-dd08ebf6c3525a Matthew Brost 2023-03-30  247  
-dd08ebf6c3525a Matthew Brost 2023-03-30  248  	tiny = xe_bo_create_pin_map(xe, m->gt, m->eng->vm,
-dd08ebf6c3525a Matthew Brost 2023-03-30  249  				    2 * SZ_4K,
-dd08ebf6c3525a Matthew Brost 2023-03-30  250  				    ttm_bo_type_kernel,
-dd08ebf6c3525a Matthew Brost 2023-03-30  251  				    XE_BO_CREATE_VRAM_IF_DGFX(m->gt) |
-dd08ebf6c3525a Matthew Brost 2023-03-30  252  				    XE_BO_CREATE_PINNED_BIT);
-dd08ebf6c3525a Matthew Brost 2023-03-30  253  	if (IS_ERR(tiny)) {
-dd08ebf6c3525a Matthew Brost 2023-03-30  254  		KUNIT_FAIL(test, "Failed to allocate fake pt: %li\n",
-dd08ebf6c3525a Matthew Brost 2023-03-30  255  			   PTR_ERR(pt));
-                                                                   ^^^^^^^^^^^
-s/pt/tiny/
+but if we call iommu_release_device() in iommu_bus_notifier() for 
+BUS_NOTIFY_DEL_DEVICE
 
-dd08ebf6c3525a Matthew Brost 2023-03-30  256  		goto free_pt;
-dd08ebf6c3525a Matthew Brost 2023-03-30  257  	}
-dd08ebf6c3525a Matthew Brost 2023-03-30  258  
-dd08ebf6c3525a Matthew Brost 2023-03-30  259  	bb = xe_bb_new(m->gt, 32, xe->info.supports_usm);
-dd08ebf6c3525a Matthew Brost 2023-03-30  260  	if (IS_ERR(bb)) {
-dd08ebf6c3525a Matthew Brost 2023-03-30  261  		KUNIT_FAIL(test, "Failed to create batchbuffer: %li\n",
-dd08ebf6c3525a Matthew Brost 2023-03-30  262  			   PTR_ERR(bb));
+action, there should be opportuniy to get the device instance, but that 
+change need
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+more evaluation about side effect.
 
+furthermore, iommu never cross domain number per context table 
+defination in VT-d
+
+spec, not mean, domain number in a system never will be !0, per my 
+understanding.
+
+
+Thanks,
+
+Ethan
+
+>
+> Regards,
+> Yi Liu
+>
 
