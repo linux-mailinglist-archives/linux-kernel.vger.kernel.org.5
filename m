@@ -1,128 +1,215 @@
-Return-Path: <linux-kernel+bounces-44188-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44195-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C322841F1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:16:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65D29841EA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:04:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 59BA4B2CCB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:00:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B1FE1C255B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:04:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7010A58217;
-	Tue, 30 Jan 2024 09:00:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AB1458AB8;
+	Tue, 30 Jan 2024 09:03:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ccmA6EkN"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="iArk4oF3"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC95157888
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:00:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDCE6605B2;
+	Tue, 30 Jan 2024 09:03:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706605204; cv=none; b=gPdTc4PXYsI7+sVoj+ttkN6yxrm6G9tPFTV4PX8rKiXSJ10zFjK6Cf/1liKvO40okh2g6lyk0RtAeKsLXL4VuHtgoyxOQvUKH+NYxwVEq3BoJAC1XoBwWjba3ZcPNO3u1ajis062PtpWTg17bvXVVnv3wouDGcg5D88+LyK/nRo=
+	t=1706605416; cv=none; b=Pomduw6OALKeraOZLalPDx1FhHTWinJSUR+Cv+xgkgKlRpnaX5SPS/M1LTtC2GCopt9DQhVy07V7dls8K6u47LFaRrMAiL2Wq7vC2nPsnSNz+Oh/2PWspKrouQOV15+PXcJg4gFZyvP3UScqfWpB+y3KDADRamK2hodalOO5BKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706605204; c=relaxed/simple;
-	bh=Ss8eXXVOK69pwFg4ALxuF9O7AP24QrPRskLjKqOA56E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SVUQTEWjdMQmhkd+R19cqVVbd0ZGNmwHStZlR5Lu8ejOpimcyexV0gIV8HwUZ2IFQVovsxOJA0B7K6IJjtH9+xGLjgyobEN+mwIbsKJZYW+19UcwfzSHjoGBAVY9tKW492p54Adl++qOn95HLzVVwh7Op1aymLCnLk/LXZ4ptIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ccmA6EkN; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-55eee4a042eso2626057a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:00:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706605200; x=1707210000; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Db3zP9xDe7AQg6WDfeMGEY2GUxXn8qP4OsKoMMuxQJ0=;
-        b=ccmA6EkNzCqWrEQnNllEh5x+B612famcR+jlP8oxYKGjSZoV5kFif7IeHvL5qOA9ex
-         trkC183mEh/r7lh1b7iFoieOKGBSpBGLXi9FL1g9pzocgc9L+zDzcDAlHbV8efoKtiQc
-         xh86Nre7G5tEOJACdu1SvoH9jfcZBnNNNWeU1ZqzYIJ4Yp47ynBRJSko3Bx85VlPe2Cl
-         30R2qciJAtpnO/NaoFjkf7Ji0gP9xOg0OHy5N78864zBR88IpP3CaqQ0+dZGpSFdhFDc
-         e1dEerihR3/7wBOndQJR9kygmz4QjwOHH1C9xMsy9ZnOS03qQuKSNGNKjveI3aWP+m1m
-         fGCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706605200; x=1707210000;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Db3zP9xDe7AQg6WDfeMGEY2GUxXn8qP4OsKoMMuxQJ0=;
-        b=U/KMjbduuhaoP5l/OzGdqlzaZKea5886A/sA2jFcyxLUegb8zaRcQPVRGJfzQEZuha
-         /vV6D4bggWeGZ1z7jMqUheJufxoUFiwhiemvTSFrxXkmWFYARJbbZGvYrtEq9Pvov49G
-         eEnav55HWS94YFt/2alpJo3ake9/PSXZaM2TdgrRos78+MQL88QtesV6hAGljWfb6Ts0
-         Zg4dwKO+ScdaT2bdGbnGwqO8XJY3cM84TTWoBMyn7Hd92/GncZlmxUaxhmLZsxgYxtD1
-         KONbFnA/UBKSLTF3GH5A7KD6Tl3PrujtB/rwd/lJWnpG1NzyMSbf7EmxLIIqj21kSjrr
-         IiLw==
-X-Gm-Message-State: AOJu0YzgxbqXBcD7juqqTTrghBB1MCDWiILLHVitc+FxEvCddX2i/8ah
-	a9kOFjFexNPKXKbWk0+Qrb7Swxjq3Lzy9gOQPq1RWOXcLmuxCYAnqEHujxKUyZ4=
-X-Google-Smtp-Source: AGHT+IFpF6eb2hwZ1pcq0BDPc8nFxpTlxhdwU9wZlPnph/0Br1InfNUBcZB2iLz9YJiS9cXsEmiNZQ==
-X-Received: by 2002:a05:6402:22e4:b0:55e:f4fb:66f6 with SMTP id dn4-20020a05640222e400b0055ef4fb66f6mr3348290edb.18.1706605200064;
-        Tue, 30 Jan 2024 01:00:00 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id f19-20020a056402195300b0055e96290001sm3700180edz.27.2024.01.30.00.59.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Jan 2024 00:59:59 -0800 (PST)
-Message-ID: <3e078f39-ccd4-4bf4-b11c-5160cc1f0221@linaro.org>
-Date: Tue, 30 Jan 2024 08:59:57 +0000
+	s=arc-20240116; t=1706605416; c=relaxed/simple;
+	bh=J1Fav46yfrrutQMhpx/1SaeAe0GyBKrRvn7bgXcLCOo=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=E0JsW4Xz91ePAlMXtPAEHlI/2EKm4hCMmjaK4nikTD8k63YFBShvMZwWra0p7qBbyANOuc3LrhMZyQoQJ+/gkobVmqF7h2tdUWVhdV5ovMUfpyhcClcYtr4DdvXGCFvuQI5dJrWBil2wBIy6fsA2PSXhnK68ba8j6M7R+DcNf4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=iArk4oF3; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40U7ate4008984;
+	Tue, 30 Jan 2024 09:03:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-type; s=qcppdkim1; bh=P8AP9xz6DnEBPOR6wXki
+	rMpP+grtE6E4DC3kD9VF1M4=; b=iArk4oF3Z0mry72CANgX5Bk1cXfNc5xZamJi
+	NaMCBXsbyAOVRnUueiHfyc9M36HjldknBkCAOVMbY9gFWL80JdJGQLeE1svWkgRA
+	HDOgsnEXyalFeMw03Wqk9eC1jBgniBYclvO/mfohr1LXN+PDn3OfIeqPmpH26ps/
+	BFpA2YYBWbh76IksWrda+JAV2uuDsiZXEXy7O5bfZIQ7p//PjRc+wOwxRs9zxFx1
+	Q/mkqiUbWidF6iwyj1FPrf74P+69Wg1aa2BeIX5nhAM2prI+Fm1DWaHLEsS01mSq
+	BfSDBR3M6j9Rse4LEBYVL1gXik6SZyDq+dBSCMcN9M6aNp2C+A==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vxvve056b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 30 Jan 2024 09:03:21 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40U93Kn2025922
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 30 Jan 2024 09:03:20 GMT
+Received: from taozha-gv.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 30 Jan 2024 01:03:15 -0800
+From: Tao Zhang <quic_taozha@quicinc.com>
+To: Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose
+	<suzuki.poulose@arm.com>,
+        Alexander Shishkin
+	<alexander.shishkin@linux.intel.com>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        Mike Leach <mike.leach@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+CC: Tao Zhang <quic_taozha@quicinc.com>,
+        Jinlong Mao
+	<quic_jinlmao@quicinc.com>, Leo Yan <leo.yan@linaro.org>,
+        Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>,
+        <coresight@lists.linaro.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Trilok Soni
+	<quic_tsoni@quicinc.com>,
+        Song Chai <quic_songchai@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <andersson@kernel.org>
+Subject: [PATCH v5 02/10] coresight-tpdm: Optimize the useage of tpdm_has_dsb_dataset
+Date: Tue, 30 Jan 2024 17:02:38 +0800
+Message-ID: <1706605366-31705-3-git-send-email-quic_taozha@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1706605366-31705-1-git-send-email-quic_taozha@quicinc.com>
+References: <1706605366-31705-1-git-send-email-quic_taozha@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/7] clk: samsung: gs101: add support for cmu_peric1
-Content-Language: en-US
-To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
- peter.griffin@linaro.org, mturquette@baylibre.com, sboyd@kernel.org,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@android.com,
- willmcvicker@google.com, semen.protsenko@linaro.org,
- alim.akhtar@samsung.com, s.nawrocki@samsung.com, tomasz.figa@gmail.com,
- cw00.choi@samsung.com, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org
-References: <20240129174703.1175426-1-andre.draszik@linaro.org>
- <20240129174703.1175426-4-andre.draszik@linaro.org>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20240129174703.1175426-4-andre.draszik@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: DQadTSg2REGfbhuBz862h9QziTe6c77s
+X-Proofpoint-ORIG-GUID: DQadTSg2REGfbhuBz862h9QziTe6c77s
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-30_03,2024-01-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
+ suspectscore=0 priorityscore=1501 impostorscore=0 mlxscore=0
+ lowpriorityscore=0 phishscore=0 bulkscore=0 adultscore=0 malwarescore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401190000 definitions=main-2401300065
 
+Since the function tpdm_has_dsb_dataset will be called by TPDA
+driver in subsequent patches, it is moved to the header file.
+And move this judgement form the function __tpdm_{enable/disable}
+to the beginning of the function tpdm_{enable/disable}_dsb.
 
+Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+---
+ drivers/hwtracing/coresight/coresight-tpdm.c | 30 +++++++++-----------
+ drivers/hwtracing/coresight/coresight-tpdm.h |  4 +++
+ 2 files changed, 18 insertions(+), 16 deletions(-)
 
-On 1/29/24 17:46, André Draszik wrote:
-> CMU_PERIC1 is the clock management unit used for the peric1 block which
-> is used for additional USI, I3C and PWM interfaces/busses. Add support
-> for muxes, dividers and gates of cmu_peric1, except for
-> CLK_GOUT_PERIC1_IP which isn't well described in the datasheet and
-> which downstream also ignores (similar to cmu_peric0).
-> 
-> Two clocks have been marked as CLK_IS_CRITICAL for the following
-> reason:
->     * disabling them makes it impossible to access any peric1
->       registers, (including those two registers).
->     * disabling gout_peric1_lhm_axi_p_peric1_i_clk sometimes has the
->       additional effect of making the whole system unresponsive.
-> 
-> One clock marked as CLK_IGNORE_UNUSED needs to be kept on until we have
-> updated the respective driver for the following reason:
->     * gout_peric1_gpio_peric1_pclk is required by the pinctrl
->       configuration. With this clock disabled, reconfiguring the pins
->       (for USI/I2C, USI/UART) will hang during register access.
->       Since pinctrl-samsung doesn't support a clock at the moment, we
->       just keep the kernel from disabling it at boot, until we have an
->       update for pinctrl-samsung, at which point we'll drop the flag.
-> 
-> Signed-off-by: André Draszik <andre.draszik@linaro.org>
-> Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
-> Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
-> 
+diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c b/drivers/hwtracing/coresight/coresight-tpdm.c
+index 0427c0fc0bf3..4b1296d11360 100644
+--- a/drivers/hwtracing/coresight/coresight-tpdm.c
++++ b/drivers/hwtracing/coresight/coresight-tpdm.c
+@@ -125,11 +125,6 @@ static ssize_t tpdm_simple_dataset_store(struct device *dev,
+ 	return ret;
+ }
+ 
+-static bool tpdm_has_dsb_dataset(struct tpdm_drvdata *drvdata)
+-{
+-	return (drvdata->datasets & TPDM_PIDR0_DS_DSB);
+-}
+-
+ static umode_t tpdm_dsb_is_visible(struct kobject *kobj,
+ 				   struct attribute *attr, int n)
+ {
+@@ -232,25 +227,27 @@ static void tpdm_enable_dsb(struct tpdm_drvdata *drvdata)
+ {
+ 	u32 val, i;
+ 
++	if (!tpdm_has_dsb_dataset(drvdata))
++		return;
++
+ 	for (i = 0; i < TPDM_DSB_MAX_EDCR; i++)
+ 		writel_relaxed(drvdata->dsb->edge_ctrl[i],
+-			   drvdata->base + TPDM_DSB_EDCR(i));
++			       drvdata->base + TPDM_DSB_EDCR(i));
+ 	for (i = 0; i < TPDM_DSB_MAX_EDCMR; i++)
+ 		writel_relaxed(drvdata->dsb->edge_ctrl_mask[i],
+-			   drvdata->base + TPDM_DSB_EDCMR(i));
++			       drvdata->base + TPDM_DSB_EDCMR(i));
+ 	for (i = 0; i < TPDM_DSB_MAX_PATT; i++) {
+ 		writel_relaxed(drvdata->dsb->patt_val[i],
+-			   drvdata->base + TPDM_DSB_TPR(i));
++			       drvdata->base + TPDM_DSB_TPR(i));
+ 		writel_relaxed(drvdata->dsb->patt_mask[i],
+-			   drvdata->base + TPDM_DSB_TPMR(i));
++			       drvdata->base + TPDM_DSB_TPMR(i));
+ 		writel_relaxed(drvdata->dsb->trig_patt[i],
+-			   drvdata->base + TPDM_DSB_XPR(i));
++			       drvdata->base + TPDM_DSB_XPR(i));
+ 		writel_relaxed(drvdata->dsb->trig_patt_mask[i],
+-			   drvdata->base + TPDM_DSB_XPMR(i));
++			       drvdata->base + TPDM_DSB_XPMR(i));
+ 	}
+ 
+ 	set_dsb_tier(drvdata);
+-
+ 	set_dsb_msr(drvdata);
+ 
+ 	val = readl_relaxed(drvdata->base + TPDM_DSB_CR);
+@@ -278,8 +275,7 @@ static void __tpdm_enable(struct tpdm_drvdata *drvdata)
+ {
+ 	CS_UNLOCK(drvdata->base);
+ 
+-	if (tpdm_has_dsb_dataset(drvdata))
+-		tpdm_enable_dsb(drvdata);
++	tpdm_enable_dsb(drvdata);
+ 
+ 	CS_LOCK(drvdata->base);
+ }
+@@ -307,6 +303,9 @@ static void tpdm_disable_dsb(struct tpdm_drvdata *drvdata)
+ {
+ 	u32 val;
+ 
++	if (!tpdm_has_dsb_dataset(drvdata))
++		return;
++
+ 	/* Set the enable bit of DSB control register to 0 */
+ 	val = readl_relaxed(drvdata->base + TPDM_DSB_CR);
+ 	val &= ~TPDM_DSB_CR_ENA;
+@@ -318,8 +317,7 @@ static void __tpdm_disable(struct tpdm_drvdata *drvdata)
+ {
+ 	CS_UNLOCK(drvdata->base);
+ 
+-	if (tpdm_has_dsb_dataset(drvdata))
+-		tpdm_disable_dsb(drvdata);
++	tpdm_disable_dsb(drvdata);
+ 
+ 	CS_LOCK(drvdata->base);
+ }
+diff --git a/drivers/hwtracing/coresight/coresight-tpdm.h b/drivers/hwtracing/coresight/coresight-tpdm.h
+index 4115b2a17b8d..ddaf333fa1c2 100644
+--- a/drivers/hwtracing/coresight/coresight-tpdm.h
++++ b/drivers/hwtracing/coresight/coresight-tpdm.h
+@@ -220,4 +220,8 @@ struct tpdm_dataset_attribute {
+ 	u32 idx;
+ };
+ 
++static bool tpdm_has_dsb_dataset(struct tpdm_drvdata *drvdata)
++{
++	return (drvdata->datasets & TPDM_PIDR0_DS_DSB);
++}
+ #endif  /* _CORESIGHT_CORESIGHT_TPDM_H */
+-- 
+2.17.1
 
-Looks good to me:
-
-Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 
