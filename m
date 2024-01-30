@@ -1,90 +1,186 @@
-Return-Path: <linux-kernel+bounces-44320-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44319-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22585842072
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:03:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 94D208420AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:08:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4927FB311FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:56:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2B2CB2C0DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:56:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1F1666B34;
-	Tue, 30 Jan 2024 09:52:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15760664B9;
+	Tue, 30 Jan 2024 09:52:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="TcpH6VlP"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KXdOzw0G"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E195664A7
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:52:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C0D6664A9;
+	Tue, 30 Jan 2024 09:52:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706608351; cv=none; b=fhqrqCg9ncXGOqabz+dJB1ozDE9B0aoC3kitZR7NDwbiKn5rVbyeNYujTejqQ8ab6dfkJ/a9dmC78LfEJjvriOWyeSp+NXIIIp7c5ePmUTAXN2AToo1C5rYiSgDneSHTFjHMD5w5jjBWhHZJ4YaBF5t8Lv0ic0/XMX5WgP85WFw=
+	t=1706608348; cv=none; b=gUdNleFRJEFJzrKMbVP3bbqsyjbjuX1PjBjovDJFCqQmUJAzJ4ijzSzrmhcvFHazX+vJVVdOq94U6GeTuI9vwfh458x+9RKmaqkK0F/7QWrVudbp5AlpuQrsB+IGLSoFoKS5fIltuLHKHlwOuJsZ0amagEXl2+GrsESRVV9W3ag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706608351; c=relaxed/simple;
-	bh=g5rkrsUczvT98u64IjHetISOxo+BA6WM15O5Bq18z8g=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=st/LDS2znZmkppGub6JzyF7SsCGhBncHMZ8XNUjCCU0gqQQcHd9g8XnKZGlhaZAWzBGYTEjmgptDCGlmfWXRCPSvtqrcmsVmC3G19L6r4tSBWzf517vHVza4gQMSCqgdjRKSKDmJgSTNAnEaGRIFyJ0nX3u+SRFspVH73G0hfkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=TcpH6VlP; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=from:to:cc:subject:date:message-id
-	:mime-version:content-transfer-encoding; s=k1; bh=eMpBOKcHgjOgUu
-	6e0neo1Xoqw8sM/5NUtcgLJ0eoc9w=; b=TcpH6VlPrVDpYNb89HzqoMZMVwpoPp
-	ByXNStY2Nw+iq2OQokAZfA0LfEF/FsCJJ56MBIwXxliwrkEHJeM8ImdK5WMaf8ca
-	EqNbRRdr+OqhBOZbD1GpPfIzIZeaK7t03XR+4kMNq6W04vhnLtFTBWggvRIns4qo
-	gKk90EhhBm4QaHjGvby4bkbccsWbMwy1MjBo5XZID1bk0oNa8bjFZfDNZcyNDX6K
-	COmnxNzCjSv5tPPuLhetN0puHmLqOw936p8f41CqLOkQS56T4UNnH23H96xXFp+7
-	u8TvrtEqnXBRvcWEJkagetICxazv1W8gvXvSR/qfCkTLt3GRovl38MAg==
-Received: (qmail 2786307 invoked from network); 30 Jan 2024 10:52:26 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 30 Jan 2024 10:52:26 +0100
-X-UD-Smtp-Session: l3s3148p1@vQM5uCYQZOdehhtJ
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: linux-renesas-soc@vger.kernel.org
-Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Magnus Damm <magnus.damm@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: renesas: ulcb-kf: document a problemw with old firmware
+	s=arc-20240116; t=1706608348; c=relaxed/simple;
+	bh=Kj7uKf/C4kWgSz8bKZaS0Cc4J2SRHT1aScYumeV+1Og=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rntOsnpQN+JXc69YFNeWEZpNdUGUVg1MWvEymJ2cN/V9dKXTBWnd5tpfFaqb8Sy3x8RfzdLXCeRpqCNyXGrCsHWpfEZpu7d7EBmzXzaFFUnsW1+mkgn1YypFMFBWx23UrTJT34DdzZhvjwgN6J9ysA9NadOeQMuZbz8xeNBtlXo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KXdOzw0G; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34906C43390;
+	Tue, 30 Jan 2024 09:52:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706608347;
+	bh=Kj7uKf/C4kWgSz8bKZaS0Cc4J2SRHT1aScYumeV+1Og=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KXdOzw0Ge+S0kxxUwX6xUO6wp/RQAOylY1MqtPueRi0QSlhyI/TZGBUzqDkIjKYXV
+	 1V62ElrAa0Ig2uLTmT9Dv/8k1IM1IxMAsXAAVmtHjXA7e+dnJWv2z/u06D6/Pfq19C
+	 TsALPLf65alRx3ngi7L/MSa8oieOEUQX9dsSDzlG+grFoH65UNxtEHmk7m7B61LvLT
+	 /AXIHtQZB9+QNpClqOUGK1BCRdX2qxq10yjSVxjii1ef37xtfoMgcc4wNghMmHort8
+	 aZfQ1FsnFf/2rJ7vYmsoaxuiQp2M/czFUG6MwvuPGB+sYmL//vRVHIF1r1MJvshsh0
+	 7qKjPGPNFHC3A==
 Date: Tue, 30 Jan 2024 10:52:22 +0100
-Message-Id: <20240130095222.11177-1-wsa+renesas@sang-engineering.com>
-X-Mailer: git-send-email 2.39.2
+From: Christian Brauner <brauner@kernel.org>
+To: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+Cc: mszeredi@redhat.com, stgraber@stgraber.org, 
+	linux-fsdevel@vger.kernel.org, Seth Forshee <sforshee@kernel.org>, 
+	Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
+	Bernd Schubert <bschubert@ddn.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 6/9] fs/fuse: support idmapped ->setattr op
+Message-ID: <20240130-vielsagend-bauamt-282fd8bff38a@brauner>
+References: <20240108120824.122178-1-aleksandr.mikhalitsyn@canonical.com>
+ <20240108120824.122178-7-aleksandr.mikhalitsyn@canonical.com>
+ <20240120-zeitmanagement-abbezahlen-8a3e2b5de72a@brauner>
+ <20240129164849.f3f194a800d88fd26a373203@canonical.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240129164849.f3f194a800d88fd26a373203@canonical.com>
 
-Old firmware set the GPIO to output, so no interrupts could be read.
-Newer firmware does this correctly. The exact version could not be
-determined, sadly.
+On Mon, Jan 29, 2024 at 04:48:49PM +0100, Alexander Mikhalitsyn wrote:
+> On Sat, 20 Jan 2024 16:23:38 +0100
+> Christian Brauner <brauner@kernel.org> wrote:
+> 
+> > On Mon, Jan 08, 2024 at 01:08:21PM +0100, Alexander Mikhalitsyn wrote:
+> > > Cc: Christian Brauner <brauner@kernel.org>
+> > > Cc: Seth Forshee <sforshee@kernel.org>
+> > > Cc: Miklos Szeredi <miklos@szeredi.hu>
+> > > Cc: Amir Goldstein <amir73il@gmail.com>
+> > > Cc: Bernd Schubert <bschubert@ddn.com>
+> > > Cc: <linux-fsdevel@vger.kernel.org>
+> > > Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+> > > ---
+> > >  fs/fuse/dir.c    | 32 +++++++++++++++++++++-----------
+> > >  fs/fuse/file.c   |  2 +-
+> > >  fs/fuse/fuse_i.h |  4 ++--
+> > >  3 files changed, 24 insertions(+), 14 deletions(-)
+> > > 
+> > > diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
+> > > index f7c2c54f7122..5fbb7100ad1c 100644
+> > > --- a/fs/fuse/dir.c
+> > > +++ b/fs/fuse/dir.c
+> > > @@ -1739,17 +1739,27 @@ static bool update_mtime(unsigned ivalid, bool trust_local_mtime)
+> > >  	return true;
+> > >  }
+> > >  
+> > > -static void iattr_to_fattr(struct fuse_conn *fc, struct iattr *iattr,
+> > > -			   struct fuse_setattr_in *arg, bool trust_local_cmtime)
+> > > +static void iattr_to_fattr(struct mnt_idmap *idmap, struct fuse_conn *fc,
+> > > +			   struct iattr *iattr, struct fuse_setattr_in *arg,
+> > > +			   bool trust_local_cmtime)
+> > >  {
+> > >  	unsigned ivalid = iattr->ia_valid;
+> > >  
+> > >  	if (ivalid & ATTR_MODE)
+> > >  		arg->valid |= FATTR_MODE,   arg->mode = iattr->ia_mode;
+> > > -	if (ivalid & ATTR_UID)
+> > > -		arg->valid |= FATTR_UID,    arg->uid = from_kuid(fc->user_ns, iattr->ia_uid);
+> > > -	if (ivalid & ATTR_GID)
+> > > -		arg->valid |= FATTR_GID,    arg->gid = from_kgid(fc->user_ns, iattr->ia_gid);
+> > > +
+> > > +	if (ivalid & ATTR_UID) {
+> > > +		kuid_t fsuid = from_vfsuid(idmap, fc->user_ns, iattr->ia_vfsuid);
+> > > +		arg->valid |= FATTR_UID;
+> > > +		arg->uid = from_kuid(fc->user_ns, fsuid);
+> > > +	}
+> > > +
+> > > +	if (ivalid & ATTR_GID) {
+> > > +		kgid_t fsgid = from_vfsgid(idmap, fc->user_ns, iattr->ia_vfsgid);
+> > > +		arg->valid |= FATTR_GID;
+> > > +		arg->gid = from_kgid(fc->user_ns, fsgid);
+> > > +	}
+> > > +
+> > >  	if (ivalid & ATTR_SIZE)
+> > >  		arg->valid |= FATTR_SIZE,   arg->size = iattr->ia_size;
+> > >  	if (ivalid & ATTR_ATIME) {
+> > > @@ -1869,8 +1879,8 @@ int fuse_flush_times(struct inode *inode, struct fuse_file *ff)
+> > >   * vmtruncate() doesn't allow for this case, so do the rlimit checking
+> > >   * and the actual truncation by hand.
+> > >   */
+> > > -int fuse_do_setattr(struct dentry *dentry, struct iattr *attr,
+> > > -		    struct file *file)
+> > > +int fuse_do_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
+> > > +		    struct iattr *attr, struct file *file)
+> > >  {
+> > >  	struct inode *inode = d_inode(dentry);
+> > >  	struct fuse_mount *fm = get_fuse_mount(inode);
+> > > @@ -1890,7 +1900,7 @@ int fuse_do_setattr(struct dentry *dentry, struct iattr *attr,
+> > >  	if (!fc->default_permissions)
+> > >  		attr->ia_valid |= ATTR_FORCE;
+> > >  
+> > > -	err = setattr_prepare(&nop_mnt_idmap, dentry, attr);
+> > > +	err = setattr_prepare(idmap, dentry, attr);
+> > >  	if (err)
+> > >  		return err;
+> > >  
+> > > @@ -1949,7 +1959,7 @@ int fuse_do_setattr(struct dentry *dentry, struct iattr *attr,
+> > >  
+> > >  	memset(&inarg, 0, sizeof(inarg));
+> > >  	memset(&outarg, 0, sizeof(outarg));
+> > > -	iattr_to_fattr(fc, attr, &inarg, trust_local_cmtime);
+> > > +	iattr_to_fattr(idmap, fc, attr, &inarg, trust_local_cmtime);
+> > >  	if (file) {
+> > >  		struct fuse_file *ff = file->private_data;
+> > >  		inarg.valid |= FATTR_FH;
+> > > @@ -2084,7 +2094,7 @@ static int fuse_setattr(struct mnt_idmap *idmap, struct dentry *entry,
+> > >  	if (!attr->ia_valid)
+> > >  		return 0;
+> > >  
+> > > -	ret = fuse_do_setattr(entry, attr, file);
+> > > +	ret = fuse_do_setattr(idmap, entry, attr, file);
+> > >  	if (!ret) {
+> > >  		/*
+> > >  		 * If filesystem supports acls it may have updated acl xattrs in
+> > > diff --git a/fs/fuse/file.c b/fs/fuse/file.c
+> > > index a660f1f21540..e0fe5497a548 100644
+> > > --- a/fs/fuse/file.c
+> > > +++ b/fs/fuse/file.c
+> > > @@ -2870,7 +2870,7 @@ static void fuse_do_truncate(struct file *file)
+> > >  	attr.ia_file = file;
+> > >  	attr.ia_valid |= ATTR_FILE;
+> > >  
+> > > -	fuse_do_setattr(file_dentry(file), &attr, file);
+> > > +	fuse_do_setattr(&nop_mnt_idmap, file_dentry(file), &attr, file);
+> > 
+> > Same as for the other patch. Please leave a comment in the commit
+> > message that briefly explains why it's ok to pass &nop_mnt_idmap here.
+> > It'll help us later. :)
+> 
+> Sure, will be fixed in -v2 ;-)
+> 
+> Explanation here is that in this specific case attr.ia_valid = ATTR_SIZE | ATTR_FILE,
+> which but we only need an idmapping for ATTR_UID | ATTR_GID.
+> 
+> From the other side, having struct file pointer means that getting an idmapping as easy as file_mnt_idmap(file),
+> and probably it's easier to pass an idmapping in this specific case rather than skipping it for a valid reasons.
+> What do you think about this?
 
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
----
- arch/arm64/boot/dts/renesas/ulcb-kf.dtsi | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi b/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
-index 84b0976503b7..45e55ce760d1 100644
---- a/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
-+++ b/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
-@@ -324,6 +324,7 @@ gpio_exp_77: gpio@77 {
- 		reg = <0x77>;
- 		gpio-controller;
- 		#gpio-cells = <2>;
-+		/* If these interrupts don't work, please update your firmware */
- 		interrupt-controller;
- 		interrupt-parent = <&gpio5>;
- 		interrupts = <9 IRQ_TYPE_EDGE_FALLING>;
--- 
-2.39.2
-
+Yeah, I'd just pass it through because then we don't have to think about
+why we're not passing it through here.
 
