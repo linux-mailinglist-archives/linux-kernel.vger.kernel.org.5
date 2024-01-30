@@ -1,99 +1,104 @@
-Return-Path: <linux-kernel+bounces-44491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44492-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA3F68422C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:20:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A01908422F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:27:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18E961F22955
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:20:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 359B9B29F64
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:21:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3D2C67E96;
-	Tue, 30 Jan 2024 11:16:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBA6E6A029;
+	Tue, 30 Jan 2024 11:16:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wnSKfYN+";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="J1gPgPNr";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iGTFcS83";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Y46nuuz/"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="P4p/yS5I"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BB5167E6D;
-	Tue, 30 Jan 2024 11:15:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E26F06A01B
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 11:16:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706613360; cv=none; b=Fevby1YP+Svta5sLPyMwyTLODKLUebC7LGSJJeQC5EWMKgcDdfOtGSNrtq55TxDg3NxnhzpBlUrGOmz8OowwbFv5MBudQPEvh+m5g7MhPVv88GbCNe+Rby7Dzia8iCuR0ehtU5zTgiiacAHIX77EZ0ZhoajvxDa5ZWI29RmVMIc=
+	t=1706613375; cv=none; b=IQ94oaEniIrnRgiqc60AruTO3UmxAJHguOEReAZPGg6CSAn6Dro3wRDXirxCNJikPCBwZRWKTryHrYzr9M4FzHjMS5K8uL+7/0F7x9LkN3HmWtuaszWTpp0TxtGLq51ZhRLn2lt3rIP4Sr6SIgObUbUqg44X6cqFCRp2rhsXmjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706613360; c=relaxed/simple;
-	bh=1u4ISiGKciq/te4aoqonTD2lmefQOKlXtD+Z/JlW8Xs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r/c9p9w2nwHIoGko6MNNVS7DJlZk6Yb25TDfmDWIuZ/MyWxjKqGeC7lVzwft0vbqj8WlsiEL6NEevz29YShxQZdLDgpbSmbf5S/sMC65zNc1B+sghDfqWj9oBufHCWdh5hVnVfASqVmhznok8arWdVkxPbS4NLU62f9nhTt9yhU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=wnSKfYN+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=J1gPgPNr; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iGTFcS83; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Y46nuuz/; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id DAA4C1F846;
-	Tue, 30 Jan 2024 11:15:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706613355; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+OQ1bCF/HA8s2JUmEwbhXiDyJh9rd41WXFOaLCe3q/U=;
-	b=wnSKfYN+XJOFJdv+dIeQpzY4JIiNbrGSw4Y7TNl6Md/2JxugJt0tqDrgMEdVfeF3AY3k8Q
-	J5IzIe8sB/hN1tq18WdTy2tOTlXSR96u3t9Fp5HQGw+B4ryGR3LqcO/eLmsSUj2+iP8cVF
-	08RrIjWoPRQvPz08P5U8xLawh3WQJwA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706613355;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+OQ1bCF/HA8s2JUmEwbhXiDyJh9rd41WXFOaLCe3q/U=;
-	b=J1gPgPNr+S4rVl9Ov63My5ktcVTtV6BiCeTHyd/ovTVtlf8nAxDqdR+bw5WTSRF4Smc09z
-	RB6XFKAyCxGUO6DQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706613353; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+OQ1bCF/HA8s2JUmEwbhXiDyJh9rd41WXFOaLCe3q/U=;
-	b=iGTFcS83zowJfNaToC+rm0tIl5H77AwpQNLp7kSNLyudQ/GATEhEzPkRUiqbaNDvaJ9oSr
-	DFHQfu237sJf/VAHMkrOuV55laaylOvgIbg+OMOitUX12LI9GA8d67LLxVSoQUebXMylrK
-	ZR69Eh2ifP668eRisCIHdqyB2FHwehw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706613353;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+OQ1bCF/HA8s2JUmEwbhXiDyJh9rd41WXFOaLCe3q/U=;
-	b=Y46nuuz/iBKzdbyJIaAipdLauaXAHfII8sF5/k+jxsw4JEJccNJu+RU7WASk6pd9PeHNpN
-	WNnTPyPQ0WdmL/Bg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id CD97B13212;
-	Tue, 30 Jan 2024 11:15:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id f9oqMmnauGVlCwAAn2gu4w
-	(envelope-from <jack@suse.cz>); Tue, 30 Jan 2024 11:15:53 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 5C9E7A0807; Tue, 30 Jan 2024 12:15:53 +0100 (CET)
-Date: Tue, 30 Jan 2024 12:15:53 +0100
-From: Jan Kara <jack@suse.cz>
-To: Kees Cook <keescook@chromium.org>
-Cc: Christian Brauner <brauner@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] select: Avoid wrap-around instrumentation in
- do_sys_poll()
-Message-ID: <20240130111553.yxm74p5q64pyuurs@quack3>
-References: <20240129184014.work.593-kees@kernel.org>
+	s=arc-20240116; t=1706613375; c=relaxed/simple;
+	bh=ehXXPYkjs9fcwAJSYgnOWnp6d6xWZAbB9yb4YVaNJ+c=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tUuvMPXXzkLZwdE0buCDGMpSC1SsY58hmQEo1LdvsARbuPbLpTg2Zyfa5vMPLSpdNMkH28XDIroDBHDx68u0qvc6PsIBa3U5MKrEUgDHIXSnc0ak1/E00y9AdF23/2MoYPvl5KOeW9ooxTh6XjnIgkEargOQOouR1LfLps5nRig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=P4p/yS5I; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-55369c59708so1550477a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 03:16:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google; t=1706613372; x=1707218172; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=C2FZft6FauqTz4a6mgFsXH5fOXhbWwAcsXYixHIZpik=;
+        b=P4p/yS5ItBO3ZwfRFF/qtPf5bsKzPF2HROeZ56DE+cApN8L3qr5HypkT+Tbt3rwhd0
+         4X30cHsuH7lShd1LngamNPzC1WSzXQA/16VJbIVTUfAOguEHVZWdHvKHtQfCluEF5ccL
+         xQNTYQ4DTHxOY3O6hq1Vx6GTF+50S1/6Y45Tc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706613372; x=1707218172;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=C2FZft6FauqTz4a6mgFsXH5fOXhbWwAcsXYixHIZpik=;
+        b=Mj3SC5Cwdfm5yjgmDFEwVwbFu+qxT82i/I8mhAg/nea/LCzRbgwb/50+5J0g363+7G
+         MBoIRD4h0XYT+aofZyE17VmFdyJdKPXYlsT9oKuKmIYiJelNKxAYtOMVmD22dnXGzVRX
+         BzqwDjpkbD5NYkPDZ04DsOwLF0Gw6n/BxSdwcHfHW7g9a3v40iAjGCTRNeM+A+S45GQ+
+         m7Vq7z+jeNrX3RWdT3D/0mxU+9AqTJFrj+Wg8eTCZGTLLTCI2ILybTibaiJigXZIcSDw
+         xsX0NuETAXCOEN8bCwKNKP9e/e3v2/tcHhX8YNvTGO64ZhXz8frFYRQhpny7y+jfLnU7
+         jqZQ==
+X-Forwarded-Encrypted: i=0; AJvYcCXPYiDJqFa12GlQKt66Rb05Lz00fU7Tsl8ITJjV/p7ZJRc9kmhKxntyTWw+yYCJ3Cc7bE4cTrD9C0XlI9LTEqGfiY8R+JVSZ5wjdTbX
+X-Gm-Message-State: AOJu0Yz6ujibbNk4S7WFD3QCKw+Y+4YknMrRjVoWV8a6+5aJo2xiZtwD
+	p89AMK+teOjKbkweZqoYQ3spED9OX8D8eQlq3cx6lZJgda3d8e92xkthE1h6DUA=
+X-Google-Smtp-Source: AGHT+IEMT3X2zvsc4bSoskcD1Q4j1mTrHeLOlnPktNoR8kFYS32umfRbdXFTr6eXS49OA5C1n9722A==
+X-Received: by 2002:a05:6402:3106:b0:55e:ff4e:70ad with SMTP id dc6-20020a056402310600b0055eff4e70admr3164992edb.0.1706613372045;
+        Tue, 30 Jan 2024 03:16:12 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id u23-20020aa7db97000000b00558a3e892b3sm4797173edt.41.2024.01.30.03.16.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jan 2024 03:16:11 -0800 (PST)
+Date: Tue, 30 Jan 2024 12:16:09 +0100
+From: Daniel Vetter <daniel@ffwll.ch>
+To: Julia Zhang <julia.zhang@amd.com>,
+	Gurchetan Singh <gurchetansingh@chromium.org>,
+	Chia-I Wu <olvaffe@gmail.com>, David Airlie <airlied@redhat.com>,
+	Gerd Hoffmann <kraxel@redhat.com>, linux-kernel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+	virtualization@lists.linux-foundation.org,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	David Airlie <airlied@gmail.com>,
+	Erik Faye-Lund <kusmabite@gmail.com>,
+	Marek =?utf-8?B?T2zFocOhaw==?= <marek.olsak@amd.com>,
+	Pierre-Eric Pelloux-Prayer <pierre-eric.pelloux-prayer@amd.com>,
+	Honglei Huang <honglei1.huang@amd.com>,
+	Chen Jiqian <Jiqian.Chen@amd.com>, Huang Rui <ray.huang@amd.com>,
+	David Stevens <stevensd@chromium.org>
+Subject: Re: [PATCH v2 1/1] drm/virtio: Implement device_attach
+Message-ID: <ZbjaebswTCxmlwu0@phenom.ffwll.local>
+Mail-Followup-To: Julia Zhang <julia.zhang@amd.com>,
+	Gurchetan Singh <gurchetansingh@chromium.org>,
+	Chia-I Wu <olvaffe@gmail.com>, David Airlie <airlied@redhat.com>,
+	Gerd Hoffmann <kraxel@redhat.com>, linux-kernel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+	virtualization@lists.linux-foundation.org,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	David Airlie <airlied@gmail.com>,
+	Erik Faye-Lund <kusmabite@gmail.com>,
+	Marek =?utf-8?B?T2zFocOhaw==?= <marek.olsak@amd.com>,
+	Pierre-Eric Pelloux-Prayer <pierre-eric.pelloux-prayer@amd.com>,
+	Honglei Huang <honglei1.huang@amd.com>,
+	Chen Jiqian <Jiqian.Chen@amd.com>, Huang Rui <ray.huang@amd.com>,
+	David Stevens <stevensd@chromium.org>
+References: <20240129103118.3258781-1-julia.zhang@amd.com>
+ <ZbjZJ3qQzdOksnb2@phenom.ffwll.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -102,127 +107,145 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240129184014.work.593-kees@kernel.org>
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=iGTFcS83;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="Y46nuuz/"
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-5.51 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[linux.org.uk:email,chromium.org:email,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:98:from];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Score: -5.51
-X-Rspamd-Queue-Id: DAA4C1F846
-X-Spam-Flag: NO
+In-Reply-To: <ZbjZJ3qQzdOksnb2@phenom.ffwll.local>
+X-Operating-System: Linux phenom 6.6.11-amd64 
 
-On Mon 29-01-24 10:40:15, Kees Cook wrote:
-> The mix of int, unsigned int, and unsigned long used by struct
-> poll_list::len, todo, len, and j meant that the signed overflow
-> sanitizer got worried it needed to instrument several places where
-> arithmetic happens between these variables. Since all of the variables
-> are always positive and bounded by unsigned int, use a single type in
-> all places. Additionally expand the zero-test into an explicit range
-> check before updating "todo".
+On Tue, Jan 30, 2024 at 12:10:31PM +0100, Daniel Vetter wrote:
+> On Mon, Jan 29, 2024 at 06:31:19PM +0800, Julia Zhang wrote:
+> > As vram objects don't have backing pages and thus can't implement
+> > drm_gem_object_funcs.get_sg_table callback. This removes drm dma-buf
+> > callbacks in virtgpu_gem_map_dma_buf()/virtgpu_gem_unmap_dma_buf()
+> > and implement virtgpu specific map/unmap/attach callbacks to support
+> > both of shmem objects and vram objects.
+> > 
+> > Signed-off-by: Julia Zhang <julia.zhang@amd.com>
+> > ---
+> >  drivers/gpu/drm/virtio/virtgpu_prime.c | 40 +++++++++++++++++++++++---
+> >  1 file changed, 36 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/virtio/virtgpu_prime.c b/drivers/gpu/drm/virtio/virtgpu_prime.c
+> > index 44425f20d91a..b490a5343b06 100644
+> > --- a/drivers/gpu/drm/virtio/virtgpu_prime.c
+> > +++ b/drivers/gpu/drm/virtio/virtgpu_prime.c
+> > @@ -49,11 +49,26 @@ virtgpu_gem_map_dma_buf(struct dma_buf_attachment *attach,
+> >  {
+> >  	struct drm_gem_object *obj = attach->dmabuf->priv;
+> >  	struct virtio_gpu_object *bo = gem_to_virtio_gpu_obj(obj);
+> > +	struct sg_table *sgt;
+> > +	int ret;
+> >  
+> >  	if (virtio_gpu_is_vram(bo))
+> >  		return virtio_gpu_vram_map_dma_buf(bo, attach->dev, dir);
+> >  
+> > -	return drm_gem_map_dma_buf(attach, dir);
+> > +	sgt = drm_prime_pages_to_sg(obj->dev,
+> > +				    to_drm_gem_shmem_obj(obj)->pages,
+> > +				    obj->size >> PAGE_SHIFT);
+> > +	if (IS_ERR(sgt))
+> > +		return sgt;
+> > +
+> > +	ret = dma_map_sgtable(attach->dev, sgt, dir, DMA_ATTR_SKIP_CPU_SYNC);
+> > +	if (ret) {
+> > +		sg_free_table(sgt);
+> > +		kfree(sgt);
+> > +		return ERR_PTR(ret);
+> > +	}
+> > +
+> > +	return sgt;
+> >  }
+> >  
+> >  static void virtgpu_gem_unmap_dma_buf(struct dma_buf_attachment *attach,
+> > @@ -63,12 +78,29 @@ static void virtgpu_gem_unmap_dma_buf(struct dma_buf_attachment *attach,
+> >  	struct drm_gem_object *obj = attach->dmabuf->priv;
+> >  	struct virtio_gpu_object *bo = gem_to_virtio_gpu_obj(obj);
+> >  
+> > +	if (!sgt)
+> > +		return;
+> > +
+> >  	if (virtio_gpu_is_vram(bo)) {
+> >  		virtio_gpu_vram_unmap_dma_buf(attach->dev, sgt, dir);
+> > -		return;
+> > +	} else {
+> > +		dma_unmap_sgtable(attach->dev, sgt, dir, DMA_ATTR_SKIP_CPU_SYNC);
+> > +		sg_free_table(sgt);
+> > +		kfree(sgt);
+> >  	}
+> > +}
+> > +
+> > +static int virtgpu_gem_device_attach(struct dma_buf *dma_buf,
+> > +				     struct dma_buf_attachment *attach)
+> > +{
+> > +	struct drm_gem_object *obj = attach->dmabuf->priv;
+> > +	struct virtio_gpu_object *bo = gem_to_virtio_gpu_obj(obj);
+> > +	int ret = 0;
+> > +
+> > +	if (!virtio_gpu_is_vram(bo) && obj->funcs->pin)
+> > +		ret = obj->funcs->pin(obj);
+> >  
+> > -	drm_gem_unmap_dma_buf(attach, sgt, dir);
+> > +	return ret;
 > 
-> This keeps sanitizer instrumentation[1] out of a UACCESS path:
+> This doesn't look like what I've expected. There should be no need to
+> change the map/unmap functions, especially not for the usual gem bo case.
+> We should definitely keep using the exact same code for that. Instead all
+> I expected is roughly
 > 
-> vmlinux.o: warning: objtool: do_sys_poll+0x285: call to __ubsan_handle_sub_overflow() with UACCESS enabled
+> virtgpu_gem_device_attach()
+> {
+> 	if (virtio_gpu_is_vram(bo)) {
+> 		if (can_access_virtio_vram_directly(attach->dev)
+> 			return 0;
+> 		else
+> 			return -EBUSY;
+> 	} else {
+> 		return drm_gem_map_attach();
+> 	}
+> }
 > 
-> Link: https://github.com/KSPP/linux/issues/26 [1]
-> Cc: Christian Brauner <brauner@kernel.org>
-> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> Cc: Jan Kara <jack@suse.cz>
-> Cc: linux-fsdevel@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-
-Yeah, good cleanup. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/select.c | 13 +++++++------
->  1 file changed, 7 insertions(+), 6 deletions(-)
+> Note that I think can_access_virtio_vram_directly() needs to be
+> implemented first. I'm not even sure it's possible, might be that all the
+> importers need to set the attachment->peer2peer flag. Which is why this
+> thing exists really. But that's a pile more work to do.
 > 
-> diff --git a/fs/select.c b/fs/select.c
-> index 0ee55af1a55c..11a3b1312abe 100644
-> --- a/fs/select.c
-> +++ b/fs/select.c
-> @@ -839,7 +839,7 @@ SYSCALL_DEFINE1(old_select, struct sel_arg_struct __user *, arg)
->  
->  struct poll_list {
->  	struct poll_list *next;
-> -	int len;
-> +	unsigned int len;
->  	struct pollfd entries[];
->  };
->  
-> @@ -975,14 +975,15 @@ static int do_sys_poll(struct pollfd __user *ufds, unsigned int nfds,
->  		struct timespec64 *end_time)
->  {
->  	struct poll_wqueues table;
-> -	int err = -EFAULT, fdcount, len;
-> +	int err = -EFAULT, fdcount;
->  	/* Allocate small arguments on the stack to save memory and be
->  	   faster - use long to make sure the buffer is aligned properly
->  	   on 64 bit archs to avoid unaligned access */
->  	long stack_pps[POLL_STACK_ALLOC/sizeof(long)];
->  	struct poll_list *const head = (struct poll_list *)stack_pps;
->   	struct poll_list *walk = head;
-> - 	unsigned long todo = nfds;
-> +	unsigned int todo = nfds;
-> +	unsigned int len;
->  
->  	if (nfds > rlimit(RLIMIT_NOFILE))
->  		return -EINVAL;
-> @@ -998,9 +999,9 @@ static int do_sys_poll(struct pollfd __user *ufds, unsigned int nfds,
->  					sizeof(struct pollfd) * walk->len))
->  			goto out_fds;
->  
-> -		todo -= walk->len;
-> -		if (!todo)
-> +		if (walk->len >= todo)
->  			break;
-> +		todo -= walk->len;
->  
->  		len = min(todo, POLLFD_PER_PAGE);
->  		walk = walk->next = kmalloc(struct_size(walk, entries, len),
-> @@ -1020,7 +1021,7 @@ static int do_sys_poll(struct pollfd __user *ufds, unsigned int nfds,
->  
->  	for (walk = head; walk; walk = walk->next) {
->  		struct pollfd *fds = walk->entries;
-> -		int j;
-> +		unsigned int j;
->  
->  		for (j = walk->len; j; fds++, ufds++, j--)
->  			unsafe_put_user(fds->revents, &ufds->revents, Efault);
+> Frankly the more I look at the original patch that added vram export
+> support the more this just looks like a "pls revert, this is just too
+> broken".
+
+The commit I mean is this one: ea5ea3d8a117 ("drm/virtio: support mapping
+exported vram"). The commit message definitely needs to cite that one, and
+also needs a cc: stable because not rejecting invalid imports is a pretty
+big deal.
+
+Also adding David.
+-Sima
+
+> 
+> We should definitely not open-code any functions for the gem_bo export
+> case, which your patch seems to do? Or maybe I'm just extremely confused.
+> -Sima
+> 
+> >  
+> >  static const struct virtio_dma_buf_ops virtgpu_dmabuf_ops =  {
+> > @@ -83,7 +115,7 @@ static const struct virtio_dma_buf_ops virtgpu_dmabuf_ops =  {
+> >  		.vmap = drm_gem_dmabuf_vmap,
+> >  		.vunmap = drm_gem_dmabuf_vunmap,
+> >  	},
+> > -	.device_attach = drm_gem_map_attach,
+> > +	.device_attach = virtgpu_gem_device_attach,
+> >  	.get_uuid = virtgpu_virtio_get_uuid,
+> >  };
+> >  
+> > -- 
+> > 2.34.1
+> > 
+> 
 > -- 
-> 2.34.1
-> 
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
 
