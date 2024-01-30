@@ -1,124 +1,122 @@
-Return-Path: <linux-kernel+bounces-44072-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44073-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 831EE841CFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:52:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFF54841CFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:52:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3CC7B24EE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:52:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2B971C23643
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:52:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A81B354667;
-	Tue, 30 Jan 2024 07:51:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84DDA53E29;
+	Tue, 30 Jan 2024 07:52:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EG3GYztW"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FWMHD4uk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40FD75381A
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 07:51:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C41EA55E43;
+	Tue, 30 Jan 2024 07:52:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706601119; cv=none; b=f//dAAbu+TKAacd6UXCwhin30RxxuzK19naJPaliL6PKkpeuuJeaV0glBHxsMpTDN2dNI0IZvryDgCExrKbMieT3MENehjaIGlxeUxUC1/Fqr4fR7TPpSIWUzbhrCW4i4r308xg46PfdiH0w/k0EjxSoxyrymG8e5H2OSpyjsjo=
+	t=1706601123; cv=none; b=d5kx+ElwGHBJo2Yjgeiv3263gGVLGoOzyizUzJEbtVFwTsn42vXK3fk9RPxaQrk4VBvfe4fuDqklWIYh8dzxErAOG4EyJttSV0FpxBXJbha6oiMZ0BQ/763kQ3KM47uRNshiu47oA22VxXEHY/ocDD4935tiA9QOmFo6lBSSgG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706601119; c=relaxed/simple;
-	bh=YLrgJ6yq1X+yEWK0QFuDAiVsv4iYPleIwkJ/IHuFqpE=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=mswZMFdzU0J1MWd6RllsWWt+yi/6P42PP/+K+h8+bE6bSbDmTGawMjQEzUx2bN3kCjckTOQsjxzhUxlYfs22+t5fcInGHdQ7rjTa2FgopHD2D8zFAUD33V5JA11xn42E4fUtT7d0IeVqxo4tPuddRLz9ItFArGg4//OtcoR8cWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EG3GYztW; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbe9e13775aso5817912276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 23:51:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706601116; x=1707205916; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aC2acMvCrsnsCSaOBPgEXr/tWbb4doa7fO8e2ncEHsI=;
-        b=EG3GYztW2zsSFEsGGn8fiXtj4TlBMhBYx7qg3Jj3iLP+4tJg4Tygztq5Rtwqx8X/dL
-         Qajy4EC2RGLmDp6dmvzz48qIguxKLsyC2Tc6GQEPsz0IX7BU2AKRI0nGgTYZ0+9WOpSY
-         ZnoJtestf0uK44MYRyRgClJeVLWXRxgupN63SI13C1WQFWbMbQfwEQiXZM0oB7SFwwDy
-         jMmrWld3JquoFT5BEHS46YsUYP3nfuIntJYACQI4XXYRvbL5rqhX/52wiM1ISPwnRaCl
-         8reP2ccnsXPidNiFObHpXuFcsocKIzUVHIgT54AoN3oRK/JBzVAdiTTnzIPZomfbH35a
-         SeSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706601116; x=1707205916;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aC2acMvCrsnsCSaOBPgEXr/tWbb4doa7fO8e2ncEHsI=;
-        b=bL+WWBICL5vSus3+FWOQZuqykWTrpnxydmGsflTzHxH42UgSJyXynjdfcUHTOlmG/G
-         j6n33eVHgJ8OKquEWehFOJm7T+in8CLtHs1J5UEgJjw1QLPpn1eYagkONCzmVlZOzX82
-         33gHjSDvMDrpZK2KIFXI9DVoxMrvNSM/Q0P2yqYClyhK/+DjH3wLZVW9LorwyzZn0mFu
-         LoZdPBGDgH9FHQvisygiR8VhnHamMFD3s3VdYrOhPnGl0Lz0GUtRUQ6Cantcp58Dje50
-         WIYL4gGeQ/ZxGmy1WvO4ZY8TXoTJ0UjdB60CRCCZeft4A/1s0rrxoTDRtLzgGF7X6nzO
-         nCxw==
-X-Gm-Message-State: AOJu0Yx37Ill9nBL2vsYYXU03zTVhm2lMr+gniNTL/utJCWDvdMRMnt3
-	rzioJM23tUvpSGEvrBhY0CIxNOLyN/J1EYXslZOP+J2yIVH6+pR4EJ88o7pNQm3DroggW1AbVJm
-	sHFqKUdhT3YKyaE6YuA==
-X-Google-Smtp-Source: AGHT+IFujAJSnIpBcmAbV97uHmHUldTU/Nx6o0IeMBQyrYJ/AkEZInSvGk6j70Unc0QUBg4KgRSkRB0BXb9FU1/9
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:6902:108f:b0:dc2:23d8:722d with
- SMTP id v15-20020a056902108f00b00dc223d8722dmr2809887ybu.13.1706601116113;
- Mon, 29 Jan 2024 23:51:56 -0800 (PST)
-Date: Tue, 30 Jan 2024 07:51:54 +0000
-In-Reply-To: <20240130014208.565554-6-hannes@cmpxchg.org>
+	s=arc-20240116; t=1706601123; c=relaxed/simple;
+	bh=GLh8dsTxNo9L/3+mC7DJTQzGc6JkyJok3IVl4QHNXYU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=RngDFqS0x4Toe4i2/3+MwiNo9+MeGR7TinF+RDmEWjBzQBiahBCR6EtpqkmI3xk6RwCDCUzJnEqKAV1jI7Ir8HMtWeBXaktPCeuPqRqrfrSIbG/9ulqio3pF4/5jDcHEXceaHFlOAzWNeN3zE3zQre3i1WfnVbKW9GLFjXxXf3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FWMHD4uk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B316EC43390;
+	Tue, 30 Jan 2024 07:52:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706601123;
+	bh=GLh8dsTxNo9L/3+mC7DJTQzGc6JkyJok3IVl4QHNXYU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=FWMHD4ukg84VQQPcUzdvYkTpZEolvS89PLEDeqEObNoHN6dL7wtbGcKftgA5f0MnW
+	 uck/JCMbyizznWP9cehzht1F7w3uyMnGd59ivYIhMQrNY/kdrHevXcgDae+uAzjbfV
+	 SHzW91Hnj4ixeD1cFhI7ivDYTkGxdJypmFkNCjRz8Mce3Ax6SIygyjfzJ7KuzAMGU1
+	 xBy+9KZ7NQ7/rlbKIViFDqfVMM16BBLd5XgHkRlDOaJ2WKUnVJYI35CKEaJ/5YDnWT
+	 HKh5jfb388949enb8epNogYKvqi7b9ve3VWDIkKwMV/fZIs9oySE6JSqz69xM2MRJK
+	 vjE8q+tzh/h9A==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Anup Patel <apatel@ventanamicro.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, Thomas
+ Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand
+ <frowand.list@gmail.com>, Conor Dooley <conor+dt@kernel.org>
+Cc: Anup Patel <apatel@ventanamicro.com>, devicetree@vger.kernel.org,
+ Saravana Kannan <saravanak@google.com>, Marc Zyngier <maz@kernel.org>,
+ Anup Patel <anup@brainfault.org>, linux-kernel@vger.kernel.org, Atish
+ Patra <atishp@atishpatra.org>, linux-riscv@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, Andrew Jones
+ <ajones@ventanamicro.com>
+Subject: Re: [PATCH v12 00/25] Linux RISC-V AIA Support
+In-Reply-To: <87r0hzuw87.fsf@all.your.base.are.belong.to.us>
+References: <20240127161753.114685-1-apatel@ventanamicro.com>
+ <87r0hzuw87.fsf@all.your.base.are.belong.to.us>
+Date: Tue, 30 Jan 2024 08:52:00 +0100
+Message-ID: <87le87uulb.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240130014208.565554-1-hannes@cmpxchg.org> <20240130014208.565554-6-hannes@cmpxchg.org>
-Message-ID: <Zbiqmi0KMo0zTJ-p@google.com>
-Subject: Re: [PATCH 05/20] mm: zswap: clean up zswap_entry_put()
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Nhat Pham <nphamcs@gmail.com>, 
-	Chengming Zhou <zhouchengming@bytedance.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 29, 2024 at 08:36:41PM -0500, Johannes Weiner wrote:
-> Remove stale comment and unnecessary local variable.
-> 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> ---
->  mm/zswap.c | 10 +++-------
->  1 file changed, 3 insertions(+), 7 deletions(-)
-> 
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index 0c6adaf2fdb6..7a7e8da2b4f8 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -546,15 +546,11 @@ static void zswap_entry_get(struct zswap_entry *entry)
->  	entry->refcount++;
->  }
->  
-> -/* caller must hold the tree lock
-> -* remove from the tree and free it, if nobody reference the entry
-> -*/
-> +/* caller must hold the tree lock */
+Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
 
-We should replace all those "caller must hold the tree lock" comments
-with lockdep_assert_held() or assert_spin_locked() or something.
+> Anup Patel <apatel@ventanamicro.com> writes:
+>
+>> The RISC-V AIA specification is ratified as-per the RISC-V international
+>> process. The latest ratified AIA specifcation can be found at:
+>> https://github.com/riscv/riscv-aia/releases/download/1.0/riscv-interrupt=
+s-1.0.pdf
+>>
+>> At a high-level, the AIA specification adds three things:
+>> 1) AIA CSRs
+>>    - Improved local interrupt support
+>> 2) Incoming Message Signaled Interrupt Controller (IMSIC)
+>>    - Per-HART MSI controller
+>>    - Support MSI virtualization
+>>    - Support IPI along with virtualization
+>> 3) Advanced Platform-Level Interrupt Controller (APLIC)
+>>    - Wired interrupt controller
+>>    - In MSI-mode, converts wired interrupt into MSIs (i.e. MSI generator)
+>>    - In Direct-mode, injects external interrupts directly into HARTs
+>>
+>> For an overview of the AIA specification, refer the AIA virtualization
+>> talk at KVM Forum 2022:
+>> https://static.sched.com/hosted_files/kvmforum2022/a1/AIA_Virtualization=
+_in_KVM_RISCV_final.pdf
+>> https://www.youtube.com/watch?v=3Dr071dL8Z0yo
+>>
+>> To test this series, use QEMU v7.2 (or higher) and OpenSBI v1.2 (or high=
+er).
+>>
+>> These patches can also be found in the riscv_aia_v12 branch at:
+>> https://github.com/avpatel/linux.git
+>>
+>> Changes since v11:
+>>  - Rebased on Linux-6.8-rc1
+>>  - Included kernel/irq related patches from "genirq, irqchip: Convert ARM
+>>    MSI handling to per device MSI domains" series by Thomas.
+>>    (PATCH7, PATCH8, PATCH9, PATCH14, PATCH16, PATCH17, PATCH18, PATCH19,
+>>     PATCH20, PATCH21, PATCH22, PATCH23, and PATCH32 of
+>>     https://lore.kernel.org/linux-arm-kernel/20221121135653.208611233@li=
+nutronix.de/)
+>>  - Updated APLIC MSI-mode driver to use the new WIRED_TO_MSI mechanism.
+>>  - Updated IMSIC driver to support per-device MSI domains for PCI and
+>>    platform devices.
+>
+> Thanks for working on this, Anup! I'm still reviewing the patches.
+>
+> I'm hitting a boot hang in text patching, with this series applied on
+> 6.8-rc2. IPI issues?
 
-I can send follow up patches on top if you don't want to resend this
-series.
-
->  static void zswap_entry_put(struct zswap_entry *entry)
->  {
-> -	int refcount = --entry->refcount;
-> -
-> -	WARN_ON_ONCE(refcount < 0);
-> -	if (refcount == 0) {
-> +	WARN_ON_ONCE(!entry->refcount);
-> +	if (--entry->refcount == 0) {
->  		WARN_ON_ONCE(!RB_EMPTY_NODE(&entry->rbnode));
->  		zswap_entry_free(entry);
->  	}
-> -- 
-> 2.43.0
-> 
+Not text patching! One cpu spinning in smp_call_function_many_cond() and
+the others are in cpu_relax(). Smells like IPI...
 
