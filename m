@@ -1,62 +1,50 @@
-Return-Path: <linux-kernel+bounces-45082-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45083-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD058842B80
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:13:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F9BE842B84
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:14:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40EA01F26170
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:13:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 377ED28CD27
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:14:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38743157031;
-	Tue, 30 Jan 2024 18:13:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qgkb0wBW"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 725991292DB;
-	Tue, 30 Jan 2024 18:13:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD71B157054;
+	Tue, 30 Jan 2024 18:14:21 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6578D1552EC;
+	Tue, 30 Jan 2024 18:14:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706638405; cv=none; b=VfHkn6H6yzUneDE/TUQVDOPF7cMNUtYfyL4u2qH9iscTo+NKsqUnJRi+6nDT/FJnGFtutxKyubbU/IEjfspUshCkCyYl9PyRDUX3pprFgoQo4s+IWQSVSpCGNL3E3h9HofN7vVVhTisLr02k7aToKJhKEcikP0es+EXCo1ooW0M=
+	t=1706638461; cv=none; b=IcqAukhc1I0N5NCR6nP1sMM0Wvz5bSQmvuoC71R5S165g9m8jy/6Q+5VOgHhLwOHqAC1QMFj6DmKFYvb5HUSvHJIB2+f3NCucb1SQEUO7SnY0kox1Q9OkRdC20sY43ABVr18X+ds6K13I1/XkAgzYNuFfFDQXD+NNCa6Uq1+7PA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706638405; c=relaxed/simple;
-	bh=tvb6k0t50n+XwnKfJ0/ZnnU9tJS9kWB+9f5a4l0aPGo=;
+	s=arc-20240116; t=1706638461; c=relaxed/simple;
+	bh=/tqXGxwF3b22rn3wgrCe0BaGaBi/qiWgcoDjGcjSu3g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KHbChy9MLi8phvUevQIxXkSndEVHSjlL/oZCYi8hCkeoI+SjA1M7/EAAVSNlxoKysHgBl87ZaGqzZ22WGPCJLo3Ak53kCkcyRErHBwDPcslxCtIaEIxxkhJwcPbRMwl/O5O9sBg/bQaiC7HCY3oJXJqUyey6A/4Iyl4VlBHekr8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qgkb0wBW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89652C433C7;
-	Tue, 30 Jan 2024 18:13:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706638404;
-	bh=tvb6k0t50n+XwnKfJ0/ZnnU9tJS9kWB+9f5a4l0aPGo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qgkb0wBW35JPQhOvoprJ5i6MGC1/cO6mUu0OQ8i3/IjxgmeSsZ2XgUgiDPAWFDORX
-	 fllBj2iiO0Li0X2xPRTsGuoG11bFoSupI2HHRbQxVvLTjBA+TbfZ8s1cCKHZviI0ca
-	 lYQ1gedydbSDG8JDt/cuWMC3FsfEQtLK0LbOMcAPp2aFVJXC4S4EMYMUTAUdLAJxMp
-	 Jwc4eFUTYdUKF6jjpBPF7zTYfhd0WhEAg1PnrJzeMLMtUNE5sZFFbmGTEF0ovlFSd5
-	 +SfwoidLU5nO0+f9TyS9WZfhQhIKHYKX5M3j9aaIVmGV79zUO//1g12+nz+VahY3cb
-	 iiX6foTCrwqOw==
-Date: Tue, 30 Jan 2024 12:13:22 -0600
-From: Rob Herring <robh@kernel.org>
-To: Conor Dooley <conor@kernel.org>, Frank Li <Frank.li@nxp.com>
-Cc: ran.wang_1@nxp.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Felipe Balbi <balbi@kernel.org>,
-	"open list:USB SUBSYSTEM" <linux-usb@vger.kernel.org>,
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>, mark.rutland@arm.com,
-	pku.leo@gmail.com, sergei.shtylyov@cogentembedded.com
-Subject: Re: [PATCH 1/2] dt-bindings: usb: dwc3: Add snps,host-vbus-glitches
- avoiding vbus glitch
-Message-ID: <20240130181322.GA2079185-robh@kernel.org>
-References: <20240119213130.3147517-1-Frank.Li@nxp.com>
- <20240124-unclothed-dodgy-c78b1fffa752@spud>
- <ZbFNIvEaAJCxC2VB@lizhi-Precision-Tower-5810>
- <20240124-video-lumpiness-178c4e317f5a@spud>
+	 Content-Type:Content-Disposition:In-Reply-To; b=F6lwPSgClyT1VU+qon9gZJC4mOu8UtTjBiDKt6eQ8RqxXnBNIIWyw9jJeIf3J98oWct9dUtWjLtg1YzY9Voj/dPVPVQGOqyGYxkv+BYj/ZBZsVIRtst88ymCOef4ndXUUeVXYyp8UHPwZlNO/TU/z98RbD9IFpxIOpeirf8CW2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A28E6DA7;
+	Tue, 30 Jan 2024 10:14:59 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.45.140])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7811B3F762;
+	Tue, 30 Jan 2024 10:14:14 -0800 (PST)
+Date: Tue, 30 Jan 2024 18:14:11 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Fenghua Yu <fenghua.yu@intel.com>
+Cc: Vinod Koul <vkoul@kernel.org>, Dave Jiang <dave.jiang@intel.com>,
+	dmaengine@vger.kernel.org,
+	linux-kernel <linux-kernel@vger.kernel.org>,
+	Nikhil Rao <nikhil.rao@intel.com>, Tony Zhu <tony.zhu@intel.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH] dmaengine: idxd: Change wmb() to smp_wmb() when copying
+ completion record to user space
+Message-ID: <Zbk8c6l5gZslj6wJ@FVFF77S0Q05N>
+References: <20240130025806.2027284-1-fenghua.yu@intel.com>
+ <Zbk4wGNcB-g91Vr0@FVFF77S0Q05N>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,64 +53,117 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240124-video-lumpiness-178c4e317f5a@spud>
+In-Reply-To: <Zbk4wGNcB-g91Vr0@FVFF77S0Q05N>
 
-On Wed, Jan 24, 2024 at 05:59:00PM +0000, Conor Dooley wrote:
-> On Wed, Jan 24, 2024 at 12:47:14PM -0500, Frank Li wrote:
-> > On Wed, Jan 24, 2024 at 05:36:42PM +0000, Conor Dooley wrote:
-> > > On Fri, Jan 19, 2024 at 04:31:28PM -0500, Frank Li wrote:
-> > > > From: Ran Wang <ran.wang_1@nxp.com>
-> > > > 
-> > > > When DWC3 is set to host mode by programming register DWC3_GCTL, VBUS
-> > > > (or its control signal) will turn on immediately on related Root Hub
-> > > > ports. Then the VBUS will be de-asserted for a little while during xhci
-> > > > reset (conducted by xhci driver) for a little while and back to normal.
-> > > > 
-> > > > This VBUS glitch might cause some USB devices emuration fail if kernel
-> > > > boot with them connected. One SW workaround which can fix this is to
-> > > > program all PORTSC[PP] to 0 to turn off VBUS immediately after setting
-> > > > host mode in DWC3 driver(per signal measurement result, it will be too
-> > > > late to do it in xhci-plat.c or xhci.c).
-> > > > 
-> > > > Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
-> > > > Reviewed-by: Peter Chen <peter.chen@nxp.com>
-> > > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > > > ---
-> > > >  Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 7 +++++++
-> > > >  1 file changed, 7 insertions(+)
-> > > > 
-> > > > diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-> > > > index 203a1eb66691f..dbf272b76e0b5 100644
-> > > > --- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-> > > > +++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-> > > > @@ -273,6 +273,13 @@ properties:
-> > > >        with an external supply.
-> > > >      type: boolean
-> > > >  
-> > > > +  snps,host-vbus-glitches:
-> > > > +    description:
-> > > > +      When set, power off all Root Hub ports immediately after
-> > > > +      setting host mode to avoid vbus (negative) glitch happen in later
-> > > > +      xhci reset. And the vbus will back to 5V automatically when reset done.
+On Tue, Jan 30, 2024 at 05:58:24PM +0000, Mark Rutland wrote:
+> This patch might be ok (it looks reasonable as an optimization), but I think
+> the description of wmb() and smp_wmb() is incorrect. I also think that you're
+> missing an rmb()/smp_rmb()eor equivalent on the reader side.
+
+Sorry, the above should have said:
+	
+	an rmb()/smp_rmb() *or* equivalent
+
 > 
-> nit: "will return to"
-> 
-> > > > +    type: boolean
-> > > 
-> > > Why do we want to have a property for this at all? The commit message
-> > > seems to describe a problem that's limited to specific configurations
-> > > and appears to be somethng the driver should do unconditionally.
-> > > 
-> > > Could you explain why this cannot be done unconditionally please?
+> On Mon, Jan 29, 2024 at 06:58:06PM -0800, Fenghua Yu wrote:
+> > wmb() is used to ensure status in the completion record is written
+> > after the rest of the completion record, making it visible to the user.
+> > However, on SMP systems, this may not guarantee visibility across
+> > different CPUs.
 > > 
-> > It depends on board design, not all system vbus can be controller by root
-> > hub port. If it is always on, it will not trigger this issue.
+> > Considering this scenario that event log handler is running on CPU1 while
+> > user app is polling completion record (cr) status on CPU2:
+> > 
+> > 	CPU1				CPU2
+> > event log handler			user app
+> > 
+> > 					1. cr = 0 (status = 0)
+> > 2. copy X to user cr except "status"
+> > 3. wmb()
+> > 4. copy Y to user cr "status"
+> > 					5. poll status value Y
+> > 				 	6. read rest cr which is still 0.
+> > 					   cr handling fails
+> > 					7. cr value X visible now
+> > 
+> > Although wmb() ensure value Y is written and visible after X is written
+> > on CPU1, the order is not guaranteed on CPU2. So user app may see status
+> > value Y while cr value X is still not visible yet on CPU2. This will
+> > cause reading 0 from the rest of cr and cr handling fails.
 > 
-> Okay, that seems reasonable to have a property for. Can you add that
-> info to the commit message please?
+> The wmb() on CPU1 ensures the order of the reads, but you need an rmb() on CPU2
 
-But if vbus is always on, then applying the work-around would be a NOP, 
-right? So you could just apply this unconditionally.
+Sorry again, the above should have said:
 
-Rob
+	The wmb() on CPU1 ensures the order of the *writes*
+
+Apologies for any confusion resulting from those mistakes.
+
+Mark.
+
+> between reading the 'status' and 'rest' parts; otherwise CPU2 (or the
+> compiler!) is permitted to hoist the read of 'rest' early, before reading from
+> 'status', and hence you can end up with a sequence that is effectively:
+> 
+> 	CPU1				CPU2
+>   event log handler			user app
+> 					
+>   					1. cr = 0 (status = 0)
+>   				 	6a. read rest cr which is still 0.
+>   2. copy X to user cr except "status"
+>   3. wmb()
+>   4. copy Y to user cr "status"
+>   					5. poll status value Y
+>   					6b. cr handling fails
+>   					7. cr value X visible now
+> 
+> Since this is all to regular cacheable memory, it's *sufficient* to use
+> smp_wmb() and smp_rmb(), but that's an optimization rather than an ordering
+> fix.
+> 
+> Note that on x86_64, TSO means that the stores are in-order (and so smp_wmb()
+> is just a compiler barrier), and IIUC loads are not reordered w.r.t. other
+> loads (and so smp_rmb() is also just a compiler barrier).
+> 
+> > Changing wmb() to smp_wmb() ensures Y is written after X on both CPU1
+> > and CPU2. This guarantees that user app can consume cr in right order.
+> 
+> This implies that smp_wmb() is *stronger* than wmb(), whereas smp_wmb() is
+> actually *weaker* (e.g. on x86_64 wmb() is an sfence, whereas smp_wmb() is a
+> barrier()).
+> 
+> Thanks,
+> Mark.
+> 
+> > 
+> > Fixes: b022f59725f0 ("dmaengine: idxd: add idxd_copy_cr() to copy user completion record during page fault handling")
+> > Suggested-by: Nikhil Rao <nikhil.rao@intel.com>
+> > Tested-by: Tony Zhu <tony.zhu@intel.com>
+> > Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+> > ---
+> >  drivers/dma/idxd/cdev.c | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/dma/idxd/cdev.c b/drivers/dma/idxd/cdev.c
+> > index 77f8885cf407..9b7388a23cbe 100644
+> > --- a/drivers/dma/idxd/cdev.c
+> > +++ b/drivers/dma/idxd/cdev.c
+> > @@ -681,9 +681,10 @@ int idxd_copy_cr(struct idxd_wq *wq, ioasid_t pasid, unsigned long addr,
+> >  		 * Ensure that the completion record's status field is written
+> >  		 * after the rest of the completion record has been written.
+> >  		 * This ensures that the user receives the correct completion
+> > -		 * record information once polling for a non-zero status.
+> > +		 * record information on any CPU once polling for a non-zero
+> > +		 * status.
+> >  		 */
+> > -		wmb();
+> > +		smp_wmb();
+> >  		status = *(u8 *)cr;
+> >  		if (put_user(status, (u8 __user *)addr))
+> >  			left += status_size;
+> > -- 
+> > 2.37.1
+> > 
+> > 
+> 
 
