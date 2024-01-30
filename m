@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-44206-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44207-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 871FB841EC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:07:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66296841EC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:07:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9BEF1C234E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:07:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0D4E1F2BE72
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:07:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 233D066B50;
-	Tue, 30 Jan 2024 09:04:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCE9D60B93;
+	Tue, 30 Jan 2024 09:04:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="d/oxvNJu"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="UFdfHjAt"
 Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C15D260894;
-	Tue, 30 Jan 2024 09:04:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62EA766B46;
+	Tue, 30 Jan 2024 09:04:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706605481; cv=none; b=KTKiP7HgDaHl9ZErNnbrqoTRB2HfxvHBWytjNQVzMgRjGBxQyDyOGK2t6sd7r+NSYYZM/NXDwgZqwCuZ5QeRT4uIl/5f01QDX9XngsI2GEjKpzh7k9yhgW8u+RFc97uJvTx0vcdW5dQeRTIGshTmwQ8Qnd9CWS/qqDa89HHOXtk=
+	t=1706605484; cv=none; b=ldUsa0pI4XX7qQEdmijGRvdIuNnJtHfsX0wKYiAn5tRk8WLV41OeoPMP0sYC/IOCDqCeIItAWf6nHKREbHazp52v3gpHf5t5qXHcW2UD+4Yd5NiNcnZHHP70H4NxqfQznQuHp0PXEH1+7tvijXISEXCqzJwVN7iG4Pby4Wx2XJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706605481; c=relaxed/simple;
-	bh=zMZUnh+ptFzCUiMHGRQMzrBIbMYD6NQ3+yiLZXs+Acg=;
+	s=arc-20240116; t=1706605484; c=relaxed/simple;
+	bh=YvFyEfP+dCZA9ZKondkqF7lJWdDHPoc6eQRkDL7dZxI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qYo+Omzjy/gD0hvCrJxQW0OXl+zcgqXSMZ+MEF0FUYXsYZR3bEy++8SIyrGs2n2G9N3VhRwuPZcBUfF9lpaOTsy+gZAyMdEc7lV+5GVQZWg1HrW5F3BFNqLUcYmgoxNuQpwdnFA4ipLbxgV93j6LtlsSzSvslzB5h4VUrZLTc4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=d/oxvNJu; arc=none smtp.client-ip=217.70.183.193
+	 MIME-Version; b=PkQQJMxWQdd4cCPxZVAq3fNt92uyYhVrZ5Y6vNwEHwtT6VqFQ754orhFUlLzRO8kg54P/CYw6r4K6rA6TydxzmzeNXNSP4XBT2FHwboUGyL4LS0HVz2QE2n+1gDF93He52aYNzoPQzNOO3D/IO7zo6nc8PX/60RMkUy8nGoAd6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=UFdfHjAt; arc=none smtp.client-ip=217.70.183.193
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPA id 1E91D240006;
-	Tue, 30 Jan 2024 09:04:36 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPA id 97C4F240002;
+	Tue, 30 Jan 2024 09:04:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1706605476;
+	t=1706605479;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=BZLD7+4VmFr+Iy4x1r22wPwY17kqHNg9zXXFrmCLK6s=;
-	b=d/oxvNJuzEefAEUXVPikn+2ik3mPEtm6jVEttEQg97iVUiRaLfJPQqa0j7F+DzNo19dsv7
-	87mjCRV0bns6Y57PcTc/JFJAIFeZi9WnTGidaEmz6ErfSPm9ybWQvyFAmg9bLIvKP2Kqje
-	gsgtSDkfqJ06w/YCLiOIbBYMMPUrj7WZ2s2um1eehUQNoz0oItK3NXLLdByqFMqEvvUVaw
-	fEJ+MDjxnYU+XaPJ0jXa6Iwcd9gb00UGu0xng8F0X/7TUnUOvQxiQutFPBGfKFHd1DJvS8
-	K8e8XZ1meX+9sPPjywKK+3GZFqLYV9vkzFKd7uinAP3q2YrU315B/SOFTtWHgA==
+	bh=l/L6bzf2gaHl/JyjqO/iv8M2x2ZxFgKdEPhznPGhi2w=;
+	b=UFdfHjAtq0cdculhhmemTP/dfOs/LSfzOgZf77WhhPHYDXys8PnSWlhThw2cLFuQCqAk6M
+	SthqX37ODNd/4vbJN1DkmbnvrbpCAZ/ng7pMwbmL7/fVWKNcv+0xu4AqRRKWOduFPG41Ti
+	MRjGX2S/lcFQPd/ajJ80aJk4MynWS7FJ73WhqU+L8FM3Tc46VP83kmbFHod5HabYzz3Zai
+	Nz3spRedOhgVgBoB45D9/5lHouceELLs+aHgaDoNTwwxiHI20AHlxsTR4GkHGk3D2baGng
+	3XVzayg0VCkDgAax7zTeVJf5fsTcO6tuhVxUrEW8ynHgNVppYD+qQgUpDoirkQ==
 From: Bastien Curutchet <bastien.curutchet@bootlin.com>
 To: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -62,9 +62,9 @@ Cc: netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	Herve Codina <herve.codina@bootlin.com>
-Subject: [PATCH 1/2] dt-bindings: net: Add TI DP83640
-Date: Tue, 30 Jan 2024 09:59:34 +0100
-Message-ID: <20240130085935.33722-2-bastien.curutchet@bootlin.com>
+Subject: [PATCH 2/2] net: phy: Add some configuration from device-tree
+Date: Tue, 30 Jan 2024 09:59:35 +0100
+Message-ID: <20240130085935.33722-3-bastien.curutchet@bootlin.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240130085935.33722-1-bastien.curutchet@bootlin.com>
 References: <20240130085935.33722-1-bastien.curutchet@bootlin.com>
@@ -77,161 +77,224 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: bastien.curutchet@bootlin.com
 
-The TI DP83640 is a PTP PHY. Some of his features can be enabled by
-hardware straps or by registers configuration. Add a device tree
-binding for configuration through registers
+Some features can now be enabled or disabled from device tree.
+If attributes are present in device-tree, features are enabled
+or disabled via MDIO registers. Else, hardware configuration is
+left as is.
+These features are : Energy Detect Mode, PHY Control Frames,
+LED configuration and Fiber Mode.
 
 Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
 ---
- .../devicetree/bindings/net/ti,dp83640.yaml   | 113 ++++++++++++++++++
- include/dt-bindings/net/ti-dp83640.h          |  18 +++
- 2 files changed, 131 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/ti,dp83640.yaml
- create mode 100644 include/dt-bindings/net/ti-dp83640.h
+ drivers/net/phy/dp83640.c     | 131 +++++++++++++++++++++++++++++++++-
+ drivers/net/phy/dp83640_reg.h |  21 +++++-
+ 2 files changed, 150 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/ti,dp83640.yaml b/Documentation/devicetree/bindings/net/ti,dp83640.yaml
-new file mode 100644
-index 000000000000..b0f389122934
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/ti,dp83640.yaml
-@@ -0,0 +1,113 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+# Copyright 2024 Nanometrics Inc
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/ti,dp83640.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/drivers/net/phy/dp83640.c b/drivers/net/phy/dp83640.c
+index 5c42c47dc564..f5770002b849 100644
+--- a/drivers/net/phy/dp83640.c
++++ b/drivers/net/phy/dp83640.c
+@@ -7,6 +7,7 @@
+ 
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ 
++#include <dt-bindings/net/ti-dp83640.h>
+ #include <linux/crc32.h>
+ #include <linux/ethtool.h>
+ #include <linux/kernel.h>
+@@ -16,6 +17,7 @@
+ #include <linux/net_tstamp.h>
+ #include <linux/netdevice.h>
+ #include <linux/if_vlan.h>
++#include <linux/of.h>
+ #include <linux/phy.h>
+ #include <linux/ptp_classify.h>
+ #include <linux/ptp_clock_kernel.h>
+@@ -1418,15 +1420,142 @@ static int dp83640_ts_info(struct mii_timestamper *mii_ts,
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_OF_MDIO
++static int dp83640_of_init(struct phy_device *phydev)
++{
++	struct device *dev = &phydev->mdio.dev;
++	struct device_node *of_node = dev->of_node;
++	int reg_val;
++	u32 of_val;
++	int ret;
 +
-+title: TI DP83640 ethernet PHY
++	if (!of_node)
++		return 0;
 +
-+allOf:
-+  - $ref: ethernet-controller.yaml#
++	/* All configured features reside in PAGE 0 */
++	phy_write(phydev, PAGESEL, 0);
 +
-+maintainers:
-+  - Bastien Curutchet <bastien.curutchet@bootlin.com>
++	/* Energy detect mode */
++	reg_val = phy_read(phydev, EDCR);
++	if (of_property_present(of_node, "ti,energy-detect-en"))
++		reg_val |= ED_EN;
++	else
++		reg_val &= ~ED_EN;
++	phy_write(phydev, EDCR, reg_val);
 +
-+description: |
-+  The DP83640 Precision PHYTER device delivers the highest level of precision
-+  clock synchronization for real time industrial connectivity based on the
-+  IEEE 1588 standard. The DP83640 has deterministic, low latency and allows
-+  choice of microcontroller with no hardware customization required
++	/* CLK_OUTPUT Pin */
++	if (of_property_present(of_node, "ti,clk-output")) {
++		ret = of_property_read_u32(of_node, "ti,clk-output", &of_val);
++		if (ret)
++			return ret;
 +
-+  This device interfaces directly to the MAC layer through the
-+  IEEE 802.3 Standard Media Independent Interface (MII), or Reduced MII (RMII).
++		reg_val = phy_read(phydev, PHYCR2);
++		switch (of_val) {
++		case 0:
++			reg_val |= CLK_OUT_DIS;
++			break;
++		case 1:
++			reg_val &= ~CLK_OUT_DIS;
++			break;
++		default:
++			phydev_err(phydev, "Invalid value for ti,clk-output property (%d)"
++					, of_val);
++			return -EINVAL;
++		}
++		phy_write(phydev, PHYCR2, reg_val);
++	}
 +
-+  Specifications about the Ethernet PHY can be found at:
-+    https://www.ti.com/lit/gpn/dp83640
++	/* LED configuration */
++	if (of_property_present(of_node, "ti,led-config"))  {
++		ret = of_property_read_u32(of_node, "ti,led-config", &of_val);
++		if (ret)
++			return ret;
 +
-+properties:
-+  reg:
-+    maxItems: 1
++		reg_val = phy_read(phydev, PHYCR) & ~(LED_CNFG_1 | LED_CNFG_0);
++		switch (of_val) {
++		case DP83640_PHYCR_LED_CNFG_MODE_1:
++			reg_val |= LED_CNFG_0;
++			break;
++		case DP83640_PHYCR_LED_CNFG_MODE_2:
++			/* Keeping LED_CNFG_1 and LED_CNFG_0 unset */
++			break;
++		case DP83640_PHYCR_LED_CNFG_MODE_3:
++			reg_val |= LED_CNFG_1;
++			break;
++		default:
++			phydev_err(phydev, "Invalid value for ti,led-config property (%d)"
++					, of_val);
++			return -EINVAL;
++		}
++		phy_write(phydev, PHYCR, reg_val);
++	}
++	if (of_property_present(of_node, "ti,phy-control-frames")) {
++		of_property_read_u32(of_node, "ti,phy-control-frames", &of_val);
++		if (ret)
++			return ret;
 +
-+  ti,clk-output:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [0, 1]
-+    description: |
-+      If present, enables or disables the CLK_OUT pin.
-+      CLK_OUT pin disabling can also be strapped. If the strap pin is not set
-+      correctly or not set at all then this can be used to configure it.
-+       - 0     = CLK_OUT pin disabled
-+       - 1     = CLK_OUT pin enabled
-+       - unset = Configured by straps
++		reg_val = phy_read(phydev, PCFCR);
++		switch (of_val) {
++		case 0:
++			reg_val &= ~PCF_EN;
++			break;
++		case 1:
++			reg_val |= PCF_EN;
++			break;
++		default:
++			phydev_err(phydev, "Invalid value for ti,phy-control-frames property (%d)"
++					, of_val);
++			return -EINVAL;
++		}
++		phy_write(phydev, PCFCR, reg_val);
++	}
++	if (of_property_present(of_node, "ti,fiber-mode")) {
++		ret = of_property_read_u32(of_node, "ti,fiber-mode", &of_val);
++		if (ret)
++			return ret;
 +
-+  ti,led-config:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [1, 2, 3]
-+    description: |
-+      If present, configures the LED Mode (values defined in
-+      dt-bindings/net/ti-dp83640.h).
-+      LED configuration can also be strapped. If the strap pin is not set
-+      correctly or not set at all then this can be used to configure it.
-+       - 1     = Mode 1
-+        LED_LINK = ON for Good Link, OFF for No Link
-+        LED_SPEED = ON in 100 Mb/s, OFF in 10 Mb/s
-+        LED_ACT = ON for Activity, OFF for No Activity
-+       - 2     = Mode 2
-+        LED_LINK = ON for Good Link, BLINK for Activity
-+        LED_SPEED = ON in 100 Mb/s, OFF in 10 Mb/s
-+        LED_ACT = ON for Collision, OFF for No Collision
-+       - 3     = Mode 3
-+        LED_LINK = ON for Good Link, BLINK for Activity
-+        LED_SPEED = ON in 100 Mb/s, OFF in 10 Mb/s
-+        LED_ACT = ON for Full Duplex, OFF for Half Duplex
-+       - unset = Configured by straps
++		reg_val = phy_read(phydev, PCSR);
++		switch (of_val) {
++		case 0:
++			reg_val &= ~FX_EN;
++			break;
++		case 1:
++			reg_val |= FX_EN;
++			break;
++		default:
++			phydev_err(phydev, "Invalid value for ti,fiber-mode property (%d)"
++					, of_val);
++			return -EINVAL;
++		}
++		phy_write(phydev, PCSR, reg_val);
++		/* Write SOFT_RESET bit to ensure configuration */
++		reg_val = phy_read(phydev, PHYCR2) | SOFT_RESET;
++		phy_write(phydev, PHYCR2, reg_val);
++	}
 +
-+  ti,phy-control-frames:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [0, 1]
-+    description: |
-+      If present, enables or disables the PHY control frames.
-+      PHY Control Frames support can also be strapped. If the strap pin is not
-+      set correctly or not set at all then this can be used to configure it.
-+       - 0     = PHY Control Frames disabled
-+       - 1     = PHY Control Frames enabled
-+       - unset = Configured by straps
++	return 0;
++}
++#else
++static int dp83640_of_init(struct phy_device *phydev)
++{
++	return 0;
++}
++#endif /* CONFIG_OF_MDIO */
 +
-+  ti,fiber-mode:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [0, 1]
-+    description: |
-+      If present, enables or disables the FX Fiber Mode.
-+      Fiber mode support can also be strapped. If the strap pin is not set
-+      correctly or not set at all then this can be used to configure it.
-+       - 0     = FX Fiber Mode disabled
-+       - 1     = FX Fiber Mode enabled
-+       - unset = Configured by straps
+ static int dp83640_probe(struct phy_device *phydev)
+ {
+ 	struct dp83640_clock *clock;
+ 	struct dp83640_private *dp83640;
+-	int err = -ENOMEM, i;
++	int err, i;
+ 
+ 	if (phydev->mdio.addr == BROADCAST_ADDR)
+ 		return 0;
+ 
++	err = dp83640_of_init(phydev);
++	if (err < 0)
++		return err;
 +
-+  ti,energy-detect-en:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description: |
-+      If present, Energy Detect Mode is enabled. If not present, Energy Detect
-+      Mode is disabled. This feature can not be strapped.
++	err = -ENOMEM;
+ 	clock = dp83640_clock_get_bus(phydev->mdio.bus);
+ 	if (!clock)
+ 		goto no_clock;
+diff --git a/drivers/net/phy/dp83640_reg.h b/drivers/net/phy/dp83640_reg.h
+index daae7fa58fb8..8877ba560406 100644
+--- a/drivers/net/phy/dp83640_reg.h
++++ b/drivers/net/phy/dp83640_reg.h
+@@ -6,7 +6,11 @@
+ #define HAVE_DP83640_REGISTERS
+ 
+ /* #define PAGE0                  0x0000 */
++#define PCSR                      0x0016 /* PCS Configuration and Status Register */
++#define PHYCR                     0x0019 /* PHY Control Register */
+ #define PHYCR2                    0x001c /* PHY Control Register 2 */
++#define EDCR                      0x001D /* Energy Detect Control Register */
++#define PCFCR                     0x001F /* PHY Control Frames Control Register */
+ 
+ #define PAGE4                     0x0004
+ #define PTP_CTL                   0x0014 /* PTP Control Register */
+@@ -50,8 +54,23 @@
+ #define PTP_GPIOMON               0x001e /* PTP GPIO Monitor Register */
+ #define PTP_RXHASH                0x001f /* PTP Receive Hash Register */
+ 
++/* Bit definitions for the PCSR register */
++#define FX_EN		          BIT(6)  /* Enable FX Fiber Mode */
 +
-+required:
-+  - reg
++/* Bit definitions for the PHYCR register */
++#define LED_CNFG_0	          BIT(5)  /* LED configuration, bit 0 */
++#define LED_CNFG_1	          BIT(6)  /* LED configuration, bit 1 */
 +
-+unevaluatedProperties: false
+ /* Bit definitions for the PHYCR2 register */
+-#define BC_WRITE                  (1<<11) /* Broadcast Write Enable */
++#define CLK_OUT_DIS	          BIT(1)  /* Disable CLK_OUT pin */
++#define SOFT_RESET		  BIT(9)  /* Soft Reset */
++#define BC_WRITE                  BIT(11) /* Broadcast Write Enable */
 +
-+examples:
-+  - |
-+    #include <dt-bindings/net/ti-dp83640.h>
++/* Bit definitions for the EDCR register */
++#define ED_EN		          BIT(15) /* Enable Energy Detect Mode */
 +
-+    mdio0 {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+      ethphy0: ethernet-phy@0 {
-+        reg = <0>;
-+        ti,clk-output = <0>;
-+        ti,energy-detect-en;
-+        ti,led-config = <DP83640_PHYCR_LED_CNFG_MODE_3>;
-+        ti,phy-control-frames = <1>;
-+        ti,fiber-mode = <1>;
-+      };
-+    };
-diff --git a/include/dt-bindings/net/ti-dp83640.h b/include/dt-bindings/net/ti-dp83640.h
-new file mode 100644
-index 000000000000..5f44f8eeb666
---- /dev/null
-+++ b/include/dt-bindings/net/ti-dp83640.h
-@@ -0,0 +1,18 @@
-+/* SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause */
-+/*
-+ * Device Tree constants for the Texas Instruments DP83640 PHY
-+ *
-+ * Author: Bastien Curutchet bastien.curutchet@bootlin.com>
-+ *
-+ * Copyright: 2024 Nanometrics Inc.
-+ */
-+
-+#ifndef _DT_BINDINGS_TI_DP83640_H
-+#define _DT_BINDINGS_TI_DP83640_H
-+
-+/* PHY CTRL bits */
-+#define DP83640_PHYCR_LED_CNFG_MODE_1 1
-+#define DP83640_PHYCR_LED_CNFG_MODE_2 2
-+#define DP83640_PHYCR_LED_CNFG_MODE_3 3
-+
-+#endif
++/* Bit definitions for the PCFCR register */
++#define PCF_EN	                  BIT(0)  /* Enable PHY Control Frames */
+ 
+ /* Bit definitions for the PTP_CTL register */
+ #define TRIG_SEL_SHIFT            (10)    /* PTP Trigger Select */
 -- 
 2.43.0
 
