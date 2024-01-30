@@ -1,126 +1,162 @@
-Return-Path: <linux-kernel+bounces-44565-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44566-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91483842448
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:00:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE6B184244A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:01:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E46F284210
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:00:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80F991F25F87
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:01:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD032679EF;
-	Tue, 30 Jan 2024 11:59:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 450B1679F0;
+	Tue, 30 Jan 2024 12:01:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lLk/jicm"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="KS7dwp8z"
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A4DC67749
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 11:59:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90FCB67749
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 12:01:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706615999; cv=none; b=BcxgRLHvtfFWKxGZIBFd8aNFBqbzrte0potW6YXVR4tkghEzpThx3+fHFh6iHRz+CgMBIkA7C/ULJKmyIX/DQZb+B/brmfSxHk+bz1iL74jtVsfX3oTOjK8E9we2NpXNtDWr0qEe+vyOiw7qm47j4hK1aP1lR6FWXSMcLIiF0jg=
+	t=1706616081; cv=none; b=TAiA31EXa2TGRmLzkHOX7Z6mnZAAWILwoCms7i9Yu+gEY3i4f6lbghbZpIeuQEKGjxKRf/EmEoesnq/qO9zyT4JxVYtRA2h4ybVNhNMNEBCr9WzvPXCWo7KrZtVfSpCMST17EIk//h3TZbjHIq3++WDW3+BRzTIU3f4RRBUwDg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706615999; c=relaxed/simple;
-	bh=OqR8YFB6veQbfeUX8oTkllbeQeM1435HmPa42X6RpJ0=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=EqBu8OXmZnOKYbfMHVflS04xyQNc+nrIluNQ1maQuOmKjBUVSdDjiTI5RwUYAFRHEtJf6re8IckfOMpnG4hkKsWVot5050gL1wVcfCx3clYkrY8Jx9BOgPf7bdgf8PCoKc9s1zsXTOEk5MdxJJ8tr5Q6ObzPEJkm/3nStD7tUec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lLk/jicm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F1ACC43390;
-	Tue, 30 Jan 2024 11:59:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706615997;
-	bh=OqR8YFB6veQbfeUX8oTkllbeQeM1435HmPa42X6RpJ0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=lLk/jicmSa5/v8/4LpKgFtpU/QgZWxj5Umt7v3OJtxGpi09+a267BGAyqI6YCte00
-	 dzrd19HwNCUm7obpenqoBSnDSOE7diVQKhccMbvtT9Yjf0xnRb7Habl8mDHtQkhBCz
-	 JvUFcQY1YADjfWGMMJG5s6/ZgvaWyKG4X67PmdD9ysDuEvr2RMkAdBV36bacJK+byq
-	 kvoeqqaglaHvqOejEy5gzoOmCvF/4+H2p5c0prZMJspPe+fCtvluQTQbZ2FXmPaPG1
-	 8JL4M2LdL6xzzL+bK7II53qW5G+C0Tk4PxGMDe8KII4+ipbM03VOou3RpKUg3Qdixz
-	 fj3EmsLA+ngRw==
-Received: from [12.161.88.66] (helo=wait-a-minute.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rUmmQ-00GFJA-Qz;
-	Tue, 30 Jan 2024 11:59:55 +0000
-Date: Tue, 30 Jan 2024 11:59:52 +0000
-Message-ID: <87ttmvvxon.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Lucas Stach <l.stach@pengutronix.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>,
-	Anup Patel <apatel@ventanamicro.com>,
-	James Gowans <jgowans@amazon.com>,
-	Koichiro Den <den@valinux.co.jp>,
-	linux-kernel@vger.kernel.org,
-	kernel@pengutronix.de,
-	patchwork-lst@pengutronix.de
-Subject: Re: [PATCH] genirq: use relaxed access by default for irq_reg_{readl,writel}
-In-Reply-To: <20240129144502.1828154-1-l.stach@pengutronix.de>
-References: <20240129144502.1828154-1-l.stach@pengutronix.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1706616081; c=relaxed/simple;
+	bh=MiwFLS45HdWVedOvpsLGeVeQVvF9T9P1qxXKz4V4K6w=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=h96mP7djWKTEqKIkEEO1AajFg8lPuDxYSz86wFPBy+KeRnYy0KzsUDLAv+CkkhMw3lQAEa3NjiGXfwcI8SB8E4JOw1zHmc8RyOCwp/VqvAkbIZfD4fzIdsQyEirPuEu9BGnAb7mbqpTtKqRHjVc0DG/ZCTPHA+43vmppdo7bBPg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=KS7dwp8z; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d0512f6e32so19503261fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 04:01:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706616077; x=1707220877; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rHZFoGtcJrlCRJilwMm607tqzIqnhBQPqkmzm1pT0lA=;
+        b=KS7dwp8zlCZyMwnmRsHAEB7ZK97h5LnkIj0wNN/5H9nZsSOzItsHdSzRDHhfFlVIMc
+         QkKvzqlgqU05Wo3zFwt+Fd276UbuBLd1/FSOx/w7IPRAI48/mT7+Wox33EjaU29GF3CX
+         z3uJnl1Wl6WBrtxF/Nx4z0kurIE+ZbRfgzjwVTX7lHakDOokZPfhK5aSi1BTdJ2HZs4p
+         ihvLTo49LxxMcskcmdhDt0KOatsRB8Sbcscll/Wk/brWshgulqcJdEEEf2Uj86QUadpW
+         rhuul1nsVzLgciQom7+DAGp0UkSQEHO9d+JFchXCxIO7+f6mR0/u7natKrE9g3WaL4YX
+         7ziQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706616077; x=1707220877;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rHZFoGtcJrlCRJilwMm607tqzIqnhBQPqkmzm1pT0lA=;
+        b=gpaNkxtiUXhFQYmXuQd2qRSscQQdq0IOVLQsw5q1j7xDCTLe+24URNSV5Jcnytm97d
+         Gu4ifvFQ7S1iwOkv69WAYd0uDDFKmfF7pnjwCxFQsK06irsh2w3FPOHroAatAnRLDiCn
+         knlyRB/6qL5d3LrueUguGUXFPiw2g7ikEdd54bG36w9yFdg7Qg0IoV1hpAC0vHEWZyJl
+         gls5g8uZBJn3n+FA/BASUa5P3YmkbhOPKCNwdmfDHbjSynhI18G/pxiZSmZT6xaipOOj
+         L5hLnu3ykxqwgKEX9FGvwN1pR97SnpXbg/0ixwsMVCUKx7k+giOYCE7VswKCymjGUywP
+         FmLQ==
+X-Gm-Message-State: AOJu0YyWzXPcLuywwGJcMliNw8JHydeLNGL2nT4NS6SBFV3S1lMAlWmX
+	a6rRri+Cji74GhXL4cq5YmEEH0WBsNDxctMz5fOzErJ4nG0+BqN6P869W28tnhg=
+X-Google-Smtp-Source: AGHT+IHKxTBCLOunly/kJxa7AZaFa9iq0AQuoHjYi4qoEZOLD43GcWUmIX9hlLSHYhq0NGwn7RPQ3w==
+X-Received: by 2002:a05:651c:1a21:b0:2d0:511e:741f with SMTP id by33-20020a05651c1a2100b002d0511e741fmr3473128ljb.48.1706616077377;
+        Tue, 30 Jan 2024 04:01:17 -0800 (PST)
+Received: from alex-rivos.ba.rivosinc.com (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
+        by smtp.gmail.com with ESMTPSA id w5-20020a2e9585000000b002cd97c7a029sm921538ljh.16.2024.01.30.04.01.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jan 2024 04:01:16 -0800 (PST)
+From: Alexandre Ghiti <alexghiti@rivosinc.com>
+To: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Qinglin Pan <panqinglin2020@iscas.ac.cn>,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Alexandre Ghiti <alexghiti@rivosinc.com>
+Subject: [PATCH -fixes] riscv: Fix arch_hugetlb_migration_supported() for NAPOT
+Date: Tue, 30 Jan 2024 13:01:14 +0100
+Message-Id: <20240130120114.106003-1-alexghiti@rivosinc.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 12.161.88.66
-X-SA-Exim-Rcpt-To: l.stach@pengutronix.de, tglx@linutronix.de, apatel@ventanamicro.com, jgowans@amazon.com, den@valinux.co.jp, linux-kernel@vger.kernel.org, kernel@pengutronix.de, patchwork-lst@pengutronix.de
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Mon, 29 Jan 2024 14:45:02 +0000,
-Lucas Stach <l.stach@pengutronix.de> wrote:
-> 
-> irqchip access does not require any memory ordering between other
-> memory transactions and the IRQ controller peripheral access.
-> As all architectures now implement the relaxed MMIO accessors we
-> can switch the irq_reg_{readl,writel} helpers to use them, in
-> order to avoid potentially costly barriers in the IRQ handling
-> hotpath.
-> 
-> Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
-> ---
->  include/linux/irq.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/irq.h b/include/linux/irq.h
-> index 90081afa10ce..fa1597db7887 100644
-> --- a/include/linux/irq.h
-> +++ b/include/linux/irq.h
-> @@ -1218,7 +1218,7 @@ static inline void irq_reg_writel(struct irq_chip_generic *gc,
->  	if (gc->reg_writel)
->  		gc->reg_writel(val, gc->reg_base + reg_offset);
->  	else
-> -		writel(val, gc->reg_base + reg_offset);
-> +		writel_relaxed(val, gc->reg_base + reg_offset);
->  }
->  
->  static inline u32 irq_reg_readl(struct irq_chip_generic *gc,
-> @@ -1227,7 +1227,7 @@ static inline u32 irq_reg_readl(struct irq_chip_generic *gc,
->  	if (gc->reg_readl)
->  		return gc->reg_readl(gc->reg_base + reg_offset);
->  	else
-> -		return readl(gc->reg_base + reg_offset);
-> +		return readl_relaxed(gc->reg_base + reg_offset);
->  }
->  
+arch_hugetlb_migration_supported() must be reimplemented to add support
+for NAPOT hugepages, which is done here.
 
-If this relaxation is introduced, it really should be documented and
-require a buy-in, because unsuspecting drivers may implicitly depend
-on the stronger ordering.
+Fixes: 82a1a1f3bfb6 ("riscv: mm: support Svnapot in hugetlb page")
+Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+---
+ arch/riscv/include/asm/hugetlb.h |  3 +++
+ arch/riscv/mm/hugetlbpage.c      | 16 +++++++++++++---
+ 2 files changed, 16 insertions(+), 3 deletions(-)
 
-I'm a strong advocate of the relaxed ordering, but changing this
-wholesale is potentially dangerous.
-
-	M.
-
+diff --git a/arch/riscv/include/asm/hugetlb.h b/arch/riscv/include/asm/hugetlb.h
+index 4c5b0e929890..20f9c3ba2341 100644
+--- a/arch/riscv/include/asm/hugetlb.h
++++ b/arch/riscv/include/asm/hugetlb.h
+@@ -11,6 +11,9 @@ static inline void arch_clear_hugepage_flags(struct page *page)
+ }
+ #define arch_clear_hugepage_flags arch_clear_hugepage_flags
+ 
++bool arch_hugetlb_migration_supported(struct hstate *h);
++#define arch_hugetlb_migration_supported arch_hugetlb_migration_supported
++
+ #ifdef CONFIG_RISCV_ISA_SVNAPOT
+ #define __HAVE_ARCH_HUGE_PTE_CLEAR
+ void huge_pte_clear(struct mm_struct *mm, unsigned long addr,
+diff --git a/arch/riscv/mm/hugetlbpage.c b/arch/riscv/mm/hugetlbpage.c
+index 87406b26c3da..29c7606414d2 100644
+--- a/arch/riscv/mm/hugetlbpage.c
++++ b/arch/riscv/mm/hugetlbpage.c
+@@ -364,7 +364,7 @@ void huge_pte_clear(struct mm_struct *mm,
+ 		pte_clear(mm, addr, ptep);
+ }
+ 
+-static __init bool is_napot_size(unsigned long size)
++static bool is_napot_size(unsigned long size)
+ {
+ 	unsigned long order;
+ 
+@@ -392,7 +392,7 @@ arch_initcall(napot_hugetlbpages_init);
+ 
+ #else
+ 
+-static __init bool is_napot_size(unsigned long size)
++static bool is_napot_size(unsigned long size)
+ {
+ 	return false;
+ }
+@@ -409,7 +409,7 @@ int pmd_huge(pmd_t pmd)
+ 	return pmd_leaf(pmd);
+ }
+ 
+-bool __init arch_hugetlb_valid_size(unsigned long size)
++static bool __hugetlb_valid_size(unsigned long size)
+ {
+ 	if (size == HPAGE_SIZE)
+ 		return true;
+@@ -421,6 +421,16 @@ bool __init arch_hugetlb_valid_size(unsigned long size)
+ 		return false;
+ }
+ 
++bool __init arch_hugetlb_valid_size(unsigned long size)
++{
++	return __hugetlb_valid_size(size);
++}
++
++bool arch_hugetlb_migration_supported(struct hstate *h)
++{
++	return __hugetlb_valid_size(huge_page_size(h));
++}
++
+ #ifdef CONFIG_CONTIG_ALLOC
+ static __init int gigantic_pages_init(void)
+ {
 -- 
-Without deviation from the norm, progress is not possible.
+2.39.2
+
 
