@@ -1,115 +1,101 @@
-Return-Path: <linux-kernel+bounces-44356-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44357-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF1298420B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:08:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 618AC8420BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:08:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88BAA1F2484F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:08:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF9F12836A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:08:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10D5060DE0;
-	Tue, 30 Jan 2024 10:07:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCB2365BB9;
+	Tue, 30 Jan 2024 10:07:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="BDw/P96U"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oXjU7ZJV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93F68605DD
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 10:07:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16BCC60869;
+	Tue, 30 Jan 2024 10:07:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706609245; cv=none; b=mZ1Ec6pNEgn8ltNAkZONRTzt+CJ5wbidiVDX/PpE3cV/gITF9bLPYmfT5Dlxhb2jlh3NG2DAQ0hSDYUAk6HXXi5cX0H4PGYxHn/SzCEdkfQBSbulr+ea1CmVa059CFlH0f6YhrL+c7kWSOc+tOx1C2JTGvBaByvgug+MR84rjqU=
+	t=1706609271; cv=none; b=ScLQTSvX3hDJJ7l8sX/W8IhZ0YjnVw5Vg+TsmU/3yOREB+z0IMzfyt7oTu01Oe8l5CDj6Gku0HfP8VqRErbgnb3DouiNt5dWNPD72CAj+t0HeZIkLyX2bQ0rtF0NdZVXVlZx7MmqMvAHkg7L8G/e4qSyC8ca4Oq+9v8vj67N7/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706609245; c=relaxed/simple;
-	bh=yW2DfKHcd6p0j7CmX5W50A9F1EGo3MnKGa/8aarOrQc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TJuvssfOzcwYI5PUpGe5F9qgEhq5WqD7HwjCSBQzhX4t9EU9bAv6ati+AIPgesOTpfvD90ykNfTII4j+w3h7iKL7iT4XWmmxWkR7mhw9/7WMox7mIfO3kyvBjFLlysSiJspN6exC5JaE09HGKHY5quGs4y1dFw2LDn2fq1tMfec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=BDw/P96U; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a26f73732c5so441820766b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 02:07:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1706609239; x=1707214039; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=MnF8BfQSshY6sgQTgD/NJK8RS69lJg5dZ3KoCaXsRxI=;
-        b=BDw/P96UmJrHVBwktsDwNDMH/jLqwSd+4gejoSn0U+rruoyxM4985uyApl0xa/rhCW
-         TqPQ2yHHPwDYV7wE56TEj8lamenVWlVfkgZsLGSKfN8yPN3uXv76njSmIt5SzKmhx+1c
-         g0fTVsIlsbEXVutSulKeT/7Q8F2yaIxP1S6zPCoLEXVkj9d2yQpRdJPNB5tTzmCr5fYc
-         i9KgaYMy7FOD2Og1WGw9dPJchKKW7tRSeWn8BOAMNbOvtvmBxjXd+xQFPamXJUTJcqrq
-         9BikuoxwH/hhDSATthSpIsYWH8rJrQcibUDpWXE/OR22taTu5+Jh5fClhqVV1j4sb3J0
-         R7Ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706609239; x=1707214039;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MnF8BfQSshY6sgQTgD/NJK8RS69lJg5dZ3KoCaXsRxI=;
-        b=cS6EhA5RPZjgyU8tPHrRvzq2CW9Ge3Yf65s6RfcMoyZNX5N7YKQcpI5kqfxT0kNWmk
-         CteNZXmfj1MACPz8Ahn0oMF1Vb8I00DgyYiKIO5n5Rt3OY+OcSrG8wnnt0njdJsDoFC/
-         hvnRMlyQfBcJQ6JZhdE7XyYeEfz9atJ5OAebIOcICnwbQXeRkHWGPt02YS5GM11xg50G
-         y6sjEv/+PZNWXYs6zyxGDHSlezkgmfdf4yxZUlvdv92AcvVCiA+n5HQwiavyFGV3rsLF
-         sCep+XQtWojgYut1A94NR2Rvo4lIkHQ0RDB/ZTetbNXQ6eOxTZLGvy2RPunZeBON38gt
-         d1kQ==
-X-Gm-Message-State: AOJu0YxtnuSq+7JKV6WcTFjFtqCpNA5qJPpE5Nguo2LOh8vyp9+1hpi+
-	fvvRhMJ1xwI2a1EBI82nmFgk/SZyVDknPXGlEOlhKyuzlv0WQ130cDS7xOfTSTc=
-X-Google-Smtp-Source: AGHT+IGjGHy24m6tONwwrlGCqydGJRVO1w8RsgncAjff3x2AK+xaesgjMgA3AlxAlZ9i9An9ekgAUQ==
-X-Received: by 2002:a17:906:5953:b0:a35:7c25:b7c6 with SMTP id g19-20020a170906595300b00a357c25b7c6mr4842806ejr.72.1706609239278;
-        Tue, 30 Jan 2024 02:07:19 -0800 (PST)
-Received: from blmsp.fritz.box ([2001:4091:a246:821e:6f3b:6b50:4762:8343])
-        by smtp.gmail.com with ESMTPSA id s15-20020a170906354f00b00a3186c2c254sm4917328eja.213.2024.01.30.02.07.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 02:07:18 -0800 (PST)
-From: Markus Schneider-Pargmann <msp@baylibre.com>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Michael Walle <michael@walle.cc>,
-	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-	linux-kernel@vger.kernel.org,
-	Markus Schneider-Pargmann <msp@baylibre.com>
-Subject: [PATCH] nvmem: core: Print error on wrong bits DT property
-Date: Tue, 30 Jan 2024 11:07:14 +0100
-Message-ID: <20240130100714.223468-1-msp@baylibre.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1706609271; c=relaxed/simple;
+	bh=8CKJrkkGZM/Di0WcrrdDLyXgOONeUOLpOJVPXsgvDfc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gHuYMJoh8CaV/ZfSDlaiVZ23rAc3ek/kxbQBaShDvmqjCg6lbEIGQV7h4P9dci5dZsLECvfJ2PCeTUiIGaNgvS4wrHBg6PycCgXuNH6QkMi5PfWHfnvFS27hR9Bn1UKTMSzd1n8zfT+x7j8+ljFmE/c79hNpKvIvPV7oQYFldGE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oXjU7ZJV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92A63C43394;
+	Tue, 30 Jan 2024 10:07:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706609270;
+	bh=8CKJrkkGZM/Di0WcrrdDLyXgOONeUOLpOJVPXsgvDfc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oXjU7ZJVNQetTKK+iu7bcpvfWtFQHKDYE888Y16U4NH5V/n7E9rrIu1Ei+fhqxJ1C
+	 aTJ/Hl/ukgxMj9wx17vqA7bZiJvKh131t5jj5sRt/z5PFd41VoUVWGO6YColmMbyMh
+	 GBPJ3XabbpiUYPRbKUPm5eh/XYRMpDk6JSGHWcZRpOYSA9pXVf8Yp1a7JPCoJKK9tc
+	 j011Q3TokZY8sC5v0t+K0Y3vc204C5daTI/DJ+S0FMqtS2yhNr6f2/ba4Rk9gBruif
+	 jxzuBfQ2wkaSrugKhbz0XIhldCgUmbqRTF6UzbTO0rjUaHZahAB6kg3FsMd5qnrp+T
+	 rSSlSOaf6POow==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rUl1u-000000002uC-18CJ;
+	Tue, 30 Jan 2024 11:07:46 +0100
+Date: Tue, 30 Jan 2024 11:07:46 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Michael Schaller <michael@5challer.de>,
+	Kai-Heng Feng <kai.heng.feng@canonical.com>,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	regressions@lists.linux.dev,
+	"Maciej W . Rozycki" <macro@orcam.me.uk>,
+	Ajay Agarwal <ajayagarwal@google.com>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>, stable@vger.kernel.org,
+	regressions@leemhuis.info
+Subject: Re: PCI/ASPM locking regression in 6.7-final (was: Re: [PATCH]
+ Revert "PCI/ASPM: Remove pcie_aspm_pm_state_change()")
+Message-ID: <ZbjKci6GuWVrpbri@hovoldconsulting.com>
+References: <Za_2oKTUksw8Di5E@hovoldconsulting.com>
+ <20240123223648.GA331671@bhelgaas>
+ <ZbDHZtR8Tg1hWAzc@hovoldconsulting.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZbDHZtR8Tg1hWAzc@hovoldconsulting.com>
 
-The algorithms in nvmem core are built with the constraint that
-bit_offset < 8. If bit_offset is greater the results are wrong. Print an
-error if the devicetree 'bits' property is outside of the valid range
-and abort parsing.
+On Wed, Jan 24, 2024 at 09:16:38AM +0100, Johan Hovold wrote:
+> On Tue, Jan 23, 2024 at 04:36:48PM -0600, Bjorn Helgaas wrote:
 
-Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
----
- drivers/nvmem/core.c | 5 +++++
- 1 file changed, 5 insertions(+)
+> > I don't quite follow.  By simply reverting, do you mean to revert
+> > f93e71aea6c6 ("Revert "PCI/ASPM: Remove
+> > pcie_aspm_pm_state_change()"")?  IIUC that would break Michael's
+> > machine again.
+> 
+> Right, at least until that issue is fully understood and alternative
+> fixes have been considered.
+> 
+> If that's not an option, we need to rework core to pass a flag through
+> more than one layer to indicate whether pcie_aspm_pm_state_change()
+> should take the bus semaphore or not. I'd rather not do that if it can
+> be avoided.
 
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 980123fb4dde..a9832b5a608e 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -806,6 +806,11 @@ static int nvmem_add_cells_from_dt(struct nvmem_device *nvmem, struct device_nod
- 		if (addr && len == (2 * sizeof(u32))) {
- 			info.bit_offset = be32_to_cpup(addr++);
- 			info.nbits = be32_to_cpup(addr);
-+			if (info.bit_offset >= BITS_PER_BYTE || info.nbits < 1) {
-+				dev_err(dev, "nvmem: invalid bits on %pOF\n", child);
-+				of_node_put(child);
-+				return -EINVAL;
-+			}
- 		}
- 
- 		info.np = of_node_get(child);
--- 
-2.43.0
+As a revert appears unlikely to happen, let's fix the regression by
+adding a new helper pci_set_power_state_locked() that can be called
+with the bus lock held:
 
+	https://lore.kernel.org/lkml/20240130100243.11011-1-johan+linaro@kernel.org/
+
+Johan
 
