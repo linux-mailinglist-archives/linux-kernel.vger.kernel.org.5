@@ -1,92 +1,96 @@
-Return-Path: <linux-kernel+bounces-45086-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45087-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01E43842B8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:16:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE4E3842B8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:18:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4135528B23D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:16:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E03C91C243F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:18:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F33B8155A4D;
-	Tue, 30 Jan 2024 18:16:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A854156968;
+	Tue, 30 Jan 2024 18:18:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tY8zLPKR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mcfwcfYS"
+Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 371928612D;
-	Tue, 30 Jan 2024 18:16:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6879A155A33
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 18:18:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706638601; cv=none; b=doMZmZHgGazXLMm3wGDHdj54VUbcS3weHesVFO3NcRdK5hLAwyD6JXBdbYgK9z5CbX/tczgSXUsXHG4Wy9v5VpvRWk4hCTCkwQKB5MVYbfO7cbIgTpLtzu3CBYCWcCqdza5EQU5sf65Iwf+WDB/HCGme8KEQoFC7HTc0EMqIZHI=
+	t=1706638710; cv=none; b=X75CcfwWhy/Tim3MBLeQA12UpiEvA0SnxaVaXBvA/f4YAxS8DcSVoG3l1WoNcziTp32jDI//jvjx4qijtPkbHUadDnRjvUpucODCwbRTZ3kDPDR0v9pzbUWVVNfZ+YmdY7e9gNMnjHTBjgh0Tv6Qdfq880ZHeHoDk2+dlmQCOp0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706638601; c=relaxed/simple;
-	bh=LpEp13sjWndJKXUQDKaQ9fVxVGcPE52nhZRtN4BAINY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VgBQDBwaURPU44qi8Vk3A5xyS+USylEZRhM7OgUokzdIN083dKNa+8+uDBN/ydQx9CmqmvHf1lSlpg3hKX2ELXbAvArjKx50EVi9af9EFh8WDwMq5+R5lvUsN/DpnZT0p3SIWPFU5o3YGSNFCkFOh6lAXu0XersKCkQ/QPAdgVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tY8zLPKR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 605FEC433C7;
-	Tue, 30 Jan 2024 18:16:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706638600;
-	bh=LpEp13sjWndJKXUQDKaQ9fVxVGcPE52nhZRtN4BAINY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tY8zLPKRyo//fJtNkz9jfrzfcGT1jNNzldzd336pGMaw7XlDhajnOn+1Qx22JhBN2
-	 FxQsDe6jMoMn/EH13xDvJAbJXIw+BswKS639JVzl4l4vJ8Y4a21FLj4XjDgc2nffQL
-	 fnjeA+3k3nLvk0TgfcndeCCjxA9ziw+2hSUOmdrah3ew68ZANNHu9r2DKzg4sn4sy/
-	 RLiFll6YWMg2z27IYkral5H8hTR4Q7eYeGFh5UaBOLRAmqKJo6ybILa3mFYDAVw05R
-	 nGJSki5K/yghVCy//9jrfd2OabdypbTdor2kSfz3DFmxwLvqNVDSnNKovgDwFdTBTT
-	 ZZzhVEUjmNARQ==
-Date: Tue, 30 Jan 2024 12:16:38 -0600
-From: Rob Herring <robh@kernel.org>
-To: Karel Balej <karelb@gimli.ms.mff.cuni.cz>
-Cc: Henrik Rydberg <rydberg@bitmath.org>,
-	~postmarketos/upstreaming@lists.sr.ht,
-	Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
-	linux-input@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	phone-devel@vger.kernel.org,
-	Markuss Broks <markuss.broks@gmail.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 4/5] dt-bindings: input/touchscreen: imagis: add
- compatible for IST3032C
-Message-ID: <170663859769.2091769.5804775030839032520.robh@kernel.org>
-References: <20240120191940.3631-1-karelb@gimli.ms.mff.cuni.cz>
- <20240120191940.3631-5-karelb@gimli.ms.mff.cuni.cz>
+	s=arc-20240116; t=1706638710; c=relaxed/simple;
+	bh=QYGx6IS6TCHytMnFpf5YwmAm01y1uABT6/tqdkSyT5c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=u75XDpj6OADC/z4ZVmNxeBYwmuNJYKH7lQvlfF8JjaOSp0UYwEiHbKG31Fsbcy/KYJ/23nPNfNcNfEbCz7lbTB3NMdKzzadqhGKvwWTe2e5hRg4VLUb7oxPga3y/PT41WcoAE/4GQZvP68AiCLGtYxZj0tUw22utVV54xT59bBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mcfwcfYS; arc=none smtp.client-ip=209.85.166.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-3638b5f8240so277885ab.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 10:18:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706638708; x=1707243508; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QYGx6IS6TCHytMnFpf5YwmAm01y1uABT6/tqdkSyT5c=;
+        b=mcfwcfYSbKbNDpsqy5RylrH8VYZiE5S7Tyw7YNrLmW5O7++wXun4Qwjy+x7ci1jfxs
+         5unacVfryGlp8S/DwXFvjeXNsqTM2b8dqSuDaFjJjr+F87V0NN6IKHU+wi80sMwnuLR+
+         NTrP313nxxlaHKHEyM9+K+g7Oy1Y8LAWmrqHlvyYBRGNhsreD5B9tPRRE0rP6R5ikvCg
+         ixKQ+pvPEOsH7KZhru3t8RUhtKJ3IoKN6IoWqonAYVptcoTOMRmE18lD4IDD0/eY1M8t
+         FmrpSb3Ld3zp6QVnqhWf6I7ZrpG8dHZj6KSqpOggdQCqR+c8BcfT8uIGemq2BIkklJQ0
+         OZ0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706638708; x=1707243508;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QYGx6IS6TCHytMnFpf5YwmAm01y1uABT6/tqdkSyT5c=;
+        b=uQBPZEpnsTVyTK6jElYrzblpv8+tvhV76zl1dOhlFOsh4lvWIIsQIcc7ErgzS35QWA
+         2ljuAgdRNoZZ3jcw8cDjFSQTR0tTGznreYQefXpiHKyOfcqTu+0EVGwRMnZjtythxYeK
+         5Fxx7Or/nD1hnfeRbjRCFHQii+CrG42d4493JsR/RilMSkQr742H1lIvj0cAAW6Luorm
+         R7zrQrfaQpvbO1Es4egATHbvJDp+M5eF7YIlKBNtlV3kh2SByxFiWnMXg+QuG4G6kaLr
+         N70ja9Zzd6NCxAL7aA1F41/JfTvradAlo8epy9/zUpuXIN3XKWuF9Kp1/xegHYWJL3Vi
+         d+BA==
+X-Gm-Message-State: AOJu0YwB77nor+Fn9PW06SmLdIuBNaHiUosH18DASL8eyVmQA0dT8Rca
+	Vox7eMrvcRtCV7tg7OPDh7Cr9zuvBXzNgT7f6SjefHO26gdXzAbeobsN0d0ZKZ/neLZkbb+HUrS
+	6ZeSeIaqGIQt9B6+r+5JvoCEbVY5fnpOL4oI=
+X-Google-Smtp-Source: AGHT+IGNeH+6/ZvR+lak8aN8tE2aB5TRbv+doV+RUr3w9+dApNV+ZvVl7d5W6W0A4rv/oR7KxOjPde4sY+yvwN5Uyzc=
+X-Received: by 2002:a05:6e02:1b87:b0:35f:fefd:653c with SMTP id
+ h7-20020a056e021b8700b0035ffefd653cmr1259217ili.3.1706638708483; Tue, 30 Jan
+ 2024 10:18:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240120191940.3631-5-karelb@gimli.ms.mff.cuni.cz>
+References: <20240130014208.565554-1-hannes@cmpxchg.org> <20240130014208.565554-9-hannes@cmpxchg.org>
+In-Reply-To: <20240130014208.565554-9-hannes@cmpxchg.org>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Tue, 30 Jan 2024 10:18:17 -0800
+Message-ID: <CAKEwX=NvXj1eJCOECCV14X58nQVNUvLtn3wFsfcUruJ1nYAnow@mail.gmail.com>
+Subject: Re: [PATCH 08/20] mm: zswap: further cleanup zswap_store()
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Yosry Ahmed <yosryahmed@google.com>, 
+	Chengming Zhou <zhouchengming@bytedance.com>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On Sat, 20 Jan 2024 20:11:15 +0100, Karel Balej wrote:
-> From: Karel Balej <balejk@matfyz.cz>
-> 
-> IST3032C is a touchscreen IC which seems mostly compatible with IST3038C
-> except that it reports a different chip ID value.
-> 
-> Signed-off-by: Karel Balej <balejk@matfyz.cz>
-> ---
-> 
-> Notes:
->     v4:
->     * Reword commit description to mention how this IC differs from the
->       already supported.
-> 
->  .../devicetree/bindings/input/touchscreen/imagis,ist3038c.yaml   | 1 +
->  1 file changed, 1 insertion(+)
-> 
-
-Acked-by: Rob Herring <robh@kernel.org>
-
+On Mon, Jan 29, 2024 at 5:42=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
+> wrote:
+>
+> - Remove dupentry, reusing entry works just fine.
+> - Rename pool to shrink_pool, as this one actually is confusing.
+> - Remove page, use folio_nid() and kmap_local_folio() directly.
+> - Set entry->swpentry in a common path.
+> - Move value and src to local scope of use.
+>
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Reviewed-by: Nhat Pham <nphamcs@gmail.com>
 
