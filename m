@@ -1,89 +1,566 @@
-Return-Path: <linux-kernel+bounces-44716-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44717-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2842842669
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:48:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0369E84266F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:50:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73215289C7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:48:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0EA9289C96
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:50:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17CCD6D1D0;
-	Tue, 30 Jan 2024 13:48:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="0EyaNAy3"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F3CA6D1C0;
+	Tue, 30 Jan 2024 13:50:14 +0000 (UTC)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A37376D1B5;
-	Tue, 30 Jan 2024 13:48:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB06D6773D
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 13:50:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706622523; cv=none; b=O6BNzHKvnPKm5ffaXIWSHgl2tmd3cWujsPqK4pIfhtqF69W9C8sDFu8BDzJgVbwolNILylywzCgrADwC+nwAPgMQ96vG9p5uxU746nJwCX4Tf4i6FsNpIJeSMhQeIDww9IJ3pJxF0indGyG6HyhA1TLCeMOdmPmEsd4RukkdF+8=
+	t=1706622613; cv=none; b=uoS2YQbaYS6160vcviAau9Oi4zsQgcIGEehqCaTOASfTHzkk7bEyGAmZvUp5rS2vRcMv9hk+RBBO+ngbt/XX3WvuaMus5/gSKRpq32vgcVBP7ifrlf9vWU0cRkvG8HHwzMnrl7U1YYOs52DKVfFBmQqVS5TfxBZm5kX0doXv5Y4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706622523; c=relaxed/simple;
-	bh=LX2Fic2UMf7KjX8p2W2+sSCjFDYmcP3OxJ1aZl3nnnY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M0rAoKME5hVKoCoJirZswaCkp01Ozw8hfJxZQcqUxIcA20jIEmg30BchSq4qRMuJhP+j7I0drH8qa/0jz+rx60rYNgQRKkyL5k2cg2wpyX7Ahei8bqA262dBsWzJatpL3tPWdPPE9IuejT/S0qhxAQ6AJXX+lLIXpLjpX13AgSc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=0EyaNAy3; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=vd//V4XYtNdO2bVzPimQHhpuzy1TW7+TDVfUFwizcWs=; b=0EyaNAy3PN3WNXOZkObkKOnf7m
-	l+LjuYFxeSmhk3U5RzxxGCO0Ob/JJ5phV2UidjoFY6TDp/w1VAOw5GU0j/6w7dWlLI65z+naIqFmw
-	nV0n25zGIlwSGH0LXks3/JplBRPXEwI4GX7pzoZ7e+w37JMlEZfKniz/sYw3x4tI8BxM=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rUoTM-006UoM-Ti; Tue, 30 Jan 2024 14:48:20 +0100
-Date: Tue, 30 Jan 2024 14:48:20 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Jisheng Zhang <jszhang@kernel.org>
-Cc: Petr Tesarik <petr@tesarici.cz>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	"open list:STMMAC ETHERNET DRIVER" <netdev@vger.kernel.org>,
-	"moderated list:ARM/STM32 ARCHITECTURE" <linux-stm32@st-md-mailman.stormreply.com>,
-	"moderated list:ARM/STM32 ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	"open list:ARM/Allwinner sunXi SoC support" <linux-sunxi@lists.linux.dev>,
-	Marc Haber <mh+netdev@zugschlus.de>,
-	Florian Fainelli <f.fainelli@gmail.com>, stable@vger.kernel.org
-Subject: Re: [PATCH net v2] net: stmmac: protect updates of 64-bit statistics
- counters
-Message-ID: <cd9ce78c-2761-4b87-af87-ed6ccb1206bb@lunn.ch>
-References: <20240128193529.24677-1-petr@tesarici.cz>
- <ZbiCWtY8ODrroHIq@xhacker>
+	s=arc-20240116; t=1706622613; c=relaxed/simple;
+	bh=RW+6u+leOPcjI19p6YltcwKkN0md8fURD3fPFEmgQXQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=BjmfP2WvHQzuJUsUFARILoc1gk+FS228qyuN2IrBMiBq08ood0fast2HnYL4LLlb3+C8GelEtkm8inNI60jSvlgunmNJ+5KKPXyeoGULVI5EyBc8zBKYWiitoPpmWyfmvp/VD8T4VB1HonJ8EfrjrstMiUzZ6Wsp95mzZFYQ0+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4TPRNM5yv9zJpQM;
+	Tue, 30 Jan 2024 21:49:07 +0800 (CST)
+Received: from kwepemm600017.china.huawei.com (unknown [7.193.23.234])
+	by mail.maildlp.com (Postfix) with ESMTPS id 454CD1400FF;
+	Tue, 30 Jan 2024 21:50:07 +0800 (CST)
+Received: from [10.174.179.234] (10.174.179.234) by
+ kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 30 Jan 2024 21:50:05 +0800
+Message-ID: <5227661e-da3b-6cff-37c5-5ddb7825e7b8@huawei.com>
+Date: Tue, 30 Jan 2024 21:50:04 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZbiCWtY8ODrroHIq@xhacker>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH v10 5/6] arm64: support copy_mc_[user]_highpage()
+To: Mark Rutland <mark.rutland@arm.com>
+CC: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+	James Morse <james.morse@arm.com>, Robin Murphy <robin.murphy@arm.com>,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>, Alexander Potapenko
+	<glider@google.com>, Alexander Viro <viro@zeniv.linux.org.uk>, Andrey
+ Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
+	Vincenzo Frascino <vincenzo.frascino@arm.com>, Andrew Morton
+	<akpm@linux-foundation.org>, Michael Ellerman <mpe@ellerman.id.au>, Nicholas
+ Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Aneesh Kumar K.V <aneesh.kumar@kernel.org>, "Naveen N. Rao"
+	<naveen.n.rao@linux.ibm.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo
+ Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+	<dave.hansen@linux.intel.com>, <x86@kernel.org>, "H. Peter Anvin"
+	<hpa@zytor.com>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-mm@kvack.org>, <linuxppc-dev@lists.ozlabs.org>,
+	<linux-kernel@vger.kernel.org>, <kasan-dev@googlegroups.com>,
+	<wangkefeng.wang@huawei.com>, Guohanjun <guohanjun@huawei.com>
+References: <20240129134652.4004931-1-tongtiangen@huawei.com>
+ <20240129134652.4004931-6-tongtiangen@huawei.com>
+ <ZbjP_19VCYmtsGcg@FVFF77S0Q05N>
+From: Tong Tiangen <tongtiangen@huawei.com>
+In-Reply-To: <ZbjP_19VCYmtsGcg@FVFF77S0Q05N>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600017.china.huawei.com (7.193.23.234)
 
-> PS: when I sent the above "net: stmmac: use per-queue 64 bit statistics
-> where necessary", I had an impression: there are too much statistics in
-> stmmac driver, I didn't see so many statistics in other eth drivers, is
-> it possible to remove some useless or not that useful statistic members?
 
-These counters might be considered ABI. We don't want to cause
-regressions in somebodies testing, or even billing scripts because we
-remove a counter which somebody is using.
 
-       Andrew
+在 2024/1/30 18:31, Mark Rutland 写道:
+> On Mon, Jan 29, 2024 at 09:46:51PM +0800, Tong Tiangen wrote:
+>> Currently, many scenarios that can tolerate memory errors when copying page
+>> have been supported in the kernel[1][2][3], all of which are implemented by
+>> copy_mc_[user]_highpage(). arm64 should also support this mechanism.
+>>
+>> Due to mte, arm64 needs to have its own copy_mc_[user]_highpage()
+>> architecture implementation, macros __HAVE_ARCH_COPY_MC_HIGHPAGE and
+>> __HAVE_ARCH_COPY_MC_USER_HIGHPAGE have been added to control it.
+>>
+>> Add new helper copy_mc_page() which provide a page copy implementation with
+>> machine check safe. The copy_mc_page() in copy_mc_page.S is largely borrows
+>> from copy_page() in copy_page.S and the main difference is copy_mc_page()
+>> add extable entry to every load/store insn to support machine check safe.
+>>
+>> Add new extable type EX_TYPE_COPY_MC_PAGE_ERR_ZERO which used in
+>> copy_mc_page().
+>>
+>> [1]a873dfe1032a ("mm, hwpoison: try to recover from copy-on write faults")
+>> [2]5f2500b93cc9 ("mm/khugepaged: recover from poisoned anonymous memory")
+>> [3]6b970599e807 ("mm: hwpoison: support recovery from ksm_might_need_to_copy()")
+>>
+>> Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+>> ---
+>>   arch/arm64/include/asm/asm-extable.h | 15 ++++++
+>>   arch/arm64/include/asm/assembler.h   |  4 ++
+>>   arch/arm64/include/asm/mte.h         |  5 ++
+>>   arch/arm64/include/asm/page.h        | 10 ++++
+>>   arch/arm64/lib/Makefile              |  2 +
+>>   arch/arm64/lib/copy_mc_page.S        | 78 ++++++++++++++++++++++++++++
+>>   arch/arm64/lib/mte.S                 | 27 ++++++++++
+>>   arch/arm64/mm/copypage.c             | 66 ++++++++++++++++++++---
+>>   arch/arm64/mm/extable.c              |  7 +--
+>>   include/linux/highmem.h              |  8 +++
+>>   10 files changed, 213 insertions(+), 9 deletions(-)
+>>   create mode 100644 arch/arm64/lib/copy_mc_page.S
+>>
+>> diff --git a/arch/arm64/include/asm/asm-extable.h b/arch/arm64/include/asm/asm-extable.h
+>> index 980d1dd8e1a3..819044fefbe7 100644
+>> --- a/arch/arm64/include/asm/asm-extable.h
+>> +++ b/arch/arm64/include/asm/asm-extable.h
+>> @@ -10,6 +10,7 @@
+>>   #define EX_TYPE_UACCESS_ERR_ZERO	2
+>>   #define EX_TYPE_KACCESS_ERR_ZERO	3
+>>   #define EX_TYPE_LOAD_UNALIGNED_ZEROPAD	4
+>> +#define EX_TYPE_COPY_MC_PAGE_ERR_ZERO	5
+>>   
+>>   /* Data fields for EX_TYPE_UACCESS_ERR_ZERO */
+>>   #define EX_DATA_REG_ERR_SHIFT	0
+>> @@ -51,6 +52,16 @@
+>>   #define _ASM_EXTABLE_UACCESS(insn, fixup)				\
+>>   	_ASM_EXTABLE_UACCESS_ERR_ZERO(insn, fixup, wzr, wzr)
+>>   
+>> +#define _ASM_EXTABLE_COPY_MC_PAGE_ERR_ZERO(insn, fixup, err, zero)	\
+>> +	__ASM_EXTABLE_RAW(insn, fixup, 					\
+>> +			  EX_TYPE_COPY_MC_PAGE_ERR_ZERO,		\
+>> +			  (						\
+>> +			    EX_DATA_REG(ERR, err) |			\
+>> +			    EX_DATA_REG(ZERO, zero)			\
+>> +			  ))
+>> +
+>> +#define _ASM_EXTABLE_COPY_MC_PAGE(insn, fixup)				\
+>> +	_ASM_EXTABLE_COPY_MC_PAGE_ERR_ZERO(insn, fixup, wzr, wzr)
+>>   /*
+>>    * Create an exception table entry for uaccess `insn`, which will branch to `fixup`
+>>    * when an unhandled fault is taken.
+>> @@ -59,6 +70,10 @@
+>>   	_ASM_EXTABLE_UACCESS(\insn, \fixup)
+>>   	.endm
+>>   
+>> +	.macro          _asm_extable_copy_mc_page, insn, fixup
+>> +	_ASM_EXTABLE_COPY_MC_PAGE(\insn, \fixup)
+>> +	.endm
+>> +
+> 
+> This should share a common EX_TYPE_ with the other "kaccess where memory error
+> is handled but other faults are fatal" cases.
+
+OK, reasonable.
+> 
+>>   /*
+>>    * Create an exception table entry for `insn` if `fixup` is provided. Otherwise
+>>    * do nothing.
+>> diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
+>> index 513787e43329..e1d8ce155878 100644
+>> --- a/arch/arm64/include/asm/assembler.h
+>> +++ b/arch/arm64/include/asm/assembler.h
+>> @@ -154,6 +154,10 @@ lr	.req	x30		// link register
+>>   #define CPU_LE(code...) code
+>>   #endif
+>>   
+>> +#define CPY_MC(l, x...)		\
+>> +9999:   x;			\
+>> +	_asm_extable_copy_mc_page    9999b, l
+>> +
+>>   /*
+>>    * Define a macro that constructs a 64-bit value by concatenating two
+>>    * 32-bit registers. Note that on big endian systems the order of the
+>> diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
+>> index 91fbd5c8a391..9cdded082dd4 100644
+>> --- a/arch/arm64/include/asm/mte.h
+>> +++ b/arch/arm64/include/asm/mte.h
+>> @@ -92,6 +92,7 @@ static inline bool try_page_mte_tagging(struct page *page)
+>>   void mte_zero_clear_page_tags(void *addr);
+>>   void mte_sync_tags(pte_t pte, unsigned int nr_pages);
+>>   void mte_copy_page_tags(void *kto, const void *kfrom);
+>> +int mte_copy_mc_page_tags(void *kto, const void *kfrom);
+>>   void mte_thread_init_user(void);
+>>   void mte_thread_switch(struct task_struct *next);
+>>   void mte_cpu_setup(void);
+>> @@ -128,6 +129,10 @@ static inline void mte_sync_tags(pte_t pte, unsigned int nr_pages)
+>>   static inline void mte_copy_page_tags(void *kto, const void *kfrom)
+>>   {
+>>   }
+>> +static inline int mte_copy_mc_page_tags(void *kto, const void *kfrom)
+>> +{
+>> +	return 0;
+>> +}
+>>   static inline void mte_thread_init_user(void)
+>>   {
+>>   }
+>> diff --git a/arch/arm64/include/asm/page.h b/arch/arm64/include/asm/page.h
+>> index 2312e6ee595f..304cc86b8a10 100644
+>> --- a/arch/arm64/include/asm/page.h
+>> +++ b/arch/arm64/include/asm/page.h
+>> @@ -29,6 +29,16 @@ void copy_user_highpage(struct page *to, struct page *from,
+>>   void copy_highpage(struct page *to, struct page *from);
+>>   #define __HAVE_ARCH_COPY_HIGHPAGE
+>>   
+>> +#ifdef CONFIG_ARCH_HAS_COPY_MC
+>> +int copy_mc_page(void *to, const void *from);
+>> +int copy_mc_highpage(struct page *to, struct page *from);
+>> +#define __HAVE_ARCH_COPY_MC_HIGHPAGE
+>> +
+>> +int copy_mc_user_highpage(struct page *to, struct page *from,
+>> +		unsigned long vaddr, struct vm_area_struct *vma);
+>> +#define __HAVE_ARCH_COPY_MC_USER_HIGHPAGE
+>> +#endif
+>> +
+>>   struct folio *vma_alloc_zeroed_movable_folio(struct vm_area_struct *vma,
+>>   						unsigned long vaddr);
+>>   #define vma_alloc_zeroed_movable_folio vma_alloc_zeroed_movable_folio
+>> diff --git a/arch/arm64/lib/Makefile b/arch/arm64/lib/Makefile
+>> index 29490be2546b..a2fd865b816d 100644
+>> --- a/arch/arm64/lib/Makefile
+>> +++ b/arch/arm64/lib/Makefile
+>> @@ -15,6 +15,8 @@ endif
+>>   
+>>   lib-$(CONFIG_ARCH_HAS_UACCESS_FLUSHCACHE) += uaccess_flushcache.o
+>>   
+>> +lib-$(CONFIG_ARCH_HAS_COPY_MC) += copy_mc_page.o
+>> +
+>>   obj-$(CONFIG_CRC32) += crc32.o
+>>   
+>>   obj-$(CONFIG_FUNCTION_ERROR_INJECTION) += error-inject.o
+>> diff --git a/arch/arm64/lib/copy_mc_page.S b/arch/arm64/lib/copy_mc_page.S
+>> new file mode 100644
+>> index 000000000000..524534d26d86
+>> --- /dev/null
+>> +++ b/arch/arm64/lib/copy_mc_page.S
+>> @@ -0,0 +1,78 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>> +/*
+>> + * Copyright (C) 2012 ARM Ltd.
+>> + */
+>> +
+>> +#include <linux/linkage.h>
+>> +#include <linux/const.h>
+>> +#include <asm/assembler.h>
+>> +#include <asm/page.h>
+>> +#include <asm/cpufeature.h>
+>> +#include <asm/alternative.h>
+>> +#include <asm/asm-extable.h>
+>> +
+>> +/*
+>> + * Copy a page from src to dest (both are page aligned) with machine check
+>> + *
+>> + * Parameters:
+>> + *	x0 - dest
+>> + *	x1 - src
+>> + * Returns:
+>> + * 	x0 - Return 0 if copy success, or -EFAULT if anything goes wrong
+>> + *	     while copying.
+>> + */
+>> +SYM_FUNC_START(__pi_copy_mc_page)
+>> +CPY_MC(9998f, ldp	x2, x3, [x1])
+>> +CPY_MC(9998f, ldp	x4, x5, [x1, #16])
+>> +CPY_MC(9998f, ldp	x6, x7, [x1, #32])
+>> +CPY_MC(9998f, ldp	x8, x9, [x1, #48])
+>> +CPY_MC(9998f, ldp	x10, x11, [x1, #64])
+>> +CPY_MC(9998f, ldp	x12, x13, [x1, #80])
+>> +CPY_MC(9998f, ldp	x14, x15, [x1, #96])
+>> +CPY_MC(9998f, ldp	x16, x17, [x1, #112])
+>> +
+>> +	add	x0, x0, #256
+>> +	add	x1, x1, #128
+>> +1:
+>> +	tst	x0, #(PAGE_SIZE - 1)
+>> +
+>> +CPY_MC(9998f, stnp	x2, x3, [x0, #-256])
+>> +CPY_MC(9998f, ldp	x2, x3, [x1])
+>> +CPY_MC(9998f, stnp	x4, x5, [x0, #16 - 256])
+>> +CPY_MC(9998f, ldp	x4, x5, [x1, #16])
+>> +CPY_MC(9998f, stnp	x6, x7, [x0, #32 - 256])
+>> +CPY_MC(9998f, ldp	x6, x7, [x1, #32])
+>> +CPY_MC(9998f, stnp	x8, x9, [x0, #48 - 256])
+>> +CPY_MC(9998f, ldp	x8, x9, [x1, #48])
+>> +CPY_MC(9998f, stnp	x10, x11, [x0, #64 - 256])
+>> +CPY_MC(9998f, ldp	x10, x11, [x1, #64])
+>> +CPY_MC(9998f, stnp	x12, x13, [x0, #80 - 256])
+>> +CPY_MC(9998f, ldp	x12, x13, [x1, #80])
+>> +CPY_MC(9998f, stnp	x14, x15, [x0, #96 - 256])
+>> +CPY_MC(9998f, ldp	x14, x15, [x1, #96])
+>> +CPY_MC(9998f, stnp	x16, x17, [x0, #112 - 256])
+>> +CPY_MC(9998f, ldp	x16, x17, [x1, #112])
+>> +
+>> +	add	x0, x0, #128
+>> +	add	x1, x1, #128
+>> +
+>> +	b.ne	1b
+>> +
+>> +CPY_MC(9998f, stnp	x2, x3, [x0, #-256])
+>> +CPY_MC(9998f, stnp	x4, x5, [x0, #16 - 256])
+>> +CPY_MC(9998f, stnp	x6, x7, [x0, #32 - 256])
+>> +CPY_MC(9998f, stnp	x8, x9, [x0, #48 - 256])
+>> +CPY_MC(9998f, stnp	x10, x11, [x0, #64 - 256])
+>> +CPY_MC(9998f, stnp	x12, x13, [x0, #80 - 256])
+>> +CPY_MC(9998f, stnp	x14, x15, [x0, #96 - 256])
+>> +CPY_MC(9998f, stnp	x16, x17, [x0, #112 - 256])
+>> +
+>> +	mov x0, #0
+>> +	ret
+>> +
+>> +9998:	mov x0, #-EFAULT
+>> +	ret
+>> +
+>> +SYM_FUNC_END(__pi_copy_mc_page)
+>> +SYM_FUNC_ALIAS(copy_mc_page, __pi_copy_mc_page)
+>> +EXPORT_SYMBOL(copy_mc_page)
+> 
+> This is a duplicate of the existing copy_page logic; it should be refactored
+> such that the logic can be shared.
+
+OK, I'll think about how to do it.
+
+> 
+>> diff --git a/arch/arm64/lib/mte.S b/arch/arm64/lib/mte.S
+>> index 5018ac03b6bf..2b748e83f6cf 100644
+>> --- a/arch/arm64/lib/mte.S
+>> +++ b/arch/arm64/lib/mte.S
+>> @@ -80,6 +80,33 @@ SYM_FUNC_START(mte_copy_page_tags)
+>>   	ret
+>>   SYM_FUNC_END(mte_copy_page_tags)
+>>   
+>> +/*
+>> + * Copy the tags from the source page to the destination one wiht machine check safe
+>> + *   x0 - address of the destination page
+>> + *   x1 - address of the source page
+>> + * Returns:
+>> + *   x0 - Return 0 if copy success, or
+>> + *        -EFAULT if anything goes wrong while copying.
+>> + */
+>> +SYM_FUNC_START(mte_copy_mc_page_tags)
+>> +	mov	x2, x0
+>> +	mov	x3, x1
+>> +	multitag_transfer_size x5, x6
+>> +1:
+>> +CPY_MC(2f, ldgm	x4, [x3])
+>> +CPY_MC(2f, stgm	x4, [x2])
+>> +	add	x2, x2, x5
+>> +	add	x3, x3, x5
+>> +	tst	x2, #(PAGE_SIZE - 1)
+>> +	b.ne	1b
+>> +
+>> +	mov x0, #0
+>> +	ret
+>> +
+>> +2:	mov x0, #-EFAULT
+>> +	ret
+>> +SYM_FUNC_END(mte_copy_mc_page_tags)
+>> +
+>>   /*
+>>    * Read tags from a user buffer (one tag per byte) and set the corresponding
+>>    * tags at the given kernel address. Used by PTRACE_POKEMTETAGS.
+>> diff --git a/arch/arm64/mm/copypage.c b/arch/arm64/mm/copypage.c
+>> index a7bb20055ce0..9765e40cde6c 100644
+>> --- a/arch/arm64/mm/copypage.c
+>> +++ b/arch/arm64/mm/copypage.c
+>> @@ -14,6 +14,25 @@
+>>   #include <asm/cpufeature.h>
+>>   #include <asm/mte.h>
+>>   
+>> +static int do_mte(struct page *to, struct page *from, void *kto, void *kfrom, bool mc)
+>> +{
+>> +	int ret = 0;
+>> +
+>> +	if (system_supports_mte() && page_mte_tagged(from)) {
+>> +		/* It's a new page, shouldn't have been tagged yet */
+>> +		WARN_ON_ONCE(!try_page_mte_tagging(to));
+>> +		if (mc)
+>> +			ret = mte_copy_mc_page_tags(kto, kfrom);
+>> +		else
+>> +			mte_copy_page_tags(kto, kfrom);
+>> +
+>> +		if (!ret)
+>> +			set_page_mte_tagged(to);
+>> +	}
+>> +
+>> +	return ret;
+>> +}
+> 
+> The boolean 'mc' argument makes this painful to read, and I don't think it's
+> necessary to have this helper anyway.
+> 
+> It'd be clearer to have this expanded inline in the callers, e.g.
+> 
+> 	// in copy_highpage(), as-is today
+> 	if (system_supports_mte() && page_mte_tagged(from)) {
+> 		/* It's a new page, shouldn't have been tagged yet */
+> 		WARN_ON_ONCE(!try_page_mte_tagging(to));
+> 		mte_copy_page_tags(kto, kfrom);
+> 		set_page_mte_tagged(to);
+> 	}
+> 
+> 	// in copy_mc_highpage()
+> 	if (system_supports_mte() && page_mte_tagged(from)) {
+> 		/* It's a new page, shouldn't have been tagged yet */
+> 		WARN_ON_ONCE(!try_page_mte_tagging(to));
+> 		ret = mte_copy_mc_page_tags(kto, kfrom);
+> 		if (ret)
+> 			return -EFAULT;
+> 		set_page_mte_tagged(to);
+> 	}
+
+OK,  follow this idea in the next version.
+
+> 
+> Mark.
+> 
+>> +
+>>   void copy_highpage(struct page *to, struct page *from)
+>>   {
+>>   	void *kto = page_address(to);
+>> @@ -24,12 +43,7 @@ void copy_highpage(struct page *to, struct page *from)
+>>   	if (kasan_hw_tags_enabled())
+>>   		page_kasan_tag_reset(to);
+>>   
+>> -	if (system_supports_mte() && page_mte_tagged(from)) {
+>> -		/* It's a new page, shouldn't have been tagged yet */
+>> -		WARN_ON_ONCE(!try_page_mte_tagging(to));
+>> -		mte_copy_page_tags(kto, kfrom);
+>> -		set_page_mte_tagged(to);
+>> -	}
+>> +	do_mte(to, from, kto, kfrom, false);
+>>   }
+>>   EXPORT_SYMBOL(copy_highpage);
+>>   
+>> @@ -40,3 +54,43 @@ void copy_user_highpage(struct page *to, struct page *from,
+>>   	flush_dcache_page(to);
+>>   }
+>>   EXPORT_SYMBOL_GPL(copy_user_highpage);
+>> +
+>> +#ifdef CONFIG_ARCH_HAS_COPY_MC
+>> +/*
+>> + * Return -EFAULT if anything goes wrong while copying page or mte.
+>> + */
+>> +int copy_mc_highpage(struct page *to, struct page *from)
+>> +{
+>> +	void *kto = page_address(to);
+>> +	void *kfrom = page_address(from);
+>> +	int ret;
+>> +
+>> +	ret = copy_mc_page(kto, kfrom);
+>> +	if (ret)
+>> +		return -EFAULT;
+>> +
+>> +	if (kasan_hw_tags_enabled())
+>> +		page_kasan_tag_reset(to);
+>> +
+>> +	ret = do_mte(to, from, kto, kfrom, true);
+>> +	if (ret)
+>> +		return -EFAULT;
+>> +
+>> +	return 0;
+>> +}
+>> +EXPORT_SYMBOL(copy_mc_highpage);
+>> +
+>> +int copy_mc_user_highpage(struct page *to, struct page *from,
+>> +			unsigned long vaddr, struct vm_area_struct *vma)
+>> +{
+>> +	int ret;
+>> +
+>> +	ret = copy_mc_highpage(to, from);
+>> +
+>> +	if (!ret)
+>> +		flush_dcache_page(to);
+>> +
+>> +	return ret;
+>> +}
+>> +EXPORT_SYMBOL_GPL(copy_mc_user_highpage);
+>> +#endif
+>> diff --git a/arch/arm64/mm/extable.c b/arch/arm64/mm/extable.c
+>> index 28ec35e3d210..bdc81518d207 100644
+>> --- a/arch/arm64/mm/extable.c
+>> +++ b/arch/arm64/mm/extable.c
+>> @@ -16,7 +16,7 @@ get_ex_fixup(const struct exception_table_entry *ex)
+>>   	return ((unsigned long)&ex->fixup + ex->fixup);
+>>   }
+>>   
+>> -static bool ex_handler_uaccess_err_zero(const struct exception_table_entry *ex,
+>> +static bool ex_handler_fixup_err_zero(const struct exception_table_entry *ex,
+>>   					struct pt_regs *regs)
+>>   {
+>>   	int reg_err = FIELD_GET(EX_DATA_REG_ERR, ex->data);
+>> @@ -69,7 +69,7 @@ bool fixup_exception(struct pt_regs *regs)
+>>   		return ex_handler_bpf(ex, regs);
+>>   	case EX_TYPE_UACCESS_ERR_ZERO:
+>>   	case EX_TYPE_KACCESS_ERR_ZERO:
+>> -		return ex_handler_uaccess_err_zero(ex, regs);
+>> +		return ex_handler_fixup_err_zero(ex, regs);
+>>   	case EX_TYPE_LOAD_UNALIGNED_ZEROPAD:
+>>   		return ex_handler_load_unaligned_zeropad(ex, regs);
+>>   	}
+>> @@ -87,7 +87,8 @@ bool fixup_exception_mc(struct pt_regs *regs)
+>>   
+>>   	switch (ex->type) {
+>>   	case EX_TYPE_UACCESS_ERR_ZERO:
+>> -		return ex_handler_uaccess_err_zero(ex, regs);
+>> +	case EX_TYPE_COPY_MC_PAGE_ERR_ZERO:
+>> +		return ex_handler_fixup_err_zero(ex, regs);
+>>   	}
+>>   
+>>   	return false;
+>> diff --git a/include/linux/highmem.h b/include/linux/highmem.h
+>> index c5ca1a1fc4f5..a42470ca42f2 100644
+>> --- a/include/linux/highmem.h
+>> +++ b/include/linux/highmem.h
+>> @@ -332,6 +332,7 @@ static inline void copy_highpage(struct page *to, struct page *from)
+>>   #endif
+>>   
+>>   #ifdef copy_mc_to_kernel
+>> +#ifndef __HAVE_ARCH_COPY_MC_USER_HIGHPAGE
+>>   /*
+>>    * If architecture supports machine check exception handling, define the
+>>    * #MC versions of copy_user_highpage and copy_highpage. They copy a memory
+>> @@ -354,7 +355,9 @@ static inline int copy_mc_user_highpage(struct page *to, struct page *from,
+>>   
+>>   	return ret ? -EFAULT : 0;
+>>   }
+>> +#endif
+>>   
+>> +#ifndef __HAVE_ARCH_COPY_MC_HIGHPAGE
+>>   static inline int copy_mc_highpage(struct page *to, struct page *from)
+>>   {
+>>   	unsigned long ret;
+>> @@ -370,20 +373,25 @@ static inline int copy_mc_highpage(struct page *to, struct page *from)
+>>   
+>>   	return ret ? -EFAULT : 0;
+>>   }
+>> +#endif
+>>   #else
+>> +#ifndef __HAVE_ARCH_COPY_MC_USER_HIGHPAGE
+>>   static inline int copy_mc_user_highpage(struct page *to, struct page *from,
+>>   					unsigned long vaddr, struct vm_area_struct *vma)
+>>   {
+>>   	copy_user_highpage(to, from, vaddr, vma);
+>>   	return 0;
+>>   }
+>> +#endif
+>>   
+>> +#ifndef __HAVE_ARCH_COPY_MC_HIGHPAGE
+>>   static inline int copy_mc_highpage(struct page *to, struct page *from)
+>>   {
+>>   	copy_highpage(to, from);
+>>   	return 0;
+>>   }
+>>   #endif
+>> +#endif
+>>   
+>>   static inline void memcpy_page(struct page *dst_page, size_t dst_off,
+>>   			       struct page *src_page, size_t src_off,
+>> -- 
+>> 2.25.1
+>>
+> .
 
