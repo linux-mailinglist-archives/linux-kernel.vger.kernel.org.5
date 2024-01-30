@@ -1,153 +1,125 @@
-Return-Path: <linux-kernel+bounces-43891-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43892-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEBA2841A76
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 04:23:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 12CD9841A78
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 04:23:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1F745B25D5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 03:22:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9025EB26025
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 03:23:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2541838388;
-	Tue, 30 Jan 2024 03:22:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="MgaQho1x"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A71AE374CC
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 03:22:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70381383A2;
+	Tue, 30 Jan 2024 03:22:16 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96D3C381D9;
+	Tue, 30 Jan 2024 03:22:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706584933; cv=none; b=FJWZjRcCcXjbLV1lTk0RDuKv1tyyT0tHp1KjANw9Ij9GyUcWnEh/QPD2wEDcpCrLHi5HeqG6aV3QToeB1do/u8XnTaNkgP6+RutoiQvCyAtFMINJY5MQL0RBnc48Qitt7L71VuqnfpdShkqz/P6CNgnnOQsi6DNJQponB2Z3JWg=
+	t=1706584936; cv=none; b=TkKuF8mJKQB1GWi70uCH44zzDaVs1OyS9muX0NwVKvm12dhgyx8qAM2K9drpvVD5E3RsywGhJFDh1vb7ssXiKVhUsqJYDcBIVkBXcNzmHWKYWS1FBTCFR2A8ejX8biEupoxx4KIqT5LDBDpH4JOQbs53F8jxqWjRvs7xJymr8Ac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706584933; c=relaxed/simple;
-	bh=hTM78LElmEuXY/I156Tkd5M/VZBKoB4TqBIat3HtxZg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kW+9zmvvy2vF0KNZbbq5PS0+UW/1OHqR1Pim8mg0JLWM9EPGg6xUsAOQAhx4Tmxe/J1P/sTZN1QahPNZS4yJi9aLR56H9YWvM8ML2nexWcLCBu/TeG/aDe9DWGwE2TTAzPvkTyGFPqlEB5LlCkdpWfiFXjcht9f8AnBMyaX8q6o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=MgaQho1x; arc=none smtp.client-ip=209.85.167.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-510221ab3ebso4717162e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 19:22:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706584930; x=1707189730; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vFwOvzgohKdirNbIQVbbIr9nG1jrmQvUigB0XE0d7lE=;
-        b=MgaQho1xyuLg0nB6gIHfubFoaukRIexbldbqdYB9rPgXAwxhFV0Ln8aNtHkoC0LKRb
-         Va4ACOlReucTtBN07oO7hO2ZwIRXYqiiejW23ABy+CvgQ/42A1WdcFI/9lMNvFMj4Q0G
-         kpPijt+Oc1/bVwtI5EGqw4CNXxVhJ9vr+GVls=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706584930; x=1707189730;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vFwOvzgohKdirNbIQVbbIr9nG1jrmQvUigB0XE0d7lE=;
-        b=UPu83QHBYVbNmm+iqNnndKizfHrlZa/HAsVkYokL08oEleCcjiGnR9prYPd/jeiwsW
-         UgEyi2UkVYNyx177j37VpwP6F3llNtodQtoVZAj6MPgoqw7V3YdX9FfKwSagEzIzPWOv
-         jLWhd8FDfF2peduJMLG9UHJCkDAeXLu2dVHekAMVElOUt8AKSB3fGY+fwb/u5Vb3jqRW
-         gMY2j4fPi4OkPXiIOLolaYYctJ7E+kd/UityrJ+H9nlf0Y2UyN4m9gJmfeLl7y9MKmIV
-         Ihw5PC++1eK9Ty3gSc+iQD9XrnMJLQCIzEqBWG4jcU6BQcAVAdWEkwrzbGdm0DuAImIS
-         F3pw==
-X-Gm-Message-State: AOJu0YzrmfuYOVyC6QlExn97/yVjj3ZHOk+PloLCjUU5lyKwZ2HW/8Z7
-	I9ULIsbeSiflj/v8D6paAx+vU8vOqb6llqsoA+YxCD5M9uVqaSbY1BsZt0gYJ+XyLySWdm+lu8B
-	HdpwfKxOT3OhEwicdUXUW6lTML5UWuv6nRcqV
-X-Google-Smtp-Source: AGHT+IEL+eB3YpLwGh9C//tICADm74yD1KdefrBuKQSDktUlLhN43MqFdTiiqm0CjqgVnyYHjaOuXC+S0wL0bQ0K82Y=
-X-Received: by 2002:a05:6512:3054:b0:511:150f:6363 with SMTP id
- b20-20020a056512305400b00511150f6363mr2506060lfb.32.1706584929429; Mon, 29
- Jan 2024 19:22:09 -0800 (PST)
+	s=arc-20240116; t=1706584936; c=relaxed/simple;
+	bh=2IXwML/OhIF3bCdnqcufjvigJt0sgb+gpzdgSWQKPMg=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=TCkKVCZoycGVCt8sXJi748hftxns5ZbILf3IZMNvPoQQajxC/XYAqe0h7uYQirvSXUkaWx+ZkJKBdyxERlTM9+L0qeMelWhjERJZL+Mmi0aXpKaAxwLain48CmF+STLpUwPAZXfwGpMj69o/m29VBndxv50ut+duIjzy0Pc//OE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.20.42.173])
+	by gateway (Coremail) with SMTP id _____8Cxbetka7hlDSoIAA--.25279S3;
+	Tue, 30 Jan 2024 11:22:12 +0800 (CST)
+Received: from [10.20.42.173] (unknown [10.20.42.173])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8Bx7c5ga7hl2jonAA--.22829S3;
+	Tue, 30 Jan 2024 11:22:10 +0800 (CST)
+Subject: Re: [PATCH v4 1/3] irqchip/loongson-eiointc: Typo fix in function
+ eiointc_domain_alloc
+To: Huacai Chen <chenhuacai@kernel.org>
+Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>,
+ Thomas Gleixner <tglx@linutronix.de>, linux-mips@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omp.ru>,
+ lvjianmin@loongson.cn, Huacai Chen <chenhuacai@loongson.cn>
+References: <20240125113623.2043061-1-maobibo@loongson.cn>
+ <20240125113623.2043061-2-maobibo@loongson.cn>
+ <CAAhV-H4w7BYpoBbudpu3TiR5COHoBRFHHra9URdK1kczpeZbGA@mail.gmail.com>
+From: maobibo <maobibo@loongson.cn>
+Message-ID: <42844534-9b08-1aed-9067-6d4525a0d2ef@loongson.cn>
+Date: Tue, 30 Jan 2024 11:22:08 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240126063500.2684087-1-wenst@chromium.org> <20240126063500.2684087-3-wenst@chromium.org>
- <2c37a716-e4bb-4db3-a95f-a40e05b28cad@molgen.mpg.de>
-In-Reply-To: <2c37a716-e4bb-4db3-a95f-a40e05b28cad@molgen.mpg.de>
-From: Chen-Yu Tsai <wenst@chromium.org>
-Date: Tue, 30 Jan 2024 11:21:58 +0800
-Message-ID: <CAGXv+5H_Rmy1-38xhG48RWW8B9a4K3P0UO=ThUFYjc8T6WT2OA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] arm64: dts: mediatek: mt8183-pico6: Fix bluetooth node
-To: Paul Menzel <pmenzel@molgen.mpg.de>
-Cc: Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Matthias Brugger <matthias.bgg@gmail.com>, 
-	Angelo Gioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Sean Wang <sean.wang@mediatek.com>, linux-bluetooth@vger.kernel.org, 
-	netdev@vger.kernel.org, linux-mediatek@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAAhV-H4w7BYpoBbudpu3TiR5COHoBRFHHra9URdK1kczpeZbGA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8Bx7c5ga7hl2jonAA--.22829S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7ZF1fAr48Aw43JF1rur4DGFX_yoW8Xry7pF
+	WUA3Wqkr45XryUA34agr4DZFyak390qrZ7Kayxtayavr98Jw1DGF1ruayqkr1vyw48GF12
+	9F40qr1Uu3W5CacCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUB2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+	XVWUAwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+	8JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
+	Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
+	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
+	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E
+	14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU4s2-UUUUU
 
-On Tue, Jan 30, 2024 at 12:31=E2=80=AFAM Paul Menzel <pmenzel@molgen.mpg.de=
-> wrote:
->
-> Dear Chen-Yu,
->
->
-> Thank you for your patch.
->
-> Am 26.01.24 um 07:34 schrieb Chen-Yu Tsai:
-> > Bluetooth is not a random device connected to the MMC/SD controller. It
-> > is function 2 of the SDIO device.
-> >
-> > Fix the address of the bluetooth node. Also fix the node name and drop
-> > the label.
->
-> Excuse my ignorance: Is this a cosmetic fix or does it fix the device
-> somehow?
 
-It's a cosmetic change, since the driver already searches the whole device
-tree for the specific compatible string. However it also fixes the device
-tree description to match the actual hardware.
 
-> > Fixes: 055ef10ccdd4 ("arm64: dts: mt8183: Add jacuzzi pico/pico6 board"=
-)
-> > Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
-> > Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@coll=
-abora.com>
-> > ---
-> > Changes since v1:
-> > - Collected reviewed-by
-> >
-> >   arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-pico6.dts | 3 ++-
-> >   1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-pico6.dt=
-s b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-pico6.dts
-> > index a2e74b829320..6a7ae616512d 100644
-> > --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-pico6.dts
-> > +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-pico6.dts
-> > @@ -82,7 +82,8 @@ pins-clk {
-> >   };
-> >
-> >   &mmc1 {
-> > -     bt_reset: bt-reset {
-> > +     bluetooth@2 {
-> > +             reg =3D <2>;
->
-> To avoid confusion, would it be possible to use sdio as a =E2=80=9Cname=
-=E2=80=9D.
+On 2024/1/29 下午8:23, Huacai Chen wrote:
+> Hi, Bibo,
+> 
+> We usually use eiointc_domain_alloc() rather than eiointc_domain_alloc
+> to describe a function, but it is not a big issue. If you will update
+> a new version you can modify this.
+sure, will do.
 
-Not sure where the confusion is. Bluetooth is the functionality this
-SDIO function provides.
+Regards
+Bibo Mao
+> 
+> Huacai
+> 
+> On Thu, Jan 25, 2024 at 7:36 PM Bibo Mao <maobibo@loongson.cn> wrote:
+>>
+>> There is small typo in function eiointc_domain_alloc, and there is no
+>> definition about struct eiointc, instead it should be struct eiointc_priv.
+>> It is strange that there is no warning with gcc compiler. This patch
+>> fixes the typo issue.
+>>
+>> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+>> Acked-by: Huacai Chen <chenhuacai@loongson.cn>
+>> ---
+>>   drivers/irqchip/irq-loongson-eiointc.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/irqchip/irq-loongson-eiointc.c b/drivers/irqchip/irq-loongson-eiointc.c
+>> index 1623cd779175..b3736bdd4b9f 100644
+>> --- a/drivers/irqchip/irq-loongson-eiointc.c
+>> +++ b/drivers/irqchip/irq-loongson-eiointc.c
+>> @@ -241,7 +241,7 @@ static int eiointc_domain_alloc(struct irq_domain *domain, unsigned int virq,
+>>          int ret;
+>>          unsigned int i, type;
+>>          unsigned long hwirq = 0;
+>> -       struct eiointc *priv = domain->host_data;
+>> +       struct eiointc_priv *priv = domain->host_data;
+>>
+>>          ret = irq_domain_translate_onecell(domain, arg, &hwirq, &type);
+>>          if (ret)
+>> --
+>> 2.39.3
+>>
 
-ChenYu
-
->
-> >               compatible =3D "mediatek,mt7921s-bluetooth";
-> >               pinctrl-names =3D "default";
-> >               pinctrl-0 =3D <&bt_pins_reset>;
->
->
-> Kind regards,
->
-> Paul
 
