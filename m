@@ -1,267 +1,280 @@
-Return-Path: <linux-kernel+bounces-43951-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43952-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47C66841B74
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 06:36:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AEFE841B76
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 06:37:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1D2A1F259B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 05:36:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01C02289C4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 05:37:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADF79381B8;
-	Tue, 30 Jan 2024 05:36:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46AF5381B0;
+	Tue, 30 Jan 2024 05:37:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="bdsVzYNp"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2104.outbound.protection.outlook.com [40.107.93.104])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="Q7aov1W3"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12olkn2019.outbound.protection.outlook.com [40.92.21.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E69D4376F4
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 05:35:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.104
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34948381B4;
+	Tue, 30 Jan 2024 05:37:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.21.19
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706592961; cv=fail; b=bcXJx1Suc7PloTBa01E10AtnY6IRA/lruGmLNuwq6QFPqNG6fmtLioJcyh0SdjllFKHH6ysNAlcIex2j+1tIbfgeFLBtIAWuknVV+EXu/CdaVi5j12w9H4Q7paGOFaEzb9jB4uEu1koBig0SXoSkJSxsspbLuB1L2l/mhpLPDQM=
+	t=1706593024; cv=fail; b=Iy8be1jDWTtC+rogsj3rHrnT6rlCcvo5g8+Lfbju85/HaHIgXvRrhV5DFLmLirHcCM5z6VhR2fP/5hKX3kmv2wRrk+0ijULwCVX3GOO0+0fr5HVWKXS6w9Skjdk0Pilx+fihUiU98YZdPUI/43x+fjyVhoQ4tjaP5ddyjKj7XJc=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706592961; c=relaxed/simple;
-	bh=xcwebWOGkRzXXNnZo/JLdO3PyZjxrdj6yHyI7bU9c00=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 Content-Type:MIME-Version; b=ZDNVd3H7uSnmxlXkKOZaDAPnr2anlkYI3HNJhT4k+VF7+PZ+kzhYesEYJ3QcurANY+ZZcsxUN9Hkxt6mwrb1flVn8+MmQ5KJW/yZwRsuRCIAqQxtkI0wnf/dElmUt5c0G7MFuEm1LSyNYFUKS/AohbepOkkieBO+W89FvkpX+Q4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b=bdsVzYNp; arc=fail smtp.client-ip=40.107.93.104
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
+	s=arc-20240116; t=1706593024; c=relaxed/simple;
+	bh=pabKxH948vXRxh3Sou3cFKLhpRkibezNnyqWgBtpOVw=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=V1IAmrcTX9CX/CkWAdq2DbYamL4QWdjEAJAA5EKxffxS+1on/auNAXxFJKhaPoUb9bsNJUbUh1H443UtncsArj5PtsCBckXNhmt3d0ikpR/PFMiOZ/53xu+HYoKULxRphMxFcI5CboxHGwgcoDXcjukExcMvRQ8dm5JCcj/ZHyA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=Q7aov1W3; arc=fail smtp.client-ip=40.92.21.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F/fIkEDFcxEaCNqpUX35P54aspwJCp0sxoJbsijoHqGT1F8498q5Qdj8lIrU0gWcgp8Vk3wuIpXiLn1QLg5lqabadQlKilnuE+OMhnGTtw/wM9q7I2OgeMoIbxVJZzfZ+hDlMmDgPk5ev2bUawOfXHIMRSBzEk7lPvKGZ59zcIWTHNqUbk8qh2g0OoI19HUMv6yiPkcx5ZnmQ9UWxavF4w0V3RcWtbgLZG0xlt1jS0v0LM9lPWyk7U7HzcBcQJUgc9A8ytRH2NhqHVY1aHBgr4JYka7Ilwz52ilP+74IhVetEWLGmPEjsl07ARUj/7I4hKKuoRqyiWvCa5ULrKQZxg==
+ b=ZvbsOir8cbsXIOhX6IacKgKxwtGlDvvCbmmCwDZDqsFp3zJ+hah7G14t4DnNsUAPZADsdbKcRzGODGnIg8ZkVcAJpK0zLygbuX9GjWzZoE28XfeMT4VGVT+xOnA/RRz/cRlgl3VJvt/A8KrQv4nyc36lbNTpYhYDo4eFAHWC0xQoatyqAWJBzpfIdSLfqNM680/OAWbSEoGXqlBYlUShn/pSTnRR1JRRzUR2ezGjDtO0+fLnehl7LgLjquwgQIWqkZ0llV4iwnZPBTdlN7t6dUQHGJjiCjMrujYEZ6MXHPXqoJAjm9CVZh8/CZrddTbPPOqDIFMsjE1JVMlx3VvAdw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NMT2PbVMCy9yR6XQJ1ohAVvGPwS0RWaTUGlFTjiJpN4=;
- b=Tghuiu6p/ZUWhg1gCzat2hBq58aqcFGnBFRjXe5QFyStOoKG/oTyvOBRHgZGrBJJcWG0r5r3pb0yXiufRDFRTm39aSYvCK7EssEU9+GrL+1YmB1Qb17wEIHxmEgri/8C83gVFMF6qvStRk7fL90nR7Xss4+VR3aDOKtasMis8ghKkphTwh39LM0bb/MNCsj1zr411qqJSeSjG8CMQzKEXWyYQVbrMRXoRpIbuiiYdItB/Igq4/dpFrJXqA2qQBgbNtnOsRXAyXG1/3XQmdnuOtJ5rnblVTdQTE/fLL2eE5OmJSY80xzfbGLCCN5PY5NL6t5gE1sxxjb+oG66WqmFFQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
+ bh=ePbyv4Cys6R9EWXnFliOFQTh/8OgQ8tkirzhniJ99GM=;
+ b=ivXw+t8LVw179ZnQriHr6GMgwQDlEyHy7QkjiHqXDTV+jlsBxvWiVCt2M7o/K2X2/ga6OaABtscJudli4V7uaBoECoyVnACB5oETTAmf/bRfqGP9swHm0sklw2aqt45ZH5V64qsRNq+L63Qi0LKaSl0FJfpeRNYzt5mL74SxbMgreKwnkkeLvPw3W7HbD0+bfKUPLcCTR+6rvznVkbrZzX5d5oF6Kyl81TJpgL2jIwawAzXjyIAIJ5FwdGDWktNdpKDi3Lm+rYxnu5/qU6jXEEIwHiuMbRI7wOUCIoz/B+WeRyjwcrVa9g/3sLWCSgPJmRp5Ljv67gXXkB4ErAcz0Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NMT2PbVMCy9yR6XQJ1ohAVvGPwS0RWaTUGlFTjiJpN4=;
- b=bdsVzYNpgrqRLpKiEBiflLSHafqnf+zhWNN1dbniBdnOgH2EqSQ9CE2S3HVdkwmBLAJqTdPrnlzHANNElC/9enKIVJVtRXXkPIfyFqSgAhlnaq4qTxSfxFwPXTLUxYQT5GrmRPvp3+D/qlKFKHDyG0eg/cXZBcKVoPz/ogvZl9Q=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
-Received: from PH0PR01MB8166.prod.exchangelabs.com (2603:10b6:510:293::17) by
- PH0PR01MB7349.prod.exchangelabs.com (2603:10b6:510:101::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7228.34; Tue, 30 Jan 2024 05:35:57 +0000
-Received: from PH0PR01MB8166.prod.exchangelabs.com
- ([fe80::67b9:4671:4fdb:2dbf]) by PH0PR01MB8166.prod.exchangelabs.com
- ([fe80::67b9:4671:4fdb:2dbf%5]) with mapi id 15.20.7228.029; Tue, 30 Jan 2024
- 05:35:57 +0000
-Date: Mon, 29 Jan 2024 21:35:51 -0800 (PST)
-From: Ilkka Koskinen <ilkka@os.amperecomputing.com>
-To: Robin Murphy <robin.murphy@arm.com>
-cc: Ilkka Koskinen <ilkka@os.amperecomputing.com>, 
-    Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-    linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] perf/arm-cmn: Enable support for tertiary match
- group
-In-Reply-To: <154b01c4-2ce3-4b85-abb6-b3baffe4f272@arm.com>
-Message-ID: <7cea725-940-4728-2879-529a49bceda@os.amperecomputing.com>
-References: <20240126221215.1537377-1-ilkka@os.amperecomputing.com> <20240126221215.1537377-4-ilkka@os.amperecomputing.com> <154b01c4-2ce3-4b85-abb6-b3baffe4f272@arm.com>
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-X-ClientProxiedBy: CH0PR03CA0030.namprd03.prod.outlook.com
- (2603:10b6:610:b0::35) To PH0PR01MB8166.prod.exchangelabs.com
- (2603:10b6:510:293::17)
+ bh=ePbyv4Cys6R9EWXnFliOFQTh/8OgQ8tkirzhniJ99GM=;
+ b=Q7aov1W3ga/uFq1/3is2m/dij1IWXm4XYFdLaffQ5NFrs2Fs/RkyrHTlx/obkpcTI8KeWKcuS+EcJHnqusQfLj40ipBTnUgDHQZ1drMcfNoODd5lhZ/5VE6whtEXJHWxXxHTOCN2fB8JkFI6/GEVpSpeixWEdnMaEWsAqIwED6tDlqqUiVejbDvdm4+8NPeKdj/hmrfhP+vrLenuhgQf7LW79DNtAISjRR9Xv5FmgYG+39Ik0Y1eFVt33uyt2Y5fmHMZGYuXPSJ94Wqqr2QOo2hWczJjwD3Ykje5fsnbToqr/wFy9C2o4Bx9emziVrnkuPErreFRzJS1GoEJlMVskA==
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
+ by CH2PR02MB6728.namprd02.prod.outlook.com (2603:10b6:610:7e::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.33; Tue, 30 Jan
+ 2024 05:36:59 +0000
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::67a9:f3c0:f57b:86dd]) by SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::67a9:f3c0:f57b:86dd%5]) with mapi id 15.20.7228.029; Tue, 30 Jan 2024
+ 05:36:59 +0000
+From: Michael Kelley <mhklinux@outlook.com>
+To: Baoquan He <bhe@redhat.com>, "kexec@lists.infradead.org"
+	<kexec@lists.infradead.org>, "akpm@linux-foundation.org"
+	<akpm@linux-foundation.org>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"x86@kernel.org" <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linuxppc-dev@lists.ozlabs.org"
+	<linuxppc-dev@lists.ozlabs.org>, "linux-s390@vger.kernel.org"
+	<linux-s390@vger.kernel.org>, "nathan@kernel.org" <nathan@kernel.org>
+Subject: RE: [PATCH v2 linux-next 1/3] x86, crash: don't nest
+ CONFIG_CRASH_DUMP ifdef inside CONFIG_KEXEC_CODE ifdef scope
+Thread-Topic: [PATCH v2 linux-next 1/3] x86, crash: don't nest
+ CONFIG_CRASH_DUMP ifdef inside CONFIG_KEXEC_CODE ifdef scope
+Thread-Index: AQHaUyh40go+WQA5m0KtJmeFc8tkfrDx1bKw
+Date: Tue, 30 Jan 2024 05:36:59 +0000
+Message-ID:
+ <SN6PR02MB4157BA050EF4F9D9F58BC694D47D2@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20240129135033.157195-1-bhe@redhat.com>
+ <ZbhmL/jQtZ7TFZqV@MiWiFi-R3L-srv>
+In-Reply-To: <ZbhmL/jQtZ7TFZqV@MiWiFi-R3L-srv>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-tmn: [VDYORJ1NoFVwoncY4cx01ogrvBox94eG]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|CH2PR02MB6728:EE_
+x-ms-office365-filtering-correlation-id: f6328023-b16c-4bca-3cb0-08dc21557a96
+x-ms-exchange-slblob-mailprops:
+ I89ikN2gb/9QbZtBpKkFdMk9gU7jZqZBTe7LPV7TAM+eVIUHrjlNRxn9SoJbiTKOEel6Zs9xDJ0eGGLvYsa1vpMfTjr/kYcziSbS5dQw2vEt9HnNh/WRyS1mE7oHyMLUo99xCzoCzlnY7tm+gI7Idx16W3VvMxqOqvLsJ5qKSwAhDlK5K3nWyHlRfL7ZJ/QMG0CR2xRXnM8A0VrzFcbZBhdt3hD9DLfYliVJt4Tq04GPSqrPAw+VTx9Ppfn7WIMSecnOriaKX8OSFlXsC7WwWL0Xny9wR7QaFN7ULKfDREMmWACMOqZ4jCyaLQdk8VT90NX0KilqwVeWMVabI6xo8PP9WhIQu9+FyFG2DL/iMnqSNmqdkcZlduLyTKK++/MjekbNGR9SQRWEgr714RGDkiaY7cCWWJKnOBtYtCzGlSS5gVj0D0dGoC9soCOC47zlvXiwEr5IEM66vws+4HnE/3HNNAMHevwH7scQnvKFA9+nCwvWcCpg6ZhtAct3lSHfZfrul+Cz2Hn4RQG9TsBnup3YR0K9ZoQKh7icGxmFNtjs+ZpkdtFDozxWYX87eIr39Qsi75gsytA/duiKUTIzbAKp+qwzYK0oFVO2sVzGPwl2d9eqq+G+CPTbz/aKMbQp2wqvMAUfeB71K3NDOC4lO1tQAyRJsFqWGxjoA9yBesdqsD1LOT7eU37jvGtfA7orCbI1Wv4qB+Ubs0KTIbpow2JiaJKWciyRMr8aLLAWdc90iTq3+V7F1JfwtR0yUvxZ05i+lOGI9lZ12fwZBRbDmjD8hyKKFDpLSvY6bGhzSZysimc5YzxtRnO0WXXe2xwkWlrOywRh4bIrwAlUrGHXlYvWjfNs81pYMBm/ZKmztJVph9A//RpU7cdvQteN3BwE64ZRq4dYqVI=
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ nEfAoiEFUwKWt8O37FmbSaXn4XOs2vOVebnZPji0gvNEthBzMKZNi4CklBO4Z4rJy5WKXTMKzWyvslXxa4YOKmcZREB+82QFdKL6fZIBGYRKmRf7yccXuodD61XrQS2mVQlGBoQq04b8ybrPuZ8038oUjALBAhW9vV0a7rICSBb9LUvqbeHXOpxNiB+lhegHjR9CpIg44+fXpm32d3rQNom5daQtJexK13Q3/RwThG70ed9nMNECh6Kwnjy67oUyUfJNx4b5XMySRchQq+7Jzf4AUjZaTZB2WpmP8kd+VK14z06lKqXHLyyeg1xR4JpjX1xjrds8DxffzEQFL2j7RaidfpnxEeNUDvyWPVORJIyWdwQom1adrrCRKoLvsbnPaIuNgm27VCIB20BXJofpz2i6PGnXPyPPz3JA+XWqGF5kzSbuLkwH4zR9rhb7bf3QmAi7EnDdN1cx3EO8Yrk8DRCm219cSBfWygeFpSYp9TvQuFShn7+vVYxdG6WKQW0kCfwB31TLNBWpTbOxWvYHARnHSwxJmv7tYgpPEpEb+Ryk6QWznQdTFVJT9Jhc1uRNgFbNZrZMngTjbaTbQ8IHSekvgVZdLgdYqR7IuPbq8NAnbn1uiWsiq9rMfy7t6FYbJPbgQVCKfIqxFLlfY3tc4A==
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?yUhm9bN62hMTp6PwIbxaghVUECXBtPW1Lc30pSmY6HpQMrFaFLX+BLsX0uB6?=
+ =?us-ascii?Q?jIF00WeBb1S5QlSdO4C7q0Ufsvf2rtiponsVLXznX12bIpI5HX7xaKuYX9od?=
+ =?us-ascii?Q?auy9tiN/GnhOQheCLeg1U1WjFSXo9EucEakEphhjrDZm8T+LX4Fb2Ug910sz?=
+ =?us-ascii?Q?ZXVm31DmIKtgl2zADzvvS6KQQ2c2M4HnZduQezk2sYWp8H/Q79znTyi2CQ2E?=
+ =?us-ascii?Q?CD6o13TbrRM3iYb3NrFrpMAe3Yk2VMguoMB7nd7k7OxEiL2U4Onb5JcCkUSS?=
+ =?us-ascii?Q?lPgaGqv0l7qTjLd84cMV1iRU/Yc5zgSbLCAsm+hSuUEh9aGDSCCPhxVdCxZ2?=
+ =?us-ascii?Q?sjtPm1RALTZV5ZAwg7b+4cmnaV6vq/2IKRpnJSRbRxjsJxVAnVlbS/jekVTH?=
+ =?us-ascii?Q?L0ujxsnD38hlaetMg/cw3ER5LBGfbzqTJWca0InsS/55hLhr4YU5Aq8cKLDj?=
+ =?us-ascii?Q?06K2NJ+JnLd8CKIgLevKayjiw8/W66K9endcYefVcDoVfnOQUgJ5kDSvxxJ7?=
+ =?us-ascii?Q?dILUTkU+E7yqu+tKp6BwDAhFnGrj6QT5R5QiN39TRCUaTENctuw9YF1xIvi8?=
+ =?us-ascii?Q?W13olJIV6BtN0f3uAmpMbpQWK8nlWNogunOnW5z2poELl0YJY+wtyFykPL+2?=
+ =?us-ascii?Q?YQ2ko3FP0/EEJciy26DqgRqd9RrQ8GO2a+M7EYQEeHAxtITDCCGvjDK0yv51?=
+ =?us-ascii?Q?5jYLg1WsPQ82Zk86OGX99pwNqALF9WzV3Zrq4otkvXsvKpUqxC8UeyF+MAdg?=
+ =?us-ascii?Q?w1c13QDCN0MONZtSSmaBYXodb+fCqSGikh6wPpAo15kvUAgmdHWOMVkCrjVC?=
+ =?us-ascii?Q?fLGeeK1cKhsjq2a6iAHgb5bVPO3DSnOd7BAv+7BMNXDtK3GeqaXMLaYUKih+?=
+ =?us-ascii?Q?mah8kcMk0jeHnA146obsusFpNygwntXZ2nLrwvrKyhPbTLb82CwcH5dg4E0Q?=
+ =?us-ascii?Q?yzsV5Vp/6Fz5ZGzMEU6RN1J9Op5+H9zaPVLBJbUDieusqpsfHSgfByvsG2rV?=
+ =?us-ascii?Q?ZsHa8a3vlSZY9oDELqXyRd9Wj3eafyDMCUkeWoqMAhVqOb25ZQMcVCC3nAi0?=
+ =?us-ascii?Q?HMZnRo4W0jbawzGtiHH9rzbdF2yXAVV4rI1rfTxxZ9n/fJ2M0xzkoX/jqn3h?=
+ =?us-ascii?Q?oD/gyicMqLPW4JWMjri+BI2GYYJ3MbBvhqT+dpiBEc+O3g89HUvTMAfdsd4j?=
+ =?us-ascii?Q?bXVtCeISgi0t2KqIxY876I1RKrodqh34mgJ0Xg=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR01MB8166:EE_|PH0PR01MB7349:EE_
-X-MS-Office365-Filtering-Correlation-Id: 81a4d7f6-6801-4526-b383-08dc215555b0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	3TZpX7NQ7qmLIC3d8IzWs6TrZK89DiH2UAxHtsFPKzIaxkgVcMSSBk4rS2qqDN4k9OZvnkf4yGWCoAcWKDM6QyIUdPEE2bd9oRiS/Zo4J0cH//IzJHME9DrZr+L9IsNgK59IFgqntazVNxfoyIOoe54PR5uftXqkVtISs0Xpj7X26/HpQvAFZwYbbp4x3YZ+RhFFMjyQxLwWuDDMN/pYfuRkQEsAqOtw8WHMkUBOUVoZWQo84hWkoET5EkKR95rB3A12nbONJug/yRoxeVmBhneQf3p5toL6eb2vjTtjfGl6t8vJuDeVzSDA7i/Ibpc5iWmsgoj0X+ok3lfNTlCuLnsFxNZ7Fssvfoj2WRPvilaMFfSFjV1tu0KigWKyYCMSTb2qg2TaJ9Ss9Z3hlBGo/FbTSLpb8cvS96NRq0ajPYgZxMJvj89EfAWnl6uug8Uzkv5iha43OKL/BYYxJUo5q2QjaLJg3eljVHoHLepzVYiM7rjrwophNs3ZbNDiqdOII8tyn1Z7ZYTXYskpvNWdMqS6uTHRfLZlG4C29Fl7q7SnTeXThgKgEk5tqOniEiL8MENqTqUBEHNNmDkyLDlLoSq9N1O9CfZ8T9N3EMTVEnmSobs2+LIpmKv2yjq46g+b
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB8166.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(39850400004)(376002)(396003)(136003)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(41300700001)(38100700002)(316002)(86362001)(6506007)(54906003)(6916009)(66946007)(66476007)(6486002)(8676002)(8936002)(53546011)(52116002)(5660300002)(2616005)(6512007)(478600001)(4326008)(26005)(2906002)(6666004)(66556008)(83380400001)(38350700005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?MBBOYMagWjIib6ib1GC457CssY+uoiPaBt9QGYGODjRoBBVB2+OQxhlhDEnW?=
- =?us-ascii?Q?n4OCLr/w3XRLBzTuwnScV7snB5/F1N1h35UvpalAgdcji9XcNUn521rBWW0/?=
- =?us-ascii?Q?3WY7UeoLVXSo34S6QwvwscvdYbIcMkSpBaCL1TUXsT0Ge8w0rtvF5t/fviHq?=
- =?us-ascii?Q?aDrBMsTsZbeqI5mbR4WsPCSp9YLErZf/qtCrjUgx/vSUhxFZblQ6RlEnx72P?=
- =?us-ascii?Q?rK4kPu78wKUjwHaezcLiMXF1cJpRrop8p1dpmRjpoxb7kdrGCazqkKvLudtb?=
- =?us-ascii?Q?gfzpxlH5pY68iNaTruCc0z2pXmWaRzAbqClOfKf/Tohvgqai7YLEHO+3orcA?=
- =?us-ascii?Q?rnRWfidgy8jRuuxAD0PXaRwyqsfBsu6gArXrw/2E7mZLUTqIv4HqMaUL3nsb?=
- =?us-ascii?Q?SvkkDV2aKLkUFteyxIlID5Ed/y6WnajWMqVJqvu41+DYfWO4e7oC8ZNFuSOJ?=
- =?us-ascii?Q?FHwqmyiL5MRmsxp5PLjgSDrWr0HD50KyR8qT2kAPq/gQWFmt6GdUBJCqVdf6?=
- =?us-ascii?Q?eYDaNBMmS4DNNtuCWVVmcq2SPi5RccQyiw8J3WRm1+YkC/uqowLUEsV+1XCn?=
- =?us-ascii?Q?ZxeI4lOzlG4RfJ5ZqQJM0+Mowccm6OVCyYmv1KwOYDjQEw2vI0Ki7GP5Wa/c?=
- =?us-ascii?Q?aeGtq8XymwKjVAj85iOYQ/+pC6eNr1xzINBFdQEa7F1fOvcnyWNolww7CCr8?=
- =?us-ascii?Q?0XSvkQw4ObbwHH5AJlRBtwdNeKiD1tl2FJFCgWp6IHhU2bon7BiISQ1mgYNA?=
- =?us-ascii?Q?LDf+thdkeiYE/IRcMYq4zHj2dTKI6zyuPn7ZHBPHOy84IFu07/8paAuVugHb?=
- =?us-ascii?Q?ecLUTHp7jbuHymJVZOKwIfXwe57faloIPzgOZVN1EDsyw5xdhu4sW3YYMQpU?=
- =?us-ascii?Q?SJQNPta5c35VmRxvX3arOZ8UuZhO9sy623hdRQewjZ4zE09f9mm+NnR5R+0X?=
- =?us-ascii?Q?rG2jj1fkA5TMr5IXyuce8a7oMKGbXD8uyluqHtdrf1/e8FT2F+T2IkqWUydJ?=
- =?us-ascii?Q?W5cbdFE36Tc1gKbSyhgVrb2V3UjZnRTBu/XP5q+gSYm+K/XCP55i1OG79uSM?=
- =?us-ascii?Q?VaDONfd1b8FNA4AREMVQspbmzQnCl10iUC6ZjfwAkw98LJzo9Meh5KlY8DaF?=
- =?us-ascii?Q?Bp7XOtr7pJurNtEPuT4P2gF+rsgj+21va40IBxn1i6AxsrDXOWgYjwK5YnKF?=
- =?us-ascii?Q?ei2QefjRQjidUI31BphrpNM0/18I+QEHW9eNudr0StjEdpvL6hfqOuenhbp2?=
- =?us-ascii?Q?ETnhSfVBwVn8RAu4LasasJXT2+JjVdQYV5irzmpCAKrBAEmr7/ZZbYX4CnMX?=
- =?us-ascii?Q?LpQrz/b8a2lvkHCrwUkXIwqcB6x4KIHsvGXErKik1U5C0CZxdYsNTOHsUWnL?=
- =?us-ascii?Q?sriXXxAmFdEn5U7q5utunvXksQ7qMrHm2I/K6NakPkjV6Z/K75JNtgReYX9R?=
- =?us-ascii?Q?GkokC3mXN66MOM37I+EVgeIpbitVjtxiL/it4sEI6FI7GqFrpsC2qpPy/szr?=
- =?us-ascii?Q?mGvbDR3QvVqoVdQReAqBSa1SrKiaAPTsOOKSWiTThE516Be8d7NwB3fJDLQV?=
- =?us-ascii?Q?ws4Q9HqYujWikXAOJRrKJMDdqv2xvyWbodcKklvhnAyfsPDtJZh/DYCOn8xB?=
- =?us-ascii?Q?e3GamDD9MrlJfO1hr4ngK3U=3D?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 81a4d7f6-6801-4526-b383-08dc215555b0
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB8166.prod.exchangelabs.com
+X-OriginatorOrg: outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jan 2024 05:35:57.4729
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: f6328023-b16c-4bca-3cb0-08dc21557a96
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jan 2024 05:36:59.1755
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pYYC8RrN4HdBL5dumut/0p3rqKJ3IytQxj3rCjbcbyzHj0hjPSijvv2XxV78E2smV/Xq8w+4noSLQ1fEXhSglOf0SG8gQyM9QLOWdYWjRJN3bfj8p07pM8lPNZTJ5HVV
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR01MB7349
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR02MB6728
 
+From: Baoquan He <bhe@redhat.com> Sent: Monday, January 29, 2024 7:00 PM
+>=20
+> Michael pointed out that the CONFIG_CRASH_DUMP ifdef is nested inside
+> CONFIG_KEXEC_CODE ifdef scope in some XEN, Hyper-V codes.
+>=20
+> Although the nesting works well too since CONFIG_CRASH_DUMP has
+> dependency on CONFIG_KEXEC_CORE, it may cause confusion because there
+> are places where it's not nested, and people may think it needs to be
+> nested even though it doesn't have to.
+>=20
+> Fix that by moving  CONFIG_CRASH_DUMP ifdeffery of codes out of
+> CONFIG_KEXEC_CODE ifdeffery scope.
+>=20
+> And also put function machine_crash_shutdown() definition inside
+> CONFIG_CRASH_DUMP ifdef scope instead of CONFIG_KEXEC_CORE ifdef.
+>=20
+> And also fix a building error Nathan reported as below by replacing
+> CONFIG_KEXEC_CORE ifdef with CONFIG_VMCORE_INFO ifdef.
+>=20
+> =3D=3D=3D=3D
+> $ curl -LSso .config https://git.alpinelinux.org/aports/plain/community/l=
+inux-edge/config-edge.x86_64
+> $ make -skj"$(nproc)" ARCH=3Dx86_64 CROSS_COMPILE=3Dx86_64-linux-
+> olddefconfig all
+> ...
+> x86_64-linux-ld: arch/x86/xen/mmu_pv.o: in function
+> `paddr_vmcoreinfo_note':
+> mmu_pv.c:(.text+0x3af3): undefined reference to `vmcoreinfo_note'
+> =3D=3D=3D=3D
+>=20
+> Link: https://lore.kernel.org/all/SN6PR02MB4157931105FA68D72E3D3DB8D47B2@=
+SN6PR02MB4157.namprd02.prod.outlook.com/T/#u
+> Link: https://lore.kernel.org/all/20240126045551.GA126645@dev-arch.thelio=
+-3990X/T/#u
+> Signed-off-by: Baoquan He <bhe@redhat.com>
+> ---
+> v1->v2:
+> - Add missing words and fix typos in patch log pointed out by Michael.
+>=20
+>  arch/x86/kernel/cpu/mshyperv.c | 10 ++++++----
+>  arch/x86/kernel/reboot.c       |  2 +-
+>  arch/x86/xen/enlighten_hvm.c   |  4 ++--
+>  arch/x86/xen/mmu_pv.c          |  2 +-
+>  4 files changed, 10 insertions(+), 8 deletions(-)
+>=20
+> diff --git a/arch/x86/kernel/cpu/mshyperv.c
+> b/arch/x86/kernel/cpu/mshyperv.c
+> index f8163a59026b..2e8cd5a4ae85 100644
+> --- a/arch/x86/kernel/cpu/mshyperv.c
+> +++ b/arch/x86/kernel/cpu/mshyperv.c
+> @@ -209,6 +209,7 @@ static void hv_machine_shutdown(void)
+>  	if (kexec_in_progress)
+>  		hyperv_cleanup();
+>  }
+> +#endif /* CONFIG_KEXEC_CORE */
+>=20
+>  #ifdef CONFIG_CRASH_DUMP
+>  static void hv_machine_crash_shutdown(struct pt_regs *regs)
+> @@ -222,8 +223,7 @@ static void hv_machine_crash_shutdown(struct
+> pt_regs *regs)
+>  	/* Disable the hypercall page when there is only 1 active CPU. */
+>  	hyperv_cleanup();
+>  }
+> -#endif
+> -#endif /* CONFIG_KEXEC_CORE */
+> +#endif /* CONFIG_CRASH_DUMP */
+>  #endif /* CONFIG_HYPERV */
+>=20
+>  static uint32_t  __init ms_hyperv_platform(void)
+> @@ -497,9 +497,11 @@ static void __init ms_hyperv_init_platform(void)
+>  	no_timer_check =3D 1;
+>  #endif
+>=20
+> -#if IS_ENABLED(CONFIG_HYPERV) && defined(CONFIG_KEXEC_CORE)
+> +#if IS_ENABLED(CONFIG_HYPERV)
+> +#if defined(CONFIG_KEXEC_CORE)
+>  	machine_ops.shutdown =3D hv_machine_shutdown;
+> -#ifdef CONFIG_CRASH_DUMP
+> +#endif
+> +#if defined(CONFIG_CRASH_DUMP)
+>  	machine_ops.crash_shutdown =3D hv_machine_crash_shutdown;
+>  #endif
+>  #endif
+> diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
+> index 1287b0d5962f..f3130f762784 100644
+> --- a/arch/x86/kernel/reboot.c
+> +++ b/arch/x86/kernel/reboot.c
+> @@ -826,7 +826,7 @@ void machine_halt(void)
+>  	machine_ops.halt();
+>  }
+>=20
+> -#ifdef CONFIG_KEXEC_CORE
+> +#ifdef CONFIG_CRASH_DUMP
+>  void machine_crash_shutdown(struct pt_regs *regs)
+>  {
+>  	machine_ops.crash_shutdown(regs);
+> diff --git a/arch/x86/xen/enlighten_hvm.c b/arch/x86/xen/enlighten_hvm.c
+> index 09e3db7ff990..0b367c1e086d 100644
+> --- a/arch/x86/xen/enlighten_hvm.c
+> +++ b/arch/x86/xen/enlighten_hvm.c
+> @@ -148,6 +148,7 @@ static void xen_hvm_shutdown(void)
+>  	if (kexec_in_progress)
+>  		xen_reboot(SHUTDOWN_soft_reset);
+>  }
+> +#endif
+>=20
+>  #ifdef CONFIG_CRASH_DUMP
+>  static void xen_hvm_crash_shutdown(struct pt_regs *regs)
+> @@ -156,7 +157,6 @@ static void xen_hvm_crash_shutdown(struct pt_regs
+> *regs)
+>  	xen_reboot(SHUTDOWN_soft_reset);
+>  }
+>  #endif
+> -#endif
+>=20
+>  static int xen_cpu_up_prepare_hvm(unsigned int cpu)
+>  {
+> @@ -238,10 +238,10 @@ static void __init xen_hvm_guest_init(void)
+>=20
+>  #ifdef CONFIG_KEXEC_CORE
+>  	machine_ops.shutdown =3D xen_hvm_shutdown;
+> +#endif
+>  #ifdef CONFIG_CRASH_DUMP
+>  	machine_ops.crash_shutdown =3D xen_hvm_crash_shutdown;
+>  #endif
+> -#endif
+>  }
+>=20
+>  static __init int xen_parse_nopv(char *arg)
+> diff --git a/arch/x86/xen/mmu_pv.c b/arch/x86/xen/mmu_pv.c
+> index 218773cfb009..e21974f2cf2d 100644
+> --- a/arch/x86/xen/mmu_pv.c
+> +++ b/arch/x86/xen/mmu_pv.c
+> @@ -2520,7 +2520,7 @@ int xen_remap_pfn(struct vm_area_struct *vma,
+> unsigned long addr,
+>  }
+>  EXPORT_SYMBOL_GPL(xen_remap_pfn);
+>=20
+> -#ifdef CONFIG_KEXEC_CORE
+> +#ifdef CONFIG_VMCORE_INFO
+>  phys_addr_t paddr_vmcoreinfo_note(void)
+>  {
+>  	if (xen_pv_domain())
+> --
+> 2.41.0
 
+Reviewed-by: Michael Kelley <mhklinux@outlook.com>
 
-On Mon, 29 Jan 2024, Robin Murphy wrote:
-
-> On 2024-01-26 10:12 pm, Ilkka Koskinen wrote:
->> Add support for tertiary match group.
->>
->> Signed-off-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
->> ---
->>   drivers/perf/arm-cmn.c | 23 +++++++++++++++++++----
->>   1 file changed, 19 insertions(+), 4 deletions(-)
->> 
->> diff --git a/drivers/perf/arm-cmn.c b/drivers/perf/arm-cmn.c
->> index dc6370396ad0..ce9fbdcf6144 100644
->> --- a/drivers/perf/arm-cmn.c
->> +++ b/drivers/perf/arm-cmn.c
->> @@ -91,10 +91,13 @@
->>   #define CMN600_WPn_CONFIG_WP_COMBINE	BIT(6)
->>   #define CMN600_WPn_CONFIG_WP_EXCLUSIVE	BIT(5)
->>   #define CMN_DTM_WPn_CONFIG_WP_GRP	GENMASK_ULL(5, 4)
->> +#define CMN600_WPn_CONFIG_WP_GRP	BIT(4)
->>   #define CMN_DTM_WPn_CONFIG_WP_CHN_SEL	GENMASK_ULL(3, 1)
->>   #define CMN_DTM_WPn_CONFIG_WP_DEV_SEL	BIT(0)
->>   #define CMN_DTM_WPn_VAL(n)		(CMN_DTM_WPn(n) + 0x08)
->>   #define CMN_DTM_WPn_MASK(n)		(CMN_DTM_WPn(n) + 0x10)
->> +#define CMN_DTM_WP_CHN_SEL_REQ_VC	0
->> +#define CMN_DTM_WP_GRP_TERTIARY		0x2
->>     #define CMN_DTM_PMU_CONFIG		0x210
->>   #define CMN__PMEVCNT0_INPUT_SEL		GENMASK_ULL(37, 32)
->> @@ -175,8 +178,8 @@
->>   #define CMN_CONFIG_WP_DEV_SEL		GENMASK_ULL(50, 48)
->>   #define CMN_CONFIG_WP_CHN_SEL		GENMASK_ULL(55, 51)
->>   /* Note that we don't yet support the tertiary match group on newer IPs 
->> */
->> -#define CMN_CONFIG_WP_GRP		BIT_ULL(56)
->> -#define CMN_CONFIG_WP_EXCLUSIVE		BIT_ULL(57)
->> +#define CMN_CONFIG_WP_GRP		GENMASK_ULL(57, 56)
->> +#define CMN_CONFIG_WP_EXCLUSIVE		BIT_ULL(58)
->>   #define CMN_CONFIG1_WP_VAL		GENMASK_ULL(63, 0)
->>   #define CMN_CONFIG2_WP_MASK		GENMASK_ULL(63, 0)
->>   @@ -1298,7 +1301,9 @@ static struct attribute *arm_cmn_format_attrs[] = {
->>     	CMN_FORMAT_ATTR(CMN_ANY, wp_dev_sel, CMN_CONFIG_WP_DEV_SEL),
->>   	CMN_FORMAT_ATTR(CMN_ANY, wp_chn_sel, CMN_CONFIG_WP_CHN_SEL),
->> -	CMN_FORMAT_ATTR(CMN_ANY, wp_grp, CMN_CONFIG_WP_GRP),
->> +	CMN_FORMAT_ATTR(CMN600, wp_grp, CMN600_WPn_CONFIG_WP_GRP),
->
-> Perhaps an easy confusion, but 4 != 56: CMN_CONFIG_WP_* represent 
-> perf_event->config{,1,2} attribute fields per the CMN_CONFIG_* pattern, 
-> whereas CMN*_WPn_CONFIG_* are hardware register fields where "config" is just 
-> annoygingly part of the register name.
-
-Ah, true.
-
->
->> +	CMN_FORMAT_ATTR(NOT_CMN600, wp_grp, CMN_CONFIG_WP_GRP),
->
-> Hmm, I'm sure last time I tried something like this, sysfs wouldn't let two 
-> attributes with the same name exist, regardless of whether one was meant to 
-> be hidden :/
->
-> TBH I think that either we change ABI for everyone consistently, or we extend 
-> the field in a backwards-compatible way. If you think an ABI break would 
-> affect existing CMN-600 users, then surely at stands to affect existing 
-> CMN-650 and CMN-700 users just as much?
-
-Well, I doubt it would really affect. Sounds like extending would be just 
-fine.
-
->> +
->>   	CMN_FORMAT_ATTR(CMN_ANY, wp_exclusive, CMN_CONFIG_WP_EXCLUSIVE),
->>   	CMN_FORMAT_ATTR(CMN_ANY, wp_combine, CMN_CONFIG_WP_COMBINE),
->>   @@ -1398,8 +1403,11 @@ static u32 arm_cmn_wp_config(struct perf_event 
->> *event)
->>     	config = FIELD_PREP(CMN_DTM_WPn_CONFIG_WP_DEV_SEL, dev) |
->>   		 FIELD_PREP(CMN_DTM_WPn_CONFIG_WP_CHN_SEL, chn) |
->> -		 FIELD_PREP(CMN_DTM_WPn_CONFIG_WP_GRP, grp) |
->>   		 FIELD_PREP(CMN_DTM_WPn_CONFIG_WP_DEV_SEL2, dev >> 1);
->> +
->> +	if (grp)
->> +		config |= is_cmn600 ? CMN600_WPn_CONFIG_WP_GRP :
->> +				      FIELD_PREP(CMN_DTM_WPn_CONFIG_WP_GRP, 
->> grp);
->
-> FWIW I think something more like "if (is_cmn600) grp &= 1;" before the 
-> existing assignent might be clearer. Note that that *is* effectively how this 
-> works already since CMN_DTM_WPn_CONFIG_WP_GRP was updated, it's just 
-> currently implicit in CMN_EVENT_WP_GRP().
-
-Seems reasonable
-
->
->>   	if (exc)
->>   		config |= is_cmn600 ? CMN600_WPn_CONFIG_WP_EXCLUSIVE :
->>   				      CMN_DTM_WPn_CONFIG_WP_EXCLUSIVE;
->
-> You've missed the "(combine && !grp)" logic below this point, which also 
-> needs to get rather more involved if a combined match across groups 1 and 2 
-> is going to work correctly.
-
-Ah, that's right
-
->
->> @@ -1764,6 +1772,13 @@ static int arm_cmn_event_init(struct perf_event 
->> *event)
->>   		/* ...and we need a "real" direction */
->>   		if (eventid != CMN_WP_UP && eventid != CMN_WP_DOWN)
->>   			return -EINVAL;
->> +
->> +		if (cmn->part != PART_CMN600)
->> +			if (CMN_EVENT_WP_GRP(event) > CMN_DTM_WP_GRP_TERTIARY 
->> ||
->> +			    (CMN_EVENT_WP_GRP(event) == 
->> CMN_DTM_WP_GRP_TERTIARY &&
->> +			     CMN_EVENT_WP_CHN_SEL(event) != 
->> CMN_DTM_WP_CHN_SEL_REQ_VC))
->> +				return -EINVAL;
->> +
->
-> We already don't attempt to sanity-check watchpoint arguments (e.g. chn>3 or 
-> chn=1,grp=1), so I'm not really inclined to start. The aim here has always 
-> been not to try to understand watchpoints at all, and effectively just pass 
-> through the register interface to the user.
-
-Yep, I noticed that. I'm fine with either way
-
-Cheers, Ilkka
-
->
-> Thanks,
-> Robin.
->
->>   		/* ...but the DTM may depend on which port we're watching */
->>   		if (cmn->multi_dtm)
->>   			hw->dtm_offset = CMN_EVENT_WP_DEV_SEL(event) / 2;
->
 
