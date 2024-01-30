@@ -1,111 +1,151 @@
-Return-Path: <linux-kernel+bounces-44138-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44139-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 713FB841DCA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:31:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3620B841DCF
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:32:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CDEC28AED6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:31:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2D421F2B44F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:32:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1246F5821B;
-	Tue, 30 Jan 2024 08:31:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RirXi2tD"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D652F58208;
-	Tue, 30 Jan 2024 08:31:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 003EE52F61;
+	Tue, 30 Jan 2024 08:32:07 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C10B76C79;
+	Tue, 30 Jan 2024 08:32:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706603470; cv=none; b=FKHRBCyx1zMxszEOdwTrNQFhqdLCXMpsjt5Gi+p1DWf4K7GT8cAGhJtdjvAE1V2/g4XuAATEqP+XfxKfdu7jMjKpCiCHNN8PuJ+9l0D7ELRiouf/efR6xrYEXzF7npfi+3YN4Ka8xu4idlvxBuz4K9qe69cvSW3LylyrkZDbfPE=
+	t=1706603526; cv=none; b=jYODu2ud3XG3P2lia+f+Tzs+NgtB5YQPoEI9ujbCJCFr70v7WPfo7LCAkmrlF9i9Vt5bWksHMBMDD8n63v3nSudODmgM1qxljYcNELq36UXUVXnBGmLi0UFhzwbfp7vzy00kcOAwrpGbrHh4RaYudsclm39EbyVI3YFBYDh74oE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706603470; c=relaxed/simple;
-	bh=eDILxyTaa4HC4XR5/xnYTNtOe1gaCpqv7fIDLS+DWwA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AWde2R0aXcUBbEN63ggkeTL3oJ5w6AmmnvSIa6IZVIPUVVG3c1Fe0SbYKrwC1yzbVlAUs/cSCk4qkaMSj5RlEWP7ZA/+AHR0CyGcnKS2dVqZl/zRx35NA7JVQ7/rquib9vK7vGxr5hugdhLF9+NeLdWTH2WsOKSNgqF/utujJhg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RirXi2tD; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706603468; x=1738139468;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=eDILxyTaa4HC4XR5/xnYTNtOe1gaCpqv7fIDLS+DWwA=;
-  b=RirXi2tDno8PxMbu8J4rVBcZOMtpKlD9NTvk6Li/ik9WX/1jLhPR6t/Q
-   nmCZ8mL9+KuXX1WnIvHLbrrze0+0ZH3DByDW78TT+rgr6+OJt6qMj5DAL
-   cnlocRLcteYurHZrjwk9i1tBUJoG6GNoEBiHxLawIqkSKdP3cbcBVahZC
-   LsS1riqognM5ormI9a4dG/rcLPo1g8SmoEAd6SyUlOM0yhEeVeIcVADgM
-   W+hL+miPH1PLLPnAh+haIzfX6/A2oyfctkMp84mczOaIBIJ7DgUBozeYK
-   gLubwAeuEQUY9uZbZyg/YLWxfE1ZYpaSfd5BOSNSuQNznZWoJkC+FcLnF
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="24686973"
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="24686973"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 00:31:07 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="737696481"
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="737696481"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 00:31:05 -0800
-Date: Tue, 30 Jan 2024 10:31:02 +0200
-From: Raag Jadav <raag.jadav@intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: u.kleine-koenig@pengutronix.de, jarkko.nikula@linux.intel.com,
-	mika.westerberg@linux.intel.com, lakshmi.sowjanya.d@intel.com,
-	linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/3] pwm: dwc: simplify error handling
-Message-ID: <ZbizxhQ5cxcDk2eK@black.fi.intel.com>
-References: <20240122030238.29437-1-raag.jadav@intel.com>
- <20240122030238.29437-3-raag.jadav@intel.com>
- <ZbZpMO9b7L-DNIcb@smile.fi.intel.com>
+	s=arc-20240116; t=1706603526; c=relaxed/simple;
+	bh=giGHyUoP2JYDUN62HXLPUpAiCyVqPjkFQ+lvW+bcLEU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LrymoY92FfZn84H+Y6KjVDRD/f2JNCpERUNJXGzvJGSLCZnO8uMVTpeUqcvD1cX9tsYGxF5V+Ry3AFLf2Zp+PNLBsaVqirVzjBhUTwKxDXQ+0rtKw5sqX26kkBTceooY1vxY8U15igco8C+FTdXm+fsplood82nWFTu4diyU/9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 04441DA7;
+	Tue, 30 Jan 2024 00:32:47 -0800 (PST)
+Received: from [10.57.79.54] (unknown [10.57.79.54])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4DEEE3F738;
+	Tue, 30 Jan 2024 00:32:00 -0800 (PST)
+Message-ID: <40cfb242-ceb0-44c6-afe7-c1744825dc62@arm.com>
+Date: Tue, 30 Jan 2024 08:31:58 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZbZpMO9b7L-DNIcb@smile.fi.intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 3/9] mm/memory: further separate anon and pagecache
+ folio handling in zap_present_pte()
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+ Nick Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
+ linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-s390@vger.kernel.org
+References: <20240129143221.263763-1-david@redhat.com>
+ <20240129143221.263763-4-david@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240129143221.263763-4-david@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sun, Jan 28, 2024 at 04:48:16PM +0200, Andy Shevchenko wrote:
-> On Mon, Jan 22, 2024 at 08:32:37AM +0530, Raag Jadav wrote:
-> > Simplify error handling in ->probe() function using dev_err_probe() helper.
+On 29/01/2024 14:32, David Hildenbrand wrote:
+> We don't need up-to-date accessed-dirty information for anon folios and can
+> simply work with the ptent we already have. Also, we know the RSS counter
+> we want to update.
 > 
-> ...
+> We can safely move arch_check_zapped_pte() + tlb_remove_tlb_entry() +
+> zap_install_uffd_wp_if_needed() after updating the folio and RSS.
 > 
-> >  	ret = pcim_iomap_regions(pci, BIT(0), pci_name(pci));
-> > -	if (ret) {
-> > -		dev_err(dev, "Failed to iomap PCI BAR (%pe)\n", ERR_PTR(ret));
-> > -		return ret;
-> > -	}
-> > +	if (ret)
-> > +		return dev_err_probe(dev, ret, "Failed to iomap PCI BAR (%pe)\n", ERR_PTR(ret));
-> >  
-> >  	base = pcim_iomap_table(pci)[0];
+> While at it, only call zap_install_uffd_wp_if_needed() if there is even
+> any chance that pte_install_uffd_wp_if_needed() would do *something*.
+> That is, just don't bother if uffd-wp does not apply.
 > 
-> > -	if (!base) {
-> > -		dev_err(dev, "Base address missing\n");
-> > -		return -ENOMEM;
-> > -	}
-> > +	if (!base)
-> > +		return dev_err_probe(dev, -ENOMEM, "Base address missing\n");
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  mm/memory.c | 16 +++++++++++-----
+>  1 file changed, 11 insertions(+), 5 deletions(-)
 > 
-> This check is bogus. Just remove it completely.
-> 
-> The pcim_iomap_table() fails IFF pcim_iomap_regions() fails.
-> You have checked the latter already.
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 69502cdc0a7d..20bc13ab8db2 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -1552,12 +1552,9 @@ static inline void zap_present_pte(struct mmu_gather *tlb,
+>  	folio = page_folio(page);
+>  	if (unlikely(!should_zap_folio(details, folio)))
+>  		return;
+> -	ptent = ptep_get_and_clear_full(mm, addr, pte, tlb->fullmm);
+> -	arch_check_zapped_pte(vma, ptent);
+> -	tlb_remove_tlb_entry(tlb, pte, addr);
+> -	zap_install_uffd_wp_if_needed(vma, addr, pte, details, ptent);
+>  
+>  	if (!folio_test_anon(folio)) {
+> +		ptent = ptep_get_and_clear_full(mm, addr, pte, tlb->fullmm);
+>  		if (pte_dirty(ptent)) {
+>  			folio_mark_dirty(folio);
+>  			if (tlb_delay_rmap(tlb)) {
+> @@ -1567,8 +1564,17 @@ static inline void zap_present_pte(struct mmu_gather *tlb,
+>  		}
+>  		if (pte_young(ptent) && likely(vma_has_recency(vma)))
+>  			folio_mark_accessed(folio);
+> +		rss[mm_counter(folio)]--;
+> +	} else {
+> +		/* We don't need up-to-date accessed/dirty bits. */
+> +		ptep_get_and_clear_full(mm, addr, pte, tlb->fullmm);
+> +		rss[MM_ANONPAGES]--;
+>  	}
+> -	rss[mm_counter(folio)]--;
+> +	arch_check_zapped_pte(vma, ptent);
 
-I'm no expert on devres but I found a few NULL returns in alloc_dr()
-call path. In the interest of learning more about iomap, wouldn't we
-need to handle them (just in some odd case)?
+Isn't the x86 (only) implementation of this relying on the dirty bit? So doesn't
+that imply you still need get_and_clear for anon? (And in hindsight I think that
+logic would apply to the previous patch too?)
 
-Raag
+Impl:
+
+void arch_check_zapped_pte(struct vm_area_struct *vma, pte_t pte)
+{
+	/*
+	 * Hardware before shadow stack can (rarely) set Dirty=1
+	 * on a Write=0 PTE. So the below condition
+	 * only indicates a software bug when shadow stack is
+	 * supported by the HW. This checking is covered in
+	 * pte_shstk().
+	 */
+	VM_WARN_ON_ONCE(!(vma->vm_flags & VM_SHADOW_STACK) &&
+			pte_shstk(pte));
+}
+
+static inline bool pte_shstk(pte_t pte)
+{
+	return cpu_feature_enabled(X86_FEATURE_SHSTK) &&
+	       (pte_flags(pte) & (_PAGE_RW | _PAGE_DIRTY)) == _PAGE_DIRTY;
+}
+
+
+> +	tlb_remove_tlb_entry(tlb, pte, addr);
+> +	if (unlikely(userfaultfd_pte_wp(vma, ptent)))
+> +		zap_install_uffd_wp_if_needed(vma, addr, pte, details, ptent);
+> +
+>  	if (!delay_rmap) {
+>  		folio_remove_rmap_pte(folio, page, vma);
+>  		if (unlikely(page_mapcount(page) < 0))
+
 
