@@ -1,118 +1,126 @@
-Return-Path: <linux-kernel+bounces-44600-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44601-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C5788424DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:26:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75AB48424E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:26:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0A07B2780C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:25:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A884F1C237B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:26:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB9FF6A00F;
-	Tue, 30 Jan 2024 12:25:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3C8567E97;
+	Tue, 30 Jan 2024 12:26:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eGqED7ZW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P/iuWvou"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F233867E96
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 12:25:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D9B76A006;
+	Tue, 30 Jan 2024 12:26:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706617509; cv=none; b=dC1LcLG6PUhwXNkERUcwPNAF2sf3nEiCg+UXLxjP8fAEYIF9iNVbNjSW11bg2p1SDsQ7dHCkwoHz8+BnjbIv4bRtLBEUPLDgO5kxWp8yQm/a7/C/TipZ1CUHEmR+i/8fEctXuc1sZhgTfS1hHjnb94bhXXL4UaaCFI3SWjAPqi4=
+	t=1706617597; cv=none; b=MXZsXK1TawrrPjOxXDjVR1HDZIvM0/Pn6RD/THQ7ALDax94/xaEAwDo08YC8or2WEIobU19shSlJr+eBrvZ8b0cytUWM8ihARGnSNgyt7Y0l+6m3PzShzMhKBzG8z6meFLbS1Pno1MDs5DjcKzx2bd5nysEph1hELTgIDbRBffg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706617509; c=relaxed/simple;
-	bh=18t4wYKdk4YqLYKxrilFw52phQEU1oy+X5t3g7YW3rM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NySyKSdJl9aqnipVvQWZ897W0qhOkMta6hcHVFzFLA+7bHEJaCwacyn93cvOcvIV3tF5LfGt4jZQT7CfQnsMW/8yYpedNUp2u3yUDAjdSK5QgnRKMoX5z2SArfbTRfqxDm0QNXjSv/gY5pWUkvS/+m1AU8+Awf7Wq16VUx5oMaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eGqED7ZW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13933C433C7;
-	Tue, 30 Jan 2024 12:25:06 +0000 (UTC)
+	s=arc-20240116; t=1706617597; c=relaxed/simple;
+	bh=pMHAd/MSWd3d0LOHEUFPp259bp/dNc4+vR9bQ1FB1qg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=d+xTsBgKA+7petmj0PGXXerhhCE3JY2bgu0gxW+VgeRh35KexuIH/7b5z+STO6CK4w0ryYJdo1Vw90IKcTR4AYKhGSWzYteAyrx1F1P4dCeN31Zj+FFY80M8Ake9H/zPV4l5PP+Z6OCXlO7khaj+q9FVPBMUv6T/u1+f3QTt93g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P/iuWvou; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9578BC433F1;
+	Tue, 30 Jan 2024 12:26:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706617508;
-	bh=18t4wYKdk4YqLYKxrilFw52phQEU1oy+X5t3g7YW3rM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eGqED7ZWnEaddXaKbW0MMMfBuL6uunY06Y9h7pwR8Tbs7CHt/UXT2xe9UintyczuK
-	 EtvbVFxmLnMtWNmjEyY24k49sPbYbOdnwrvDPEPbXqq9jjjnkZnD/e6biKUwpdHUqb
-	 DAs3IpWoqsSz8KgC/86T3Xprt2/6ewyWjczURvwfMDrjPAbSt7HJCHD3LTnehf6sx7
-	 0fycka7Z7g0H3m01YUp1EZAzG8ingyGyclVDGkXJEaQe7NybyUUdmNmqjgbfnHegsd
-	 IZGTMl69khcwTs638BCNaF5DePsZD5W+n4YGYWRmVta2hmTAjxpuYdCJWLm8UFieIR
-	 jd5diXYJOLMJw==
-Date: Tue, 30 Jan 2024 12:25:04 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Dave Martin <Dave.Martin@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Jackson Cooper-Driver <Jackson.Cooper-Driver@arm.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] arm64/sme: Restore SMCR on exit from suspend
-Message-ID: <e48c714e-8ea5-49f1-82d3-8d55dc89ce37@sirena.org.uk>
-References: <20240130-arm64-sme-resume-v1-0-0e60ebba18df@kernel.org>
- <20240130-arm64-sme-resume-v1-1-0e60ebba18df@kernel.org>
- <ZbjVNggOxxoQXitV@e133380.arm.com>
+	s=k20201202; t=1706617596;
+	bh=pMHAd/MSWd3d0LOHEUFPp259bp/dNc4+vR9bQ1FB1qg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=P/iuWvoupx0VYnvbBZVrrxx3EQ0Rh7GxRWlmLLWgpGYMzobnH+UCYgroT9IR1JR/t
+	 TxwJVnskRUQzXZNwh1g+4lO3L2Cw9Vwk1R5vO9rAs8Z3WEDuyyaU0bRIJpl9jGk9tG
+	 pbW7NaDaOfS+Di+zLJ5Lf0Jns0fxmxocSYsuBhcqXSrfN1HWbevtQLzevhF8NgnE4i
+	 j4N4nR7I80HgU24AMDD3dA3FLhqBDrxrnE4veDOABHIICIuSphjCWmvlnd4qd6+ngl
+	 a8ytIykDVuIWnvNPLLVQpoauR9taqftzrFy+tz7VLSraWoScoteyzVbP71wl9W98jh
+	 q+HAEzEUgoOIw==
+Message-ID: <2d111b04-4307-4f47-b3a4-208f571d04a8@kernel.org>
+Date: Tue, 30 Jan 2024 21:26:32 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="p2+gdtYAXO19PTGN"
-Content-Disposition: inline
-In-Reply-To: <ZbjVNggOxxoQXitV@e133380.arm.com>
-X-Cookie: 1 bulls, 3 cows.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ahci: Extend ASM1061 43-bit DMA address quirk to other
+ ASM106x parts
+Content-Language: en-US
+To: Lennert Buytenhek <kernel@wantstofly.org>
+Cc: Niklas Cassel <cassel@kernel.org>, linux-ide@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
+ John Garry <john.g.garry@oracle.com>, Joerg Roedel <jroedel@suse.de>,
+ Szuying Chen <chensiying21@gmail.com>, Jesse1_Chang@asmedia.com.tw,
+ Richard_Hsu@asmedia.com.tw, Chloe_Chen@asmedia.com.tw
+References: <ZbjgTmR5FbAnb-Ua@wantstofly.org>
+ <6ab581f1-385c-49af-bff3-aacd1cdbe1d8@kernel.org>
+ <ZbjkoKotLvDSeJTA@wantstofly.org>
+From: Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <ZbjkoKotLvDSeJTA@wantstofly.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
+On 1/30/24 20:59, Lennert Buytenhek wrote:
+> On Tue, Jan 30, 2024 at 08:46:23PM +0900, Damien Le Moal wrote:
+> 
+>>> ASMedia have confirmed that all ASM106x parts currently listed in
+>>> ahci_pci_tbl[] suffer from the 43-bit DMA address limitation that we ran
+>>> into on the ASM1061, and therefore, we need to apply the quirk added by
+>>> commit 20730e9b2778 to the other supported ASM106x parts as well.
+>>>
+>>> Signed-off-by: Lennert Buytenhek <kernel@wantstofly.org>
+>>
+>> I think this needs a cc: stable tag.
+> 
+> The commit that is likely responsible for surfacing this issue is
+> 791c2b17fb40 which went into v6.6 -- so would this then be appropriate,
+> or do you think this should be backported to older versions as well?
 
---p2+gdtYAXO19PTGN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hmmm... given this is a hardware "bug", it seems safer to backport to all stable
+& lts. From what I understand, the device may be doing bad DMA, regardless of
+what the iommu is doing. Niklas ? you followed this more carefully than I did :)
 
-On Tue, Jan 30, 2024 at 10:53:42AM +0000, Dave Martin wrote:
-> On Tue, Jan 30, 2024 at 12:02:48AM +0000, Mark Brown wrote:
-> > The fields in SMCR_EL1 reset to an architecturally UNKNOWN value. Since=
- we
-> > do not otherwise manage the traps configured in this register at runtim=
-e we
-> > need to reconfigure them after a suspend in case nothing else was kind
-> > enough to preserve them for us.
+> 
+> Cc: stable@vger.kernel.org # 6.6.x
+> 
+> 
+>>> ---
+>>>  drivers/ata/ahci.c | 10 +++++-----
+>>>  1 file changed, 5 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
+>>> index d2460fa985b7..da2e74fce2d9 100644
+>>> --- a/drivers/ata/ahci.c
+>>> +++ b/drivers/ata/ahci.c
+>>> @@ -606,13 +606,13 @@ static const struct pci_device_id ahci_pci_tbl[] = {
+>>>  	{ PCI_VDEVICE(PROMISE, 0x3781), board_ahci },   /* FastTrak TX8660 ahci-mode */
+>>>  
+>>>  	/* ASMedia */
+>>> -	{ PCI_VDEVICE(ASMEDIA, 0x0601), board_ahci },	/* ASM1060 */
+>>> -	{ PCI_VDEVICE(ASMEDIA, 0x0602), board_ahci },	/* ASM1060 */
+>>> +	{ PCI_VDEVICE(ASMEDIA, 0x0601), board_ahci_43bit_dma },	/* ASM1060 */
+>>> +	{ PCI_VDEVICE(ASMEDIA, 0x0602), board_ahci_43bit_dma },	/* ASM1060 */
+>>>  	{ PCI_VDEVICE(ASMEDIA, 0x0611), board_ahci_43bit_dma },	/* ASM1061 */
+>>>  	{ PCI_VDEVICE(ASMEDIA, 0x0612), board_ahci_43bit_dma },	/* ASM1061/1062 */
+>>> -	{ PCI_VDEVICE(ASMEDIA, 0x0621), board_ahci },   /* ASM1061R */
+>>> -	{ PCI_VDEVICE(ASMEDIA, 0x0622), board_ahci },   /* ASM1062R */
+>>> -	{ PCI_VDEVICE(ASMEDIA, 0x0624), board_ahci },   /* ASM1062+JMB575 */
+>>> +	{ PCI_VDEVICE(ASMEDIA, 0x0621), board_ahci_43bit_dma },	/* ASM1061R */
+>>> +	{ PCI_VDEVICE(ASMEDIA, 0x0622), board_ahci_43bit_dma },	/* ASM1062R */
+>>> +	{ PCI_VDEVICE(ASMEDIA, 0x0624), board_ahci_43bit_dma },	/* ASM1062+JMB575 */
+>>>  	{ PCI_VDEVICE(ASMEDIA, 0x1062), board_ahci },	/* ASM1062A */
+>>>  	{ PCI_VDEVICE(ASMEDIA, 0x1064), board_ahci },	/* ASM1064 */
+>>>  	{ PCI_VDEVICE(ASMEDIA, 0x1164), board_ahci },   /* ASM1164 */
 
-> Are any other regs affected? =20
+-- 
+Damien Le Moal
+Western Digital Research
 
-> What about SMPRI_EL1?  That seems to be initialised once and for all in
-> cpufeatures, so I'd guess it might be affected.
-
-Ah, yes - we should do that too, thanks.  At present we map SMPRI_EL1
-out using EL2 controls and just set it to 0 on init so I keep forgetting
-about it, I wrote a few lines of code years ago.
-
-> Also, what about the _EL2 regs if the kernel is resuming at EL2
-> (without VHE -- or if SME && !VHE not a thing?)
-
-Yeah, I was somewhat confused about where the EL2 handling was in the
-resume path and was hoping that if we weren't just rerunning the initial
-setup someone would tell me what I'm missing (which appeared to be what
-was happening).
-
-The hardware will always have VHE but we could be running nVHE (eg, for
-pKVM) so not using it.
-
---p2+gdtYAXO19PTGN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmW46p8ACgkQJNaLcl1U
-h9CPZAf/SjeSn+2E+55OUBsJw88y3XY3aDeZ72sklbI+xbiEcUI2PyOHWpSdD6zn
-W/f8sGWhy4uypX0tfuHo2ZtjyfHT9csAIXTavEUCN9kCBXrAG4zRpX7suUGKK3+U
-H15dWNgSe2wLxdpKoUc783cnUHEM1pecU2kSEAuDPRwHkonlIBlw/VZG9o3D5dhN
-rWI1DaGGYK7yFg+Q1Auj4k0jBGl2HoAoNLCCKnika3VFM8/6yEukgGYmNTdP5MRJ
-jYsdVqKRZ3gyA8S+pU+L9p6zFd9B9Ongo6BRH81cY8Odt3eUOOhXUfyX+wNFcqy9
-2RA3WmgIHfErZcfcD12m1d4mMn0KRw==
-=D39O
------END PGP SIGNATURE-----
-
---p2+gdtYAXO19PTGN--
 
