@@ -1,148 +1,100 @@
-Return-Path: <linux-kernel+bounces-44735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44736-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5233E8426B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:12:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA76B8426BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:16:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4ED5285C6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:12:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0CEB6B228B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:16:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEAF46DCFB;
-	Tue, 30 Jan 2024 14:12:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KBgKF1ie"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E63486DD0D;
+	Tue, 30 Jan 2024 14:16:08 +0000 (UTC)
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CC8A6D1DB;
-	Tue, 30 Jan 2024 14:12:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BD3F6DCE8;
+	Tue, 30 Jan 2024 14:16:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706623947; cv=none; b=Be6UtPMwxfPwQMTTYQHvH0MgsCk1Za1uG0k9REVus5XNmTKbSUPNPLXvURAlpNm1RbELLJWgSmAktuiFOb7QrvFIT2HIVFfiEs5O1onXUwQpxwG2QNJUUA4ky+dC3RnCJe4U1cDs/W9o+csIBTfz94JeOhg2FnAHxhNX7/R6Apw=
+	t=1706624168; cv=none; b=CzaTPxWoGGAml0EdGV7eXO5QpJfjPT9/nXEZz0jXMsc6ztp/ve5vQ5m8WP57NgCq98zW8mQmUZVUmJ4z+xn/y43HYYDV8WElRseDidnGcyYJg/C+1xqha2VUulnH28uIIFYNmYKVw9qCRbirF+BQSQYxv/8AZCZoGx72rUAQYak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706623947; c=relaxed/simple;
-	bh=V1d6QnJih+bl/9yZ7PYqfSpDrBSlonUiSAcEhRy++04=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=F+2jdMIHiiGo0DG/8ZooS1XlqJJf6Wu/09Hu9hWBdjiM041K0alcepwzyQZ0vjnsnwDG178YW185apXPZgU2A8gQYHuZrgB53C/rkNsXBm014BdAoUepG3JgLYCHurP963NdrfThw2kf2RCGawB1AgezXkPbrhW6GxfV7Ay7tZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KBgKF1ie; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B393C433F1;
-	Tue, 30 Jan 2024 14:12:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706623946;
-	bh=V1d6QnJih+bl/9yZ7PYqfSpDrBSlonUiSAcEhRy++04=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=KBgKF1iesVD7dHytxhDJzUvob9bKwNFiKD4xxQIZKRTvm8MP6mHAbTIV7WeFEHgaM
-	 suV8USZbVs81ycIPNBHXRgsnylcMONOhtcj/WpDF7dTG+IA8P/WuysjSnEutQUWgKb
-	 5Iio6T27L69Hb98/SP0JLrauij9sP3ibXOlcci+myryz1vTauSt7l94E4CSjvHffe5
-	 TcD5cbagkYTTimENli94EPX3BQfqcrpvGViA3zc2EEpXedYNTQJ8VFZuyTraS029Vy
-	 F5O5/66BoRoXfW5lNvX+9khjsGs6bkG0FAboc9hec6oW+SLSJ6sMF7FZlBxzbwoJPD
-	 /RR8KTbdmQsGA==
-Date: Tue, 30 Jan 2024 23:12:22 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Beau Belgrave <beaub@linux.microsoft.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com
-Subject: Re: [PATCH 2/4] tracing/user_events: Introduce multi-format events
-Message-Id: <20240130231222.1ff0777d13f6179ce4ada91f@kernel.org>
-In-Reply-To: <20240129172907.GA444-beaub@linux.microsoft.com>
-References: <20240123220844.928-1-beaub@linux.microsoft.com>
-	<20240123220844.928-3-beaub@linux.microsoft.com>
-	<20240127000104.7c98b34d295747ab1b084bd2@kernel.org>
-	<20240126191007.GA456-beaub@linux.microsoft.com>
-	<20240126150445.71c5d426@gandalf.local.home>
-	<20240129172907.GA444-beaub@linux.microsoft.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706624168; c=relaxed/simple;
+	bh=ImXecEhuep996vGaWscJBS4axlSdLV1KhnIAesMx3bM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QA0stswuJyP7ZLuPv6KLqXt3Cnne3zZY5E/XWWSKmbAoUBdloDfIR1WKKOvJEfSxxb2JUIhH8ZpxipVrQxDrsQd/4olQgjwvRIkr+2zWOO5hhTnEq6GDFMC3C8lvKWxAhOkhJAUepBVyZMrG2O6FdKolrYtJTXUAZWxruiK4KIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 9847868C4E; Tue, 30 Jan 2024 15:16:01 +0100 (CET)
+Date: Tue, 30 Jan 2024 15:16:01 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Jan Kara <jack@suse.cz>
+Cc: Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
+	Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.com>,
+	David Howells <dhowells@redhat.com>,
+	Brian Foster <bfoster@redhat.com>,
+	Christian Brauner <brauner@kernel.org>,
+	"Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 19/19] writeback: simplify writeback iteration
+Message-ID: <20240130141601.GA31330@lst.de>
+References: <20240125085758.2393327-1-hch@lst.de> <20240125085758.2393327-20-hch@lst.de> <20240130104605.2i6mmdncuhwwwfin@quack3>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240130104605.2i6mmdncuhwwwfin@quack3>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-On Mon, 29 Jan 2024 09:29:07 -0800
-Beau Belgrave <beaub@linux.microsoft.com> wrote:
+On Tue, Jan 30, 2024 at 11:46:05AM +0100, Jan Kara wrote:
+> Looking at it now I'm thinking whether we would not be better off to
+> completely dump the 'error' argument of writeback_iter() /
+> writeback_iter_next() and just make all .writepage implementations set
+> wbc->err directly. But that means touching all the ~20 writepage
+> implementations we still have...
 
-> On Fri, Jan 26, 2024 at 03:04:45PM -0500, Steven Rostedt wrote:
-> > On Fri, 26 Jan 2024 11:10:07 -0800
-> > Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> > 
-> > > > OK, so the each different event has suffixed name. But this will
-> > > > introduce non C-variable name.
-> > > > 
-> > > > Steve, do you think your library can handle these symbols? It will
-> > > > be something like "event:[1]" as the event name.
-> > > > Personally I like "event.1" style. (of course we need to ensure the
-> > > > user given event name is NOT including such suffix numbers)
-> > > >   
-> > > 
-> > > Just to clarify around events including a suffix number. This is why
-> > > multi-events use "user_events_multi" system name and the single-events
-> > > using just "user_events".
-> > > 
-> > > Even if a user program did include a suffix, the suffix would still get
-> > > appended. An example is "test" vs "test:[0]" using multi-format would
-> > > result in two tracepoints ("test:[0]" and "test:[0]:[1]" respectively
-> > > (assuming these are the first multi-events on the system).
-> > > 
-> > > I'm with you, we really don't want any spoofing or squatting possible.
-> > > By using different system names and always appending the suffix I
-> > > believe covers this.
-> > > 
-> > > Looking forward to hearing Steven's thoughts on this as well.
-> > 
-> > I'm leaning towards Masami's suggestion to use dots, as that won't conflict
-> > with special characters from bash, as '[' and ']' do.
-> > 
+Heh.  I actually had an earlier version that looked at wbc->err in
+the ->writepages callers.  But it felt a bit too ugly.
+
+> > +		 */
+> > +		if (wbc->sync_mode == WB_SYNC_NONE &&
+> > +		    (wbc->err || wbc->nr_to_write <= 0))
+> > +			goto finish;
 > 
-> Thanks, yeah ideally we wouldn't use special characters.
+> I think it would be a bit more comprehensible if we replace the goto with:
+> 			folio_batch_release(&wbc->fbatch);
+> 			if (wbc->range_cyclic)
+> 				mapping->writeback_index =
+> 					folio->index + folio_nr_pages(folio);
+> 			*error = wbc->err;
+> 			return NULL;
+
+I agree that keeping the logic on when to break and when to set the
+writeback_index is good, but duplicating the batch release and error
+assignment seems a bit suboptimal.  Let me know what you think of the
+alternatіve variant below.
+
+> > +	struct folio *folio = 0;
+> 			     ^^ NULL please
+
+Fixed.
+
+> >  			ret = writeback_use_writepage(mapping, wbc);
+> > +			if (!ret)
+> > +				ret = wbc->err;
 > 
-> I'm not picky about this. However, I did want something that clearly
-> allowed a glob pattern to find all versions of a given register name of
-> user_events by user programs that record. The dot notation will pull in
-> more than expected if dotted namespace style names are used.
-> 
-> An example is "Asserts" and "Asserts.Verbose" from different programs.
-> If we tried to find all versions of "Asserts" via glob of "Asserts.*" it
-> will pull in "Asserts.Verbose.1" in addition to "Asserts.0".
+> AFAICT this should not be needed as writeback_iter() made sure wbc->err is
+> returned when set?
 
-If we use dot for the suffix number, we can prohibit user to use it
-for their name. They still can use '_' (or change the group name?)
-I just concerned that the name can be parsed by existing tools. Since
-':' is used as a separator for group and event name in some case (e.g.
-tracefs "set_event" is using, so trace-cmd and perf is using it.)
-
-> While a glob of "Asserts.[0-9]" works when the unique ID is 0-9, it
-> doesn't work if the number is higher, like 128. If we ever decide to
-> change the ID from an integer to say hex to save space, these globs
-> would break.
-
-Hmm, why can't we use regexp?
-And if we limits the number of events up to 1000 for each same-name event
-we can use fixed numbers, like Assets.[0-9][0-9][0-9]
-
-Thank you,
-
-> 
-> Is there some scheme that fits the C-variable name that addresses the
-> above scenarios? Brackets gave me a simple glob that seemed to prevent a
-> lot of this ("Asserts.\[*\]" in this case).
-> 
-> Are we confident that we always want to represent the ID as a base-10
-> integer vs a base-16 integer? The suffix will be ABI to ensure recording
-> programs can find their events easily.
-> 
-> Thanks,
-> -Beau
-> 
-> > -- Steve
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Heh.  That's a leftover from my above mentioned different attempt at
+error handling and shouldn't have stayed in.
 
