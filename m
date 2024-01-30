@@ -1,175 +1,120 @@
-Return-Path: <linux-kernel+bounces-44151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2246841E00
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:39:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3F5C841E03
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:39:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F0E5B2A52F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:39:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B4A201C24E6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:39:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2752F57302;
-	Tue, 30 Jan 2024 08:39:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 587A156B94;
+	Tue, 30 Jan 2024 08:39:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="VLFkN1Km"
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="KJ//jMYd"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF11D5647A
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 08:39:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AEB658107;
+	Tue, 30 Jan 2024 08:39:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706603949; cv=none; b=N5hTTxqiqnKYhX1ET1ceLJUQdxTla1FJk1aTH1YlbRRIg+BBAxjCUqDofwSCoXXvDrii1eniEjCWd2ledNkLnpPvf460PgKBEt6wUB0QP1TeVKtZsX0QGSXO10FRoprBhGkH1mlgXwL8VVbe3O9qFIbuFDgK9szFI9w6j+puRJE=
+	t=1706603963; cv=none; b=rqLypXqCCrHXOMw1EEzHDYlJiisX0VGNeRG7migXIjc8M4QRdjaPMIoatQ5rnCWFW1UKAH0GSsokTfvV4iCIK4egYDq7kRUUpG8CYRS/qbE2XvTdXJZWCLpnShuc9PMGBek1P1MpZaGc7jS9mHoScKsb3YA+6di1ph3wz+JG0j8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706603949; c=relaxed/simple;
-	bh=UKBvv/BFlyrDxBcZH/pwwW+bTFeY41MHyLdKXLHf118=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RcWbZlQA2IBIJQrlVZ0KxIRvkcpcxXd3oO+HZpNt3KEdvrQMx6pJkmoFKkTb6uUPc55m4pwbp1JvlTyPVEGHzm33nJ+95GWF904pqFmGGZMxPdvUKl+tUVaOv5LYpRAiQa1lleSGPT+FODz3uOM558nbHxsyVBaJumslCqFiDRM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=VLFkN1Km; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a352d9c0f9dso108323166b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 00:39:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1706603946; x=1707208746; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TE8g68bLoogToLshL4JAe9mPYk5p/5wsw2SHoYT3R4c=;
-        b=VLFkN1KmuWTsVitoLnBh79rcMLIg3LOLoqWwkQf+bPNukQbpPJTaYrMFXakN42Kcny
-         G6ez3u1M278sO8iOxJ7xvldiPgnYcXcQ+1JLrCJM/R7kINbII56iwpolpooBZsaEDuPE
-         aqoDTzevT0CB1HXbU4RVdkOUuGCut+GMxw7LY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706603946; x=1707208746;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TE8g68bLoogToLshL4JAe9mPYk5p/5wsw2SHoYT3R4c=;
-        b=bXFdAS6i48JbBozqgUfJ9bmttbeX+dLpJSUx6JmtXAoJeabOuXfY1O+TY8AtXVs0Qy
-         ARANU7PPWbWG46GM4H3b6azlUN1JMwYQCprpJSUrJmvXwGPeYydjnoRH2vwsPh+ZWjsH
-         GgnKetx2OxC3Y3rvOHzcP3QvgKXk0XiNzz11S8pMkPVpq3uRAsx2ItmV+9ePfB/uyzir
-         zn6XceHqqYn4iieG9wVPOwBR3ZcWA5LUWWfvYJJ6H8LAiIgFERDr+Ry9fcf3fds5W9YY
-         kJT40+P5w1NxT9cuYVDCJ4S6w+wDP6+ZWrW0NO3N16TD+3kAt49njmpGAYRyMlrCgxN3
-         ShTQ==
-X-Gm-Message-State: AOJu0YxAKmKSrf3eFaFf2Z+3mpBwS3alGagMa2VE5S5cCzVJdJ0+uuMO
-	hAmv+SsWqfCYIzjoMalB6ylfCe1pnbTpIyPlHRvXkATPgS69I5EIHbxcdkqrcJ4=
-X-Google-Smtp-Source: AGHT+IFdCTZEdjvisRYBnyq6kNe7z03n8kmvQKAP+gzRjiJX+KgoRRSwkprv6TQSY4NWeiBUSsDbbA==
-X-Received: by 2002:a17:906:6d01:b0:a35:561d:cf5a with SMTP id m1-20020a1709066d0100b00a35561dcf5amr5688909ejr.6.1706603945702;
-        Tue, 30 Jan 2024 00:39:05 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id s8-20020a17090699c800b00a351828ca32sm4271064ejn.118.2024.01.30.00.39.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 00:39:05 -0800 (PST)
-Date: Tue, 30 Jan 2024 09:39:03 +0100
-From: Daniel Vetter <daniel@ffwll.ch>
-To: Boris Brezillon <boris.brezillon@collabora.com>
-Cc: Dmitry Osipenko <dmitry.osipenko@collabora.com>,
-	David Airlie <airlied@gmail.com>, Gerd Hoffmann <kraxel@redhat.com>,
-	Gurchetan Singh <gurchetansingh@chromium.org>,
-	Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	Qiang Yu <yuq825@gmail.com>, Steven Price <steven.price@arm.com>,
-	Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v19 22/30] drm/shmem-helper: Add common memory shrinker
-Message-ID: <Zbi1pzY3CbQxnnBQ@phenom.ffwll.local>
-Mail-Followup-To: Boris Brezillon <boris.brezillon@collabora.com>,
-	Dmitry Osipenko <dmitry.osipenko@collabora.com>,
-	David Airlie <airlied@gmail.com>, Gerd Hoffmann <kraxel@redhat.com>,
-	Gurchetan Singh <gurchetansingh@chromium.org>,
-	Chia-I Wu <olvaffe@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	Qiang Yu <yuq825@gmail.com>, Steven Price <steven.price@arm.com>,
-	Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	kernel@collabora.com, virtualization@lists.linux-foundation.org
-References: <20240105184624.508603-1-dmitry.osipenko@collabora.com>
- <20240105184624.508603-23-dmitry.osipenko@collabora.com>
- <20240125100703.76d802ad@collabora.com>
+	s=arc-20240116; t=1706603963; c=relaxed/simple;
+	bh=9fYopgXzbpsQiE7E/H2LDcOlBUc/v20dA7T49dXOcZA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DNM+/U3cSGMolciHTGlFDYVdYI8nVxXR9mDW3Y/YZdNPatRDdqViDvtlx8ns23y+/OSF1n3P7tjBazxD3V/L4sj9Hogy0EpMGacsWEB4Ok9czSN4j9wuXCiIbDyjhUG9E1zjSmWpqSX7kK3bIBzQiyb/BrnOEEqhubuf/CPpVCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=KJ//jMYd; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1706603960;
+	bh=9fYopgXzbpsQiE7E/H2LDcOlBUc/v20dA7T49dXOcZA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=KJ//jMYd/5xJLL/l0JF6Usg6KpSaxKV6UEPWTOzcid5hnldRaFoWyGoZlVjfNpJAU
+	 8v6aiI+zOR2OKs0pzqlTJZiCRsYVHVHl3y1EuYQudeWWIdSX8ThAkp730BLsd+8Fr+
+	 Kd3VTLJcS/JBsbjk9vsVk+NE5jvLAvmDDBCy1LpxaEgldCbLzRm8JlaawMlrjzBISX
+	 9A4zAwP7HJTScRIy4RL0jCNcmLQgLxuqf58R1H27MMTEocRm67PUoYS60mauL/BXXw
+	 WasRNhhfC5eo0Z/xe6ASTBU+C6xhY5QsnH9Miy4ob7yJo9lHLMagZ41e6nYQEYgzyh
+	 mzS/uShqbszZA==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 0719C3782076;
+	Tue, 30 Jan 2024 08:39:19 +0000 (UTC)
+Message-ID: <bc1d5824-fc34-4c04-b375-1f506a358193@collabora.com>
+Date: Tue, 30 Jan 2024 09:39:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240125100703.76d802ad@collabora.com>
-X-Operating-System: Linux phenom 6.6.11-amd64 
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/2] dt-bindings: media: mediatek-jpeg-encoder: change
+ max iommus count
+Content-Language: en-US
+To: Chen-Yu Tsai <wenst@chromium.org>
+Cc: linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+References: <20240127084258.68302-1-eugen.hristev@collabora.com>
+ <170652472373.127352.5854831299483160743.b4-ty@collabora.com>
+ <282822ba-0e96-4078-a807-4b0b08e42014@collabora.com>
+ <CAGXv+5Em3HUJV1pv177LUwf9iMhKSLcGhVAt6ON9YZMNaT2oZw@mail.gmail.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <CAGXv+5Em3HUJV1pv177LUwf9iMhKSLcGhVAt6ON9YZMNaT2oZw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jan 25, 2024 at 10:07:03AM +0100, Boris Brezillon wrote:
-> On Fri,  5 Jan 2024 21:46:16 +0300
-> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+Il 30/01/24 04:24, Chen-Yu Tsai ha scritto:
+> (Drop a bunch of people from CC)
 > 
-> >   *
-> >   * This function Increases the use count and allocates the backing pages if
-> >   * use-count equals to zero.
-> > + *
-> > + * Note that this function doesn't pin pages in memory. If your driver
-> > + * uses drm-shmem shrinker, then it's free to relocate pages to swap.
-> > + * Getting pages only guarantees that pages are allocated, and not that
-> > + * pages reside in memory. In order to pin pages use drm_gem_shmem_pin().
+> On Mon, Jan 29, 2024 at 6:48 PM AngeloGioacchino Del Regno
+> <angelogioacchino.delregno@collabora.com> wrote:
+>>
+>> Il 29/01/24 11:41, AngeloGioacchino Del Regno ha scritto:
+>>>
+>>> On Sat, 27 Jan 2024 10:42:57 +0200, Eugen Hristev wrote:
+>>>> MT8186 has 4 iommus in the list, to cope with this situation, adjust
+>>>> the maxItems to 4 (instead of previous 2).
+>>>> Add also minItems as 2 to keep compatibility with current devices.
+>>>>
+>>>>
+>>>
+>>> Applied to v6.4-next/dts64, thanks!
+>>>
+>>
+>> Sorry, typo: v6.8-next/dts64
 > 
-> I still find this explanation confusing, if pages are allocated, they
-> reside in memory. The only difference between drm_gem_shmem_get_pages()
-> and drm_gem_shmem_pin_pages() is that the former lets the system
-> reclaim the memory if the buffer is idle (no unsignalled fence attached
-> to the dma_resv).
+> I was wondering, what script produces this email?
 > 
-> We also need to describe the workflow for GEM validation (that's the
-> TTM term for the swapin process happening when a GPU job is submitted).
+> AFAIK `b4 ty` gives a simple thank you letter without branch or commit
+> hashes.
 > 
-> 1. Prepare the GPU job and initialize its fence
-> 2. Lock the GEM resv
-> 3. Add the GPU job fence to the resv object
-> 4. If the GEM is evicted
->    a. call drm_gem_shmem_swapin_locked()
->    b. get the new sgt with drm_gem_shmem_get_pages_sgt_locked()
->    c. repopulate the MMU table (driver internals)
 
-Might be good to explain where to call drm_sched_job_arm() here for
-drivers using drm/sched, since that also needs to be at a very specific
-point. Probably best to flesh out the details here by linking to the
-relevant drm/sched and gpuvm functions as examples.
+That's exactly `b4 ty` :-)
+You can use a custom template, so that it reads something like
 
-> 5. Unlock the GEM dma_resv
-> 6. Submit the GPU job
+`Applied to ${branch}, thanks!`
+
+Cheers,
+Angelo
+
+> ChenYu
 > 
-> With this sequence, the GEM pages are guaranteed to stay around until
-> the GPU job is finished.
+>>> [1/2] dt-bindings: media: mediatek-jpeg-encoder: change max iommus count
+>>>         commit: b824b32dd5e98221cbe2e8bcccc6fb4134e35fc1
+>>> [2/2] arm64: dts: mediatek: mt8186: Add jpgenc node
+>>>         commit: 4c5b46fbf52d52b0f392f0fc3913560bad438e49
+>>>
+>>> Best regards,
+>>
+>>
 
-Yeah I think the comment needs to explain how this ties together with
-dma_resv locking and dma_resv fences, otherwise it just doesn't make much
-sense.
-
-This holds even more so given that some of the earlier drivers derived
-from i915-gem code (and i915-gem itself) use _pin() both for these more
-permanent pinnings, and also to temporarily put the memory in place before
-it all gets fenced and then unpinned&unlocked.
-
-So would be really good to have the sharpest possible nomeclatura here we
-can get, and link between all the related concepts and functions in the
-kerneldoc.
-
-Some overview flow like Boris sketched above in a DOC: section would also
-be great.
-
-Cheers, Sima
-> 
-> >   */
-> >  int drm_gem_shmem_get_pages(struct drm_gem_shmem_object *shmem)
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
 
