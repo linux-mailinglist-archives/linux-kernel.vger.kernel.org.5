@@ -1,125 +1,120 @@
-Return-Path: <linux-kernel+bounces-45044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45043-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC31D842AF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:30:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26440842AED
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:29:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A2851F26652
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:30:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBA111F25EF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:29:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1A1712BF0A;
-	Tue, 30 Jan 2024 17:29:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="bxsIG6Gq"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A97912BF05;
+	Tue, 30 Jan 2024 17:29:29 +0000 (UTC)
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B307A129A89;
-	Tue, 30 Jan 2024 17:29:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F418586AC8;
+	Tue, 30 Jan 2024 17:29:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706635786; cv=none; b=GUO5Iy+mT2Db/Hs9jEH8p4uoPfxrCcVwgJYwXk6v+5cDy7nHCnu7b/I3qfGlii/0q6JO3r3VzY3yKqGQ4XdCAnym0KLTxVBwN8GlsJ1wlrnAVkxxWTNT9ySvRFHyPZYHaofqyEyDEv0vE191Xd3gscC2CPm+6uMw5uFpeGbc32Q=
+	t=1706635768; cv=none; b=QT/pH1v0LXrAeHnOeCNcGa9fZWA5l70ZSQBgZWKtFfmJHtqAdonxWmtssdMSgjjUSlmb2mT8enNKiCpPSEG8W4mL3/fg4WrOJ8vIeoQ+BQ327s1cfy/mubBC/6IFTLk7Rl8Vx2Ti2dc/wunr/6qRrRVd6rqMXHA85cBDTVAxWwo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706635786; c=relaxed/simple;
-	bh=7az4Waz8J1QeluuvlOX7oECI86AAEqC9k4ksYPBPl80=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=a/3Bcw5C9V277VWGJ1rYkLYEJhyo9//Kjm6+8PVMvLujgSziJIJ4V3LjlhrkLTNMtf32mGa3Mt4Fu+xphJVx8HlBySz0Aj7A0nXhHUw/DWfpWt4eNml4U1fqOEwoxlbPxOf7DpSgR9pxaUaaDysFw73vHWaMbXjRkttlkkOE5OI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=bxsIG6Gq; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40UHD1Jx018567;
-	Tue, 30 Jan 2024 17:29:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=0GIBVRrE0qEAyu+uD125mgu8V031EIjyhavhlO2/X1k=; b=bx
-	sIG6GqhStLSXcLEF9TkjuuW4c2T3GeWd5wpvM1DanzjaGHtAMrj849RjGcPwwJvQ
-	+InMTy/aCtTl5q5+jnM+9+gwKMfT6vNXT0xW0PwqC/21Qd0oijo3j6NwIBDfJZnF
-	Ip3BvvbixOr0HTUV2uZMwjz3ekuY/luUCM9OWHZoZJsuvyYIyf+cjRfxS3wtuK/Z
-	JYM2v5hxUUguK7UNI8s6ii+UWjmljHk77VLUZ9UezcbI0GJpnUf8y/DcvhsuLHj6
-	q5mL3h5t6LgH76x3MZaP28djBgsF5eKWAwOmjSaqZFmDBH8pF4trAHVzTFWj7Hy1
-	flZw/rVLlMt8PmVWgemg==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vxvsr1c2y-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Jan 2024 17:29:20 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40UHTJ1q019556
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Jan 2024 17:29:19 GMT
-Received: from [10.110.47.232] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 30 Jan
- 2024 09:29:18 -0800
-Message-ID: <175dcf69-0859-4475-8054-ccd417c38645@quicinc.com>
-Date: Tue, 30 Jan 2024 09:29:16 -0800
+	s=arc-20240116; t=1706635768; c=relaxed/simple;
+	bh=wQ5lyz2eBlx1PxsGXBAMIkd3YS8qNppoaChpsHFgeSA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ljFon+YermeneluwqqDzB6PiVIGSoYrSFh/bRdtF8LMTv0OCj7Rzp57aWFIC202F+/vjRFVOWRKPI7EtygTN4HADbQtv5LRjYtAqx/80YVeuKLt497QhXq/BexwP5J06PEnIrqQJAHJ8tckAvb7q/Qq6ZEWTbeZPwKhPRXN1vJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a29c4bbb2f4so445376266b.1;
+        Tue, 30 Jan 2024 09:29:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706635765; x=1707240565;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lX5j+4Pi5k+lrwe5c2LVQlx9bMQ0Yzg1CVxNcNnOwRU=;
+        b=nVIcyk/fobbLJV6cBWIKnD0wj2UZoOYgi6CemWDu+UageYZPZRN+fyR2uiGtkqVCmf
+         5DWML6lR0VuzqPlYgFT3MLx/d/V8y39VGY3RFAMFytZrSf5twpGa2zwp6b/v/qhminvK
+         rN4cDRWPTHmLArozwnIq3voZvB4CTHGhpczfJgHwKNGGBk5qFDh3EVABQm31gs0HPHUX
+         IB6yN7bG3l8XxnYXojeP9o1YkhcRbe1pWmf7Lo8CoIikucMkbYSxey1bIcIV6zK6/E44
+         q3voEOitGGFJu2YJ51iK22zyu/nHZ6lhTgstoSkis5cKaj6/oyTuwiatjfjYxP5nktE4
+         VvTg==
+X-Gm-Message-State: AOJu0Yz2HiLxFA8g4wySrjKD19C8qSCchDr9HZGG3Zzsk8fRSsrG6NbW
+	7a3D9/tUs3njGSaHRGl2pAQYDJMylHOQw050xQfQhzPzFcmUb5SM
+X-Google-Smtp-Source: AGHT+IHP0TNvHsKVfe06kCsdvC4yvJ2v+4V8iPbs6DfFMnJTk08qnmxaatQnOQvg5LTM0M+5jDtpvA==
+X-Received: by 2002:a17:906:250e:b0:a35:d943:b183 with SMTP id i14-20020a170906250e00b00a35d943b183mr3829613ejb.35.1706635764952;
+        Tue, 30 Jan 2024 09:29:24 -0800 (PST)
+Received: from gmail.com (fwdproxy-cln-116.fbsv.net. [2a03:2880:31ff:74::face:b00c])
+        by smtp.gmail.com with ESMTPSA id w24-20020a17090652d800b00a3193a5556csm5309049ejn.189.2024.01.30.09.29.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jan 2024 09:29:24 -0800 (PST)
+Date: Tue, 30 Jan 2024 09:29:22 -0800
+From: Breno Leitao <leitao@debian.org>
+To: Vegard Nossum <vegard.nossum@oracle.com>
+Cc: Jonathan Corbet <corbet@lwn.net>,
+	Jani Nikula <jani.nikula@linux.intel.com>, kuba@kernel.org,
+	"David S. Miller" <davem@davemloft.net>, linux-doc@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	pabeni@redhat.com, edumazet@google.com
+Subject: Re: [PATCH v3] Documentation: Document each netlink family
+Message-ID: <Zbkx8vd+vzLvWuuF@gmail.com>
+References: <20231121114831.3033560-1-leitao@debian.org>
+ <874jevjgvo.fsf@intel.com>
+ <87jznqewa7.fsf@meer.lwn.net>
+ <ZbkebMW+xLqNhsoB@gmail.com>
+ <63304f6a-d26f-414a-8c92-14d740774379@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 5/9] wifi: fill in MODULE_DESCRIPTION()s for wcn36xx
-Content-Language: en-US
-To: Breno Leitao <leitao@debian.org>, <kuba@kernel.org>, <davem@davemloft.net>,
-        <pabeni@redhat.com>, <edumazet@google.com>,
-        Loic
- Poulain <loic.poulain@linaro.org>, Kalle Valo <kvalo@kernel.org>
-CC: <dsahern@kernel.org>, <weiwan@google.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <horms@kernel.org>, <andrew@lunn.ch>,
-        <leit@fb.com>,
-        "open list:QUALCOMM WCN36XX WIRELESS DRIVER"
-	<wcn36xx@lists.infradead.org>,
-        "open list:NETWORKING DRIVERS (WIRELESS)"
-	<linux-wireless@vger.kernel.org>
-References: <20240130104243.3025393-1-leitao@debian.org>
- <20240130104243.3025393-6-leitao@debian.org>
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <20240130104243.3025393-6-leitao@debian.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: qanf808Oxw3oHs_4etkwAM3em9V9HxXG
-X-Proofpoint-ORIG-GUID: qanf808Oxw3oHs_4etkwAM3em9V9HxXG
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-30_08,2024-01-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- mlxlogscore=999 spamscore=0 lowpriorityscore=0 suspectscore=0 phishscore=0
- malwarescore=0 clxscore=1011 impostorscore=0 adultscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401190000 definitions=main-2401300129
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <63304f6a-d26f-414a-8c92-14d740774379@oracle.com>
 
-On 1/30/2024 2:42 AM, Breno Leitao wrote:
-> W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
-> Add descriptions to the Qualcomm Atheros WCN3660/3680 wireless driver.
+On Tue, Jan 30, 2024 at 05:23:36PM +0100, Vegard Nossum wrote:
 > 
-> Signed-off-by: Breno Leitao <leitao@debian.org>
-Reviewed-by: Jeff Johnson <quic_jjohnson@quicinc.com>
-
-> ---
->  drivers/net/wireless/ath/wcn36xx/main.c | 1 +
->  1 file changed, 1 insertion(+)
+> On 30/01/2024 17:06, Breno Leitao wrote:
+> > On Tue, Jan 30, 2024 at 07:22:08AM -0700, Jonathan Corbet wrote:
+> > > Jani Nikula <jani.nikula@linux.intel.com> writes:
+> > > 
+> > > > On Tue, 21 Nov 2023, Breno Leitao <leitao@debian.org> wrote:
+> > > > > This is a simple script that parses the Netlink YAML spec files
+> > > > > (Documentation/netlink/specs/), and generates RST files to be rendered
+> > > > > in the Network -> Netlink Specification documentation page.
+> > > > 
+> > > > First of all, my boilerplate complaint: All extra processing for Sphinx
+> > > > should really be done using Sphinx extensions instead of adding Makefile
+> > > > hacks. I don't think it's sustainable to keep adding this stuff. We
+> > > > chose Sphinx because it is extensible, and to avoid the Rube Goldberg
+> > > > machine that the previous documentation build system was.
+> > > 
+> > > So I feel like we've (me included) have kind of sent Breno around in
+> > > circles on this one.  This *was* implemented as an extension once:
+> > > 
+> > >    https://lore.kernel.org/netdev/20231103135622.250314-1-leitao@debian.org/
+> > > 
+> > > At that time it seemed too complex, and I thought that an external
+> > > script would lead to a simpler implementation overall.  Perhaps I was
+> > > wrong.
+> > 
+> > I think you are correct. I personally _think_ that the external script
+> > is better, mainly because it is self contained, thus, easier to
+> > maintain.
 > 
-> diff --git a/drivers/net/wireless/ath/wcn36xx/main.c b/drivers/net/wireless/ath/wcn36xx/main.c
-> index 41119fb177e3..4e6b4df8562f 100644
-> --- a/drivers/net/wireless/ath/wcn36xx/main.c
-> +++ b/drivers/net/wireless/ath/wcn36xx/main.c
-> @@ -1685,6 +1685,7 @@ static struct platform_driver wcn36xx_driver = {
->  
->  module_platform_driver(wcn36xx_driver);
->  
-> +MODULE_DESCRIPTION("Qualcomm Atheros WCN3660/3680 wireless driver");
->  MODULE_LICENSE("Dual BSD/GPL");
->  MODULE_AUTHOR("Eugene Krasnikov k.eugene.e@gmail.com");
->  MODULE_FIRMWARE(WLAN_NV_FILE);
+> From a cursory look at the two versions, the actual Python code to read
+> the YAML and write the reST is the same in both cases. (Breno, please
+> correct me if I'm wrong.)
 
+You are correct. They are similar because Sphinx was not bringing much
+value to what I was trying to do (or I was not able to explore all
+Sphinx benefit - It was my very first Sphinx plug-in).
+
+That said, the plug-in was basically a wrapper around "the Python code",
+that was re-used for the one-off script. So, moving from one to another
+was easy.
 
