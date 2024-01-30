@@ -1,179 +1,226 @@
-Return-Path: <linux-kernel+bounces-44767-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44768-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2559E84271F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:48:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3F23842724
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:49:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC85A2876F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:48:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27DA3B21AFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:49:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25CD87CF2F;
-	Tue, 30 Jan 2024 14:48:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C3517CF29;
+	Tue, 30 Jan 2024 14:49:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ccPzonpX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CjaKvfM/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D60C6D1AD;
-	Tue, 30 Jan 2024 14:48:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0B516BB2B
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 14:49:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706626100; cv=none; b=FDuM6SwXorn830a99IXkbU/K3l6xd+kXSUDTaN0i81K2xyomfwTJbscARynV6sFr4f/u/+YIAoI9pWjgp+OhCwx7wuKxa8maPook1pz9HLUIR5ve3e4ca6UIOwHHAhHEhtmA2V017/o9ZUhwdlToRk5jzzCyYt4b5SJGzR2ixLg=
+	t=1706626187; cv=none; b=O/gCkQsqBoIU4UQRaVLtjNSLfNKXl98Xg8kzH5gNC9zRceZqhrFB2fpF5tcxeFXjtiOaVCU0UujrOR4905vzFW1fVGYRDq41nGFGLzQZVT4q9PfYFY9uuE1izOno6DkUg3OgF9MDbukfjkMzmWFzrFrJ7guUc0lgeuz4e3VMK48=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706626100; c=relaxed/simple;
-	bh=dFAmHTWb/k1pUfbCz9xzZr84exg5dJcjVhp+IOIvovc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=PF/fu8bPH+ZK4EFdYcS8al9Hff2fI/XbFINthi/L9aNz+FZIf+VgdQTOuoxiQF7j/8TtX77YeWUD1qy2B5PEYzhimXa7heTpAUJqM/ABhLMyF539fNoK7pAsLDa9piNJW/FPp9FJFl/7nrwANa5ETyvFoSYhn6mQhwgvZ8yqxTE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ccPzonpX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B276C433A6;
-	Tue, 30 Jan 2024 14:48:19 +0000 (UTC)
+	s=arc-20240116; t=1706626187; c=relaxed/simple;
+	bh=B62oaFM0vBB+o7VxltDa38Ve4oQtWNobEnD6Wez7Ycg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=TcU6RcZ43YafsIFY1okfyXzZKsEr5aoskBaH+w3Lzyfn57qeaxkuK4YhBm5MZIUBFPE2656OUfJd+u9RON7168/n/qwEGvFDPw131T23Ch7U7Zi+lN/PoW9vDox+Sxgw25coNf/hI+x9gpgFcnbN6r+SCDuvsi070hV5Mo2em+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CjaKvfM/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05099C43390;
+	Tue, 30 Jan 2024 14:49:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706626099;
-	bh=dFAmHTWb/k1pUfbCz9xzZr84exg5dJcjVhp+IOIvovc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=ccPzonpXZvS27V5JUZNxi0kUahPAKekIQhGPusg5QPgTYp8CfRCxAG1AJZA9N0i5r
-	 Smf4s1pkGTIx/Ufs6ChVkqS5oMliJQ1UEcjAIqxXF6qLuh//tbujZ14JO9PQbTL65T
-	 zDJ0mpHj5wTLvsVJU2F2rSxwM9qDBF3EOZArP9/fuXWbtQU9SThQ/+iuPREFvBzZtm
-	 dYa9E51PI0w/22pMi0A59p+YHzdrg/JwYhbIHgAmjTWUi12o2zxJjZHkh2owElCHQ3
-	 hCHMUJqu6ORBj3Q3Pv8WB8yZExflQfLFij3NLdzBQHRaab7VaNrrd/F0yV8LgXQsr0
-	 wUcASiikCITfg==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Anup Patel <apatel@ventanamicro.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley
- <paul.walmsley@sifive.com>, Thomas Gleixner <tglx@linutronix.de>, Rob
- Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand
- <frowand.list@gmail.com>, Conor Dooley <conor+dt@kernel.org>,
- devicetree@vger.kernel.org, Saravana Kannan <saravanak@google.com>, Marc
- Zyngier <maz@kernel.org>, Anup Patel <anup@brainfault.org>,
- linux-kernel@vger.kernel.org, Atish Patra <atishp@atishpatra.org>,
- linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- Andrew Jones <ajones@ventanamicro.com>
-Subject: Re: [PATCH v12 00/25] Linux RISC-V AIA Support
-In-Reply-To: <87cytjvybb.fsf@all.your.base.are.belong.to.us>
-References: <20240127161753.114685-1-apatel@ventanamicro.com>
- <87r0hzuw87.fsf@all.your.base.are.belong.to.us>
- <87le87uulb.fsf@all.your.base.are.belong.to.us>
- <CAK9=C2UYCKUBKggtM606orH2mBu_AbTdB5-R5AP1M0t-LsEbEQ@mail.gmail.com>
- <87cytjvybb.fsf@all.your.base.are.belong.to.us>
-Date: Tue, 30 Jan 2024 15:48:16 +0100
-Message-ID: <87ttmuq3m7.fsf@all.your.base.are.belong.to.us>
+	s=k20201202; t=1706626187;
+	bh=B62oaFM0vBB+o7VxltDa38Ve4oQtWNobEnD6Wez7Ycg=;
+	h=Date:From:To:Cc:Subject:From;
+	b=CjaKvfM/j4hULH69Rq0aCR273Y9BsgX2+vr1lvcixGTAqFCfWScfGhVCGI4iAQ9kO
+	 Bsplxfh/4E0mPxzpcHruA5lWM95gd4imlu4+Cvp+RspnBuqh6eo9PWr+bnJOU6GmSJ
+	 j+Jk1oO6D2tCYMXNJrMFrm1Nse3Px6lLa5xzevtZp494wpbMOEU3Gfd6wuIjw927/4
+	 vO8+Zittp3GseHvwcJKWkbA5mQ36i7r3oa+yAb37wsvZwN1Vn26htyZ5kVHmj41R8N
+	 MXBCnvXMBfzWjIAT2tzBgHhuD/t3HcoB1SKQPnya6NfZmzkW2GI2mvJpo1n27G4DTH
+	 maqkFkUsQou3A==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+	id 915A240441; Tue, 30 Jan 2024 11:49:44 -0300 (-03)
+Date: Tue, 30 Jan 2024 11:49:44 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: linux-kernel@vger.kernel.org
+Cc: Adrian Hunter <adrian.hunter@intel.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Miklos Szeredi <mszeredi@redhat.com>,
+	Namhyung Kim <namhyung@kernel.org>
+Subject: [PATCH 1/1 fyi] tools include UAPI: Sync linux/mount.h copy with the
+ kernel sources
+Message-ID: <ZbkMiB7ZcOsLP2V5@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
+tldr; Just FYI, I'm carrying this on the perf tools tree.
 
-> Anup Patel <apatel@ventanamicro.com> writes:
->
->> On Tue, Jan 30, 2024 at 1:22=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@ker=
-nel.org> wrote:
->>>
->>> Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
->>>
->>> > Anup Patel <apatel@ventanamicro.com> writes:
->>> >
->>> >> The RISC-V AIA specification is ratified as-per the RISC-V internati=
-onal
->>> >> process. The latest ratified AIA specifcation can be found at:
->>> >> https://github.com/riscv/riscv-aia/releases/download/1.0/riscv-inter=
-rupts-1.0.pdf
->>> >>
->>> >> At a high-level, the AIA specification adds three things:
->>> >> 1) AIA CSRs
->>> >>    - Improved local interrupt support
->>> >> 2) Incoming Message Signaled Interrupt Controller (IMSIC)
->>> >>    - Per-HART MSI controller
->>> >>    - Support MSI virtualization
->>> >>    - Support IPI along with virtualization
->>> >> 3) Advanced Platform-Level Interrupt Controller (APLIC)
->>> >>    - Wired interrupt controller
->>> >>    - In MSI-mode, converts wired interrupt into MSIs (i.e. MSI gener=
-ator)
->>> >>    - In Direct-mode, injects external interrupts directly into HARTs
->>> >>
->>> >> For an overview of the AIA specification, refer the AIA virtualizati=
-on
->>> >> talk at KVM Forum 2022:
->>> >> https://static.sched.com/hosted_files/kvmforum2022/a1/AIA_Virtualiza=
-tion_in_KVM_RISCV_final.pdf
->>> >> https://www.youtube.com/watch?v=3Dr071dL8Z0yo
->>> >>
->>> >> To test this series, use QEMU v7.2 (or higher) and OpenSBI v1.2 (or =
-higher).
->>> >>
->>> >> These patches can also be found in the riscv_aia_v12 branch at:
->>> >> https://github.com/avpatel/linux.git
->>> >>
->>> >> Changes since v11:
->>> >>  - Rebased on Linux-6.8-rc1
->>> >>  - Included kernel/irq related patches from "genirq, irqchip: Conver=
-t ARM
->>> >>    MSI handling to per device MSI domains" series by Thomas.
->>> >>    (PATCH7, PATCH8, PATCH9, PATCH14, PATCH16, PATCH17, PATCH18, PATC=
-H19,
->>> >>     PATCH20, PATCH21, PATCH22, PATCH23, and PATCH32 of
->>> >>     https://lore.kernel.org/linux-arm-kernel/20221121135653.20861123=
-3@linutronix.de/)
->>> >>  - Updated APLIC MSI-mode driver to use the new WIRED_TO_MSI mechani=
-sm.
->>> >>  - Updated IMSIC driver to support per-device MSI domains for PCI and
->>> >>    platform devices.
->>> >
->>> > Thanks for working on this, Anup! I'm still reviewing the patches.
->>> >
->>> > I'm hitting a boot hang in text patching, with this series applied on
->>> > 6.8-rc2. IPI issues?
->>>
->>> Not text patching! One cpu spinning in smp_call_function_many_cond() and
->>> the others are in cpu_relax(). Smells like IPI...
->>
->> I tried bootefi from U-Boot multiple times but can't reproduce the
->> issue you are seeing.
->
-> Thanks! I can reproduce without EFI, and simpler command-line:
->
-> qemu-system-riscv64 \
->   -bios /path/to/fw_dynamic.bin \
->   -kernel /path/to/Image \
->   -append 'earlycon console=3Dtty0 console=3DttyS0' \
->   -machine virt,aia=3Daplic-imsic \
->   -no-reboot -nodefaults -nographic \
->   -smp 4 \
->   -object rng-random,filename=3D/dev/urandom,id=3Drng0 \
->   -device virtio-rng-device,rng=3Drng0 \
->   -m 4G -chardev stdio,id=3Dchar0 -serial chardev:char0
->
-> I can reproduce with your upstream riscv_aia_v12 plus the config in the
-> gist [1], and all latest QEMU/OpenSBI:
->
-> QEMU: 11be70677c70 ("Merge tag 'pull-vfio-20240129' of https://github.com=
-/legoater/qemu into staging")
-> OpenSBI: bb90a9ebf6d9 ("lib: sbi: Print number of debug triggers found")
-> Linux: d9b9d6eb987f ("MAINTAINERS: Add entry for RISC-V AIA drivers")
->
-> Removing ",aia=3Daplic-imsic" from the CLI above completes the boot (i.e.
-> panicking about missing root mount ;-))
+- Arnaldo
 
-More context; The hang is during a late initcall, where an ftrace direct
-(register_ftrace_direct()) modification is done.
+Full explanation:
 
-Stop machine is used to call into __ftrace_modify_call(). Then into the
-arch specific patch_text_nosync(), where flush_icache_range() hangs in
-flush_icache_all(). From "on_each_cpu(ipi_remote_fence_i, NULL, 1);" to
-on_each_cpu_cond_mask() "smp_call_function_many_cond(mask, func, info,
-scf_flags, cond_func);" which never returns from "csd_lock_wait(csd)"
-right before the end of the function.
+There used to be no copies, with tools/ code using kernel headers
+directly. From time to time tools/perf/ broke due to legitimate kernel
+hacking. At some point Linus complained about such direct usage. Then we
+adopted the current model.
 
-Any ideas? Disabling CONFIG_HID_BPF, that does the early ftrace code
-patching fixes the boot hang, but it does seem related to IPI...
+The way these headers are used in perf are not restricted to just
+including them to compile something.
+
+There are sometimes used in scripts that convert defines into string
+tables, etc, so some change may break one of these scripts, or new MSRs
+may use some different #define pattern, etc.
+
+E.g.:
+
+  $ ls -1 tools/perf/trace/beauty/*.sh | head -5
+  tools/perf/trace/beauty/arch_errno_names.sh
+  tools/perf/trace/beauty/drm_ioctl.sh
+  tools/perf/trace/beauty/fadvise.sh
+  tools/perf/trace/beauty/fsconfig.sh
+  tools/perf/trace/beauty/fsmount.sh
+  $
+  $ tools/perf/trace/beauty/fadvise.sh
+  static const char *fadvise_advices[] = {
+  	[0] = "NORMAL",
+  	[1] = "RANDOM",
+  	[2] = "SEQUENTIAL",
+  	[3] = "WILLNEED",
+  	[4] = "DONTNEED",
+  	[5] = "NOREUSE",
+  };
+  $
+
+The tools/perf/check-headers.sh script, part of the tools/ build
+process, points out changes in the original files.
+
+So its important not to touch the copies in tools/ when doing changes in
+the original kernel headers, that will be done later, when
+check-headers.sh inform about the change to the perf tools hackers.
+
+---
+
+To pick the changes from:
+
+  35e27a5744131996 ("fs: keep struct mnt_id_req extensible")
+  b4c2bea8ceaa50cd ("add listmount(2) syscall")
+  46eae99ef73302f9 ("add statmount(2) syscall")
+
+That doesn't change anything in tools this time as nothing that is
+harvested by the beauty scripts got changed:
+
+  $ ls -1 tools/perf/trace/beauty/*mount*sh
+  tools/perf/trace/beauty/fsmount.sh
+  tools/perf/trace/beauty/mount_flags.sh
+  tools/perf/trace/beauty/move_mount_flags.sh
+  $
+
+This addresses this perf build warning.
+
+  Warning: Kernel ABI header differences:
+    diff -u tools/include/uapi/linux/mount.h include/uapi/linux/mount.h
+
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Miklos Szeredi <mszeredi@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Link: https://lore.kernel.org/lkml/
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/include/uapi/linux/mount.h | 70 ++++++++++++++++++++++++++++++++
+ 1 file changed, 70 insertions(+)
+
+diff --git a/tools/include/uapi/linux/mount.h b/tools/include/uapi/linux/mount.h
+index bb242fdcfe6b29bf..ad5478dbad007341 100644
+--- a/tools/include/uapi/linux/mount.h
++++ b/tools/include/uapi/linux/mount.h
+@@ -138,4 +138,74 @@ struct mount_attr {
+ /* List of all mount_attr versions. */
+ #define MOUNT_ATTR_SIZE_VER0	32 /* sizeof first published struct */
+ 
++
++/*
++ * Structure for getting mount/superblock/filesystem info with statmount(2).
++ *
++ * The interface is similar to statx(2): individual fields or groups can be
++ * selected with the @mask argument of statmount().  Kernel will set the @mask
++ * field according to the supported fields.
++ *
++ * If string fields are selected, then the caller needs to pass a buffer that
++ * has space after the fixed part of the structure.  Nul terminated strings are
++ * copied there and offsets relative to @str are stored in the relevant fields.
++ * If the buffer is too small, then EOVERFLOW is returned.  The actually used
++ * size is returned in @size.
++ */
++struct statmount {
++	__u32 size;		/* Total size, including strings */
++	__u32 __spare1;
++	__u64 mask;		/* What results were written */
++	__u32 sb_dev_major;	/* Device ID */
++	__u32 sb_dev_minor;
++	__u64 sb_magic;		/* ..._SUPER_MAGIC */
++	__u32 sb_flags;		/* SB_{RDONLY,SYNCHRONOUS,DIRSYNC,LAZYTIME} */
++	__u32 fs_type;		/* [str] Filesystem type */
++	__u64 mnt_id;		/* Unique ID of mount */
++	__u64 mnt_parent_id;	/* Unique ID of parent (for root == mnt_id) */
++	__u32 mnt_id_old;	/* Reused IDs used in proc/.../mountinfo */
++	__u32 mnt_parent_id_old;
++	__u64 mnt_attr;		/* MOUNT_ATTR_... */
++	__u64 mnt_propagation;	/* MS_{SHARED,SLAVE,PRIVATE,UNBINDABLE} */
++	__u64 mnt_peer_group;	/* ID of shared peer group */
++	__u64 mnt_master;	/* Mount receives propagation from this ID */
++	__u64 propagate_from;	/* Propagation from in current namespace */
++	__u32 mnt_root;		/* [str] Root of mount relative to root of fs */
++	__u32 mnt_point;	/* [str] Mountpoint relative to current root */
++	__u64 __spare2[50];
++	char str[];		/* Variable size part containing strings */
++};
++
++/*
++ * Structure for passing mount ID and miscellaneous parameters to statmount(2)
++ * and listmount(2).
++ *
++ * For statmount(2) @param represents the request mask.
++ * For listmount(2) @param represents the last listed mount id (or zero).
++ */
++struct mnt_id_req {
++	__u32 size;
++	__u32 spare;
++	__u64 mnt_id;
++	__u64 param;
++};
++
++/* List of all mnt_id_req versions. */
++#define MNT_ID_REQ_SIZE_VER0	24 /* sizeof first published struct */
++
++/*
++ * @mask bits for statmount(2)
++ */
++#define STATMOUNT_SB_BASIC		0x00000001U     /* Want/got sb_... */
++#define STATMOUNT_MNT_BASIC		0x00000002U	/* Want/got mnt_... */
++#define STATMOUNT_PROPAGATE_FROM	0x00000004U	/* Want/got propagate_from */
++#define STATMOUNT_MNT_ROOT		0x00000008U	/* Want/got mnt_root  */
++#define STATMOUNT_MNT_POINT		0x00000010U	/* Want/got mnt_point */
++#define STATMOUNT_FS_TYPE		0x00000020U	/* Want/got fs_type */
++
++/*
++ * Special @mnt_id values that can be passed to listmount
++ */
++#define LSMT_ROOT		0xffffffffffffffff	/* root mount */
++
+ #endif /* _UAPI_LINUX_MOUNT_H */
+-- 
+2.43.0
 
 
