@@ -1,271 +1,91 @@
-Return-Path: <linux-kernel+bounces-44119-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44089-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9642841D83
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:21:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0B75841D36
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:08:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 349D7B277EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:21:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 431AA28BD35
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:08:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16FA36A037;
-	Tue, 30 Jan 2024 08:15:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7A655477C;
+	Tue, 30 Jan 2024 08:08:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XIftHMrP"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uuVC6mQV"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 138E56A01F;
-	Tue, 30 Jan 2024 08:15:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C201B54677
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 08:08:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706602519; cv=none; b=rwUhqGP2q8HUyMTtgNwvY0CqXSlz6ESPEWM3oNNZkIWHCV+DXVAlm0hBjDluSxy0F1GedFIHFlXbLHARm6NsegvB8ud+Ars5afAVBwkZO6KvGWDqKBhFUQ0lYXCariaBz+t5OpJAdKGMpx2LCw87ZxzdvP/PiRdrE0jITKta9o4=
+	t=1706602132; cv=none; b=Bz7cN6QbRc6xIxxWgfULfmuh0i9ZufNJ+urXOMPnyobJm9t3DWsqNzd++sN6gZkUm9DezsR9q6f5YUHRn3SPtBxej8KZr0RG7MdlXV7Ee436EGYkp4/uhmPkfSOkE0z5mqdlWsGTPWI+UGu2899LZt7C17CC7mEwXEm/yV37fQI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706602519; c=relaxed/simple;
-	bh=xAXFWXbfZ0fCyVjEm8a/lDKedHKzBbgMHiYFrctbvM8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=LHVcl6pkIqP7wQYs5X03ohaVhXuJZgpEmfW7tI4goW9HqT/CgRLJ9cDfgzoCdZ+9OmW8Nvwnm1QwhtDJqLkRUwiovFhHE2WSb6QqzKSX48rtMOuHYUk5tS5kQphiwMvOLFNawInrSKwHm0vJXMCIUgwSIQl0PDQImTg9AqddYY8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XIftHMrP; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706602517; x=1738138517;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=xAXFWXbfZ0fCyVjEm8a/lDKedHKzBbgMHiYFrctbvM8=;
-  b=XIftHMrP6a6PKuJmWKeZIMtNv02xG4p1NB6wk3GX5lx928gcX1Eh+xCt
-   9EXqBsI87aLB+o4OP37hffAorjUKuAFhUOnuXv1WIpW+wx3jK+MYUwUWf
-   riVlAl4kT3dBXMPV8nO/BI6/wQGNQ83N3tNc1lamwGTZJimuB2aQGiZcE
-   8o68YQj5/gHKw2y4+RXiQ/JErkBvrMMMJFvJbIL4dTNwsr9VL9+0/cCrY
-   0pqGEwAehVEzoiBvzqLqK9RVdByAj2zV7S8zJNHGOCgPvr0ZMoRhBG7T9
-   PFn/25iKNU3QODkQ/dMWitEgqIFLtY2lBDXwGkuYOE4aTgMldN440C175
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="10588583"
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="10588583"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 00:15:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="3634053"
-Received: from allen-box.sh.intel.com ([10.239.159.127])
-  by fmviesa003.fm.intel.com with ESMTP; 30 Jan 2024 00:15:13 -0800
-From: Lu Baolu <baolu.lu@linux.intel.com>
-To: Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	Nicolin Chen <nicolinc@nvidia.com>
-Cc: Yi Liu <yi.l.liu@intel.com>,
-	Jacob Pan <jacob.jun.pan@linux.intel.com>,
-	Longfang Liu <liulongfang@huawei.com>,
-	Yan Zhao <yan.y.zhao@intel.com>,
-	Joel Granados <j.granados@samsung.com>,
-	iommu@lists.linux.dev,
-	kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Lu Baolu <baolu.lu@linux.intel.com>,
-	Jason Gunthorpe <jgg@nvidia.com>
-Subject: [PATCH v11 16/16] iommu: Make iommu_report_device_fault() return void
-Date: Tue, 30 Jan 2024 16:08:35 +0800
-Message-Id: <20240130080835.58921-17-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240130080835.58921-1-baolu.lu@linux.intel.com>
-References: <20240130080835.58921-1-baolu.lu@linux.intel.com>
+	s=arc-20240116; t=1706602132; c=relaxed/simple;
+	bh=MsX32WjhNDdW2qr6JOHB9rEwqosyJkstTNFGRZOwOuk=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=L6BrM0bW0sZDYs/hFOdXINqLWJ2dxAxQNwnvS1zlpiKYtwYO5TY8fAWa1C1v0a+8Euj+pZCkEsG/Zsjgz6gNThcKyVZmHRLjIOpCRBal758n5Rm9bXHMpnDIYx/BqdG/I26PR/xRIb8Wyy7wdVuA1vNwZ2eDU5NcvMRGrGzm4sk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=uuVC6mQV; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-5fffb2798bfso62548527b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 00:08:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706602129; x=1707206929; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4yuy6DXMuQ7aM2x/F8JDP7FABfqZoOLw5CnCxlTpGVA=;
+        b=uuVC6mQVagqiaTri0wSyvJLr+suSR3o43FkKQMMxmSqk0S7mmTqKSlFC39M7BBADzX
+         ltYBaAzmlEsP6TaPKtm8BRqO0NszUh5xN4C9uNQzpomFGWo7SjxwU7iPOPEl2OiRKznO
+         9H+Sb/B1bDTjLQqpKfiHE4jwnc1gQRQLXjXVndZR1BApI/ouEOUuIACnvE5lshY9Sa7C
+         WHGT5vxOCtGY9Lx8NAEbAwdL/zb55izpvG7MrMTKuYJDnv2ySCm3tiUrL/CfQ9hnb8m6
+         iEonkC2Ek7ncu+tXxqPyZW/dwpE6Jv+N2HySWHjm2hcqHOOVxGCt8a2pS2X7k9eTckO8
+         B7+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706602129; x=1707206929;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4yuy6DXMuQ7aM2x/F8JDP7FABfqZoOLw5CnCxlTpGVA=;
+        b=fnTCeIybWVkYRspOHdsogwPxf2aUpv8tprTo/6z0aKNpx9VR43avRaTTTDbcv09zuS
+         H+LqXwnRVCfBR0a9o8L6qM0sewdrNJZQXtdqeLqgNjod7pFPVaC5siZJJcG0KmMxd45K
+         Z8x0muqiYU7mg4o++ndfHHShC2DpGCb6Rq7ILFRKtG8rKyIIHJvly8YLOaaQ47iGdCHg
+         ZxCBEkaC8e/SU+vJcq/RZn+n+2DpKLeTZKZk5D9ocDHeHoYEs2JdT3/SV6rDSOLLOBph
+         8QwjjrJkKukqy03H2nv3d1K8ckVlJYCOrmGEZzIMi05RSsagLpfXDy/Z5Bd3Uq57omKp
+         EEJA==
+X-Gm-Message-State: AOJu0Yx60FQJyB/QKWD2+XSX2p+eILgMWyFKGypyE/33OzwYA74Geivh
+	sEZIuNzJKRlOHJpT2MVYHaYXyLGV5ORKUD4s6Sffp2lDKS+wY/To8nTK1opFmhdHFOIYD96zRPQ
+	taZeXQ1lrkiltbUc+TA==
+X-Google-Smtp-Source: AGHT+IHYJh/JZb9tcGVFMyDOwEKQlvsjTsnVcdkiirQ0l/OYkIkLQ0xdTfuKo+pCIIg1GGlzGiCXJcuUxWGhHlNo
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a81:79d0:0:b0:5ff:aa85:6244 with SMTP
+ id u199-20020a8179d0000000b005ffaa856244mr2355603ywc.8.1706602129686; Tue, 30
+ Jan 2024 00:08:49 -0800 (PST)
+Date: Tue, 30 Jan 2024 08:08:47 +0000
+In-Reply-To: <20240130014208.565554-2-hannes@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20240130014208.565554-1-hannes@cmpxchg.org> <20240130014208.565554-2-hannes@cmpxchg.org>
+Message-ID: <Zbiuj7qXrKJ2sQhW@google.com>
+Subject: Re: [PATCH 01/20] mm: zswap: rename zswap_free_entry to zswap_entry_free
+From: Yosry Ahmed <yosryahmed@google.com>
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Nhat Pham <nphamcs@gmail.com>, 
+	Chengming Zhou <zhouchengming@bytedance.com>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-As the iommu_report_device_fault() has been converted to auto-respond a
-page fault if it fails to enqueue it, there's no need to return a code
-in any case. Make it return void.
+On Mon, Jan 29, 2024 at 08:36:37PM -0500, Johannes Weiner wrote:
+> There is a zswap_entry_ namespace with multiple functions already.
+> 
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- include/linux/iommu.h                       |  5 ++---
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c |  4 ++--
- drivers/iommu/intel/svm.c                   | 19 ++++++----------
- drivers/iommu/io-pgfault.c                  | 25 +++++++--------------
- 4 files changed, 19 insertions(+), 34 deletions(-)
+Acked-by: Yosry Ahmed <yosryahmed@google.com>
 
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index ceadbeaffd98..6ab90cb93da9 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -1545,7 +1545,7 @@ struct iopf_queue *iopf_queue_alloc(const char *name);
- void iopf_queue_free(struct iopf_queue *queue);
- int iopf_queue_discard_partial(struct iopf_queue *queue);
- void iopf_free_group(struct iopf_group *group);
--int iommu_report_device_fault(struct device *dev, struct iopf_fault *evt);
-+void iommu_report_device_fault(struct device *dev, struct iopf_fault *evt);
- void iopf_group_response(struct iopf_group *group,
- 			 enum iommu_page_response_code status);
- #else
-@@ -1583,10 +1583,9 @@ static inline void iopf_free_group(struct iopf_group *group)
- {
- }
- 
--static inline int
-+static inline void
- iommu_report_device_fault(struct device *dev, struct iopf_fault *evt)
- {
--	return -ENODEV;
- }
- 
- static inline void iopf_group_response(struct iopf_group *group,
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index 42eb59cb99f4..02580364acda 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -1455,7 +1455,7 @@ arm_smmu_find_master(struct arm_smmu_device *smmu, u32 sid)
- /* IRQ and event handlers */
- static int arm_smmu_handle_evt(struct arm_smmu_device *smmu, u64 *evt)
- {
--	int ret;
-+	int ret = 0;
- 	u32 perm = 0;
- 	struct arm_smmu_master *master;
- 	bool ssid_valid = evt[0] & EVTQ_0_SSV;
-@@ -1511,7 +1511,7 @@ static int arm_smmu_handle_evt(struct arm_smmu_device *smmu, u64 *evt)
- 		goto out_unlock;
- 	}
- 
--	ret = iommu_report_device_fault(master->dev, &fault_evt);
-+	iommu_report_device_fault(master->dev, &fault_evt);
- out_unlock:
- 	mutex_unlock(&smmu->streams_mutex);
- 	return ret;
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 2f8716636dbb..b644d57da841 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -561,14 +561,11 @@ static int prq_to_iommu_prot(struct page_req_dsc *req)
- 	return prot;
- }
- 
--static int intel_svm_prq_report(struct intel_iommu *iommu, struct device *dev,
--				struct page_req_dsc *desc)
-+static void intel_svm_prq_report(struct intel_iommu *iommu, struct device *dev,
-+				 struct page_req_dsc *desc)
- {
- 	struct iopf_fault event = { };
- 
--	if (!dev || !dev_is_pci(dev))
--		return -ENODEV;
--
- 	/* Fill in event data for device specific processing */
- 	event.fault.type = IOMMU_FAULT_PAGE_REQ;
- 	event.fault.prm.addr = (u64)desc->addr << VTD_PAGE_SHIFT;
-@@ -601,7 +598,7 @@ static int intel_svm_prq_report(struct intel_iommu *iommu, struct device *dev,
- 		event.fault.prm.private_data[0] = ktime_to_ns(ktime_get());
- 	}
- 
--	return iommu_report_device_fault(dev, &event);
-+	iommu_report_device_fault(dev, &event);
- }
- 
- static void handle_bad_prq_event(struct intel_iommu *iommu,
-@@ -704,12 +701,10 @@ static irqreturn_t prq_event_thread(int irq, void *d)
- 		if (!pdev)
- 			goto bad_req;
- 
--		if (intel_svm_prq_report(iommu, &pdev->dev, req))
--			handle_bad_prq_event(iommu, req, QI_RESP_INVALID);
--		else
--			trace_prq_report(iommu, &pdev->dev, req->qw_0, req->qw_1,
--					 req->priv_data[0], req->priv_data[1],
--					 iommu->prq_seq_number++);
-+		intel_svm_prq_report(iommu, &pdev->dev, req);
-+		trace_prq_report(iommu, &pdev->dev, req->qw_0, req->qw_1,
-+				 req->priv_data[0], req->priv_data[1],
-+				 iommu->prq_seq_number++);
- 		pci_dev_put(pdev);
- prq_advance:
- 		head = (head + sizeof(*req)) & PRQ_RING_MASK;
-diff --git a/drivers/iommu/io-pgfault.c b/drivers/iommu/io-pgfault.c
-index e932ab5e8dc9..f70a09149b95 100644
---- a/drivers/iommu/io-pgfault.c
-+++ b/drivers/iommu/io-pgfault.c
-@@ -176,26 +176,22 @@ static struct iopf_group *iopf_group_alloc(struct iommu_fault_param *iopf_param,
-  * freed after the device has stopped generating page faults (or the iommu
-  * hardware has been set to block the page faults) and the pending page faults
-  * have been flushed.
-- *
-- * Return: 0 on success and <0 on error.
-  */
--int iommu_report_device_fault(struct device *dev, struct iopf_fault *evt)
-+void iommu_report_device_fault(struct device *dev, struct iopf_fault *evt)
- {
- 	struct iommu_fault *fault = &evt->fault;
- 	struct iommu_fault_param *iopf_param;
- 	struct iopf_group abort_group = {};
- 	struct iopf_group *group;
--	int ret;
- 
- 	iopf_param = iopf_get_dev_fault_param(dev);
- 	if (WARN_ON(!iopf_param))
--		return -ENODEV;
-+		return;
- 
- 	if (!(fault->prm.flags & IOMMU_FAULT_PAGE_REQUEST_LAST_PAGE)) {
--		ret = report_partial_fault(iopf_param, fault);
-+		report_partial_fault(iopf_param, fault);
- 		iopf_put_dev_fault_param(iopf_param);
- 		/* A request that is not the last does not need to be ack'd */
--		return ret;
- 	}
- 
- 	/*
-@@ -207,25 +203,21 @@ int iommu_report_device_fault(struct device *dev, struct iopf_fault *evt)
- 	 * leaving, otherwise partial faults will be stuck.
- 	 */
- 	group = iopf_group_alloc(iopf_param, evt, &abort_group);
--	if (group == &abort_group) {
--		ret = -ENOMEM;
-+	if (group == &abort_group)
- 		goto err_abort;
--	}
- 
- 	group->domain = get_domain_for_iopf(dev, fault);
--	if (!group->domain) {
--		ret = -EINVAL;
-+	if (!group->domain)
- 		goto err_abort;
--	}
- 
- 	/*
- 	 * On success iopf_handler must call iopf_group_response() and
- 	 * iopf_free_group()
- 	 */
--	ret = group->domain->iopf_handler(group);
--	if (ret)
-+	if (group->domain->iopf_handler(group))
- 		goto err_abort;
--	return 0;
-+
-+	return;
- 
- err_abort:
- 	iopf_group_response(group, IOMMU_PAGE_RESP_FAILURE);
-@@ -233,7 +225,6 @@ int iommu_report_device_fault(struct device *dev, struct iopf_fault *evt)
- 		__iopf_free_group(group);
- 	else
- 		iopf_free_group(group);
--	return ret;
- }
- EXPORT_SYMBOL_GPL(iommu_report_device_fault);
- 
--- 
-2.34.1
-
+Thanks.
 
