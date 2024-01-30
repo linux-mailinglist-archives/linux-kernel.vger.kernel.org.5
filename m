@@ -1,110 +1,111 @@
-Return-Path: <linux-kernel+bounces-45152-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45153-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 441BD842C39
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:58:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E705842C3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:01:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 014B4282CC2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:58:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45CAB1C245EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:01:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AE577994C;
-	Tue, 30 Jan 2024 18:58:43 +0000 (UTC)
-Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DF3579956;
+	Tue, 30 Jan 2024 19:01:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org header.b="S/LRa7k1"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24B637993D
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 18:58:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6754079944
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 19:01:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706641122; cv=none; b=kRPXOKbexg8CpCAYhzxvUcnJZmTRGkkaWcp4gyn3Rf6xCzwur3X6CkLrPX2UUG019TK94PE5TM2gEFUhmRQm2cJbgDp9CVbEPf0f23yvt90CI11spXofh2+SPlqaTOBl1Bx90Md9IAohvTglX6ol1S4UouwHKDrE0+uPceQn/M0=
+	t=1706641297; cv=none; b=opO6i1FrytTuSisEYrCCqwzev3PsCV+jt15xSxjHFzI5S0GdwmStdv2/OgRRmQVJy/zjjmAxQpIHbUMwsfQYybYiI3VrpLwCWJXmmb5pkrHK5d3JdjXBelIe5ucuKM67zuVNTRcQJmjBGxkLJ6DV8YuoAKjCl2LVgGJHXgxnF2g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706641122; c=relaxed/simple;
-	bh=feOlOVjVoDFlYhJijI29hyyTBq3VHkJbnIkbQHkWo+M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bOIOpdav2sWj0GSXYVFZ5pkx7608QHEGirS3+Hfv00p830jk2jHZGbDA9bhU+5G03xAjl0egP1eIFKFuXsJZTX+PrSN9mkxipMEyuC2NTuGZj7Ft/6I4sh70Tnda5Lh8acG+aPE7B49K5jt9oHDJaaWFyxmbnXsD+tIAWUNQWKg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=redhat.com; arc=none smtp.client-ip=209.85.219.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-680b1335af6so1008266d6.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 10:58:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706641120; x=1707245920;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+	s=arc-20240116; t=1706641297; c=relaxed/simple;
+	bh=E4micvE7O+ZbfCsFYarptDn3Hd1yYBBH03FWbQeFOoc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Gekm3i/F2qvli+Zl6QbzAk6cPy+7AJCAA/HS9tAKtFs3JaVAvCBDMADTf4qOu6aCMWPwbW+eD/IqoOq7LXFQNC7vM6NgNPTASIC1DELrcOVMGbLIb+eWRFElnxc2ZD3z6XsbiVOPp1X0AjwIoXNTxHlGCDsqnveG7MvuQme/xek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=endlessos.org; spf=pass smtp.mailfrom=endlessos.org; dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org header.b=S/LRa7k1; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=endlessos.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=endlessos.org
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc26698a5bfso1268418276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 11:01:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=endlessos.org; s=google; t=1706641294; x=1707246094; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sQQdl1Z7hWzrJNQVbHBRvsLI1/jbn0qd6qXGr4XoIGk=;
-        b=Maw7q42p+L6eYhX1t7W13S8ijRbr1eaR5tju3Uq8I6XQXpzmP0JDyQTQdUphsPYbJd
-         yFbk3y3HbN/4I60obNgtiluphtcAgXcypdEqdVhXCOr6xIM/bZJcrnsW3S2s3OtQHgfP
-         vN4taaTXjESJHNMfX9ytLjRpabxpWt7n8amVNXlHPGQAA9gGaTGPJcg9YQMCtB3Qxf//
-         kFbCQzEZabSDetGL1XTM93tj/0eHCPS1Wlg3v/FzHoobF9XxhXxt0VEw4YCSlAkO8qQn
-         w1bkZtnQTPozT5swT/OSFLwvT6kY+1XZAwOquKVDgEE684Aj8Luv/itTG9Y6R4RvhpIg
-         TUHg==
-X-Gm-Message-State: AOJu0YyyiIU8HxstTxHXaH9dtdNWZXHgv33dE1R36LzCuzWxBgrjnz5/
-	q0SpHQzFS5i0njQpIW/vxuTJ83ha/u25SKTcCjjVku2pOpPzXLsdoSQm2q4ZPA==
-X-Google-Smtp-Source: AGHT+IFAvIv3XblWdgdQ8RQaDq6JHCKiCsKus1Crsy6Zo4z9JO1wUINYuy/SufWB3UTtR+pOQa194Q==
-X-Received: by 2002:ad4:4353:0:b0:68c:4b59:d4ee with SMTP id q19-20020ad44353000000b0068c4b59d4eemr1868859qvs.21.1706641120069;
-        Tue, 30 Jan 2024 10:58:40 -0800 (PST)
-Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
-        by smtp.gmail.com with ESMTPSA id or32-20020a05621446a000b0068189e9d3a3sm4322738qvb.112.2024.01.30.10.58.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 10:58:39 -0800 (PST)
-Date: Tue, 30 Jan 2024 13:58:38 -0500
-From: Mike Snitzer <snitzer@kernel.org>
-To: Kees Cook <keescook@chromium.org>
-Cc: linux-hardening@vger.kernel.org, Alasdair Kergon <agk@redhat.com>,
-	Mikulas Patocka <mpatocka@redhat.com>, dm-devel@lists.linux.dev,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 47/82] dm verity: Refactor intentional wrap-around test
-Message-ID: <ZblG3sBtxv68aRyH@redhat.com>
-References: <20240122235208.work.748-kees@kernel.org>
- <20240123002814.1396804-47-keescook@chromium.org>
+        bh=78og88yF4pCuDlRqg/F7xnA9QQPhVIa54mFydxb6xAQ=;
+        b=S/LRa7k1I6VkFGbMjJwp/QW0hek8NQEkABe3RQolvttUei2fqEK7Vd6XP3BmNh/5c5
+         mLdEEyb3LIrVcn5oOpv4wHfCJfxnM2aFnlnTfHHk2XNytrTl1c7/Blzubi6o9ZzcXYTE
+         5DsHE53pzEopVyRhMZ2ixUQDaSLtROgqEr3XCdNyt8lew3QPLJMcDN5ayXrjbYTtcsH9
+         TOQX/j07fvJ10OsWzJG/N7pTX6x4F99gT8+NRGnu3JU4BUZNw0HI+aG1LlHISSXGKJKc
+         dHE44i6w/ilDkEAEoat3tJP8PZvE+jso7cencgI9+0ajA8UZ8Lt4ik0dYAhrYduIRWjK
+         SN8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706641294; x=1707246094;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=78og88yF4pCuDlRqg/F7xnA9QQPhVIa54mFydxb6xAQ=;
+        b=tlXLm3xVlXywpyRm5bHSq/b4NEqxYl/By5MfVyJ5DsHoGkMNqJomVHIEUUv8XClEo/
+         jJbNRwJ0LyxsB5/42o2DNX5VND3+dMrodMYdV018xAerT4y1nlvMMHASEa4iwXuZ5YCT
+         uICXQAXeunVg7xDlb/Ea1c3Io2c16xOycSv+O2ehQQI3Eb2XjWRACQX1gtv6eRev676u
+         inQbUHcHTe28AQVEdUo96qrxdePkOHrFtrSryBZ/CmwQ57xGqGS/4HFvTt2olS/5nvZK
+         tW1IfHUz9u90Tz36LNPKMT1PDKxFtgTXWeWm518dpY1EzBuHcqOAWebT3AnfATwj+/Kr
+         Gwug==
+X-Forwarded-Encrypted: i=0; AJvYcCX+Xjbd9JAcN2v+5rnTzhSOWpiN1H4/oXZZ46f6XNVTVDaiLw8xpejq6ASJQO1baYR6i69kVrb1TgUBcjMMxtZ3mceIS3yfnBTddYr+
+X-Gm-Message-State: AOJu0YyYvuySalRHlTeGvYb/yJthOS4jBP5Fi2bJkTwmuAWtTJu0TYZO
+	Wyl+iYVjnVFF8w1ScWNivpPnk0LCmlzj33KlBkc7vHm2ih6z7VIqv/sG+pHzyhy2anS1ywtUaRV
+	J/BhyuK8+ceIRG2bpsol65XLhq1Bo5poD5Rsfqg==
+X-Google-Smtp-Source: AGHT+IEIheGpue36qp31pmYoALnxMN3CKJuNbqB2Ltwx8pEJRNlVwh1TE9U+Ybr/IFc6SWJpr7mnK28qhEHL7CgEogA=
+X-Received: by 2002:a25:4191:0:b0:dc6:42cd:6554 with SMTP id
+ o139-20020a254191000000b00dc642cd6554mr200359yba.0.1706641294016; Tue, 30 Jan
+ 2024 11:01:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240123002814.1396804-47-keescook@chromium.org>
+References: <20240130183124.19985-1-drake@endlessos.org> <7a8f3595-3efc-428a-852a-d9edc8ebb01b@amd.com>
+In-Reply-To: <7a8f3595-3efc-428a-852a-d9edc8ebb01b@amd.com>
+From: Daniel Drake <drake@endlessos.org>
+Date: Tue, 30 Jan 2024 15:00:58 -0400
+Message-ID: <CAD8Lp45ycrY-hkKVZGEQdeYmODauaShgFp2tj=QtEXK_C2tcYA@mail.gmail.com>
+Subject: Re: [PATCH] PCI: Disable D3cold on Asus B1400 PCI-NVMe bridge
+To: Mario Limonciello <mario.limonciello@amd.com>
+Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, bhelgaas@google.com, 
+	david.e.box@linux.intel.com, Jian-Hong Pan <jhp@endlessos.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 22 2024 at  7:27P -0500,
-Kees Cook <keescook@chromium.org> wrote:
+On Tue, Jan 30, 2024 at 2:47=E2=80=AFPM Mario Limonciello
+<mario.limonciello@amd.com> wrote:
+> Has there already been a check done whether any newer firmware is
+> available from ASUS that doesn't suffer the deficiency described below?
 
-> In an effort to separate intentional arithmetic wrap-around from
-> unexpected wrap-around, we need to refactor places that depend on this
-> kind of math. One of the most common code patterns of this is:
-> 
-> 	VAR + value < VAR
-> 
-> Notably, this is considered "undefined behavior" for signed and pointer
-> types, which the kernel works around by using the -fno-strict-overflow
-> option in the build[1] (which used to just be -fwrapv). Regardless, we
-> want to get the kernel source to the position where we can meaningfully
-> instrument arithmetic wrap-around conditions and catch them when they
-> are unexpected, regardless of whether they are signed[2], unsigned[3],
-> or pointer[4] types.
-> 
-> Refactor open-coded wrap-around addition test to use add_would_overflow().
-> This paves the way to enabling the wrap-around sanitizers in the future.
-> 
-> Link: https://git.kernel.org/linus/68df3755e383e6fecf2354a67b08f92f18536594 [1]
-> Link: https://github.com/KSPP/linux/issues/26 [2]
-> Link: https://github.com/KSPP/linux/issues/27 [3]
-> Link: https://github.com/KSPP/linux/issues/344 [4]
-> Cc: Alasdair Kergon <agk@redhat.com>
-> Cc: Mike Snitzer <snitzer@kernel.org>
-> Cc: Mikulas Patocka <mpatocka@redhat.com>
-> Cc: dm-devel@lists.linux.dev
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+The latest firmware does flip StorageD3Enable to 0, which has the side
+effect of never putting the NVMe device or the parent bridge into
+D3cold.
+However, we have shipped hundreds of these devices with the original
+production BIOS version to first time computer users, so it is not
+feasible to ask the end user to upgrade. And there is no
+Linux-compatible online firmware update for this product range. Hence
+a Linux-level workaround for this issue would be highly valuable.
 
-Please change subject to:
-"dm: Refactor intentional wrap-around test in a few targets"
+> Is this the only problem blocking s2idle from working effectively on
+> this platform?  If so, I would think you want to just do the revert in
+> the same series if it's decided this patch needs to spin again for any
+> reason.
 
-Reviewed-by: Mike Snitzer <snitzer@kernel.org>
+Yes these could be combined into the same series, with agreement from
+the drivers/acpi/ maintainers for the S3 revert.
+
+Thanks
+Daniel
 
