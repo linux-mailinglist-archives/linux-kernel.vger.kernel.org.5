@@ -1,114 +1,138 @@
-Return-Path: <linux-kernel+bounces-43705-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43710-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEBAB841811
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 02:02:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F17BC841829
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 02:12:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 80DBFB2165E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 01:02:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 915241F23907
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 01:12:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D024B2E821;
-	Tue, 30 Jan 2024 01:02:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18FEB33CCF;
+	Tue, 30 Jan 2024 01:11:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4gNubVh4"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="u0qhlXeD"
+Received: from out203-205-221-153.mail.qq.com (out203-205-221-153.mail.qq.com [203.205.221.153])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89B4036117
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:02:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13BA5D266
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:11:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706576549; cv=none; b=MsrH0FzCLIRZI1b1R7Hkk5b6cTvQ1/O2D/4ENeUfcowEfPfdZOaNONdSKL5fNblrReAvU99zLQZYfu75pgFSPIixcM8pqmGlc/akeRgI/+Q2WRrN7SV2DM8r42hS7d9OfrRaZWowdRT0YzQON+IPiZ6tFm+j78PiqigDpeQVsGo=
+	t=1706577117; cv=none; b=AyKeQq3PKQGJkMFOETfmMMay5w8+VT5BcXKn42/aOaN6bI+5MkrQF61Jw36I8Ed+UXN1WfyWlvGqBH48ewiOHKoa0mdYXGvFTAhxi5y1BtMQG33r9K9SY8mayWU0iEW8M0fPuris5cMcA9Pszu5kDdNfrQZxFU2+UWJoUqW52qU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706576549; c=relaxed/simple;
-	bh=eQQVzNpyQ4k5C+OR/TJK6umpga8oG0wdB6/rTvPba3w=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=KeS0L5qErPeks4xWVJ3NdFYkQwNudMN0tAbYcbU7n4aMHT1ro4cdWX2NmkypgAoxBINyzQHa/GKEb0XUxo54/oWW4pmlNsaPS4FyM87JxEo9jwzl5HkRhIMpSfOlvwIgqMBdv8sP5dLETfy1/Vopt5Whc8sxI3950cPCR1tADCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4gNubVh4; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc2629d180fso7199791276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 17:02:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706576546; x=1707181346; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lZSrdH5I7u0zNwSNWZORF6UyHmXuWHBABDMeAreYwGg=;
-        b=4gNubVh4qRFO+lhGWbIuVgh5rnqbJRuGzjjRSX7xmZVcszTSU32INZingPc31W6b/p
-         OghHyj7zOAgQMgavQPFkEgSKxMIADtV8vRyaS8UnCeoTU2wDBK0JCQ5hVjPoPh/L4Ycz
-         +sJVn309MBFmhmtjiTHwvu37afaZ1PcsWEIKZ92zQDv+p3PGP9oTdKC2butNLMOWsRDB
-         YAr2kQlqe9tPBU7yoOYRGaujI3bpIX59FZoifRSbTs58dFTymPu6MimQnNIGkSgOV551
-         clk6qfEe708stggE0XnDWmc9a8fxuxZHTLaWs6rFMGSjD2FzgRGTRwxMMxPot/lEtVAa
-         IliA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706576546; x=1707181346;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lZSrdH5I7u0zNwSNWZORF6UyHmXuWHBABDMeAreYwGg=;
-        b=I0GJ3gYkV46Gk/YTv/io/S4BmZY9G/F+34zPO88msx/KSDSwdLr9cr4fNuekPGxTpU
-         fD+1A8Z5AOziCKixFmb/NHHAe18boXFU0u1Oil50FqZYqwJ6XT+y/2lYDmTNXHe+7nFG
-         Fhe1Wy7yddUmgY4BRXGkynHdOvE77XnkJ1l741O/uqgdkHg1+r67Uz7xMcivtwQMfZ7h
-         DrkNZgQgXZyQXyJrwYk6hAPcQz0mRzt22cqr8yftbtVW9Z02urvdPH6Gopjiq/C3LkJN
-         BjmbzXm2L9zBXDDjz2XQM1Vwu2/KoY3r0F7jWY9uYPZpOCYWkg6hhV/z/apieNCm9gfI
-         wStA==
-X-Gm-Message-State: AOJu0Yzs9XE5nMH5Cihq0p9K/EHlOjekYIqIVfgtXuLvhpv67DMn+smW
-	Xu0zvhPYNyNNhszB2gbrZXu0g6iL9SQAXa2I8r2YjF5HpTM46pB1SleXDidJDNhYGmSZsTH8kZS
-	X28+T+muO4iKHuvJ89w==
-X-Google-Smtp-Source: AGHT+IE9Mh60TagYwcbyXda/9IpvEZ5n8YwuyQK5UTl98rhZse04NPXV79Dk78e5oca4DqkUwxuVBrGZG2ciKDSn
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:6902:2405:b0:dc2:6501:f42 with SMTP
- id dr5-20020a056902240500b00dc265010f42mr2482352ybb.5.1706576546597; Mon, 29
- Jan 2024 17:02:26 -0800 (PST)
-Date: Tue, 30 Jan 2024 01:02:24 +0000
-In-Reply-To: <20240129224542.162599-2-nphamcs@gmail.com>
+	s=arc-20240116; t=1706577117; c=relaxed/simple;
+	bh=Q941lI8nlLFQAL+xtX6tHTJm4YMyBQkQpd5pKaj8E60=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=cgD5PMz8MWEYfkeZcTChmIhQ1ys48zMbFpxm9+/ss26/+8H3RTJjzVDBmADEoi7Svynv3dYejanRD98sEbgQYNx+E4UNfrsmjyFmDd2uIx4n6ZqYHgy0Q3Tn7bmJZ2eqafZbNUqvm+W4iUUQPe5837ddf3XRNm8O8VVvB2VsMXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=u0qhlXeD; arc=none smtp.client-ip=203.205.221.153
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1706576807; bh=Ph+JMqI9QDGLe2tOGODyVREVCb+Ip05RMDj1QLse+9Q=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=u0qhlXeDg3lOSR4qHQdh//CeQwga4vkz4nNKYEILaaHUmqMcQ55MAHjUUf3za2zqV
+	 tpyZnKn/gxTZkshp1OHyrGj12K8dnE6K9/6Wbi14bv2pl1pSxO42Pt2Fyha4gXrCY/
+	 E+VYBR5AW+rk2k3jJDu2+HnWgY3cKMUogY1nfg+8=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
+	id 2BA4CA0; Tue, 30 Jan 2024 09:00:43 +0800
+X-QQ-mid: xmsmtpt1706576443t7gnnu2py
+Message-ID: <tencent_96923BDDBADDD4195E4FA18DB525DB8D9407@qq.com>
+X-QQ-XMAILINFO: Mdc3TkmnJyI/VlmtfTzmjpgXPDjprb0CBbeC5hHXlW8CUoJ/9pJQ3xWqV/T47B
+	 l/yHjGN44KCzu8nj0c+FVLgsPgux7or0SXVs36QDrbPQj2W4/e40fsjcD+1nvaP8GjrlbEWHltPK
+	 LrEqugpzGWKMJWz51dWrH4RxflJeFVTWHuFhQcoq8AS2ORJbDU5s8MJAc+N0SmF0FeZnyRNkxooq
+	 X2Au4x2fZLLQqEabLIFzrOfou7jwJMaPVw9WJURZ1AgUYuvLPX0heTMLRCvjzaIIbLSCrWxKy6Aj
+	 rr+E2edW78ens5nD2pvZaIOiSVApjUWvOYzfMGhmhsMwvGyLjCjqi6pApALBZ/Y8t1Kn8PSRs8eI
+	 0uagTqZpVEg3X4yC0OoYAxM/++DYEo6JOlOCj37tpw7pezEQy/VRoGlLXdM8NuQbNCbA0dS98VFA
+	 uEBBGDLdnAZBNbGe/QGb04n/0zTAkW6iOf9tLa+EWhZSf0z0ugPah+FbjnyfITMXeZ+8pddwGdCf
+	 YjrUpfwxDdw0znrDYWD0sqUhsqGjnKECENhKmfzhgoTngvUVycRPpljjXK6DpAF1x86lOp4yeb0U
+	 qMKPZw8/NOrDk91J021y30NaqlMi1kX+NS9x9dK5cUlFk7OblwyGHiYwRVHDS7hNvnqiKoZGGEal
+	 kXEHqKRD97h71bQ1OhQEhifCO3Sqd9y2ECrDmXE+8a2vQTpEw24SY4uagg36v1WTY3KSIRZaLl7L
+	 CkJ4givEhsqeCvo0uErEP1lQpOXSjk204oIBM8PCqrPMS5c5cL9LOtvu/vDVui2RDSRsWuxDIbtf
+	 8NMlo7sSjHdHdMAx5c3VAuGuWoDvg21dY85jU/xr6oKhctksqIZtQe2cJJtYW3Zqo7d3Kgd+yHO0
+	 +wugmZ201TjxA4RMxwaKI50gJvwaDPUwWtyBW91AtMKDrr+ESt3gLchtZbJmRcWA==
+X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+2373f6be3e6de4f92562@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [block?] [trace?] INFO: task hung in blk_trace_remove (2)
+Date: Tue, 30 Jan 2024 09:00:44 +0800
+X-OQ-MSGID: <20240130010043.3176371-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <0000000000002b1fc7060fca3adf@google.com>
+References: <0000000000002b1fc7060fca3adf@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240129224542.162599-1-nphamcs@gmail.com> <20240129224542.162599-2-nphamcs@gmail.com>
-Message-ID: <ZbhKoJ5BcP_RhMt4@google.com>
-Subject: Re: [PATCH 1/3] selftests: zswap: add zswap selftest file to zswap
- maintainer entry
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: akpm@linux-foundation.org, shuah@kernel.org, hannes@cmpxchg.org, 
-	tj@kernel.org, lizefan.x@bytedance.com, linux-mm@kvack.org, 
-	kernel-team@meta.com, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jan 29, 2024 at 02:45:40PM -0800, Nhat Pham wrote:
-> Make it easier for contributors to find the zswap maintainers when they
-> update the zswap tests.
-> 
-> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+please test task hung in blk_trace_remove
 
-I guess I had to check the zswap tests at some point :)
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
-Acked-by: Yosry Ahmed <yosryahmed@google.com> 
+diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
+index d5d94510afd3..43af0e72488c 100644
+--- a/kernel/trace/blktrace.c
++++ b/kernel/trace/blktrace.c
+@@ -320,8 +320,10 @@ static void blk_trace_free(struct request_queue *q, struct blk_trace *bt)
+ 	 * under 'q->debugfs_dir', thus lookup and remove them.
+ 	 */
+ 	if (!bt->dir) {
+-		debugfs_lookup_and_remove("dropped", q->debugfs_dir);
+-		debugfs_lookup_and_remove("msg", q->debugfs_dir);
++		struct dentry *debugfs_dir = q ? q->debugfs_dir : bt->debugfs_dir;
++
++		debugfs_lookup_and_remove("dropped", debugfs_dir);
++		debugfs_lookup_and_remove("msg", debugfs_dir);
+ 	} else {
+ 		debugfs_remove(bt->dir);
+ 	}
+@@ -377,12 +379,23 @@ static int blk_trace_stop(struct blk_trace *bt)
+ 	return 0;
+ }
+ 
++static void blk_trace_rcu_free(struct rcu_head *rcu)
++{
++	struct blk_trace *bt;
++
++	bt = container_of(rcu, struct blk_trace, rcu);
++	if (bt) {
++		blk_trace_free(NULL, bt);
++		put_probe_ref();
++	}
++}
++
+ static void blk_trace_cleanup(struct request_queue *q, struct blk_trace *bt)
+ {
+ 	blk_trace_stop(bt);
+-	synchronize_rcu();
+-	blk_trace_free(q, bt);
+-	put_probe_ref();
++	if (!bt->dir)
++		bt->debugfs_dir = q->debugfs_dir;
++	call_rcu(&bt->rcu, blk_trace_rcu_free);
+ }
+ 
+ static int __blk_trace_remove(struct request_queue *q)
+diff --git a/include/linux/blktrace_api.h b/include/linux/blktrace_api.h
+index 122c62e561fc..4920c201bd12 100644
+--- a/include/linux/blktrace_api.h
++++ b/include/linux/blktrace_api.h
+@@ -26,6 +26,8 @@ struct blk_trace {
+ 	struct dentry *dir;
+ 	struct list_head running_list;
+ 	atomic_t dropped;
++	struct dentry  *debugfs_dir;
++	struct rcu_head rcu;
+ };
+ 
+ extern int blk_trace_ioctl(struct block_device *, unsigned, char __user *);
 
-> ---
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index fecebfc4c0dc..5f60faaefaf2 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -24396,6 +24396,7 @@ F:	include/linux/zpool.h
->  F:	include/linux/zswap.h
->  F:	mm/zpool.c
->  F:	mm/zswap.c
-> +F:	tools/testing/selftests/cgroup/test_zswap.c
->  
->  THE REST
->  M:	Linus Torvalds <torvalds@linux-foundation.org>
-> -- 
-> 2.39.3
-> 
 
