@@ -1,102 +1,126 @@
-Return-Path: <linux-kernel+bounces-44564-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44565-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A096D842446
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:59:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91483842448
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:00:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2EB11C26003
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:59:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E46F284210
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:00:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7038F679EF;
-	Tue, 30 Jan 2024 11:59:35 +0000 (UTC)
-Received: from mail.wantstofly.org (hmm.wantstofly.org [213.239.204.108])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD032679EF;
+	Tue, 30 Jan 2024 11:59:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lLk/jicm"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8907467E60;
-	Tue, 30 Jan 2024 11:59:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.239.204.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A4DC67749
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 11:59:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706615975; cv=none; b=NIa+2YATVhmbXHbt1N6ckl4+YAlSAqEHm43ZDzEJWQG/1ZiGm5KpOz75O/Y8xPSinPo9O0mQ1Y7DU3zwmKVosEnHzbM0t52BO2jQwJAarlEcezj4241Qfb/Esu/RS40PI58yyX0n7u7kjumy7p73whTyJ8lC7yh8i8lq2IHVuK0=
+	t=1706615999; cv=none; b=BcxgRLHvtfFWKxGZIBFd8aNFBqbzrte0potW6YXVR4tkghEzpThx3+fHFh6iHRz+CgMBIkA7C/ULJKmyIX/DQZb+B/brmfSxHk+bz1iL74jtVsfX3oTOjK8E9we2NpXNtDWr0qEe+vyOiw7qm47j4hK1aP1lR6FWXSMcLIiF0jg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706615975; c=relaxed/simple;
-	bh=/EbS7QCd5gU5yDybrgjByI/a3znatbuHH67Z4bVG8NA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b2P3qKyXoFezCnBr7eSLPRwWhFtIj+F9XDIpKl1uljx2MUXFVRgf9PyWKtbKjXV82FqKiQa+WuJMEDNZFeYhZIWgDtXgqcgWrjpt4dLfmUSRSpDphkwjDcH7GM2hthnmQXu3bwtVKJhifZEMNfpbqLHn8pGpcbfJTV4ghkqKuOg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wantstofly.org; spf=pass smtp.mailfrom=wantstofly.org; arc=none smtp.client-ip=213.239.204.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wantstofly.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wantstofly.org
-Received: by mail.wantstofly.org (Postfix, from userid 1000)
-	id E87AD7F711; Tue, 30 Jan 2024 13:59:28 +0200 (EET)
-Date: Tue, 30 Jan 2024 13:59:28 +0200
-From: Lennert Buytenhek <kernel@wantstofly.org>
-To: Damien Le Moal <dlemoal@kernel.org>
-Cc: Niklas Cassel <cassel@kernel.org>, linux-ide@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
-	John Garry <john.g.garry@oracle.com>,
-	Joerg Roedel <jroedel@suse.de>,
-	Szuying Chen <chensiying21@gmail.com>, Jesse1_Chang@asmedia.com.tw,
-	Richard_Hsu@asmedia.com.tw, Chloe_Chen@asmedia.com.tw
-Subject: Re: [PATCH] ahci: Extend ASM1061 43-bit DMA address quirk to other
- ASM106x parts
-Message-ID: <ZbjkoKotLvDSeJTA@wantstofly.org>
-References: <ZbjgTmR5FbAnb-Ua@wantstofly.org>
- <6ab581f1-385c-49af-bff3-aacd1cdbe1d8@kernel.org>
+	s=arc-20240116; t=1706615999; c=relaxed/simple;
+	bh=OqR8YFB6veQbfeUX8oTkllbeQeM1435HmPa42X6RpJ0=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=EqBu8OXmZnOKYbfMHVflS04xyQNc+nrIluNQ1maQuOmKjBUVSdDjiTI5RwUYAFRHEtJf6re8IckfOMpnG4hkKsWVot5050gL1wVcfCx3clYkrY8Jx9BOgPf7bdgf8PCoKc9s1zsXTOEk5MdxJJ8tr5Q6ObzPEJkm/3nStD7tUec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lLk/jicm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F1ACC43390;
+	Tue, 30 Jan 2024 11:59:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706615997;
+	bh=OqR8YFB6veQbfeUX8oTkllbeQeM1435HmPa42X6RpJ0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=lLk/jicmSa5/v8/4LpKgFtpU/QgZWxj5Umt7v3OJtxGpi09+a267BGAyqI6YCte00
+	 dzrd19HwNCUm7obpenqoBSnDSOE7diVQKhccMbvtT9Yjf0xnRb7Habl8mDHtQkhBCz
+	 JvUFcQY1YADjfWGMMJG5s6/ZgvaWyKG4X67PmdD9ysDuEvr2RMkAdBV36bacJK+byq
+	 kvoeqqaglaHvqOejEy5gzoOmCvF/4+H2p5c0prZMJspPe+fCtvluQTQbZ2FXmPaPG1
+	 8JL4M2LdL6xzzL+bK7II53qW5G+C0Tk4PxGMDe8KII4+ipbM03VOou3RpKUg3Qdixz
+	 fj3EmsLA+ngRw==
+Received: from [12.161.88.66] (helo=wait-a-minute.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rUmmQ-00GFJA-Qz;
+	Tue, 30 Jan 2024 11:59:55 +0000
+Date: Tue, 30 Jan 2024 11:59:52 +0000
+Message-ID: <87ttmvvxon.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Lucas Stach <l.stach@pengutronix.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+	Anup Patel <apatel@ventanamicro.com>,
+	James Gowans <jgowans@amazon.com>,
+	Koichiro Den <den@valinux.co.jp>,
+	linux-kernel@vger.kernel.org,
+	kernel@pengutronix.de,
+	patchwork-lst@pengutronix.de
+Subject: Re: [PATCH] genirq: use relaxed access by default for irq_reg_{readl,writel}
+In-Reply-To: <20240129144502.1828154-1-l.stach@pengutronix.de>
+References: <20240129144502.1828154-1-l.stach@pengutronix.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6ab581f1-385c-49af-bff3-aacd1cdbe1d8@kernel.org>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 12.161.88.66
+X-SA-Exim-Rcpt-To: l.stach@pengutronix.de, tglx@linutronix.de, apatel@ventanamicro.com, jgowans@amazon.com, den@valinux.co.jp, linux-kernel@vger.kernel.org, kernel@pengutronix.de, patchwork-lst@pengutronix.de
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Tue, Jan 30, 2024 at 08:46:23PM +0900, Damien Le Moal wrote:
-
-> > ASMedia have confirmed that all ASM106x parts currently listed in
-> > ahci_pci_tbl[] suffer from the 43-bit DMA address limitation that we ran
-> > into on the ASM1061, and therefore, we need to apply the quirk added by
-> > commit 20730e9b2778 to the other supported ASM106x parts as well.
-> > 
-> > Signed-off-by: Lennert Buytenhek <kernel@wantstofly.org>
+On Mon, 29 Jan 2024 14:45:02 +0000,
+Lucas Stach <l.stach@pengutronix.de> wrote:
 > 
-> I think this needs a cc: stable tag.
+> irqchip access does not require any memory ordering between other
+> memory transactions and the IRQ controller peripheral access.
+> As all architectures now implement the relaxed MMIO accessors we
+> can switch the irq_reg_{readl,writel} helpers to use them, in
+> order to avoid potentially costly barriers in the IRQ handling
+> hotpath.
+> 
+> Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+> ---
+>  include/linux/irq.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/irq.h b/include/linux/irq.h
+> index 90081afa10ce..fa1597db7887 100644
+> --- a/include/linux/irq.h
+> +++ b/include/linux/irq.h
+> @@ -1218,7 +1218,7 @@ static inline void irq_reg_writel(struct irq_chip_generic *gc,
+>  	if (gc->reg_writel)
+>  		gc->reg_writel(val, gc->reg_base + reg_offset);
+>  	else
+> -		writel(val, gc->reg_base + reg_offset);
+> +		writel_relaxed(val, gc->reg_base + reg_offset);
+>  }
+>  
+>  static inline u32 irq_reg_readl(struct irq_chip_generic *gc,
+> @@ -1227,7 +1227,7 @@ static inline u32 irq_reg_readl(struct irq_chip_generic *gc,
+>  	if (gc->reg_readl)
+>  		return gc->reg_readl(gc->reg_base + reg_offset);
+>  	else
+> -		return readl(gc->reg_base + reg_offset);
+> +		return readl_relaxed(gc->reg_base + reg_offset);
+>  }
+>  
 
-The commit that is likely responsible for surfacing this issue is
-791c2b17fb40 which went into v6.6 -- so would this then be appropriate,
-or do you think this should be backported to older versions as well?
+If this relaxation is introduced, it really should be documented and
+require a buy-in, because unsuspecting drivers may implicitly depend
+on the stronger ordering.
 
-Cc: stable@vger.kernel.org # 6.6.x
+I'm a strong advocate of the relaxed ordering, but changing this
+wholesale is potentially dangerous.
 
+	M.
 
-> > ---
-> >  drivers/ata/ahci.c | 10 +++++-----
-> >  1 file changed, 5 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
-> > index d2460fa985b7..da2e74fce2d9 100644
-> > --- a/drivers/ata/ahci.c
-> > +++ b/drivers/ata/ahci.c
-> > @@ -606,13 +606,13 @@ static const struct pci_device_id ahci_pci_tbl[] = {
-> >  	{ PCI_VDEVICE(PROMISE, 0x3781), board_ahci },   /* FastTrak TX8660 ahci-mode */
-> >  
-> >  	/* ASMedia */
-> > -	{ PCI_VDEVICE(ASMEDIA, 0x0601), board_ahci },	/* ASM1060 */
-> > -	{ PCI_VDEVICE(ASMEDIA, 0x0602), board_ahci },	/* ASM1060 */
-> > +	{ PCI_VDEVICE(ASMEDIA, 0x0601), board_ahci_43bit_dma },	/* ASM1060 */
-> > +	{ PCI_VDEVICE(ASMEDIA, 0x0602), board_ahci_43bit_dma },	/* ASM1060 */
-> >  	{ PCI_VDEVICE(ASMEDIA, 0x0611), board_ahci_43bit_dma },	/* ASM1061 */
-> >  	{ PCI_VDEVICE(ASMEDIA, 0x0612), board_ahci_43bit_dma },	/* ASM1061/1062 */
-> > -	{ PCI_VDEVICE(ASMEDIA, 0x0621), board_ahci },   /* ASM1061R */
-> > -	{ PCI_VDEVICE(ASMEDIA, 0x0622), board_ahci },   /* ASM1062R */
-> > -	{ PCI_VDEVICE(ASMEDIA, 0x0624), board_ahci },   /* ASM1062+JMB575 */
-> > +	{ PCI_VDEVICE(ASMEDIA, 0x0621), board_ahci_43bit_dma },	/* ASM1061R */
-> > +	{ PCI_VDEVICE(ASMEDIA, 0x0622), board_ahci_43bit_dma },	/* ASM1062R */
-> > +	{ PCI_VDEVICE(ASMEDIA, 0x0624), board_ahci_43bit_dma },	/* ASM1062+JMB575 */
-> >  	{ PCI_VDEVICE(ASMEDIA, 0x1062), board_ahci },	/* ASM1062A */
-> >  	{ PCI_VDEVICE(ASMEDIA, 0x1064), board_ahci },	/* ASM1064 */
-> >  	{ PCI_VDEVICE(ASMEDIA, 0x1164), board_ahci },   /* ASM1164 */
+-- 
+Without deviation from the norm, progress is not possible.
 
