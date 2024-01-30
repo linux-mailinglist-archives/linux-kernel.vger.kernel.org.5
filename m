@@ -1,132 +1,139 @@
-Return-Path: <linux-kernel+bounces-44212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44183-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA3BC841EE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:11:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F29CD841EE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:11:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A652128D897
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:11:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02B00B2F16F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:54:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D92B458ABA;
-	Tue, 30 Jan 2024 09:11:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC33757898;
+	Tue, 30 Jan 2024 08:54:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WWOOqlyo"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zPbgxoi7"
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B663537E0;
-	Tue, 30 Jan 2024 09:11:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C2DC5786C
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 08:54:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706605887; cv=none; b=tmJc8S0ZO78LlwbcF/z59Nn1K1AFxTztRXlcwthPn/AheKJOOOAauOBo3UNKQdGlWjZzuEDDVhm5bjCggSs8Qm/2YNY/ADqG0RSUDr3JdSAbN+6dXHObEw97PAYd0VJ64lQBgftPx3/JVC4acLA7nHHWCuA3hEHpr6oBl0i6xaU=
+	t=1706604844; cv=none; b=aXuAJT2IQAVtsShKgoEKz13gJ6SRQ/uXVGREOJMqmkRSdpcgSKwaBd4zZeK1N9dvuOnQ+HK/1iGqZTVAueokYMXYmMlw9Yb2pqe80uJ8M7TVrp7vPYPyhyo44i9zIPI1MU7IaajoK0X9p5ltAIHG6RlZOPSLwoouS9SrwofacGQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706605887; c=relaxed/simple;
-	bh=RvaoRqi6d2649HMPir89XZBkoGY4LvB2aJ08/fzLesM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OwIoCxdBp5hZxuRZ25uccirHrW/xfc0uVG65KgwzNU77ZrQN2wRDHLXoWE7NYYqqMHhr3ZQLGTy4K8VyAoKNRnAnbWZTY0NBXZoozc/ZD0dDNnym1AbiOKYVH/Ybn5vqo8RcBhnnCFPT1obXy9xSQ0R6a+pOodnUwbPGjiXYm1M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WWOOqlyo; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706605885; x=1738141885;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=RvaoRqi6d2649HMPir89XZBkoGY4LvB2aJ08/fzLesM=;
-  b=WWOOqlyobAZ/aHu/H5+bqb2uPi9W00i74sxn2oTn9h3jOe9lwbLRmQG7
-   C6y12SuuoOW3selaV5Ut3dycE9IyRJ4Ar88Th5fm3j38D/kD69PrkigyM
-   hSLHmKZP1JaKGsBf/Y00ad3FzQ6aRMwwt6+bVW8+uswOTm7fiz8X50b2/
-   84MoCEeBw45Tc7NXk5wBTEZo+R8tLTaPOyTP3MZH1NoyiaDLTAnWLLneY
-   INZxTRykTqeuMVslw0IF4RLP8kKKJarfRdW5nyXzNX+fwICWxkrEM0QtV
-   fS0iiCXNG0pxEFi9VbE2kC3EzN6/xWvhieuTpxML5Tt/S83o4A7ep2Y3V
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="3055983"
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="3055983"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 01:08:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="931378461"
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="931378461"
-Received: from vkamysba-mobl1.amr.corp.intel.com (HELO [10.254.116.178]) ([10.254.116.178])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 01:07:25 -0800
-Message-ID: <4f54a12c-c8a3-414c-b4df-3f7b25e6d524@linux.intel.com>
-Date: Mon, 29 Jan 2024 18:15:14 +0100
+	s=arc-20240116; t=1706604844; c=relaxed/simple;
+	bh=G8sl2lS+IaDiGr/COgYH10cSJ7PzxMwL+ublPA4/gvI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CXcu10T8FvWuy2JGTmC4MPzIUUOIBNnvrSgXt0KMxOLtLbI4KI5OanxVtendPuwFhVA0MjAhquPIt+/NB3D2PnVCkdYTQjLRUuidWgNVaH6lVGH8+o0DUlOYBmp7gjKgaFBCLzktAjUgZMzm/KDWHlfQARTf7rWdub0nqYrh5Gg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zPbgxoi7; arc=none smtp.client-ip=209.85.167.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3bbc649c275so1439185b6e.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 00:54:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706604841; x=1707209641; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=7TkZJIKQyigRSw9xWbiatjiA506UbWDVE+Kdu3nQRyk=;
+        b=zPbgxoi7VBa+k0GUe+XCvN0hsM0hVzFoLAmjsJxbtMaxyhUctvawiAnVmUKhoJS4dX
+         Dshbet+62X3Yh1/sc2LBjha2eafPw+cu/nIzh2dwLmI6NOtzpo//qwCU52bWct5UAD3E
+         j2RNzZ0d2FevjSNz7UwDo7J8VBzegEsbFlkXVvQJvYHDkPNPOITO95ZOeDFkzBOZLOtQ
+         weH7GshiJr2zUDyRq3t0qFiYUb+LMs7qWDsgyLWpTegpXpUUDRcLv82Gjpy5FAKczPF3
+         nQKFsEdJgydS9JxBDYBr1k5ulSx21XFoAcC55wOzDYzvdicEjVw3i+NHYQWI+cZl3C1u
+         PaqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706604841; x=1707209641;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7TkZJIKQyigRSw9xWbiatjiA506UbWDVE+Kdu3nQRyk=;
+        b=wJP5W/6PqrKcYnI4/9+sXJ82oOjwUeEUw7ernq5c7GoK6Wax7QF1S+uDg9MWsM1Iv9
+         wTPwqRS8w2LzrLGeViuyzg4zAJ5LZp9k8xFq5wVrsX0FMKvjMtyQgOCy/iMDFko6P+oz
+         HPlpbynlda4FKw8UKUn0qVuDEzVPDYeTynvEztAyKnveL0Iq7iZ+4iOTcRyJdX7r64As
+         qk5g82LYyw8cRn/1uZTQzYMKqPStJaCrbzHXP11s/IjdWGgKu+z2Wk9fenzikuizVUU/
+         2ZRCU2ULPEieWssc8o71/P6sUQaMSKXhSCOKpxw01fhKnPqbrOEJRgWZyEQkxy41V+MG
+         2jJQ==
+X-Gm-Message-State: AOJu0YyOhs0qMbIOVVdswSYIlqCFGIwqJt83Pr9kAxEXudcjAWLoKt/0
+	LTx/FijkyWLuyTgfo/uUePjQmYolZjolo54iI1Ii0HSjM+EcmEe7ufW3auqmhQ==
+X-Google-Smtp-Source: AGHT+IHF8tvqT6/4XZap19WF5cks4KGjl1+krysKoU6uZio3PMGnP7+Hq13PeNnAUYP203TS4jLkEw==
+X-Received: by 2002:a05:6808:1287:b0:3bd:f103:4550 with SMTP id a7-20020a056808128700b003bdf1034550mr4853058oiw.34.1706604841479;
+        Tue, 30 Jan 2024 00:54:01 -0800 (PST)
+Received: from thinkpad ([117.202.188.6])
+        by smtp.gmail.com with ESMTPSA id s20-20020a056a00195400b006dbe42b8f75sm7180736pfk.220.2024.01.30.00.53.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jan 2024 00:54:01 -0800 (PST)
+Date: Tue, 30 Jan 2024 14:23:51 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+Cc: vkoul@kernel.org, jingoohan1@gmail.com, conor+dt@kernel.org,
+	konrad.dybcio@linaro.org, robh+dt@kernel.org,
+	quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
+	quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
+	dmitry.baryshkov@linaro.org, quic_krichai@quicinc.com,
+	quic_vbadigan@quicinc.com, quic_parass@quicinc.com,
+	quic_schintav@quicinc.com, quic_shijjose@quicinc.com,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Serge Semin <fancer.lancer@gmail.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	mhi@lists.linux.dev
+Subject: Re: [PATCH v1 6/6] PCI: epf-mhi: Add flag to enable HDMA for SA8775P
+Message-ID: <20240130085351.GC83288@thinkpad>
+References: <1705669223-5655-1-git-send-email-quic_msarkar@quicinc.com>
+ <1705669223-5655-7-git-send-email-quic_msarkar@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 08/18] ASoC: cs35l56: Fix default SDW TX mixer registers
-Content-Language: en-US
-To: Richard Fitzgerald <rf@opensource.cirrus.com>, broonie@kernel.org,
- tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-References: <20240129162737.497-1-rf@opensource.cirrus.com>
- <20240129162737.497-9-rf@opensource.cirrus.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20240129162737.497-9-rf@opensource.cirrus.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1705669223-5655-7-git-send-email-quic_msarkar@quicinc.com>
 
+On Fri, Jan 19, 2024 at 06:30:22PM +0530, Mrinmay Sarkar wrote:
+> SA8775P supports HDMA as DMA engine so adding 'MHI_EPF_USE_DMA'
 
+s/adding/add
 
-On 1/29/24 17:27, Richard Fitzgerald wrote:
-> Patch the SDW TX mixer registers to silicon defaults.
+> flag to enable HDMA support.
 > 
-> CS35L56 is designed for SDCA and a generic SDCA driver would
-> know nothing about these chip-specific registers. So the
-> firmware sets up the SDW TX mixer registers to whatever audio
-> is relevant on a specific system.
-> 
-> This means that the driver cannot assume the initial values
-> of these registers. But Linux has ALSA controls to configure
-> routing, so the registers can be patched to silicon default and
-> the ALSA controls used to select what audio to feed back to the
-> host capture path.
+> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
 
-humm, which has the precedence then?
-a) the values set by firmware
-b) the default values set by the driver?
+With above addressed,
 
-Also if the firmware touches those registers shouldn't they be marked as
-'volatile'?
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
+- Mani
 
-> Backport note:
-> This won't apply to kernels older than v6.6.
-> 
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-> Fixes: e49611252900 ("ASoC: cs35l56: Add driver for Cirrus Logic CS35L56")
 > ---
->  sound/soc/codecs/cs35l56-shared.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
+>  drivers/pci/endpoint/functions/pci-epf-mhi.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/sound/soc/codecs/cs35l56-shared.c b/sound/soc/codecs/cs35l56-shared.c
-> index 35789ffc63af..a812abf90836 100644
-> --- a/sound/soc/codecs/cs35l56-shared.c
-> +++ b/sound/soc/codecs/cs35l56-shared.c
-> @@ -12,6 +12,15 @@
->  #include "cs35l56.h"
+> diff --git a/drivers/pci/endpoint/functions/pci-epf-mhi.c b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> index 2c54d80..570c1d1f 100644
+> --- a/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> +++ b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> @@ -137,6 +137,7 @@ static const struct pci_epf_mhi_ep_info sa8775p_info = {
+>  	.epf_flags = PCI_BASE_ADDRESS_MEM_TYPE_32,
+>  	.msi_count = 32,
+>  	.mru = 0x8000,
+> +	.flags = MHI_EPF_USE_DMA,
+>  };
 >  
->  static const struct reg_sequence cs35l56_patch[] = {
-> +	/*
-> +	 * Firmware can change these to non-defaults to satisfy SDCA.
-> +	 * Ensure that they are at known defaults.
-> +	 */
-> +	{ CS35L56_SWIRE_DP3_CH1_INPUT,		0x00000018 },
-> +	{ CS35L56_SWIRE_DP3_CH2_INPUT,		0x00000019 },
-> +	{ CS35L56_SWIRE_DP3_CH3_INPUT,		0x00000029 },
-> +	{ CS35L56_SWIRE_DP3_CH4_INPUT,		0x00000028 },
-> +
->  	/* These are not reset by a soft-reset, so patch to defaults. */
->  	{ CS35L56_MAIN_RENDER_USER_MUTE,	0x00000000 },
->  	{ CS35L56_MAIN_RENDER_USER_VOLUME,	0x00000000 },
+>  struct pci_epf_mhi {
+> -- 
+> 2.7.4
+> 
+
+-- 
+மணிவண்ணன் சதாசிவம்
 
