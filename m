@@ -1,140 +1,92 @@
-Return-Path: <linux-kernel+bounces-44008-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44009-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC754841C29
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:48:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 086D8841C2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:49:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C65A28C342
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 06:48:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B927B28C34B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 06:49:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A3C13F9FF;
-	Tue, 30 Jan 2024 06:48:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 020F7433BD;
+	Tue, 30 Jan 2024 06:49:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="TmHmwp7A"
-Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LOuHuQMY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D151F3C46A
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 06:48:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.252
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42AF951C28;
+	Tue, 30 Jan 2024 06:49:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706597332; cv=none; b=e7H3D9Axh6g6bVhKdtflHBbnBBIckBQl8X0KVKJq1orwooXZxT5JkWLDy/0xw2ts4gtrxZAQEwE2b8N+ZTZBi9qcB6E6Niygn83vPp58V4nika7dX2gb7VDxQTEXfBz7VC48tCRwPtO+LN7vLFIpLS4graLbM3OzsSCpHCZv7uY=
+	t=1706597340; cv=none; b=DPb1+c+rJYLhaemFCm0WrpTz3RdYxt5jwG6XBTSQT99VjuV9YewxAMPQSbYDWqc6vrd1TqmcLICVphNWl1DbiaksddV0yWoAZROJz1bqyQIUUB6UL/yIpqcCRR29bIaUmBXjBV9OJUMXGivK8CoG/qf+OiUaep8LXf/C2LR0ppo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706597332; c=relaxed/simple;
-	bh=6YF760Pi05L2dMHpTU/8OH8hfrtfGghIMGzlThxl55M=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=jxeBOe+adNKqMhs7AL88VbJ8eZiRfW+uI9ouHJEm1B0MFReQVdb4kXTk7DDhHKTv2HymUHgB9kM1tSBzXqbZINPVtKwkGjGaITRW9RRhaw3vJPfoTAOm1Ditq5CD5rZ6+yP2uy1Mo6lcCMQzVRS2iauN02aFHsbwmeh8TgvLcJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=TmHmwp7A; arc=none smtp.client-ip=162.62.57.252
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1706597325; bh=JLP6mlEZJuPhaiIgwDOXVR/QBpZ+ke17UGLzsQRY79A=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=TmHmwp7Ajv3hFvfMLpP08iNBCvbpmi3XKz73lHpfHSBuvvv42TZl0h5Wx9muA8Nky
-	 fR4be0wJLPC+LiHOPLH45D2Kp5EzJkqJ8c5RbN9YuV8XdWcj3IJPnI1oWEUpCwQhYz
-	 rhjBogFkgAS31vwFikjGBOIUZ0XUgkGatusZBvcI=
-Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
-	by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
-	id C2B21C6F; Tue, 30 Jan 2024 14:48:43 +0800
-X-QQ-mid: xmsmtpt1706597323t2eqdxsce
-Message-ID: <tencent_A9BA7DBB1A33069E111B6F4BF91B38255B08@qq.com>
-X-QQ-XMAILINFO: ONeCszOCk2GVZk1NHXN29/yO+WbTGl8qC5wphv1ynVXd+ZaullKKLN0k6U0ZYA
-	 9d72e+FLeJzsR3Eb+3lXQxVPV3OWXFzFscdCV/ADqdQAtoj1hb/7csHzh9gwghDv0TfOuWjhZYuj
-	 wyCZrWb8l1ZYH6RRwbkdEDrmM9e43pZ7+9n5KQS8O8lwEOr6hDu1IXQsh60IMogzAIt9pci3u/HZ
-	 F6+QWZz993kJLOgnpy8sCef7Q6eK9AWp8QozRZCXwWBWn6FF+heEgwEJ5bVDFWS42DAbfOx6nW9H
-	 KSWmapebwn1tqPCXhHCYh5fL1TDXfDN0ggNmJ3TVQRGC5jfSxNh1MLHlFHbH3q0d7kL8UlhEGd8C
-	 MkL4O75UsYuLW+aTcab2WNHxz6aOzcXT0TA8Zyl/bzrgkKmaKeXEi7uN6d16oripmTIeIkHPr6f+
-	 e3LiVBQzRH31dmAXgIzFf8d0Qc0EQK71CQ0KKi02jV1f1CZ8AVioxnpWfmWYFG/sfcT4Uv2WYj+E
-	 SbAhSPNEXr/s9tVSiP1P/O3UwVoJ0KyZV1vhK9luT3jmK1HMgoFju8XzqDVKU3MXkXNncd9v2fcx
-	 8TBOT432aaqJlLm0EanKxWp2ZQ2w5SEKwteKluFmXYYA5THc5IvPhghvwRAVjMCP9+hCPyvX5pJ5
-	 vZwIA71RHvqVWS2ZWIusCuvIZTACNmHLTkUHf76IUP3merBq8Pl+FyG2kiDgJhiCnqemK5x5pfbR
-	 mxQF+yOzhBKEAco8jUTVlWHOGI78QJ5QTXqIFKsYG1hMKKLR5y7F/3S1PtijdJneIB60Tm+navBf
-	 a3M2PBJGHhPS+up0/tmHUTwuKvgbYJNtIA+pK3i/tQ74qdjMUtO75xUfnZkZxsPixAcq6A4jkqTI
-	 7DKdSUHEPabx2sqmjjXDuAefRXee2txpFIaDLnj7iZ1aUMyGKEEWPJvsvx/rOq/WxZgZHUOtGa
-X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+2373f6be3e6de4f92562@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [block?] [trace?] INFO: task hung in blk_trace_remove (2)
-Date: Tue, 30 Jan 2024 14:48:43 +0800
-X-OQ-MSGID: <20240130064843.3597953-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <0000000000002b1fc7060fca3adf@google.com>
-References: <0000000000002b1fc7060fca3adf@google.com>
+	s=arc-20240116; t=1706597340; c=relaxed/simple;
+	bh=Lts8NYTRMQPuSuYLjhsH+P4qkbE/Ml69VrRBffpn1Aw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=N0RliZB6DYrkn2QjG10x+MgzC1QUrHTWt1rMhXIJcQgNKodQzw2DAgat3/8n68MmyrFnX/9WofeLG44lUfCO0+SN+R01+/F33n/U86F4q3tcHNvPsZb6EbeXNMZfRYMMfZuQ54tlMHNwS6Sjyn+wyxH1Fuh51KvdmFWIj3Y79ek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LOuHuQMY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBEA6C433F1;
+	Tue, 30 Jan 2024 06:48:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706597340;
+	bh=Lts8NYTRMQPuSuYLjhsH+P4qkbE/Ml69VrRBffpn1Aw=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=LOuHuQMY9w8eOAwzqLsbzFyCI5GJ5QnsChIHsioy4d+rYr9kXPMX8tCfh3VBTsEfq
+	 uT8dAWzAFCPdg5PRpRIYPpOh/koMCVQ/R5FZl89SPX01vDHPyT2ntja6ZjoC5Zn4R9
+	 v6xBWq3bAbVYm/7canFTbJbSuk0fGyc8TYKSF+rS27Diwr2GKI1PnUfjQ+ycL+gSTK
+	 Mi7MRaje/cLevt5p3tTRES3rzmUAcrP3i6AFESPBjCLmBxCNWcxvf4nmlq2zSv8se6
+	 eURQIg9oQQWUyQdaNVtXndL2xOy6y8nG8h2tG/+y3rjwotdj2tasP0ohmwihx80sfp
+	 oolWMn6nT5BjA==
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5110fae7af5so2049797e87.0;
+        Mon, 29 Jan 2024 22:48:59 -0800 (PST)
+X-Gm-Message-State: AOJu0YyqP9GZqyaLmA6euokkIV9v5nHUTS4+5EuUgomrNUBE1floqpx5
+	EgPGwBP6BjCDl+AqQzwVDoDZBfNpmBIMz5vCFfvIVS6GNvYoVOLEYAtZAmdi8rE8HpW95MCNh12
+	fa6IVaf8H+qSH4AVVRY4gUq1BAxI=
+X-Google-Smtp-Source: AGHT+IEG6PZtQZ8527EmUrzzi+1+TLEcyHZvqYxC5x/00oIk5/z/xWerCrHKhb8y1XuQZStMl8LoBkeOo2N0vqIhqpg=
+X-Received: by 2002:a05:6512:280e:b0:50e:b25e:94d8 with SMTP id
+ cf14-20020a056512280e00b0050eb25e94d8mr6367837lfb.41.1706597338147; Mon, 29
+ Jan 2024 22:48:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231229070500.3602712-1-lilingfeng@huaweicloud.com> <c47a4ff6-43a0-a536-29ff-db2d1a931181@huaweicloud.com>
+In-Reply-To: <c47a4ff6-43a0-a536-29ff-db2d1a931181@huaweicloud.com>
+From: Song Liu <song@kernel.org>
+Date: Mon, 29 Jan 2024 22:48:46 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW6YWnG86fTRcPeeGfk219dG=Rm=LeFde0OEJJjGnqgaZA@mail.gmail.com>
+Message-ID: <CAPhsuW6YWnG86fTRcPeeGfk219dG=Rm=LeFde0OEJJjGnqgaZA@mail.gmail.com>
+Subject: Re: [PATCH] md: get rdev->mddev with READ_ONCE()
+To: Li Lingfeng <lilingfeng@huaweicloud.com>
+Cc: linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	yukuai3@huawei.com, linan122@huawei.com, yi.zhang@huawei.com, 
+	yangerkun@huawei.com, lilingfeng3@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-please test task hung in blk_trace_remove
+On Mon, Jan 29, 2024 at 5:55=E2=80=AFAM Li Lingfeng <lilingfeng@huaweicloud=
+com> wrote:
+>
+> Friendly ping ...
+>
+> Thanks
+>
+> =E5=9C=A8 2023/12/29 15:05, Li Lingfeng =E5=86=99=E9=81=93:
+> > From: Li Lingfeng <lilingfeng3@huawei.com>
+> >
+> > Users may get rdev->mddev by sysfs while rdev is releasing.
+> > So use both READ_ONCE() and WRITE_ONCE() to prevent load/store tearing
+> > and to read/write mddev atomically.
+> >
+> > Signed-off-by: Li Lingfeng <lilingfeng3@huawei.com>
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+Sorry for the delay. Applied to md-tmp-6.9 branch.
 
-diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index d5d94510afd3..ff52ad6c7bf2 100644
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -320,8 +320,10 @@ static void blk_trace_free(struct request_queue *q, struct blk_trace *bt)
- 	 * under 'q->debugfs_dir', thus lookup and remove them.
- 	 */
- 	if (!bt->dir) {
--		debugfs_lookup_and_remove("dropped", q->debugfs_dir);
--		debugfs_lookup_and_remove("msg", q->debugfs_dir);
-+		struct dentry *debugfs_dir = q ? q->debugfs_dir : bt->debugfs_dir;
-+
-+		debugfs_lookup_and_remove("dropped", debugfs_dir);
-+		debugfs_lookup_and_remove("msg", debugfs_dir);
- 	} else {
- 		debugfs_remove(bt->dir);
- 	}
-@@ -377,12 +379,25 @@ static int blk_trace_stop(struct blk_trace *bt)
- 	return 0;
- }
- 
-+static void blk_trace_rcu_free(struct rcu_head *rcu)
-+{
-+	struct blk_trace *bt;
-+
-+	bt = container_of(rcu, struct blk_trace, rcu);
-+	if (bt) {
-+		blk_trace_free(NULL, bt);
-+		put_probe_ref();
-+	}
-+}
-+
- static void blk_trace_cleanup(struct request_queue *q, struct blk_trace *bt)
- {
- 	blk_trace_stop(bt);
--	synchronize_rcu();
--	blk_trace_free(q, bt);
--	put_probe_ref();
-+	if (!bt->dir)
-+		bt->debugfs_dir = q->debugfs_dir;
-+	mutex_unlock(&q->debugfs_mutex);
-+	call_rcu(&bt->rcu, blk_trace_rcu_free);
-+	mutex_lock(&q->debugfs_mutex);
- }
- 
- static int __blk_trace_remove(struct request_queue *q)
-diff --git a/include/linux/blktrace_api.h b/include/linux/blktrace_api.h
-index 122c62e561fc..4920c201bd12 100644
---- a/include/linux/blktrace_api.h
-+++ b/include/linux/blktrace_api.h
-@@ -26,6 +26,8 @@ struct blk_trace {
- 	struct dentry *dir;
- 	struct list_head running_list;
- 	atomic_t dropped;
-+	struct dentry  *debugfs_dir;
-+	struct rcu_head rcu;
- };
- 
- extern int blk_trace_ioctl(struct block_device *, unsigned, char __user *);
-
+Thanks,
+Song
 
