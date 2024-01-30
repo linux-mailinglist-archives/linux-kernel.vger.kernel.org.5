@@ -1,67 +1,67 @@
-Return-Path: <linux-kernel+bounces-44334-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44335-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CD8D842063
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:01:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38DA98420C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:08:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FCB51C266D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:01:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 79AFCB31BC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:02:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DE0467732;
-	Tue, 30 Jan 2024 09:57:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CF3B6DD07;
+	Tue, 30 Jan 2024 09:57:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="FBRjGuiz"
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="arOvOHtO"
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D16766B34
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:57:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 725FC67739
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:57:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706608626; cv=none; b=CnwtDRcrRxXhKT46oXAGFCZcem/Nw1xOqb7Z5F5Zi5U+F76s3+5E4M+Y1z4frlEkdmAWxmhFdIUXIUugZ6g1eYuU5ycE8w0AJYIHN2CJw/GPk5LYzO9yc4VX6PRgL16w89fj653+5ZzUxS+f6oRpTbZ+iYI7H5A44HoHJ77rQbE=
+	t=1706608628; cv=none; b=EW14FoptPLzQlfQhvWYBkfqwt1lcoqeqZJgdyU2z4IOujJakGi+gf06aPXfo5PbzdkqHvwWzCWbgCAbS0TczIrNMk5ExwNEB1/N5nBQL3msBBTYrrUA6AiqZ+u9G4FB8T8NyCSzvjeO8Sdg6a+nH8gZNk/0zxyjwcvmTbhbmiTE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706608626; c=relaxed/simple;
-	bh=DZ/v2H4uuaEQcj7bfKz1fgk00itGWaWjpueC+N1wZt8=;
+	s=arc-20240116; t=1706608628; c=relaxed/simple;
+	bh=PjLNZGOK4cojVlDhXj8cggrO1CsQ4u8l1duSGG978Bo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QnEqDogdYX4HiQV+0AZvux2SVvM/Ks+3eoworcFMs7N6ZFmNErCms9Ofr+UA5Ak2GcBD9rmpaFey8oWOfWwKGCUOC4cVnWOmC8tz/atgBT12VhOkRPaTZuKGhXGTFUq47YbHmbMrvuQkX4PAfzUqOIn6Lk6Fy+OzX+hIY6qbFFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=FBRjGuiz; arc=none smtp.client-ip=209.85.215.182
+	 MIME-Version; b=EYkA9KfJVpwVp/yVhF6CqEZVlCTmLjwNHQq8Dfc66Ttkx+7grUbhGu7sQONxIBPAA99be8JoFPHJrlyoN5qqzwcYj81Ur3Unyxv48/GB8kOAliHURj9xAND1odag7LFua3w0vfEOpoJRONrQennVzhjSX+wfpAxx0dCjH/6tFyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=arOvOHtO; arc=none smtp.client-ip=209.85.216.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5d8b519e438so1620655a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:57:05 -0800 (PST)
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2901ceb0d33so3553651a91.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:57:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706608624; x=1707213424; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1706608627; x=1707213427; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FAWe64W2NwnFAQiXHeHZ8EMU8gr37Jq34GIw0wUlRAI=;
-        b=FBRjGuizXSJu3e8vLLKGziuYE4iXIt8+434d444FTfItnoobx2Xpz5s19yUh40mr0L
-         Zuv9B1ScIgx1xDoaQn+wwpjjWo/DgK1iYAGEoYHovs9/iuyzh+68uSQ3jRMMLdIL1jqd
-         QJLJbGmMil+mx8kAoBUo2siI3dt3pVKRIZqO8=
+        bh=gdC3n49f3pUPNsrcBA7Bt2BGENrWBIomL/x/RasR6Lw=;
+        b=arOvOHtONb2E51YRGSlT/H6dFpxETt36r1dKYJzVpEyMf5vDtG9InBYf7KAoEE+G1d
+         oRVJiFszU5u8kZEu9WATRXzhnt/Xe46soqRWVHUuMHsKf86mR/yhdM75Hr1/xI59Z0Qz
+         FKXkTaFT5RwrUYUOqITq01ORHBrNxUhjJphnM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706608624; x=1707213424;
+        d=1e100.net; s=20230601; t=1706608627; x=1707213427;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FAWe64W2NwnFAQiXHeHZ8EMU8gr37Jq34GIw0wUlRAI=;
-        b=p0E3UxpaaPMWLqS5MxSun4o9CgZXOOPLwJVXNf5LF/uKeWfDdLMze0jvb82hiLUrls
-         UgHUUOQ/eNTFCQI3YbsRsDCRH8yeynCs+AyUkyQYyL7eVHZlNnwkYM+y7rDIFeaiBu/f
-         NwLJ73MAZzDwDpSfaZiFCZCxlWxjQUithbSDPX8lExpty8qnpOFUFqZ5PODYr3922aob
-         J6eMk6zqu1yISpNpdGOKQ4FDcRBeCSStk+ydhMhO8aKeo/LYhHFmlPuINkCskofYqEUw
-         c6Pqg80NEm/L4mGgypDizgw/DAPi6gZM2S4p2lQe8j3sOAmjs/Co1nWNZmWQP3+ofJw2
-         vLYA==
-X-Gm-Message-State: AOJu0YwFB1Pe/3G1z6CujF8DnuHmeM4NPhzBEF4I2KWwoFZqIYfTbkrt
-	ZFWxh5mZ0HcQYzGYaySLzPP7HejigyvWoweDy3sS2BPZGXTdZJB7zLTA6vZ+sg==
-X-Google-Smtp-Source: AGHT+IFsG8Y80ah1dIgzlZvXYiG5Z2lLgwRHRKU6R8YE9ltRgG2UNVPQyVsusIsxO+y6QwQmac6yuA==
-X-Received: by 2002:a05:6a20:2d0f:b0:19c:a389:dd6b with SMTP id g15-20020a056a202d0f00b0019ca389dd6bmr4272695pzl.20.1706608624676;
-        Tue, 30 Jan 2024 01:57:04 -0800 (PST)
+        bh=gdC3n49f3pUPNsrcBA7Bt2BGENrWBIomL/x/RasR6Lw=;
+        b=pRf6hDstuFnanddHwVTwPrJ6z18oKw8KlHAg6DVBO4AKOpc90VDlEGrSWEsMWB/Zg8
+         dx0co58DP5vOkVxG2v0K4PsVQXLkJig9fGwKNvb1dgh7iakKhC6WN/V/xJvg7OFvhrb8
+         6ug2M/TPfGm0uCrFqXWAtKHqHT5rtTsQFd6ysrKT6aIGgxMBqKB6Jkz8YrQgHZ/aOIY9
+         SSauu/GSfzNF2d7Trg1scRJ5vS9xZfdVqtSIlh2RlmsEIiJsvk9bC4crQy40Hr/VhcLo
+         8plv3SMD5iVIxEYiHajtRBufkC1PPinA1kUXSKEWfs3217SZe8XK63XicVGA4GHzkYJ/
+         m88Q==
+X-Gm-Message-State: AOJu0YxXOPSzOB3YMQjdK6jUWZTPfwu0Da+M8RNIfITXJkeefPB+b3it
+	skRkn5ABLod1xlSbmHUtNUidgGRItajnHpaFDcAgCQNVbGrLwROcDo7Rj1fKWw==
+X-Google-Smtp-Source: AGHT+IGlxSqsMuF9m2bnctGlj48RdUWW+c4ToCBn1TGjF/x6IAqZ5PbEFfSDJkkT532DsO+oYz2DtQ==
+X-Received: by 2002:a17:90b:696:b0:28d:1581:29e6 with SMTP id m22-20020a17090b069600b0028d158129e6mr1136268pjz.13.1706608626736;
+        Tue, 30 Jan 2024 01:57:06 -0800 (PST)
 Received: from wenstp920.tpe.corp.google.com ([2401:fa00:1:10:469:110f:d748:6896])
-        by smtp.gmail.com with ESMTPSA id sm5-20020a17090b2e4500b0028ffea988a2sm8069810pjb.37.2024.01.30.01.57.02
+        by smtp.gmail.com with ESMTPSA id sm5-20020a17090b2e4500b0028ffea988a2sm8069810pjb.37.2024.01.30.01.57.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 01:57:04 -0800 (PST)
+        Tue, 30 Jan 2024 01:57:06 -0800 (PST)
 From: Chen-Yu Tsai <wenst@chromium.org>
 To: Matthias Brugger <matthias.bgg@gmail.com>,
 	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
@@ -71,9 +71,9 @@ Cc: Chen-Yu Tsai <wenst@chromium.org>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-mediatek@lists.infradead.org,
 	William-tw Lin <william-tw.lin@mediatek.com>
-Subject: [PATCH 2/3] soc: mediatek: mtk-socinfo: Add extra entry for MT8183
-Date: Tue, 30 Jan 2024 17:56:52 +0800
-Message-ID: <20240130095656.3712469-3-wenst@chromium.org>
+Subject: [PATCH 3/3] nvmem: mtk-efuse: Drop NVMEM device name
+Date: Tue, 30 Jan 2024 17:56:53 +0800
+Message-ID: <20240130095656.3712469-4-wenst@chromium.org>
 X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
 In-Reply-To: <20240130095656.3712469-1-wenst@chromium.org>
 References: <20240130095656.3712469-1-wenst@chromium.org>
@@ -85,27 +85,31 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The MT8183 has another socinfo match, with the second cell only
-differing by one bit. Add it to the driver.
+The MT8183 has not one but two efuse devices. The static name and ID
+causes the second efuse device to fail to probe, due to duplicate sysfs
+entries.
 
-Fixes: 423a54da3c7e ("soc: mediatek: mtk-socinfo: Add driver for getting chip information")
+With the rework of the mtk-socinfo driver, lookup by name is no longer
+necessary. The custom name can simply be dropped.
+
+Fixes: 4e6102d60d88 ("nvmem: mtk-efuse: Register MediaTek socinfo driver from efuse")
 Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
 ---
- drivers/soc/mediatek/mtk-socinfo.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/nvmem/mtk-efuse.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/soc/mediatek/mtk-socinfo.c b/drivers/soc/mediatek/mtk-socinfo.c
-index 3909d22062ce..42572e8c1520 100644
---- a/drivers/soc/mediatek/mtk-socinfo.c
-+++ b/drivers/soc/mediatek/mtk-socinfo.c
-@@ -45,6 +45,7 @@ static const char *cell_names[MAX_CELLS] = {"socinfo-data1", "socinfo-data2"};
- static struct socinfo_data socinfo_data_table[] = {
- 	MTK_SOCINFO_ENTRY("MT8173", "MT8173V/AC", "MT8173", 0x6CA20004, 0x10000000),
- 	MTK_SOCINFO_ENTRY("MT8183", "MT8183V/AZA", "Kompanio 500", 0x00010043, 0x00000840),
-+	MTK_SOCINFO_ENTRY("MT8183", "MT8183V/AZA", "Kompanio 500", 0x00010043, 0x00000940),
- 	MTK_SOCINFO_ENTRY("MT8186", "MT8186GV/AZA", "Kompanio 520", 0x81861001, CELL_NOT_USED),
- 	MTK_SOCINFO_ENTRY("MT8186T", "MT8186TV/AZA", "Kompanio 528", 0x81862001, CELL_NOT_USED),
- 	MTK_SOCINFO_ENTRY("MT8188", "MT8188GV/AZA", "Kompanio 830", 0x81880000, 0x00000010),
+diff --git a/drivers/nvmem/mtk-efuse.c b/drivers/nvmem/mtk-efuse.c
+index f5bebcecf9bd..9caf04667341 100644
+--- a/drivers/nvmem/mtk-efuse.c
++++ b/drivers/nvmem/mtk-efuse.c
+@@ -86,7 +86,6 @@ static int mtk_efuse_probe(struct platform_device *pdev)
+ 	econfig.size = resource_size(res);
+ 	econfig.priv = priv;
+ 	econfig.dev = dev;
+-	econfig.name = "mtk-efuse";
+ 	if (pdata->uses_post_processing)
+ 		econfig.fixup_dt_cell_info = &mtk_efuse_fixup_dt_cell_info;
+ 	nvmem = devm_nvmem_register(dev, &econfig);
 -- 
 2.43.0.429.g432eaa2c6b-goog
 
