@@ -1,111 +1,92 @@
-Return-Path: <linux-kernel+bounces-43931-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43932-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EEA5841AF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 05:20:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D14C3841AFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 05:26:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91CFB285A31
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 04:20:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8404E1F259CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 04:26:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B02743838A;
-	Tue, 30 Jan 2024 04:20:10 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42AFA381B6;
-	Tue, 30 Jan 2024 04:20:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE70F381AF;
+	Tue, 30 Jan 2024 04:26:29 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B74593770A;
+	Tue, 30 Jan 2024 04:26:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706588410; cv=none; b=R6FpvnB6OYn5TOqbdkhGYTftR1lxctkJIv+MRFg8VJOoigGGqc5OTEUozyZqE2LYJSugYjJrv6HTA3Z/yeIn4VqzwgfV9509o1HdWjwzCJdKTmEnffjDf3lVvhcLCJtBfPfuZgftThrlUw8m9d9y1WvXtDY4g+RD5IWUvcij7bA=
+	t=1706588789; cv=none; b=PzLr9SHLrYjg573GOjr6XRR6i6C1pSxIAROa6MvpLEZLvwncH4B1npOre0tyVQlxwZDcdMQahvl64tCmI+ptmI18Zsz0ljMboRCI8anPFgbXoRWlouo7wekX/LO6TVhmBne4VvNTVZBxvb1UkC/xtdsT5sPF9oGvefqxoItXw3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706588410; c=relaxed/simple;
-	bh=wpynsECXfwdN5FMfXVF0/SEgWc5k0ukuXRXAKJP9C+U=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=C7Kh5EiTlaNKhza4/GO8Dll7tcWGSJfW5AQ+Oi3TDZNnVpIDoKge8W7XdkF7CbuAUUjuDgXTIEZvkbWCLk1TvPM56jg20NamIzZkOd5OVSFZh3q8AOBJ3gxzmk3/Oa7LsP2NR6ZXKjnsP1hLmupAYbrHZfdH8P8CV4ZFasgzpZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TPBlc5fnBz4f3mHM;
-	Tue, 30 Jan 2024 12:19:56 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 42BC01A0172;
-	Tue, 30 Jan 2024 12:20:03 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP4 (Coremail) with SMTP id gCh0CgCn+mzweLhlrLnHCQ--.27109S2;
-	Tue, 30 Jan 2024 12:20:02 +0800 (CST)
-Subject: Re: [PATCH bpf v2 1/3] x86/mm: Move is_vsyscall_vaddr() into
- asm/vsyscall.h
-To: Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org, bpf@vger.kernel.org
-Cc: Dave Hansen <dave.hansen@linux.intel.com>,
- Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, "H . Peter Anvin" <hpa@zytor.com>,
- linux-kernel@vger.kernel.org, xingwei lee <xrivendell7@gmail.com>,
- Jann Horn <jannh@google.com>, Yonghong Song <yonghong.song@linux.dev>,
- houtao1@huawei.com
-References: <20240126115423.3943360-1-houtao@huaweicloud.com>
- <20240126115423.3943360-2-houtao@huaweicloud.com>
- <76af5d2e-7598-42b4-9ed9-8fec25ece057@intel.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <74d6548c-2de7-9204-ce23-d198387de82c@huaweicloud.com>
-Date: Tue, 30 Jan 2024 12:20:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1706588789; c=relaxed/simple;
+	bh=OmsH5cVGc67ZoutoHVLZlyvRi+VnnD7tEU5XBBF9WIU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jBsMLQjTnM78Q0EYcSC5zuK//NZTY5Vcacyj51FIDgVmJzOXv+/C++KNp19F1quNFVq9fmaKUKTYXiC6aOf5BvKm3hyXfm3dyjOkswwFEjMhXV1eWBfJfyy7Rw0HqwXvxJBX6jEbwleoVItDf1oZRcx2wqCWqxpjUGxC7fR7xv0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C3D28DA7;
+	Mon, 29 Jan 2024 20:27:10 -0800 (PST)
+Received: from [10.163.41.110] (unknown [10.163.41.110])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 31CBB3F762;
+	Mon, 29 Jan 2024 20:26:13 -0800 (PST)
+Message-ID: <3fbfb5fc-83a4-49da-ba75-9b671ffe0569@arm.com>
+Date: Tue, 30 Jan 2024 09:56:10 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <76af5d2e-7598-42b4-9ed9-8fec25ece057@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v3 01/35] mm: page_alloc: Add gfp_flags parameter to
+ arch_alloc_page()
 Content-Language: en-US
-X-CM-TRANSID:gCh0CgCn+mzweLhlrLnHCQ--.27109S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrXFW8JF18KFWfCrW5XF4fXwb_yoWxXrb_CF
-	W0vFWkWrZ3Jas3JF90yr15XFWkKr48GF45GFn8Gr9xJFnIqFykJrnYyr4vvr4YqF10q3y3
-	Gr9xZrWDZrnrKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbI8YFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
-	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AK
-	xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
-	xUOyCJDUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+To: Alexandru Elisei <alexandru.elisei@arm.com>
+Cc: catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
+ maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
+ yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
+ mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+ vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
+ bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+ vschneid@redhat.com, mhiramat@kernel.org, rppt@kernel.org, hughd@google.com,
+ pcc@google.com, steven.price@arm.com, vincenzo.frascino@arm.com,
+ david@redhat.com, eugenis@google.com, kcc@google.com, hyesoo.yu@samsung.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+ linux-arch@vger.kernel.org, linux-mm@kvack.org,
+ linux-trace-kernel@vger.kernel.org
+References: <20240125164256.4147-1-alexandru.elisei@arm.com>
+ <20240125164256.4147-2-alexandru.elisei@arm.com>
+ <de0c74b3-0c7d-4f21-8454-659e8b616ea7@arm.com> <ZbePA2dGE6Vs-58t@raptor>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <ZbePA2dGE6Vs-58t@raptor>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
 
 
-On 1/30/2024 7:56 AM, Sohil Mehta wrote:
-> On 1/26/2024 3:54 AM, Hou Tao wrote:
->> From: Hou Tao <houtao1@huawei.com>
->>
->> Moving is_vsyscall_vaddr() into asm/vsyscall.h to make it available for
-> s/Moving/Move
+On 1/29/24 17:11, Alexandru Elisei wrote:
+> Hi,
+> 
+> On Mon, Jan 29, 2024 at 11:18:59AM +0530, Anshuman Khandual wrote:
+>> On 1/25/24 22:12, Alexandru Elisei wrote:
+>>> Extend the usefulness of arch_alloc_page() by adding the gfp_flags
+>>> parameter.
+>> Although the change here is harmless in itself, it will definitely benefit
+>> from some additional context explaining the rationale, taking into account
+>> why-how arch_alloc_page() got added particularly for s390 platform and how
+>> it's going to be used in the present proposal.
+> arm64 will use it to reserve tag storage if the caller requested a tagged
+> page. Right now that means that __GFP_ZEROTAGS is set in the gfp mask, but
+> I'll rename it to __GFP_TAGGED in patch #18 ("arm64: mte: Rename
+> __GFP_ZEROTAGS to __GFP_TAGGED") [1].
+> 
+> [1] https://lore.kernel.org/lkml/20240125164256.4147-19-alexandru.elisei@arm.com/
 
-Will update in v3.
->
->> copy_from_kernel_nofault_allowed() in arch/x86/mm/maccess.c.
->>
->> Signed-off-by: Hou Tao <houtao1@huawei.com>
->> ---
->>  arch/x86/include/asm/vsyscall.h | 10 ++++++++++
->>  arch/x86/mm/fault.c             |  9 ---------
->>  2 files changed, 10 insertions(+), 9 deletions(-)
->>
->
-> Reviewed-by: Sohil Mehta <sohil.mehta@intel.com>
-
-Thank you for the review and all of your suggestions.
-
+Makes sense, but please do update the commit message explaining how
+new gfp mask argument will be used to detect tagged page allocation
+requests, further requiring tag storage allocation.
 
