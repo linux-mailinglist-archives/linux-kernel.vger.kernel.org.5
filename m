@@ -1,280 +1,319 @@
-Return-Path: <linux-kernel+bounces-43952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AEFE841B76
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 06:37:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5AD7841B78
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 06:37:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01C02289C4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 05:37:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DC331F25B6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 05:37:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46AF5381B0;
-	Tue, 30 Jan 2024 05:37:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CDD1381BB;
+	Tue, 30 Jan 2024 05:37:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="Q7aov1W3"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12olkn2019.outbound.protection.outlook.com [40.92.21.19])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FC0tHB3R"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34948381B4;
-	Tue, 30 Jan 2024 05:37:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.21.19
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706593024; cv=fail; b=Iy8be1jDWTtC+rogsj3rHrnT6rlCcvo5g8+Lfbju85/HaHIgXvRrhV5DFLmLirHcCM5z6VhR2fP/5hKX3kmv2wRrk+0ijULwCVX3GOO0+0fr5HVWKXS6w9Skjdk0Pilx+fihUiU98YZdPUI/43x+fjyVhoQ4tjaP5ddyjKj7XJc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706593024; c=relaxed/simple;
-	bh=pabKxH948vXRxh3Sou3cFKLhpRkibezNnyqWgBtpOVw=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=V1IAmrcTX9CX/CkWAdq2DbYamL4QWdjEAJAA5EKxffxS+1on/auNAXxFJKhaPoUb9bsNJUbUh1H443UtncsArj5PtsCBckXNhmt3d0ikpR/PFMiOZ/53xu+HYoKULxRphMxFcI5CboxHGwgcoDXcjukExcMvRQ8dm5JCcj/ZHyA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=Q7aov1W3; arc=fail smtp.client-ip=40.92.21.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZvbsOir8cbsXIOhX6IacKgKxwtGlDvvCbmmCwDZDqsFp3zJ+hah7G14t4DnNsUAPZADsdbKcRzGODGnIg8ZkVcAJpK0zLygbuX9GjWzZoE28XfeMT4VGVT+xOnA/RRz/cRlgl3VJvt/A8KrQv4nyc36lbNTpYhYDo4eFAHWC0xQoatyqAWJBzpfIdSLfqNM680/OAWbSEoGXqlBYlUShn/pSTnRR1JRRzUR2ezGjDtO0+fLnehl7LgLjquwgQIWqkZ0llV4iwnZPBTdlN7t6dUQHGJjiCjMrujYEZ6MXHPXqoJAjm9CVZh8/CZrddTbPPOqDIFMsjE1JVMlx3VvAdw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ePbyv4Cys6R9EWXnFliOFQTh/8OgQ8tkirzhniJ99GM=;
- b=ivXw+t8LVw179ZnQriHr6GMgwQDlEyHy7QkjiHqXDTV+jlsBxvWiVCt2M7o/K2X2/ga6OaABtscJudli4V7uaBoECoyVnACB5oETTAmf/bRfqGP9swHm0sklw2aqt45ZH5V64qsRNq+L63Qi0LKaSl0FJfpeRNYzt5mL74SxbMgreKwnkkeLvPw3W7HbD0+bfKUPLcCTR+6rvznVkbrZzX5d5oF6Kyl81TJpgL2jIwawAzXjyIAIJ5FwdGDWktNdpKDi3Lm+rYxnu5/qU6jXEEIwHiuMbRI7wOUCIoz/B+WeRyjwcrVa9g/3sLWCSgPJmRp5Ljv67gXXkB4ErAcz0Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ePbyv4Cys6R9EWXnFliOFQTh/8OgQ8tkirzhniJ99GM=;
- b=Q7aov1W3ga/uFq1/3is2m/dij1IWXm4XYFdLaffQ5NFrs2Fs/RkyrHTlx/obkpcTI8KeWKcuS+EcJHnqusQfLj40ipBTnUgDHQZ1drMcfNoODd5lhZ/5VE6whtEXJHWxXxHTOCN2fB8JkFI6/GEVpSpeixWEdnMaEWsAqIwED6tDlqqUiVejbDvdm4+8NPeKdj/hmrfhP+vrLenuhgQf7LW79DNtAISjRR9Xv5FmgYG+39Ik0Y1eFVt33uyt2Y5fmHMZGYuXPSJ94Wqqr2QOo2hWczJjwD3Ykje5fsnbToqr/wFy9C2o4Bx9emziVrnkuPErreFRzJS1GoEJlMVskA==
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
- by CH2PR02MB6728.namprd02.prod.outlook.com (2603:10b6:610:7e::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.33; Tue, 30 Jan
- 2024 05:36:59 +0000
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::67a9:f3c0:f57b:86dd]) by SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::67a9:f3c0:f57b:86dd%5]) with mapi id 15.20.7228.029; Tue, 30 Jan 2024
- 05:36:59 +0000
-From: Michael Kelley <mhklinux@outlook.com>
-To: Baoquan He <bhe@redhat.com>, "kexec@lists.infradead.org"
-	<kexec@lists.infradead.org>, "akpm@linux-foundation.org"
-	<akpm@linux-foundation.org>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"x86@kernel.org" <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linuxppc-dev@lists.ozlabs.org"
-	<linuxppc-dev@lists.ozlabs.org>, "linux-s390@vger.kernel.org"
-	<linux-s390@vger.kernel.org>, "nathan@kernel.org" <nathan@kernel.org>
-Subject: RE: [PATCH v2 linux-next 1/3] x86, crash: don't nest
- CONFIG_CRASH_DUMP ifdef inside CONFIG_KEXEC_CODE ifdef scope
-Thread-Topic: [PATCH v2 linux-next 1/3] x86, crash: don't nest
- CONFIG_CRASH_DUMP ifdef inside CONFIG_KEXEC_CODE ifdef scope
-Thread-Index: AQHaUyh40go+WQA5m0KtJmeFc8tkfrDx1bKw
-Date: Tue, 30 Jan 2024 05:36:59 +0000
-Message-ID:
- <SN6PR02MB4157BA050EF4F9D9F58BC694D47D2@SN6PR02MB4157.namprd02.prod.outlook.com>
-References: <20240129135033.157195-1-bhe@redhat.com>
- <ZbhmL/jQtZ7TFZqV@MiWiFi-R3L-srv>
-In-Reply-To: <ZbhmL/jQtZ7TFZqV@MiWiFi-R3L-srv>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-tmn: [VDYORJ1NoFVwoncY4cx01ogrvBox94eG]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|CH2PR02MB6728:EE_
-x-ms-office365-filtering-correlation-id: f6328023-b16c-4bca-3cb0-08dc21557a96
-x-ms-exchange-slblob-mailprops:
- I89ikN2gb/9QbZtBpKkFdMk9gU7jZqZBTe7LPV7TAM+eVIUHrjlNRxn9SoJbiTKOEel6Zs9xDJ0eGGLvYsa1vpMfTjr/kYcziSbS5dQw2vEt9HnNh/WRyS1mE7oHyMLUo99xCzoCzlnY7tm+gI7Idx16W3VvMxqOqvLsJ5qKSwAhDlK5K3nWyHlRfL7ZJ/QMG0CR2xRXnM8A0VrzFcbZBhdt3hD9DLfYliVJt4Tq04GPSqrPAw+VTx9Ppfn7WIMSecnOriaKX8OSFlXsC7WwWL0Xny9wR7QaFN7ULKfDREMmWACMOqZ4jCyaLQdk8VT90NX0KilqwVeWMVabI6xo8PP9WhIQu9+FyFG2DL/iMnqSNmqdkcZlduLyTKK++/MjekbNGR9SQRWEgr714RGDkiaY7cCWWJKnOBtYtCzGlSS5gVj0D0dGoC9soCOC47zlvXiwEr5IEM66vws+4HnE/3HNNAMHevwH7scQnvKFA9+nCwvWcCpg6ZhtAct3lSHfZfrul+Cz2Hn4RQG9TsBnup3YR0K9ZoQKh7icGxmFNtjs+ZpkdtFDozxWYX87eIr39Qsi75gsytA/duiKUTIzbAKp+qwzYK0oFVO2sVzGPwl2d9eqq+G+CPTbz/aKMbQp2wqvMAUfeB71K3NDOC4lO1tQAyRJsFqWGxjoA9yBesdqsD1LOT7eU37jvGtfA7orCbI1Wv4qB+Ubs0KTIbpow2JiaJKWciyRMr8aLLAWdc90iTq3+V7F1JfwtR0yUvxZ05i+lOGI9lZ12fwZBRbDmjD8hyKKFDpLSvY6bGhzSZysimc5YzxtRnO0WXXe2xwkWlrOywRh4bIrwAlUrGHXlYvWjfNs81pYMBm/ZKmztJVph9A//RpU7cdvQteN3BwE64ZRq4dYqVI=
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- nEfAoiEFUwKWt8O37FmbSaXn4XOs2vOVebnZPji0gvNEthBzMKZNi4CklBO4Z4rJy5WKXTMKzWyvslXxa4YOKmcZREB+82QFdKL6fZIBGYRKmRf7yccXuodD61XrQS2mVQlGBoQq04b8ybrPuZ8038oUjALBAhW9vV0a7rICSBb9LUvqbeHXOpxNiB+lhegHjR9CpIg44+fXpm32d3rQNom5daQtJexK13Q3/RwThG70ed9nMNECh6Kwnjy67oUyUfJNx4b5XMySRchQq+7Jzf4AUjZaTZB2WpmP8kd+VK14z06lKqXHLyyeg1xR4JpjX1xjrds8DxffzEQFL2j7RaidfpnxEeNUDvyWPVORJIyWdwQom1adrrCRKoLvsbnPaIuNgm27VCIB20BXJofpz2i6PGnXPyPPz3JA+XWqGF5kzSbuLkwH4zR9rhb7bf3QmAi7EnDdN1cx3EO8Yrk8DRCm219cSBfWygeFpSYp9TvQuFShn7+vVYxdG6WKQW0kCfwB31TLNBWpTbOxWvYHARnHSwxJmv7tYgpPEpEb+Ryk6QWznQdTFVJT9Jhc1uRNgFbNZrZMngTjbaTbQ8IHSekvgVZdLgdYqR7IuPbq8NAnbn1uiWsiq9rMfy7t6FYbJPbgQVCKfIqxFLlfY3tc4A==
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?yUhm9bN62hMTp6PwIbxaghVUECXBtPW1Lc30pSmY6HpQMrFaFLX+BLsX0uB6?=
- =?us-ascii?Q?jIF00WeBb1S5QlSdO4C7q0Ufsvf2rtiponsVLXznX12bIpI5HX7xaKuYX9od?=
- =?us-ascii?Q?auy9tiN/GnhOQheCLeg1U1WjFSXo9EucEakEphhjrDZm8T+LX4Fb2Ug910sz?=
- =?us-ascii?Q?ZXVm31DmIKtgl2zADzvvS6KQQ2c2M4HnZduQezk2sYWp8H/Q79znTyi2CQ2E?=
- =?us-ascii?Q?CD6o13TbrRM3iYb3NrFrpMAe3Yk2VMguoMB7nd7k7OxEiL2U4Onb5JcCkUSS?=
- =?us-ascii?Q?lPgaGqv0l7qTjLd84cMV1iRU/Yc5zgSbLCAsm+hSuUEh9aGDSCCPhxVdCxZ2?=
- =?us-ascii?Q?sjtPm1RALTZV5ZAwg7b+4cmnaV6vq/2IKRpnJSRbRxjsJxVAnVlbS/jekVTH?=
- =?us-ascii?Q?L0ujxsnD38hlaetMg/cw3ER5LBGfbzqTJWca0InsS/55hLhr4YU5Aq8cKLDj?=
- =?us-ascii?Q?06K2NJ+JnLd8CKIgLevKayjiw8/W66K9endcYefVcDoVfnOQUgJ5kDSvxxJ7?=
- =?us-ascii?Q?dILUTkU+E7yqu+tKp6BwDAhFnGrj6QT5R5QiN39TRCUaTENctuw9YF1xIvi8?=
- =?us-ascii?Q?W13olJIV6BtN0f3uAmpMbpQWK8nlWNogunOnW5z2poELl0YJY+wtyFykPL+2?=
- =?us-ascii?Q?YQ2ko3FP0/EEJciy26DqgRqd9RrQ8GO2a+M7EYQEeHAxtITDCCGvjDK0yv51?=
- =?us-ascii?Q?5jYLg1WsPQ82Zk86OGX99pwNqALF9WzV3Zrq4otkvXsvKpUqxC8UeyF+MAdg?=
- =?us-ascii?Q?w1c13QDCN0MONZtSSmaBYXodb+fCqSGikh6wPpAo15kvUAgmdHWOMVkCrjVC?=
- =?us-ascii?Q?fLGeeK1cKhsjq2a6iAHgb5bVPO3DSnOd7BAv+7BMNXDtK3GeqaXMLaYUKih+?=
- =?us-ascii?Q?mah8kcMk0jeHnA146obsusFpNygwntXZ2nLrwvrKyhPbTLb82CwcH5dg4E0Q?=
- =?us-ascii?Q?yzsV5Vp/6Fz5ZGzMEU6RN1J9Op5+H9zaPVLBJbUDieusqpsfHSgfByvsG2rV?=
- =?us-ascii?Q?ZsHa8a3vlSZY9oDELqXyRd9Wj3eafyDMCUkeWoqMAhVqOb25ZQMcVCC3nAi0?=
- =?us-ascii?Q?HMZnRo4W0jbawzGtiHH9rzbdF2yXAVV4rI1rfTxxZ9n/fJ2M0xzkoX/jqn3h?=
- =?us-ascii?Q?oD/gyicMqLPW4JWMjri+BI2GYYJ3MbBvhqT+dpiBEc+O3g89HUvTMAfdsd4j?=
- =?us-ascii?Q?bXVtCeISgi0t2KqIxY876I1RKrodqh34mgJ0Xg=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F87F37163;
+	Tue, 30 Jan 2024 05:37:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706593059; cv=none; b=N2GypjRRdi6qOSp7CF6ePSs29Rn0zPDd4iOjkN8mmuwfZW5xUplnsjL9fkZVtHtsRoiNVdOAfp8oazJRBGfcmDfeeEJ8sGYBpMnAhCQxuWaFd2V3H/roOLf4PGLL7CJAAupZUdCq6soYlh7N5E3jqpUmBKcLJ47ePFyg6vTBjeE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706593059; c=relaxed/simple;
+	bh=B7k7MbUK+Q3vzv/j7os+HGNfCi2js3vEaDuq2uiU3uY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=g8Ccops6RyeqGYCSr7Jwp6+Ld8gCX7eR0cLL1Z+edrympTdOAGkZYwer1Vdfut+D6aoCqr8/r5TSCYH6+r9vhbe0en12BQPHmbLxM97K+yykU5ukGJIHo+lTehyM5+cl6ADerG3YBFB/yNfGIGoPUAtOokRB78hxNmZEgLrKcJY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FC0tHB3R; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706593057; x=1738129057;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=B7k7MbUK+Q3vzv/j7os+HGNfCi2js3vEaDuq2uiU3uY=;
+  b=FC0tHB3Rsr7iRC4VB4hpwgn443+5lp8C6JmlOfcC6juuNuXns7WOLH5r
+   82yUBekS74hrFAcpVy+c4wY9ILCO3gjFA6V6pPiaL24PTDTHH9mgcL/Ku
+   IroqP7snnofBQxJqIZYN1OSTiUcIu4BnncndV0B0f6R3c84DovhHxrLtL
+   SxcRMTu94cHNyw54W+twNo3s5qzXtec6RUmaeE6Pfyy74kDg+9RXW1cN7
+   Lz61Ub+43Euo0+iYLhM4o5WsWMRdZJ5nQlwi9joXS7rScAnmv/hG8psWD
+   mb4qG+d4/box/R3c5yiVodZL+d/PG+w3jG083ixYEOFApc1uZKFYskWPo
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="9815221"
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="9815221"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 21:37:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="3547785"
+Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.238.130.190]) ([10.238.130.190])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 21:37:32 -0800
+Message-ID: <d4e857f7-1a8f-43da-8f9b-0fba352c7b5b@linux.intel.com>
+Date: Tue, 30 Jan 2024 13:37:30 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: f6328023-b16c-4bca-3cb0-08dc21557a96
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jan 2024 05:36:59.1755
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR02MB6728
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v12 2/5] iommu/vt-d: don't issue ATS Invalidation request
+ when device is disconnected
+To: Yi Liu <yi.l.liu@intel.com>, baolu.lu@linux.intel.com,
+ bhelgaas@google.com, robin.murphy@arm.com, jgg@ziepe.ca
+Cc: kevin.tian@intel.com, dwmw2@infradead.org, will@kernel.org,
+ lukas@wunner.de, iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+ linux-pci@vger.kernel.org, Haorong Ye <yehaorong@bytedance.com>
+References: <20240129034924.817005-1-haifeng.zhao@linux.intel.com>
+ <20240129034924.817005-3-haifeng.zhao@linux.intel.com>
+ <62f9ad7b-eaad-4a73-856a-78b30817b0d5@intel.com>
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+In-Reply-To: <62f9ad7b-eaad-4a73-856a-78b30817b0d5@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-From: Baoquan He <bhe@redhat.com> Sent: Monday, January 29, 2024 7:00 PM
->=20
-> Michael pointed out that the CONFIG_CRASH_DUMP ifdef is nested inside
-> CONFIG_KEXEC_CODE ifdef scope in some XEN, Hyper-V codes.
->=20
-> Although the nesting works well too since CONFIG_CRASH_DUMP has
-> dependency on CONFIG_KEXEC_CORE, it may cause confusion because there
-> are places where it's not nested, and people may think it needs to be
-> nested even though it doesn't have to.
->=20
-> Fix that by moving  CONFIG_CRASH_DUMP ifdeffery of codes out of
-> CONFIG_KEXEC_CODE ifdeffery scope.
->=20
-> And also put function machine_crash_shutdown() definition inside
-> CONFIG_CRASH_DUMP ifdef scope instead of CONFIG_KEXEC_CORE ifdef.
->=20
-> And also fix a building error Nathan reported as below by replacing
-> CONFIG_KEXEC_CORE ifdef with CONFIG_VMCORE_INFO ifdef.
->=20
-> =3D=3D=3D=3D
-> $ curl -LSso .config https://git.alpinelinux.org/aports/plain/community/l=
-inux-edge/config-edge.x86_64
-> $ make -skj"$(nproc)" ARCH=3Dx86_64 CROSS_COMPILE=3Dx86_64-linux-
-> olddefconfig all
-> ...
-> x86_64-linux-ld: arch/x86/xen/mmu_pv.o: in function
-> `paddr_vmcoreinfo_note':
-> mmu_pv.c:(.text+0x3af3): undefined reference to `vmcoreinfo_note'
-> =3D=3D=3D=3D
->=20
-> Link: https://lore.kernel.org/all/SN6PR02MB4157931105FA68D72E3D3DB8D47B2@=
-SN6PR02MB4157.namprd02.prod.outlook.com/T/#u
-> Link: https://lore.kernel.org/all/20240126045551.GA126645@dev-arch.thelio=
--3990X/T/#u
-> Signed-off-by: Baoquan He <bhe@redhat.com>
-> ---
-> v1->v2:
-> - Add missing words and fix typos in patch log pointed out by Michael.
->=20
->  arch/x86/kernel/cpu/mshyperv.c | 10 ++++++----
->  arch/x86/kernel/reboot.c       |  2 +-
->  arch/x86/xen/enlighten_hvm.c   |  4 ++--
->  arch/x86/xen/mmu_pv.c          |  2 +-
->  4 files changed, 10 insertions(+), 8 deletions(-)
->=20
-> diff --git a/arch/x86/kernel/cpu/mshyperv.c
-> b/arch/x86/kernel/cpu/mshyperv.c
-> index f8163a59026b..2e8cd5a4ae85 100644
-> --- a/arch/x86/kernel/cpu/mshyperv.c
-> +++ b/arch/x86/kernel/cpu/mshyperv.c
-> @@ -209,6 +209,7 @@ static void hv_machine_shutdown(void)
->  	if (kexec_in_progress)
->  		hyperv_cleanup();
->  }
-> +#endif /* CONFIG_KEXEC_CORE */
->=20
->  #ifdef CONFIG_CRASH_DUMP
->  static void hv_machine_crash_shutdown(struct pt_regs *regs)
-> @@ -222,8 +223,7 @@ static void hv_machine_crash_shutdown(struct
-> pt_regs *regs)
->  	/* Disable the hypercall page when there is only 1 active CPU. */
->  	hyperv_cleanup();
->  }
-> -#endif
-> -#endif /* CONFIG_KEXEC_CORE */
-> +#endif /* CONFIG_CRASH_DUMP */
->  #endif /* CONFIG_HYPERV */
->=20
->  static uint32_t  __init ms_hyperv_platform(void)
-> @@ -497,9 +497,11 @@ static void __init ms_hyperv_init_platform(void)
->  	no_timer_check =3D 1;
->  #endif
->=20
-> -#if IS_ENABLED(CONFIG_HYPERV) && defined(CONFIG_KEXEC_CORE)
-> +#if IS_ENABLED(CONFIG_HYPERV)
-> +#if defined(CONFIG_KEXEC_CORE)
->  	machine_ops.shutdown =3D hv_machine_shutdown;
-> -#ifdef CONFIG_CRASH_DUMP
-> +#endif
-> +#if defined(CONFIG_CRASH_DUMP)
->  	machine_ops.crash_shutdown =3D hv_machine_crash_shutdown;
->  #endif
->  #endif
-> diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
-> index 1287b0d5962f..f3130f762784 100644
-> --- a/arch/x86/kernel/reboot.c
-> +++ b/arch/x86/kernel/reboot.c
-> @@ -826,7 +826,7 @@ void machine_halt(void)
->  	machine_ops.halt();
->  }
->=20
-> -#ifdef CONFIG_KEXEC_CORE
-> +#ifdef CONFIG_CRASH_DUMP
->  void machine_crash_shutdown(struct pt_regs *regs)
->  {
->  	machine_ops.crash_shutdown(regs);
-> diff --git a/arch/x86/xen/enlighten_hvm.c b/arch/x86/xen/enlighten_hvm.c
-> index 09e3db7ff990..0b367c1e086d 100644
-> --- a/arch/x86/xen/enlighten_hvm.c
-> +++ b/arch/x86/xen/enlighten_hvm.c
-> @@ -148,6 +148,7 @@ static void xen_hvm_shutdown(void)
->  	if (kexec_in_progress)
->  		xen_reboot(SHUTDOWN_soft_reset);
->  }
-> +#endif
->=20
->  #ifdef CONFIG_CRASH_DUMP
->  static void xen_hvm_crash_shutdown(struct pt_regs *regs)
-> @@ -156,7 +157,6 @@ static void xen_hvm_crash_shutdown(struct pt_regs
-> *regs)
->  	xen_reboot(SHUTDOWN_soft_reset);
->  }
->  #endif
-> -#endif
->=20
->  static int xen_cpu_up_prepare_hvm(unsigned int cpu)
->  {
-> @@ -238,10 +238,10 @@ static void __init xen_hvm_guest_init(void)
->=20
->  #ifdef CONFIG_KEXEC_CORE
->  	machine_ops.shutdown =3D xen_hvm_shutdown;
-> +#endif
->  #ifdef CONFIG_CRASH_DUMP
->  	machine_ops.crash_shutdown =3D xen_hvm_crash_shutdown;
->  #endif
-> -#endif
->  }
->=20
->  static __init int xen_parse_nopv(char *arg)
-> diff --git a/arch/x86/xen/mmu_pv.c b/arch/x86/xen/mmu_pv.c
-> index 218773cfb009..e21974f2cf2d 100644
-> --- a/arch/x86/xen/mmu_pv.c
-> +++ b/arch/x86/xen/mmu_pv.c
-> @@ -2520,7 +2520,7 @@ int xen_remap_pfn(struct vm_area_struct *vma,
-> unsigned long addr,
->  }
->  EXPORT_SYMBOL_GPL(xen_remap_pfn);
->=20
-> -#ifdef CONFIG_KEXEC_CORE
-> +#ifdef CONFIG_VMCORE_INFO
->  phys_addr_t paddr_vmcoreinfo_note(void)
->  {
->  	if (xen_pv_domain())
-> --
-> 2.41.0
 
-Reviewed-by: Michael Kelley <mhklinux@outlook.com>
+On 1/29/2024 5:32 PM, Yi Liu wrote:
+> On 2024/1/29 11:49, Ethan Zhao wrote:
+>> For those endpoint devices connect to system via hotplug capable ports,
+>> users could request a hot reset to the device by flapping device's link
+>> through setting the slot's link control register, as pciehp_ist() DLLSC
+>> interrupt sequence response, pciehp will unload the device driver and
+>> then power it off. thus cause an IOMMU device-TLB invalidation (Intel
+>> VT-d spec, or ATS Invalidation in PCIe spec r6.1) request for 
+>> non-existence
+>> target device to be sent and deadly loop to retry that request after ITE
+>> fault triggered in interrupt context.
+>>
+>> That would cause following continuous hard lockup warning and system 
+>> hang
+>>
+>> [ 4211.433662] pcieport 0000:17:01.0: pciehp: Slot(108): Link Down
+>> [ 4211.433664] pcieport 0000:17:01.0: pciehp: Slot(108): Card not 
+>> present
+>> [ 4223.822591] NMI watchdog: Watchdog detected hard LOCKUP on cpu 144
+>> [ 4223.822622] CPU: 144 PID: 1422 Comm: irq/57-pciehp Kdump: loaded 
+>> Tainted: G S
+>>           OE    kernel version xxxx
+>> [ 4223.822623] Hardware name: vendorname xxxx 666-106,
+>> BIOS 01.01.02.03.01 05/15/2023
+>> [ 4223.822623] RIP: 0010:qi_submit_sync+0x2c0/0x490
+>> [ 4223.822624] Code: 48 be 00 00 00 00 00 08 00 00 49 85 74 24 20 0f 
+>> 95 c1 48 8b
+>>   57 10 83 c1 04 83 3c 1a 03 0f 84 a2 01 00 00 49 8b 04 24 8b 70 34 
+>> <40> f6 c6 1
+>> 0 74 17 49 8b 04 24 8b 80 80 00 00 00 89 c2 d3 fa 41 39
+>> [ 4223.822624] RSP: 0018:ffffc4f074f0bbb8 EFLAGS: 00000093
+>> [ 4223.822625] RAX: ffffc4f040059000 RBX: 0000000000000014 RCX: 
+>> 0000000000000005
+>> [ 4223.822625] RDX: ffff9f3841315800 RSI: 0000000000000000 RDI: 
+>> ffff9f38401a8340
+>> [ 4223.822625] RBP: ffff9f38401a8340 R08: ffffc4f074f0bc00 R09: 
+>> 0000000000000000
+>> [ 4223.822626] R10: 0000000000000010 R11: 0000000000000018 R12: 
+>> ffff9f384005e200
+>> [ 4223.822626] R13: 0000000000000004 R14: 0000000000000046 R15: 
+>> 0000000000000004
+>> [ 4223.822626] FS:  0000000000000000(0000) GS:ffffa237ae400000(0000)
+>> knlGS:0000000000000000
+>> [ 4223.822627] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> [ 4223.822627] CR2: 00007ffe86515d80 CR3: 000002fd3000a001 CR4: 
+>> 0000000000770ee0
+>> [ 4223.822627] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 
+>> 0000000000000000
+>> [ 4223.822628] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 
+>> 0000000000000400
+>> [ 4223.822628] PKRU: 55555554
+>> [ 4223.822628] Call Trace:
+>> [ 4223.822628]  qi_flush_dev_iotlb+0xb1/0xd0
+>> [ 4223.822628]  __dmar_remove_one_dev_info+0x224/0x250
+>> [ 4223.822629]  dmar_remove_one_dev_info+0x3e/0x50
+>> [ 4223.822629]  intel_iommu_release_device+0x1f/0x30
+>> [ 4223.822629]  iommu_release_device+0x33/0x60
+>> [ 4223.822629]  iommu_bus_notifier+0x7f/0x90
+>> [ 4223.822630]  blocking_notifier_call_chain+0x60/0x90
+>> [ 4223.822630]  device_del+0x2e5/0x420
+>> [ 4223.822630]  pci_remove_bus_device+0x70/0x110
+>> [ 4223.822630]  pciehp_unconfigure_device+0x7c/0x130
+>> [ 4223.822631]  pciehp_disable_slot+0x6b/0x100
+>> [ 4223.822631]  pciehp_handle_presence_or_link_change+0xd8/0x320
+>> [ 4223.822631]  pciehp_ist+0x176/0x180
+>> [ 4223.822631]  ? irq_finalize_oneshot.part.50+0x110/0x110
+>> [ 4223.822632]  irq_thread_fn+0x19/0x50
+>> [ 4223.822632]  irq_thread+0x104/0x190
+>> [ 4223.822632]  ? irq_forced_thread_fn+0x90/0x90
+>> [ 4223.822632]  ? irq_thread_check_affinity+0xe0/0xe0
+>> [ 4223.822633]  kthread+0x114/0x130
+>> [ 4223.822633]  ? __kthread_cancel_work+0x40/0x40
+>> [ 4223.822633]  ret_from_fork+0x1f/0x30
+>> [ 4223.822633] Kernel panic - not syncing: Hard LOCKUP
+>> [ 4223.822634] CPU: 144 PID: 1422 Comm: irq/57-pciehp Kdump: loaded 
+>> Tainted: G S
+>>           OE     kernel version xxxx
+>> [ 4223.822634] Hardware name: vendorname xxxx 666-106,
+>> BIOS 01.01.02.03.01 05/15/2023
+>> [ 4223.822634] Call Trace:
+>> [ 4223.822634]  <NMI>
+>> [ 4223.822635]  dump_stack+0x6d/0x88
+>> [ 4223.822635]  panic+0x101/0x2d0
+>> [ 4223.822635]  ? ret_from_fork+0x11/0x30
+>> [ 4223.822635]  nmi_panic.cold.14+0xc/0xc
+>> [ 4223.822636]  watchdog_overflow_callback.cold.8+0x6d/0x81
+>> [ 4223.822636]  __perf_event_overflow+0x4f/0xf0
+>> [ 4223.822636]  handle_pmi_common+0x1ef/0x290
+>> [ 4223.822636]  ? __set_pte_vaddr+0x28/0x40
+>> [ 4223.822637]  ? flush_tlb_one_kernel+0xa/0x20
+>> [ 4223.822637]  ? __native_set_fixmap+0x24/0x30
+>> [ 4223.822637]  ? ghes_copy_tofrom_phys+0x70/0x100
+>> [ 4223.822637]  ? __ghes_peek_estatus.isra.16+0x49/0xa0
+>> [ 4223.822637]  intel_pmu_handle_irq+0xba/0x2b0
+>> [ 4223.822638]  perf_event_nmi_handler+0x24/0x40
+>> [ 4223.822638]  nmi_handle+0x4d/0xf0
+>> [ 4223.822638]  default_do_nmi+0x49/0x100
+>> [ 4223.822638]  exc_nmi+0x134/0x180
+>> [ 4223.822639]  end_repeat_nmi+0x16/0x67
+>> [ 4223.822639] RIP: 0010:qi_submit_sync+0x2c0/0x490
+>> [ 4223.822639] Code: 48 be 00 00 00 00 00 08 00 00 49 85 74 24 20 0f 
+>> 95 c1 48 8b
+>>   57 10 83 c1 04 83 3c 1a 03 0f 84 a2 01 00 00 49 8b 04 24 8b 70 34 
+>> <40> f6 c6 10
+>>   74 17 49 8b 04 24 8b 80 80 00 00 00 89 c2 d3 fa 41 39
+>> [ 4223.822640] RSP: 0018:ffffc4f074f0bbb8 EFLAGS: 00000093
+>> [ 4223.822640] RAX: ffffc4f040059000 RBX: 0000000000000014 RCX: 
+>> 0000000000000005
+>> [ 4223.822640] RDX: ffff9f3841315800 RSI: 0000000000000000 RDI: 
+>> ffff9f38401a8340
+>> [ 4223.822641] RBP: ffff9f38401a8340 R08: ffffc4f074f0bc00 R09: 
+>> 0000000000000000
+>> [ 4223.822641] R10: 0000000000000010 R11: 0000000000000018 R12: 
+>> ffff9f384005e200
+>> [ 4223.822641] R13: 0000000000000004 R14: 0000000000000046 R15: 
+>> 0000000000000004
+>> [ 4223.822641]  ? qi_submit_sync+0x2c0/0x490
+>> [ 4223.822642]  ? qi_submit_sync+0x2c0/0x490
+>> [ 4223.822642]  </NMI>
+>> [ 4223.822642]  qi_flush_dev_iotlb+0xb1/0xd0
+>> [ 4223.822642]  __dmar_remove_one_dev_info+0x224/0x250
+>> [ 4223.822643]  dmar_remove_one_dev_info+0x3e/0x50
+>> [ 4223.822643]  intel_iommu_release_device+0x1f/0x30
+>> [ 4223.822643]  iommu_release_device+0x33/0x60
+>> [ 4223.822643]  iommu_bus_notifier+0x7f/0x90
+>> [ 4223.822644]  blocking_notifier_call_chain+0x60/0x90
+>> [ 4223.822644]  device_del+0x2e5/0x420
+>> [ 4223.822644]  pci_remove_bus_device+0x70/0x110
+>> [ 4223.822644]  pciehp_unconfigure_device+0x7c/0x130
+>> [ 4223.822644]  pciehp_disable_slot+0x6b/0x100
+>> [ 4223.822645]  pciehp_handle_presence_or_link_change+0xd8/0x320
+>> [ 4223.822645]  pciehp_ist+0x176/0x180
+>> [ 4223.822645]  ? irq_finalize_oneshot.part.50+0x110/0x110
+>> [ 4223.822645]  irq_thread_fn+0x19/0x50
+>> [ 4223.822646]  irq_thread+0x104/0x190
+>> [ 4223.822646]  ? irq_forced_thread_fn+0x90/0x90
+>> [ 4223.822646]  ? irq_thread_check_affinity+0xe0/0xe0
+>> [ 4223.822646]  kthread+0x114/0x130
+>> [ 4223.822647]  ? __kthread_cancel_work+0x40/0x40
+>> [ 4223.822647]  ret_from_fork+0x1f/0x30
+>> [ 4223.822647] Kernel Offset: 0x6400000 from 0xffffffff81000000 
+>> (relocation
+>> range: 0xffffffff80000000-0xffffffffbfffffff)
+>>
+>> Such issue could be triggered by all kinds of regular surprise removal
+>> hotplug operation. like:
+>>
+>> 1. pull EP(endpoint device) out directly.
+>> 2. turn off EP's power.
+>> 3. bring the link down.
+>> etc.
+>>
+>> this patch aims to work for regular safe removal and surprise removal
+>> unplug. these hot unplug handling process could be optimized for fix the
+>> ATS Invalidation hang issue by calling pci_dev_is_disconnected() in
+>> function devtlb_invalidation_with_pasid() to check target device 
+>> state to
+>> avoid sending meaningless ATS Invalidation request to iommu when 
+>> device is
+>> gone. (see IMPLEMENTATION NOTE in PCIe spec r6.1 section 10.3.1)
+>>
+>> For safe removal, device wouldn't be removed until the whole software
+>> handling process is done, it wouldn't trigger the hard lock up issue
+>> caused by too long ATS Invalidation timeout wait. In safe removal path,
+>> device state isn't set to pci_channel_io_perm_failure in
+>> pciehp_unconfigure_device() by checking 'presence' parameter, calling
+>> pci_dev_is_disconnected() in devtlb_invalidation_with_pasid() will 
+>> return
+>> false there, wouldn't break the function.
+>>
+>> For surprise removal, device state is set to 
+>> pci_channel_io_perm_failure in
+>> pciehp_unconfigure_device(), means device is already gone (disconnected)
+>> call pci_dev_is_disconnected() in devtlb_invalidation_with_pasid() will
+>> return true to break the function not to send ATS Invalidation 
+>> request to
+>> the disconnected device blindly, thus avoid to trigger further ITE 
+>> fault,
+>> and ITE fault will block all invalidation request to be handled.
+>> furthermore retry the timeout request could trigger hard lockup.
+>>
+>> safe removal (present) & surprise removal (not present)
+>>
+>> pciehp_ist()
+>>     pciehp_handle_presence_or_link_change()
+>>       pciehp_disable_slot()
+>>         remove_board()
+>>           pciehp_unconfigure_device(presence) {
+>>             if (!presence)
+>>                  pci_walk_bus(parent, pci_dev_set_disconnected, NULL);
+>>             }
+>>
+>> this patch works for regular safe removal and surprise removal of ATS
+>> capable endpoint on PCIe switch downstream ports.
+>
+> this is not the real fix. So this series may focus on the real fix (avoid
+> dead loop in intel iommu driver when ITE happens), and in the end add 
+> this
+> patch as an optimization.
 
+This is the second time I brought it on top of other patches as Baolu 
+perfers
+
+Bjorn also suggested to take this one as optimization addition to others.
+
+Anyway, just the order in this patch list, the same result after applied.
+
+to solve customer issue, this one is needed.
+
+
+Thanks,
+
+Ethan
+
+>
+>> Fixes: 6f7db75e1c46 ("iommu/vt-d: Add second level page table 
+>> interface")
+>> Tested-by: Haorong Ye <yehaorong@bytedance.com>
+>> Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
+>> ---
+>>   drivers/iommu/intel/pasid.c | 3 +++
+>>   1 file changed, 3 insertions(+)
+>>
+>> diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
+>> index 3239cefa4c33..953592125e4a 100644
+>> --- a/drivers/iommu/intel/pasid.c
+>> +++ b/drivers/iommu/intel/pasid.c
+>> @@ -214,6 +214,9 @@ devtlb_invalidation_with_pasid(struct intel_iommu 
+>> *iommu,
+>>       if (!info || !info->ats_enabled)
+>>           return;
+>>   +    if (pci_dev_is_disconnected(to_pci_dev(dev)))
+>> +        return;
+>> +
+>>       sid = info->bus << 8 | info->devfn;
+>>       qdep = info->ats_qdep;
+>>       pfsid = info->pfsid;
+>
 
