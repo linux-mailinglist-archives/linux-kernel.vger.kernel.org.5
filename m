@@ -1,86 +1,105 @@
-Return-Path: <linux-kernel+bounces-44245-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44246-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 819E0841F49
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:22:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 294AB841F4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:23:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3536C288780
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:22:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C4CC1C24BDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:23:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CB6E59B7C;
-	Tue, 30 Jan 2024 09:22:43 +0000 (UTC)
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5EAC59B7C;
+	Tue, 30 Jan 2024 09:23:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="XiSz3zCO"
+Received: from mail-lj1-f201.google.com (mail-lj1-f201.google.com [209.85.208.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 346B85821B;
-	Tue, 30 Jan 2024 09:22:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A20659148
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:22:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706606562; cv=none; b=NjAPDwDYJo3+HnXHOERcC6yPHpnJ917gBKAYjXWfZk0NcRtCfLYw4zsB2FAuiv6bh203rsAkwrC7F/qxLZPBM48mutuqq1TW4RlH8MxM2/6XcETGEKfpzR9FkunGkd9v9kq26pTC386gH+/cpKuVFOWZPYXRPJmrHm0c3gRZtHE=
+	t=1706606580; cv=none; b=a6+9aLqjz7gzh/PJsUF4+2upw6Y6DkpqVYY89E2k3fQebXUmI3MssWJ3TlGgGvBC7M6V3kypoljNGnSUnvroGBX2fUpwpsXwcgArcSYjMKStOFPkfwzI6/QkFXTuWMDRLl1P9nZN+Ftwqw91NMsfFW/96PpPUuwze3GLEDxE9KI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706606562; c=relaxed/simple;
-	bh=3FaXiBg+ttcHCxyhLX5SxGC4C48vfhGTHfFGfydFHHo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B+fg6OZO++XpT5YLwo+whxBJVw2WDBFvFFY96YZkh5hpLEHc+qRGIXt8dk6rx8JqqnPkVKhEBfEV5xJiUBjRWNQyuiuB+UmswiBMetwIhbpIE0rm2lNq0sKzh09rvLC/HKwI4Gpum5JTbe8Pb/JzdqeGYYAK0KmlrGzL4W/zJv0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a271a28aeb4so449809766b.2;
-        Tue, 30 Jan 2024 01:22:41 -0800 (PST)
+	s=arc-20240116; t=1706606580; c=relaxed/simple;
+	bh=u8E/DAzdM4BDv+M4rE/6UY3tXIFTWYYORwwsXK8NW1Q=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=ii0S0uu0A6VF3b/9+tn+/YFDwDxAF8WH2qPYV9OeL6//8KJdNsLdwl+0wL6vFKPWASVEr7qzYf5wwSeh2/xduDcdazgKN/OSRUPAgIut9LVWgrlUokZ9UCt86Iqs7H427cZ4xEbrhsMZ3oMVit9T9gCOuwX6QvZHVlGO7uqIofk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=XiSz3zCO; arc=none smtp.client-ip=209.85.208.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
+Received: by mail-lj1-f201.google.com with SMTP id 38308e7fff4ca-2cf3f998869so33128031fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:22:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706606576; x=1707211376; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OqLMO+WcsA+qHzDqK7CtF5QEfkhWOqOfu9v7+ZVhskE=;
+        b=XiSz3zCOefqwkTmBq9+h/pKYiuDQ0oDreYkg4yBCyqFFPH75qp8Rj1i17gpjnW33uD
+         9Y9G6Mn+ClJsYXQMWxVlGhjjoarsQgiTKM+7O6uOBPTKXQ7i/Hh8ejd0h257J/THo0aE
+         nfhVRUHy+5Zyzhuu19vH+27txyM6fLmjqktikAYqiD3bHuVy+ZKUaMBkCbop34FeA8P3
+         HJFfeE28XAK0BUWXR+VUajgSwYogu2eANY3O7OM5QvDw9cO8JN3nnrkOd45k8ZpWN7dA
+         3TQlgsxUfShCe4ruqS/8KujqPmNkwqJIW/TbcdHW6rWwu2Tm9dZq1Qk8abMf8ay09UNk
+         lOSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706606559; x=1707211359;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CdKd23f1J6yGmBgl+M5aVLp5kmWUlm4oxH8bB0nJi6k=;
-        b=vzarZfHNQtj1FjJ+lNilK1LFuoRXvt6a5OHaeSuYnbCDv4Sv/2zywVwq5OOnCdy9db
-         kcnX3FOPCgaGwJyNVahjgbunIgL1dbsNgAM26L1q1opIjwR024kaAwM2Dxnfn86OfrG8
-         lTNYam3vzHgfyy9VsDJkP7Vmoz4F4qtU93JU8umlurbOeh6rlE+RDTWEB1vLGvOc5pbn
-         WGu2Vag4GCIPmnzddBHCUe42ZQoZWD9TdMrIsDuvf62euHZeZWsvh4PDEhJi5YUZInZ8
-         eY5InSuF655eHRGMGASju0TdbcHm9QpJz4+UmQRWKTFDVqYH3GWNNUB9qfCd4jxR8WnX
-         116w==
-X-Gm-Message-State: AOJu0Yx7VIFOGlbrAWRKLigEGEBVn7L4H5m6PwgxCyxFXy/c6GHL1l37
-	ZHldraKkmuYuvuw2WtWMkqslNtZLgfAdKL7IWr60ja+cBoXaWPOn
-X-Google-Smtp-Source: AGHT+IE+mGmGxjygvwBRDOJm7IEcs8uZLlvzYKx1CiWSGHAdIlcYcKjfXBgTFYfKS+qB7I/AwI4VAQ==
-X-Received: by 2002:a17:906:1d03:b0:a35:499b:9644 with SMTP id n3-20020a1709061d0300b00a35499b9644mr5901234ejh.15.1706606559292;
-        Tue, 30 Jan 2024 01:22:39 -0800 (PST)
-Received: from gmail.com (fwdproxy-cln-017.fbsv.net. [2a03:2880:31ff:11::face:b00c])
-        by smtp.gmail.com with ESMTPSA id mc4-20020a170906eb4400b00a338fedb9ebsm4936377ejb.54.2024.01.30.01.22.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 01:22:39 -0800 (PST)
-Date: Tue, 30 Jan 2024 01:22:37 -0800
-From: Breno Leitao <leitao@debian.org>
-To: Matthew Wood <thepacketgeek@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 2/8] net: netconsole: move netconsole_target
- config_item to config_group
-Message-ID: <Zbi/3Z/a/PCYha0W@gmail.com>
-References: <20240126231348.281600-1-thepacketgeek@gmail.com>
- <20240126231348.281600-3-thepacketgeek@gmail.com>
+        d=1e100.net; s=20230601; t=1706606576; x=1707211376;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OqLMO+WcsA+qHzDqK7CtF5QEfkhWOqOfu9v7+ZVhskE=;
+        b=VLRrvyqGpSs2d/JX2id46lCAY8I6aKK7B6PVV4kYVA8R4UWUv5jX7anhB3k/qWJYLg
+         veBay3pg172wk7tpvDDlQ0j4bWNAmFzMkNj7HmhPO1ZdU1/Adtb7dvzMv71RhIPb3n2o
+         B6mS2b0xED7bdF6xED+XYX/R194K7YWwJ5rgsTCUKBrZHr3y0MFmwMZY7aEES1RFERUF
+         zgqDzdHmX7t+IsoWlkeJ0L3TVTw/JB3t73Y+IG7JYjbul2SapJIlPozHaTJHhY6Aw2C+
+         CX9Sq9U+K58M2oFVm9l6tDqGRMEgKH8VYb+RxoVtPpfWhpOXyKGTMzg0T0CNvvQUD13z
+         gxxg==
+X-Gm-Message-State: AOJu0YyaQf18O+rPlfzAtDjesigTXnKi8hYReteEIxKdVSSxvGddpJPj
+	1OyANTUiEjK98sswdsgeK3/HSRhnIDJr2iyqwacIOmZEFDn/q3+BgbMAwiBwt+F+1DpBDW544KH
+	eZJ32m1BNy/PJJQ==
+X-Google-Smtp-Source: AGHT+IF87NQ812vMFotO2i42XCkp9U2cUqOajgaKofrGlkuAmbQh0g7jvgwQO8Z70Yi76a7LPw7Yradv/DUgloU=
+X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
+ (user=aliceryhl job=sendgmr) by 2002:a2e:a370:0:b0:2cf:3298:3ddc with SMTP id
+ i16-20020a2ea370000000b002cf32983ddcmr10644ljn.7.1706606576260; Tue, 30 Jan
+ 2024 01:22:56 -0800 (PST)
+Date: Tue, 30 Jan 2024 09:22:52 +0000
+In-Reply-To: <20240123150112.124084-1-kernel@valentinobst.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240126231348.281600-3-thepacketgeek@gmail.com>
+Mime-Version: 1.0
+References: <20240123150112.124084-1-kernel@valentinobst.de>
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+Message-ID: <20240130092252.1610582-1-aliceryhl@google.com>
+Subject: Re: [PATCH v2 00/12] rust: kernel: documentation improvements
+From: Alice Ryhl <aliceryhl@google.com>
+To: kernel@valentinobst.de
+Cc: alex.gaynor@gmail.com, fraunhofer@valentinobst.de, 
+	linux-kernel@vger.kernel.org, ojeda@kernel.org, 
+	rust-for-linux@vger.kernel.org, wedsonaf@gmail.com, 
+	Alice Ryhl <aliceryhl@google.com>
+Content-Type: text/plain; charset="utf-8"
 
-On Fri, Jan 26, 2024 at 03:13:37PM -0800, Matthew Wood wrote:
-> In order to support a nested userdata config_group in later patches,
-> use a config_group for netconsole_target instead of a
-> config_item. It's a no-op functionality-wise, since
-> config_group maintains all features of a config_item via the cg_item
-> member.
-> 
-> Signed-off-by: Matthew Wood <thepacketgeek@gmail.com>
+Valentin Obst <kernel@valentinobst.de> writes:
+> This patch set aims to make small improvements to the documentation of
+> the kernel crate. It engages in a few different activities:
+> - fixing trivial typos (commit #1),
+> - updating code examples to better reflect an idiomatic coding style
+>   (commits #2,6),
+> - increasing the consistency within the crate's documentation as a whole
+>   (commits #3,5,7,8,9,11,12),
+> - adding more intra-doc links as well as srctree-relative links to C
+>   header files (commits #4,10).
 
-Reviewed-by: Breno Leitao <leitao@debian.org>
+I left one comment [1] on the last patch. With that fixed, you may add:
+
+Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+
+to all of the patches.
+
+(I responded on v1 by accident, but it was v2 that I have reviewed.)
+
+[1]: https://lore.kernel.org/rust-for-linux/CAH5fLghSaorRgDDuqNCN-BhQ86ysX96b=nKM_cZAN0_E6Ai04A@mail.gmail.com/
 
