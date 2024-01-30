@@ -1,173 +1,177 @@
-Return-Path: <linux-kernel+bounces-43997-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43999-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 419E6841BFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:36:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FD8B841C04
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 07:37:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AC4B8B22516
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 06:36:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BAFFF287BEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 06:37:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4974E383A8;
-	Tue, 30 Jan 2024 06:36:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D9243D393;
+	Tue, 30 Jan 2024 06:37:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2r8m4z+s"
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="INM8781O"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 131924C61
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 06:36:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F8B539FC1;
+	Tue, 30 Jan 2024 06:37:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706596569; cv=none; b=gU0rChmFx0xLAjMubJ0EQCc2rsJhBpLXAceK61rMcJVDZv5qIT+zkPKwiYvgpnrS1zxMIyJPbOVjRSPMPgx5sXdqzbPJSF6G4j09/WrWI/USZb65guJ6VmPLXq6PZItNf1eCK1UkilQBchdg7IE3qPObOBayyLCubppz7YrdvNo=
+	t=1706596635; cv=none; b=Ir9RGd+319rebbwkoq3QT0QmOaJecIgokIGPwldQrPbBL6MmGuSIRSTZwQqxgmT+BMzuEwLsj6+BwotXGkxxDQkT9DfjZkr/u5GbiUtH6qpwODJdOh77aQfv5EaHkI+B8xqZIr9KjDIa2p1Er2WQFu9eHtH2JI6K0TdmU2AbfWI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706596569; c=relaxed/simple;
-	bh=LGFgozpDpNff0v5K6NHEQYxTIsH7ytp7gB/Q2V+8pwE=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=kdBfuBehwWIUcC5kDXFEKoYrZuleUIKEMk66ucXUDtZu3I/dXUeGpkwVTnCqQqkImI54hzkTHErOmNJIxPjeWCLPfPQ0pW2NmJwlulg5O6uLMlyEx0kfKlkAWX8EQTnaAn6X9E1BHovvLbLFLl+UToz7LxF3ciUNXNZ86xWKHtY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--avagin.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2r8m4z+s; arc=none smtp.client-ip=209.85.216.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--avagin.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-294cb63fda2so1384178a91.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 22:36:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706596567; x=1707201367; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=MVXjYaU74UNiN/jcBg4R2XESl1frZVjMD5rXT/kNyBk=;
-        b=2r8m4z+skAST6nLMEa3E3j7igjK5/Q83MopXuF+KxO5a26+yU8a4hfODeYTP4NeSEV
-         C0MdHbOhkT+o1kH7bTeujhSES6x2t99Qb4m5tuTcc/v7ezCxFZ1rTB7dzCGz2wlniGI0
-         HyWAIl/MhMnUieLpEv2RABIiKAajMX6IMzL4hny9QbtFWGJYL7R/AQ9v6SIN2v4JaH+f
-         BWIpP+08uuJEBvCJoC9p1zB3805vJdYhRTjH9Ohq5cddG1mbOUzkY5OJJnRXUlcZhCvz
-         MFB1wEebGrr8meQzPo2V2hHV4NO5/QZ8fECG+0maR1ZbAHbYwG7F9PyUmrCwwq1cOtl6
-         v4Lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706596567; x=1707201367;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MVXjYaU74UNiN/jcBg4R2XESl1frZVjMD5rXT/kNyBk=;
-        b=oYtWlRqR6GDWGkCjW8UhWce24vu/iatHHG2IoDlsBwdHAKq1w5tWw30kMpWujHpqwX
-         mPypIenEJGxX1D4imF8JZ6QZ9eIQ/RUczOvesyG4FKXRqk5FJQyNfMol0jxdCxexyzaX
-         2zQnMgbTCkB76dbGGN+UITPhOCTX2JFPAEnfPfTCkz9da/juV0EjNWYyWc5c0UX7sKa9
-         sfSEu9MF0dLAoyr6FOEvgZRSzRqApm8OlD7F/FnOqAdauIaY9NggBQ3hh3lrItZmbgfU
-         Ts1MCSLeyF7B9+E/dvp5bsMmUFxinCwak/RLxEZRXreEETJfp2Rt68Fc3zHI282rKwDa
-         qM4Q==
-X-Gm-Message-State: AOJu0YyD+z8hWbjDP+QXk975zmEce/egtX/iOsii0/kdWB8FETuJl1Wz
-	WllKOgVZto4xyJ2xCBk7V7LyByYS7sItqXDo/8M8v3BMRolI3wwWcC3RQj/UrLey7LpJEqtkabm
-	4OA==
-X-Google-Smtp-Source: AGHT+IH9QsHcLju9rhS/Xko7JDx+IZhdnG6BOk+xYLW5y+ECXV/nzPwAk88jdBnoKJzXf4+k6aXBpVi7ouM=
-X-Received: from avagin.kir.corp.google.com ([2620:0:1008:10:512c:bd37:9d9b:405e])
- (user=avagin job=sendgmr) by 2002:a17:903:34c6:b0:1d8:fb04:ac78 with SMTP id
- ml6-20020a17090334c600b001d8fb04ac78mr7357plb.10.1706596567301; Mon, 29 Jan
- 2024 22:36:07 -0800 (PST)
-Date: Mon, 29 Jan 2024 22:36:03 -0800
+	s=arc-20240116; t=1706596635; c=relaxed/simple;
+	bh=ocd7CtyJUXOYKX8nrVVCi4rWZbk47Swv1h3/8sjcQWE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NnqmsPat8YfwL9llB4jYNdU3DLnG2tIxf+L7RCkJQzv1EiGQNI/eNVxLNQPoJkg66tZGdx0Vi8LmtiUMkAt5H1c1Ald3fvIE6yEStNRoqxCSHjR98DDTeiPyKkyVNTy/DvL1E2/TmgDITDYAVlUPebPCHstkridyAc5TQh8FNUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=INM8781O; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 742B2C43390;
+	Tue, 30 Jan 2024 06:37:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706596635;
+	bh=ocd7CtyJUXOYKX8nrVVCi4rWZbk47Swv1h3/8sjcQWE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=INM8781OMSNPsB1j6nBqzZNn6KnUY8X8fVHLAXqjAuich3nvI2Et9oIypWnMcfIJB
+	 Q8t8MHPvFqGfo78UPnYkTVA2xITj9C30Q3M0+qe/YJAVnoweXAbsb7o5lGF2Fz/3zB
+	 BRyHefHvCeOgg1I1PDiKjrvWGj+l50QzBr/WgygEuf778ujcpjx3++4elxsdMAID/M
+	 V0a6jgzGsXqwl2FkytcCq7/v2AizXmVGD9uFSQXU+y6v7Qdo9SxYSMiL3XdR17fQRk
+	 wpoiTikH7tfNVtcvipdR/jZSPK0tRltd3A9u0fBaSabom7d99RxHLBI7n1MxkEGrQ+
+	 zxWdx1LqXBzsw==
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5101f2dfdadso6200892e87.2;
+        Mon, 29 Jan 2024 22:37:15 -0800 (PST)
+X-Gm-Message-State: AOJu0Yw7JZSFkb9gv1ivRblsZKKdMgwQQB8cokfMcgvSlMA6ed+SR1AQ
+	nMnYg5KDlLt0NIomI5KrJ1ydFIS4csMKOr4UOcoJrBikjotXmBVFHntKt9ZrTT4RljFTSdk0UZa
+	or+YQZmbvO04mUkQGeVQIuLQXOHs=
+X-Google-Smtp-Source: AGHT+IHcm0+jtj+r9oSmYfrZiBtnwQsEY0Ta32XhNMfT22BCmdEtq9D40hDq6QRns2586neW8SNqBOvzuNTkaIUjfgw=
+X-Received: by 2002:ac2:4c34:0:b0:511:19b0:3f23 with SMTP id
+ u20-20020ac24c34000000b0051119b03f23mr636305lfq.44.1706596633609; Mon, 29 Jan
+ 2024 22:37:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-Message-ID: <20240130063603.3392627-1-avagin@google.com>
-Subject: [PATCH v2 RESEND] x86/fpu: call fault_in_readable() for the entire
- xsave buffer
-From: Andrei Vagin <avagin@google.com>
-To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Andrei Vagin <avagin@google.com>, Dave Hansen <dave.hansen@intel.com>, 
-	stable@vger.kernel.org, Konstantin Bogomolov <bogomolov@google.com>
+MIME-Version: 1.0
+References: <20231228125553.2697765-1-yukuai1@huaweicloud.com> <20231228125553.2697765-4-yukuai1@huaweicloud.com>
+In-Reply-To: <20231228125553.2697765-4-yukuai1@huaweicloud.com>
+From: Song Liu <song@kernel.org>
+Date: Mon, 29 Jan 2024 22:37:01 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW5ck33wdFznkpXzZmyW3ux3gCf-yhQnevdirjVJkmzmEA@mail.gmail.com>
+Message-ID: <CAPhsuW5ck33wdFznkpXzZmyW3ux3gCf-yhQnevdirjVJkmzmEA@mail.gmail.com>
+Subject: Re: [PATCH -next 3/3] md: use interruptible apis in idle/frozen_sync_thread()
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: yukuai3@huawei.com, neilb@suse.de, linux-raid@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Before this change, the expected size of the user space buffer was
-taken from fx_sw->xstate_size. fx_sw->xstate_size can be changed
-from user-space, so it is possible construct a sigreturn frame where:
+Hi,
 
- * fx_sw->xstate_size is smaller than the size required by valid bits in
-   fx_sw->xfeatures.
- * user-space unmaps parts of the sigrame fpu buffer so that not all of
-   the buffer required by xrstor is accessible.
+Sorry for the late reply.
 
-In this case, xrstor tries to restore and accesses the unmaped area
-which results in a fault. But fault_in_readable succeeds because buf +
-fx_sw->xstate_size is within the still mapped area, so it goes back and
-tries xrstor again. It will spin in this loop forever.
+The first two patches of the set look good, so I applied them to
+md-tmp-6.9 branch. However, this one needs a respin.
 
-Thomas suggested to pass fpstate->user_size into fault_in_readable,
-because it is the maximum size which can be touched by XRSTOR.
+On Thu, Dec 28, 2023 at 4:58=E2=80=AFAM Yu Kuai <yukuai1@huaweicloud.com> w=
+rote:
+>
+> From: Yu Kuai <yukuai3@huawei.com>
+>
+> Before refactoring idle and frozen from action_store, interruptible apis
+> is used so that hungtask warning won't be triggered if it takes too long
+> to finish idle/frozen sync_thread. So change to use interruptible apis.
 
-Cc: Dave Hansen <dave.hansen@intel.com>
-Cc: stable@vger.kernel.org
-Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-Reported-by: Konstantin Bogomolov <bogomolov@google.com>
-Fixes: fcb3635f5018 ("x86/fpu/signal: Handle #PF in the direct restore path")
-Signed-off-by: Andrei Vagin <avagin@google.com>
----
-v2: use fpstate->user_size instead of calculating a size of xstate
-buffer.
-resend: add stable@ and lkml@ to CC
+This paragraph is confusing. Please rephrase it.
 
- arch/x86/kernel/fpu/signal.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+>
+> In order not to make stop_sync_thread() more complicated, factor out a
+> helper prepare_to_stop_sync_thread() to replace stop_sync_thread().
+>
+> Also return error to user if idle/frozen_sync_thread() failed, otherwise
+> user will be misleaded.
 
-diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
-index 558076dbde5b..247f2225aa9f 100644
---- a/arch/x86/kernel/fpu/signal.c
-+++ b/arch/x86/kernel/fpu/signal.c
-@@ -274,12 +274,13 @@ static int __restore_fpregs_from_user(void __user *buf, u64 ufeatures,
-  * Attempt to restore the FPU registers directly from user memory.
-  * Pagefaults are handled and any errors returned are fatal.
-  */
--static bool restore_fpregs_from_user(void __user *buf, u64 xrestore,
--				     bool fx_only, unsigned int size)
-+static bool restore_fpregs_from_user(void __user *buf, u64 xrestore, bool fx_only)
- {
- 	struct fpu *fpu = &current->thread.fpu;
- 	int ret;
- 
-+	/* Restore enabled features only. */
-+	xrestore &= fpu->fpstate->user_xfeatures;
- retry:
- 	fpregs_lock();
- 	/* Ensure that XFD is up to date */
-@@ -309,7 +310,7 @@ static bool restore_fpregs_from_user(void __user *buf, u64 xrestore,
- 		if (ret != X86_TRAP_PF)
- 			return false;
- 
--		if (!fault_in_readable(buf, size))
-+		if (!fault_in_readable(buf, fpu->fpstate->user_size))
- 			goto retry;
- 		return false;
- 	}
-@@ -339,7 +340,6 @@ static bool __fpu_restore_sig(void __user *buf, void __user *buf_fx,
- 	struct user_i387_ia32_struct env;
- 	bool success, fx_only = false;
- 	union fpregs_state *fpregs;
--	unsigned int state_size;
- 	u64 user_xfeatures = 0;
- 
- 	if (use_xsave()) {
-@@ -349,17 +349,14 @@ static bool __fpu_restore_sig(void __user *buf, void __user *buf_fx,
- 			return false;
- 
- 		fx_only = !fx_sw_user.magic1;
--		state_size = fx_sw_user.xstate_size;
- 		user_xfeatures = fx_sw_user.xfeatures;
- 	} else {
- 		user_xfeatures = XFEATURE_MASK_FPSSE;
--		state_size = fpu->fpstate->user_size;
- 	}
- 
- 	if (likely(!ia32_fxstate)) {
- 		/* Restore the FPU registers directly from user memory. */
--		return restore_fpregs_from_user(buf_fx, user_xfeatures, fx_only,
--						state_size);
-+		return restore_fpregs_from_user(buf_fx, user_xfeatures, fx_only);
- 	}
- 
- 	/*
--- 
-2.43.0.429.g432eaa2c6b-goog
+s/misleaded/misled/
 
+>
+> Fixes: 130443d60b1b ("md: refactor idle/frozen_sync_thread() to fix deadl=
+ock")
+> Fixes: 8e8e2518fcec ("md: Close race when setting 'action' to 'idle'.")
+
+Please add more information about what is being fixed here, so that
+we can make a clear decision on whether the fix needs to be back
+ported to stable kernels.
+
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+>  drivers/md/md.c | 105 ++++++++++++++++++++++++++++++------------------
+>  1 file changed, 67 insertions(+), 38 deletions(-)
+>
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index 60f99768a1a9..9ea05de79fe4 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -4846,26 +4846,34 @@ action_show(struct mddev *mddev, char *page)
+>         return sprintf(page, "%s\n", type);
+>  }
+>
+> +static bool sync_thread_stopped(struct mddev *mddev, int *sync_seq)
+
+I think we need a comment for this.
+
+> +{
+> +       if (!test_bit(MD_RECOVERY_RUNNING, &mddev->recovery))
+> +               return true;
+> +
+> +       if (sync_seq && *sync_seq !=3D atomic_read(&mddev->sync_seq))
+> +               return true;
+> +
+> +       return false;
+> +}
+> +
+>  /**
+> - * stop_sync_thread() - wait for sync_thread to stop if it's running.
+> + * prepare_to_stop_sync_thread() - prepare to stop sync_thread if it's r=
+unning.
+>   * @mddev:     the array.
+> - * @locked:    if set, reconfig_mutex will still be held after this func=
+tion
+> - *             return; if not set, reconfig_mutex will be released after=
+ this
+> - *             function return.
+> - * @check_seq: if set, only wait for curent running sync_thread to stop,=
+ noted
+> - *             that new sync_thread can still start.
+> + * @unlock:    whether or not caller want to release reconfig_mutex if
+> + *             sync_thread is not running.
+> + *
+> + * Return true if sync_thread is running, release reconfig_mutex and do
+> + * preparatory work to stop sync_thread, caller should wait for
+> + * sync_thread_stopped() to return true. Return false if sync_thread is =
+not
+> + * running, reconfig_mutex will be released if @unlock is set.
+>   */
+
+I found prepare_to_stop_sync_thread very hard to reason. Please try to
+rephrase the comment or refactor the code. Maybe it makes sense to put
+the following logic and its variations to a separate function:
+
+        if (prepare_to_stop_sync_thread(mddev, false)) {
+                wait_event(resync_wait, sync_thread_stopped(mddev, NULL));
+                mddev_lock_nointr(mddev);
+        }
+
+Thanks,
+Song
+
+> -static void stop_sync_thread(struct mddev *mddev, bool locked, bool chec=
+k_seq)
+> +static bool prepare_to_stop_sync_thread(struct mddev *mddev, bool unlock=
+)
+>  {
+> -       int sync_seq;
+
+[...]
 
