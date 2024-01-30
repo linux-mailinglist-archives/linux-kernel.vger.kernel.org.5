@@ -1,104 +1,195 @@
-Return-Path: <linux-kernel+bounces-44843-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3541842810
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:30:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF11984281C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:34:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF51928C34B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:30:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D401D1C20B14
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:34:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A24FE823D6;
-	Tue, 30 Jan 2024 15:30:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3359D82D85;
+	Tue, 30 Jan 2024 15:33:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qxur3Siw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="J1d9Ne19"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA009823A7
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 15:30:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A10A5823C9;
+	Tue, 30 Jan 2024 15:33:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706628603; cv=none; b=n9XNvloDQTyOrHrgfvstgrteBLJKOmKQcL+h2E/2lyQ7/kSd7QBkjgQlqRE3zVH40Dfn5pJWJSCzPOdLdE44TTSmHAJnoiADEaZOYIQfDdAlpNtVdFShS3MHgZ5FnSSpGUwfyMwJRKgNNUoiQhUOhriAko+nsXYHBpfkHAjG1/g=
+	t=1706628833; cv=none; b=qpnAyR+xlGbjigdElPlRe2XFsVJAPX2naiZk4FC0Y/CdeliuZgkcxvRpkWe6G48h6/zx9j53hdijbw/2X4NO3/fWEV+jgnrZld83HYEO8x/rfIH8c2Jv90/pCyjX5qZwpIUKN7bolApCGPVIzmsEzTMQR0g5oZc2PVKKm8ca9Hs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706628603; c=relaxed/simple;
-	bh=80jbZzlmEWIV6mLzBxKiN05mY7enQN9I6AWRUplkQ6w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QNki38YbUkeEx02vHX/SVwkKUnw7M9L/nys4p9V5x9wY9RkNJZzMGFHrK51jejvjk68K882JD1xir+HD2RvFop30itkqSmFlxrWBeisUUK6dGjC5CiWg1L4U0d4zhF2NdHw6m5Lco/A6hVBMbv6gSSwYimH+jMpY1vR/vMp9s5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qxur3Siw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D852AC433C7;
-	Tue, 30 Jan 2024 15:30:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706628602;
-	bh=80jbZzlmEWIV6mLzBxKiN05mY7enQN9I6AWRUplkQ6w=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Qxur3Siw7jzRJYmcS60JgXwxJb0Sdpt8yptfeZyt473WUWurFT5547UMYRNrzsSv4
-	 kINJKoosiEtOq4nv+Y5sphQWwQ90lMMMd4DGOXfpwpWA4RS/1kjSZqEMUTDu7I88/z
-	 7EHxZBUtMks6fxeOE82IGq6eDLiZ30mKRYoa0oMsL3fFnrZbH+Xi1l6zxExCYf7E4D
-	 2nbGglx/IO8CHkyuARQrf60Usr3x/P47ixVuln64dq7rBxUVX9qjKvu3tH1cShJBKx
-	 gXv5/d6jYohnF48mx2EvpgjgOiVVE3W4OYFoxlVDQVgYTZ8jSvx7SCVbEUh0mqEe4o
-	 97RzP5ah24olw==
-Date: Tue, 30 Jan 2024 16:29:59 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-	John Stultz <jstultz@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Eric Dumazet <edumazet@google.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-	Arjan van de Ven <arjan@infradead.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Rik van Riel <riel@surriel.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Sebastian Siewior <bigeasy@linutronix.de>,
-	Giovanni Gherdovich <ggherdovich@suse.cz>,
-	Lukasz Luba <lukasz.luba@arm.com>,
-	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>
-Subject: Re: [PATCH v10 18/20] timers: Implement the hierarchical pull model
-Message-ID: <ZbkV9wVxFhQxujb3@localhost.localdomain>
-References: <20240115143743.27827-1-anna-maria@linutronix.de>
- <20240115143743.27827-19-anna-maria@linutronix.de>
- <ZbJwol4QoSgz0QlH@lothringen>
- <877cjtcuv4.fsf@somnus>
+	s=arc-20240116; t=1706628833; c=relaxed/simple;
+	bh=nkm0OWHFuQWKYwZc1WEkbla4lt45LORU0WQDLLCTrX8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FTN828yswo2mlGM9HpteWocxZSUQXo1Q50BEChpVKfF4OlgLB6IBTtE7BJ9/4CG26cUNn/EhtL3J6R1gugxERV0yMiNiFAZeK3E24vmRsO1qWag5NUhwsAB+aRavDrRJXqzGX/vQeSLdmmIzTDLffMHAD1EPB8ZM92H1McPHiBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=J1d9Ne19; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706628832; x=1738164832;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=nkm0OWHFuQWKYwZc1WEkbla4lt45LORU0WQDLLCTrX8=;
+  b=J1d9Ne19A4LFXTKnCitwq93tpxnz9d8oXgrBENpCJ44yk1S0dbioAnLN
+   6CyUFLOsnp5z0ezptwgFQTwEfRdSEEsbOAQ2FJider9af8J+NkjfNira6
+   ngZDJ7D55lV9N44axbscd/javmXpZyjZgVOuuIKkzZh6z/pYUHcr2xzy9
+   zteSAvTiYidVODJxbWkHbBNSRpeGcTqlgZVY5SmR9ylGOoOWcE6yxIMCG
+   m50sYCFPjibiTIIWIhzxbJOSxdUhNk5YXUtaOX3MJkdjSghHV7gK4vGYV
+   gjJ3bsw9UAL87Ca82XRzx5XHgFJjFCpc0gLxCeAJd163G6fIB+uNoYk51
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="24786745"
+X-IronPort-AV: E=Sophos;i="6.05,230,1701158400"; 
+   d="scan'208";a="24786745"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 07:31:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,230,1701158400"; 
+   d="scan'208";a="22465315"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.93.16.217]) ([10.93.16.217])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 07:31:24 -0800
+Message-ID: <9da45a6a-a40b-4768-90d0-d7de674baec1@linux.intel.com>
+Date: Tue, 30 Jan 2024 23:31:22 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <877cjtcuv4.fsf@somnus>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v18 060/121] KVM: TDX: TDP MMU TDX support
+To: isaku.yamahata@intel.com
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+ erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+ Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+ chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
+References: <cover.1705965634.git.isaku.yamahata@intel.com>
+ <a47c5a9442130f45fc09c1d4ae0e4352054be636.1705965635.git.isaku.yamahata@intel.com>
+From: Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <a47c5a9442130f45fc09c1d4ae0e4352054be636.1705965635.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Le Sun, Jan 28, 2024 at 04:58:55PM +0100, Anna-Maria Behnsen a écrit :
-> Frederic Weisbecker <frederic@kernel.org> writes:
-> >> +
-> >> +			if (tmigr_check_lonely(topgroup))
-> >> +				return READ_ONCE(topgroup->next_expiry);
-> 
-> When I hand in tevt->global as a parameter, I'll need to compare the
-> first expiry of the toplevel group and the tevt->global value and return
-> the earlier expiry. Only a single child is active in top level, so it
-> might be that this CPU is the last active CPU in hierarchy.
-> 
-> I didn't check all the way to the top whether all groups are
-> 'lonely'. So when the top level group has only a single active child, it
-> is also possible that the child of the top level group has two active
-> children... Then a return of KTIME_MAX would be also a more precise
-> forecast.
-> 
-> This quick check is there to keep the overhead minimal when checking
-> whether it might be possible to go idle. So I don't know, if we should
-> add this additional check per level (which is pretty simple when using
-> group->parent for walking the hierarchy). What do you think?
 
-Not sure. Maybe if the tree never exceeds 3 levels (does it?) it's ok to
-do the walk?
 
-Thanks.
+On 1/23/2024 7:53 AM, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+>
+> Implement hooks of TDP MMU for TDX backend.  TLB flush, TLB shootdown,
+> propagating the change private EPT entry to Secure EPT and freeing Secure
+> EPT page. TLB flush handles both shared EPT and private EPT.  It flushes
+> shared EPT same as VMX.  It also waits for the TDX TLB shootdown.  For the
+> hook to free Secure EPT page, unlinks the Secure EPT page from the Secure
+> EPT so that the page can be freed to OS.
+>
+> Propagate the entry change to Secure EPT.  The possible entry changes are
+> present -> non-present(zapping) and non-present -> present(population).  On
+> population just link the Secure EPT page or the private guest page to the
+> Secure EPT by TDX SEAMCALL. Because TDP MMU allows concurrent
+> zapping/population, zapping requires synchronous TLB shoot down with the
+> frozen EPT entry.  It zaps the secure entry, increments TLB counter, sends
+> IPI to remote vcpus to trigger TLB flush, and then unlinks the private
+> guest page from the Secure EPT. For simplicity, batched zapping with
+> exclude lock is handled as concurrent zapping.  Although it's inefficient,
+> it can be optimized in the future.
+>
+> For MMIO SPTE, the spte value changes as follows.
+> initial value (suppress VE bit is set)
+> -> Guest issues MMIO and triggers EPT violation
+> -> KVM updates SPTE value to MMIO value (suppress VE bit is cleared)
+> -> Guest MMIO resumes.  It triggers VE exception in guest TD
+> -> Guest VE handler issues TDG.VP.VMCALL<MMIO>
+> -> KVM handles MMIO
+> -> Guest VE handler resumes its execution after MMIO instruction
+>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+>
+> ---
+> v18:
+> - rename tdx_sept_page_aug() -> tdx_mem_page_aug()
+> - checkpatch: space => tab
+>
+> v15 -> v16:
+> - Add the handling of TD_ATTR_SEPT_VE_DISABLE case.
+>
+> v14 -> v15:
+> - Implemented tdx_flush_tlb_current()
+> - Removed unnecessary invept in tdx_flush_tlb().  It was carry over
+>    from the very old code base.
+> ---
+>   arch/x86/kvm/mmu/spte.c    |   3 +-
+>   arch/x86/kvm/vmx/main.c    |  71 +++++++-
+>   arch/x86/kvm/vmx/tdx.c     | 342 +++++++++++++++++++++++++++++++++++++
+>   arch/x86/kvm/vmx/tdx.h     |   2 +-
+>   arch/x86/kvm/vmx/tdx_ops.h |   6 +
+>   arch/x86/kvm/vmx/x86_ops.h |   6 +
+>   6 files changed, 424 insertions(+), 6 deletions(-)
+[...]
+> +
+> +/*
+> + * TLB shoot down procedure:
+> + * There is a global epoch counter and each vcpu has local epoch counter.
+> + * - TDH.MEM.RANGE.BLOCK(TDR. level, range) on one vcpu
+> + *   This blocks the subsequenct creation of TLB translation on that range.
+> + *   This corresponds to clear the present bit(all RXW) in EPT entry
+> + * - TDH.MEM.TRACK(TDR): advances the epoch counter which is global.
+> + * - IPI to remote vcpus
+> + * - TDExit and re-entry with TDH.VP.ENTER on remote vcpus
+> + * - On re-entry, TDX module compares the local epoch counter with the global
+> + *   epoch counter.  If the local epoch counter is older than the global epoch
+> + *   counter, update the local epoch counter and flushes TLB.
+> + */
+> +static void tdx_track(struct kvm *kvm)
+> +{
+> +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
+> +	u64 err;
+> +
+> +	KVM_BUG_ON(!is_hkid_assigned(kvm_tdx), kvm);
+> +	/* If TD isn't finalized, it's before any vcpu running. */
+> +	if (unlikely(!is_td_finalized(kvm_tdx)))
+> +		return;
+> +
+> +	/*
+> +	 * tdx_flush_tlb() waits for this function to issue TDH.MEM.TRACK() by
+> +	 * the counter.  The counter is used instead of bool because multiple
+> +	 * TDH_MEM_TRACK() can be issued concurrently by multiple vcpus.
+> +	 */
+> +	atomic_inc(&kvm_tdx->tdh_mem_track);
+> +	/*
+> +	 * KVM_REQ_TLB_FLUSH waits for the empty IPI handler, ack_flush(), with
+> +	 * KVM_REQUEST_WAIT.
+> +	 */
+> +	kvm_make_all_cpus_request(kvm, KVM_REQ_TLB_FLUSH);
+> +
+> +	do {
+> +		/*
+> +		 * kvm_flush_remote_tlbs() doesn't allow to return error and
+> +		 * retry.
+> +		 */
+> +		err = tdh_mem_track(kvm_tdx->tdr_pa);
+> +	} while (unlikely((err & TDX_SEAMCALL_STATUS_MASK) == TDX_OPERAND_BUSY));
+
+Why the sequence of the code is different from the description of the 
+function.
+In the description, do the TDH.MEM.TRACK before IPIs.
+But in the code, do TDH.MEM.TRACK after IPIs?
+
+
+> +
+> +	/* Release remote vcpu waiting for TDH.MEM.TRACK in tdx_flush_tlb(). */
+> +	atomic_dec(&kvm_tdx->tdh_mem_track);
+> +
+> +	if (KVM_BUG_ON(err, kvm))
+> +		pr_tdx_error(TDH_MEM_TRACK, err, NULL);
+> +
+> +}
+> +
+[...]
+
 
