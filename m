@@ -1,199 +1,110 @@
-Return-Path: <linux-kernel+bounces-44100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44108-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED994841D51
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:14:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66350841D65
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 09:16:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E960B25717
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:13:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 226CC28FBA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 08:16:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCC445577A;
-	Tue, 30 Jan 2024 08:13:48 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C23D54730;
-	Tue, 30 Jan 2024 08:13:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 070A260B8C;
+	Tue, 30 Jan 2024 08:14:35 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A5F1605D8;
+	Tue, 30 Jan 2024 08:14:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706602428; cv=none; b=D9yB4jwcjVMAtZWRQIv7bjFaDTMuamtnb3SK47wrPx+IXNcEjqFA3NZQQ8sceKDRRjtxZ49be3yhU7aj4SKpFpI9LLjby6rY2n295R4v9u2s8pHJ8xxjWrwJiTj8e3Yvawk3LDgETbWlsLwRQcmqWYbzSH07TULboH5kpEe1uHs=
+	t=1706602474; cv=none; b=W7q1ijeZQs7R2y4m9m6lHn2FLdDG19nKSTQFJJT3lsSJdXthbGp06wISvjsWRlhzmwCWz+zldvz+Ac2cr2PEL9raqx4+aOvEUVdeCgKLYOzei5LHHydnq5wM/11LxXP2B2nGJinR6RyK7tPRaVNr3KIAI4/r0aYPUrdcDol3uGU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706602428; c=relaxed/simple;
-	bh=hoXZ+7t4/9iqisEcsZ0owVBriVlaMkcKhjK2xwCBTc8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GZ0jGYwfKAZL2NQYn3SplCk5VOQADeKkra8IID7LSy/HwRJ0fdZBhDzJi7iOv3iMRE15OxRr5HEqzvNuooEeIwktqnpnJazHIZLa3JYD+UOe2CSRbuI3zOlLjbJNhFfxHERfehMlBexHyPoxg+nT7Xc1TaNVUa43VMcRrmu91Hw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 02A1DDA7;
-	Tue, 30 Jan 2024 00:14:28 -0800 (PST)
-Received: from [10.57.79.54] (unknown [10.57.79.54])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2A6013F738;
-	Tue, 30 Jan 2024 00:13:39 -0800 (PST)
-Message-ID: <40e87333-4da9-4497-a117-9885986e376a@arm.com>
-Date: Tue, 30 Jan 2024 08:13:38 +0000
+	s=arc-20240116; t=1706602474; c=relaxed/simple;
+	bh=2X8SIWoitl+VKVgntwPYWRKMalIKKPmqONWJZDOtlBc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WbJPcDi3+Rxogbpg/x45k4W92TFWQzNcN6ynHS6GcUq9D+1/45BN4XAZDvn2+5RDuXyN8EL8zeomHhPcjYhXJvCb+eVgdALMuGRnlfWgL9LslC90IkCr4Ov/mpA9l9UHqgaD5S2sKooqV/oi3dWm4zSwcd660XPxVRwDUou1ekU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 8038e5d20ca848c3927a7be67658d64c-20240130
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:f1c4e82b-a40f-43e6-aa2a-683b630f6be4,IP:10,
+	URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
+	ION:release,TS:-10
+X-CID-INFO: VERSION:1.1.35,REQID:f1c4e82b-a40f-43e6-aa2a-683b630f6be4,IP:10,UR
+	L:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:-10
+X-CID-META: VersionHash:5d391d7,CLOUDID:5f136983-8d4f-477b-89d2-1e3bdbef96d1,B
+	ulkID:240130161419ZQQNJ2TK,BulkQuantity:0,Recheck:0,SF:24|17|19|44|66|38|1
+	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
+	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 8038e5d20ca848c3927a7be67658d64c-20240130
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
+	(envelope-from <chentao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 409578972; Tue, 30 Jan 2024 16:14:17 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+	by mail.kylinos.cn (NSMail) with SMTP id 8CD10E000EBB;
+	Tue, 30 Jan 2024 16:14:17 +0800 (CST)
+X-ns-mid: postfix-65B8AFD9-367288681
+Received: from kernel.. (unknown [172.20.15.213])
+	by mail.kylinos.cn (NSMail) with ESMTPA id 1A722E000EB9;
+	Tue, 30 Jan 2024 16:14:13 +0800 (CST)
+From: Kunwu Chan <chentao@kylinos.cn>
+To: steffen.klassert@secunet.com,
+	herbert@gondor.apana.org.au,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Kunwu Chan <chentao@kylinos.cn>
+Subject: [PATCH ipsec-next] xfrm: Simplify the allocation of slab caches in xfrm_policy_init
+Date: Tue, 30 Jan 2024 16:14:11 +0800
+Message-Id: <20240130081411.58246-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/9] mm/memory: factor out zapping of present pte into
- zap_present_pte()
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
- Nick Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
- Michael Ellerman <mpe@ellerman.id.au>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
- linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-s390@vger.kernel.org
-References: <20240129143221.263763-1-david@redhat.com>
- <20240129143221.263763-2-david@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20240129143221.263763-2-david@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
-On 29/01/2024 14:32, David Hildenbrand wrote:
-> Let's prepare for further changes by factoring out processing of present
-> PTEs.
-> 
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->  mm/memory.c | 92 ++++++++++++++++++++++++++++++-----------------------
->  1 file changed, 52 insertions(+), 40 deletions(-)
-> 
-> diff --git a/mm/memory.c b/mm/memory.c
-> index b05fd28dbce1..50a6c79c78fc 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -1532,13 +1532,61 @@ zap_install_uffd_wp_if_needed(struct vm_area_struct *vma,
->  	pte_install_uffd_wp_if_needed(vma, addr, pte, pteval);
->  }
->  
-> +static inline void zap_present_pte(struct mmu_gather *tlb,
-> +		struct vm_area_struct *vma, pte_t *pte, pte_t ptent,
-> +		unsigned long addr, struct zap_details *details,
-> +		int *rss, bool *force_flush, bool *force_break)
-> +{
-> +	struct mm_struct *mm = tlb->mm;
-> +	bool delay_rmap = false;
-> +	struct folio *folio;
+commit 0a31bd5f2bbb ("KMEM_CACHE(): simplify slab cache creation")
+introduces a new macro.
+Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
+to simplify the creation of SLAB caches.
 
-You need to init this to NULL otherwise its a random value when calling
-should_zap_folio() if vm_normal_page() returns NULL.
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+---
+ net/xfrm/xfrm_policy.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-> +	struct page *page;
-> +
-> +	page = vm_normal_page(vma, addr, ptent);
-> +	if (page)
-> +		folio = page_folio(page);
-> +
-> +	if (unlikely(!should_zap_folio(details, folio)))
-> +		return;
-> +	ptent = ptep_get_and_clear_full(mm, addr, pte, tlb->fullmm);
-> +	arch_check_zapped_pte(vma, ptent);
-> +	tlb_remove_tlb_entry(tlb, pte, addr);
-> +	zap_install_uffd_wp_if_needed(vma, addr, pte, details, ptent);
-> +	if (unlikely(!page)) {
-> +		ksm_might_unmap_zero_page(mm, ptent);
-> +		return;
-> +	}
-> +
-> +	if (!folio_test_anon(folio)) {
-> +		if (pte_dirty(ptent)) {
-> +			folio_mark_dirty(folio);
-> +			if (tlb_delay_rmap(tlb)) {
-> +				delay_rmap = true;
-> +				*force_flush = true;
-> +			}
-> +		}
-> +		if (pte_young(ptent) && likely(vma_has_recency(vma)))
-> +			folio_mark_accessed(folio);
-> +	}
-> +	rss[mm_counter(folio)]--;
-> +	if (!delay_rmap) {
-> +		folio_remove_rmap_pte(folio, page, vma);
-> +		if (unlikely(page_mapcount(page) < 0))
-> +			print_bad_pte(vma, addr, ptent, page);
-> +	}
-> +	if (unlikely(__tlb_remove_page(tlb, page, delay_rmap))) {
-> +		*force_flush = true;
-> +		*force_break = true;
-> +	}
-> +}
-> +
->  static unsigned long zap_pte_range(struct mmu_gather *tlb,
->  				struct vm_area_struct *vma, pmd_t *pmd,
->  				unsigned long addr, unsigned long end,
->  				struct zap_details *details)
->  {
-> +	bool force_flush = false, force_break = false;
->  	struct mm_struct *mm = tlb->mm;
-> -	int force_flush = 0;
->  	int rss[NR_MM_COUNTERS];
->  	spinlock_t *ptl;
->  	pte_t *start_pte;
-> @@ -1565,45 +1613,9 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
->  			break;
->  
->  		if (pte_present(ptent)) {
-> -			unsigned int delay_rmap;
-> -
-> -			page = vm_normal_page(vma, addr, ptent);
-> -			if (page)
-> -				folio = page_folio(page);
-> -
-> -			if (unlikely(!should_zap_folio(details, folio)))
-> -				continue;
-> -			ptent = ptep_get_and_clear_full(mm, addr, pte,
-> -							tlb->fullmm);
-> -			arch_check_zapped_pte(vma, ptent);
-> -			tlb_remove_tlb_entry(tlb, pte, addr);
-> -			zap_install_uffd_wp_if_needed(vma, addr, pte, details,
-> -						      ptent);
-> -			if (unlikely(!page)) {
-> -				ksm_might_unmap_zero_page(mm, ptent);
-> -				continue;
-> -			}
-> -
-> -			delay_rmap = 0;
-> -			if (!folio_test_anon(folio)) {
-> -				if (pte_dirty(ptent)) {
-> -					folio_mark_dirty(folio);
-> -					if (tlb_delay_rmap(tlb)) {
-> -						delay_rmap = 1;
-> -						force_flush = 1;
-> -					}
-> -				}
-> -				if (pte_young(ptent) && likely(vma_has_recency(vma)))
-> -					folio_mark_accessed(folio);
-> -			}
-> -			rss[mm_counter(folio)]--;
-> -			if (!delay_rmap) {
-> -				folio_remove_rmap_pte(folio, page, vma);
-> -				if (unlikely(page_mapcount(page) < 0))
-> -					print_bad_pte(vma, addr, ptent, page);
-> -			}
-> -			if (unlikely(__tlb_remove_page(tlb, page, delay_rmap))) {
-> -				force_flush = 1;
-> +			zap_present_pte(tlb, vma, pte, ptent, addr, details,
-> +					rss, &force_flush, &force_break);
-> +			if (unlikely(force_break)) {
->  				addr += PAGE_SIZE;
->  				break;
->  			}
+diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
+index 7351f32052dc..6ac97e0b66cb 100644
+--- a/net/xfrm/xfrm_policy.c
++++ b/net/xfrm/xfrm_policy.c
+@@ -4025,10 +4025,7 @@ static int __net_init xfrm_policy_init(struct net =
+*net)
+ 	int dir, err;
+=20
+ 	if (net_eq(net, &init_net)) {
+-		xfrm_dst_cache =3D kmem_cache_create("xfrm_dst_cache",
+-					   sizeof(struct xfrm_dst),
+-					   0, SLAB_HWCACHE_ALIGN|SLAB_PANIC,
+-					   NULL);
++		xfrm_dst_cache =3D KMEM_CACHE(xfrm_dst, SLAB_HWCACHE_ALIGN | SLAB_PANI=
+C);
+ 		err =3D rhashtable_init(&xfrm_policy_inexact_table,
+ 				      &xfrm_pol_inexact_params);
+ 		BUG_ON(err);
+--=20
+2.39.2
 
 
