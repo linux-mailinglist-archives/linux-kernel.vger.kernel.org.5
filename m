@@ -1,132 +1,478 @@
-Return-Path: <linux-kernel+bounces-44722-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44723-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5A31842684
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:56:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96753842688
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 14:57:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9264828E230
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:56:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 43FC8B23613
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 13:57:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B0956D1CB;
-	Tue, 30 Jan 2024 13:56:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V7hZ76Vk"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8A856D1CC;
+	Tue, 30 Jan 2024 13:57:02 +0000 (UTC)
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4AFE6D1B1;
-	Tue, 30 Jan 2024 13:56:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DCD46BB3D
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 13:56:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706622963; cv=none; b=OqqpW28sy++GOEiS11UaMlyU4pPE2QGFNy8VOf4EBAl/mz5HHZ257gIvEX22hEQlytnLZmbVmaZPb2AqnpS8O8E/o2Zjw850qAm0IBQxxSLdtII/WZE0xlnoeGbJyA9VYNWk42WAPMoKVWs0ylwT23vdtiGRgb2I5xiXGJJBFWY=
+	t=1706623022; cv=none; b=InIk7PpxmDl1Oi7G/Ti7Xb0l73vfMPGhMZZh8eHGXtmU9/Cjs7LqgmlTGj9E3Z05bPlSpP4dap7zR/krmSO/HaWpt2ZI+I7sIONMLjIGP7x4doLMH4YTU/HXOAdZi4795yZ19bbEqvcm3+c5iGF6MhAj2s9SGl93V7WbEIx/F6M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706622963; c=relaxed/simple;
-	bh=6kOSaJfqPSlJRouPhGEV8c/CvXVYQ46pRD4QgFVwYZQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RQYGExTfZfU+6qYSRZzu21tAbbmWh63iCIpzM33q51QghetSP3jASGSW6dYAunNEeWl9EWOW3LRZPZdL5Dv0ZVBIzXsfLL56gqha/txYpkMsmeaHHzLu2B5LTcG0bgwkfZK3CypfXHycofuxoMKd2JLpTSe0UKHnJrzrpxqANr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V7hZ76Vk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C33BC43394;
-	Tue, 30 Jan 2024 13:56:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706622963;
-	bh=6kOSaJfqPSlJRouPhGEV8c/CvXVYQ46pRD4QgFVwYZQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=V7hZ76Vk1Em6icF9OhasDsoYYK0WkRj27XOXCvffrY+h0S43BNXsnVZHHr8QPcJLe
-	 VCpq5YoIKKVUFVOk+H+A6YsGej/kVNfOeuYD733hXkemmB0PwUHGM4bTCCzxfDB/2d
-	 5RKfiw0zKLq6/Wd40VX36BOS2U3fQewkQcgFL29/YcSptsW3MGY/ggN4M6YakTgzqD
-	 buryrKgyDY40/8Qgd3hnVkNFEk6/BMN7PU71pG24DTEHlf2TptqY21xaLSRf32b9ii
-	 aq7VnBh3ehIwHnzigdXKleeopI2C2qdL3IlzQ1OL9KLogpqyO0e5ETVJF1bkG9VbLR
-	 qMXEWfPsFtt5g==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-	id 4E31940441; Tue, 30 Jan 2024 10:56:00 -0300 (-03)
-Date: Tue, 30 Jan 2024 10:56:00 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Kan Liang <kan.liang@intel.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: perf test hybrid failing on 14700K
-Message-ID: <Zbj_8KkXWnCJB-8M@kernel.org>
-References: <ZYbm5L7tw7bdpDpE@kernel.org>
- <CAP-5=fWVQ-7ijjK3-w1q+k2WYVNHbAcejb-xY0ptbjRw476VKA@mail.gmail.com>
+	s=arc-20240116; t=1706623022; c=relaxed/simple;
+	bh=KUtuEPKE8W+a7u1isQG+ftW5w7zrhVfncCaPiRBM1KQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=AgxlD5XNdIWN1Irf64CZqE6Zc5WPcqg7+lfEVU4yxaizQu3Qh/TRja8IdNcI4kiZHEmx4qvr7ROINzWFwelu6uZAWyI90C1r9QZ1P6TUliJt1hAqv09p8U630JYlmmLvJ5AxQIm5FUy40xwp+d5bTD1hai0r6FSOIajwCrC7YcY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4TPRXm5dNzz1vsnb;
+	Tue, 30 Jan 2024 21:56:24 +0800 (CST)
+Received: from kwepemm600017.china.huawei.com (unknown [7.193.23.234])
+	by mail.maildlp.com (Postfix) with ESMTPS id 77B311A016C;
+	Tue, 30 Jan 2024 21:56:49 +0800 (CST)
+Received: from [10.174.179.234] (10.174.179.234) by
+ kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 30 Jan 2024 21:56:47 +0800
+Message-ID: <a9080311-b7a9-bb2c-13a4-650ecc8d459e@huawei.com>
+Date: Tue, 30 Jan 2024 21:56:46 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH v10 6/6] arm64: introduce copy_mc_to_kernel()
+ implementation
+To: Mark Rutland <mark.rutland@arm.com>
+CC: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+	James Morse <james.morse@arm.com>, Robin Murphy <robin.murphy@arm.com>,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>, Alexander Potapenko
+	<glider@google.com>, Alexander Viro <viro@zeniv.linux.org.uk>, Andrey
+ Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
+	Vincenzo Frascino <vincenzo.frascino@arm.com>, Andrew Morton
+	<akpm@linux-foundation.org>, Michael Ellerman <mpe@ellerman.id.au>, Nicholas
+ Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Aneesh Kumar K.V <aneesh.kumar@kernel.org>, "Naveen N. Rao"
+	<naveen.n.rao@linux.ibm.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo
+ Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+	<dave.hansen@linux.intel.com>, <x86@kernel.org>, "H. Peter Anvin"
+	<hpa@zytor.com>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-mm@kvack.org>, <linuxppc-dev@lists.ozlabs.org>,
+	<linux-kernel@vger.kernel.org>, <kasan-dev@googlegroups.com>,
+	<wangkefeng.wang@huawei.com>, Guohanjun <guohanjun@huawei.com>
+References: <20240129134652.4004931-1-tongtiangen@huawei.com>
+ <20240129134652.4004931-7-tongtiangen@huawei.com>
+ <ZbjNbA1Onnjd6kyp@FVFF77S0Q05N>
+From: Tong Tiangen <tongtiangen@huawei.com>
+In-Reply-To: <ZbjNbA1Onnjd6kyp@FVFF77S0Q05N>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fWVQ-7ijjK3-w1q+k2WYVNHbAcejb-xY0ptbjRw476VKA@mail.gmail.com>
-X-Url: http://acmel.wordpress.com
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600017.china.huawei.com (7.193.23.234)
 
-Em Fri, Jan 19, 2024 at 10:09:10PM -0800, Ian Rogers escreveu:
-> On Sat, Dec 23, 2023 at 5:55 AM Arnaldo Carvalho de Melo
-> <acme@kernel.org> wrote:
-> >
-> > Hi Kan,
-> >
-> > I noticed the following problem, are you able to reproduce it?
-> >
-> > Happy solstice!
-> >
-> > - Arnaldo
-> 
-> Hi Arnaldo,
-> 
-> I'm seeing a test failure on Alderlake in perf-tools-next and wondered
-> if it was on your radar:
-> ```
->  32: Session topology                                                :
-> --- start ---
-> test child forked, pid 539222
-> templ file: /tmp/perf-test-HMet21
-> Using CPUID GenuineIntel-6-97-2
-> ------------------------------------------------------------
-> perf_event_attr:
->  type                             0 (PERF_TYPE_HARDWARE)
->  config                           0x800000000
->  disabled                         1
-> ------------------------------------------------------------
-> sys_perf_event_open: pid 0  cpu -1  group_fd -1  flags 0x8 = 4
-> ------------------------------------------------------------
-> perf_event_attr:
->  type                             0 (PERF_TYPE_HARDWARE)
->  config                           0x400000000
->  disabled                         1
-> ------------------------------------------------------------
-> sys_perf_event_open: pid 0  cpu -1  group_fd -1  flags 0x8 = 5
-> non matching sample_type
-> FAILED tests/topology.c:73 can't get session
-> test child finished with -1
-> ---- end ----
-> Session topology: FAILED!
-> ```
-> 
-> The code is hitting this line in evlist__valid_sample_type as
-> core.nr_entries is 2 on hybrid not 1:
-> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/util/evlist.c?h=perf-tools-next#n1215
-> this causes perf_session__open to fail:
-> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/util/session.c?h=perf-tools-next#n129
 
-Yes, I see this as well, haven't yet analysed it
 
-root@number:~# perf test -v topology
- 38: Session topology                                                :
---- start ---
-test child forked, pid 260120
-templ file: /tmp/perf-test-WMa4M5
-Using CPUID GenuineIntel-6-B7-1
-non matching sample_type
-FAILED tests/topology.c:73 can't get session
-test child finished with -1
----- end ----
-Session topology: FAILED!
-root@number:~#
+在 2024/1/30 18:20, Mark Rutland 写道:
+> On Mon, Jan 29, 2024 at 09:46:52PM +0800, Tong Tiangen wrote:
+>> The copy_mc_to_kernel() helper is memory copy implementation that handles
+>> source exceptions. It can be used in memory copy scenarios that tolerate
+>> hardware memory errors(e.g: pmem_read/dax_copy_to_iter).
+>>
+>> Currnently, only x86 and ppc suuport this helper, after arm64 support
+>> machine check safe framework, we introduce copy_mc_to_kernel()
+>> implementation.
+>>
+>> Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+>> ---
+>>   arch/arm64/include/asm/string.h  |   5 +
+>>   arch/arm64/include/asm/uaccess.h |  21 +++
+>>   arch/arm64/lib/Makefile          |   2 +-
+>>   arch/arm64/lib/memcpy_mc.S       | 257 +++++++++++++++++++++++++++++++
+>>   mm/kasan/shadow.c                |  12 ++
+>>   5 files changed, 296 insertions(+), 1 deletion(-)
+>>   create mode 100644 arch/arm64/lib/memcpy_mc.S
+> 
+> Looking at the diffstat and code, this duplicates arch/arm64/lib/memcpy.S with
+> a few annotations. Duplicating that code is not maintainable, and so we cannot
+> take this as-is.
+> 
+> If you want a version that can handle faults that *must* be written such that
+> the code is shared with the regular memcpy. That could be done by using macros
+> to instantiate two copies (one with fault handling, the other without).
+> 
+> It would also be very helpful to see *any* indication that this has been
+> tested, which is sorely lacking in the series as-is.
+> 
+> Mark.
+
+OK, so that's what I'm really want to solve right now, a lot of
+  duplicate code, and I'm going to think about how to deal with that.
+
+Thank you very much for your good advice:)
+Tong.
+
+> 
+>> diff --git a/arch/arm64/include/asm/string.h b/arch/arm64/include/asm/string.h
+>> index 3a3264ff47b9..995b63c26e99 100644
+>> --- a/arch/arm64/include/asm/string.h
+>> +++ b/arch/arm64/include/asm/string.h
+>> @@ -35,6 +35,10 @@ extern void *memchr(const void *, int, __kernel_size_t);
+>>   extern void *memcpy(void *, const void *, __kernel_size_t);
+>>   extern void *__memcpy(void *, const void *, __kernel_size_t);
+>>   
+>> +#define __HAVE_ARCH_MEMCPY_MC
+>> +extern int memcpy_mcs(void *, const void *, __kernel_size_t);
+>> +extern int __memcpy_mcs(void *, const void *, __kernel_size_t);
+>> +
+>>   #define __HAVE_ARCH_MEMMOVE
+>>   extern void *memmove(void *, const void *, __kernel_size_t);
+>>   extern void *__memmove(void *, const void *, __kernel_size_t);
+>> @@ -57,6 +61,7 @@ void memcpy_flushcache(void *dst, const void *src, size_t cnt);
+>>    */
+>>   
+>>   #define memcpy(dst, src, len) __memcpy(dst, src, len)
+>> +#define memcpy_mcs(dst, src, len) __memcpy_mcs(dst, src, len)
+>>   #define memmove(dst, src, len) __memmove(dst, src, len)
+>>   #define memset(s, c, n) __memset(s, c, n)
+>>   
+>> diff --git a/arch/arm64/include/asm/uaccess.h b/arch/arm64/include/asm/uaccess.h
+>> index 14be5000c5a0..61e28ef2112a 100644
+>> --- a/arch/arm64/include/asm/uaccess.h
+>> +++ b/arch/arm64/include/asm/uaccess.h
+>> @@ -425,4 +425,25 @@ static inline size_t probe_subpage_writeable(const char __user *uaddr,
+>>   
+>>   #endif /* CONFIG_ARCH_HAS_SUBPAGE_FAULTS */
+>>   
+>> +#ifdef CONFIG_ARCH_HAS_COPY_MC
+>> +/**
+>> + * copy_mc_to_kernel - memory copy that handles source exceptions
+>> + *
+>> + * @dst:	destination address
+>> + * @src:	source address
+>> + * @len:	number of bytes to copy
+>> + *
+>> + * Return 0 for success, or #size if there was an exception.
+>> + */
+>> +static inline unsigned long __must_check
+>> +copy_mc_to_kernel(void *to, const void *from, unsigned long size)
+>> +{
+>> +	int ret;
+>> +
+>> +	ret = memcpy_mcs(to, from, size);
+>> +	return (ret == -EFAULT) ? size : 0;
+>> +}
+>> +#define copy_mc_to_kernel copy_mc_to_kernel
+>> +#endif
+>> +
+>>   #endif /* __ASM_UACCESS_H */
+>> diff --git a/arch/arm64/lib/Makefile b/arch/arm64/lib/Makefile
+>> index a2fd865b816d..899d6ae9698c 100644
+>> --- a/arch/arm64/lib/Makefile
+>> +++ b/arch/arm64/lib/Makefile
+>> @@ -3,7 +3,7 @@ lib-y		:= clear_user.o delay.o copy_from_user.o		\
+>>   		   copy_to_user.o copy_page.o				\
+>>   		   clear_page.o csum.o insn.o memchr.o memcpy.o		\
+>>   		   memset.o memcmp.o strcmp.o strncmp.o strlen.o	\
+>> -		   strnlen.o strchr.o strrchr.o tishift.o
+>> +		   strnlen.o strchr.o strrchr.o tishift.o memcpy_mc.o
+>>   
+>>   ifeq ($(CONFIG_KERNEL_MODE_NEON), y)
+>>   obj-$(CONFIG_XOR_BLOCKS)	+= xor-neon.o
+>> diff --git a/arch/arm64/lib/memcpy_mc.S b/arch/arm64/lib/memcpy_mc.S
+>> new file mode 100644
+>> index 000000000000..7076b500d154
+>> --- /dev/null
+>> +++ b/arch/arm64/lib/memcpy_mc.S
+>> @@ -0,0 +1,257 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>> +/*
+>> + * Copyright (c) 2012-2021, Arm Limited.
+>> + *
+>> + * Adapted from the original at:
+>> + * https://github.com/ARM-software/optimized-routines/blob/afd6244a1f8d9229/string/aarch64/memcpy.S
+>> + */
+>> +
+>> +#include <linux/linkage.h>
+>> +#include <asm/assembler.h>
+>> +
+>> +/* Assumptions:
+>> + *
+>> + * ARMv8-a, AArch64, unaligned accesses.
+>> + *
+>> + */
+>> +
+>> +#define L(label) .L ## label
+>> +
+>> +#define dstin	x0
+>> +#define src	x1
+>> +#define count	x2
+>> +#define dst	x3
+>> +#define srcend	x4
+>> +#define dstend	x5
+>> +#define A_l	x6
+>> +#define A_lw	w6
+>> +#define A_h	x7
+>> +#define B_l	x8
+>> +#define B_lw	w8
+>> +#define B_h	x9
+>> +#define C_l	x10
+>> +#define C_lw	w10
+>> +#define C_h	x11
+>> +#define D_l	x12
+>> +#define D_h	x13
+>> +#define E_l	x14
+>> +#define E_h	x15
+>> +#define F_l	x16
+>> +#define F_h	x17
+>> +#define G_l	count
+>> +#define G_h	dst
+>> +#define H_l	src
+>> +#define H_h	srcend
+>> +#define tmp1	x14
+>> +
+>> +/* This implementation handles overlaps and supports both memcpy and memmove
+>> +   from a single entry point.  It uses unaligned accesses and branchless
+>> +   sequences to keep the code small, simple and improve performance.
+>> +
+>> +   Copies are split into 3 main cases: small copies of up to 32 bytes, medium
+>> +   copies of up to 128 bytes, and large copies.  The overhead of the overlap
+>> +   check is negligible since it is only required for large copies.
+>> +
+>> +   Large copies use a software pipelined loop processing 64 bytes per iteration.
+>> +   The destination pointer is 16-byte aligned to minimize unaligned accesses.
+>> +   The loop tail is handled by always copying 64 bytes from the end.
+>> +*/
+>> +
+>> +SYM_FUNC_START(__pi_memcpy_mcs)
+>> +	add	srcend, src, count
+>> +	add	dstend, dstin, count
+>> +	cmp	count, 128
+>> +	b.hi	L(copy_long)
+>> +	cmp	count, 32
+>> +	b.hi	L(copy32_128)
+>> +
+>> +	/* Small copies: 0..32 bytes.  */
+>> +	cmp	count, 16
+>> +	b.lo	L(copy16)
+>> +	CPY_MC(9998f, ldp	A_l, A_h, [src])
+>> +	CPY_MC(9998f, ldp	D_l, D_h, [srcend, -16])
+>> +	CPY_MC(9998f, stp	A_l, A_h, [dstin])
+>> +	CPY_MC(9998f, stp	D_l, D_h, [dstend, -16])
+>> +	mov x0, #0
+>> +	ret
+>> +
+>> +	/* Copy 8-15 bytes.  */
+>> +L(copy16):
+>> +	tbz	count, 3, L(copy8)
+>> +	CPY_MC(9998f, ldr	A_l, [src])
+>> +	CPY_MC(9998f, ldr	A_h, [srcend, -8])
+>> +	CPY_MC(9998f, str	A_l, [dstin])
+>> +	CPY_MC(9998f, str	A_h, [dstend, -8])
+>> +	mov x0, #0
+>> +	ret
+>> +
+>> +	.p2align 3
+>> +	/* Copy 4-7 bytes.  */
+>> +L(copy8):
+>> +	tbz	count, 2, L(copy4)
+>> +	CPY_MC(9998f, ldr	A_lw, [src])
+>> +	CPY_MC(9998f, ldr	B_lw, [srcend, -4])
+>> +	CPY_MC(9998f, str	A_lw, [dstin])
+>> +	CPY_MC(9998f, str	B_lw, [dstend, -4])
+>> +	mov x0, #0
+>> +	ret
+>> +
+>> +	/* Copy 0..3 bytes using a branchless sequence.  */
+>> +L(copy4):
+>> +	cbz	count, L(copy0)
+>> +	lsr	tmp1, count, 1
+>> +	CPY_MC(9998f, ldrb	A_lw, [src])
+>> +	CPY_MC(9998f, ldrb	C_lw, [srcend, -1])
+>> +	CPY_MC(9998f, ldrb	B_lw, [src, tmp1])
+>> +	CPY_MC(9998f, strb	A_lw, [dstin])
+>> +	CPY_MC(9998f, strb	B_lw, [dstin, tmp1])
+>> +	CPY_MC(9998f, strb	C_lw, [dstend, -1])
+>> +L(copy0):
+>> +	mov x0, #0
+>> +	ret
+>> +
+>> +	.p2align 4
+>> +	/* Medium copies: 33..128 bytes.  */
+>> +L(copy32_128):
+>> +	CPY_MC(9998f, ldp	A_l, A_h, [src])
+>> +	CPY_MC(9998f, ldp	B_l, B_h, [src, 16])
+>> +	CPY_MC(9998f, ldp	C_l, C_h, [srcend, -32])
+>> +	CPY_MC(9998f, ldp	D_l, D_h, [srcend, -16])
+>> +	cmp	count, 64
+>> +	b.hi	L(copy128)
+>> +	CPY_MC(9998f, stp	A_l, A_h, [dstin])
+>> +	CPY_MC(9998f, stp	B_l, B_h, [dstin, 16])
+>> +	CPY_MC(9998f, stp	C_l, C_h, [dstend, -32])
+>> +	CPY_MC(9998f, stp	D_l, D_h, [dstend, -16])
+>> +	mov x0, #0
+>> +	ret
+>> +
+>> +	.p2align 4
+>> +	/* Copy 65..128 bytes.  */
+>> +L(copy128):
+>> +	CPY_MC(9998f, ldp	E_l, E_h, [src, 32])
+>> +	CPY_MC(9998f, ldp	F_l, F_h, [src, 48])
+>> +	cmp	count, 96
+>> +	b.ls	L(copy96)
+>> +	CPY_MC(9998f, ldp	G_l, G_h, [srcend, -64])
+>> +	CPY_MC(9998f, ldp	H_l, H_h, [srcend, -48])
+>> +	CPY_MC(9998f, stp	G_l, G_h, [dstend, -64])
+>> +	CPY_MC(9998f, stp	H_l, H_h, [dstend, -48])
+>> +L(copy96):
+>> +	CPY_MC(9998f, stp	A_l, A_h, [dstin])
+>> +	CPY_MC(9998f, stp	B_l, B_h, [dstin, 16])
+>> +	CPY_MC(9998f, stp	E_l, E_h, [dstin, 32])
+>> +	CPY_MC(9998f, stp	F_l, F_h, [dstin, 48])
+>> +	CPY_MC(9998f, stp	C_l, C_h, [dstend, -32])
+>> +	CPY_MC(9998f, stp	D_l, D_h, [dstend, -16])
+>> +	mov x0, #0
+>> +	ret
+>> +
+>> +	.p2align 4
+>> +	/* Copy more than 128 bytes.  */
+>> +L(copy_long):
+>> +	/* Use backwards copy if there is an overlap.  */
+>> +	sub	tmp1, dstin, src
+>> +	cbz	tmp1, L(copy0)
+>> +	cmp	tmp1, count
+>> +	b.lo	L(copy_long_backwards)
+>> +
+>> +	/* Copy 16 bytes and then align dst to 16-byte alignment.  */
+>> +
+>> +	CPY_MC(9998f, ldp	D_l, D_h, [src])
+>> +	and	tmp1, dstin, 15
+>> +	bic	dst, dstin, 15
+>> +	sub	src, src, tmp1
+>> +	add	count, count, tmp1	/* Count is now 16 too large.  */
+>> +	CPY_MC(9998f, ldp	A_l, A_h, [src, 16])
+>> +	CPY_MC(9998f, stp	D_l, D_h, [dstin])
+>> +	CPY_MC(9998f, ldp	B_l, B_h, [src, 32])
+>> +	CPY_MC(9998f, ldp	C_l, C_h, [src, 48])
+>> +	CPY_MC(9998f, ldp	D_l, D_h, [src, 64]!)
+>> +	subs	count, count, 128 + 16	/* Test and readjust count.  */
+>> +	b.ls	L(copy64_from_end)
+>> +
+>> +L(loop64):
+>> +	CPY_MC(9998f, stp	A_l, A_h, [dst, 16])
+>> +	CPY_MC(9998f, ldp	A_l, A_h, [src, 16])
+>> +	CPY_MC(9998f, stp	B_l, B_h, [dst, 32])
+>> +	CPY_MC(9998f, ldp	B_l, B_h, [src, 32])
+>> +	CPY_MC(9998f, stp	C_l, C_h, [dst, 48])
+>> +	CPY_MC(9998f, ldp	C_l, C_h, [src, 48])
+>> +	CPY_MC(9998f, stp	D_l, D_h, [dst, 64]!)
+>> +	CPY_MC(9998f, ldp	D_l, D_h, [src, 64]!)
+>> +	subs	count, count, 64
+>> +	b.hi	L(loop64)
+>> +
+>> +	/* Write the last iteration and copy 64 bytes from the end.  */
+>> +L(copy64_from_end):
+>> +	CPY_MC(9998f, ldp	E_l, E_h, [srcend, -64])
+>> +	CPY_MC(9998f, stp	A_l, A_h, [dst, 16])
+>> +	CPY_MC(9998f, ldp	A_l, A_h, [srcend, -48])
+>> +	CPY_MC(9998f, stp	B_l, B_h, [dst, 32])
+>> +	CPY_MC(9998f, ldp	B_l, B_h, [srcend, -32])
+>> +	CPY_MC(9998f, stp	C_l, C_h, [dst, 48])
+>> +	CPY_MC(9998f, ldp	C_l, C_h, [srcend, -16])
+>> +	CPY_MC(9998f, stp	D_l, D_h, [dst, 64])
+>> +	CPY_MC(9998f, stp	E_l, E_h, [dstend, -64])
+>> +	CPY_MC(9998f, stp	A_l, A_h, [dstend, -48])
+>> +	CPY_MC(9998f, stp	B_l, B_h, [dstend, -32])
+>> +	CPY_MC(9998f, stp	C_l, C_h, [dstend, -16])
+>> +	mov x0, #0
+>> +	ret
+>> +
+>> +	.p2align 4
+>> +
+>> +	/* Large backwards copy for overlapping copies.
+>> +	   Copy 16 bytes and then align dst to 16-byte alignment.  */
+>> +L(copy_long_backwards):
+>> +	CPY_MC(9998f, ldp	D_l, D_h, [srcend, -16])
+>> +	and	tmp1, dstend, 15
+>> +	sub	srcend, srcend, tmp1
+>> +	sub	count, count, tmp1
+>> +	CPY_MC(9998f, ldp	A_l, A_h, [srcend, -16])
+>> +	CPY_MC(9998f, stp	D_l, D_h, [dstend, -16])
+>> +	CPY_MC(9998f, ldp	B_l, B_h, [srcend, -32])
+>> +	CPY_MC(9998f, ldp	C_l, C_h, [srcend, -48])
+>> +	CPY_MC(9998f, ldp	D_l, D_h, [srcend, -64]!)
+>> +	sub	dstend, dstend, tmp1
+>> +	subs	count, count, 128
+>> +	b.ls	L(copy64_from_start)
+>> +
+>> +L(loop64_backwards):
+>> +	CPY_MC(9998f, stp	A_l, A_h, [dstend, -16])
+>> +	CPY_MC(9998f, ldp	A_l, A_h, [srcend, -16])
+>> +	CPY_MC(9998f, stp	B_l, B_h, [dstend, -32])
+>> +	CPY_MC(9998f, ldp	B_l, B_h, [srcend, -32])
+>> +	CPY_MC(9998f, stp	C_l, C_h, [dstend, -48])
+>> +	CPY_MC(9998f, ldp	C_l, C_h, [srcend, -48])
+>> +	CPY_MC(9998f, stp	D_l, D_h, [dstend, -64]!)
+>> +	CPY_MC(9998f, ldp	D_l, D_h, [srcend, -64]!)
+>> +	subs	count, count, 64
+>> +	b.hi	L(loop64_backwards)
+>> +
+>> +	/* Write the last iteration and copy 64 bytes from the start.  */
+>> +L(copy64_from_start):
+>> +	CPY_MC(9998f, ldp	G_l, G_h, [src, 48])
+>> +	CPY_MC(9998f, stp	A_l, A_h, [dstend, -16])
+>> +	CPY_MC(9998f, ldp	A_l, A_h, [src, 32])
+>> +	CPY_MC(9998f, stp	B_l, B_h, [dstend, -32])
+>> +	CPY_MC(9998f, ldp	B_l, B_h, [src, 16])
+>> +	CPY_MC(9998f, stp	C_l, C_h, [dstend, -48])
+>> +	CPY_MC(9998f, ldp	C_l, C_h, [src])
+>> +	CPY_MC(9998f, stp	D_l, D_h, [dstend, -64])
+>> +	CPY_MC(9998f, stp	G_l, G_h, [dstin, 48])
+>> +	CPY_MC(9998f, stp	A_l, A_h, [dstin, 32])
+>> +	CPY_MC(9998f, stp	B_l, B_h, [dstin, 16])
+>> +	CPY_MC(9998f, stp	C_l, C_h, [dstin])
+>> +	mov x0, #0
+>> +	ret
+>> +
+>> +9998:	mov x0, #-EFAULT
+>> +	ret
+>> +SYM_FUNC_END(__pi_memcpy_mcs)
+>> +
+>> +SYM_FUNC_ALIAS(__memcpy_mcs, __pi_memcpy_mcs)
+>> +EXPORT_SYMBOL(__memcpy_mcs)
+>> +SYM_FUNC_ALIAS_WEAK(memcpy_mcs, __memcpy_mcs)
+>> +EXPORT_SYMBOL(memcpy_mcs)
+>> diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
+>> index 9ef84f31833f..e6519fd329b2 100644
+>> --- a/mm/kasan/shadow.c
+>> +++ b/mm/kasan/shadow.c
+>> @@ -79,6 +79,18 @@ void *memcpy(void *dest, const void *src, size_t len)
+>>   }
+>>   #endif
+>>   
+>> +#ifdef __HAVE_ARCH_MEMCPY_MC
+>> +#undef memcpy_mcs
+>> +int memcpy_mcs(void *dest, const void *src, size_t len)
+>> +{
+>> +	if (!check_memory_region((unsigned long)src, len, false, _RET_IP_) ||
+>> +	    !check_memory_region((unsigned long)dest, len, true, _RET_IP_))
+>> +		return (unsigned long)len;
+>> +
+>> +	return __memcpy_mcs(dest, src, len);
+>> +}
+>> +#endif
+>> +
+>>   void *__asan_memset(void *addr, int c, ssize_t len)
+>>   {
+>>   	if (!kasan_check_range(addr, len, true, _RET_IP_))
+>> -- 
+>> 2.25.1
+>>
+> .
 
