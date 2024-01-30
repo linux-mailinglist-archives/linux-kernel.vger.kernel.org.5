@@ -1,64 +1,61 @@
-Return-Path: <linux-kernel+bounces-44411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AE148421BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:45:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2ECC8421C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:45:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D58C1C25A2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:45:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F4E9292FE4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:45:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A497567A05;
-	Tue, 30 Jan 2024 10:43:55 +0000 (UTC)
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F92867E82;
+	Tue, 30 Jan 2024 10:43:59 +0000 (UTC)
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85860679FF;
-	Tue, 30 Jan 2024 10:43:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31B0B67E6F;
+	Tue, 30 Jan 2024 10:43:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706611435; cv=none; b=sB3L8dkGAnbWXtKPcOg2ZOj1ff12rf5MfFpMLnEPLm8nU8t0lrnhKNYLqgzhdVpLydfa6QNNk51z4VHkoPpmyFGW/LrUZOcJhhsStjtKzzaER3hSJFfuUls2v0DlNEx9e4l2Aphmq1gUsNuNtv94jzwD8yMxit5Qm1+jV2TfsMg=
+	t=1706611438; cv=none; b=baZraTDbhl6cfhJk9R7Joj4Obx67o7Hj/dXQzLaEuXlNtcxYdE+K5r314MveK8m8O8vEroLb2W5HvvGMdrVxbD99AB1PNcxS4nqijkVend7O/CwvhwZHDrE57r+smGUUYchaauyJtyRQCtQu+mRONqVlxCoCnIcB4D5Xii7WrhA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706611435; c=relaxed/simple;
-	bh=6/zPyHCjOysxp4BceH7lIBdERxHNJ7sl55MbOWKAdxM=;
+	s=arc-20240116; t=1706611438; c=relaxed/simple;
+	bh=VIjszJsbF2GDzmdLEhRHO/hbtloJjxsbJ0cwUfkqGyM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FBbH69PJpwooI/6QjxzrfqWL/cSqhAUImadX/MYJvV9KlDJ8rlG5n6QBRmHJfrll/iVjdR7MedFd/oJEFDU2C3cmRZFRTZld3rxjCt4+8z2d9AMGSU/mMi/WZNST7LUt4qTtR924P4RRDBmZtScG7oE3uuLKBz+SiDHw9PvtEs4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.44
+	 MIME-Version; b=sRBfKXuzyAJbWDdCNYcu1XdGyE2a9LW6aPExIJsh3I4W9Ud546DQWY8Pi6oT8orE/b/eTpgADzbpNp3x0Zrgr3kheDwVkK9H8Crkda7N1ESJ10Pp1seME09XBcMUp2tdWWUOF6ltbCKL8qn43sUEHePt6ZQgXJEqeOMG7to2bqw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-55ad2a47b7aso3881722a12.3;
-        Tue, 30 Jan 2024 02:43:53 -0800 (PST)
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-55f50cf2021so248984a12.1;
+        Tue, 30 Jan 2024 02:43:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706611431; x=1707216231;
+        d=1e100.net; s=20230601; t=1706611435; x=1707216235;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xGidONtgTcC3mg8Z/dch3MAVxBE6VowMMnHBLOSFwMk=;
-        b=PjgthwNbIFotOwlHjmNrFNygOXgJhiEoxII6ZGFXsxCDw7CUjepRoc56cORmrFdSXm
-         JuO5ShbaFKrQyejxtSoK3r4dqLbodQF9SPOLOd2L92gKO6fv8fvz4QPGfZYBytGI+aDf
-         mCD/EajwXmpgRTyCxR4GUC8B3CYDTLsbQErU0Kl4n78FAqzJFYDkSwRWBivYlwv0+ing
-         WLcJ4LHthFiOAD9CUIZdTQeStpdE962TVMi5JcXwsJPDNZkbT/ncpp9Fx2uG8uCCbUlg
-         xs9rMTeLctBYpJkxDDkgNxKuE3nPr6qPgRSYIZZWMblTR8oRWaKy7I82jkFjz+RabuCD
-         wI7Q==
-X-Gm-Message-State: AOJu0YwKUNRss5zy+yrI6sHnBzbd4L/DeST0snp0bhcLLUv1N3lHf3sU
-	cA4sBS3WpzgZA3lW9D+Bko+rGEWpa7FqfqoGVqMAVguLaKkAJH8GpTgTZ6sTz7un0w==
-X-Google-Smtp-Source: AGHT+IHkquS72S+Pdcn0a5QgpEJo3OIgZ/1TfW5RBqrbBNa8Z+6bTh/xcXowMwU3c1LsPaZLswFXJg==
-X-Received: by 2002:a17:906:1b09:b0:a27:6e73:a248 with SMTP id o9-20020a1709061b0900b00a276e73a248mr5598302ejg.68.1706611431610;
-        Tue, 30 Jan 2024 02:43:51 -0800 (PST)
-Received: from localhost (fwdproxy-lla-003.fbsv.net. [2a03:2880:30ff:3::face:b00c])
-        by smtp.gmail.com with ESMTPSA id ti12-20020a170907c20c00b00a360eb62afdsm822894ejc.32.2024.01.30.02.43.51
+        bh=76e9uPIeXCxDiA3pMJxXyMeHe9zGOP/nmo8UuctdYG8=;
+        b=cAQISUL+tQA8iR+jf86mREVBxRoj4uf0yIA85ZOE2Ip78n3n/WTd6H1r0/e79qcN53
+         u5wAXkPliPp7IWe/sA67Ybs2GzoyOKQkD/fuapPkIkTBPKwwSySY1GTXT/405lKND4AH
+         JA/EO0ElAG5ll5EyvQvEcidcbR1V9eVv6SlS3AKjULz521UtImesp4u0+3vb/3oc8bbu
+         ZMyedvhNC7qAOh/ETpQSgHcva0lISxmNPNT+8tujYbgDejsuuhN5jO5tLYFOKWDG6EP6
+         +Y7GEV0nO1R4JiXy0GOOp0zZ077XYrTFkNB5gNDLDvpj+dUGFhzXiukRUx667MB80HRj
+         IY6A==
+X-Gm-Message-State: AOJu0YwvKMWOeqhqRZWLvDzTecgYmKR81RjEL1EDBjYfQHmXJOX5dXao
+	GLSzwNxmyZ541Hpsm/AhC3Ao+VA91sYc3I0R3dt+E9vYYNIBttRW4El/R9UtjDJslA==
+X-Google-Smtp-Source: AGHT+IE5DBnCKLOmnlpPsk6kJYKBKsXojDbNbaLqKAdFzfUBd0dnr+0ErjJTmFBd1dRKqkOqjjJ9jw==
+X-Received: by 2002:aa7:d904:0:b0:55f:11cf:ee56 with SMTP id a4-20020aa7d904000000b0055f11cfee56mr3292534edr.28.1706611435126;
+        Tue, 30 Jan 2024 02:43:55 -0800 (PST)
+Received: from localhost (fwdproxy-lla-007.fbsv.net. [2a03:2880:30ff:7::face:b00c])
+        by smtp.gmail.com with ESMTPSA id n16-20020aa7d050000000b0055f0f643ebcsm1604211edo.96.2024.01.30.02.43.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 02:43:51 -0800 (PST)
+        Tue, 30 Jan 2024 02:43:54 -0800 (PST)
 From: Breno Leitao <leitao@debian.org>
 To: kuba@kernel.org,
 	davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
-	Arend van Spriel <aspriel@gmail.com>,
-	Franky Lin <franky.lin@broadcom.com>,
-	Hante Meuleman <hante.meuleman@broadcom.com>,
 	Kalle Valo <kvalo@kernel.org>
 Cc: dsahern@kernel.org,
 	weiwan@google.com,
@@ -67,11 +64,12 @@ Cc: dsahern@kernel.org,
 	horms@kernel.org,
 	andrew@lunn.ch,
 	leit@fb.com,
-	linux-wireless@vger.kernel.org (open list:BROADCOM BRCM80211 IEEE802.11n WIRELESS DRIVER),
-	brcm80211-dev-list.pdl@broadcom.com (open list:BROADCOM BRCM80211 IEEE802.11n WIRELESS DRIVER)
-Subject: [PATCH net 3/9] wifi: fill in MODULE_DESCRIPTION()s for Broadcom WLAN
-Date: Tue, 30 Jan 2024 02:42:37 -0800
-Message-Id: <20240130104243.3025393-4-leitao@debian.org>
+	Wu Yunchuan <yunchuan@nfschina.com>,
+	Kalle Valo <quic_kvalo@quicinc.com>,
+	linux-wireless@vger.kernel.org (open list:USB AR5523 WIRELESS DRIVER)
+Subject: [PATCH net 4/9] wifi: fill in MODULE_DESCRIPTION()s for ar5523
+Date: Tue, 30 Jan 2024 02:42:38 -0800
+Message-Id: <20240130104243.3025393-5-leitao@debian.org>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20240130104243.3025393-1-leitao@debian.org>
 References: <20240130104243.3025393-1-leitao@debian.org>
@@ -84,51 +82,24 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
-Add descriptions to the Broadcom FullMac WLAN drivers.
+Add descriptions to the Atheros AR5523 wireless driver.
 
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/bca/module.c | 1 +
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/cyw/module.c | 1 +
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/wcc/module.c | 1 +
- 3 files changed, 3 insertions(+)
+ drivers/net/wireless/ath/ar5523/ar5523.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bca/module.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bca/module.c
-index d55f3271d619..4f0c1e1a8e60 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bca/module.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bca/module.c
-@@ -20,6 +20,7 @@ static void __exit brcmf_bca_exit(void)
- 	brcmf_fwvid_unregister_vendor(BRCMF_FWVENDOR_BCA, THIS_MODULE);
- }
+diff --git a/drivers/net/wireless/ath/ar5523/ar5523.c b/drivers/net/wireless/ath/ar5523/ar5523.c
+index 43e0db78d42b..a742cec44e3d 100644
+--- a/drivers/net/wireless/ath/ar5523/ar5523.c
++++ b/drivers/net/wireless/ath/ar5523/ar5523.c
+@@ -1803,5 +1803,6 @@ static struct usb_driver ar5523_driver = {
  
-+MODULE_DESCRIPTION("Broadcom FullMAC WLAN driver plugin for Broadcom AP chipsets");
+ module_usb_driver(ar5523_driver);
+ 
++MODULE_DESCRIPTION("Atheros AR5523 wireless driver");
  MODULE_LICENSE("Dual BSD/GPL");
- MODULE_IMPORT_NS(BRCMFMAC);
- 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cyw/module.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cyw/module.c
-index f82fbbe3ecef..90d06cda03a2 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cyw/module.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cyw/module.c
-@@ -20,6 +20,7 @@ static void __exit brcmf_cyw_exit(void)
- 	brcmf_fwvid_unregister_vendor(BRCMF_FWVENDOR_CYW, THIS_MODULE);
- }
- 
-+MODULE_DESCRIPTION("Broadcom FullMAC WLAN driver plugin for Cypress/Infineon chipsets");
- MODULE_LICENSE("Dual BSD/GPL");
- MODULE_IMPORT_NS(BRCMFMAC);
- 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/wcc/module.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/wcc/module.c
-index 02918d434556..b66135e3cff4 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/wcc/module.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/wcc/module.c
-@@ -20,6 +20,7 @@ static void __exit brcmf_wcc_exit(void)
- 	brcmf_fwvid_unregister_vendor(BRCMF_FWVENDOR_WCC, THIS_MODULE);
- }
- 
-+MODULE_DESCRIPTION("Broadcom FullMAC WLAN driver plugin for Broadcom mobility chipsets");
- MODULE_LICENSE("Dual BSD/GPL");
- MODULE_IMPORT_NS(BRCMFMAC);
- 
+ MODULE_FIRMWARE(AR5523_FIRMWARE_FILE);
 -- 
 2.39.3
 
