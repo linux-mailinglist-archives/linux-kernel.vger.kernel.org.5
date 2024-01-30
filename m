@@ -1,99 +1,191 @@
-Return-Path: <linux-kernel+bounces-44488-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADF7D8422BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:20:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E24E28422C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:20:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E10E21C25BE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:20:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A3F2295C5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:20:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1180F679FB;
-	Tue, 30 Jan 2024 11:14:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yumtipkg"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87C00679F2;
+	Tue, 30 Jan 2024 11:14:47 +0000 (UTC)
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51ADA679E2;
-	Tue, 30 Jan 2024 11:14:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF1B7664AE
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 11:14:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706613243; cv=none; b=ssQcYSDLXcxSeowymZvahr6jY9b5GmWKHRRZHd9oV+mm247az5N6rrRB9CLdm4lg1u0VaIpll7bDY77tv5Ft0yhRtfXz1WKKDuqK30mX5iUyDlNhadarY3bvbpUQtp8vpMcG3nkoWynBn3nLT/wUrwQMgzk8CzaJUMLnz/HvJgY=
+	t=1706613287; cv=none; b=qFUYLinxIED/kOmuvuptP9gN0SAl3h9ZqhPdRDBFnXdPVo1r+qsmm5lByhLAoptYmu44elbXY7nSxxu/dPcE0QvBBWL/QKf+Tylf423kFbL2jDTJ+JiUQz1O8LXRgymYnRhT8qUp52CG/zdMcIWpCoOF4KV4YemZWVW7Eicg/L0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706613243; c=relaxed/simple;
-	bh=/9NzOhfNsiFt9TBV15bxnbKB8v1glIQ/hLc+NQj7LX8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cZ+Ge4aYdo9VPRgwr5sVB+ge49E8/E1evAlCBI1BGN6KXdOMv6wivjbf26+gXYMaQQCZixOCL6QfGYpKBBiUk+KV3lmkex7xxsUXWkqDkecQXy28enknmNViReknhCPeJj+BItOSvi+PpHs9E8s8QQ4591YpRUOAHewy9gp/lQY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yumtipkg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BED6C433F1;
-	Tue, 30 Jan 2024 11:13:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706613242;
-	bh=/9NzOhfNsiFt9TBV15bxnbKB8v1glIQ/hLc+NQj7LX8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Yumtipkggd8S+HmelxCX+RgmP58dbbSqaP1bl0m9Jk8KAfbq57cRp7DF/g9AQO/bZ
-	 SIJSkZTXsWBFcxJJwFps8y+WP7wrW9azpG6uOaqHkoiB9UYw1+yJlRRvSeBUVgArhx
-	 Od7wfg+QwsYx9Yf2m2wUE3M3cFWp4KtBlOXhs9BoyWcSXrh7JhKND5VWv43cBGWANy
-	 uts3cwul209VPKtFwcCGFai9xYiOlSYUNlTbAkrj45qKvdA7US2r7WSwn30ESSdc3V
-	 hsJp1CDqsKtmTKZwz9m50KJIJvoktjc6uZ75SzKX+AVLIq/Nali7SDxE9wbZoZ4w0h
-	 uklMom/GuJGVw==
-Date: Tue, 30 Jan 2024 11:13:55 +0000
-From: Mark Brown <broonie@kernel.org>
-To: kovalev@altlinux.org
-Cc: stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org, u.kleine-koenig@pengutronix.de,
-	a.firago@yadro.com, sashal@kernel.org, zhuning0077@gmail.com,
-	tiwai@suse.com, perex@perex.cz, lgirdwood@gmail.com
-Subject: Re: [PATCH 6.1.y 1/7] ASoC: codecs: es8326: Convert to i2c's
- .probe_new()
-Message-ID: <25386374-44e8-4b74-8803-2dcb0806f80d@sirena.org.uk>
-References: <20240130094708.290485-1-kovalev@altlinux.org>
- <20240130094708.290485-2-kovalev@altlinux.org>
+	s=arc-20240116; t=1706613287; c=relaxed/simple;
+	bh=hrlC0Nc3SSTE67CT9tQ8BqfKTYytcG1CKlF7JbeaVoo=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:CC:References:
+	 In-Reply-To:Content-Type; b=NlxAzVtnw0O4tXUkabWf3cbBuI+0PQq12iSBmy5XRPwrrmnWhYFCLe/yCtBZhePll1CHh3uasQhCyokcHc2z6tExZ2rstQXGAwScppz5SWEDa++N9MYejFvDlSaDjSNP0sLXqSMe3HcJA2LfR2H7G9PqS8tfzPRgeI6idNXMKDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TPMvz6zx9z1Q89B;
+	Tue, 30 Jan 2024 19:12:47 +0800 (CST)
+Received: from kwepemm600017.china.huawei.com (unknown [7.193.23.234])
+	by mail.maildlp.com (Postfix) with ESMTPS id D80601A016C;
+	Tue, 30 Jan 2024 19:14:37 +0800 (CST)
+Received: from [10.174.179.234] (10.174.179.234) by
+ kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 30 Jan 2024 19:14:35 +0800
+Message-ID: <23795738-b86e-7709-bc2b-5abba2e77b68@huawei.com>
+Date: Tue, 30 Jan 2024 19:14:35 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="JlNGArQx6R6RiAba"
-Content-Disposition: inline
-In-Reply-To: <20240130094708.290485-2-kovalev@altlinux.org>
-X-Cookie: 1 bulls, 3 cows.
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+From: Tong Tiangen <tongtiangen@huawei.com>
+Subject: Re: [PATCH v10 3/6] arm64: add uaccess to machine check safe
+To: Mark Rutland <mark.rutland@arm.com>
+CC: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+	James Morse <james.morse@arm.com>, Robin Murphy <robin.murphy@arm.com>,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>, Alexander Potapenko
+	<glider@google.com>, Alexander Viro <viro@zeniv.linux.org.uk>, Andrey
+ Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
+	Vincenzo Frascino <vincenzo.frascino@arm.com>, Andrew Morton
+	<akpm@linux-foundation.org>, Michael Ellerman <mpe@ellerman.id.au>, Nicholas
+ Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Aneesh Kumar K.V <aneesh.kumar@kernel.org>, "Naveen N. Rao"
+	<naveen.n.rao@linux.ibm.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo
+ Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+	<dave.hansen@linux.intel.com>, <x86@kernel.org>, "H. Peter Anvin"
+	<hpa@zytor.com>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-mm@kvack.org>, <linuxppc-dev@lists.ozlabs.org>,
+	<linux-kernel@vger.kernel.org>, <kasan-dev@googlegroups.com>,
+	<wangkefeng.wang@huawei.com>, Guohanjun <guohanjun@huawei.com>
+References: <20240129134652.4004931-1-tongtiangen@huawei.com>
+ <20240129134652.4004931-4-tongtiangen@huawei.com>
+ <ZbfjvD1_yKK6IVVY@FVFF77S0Q05N>
+In-Reply-To: <ZbfjvD1_yKK6IVVY@FVFF77S0Q05N>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600017.china.huawei.com (7.193.23.234)
 
 
---JlNGArQx6R6RiAba
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 30, 2024 at 12:47:02PM +0300, kovalev@altlinux.org wrote:
-> From: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
->=20
-> Commit 784252bac835c831e10c48be633cd1ff0d697326 upstream.
->=20
-> The probe function doesn't make use of the i2c_device_id * parameter so it
-> can be trivially converted.
+在 2024/1/30 1:43, Mark Rutland 写道:
+> On Mon, Jan 29, 2024 at 09:46:49PM +0800, Tong Tiangen wrote:
+>> If user process access memory fails due to hardware memory error, only the
+>> relevant processes are affected, so it is more reasonable to kill the user
+>> process and isolate the corrupt page than to panic the kernel.
+>>
+>> Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+>> ---
+>>   arch/arm64/lib/copy_from_user.S | 10 +++++-----
+>>   arch/arm64/lib/copy_to_user.S   | 10 +++++-----
+>>   arch/arm64/mm/extable.c         |  8 ++++----
+>>   3 files changed, 14 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/arch/arm64/lib/copy_from_user.S b/arch/arm64/lib/copy_from_user.S
+>> index 34e317907524..1bf676e9201d 100644
+>> --- a/arch/arm64/lib/copy_from_user.S
+>> +++ b/arch/arm64/lib/copy_from_user.S
+>> @@ -25,7 +25,7 @@
+>>   	.endm
+>>   
+>>   	.macro strb1 reg, ptr, val
+>> -	strb \reg, [\ptr], \val
+>> +	USER(9998f, strb \reg, [\ptr], \val)
+>>   	.endm
+> 
+> This is a store to *kernel* memory, not user memory. It should not be marked
+> with USER().
 
-This is obviously not a bug fix.
+This does cause some misconceptions, and my original idea was to reuse 
+the fixup capability of USER().
 
---JlNGArQx6R6RiAba
-Content-Type: application/pgp-signature; name="signature.asc"
+> 
+> I understand that you *might* want to handle memory errors on these stores, but
+> the commit message doesn't describe that and the associated trade-off. For
+> example, consider that when a copy_form_user fails we'll try to zero the
+> remaining buffer via memset(); so if a STR* instruction in copy_to_user
+> faulted, upon handling the fault we'll immediately try to fix that up with some
+> more stores which will also fault, but won't get fixed up, leading to a panic()
+> anyway...
 
------BEGIN PGP SIGNATURE-----
+When copy_from_user() triggers a memory error, there are two cases: ld
+user memory error and st kernel memory error. The former can clear the
+remaining kernel memory, and the latter cannot be cleared because the
+page is poison.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmW42fIACgkQJNaLcl1U
-h9AF4wf+KMjI0jWwgikQQPyjfg4Md2U3jxs0VUI32Yjrul2MIOQvX5y1E4+/SL76
-nXtvq0QhXhQYgk8mdv4zlUD5+9ozi6NqWGNeU0ggquRieWOu1Wl4K5H/OeGDhuIB
-uefbKQ+TFBvjzyQRub/KiQkI/RGvjdIj42ttScUuVID6BG3FlXiZQJATy+gWZIs9
-2r7Up22dgKsmIw6U4GoV9fvQwP9xIM5gp3/OR8i3wpD+4edGekIUbYcs+NbpSo+e
-xUjSz1YlrFfVnTdqZ/6lmdz84P8+0oTesan7TClPSG5qvWDoVvb3ruNeNdwNiMhF
-qNRLj14lGgNu/7SJ+RXonBvcPHPpgQ==
-=4Ne0
------END PGP SIGNATURE-----
+The purpose of memset() is to keep the data consistency of the kernel
+memory (or multiple subsequent pages) (the data that is not copied
+should be set to 0). My consideration here is that since our ultimate
+goal is to kill the owner thread of the kernel memory data, the
+"consistency" of the kernel memory data is not so important, but
+increases the processing complexity.
 
---JlNGArQx6R6RiAba--
+The trade-offs do need to be added to commit message after agreement
+is reached :)
+> 
+> Further, this change will also silently fixup unexpected kernel faults if we
+> pass bad kernel pointers to copy_{to,from}_user, which will hide real bugs.
+
+I think this is better than the panic kernel, because the real bugs
+belongs to the user process. Even if the wrong pointer is
+transferred, the page corresponding to the wrong pointer has a memroy
+error. In addition, the panic information contains necessary information
+for users to check.
+
+> 
+> So NAK to this change as-is; likewise for the addition of USER() to other ldr*
+> macros in copy_from_user.S and the addition of USER() str* macros in
+> copy_to_user.S.
+> 
+> If we want to handle memory errors on some kaccesses, we need a new EX_TYPE_*
+> separate from the usual EX_TYPE_KACESS_ERR_ZERO that means "handle memory
+> errors, but treat other faults as fatal". That should come with a rationale and
+> explanation of why it's actually useful.
+
+This makes sense. Add kaccess types that can be processed properly.
+
+> 
+> [...]
+> 
+>> diff --git a/arch/arm64/mm/extable.c b/arch/arm64/mm/extable.c
+>> index 478e639f8680..28ec35e3d210 100644
+>> --- a/arch/arm64/mm/extable.c
+>> +++ b/arch/arm64/mm/extable.c
+>> @@ -85,10 +85,10 @@ bool fixup_exception_mc(struct pt_regs *regs)
+>>   	if (!ex)
+>>   		return false;
+>>   
+>> -	/*
+>> -	 * This is not complete, More Machine check safe extable type can
+>> -	 * be processed here.
+>> -	 */
+>> +	switch (ex->type) {
+>> +	case EX_TYPE_UACCESS_ERR_ZERO:
+>> +		return ex_handler_uaccess_err_zero(ex, regs);
+>> +	}
+> 
+> Please fold this part into the prior patch, and start ogf with *only* handling
+> errors on accesses already marked with EX_TYPE_UACCESS_ERR_ZERO. I think that
+> change would be relatively uncontroversial, and it would be much easier to
+> build atop that.
+
+OK, the two patches will be merged in the next release.
+
+Many thanks.
+Tong.
+
+> 
+> Thanks,
+> Mark.
+> .
 
