@@ -1,593 +1,139 @@
-Return-Path: <linux-kernel+bounces-45080-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45081-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02348842B78
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:09:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD15B842B7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:10:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 26DC61C24731
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:09:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 172161C210EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:10:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79DD9156968;
-	Tue, 30 Jan 2024 18:09:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9300156968;
+	Tue, 30 Jan 2024 18:09:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="c0KBuxxy"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b="oXUr4SUt"
+Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28756155A5D;
-	Tue, 30 Jan 2024 18:09:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A02678612D;
+	Tue, 30 Jan 2024 18:09:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=157.90.84.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706638153; cv=none; b=JcbOurat75TUgOSivsrnzhf1Hd+ZvoSFegwEOFoA7lm3DyaCu0QlEDHL+wQq/aSs4E/rzKNxoDcrWlUY4R+8fiyVqUKyZ7UKE/wT3/idDfRDCloZ3sjS8zU3wkat6rKf4a21YQdpQbbs1iAn3b0b5CiURCl6WASYj2iii67YRGo=
+	t=1706638198; cv=none; b=I7atQSvj26W7S7RtgkvnyWDm+K0JolAzz4mdqJ89idd3kZdS8l21O7ctusCTmDw/4EAJMAyVuVyDp2Jy+CbNTdS98jT10zNso++Yxc7Q0nZpus8RzoEZ0yM2Qc5sFUWPKYxlNa4O4kS17Q8ySJvjwVqqQXrRTwfAI7XbB3/5IHc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706638153; c=relaxed/simple;
-	bh=qPHLBGQcbx+a/P2SvHS9zlzFDNbMb9t0tcjBhxjZ6aQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=j3KXVwHX+YRsfc1NYE/p9NDPy2wJEwx/ZYM8oaHWiP9UA9J5/WNWBs7hDO7kHn6yREe9hpBM/l5MYcv9FZgvjPgD4xYqtPYFhxXmRXwXdsaJ9XttBJOLCc2LjFi4TGlYlNThefpjIiNJJiBhf1E3oPTkuZZT3+dFQyyVoc6Bqrs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=c0KBuxxy; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706638151; x=1738174151;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=qPHLBGQcbx+a/P2SvHS9zlzFDNbMb9t0tcjBhxjZ6aQ=;
-  b=c0KBuxxy8EmQXySKRUb+3laaPQFQ0J8iTb1ZJZo7QiixOQubVZQFTiML
-   2PjTpOryRs+zToBZXUB4g0hv4uas9Jdp1An3ooFzQ/L7I9p4T7kpVR3R4
-   0MloUKwnEYInAz2MXUiu6OtDUE2tSWa/pXOCo5+oPyG8v7uRfWrmIoCNd
-   b7xBnA0AFHRhsVH/tBUN/oI3Wou9YHPH8Nx57XFRHnDSVBdtZsY6VlNid
-   7iGgGS8x5VHA8UdvAVKahrzgT0eWVLoguJ9EjUVd78e9FwahIk2DruDz9
-   FJxuLVzQkKNY0gbwG3bQKeMWCS65aJ8YvW+FDFGNUOogxmIlw0gZEhnNf
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="10108752"
-X-IronPort-AV: E=Sophos;i="6.05,230,1701158400"; 
-   d="scan'208";a="10108752"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 10:09:10 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,230,1701158400"; 
-   d="scan'208";a="36584202"
-Received: from b49691a74b80.jf.intel.com ([10.165.54.183])
-  by orviesa001.jf.intel.com with ESMTP; 30 Jan 2024 10:09:09 -0800
-From: weilin.wang@intel.com
-To: weilin.wang@intel.com,
-	Namhyung Kim <namhyung@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Kan Liang <kan.liang@linux.intel.com>
-Cc: linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Perry Taylor <perry.taylor@intel.com>,
-	Samantha Alt <samantha.alt@intel.com>,
-	Caleb Biggers <caleb.biggers@intel.com>,
-	Mark Rutland <mark.rutland@arm.com>
-Subject: [PATCH v1 1/1] perf test: Simplify metric value validation test final report
-Date: Tue, 30 Jan 2024 10:09:07 -0800
-Message-ID: <20240130180907.639729-1-weilin.wang@intel.com>
-X-Mailer: git-send-email 2.42.0
+	s=arc-20240116; t=1706638198; c=relaxed/simple;
+	bh=m87LuxG5SlcKEZJiG44L5Eg1MueyoN2vTGz62/+gQhM=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=jfUiZbcwIFm25B3JijfkjBy/tw0NOUsgiahrKoo48KMEuGC7mmebBMGhwXkBtK7hl11NzYZr0PV+vKeP2bfgwRcw6lMfW/Dz8dnXJOqu6YEOzoSfbIuJpEvbr5SXG/BNIxlVt1SlcXjmUQfkMgdCZPkCefPEWEg+cAkxGdOakRE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com; spf=pass smtp.mailfrom=tuxedocomputers.com; dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b=oXUr4SUt; arc=none smtp.client-ip=157.90.84.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxedocomputers.com
+Received: from [192.168.42.20] (p5de453e7.dip0.t-ipconnect.de [93.228.83.231])
+	(Authenticated sender: wse@tuxedocomputers.com)
+	by mail.tuxedocomputers.com (Postfix) with ESMTPSA id 2AA442FC004A;
+	Tue, 30 Jan 2024 19:09:52 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
+	s=default; t=1706638192;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yt5XmcRwrc6b3h54Zz6Vh2inuJB9pyPk7T4/qPJrHe0=;
+	b=oXUr4SUtxCpBwyI+wvB3hhhVwpbRHVJlKIdgP9iwrS3sIV/8miYDVzgfiRh4TxnqK2Z6JK
+	HYx9o3mSmxmpVGnXN/ceoezdXa0FMUU6DXEcU5bz5cFFX1904+XV4T+2xsGWx7wg8Ixgay
+	i12V14VEKexLjH9vn3EHB50UkIdywas=
+Authentication-Results: mail.tuxedocomputers.com;
+	auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
+Message-ID: <9851a06d-956e-4b57-be63-e10ff1fce8b4@tuxedocomputers.com>
+Date: Tue, 30 Jan 2024 19:09:51 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+From: Werner Sembach <wse@tuxedocomputers.com>
+Subject: Re: Implement per-key keyboard backlight as auxdisplay?
+To: Hans de Goede <hdegoede@redhat.com>, Pavel Machek <pavel@ucw.cz>
+Cc: Jani Nikula <jani.nikula@linux.intel.com>, jikos@kernel.org,
+ Jelle van der Waa <jelle@vdwaa.nl>,
+ Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, Lee Jones <lee@kernel.org>,
+ linux-kernel@vger.kernel.org,
+ "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ linux-input@vger.kernel.org, ojeda@kernel.org, linux-leds@vger.kernel.org
+References: <aac81702-df1e-43a2-bfe9-28e9cb8d2282@tuxedocomputers.com>
+ <ZSmg4tqXiYiX18K/@duo.ucw.cz>
+ <CANiq72mfP+dOLFR352O0UNVF8m8yTi_VmOY1zzQdTBjPWCRowg@mail.gmail.com>
+ <87sf61bm8t.fsf@intel.com> <ZVvHG/Q+V6kCnfKZ@duo.ucw.cz>
+ <f4137e34-c7fb-4f21-bc93-1496cbf61fdf@tuxedocomputers.com>
+ <8096a042-83bd-4b9f-b633-79e86995c9b8@redhat.com>
+ <f416fbca-589b-4f6a-aad6-323b66398273@tuxedocomputers.com>
+ <4222268b-ff44-4b7d-bf11-e350594bbe24@redhat.com>
+ <ac02143c-d417-49e5-9c6e-150cbda71ba7@tuxedocomputers.com>
+ <ZaljwLe7P+dXHEHb@duo.ucw.cz>
+ <6bbfdd62-e663-4a45-82f4-445069a8d690@redhat.com>
+ <0cdb78b1-7763-4bb6-9582-d70577781e61@tuxedocomputers.com>
+ <7228f2c6-fbdd-4e19-b703-103b8535d77d@redhat.com>
+ <730bead8-6e1d-4d21-90d2-4ee73155887a@tuxedocomputers.com>
+ <952409e1-2f0e-4d7a-a7a9-3b78f2eafec7@redhat.com>
+Content-Language: en-US, de-DE
+In-Reply-To: <952409e1-2f0e-4d7a-a7a9-3b78f2eafec7@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Weilin Wang <weilin.wang@intel.com>
+Hi Hans,
 
-The original test report was too complicated to read with information
-that not really useful. This new update simplify the report which should
-largely improve the readibility.
+resend because Thunderbird htmlified the mail :/
 
-Signed-off-by: Weilin Wang <weilin.wang@intel.com>
----
- .../tests/shell/lib/perf_metric_validation.py | 231 ++++++++++--------
- tools/perf/tests/shell/stat_metrics_values.sh |   4 +-
- 2 files changed, 127 insertions(+), 108 deletions(-)
+Am 30.01.24 um 18:10 schrieb Hans de Goede:
+> Hi Werner,
+>
+> On 1/30/24 12:12, Werner Sembach wrote:
+>> Hi Hans,
+>>
+>> Am 29.01.24 um 14:24 schrieb Hans de Goede:
+<snip>
+>> I think that are mostly external keyboards, so in theory a possible cut could also between built-in and external devices.
+> IMHO it would be better to limit /dev/rgbledstring use to only
+> cases where direct userspace control is not possible and thus
+> have the cut be based on whether direct userspace control
+> (e.g. /dev/hidraw access) is possible or not.
 
-diff --git a/tools/perf/tests/shell/lib/perf_metric_validation.py b/tools/perf/tests/shell/lib/perf_metric_validation.py
-index 50a34a9cc040..a2d235252183 100644
---- a/tools/perf/tests/shell/lib/perf_metric_validation.py
-+++ b/tools/perf/tests/shell/lib/perf_metric_validation.py
-@@ -1,4 +1,4 @@
--#SPDX-License-Identifier: GPL-2.0
-+# SPDX-License-Identifier: GPL-2.0
- import re
- import csv
- import json
-@@ -6,36 +6,61 @@ import argparse
- from pathlib import Path
- import subprocess
- 
-+
-+class TestError:
-+    def __init__(self, metric: list[str], wl: str, value: list[float], low: float, up=float('nan'), description=str()):
-+        self.metric: list = metric  # multiple metrics in relationship type tests
-+        self.workloads = [wl]  # multiple workloads possible
-+        self.collectedValue: list = value
-+        self.valueLowBound = low
-+        self.valueUpBound = up
-+        self.description = description
-+
-+    def __repr__(self) -> str:
-+        if len(self.metric) > 1:
-+            return "\nMetric Relationship Error: \tThe collected value of metric {0}\n\
-+                \tis {1} in workload(s): {2} \n\
-+                \tbut expected value range is [{3}, {4}]\n\
-+                \tRelationship rule description: \'{5}\'".format(self.metric, self.collectedValue, self.workloads,
-+                                                                 self.valueLowBound, self.valueUpBound, self.description)
-+        elif len(self.collectedValue) == 0:
-+            return "\nNo Metric Value Error: \tMetric {0} returns with no value \n\
-+                    \tworkload(s): {1}".format(self.metric, self.workloads)
-+        else:
-+            return "\nWrong Metric Value Error: \tThe collected value of metric {0}\n\
-+                    \tis {1} in workload(s): {2}\n\
-+                    \tbut expected value range is [{3}, {4}]"\
-+                        .format(self.metric, self.collectedValue, self.workloads,
-+                                self.valueLowBound, self.valueUpBound)
-+
-+
- class Validator:
-     def __init__(self, rulefname, reportfname='', t=5, debug=False, datafname='', fullrulefname='', workload='true', metrics=''):
-         self.rulefname = rulefname
-         self.reportfname = reportfname
-         self.rules = None
--        self.collectlist:str = metrics
-+        self.collectlist: str = metrics
-         self.metrics = self.__set_metrics(metrics)
-         self.skiplist = set()
-         self.tolerance = t
- 
-         self.workloads = [x for x in workload.split(",") if x]
--        self.wlidx = 0 # idx of current workloads
--        self.allresults = dict() # metric results of all workload
--        self.allignoremetrics = dict() # metrics with no results or negative results
--        self.allfailtests = dict()
-+        self.wlidx = 0  # idx of current workloads
-+        self.allresults = dict()  # metric results of all workload
-         self.alltotalcnt = dict()
-         self.allpassedcnt = dict()
--        self.allerrlist = dict()
- 
--        self.results = dict() # metric results of current workload
-+        self.results = dict()  # metric results of current workload
-         # vars for test pass/failure statistics
--        self.ignoremetrics= set() # metrics with no results or negative results, neg result counts as a failed test
--        self.failtests = dict()
-+        # metrics with no results or negative results, neg result counts failed tests
-+        self.ignoremetrics = set()
-         self.totalcnt = 0
-         self.passedcnt = 0
-         # vars for errors
-         self.errlist = list()
- 
-         # vars for Rule Generator
--        self.pctgmetrics = set() # Percentage rule
-+        self.pctgmetrics = set()  # Percentage rule
- 
-         # vars for debug
-         self.datafname = datafname
-@@ -69,10 +94,10 @@ class Validator:
-                       ensure_ascii=True,
-                       indent=4)
- 
--    def get_results(self, idx:int = 0):
-+    def get_results(self, idx: int = 0):
-         return self.results[idx]
- 
--    def get_bounds(self, lb, ub, error, alias={}, ridx:int = 0) -> list:
-+    def get_bounds(self, lb, ub, error, alias={}, ridx: int = 0) -> list:
-         """
-         Get bounds and tolerance from lb, ub, and error.
-         If missing lb, use 0.0; missing ub, use float('inf); missing error, use self.tolerance.
-@@ -85,7 +110,7 @@ class Validator:
-                   tolerance, denormalized base on upper bound value
-         """
-         # init ubv and lbv to invalid values
--        def get_bound_value (bound, initval, ridx):
-+        def get_bound_value(bound, initval, ridx):
-             val = initval
-             if isinstance(bound, int) or isinstance(bound, float):
-                 val = bound
-@@ -113,10 +138,10 @@ class Validator:
- 
-         return lbv, ubv, denormerr
- 
--    def get_value(self, name:str, ridx:int = 0) -> list:
-+    def get_value(self, name: str, ridx: int = 0) -> list:
-         """
-         Get value of the metric from self.results.
--        If result of this metric is not provided, the metric name will be added into self.ignoremetics and self.errlist.
-+        If result of this metric is not provided, the metric name will be added into self.ignoremetics.
-         All future test(s) on this metric will fail.
- 
-         @param name: name of the metric
-@@ -142,7 +167,7 @@ class Validator:
-         Check if metrics value are non-negative.
-         One metric is counted as one test.
-         Failure: when metric value is negative or not provided.
--        Metrics with negative value will be added into the self.failtests['PositiveValueTest'] and self.ignoremetrics.
-+        Metrics with negative value will be added into self.ignoremetrics.
-         """
-         negmetric = dict()
-         pcnt = 0
-@@ -155,25 +180,27 @@ class Validator:
-             else:
-                 pcnt += 1
-             tcnt += 1
-+        # The first round collect_perf() run these metrics with simple workload
-+        # "true". We give metrics a second chance with a longer workload if less
-+        # than 20 metrics failed positive test.
-         if len(rerun) > 0 and len(rerun) < 20:
-             second_results = dict()
-             self.second_test(rerun, second_results)
-             for name, val in second_results.items():
--                if name not in negmetric: continue
-+                if name not in negmetric:
-+                    continue
-                 if val >= 0:
-                     del negmetric[name]
-                     pcnt += 1
- 
--        self.failtests['PositiveValueTest']['Total Tests'] = tcnt
--        self.failtests['PositiveValueTest']['Passed Tests'] = pcnt
-         if len(negmetric.keys()):
-             self.ignoremetrics.update(negmetric.keys())
--            negmessage = ["{0}(={1:.4f})".format(name, val) for name, val in negmetric.items()]
--            self.failtests['PositiveValueTest']['Failed Tests'].append({'NegativeValue': negmessage})
-+            self.errlist.extend(
-+                [TestError([m], self.workloads[self.wlidx], negmetric[m], 0) for m in negmetric.keys()])
- 
-         return
- 
--    def evaluate_formula(self, formula:str, alias:dict, ridx:int = 0):
-+    def evaluate_formula(self, formula: str, alias: dict, ridx: int = 0):
-         """
-         Evaluate the value of formula.
- 
-@@ -187,10 +214,11 @@ class Validator:
-         sign = "+"
-         f = str()
- 
--        #TODO: support parenthesis?
-+        # TODO: support parenthesis?
-         for i in range(len(formula)):
-             if i+1 == len(formula) or formula[i] in ('+', '-', '*', '/'):
--                s = alias[formula[b:i]] if i+1 < len(formula) else alias[formula[b:]]
-+                s = alias[formula[b:i]] if i + \
-+                    1 < len(formula) else alias[formula[b:]]
-                 v = self.get_value(s, ridx)
-                 if not v:
-                     errs.append(s)
-@@ -228,49 +256,49 @@ class Validator:
-         alias = dict()
-         for m in rule['Metrics']:
-             alias[m['Alias']] = m['Name']
--        lbv, ubv, t = self.get_bounds(rule['RangeLower'], rule['RangeUpper'], rule['ErrorThreshold'], alias, ridx=rule['RuleIndex'])
--        val, f = self.evaluate_formula(rule['Formula'], alias, ridx=rule['RuleIndex'])
-+        lbv, ubv, t = self.get_bounds(
-+            rule['RangeLower'], rule['RangeUpper'], rule['ErrorThreshold'], alias, ridx=rule['RuleIndex'])
-+        val, f = self.evaluate_formula(
-+            rule['Formula'], alias, ridx=rule['RuleIndex'])
-+
-+        lb = rule['RangeLower']
-+        ub = rule['RangeUpper']
-+        if isinstance(lb, str):
-+            if lb in alias:
-+                lb = alias[lb]
-+        if isinstance(ub, str):
-+            if ub in alias:
-+                ub = alias[ub]
-+
-         if val == -1:
--            self.failtests['RelationshipTest']['Failed Tests'].append({'RuleIndex': rule['RuleIndex'], 'Description':f})
-+            self.errlist.append(TestError([m['Name'] for m in rule['Metrics']], self.workloads[self.wlidx], [],
-+                                lb, ub, rule['Description']))
-         elif not self.check_bound(val, lbv, ubv, t):
--            lb = rule['RangeLower']
--            ub = rule['RangeUpper']
--            if isinstance(lb, str):
--                if lb in alias:
--                    lb = alias[lb]
--            if isinstance(ub, str):
--                if ub in alias:
--                    ub = alias[ub]
--            self.failtests['RelationshipTest']['Failed Tests'].append({'RuleIndex': rule['RuleIndex'], 'Formula':f,
--                                                                       'RangeLower': lb, 'LowerBoundValue': self.get_value(lb),
--                                                                       'RangeUpper': ub, 'UpperBoundValue':self.get_value(ub),
--                                                                       'ErrorThreshold': t, 'CollectedValue': val})
-+            self.errlist.append(TestError([m['Name'] for m in rule['Metrics']], self.workloads[self.wlidx], [val],
-+                                lb, ub, rule['Description']))
-         else:
-             self.passedcnt += 1
--            self.failtests['RelationshipTest']['Passed Tests'] += 1
-         self.totalcnt += 1
--        self.failtests['RelationshipTest']['Total Tests'] += 1
- 
-         return
- 
--
-     # Single Metric Test
--    def single_test(self, rule:dict):
-+    def single_test(self, rule: dict):
-         """
-         Validate if the metrics are in the required value range.
-         eg. lower_bound <= metrics_value <= upper_bound
-         One metric is counted as one test in this type of test.
-         One rule may include one or more metrics.
-         Failure: when the metric value not provided or the value is outside the bounds.
--        This test updates self.total_cnt and records failed tests in self.failtest['SingleMetricTest'].
-+        This test updates self.total_cnt.
- 
-         @param rule: dict with metrics to validate and the value range requirement
-         """
--        lbv, ubv, t = self.get_bounds(rule['RangeLower'], rule['RangeUpper'], rule['ErrorThreshold'])
-+        lbv, ubv, t = self.get_bounds(
-+            rule['RangeLower'], rule['RangeUpper'], rule['ErrorThreshold'])
-         metrics = rule['Metrics']
-         passcnt = 0
-         totalcnt = 0
--        faillist = list()
-         failures = dict()
-         rerun = list()
-         for m in metrics:
-@@ -286,25 +314,20 @@ class Validator:
-             second_results = dict()
-             self.second_test(rerun, second_results)
-             for name, val in second_results.items():
--                if name not in failures: continue
-+                if name not in failures:
-+                    continue
-                 if self.check_bound(val, lbv, ubv, t):
-                     passcnt += 1
-                     del failures[name]
-                 else:
--                    failures[name] = val
-+                    failures[name] = [val]
-                     self.results[0][name] = val
- 
-         self.totalcnt += totalcnt
-         self.passedcnt += passcnt
--        self.failtests['SingleMetricTest']['Total Tests'] += totalcnt
--        self.failtests['SingleMetricTest']['Passed Tests'] += passcnt
-         if len(failures.keys()) != 0:
--            faillist = [{'MetricName':name, 'CollectedValue':val} for name, val in failures.items()]
--            self.failtests['SingleMetricTest']['Failed Tests'].append({'RuleIndex':rule['RuleIndex'],
--                                                                       'RangeLower': rule['RangeLower'],
--                                                                       'RangeUpper': rule['RangeUpper'],
--                                                                       'ErrorThreshold':rule['ErrorThreshold'],
--                                                                       'Failure':faillist})
-+            self.errlist.extend([TestError([name], self.workloads[self.wlidx], val,
-+                                rule['RangeLower'], rule['RangeUpper']) for name, val in failures.items()])
- 
-         return
- 
-@@ -312,19 +335,11 @@ class Validator:
-         """
-         Create final report and write into a JSON file.
-         """
--        alldata = list()
--        for i in range(0, len(self.workloads)):
--            reportstas = {"Total Rule Count": self.alltotalcnt[i], "Passed Rule Count": self.allpassedcnt[i]}
--            data = {"Metric Validation Statistics": reportstas, "Tests in Category": self.allfailtests[i],
--                    "Errors":self.allerrlist[i]}
--            alldata.append({"Workload": self.workloads[i], "Report": data})
--
--        json_str = json.dumps(alldata, indent=4)
--        print("Test validation finished. Final report: ")
--        print(json_str)
-+        print(self.errlist)
- 
-         if self.debug:
--            allres = [{"Workload": self.workloads[i], "Results": self.allresults[i]} for i in range(0, len(self.workloads))]
-+            allres = [{"Workload": self.workloads[i], "Results": self.allresults[i]}
-+                      for i in range(0, len(self.workloads))]
-             self.json_dump(allres, self.datafname)
- 
-     def check_rule(self, testtype, metric_list):
-@@ -342,13 +357,13 @@ class Validator:
-         return True
- 
-     # Start of Collector and Converter
--    def convert(self, data: list, metricvalues:dict):
-+    def convert(self, data: list, metricvalues: dict):
-         """
-         Convert collected metric data from the -j output to dict of {metric_name:value}.
-         """
-         for json_string in data:
-             try:
--                result =json.loads(json_string)
-+                result = json.loads(json_string)
-                 if "metric-unit" in result and result["metric-unit"] != "(null)" and result["metric-unit"] != "":
-                     name = result["metric-unit"].split("  ")[1] if len(result["metric-unit"].split("  ")) > 1 \
-                         else result["metric-unit"]
-@@ -365,9 +380,10 @@ class Validator:
-         print(" ".join(command))
-         cmd = subprocess.run(command, stderr=subprocess.PIPE, encoding='utf-8')
-         data = [x+'}' for x in cmd.stderr.split('}\n') if x]
-+        if data[0][0] != '{':
-+            data[0] = data[0][data[0].find('{'):]
-         return data
- 
--
-     def collect_perf(self, workload: str):
-         """
-         Collect metric data with "perf stat -M" on given workload with -a and -j.
-@@ -385,14 +401,18 @@ class Validator:
-             if rule["TestType"] == "RelationshipTest":
-                 metrics = [m["Name"] for m in rule["Metrics"]]
-                 if not any(m not in collectlist[0] for m in metrics):
--                    collectlist[rule["RuleIndex"]] = [",".join(list(set(metrics)))]
-+                    collectlist[rule["RuleIndex"]] = [
-+                        ",".join(list(set(metrics)))]
- 
-         for idx, metrics in collectlist.items():
--            if idx == 0: wl = "true"
--            else: wl = workload
-+            if idx == 0:
-+                wl = "true"
-+            else:
-+                wl = workload
-             for metric in metrics:
-                 data = self._run_perf(metric, wl)
--                if idx not in self.results: self.results[idx] = dict()
-+                if idx not in self.results:
-+                    self.results[idx] = dict()
-                 self.convert(data, self.results[idx])
-         return
- 
-@@ -412,7 +432,8 @@ class Validator:
-         2) create metric name list
-         """
-         command = ['perf', 'list', '-j', '--details', 'metrics']
--        cmd = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf-8')
-+        cmd = subprocess.run(command, stdout=subprocess.PIPE,
-+                             stderr=subprocess.PIPE, encoding='utf-8')
-         try:
-             data = json.loads(cmd.stdout)
-             for m in data:
-@@ -453,12 +474,12 @@ class Validator:
-         rules = data['RelationshipRules']
-         self.skiplist = set([name.lower() for name in data['SkipList']])
-         self.rules = self.remove_unsupported_rules(rules)
--        pctgrule = {'RuleIndex':0,
--                    'TestType':'SingleMetricTest',
--                    'RangeLower':'0',
-+        pctgrule = {'RuleIndex': 0,
-+                    'TestType': 'SingleMetricTest',
-+                    'RangeLower': '0',
-                     'RangeUpper': '100',
-                     'ErrorThreshold': self.tolerance,
--                    'Description':'Metrics in percent unit have value with in [0, 100]',
-+                    'Description': 'Metrics in percent unit have value with in [0, 100]',
-                     'Metrics': [{'Name': m.lower()} for m in self.pctgmetrics]}
-         self.rules.append(pctgrule)
- 
-@@ -469,8 +490,9 @@ class Validator:
-             idx += 1
- 
-         if self.debug:
--            #TODO: need to test and generate file name correctly
--            data = {'RelationshipRules':self.rules, 'SupportedMetrics': [{"MetricName": name} for name in self.metrics]}
-+            # TODO: need to test and generate file name correctly
-+            data = {'RelationshipRules': self.rules, 'SupportedMetrics': [
-+                {"MetricName": name} for name in self.metrics]}
-             self.json_dump(data, self.fullrulefname)
- 
-         return
-@@ -482,20 +504,17 @@ class Validator:
-         @param key: key to the dictionaries (index of self.workloads).
-         '''
-         self.allresults[key] = self.results
--        self.allignoremetrics[key] = self.ignoremetrics
--        self.allfailtests[key] = self.failtests
-         self.alltotalcnt[key] = self.totalcnt
-         self.allpassedcnt[key] = self.passedcnt
--        self.allerrlist[key] = self.errlist
- 
--    #Initialize data structures before data validation of each workload
-+    # Initialize data structures before data validation of each workload
-     def _init_data(self):
- 
--        testtypes = ['PositiveValueTest', 'RelationshipTest', 'SingleMetricTest']
-+        testtypes = ['PositiveValueTest',
-+                     'RelationshipTest', 'SingleMetricTest']
-         self.results = dict()
--        self.ignoremetrics= set()
-+        self.ignoremetrics = set()
-         self.errlist = list()
--        self.failtests = {k:{'Total Tests':0, 'Passed Tests':0, 'Failed Tests':[]} for k in testtypes}
-         self.totalcnt = 0
-         self.passedcnt = 0
- 
-@@ -525,32 +544,33 @@ class Validator:
-                 testtype = r['TestType']
-                 if not self.check_rule(testtype, r['Metrics']):
-                     continue
--                if  testtype == 'RelationshipTest':
-+                if testtype == 'RelationshipTest':
-                     self.relationship_test(r)
-                 elif testtype == 'SingleMetricTest':
-                     self.single_test(r)
-                 else:
-                     print("Unsupported Test Type: ", testtype)
--                    self.errlist.append("Unsupported Test Type from rule: " + r['RuleIndex'])
--            self._storewldata(i)
-             print("Workload: ", self.workloads[i])
--            print("Total metrics collected: ", self.failtests['PositiveValueTest']['Total Tests'])
--            print("Non-negative metric count: ", self.failtests['PositiveValueTest']['Passed Tests'])
-             print("Total Test Count: ", self.totalcnt)
-             print("Passed Test Count: ", self.passedcnt)
--
-+            self._storewldata(i)
-         self.create_report()
--        return sum(self.alltotalcnt.values()) != sum(self.allpassedcnt.values())
-+        return len(self.errlist) > 0
- # End of Class Validator
- 
- 
- def main() -> None:
--    parser = argparse.ArgumentParser(description="Launch metric value validation")
--
--    parser.add_argument("-rule", help="Base validation rule file", required=True)
--    parser.add_argument("-output_dir", help="Path for validator output file, report file", required=True)
--    parser.add_argument("-debug", help="Debug run, save intermediate data to files", action="store_true", default=False)
--    parser.add_argument("-wl", help="Workload to run while data collection", default="true")
-+    parser = argparse.ArgumentParser(
-+        description="Launch metric value validation")
-+
-+    parser.add_argument(
-+        "-rule", help="Base validation rule file", required=True)
-+    parser.add_argument(
-+        "-output_dir", help="Path for validator output file, report file", required=True)
-+    parser.add_argument("-debug", help="Debug run, save intermediate data to files",
-+                        action="store_true", default=False)
-+    parser.add_argument(
-+        "-wl", help="Workload to run while data collection", default="true")
-     parser.add_argument("-m", help="Metric list to validate", default="")
-     args = parser.parse_args()
-     outpath = Path(args.output_dir)
-@@ -559,8 +579,8 @@ def main() -> None:
-     datafile = Path.joinpath(outpath, 'perf_data.json')
- 
-     validator = Validator(args.rule, reportf, debug=args.debug,
--                        datafname=datafile, fullrulefname=fullrule, workload=args.wl,
--                        metrics=args.m)
-+                          datafname=datafile, fullrulefname=fullrule, workload=args.wl,
-+                          metrics=args.m)
-     ret = validator.test()
- 
-     return ret
-@@ -569,6 +589,3 @@ def main() -> None:
- if __name__ == "__main__":
-     import sys
-     sys.exit(main())
--
--
--
-diff --git a/tools/perf/tests/shell/stat_metrics_values.sh b/tools/perf/tests/shell/stat_metrics_values.sh
-index 7ca172599aa6..279f19c5919a 100755
---- a/tools/perf/tests/shell/stat_metrics_values.sh
-+++ b/tools/perf/tests/shell/stat_metrics_values.sh
-@@ -19,6 +19,8 @@ echo "Output will be stored in: $tmpdir"
- $PYTHON $pythonvalidator -rule $rulefile -output_dir $tmpdir -wl "${workload}"
- ret=$?
- rm -rf $tmpdir
--
-+if [ $ret -ne 0 ]; then
-+	echo "Metric validation return with erros. Please check metrics reported with errors."
-+fi
- exit $ret
- 
--- 
-2.42.0
+Ack
+
+<snip>
+
+>> So also no basic driver? Or still the concept from before with a basic 1 zone only driver via leds subsystem to have something working, but it is unregistered by userspace, if open rgb wants to take over for fine granular support?
+> Ah good point, no I think that a basic driver just for kbd backlight
+> brightness support which works with the standard desktop environment
+> controls for this makes sense.
+>
+> Combined with some mechanism for e.g. openrgb to fully take over
+> control as discussed. It is probably a good idea to file a separate
+> issue with the openrgb project to discuss the takeover API.
+
+I think the OpenRGB maintainers are pretty flexible at that point, after all 
+it's similar to enable commands a lot of rgb devices need anyway. I would 
+include it in a full api proposal.
+
+On this note: Any particular reason you suggested an ioctl interface instead of 
+a sysfs one? (Open question as, for example, I have no idea what performance 
+implications both have)
+
+<snip>
+
+>> I opened an issue regarding this:https://gitlab.com/CalcProgrammer1/OpenRGB/-/issues/3916
+> Great, thank you.
+First replies are in.
+> Regards,
+>
+> Hans
+
+Kind regards,
+
+Werner
 
 
