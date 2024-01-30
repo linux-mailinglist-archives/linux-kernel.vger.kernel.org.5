@@ -1,111 +1,157 @@
-Return-Path: <linux-kernel+bounces-45153-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45154-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E705842C3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:01:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7753B842C3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:04:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45CAB1C245EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:01:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A11561C2467F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:04:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DF3579956;
-	Tue, 30 Jan 2024 19:01:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5EFE79956;
+	Tue, 30 Jan 2024 19:04:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org header.b="S/LRa7k1"
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="sPvFIbvn"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6754079944
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 19:01:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 083FD79948;
+	Tue, 30 Jan 2024 19:04:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706641297; cv=none; b=opO6i1FrytTuSisEYrCCqwzev3PsCV+jt15xSxjHFzI5S0GdwmStdv2/OgRRmQVJy/zjjmAxQpIHbUMwsfQYybYiI3VrpLwCWJXmmb5pkrHK5d3JdjXBelIe5ucuKM67zuVNTRcQJmjBGxkLJ6DV8YuoAKjCl2LVgGJHXgxnF2g=
+	t=1706641452; cv=none; b=S50TscRi5ny3JoTnv/gnaSB1I33qw2jO28EwMtTb3Dq+Zs3WfdblTMRXyQFNwbY6ZKKFxQPXfGbq2sipuwr3r3tfbkNaUy4Az/UEk+Fe5ZjJkqZ9g+dXjCNMRjAyjF8nBQZA9CqAnog52J10SROr/13L9GT+ikkW155D7lx36K4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706641297; c=relaxed/simple;
-	bh=E4micvE7O+ZbfCsFYarptDn3Hd1yYBBH03FWbQeFOoc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Gekm3i/F2qvli+Zl6QbzAk6cPy+7AJCAA/HS9tAKtFs3JaVAvCBDMADTf4qOu6aCMWPwbW+eD/IqoOq7LXFQNC7vM6NgNPTASIC1DELrcOVMGbLIb+eWRFElnxc2ZD3z6XsbiVOPp1X0AjwIoXNTxHlGCDsqnveG7MvuQme/xek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=endlessos.org; spf=pass smtp.mailfrom=endlessos.org; dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org header.b=S/LRa7k1; arc=none smtp.client-ip=209.85.219.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=endlessos.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=endlessos.org
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc26698a5bfso1268418276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 11:01:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos.org; s=google; t=1706641294; x=1707246094; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=78og88yF4pCuDlRqg/F7xnA9QQPhVIa54mFydxb6xAQ=;
-        b=S/LRa7k1I6VkFGbMjJwp/QW0hek8NQEkABe3RQolvttUei2fqEK7Vd6XP3BmNh/5c5
-         mLdEEyb3LIrVcn5oOpv4wHfCJfxnM2aFnlnTfHHk2XNytrTl1c7/Blzubi6o9ZzcXYTE
-         5DsHE53pzEopVyRhMZ2ixUQDaSLtROgqEr3XCdNyt8lew3QPLJMcDN5ayXrjbYTtcsH9
-         TOQX/j07fvJ10OsWzJG/N7pTX6x4F99gT8+NRGnu3JU4BUZNw0HI+aG1LlHISSXGKJKc
-         dHE44i6w/ilDkEAEoat3tJP8PZvE+jso7cencgI9+0ajA8UZ8Lt4ik0dYAhrYduIRWjK
-         SN8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706641294; x=1707246094;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=78og88yF4pCuDlRqg/F7xnA9QQPhVIa54mFydxb6xAQ=;
-        b=tlXLm3xVlXywpyRm5bHSq/b4NEqxYl/By5MfVyJ5DsHoGkMNqJomVHIEUUv8XClEo/
-         jJbNRwJ0LyxsB5/42o2DNX5VND3+dMrodMYdV018xAerT4y1nlvMMHASEa4iwXuZ5YCT
-         uICXQAXeunVg7xDlb/Ea1c3Io2c16xOycSv+O2ehQQI3Eb2XjWRACQX1gtv6eRev676u
-         inQbUHcHTe28AQVEdUo96qrxdePkOHrFtrSryBZ/CmwQ57xGqGS/4HFvTt2olS/5nvZK
-         tW1IfHUz9u90Tz36LNPKMT1PDKxFtgTXWeWm518dpY1EzBuHcqOAWebT3AnfATwj+/Kr
-         Gwug==
-X-Forwarded-Encrypted: i=0; AJvYcCX+Xjbd9JAcN2v+5rnTzhSOWpiN1H4/oXZZ46f6XNVTVDaiLw8xpejq6ASJQO1baYR6i69kVrb1TgUBcjMMxtZ3mceIS3yfnBTddYr+
-X-Gm-Message-State: AOJu0YyYvuySalRHlTeGvYb/yJthOS4jBP5Fi2bJkTwmuAWtTJu0TYZO
-	Wyl+iYVjnVFF8w1ScWNivpPnk0LCmlzj33KlBkc7vHm2ih6z7VIqv/sG+pHzyhy2anS1ywtUaRV
-	J/BhyuK8+ceIRG2bpsol65XLhq1Bo5poD5Rsfqg==
-X-Google-Smtp-Source: AGHT+IEIheGpue36qp31pmYoALnxMN3CKJuNbqB2Ltwx8pEJRNlVwh1TE9U+Ybr/IFc6SWJpr7mnK28qhEHL7CgEogA=
-X-Received: by 2002:a25:4191:0:b0:dc6:42cd:6554 with SMTP id
- o139-20020a254191000000b00dc642cd6554mr200359yba.0.1706641294016; Tue, 30 Jan
- 2024 11:01:34 -0800 (PST)
+	s=arc-20240116; t=1706641452; c=relaxed/simple;
+	bh=/VhpS5sd/6Wo9lZmVmUCPhzalbMspHdeI+886w/8Nls=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AjnBtPXejlonvizDos76qup11iEzPBy/yXFcmGOO1aLQH8tFS//ZkGmmqbcjS0jcarxZp3LMT0SOwkR7jlbM5RXvMqiUnilJCf5tdJO8OelF1p19JdKGyThD9Mdo7jbvy40B4Sd7UCP/xx2KlUwbt9zlL3WUv6ELa3JGrOyONjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=sPvFIbvn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48FA5C433C7;
+	Tue, 30 Jan 2024 19:04:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1706641451;
+	bh=/VhpS5sd/6Wo9lZmVmUCPhzalbMspHdeI+886w/8Nls=;
+	h=From:To:Cc:Subject:Date:From;
+	b=sPvFIbvnEnAfVnGnWpE1wIA6AsVzmHu44QSP4mHgzR0gVpraQ6hb0UWMyr45N6ncO
+	 /fVUj47CsgFdoUz4mICcPYg7bl3baxe6qDxRRPpihbNyvnDIKLYXMGkumfcjW6TN2z
+	 iDwbrd2zJw+5M5jf/ePV/Uv8EaiQdo1lrUABqMrI=
+From: Linus Torvalds <torvalds@linux-foundation.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 1/6] tracefs: avoid using the ei->dentry pointer unnecessarily
+Date: Tue, 30 Jan 2024 11:03:50 -0800
+Message-ID: <20240130190355.11486-1-torvalds@linux-foundation.org>
+X-Mailer: git-send-email 2.43.0.5.g38fb137bdb
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130183124.19985-1-drake@endlessos.org> <7a8f3595-3efc-428a-852a-d9edc8ebb01b@amd.com>
-In-Reply-To: <7a8f3595-3efc-428a-852a-d9edc8ebb01b@amd.com>
-From: Daniel Drake <drake@endlessos.org>
-Date: Tue, 30 Jan 2024 15:00:58 -0400
-Message-ID: <CAD8Lp45ycrY-hkKVZGEQdeYmODauaShgFp2tj=QtEXK_C2tcYA@mail.gmail.com>
-Subject: Re: [PATCH] PCI: Disable D3cold on Asus B1400 PCI-NVMe bridge
-To: Mario Limonciello <mario.limonciello@amd.com>
-Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
-	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, bhelgaas@google.com, 
-	david.e.box@linux.intel.com, Jian-Hong Pan <jhp@endlessos.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 30, 2024 at 2:47=E2=80=AFPM Mario Limonciello
-<mario.limonciello@amd.com> wrote:
-> Has there already been a check done whether any newer firmware is
-> available from ASUS that doesn't suffer the deficiency described below?
+The eventfs_find_events() code tries to walk up the tree to find the
+event directory that a dentry belongs to, in order to then find the
+eventfs inode that is associated with that event directory.
 
-The latest firmware does flip StorageD3Enable to 0, which has the side
-effect of never putting the NVMe device or the parent bridge into
-D3cold.
-However, we have shipped hundreds of these devices with the original
-production BIOS version to first time computer users, so it is not
-feasible to ask the end user to upgrade. And there is no
-Linux-compatible online firmware update for this product range. Hence
-a Linux-level workaround for this issue would be highly valuable.
+However, it uses an odd combination of walking the dentry parent,
+looking up the eventfs inode associated with that, and then looking up
+the dentry from there.  Repeat.
 
-> Is this the only problem blocking s2idle from working effectively on
-> this platform?  If so, I would think you want to just do the revert in
-> the same series if it's decided this patch needs to spin again for any
-> reason.
+But the code shouldn't have back-pointers to dentries in the first
+place, and it should just walk the dentry parenthood chain directly.
 
-Yes these could be combined into the same series, with agreement from
-the drivers/acpi/ maintainers for the S3 revert.
+Similarly, 'set_top_events_ownership()' looks up the dentry from the
+eventfs inode, but the only reason it wants a dentry is to look up the
+superblock in order to look up the root dentry.
 
-Thanks
-Daniel
+But it already has the real filesystem inode, which has that same
+superblock pointer.  So just pass in the superblock pointer using the
+information that's already there, instead of looking up extraneous data
+that is irrelevant.
+
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+---
+ fs/tracefs/event_inode.c | 26 ++++++++++++--------------
+ 1 file changed, 12 insertions(+), 14 deletions(-)
+
+diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+index 1c3dd0ad4660..2d128bedd654 100644
+--- a/fs/tracefs/event_inode.c
++++ b/fs/tracefs/event_inode.c
+@@ -156,33 +156,30 @@ static int eventfs_set_attr(struct mnt_idmap *idmap, struct dentry *dentry,
+ 	return ret;
+ }
+ 
+-static void update_top_events_attr(struct eventfs_inode *ei, struct dentry *dentry)
++static void update_top_events_attr(struct eventfs_inode *ei, struct super_block *sb)
+ {
+-	struct inode *inode;
++	struct inode *root;
+ 
+ 	/* Only update if the "events" was on the top level */
+ 	if (!ei || !(ei->attr.mode & EVENTFS_TOPLEVEL))
+ 		return;
+ 
+ 	/* Get the tracefs root inode. */
+-	inode = d_inode(dentry->d_sb->s_root);
+-	ei->attr.uid = inode->i_uid;
+-	ei->attr.gid = inode->i_gid;
++	root = d_inode(sb->s_root);
++	ei->attr.uid = root->i_uid;
++	ei->attr.gid = root->i_gid;
+ }
+ 
+ static void set_top_events_ownership(struct inode *inode)
+ {
+ 	struct tracefs_inode *ti = get_tracefs(inode);
+ 	struct eventfs_inode *ei = ti->private;
+-	struct dentry *dentry;
+ 
+ 	/* The top events directory doesn't get automatically updated */
+ 	if (!ei || !ei->is_events || !(ei->attr.mode & EVENTFS_TOPLEVEL))
+ 		return;
+ 
+-	dentry = ei->dentry;
+-
+-	update_top_events_attr(ei, dentry);
++	update_top_events_attr(ei, inode->i_sb);
+ 
+ 	if (!(ei->attr.mode & EVENTFS_SAVE_UID))
+ 		inode->i_uid = ei->attr.uid;
+@@ -235,8 +232,10 @@ static struct eventfs_inode *eventfs_find_events(struct dentry *dentry)
+ 
+ 	mutex_lock(&eventfs_mutex);
+ 	do {
+-		/* The parent always has an ei, except for events itself */
+-		ei = dentry->d_parent->d_fsdata;
++		// The parent is stable because we do not do renames
++		dentry = dentry->d_parent;
++		// ... and directories always have d_fsdata
++		ei = dentry->d_fsdata;
+ 
+ 		/*
+ 		 * If the ei is being freed, the ownership of the children
+@@ -246,12 +245,11 @@ static struct eventfs_inode *eventfs_find_events(struct dentry *dentry)
+ 			ei = NULL;
+ 			break;
+ 		}
+-
+-		dentry = ei->dentry;
++		// Walk upwards until you find the events inode
+ 	} while (!ei->is_events);
+ 	mutex_unlock(&eventfs_mutex);
+ 
+-	update_top_events_attr(ei, dentry);
++	update_top_events_attr(ei, dentry->d_sb);
+ 
+ 	return ei;
+ }
+-- 
+2.43.0.5.g38fb137bdb
+
 
