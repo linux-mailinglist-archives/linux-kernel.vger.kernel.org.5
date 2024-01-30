@@ -1,109 +1,126 @@
-Return-Path: <linux-kernel+bounces-45037-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F3C3842ADA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:25:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43EBC842ADE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 18:26:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3E49B258FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:25:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75E0B1C257FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 17:26:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35B7912BEAA;
-	Tue, 30 Jan 2024 17:25:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C00B612BEAA;
+	Tue, 30 Jan 2024 17:26:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="TOn1Lcre"
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="TGmk8Bnb"
+Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E15BA1292DC
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 17:25:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 802B21292C2
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 17:26:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706635539; cv=none; b=sTPXG890t9gIxjFPAC2c1lBgTQwzfvYyC8VsZz2dNG6jsIRs8m79ZZ1rWwUI+//QfEocx7XoDmMkm8hhy557/qnvnAuLOtL7z4ZFNit/89vjkpptfxaSSgTmzjerMXucWdO1K1E7hZCgUUBoNYdzv1oAFYQKoe9duukTNQzDPrs=
+	t=1706635606; cv=none; b=qtPgEz0hHo5Hn4kEjFJpo/mMYIISKbTzUi5sBLXq8sJVbGiF1v7UuDbRH0iiJUPd6UIteYGZadoxvGrA6geif4DGPk1xl5GnEsSjBZKACtPZNWXIGqZklrpniCwBvC9E/eONrZxe9suoWWkqvSh4N8NR0pdFKLIK/zjVja/66C0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706635539; c=relaxed/simple;
-	bh=FcwkWgQyZxHw0vq0MR9FTO1uQCeqns6oU7XSsrjb7aE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ucavaf4N2bkj1x8S/IJ0ljua5Ecob/MCCXDuVK0MTSf2o5RSx1gtR/ATW1wjp7h0hJR+PRjVO+tXXMlqu73Nu40fTEZNLU7NEex36xACuiMx8p5VuNRXFxAv53UUVXmUmYmHcMJh0gGEyfEj54+7L7Fz/EXHwEo5Yf8Ag8DIFqk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=none smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=TOn1Lcre; arc=none smtp.client-ip=209.85.208.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linuxfoundation.org
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2cf42ca9bb2so50164191fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:25:37 -0800 (PST)
+	s=arc-20240116; t=1706635606; c=relaxed/simple;
+	bh=tujS63Z3WTO3HL/gA030RreduT7A4LeLdFjqM6yXNnk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ivfTIjZmMLHRDXg+22ISe8w48N8sKrmue3NVJhv0lFV6iKi8eez/gT9/OfaUWurPR3jbFJ5AOwLlF+S11yBVQWG+sP9qasyy48+u2dQgT3tt34RDHmPgu9qYG2/CogVnbwDZOe/Ra9zJyrWWrlV0KGb8EBCtYFM5x8uXdp3a4DM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=TGmk8Bnb; arc=none smtp.client-ip=209.85.166.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-7bed8fee278so175919839f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:26:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1706635536; x=1707240336; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=3M0wWn2WcqB5JyFL/iZZPD7cHnf4NTD7VpnGyg3ebus=;
-        b=TOn1LcreSMIM6/zFLzh4cG5qTx+j3gS42S7jY7daQlEKRMEXTFX5dTUwH1HQo+bhlG
-         xa7deIbmurGZi/QjEqzH/VtXqNqAECJXK/E2mT2hzt6095S0qg7HxSjMKrB4AmTbV3o5
-         XNW/tAikyUj7pX/1ejL4o6+uz3TBWzrQkhQrI=
+        d=chromium.org; s=google; t=1706635603; x=1707240403; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XHEc5V/RfvIUcDqDPWtfK2Fbm134fj3EfnAyQgIeJsU=;
+        b=TGmk8BnbaburrtVf4hxBD9barLu3slCpIOTxK0I4oHi227NxZRGS1T5we2C2WFoANR
+         QIpUUJ5kOQiK12Y60RP6iV34x0aeYWLzP79OcH0lVZ9/b4IcHfDnHGZsYcQI28z482fH
+         AijkXdIKZCcnaKvzjIm1u7CPEJ+rliuo/1e1w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706635536; x=1707240336;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3M0wWn2WcqB5JyFL/iZZPD7cHnf4NTD7VpnGyg3ebus=;
-        b=IZyyfrRYHt/a0XMjxm7F+5BgLmUxOE32WzBxsevvlcR66DDtgq0u3ZheOT+RYtZZ4m
-         QKyLOCICtOzyiy2yscGSg1MzqSscoKyeuYavb+ILM9RZqHnEo7/zPT1hg2h5CLb9pdlS
-         J+ssswkTALjPfpRoTQJL6hk34Fu1iyrSDnszUjJnC7GI6NPBWbEqaEFqAAR8YpCI2mVD
-         jRB2lY8rDTlyi4lVnhO4PgAJc3ixJ+iVulJcap/2J56isSMLU0EzU8ZnpM3nLopaf3F8
-         gNrs0OPejeQCtAukqj1T7PoIhaH2yMtHELLEMd3Br3dX9SQjPtmXH2jylIOTO0t6Nu0E
-         B0Mw==
-X-Gm-Message-State: AOJu0YyuSF8xn2Vyul2m398ScT7v+NkwIwPcfGNHYryRhhCPhikSa9pS
-	ghHNdX4/dmCyEZbnJ2Os5fH4+IKd3mcpzHyX5eCSDvWSyKS4KKm55diF01swVDiwSyl06+DJp2/
-	WtTM=
-X-Google-Smtp-Source: AGHT+IGaMamlDa1w2BQcSCYowXLm3mqLObyVo0H6OVj96UmK+2LcC2cCL0T/kkvEpVjs41pN5HHSuQ==
-X-Received: by 2002:a2e:960d:0:b0:2cc:6fe2:4ddc with SMTP id v13-20020a2e960d000000b002cc6fe24ddcmr6246933ljh.3.1706635535717;
-        Tue, 30 Jan 2024 09:25:35 -0800 (PST)
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
-        by smtp.gmail.com with ESMTPSA id f24-20020a2eb5b8000000b002d05fe442f4sm173149ljn.50.2024.01.30.09.25.34
-        for <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20230601; t=1706635603; x=1707240403;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XHEc5V/RfvIUcDqDPWtfK2Fbm134fj3EfnAyQgIeJsU=;
+        b=okiyo8V1LNwHuF130p/l9qkxO/556akoABpN6Xc1iGKF7elPUUWRMzqXe1Eee1Fi5v
+         4iqm+Nhsnk8kW1qA5ObPIoWdzbJIWst62f17QljIDB5O96gHDpBqdEd3uU+LLON+4JD1
+         9DRKOVSG8JBF5RX9GBdx2HhvR9r/uep7yQUScPM9k3sYW+QPHVmPYys2cYGtM/mpqc1z
+         URUCmm5svJtgF2TOLzkkW555lzF47YyZuY8uGIvJwIicfLQo6EUtAizXhRuHDZNa4GhV
+         X88Aa7Keoq3gt4iu0sd9rcrl7p1///5RlQCwPf1zkq1R8JBX0IzTtrPcvoE/tVVK+3yy
+         qM7A==
+X-Gm-Message-State: AOJu0Yx+6DqnoUiVxRwxQhSVXu1iFLii/F5XRfk1mA1AUGvsZoSevZUP
+	NgybCgwmV36KPD3nyDDiDdcRZCBvAS43vWsE92iEEOWIKtUuvzSfRUVUp3hs4A==
+X-Google-Smtp-Source: AGHT+IFimfDfRCnK1E0ZunAlWv35M1YoVKRH2MzzR63F6QtSUlTwYNRe0SPuAy6cbeJgD5ssxgxk2w==
+X-Received: by 2002:a05:6602:1249:b0:7ba:c1d9:7664 with SMTP id o9-20020a056602124900b007bac1d97664mr8268582iou.20.1706635603591;
+        Tue, 30 Jan 2024 09:26:43 -0800 (PST)
+Received: from localhost (110.41.72.34.bc.googleusercontent.com. [34.72.41.110])
+        by smtp.gmail.com with UTF8SMTPSA id k28-20020a02335c000000b00470e7cd33acsm135832jak.27.2024.01.30.09.26.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Jan 2024 09:25:35 -0800 (PST)
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-5100cb238bcso7646447e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:25:34 -0800 (PST)
-X-Received: by 2002:a2e:8417:0:b0:2cf:36b:9abb with SMTP id
- z23-20020a2e8417000000b002cf036b9abbmr5802206ljg.44.1706635533757; Tue, 30
- Jan 2024 09:25:33 -0800 (PST)
+        Tue, 30 Jan 2024 09:26:43 -0800 (PST)
+Date: Tue, 30 Jan 2024 17:26:42 +0000
+From: Matthias Kaehlcke <mka@chromium.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Javier Carrasco <javier.carrasco@wolfvision.net>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-usb@vger.kernel.org
+Subject: Re: [PATCH 2/2] usb: misc: onboard_hub: add support for XMOS XVF3500
+Message-ID: <ZbkxUlFSKlUkcHaC@google.com>
+References: <20240130-onboard_xvf3500-v1-0-51b5398406cb@wolfvision.net>
+ <20240130-onboard_xvf3500-v1-2-51b5398406cb@wolfvision.net>
+ <ZbkfsVr-1pOTa1ic@google.com>
+ <2024013024-borax-enjoying-beb5@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130091300.2968534-1-tj@kernel.org> <20240130091300.2968534-4-tj@kernel.org>
-In-Reply-To: <20240130091300.2968534-4-tj@kernel.org>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 30 Jan 2024 09:25:17 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whyr9jtwpiF8=es3j+D3tFF_338nJqdUq3f3oc=oJAPMA@mail.gmail.com>
-Message-ID: <CAHk-=whyr9jtwpiF8=es3j+D3tFF_338nJqdUq3f3oc=oJAPMA@mail.gmail.com>
-Subject: Re: [PATCH 3/8] workqueue: Implement BH workqueues to eventually
- replace tasklets
-To: Tejun Heo <tj@kernel.org>
-Cc: mpatocka@redhat.com, linux-kernel@vger.kernel.org, 
-	dm-devel@lists.linux.dev, msnitzer@redhat.com, ignat@cloudflare.com, 
-	damien.lemoal@wdc.com, bob.liu@oracle.com, houtao1@huawei.com, 
-	peterz@infradead.org, mingo@kernel.org, netdev@vger.kernel.org, 
-	allen.lkml@gmail.com, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <2024013024-borax-enjoying-beb5@gregkh>
 
-On Tue, 30 Jan 2024 at 01:13, Tejun Heo <tj@kernel.org> wrote:
->
-> This patch implements BH workqueues which share the same semantics and
-> features of regular workqueues but execute their work items in the softirq
-> context.
+On Tue, Jan 30, 2024 at 08:19:40AM -0800, Greg Kroah-Hartman wrote:
+> On Tue, Jan 30, 2024 at 04:11:29PM +0000, Matthias Kaehlcke wrote:
+> > Hi Javier,
+> > 
+> > I understand your motivation for using the onboard_usb_hub driver
+> > for powering up a non-hub device, it feels a bit hacky to use it
+> > as is though. Re-using the driver might be the right thing to do,
+> > but then it should probably be renamed to onboard_usb_dev (or
+> > similar) and do the hub specific bits as special case.
+> > 
+> > Greg, do you have any thoughts on this?
+> 
+> Yeah, this worries me, adding non-hub support to this driver feels odd.
 
-Thanks for doing this. Honestly, while I felt this was a natural thing
-to do and would clean things up, every time I look at the workqueue
-code I just shudder and go "I'm sure Tejun can work this out".
+It is odd as long as this driver claims to be hub-specific, but truth
+is that the hub-specific bits are a small part of the driver, I think
+it might be worthwhile to consider adapting the driver to other devices
+if there is no clear better solution.
 
-Patches look fine to me - I'd love to actually have the dm-crypt
-people (and networking people, for that matter) verify that there are
-no performance gotchas from the slightly heavier (but more generic)
-workqueue interfaces.
+A possible alternative could be a separate onboard_usb_dev driver for
+non-hub devices, with a similar structure as the onboard_hub driver,
+but without the hub-specific bits.
 
-                   Linus
+> Why can't this all just be done in an individual driver for this device
+> itself?
+
+I suppose the reason is the good old chicken-egg situation that the (USB)
+driver is only instantiated after the device has bee powered on, which is
+what the driver is supposed to take care of. For the onboard_hub driver
+this was solved by having a platform driver that is instantiated by the
+parent hub if the onboard hub has a device tree entry. Probably something
+similar would be needed for an individual driver, and the generic hub
+driver would have to call the equivalent of onboard_hub_create_pdevs()
+for all drivers of this type (or a wrapper that does this).
+
+m.
 
