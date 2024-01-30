@@ -1,156 +1,350 @@
-Return-Path: <linux-kernel+bounces-45177-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45178-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E101B842C80
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:19:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF65A842C83
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 20:22:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB4EF1C24353
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:19:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F46A1C2439B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 19:22:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04C147AE63;
-	Tue, 30 Jan 2024 19:19:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C30B87AE63;
+	Tue, 30 Jan 2024 19:21:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Matk8Y+w"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="J1j01JHV"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57B9B69970
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 19:19:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706642365; cv=none; b=M3LdA1jdeOJuK5WeiO8RXZBRb2AHh6fzhuRRMrMCyurbwnPDpfzaH6M5dKY0spc2BvRVsSBG9+0H5vpg5rfRzUg4l+3M00NMNzvTexdRZuepxroy/ALw7oil5kNqHFM3fHr2+7FAZOnaQzbAsy3Ti+Y9UbQqIejbJgzNdimztog=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706642365; c=relaxed/simple;
-	bh=wzJcKIgs/uFgPoU/NkNhAK25xpfIJjwjPT1K5sVmsTo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pl/lCY2cSSpyTU6z++CxKhi7Gk5dYRqXTcEtp9Tp4YekveMs8/abj01m7Q+r63n1tSB538mZMCazvINb9elSa/OBt9DiAaOAEvFa4AkyIm8zTNRaa6an/JRurmssvYsxtCe5D17QuUymPtjj5xhhHFnEUn06mj+hmFeVwYSvywc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Matk8Y+w; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-51032e62171so4709077e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 11:19:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1706642361; x=1707247161; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=G5HDN8hMhvJPlLwbvxkEblRc74lfQs68/VLCsSFwK6k=;
-        b=Matk8Y+wALU7IVz6AyfRYZN0vhsY1qurLM4YqrNtJ5V6yfKwht1vGoBK0K4Qn6KyfY
-         Zo/LBG4UjUEUHuAq23DoozdNPYVaKsdsaUQd/s7iTsRmNJG2SfuZCBY70r1fmpfUGL85
-         ezN3rg5/eCf0zcHIb0hlv2qkurqlzZu1EmWc0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706642361; x=1707247161;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=G5HDN8hMhvJPlLwbvxkEblRc74lfQs68/VLCsSFwK6k=;
-        b=FCTQdPDj60rApdoU6P9HyPFHwQOvd/S2uMjDsDKLXfpK0uZ8n0XBWwxZx9Mhhitz7o
-         1NNJtRbQQHzHbv4l2IUgGJRYD1wVwyP6JXqnjauVD10DrqjJ3RidlU8S+8PwSO/VP917
-         KfaVltXOCwI7Y0x78P/h1ez8IsoR9bVBS0vhi0gtucGIK7v3IRSQR/bObdX08qBxjVHs
-         /9bjF/vXR2lOA4/MSG9j4Cp48sbYAQ9NJRs1tGvAPsz5KFWggHE7xGuzeAzVOa9BAcB4
-         GGhJYqPnFXemHJKuiNRvWTNPzo2UZLlxKGo4vG2gf4L+5y92W6wUq1SZ88nfHIZOSB1d
-         +LTA==
-X-Gm-Message-State: AOJu0YyiRTQSjfDBUlhv/GNJKIcd4zQ+/ro0DwEOG36N3AsE//+lIAyF
-	6wD6XIfw8D23dsWAmnF5XVgQ1w6wxXKXDD1fBPjeGXOE22ZDbsNZymNnWRdmrxSnjvzm9dAo6rI
-	HBROFQQ==
-X-Google-Smtp-Source: AGHT+IEJIuZguRTNPu5PtTMJZ9mtY5Mz/dRa88m4OmP9cxmI7RIhyMn+FxKt8F06uKKsB6WMb6mtMA==
-X-Received: by 2002:ac2:4857:0:b0:511:9d5:dd88 with SMTP id 23-20020ac24857000000b0051109d5dd88mr4914562lfy.50.1706642361262;
-        Tue, 30 Jan 2024 11:19:21 -0800 (PST)
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
-        by smtp.gmail.com with ESMTPSA id u28-20020ac243dc000000b00511211cd8d3sm100200lfl.309.2024.01.30.11.19.19
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Jan 2024 11:19:20 -0800 (PST)
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cf1288097aso57793891fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 11:19:19 -0800 (PST)
-X-Received: by 2002:a05:651c:19a4:b0:2d0:4f51:531 with SMTP id
- bx36-20020a05651c19a400b002d04f510531mr4399720ljb.45.1706642358738; Tue, 30
- Jan 2024 11:19:18 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80D753838C
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 19:21:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.41
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706642517; cv=fail; b=sxu2EuaErCP+9pl/HjdF9cISPu1qflbxWyM8pxn69hHS37gluLFvwu5hjGvbLHBiDBkkx7uDwDS32mn2/1Hhih6VlWvHkiGcoCRxS+oKcyEaKR56MF1cOIVOdvPgLz+Cpp5LLWz3q43WhUE+IAaAfP+JCX7kXdRx19xToektBCU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706642517; c=relaxed/simple;
+	bh=FtLJDeBJLt2bwncCQPjOIAVHdgn56LBIJYxZ7OUoDRk=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=t1MIEioDUgG51sUMSPdptxrWsQjfcUo8Pp0zQfx4H0+Ya6LPjWo5hKAlEGzAiF0UJiOJoreEAk7M9r5iAhom6z+vdGtKNzW6SXqCa+6qIFMlXCZIQzna8roWlULP9caMjCuXqY5qmGFUNQJcF5/ZNeTK/pmZVzOh8g1iHcCzQfg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=J1j01JHV; arc=fail smtp.client-ip=40.107.236.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=U40FX4rGxMNkyPO3iXfGDR+lTq8l1yoDQSK4+s3PN4tzXqfaUvyS9my7ufOtjbd2VoUB1Mm4jnkjlGhrTQxkuTgX8s5Oe0DShT7SGzK5MvX5qtDh30cG0o9aQ8AdXBvKUMO2wDPSV4rvKAy9tqsfvzLUDI3dUv7Yh/yg5fYCvnl/FfVEIN3/17mJfqzM5SFH6uSfsauO6coQMd0kYdsfLbQiWR7vSnvH78UE+S+D9oerjohRLo8OvI91A3udk4kjFVMV8RVXA1LtSuN3WVGka7zN8KAfPtjBXAcnBETbmuH4aE7n9nvoQwnRK58Rtn/zegn4unWJXr1PrHgMaY2RZA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Cydh1HhoZmfkzM4zFnMwIsH82wOKZ7SUw8tQY2eroy4=;
+ b=l0i3WHdR26O2K2h7bfxyeyDnrPlPwderl1avhnL5fpK6yCzt/1g6PlKFTZkRjCdiBf8v1zZZ2+QqJIOdzNja2/JzWPtnGbbNSUkrkEzs/F5TwMu0ZGtOblYDrAQrLOJ0wJxxKZlKOz8WAI5gf5LrbEt1cHvFuXl09vd4CxIpc9gYEy1686esR7e/7US8CIY7MMcPiBuSydXvdg5W4Y2Qs+cTJ15abc471Km/Xi9qO/IWoI/lZvt1ZFGi/MUSD87pjH8STcfd2THNUomaszCnae8lZ5GsccI6Niv5JMBKOE+8m1XgJKGCtJTILsLUY7XfRGdZvpH5eA5wxw1SVbc53w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Cydh1HhoZmfkzM4zFnMwIsH82wOKZ7SUw8tQY2eroy4=;
+ b=J1j01JHVb5ao+yHvg1lCLss6grS/tkCB0kHbkiLGs5T+4BbraGevu4fKGXwm7EJzglwD/0pqpcb8HTs9jnfuCBfBRd+dp+q//OxdwfKFBsxCYoqWsprCmO1dkIbUwrqfwFasmPRHWGWkFUOvRSnih6FoLSDdAZhXv/lHpnPNT1U=
+Received: from BL1PR12MB5144.namprd12.prod.outlook.com (2603:10b6:208:316::6)
+ by BL1PR12MB5047.namprd12.prod.outlook.com (2603:10b6:208:31a::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.34; Tue, 30 Jan
+ 2024 19:21:52 +0000
+Received: from BL1PR12MB5144.namprd12.prod.outlook.com
+ ([fe80::9288:f78d:b34e:9b52]) by BL1PR12MB5144.namprd12.prod.outlook.com
+ ([fe80::9288:f78d:b34e:9b52%7]) with mapi id 15.20.7228.029; Tue, 30 Jan 2024
+ 19:21:52 +0000
+From: "Deucher, Alexander" <Alexander.Deucher@amd.com>
+To: Qiang Ma <maqianga@uniontech.com>, "lexander.deucher@amd.com"
+	<lexander.deucher@amd.com>, "Koenig, Christian" <Christian.Koenig@amd.com>,
+	"Pan, Xinhui" <Xinhui.Pan@amd.com>, "airlied@gmail.com" <airlied@gmail.com>,
+	"daniel@ffwll.ch" <daniel@ffwll.ch>, "sunran001@208suo.com"
+	<sunran001@208suo.com>, "SHANMUGAM, SRINIVASAN"
+	<SRINIVASAN.SHANMUGAM@amd.com>
+CC: "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	"amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] drm/amdgpu: Clear the hotplug interrupt ack bit before
+ hpd initialization
+Thread-Topic: [PATCH] drm/amdgpu: Clear the hotplug interrupt ack bit before
+ hpd initialization
+Thread-Index: AQHaU4cDdnUjG/LfxES2tZRMh9MU2LDyu1Yw
+Date: Tue, 30 Jan 2024 19:21:52 +0000
+Message-ID:
+ <BL1PR12MB5144CE51F819FA7E011CF9BBF77D2@BL1PR12MB5144.namprd12.prod.outlook.com>
+References: <20240130093522.19914-1-maqianga@uniontech.com>
+In-Reply-To: <20240130093522.19914-1-maqianga@uniontech.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_ActionId=6d68e7d2-d7dd-4e5d-bc31-5116b5158530;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_ContentBits=0;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Enabled=true;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Method=Privileged;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Name=Public-AIP
+ 2.0;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_SetDate=2024-01-30T19:19:15Z;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL1PR12MB5144:EE_|BL1PR12MB5047:EE_
+x-ms-office365-filtering-correlation-id: c18d8906-c6c5-4d78-cfe3-08dc21c8b6b5
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ WkpzXj4YL4d7HV67/GV/y5PwpomjoNv7qzfX4HLcwEaIkBJdJysIhhL7GEsuam6pH+zDSA4iOZ+53Cz/UF2Yi4vCxcVUcB2MGTX//f2O+LdHa1fmrFTGxaXXMG7DOus4C5O4u7nqXDBzG41A4wUwTW9EPRSekjT0O6ik4N/s/rGEROou9JOhN96rnjz+97jklPQDIoB94ID69N2np9T+3Q+oLH/3ABOkLqUag4oi8hMfquIjQQVZ1fSo9XfrqcRC7vMdu0CuHP50K/04rhFS/8nKFrWzHG0xPYbNCHafMI4nTgiC74bdpb+au/EXvondpMA+lCSLYfDAnChSL2pl1q+j3ba6Lb/stkb06YHAp6gAPUSaLxcj40wpCQ4VJ7DM1pLcYJSC5SI/y/rvP5/QlJX6YSoNV9h5Dm5b3lIW9kNsSRGRRHt7oyu9VT+wiyVMSUoKJG6Dzw1A86rtej+yg2mo0OEnUpkIn5oTTFu5GRyv6DA7iTc3pY7IeUUegO+c8y3NYEQ0W/VdYTcHArBTFJLGRRw3lZPjvvgpZq9ZBW+EFzrPgkfJqwM+HVoWaBxRbSQ5A7JmLnbnx2Ib5uZFLFbtsYvytMKZyQFh34Glyze2imPwdzHoPiMUpAlEXaPR1hrCpvJuriRNn0sBCFLTxQ==
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5144.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(366004)(136003)(396003)(376002)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(921011)(83380400001)(26005)(9686003)(66556008)(7696005)(6506007)(38100700002)(122000001)(4326008)(8936002)(66946007)(5660300002)(66446008)(71200400001)(2906002)(478600001)(76116006)(41300700001)(52536014)(54906003)(64756008)(8676002)(66476007)(110136005)(53546011)(316002)(6636002)(38070700009)(86362001)(33656002)(55016003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?aUXd28Sn19F2YXTadBuSqT4hgEF3p/SL0xKSmhgUEhEuS4KWnbmSqQIXbMy6?=
+ =?us-ascii?Q?zt86zufoxHYW9iyJmqwsp+Zf/bE8CzITmMcOuXkysoKmS0Tn1XF+nQBNIAeX?=
+ =?us-ascii?Q?ASnokFfCEsZBXlE69dJuYTgxP1fYWjs7boX2Zt+YDXlr4OMyN/ZjKBHxzF9L?=
+ =?us-ascii?Q?2YNLwFBHpSbLiJA0R8D38feIU8FihMfYGS+b0vlrLUO+4eltCzNAObuTSo8z?=
+ =?us-ascii?Q?SJU4UMRbonhXhGCKpxM3TTWK5rzMJB4yHhkB+//JMMrkGrQVT2AtgWuirgvm?=
+ =?us-ascii?Q?bgvf28CofoeSs/S+7+efoUz847VCmfoTnIwQaz735rqsrGKfBcCg0G4TSlXZ?=
+ =?us-ascii?Q?2uqHmw1C/ZlsmsKEMB5ltyy8GhmB4xP9P9FgdLUQnuELL325xJaX2cXDF7bQ?=
+ =?us-ascii?Q?89VlLeXI2mWQVAh/syv4gd4ieeRiRmYclaKrMRxcLX4BVFRQw+OHMgXfYpkB?=
+ =?us-ascii?Q?6ocoIPwnBnT2IVqhlTbvP0JLwr4EI1JZDLIVFFBthd7X2Mvi3xgodLUjngeU?=
+ =?us-ascii?Q?wa6qqGWZ3ABngEmxbnmahsXBdSzxKGz8r+/tvyoE1S3dTf9l3OgL/0CDOmAW?=
+ =?us-ascii?Q?VpNvmjfW3F1FW1cjmmZfEASUqmg59JceAWLVWKWxOcvkp6Iv4ULhmybl8y1h?=
+ =?us-ascii?Q?0fZrL5X3g7Z7/PgozBmJckFmTJg4xBKo6731Wai4fGz4X1/zzO1K8swsmepo?=
+ =?us-ascii?Q?ZrnRnogm/gpunLvongf0DsA76lLBXsy9K7IRK8u9kZpiGORHAa+pR1SCYOJu?=
+ =?us-ascii?Q?cytW147h3mCVbsMZScRp+d4uIP0z2Jy/0Wv0zKz9pwG+j6+TU7BEknIMNR9A?=
+ =?us-ascii?Q?VgQaNno1VEmNIUrFKwL5u3OH1dhtSQzieLroWlHA/TnLQVJO1JE4ohs5e4fb?=
+ =?us-ascii?Q?HbYGbPc9PabH7YaxwgOQCHOhAY9oVfunfO7szO8y8t35JLiyCLiD5WQEDDRv?=
+ =?us-ascii?Q?VEhu3Ol456RQH2uxOcz7S7eddfUG9WBHcfU5G6xYCnEVyaJqR2IKeQwjGNsx?=
+ =?us-ascii?Q?/LAAMjzQl0RgMP6/ELog3Gaa+7E97OmTMvSCrFSFGsmACAaldTMoKVtmX43l?=
+ =?us-ascii?Q?xtEVcQKkezL3NPpKKphVa9pqE5z5ZbKOekKVcC43C90IhPlPrV0DY8N/hVHe?=
+ =?us-ascii?Q?v7N+jLuRkmB8mguPoRAhdopi/2ESkMK60Ct0p9pil3V/EGBTQB6v1MkrcR63?=
+ =?us-ascii?Q?UOGxSkBfINlPFNFBibVd3in6eFf8gNDflkBD0k1WK8SPfuHovxG46HSmRNFQ?=
+ =?us-ascii?Q?ooS2kcx677Zn9CBHzO+PVMGGwBBddApJCuJxLAooVFn1vGyGwiHDlNTvt6Sl?=
+ =?us-ascii?Q?mKAi11GBYiqThFFp+ge7ruY35jaYOx/WJVWqhh4PTMKSzl8NAYA0qsmC1BRz?=
+ =?us-ascii?Q?25SepnEQoLiA1yFlnm1kMhbZrmc/DKs2zXZC78Bi8a0pU/sIF9BgBbpi1s1o?=
+ =?us-ascii?Q?SPzZOgRpX+hMchNSiSSKLuYYncYr60cjfndQOZFw5ryJPIykC8B1uUDauXwh?=
+ =?us-ascii?Q?uaRgDlZEYNEWp3eH6Z3SS+ivJsyxnhCtEJzoeoJuKp3kK+UX7wAG+cNkTaBu?=
+ =?us-ascii?Q?ht8UpNK7Cmo82cIdEj4=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <202401291043.e62e89dc-oliver.sang@intel.com> <CAHk-=wh0M=e8R=ZXxa4vesLTtvGmYWJ-w1VmXxW5Mva=Nimk4Q@mail.gmail.com>
- <20240129120125.605e97af@gandalf.local.home> <CAHk-=wghx8Abyx_jcSrCDuNj96SuWS0NvNMhfU8VjFGg9bgm_g@mail.gmail.com>
- <CAHk-=whb91PWEaEJpRGsuWaQpYZGj98ji8HC2vvHD4xb_TqhJw@mail.gmail.com>
- <CAHk-=wgp7UkG31=cCcbSdhMv6-vBJ=orktUOUdiLzw4tQ4gDLg@mail.gmail.com>
- <20240129152600.7587d1aa@gandalf.local.home> <CAHk-=wghobf5qCqNUsafkQzNAZBJiS0=7CRjNXNChpoAvTbvUw@mail.gmail.com>
- <20240129172200.1725f01b@gandalf.local.home> <CAHk-=wjV6+U1FQ8wzQ5ASmqGgby+GZ6wpdh0NrJgA43mc+TEwA@mail.gmail.com>
- <CAHk-=wgOxTeTi02C=kOXsHzuD6XCrV0L1zk1XP9t+a4Wx--xvA@mail.gmail.com>
- <20240129174950.5a17a86c@gandalf.local.home> <CAHk-=wjbzw3=nwR5zGH9jqXgB8jj03wxWfdFDn=oAVCoymQQJg@mail.gmail.com>
- <20240129193549.265f32c8@gandalf.local.home> <CAHk-=whRxcmjvGNBKi9_x59cAedh8SO8wsNDNrEQbAQfM5A8CQ@mail.gmail.com>
- <CAHk-=wh97AkwaOkXoBgf0z8EP88ePffLnTcmmQXcY+AhFaFrnA@mail.gmail.com> <20240130132319.022817e8@gandalf.local.home>
-In-Reply-To: <20240130132319.022817e8@gandalf.local.home>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 30 Jan 2024 11:19:01 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiGb2aDbtq2+mYv6C=pYRKmo_iOu9feL9o52iRT8cuh6Q@mail.gmail.com>
-Message-ID: <CAHk-=wiGb2aDbtq2+mYv6C=pYRKmo_iOu9feL9o52iRT8cuh6Q@mail.gmail.com>
-Subject: Re: [linus:master] [eventfs] 852e46e239: BUG:unable_to_handle_page_fault_for_address
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev, lkp@intel.com, 
-	linux-kernel@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Christian Brauner <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Ajay Kaher <ajay.kaher@broadcom.com>, linux-trace-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5144.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c18d8906-c6c5-4d78-cfe3-08dc21c8b6b5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jan 2024 19:21:52.2109
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: F5KO+uswnqvh2OLaWKjYZTseS/HYi/15w/mBe+SjxBi/kVyoMrBi73GKcXgr5NOEIwZ2KO5z4WZ+KiMcs4Yh0g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5047
 
-On Tue, 30 Jan 2024 at 10:23, Steven Rostedt <rostedt@goodmis.org> wrote:
+[Public]
+
+> -----Original Message-----
+> From: amd-gfx <amd-gfx-bounces@lists.freedesktop.org> On Behalf Of Qiang
+> Ma
+> Sent: Tuesday, January 30, 2024 4:35 AM
+> To: lexander.deucher@amd.com; Koenig, Christian
+> <Christian.Koenig@amd.com>; Pan, Xinhui <Xinhui.Pan@amd.com>;
+> airlied@gmail.com; daniel@ffwll.ch; sunran001@208suo.com;
+> SHANMUGAM, SRINIVASAN <SRINIVASAN.SHANMUGAM@amd.com>
+> Cc: Qiang Ma <maqianga@uniontech.com>; dri-devel@lists.freedesktop.org;
+> amd-gfx@lists.freedesktop.org; linux-kernel@vger.kernel.org
+> Subject: [PATCH] drm/amdgpu: Clear the hotplug interrupt ack bit before h=
+pd
+> initialization
 >
-> I know you don't send patches inlined anymore, which is a shame, because
-> patchwork takes care of all the administering when patches are inlined, and
-> I don't miss patches like I use to.
+> Problem:
+> The computer in the bios initialization process, unplug the HDMI display,=
+ wait
+> until the system up, plug in the HDMI display, did not enter the hotplug
+> interrupt function, the display is not bright.
+>
+> Fix:
+> After the above problem occurs, and the hpd ack interrupt bit is 1, the
+> interrupt should be cleared during hpd_init initialization so that when t=
+he
+> driver is ready, it can respond to the hpd interrupt normally.
+>
+> Signed-off-by: Qiang Ma <maqianga@uniontech.com>
+> ---
+>  drivers/gpu/drm/amd/amdgpu/dce_v10_0.c |  2 ++
+> drivers/gpu/drm/amd/amdgpu/dce_v11_0.c |  2 ++
+> drivers/gpu/drm/amd/amdgpu/dce_v6_0.c  | 20 +++++++++++++++++---
+> drivers/gpu/drm/amd/amdgpu/dce_v8_0.c  | 20 +++++++++++++++++---
+>  4 files changed, 38 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/dce_v10_0.c
+> b/drivers/gpu/drm/amd/amdgpu/dce_v10_0.c
+> index bb666cb7522e..11859059fd10 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/dce_v10_0.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/dce_v10_0.c
+> @@ -51,6 +51,7 @@
+>
+>  static void dce_v10_0_set_display_funcs(struct amdgpu_device *adev);
+> static void dce_v10_0_set_irq_funcs(struct amdgpu_device *adev);
+> +static void dce_v10_0_hpd_int_ack(struct amdgpu_device *adev, int hpd);
+>
+>  static const u32 crtc_offsets[] =3D {
+>       CRTC0_REGISTER_OFFSET,
+> @@ -363,6 +364,7 @@ static void dce_v10_0_hpd_init(struct
+> amdgpu_device *adev)
+>
+> AMDGPU_HPD_DISCONNECT_INT_DELAY_IN_MS);
+>               WREG32(mmDC_HPD_TOGGLE_FILT_CNTL +
+> hpd_offsets[amdgpu_connector->hpd.hpd], tmp);
+>
+> +             dce_v6_0_hpd_int_ack(adev, amdgpu_connector->hpd.hpd);
 
-I just sent the whole series as individual patches., and doing a
 
-  b4 am 20240130190355.11486-1-torvalds@linux-foundation.org
+Should be dce_v10_0_hpd_int_ack().
 
-should get them all (or if you use patchwork, do that)
+>               dce_v10_0_hpd_set_polarity(adev, amdgpu_connector-
+> >hpd.hpd);
+>               amdgpu_irq_get(adev, &adev->hpd_irq,
+>                              amdgpu_connector->hpd.hpd);
+> diff --git a/drivers/gpu/drm/amd/amdgpu/dce_v11_0.c
+> b/drivers/gpu/drm/amd/amdgpu/dce_v11_0.c
+> index 7af277f61cca..745e4fdffade 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/dce_v11_0.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/dce_v11_0.c
+> @@ -51,6 +51,7 @@
+>
+>  static void dce_v11_0_set_display_funcs(struct amdgpu_device *adev);
+> static void dce_v11_0_set_irq_funcs(struct amdgpu_device *adev);
+> +static void dce_v11_0_hpd_int_ack(struct amdgpu_device *adev, int hpd);
+>
+>  static const u32 crtc_offsets[] =3D
+>  {
+> @@ -387,6 +388,7 @@ static void dce_v11_0_hpd_init(struct
+> amdgpu_device *adev)
+>
+> AMDGPU_HPD_DISCONNECT_INT_DELAY_IN_MS);
+>               WREG32(mmDC_HPD_TOGGLE_FILT_CNTL +
+> hpd_offsets[amdgpu_connector->hpd.hpd], tmp);
+>
+> +             dce_v11_0_hpd_int_ack(adev, amdgpu_connector-
+> >hpd.hpd);
+>               dce_v11_0_hpd_set_polarity(adev, amdgpu_connector-
+> >hpd.hpd);
+>               amdgpu_irq_get(adev, &adev->hpd_irq, amdgpu_connector-
+> >hpd.hpd);
+>       }
+> diff --git a/drivers/gpu/drm/amd/amdgpu/dce_v6_0.c
+> b/drivers/gpu/drm/amd/amdgpu/dce_v6_0.c
+> index 143efc37a17f..f8e15ebf74b4 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/dce_v6_0.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/dce_v6_0.c
+> @@ -272,6 +272,21 @@ static void dce_v6_0_hpd_set_polarity(struct
+> amdgpu_device *adev,
+>       WREG32(mmDC_HPD1_INT_CONTROL + hpd_offsets[hpd], tmp);  }
+>
+> +static void dce_v6_0_hpd_int_ack(struct amdgpu_device *adev,
+> +                              int hpd)
+> +{
+> +     u32 tmp;
+> +
+> +     if (hpd >=3D adev->mode_info.num_hpd) {
+> +             DRM_DEBUG("invalid hdp %d\n", hpd);
+> +             return;
+> +     }
+> +
+> +     tmp =3D RREG32(mmDC_HPD1_INT_CONTROL + hpd_offsets[hpd]);
+> +     tmp |=3D DC_HPD1_INT_CONTROL__DC_HPD1_INT_ACK_MASK;
+> +     WREG32(mmDC_HPD1_INT_CONTROL + hpd_offsets[hpd], tmp); }
+> +
+>  /**
+>   * dce_v6_0_hpd_init - hpd setup callback.
+>   *
+> @@ -311,6 +326,7 @@ static void dce_v6_0_hpd_init(struct amdgpu_device
+> *adev)
+>                       continue;
+>               }
+>
+> +             dce_v6_0_hpd_int_ack(adev, amdgpu_connector->hpd.hpd);
+>               dce_v6_0_hpd_set_polarity(adev, amdgpu_connector-
+> >hpd.hpd);
+>               amdgpu_irq_get(adev, &adev->hpd_irq, amdgpu_connector-
+> >hpd.hpd);
+>       }
+> @@ -3101,9 +3117,7 @@ static int dce_v6_0_hpd_irq(struct amdgpu_device
+> *adev,
+>       mask =3D interrupt_status_offsets[hpd].hpd;
+>
+>       if (disp_int & mask) {
+> -             tmp =3D RREG32(mmDC_HPD1_INT_CONTROL +
+> hpd_offsets[hpd]);
+> -             tmp |=3D
+> DC_HPD1_INT_CONTROL__DC_HPD1_INT_ACK_MASK;
+> -             WREG32(mmDC_HPD1_INT_CONTROL + hpd_offsets[hpd],
+> tmp);
+> +             dce_v6_0_hpd_int_ack(adev, hpd);
+>               schedule_delayed_work(&adev->hotplug_work, 0);
+>               DRM_DEBUG("IH: HPD%d\n", hpd + 1);
+>       }
+> diff --git a/drivers/gpu/drm/amd/amdgpu/dce_v8_0.c
+> b/drivers/gpu/drm/amd/amdgpu/dce_v8_0.c
+> index adeddfb7ff12..141e33a01686 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/dce_v8_0.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/dce_v8_0.c
+> @@ -264,6 +264,21 @@ static void dce_v8_0_hpd_set_polarity(struct
+> amdgpu_device *adev,
+>       WREG32(mmDC_HPD1_INT_CONTROL + hpd_offsets[hpd], tmp);  }
+>
+> +static void dce_v8_0_hpd_int_ack(struct amdgpu_device *adev,
+> +                              int hpd)
+> +{
+> +     u32 tmp;
+> +
+> +     if (hpd >=3D adev->mode_info.num_hpd) {
+> +             DRM_DEBUG("invalid hdp %d\n", hpd);
+> +             return;
+> +     }
+> +
+> +     tmp =3D RREG32(mmDC_HPD1_INT_CONTROL + hpd_offsets[hpd]);
+> +     tmp |=3D DC_HPD1_INT_CONTROL__DC_HPD1_INT_ACK_MASK;
+> +     WREG32(mmDC_HPD1_INT_CONTROL + hpd_offsets[hpd], tmp); }
+> +
+>  /**
+>   * dce_v8_0_hpd_init - hpd setup callback.
+>   *
+> @@ -303,6 +318,7 @@ static void dce_v8_0_hpd_init(struct amdgpu_device
+> *adev)
+>                       continue;
+>               }
+>
+> +             dce_v6_0_hpd_int_ack(adev, amdgpu_connector->hpd.hpd);
 
-I don't normally do these inlined patches any more, because honestly,
-99% of all patches I do end up being "I can't test this very well, I
-think you should do something like this".
+Should be dce_v8_0_hpd_int_ack().
 
-In fact, for simple ones where I might not have even compile-tested
-them, much less booted into a kernel with them, I will actively
-whitespace-corrupt the patch, just to make sure they aren't applied as
-any kind of real workflow - they are almost always meant as a "I think
-you should do this, and take credit for it all".
 
-And so when I'm working on a series like this, I'll send attachments
-just because it's easier, and because I don't want to patch-bomb
-people with some kind of crazy work-in-progress thing.
+>               dce_v8_0_hpd_set_polarity(adev, amdgpu_connector-
+> >hpd.hpd);
+>               amdgpu_irq_get(adev, &adev->hpd_irq, amdgpu_connector-
+> >hpd.hpd);
+>       }
+> @@ -3189,9 +3205,7 @@ static int dce_v8_0_hpd_irq(struct amdgpu_device
+> *adev,
+>       mask =3D interrupt_status_offsets[hpd].hpd;
+>
+>       if (disp_int & mask) {
+> -             tmp =3D RREG32(mmDC_HPD1_INT_CONTROL +
+> hpd_offsets[hpd]);
+> -             tmp |=3D
+> DC_HPD1_INT_CONTROL__DC_HPD1_INT_ACK_MASK;
+> -             WREG32(mmDC_HPD1_INT_CONTROL + hpd_offsets[hpd],
+> tmp);
+> +             dce_v6_0_hpd_int_ack(adev, hpd);
 
-But I'm reasonably comfortable with this series now, so I sent it as a
-"real" patch series. I like it partly because it just removes a lot of
-lines:
+Same here.
 
- 3 files changed, 160 insertions(+), 433 deletions(-)
+>               schedule_delayed_work(&adev->hotplug_work, 0);
+>               DRM_DEBUG("IH: HPD%d\n", hpd + 1);
+>       }
+> --
+> 2.20.1
 
-but mostly because the lines it removes are what I consider actively
-broken code. So it's not just getting rid of LOC, it's getting rid of
-complexity (and bugs) IMHO.
-
-That said, I also don't think that patch series is any kind of
-"final". I didn't fix up the readdir iterator locking, for example. I
-don't think the SRCU parts are needed at all any more thanks to the
-refcounting - the 'ei' is no longer protected by SRCU, it's protected
-by virtue of us having the file open (and thus holding the dentry).
-
-So please think of that series not as any kind of final word. More as
-a "I strongly believe this is the direction eventfs should go".
-
-I am perfectly ok with you munging those patches and taking full
-credit for them, for example.
-
-My "testing" has not involved any real tracing usage, and while I
-*have* booted that thing, and have done some very basic smoke-testing
-in /sys/kernel/tracing, 99% of the work was literally me just going
-through the lookup code, removing everything I found objectionable,
-and replacing it with what the VFS layer generally would want.
-
-                      Linus
 
