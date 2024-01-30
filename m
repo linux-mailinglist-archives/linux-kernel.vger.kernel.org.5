@@ -1,118 +1,139 @@
-Return-Path: <linux-kernel+bounces-44338-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44339-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13BF184206F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:03:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EA8BA842071
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:03:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C0841C26676
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:03:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D228C1C26F36
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 10:03:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A2F567E96;
-	Tue, 30 Jan 2024 09:59:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B3BA6A027;
+	Tue, 30 Jan 2024 10:00:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nPHfBZJG"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="M9i6jftZ"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6EA4605D5;
-	Tue, 30 Jan 2024 09:59:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00CA7605D5
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 09:59:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706608793; cv=none; b=EG4Wv+dbB2ZZk1Z9ihbagPxjvqgnT9bkb3EL70OJEKuYlyBMuCcYASD86qjA4+24bIf73/ClK5szjv2fb7+BXfKnAKhMUvyWiKhe+eCA3SesjGhykPXi4f4UWUEUwzyCi2FNeBuH6CyZbo//hXTYhm7yvN9prgxzEz16HAuq1i0=
+	t=1706608801; cv=none; b=FxMr1pX5pfIeRtdGkXc5bC4d4HfmeHTv1HTW27A5MXiPqiXGmrh+hJNCka1n+u6HjHMZDiIf6PgjNmSCEzOmGE+RmDglTG9nRFv/Xvwy+zqW/e7NxYHi+bfrBVeltfqigzOGlmI6D09WqHlIkTua6Z3ct2huRru1J8cOCdAGrNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706608793; c=relaxed/simple;
-	bh=6P5FfbFKXvpTVgfjV2JFIycWosCzugB7elVDu3wefxI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oMK2BF2PUUwtUpjGLXVUIJDy1BUe3Oh8FZioRcMXlZE3kuDk3ougA9I/5Gt6cLzmBKNxwFUesLlG3w8zIHZ9j3q+D8EXwyfDg9TDwfTNNfCIfPnOaKg56r2VdPG1lAPKR3Jjx3/adiWC+xYlzex7YwbezWouPAUzHDHHRa9aPHM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nPHfBZJG; arc=none smtp.client-ip=134.134.136.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706608791; x=1738144791;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=6P5FfbFKXvpTVgfjV2JFIycWosCzugB7elVDu3wefxI=;
-  b=nPHfBZJG1kw4TxyPAx+BJReQtlMBJCyo2M8ZUJXATbhuN13eD0Gqykf5
-   20JZYfhVN0T7mSkAKzxYrJ+0EbxOA91FIln4cnBe5lLr9pQVFZTdz3FtK
-   wlsj4bFeiNfWQmSwruWwRnHDpPWX6VUVggjRJujuy9mkz6UKl4atBfg+W
-   R3z2BfYHFEnvJ2c7DOwQIFxaWd9WLAK3L70BFJtWeNgR6S4BtdKu0s0Xn
-   GPVdJuskmHJGCVB7xOdm6j3+FHljvarYIiK6A06t+UqXkhXppFh/ckHCO
-   nTn5y0y/s89wNy51L9TlgmR/hV56LK9Fqk+XVazIQ8SB6eRJiPhTlPJ9T
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="393662032"
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="393662032"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 01:59:50 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="911388471"
-X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
-   d="scan'208";a="911388471"
-Received: from mszycik-mobl1.ger.corp.intel.com (HELO [10.246.34.225]) ([10.246.34.225])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 01:59:46 -0800
-Message-ID: <92958c7b-7e5f-4e25-819f-4e52f9ffcf7b@linux.intel.com>
-Date: Tue, 30 Jan 2024 10:59:40 +0100
+	s=arc-20240116; t=1706608801; c=relaxed/simple;
+	bh=mNw5TrQ7ILcQGi5iCrUSeKS8QpvSrMGTQewU6sjZTyw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=GhRiiXxSD9Xy6spJ5lZV6jmoULQfKuHvz6aKtulDmNM0axBHNOR4WkHN3x0KxXqBof+gbesJrhyLhcyXACqAEccnlBZ4+M1i5xF9BGnFM/UB0VeKSnSu7MLYcOjUAZqBJ4J36Dak6ffrQCtqKaYTlD67PW2r8xocfAl6M6C2zVM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=M9i6jftZ; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706608798;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=2t9JICKhM82/154timl/hUWjQtNhaMv+Tcp7bNglvcw=;
+	b=M9i6jftZktFiE1i9SDq02FuHSjN2VEoSIu0DUHQQ3Pamz4e9dQrKuXxEfhNnfBHz1Vk+9S
+	fmKQXhraPq99Faqc6iLaV+9bnBo2Jl0B7aAJEqTX/X4UeHe8585e1aVOg4lvEIovIeyyuP
+	CCBaKjE51ePsqdzp/waEuF1QtISKToM=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-52-qHZTj0-pOSaY4LN1YvGaAg-1; Tue, 30 Jan 2024 04:59:57 -0500
+X-MC-Unique: qHZTj0-pOSaY4LN1YvGaAg-1
+Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-51117755c8aso188075e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 01:59:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706608796; x=1707213596;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2t9JICKhM82/154timl/hUWjQtNhaMv+Tcp7bNglvcw=;
+        b=q9BOxOnMr6M6+PDgFg5HdgsygjT+J8nGZC+QnxbtyVo39zIUbUcIDXbS0yOKAP9Q9R
+         1hgyHcOV7tbm6GXEW0hOHrVmJbvPwRJQnhitmS+rwrRJSiskuxTeNEQgbk4JbeY7J2eL
+         jW73gBLNk4oXcqxVn2NZYwTvgvnY+d9STkrrUoG2UYgR5Rv7RWfhRMxG7xIKNdnUXOuv
+         TOwCQCSFMxaeR1dsSiKXgCLKd31GLbNNqW0PoQFPzMn1obroZ1boqEc5xwfRLoDwJCfB
+         mvtCoFKsmCbFvzq2XBc79+n9F6TWPr/esaslLPfJJ3MgtBnVJ7LJOxSvcd38Nr8/JNuX
+         GJKw==
+X-Gm-Message-State: AOJu0YzAfUExSxGRGLmOM8bClrXKyyifZpuCyQSB3w6tLlTfVTinzZNC
+	yFAI3rsfLxQAMazJJOqLKkO1s1IRgMUlYsR6KyAU3O0o2aMmOMEke6dm6VkR6KQOfHsYVqiMhh5
+	im99YuWKrMgdX6L/6nuOQtjYxIucfWTsOm97VyCnwef9PtsmiZ3UgWaz0vGNg6A==
+X-Received: by 2002:a19:4f19:0:b0:510:1bb8:506a with SMTP id d25-20020a194f19000000b005101bb8506amr5255371lfb.5.1706608795908;
+        Tue, 30 Jan 2024 01:59:55 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGVMkdvwWvmymMw+ffNr7vIpOaBMntnycrvd3Xt/dLrwh9IhFpfE4Q3VDObFj2Y4k7LErqgBg==
+X-Received: by 2002:a19:4f19:0:b0:510:1bb8:506a with SMTP id d25-20020a194f19000000b005101bb8506amr5255354lfb.5.1706608795526;
+        Tue, 30 Jan 2024 01:59:55 -0800 (PST)
+Received: from gerbillo.redhat.com (146-241-232-203.dyn.eolo.it. [146.241.232.203])
+        by smtp.gmail.com with ESMTPSA id gw6-20020a05600c850600b0040e813f1f31sm12625815wmb.25.2024.01.30.01.59.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jan 2024 01:59:55 -0800 (PST)
+Message-ID: <0c767128a7ceee72c3cfb4c17498ef3b6fd87a56.camel@redhat.com>
+Subject: Re: [PATCH net-next v6 1/2] net: introduce abstraction for network
+ memory
+From: Paolo Abeni <pabeni@redhat.com>
+To: Mina Almasry <almasrymina@google.com>, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>,  Jakub Kicinski <kuba@kernel.org>, Jason Gunthorpe
+ <jgg@nvidia.com>, Christian =?ISO-8859-1?Q?K=F6nig?=
+ <christian.koenig@amd.com>, Shakeel Butt <shakeelb@google.com>, Yunsheng
+ Lin <linyunsheng@huawei.com>, Willem de Bruijn
+ <willemdebruijn.kernel@gmail.com>
+Date: Tue, 30 Jan 2024 10:59:53 +0100
+In-Reply-To: <20240123221749.793069-2-almasrymina@google.com>
+References: <20240123221749.793069-1-almasrymina@google.com>
+	 <20240123221749.793069-2-almasrymina@google.com>
+Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=mQINBGISiDUBEAC5uMdJicjm3ZlWQJG4u2EU1EhWUSx8IZLUTmEE8zmjPJFSYDcjtfGcbzLPb63BvX7FADmTOkO7gwtDgm501XnQaZgBUnCOUT8qv5MkKsFH20h1XJyqjPeGM55YFAXc+a4WD0YyO5M0+KhDeRLoildeRna1ey944VlZ6Inf67zMYw9vfE5XozBtytFIrRyGEWkQwkjaYhr1cGM8ia24QQVQid3P7SPkR78kJmrT32sGk+TdR4YnZzBvVaojX4AroZrrAQVdOLQWR+w4w1mONfJvahNdjq73tKv51nIpu4SAC1Zmnm3x4u9r22mbMDr0uWqDqwhsvkanYmn4umDKc1ZkBnDIbbumd40x9CKgG6ogVlLYeJa9WyfVMOHDF6f0wRjFjxVoPO6p/ZDkuEa67KCpJnXNYipLJ3MYhdKWBZw0xc3LKiKc+nMfQlo76T/qHMDfRMaMhk+L8gWc3ZlRQFG0/Pd1pdQEiRuvfM5DUXDo/YOZLV0NfRFU9SmtIPhbdm9cV8Hf8mUwubihiJB/9zPvVq8xfiVbdT0sPzBtxW0fXwrbFxYAOFvT0UC2MjlIsukjmXOUJtdZqBE3v3Jf7VnjNVj9P58+MOx9iYo8jl3fNd7biyQWdPDfYk9ncK8km4skfZQIoUVqrWqGDJjHO1W9CQLAxkfOeHrmG29PK9tHIwARAQABtB9QYW9sbyBBYmVuaSA8cGFiZW5pQHJlZGhhdC5jb20+iQJSBBMBCAA8FiEEg1AjqC77wbdLX2LbKSR5jcyPE6QFAmISiDUCGwMFCwkIBwIDIgIBBhUKCQgLAgQWAgMBAh4HAheAAAoJECkkeY3MjxOkJSYQAJcc6MTsuFxYdYZkeWjW//zbD3ApRHzpNlHLVSuJqHr9/aDS+tyszgS8jj9MiqALzgq4iZbg
+ 7ZxN9ZsDL38qVIuFkSpgMZCiUHdxBC11J8nbBSLlpnc924UAyr5XrGA99 6Wl5I4Km3128GY6iAkH54pZpOmpoUyBjcxbJWHstzmvyiXrjA2sMzYjt3Xkqp0cJfIEekOi75wnNPofEEJg28XPcFrpkMUFFvB4Aqrdc2yyR8Y36rbw18sIX3dJdomIP3dL7LoJi9mfUKOnr86Z0xltgcLPGYoCiUZMlXyWgB2IPmmcMP2jLJrusICjZxLYJJLofEjznAJSUEwB/3rlvFrSYvkKkVmfnfro5XEr5nStVTECxfy7RTtltwih85LlZEHP8eJWMUDj3P4Q9CWNgz2pWr1t68QuPHWaA+PrXyasDlcRpRXHZCOcvsKhAaCOG8TzCrutOZ5NxdfXTe3f1jVIEab7lNgr+7HiNVS+UPRzmvBc73DAyToKQBn9kC4jh9HoWyYTepjdcxnio0crmara+/HEyRZDQeOzSexf85I4dwxcdPKXv0fmLtxrN57Ae82bHuRlfeTuDG3x3vl/Bjx4O7Lb+oN2BLTmgpYq7V1WJPUwikZg8M+nvDNcsOoWGbU417PbHHn3N7yS0lLGoCCWyrK1OY0QM4EVsL3TjOfUtCNQYW9sbyBBYmVuaSA8cGFvbG8uYWJlbmlAZ21haWwuY29tPokCUgQTAQgAPBYhBINQI6gu+8G3S19i2ykkeY3MjxOkBQJiEoitAhsDBQsJCAcCAyICAQYVCgkICwIEFgIDAQIeBwIXgAAKCRApJHmNzI8TpBzHD/45pUctaCnhee1vkQnmStAYvHmwrWwIEH1lzDMDCpJQHTUQOOJWDAZOFnE/67bxSS81Wie0OKW2jvg1ylmpBA0gPpnzIExQmfP72cQ1TBoeVColVT6Io35BINn+ymM7c0Bn8RvngSEpr3jBtqvvWXjvtnJ5/HbOVQCg62NC6ewosoKJPWpGXMJ9SKsVIOUHsmoWK60spzeiJoSmAwm3zTJQnM5kRh2q
+ iWjoCy8L35zPqR5TV+f5WR5hTVCqmLHSgm1jxwKhPg9L+GfuE4d0SWd84y GeOB3sSxlhWsuTj1K6K3MO9srD9hr0puqjO9sAizd0BJP8ucf/AACfrgmzIqZXCfVS7jJ/M+0ic+j1Si3yY8wYPEi3dvbVC0zsoGj9n1R7B7L9c3g1pZ4L9ui428vnPiMnDN3jh9OsdaXeWLvSvTylYvw9q0DEXVQTv4/OkcoMrfEkfbXbtZ3PRlAiddSZA5BDEkkm6P9KA2YAuooi1OD9d4MW8LFAeEicvHG+TPO6jtKTacdXDRe611EfRwTjBs19HmabSUfFcumL6BlVyceIoSqXFe5jOfGpbBevTZtg4kTSHqymGb6ra6sKs+/9aJiONs5NXY7iacZ55qG3Ib1cpQTps9bQILnqpwL2VTaH9TPGWwMY3Nc2VEc08zsLrXnA/yZKqZ1YzSY9MGXWYLkCDQRiEog1ARAAyXMKL+x1lDvLZVQjSUIVlaWswc0nV5y2EzBdbdZZCP3ysGC+s+n7xtq0o1wOvSvaG9h5q7sYZs+AKbuUbeZPu0bPWKoO02i00yVoSgWnEqDbyNeiSW+vI+VdiXITV83lG6pS+pAoTZlRROkpb5xo0gQ5ZeYok8MrkEmJbsPjdoKUJDBFTwrRnaDOfb+Qx1D22PlAZpdKiNtwbNZWiwEQFm6mHkIVSTUe2zSemoqYX4QQRvbmuMyPIbwbdNWlItukjHsffuPivLF/XsI1gDV67S1cVnQbBgrpFDxN62USwewXkNl+ndwa+15wgJFyq4Sd+RSMTPDzDQPFovyDfA/jxN2SK1Lizam6o+LBmvhIxwZOfdYH8bdYCoSpqcKLJVG3qVcTwbhGJr3kpRcBRz39Ml6iZhJyI3pEoX3bJTlR5Pr1Kjpx13qGydSMos94CIYWAKhegI06aTdvvuiigBwjngo/Rk5S+iEGR5KmTqGyp27o6YxZy6D4NIc6PKUzhIUxfvuHNvfu
+ sD2W1U7eyLdm/jCgticGDsRtweytsgCSYfbz0gdgUuL3EBYN3JLbAU+UZpy v/fyD4cHDWaizNy/KmOI6FFjvVh4LRCpGTGDVPHsQXaqvzUybaMb7HSfmBBzZqqfVbq9n5FqPjAgD2lJ0rkzb9XnVXHgr6bmMRlaTlBMAEQEAAYkCNgQYAQgAIBYhBINQI6gu+8G3S19i2ykkeY3MjxOkBQJiEog1AhsMAAoJECkkeY3MjxOkY1YQAKdGjHyIdOWSjM8DPLdGJaPgJdugHZowaoyCxffilMGXqc8axBtmYjUIoXurpl+f+a7S0tQhXjGUt09zKlNXxGcebL5TEPFqgJTHN/77ayLslMTtZVYHE2FiIxkvW48yDjZUlefmphGpfpoXe4nRBNto1mMB9Pb9vR47EjNBZCtWWbwJTIEUwHP2Z5fV9nMx9Zw2BhwrfnODnzI8xRWVqk7/5R+FJvl7s3nY4F+svKGD9QHYmxfd8Gx42PZc/qkeCjUORaOf1fsYyChTtJI4iNm6iWbD9HK5LTMzwl0n0lL7CEsBsCJ97i2swm1DQiY1ZJ95G2Nz5PjNRSiymIw9/neTvUT8VJJhzRl3Nb/EmO/qeahfiG7zTpqSn2dEl+AwbcwQrbAhTPzuHIcoLZYV0xDWzAibUnn7pSrQKja+b8kHD9WF+m7dPlRVY7soqEYXylyCOXr5516upH8vVBmqweCIxXSWqPAhQq8d3hB/Ww2A0H0PBTN1REVw8pRLNApEA7C2nX6RW0XmA53PIQvAP0EAakWsqHoKZ5WdpeOcH9iVlUQhRgemQSkhfNaP9LqR1XKujlTuUTpoyT3xwAzkmSxN1nABoutHEO/N87fpIbpbZaIdinF7b9srwUvDOKsywfs5HMiUZhLKoZzCcU/AEFjQsPTATACGsWf3JYPnWxL9
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Intel-wired-lan] [PATCH net-next RESENT v3] ethtool: ice:
- Support for RSS settings to GTP from ethtool
-To: takeru hayasaka <hayatake396@gmail.com>
-Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>,
- Tony Nguyen <anthony.l.nguyen@intel.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
- vladimir.oltean@nxp.com, linux-kernel@vger.kernel.org, laforge@gnumonks.org,
- intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
- mailhol.vincent@wanadoo.fr
-References: <20240127140747.905552-1-hayatake396@gmail.com>
- <154f979e-a335-461b-b72e-5e9c54fe940c@linux.intel.com>
- <CADFiAcJShbgBLXdVgs1vK1jqDFopkRcw-se4b4h0V3Yd60xLVw@mail.gmail.com>
-Content-Language: en-US
-From: Marcin Szycik <marcin.szycik@linux.intel.com>
-In-Reply-To: <CADFiAcJShbgBLXdVgs1vK1jqDFopkRcw-se4b4h0V3Yd60xLVw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
+On Tue, 2024-01-23 at 14:17 -0800, Mina Almasry wrote:
+> diff --git a/include/net/netmem.h b/include/net/netmem.h
+> new file mode 100644
+> index 000000000000..9f327d964782
+> --- /dev/null
+> +++ b/include/net/netmem.h
+> @@ -0,0 +1,41 @@
+> +/* SPDX-License-Identifier: GPL-2.0
+> + *
+> + *	Network memory
+> + *
+> + *	Author:	Mina Almasry <almasrymina@google.com>
+> + */
+> +
+> +#ifndef _NET_NETMEM_H
+> +#define _NET_NETMEM_H
+> +
+> +/**
+> + * netmem_ref - a nonexistent type marking a reference to generic networ=
+k
 
+Minor nit: here you need to prepend 'struct' to avoid a kdoc warning:
 
-On 30.01.2024 07:39, takeru hayasaka wrote:
-> Hi Marcin-san
-> Thanks for your review!
-> 
->> Do I understand correctly that all gtpu* include TEID? Maybe write it here.
-> Yes, that's correct.
-> 
->> It would be nice to see a link to the patch that added GTP and 'e' flag support
-> to ethtool itself ("ethtool: add support for rx-flow-hash gtp").
-> I will send you the link.
-> The one I sent earlier was outdated, so I've updated it to match this patch.
-> https://lore.kernel.org/netdev/20240130053742.946517-1-hayatake396@gmail.com/
-> 
->> gtpc(4|6) doesn't include TEID, so what is its purpose?
-> In GTPC communication, there is no TEID in the CSR (Create Session Request).
-> Therefore, there are cases of GTPC that do not include TEID.
+include/net/netmem.h:20: warning: cannot understand function prototype: 'ty=
+pedef unsigned long __bitwise netmem_ref; '
 
-The way I understand it now, this patch (and the ethtool one) adds hashing on
-TEID field in GTP* headers. So I wanted to ask why do we have a case (gtpc(4|6))
-that doesn't include TEID? Do we hash on other fields in this header?
+Should be:
 
-> 
->> s/TEID(4byte)/TEID (4bytes)/
->> Also, I think two newlines should remain here.
-> I will correct the TEID notation in the next patch!
+* struct netmem_ref - a nonexistent type marking a reference to generic net=
+work
 
-Thanks,
-Marcin
+Cheers,
 
----8<---
+Paolo
+
 
