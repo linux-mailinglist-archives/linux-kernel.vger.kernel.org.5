@@ -1,119 +1,191 @@
-Return-Path: <linux-kernel+bounces-44880-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44882-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73923842875
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:53:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18B7F84287A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 16:54:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2ABA91F222C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:53:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D14D1C25DB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 15:54:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 312C886AC8;
-	Tue, 30 Jan 2024 15:53:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 202561272D4;
+	Tue, 30 Jan 2024 15:53:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kcalAKcL"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WWd14fgN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B08985C44;
-	Tue, 30 Jan 2024 15:53:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C5A28613E;
+	Tue, 30 Jan 2024 15:53:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706630010; cv=none; b=gU8Yn2wpCMOE3fuusVRxmaGeGoVhmYqRS1tk3Eqg0oRu9plEyUDfnNjSlPck3/UAzQMrkstdtKfXBkZgEKaxpRPP+3yhWLXkxNyTTReVznS2kyup/UdteeEaV8oO7012b9jKZhDZhWPzBM5r/bC/uv5gzv0d5G0iT9jV8uLCP0I=
+	t=1706630022; cv=none; b=InpQFRTL73QLChP5H9pJxcvYxHenAkoq5YMOFXK6Li5lvqwQwVfKchX72F83sd7CS2XqDgqaDPeZ/G312x0lIOgfh8ujSv6+Lf3qh5HwAvsbyk8hAgLVNXZl09tlvajAIdMdmxdqb7P4KhuWIztOLcgHvNSHBExehPnORQEZrGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706630010; c=relaxed/simple;
-	bh=UIe+zdWCR/Ww2V/jLPrMjticY2axcU12ENjKMXzkdzY=;
+	s=arc-20240116; t=1706630022; c=relaxed/simple;
+	bh=R+skgP9gYAOnJxpGZoCeIncWf1CrBc8RcUjjZVvJHHc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GE2Jtt+YMRcCfT+nUadTWmOLbZM6TeDu72cuc4IZ81Jq9h2dsqhtOq5Wq/1c/bLe7X/0HtT4S8sNjpyFhJO7mf9GS14wVgsW2LmRP5YNVP4cnE+VBiJAm6b1RSzVqN1LEBsjC5c4YpiAkrpHV8ZOnY8pQs7LnPLSf5R7R6ffnws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kcalAKcL; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6ddd1fc67d2so1859525b3a.2;
-        Tue, 30 Jan 2024 07:53:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706630008; x=1707234808; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WvnOw81iTWv+Rh9SWXo4ayaLBbjRis7Z8HFX8oWs5s8=;
-        b=kcalAKcLbdpKBwbc6w0NTuUUCJ0gT3G5iONckWourp3w1KTuZB2lQMU9M7JZizlRSu
-         4gCgtAOBriJUAsHrMo0krXCparfcygvavfbGT6YxYp1pbzWXJNPNFRjR+Ozz6BXv/zV/
-         djxQmTaSBqyZHPvEe+qZb8trdzYO1F+MHVouGlG1ZyjGQCjhvAc55IP/P+duPJ8Rt67Q
-         g/5UDZjsQqz9fKCQUk4zng7NgYrMmuWQOyHZeTiXVFga04yIzXRn14YiF8a4wvRwFxsD
-         R5tZICs2JdNOKNGldZRlNjD/AmYahoEqlokTFM9vsiS0/Qph3hTSfVohcCsC1B2fEzc3
-         P54A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706630008; x=1707234808;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WvnOw81iTWv+Rh9SWXo4ayaLBbjRis7Z8HFX8oWs5s8=;
-        b=wi9QO9Ct7CaRYYj/Wsj5nCDjPnGEJAb317l7ajLIASs5nEyAchKpWZ7zuOJzQ/LoOR
-         LYNwFP8tOW8qqfgaXmQFrcj3do7AR1k0qLav6bINaR0YZM33rremhZJX48oW7vNjSj/3
-         Kz/BD7HcbYWQ445fqfPLeY23vVIH7gsFovYk5IKQmquJYkoHCl3tnsbqzeVr1tuHGrDj
-         3Y9KW2Z38qKmlYOfZYTvCKhXdQ16FDofZRfNALNles8mG/tK3+qn8ea3Wrv0HAl11smT
-         4/aAKWGSIMxlz/0Sjxe78EyKHwieLTkbtM+mkloOm3/xdID00Ot7HlGeZxpPuANHg2lA
-         sYTg==
-X-Gm-Message-State: AOJu0Yzbwsw5mH7LUOEJw+aUM489fN/oo3gCxwtt2Cso4MggVy2Lyc4Z
-	c9x3+1Br5uDPasueHnfrBgqUtgoYftC7WNKioB4XlLQnV+pEJcc0
-X-Google-Smtp-Source: AGHT+IHjs+7Au2nQ2UZ02r/5YFemO3930W53TAMdk751tM0g6UVfvFp8IJR1SUj7EikwCAORkxjt2w==
-X-Received: by 2002:a62:d148:0:b0:6d9:ecbb:8bd8 with SMTP id t8-20020a62d148000000b006d9ecbb8bd8mr4760905pfl.32.1706630008269;
-        Tue, 30 Jan 2024 07:53:28 -0800 (PST)
-Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
-        by smtp.gmail.com with ESMTPSA id gu2-20020a056a004e4200b006dde1781800sm8219654pfb.94.2024.01.30.07.53.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 07:53:27 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 30 Jan 2024 05:53:26 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: torvalds@linux-foundation.org, mpatocka@redhat.com,
-	linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev,
-	msnitzer@redhat.com, ignat@cloudflare.com, damien.lemoal@wdc.com,
-	bob.liu@oracle.com, houtao1@huawei.com, peterz@infradead.org,
-	mingo@kernel.org, netdev@vger.kernel.org, allen.lkml@gmail.com,
-	kernel-team@meta.com, Alasdair Kergon <agk@redhat.com>,
-	Mike Snitzer <snitzer@kernel.org>, tglx@linutronix.de
-Subject: Re: [PATCH 7/8] dm-crypt: Convert from tasklet to BH workqueue
-Message-ID: <Zbkbdm66X2LcxSHD@slm.duckdns.org>
-References: <20240130091300.2968534-1-tj@kernel.org>
- <20240130091300.2968534-8-tj@kernel.org>
- <20240130104645.Gvnx8KnC@linutronix.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZFxg3oxKi5ZAr8pMapvkOd/8+xUwK3JIEkJF0ZCAcNavLnk4N/vFHAmsytRHwfR2qHouubop03NiRU2QZTWPEwDzPb7mW9LaXHSrMEu1Hb12LeL0x3GjubFmoD7PQoZTRkBsnFctwkc/lSzvvosRF1Is7vOnpiMNl87Jin+L+Pk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WWd14fgN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67585C433C7;
+	Tue, 30 Jan 2024 15:53:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706630021;
+	bh=R+skgP9gYAOnJxpGZoCeIncWf1CrBc8RcUjjZVvJHHc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WWd14fgNauH0btT8LYpk58n2O3ZUTLfdNxSnN8E6uSrQXqwFcnvYIQ9dZVeQbASf3
+	 8hTdYuN9SFrRniqbNzGLBQx80cp7Q8B+S1cp8XK22ouQmZyeE025DPnvBdEAZl7T4B
+	 wnMrBWiUz4N1vh5s3B/or/2dSAEfxQkZuKHjvFF4PI2z4VFZzU0Oepa8n7WDQIP8bt
+	 hFoVW2VU/4jh49FiUo8i7TUcDU0zYXBmcFa+mLgT0cyZV7BMKmMYKRCwYpFYzKGubB
+	 Jb9mX+qFpH2AeJtjUh7JST1PRM369brANH1C0CbldVSUOEz4SDsoY20s0Ty79xnJTD
+	 K2cYn4CszVaLA==
+Date: Tue, 30 Jan 2024 15:53:36 +0000
+From: Lee Jones <lee@kernel.org>
+To: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Cc: David Laight <David.Laight@aculab.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Petr Mladek <pmladek@suse.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Crutcher Dunnavant <crutcher+kernel@datastacks.com>,
+	Juergen Quade <quade@hsnr.de>
+Subject: Re: [PATCH 1/1] lib/vsprintf: Implement ssprintf() to catch
+ truncated strings
+Message-ID: <20240130155336.GA8551@google.com>
+References: <20240125083921.1312709-1-lee@kernel.org>
+ <a37e8071-32ac-4f5d-95e8-ddd2eb21edcd@rasmusvillemoes.dk>
+ <20240125103624.GC74950@google.com>
+ <54e518b6dd9647c1add38b706eccbb4b@AcuMS.aculab.com>
+ <20240129092440.GA1708181@google.com>
+ <7054dcbfb7214665afedaea93ce4dbad@AcuMS.aculab.com>
+ <20240129095237.GC1708181@google.com>
+ <20240130150721.GA692144@google.com>
+ <79921f9a-2453-48ec-85db-e63a0958db1e@prevas.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240130104645.Gvnx8KnC@linutronix.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <79921f9a-2453-48ec-85db-e63a0958db1e@prevas.dk>
 
-Hello,
+On Tue, 30 Jan 2024, Rasmus Villemoes wrote:
 
-On Tue, Jan 30, 2024 at 11:46:45AM +0100, Sebastian Andrzej Siewior wrote:
-> On 2024-01-29 23:11:54 [-1000], Tejun Heo wrote:
-> >  		if (in_hardirq() || irqs_disabled()) {
-> > -			io->in_tasklet = true;
-> > -			tasklet_init(&io->tasklet, kcryptd_crypt_tasklet, (unsigned long)&io->work);
-> > -			tasklet_schedule(&io->tasklet);
-> > +			INIT_WORK(&io->work, kcryptd_crypt);
-> > +			queue_work(system_bh_wq, &io->work);
+> On 30/01/2024 16.07, Lee Jones wrote:
+> > On Mon, 29 Jan 2024, Lee Jones wrote:
+> > 
+> >> On Mon, 29 Jan 2024, David Laight wrote:
+> >>
+> >>> ...
+> >>>>> I'm sure that the safest return for 'truncated' is the buffer length.
+> >>>>> The a series of statements like:
+> >>>>> 	buf += xxx(buf, buf_end - buf, .....);
+> >>>>> can all be called with a single overflow check at the end.
+> >>>>>
+> >>>>> Forget the check, and the length just contains a trailing '\0'
+> >>>>> which might cause confusion but isn't going to immediately
+> >>>>> break the world.
+> >>>>
+> >>>> snprintf() does this and has been proven to cause buffer-overflows.
+> >>>> There have been multiple articles authored describing why using
+> >>>> snprintf() is not generally a good idea for the masses including the 2
+> >>>> linked in the commit message:
+> >>>
+> >>> snprintf() returns the number of bytes that would have been output [1].
+> >>> I'm not suggesting that, or not terminating the buffer.
+> >>> Just returning the length including the '\0' (unless length was zero).
+> >>> This still lets the code check for overflow but isn't going to
+> >>> generate a pointer outside the buffer if used to update a pointer.
+> >>
+> >> I see.  Well I'm not married to my solution.  However, I am convinced
+> >> that the 2 solutions currently offered can be improved upon.  If you or
+> >> anyone else has a better solution, I'd be more than happy to implement
+> >> and switch to it.
+> >>
+> >> Let me have a think about the solution you suggest and get back to you.
+> > 
+> > Okay, I've written a bunch of simple test cases and results are
+> > positive.  It seems to achieve my aim whilst minimising any potential
+> > pitfalls.
+> > 
+> >  - Success returns Bytes actually written - no functional change
+> >  - Overflow returns the size of the buffer - which makes the result
+> >    a) testable for overflow
+> >    b) non-catastrophic if accidentally used to manipulate later sizes
 > 
-> Why do we need the tasklet here in the first place? Couldn't we use
-> workqueue? As per comment, the request originates in hardirq and then it
-> is moved to tasklet. Couldn't it be moved to workqueue regardless?
+> You are describing scnprintf(), which almost does exactly that. The last
+> thing we need is another interface with almost identical semantics.
 
-Yes, you can and if you replace that system_bh_wq with system_wq, or
-system_highpri_wq, everything should be fine in terms of correctness.
-However, that would mean that the work item now would always incur a
-scheduling latency which can be lengthy in certain circumstances. Whether
-that's an actual problem for the subsystem at hand, I have no idea.
+It does, which is why when I first centred my efforts on this task the
+plan was to simply switch to it.  However, as I described in the commit
+message:
 
-Thanks.
+  "Whist executing the task, it quickly became apparent that the initial
+  thought of simply s/snprintf/scnprintf/ wasn't going to be adequate
+  for a number of cases.  Specifically ones where the caller needs to
+  know whether the given string ends up being truncated."
+
+A great deal of callers want to know if the string they attempted to
+form was successful.  A malformed string would lead to oddities in the
+best cases and various device/probing/matching failures in the worst.
+
+> >     int size = 10;
+> >     char buf[size];
+> >     char *b = buf;
+> > 
+> >     ret = spprintf(b, size, "1234");
+> >     size -= ret;
+> >     b += ret;
+> >     // ret = 4  size = 6  buf = "1234\0"
+> > 
+> >     ret = spprintf(b, size, "5678");
+> >     size -= ret;
+> >     b += ret;
+> >     // ret = 4  size = 2  buf = "12345678\0"
+> > 
+> >     ret = spprintf(b, size, "9***");
+> >     size -= ret;
+> >     b += ret;
+> >     // ret = 2  size = 0  buf = "123456789\0"
+> 
+> So here scnprint() would have returned 1, leaving size at 1. scnprintf()
+> has the invariant that, for non-zero size, the return value is strictly
+> less than that size, so when passed a size of 1, all subsequent calls
+> return 0 (corresponding to the fact that all it could do was to write
+> the '\0' terminator).
+> 
+> This pattern already exists, and is really the reason scnprint exists.
+> Yes, scnprintf() cannot distinguish overflow from
+> it-just-exactly-fitted. Maybe it would have been better to make it work
+> like this, but I don't think there's a real use
+
+There are real use-cases.  They are what brought me here.
+
+> and we do have
+> seq_buf() if one really wants an interface that can build a string
+> piece-meal while keeping track of whether it ever caused overflow.
+
+seq_buf_*() looks okay, but it's petty heavy requiring what looks like
+the buffers to be initialised with an API call before use.  We're
+looking for something more light weight.
+
+scnprint() had clear safety centric improvements over snprintf() and
+spprintf() adds an additional layer of return value checking on top of
+that.
+
+I'm not sure I understand the resistance to something which is needed
+and has clear benefits over what presently exists just for the sake of a
+few lines of code.  I'd be on board if it were change for the sake of
+change, but the added flexibility and ease of use is evident.
 
 -- 
-tejun
+Lee Jones [李琼斯]
 
