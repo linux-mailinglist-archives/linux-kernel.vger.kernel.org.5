@@ -1,95 +1,113 @@
-Return-Path: <linux-kernel+bounces-44514-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-44543-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5FC4842319
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:31:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F73F842400
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 12:48:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A60828DED0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:31:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6FE82898E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 11:48:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8606466B5B;
-	Tue, 30 Jan 2024 11:31:06 +0000 (UTC)
-Received: from mail115-63.sinamail.sina.com.cn (mail115-63.sinamail.sina.com.cn [218.30.115.63])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67DCE67E69;
+	Tue, 30 Jan 2024 11:43:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jp8N5znL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 077FA66B33
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 11:31:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.63
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82B3E67A19
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 11:43:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706614266; cv=none; b=qsRY/mNlLsrvBDqqPI/LVRCI80J0IuML3NcDL0P0jHZx/misF4jAtla+CSjQY4xAOyGFzYuzCFnDKy1RYkhaMOwyGYyRtECnFHu/yCVkOttTixav8ryY99xgeh/968gpAbmIFMlSvY6eFN4d6MuzxX8l99fzxYENuxHs3U721c4=
+	t=1706615014; cv=none; b=XzmdCbq8GTH/bdEqtYpU6br7MDg2nTBujwtGz34+pVyh6Te5xk2AlPh9YNKnF7U8H7xAtoG9lioBUWj1COis0NF3wkCQ9l3lTUIphqbK57UG2sWNWOdTsA4cFi80UFg4S733+lHnZnFeh6MZa66O0jW4e0YAhOsmy+1eQYT0GJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706614266; c=relaxed/simple;
-	bh=8izGayVFiylM6e6Nv0jsppZ+9+/0Qelwm4RqoWSLt/w=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bS5XqkSvhi0UQxI058KjpS9BLUj3EgNzZ+USFVcEW033ja0BEkfHcpD4ly7fxswthkQENWhD3ShwE16MX+VaCxPp31RG091TE4KA2UAoiXRdgj9OCCSBzVuTB0vQIhEqqjUBoiLtlqbR+mxnxClUC8xKWrNXS3tWHh0o1HAnrBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.63
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([116.24.10.30])
-	by sina.com (10.75.12.45) with ESMTP
-	id 65B8DDE6000075BC; Tue, 30 Jan 2024 19:30:52 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 48242231457765
-X-SMAIL-UIID: 1F60C372F9BC48C7B815906CE64D145F-20240130-193052-1
-From: Hillf Danton <hdanton@sina.com>
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-	syzbot <syzbot+a984066a63e9c1e62662@syzkaller.appspotmail.com>,
-	eadavis@qq.com,
-	Peter Zijlstra <peterz@infradead.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [bluetooth?] INFO: task hung in hci_conn_failed
-Date: Tue, 30 Jan 2024 19:30:37 +0800
-Message-Id: <20240130113037.1390-1-hdanton@sina.com>
-In-Reply-To: <ZbgJqc06rEZ_FqRw@boqun-archlinux>
-References: <tencent_4A66EF6ACD6878526F542C2D6D109794E80A@qq.com> <20240129044824.1218-1-hdanton@sina.com> <20240129104753.1328-1-hdanton@sina.com> <afb57c55-5fd0-4f79-9653-67ef0c1e341e@I-love.SAKURA.ne.jp>
+	s=arc-20240116; t=1706615014; c=relaxed/simple;
+	bh=1dvspfcJflTfBs11wiC68BBxE/i2yh/F5YLwP7Tw4mk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kzbheVo33uPgqEGX5ndp+00A2WTcg//uCef35dYbt0bWRyE3lQKBs3EHh6sZgWozOWVuH2XOSOWfVXhjkekpKT//W1CD9DVlBR27odN7xYuTl42imnyLHSUdIbCvy3HqKylefSHmL9vXOSWFoa2i7FGA++MnR5z2OlZMly1v6pM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jp8N5znL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 808ECC433F1;
+	Tue, 30 Jan 2024 11:43:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706615014;
+	bh=1dvspfcJflTfBs11wiC68BBxE/i2yh/F5YLwP7Tw4mk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Jp8N5znLrchQW7iQQFTKbpb455YiKpVWmC2a96EWlFM2XehFfkc5+M2RDR2OcG0dy
+	 ekgA/SJ68RF1kQSb8q2wpNOpWX/9ry/nzv4+NjK1fCgaEnbShPFVLMf+X86KBDNzxB
+	 GPF+8bbGMHRhf0TLxcacVIfmcc3td0bU1Qtj5wJUku5E9qlg4E3nry9a6Nrm9Hzz9j
+	 ByFXdex/dIT7RE4ozYSKyeMZll6aTcvvWs7YtAHTgwuCeffG9/bq/FXJvc1qb9iJ/7
+	 wYKi0RiLZX0yY2Q2H+pxX8uDgNFxn1dZO2bn5KgB5CMTuxl4zxSHEmCGGHTwUhhy9Q
+	 XiPWxhcLiPLfA==
+Date: Tue, 30 Jan 2024 19:30:43 +0800
+From: Jisheng Zhang <jszhang@kernel.org>
+To: David Laight <David.Laight@aculab.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Matteo Croce <mcroce@microsoft.com>,
+	kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH 2/3] riscv: optimized memmove
+Message-ID: <Zbjd43y3s6PDfQE0@xhacker>
+References: <20240128111013.2450-1-jszhang@kernel.org>
+ <20240128111013.2450-3-jszhang@kernel.org>
+ <59bed43df37b4361a8a1cb31b8582e9b@AcuMS.aculab.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <59bed43df37b4361a8a1cb31b8582e9b@AcuMS.aculab.com>
 
-On Mon, 29 Jan 2024 12:25:13 -0800 Boqun Feng <boqun.feng@gmail.com>
+On Sun, Jan 28, 2024 at 12:47:00PM +0000, David Laight wrote:
+> From: Jisheng Zhang
+> > Sent: 28 January 2024 11:10
+> > 
+> > When the destination buffer is before the source one, or when the
+> > buffers doesn't overlap, it's safe to use memcpy() instead, which is
+> > optimized to use a bigger data size possible.
+> > 
+> ...
+> > + * Simply check if the buffer overlaps an call memcpy() in case,
+> > + * otherwise do a simple one byte at time backward copy.
 > 
-> Looks to me that debug_show_all_locks() doesn't hold the lockdep lock,
-> so it's really a best effort race read of all tasks on lock hold
-> information. Maybe Hillf wants the following? (Completely untested, it
-> will stop your whole system and print lock holding information).
+> I'd at least do a 64bit copy loop if the addresses are aligned.
+> 
+> Thinks a bit more....
+> 
+> Put the copy 64 bytes code (the body of the memcpy() loop)
+> into it an inline function and call it with increasing addresses
+> in memcpy() are decrementing addresses in memmove.
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
+Hi David,
 
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -6611,6 +6611,8 @@ void debug_show_all_locks(void)
- 	}
- 	pr_warn("\nShowing all locks held in the system:\n");
- 
-+	local_irq_disable();
-+	lockdep_lock();
- 	rcu_read_lock();
- 	for_each_process_thread(g, p) {
- 		if (!p->lockdep_depth)
-@@ -6620,6 +6622,8 @@ void debug_show_all_locks(void)
- 		touch_all_softlockup_watchdogs();
- 	}
- 	rcu_read_unlock();
-+	lockdep_unlock();
-+	local_irq_enable();
- 
- 	pr_warn("\n");
- 	pr_warn("=============================================\n\n");
---
+Besides the 64 bytes copy, there's another optimization in __memcpy:
+word-by-word copy even if s and d are not aligned.
+So if we make the two optimizd copy as inline functions and call them
+in memmove(), we almost duplicate the __memcpy code, so I think
+directly calling __memcpy is a bit better.
+
+Thanks
+> 
+> So memcpy() contains:
+> 	src_lim = src_lim + count;
+> 	... alignment copy
+> 	for (; src + 64 <= src_lim; src += 64; dest += 64)
+> 		copy_64_bytes(dest, src);
+> 	... tail copy
+> 
+> Then you can do something very similar for backwards copies.
+> 
+> 	David
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
+> 
 
