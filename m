@@ -1,222 +1,92 @@
-Return-Path: <linux-kernel+bounces-45580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43CCC8432A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 02:19:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6CA08432AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 02:20:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6910E1C2504B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 01:19:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6EA75B23A95
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 01:20:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F9B1EDD;
-	Wed, 31 Jan 2024 01:19:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C9DA139E;
+	Wed, 31 Jan 2024 01:20:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="vpfqMJWs"
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kg/tKFk3"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6ABB7FA
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 01:19:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59AF84C65;
+	Wed, 31 Jan 2024 01:20:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706663983; cv=none; b=Oo7F86Bs4jBHj1DpS6I+ORPIqB7bwzrCS5JjxDGwi9eY4NH3z2glNPAOaDEYNHGS2uLrIlRSBVWfwejR3FdzsCaFvNjgYo31f4i0BMGkmz/kIZ9Q68Ukdgak8W9PLMvIlSzVBGp1kfKwFrP8aIwT7KIS0bcyDMQdhF76H7eWMhc=
+	t=1706664026; cv=none; b=cX8JQjVIgnAgsBboesIyACAODpT2r6vAmDbNVu9Rt2py3X4ktT8Czz3nZgYi4PKz4QHKmLLejO5JbdTQHNYmB0B4YA9aOOqsSUmBriZYBTrIYtTz43eDNPElsGJXOuIbVRxnRpfnsCQiXL31HlP4jIcf3J4y14+NQ/xTqwq55mw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706663983; c=relaxed/simple;
-	bh=wXpIbBYsw5piRhsl6RgdldRPIgSDaSHdiHt8JrNeyDQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gpm4gtnPtkUKXGS9gksPfJkghFcJuIsY2gMl7/KL7ckEUU/S1AlfuIWLsNCV8rWoCGAEL58993NICbTEj9sgfp8WjK81zN3t+k+1GhET4Cj7h4lSVRB7I76h5ceYi6pCfSFzSXQD5VIgd6tO5OwUPUZFVTkaKzUla8twanN5gJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=vpfqMJWs; arc=none smtp.client-ip=115.124.30.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1706663977; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=QNcnZ4YTCX16sFr0xVxV0BBzhklTzrouZKUQMVBhs6A=;
-	b=vpfqMJWsCq61e9ix34Qd8yuhvnJULeWM4vqeXinIxT7tPBIv92uHrDUiUu9BXidLE0X4aDjmdNQgc+4EZ00nm9XitLbCMIASFM5kZZI6QTKx3CfPMr+FmhP1Ey/sj7sDkfJDAurRF9K73lLweLEhpvQxYSbfptP893HbA3leqeM=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=liusong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W.hOH5._1706663975;
-Received: from 30.178.80.124(mailfrom:liusong@linux.alibaba.com fp:SMTPD_---0W.hOH5._1706663975)
-          by smtp.aliyun-inc.com;
-          Wed, 31 Jan 2024 09:19:36 +0800
-Message-ID: <f6525b03-0864-4bd3-b083-3532f0042745@linux.alibaba.com>
-Date: Wed, 31 Jan 2024 09:19:35 +0800
+	s=arc-20240116; t=1706664026; c=relaxed/simple;
+	bh=uDA455Pv69DDJHi8Ti0vcIAvDtygawzLM08+OuqQ/cw=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=ceVOHUWBzZU2RHwvPm3pFCed0ho8r3lWnsv7eWRhGDMvYnCuSymhENrXtfFBePshexUbKBCX//Q82E/KYu28d+T9PIPyB54NsN6wCe7UwRgQ3wo/gfK9rYsSlUBzLzyn3uUqkelZ0JK+MIn3c85hquhteN3P8GbIEuj85AmP0RM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kg/tKFk3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id CFE88C43390;
+	Wed, 31 Jan 2024 01:20:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706664025;
+	bh=uDA455Pv69DDJHi8Ti0vcIAvDtygawzLM08+OuqQ/cw=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=Kg/tKFk32q01ka/Zw9x8SpNQx9EEXFf956jBIJmXfLV2onqGxMPA0JhwzPVPDucFT
+	 noBO9hysv4tDOo7L+kc7Lx8ZUugiGyHNub9FutJMLLsz9KWXd3ZJhH41mi8IyIk23/
+	 YtTl0P9cXiNQA6ertvC5bzOYQG5H7FY7qaqeB7Ro6Lgnrf9UgbaNLLmG87iHp+LlLk
+	 Ay0oJBDQZyeFaA7C81FMB8im+pWU9Q8Kt94qCBWQZA+9RWD0F36h2xyEc3oyl2gkq3
+	 tOHM1IWAo2KvqlYuFWRc3I+8Op7YKhQm1zZKuWlMrbswM3ef77hQQg9czJ59QUxIXb
+	 YJ9qWHk7uL8fg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B7025C4166F;
+	Wed, 31 Jan 2024 01:20:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCHv2 1/2] watchdog/softlockup: low-overhead detection of
- interrupt storm
-To: Bitao Hu <yaoma@linux.alibaba.com>, dianders@chromium.org,
- akpm@linux-foundation.org, pmladek@suse.com, lecopzer.chen@mediatek.com,
- kernelfans@gmail.com
-Cc: linux-kernel@vger.kernel.org
-References: <20240130074744.45759-1-yaoma@linux.alibaba.com>
- <20240130074744.45759-2-yaoma@linux.alibaba.com>
-From: Liu Song <liusong@linux.alibaba.com>
-In-Reply-To: <20240130074744.45759-2-yaoma@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: rds: Simplify the allocation of slab caches in
+ rds_conn_init
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170666402574.11970.2150907643973879045.git-patchwork-notify@kernel.org>
+Date: Wed, 31 Jan 2024 01:20:25 +0000
+References: <20240124075801.471330-1-chentao@kylinos.cn>
+In-Reply-To: <20240124075801.471330-1-chentao@kylinos.cn>
+To: Kunwu Chan <chentao@kylinos.cn>
+Cc: santosh.shilimkar@oracle.com, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
+ linux-kernel@vger.kernel.org
 
+Hello:
 
-在 2024/1/30 15:47, Bitao Hu 写道:
-> The following softlockup is caused by interrupt storm, but it cannot be
-> identified from the call tree. Because the call tree is just a snapshot
-> and doesn't fully capture the behavior of the CPU during the soft lockup.
->    watchdog: BUG: soft lockup - CPU#28 stuck for 23s! [fio:83921]
->    ...
->    Call trace:
->      __do_softirq+0xa0/0x37c
->      __irq_exit_rcu+0x108/0x140
->      irq_exit+0x14/0x20
->      __handle_domain_irq+0x84/0xe0
->      gic_handle_irq+0x80/0x108
->      el0_irq_naked+0x50/0x58
->
-> Therefore，I think it is necessary to report CPU utilization during the
-> softlockup_thresh period (report once every sample_period, for a total
-> of 5 reportings), like this:
->    watchdog: BUG: soft lockup - CPU#28 stuck for 23s! [fio:83921]
->    CPU#28 Utilization every 4s during lockup:
->      #1: 0% system, 0% softirq, 100% hardirq, 0% idle
->      #2: 0% system, 0% softirq, 100% hardirq, 0% idle
->      #3: 0% system, 0% softirq, 100% hardirq, 0% idle
->      #4: 0% system, 0% softirq, 100% hardirq, 0% idle
->      #5: 0% system, 0% softirq, 100% hardirq, 0% idle
->    ...
->
-> This would be helpful in determining whether an interrupt storm has
-> occurred or in identifying the cause of the softlockup. The criteria for
-> determination are as follows:
->    a. If the hardirq utilization is high, then interrupt storm should be
->    considered and the root cause cannot be determined from the call tree.
->    b. If the softirq utilization is high, then we could analyze the call
->    tree but it may cannot reflect the root cause.
->    c. If the system utilization is high, then we could analyze the root
->    cause from the call tree.
->
-> Signed-off-by: Bitao Hu <yaoma@linux.alibaba.com>
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Wed, 24 Jan 2024 15:58:01 +0800 you wrote:
+> Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
+> to simplify the creation of SLAB caches.
+> 
+> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
 > ---
->   kernel/watchdog.c | 72 +++++++++++++++++++++++++++++++++++++++++++++++
->   1 file changed, 72 insertions(+)
->
-> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-> index 81a8862295d6..0efe9604c3c2 100644
-> --- a/kernel/watchdog.c
-> +++ b/kernel/watchdog.c
-> @@ -23,6 +23,8 @@
->   #include <linux/sched/debug.h>
->   #include <linux/sched/isolation.h>
->   #include <linux/stop_machine.h>
-> +#include <linux/kernel_stat.h>
-> +#include <linux/math64.h>
->   
->   #include <asm/irq_regs.h>
->   #include <linux/kvm_para.h>
-> @@ -441,6 +443,73 @@ static int is_softlockup(unsigned long touch_ts,
->   	return 0;
->   }
->   
-> +#ifdef CONFIG_IRQ_TIME_ACCOUNTING
-> +#define NUM_STATS_GROUPS	5
-> +#define STATS_SYSTEM		0
-> +#define STATS_SOFTIRQ		1
-> +#define STATS_HARDIRQ		2
-> +#define STATS_IDLE		3
-> +#define NUM_STATS_PER_GROUP	4
-This is a set of related numbers; wouldn't it be better to use an enum?
-> +static DEFINE_PER_CPU(u16, cpustat_old[NUM_STATS_PER_GROUP]);
-> +static DEFINE_PER_CPU(u8, cpustat_utilization[NUM_STATS_GROUPS][NUM_STATS_PER_GROUP]);
-> +static DEFINE_PER_CPU(u8, cpustat_tail);
-> +static enum cpu_usage_stat idx_to_stat[NUM_STATS_PER_GROUP] = {
-> +	CPUTIME_SYSTEM, CPUTIME_SOFTIRQ, CPUTIME_IRQ, CPUTIME_IDLE
-> +};
-To be honest, I'm not particularly fond of the name 'idx_to_stat' as the 
-concept of an
-index is already implied by the nature of an array, so adding 'idx' is 
-redundant.
-I suggest shortening the name.
+>  net/rds/connection.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 
-> +
-> +static void update_cpustat(void)
-> +{
-> +	u8 i;
-> +	u16 *old = this_cpu_ptr(cpustat_old);
-> +	u8 (*utilization)[NUM_STATS_PER_GROUP] = this_cpu_ptr(cpustat_utilization);
-> +	u8 tail = this_cpu_read(cpustat_tail);
-> +	struct kernel_cpustat kcpustat;
-> +	u64 *cpustat = kcpustat.cpustat;
-> +	u16 sample_period_ms = sample_period >> 24LL; /* 2^24ns ~= 16.8ms */
+Here is the summary with links:
+  - net: rds: Simplify the allocation of slab caches in rds_conn_init
+    https://git.kernel.org/netdev/net-next/c/047a7d261be6
 
-There are two instances where right shift operations are used; it is 
-suggested to employ a helper macro for a more comfortable look.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-> +
-> +	kcpustat_cpu_fetch(&kcpustat, smp_processor_id());
-> +	for (i = STATS_SYSTEM; i < NUM_STATS_PER_GROUP; i++) {
-> +		/*
-> +		 * We don't need nanosecond resolution. A granularity of 16ms is
-> +		 * sufficient for our precision, allowing us to use u16 to store
-> +		 * cpustats, which will roll over roughly every ~1000 seconds.
-> +		 * 2^24 ~= 16 * 10^6
-> +		 */
-> +		cpustat[idx_to_stat[i]] = lower_16_bits(cpustat[idx_to_stat[i]] >> 24LL);
-> +		utilization[tail][i] = 100 * (u16)(cpustat[idx_to_stat[i]] - old[i])
-> +					/ sample_period_ms;
-> +		old[i] = cpustat[idx_to_stat[i]];
-> +	}
-> +	this_cpu_write(cpustat_tail, (tail + 1) % NUM_STATS_GROUPS);
-> +}
-> +
-> +static void print_cpustat(void)
-> +{
-> +	u8 i, j;
-> +	u8 (*utilization)[NUM_STATS_PER_GROUP] = this_cpu_ptr(cpustat_utilization);
-> +	u8 tail = this_cpu_read(cpustat_tail);
-> +	u64 sample_period_second = sample_period;
-> +
-> +	do_div(sample_period_second, NSEC_PER_SEC);
-> +	/*
-> +	 * We do not want the "watchdog: " prefix on every line,
-> +	 * hence we use "printk" instead of "pr_crit".
-> +	 */
-> +	printk(KERN_CRIT "CPU#%d Utilization every %llus during lockup:\n",
-> +		smp_processor_id(), sample_period_second);
-> +	for (j = STATS_SYSTEM, i = tail; j < NUM_STATS_GROUPS;
-> +		j++, i = (i + 1) % NUM_STATS_GROUPS) {
-> +		printk(KERN_CRIT "\t#%d: %3u%% system,\t%3u%% softirq,\t"
-> +			"%3u%% hardirq,\t%3u%% idle\n", j+1,
-> +			utilization[i][STATS_SYSTEM], utilization[i][STATS_SOFTIRQ],
-> +			utilization[i][STATS_HARDIRQ], utilization[i][STATS_IDLE]);
-> +	}
-> +}
-> +#else
-> +static inline void update_cpustat(void) { }
-> +static inline void print_cpustat(void) { }
-> +#endif
-> +
->   /* watchdog detector functions */
->   static DEFINE_PER_CPU(struct completion, softlockup_completion);
->   static DEFINE_PER_CPU(struct cpu_stop_work, softlockup_stop_work);
-> @@ -504,6 +573,8 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
->   	 */
->   	period_ts = READ_ONCE(*this_cpu_ptr(&watchdog_report_ts));
->   
-> +	update_cpustat();
-> +
->   	/* Reset the interval when touched by known problematic code. */
->   	if (period_ts == SOFTLOCKUP_DELAY_REPORT) {
->   		if (unlikely(__this_cpu_read(softlockup_touch_sync))) {
-> @@ -539,6 +610,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
->   		pr_emerg("BUG: soft lockup - CPU#%d stuck for %us! [%s:%d]\n",
->   			smp_processor_id(), duration,
->   			current->comm, task_pid_nr(current));
-> +		print_cpustat();
->   		print_modules();
->   		print_irqtrace_events(current);
->   		if (regs)
 
