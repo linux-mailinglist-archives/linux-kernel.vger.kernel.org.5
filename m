@@ -1,102 +1,147 @@
-Return-Path: <linux-kernel+bounces-47077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62CFF8448D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:29:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C3958448D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:29:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2A3DB23D81
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:29:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 033E81F27EF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:29:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 440C63FE24;
-	Wed, 31 Jan 2024 20:24:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10FEA82869;
+	Wed, 31 Jan 2024 20:25:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cSb/6rbQ"
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CfQ3PWl6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 043A913E22E
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 20:24:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 483EE405DD;
+	Wed, 31 Jan 2024 20:25:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706732657; cv=none; b=HFQQpS/FeccoFetbbsFICgAeSjRor38pydtYNeIZ/PN6lUaZxrasGJX9GbItt6sb47pOndrJOomPVEye+aPUX2rHdmBHXr47mMn9m4tztbz4mrSI806zA6EIhdnJlLHACLkUKKgh8/o6xN6TNhOjTE77UGTzWnI4dLie/9Mco+U=
+	t=1706732722; cv=none; b=NkajXRj5ajXV4dJeGW5pJsFM7m+nUQwz0Qeeu+mERMOHDxIgOW88AUZ0OmDfH4UlKAdpgIJRVV16sd6ad1OuzMuB5G31oDZAos3+SqPHlpRiRwTsXIHQtD5O6skgFVHHUPNAqR1GZ+0q91HAjUKF+7BfxfjxizH0BB9DX32QPfc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706732657; c=relaxed/simple;
-	bh=64KMf/+FyjVtpRUZmQKXmip+XQCMRyyekmcIwCIvfR0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bzFbgeDocbfw4kfFV+pqZzp+nHOihP0v7+MRyd6s7n7FRiUicz8YjFhhNsmmmSPpiZjaFmoRFl11PcDOq5xK7SHugNUuR2Cue934IvcNZ8QeekiFHcy7gx4OrIUeeBluyadFMUCZmSayibkItSQfte+YuX7PF4R9FO3mi0qdHPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cSb/6rbQ; arc=none smtp.client-ip=209.85.128.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-604059403e9so1766357b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 12:24:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706732655; x=1707337455; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=64KMf/+FyjVtpRUZmQKXmip+XQCMRyyekmcIwCIvfR0=;
-        b=cSb/6rbQ0yNBl6lfzR1AN2pOZbUm/8OFo6BkvatnzdMhVIQqGBHobob5lzPVhbgHqO
-         GQzHprgxVI1xz8i4wOU5OCwYtYbJu/ANVm6a4WrylgeiR5KoX1F2RwedWkK3KvB84lc9
-         LC3nbcdwqSVwiD6EalSx1AhX7Kl1FXXZa+T8/p51Nph7ryrVtfw3uvxo8ncOzK8fcYJy
-         ZHnDbqckPmAMFyw7owDg5rCGtE7a5nKsiTrDaOPTx6NPqRvSnDs9wlDb3u00Yhp6qQLG
-         7aFzv70gJYpQ0bvD2pPAtjYdGbSk5seqDNBgPRzgUPD6Q/mnPnbo6GMAvZR2o5JW0Z+P
-         6J3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706732655; x=1707337455;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=64KMf/+FyjVtpRUZmQKXmip+XQCMRyyekmcIwCIvfR0=;
-        b=dQ9utrXg0QPG/oXiW0OENPRtBxAV/rnT2tWo8xXqeDGvHX8iRPJkdC1L9tpuVsH4nD
-         ndKjYpQc3tK/EOpmqT2EJxXhnvybVssBW4OMXsHH9/XMgBVIxUwHJNcvqEKLp2JSk5L1
-         mD2OScYLE5N9od7JPTxnkgbGLvreL26ebvi0mVxyA4kV1gnIkth5j5LEbmMzl+KEP5Bh
-         QuaT0546Zk9gV5lN4cnFv+OODVEWxh9azPUkFLX+NBXoJwFuOLQZQySENTv5/wzBZVzM
-         0pV52KkQtmm/YxNDxi8J4WqOZifhxeFqJwYCh0KuCUpI03hXVClMQ3zdO36pUkcwOYXx
-         NsLQ==
-X-Gm-Message-State: AOJu0Yy2nrqeZ0XqTbbyARzpQEwxUR+yMkRfTuqcnga6lb5mzn59d7mO
-	TtTBDRTwotbW6pbbP/efnujxyFu+NrupxW61/2hJz1nHzGnn6V8BsJ7t1tiKqriIPtUjzrj8ozt
-	fQMvPa2ghsIVp3xqPfmSRJPhOlVeCMYLa4i+PGQ==
-X-Google-Smtp-Source: AGHT+IF1QF/qVP8hWirLpqPTh4WqY/koXmDouYX7xW9tJ0uXH/T8LEu41dns0v8qPg9Pknhpq6nH2WDb4tKsn16RMsU=
-X-Received: by 2002:a81:9a09:0:b0:604:18dd:881c with SMTP id
- r9-20020a819a09000000b0060418dd881cmr159836ywg.49.1706732655001; Wed, 31 Jan
- 2024 12:24:15 -0800 (PST)
+	s=arc-20240116; t=1706732722; c=relaxed/simple;
+	bh=adwQTBsELG6IcUpc/2BvWJPBMElyuZywwj6CtPi8rAw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uN0yyrj6fagJCstC9tMSPJlEedOIGkss4S0xGPpjQ/rgYaiSYUdIXzTxEQ/L4PRTcDijrKkPUDJks41ZYRLa6hMccbFnIW1i0KN82j48YijJL2n87Dfh3huWXM67JOxdqa+7H5+76iUEFYIix6epunG+9o0Ih2o06q8oGzRUqv4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CfQ3PWl6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 685C4C433F1;
+	Wed, 31 Jan 2024 20:25:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706732721;
+	bh=adwQTBsELG6IcUpc/2BvWJPBMElyuZywwj6CtPi8rAw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CfQ3PWl67yoCo7KBDU/gpnSRg48r2ztxAib2ticidVXNkTX0QOn6nRWIMGFQpJryV
+	 BJo3GhznvsCSL5W27wseLcQnxPQnDN3pEjAMbiet33G07CQ47RJfe+OsR/jy+EkF3T
+	 fjhF+Xwoi4cw2N49fHybqIDs8x0Hi4dI82VlKu/jnr7y8r60OGSnuCqbdRvNH6XYMG
+	 XwUBCXZ/qWHbrXlU6JyEJYSIIhgUGJ6aFU7hQLAIG9K7lkqLUB5pOzCT3ujnupP8QC
+	 QHB/794IdABRfiZrDNy+/cnOLc5YZns+Hb4LLVN2Xcgt23Zi9xwE13ipjm6HTC5SA5
+	 A7L5paB5NtLxA==
+Date: Wed, 31 Jan 2024 14:25:19 -0600
+From: Rob Herring <robh@kernel.org>
+To: Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+	Jiri Kosina <jikos@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	linux-arm-msm@vger.kernel.org, linux-input@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Konrad Dybcio <konrad.dybcio@somainline.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Daniel Thompson <daniel.thompson@linaro.org>
+Subject: Re: [PATCH v3 2/2] arm64: dts: qcom: sc8280xp-x13s: Fix/enable
+ touchscreen
+Message-ID: <20240131202519.GB2222869-robh@kernel.org>
+References: <20240129-x13s-touchscreen-v3-0-c4a933034145@quicinc.com>
+ <20240129-x13s-touchscreen-v3-2-c4a933034145@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130124828.14678-1-brgl@bgdev.pl> <20240130124828.14678-22-brgl@bgdev.pl>
-In-Reply-To: <20240130124828.14678-22-brgl@bgdev.pl>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 31 Jan 2024 21:24:04 +0100
-Message-ID: <CACRpkdZfKRCNO2nVXzBGEuY2-sV=D1utfOaPD_OsjfnUhDSqnw@mail.gmail.com>
-Subject: Re: [PATCH 21/22] gpio: remove the RW semaphore from the GPIO device
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, "Paul E . McKenney" <paulmck@kernel.org>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Wolfram Sang <wsa@the-dreams.de>, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240129-x13s-touchscreen-v3-2-c4a933034145@quicinc.com>
 
-On Tue, Jan 30, 2024 at 1:48=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
- wrote:
+On Mon, Jan 29, 2024 at 08:47:48AM -0800, Bjorn Andersson wrote:
+> The touchscreen present on some SKUs of Lenovo Thinkpad X13s is never
+> detected by Linux. Power is applied and the device is brought out of
+> reset using the pinconfig in DeviceTree, but the read-test in
+> __i2c_hid_core_probe() fails to access the device, which result in probe
+> being aborted.
+> 
+> Some users have reported success after rebinding the device.
+> 
+> Looking to the ACPI tables, there's a 5ms after-power and a 200ms
+> after-reset delay. The power-supply is shared with other components, so
+> this is active all the way through boot. The reset GPIO, on the other
+> hand, is low (reset asserted) at boot, so this is first deasserted by
+> the implicit application of the pinconf state.
+> 
+> This means the time between reset deassert and __i2c_hid_core_probe() is
+> significantly below the value documented in the ACPI tables.
+> 
+> As the I2C HID binding and driver support specifying a reset gpio,
+> replace the pinconf-based scheme to pull the device out of reset. Then
+> specify the after-reset time.
+> 
+> The shared power rail is currently always on, but in case this ever
+> change, the after-power delay is added as well, to not violate the
+> power-on to reset-deassert timing requirement.
+> 
+> Fixes: 32c231385ed4 ("arm64: dts: qcom: sc8280xp: add Lenovo Thinkpad X13s devicetree")
+> Tested-by: Daniel Thompson <daniel.thompson@linaro.org>
+> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> ---
+>  arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts b/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts
+> index def3976bd5bb..33731b95ad51 100644
+> --- a/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts
+> @@ -620,7 +620,6 @@ &i2c4 {
+>  
+>  	status = "okay";
+>  
+> -	/* FIXME: verify */
+>  	touchscreen@10 {
+>  		compatible = "hid-over-i2c";
 
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> With all accesses to gdev->chip being protected with SRCU, we can now
-> remove the RW-semaphore specific to the character device which
-> fullfilled the same role up to this point.
->
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Please add a real device compatible before you need the next power 
+sequencing property I'll reject.
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-
-Yours,
-Linus Walleij
+>  		reg = <0x10>;
+> @@ -630,6 +629,11 @@ touchscreen@10 {
+>  		vdd-supply = <&vreg_misc_3p3>;
+>  		vddl-supply = <&vreg_s10b>;
+>  
+> +		reset-gpios = <&tlmm 99 GPIO_ACTIVE_LOW>;
+> +
+> +		post-power-on-delay-ms = <5>;
+> +		post-reset-deassert-delay-ms = <200>;
+> +
+>  		pinctrl-names = "default";
+>  		pinctrl-0 = <&ts0_default>;
+>  	};
+> @@ -1450,7 +1454,6 @@ int-n-pins {
+>  		reset-n-pins {
+>  			pins = "gpio99";
+>  			function = "gpio";
+> -			output-high;
+>  			drive-strength = <16>;
+>  		};
+>  	};
+> 
+> -- 
+> 2.25.1
+> 
 
