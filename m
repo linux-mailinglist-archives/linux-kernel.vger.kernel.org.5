@@ -1,241 +1,165 @@
-Return-Path: <linux-kernel+bounces-45700-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D9B2843458
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 04:07:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB70484345E
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 04:11:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76D2C1F2631D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 03:07:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BC3E1C24512
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 03:11:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CD10101C5;
-	Wed, 31 Jan 2024 03:07:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4620712B86;
+	Wed, 31 Jan 2024 03:11:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pnoxswJV"
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UAH3i7xR"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61DB0FBEA
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 03:07:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 096A91079B
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 03:11:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706670452; cv=none; b=FUjxI/nCPJ+p6q/+Feej2WCcMKd9tYKnMRiQOdVG89Wos6/1ry/3XH4wOaGxNwihWf2ZLghTa5FTL/iV1mF7MUTxLy7MV4WQdtHMobWBAWe2AAEHrduPporNbsWRxvhLO9nHtphYJ2GvpZ378LXGTTh4BrxsZhL4XmfxN+kPk+Y=
+	t=1706670701; cv=none; b=EFWtQ2jXfWuonN9c/jNEgLtAWunIDCyyTj5Yg9Cn+7k70YPZWKdyueogDgBIgFRUWx/VSfPayLap7YMun8jyrU2/yPofbgOmGU2GeEXf5O2rmDxvmiL2veTnCpN7cSq5G8a5/dewlw1P1MwTRM5eFLaNTx/Tek5On/bsYVC4jPE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706670452; c=relaxed/simple;
-	bh=wGptIHszJhPa5ileBViBX/mcYWc779L3JP1n3pvT/c0=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=glUu1vg3raxfHhNksdxx3Mj9QHKRJ5JhRcLNHKCK0RLvNuDA1GONKTauiWY+Ag0QLZwZETeMbVaVB3FF1ZrA7awmh17oBggpjgcLs18OrXHzIUNN89qWpi4wtMhuxGefq7thrQA2FYVz+VG4Cbn8cFHaZanOb241tXvwUgwVSbQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pnoxswJV; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Content-Type: text/plain;
-	charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706670447;
+	s=arc-20240116; t=1706670701; c=relaxed/simple;
+	bh=8A1sNTcqh/vi3qf/rn7lmh0Ujtt2fMYFqdqHx9tLGhU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MMMNU/srQLYE4fqCjFrBZ+Jgm8sY1EfNuDcE7kfTzq2d8qBYIpf/JPQ/P8/Jiq0/HyvvMjcj9vE6tJhSV80qW4Zk2Xrh+zVSFGfVbRhx4xosKFtOjQWQasZdWFHos+l7hTZZuEp1XcobCd1pbl7hMmxftBmu35yRJTvsQAr/0T0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UAH3i7xR; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706670699;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NNpTT/WqMYE/kMlEau8F0K6s+byKh41jM8d3ijxTy+U=;
-	b=pnoxswJVQxLXXKjgabA/iWqVs55dd1FIBzgFJZkrFqruLK6cJ93egcuzxTj86u1a4YNGwc
-	N6RFFZZPkByRzNX+DvNBJPZxhiaHlumPSevDx48S0D+6Uzm6qIInKeeZPtT3lLTKpLW+jf
-	OcDJOrb1g8fqXEAQghRBQLsoMx2S00c=
+	bh=iu3CJL4LbQS98hB4MGDC78q9pGdj3UV5DPUVK7DzfMo=;
+	b=UAH3i7xRVFR/0xSVCuEEGyNeQHSIdyEbyl29fLGPnnqrpx8bdayf4jTRhmvNntNGjHDygs
+	Aqx1g0g2DxZ/PJjo8g5kxnFCIlcgmrWdetUASY83bMKJZByAb8wkZnXPuQouLGAHz87Tg8
+	YPnjk3KU+XPTrutGlrQpoNfyIyK8SyU=
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
+ [209.85.167.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-443-BQS8Cf2bMqaAtzTZ2a21nA-1; Tue, 30 Jan 2024 22:11:36 -0500
+X-MC-Unique: BQS8Cf2bMqaAtzTZ2a21nA-1
+Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3be75cab163so605007b6e.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 19:11:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706670695; x=1707275495;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iu3CJL4LbQS98hB4MGDC78q9pGdj3UV5DPUVK7DzfMo=;
+        b=XJZlkw5C0B3jI5MqSBMRb7jtwaQVp92cWyJFAKXz14dWzPrzbLXjxOBd8rt+Sg3qbL
+         bKijNJ5Fq1eZlG0VgOvtqcTpkt9EMa0hdJeYsKmuJWKlfKfRmh7sayvmC7PlcpQzLGZe
+         crnx82YYVgio1yD6LyBrkPOrusTyKCRxdlFJgANNUx1Wtwoh+JM1Gdu7TpgIY44Rp7BW
+         ZpI8ofJzPdjUMN9paj5vhFnj9QR0KSKhw3ZxVS4pxaIqu5GktalmD38gqlDe35tOePFJ
+         Knrp9GrKsrVgWrNTDS2v8EWHNhCuf5V077tSqQ5Kbw4Vi5aJGmH19XQWCe/oi8wyxT7Z
+         jA+Q==
+X-Gm-Message-State: AOJu0Yxv4JkFOx+QDqTH627wlA2zXt8dF9PGb4sVfcYGEr5Z8bqhDoGY
+	wCmuXiiummEzdVANMnwgN6ZJxPuMgQdYd8SqgtdfMcDOVTPu++FPHBeASyOvRMmSX3kRKc+Os1d
+	NzTs308XwXWHjNPpf1V1Jm+OYbR2OBiDpPxrD2UrFPkfoNtcGvMXj1wI+fq3vJA==
+X-Received: by 2002:a05:6808:329a:b0:3be:6bed:70af with SMTP id cg26-20020a056808329a00b003be6bed70afmr574526oib.3.1706670695142;
+        Tue, 30 Jan 2024 19:11:35 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFmfRksgT7QnfG2CN0xzUAVB0zgkTIWmjGTT9JZuTu7vPmTr2vpPAGzf5rzH88B+9ZKhzkzMg==
+X-Received: by 2002:a05:6808:329a:b0:3be:6bed:70af with SMTP id cg26-20020a056808329a00b003be6bed70afmr574507oib.3.1706670694846;
+        Tue, 30 Jan 2024 19:11:34 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWlTw1dye8bxzwmPtvq8UxMcKWb53stpiyLPATNR6iaQUszWm9J9ynFpckV3yNoZa1PI8CIknSnuWJsBwaO02BqdGhqrfursNiEOkio6a2UGvFqsVKpuU/H5CSPkl+Aa2kxjGVkGMiZrkfwq5bg8R52435X0a6KA1/AbSuJhoyQpkAD+OlfOvHsMt3eGTuITT3pZ5hRXf59RibQDhxuEv0FmCJIGONPRfRNZ93L0Oa8zSOPIpMBk7+pzBn8w2th2H5M99+zW5THY8QAvX/oZjnk9j0cijhnLF+LkcajdzOpCxzEneepW3w+i56pxirHQMbskARfpvCEAFw5kgClUG9W352XhNnU0gEOP6vKEt04bMNk8V7vkIhMeiBB+5sV09Y7rU8hpuw0ZumI+0dFILHnPHNahfEQXvzi9sFHpw==
+Received: from [10.72.116.50] ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id p26-20020a62ab1a000000b006ddb85a61cfsm8564500pff.162.2024.01.30.19.11.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jan 2024 19:11:34 -0800 (PST)
+Message-ID: <d2d09269-30fa-461d-9461-16a1ffbde6b6@redhat.com>
+Date: Wed, 31 Jan 2024 11:11:28 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Subject: Re: [PATCH] fs,hugetlb: Fix NULL pointer dereference in
- hugetlbs_fill_super
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20240130210418.3771-1-osalvador@suse.de>
-Date: Wed, 31 Jan 2024 11:06:43 +0800
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- LKML <linux-kernel@vger.kernel.org>,
- Linux-MM <linux-mm@kvack.org>,
- Michal Hocko <mhocko@suse.com>,
- David Howells <dhowells@redhat.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <C57651FA-D3E4-4B18-83F1-6BFDA70260A5@linux.dev>
-References: <20240130210418.3771-1-osalvador@suse.de>
-To: Oscar Salvador <osalvador@suse.de>
-X-Migadu-Flow: FLOW_OUT
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/5] KVM: selftests: aarch64: Introduce
+ pmu_event_filter_test
+To: Eric Auger <eauger@redhat.com>, Oliver Upton <oliver.upton@linux.dev>,
+ Marc Zyngier <maz@kernel.org>, kvmarm@lists.linux.dev
+Cc: James Morse <james.morse@arm.com>, kvm@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+ Shuah Khan <shuah@kernel.org>, Suzuki K Poulose <suzuki.poulose@arm.com>,
+ Zenghui Yu <yuzenghui@huawei.com>
+References: <20240116060129.55473-1-shahuang@redhat.com>
+ <51ca8edc-81e6-4c6d-9c72-80fe59919868@redhat.com>
+Content-Language: en-US
+From: Shaoqin Huang <shahuang@redhat.com>
+In-Reply-To: <51ca8edc-81e6-4c6d-9c72-80fe59919868@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+Hi Eric,
 
+On 1/26/24 18:25, Eric Auger wrote:
+> Hi Shaoqin,
+> 
+> On 1/16/24 07:01, Shaoqin Huang wrote:
+>> The test is inspired by the pmu_event_filter_test which implemented by x86. On
+>> the arm64 platform, there is the same ability to set the pmu_event_filter
+>> through the KVM_ARM_VCPU_PMU_V3_FILTER attribute. So add the test for arm64.
+>>
+>> The series first move some pmu common code from vpmu_counter_access to
+>> lib/aarch64/vpmu.c and include/aarch64/vpmu.h, which can be used by
+>> pmu_event_filter_test. Then fix a bug related to the [enable|disable]_counter,
+>> and at last, implement the test itself.
+> which branch does it apply on? I fail to apply on top on main.
+> 
+> Or can you provide a branch?
 
-> On Jan 31, 2024, at 05:04, Oscar Salvador <osalvador@suse.de> wrote:
->=20
-> When configuring a hugetlb filesystem via the fsconfig() syscall, =
-there is a
-> possible NULL dereference in hugetlbfs_fill_super() caused by =
-assigning
-> NULL to ctx->hstate in hugetlbfs_parse_param() when the requested =
-pagesize
-> is non valid.
->=20
-> E.g: Taking the following steps:
->=20
->     fd =3D fsopen("hugetlbfs", FSOPEN_CLOEXEC);
->     fsconfig(fd, FSCONFIG_SET_STRING, "pagesize", "1024", 0);
->     fsconfig(fd, FSCONFIG_CMD_CREATE, NULL, NULL, 0);
->=20
-> Given that the requested "pagesize" is invalid, ctxt->hstate will be =
-replaced
-> with NULL, losing its previous value, and we will print an error:
->=20
-> ...
-> ...
-> case Opt_pagesize:
-> ps =3D memparse(param->string, &rest);
-> ctx->hstate =3D h;
-> if (!ctx->hstate) {
->         pr_err("Unsupported page size %lu MB\n", ps / SZ_1M);
->         return -EINVAL;
-> }
-> return 0;
-> ...
-> ...
->=20
-> This is a problem because later on, we will dereference ctxt->hstate =
-in
-> hugetlbfs_fill_super()
->=20
-> ...
-> ...
-> sb->s_blocksize =3D huge_page_size(ctx->hstate);
-> ...
-> ...
->=20
-> Causing below Oops.
->=20
-> Fix this by replacing cxt->hstate value only when then pagesize is =
-known to be valid.
->=20
-> kernel: hugetlbfs: Unsupported page size 0 MB
-> kernel: BUG: kernel NULL pointer dereference, address: =
-0000000000000028
-> kernel: #PF: supervisor read access in kernel mode
-> kernel: #PF: error_code(0x0000) - not-present page
-> kernel: PGD 800000010f66c067 P4D 800000010f66c067 PUD 1b22f8067 PMD 0
-> kernel: Oops: 0000 [#1] PREEMPT SMP PTI
-> kernel: CPU: 4 PID: 5659 Comm: syscall Tainted: G            E      =
-6.8.0-rc2-default+ #22 5a47c3fef76212addcc6eb71344aabc35190ae8f
-> kernel: Hardware name: Intel Corp. GROVEPORT/GROVEPORT, BIOS =
-GVPRCRB1.86B.0016.D04.1705030402 05/03/2017
-> kernel: RIP: 0010:hugetlbfs_fill_super+0xb4/0x1a0
-> kernel: Code: 48 8b 3b e8 3e c6 ed ff 48 85 c0 48 89 45 20 0f 84 d6 00 =
-00 00 48 b8 ff ff ff ff ff ff ff 7f 4c 89 e7 49 89 44 24 20 48 8b 03 =
-<8b> 48 28 b8 00 10 00 00 48 d3 e0 49 89 44 24 18 48 8b 03 8b 40 28
-> kernel: RSP: 0018:ffffbe9960fcbd48 EFLAGS: 00010246
-> kernel: RAX: 0000000000000000 RBX: ffff9af5272ae780 RCX: =
-0000000000372004
-> kernel: RDX: ffffffffffffffff RSI: ffffffffffffffff RDI: =
-ffff9af555e9b000
-> kernel: RBP: ffff9af52ee66b00 R08: 0000000000000040 R09: =
-0000000000370004
-> kernel: R10: ffffbe9960fcbd48 R11: 0000000000000040 R12: =
-ffff9af555e9b000
-> kernel: R13: ffffffffa66b86c0 R14: ffff9af507d2f400 R15: =
-ffff9af507d2f400
-> kernel: FS:  00007ffbc0ba4740(0000) GS:ffff9b0bd7000000(0000) =
-knlGS:0000000000000000
-> kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> kernel: CR2: 0000000000000028 CR3: 00000001b1ee0000 CR4: =
-00000000001506f0
-> kernel: Call Trace:
-> kernel:  <TASK>
-> kernel:  ? __die_body+0x1a/0x60
-> kernel:  ? page_fault_oops+0x16f/0x4a0
-> kernel:  ? search_bpf_extables+0x65/0x70
-> kernel:  ? fixup_exception+0x22/0x310
-> kernel:  ? exc_page_fault+0x69/0x150
-> kernel:  ? asm_exc_page_fault+0x22/0x30
-> kernel:  ? __pfx_hugetlbfs_fill_super+0x10/0x10
-> kernel:  ? hugetlbfs_fill_super+0xb4/0x1a0
-> kernel:  ? hugetlbfs_fill_super+0x28/0x1a0
-> kernel:  ? __pfx_hugetlbfs_fill_super+0x10/0x10
-> kernel:  vfs_get_super+0x40/0xa0
-> kernel:  ? __pfx_bpf_lsm_capable+0x10/0x10
-> kernel:  vfs_get_tree+0x25/0xd0
-> kernel:  vfs_cmd_create+0x64/0xe0
-> kernel:  __x64_sys_fsconfig+0x395/0x410
-> kernel:  do_syscall_64+0x80/0x160
-> kernel:  ? syscall_exit_to_user_mode+0x82/0x240
-> kernel:  ? do_syscall_64+0x8d/0x160
-> kernel:  ? syscall_exit_to_user_mode+0x82/0x240
-> kernel:  ? do_syscall_64+0x8d/0x160
-> kernel:  ? exc_page_fault+0x69/0x150
-> kernel:  entry_SYSCALL_64_after_hwframe+0x6e/0x76
-> kernel: RIP: 0033:0x7ffbc0cb87c9
-> kernel: Code: 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 66 90 48 89 =
-f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 =
-<48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 97 96 0d 00 f7 d8 64 89 01 48
-> kernel: RSP: 002b:00007ffc29d2f388 EFLAGS: 00000206 ORIG_RAX: =
-00000000000001af
-> kernel: RAX: ffffffffffffffda RBX: 0000000000000000 RCX: =
-00007ffbc0cb87c9
-> kernel: RDX: 0000000000000000 RSI: 0000000000000006 RDI: =
-0000000000000003
-> kernel: RBP: 00007ffc29d2f3b0 R08: 0000000000000000 R09: =
-0000000000000000
-> kernel: R10: 0000000000000000 R11: 0000000000000206 R12: =
-0000000000000000
-> kernel: R13: 00007ffc29d2f4c0 R14: 0000000000000000 R15: =
-0000000000000000
-> kernel:  </TASK>
-> kernel: Modules linked in: rpcsec_gss_krb5(E) auth_rpcgss(E) nfsv4(E) =
-dns_resolver(E) nfs(E) lockd(E) grace(E) sunrpc(E) netfs(E) af_packet(E) =
-bridge(E) stp(E) llc(E) iscsi_ibft(E) iscsi_boot_sysfs(E) =
-intel_rapl_msr(E) intel_rapl_common(E) iTCO_wdt(E) intel_pmc_bxt(E) =
-sb_edac(E) iTCO_vendor_support(E) x86_pkg_temp_thermal(E) =
-intel_powerclamp(E) coretemp(E) kvm_intel(E) rfkill(E) ipmi_ssif(E) =
-kvm(E) acpi_ipmi(E) irqbypass(E) pcspkr(E) igb(E) ipmi_si(E) mei_me(E) =
-i2c_i801(E) joydev(E) intel_pch_thermal(E) i2c_smbus(E) dca(E) =
-lpc_ich(E) mei(E) ipmi_devintf(E) ipmi_msghandler(E) acpi_pad(E) =
-tiny_power_button(E) button(E) fuse(E) efi_pstore(E) configfs(E) =
-ip_tables(E) x_tables(E) ext4(E) mbcache(E) jbd2(E) hid_generic(E) =
-usbhid(E) sd_mod(E) t10_pi(E) crct10dif_pclmul(E) crc32_pclmul(E) =
-crc32c_intel(E) polyval_clmulni(E) ahci(E) xhci_pci(E) =
-polyval_generic(E) gf128mul(E) ghash_clmulni_intel(E) sha512_ssse3(E) =
-sha256_ssse3(E) xhci_pci_renesas(E) libahci(E) ehci_pci(E) sha1_ssse3(E) =
-xhci_hcd(E) ehci_hcd(E) libata(E)
-> kernel:  mgag200(E) i2c_algo_bit(E) usbcore(E) wmi(E) sg(E) =
-dm_multipath(E) dm_mod(E) scsi_dh_rdac(E) scsi_dh_emc(E) scsi_dh_alua(E) =
-scsi_mod(E) scsi_common(E) aesni_intel(E) crypto_simd(E) cryptd(E)
-> kernel: Unloaded tainted modules: acpi_cpufreq(E):1 fjes(E):1
-> kernel: CR2: 0000000000000028
-> kernel: ---[ end trace 0000000000000000 ]---
-> kernel: RIP: 0010:hugetlbfs_fill_super+0xb4/0x1a0
-> kernel: Code: 48 8b 3b e8 3e c6 ed ff 48 85 c0 48 89 45 20 0f 84 d6 00 =
-00 00 48 b8 ff ff ff ff ff ff ff 7f 4c 89 e7 49 89 44 24 20 48 8b 03 =
-<8b> 48 28 b8 00 10 00 00 48 d3 e0 49 89 44 24 18 48 8b 03 8b 40 28
-> kernel: RSP: 0018:ffffbe9960fcbd48 EFLAGS: 00010246
-> kernel: RAX: 0000000000000000 RBX: ffff9af5272ae780 RCX: =
-0000000000372004
-> kernel: RDX: ffffffffffffffff RSI: ffffffffffffffff RDI: =
-ffff9af555e9b000
-> kernel: RBP: ffff9af52ee66b00 R08: 0000000000000040 R09: =
-0000000000370004
-> kernel: R10: ffffbe9960fcbd48 R11: 0000000000000040 R12: =
-ffff9af555e9b000
-> kernel: R13: ffffffffa66b86c0 R14: ffff9af507d2f400 R15: =
-ffff9af507d2f400
-> kernel: FS:  00007ffbc0ba4740(0000) GS:ffff9b0bd7000000(0000) =
-knlGS:0000000000000000
-> kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> kernel: CR2: 0000000000000028 CR3: 00000001b1ee0000 CR4: =
-00000000001506f0
->=20
-> Signed-off-by: Michal Hocko <mhocko@suse.com>
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+This was based on v6.7.
 
-Thanks for your fix.
+> 
+> Eric
+>>
+>> Changelog:
+>> ----------
+>> v2->v3:
+>>    - Check the pmceid in guest code instead of pmu event count since different
+>>    hardware may have different event count result, check pmceid makes it stable
+>>    on different platform.                        [Eric]
+>>    - Some typo fixed and commit message improved.
+>>
+>> v1->v2:
+>>    - Improve the commit message.                 [Eric]
+>>    - Fix the bug in [enable|disable]_counter.    [Raghavendra & Marc]
+>>    - Add the check if kvm has attr KVM_ARM_VCPU_PMU_V3_FILTER.
+>>    - Add if host pmu support the test event throught pmceid0.
+>>    - Split the test_invalid_filter() to another patch. [Eric]
+>>
+>> v1: https://lore.kernel.org/all/20231123063750.2176250-1-shahuang@redhat.com/
+>> v2: https://lore.kernel.org/all/20231129072712.2667337-1-shahuang@redhat.com/
+>>
+>> Shaoqin Huang (5):
+>>    KVM: selftests: aarch64: Make the [create|destroy]_vpmu_vm() public
+>>    KVM: selftests: aarch64: Move pmu helper functions into vpmu.h
+>>    KVM: selftests: aarch64: Fix the buggy [enable|disable]_counter
+>>    KVM: selftests: aarch64: Introduce pmu_event_filter_test
+>>    KVM: selftests: aarch64: Add invalid filter test in
+>>      pmu_event_filter_test
+>>
+>>   tools/testing/selftests/kvm/Makefile          |   2 +
+>>   .../kvm/aarch64/pmu_event_filter_test.c       | 255 ++++++++++++++++++
+>>   .../kvm/aarch64/vpmu_counter_access.c         | 218 ++-------------
+>>   .../selftests/kvm/include/aarch64/vpmu.h      | 135 ++++++++++
+>>   .../testing/selftests/kvm/lib/aarch64/vpmu.c  |  74 +++++
+>>   5 files changed, 490 insertions(+), 194 deletions(-)
+>>   create mode 100644 tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
+>>   create mode 100644 tools/testing/selftests/kvm/include/aarch64/vpmu.h
+>>   create mode 100644 tools/testing/selftests/kvm/lib/aarch64/vpmu.c
+>>
+> 
 
-Acked-by: Muchun Song <muchun.song@linux.dev>
-
+-- 
+Shaoqin
 
 
