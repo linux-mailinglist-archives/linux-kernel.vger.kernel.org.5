@@ -1,88 +1,72 @@
-Return-Path: <linux-kernel+bounces-46985-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46995-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B56E844783
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:52:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 574A78447A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:57:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B760AB24C99
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:52:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C06BA1F22292
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:57:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DFCB3717C;
-	Wed, 31 Jan 2024 18:52:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D743713AA4D;
+	Wed, 31 Jan 2024 18:55:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="r3UjfOrz"
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WFhRLlf6"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 361EC3613E
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 18:52:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1561540BE7
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 18:54:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706727148; cv=none; b=C/24JvZDd29a16KLmClwfxnengdKLpHf9PDQK/KUkVyaVFR6t+p8C9kj+XsKr/xpntG5h1BZUUzg8tX6Xc6buTaEjJwu+ru60PTSH1a3OrMCjujQnuZQDrUJMTnAdWfpsYFj4QBjxKQlkkiEbhxX3s1rDBnX7PLPHDDuE5QhWXM=
+	t=1706727301; cv=none; b=VetVzZspKw4AmE4Oul+FdJJLbQcPwQDozyBdYlg+Rcq756VxkIfhkUhl7mxfkrZEQdiEqNdlOCGSuIv0NSSxUpC8qvjZn4uLfPI9xIwRZqZck5gygb0EBT8N+ZvK3IFRCtGySXIsQT54EbH9nxFkEAHWt5G7iXtJndJU1KF6Pu4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706727148; c=relaxed/simple;
-	bh=lcS4vmnme2UaHVAVN/gC82S1196l0v1ChJzJLg47R8o=;
+	s=arc-20240116; t=1706727301; c=relaxed/simple;
+	bh=b1exTRH9trJx0myKG8w1CzTk99qlyyGiP2ip+vPOALE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I5hrAxXP0nfvQUFLSJxcvR0Zlmzx7/cqq6tsgnT3HZfZpfeANdHvIk4fN8TYoTc9bm4O350xptaGo+olwDkmJrVf41HOV4NtfTsdWI0rWYY4Uf08L6Cvi0yeqBvkxGOjCe4cC9Y1fT+K17gSOztmbQVlk37gCgqOJ7mwqbIOUuk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=r3UjfOrz; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6de2f8d6fb9so36666b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 10:52:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706727144; x=1707331944; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=25r5gOm14IJEMHyveKwAf4p2gsLmehhu/N00VeJ591Y=;
-        b=r3UjfOrzgoEIPqusACFINohei7g4Jx/hxS4k2o0eDAdTa79QPvm6nbArxXja8LSXe8
-         fp/kyGaZJtFLGkXgHVhsurhuAAf9K6OcAMCq7DI/+jtvVRleksSLeLuxR2Sw+trKvNWp
-         HSiO/nl9T49fAV4HMSbRX2gs6APTalku+sknXqPx3KA6TQzrLRv9owEjFZVeo++w0xOL
-         hnsBb8C6DC0djfPukVC8gKviF9oSSYxZC2g+gHBuxuf9SeECiNzXfR24A0beDcRCU2cq
-         9fQ+YR+Yxfx91amdfykmmHpI8DPi5gG0cXsQ4+bNpz3lwY3Nfwvlv22E6hPqk0aU1jyF
-         VFWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706727144; x=1707331944;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=25r5gOm14IJEMHyveKwAf4p2gsLmehhu/N00VeJ591Y=;
-        b=fxmPWcmxHE23jO3tW6k1s4KTRt1BSNUK0TIPpPgUtsmZL6SDX4c3UIJkfKz01cHNCY
-         dv7QyhLfv4tnmIZQkIiqbiYx7hOsLtrw2nCa2M8mVuTw2kIC8LAcHUw3nuURFuLYyiFW
-         fignx6J8kaiS0E28PE3i53VCX5YOv9z5mV3OOhIth6X0i8o6X9k9TWdcjYbRCz25beef
-         OSdtKSUGaT7e21unWLngVrrGR5yptXyy1Vk5+MjTUrmnU6W4fdfFCDnJL7G/GX+4cI7D
-         a9mLgqMf2bVTJCyvcz7XlSTbmt13Qp9+RoIcJNLWx1XEhdOnrL/qWWa7Eosiry5oMeTW
-         pTyw==
-X-Gm-Message-State: AOJu0Yw7SwGYQ03j21VS8lG9NiRupydEBGa+OZZ41+SJbke8QPHBBEsX
-	fS15CLuDTkuD6tiH0ddBebB/YtqufPwOSwjooBPliry7nqbK0vAhdpyQhAAOxp8=
-X-Google-Smtp-Source: AGHT+IFt7HhwIpxyhcBUyO5WrVAx3ZZVqZxLhljiEsHbdkGMIfzL6iqPgPDoivsMk5MeYNfBz4nY2A==
-X-Received: by 2002:a05:6a00:1acf:b0:6df:dfd5:1b1e with SMTP id f15-20020a056a001acf00b006dfdfd51b1emr1625498pfv.7.1706727144422;
-        Wed, 31 Jan 2024 10:52:24 -0800 (PST)
-Received: from p14s ([2604:3d09:148c:c800:130d:9bb4:89ef:ab9e])
-        by smtp.gmail.com with ESMTPSA id b185-20020a6334c2000000b0059d6f5196fasm10722471pga.78.2024.01.31.10.52.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 10:52:24 -0800 (PST)
-Date: Wed, 31 Jan 2024 11:52:21 -0700
-From: Mathieu Poirier <mathieu.poirier@linaro.org>
-To: Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Jens Wiklander <jens.wiklander@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	op-tee@lists.trustedfirmware.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] remoteproc: stm32: Add support of an OP-TEE TA to
- load the firmware
-Message-ID: <ZbqW5YfDmEWG4G1X@p14s>
-References: <20240118100433.3984196-1-arnaud.pouliquen@foss.st.com>
- <20240118100433.3984196-5-arnaud.pouliquen@foss.st.com>
- <ZbPnsJm67G10+HQ3@p14s>
- <7ec6c9e8-9267-4e7c-81a4-abcdb2ab4239@foss.st.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ULEKdP2gW8xNoL0auTVVATM1/IEP0k+jJP41bizKnlgIWZnt0KCoHYdnpnB+mPpovwhoChoTlVeL/kFQ7a+6Ey+qWU22cmbMie8E8bjjDRusFKuvCnDVEhASvFuVVqDJc9DkHLRWK5KiDKdpDoNpaAhdiLIMRDC7qCj4lfuJjpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WFhRLlf6; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706727299; x=1738263299;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=b1exTRH9trJx0myKG8w1CzTk99qlyyGiP2ip+vPOALE=;
+  b=WFhRLlf645VaNsPSS5Rrskob7H2J/n+pWXHfpkRg1v1aCZJsP35c8hQY
+   NiU7V8Gv/SI0sDEYdNv5oexFT0O630yDuSCgFys/qcLPe3Amk9v5Aze2C
+   Oe6yrIcWO8crrq4dFZTabKP624ofCUAURDBP/9DTBI9x5NP1oZ+nmVs0a
+   i/9oncy/wFWx6jj/rxM2tboSNT0fQ+dX4iT1/5+F0RFbSEQhUtnbhLA2W
+   gEl1GyY5MfTJJpdpTBEgmYXc5N9bZWDs6H4JxLJPvYjasxjyRQ0rezeiy
+   FpkgNIAm1CL0OmSTqb4Pqe+CU00V7I91j2kgU7AroggRtAqx0iR5XJBny
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="25158912"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="25158912"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 10:54:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="931941232"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="931941232"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 31 Jan 2024 10:54:52 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id D326F1D0; Wed, 31 Jan 2024 20:52:46 +0200 (EET)
+Date: Wed, 31 Jan 2024 20:52:46 +0200
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>, 
+	Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Isaku Yamahata <isaku.yamahata@intel.com>, x86@kernel.org, linux-kernel@vger.kernel.org, 
+	Juergen Gross <jgross@suse.com>
+Subject: Re: [PATCH, RESEND] x86/pat: Simplifying the PAT programming protocol
+Message-ID: <67hqgqargmt6nln5mds672g263lka7glyzbvcdgt4owdg7xc2e@v6wvuizw5ond>
+References: <20240124130650.496056-1-kirill.shutemov@linux.intel.com>
+ <20240131175738.GIZbqKEhlDKhaKfh_w@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,320 +75,109 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7ec6c9e8-9267-4e7c-81a4-abcdb2ab4239@foss.st.com>
+In-Reply-To: <20240131175738.GIZbqKEhlDKhaKfh_w@fat_crate.local>
 
-On Tue, Jan 30, 2024 at 10:13:48AM +0100, Arnaud POULIQUEN wrote:
-> 
-> 
-> On 1/26/24 18:11, Mathieu Poirier wrote:
-> > On Thu, Jan 18, 2024 at 11:04:33AM +0100, Arnaud Pouliquen wrote:
-> >> The new TEE remoteproc device is used to manage remote firmware in a
-> >> secure, trusted context. The 'st,stm32mp1-m4-tee' compatibility is
-> >> introduced to delegate the loading of the firmware to the trusted
-> >> execution context. In such cases, the firmware should be signed and
-> >> adhere to the image format defined by the TEE.
-> >>
-> >> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> >> ---
-> >> V1 to V2 update:
-> >> - remove the select "TEE_REMOTEPROC" in STM32_RPROC config as detected by
-> >>   the kernel test robot:
-> >>      WARNING: unmet direct dependencies detected for TEE_REMOTEPROC
-> >>      Depends on [n]: REMOTEPROC [=y] && OPTEE [=n]
-> >>      Selected by [y]:
-> >>      - STM32_RPROC [=y] && (ARCH_STM32 || COMPILE_TEST [=y]) && REMOTEPROC [=y]
-> >> - Fix initialized trproc variable in  stm32_rproc_probe
-> >> ---
-> >>  drivers/remoteproc/stm32_rproc.c | 149 +++++++++++++++++++++++++++++--
-> >>  1 file changed, 144 insertions(+), 5 deletions(-)
-> >>
-> >> diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-> >> index fcc0001e2657..cf6a21bac945 100644
-> >> --- a/drivers/remoteproc/stm32_rproc.c
-> >> +++ b/drivers/remoteproc/stm32_rproc.c
-> >> @@ -20,6 +20,7 @@
-> >>  #include <linux/remoteproc.h>
-> >>  #include <linux/reset.h>
-> >>  #include <linux/slab.h>
-> >> +#include <linux/tee_remoteproc.h>
-> >>  #include <linux/workqueue.h>
-> >>  
-> >>  #include "remoteproc_internal.h"
-> >> @@ -49,6 +50,9 @@
-> >>  #define M4_STATE_STANDBY	4
-> >>  #define M4_STATE_CRASH		5
-> >>  
-> >> +/* Remote processor unique identifier aligned with the Trusted Execution Environment definitions */
-> >> +#define STM32_MP1_M4_PROC_ID    0
-> >> +
-> >>  struct stm32_syscon {
-> >>  	struct regmap *map;
-> >>  	u32 reg;
-> >> @@ -90,6 +94,8 @@ struct stm32_rproc {
-> >>  	struct stm32_mbox mb[MBOX_NB_MBX];
-> >>  	struct workqueue_struct *workqueue;
-> >>  	bool hold_boot_smc;
-> >> +	bool fw_loaded;
-> >> +	struct tee_rproc *trproc;
-> >>  	void __iomem *rsc_va;
-> >>  };
-> >>  
-> >> @@ -257,6 +263,91 @@ static int stm32_rproc_release(struct rproc *rproc)
-> >>  	return err;
-> >>  }
-> >>  
-> >> +static int stm32_rproc_tee_elf_sanity_check(struct rproc *rproc,
-> >> +					    const struct firmware *fw)
-> >> +{
-> >> +	struct stm32_rproc *ddata = rproc->priv;
-> >> +	unsigned int ret = 0;
-> >> +
-> >> +	if (rproc->state == RPROC_DETACHED)
-> >> +		return 0;
-> >> +
-> >> +	ret = tee_rproc_load_fw(ddata->trproc, fw);
-> >> +	if (!ret)
-> >> +		ddata->fw_loaded = true;
-> >> +
-> >> +	return ret;
-> >> +}
-> >> +
-> >> +static int stm32_rproc_tee_elf_load(struct rproc *rproc,
-> >> +				    const struct firmware *fw)
-> >> +{
-> >> +	struct stm32_rproc *ddata = rproc->priv;
-> >> +	unsigned int ret;
-> >> +
-> >> +	/*
-> >> +	 * This function can be called by remote proc for recovery
-> >> +	 * without the sanity check. In this case we need to load the firmware
-> >> +	 * else nothing done here as the firmware has been preloaded for the
-> >> +	 * sanity check to be able to parse it for the resource table.
-> >> +	 */
+On Wed, Jan 31, 2024 at 06:57:38PM +0100, Borislav Petkov wrote:
+> On Wed, Jan 24, 2024 at 03:06:50PM +0200, Kirill A. Shutemov wrote:
+> > The programming protocol for the PAT MSR follows the MTRR programming
+> > protocol. However, this protocol is cumbersome and requires disabling
+> > caching (CR0.CD=1), which is not possible on some platforms.
 > > 
-> > This comment is very confusing - please consider refactoring.  
+> > Specifically, a TDX guest is not allowed to set CR0.CD. It triggers
+> > a #VE exception.
 > > 
-> >> +	if (ddata->fw_loaded)
-> >> +		return 0;
-> >> +
+> > Turned out the requirement to follow the MTRR programming protocol for
+> > PAT programming is unnecessarily strict. The new Intel Software
+> > Developer Manual[1] (December 2023) relaxes this requirement. Please
+> > refer to the section titled "Programming the PAT" for more information.
+> 
+> How about you state that requirement here instead of referring to that
+> doc which is hard to read and changes constantly?
+> 
+> I'd prefer to have that programming requirement spelled out here to know
+> in the future what that requirement was and what "variant" was added to
+> the kernel in case someone decides to relax it even more.
+
+I summarized the requirements below: TLB has to flashed. Here's what SDM
+says:
+
+    The operating system (OS) is responsible for ensuring that changes to a
+    PAT entry occur in a manner that maintains the consistency of the
+    processor caches and translation lookaside buffers (TLB). It requires the
+    OS to invalidate all affected TLB entries (including global entries) and
+    all entries in all paging-structure caches. It may also require flushing
+    of the processor caches in certain situations.
+
+    ...
+
+    Example of a sequence to invalidate the processor TLBs and caches (if
+    necessary):
+
+    1. If the PCIDE or PGE flag is set in CR4, flush TLBs by clearing one of
+    those flags (then restore the flag via a subsequent CR4 write).
+
+    Otherwise, flush TLBs by executing a MOV from control register CR3 to
+    another register and then a MOV from that register back to CR3.
+
+    2. In the case that there are changes to memory-type mappings for which
+    cache self-snooping behavior would be problematic given the existing
+    mappings (e.g., changing a cache line's memory type from WB to UC to be
+    used for memory-mapped I/O), then cache flushing is also required. This
+    can be done by executing CLFLUSH operations for all affected cache lines
+    or by executing the WBINVD instruction (recommended only if there are a
+    large number of affected mappings or if it is unknown which mappings are
+    affected)
+
+The second step is relevant for set_memory code that already does the
+flushing on changing memory type.
+
+> > The AMD documentation does not link PAT programming to MTRR.
 > > 
-> > I'm not sure about keeping a flag to indicate the status of the loaded firmware.
-> > It is not done for the non-secure method, I don't see why it would be needed for
-> > the secure one.
-> > 
+> > The kernel only needs to flush the TLB after updating the PAT MSR. The
+> > set_memory code already takes care of flushing the TLB and cache when
+> > changing the memory type of a page.
 > 
-> The difference is on the sanity check.
-> - in rproc_elf_sanity_check we  parse the elf file to verify that it is
-> valid.
-> - in stm32_rproc_tee_elf_sanity_check we have to do the same, that means to
-> authenticate it. the authentication is done during the load.
-> 
-> So this flag is used to avoid to reload it twice time.
-> refactoring the comment should help to understand this flag
-> 
-> 
-> An alternative would be to bypass the sanity check. But this lead to same
-> limitation.
-> Before loading the firmware in remoteproc_core, we call rproc_parse_fw() that is
-> used to get the resource table address. To get it from tee we need to
-> authenticate the firmware so load it...
->
+> So far so good. However, what guarantees that this relaxing of the
+> protocol doesn't break any existing machines?
 
-I spent a long time thinking about this patchset.  Looking at the code as it
-is now, request_firmware() in rproc_boot() is called even when the TEE is
-responsible for loading the firmware.  There should be some conditional code
-that calls either request_firmware() or tee_rproc_load_fw().  The latter should
-also be renamed to tee_rproc_request_firmware() to avoid confusion.
+Our HW folks confirmed that the new optimized sequence works on all past
+processors that support PAT.
 
-I touched on that before but please rename rproc_tee_get_rsc_table() to
-rproc_tee_elf_load_rsc_table().  I also suggest to introduce a new function,
-rproc_tee_get_loaded_rsc_table() that would be called from
-rproc_tee_elf_load_rsc_table().  That way we don't need trproc->rsc_va.  
+> If anything, this patch needs to be tested on everything possible. I can
+> do that on AMD hw and some old Intels, just to be sure.
 
-I also think tee_rproc should be renamed to "rproc_tee_interface" and folded
-under struct rproc.  
+Testing wouldn't hurt, but it cannot possibly prove that the new flow is
+safe by testing.
 
-With the above most of the problems with the current implementation should
-naturally go away.
-
-Thanks,
-Mathieu
-
+> > @@ -296,13 +298,8 @@ void __init pat_bp_init(void)
+> >  	/*
+> >  	 * Xen PV doesn't allow to set PAT MSR, but all cache modes are
+> >  	 * supported.
+> > -	 * When running as TDX guest setting the PAT MSR won't work either
+> > -	 * due to the requirement to set CR0.CD when doing so. Rely on
+> > -	 * firmware to have set the PAT MSR correctly.
+> >  	 */
+> > -	if (pat_disabled ||
+> > -	    cpu_feature_enabled(X86_FEATURE_XENPV) ||
+> > -	    cpu_feature_enabled(X86_FEATURE_TDX_GUEST)) {
+> > +	if (pat_disabled || cpu_feature_enabled(X86_FEATURE_XENPV)) {
+> >  		init_cache_modes(pat_msr_val);
+> >  		return;
 > 
-> >> +	ret = tee_rproc_load_fw(ddata->trproc, fw);
-> >> +	if (ret)
-> >> +		return ret;
-> >> +	ddata->fw_loaded = true;
-> >> +
-> >> +	/* Update the resource table parameters. */
-> >> +	if (rproc_tee_get_rsc_table(ddata->trproc)) {
-> >> +		/* No resource table: reset the related fields. */
-> >> +		rproc->cached_table = NULL;
-> >> +		rproc->table_ptr = NULL;
-> >> +		rproc->table_sz = 0;
-> >> +	}
-> >> +
-> >> +	return 0;
-> >> +}
-> >> +
-> >> +static struct resource_table *
-> >> +stm32_rproc_tee_elf_find_loaded_rsc_table(struct rproc *rproc,
-> >> +					  const struct firmware *fw)
-> >> +{
-> >> +	struct stm32_rproc *ddata = rproc->priv;
-> >> +
-> >> +	return tee_rproc_get_loaded_rsc_table(ddata->trproc);
-> >> +}
-> >> +
-> >> +static int stm32_rproc_tee_start(struct rproc *rproc)
-> >> +{
-> >> +	struct stm32_rproc *ddata = rproc->priv;
-> >> +
-> >> +	return tee_rproc_start(ddata->trproc);
-> >> +}
-> >> +
-> >> +static int stm32_rproc_tee_attach(struct rproc *rproc)
-> >> +{
-> >> +	/* Nothing to do, remote proc already started by the secured context. */
-> >> +	return 0;
-> >> +}
-> >> +
-> >> +static int stm32_rproc_tee_stop(struct rproc *rproc)
-> >> +{
-> >> +	struct stm32_rproc *ddata = rproc->priv;
-> >> +	int err;
-> >> +
-> >> +	stm32_rproc_request_shutdown(rproc);
-> >> +
-> >> +	err = tee_rproc_stop(ddata->trproc);
-> >> +	if (err)
-> >> +		return err;
-> >> +
-> >> +	ddata->fw_loaded = false;
-> >> +
-> >> +	return stm32_rproc_release(rproc);
-> >> +}
-> >> +
-> >>  static int stm32_rproc_prepare(struct rproc *rproc)
-> >>  {
-> >>  	struct device *dev = rproc->dev.parent;
-> >> @@ -319,7 +410,14 @@ static int stm32_rproc_prepare(struct rproc *rproc)
-> >>  
-> >>  static int stm32_rproc_parse_fw(struct rproc *rproc, const struct firmware *fw)
-> >>  {
-> >> -	if (rproc_elf_load_rsc_table(rproc, fw))
-> >> +	struct stm32_rproc *ddata = rproc->priv;
-> >> +	int ret;
-> >> +
-> >> +	if (ddata->trproc)
-> >> +		ret = rproc_tee_get_rsc_table(ddata->trproc);
-> >> +	else
-> >> +		ret = rproc_elf_load_rsc_table(rproc, fw);
-> >> +	if (ret)
-> >>  		dev_warn(&rproc->dev, "no resource table found for this firmware\n");
-> >>  
-> >>  	return 0;
-> >> @@ -693,8 +791,22 @@ static const struct rproc_ops st_rproc_ops = {
-> >>  	.get_boot_addr	= rproc_elf_get_boot_addr,
-> >>  };
-> >>  
-> >> +static const struct rproc_ops st_rproc_tee_ops = {
-> >> +	.prepare	= stm32_rproc_prepare,
-> >> +	.start		= stm32_rproc_tee_start,
-> >> +	.stop		= stm32_rproc_tee_stop,
-> >> +	.attach		= stm32_rproc_tee_attach,
-> >> +	.kick		= stm32_rproc_kick,
-> >> +	.parse_fw	= stm32_rproc_parse_fw,
-> >> +	.find_loaded_rsc_table = stm32_rproc_tee_elf_find_loaded_rsc_table,
-> >> +	.get_loaded_rsc_table = stm32_rproc_get_loaded_rsc_table,
-> >> +	.sanity_check	= stm32_rproc_tee_elf_sanity_check,
-> >> +	.load		= stm32_rproc_tee_elf_load,
-> >> +};
-> >> +
-> >>  static const struct of_device_id stm32_rproc_match[] = {
-> >> -	{ .compatible = "st,stm32mp1-m4" },
-> >> +	{.compatible = "st,stm32mp1-m4",},
-> >> +	{.compatible = "st,stm32mp1-m4-tee",},
-> >>  	{},
-> >>  };
-> >>  MODULE_DEVICE_TABLE(of, stm32_rproc_match);
-> >> @@ -853,6 +965,7 @@ static int stm32_rproc_probe(struct platform_device *pdev)
-> >>  	struct device *dev = &pdev->dev;
-> >>  	struct stm32_rproc *ddata;
-> >>  	struct device_node *np = dev->of_node;
-> >> +	struct tee_rproc *trproc = NULL;
-> >>  	struct rproc *rproc;
-> >>  	unsigned int state;
-> >>  	int ret;
-> >> @@ -861,11 +974,31 @@ static int stm32_rproc_probe(struct platform_device *pdev)
-> >>  	if (ret)
-> >>  		return ret;
-> >>  
-> >> -	rproc = rproc_alloc(dev, np->name, &st_rproc_ops, NULL, sizeof(*ddata));
-> >> -	if (!rproc)
-> >> -		return -ENOMEM;
-> >> +	if (of_device_is_compatible(np, "st,stm32mp1-m4-tee")) {
-> >> +		trproc = tee_rproc_register(dev, STM32_MP1_M4_PROC_ID);
-> >> +		if (IS_ERR(trproc)) {
-> >> +			dev_err_probe(dev, PTR_ERR(trproc),
-> >> +				      "signed firmware not supported by TEE\n");
-> >> +			return PTR_ERR(trproc);
-> >> +		}
-> >> +		/*
-> >> +		 * Delegate the firmware management to the secure context.
-> >> +		 * The firmware loaded has to be signed.
-> >> +		 */
-> >> +		dev_info(dev, "Support of signed firmware only\n");
-> > 
-> > Not sure what this adds.  Please remove.
+> What does that mean, now, practically?
 > 
-> This is used to inform the user that only a signed firmware can be loaded, not
-> an ELF file.
-> I have a patch in my pipe to provide the supported format in the debugfs. In a
-> first step, I can suppress this message and we can revisit the issue when I push
-> the debugfs proposal.
+> That TDX guests virtualize the PAT MSR just like with any other guest or
+> what is going on there?
 > 
-> Thanks,
-> Arnaud
-> 
-> > 
-> >> +	}
-> >> +	rproc = rproc_alloc(dev, np->name,
-> >> +			    trproc ? &st_rproc_tee_ops : &st_rproc_ops,
-> >> +			    NULL, sizeof(*ddata));
-> >> +	if (!rproc) {
-> >> +		ret = -ENOMEM;
-> >> +		goto free_tee;
-> >> +	}
-> >>  
-> >>  	ddata = rproc->priv;
-> >> +	ddata->trproc = trproc;
-> >> +	if (trproc)
-> >> +		trproc->rproc = rproc;
-> >>  
-> >>  	rproc_coredump_set_elf_info(rproc, ELFCLASS32, EM_NONE);
-> >>  
-> >> @@ -916,6 +1049,10 @@ static int stm32_rproc_probe(struct platform_device *pdev)
-> >>  		device_init_wakeup(dev, false);
-> >>  	}
-> >>  	rproc_free(rproc);
-> >> +free_tee:
-> >> +	if (trproc)
-> >> +		tee_rproc_unregister(trproc);
-> >> +
-> >>  	return ret;
-> >>  }
-> >>  
-> >> @@ -937,6 +1074,8 @@ static void stm32_rproc_remove(struct platform_device *pdev)
-> >>  		device_init_wakeup(dev, false);
-> >>  	}
-> >>  	rproc_free(rproc);
-> >> +	if (ddata->trproc)
-> >> +		tee_rproc_unregister(ddata->trproc);
-> >>  }
-> >>  
-> >>  static int stm32_rproc_suspend(struct device *dev)
-> >> -- 
-> >> 2.25.1
-> >>
+> This should be explicitly stated in the commit message.
+
+PAT MST was always virtualized, but we was not able to program it as we
+followed MTRR protocol that sets CR0.CD. And I covered it in the commit
+message:
+
+    Specifically, a TDX guest is not allowed to set CR0.CD. It triggers
+    a #VE exception.
+
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
 
