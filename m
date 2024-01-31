@@ -1,328 +1,147 @@
-Return-Path: <linux-kernel+bounces-45669-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45670-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBAC98433CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 03:26:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E7A48433CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 03:26:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F04C31C2222E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 02:26:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02E20B2633F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 02:26:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F55563C7;
-	Wed, 31 Jan 2024 02:24:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E58663A7;
+	Wed, 31 Jan 2024 02:26:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UYFSi4EQ"
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OPPgOhnm"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82F8938DCD
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 02:24:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C87FAFBEA;
+	Wed, 31 Jan 2024 02:26:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706667882; cv=none; b=K5lpyIPnlROIB2LPNN3ITyBKyEievXJ0v9hL4fPn30Fqz1FY+N/+bNxULdlsv1yva+t6yxXrLogeQZuHYjLtoxwVkiVbZ69zqSjd+6CXrdO5M49+plf61cL5ZyANIMujQNuNqs1neqbQih+Lendkagsg3lwEB35lysALyjFLoys=
+	t=1706667997; cv=none; b=pc2biBnq2H0bvSlybyF4triKPPJUSpaT+PPcVYh/mddoPH3dTFqqeGZkBjuv8iCwjg1wWrXSilRCNVTg4PtDoVTH8oXRfLINEozJHJ4HWsm5j/61tt55r4lg+DDBgAh2wsTvr3JAcW1CgPtMPjI6iS+gkL7zR/INCEuyewo1pZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706667882; c=relaxed/simple;
-	bh=W8wKKId1/z0dIWkQvCTjtBqlVtolqte1iLwbPROJK3A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=LrVXrcZEszMw8riLMmJQ6tt/l2BKD+0d1+xF2bfSW9GHlxIfNKy0+F12Elt+BVvIpoOiFQYxs0DWiccWCjCNgdf+r8koq7Z8VcNDQIpZmxizbcvNDzmld1LNsnMhJCy8Q2Mz1TalJ8b3Pouyrl7EiKOIDn3pH4FNe/QHQ6oCCpk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UYFSi4EQ; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-33ae3cc8a70so2650368f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 18:24:39 -0800 (PST)
+	s=arc-20240116; t=1706667997; c=relaxed/simple;
+	bh=/caAATAC3YlAgHJWcLd2PRWxBcWyFww9t7GlhCaKJgk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tXnZcpkopda94KmebXzcu3Lck8YLna62+kWPqfWl+B0dOAos/fdVUd0J4uxDPYGxUCWRJ9o4xIqpA4UAOuuen3ezsBfJFlaZHidmGYIXxyiwSqkNR5ZwIGrQEIsYYbJhR83rXQyBU9BCWU9rptxbKzeuBHMWvyrtZOGEDY1sbSc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OPPgOhnm; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40ef6f10b56so21248915e9.2;
+        Tue, 30 Jan 2024 18:26:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706667878; x=1707272678; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LNDBDr2HIUePrwDqJX7AXKQLPV8jSOXnSTo+JHeA8P8=;
-        b=UYFSi4EQlRRTXc+dklykLD4l+9PnpUGRMmWl1E5m6Dr2nOqhnsQNMFx7Cx1/PEb1Kb
-         8uu07cpTMkaMdeEIuNV1/jMjYem8pqkMksTou6/ZRQXIijO6py4VODIEX8UjqKFZ05+I
-         UBfoxEi1P8zb16D3remv+q/ePhRWix91Bix6yyeyqrppPRyTF7Fg6uwOSssBY2ePBGqx
-         pwn8B/ytHLOnjJFPWWUzm1WhXPukoMrr6n6mN9QfHUtTaSgdRf95tWRXf+h5icuu0aRM
-         uNxak/wtunljMY0cLP5Df+UgJvhSxHjJPukJrvSfDespPOvfW+jAuopYLrP1WKZf8dT8
-         Y9lQ==
+        d=gmail.com; s=20230601; t=1706667994; x=1707272794; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=X2j01IiI6zfUsJF9a2WQ/9OjdhPJsQd8hNy4wmMlPXc=;
+        b=OPPgOhnmo2o80nAd8FlW/pyMi/mbL8WkfJL8+H+uKPVm/gT/aohAviTEJRynY5Miqa
+         z0Is+8kEO1nwmKzQHszcGWK8z8GMuW0Ejjg2TAMdCVcGMnZTFP1wmuEr5q+CTmjZgwnL
+         m7N0H49lWNgNKOM7wH9KdXofK/gJguZGTQr+o3TGl3x5/2OCRUX83wVAxSZWW6PvWaGu
+         8dHg4upSlkBLaK07wEaWTRJ4SGXQyVdNYUT/VNXdP4h6dGenNEBZN9MpXqXh+p4aftIL
+         3W6apMwYFlhoT3dxupTY28EQ2uVkuZvqihVW5ha/gf+ftCIi+ZCEwEYsowgx6iTr0Pwu
+         M6iQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706667878; x=1707272678;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LNDBDr2HIUePrwDqJX7AXKQLPV8jSOXnSTo+JHeA8P8=;
-        b=papnQkrHk16XJTC3RmnT6R5MKN69KhTNp0I8c+eEO2h/4sENFZ6w2BsQLbGMbLyynN
-         xYUUrHFoApcOiNwIBYWRecrx/P1eJGskEhPFVChvrhi3LJ7HTgxspQVKgSRzcim4crnU
-         JhXc65fK1CuUg47Hi7tpMuRf29LgfPlyHN1aTKLKfbMGhhhjRBeMBqPcLIOG11aEvnP7
-         rrvdnLqxmM3ohcsj9kj6rPGfKog91a4BFF2duh3ZPVGEcKRDC2VZh7pSMzALkRSzGO7X
-         fMZJaIs/mD7Yu3Yl49NbZg05h0GPS5R66EzfadcGd1oq0miBW9rkBaeOVYmHuors6epa
-         z0gA==
-X-Gm-Message-State: AOJu0YxDcTlMmZgt8xx4AkC/vdZxmqp+f+jcjlJLKUDbrLlMDVh3Oqtn
-	54g2yxXUL+5ptAfhenib3wUl9HjFaReKXOB4MXcf17xRqcfi3FwQsZn09gutkvXq+bNIhZNpqNl
-	xRKpUuBOZAEkFkgVSZj3ZvvQ9r26y6v46bd0u
-X-Google-Smtp-Source: AGHT+IHmasuDEqZccuPfAUzwk2QyR9mhEieYSp+I9wbmzSc2V2fKLkiiZu/JCqxutAC4P8kMWrX8V3bPUn7hqIZEZHY=
-X-Received: by 2002:a05:6000:1753:b0:33a:f4e4:107f with SMTP id
- m19-20020a056000175300b0033af4e4107fmr163045wrf.38.1706667877436; Tue, 30 Jan
- 2024 18:24:37 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706667994; x=1707272794;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=X2j01IiI6zfUsJF9a2WQ/9OjdhPJsQd8hNy4wmMlPXc=;
+        b=iPQWlWShXEP7TGcznIYOHFhGYiED5iB5AZLHnMh+Oas89wfPWagWQiVWi0Z+AhJsSK
+         45HSiomDsJM82rfTvfWUoO9HnLgQW0eiMBo5QobFaMo32MhEEcn2PhDcoHCSahD9RQZX
+         p34gf2tbKEO3Dt2LS2TcIExboqjoYV0pWFmMfkALAQAbXyDCORCN0+bGJTTv/NvW9mhN
+         WEDFy+vZ/iI1o60s6sFxPbmc1AT56KjRv829NbleEqJaEyDBoGCeKJ0gRSJ2k131fM8b
+         /wpPl/wS22COs4tmWGIs2onvO2U89VNBU5vP9ojAUnNK23ixS4lRggSq8pPjFn0Pg7gs
+         ps6Q==
+X-Gm-Message-State: AOJu0YxGpJoYPNYNrAlfE0Up9suF92xA7dmxBVMhbGrTu2Nv7isRPQrI
+	75ALr5HVngdc2ZPC5IsxkTAudgydWlMxT1Ug22mP8b1fLYjLARWAZKQN0NlQ
+X-Google-Smtp-Source: AGHT+IH6wXtZiOCKa9k9rmOs0Q0DrW3c2cdodtlHXpUNhdraZpJnpHiL3I3Fm+ftJPcBqxv/nYRFYg==
+X-Received: by 2002:a05:600c:35d5:b0:40e:f557:738d with SMTP id r21-20020a05600c35d500b0040ef557738dmr177060wmq.26.1706667993713;
+        Tue, 30 Jan 2024 18:26:33 -0800 (PST)
+Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.googlemail.com with ESMTPSA id f22-20020a7bc8d6000000b0040eea5dc778sm757722wml.1.2024.01.30.18.26.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jan 2024 18:26:33 -0800 (PST)
+From: Christian Marangi <ansuelsmth@gmail.com>
+To: Andy Gross <agross@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Robert Marko <robert.marko@sartura.hr>,
+	linux-arm-msm@vger.kernel.org,
+	netdev@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Christian Marangi <ansuelsmth@gmail.com>
+Subject: [net-next PATCH v3 0/2] net: mdio-ipq4019: fix wrong default MDC rate
+Date: Wed, 31 Jan 2024 03:26:02 +0100
+Message-ID: <20240131022606.1532-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240129193512.123145-1-lokeshgidra@google.com>
- <20240129193512.123145-3-lokeshgidra@google.com> <20240129210014.troxejbr3mzorcvx@revolver>
- <CA+EESO6XiPfbUBgU3FukGvi_NG5XpAQxWKu7vg534t=rtWmGXg@mail.gmail.com>
- <20240130034627.4aupq27mksswisqg@revolver> <Zbi5bZWI3JkktAMh@kernel.org> <20240130172831.hv5z7a7bhh4enoye@revolver>
-In-Reply-To: <20240130172831.hv5z7a7bhh4enoye@revolver>
-From: Lokesh Gidra <lokeshgidra@google.com>
-Date: Tue, 30 Jan 2024 18:24:24 -0800
-Message-ID: <CA+EESO7W=yz1DyNsuDRd-KJiaOg51QWEQ_MfpHxEL99ZeLS=AA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] userfaultfd: protect mmap_changing with rw_sem in userfaulfd_ctx
-To: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Mike Rapoport <rppt@kernel.org>, 
-	Lokesh Gidra <lokeshgidra@google.com>, akpm@linux-foundation.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, selinux@vger.kernel.org, surenb@google.com, 
-	kernel-team@android.com, aarcange@redhat.com, peterx@redhat.com, 
-	david@redhat.com, axelrasmussen@google.com, bgeffon@google.com, 
-	willy@infradead.org, jannh@google.com, kaleshsingh@google.com, 
-	ngeoffray@google.com, timmurray@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 30, 2024 at 9:28=E2=80=AFAM Liam R. Howlett <Liam.Howlett@oracl=
-e.com> wrote:
->
-> * Mike Rapoport <rppt@kernel.org> [240130 03:55]:
-> > On Mon, Jan 29, 2024 at 10:46:27PM -0500, Liam R. Howlett wrote:
-> > > * Lokesh Gidra <lokeshgidra@google.com> [240129 17:35]:
-> > > > On Mon, Jan 29, 2024 at 1:00=E2=80=AFPM Liam R. Howlett <Liam.Howle=
-tt@oracle.com> wrote:
-> > > > >
-> > > > > * Lokesh Gidra <lokeshgidra@google.com> [240129 14:35]:
-> > > > > > Increments and loads to mmap_changing are always in mmap_lock
-> > > > > > critical section.
-> > > > >
-> > > > > Read or write?
-> > > > >
-> > > > It's write-mode when incrementing (except in case of
-> > > > userfaultfd_remove() where it's done in read-mode) and loads are in
-> > > > mmap_lock (read-mode). I'll clarify this in the next version.
-> > > > >
-> > > > > > This ensures that if userspace requests event
-> > > > > > notification for non-cooperative operations (e.g. mremap), user=
-faultfd
-> > > > > > operations don't occur concurrently.
-> > > > > >
-> > > > > > This can be achieved by using a separate read-write semaphore i=
-n
-> > > > > > userfaultfd_ctx such that increments are done in write-mode and=
- loads
-> > > > > > in read-mode, thereby eliminating the dependency on mmap_lock f=
-or this
-> > > > > > purpose.
-> > > > > >
-> > > > > > This is a preparatory step before we replace mmap_lock usage wi=
-th
-> > > > > > per-vma locks in fill/move ioctls.
-> > > > > >
-> > > > > > Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
-> > > > > > ---
-> > > > > >  fs/userfaultfd.c              | 40 ++++++++++++----------
-> > > > > >  include/linux/userfaultfd_k.h | 31 ++++++++++--------
-> > > > > >  mm/userfaultfd.c              | 62 ++++++++++++++++++++-------=
---------
-> > > > > >  3 files changed, 75 insertions(+), 58 deletions(-)
-> > > > > >
-> > > > > > diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-> > > > > > index 58331b83d648..c00a021bcce4 100644
-> > > > > > --- a/fs/userfaultfd.c
-> > > > > > +++ b/fs/userfaultfd.c
-> > > > > > @@ -685,12 +685,15 @@ int dup_userfaultfd(struct vm_area_struct=
- *vma, struct list_head *fcs)
-> > > > > >               ctx->flags =3D octx->flags;
-> > > > > >               ctx->features =3D octx->features;
-> > > > > >               ctx->released =3D false;
-> > > > > > +             init_rwsem(&ctx->map_changing_lock);
-> > > > > >               atomic_set(&ctx->mmap_changing, 0);
-> > > > > >               ctx->mm =3D vma->vm_mm;
-> > > > > >               mmgrab(ctx->mm);
-> > > > > >
-> > > > > >               userfaultfd_ctx_get(octx);
-> > > > > > +             down_write(&octx->map_changing_lock);
-> > > > > >               atomic_inc(&octx->mmap_changing);
-> > > > > > +             up_write(&octx->map_changing_lock);
-> > >
-> > > On init, I don't think taking the lock is strictly necessary - unless
-> > > there is a way to access it before this increment?  Not that it would
-> > > cost much.
-> >
-> > It's fork, the lock is for the context of the parent process and there
-> > could be uffdio ops running in parallel on its VM.
->
-> Is this necessary then?  We are getting the octx from another mm but the
-> mm is locked for forking.  Why does it matter if there are readers of
-> the octx?
->
-> I assume, currently, there is no way the userfaultfd ctx can
-> be altered under mmap_lock held for writing. I would think it matters if
-> there are writers (which, I presume are blocked by the mmap_lock for
-> now?)  Shouldn't we hold the write lock for the entire dup process, I
-> mean, if we remove the userfaultfd from the mmap_lock, we cannot let the
-> structure being duplicated change half way through the dup process?
->
-> I must be missing something with where this is headed?
->
-AFAIU, the purpose of mmap_changing is to serialize uffdio operations
-with non-cooperative events if and when such events are being
-monitored by userspace (in case you missed, in all the cases of writes
-to mmap_changing, we only do it if that non-cooperative event has been
-requested by the user). As you pointed out there are no correctness
-concerns as far as userfaultfd operations are concerned. But these
-events are essential for the uffd monitor's functioning.
+This was a long journey to arrive and discover this problem.
 
-For example: say the uffd monitor wants to be notified for REMAP
-operations while doing uffdio_copy operations. When COPY ioctls start
-failing with -EAGAIN and uffdio_copy.copy =3D=3D 0, then it knows it must
-be due to mremap(), in which case it waits for the REMAP event
-notification before attempting COPY again.
+To not waste too much char, there is a race problem with PHY and driver
+probe. This was observed with Aquantia PHY firmware loading.
 
-But there are few things that I didn't get after going through the
-history of non-cooperative events. Hopefully Mike (or someone else
-familiar) can clarify:
+With some hacks the race problem was workarounded but an interesting
+thing was notice. It took more than a minute for the firmware to load
+via MDIO.
 
-IIUC, the idea behind non-cooperative events was to block uffdio
-operations from happening *before* the page tables are manipulated by
-the event (like mremap), and that the uffdio ops are resumed after the
-event notification is received by the monitor. If so then:
+This was strange as the same operation was done by UBoot in at max 5
+second and the same data was loaded.
 
-1) Why in the case of REMAP prep() is done after page-tables are
-moved? Shouldn't it be done before? All other non-cooperative
-operations do the prep() before.
-2) UFFD_FEATURE_EVENT_REMOVE only notifies user space. It is not
-consistently blocking uffdio operations (as both sides are acquiring
-mmap_lock in read-mode) when remove operation is taking place. I can
-understand this was intentionally left as is in the interest of not
-acquiring mmap_lock in write-mode during madvise. But is only getting
-the notification any useful? Can we say this patch fixes it? And in
-that case shouldn't I split userfaultfd_remove() into two functions
-(like other non-cooperative operations)?
-3) Based on [1] I see how mmap_changing helps in eliminating duplicate
-work (background copy) by uffd monitor, but didn't get if there is a
-correctness aspect too that I'm missing? I concur with Amit's point in
-[1] that getting -EEXIST when setting up the pte will avoid memory
-corruption, no?
+A similar problem was observed on a mtk board that also had an
+Aquantia PHY where the load was very slow. It was notice that the cause
+was the MDIO bus running at a very low speed and the firmware
+was missing a property (present in mtk sdk) that set the right frequency
+to the MDIO bus.
 
-[1] https://lore.kernel.org/lkml/20201206093703.GY123287@linux.ibm.com/
-> >
-> > > > > You could use the first bit of the atomic_inc as indication of a =
-write.
-> > > > > So if the mmap_changing is even, then there are no writers.  If i=
-t
-> > > > > didn't change and it's even then you know no modification has hap=
-pened
-> > > > > (or it overflowed and hit the same number which would be rare, bu=
-t
-> > > > > maybe okay?).
-> > > >
-> > > > This is already achievable, right? If mmap_changing is >0 then we k=
-now
-> > > > there are writers. The problem is that we want writers (like mremap
-> > > > operations) to block as long as there is a userfaultfd operation (a=
-lso
-> > > > reader of mmap_changing) going on. Please note that I'm inferring t=
-his
-> > > > from current implementation.
-> > > >
-> > > > AFAIU, mmap_changing isn't required for correctness, because all
-> > > > operations are happening under the right mode of mmap_lock. It's us=
-ed
-> > > > to ensure that while a non-cooperative operations is happening, if =
-the
-> > > > user has asked it to be notified, then no other userfaultfd operati=
-ons
-> > > > should take place until the user gets the event notification.
-> > >
-> > > I think it is needed, mmap_changing is read before the mmap_lock is
-> > > taken, then compared after the mmap_lock is taken (both read mode) to
-> > > ensure nothing has changed.
-> >
-> > mmap_changing is required to ensure that no uffdio operation runs in
-> > parallel with operations that modify the memory map, like fork, mremap,
-> > munmap and some of madvise calls.
-> > And we do need the writers to block if there is an uffdio operation goi=
-ng
-> > on, so I think an rwsem is the right way to protect mmap_chaniging.
-> >
-> > > > > > @@ -783,7 +788,9 @@ bool userfaultfd_remove(struct vm_area_stru=
-ct *vma,
-> > > > > >               return true;
-> > > > > >
-> > > > > >       userfaultfd_ctx_get(ctx);
-> > > > > > +     down_write(&ctx->map_changing_lock);
-> > > > > >       atomic_inc(&ctx->mmap_changing);
-> > > > > > +     up_write(&ctx->map_changing_lock);
-> > > > > >       mmap_read_unlock(mm);
-> > > > > >
-> > > > > >       msg_init(&ewq.msg);
-> > >
-> > > If this happens in read mode, then why are you waiting for the reader=
-s
-> > > to leave?  Can't you just increment the atomic?  It's fine happening =
-in
-> > > read mode today, so it should be fine with this new rwsem.
-> >
-> > It's been a while and the details are blurred now, but if I remember
-> > correctly, having this in read mode forced non-cooperative uffd monitor=
- to
-> > be single threaded. If a monitor runs, say uffdio_copy, and in parallel=
- a
-> > thread in the monitored process does MADV_DONTNEED, the latter will wai=
-t
-> > for userfaultfd_remove notification to be processed in the monitor and =
-drop
-> > the VMA contents only afterwards. If a non-cooperative monitor would
-> > process notification in parallel with uffdio ops, MADV_DONTNEED could
-> > continue and race with uffdio_copy, so read mode wouldn't be enough.
-> >
->
-> Right now this function won't stop to wait for readers to exit the
-> critical section, but with this change there will be a pause (since the
-> down_write() will need to wait for the readers with the read lock).  So
-> this is adding a delay in this call path that isn't necessary (?) nor
-> existed before.  If you have non-cooperative uffd monitors, then you
-> will have to wait for them to finish to mark the uffd as being removed,
-> where as before it was a fire & forget, this is now a wait to tell.
->
-I think a lot will be clearer once we get a response to my questions
-above. IMHO not only this write-lock is needed here, we need to fix
-userfaultfd_remove() by splitting it into userfaultfd_remove_prep()
-and userfaultfd_remove_complete() (like all other non-cooperative
-operations) as well. This patch enables us to do that as we remove
-mmap_changing's dependency on mmap_lock for synchronization.
->
-> > There was no much sense to make MADV_DONTNEED take mmap_lock in write m=
-ode
-> > just for this, but now taking the rwsem in write mode here sounds
-> > reasonable.
-> >
->
-> I see why there was no need for a mmap_lock in write mode, but I think
-> taking the new rwsem in write mode is unnecessary.
->
-> Basically, I see this as a signal to new readers to abort, but we don't
-> need to wait for current readers to finish before this one increments
-> the atomic.
->
-> Unless I missed something, I don't think you want to take the write lock
-> here.
-What I understood from the history of mmap_changing is that the
-intention was to enable informing the uffd monitor about the correct
-state of which pages are filled and which aren't. Going through this
-thread was very helpful [2]
+It was fun to find that THE VERY SAME PROBLEM is present on IPQ in a
+different form. The MDIO apply internally a division to the feed clock
+resulting in the bus running at 390KHz instead of 6.25Mhz.
 
-[2] https://lore.kernel.org/lkml/1527061324-19949-1-git-send-email-rppt@lin=
-ux.vnet.ibm.com/
->
-> Thanks,
-> Liam
+Searching around the web for some documentation and some include and
+analyzing the uboot codeflow resulted in the divider being set wrongly
+at /256 instead of /16 as the value was actually never set.
+Applying the value restore the original load time for the Aquantia PHY.
+
+This series mainly handle this by adding support for the "clock-frequency"
+property.
+
+Changes v3:
+- Add Reviewed-by tag
+- Fix english grammar error in comment
+- Drop DTS patch
+Changes v2:
+- Use DIV_ROUND_UP
+- Introduce logic to chose a default value for 802.3 spec 2.5MHz
+
+Christian Marangi (2):
+  dt-bindings: net: ipq4019-mdio: document now supported clock-frequency
+  net: mdio: ipq4019: add support for clock-frequency property
+
+ .../bindings/net/qcom,ipq4019-mdio.yaml       |  15 +++
+ drivers/net/mdio/mdio-ipq4019.c               | 109 +++++++++++++++++-
+ 2 files changed, 118 insertions(+), 6 deletions(-)
+
+-- 
+2.43.0
+
 
