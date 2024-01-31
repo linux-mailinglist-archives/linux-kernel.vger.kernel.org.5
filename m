@@ -1,112 +1,155 @@
-Return-Path: <linux-kernel+bounces-46503-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46505-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92A1A8440A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:34:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 690108440AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:35:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B61711C2430F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:34:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E82AD1F29C8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:35:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54FE87D3F2;
-	Wed, 31 Jan 2024 13:33:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ADFF7D403;
+	Wed, 31 Jan 2024 13:35:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AQ+TZXm8"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="cGBqzFDt"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01D007BAF3;
-	Wed, 31 Jan 2024 13:33:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CD847BB10;
+	Wed, 31 Jan 2024 13:35:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706708034; cv=none; b=FGoxK0FMzaqZO3HEWN5o56a7mVhHAgn9/+9nGn5IT5OZlQXeHBtGMMrZY/okGADEheUyDbaSGTVo5oPDDqrKrGom0wh6a2/5lSRai5D/J1CRcUn5BLoF/dN939RvPma1NhbPvo1bqwoo2wIIYW/fWxXZOa/Gx5VWvE+5MyFjssI=
+	t=1706708117; cv=none; b=juHDikQW4v4wumL3m6ecYDnK6+pHoADS804xBJ6STx2zsrdATvVQAxeAN0Q8FT5DCMtUbB7MUmeEoAiaScIGu85WKfL0vU0tLsMcTfZfwZJM9Y4SIe8kJsjxVhLnQFQHcjvtJ15Dcllg1EMkB5PTdOrZS8ft8As2lgYzYzmc9GI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706708034; c=relaxed/simple;
-	bh=x7pDRdtnj1w7St6knLG86KC9J7zYvKmaTgXcKEEy/xU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=k8asbr9vj1CuVB8dSvVGO17BNHx9MXVo/Jvt0Wj6d/UNXVc/zWuofra6NtdivHrU/nvTfJnXUpyXjchTDUbBAgA1ivPxAKRriv5yhIgEcjrWTi7JRHLNe7woH70TG3CwuxzIZ7GfBdyA/Lx12HDH7ftceytvYyGlml2tpUyOF9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AQ+TZXm8; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-55c33773c0aso5534410a12.1;
-        Wed, 31 Jan 2024 05:33:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706708031; x=1707312831; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=g2vX3j9pZB99MF+ul54pGfWjbJyQ2L+Maw8cOuYH98o=;
-        b=AQ+TZXm8iCvlbK2HPg1/e/QgQc4qkVw8LyO1PcnvftZ5lqpoO6zDRqRcf4/WZ1IkGJ
-         WY2CrimbWNo6EgveN0YrpSA++QJ1FCOYTV/p3Z0WlgbBIM+1Ok0yz/Gac3iMmLiKsN3m
-         3xcbTKCwYOn93KAG6G7g6VdFHsrh1QMW5uF/792iCirboGZsauX5CKs8gbTeQ1oNmmDr
-         6J2jUkCQPvmreDr4uODXdwcKpEOsxp1UHQjAuaIpjZhcXtGmudCvBEe8VWeJCH1LY+Fl
-         n7hUiWPSc/GmkuMr47CV+WnErIBi5/YqrPqODwQQpEVfpmjU0gU4xdORqTQTHCSuYbDh
-         4OgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706708031; x=1707312831;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=g2vX3j9pZB99MF+ul54pGfWjbJyQ2L+Maw8cOuYH98o=;
-        b=TrHRoZToMbtAHCfu85yqPKflAGWUbKE9NUD1t/rE9hlYRzwTxF0P29XRxzL3BVgbYh
-         oCHAwNndgmDdAHlOZOhslBFhp5/CcGhKmxG+1HQ0iqi9ezelxahgj0h3UheYArcVEqDf
-         PSkNA+kgLw9tAu1mhc8PcbNCjddjmYH/aM5yXGaX+Y8xZr572gRNftrnB81WzsdOF2ji
-         3Rr3CYRPfqbB/hxOFW9GTh6/ViW1dgwiE4yg0GB0Q5duOe4ZVxvuBLCK6f0pKcRP4bHg
-         eYuOTpneOY6S2gpEfR6s5UgFmpJnixhgyIryFt4sQkpIhc+GCyjH7lyeE+CuhFAw5DnR
-         +kdw==
-X-Gm-Message-State: AOJu0YydK4KBcPkV6MerceulSOOgC2mhcAMyt9oHFw2TUqwgMlDKpfeN
-	frByNbjfX+c2Z9vPvj697WxjZMuAcRrxQbVf8ZScg57fCaZJkYhaVg3F3p8I
-X-Google-Smtp-Source: AGHT+IHsKF1n9XLJxec1HD9HMXbUCbpxrOuB0WcplBS4PYu5bbUSEj6toKCDUOFEw1hW/o1CeKMgow==
-X-Received: by 2002:aa7:c354:0:b0:55f:144f:4fe4 with SMTP id j20-20020aa7c354000000b0055f144f4fe4mr1215227edr.27.1706708030981;
-        Wed, 31 Jan 2024 05:33:50 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUDDjDXbSp+3d4LcD8AzgYOe5pzNlbspew2zInXso8UidvVhJiQ2SBRl/jb3FU2N4E6TKtX4pXuQ6151wRYuLlWNa0y5Mn6Q0DDwyqbCY6HK4R/cLgu36NZzx6KXLbxPW7gAjIKkitQL9BNbet/PhZVbFSnR0RY//db2vQDD0J5AWWmDJvniUR7DLFG+jC2qy9UTHRgyMf4fxjvahyFptd6Tb9QfHEmC2/vriR2tJmaG2KsKRP8LmvvwarOGwv2wAefeYT2Z6K6VD1iuw2tUPY0TmQ8Oc1Oizc=
-Received: from localhost.localdomain ([213.55.225.76])
-        by smtp.gmail.com with ESMTPSA id fd12-20020a056402388c00b00557d839727esm5866201edb.7.2024.01.31.05.33.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 05:33:50 -0800 (PST)
-From: Ali Zahraee <ahzahraee@gmail.com>
-To: rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com,
-	shuah@kernel.org
-Cc: Ali Zahraee <ahzahraee@gmail.com>,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH] selftests: ftrace: fix typo in test description
-Date: Wed, 31 Jan 2024 14:33:06 +0100
-Message-Id: <20240131133306.7723-1-ahzahraee@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706708117; c=relaxed/simple;
+	bh=Q4jchHsyUSgGgsWg3qeXL0ngWEAkiAaiiTy/MAzG4eg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=rLfofcioY8nLLUI/Fned9DJQfSIh65NnxiM8/XGNLe1wgh8iiA/MXZZvd597U5gMdiw+zFVrBMxmddJpJqRuIrzKt/vIEeO2C/+1en00/nh4eN1y/B5tEMj+iYiPqSjvR0sSRS0F/v3P3z2oWZNnnCmG+H2UuaLxZgNQGaY6laM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=cGBqzFDt; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40VDZ7nj120425;
+	Wed, 31 Jan 2024 07:35:07 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706708107;
+	bh=wYV7fdwKreRS4KsgsXkkx9ORp7Ffj/MSJJ3YQgSu6+c=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=cGBqzFDttqN/ZsZCgfE+OM7CZ7WyHw0q1CqqRMj7zBK8wUtiUxTQCO7cSJjJaKKMC
+	 JqnisxhXRPzJx2z/RG/HdSPIFENWVaMD7dC8j4XE1syjFXgF4XmqFQhUqvmOza1UGk
+	 6i2H7j8pZXw4pDfItLGPyKm73thJYyEfvtazOyhU=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40VDZ7PO068862
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 31 Jan 2024 07:35:07 -0600
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 31
+ Jan 2024 07:35:07 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 31 Jan 2024 07:35:07 -0600
+Received: from [10.249.142.56] ([10.249.142.56])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40VDZ1hO102190;
+	Wed, 31 Jan 2024 07:35:02 -0600
+Message-ID: <5e03e867-b45f-482b-b734-7949e28fc97e@ti.com>
+Date: Wed, 31 Jan 2024 19:05:00 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 00/13] Add tuning algorithm for delay chain
+Content-Language: en-US
+To: Judith Mendez <jm@ti.com>, Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob
+ Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC: Adrian Hunter <adrian.hunter@intel.com>, <linux-mmc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Nishanth Menon <nm@ti.com>,
+        Andrew Davis
+	<afd@ti.com>, Udit Kumar <u-kumar1@ti.com>,
+        Roger Quadros
+	<rogerq@kernel.org>, <devicetree@vger.kernel.org>,
+        Randolph Sapp <rs@ti.com>
+References: <20240131003714.2779593-1-jm@ti.com>
+From: "Raghavendra, Vignesh" <vigneshr@ti.com>
+In-Reply-To: <20240131003714.2779593-1-jm@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-The typo in the description shows up in test logs and output.
-This patch submission is part of my application to the Linux Foundation
-mentorship program: Linux kernel Bug Fixing Spring Unpaid 2024.
+Hi,
 
-Signed-off-by: Ali Zahraee <ahzahraee@gmail.com>
----
- tools/testing/selftests/ftrace/test.d/00basic/test_ownership.tc | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 1/31/2024 6:07 AM, Judith Mendez wrote:
+> This patch series introduces a new tuning algorithm for
+> mmc. The new algorithm should be used when delay chain is
+> enabled. The ITAPDLY is selected from the largest passing
+> window and the buffer is not viewed as a circular buffer.
+> The new tuning algorithm is implemented as per the paper
+> published here [0] and has been tested on the following
+> platforms: AM62x SK, AM62A SK, AM62p SK, AM64x SK, and AM64x
+> EVM.
+> 
+> The series also includes a few fixes in the sdhci_am654
+> driver on OTAPDLYEN/ITAPDLYEN and ITAPDELSEL. There are
+> also device tree node fixes for missing mmc nodes,
+> modifying DLL properties, and fixes for OTAP/ITAP delay
+> values. 
+> 
+> MMC0/MMC2 nodes are introduced for AM62ax in this series.
+> 
+> This series is sent as a RFC mostly to get some feedback
+> and/or comments on the new tuning algorithm implementation.
+> 
+> [0] https://www.ti.com/lit/an/spract9/spract9.pdf
+> 
 
-diff --git a/tools/testing/selftests/ftrace/test.d/00basic/test_ownership.tc b/tools/testing/selftests/ftrace/test.d/00basic/test_ownership.tc
-index add7d5bf585d..c45094d1e1d2 100644
---- a/tools/testing/selftests/ftrace/test.d/00basic/test_ownership.tc
-+++ b/tools/testing/selftests/ftrace/test.d/00basic/test_ownership.tc
-@@ -1,6 +1,6 @@
- #!/bin/sh
- # SPDX-License-Identifier: GPL-2.0
--# description: Test file and directory owership changes for eventfs
-+# description: Test file and directory ownership changes for eventfs
- 
- original_group=`stat -c "%g" .`
- original_owner=`stat -c "%u" .`
--- 
-2.34.1
 
+> Judith Mendez (11):
+>   drivers: mmc: host: sdhci_am654: Add tuning algorithm for delay chain
+>   drivers: mmc: host: sdhci_am654: Write ITAPDLY for DDR52 timing
+>   drivers: mmc: host: sdhci_am654: Add missing OTAP/ITAP enable
+>   drivers: mmc: host: sdhci_am654: Add ITAPDLYSEL in
+>     sdhci_j721e_4bit_set_clock
+>   drivers: mmc: host: sdhci_am654: Fix ITAPDLY for HS400 timing
+
+These patches needs to have Fixes: tag as they are bug fixes IMO.
+
+>   arm64: dts: ti: k3-am62a-main: Add sdhci2 instance
+>   arm64: dts: ti: k3-am64-main: Update ITAP/OTAP values for MMC
+>   arm64: dts: ti: k3-am62-main: Update ITAP/OTAP values for MMC
+>   arm64: dts: ti: k3-am62p: Add missing properties for MMC
+>   arm64: dts: ti: k3-am6*: Remove DLL properties for soft phys
+>   arm64: dts: ti: k3-am6*: Reorganize MMC properties
+> 
+> Nitin Yadav (2):
+>   arm64: dts: ti: k3-am62a-main: Add sdhci0 instance
+>   arm64: dts: ti: k3-am62a7-sk: Enable eMMC support
+> 
+
+Can the driver changes be merged independent of DT changes? Or are they
+meant to go together? Latter would be problematic as it creates cross
+tree dependencies.
+
+>  arch/arm64/boot/dts/ti/k3-am62-main.dtsi      |  57 +++--
+>  .../arm64/boot/dts/ti/k3-am625-beagleplay.dts |   5 -
+>  arch/arm64/boot/dts/ti/k3-am62a-main.dtsi     |  45 +++-
+>  arch/arm64/boot/dts/ti/k3-am62a7-sk.dts       |  27 ++-
+>  arch/arm64/boot/dts/ti/k3-am62p-main.dtsi     |  44 +++-
+>  arch/arm64/boot/dts/ti/k3-am62p5-sk.dts       |   7 +-
+>  .../arm64/boot/dts/ti/k3-am62x-sk-common.dtsi |   4 +-
+>  arch/arm64/boot/dts/ti/k3-am64-main.dtsi      |  17 +-
+>  arch/arm64/boot/dts/ti/k3-am642-evm.dts       |   4 +-
+>  arch/arm64/boot/dts/ti/k3-am642-sk.dts        |   2 -
+>  drivers/mmc/host/sdhci_am654.c                | 215 ++++++++++++++----
+>  11 files changed, 321 insertions(+), 106 deletions(-)
+> 
 
