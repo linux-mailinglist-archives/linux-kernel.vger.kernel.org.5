@@ -1,168 +1,205 @@
-Return-Path: <linux-kernel+bounces-46856-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A209F84457C
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:02:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E2B584457F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:03:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 582D7296B7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:02:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82A421C20ADA
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:03:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE57812CD9F;
-	Wed, 31 Jan 2024 17:02:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C88112BF32;
+	Wed, 31 Jan 2024 17:03:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZwmnLCBn"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ldJ1QjP1"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60DD012BF29
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 17:02:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83E9E12BE99
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 17:03:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706720552; cv=none; b=CiGXtJdAkpVoGmbsLDqxjeXR5InjBfv5BzxR/KwU+57bfETtd7/FA458b3juASfZtc6/Tki4XU3U0bA42VlSuXsZYICNvTBCkVtv8rFAHyS5wyY4OG9J+kFVYQrOa90dZMR6trJAf/jH3KZIRH+dA5ThSC/QGbIOVhpPcxPThZE=
+	t=1706720617; cv=none; b=izhpTmbSi6cTgV9MRFK826Vry5dzBPHXyl1G1toXhitp4vJFW2c1HoSroDh1C7sX0wYAEcjIOYpg7Y1A5i0C+OIKONL18qUUpqMcYDWlHFMDkMYS9FOGuo3glnlGyYfobtm4vrF2MIJB/loxBr1BXjkicOQJxk2xz+hPi78B8Dw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706720552; c=relaxed/simple;
-	bh=hTg5k74QmpvyvwjY4YbpJ3C/Nr/lrvB+Z01K6o3yy00=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dUzeObbCy2xk+FWT4M0peUXeC2qStgqqDgQchWXjO0Qyxc92Y73qIvBOHH5rY4axbR9m2jKL6yklxoVFPwHAxxnHhxrArEiGtgAul4qKP5Wjy2VtaYIzUcXv5YMpIW893GSqjHkyK80jJE5t4KGUKH2T2YTt6b9zWSrdRmliiRk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZwmnLCBn; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706720549;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+PPWOOEFuJus9zo4CJIRzMe9cHcboMBvYvYCgkjyXYM=;
-	b=ZwmnLCBnMxJIHLNRHQwQJ4yhV6HVZDKj5jR0+3S6tJSiRO0GHtXLSc/pl2QDc/z4vKvsaX
-	SitM3oj6+JXq2W0wKU9siwwjTJeCv3iygn2KIeMCF77qGONKt845cZFYsFm6MbJ9urRu0i
-	tr5vRllbvyWAmuRfIs4q0mLDI+okfgo=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-206-TEyGMUkjMv-SjfJFdFiMew-1; Wed,
- 31 Jan 2024 12:02:25 -0500
-X-MC-Unique: TEyGMUkjMv-SjfJFdFiMew-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D4F593810B1A;
-	Wed, 31 Jan 2024 17:02:24 +0000 (UTC)
-Received: from [10.22.18.157] (unknown [10.22.18.157])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 8646D134;
-	Wed, 31 Jan 2024 17:02:24 +0000 (UTC)
-Message-ID: <16edcd04-061e-4e6a-87a1-681810432edb@redhat.com>
-Date: Wed, 31 Jan 2024 12:02:24 -0500
+	s=arc-20240116; t=1706720617; c=relaxed/simple;
+	bh=k5z0kfJjUREZSnHpb78Vy9aJZkf3Vm8DS3NBWI2dg0w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VGQwnPsCO+O57/5Wqb7wJRyohSJeh/LPhPjIb5bz34H2er8FKHzums0EHJXGvXD/L7U1raDYSfqxvMtfMxtwUX9W4e4t//fGTYSOW5mUPz2yh0E04IyiBd9z0Ns+UBjzgxOFQAKPaT4eKt4zm9ODFLkPQS0DicqqAPmyUrZnvPY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ldJ1QjP1; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55f5d62d024so9684a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:03:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706720613; x=1707325413; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+kAbr9rMOfiWUKrFn+5xYnZ12BoeCWRWCVm9Fg2uVqA=;
+        b=ldJ1QjP1yTzbHtU5dtR0ToVudvrCaQ7QuR3L+Cyzpob6YmJloNWG+XWXlXScIOeDR9
+         X0jAHM0kytorTHaQL9YAp6N/TIXHKChQCbVLzU1/HEfDtf1wCQtmmxW+T68mK9bCHxaz
+         dHnPOo/3TYz0HK7pGutipSOm/UUj5WEBbZ+ZrrnieZkgd4mF+a6cU6JHl3ZKoPyFS0t7
+         QTJ5KysYRh4cNf4U3YCxRualaAdD7h/0cgE+NL7yZz5Glv8FHXNrwzTpgAj9KiLsHlyA
+         W+z1jGWJcQayE0uuk026EXt3huVBQWnsaJpxqpk0Y5d7xYe6D+bJCRdkoCuJe+Cx5RBH
+         Mn1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706720613; x=1707325413;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+kAbr9rMOfiWUKrFn+5xYnZ12BoeCWRWCVm9Fg2uVqA=;
+        b=LgUE27dgYyv0Ht0F9KhIScTHSfjWGyiAwVvGOZMInLhwlTO8yZAMdJlBMeRViJAcSO
+         EGNcMKWngutWeZ/UzV117ze6X9WvWM5HbZ0Z54ZbuhudhoY2CVkeetPxsvwZAjMYFzFw
+         8gkEa/KtiC47G4rfFg3sJABNO8t3L68JA9F0a4XJIAvEkPhHmVJ3RABXX0FCdOuNCBAF
+         IpucN7W2vkgDa8iYdtIrwi/fElPFhcj1KdjzINcLX17OlCKJ1WT/F2TJEbdAU45JA6mS
+         0Z7sryn6zey7cEdNK/sGN8cUywy4Rn6bWwGak1JZ2MvbGCAjdLnWreV4nooFHEz94PR/
+         R1Dg==
+X-Gm-Message-State: AOJu0Yz4lUa0phbXdTiOknZ3I33T+xqao0fRko0fMj7lyqmoZ4yB28vk
+	ljTD8gYsgBuJQrrC/TsCCrccJapIYGgeDBBA7JF7TqgDgM5ouBqfhu9yt90fakmLdzJ/QnJNuJ3
+	yIyd8INOP7s3sFnORcTllLzZRUcVXjp3BKOmv5w2MpM5u2TyV7A==
+X-Google-Smtp-Source: AGHT+IHLDFLqxUssM4sVwOZhBThb0eaK4xFarqS8UV9j+FGhRco2Uu28uMQ6+ppgu/6efVn+znERBFOVcJiQeioB7fc=
+X-Received: by 2002:a05:6402:288a:b0:55d:2dda:f331 with SMTP id
+ eg10-20020a056402288a00b0055d2ddaf331mr435965edb.7.1706720613353; Wed, 31 Jan
+ 2024 09:03:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 3/3] workqueue: Enable unbound cpumask update on
- ordered workqueues
-Content-Language: en-US
-To: Tejun Heo <tj@kernel.org>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>, linux-kernel@vger.kernel.org,
- Juri Lelli <juri.lelli@redhat.com>, Cestmir Kalina <ckalina@redhat.com>,
- Alex Gladkov <agladkov@redhat.com>
-References: <20240130183336.511948-1-longman@redhat.com>
- <20240130183336.511948-4-longman@redhat.com>
- <Zbp8k1mbKuujC94q@slm.duckdns.org>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <Zbp8k1mbKuujC94q@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+References: <20240131150332.1326523-1-quic_kriskura@quicinc.com>
+In-Reply-To: <20240131150332.1326523-1-quic_kriskura@quicinc.com>
+From: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+Date: Wed, 31 Jan 2024 09:03:17 -0800
+Message-ID: <CANP3RGeHXmEcDN=-h1uGBzu_Ur2UcmiEuFDXAEr0Z2ptXnHq=Q@mail.gmail.com>
+Subject: Re: [PATCH v2] usb: gadget: ncm: Avoid dropping datagrams of properly
+ parsed NTBs
+To: Krishna Kurapati <quic_kriskura@quicinc.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Hardik Gajjar <hgajjar@de.adit-jv.com>, 
+	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	quic_ppratap@quicinc.com, quic_wcheng@quicinc.com, quic_jackp@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 1/31/24 12:00, Tejun Heo wrote:
-> Hello,
+On Wed, Jan 31, 2024 at 7:03=E2=80=AFAM Krishna Kurapati
+<quic_kriskura@quicinc.com> wrote:
 >
-> On Tue, Jan 30, 2024 at 01:33:36PM -0500, Waiman Long wrote:
->> +/* requeue the work items stored in wq->o_list */
->> +static void requeue_ordered_works(struct workqueue_struct *wq)
->> +{
->> +	LIST_HEAD(head);
->> +	struct work_struct *work, *next;
->> +
->> +	raw_spin_lock_irq(&wq->o_lock);
->> +	if (list_empty(&wq->o_list))
->> +		goto unlock_out;	/* No requeuing is needed */
->> +
->> +	list_splice_init(&wq->o_list, &head);
->> +	raw_spin_unlock_irq(&wq->o_lock);
->> +
->> +	/*
->> +	 * Requeue the first batch of work items. Since it may take a while
->> +	 * to drain the old pwq and update the workqueue attributes, there
->> +	 * may be a rather long list of work items to process. So we allow
->> +	 * queue_work() callers to continue putting their work items in o_list.
->> +	 */
->> +	list_for_each_entry_safe(work, next, &head, entry) {
->> +		list_del_init(&work->entry);
->> +		local_irq_disable();
->> +		__queue_work_rcu_locked(WORK_CPU_UNBOUND, wq, work);
->> +		local_irq_enable();
->> +	}
->> +
->> +	/*
->> +	 * Now check if there are more work items queued, if so set ORD_WAIT
->> +	 * and force incoming queue_work() callers to busy wait until the 2nd
->> +	 * batch of work items have been properly requeued. It is assumed
->> +	 * that the 2nd batch should be much smaller.
->> +	 */
->> +	raw_spin_lock_irq(&wq->o_lock);
->> +	if (list_empty(&wq->o_list))
->> +		goto unlock_out;
->> +	WRITE_ONCE(wq->o_state, ORD_WAIT);
->> +	list_splice_init(&wq->o_list, &head);
->> +	raw_spin_unlock(&wq->o_lock);	/* Leave interrupt disabled */
->> +	list_for_each_entry_safe(work, next, &head, entry) {
->> +		list_del_init(&work->entry);
->> +		__queue_work_rcu_locked(WORK_CPU_UNBOUND, wq, work);
->> +	}
->> +	WRITE_ONCE(wq->o_state, ORD_NORMAL);
->> +	local_irq_enable();
->> +	return;
->> +
->> +unlock_out:
->> +	WRITE_ONCE(wq->o_state, ORD_NORMAL);
->> +	raw_spin_unlock_irq(&wq->o_lock);
->> +}
-> I'm not a big fan of this approach. It's a rather big departure from how
-> things are usually done in workqueue. I'd much prefer sth like the
-> following:
+> It is observed sometimes when tethering is used over NCM with Windows 11
+> as host, at some instances, the gadget_giveback has one byte appended at
+> the end of a proper NTB. When the NTB is parsed, unwrap call looks for
+> any leftover bytes in SKB provided by u_ether and if there are any pendin=
+g
+> bytes, it treats them as a separate NTB and parses it. But in case the
+> second NTB (as per unwrap call) is faulty/corrupt, all the datagrams that
+> were parsed properly in the first NTB and saved in rx_list are dropped.
 >
-> - Add the ability to mark an unbound pwq plugged. If plugged,
->     pwq_tryinc_nr_active() always fails.
+> Adding a few custom traces showed the following:
 >
-> - When cpumasks need updating, set max_active of all ordered workqueues to
->    zero and flush them. Note that if you set all max_actives to zero (note
->    that this can be another "plug" flag on the workqueue) first, all the
->    ordered workqueues would already be draining, so calling flush_workqueue()
->    on them sequentially shouldn't take too long.
+> [002] d..1  7828.532866: dwc3_gadget_giveback: ep1out:
+> req 000000003868811a length 1025/16384 zsI =3D=3D> 0
+> [002] d..1  7828.532867: ncm_unwrap_ntb: K: ncm_unwrap_ntb toprocess: 102=
+5
+> [002] d..1  7828.532867: ncm_unwrap_ntb: K: ncm_unwrap_ntb nth: 175199934=
+2
+> [002] d..1  7828.532868: ncm_unwrap_ntb: K: ncm_unwrap_ntb seq: 0xce67
+> [002] d..1  7828.532868: ncm_unwrap_ntb: K: ncm_unwrap_ntb blk_len: 0x400
+> [002] d..1  7828.532868: ncm_unwrap_ntb: K: ncm_unwrap_ntb ndp_len: 0x10
+> [002] d..1  7828.532869: ncm_unwrap_ntb: K: Parsed NTB with 1 frames
 >
-> - Do the normal pwq allocation and linking but make sure that all new
->    ordered pwqs start plugged.
+> In this case, the giveback is of 1025 bytes and block length is 1024.
+> The rest 1 byte (which is 0x00) won't be parsed resulting in drop of
+> all datagrams in rx_list.
 >
-> - When update is done, restore the max_actives on all ordered workqueues.
+> Same is case with packets of size 2048:
+> [002] d..1  7828.557948: dwc3_gadget_giveback: ep1out:
+> req 0000000011dfd96e length 2049/16384 zsI =3D=3D> 0
+> [002] d..1  7828.557949: ncm_unwrap_ntb: K: ncm_unwrap_ntb nth: 175199934=
+2
+> [002] d..1  7828.557950: ncm_unwrap_ntb: K: ncm_unwrap_ntb blk_len: 0x800
 >
-> - New work items will now get queued to the newest dfl_pwq which is plugged
->    and we know that wq->pwqs list contain pwqs in reverse creation order. So,
->    from pwq_release_workfn(), if the pwq being released is for an ordered
->    workqueue and not plugged, unplug the pwq right in front.
+> Lecroy shows one byte coming in extra confirming that the byte is coming
+> in from PC:
 >
-> This hopefully should be less invasive.
+> Transfer 2959 - Bytes Transferred(1025)  Timestamp((18.524 843 590)
+> - Transaction 8391 - Data(1025 bytes) Timestamp(18.524 843 590)
+> --- Packet 4063861
+>       Data(1024 bytes)
+>       Duration(2.117us) Idle(14.700ns) Timestamp(18.524 843 590)
+> --- Packet 4063863
+>       Data(1 byte)
+>       Duration(66.160ns) Time(282.000ns) Timestamp(18.524 845 722)
 >
-> Thanks.
+> According to Windows driver, no ZLP is needed if wBlockLength is non-zero=
+,
+> because the non-zero wBlockLength has already told the function side the
+> size of transfer to be expected. However, there are in-market NCM devices
+> that rely on ZLP as long as the wBlockLength is multiple of wMaxPacketSiz=
+e.
+> To deal with such devices, it pads an extra 0 at end so the transfer is n=
+o
+> longer multiple of wMaxPacketSize.
+>
+> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+> ---
+>  drivers/usb/gadget/function/f_ncm.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/usb/gadget/function/f_ncm.c b/drivers/usb/gadget/fun=
+ction/f_ncm.c
+> index ca5d5f564998..8c314dc98952 100644
+> --- a/drivers/usb/gadget/function/f_ncm.c
+> +++ b/drivers/usb/gadget/function/f_ncm.c
+> @@ -1338,11 +1338,17 @@ static int ncm_unwrap_ntb(struct gether *port,
+>              "Parsed NTB with %d frames\n", dgram_counter);
+>
+>         to_process -=3D block_len;
+> -       if (to_process !=3D 0) {
+> +
+> +       if (to_process =3D=3D 1 &&
+> +           (block_len % 512 =3D=3D 0) &&
+> +           (*(unsigned char *)(ntb_ptr + block_len) =3D=3D 0x00)) {
 
-Thanks for suggestion. I will rework the patch series to use this approach.
+I'm unconvinced this (block_len % 512) works right...
+imagine you have 2 ntbs back to back (for example 400 + 624) that
+together add up to 1024,
+and then a padding null byte.
+I think block_len will be 624 then and not 1024.
 
-Cheers,
-Longman
+perhaps this actually needs to be:
+  (ntp_ptr + block_len - skb->data) % 512 =3D=3D 0
 
+The point is that AFAICT the multiple of 512/1024 that matters is in
+the size of the USB transfer,
+not the NTB block size itself.
+
+> +               goto done;
+> +       } else if (to_process > 0) {
+>                 ntb_ptr =3D (unsigned char *)(ntb_ptr + block_len);
+
+note that ntb_ptr moves forward by block_len here,
+so it's *not* always the start of the packet, so block_len is not
+necessarily the actual on the wire size.
+
+>                 goto parse_ntb;
+>         }
+>
+> +done:
+>         dev_consume_skb_any(skb);
+>
+>         return 0;
+> --
+> 2.34.1
+>
+
+But it would perhaps be worth confirming in the MS driver source what
+exactly they're doing...
+(maybe they never even generate multiple ntbs per usb segment...)
+
+You may also want to mention in the commit message that 512 comes from
+USB2 block size, and also works for USB3 block size of 1024.
+
+--
+Maciej =C5=BBenczykowski, Kernel Networking Developer @ Google
 
