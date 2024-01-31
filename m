@@ -1,114 +1,111 @@
-Return-Path: <linux-kernel+bounces-47027-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47026-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E945844832
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:42:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3518384482D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:42:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BCD128A1EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:42:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB36C2824FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:42:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 295973E49D;
-	Wed, 31 Jan 2024 19:42:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="vpLA9WZb"
-Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCC3837143;
+	Wed, 31 Jan 2024 19:42:04 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 902DE3FB1B;
-	Wed, 31 Jan 2024 19:42:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C9313B189;
+	Wed, 31 Jan 2024 19:42:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706730134; cv=none; b=lulEF9wPer63pA3GkKIWklfWP0ZJYRqXJoDXT17TjmNHrhuw0HJnzc7T4izCWv9vWOkD5OeqDD+f+rgIyBA6GhOdQwqu7lEGkb5EamOHm1koKklbu+Q6n7UlB7toGy6vInVTmSc/AVDZ/8+xn0q7OrVbmfGIE2TCvJB+4xCxlgE=
+	t=1706730124; cv=none; b=CKDNEWCPbTlXDsTJ4OtvtXoLCc5cbe5Y6nL5fb9NEAzrH9iuqnlFLlu/L+WduBsOLzpFvL6cFY1O5zSB+UlRS6szcs9zaNKNi/vpP+iLsuzgJ3PhmGjNp5mW/RDv+JUkmudYwbJm7SkcPf3L97/Vam5jZE5ZMgMq9R2uyTu5W+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706730134; c=relaxed/simple;
-	bh=HfEeR4MwJftRCskWBfPPSp7AlKEy7Zjknx2BVaGOJBQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mWYLW2kFWHHDXiMB16TSnRq0FoMoVRPOKfKNMc5vEFXv0YbOyCM5IDIm8CpR+P87GGoxSTXZVEtrEb8REt9SL6K6ktEir6im384QaU0r/BtTCTsKMaM+iW7qbdWjbOywYmfZBclm5MNkQTPbZ4koYSIACHTY5kzX2Piro7yMKWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=vpLA9WZb; arc=none smtp.client-ip=217.194.8.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
-Received: from francesco-nb (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-	by mail11.truemail.it (Postfix) with ESMTPA id A02F422B70;
-	Wed, 31 Jan 2024 20:42:09 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
-	s=default; t=1706730130;
-	bh=+K3WVKgZ1fWnpN1m6qoOBzVUSoAk5LMmTV/l3Hp8dMU=; h=From:To:Subject;
-	b=vpLA9WZbGyS5yGYnXdvEOeicCcSD8At9fQJ0HSzQVEvS4QTiZsOss7LArzGKItS1Y
-	 rgQLbPcwPMoLFvCXJ6KbDnlh3QzXvlIE36EWtHbTKJv1dhNuJyAfWToxxDmWJ/fNbJ
-	 87NwCIEjzO7iDLhtkYhpLiDvBQCDKxYqC2ldxZlLtZy4jrYbzWALolIHqbtCdqz2Lr
-	 W+HYj6+Zq92UGlubi3VZUJYDyzHw54BPSdbw/a8l3QOVeKSsROKQN3PH7SSRwCu7Qa
-	 CyLpN17qrN/is5nPRH3cAOk7kfEisnNA+6Uw+jVCSK5ShxX2iZdxvfIczDrJL2GDqd
-	 QDXPEjpqdM0qw==
-Date: Wed, 31 Jan 2024 20:42:07 +0100
-From: Francesco Dolcini <francesco@dolcini.it>
-To: carlos.song@nxp.com
-Cc: broonie@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-	kernel@pengutronix.de, linux-imx@nxp.com, benjamin@bigler.one,
-	stefanmoring@gmail.com, linux-spi@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] spi: imx: fix the burst length at DMA mode and CPU
- mode
-Message-ID: <20240131194207.GB12870@francesco-nb>
-References: <20240131101916.437398-1-carlos.song@nxp.com>
+	s=arc-20240116; t=1706730124; c=relaxed/simple;
+	bh=m8vwoaQsBcdyqdU5wzhrn7icali5QipJmCUL6e3LtlI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=AgSmmo1X0nnuqNFSqPAi3M/hKaJKl7IXUIznifhU/4sIf7UCf2RTlLxAoH7FaxYO8VjtX+RXqbs7NMsTZ5wrM8OD3OXBOdyubnd9LKepAXAFHWybatEXZbIqjPLEKbRcE+rF7wFNZmxkhh8ln1DMoy/REPoVcAia/L6QjuxnQBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C73CC433C7;
+	Wed, 31 Jan 2024 19:42:02 +0000 (UTC)
+Date: Wed, 31 Jan 2024 14:42:16 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
+ lkp@intel.com, linux-kernel@vger.kernel.org, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mathieu
+ Desnoyers <mathieu.desnoyers@efficios.com>, Christian Brauner
+ <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, Ajay Kaher
+ <ajay.kaher@broadcom.com>, linux-trace-kernel@vger.kernel.org
+Subject: Re: [linus:master] [eventfs] 852e46e239:
+ BUG:unable_to_handle_page_fault_for_address
+Message-ID: <20240131144217.0130b517@gandalf.local.home>
+In-Reply-To: <CAHk-=wgh0otaSyV0MNrQpwFDTjT3=TWV94Wit2eUuPdh2KdyVg@mail.gmail.com>
+References: <202401291043.e62e89dc-oliver.sang@intel.com>
+	<CAHk-=wghobf5qCqNUsafkQzNAZBJiS0=7CRjNXNChpoAvTbvUw@mail.gmail.com>
+	<20240129172200.1725f01b@gandalf.local.home>
+	<CAHk-=wjV6+U1FQ8wzQ5ASmqGgby+GZ6wpdh0NrJgA43mc+TEwA@mail.gmail.com>
+	<CAHk-=wgOxTeTi02C=kOXsHzuD6XCrV0L1zk1XP9t+a4Wx--xvA@mail.gmail.com>
+	<20240129174950.5a17a86c@gandalf.local.home>
+	<CAHk-=wjbzw3=nwR5zGH9jqXgB8jj03wxWfdFDn=oAVCoymQQJg@mail.gmail.com>
+	<20240129193549.265f32c8@gandalf.local.home>
+	<CAHk-=whRxcmjvGNBKi9_x59cAedh8SO8wsNDNrEQbAQfM5A8CQ@mail.gmail.com>
+	<CAHk-=wh97AkwaOkXoBgf0z8EP88ePffLnTcmmQXcY+AhFaFrnA@mail.gmail.com>
+	<20240130132319.022817e8@gandalf.local.home>
+	<CAHk-=wiGb2aDbtq2+mYv6C=pYRKmo_iOu9feL9o52iRT8cuh6Q@mail.gmail.com>
+	<20240130143734.31b9b3f1@gandalf.local.home>
+	<CAHk-=whMJgqu2v1_Uopg5NBschGFa_BK1Ct=s7ehwnzPpPi6nQ@mail.gmail.com>
+	<20240131105847.3e9afcb8@gandalf.local.home>
+	<CAHk-=wgh0otaSyV0MNrQpwFDTjT3=TWV94Wit2eUuPdh2KdyVg@mail.gmail.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240131101916.437398-1-carlos.song@nxp.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 31, 2024 at 06:19:16PM +0800, carlos.song@nxp.com wrote:
-> From: Carlos Song <carlos.song@nxp.com>
-> 
-> For DMA mode, the bus width of the DMA is equal to the size of data
-> word, so burst length should be configured as bits per word.
-> 
-> For CPU mode, because of the spi transfer len is in byte, so burst
-> length should be configured as bits per byte * spi_imx->count.
-> 
-> Signed-off-by: Carlos Song <carlos.song@nxp.com>
-> Reviewed-by: Clark Wang <xiaoning.wang@nxp.com>
-> Fixes: e9b220aeacf1 ("spi: spi-imx: correctly configure burst length when using dma")
-> Fixes: 5f66db08cbd3 ("spi: imx: Take in account bits per word instead of assuming 8-bits")
-> ---
-> Changes for V2:
-> - Removed BITS_PER_BYTE defination
-> ---
->  drivers/spi/spi-imx.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
-> index 546cdce525fc..0436e7a161ef 100644
-> --- a/drivers/spi/spi-imx.c
-> +++ b/drivers/spi/spi-imx.c
-> @@ -660,15 +660,14 @@ static int mx51_ecspi_prepare_transfer(struct spi_imx_data *spi_imx,
->  			<< MX51_ECSPI_CTRL_BL_OFFSET;
->  	else {
->  		if (spi_imx->usedma) {
-> -			ctrl |= (spi_imx->bits_per_word *
-> -				spi_imx_bytes_per_word(spi_imx->bits_per_word) - 1)
-> +			ctrl |= (spi_imx->bits_per_word - 1)
->  				<< MX51_ECSPI_CTRL_BL_OFFSET;
->  		} else {
->  			if (spi_imx->count >= MX51_ECSPI_CTRL_MAX_BURST)
-> -				ctrl |= (MX51_ECSPI_CTRL_MAX_BURST - 1)
-> +				ctrl |= (MX51_ECSPI_CTRL_MAX_BURST * BITS_PER_BYTE - 1)
->  						<< MX51_ECSPI_CTRL_BL_OFFSET;
->  			else
-> -				ctrl |= (spi_imx->count * spi_imx->bits_per_word - 1)
-> +				ctrl |= (spi_imx->count * BITS_PER_BYTE - 1)
->  						<< MX51_ECSPI_CTRL_BL_OFFSET;
->  		}
->  	}
+On Wed, 31 Jan 2024 11:35:18 -0800
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-Add #include <linux/bits.h> given you are using BITS_PER_BYTE
+> On Wed, 31 Jan 2024 at 07:58, Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > BTW, I ran my full test suite on your patches with the below updates and it
+> > all passed.  
+> 
+> Those patch updates all look sane to me.
+> 
+> > I can break up and clean up the patches so that they are bisectable, and if
+> > that passes the bisectable portion of my tests, I can still send them to
+> > you for 6.8.  
+> 
+> Ack. That series you posted looks fine. I didn't do any actual testing
+> or applying the patches, just looking at them.
+> 
+> The one thing I noticed is that the 'llist' removal still needs to be
+> done. The logical point is that "[PATCH v2 7/7]" where the
+> eventfs_workfn stuff is ripped out.
+> 
+> And the 'rcu' head should now be a union with something that is no
+> longer used after the last kref. The only thing that *is* used after
+> the last kref is the "is_freed" bit, so there's lots of choice. Using
+> the 'struct list_head listl' that is used for the child list would
+> seem to be the obvious choice, but it could be anything (including all
+> of the beginning of that eventfs_inode, but then you would need to
+> group that as another nested unnamed struct, so picking a "big enough"
+> entry like 'list' makes it syntactically simpler.
 
-Francesco
+Yeah, that was what I was talking about in my cover letter with:
 
+  Note, there's more clean ups that can happen. One being cleaning up the
+  eventfs_inode structure. But that's not critical now and can be added
+  later.
+
+I just want to get the majority of the broken parts done. The clean up of
+the eventfs_inode is something that I'd add a separate patch. Not sure that
+falls in your "fixes" category for 6.8.
+
+-- Steve
 
