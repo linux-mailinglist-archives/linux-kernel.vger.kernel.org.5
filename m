@@ -1,137 +1,94 @@
-Return-Path: <linux-kernel+bounces-45758-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45759-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 486458435E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:10:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 026978435E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:11:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC3A728544C
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 05:10:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3537F1C25AB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 05:11:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59B6B3E494;
-	Wed, 31 Jan 2024 05:09:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A523C3D98A;
+	Wed, 31 Jan 2024 05:11:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gV37/hIF"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC8D93FB0D;
-	Wed, 31 Jan 2024 05:09:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6D513D550;
+	Wed, 31 Jan 2024 05:11:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706677784; cv=none; b=fCmRDgSwdmXoRVT4/CT54SJwwo21kbZXVT8s7twqsXMyscnAui0cWE3tENgGICdmsShBQ5ww4d1KDT0JBX9eLCaMuBlzov9sGjUPMVCRG+kasazKq9fc/vjUDyOY2LwVZPOB/UqxghevQeNon1jXobunGGX22oy3QRBfzjtlMUE=
+	t=1706677862; cv=none; b=Jitu8CVRFckuDHIW95uERzjdo5Aos5qRWkIShfReFJmU1rBIhauTgpVpb8E6L/QQM35yArY4DHRx0IS5BzKBMSgAJyScJn3kd85jgYO5WpEMGx5dzhyO7T1eU9Uu/up16H+ASd0fugFssQfa1nUB7zlIScmgkgwHpT3pXUAtjro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706677784; c=relaxed/simple;
-	bh=QvjKDYSLV2yuH9+Dn5eSLY9XpB6/Ol/LAIJt1dzRKXc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=AXaSx72DMXBB63wZFBEFvqaSyDUhjWr/7Rl/m1q5R58eVxnwPhOrFmV1j7vOZhzFNYmxWHIkJLc8TryNxGzJ6hNBEpPu6Y8kaEa8THXQZaKYENq+CFSMQbGOMC3ekDgt5bLawCBrGBUTJ6gFwRVdrUktUlpV9v9UrrYwWneJMoI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD2F9C433C7;
-	Wed, 31 Jan 2024 05:09:43 +0000 (UTC)
-Date: Wed, 31 Jan 2024 00:09:56 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/6] eventfs: get rid of dentry pointers without
- refcounts
-Message-ID: <20240131000956.3dbc0fc0@gandalf.local.home>
-In-Reply-To: <20240130190355.11486-5-torvalds@linux-foundation.org>
-References: <20240130190355.11486-1-torvalds@linux-foundation.org>
-	<20240130190355.11486-5-torvalds@linux-foundation.org>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706677862; c=relaxed/simple;
+	bh=xrcGrwHhitnih9E8v9UQ+w1w2AvDKYiVY78bIEM1OfU=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
+	 MIME-Version:Content-Type; b=U2LMKTyu0ujFnnLKeo3c7T6Thai9c9PvpPF7gldfHiqj9LL5Kh3gDcXn9qQHmZjY4mtRnID+5c3J5Wyu73NF/mW/mH4RhASv9cPY59GLl9F0v7fPiXCGn160rzk5E+4TLiRhhCXoE9X49tLknfHruO72Wwh1mJUHPvBIBurUBus=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gV37/hIF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B728C433F1;
+	Wed, 31 Jan 2024 05:10:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706677861;
+	bh=xrcGrwHhitnih9E8v9UQ+w1w2AvDKYiVY78bIEM1OfU=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=gV37/hIFfWJQ2Y6bf0lACNqLo0bKasPahlBztYPNgvksqUGAX8CgQq99fvvn91Cvw
+	 JYbKYeRH6cuFoeDzc7WhJ2CoCe0rJXAFaDvU2PrLBeAkBDbq02x9yorLAVZXhWC9yA
+	 XfEQWvQTKz0QSHWaQujfvHmytIr9spTbtx1Iif8a1RkhszgeFABGbvUrMa1GD1FtU4
+	 QwyhgLjQmtRSGen9pFqqAvdHtJpAjSQfHaDGRYlUE9cKEDw48GpV5yhTqkBQb12/xR
+	 f/fVcG4h8LJ9EMqdGisIE1qoKJ6uXXoMkxvZFZWNqqUdDpgZzbGeWVzKHZdai80qXg
+	 sy0N9UpvdOlMg==
+From: Kalle Valo <kvalo@kernel.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Breno Leitao <leitao@debian.org>,  davem@davemloft.net,
+  pabeni@redhat.com,  edumazet@google.com,  dsahern@kernel.org,
+  weiwan@google.com,  netdev@vger.kernel.org,
+  linux-kernel@vger.kernel.org,  horms@kernel.org,  andrew@lunn.ch,
+  leit@fb.com,  Uwe =?utf-8?Q?Kleine-K=C3=B6nig?=
+ <u.kleine-koenig@pengutronix.de>,  Kees
+ Cook <keescook@chromium.org>,  Johannes Berg <johannes.berg@intel.com>,
+  Emmanuel Grumbach <emmanuel.grumbach@intel.com>,  Justin Stitt
+ <justinstitt@google.com>,  Li Zetao <lizetao1@huawei.com>,  Francois
+ Romieu <romieu@fr.zoreil.com>,  Rob Herring <robh@kernel.org>,  Marc
+ Kleine-Budde <mkl@pengutronix.de>,  Ruan Jinjie <ruanjinjie@huawei.com>,
+  linux-wireless@vger.kernel.org (open list:TI WILINK WIRELESS DRIVERS)
+Subject: Re: [PATCH net 1/9] wifi: fill in MODULE_DESCRIPTION()s for wlcore
+References: <20240130104243.3025393-2-leitao@debian.org>
+	<170662101207.2289851.7564186430529596261.kvalo@kernel.org>
+	<20240130181435.13f6e2cc@kernel.org>
+Date: Wed, 31 Jan 2024 07:10:54 +0200
+In-Reply-To: <20240130181435.13f6e2cc@kernel.org> (Jakub Kicinski's message of
+	"Tue, 30 Jan 2024 18:14:35 -0800")
+Message-ID: <87y1c6uly9.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-On Tue, 30 Jan 2024 11:03:54 -0800
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+Jakub Kicinski <kuba@kernel.org> writes:
 
-> +/*
-> + * eventfs_inode reference count management.
-> + *
-> + * NOTE! We count only references from dentries, in the
-> + * form 'dentry->d_fsdata'. There are also references from
-> + * directory inodes ('ti->private'), but the dentry reference
-> + * count is always a superset of the inode reference count.
-> + */
-> +static void release_ei(struct kref *ref)
-> +{
-> +	struct eventfs_inode *ei = container_of(ref, struct eventfs_inode, kref);
-> +	kfree(ei->entry_attrs);
+> On Tue, 30 Jan 2024 13:23:34 +0000 (UTC) Kalle Valo wrote:
+>> > W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
+>> > Add descriptions to the TI WLAN wlcore drivers.
+>> > 
+>> > Signed-off-by: Breno Leitao <leitao@debian.org>  
+>> 
+>> These patches go to wireless-next, not net. But no need to resend because of this.
+>
+> FWIW I've been taking these thru net (or wireless in your case)
+> rather than the -next tree. There's zero chance of regression
+> here and the warnings are annoying. But up to you.
 
-I did modify this to add back the kfree_const(ei->name);
+Good point, I'll take them to wireless. Thanks.
 
-I would also like to add a:
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-	WARN_ON_ONCE(!ei->is_freed);
-
-The kref_put() logic should add the protection that this is guaranteed to
-be true as the logic in the removal does:
-
-	ei->is_freed = 1;
-  [..]
-	kref_put(ei);
-
-I would think that the last "put" would always have the "is_freed" set. The
-WARN_ON is to catch things doing too many put_ei().
-
-
-> +	kfree(ei);
-> +}
-> +
-
-
-> @@ -951,5 +857,6 @@ void eventfs_remove_events_dir(struct eventfs_inode *ei)
->  	 * sticks around while the other ei->dentry are created
->  	 * and destroyed dynamically.
->  	 */
-> +	simple_recursive_removal(dentry, NULL);
-
-Actually, this doesn't work. It expects all the dentries in the list to
-have positive ref counts, as it does dput() on them. If there's any cached,
-it will bug with a dput() on a dentry of zero.
-
-The only dentries that should have non zero ref counts are ones that are
-currently being accessed and wont go away until finished. I think all we
-need to do is invalidate the top dentry. Is that true?
-
-Does this work:
-
-	d_invalidate(dentry);
-
-to make the directory no longer accessible. And all dentries within it
-should be zero, and hopefully go away on memory reclaim. The last patch
-removes it, but if you want to test the deletion, you can do this:
-
- # cd /sys/kernel/tracing
- # mkdir instances/foo
- # ls instances/foo/events
- # rmdir instances/foo
-
-
-But also note that this patch fails with the "ghost" files with the kprobe
-test again. When I apply patch 6, that goes away. I'm guessing that's
-because this needs the d_revalidate() call. To not break bisection, I think
-we need to merge this and patch 6 together.
-
-Also patch 6 removes the simple_recursive_removal() which without at least
-the d_invalidate() causes a dput splat. That's because the rmdir calls
-tracefs_remove() which calls simple_recursive_removal() that will walk to
-the events directory and I'm assuming if it hasn't been invalidated, it
-walks into it causing the same issue as a simple_recursive_removal() would
-have here.
-
-Try the above mkdir and rmdir to see.
-
--- Steve
-
-
->  	dput(dentry);
->  }
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
