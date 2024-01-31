@@ -1,264 +1,194 @@
-Return-Path: <linux-kernel+bounces-46739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46740-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CF8E84436A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:52:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7382584436C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:53:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4F41BB22915
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:52:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97AA11C22DFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:53:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 338FB12A14C;
-	Wed, 31 Jan 2024 15:52:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA04212AAF2;
+	Wed, 31 Jan 2024 15:52:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KGN10B/1"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="qHALQVWu"
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2076.outbound.protection.outlook.com [40.107.223.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EB9C433CB;
-	Wed, 31 Jan 2024 15:52:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706716354; cv=none; b=nGt3mWcewYwn/t5S9MeJMc1eYcERZriEH0Jt2X9zuAk19FSxO7URPktWqLCJqj6Qh8k12ZFOPmRH0dLLZV8jS4KWid55iaYIcohXNIO3aoo0h5XQr2cx2/UMRSEeLo95VZzeR2bERFjR96Mis/L+cbIi/Iw7iMErSQOoJ5zJG+4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706716354; c=relaxed/simple;
-	bh=gh7UgQTt1upM52DH9/brHa41xulwVb6hdMi49LlFaU4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ICypWAs3r25YJdCC9IrU7jv0Oe7phJg7LKjPaY1oMMs+ahoL09NlVNyxQdqmMmzriE/CyFAN2RKmO41y5cRGVEgxg/aI6UvRTtP53NLjBFd0s17uGoehsS+4rhNidxs7zaxwEkcpxqnI2T5wyxzgQKER6HxKKPmh6FobbntZn8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KGN10B/1; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-51124d43943so1218734e87.2;
-        Wed, 31 Jan 2024 07:52:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706716350; x=1707321150; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OQX3o9OdnVWodXK7XnVqKIBMgmyYUG9SCf1DG/2FOUc=;
-        b=KGN10B/1Q2izJ7khreM+avVzPxttmnrQ0fWfhHKlJH37fb0c3IGfzA+Vhr8gTudMpR
-         Mm+UN2/Ew0y2ad4QbrJzkqhVQXj6koccU5ukHsXH1rydGRma1ylWaQc+TbB+ImEH0VC2
-         DLO8D1TIeYsWvNNjdzXZB6Cap31gg1O6WQrCiWvUavYlqfSmQnkaR2YsOcQ9XHVWiYq9
-         VxHTPR+PV7wjZ2VrAuoJkME/eUCucPA0dtSF6uOmLipkMbXvzfLGTemDW1PFplD2c5nq
-         NPrPSubPsk7oHXi94Fj9Y0Phb3EUxrIDa/q0CpxRBfbmxPqMAhgxaK+PP/P0HE3HHthx
-         FGFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706716350; x=1707321150;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OQX3o9OdnVWodXK7XnVqKIBMgmyYUG9SCf1DG/2FOUc=;
-        b=KqAwN9l4C3i/DZIlxvb06SKiUD9DwRLn48zVE6250ml48wCpcOdAFOt8e9GcbOWSQp
-         HkHrtp9neg6ijTQV4LXL5D6MRMd5bWIJFWCDEFfD7A4JILV7kS9O2tW5+RanAGwe1S6T
-         rczRzNHWn5eKE+OKMRy955jp9bWhqLuykGudFHWaNOtUoKB22gzKfxy289K6Uhjc0hfO
-         8h0/iO/ZAwYLLOcrptlt51Vh0xyplHmjEhL2RZdEBcLAa6LpcBvY5AcxSW2iy5mFFQnx
-         SqOpOHCxIm/v7G3y4liQZzu64WDqfX8XoZRpBYxMrEASuYieiml+SmtKfRHDmisONEXT
-         +rgg==
-X-Gm-Message-State: AOJu0Yx4sYe9BfuV+q0Cnd2e74wMIdytWxPerJlDRE8nkLdAqkFUO9jG
-	jZT+nWyQPoVYoQ6okVx4xhIP40YOn2lTcbs53vYUQkjkFl+3UHKwIDTSGF0OXDeNus4u85LV6s+
-	lgPrmD5y3ymusTg5R4VkMC1Ea5cw=
-X-Google-Smtp-Source: AGHT+IHGgRpeCu9yNBRtA4a5mdEUPe6rJOKy5MddfQNAEf49HG41vyeNWWjwuxEzNvIAJhfV9seBWUCZ2kKje+jEW6w=
-X-Received: by 2002:a05:651c:10c9:b0:2d0:4fbb:7bfd with SMTP id
- l9-20020a05651c10c900b002d04fbb7bfdmr1431157ljn.10.1706716349820; Wed, 31 Jan
- 2024 07:52:29 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF6D312A15A;
+	Wed, 31 Jan 2024 15:52:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.76
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706716357; cv=fail; b=qPEgPD7mv+qKKocwo1pTDBgTFBg2/q4ZPF9mmd0PVHHTCvKVxgo8T3af5qiHq+c6A0R1xCWw8jQGcxrIOECefcA6vRZDWzdNs7qRsA1vPXe3RWqZCVlMhOUH5Gb6bTVx0GhxC5MvUUPIz4tjApqpgV7XyfplkLgI41Lxu+8mbXI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706716357; c=relaxed/simple;
+	bh=Icz4Cvz51d7o/PUO6p1f1BT/AYh8hbXOyJqXlluZaxo=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=dH9Nb52uM3A5in2TVzFgioBSZzLRAkTld2WIFs8X6n2cUrjRP+SNYJSuzbsfzvTzuR6dZb6816OzOyzwg8mNZ0koa08x1Ppl9khITCRiKFLYG6rInJ9VRyEJWlREmxmZ8X7fft4DHSlKe60Cf+SRxfQZVu+QKSviwaO6xW2wYvM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=qHALQVWu; arc=fail smtp.client-ip=40.107.223.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FpKBc8kjQSnZh84FZKSKbHOwBJKXLvGqXCvJitcZl0PHnjWon1+PZZGpgQ0N33Ikz7p9DUeJmEy8OFXWHj3dl38B4yiH8YMILRh8R6DCstkfP+sDDrXMSSh+rd41LuNFVWRswDmtBtKpp72zLtOfsX4fdE5N1ryyy4HUb0PWsMkpLhgRZpIEcvcXXanXoky3QbmQzqwnWilWkBKHZqFsIKaMKg17rQdzD8DW/ghB+squDlSx4tiTiaN+zATl8D0as2B8z/updN2xYEhY7NjcqkTwyNJ3jvseUmh2bhXhDXmxeSpphi2BJFpiyJRz4EB2sUuEOzn1P6xtKyVzlnIdQw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Icz4Cvz51d7o/PUO6p1f1BT/AYh8hbXOyJqXlluZaxo=;
+ b=BqEzgoo/825oVmLvL7GP3a2NDYyP7CCbxW2hN+6/ZOjuoaV3TupdMph2FcvlseyLtzKxBsqCS5AULQQrI3P1CS++yMgTMRjkD4regAOgRavzfmtQzvzk52Sl+ChULmIn1PPHi9mYRFpj9TV7nvBwi4451D5GT8Amc70n/1X77o5qeZVBGGnkToCK7OTMLr6eozqVxdWzeF/G8Jy1A1sE8dCGtRkfYZ9MB2MKev9LetIDEK1HXTQaz8DaSRZqppHS8uQ2BK5o1sfEDfkPMZylFpGbtMFA9Yq7h/H++/cYk2u2JcLVkbcLaZU06Tw2rnwuLA7WADyH4CTC6Exb+zJ43g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Icz4Cvz51d7o/PUO6p1f1BT/AYh8hbXOyJqXlluZaxo=;
+ b=qHALQVWu5IDTPyv5jy8mDsg51no8kho8qmbn3Ls+Aoawgx0Qc0TnA1J5w2ybA5IdBBqI628LxkjoKwX41h5R4en4mffe5vaxFANmf0aCSC5zm0ylVrsXMmVGNdZUiOrMB0BV5tlF1h3wiZq4Iw2eGb2ciyayKjvHZU7X504uih879Qp2dADoqohjDFSQsXcfc4KhjU3F6HSy1Mh5Ehi41pWwG0BxZuuHk1fVkJ+U6+yx5ryC54mloOl4o1CBkPmpSlbUGNlMVbGOAhpVU8WXIfYJlYEcvv5w089/zAYWFVwh3iDp6f+y1zbNtrgAguypeKFwfsllPAlkMdPiEgP5ng==
+Received: from DM6PR12MB4516.namprd12.prod.outlook.com (2603:10b6:5:2ac::20)
+ by CH0PR12MB5329.namprd12.prod.outlook.com (2603:10b6:610:d4::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.8; Wed, 31 Jan
+ 2024 15:52:32 +0000
+Received: from DM6PR12MB4516.namprd12.prod.outlook.com
+ ([fe80::fa7e:d2b7:5f80:2dd4]) by DM6PR12MB4516.namprd12.prod.outlook.com
+ ([fe80::fa7e:d2b7:5f80:2dd4%5]) with mapi id 15.20.7228.029; Wed, 31 Jan 2024
+ 15:52:32 +0000
+From: Danielle Ratson <danieller@nvidia.com>
+To: Andrew Lunn <andrew@lunn.ch>
+CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "davem@davemloft.net"
+	<davem@davemloft.net>, "edumazet@google.com" <edumazet@google.com>,
+	"kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
+	"corbet@lwn.net" <corbet@lwn.net>, "linux@armlinux.org.uk"
+	<linux@armlinux.org.uk>, "sdf@google.com" <sdf@google.com>,
+	"kory.maincent@bootlin.com" <kory.maincent@bootlin.com>,
+	"maxime.chevallier@bootlin.com" <maxime.chevallier@bootlin.com>,
+	"vladimir.oltean@nxp.com" <vladimir.oltean@nxp.com>,
+	"przemyslaw.kitszel@intel.com" <przemyslaw.kitszel@intel.com>,
+	"ahmed.zaki@intel.com" <ahmed.zaki@intel.com>, "richardcochran@gmail.com"
+	<richardcochran@gmail.com>, "shayagr@amazon.com" <shayagr@amazon.com>,
+	"paul.greenwalt@intel.com" <paul.greenwalt@intel.com>, "jiri@resnulli.us"
+	<jiri@resnulli.us>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, mlxsw
+	<mlxsw@nvidia.com>, Petr Machata <petrm@nvidia.com>, Ido Schimmel
+	<idosch@nvidia.com>
+Subject: RE: [RFC PATCH net-next 9/9] ethtool: Add ability to flash
+ transceiver modules' firmware
+Thread-Topic: [RFC PATCH net-next 9/9] ethtool: Add ability to flash
+ transceiver modules' firmware
+Thread-Index: AQHaTQ+QQZNGrHyNcEuTxxeyuUrKM7DrCc6AgAb9nvCAAhi30A==
+Date: Wed, 31 Jan 2024 15:52:32 +0000
+Message-ID:
+ <DM6PR12MB4516BC80DBF383A186707F19D87C2@DM6PR12MB4516.namprd12.prod.outlook.com>
+References: <20240122084530.32451-1-danieller@nvidia.com>
+ <20240122084530.32451-10-danieller@nvidia.com>
+ <5bf6b526-02c4-4940-b8ec-bf858f9d4a58@lunn.ch>
+ <DM6PR12MB45161C82F43B67AD8EDB950BD87C2@DM6PR12MB4516.namprd12.prod.outlook.com>
+In-Reply-To:
+ <DM6PR12MB45161C82F43B67AD8EDB950BD87C2@DM6PR12MB4516.namprd12.prod.outlook.com>
+Accept-Language: he-IL, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM6PR12MB4516:EE_|CH0PR12MB5329:EE_
+x-ms-office365-filtering-correlation-id: c0068db5-1542-4d2f-7706-08dc2274a30a
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ ScWf6plQFoEiJnANHzTBLU8ywlQCbkDOyvRDaoH44X619pxu2VadTKJiDRlNBK+l3YGYw7FuD1Y53G/9H0+zgu2g7iPV/VCA9n/nmk0J4qv5mdjEvAnsWPuUtL47rbYrLHXSCtqlmq9VD8GF2CpNAK5VxnPqsxXXnto59UJW4R1MYDTcWW+t4IOMuAZlnEdPjpdzy1S4Y+A85YjQzSxj3DTwhlGU3OQXIQLAp2ksOQGP/RtCbIWBQ/lA+Z5jCjJ/VMV2C+kKHTxB4TB+5ltYqORQUQKKqKjK4HdzEzvdYn/aAjjE1DtOTG6/CgPezDsc5+mU1rFiycmX2Kc3fTbgdZY7wKHwsrF6Vy+o6+0aFMW4ouReTVu8ULI8eARnwbqgdE6nElzMqTDA4i9B/L8vL4MO0IqwGXxbP5SG1PEr73kSRzyMZBq509VZOxmnOHiUk0p7O69ticS6P1WKn3LC+fV0SmDBhyKUmREoMOemPTptlCo/FNt3oWIBTINrVusV/u89nxye2vb3L2HR9j8oOwVehTw2JDbVp2TCyObSER/VzUa//nXo6TU7+gNHpbG+AjhJ4EOeZnyQj53ESntBtShD+5bN2pwGyO2SFCFjOCnXG1YzA2OVhosxsk2iaFYU
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4516.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(136003)(346002)(376002)(366004)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(55016003)(66899024)(41300700001)(83380400001)(86362001)(33656002)(38070700009)(2940100002)(122000001)(52536014)(107886003)(38100700002)(26005)(9686003)(8676002)(76116006)(7696005)(6506007)(2906002)(478600001)(6916009)(316002)(71200400001)(66556008)(66476007)(66446008)(64756008)(54906003)(66946007)(8936002)(5660300002)(4326008)(7416002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?RGhlb2Y4S3kzYU14cm10RWVFbmJraFBvWlp6VlNBSWZjRlJaRHN4NkxNOXdh?=
+ =?utf-8?B?bHVodXBSbllkQWJRTGJRTWZDQXQyeHJDSmpYY2JBK1l6NVlFU0pJY2ZONlBp?=
+ =?utf-8?B?eWRDNm8yc1ZlV0lEcXdGNTJXbng2OGpYOFo1T0p2aTVyVzZxZCtXQWtqVktE?=
+ =?utf-8?B?d2dLWVlLYXFiVEd2UGo4UmN4L0x6YlJ6b2c2UDBUVTQxallkQjVZRkljQllJ?=
+ =?utf-8?B?SXN5QkNSUldLd0FWZkxKaE92YnMxdWFqV1RWa1BBMGlGMTgxbDNPVmRhQWNI?=
+ =?utf-8?B?eC9iSzJFRG45eHQ3aVpCMTZCMFIyakdHT0kzNHp2bzFoVVZqK2l4dDdoRnla?=
+ =?utf-8?B?VGFuRFYveTNmTnJIUXlHVThWY3dnVHRWSjR2K2tnZlY1Y2ZwTVpqNEttNkVl?=
+ =?utf-8?B?SlVkQnpDVFhjdEN4Smd0cmlrVzgwNVEyaldieVl0dVcwQXVHOUJBOUhaQ0xn?=
+ =?utf-8?B?RFRuV0NrMEJQMXNncjRnM0VJZFBlZ0g3RkNEZUN0bmdBQThFZGlYeGwvYkhU?=
+ =?utf-8?B?alkzRWs5NjNZaDJ4OGVWNEpITmVDUERacVBCSXN6ejFaL0p1dkkxSXJZb0dD?=
+ =?utf-8?B?RHhrRXhmWWpVb2dwN0tDcUtLUEZOa0dXNEhGdko2dTRXeHZTSGZISGVrQ1Fo?=
+ =?utf-8?B?YnFBWHlpRVA1YUdQY1FaeHVZYzFqWER2R2wyK3diemt6RCtYZXFUb0JpczhU?=
+ =?utf-8?B?RzA4YlBsUVFMbU9Ia1YxTStMNU5xd0FlRkhTV3NvTFVQMHRmaDJMaFdyV0R2?=
+ =?utf-8?B?QlZnRTI0bW45MmF5UWJmQXRyZFJabTFrSDdoQ1FwUzBCeDJiUlVMa3dQN0c3?=
+ =?utf-8?B?MXlYc0NObE42ZWxLQjczMmhIdURVWUJaN0lNalNyd2VsN1dpeWJiWCtOMXZn?=
+ =?utf-8?B?eFpPRWRFRGlDbFUrdzNwWWQ5SHdmRlJvN0VENnhRd0NvVGNpV2RyMUY0Q21j?=
+ =?utf-8?B?bnErSkpEUnRYOHVEVzhiSS9lZFk1OGFhUzR1WkxFZ2xTMkxzdkhVS1h1cWhN?=
+ =?utf-8?B?Y2tMUXUyVU1yMkI3T0NvREhMMHMyV25TQmZHUzk0Szc3bFRDNVlCWU1WdENu?=
+ =?utf-8?B?Ry9JaXZ2ZTdVWXg2aHROMWg4QzFVcG0xNXhPVzg3WEJmbWpiMEZZWFl0UVYw?=
+ =?utf-8?B?TjU5bkhIMXJsVzZmREprb3YzOStqTVB0RVJZMjVhVlJzRlRjZGovekVMWjdr?=
+ =?utf-8?B?ek1oNmpjV3o3WmMwemtZRFg5NDNPYmk0N3RpOTh0b2JhM2V2Z1dBcFV5MFFm?=
+ =?utf-8?B?VFBtSFk0M2dmZUZtb2t5NnB5aXJHYkNCemtFQ0FZOU1SQ3RHSCtYajQwUFpN?=
+ =?utf-8?B?N2dieXhlbmZvd0MzQW4rdVc1M1RBWmhyRFNLMFNnU2oySy9ieEhIcXNJVWgy?=
+ =?utf-8?B?T29RSnBCalpvRFdoeGM5bHB1dUVudlFCenhCR1RDZzBDR0RoU3JUSHBIZ2dj?=
+ =?utf-8?B?YmpnZzRRVGp0K21xbU1yN1RhUk10QVJRTGtWOGkyc1NTdFNnaGxwTjRmZW1j?=
+ =?utf-8?B?MUFOUzBiZEgwazZESWhhSldoMks3SC80d0hnY2RoclN2V0Y4UmszTFl1ZlE0?=
+ =?utf-8?B?b1pXZ1FDMmgrSmk5SDdEaVpLNUFyTVVDckhxeGVrK0RZWm01Wm0zU25CbW5v?=
+ =?utf-8?B?Y082RXBLRFRNeklac3ZFams2NW1aeUZ5Z2loNkdmVDRSVkw0VFVoZHJmUlhi?=
+ =?utf-8?B?UVA4VGhnTzZPTWVwTm1YU3hRNUxCOWdEakpRMVp1OXdkNmtOa2VrbUIrVUhi?=
+ =?utf-8?B?MlhPaFFNZTZmeEVkbktoUnNFY0xSaXpmYy9CV2IvelVPdkdvcG5GZEM0U2pr?=
+ =?utf-8?B?VW9rQlZzV0kxU2dpdzh3TTFPaFVrK1BVT3BPVmJ3bmxhYVdWYTFxSFVxZmRJ?=
+ =?utf-8?B?aHhibG51SGxRSHVhcjN1UWUydnE2ZnJFMGwxWlBvczF5K2RxWWNUUWpTb1JN?=
+ =?utf-8?B?QUdLNGw1L09MaFpTYndVVlhZSlJrdm5GS2wwN2JnVkh4N0c5Sm8ra1pMZGtI?=
+ =?utf-8?B?MVl1bVlwNDhPcVpyU29YUTBuSkdZNmdtdUg5ZFdBRk03QU1sa0J0OFpkcGJZ?=
+ =?utf-8?B?RkZ6M2cxQWhscTdkbTh1ZDJqZFh5Z1VtMHBNZ1JObnU1dmFndVdWUGJLTXRo?=
+ =?utf-8?Q?4QGkdiszdt5f3CLx9z2Xweyr7?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <aac81702-df1e-43a2-bfe9-28e9cb8d2282@tuxedocomputers.com>
- <CANiq72mfP+dOLFR352O0UNVF8m8yTi_VmOY1zzQdTBjPWCRowg@mail.gmail.com>
- <87sf61bm8t.fsf@intel.com> <ZVvHG/Q+V6kCnfKZ@duo.ucw.cz> <f4137e34-c7fb-4f21-bc93-1496cbf61fdf@tuxedocomputers.com>
- <8096a042-83bd-4b9f-b633-79e86995c9b8@redhat.com> <f416fbca-589b-4f6a-aad6-323b66398273@tuxedocomputers.com>
- <4222268b-ff44-4b7d-bf11-e350594bbe24@redhat.com> <ac02143c-d417-49e5-9c6e-150cbda71ba7@tuxedocomputers.com>
- <ZaljwLe7P+dXHEHb@duo.ucw.cz> <6bbfdd62-e663-4a45-82f4-445069a8d690@redhat.com>
- <0cdb78b1-7763-4bb6-9582-d70577781e61@tuxedocomputers.com>
- <7228f2c6-fbdd-4e19-b703-103b8535d77d@redhat.com> <730bead8-6e1d-4d21-90d2-4ee73155887a@tuxedocomputers.com>
- <952409e1-2f0e-4d7a-a7a9-3b78f2eafec7@redhat.com> <9851a06d-956e-4b57-be63-e10ff1fce8b4@tuxedocomputers.com>
- <1bc6d6f0-a13d-4148-80cb-9c13dec7ed32@redhat.com> <b70b2ea8-abfd-4d41-b336-3e34e5bdb8c6@tuxedocomputers.com>
- <477d30ee-247e-47e6-bc74-515fd87fdc13@redhat.com> <e21a7d87-3059-4a51-af04-1062dac977d2@tuxedocomputers.com>
-In-Reply-To: <e21a7d87-3059-4a51-af04-1062dac977d2@tuxedocomputers.com>
-From: Roderick Colenbrander <thunderbird2k@gmail.com>
-Date: Wed, 31 Jan 2024 07:52:17 -0800
-Message-ID: <CAEc3jaDsv0hv8gcqsMdcrMf4WK-Nq0LMgPcVHzv87x+J0M=V2Q@mail.gmail.com>
-Subject: Re: Future handling of complex RGB devices on Linux
-To: Werner Sembach <wse@tuxedocomputers.com>
-Cc: Hans de Goede <hdegoede@redhat.com>, Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, 
-	jikos@kernel.org, linux-kernel@vger.kernel.org, 
-	Jelle van der Waa <jelle@vdwaa.nl>, Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, 
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, linux-input@vger.kernel.org, 
-	ojeda@kernel.org, linux-leds@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4516.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c0068db5-1542-4d2f-7706-08dc2274a30a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Jan 2024 15:52:32.6405
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: V84S5bYrk+GMGr2B0p4QGd+ZvwrnONtdFqx4Pqp2SWOB9XMvQb2VyaRVGbAD9cIQukpcNV8oUtnYHQqJfK8oQQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5329
 
-On Wed, Jan 31, 2024 at 3:42=E2=80=AFAM Werner Sembach <wse@tuxedocomputers=
-com> wrote:
->
-> Hi,
->
-> so I combined Hans last draft, with the discussion since then and the com=
-ments
-> from the OpenRGB maintainers from here
-> https://gitlab.com/CalcProgrammer1/OpenRGB/-/issues/3916 and my own exper=
-ience
-> and came up witrh this rough updated draft for the new uapi:
->
-> Future handling of complex RGB devices on Linux:
->
-> Optional: Provide a basic leds-subsystem driver:
->      - The whole device is treated as a singular RGB led in the current l=
-eds uapi
->          - Backwards compatibility
->          - Have something work out-of-the-box and during boot time
->      - The driver also registers a misc device with a singluar sysfs attr=
-ibute
-> select_uapi
->          - reading this gives back "[leds] none"
->          - the current active uapi can be selected by writing it to that =
-attribute
->          - switching the uapi means deregistering the device from that en=
-tirely
-> and registering and initializing it with the new one froms scratch
->          - selecting none only does the deregistering
->
-> If the device is already reachable by userspace directly, e.g. via hidraw=
-, the
-> kernel will only offer this basic implementation and a more complex drive=
-r has
-> to be implemented in userspace.
->      - This driver has to use the select_uapi attribute first and select =
-"none"
-> to avoid undefined behaviour caused by accessing the leds upai and hidraw=
- to
-> control the lighting at the same time
->      - Question: How to best associate the select_uapi attribute to the
-> corresponding hidraw (or other) direct access channel? So that a userspac=
-e
-> driver can reliable check whether or not this has to be set.
->
-> Devices not reachable by userspace directly, e.g. because they are contro=
-led via
-> a wmi interface, can also be implemented in the new rgbledstring-subsyste=
-m
-> (working title) for more complex control
->      - a rgbledstring device provides an ioctl interface (ioctl only no r=
-/w)
-> using /dev/rgbledstring0, /dev/rgbledstring1, etc. registered as a misc c=
-hardev.
->          - get-device-info ioctl which returns in a single struct:
->              - char name[64]                     /* Device model name /
-> identifier, preferable human readable. For keyboards, if known to the dri=
-ver,
-> physical layout (or even printed layout) should be separated here */
->              - enum device_type                  /* e.g. keyboard, mouse,
-> lightbar, etc. */
->              - char firmware_version_string[64]  /* if known to the drive=
-r,
-> empty otherwise */
->              - char serial_number[64]            /* if known to the drive=
-r,
-> empty otherwise */
->              - enum supported_modes[64]          /* modes supported by th=
-e
-> firmware e.g. static/direct, breathing, scan, raindrops, etc. */
->          - get-mode-info icotl, RFC here: Hans thinks it is better to hav=
-e the
-> modes and their inputs staticly defined and have, if required, something =
-like
-> breathing_clevo_1, breathing_clevo_2, breathing_tongfang_1 if the inputs =
-vary
-> between vendors. I think a dynamic approach could be useful where userspa=
-ce just
-> queries the struct required for each individual mode.
->              - input: a mode from the supported_modes extracted from get-=
-device-info
->              - output: static information about the mode, e.g.
-> max_animation_speed, max_brightness, etc.
->              - output: the struct/a list of attributes and their types re=
-quired
-> to configure the mode
->          - set-mode ioctl takes a single struct:
->              - enum mode                         /* from supported_modes =
-*/
->              - union data
->                  - char raw[3072]
->                  - <all structs returned by get-mode-info>
->          - The driver also registers a singluar sysfs attribute select_ua=
-pi
->              - reading this gives back "[leds] rgbledstring none" or
-> "[rgbledstring] none" respectifly
->              - Discussion question: should select_uapi instead be use_led=
-s_uapi
->                  - if 1: use basic leds driver
->                  - if 0: if device is userspace accessible no kernel driv=
-er is
-> active, if device ist not userspace accessible register rgbledstring (aka
-> implicit separation between rgbledstring and none instead of explicit one=
-)
->
-> Zone configuration would be seen as a subset of mode configuration, as I =
-suspect
-> not every mode needs the zone configuration even on devices that offer it=
-?
->
-> The most simple mode would be static/direct and the set-mode struct would=
- look
-> like this:
-> {
->      enum mode, /* =3D static */
->      {
->          uint8 brightness, /* global brightness, some keyboards offer thi=
-s */
->          uint8 color[<number_of_leds>*3]
->      }
-> }
->
-> Question: Are there modes that have a separate setup command that is only
-> required once and then a continuous stream of update information? If yes,=
- should
-> we reflect that by splitting set-mode into set-mode-setup and set-mode-up=
-date
-> (with get-mode-info returning one struct for each)? Or should userspace j=
-ust
-> always send setup and update information and it's up to the kernel driver=
- to
-> only resend the setup command when something has changed? In the former c=
-ase
-> set-mode-update might be a noop in most cases.
->
-> Discussion on this might also happen here:
-> https://gitlab.com/CalcProgrammer1/OpenRGB/-/issues/3916#note_1751170108
->
-> Regards,
->
-> Werner
->
->
-
-Hi Werner,
-
-I don't have a particular opinion as I don't know too much about RGB
-keyboards. I just want to provide some food for thought and provide
-some extra context of other devices. Just to challenge the discussion
-and make sure than any API is flexible enough as it is hard to change
-kernel interfaces later on.
-
-At Sony our PlayStation controllers historically had a variety of LEDs
-whether basic indicator ones (e.g. used to pick a player number) as
-well as RGB leds. The devices are all HID based, but we do custom
-parsing in hid-playstation to break out them out through LED framework
-(regular leds and leds-class-multicolor for RGB). They were a bit of a
-nightmare for applications to discover as crawling sysfs isn't fun (we
-wrote a lot of code for Android's input framework to do this for our
-own peripherals, but others too).
-
-I'm not entirely sure where your RGB proposal is headed, but if one of
-the higher goals is making dealing with LEDs and input devices easier,
-maybe this extra info helps some of the discussion.
-
-Thanks,
-Roderick Colenbrander
+PiA+IFN1YmplY3Q6IFJlOiBbUkZDIFBBVENIIG5ldC1uZXh0IDkvOV0gZXRodG9vbDogQWRkIGFi
+aWxpdHkgdG8gZmxhc2gNCj4gPiB0cmFuc2NlaXZlciBtb2R1bGVzJyBmaXJtd2FyZQ0KPiA+DQo+
+ID4gPiArc3RhdGljIGludA0KPiA+ID4gK21vZHVsZV9mbGFzaF9md19zY2hlZHVsZShzdHJ1Y3Qg
+bmV0X2RldmljZSAqZGV2LA0KPiA+ID4gKwkJCSBzdHJ1Y3QgZXRodG9vbF9tb2R1bGVfZndfZmxh
+c2hfcGFyYW1zICpwYXJhbXMsDQo+ID4gPiArCQkJIHN0cnVjdCBuZXRsaW5rX2V4dF9hY2sgKmV4
+dGFjaykgew0KPiA+ID4gKwljb25zdCBzdHJ1Y3QgZXRodG9vbF9vcHMgKm9wcyA9IGRldi0+ZXRo
+dG9vbF9vcHM7DQo+ID4gPiArCXN0cnVjdCBldGh0b29sX21vZHVsZV9md19mbGFzaCAqbW9kdWxl
+X2Z3Ow0KPiA+ID4gKwlpbnQgZXJyOw0KPiA+ID4gKw0KPiA+ID4gKwlpZiAoIW9wcy0+c2V0X21v
+ZHVsZV9lZXByb21fYnlfcGFnZSB8fA0KPiA+ID4gKwkgICAgIW9wcy0+Z2V0X21vZHVsZV9lZXBy
+b21fYnlfcGFnZSkgew0KPiA+ID4gKwkJTkxfU0VUX0VSUl9NU0coZXh0YWNrLA0KPiA+ID4gKwkJ
+CSAgICAgICAiRmxhc2hpbmcgbW9kdWxlIGZpcm13YXJlIGlzIG5vdCBzdXBwb3J0ZWQgYnkNCj4g
+PiB0aGlzIGRldmljZSIpOw0KPiA+ID4gKwkJcmV0dXJuIC1FT1BOT1RTVVBQOw0KPiA+ID4gKwl9
+DQo+ID4gPiArDQo+ID4gPiArCWlmIChkZXYtPm1vZHVsZV9md19mbGFzaF9pbl9wcm9ncmVzcykg
+ew0KPiA+ID4gKwkJTkxfU0VUX0VSUl9NU0coZXh0YWNrLCAiTW9kdWxlIGZpcm13YXJlIGZsYXNo
+aW5nIGFscmVhZHkNCj4gPiBpbiBwcm9ncmVzcyIpOw0KPiA+ID4gKwkJcmV0dXJuIC1FQlVTWTsN
+Cj4gPiA+ICsJfQ0KPiA+ID4gKw0KPiA+ID4gKwltb2R1bGVfZncgPSBremFsbG9jKHNpemVvZigq
+bW9kdWxlX2Z3KSwgR0ZQX0tFUk5FTCk7DQo+ID4gPiArCWlmICghbW9kdWxlX2Z3KQ0KPiA+ID4g
+KwkJcmV0dXJuIC1FTk9NRU07DQo+ID4gPiArDQo+ID4gPiArCW1vZHVsZV9mdy0+cGFyYW1zID0g
+KnBhcmFtczsNCj4gPiA+ICsJZXJyID0gcmVxdWVzdF9maXJtd2FyZSgmbW9kdWxlX2Z3LT5mdywg
+bW9kdWxlX2Z3LQ0KPiA+ID5wYXJhbXMuZmlsZV9uYW1lLA0KPiA+ID4gKwkJCSAgICAgICAmZGV2
+LT5kZXYpOw0KPiA+DQo+ID4gSG93IGJpZyBhcmUgdGhlc2UgZmlybXdhcmUgYmxvYnM/DQo+ID4N
+Cg0KVGhlIGxhcmdlc3QgZmlsZSBJIGNhbWUgYWNyb3NzIGlzIDQwMEsuDQoNCj4gPiBJZGVhbGx5
+IHdlIHdhbnQgdG8gYmUgYWJsZSB0byB1c2UgdGhlIHNhbWUgQVBJIHRvIHVwZ3JhZGUgdGhpbmdz
+IGxpa2UNCj4gPiBHUE9OIG1vZHVsZXMsIHdoaWNoIG9mdGVuIHJ1biBhbiBvcGVud3J0IGltYWdl
+LCBhbmQgdGhleSBhcmUgcGx1Z2dlZA0KPiA+IGludG8gYSBjYWJsZSBtb2RlbSB3aGljaCBkb2Vz
+IG5vdCBoYXZlIHRvbyBtdWNoIFJBTS4NCj4gPg0KPiA+IEdpdmVuIHRoYXQgdGhlIGludGVyZmFj
+ZSB0byB0aGUgRUVQUk9NIGlzIHVzaW5nIDEyOCBieXRlIDEvMiBwYWdlcywNCj4gPiB3b3VsZCBp
+dCBiZSBwb3NzaWJsZSB0byB1c2UgcmVxdWVzdF9wYXJ0aWFsX2Zpcm13YXJlX2ludG9fYnVmKCkg
+dG8NCj4gPiByZWFkIGl0IG9uIGRlbWFuZCwgcmF0aGVyIHRoYW4gYWxsIGF0IG9uY2U/DQo+ID4N
+Cj4gPiAgICAgIEFuZHJldw0KPiANCj4gT0ssIElsbCBoYW5kbGUgdGhhdCBpbiB0aGUgYWN0dWFs
+IHZlcnNpb24uDQo+IFRoYW5rcy4NCg==
 
