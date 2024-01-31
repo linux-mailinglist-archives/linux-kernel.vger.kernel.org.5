@@ -1,123 +1,105 @@
-Return-Path: <linux-kernel+bounces-46304-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46303-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C699A843DB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:06:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC47B843DE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:11:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CEB228F19A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:06:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5EB2FB330A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:05:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1E6474E10;
-	Wed, 31 Jan 2024 11:04:02 +0000 (UTC)
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DBA86A030;
+	Wed, 31 Jan 2024 11:03:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LWCfUDrJ"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0021569E01;
-	Wed, 31 Jan 2024 11:03:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26E807AE71;
+	Wed, 31 Jan 2024 11:03:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706699042; cv=none; b=WAXfizk4iPVITH8S5nfbQyTllFtxhfImCtFxL7Qjt5h1RRn1AJ+zKvA3X84t6Joyf/keJg1uo9erApsOk4fMFn7ikPYlr8NLoRqf+i6YmNQoL9xeutYWwDZ7+ZBlzsA/ygv79ztwwcMAEVmnryBLS52V3R2cYycHlxL2iaIhTk4=
+	t=1706699038; cv=none; b=N8MNhuK/OZW8YJshudKaIi7m7F6En8EL9PL2R4dQJaKRH+IG198sAk6wW5E0R/rW8I0kiw3RqQlhVnRqPQGixFJBHQfAlaDNS2In4cNePeqCov8KChpk9wI0JTLHvc17wgKsqlWxWQfKNbcf0orhI3lkw6BT+MyD/UUj3qek3Ig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706699042; c=relaxed/simple;
-	bh=MF15pQugtdlnNOn8GYPnjqNliIbbwugYe4jmkof3kak=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=c22qBiYmge12ULWEvVVw0xLOC8uh691EGqWMXQsbuFHkuh1K6+En/PpgClQU0CvuyhYdX/3QZF3JWrOS70l25aCexeL2XOWScw9OfawYPWg0rPi4TadkVZVOKrYFRhsOvr1WChBpAruf/WfT1XmWJ+VFATXKXrfJO5TjkKf0BZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; arc=none smtp.client-ip=130.133.4.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=physik.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.97)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1rV8Nd-00000003zED-3sxC; Wed, 31 Jan 2024 12:03:45 +0100
-Received: from p57bd970d.dip0.t-ipconnect.de ([87.189.151.13] helo=[192.168.178.20])
-          by inpost2.zedat.fu-berlin.de (Exim 4.97)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1rV8Nd-00000003d3G-2n9P; Wed, 31 Jan 2024 12:03:45 +0100
-Message-ID: <494586ed5a0871cf7cfd005f513577952306a0bc.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH] sh: Fix build with CONFIG_UBSAN=y
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Kees Cook <keescook@chromium.org>, Yoshinori Sato
-	 <ysato@users.sourceforge.jp>
-Cc: kernel test robot <lkp@intel.com>, Rich Felker <dalias@libc.org>, 
- Masahiro Yamada <masahiroy@kernel.org>, Nicolas Schier <n.schier@avm.de>,
- linux-sh@vger.kernel.org,  linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
-Date: Wed, 31 Jan 2024 12:03:44 +0100
-In-Reply-To: <20240130232717.work.088-kees@kernel.org>
-References: <20240130232717.work.088-kees@kernel.org>
-Autocrypt: addr=glaubitz@physik.fu-berlin.de; prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	s=arc-20240116; t=1706699038; c=relaxed/simple;
+	bh=l97JaM/WxbJ3cuZRvKI3tEr4j0C+sm43YPiTF6kpOBQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IeRIUDng4QJn2/DmfVRaEXBqzzzIhAGkXQBo6EeNHK8fAiHd5arIj/zHU6RAl63Oh3vs7wytXReSj3BYVvFj7INMFMCijjqrNCRTp3Ego7t/BTO2+HlqgN6TtBHDEXO5PrxAReCU24w3XqGmjG1tTLdO+6dGMlwdHUrAYcdTK7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LWCfUDrJ; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706699037; x=1738235037;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=l97JaM/WxbJ3cuZRvKI3tEr4j0C+sm43YPiTF6kpOBQ=;
+  b=LWCfUDrJwxLresBSRIAXce4TjnDiuRGPyliEjO+yZ/79aq0lp9oBv9cp
+   VymN2fwp3MKLB+LuQuH6DhauGmQ3H5TSqSS9XtF7E4lJwKKfUWeEq5hWd
+   oQcwAV9X6pXaGtbNzEdsY86kLIWpFHbQUM3XoXaIeYPZYEwTxKYfqm1SR
+   9ATuGb1qYsCVNqOTypl986N1irPms5LFKg3q7p1u1tlZ/RxLYs/13oglG
+   +11ef0wTcc2wwl9J47j8ndYUIM0Ncj4m1MyY/0e9nlN2ZAR9Amg/XPsm3
+   ELpWWXOG47Wd1r754PlHA499xw9GMka8+BTBNM67sy6SvkGjsXIJmiJPI
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="2508381"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="2508381"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 03:03:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="822533447"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="822533447"
+Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.74])
+  by orsmga001.jf.intel.com with SMTP; 31 Jan 2024 03:03:51 -0800
+Received: by stinkbox (sSMTP sendmail emulation); Wed, 31 Jan 2024 13:03:50 +0200
+Date: Wed, 31 Jan 2024 13:03:50 +0200
+From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Chaitanya Kumar Borah <chaitanya.kumar.borah@intel.com>,
+	Jani Nikula <jani.nikula@intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	maarten.lankhorst@linux.intel.com, tzimmermann@suse.de,
+	airlied@gmail.com, daniel@ffwll.ch, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH AUTOSEL 6.1 04/53] drm: Fix color LUT rounding
+Message-ID: <ZbopFnfEwETj0mlx@intel.com>
+References: <20240122150949.994249-1-sashal@kernel.org>
+ <20240122150949.994249-4-sashal@kernel.org>
+ <Za6ano6dg0Mau7OI@intel.com>
+ <Zbl_gq9FhTICi4FS@sashalap>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-ZEDAT-Hint: PO
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Zbl_gq9FhTICi4FS@sashalap>
+X-Patchwork-Hint: comment
 
-Hi Kees,
+On Tue, Jan 30, 2024 at 06:00:18PM -0500, Sasha Levin wrote:
+> On Mon, Jan 22, 2024 at 06:50:00PM +0200, Ville Syrjälä wrote:
+> >On Mon, Jan 22, 2024 at 10:08:05AM -0500, Sasha Levin wrote:
+> >> From: Ville Syrjälä <ville.syrjala@linux.intel.com>
+> >>
+> >> [ Upstream commit c6fbb6bca10838485b820e8a26c23996f77ce580 ]
+> >
+> >Why is this being backported?
+> 
+> Is this not a fix for an issue?
 
-On Tue, 2024-01-30 at 15:27 -0800, Kees Cook wrote:
-> The early boot stub for sh had UBSan instrumentation present where it is
-> not supported. Disable it for this part of the build.
->=20
->   sh4-linux-ld: arch/sh/boot/compressed/misc.o: in function `zlib_inflate=
-_table':
->   misc.c:(.text+0x670): undefined reference to `__ubsan_handle_shift_out_=
-of_bounds'
->=20
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202401310416.s8HLiLnC-lkp@i=
-ntel.com/
-> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-> Cc: Rich Felker <dalias@libc.org>
-> Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-> Cc: Masahiro Yamada <masahiroy@kernel.org>
-> Cc: Nicolas Schier <n.schier@avm.de>
-> Cc: linux-sh@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  arch/sh/boot/compressed/Makefile | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/arch/sh/boot/compressed/Makefile b/arch/sh/boot/compressed/M=
-akefile
-> index b5e29f99c02c..6c6c791a1d06 100644
-> --- a/arch/sh/boot/compressed/Makefile
-> +++ b/arch/sh/boot/compressed/Makefile
-> @@ -12,6 +12,7 @@ targets :=3D vmlinux vmlinux.bin vmlinux.bin.gz vmlinux=
-bin.bz2 \
->             vmlinux.bin.lzma vmlinux.bin.xz vmlinux.bin.lzo $(OBJECTS)
-> =20
->  GCOV_PROFILE :=3D n
-> +UBSAN_SANITIZE :=3D n
-> =20
->  #
->  # IMAGE_OFFSET is the load offset of the compression loader
+It is, for a very minor one that's not really going to hurt
+anyone. But it doesn't exist in a vacuum so backprting it
+alone can introduce other issues that people will actually
+notice. If I wanted it backported I would have have
+tagged it as such.
 
-Thanks for the patch. I'm looking into this now and will provide the review=
- later.
-
-Adrian
-
---=20
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+-- 
+Ville Syrjälä
+Intel
 
