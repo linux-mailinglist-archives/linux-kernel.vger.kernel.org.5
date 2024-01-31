@@ -1,236 +1,147 @@
-Return-Path: <linux-kernel+bounces-46435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55384843F9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:46:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A487C843F9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:48:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BEB5A1F28789
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:46:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 591091F2A41A
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:48:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D3C08F78;
-	Wed, 31 Jan 2024 12:46:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A65EF7A716;
+	Wed, 31 Jan 2024 12:48:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="RtmyCQWp";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FOw4IlKV";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="RtmyCQWp";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FOw4IlKV"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LlrLs+8h"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 571E87690E;
-	Wed, 31 Jan 2024 12:46:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 666FE7690E
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 12:47:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706705201; cv=none; b=JISTD/yyjc4dItxFUJb5bGvaaaR9kJUP6qtvaGLWIPn5ijJ7iURzHMgHtHet0IGEZJY/IQoLldELI7Tr8zXBtqzOqFIozF7YGZTz4BAxxFToe+CUq9kY95lO4PNBJXsBkuAx/ghW6po1E/1nb4zGc5cy67kDZ5ysMufFZrGYw/Y=
+	t=1706705281; cv=none; b=hoeggOgRX26zWDOHnjHnkQwwOBxpcQGA4wFhC5n7qAzQfOAR5edmigpfBmz6qSagiV9OMy2YSQ8zJf1U71AnR35k0iE4wRzwP3mFQe5seXkOselQsOiL7WZzmx531JxKmldjJXOWEZwdQ1jFlm05+YxLPS7lTkogiR5FSHP3QJ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706705201; c=relaxed/simple;
-	bh=1IPPGnuyc8eiE2l9ctUhcE32IyTYiQr4s6ZSFeTvVZ4=;
+	s=arc-20240116; t=1706705281; c=relaxed/simple;
+	bh=4wQ7TAIOJQ5m6kdVg1wSzsPCQ4PkDeWkFwCc0m1BgrE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LX5ieKZ7algtxmKScDyljj/zSrNNScr74vkeG7y/ryJjuSJffQFEk7ImDj5HEoVFrspi6xM5AY2KY4wmOrQ2MkuCHjDhil6owm995NMpmaCM//j7WcvpjTu/XlSt+9cMYkTvgDFaUoT3f6387jdpzEVM5A5t8RTHghQ1exxpfk4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=RtmyCQWp; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FOw4IlKV; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=RtmyCQWp; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FOw4IlKV; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	 Content-Type:Content-Disposition:In-Reply-To; b=t8lQxK+PLxHUc1oYBIcArbm8IYvyT6PZQ8ErBDwiKIwcnU3zsFPAbNn5KQ4xazWj9R/JQoBp5sDsJiDrUR97643o5l4WxFMOB1wa1rvHCCWU+n5ZzFlXzq9MXj4WGl2UgMGKHifpt4P7ugm0ZeaZIArSZcGM00GTWuBKTpG0nV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LlrLs+8h; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706705278;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sZgQ3em8+hL4vf1kxriNyHbGVBBe93HygSX6eu/F3dE=;
+	b=LlrLs+8hJoDguBb3Xj1IR6spHgt8v7pgwNPv6z9rmG/Y8fWIumOsU5f6dZvyK868BWaJN/
+	zd86Yy0YxwykWggDTYI0hSjJAwwEk6BA3YUi5tSKirfuFofn//L1SEHydK4yG8y1gXCNo1
+	dR+3Ph6gDyvjgiAnr5iEoLyLhIkXo1Y=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-495-VJTCrdEtObC81bpv7NZDpQ-1; Wed, 31 Jan 2024 07:47:49 -0500
+X-MC-Unique: VJTCrdEtObC81bpv7NZDpQ-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 5D87A21FFC;
-	Wed, 31 Jan 2024 12:46:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706705197; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3C7Lak3dvLjIVuOE+go6tRBC1cR0+Mdscg1hy5G174w=;
-	b=RtmyCQWpVjM8W1QpZiEEzuRCEfuohSi3aZZ2p7m4uXeazw0zN+nAI4so3b2elcXBtWoQ0X
-	W3hPoRFVo+IYLYa6cwPT8A+Q0l3GBkxWm6f9Tqm8Fa9J65frE67PLrmodHYx1vfzb81X4r
-	Ut9SH4dQ0SE5Zd21lQHbmG+Cirsv57E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706705197;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3C7Lak3dvLjIVuOE+go6tRBC1cR0+Mdscg1hy5G174w=;
-	b=FOw4IlKVV3k3fUSgNYjR8ql71edpTTWRLN5sIoHEtR9SHEH4wer03oTKb1+6TL3iSyDlqn
-	Z0X0BkXx62r6mcCQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706705197; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3C7Lak3dvLjIVuOE+go6tRBC1cR0+Mdscg1hy5G174w=;
-	b=RtmyCQWpVjM8W1QpZiEEzuRCEfuohSi3aZZ2p7m4uXeazw0zN+nAI4so3b2elcXBtWoQ0X
-	W3hPoRFVo+IYLYa6cwPT8A+Q0l3GBkxWm6f9Tqm8Fa9J65frE67PLrmodHYx1vfzb81X4r
-	Ut9SH4dQ0SE5Zd21lQHbmG+Cirsv57E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706705197;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3C7Lak3dvLjIVuOE+go6tRBC1cR0+Mdscg1hy5G174w=;
-	b=FOw4IlKVV3k3fUSgNYjR8ql71edpTTWRLN5sIoHEtR9SHEH4wer03oTKb1+6TL3iSyDlqn
-	Z0X0BkXx62r6mcCQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 4B4BC132FA;
-	Wed, 31 Jan 2024 12:46:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id i29YEi1BumXtVQAAn2gu4w
-	(envelope-from <jack@suse.cz>); Wed, 31 Jan 2024 12:46:37 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id C289AA0809; Wed, 31 Jan 2024 13:46:36 +0100 (CET)
-Date: Wed, 31 Jan 2024 13:46:36 +0100
-From: Jan Kara <jack@suse.cz>
-To: Baokun Li <libaokun1@huawei.com>
-Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
-	jack@suse.cz, ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
-	yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com,
-	stable@kernel.org, Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Subject: Re: [PATCH] ext4: correct best extent lstart adjustment logic
-Message-ID: <20240131124636.gmxaiex6yqrhvxcj@quack3>
-References: <20240122123332.555370-1-libaokun1@huawei.com>
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BA1EA800074;
+	Wed, 31 Jan 2024 12:47:48 +0000 (UTC)
+Received: from localhost (unknown [10.72.116.15])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id CAA01492BC6;
+	Wed, 31 Jan 2024 12:47:47 +0000 (UTC)
+Date: Wed, 31 Jan 2024 20:47:40 +0800
+From: Baoquan He <bhe@redhat.com>
+To: Nikolay Borisov <nik.borisov@suse.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Elena Reshetova <elena.reshetova@intel.com>,
+	Jun Nakajima <jun.nakajima@intel.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	"Kalra, Ashish" <ashish.kalra@amd.com>,
+	Sean Christopherson <seanjc@google.com>,
+	"Huang, Kai" <kai.huang@intel.com>, kexec@lists.infradead.org,
+	linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv6 00/16] x86/tdx: Add kexec support
+Message-ID: <ZbpBbAkPxQZ6gHoE@MiWiFi-R3L-srv>
+References: <20240124125557.493675-1-kirill.shutemov@linux.intel.com>
+ <3f44458f-2b4a-4464-a3df-cb791298dafc@redhat.com>
+ <efe20a00-9a7c-4c03-8fcc-fce265cdbf0e@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240122123332.555370-1-libaokun1@huawei.com>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=RtmyCQWp;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=FOw4IlKV
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-2.37 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 BAYES_HAM(-3.00)[100.00%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 NEURAL_HAM_SHORT(-0.06)[-0.324];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,huawei.com,kernel.org,linux.ibm.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: -2.37
-X-Rspamd-Queue-Id: 5D87A21FFC
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <efe20a00-9a7c-4c03-8fcc-fce265cdbf0e@suse.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
-[Added Ojaswin to CC as an author of the discussed patch]
-
-On Mon 22-01-24 20:33:32, Baokun Li wrote:
-> When yangerkun review commit 93cdf49f6eca ("ext4: Fix best extent lstart
-> adjustment logic in ext4_mb_new_inode_pa()"), it was found that the best
-> extent did not completely cover the original request after adjusting the
-> best extent lstart in ext4_mb_new_inode_pa() as follows:
+On 01/31/24 at 09:31am, Nikolay Borisov wrote:
 > 
->   original request: 2/10(8)
->   normalized request: 0/64(64)
->   best extent: 0/9(9)
 > 
-> When we check if best ex can be kept at start of goal, ac_o_ex.fe_logical
-> is 2 less than the adjusted best extent logical end 9, so we think the
-> adjustment is done. But obviously 0/9(9) doesn't cover 2/10(8), so we
-> should determine here if the original request logical end is less than or
-> equal to the adjusted best extent logical end.
+> On 30.01.24 г. 15:43 ч., Paolo Bonzini wrote:
+> > On 1/24/24 13:55, Kirill A. Shutemov wrote:
+> > > The patchset adds bits and pieces to get kexec (and crashkernel) work on
+> > > TDX guest.
+> > > 
+> > > The last patch implements CPU offlining according to the approved ACPI
+> > > spec change poposal[1]. It unlocks kexec with all CPUs visible in
+> > > the target
+> > > kernel. It requires BIOS-side enabling. If it missing we fallback to
+> > > booting
+> > > 2nd kernel with single CPU.
+> > > 
+> > > Please review. I would be glad for any feedback.
+> > 
+> > Hi Kirill,
+> > 
+> > I have a very basic question: is there a reason why this series does not
+> > revert commit cb8eb06d50fc, "x86/virt/tdx: Disable TDX host support when
+> > kexec is enabled"?
+> 
+> While on the topic, Paolo do you think it's  better to have a runtime
+> disable of kexec rather than at compile time:
+> 
+> [RFC PATCH] x86/virt/tdx: Disable KEXEC in the presence of TDX
+> 
+> 20240118160118.1899299-1-nik.borisov@suse.com
 
-I'm sorry for a bit delayed reply. Why do you think it is a problem if the
-resulting extent doesn't cover the full original range? We must always
-cover the first block of the original extent so that the allocation makes
-forward progress. But otherwise we choose to align to the start / end of
-the goal range to reduce fragmentation even if we don't cover the whole
-requested range - the rest of the range will be covered by the next
-allocation. Also there is a problem with trying to cover the whole original
-range described in [1]. Essentially the goal range does not need to cover
-the whole original range and if we try to align the allocated range to
-cover the whole original range, it may result in exceeding the goal range
-and thus overlapping preallocations and triggering asserts in the prealloc
-code.
+Runtime disabling kexec looks better than at cmpile time, esp for
+distros. While from above patch, making using of kexec_load_disabled to 
+achive the runtime disabling may not be so good. Because we have a front
+door to enable it through:
 
-So if we decided we want to handle the case you describe in a better way,
-we'd need something making sure we don't exceed the goal range.
+/proc/sys/kernel/kexec_load_disabled
 
-								Honza
-
-[1] https://lore.kernel.org/all/Y+UzQJRIJEiAr4Z4@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com/
+If there's a flag or status to check if TDX host is enabled, and does
+the checking in kexec_load_permitted(), that could be better. Anyway, I
+saw Huang, Kai has posted the tdx host support patchset.
 
 > 
-> Moreover, the best extent len is not modified during the adjustment
-> process, and it is already checked by the previous assertion, so replace
-> the check for fe_len with a check for the best extent logical end.
+> I'm trying to get traction for this patch.
 > 
-> Cc: stable@kernel.org
-> Fixes: 93cdf49f6eca ("ext4: Fix best extent lstart adjustment logic in ext4_mb_new_inode_pa()")
-> Signed-off-by: yangerkun <yangerkun@huawei.com>
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> ---
->  fs/ext4/mballoc.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
 > 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index f44f668e407f..fa5977fe8d72 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -5146,6 +5146,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
->  			.fe_len = ac->ac_orig_goal_len,
->  		};
->  		loff_t orig_goal_end = extent_logical_end(sbi, &ex);
-> +		loff_t o_ex_end = extent_logical_end(sbi, &ac->ac_o_ex);
->  
->  		/* we can't allocate as much as normalizer wants.
->  		 * so, found space must get proper lstart
-> @@ -5161,7 +5162,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
->  		 * 1. Check if best ex can be kept at end of goal (before
->  		 *    cr_best_avail trimmed it) and still cover original start
->  		 * 2. Else, check if best ex can be kept at start of goal and
-> -		 *    still cover original start
-> +		 *    still cover original end
->  		 * 3. Else, keep the best ex at start of original request.
->  		 */
->  		ex.fe_len = ac->ac_b_ex.fe_len;
-> @@ -5171,7 +5172,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
->  			goto adjust_bex;
->  
->  		ex.fe_logical = ac->ac_g_ex.fe_logical;
-> -		if (ac->ac_o_ex.fe_logical < extent_logical_end(sbi, &ex))
-> +		if (o_ex_end <= extent_logical_end(sbi, &ex))
->  			goto adjust_bex;
->  
->  		ex.fe_logical = ac->ac_o_ex.fe_logical;
-> @@ -5179,7 +5180,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
->  		ac->ac_b_ex.fe_logical = ex.fe_logical;
->  
->  		BUG_ON(ac->ac_o_ex.fe_logical < ac->ac_b_ex.fe_logical);
-> -		BUG_ON(ac->ac_o_ex.fe_len > ac->ac_b_ex.fe_len);
-> +		BUG_ON(o_ex_end > extent_logical_end(sbi, &ex));
->  		BUG_ON(extent_logical_end(sbi, &ex) > orig_goal_end);
->  	}
->  
-> -- 
-> 2.31.1
+> > 
+> > Thanks,
+> > 
+> > Paolo
+> > 
+> > 
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+
 
