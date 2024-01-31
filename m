@@ -1,195 +1,171 @@
-Return-Path: <linux-kernel+bounces-46905-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F07AA844637
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:32:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38FB6844618
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:26:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EC921B2452B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:27:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC1DA1F27884
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:26:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A73212DD82;
-	Wed, 31 Jan 2024 17:27:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ijLJ/ueO"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FA8612DDB3;
+	Wed, 31 Jan 2024 17:26:06 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7724712BE9D;
-	Wed, 31 Jan 2024 17:27:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 096EA12DD92;
+	Wed, 31 Jan 2024 17:26:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706722048; cv=none; b=UROzTL95iVTBW6zWUQiw9CL+XzvnON+BG3CCM3T06JcFd8gnAZvhF7jNfzCqZ07AeuzuYb+NEyYjZoxgnlH7wHRGc7cZ5dygUSdsHDMhlZba6uR6Hs/uwxy4epCi0e478k1czT7tdZOLT6VFxduFyRBgFxtJBJKIMpXg7NCC6iM=
+	t=1706721966; cv=none; b=QzZGYEdJqavkEkYGG0Bq2su81RinyaUr2vDCX+FUZBXmAjre02HlyyVpTX3IJ8s67b+lp1vrQwJI+vQ5/187VWnwB+IGpiU7G+TkHe+gadptBdAt4abh7RxnYjoFrDWBF63b3ChIR9mO7/mbM3X0TsWLl+ME++PsOIAEfQGhoDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706722048; c=relaxed/simple;
-	bh=FMTvWAmrYJA6h1ZoUWR00DIBE1PV9VIZryfKE6SjFI8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SnraLSGdp8u4kpv3O+Fp8UmT4PL4roSfxkxDoU5z+l0R4QpK1Nh4MXZO6cN6cW8A2ot9ODov844NrZBlNfzGkqfbEFIuSFrSFRRr2GKYt+Wt/cDX9MSOsQs8U2pqQFMSyBwnioXJlIa31xQxEwf5OQcI6NlqQ7yjCC4pD7MEC5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ijLJ/ueO; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40VHHJgD006611;
-	Wed, 31 Jan 2024 17:27:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=lsvMoolOth0SOeipzcTmQMNAjiPxqd89r0TeAdoCg7o=;
- b=ijLJ/ueO7E+WFKtJ8omsbRYiTgcU7fnUxXl5dsJFkXD2m5D3KAkos9NtC9RqTUrG20pL
- 0X1dumZvE/C1D2A+mISHtfrv/dFQo0V30SGv9R4m3A3SqnBtK2NxYuEqzQZcTSx98evb
- VJ20td+QaB0ke5pAOAL1wlJAba78t484qbJDxyKbX20QW4EOxaltNo/+V44ravo7hWML
- iJ4ZVvR/Njo/ZrLGa8ivLQSHHo8J+ux+ByKH3czUsIwfUjHkJoR+EhoOfXeRKszw1Odh
- 9P3mOeEqgZuxtKdm8RvvUhhrjC2FXTh68DdUg9WGHYB/iFsrS5HAr8/9ZpZ4165XLQId pg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vytfg09g9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 31 Jan 2024 17:27:12 +0000
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40VHI1N3008186;
-	Wed, 31 Jan 2024 17:27:10 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vytfg08jn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 31 Jan 2024 17:27:08 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40VG3DDP011231;
-	Wed, 31 Jan 2024 17:25:46 GMT
-Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vweckpg0f-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 31 Jan 2024 17:25:46 +0000
-Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
-	by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40VHPjTZ28181154
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 31 Jan 2024 17:25:45 GMT
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C9D8C58055;
-	Wed, 31 Jan 2024 17:25:45 +0000 (GMT)
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 19D095803F;
-	Wed, 31 Jan 2024 17:25:41 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-	by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 31 Jan 2024 17:25:40 +0000 (GMT)
-Message-ID: <f0c5ad17-3ee3-427c-bcf3-883171e82917@linux.ibm.com>
-Date: Wed, 31 Jan 2024 12:25:40 -0500
+	s=arc-20240116; t=1706721966; c=relaxed/simple;
+	bh=Tv/OIdhU0ncVmP7nGCQx/bdXuPecUNW1V8ksBVTdZoU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=EyyxenD+Sk5MuPmIATCrVeU8zGQdOQZiFyCFRpDhYex0bm1cxWMZL+wZWB22PJ9SIhyhiSRDteXAivesHaTxMU2IKMoDe3Ot+c88SvzxtVSVBhXH0UjfbeuXdiBaIyZqHycl5nXgdirPmdtcbW5mJCdHHAe+EBjpPmktd7eesM4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B1A4C433F1;
+	Wed, 31 Jan 2024 17:26:04 +0000 (UTC)
+Date: Wed, 31 Jan 2024 12:26:18 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
+ lkp@intel.com, linux-kernel@vger.kernel.org, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mathieu
+ Desnoyers <mathieu.desnoyers@efficios.com>, Christian Brauner
+ <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, Ajay Kaher
+ <ajay.kaher@broadcom.com>, linux-trace-kernel@vger.kernel.org
+Subject: Re: [linus:master] [eventfs] 852e46e239:
+ BUG:unable_to_handle_page_fault_for_address
+Message-ID: <20240131122618.7c533387@gandalf.local.home>
+In-Reply-To: <20240131105847.3e9afcb8@gandalf.local.home>
+References: <202401291043.e62e89dc-oliver.sang@intel.com>
+	<20240129152600.7587d1aa@gandalf.local.home>
+	<CAHk-=wghobf5qCqNUsafkQzNAZBJiS0=7CRjNXNChpoAvTbvUw@mail.gmail.com>
+	<20240129172200.1725f01b@gandalf.local.home>
+	<CAHk-=wjV6+U1FQ8wzQ5ASmqGgby+GZ6wpdh0NrJgA43mc+TEwA@mail.gmail.com>
+	<CAHk-=wgOxTeTi02C=kOXsHzuD6XCrV0L1zk1XP9t+a4Wx--xvA@mail.gmail.com>
+	<20240129174950.5a17a86c@gandalf.local.home>
+	<CAHk-=wjbzw3=nwR5zGH9jqXgB8jj03wxWfdFDn=oAVCoymQQJg@mail.gmail.com>
+	<20240129193549.265f32c8@gandalf.local.home>
+	<CAHk-=whRxcmjvGNBKi9_x59cAedh8SO8wsNDNrEQbAQfM5A8CQ@mail.gmail.com>
+	<CAHk-=wh97AkwaOkXoBgf0z8EP88ePffLnTcmmQXcY+AhFaFrnA@mail.gmail.com>
+	<20240130132319.022817e8@gandalf.local.home>
+	<CAHk-=wiGb2aDbtq2+mYv6C=pYRKmo_iOu9feL9o52iRT8cuh6Q@mail.gmail.com>
+	<20240130143734.31b9b3f1@gandalf.local.home>
+	<CAHk-=whMJgqu2v1_Uopg5NBschGFa_BK1Ct=s7ehwnzPpPi6nQ@mail.gmail.com>
+	<20240131105847.3e9afcb8@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/5] evm: Use the real inode's metadata to calculate
- metadata hash
-Content-Language: en-US
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        zohar@linux.ibm.com, roberto.sassu@huawei.com, miklos@szeredi.hu
-References: <20240130214620.3155380-1-stefanb@linux.ibm.com>
- <20240130214620.3155380-5-stefanb@linux.ibm.com>
- <38230b4c-54ae-45ed-a6fb-34e63501e5b1@linux.ibm.com>
- <CAOQ4uxiYARZBSgzb4_W-RKvB1XLSF3GUBqeLw2kH+eVeZ_8ARQ@mail.gmail.com>
- <c018b014-9ba8-4395-86dc-b61346ab20a8@linux.ibm.com>
- <CAOQ4uxi6Te8izWpXROthknRaXrVA9jho5nbc+mkuQDrcTLY44Q@mail.gmail.com>
-From: Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <CAOQ4uxi6Te8izWpXROthknRaXrVA9jho5nbc+mkuQDrcTLY44Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: da6bg1rqaGfjaUZXT525S0efJqnep6By
-X-Proofpoint-ORIG-GUID: YdP97E0i6OhsgP4fTtOj83B3bGJXnlLs
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-31_10,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
- impostorscore=0 suspectscore=0 bulkscore=0 priorityscore=1501 mlxscore=0
- phishscore=0 lowpriorityscore=0 mlxlogscore=999 clxscore=1015
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401310135
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
+On Wed, 31 Jan 2024 10:58:47 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-
-On 1/31/24 10:54, Amir Goldstein wrote:
-> On Wed, Jan 31, 2024 at 4:40 PM Stefan Berger <stefanb@linux.ibm.com> wrote:
->>
->>
->>
->> On 1/31/24 08:16, Amir Goldstein wrote:
->>> On Wed, Jan 31, 2024 at 4:11 AM Stefan Berger <stefanb@linux.ibm.com> wrote:
->>>>
->>>>
->>>>
->>>> On 1/30/24 16:46, Stefan Berger wrote:
->>>>> Changes to the file attribute (mode bits, uid, gid) on the lower layer
->>>>> are not take into account when d_backing_inode() is used when a file is
->>>>> accessed on the overlay layer and this file has not yet been copied up.
->>>>> This is because d_backing_inode() does not return the real inode of the
->>>>> lower layer but instead returns the backing inode which holds old file
->>>>> attributes. When the old file attributes are used for calculating the
->>>>> metadata hash then the expected hash is calculated and the file then
->>>>> mistakenly passes signature verification. Therefore, use d_real_inode()
->>>>> which returns the inode of the lower layer for as long as the file has
->>>>> not been copied up and returns the upper layer's inode otherwise.
->>>>>
->>>>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
->>>>> ---
->>>>>     security/integrity/evm/evm_crypto.c | 2 +-
->>>>>     1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity/evm/evm_crypto.c
->>>>> index b1ffd4cc0b44..2e48fe54e899 100644
->>>>> --- a/security/integrity/evm/evm_crypto.c
->>>>> +++ b/security/integrity/evm/evm_crypto.c
->>>>> @@ -223,7 +223,7 @@ static int evm_calc_hmac_or_hash(struct dentry *dentry,
->>>>>                                  size_t req_xattr_value_len,
->>>>>                                  uint8_t type, struct evm_digest *data)
->>>>>     {
->>>>> -     struct inode *inode = d_backing_inode(dentry);
->>>>> +     struct inode *inode = d_real_inode(dentry);
->>>>>         struct xattr_list *xattr;
->>>>>         struct shash_desc *desc;
->>>>>         size_t xattr_size = 0;
->>>>
->>>> We need this patch when NOT activating CONFIG_OVERLAY_FS_METACOPY but
->>>> when setting CONFIG_OVERLAY_FS_METACOPY=y it has to be reverted...  I am
->>>> not sure what the solution is.
->>>
->>> I think d_real_inode() does not work correctly for all its current users for
->>> a metacopy file.
->>>
->>> I think the solution is to change d_real_inode() to return the data inode
->>> and add another helper to get the metadata inode if needed.
->>> I will post some patches for it.
->>
->> I thought that we may have to go through vfs_getattr() but even better
->> if we don't because we don't have the file *file anywhere 'near'.
->>
->>>
->>> However, I must say that I do not know if evm_calc_hmac_or_hash()
->>> needs the lower data inode, the upper metadata inode or both.
->>
->> What it needs are data structures with mode bits, uid, and gid that stat
->> in userspace would show.
->>
->>
+> BTW, I ran my full test suite on your patches with the below updates and it
+> all passed. Note, I did not run the "bisectable" portion of my test. That
+> is, the part that runs tests on each patch in the series. Because I know
+> that fails. I just ran the tests on the last applied patch.
 > 
-> With or without metacopy enabled, an overlay inode st_uid st_gid st_mode
-> are always taken from the upper most inode which is what d_real_inode()
-> currently returns, so I do not understand what the problem is.
+> I can break up and clean up the patches so that they are bisectable, and if
+> that passes the bisectable portion of my tests, I can still send them to
+> you for 6.8. I think this does fix a lot of hidden bugs, and would like all
+> this to go back to 6.6 when the eventfs was first introduced.
 
-I have testcases that work fine with this series when 
-CONFIG_OVERLAY_FS_METACOPY is not active. Once I activate this then a 
-test case that changes a file's gid on the overlay layer from 0 to '12' 
-while causing a copy-up allows a file to execute even thugh it should 
-not execute. The reason is because d_real_inode(dentry)->i_guid shows 
-the '0' while d_backing_dentry(dentry)->i_guid shows '12'. User space 
-stat also shows '12' as expected.
+So I swapped the order of patch 5 and patch 6, and it appears that patch 6
+works without 5 (with some massaging).
 
+Here's the new patch 6 without patch 5, and now patch 5 just finishes the
+rest of the changes.
 
-Just saw your other email, will try that now ...
+I'll post this series, pull it in through my normal work flow, and rerun
+the full test suite with the bisecting check as well.
+
+-- Steve
+
+diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+index 0289ec787367..0213a3375d53 100644
+--- a/fs/tracefs/event_inode.c
++++ b/fs/tracefs/event_inode.c
+@@ -378,13 +378,12 @@ static void free_ei(struct eventfs_inode *ei)
+ }
+ 
+ /**
+- * eventfs_set_ei_status_free - remove the dentry reference from an eventfs_inode
+- * @ti: the tracefs_inode of the dentry
++ * eventfs_d_release - dentry is going away
+  * @dentry: dentry which has the reference to remove.
+  *
+  * Remove the association between a dentry from an eventfs_inode.
+  */
+-void eventfs_set_ei_status_free(struct tracefs_inode *ti, struct dentry *dentry)
++void eventfs_d_release(struct dentry *dentry)
+ {
+ 	struct eventfs_inode *ei;
+ 	int i;
+diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
+index f403d32bd7cd..cf90ea86baf8 100644
+--- a/fs/tracefs/inode.c
++++ b/fs/tracefs/inode.c
+@@ -377,21 +377,30 @@ static const struct super_operations tracefs_super_operations = {
+ 	.show_options	= tracefs_show_options,
+ };
+ 
+-static void tracefs_dentry_iput(struct dentry *dentry, struct inode *inode)
++/*
++ * It would be cleaner if eventfs had its own dentry ops.
++ *
++ * Note that d_revalidate is called potentially under RCU,
++ * so it can't take the eventfs mutex etc. It's fine - if
++ * we open a file just as it's marked dead, things will
++ * still work just fine, and just see the old stale case.
++ */
++static void tracefs_d_release(struct dentry *dentry)
+ {
+-	struct tracefs_inode *ti;
++	if (dentry->d_fsdata)
++		eventfs_d_release(dentry);
++}
+ 
+-	if (!dentry || !inode)
+-		return;
++static int tracefs_d_revalidate(struct dentry *dentry, unsigned int flags)
++{
++	struct eventfs_inode *ei = dentry->d_fsdata;
+ 
+-	ti = get_tracefs(inode);
+-	if (ti && ti->flags & TRACEFS_EVENT_INODE)
+-		eventfs_set_ei_status_free(ti, dentry);
+-	iput(inode);
++	return !(ei && ei->is_freed);
+ }
+ 
+ static const struct dentry_operations tracefs_dentry_operations = {
+-	.d_iput = tracefs_dentry_iput,
++	.d_revalidate = tracefs_d_revalidate,
++	.d_release = tracefs_d_release,
+ };
+ 
+ static int trace_fill_super(struct super_block *sb, void *data, int silent)
+diff --git a/fs/tracefs/internal.h b/fs/tracefs/internal.h
+index 9e64ca4829c7..687faba9807b 100644
+--- a/fs/tracefs/internal.h
++++ b/fs/tracefs/internal.h
+@@ -77,6 +77,7 @@ struct dentry *tracefs_start_creating(const char *name, struct dentry *parent);
+ struct dentry *tracefs_end_creating(struct dentry *dentry);
+ struct dentry *tracefs_failed_creating(struct dentry *dentry);
+ struct inode *tracefs_get_inode(struct super_block *sb);
+-void eventfs_set_ei_status_free(struct tracefs_inode *ti, struct dentry *dentry);
++
++void eventfs_d_release(struct dentry *dentry);
+ 
+ #endif /* _TRACEFS_INTERNAL_H */
 
