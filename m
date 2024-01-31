@@ -1,99 +1,123 @@
-Return-Path: <linux-kernel+bounces-46621-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46622-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 651AA84421D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:44:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1C1384421E
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:45:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE146B2BA38
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:42:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 915B91F267B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:45:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B854084A2B;
-	Wed, 31 Jan 2024 14:42:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8864584A35;
+	Wed, 31 Jan 2024 14:45:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NGMvGKXf"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="ggL8SJR/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B32183CC0
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 14:42:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F76B8287A;
+	Wed, 31 Jan 2024 14:45:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706712148; cv=none; b=EE75LMFRkooQK2VtZOATHAFEErQczCIPb6EpbwIIKsZAXt6Ky0OgHGz6vyF4Wntd59FvUbsPOu/xr/+pjdQLqYba8Kb/KKO+g3Gi24ZP4ZFHELMZV8rFe1W6iLKWKVlygpFdOi9FcvyzUbMOKkMOwHxOL3C0kSlUmmlbgeKxA1M=
+	t=1706712314; cv=none; b=B/yf/b/eJ0LMwurXAVXE+fsu5ulRSv7SY5QjtSjigtDNklhGdvOLrI8Egswhj9EP12PsqNcNOzf+uVWivQsp/9eTNtjApUlWut4FnC8OwJPyXIfIwNObMSCZFtg0ucWF5v4SU/ySZE0wtAFxu3/PZJKW2WEDRbp7hf/ppvhqDC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706712148; c=relaxed/simple;
-	bh=K31KqT5V5uF5b954ZcpqYJhJ0+aoYbQF+sfNU7Nx2B4=;
+	s=arc-20240116; t=1706712314; c=relaxed/simple;
+	bh=kCZwcyMb+5WvH3zc/WuE5q1/NFvJGsx1BENTOF5FEqA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bM3KhUWV+SuSF9Rm3f7469EZREhsFGWOFPHinorkWxiGH1AaZre1g0cMGk4fiucgghzD7ejjGTGsZBQHC7HKtkizFm32lafIus+wyBnCJdjhHyk2+58RFJ1sDxL5yy1KwbIV258P/HVa85fgDcB5QEYIvValgK5oZKrqT6E7UJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NGMvGKXf; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40e9101b5f9so54701125e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 06:42:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706712143; x=1707316943; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=K31KqT5V5uF5b954ZcpqYJhJ0+aoYbQF+sfNU7Nx2B4=;
-        b=NGMvGKXf/NKrrNkwdoYuutjpFtJjxIRGPIYnPTLuINv94uljI+aQXWuKdquwMaGLa8
-         PQ/smU3Fgjmh35h2X9SZTaE8nd2Kh/ehv66hjtjUUI2aby1WXIDBC/gyu9FmzM4OZ9An
-         RYAojzhysLoc7XFwBt2YISOEoxMh0Xwmg+Dvk1p/eZYcGwFMnfg5LpEXDqkXvxHd0Tll
-         i94IbvYeSnhVE0WwUWaRV9+VlkgrevuYYWLWre5J4LLlgjPSbQCbKSw1gbhyja0iMyFp
-         dwgoBSS9ki3UOZ1JlCNzK0CAyizixJrglnRNM7A2VCSmL0eyWX2JIyn6yBIqTdh8i9w7
-         Sedw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706712143; x=1707316943;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K31KqT5V5uF5b954ZcpqYJhJ0+aoYbQF+sfNU7Nx2B4=;
-        b=hHMCO1OmVAzlZEWboh4PwSij4HhKqGA2Si4uvO1l/sopiHFCGsjm7hQJG6QTUDm8qz
-         +8RXnL+33YhkSJPGrI9IGbd+UWs+COaFsTUTYtstkb2aUZWDmJ4yRGNPYFIHbEakQp/g
-         L/NoAimUOMn57ObkCEnBt/D+eMVLueD3jRGDUP4d5cEEkjMnGLNIYl9UihDw0aZbkxAX
-         lWafghrnqDWguFih1TFu8LpuJQ7g+9nF/Hor4dNQfFiXCcZR4RlP3f2Sm+W560ShsB/Z
-         GS28gdPL3jWKpxVQVIoEres4ba6PzXng43c/VEWzHiMHnR+wtS6LiiExPUTwVMcntgAQ
-         EO5A==
-X-Gm-Message-State: AOJu0YxCwPW9dl+97QMtJczPmyo011cViBWW7R7dHNEm8SHmQFQrztwe
-	KUTJ+FB4YvC71hnXejTaY86tUrjCDQxbeTLazMSSFCVyI4fmnsZNRddzZTMa1sI=
-X-Google-Smtp-Source: AGHT+IHrC/K+xdbE/khLOxKWVe2CNuHMAaEhHqNgScg2QXA2v/u7cDClshre9bUbEaRveSzAwxcppw==
-X-Received: by 2002:a05:600c:1386:b0:40e:f5d0:8517 with SMTP id u6-20020a05600c138600b0040ef5d08517mr1321066wmf.33.1706712143446;
-        Wed, 31 Jan 2024 06:42:23 -0800 (PST)
-Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
-        by smtp.gmail.com with ESMTPSA id l18-20020a05600c1d1200b0040e89ade84bsm1830569wms.4.2024.01.31.06.42.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 06:42:23 -0800 (PST)
-Date: Wed, 31 Jan 2024 14:42:21 +0000
-From: Daniel Thompson <daniel.thompson@linaro.org>
-To: Sean Young <sean@mess.org>
-Cc: Flavio Suligoi <f.suligoi@asem.it>, Lee Jones <lee@kernel.org>,
-	Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
-Subject: Re: [PATCH] backlight: mp3309c: Use pwm_apply_might_sleep()
-Message-ID: <20240131144221.GB5929@aspen.lan>
-References: <20240128154905.407302-1-sean@mess.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=IecajaxYBleBageA4CczfYtm5ThH+Z5u0AdEjbV862bZ5SaRT6yVCt+nxbZ4MFwFIyb7ks0T0PA7UjJx8A//9ZkNMMBvO2+oJKTlx8mtFYPbuY6THeGsr2Iq9/aYOV26xd513AWuCDOElJhRoMlFwhcVxWjKkm1n/Ppzn+rcUbw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=ggL8SJR/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69D56C433C7;
+	Wed, 31 Jan 2024 14:45:12 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="ggL8SJR/"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+	t=1706712309;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1fYt8wXatgG3kv/t9njHjlDMwjUnGLZdfGdlIyn9zH8=;
+	b=ggL8SJR/RILxNt5QWNzEkGHkToTXzWqitmbTeVOu0EhBIQQ7kbLc1XgjyvE36XvNvJYm7y
+	H8FC17DEUpipkFq7yh/dsR+Nx8M8ynfLwAL/eMtcDFuybrN9WcXAs5CiCC4VJWPgkFLRa2
+	4K5X0qRKOqiyzyKwNmEmzFlTqd5/7ow=
+Received: 
+	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id a7d12a80 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Wed, 31 Jan 2024 14:45:09 +0000 (UTC)
+Date: Wed, 31 Jan 2024 15:45:06 +0100
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: "Reshetova, Elena" <elena.reshetova@intel.com>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	"Nakajima, Jun" <jun.nakajima@intel.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	"Kalra, Ashish" <ashish.kalra@amd.com>,
+	Sean Christopherson <seanjc@google.com>,
+	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] x86/random: Retry on RDSEED failure
+Message-ID: <Zbpc8tppxuKr-hnN@zx2c4.com>
+References: <20240130083007.1876787-1-kirill.shutemov@linux.intel.com>
+ <CAHmME9pOt=uEmuBzBpgUHw9DqAD2FZTZ3v53AOZbQ3Cd2p97xQ@mail.gmail.com>
+ <DM8PR11MB5750E38A8B2BCE66AF7F9812E77D2@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <CAHmME9qMO7=RDR60bKJvpDTRokcKed_i0+7BbFD53_7o2OJ6-g@mail.gmail.com>
+ <CAHmME9rum4uwSNFd_GkD9p_+vN4DBxA=feZX7k9RvugFZsZNJg@mail.gmail.com>
+ <DM8PR11MB5750797D0B9B8EB32740F55DE77D2@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <CAHmME9oC=GE-7QS2m9FA5cs_ss+tQgB9Pj3tKnTtMMFpQmUshg@mail.gmail.com>
+ <DM8PR11MB5750B861F7A105886AA5FCE4E77C2@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <CAHmME9oJvbZgT4yT9Vydc2ZQVSo3Ea65G5aVK7gFxphkV00BnQ@mail.gmail.com>
+ <20240131140756.GB2356784@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240128154905.407302-1-sean@mess.org>
+In-Reply-To: <20240131140756.GB2356784@mit.edu>
 
-On Sun, Jan 28, 2024 at 03:49:04PM +0000, Sean Young wrote:
-> pwm_apply_state() is deprecated since commit c748a6d77c06a ("pwm: Rename
-> pwm_apply_state() to pwm_apply_might_sleep()"). This is the final user
-> in the tree.
->
-> Signed-off-by: Sean Young <sean@mess.org>
+On Wed, Jan 31, 2024 at 09:07:56AM -0500, Theodore Ts'o wrote:
+> What about simply treating boot-time initialization of the /dev/random
+> state as special.  That is, on x86, if the hardware promises that
+> RDSEED or RDRAND is available, we use them to initialization our RNG
+> state at boot.  On bare metal, there can't be anyone else trying to
+> exhaust the on-chip RNG's entropy supply, so if RDSEED or RDRAND
+> aren't working available --- panic, since the hardware is clearly
+> busted.
 
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+This is the first thing I suggested here: https://lore.kernel.org/all/CAHmME9qsfOdOEHHw_MOBmt6YAtncbbqP9LPK2dRjuOp1CrHzRA@mail.gmail.com/
 
+But Elena found this dissatisfying because we still can't guarantee new
+material later.
 
-Daniel.
+> On a guest OS, if confidential compute is enabled, and if RDSEED and
+> RDRAND don't work after N retries, and we know CC is enabled, panic,
+> since the kernel can't provide the promised security gaurantees, and
+> the CC developers and users are cordially invited to sharpen their
+> pitchforks and to send their tender regards to the Intel RNG
+> engineers.
+
+Yea, maybe bubbling the RDRAND DoS up to another DoS in the CoCo case is
+a good tradeoff that will produce the right pitchforkers without
+breaking anything real.
+
+> For non-confidential compute guests, the question is what is the
+> appropriate reaction if another VM, possibly belonging to a different
+> user/customer, is carrying out a RDRAND DOS attack.  I'd argue that in
+> these cases, if the guest VM is using virtio-random, then the host's
+> /dev/random should be able to cover for cases of Intel RNG exhaustion,
+> and allowing other customer to be able to prevent other user's VM's
+> from being able to boot is the the greater evil, so we shouldn't treat
+> boot-time RDRAND/RDSEED failures as panic-worthy.
+
+The non-CoCo case is fine, because guests can trust hosts, so things are
+as they have been forever.
+
+Jason
 
