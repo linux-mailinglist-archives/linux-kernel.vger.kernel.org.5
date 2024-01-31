@@ -1,153 +1,196 @@
-Return-Path: <linux-kernel+bounces-45837-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCDA58436D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:31:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B16F8436E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:38:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99006282BF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:31:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 171111F2A484
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:38:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BFA551013;
-	Wed, 31 Jan 2024 06:31:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67F403E48E;
+	Wed, 31 Jan 2024 06:37:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="z+cNMApf"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mqdPm6+X"
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D3CB4E1C7
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 06:31:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC22F36B08;
+	Wed, 31 Jan 2024 06:37:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706682666; cv=none; b=cgyJQ5bM2Jk+xGN1f5uXYjc0GHKvZMlV5OJXY0M1y5ArXztX0IpWAiAOyzegGjP5X01Y/jZ1VJUx2rdXS921Q/COKIB94eZmEKTSrF0cXdq8p2eGlXFTVmDL21y9q5teYNPpRofn1F4AE3wJTmEpXKCPynHubptafAdgEVNEkbU=
+	t=1706683075; cv=none; b=ja+z6oyPFnB95k/4ujrzklE6SnOMGDYJoxBVrSHi18GDi+P1bNT0hDATpZqGDFpCNcpV1ukTBqPw6F7KQGY4Ko667O9fxfm/J4RNff/8KB9PE83hAlTN+Xv2SFd8WBayioXgZV228yUPCdmN5gmXwzMfpSeTBzjYRsFqexWXSl8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706682666; c=relaxed/simple;
-	bh=ukGaeKDWoBnc0AIrKBff3Y2VDwj+LfqCpXcFKMzADh0=;
-	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=mZn2gzZ4lVBTsqZ9Y604z11BQZPVsvd5qhCv4dHza/9Si2RCp036Q5j4Ozaby66SfJ8deiOtfezeiUo3S9Uebqbg3DLziCE+OELzMQ4uftqV9AeLM083lfSCJ+sAJHX+hCtNeGOPwUZvh+LK2rPFp///cu3HcAQLVElhPswWJLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=z+cNMApf; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbf618042daso7310337276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 22:31:04 -0800 (PST)
+	s=arc-20240116; t=1706683075; c=relaxed/simple;
+	bh=XiWCT2+1WeTGJCqJCMdukZXFIkkpn03DWfgeCLshmL4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tArlOoZDk6XhkqWKPol4GqJCIzg31GmCuocFtVavdfZDhLqYR4BDjq51EkQ7a7Bnwn9oROiruc0H1JcnUEEi2JbvRN9wNer1Fa0UqTKU9grghproV+d1qKcEUt/YyNZXS+Mc2E3xIEnAPXVNQJ5/BR1lldTTT2W2D49GCaQN3hQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mqdPm6+X; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6ddfb0dac4dso3430169b3a.1;
+        Tue, 30 Jan 2024 22:37:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706682663; x=1707287463; darn=vger.kernel.org;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=G1xH5pJjJI+heTB8iMmEvxa0X+0fNgErrr9gRIyth2g=;
-        b=z+cNMApfdnCiyR2tpp+pXabq1/2OzeBTR65q/VwEAJztm54xYjWQHxqxraGkSQM28l
-         b4NS1swQgiZkmLJKpEJGdDWE1q/2/zJ4Q1XLLF8Y08JPM3JO8AXgpwmcR+DMdwBvHL5C
-         VkPEdvUD4sXHO2JYAwhqTwEBdDppZK28KRmGaat73fUa8HHHvk44I/v2hk+1AkdV91bg
-         Lm3Bvhg2B3o4BQVSkvTpI8bxXXTSRGm8yXzQ6DSmjst6NJ9DP+M5yEwXyroRD9rnOHSE
-         FYS5TiztIV+elSKP3Qije8UtHth6BqV/VoFV6zPbv48Xx0cccBtco3LtIco5JmLQtkAh
-         nshw==
+        d=gmail.com; s=20230601; t=1706683073; x=1707287873; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=GM6uBHoDxgNzauu5ZyOmhvBDZClfH0t/dJxtRq9cGjA=;
+        b=mqdPm6+XwdQZhQ9eH8FAsMmNUV9gUF30co4H5Vz6TNbWtBGzgrE/zuClMjwUildF/Q
+         9BWXO/Mdi1mamu+K4ojntqAkk77sWRS0faDILBgc82Nosxxsqqt/XBG+caZHHkfSEIO+
+         I43ODkOmmuXzRIkJ1uRcOvwp2QYojNrk7tShkgR6hmxo34yoxT1997ZQKYHcJsV8L0NZ
+         T47KF9PYQcA+yASa361f1MllrKT9TeH456lxEeydsKYh4v3Nv4oSSpoKtwzUet6mEG9a
+         8ILl5wHEM4gQRakFoqJIZQfUP8RrZUYTSMjVzVY6pBjpTKD3U0decH8OYzgJKRw8Rctg
+         ECRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706682663; x=1707287463;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=G1xH5pJjJI+heTB8iMmEvxa0X+0fNgErrr9gRIyth2g=;
-        b=RPec7CX1+IOYCuulv46M5Gk46cf2Y4GgGh0xORyb1TaiXI5I6RfDIeFG1OnKhLQLTy
-         bSdpdUtvDIszBzT/UlHdWr1+f+CM+zKiF1+WPHlieJOM2Y1tQJRCMaHQyQgrDH63wsua
-         53wzDyjf06mN4rmAsWF4N0oshgzNiVdBvvaeOu/dubwWCqI67QfhRee0EH8N+0qICemt
-         8UO5krIMKanB+fcW5YkAoTd8ErzLx6P59KA3Aq/5xVGpFwblnWCzjmz4LfIJnUWusDJz
-         PIRHPAu9KLUqlf0EHGrh3enBm7nmhsw8mKQtiGmDWE1o2RTFxcFzUT9L4MC2a0LL5D4a
-         BeBg==
-X-Gm-Message-State: AOJu0Ywxb91yu1n0Zgd96ZmN88XXpzKxQjMYw5erhKRjvVLHfKS7hMVW
-	50BISUmZ9Mc5ckfIgSpOdI1vyoUi0DVq2drNYGgq3kS7yJ5TzNsRhaT2CxUMqPXlfZLi0hSrPFc
-	oP5aPSA==
-X-Google-Smtp-Source: AGHT+IGEAP5D5vAqHrvlnv6Eelf1+7FuoCNqHzUR7cXudPK8BmAeyVeZmn/bgM7Au0VD8i5lkH4LxN/578hy
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:d0ab:43c6:7969:62ab])
- (user=irogers job=sendgmr) by 2002:a05:6902:1188:b0:dbe:d0a9:2be8 with SMTP
- id m8-20020a056902118800b00dbed0a92be8mr36777ybu.0.1706682663552; Tue, 30 Jan
- 2024 22:31:03 -0800 (PST)
-Date: Tue, 30 Jan 2024 22:30:47 -0800
-In-Reply-To: <20240131063048.492010-1-irogers@google.com>
-Message-Id: <20240131063048.492010-2-irogers@google.com>
+        d=1e100.net; s=20230601; t=1706683073; x=1707287873;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GM6uBHoDxgNzauu5ZyOmhvBDZClfH0t/dJxtRq9cGjA=;
+        b=ieI6bealrdJ1YTWVk/K+FBkg2XHyNPFuWCJOWQLokbFUrJBsmqmQ2BGBa2YbEK20Dj
+         QxchKN0TEJdSrhOfeEw+aC9cnF39NrTrMmJ0RBZUMTrkoWqx6ePE022jHX6ayp4YsTRO
+         1YQCUwk9HGxfFB14KA9ceBPPaT4o4Viw41BSV+gWdG88T5uEr/PbybKH4d5JGJKJ1GIn
+         0ULz09kpXcqBoZkPKliOoMAuSRk1h44xFHKorgzxLpYPJju5T4f+WMX8uXu8VTAHOYBJ
+         3VANCZz4cHwduhU9LVSapnfc8k7G1WHmeriNBF1sLqhKN/p2RALiGSWgsb7lzodsSk+U
+         T4Aw==
+X-Gm-Message-State: AOJu0YyIBHgq6hZq2NUYPlezR2owSoHgeuyJKCAzfA3ZREacbhH3zm29
+	wsd7XijJvFVbecLSDCvzW1I/69Pyrch0LQtlcQW2JJ0b86++mBWl
+X-Google-Smtp-Source: AGHT+IFYAV4FbkdICGK42XD7z6/Nx7sBof37ReT0CHiBwriOc4zXorQDefP/ncF9JAo34wVfeJGKmw==
+X-Received: by 2002:aa7:8298:0:b0:6db:cdfd:af6 with SMTP id s24-20020aa78298000000b006dbcdfd0af6mr836437pfm.31.1706683072624;
+        Tue, 30 Jan 2024 22:37:52 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id q21-20020a62ae15000000b006d97f80c4absm9021585pff.41.2024.01.30.22.37.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jan 2024 22:37:51 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <a908d04b-8068-4831-87ef-44175250c226@roeck-us.net>
+Date: Tue, 30 Jan 2024 22:37:50 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240131063048.492010-1-irogers@google.com>
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-Subject: [PATCH v1 2/2] perf parse-events: Improve error location of terms
- cloned from an event
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, James Clark <james.clark@arm.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	tchen168@asu.edu, Michael Petlan <mpetlan@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] watchdog: qcom: Start the watchdog in probe
+Content-Language: en-US
+To: Pavan Kondeti <quic_pkondeti@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Wim Van Sebroeck <wim@linux-watchdog.org>, linux-arm-msm@vger.kernel.org,
+ linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Mukesh Ojha <quic_mojha@quicinc.com>
+References: <20240131-qcom-wdt-start-probe-v1-1-bee0a86e2bba@quicinc.com>
+ <1a996038-bcc7-4c0f-8f27-ca36a2eb9d3d@roeck-us.net>
+ <cfaaed23-8f59-4447-af0b-b94b35ce68ba@quicinc.com>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <cfaaed23-8f59-4447-af0b-b94b35ce68ba@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-A PMU event/alias will have a set of format terms that replace it when
-an event is parsed. The location of the terms is their position when
-parsed for the event/alias either from sysfs or json. This location is
-of little use when an event fails to parse as the error will be given
-in terms of the location in the string of events parsed not the json
-or sysfs string. Fix this by making the cloned terms location that of
-the event/alias.
+On 1/30/24 22:16, Pavan Kondeti wrote:
+> On Tue, Jan 30, 2024 at 10:01:15PM -0800, Guenter Roeck wrote:
+>> On 1/30/24 20:15, Pavankumar Kondeti wrote:
+>>> When CONFIG_WATCHDOG_HANDLE_BOOT_ENABLED is enabled, kernel can pet the
+>>> watchdog until user space takes over. Make use of this feature and
+>>> start the watchdog in probe.
+>>>
+>>> Signed-off-by: Pavankumar Kondeti <quic_pkondeti@quicinc.com>
+>>> ---
+>>>    drivers/watchdog/qcom-wdt.c | 6 +++++-
+>>>    1 file changed, 5 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/watchdog/qcom-wdt.c b/drivers/watchdog/qcom-wdt.c
+>>> index 9e790f0c2096..4fb5dbf5faee 100644
+>>> --- a/drivers/watchdog/qcom-wdt.c
+>>> +++ b/drivers/watchdog/qcom-wdt.c
+>>> @@ -276,12 +276,16 @@ static int qcom_wdt_probe(struct platform_device *pdev)
+>>>    	watchdog_init_timeout(&wdt->wdd, 0, dev);
+>>>    	/*
+>>> +	 * Kernel can pet the watchdog until user space takes over.
+>>> +	 * Start the watchdog here to make use of this feature.
+>>> +	
+>>
+>> No, that is not what CONFIG_WATCHDOG_HANDLE_BOOT_ENABLED is about.
+>> Please see its description.
+>>
+>> NACK.
+>>
+> Thanks for taking a look Guenter. I thought of using
+> WATCHDOG_HANDLE_BOOT_ENABLED and infiniite open timeout as a hint to start
+> the watchdog in probe. After seeing your NACK for this patch, I guess
+> that would also would have been rejected.
+> 
+WATCHDOG_HANDLE_BOOT_ENABLED is not supposed to be used in drivers.
+It is a flag for the watchdog core. Before you bring it up, stm32_iwdg.c
+is a corner case because (presumably) the driver can not determine
+if the watchdog is running.
 
-If a cloned term from an event/alias is invalid the bad format is hard
-to determine from the error string. Add the name of the bad format
-into the error string.
+> Do you think we can revive this [1] to add support for watchdog pet from
+> the kernel? It would be helpful in cases where the user space has no
+> support for watchdog pet (say minimal ramdisk).
+> 
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
-These fixes were inspired by the poor error output in:
-https://lore.kernel.org/linux-perf-users/alpine.LRH.2.20.2401300733310.11354@Diego/
----
- tools/perf/util/pmu.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+If done properly, sure. Looking at the exchange, the patch still had issues
+which I don't think were ever resolved.
 
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 355f813f960d..437386dedd5c 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -657,7 +657,7 @@ static int pmu_aliases_parse(struct perf_pmu *pmu)
- 	return 0;
- }
- 
--static int pmu_alias_terms(struct perf_pmu_alias *alias, struct list_head *terms)
-+static int pmu_alias_terms(struct perf_pmu_alias *alias, int err_loc, struct list_head *terms)
- {
- 	struct parse_events_term *term, *cloned;
- 	struct parse_events_terms clone_terms;
-@@ -675,6 +675,7 @@ static int pmu_alias_terms(struct perf_pmu_alias *alias, struct list_head *terms
- 		 * which we don't want for implicit terms in aliases.
- 		 */
- 		cloned->weak = true;
-+		cloned->err_term = cloned->err_val = err_loc;
- 		list_add_tail(&cloned->list, &clone_terms.terms);
- 	}
- 	list_splice_init(&clone_terms.terms, terms);
-@@ -1363,8 +1364,8 @@ static int pmu_config_term(const struct perf_pmu *pmu,
- 
- 			parse_events_error__handle(err, term->err_val,
- 				asprintf(&err_str,
--				    "value too big for format, maximum is %llu",
--				    (unsigned long long)max_val) < 0
-+				    "value too big for format (%s), maximum is %llu",
-+				    format->name, (unsigned long long)max_val) < 0
- 				    ? strdup("value too big for format")
- 				    : err_str,
- 				    NULL);
-@@ -1518,7 +1519,7 @@ int perf_pmu__check_alias(struct perf_pmu *pmu, struct parse_events_terms *head_
- 		alias = pmu_find_alias(pmu, term);
- 		if (!alias)
- 			continue;
--		ret = pmu_alias_terms(alias, &term->list);
-+		ret = pmu_alias_terms(alias, term->err_term, &term->list);
- 		if (ret) {
- 			parse_events_error__handle(err, term->err_term,
- 						strdup("Failure to duplicate terms"),
--- 
-2.43.0.429.g432eaa2c6b-goog
+Personally I would not want to rely on this, though. It won't address situations
+where userspace hangs but low level kernel interrupts still work. I think
+it is mostly useful to cover the time from loading the watchdog driver
+to starting the watchdog daemon, but even that would better be solved by
+starting the watchdog in the ROM monitor or BIOS. A minimal watchdog daemon
+would not consume that much memory, so I don't think "user space has no
+support for watchdog pet (say minimal ramdisk)" would ever be a real problem.
+Such a minimal system would probably (hopefully) be based on busybox which
+does support a watchdog.
+
+Guenter
 
 
