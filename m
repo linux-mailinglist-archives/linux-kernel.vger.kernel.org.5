@@ -1,114 +1,119 @@
-Return-Path: <linux-kernel+bounces-46658-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46663-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A42D844251
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:56:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F266F844261
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:59:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CF5C1C2A47D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:56:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 919AB1F2E225
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:59:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C4E013AA2D;
-	Wed, 31 Jan 2024 14:50:58 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCCE212F5A1;
-	Wed, 31 Jan 2024 14:50:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD86412A15E;
+	Wed, 31 Jan 2024 14:52:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="ZM5My5wo"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E674A84A52;
+	Wed, 31 Jan 2024 14:52:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706712646; cv=none; b=AMukgAwjQ/XCVjkQ+DVUopbToqn07ya4T1iSn0TrL761eYXwj7IKTEIKeqkszpZtMx6bqhlrTsAkBv6E+va6IK5BOIBIBwP+v7OyOe/QPaZm+nThyxDQ3viybp7S6knXi+AgGGiTKdQ69hCoINjrQXdzNYCW5zkYHd/QxFqiGw4=
+	t=1706712751; cv=none; b=UegH0DUL+ftOE9N9aM6kl8XY3Ynubqe8gmqZJlEx9HBOo+R6FLS2O8aEe87pvjCtIDJA6jRTfS+2RjJLTQH8qNfWNg4aP4q5jVXb1OE1L9omYOZlkuagSSmAmy+z245oQVjELabKEHzvJCQ4dbT9LyifVdAcJXxOHGeXjU/y2WY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706712646; c=relaxed/simple;
-	bh=iavdwSoa/91DZNj9sYAc+ToYnDtfSzIXsRuwYSklzyM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=goRAvAbhshx9zKefXZhJmBirU6CJt5W0Do6SvomiJML2H3GAxl8QcF+cqNbg8tU0hiz2dE8XH/GmZ3y2LFC1hgb+BY590wJ7nk7f74KRyI54j4stu9Qi9xTr/+Vhh1Boi8yvjn8NIswlOJdjFTLXmQDVt+5vf4VCtUFm/zGGuXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1D28ADA7;
-	Wed, 31 Jan 2024 06:51:22 -0800 (PST)
-Received: from donnerap.manchester.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 14BD43F762;
-	Wed, 31 Jan 2024 06:50:35 -0800 (PST)
-Date: Wed, 31 Jan 2024 14:50:33 +0000
-From: Andre Przywara <andre.przywara@arm.com>
-To: Aleksandr Shubin <privatesub2@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?=
- <u.kleine-koenig@pengutronix.de>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec
- <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, Paul
- Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, Philipp Zabel <p.zabel@pengutronix.de>,
- Maksim Kiselev <bigunclemax@gmail.com>, Cristian Ciocaltea
- <cristian.ciocaltea@collabora.com>, Marc Kleine-Budde <mkl@pengutronix.de>,
- John Watts <contact@jookia.org>, Cheo Fusi <fusibrandon13@gmail.com>,
- linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
- linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v8 3/3] riscv: dts: allwinner: d1: Add pwm node
-Message-ID: <20240131145033.0b05f4c6@donnerap.manchester.arm.com>
-In-Reply-To: <20240131125920.2879433-4-privatesub2@gmail.com>
-References: <20240131125920.2879433-1-privatesub2@gmail.com>
-	<20240131125920.2879433-4-privatesub2@gmail.com>
-Organization: ARM
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
+	s=arc-20240116; t=1706712751; c=relaxed/simple;
+	bh=CAVuopFYw2Cq9k4IZHTbz/jUD6sj9hYEe12XppGE8tk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MnOxWf5bZGT8ADzbWJwTLQk/XqKDb12vzqSEM2Gohxkj7LR47Yo7MyFAsKWSqggoV987bQRLfd2Qz19zgPaYvweQ5ZiD0MtdjLzPSUjev2ja09ouByAXATP5oIQ2kCOMeULMmzYYDaVhDuxoVG4BRwOkX6PReWQREY1OwX04W4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=ZM5My5wo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9202C43601;
+	Wed, 31 Jan 2024 14:52:28 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="ZM5My5wo"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+	t=1706712747;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=08V5Tn/E3QHiknxLw9Mvmg79PQM1lmEyJEgFVM+dfA0=;
+	b=ZM5My5woF1RnrEBzh7NrcqN2HvNxx1AExBaNWhqTm2lUemCmQdNGipM8JH9pThNLq7da16
+	Ds4ggg+Q5amSpO0B9NQviIIWB9XJAC9hMytXOFyoNoLwP7JUVgqXDQudQK769svE+IqIhf
+	VSfCOqaSPVBWKuBUK49CbbmqzMtSCVI=
+Received: 
+	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 6f61bf04 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Wed, 31 Jan 2024 14:52:27 +0000 (UTC)
+Date: Wed, 31 Jan 2024 15:52:26 +0100
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: "Reshetova, Elena" <elena.reshetova@intel.com>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	"Nakajima, Jun" <jun.nakajima@intel.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	"Kalra, Ashish" <ashish.kalra@amd.com>,
+	Sean Christopherson <seanjc@google.com>,
+	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] x86/random: Retry on RDSEED failure
+Message-ID: <ZbpequdB0dQdH6aA@zx2c4.com>
+References: <CAHmME9pOt=uEmuBzBpgUHw9DqAD2FZTZ3v53AOZbQ3Cd2p97xQ@mail.gmail.com>
+ <DM8PR11MB5750E38A8B2BCE66AF7F9812E77D2@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <CAHmME9qMO7=RDR60bKJvpDTRokcKed_i0+7BbFD53_7o2OJ6-g@mail.gmail.com>
+ <CAHmME9rum4uwSNFd_GkD9p_+vN4DBxA=feZX7k9RvugFZsZNJg@mail.gmail.com>
+ <DM8PR11MB5750797D0B9B8EB32740F55DE77D2@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <CAHmME9oC=GE-7QS2m9FA5cs_ss+tQgB9Pj3tKnTtMMFpQmUshg@mail.gmail.com>
+ <DM8PR11MB5750B861F7A105886AA5FCE4E77C2@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <CAHmME9oJvbZgT4yT9Vydc2ZQVSo3Ea65G5aVK7gFxphkV00BnQ@mail.gmail.com>
+ <20240131140756.GB2356784@mit.edu>
+ <Zbpc8tppxuKr-hnN@zx2c4.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <Zbpc8tppxuKr-hnN@zx2c4.com>
 
-On Wed, 31 Jan 2024 15:59:16 +0300
-Aleksandr Shubin <privatesub2@gmail.com> wrote:
-
-Hi,
-
-> D1 and T113s contain a pwm controller with 8 channels.
-> This controller is supported by the sun20i-pwm driver.
+On Wed, Jan 31, 2024 at 03:45:06PM +0100, Jason A. Donenfeld wrote:
+> On Wed, Jan 31, 2024 at 09:07:56AM -0500, Theodore Ts'o wrote:
+> > What about simply treating boot-time initialization of the /dev/random
+> > state as special.  That is, on x86, if the hardware promises that
+> > RDSEED or RDRAND is available, we use them to initialization our RNG
+> > state at boot.  On bare metal, there can't be anyone else trying to
+> > exhaust the on-chip RNG's entropy supply, so if RDSEED or RDRAND
+> > aren't working available --- panic, since the hardware is clearly
+> > busted.
 > 
-> Add a device tree node for it.
+> This is the first thing I suggested here: https://lore.kernel.org/all/CAHmME9qsfOdOEHHw_MOBmt6YAtncbbqP9LPK2dRjuOp1CrHzRA@mail.gmail.com/
 > 
-> Signed-off-by: Aleksandr Shubin <privatesub2@gmail.com>
-
-Compared against the manual:
-
-Reviewed-by: Andre Przywara <andre.przywara@arm.com>
-
-Cheers,
-Andre
-
-> ---
->  arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
+> But Elena found this dissatisfying because we still can't guarantee new
+> material later.
 > 
-> diff --git a/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi b/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi
-> index 5a9d7f5a75b4..435a1e66aa6a 100644
-> --- a/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi
-> +++ b/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi
-> @@ -145,6 +145,18 @@ uart3_pb_pins: uart3-pb-pins {
->  			};
->  		};
->  
-> +		pwm: pwm@2000c00 {
-> +			compatible = "allwinner,sun20i-d1-pwm";
-> +			reg = <0x02000c00 0x400>;
-> +			clocks = <&ccu CLK_BUS_PWM>,
-> +				 <&dcxo>,
-> +				 <&ccu CLK_APB0>;
-> +			clock-names = "bus", "hosc", "apb0";
-> +			resets = <&ccu RST_BUS_PWM>;
-> +			status = "disabled";
-> +			#pwm-cells = <0x3>;
-> +		};
-> +
->  		ccu: clock-controller@2001000 {
->  			compatible = "allwinner,sun20i-d1-ccu";
->  			reg = <0x2001000 0x1000>;
+> > On a guest OS, if confidential compute is enabled, and if RDSEED and
+> > RDRAND don't work after N retries, and we know CC is enabled, panic,
+> > since the kernel can't provide the promised security gaurantees, and
+> > the CC developers and users are cordially invited to sharpen their
+> > pitchforks and to send their tender regards to the Intel RNG
+> > engineers.
+> 
+> Yea, maybe bubbling the RDRAND DoS up to another DoS in the CoCo case is
+> a good tradeoff that will produce the right pitchforkers without
+> breaking anything real.
 
+One problem, though, is userspace can DoS the kernel's use of RDRAND.
+So probably infinitely retrying in CoCo environments is better than
+panicing/warning, since ostensibly a kthread will eventually succeed.
+
+Maybe, though, the Intel platform just simply isn't ready for CoCo, and
+marketing got a little bit ahead of the tech?
+
+Jason
 
