@@ -1,199 +1,102 @@
-Return-Path: <linux-kernel+bounces-46541-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46542-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD9C884411E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:56:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5932C84411F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:57:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E3BF287EDA
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:56:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E840D1F2B387
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:57:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 775A280C0C;
-	Wed, 31 Jan 2024 13:56:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3333C80C06;
+	Wed, 31 Jan 2024 13:56:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l0PWlv0R"
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nb3Ivi5f"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28F597BAFA;
-	Wed, 31 Jan 2024 13:56:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4D6A82864
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 13:56:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706709402; cv=none; b=M/rlZ4yC5UrdF/QoHIVdafW+HQ6U/0Wsol1X++pTeIYnMXOx1mKaTCC31IlF17qwFQFhv7sRwVVuSY6tpByOyojE0QncgkPC6TsjiPp4pSaGhXcQr9xxA+8Ic/CRzFwY42w9ofwPFt3KPW9dhN1IxV7xFQY9vQqkWHuvK3NrnsI=
+	t=1706709411; cv=none; b=LEZSCKHaeKXiRv3QIul2/2ItnZyPHWxUBotFfJhPktr2pr9jusZ8SOfQqbVIq0IyGQ0ro9xXwgyWnFVTo47qsq2EvPJm22ATVo/DL/PbY8vCB3YwGc2cfJJ49Zm/KavkTuo2Tbyi9hK7Rml1Gwo9eWLMPaW7BnS4YY1DS5PDd9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706709402; c=relaxed/simple;
-	bh=w5siA9sGMBf7veAhjHbaJt4PyHM/ZANL2abhaYEQEVY=;
+	s=arc-20240116; t=1706709411; c=relaxed/simple;
+	bh=rGSvB5/8qxA64jtWN9ZfyRNxz1iktfkomOYpwJsrEU8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TepOLaVn5R6+tt+PBHUFUts5ylebO9R6VX/zlAqgcgtZPWwOF8GGs+cnWo9DSSx3icDEcHDxSjzdLQRoXR7LkIjc8FYRscmDxqxcM9mplL0sWG9QsTUOsxjwi6FZCIVwpHeNhpqAVZwGr40Ranp2/tgHfcuXmxhKcXCHOq8OB8E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l0PWlv0R; arc=none smtp.client-ip=209.85.219.41
+	 To:Cc:Content-Type; b=li/v+FTVZgjjM/r198lwGhL45UJHmyU6Jl2vsm74R86lTFlrrLvIJMXB0+EXm1K2g9yj6LdX3PGx2T97xnRL0clqrYsqGTXZRVmdXeIkXnQBroe8H6Om1IRsgGuC+GN/1Zi9laL1DVT6aZr4hR8vyvoBCcpuPc8AQHZlNmG1Nwk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Nb3Ivi5f; arc=none smtp.client-ip=209.85.208.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-6818a9fe3d4so35191426d6.0;
-        Wed, 31 Jan 2024 05:56:40 -0800 (PST)
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d057b6ddfdso24613751fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 05:56:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706709400; x=1707314200; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706709408; x=1707314208; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NX69lf1UBcmeU7AcsTpm4saig8TXToBAcBQEpKY5iZs=;
-        b=l0PWlv0RNtCDN5TcM3W8vjigBXK7Ic9HljMaWKK11iPuVkechySvglxFgvmihPk0H2
-         8/FURKjxW21GTVl4CzccGYrPfCVUVBbngRmoUIqLPC4jLlK/D1G7Fys0dy6TJS+dRt7t
-         DGrYiyKDz6Pp5DiZ9q+LagiiIkWFppV6QHjZppPrscKK7eUqV7WIRx8+zD2xjIIGR0OJ
-         10/N57Y3oZRyPhhTkyHkTVpxHitajybxKkSNoc45ZISrYhQ7rX6I1hycDYvc9sPRhR9U
-         eNno9zDAPf6zkdS1dw0SqTCK84WDmLzrteEJ3rYX+QO+4vt+9OtAvY+51Rl4PdahvWGF
-         xLLw==
+        bh=rGSvB5/8qxA64jtWN9ZfyRNxz1iktfkomOYpwJsrEU8=;
+        b=Nb3Ivi5fzBXJa7q9Kl7AOMGtiRU6JhK+evIEifxG2Pdz43ii8k5w8kBob2JHs1EnRZ
+         A86V8O3OX1E8ILZ+1A9Xrnvi8hxjSmSwakhfLyWZKZOovAjoaW+S/ibKsUn/Mzoxm9Qo
+         hTehEJqs2Mp3fNY+Kx46u+AZObw62Sm/vRiErbi6It13XZfQEq9yg8ZhuXdNIfdHCqIA
+         5xYBlUub4uxFQboZuecWBtoXNY5gp8OnvNW3orKfpbYMumCPEPsTyKCckKrjxjspvanL
+         15rMfoDwYkghO7sBWJSZYTJXfK8qlqKwkAS5d/sU4lux64vDThwa+59oRwVM7MW2jSX7
+         UW7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706709400; x=1707314200;
+        d=1e100.net; s=20230601; t=1706709408; x=1707314208;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NX69lf1UBcmeU7AcsTpm4saig8TXToBAcBQEpKY5iZs=;
-        b=wLO0L3KvgzcMmF4Kmfwlb1WiaZ+Pp+z3q7RTPI20PGUAuKd9BK1i9jiYs29y/My90s
-         79StHl+9fESZ1iwNUHRkhmZTtMpoKwWDutwbAdj41hbzCl2/ABqXbtquOdwttIpi/OyP
-         joDdOOYDZBAzvngQb+pCPealzDDSQzwMY3YKsD/W4E+GS4UZO6zZJ5FeXoYZEpn5fbJP
-         aZISLUhieL1GzMerARSRf7m1HyxsPe81cD9hrkqJ7dSBDw+arRUwzD9XFb50Eeu2gvNq
-         WMOliEOVgtalg4qMv+WNWcrkJT9BPU93ZZ2QcabXW2p3t4sVkjIdFoAI0Kw5kBPa5MH5
-         YAnA==
-X-Gm-Message-State: AOJu0YwKYQ3gFJDmL0iqrhrm+g+hzI+w+NypFq3AQzcxCwiyqs5PyBaO
-	ILDBEz7eQGMUQMDGCj7SUWrmSvcR+UgwlBBDx1s+Um28WqNg3ECYVYOxjYEr9XG3hKHFoX1lrTc
-	RKAmqzoiJtCzNGSTzrE7UdKwMHGU=
-X-Google-Smtp-Source: AGHT+IHpUaL8efMK3QQWjl9InIeOROIpSFzCRENAnrd8HpKFGyCtceNv1gZ80ujkxT22g7FQqcAu2lYK+HDvYkScRc8=
-X-Received: by 2002:ad4:5bcf:0:b0:68c:6b70:ff4a with SMTP id
- t15-20020ad45bcf000000b0068c6b70ff4amr1891251qvt.37.1706709399954; Wed, 31
- Jan 2024 05:56:39 -0800 (PST)
+        bh=rGSvB5/8qxA64jtWN9ZfyRNxz1iktfkomOYpwJsrEU8=;
+        b=S3sxJ2ngkc/dJUbluqhLhdAU3gnhs322FURDmdGFUjiaTXJM/sqQxjstKI3jX606Xa
+         ProlT/cFgPIUjYecGq+gcAQeAG+h6xfr2fXPRs9Y5zZHz6n5sM7X6vF8r0h5Vbd4g7E9
+         So/eO6kss6Aa6mspSbTCTzY2+anXADgxW9OKzxM0WxVe5Qdse+ySBxnCs9GQkdpcoHAw
+         oeJ6hXSoCgXEG+oiP6suFr4GmTgSIyKuhZJMxk8UqMN3Anlbc3ccDyOGa6YTJgbzLTNa
+         9V0ak+srIUA36WZg7qYbQ9A/q+x9VXIzwH/UhehmJOKSg5aHP5XWpJphUGNhVpxM5gB6
+         6kDw==
+X-Gm-Message-State: AOJu0YwJ02f+pgtyMSs8KQsbmXSH3awz/uZMQctvE6k/h6j/TI5TumX/
+	DHJQJ+RVgnNfjFRCGPi4LP0NOSCNpthEvyws9eCy9H6RzsOHr8DLvLXujzKBoT/ACXBU5L0JS6x
+	H5dHX3aoHWuleINC8rmRx8z3P8dg=
+X-Google-Smtp-Source: AGHT+IHlkF3I7FEjP8gwzU2CmWK1s44YfAt24aenmwRx9jOqw+OUQ0fdI/ODDaa5RcZa8ZtqtM/krkro9JbWDWuAwqk=
+X-Received: by 2002:a2e:8906:0:b0:2d0:6396:ba91 with SMTP id
+ d6-20020a2e8906000000b002d06396ba91mr1189479lji.44.1706709407473; Wed, 31 Jan
+ 2024 05:56:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130214620.3155380-1-stefanb@linux.ibm.com> <20240130214620.3155380-4-stefanb@linux.ibm.com>
-In-Reply-To: <20240130214620.3155380-4-stefanb@linux.ibm.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 31 Jan 2024 15:56:28 +0200
-Message-ID: <CAOQ4uxjC=-GOFi3J4ctcNgdMfaerkae30OH9=TkKTWCf=TP95g@mail.gmail.com>
-Subject: Re: [PATCH 3/5] ima: Reset EVM status upon detecting changes to
- overlay backing file
-To: Stefan Berger <stefanb@linux.ibm.com>
-Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com, 
-	roberto.sassu@huawei.com, miklos@szeredi.hu, 
-	Christian Brauner <brauner@kernel.org>
+References: <20240117190545.596057-1-vincent.guittot@linaro.org>
+In-Reply-To: <20240117190545.596057-1-vincent.guittot@linaro.org>
+From: Erico Nunes <nunes.erico@gmail.com>
+Date: Wed, 31 Jan 2024 14:56:35 +0100
+Message-ID: <CAK4VdL3Bg70ycz5vd4RfwNYa3KcYU8rdPX==i7znzQFw_EgTjA@mail.gmail.com>
+Subject: Re: [Resend PATCH] topology: Set capacity_freq_ref in all cases
+To: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
+	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, 
+	sudeep.holla@arm.com, gregkh@linuxfoundation.org, rafael@kernel.org, 
+	linux-kernel@vger.kernel.org, lukasz.luba@arm.com, ionela.voinescu@arm.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 30, 2024 at 11:46=E2=80=AFPM Stefan Berger <stefanb@linux.ibm.c=
-om> wrote:
+On Wed, Jan 17, 2024 at 8:06=E2=80=AFPM Vincent Guittot
+<vincent.guittot@linaro.org> wrote:
 >
-> To avoid caching effects to take effect reset the EVM status upon
-> detecting changes to the overlay backing files. This prevents a not-yet-
-> copied-up file on the overlay from executing if for example the
-> security.evm xattr on the file on the 'lower' layer has been removed.
->
+> If "capacity-dmips-mhz" is not set, raw_capacity is null and we skip the
+> normalization step which includes setting per_cpu capacity_freq_ref.
+> Always register the notifier but skip the capacity normalization if
+> raw_capacity is null.
 
-And what is expected to happen when file is executed after copy up?
-Doesn't this change also protect the same threat after copy up?
+I bisected an issue of cpufreq no longer working on v6.8-rc on a TI
+SK-AM62 board and it pointed me to b3edde44e5d4 ("cpufreq/schedutil:
+Use a fixed reference frequency").
+This commit does fix the issue but doesn't appear to be merged
+anywhere yet. It would be good to have this fixed before 6.8 release.
 
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> ---
->  include/linux/evm.h               | 8 ++++++++
->  security/integrity/evm/evm_main.c | 7 +++++++
->  security/integrity/ima/ima_main.c | 2 ++
->  3 files changed, 17 insertions(+)
->
-> diff --git a/include/linux/evm.h b/include/linux/evm.h
-> index d8c0343436b8..e7d6742eee9d 100644
-> --- a/include/linux/evm.h
-> +++ b/include/linux/evm.h
-> @@ -66,6 +66,8 @@ extern int evm_protected_xattr_if_enabled(const char *r=
-eq_xattr_name);
->  extern int evm_read_protected_xattrs(struct dentry *dentry, u8 *buffer,
->                                      int buffer_size, char type,
->                                      bool canonical_fmt);
-> +extern void evm_reset_cache_status(struct dentry *dentry,
-> +                                  struct integrity_iint_cache *iint);
->  #ifdef CONFIG_FS_POSIX_ACL
->  extern int posix_xattr_acl(const char *xattrname);
->  #else
-> @@ -189,5 +191,11 @@ static inline int evm_read_protected_xattrs(struct d=
-entry *dentry, u8 *buffer,
->         return -EOPNOTSUPP;
->  }
->
-> +static inline void evm_reset_cache_status(struct dentry *dentry,
-> +                                         struct integrity_iint_cache *ii=
-nt)
-> +{
-> +       return;
-> +}
-> +
->  #endif /* CONFIG_EVM */
->  #endif /* LINUX_EVM_H */
-> diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/e=
-vm_main.c
-> index 22a5e26860ea..e96d127b48a2 100644
-> --- a/security/integrity/evm/evm_main.c
-> +++ b/security/integrity/evm/evm_main.c
-> @@ -721,6 +721,13 @@ static void evm_reset_status(struct inode *inode)
->                 iint->evm_status =3D INTEGRITY_UNKNOWN;
->  }
->
-> +void evm_reset_cache_status(struct dentry *dentry,
-> +                           struct integrity_iint_cache *iint)
-> +{
-> +       if (d_real_inode(dentry) !=3D d_backing_inode(dentry))
-> +               iint->evm_status =3D INTEGRITY_UNKNOWN;
-> +}
-> +
->  /**
->   * evm_revalidate_status - report whether EVM status re-validation is ne=
-cessary
->   * @xattr_name: pointer to the affected extended attribute name
-> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/i=
-ma_main.c
-> index cc1217ac2c6f..84bdc6e58329 100644
-> --- a/security/integrity/ima/ima_main.c
-> +++ b/security/integrity/ima/ima_main.c
-> @@ -26,6 +26,7 @@
->  #include <linux/ima.h>
->  #include <linux/fs.h>
->  #include <linux/iversion.h>
-> +#include <linux/evm.h>
->
->  #include "ima.h"
->
-> @@ -295,6 +296,7 @@ static int process_measurement(struct file *file, con=
-st struct cred *cred,
->                     !inode_eq_iversion(backing_inode, iint->version)) {
->                         iint->flags &=3D ~IMA_DONE_MASK;
->                         iint->measured_pcrs =3D 0;
-> +                       evm_reset_cache_status(file_dentry(file), iint);
->                 }
->         }
-
-Make sense.
-Unrelated to your change, I now noticed something odd about Mimi's change:
-
-        backing_inode =3D d_real_inode(file_dentry(file));
-
-I find the choice of variable name to be quite confusing, because ima/evm c=
-ode
-uses  d_backing_inode() all over the place and d_real_inode() !=3D
-d_backing_inode().
-
-First of all, there is never any reason to use d_backing_inode() and its na=
-me is
-quite confusing in the first place, but it will be a big cleanup to
-remove them all.
-
-Suggest to rename the variable to real_inode, same as in
-ima_collect_measurement()
-to be consistent and reduce confusion factor, which is already high enough =
-;)
-
-Thanks,
-Amir.
+Tested-by: Erico Nunes <nunes.erico@gmail.com>
 
