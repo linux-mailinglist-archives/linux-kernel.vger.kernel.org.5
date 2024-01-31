@@ -1,78 +1,80 @@
-Return-Path: <linux-kernel+bounces-46147-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46146-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A257C843B3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:38:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B13D7843B3A
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:37:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C5131F2C303
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:38:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E45F1F2B526
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:37:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBC826996F;
-	Wed, 31 Jan 2024 09:37:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEF786994E;
+	Wed, 31 Jan 2024 09:37:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CEvgYj1D"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UQG0XsPB"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D981569941;
-	Wed, 31 Jan 2024 09:37:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78B7567E7D;
+	Wed, 31 Jan 2024 09:37:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706693863; cv=none; b=N3B+pbgxdKal+mgOHIVTTm+uu3mojHSK4HKlJSTatsJaHeRHcp39fOCVzKOwwL5JIWN462uU4mRVVGM0ozdqhQxoaCTS3t+pfixrApLDgQ028mmzkjh8oYlmNTF8VMs4KYMe786lJU0q2jSbwOl3d3zr5xexpqAuP/1fu22X0v4=
+	t=1706693849; cv=none; b=gUQnuDKTRqBbVCP7pkQUIbaYiv5KJ8XYehET/AlLPiZo39DtQPOCQrwuJG69hq4qyBR5E89Q6elbVS32B1FtClgD0+c2RSV4KH/DP/9uOnTt5JeOdrC0xzWSBRU6fsujogDBp6wcOBI9y6M3i+sEWsCaidH3O0yH+s/DpA/H744=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706693863; c=relaxed/simple;
-	bh=hR3CBMAREr/xNcwJYK+yDVMcP8chuolAWpvStyy2ikE=;
+	s=arc-20240116; t=1706693849; c=relaxed/simple;
+	bh=NoQuHti6IiS7+y8Ci1LusmcVVUnkd5kTdFqj+tyu7T0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cPnyUaj18zOtHphHOtRTbObak9RfrknEOYtytWPyP2h68ZBbEb+zZTGnsrIgjTFQnv843uhEKJybVs2LNHAiLfNeHon45oQRqYno/VN2y8yByrmYZGk6lnZvkHgxI2BLwNcYtW75yY3CC7SZ+EDxkS5KsfGe3WazDIpIRfYh3oQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CEvgYj1D; arc=none smtp.client-ip=192.198.163.11
+	 Content-Type:Content-Disposition:In-Reply-To; b=QcHgJXwMe/vO30uxnH8oFvcSKr5RPwiDF0RJMJDKf8BowSFWB2oiOurX0eSQk8lTbPPz6qx3fcDAKKjbGiZZLMbl/EaQcTsFgsGgOoLVoBpFPrkh2lj5CG4K9TBK6KbvHBqiq5Z3ZtaR6z89PTyRnqATWPyyMeGPogBmfsmA5qI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UQG0XsPB; arc=none smtp.client-ip=192.198.163.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706693862; x=1738229862;
+  t=1706693845; x=1738229845;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=hR3CBMAREr/xNcwJYK+yDVMcP8chuolAWpvStyy2ikE=;
-  b=CEvgYj1DcCHR6cz9PD23/7+gsgU4jpcnPtu+dUOzhDrB1cGy/0/EasHz
-   x6MU7Hb8kPxxNXb4hR917YsU95KyNS5j8O+Rh8ZpQUD03J1THRMfb4fAN
-   HftU1QK7bCpwG9PNWJ3rNfFPoH/oyX/w//6o9Pjd1WIykjzzDZhz2k0Xo
-   5P/uz3+uEYPvuGeL86DHFef5OZZLwLEN7odCT6ozjaMhYwZMY9sUXjv4B
-   boc6zYpX/Hj1LJcq5lTiLEzLNw9SBR2ac3GwaCABPMO2C7nGt16+kTCoc
-   ndreAYypOfyyVI3uEGMGSo5jK40bCoHVMk2tmJ7l9ykVihdC2nLSH756R
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="10215277"
+  bh=NoQuHti6IiS7+y8Ci1LusmcVVUnkd5kTdFqj+tyu7T0=;
+  b=UQG0XsPBffKIfahohbarDYkA2tZMEOeBbATXWnzsXBzHxE4cAfscRsVl
+   8UwbK+KrxnxYuTaX2bjRowjSXFp6esu/9vKKZ8UUJSJAHeObhYuZve3Az
+   4Wfz/FoL1O4OFn87vdSVXfuekR+X9hziczrovcI9paRGNg/yApu9+g8t7
+   Fc0Gfwdv3h5TEYr6svLC0ofgMGc7U6a2mHqICkhOAV7gmT2Pe4Sc1J5XZ
+   KKtszaFqlyYwHKnHGfF8Olgy6qSxMmdyOvRgrKf9KwfUqBfkOOMGlXc0+
+   GQ2OdeWQz28yrdKRQ2CfOti6C0f+Y7fzvlQPEf6Y9hr5teJNYARIKXYHK
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="2488841"
 X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="10215277"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 01:37:41 -0800
+   d="scan'208";a="2488841"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 01:37:25 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="822505467"
 X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="822505467"
+   d="scan'208";a="36805531"
 Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 31 Jan 2024 01:37:37 -0800
+  by orviesa001.jf.intel.com with ESMTP; 31 Jan 2024 01:37:22 -0800
 Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1rV72C-0001PK-1K;
-	Wed, 31 Jan 2024 09:37:33 +0000
-Date: Wed, 31 Jan 2024 17:34:48 +0800
+	id 1rV71w-0001Ov-2b;
+	Wed, 31 Jan 2024 09:37:17 +0000
+Date: Wed, 31 Jan 2024 17:34:49 +0800
 From: kernel test robot <lkp@intel.com>
-To: Bartosz Golaszewski <brgl@bgdev.pl>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Wolfram Sang <wsa-dev@sang-engineering.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH 01/22] gpio: protect the list of GPIO devices with SRCU
-Message-ID: <202401311746.be3dlVTg-lkp@intel.com>
-References: <20240130124828.14678-2-brgl@bgdev.pl>
+To: Mario Limonciello <mario.limonciello@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Harry Wentland <harry.wentland@amd.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Hans de Goede <hdegoede@redhat.com>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	"open list:ACPI" <linux-acpi@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+	Melissa Wen <mwen@igalia.com>,
+	Mark Pearson <mpearson-lenovo@squebb.ca>,
+	Mario Limonciello <mario.limonciello@amd.com>
+Subject: Re: [PATCH v2 2/4] drm: Add drm_get_acpi_edid() helper
+Message-ID: <202401311759.htfj4nbl-lkp@intel.com>
+References: <20240130192608.11666-3-mario.limonciello@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,107 +83,99 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240130124828.14678-2-brgl@bgdev.pl>
+In-Reply-To: <20240130192608.11666-3-mario.limonciello@amd.com>
 
-Hi Bartosz,
+Hi Mario,
 
 kernel test robot noticed the following build warnings:
 
-[auto build test WARNING on brgl/gpio/for-next]
-[also build test WARNING on linus/master v6.8-rc2 next-20240131]
+[auto build test WARNING on rafael-pm/linux-next]
+[also build test WARNING on rafael-pm/acpi-bus linus/master v6.8-rc2 next-20240131]
+[cannot apply to drm-misc/drm-misc-next rafael-pm/devprop]
 [If your patch is applied to the wrong git tree, kindly drop us a note.
 And when submitting patch, we suggest to use '--base' as documented in
 https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Bartosz-Golaszewski/gpio-protect-the-list-of-GPIO-devices-with-SRCU/20240130-205537
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git gpio/for-next
-patch link:    https://lore.kernel.org/r/20240130124828.14678-2-brgl%40bgdev.pl
-patch subject: [PATCH 01/22] gpio: protect the list of GPIO devices with SRCU
-config: i386-randconfig-141-20240131 (https://download.01.org/0day-ci/archive/20240131/202401311746.be3dlVTg-lkp@intel.com/config)
+url:    https://github.com/intel-lab-lkp/linux/commits/Mario-Limonciello/ACPI-video-Handle-fetching-EDID-that-is-longer-than-256-bytes/20240131-032909
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
+patch link:    https://lore.kernel.org/r/20240130192608.11666-3-mario.limonciello%40amd.com
+patch subject: [PATCH v2 2/4] drm: Add drm_get_acpi_edid() helper
+config: i386-buildonly-randconfig-001-20240131 (https://download.01.org/0day-ci/archive/20240131/202401311759.htfj4nbl-lkp@intel.com/config)
 compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240131/202401311759.htfj4nbl-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401311746.be3dlVTg-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401311759.htfj4nbl-lkp@intel.com/
 
-New smatch warnings:
-drivers/gpio/gpiolib.c:4167 gpiod_find_and_request() error: uninitialized symbol 'ret'.
-drivers/gpio/gpiolib.c:4181 gpiod_find_and_request() error: uninitialized symbol 'desc'.
+All warnings (new ones prefixed by >>):
 
-Old smatch warnings:
-drivers/gpio/gpiolib.c:4184 gpiod_find_and_request() error: uninitialized symbol 'desc'.
+>> drivers/acpi/acpi_video.c:642:44: warning: format specifies type 'long' but the argument has type 'ssize_t' (aka 'int') [-Wformat]
+     642 |                                  "Invalid _DDC data for length %ld\n", length);
+         |                                                                ~~~     ^~~~~~
+         |                                                                %zd
+   include/linux/acpi.h:1219:30: note: expanded from macro 'acpi_handle_debug'
+    1219 |                            handle, pr_fmt(fmt), ##__VA_ARGS__)
+         |                                           ~~~     ^~~~~~~~~~~
+   include/linux/dynamic_debug.h:250:59: note: expanded from macro '_dynamic_func_call'
+     250 |         _dynamic_func_call_cls(_DPRINTK_CLASS_DFLT, fmt, func, ##__VA_ARGS__)
+         |                                                                  ^~~~~~~~~~~
+   include/linux/dynamic_debug.h:248:65: note: expanded from macro '_dynamic_func_call_cls'
+     248 |         __dynamic_func_call_cls(__UNIQUE_ID(ddebug), cls, fmt, func, ##__VA_ARGS__)
+         |                                                                        ^~~~~~~~~~~
+   include/linux/dynamic_debug.h:224:15: note: expanded from macro '__dynamic_func_call_cls'
+     224 |                 func(&id, ##__VA_ARGS__);                       \
+         |                             ^~~~~~~~~~~
+   1 warning generated.
 
-vim +/ret +4167 drivers/gpio/gpiolib.c
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for ACPI_WMI
+   Depends on [n]: X86_PLATFORM_DEVICES [=n] && ACPI [=y]
+   Selected by [y]:
+   - DRM [=y] && HAS_IOMEM [=y] && (AGP [=n] || AGP [=n]=n) && !EMULATED_CMPXCHG && HAS_DMA [=y] && X86 [=y]
 
-0eadd36d9123745 Dmitry Torokhov     2022-09-03  4128  
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4129  static struct gpio_desc *gpiod_find_and_request(struct device *consumer,
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4130  						struct fwnode_handle *fwnode,
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4131  						const char *con_id,
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4132  						unsigned int idx,
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4133  						enum gpiod_flags flags,
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4134  						const char *label,
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4135  						bool platform_lookup_allowed)
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4136  {
-ba2dc1cb5491712 Hans de Goede       2022-12-29  4137  	unsigned long lookupflags = GPIO_LOOKUP_FLAGS_DEFAULT;
-c122f461ccac0e7 Andy Shevchenko     2023-03-09  4138  	struct gpio_desc *desc;
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4139  	int ret;
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4140  
-1fe5210a1bfba00 Bartosz Golaszewski 2024-01-30  4141  	scoped_guard(srcu, &gpio_devices_srcu) {
-1fe5210a1bfba00 Bartosz Golaszewski 2024-01-30  4142  		desc = gpiod_find_by_fwnode(fwnode, consumer, con_id, idx,
-1fe5210a1bfba00 Bartosz Golaszewski 2024-01-30  4143  					    &flags, &lookupflags);
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4144  		if (gpiod_not_found(desc) && platform_lookup_allowed) {
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4145  			/*
-1fe5210a1bfba00 Bartosz Golaszewski 2024-01-30  4146  			 * Either we are not using DT or ACPI, or their lookup
-1fe5210a1bfba00 Bartosz Golaszewski 2024-01-30  4147  			 * did not return a result. In that case, use platform
-1fe5210a1bfba00 Bartosz Golaszewski 2024-01-30  4148  			 * lookup as a fallback.
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4149  			 */
-1fe5210a1bfba00 Bartosz Golaszewski 2024-01-30  4150  			dev_dbg(consumer,
-1fe5210a1bfba00 Bartosz Golaszewski 2024-01-30  4151  				"using lookup tables for GPIO lookup\n");
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4152  			desc = gpiod_find(consumer, con_id, idx, &lookupflags);
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4153  		}
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4154  
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4155  		if (IS_ERR(desc)) {
-1fe5210a1bfba00 Bartosz Golaszewski 2024-01-30  4156  			dev_dbg(consumer, "No GPIO consumer %s found\n",
-1fe5210a1bfba00 Bartosz Golaszewski 2024-01-30  4157  				con_id);
-0eadd36d9123745 Dmitry Torokhov     2022-09-03  4158  			return desc;
-0eadd36d9123745 Dmitry Torokhov     2022-09-03  4159  		}
-0eadd36d9123745 Dmitry Torokhov     2022-09-03  4160  
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4161  		/*
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4162  		 * If a connection label was passed use that, else attempt to use
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4163  		 * the device name as label
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4164  		 */
-0eadd36d9123745 Dmitry Torokhov     2022-09-03  4165  		ret = gpiod_request(desc, label);
-1fe5210a1bfba00 Bartosz Golaszewski 2024-01-30  4166  	}
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11 @4167  	if (ret) {
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4168  		if (!(ret == -EBUSY && flags & GPIOD_FLAGS_BIT_NONEXCLUSIVE))
-0eadd36d9123745 Dmitry Torokhov     2022-09-03  4169  			return ERR_PTR(ret);
-0eadd36d9123745 Dmitry Torokhov     2022-09-03  4170  
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4171  		/*
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4172  		 * This happens when there are several consumers for
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4173  		 * the same GPIO line: we just return here without
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4174  		 * further initialization. It is a bit of a hack.
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4175  		 * This is necessary to support fixed regulators.
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4176  		 *
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4177  		 * FIXME: Make this more sane and safe.
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4178  		 */
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4179  		dev_info(consumer,
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4180  			 "nonexclusive access to GPIO for %s\n", con_id);
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11 @4181  		return desc;
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4182  	}
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4183  
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4184  	ret = gpiod_configure_flags(desc, con_id, lookupflags, flags);
-0eadd36d9123745 Dmitry Torokhov     2022-09-03  4185  	if (ret < 0) {
-8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4186  		dev_dbg(consumer, "setup of GPIO %s failed\n", con_id);
-0eadd36d9123745 Dmitry Torokhov     2022-09-03  4187  		gpiod_put(desc);
-0eadd36d9123745 Dmitry Torokhov     2022-09-03  4188  		return ERR_PTR(ret);
-0eadd36d9123745 Dmitry Torokhov     2022-09-03  4189  	}
-0eadd36d9123745 Dmitry Torokhov     2022-09-03  4190  
-9ce4ed5b4db1363 Bartosz Golaszewski 2023-08-21  4191  	gpiod_line_state_notify(desc, GPIOLINE_CHANGED_REQUESTED);
-0eadd36d9123745 Dmitry Torokhov     2022-09-03  4192  
-0eadd36d9123745 Dmitry Torokhov     2022-09-03  4193  	return desc;
-0eadd36d9123745 Dmitry Torokhov     2022-09-03  4194  }
-0eadd36d9123745 Dmitry Torokhov     2022-09-03  4195  
+
+vim +642 drivers/acpi/acpi_video.c
+
+^1da177e4c3f41 drivers/acpi/video.c      Linus Torvalds    2005-04-16  612  
+^1da177e4c3f41 drivers/acpi/video.c      Linus Torvalds    2005-04-16  613  static int
+4be44fcd3bf648 drivers/acpi/video.c      Len Brown         2005-08-05  614  acpi_video_device_EDID(struct acpi_video_device *device,
+4be44fcd3bf648 drivers/acpi/video.c      Len Brown         2005-08-05  615  		       union acpi_object **edid, ssize_t length)
+^1da177e4c3f41 drivers/acpi/video.c      Linus Torvalds    2005-04-16  616  {
+^1da177e4c3f41 drivers/acpi/video.c      Linus Torvalds    2005-04-16  617  	int status;
+^1da177e4c3f41 drivers/acpi/video.c      Linus Torvalds    2005-04-16  618  	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
+^1da177e4c3f41 drivers/acpi/video.c      Linus Torvalds    2005-04-16  619  	union acpi_object *obj;
+^1da177e4c3f41 drivers/acpi/video.c      Linus Torvalds    2005-04-16  620  	union acpi_object arg0 = { ACPI_TYPE_INTEGER };
+^1da177e4c3f41 drivers/acpi/video.c      Linus Torvalds    2005-04-16  621  	struct acpi_object_list args = { 1, &arg0 };
+^1da177e4c3f41 drivers/acpi/video.c      Linus Torvalds    2005-04-16  622  
+^1da177e4c3f41 drivers/acpi/video.c      Linus Torvalds    2005-04-16  623  
+^1da177e4c3f41 drivers/acpi/video.c      Linus Torvalds    2005-04-16  624  	*edid = NULL;
+^1da177e4c3f41 drivers/acpi/video.c      Linus Torvalds    2005-04-16  625  
+^1da177e4c3f41 drivers/acpi/video.c      Linus Torvalds    2005-04-16  626  	if (!device)
+d550d98d331737 drivers/acpi/video.c      Patrick Mochel    2006-06-27  627  		return -ENODEV;
+25f97b27045655 drivers/acpi/acpi_video.c Mario Limonciello 2024-01-30  628  	if (!length || (length % 128))
+d550d98d331737 drivers/acpi/video.c      Patrick Mochel    2006-06-27  629  		return -EINVAL;
+25f97b27045655 drivers/acpi/acpi_video.c Mario Limonciello 2024-01-30  630  	arg0.integer.value = length / 128;
+^1da177e4c3f41 drivers/acpi/video.c      Linus Torvalds    2005-04-16  631  
+901302688cb85b drivers/acpi/video.c      Patrick Mochel    2006-05-19  632  	status = acpi_evaluate_object(device->dev->handle, "_DDC", &args, &buffer);
+^1da177e4c3f41 drivers/acpi/video.c      Linus Torvalds    2005-04-16  633  	if (ACPI_FAILURE(status))
+d550d98d331737 drivers/acpi/video.c      Patrick Mochel    2006-06-27  634  		return -ENODEV;
+^1da177e4c3f41 drivers/acpi/video.c      Linus Torvalds    2005-04-16  635  
+50dd096973f1d9 drivers/acpi/video.c      Jan Engelhardt    2006-10-01  636  	obj = buffer.pointer;
+^1da177e4c3f41 drivers/acpi/video.c      Linus Torvalds    2005-04-16  637  
+^1da177e4c3f41 drivers/acpi/video.c      Linus Torvalds    2005-04-16  638  	if (obj && obj->type == ACPI_TYPE_BUFFER)
+^1da177e4c3f41 drivers/acpi/video.c      Linus Torvalds    2005-04-16  639  		*edid = obj;
+^1da177e4c3f41 drivers/acpi/video.c      Linus Torvalds    2005-04-16  640  	else {
+25f97b27045655 drivers/acpi/acpi_video.c Mario Limonciello 2024-01-30  641  		acpi_handle_debug(device->dev->handle,
+25f97b27045655 drivers/acpi/acpi_video.c Mario Limonciello 2024-01-30 @642  				 "Invalid _DDC data for length %ld\n", length);
+^1da177e4c3f41 drivers/acpi/video.c      Linus Torvalds    2005-04-16  643  		status = -EFAULT;
+^1da177e4c3f41 drivers/acpi/video.c      Linus Torvalds    2005-04-16  644  		kfree(obj);
+^1da177e4c3f41 drivers/acpi/video.c      Linus Torvalds    2005-04-16  645  	}
+^1da177e4c3f41 drivers/acpi/video.c      Linus Torvalds    2005-04-16  646  
+d550d98d331737 drivers/acpi/video.c      Patrick Mochel    2006-06-27  647  	return status;
+^1da177e4c3f41 drivers/acpi/video.c      Linus Torvalds    2005-04-16  648  }
+^1da177e4c3f41 drivers/acpi/video.c      Linus Torvalds    2005-04-16  649  
 
 -- 
 0-DAY CI Kernel Test Service
