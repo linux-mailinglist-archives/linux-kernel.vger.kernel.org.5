@@ -1,294 +1,672 @@
-Return-Path: <linux-kernel+bounces-45840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 014988436E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:38:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E6D28436F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:45:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A2571F2A74A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:38:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22042287082
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:45:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BF1E42049;
-	Wed, 31 Jan 2024 06:38:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DA524D584;
+	Wed, 31 Jan 2024 06:45:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lDeNfLtc"
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NlQ6RV15"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34B9C38399;
-	Wed, 31 Jan 2024 06:38:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B96394E1A8;
+	Wed, 31 Jan 2024 06:45:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706683118; cv=none; b=hc0Fdzrn9nPgdpc5IcxymhY1TNpSM5ZMIegZM9Bxclmpbl+5x3Iswa4/MRZrTtfadCjadYXs+7wEal1O43Px0zvdjMnU1+Nn8mQ/C0Weqg8nCfHd/pDRqHh4QYQMNW/Y/+RfCYybTk22L+DtC6mcdgXHpU/E3jqi02CaoqoTKyc=
+	t=1706683517; cv=none; b=ADWp/K4qIXZJQxfGoVmodEOPDStHphPWO1dSEQyAAWsjoUAs0a671UpgmAmvFlDEOvDC+4izTRYxv2Yp4JDNm1yYDgYZ28wkV9+qGuTQarGR8BWtks0Yw2EjnIHJ3/wR1aggvM1Uttc4Tdzum4+VhJQt3T3y92qbobeGIGz9tMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706683118; c=relaxed/simple;
-	bh=7KDFAU8s2wR4bPsMZzaeIQ/0mGhrd+S9mSxfVVE5N+8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZGYWh6uzGPyDA92umDTm14kmZntEE8MZZYWJ3QsoINa/5fQ0sR+N6J/VF067ixNqp+gjnlrWBeh/AqYNS7eehj1xSwiaUCXKqDFywvsKRGkOywo59byMUrN7kd/3YyC7hJMsjTPuQGrLAQYtZ8yq/Hkrrt0+tr7zH9FQeysLo3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lDeNfLtc; arc=none smtp.client-ip=209.85.219.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-6818f3cf00aso39259986d6.0;
-        Tue, 30 Jan 2024 22:38:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706683115; x=1707287915; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6OVlHJvrK3//SACaGBCuaMdfL6VLG3Nf0f7Gh7CCmz4=;
-        b=lDeNfLtcGA03NN/uyDKmMSvADNJ/dIP4UoWuJ5KgQteMSZSfkY8rgxcWVUDS+dxqaP
-         fghj0GgoHSArafgOwErNDhnbUesH9X/FjUqt/AkzndY0Ace0wtoGykMLxT1tbpUifnFP
-         OsvUSth+5wvv+FGj5aPgsh3UVQjV/podVcTON3OG3CAsGFSjbztdtBmoFQfLbfixWiJX
-         KLxJrcJEUXvsBjQSA8+16utWcGFeBlbf6ubrFK0VPA8LXFkCnuhtnaOtrnn4+qtxyGAd
-         rb0w6D/H17ODrXjFiZCqTDjwxjmCz8D+gI4SedYjz+6TCbM8gqWLDJ/fnk4Z2SITLbUP
-         QQAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706683115; x=1707287915;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6OVlHJvrK3//SACaGBCuaMdfL6VLG3Nf0f7Gh7CCmz4=;
-        b=kYFMXEublu6cbM7I/+YBKML4agf8rDooiHzZ6QtQOiL8hlfFjsFcpzNVw5u2FJG54l
-         b4LogX532wuqeKe3ou3P+nW80qxBk4kLTRFZFmvQITgUz4kAlGewjkU0cL8JPpynNvUg
-         Qs7xNnFNG3h/EAoyirITNf8SdcT9Hpdn+UXDOTYWeEw7HSBcnKIKm7+oxYyWEl1Y4Ylz
-         twET0lyZ3XAnpCuJd/4VpJJAFvycEbhQi0Kb6Owng+IfYPDGaFK/MafVqa1FZU0WBuzk
-         iqMxPD+wlgh92CWstGNqhFe6VqSPpDQr9wMn6B8QgHCDAW3wcgsHdAvipfPOdfcwh8FY
-         nK9w==
-X-Gm-Message-State: AOJu0Yx0auSWYIuPreoV3Fcv9Jj1QbYhWArh4S05vSOGwO9YOeK3/cfG
-	DzqXlBAsEwLcq2HuPx/sFPS5Qpbbd0Uuol/YiVW5bmPRKndavuDM
-X-Google-Smtp-Source: AGHT+IHGR9Psh3CWFpRvhr+EIAGFiiQTn/fQ/OeNMDw28Qe/8LO7NBiE1xLguL3HEsSFEarNjcXlVQ==
-X-Received: by 2002:ad4:5cc6:0:b0:68c:67a0:a194 with SMTP id iu6-20020ad45cc6000000b0068c67a0a194mr988723qvb.61.1706683114910;
-        Tue, 30 Jan 2024 22:38:34 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCX73WapufAf0vTlnVFHLt83nvLYg5YLPpOl3kfzm0IilJI/c7FdcXu7He4glPxohGaX9M6lIBZoiT4/2Yu4MnZEzkRUeO76xjcz/GUcjw+UN0TjMaNao8RWt2ch0cL0Lqa2Y7mfaMNFLy/rZsKxPpKpMLG4mGfZV4OBH10LWKl4hHGouPVcuytqmlmWqH/Lb1Xsv7MjM3ySTTXbvPBaKR0N4ZDJhqsR4eNdzV3LG+8kJ44HGeNWKEY240bJuYriiQLAXSMcBZ6drB3Oaav40spugEYhyZY8xN3BuUrRmla9q114yUKKPwH1jx6BfR+vFhMFv0vceqXYdH3YzNAzTQ1jEZ681VbW7mfun537Sx1nZkrxCVfdS0YGRIZSzDSmIpPEJis34lsMjAXK3zTicEKQxGN9bkAqNpW0KzzWK09m7O37gkAOwujJLQYBdNJmDQmXm3dYSn9uQwBT8GMuz4aio67bC4k6F7KD1DE=
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id ol5-20020a0562143d0500b006869bc1fc0esm5239092qvb.11.2024.01.30.22.38.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 22:38:34 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailauth.nyi.internal (Postfix) with ESMTP id 7493727C005B;
-	Wed, 31 Jan 2024 01:38:33 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Wed, 31 Jan 2024 01:38:33 -0500
-X-ME-Sender: <xms:6Oq5ZV24iFMcQRxBoy4Ak_Bsgx4rTJdr0zCm-3BjSYgOZicNpOw_4w>
-    <xme:6Oq5ZcEpjErj9Vr5OqGnNEdCoMKmiIAyDvrk1r5dmTPxFD7MnmsgV0ggGDsmi9fnd
-    l5iCM-eITlgdjPuPA>
-X-ME-Received: <xmr:6Oq5ZV6FfX6KbMAWY0AT4qEoYVIG6OH9oPnZ7uKTaM_-LRafqSftMrKsFA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtkedgleeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpeffjeekveekhfekudekgeeivdefhedthedvfeegleegueeviefhueeuudeh
-    keektdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgpdhgihhthhhusgdrtghomhdpsh
-    ihiihkrghllhgvrhdrrghpphhsphhothdrtghomhenucevlhhushhtvghrufhiiigvpedt
-    necurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvg
-    hrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhf
-    vghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:6Oq5ZS2pz1ygU3dr6Ij2NNJmmsZ2SJjJjTFbBMzqgwetXX6IFmy9Aw>
-    <xmx:6Oq5ZYE6KU4rVaDcV6Qw9CWCUQCMLmp5rVOIKDhp1UdbZG6JLRf8UQ>
-    <xmx:6Oq5ZT9r8J-vXGKOKPXcQ2j8AvCpBlndj3aJB5n6oIkHBdf3PaKRcg>
-    <xmx:6eq5ZVeUO2aj2Xdq3_wn84cXk_zpFsSAq4s-t4JHX586AGhyhuFSyQ>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 31 Jan 2024 01:38:31 -0500 (EST)
-Date: Tue, 30 Jan 2024 22:38:30 -0800
-From: Boqun Feng <boqun.feng@gmail.com>
-To: syzbot <syzbot+a984066a63e9c1e62662@syzkaller.appspotmail.com>
-Cc: eadavis@qq.com, hdanton@sina.com, linux-kernel@vger.kernel.org,
-	penguin-kernel@i-love.sakura.ne.jp, peterz@infradead.org,
-	syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>, urezki@gmail.com,
-	neeraj.iitr10@gmail.com, rcu@vger.kernel.org
-Subject: Re: [syzbot] [bluetooth?] INFO: task hung in hci_conn_failed
-Message-ID: <Zbnq5o_HJOMIIK-c@Boquns-Mac-mini.home>
-References: <20240130113037.1390-1-hdanton@sina.com>
- <00000000000082e8ba06102ba5f1@google.com>
+	s=arc-20240116; t=1706683517; c=relaxed/simple;
+	bh=62rH2nWT7oZIFy1JA85REPqTaRFFGgCKxs03yS0PYo4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=WjPf5Cke35w2Po7DIf9Kyxt22rK0juMUPRt9AZSNWKkjMWNIeW3Ej9LpcEibJILbtd5rBhJuzOyKNSQH8Tio8L1FNf9qiGVLNLb5Y2ift9eQrpXy6et7396uGw3f8ztnjzhOlXnY55Sn1oMzuLr7VsWa6IQV/YItbCRZtk9e+sQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NlQ6RV15; arc=none smtp.client-ip=192.55.52.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706683515; x=1738219515;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=62rH2nWT7oZIFy1JA85REPqTaRFFGgCKxs03yS0PYo4=;
+  b=NlQ6RV15bbX/sEpEJR/MEcWOLJHJpmZAaM2MXkNXzMmgROutp7X68thS
+   4/q5IFvr9ukwf+5H6hH/WxYANylQFfF6EjzJnS+NVFB2RRDEon7pbZ6ql
+   Cnk7AvyW6ZPXw4Ho63dy7b7ZSY4+NTOz7gQYLP3jRciOE1kaC3sXUFbAa
+   /UtWlL1z2tnua4/ZcHjqS/6tR7unImqn5RFa222QjypBr5uxBYa75xmpD
+   IEilSHGkL5L4pivJWju4peMuVF20KNSwytOO0SajKSZWCWVcbvp6NyXma
+   CCEjTSMFS/yPaMglDjdpA3f8cdxd/NQSNGVW76ILo485YCDSManrzuoRj
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="402364620"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="402364620"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 22:45:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="907783072"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="907783072"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 22:45:08 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Gregory Price <gourry.memverge@gmail.com>
+Cc: linux-mm@kvack.org,  linux-kernel@vger.kernel.org,
+  linux-doc@vger.kernel.org,  linux-fsdevel@vger.kernel.org,
+  linux-api@vger.kernel.org,  corbet@lwn.net,  akpm@linux-foundation.org,
+  gregory.price@memverge.com,  honggyu.kim@sk.com,  rakie.kim@sk.com,
+  hyeongtak.ji@sk.com,  mhocko@kernel.org,  vtavarespetr@micron.com,
+  jgroves@micron.com,  ravis.opensrc@micron.com,  sthanneeru@micron.com,
+  emirakhur@micron.com,  Hasan.Maruf@amd.com,  seungjun.ha@samsung.com,
+  hannes@cmpxchg.org,  dan.j.williams@intel.com,  Srinivasulu Thanneeru
+ <sthanneeru.opensrc@micron.com>
+Subject: Re: [PATCH v4 3/3] mm/mempolicy: introduce MPOL_WEIGHTED_INTERLEAVE
+ for weighted interleaving
+In-Reply-To: <20240130182046.74278-4-gregory.price@memverge.com> (Gregory
+	Price's message of "Tue, 30 Jan 2024 13:20:46 -0500")
+References: <20240130182046.74278-1-gregory.price@memverge.com>
+	<20240130182046.74278-4-gregory.price@memverge.com>
+Date: Wed, 31 Jan 2024 14:43:12 +0800
+Message-ID: <877cjqgfzz.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00000000000082e8ba06102ba5f1@google.com>
+Content-Type: text/plain; charset=ascii
 
-[Cc other RCU folks]
+Gregory Price <gourry.memverge@gmail.com> writes:
 
-On Tue, Jan 30, 2024 at 07:45:06AM -0800, syzbot wrote:
-> Hello,
-> 
+> When a system has multiple NUMA nodes and it becomes bandwidth hungry,
+> using the current MPOL_INTERLEAVE could be an wise option.
+>
+> However, if those NUMA nodes consist of different types of memory such
+> as socket-attached DRAM and CXL/PCIe attached DRAM, the round-robin
+> based interleave policy does not optimally distribute data to make use
+> of their different bandwidth characteristics.
+>
+> Instead, interleave is more effective when the allocation policy follows
+> each NUMA nodes' bandwidth weight rather than a simple 1:1 distribution.
+>
+> This patch introduces a new memory policy, MPOL_WEIGHTED_INTERLEAVE,
+> enabling weighted interleave between NUMA nodes.  Weighted interleave
+> allows for proportional distribution of memory across multiple numa
+> nodes, preferably apportioned to match the bandwidth of each node.
+>
+> For example, if a system has 1 CPU node (0), and 2 memory nodes (0,1),
+> with bandwidth of (100GB/s, 50GB/s) respectively, the appropriate
+> weight distribution is (2:1).
+>
+> Weights for each node can be assigned via the new sysfs extension:
+> /sys/kernel/mm/mempolicy/weighted_interleave/
+>
+> For now, the default value of all nodes will be `1`, which matches
+> the behavior of standard 1:1 round-robin interleave. An extension
+> will be added in the future to allow default values to be registered
+> at kernel and device bringup time.
+>
+> The policy allocates a number of pages equal to the set weights. For
+> example, if the weights are (2,1), then 2 pages will be allocated on
+> node0 for every 1 page allocated on node1.
+>
+> The new flag MPOL_WEIGHTED_INTERLEAVE can be used in set_mempolicy(2)
+> and mbind(2).
+>
+> Some high level notes about the pieces of weighted interleave:
+>
+> current->il_prev:
+>     Default interleave uses this to track the last used node.
+>     Weighted interleave uses this to track the *current* node, and
+>     when weight reaches 0 it will be used to acquire the next node.
+>
+> current->il_weight:
+>     The active weight of the current node (current->il_prev)
+>     When this reaches 0, current->il_prev is set to the next node
+>     and current->il_weight is set to the next weight.
 
-This looks like the case which Frederic recently fixed:
+I still think that my description of the 2 fields above is easier to be
+understood.  For weighted interleave,
 
-	https://lore.kernel.org/lkml/20240129232349.3170819-9-boqun.feng@gmail.com/
+current->il_prev is the node from which we allocated page in previous
+allocation.
 
-, which is currently queued in my tree for v6.9 PR:
+current->il_weight is the remaining weight for current->il_prev after
+previous allocation.
 
-	https://github.com/fbq/linux.git rcu-exp.2024.01.29b
+But I will not force you to use this.  Use it only if you think that
+they are better.
 
-can we give it a spin?
+> weighted_interleave_nodes:
+>     Counts the number of allocations as they occur, and applies the
+>     weight for the current node.  When the weight reaches 0, switch
+>     to the next node.  Operates only on task->mempolicy.
+>
+> weighted_interleave_nid:
+>     Gets the total weight of the nodemask as well as each individual
+>     node weight, then calculates the node based on the given index.
+>     Operates on VMA policies.
+>
+> bulk_array_weighted_interleave:
+>     Gets the total weight of the nodemask as well as each individual
+>     node weight, then calculates the number of "interleave rounds" as
+>     well as any delta ("partial round").  Calculates the number of
+>     pages for each node and allocates them.
+>
+>     If a node was scheduled for interleave via interleave_nodes, the
+>     current weight will be allocated first.
+>
+>     Operates only on the task->mempolicy.
+>
+> One piece of complexity is the interaction between a recent refactor
+> which split the logic to acquire the "ilx" (interleave index) of an
+> allocation and the actual application of the interleave. If a call
+> to alloc_pages_mpol() were made with a weighted-interleave policy and
+> ilx set to NO_INTERLEAVE_INDEX, weighted_interleave_nodes() would
+> operate on a VMA policy - violating the description above.
+>
+> An inspection of all callers of alloc_pages_mpol() shows that all
+> external callers set ilx to `0`, an index value, or will call
+> get_vma_policy() to acquire the ilx.
+>
+> For example, mm/shmem.c may call into alloc_pages_mpol. The call stacks
+> all set (pgoff_t ilx) or end up in `get_vma_policy()`.  This enforces
+> the `weighted_interleave_nodes()` and `weighted_interleave_nid()`
+> policy requirements (task/vma respectively).
+>
+> Suggested-by: Hasan Al Maruf <Hasan.Maruf@amd.com>
+> Signed-off-by: Gregory Price <gregory.price@memverge.com>
+> Co-developed-by: Rakie Kim <rakie.kim@sk.com>
+> Signed-off-by: Rakie Kim <rakie.kim@sk.com>
+> Co-developed-by: Honggyu Kim <honggyu.kim@sk.com>
+> Signed-off-by: Honggyu Kim <honggyu.kim@sk.com>
+> Co-developed-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
+> Signed-off-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
+> Co-developed-by: Srinivasulu Thanneeru <sthanneeru.opensrc@micron.com>
+> Signed-off-by: Srinivasulu Thanneeru <sthanneeru.opensrc@micron.com>
+> Co-developed-by: Ravi Jonnalagadda <ravis.opensrc@micron.com>
+> Signed-off-by: Ravi Jonnalagadda <ravis.opensrc@micron.com>
+> ---
+>  .../admin-guide/mm/numa_memory_policy.rst     |   9 +
+>  include/linux/sched.h                         |   1 +
+>  include/uapi/linux/mempolicy.h                |   1 +
+>  mm/mempolicy.c                                | 231 +++++++++++++++++-
+>  4 files changed, 238 insertions(+), 4 deletions(-)
+>
+> diff --git a/Documentation/admin-guide/mm/numa_memory_policy.rst b/Documentation/admin-guide/mm/numa_memory_policy.rst
+> index eca38fa81e0f..a70f20ce1ffb 100644
+> --- a/Documentation/admin-guide/mm/numa_memory_policy.rst
+> +++ b/Documentation/admin-guide/mm/numa_memory_policy.rst
+> @@ -250,6 +250,15 @@ MPOL_PREFERRED_MANY
+>  	can fall back to all existing numa nodes. This is effectively
+>  	MPOL_PREFERRED allowed for a mask rather than a single node.
+>  
+> +MPOL_WEIGHTED_INTERLEAVE
+> +	This mode operates the same as MPOL_INTERLEAVE, except that
+> +	interleaving behavior is executed based on weights set in
+> +	/sys/kernel/mm/mempolicy/weighted_interleave/
+> +
+> +	Weighted interleave allocates pages on nodes according to a
+> +	weight.  For example if nodes [0,1] are weighted [5,2], 5 pages
+> +	will be allocated on node0 for every 2 pages allocated on node1.
+> +
+>  NUMA memory policy supports the following optional mode flags:
+>  
+>  MPOL_F_STATIC_NODES
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index ffe8f618ab86..b9ce285d8c9c 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -1259,6 +1259,7 @@ struct task_struct {
+>  	/* Protected by alloc_lock: */
+>  	struct mempolicy		*mempolicy;
+>  	short				il_prev;
+> +	u8				il_weight;
+>  	short				pref_node_fork;
+>  #endif
+>  #ifdef CONFIG_NUMA_BALANCING
+> diff --git a/include/uapi/linux/mempolicy.h b/include/uapi/linux/mempolicy.h
+> index a8963f7ef4c2..1f9bb10d1a47 100644
+> --- a/include/uapi/linux/mempolicy.h
+> +++ b/include/uapi/linux/mempolicy.h
+> @@ -23,6 +23,7 @@ enum {
+>  	MPOL_INTERLEAVE,
+>  	MPOL_LOCAL,
+>  	MPOL_PREFERRED_MANY,
+> +	MPOL_WEIGHTED_INTERLEAVE,
+>  	MPOL_MAX,	/* always last member of enum */
+>  };
+>  
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index 3bdfaf03b660..7cd92f4ec0d7 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -19,6 +19,13 @@
+>   *                for anonymous memory. For process policy an process counter
+>   *                is used.
+>   *
+> + * weighted interleave
+> + *                Allocate memory interleaved over a set of nodes based on
+> + *                a set of weights (per-node), with normal fallback if it
+> + *                fails.  Otherwise operates the same as interleave.
+> + *                Example: nodeset(0,1) & weights (2,1) - 2 pages allocated
+> + *                on node 0 for every 1 page allocated on node 1.
+> + *
+>   * bind           Only allocate memory on a specific set of nodes,
+>   *                no fallback.
+>   *                FIXME: memory is allocated starting with the first node
+> @@ -441,6 +448,10 @@ static const struct mempolicy_operations mpol_ops[MPOL_MAX] = {
+>  		.create = mpol_new_nodemask,
+>  		.rebind = mpol_rebind_preferred,
+>  	},
+> +	[MPOL_WEIGHTED_INTERLEAVE] = {
+> +		.create = mpol_new_nodemask,
+> +		.rebind = mpol_rebind_nodemask,
+> +	},
+>  };
+>  
+>  static bool migrate_folio_add(struct folio *folio, struct list_head *foliolist,
+> @@ -862,8 +873,11 @@ static long do_set_mempolicy(unsigned short mode, unsigned short flags,
+>  
+>  	old = current->mempolicy;
+>  	current->mempolicy = new;
+> -	if (new && new->mode == MPOL_INTERLEAVE)
+> +	if (new && (new->mode == MPOL_INTERLEAVE ||
+> +		    new->mode == MPOL_WEIGHTED_INTERLEAVE)) {
+>  		current->il_prev = MAX_NUMNODES-1;
+> +		current->il_weight = 0;
+> +	}
+>  	task_unlock(current);
+>  	mpol_put(old);
+>  	ret = 0;
+> @@ -888,6 +902,7 @@ static void get_policy_nodemask(struct mempolicy *pol, nodemask_t *nodes)
+>  	case MPOL_INTERLEAVE:
+>  	case MPOL_PREFERRED:
+>  	case MPOL_PREFERRED_MANY:
+> +	case MPOL_WEIGHTED_INTERLEAVE:
+>  		*nodes = pol->nodes;
+>  		break;
+>  	case MPOL_LOCAL:
+> @@ -972,6 +987,13 @@ static long do_get_mempolicy(int *policy, nodemask_t *nmask,
+>  		} else if (pol == current->mempolicy &&
+>  				pol->mode == MPOL_INTERLEAVE) {
+>  			*policy = next_node_in(current->il_prev, pol->nodes);
+> +		} else if (pol == current->mempolicy &&
+> +				pol->mode == MPOL_WEIGHTED_INTERLEAVE) {
+> +			if (current->il_weight)
+> +				*policy = current->il_prev;
+> +			else
+> +				*policy = next_node_in(current->il_prev,
+> +						       pol->nodes);
+>  		} else {
+>  			err = -EINVAL;
+>  			goto out;
+> @@ -1336,7 +1358,8 @@ static long do_mbind(unsigned long start, unsigned long len,
+>  		 * VMAs, the nodes will still be interleaved from the targeted
+>  		 * nodemask, but one by one may be selected differently.
+>  		 */
+> -		if (new->mode == MPOL_INTERLEAVE) {
+> +		if (new->mode == MPOL_INTERLEAVE ||
+> +		    new->mode == MPOL_WEIGHTED_INTERLEAVE) {
+>  			struct page *page;
+>  			unsigned int order;
+>  			unsigned long addr = -EFAULT;
+> @@ -1784,7 +1807,8 @@ struct mempolicy *__get_vma_policy(struct vm_area_struct *vma,
+>   * @vma: virtual memory area whose policy is sought
+>   * @addr: address in @vma for shared policy lookup
+>   * @order: 0, or appropriate huge_page_order for interleaving
+> - * @ilx: interleave index (output), for use only when MPOL_INTERLEAVE
+> + * @ilx: interleave index (output), for use only when MPOL_INTERLEAVE or
+> + *       MPOL_WEIGHTED_INTERLEAVE
+>   *
+>   * Returns effective policy for a VMA at specified address.
+>   * Falls back to current->mempolicy or system default policy, as necessary.
+> @@ -1801,7 +1825,8 @@ struct mempolicy *get_vma_policy(struct vm_area_struct *vma,
+>  	pol = __get_vma_policy(vma, addr, ilx);
+>  	if (!pol)
+>  		pol = get_task_policy(current);
+> -	if (pol->mode == MPOL_INTERLEAVE) {
+> +	if (pol->mode == MPOL_INTERLEAVE ||
+> +	    pol->mode == MPOL_WEIGHTED_INTERLEAVE) {
+>  		*ilx += vma->vm_pgoff >> order;
+>  		*ilx += (addr - vma->vm_start) >> (PAGE_SHIFT + order);
+>  	}
+> @@ -1851,6 +1876,22 @@ bool apply_policy_zone(struct mempolicy *policy, enum zone_type zone)
+>  	return zone >= dynamic_policy_zone;
+>  }
+>  
+> +static unsigned int weighted_interleave_nodes(struct mempolicy *policy)
+> +{
+> +	unsigned int node = current->il_prev;
+> +
+> +	if (!current->il_weight || !node_isset(node, policy->nodes)) {
+> +		node = next_node_in(node, policy->nodes);
+> +		/* can only happen if nodemask is being rebound */
+> +		if (node == MAX_NUMNODES)
+> +			return node;
 
-Regards,
-Boqun
+I feel a little unsafe to read policy->nodes at same time of writing in
+rebound.  Is it better to use a seqlock to guarantee its consistency?
+It's unnecessary to be a part of this series though.
 
-> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-> INFO: task hung in hci_conn_failed
-> 
-> INFO: task kworker/u5:4:5429 blocked for more than 143 seconds.
->       Not tainted 6.8.0-rc2-syzkaller-g861c0981648f-dirty #0
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:kworker/u5:4    state:D stack:27616 pid:5429  tgid:5429  ppid:2      flags:0x00004000
-> Workqueue: hci0 hci_cmd_sync_work
-> Call Trace:
->  <TASK>
->  context_switch kernel/sched/core.c:5400 [inline]
->  __schedule+0xf12/0x5c00 kernel/sched/core.c:6727
->  __schedule_loop kernel/sched/core.c:6802 [inline]
->  schedule+0xe9/0x270 kernel/sched/core.c:6817
->  schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6874
->  __mutex_lock_common kernel/locking/mutex.c:684 [inline]
->  __mutex_lock+0x5b9/0x9d0 kernel/locking/mutex.c:752
->  hci_connect_cfm include/net/bluetooth/hci_core.h:1983 [inline]
->  hci_conn_failed+0x158/0x370 net/bluetooth/hci_conn.c:1289
->  hci_abort_conn_sync+0x758/0xb50 net/bluetooth/hci_sync.c:5356
->  abort_conn_sync+0x187/0x390 net/bluetooth/hci_conn.c:2988
->  hci_cmd_sync_work+0x1a4/0x410 net/bluetooth/hci_sync.c:306
->  process_one_work+0x886/0x15d0 kernel/workqueue.c:2633
->  process_scheduled_works kernel/workqueue.c:2706 [inline]
->  worker_thread+0x8b9/0x1290 kernel/workqueue.c:2787
->  kthread+0x2c6/0x3a0 kernel/kthread.c:388
->  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
->  </TASK>
-> 
-> Showing all locks held in the system:
-> 3 locks held by kworker/0:0/8:
-> 3 locks held by kworker/0:1/9:
-> 2 locks held by kworker/u4:0/11:
->  #0: ffff888013089938 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x789/0x15d0 kernel/workqueue.c:2608
->  #1: ffffc90000107d80 (connector_reaper_work){+.+.}-{0:0}, at: process_one_work+0x7eb/0x15d0 kernel/workqueue.c:2609
-> 2 locks held by kworker/u4:2/42:
->  #0: ffff888013089938 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x789/0x15d0 kernel/workqueue.c:2608
->  #1: ffffc90000b2fd80 ((reaper_work).work){+.+.}-{0:0}, at: process_one_work+0x7eb/0x15d0 kernel/workqueue.c:2609
-> 1 lock held by udevd/4510:
-> 2 locks held by getty/4809:
->  #0: ffff8880298450a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x24/0x80 drivers/tty/tty_ldisc.c:243
->  #1: ffffc90002f062f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0xfc6/0x1490 drivers/tty/n_tty.c:2201
-> 1 lock held by syz-executor.3/5419:
-> 5 locks held by kworker/u5:4/5429:
->  #0: ffff88802d96d538 ((wq_completion)hci0){+.+.}-{0:0}, at: process_one_work+0x789/0x15d0 kernel/workqueue.c:2608
->  #1: ffffc90009befd80 ((work_completion)(&hdev->cmd_sync_work)){+.+.}-{0:0}, at: process_one_work+0x7eb/0x15d0 kernel/workqueue.c:2609
->  #2: ffff888075635060 (&hdev->req_lock){+.+.}-{3:3}, at: hci_cmd_sync_work+0x170/0x410 net/bluetooth/hci_sync.c:305
->  #3: ffff888075634078 (&hdev->lock){+.+.}-{3:3}, at: hci_abort_conn_sync+0x150/0xb50 net/bluetooth/hci_sync.c:5337
->  #4: ffffffff8ef238c8 (hci_cb_list_lock){+.+.}-{3:3}, at: hci_connect_cfm include/net/bluetooth/hci_core.h:1983 [inline]
->  #4: ffffffff8ef238c8 (hci_cb_list_lock){+.+.}-{3:3}, at: hci_conn_failed+0x158/0x370 net/bluetooth/hci_conn.c:1289
-> 6 locks held by kworker/u5:5/5431:
->  #0: ffff888027f29538 ((wq_completion)hci5){+.+.}-{0:0}, at: process_one_work+0x789/0x15d0 kernel/workqueue.c:2608
->  #1: ffffc90009bffd80 ((work_completion)(&hdev->cmd_sync_work)){+.+.}-{0:0}, at: process_one_work+0x7eb/0x15d0 kernel/workqueue.c:2609
->  #2: ffff888079359060 (&hdev->req_lock){+.+.}-{3:3}, at: hci_cmd_sync_work+0x170/0x410 net/bluetooth/hci_sync.c:305
->  #3: ffff888079358078 (&hdev->lock){+.+.}-{3:3}, at: hci_abort_conn_sync+0x150/0xb50 net/bluetooth/hci_sync.c:5337
->  #4: ffffffff8ef238c8 (hci_cb_list_lock){+.+.}-{3:3}, at: hci_connect_cfm include/net/bluetooth/hci_core.h:1983 [inline]
->  #4: ffffffff8ef238c8 (hci_cb_list_lock){+.+.}-{3:3}, at: hci_conn_failed+0x158/0x370 net/bluetooth/hci_conn.c:1289
->  #5: ffffffff8d1b8438 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:324 [inline]
->  #5: ffffffff8d1b8438 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x3ff/0x800 kernel/rcu/tree_exp.h:995
-> 3 locks held by kworker/1:5/5500:
-> 3 locks held by kworker/0:8/5556:
-> 3 locks held by kworker/1:6/5586:
-> 3 locks held by kworker/1:7/5659:
-> 2 locks held by dhcpcd/20271:
->  #0: ffff88808e304130 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1691 [inline]
->  #0: ffff88808e304130 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: packet_do_bind+0x2c/0xf50 net/packet/af_packet.c:3202
->  #1: ffffffff8d1b8438 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:324 [inline]
->  #1: ffffffff8d1b8438 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x3ff/0x800 kernel/rcu/tree_exp.h:995
-> 1 lock held by dhcpcd/20354:
->  #0: ffff88803a7ba130 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1691 [inline]
->  #0: ffff88803a7ba130 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: packet_do_bind+0x2c/0xf50 net/packet/af_packet.c:3202
-> 1 lock held by dhcpcd/20466:
->  #0: ffff88801db68130 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1691 [inline]
->  #0: ffff88801db68130 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: packet_do_bind+0x2c/0xf50 net/packet/af_packet.c:3202
-> 1 lock held by dhcpcd/20585:
->  #0: ffff888094ba4130 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1691 [inline]
->  #0: ffff888094ba4130 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: packet_do_bind+0x2c/0xf50 net/packet/af_packet.c:3202
-> 1 lock held by dhcpcd/20736:
->  #0: ffff88809175e130 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1691 [inline]
->  #0: ffff88809175e130 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: packet_do_bind+0x2c/0xf50 net/packet/af_packet.c:3202
-> 1 lock held by syz-executor.1/21229:
-> 3 locks held by syz-executor.4/21232:
-> 1 lock held by syz-executor.5/21233:
-> 
-> =============================================
-> 
-> NMI backtrace for cpu 1
-> CPU: 1 PID: 29 Comm: khungtaskd Not tainted 6.8.0-rc2-syzkaller-g861c0981648f-dirty #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
->  nmi_cpu_backtrace+0x277/0x390 lib/nmi_backtrace.c:113
->  nmi_trigger_cpumask_backtrace+0x299/0x300 lib/nmi_backtrace.c:62
->  trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
->  check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
->  watchdog+0xf87/0x1210 kernel/hung_task.c:379
->  kthread+0x2c6/0x3a0 kernel/kthread.c:388
->  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
->  </TASK>
-> Sending NMI from CPU 1 to CPUs 0:
-> NMI backtrace for cpu 0
-> CPU: 0 PID: 21255 Comm: syz-executor.0 Not tainted 6.8.0-rc2-syzkaller-g861c0981648f-dirty #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-> RIP: 0010:__debug_check_no_obj_freed lib/debugobjects.c:981 [inline]
-> RIP: 0010:debug_check_no_obj_freed+0x21d/0x600 lib/debugobjects.c:1019
-> Code: 89 64 24 38 49 bd 22 01 00 00 00 00 ad de 48 c1 ea 03 4d 89 fc 80 3c 1a 00 0f 85 dc 00 00 00 48 8d 78 18 41 83 c6 01 4c 8b 38 <48> 89 fa 48 c1 ea 03 80 3c 1a 00 0f 85 f7 02 00 00 48 8b 50 18 4c
-> RSP: 0018:ffffc9007e76fc80 EFLAGS: 00000006
-> RAX: ffff88809414c528 RBX: dffffc0000000000 RCX: ffffffff8168ea5e
-> RDX: 1ffff110128298a5 RSI: ffff888066342100 RDI: ffff88809414c540
-> RBP: ffffc9007e76fdc0 R08: 0000000000000001 R09: fffff5200fcedf7e
-> R10: 0000000000000003 R11: 0000000000000000 R12: ffff888066341100
-> R13: dead000000000122 R14: 0000000000000005 R15: ffff88805dc630f0
-> FS:  0000555555f24480(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007faacb501400 CR3: 0000000048e71000 CR4: 0000000000350ef0
-> Call Trace:
->  <NMI>
->  </NMI>
->  <TASK>
->  slab_free_hook mm/slub.c:2093 [inline]
->  slab_free mm/slub.c:4299 [inline]
->  kmem_cache_free+0x255/0x350 mm/slub.c:4363
->  putname+0x12e/0x170 fs/namei.c:274
->  do_symlinkat+0x1ac/0x310 fs/namei.c:4515
->  __do_sys_symlinkat fs/namei.c:4522 [inline]
->  __se_sys_symlinkat fs/namei.c:4519 [inline]
->  __x64_sys_symlinkat+0x97/0xc0 fs/namei.c:4519
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0xd3/0x250 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x63/0x6b
-> RIP: 0033:0x7faacb47c527
-> Code: 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 0a 01 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007ffd9c121f28 EFLAGS: 00000206 ORIG_RAX: 000000000000010a
-> RAX: ffffffffffffffda RBX: 00007ffd9c121ff0 RCX: 00007faacb47c527
-> RDX: 00007faacb4c9526 RSI: 00000000ffffff9c RDI: 00007ffd9c121ff0
-> RBP: 0000000000000001 R08: 0000000000000017 R09: 00007ffd9c121c77
-> R10: 0000000000000000 R11: 0000000000000206 R12: 0000000000000000
-> R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000000
->  </TASK>
-> 
-> 
-> Tested on:
-> 
-> commit:         861c0981 Merge tag 'jfs-6.8-rc3' of github.com:kleikam..
-> git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1207db37e80000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=b168fa511db3ca08
-> dashboard link: https://syzkaller.appspot.com/bug?extid=a984066a63e9c1e62662
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> patch:          https://syzkaller.appspot.com/x/patch.diff?x=14a550d3e80000
-> 
+> +		current->il_prev = node;
+> +		current->il_weight = get_il_weight(node);
+> +	}
+> +	current->il_weight--;
+> +	return node;
+> +}
+> +
+>  /* Do dynamic interleaving for a process */
+>  static unsigned int interleave_nodes(struct mempolicy *policy)
+>  {
+> @@ -1885,6 +1926,9 @@ unsigned int mempolicy_slab_node(void)
+>  	case MPOL_INTERLEAVE:
+>  		return interleave_nodes(policy);
+>  
+> +	case MPOL_WEIGHTED_INTERLEAVE:
+> +		return weighted_interleave_nodes(policy);
+> +
+>  	case MPOL_BIND:
+>  	case MPOL_PREFERRED_MANY:
+>  	{
+> @@ -1923,6 +1967,45 @@ static unsigned int read_once_policy_nodemask(struct mempolicy *pol,
+>  	return nodes_weight(*mask);
+>  }
+>  
+> +static unsigned int weighted_interleave_nid(struct mempolicy *pol, pgoff_t ilx)
+> +{
+> +	nodemask_t nodemask;
+> +	unsigned int target, nr_nodes;
+> +	u8 __rcu *table;
+> +	unsigned int weight_total = 0;
+> +	u8 weight;
+> +	int nid;
+> +
+> +	nr_nodes = read_once_policy_nodemask(pol, &nodemask);
+> +	if (!nr_nodes)
+> +		return numa_node_id();
+> +
+> +	rcu_read_lock();
+> +	table = rcu_dereference(iw_table);
+> +	/* calculate the total weight */
+> +	for_each_node_mask(nid, nodemask) {
+> +		/* detect system default usage */
+> +		weight = table ? table[nid] : 1;
+> +		weight = weight ? weight : 1;
+> +		weight_total += weight;
+> +	}
+> +
+> +	/* Calculate the node offset based on totals */
+> +	target = ilx % weight_total;
+> +	nid = first_node(nodemask);
+> +	while (target) {
+> +		/* detect system default usage */
+> +		weight = table ? table[nid] : 1;
+> +		weight = weight ? weight : 1;
+
+I found duplicated pattern as above in this patch.  Can we define a
+function like below to remove the duplication?
+
+u8 __get_il_weight(u8 *table, int nid)
+{
+        u8 weight;
+
+        weight = table ? table[nid] : 1;
+        return weight ? : 1;
+}
+
+This can be used in alloc_pages_bulk_array_weighted_interleave() to copy
+from global to local weights array too.
+
+But this isn't a big deal.  I will leave it to you to decide.
+
+> +		if (target < weight)
+> +			break;
+> +		target -= weight;
+> +		nid = next_node_in(nid, nodemask);
+> +	}
+> +	rcu_read_unlock();
+> +	return nid;
+> +}
+> +
+>  /*
+>   * Do static interleaving for interleave index @ilx.  Returns the ilx'th
+>   * node in pol->nodes (starting from ilx=0), wrapping around if ilx
+> @@ -1983,6 +2066,11 @@ static nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *pol,
+>  		*nid = (ilx == NO_INTERLEAVE_INDEX) ?
+>  			interleave_nodes(pol) : interleave_nid(pol, ilx);
+>  		break;
+> +	case MPOL_WEIGHTED_INTERLEAVE:
+> +		*nid = (ilx == NO_INTERLEAVE_INDEX) ?
+> +			weighted_interleave_nodes(pol) :
+> +			weighted_interleave_nid(pol, ilx);
+> +		break;
+>  	}
+>  
+>  	return nodemask;
+> @@ -2044,6 +2132,7 @@ bool init_nodemask_of_mempolicy(nodemask_t *mask)
+>  	case MPOL_PREFERRED_MANY:
+>  	case MPOL_BIND:
+>  	case MPOL_INTERLEAVE:
+> +	case MPOL_WEIGHTED_INTERLEAVE:
+>  		*mask = mempolicy->nodes;
+>  		break;
+>  
+> @@ -2144,6 +2233,7 @@ struct page *alloc_pages_mpol(gfp_t gfp, unsigned int order,
+>  		 * node in its nodemask, we allocate the standard way.
+>  		 */
+>  		if (pol->mode != MPOL_INTERLEAVE &&
+> +		    pol->mode != MPOL_WEIGHTED_INTERLEAVE &&
+>  		    (!nodemask || node_isset(nid, *nodemask))) {
+>  			/*
+>  			 * First, try to allocate THP only on local node, but
+> @@ -2279,6 +2369,127 @@ static unsigned long alloc_pages_bulk_array_interleave(gfp_t gfp,
+>  	return total_allocated;
+>  }
+>  
+> +static unsigned long alloc_pages_bulk_array_weighted_interleave(gfp_t gfp,
+> +		struct mempolicy *pol, unsigned long nr_pages,
+> +		struct page **page_array)
+> +{
+> +	struct task_struct *me = current;
+> +	unsigned long total_allocated = 0;
+> +	unsigned long nr_allocated = 0;
+> +	unsigned long rounds;
+> +	unsigned long node_pages, delta;
+> +	u8 __rcu *table, *weights, weight;
+> +	unsigned int weight_total = 0;
+> +	unsigned long rem_pages = nr_pages;
+> +	nodemask_t nodes;
+> +	int nnodes, node, next_node;
+> +	int resume_node = MAX_NUMNODES - 1;
+> +	u8 resume_weight = 0;
+> +	int prev_node;
+> +	int i;
+> +
+> +	if (!nr_pages)
+> +		return 0;
+> +
+> +	nnodes = read_once_policy_nodemask(pol, &nodes);
+> +	if (!nnodes)
+> +		return 0;
+> +
+> +	/* Continue allocating from most recent node and adjust the nr_pages */
+> +	node = me->il_prev;
+> +	weight = me->il_weight;
+> +	if (weight && node_isset(node, nodes)) {
+> +		node_pages = min(rem_pages, weight);
+> +		nr_allocated = __alloc_pages_bulk(gfp, node, NULL, node_pages,
+> +						  NULL, page_array);
+> +		page_array += nr_allocated;
+> +		total_allocated += nr_allocated;
+> +		/* if that's all the pages, no need to interleave */
+> +		if (rem_pages < weight) {
+> +			/* stay on current node, adjust il_weight */
+> +			me->il_weight -= rem_pages;
+> +			return total_allocated;
+> +		} else if (rem_pages == weight) {
+> +			/* move to next node / weight */
+> +			me->il_prev = next_node_in(node, nodes);
+> +			me->il_weight = get_il_weight(next_node);
+> +			return total_allocated;
+> +		}
+> +		/* Otherwise we adjust remaining pages, continue from there */
+> +		rem_pages -= weight;
+> +	}
+> +	/* clear active weight in case of an allocation failure */
+> +	me->il_weight = 0;
+> +	prev_node = node;
+> +
+> +	/* create a local copy of node weights to operate on outside rcu */
+> +	weights = kzalloc(nr_node_ids, GFP_KERNEL);
+> +	if (!weights)
+> +		return total_allocated;
+> +
+> +	rcu_read_lock();
+> +	table = rcu_dereference(iw_table);
+> +	if (table)
+> +		memcpy(weights, table, nr_node_ids);
+> +	rcu_read_unlock();
+> +
+> +	/* calculate total, detect system default usage */
+> +	for_each_node_mask(node, nodes) {
+> +		if (!weights[node])
+> +			weights[node] = 1;
+> +		weight_total += weights[node];
+> +	}
+> +
+> +	/*
+> +	 * Calculate rounds/partial rounds to minimize __alloc_pages_bulk calls.
+> +	 * Track which node weighted interleave should resume from.
+> +	 *
+> +	 * if (rounds > 0) and (delta == 0), resume_node will always be
+> +	 * the node following prev_node and its weight.
+> +	 */
+> +	rounds = rem_pages / weight_total;
+> +	delta = rem_pages % weight_total;
+> +	resume_node = next_node_in(prev_node, nodes);
+> +	resume_weight = weights[resume_node];
+> +	for (i = 0; i < nnodes; i++) {
+> +		node = next_node_in(prev_node, nodes);
+> +		weight = weights[node];
+> +		node_pages = weight * rounds;
+> +		/* If a delta exists, add this node's portion of the delta */
+> +		if (delta > weight) {
+> +			node_pages += weight;
+> +			delta -= weight;
+> +		} else if (delta) {
+> +			node_pages += delta;
+> +			/* delta may deplete on a boundary or w/ a remainder */
+> +			if (delta == weight) {
+> +				/* boundary: resume from next node/weight */
+> +				resume_node = next_node_in(node, nodes);
+> +				resume_weight = weights[resume_node];
+> +			} else {
+> +				/* remainder: resume this node w/ remainder */
+> +				resume_node = node;
+> +				resume_weight = weight - delta;
+> +			}
+
+If we are comfortable to leave resume_weight == 0, then the above
+branch can be simplified to.
+
+        resume_node = node;
+        resume_weight = weight - delta;
+
+But, this is a style issue again.  I will leave it to you to decide.
+
+So, except the issue you pointed out already.  All series looks good to
+me!  Thanks!  Feel free to add
+
+Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
+
+to the whole series.
+
+> +			delta = 0;
+> +		}
+> +		/* node_pages can be 0 if an allocation fails and rounds == 0 */
+> +		if (!node_pages)
+> +			break;
+> +		nr_allocated = __alloc_pages_bulk(gfp, node, NULL, node_pages,
+> +						  NULL, page_array);
+> +		page_array += nr_allocated;
+> +		total_allocated += nr_allocated;
+> +		if (total_allocated == nr_pages)
+> +			break;
+> +		prev_node = node;
+> +	}
+> +	me->il_prev = resume_node;
+> +	me->il_weight = resume_weight;
+> +	kfree(weights);
+> +	return total_allocated;
+> +}
+> +
+>  static unsigned long alloc_pages_bulk_array_preferred_many(gfp_t gfp, int nid,
+>  		struct mempolicy *pol, unsigned long nr_pages,
+>  		struct page **page_array)
+> @@ -2319,6 +2530,10 @@ unsigned long alloc_pages_bulk_array_mempolicy(gfp_t gfp,
+>  		return alloc_pages_bulk_array_interleave(gfp, pol,
+>  							 nr_pages, page_array);
+>  
+> +	if (pol->mode == MPOL_WEIGHTED_INTERLEAVE)
+> +		return alloc_pages_bulk_array_weighted_interleave(
+> +				  gfp, pol, nr_pages, page_array);
+> +
+>  	if (pol->mode == MPOL_PREFERRED_MANY)
+>  		return alloc_pages_bulk_array_preferred_many(gfp,
+>  				numa_node_id(), pol, nr_pages, page_array);
+> @@ -2394,6 +2609,7 @@ bool __mpol_equal(struct mempolicy *a, struct mempolicy *b)
+>  	case MPOL_INTERLEAVE:
+>  	case MPOL_PREFERRED:
+>  	case MPOL_PREFERRED_MANY:
+> +	case MPOL_WEIGHTED_INTERLEAVE:
+>  		return !!nodes_equal(a->nodes, b->nodes);
+>  	case MPOL_LOCAL:
+>  		return true;
+> @@ -2530,6 +2746,10 @@ int mpol_misplaced(struct folio *folio, struct vm_area_struct *vma,
+>  		polnid = interleave_nid(pol, ilx);
+>  		break;
+>  
+> +	case MPOL_WEIGHTED_INTERLEAVE:
+> +		polnid = weighted_interleave_nid(pol, ilx);
+> +		break;
+> +
+>  	case MPOL_PREFERRED:
+>  		if (node_isset(curnid, pol->nodes))
+>  			goto out;
+> @@ -2904,6 +3124,7 @@ static const char * const policy_modes[] =
+>  	[MPOL_PREFERRED]  = "prefer",
+>  	[MPOL_BIND]       = "bind",
+>  	[MPOL_INTERLEAVE] = "interleave",
+> +	[MPOL_WEIGHTED_INTERLEAVE] = "weighted interleave",
+>  	[MPOL_LOCAL]      = "local",
+>  	[MPOL_PREFERRED_MANY]  = "prefer (many)",
+>  };
+> @@ -2963,6 +3184,7 @@ int mpol_parse_str(char *str, struct mempolicy **mpol)
+>  		}
+>  		break;
+>  	case MPOL_INTERLEAVE:
+> +	case MPOL_WEIGHTED_INTERLEAVE:
+>  		/*
+>  		 * Default to online nodes with memory if no nodelist
+>  		 */
+> @@ -3073,6 +3295,7 @@ void mpol_to_str(char *buffer, int maxlen, struct mempolicy *pol)
+>  	case MPOL_PREFERRED_MANY:
+>  	case MPOL_BIND:
+>  	case MPOL_INTERLEAVE:
+> +	case MPOL_WEIGHTED_INTERLEAVE:
+>  		nodes = pol->nodes;
+>  		break;
+>  	default:
+
+--
+Best Regards,
+Huang, Ying
+
 
