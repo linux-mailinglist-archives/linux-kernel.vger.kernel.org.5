@@ -1,73 +1,54 @@
-Return-Path: <linux-kernel+bounces-46002-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46003-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2580184391B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:32:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D518084391E
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:32:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 861A71F27FDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:32:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 148891C28FA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:32:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BE193FB30;
-	Wed, 31 Jan 2024 08:32:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1D90605CC;
+	Wed, 31 Jan 2024 08:32:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VJ9j0a/T"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="lDQSfraS"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87E61168A3
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 08:32:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C16A5DF17;
+	Wed, 31 Jan 2024 08:32:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706689930; cv=none; b=n4tEJXU4mAoR+mUmgSCIvoJxE1GZNya7zqz2n8uDDzludz2uSePyHpnN5H3aamMao3KoWbu5yTDbrW6/SADNEo9Us53iVYImUx3y25Lce916kS2+VjQ2WINQMW8x77pgm7dMgzXqazHfmqc8Arey2oEiaoWBB+eAi5d4amNt4Ds=
+	t=1706689934; cv=none; b=atcT0o8Fj1PLP3IseHZ+kM+mcvCfiTUJHbmBKzEZtJMl2hLW1HGR0fYlYQqO2W258Klevna315evt3Gk7xj6E/BkQoIJ/u0F5ZVYK0Qkti0nD8mLU5WIVJhZ41/4VO/3Eduqsh6x3tItzSSDYO7qWptHEn0wY7XMCGazQy9FUeU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706689930; c=relaxed/simple;
-	bh=uW2qWG9f4i8dbiyjx/KoeHEpStHxMUg4GXRKzOVY26Q=;
+	s=arc-20240116; t=1706689934; c=relaxed/simple;
+	bh=LnrH8a5zYVpmAlRagGxradQPGUkv1B0XDLbxWC6rdmA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jwqZwVOJ4cfCa7JdNQxIZ0b7z5s/qII9PGqOsi0smlzuduiHNdaIEneq3TqFewRkMRzng0ATsKGlUQ5TinpRB96GxMgYXXOAEdbqKLBdk1URzVwtho0dpLdlMdaDDO8zwflUnOVVzdz/WdmyQQV5cJ7IOcoAfZkZt7iI1o0XlPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VJ9j0a/T; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a29c4bbb2f4so522870266b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 00:32:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706689926; x=1707294726; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hKqI+ex6kcefYsSc13l7kLpM/i1M6RfFSyL6Vm7tWxU=;
-        b=VJ9j0a/T1xNiD/kIBapBtVnHZynt7aIdqnkyYNKllPxkuGQF7FXV1YuH/ACmBPOk+A
-         mpuDVAdpIirDfX6UXlw6N7mXHdxJBKmZAIhHsGQhkX4BS/lyULzn+xvaqSvK5nOXAcFd
-         SnMhesdWlt+J8RTBVAl5BIboUXKyUJGRTXQYlgT9M6klJ4taGr+BhxFwpRZWWhgb2BQE
-         CQ+U4RuvkASa62z02hTGLuBN3+k3PkTRCC/X6So2DrxM+1IV8aGr6b2HWfyblha6iOn6
-         2UZLFFmU+PDBfdvj/ZM/SHpIf47L/DOdL4zYylqCVEDJv+vpLuC3XWw7zp29FS29bK//
-         9Eww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706689926; x=1707294726;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hKqI+ex6kcefYsSc13l7kLpM/i1M6RfFSyL6Vm7tWxU=;
-        b=tQKLeUIzsJZsZZcNxcxlgq5Bc76eodxW8NsQdZ/IGMx0QyeUTB00P8zCl/lTubRDkJ
-         ImYzHvdN2ZNNkowaksuxrMzkVtPvWHDPfcKfyYoPZUccqxhHLMtuefME/GooIaiJ3HZc
-         g+2Dlq67jv8f8Sve91TyKAu/ZQ994Ia5V7m7+zSZzHVae8mZGsdRe/wvEaMJCF8vMglv
-         sB04kwPjxj02DxwfrLSjLS4zksPlFDZpa75rTt2cLBzVqbSI8/PvKZlSZzDMjqUHXuXq
-         648dNgyARaLJWLWGEhtpA/+KTTG2Yo6qSTo0e/SfrV6aTV7uz9mdwJ+Ppe7qict1Nigd
-         +lFQ==
-X-Gm-Message-State: AOJu0YxdmKn0msBipuGE+CamiZIhMd1izSSrt7f2TBFUP+6DzKDuTIHT
-	2owJFyOnk4wDvclzkqC3/ulVKLNs58h0hrHuXQCwkT8lFosKAwHtlgUyBhJvnVI=
-X-Google-Smtp-Source: AGHT+IFwIdjNb2fXwv4JhM+chfZh206ZDHeUAv0mOI3XqXYqDj0+8KPriicjL4LSfixqTqt/TAeN5w==
-X-Received: by 2002:a17:906:28cd:b0:a36:600d:8911 with SMTP id p13-20020a17090628cd00b00a36600d8911mr565720ejd.10.1706689925683;
-        Wed, 31 Jan 2024 00:32:05 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWvEnQ0I6KVpTKGVxXiAJkhJ/m9JcbKiiwVjBDe1jMuIJXVkIwsySjB4CyuZO4OYj8dgVUdqG9guadmgpDAE4ojOrvss3JdC8jNPjs5CpaZFMyRScDyy8JKnWoOy/vk53AjTpO6VBY2xI0ETiWnhdJTxmmLJGeVM65Luia3uZ7PdrTAz62D2SWcdnbQYNY7WPO4I1M8aKf/vG7T9MvhAYHkmb/NDw8oraI5wclzIZ0CJayvcfmS4G15ZTwJvUqbz5i/o4tEbJep8Uo41jSiYXCDNCi+Pvwg+io+fr5c9Lyi3nuUAmos7rxiNeluTJ97gdrjvLjko0JV0BoK1sWWtedYDDGdnIv40beE
-Received: from [192.168.1.20] ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id vb1-20020a170907d04100b00a34c07816e3sm5919866ejc.73.2024.01.31.00.32.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Jan 2024 00:32:04 -0800 (PST)
-Message-ID: <52f1e76e-0953-4625-94ae-2208600f5729@linaro.org>
-Date: Wed, 31 Jan 2024 09:32:02 +0100
+	 In-Reply-To:Content-Type; b=Ksl/91ngH02Nys0nrzpgyW1ooSmTpWrGA5lCHDsFYrC+jT2wbf9mB03BaG1IzJ28eWWnCxgjAfEZGoe8Y40Nm1F7fYhh8feUWHkfU5R4AaAqknsDRH1yfyPU6JI/L0/43pZTmVWlxVsa5WwelExbuiz0wdzpgA8uh+eQNclgoqs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=lDQSfraS; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1706689930;
+	bh=LnrH8a5zYVpmAlRagGxradQPGUkv1B0XDLbxWC6rdmA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=lDQSfraSCJwGUPW5n9z/BbT0hc5H5woZFWcMz7OmWUoONNJNka8sk8fzhPQ5ZJVX4
+	 JtOqZTULJOVS9Lgl0KpXtULLXUqRyNZDpA2HtRPC46jTEktXLhyGAcx1s7+VfQCF/Z
+	 8JwIwnbiuU6exVHUMgZo6Pfxc+9CabHXbXmq4n9/6P44t7Lu6bsUSERmjUjUL5bcDc
+	 OHYI5CSyg0uLDfrerIBBUoC1dGX8qf3St3mRTTFKB10c7csVzrIFMj1osey0ATMvV0
+	 7wPxXxJoQn3Tc4p+V3zz8JkS4RsqJuKTIgg28MNC/j8X1xhPmtPYMgl052FgMQrz5d
+	 7bAyDN6ldt/1A==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4543F37803EE;
+	Wed, 31 Jan 2024 08:32:09 +0000 (UTC)
+Message-ID: <7574acab-4a4e-4213-a477-5ef1870fe98a@collabora.com>
+Date: Wed, 31 Jan 2024 09:32:08 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,156 +56,115 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] dt-bindings: pinctrl: cy8x95x0: Minor fix & update
-Content-Language: en-US
-To: Naresh Solanki <naresh.solanki@9elements.com>,
- Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+Subject: Re: [PATCH 2/3] dt-bindings: arm: mediatek: convert PCIESYS to the
+ json-schema
+To: Rob Herring <robh@kernel.org>
+Cc: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Patrick Rudolph <patrick.rudolph@9elements.com>
-Cc: mazziesaccount@gmail.com, linux-gpio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240130125602.568719-1-naresh.solanki@9elements.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240130125602.568719-1-naresh.solanki@9elements.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+ Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
+ <matthias.bgg@gmail.com>, devicetree@vger.kernel.org,
+ linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+ Russell King <linux@armlinux.org.uk>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Thomas Gleixner <tglx@linutronix.de>
+References: <20240123082100.7334-1-zajec5@gmail.com>
+ <20240123082100.7334-3-zajec5@gmail.com>
+ <e17b85b1-7f1f-4b60-89b7-43f560466cc2@collabora.com>
+ <20240130203413.GA2290196-robh@kernel.org>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+In-Reply-To: <20240130203413.GA2290196-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 30/01/2024 13:56, Naresh Solanki wrote:
-> Update maxItems to 60 for gpio-reserved-ranges to allow multiple gpio
-
-Subject: everything can be a fix and everything is update. Write
-something useful.
-
-> reserved ranges.
-> Add input-enable property to allow configuring a pin as input.
-> Update example & fix alignment.
+Il 30/01/24 21:34, Rob Herring ha scritto:
+> On Tue, Jan 23, 2024 at 12:20:29PM +0100, AngeloGioacchino Del Regno wrote:
+>> Il 23/01/24 09:20, Rafał Miłecki ha scritto:
+>>> From: Rafał Miłecki <rafal@milecki.pl>
+>>>
+>>> This helps validating DTS files. Introduced changes:
+>>> 1. Documented "reg" property
+>>> 2. Adjusted "reg" in example
+>>>
+>>> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+>>> ---
+>>>    .../arm/mediatek/mediatek,mt7622-pciesys.yaml | 47 +++++++++++++++++++
+>>>    .../arm/mediatek/mediatek,pciesys.txt         | 25 ----------
+>>>    2 files changed, 47 insertions(+), 25 deletions(-)
+>>>    create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,mt7622-pciesys.yaml
+>>>    delete mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,pciesys.txt
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,mt7622-pciesys.yaml b/Documentation/devicetree/bindings/arm/mediatek/mediatek,mt7622-pciesys.yaml
+>>> new file mode 100644
+>>> index 000000000000..7340a2512402
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,mt7622-pciesys.yaml
+>>
+>> I think that we should really move all those clock controller yaml files to their
+>> proper directory, which would be
+>>
+>> Documentation/devicetree/bindings/clock/
+>>
+>> ...because those are clock controllers anyway and the fact that they do also
+>> provide a reset controller doesn't really justify having them in arm/mediatek.
+>>
+>> Besides, I would appreciate if you could also move mt8186/92/95 and eventual
+>> others that are there to clock/.
 > 
-> Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
-> ---
->  .../bindings/pinctrl/cypress,cy8c95x0.yaml    | 38 ++++++++++++++-----
->  1 file changed, 28 insertions(+), 10 deletions(-)
+> Yes, please move it.
 > 
-> diff --git a/Documentation/devicetree/bindings/pinctrl/cypress,cy8c95x0.yaml b/Documentation/devicetree/bindings/pinctrl/cypress,cy8c95x0.yaml
-> index 7f30ec2f1e54..90dda5d3cc55 100644
-> --- a/Documentation/devicetree/bindings/pinctrl/cypress,cy8c95x0.yaml
-> +++ b/Documentation/devicetree/bindings/pinctrl/cypress,cy8c95x0.yaml
-> @@ -45,7 +45,8 @@ properties:
->      maxItems: 1
->  
->    gpio-reserved-ranges:
-> -    maxItems: 1
-> +    minItems: 1
-> +    maxItems: 60
->  
->    vdd-supply:
->      description:
-> @@ -85,6 +86,8 @@ patternProperties:
->  
->        bias-disable: true
->  
-> +      input-enable: true
-> +
->        output-high: true
->  
->        output-low: true
-> @@ -125,14 +128,29 @@ examples:
->        #size-cells = <0>;
->  
->        pinctrl@20 {
-> -        compatible = "cypress,cy8c9520";
-> -        reg = <0x20>;
-> -        gpio-controller;
-> -        #gpio-cells = <2>;
-> -        #interrupt-cells = <2>;
-> -        interrupts = <GIC_SPI 94 IRQ_TYPE_LEVEL_HIGH>;
-> -        interrupt-controller;
-> -        vdd-supply = <&p3v3>;
-> -        gpio-reserved-ranges = <5 1>;
-> +          compatible = "cypress,cy8c9520";
+>>
+>>> @@ -0,0 +1,47 @@
+>>> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+>>> +%YAML 1.2
+>>> +---
+>>> +$id: http://devicetree.org/schemas/arm/mediatek/mediatek,mt7622-pciesys.yaml#
+>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>> +
+>>> +title: MediaTek PCIESYS controller
+>>> +
+>>> +description:
+>>> +  The MediaTek PCIESYS controller provides various clocks to the system.
+>>> +
+>>> +maintainers:
+>>> +  - Matthias Brugger <matthias.bgg@gmail.com>
+>>> +
+>>> +properties:
+>>> +  compatible:
+>>> +    items:
+>>> +      - enum:
+>>> +          - mediatek,mt7622-pciesys
+>>> +          - mediatek,mt7629-pciesys
+>>> +      - const: syscon
+>>
+>> I know that there's syscon all over the place and, even if I admit I didn't check,
+>> I am fairly sure that there's absolutely no reason to have syscon there, and that
+>> the syscon compatible never did anything for (most of, or all of) those clock
+>> controllers, at all.
+>>
+>> I'm not sure - though - if removing syscon during the txt->yaml conversion is
+>> acceptable (yeah we'd be cheating a bit), but something makes me say it is, because
+>> the bindings couldn't validate before that one as well.
+> 
+> As long as you state why you are removing it in the commit msg.
+> 
+>>
+>> Of course you'd have to remove the syscon compatible from the affected device trees
+>> as well as omitting it here.
+> 
+> You could also do 'minItems: 1' and 'deprecated' in the 2nd item.
+> 
 
-I don't understand why you change from correct indentation to mixed one
-(2 and 4 spaces). It does not make sense.
+That too. Yes. But I still really want to see the syscon compatible removed from
+the device trees on those nodes because it doesn't make any sense to have it :-)
 
-
-> +          reg = <0x20>;
-> +          gpio-controller;
-> +          #gpio-cells = <2>;
-> +          #interrupt-cells = <2>;
-> +          interrupts = <GIC_SPI 94 IRQ_TYPE_LEVEL_HIGH>;
-> +          interrupt-controller;
-> +          vdd-supply = <&p3v3>;
-> +          gpio-reserved-ranges = <1 2>, <6 1>, <10 1>, <15 1>;
-> +
-> +          pinctrl-0 = <&U62160_pins>, <&U62160_ipins>;
-> +          pinctrl-names = "default";
-
-Missing blank line.
-
-> +          U62160_pins: cfg-pins {
-> +              pins = "gp03", "gp16", "gp20", "gp50", "gp51";
-> +              function = "gpio";
-> +              input-enable;
-> +              bias-pull-up;
-> +          };
-
-Missing blank line.
+>> However, to be sure that we're doing the right thing here, I have to summon someone
+>> that can actually give a definitive answer to what I just said.....
+>>
+>> Krzysztof, please? :-)
 
 
-> +          U62160_ipins: icfg-pins {
-> +              pins = "gp04", "gp17", "gp21", "gp52", "gp53";
-> +              function = "gpio";
-> +              input-enable;
-> +              bias-pull-up;
-> +          };
->        };
->      };
-
-Best regards,
-Krzysztof
 
 
