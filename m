@@ -1,123 +1,126 @@
-Return-Path: <linux-kernel+bounces-46804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46805-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 742C0844489
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:31:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71AD084448C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:32:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3034B28AFFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:31:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E9AC1F2CEE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:32:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64B6013E220;
-	Wed, 31 Jan 2024 16:27:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94CC46FC6;
+	Wed, 31 Jan 2024 16:30:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="F2vykkux"
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="FT0Fzc15"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C29A013BE80;
-	Wed, 31 Jan 2024 16:27:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D52A010A16;
+	Wed, 31 Jan 2024 16:30:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706718449; cv=none; b=elPAkh0tfj5JgEQ4wVgMLYuD/KwIIjyVmK3Sn20mTrOVx7DxlBva1J8MVCtvZVRl+GQIYQUkis3CBCACfHSx4pppRbIPZVde4x9RctSIYjd9NfwuEWbGBIOCCMtN/pBpP2H15eZlh3REJxUCvu+AEtin0rwuIiwRRfHNzpyKWb4=
+	t=1706718617; cv=none; b=mKzsT6QyZZtVmQFiqG9LJWRWjYDIMCpvbYTPV6Op1mtTmddzXQPrhj7sNZO9GnMZT8B3D5gBC4CSS1rg8GLVIoixhYSmIAALBTeg+tjIHT0J5GHDq3nfRaTLVfHZT/HTPVo+ajMEjgWiJh5TO9HH7oQv6pivLRFGeovoybAk8cM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706718449; c=relaxed/simple;
-	bh=XnW4AYy3Nc97tfx3b9rBN9XG71YZGgJFnnvWMkeQV3U=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Brt13EpCq7UrRCf/Sx/As7Wf6gk/p3q8CAokzmBzA5OOdypUWgWW70Sy4uKRM8NW2px7cwYmq7BGu0/5bkXBhf4Q2WElkr0yvI890PzImb/oHlbsNbpxUTNBXlxUKighkcu9mvQ/r1xArYt3lkI78ZoLsbG2zkWAt8hLdS4v0mc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=F2vykkux; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4DFBF4000C;
-	Wed, 31 Jan 2024 16:27:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1706718444;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=E0E4D1zz8fIXJ+KURAPowU82qI2dGBP74YLhcrLKxeE=;
-	b=F2vykkuxPmOPCEqFpG66Hjw4H+nvbRvwiORFpqCghiwDy6wgvYnqTB7tCu1698xlP+9yi3
-	mK8Fa1OnckzQr5yn5ufgb67Nl48UPBwBL7ChdGEgPFq3Z6lk6PKnCIlblQbQZmXDL1RllZ
-	BYBN3lu8uy7uPLnHkOYsDCD5IlU2H82f4RMMI30fG0OH60gkF8+lJ8YS2EQubUuckh1cYr
-	IMKfY2kyS+lDfN5yiUsN7E8vmah2Y9BZCHbV86go1Y6R2kiwczY+XBOnCs1XU1XL+DBcJ8
-	/sfVlQ9ZNkdbnWV/BfmNnuk+BuiflxfwggsiLuu5JucQDIO7aa/+OSynLpafMA==
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Date: Wed, 31 Jan 2024 17:26:31 +0100
-Subject: [PATCH v4 18/18] MIPS: mobileye: eyeq5: add pinctrl properties to
- UART nodes
+	s=arc-20240116; t=1706718617; c=relaxed/simple;
+	bh=7V1fSgM4dCw5mlPpFTAU48pNl+7Y50/umf6DNk56DA0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sHMdwxjSi0DAd594tgdjm9JZGu3asSkLrXSl+1+QGA5I39orG7tZUCImTjeniTHI+LXgS3oXaBkoUtZGTYW4R3vfsCS39FIV5Ftkb4DCdcftTQNVEKqSXH9kuL2NlWadlv1O8yZ8XlqAlcq8MO0ps5Izw30Xo7E7NJIUGGX+NRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=FT0Fzc15; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 6290E40E0177;
+	Wed, 31 Jan 2024 16:30:13 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 7GQ7zRmXTudR; Wed, 31 Jan 2024 16:30:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1706718611; bh=CwEErEB3kf4RV79ZYL4VTQTVVr1r+pmwOOZjB2GqHX8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FT0Fzc15Ik8qxsIJb/DkO7GGIGwKyf5+d/2niv86eGi9vZs09M+9SRHZ0CaxTAkew
+	 qQX/Hc0GsOcQDyshkSAOGiYxmlWV79/k8hs22cMauUhYQI3hfQ4DnCg3sC9ZYyLrGM
+	 ot4jMX0I7B2caZfGD+YRNt6C3gDweittOAm1YTBM9fYGznDfpbyX4vKXd8AByNK3E8
+	 ne8iXgwIhTDXWV7uyMN2ozEA+uoLzz6oXQtFyOlhjz7XTiCdbM5d/r2+Drq6gdjPsw
+	 yak8/RlmQKstxU3LjZrjIG7aN6Hb7ENIsHb+Oaa5rOFq0P3wNnTQ7NxF3mVCcqEeWL
+	 1N2yJ6/9axAyvjKOGeJORYRPMYrHxGKgTGgDID+IwbW9/RRDfY6Zjo6C+JNrE7eTP4
+	 DJyST6GQnuc/DVlJlNSmM4yf++toYjZ0BxgbqQ3Vt1htYp81aA4wWm0X4vKMjpD2Oh
+	 fGLKEvRC4hYYdUpIOGQ1xZCw/T8PcjY8Clue4YWYr6YAGwpl3iag6KLy4vQGZIDhhC
+	 PMajdU1cEQI2GKS4LAN1OzKGjTisOLQlXeSSQNf5fS2sLGgLtMLUGaTU2MEu+bC8rv
+	 sPTFWWpxh8qzdcTIUe55IWH3RxALfhpJwe/HewWL4t7b5komTAU5tKAoY6QHBYMe2s
+	 rjlBaZ71WYEFlOQNT+aA6+fQ=
+Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 256DC40E00C5;
+	Wed, 31 Jan 2024 16:29:53 +0000 (UTC)
+Date: Wed, 31 Jan 2024 17:29:52 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org,
+	Kevin Loughlin <kevinloughlin@google.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Dionna Glaze <dionnaglaze@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>,
+	linux-arch@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH v3 03/19] x86/startup_64: Drop long return to
+ initial_code pointer
+Message-ID: <20240131162952.GHZbp1gH7C7lNMRUru@fat_crate.local>
+References: <20240129180502.4069817-21-ardb+git@google.com>
+ <20240129180502.4069817-24-ardb+git@google.com>
+ <20240131134431.GJZbpOvz3Ibhg4VhCl@fat_crate.local>
+ <CAMj1kXF7T4morB+Z3BDy-UaeHoeU6fHtnaa-7HJY_NR3RVC5sg@mail.gmail.com>
+ <CAMj1kXGk1QivyoK4H5CVp7p-tfYoQSTuethpkm8bWBcTO_UMGw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240131-mbly-clk-v4-18-bcd00510d6a0@bootlin.com>
-References: <20240131-mbly-clk-v4-0-bcd00510d6a0@bootlin.com>
-In-Reply-To: <20240131-mbly-clk-v4-0-bcd00510d6a0@bootlin.com>
-To: Gregory CLEMENT <gregory.clement@bootlin.com>, 
- Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- Linus Walleij <linus.walleij@linaro.org>, 
- =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>, 
- Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
- linux-mips@vger.kernel.org, linux-clk@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- Tawfik Bayouk <tawfik.bayouk@mobileye.com>, linux-gpio@vger.kernel.org, 
- =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-X-Mailer: b4 0.12.4
-X-GND-Sasl: theo.lebrun@bootlin.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXGk1QivyoK4H5CVp7p-tfYoQSTuethpkm8bWBcTO_UMGw@mail.gmail.com>
 
-UART nodes are present in the platform devicetree. Add pinctrl to them
-now that the pin controller is supported.
+On Wed, Jan 31, 2024 at 03:07:50PM +0100, Ard Biesheuvel wrote:
+> > s/int3/RET seems to do the trick.
+> >
+> or ud2, even better,
 
-Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
----
- arch/mips/boot/dts/mobileye/eyeq5.dtsi | 6 ++++++
- 1 file changed, 6 insertions(+)
+Yap, that does it. And yes, we don't return here. I guess objtool
+complains because
 
-diff --git a/arch/mips/boot/dts/mobileye/eyeq5.dtsi b/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-index ae13e8299994..643bbc55e2b5 100644
---- a/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-+++ b/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-@@ -79,6 +79,8 @@ uart0: serial@800000 {
- 			clocks  = <&uart_clk>, <&occ_periph>;
- 			clock-names = "uartclk", "apb_pclk";
- 			resets = <&reset 0 10>;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&uart0_pins>;
- 		};
- 
- 		uart1: serial@900000 {
-@@ -90,6 +92,8 @@ uart1: serial@900000 {
- 			clocks  = <&uart_clk>, <&occ_periph>;
- 			clock-names = "uartclk", "apb_pclk";
- 			resets = <&reset 0 11>;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&uart1_pins>;
- 		};
- 
- 		uart2: serial@a00000 {
-@@ -101,6 +105,8 @@ uart2: serial@a00000 {
- 			clocks  = <&uart_clk>, <&occ_periph>;
- 			clock-names = "uartclk", "apb_pclk";
- 			resets = <&reset 0 12>;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&uart2_pins>;
- 		};
- 
- 		olb: system-controller@e00000 {
+"7. file: warning: objtool: func()+0x5c: stack state mismatch
+
+   The instruction's frame pointer state is inconsistent, depending on
+   which execution path was taken to reach the instruction.
+
+   ...
+
+   Another possibility is that the code has some asm or inline asm which
+   does some unusual things to the stack or the frame pointer.  In such
+   cases it's probably appropriate to use the unwind hint macros in
+   asm/unwind_hints.h.
+"
+
+Lemme test this one a bit on my machines and queue it.
+
+Thx.
 
 -- 
-2.43.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
