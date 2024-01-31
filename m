@@ -1,154 +1,93 @@
-Return-Path: <linux-kernel+bounces-46543-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46545-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDB9E844124
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:57:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13E7484412C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:58:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87C5228837D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:57:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7FC21F22198
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:58:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AF4D80C07;
-	Wed, 31 Jan 2024 13:57:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JMJM9ktc"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 652EC82865;
+	Wed, 31 Jan 2024 13:58:16 +0000 (UTC)
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7349B7866F;
-	Wed, 31 Jan 2024 13:57:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9337C7BAFA;
+	Wed, 31 Jan 2024 13:58:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706709451; cv=none; b=AmsAIh3a1JX/HTHPzpuphY/YzYacyl0VHxLH/9sD18YAo0VAD4BcqSKfmatzYfPbvYvL0Jq02N9zyRQ5p0MY67h9aV7CczKhThkV6znDdeIQTciAL4b1brXEFsSgm9N+bVFvcZALqPO19k9BzHFmi6XH/a9i/e/MPpb23G4CJ+g=
+	t=1706709495; cv=none; b=l+VHppatUt1YLGj82yigADPftkM0m/9G5OUvqB+ocWkDWcVNBkkqTQ29s7Vcm2iDWHTwdZxV56/dz5IkbVwi1E3EqommmfxaLL+nnQqVss+MlcpOfck/m5hYiKUs37w4YvDFbqyL06hcyC3KtOR7TALgztDb0w9KiWFpo9EHVZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706709451; c=relaxed/simple;
-	bh=nLvzwb6WYwRoyrFoBK7xr3Ig0dOYx8JY28+OYqJ4wAE=;
+	s=arc-20240116; t=1706709495; c=relaxed/simple;
+	bh=td42V5WtxJ5A7xupTMIxEkM8quiEk1wi7aSb6k8B9E4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aJv8ZnVc4xjA1ydXvNJtIygLXyT6pgHC7IobtQ35weA7bl8tUSSXjZrMJisvYGTmNFygTObgF11zOc6F/heZs0tRx8Z9NWA6xc86pSo4zzlGeP16orqJi0YXRppQNs+ReVDD7s+PXPwBO80AeyGxw6QrHl58fvwTCsgmT8Pr/f8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JMJM9ktc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 482A5C433C7;
-	Wed, 31 Jan 2024 13:57:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706709451;
-	bh=nLvzwb6WYwRoyrFoBK7xr3Ig0dOYx8JY28+OYqJ4wAE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=JMJM9ktcnrmUtDHOzMgMydX0TzI+TQgzOdnVQZlAwuF7himMX6COXvBqgs785UpQ6
-	 O0jSx/fOukXyp+nn4TIEkZAhXE/96/L3bRebV/UC+givnL9IvqbHa9H5Ma/9ZzpqcK
-	 /15dYAELntgCU2xsAEY2xaTFs1jedkULLNmdi7f40VdAP+iS/WXdRoalRK4z3VID3t
-	 UCYeJtmrER5z/4xL1bz/BTphqkQLQvbFlQsx08bkI7oMBSnnRCTvD52ujkJIByE35N
-	 OMGqTxI01L+tvZoc41J3ghLjPobM61vnrgrXXrXw2S7fVMMNVv0t6IwFgk/ghbk8vk
-	 UpZyn7atMR6RQ==
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cf588c4dbcso50606941fa.1;
-        Wed, 31 Jan 2024 05:57:31 -0800 (PST)
-X-Gm-Message-State: AOJu0Ywiu5QCo/4CW8TcDLKr0GwNTdAZMW08w/ZN8RAtjtGCcObzXcyE
-	+uTzk6okXyFNrvAVMDWCYBuBz2kKGrSwcyUaIerRmRWqxuC3/ugr0mP18Rqn3a91mIylHLtLqyE
-	Db0MHpxUi0KrPNBSrL0VF8eFMD4A=
-X-Google-Smtp-Source: AGHT+IE5KOp/oqYq4S5cBEtKvQDaGkC8zXIG3DeDsiZ++cOC6WwUL+DXRU3gVuk676tBxlVNSAp8wTW59zMONGU7b3I=
-X-Received: by 2002:a05:651c:19a8:b0:2ce:fa00:9b0a with SMTP id
- bx40-20020a05651c19a800b002cefa009b0amr1505548ljb.16.1706709449515; Wed, 31
- Jan 2024 05:57:29 -0800 (PST)
+	 To:Cc:Content-Type; b=UfB6KMJowkfQZaNnSh6ggJlRgdek1sUIC1OQ8CmmnPLl8bL+UtcTm4VpvoiUL5OzXsdYIhlLVetWPHoPa4OzRB+KO0B1r7mg2vb859Y8KfIdAm6G1zplfMgvHijqy/9BaI8s68nDBRqigRkyy/iWf62UgSgWNY+YvymajXpcUak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-59a1e21b0ebso889979eaf.1;
+        Wed, 31 Jan 2024 05:58:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706709493; x=1707314293;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=td42V5WtxJ5A7xupTMIxEkM8quiEk1wi7aSb6k8B9E4=;
+        b=msaMTh9cXydxpOK8s3rQ+SJlaisKxHVWAMPoguu5Sash4Jc5vgZrQwLZLomZn3PvUL
+         XjFnTyHUg5PqCFnNLQjn/OSBI5KKDERhyu9sg6r3HzoDahim6AenzBGo1dTMG4gGyzXQ
+         XGfKjUeMZBfdufByMohJT0PC8pgD1vqa1OLHz+x3NYnQDrDaeEWZd0tPe4vuSgsn+fWZ
+         7iRrOVZFjqEom/AYwh6IxqIzd53AC3NNjL6Y2AkR3Z74zOWqUOAeJgQUrUhC6I5VA0ug
+         WiB8s1MhtPpCFMh8yHQlib+bykAGiItbjSEobos75QDEQWM91Y32RhlAVt0GVLEvzkS9
+         qFtA==
+X-Gm-Message-State: AOJu0YwEo6LO1YwAaKRVLOUPA6Wi7BNrdfUzq6J7BExI+mcTP/j6Pk4Z
+	SjUv7IeMOwRCtjy7sUEs8x9bEKzxv10rgNzpscS5bksScZ8e0Y9noT4NG+Fgaz2C0juRGuUVSYB
+	NnKRwfuh28FMnwR1XwTOfIUuhs+8=
+X-Google-Smtp-Source: AGHT+IGknvzqH81VSV0dvAw4O75J0y/Wp3wRWa45qzduvyN05yPyp6U2FaoaAhJ67DaS0Zr+WLrzTtvYhkAYbJhslrw=
+X-Received: by 2002:a05:6820:606:b0:599:6d16:353c with SMTP id
+ e6-20020a056820060600b005996d16353cmr2065521oow.1.1706709493563; Wed, 31 Jan
+ 2024 05:58:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240129180502.4069817-21-ardb+git@google.com>
- <20240129180502.4069817-24-ardb+git@google.com> <20240131134431.GJZbpOvz3Ibhg4VhCl@fat_crate.local>
-In-Reply-To: <20240131134431.GJZbpOvz3Ibhg4VhCl@fat_crate.local>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Wed, 31 Jan 2024 14:57:18 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXF7T4morB+Z3BDy-UaeHoeU6fHtnaa-7HJY_NR3RVC5sg@mail.gmail.com>
-Message-ID: <CAMj1kXF7T4morB+Z3BDy-UaeHoeU6fHtnaa-7HJY_NR3RVC5sg@mail.gmail.com>
-Subject: Re: [PATCH v3 03/19] x86/startup_64: Drop long return to initial_code pointer
-To: Borislav Petkov <bp@alien8.de>
-Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org, 
-	Kevin Loughlin <kevinloughlin@google.com>, Tom Lendacky <thomas.lendacky@amd.com>, 
-	Dionna Glaze <dionnaglaze@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>, linux-arch@vger.kernel.org, 
-	llvm@lists.linux.dev
+References: <20240119090502.3869695-1-li.meng@amd.com> <CAJZ5v0gzKdjZJBypEw1+czGN-SHbx0s0-h=Lq96+MDVAO11PYQ@mail.gmail.com>
+ <20240129153311.GDZbfFN0Twxkw4FnKX@fat_crate.local>
+In-Reply-To: <20240129153311.GDZbfFN0Twxkw4FnKX@fat_crate.local>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 31 Jan 2024 14:58:02 +0100
+Message-ID: <CAJZ5v0hRk3tME7yeC+1r0RM4-oPPrnSu2=JCsOshBbJp_Nq2Hg@mail.gmail.com>
+Subject: Re: [PATCH V14 0/7] amd-pstate preferred core
+To: Borislav Petkov <bp@alien8.de>, Meng Li <li.meng@amd.com>
+Cc: "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, Huang Rui <ray.huang@amd.com>, 
+	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org, 
+	linux-acpi@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>, 
+	linux-kselftest@vger.kernel.org, Nathan Fontenot <nathan.fontenot@amd.com>, 
+	Deepak Sharma <deepak.sharma@amd.com>, Alex Deucher <alexander.deucher@amd.com>, 
+	Mario Limonciello <mario.limonciello@amd.com>, Shimmer Huang <shimmer.huang@amd.com>, 
+	Perry Yuan <Perry.Yuan@amd.com>, Xiaojian Du <Xiaojian.Du@amd.com>, 
+	Viresh Kumar <viresh.kumar@linaro.org>, Oleksandr Natalenko <oleksandr@natalenko.name>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 31 Jan 2024 at 14:45, Borislav Petkov <bp@alien8.de> wrote:
+On Mon, Jan 29, 2024 at 4:33=E2=80=AFPM Borislav Petkov <bp@alien8.de> wrot=
+e:
 >
-> On Mon, Jan 29, 2024 at 07:05:06PM +0100, Ard Biesheuvel wrote:
-> > From: Ard Biesheuvel <ardb@kernel.org>
+> On Mon, Jan 29, 2024 at 04:18:02PM +0100, Rafael J. Wysocki wrote:
+> > You've had comments on the previous version of this.
 > >
-> > Since commit 866b556efa12 ("x86/head/64: Install startup GDT"), the
-> > primary startup sequence sets the code segment register (CS) to __KERNEL_CS
-> > before calling into the startup code shared between primary and
-> > secondary boot.
-> >
-> > This means a simple indirect call is sufficient here.
-> >
-> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> > ---
-> >  arch/x86/kernel/head_64.S | 35 ++------------------
-> >  1 file changed, 3 insertions(+), 32 deletions(-)
-> >
-> > diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-> > index d4918d03efb4..4017a49d7b76 100644
-> > --- a/arch/x86/kernel/head_64.S
-> > +++ b/arch/x86/kernel/head_64.S
-> > @@ -428,39 +428,10 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
-> >       movq    %r15, %rdi
-> >
-> >  .Ljump_to_C_code:
-> > -     /*
-> > -      * Jump to run C code and to be on a real kernel address.
-> > -      * Since we are running on identity-mapped space we have to jump
-> > -      * to the full 64bit address, this is only possible as indirect
-> > -      * jump.  In addition we need to ensure %cs is set so we make this
-> > -      * a far return.
-> > -      *
-> > -      * Note: do not change to far jump indirect with 64bit offset.
-> > -      *
-> > -      * AMD does not support far jump indirect with 64bit offset.
-> > -      * AMD64 Architecture Programmer's Manual, Volume 3: states only
-> > -      *      JMP FAR mem16:16 FF /5 Far jump indirect,
-> > -      *              with the target specified by a far pointer in memory.
-> > -      *      JMP FAR mem16:32 FF /5 Far jump indirect,
-> > -      *              with the target specified by a far pointer in memory.
-> > -      *
-> > -      * Intel64 does support 64bit offset.
-> > -      * Software Developer Manual Vol 2: states:
-> > -      *      FF /5 JMP m16:16 Jump far, absolute indirect,
-> > -      *              address given in m16:16
-> > -      *      FF /5 JMP m16:32 Jump far, absolute indirect,
-> > -      *              address given in m16:32.
-> > -      *      REX.W + FF /5 JMP m16:64 Jump far, absolute indirect,
-> > -      *              address given in m16:64.
-> > -      */
-> > -     pushq   $.Lafter_lret   # put return address on stack for unwinder
-> >       xorl    %ebp, %ebp      # clear frame pointer
-> > -     movq    initial_code(%rip), %rax
-> > -     pushq   $__KERNEL_CS    # set correct cs
-> > -     pushq   %rax            # target address in negative space
-> > -     lretq
-> > -.Lafter_lret:
-> > -     ANNOTATE_NOENDBR
-> > +     ANNOTATE_RETPOLINE_SAFE
-> > +     callq   *initial_code(%rip)
-> > +     int3
-> >  SYM_CODE_END(secondary_startup_64)
-> >
-> >  #include "verify_cpu.S"
+> > Have they all been addressed?
 >
-> objtool doesn't like it yet:
->
-> vmlinux.o: warning: objtool: verify_cpu+0x0: stack state mismatch: cfa1=4+8 cfa2=-1+0
->
-> Once we've solved this, I'll take this one even now - very nice cleanup!
->
+> Yeah, see patch 1.
 
-s/int3/RET seems to do the trick.
+Thanks!
 
-As long as there is an instruction that follows the callq, the
-unwinder will see secondary_startup_64 at the base of the call stack.
-We never return here anyway.
+So the whole lot has been applied as 6.9 material, with some patch
+subjects changed and a couple of changelogs edited.
+
+Thank you!
 
