@@ -1,150 +1,148 @@
-Return-Path: <linux-kernel+bounces-45748-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45749-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 218968434E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 05:53:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 484D58434E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 05:56:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B63E21F26220
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 04:53:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F28B02898D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 04:56:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3F6B3D0B6;
-	Wed, 31 Jan 2024 04:53:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11A4B3D0BC;
+	Wed, 31 Jan 2024 04:55:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ytyFD4cH"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qifMW2hE"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82C763D0A9;
-	Wed, 31 Jan 2024 04:53:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47FE73D0A1;
+	Wed, 31 Jan 2024 04:55:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706676802; cv=none; b=UgZUdg/hhAypd96Kxg12zWLQ8lLj834WcJAN5goKscJ+efymTYokoo7St8yfPnQEiFYb/Y4cFrDrcrVeeTQeUYkK06mCahvjmQH+zGIFFBYkC7VZTpFlQR7QZ3dApJe89up+epHMhdIVIbNvpnkqJ9ctaTBUnpKs93v+P58xkIU=
+	t=1706676953; cv=none; b=Di8VDHwv6p7kJwy7imJvfVUwfTRABvD7L3njrXJrfeKXjjAu1Oovkx+ud25VE32VyW/WcaMuW3aLLQyuAiTeYbZaVJMOknTSjJ3ydThf7groSno5LM6X57dzCuYIA6Kat01U1w8cDAxHxhwzqcrAfBPgk6wS3yRwfgaarcvOi2U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706676802; c=relaxed/simple;
-	bh=83vEIVIiRUom9n5l9Wa09T44oRPDaNBb4ZBKRZ8M/Uo=;
-	h=Message-ID:Date:MIME-Version:CC:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Km06Z5vT/DvJDOcI13npCqUKbR+QR/ysOR9uUtVd+sqogqRic4A/eM8KEMAsYcKNaO+ZUszBOhv0oBIw09Vn1VnWwkr3Ydw421DT/C0BEM+wKhWXrUyurhJL6SuMqUXStX/iDfenPeOen2n3745SUsVgHpwQXo4pG032G82skwI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=ytyFD4cH; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40V4r8ei052324;
-	Tue, 30 Jan 2024 22:53:08 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706676788;
-	bh=S5CDXwnWVi9SBaQus4QzH3o1wmOSFFe3GN7qWSYETTg=;
-	h=Date:CC:Subject:To:References:From:In-Reply-To;
-	b=ytyFD4cHnN/gIXHJ+XP9Z0uz3p4rcCbvfDVdmFkD905njMdm5O8KEjwAoYzOnLA+Z
-	 bVVY0YKexnmSATZPtuNn1YdUvPD64yNqxc1dKxQr3dYW9n7hlz0t4ByYCMvivoF9Tu
-	 72HmunUFlWgZSiIc0t6Cb8JNqzt+EMOly/AUmQhE=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40V4r8xN039522
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 30 Jan 2024 22:53:08 -0600
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 30
- Jan 2024 22:53:07 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 30 Jan 2024 22:53:07 -0600
-Received: from [172.24.227.9] (uda0492258.dhcp.ti.com [172.24.227.9])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40V4r4uJ057488;
-	Tue, 30 Jan 2024 22:53:05 -0600
-Message-ID: <126d520e-bd00-467b-b5dc-3423cc405410@ti.com>
-Date: Wed, 31 Jan 2024 10:23:03 +0530
+	s=arc-20240116; t=1706676953; c=relaxed/simple;
+	bh=UAcaG1XK5qRhb1eEHIUDL8EenSrO063sixI2jRRZVqg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Dr32f47V2FMit7Va1YfzXnIVN7BXb1WDUoxPj8ct+a32IoW9YCv5OMC0vkwFqHOJynrIGqR4Gys0flwsOkmCDlMf0LwowoTKg8uSD7mo/cHNMjEor+2dHHzaekzipx60hE9E3BejRdg1RfAEeiTOaUAjrYQ9W60TQh8ZKZ0kdp8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qifMW2hE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8D7AC43390;
+	Wed, 31 Jan 2024 04:55:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706676952;
+	bh=UAcaG1XK5qRhb1eEHIUDL8EenSrO063sixI2jRRZVqg=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=qifMW2hExigqDc9NNIfpRl3LgWBwoXismg+Zf4JIj0mWtWM6/4/jOi9m1y4LG0+IV
+	 98+JGAytF44SDjGpfvQnk4f5AnjwqjAlugoWEzjwrqhuSyZa/FgHosLfTXp7QT5cmS
+	 kbUwjDSsrpzZIjTmFYK1cgm4CGxbWrtoNsCHOI1R6gcX/GuWSkQICpabKwqBOAUs1m
+	 D28cpiVZjJ1vTH9uaDhZh59tHLFl8IIeO2BPYFft5v/o+C+jnUOMseMvoikPXr+5eU
+	 e+QZVT00u+FP1pQz4U3Hs3JUNyJaSEn65JPnQKDMZGpKK3D7e+ohO9IqZ4Jt7Ror+d
+	 One20Hed4NEiA==
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5110fae7af5so3489629e87.0;
+        Tue, 30 Jan 2024 20:55:52 -0800 (PST)
+X-Gm-Message-State: AOJu0YxtEjBT/b+a5V+/cdxpcaORYpQqqkDxrPVjQ+50/r8X4WAoo8qD
+	0cGpk2ixacxLt7AtpZo4xJg8wauiGNzJ3g+Z5W0rrigceCI9U6FAvMGP+ts9nQbgE7kgNJO03vG
+	UDCuXT1P/HxcpERVakOZsaCbtFRE=
+X-Google-Smtp-Source: AGHT+IG2pk+OgJ/SA4zOiQYsteh2+uWiGgm5RzgPyiaXhKOriI6X38evAsmx1xw+J07cYAoMgGbF6x2vH5KfZbzfAKE=
+X-Received: by 2002:a05:6512:3ec:b0:510:1a32:6298 with SMTP id
+ n12-20020a05651203ec00b005101a326298mr398529lfq.56.1706676950941; Tue, 30 Jan
+ 2024 20:55:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-CC: <bhelgaas@google.com>, <lpieralisi@kernel.org>, <kw@linux.com>,
-        <robh@kernel.org>, <vigneshr@ti.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <srk@ti.com>, <s-vadapalli@ti.com>
-Subject: Re: [PATCH] PCI: j721e: Extend j721e_pcie_ctrl_init() for non syscon
- nodes
-Content-Language: en-US
-To: Andrew Davis <afd@ti.com>
-References: <20240129104958.1139787-1-s-vadapalli@ti.com>
- <077682de-7789-4f1f-8dcc-aa47f4fb2dff@ti.com>
- <792c972b-052e-4e24-a85f-9415fe02aa01@ti.com>
- <2a373360-9bf2-411c-a9aa-0a7451b9ba38@ti.com>
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
-In-Reply-To: <2a373360-9bf2-411c-a9aa-0a7451b9ba38@ti.com>
+References: <ZbMnZnvyIyoWeIro@fisica.ufpr.br> <20240126154610.24755-1-dan@danm.net>
+ <20240130172524.0000417b@linux.intel.com> <95f2e08e-2daf-e298-e696-42ebfa7b9bbf@huaweicloud.com>
+In-Reply-To: <95f2e08e-2daf-e298-e696-42ebfa7b9bbf@huaweicloud.com>
+From: Song Liu <song@kernel.org>
+Date: Tue, 30 Jan 2024 20:55:39 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW7QHq4e+cHvZcw8c=ePpeSM69UKTEi8P40=-jOZn+YyyA@mail.gmail.com>
+Message-ID: <CAPhsuW7QHq4e+cHvZcw8c=ePpeSM69UKTEi8P40=-jOZn+YyyA@mail.gmail.com>
+Subject: Re: [REGRESSION] 6.7.1: md: raid5 hang and unresponsive system;
+ successfully bisected
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: Blazej Kucman <blazej.kucman@linux.intel.com>, Dan Moulding <dan@danm.net>, carlos@fisica.ufpr.br, 
+	gregkh@linuxfoundation.org, junxiao.bi@oracle.com, 
+	linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org, 
+	regressions@lists.linux.dev, stable@vger.kernel.org, 
+	"yukuai (C)" <yukuai3@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Jan 30, 2024 at 6:41=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> w=
+rote:
+>
+> Hi, Blazej!
+>
+> =E5=9C=A8 2024/01/31 0:26, Blazej Kucman =E5=86=99=E9=81=93:
+> > Hi,
+> >
+> > On Fri, 26 Jan 2024 08:46:10 -0700
+> > Dan Moulding <dan@danm.net> wrote:
+> >>
+> >> That's a good suggestion, so I switched it to use XFS. It can still
+> >> reproduce the hang. Sounds like this is probably a different problem
+> >> than the known ext4 one.
+> >>
+> >
+> > Our daily tests directed at mdadm/md also detected a problem with
+> > identical symptoms as described in the thread.
+> >
+> > Issue detected with IMSM metadata but it also reproduces with native
+> > metadata.
+> > NVMe disks under VMD controller were used.
+> >
+> > Scenario:
+> > 1. Create raid10:
+> > mdadm --create /dev/md/r10d4s128-15_A --level=3D10 --chunk=3D128
+> > --raid-devices=3D4 /dev/nvme6n1 /dev/nvme2n1 /dev/nvme3n1 /dev/nvme0n1
+> > --size=3D7864320 --run
+> > 2. Create FS
+> > mkfs.ext4 /dev/md/r10d4s128-15_A
+> > 3. Set faulty one raid member:
+> > mdadm --set-faulty /dev/md/r10d4s128-15_A /dev/nvme3n1
+> > 4. Stop raid devies:
+> > mdadm -Ss
+> >
+> > Expected result:
+> > The raid stops without kernel hangs and errors.
+> >
+> > Actual result:
+> > command "mdadm -Ss" hangs,
+> > hung_task occurs in OS.
+>
+> Can you test the following patch?
+>
+> Thanks!
+> Kuai
+>
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index e3a56a958b47..a8db84c200fe 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -578,8 +578,12 @@ static void submit_flushes(struct work_struct *ws)
+>                          rcu_read_lock();
+>                  }
+>          rcu_read_unlock();
+> -       if (atomic_dec_and_test(&mddev->flush_pending))
+> +       if (atomic_dec_and_test(&mddev->flush_pending)) {
+> +               /* The pair is percpu_ref_get() from md_flush_request() *=
+/
+> +               percpu_ref_put(&mddev->active_io);
+> +
+>                  queue_work(md_wq, &mddev->flush_work);
+> +       }
+>   }
+>
+>   static void md_submit_flush_data(struct work_struct *ws)
 
+This fixes the issue in my tests. Please submit the official patch.
+Also, we should add a test in mdadm/tests to cover this case.
 
-On 30/01/24 20:30, Andrew Davis wrote:
-> On 1/29/24 10:50 PM, Siddharth Vadapalli wrote:
->> Hello Andrew,
->>
->> On 29/01/24 20:49, Andrew Davis wrote:
->>> On 1/29/24 4:49 AM, Siddharth Vadapalli wrote:
->>
->> ...
->>
->>>>        int ret;
->>>>    -    syscon = syscon_regmap_lookup_by_phandle(node, "ti,syscon-pcie-ctrl");
->>>> +    scm_conf = of_parse_phandle(node, "ti,syscon-pcie-ctrl", 0);
->>>> +    if (!scm_conf) {
->>>> +        dev_err(dev, "unable to get System Controller node\n");
->>>> +        return -ENODEV;
->>>> +    }
->>>> +
->>>> +    syscon = device_node_to_regmap(scm_conf);
->>>
->>> Turning the entire "simple-bus" region into a regmap using this
->>> function is just as broken as having it as a "syscon". The core
->>> problem we are solving by getting rid of the blanket syscon nodes
->>> is that it causes multiple mappings of the same register. This
->>> can cause issues with regmap caching, read–modify–write, etc..
->>>
->>> What you want to do is add a subnode to the simple-bus, have that
->>> encapsulate just the registers used for PCIe, and have the PCIe
->>> node point to that. Then this patch isn't needed.
->>>
->>> For an example, see how it's done for DSS[0].
->>
->> Thank you for reviewing the patch. I will implement it similar to what's done
->> for DSS as you pointed out. However, what about the existing SoCs which make use
->> of the "ti,syscon-pcie-ctrl" property? Do you suggest that I add another
->> device-tree property for pointing to the PCIE_CTRL register within the CTRL_MMR
->> region, or do you suggest that I reuse the existing "ti,syscon-pcie-ctrl"
->> property differently in the SoCs like J784S4 where the scm_conf node is a
->> "simple-bus"?
->>
->> The "ti,syscon-pcie-ctrl" property as defined in the device-tree bindings has
->> two elements with the first being the phandle to the scm_conf node and the
->> second being the offset of the PCIE_CTRL register. The newer implementation you
->> are suggesting will either require a new property which accepts only one element
->> namely the phandle to the node within scm_conf corresponding to the PCIE_CTRL
->> register. Will adding a new property be acceptable?
->>
-> 
-> Why would you need a new property? If there is no offset to the PCIE_CTRL register
-> in the new syscon space then just set the offset = 0x0, easy.
-
-Seems like a Hack to me considering that the offset will always be zero for
-non-syscon parent nodes (which will be the convention going forward), implying
-that the offset might as well be dropped and just the phandle is sufficient. For
-now I shall implement it as you suggested. Maybe once the syscon nodes in
-existing SoCs are also converted to simple-bus, then the property can be
-redefined to just be the phandle to "pcie_ctrl" register.
-
-> 
-> Andrew
-
--- 
-Regards,
-Siddharth.
+Thanks,
+Song
 
