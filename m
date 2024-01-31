@@ -1,58 +1,93 @@
-Return-Path: <linux-kernel+bounces-46855-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46860-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F05B844619
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:26:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4A13844584
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:04:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 936EFB2FFB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:02:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD5B01C21094
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:04:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F41F312C52B;
-	Wed, 31 Jan 2024 17:02:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5E1D12CDA9;
+	Wed, 31 Jan 2024 17:04:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xsa+OYMe"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zlmPb0pl"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44AD612BF3F
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 17:02:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30D5712C54F
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 17:04:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706720550; cv=none; b=Ee5bL8CKR8Aumqv826LLkZdVrViUyXOUoM39UP0fppw8odIbKH8zvTy8J3AkvsElnmITudMtOt+Eok+TnqhMMNFXCJibl7lIjTBH9CRH9tjBXlktVHUHE0L1HTwpz3Y1kUd98fzHzIwqWdz4MjkD+j65oJgRbBr0MbLw9Cgcz7o=
+	t=1706720658; cv=none; b=OH7U6SUvW/ExIpYMTFcuEmfKtIsURh5i4CjyEBiCIfpUH9RLU1yMUCYmBlZvo3K9EUEohX7NEKUJuQ7QzvGw5bkv1xqN/XZrrq79Z8xomvBXzTuUX1KfDWR6TGiCNqYWZTBvS70++mtetq9I2IwKcpuLXHQR96hmJHkChfpjG00=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706720550; c=relaxed/simple;
-	bh=fJuo9hQkoVtajH6JUANaiNyGUbG5vMkf+ZkVc6SPejU=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=RMCuULqMQzuThlJAmICHQWOTXouhyEQpxV4h/1UQrfKe9WQtlt1Az1D5sjTLuFt0UkkTknBMcbUCp1DAZ4wHtt1OZ+tT88K56Et2+GNoV9ZYNkL4+zgknKUdOfSC+5nXgGH7rGK/m97u5slDQMjbCgIesGMP0n3lvJ1ejOs/Ows=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xsa+OYMe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89984C43394;
-	Wed, 31 Jan 2024 17:02:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706720549;
-	bh=fJuo9hQkoVtajH6JUANaiNyGUbG5vMkf+ZkVc6SPejU=;
-	h=Date:From:To:Cc:Subject:From;
-	b=Xsa+OYMeSWPM/YTaoZNcuIOOibVDINAHkV/QL9ig0+hQ4sUJIpT+jdlFKykbR5k66
-	 ZkKczsCyVlZuv3+cfYtd8HnbV6Zez4aiZzsn5vT7aRtIXtepYM3xTBAZRoVkKoKo18
-	 SsiUM4wq/U4HzCPu3rxU+9tIJDIrn/PHEvKmCLgWZT+Pwp+Rj0IjO8cfIOhl6H06O6
-	 91//w8J5Q4m3iYIcrX3NDnSZKZxKMyjVXJ8UbIfjP4PJWGXi0t61LXPfjXN/RJhp0z
-	 Hx235Uz2ZysxHg2QvETcBuLAANi6Jlvs7a+Gbe2p51Ayw2sfwjh3jFQp3Qx65Mgu1K
-	 gycBmwPVMJTLw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-	id 29D6140441; Wed, 31 Jan 2024 14:02:27 -0300 (-03)
-Date: Wed, 31 Jan 2024 14:02:27 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: linux-kernel@vger.kernel.org
-Cc: Adrian Hunter <adrian.hunter@intel.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Namhyung Kim <namhyung@kernel.org>
-Subject: [PATCH 1/1 fyi] perf tools headers: update the
- asm-generic/unaligned.h copy with the kernel sources
-Message-ID: <Zbp9I7rmFj1Owhug@kernel.org>
+	s=arc-20240116; t=1706720658; c=relaxed/simple;
+	bh=ZUvoMqLlWwnTNMnys2DYO447gojutJvvOQ3DbVjEF0c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WnLHztrG4R3s7yKKFwVEObo4McMaYbXo/kBZeSbdv2tU0uF0DAHLW5BHlIjX0lmZXEyo0Qe9SSWWzXosWaZXieE+gngytUuJmlWKTzg5DGpLLVMeCN50Vf6tRXY+iBhOFVd9xhUEIJrT3bJuqYc5P0drOhBaFpKtw5StEveFv4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zlmPb0pl; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a30f7c9574eso627762566b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:04:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706720654; x=1707325454; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BUi9VE3WcG0AerBnR/I4iBGlcSiIv3dP498x8byF2A0=;
+        b=zlmPb0plmD6IayCtWTTKJD5uFUT32wBOzoo9K0v1QXxY7Pe/SmDHvxxPcTJWzKtDpA
+         vDhneT77fEctQk2dK7dfJ0/vx2k/wBuz2A0eRW6Ke/qZzYYBIv8KGH/g8We1XBYcwnlj
+         lgN7CRRZ36mVc3lBaFclAvcApHl5ICMjT8S92zzD3gN/1M9ZR4WDIQg2LOc6P2IjmtHC
+         fpd+nfIZl/KlT+jhwbZbC3SnPLyfdU9iH4lS/xoNIa9g6ICVF0qLs6Ems95Tq/6CRsN/
+         iVjhkGoqWEoE2axN4O/7lLjc+f5GZv9svys/GGxg7M0S0ko21oQLhc+ZUznh+8R/PNld
+         KyaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706720654; x=1707325454;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BUi9VE3WcG0AerBnR/I4iBGlcSiIv3dP498x8byF2A0=;
+        b=J63shDoEoXUd3VLowEI2Ax/dGWFIf4eD3xo/7pVmXBFGXE/17NzwFeP0OaZUn1cbbW
+         f6+n4EpwPlpBEFhl2S99bKX/5Sx5jxkPqXgweT1RevWd1UYYCJcudLqABH/3UUEPvrmO
+         CrXWU0ecBCrqTAL4rTGvpcoTqFX/+bJfwLtf1HuJVwyRNkGPcWolMhjl9fTxxgzz/HOh
+         QXzY83x/fwkmLFIeEAw/Rw7Gi2/+1cyqrfV6tuHIW5k4NDK4VO3ivIt8aSTCm3LAtbR2
+         i5660GsnTwro/WalJden0ljqxYDL4diGajjf3YK20jEEtvtQPVbI+fqAaa8Nkod4IAuN
+         mZdg==
+X-Gm-Message-State: AOJu0Yx3brPPyjAUChFv6xhpoxOLXIxJDJn/UHM1516CciA2w7pdR8b6
+	PQjr6n7zpD6ea0h+wpCv0LE6FLaXMMLanHYM83vTo10YB0iBlhK/asPtUJ5KHF8=
+X-Google-Smtp-Source: AGHT+IFV90oJohU7ErajKDUKCpuqHRW982RiDbML/oPjY4Vabr8rn5VWmS27dW3UAmgTq8H7qQnuAQ==
+X-Received: by 2002:a17:906:fc26:b0:a35:3152:c46b with SMTP id ov38-20020a170906fc2600b00a353152c46bmr1558869ejb.60.1706720654433;
+        Wed, 31 Jan 2024 09:04:14 -0800 (PST)
+Received: from linaro.org ([79.115.23.25])
+        by smtp.gmail.com with ESMTPSA id mm15-20020a1709077a8f00b00a363a304c91sm1581384ejc.211.2024.01.31.09.04.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Jan 2024 09:04:14 -0800 (PST)
+Date: Wed, 31 Jan 2024 19:04:12 +0200
+From: Abel Vesa <abel.vesa@linaro.org>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Rob Clark <robdclark@gmail.com>,
+	Abhinav Kumar <quic_abhinavk@quicinc.com>,
+	Sean Paul <sean@poorly.run>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/5] drm/msm/dp: Try looking for link-frequencies into
+ the port@0's endpoint first
+Message-ID: <Zbp9jPF2FspZEk6q@linaro.org>
+References: <20240129-x1e80100-display-v1-0-0d9eb8254df0@linaro.org>
+ <20240129-x1e80100-display-v1-4-0d9eb8254df0@linaro.org>
+ <CAA8EJpq1RSi4H6m6UQcyxEr=hip=ypKz9DhHziNKvDjUHsES8Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,125 +96,59 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <CAA8EJpq1RSi4H6m6UQcyxEr=hip=ypKz9DhHziNKvDjUHsES8Q@mail.gmail.com>
 
-tldr; Just FYI, I'm carrying this on the perf tools tree.
+On 24-01-29 17:08:29, Dmitry Baryshkov wrote:
+> On Mon, 29 Jan 2024 at 15:19, Abel Vesa <abel.vesa@linaro.org> wrote:
+> >
+> > From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+> >
+> > On platforms where the endpoint used is on port@0, looking for port@1
+> > instead results in just ignoring the max link-frequencies altogether.
+> > Look at port@0 first, then, if not found, look for port@1.
+> 
+> NAK. Platforms do not "use port@0". It is for the connection between
+> DPU and DP, while the link-frequencies property is for the link
+> between DP controller and the actual display.
 
-- Arnaldo
+I messed up. This patch is not needed, plus the author is wrong.
 
-Full explanation:
+Will drop in the next version.
 
-There used to be no copies, with tools/ code using kernel headers
-directly. From time to time tools/perf/ broke due to legitimate kernel
-hacking. At some point Linus complained about such direct usage. Then we
-adopted the current model.
+Sorry about that.
 
-The way these headers are used in perf are not restricted to just
-including them to compile something.
-
-There are sometimes used in scripts that convert defines into string
-tables, etc, so some change may break one of these scripts, or new MSRs
-may use some different #define pattern, etc.
-
-E.g.:
-
-  $ ls -1 tools/perf/trace/beauty/*.sh | head -5
-  tools/perf/trace/beauty/arch_errno_names.sh
-  tools/perf/trace/beauty/drm_ioctl.sh
-  tools/perf/trace/beauty/fadvise.sh
-  tools/perf/trace/beauty/fsconfig.sh
-  tools/perf/trace/beauty/fsmount.sh
-  $
-  $ tools/perf/trace/beauty/fadvise.sh
-  static const char *fadvise_advices[] = {
-  	[0] = "NORMAL",
-  	[1] = "RANDOM",
-  	[2] = "SEQUENTIAL",
-  	[3] = "WILLNEED",
-  	[4] = "DONTNEED",
-  	[5] = "NOREUSE",
-  };
-  $
-
-The tools/perf/check-headers.sh script, part of the tools/ build
-process, points out changes in the original files.
-
-So its important not to touch the copies in tools/ when doing changes in
-the original kernel headers, that will be done later, when
-check-headers.sh inform about the change to the perf tools hackers.
-
----
-
-To pick up the changes in:
-
-  1ab33c03145d0f6c ("asm-generic: make sparse happy with odd-sized put_unaligned_*()")
-
-Addressing this perf tools build warning:
-
-  Warning: Kernel ABI header differences:
-    diff -u tools/include/asm-generic/unaligned.h include/asm-generic/unaligned.h
-
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Link: https://lore.kernel.org/lkml/
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/include/asm-generic/unaligned.h | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
-
-diff --git a/tools/include/asm-generic/unaligned.h b/tools/include/asm-generic/unaligned.h
-index 2fd551915c2025ee..cdd2fd078027afc9 100644
---- a/tools/include/asm-generic/unaligned.h
-+++ b/tools/include/asm-generic/unaligned.h
-@@ -105,9 +105,9 @@ static inline u32 get_unaligned_le24(const void *p)
- 
- static inline void __put_unaligned_be24(const u32 val, u8 *p)
- {
--	*p++ = val >> 16;
--	*p++ = val >> 8;
--	*p++ = val;
-+	*p++ = (val >> 16) & 0xff;
-+	*p++ = (val >> 8) & 0xff;
-+	*p++ = val & 0xff;
- }
- 
- static inline void put_unaligned_be24(const u32 val, void *p)
-@@ -117,9 +117,9 @@ static inline void put_unaligned_be24(const u32 val, void *p)
- 
- static inline void __put_unaligned_le24(const u32 val, u8 *p)
- {
--	*p++ = val;
--	*p++ = val >> 8;
--	*p++ = val >> 16;
-+	*p++ = val & 0xff;
-+	*p++ = (val >> 8) & 0xff;
-+	*p++ = (val >> 16) & 0xff;
- }
- 
- static inline void put_unaligned_le24(const u32 val, void *p)
-@@ -129,12 +129,12 @@ static inline void put_unaligned_le24(const u32 val, void *p)
- 
- static inline void __put_unaligned_be48(const u64 val, u8 *p)
- {
--	*p++ = val >> 40;
--	*p++ = val >> 32;
--	*p++ = val >> 24;
--	*p++ = val >> 16;
--	*p++ = val >> 8;
--	*p++ = val;
-+	*p++ = (val >> 40) & 0xff;
-+	*p++ = (val >> 32) & 0xff;
-+	*p++ = (val >> 24) & 0xff;
-+	*p++ = (val >> 16) & 0xff;
-+	*p++ = (val >> 8) & 0xff;
-+	*p++ = val & 0xff;
- }
- 
- static inline void put_unaligned_be48(const u64 val, void *p)
--- 
-2.43.0
-
+> 
+> >
+> > Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+> > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> > ---
+> >  drivers/gpu/drm/msm/dp/dp_parser.c | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/gpu/drm/msm/dp/dp_parser.c b/drivers/gpu/drm/msm/dp/dp_parser.c
+> > index 7032dcc8842b..eec5b8b83f4b 100644
+> > --- a/drivers/gpu/drm/msm/dp/dp_parser.c
+> > +++ b/drivers/gpu/drm/msm/dp/dp_parser.c
+> > @@ -97,7 +97,11 @@ static u32 dp_parser_link_frequencies(struct device_node *of_node)
+> >         u64 frequency = 0;
+> >         int cnt;
+> >
+> > -       endpoint = of_graph_get_endpoint_by_regs(of_node, 1, 0); /* port@1 */
+> > +       endpoint = of_graph_get_endpoint_by_regs(of_node, 0, 0); /* port@0 */
+> > +
+> > +       if (!endpoint)
+> > +               endpoint = of_graph_get_endpoint_by_regs(of_node, 1, 0); /* port@1 */
+> > +
+> >         if (!endpoint)
+> >                 return 0;
+> >
+> >
+> > --
+> > 2.34.1
+> >
+> 
+> 
+> -- 
+> With best wishes
+> Dmitry
 
