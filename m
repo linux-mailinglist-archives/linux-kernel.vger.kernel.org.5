@@ -1,175 +1,102 @@
-Return-Path: <linux-kernel+bounces-47056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47055-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C2208448A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:18:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2E7E8448A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:17:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52A25287FF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:18:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D52C91C22B62
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:17:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E0443FE2A;
-	Wed, 31 Jan 2024 20:17:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7D983FB31;
+	Wed, 31 Jan 2024 20:17:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jNqj7C2u"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fDaNr2Ao"
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB8913EA9B;
-	Wed, 31 Jan 2024 20:17:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70D523EA9B
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 20:17:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706732275; cv=none; b=WkbZK+ke2ycMmTMbGT6+VfZYXa/GKSYEER3FvUV2Dvy1cM3K87BqNNCVQ76m+ToDW34HQ0Tawom8XQVo0dLM22RuxbEI+yCu7xSuWo75HOrPgLMGMtseWujHDUvBK3Axa6YB7Bd6CUJ3h0jsceGtZCmOUKUbPHbz1Mfj1hTRQws=
+	t=1706732252; cv=none; b=so4nwXyzm7Rfe9VaBKxSFvxqLxbn5O6qUSjsOtASVhLwwCdV5ZUUmXdMY0MnLUqfuIK6Xfc6CUfwnA8zuAT+es78w9ZqKtn0Xula/7LaAkBJtdYbU9zAikksikLTuk3Btfe0y7RQ9Lulqn5b88GA2DruvARpGY/MDDxDnkvZpaY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706732275; c=relaxed/simple;
-	bh=o4aiy10+fDl63wpHTMTWUdeIXhOIrgTQNnErR//DCa8=;
+	s=arc-20240116; t=1706732252; c=relaxed/simple;
+	bh=BTliOxaTIKtdhGrJh/+gt3GB4Eb5h9IjYdumB/YLq0A=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EQ6P/F/10d0asCSNlMsxsHoEzyK2g/hsbwXaR8MPWc2L7wPonXa8W/5tVFLdyx6Jle0zZNzYdB3hTXDajfiphP3T4IhxmlPOwyYszlsoiujBZZ2Oe2CDPVDncMw9Nwrt1n37nUNop7AaVTIl/1bkOs2x8yFohK1RpkiHR6PfR/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jNqj7C2u; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a34c5ca2537so19474666b.0;
-        Wed, 31 Jan 2024 12:17:53 -0800 (PST)
+	 To:Cc:Content-Type; b=a54wSTljgoYwWxO5QUo+sqdm+zZZAQq3HyZpQqdv92Ur1Aq7THHjEvzHRvWmFKJ5ENvN6/92oZ7GWB2AeeWwV5Ha+BGtQVKwV2C7/BoB3xOonbMZzxteFCAFzWiA6HuLAtxN2xXdrC+gHGRIaMwGUUfznjYotzgaJubKcvjke2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=fDaNr2Ao; arc=none smtp.client-ip=209.85.128.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-603fdc46852so1627837b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 12:17:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706732272; x=1707337072; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1706732249; x=1707337049; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=i3x+XA1EAM69Gx/EupL1JFa+ff5P92JTzUQLfIHSyz4=;
-        b=jNqj7C2umhbQwYnppEXxjS+JktkmIh65SIcOTcACmuKgUkD554mp/8qoDr3xmNiDcK
-         UlLen0VVAeguskRXqWmDHFsWJ6cC9KEL21YRvLMRtWYUFZ0dF86esxInVD8vhPbjPsdl
-         YMZjb1zZIYEjJXqYMjSQf/jx1bo4VnZw0Im5Hzh7v4KXmMRwEDKTaU1+FjKivcpePsCm
-         jsSdWuswKR5gT4JtjQgjVcd+W8pYemVl633gmHCa55LabHt3WIQNL/D4CFw1MMlb5vDM
-         gvv86qAXYCRPvu/H9lExdGe1Iu2WII/eYQrn/pSTxA1yv1D70K2tt+em93swORvJOoXY
-         P97g==
+        bh=BTliOxaTIKtdhGrJh/+gt3GB4Eb5h9IjYdumB/YLq0A=;
+        b=fDaNr2Ao7hZVgSbDc7CNLOsmpj3bC+iwhd2SUj3SP+CzQhOMOsmvbfg34cmHtQNrYc
+         Ef2wfDFIpj6Xvw8duIyahJAIcbpqmohmsaRLg9DGFoIqi0vRf6SzYxXbx0x3sUmN/Who
+         G8Gtk90ShAagF1E+4U+nRpGF3dQyerPmDJspIHm/7pesqdD50fyj1JLp2EdggjsH0naa
+         X3Shu9my5CTY8ehHsrd50zOJMAzD+08XFMGORQNsKZdupksGQ5tAxcGnz6iKbrXOdfCQ
+         TGJ9JLKL0WjQ6kLzW7xnCd5I+HkHWtdYiMKRIVGWNiRUNSQolsQT8ThO8e0bELCc9sU1
+         tvQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706732272; x=1707337072;
+        d=1e100.net; s=20230601; t=1706732249; x=1707337049;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=i3x+XA1EAM69Gx/EupL1JFa+ff5P92JTzUQLfIHSyz4=;
-        b=o616j1q5ehiZrgH1IKYCQqkdzZyD5FWAsdISxdRHtzGkXM0RZnSa41cRUSk0QSRtNw
-         sybKcA3vGLxuLJ31YkDQIKnBOWjDikX7WKIYKlA+nW8rCrp1uPDvHbSuXbzCOBYyYqgD
-         Z2ffaj+3OLWhYygytiEoofImUbUr97K8YVwfbpDp8LX5Fm1QHpDF787nhstrY4WYwJ6b
-         3MRx1T0jCuki34rsfA39fRDK83U+4Kfms+lEB7f6Z439E8LOBJ+KWVXcSHgkeD0STdlK
-         cTXIEbvE8q0qj9D1tAR9ix9hqoifryp2vwQ+3x7KoRUDsp0uLcqztx5SsuQ24+ftF3Y8
-         rm5w==
-X-Gm-Message-State: AOJu0Yw7sL1usZZtUXzFZxScPdvzk3Wz6p8cYqwCiNrGu5kyylDFo1v3
-	IVEere2ONCVJblvHVYoaz/nzda4EO3esbV7uGH5ziNyMFRtjhstJQy9J5hOWHGUgKUAprMlA9k1
-	xd3c/Ylrdiqp+GYy3oHvuc558DAk=
-X-Google-Smtp-Source: AGHT+IHXBrFCx5kQCeErdbREsugyHAfbuEbibVXq02hfcq1oPmsfcZZLGhX7hXPtFYvQEPMmWMEUtGyEiepFoY1c7mg=
-X-Received: by 2002:a17:906:f2c6:b0:a35:85b7:560a with SMTP id
- gz6-20020a170906f2c600b00a3585b7560amr1946530ejb.46.1706732271649; Wed, 31
- Jan 2024 12:17:51 -0800 (PST)
+        bh=BTliOxaTIKtdhGrJh/+gt3GB4Eb5h9IjYdumB/YLq0A=;
+        b=kQaRCmawLWui/cKwlQfMFvWt8sVGbeiDXLzZ/AYZURvzzKJKo5V8CIMEHk9y/SPip5
+         ji5jWYTWDByqDEdlrmjQHDollTcLf3BaFIWoyCIcuLqr7Sd/2d9rnzes+daflLOPoCf1
+         CCyjfUPX8cMu+Cm7HTAqemNmrBLEN0Ohvg8servuvN1tkG7jv/MtZklG3IPbWgJB3rAv
+         uYDty5QeXWQ7Fd95nxKdXm/XWVgWNwcxYPaYrz1jnGz8EyB2GeYUCy0oSRZ9+c9gVXrc
+         /xbVxKAdPR0Xkgg6dnjF9RaPAUNdOPjDykuKj8Emg8gI8pxUvGqosQODwjMb7lykcKMu
+         d4kQ==
+X-Gm-Message-State: AOJu0YxKqbhzGgosBhjE2alFlBWV7qyAMrI5Q7aCvQaHr2JpjtVsGQI/
+	TLXtc4dJv3/nZNeJJUeE2gk+6MZa11hJjrIZn65Nz1Eeg5aoNrQicV5J3OhxVzIBJVWut/njJ2U
+	8yfFBrI9Ul6kPWMqhy6OpFc5b/gCUkUPUP1SWAlnkV+ZLzuoHWvk=
+X-Google-Smtp-Source: AGHT+IEqmyTd4gqkQ6kqF8ce/gDvES+VmPNb/Xegyl4QD24HktmyP6vfTyAaWq3IqSksBdtOEL9MC58IPSh1Ru3fWGs=
+X-Received: by 2002:a81:ae5e:0:b0:5f8:f50e:bcf9 with SMTP id
+ g30-20020a81ae5e000000b005f8f50ebcf9mr2827329ywk.20.1706732249448; Wed, 31
+ Jan 2024 12:17:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230804104602.395892-1-ckeepax@opensource.cirrus.com>
- <20230804104602.395892-6-ckeepax@opensource.cirrus.com> <ZalahZkCrBm-BXwz@surfacebook.localdomain>
- <20240119114917.GB16899@ediswmail.ad.cirrus.com> <ZbpqPuDj/v07yZ5y@ediswmail9.ad.cirrus.com>
-In-Reply-To: <ZbpqPuDj/v07yZ5y@ediswmail9.ad.cirrus.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Wed, 31 Jan 2024 22:17:15 +0200
-Message-ID: <CAHp75Vda3nZn8KwqSRvKQL9oeH_PjTnDDPuQytJvTgb2_HDvBQ@mail.gmail.com>
-Subject: Re: [PATCH v7 5/6] spi: cs42l43: Add SPI controller support
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: broonie@kernel.org, lee@kernel.org, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	linus.walleij@linaro.org, vkoul@kernel.org, lgirdwood@gmail.com, 
-	yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com, 
-	pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org, 
-	patches@opensource.cirrus.com, devicetree@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, linux-spi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+References: <20240130124828.14678-1-brgl@bgdev.pl> <20240130124828.14678-19-brgl@bgdev.pl>
+In-Reply-To: <20240130124828.14678-19-brgl@bgdev.pl>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 31 Jan 2024 21:17:18 +0100
+Message-ID: <CACRpkdaiECDm3g0HOvBgRDrEieM9A5+AMfN2GFkRhP05XY4L8A@mail.gmail.com>
+Subject: Re: [PATCH 18/22] gpio: add the can_sleep flag to struct gpio_device
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, "Paul E . McKenney" <paulmck@kernel.org>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Wolfram Sang <wsa@the-dreams.de>, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 31, 2024 at 5:41=E2=80=AFPM Charles Keepax
-<ckeepax@opensource.cirrus.com> wrote:
-> On Fri, Jan 19, 2024 at 11:49:17AM +0000, Charles Keepax wrote:
-> > On Thu, Jan 18, 2024 at 07:06:13PM +0200, andy.shevchenko@gmail.com wro=
-te:
-> > > Fri, Aug 04, 2023 at 11:46:01AM +0100, Charles Keepax kirjoitti:
-> > > > +         while (buf < block) {
-> > > > +                 const u8 *word =3D min(buf + sizeof(u32), block);
-> > > > +                 int pad =3D (buf + sizeof(u32)) - word;
-> > > > +
-> > > > +                 while (buf < word) {
-> > > > +                         val >>=3D BITS_PER_BYTE;
-> > > > +                         val |=3D FIELD_PREP(GENMASK(31, 24), *buf=
-);
-> > > > +
-> > > > +                         buf++;
-> > > > +                 }
-> > >
-> > > Is this a reinvented way of get_unaligned_*() APIs?
-> > >
-> > > > +                 val >>=3D pad * BITS_PER_BYTE;
-> > > > +
-> > > > +                 regmap_write(regmap, CS42L43_TX_DATA, val);
-> > > > +         }
-> > >
-> > > ...
-> > >
-> > > > +                 while (buf < word) {
-> > > > +                         *buf =3D FIELD_GET(GENMASK(7, 0), val);
-> > > > +
-> > > > +                         val >>=3D BITS_PER_BYTE;
-> > > > +                         buf++;
-> > > > +                 }
-> > >
-> > > put_unaligned_*() ?
-> > >
-> >
-> > Alas as it has been a while I have forgetten the exact context
-> > here and this one will take a little more time. I will try to
-> > find some spare time to work out if that would actual do the same
-> > thing, I have a vague feeling there was something here.
-> >
+On Tue, Jan 30, 2024 at 1:48=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
+
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 >
-> Ok found some time to refresh my memory on this.
+> Duplicating the can_sleep value in GPIO device will allow us to not
+> needlessly dereference the chip pointer in several places and reduce the
+> number of SRCU read-only critical sections.
 >
-> The main issue here was as this is processing raw data for the
-> SPI we shouldn't assume the data is a multiple of 4-bytes. You
-> could write the code such that you used put_unaligned_le32 for
-> most of the data and then special case the remainder, which would
-> probably be slightly faster. But for the remainder you either end
-> with the code here anyway or a special case for each of the cases
-> 8,16,24 bits. So the code ends up looking much messier.
-> Personally I am inclined to leave this unless performance on the
-> SPI becomes a major issue.
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Yes, the problem with the code is that it is a NIH existing API or patterns=
-.
-We have already in the IIO subsystem a pattern where there is a switch case
-and put/get unaligned APIs per case. Perhaps this is what needs to be
-factored out
-for everybody.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-https://elixir.bootlin.com/linux/latest/source/drivers/iio/adc/ad4130.c#L47=
-2
-
-(some shorter variants)
-https://elixir.bootlin.com/linux/latest/source/drivers/iio/adc/ltc2497.c#L6=
-6
-https://elixir.bootlin.com/linux/latest/source/drivers/iio/adc/ad4130.c#L47=
-2
-
-Here is the abstraction for cameras, perhaps that's what ASoC might need.
-drivers/media/v4l2-core/v4l2-cci.c.
-
-> There is perhaps an argument for a comment in the code to explain
-> this given it took me time to remember what was going on.
-
-That's for sure.
-
-
---=20
-With Best Regards,
-Andy Shevchenko
+Yours,
+Linus Walleij
 
