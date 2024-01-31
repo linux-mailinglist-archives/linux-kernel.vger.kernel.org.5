@@ -1,274 +1,228 @@
-Return-Path: <linux-kernel+bounces-46181-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46246-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2DC3843BE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:09:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CC68843CF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:40:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3ACE7B26A7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:09:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D807E2939FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:40:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A22C769D0C;
-	Wed, 31 Jan 2024 10:09:20 +0000 (UTC)
-Received: from smtpbg156.qq.com (smtpbg156.qq.com [15.184.82.18])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BB8969D0C;
+	Wed, 31 Jan 2024 10:40:38 +0000 (UTC)
+Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2123.outbound.protection.partner.outlook.cn [139.219.146.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A30169D00
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 10:09:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=15.184.82.18
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706695760; cv=none; b=pYp0H3M7g0IIhQIprbBDGonbXHdMaclBvCb7oJBLI71AbTz2DNmmbTmOOdADl9fuZL4Dqgu8jH5MKnp9p+hBPnNRYzeq1Tb24XVCEVJHIyAMIPA8Of4fa6dA1iQgQUa44uPlQ5Dgy/QTKlnQL8XAADFdgY6ea+MIihd6Yg3QG3Y=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706695760; c=relaxed/simple;
-	bh=RP/I+8uuK/VRuOMcdIvi50FS3t9KpH1OFAKeipus0Zk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AJtHyc67IqqCXcbqXkuYT6paysjnNlwwgJ8UdqMpcuQRalqJliOb3g6ajCVK96EqwMWxBJ6xT9EocQV5wPKTdCcp1UsX75MncpfMwpcV0bFVmttZ3Iu/NZCpGum/9pSO5/88si5PdybctlkTOWCeEZCAPFqGTrcjW19kEni3D9s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=15.184.82.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
-X-QQ-mid: bizesmtp75t1706695625tivm4zm9
-X-QQ-Originating-IP: nhTylzDyDo0X69SSTDFByXkurmTeC9BIYrrq9o5w/Rc=
-Received: from [127.0.0.1] ( [223.112.234.130])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Wed, 31 Jan 2024 18:07:04 +0800 (CST)
-X-QQ-SSF: 00400000000000B0B000000A0000000
-X-QQ-FEAT: FwowAM4HOqA1ZfczPNwk89L/EDYhnrdgPQcm5K2csmbV6IglsxTql112S2ip+
-	o3diWF5wkq++k7OF3ypRhArsEXktzpH6EEfoeVu0rzEc4uMPCe9yOeowypok6Rg8U5086jc
-	xpSGlnh5TI51dMlXbfw1cTlAxvj03VfLJ9Qm0gx+8UXx/FhqWJqO8te94/WdMy8bKTD9HXv
-	71IMoyO6lu6CGUdzaMNg1vLJEh2K4IhyvOQ+G0/4CabIC05UDW7fiKLmmj7gzyyvtYKxScX
-	czfXZs0Kf91pfIaD+KKHiWQclvEo2wzDuW35n3VkZnQ9dUKAZgDXwLeWG3fWUhuY0KQRep6
-	G4rwpI607SxyyKMIsClefN8evPqSIr/1glujPTKSEg+R/4t2ev/ajMtMect7sZiACMJCv35
-	+sfDfFrwFzBsJAdcHQM0jU3dA7kBYDed
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 10940394262338438076
-Message-ID: <0C0EA95E5AC6D147+ff1001b7-d61b-4365-9a22-b3c4dfacbc53@shingroup.cn>
-Date: Wed, 31 Jan 2024 18:07:03 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A61E69D0B;
+	Wed, 31 Jan 2024 10:40:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.146.123
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706697637; cv=fail; b=o0/jZuTcbVsnk87E6sMj1r6LbLOeOIvgvdeSZDXWy/FJgBem44l8Praf6aG9c1ntlqC/DkGau5rueW6ytQzH2mb64lHVf8VskZXUGJtDAXs/I1bMgAKX3DSzFNd+jQE8B9dTj6JOnITzLwTQvGdq+JZehK6Lqh4dikcgYHJS25k=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706697637; c=relaxed/simple;
+	bh=WrngU0cqJWE8iYOCGJHyDNFOSufIx64Og0cutRtDVtQ=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=ZL7cMMzcUoG7SqcL9QNYYZEef6ryZoVaxx4a1fRM9nZ93xj9El7hsYYRkgL0NRJ0qymt+Lw9Kg7g5u8o6ivjRol/6zIpO3moXCHWWddhiV/nHTzMoiZUeDs+jSLJCMiikIye1p6tr0xG6dAHuYZ6uT6a/Oo9VB4oMpVTL3AT83s=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.146.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QgrMSJsQyXDmroakVZPCF0/rQRm18XiCmXUyzsGJDCVepksxuOr0OlbLMg/31v9kRRAnJiRNkhe09FSlaWR5V7loSgduEx+MLOxkWNsUrGgBwAlkpyFAZQtKKwv7GXLV8Hwda7DUvOyQw4VkTPJ3cHIhUpvSqfRjIzsQRwxekuAJxR30/w80+/QDoTVKzyOSv2bn9wwobgeW767pTjt4dllOQhg6qIKdnSCQ7K1X3bDnUoyPsjKY1TlxwFliR9/XhlddWJIMrvbKe6Ou8pFORcYS9sOD5berVeZr/X20GAzDgnjaWeMg6MDX2XY1sASfs9xNB0+rbQzhGFH+IjwVWg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zhADv0OpMlAftKwUCinfh10J8mx+tVIicHFmgxSwuQ0=;
+ b=HtYn1sm/VdNtHAaCnCPnqXhfI4cKbmo5rSYUZ9um/A9tsXRkes5Jd+uWSXUhbETWx7eUV95blhsLFGhV5+SD+oU5BHsB9syoqlwuLq78ysjzRqrTtzv9AyQLgPFqJNQDzf9UX0mUzNsW/MIYlBQ5q2HGOgyb/iLSddIl1UnIqXibgS2ymvOA+YhOoZyfJK6nArOh4Nv4rSsDMlkXqGdhOAgk8DQGhpp5plqivcm6QyHj5nBBjBUd3JPcSxhyj56jwQnr08zDkL1TsElo1TYizyD/Myq1f7RkPx7JD3leWB6vE+m2ouh9zCAvIt6yA/hsadBAGGGLgdCi8CNAERakwA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Received: from SHXPR01MB0863.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:25::15) by SHXPR01MB0797.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:26::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.34; Wed, 31 Jan
+ 2024 10:07:09 +0000
+Received: from SHXPR01MB0863.CHNPR01.prod.partner.outlook.cn
+ ([fe80::5a5a:fa59:15fd:63dc]) by
+ SHXPR01MB0863.CHNPR01.prod.partner.outlook.cn ([fe80::5a5a:fa59:15fd:63dc%3])
+ with mapi id 15.20.7228.029; Wed, 31 Jan 2024 10:07:08 +0000
+From: Minda Chen <minda.chen@starfivetech.com>
+To: Rob Herring <robh@kernel.org>
+CC: Palmer Dabbelt <palmer@dabbelt.com>, Lorenzo Pieralisi
+	<lpieralisi@kernel.org>, Kevin Xie <kevin.xie@starfivetech.com>, Leyfoon Tan
+	<leyfoon.tan@starfivetech.com>, Bjorn Helgaas <bhelgaas@google.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, Daire McNamara
+	<daire.mcnamara@microchip.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	=?iso-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mason Huo
+	<mason.huo@starfivetech.com>, Emil Renner Berthing
+	<emil.renner.berthing@canonical.com>, Conor Dooley <conor@kernel.org>, Paul
+ Walmsley <paul.walmsley@sifive.com>, Albert Ou <aou@eecs.berkeley.edu>,
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>
+Subject: Re: [PATCH v14,RESEND 19/22] dt-bindings: PCI: Add StarFive JH7110
+ PCIe controller
+Thread-Topic: [PATCH v14,RESEND 19/22] dt-bindings: PCI: Add StarFive JH7110
+ PCIe controller
+Thread-Index: AQHaUk7ANof4CuKrsESG58uORquI7LDxXlAAgAEciACAATsJUA==
+Date: Wed, 31 Jan 2024 10:07:08 +0000
+Message-ID:
+ <SHXPR01MB0863F3FFB671A0B95324A830E67CA@SHXPR01MB0863.CHNPR01.prod.partner.outlook.cn>
+References: <20240129010142.3732-1-minda.chen@starfivetech.com>
+ <20240129010142.3732-4-minda.chen@starfivetech.com>
+ <170656679886.3057.12378312489853176077.robh@kernel.org>
+ <20240130151934.GA1636501-robh@kernel.org>
+In-Reply-To: <20240130151934.GA1636501-robh@kernel.org>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SHXPR01MB0863:EE_|SHXPR01MB0797:EE_
+x-ms-office365-filtering-correlation-id: e20775ca-71d4-44bf-17d1-08dc224462b5
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ +eTndG5e8ZDFNKThe/FTof5rojlAiIQkdBV1uom3wmhYjdEqyDh9q31jfne+V/uYMKKm41d0Zj0FIOZRiZHHKBbGSYA/GgmgWefgs8gQfecs8Btwut6MIpV8X+YSZeGGlabHulHaQukz5WjaVkN0NdRrAxKv1+38ttBSnwEngX5uGgi1jTAJ6ZgnEXXMRwwWoi4gJruxPQ54aZrrMPOAB/Lm4FAx7ifz2Q9iJfKBRy5DGdXx5rBRfykiIWPOdJZ5NM7BzFgNXV1dPAPpm/nqErqm/qUTDda8hRePOMOyn0GByh0jos2Zc/Bg73Za4AX4+Qxsbu+h8hXDD58vKiJNnqKnmH0l+HdYzcw8PQwn71KdHTqYMtmKK15mImWeCeskuSx73Dxrbis9f1DyZuRT/+Bi9sLMZhkMOcHD4v+ef4+dAebQAMB83IY/nwuTu2luO0UJVEMgsWfTZ8VVf+1xYlKgWFZobcqzVWQtI/f3DgDeWlAHmizJAHtGpkDoW1gp04b0Ol4g+XPICObJydUbrTWuilBmq6X3OYEG2/HtBFS6+XDsAVkHqhXYsbsBdcfKOkpvS05zEys8qDmT3w1UOnDppi4W295/fPVY8ykyfHg=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SHXPR01MB0863.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(39830400003)(346002)(366004)(136003)(396003)(230922051799003)(230273577357003)(230173577357003)(64100799003)(1800799012)(451199024)(186009)(38070700009)(7416002)(41320700001)(2906002)(40180700001)(5660300002)(33656002)(41300700001)(86362001)(66446008)(64756008)(76116006)(54906003)(66476007)(83380400001)(66946007)(6916009)(966005)(508600001)(66556008)(71200400001)(7696005)(9686003)(55016003)(8676002)(26005)(44832011)(122000001)(4326008)(8936002)(38100700002)(40160700002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?iso-8859-2?Q?iZLFVnPiawQsG6dKofl+88tg8LdCLBrx1rwXDDCeO8mWCXcfBEkzVcybFi?=
+ =?iso-8859-2?Q?MWcf8s9HRNLv1SVNn/9wHYbP0tEnfDOUk7e+YGR93zy4eUPOG4Z03jl8cd?=
+ =?iso-8859-2?Q?TjNBb3J0wuQzS7aYjLJwY+OHMuM9kSjxOgz7NfY0cFziXVOW4ZwU231aUc?=
+ =?iso-8859-2?Q?MdLSkBk7WpSc8AtvKIScwZUhdT8qWB9lDk4DvooSZ5lXmvXhsiMIZ9vqIL?=
+ =?iso-8859-2?Q?gSCH9k8syA4maG97dil+BrkiNQa3dmL92h1xuwhVDDLdujL1IUypPH5qO9?=
+ =?iso-8859-2?Q?AmRDOw4YZMGappm4HW+me8iRVo+z/7wtZUq96NuX1+eRtrzB9g7YQIH7/a?=
+ =?iso-8859-2?Q?voxGaV1C6JtnwM+fdqWXuWgRBywXMyv199/QwZvU/opBhvSiMgQSW8Vam7?=
+ =?iso-8859-2?Q?9a73/tIXKFWkssbp3g5OmW0xClt2zd4zd0tYSKvzTsgy4oOB254e/m8xEU?=
+ =?iso-8859-2?Q?a8Ib4nlc4+vV7BraBLrZ/8N40neoMN2byv+ATciGnWl7lkDrCN3x1cxv72?=
+ =?iso-8859-2?Q?MmTmAoJOOfurQU+crBUimYT+yCPkpcaSMfVoG+a8DRwUhOCktazyq69fd5?=
+ =?iso-8859-2?Q?wCYRUW1110V6urdGWhhVPqpR3JIXMXiQa2DsbF3jp+cR5adqjdwMURJOqH?=
+ =?iso-8859-2?Q?SmGzkmmPawgBg6bLubYvbIFyvPIBgsmizs447D3QlvKcyR6dpTwupqXBl2?=
+ =?iso-8859-2?Q?gzqqQNZGJ40gzktT7Y2eGpnWz57eJDS/sPXcsKXyxtbqPiMoTugAnUYJab?=
+ =?iso-8859-2?Q?zhEm0ZxkDEjO9vNUDExAiLerwsV0zH8Fu7j3NAzaUh8vvfAi5Q5FLSvjMI?=
+ =?iso-8859-2?Q?u5ZyfJZifXDDE7U9JRTNlJD/gIvu5WmkP7frdfwgtBzLmsYW5kvDTk3dLz?=
+ =?iso-8859-2?Q?ERpQtvW/ouf0NZZjSu1m78sSkVNSDV/gzcR4IbFtH2HGRLVSrz/k8ALirp?=
+ =?iso-8859-2?Q?f+zzwnVFkvW3PgvNz/USn+9M/veu7/FXo9yG07lc9dQFFBq4WEZ7tTfrFw?=
+ =?iso-8859-2?Q?TkvyP4DNARuD7jCFjAMoLcTHJBbknpJ4ig9SnbZci4OA6CfiJIzrqc70Cj?=
+ =?iso-8859-2?Q?YLb+iyEOBMdSymxm5NF+bPPTLBEcxWr6m8o65aNevEp3nX5JzyZTDUcrMn?=
+ =?iso-8859-2?Q?U0SzKViohLup1f2tHPLHCFk8XMIMzOA7nTnHF/kIgL4ys3vocodBnaLFcu?=
+ =?iso-8859-2?Q?aMIQLC8OMgk5IAeamc3nZGdEX6MJkI/Besw/+gNQwyEG358mR8HSps+nyw?=
+ =?iso-8859-2?Q?x7O+po8KAgHqYWTnu7Y9ysUwf3cx6B0v9vZuc8CwkQEb011T4E5jYzw5bm?=
+ =?iso-8859-2?Q?4VJ/lbpLoW8Wtv5sMsILkWfNYPpsVMJtYawDxpq+eu9rzOITalVffICBNq?=
+ =?iso-8859-2?Q?a6h9XWFYMzIhUBHm3NO56CWxSs3t8ghztLafHjL/NY4Q59Kc5fS7gQ9ddc?=
+ =?iso-8859-2?Q?8aBCD5V/OA/MTxVDmonAtHRfOIhF4smwTak8oJJBi5XXsuy0CfkHKkB9Dv?=
+ =?iso-8859-2?Q?yR3OwFCU1vRYMJdcb7HYSh5h/lZ827kFFPySJgknucaFBB9Gz1CbyLsJgN?=
+ =?iso-8859-2?Q?PbRKwyHddC0hDa2y9k8RpHFiqchuMZbyMS2qTpLNNVnb1Dwf8QJkx5c+Vv?=
+ =?iso-8859-2?Q?cybX83Ul1tHF+GZZVALLnj9YoC2e5+DkNs?=
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] perf/hx_arm_ni: Support uncore ARM NI-700 PMU
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzk@kernel.org>, Will Deacon <will@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>
-Cc: shenghui.qu@shingroup.cn, ke.zhao@shingroup.cn, zhijie.ren@shingroup.cn,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20240131070821.11477-1-jialong.yang@shingroup.cn>
- <deb708e5-bbaf-4510-826b-17e14e69b475@kernel.org>
- <6D9001324476F76F+ee5f853d-7c69-4a99-857c-cc2b03e9eea1@shingroup.cn>
- <fef66164-1238-45e4-b70c-c565caa2cf75@kernel.org>
-From: =?UTF-8?B?WWFuZyBKaWFsb25nIOadqOS9s+m+mQ==?= <jialong.yang@shingroup.cn>
-In-Reply-To: <fef66164-1238-45e4-b70c-c565caa2cf75@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz6a-1
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SHXPR01MB0863.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-Network-Message-Id: e20775ca-71d4-44bf-17d1-08dc224462b5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Jan 2024 10:07:08.8646
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 2tuRH9VHICaUrxhvK7y47hamdbhcTDak1DGM3lnBPqYKRGia89/pEEKhcnwsZzOUCivEXe26esJ/5ojoivphS1gbSRuSv9lOM9D06QyRQ44=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SHXPR01MB0797
 
 
+>=20
+> On Mon, Jan 29, 2024 at 04:21:12PM -0600, Rob Herring wrote:
+> >
+> > On Mon, 29 Jan 2024 09:01:39 +0800, Minda Chen wrote:
+> > > Add StarFive JH7110 SoC PCIe controller dt-bindings. JH7110 using
+> > > PLDA XpressRICH PCIe host controller IP.
+> > >
+> > > Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+> > > Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
+> > > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> > > Reviewed-by: Rob Herring <robh@kernel.org>
+> > > ---
+> > >  .../bindings/pci/starfive,jh7110-pcie.yaml    | 120 ++++++++++++++++=
+++
+> > >  1 file changed, 120 insertions(+)
+> > >  create mode 100644
+> > > Documentation/devicetree/bindings/pci/starfive,jh7110-pcie.yaml
+> > >
+> >
+> > My bot found errors running 'make DT_CHECKER_FLAGS=3D-m
+> dt_binding_check'
+> > on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> >
+> > yamllint warnings/errors:
+> >
+> > dtschema/dtc warnings/errors:
+> >
+> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/p=
+ci/s
+> tarfive,jh7110-pcie.yaml:
+> > Error in referenced schema matching $id:
+> > http://devicetree.org/schemas/pci/plda,xpressrich3-axi-common.yaml
+> >
+> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/p=
+ci/s
+> tarfive,jh7110-pcie.example.dtb: pcie@940000000: False schema does not
+> allow {'compatible': ['starfive,jh7110-pcie'], 'reg': [[9, 1073741824, 0,
+> 268435456], [0, 721420288, 0, 16777216]], 'reg-names': ['cfg', 'apb'],
+> '#address-cells': [[3]], '#size-cells': [[2]], '#interrupt-cells': [[1]],=
+ 'device_type':
+> ['pci'], 'ranges': [[2181038080, 0, 805306368, 0, 805306368, 0, 134217728=
+],
+> [3271557120, 9, 0, 9, 0, 0, 1073741824]], 'starfive,stg-syscon': [[429496=
+7295]],
+> 'bus-range': [[0, 255]], 'interrupts': [[56]], 'interrupt-map-mask': [[0,=
+ 0, 0, 7]],
+> 'interrupt-map': [[0, 0, 0, 1, 2, 1], [0, 0, 0, 2, 2, 2], [0, 0, 0, 3, 2,=
+ 3], [0, 0, 0, 4, 2, 4]],
+> 'msi-controller': True, 'clocks': [[4294967295, 86], [4294967295, 10],
+> [4294967295, 8], [4294967295, 9]], 'clock-names': ['noc', 'tl', 'axi_mst0=
+', 'apb'],
+> 'resets': [[4294967295, 11], [4294967295, 12], [4294967295, 13], [4294967=
+295,
+> 14], [4294967295, 15], [4294967295, 16]], 'perst-gpios': [[4294967295, 26=
+, 1]],
+> 'phys': [[4294967295]], 'interrupt-controller': {'#address-cells': [[0]],
+> '#interrupt-cells': [[1]], 'interrupt-controller': True, 'phandle': [[2]]=
+}, '$nodename':
+> ['pcie@940000000']}
+> > 	from schema $id:
+> > http://devicetree.org/schemas/pci/starfive,jh7110-pcie.yaml#
+> >
+> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/p=
+ci/s
+> tarfive,jh7110-pcie.example.dtb: pcie@940000000: Unevaluated properties a=
+re
+> not allowed ('#address-cells', '#interrupt-cells', '#size-cells', 'bus-ra=
+nge',
+> 'device_type', 'interrupt-controller', 'interrupt-map', 'interrupt-map-ma=
+sk',
+> 'interrupts', 'msi-controller', 'ranges', 'reg', 'reg-names' were unexpec=
+ted)
+> > 	from schema $id:
+> > http://devicetree.org/schemas/pci/starfive,jh7110-pcie.yaml#
+>=20
+> These are probably due to only patches 16-22 showing up in lore.
+>=20
+> Rob
 
-在 2024/1/31 17:38, Krzysztof Kozlowski 写道:
-> On 31/01/2024 10:07, Yang Jialong 杨佳龙 wrote:
->>
->>
->> 在 2024/1/31 15:59, Krzysztof Kozlowski 写道:
->>> On 31/01/2024 08:08, JiaLong.Yang wrote:
->>>> This code is based on uncore PMUs arm_smmuv3_pmu and arm-cmn.
->>>> One ni-700 can have many clock domains. Each of them has only one PMU.
->>>> Here one PMU corresponds to one 'struct ni_pmu' instance.
->>>> PMU name will be ni_pmu_N_M, which N means different NI-700s and M means
->>>> different PMU in one NI-700. If only one NI-700 found in NI-700, name will
->>>> be ni_pmu_N.
->>>> Node interface event name will be xxni_N_eventname, such as
->>>> asni_0_rdreq_any. There are many kinds of type of nodes in one clock
->>>> domain. Also means that there are many kinds of that in one PMU. So we
->>>> distinguish them by xxni string. Besides, maybe there are many nodes
->>>> have same type. So we have number N in event name.
->>>> By ni_pmu_0_0/asni_0_rdreq_any/, we can pinpoint accurate bus traffic.
->>>> Example1: perf stat -a -e ni_pmu_0_0/asni_0_rdreq_any/,ni_pmu_0_0/cycles/
->>>> EXample2: perf stat -a -e ni_pmu_0_0/asni,id=0,event=0x0/
->>>>
->>>> Signed-off-by: JiaLong.Yang <jialong.yang@shingroup.cn>
->>>> ---
->>>> v1 --> v2:
->>>> 1. Submit MAINTANER Documentation/ files seperately.
->>>
->>> SEPARATE PATCHES, not patchsets. You have now checkpatch warnings
->>> because of this...
->>
->> ...OK. But the MAINTANER file changing should be given in which one
->> patches.
->> I will submit patch v3 after talking and your permission.
->>
->>>
->>>> 2. Delete some useless info printing.
->>>> 3. Change print from pr_xxx to dev_xxx.
->>>> 4. Fix more than 75 length log info.
->>>> 5. Fix dts attribute pccs-id.
->>>> 6. Fix generic name according to DT specification.
->>>> 7. Some indentation.
->>>> 8. Del of_match_ptr macro.
->>>>
->>>>    drivers/perf/Kconfig     |   11 +
->>>>    drivers/perf/Makefile    |    1 +
->>>>    drivers/perf/hx_arm_ni.c | 1284 ++++++++++++++++++++++++++++++++++++++
->>>>    3 files changed, 1296 insertions(+)
->>>>    create mode 100644 drivers/perf/hx_arm_ni.c
->>>>
->>>> diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
->>>> index ec6e0d9194a1..95ef8b13730f 100644
->>>> --- a/drivers/perf/Kconfig
->>>> +++ b/drivers/perf/Kconfig
->>>> @@ -241,4 +241,15 @@ config CXL_PMU
->>>>    
->>>>    	  If unsure say 'm'.
->>>>    
->>>> +config HX_ARM_NI_PMU
->>>> +       tristate "HX ARM NI-700 PMU"
->>>> +       depends on PPC_HX_C2000 && 64BIT
->>>
->>> 1. There is no PPC_HX_C2000.
->>
->> I have been used to using this macro. However this macro is not existed
->> in mainline.
->> I will replace it with ARM64. And del involved C code if OK.
->>
->> 64bit:
->> __ffs(unsigned long) and __fls(unsigned long) will be wrong in 32bit. I
->> pass a u64 argument.
-> 
-> One thing is where the code is supposed to run, second thing is compile
-> testing.
-> 
+Yes.
+The plda,xpressrich3-axi-common.yaml file is not added to kernel.
 
-Now run on my company product, a 64bit PowerPC...
-But I think it's general for 64bit systems.
-
-> Why do you use __ffs, not __ffs64 which takes u64 if you really want
-> only 64bit argument? unsigned long != u64, so your code is not
-> architecture independent. You claim you wrote it on purpose as
-> non-architecture-independent, but then I claim it's a bug. We are
-> supposed to write code which is portable, as much as possible, assuming
-> it does not affect readability.
-> 
-
-I write code in v5.18, there are __ffs64() and fls64(). Asymmetric.
-There are some difference in return val between __ffs() and ffs64().
-__ffs(0) and ffs64(0) will give different value.
-
-And I'm sure code run in 64bit. So I choose to use __ffs and __fls.
-
-Maybe it could be compatbile with 32bit. But I don't have a environment 
-to test this.
-> 
->> struct ni_hw_perf_event will be big than limit.
->> BUILD_BUG_ON(sizeof(struct ni_hw_perf_event) > offsetof(struct
->> hw_perf_event, target));
-> 
-> And why do you need to use any of such code? Please open one of hundreds
-> of other drivers which work correctly on 32 and 64-bit platforms.
-> 
-
-Code for 64bit.
-This code is to avoid struct ni_hw_perf_event is too big than struct 
-hw_perf_event::target.
-I learn it from arm-cmn.c.
-ni_hw_perf_event will replace hw_perf_event.
-I will put some useful information in it with less space and good field 
-names.
-But I can't exceed a limit.
-
->>
->>> 2. Nothing justified dependency on 64bit. Drop or explain. Your previous
->>> message did not provide real rationale.
->>
->> If ARM64, then drop.
-> 
-> ...
-> 
-> ...
-> 
->>>> +	/* Step2: Traverse all clock domains. */
->>>> +	for (cd_idx = 0; cd_idx < ni->cd_num; cd_idx++) {
->>>> +		cd = cd_arrays[cd_idx];
->>>> +
->>>> +		num = ni_child_number(cd);
->>>> +		dev_dbg(dev, "The %dth clock domain has %d child nodes:", cd_idx, num);
->>>> +
->>>> +		/* Omit pmu node */
->>>> +		ni_pmu = devm_kzalloc(dev, struct_size(ni_pmu, ev_src_nodes, num - 1),
->>>> +				      GFP_KERNEL);
->>>> +		ni_pmu->ev_src_num = num - 1;
->>>> +
->>>> +		if (!ni_pmu)
->>>> +			return -ENOMEM;
->>>> +
->>>> +		num_idx = 0;
->>>> +		for (nd_idx = 0; nd_idx < num; nd_idx++) {
->>>> +			nd = ni_child_pointer(pbase, cd, nd_idx);
->>>> +
->>>> +			node.base = nd;
->>>> +			node.node_type = ni_node_node_type(nd);
->>>> +
->>>> +			if (unlikely(ni_node_type(nd) == NI_PMU))
->>>> +				ni_pmu->pmu_node = node;
->>>> +			else
->>>> +				ni_pmu->ev_src_nodes[num_idx++] = node;
->>>> +			dev_dbg(dev, "  name: %s   id: %d", ni_node_name[node.type], node.id);
->>>> +		}
->>>> +
->>>> +		ni_pmu->dev = dev;
->>>> +		ni_pmu->ni = ni;
->>>> +		ni->ni_pmus[cd_idx] = ni_pmu;
->>>> +	}
->>>> +
->>>> +	devm_kfree(dev, cd_arrays);
->>>
->>> Why? If it is not device-lifetime then allocate with usual way.
->>>
->>
->> No device-lifetime.
->> Will allocate in stack.
-> 
-> I was thinking about kzalloc. But if array is small, stack could be as well.
-> 
-
-If I have to return before devm_kfree because of wrong, I will have to use:
-
-goto out;
-
-out:
-kfree();
-
-But if I use devm_kzalloc, I will not be worried about that. Even if no 
-device-lifetime.
-Isn't this a good way?
-
-> ...
-> 
->>>
->>>> +
->>>> +static const struct of_device_id ni_pmu_of_match[] = {
->>>> +	{ .compatible = "hx,c2000-arm-ni" },
->>>
->>> Don't send undocumented compatibles.
->>
->> OK. Means I should send doc and code in one patch thread with more than
->> one patch?
-> 
-> Yes. Please open lore.kernel.org and look at any other submissions
-> involving bindings or other type of ABI documentation (like sysfs).
-
-Get.
-
-> 
-> Best regards,
-> Krzysztof
-> 
-> 
-
+Error in referenced schema matching $id:
+> > http://devicetree.org/schemas/pci/plda,xpressrich3-axi-common.yaml
 
