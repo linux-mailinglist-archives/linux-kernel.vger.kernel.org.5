@@ -1,188 +1,155 @@
-Return-Path: <linux-kernel+bounces-46148-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46149-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85CFE843B42
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:38:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 815AD843B43
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:38:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 12A961F2C665
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:38:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B13128F941
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:38:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5874369979;
-	Wed, 31 Jan 2024 09:37:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58D446775E;
+	Wed, 31 Jan 2024 09:38:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="xBkCE3xf"
-Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com [209.85.221.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="l/FhzAmU"
+Received: from out162-62-57-210.mail.qq.com (out162-62-57-210.mail.qq.com [162.62.57.210])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA91467E86
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:37:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C79C36773D
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:38:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.210
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706693864; cv=none; b=So2graLUdxX6qI/7Nbwq6G+ZjPT8Q4vuoqfghbGHzAsuPIdihWHj3nm70V+xwycpwO/EtmrdTaQTsPkWG8052uagTsPLwOCMBzXywnILcyl921cDDDJgG8iFGOsIlWPp1bAd69XvR/dmOaKShsTgmk0c3ATyUA19GRFaEqSEdj0=
+	t=1706693891; cv=none; b=U//9eDS5pz5FQMRqr1cIKYGc8oD2CIDLm/E1NIM+id75H4KnPIm+UcKDoihSksi2dY0jsU7/NvcmD+YcvB0wVwgOsHj5zGZynHd1+GaVyFAVV+EYhXPXLCnjoUBPOlCJ/2wQW6R2JHzNSOX00XfZ6mrKs9kF7qrwS6qtf2Eb6Nk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706693864; c=relaxed/simple;
-	bh=6g/9wBTl6BPCWec9Q4PfBb1jAfx/QsrhO21o+nVjTVw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XVnb0GTGJCrhD9SVCR7ps5njoEwhwgzZOviuNb0G+JccYLIqreVafip2VO1528miIoOFRzcVWgzGWg9cX3z4CboWjncdZvWDHhU14j1IXOVjKshbOuJDmP7Y9tRzUsmzmLpqE+9pbCzUdjTa85k76m1NCqGsxJFz1rMNwh99uMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=xBkCE3xf; arc=none smtp.client-ip=209.85.221.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-vk1-f173.google.com with SMTP id 71dfb90a1353d-4bd91d89fbeso1391829e0c.2
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 01:37:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1706693861; x=1707298661; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DmHeh0AnnU8R6/8VaEZIi+vqbQkcVNAn6pqy7RHvRQI=;
-        b=xBkCE3xfgEp8qPGMcW2d28LiFylg+yIZOldTOmpHe5lUFK6l5+DI497ZIMUvKHvR3j
-         5vOhoZK9QoLFDxfTn4kYxFh/FX3o8o25S/D6Sv8wZeP18QQPnyWKphT1Bh7/ezCzu4Wr
-         s95RpLWANK4vYXBZrbepdIn0wldP0HdC2BxO0HdJ+8ZawP2n58lqMjREM5faykWBjJ45
-         EtBMY2xpQgjmRDSFw9hHxeb8YH3+3DWp7ciglNRhkeikLvefwq2ngMcoIKg2ocnq/ql2
-         RL8HFjKkqdVJR+bPWl1Add/iTs6kyaHX4qQGGvRX+gUYzPDz0BBz9JoiBd75cdYvLfG+
-         ZdBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706693861; x=1707298661;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DmHeh0AnnU8R6/8VaEZIi+vqbQkcVNAn6pqy7RHvRQI=;
-        b=mwAuWKThEQfRwUWQQ53hGN3F8G6zQFlmmeBhgk8mss/msbZGdYzGP8mXCGUHQDKR9w
-         bNBYPMn7uNQtjR6uoPFJJI1iu77tjCB8ZROFtZylFtowBMRByNagi9WYp858NHAHPxEs
-         HHrgiZaAc9H5bqNy+xgM8u7Teql3KfJd+FRtEOuziUQ6cGyla8GPlENlScfw0T49htCq
-         xADldZD+QP+E1Ms58x/PKR4xXpEBnXHSlW2/KXZq/lRMgvLwSC2Xw3rKFkJP8MrVQBLR
-         JtgTvFyhuigym4USWGRLA0paTSEuBn4lfKnaDSkIlrbF6s18NlMldhKVQaQ1Vtqp9wAn
-         vVSw==
-X-Gm-Message-State: AOJu0YwX9o/yKVjr6HJxY3TkZK7P0LmVVjkUkxnwTZkv9wdU3+g/lHsi
-	nePSCYAMS1pnYu/V9MakbPmlnQ1LS9qnVOYNfOcSy15OwWNWHwX4vp84+otkTaqQQqha8LPT50a
-	GZsAca9tI3O+h6WCxBIm6N2uYp0mHQ4v0DRJpVw==
-X-Google-Smtp-Source: AGHT+IGYiHwBdTOPDnoFpMk4wG2qn9o70lLB7qc/tMqoiGXQQ1hR03EibuQ3mFexsetD4ArcCOazY4KDA9aeRUgU3NE=
-X-Received: by 2002:a05:6122:4693:b0:4bf:dbbd:37aa with SMTP id
- di19-20020a056122469300b004bfdbbd37aamr937831vkb.15.1706693860441; Wed, 31
- Jan 2024 01:37:40 -0800 (PST)
+	s=arc-20240116; t=1706693891; c=relaxed/simple;
+	bh=P9oCSEVSvI3I8NxFBzCwMHgI6aG8o8ztxBa28NA+uno=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=glT3uydGhKwBjut8aniuCYnxhDMESZKvwcR8fkVQRY4oxIS3c5Fl1ilUS18Q0+dVAmUnfGKI5uA91ZnLQk50N+m15NwLQi4A0bXY+x+cBklyKJhLbj67Mhim7gkFvN1m8KGWv+ZCZ+5ouI4mT3rhKP9noCn8ANO6mXlj85Bd6lQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=l/FhzAmU; arc=none smtp.client-ip=162.62.57.210
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1706693884; bh=p0o02FUi1b8JvQdnhRH4R4WteCSwKGmKcl/ZjRkdDd0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=l/FhzAmU8O6YmijlrqGS0xrLi98HJh5KWMb0DKdF46KiUJ1SMiZmn2CnuwvX+kOJj
+	 K3mYY2+WNcPrlCqFJZ/mo9WQG1ylGKWh0Rj8FYHSokwVEzuYqUMzDwTIHaG5BzD6Ne
+	 UFQg4Op5SqeC5auOG+GwQTD3i80ghwjOqhdZ+zsA=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
+	id 9832AEBE; Wed, 31 Jan 2024 17:38:03 +0800
+X-QQ-mid: xmsmtpt1706693883tafy3pex3
+Message-ID: <tencent_48D4BAEFBB2133B89EC81B974B4A1B242508@qq.com>
+X-QQ-XMAILINFO: OQhZ3T0tjf0aO645nJ9CGVGSJdd4bz9P8UwSDScT1q/xnawKlJQ8idd1qIh3aM
+	 Tx5HG242m8ujpb0DVF3W1LgwPIFAQyRUYzsdezj+lRtd5RSvKWdyD1qRdsP6yHFiGasfJR9hDYG3
+	 VJKhyehhkGgRd6NKV587G69aXIT7YvNH8adK26KYTUYfJlA8YLyzXWHsbjF3jS32x4lAoJqVBzVP
+	 j7eiGOp7SpgP44DHo5Nc5WVmfhMfDO8GsvlVzL6MIg6sDE1vxoWVvVdRDwvyUieQeKBpQgLTN0aU
+	 xxy7sFPTE9tqnY75Y8zOSm5VsC/E7dlgWZwk3s2ERjU7opGsBYGQT1TNGN5SX80z4mBMspR4FNEc
+	 S6BQ3fSLhNMcpvsIlH5lHRzjac9KUszuhU5I74nLQe9nF69ljT5iha5sfHKVXnD/jonPiGYBjn8I
+	 Doh+ByNgbyZ7e0Nl0pKQPyavnZfMZUPKuJqzx1oIy0ZF9+xTAqDZGlLIAt7nULoVvu+yFJOt9fBI
+	 9PjNj94Zf1NjgbjQ0wRm2zVQ7NhMyQp3DhybX6BnNTtEFONrrim8ygV8XJJMwLOfP6N2nuUnf6L1
+	 T1JjQyUcLXWPojPNwAj/R3At0YFn3jb6n+H24ELHvLgL8LUBMJDeeym6mjsAAK6a2zez1NGchYUv
+	 S4Kj+lm75MHIyoaUakM9iTrNklcmJiv3GPiD0mofqlYvnA2KYg9N4aadVDQYq/BwGDOmOaWDoKNB
+	 ybELuqpoPVpQgJ0pY3y70rLeLXLxpk6IrNUz2Ne8kiImHYBNOWJPrImoyMtekA1oKOue5EjTj3jP
+	 KUp0Dch4B9qQlNGhCJtiMnvLu0d/4lijmSRv8n+2bZ+5X9cd/o0DAcY4bUc4NNzmWVYYEe1/NvPZ
+	 tKOpmoeVDK9p7ormD4sAMp19RbYIjK0BveXn8QIC6WXlRx3M+umZU2x/1xw/5QFZmsVzg+MfosJG
+	 eIX4pgZqW64qtnFaPk+cZ4BE4Or2KJU1iHPnJHE/0QW44GvXrRNSY+wY9thque/83fQk4L1o4=
+X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+2373f6be3e6de4f92562@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [block?] [trace?] INFO: task hung in blk_trace_remove (2)
+Date: Wed, 31 Jan 2024 17:38:03 +0800
+X-OQ-MSGID: <20240131093803.1049661-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <0000000000002b1fc7060fca3adf@google.com>
+References: <0000000000002b1fc7060fca3adf@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240129115216.96479-1-krzysztof.kozlowski@linaro.org>
- <20240129115216.96479-5-krzysztof.kozlowski@linaro.org> <CACRpkdYf4HUaV-Pjr81WjLbzy9zdAnyFWs9gPayPC6-3OjHQwA@mail.gmail.com>
-In-Reply-To: <CACRpkdYf4HUaV-Pjr81WjLbzy9zdAnyFWs9gPayPC6-3OjHQwA@mail.gmail.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Wed, 31 Jan 2024 10:37:29 +0100
-Message-ID: <CAMRc=Mc1SGLeUOWmKg=fvCdM+RR6FSu2QkFuR17s7L99eRMGug@mail.gmail.com>
-Subject: Re: [PATCH v6 4/6] reset: Instantiate reset GPIO controller for
- shared reset-gpios
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, 
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Banajit Goswami <bgoswami@quicinc.com>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Viresh Kumar <viresh.kumar@linaro.org>, Frank Rowand <frowand.list@gmail.com>, 
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, 
-	linux-arm-msm@vger.kernel.org, linux-sound@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-pm@vger.kernel.org, Chris Packham <chris.packham@alliedtelesis.co.nz>, 
-	Sean Anderson <sean.anderson@seco.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 31, 2024 at 9:57=E2=80=AFAM Linus Walleij <linus.walleij@linaro=
-org> wrote:
->
-> Hi Krzysztof,
->
-> something is odd with the addresses on this patch, because neither GPIO
-> maintainer is on CC nor linux-gpio@vger, and it's such a GPIO-related
-> patch. We only saw it through side effects making <linux/gpio/driver.h>
-> optional, as required by this patch.
->
-> Please also CC Geert Uytterhoeven, the author of the GPIO aggregator.
->
-> i.e. this:
-> > 2. !GPIOLIB stub:
-> >    https://lore.kernel.org/all/20240125081601.118051-3-krzysztof.kozlow=
-ski@linaro.org/
->
-> On Mon, Jan 29, 2024 at 12:53=E2=80=AFPM Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
->
-> > Devices sharing a reset GPIO could use the reset framework for
-> > coordinated handling of that shared GPIO line.  We have several cases o=
-f
-> > such needs, at least for Devicetree-based platforms.
-> >
-> > If Devicetree-based device requests a reset line, while "resets"
-> > Devicetree property is missing but there is a "reset-gpios" one,
-> > instantiate a new "reset-gpio" platform device which will handle such
-> > reset line.  This allows seamless handling of such shared reset-gpios
-> > without need of changing Devicetree binding [1].
-> >
-> > To avoid creating multiple "reset-gpio" platform devices, store the
-> > Devicetree "reset-gpios" GPIO specifiers used for new devices on a
-> > linked list.  Later such Devicetree GPIO specifier (phandle to GPIO
-> > controller, GPIO number and GPIO flags) is used to check if reset
-> > controller for given GPIO was already registered.
-> >
-> > If two devices have conflicting "reset-gpios" property, e.g. with
-> > different ACTIVE_xxx flags, this would allow to spawn two separate
-> > "reset-gpio" devices, where the second would fail probing on busy GPIO
-> > request.
-> >
-> > Link: https://lore.kernel.org/all/YXi5CUCEi7YmNxXM@robh.at.kernel.org/ =
-[1]
-> > Cc: Bartosz Golaszewski <brgl@bgdev.pl>
-> > Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> > Cc: Sean Anderson <sean.anderson@seco.com>
-> > Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
-> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> (...)
->
-> In my naive view, this implements the following:
->
-> reset -> virtual "gpio" -> many physical gpios[0..n]
+please test task hung in blk_trace_remove
 
-This is a different problem: it supports many users enabling the same
-GPIO (in Krzysztof's patch it's one but could be more if needed) but -
-unlike the broken NONEXCLUSIVE GPIOs in GPIOLIB - it counts the number
-of users and doesn't disable the GPIO for as long as there's at least
-one.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
-Bart
+diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
+index d5d94510afd3..1af3c8aa78a3 100644
+--- a/kernel/trace/blktrace.c
++++ b/kernel/trace/blktrace.c
+@@ -311,7 +311,7 @@ static void __blk_add_trace(struct blk_trace *bt, sector_t sector, int bytes,
+ 	local_irq_restore(flags);
+ }
+ 
+-static void blk_trace_free(struct request_queue *q, struct blk_trace *bt)
++static void blk_trace_free_top(struct request_queue *q, struct blk_trace *bt)
+ {
+ 	relay_close(bt->rchan);
+ 
+@@ -325,11 +325,21 @@ static void blk_trace_free(struct request_queue *q, struct blk_trace *bt)
+ 	} else {
+ 		debugfs_remove(bt->dir);
+ 	}
++}
++
++static void blk_trace_free_bt(struct blk_trace *bt)
++{
+ 	free_percpu(bt->sequence);
+ 	free_percpu(bt->msg_data);
+ 	kfree(bt);
+ }
+ 
++static void blk_trace_free(struct request_queue *q, struct blk_trace *bt)
++{
++	blk_trace_free_top(q, bt);
++	blk_trace_free_bt(bt);
++}
++
+ static void get_probe_ref(void)
+ {
+ 	mutex_lock(&blk_probe_mutex);
+@@ -377,12 +387,23 @@ static int blk_trace_stop(struct blk_trace *bt)
+ 	return 0;
+ }
+ 
++static void blk_trace_rcu_free(struct rcu_head *rcu)
++{
++	struct blk_trace *bt;
++
++	bt = container_of(rcu, struct blk_trace, rcu);
++	if (bt)
++		blk_trace_free_bt(bt);
++}
++
+ static void blk_trace_cleanup(struct request_queue *q, struct blk_trace *bt)
+ {
+ 	blk_trace_stop(bt);
+-	synchronize_rcu();
+-	blk_trace_free(q, bt);
++	blk_trace_free_top(q, bt);
+ 	put_probe_ref();
++	mutex_unlock(&q->debugfs_mutex);
++	call_rcu(&bt->rcu, blk_trace_rcu_free);
++	mutex_lock(&q->debugfs_mutex);
+ }
+ 
+ static int __blk_trace_remove(struct request_queue *q)
+diff --git a/include/linux/blktrace_api.h b/include/linux/blktrace_api.h
+index 122c62e561fc..5f927328b7e6 100644
+--- a/include/linux/blktrace_api.h
++++ b/include/linux/blktrace_api.h
+@@ -26,6 +26,7 @@ struct blk_trace {
+ 	struct dentry *dir;
+ 	struct list_head running_list;
+ 	atomic_t dropped;
++	struct rcu_head rcu;
+ };
+ 
+ extern int blk_trace_ioctl(struct block_device *, unsigned, char __user *);
 
->
-> So if there was already a way in the kernel to map one GPIO to
-> many GPIOs, the framework could just use that with a simple
-> single GPIO?
->
-> See the bindings in:
-> Documentation/devicetree/bindings/gpio/gpio-delay.yaml
->
-> This is handled by drivers/gpio/gpio-aggregator.c.
->
-> This supports a 1-to-1 map: one GPIO in, one GPIO out, same offset.
-> So if that is extended to support 1-to-many, this problem is solved.
->
-> Proposed solution: add a single boolean property such as
-> aggregate-all-gpios; to the gpio-delay node, making it provide
-> one single gpio at offset 0 on the consumer side, and refuse any
-> more consumers.
->
-> This will also solve the problem with induced delays on
-> some GPIO lines as I can see was discussed in the bindings,
-> the gpio aggregator already supports that, but it would work
-> fine with a delay being zero as well.
->
-> This avoids all the hackery with driver stubs etc as well.
->
-> Yours,
-> Linus Walleij
 
