@@ -1,129 +1,123 @@
-Return-Path: <linux-kernel+bounces-47215-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47216-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62FBA844A9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:57:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6255E844A9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:58:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E51A1C2228B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:57:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F218D1F2276B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:58:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8A7739AFC;
-	Wed, 31 Jan 2024 21:57:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 755BF39AF0;
+	Wed, 31 Jan 2024 21:58:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YWKswDPH"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="h5bIouCx"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0355F39AC3
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 21:57:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58154848A;
+	Wed, 31 Jan 2024 21:58:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706738251; cv=none; b=dvI45yp2MOq7ind2VBI5ku64i0oQaXf3QvPeo01XS+o9ImXB5/Uh+yECto1DNqy1D5JRpyYNX8PvxmN6NTY6SqfPhRTSWe4rzf8QIaycyzGFe33JFklJ4JrsIzXadZ6LH7W/DwLjA954bQdnq3+nvZnTZ+anGcynGZQNYw60y60=
+	t=1706738308; cv=none; b=RREqfd1GgoszwjXYTObXfV3FyxQUi2w0oTvivnFvFKVArHCZcB4cE5TneuZYni5hTyF18lBHElydafH4+3WCdFB4/vQdwnJN+TFYNwVYxy/+rKxNjU3sXdfoYBI3QxIg0+F8zChwZcp6SKMsai7kSRnDTEIM41BkQq2GbKe5LPY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706738251; c=relaxed/simple;
-	bh=gC0lXf7I3SZcZiIxOmuaTz2uCZpWqFRp2MIZZXqsmkU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=I2zT+1HM1jhEllJkBYkpXsajri/KC6xT1D+DBX/uj+GrywsZG+rwpIxl5iJ3uADOSqLgOwbjxZzkqbedb2TgKw+psUYnhPDOotUxnfsyStQbdWge2Uqr4EEeJSu2CBTuFrjvpjPX39PxA1NC1WMRKy+rZGgSpCvi0JkA9bEhDPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YWKswDPH; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706738247;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=O5fW+pR0Od9wClLuo3WHp1P1SzDvmkG9A4Voix2JXDE=;
-	b=YWKswDPHHk9FPRSX7dJuXuJNaXeLfNKyqC+dFm8txpGZzNvnt4dXh/CcHpRGaaRRjqNJqz
-	fGHGCPXJ+ZhnB/ZILjaj7pZQ6BfzSpjr7q6+i1UV4KtfvFDFn7JzomWvfIROwo5HxmsMSD
-	Y+YnAIC+KpkO71gvq93PwVzOij8CY8E=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-125-ysbqdaHYMD6D5-ckay1BDg-1; Wed, 31 Jan 2024 16:57:25 -0500
-X-MC-Unique: ysbqdaHYMD6D5-ckay1BDg-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-33afc5a3f40so76658f8f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 13:57:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706738244; x=1707343044;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=O5fW+pR0Od9wClLuo3WHp1P1SzDvmkG9A4Voix2JXDE=;
-        b=l5Bs+SQp/XVyONzd7YI2FnGmPQxSYYyBUKc9Z/q2aAoai3LLpL165Q9Ypsmxjkhg/r
-         qsVz/jcJTPOOJioY2karX7sYEvhrRdAFig5+eLChANIFPZ+wtSdYK0NrTSKJJ79fmP35
-         TmtvlJ1fl0AM/CB+3JwINqLW7aUVwOzbL7hI4qqqlL/0K+AINNcivq4pvcbpil9vMRw1
-         4Ys0sv09+ibGa7VCEmtn5d4ZijxWgVKpjUwfN9e1zo/GXrm+URbTHx95SD4WqK4Qrrmr
-         sME2rkZIajHkT/pwJPibphaPPpJJ4lqbWuS7GIa/B7Aowua0RJ36t5nxfRJCtwNXAvId
-         DGTw==
-X-Gm-Message-State: AOJu0Yy7Mg5/TbSIxdNxM14oL7CjHoEWBwJoMjTQsZOj07/ufatdwee5
-	RF/eOLDJnvb6AZtbzAEyeEdOp6HERThmeafu7FO/k+Tvdn5o8EOnbDZ0uvhErLkVxO9Twu61f3a
-	shL44x0ElpIzeLSMj8sRTPfeKW07g5bsZ77FY6TefzTWc8uS/lBtbHBvqY/spc9UmHzKJ3RNLMs
-	jMJeqFp67a8OsFPrPY+pb0cFO5WtCit3VMkSlnQLXl7v4U
-X-Received: by 2002:adf:f98d:0:b0:33b:998:3643 with SMTP id f13-20020adff98d000000b0033b09983643mr248807wrr.34.1706738244227;
-        Wed, 31 Jan 2024 13:57:24 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEvq6Klk32tuusUbUXszcqh0e5W5OiGe4KfWf4z08Djrb6F1s6ICn5hYUcrjCqeJicorPvnA82CO8a4mLBNIjY=
-X-Received: by 2002:adf:f98d:0:b0:33b:998:3643 with SMTP id
- f13-20020adff98d000000b0033b09983643mr248789wrr.34.1706738243932; Wed, 31 Jan
- 2024 13:57:23 -0800 (PST)
+	s=arc-20240116; t=1706738308; c=relaxed/simple;
+	bh=OCJeKfhQ9glNLXX2ntf9uF6fRDRZS3kJloQ6WG9qz+0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Oss+OhbgcqQ1dcGfO9SCkNHAVb2Ex4DaXWA+5i4qzURSoURH9NufE/mfrO5cgfql+iid3GVVBp0lsazN6OPzDRZEpFOXqGx1MPnxSIH0bBlF2qiX0ebp8QzhrWE+UEfwU6REAzsLK0bMN/yX+f3yA8nu2+1+g6OXW5uWS5beEiQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=h5bIouCx; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=iQfXW37ZK31yG37Afle32aWwrDr+gCC0dupCwANd1vs=; b=h5bIouCxLjtlG+frdiQOFKm2uX
+	U/2ZniW40PsD232UWulNNlEaoHXQ8vL020jg5yOCCTTa2+x+4cp4iN0RKjKmw/OFYhACLIHTwfHrr
+	+OCXquWfqnT2hOYEFwKT6LLOUBLWA2LhvBYQNZ6mEUsnh/xuiGHLX8KHfraUJLSPSPCZ74ckbjL4L
+	P5vpWzCdDLZG1+r+ZaXFv+NzQs/EblX49p6GNr5b3Ps9H8UMa0RrlxLERCzxFBPLMYC6RjWIx12M3
+	DUQzLrOfxDW43HkIUxSepWMBLAeXVqd6+SjoBG1E1Agz2p7Wd/eMuy2VQiUevb74HBKrZx5tEEB4E
+	CXo+TkOA==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rVIbC-00000005dEB-100a;
+	Wed, 31 Jan 2024 21:58:26 +0000
+Date: Wed, 31 Jan 2024 13:58:26 -0800
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: kernel test robot <oliver.sang@intel.com>,
+	Daniel Gomez <da.gomez@samsung.com>, oe-lkp@lists.linux.dev,
+	lkp@intel.com, linux-kernel@vger.kernel.org,
+	"gost.dev@samsung.com" <gost.dev@samsung.com>,
+	Pankaj Raghav <p.raghav@samsung.com>
+Subject: Re: [PATCH 1/2] test_xarray: add tests for advanced multi-index use
+Message-ID: <ZbrCglszF4n3BtGA@bombadil.infradead.org>
+References: <20231104005747.1389762-2-da.gomez@samsung.com>
+ <202311152254.610174ff-oliver.sang@intel.com>
+ <ZVfS8fiudvHADtoR@bombadil.infradead.org>
+ <ZVfT3bs9+F0jqIAw@casper.infradead.org>
+ <ZVfUnhzv4UDigZKa@bombadil.infradead.org>
+ <ZbQEA6WIh0HrFTbP@bombadil.infradead.org>
+ <ZbQHWf0Hh04OwoZx@casper.infradead.org>
+ <ZbQQXO5YhKhdr1Ou@bombadil.infradead.org>
+ <ZbQW3PRAIw8e7m0m@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <170663397812.1314437.1686905275956809283@demetrius>
-In-Reply-To: <170663397812.1314437.1686905275956809283@demetrius>
-From: Clark Williams <williams@redhat.com>
-Date: Wed, 31 Jan 2024 21:57:12 +0000
-Message-ID: <CAMLffL_XZqBwoq8WivEyAU46TrTas+x4h5n4H=fFRq3ODWmEpw@mail.gmail.com>
-Subject: Re: [ANNOUNCE] 6.1.75-rt23
-To: LKML <linux-kernel@vger.kernel.org>, 
-	linux-rt-users <linux-rt-users@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Carsten Emde <C.Emde@osadl.org>, John Kacur <jkacur@redhat.com>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Daniel Wagner <daniel.wagner@suse.com>, 
-	Tom Zanussi <tom.zanussi@linux.intel.com>, Clark Williams <williams@redhat.com>, 
-	Pavel Machek <pavel@denx.de>, Joseph Salisbury <joseph.salisbury@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZbQW3PRAIw8e7m0m@casper.infradead.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-Wow, that'll teach me to do two releases back to back. I fat fingered
-my release announcement for 6.6 and did the 6.1 instead.
+On Fri, Jan 26, 2024 at 08:32:28PM +0000, Matthew Wilcox wrote:
+> On Fri, Jan 26, 2024 at 12:04:44PM -0800, Luis Chamberlain wrote:
+> > > We have a perfectly good system for "relaxing":
+> > > 
+> > >         xas_for_each_marked(&xas, page, end, PAGECACHE_TAG_DIRTY) {
+> > >                 xas_set_mark(&xas, PAGECACHE_TAG_TOWRITE);
+> > >                 if (++tagged % XA_CHECK_SCHED)
+> > >                         continue;
+> > > 
+> > >                 xas_pause(&xas);
+> > >                 xas_unlock_irq(&xas);
+> > >                 cond_resched();
+> > >                 xas_lock_irq(&xas);
+> > >         }
+> > 
+> > And yet we can get a soft lockup with order 20 (1,048,576 entries),
+> > granted busy looping over 1 million entries is insane, but it seems it
+> > the existing code may not be enough to avoid the soft lockup. Also
+> > cond_resched() may be eventually removed [0].
+> 
+> what?  you're in charge of when you sleep.  you can do this:
+> 
+> unsigned i = 0;
+> rcu_read_lock();
+> xas_for_each(...) {
+> 	...
+> 	if (iter++ % XA_CHECK_SCHED)
+> 		continue;
+> 	xas_pause();
+> 	rcu_read_unlock();
+> 	rcu_read_lock();
+> }
+> rcu_read_unlock();
+> 
+> and that will get rid of the rcu warnings.  right?
 
-Sorry for the noise, the v6.6.14 announce will be out shortly
+The RCU warning was due to my getting an try call missing an RCU lock,
+I fixed that. The pending issue was a soft lockup that I get on low end systems
+testing test_xarray with higher order but after testing on a 2 vcpus
+with only 2 GiB of RAM I cannot reproduce so we can address this later.
+I forget the exact type of low end system I tested this on... but anyway
+I can't reproduce now. I suspect it may have been similar to the issue
+0-day had found long ago and you noted an overloaded system [0]
 
-Clark
+[0] https://lore.kernel.org/all/20190306120843.GI13380@bombadil.infradead.org/
 
-On Tue, Jan 30, 2024 at 5:00=E2=80=AFPM Clark Williams <williams@redhat.com=
-> wrote:
->
-> Hello RT-list!
->
-> I'm pleased to announce the 6.1.75-rt23 stable release.
->
-> You can get this release via the git tree at:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
->
->   branch: v6.1-rt
->   Head SHA1: feaccee7987b202020fb8e13d33a793930a55045
->
-> Or to build 6.1.75-rt23 directly, the following patches should be applied=
-:
->
->   https://www.kernel.org/pub/linux/kernel/v6.x/linux-6.1.tar.xz
->
->   https://www.kernel.org/pub/linux/kernel/v6.x/patch-6.1.75.xz
->
->   https://www.kernel.org/pub/linux/kernel/projects/rt/6.1/patch-6.1.75-rt=
-23.patch.xz
->
->
-> Enjoy!
-> Clark
->
-
+  Luis
 
