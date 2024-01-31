@@ -1,228 +1,255 @@
-Return-Path: <linux-kernel+bounces-47041-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47042-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51B35844861
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:04:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EA28844865
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:05:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05F25283C5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:04:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 091B2289310
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:05:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AB873FB0A;
-	Wed, 31 Jan 2024 20:04:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 055233FB1C;
+	Wed, 31 Jan 2024 20:05:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lrFX2Wii"
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="VnxBfS3w"
+Received: from BN1PR04CU002.outbound.protection.outlook.com (mail-eastus2azon11022011.outbound.protection.outlook.com [52.101.56.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A78C03F8C0;
-	Wed, 31 Jan 2024 20:04:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706731451; cv=none; b=Yvt8OkYs9XXjhmPW9JQYppyROb4WHleEdw7lJm2IHMh/J2u1CCNmNwUcnIRJM4uRb7hy+ov/6v7bR8AjpccimPqymnnZ4xT8uKdMjsreOdTZ4lWfKZeqGb4EQQujGZty9WMeXrMCxufprpRf9ZCYxv3+/DXkFNxGzRSUTYne0HI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706731451; c=relaxed/simple;
-	bh=H3X8hBE9MpoUWzlBFFbwUiJxMKacKJ2HbGRILneORiY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eHdYdTosvuAVuO+KKscZlxXIfbR1cp02BWmFTQ587oQqPRHyR60sQL2vvyJbU8JlbUaogu6RRGFVDL2Le0rwWsDDruz/lwkB8LtLmITJRqhjBBAq+e3fdbV5DgcXUJsHVdiVqbpHdeQ1IP2hjPHlkHyUxfi2O6R4IGgYDu6LBxo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lrFX2Wii; arc=none smtp.client-ip=95.215.58.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <bd3d594e-55e7-47c3-99f4-efc1a4688fb2@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706731446;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZwLfC8CGeTzzOoxYrLLyAKkP2cIJ8WWC+JNjubQjcm8=;
-	b=lrFX2WiigN0GpqwMGX9SYK2DYC0HacFx3LT3/EtVCF72Pk/e6kOTwt5Wpb0V+tOOso8N7l
-	oYhyBkeSE1AkfhJKV6/l43GoQ70SWfH0pcfqqdqT7G0E3yi7u+0YM7Bn1/vy7XTZBGKwiK
-	+fizEjoqZg2cDtyLtwPm/Rwf8S6hLO8=
-Date: Wed, 31 Jan 2024 12:04:00 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 069913F8E6;
+	Wed, 31 Jan 2024 20:05:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.56.11
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706731546; cv=fail; b=ZmRJrTTs099s65D9RJULFDWRpFiuuzHORSZRYzVKc855zW9yduTXhfssAeeOHKXSJQVOpoJqu4LGTVy4FjjD48XmhBVuYwTFxJnPYIEGx177JD33QBIkcPpBi9j9RR3sBjtxoLi3aU86yuFO846U0e1JXdH766aumhgho4m1MrM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706731546; c=relaxed/simple;
+	bh=4l34O8IysWodp8UFmAeNUIwpRNJUMiU7RjZJJ+W3WJU=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=XzdytncyggfaVGgFIpxWxwOoNFBCR3OZTNohS5rXDCGy7mZDXgNCBtb17p3yRZmhOn8PtV+Rn1v9XbZCl1gK26T5wZ4C2VkVP5dZ/Bt5TnO+xiy3ouNdeWf+33B2kuSES0sV4LJiu1zWBkcayHTlCieeawgBp1Q8Mo69vlz7CA8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=VnxBfS3w; arc=fail smtp.client-ip=52.101.56.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UWGNIU21AX+E1TdCV9ZErMbHvTatOxfU6NMifoeb6AxSY7i/ZwK6jj4a5GQ0h3tC57uZejuRaDAgEv+y20a1LCBrjda3zWiynwtGoUWqlBsJTGzHXmgHGavx7XgcYyOVgT2T4Ida3MHq6RtM2lbxO+xLcum8tsUmTZXG2z0JppZCJGX+PewH95wMpDaZrk3Gn1VEwwgB/m2hNke5NbgO6WNrEJe+ZVt9omx+Pso+zDAhrhLTilV3PUqUTb1TRqYBZdN140S0RlJ/DPxfVAka5FYi1QS7YVCWf6uofN5J8/F0pDyXZOhHNNn1O0/MSHkWSsMeNHoWcF2iakInlkHqKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3lAVu4As9hIJmi7PhDqPkXNM1ObofFZnvR2SfR72zZs=;
+ b=Efet5qf2+TiAYqlcwfTrYNsjd7ZiGqA9ngu6URMqJdDhTbIh+v0OdwQyRhdrFAPvdC/3UJDMM8W4bjyqNxVCpdK5U4FElYWdeMXNJDzzL3fGFRSg1P7U9/12O4fRXSCpbGlY9JT6mcm2aAMz7MrrbD+8jf1Fik+guCLAEx1zf8xrIgWAtWuAFQHts5uxeSXMrJOcMId+oSZCwt140ngyXQ3ejcpaTZdt9zqny3gGleZPjS/Kbr6kRtT1750f2gb7oS7mWSKXsL1sLxIWe/Iu5dUtCQYPrRXiwzewt77sSyz96nmWORmn4loVsImm9VwS9qpDhwna7WMqtuyB/5lg6g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3lAVu4As9hIJmi7PhDqPkXNM1ObofFZnvR2SfR72zZs=;
+ b=VnxBfS3wN4quWWxoRv4Y2PDr6mcznf13CjNgXXESjXsiQgPqLciKhlsnC9v3Q0eamfd1O8cShKLXmX/XfTnd9Mu2XgY8h6UNJYvvT5XFXd2MTfW6ySsexvAZg/K+sfEqUnGPwZL5w+fml+PKOMoVL9IRQ/oBswreelrl9BzYDPY=
+Received: from DS1PEPF00012A5F.namprd21.prod.outlook.com
+ (2603:10b6:2c:400:0:3:0:10) by BY5PR21MB1460.namprd21.prod.outlook.com
+ (2603:10b6:a03:21d::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.4; Wed, 31 Jan
+ 2024 20:05:40 +0000
+Received: from DS1PEPF00012A5F.namprd21.prod.outlook.com
+ ([fe80::ff76:81ea:f8d6:45]) by DS1PEPF00012A5F.namprd21.prod.outlook.com
+ ([fe80::ff76:81ea:f8d6:45%8]) with mapi id 15.20.7249.015; Wed, 31 Jan 2024
+ 20:05:39 +0000
+From: Haiyang Zhang <haiyangz@microsoft.com>
+To: Dexuan Cui <decui@microsoft.com>, Shradha Gupta
+	<shradhagupta@linux.microsoft.com>
+CC: KY Srinivasan <kys@microsoft.com>, Wei Liu <wei.liu@kernel.org>, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
+ Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Wojciech Drewek
+	<wojciech.drewek@intel.com>, "linux-hyperv@vger.kernel.org"
+	<linux-hyperv@vger.kernel.org>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, Shradha Gupta <shradhagupta@microsoft.com>,
+	"stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH] hv_netvsc:Register VF in netvsc_probe if
+ NET_DEVICE_REGISTER missed
+Thread-Topic: [PATCH] hv_netvsc:Register VF in netvsc_probe if
+ NET_DEVICE_REGISTER missed
+Thread-Index: AQHaU0yZNOZ7/lEXVUScWvjgIg8G/LDyyvGAgADDxwCAAI9LcIAAFIAAgAAkwVA=
+Date: Wed, 31 Jan 2024 20:05:39 +0000
+Message-ID:
+ <DS1PEPF00012A5F6DC9FADEC65BDB80AA58CA7C2@DS1PEPF00012A5F.namprd21.prod.outlook.com>
+References:
+ <1706599135-12651-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <SA1PR21MB1335C5554F769454AAEDE1C8BF7D2@SA1PR21MB1335.namprd21.prod.outlook.com>
+ <20240131075404.GA18190@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <DS1PEPF00012A5FD2F8DBDCA1A0A58C6AC6CA7C2@DS1PEPF00012A5F.namprd21.prod.outlook.com>
+ <SA1PR21MB133546A5D3B1E471E4021A00BF7C2@SA1PR21MB1335.namprd21.prod.outlook.com>
+In-Reply-To:
+ <SA1PR21MB133546A5D3B1E471E4021A00BF7C2@SA1PR21MB1335.namprd21.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=94a4fd25-9eef-4088-8818-4ef9b583d8ec;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-01-31T16:26:55Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DS1PEPF00012A5F:EE_|BY5PR21MB1460:EE_
+x-ms-office365-filtering-correlation-id: 293bdc4d-fccb-4259-302e-08dc2297ff30
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ M6k9MKYOMdQqjo8F+eEsHP3H9XhhyisQai1ySIlccbK8FSG70CAe9MeFAyqPPhuDEdlPGbG4K8LO9LaWLwcdeFs/5LVm1iH8SXIpnRAVYCC8hmZ7rnZuWP2YdA4mrQcjQTYNiLrR7pW5leEeGVOTDUSd5SUWJqk9LvYIn/RXTJOnBC/U8rALD1pGlF99DcMfFYfMlvMCLMwQDWQXSrzCCpkdglqwTXLUXFadmbLr8EdY5AOY0xUUWBDqy3rA6cteuhFrfBLDLiK7yoxoTVWp3/278cOEIyY/lNB3hXHFmdGw3BS1EUzLSfqo19012gLJWaYO1+2rD64HobPuqnrFrXWAB9DyvhijCmoJr0GPaW3gNhLt9Fh7YiLyQ5VmV01EWzfItKAxZYg3S1rtGVQ4gPpzreZo0qJmvMFBcplk1qJwSG2NKqGbgunQE1TQ8tgnbr8y9F3Pp5HXdysZzdroYHEYnjZgYvLrVv6zTl7jTFVF3NOa88P1JINbKCac/nSYlkHaUov71Aw7XuiDTl4wo1j7UzeBf1Lw37go8lIoYZ9yqmPZebnx+k9VHYR1yMAw1G2qmweUtlcukELdHohP50ndfDWQ1tUSyHA5dB+xidrMezfQjTLkcKOq8LaonB+D
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS1PEPF00012A5F.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(396003)(136003)(39860400002)(346002)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(26005)(41300700001)(55016003)(7696005)(478600001)(82960400001)(71200400001)(10290500003)(38070700009)(83380400001)(6506007)(9686003)(53546011)(316002)(54906003)(82950400001)(38100700002)(122000001)(64756008)(66476007)(2906002)(86362001)(110136005)(76116006)(7416002)(8676002)(33656002)(8936002)(66946007)(52536014)(8990500004)(66446008)(4326008)(66556008)(5660300002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?ZoY9wf5ImRgsM6ZhlAtBGq3n1bM1cZEA5kqWVghSQr/JRO4HNU9XpbEMbPAi?=
+ =?us-ascii?Q?F1YAg+o22LupKvXx0F4fa+3pd7QeQPeW3Wt413a5pLkLXkQKcTV9X/STaUTM?=
+ =?us-ascii?Q?zR4TI+R50HSgi+eU0d+YA5xka8gn9j8tVOl5G8nZ6Gr+1gkGe1MkqS+p0l44?=
+ =?us-ascii?Q?0OikkPXqzoM9yDWXQAPEKgpg4bTOsudcxVMP6s/L7VQc2O/aCmFxXdQ/bt6h?=
+ =?us-ascii?Q?REO94ox7+Q6vLNsLDM0vcxQtY5BzUuKn8LqKFtni2niCnkX0yA3Iib+oVSPI?=
+ =?us-ascii?Q?THqa2RZz3A/3RdCbjr9z6sGLl8vKulAAtFyrBPBWfHd5vzoJqYfk1Cj54oRs?=
+ =?us-ascii?Q?7pjzN0nUwmNdWrJkbzI2zQz/FcoiMwDr90m50Z7FP+iPdVbNBG1XmBTdGchQ?=
+ =?us-ascii?Q?3i+Ul1mIw0W4bGDKVIyhvVfaGP3p5bW6B/4UocxJFkGCo2qc0RQnZunaGFCZ?=
+ =?us-ascii?Q?qBVneD8CGHPZYN8l3tQNasMgXXsP8XactcS/S9yb15yztfPg2Rv++Wv8m3Dp?=
+ =?us-ascii?Q?frdI8+CRmXv9i8e+YMxHvqRSAdXSZcynkOz6cNIIqaThO22uKffE2hSV1Whu?=
+ =?us-ascii?Q?B9KFUOvIn6eqBKpkjdlVNMY9KVhpjxV+t4ItMq4LwWWVomNDHeXhG+rMFqcO?=
+ =?us-ascii?Q?jZg+Eyfgg5yL6LYBNxQXejAH7LXZ6G/0nafDYvm3ZwkD4P8g6BzjkwVYuqSN?=
+ =?us-ascii?Q?ZSA4ysVFf3po5xMjj0NWTuEkhMwOQk24sVHWHHYUB6xvujjLNEHIn8+YKg3b?=
+ =?us-ascii?Q?JHtAKW5lTTXHduGifdGOvHPXys9Wb/bYm2ZLwh7lHejrdN5jJQfJh5CiHpOL?=
+ =?us-ascii?Q?eFO8DM1mGVDaNOBEet/SVISESIs4tEazwDWLlQIUKl7W+Imd4RGvDj8dX1M7?=
+ =?us-ascii?Q?vwcb1/8SsoEJqjV9NC5pBfySmU8xofcNWSUjY7Sg6H6VhLw+pZq+dTnSRpHv?=
+ =?us-ascii?Q?Wbx5jxwv01WwPo9DN3mlPD8IHlQuniX7gbl+nByrfFPsV8RujyG/fZWXZXS/?=
+ =?us-ascii?Q?GAGrtZnmt+9QpgmQdZzox78UGI98hkla7/0J9IqcZMOkgIa3I04iV0UyBDSD?=
+ =?us-ascii?Q?3b8YKg6qavyvVp3sTTPP2bBS8j+3ftOXAJ+/w4sjsNSu33U6PoIspQtVqkqm?=
+ =?us-ascii?Q?tZpXOjpBA41xG08qran1+a9/llLEIHhZ4jDjzJGkMpKYIqNNG0jHVqhyocOi?=
+ =?us-ascii?Q?oPLYwKp6h8pC/hCZhi2CMDWbqdt+61kler+1Sagh4eT/LBfcG2k3GAeFJEnG?=
+ =?us-ascii?Q?4n/8GTWAZ6LTU0rCwONC7Fn+cmkhtUnQ22Pse4hRtQNmIoBIzTQuFxIDiNN/?=
+ =?us-ascii?Q?a9HHRDy5X9eXsRvHgsT5VElbOj7Eb9fQPYYvqRyUCxA7qLiSALJpMeykC5yL?=
+ =?us-ascii?Q?zjdnpyIkhQD9eEGk9YSi7vtOYMJyGNRXatNob1KUixAXDygkJNZj9zdUPqfP?=
+ =?us-ascii?Q?CwZ0k83ZkYfLGvRrdl0ABSuGitAVBl0+6LI7OtpB6XWzUu5s6ydXq9DJJ7Q4?=
+ =?us-ascii?Q?y3lZmlwMZI4dKRvjADidy8oakKUOUvl94u3Mgv+sDIHNIxEjm2/ET6DFJx0T?=
+ =?us-ascii?Q?OqVdgjW02LA15JaethjISMeN8VUMBNWg3g5mdORe?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] bpf: Separate bpf_local_storage_lookup() fast and slow
- paths
-Content-Language: en-GB
-To: Marco Elver <elver@google.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20240131141858.1149719-1-elver@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20240131141858.1149719-1-elver@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DS1PEPF00012A5F.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 293bdc4d-fccb-4259-302e-08dc2297ff30
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Jan 2024 20:05:39.6468
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Ti1/JNS3iYAxo67ASNEr6ujuTX8JICb3ki3bHy5yuUTa3k7t3gERaKwol5ZOedEmtJugJ729MLBY+YnfLtqlmg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR21MB1460
 
 
-On 1/31/24 6:18 AM, Marco Elver wrote:
-> To allow the compiler to inline the bpf_local_storage_lookup() fast-
-> path, factor it out by making bpf_local_storage_lookup() a static inline
-> function and move the slow-path to bpf_local_storage_lookup_slowpath().
->
-> Base on results from './benchs/run_bench_local_storage.sh' this produces
-> improvements in throughput and latency in the majority of cases:
->
-> | Hashmap Control
-> | ===============
-> | num keys: 10
-> |  hashmap (control) sequential get:
-> |                              <before>                | <after>
-> |   hits throughput:           13.895 ± 0.024 M ops/s  | 14.022 ± 0.095 M ops/s	(+0.9%)
-> |   hits latency:              71.968 ns/op            | 71.318 ns/op		(-0.9%)
-> |   important_hits throughput: 13.895 ± 0.024 M ops/s  | 14.022 ± 0.095 M ops/s	(+0.9%)
-> |
-> | num keys: 1000
-> |  hashmap (control) sequential get:
-> |                              <before>                | <after>
-> |   hits throughput:           11.793 ± 0.018 M ops/s  | 11.645 ± 0.370 M ops/s	(-1.3%)
-> |   hits latency:              84.794 ns/op            | 85.874 ns/op		(+1.3%)
-> |   important_hits throughput: 11.793 ± 0.018 M ops/s  | 11.645 ± 0.370 M ops/s	(-1.3%)
-> |
-> | num keys: 10000
-> |  hashmap (control) sequential get:
-> |                              <before>                | <after>
-> |   hits throughput:           7.113 ± 0.012 M ops/s   | 7.037 ± 0.051 M ops/s	(-1.1%)
-> |   hits latency:              140.581 ns/op           | 142.113 ns/op		(+1.1%)
-> |   important_hits throughput: 7.113 ± 0.012 M ops/s   | 7.037 ± 0.051 M ops/s	(-1.1%)
-> |
-> | num keys: 100000
-> |  hashmap (control) sequential get:
-> |                              <before>                | <after>
-> |   hits throughput:           4.793 ± 0.034 M ops/s   | 4.990 ± 0.025 M ops/s	(+4.1%)
-> |   hits latency:              208.623 ns/op           | 200.401 ns/op		(-3.9%)
-> |   important_hits throughput: 4.793 ± 0.034 M ops/s   | 4.990 ± 0.025 M ops/s	(+4.1%)
-> |
-> | num keys: 4194304
-> |  hashmap (control) sequential get:
-> |                              <before>                | <after>
-> |   hits throughput:           2.088 ± 0.008 M ops/s   | 2.962 ± 0.004 M ops/s	(+41.9%)
-> |   hits latency:              478.851 ns/op           | 337.648 ns/op		(-29.5%)
-> |   important_hits throughput: 2.088 ± 0.008 M ops/s   | 2.962 ± 0.004 M ops/s	(+41.9%)
-> |
-> | Local Storage
-> | =============
-> | num_maps: 1
-> |  local_storage cache sequential  get:
-> |                              <before>                | <after>
-> |   hits throughput:           32.598 ± 0.008 M ops/s  | 38.480 ± 0.054 M ops/s	(+18.0%)
-> |   hits latency:              30.676 ns/op            | 25.988 ns/op		(-15.3%)
-> |   important_hits throughput: 32.598 ± 0.008 M ops/s  | 38.480 ± 0.054 M ops/s	(+18.0%)
-> |  local_storage cache interleaved get:
-> |                              <before>                | <after>
-> |   hits throughput:           36.963 ± 0.045 M ops/s  | 43.847 ± 0.037 M ops/s	(+18.6%)
-> |   hits latency:              27.054 ns/op            | 22.807 ns/op		(-15.7%)
-> |   important_hits throughput: 36.963 ± 0.045 M ops/s  | 43.847 ± 0.037 M ops/s	(+18.6%)
-> |
-> | num_maps: 10
-> |  local_storage cache sequential  get:
-> |                              <before>                | <after>
-> |   hits throughput:           32.078 ± 0.004 M ops/s  | 37.813 ± 0.020 M ops/s	(+17.9%)
-> |   hits latency:              31.174 ns/op            | 26.446 ns/op		(-15.2%)
-> |   important_hits throughput: 3.208 ± 0.000 M ops/s   | 3.781 ± 0.002 M ops/s	(+17.9%)
-> |  local_storage cache interleaved get:
-> |                              <before>                | <after>
-> |   hits throughput:           34.564 ± 0.011 M ops/s  | 40.082 ± 0.037 M ops/s	(+16.0%)
-> |   hits latency:              28.932 ns/op            | 24.949 ns/op		(-13.8%)
-> |   important_hits throughput: 12.344 ± 0.004 M ops/s  | 14.315 ± 0.013 M ops/s	(+16.0%)
-> |
-> | num_maps: 16
-> |  local_storage cache sequential  get:
-> |                              <before>                | <after>
-> |   hits throughput:           32.493 ± 0.023 M ops/s  | 38.147 ± 0.029 M ops/s	(+17.4%)
-> |   hits latency:              30.776 ns/op            | 26.215 ns/op		(-14.8%)
-> |   important_hits throughput: 2.031 ± 0.001 M ops/s   | 2.384 ± 0.002 M ops/s	(+17.4%)
-> |  local_storage cache interleaved get:
-> |                              <before>                | <after>
-> |   hits throughput:           34.380 ± 0.521 M ops/s  | 41.605 ± 0.095 M ops/s	(+21.0%)
-> |   hits latency:              29.087 ns/op            | 24.035 ns/op		(-17.4%)
-> |   important_hits throughput: 10.939 ± 0.166 M ops/s  | 13.238 ± 0.030 M ops/s	(+21.0%)
-> |
-> | num_maps: 17
-> |  local_storage cache sequential  get:
-> |                              <before>                | <after>
-> |   hits throughput:           28.748 ± 0.028 M ops/s  | 32.248 ± 0.080 M ops/s	(+12.2%)
-> |   hits latency:              34.785 ns/op            | 31.009 ns/op		(-10.9%)
-> |   important_hits throughput: 1.693 ± 0.002 M ops/s   | 1.899 ± 0.005 M ops/s	(+12.2%)
-> |  local_storage cache interleaved get:
-> |                              <before>                | <after>
-> |   hits throughput:           31.313 ± 0.030 M ops/s  | 35.911 ± 0.020 M ops/s	(+14.7%)
-> |   hits latency:              31.936 ns/op            | 27.847 ns/op		(-12.8%)
-> |   important_hits throughput: 9.533 ± 0.009 M ops/s   | 10.933 ± 0.006 M ops/s	(+14.7%)
-> |
-> | num_maps: 24
-> |  local_storage cache sequential  get:
-> |                              <before>                | <after>
-> |   hits throughput:           18.475 ± 0.027 M ops/s  | 19.000 ± 0.006 M ops/s	(+2.8%)
-> |   hits latency:              54.127 ns/op            | 52.632 ns/op		(-2.8%)
-> |   important_hits throughput: 0.770 ± 0.001 M ops/s   | 0.792 ± 0.000 M ops/s	(+2.9%)
-> |  local_storage cache interleaved get:
-> |                              <before>                | <after>
-> |   hits throughput:           21.361 ± 0.028 M ops/s  | 22.388 ± 0.099 M ops/s	(+4.8%)
-> |   hits latency:              46.814 ns/op            | 44.667 ns/op		(-4.6%)
-> |   important_hits throughput: 6.009 ± 0.008 M ops/s   | 6.298 ± 0.028 M ops/s	(+4.8%)
-> |
-> | num_maps: 32
-> |  local_storage cache sequential  get:
-> |                              <before>                | <after>
-> |   hits throughput:           14.220 ± 0.006 M ops/s  | 14.168 ± 0.020 M ops/s	(-0.4%)
-> |   hits latency:              70.323 ns/op            | 70.580 ns/op		(+0.4%)
-> |   important_hits throughput: 0.445 ± 0.000 M ops/s   | 0.443 ± 0.001 M ops/s	(-0.4%)
-> |  local_storage cache interleaved get:
-> |                              <before>                | <after>
-> |   hits throughput:           17.250 ± 0.011 M ops/s  | 16.650 ± 0.021 M ops/s	(-3.5%)
-> |   hits latency:              57.971 ns/op            | 60.061 ns/op		(+3.6%)
-> |   important_hits throughput: 4.815 ± 0.003 M ops/s   | 4.647 ± 0.006 M ops/s	(-3.5%)
-> |
-> | num_maps: 100
-> |  local_storage cache sequential  get:
-> |                              <before>                | <after>
-> |   hits throughput:           5.212 ± 0.012 M ops/s   | 5.878 ± 0.004 M ops/s	(+12.8%)
-> |   hits latency:              191.877 ns/op           | 170.116 ns/op		(-11.3%)
-> |   important_hits throughput: 0.052 ± 0.000 M ops/s   | 0.059 ± 0.000 M ops/s	(+13.5%)
-> |  local_storage cache interleaved get:
-> |                              <before>                | <after>
-> |   hits throughput:           6.521 ± 0.053 M ops/s   | 7.086 ± 0.010 M ops/s	(+8.7%)
-> |   hits latency:              153.343 ns/op           | 141.116 ns/op		(-8.0%)
-> |   important_hits throughput: 1.703 ± 0.014 M ops/s   | 1.851 ± 0.003 M ops/s	(+8.7%)
-> |
-> | num_maps: 1000
-> |  local_storage cache sequential  get:
-> |                              <before>                | <after>
-> |   hits throughput:           0.357 ± 0.005 M ops/s   | 0.325 ± 0.005 M ops/s	(-9.0%)
-> |   hits latency:              2803.738 ns/op          | 3076.923 ns/op		(+9.7%)
-> |   important_hits throughput: 0.000 ± 0.000 M ops/s   | 0.000 ± 0.000 M ops/s
-> |  local_storage cache interleaved get:
-> |                              <before>                | <after>
-> |   hits throughput:           0.434 ± 0.007 M ops/s   | 0.447 ± 0.007 M ops/s	(+3.0%)
-> |   hits latency:              2306.539 ns/op          | 2237.687 ns/op		(-3.0%)
-> |   important_hits throughput: 0.109 ± 0.002 M ops/s   | 0.112 ± 0.002 M ops/s	(+2.8%)
->
-> Signed-off-by: Marco Elver <elver@google.com>
 
-Thanks for the patch. This indeed could improve performance with inlining.
-In Meta, we started to use LTO kernel which already have
-bpf_local_storage_lookup() cross-file inlined into
-bpf_sk_storage_lookup(), so we won't be able to reap
-this benefit.
+> -----Original Message-----
+> From: Dexuan Cui <decui@microsoft.com>
+> Sent: Wednesday, January 31, 2024 12:40 PM
+> To: Haiyang Zhang <haiyangz@microsoft.com>; Shradha Gupta
+> <shradhagupta@linux.microsoft.com>
+> Cc: KY Srinivasan <kys@microsoft.com>; Wei Liu <wei.liu@kernel.org>;
+> David S. Miller <davem@davemloft.net>; Eric Dumazet
+> <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>; Paolo Abeni
+> <pabeni@redhat.com>; Wojciech Drewek <wojciech.drewek@intel.com>; linux-
+> hyperv@vger.kernel.org; netdev@vger.kernel.org; linux-
+> kernel@vger.kernel.org; Shradha Gupta <shradhagupta@microsoft.com>;
+> stable@vger.kernel.org
+> Subject: RE: [PATCH] hv_netvsc:Register VF in netvsc_probe if
+> NET_DEVICE_REGISTER missed
+>=20
+> > From: Haiyang Zhang <haiyangz@microsoft.com>
+> > Sent: Wednesday, January 31, 2024 8:46 AM
+> >  [...]
+> > > From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+> > > Sent: Wednesday, January 31, 2024 2:54 AM
+> > > > [...]
+> > > > > +		netvsc_prepare_bonding(vf_netdev);
+> > > > > +		netvsc_register_vf(vf_netdev, VF_REG_IN_PROBE);
+> > > > > +		__netvsc_vf_setup(net, vf_netdev);
+> > > >
+> > > > add a "break;' ?
+> > > With MANA devices and multiport support there, the individual ports
+> are
+> > > also net_devices.
+> > > Wouldn't this be needed for such scenario(where we have multiple mana
+> > > port net devices) to
+> > > register them all?
+> >
+> > Each device has separate probe() call, so only one VF will match in one
+> > netvsc_probe().
+> >
+> > netvsc_prepare_bonding() &  netvsc_register_vf() have
+> > get_netvsc_byslot(vf_netdev), but __netvsc_vf_setup() doesn't have. So,
+> > in case of multi-Vfs, this code will run "this" netvsc NIC with
+> multiple VFs by
+> > __netvsc_vf_setup() which isn't correct.
+> >
+> > You need to add the following lines before
+> > netvsc_prepare_bonding(vf_netdev)
+> > in netvsc_probe() to skip non-matching VFs:
+> >
+> > if (net !=3D get_netvsc_byslot(vf_netdev))
+> > 	continue;
+>=20
+> Haiyang is correct.
+> I think it's still good to add a "break;", e.g. my understanding is
+> something
+> like the below (this is untested):
+>=20
+> +static struct net_device *get_matching_netvsc_dev(net_device
+> *event_ndev)
+> +{
+> +       /* Skip NetVSC interfaces */
+> +       if (event_ndev->netdev_ops =3D=3D &device_ops)
+> +               return NULL;
+> +
+> +       /* Avoid non-Ethernet type devices */
+> +       if (event_ndev->type !=3D ARPHRD_ETHER)
+> +               return NULL;
+> +
+> +       /* Avoid Vlan dev with same MAC registering as VF */
+> +       if (is_vlan_dev(event_ndev))
+> +               return NULL;
+> +
+> +       /* Avoid Bonding master dev with same MAC registering as VF */
+> +       if (netif_is_bond_master(event_ndev))
+> +               return NULL;
+> +
+> +       return get_netvsc_byslot(event_ndev);
+> +}
 
-In the subject, please use tag [PATCH bpf-next] so CI can
-pick it up for testing properly.
+Looks good.=20
+But, like you said before, the four if's can be moved into a new function,
+and shared by two callers: netvsc_probe() & netvsc_netdev_event().
 
-[...]
 
+>=20
+> +	for_each_netdev(dev_net(net), vf_netdev) {
+> + 		if (get_matching_netvsc_dev(event_dev) !=3D net)
+> +			continue;
+> +
+> +		netvsc_prepare_bonding(vf_netdev);
+> +		netvsc_register_vf(vf_netdev, VF_REG_IN_PROBE);
+> +		__netvsc_vf_setup(net, vf_netdev);
+> +
+> +		break;
+> +	}
+>=20
+> We can also use get_matching_netvsc_dev() in netvsc_netdev_event().
+
+netvsc_netdev_event() >> netvsc_unregister_vf() uses get_netvsc_byref(vf_ne=
+tdev)
+instead of get_netvsc_byslot().
+So probably just re-factoring the four if's is better.
+
+Thanks,
+-Haiyang
 
