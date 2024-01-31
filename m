@@ -1,228 +1,176 @@
-Return-Path: <linux-kernel+bounces-46246-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46178-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CC68843CF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:40:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CE30843BDE
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:08:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D807E2939FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:40:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B196A1C25076
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:08:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BB8969D0C;
-	Wed, 31 Jan 2024 10:40:38 +0000 (UTC)
-Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2123.outbound.protection.partner.outlook.cn [139.219.146.123])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFE4669975;
+	Wed, 31 Jan 2024 10:08:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="OdS+Tdbt"
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2070.outbound.protection.outlook.com [40.107.95.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A61E69D0B;
-	Wed, 31 Jan 2024 10:40:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.146.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3DF06996A;
+	Wed, 31 Jan 2024 10:08:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.70
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706697637; cv=fail; b=o0/jZuTcbVsnk87E6sMj1r6LbLOeOIvgvdeSZDXWy/FJgBem44l8Praf6aG9c1ntlqC/DkGau5rueW6ytQzH2mb64lHVf8VskZXUGJtDAXs/I1bMgAKX3DSzFNd+jQE8B9dTj6JOnITzLwTQvGdq+JZehK6Lqh4dikcgYHJS25k=
+	t=1706695689; cv=fail; b=l516xyQ1Y1LRcVaGV7RZ+9jKp3ata2XRNd+3xQpAZfU8HFiOJ5v6JrxYgbMT4gFU7/CcthUWDgjY1ypKI4RaNYtSUqFva3w+dFjImKI05R45FLG/sT3spPnlHiN+YyRXBkIl3pLpS1df6gob2IjaswysbRTw4Lc0dxW/SiqFtIo=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706697637; c=relaxed/simple;
-	bh=WrngU0cqJWE8iYOCGJHyDNFOSufIx64Og0cutRtDVtQ=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=ZL7cMMzcUoG7SqcL9QNYYZEef6ryZoVaxx4a1fRM9nZ93xj9El7hsYYRkgL0NRJ0qymt+Lw9Kg7g5u8o6ivjRol/6zIpO3moXCHWWddhiV/nHTzMoiZUeDs+jSLJCMiikIye1p6tr0xG6dAHuYZ6uT6a/Oo9VB4oMpVTL3AT83s=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.146.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+	s=arc-20240116; t=1706695689; c=relaxed/simple;
+	bh=k8IG37cyQTC/jEjoD36G3DerA++mnCRaElSH54A8OX0=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=VLhAqtPZuUkMHzpu6tJZG4utw2QBpzgVWwGiwTcVyFDlEZd6CVTg7RVf7uJV/C3q5zmUWGjuXmvti2Sc/jHv8blemisX68H+HJJ15Xfr2oRs6UIR5j+THpKBkKGFTGJ5Nymw2k5hcds4D4wrreNXfvaIgP+6No5yAREdNEk5qNI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=OdS+Tdbt; arc=fail smtp.client-ip=40.107.95.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QgrMSJsQyXDmroakVZPCF0/rQRm18XiCmXUyzsGJDCVepksxuOr0OlbLMg/31v9kRRAnJiRNkhe09FSlaWR5V7loSgduEx+MLOxkWNsUrGgBwAlkpyFAZQtKKwv7GXLV8Hwda7DUvOyQw4VkTPJ3cHIhUpvSqfRjIzsQRwxekuAJxR30/w80+/QDoTVKzyOSv2bn9wwobgeW767pTjt4dllOQhg6qIKdnSCQ7K1X3bDnUoyPsjKY1TlxwFliR9/XhlddWJIMrvbKe6Ou8pFORcYS9sOD5berVeZr/X20GAzDgnjaWeMg6MDX2XY1sASfs9xNB0+rbQzhGFH+IjwVWg==
+ b=g+rwMFejQQKdB7mzMk6/BOneWiEvA8mkFKY6tT0lRD/nVDc7VOFIVxcCc2Swak5+uXqqhwQHFy/uCvNct0rqeHoZZK5mKd/8uwYZDX41NIWpDlFqImsBwHASBpAIu+NBMV1ZRJ8UQ6hDKW2tbAwJ0+uXBe7g+ERmP572U90WO6v1poP648+qvf3EzyM2ayYnFzKrwF7vLFOM02lMeGnPgMDvqYCuDWgrCBcUXR85rx704x48PVTIP2hOFy9K2oO7yqi/YPidSFkUljQImGwpF/b5KtapWkAuclxfGGd3K82ug3hCLpGWQFXyDO2v8f4eeQzVcHPA7CFjGzyIpuVPDQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zhADv0OpMlAftKwUCinfh10J8mx+tVIicHFmgxSwuQ0=;
- b=HtYn1sm/VdNtHAaCnCPnqXhfI4cKbmo5rSYUZ9um/A9tsXRkes5Jd+uWSXUhbETWx7eUV95blhsLFGhV5+SD+oU5BHsB9syoqlwuLq78ysjzRqrTtzv9AyQLgPFqJNQDzf9UX0mUzNsW/MIYlBQ5q2HGOgyb/iLSddIl1UnIqXibgS2ymvOA+YhOoZyfJK6nArOh4Nv4rSsDMlkXqGdhOAgk8DQGhpp5plqivcm6QyHj5nBBjBUd3JPcSxhyj56jwQnr08zDkL1TsElo1TYizyD/Myq1f7RkPx7JD3leWB6vE+m2ouh9zCAvIt6yA/hsadBAGGGLgdCi8CNAERakwA==
+ bh=VxZAeKyar4lj664e5KVjs76LkhDUhulhWOJciKOLE5Y=;
+ b=kT0PS8BGMsYelOay4MBqVvPo4EYUsTEHuU/JyTvjbQW6DkjQB3nnhmctjciUaI3AopqfhOpe39gbTFaZN0DaXnAjS6DjRTJwySNOUcamMC0kFQot4598b+wVLXbbYZUkDXVMdNSmnqzdYk7z5iHLyFORSwqHKoKVw+rwuEV+7k3wxtOG4FOeaJduxu0+75MDE58NNUZekrhobBBN2sQzG0o86NdX1HYHwRQuZ4v6LSGRxpqSwmOK6f50qsISdOZIWFT+1czK6+pIo1pq9oOfkXRjk6wxE4cLjKk7GPX9DGsvXpmpIASLzSrvKlKrDmE+0tc8jss+MY9ZFquBzHtU2w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starfivetech.com; dmarc=pass action=none
- header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
-Received: from SHXPR01MB0863.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c311:25::15) by SHXPR01MB0797.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c311:26::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.34; Wed, 31 Jan
- 2024 10:07:09 +0000
-Received: from SHXPR01MB0863.CHNPR01.prod.partner.outlook.cn
- ([fe80::5a5a:fa59:15fd:63dc]) by
- SHXPR01MB0863.CHNPR01.prod.partner.outlook.cn ([fe80::5a5a:fa59:15fd:63dc%3])
- with mapi id 15.20.7228.029; Wed, 31 Jan 2024 10:07:08 +0000
-From: Minda Chen <minda.chen@starfivetech.com>
-To: Rob Herring <robh@kernel.org>
-CC: Palmer Dabbelt <palmer@dabbelt.com>, Lorenzo Pieralisi
-	<lpieralisi@kernel.org>, Kevin Xie <kevin.xie@starfivetech.com>, Leyfoon Tan
-	<leyfoon.tan@starfivetech.com>, Bjorn Helgaas <bhelgaas@google.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, Daire McNamara
-	<daire.mcnamara@microchip.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	=?iso-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mason Huo
-	<mason.huo@starfivetech.com>, Emil Renner Berthing
-	<emil.renner.berthing@canonical.com>, Conor Dooley <conor@kernel.org>, Paul
- Walmsley <paul.walmsley@sifive.com>, Albert Ou <aou@eecs.berkeley.edu>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>
-Subject: Re: [PATCH v14,RESEND 19/22] dt-bindings: PCI: Add StarFive JH7110
- PCIe controller
-Thread-Topic: [PATCH v14,RESEND 19/22] dt-bindings: PCI: Add StarFive JH7110
- PCIe controller
-Thread-Index: AQHaUk7ANof4CuKrsESG58uORquI7LDxXlAAgAEciACAATsJUA==
-Date: Wed, 31 Jan 2024 10:07:08 +0000
-Message-ID:
- <SHXPR01MB0863F3FFB671A0B95324A830E67CA@SHXPR01MB0863.CHNPR01.prod.partner.outlook.cn>
-References: <20240129010142.3732-1-minda.chen@starfivetech.com>
- <20240129010142.3732-4-minda.chen@starfivetech.com>
- <170656679886.3057.12378312489853176077.robh@kernel.org>
- <20240130151934.GA1636501-robh@kernel.org>
-In-Reply-To: <20240130151934.GA1636501-robh@kernel.org>
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=starfivetech.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SHXPR01MB0863:EE_|SHXPR01MB0797:EE_
-x-ms-office365-filtering-correlation-id: e20775ca-71d4-44bf-17d1-08dc224462b5
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- +eTndG5e8ZDFNKThe/FTof5rojlAiIQkdBV1uom3wmhYjdEqyDh9q31jfne+V/uYMKKm41d0Zj0FIOZRiZHHKBbGSYA/GgmgWefgs8gQfecs8Btwut6MIpV8X+YSZeGGlabHulHaQukz5WjaVkN0NdRrAxKv1+38ttBSnwEngX5uGgi1jTAJ6ZgnEXXMRwwWoi4gJruxPQ54aZrrMPOAB/Lm4FAx7ifz2Q9iJfKBRy5DGdXx5rBRfykiIWPOdJZ5NM7BzFgNXV1dPAPpm/nqErqm/qUTDda8hRePOMOyn0GByh0jos2Zc/Bg73Za4AX4+Qxsbu+h8hXDD58vKiJNnqKnmH0l+HdYzcw8PQwn71KdHTqYMtmKK15mImWeCeskuSx73Dxrbis9f1DyZuRT/+Bi9sLMZhkMOcHD4v+ef4+dAebQAMB83IY/nwuTu2luO0UJVEMgsWfTZ8VVf+1xYlKgWFZobcqzVWQtI/f3DgDeWlAHmizJAHtGpkDoW1gp04b0Ol4g+XPICObJydUbrTWuilBmq6X3OYEG2/HtBFS6+XDsAVkHqhXYsbsBdcfKOkpvS05zEys8qDmT3w1UOnDppi4W295/fPVY8ykyfHg=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SHXPR01MB0863.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(39830400003)(346002)(366004)(136003)(396003)(230922051799003)(230273577357003)(230173577357003)(64100799003)(1800799012)(451199024)(186009)(38070700009)(7416002)(41320700001)(2906002)(40180700001)(5660300002)(33656002)(41300700001)(86362001)(66446008)(64756008)(76116006)(54906003)(66476007)(83380400001)(66946007)(6916009)(966005)(508600001)(66556008)(71200400001)(7696005)(9686003)(55016003)(8676002)(26005)(44832011)(122000001)(4326008)(8936002)(38100700002)(40160700002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?iso-8859-2?Q?iZLFVnPiawQsG6dKofl+88tg8LdCLBrx1rwXDDCeO8mWCXcfBEkzVcybFi?=
- =?iso-8859-2?Q?MWcf8s9HRNLv1SVNn/9wHYbP0tEnfDOUk7e+YGR93zy4eUPOG4Z03jl8cd?=
- =?iso-8859-2?Q?TjNBb3J0wuQzS7aYjLJwY+OHMuM9kSjxOgz7NfY0cFziXVOW4ZwU231aUc?=
- =?iso-8859-2?Q?MdLSkBk7WpSc8AtvKIScwZUhdT8qWB9lDk4DvooSZ5lXmvXhsiMIZ9vqIL?=
- =?iso-8859-2?Q?gSCH9k8syA4maG97dil+BrkiNQa3dmL92h1xuwhVDDLdujL1IUypPH5qO9?=
- =?iso-8859-2?Q?AmRDOw4YZMGappm4HW+me8iRVo+z/7wtZUq96NuX1+eRtrzB9g7YQIH7/a?=
- =?iso-8859-2?Q?voxGaV1C6JtnwM+fdqWXuWgRBywXMyv199/QwZvU/opBhvSiMgQSW8Vam7?=
- =?iso-8859-2?Q?9a73/tIXKFWkssbp3g5OmW0xClt2zd4zd0tYSKvzTsgy4oOB254e/m8xEU?=
- =?iso-8859-2?Q?a8Ib4nlc4+vV7BraBLrZ/8N40neoMN2byv+ATciGnWl7lkDrCN3x1cxv72?=
- =?iso-8859-2?Q?MmTmAoJOOfurQU+crBUimYT+yCPkpcaSMfVoG+a8DRwUhOCktazyq69fd5?=
- =?iso-8859-2?Q?wCYRUW1110V6urdGWhhVPqpR3JIXMXiQa2DsbF3jp+cR5adqjdwMURJOqH?=
- =?iso-8859-2?Q?SmGzkmmPawgBg6bLubYvbIFyvPIBgsmizs447D3QlvKcyR6dpTwupqXBl2?=
- =?iso-8859-2?Q?gzqqQNZGJ40gzktT7Y2eGpnWz57eJDS/sPXcsKXyxtbqPiMoTugAnUYJab?=
- =?iso-8859-2?Q?zhEm0ZxkDEjO9vNUDExAiLerwsV0zH8Fu7j3NAzaUh8vvfAi5Q5FLSvjMI?=
- =?iso-8859-2?Q?u5ZyfJZifXDDE7U9JRTNlJD/gIvu5WmkP7frdfwgtBzLmsYW5kvDTk3dLz?=
- =?iso-8859-2?Q?ERpQtvW/ouf0NZZjSu1m78sSkVNSDV/gzcR4IbFtH2HGRLVSrz/k8ALirp?=
- =?iso-8859-2?Q?f+zzwnVFkvW3PgvNz/USn+9M/veu7/FXo9yG07lc9dQFFBq4WEZ7tTfrFw?=
- =?iso-8859-2?Q?TkvyP4DNARuD7jCFjAMoLcTHJBbknpJ4ig9SnbZci4OA6CfiJIzrqc70Cj?=
- =?iso-8859-2?Q?YLb+iyEOBMdSymxm5NF+bPPTLBEcxWr6m8o65aNevEp3nX5JzyZTDUcrMn?=
- =?iso-8859-2?Q?U0SzKViohLup1f2tHPLHCFk8XMIMzOA7nTnHF/kIgL4ys3vocodBnaLFcu?=
- =?iso-8859-2?Q?aMIQLC8OMgk5IAeamc3nZGdEX6MJkI/Besw/+gNQwyEG358mR8HSps+nyw?=
- =?iso-8859-2?Q?x7O+po8KAgHqYWTnu7Y9ysUwf3cx6B0v9vZuc8CwkQEb011T4E5jYzw5bm?=
- =?iso-8859-2?Q?4VJ/lbpLoW8Wtv5sMsILkWfNYPpsVMJtYawDxpq+eu9rzOITalVffICBNq?=
- =?iso-8859-2?Q?a6h9XWFYMzIhUBHm3NO56CWxSs3t8ghztLafHjL/NY4Q59Kc5fS7gQ9ddc?=
- =?iso-8859-2?Q?8aBCD5V/OA/MTxVDmonAtHRfOIhF4smwTak8oJJBi5XXsuy0CfkHKkB9Dv?=
- =?iso-8859-2?Q?yR3OwFCU1vRYMJdcb7HYSh5h/lZ827kFFPySJgknucaFBB9Gz1CbyLsJgN?=
- =?iso-8859-2?Q?PbRKwyHddC0hDa2y9k8RpHFiqchuMZbyMS2qTpLNNVnb1Dwf8QJkx5c+Vv?=
- =?iso-8859-2?Q?cybX83Ul1tHF+GZZVALLnj9YoC2e5+DkNs?=
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VxZAeKyar4lj664e5KVjs76LkhDUhulhWOJciKOLE5Y=;
+ b=OdS+TdbtakTcpJAscY2fEdSsJ2mBnACEBDu1hfyP0fZMCpQh1Ri18C1zwCPKQs0i9bVsPy5OxChYfmW9I5Mycks95iaRojYL8VRQE8hIobIfqr+BSYXJQObPuNwzpMDL7W7IhsFQQtM4ikrsd48reMdWfAOygmJHed8/RLHgrvw=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
+ by SA0PR12MB4575.namprd12.prod.outlook.com (2603:10b6:806:73::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.22; Wed, 31 Jan
+ 2024 10:08:04 +0000
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::e1fb:4123:48b1:653]) by PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::e1fb:4123:48b1:653%4]) with mapi id 15.20.7228.029; Wed, 31 Jan 2024
+ 10:08:04 +0000
+Message-ID: <223ce1a9-d0ca-4922-b0a5-030be084afa3@amd.com>
+Date: Wed, 31 Jan 2024 11:07:58 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/msm/gem: Fix double resv lock aquire
+Content-Language: en-US
+To: Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
+Cc: linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+ Rob Clark <robdclark@chromium.org>, Abhinav Kumar
+ <quic_abhinavk@quicinc.com>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+ Sumit Semwal <sumit.semwal@linaro.org>,
+ open list <linux-kernel@vger.kernel.org>
+References: <20240130223533.25713-1-robdclark@gmail.com>
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <20240130223533.25713-1-robdclark@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: AS4P189CA0066.EURP189.PROD.OUTLOOK.COM
+ (2603:10a6:20b:659::14) To PH7PR12MB5685.namprd12.prod.outlook.com
+ (2603:10b6:510:13c::22)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: starfivetech.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|SA0PR12MB4575:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1079b6dd-e8d2-41ee-08b9-08dc2244838d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	675DqIxtWuEcadQbXFho/D6o/yr5r1+/U8S1kHCml9q8mmymW8Tic+fBUC5RpkhhIzOJ6xqEaD9jAdcE4364dmM1yyGeWCuYctEn8pHScosbN62NmYiZGfABW0k5t91PAhjPxuwAKOprEu1cSY7J1XJR4jdr2qox3QOYCBb3K1iIb572TcCa1f5x3+qV/cN3xX90raWeH5DHmg5rd8GeVEYLW98uBpLlUhv3m+JuySPojjNKGyLGcOEjjJxiDYRDZLENYk+Jz85lM94NUH+6G0yWkS4kkGcbqa0q7sfAJjDcqM7htd7Mt2Xh7qZ7tf8qvVUdMD8s5LcDNuNx7OTNFbWwO4+MEtIxRcKzAYBYhciWXEJNR2tY4Hjyxe7orZX3e1x/GvkQMzBv4HeD6tjKvDggS/DWPJf/BHum/eSGf08l42U1JNoy7jkczbipv4m5uHWMhg6tGJ0eUXxStSlV9PgoJmxCv8qEf1bYDYzQMUuhl7X0Ztihb2cwbDUM7BT5wDuFnXtxyklcJPpvqnfzRIW14P+F9vScSzNM40LajryuHdw/SsVqsJC5WbX7tvhkx9Uiir+08gWmJrZO/nxeOhj0Stf7d4MEdehjeyV8PHtFaWSM1eSahpqq0RZf5el6E/oCkkmuT3n0xGMprNpC/A==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(376002)(366004)(396003)(346002)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(316002)(6486002)(66946007)(66556008)(66476007)(54906003)(478600001)(6666004)(8936002)(6506007)(6512007)(8676002)(4326008)(5660300002)(26005)(2616005)(7416002)(66574015)(2906002)(83380400001)(31696002)(86362001)(38100700002)(41300700001)(36756003)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?VHVKVGFZaGFRWlA3WDhCN3dnak96Mjdqc1B2QTM1YnJueVZVcnNzcjlmZTZH?=
+ =?utf-8?B?UkJQcVQxRUUweVN5MmNmSktjMGRMeUl5MnY5TWZmNGU1dEJ4ejdPeGc2WDNh?=
+ =?utf-8?B?MnQ1QklPbVVwNWtiaHRoQVhzQkJFZG13OEtNU2JoOVBRTjJTMHZSYnI0M2Rw?=
+ =?utf-8?B?dnhBcEhQc1B4bFZKRmdQVnkxcmJyVS9wRHQzR2N5eVN0YWhSVHM2eXM2NnE0?=
+ =?utf-8?B?YVRHL2hrckVKWVFXdVkvV0tyOTNpaEdQYnhlbEVHM2RIYzIwbUNJcEZIN3hO?=
+ =?utf-8?B?Z2xqc2ZIUkg3MkhTNFh3bEFBMktPT1REdTgrRnRRM0cyczhoYitwOW13RDVi?=
+ =?utf-8?B?UEtERzFsWW1ITFBNZmVIMXYxc1Y1cUNMdFczaW1SUGVCTUUzbnI1ZytsUjVE?=
+ =?utf-8?B?Z1dZUzBoaFhPbzJlRG8vQnVZL3hWb0JVQ1RrTE9JUEdZb29OdVBJT2dJYmRm?=
+ =?utf-8?B?ZFcrUEptdWRHT3RVc0cvRHQwYkpucGJsbUc0NVF4UjBsWWxqYU5rVHNyMXNC?=
+ =?utf-8?B?NVdpckdpclpPc2RCZTVxMTFmdlFwVUwyNnZ3aXhCRkxvZzIySGNrR2ovdFhi?=
+ =?utf-8?B?Ums1V28vRmpHUUNiZ1hFUkM3VG1uRkZkNFZPZXpVdmdkKzZRYUQ1eDR5NnlZ?=
+ =?utf-8?B?c3czM042UFk1RWI5STZlb1pPR1Y4RFpsZFpMSm80Z2dIZDEvQUNqZU1nQ0xv?=
+ =?utf-8?B?UGRmMkVrTXcyUi9NcW1GaThvRzJPK0NDQzlkUjNGWEhWcU82NkQ1N2luT2pD?=
+ =?utf-8?B?RHliWkJZTE1NdkQvVWRhUVRWa3h0NzBzWFN1K0NHL3I5bkhibmFsZGJsNEEx?=
+ =?utf-8?B?VXF4SXE2Wm5HWm1POXhjNHA2ekRTTWViNGpWTjhjMFVrblZrVkdjalUvNk55?=
+ =?utf-8?B?eC85OW5FWENLMmUzL2MrRm9seXd6UXlpTWU4MStDMzArZlhBall4YW9JeDBP?=
+ =?utf-8?B?aHFmRTNKQ0ZlUkNzREFmZFhVbktqMUJ1RVZxdDlQLzdIM0FLaWZDR2V1UFVZ?=
+ =?utf-8?B?K1dLVWFuQVVKakVqZUxIS2ZnVHhqK0NwaVIzWk0wMkhlNjF1cHBtSTIrNzdI?=
+ =?utf-8?B?U0hQQ2RpUXRhbmdGeFQ1bENUempCQ0l4VlBZZUFxdldGQ1BHelFON1hVSHFW?=
+ =?utf-8?B?TlMySE1WTGZkYlhGZVltbWVWcVJSQTFNcUYxenllVUMwVG55S0Z3TzcrM2s1?=
+ =?utf-8?B?RHdnSmFpdjQyYW9LdVpyTUgrTGxGWnkyWXlNdzkxMUwrUmZJdW9lZyt0azJD?=
+ =?utf-8?B?a0poUDVpUjdNZ1JRQlJGMUQ4K1RHZlJ4T2s3N3U5T0VLZzFDcXhkUFVRaEgz?=
+ =?utf-8?B?TUMvZGFiMzFLRGdUNzNqdERScVlCMzk4SElvQ3dFTkRHS1ZhbGJZeU9GejQ0?=
+ =?utf-8?B?RHU0M3IrWUpzcWMwdWxURmo1YUJ6OWdMa0VOdHlHWmRvelJ0bUgxQkFrMEQy?=
+ =?utf-8?B?Q0VzN2Jqb3cyemh5cWdLdUF3TWVBQURod1VIc0VJS3g2eXpuRDUwYldTdEN1?=
+ =?utf-8?B?clRHZ213QXdwOW5BWXBKd0tBNnA1NGplamgxeGRwVHI2WkhJL0tSbkpWYTZs?=
+ =?utf-8?B?Vm1CSFZ2RDB0UVFJdjdwM2wvalJOSmxrbVJRZEpSRmxPd09id1d0b3NkdzBC?=
+ =?utf-8?B?dmFrUjVjNnJ6RFl2VExDWlVudzRiNHJZN2IwNzRGVjA2Z2NUQlBJaUErQlFN?=
+ =?utf-8?B?VVdEb1hRYWpGSDhDMVFYTFlLK1A2ZmV5ODBabk93UVFtOW55RkhYYlJxOWYv?=
+ =?utf-8?B?ZGVuM3dRemF2NWJac0FHWFVMbGw4Y0VGd0lJaVFVekZtencrWDQ2a2xKSjda?=
+ =?utf-8?B?RWZjVUFld2dQL3U0NXMvRjJlVkFIMW9sK29TNjZlVlYvU1RBM2Z1c3pBZmJo?=
+ =?utf-8?B?aDM2WE41V01HLzJ1ajdqeGdGYlF6d25TT0JCT2hTekhSLzYvUEhFTVNPRmMw?=
+ =?utf-8?B?cUZDaVJNNkxNbC9YUWRlQkprdkVWSnM5bmhjZ3NTTmlDZDZnY1VzMFhDbDNU?=
+ =?utf-8?B?dTVRakV2NDRaTVZwczk5RlNyRzdVUWh6dGFoZTVlNy9QY0J2b0xlVHBpRmw2?=
+ =?utf-8?B?YU9iOXF5T0l0Uk02dURVdXYxOHVMRHhmU08yUTVEMnFVUjNsM1V2Z3hCZnlI?=
+ =?utf-8?Q?rUec=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1079b6dd-e8d2-41ee-08b9-08dc2244838d
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SHXPR01MB0863.CHNPR01.prod.partner.outlook.cn
-X-MS-Exchange-CrossTenant-Network-Message-Id: e20775ca-71d4-44bf-17d1-08dc224462b5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Jan 2024 10:07:08.8646
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jan 2024 10:08:04.2585
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 2tuRH9VHICaUrxhvK7y47hamdbhcTDak1DGM3lnBPqYKRGia89/pEEKhcnwsZzOUCivEXe26esJ/5ojoivphS1gbSRuSv9lOM9D06QyRQ44=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SHXPR01MB0797
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4ydXLyJOfzdp6WV3sm+bF7CI/4ZhjkNMJDbFYDbDDxD8UQNS5PwiiMPwnElK0YKi
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4575
 
+Am 30.01.24 um 23:35 schrieb Rob Clark:
+> From: Rob Clark <robdclark@chromium.org>
+>
+> Since commit 56e5abba8c3e ("dma-buf: Add unlocked variant of vmapping
+> functions"), the resv lock is already held in the prime vmap path, so
+> don't try to grab it again.
+>
+> Fixes: 56e5abba8c3e ("dma-buf: Add unlocked variant of vmapping functions")
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
 
->=20
-> On Mon, Jan 29, 2024 at 04:21:12PM -0600, Rob Herring wrote:
-> >
-> > On Mon, 29 Jan 2024 09:01:39 +0800, Minda Chen wrote:
-> > > Add StarFive JH7110 SoC PCIe controller dt-bindings. JH7110 using
-> > > PLDA XpressRICH PCIe host controller IP.
-> > >
-> > > Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
-> > > Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
-> > > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> > > Reviewed-by: Rob Herring <robh@kernel.org>
-> > > ---
-> > >  .../bindings/pci/starfive,jh7110-pcie.yaml    | 120 ++++++++++++++++=
-++
-> > >  1 file changed, 120 insertions(+)
-> > >  create mode 100644
-> > > Documentation/devicetree/bindings/pci/starfive,jh7110-pcie.yaml
-> > >
-> >
-> > My bot found errors running 'make DT_CHECKER_FLAGS=3D-m
-> dt_binding_check'
-> > on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> >
-> > yamllint warnings/errors:
-> >
-> > dtschema/dtc warnings/errors:
-> >
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/p=
-ci/s
-> tarfive,jh7110-pcie.yaml:
-> > Error in referenced schema matching $id:
-> > http://devicetree.org/schemas/pci/plda,xpressrich3-axi-common.yaml
-> >
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/p=
-ci/s
-> tarfive,jh7110-pcie.example.dtb: pcie@940000000: False schema does not
-> allow {'compatible': ['starfive,jh7110-pcie'], 'reg': [[9, 1073741824, 0,
-> 268435456], [0, 721420288, 0, 16777216]], 'reg-names': ['cfg', 'apb'],
-> '#address-cells': [[3]], '#size-cells': [[2]], '#interrupt-cells': [[1]],=
- 'device_type':
-> ['pci'], 'ranges': [[2181038080, 0, 805306368, 0, 805306368, 0, 134217728=
-],
-> [3271557120, 9, 0, 9, 0, 0, 1073741824]], 'starfive,stg-syscon': [[429496=
-7295]],
-> 'bus-range': [[0, 255]], 'interrupts': [[56]], 'interrupt-map-mask': [[0,=
- 0, 0, 7]],
-> 'interrupt-map': [[0, 0, 0, 1, 2, 1], [0, 0, 0, 2, 2, 2], [0, 0, 0, 3, 2,=
- 3], [0, 0, 0, 4, 2, 4]],
-> 'msi-controller': True, 'clocks': [[4294967295, 86], [4294967295, 10],
-> [4294967295, 8], [4294967295, 9]], 'clock-names': ['noc', 'tl', 'axi_mst0=
-', 'apb'],
-> 'resets': [[4294967295, 11], [4294967295, 12], [4294967295, 13], [4294967=
-295,
-> 14], [4294967295, 15], [4294967295, 16]], 'perst-gpios': [[4294967295, 26=
-, 1]],
-> 'phys': [[4294967295]], 'interrupt-controller': {'#address-cells': [[0]],
-> '#interrupt-cells': [[1]], 'interrupt-controller': True, 'phandle': [[2]]=
-}, '$nodename':
-> ['pcie@940000000']}
-> > 	from schema $id:
-> > http://devicetree.org/schemas/pci/starfive,jh7110-pcie.yaml#
-> >
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/p=
-ci/s
-> tarfive,jh7110-pcie.example.dtb: pcie@940000000: Unevaluated properties a=
-re
-> not allowed ('#address-cells', '#interrupt-cells', '#size-cells', 'bus-ra=
-nge',
-> 'device_type', 'interrupt-controller', 'interrupt-map', 'interrupt-map-ma=
-sk',
-> 'interrupts', 'msi-controller', 'ranges', 'reg', 'reg-names' were unexpec=
-ted)
-> > 	from schema $id:
-> > http://devicetree.org/schemas/pci/starfive,jh7110-pcie.yaml#
->=20
-> These are probably due to only patches 16-22 showing up in lore.
->=20
-> Rob
+Acked-by: Christian König <christian.koenig@amd.com>
 
-Yes.
-The plda,xpressrich3-axi-common.yaml file is not added to kernel.
+> ---
+>   drivers/gpu/drm/msm/msm_gem_prime.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/msm/msm_gem_prime.c b/drivers/gpu/drm/msm/msm_gem_prime.c
+> index 5f68e31a3e4e..8a27b57a5bea 100644
+> --- a/drivers/gpu/drm/msm/msm_gem_prime.c
+> +++ b/drivers/gpu/drm/msm/msm_gem_prime.c
+> @@ -26,7 +26,7 @@ int msm_gem_prime_vmap(struct drm_gem_object *obj, struct iosys_map *map)
+>   {
+>   	void *vaddr;
+>   
+> -	vaddr = msm_gem_get_vaddr(obj);
+> +	vaddr = msm_gem_get_vaddr_locked(obj);
+>   	if (IS_ERR(vaddr))
+>   		return PTR_ERR(vaddr);
+>   	iosys_map_set_vaddr(map, vaddr);
 
-Error in referenced schema matching $id:
-> > http://devicetree.org/schemas/pci/plda,xpressrich3-axi-common.yaml
 
