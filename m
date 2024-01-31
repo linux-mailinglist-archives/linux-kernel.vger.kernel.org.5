@@ -1,182 +1,107 @@
-Return-Path: <linux-kernel+bounces-46683-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46684-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1B9B84429C
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:07:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C8C584429F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:07:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3680F1F2B1CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:07:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D503628BA8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:07:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6B0B84A2E;
-	Wed, 31 Jan 2024 15:07:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E15ED84A52;
+	Wed, 31 Jan 2024 15:07:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gLCklx3r"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uTXNxpIR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3202880C04
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 15:07:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D00F69D00;
+	Wed, 31 Jan 2024 15:07:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706713648; cv=none; b=iVMon/q3iDp1n66f/59RhsDQ0WurKH5ukBMRt++k7i1AZm/TKttIL5Az55dO9VDcHA2hkm8/RrEp+q7a6JrG46Wf2iZlH9S7QP5lhQsfIAkFbIO1OUpw/Q65V5l5d7TcoZCclhCZOAsv+AXHCvSQ+mfuse2nDcWm2rkDb4QSISw=
+	t=1706713657; cv=none; b=IwLoF0vn1SlJkfrxdTdtycxZv1SPShaxUwNCqfHxB1q621nXxYmJZkusYg2ZdCB5+ddJFR9ejy5ZOEtl24msbphK3dcoYWxpxADN6uWXEAwV0+1+8ciQnfed4S0Q98VlXIfI0UjXbGWg8AnH/sGtoaKZ+fVcQqgNt8KcB9/sofw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706713648; c=relaxed/simple;
-	bh=1gKRjbeF385lVjQe3INmGEbRSihpxA0qX1m3cojS4F4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=gThRJwSJ0cyJU1BxUQqyQy56dHU0osbN2AG7ttIv1dti+xNIDJ9S5q4auRLBqP6IW2w7zSR16PbkHhlToNQ6MMAp65Vb8bQqOgdBPAEKZdpf/QfCWDwNLkDgilSz3rewpMc1OVZ2lzuDCmrlW+mZthpDthXpCDCHilGEOPJTmOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gLCklx3r; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706713645; x=1738249645;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=1gKRjbeF385lVjQe3INmGEbRSihpxA0qX1m3cojS4F4=;
-  b=gLCklx3rPVlvg6CrQRKigd9lG/2Yxk+/rhJCucA0t/mEDOEZOxmaXvCx
-   O+1gZJiHHN0Xs8DZdMjYlCnieMMTnQyqCY6Hj/23ijZTrhokpdWmN3rZB
-   DtkWig8ujaDZ1daPBq53qyLt37LnziRjIbn6gUpq6ipmzzq7NxAOHvr6C
-   Z2d1dUMdjr0xzfF62rK5Wkzj9mgVR+yyG5UyCgwsHJX/nDi3uGHX3BRJ0
-   wroTa+bsSoIsvlY6pmWtPVE0gdtMMvMkuyvwZ4tDkRtCxCTYXTbk9cJhO
-   U6/rbrksR+zPeB+r88hicz0W6SYq8IULegMult8CPmL4Bmnu8fFETV3Mc
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="3474310"
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="3474310"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 07:07:25 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="788607938"
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="788607938"
-Received: from abarrete-mobl.ger.corp.intel.com (HELO localhost) ([10.252.59.174])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 07:07:19 -0800
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Lucas De Marchi <lucas.demarchi@intel.com>, wangxiaoming321
- <xiaoming.wang@intel.com>
-Cc: ogabbay@kernel.org, thomas.hellstrom@linux.intel.com,
- maarten.lankhorst@linux.intel.com, mripard@kernel.org,
- tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
- intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/xe/display: Fix memleak in display initialization
-In-Reply-To: <abko5y3n5mju6srjly257bpqlvjf5ie6h6snboaekxnfv5mu76@jjumdgev76ag>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240125063633.989944-1-xiaoming.wang@intel.com>
- <20240126153453.997855-1-xiaoming.wang@intel.com>
- <abko5y3n5mju6srjly257bpqlvjf5ie6h6snboaekxnfv5mu76@jjumdgev76ag>
-Date: Wed, 31 Jan 2024 17:07:16 +0200
-Message-ID: <87zfwlh78b.fsf@intel.com>
+	s=arc-20240116; t=1706713657; c=relaxed/simple;
+	bh=3aiCCA7CxoRzULPh9IwHf5NFobEP7nFqJa6RSSR5YKY=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=Autg2wiW0/a1lRSpDzEIFdKO3ZJL5MOQ96eSRBfD/Av8Zog4uwhYt8VhSGpW9rVJvGSB+LQfMD8GxEquVfvnzLZWylO3PbDFBubqoQw5zqFkln6opJ0Q9Jk9Gr3EbDp4U+xUVdv1gIkHXjlpYwRyDXbAAd8B3IWqnfkzeVYTPnM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uTXNxpIR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 600FEC43394;
+	Wed, 31 Jan 2024 15:07:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706713656;
+	bh=3aiCCA7CxoRzULPh9IwHf5NFobEP7nFqJa6RSSR5YKY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=uTXNxpIRBUUC/CUHs3JtFSRg+n+3BvDfZVl1RrjZZXQvlDOxAOmbrhSQjSrTOOVhE
+	 9QwSX9FDbGNCTXYAGJ+G5ilToXA/H1Qu+4NSpZKMb9g9aUxJkI+fxAQa+7IHu1bIAN
+	 /w+DzhEuV/wg8BDXmC2frAZ+wrU9CBVs0NmD1qbwY8eQ1ChEkJoLeaRr5XHPQ1XENu
+	 qwFGUJNqgiaNRioT4lIHOyjeoedcrR8q7h2Ow1vDsR7Yg7XFF6j6RMBN1GJtxL8sBP
+	 TXLbf8JiLUSVXlwf0NZ07WGe6M7NTkF4I8yja798jwaUzWQky8LtwnTQoYVGc/G5hr
+	 Or2bHLC3KC1Bg==
+Date: Wed, 31 Jan 2024 09:07:34 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Johan Hovold <johan@kernel.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the pci-current tree
+Message-ID: <20240131150734.GA585821@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zbn58XcoOXauLUjN@hovoldconsulting.com>
 
-On Wed, 31 Jan 2024, Lucas De Marchi <lucas.demarchi@intel.com> wrote:
-> +Jani
->
-> On Fri, Jan 26, 2024 at 11:34:53PM +0800, wangxiaoming321 wrote:
->>intel_power_domains_init has been called twice in xe_device_probe:
->>xe_device_probe -> xe_display_init_nommio -> intel_power_domains_init(xe)
->>xe_device_probe -> xe_display_init_noirq -> intel_display_driver_probe_noirq
->>-> intel_power_domains_init(i915)
->
-> ok, once upon a time intel_power_domains_init() was called by the driver
-> initialization code and not initialized inside the display. I think.
-> Now it's part of the display probe and we never updated the xe side.
->
->>
->>It needs remove one to avoid power_domains->power_wells double malloc.
->>
->>unreferenced object 0xffff88811150ee00 (size 512):
->>  comm "systemd-udevd", pid 506, jiffies 4294674198 (age 3605.560s)
->>  hex dump (first 32 bytes):
->>    10 b4 9d a0 ff ff ff ff ff ff ff ff ff ff ff ff  ................
->>    ff ff ff ff ff ff ff ff 00 00 00 00 00 00 00 00  ................
->>  backtrace:
->>    [<ffffffff8134b901>] __kmem_cache_alloc_node+0x1c1/0x2b0
->>    [<ffffffff812c98b2>] __kmalloc+0x52/0x150
->>    [<ffffffffa08b0033>] __set_power_wells+0xc3/0x360 [xe]
->>    [<ffffffffa08562fc>] xe_display_init_nommio+0x4c/0x70 [xe]
->>    [<ffffffffa07f0d1c>] xe_device_probe+0x3c/0x5a0 [xe]
->>    [<ffffffffa082e48f>] xe_pci_probe+0x33f/0x5a0 [xe]
->>    [<ffffffff817f2187>] local_pci_probe+0x47/0xa0
->>    [<ffffffff817f3db3>] pci_device_probe+0xc3/0x1f0
->>    [<ffffffff8192f2a2>] really_probe+0x1a2/0x410
->>    [<ffffffff8192f598>] __driver_probe_device+0x78/0x160
->>    [<ffffffff8192f6ae>] driver_probe_device+0x1e/0x90
->>    [<ffffffff8192f92a>] __driver_attach+0xda/0x1d0
->>    [<ffffffff8192c95c>] bus_for_each_dev+0x7c/0xd0
->>    [<ffffffff8192e159>] bus_add_driver+0x119/0x220
->>    [<ffffffff81930d00>] driver_register+0x60/0x120
->>    [<ffffffffa05e50a0>] 0xffffffffa05e50a0
->>
->
-> This will need a Fixes trailer.  This seems to be a suitable one:
->
-> Fixes: 44e694958b95 ("drm/xe/display: Implement display support")
->
->>Signed-off-by: wangxiaoming321 <xiaoming.wang@intel.com>
->>---
->> drivers/gpu/drm/xe/xe_display.c | 6 ------
->> 1 file changed, 6 deletions(-)
->>
->>diff --git a/drivers/gpu/drm/xe/xe_display.c b/drivers/gpu/drm/xe/xe_display.c
->>index 74391d9b11ae..e4db069f0db3 100644
->>--- a/drivers/gpu/drm/xe/xe_display.c
->>+++ b/drivers/gpu/drm/xe/xe_display.c
->>@@ -134,8 +134,6 @@ static void xe_display_fini_nommio(struct drm_device *dev, void *dummy)
->>
->> int xe_display_init_nommio(struct xe_device *xe)
->> {
->>-	int err;
->>-
->> 	if (!xe->info.enable_display)
->> 		return 0;
->>
->>@@ -145,10 +143,6 @@ int xe_display_init_nommio(struct xe_device *xe)
->> 	/* This must be called before any calls to HAS_PCH_* */
->> 	intel_detect_pch(xe);
->>
->>-	err = intel_power_domains_init(xe);
->>-	if (err)
->>-		return err;
->
-> xe_display_init_nommio() has xe_display_fini_nommio() as its destructor
-> counter part. Unfortunately display side looks wrong as it does:
->
-> init:
-> 	intel_display_driver_probe_noirq() -> intel_power_domains_init()
->
-> destroy:
-> 	i915_driver_late_release() -> intel_power_domains_cleanup()
->
-> I think leaving intel_power_domains_cleanup() as is for now so it's
-> called by xe works, but this needs to go through CI, which apparently
-> this series didn't go. I re-triggered it.
->
-> +Jani if he thinks this can be changed in another way or already have
-> the complete solution.
+On Wed, Jan 31, 2024 at 08:42:41AM +0100, Johan Hovold wrote:
+> On Wed, Jan 31, 2024 at 12:58:43PM +1100, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > After merging the pci-current tree, today's linux-next build (htmldocs)
+> > produced this warning:
+> > 
+> > drivers/pci/bus.c:440: warning: Function parameter or struct member 'top' not described in 'pci_walk_bus'
+> > drivers/pci/bus.c:440: warning: Function parameter or struct member 'cb' not described in 'pci_walk_bus'
+> > drivers/pci/bus.c:440: warning: Function parameter or struct member 'userdata' not described in 'pci_walk_bus'
+> > 
+> > Introduced by commit
+> > 
+> >   69fb843fdbd9 ("PCI/ASPM: Fix deadlock when enabling ASPM")
+> 
+> Bah, I added a newline after the opening /** when moving a comment
+> without noticing that the kernel doc comment was malformed.
+> 
+> Bjorn, you could either remove that newline or squash the below patch
+> address this.
 
-I don't. But it is and will be a recurring problem. i915 and xe core
-drivers should handle display init and cleanup the same way. But
-currently i915 goes on to call e.g. intel_power_domains_cleanup()
-directly from top level driver code. There are other examples.
+Squashed in, thanks!
 
-And we seem to have recently added *more*. See e.g. bd738d859e71
-("drm/i915: Prevent modesets during driver init/shutdown").
+> diff --git a/drivers/pci/bus.c b/drivers/pci/bus.c
+> index 116415f91195..826b5016a101 100644
+> --- a/drivers/pci/bus.c
+> +++ b/drivers/pci/bus.c
+> @@ -425,9 +425,9 @@ static void __pci_walk_bus(struct pci_bus *top, int (*cb)(struct pci_dev *, void
+>  
+>  /**
+>   *  pci_walk_bus - walk devices on/under bus, calling callback.
+> - *  @top      bus whose devices should be walked
+> - *  @cb       callback to be called for each device found
+> - *  @userdata arbitrary pointer to be passed to callback.
+> + *  @top: bus whose devices should be walked
+> + *  @cb: callback to be called for each device found
+> + *  @userdata: arbitrary pointer to be passed to callback
+>   *
+>   *  Walk the given bus, including any bridged devices
+>   *  on buses under this bus.  Call the provided callback
 
 
-BR,
-Jani.
-
-
--- 
-Jani Nikula, Intel
 
