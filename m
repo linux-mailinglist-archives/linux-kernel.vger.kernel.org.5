@@ -1,119 +1,114 @@
-Return-Path: <linux-kernel+bounces-47025-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47027-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2858084482A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:42:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E945844832
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:42:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBD5D1F2678A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:42:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BCD128A1EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:42:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAFB03EA72;
-	Wed, 31 Jan 2024 19:41:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 295973E49D;
+	Wed, 31 Jan 2024 19:42:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YMdiFHmX"
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="vpLA9WZb"
+Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 762C63FB17
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 19:41:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 902DE3FB1B;
+	Wed, 31 Jan 2024 19:42:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706730107; cv=none; b=ZYic2XY25klDrN19UrBxkO3FdpStzIq7txY9j1lYipqhhnJW5VczenizCwJXNxMKnrrGKVhyjpADBry0QLBuDX6kC5Sh1QhrEXTxWizR8u2pMgfssCWNfoCNgX/At2F43KC9r8zcMBI9RNOVDaIwngLc/g/fx22cGyHHalSfFq4=
+	t=1706730134; cv=none; b=lulEF9wPer63pA3GkKIWklfWP0ZJYRqXJoDXT17TjmNHrhuw0HJnzc7T4izCWv9vWOkD5OeqDD+f+rgIyBA6GhOdQwqu7lEGkb5EamOHm1koKklbu+Q6n7UlB7toGy6vInVTmSc/AVDZ/8+xn0q7OrVbmfGIE2TCvJB+4xCxlgE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706730107; c=relaxed/simple;
-	bh=OkhClyqGGM5gqjlWyitEvXIZetTvRXEOIznDvqpU1TI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CoIKPDC8NduQ0wV9se18wwsBp9cY9dkHCWlECZr+AmJkyMDSaWZ2DSs/qDPPEWqjIC4UWCsZFCT3Y26P/a0CRbmKPK4I+CyPm3IJv4cyYLoYhR5tE0J2i0VfIgKSzp/QU2YnRyiVmMmYVXnIn45HVSLJvCtTrmbD59OKQTHND5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YMdiFHmX; arc=none smtp.client-ip=209.85.128.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-602c714bdbeso803577b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 11:41:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706730104; x=1707334904; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OnoQHvAbASaPoVdTyGlmKQC9N2Jh1gEDxnnkfJ0ZHb4=;
-        b=YMdiFHmXZ4YNZ83hJFGTVaJFVgCJN1eKBI0DLd8/m6U73fU/N4RryPGL56IaTHmRss
-         EG5f10CeHJa9CzpxPHTG2q6DQe7hvF2kgOYkTYa0PSy2o2rrKfiAcjU2bFIGQq71QqZh
-         2eDYl4jKfEN5FLu2TMjfaNFUvzeQzVfzDVB6rnFGOheXFWy4m1DIty9vCoFTOzqRVkge
-         vyIhIN1WsYtDCxqoRM7hkxUS9bJtpDBx0/SHxlD5JH5UknYQ5YHbIkACoKN01PSEF+ZN
-         ZVtT9/emgPH6b4Iyc4fHEnX5tGUZAUu0cnGSt1o3l4XgMFcgAN/IyMPKROkcRsIlVomW
-         XXfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706730104; x=1707334904;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OnoQHvAbASaPoVdTyGlmKQC9N2Jh1gEDxnnkfJ0ZHb4=;
-        b=Q6UXnec5k2IIEEi0249wFzvSaA5CQRLnygx3fDqNSySpG1Xi+8yc8xtoGgPBNgLbMJ
-         Ju6UbuoxOIMk2bwOMYKHTyLnKMbTjH+uaqhdgA2Tk8ayKz74tJsW8Q2r9xbZkHq+WArO
-         j55BKsPrWgjDCM+p6UOallAREdncR9f6CC6QPPwPL0szGmv2dNcFWhQMFl2F36mhY6Cu
-         o39I5no7Zg+F7ip+PiTBd6G+LeELuZJ6AlmmwsOTNCvn9uVZqP/bANfFAz7rllbAUaGC
-         kJ8QP5+CuxfPRqod2MXSM2FunTVVwoaxi36qeJKxxe5oKgInlqEGBaO3GCfrgw43mLKG
-         w1lA==
-X-Gm-Message-State: AOJu0Yzf4RtywMpIRbULyZvZTt2hobDKEgjLTr4/QQoeVo3YlYtodqO2
-	XvFGoiO3daIuXbR54HAFz451lUdV1oco+C2Jo0/VOWIqjegyA/Mf1p/NKLhAtaqOXiLgAyD9xPz
-	Eb4/vVC15zYf2HVcskzQ8L9F9TQoAnJzpFxth5g==
-X-Google-Smtp-Source: AGHT+IHIkxz5wbRgafyXx9pFQL6X7VgtqIYZUzIvbjFzPcOeVDH+7LFp9Qk/vLeKYy4h/WD0yWj0sJaf3erb0b5746Y=
-X-Received: by 2002:a81:83cc:0:b0:604:1277:d759 with SMTP id
- t195-20020a8183cc000000b006041277d759mr1317173ywf.20.1706730104368; Wed, 31
- Jan 2024 11:41:44 -0800 (PST)
+	s=arc-20240116; t=1706730134; c=relaxed/simple;
+	bh=HfEeR4MwJftRCskWBfPPSp7AlKEy7Zjknx2BVaGOJBQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mWYLW2kFWHHDXiMB16TSnRq0FoMoVRPOKfKNMc5vEFXv0YbOyCM5IDIm8CpR+P87GGoxSTXZVEtrEb8REt9SL6K6ktEir6im384QaU0r/BtTCTsKMaM+iW7qbdWjbOywYmfZBclm5MNkQTPbZ4koYSIACHTY5kzX2Piro7yMKWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=vpLA9WZb; arc=none smtp.client-ip=217.194.8.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
+Received: from francesco-nb (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+	by mail11.truemail.it (Postfix) with ESMTPA id A02F422B70;
+	Wed, 31 Jan 2024 20:42:09 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
+	s=default; t=1706730130;
+	bh=+K3WVKgZ1fWnpN1m6qoOBzVUSoAk5LMmTV/l3Hp8dMU=; h=From:To:Subject;
+	b=vpLA9WZbGyS5yGYnXdvEOeicCcSD8At9fQJ0HSzQVEvS4QTiZsOss7LArzGKItS1Y
+	 rgQLbPcwPMoLFvCXJ6KbDnlh3QzXvlIE36EWtHbTKJv1dhNuJyAfWToxxDmWJ/fNbJ
+	 87NwCIEjzO7iDLhtkYhpLiDvBQCDKxYqC2ldxZlLtZy4jrYbzWALolIHqbtCdqz2Lr
+	 W+HYj6+Zq92UGlubi3VZUJYDyzHw54BPSdbw/a8l3QOVeKSsROKQN3PH7SSRwCu7Qa
+	 CyLpN17qrN/is5nPRH3cAOk7kfEisnNA+6Uw+jVCSK5ShxX2iZdxvfIczDrJL2GDqd
+	 QDXPEjpqdM0qw==
+Date: Wed, 31 Jan 2024 20:42:07 +0100
+From: Francesco Dolcini <francesco@dolcini.it>
+To: carlos.song@nxp.com
+Cc: broonie@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+	kernel@pengutronix.de, linux-imx@nxp.com, benjamin@bigler.one,
+	stefanmoring@gmail.com, linux-spi@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] spi: imx: fix the burst length at DMA mode and CPU
+ mode
+Message-ID: <20240131194207.GB12870@francesco-nb>
+References: <20240131101916.437398-1-carlos.song@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130124828.14678-1-brgl@bgdev.pl> <20240130124828.14678-8-brgl@bgdev.pl>
-In-Reply-To: <20240130124828.14678-8-brgl@bgdev.pl>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 31 Jan 2024 20:41:33 +0100
-Message-ID: <CACRpkdaqrZ5cgpnocBv4NbLfZGuW+M0uQzfCpA_A4+5wTe1J2w@mail.gmail.com>
-Subject: Re: [PATCH 07/22] gpio: protect the descriptor label with SRCU
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, "Paul E . McKenney" <paulmck@kernel.org>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Wolfram Sang <wsa@the-dreams.de>, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240131101916.437398-1-carlos.song@nxp.com>
 
-On Tue, Jan 30, 2024 at 1:48=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
- wrote:
+On Wed, Jan 31, 2024 at 06:19:16PM +0800, carlos.song@nxp.com wrote:
+> From: Carlos Song <carlos.song@nxp.com>
+> 
+> For DMA mode, the bus width of the DMA is equal to the size of data
+> word, so burst length should be configured as bits per word.
+> 
+> For CPU mode, because of the spi transfer len is in byte, so burst
+> length should be configured as bits per byte * spi_imx->count.
+> 
+> Signed-off-by: Carlos Song <carlos.song@nxp.com>
+> Reviewed-by: Clark Wang <xiaoning.wang@nxp.com>
+> Fixes: e9b220aeacf1 ("spi: spi-imx: correctly configure burst length when using dma")
+> Fixes: 5f66db08cbd3 ("spi: imx: Take in account bits per word instead of assuming 8-bits")
+> ---
+> Changes for V2:
+> - Removed BITS_PER_BYTE defination
+> ---
+>  drivers/spi/spi-imx.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
+> index 546cdce525fc..0436e7a161ef 100644
+> --- a/drivers/spi/spi-imx.c
+> +++ b/drivers/spi/spi-imx.c
+> @@ -660,15 +660,14 @@ static int mx51_ecspi_prepare_transfer(struct spi_imx_data *spi_imx,
+>  			<< MX51_ECSPI_CTRL_BL_OFFSET;
+>  	else {
+>  		if (spi_imx->usedma) {
+> -			ctrl |= (spi_imx->bits_per_word *
+> -				spi_imx_bytes_per_word(spi_imx->bits_per_word) - 1)
+> +			ctrl |= (spi_imx->bits_per_word - 1)
+>  				<< MX51_ECSPI_CTRL_BL_OFFSET;
+>  		} else {
+>  			if (spi_imx->count >= MX51_ECSPI_CTRL_MAX_BURST)
+> -				ctrl |= (MX51_ECSPI_CTRL_MAX_BURST - 1)
+> +				ctrl |= (MX51_ECSPI_CTRL_MAX_BURST * BITS_PER_BYTE - 1)
+>  						<< MX51_ECSPI_CTRL_BL_OFFSET;
+>  			else
+> -				ctrl |= (spi_imx->count * spi_imx->bits_per_word - 1)
+> +				ctrl |= (spi_imx->count * BITS_PER_BYTE - 1)
+>  						<< MX51_ECSPI_CTRL_BL_OFFSET;
+>  		}
+>  	}
 
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> In order to ensure that the label is not freed while it's being
-> accessed, let's protect it with SRCU and synchronize it everytime it's
-> changed.
->
-> Let's modify desc_set_label() to manage the memory used for the label as
-> it can only be freed once synchronize_srcu() returns.
->
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Add #include <linux/bits.h> given you are using BITS_PER_BYTE
 
-And this conclude the previous patches by protecting the inevitable
-label with SRCU, very clever. (I wouldn't have been able to come up
-with it...)
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Francesco
 
-> -#define gpiod_err(desc, fmt, ...)                                       =
-      \
-> -       pr_err("gpio-%d (%s): " fmt, desc_to_gpio(desc), desc->label ? : =
-"?",  \
-> -                ##__VA_ARGS__)
-(...)
-
-Now it is clear why you were minimizing these helpers.
-(Maybe add to the commit message of that patch? "We do this
-because all functions need to be changed later".)
-
-Yours,
-Linus Walleij
 
