@@ -1,135 +1,134 @@
-Return-Path: <linux-kernel+bounces-46491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46494-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D81C844081
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:25:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B30C4844089
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:27:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 024681F2BE72
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:25:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52D8E1F2C8E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:27:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3E517BB0D;
-	Wed, 31 Jan 2024 13:25:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C0017D403;
+	Wed, 31 Jan 2024 13:27:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H76iJFDD"
-Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QAr2T3qJ"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7CE274E24;
-	Wed, 31 Jan 2024 13:25:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 963ED7BB03
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 13:27:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706707543; cv=none; b=HStpRzfRuNazWISZ0pKJpvo9Om4CkngKEEvilF/J7SIb/FkgWva+pajhRAfhjkhFDd0KQ/7mgGP+/K6VE9SuxXX0zxI9h8N0pG9Su0oKm6msM0b2V+zC3cc4y+JOJEOpqJre6KnC5k9xjPH8hYfW0oe1rnxSRwNk/XXYVVpTY7c=
+	t=1706707625; cv=none; b=mASPmnW8Iu4rl3DnjhgI7XR/jj29oXL3EP6TgoonuZ80rNAkZeb5N4dhGWw7XMZ4RtofypV8eqjq7YREOPFciOBJoY5rj8g/yBXADGYzdmzLEv/UTBTHWVMthRnTdpj1FhlHUGIyPLzmDk60qX6ZSZkvZ4kN6oscImws3qBS5Ow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706707543; c=relaxed/simple;
-	bh=mrnPuo7MULhNnO7ai8Laqwn0SsYOAxZu1J39la8H5/A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WdTiZ0dwUz8C0BuqBy06uUTOo8zCTndlbsJeDLtzQRlOiHSi7A9nVoErynp6j5pcNEw1lZIjS2XS3qNmjiu8HUe19Dt+ZVFaMtt+e4O0ltvUyGLuimAQVTNBa2Dw3caRJk9UWaP+MKCvljZCLWd603pVE8CJjHmn0ztebKb/5ps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H76iJFDD; arc=none smtp.client-ip=209.85.219.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-686a92a8661so35717726d6.0;
-        Wed, 31 Jan 2024 05:25:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706707541; x=1707312341; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9Uf6+XRPgpi5oQnuc4d38dfYrYU0Kc9cu3ZpAUB+/+o=;
-        b=H76iJFDDCyVEp6Lv5YPurKwteJX+MndVctXj5cTkMldIKXDjQmvsWMJi2m4AU+9MjK
-         S512jeYsvs+d8KG1nRDrU162RK6cSU/FY6ixcvj+e3xXIYPHJQXVBilj6Ps00cCHbvm9
-         5RCm6v/CSIC1n0HFgJFVTdk/djopkaYh9YZb6nPVV66WZ6H0VcQBE4CqeGgqUe3WUGpF
-         Sz+eDCWmZk69Ppn/N0+Jau4i3sgCIecFsPdPzI9goZ4ZP10LfvyqOy3sqxAKYKNRfYx8
-         GrkkIVaIkCnAd7ADUQJJvKy4PvqZSj6SueZ6TIor7EwydrHJ8w+d8spJUPb3g5LceZZG
-         xLyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706707541; x=1707312341;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9Uf6+XRPgpi5oQnuc4d38dfYrYU0Kc9cu3ZpAUB+/+o=;
-        b=q3H9iwZlnqdem8EeAXY1QyqyF5ZFYG93W/ElUUk10cUdtnPS1D50nf4jq73yjYUA65
-         1bLK5hRi5d0A3Emq+vp/P2BIbaYdnU+fSCMgZFKYYModCrQ+IgNLmqb+TZdysdlt4f6O
-         J9oX6cqUjZFpwudvft+R2vYXKL5iJf3LI2n3JQHhDxR7b2Ai+12plMFm/Wyn14RiuWE4
-         Mlq3ZEbqwlLTdB9OKvYe+rDKXhW6rvTcuQ37A7Rc8zkdLS96ufJV4dHcD9exzIENDPGh
-         qvh5cKHNGccHJh/C4hkWrkEPMQSx2BjFSMYoRJX+dvQk5KoCdQZMJJm37z3r6fatrppn
-         r3/Q==
-X-Gm-Message-State: AOJu0YzezZlh7LeJVJ7/nB4DBwy0RImJUiarEIGBETPIghfAh1IX3v4F
-	BqkaWa5u62hYVVDDVGLWtLPv3tcUFLTB0MHLne1uUYE57g1cEEwBkkmWS6MgkwXOhKw3fsqho6F
-	RrsrxOjBbb6qk/6jCc5G90+4NJcs6rmRw6OM=
-X-Google-Smtp-Source: AGHT+IF0rFCz+Sbu4mEx3ApRgUFGYzvN4mVLVxYjSABEsCtH1c9/X2J9etEXURqYQtFa6EuS8Kcgw3imhNeVyQLiBrI=
-X-Received: by 2002:a05:6214:2425:b0:68c:645d:1a14 with SMTP id
- gy5-20020a056214242500b0068c645d1a14mr2069494qvb.15.1706707540694; Wed, 31
- Jan 2024 05:25:40 -0800 (PST)
+	s=arc-20240116; t=1706707625; c=relaxed/simple;
+	bh=x2alkTFdX9GtAAjAdf9d5pBfRjBGsbqEAc0JOC49oYY=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=F4HH/clEBRYJrUkOQXPWQytGFPkmXGmK7sG5NsaQ6ccd/1M2wzbyZJRXPk1gd/P5gs4lj6jOOB8COoYb6A1PwkX5rB1SUEiVQg87urcLUNMTZbkiaegS4VPxdk3VoGzhz94TPVAsLMU4PDdTLhtZVAaQbMRRk5vErmrx1oaUqtQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QAr2T3qJ; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706707622;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=AEoHzKgqw9sGTXanl1cSpEXOm2keGIi49ypqIIavTQY=;
+	b=QAr2T3qJ4T+rqV6FPAgKZXl+sKCdxgVaDuq730gcnGxwv1rCTuF6gPZTlzrj09wTRIdqmz
+	qsOZwsDLZMfUEDsu1UEO74i8a35a2snAd5S3zDLE8V/DnWTduCXeNsQSrzkRyPjwMrO7C7
+	lcAz21UGL1SSCPfoAm995Hke8j+OpCw=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-466-ryf6m05BOHuqu6haSIRe3w-1; Wed, 31 Jan 2024 08:26:58 -0500
+X-MC-Unique: ryf6m05BOHuqu6haSIRe3w-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5EFE0101A526;
+	Wed, 31 Jan 2024 13:26:58 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.249])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 0D16140C122E;
+	Wed, 31 Jan 2024 13:26:56 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Wed, 31 Jan 2024 14:25:43 +0100 (CET)
+Date: Wed, 31 Jan 2024 14:25:41 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
+	Tycho Andersen <tycho@tycho.pizza>, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/1] pidfd: implement PIDFD_THREAD flag for pidfd_open()
+Message-ID: <20240131132541.GA23632@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130214620.3155380-1-stefanb@linux.ibm.com> <20240130214620.3155380-2-stefanb@linux.ibm.com>
-In-Reply-To: <20240130214620.3155380-2-stefanb@linux.ibm.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 31 Jan 2024 15:25:29 +0200
-Message-ID: <CAOQ4uxjgdvGU0WE+92ByQE26Jp0j16AgfyCjNyEp7=86akOSsA@mail.gmail.com>
-Subject: Re: [PATCH 1/5] security: allow finer granularity in permitting
- copy-up of security xattrs
-To: Stefan Berger <stefanb@linux.ibm.com>
-Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com, 
-	roberto.sassu@huawei.com, miklos@szeredi.hu, 
-	Christian Brauner <brauner@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-On Tue, Jan 30, 2024 at 11:46=E2=80=AFPM Stefan Berger <stefanb@linux.ibm.c=
-om> wrote:
->
-> Copying up xattrs is solely based on the security xattr name. For finer
-> granularity add a dentry parameter to the security_inode_copy_up_xattr
-> hook definition, allowing decisions to be based on the xattr content as
-> well.
->
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> ---
->  fs/overlayfs/copy_up.c            | 2 +-
->  include/linux/evm.h               | 2 +-
->  include/linux/lsm_hook_defs.h     | 3 ++-
->  include/linux/security.h          | 4 ++--
->  security/integrity/evm/evm_main.c | 2 +-
->  security/security.c               | 7 ++++---
->  security/selinux/hooks.c          | 2 +-
->  security/smack/smack_lsm.c        | 2 +-
->  8 files changed, 13 insertions(+), 11 deletions(-)
->
-> diff --git a/fs/overlayfs/copy_up.c b/fs/overlayfs/copy_up.c
-> index b8e25ca51016..bd9ddcefb7a7 100644
-> --- a/fs/overlayfs/copy_up.c
-> +++ b/fs/overlayfs/copy_up.c
-> @@ -114,7 +114,7 @@ int ovl_copy_xattr(struct super_block *sb, const stru=
-ct path *oldpath, struct de
->                 if (ovl_is_private_xattr(sb, name))
->                         continue;
->
-> -               error =3D security_inode_copy_up_xattr(name);
-> +               error =3D security_inode_copy_up_xattr(old, name);
+Please see the interdiff below.
 
-What do you think about:
+Also, I updated the changelog to document that the behaviour of
+pidfd_poll(PIDFD_THREAD, pid-of-group-leader) is not well defined
+if a sub-thread execs.
 
-                     error =3D security_inode_copy_up_xattr(name, NULL, 0);
+Do you agree with this semantics?
 
-and then later...
+Oleg.
+---
 
-                     error =3D security_inode_copy_up_xattr(name, value, si=
-ze);
+diff --git a/fs/exec.c b/fs/exec.c
+index 73e4045df271..0fd7e668c477 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -1143,7 +1143,11 @@ static int de_thread(struct task_struct *tsk)
+ 
+ 		BUG_ON(leader->exit_state != EXIT_ZOMBIE);
+ 		leader->exit_state = EXIT_DEAD;
+-
++		/*
++		 * leader and tsk exhanged their pids, the old pid dies,
++		 * wake up the PIDFD_THREAD waiters.
++		 */
++		do_notify_pidfd(leader);
+ 		/*
+ 		 * We are going to release_task()->ptrace_unlink() silently,
+ 		 * the tracer can sleep in do_wait(). EXIT_DEAD guarantees
+diff --git a/include/linux/pid.h b/include/linux/pid.h
+index e6a041cb8bac..8124d57752b9 100644
+--- a/include/linux/pid.h
++++ b/include/linux/pid.h
+@@ -70,10 +70,11 @@ extern const struct file_operations pidfd_fops;
+ 
+ struct file;
+ 
+-extern struct pid *pidfd_pid(const struct file *file);
++struct pid *pidfd_pid(const struct file *file);
+ struct pid *pidfd_get_pid(unsigned int fd, unsigned int *flags);
+ struct task_struct *pidfd_get_task(int pidfd, unsigned int *flags);
+ int pidfd_prepare(struct pid *pid, unsigned int flags, struct file **ret);
++void do_notify_pidfd(struct task_struct *task);
+ 
+ static inline struct pid *get_pid(struct pid *pid)
+ {
+diff --git a/kernel/signal.c b/kernel/signal.c
+index 5f48d2c4b409..9b40109f0c56 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -2019,7 +2019,7 @@ int send_sigqueue(struct sigqueue *q, struct pid *pid, enum pid_type type)
+ 	return ret;
+ }
+ 
+-static void do_notify_pidfd(struct task_struct *task)
++void do_notify_pidfd(struct task_struct *task)
+ {
+ 	struct pid *pid;
+ 
 
-I am asking because overlayfs uses mnt_idmap(path->mnt) and you
-have used nop_mnt_idmap inside evm hook.
-this does not look right to me?
-
-Thanks,
-Amir.
 
