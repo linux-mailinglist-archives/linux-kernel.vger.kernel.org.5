@@ -1,133 +1,111 @@
-Return-Path: <linux-kernel+bounces-45882-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45884-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B60AB843780
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:16:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E1C884378B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:17:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2125FB246B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:16:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B95861F24BD2
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:17:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE5B955E78;
-	Wed, 31 Jan 2024 07:16:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8FC750A63;
+	Wed, 31 Jan 2024 07:17:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WRMVNJB6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="skGgilxU"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E85D55C18
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 07:16:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 403805577C
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 07:17:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706685378; cv=none; b=TIOGF+F8b4luC372lEaD+Yes9dSrvJea6HzHnLEKC42md/LOAzbsJ6ZEtS1YekL90BhowYya/9XQiq4eu1Bys8KF+QOkEEY/hvbN0i5vfh8b3B8M46dD6e5jt56FfHJjDzH1LU9iBDXuWe9NosoNLncFFD0zH8kruOAJAPOzJto=
+	t=1706685430; cv=none; b=of1jKl1C1tignvj6sSBNIPQbdSzjyZla1D7xFEKrqo2QWeIQkha69VqNRcFGbaz7wXHMvI38d51YnyM0wPDJM3oMusaeaO75EFhqA7Vllq1i1nV1zXijzAaDaXpVgBqUXrdCGqf/aY8uozkboPAaE8DTBr+v9Kh67ToKyT+xL1U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706685378; c=relaxed/simple;
-	bh=bxaTZPOIsT8/v/Vj4KDp4NSxc016wqx9zKxXiJMGM60=;
+	s=arc-20240116; t=1706685430; c=relaxed/simple;
+	bh=SBwf/LLGCzAHLu6vwrpQFfw+tJTtM2sMiItF7LdOdsk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DEQk/H8uvjX2RNvBON09RAFnRcOYFLjrK6iqTdUOuJMalpZnAqjZf2fKemPiaWoXKaOWFfiGKAH5A5IZeOw2+v4hRAV1u3rIQTv1tuIkdk1qUtW6OpFoNhBBXOTfMN+e1JbznJ2ArcP1vnugOtTSYT4W1k4RjMfUkfkPcWx1t7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WRMVNJB6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D3EAC43390
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 07:16:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706685377;
-	bh=bxaTZPOIsT8/v/Vj4KDp4NSxc016wqx9zKxXiJMGM60=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=WRMVNJB6gIbwUFbPJsGgU4P0PIVAuXr1sk6RkyldhhlOyx+IJe8tMO8drzB06KIMJ
-	 cyUEVpZNeezdTCYRpVO+L1mO3vL6TEEkA29zNQO+bbpXalQ5JFFX1qp84hTIZNxwBB
-	 LWMVL0Yorq6OQNG3XE3UoF14X8yF7rxzhDS0hlL89ep5d6xHkD0ZTwK2xsSQf/Nh4x
-	 GKn7rByogCFMDR99zsMwkRvgomcibqE77Xe3RUY12K2cy+T36H5bel/++kf6DGiOoi
-	 KVpcfAwehQp3DBV7ltJm5csGvpfD5mGkt0zsX0pzOUN2oCxtnuytu4W82xlHG2Mwtp
-	 I0SF8HFzBrF9g==
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-51124d43943so537734e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 23:16:17 -0800 (PST)
-X-Gm-Message-State: AOJu0YybLjrW2OynLjv89g03Mmqs5NTNjA9b/15RKSMtc+lavWxGJ8Sk
-	M2raBq5kTIeNPRiz/kbqDBstxFcYOJV9dZOZIkWBlvLwzT8rxZzrSxShqi+nU2D/PWshPIppyhf
-	hL6+6+o3UxuU3VIiUa6iUYRF25d8=
-X-Google-Smtp-Source: AGHT+IHycALSdp58lauizjvlFTDf1HG4M++w1hgV9fGKdapW6+rKH86r7BfPv9mEAudb0KxSAZ4XSk5Y6G2ou6JVXQk=
-X-Received: by 2002:a05:6512:449:b0:511:150f:6363 with SMTP id
- y9-20020a056512044900b00511150f6363mr560083lfk.32.1706685375813; Tue, 30 Jan
- 2024 23:16:15 -0800 (PST)
+	 To:Cc:Content-Type; b=R/jsk06gogrlS/oWcDrfHdC2iRgp32d+egPZUbkiK9spQOSEyjqZSVJRdiD03wTshXY+lGdUmkkI5qAyLP57Xp6iJPasl+/Q3vRWuxJXW5V6p/v6x4WkBtaxUq3y0TpDPL6chJa6jAcmVGja5XqsrsrUiad9E/IOCDQC78WGnBY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=skGgilxU; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dc238cb1b17so5151904276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 23:17:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706685427; x=1707290227; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=i++Ghkf0yxbfp+SFq64kOAC5DCFdLn2FGQfA07BzBKg=;
+        b=skGgilxUjyHfYPott6hjnYEwUcGIIw0iLZ79jmZDeoTwQ39TGuwMbYfSOSeR1xlylj
+         KmPNLTPoxFsJwxfzStCQBl9x0+j+gA5Yvjo3wYuxEPKriaQgq2ByUszH4EPwE35vBKzY
+         GaXKNuo/7a+G7t0FcS4oRg5A3f2GO1a/A9LAKud+MnfzVLc/FwUkfunju5D9hFFhavbq
+         ZGICYfM7Yv7s2aPLbMBG9JNBR0wTf34KCtRDGW9T+8pXqVz9FcClOQNMF6FdVbKI3KpA
+         qFQIIxUU3o45sNSE1RBBvB536zGlzscmCRlaNiu3jGFNQtxkpJSI73D0DaNVU2ivhgB3
+         Np5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706685427; x=1707290227;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=i++Ghkf0yxbfp+SFq64kOAC5DCFdLn2FGQfA07BzBKg=;
+        b=tMftEb/5dVhOvKpqg7tkTi9rZodbQjqJzOUCleWVQhHHZj2M2bxTVvFp6Dq7iqX1Zq
+         EtwipLPQvBh4i8UyI9mUVBIofJOU+KMIee3fSot5fMKPBd0aRp2qluKrVrKv6d1SlthC
+         y+Uw7AfV0uPWisIIWAANAIRHbMlde2fGlJoNw+XbEpEkcQeMB8ghs2zttl4dlsh7EzgX
+         jWMYpLNT7Vj2d6so4K7pGtobTwSHaPIZr8mDZ4g2R3NCsXxiznDhiiBQjzIbre6zCJWx
+         tsdJRZsl/Tc/hfZNNUqUmAiWhwyCztCYM4DbP/HZt+LJvqnHk170NdRpBx9Ywbi1Yp3t
+         b2nA==
+X-Gm-Message-State: AOJu0YyMx9o4GpC/QuYh/EBJ/xVlcsgzj5kqc7urlAuRluIHddhwbvmI
+	LoVQDjyTBCBzihwpwN0r7oZDbn3NtUOBCS09GtQxr0QeNTYWTOWOk2dGV/IcP2nkeAe8N7VQREV
+	FVBW67a/upw9Tk4+kY/Dny9THMjScDg7ENVEZuw==
+X-Google-Smtp-Source: AGHT+IFTNzxcPE7P1aDSv5JKuBB1enENzJJokT41i2jNc0I+1qhMXhMXCe1ePN6biXsX0bf+Ecr83unT7phgH6+21hA=
+X-Received: by 2002:a25:6b44:0:b0:dc2:2e50:dc4b with SMTP id
+ o4-20020a256b44000000b00dc22e50dc4bmr894449ybm.52.1706685427161; Tue, 30 Jan
+ 2024 23:17:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131065322.1126831-1-maskray@google.com>
-In-Reply-To: <20240131065322.1126831-1-maskray@google.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Wed, 31 Jan 2024 08:16:04 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXGzADFWa7RmXyjWpCnQ=9hhz6i-XkN4PS1CboZ-kFL8dQ@mail.gmail.com>
-Message-ID: <CAMj1kXGzADFWa7RmXyjWpCnQ=9hhz6i-XkN4PS1CboZ-kFL8dQ@mail.gmail.com>
-Subject: Re: [PATCH] arm64: jump_label: use constraint "S" instead of "i"
-To: Fangrui Song <maskray@google.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	linux-arm-kernel@lists.infradead.org, Jisheng Zhang <jszhang@kernel.org>, 
-	llvm@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240131-ufs-phy-clock-v3-0-58a49d2f4605@linaro.org> <20240131-ufs-phy-clock-v3-2-58a49d2f4605@linaro.org>
+In-Reply-To: <20240131-ufs-phy-clock-v3-2-58a49d2f4605@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Wed, 31 Jan 2024 09:16:56 +0200
+Message-ID: <CAA8EJpqGhUiF6is9K0OeB+DW5BmTTEEvk1sEDkxV+cN5BWpNnw@mail.gmail.com>
+Subject: Re: [PATCH v3 02/17] phy: qcom-qmp-ufs: Switch to devm_clk_bulk_get_all()
+ API
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>, 
+	Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-clk@vger.kernel.org, quic_cang@quicinc.com
 Content-Type: text/plain; charset="UTF-8"
 
-Hello Fangrui,
-
-On Wed, 31 Jan 2024 at 07:53, Fangrui Song <maskray@google.com> wrote:
+On Wed, 31 Jan 2024 at 09:08, Manivannan Sadhasivam
+<manivannan.sadhasivam@linaro.org> wrote:
 >
-> The constraint "i" seems to be copied from x86 (and with a redundant
-> modifier "c"). It works with -fno-PIE but not with -fPIE/-fPIC in GCC's
-> aarch64 port.
+> Device drivers should just rely on the clocks provided by the devicetree
+> and enable/disable them based on the requirement. There is no need to
+> validate the clocks provided by devicetree in the driver. That's the job
+> of DT schema.
 >
-> The constraint "S", which denotes a symbol reference (e.g. function,
-> global variable) or label reference, is more appropriate, and has been
-> available in GCC since 2012 and in Clang since 7.0.
+> So let's switch to devm_clk_bulk_get_all() API that just gets the clocks
+> provided by devicetree and remove hardcoded clocks info.
 >
-> Signed-off-by: Fangrui Song <maskray@google.com>
-> Link: https://maskray.me/blog/2024-01-30-raw-symbol-names-in-inline-assembly
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 > ---
->  arch/arm64/include/asm/jump_label.h | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/arm64/include/asm/jump_label.h b/arch/arm64/include/asm/jump_label.h
-> index 48ddc0f45d22..31862b3bb33d 100644
-> --- a/arch/arm64/include/asm/jump_label.h
-> +++ b/arch/arm64/include/asm/jump_label.h
-> @@ -23,9 +23,9 @@ static __always_inline bool arch_static_branch(struct static_key * const key,
->                  "      .pushsection    __jump_table, \"aw\"    \n\t"
->                  "      .align          3                       \n\t"
->                  "      .long           1b - ., %l[l_yes] - .   \n\t"
-> -                "      .quad           %c0 - .                 \n\t"
-> +                "      .quad           %0 - .                  \n\t"
->                  "      .popsection                             \n\t"
-> -                :  :  "i"(&((char *)key)[branch]) :  : l_yes);
-> +                :  :  "S"(&((char *)key)[branch]) :  : l_yes);
+>  drivers/phy/qualcomm/phy-qcom-qmp-ufs.c | 63 ++++-----------------------------
+>  1 file changed, 7 insertions(+), 56 deletions(-)
 
-'key' is not used as a raw symbol name. We should make this
-
-"    .quad   %0 + %1 - ."
-
-and
-
-::  "S"(key), "i"(branch) :: l_yes);
-
-if we want to really clean this up.
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
 
-
->
->         return false;
->  l_yes:
-> @@ -40,9 +40,9 @@ static __always_inline bool arch_static_branch_jump(struct static_key * const ke
->                  "      .pushsection    __jump_table, \"aw\"    \n\t"
->                  "      .align          3                       \n\t"
->                  "      .long           1b - ., %l[l_yes] - .   \n\t"
-> -                "      .quad           %c0 - .                 \n\t"
-> +                "      .quad           %0 - .                  \n\t"
->                  "      .popsection                             \n\t"
-> -                :  :  "i"(&((char *)key)[branch]) :  : l_yes);
-> +                :  :  "S"(&((char *)key)[branch]) :  : l_yes);
->
->         return false;
->  l_yes:
-> --
-> 2.43.0.429.g432eaa2c6b-goog
->
+-- 
+With best wishes
+Dmitry
 
