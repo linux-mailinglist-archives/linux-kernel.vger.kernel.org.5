@@ -1,232 +1,137 @@
-Return-Path: <linux-kernel+bounces-46499-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46500-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBC6A844095
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:30:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B3EE84409A
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:31:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70F2F281974
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:30:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 106781F2B5D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:31:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A47B7BB10;
-	Wed, 31 Jan 2024 13:30:35 +0000 (UTC)
-Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3E3B7D3F2;
+	Wed, 31 Jan 2024 13:31:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FZ6rqX4H"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2444C7AE65
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 13:30:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E64C979DD0;
+	Wed, 31 Jan 2024 13:31:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706707834; cv=none; b=aQ9ZnVJDeMo4HfrwxaVjZbW0iafJtUQ0G4iDk7xnZYBMEYaDfIVr5POKsfO2oujvqJs6SSwXRR5j6CslD5kGOgxBZvtjBPER4eUzEqNYbM4k04qbolY0Rhv70aq0e0pRa2a19iBx/PpyB8GUlxzqbCM5Oro9pNaB4+3pqz0rUnM=
+	t=1706707896; cv=none; b=FpyjvmPIw9XGzajBfW6EN9LKsp4cavGSHAXeL+kCzeO+0aKZwstS2CLWyus7QAcDmo7YTxy3tVsjcCiV/W18kEo24wkv0AprpTEHfIzjYm7NUKPIrxl5GN42Kx5FMnOMn6xs1JhnfaWzV0A/dULs28nUHOJSlPt4TXGf6JUB5Kc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706707834; c=relaxed/simple;
-	bh=9MHyl2YuajP1t5RTzvhWTy6pVSz8JSWVNyEoJ3+fI4c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=I2nlUWZOsWimD3zhP6vAr6QdQ30cy4DIh+enaXTgmJQVh3iSRx6DKAaD2j0bF+wL83+1L0n7REA6Tfn2ZPbD3Pe7HolIX4i8t8o5nMfO7U8p7eg5HnBbR+aYtsyg+D1UJSUEOs1CnEfSIy4X1q0mg1ryJlJ9JGt8V2Gf9hWX8ag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-59a47232667so291784eaf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 05:30:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706707832; x=1707312632;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=n/rYmxaRyYcbls7DLNAJGNk9JtvKcHEco425CoFE7h8=;
-        b=plFz7tEtLt7ImRPvbIu0f4K9z8zBJhGZSeYzxX5f/aCdYh5BnY0oKSoF+CpUs7wHN8
-         SQLgYB7e/KdE/+osUnxpjBk5oaFkaSN4eunYXIv9iCM4ltL0z6Cvb7q8JILRrIBUGRrl
-         wQ3uAbJPBVEreOJC/FaCRWJq7gAnYPVi8MtpgfjRVjQBv6wf+/l2ZfPCpwVu01VppLes
-         ySU05LBtk/mXqBYajzJnveuNlUaDAfRQi3rtpPq5NSDuglQVscCwOOHsw4tyEBCkMgqd
-         4t+JSsfIwmwOJGGoHCXwVm7m+36A3KoRlIgOoeH/WhLxvB43TxWwyVK5+5DCeXy1Sy7N
-         gzXA==
-X-Forwarded-Encrypted: i=0; AJvYcCWfZJxCzvG+JgTBIV/fjSoJBI7Vis6+yu2xGDfplxUkkhxWuf9U8Nqw5jRIeXj4NgVcM+vkSYDiyWtVDRONPRwRjk01BwD7u1ZL9hxy
-X-Gm-Message-State: AOJu0YyBHG1ts0+ruT54iOxY2EqKE2Wm9qXBKtZmp8UxQmIRQi6YiTHG
-	imQquilKHtEepRbRQSe6aGTlEo5RJmwHUDVg4Nb13pH1gYK7Z7lJe20tqzuyYW7gZ8LbmGLDvYS
-	eI3EB8kTqRULA6a5zeO+aHaIzTUk=
-X-Google-Smtp-Source: AGHT+IHpOBMRVTnwpVok/4beLIL/TkCN5tTRjeqI9mD9VY7x96Ig05JoGQDYJFpjPA7LLZIuU8QiCdP37ZGvmMGr05Q=
-X-Received: by 2002:a05:6820:139:b0:599:9e03:68da with SMTP id
- i25-20020a056820013900b005999e0368damr1536206ood.0.1706707832016; Wed, 31 Jan
- 2024 05:30:32 -0800 (PST)
+	s=arc-20240116; t=1706707896; c=relaxed/simple;
+	bh=/wX6XvVShZF4f+RJM2tJZ0XC0594GygcaRPbj/ixCk8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Nd36MOfBhxJuObUBb8nG2eAM3cfXYHBEVSobySKVn3Q9sbu6gLf3AFXGykwfUuswsy8q9pFs2NiO881L4lRvGQdbyWl7x39nuTa5v8oyagtxDa/Vf1C1svkvWipy3dzykqB9B9ndGUMakKQEWAzXYCg2bQ86I2hb6TzCwXKug0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FZ6rqX4H; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A85D6C433F1;
+	Wed, 31 Jan 2024 13:31:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706707895;
+	bh=/wX6XvVShZF4f+RJM2tJZ0XC0594GygcaRPbj/ixCk8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FZ6rqX4HHl5QPe4BXP9ckVtW/dcev6Rq6IzWVYJDhFivWx7cFifDs1+R9FdydacKM
+	 CLnyPI/uws4gRcxB08g8zmEwBYedkXliswtYEjoK/YMTOeTE7tiCBwqigWCrAo9o1L
+	 AlrLuZRsk/28HfWdPg/FiADJxaLl3Ze8Xg3N896RV88GixeqJMj/AXfgA3mXIK2XbY
+	 KLwTYK7Z/sqitkr8m9Gg4JXdZLnT/bXByYRaP3zxHaT2Fr8s1NmfAuGU0yzaSGn+u8
+	 GRH0BLK1sPMhdlu96cWuBrUYCVX/3De0cQKgX0NhIt7fh8qU6Q5KcozDtJpSjCfT8s
+	 9/AXjhzoQG96w==
+Date: Wed, 31 Jan 2024 13:31:27 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Viresh Kumar <viresh.kumar@linaro.org>,
+	Frank Rowand <frowand.list@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
+	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+	Chris Packham <chris.packham@alliedtelesis.co.nz>,
+	Sean Anderson <sean.anderson@seco.com>
+Subject: Re: [PATCH v6 4/6] reset: Instantiate reset GPIO controller for
+ shared reset-gpios
+Message-ID: <7a65b551-817d-4f51-8eb9-bd8b2f93dcba@sirena.org.uk>
+References: <20240129115216.96479-1-krzysztof.kozlowski@linaro.org>
+ <20240129115216.96479-5-krzysztof.kozlowski@linaro.org>
+ <CACRpkdYf4HUaV-Pjr81WjLbzy9zdAnyFWs9gPayPC6-3OjHQwA@mail.gmail.com>
+ <CAMRc=Mc1SGLeUOWmKg=fvCdM+RR6FSu2QkFuR17s7L99eRMGug@mail.gmail.com>
+ <CACRpkdbaxqTzwL9L02vCpMMdBYsubNP1VkNuJ8mXB_=4E3Kjaw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240123-fix-device-links-overlays-v1-1-9e4f6acaab6c@analog.com> <dcb1b6dbc2172dd66bfdcc0c8135e0d98f1c22dd.camel@gmail.com>
-In-Reply-To: <dcb1b6dbc2172dd66bfdcc0c8135e0d98f1c22dd.camel@gmail.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 31 Jan 2024 14:30:20 +0100
-Message-ID: <CAJZ5v0gAK9CChRPSx7Lu=BrGQo22q4swpvvN3__wFw68NfqKPA@mail.gmail.com>
-Subject: Re: [PATCH RESEND RFC] driver: core: don't queue device links removal
- for dt overlays
-To: =?UTF-8?B?TnVubyBTw6E=?= <noname.nuno@gmail.com>
-Cc: nuno.sa@analog.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Frank Rowand <frowand.list@gmail.com>, 
-	Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, 
-	Saravana Kannan <saravanak@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="5U5lAS5lCFVLuVnC"
+Content-Disposition: inline
+In-Reply-To: <CACRpkdbaxqTzwL9L02vCpMMdBYsubNP1VkNuJ8mXB_=4E3Kjaw@mail.gmail.com>
+X-Cookie: I will never lie to you.
+
+
+--5U5lAS5lCFVLuVnC
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 31, 2024 at 1:20=E2=80=AFPM Nuno S=C3=A1 <noname.nuno@gmail.com=
-> wrote:
->
-> On Tue, 2024-01-23 at 16:40 +0100, Nuno Sa via B4 Relay wrote:
-> > From: Nuno Sa <nuno.sa@analog.com>
-> >
-> > For device links, releasing the supplier/consumer devices references
-> > happens asynchronously in device_link_release_fn(). Hence, the possible
-> > release of an of_node is also asynchronous. If these nodes were added
-> > through overlays we have a problem because this does not respect the
-> > devicetree overlays assumptions that when a changeset is
-> > being removed in __of_changeset_entry_destroy(), it must hold the last
-> > reference to that node. Due to the async nature of device links that
-> > cannot be guaranteed.
-> >
-> > Given the above, in case one of the link consumer/supplier is part of
-> > an overlay node we call directly device_link_release_fn() instead of
-> > queueing it. Yes, it might take some significant time for
-> > device_link_release_fn() to complete because of synchronize_srcu() but
-> > we would need to, anyways, wait for all OF references to be released if
-> > we want to respect overlays assumptions.
-> >
-> > Signed-off-by: Nuno Sa <nuno.sa@analog.com>
-> > ---
-> > This RFC is a follow up of a previous one that I sent to the devicetree
-> > folks [1]. It got rejected because it was not really fixing the root
-> > cause of the issue (which I do agree). Please see the link where I
-> > fully explain what the issue is.
-> >
-> > I did also some git blaming and did saw that commit
-> > 80dd33cf72d1 ("drivers: base: Fix device link removal") introduced
-> > queue_work() as we could be releasing the last device reference and hen=
-ce
-> > sleeping which is against SRCU callback requirements. However, that sam=
-e
-> > commit is now making use of synchronize_srcu() which may take
-> > significant time (and I think that's the reason for the work item?).
-> >
-> > However, given the dt overlays requirements, I'm not seeing any
-> > reason to not be able to run device_link_release_fn() synchronously if =
-we
-> > detect an OVERLAY node is being released. I mean, even if we come up
-> > (and I did some experiments in this regard) with some async mechanism t=
-o
-> > release the OF nodes refcounts, we still need a synchronization point
-> > somewhere.
-> >
-> > Anyways, I would like to have some feedback on how acceptable would thi=
-s
-> > be or what else could I do so we can have a "clean" dt overlay removal.
-> >
-> > I'm also including dt folks so they can give some comments on the new
-> > device_node_overlay_removal() function. My goal is to try to detect whe=
-n an
-> > overlay is being removed (maybe we could even have an explicit flag for
-> > it?) and only directly call device_link_release_fn() in that case.
-> >
-> > [1]:
-> > https://lore.kernel.org/linux-devicetree/20230511151047.1779841-1-nuno.=
-sa@analog.com/
-> > ---
-> >  drivers/base/core.c | 25 ++++++++++++++++++++++++-
-> >  1 file changed, 24 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/base/core.c b/drivers/base/core.c
-> > index 14d46af40f9a..31ea001f6142 100644
-> > --- a/drivers/base/core.c
-> > +++ b/drivers/base/core.c
-> > @@ -497,6 +497,18 @@ static struct attribute *devlink_attrs[] =3D {
-> >  };
-> >  ATTRIBUTE_GROUPS(devlink);
-> >
-> > +static bool device_node_overlay_removal(struct device *dev)
-> > +{
-> > +     if (!dev_of_node(dev))
-> > +             return false;
-> > +     if (!of_node_check_flag(dev->of_node, OF_DETACHED))
-> > +             return false;
-> > +     if (!of_node_check_flag(dev->of_node, OF_OVERLAY))
-> > +             return false;
-> > +
-> > +     return true;
-> > +}
-> > +
-> >  static void device_link_release_fn(struct work_struct *work)
-> >  {
-> >       struct device_link *link =3D container_of(work, struct device_lin=
-k,
-> > rm_work);
-> > @@ -532,8 +544,19 @@ static void devlink_dev_release(struct device *dev=
-)
-> >        * synchronization in device_link_release_fn() and if the consume=
-r or
-> >        * supplier devices get deleted when it runs, so put it into the
-> > "long"
-> >        * workqueue.
-> > +      *
-> > +      * However, if any of the supplier, consumer nodes is being remov=
-ed
-> > +      * through overlay removal, the expectation in
-> > +      * __of_changeset_entry_destroy() is for the node 'kref' to be 1
-> > which
-> > +      * cannot be guaranteed with the async nature of
-> > +      * device_link_release_fn(). Hence, do it synchronously for the
-> > overlay
-> > +      * case.
-> >        */
-> > -     queue_work(system_long_wq, &link->rm_work);
-> > +     if (device_node_overlay_removal(link->consumer) ||
-> > +         device_node_overlay_removal(link->supplier))
-> > +             device_link_release_fn(&link->rm_work);
-> > +     else
-> > +             queue_work(system_long_wq, &link->rm_work);
-> >  }
-> >
-> >  static struct class devlink_class =3D {
-> >
-> > ---
-> > base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
-> > change-id: 20240123-fix-device-links-overlays-5422e033a09b
-> > --
-> >
-> > Thanks!
-> > - Nuno S=C3=A1
-> >
->
-> Hi Rafael,
->
-> Would be nice to have your feedback on this one or if this is a complete =
-nack...
-> I think calling device_link_release_fn() synchronously is ok but I might =
-be
-> completely wrong.
+On Wed, Jan 31, 2024 at 02:17:54PM +0100, Linus Walleij wrote:
+> On Wed, Jan 31, 2024 at 10:37=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.=
+pl> wrote:
 
-Well, it sounds like you are expecting me to confirm that what you are
-doing makes sense, but I cannot do that, because I am not sufficiently
-familiar with DT overlays.
+> > This is a different problem: it supports many users enabling the same
+> > GPIO (in Krzysztof's patch it's one but could be more if needed) but -
+> > unlike the broken NONEXCLUSIVE GPIOs in GPIOLIB - it counts the number
+> > of users and doesn't disable the GPIO for as long as there's at least
+> > one.
 
-You first need to convince yourself that you are not completely wrong.
+> I don't know if the NONEXCLUSIVE stuff is broken, if you mean reference
+> counting isn't working on them, then that is by design because they were
+> invented for regulators and such use cases that do their own reference
+> counting. It's also used for hacks where people need to look up a desc in
+> a second spot, (perhaps we can fix those better).
 
-> +Cc Saravan as he should also be very familiar with device_links and see =
-if the
-> above fairly simple solution is sane.
->
-> I also don't want to be pushy as I know you guys are all very busy but it=
-'s (i
-> think) the third time I resend the patch :)
+Their own reference counting or whatever other coordination they want -
+the deal is that users are responsible for their own coordination
+whatever that might be.
 
-Sorry about that, I haven't realized that my input is requisite.
+> The NONEXCLUSIVE stuff was prompted by converting regulators to
+> gpio descriptors, so it was for the greater good one can say. Or the
+> lesser evil :( my judgement can be questioned here.
 
-So the patch not only calls device_link_release_fn() synchronously,
-but it also calls this function directly and I, personally, wouldn't
-do at least the latter.
+Right, previously we were working out if a GPIO was shared by looking at
+the GPIO number but with descriptors we need to get the GPIO before we
+can do anything with it, including figure out if it's shared.
 
-It should be fine to run it synchronously from within
-devlink_dev_release(), it will just take time for the SRCU
-synchronization, but AFAICS it is not generally safe to run it without
-dropping the last reference to the device link.
+--5U5lAS5lCFVLuVnC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmW6S64ACgkQJNaLcl1U
+h9Bm0Qf+PFOwuKiFI40ez5qHeItPwuHuhqbENB0dhjJvdchHy3Bdgsm1MCOMCTZd
+6/cO4FuB77KP/slLSj7ICXs76V7dBj+b44PHcYb8WLCekOT8Sqj5Q4CJTjdw0qSp
+fAHhiisIim79bkwRPZgsDDqBg3tPk84eHCE5ucSRJKd620AHcOMT5TNPUWLsrREg
+btTfJTz5iioUdkoMfH1nbKWhhE9SeSP7DDnQ1EHb4kT8GEe9W7rvxtiky7BVK0FP
+FkXKDzVduVT1NWiWk6tBtoowFaiiG9r5Oj1xQh0W/o7MBJPE5GqAEMMWrgaop/93
+k0CRefl+PXGzcKCbK0TE9DN/8NVk6w==
+=M89N
+-----END PGP SIGNATURE-----
+
+--5U5lAS5lCFVLuVnC--
 
