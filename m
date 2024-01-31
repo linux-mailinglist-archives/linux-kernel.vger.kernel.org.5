@@ -1,88 +1,106 @@
-Return-Path: <linux-kernel+bounces-45810-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45811-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA84E843684
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:18:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF9A9843687
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:20:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76A052897FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:18:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27EFA1C269FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:20:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D8DC16416;
-	Wed, 31 Jan 2024 06:18:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="EeBfOmAf"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C6B33E49B;
+	Wed, 31 Jan 2024 06:19:52 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 551A13E48E;
-	Wed, 31 Jan 2024 06:18:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0D7A3D0A8;
+	Wed, 31 Jan 2024 06:19:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706681888; cv=none; b=IkxtB277GkbL7tYcVwUL551sMZGVlKvTK3tMzLAILU8v4CPJyLEOe7y7UyrkJWdsrY6fPtGSidWvZA+N+UeIaBRQrUDZDgS8uZT1QR3S2edB1T+AvWgrqixjR/ml/KIb3zG+uGw6cMkKBkaesGou3/6F6FXF++IIdbjTJB6YtmI=
+	t=1706681991; cv=none; b=aEehZOQYykqSseToVkyG1iJ0FayY8HOOWc2ZuX8l8dIK4kxMS0ENQdfGft+o47ho7qANqWQzCsxLDAX95FUtSflaawCUj/Kb3JiAzsi2kN6EsZ12Q57Z3q+wpuhs+ESLPnOQg3ugWteIqoUF/w77mngA9WYiQOXKH9vBJb6SqpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706681888; c=relaxed/simple;
-	bh=w3D/s0j2doF3zwzpY1z9z6nuXxX4WiecNK9wpzgOcnk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Tipl8EQux0TcJ0UVPoEi/Aefi6Sq/uIdXgjFlnWuXpcYLSc3fTsWG0HC4/XbAibhngdyBAPg35DuPnr5xNE4GrufhAEhIbxKPOQe0Ffw1wrlOAfXDxFFy1a7STn6QhcXWXZr+2SWayIZz67dP47pWmLHaG6WKzQRYHs5E8yk9lI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=EeBfOmAf; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=NIDqFzAxt4YZhctftXJOdlnjyHvxqbwYfAJo9MG22ew=; b=EeBfOmAfrFbOhPnrE2ZDIiIlng
-	7d43LAKcT5snLNncF7joHHJWKu+g19gwKbl5GDQLPzo0dp5yhNNgcYbUxlFLsRf/2BRF1MIvU+W8o
-	XlnwX4U7mXYFOchn1OuRh7YJbTOJhdkZUgkEgvcrTPZLpVtiWgkXeVQop7xVwtAsdmlS0agD/xHgM
-	8SIZgzZ/X6jtvrBdsLYTMEKkBhjX16QlNeeK80zrkJhJkMnJ0UXR92MO6JqOgIPl9HQZYFYXpIX4s
-	55dyv071AGkM32E8C1K/kUa2nCLKD4SEGukVR4Trok4EIRjwS6RtxLMG3U0Vo5Tc1oz5Jt8u6gNz6
-	Lm5iPkmQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rV3v5-00000001cb4-078E;
-	Wed, 31 Jan 2024 06:17:59 +0000
-Date: Tue, 30 Jan 2024 22:17:58 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Dave Chinner <david@fromorbit.com>
-Cc: Matthew Wilcox <willy@infradead.org>, Theodore Ts'o <tytso@mit.edu>,
-	syzbot <syzbot+cdee56dbcdf0096ef605@syzkaller.appspotmail.com>,
-	adilger.kernel@dilger.ca, chandan.babu@oracle.com, jack@suse.com,
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: current->journal_info got nested! (was Re: [syzbot] [xfs?]
- [ext4?] general protection fault in jbd2__journal_start)
-Message-ID: <ZbnmFo0_dh-2Sgwl@infradead.org>
-References: <000000000000e98460060fd59831@google.com>
- <000000000000d6e06d06102ae80b@google.com>
- <ZbmILkfdGks57J4a@dread.disaster.area>
- <20240131045822.GA2356784@mit.edu>
- <ZbnYitvLz7sWi727@casper.infradead.org>
- <Zbnicfk+JHIlG2WC@dread.disaster.area>
+	s=arc-20240116; t=1706681991; c=relaxed/simple;
+	bh=u5O3/gNRSdF1Vka2tF/34OTpsuldLvuRZepGrl5h7k0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=SMd1/Ht+hwPMxiZzVQrytTKDNCCdD+anj/qi/Ds1xW4e3l7v/khJH85HxE1ueXqAzq2V0FYjkpG2QgRqaX4/ufGujJr9Wl5ehxhKWoJbBjQWa2TQJuZE+gXn/WP9zakGgSy9iI4/6Q2MYFtMwXI8rtXceGsQKzKQxvlwSP3gJ7I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 40ea3aee49ee4d33a1f27c107259acbd-20240131
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:c50e72fa-99b4-4905-8d10-937242d3f027,IP:20,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:5
+X-CID-INFO: VERSION:1.1.35,REQID:c50e72fa-99b4-4905-8d10-937242d3f027,IP:20,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:5
+X-CID-META: VersionHash:5d391d7,CLOUDID:b83cf37f-4f93-4875-95e7-8c66ea833d57,B
+	ulkID:240131141931X8CLJG0B,BulkQuantity:0,Recheck:0,SF:38|24|17|19|44|66|1
+	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
+	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 40ea3aee49ee4d33a1f27c107259acbd-20240131
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
+	(envelope-from <chentao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 297476359; Wed, 31 Jan 2024 14:19:28 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+	by mail.kylinos.cn (NSMail) with SMTP id 3AAC9E000EB9;
+	Wed, 31 Jan 2024 14:19:27 +0800 (CST)
+X-ns-mid: postfix-65B9E66F-40888197
+Received: from kernel.. (unknown [172.20.15.254])
+	by mail.kylinos.cn (NSMail) with ESMTPA id 74415E000EB9;
+	Wed, 31 Jan 2024 14:19:25 +0800 (CST)
+From: Kunwu Chan <chentao@kylinos.cn>
+To: clm@fb.com,
+	josef@toxicpanda.com,
+	dsterba@suse.com
+Cc: linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Kunwu Chan <chentao@kylinos.cn>
+Subject: [PATCH] btrfs: Simplify the allocation of slab caches in btrfs_delayed_inode_init
+Date: Wed, 31 Jan 2024 14:19:24 +0800
+Message-Id: <20240131061924.130083-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zbnicfk+JHIlG2WC@dread.disaster.area>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 31, 2024 at 05:02:25PM +1100, Dave Chinner wrote:
-> This may not be true for other filesystems, but I don't think we
-> can really say "page faults in any filesystem transaction are unsafe
-> and should be banned"....
+commit 0a31bd5f2bbb ("KMEM_CACHE(): simplify slab cache creation")
+introduces a new macro.
+Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
+to simplify the creation of SLAB caches.
 
-I think the point is page faults with current->journal_info set is
-unsafe, as the can recurse into another file system using it.  If we
-don't set current->journal_info (and your ideas for that sound sensible
-to me), the question of page faults in transactions is decoupled from
-that.  We just need to ensure we never recurse into a transaction in
-the same or a dependent fs, which ot me suggest we'd better avoid it
-if we easily can.
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+---
+ fs/btrfs/delayed-inode.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+index 08102883f560..8c748c6cdf6d 100644
+--- a/fs/btrfs/delayed-inode.c
++++ b/fs/btrfs/delayed-inode.c
+@@ -28,11 +28,7 @@ static struct kmem_cache *delayed_node_cache;
+=20
+ int __init btrfs_delayed_inode_init(void)
+ {
+-	delayed_node_cache =3D kmem_cache_create("btrfs_delayed_node",
+-					sizeof(struct btrfs_delayed_node),
+-					0,
+-					SLAB_MEM_SPREAD,
+-					NULL);
++	delayed_node_cache =3D KMEM_CACHE(btrfs_delayed_node, SLAB_MEM_SPREAD);
+ 	if (!delayed_node_cache)
+ 		return -ENOMEM;
+ 	return 0;
+--=20
+2.39.2
 
 
