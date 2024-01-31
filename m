@@ -1,92 +1,88 @@
-Return-Path: <linux-kernel+bounces-46029-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CF4B843984
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:46:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B16D88439B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:52:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04D901F26DCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:46:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E65F5B28E04
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:52:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1C2F7690E;
-	Wed, 31 Jan 2024 08:42:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 516B686ADC;
+	Wed, 31 Jan 2024 08:42:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="aWxkgMYt"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b="yRjrGjaT"
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2082.outbound.protection.outlook.com [40.107.255.82])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 006966EB5C
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 08:41:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706690521; cv=none; b=Jl201Duy3ndJRvg4skJBkvL76m51OVqoFhQY1cvoIOr8FSyxTAC8kTmLaeWOa0QtkT8cZlwqE1zZeUtCPFO/ly+DmpwwB7leUFe1iPAiy8w14+vT8XCwG0nXA6PC2KXnhGSKODueYaNrf2Qvt5qVw5J89FKIeONNXmI33xCValw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706690521; c=relaxed/simple;
-	bh=aLlMQy8HZ3Uodd7EYAzkrNQyWPQI2JPqu4nG0FzkUGE=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ACF484A50;
+	Wed, 31 Jan 2024 08:42:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.255.82
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706690570; cv=fail; b=iiv0HziiEvDPQxZyljOkphP2VfUM/aUxTyZ++V6CbUIRf/80B0J8cAabrmvC/MxikC4NRDL2Gcow6sH7huYWxS/5J0YYqCOkOqo31en+EMMMp90vfo78ZyA36q2WDIJQJFIMLaIQuCkDrd72RLy9pY3JIHAUrh8Afz2+ga3luDg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706690570; c=relaxed/simple;
+	bh=Ly28CfV3UMEr07sD1EFL8GYyPPm1U7bHvtY6WpBwtME=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Cv/GexdyXE052gOiXnAH2I7grhyTQ1GgMEGHagcFKBg5q7JIfXXZFjGhqhuL5luctr/fjhPKIQi8FNCLldYGLYPUcuXhFQnGLG8449/0x4yZJ55c+OW92K2cMiP0Yag0Q7DyhGxXMFFEqaUFvimDMoIxE+WwkTtDPlihnezMh7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=aWxkgMYt; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-55eed368b0bso1309973a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 00:41:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1706690518; x=1707295318; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nQCfrFSxrrf9tRO6HJcq+akjVQCNk3tk3vQzaskg9t8=;
-        b=aWxkgMYtVswfmajGy8LMr8yIBEy2/fiC/NfYkxiDIFG7/PCuJXF8b60My06Y8kzefE
-         D5Zz8cr0/A4tzST4FRWnB32gBFY3El9OK0hycQXmgFxuBrHfpCoz6eZhJ7Pgvj5JHhmO
-         IymlO2KXMEHSKPGvhN1T/8m1zepAgMYjMBFyW90EZvQv0AFNfPySrg2fX2Iys9ketwde
-         mTUM7O0D/E5jy3IgoXEx/ici9sUZff7Vyqh++OToD4JBtem1sBSggARD9ctK7hkZ0eQV
-         cA4eZct+eUK56UdIUrKfRKYp1BicfopTMAp2p6SpnnqNECyEeIq94fYXyGgvFyLFTM3p
-         Hy9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706690518; x=1707295318;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nQCfrFSxrrf9tRO6HJcq+akjVQCNk3tk3vQzaskg9t8=;
-        b=Nsw51PH9VHGljNFVimZQChVp3aciNifcHGdLVmLUzOmP15bVZluE2dFE8MBtLIKLjG
-         RBdbZe3WuSCsWpvXcGY7EJHdY5++Zbgbdli/3HN9Nr5UeEMUl3A/49xUUggLr0aiHlwo
-         IIO8bhOKAmxQtxWCJNIA/upp2NlMc+P8INDibRoRxQy55otiDHOz8N7MXzn7YtTzV7d5
-         3UmHJ25NfyRRfPbRbUmls8G5jWINFmOt3FgKmCRiBsnQvTPYwIPnoXt1EP/1ef7UDZL9
-         G3C5j8/DNDmembgLNWcGEuE/KWubyif5YbWgmmOwpYH6so6DVebyt3Mc/MJHLcziVyJ6
-         Wz5g==
-X-Gm-Message-State: AOJu0YxTux7b52dRuscaMl/Y7Z5hAqpp61fXTs/qTwMoHBo7cxjw3mLp
-	0VHK0ashdZtO/vlXV6szKj3Y3qhd9Q/55lMD2qmWxqQqSzkC/Wq3aKk5BshS6Jk=
-X-Google-Smtp-Source: AGHT+IHKr0M8p2erIxEMLCxQzd8C2G5HCFys+AO9+35Tn6g57xz7Pk+Ug/GD74zCWV734TpilIa+eA==
-X-Received: by 2002:a50:8d54:0:b0:55d:71d7:31c5 with SMTP id t20-20020a508d54000000b0055d71d731c5mr947757edt.6.1706690518298;
-        Wed, 31 Jan 2024 00:41:58 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCW+fQSw5vPHy6jQbwiRMhmeUpgOaDIs3EZEsRstr6oQ56ilGrJP5dHob+V3YWhuc6t70LJ4sRzNaIRgR4cTmvR0CVyV2aO3qDPvfw8DZBWV0Yt7xZk/aPtjzPgstdLd71FwOGn644TvJh08hVHzpIot+gY5PMyhPdX3iWftXafslOSLbYY/zGATXTlVTjXPTpEPUxBZ3Q4qsneBd7EzqTvSCu0K0hsSVByS2lkY+uofDGreeAM5VR1x60DmJBx3x8fWPDtKeCA7nmlWLvUIuHO7rwlQso3pwWrZ5Jh7kpfFUZcF2MZW1GXC0dBjVXo6PwczjTWpl4u5iQV38vXx81HDWhBw62D1h9n3pIn9wSQNJGGQA3KbegUxSLBBUHa+EG9H0el5zDDizdo74JijFfDldGhpb3bNvV+WisJozn4ccc4ggTg=
-Received: from claudiu-X670E-Pro-RS.. ([82.78.167.87])
-        by smtp.gmail.com with ESMTPSA id cq16-20020a056402221000b0055f02661ae2sm2863630edb.78.2024.01.31.00.41.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 00:41:57 -0800 (PST)
-From: Claudiu <claudiu.beznea@tuxon.dev>
-X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
-To: s.shtylyov@omp.ru,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	richardcochran@gmail.com,
-	p.zabel@pengutronix.de,
-	geert+renesas@glider.be
-Cc: netdev@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	claudiu.beznea@tuxon.dev,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH net-next v5 09/15] net: ravb: Split GTI computation and set operations
-Date: Wed, 31 Jan 2024 10:41:27 +0200
-Message-Id: <20240131084133.1671440-10-claudiu.beznea.uj@bp.renesas.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240131084133.1671440-1-claudiu.beznea.uj@bp.renesas.com>
-References: <20240131084133.1671440-1-claudiu.beznea.uj@bp.renesas.com>
+	 MIME-Version:Content-Type; b=daGQt4yPruN2cRZUSOcRNfjY6LTaMxEXxYsz31FCEmCicuilCaAcx6wf7EyAnywC80xm8E2xPIxrzjEiHrSotEvqqqp/FlhWRyLzJHmMDJBKjbc8fuoylqoFDwlVZ/Mp9JSLhN3B/vH6wPSeuFAQBgC2rGzdXJOnPlZJ6oF0vBk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com; spf=pass smtp.mailfrom=wiwynn.com; dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b=yRjrGjaT; arc=fail smtp.client-ip=40.107.255.82
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wiwynn.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Lp5UktXftTc3gdCkkvw3uDLIrxARoM+ypT1s6aosjn62djzkHAwPU1i4yY2KsI4cJ7OBWEgoYPQWI7dn6qTH8eVT9CAfWn8560GWERFP942giYUAa2W5weaJR444HjCSNg4ARMWigVDfv16TMlp8XLJ4KTitff3trl2jdaiHNKevFG4V53tR/yXzr6XPZOA7WA1MUlRghH3zVSSzMC5XN5X3W5FXXJ3iOhtIteyz4Q4V1yK0qwJroTEQBYh59MF5qD37sOYEMpF9L8taQVAjo2ks5Brbrhcp3lbSCDVZTYBcWverTh2rvvoCR/8L2FegbwtVCMrsgeq9MGDHkci0IA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VOMueDJJIgwj38qzOiLlcwloqWFXMc1YNGi3D52Uzdk=;
+ b=CveFgOvrub8LzXHgT08y0Pagn11B6upgrhj17kwv4ckRDRn75leJTXISqy5ylFHRdXOdzAJBjWJSSMCpng6N+TGoH1hc/4c2F231xLdeWvkIBfojfMK+grcP9ZqK2UmzGMyJt0yYaRUGkPDwUAidK75YAFgFq6tFPJYD1CJFlstaSeSXZpZ2daG4pnop0Gm93WqD4ZcQ2PfJkvfoqu/qDZh6Db48gt+2Zql3DsOGQxOhfNIh2FDaRnl36ANPgiwTmGY9Jbhp8YgoR/EzZJVGblCe8cwVJYa58A2tlOpjWDqTl2OZ+aDTpMXY97pkmg+LRB76EPus0jjwKmJqcpWl1w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
+ 211.20.1.79) smtp.rcpttodomain=stwcx.xyz smtp.mailfrom=wiwynn.com; dmarc=fail
+ (p=quarantine sp=quarantine pct=100) action=quarantine
+ header.from=wiwynn.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VOMueDJJIgwj38qzOiLlcwloqWFXMc1YNGi3D52Uzdk=;
+ b=yRjrGjaT1+KnjqCy1PbQqkxvcr4K7TSQTuyVRjKDmlzVcBDmbmsAOVDthSox2rM8jDl7Snf/fvCPMXyP6WP9jguC9UOGBuK/tTUN0aJRqvUnWzauAYCy2fpPxEr2ip/AyFQVtEJZmRQYUV7gy0ukmt22uyN0/qlwlG8LmW7FDbaUsVcFHfPo20vFWIU3RkXaUWSMI6wRmEkR31g6jZ2JF6+DZbq7UsgdQnifOzMBJ9bYa+GNGnqxqQNy9fM/puLcCPHamKXbmhAcp5aP/eXF4E1yraEMpjQaxwMpgE/h1lccyRvdXBgHUrebrF3otxPqPl0BYQ+F+2EoezYPdLpaqw==
+Received: from SG2P153CA0020.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c7::7) by
+ JH0PR04MB7962.apcprd04.prod.outlook.com (2603:1096:990:97::11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7228.34; Wed, 31 Jan 2024 08:42:45 +0000
+Received: from HK2PEPF00006FB2.apcprd02.prod.outlook.com
+ (2603:1096:4:c7:cafe::4b) by SG2P153CA0020.outlook.office365.com
+ (2603:1096:4:c7::7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.8 via Frontend
+ Transport; Wed, 31 Jan 2024 08:42:45 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
+ smtp.mailfrom=wiwynn.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=quarantine header.from=wiwynn.com;
+Received-SPF: Fail (protection.outlook.com: domain of wiwynn.com does not
+ designate 211.20.1.79 as permitted sender) receiver=protection.outlook.com;
+ client-ip=211.20.1.79; helo=localhost.localdomain;
+Received: from localhost.localdomain (211.20.1.79) by
+ HK2PEPF00006FB2.mail.protection.outlook.com (10.167.8.8) with Microsoft SMTP
+ Server id 15.20.7228.16 via Frontend Transport; Wed, 31 Jan 2024 08:42:44
+ +0000
+From: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+To: patrick@stwcx.xyz,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Joel Stanley <joel@jms.id.au>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>
+Cc: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-aspeed@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v5 16/21] ARM: dts: aspeed: yosemite4: Initialize bmc gpio state
+Date: Wed, 31 Jan 2024 16:41:27 +0800
+Message-Id: <20240131084134.328307-17-Delphine_CC_Chiu@wiwynn.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240131084134.328307-1-Delphine_CC_Chiu@wiwynn.com>
+References: <20240131084134.328307-1-Delphine_CC_Chiu@wiwynn.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,189 +90,251 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: HK2PEPF00006FB2:EE_|JH0PR04MB7962:EE_
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 7dbcb019-92ad-4c91-4641-08dc22389897
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	+h0DFgJdBUrhfqdJvnqS9ujbYkxWMCKeVlU6mUjTKe/0mswSQhHAFxOFkMGtud8JL3aV+vx+UDP/rQySV/LOHvRAxfoDls1dgI72lBLTS6SXmkZBL4CP7tvPJKpRbU8U/hoOOKNzrov3/aO47jsoENW2bhoqZ1xIVghR6LeWBCQ6qoloyOndQU1Mz1JdAMGJxhSuuFkHyYJX1n0gs5XSQKGjpFHwX6TdJS2fO3eByEXQ2davZwzdH4Fse95cClFUly3+VEXPTpG2+kQluoGNADuSDONjIRlWCWm5bmUUcixkOosyDTsaDbBic8+zw+KqjDoygEAQJXDcnBMVTxcAUpESutOhspXi3vtxLc3E4tKfdIQLeP5LYANXXiIrrNJtNqI/K4mFBdYz/S/52fDS6/CL67GKKDSL73Am+Ng3lHzN2409cNwgT2pxkk1Gb5WiXWaJF+EiX745/zIzNZfiG2bL5s+eUWnlxgyCj4SCDRduyaq6CBF4+cOtR81otLH3+3vwaANxf5AjHoJb2Iku/pE6+I/ARSN+cI6ys7P+tvN97oPWL8+RwgcKg+QXM0sagql1bXJbpKkxvvxD0mUteV1WDS5UXRTtEEC36m1JR3bjzrJYHdIynzr0+tcf5oNSgkrrS/it4AGSAn9jLgnvZnZmn5aca/Fv+HFAAK916eVYaPjQePJ5LPiMKW8mnc/E0Zhel5BiSTiJGhPP/9Cp1A==
+X-Forefront-Antispam-Report:
+	CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(6069001)(4636009)(39860400002)(136003)(396003)(376002)(346002)(230922051799003)(451199024)(186009)(64100799003)(82310400011)(1800799012)(36840700001)(46966006)(9316004)(316002)(4326008)(8676002)(86362001)(5660300002)(2906002)(7416002)(8936002)(110136005)(36736006)(70586007)(70206006)(36756003)(83380400001)(6486002)(82740400003)(6506007)(36860700001)(47076005)(356005)(81166007)(6666004)(6512007)(478600001)(956004)(1076003)(2616005)(26005)(336012)(41300700001)(40480700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: wiwynn.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jan 2024 08:42:44.2237
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7dbcb019-92ad-4c91-4641-08dc22389897
+X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
+X-MS-Exchange-CrossTenant-AuthSource:
+	HK2PEPF00006FB2.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: JH0PR04MB7962
 
-From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Initialize bmc gpio state
 
-ravb_set_gti() was computing the value of GTI based on the reference clock
-rate and then applied it to register. This was done on the driver's probe
-function. In order to implement runtime PM for all IP variants (as some IP
-variants switches to reset mode (and thus the registers content is lost)
-when module standby is configured through clock APIs) the GTI setup was
-split in 2 parts: one computing the value of the GTI register (done in the
-driver's probe function) and one applying the computed value to register
-(done in the driver's ndo_open API).
-
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
 ---
+Changelog:
+  - v4
+    - Rename gpio-line-names
+  - v3
+    - Add patch for revising gpio name
+---
+ .../aspeed/aspeed-bmc-facebook-yosemite4.dts  | 192 ++++++++++++++++++
+ 1 file changed, 192 insertions(+)
 
-Changes in v5:
-- none
-
-Changes in v4:
-- collected tags
-
-Changes in v3:
-- fixed typos in patch description
-- use u64 instead of uint64_t
-- remove ravb_wait() for setting GCCR.LTI
-
-Changes in v2:
-- none; this patch is new
-
- drivers/net/ethernet/renesas/ravb.h      |  2 +
- drivers/net/ethernet/renesas/ravb_main.c | 96 ++++++++++++------------
- 2 files changed, 52 insertions(+), 46 deletions(-)
-
-diff --git a/drivers/net/ethernet/renesas/ravb.h b/drivers/net/ethernet/renesas/ravb.h
-index e3506888cca6..268ccfafe7aa 100644
---- a/drivers/net/ethernet/renesas/ravb.h
-+++ b/drivers/net/ethernet/renesas/ravb.h
-@@ -1102,6 +1102,8 @@ struct ravb_private {
- 
- 	const struct ravb_hw_info *info;
- 	struct reset_control *rstc;
-+
-+	u32 gti_tiv;
+diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
+index 6d5710e5753c..bce739f2a081 100644
+--- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
++++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
+@@ -1271,6 +1271,7 @@ temperature-sensor@1f {
+ 	};
  };
  
- static inline u32 ravb_read(struct net_device *ndev, enum ravb_reg reg)
-diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-index f9297224e527..0f7b1d503618 100644
---- a/drivers/net/ethernet/renesas/ravb_main.c
-+++ b/drivers/net/ethernet/renesas/ravb_main.c
-@@ -1756,6 +1756,50 @@ static const struct ethtool_ops ravb_ethtool_ops = {
- 	.set_wol		= ravb_set_wol,
++
+ &adc0 {
+ 	ref_voltage = <2500>;
+ 	status = "okay";
+@@ -1298,3 +1299,194 @@ &ehci1 {
+ &uhci {
+ 	status = "okay";
  };
- 
-+static void ravb_set_gti(struct net_device *ndev)
-+{
-+	struct ravb_private *priv = netdev_priv(ndev);
-+	const struct ravb_hw_info *info = priv->info;
 +
-+	if (!(info->gptp || info->ccc_gac))
-+		return;
++&sgpiom0 {
++	status = "okay";
++	ngpios = <128>;
++	bus-frequency = <48000>;
++};
 +
-+	ravb_write(ndev, priv->gti_tiv, GTI);
++&gpio0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_gpiu2_default &pinctrl_gpiu3_default
++		     &pinctrl_gpiu4_default &pinctrl_gpiu6_default>;
++	gpio-line-names =
++	/*A0-A7*/       "","","","","","","","",
++	/*B0-B7*/       "FLT-HSC-SERVER-SLOT8-N","AC-ON-OFF-BTN-CPLD-SLOT5-N",
++			"PWRGD-SLOT1-STBY","PWRGD-SLOT2-STBY",
++			"PWRGD-SLOT3-STBY","PWRGD-SLOT4-STBY","","",
++	/*C0-C7*/       "","","","","FM-NIC0-WAKE-N",
++			"FM-NIC1-WAKE-N","","RST-PCIE-SLOT2-N",
++	/*D0-D7*/       "","","","","","","","",
++	/*E0-E7*/       "PRSNT-NIC1-N","PRSNT-NIC2-N","","RST-PCIE-SLOT1-N",
++			"","","","",
++	/*F0-F7*/       "FM-RESBTN-SLOT1-BMC-N","FM-RESBTN-SLOT2-BMC-N",
++			"FM-RESBTN-SLOT3-BMC-N","FM-RESBTN-SLOT4-BMC-N",
++			"PRSNT-SB-SLOT1-N","PRSNT-SB-SLOT2-N",
++			"PRSNT-SB-SLOT3-N","PRSNT-SB-SLOT4-N",
++	/*G0-G7*/       "","","","","","","","",
++	/*H0-H7*/       "","","","","","","","",
++	/*I0-I7*/       "","","","","","ALT-MEDUSA-ADC-N",
++			"ALT-SMB-BMC-CPLD2-N",
++			"INT-SPIDER-ADC-R-N",
++	/*J0-J7*/       "","","","","","","","",
++	/*K0-K7*/       "","","","","","","","",
++	/*L0-L7*/       "","","","","","","ALT-MEDUSA-P12V-EFUSE-N","",
++	/*M0-M7*/       "EN-NIC0-POWER-BMC-R","EN-NIC1-POWER-BMC-R",
++			"INT-MEDUSA-IOEXP-TEMP-N","PRSNT-NIC3-N",
++			"INT-SMB-BMC-SLOT1-4-BMC-N",
++			"AC-ON-OFF-BTN-CPLD-SLOT6-N","","",
++	/*N0-N7*/       "FLT-HSC-SERVER-SLOT1-N","FLT-HSC-SERVER-SLOT2-N",
++			"FLT-HSC-SERVER-SLOT3-N","FLT-HSC-SERVER-SLOT4-N",
++			"FM-BMC-READY-R2","RST-SMB-NIC0-R-N","","",
++	/*O0-O7*/       "AC-ON-OFF-BTN-CPLD-SLOT8-N","RST-SMB-NIC1-R-N",
++			"RST-SMB-NIC2-R-N","RST-SMB-NIC3-R-N",
++			"","","","",
++	/*P0-P7*/       "ALT-SMB-BMC-CPLD1-N","'BTN-BMC-R2-N",
++			"EN-P3V-BAT-SCALED-R","PWRGD-P5V-USB-BMC",
++			"FM-BMC-RTCRST-R","RST-USB-HUB-R-N",
++			"FLAG-P5V-USB-BMC-N","",
++	/*Q0-Q7*/       "AC-ON-OFF-BTN-CPLD-SLOT1-N","AC-ON-OFF-BTN-CPLD-SLOT2-N",
++			"AC-ON-OFF-BTN-CPLD-SLOT3-N","AC-ON-OFF-BTN-CPLD-SLOT4-N",
++			"PRSNT-SB-SLOT5-N","PRSNT-SB-SLOT6-N",
++			"PRSNT-SB-SLOT7-N","PRSNT-SB-SLOT8-N",
++	/*R0-R7*/       "AC-ON-OFF-BTN-CPLD-SLOT7-N","INT-SMB-BMC-SLOT5-8-BMC-N",
++			"FM-PWRBRK-NIC-BMC-R2","RST-PCIE-SLOT4-N",
++			"RST-PCIE-SLOT5-N","RST-PCIE-SLOT6-N",
++			"RST-PCIE-SLOT7-N","RST-PCIE-SLOT8-N",
++	/*S0-S7*/       "FM-NIC2-WAKE-N","FM-NIC3-WAKE-N",
++			"EN-NIC3-POWER-BMC-R","SEL-BMC-JTAG-MUX-R",
++			"","ALT-P12V-AUX-N","FAST-PROCHOT-N",
++			"SPI-WP-DISABLE-STATUS-R-N",
++	/*T0-T7*/       "","","","","","","","",
++	/*U0-U7*/       "","","RST-PCIE-SLOT3-N","",
++			"","PRSNT-NIC0-N","","",
++	/*V0-V7*/       "FM-RESBTN-SLOT5-BMC-N","FM-RESBTN-SLOT6-BMC-N",
++			"FM-RESBTN-SLOT7-BMC-N","FM-RESBTN-SLOT8-BMC-N",
++			"","","","",
++	/*W0-W7*/       "PRSNT-TPM-BMC-N","PRSNT-OCP-DEBUG-BMC-N","ALT-TEMP-BMC-N","ALT-RTC-BMC-N",
++			"","","","",
++	/*X0-X7*/       "","LT-HSC-SERVER-SLOT6-N","FLT-HSC-SERVER-SLOT7-N","","","",
++			"PWRGD-SLOT5-STBY","PWRGD-SLOT6-STBY",
++	/*Y0-Y7*/       "","","SPI-LOCK-REQ-BMC-N","PWRGD-SLOT7-STBY",
++			"","","EN-NIC2-POWER-BMC-R","",
++	/*Z0-Z7*/       "EN-P5V-USB-CPLD-R","'FLT-HSC-SERVER-SLOT5-N",
++			"PWRGD-SLOT8-STBY","","","","","";
 +
-+	/* Request GTI loading */
-+	ravb_modify(ndev, GCCR, GCCR_LTI, GCCR_LTI);
-+}
-+
-+static int ravb_compute_gti(struct net_device *ndev)
-+{
-+	struct ravb_private *priv = netdev_priv(ndev);
-+	const struct ravb_hw_info *info = priv->info;
-+	struct device *dev = ndev->dev.parent;
-+	unsigned long rate;
-+	u64 inc;
-+
-+	if (!(info->gptp || info->ccc_gac))
-+		return 0;
-+
-+	if (info->gptp_ref_clk)
-+		rate = clk_get_rate(priv->gptp_clk);
-+	else
-+		rate = clk_get_rate(priv->clk);
-+	if (!rate)
-+		return -EINVAL;
-+
-+	inc = div64_ul(1000000000ULL << 20, rate);
-+
-+	if (inc < GTI_TIV_MIN || inc > GTI_TIV_MAX) {
-+		dev_err(dev, "gti.tiv increment 0x%llx is outside the range 0x%x - 0x%x\n",
-+			inc, GTI_TIV_MIN, GTI_TIV_MAX);
-+		return -EINVAL;
-+	}
-+	priv->gti_tiv = inc;
-+
-+	return 0;
-+}
-+
- /* Network device open function for Ethernet AVB */
- static int ravb_open(struct net_device *ndev)
- {
-@@ -1773,6 +1817,8 @@ static int ravb_open(struct net_device *ndev)
- 		goto out_napi_off;
- 	ravb_emac_init(ndev);
- 
-+	ravb_set_gti(ndev);
-+
- 	/* Initialise PTP Clock driver */
- 	if (info->gptp)
- 		ravb_ptp_init(ndev, priv->pdev);
-@@ -2464,34 +2510,6 @@ static const struct of_device_id ravb_match_table[] = {
- };
- MODULE_DEVICE_TABLE(of, ravb_match_table);
- 
--static int ravb_set_gti(struct net_device *ndev)
--{
--	struct ravb_private *priv = netdev_priv(ndev);
--	const struct ravb_hw_info *info = priv->info;
--	struct device *dev = ndev->dev.parent;
--	unsigned long rate;
--	uint64_t inc;
--
--	if (info->gptp_ref_clk)
--		rate = clk_get_rate(priv->gptp_clk);
--	else
--		rate = clk_get_rate(priv->clk);
--	if (!rate)
--		return -EINVAL;
--
--	inc = div64_ul(1000000000ULL << 20, rate);
--
--	if (inc < GTI_TIV_MIN || inc > GTI_TIV_MAX) {
--		dev_err(dev, "gti.tiv increment 0x%llx is outside the range 0x%x - 0x%x\n",
--			inc, GTI_TIV_MIN, GTI_TIV_MAX);
--		return -EINVAL;
--	}
--
--	ravb_write(ndev, inc, GTI);
--
--	return 0;
--}
--
- static int ravb_set_config_mode(struct net_device *ndev)
- {
- 	struct ravb_private *priv = netdev_priv(ndev);
-@@ -2763,15 +2781,9 @@ static int ravb_probe(struct platform_device *pdev)
- 	if (error)
- 		goto out_rpm_put;
- 
--	if (info->gptp || info->ccc_gac) {
--		/* Set GTI value */
--		error = ravb_set_gti(ndev);
--		if (error)
--			goto out_rpm_put;
--
--		/* Request GTI loading */
--		ravb_modify(ndev, GCCR, GCCR_LTI, GCCR_LTI);
--	}
-+	error = ravb_compute_gti(ndev);
-+	if (error)
-+		goto out_rpm_put;
- 
- 	if (info->internal_delay) {
- 		ravb_parse_delay_mode(np, ndev);
-@@ -2984,15 +2996,7 @@ static int ravb_resume(struct device *dev)
- 	if (ret)
- 		return ret;
- 
--	if (info->gptp || info->ccc_gac) {
--		/* Set GTI value */
--		ret = ravb_set_gti(ndev);
--		if (ret)
--			return ret;
--
--		/* Request GTI loading */
--		ravb_modify(ndev, GCCR, GCCR_LTI, GCCR_LTI);
--	}
-+	ravb_set_gti(ndev);
- 
- 	if (info->internal_delay)
- 		ravb_set_delay_mode(ndev);
++	pin_gpio_b4 {
++		gpios = <ASPEED_GPIO(B, 4) GPIO_ACTIVE_HIGH>;
++		input;
++	};
++	pin_gpio_b5 {
++		gpios = <ASPEED_GPIO(B, 5) GPIO_ACTIVE_HIGH>;
++		input;
++	};
++	pin_gpio_f0 {
++		gpios = <ASPEED_GPIO(F, 0) GPIO_ACTIVE_LOW>;
++		input;
++	};
++	pin_gpio_f1 {
++		gpios = <ASPEED_GPIO(F, 1) GPIO_ACTIVE_LOW>;
++		input;
++	};
++	pin_gpio_f2 {
++		gpios = <ASPEED_GPIO(F, 2) GPIO_ACTIVE_LOW>;
++		input;
++		};
++	pin_gpio_f3 {
++		gpios = <ASPEED_GPIO(F, 3) GPIO_ACTIVE_LOW>;
++		input;
++	};
++	pin_gpio_f4 {
++		gpios = <ASPEED_GPIO(F, 4) GPIO_ACTIVE_LOW>;
++		input;
++	};
++	pin_gpio_f5 {
++		gpios = <ASPEED_GPIO(F, 5) GPIO_ACTIVE_LOW>;
++		input;
++	};
++	pin_gpio_f6 {
++		gpios = <ASPEED_GPIO(F, 6) GPIO_ACTIVE_LOW>;
++		input;
++	};
++	pin_gpio_f7 {
++		gpios = <ASPEED_GPIO(F, 7) GPIO_ACTIVE_LOW>;
++		input;
++	};
++	pin_gpio_l6 {
++		gpios = <ASPEED_GPIO(L, 6) GPIO_ACTIVE_LOW>;
++		input;
++	};
++	pin_gpio_l7 {
++		gpios = <ASPEED_GPIO(L, 7) GPIO_ACTIVE_LOW>;
++		input;
++	};
++	pin_gpio_s0 {
++		gpios = <ASPEED_GPIO(S, 0) GPIO_ACTIVE_LOW>;
++		input;
++	};
++	pin_gpio_s1 {
++		gpios = <ASPEED_GPIO(S, 1) GPIO_ACTIVE_LOW>;
++		input;
++	};
++	pin_gpio_v0 {
++		gpios = <ASPEED_GPIO(V, 0) GPIO_ACTIVE_LOW>;
++		input;
++	};
++	pin_gpio_v1 {
++		gpios = <ASPEED_GPIO(V, 1) GPIO_ACTIVE_LOW>;
++		input;
++	};
++	pin_gpio_v2 {
++		gpios = <ASPEED_GPIO(V, 2) GPIO_ACTIVE_LOW>;
++		input;
++	};
++	pin_gpio_v3 {
++		gpios = <ASPEED_GPIO(V, 3) GPIO_ACTIVE_LOW>;
++		input;
++	};
++	pin_gpio_w0 {
++		gpios = <ASPEED_GPIO(W, 0) GPIO_ACTIVE_LOW>;
++		input;
++	};
++	pin_gpio_w1 {
++		gpios = <ASPEED_GPIO(W, 1) GPIO_ACTIVE_LOW>;
++		input;
++	};
++	pin_gpio_w2 {
++		gpios = <ASPEED_GPIO(W, 2) GPIO_ACTIVE_LOW>;
++		input;
++	};
++	pin_gpio_w3 {
++		gpios = <ASPEED_GPIO(W, 3) GPIO_ACTIVE_LOW>;
++		input;
++	};
++	pin_gpio_w4 {
++		gpios = <ASPEED_GPIO(W, 4) GPIO_ACTIVE_LOW>;
++		input;
++	};
++	pin_gpio_w5 {
++		gpios = <ASPEED_GPIO(W, 5) GPIO_ACTIVE_LOW>;
++		input;
++	};
++	pin_gpio_w6 {
++		gpios = <ASPEED_GPIO(W, 6) GPIO_ACTIVE_LOW>;
++		input;
++	};
++	pin_gpio_w7 {
++		gpios = <ASPEED_GPIO(W, 7) GPIO_ACTIVE_LOW>;
++		input;
++	};
++	pin_gpio_z3 {
++		gpios = <ASPEED_GPIO(Z, 3) GPIO_ACTIVE_LOW>;
++		input;
++	};
++	pin_gpio_z4 {
++		gpios = <ASPEED_GPIO(Z, 4) GPIO_ACTIVE_LOW>;
++		input;
++	};
++	pin_gpio_z5 {
++		gpios = <ASPEED_GPIO(Z, 5) GPIO_ACTIVE_LOW>;
++		input;
++	};
++};
 -- 
-2.39.2
+2.25.1
 
 
