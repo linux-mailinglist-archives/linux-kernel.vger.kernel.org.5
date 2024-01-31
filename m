@@ -1,175 +1,103 @@
-Return-Path: <linux-kernel+bounces-47049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83E08844877
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:11:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FF9C844879
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:11:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25AE7B2687B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:10:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E47261F234C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:11:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAA2D3FB1B;
-	Wed, 31 Jan 2024 20:10:48 +0000 (UTC)
-Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53AF53FE48;
+	Wed, 31 Jan 2024 20:10:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="u4y/x8dc"
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C66D03EA8F;
-	Wed, 31 Jan 2024 20:10:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 199D43FE27
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 20:10:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706731848; cv=none; b=nQSPZo9gZxs1/FmOMw3uU0GbfwmbNZsT1hG+goxHXoUsOOgleXkDON/3v78BQwLLKGzNE0hjRSZJjUSp1M+gSpU9Hgwq5ZB/IDyg5Uh39sMTy+w9e7blqkPJy2CIMbe2q8LQ82xzg3hENpN3S+/droOWCzdYbpf+BU19jJfDvnY=
+	t=1706731851; cv=none; b=JYlDs6eUSiaAoNnJy1g5Zvuup885FxoQdycbSiF3xzNDt4X8ccaEfX7zEoXhC+B6QxsugQXIVOKG+jceVq/CcMTXmcRq+Gkld9RpQVLZ5a3fd7P9xk8kaICZLz49+QMBdf7yt5s+sTkz8XJZbTT9pWwpDmrA4SjbmamfUesjBvY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706731848; c=relaxed/simple;
-	bh=yvIIoyXGudofLdak54lnAl5F/PO/NPHcmWDmLeNKAkA=;
+	s=arc-20240116; t=1706731851; c=relaxed/simple;
+	bh=zbht5rbF5vwft67Ip62P/qWqh70GKmzfR9gnSCxmPkQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OkezZN/ybu/+ykOZm6gdoiBQGdQPiVnzQfBnZ8jv6tlYnSF/IgvqsgV9bDvtvufZTlJTfTnnJtFgIrezqFQ9zFIPbUtSTRmyyJY1s9IAP2ehYJFSS3+Fq2pjpgtrM7nYgHNHrqxKmN0UO4QjDpYp5XHFSH1rRFmLWtDNO0xBxQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-59a47232667so31024eaf.0;
-        Wed, 31 Jan 2024 12:10:46 -0800 (PST)
+	 To:Cc:Content-Type; b=KmHNo4mG1sqSco90Lzn7dY7jjoNwfTHH0JM2X8HqehiQ8IDa6e3XsR3g0Na0sRpepZTfYE5l0qOTxqFzsdHpckn0lYVoszyMD+WvZcnZwbvPpenUomPt1Ys3HO5jBeGU60u5ydLFW5daoAolOnZKTDJDuAC4qjsxYDJE8zbLttc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=u4y/x8dc; arc=none smtp.client-ip=209.85.128.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-60406f4e1d0so1661387b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 12:10:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706731849; x=1707336649; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zbht5rbF5vwft67Ip62P/qWqh70GKmzfR9gnSCxmPkQ=;
+        b=u4y/x8dcGgROzaYLzS/8/AxiNOWmu4xkUI7NombK4f6U2jRDzQxQGNQeYC/jcVmrB0
+         vYoeGcfKlKGc3lq9WBZBx3O55EU+RiPpj9P1NRobuZVxL5N8McvPicI3tcMZ9gLGMhvQ
+         CDob0BQwXfw+D0kRBGOr9GGpU6+SPMfo3rhi2aoCicHkVANFUJ13bz8sqANyovcxNnY0
+         cGqoHr/+WiwQedi20Ryp0xby2ZIxSTipjSoYJe5GsUK5avhcwYZKBJrGqhaxzT5HK5ug
+         9xZF4T5lokf/B2G053ptpzfDg4+1zwiGd19iwsGjWm6FtdjObVt6reAZinTyZy5DjVGC
+         KAjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706731846; x=1707336646;
+        d=1e100.net; s=20230601; t=1706731849; x=1707336649;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=a1uAoancuJa/9IhiVCyHhohsMalnFxe6NBsvAk35fzc=;
-        b=OeVzegZCRHxdSZRNpuJU/oo/gYYC+vvSfsqMWhjxRSEtjbSTCSM2vQcKU3kETNen2q
-         /afsTxiVM0BC6EX8PSGBE/33JKl62zj3BujNU5xxmCjyxWlJocoZVNz+Uye7NOWeB7Gq
-         q4oNtjuX8FEToyMDbuii4UrCjIVDExX/9UJaS7CEgX9AQ5HDIIL4eaJCnDCV7liT9o3D
-         l8lYFA1MOZxAL6jnoBoarrdgnsvpCiwc9mYnucBcNFxHvBeLzxdDQy9R/uKpsCZYg5fx
-         xxtxVasU+D6743/sZwASntpYgBZ4CQoviu2IPwo2a0qnNxEMt637vA6+5XGxw/d4PMgY
-         918Q==
-X-Forwarded-Encrypted: i=0; AJvYcCUdv+2Jb/kB+d0BPDE4ATkXXruFoMxB4kn+vaKzhJ2l693H7Qk6/tSnApn9UrH5waTgCGnmDhUCSNNIQ8zlu0iVhcFnbJtkW6GUVgIRvBI6RslQStC8VwcP96djnuXxNujVU4uu2Rk=
-X-Gm-Message-State: AOJu0Yy0O9JcHL/A7ZXMpzSZ3JiC8vGaWKA/MT2S9ZcW0c7vFSY22qW1
-	XmtogEXVnaEvubqSvl6SfjB8NDxMZvujg7dqpKjLjKXzqEDpi1gbyg0Tr7lGTvDTUYn69hHshGV
-	C7jvM/L5z4tjFE7Ow2Gj508kU3t4=
-X-Google-Smtp-Source: AGHT+IHCfXG4/CSj8TyapJXTTLADTLQBjh+rB92N5CLM2HXN4qaRRlGGqGVP2j2UOEnHouTJINBGd8IoEZqiLa79tq8=
-X-Received: by 2002:a4a:a787:0:b0:59c:7c63:928f with SMTP id
- l7-20020a4aa787000000b0059c7c63928fmr851678oom.0.1706731845812; Wed, 31 Jan
- 2024 12:10:45 -0800 (PST)
+        bh=zbht5rbF5vwft67Ip62P/qWqh70GKmzfR9gnSCxmPkQ=;
+        b=hX+PNMEKqKae9auyu5rU0XTFfeiLyg7sBNprzFlldNAIma2wD9UiL9m3Hts87mI564
+         H6jiwgbbnoCZgZfukthtHhi4UXBkgCRh0hGh+ZwMXbs/tm8PhyQkQnEdVsf408+UyPtI
+         OwCxmkcDJvfCxj4gKpkUyWoA6yrQxF9Uhw6GxarQRc1089Vw3aKfAeYLj+Xqoln5pnD8
+         +WU4G8iAcb0cydBr5RFNUa6ohClibtesxNlFM2l0Psn17WsLY9P6iGwBGN+nCJ1Ri8Xy
+         7zCinKeoCYbXYuWZQ5aPagrA/428NOt+qvcPgIKkC6bKHx0FG84bWyHhmVfzsulcEr44
+         Lb/A==
+X-Gm-Message-State: AOJu0YyZfMsXE7hcHKH7YH9VFLIcp2sH/FmJwfZ9xpZBGo2TpE+V+dEn
+	Q/aw+r+Yv5DakwhKx5P1nFvVuV8vNzXAFFQuH3z36z6p7bWx4BCOMgWFXoLOMoZCCwR66CZWvgI
+	r3MYx4IDbZ6G0lvGNtAj58GB3bDeBlFbj2Gkz3w==
+X-Google-Smtp-Source: AGHT+IG4x4rsv2xknv/jiQVp0Dua73Me5S7piuf0s2bsHE3HvZ1Cbph3+NUYOuCP8+nCqT32PG6U+mWJWBCOQiJJ2S4=
+X-Received: by 2002:a0d:ea4d:0:b0:604:666:4232 with SMTP id
+ t74-20020a0dea4d000000b0060406664232mr103933ywe.16.1706731849106; Wed, 31 Jan
+ 2024 12:10:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131191317.2191421-1-pranavpp@google.com>
-In-Reply-To: <20240131191317.2191421-1-pranavpp@google.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 31 Jan 2024 21:10:34 +0100
-Message-ID: <CAJZ5v0gXsCuVvqynDeuf_NZtyAJ07umx1NUqfFZb25vjNABAfw@mail.gmail.com>
-Subject: Re: [PATCH] alarmtimer, PM: suspend: Expose a function from
-To: Pranav Prasad <pranavpp@google.com>
-Cc: rafael@kernel.org, pavel@ucw.cz, linux-pm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, krossmo@google.com, jstultz@google.com
+References: <20240130124828.14678-1-brgl@bgdev.pl> <20240130124828.14678-15-brgl@bgdev.pl>
+In-Reply-To: <20240130124828.14678-15-brgl@bgdev.pl>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 31 Jan 2024 21:10:38 +0100
+Message-ID: <CACRpkdb9kp-a_Su8VgBwv1bWx-cOoH1R3GP9UH=pcbntGUviMw@mail.gmail.com>
+Subject: Re: [PATCH 14/22] gpio: cdev: replace gpiochip_get_desc() with gpio_device_get_desc()
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, "Paul E . McKenney" <paulmck@kernel.org>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Wolfram Sang <wsa@the-dreams.de>, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 31, 2024 at 8:13=E2=80=AFPM Pranav Prasad <pranavpp@google.com>=
+On Tue, Jan 30, 2024 at 1:48=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
  wrote:
->
-> Hi!
->
-> I am proposing a patch in which I want to return the errno code ETIME
-> instead of EBUSY in enter_state() in the kernel suspend flow. Currently,
-> EBUSY is returned  when an imminent alarm is pending which is checked in
-> alarmtimer_suspend() in alarmtimer.c. The proposed patch series moves the
-> check to enter_state() in suspend.c to catch a potential suspend failure
-> early in the suspend flow. I want to replace EBUSY with ETIME to make it
-> more diagnosable in userspace, and may be more appropriate considering a
-> timer is about to expire.
->
-> I am reaching out to get an opinion from the
-> suspend maintainers if this would act as any potential risk in the suspen=
-d
-> flow which only has EBUSY, EAGAIN, and EINVAL as return error codes
-> currently. This has been developed as part of a patch series, and only th=
-e
-> patch of interest is below this message. Any feedback or insights would b=
-e
-> greatly appreciated.
->
-> Thank you,
-> Pranav Prasad
->
-> The alarmtimer driver currently fails suspend attempts when there is an
-> alarm pending within the next suspend_check_duration_ns nanoseconds, sinc=
-e
-> the   system is expected to wake up soon anyway. The entire suspend proce=
-ss
-> is initiated even though the system will immediately awaken. This process
-> includes substantial work before the suspend fails and additional work
-> afterwards to undo the failed suspend that was attempted. Therefore on
-> battery-powered devices that initiate suspend attempts from userspace, it
-> may be advantageous to be able to fail the suspend earlier in the suspend
-> flow to avoid power consumption instead of unnecessarily doing extra work=
-.
-> As one data point, an analysis of a subset of Android devices showed that
-> imminent alarms account for roughly 40% of all suspend failures on averag=
-e
-> leading to unnecessary power wastage.
->
-> To facilitate this, expose
-> function time_check_suspend_fail() from alarmtimer to be used by the powe=
-r
-> subsystem to perform the check earlier in the suspend flow. Perform the
-> check in enter_state() and return early if an alarm is to be fired in the
-> next suspend_check_duration_ns nanoseconds, failing suspend.
->
-> Signed-off-by: Pranav Prasad <pranavpp@google.com>
-> Signed-off-by: Kelly Rossmoyer <krossmo@google.com>
-> ---
->  include/linux/time.h     |   1 +
->  kernel/power/suspend.c   |   3 ++
->  kernel/time/alarmtimer.c | 113 ++++++++++++++++++++++++++++-----------
->  3 files changed, 87 insertions(+), 30 deletions(-)
->
-> diff --git a/include/linux/time.h b/include/linux/time.h
-> index 16cf4522d6f3..aab7c4e51e11 100644
-> --- a/include/linux/time.h
-> +++ b/include/linux/time.h
-> @@ -56,6 +56,7 @@ struct tm {
->  };
->
->  void time64_to_tm(time64_t totalsecs, int offset, struct tm *result);
-> +int time_check_suspend_fail(void);
->
->  # include <linux/time32.h>
->
-> diff --git a/kernel/power/suspend.c b/kernel/power/suspend.c
-> index fa3bf161d13f..7a0175dae0d9 100644
-> --- a/kernel/power/suspend.c
-> +++ b/kernel/power/suspend.c
-> @@ -26,6 +26,7 @@
->  #include <linux/suspend.h>
->  #include <linux/syscore_ops.h>
->  #include <linux/swait.h>
-> +#include <linux/time.h>
->  #include <linux/ftrace.h>
->  #include <trace/events/power.h>
->  #include <linux/compiler.h>
-> @@ -564,6 +565,8 @@ static int enter_state(suspend_state_t state)
->  #endif
->         } else if (!valid_state(state)) {
->                 return -EINVAL;
-> +       } else if (time_check_suspend_fail()) {
-> +               return -ETIME;
 
-This causes a function defined in modular code to be called from
-non-modular code which is an obvious mistake.
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> gpio_device_get_desc() is the safer alternative to gpiochip_get_desc().
+> As we don't really need to dereference the chip pointer to retrieve the
+> descriptors in character device code, let's use it.
+>
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-It also makes the generic suspend code call a function defined in a
-random driver, which is a total no-go as far as I am concerned.
+Excellent.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Why don't you instead define a PM notifier in the alarmtimer driver
-and check if it is going to trigger shortly from there?  PM notifiers
-run before the tasks freezer, so there would be a little difference
-timing-wise and you can return whatever error code you like from
-there.  As an additional benefit, you'd be able to handle hibernation
-in the same way.
-
-Thanks!
+Yours,
+Linus Walleij
 
