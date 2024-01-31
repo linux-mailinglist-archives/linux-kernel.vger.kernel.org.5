@@ -1,111 +1,76 @@
-Return-Path: <linux-kernel+bounces-45548-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45549-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEE4F843243
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 01:48:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FEE4843244
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 01:48:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F16BC1C25559
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 00:48:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F01582894BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 00:48:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57E375224;
-	Wed, 31 Jan 2024 00:47:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1920EEBF;
+	Wed, 31 Jan 2024 00:48:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="bdkupmkA"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="QtIThWPs"
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1C834C7D
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 00:47:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A0A67EB;
+	Wed, 31 Jan 2024 00:48:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706662049; cv=none; b=qdOtlFCRpZMLsDUobWmkYJaZ6oy63Q7Sip6/UsEX41pX1Ak5v6nMofhiSBjs8o7t3IJPlJJicqdBFk99Tmll/y3nCcxm4REJuT7bQVlqKwMOBtzpMSlmm4ay74D4nwtvhiDfOJ31BA1vx+begiUx3xO2aAWQt6jhKdnYWwbTF/k=
+	t=1706662093; cv=none; b=fH6gRsPX4TBYMU8abqanjVOr810EQx5yfSTCftpW0Vw+Yz4JyF4mz1DjqQ201UcGOi2bS98titaieRZmrORmFjyma1AayuAQtNwrpI+Ai2xSsnu8N2AYEXbN1WmG2/lBOvCR7UR2Og0njl+pegWrGGyv3Et9infI4O7qsn+sT0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706662049; c=relaxed/simple;
-	bh=ninTgaiN3nmFAHxl8tpds0wBfwAOd1pBJBheBbLfgh8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=r+ZQVjz7FvpC74FE6AqUR7MVbAeqMpOkUTHl1CgOlq9lIYGGjOdsjh+gCQQIhHcpZOXdXWwYkG9omsMy6DE17273u5B0FZUiJrArI2RNFxkiWYptqst7p7DZhfwV3Ijf9wCb7J1+VFEDHHMAI7h5ITJb4cjMMjfR/2Do0OHDqpQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=bdkupmkA; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+	s=arc-20240116; t=1706662093; c=relaxed/simple;
+	bh=Y3ORv9uSKc/gzYNp8iwBsCBjJYn7exhDa5OECXnAf9I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eFldBzmO1CB5o5OEhZjl7726GjkhgubuBnFjJwtu8jltFGT/4mFXMn9HKm4SmK0TivyO1Oq1mM62f1OwN8fmVbT/TPWUFQcaFH0lk02G5al86hwOcrKtToEFLniZ45xYc9BQfUo5KCO8va/QUYBLtl3ZEsOEbi0iNr1gV9xx1sI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=QtIThWPs; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=+zdfb/cHl3dXnmcyuQ8UW73rXI4wnC1EyuTSXPxPV7s=; b=bdkupmkAXZ7EQQm9xuTfiKhxh2
-	TSgdaJbIN7c3XgwH6266OsGHN8FlfTMPPrUseBIL1w1DwdWxh1WDJX3DN0WDCBGRVgd8YjEGlXcVu
-	vH8EBibQUe5fz3ZssmI0w9LKzpkLY7Terk0aF97xTwjMtYdNof4rWthhLGWocMk2Ru1hFAm7H2MBp
-	Cs8/w0OqJF20zjb2vmfljZwpvIaiM5K313picfil+dQfzTI2FZvkDG/VRRQMjzS2DsxrElGf9YOqd
-	txhsTOvVT+HOWqXnZRR1Lt8cWZZ0qKii+/fZHVNtL/waSgEvZVsYjnwE+eY0G6ztZVsmCuCZ+umWf
-	8zQ+RQxQ==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rUylD-000000013mc-0wGu;
-	Wed, 31 Jan 2024 00:47:27 +0000
-Message-ID: <118a560d-9e5f-4bc4-b0d2-ee0b3d6a5120@infradead.org>
-Date: Tue, 30 Jan 2024 16:47:26 -0800
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=GAADshofue1d9TTWA5jeSnqjUKHbX9U7EdljKoDoQEY=; b=QtIThWPs/nfJCH7Fl6lPpn7OVQ
+	NvrhaD+J0eGAIeSX6nNE8ImsPYy1ThiY9k3V21ylbqCKerlpn6qjXV9AAOcAHd7qyGKfgd2VWB6QB
+	51ET5JJk2Par201K1IIjaLugjU6i72/ujVLBL1wNLeJ2dQYSSyxhJkDLyRWu0vAS0nyqR3YU0y04L
+	MyADV2U6XV+N33crvBsxjzhSuR14s/n+WjyN7BU/zUnBikaQ4v9HNyTClO0ARG/01dxi64s3gEn6w
+	tyQ0nUhsIsdQ0xvS8h9iKweapatejslEpjKjdJF2BqgJF40HlTAR0vSJduK8MgzJIQkf3OLA+1kJm
+	4iIaO/WA==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rUylp-001l8u-1R;
+	Wed, 31 Jan 2024 00:48:05 +0000
+Date: Wed, 31 Jan 2024 00:48:05 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/6] eventfs: get rid of dentry pointers without refcounts
+Message-ID: <20240131004805.GO2087318@ZenIV>
+References: <20240130190355.11486-1-torvalds@linux-foundation.org>
+ <20240130190355.11486-5-torvalds@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: commit tag order vs. "b4 am"
-Content-Language: en-US
-To: Tony Luck <tony.luck@intel.com>, x86@kernel.org
-Cc: Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
- Reinette Chatre <reinette.chatre@intel.com>, linux-kernel@vger.kernel.org
-References: <Zbl5XvzpqND9exmW@agluck-desk3>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <Zbl5XvzpqND9exmW@agluck-desk3>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240130190355.11486-5-torvalds@linux-foundation.org>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
+On Tue, Jan 30, 2024 at 11:03:54AM -0800, Linus Torvalds wrote:
 
+>  	inode = tracefs_get_inode(dentry->d_sb);
+>  	if (unlikely(!inode))
+> -		return eventfs_failed_creating(dentry);
+> +		return ERR_PTR(-ENOMEM);
 
-On 1/30/24 14:34, Tony Luck wrote:
-> Reinette noticed that v14 of my resctrl/SNC patch series[1] did not adhere
-> to the tag order proscribed in Documentation/process/maintainer-tip.rst
-> Specifically my "Signed-off-by:" was now the last tag, instead of
-> appearing before the "Reviewed-by:" and "Tested-by" tags as it had in
-> v13.
-> 
-> A little digging showed that my tag had been moved to the end by "b4 am"
-> when I used it to pick up some additonal tags.
-> 
-> An e-mail discussion with Konstantin ensued to determine if this was
-> a bug. Konstantin said:
-> 
->    This is the intended behaviour, because b4 follows the chain-of-custody
->    procedure. If we encounter a Signed-off-by trailer matching the identity of
->    the user preparing the series, we move it to the bottom to indicate that the
->    chain-of-custody boundary has moved to include the code review trailers
->    received after the initial submission.
-> 
->    https://lore.kernel.org/tools/20221031165842.vxr4kp6h7qnkc53l@meerkat.local/
-> 
->    Basically, the "Signed-off-by" trailer is special because it indicates that
->    everything above it is the responsibility of the person doing the sign-off. If
->    we kept your Signed-off-by in the original spot, then it wouldn't be clear who
->    collected and applied the trailers.
-
-I can't find "chain of custody" anywhere in Documentation/process/, nor a
-specification or example of this ordering.
-
-Where did this b4 requirement come from?
-
-> Question: Do the TIP maintainers agree with Konstantin's opinion that
-> the Signed-off-by: includes all the tags applied prior? If so, this
-> should be called out in Documentation/process/maintainer-tip.rst
-> 
-> 
-> [1] https://lore.kernel.org/all/20240126223837.21835-1-tony.luck@intel.com/
-> 
-
-thanks.
--- 
-#Randy
+That belongs in the lookup crapectomy patch - bisect hazard from stray dput().
+Same for similar chunks below.
 
