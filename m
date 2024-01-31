@@ -1,280 +1,592 @@
-Return-Path: <linux-kernel+bounces-45612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45611-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8095843303
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 02:50:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32024843300
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 02:50:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FB3428682E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 01:50:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5732E1C25A6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 01:50:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ACFB4C98;
-	Wed, 31 Jan 2024 01:50:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="N55y1LIB"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47E4B4C7D;
+	Wed, 31 Jan 2024 01:50:02 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6796F5667;
-	Wed, 31 Jan 2024 01:50:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4608D4C89;
+	Wed, 31 Jan 2024 01:50:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706665822; cv=none; b=gvlbR/3IivQOpPWnPPao+Va3CNs6r96//6MBWbhCwoDNPjKGjUclB0uix4px6cLfiojmFUMdoXFeZ3Ta+0f59pp5uvoxPODuBKVYShx3z3s8VtoqNzmi0/tfQ8ulK8r3wc6DFu2AUbfxidNTNsikW6PjFUKO47sOaQ9UgZnkCMQ=
+	t=1706665801; cv=none; b=qSZFdJgDS+7Lr39AbUocqVoe9sC0d6MZ1zHGLexVQnj4the2Dlwa295hwtP4pg1BhjGCtl8NUxPES5Tadq0j2WktqF2KdAsDarth+LWVN/VOkIuPx0M0+ULT4HJQIeU+pfNwyNasIwWisyV4zRRUT89mxaMhH+h+7fJu6L5CVxQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706665822; c=relaxed/simple;
-	bh=/8Wby2OiydINwAPdsuxfMFpTvjRqr3bToN//tTrsRIk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=mhdKt4cNZ7yxGMf/VPfExUh6MuO0xteh24vUxZU97GkEl4CP6+IXpZDwO/kPn3VSubF4vUVqLe6Wu/tqi5y+mHhIv4o9YD+DZu/7yue9T+4sPK+2Ou0nVXMubtbUegOzQHTV2YCk8qDKfyH+nsza5T6/o4zKrVGGf+69dnEqq2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=N55y1LIB; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40V0QK9c022721;
-	Wed, 31 Jan 2024 01:50:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=cMM4QYyHY9BblaVLuPOFRGFx0CWwGbQV8FlLVlpwXCY=; b=N5
-	5y1LIBeqzD+nhqyQW6OcVMre/JL5VBq0iBTAewa+895u9mn6k026oZzEBT6ZE6ti
-	xhypuICfI7CGmyYvjkf5x27RXUmq7WgkyGB/CASDpzfU6rSO7nbMtNT+0LCDShE3
-	NyNhhupZMm9eR0G72JvHwmjK4M71pk2NLeApZhE7ryqm8TEZYl6lTml8rxmH0I0a
-	x3ifDsbbNUAtaOPTv1X2lVjTe8CBpKQgvR6GibDFVrSusrvz/oVGbd+uGNs1aRJP
-	JrppQ9F6Foc9oGAo4xkyBvcc0fs7z4DRgRZ1GTqW2heX5eAGGuZcRmtnXsASrONA
-	0jzOADtzTQZtR/qANHKg==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vy9b8rcbc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 31 Jan 2024 01:50:14 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40V1oDaB008163
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 31 Jan 2024 01:50:13 GMT
-Received: from [10.216.5.224] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 30 Jan
- 2024 17:50:08 -0800
-Message-ID: <98602d57-5b52-1180-4a71-26223b9b4738@quicinc.com>
-Date: Wed, 31 Jan 2024 07:20:05 +0530
+	s=arc-20240116; t=1706665801; c=relaxed/simple;
+	bh=OpuqTwwrI+GIn2hZZz15WNOLt8Hz69lBwVL6JEzGIVw=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=l8gf4sovyziEY9+PNf+ksmTqvyhf/4XkQHvl1OuJYjLGDxCSKfceql0TF0EMNLzCUKQ9FgT7PRXl8UFEMJeX6snQ6R8NsEhaE2cdDtoTuyuFXq8yn7ujj7RJK9n06Mp2yoBm618Ihgr6SstseDrjkJximNbYQVCYPUDDXtjThsA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CEC3C433F1;
+	Wed, 31 Jan 2024 01:50:00 +0000 (UTC)
+Date: Tue, 30 Jan 2024 20:50:12 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Al Viro
+ <viro@ZenIV.linux.org.uk>, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu
+ Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: [PATCH v2 (3/6)] tracefs: dentry lookup crapectomy
+Message-ID: <20240130205012.4d501778@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [PATCH v9] bus: mhi: host: Add tracing support
-Content-Language: en-US
-To: Manivannan Sadhasivam <mani@kernel.org>
-CC: Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu
-	<mhiramat@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <mhi@lists.linux.dev>,
-        <linux-arm-msm@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
-        <quic_vbadigan@quicinc.com>, <quic_ramkri@quicinc.com>,
-        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
-        <quic_parass@quicinc.com>
-References: <20240105-ftrace_support-v9-1-a2dca64cc6ea@quicinc.com>
- <20240130081152.GH32821@thinkpad>
-From: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
-In-Reply-To: <20240130081152.GH32821@thinkpad>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 63ALK7QvKyowvRoFY-BRepx_pk4y6lGd
-X-Proofpoint-ORIG-GUID: 63ALK7QvKyowvRoFY-BRepx_pk4y6lGd
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-30_14,2024-01-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- clxscore=1015 spamscore=0 suspectscore=0 mlxscore=0 priorityscore=1501
- lowpriorityscore=0 impostorscore=0 mlxlogscore=999 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401190000 definitions=main-2401310014
 
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
+The dentry lookup for eventfs files was very broken, and had lots of
+signs of the old situation where the filesystem names were all created
+statically in the dentry tree, rather than being looked up dynamically
+based on the eventfs data structures.
 
-On 1/30/2024 1:41 PM, Manivannan Sadhasivam wrote:
-> On Fri, Jan 05, 2024 at 05:53:03PM +0530, Krishna chaitanya chundru wrote:
->> This change adds ftrace support for following functions which
->> helps in debugging the issues when there is Channel state & MHI
->> state change and also when we receive data and control events:
->> 1. mhi_intvec_mhi_states
->> 2. mhi_process_data_event_ring
->> 3. mhi_process_ctrl_ev_ring
->> 4. mhi_gen_tre
->> 5. mhi_update_channel_state
->> 6. mhi_tryset_pm_state
->> 7. mhi_pm_st_worker
->>
->> Change the implementation of the arrays which has enum to strings mapping
->> to make it consistent in both trace header file and other files.
->>
->> Where ever the trace events are added, debug messages are removed.
->>
->> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-> 
-> Few nitpicks below.
-> 
-I will make suggested changes in next patch.
+You could see it in the naming - how it claimed to "create" dentries
+rather than just look up the dentries that were given it.
 
-- Krishna Chaitanya.
->> Reviewed-by: "Steven Rostedt (Google)" <rostedt@goodmis.org>
->> ---
->> Changes in v9:
->> - Change the implementations of some array so that the strings to enum mapping
->> - is same in both trace header and other files as suggested by steve.
->> - Link to v8: https://lore.kernel.org/r/20231207-ftrace_support-v8-1-7f62d4558555@quicinc.com
->>
->> Changes in v8:
->> - Pass the structure and derefernce the variables in TP_fast_assign as suggested by steve
->> - Link to v7: https://lore.kernel.org/r/20231206-ftrace_support-v7-1-aca49a04268b@quicinc.com
->>
->> Changes in v7:
->> - change log format as pointed by mani.
->> - Link to v6: https://lore.kernel.org/r/20231204-ftrace_support-v6-1-9b206546dac2@quicinc.com
->>
->> Changes in v6:
->> - use 'rp' directly as suggested by jeffrey.
->> - Link to v5: https://lore.kernel.org/r/20231127-ftrace_support-v5-1-eb67daead4f1@quicinc.com
->>
->> Changes in v5:
->> - Use DECLARE_EVENT_CLASS for multiple events as suggested by steve.
->> - Instead of converting to u64 to print address, use %px to print the address to avoid
->> - warnings in some platforms.
->> - Link to v4: https://lore.kernel.org/r/20231111-ftrace_support-v4-1-c83602399461@quicinc.com
->>
->> Changes in v4:
->> - Fix compilation issues in previous patch which happended due to rebasing.
->> - In the defconfig FTRACE config is not enabled due to that the compilation issue is not
->> - seen in my workspace.
->> - Link to v3: https://lore.kernel.org/r/20231111-ftrace_support-v3-1-f358d2911a74@quicinc.com
->>
->> Changes in v3:
->> - move trace header file from include/trace/events to drivers/bus/mhi/host/ so that
->> - we can include driver header files.
->> - Use macros directly in the trace events as suggested Jeffrey Hugo.
->> - Reorder the structure in the events as suggested by steve to avoid holes in the buffer.
->> - removed the mhi_to_physical function as this can give security issues.
->> - removed macros to define strings as we can get those from driver headers.
->> - Link to v2: https://lore.kernel.org/r/20231013-ftrace_support-v2-1-6e893ce010b5@quicinc.com
->>
->> Changes in v2:
->> - Passing the raw state into the trace event and using  __print_symbolic() as suggested by bjorn.
->> - Change mhi_pm_st_worker to mhi_pm_st_transition as suggested by bjorn.
->> - Fixed the kernel test rebot issues.
->> - Link to v1: https://lore.kernel.org/r/20231005-ftrace_support-v1-1-23a2f394fa49@quicinc.com
->> ---
->>   drivers/bus/mhi/common.h        |  38 +++---
->>   drivers/bus/mhi/host/init.c     |  63 +++++----
->>   drivers/bus/mhi/host/internal.h |  40 ++++++
->>   drivers/bus/mhi/host/main.c     |  19 ++-
->>   drivers/bus/mhi/host/pm.c       |   7 +-
->>   drivers/bus/mhi/host/trace.h    | 275 ++++++++++++++++++++++++++++++++++++++++
->>   6 files changed, 378 insertions(+), 64 deletions(-)
->>
-> 
-> [...]
-> 
->> +TRACE_EVENT(mhi_gen_tre,
->> +
->> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
->> +		 struct mhi_ring_element *mhi_tre),
->> +
->> +	TP_ARGS(mhi_cntrl, mhi_chan, mhi_tre),
->> +
->> +	TP_STRUCT__entry(
->> +		__string(name, mhi_cntrl->mhi_dev->name)
->> +		__field(int, ch_num)
->> +		__field(void *, wp)
->> +		__field(__le64, tre_ptr)
->> +		__field(__le32, dword0)
->> +		__field(__le32, dword1)
->> +	),
->> +
->> +	TP_fast_assign(
->> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
->> +		__entry->ch_num = mhi_chan->chan;
->> +		__entry->wp = mhi_tre;
->> +		__entry->tre_ptr = mhi_tre->ptr;
->> +		__entry->dword0 = mhi_tre->dword[0];
->> +		__entry->dword1 = mhi_tre->dword[1];
->> +	),
->> +
->> +	TP_printk("%s: Chan: %d Tre: 0x%p Tre buf: 0x%llx dword0: 0x%08x dword1: 0x%08x\n",
-> 
-> Use caps for printing the acronyms everywhere. Like TRE, DWORD etc...
-> 
->> +		  __get_str(name), __entry->ch_num, __entry->wp, __entry->tre_ptr,
->> +		  __entry->dword0, __entry->dword1)
->> +);
->> +
->> +TRACE_EVENT(mhi_intvec_states,
->> +
->> +	TP_PROTO(struct mhi_controller *mhi_cntrl, int dev_ee, int dev_state),
->> +
->> +	TP_ARGS(mhi_cntrl, dev_ee, dev_state),
->> +
->> +	TP_STRUCT__entry(
->> +		__string(name, mhi_cntrl->mhi_dev->name)
->> +		__field(int, local_ee)
->> +		__field(int, state)
->> +		__field(int, dev_ee)
->> +		__field(int, dev_state)
->> +	),
->> +
->> +	TP_fast_assign(
->> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
->> +		__entry->local_ee = mhi_cntrl->ee;
->> +		__entry->state = mhi_cntrl->dev_state;
->> +		__entry->dev_ee = dev_ee;
->> +		__entry->dev_state = dev_state;
->> +	),
->> +
->> +	TP_printk("%s: local ee: %s state: %s device ee: %s state: %s\n",
-> 
-> "Local EE... State:...Device EE.."
-> 
->> +		  __get_str(name),
->> +		  __print_symbolic(__entry->local_ee, MHI_EE_LIST),
->> +		  __print_symbolic(__entry->state, MHI_STATE_LIST),
->> +		  __print_symbolic(__entry->dev_ee, MHI_EE_LIST),
->> +		  __print_symbolic(__entry->state, MHI_STATE_LIST))
->> +);
->> +
-> 
-> [...]
-> 
->> +DECLARE_EVENT_CLASS(mhi_update_channel_state,
->> +
->> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan, int state),
->> +
->> +	TP_ARGS(mhi_cntrl, mhi_chan, state),
->> +
->> +	TP_STRUCT__entry(
->> +		__string(name, mhi_cntrl->mhi_dev->name)
->> +		__field(int, ch_num)
->> +		__field(int, state)
->> +	),
->> +
->> +	TP_fast_assign(
->> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
->> +		__entry->ch_num = mhi_chan->chan;
->> +		__entry->state = state;
->> +	),
->> +
->> +	TP_printk("%s: chan%d: Updating state to: %s\n",
->> +		  __get_str(name), __entry->ch_num,
->> +		  __print_symbolic(__entry->state, MHI_CH_STATE_TYPE_LIST))
-> 
-> So same trace will get printed for both mhi_channel_command_start() and
-> mhi_channel_command_end()?
-> 
-> - Mani
-> 
+You could see it in various nonsensical and very incorrect operations,
+like using "simple_lookup()" on the dentries that were passed in, which
+only results in those dentries becoming negative dentries.  Which meant
+that any other lookup would possibly return ENOENT if it saw that
+negative dentry before the data rwas then later filled in.
+
+You could see it in the immesnse amount of nonsensical code that didn't
+actually just do lookups.
+
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+Changes since v1: https://lore.kernel.org/linux-trace-kernel/20240130190355.11486-3-torvalds@linux-foundation.org
+
+- Fixed the lookup case of not found dentry, to return an error.
+  This was added in a later patch when it should have been in this one.
+  This still had the d_add(dentry, NULL) in lookup.
+
+- Removed the calls to eventfs_{start,end,failed}_creating() (Al Viro)
+
+ fs/tracefs/event_inode.c | 285 ++++++++-------------------------------
+ fs/tracefs/inode.c       |  69 ----------
+ fs/tracefs/internal.h    |   3 -
+ 3 files changed, 58 insertions(+), 299 deletions(-)
+
+diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+index e9819d719d2a..4878f4d578be 100644
+--- a/fs/tracefs/event_inode.c
++++ b/fs/tracefs/event_inode.c
+@@ -230,7 +230,6 @@ static struct eventfs_inode *eventfs_find_events(struct dentry *dentry)
+ {
+ 	struct eventfs_inode *ei;
+ 
+-	mutex_lock(&eventfs_mutex);
+ 	do {
+ 		// The parent is stable because we do not do renames
+ 		dentry = dentry->d_parent;
+@@ -247,7 +246,6 @@ static struct eventfs_inode *eventfs_find_events(struct dentry *dentry)
+ 		}
+ 		// Walk upwards until you find the events inode
+ 	} while (!ei->is_events);
+-	mutex_unlock(&eventfs_mutex);
+ 
+ 	update_top_events_attr(ei, dentry->d_sb);
+ 
+@@ -280,11 +278,10 @@ static void update_inode_attr(struct dentry *dentry, struct inode *inode,
+ }
+ 
+ /**
+- * create_file - create a file in the tracefs filesystem
+- * @name: the name of the file to create.
++ * lookup_file - look up a file in the tracefs filesystem
++ * @dentry: the dentry to look up
+  * @mode: the permission that the file should have.
+  * @attr: saved attributes changed by user
+- * @parent: parent dentry for this file.
+  * @data: something that the caller will want to get to later on.
+  * @fop: struct file_operations that should be used for this file.
+  *
+@@ -292,13 +289,13 @@ static void update_inode_attr(struct dentry *dentry, struct inode *inode,
+  * directory. The inode.i_private pointer will point to @data in the open()
+  * call.
+  */
+-static struct dentry *create_file(const char *name, umode_t mode,
++static struct dentry *lookup_file(struct dentry *dentry,
++				  umode_t mode,
+ 				  struct eventfs_attr *attr,
+-				  struct dentry *parent, void *data,
++				  void *data,
+ 				  const struct file_operations *fop)
+ {
+ 	struct tracefs_inode *ti;
+-	struct dentry *dentry;
+ 	struct inode *inode;
+ 
+ 	if (!(mode & S_IFMT))
+@@ -307,15 +304,9 @@ static struct dentry *create_file(const char *name, umode_t mode,
+ 	if (WARN_ON_ONCE(!S_ISREG(mode)))
+ 		return NULL;
+ 
+-	WARN_ON_ONCE(!parent);
+-	dentry = eventfs_start_creating(name, parent);
+-
+-	if (IS_ERR(dentry))
+-		return dentry;
+-
+ 	inode = tracefs_get_inode(dentry->d_sb);
+ 	if (unlikely(!inode))
+-		return eventfs_failed_creating(dentry);
++		return ERR_PTR(-ENOMEM);
+ 
+ 	/* If the user updated the directory's attributes, use them */
+ 	update_inode_attr(dentry, inode, attr, mode);
+@@ -329,32 +320,29 @@ static struct dentry *create_file(const char *name, umode_t mode,
+ 
+ 	ti = get_tracefs(inode);
+ 	ti->flags |= TRACEFS_EVENT_INODE;
+-	d_instantiate(dentry, inode);
++
++	d_add(dentry, inode);
+ 	fsnotify_create(dentry->d_parent->d_inode, dentry);
+-	return eventfs_end_creating(dentry);
++	return dentry;
+ };
+ 
+ /**
+- * create_dir - create a dir in the tracefs filesystem
++ * lookup_dir_entry - look up a dir in the tracefs filesystem
++ * @dentry: the directory to look up
+  * @ei: the eventfs_inode that represents the directory to create
+- * @parent: parent dentry for this file.
+  *
+- * This function will create a dentry for a directory represented by
++ * This function will look up a dentry for a directory represented by
+  * a eventfs_inode.
+  */
+-static struct dentry *create_dir(struct eventfs_inode *ei, struct dentry *parent)
++static struct dentry *lookup_dir_entry(struct dentry *dentry,
++	struct eventfs_inode *pei, struct eventfs_inode *ei)
+ {
+ 	struct tracefs_inode *ti;
+-	struct dentry *dentry;
+ 	struct inode *inode;
+ 
+-	dentry = eventfs_start_creating(ei->name, parent);
+-	if (IS_ERR(dentry))
+-		return dentry;
+-
+ 	inode = tracefs_get_inode(dentry->d_sb);
+ 	if (unlikely(!inode))
+-		return eventfs_failed_creating(dentry);
++		return ERR_PTR(-ENOMEM);
+ 
+ 	/* If the user updated the directory's attributes, use them */
+ 	update_inode_attr(dentry, inode, &ei->attr,
+@@ -371,11 +359,14 @@ static struct dentry *create_dir(struct eventfs_inode *ei, struct dentry *parent
+ 	/* Only directories have ti->private set to an ei, not files */
+ 	ti->private = ei;
+ 
++	dentry->d_fsdata = ei;
++        ei->dentry = dentry;	// Remove me!
++
+ 	inc_nlink(inode);
+-	d_instantiate(dentry, inode);
++	d_add(dentry, inode);
+ 	inc_nlink(dentry->d_parent->d_inode);
+ 	fsnotify_mkdir(dentry->d_parent->d_inode, dentry);
+-	return eventfs_end_creating(dentry);
++	return dentry;
+ }
+ 
+ static void free_ei(struct eventfs_inode *ei)
+@@ -425,7 +416,7 @@ void eventfs_set_ei_status_free(struct tracefs_inode *ti, struct dentry *dentry)
+ }
+ 
+ /**
+- * create_file_dentry - create a dentry for a file of an eventfs_inode
++ * lookup_file_dentry - create a dentry for a file of an eventfs_inode
+  * @ei: the eventfs_inode that the file will be created under
+  * @idx: the index into the d_children[] of the @ei
+  * @parent: The parent dentry of the created file.
+@@ -438,157 +429,21 @@ void eventfs_set_ei_status_free(struct tracefs_inode *ti, struct dentry *dentry)
+  * address located at @e_dentry.
+  */
+ static struct dentry *
+-create_file_dentry(struct eventfs_inode *ei, int idx,
+-		   struct dentry *parent, const char *name, umode_t mode, void *data,
++lookup_file_dentry(struct dentry *dentry,
++		   struct eventfs_inode *ei, int idx,
++		   umode_t mode, void *data,
+ 		   const struct file_operations *fops)
+ {
+ 	struct eventfs_attr *attr = NULL;
+ 	struct dentry **e_dentry = &ei->d_children[idx];
+-	struct dentry *dentry;
+-
+-	WARN_ON_ONCE(!inode_is_locked(parent->d_inode));
+ 
+-	mutex_lock(&eventfs_mutex);
+-	if (ei->is_freed) {
+-		mutex_unlock(&eventfs_mutex);
+-		return NULL;
+-	}
+-	/* If the e_dentry already has a dentry, use it */
+-	if (*e_dentry) {
+-		dget(*e_dentry);
+-		mutex_unlock(&eventfs_mutex);
+-		return *e_dentry;
+-	}
+-
+-	/* ei->entry_attrs are protected by SRCU */
+ 	if (ei->entry_attrs)
+ 		attr = &ei->entry_attrs[idx];
+ 
+-	mutex_unlock(&eventfs_mutex);
+-
+-	dentry = create_file(name, mode, attr, parent, data, fops);
+-
+-	mutex_lock(&eventfs_mutex);
+-
+-	if (IS_ERR_OR_NULL(dentry)) {
+-		/*
+-		 * When the mutex was released, something else could have
+-		 * created the dentry for this e_dentry. In which case
+-		 * use that one.
+-		 *
+-		 * If ei->is_freed is set, the e_dentry is currently on its
+-		 * way to being freed, don't return it. If e_dentry is NULL
+-		 * it means it was already freed.
+-		 */
+-		if (ei->is_freed) {
+-			dentry = NULL;
+-		} else {
+-			dentry = *e_dentry;
+-			dget(dentry);
+-		}
+-		mutex_unlock(&eventfs_mutex);
+-		return dentry;
+-	}
+-
+-	if (!*e_dentry && !ei->is_freed) {
+-		*e_dentry = dentry;
+-		dentry->d_fsdata = ei;
+-	} else {
+-		/*
+-		 * Should never happen unless we get here due to being freed.
+-		 * Otherwise it means two dentries exist with the same name.
+-		 */
+-		WARN_ON_ONCE(!ei->is_freed);
+-		dentry = NULL;
+-	}
+-	mutex_unlock(&eventfs_mutex);
+-
+-	return dentry;
+-}
+-
+-/**
+- * eventfs_post_create_dir - post create dir routine
+- * @ei: eventfs_inode of recently created dir
+- *
+- * Map the meta-data of files within an eventfs dir to their parent dentry
+- */
+-static void eventfs_post_create_dir(struct eventfs_inode *ei)
+-{
+-	struct eventfs_inode *ei_child;
+-
+-	lockdep_assert_held(&eventfs_mutex);
+-
+-	/* srcu lock already held */
+-	/* fill parent-child relation */
+-	list_for_each_entry_srcu(ei_child, &ei->children, list,
+-				 srcu_read_lock_held(&eventfs_srcu)) {
+-		ei_child->d_parent = ei->dentry;
+-	}
+-}
+-
+-/**
+- * create_dir_dentry - Create a directory dentry for the eventfs_inode
+- * @pei: The eventfs_inode parent of ei.
+- * @ei: The eventfs_inode to create the directory for
+- * @parent: The dentry of the parent of this directory
+- *
+- * This creates and attaches a directory dentry to the eventfs_inode @ei.
+- */
+-static struct dentry *
+-create_dir_dentry(struct eventfs_inode *pei, struct eventfs_inode *ei,
+-		  struct dentry *parent)
+-{
+-	struct dentry *dentry = NULL;
+-
+-	WARN_ON_ONCE(!inode_is_locked(parent->d_inode));
+-
+-	mutex_lock(&eventfs_mutex);
+-	if (pei->is_freed || ei->is_freed) {
+-		mutex_unlock(&eventfs_mutex);
+-		return NULL;
+-	}
+-	if (ei->dentry) {
+-		/* If the eventfs_inode already has a dentry, use it */
+-		dentry = ei->dentry;
+-		dget(dentry);
+-		mutex_unlock(&eventfs_mutex);
+-		return dentry;
+-	}
+-	mutex_unlock(&eventfs_mutex);
++	dentry->d_fsdata = ei;		// NOTE: ei of _parent_
++	lookup_file(dentry, mode, attr, data, fops);
+ 
+-	dentry = create_dir(ei, parent);
+-
+-	mutex_lock(&eventfs_mutex);
+-
+-	if (IS_ERR_OR_NULL(dentry) && !ei->is_freed) {
+-		/*
+-		 * When the mutex was released, something else could have
+-		 * created the dentry for this e_dentry. In which case
+-		 * use that one.
+-		 *
+-		 * If ei->is_freed is set, the e_dentry is currently on its
+-		 * way to being freed.
+-		 */
+-		dentry = ei->dentry;
+-		if (dentry)
+-			dget(dentry);
+-		mutex_unlock(&eventfs_mutex);
+-		return dentry;
+-	}
+-
+-	if (!ei->dentry && !ei->is_freed) {
+-		ei->dentry = dentry;
+-		eventfs_post_create_dir(ei);
+-		dentry->d_fsdata = ei;
+-	} else {
+-		/*
+-		 * Should never happen unless we get here due to being freed.
+-		 * Otherwise it means two dentries exist with the same name.
+-		 */
+-		WARN_ON_ONCE(!ei->is_freed);
+-		dentry = NULL;
+-	}
+-	mutex_unlock(&eventfs_mutex);
++	*e_dentry = dentry;	// Remove me
+ 
+ 	return dentry;
+ }
+@@ -607,79 +462,55 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
+ 					  struct dentry *dentry,
+ 					  unsigned int flags)
+ {
+-	const struct file_operations *fops;
+-	const struct eventfs_entry *entry;
+ 	struct eventfs_inode *ei_child;
+ 	struct tracefs_inode *ti;
+ 	struct eventfs_inode *ei;
+-	struct dentry *ei_dentry = NULL;
+-	struct dentry *ret = NULL;
+-	struct dentry *d;
+ 	const char *name = dentry->d_name.name;
+-	umode_t mode;
+-	void *data;
+-	int idx;
+-	int i;
+-	int r;
++	struct dentry *result = NULL;
+ 
+ 	ti = get_tracefs(dir);
+ 	if (!(ti->flags & TRACEFS_EVENT_INODE))
+-		return NULL;
+-
+-	/* Grab srcu to prevent the ei from going away */
+-	idx = srcu_read_lock(&eventfs_srcu);
++		return ERR_PTR(-EIO);
+ 
+-	/*
+-	 * Grab the eventfs_mutex to consistent value from ti->private.
+-	 * This s
+-	 */
+ 	mutex_lock(&eventfs_mutex);
+-	ei = READ_ONCE(ti->private);
+-	if (ei && !ei->is_freed)
+-		ei_dentry = READ_ONCE(ei->dentry);
+-	mutex_unlock(&eventfs_mutex);
+-
+-	if (!ei || !ei_dentry)
+-		goto out;
+ 
+-	data = ei->data;
++	ei = ti->private;
++	if (!ei || ei->is_freed)
++		goto enoent;
+ 
+-	list_for_each_entry_srcu(ei_child, &ei->children, list,
+-				 srcu_read_lock_held(&eventfs_srcu)) {
++	list_for_each_entry(ei_child, &ei->children, list) {
+ 		if (strcmp(ei_child->name, name) != 0)
+ 			continue;
+-		ret = simple_lookup(dir, dentry, flags);
+-		if (IS_ERR(ret))
+-			goto out;
+-		d = create_dir_dentry(ei, ei_child, ei_dentry);
+-		dput(d);
++		if (ei_child->is_freed)
++			goto enoent;
++		lookup_dir_entry(dentry, ei, ei_child);
+ 		goto out;
+ 	}
+ 
+-	for (i = 0; i < ei->nr_entries; i++) {
+-		entry = &ei->entries[i];
+-		if (strcmp(name, entry->name) == 0) {
+-			void *cdata = data;
+-			mutex_lock(&eventfs_mutex);
+-			/* If ei->is_freed, then the event itself may be too */
+-			if (!ei->is_freed)
+-				r = entry->callback(name, &mode, &cdata, &fops);
+-			else
+-				r = -1;
+-			mutex_unlock(&eventfs_mutex);
+-			if (r <= 0)
+-				continue;
+-			ret = simple_lookup(dir, dentry, flags);
+-			if (IS_ERR(ret))
+-				goto out;
+-			d = create_file_dentry(ei, i, ei_dentry, name, mode, cdata, fops);
+-			dput(d);
+-			break;
+-		}
++	for (int i = 0; i < ei->nr_entries; i++) {
++		void *data;
++		umode_t mode;
++		const struct file_operations *fops;
++		const struct eventfs_entry *entry = &ei->entries[i];
++
++		if (strcmp(name, entry->name) != 0)
++			continue;
++
++		data = ei->data;
++		if (entry->callback(name, &mode, &data, &fops) <= 0)
++			goto enoent;
++
++		lookup_file_dentry(dentry, ei, i, mode, data, fops);
++		goto out;
+ 	}
++
++ enoent:
++	/* Don't cache negative lookups, just return an error */
++	result = ERR_PTR(-ENOENT);
++
+  out:
+-	srcu_read_unlock(&eventfs_srcu, idx);
+-	return ret;
++	mutex_unlock(&eventfs_mutex);
++	return result;
+ }
+ 
+ /*
+diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
+index f7cde61ff2fc..0d71dcea741a 100644
+--- a/fs/tracefs/inode.c
++++ b/fs/tracefs/inode.c
+@@ -495,75 +495,6 @@ struct dentry *tracefs_end_creating(struct dentry *dentry)
+ 	return dentry;
+ }
+ 
+-/**
+- * eventfs_start_creating - start the process of creating a dentry
+- * @name: Name of the file created for the dentry
+- * @parent: The parent dentry where this dentry will be created
+- *
+- * This is a simple helper function for the dynamically created eventfs
+- * files. When the directory of the eventfs files are accessed, their
+- * dentries are created on the fly. This function is used to start that
+- * process.
+- */
+-struct dentry *eventfs_start_creating(const char *name, struct dentry *parent)
+-{
+-	struct dentry *dentry;
+-	int error;
+-
+-	/* Must always have a parent. */
+-	if (WARN_ON_ONCE(!parent))
+-		return ERR_PTR(-EINVAL);
+-
+-	error = simple_pin_fs(&trace_fs_type, &tracefs_mount,
+-			      &tracefs_mount_count);
+-	if (error)
+-		return ERR_PTR(error);
+-
+-	if (unlikely(IS_DEADDIR(parent->d_inode)))
+-		dentry = ERR_PTR(-ENOENT);
+-	else
+-		dentry = lookup_one_len(name, parent, strlen(name));
+-
+-	if (!IS_ERR(dentry) && dentry->d_inode) {
+-		dput(dentry);
+-		dentry = ERR_PTR(-EEXIST);
+-	}
+-
+-	if (IS_ERR(dentry))
+-		simple_release_fs(&tracefs_mount, &tracefs_mount_count);
+-
+-	return dentry;
+-}
+-
+-/**
+- * eventfs_failed_creating - clean up a failed eventfs dentry creation
+- * @dentry: The dentry to clean up
+- *
+- * If after calling eventfs_start_creating(), a failure is detected, the
+- * resources created by eventfs_start_creating() needs to be cleaned up. In
+- * that case, this function should be called to perform that clean up.
+- */
+-struct dentry *eventfs_failed_creating(struct dentry *dentry)
+-{
+-	dput(dentry);
+-	simple_release_fs(&tracefs_mount, &tracefs_mount_count);
+-	return NULL;
+-}
+-
+-/**
+- * eventfs_end_creating - Finish the process of creating a eventfs dentry
+- * @dentry: The dentry that has successfully been created.
+- *
+- * This function is currently just a place holder to match
+- * eventfs_start_creating(). In case any synchronization needs to be added,
+- * this function will be used to implement that without having to modify
+- * the callers of eventfs_start_creating().
+- */
+-struct dentry *eventfs_end_creating(struct dentry *dentry)
+-{
+-	return dentry;
+-}
+-
+ /* Find the inode that this will use for default */
+ static struct inode *instance_inode(struct dentry *parent, struct inode *inode)
+ {
+diff --git a/fs/tracefs/internal.h b/fs/tracefs/internal.h
+index 91c2bf0b91d9..143cfbfdbc5f 100644
+--- a/fs/tracefs/internal.h
++++ b/fs/tracefs/internal.h
+@@ -79,9 +79,6 @@ struct dentry *tracefs_start_creating(const char *name, struct dentry *parent);
+ struct dentry *tracefs_end_creating(struct dentry *dentry);
+ struct dentry *tracefs_failed_creating(struct dentry *dentry);
+ struct inode *tracefs_get_inode(struct super_block *sb);
+-struct dentry *eventfs_start_creating(const char *name, struct dentry *parent);
+-struct dentry *eventfs_failed_creating(struct dentry *dentry);
+-struct dentry *eventfs_end_creating(struct dentry *dentry);
+ void eventfs_set_ei_status_free(struct tracefs_inode *ti, struct dentry *dentry);
+ 
+ #endif /* _TRACEFS_INTERNAL_H */
+-- 
+2.43.0
+
 
