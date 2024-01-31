@@ -1,61 +1,52 @@
-Return-Path: <linux-kernel+bounces-46699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A375A8442DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:20:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C96288442E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:20:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D64AB1C2249B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:20:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0808C1C24876
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:20:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B37BE86ADE;
-	Wed, 31 Jan 2024 15:20:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33EF584A5A;
+	Wed, 31 Jan 2024 15:20:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="X9ZQmHcB"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X5LsiJhj"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A27C184A4E;
-	Wed, 31 Jan 2024 15:19:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71B4580C07;
+	Wed, 31 Jan 2024 15:20:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706714400; cv=none; b=BCRDT8AHR7hFPE2pwNG9CgFNQIT+aOU96HQuRWjjo9+f9pq6kTWyzRmMs7ofO01OLaVAC16i79k6y2/mbfCsj2PXwuRgUCVaw8hZb7tQIBQ3zT5LRE/Of8yugBxD72tNQkMMOhSQMpm50hgM0guOrVANl9t66ZpKzaywOLwMCRM=
+	t=1706714424; cv=none; b=EV4uzoL3C2jdp7Q5qeG0oTr/2xyCqLyw1bVkrJeDS/81h0xV3Try0RCuzjnSj7zxdurDVsNyT55d/oZDf/p42Wp4KgYPHqPeQoDyiUcck5jBWVFciCW7BAQHX3P2FiGDVzivkyKJgBs1i/A6+7UuW1UJBRlRz518CXAWhyEJJhM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706714400; c=relaxed/simple;
-	bh=zraZ4GAWYd3k1nTN/PDgHLRPmEqVILITkc+KhQpafPM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iSPEoZ8RWfPZikgOOgF0DxtmCgeQJuVuVixuEkmXBshCqXTH9hFiagklHaTF70ZTeRU7FJq96Odb3Zb1w4J3zjxG/IjICuqg/B8hMqUvSBnGQse/tXG8cf3S+6tedW8rJErxIbEfLcuTQXrCNMKklaLl4vDuvQU7veZxNKL5mEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=X9ZQmHcB; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=KgQbi6lyjFW5qirmbLoeKbLsIIOOKokmJfR24WR5lg0=; b=X9ZQmHcBVoKAYlIjjw+sYEBzyB
-	2ACdNbkF9Hd0P/VS6B72nC8Gr5DvavMKEvsGhAVx4M4Gv/ZL/jbiDL/0MbXL2Z1fsj3sp85kADzln
-	VGRkA9SfrfPpRqDGMUCHJJ13AJml/POrk5rGp1p44PdTipetUPmYqBdzK16R52a6+JgA=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rVCNS-006ap9-HN; Wed, 31 Jan 2024 16:19:50 +0100
-Date: Wed, 31 Jan 2024 16:19:50 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Dimitri Fedrau <dima.fedrau@gmail.com>
-Cc: Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Stefan Eichenberger <eichest@gmail.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 net-next 10/13] net: phy: marvell-88q2xxx: make
- mv88q2xxx_config_aneg generic
-Message-ID: <d640fd10-e2b7-4a56-956d-d37dc73f01bb@lunn.ch>
-References: <20240122212848.3645785-1-dima.fedrau@gmail.com>
- <20240122212848.3645785-11-dima.fedrau@gmail.com>
+	s=arc-20240116; t=1706714424; c=relaxed/simple;
+	bh=Gr74ONIaZTedRoeUUDoZkXUP5VNLAxHplRrixPLjtsg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=PjmF0HtSLs12Kz1u+kCkCml8hAMaGM89qTX5xl23WE/ecD2+Go3joVCJNpjRByTNBMaVL86wnfdBP09RIUVO3VpDyG+A6/JDvOOqtp7iSnvlU6itA7W8oB+DxuVSOOWY0pzmqCs2xj1+fRKy7YNDaF+mG9AHp7iKt9Mh61yibNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X5LsiJhj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58E72C43394;
+	Wed, 31 Jan 2024 15:20:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706714424;
+	bh=Gr74ONIaZTedRoeUUDoZkXUP5VNLAxHplRrixPLjtsg=;
+	h=Date:From:To:Cc:Subject:From;
+	b=X5LsiJhjHd8V4VtlySEnDsVf1LJZE1JlTr15d9RBEkiJMz6ad63jgt1cjJRINSx67
+	 9kooCT6FDwX9pUyLunkXJRnUXI1PPUI9GyFpY1v6M1eJAYHBeT+NK/VYkBI5vuTaXv
+	 zZGRhyCdy4Eupye8b14b01eX+uPLzzPGs1Gs6BhAT758mkteZC56DQxCAQTQgxzrSj
+	 M5tvZhA6d2as3jP2sP6brjk9GvjFi5Vc5V1HrGq+q0qCQ24JNLY56rHWbmWv1Ft2O5
+	 Hy5Su+WACg/GGzf/by0S0ltF8s87HwiDzU4aQRXfAGgrWRR1wMnBmgwJ6dnLbrVk5v
+	 6c/pAweAvbOkA==
+Date: Wed, 31 Jan 2024 16:20:19 +0100
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Wolfram Sang <wsa@kernel.org>
+Cc: linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Peter Rosin <peda@axentia.se>, Krzysztof Kozlowski <krzk@lkernel.org>
+Subject: [GIT PULL] i2c-host changes for v6.8-rc3
+Message-ID: <heubxjuedaz7tfkmdendm7jkpahd5yhvuivxw5dxvxmvf7da7z@gohlttvtjn7b>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,17 +55,37 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240122212848.3645785-11-dima.fedrau@gmail.com>
 
-On Mon, Jan 22, 2024 at 10:28:43PM +0100, Dimitri Fedrau wrote:
-> Marvell 88Q2xxx devices follow the same scheme, after configuration they
-> need a soft reset. Soft resets differ between devices, so we use the
-> .soft_reset callback instead of creating .config_aneg callbacks for each
-> device.
-> 
-> Signed-off-by: Dimitri Fedrau <dima.fedrau@gmail.com>
+Hi Wolfram,
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+I'm sending you the first pull request. At this round I have only
+collected the repository URL update.
 
-    Andrew
+Let's kick things off! :-)
+
+Thanks,
+Andi
+
+The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
+
+  Linux 6.8-rc2 (2024-01-28 17:01:12 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git tags/i2c-host-fixes-6.8-rc3
+
+for you to fetch changes up to 9189526c46f2ad14df25dbdc30443f79d03dc7bd:
+
+  MAINTAINERS: Update i2c host drivers repository (2024-01-31 16:05:07 +0100)
+
+----------------------------------------------------------------
+Just a maintenance patch that updates the repository where the
+i2c host and muxes related patches will be collected.
+
+----------------------------------------------------------------
+Andi Shyti (1):
+      MAINTAINERS: Update i2c host drivers repository
+
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
