@@ -1,116 +1,222 @@
-Return-Path: <linux-kernel+bounces-46997-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46998-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 875E88447AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:01:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 237DB8447B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:02:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3299A1F22D38
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:01:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C4A41F22227
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:02:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06D8F3611B;
-	Wed, 31 Jan 2024 19:01:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="h0kgfmPj"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49F9A37143;
+	Wed, 31 Jan 2024 19:01:59 +0000 (UTC)
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 976432135C
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 19:01:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B0E8CA7F;
+	Wed, 31 Jan 2024 19:01:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706727671; cv=none; b=AkI3N5ohw2DS9dimVw/VGqIEGphdaVrDZk9qflD8XvCsSc45wqjxHy1tiv0ELS9sKYdHEGI69Cnc9DjriTyQhL3MJYzRR3wiJFZHIYV1sA275+ABmLVHHaAIzBCNvK/WVsUfXaFhjwP2BTjA+BeOrKioWpZ0yuCwT6hfDX9to6Q=
+	t=1706727718; cv=none; b=ONwJy5kYQaxYVEhedgglOoC62pgv/UFFsTkjB+uNRvuhqGsOzgSNxT5729rmPE+Zp6HPy5Cx3Bp41tyf6YOqh4hZSttpYmPhV/PquQUvD9ahsPFl7kXC19vlAyDoSB7e+6B3vUHKmiX0gPjHNR1nCLx6+uXxflInaWLveKU41fY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706727671; c=relaxed/simple;
-	bh=2FW+E70zb+jtCWw0vFT7rUSygY5hCC4TwbggVezxrqA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VQjROcVM0mEJM6fWB4jGe98vcCCmdzdaMCigPLEDMjC988pPNdyaBcAAo7k5Ji/rtjvcIHz7Y6IDkKYxiFKBNlecVPa+P6v3dHUM3OQqZXqHi1wDbY+kedwQh7pTh9DTDa/TRIKyF4iIK076RU98QUkuVqXaSxl3+PpOpjJxGHk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=h0kgfmPj; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=FG9JknT4xvN8St/UMt7dRNO3f3FgC/mu2jaTaHknhkA=; b=h0kgfmPjm2TFnMUX3ri8gtEdlj
-	lNRpeE3zmlaYgAMvpXL2Dz16o88PMRc5E6BEAqWsbx0//hEhgIhqgYwJxsR2CbMt/cmaZ5oBSA9s1
-	mh8uP9oF7xpoAzVb4LEKMDDCtA4a26IVbZpggw0ozJzREtUhpp7sYlVoKki+5GZuGk30UQzRdcUjw
-	eaROgzQ5WeLNuuna7SKO7qiVy79e2u5AOPhDGYCI4Lw5QRLSgXExaCsuYnWmjjBBdNM+dA2dkjevt
-	tSBlYR+FAyrz2sJ316Mg0ZT7/q/j6HMQiaAqTUTTR/h9HMj0pZm6hFjaq6UZVWCepuqG2s3kx6ceZ
-	txnCLQ8Q==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:53368)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rVFpG-0003hm-2d;
-	Wed, 31 Jan 2024 19:00:46 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rVFp9-0006ds-E6; Wed, 31 Jan 2024 19:00:39 +0000
-Date: Wed, 31 Jan 2024 19:00:39 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Robin Murphy <robin.murphy@arm.com>
-Cc: Yongqiang Liu <liuyongqiang13@huawei.com>,
-	linux-arm-kernel@lists.infradead.org, yanaijie@huawei.com,
-	zhangxiaoxu5@huawei.com, wangkefeng.wang@huawei.com,
-	sunnanyong@huawei.com, rppt@linux.ibm.com,
-	linux-kernel@vger.kernel.org, keescook@chromium.org, arnd@arndb.de,
-	m.szyprowski@samsung.com, willy@infradead.org
-Subject: Re: [PATCH] arm: flush: don't abuse pfn_valid() to check if pfn is
- in RAM
-Message-ID: <ZbqY12U/CXwAAu7A@shell.armlinux.org.uk>
-References: <20240131125907.1006760-1-liuyongqiang13@huawei.com>
- <0da50102-3e87-49f7-b8f7-45cfcb4232d6@arm.com>
+	s=arc-20240116; t=1706727718; c=relaxed/simple;
+	bh=eQZHF14Plim2/h/HfVCGI8KyzULHq0F0ksaKAy59jYE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=AiSJskCz5pE050rv4/+fLA+7ZwJ4g0s1NS0EKv4t+Qih1qKBmNMjWDz64lZMKdZm3q6cDGJbWxUYrgzcZvDAE+QCt/wxBletD9nseQdnFeIp3le5swoC7j4CfLzH8AQM+jDyCCHiQbJF6tLC8mdf1mwXI0A9GBOukj5fO76l5bU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id b6d18a2c6112265a; Wed, 31 Jan 2024 20:01:53 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 59EC066982B;
+	Wed, 31 Jan 2024 20:01:53 +0100 (CET)
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
+ Linux PM <linux-pm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ Lukasz Luba <lukasz.luba@arm.com>, Zhang Rui <rui.zhang@intel.com>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+ Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
+Subject:
+ Re: [PATCH v1] thermal: sysfs: Make trip hysteresis writable along with trip
+ temperature
+Date: Wed, 31 Jan 2024 20:01:53 +0100
+Message-ID: <12386481.O9o76ZdvQC@kreacher>
+In-Reply-To:
+ <CAJZ5v0iZ0hyPYB3i6YdbiKueHGWoM3i6mPBnzGL9bB8wFxVSPw@mail.gmail.com>
+References:
+ <4565526.LvFx2qVVIh@kreacher>
+ <7caf2f4d-d0d5-4622-b290-bb0396547f3c@linaro.org>
+ <CAJZ5v0iZ0hyPYB3i6YdbiKueHGWoM3i6mPBnzGL9bB8wFxVSPw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0da50102-3e87-49f7-b8f7-45cfcb4232d6@arm.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtledguddujecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthhqredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeekieelheffleefgffgtdejvdektedtjeefveeugeefvdfhgfduueetiefgieelteenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepkedprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheprhgrfhgrvghlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghr
+ nhgvlhdrohhrghdprhgtphhtthhopehluhhkrghsiidrlhhusggrsegrrhhmrdgtohhmpdhrtghpthhtoheprhhuihdriihhrghnghesihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=8 Fuz1=8 Fuz2=8
 
-On Wed, Jan 31, 2024 at 06:39:31PM +0000, Robin Murphy wrote:
-> On 31/01/2024 12:59 pm, Yongqiang Liu wrote:
-> > @@ -292,7 +293,7 @@ void __sync_icache_dcache(pte_t pteval)
-> >   		/* only flush non-aliasing VIPT caches for exec mappings */
-> >   		return;
-> >   	pfn = pte_pfn(pteval);
-> > -	if (!pfn_valid(pfn))
-> > +	if (!memblock_is_map_memory(PFN_PHYS(pfn)))
-> >   		return;
-> >   	folio = page_folio(pfn_to_page(pfn));
-> 
-> Hmm, it's a bit odd in context, since pfn_valid() obviously pairs with this
-> pfn_to_page(), whereas it's not necessarily clear that
-> memblock_is_map_memory() implies pfn_valid().
-> 
-> However, in this case we're starting from a PTE - rather than going off to
-> do a slow scan of memblock to determine whether a round-trip through
-> page_address() is going to give back a mapped VA, can we not trivially
-> identify that from whether the PTE itself is valid?
+On Wednesday, January 31, 2024 7:41:52 PM CET Rafael J. Wysocki wrote:
+> On Wed, Jan 31, 2024 at 7:18=E2=80=AFPM Daniel Lezcano
+> <daniel.lezcano@linaro.org> wrote:
+> >
+> > On 29/01/2024 21:40, Rafael J. Wysocki wrote:
+> > > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > >
+> > > Trip point temperature can be modified via sysfs if
+> > > CONFIG_THERMAL_WRITABLE_TRIPS is enabled and the thermal
+> > > zone creator requested that the given trip be writable
+> > > in the writable trips mask passed to the registration
+> > > function.
+> > >
+> > > However, trip point hysteresis is treated differently - it is only
+> > > writable if the thermal zone has a .set_trip_hyst() operation defined
+> > > and neither CONFIG_THERMAL_WRITABLE_TRIPS, nor the writable trips mask
+> > > supplied by the zone creator has any bearing on this.  That is
+> > > inconsistent and confusing, and it generally does not meet user
+> > > expectations.
+> > >
+> > > For this reason, modify create_trip_attrs() to handle trip point
+> > > hysteresis in the same way as trip point temperature, so they both
+> > > are writable at the same time regardless of what trip point operations
+> > > are defined for the thermal zone.
+> > >
+> > > Link: https://lore.kernel.org/linux-pm/20240106191502.29126-1-quic_ma=
+nafm@quicinc.com
+> > > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > > ---
+> > >
+> > > Notes:
+> > >
+> > >   * I don't think that CONFIG_THERMAL_WRITABLE_TRIPS is very useful.
+> > >     The only thing controlled by it is whether or not the writable tr=
+ip
+> > >     mask used during registration will have any effect and this is qu=
+ite
+> > >     confusing.  Some drivers select it for this reason which seems a =
+bit
+> > >     odd to me.
+> > >
+> > >     Maybe it can be dropped after the patch below?
+> >
+> > Actually it is used from an userspace daemon to get threshold crossing
+> > temperature which is then changed on the fly.
+>=20
+> I mean to drop CONFIG_THERMAL_WRITABLE_TRIPS and make the writable
+> trip masks used during zone registration always work.  Sorry for the
+> confusion.
 
-Depends what you mean by "valid". If you're referring to pte_valid()
-and L_PTE_VALID then no.
+So for the record, this (and note that the symbol is clearly not used as
+intended, because drivers select it and one platform sets it in defconfig):
 
-On 32-bit non-LPAE, the valid bit is the same as the present bit, and
-needs to be set for the PTE to not fault. Any PTE that is mapping
-something will be "valid" whether it is memory or not, whether it is
-backed by a page or not.
+=2D--
+ arch/arm/configs/imx_v6_v7_defconfig |    1 -
+ drivers/thermal/Kconfig              |   11 -----------
+ drivers/thermal/intel/Kconfig        |    2 --
+ drivers/thermal/thermal_sysfs.c      |    8 +++-----
+ 4 files changed, 3 insertions(+), 19 deletions(-)
 
-pfn_valid() should be telling us whether the PFN is suitable to be
-passed to pfn_to_page(), and if we have a situation where pfn_valid()
-returns true, but pfn_to_page() returns an invalid page, then that in
-itself is a bug that needs to be fixed and probably has far reaching
-implications for the stability of the kernel.
+Index: linux-pm/drivers/thermal/Kconfig
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+=2D-- linux-pm.orig/drivers/thermal/Kconfig
++++ linux-pm/drivers/thermal/Kconfig
+@@ -83,17 +83,6 @@ config THERMAL_OF
+ 	  Say 'Y' here if you need to build thermal infrastructure
+ 	  based on device tree.
+=20
+=2Dconfig THERMAL_WRITABLE_TRIPS
+=2D	bool "Enable writable trip points"
+=2D	help
+=2D	  This option allows the system integrator to choose whether
+=2D	  trip temperatures can be changed from userspace. The
+=2D	  writable trips need to be specified when setting up the
+=2D	  thermal zone but the choice here takes precedence.
+=2D
+=2D	  Say 'Y' here if you would like to allow userspace tools to
+=2D	  change trip temperatures.
+=2D
+ choice
+ 	prompt "Default Thermal governor"
+ 	default THERMAL_DEFAULT_GOV_STEP_WISE
+Index: linux-pm/drivers/thermal/thermal_sysfs.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+=2D-- linux-pm.orig/drivers/thermal/thermal_sysfs.c
++++ linux-pm/drivers/thermal/thermal_sysfs.c
+@@ -458,8 +458,7 @@ static int create_trip_attrs(struct ther
+ 						tz->trip_temp_attrs[indx].name;
+ 		tz->trip_temp_attrs[indx].attr.attr.mode =3D S_IRUGO;
+ 		tz->trip_temp_attrs[indx].attr.show =3D trip_point_temp_show;
+=2D		if (IS_ENABLED(CONFIG_THERMAL_WRITABLE_TRIPS) &&
+=2D		    mask & (1 << indx)) {
++		if (mask & (1 << indx)) {
+ 			tz->trip_temp_attrs[indx].attr.attr.mode |=3D S_IWUSR;
+ 			tz->trip_temp_attrs[indx].attr.store =3D
+ 							trip_point_temp_store;
+@@ -474,8 +473,7 @@ static int create_trip_attrs(struct ther
+ 					tz->trip_hyst_attrs[indx].name;
+ 		tz->trip_hyst_attrs[indx].attr.attr.mode =3D S_IRUGO;
+ 		tz->trip_hyst_attrs[indx].attr.show =3D trip_point_hyst_show;
+=2D		if (IS_ENABLED(CONFIG_THERMAL_WRITABLE_TRIPS) &&
+=2D		    mask & (1 << indx)) {
++		if (mask & (1 << indx)) {
+ 			tz->trip_hyst_attrs[indx].attr.attr.mode |=3D S_IWUSR;
+ 			tz->trip_hyst_attrs[indx].attr.store =3D
+ 					trip_point_hyst_store;
+Index: linux-pm/drivers/thermal/intel/Kconfig
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+=2D-- linux-pm.orig/drivers/thermal/intel/Kconfig
++++ linux-pm/drivers/thermal/intel/Kconfig
+@@ -23,7 +23,6 @@ config X86_PKG_TEMP_THERMAL
+ 	tristate "X86 package temperature thermal driver"
+ 	depends on X86_THERMAL_VECTOR
+ 	select THERMAL_GOV_USER_SPACE
+=2D	select THERMAL_WRITABLE_TRIPS
+ 	select INTEL_TCC
+ 	default m
+ 	help
+@@ -47,7 +46,6 @@ config INTEL_SOC_DTS_THERMAL
+ 	tristate "Intel SoCs DTS thermal driver"
+ 	depends on X86 && PCI && ACPI
+ 	select INTEL_SOC_DTS_IOSF_CORE
+=2D	select THERMAL_WRITABLE_TRIPS
+ 	help
+ 	  Enable this to register Intel SoCs (e.g. Bay Trail) platform digital
+ 	  temperature sensor (DTS). These SoCs have two additional DTSs in
+Index: linux-pm/arch/arm/configs/imx_v6_v7_defconfig
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+=2D-- linux-pm.orig/arch/arm/configs/imx_v6_v7_defconfig
++++ linux-pm/arch/arm/configs/imx_v6_v7_defconfig
+@@ -228,7 +228,6 @@ CONFIG_SENSORS_IIO_HWMON=3Dy
+ CONFIG_SENSORS_PWM_FAN=3Dy
+ CONFIG_SENSORS_SY7636A=3Dy
+ CONFIG_THERMAL_STATISTICS=3Dy
+=2DCONFIG_THERMAL_WRITABLE_TRIPS=3Dy
+ CONFIG_CPU_THERMAL=3Dy
+ CONFIG_IMX_THERMAL=3Dy
+ CONFIG_WATCHDOG=3Dy
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+
+
 
