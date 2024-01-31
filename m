@@ -1,201 +1,178 @@
-Return-Path: <linux-kernel+bounces-46746-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46747-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54840844385
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:59:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E46B9844389
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:59:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1218D289C3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:59:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AB5A28A176
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:59:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DA2012A14E;
-	Wed, 31 Jan 2024 15:58:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 922DE12A15E;
+	Wed, 31 Jan 2024 15:59:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="c4bh8QXx"
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="maakPQV0"
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8967E12A148;
-	Wed, 31 Jan 2024 15:58:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A242963C7
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 15:59:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706716736; cv=none; b=UAdCViHb0tSEWhGfOtAznGK63V9s0ZzWbonYRs034/2bP0B9jYZVLyNxTfye8X3vbzu8O3F7zp3dEUqcv2wI8bbFcOh+sx7NPpmo2QQR5GYYZV2mTrsE0uZtbM8mGcYmg3dHsMHqq3n7qcgFVrF2xZcwwk0m03Gm0s2fKh1j+DU=
+	t=1706716777; cv=none; b=hBtU9h3rmycQC2/y6gmvSdaxt544ae7ctnW3yDgsACGeqoC3559jm4tq1BhiPy9b4g/VyR82FOtMe1PbIxXpeYmQQeiD+OGyp0ncM3D/x1xBdbtGpp7iecE92FnYmbzlL3/NY/XO8iIqVlyt32+wB+8Cd4TNbL39+UD8gNd9KFM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706716736; c=relaxed/simple;
-	bh=Y/Q3xsF6bD0RrFVjl35hYlQmnoNUueb0qo3uoYGenB0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=AzZbN5vAisppOYi9dZZLEuNkOEfwor/MDH6/Mc2Mduid+4diE4A0j4VR8oNfv85fPSCqD7pmvC1G9mvA91clrIy6oW+boGDOoqoLn85OCH8uAP/cSEQj4v7mJ19GtIWzNDmUInm6xXRIpXywdTo+92O9dtrFuMOxjhh8g/Q7lO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=c4bh8QXx; arc=none smtp.client-ip=45.79.88.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 48D7F47AA7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1706716731; bh=PLm8WUNIAKoIK/mO/devLpWdKufj7FVlfUUU03pGBg0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=c4bh8QXx9iugcyu/pTN7YIw9hBi+qKv5fFBnxl9IYk/syHRzgig29LuO2sxCRGcp+
-	 nJgEL1DNJ7NL9P3isxVgP4XnJSk6l9XHtcbISiFgpOcK07on2ssCpbLAhW7Mb7Wb/J
-	 UrTmxw8cKwdc74GZiF+7iC0B+21uXsk7HrYrd4w3taDp65SikB7OyO1Z2N6JrA1oZy
-	 RJXWY97SOnx2ClTF2yJuEV6AK04NBHVndlZ0yde7S+X0LP7NdK8GDeGHRVddOR3nM/
-	 UtJ42x0Xoc9xOJh95NUr+91SVhaSeX51S79iLifUoLPiMRwv7e8Tj++Z3KxhYBKPvH
-	 b22L9ZOXfDZZw==
-Received: from localhost (unknown [IPv6:2601:280:5e00:7e19::646])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id 48D7F47AA7;
-	Wed, 31 Jan 2024 15:58:51 +0000 (UTC)
-From: Jonathan Corbet <corbet@lwn.net>
-To: "Corona, Ernesto" <ernesto.corona@intel.com>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "linux-aspeed@lists.ozlabs.org"
- <linux-aspeed@lists.ozlabs.org>
-Cc: "Corona, Ernesto" <ernesto.corona@intel.com>,
- "'oleksandrs@mellanox.com'" <oleksandrs@mellanox.com>, "Castro, Omar
- Eduardo" <omar.eduardo.castro@intel.com>,
- "'omar.eduardo.castro@linux.intel.com'"
- <omar.eduardo.castro@linux.intel.com>, "'arnd@arndb.de'" <arnd@arndb.de>,
- "'arnd@arndb.de'" <arnd@arndb.de>, "'mchehab+samsung@kernel.org'"
- <mchehab+samsung@kernel.org>, "'linus.walleij@linaro.org'"
- <linus.walleij@linaro.org>, "'manivannan.sadhasivam@linaro.org'"
- <manivannan.sadhasivam@linaro.org>, "'jhugo@codeaurora.org'"
- <jhugo@codeaurora.org>, "Filary, Steven A" <steven.a.filary@intel.com>,
- "'jiri@nvidia.com'" <jiri@nvidia.com>, "'vadimp@mellanox.com'"
- <vadimp@mellanox.com>, "'amithash@fb.com'" <amithash@fb.com>,
- "'patrickw3@fb.com'" <patrickw3@fb.com>, "Chen, Luke"
- <luke_chen@aspeedtech.com>, "'billy_tsai@aspeedtech.com'"
- <billy_tsai@aspeedtech.com>, "'rgrs@protonmail.com'" <rgrs@protonmail.com>
-Subject: Re: [PATCH 30 4/7] Add ABI documentation
-In-Reply-To: <LV8PR11MB8463E4402495BACB9E3ACE588B7D2@LV8PR11MB8463.namprd11.prod.outlook.com>
-References: <LV8PR11MB8463E4402495BACB9E3ACE588B7D2@LV8PR11MB8463.namprd11.prod.outlook.com>
-Date: Wed, 31 Jan 2024 08:58:50 -0700
-Message-ID: <87mssl7av9.fsf@meer.lwn.net>
+	s=arc-20240116; t=1706716777; c=relaxed/simple;
+	bh=KxTha3Sw2me4wQD2ZIVM7exaX0/yMCyxiR7mnGOFOLY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Y6ZolBe4IvT8VEuEpZOuVavnNqknqF54KaKmklCkxg3xN6MROEmtHL0Curgt9cf3T1Yij3fz22DXw9XINx5WVl1NE6/ytJ+bEJgRUP4nKvj0o/z8BX+9UjV92ghaT6z2uu5WgjrlvGkfCb/0SCvoaItd7HPCktVYnLstD19PWbM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=maakPQV0; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40e913e3f03so55905675e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 07:59:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706716773; x=1707321573; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=SJEZ1qPaiDldAW8C05rM2rqR0hTzPI1igVobAmalZsY=;
+        b=maakPQV07x86hzoHNYT3i9Df3t0aUIyYaJz0NKQqd9fS0Op0GFcCCI5uP3CgSg6jsm
+         UxQtDlKyWO6cPk/Es8dgXS/SM5OuymQnsKwJcGfjieeD76Tn125URTvOnGNdIljlsVF6
+         jVM9tvzWL/fxuBlji8zYEcOFj63FT/rGYYSJJTexxSfMACZbojeXiw7aW5kwNix3mW/5
+         7Fn9N8lD5yj7G3PLDw0CrdlSg0ft7FjyhMF7IyFmIC6LtfaQewAy8TaQmAGxZzcYS1Xx
+         Vfnka022pNgNs67dfc7PgkAq7u1FM6nBZJqQJsvvFL7wVJRm3rAeYljaTwf/v7EWxhw6
+         zggg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706716773; x=1707321573;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SJEZ1qPaiDldAW8C05rM2rqR0hTzPI1igVobAmalZsY=;
+        b=a9VjV+yFzYakWaIg52yr2kLM5hT0js1shJP2xG3IUlXKrPhZrbSYISca8XS8Evf0iS
+         i8RnaxQ6Udo2o/jyG4YGxF4UwiKOm7MPJJ9TixBO3VMxeEhqxBK95xQsDVaL+Y2oKM9I
+         41JLbbpfG69p3PM/CI2w8CQ/CYmNjN9sTHtON0082k9nhqETT9tKGECCn2wcWDw/rGr3
+         nL6HwMSllLwolZGwTkKWU8Vb9NVLB6yW9q+PLpPFmTtANTmfeD7YnZr8gqaUIntcBpok
+         kIzaI73fCByhi+osLJdXnCo19vAuBPNLObi7wsEzjNsiDiqR/nf3PL7GOWxJ2rAKoV97
+         nG9A==
+X-Gm-Message-State: AOJu0Yx/bgpbMybMUWmbYW3qSXB+XnHkTFtIK5koA7x8DZ6p+l67kjdS
+	AMoku7gwF9I8wXUBwLDOWM1/RxW6UB9M1HbahPf1QS2J8bZNQc3hohXy92TP9N8=
+X-Google-Smtp-Source: AGHT+IE0y4HMNlJGrQQF1/vBmusVf+vGvj5kGeOQLs8zgDMsoQ9mThbIK2SfMvCJNZS4ESF4P8sD+g==
+X-Received: by 2002:a05:600c:468b:b0:40e:e834:3d86 with SMTP id p11-20020a05600c468b00b0040ee8343d86mr1590072wmo.37.1706716772821;
+        Wed, 31 Jan 2024 07:59:32 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCU5toVRodwweHTcQIyYJFP2Sf3z6pJe8uOj3kJL8Bf9n+o3G8oH7qCtVvtBB6ZzANPh3d2Znisr/JVcpjb5tj+mnQOtD0bGrsmT4CRsS6KdtKyxWKOCl38Giy/mwdkpg1+QQxv40odbMZlnkY5SYdo2XLk0XdYDTp7WRoTnVpNlAlYCWWsQHxNfcLCDVAWDcXk3GvVdHhPFZ62Gx3ql6nSu6/WKzbRDqzGUIYgkgqpdB1vq50EO2ieKr+XUNsum2CV+pMMxiPj9TkdU06yVd81ZbG9I+ff7kAkhj9IowwAQm+N5BwHjhUoaeye58UCta73W6pRJRoGC3DvGN4oHjbsgUSKWyszDmS4NdxPTBbwp2RdU2Ks6e9clrZ+UECY6zRr/NAd2cDDBxGCLVOmgvb+jVeV5smy1Xly69fTl7+hY8866CxoOjFO1I48MgVF0UdOI5C1yuLuymZyybFPw6nm1nAcMitNsxXW/PlXLReWUH5BFV6Jriyq2AKNFsNYuHKk6srdfiXlJ0B77YIP+V0E/i01m7OxC/pDhPX+9RSpIvCQkc7ZVpcu7PMqJqsCDBi7cS4PdMDvYQwktSWOvXekDuYCwO0eKbSeWmguapyXy15tDZbbtoRH2ScNNIwiU21PKEtXagxXWu+FGng==
+Received: from alex-rivos.ba.rivosinc.com (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
+        by smtp.gmail.com with ESMTPSA id t24-20020a1c7718000000b0040f0219c371sm1926678wmi.19.2024.01.31.07.59.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Jan 2024 07:59:32 -0800 (PST)
+From: Alexandre Ghiti <alexghiti@rivosinc.com>
+To: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Ved Shanbhogue <ved@rivosinc.com>,
+	Matt Evans <mev@rivosinc.com>,
+	Dylan Jhong <dylan@andestech.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org,
+	linux-mm@kvack.org
+Cc: Alexandre Ghiti <alexghiti@rivosinc.com>
+Subject: [PATCH RFC v2 0/4] Svvptc extension to remove preventive sfence.vma
+Date: Wed, 31 Jan 2024 16:59:25 +0100
+Message-Id: <20240131155929.169961-1-alexghiti@rivosinc.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-"Corona, Ernesto" <ernesto.corona@intel.com> writes:
+In RISC-V, after a new mapping is established, a sfence.vma needs to be
+emitted for different reasons:
 
-> Added document that describe the ABI for JTAG class driver
+- if the uarch caches invalid entries, we need to invalidate it otherwise
+  we would trap on this invalid entry,
+- if the uarch does not cache invalid entries, a reordered access could fail
+  to see the new mapping and then trap (sfence.vma acts as a fence).
 
-A few comments
+We can actually avoid emitting those (mostly) useless and costly sfence.vma
+by handling the traps instead:
 
-> diff --git a/Documentation/jtag/index.rst b/Documentation/jtag/index.rst
-> new file mode 100644
-> index 000000000000..8a2761d1c17e
-> --- /dev/null
-> +++ b/Documentation/jtag/index.rst
+- for new kernel mappings: only vmalloc mappings need to be taken care of,
+  other new mapping are rare and already emit the required sfence.vma if
+  needed.
+  That must be achieved very early in the exception path as explained in
+  patch 3, and this also fixes our fragile way of dealing with vmalloc faults.
 
-Please, let's not create another top-level directory for this; this
-looks like information that belongs in the userspace-api book.
+- for new user mappings: Svvptc makes update_mmu_cache() a no-op and no
+  traps can happen since xRET instructions now act as fences.
 
-> @@ -0,0 +1,18 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +==============================
-> +Joint Test Action Group (JTAG)
-> +==============================
-> +
-> +.. toctree::
-> +   :maxdepth: 1
-> +
-> +   jtag-summary
-> +   jtagdev
-> +
-> +.. only::  subproject and html
-> +
-> +   Indices
-> +   =======
-> +
-> +   * :ref:`genindex`
-> diff --git a/Documentation/jtag/jtag-summary.rst b/Documentation/jtag/jtag-summary.rst
-> new file mode 100644
-> index 000000000000..07cfa7a761d7
-> --- /dev/null
-> +++ b/Documentation/jtag/jtag-summary.rst
-> @@ -0,0 +1,49 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +====================================
-> +Linux kernel JTAG support
-> +====================================
-> +
-> +Introduction to JTAG
-> +====================
-> +
-> +JTAG is an industry standard for verifying hardware. JTAG provides access to
-> +many logic signals of a complex integrated circuit, including the device pins.
-> +
-> +A JTAG interface is a special interface added to a chip.
-> +Depending on the version of JTAG, two, four, or five pins are added.
-> +
-> +The connector pins are:
-> + * TDI (Test Data In)
-> + * TDO (Test Data Out)
-> + * TCK (Test Clock)
-> + * TMS (Test Mode Select)
-> + * TRST (Test Reset) optional
-> +
-> +JTAG interface is designed to have two parts - basic core driver and
-> +hardware specific driver. The basic driver introduces a general interface
-> +which is not dependent of specific hardware. It provides communication
-> +between user space and hardware specific driver.
-> +Each JTAG device is represented as a char device from (jtag0, jtag1, ...).
-> +Access to a JTAG device is performed through IOCTL calls.
-> +
-> +Call flow example:
-> +::
+Patch 1 and 2 introduce Svvptc extension probing.
 
-You can express this more readably as just
+It's still an RFC because Svvptc is not ratified yet.
 
-  Call flow example::
+On our uarch that does not cache invalid entries and a 6.5 kernel, the
+gains are measurable:
 
+* Kernel boot:                  6%
+* ltp - mmapstress01:           8%
+* lmbench - lat_pagefault:      20%
+* lmbench - lat_mmap:           5%
 
+Thanks to Ved and Matt Evans for triggering the discussion that led to
+this patchset!
 
-> +
-> +	User: open  -> /dev/jatgX -> JTAG core driver -> JTAG hardware specific driver
-> +	User: ioctl -> /dev/jtagX -> JTAG core driver -> JTAG hardware specific driver
-> +	User: close -> /dev/jatgX -> JTAG core driver -> JTAG hardware specific driver
-> +
-> +
-> +THANKS TO
-> +---------
-> +Contributors to Linux-JTAG discussions include (in alphabetical order,
-> +by last name):
-> +
-> +- Omar Castro
-> +- Ernesto Corona
-> +- Steven Filary
-> +- Vadim Pasternak
-> +- Jiri Pirko
-> +- Oleksandr Shamray
-> +- Billy Tsai
-> \ No newline at end of file
+Any feedback, test or relevant benchmark are welcome :)
 
-Files should end in a newline
+Changes in v2:
+- Rebase on top of 6.8-rc1
+- Remove patch with runtime detection of tlb caching and debugfs patch
+- Add patch that probes Svvptc
+- Add patch that defines the new Svvptc dt-binding
+- Leave the behaviour as-is for uarchs that cache invalid TLB entries since
+  I don't have any good perf numbers
+- Address comments from Christoph on v1
+- Fix a race condition in new_vmalloc update:
 
-[...]
+       ld      a2, 0(a0) <= this could load something which is != -1
+       not     a1, a1    <= here or in the instruction after, flush_cache_vmap()
+                            could make the whole bitmap to 1
+       and     a1, a2, a1
+       sd      a1, 0(a0) <= here we would clear bits that should not be cleared!
 
-> +===============  =========  =======  =====================================================
-> +Bit Field        Bit begin  Bit end  Description
-> +===============  =========  =======  =====================================================
-> +rsvd             25         31       Reserved, not used
-> +pad data         24         24       Value used for pre and post padding. Either 1 or 0.
-> +post pad count   12         23       Number of padding bits to be executed after transfer.
-> +pre pad count    0          11       Number of padding bit to be executed before transfer.
-> +===============  =========  =======  =====================================================
+   Instead, replace the whole sequence with:
+       amoxor.w        a0, a1, (a0)
 
-You should be able to wrap the final column of the table, avoiding these
-long lines.
+Alexandre Ghiti (4):
+  riscv: Add ISA extension parsing for Svvptc
+  dt-bindings: riscv: Add Svvptc ISA extension description
+  riscv: Stop emitting preventive sfence.vma for new vmalloc mappings
+  riscv: Stop emitting preventive sfence.vma for new userspace mappings
+    with Svvptc
 
-Thanks,
+ .../devicetree/bindings/riscv/extensions.yaml |  7 ++
+ arch/riscv/include/asm/cacheflush.h           | 18 +++-
+ arch/riscv/include/asm/hwcap.h                |  1 +
+ arch/riscv/include/asm/pgtable.h              | 16 +++-
+ arch/riscv/include/asm/thread_info.h          |  5 ++
+ arch/riscv/kernel/asm-offsets.c               |  5 ++
+ arch/riscv/kernel/cpufeature.c                |  1 +
+ arch/riscv/kernel/entry.S                     | 84 +++++++++++++++++++
+ arch/riscv/mm/init.c                          |  2 +
+ arch/riscv/mm/pgtable.c                       | 13 +++
+ 10 files changed, 150 insertions(+), 2 deletions(-)
 
-jon
+-- 
+2.39.2
+
 
