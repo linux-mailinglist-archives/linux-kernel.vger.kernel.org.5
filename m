@@ -1,117 +1,114 @@
-Return-Path: <linux-kernel+bounces-45799-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45798-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5719843657
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:58:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F25D843654
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:57:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5BA8E1F280E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 05:58:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE81428901D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 05:57:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A062E3E46B;
-	Wed, 31 Jan 2024 05:58:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 887323DBB3;
+	Wed, 31 Jan 2024 05:57:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ewh1VKAJ"
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="cBPK5zEU"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F1653DB97;
-	Wed, 31 Jan 2024 05:58:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1B953DBBF
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 05:57:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706680730; cv=none; b=asc3FJ5H+wlUofieqTegQ3nHUYAVhZ+jpOJ6FDUeutwJ3bwunZSs+kKZ38FxnYctb7HMYCX9ukQEmvCAr5yiTxbqrHz4UVB6akBP6cShpdmh7howDBH43o5wS/5z9WO9AHCsbJjAZimnLzFxXB7QKAGsgP7hqAxRS5EHpkmBC/w=
+	t=1706680667; cv=none; b=sC8FgBnt+3Ka7IjcPiyyfFRQD1SOIpp/+Ma6oMqZr8iZtG39mdH1fD1PMCEqXoDAbOsh2TkTImjF7rw24RQtgEr0fX1JBaslV0dvsrWzPU8A9j9GzlK2Y900s3nvlE5DGsdsd8Jrroab4CxPZhGFmdV2jC4m6JwD36piqTMcT6Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706680730; c=relaxed/simple;
-	bh=0tOTsazWTcs9QYzc3VNchWmVv4Rg9HgIxUYj/cpbTtY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=iO2rJUAlR/rTmzAyjRkb3RKh0/qMKFvQV+8YfkU/i1tLWdgnr08gUmh4g9iCqt+TlKP0bN7zlJbF+YwI4U4+VTeATi90OMH/bZDt5SQlod+uXjb82mT5lUo63Be/1Agv8/Olabse4wy0pJ2XRPbW1HcO56fRd6CzwliJgQJM2Qc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ewh1VKAJ; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6ddfb0dac4dso3414182b3a.1;
-        Tue, 30 Jan 2024 21:58:48 -0800 (PST)
+	s=arc-20240116; t=1706680667; c=relaxed/simple;
+	bh=vOyih3ICf+cC/rEztfmfpM3LdNIl0b2I9wSmpv/NLFk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QIbQzBTqAp16ljZ/NVSKi+NHWSgZxc+1K9UkaIEgvggdBUk0w7fDIFcQ2m4apYJw04ngSMJVE9OpndXHzNz9IzZmC+TIzYQl1bIF7wIdIxdHEoualQK8ZYN7sQp8tYKMRC1MDjxtTyrDsdTzFyIx7dIGh5kgZtPcHv5WRtW64sY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=cBPK5zEU; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a35385da5bbso632340566b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 21:57:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706680728; x=1707285528; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0dHEweAsyBseNZ/atWmXcoaWQ2MjiSsil4Mz+T/iMO0=;
-        b=Ewh1VKAJS2lNUkD5rXKZlDBoflb0g8XxswMjDDltlAXIXklz1wtpJAr1d+luUUIncK
-         K3ryJY1XT9CMC4X90PphvEosYfvqlXS5gbwy2RKkcfqh+n+VQa3LqtD4kGjJ9xtTVgfb
-         1/qMmVRUlgYiAz8QA1ycTjm2up4G0ThMlu4KR70F9zX8xSrhSkf/rXgdwBkgAidhfyC6
-         YF20jHdjLS4xqldfDTl5vCqLgq1k1PJsbRjfpytseemU/pTD9pXIiHcZHXRkL91jxWPt
-         JaYzK35Y49fs8uxpo2+vRwjrcdcBMy2dIHk64VDu8XQxvvT9J3UyyYTOf8wav+kCI4ul
-         sWpg==
+        d=linux-foundation.org; s=google; t=1706680664; x=1707285464; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=DJmhQWnMdv5xPINffOj6QDTUCMF7DMEzkKe7lbx6KIE=;
+        b=cBPK5zEUQs9ZGjlwe0sQxa8pWCYVhR/pb0wKhpLAkfs9O9yK8E7q1fKltCbD3nHaBI
+         uL6V7bHSbSnzmN2ZQF+zojIHIIsbQ8j+qyzNpbue9ZjQtCKo1tV74q2nf8jXmAaQTV4+
+         FwEKEMyxTWcgDFB/IXT8G1Ra67gNVqobnr8Zo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706680728; x=1707285528;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0dHEweAsyBseNZ/atWmXcoaWQ2MjiSsil4Mz+T/iMO0=;
-        b=aE2pQabwS2cP7aDcg+9VlSdHrilGC4SvyMBMvUjO3tTp8SHaoVZU2ZmxmByKHXZ3Ur
-         b7+bLxC+PlFtxaMYWtxqhKL0brc2fvuUe4izOpVRyDZ6dhF7cziryxzt+ocWLCFYWhsc
-         BWgMd/mjCg9nB3DxHzGJA+6isHRr2uUEqpW5bUo9jZz/xoaPs5+bZVBUK3Selqa+45sE
-         Yisvr/G7w98JbFmmi/JCYiHKv4mWw1RkfXohCyxoHsEGGB9CWcJMwFRViydcm8gNiRs7
-         giN3+Xg/whVScbHT4lAlX4U6XMzC0QIcTbNkRbyqgcflEKrYfwBM/E3sp5KbszbErdaE
-         EAJw==
-X-Gm-Message-State: AOJu0YxcUMlAA9YpRx4DYCkXCqZlDWt/A39Tb1WsU61yFtUIv9sRRlZa
-	WYoBfTS2yaVI8f8S5vZsQI4sSiifnXR2lDSRnpl6xM29xG/57zh8
-X-Google-Smtp-Source: AGHT+IGLy3CTr6dtmBN0i4y86QW6ckGmvweQVBKl1e4gw9U3t2G3fLuXuIAGKGZoZWESux3lwXbCwQ==
-X-Received: by 2002:aa7:87c3:0:b0:6de:2f30:9aa4 with SMTP id i3-20020aa787c3000000b006de2f309aa4mr778100pfo.33.1706680727878;
-        Tue, 30 Jan 2024 21:58:47 -0800 (PST)
-Received: from charles-System-Product-Name.dhcpserver.bu9bmc.local (1-34-21-66.hinet-ip.hinet.net. [1.34.21.66])
-        by smtp.gmail.com with ESMTPSA id r20-20020aa78b94000000b006ddddc7701fsm8904385pfd.4.2024.01.30.21.58.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 21:58:47 -0800 (PST)
-From: Charles Hsu <ythsu0511@gmail.com>
-To: jdelvare@suse.com,
-	linux@roeck-us.net,
-	corbet@lwn.net,
-	Delphine_CC_Chiu@Wiwynn.com,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	linux-hwmon@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Charles Hsu <ythsu0511@gmail.com>
-Subject: [PATCH v3 2/2] dt-bindings: Add MPQ8785 voltage regulator device
-Date: Wed, 31 Jan 2024 13:55:26 +0800
-Message-Id: <20240131055526.2700452-2-ythsu0511@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240131055526.2700452-1-ythsu0511@gmail.com>
-References: <20240131055526.2700452-1-ythsu0511@gmail.com>
+        d=1e100.net; s=20230601; t=1706680664; x=1707285464;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DJmhQWnMdv5xPINffOj6QDTUCMF7DMEzkKe7lbx6KIE=;
+        b=soZYCfAJPjYxAwFvbUM79dItiJWakbxf9fuwthFBYaKlBlc73YA0FW9En7onJrcQto
+         FSHxv7Y2PqeNIHtPnPV1hFujP1uQu/5f0CvDw566eIiOYQL2SnY5VyWUET1G8l4OfjGM
+         sFSrXoXsKuI8INvTl3pQ5JexvDGq4j0u6neeFi4imBMOH8VSRDMkYTWnAgC05V8kQg6B
+         R0beTpLiGCb4t17JFyxrt+4MhZ/Jc2jN8jYpH1IgRVB2H079sGIiHDHGN3tKGBDAQyIn
+         9CubZTDXEddzBHgfQ9lWNb1de9dm0hK+bbnKjPeQgQEPXVn5GWxVH2W0uF8d9FUa7SSq
+         1EZg==
+X-Gm-Message-State: AOJu0Yz/qsUME4usOTQ9b1MEONJ0pBbi0KdpkvAqgqnAZgvlgfB9vqHO
+	KMAg4zgTyY1EghscqapJn0l8VFJZerLsPlkwdmiL7MWyVXfMhGtJYjdil9X0ym3QVj2Irc2rI8l
+	aGplJiQ==
+X-Google-Smtp-Source: AGHT+IGbRbGiu4f/WIKa1Rl6P5/oSPIPIKx0utpggoYHWfRPlazQ0PgDLOu8TGgi/ECTLhJGpVzvtA==
+X-Received: by 2002:a17:906:4c54:b0:a34:d426:1b86 with SMTP id d20-20020a1709064c5400b00a34d4261b86mr368990ejw.9.1706680663974;
+        Tue, 30 Jan 2024 21:57:43 -0800 (PST)
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com. [209.85.208.54])
+        by smtp.gmail.com with ESMTPSA id zh11-20020a170906880b00b00a359c588d31sm3442074ejb.100.2024.01.30.21.57.43
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jan 2024 21:57:43 -0800 (PST)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-55f0367b15fso3661704a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 21:57:43 -0800 (PST)
+X-Received: by 2002:aa7:ca47:0:b0:55e:eade:fcba with SMTP id
+ j7-20020aa7ca47000000b0055eeadefcbamr342103edt.5.1706680663061; Tue, 30 Jan
+ 2024 21:57:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240130190355.11486-1-torvalds@linux-foundation.org>
+ <20240130190355.11486-5-torvalds@linux-foundation.org> <20240131000956.3dbc0fc0@gandalf.local.home>
+ <CAHk-=wjH+k47je4YbP=D+KOiNYp8cJh8C_gZFzSOa8HPDm=AQw@mail.gmail.com> <20240131003317.7a63e799@gandalf.local.home>
+In-Reply-To: <20240131003317.7a63e799@gandalf.local.home>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 30 Jan 2024 21:57:26 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wg69FE2826EokkCbSKHZvCG-cM5t=9SMFLcfpNu8Yvwqw@mail.gmail.com>
+Message-ID: <CAHk-=wg69FE2826EokkCbSKHZvCG-cM5t=9SMFLcfpNu8Yvwqw@mail.gmail.com>
+Subject: Re: [PATCH 5/6] eventfs: get rid of dentry pointers without refcounts
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Monolithic Power Systems, Inc. (MPS) synchronous step-down converter.
+On Tue, 30 Jan 2024 at 21:33, Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> With even the last patch included, without the d_invalidate() I get errors
+> with simply doing:
+>
+>  # cd /sys/kernel/tracing
+>  # mkdir instances/foo
+>  # ls instances/foo/events
+>  # rmdir instances/foo
+>
+> As the rmdir calls tracefs_remove() that calls simple_recursive_removal()
+> that then walks into the "events" directory. Without that d_invalidate, it
+> walks beyond just the top directory and then splats on the dentries that
+> are cached.
 
-Signed-off-by: Charles Hsu <ythsu0511@gmail.com>
----
- Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+Ugh.
 
-diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
-index 79dcd92c4a43..088b23ed2ae6 100644
---- a/Documentation/devicetree/bindings/trivial-devices.yaml
-+++ b/Documentation/devicetree/bindings/trivial-devices.yaml
-@@ -129,6 +129,8 @@ properties:
-           - mps,mp2975
-             # Monolithic Power Systems Inc. multi-phase hot-swap controller mp5990
-           - mps,mp5990
-+            # Monolithic Power Systems Inc. synchronous step-down converter mpq8785
-+          - mps,mpq8785
-             # Honeywell Humidicon HIH-6130 humidity/temperature sensor
-           - honeywell,hi6130
-             # IBM Common Form Factor Power Supply Versions (all versions)
--- 
-2.34.1
+This is only an issue for that "events" dir, right? The one that has a
+proper refcount on the dentry in 'ei->events_dir'?
 
+Because yes, then doing d_invalidate() looks like the right thing.
+
+           Linus
 
