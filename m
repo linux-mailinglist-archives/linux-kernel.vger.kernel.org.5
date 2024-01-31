@@ -1,224 +1,148 @@
-Return-Path: <linux-kernel+bounces-47195-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47196-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BC80844A5E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:49:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E1FC3844A62
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:50:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FBE31C22D68
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:49:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D67441C22F80
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:50:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD7CB39AF0;
-	Wed, 31 Jan 2024 21:49:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B93E139AFE;
+	Wed, 31 Jan 2024 21:50:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="b2OFInSb"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2066.outbound.protection.outlook.com [40.107.237.66])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MHFgd8MI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AAC239ACC;
-	Wed, 31 Jan 2024 21:49:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.66
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706737763; cv=fail; b=U77EhvuKWXkOTc643U4RM7lSvJyEB6KLRDqgqZz3g0MQEwaxNawi2CqNzZOmDbnBVx7clwY6ZYwWLfkbFr0s6Erx1LTPA6taIGzuv9VOz+HJcDUs1M9NVmiGF8+6O7WaoEHcCAuN9eMTVxDBfSlXhfW9KbbtFqdgR49IfYEgr4Q=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706737763; c=relaxed/simple;
-	bh=ubQ+p6Q8+X0KmSzqoO2G9lw8RDCLf1zERqmnYkU5Gi4=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=WbhbVsexo+f5Xaijr0ce6epk6IpwMruZOW09j6rVzJRji8msdtUnVwAX4eEQrwEZRwYfGN5kM72n9a4Hjl1pNFfTHDk46I8KroT+WaiEJb7oW4xzbWXyH4pPbFU1DQafdhF9wDFOxmTIKjVH6HYqIfl952at64Y3kWCnXPEtsJc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=b2OFInSb; arc=fail smtp.client-ip=40.107.237.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lmxLMKQ9UQB7GJibuXkdSjfco0ew1FL0slF4gDmR6wBN08A0vtmg5Uzqa7OHaaZ1ig4i56+FjHOVM2zqcUeNQa+PVm1YbG/H3Qd7TpCeaMJCpWNoTKSpwjVSUZTPlg67ocw6jvTSUG1AJ/wULszwN536aglDwOdLDNp1GFLD4xAhl/m/lwKhDm04ND0qjWu+fQ8Zv5p/fVRkfZSj84e855YLqpg91iz8tE/m09XOMLilFautB2E74rq68hkpTtt9Qs37rWozWeLYNtqItT4RJQ3faoG+GUp7JfroqdD7q6xTSHgF1N+Lt9R3SI/mKfU4Lyi+rblYx+Fir1zfbp4QwA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FTv2/qRXAIjk6WzO6JeOgg2oQ2XVHoc07sCvalY8D2I=;
- b=nq/lN9P41a7/anKa3Z1FIKHMRZ1cxzE77HFvNX29so8oeSCY4UBHUjGfm4PV571SQQFomj5pFwMCASj8sjr3KslPivKYWVEAC1xajo8QIFu7yhiOViTYd1ktcGwNW2ruGvxgmLLb8zTDbUaxUfCoW/HzTdIAe4c06vBIw2GQfEGD8sG6eA1BXVoiTbyZefqu5WqlgzwS/NI5LtaQuYrg+mx0L9LBTtRMbinrRb5sq7US8gomp4ub3Ryq9IyXz4wlNN8CoOzHmeN9VXFxZkAiDRVkEbUtcbFB5SmTMdWqGCJnuQMkpF7Ft6+0nKVFMNIYL+CXF2zjRrrTh0F4QNCjSw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FTv2/qRXAIjk6WzO6JeOgg2oQ2XVHoc07sCvalY8D2I=;
- b=b2OFInSb7tfmWmyTchygTIUVd2Bb1AxmXbJMbj2RXMsrgSrQnN71+S5DQ2P42UWLYoDPL4BGGFbvBfG7EvneTjN/6eVfqIUzn/D720/vVtdarPonmXfegoXnwsTRS8YZmvEw5wHtZVCWboRW0eSnvpKaGyePrSdHmlfMtEp7XDA=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by DS0PR12MB7630.namprd12.prod.outlook.com (2603:10b6:8:11d::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.23; Wed, 31 Jan
- 2024 21:49:17 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::c30:614f:1cbd:3c64]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::c30:614f:1cbd:3c64%4]) with mapi id 15.20.7249.024; Wed, 31 Jan 2024
- 21:49:17 +0000
-Message-ID: <a0580854-b5d5-4bac-a35e-cc2613ccab2f@amd.com>
-Date: Wed, 31 Jan 2024 15:49:14 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/6] cpufreq:amd-pstate: get pstate transition delay and
- latency value from ACPI tables
-Content-Language: en-US
-To: Perry Yuan <perry.yuan@amd.com>, rafael.j.wysocki@intel.com,
- viresh.kumar@linaro.org, Ray.Huang@amd.com, gautham.shenoy@amd.com,
- Borislav.Petkov@amd.com
-Cc: Alexander.Deucher@amd.com, Xinmei.Huang@amd.com, Xiaojian.Du@amd.com,
- Li.Meng@amd.com, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1706690577.git.perry.yuan@amd.com>
- <872b172c350021ab3c55f80460c33473486e4241.1706690577.git.perry.yuan@amd.com>
-From: Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <872b172c350021ab3c55f80460c33473486e4241.1706690577.git.perry.yuan@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DM6PR12CA0023.namprd12.prod.outlook.com
- (2603:10b6:5:1c0::36) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E313E39ACA;
+	Wed, 31 Jan 2024 21:50:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706737828; cv=none; b=dzm3JNdwsElvnW2z+HuYJ/UkT2wNyJNPndb5T79x6kV65RcLHSSWsAPupp6GLP3VfE/q0X0oxBh4HzbfiXeuv9oDOzfIzzXs09JdtilJg5xkYoy1fHn1hs+MpQRQe1HXTu/rAWk0Nwd3ZRZWK3wtZajxkJH6J+IIfwziLAWPhE0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706737828; c=relaxed/simple;
+	bh=VA4S5+OXGEre7LcIjG8/DyUIQAvRbZd0CUxocr8qS9s=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=cjrqCcc8qHf/1F9Qu31YLpeUUY9n05PF20VhKRtdQQWP+thlFZyvU6gSzUPJCLprap7CgFIggei3N7XlNhRc3D+r1UJclUcSY8iPlJZN8J8aVjjYKVdxTlIx/pjvbvJe0zmKe7vASyEHCz77Zgo8lsNPHEf1KU5wRie7AIPzNtM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MHFgd8MI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D4E0C433F1;
+	Wed, 31 Jan 2024 21:50:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706737827;
+	bh=VA4S5+OXGEre7LcIjG8/DyUIQAvRbZd0CUxocr8qS9s=;
+	h=From:Subject:Date:To:Cc:From;
+	b=MHFgd8MIfCmRKwBb9sVyA6Lp5gZtz2QK8L0SkpzL7DpxVzPPCHqqS60vq5t+4yEjK
+	 q4SxM/xC7O4wI7Atnr76WTxskuUGOWHm1fq/LWIKKjDCc2N9NWjMJreVkJ+ydC1DJX
+	 E/aqVqfJRdCbYRIGdv1m9t1SkVqnZb/r+NKAoem/4EMkCgQoc+wiistnQVdTFN1Fs/
+	 IoMPQBZxYKGIMLkPcGtNcqNAaCRuqM995PyyxI/637DuHgyXSGz/P/UNllsj2kCOkX
+	 wXTCUrnCReR3m/Rir3D1HjKP/VYbNPIMOsrZKeSWsn0GfacejnZO7NpdOOnW7oGX8k
+	 SuWIkM1U+dOrA==
+From: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
+Subject: [PATCH net 0/9] mptcp: fixes for recent issues reported by CI's
+Date: Wed, 31 Jan 2024 22:49:45 +0100
+Message-Id: <20240131-upstream-net-20240131-mptcp-ci-issues-v1-0-4c1c11e571ff@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|DS0PR12MB7630:EE_
-X-MS-Office365-Filtering-Correlation-Id: 59b74ed8-f985-4c1d-b1c8-08dc22a678e2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	Jednba2oLzSjAun6Es1i9oiEEJZiLqgVMV7Kjz4R1fF6gzVjLWlt75rphaK6ecxH7wvMO1hi0oPrDFZPEfzc60PVpdtT28IBxQbwTW6jCmJjpUXVm4l/zOUEh3cWTLEtL6/bo5/jrPs92gfrePXEdjOdH1STo9z+Cu6z7xRtbN2En50+FVqinKAX/bkJ7exCgPVMejrSb1D+BKsOFO339UTqytyG2m7jegIcB+VZHETNcHK2CBbuqFsmnSPTd5id/l/HaheLWd5ahZokZAXmtin+IhZuFunyxyH7GKMl+34L0ZVsuUHs2VbeRizkvC0yo9tp9UBLQBhEe6qw90YR3TEYsf10/xwPVPadwu3OJzJD6lRA3Y0CsK9WQUPdvxxbUVZIvAxwWD0klqujWlbLMX0PEbCzueiAXziNVtZm6N0jWaka9y7PW3Xav2WgqEYMWBBCEepLoFXiZ4D38848DkuHgDRRyHMwcPRdOCExopxhSaYwA+If+MU59GEaF46Q8VYsc7YRvB5G8SGsdlG2VMwCzJ2Am1OFvwVbU7Yaz88mxZF4B2zBvV3SCvnT5GRvHkdWo3HGiw/aZAssQi64mQitTBcwEYDPfR1ZvidgcyF+9pnNKmnCHzuKH3mn7Zy1AfEUT7/7iXijj0fwQkfFHg==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(39860400002)(376002)(346002)(366004)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(44832011)(2906002)(5660300002)(31696002)(86362001)(6486002)(36756003)(38100700002)(26005)(478600001)(6506007)(2616005)(53546011)(83380400001)(41300700001)(6512007)(6666004)(8936002)(316002)(66946007)(8676002)(4326008)(6636002)(66556008)(66476007)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?ZGlXT2RHUS95cWZxYzl5cVJ4d0ZjeWFmd2ZoY3lFSGtPS3ZUV29PbXJWRnBP?=
- =?utf-8?B?ZUcvS1lzVEpyNWJwS3FJUHJ0Q2t1RFE5UUZ2UHA3cjhrSFVmVDFJYmZQTzdR?=
- =?utf-8?B?N3h0aXh6L2l6aCtDd0FsMWFlRlRuaDUweml1Sm11blkzdTU0cC9jTW00eVBl?=
- =?utf-8?B?RDRna0x1SjV2ZWNQNmQ3dXR1Ny9KaGo5QzhSUEJDZEM4NnU2V3Q3QVl0azVF?=
- =?utf-8?B?UVhWZkJ6N0hWY2NzYzRCR2E3anpRSmh3R1hCeGNsZ3JsTWhkRnpRZDUxNTdj?=
- =?utf-8?B?VVVYYmNWNjIxT3BHc1VueTZ3U2NlZjBKNVBQQVRQdCtmUkZORUowRmJQQWVo?=
- =?utf-8?B?N2tSUGx6MFNnZlBWRVoxa2RyZFdYM3VCMXY0b2JRUkZVbkprYWtHbHROODJu?=
- =?utf-8?B?UWMwWEZCSGUxZVozY0FtbWordHdoSkZhWnNTeXhFRWhpMWN1Z2ovNjdaKzdI?=
- =?utf-8?B?NHZuQjczbGVuczFGbnp3aDVIbGt3YjhCQ0VOQVJFbUQzSXREd3JoeVhBQ3g4?=
- =?utf-8?B?Y3pjbEgycHl6TDFpaFY4WC85SUJJaHZTR0FsZkxWWmVBZHFMRUNNYkRtMjBR?=
- =?utf-8?B?N2huRElPNkMvallOSmwrSW1qeFVBSEFJcHl6dENWZ2hBZEwrMHkxZWhVQTkw?=
- =?utf-8?B?eEoySDQrV1VNWUpjQ3g0UzNzelc5TjVhS3VVY1luNDBZbXN1eG14VkxLR1NO?=
- =?utf-8?B?eVNFZEJwMkZKMThSMnVmUWtvSitKeVVydS9naUtwdDByMStQc2Z4aXdqQllP?=
- =?utf-8?B?bUFyTG1zamxmb2FpVnh6TDc2ek1iSUtqUVZGa0creFdKRmdjWWZwQTdzcUVu?=
- =?utf-8?B?eExUSFVJVnBqR1NUc1ZndklMRG4xRGkydzh6bEZtSngwRDZRRFpaSFRTMFE0?=
- =?utf-8?B?cmc0clY3UEdTWjd2dTQ0R3pCV01HOEYwY3M0SVQ5L1oremJ0VTBrcGV1cU1B?=
- =?utf-8?B?OTVtVXJidEJlcHZvc2lORU9aUTJoaTlEVlc5cEhrcmN5Nk5ZcS9xSnhYUEl5?=
- =?utf-8?B?TTBoV0FlSW52U1BROGUvRThvTlFPRVI2bjNCaWhoZHBRYVZKb0w3cW1YS0JU?=
- =?utf-8?B?YWVReEV1RVpHcjBENkJqUW1SNFZ4V25vR0lybHlIaXdLdlRLeGNNTkxLZWw0?=
- =?utf-8?B?RWY0TTBYdzVERzdYWkNnY000TGUwU3laVEpOOW03ZEY1eW94RnNIZThobVUr?=
- =?utf-8?B?UUxFQmtqVW04aXJHektha2FxVXJkTFFQVjIzekU5SjFxNHFzV1pJczJYVlZr?=
- =?utf-8?B?QTVLVXoyanREYWNWdGR4VmlzWVhUWHF4THNtM2FUUktpZGY3SERnS1hqZm9D?=
- =?utf-8?B?Qk9GNDA1ak9JWk1NdU5EY0IxU3Nya3Y4YUl6RDkzM0lYRUMzdERzaHd2OVZ0?=
- =?utf-8?B?MTY4dzJIZERnc1RSY0dhVmZYZTFIU3FmSVdVR1Z6eGVaS21vMjNNMEp4MzJp?=
- =?utf-8?B?KzZsSjcwdnVvM0k2RFZIa0xNcHdtbVFhb21EVlY5em9jOHhkQjlYVjh4QUNo?=
- =?utf-8?B?VjM2eHlaV2J3Q0RKVmp2dFozUUdhR0dRZlJnWFd1OXBtQVoxM04yZ1FiY09w?=
- =?utf-8?B?S3NjSGFBRGlvY2RYS1E5d2lDMGN0dHFKQ0RYWmlpMy9IckQ0c0xKTmtyTlZ6?=
- =?utf-8?B?eVUxa0grUkcrSWFDN0gvK1lpRzdCUm92TXlpVEpWYjFlUHZiRm5IRXBMMTlz?=
- =?utf-8?B?bkFtRFZCQ3RFSERiZDhpd3BxUlRTUG4yT3ZwT29MQTU1WDJiNmRXWi8wS1Bv?=
- =?utf-8?B?ajR4d3dvdmZla2t2OGhvMzA0TjdyeGhQOXJ4RzViNHFDaTc3cnhQSjdzbUwr?=
- =?utf-8?B?NXBxSWNYRlFEcDZkbkRlcFNIb2F2TTZFZ0pKMXBNZ2RBOHJZVENEdm56QzBO?=
- =?utf-8?B?ZTQ1YzdZeG9WdXM0eE95TUlBc2gyZHIzSjFCSnlQR2dvY2MzWTk2MEQ3Y1Zn?=
- =?utf-8?B?bml4RWdKeDJNYmJsZjFPMVZLd0hXUVJzcVVSV1J2Wi9SS2NQWHpKWUtLUXdh?=
- =?utf-8?B?ZS9pbm1wbUlldk9MZE9pdXduR1loekNJa1VHS3pUUVI1TVdzV2RNTWkzR1pM?=
- =?utf-8?B?NHFYZHlmSVAvV2lxK1dxZStncUF1QVFqTVVxc1NMbS84ZzFDUjRVRzZ6dTVG?=
- =?utf-8?Q?0U+c2ys56cKjYb13SXzI3nwMe?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 59b74ed8-f985-4c1d-b1c8-08dc22a678e2
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jan 2024 21:49:16.9379
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gWIzsPGJ80W2w7UK7EA68EMDS7fAyULecg/roPhhy59gzVC5UzsEhmAWdytTKMSr9nPDikV5IDrYhf/6nys0Yw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7630
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAHnAumUC/z2NywqDMBBFf0Vm3YFErY/+inSh8badhTFkYhHEf
+ zd00eW5cO45SBEFSo/ioIivqKw+g70V5D6jf4NlzkylKWtjK8tb0BQxLuyR+L8uIbnATlhUNyj
+ 3c9NN98ZYtDXlrxDxkv3XGSib9DzPC0Aha6V8AAAA
+To: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>, 
+ Geliang Tang <geliang.tang@linux.dev>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Shuah Khan <shuah@kernel.org>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, 
+ "Matthieu Baerts (NGI0)" <matttbe@kernel.org>, stable@vger.kernel.org, 
+ Geliang Tang <geliang@kernel.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3030; i=matttbe@kernel.org;
+ h=from:subject:message-id; bh=VA4S5+OXGEre7LcIjG8/DyUIQAvRbZd0CUxocr8qS9s=;
+ b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBlusCf5pZ5h12sBggnu3rqTutMrwEJMixZM7Mak
+ joQhVGjV0SJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZbrAnwAKCRD2t4JPQmmg
+ c3HQD/9D86lvkLEUa+sCkWAGbpXGChRs4bcLbsOBUCZlo6uhsTraKYGWataaPWcHPothtvFs8Tm
+ jOd+e3oqBPKzN4laDIsjuaQKGyxicLY00zdvBa8rWR74cccSPcjsp4IeRpJkqy0xk/mUItgd2/I
+ Je+zISNODFd6SVb732WQS5/Q+SYgdPY6BypHY9XXV9ZcfExKuj+mo+CSxIWNnR5+gh+aGn8scnr
+ E1278aCvLAVSuxvKOgvA3QKdQVLtM5fLC9ubWp6V1LJ9e+rmjqhktmmTp3JZZghqgyNyZsJVzS4
+ tE7rVNtJoii78/jidC6zPyf2ek3fqhckkYnqiNDdVWwdVyoXpmJ6itD/yDUfESzzerhkw34AgYc
+ x9AfBbheJa+FE6EVfmvnf55Xn+pj4CptiAdBvomTyQGMMvZ4z5McRMbIsycJniMoT4OExODe1f4
+ 8bg6GxiLtCVBSu22r9h+RynGJAziLjGNQFphkGJXdYeLBnmCDH4AZGaLMDFNZ8pvqaFUNV/tXU+
+ RvQBdPRR/v+HDnN/v1+IZmmpbhAtfrumVpkVGoHMDEb2e3dF+8NsNdRuDjjt1cHKTyrDsVUc2dI
+ mcF1gWPokwY5rLbIuTr2w5plZ6IbOQlj7rQbE91Dahe9GXz4FPY0OKmWTZqeQHkinSdlRkK5WQx
+ Q/X/0he1GSWeDMQ==
+X-Developer-Key: i=matttbe@kernel.org; a=openpgp;
+ fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
 
-On 1/31/2024 02:50, Perry Yuan wrote:
-> make pstate driver initially retrieve the P-state transition delay and latency
-> values from the BIOS ACPI tables which has more reasonable delay and latency
-> values according to the platform design and requirements.
-> 
-> Previously there values were hardcoded at specific value which may
-> have conflicted with platform and it might not reflect the most accurate or
-> optimized setting for the processor.
-> 
-> [054h 0084   8]                Preserve Mask : FFFFFFFF00000000
-> [05Ch 0092   8]                   Write Mask : 0000000000000001
-> [064h 0100   4]              Command Latency : 00000FA0
-> [068h 0104   4]          Maximum Access Rate : 0000EA60
-> [06Ch 0108   2]      Minimum Turnaround Time : 0000
-> 
-> Signed-off-by: Perry Yuan <perry.yuan@amd.com>
+This series of 9 patches fixes issues mostly identified by CI's not
+managed by the MPTCP maintainers. Thank you Linero (LKFT) and Netdev
+maintainers (NIPA) for running our kunit and selftests tests!
 
-One comment below.
+For the first patch, it took a bit of time to identify the root cause.
+Some MPTCP Join selftest subtests have been "flaky", mostly in slow
+environments. It appears to be due to the use of a TCP-specific helper
+on an MPTCP socket. A fix for kernels >= v5.15.
 
-Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
-> ---
->   drivers/cpufreq/amd-pstate.c | 34 ++++++++++++++++++++++++++++++++--
->   1 file changed, 32 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
-> index db7b36afdce2..eea2e192d748 100644
-> --- a/drivers/cpufreq/amd-pstate.c
-> +++ b/drivers/cpufreq/amd-pstate.c
-> @@ -683,6 +683,36 @@ static void amd_perf_ctl_reset(unsigned int cpu)
->   	wrmsrl_on_cpu(cpu, MSR_AMD_PERF_CTL, 0);
->   }
->   
-> +/**
-> + * Get pstate transition delay time from ACPI tables that firmware set
-> + * instead of using hardcode value directly.
-> + */
-> +static u32 amd_pstate_get_transition_delay_us(unsigned int cpu)
-> +{
-> +	u32 transition_delay_ns;
-> +
-> +	transition_delay_ns= cppc_get_transition_latency(cpu);
+Patches 2 to 4 add missing kernel config to support NetFilter tables
+needed for IPTables commands. These kconfigs are usually enabled in
+default configurations, but apparently not for all architectures.
+Patches 2 and 3 can be backported up to v5.11 and the 4th one up to
+v5.19.
 
-space before the =
+Patch 5 increases the time limit for MPTCP selftests. It appears that
+many CI's execute tests in a VM without acceleration supports, e.g. QEmu
+without KVM. As a result, the tests take longer. Plus, there are more
+and more tests. This patch modifies the timeout added in v5.18.
 
-> +	if (transition_delay_ns == CPUFREQ_ETERNAL)
-> +		return AMD_PSTATE_TRANSITION_DELAY;
-> +
-> +	return transition_delay_ns / NSEC_PER_USEC;
-> +}
-> +
-> +/**
-> + * Get pstate transition latency value from ACPI tables that firmware set
-> + * instead of using hardcode value directly.
-> + */
-> +static u32 amd_pstate_get_transition_latency(unsigned int cpu)
-> +{
-> +	u32 transition_latency;
-> +
-> +	transition_latency = cppc_get_transition_latency(cpu);
-> +	if (transition_latency  == CPUFREQ_ETERNAL)
-> +		return AMD_PSTATE_TRANSITION_LATENCY;
-> +
-> +	return transition_latency;
-> +}
-> +
->   static int amd_pstate_cpu_init(struct cpufreq_policy *policy)
->   {
->   	int min_freq, max_freq, nominal_freq, lowest_nonlinear_freq, ret;
-> @@ -725,8 +755,8 @@ static int amd_pstate_cpu_init(struct cpufreq_policy *policy)
->   		goto free_cpudata1;
->   	}
->   
-> -	policy->cpuinfo.transition_latency = AMD_PSTATE_TRANSITION_LATENCY;
-> -	policy->transition_delay_us = AMD_PSTATE_TRANSITION_DELAY;
-> +	policy->cpuinfo.transition_latency = amd_pstate_get_transition_latency(policy->cpu);
-> +	policy->transition_delay_us = amd_pstate_get_transition_delay_us(policy->cpu);
->   
->   	policy->min = min_freq;
->   	policy->max = max_freq;
+Patch 6 reduces the maximum rate and delay of the different links in
+some Simult Flows selftest subtests. The goal is to let slow VMs reach
+the maximum speed. The original rate was introduced in v5.11.
+
+Patch 7 lets CI changing the prefix of the subtests titles, to be able
+to run the same selftest multiple times with different parameters. With
+different titles, tests will be considered as different and not override
+previous results as it is the case with some CI envs. Subtests have been
+introduced in v6.6.
+
+Patch 8 and 9 make some MPTCP Join selftest subtests quicker by stopping
+the transfer when the expected events have been seen. Patch 8 can be
+backported up to v6.5.
+
+Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+---
+Matthieu Baerts (NGI0) (8):
+      selftests: mptcp: add missing kconfig for NF Filter
+      selftests: mptcp: add missing kconfig for NF Filter in v6
+      selftests: mptcp: add missing kconfig for NF Mangle
+      selftests: mptcp: increase timeout to 30 min
+      selftests: mptcp: decrease BW in simult flows
+      selftests: mptcp: allow changing subtests prefix
+      selftests: mptcp: join: stop transfer when check is done (part 1)
+      selftests: mptcp: join: stop transfer when check is done (part 2)
+
+Paolo Abeni (1):
+      mptcp: fix data re-injection from stale subflow
+
+ net/mptcp/protocol.c                              |  3 ---
+ tools/testing/selftests/net/mptcp/config          |  3 +++
+ tools/testing/selftests/net/mptcp/mptcp_join.sh   | 27 +++++++++--------------
+ tools/testing/selftests/net/mptcp/mptcp_lib.sh    |  2 +-
+ tools/testing/selftests/net/mptcp/settings        |  2 +-
+ tools/testing/selftests/net/mptcp/simult_flows.sh |  8 +++----
+ 6 files changed, 20 insertions(+), 25 deletions(-)
+---
+base-commit: c9ec85153fea6873c52ed4f5055c87263f1b54f9
+change-id: 20240131-upstream-net-20240131-mptcp-ci-issues-9d68b5601e74
+
+Best regards,
+-- 
+Matthieu Baerts (NGI0) <matttbe@kernel.org>
 
 
