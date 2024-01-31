@@ -1,140 +1,139 @@
-Return-Path: <linux-kernel+bounces-46535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46539-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F3CA844107
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:51:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 037B6844116
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:54:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B28D41C20F5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:51:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 970041F2DAA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:54:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B23580BF9;
-	Wed, 31 Jan 2024 13:51:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ABCD82860;
+	Wed, 31 Jan 2024 13:53:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LVNj2Nr6"
-Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IQ/r2fAj"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65D1380BF1
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 13:51:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1945581ADE
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 13:53:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706709109; cv=none; b=cNA8K/vN9jipHhNlaXZkp61JNLwqE/+bqWjAUEA8KcZnAZPiOE074TQCXv4xcZhi3ItWO/g3dqXLcBWxHYPFqhtQdGbdwFdaFLvJn2oQm2x65oMdfl4jQVaMdP/7bH7rTWkZ0iaaRZfLtsCED7EZVYX/KdSHoGwDCeuVCvVMds8=
+	t=1706709235; cv=none; b=DOngc6gdQrIJQB/Pug+TS/1nVECG886onGOzcYUDeZTUrGflEzIr3k8D7Vm4uWQc806samBeQ8P3kl5YkxLXK+hFFrKZKrTvn9F63Rdx8ogmnx0mIH9hq8Z5uMqhUXzH8XEDHO1NvOzC3X5AOahuMmA3u0fxdDVgmMPYkGKrXbM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706709109; c=relaxed/simple;
-	bh=fyn7CNrrVrpYyrM58B+ntXebk8wUTe3fdYprQRco57w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=ngoonFkEhpC93hqjGm6ETrZHSKxWhFJMDYW2FNvuep6QzgVp21mrBEuw5uOqeOueaa/snNOoMvCIjoqq2jeWrTXqgnKCDO85wtobCBESytSFPrWLuHu/iTskgboiJtzDQ9f16JcRIaHMOXBjUJZpXfvE03NFMfL1/HYRKbHo1NU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=LVNj2Nr6; arc=none smtp.client-ip=209.85.166.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-36394219fbfso141325ab.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 05:51:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706709107; x=1707313907; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Qp92m4+7j1oe526U6TZ1do3LliICAajgI9vCOPFkmF0=;
-        b=LVNj2Nr6xDNiGEKjMbxMD3UBG8y8693Dl7x8vddOiBWwVoHRaufFXh59Exy3JCu2Wb
-         SdrG4/5109P/Me7ug+ZOrleUu17dgYY6sfbGPf7rWGR8+w5pIF5ds+VecaS4qc662Cd5
-         YIN9NE13v9rhcAC//SAqO9EHdmdrrp/cwX4VER0ius6ykdU4t5hQUnDNcQVIHpOGRgQm
-         aZvU8JqagTcXAFm7aLpZAY9ofytkarq3JrL1h4kmfYZO9jML7S31xYSe2n+dj6IvSuab
-         h3w/6Yw6QVuptWTsSwz+SAhRvkuS7DOd0LTiPmIPppz+6Mtfzn4PQprDXuF+our48xnq
-         jD3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706709107; x=1707313907;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Qp92m4+7j1oe526U6TZ1do3LliICAajgI9vCOPFkmF0=;
-        b=RCCrHsbayjuwgJbQPRgessjKGcS6Iqg3+Ein3x6YVME6dEaqFG1pB5swbay/81jjTq
-         UJA5umX3WX0KkRYUL5W2Co//0CQK0xs1f+5h8lddslz/tkvyIcRNsYtuH2UunNCYzPy0
-         HZSoYZLjuAvICbpQEG/FTsAtO54jHCet8HtC0s6BAAkGNv20jZXkebiLJpEUYZyrvRBJ
-         xSVXXHoWmQPyGLdMw8RFVNYQnTepPy2fHFqAZftKSYKoTtx9WaWvbdjpES2SA6wvw7Zq
-         /HhG+asTlISJZ9KFsdrBQlGyGW7Y3stpw/dBK41PKdIRyaaSRhuPeQwuzhGMLzYhhiZj
-         4log==
-X-Gm-Message-State: AOJu0YwbY7GyAcZHjNQBrAdvpUo5ZA5f+thT+tQL3hZ5ACiDk4AsHKad
-	qLFCnYukz+qK8Q5cZ3WXRD3pkARfZD5IUNirr74c4m8IBPFrV8JX9VU19aoDwhpLjJBDf+qL5gP
-	Racz1BBTqDoLt5F+QJVyL2UOEIW7r7lSXllGy
-X-Google-Smtp-Source: AGHT+IFz910e95ewtwhhYN+Tk20AQOgrnpskxCJV00zrcITe64YiZIZkOE0LSPtKjShspk5+kSPGqENdP6DEEZRg6mk=
-X-Received: by 2002:a05:6e02:e0b:b0:363:8007:d7dd with SMTP id
- a11-20020a056e020e0b00b003638007d7ddmr468225ilk.3.1706709107325; Wed, 31 Jan
- 2024 05:51:47 -0800 (PST)
+	s=arc-20240116; t=1706709235; c=relaxed/simple;
+	bh=uakhvgKxjPNFgke93mN0JdxLjWrSFUxLbgu+RZRmEiA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cFBxgyxDt0MLdVIb1i27WCVslzKU0ad8f5VV7JMqw+axI2f/sxkMfo0kjItdXpJ//e7m2LXTbmbYYEFaL4Wac5/+PaOqnTpH+KVfbCVE6EafAmBLoaBA+5GE9nrGF2VNdVLe1SYhQ5NgDY71VxMsYm8eUkLvN7p4RBUDHqV8nuc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IQ/r2fAj; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706709233;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=E4i0Tk4JbtiIv1UU4oy6keRyKO0PtP4NeohxR4ZpA+c=;
+	b=IQ/r2fAjl+P61E93C3G/3QGAtPH1pznmy6HydfOvkCoCwmGrzPT2S+L/wQsL3fjgG6N8/L
+	TNfV4uk8mbVsq57fDqQ+lfjDw0L0zng7JX6r/tgWrcYmTJbViVjB5D8Wxif3yQfrMKqaif
+	oHU1Ri4wplmiYNObmacCAUMOWH8rfsA=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-495-_-stHLIRM3mmrNXR4w-Rug-1; Wed, 31 Jan 2024 08:53:49 -0500
+X-MC-Unique: _-stHLIRM3mmrNXR4w-Rug-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 23E71848A69;
+	Wed, 31 Jan 2024 13:53:49 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.249])
+	by smtp.corp.redhat.com (Postfix) with SMTP id DF2FA2166B31;
+	Wed, 31 Jan 2024 13:53:47 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Wed, 31 Jan 2024 14:52:34 +0100 (CET)
+Date: Wed, 31 Jan 2024 14:52:32 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Tycho Andersen <tycho@tycho.pizza>
+Cc: Christian Brauner <brauner@kernel.org>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] pidfd: implement PIDFD_THREAD flag for pidfd_open()
+Message-ID: <20240131135232.GA2609@redhat.com>
+References: <20240130112638.GA29773@redhat.com>
+ <20240130113409.GA29849@redhat.com>
+ <ZbmwJiIS4ei64u6R@tycho.pizza>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131134940.593788-1-irogers@google.com>
-In-Reply-To: <20240131134940.593788-1-irogers@google.com>
-From: Ian Rogers <irogers@google.com>
-Date: Wed, 31 Jan 2024 05:51:36 -0800
-Message-ID: <CAP-5=fVf6A2dxLpFKo4S5A7KUtVqBsBH0u1P29ksf1TjYZvhaQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] perf tsc: Add missing newlines to debug statements
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, James Clark <james.clark@arm.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	tchen168@asu.edu, Michael Petlan <mpetlan@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZbmwJiIS4ei64u6R@tycho.pizza>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-On Wed, Jan 31, 2024 at 5:49=E2=80=AFAM Ian Rogers <irogers@google.com> wro=
-te:
+On 01/30, Tycho Andersen wrote:
 >
-> It is assumed that debug statements always print a newline, fix two
-> missing ones.
+> On Tue, Jan 30, 2024 at 12:34:09PM +0100, Oleg Nesterov wrote:
+> > Damn. Self-NACK.
+> >
+> > I forgot (we all ;) about mt-exec, and there are 2 problems.
+> >
+> > 1. The "if (!thread_group_leader(tsk))" block in de_thread() needs
+> >    do_notify_pidfd() too, the execing non-leader thread looses its
+> >    old pid, pidfd_poll(PIDFD_THREAD, pid-of-execing-sub-thread)
+> >    should succeed. Must be fixed, I think.
 >
-> Signed-off-by: Ian Rogers <irogers@google.com>
+> I think the `test_non_tgl_exec` from my tests exercises the scenario
+> you're describing, and it works.
 
-Sorry forgot to add:
-Reviewed-by: James Clark <james.clark@arm.com>
-To this one.
+This means your test is racy, I guess.
 
-Thanks,
-Ian
+Look. We have a leader L, its sub-thtread T with the pid TPID, and
+another process X which sleeps in pidfd_poll(PIDFD_THREAD, TPID).
 
-> ---
-> This patch was inspired by bad debug output in:
-> https://lore.kernel.org/linux-perf-users/CAGjhMsg_bVKJ_zfsLUR32+oZwGDr3Oi=
-BHV_BJ3QtFjyKAs7Sgg@mail.gmail.com/
-> ---
->  tools/perf/arch/x86/util/tsc.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+T starts de_thread and kills the leader L. The leader exits and wakes
+X up.
+
+Then T does de_thread() -> exchange_tids() so we have
+
+	// BEFORE:
+	// pid_task(TPID, PIDTYPE_PID) == T
+	exchange_tids(tsk, leader);
+	// AFTER:
+	// pid_task(TPID, PIDTYPE_PID) == L
+
+Now. If X calls pidfd_task_exited(TPID, true) "AFTER" then we are
+fine, pidfd_task_exited() will return true. OK, this is not exactly
+true, leader->exit_state == 0 right after exchange_tids(), but lets
+ignore.
+
+However. If X calls pidfd_task_exited(TPID, true) "BEFORE" it will
+return false: pid_task(TPID) == T and T is not going to die. So
+pidfd_poll() will block again forever, TPID is going to die.
+
+See?
+
+Fixed in v3.
+
+> > 2. pidfd_poll(PIDFD_THREAD, pid-of-group-leader) should not succeed
+> >    when its sub-thread execs, the execing thread inherits the leader's
+> >    pid. Perhaps pidfd_task_exited() can check sig->group_exec_task,
 >
-> diff --git a/tools/perf/arch/x86/util/tsc.c b/tools/perf/arch/x86/util/ts=
-c.c
-> index 9b99f48b923c..e2d6cfe21057 100644
-> --- a/tools/perf/arch/x86/util/tsc.c
-> +++ b/tools/perf/arch/x86/util/tsc.c
-> @@ -33,7 +33,7 @@ static double cpuinfo_tsc_freq(void)
->
->         cpuinfo =3D fopen("/proc/cpuinfo", "r");
->         if (!cpuinfo) {
-> -               pr_err("Failed to read /proc/cpuinfo for TSC frequency");
-> +               pr_err("Failed to read /proc/cpuinfo for TSC frequency\n"=
-);
->                 return NAN;
->         }
->         while (getline(&line, &len, cpuinfo) > 0) {
-> @@ -48,7 +48,7 @@ static double cpuinfo_tsc_freq(void)
->         }
->  out:
->         if (fpclassify(result) =3D=3D FP_ZERO)
-> -               pr_err("Failed to find TSC frequency in /proc/cpuinfo");
-> +               pr_err("Failed to find TSC frequency in /proc/cpuinfo\n")=
-;
->
->         free(line);
->         fclose(cpuinfo);
-> --
-> 2.43.0.429.g432eaa2c6b-goog
->
+> I didn't have an explicit test for this, but I hacked one up, and
+> pidfd_poll(PIDFD_THREAD, pid-of-group-leader) doesn't return after
+> exec.
+
+See above, this depends on timing.
+
+See also v3 I've sent, I tried to document the problems with mt-exec.
+
+Oleg.
+
 
