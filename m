@@ -1,104 +1,98 @@
-Return-Path: <linux-kernel+bounces-45821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39F198436A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:26:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65D89843643
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:53:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0C54B265A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:26:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0612C1F28201
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 05:53:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C64B3EA9D;
-	Wed, 31 Jan 2024 06:25:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8BE63F8FE;
+	Wed, 31 Jan 2024 05:52:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eAHplHh2"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="mREkTbXH"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B390C3EA7A;
-	Wed, 31 Jan 2024 06:25:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB4123F8F7;
+	Wed, 31 Jan 2024 05:52:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706682355; cv=none; b=fg+R+MdYbyl/E6UpHrGvPrH92kBU3oXuxWns8pV5kjr9xOkSND+T7B4Nt0JoRfwYA5mKAnf5uBVBHZp+IU7uZBOjq8FWvld8HVHF3WSwZIaAuz0o0h3r8W1SLm7HbHMB534vaaEnim58T82zLk8CQ5LeLGsMGSPtwW+pWjOE1Ro=
+	t=1706680346; cv=none; b=RWRfeohsljrHQa780Sht9KESGGjSzcSTymG8qkvGcm98hC6+EYOnplXEtA9F0lC9BhIEcbXTM9HZLZqfIxlHYS5VQd5n8FKJmkGjsOgDa1YPw2SYnGf4ZKi9Dc0vFp57VvOAYKYsqikUyew6ufxNcLJWzr1xj8YV77lbHGQDdkk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706682355; c=relaxed/simple;
-	bh=Dz+rEBJ1wZtGL4hQOfZUqa80XN/mQMePbBMimQSo/DE=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=I0cFyrxwB6CUjqhI5SpUDhovsFHQIqC5p+/pJU4IEqrPpVxsEzqW8DZe7ful/FQgKuPfcqY0guf8oFyyIOLM/i+dWAfcZQftqtWwmwQgDhs4WSvgXMxkfM3Ub88IyoFs6JNjvTG/OoZdaQ9yOBX9pHllMc/b6gEqgpKNbVlTRRA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eAHplHh2; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706682353; x=1738218353;
-  h=from:to:cc:subject:date:message-id;
-  bh=Dz+rEBJ1wZtGL4hQOfZUqa80XN/mQMePbBMimQSo/DE=;
-  b=eAHplHh2S9pdRDzjgvzFHshNkiSArFrKroXo7QoWq/B812hZ6r8Z/UwD
-   sabFCxTq56v5R+WcUv2ELz6qFPZf7sxg0eB+f066YRfU0IdP7mHIu57yy
-   Mc1U3emt7Mo/Rk/kbsq9hBaM7ZcMRVcr6JVLNL8zaKW3+6KI6sCF6JimX
-   7fy5sWQwrIHjcSvWf3gIsHEi1pT9Mc7Izmj3Usuoh33qoWYC2+zxNHoG+
-   vLu8yFUWT8a05EKxed4Aq4Zislw0nUV2WtNDJkc5+W11qifFIaCHgrkVu
-   xk6sCzv6YdEKUzaPWVId1Vxj70GBMsQcPrznm3JoRUiacWEHobr+jEQM0
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="16888137"
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="16888137"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 22:25:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="3939842"
-Received: from yzhao56-desk.sh.intel.com ([10.239.159.62])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 22:25:50 -0800
-From: Yan Zhao <yan.y.zhao@intel.com>
-To: arnd@arndb.de,
-	linus.walleij@linaro.org,
-	guoren@kernel.org,
-	bcain@quicinc.com,
-	jonas@southpole.se,
-	stefan.kristiansson@saunalahti.fi,
-	shorne@gmail.com
-Cc: linux-arch@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org,
-	linux-openrisc@vger.kernel.org,
-	Yan Zhao <yan.y.zhao@intel.com>
-Subject: [PATCH 0/4] apply page shift to PFN instead of VA in pfn_to_virt
-Date: Wed, 31 Jan 2024 13:51:59 +0800
-Message-Id: <20240131055159.2506-1-yan.y.zhao@intel.com>
-X-Mailer: git-send-email 2.17.1
+	s=arc-20240116; t=1706680346; c=relaxed/simple;
+	bh=oLIoHkCq7oxroT661WmG3ewiFL1pCsYktfj18SCPxK0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fiKt9a0revLgkdcDtiEXJlrHbTf/vlee+IPnn7U47u7QyD2Pn9sNdYcwRz3lZHLx4zGyI0PcZh/XT8IZJPgOkxjOjbtPQWlYPnfBkLToS0FlglaLQ8vHI+510fNw2UB9y+do+hKJ1NZKfxuHfnbBOj6MUgcW+yQs6piT6yGyY2Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=mREkTbXH; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from umang.Jain (unknown [103.86.18.206])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id C661F3D9;
+	Wed, 31 Jan 2024 06:50:55 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1706680257;
+	bh=oLIoHkCq7oxroT661WmG3ewiFL1pCsYktfj18SCPxK0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=mREkTbXHguI7h4qA9e846aeJY3aBYevjyG4kgFlQBeUg0z74K8aAwkXrWAC7XqSI3
+	 euV4oEjxiIekIKQbNLyIxfa1Ztzlx45Sb9XtV9+ZweBuAaujwJ0dnJxI1VqVQvRsM3
+	 kGusMaeUgNpOEgmAPQa7yboZXp7rq64VgCa3mCvk=
+From: Umang Jain <umang.jain@ideasonboard.com>
+To: linux-media@vger.kernel.org
+Cc: Kieran Bingham <kieran.bingham@ideasonboard.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Umang Jain <umang.jain@ideasonboard.com>
+Subject: [PATCH v2 0/5] imx335: Support additional link-freq and TPG
+Date: Wed, 31 Jan 2024 11:22:03 +0530
+Message-ID: <20240131055208.170934-1-umang.jain@ideasonboard.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-This is a tiny fix to pfn_to_virt() for some platforms.
+This series adds support for additional link frequency and
+test pattern generator on IMX335.
 
-The original implementaion of pfn_to_virt() takes PFN instead of PA as the
-input to macro __va, with PAGE_SHIFT applying to the converted VA, which
-is not right under most conditions, especially when there's an offset in
-__va.
+Patch 1/5 is a drive-by patch which drops setting of a reserved
+register. This register has no effect in operation/streaming of the
+sensor.
+
+Patch 2/5 adds usage of v4l2_link_freq_to_bitmap V4L2 helper.
+
+Patch 3/4 supports for additional link-frequency supported by IMX335
+
+Patch 4/5 is also a prep-up patch for TPG introduction(in 5/5), as the test
+pattern needs sensor to be powered up to apply the test pattern.
+
+Patch 5/5 adds the TPG.
+
+Changes in v2:
+- add new patch 2/5 to use v4l2_link_freq_to_bitmap
+- fixup a return; in 4/5
+
+Matthias Fend (1):
+  media: i2c: imx335: Add support for test pattern generator
+
+Umang Jain (4):
+  media: i2c: imx335: Drop setting of 0x3a00 register
+  media: imx335: Use v4l2_link_freq_to_bitmap helper
+  media: i2c: imx335: Support multiple link frequency
+  media: i2c: imx335: Refactor power sequence to set controls
+
+ drivers/media/i2c/imx335.c | 250 ++++++++++++++++++++++++++++++-------
+ 1 file changed, 205 insertions(+), 45 deletions(-)
 
 
-Yan Zhao (4):
-  asm-generic/page.h: apply page shift to PFN instead of VA in
-    pfn_to_virt
-  csky: apply page shift to PFN instead of VA in pfn_to_virt
-  Hexagon: apply page shift to PFN instead of VA in pfn_to_virt
-  openrisc: apply page shift to PFN instead of VA in pfn_to_virt
-
- arch/csky/include/asm/page.h     | 2 +-
- arch/hexagon/include/asm/page.h  | 2 +-
- arch/openrisc/include/asm/page.h | 2 +-
- include/asm-generic/page.h       | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
-
-
-base-commit: 41bccc98fb7931d63d03f326a746ac4d429c1dd3
+base-commit: d7cb6098f1d4866ae864cccdbb3fdcea1176a7f6
 -- 
-2.17.1
+2.41.0
 
 
