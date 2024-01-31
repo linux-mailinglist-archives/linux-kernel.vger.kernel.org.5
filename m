@@ -1,166 +1,136 @@
-Return-Path: <linux-kernel+bounces-47095-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47096-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DBB284490D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:41:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12F63844910
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:42:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 286C628FDA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:41:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45BFD1C2308B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:42:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 863C23839F;
-	Wed, 31 Jan 2024 20:41:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84F9A3839F;
+	Wed, 31 Jan 2024 20:42:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="QNici0k+"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="ARBz+MSp"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10C3720DE0;
-	Wed, 31 Jan 2024 20:41:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D52B20DE0;
+	Wed, 31 Jan 2024 20:42:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706733704; cv=none; b=Ik1c32Jyn6IR98YlEhskW7mX9DsyEUcgzs4CzWOnRRBGTsIkiVYjh9t8FlDcjIj9cmw/xWvlhvzCvlP5LvSrth/gX3V7uoNktYNK/Zuj3qaucX9ztnF/gomnfSUvyi1bSd6aq+Op/g+Gb6sD3DUF7D/BINOg2L+MYGVlbEDLE4U=
+	t=1706733741; cv=none; b=E6w6elcYy/RIG2g0PX2QhBGV4J6cQCptEBTX2t4HHbM7v677IPOLQrWhPo7O/RJ8yJmkfppQZTJO2IlTITrhEVG/IT9pVlJL4VgW8I50YQHCDcJuqcg8Xc2h6hPUE58aKW36aljjmas3bs/G1uyN0MnJe5jFOJgvqZRZN1AS+vs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706733704; c=relaxed/simple;
-	bh=i8BK1vul/D0h0q8NumttG0fZUxs7TYr/KsMBcuAt20o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=qz2G5JGOBdvThzMnF/ODo4Pc0gX24y7h1YjWuNjzuOZsGIg5uD9DvOaGDNvPI8DvjBOy6NPKDBG1SWd/b7jVspJdWuaYcfiOuJXSmqLHuTT9Qg8Zz3nCS46KsE20in4vLb8kFDggFp5DcjrlEfhs/cnuzZhm1A4VcLX0AhzM6HM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=QNici0k+; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40VKfVJQ112558;
-	Wed, 31 Jan 2024 14:41:31 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706733691;
-	bh=MrbmAMsWZQgSlGEY4D41Ts6E5MpC5FPSiof4n6JfF0I=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=QNici0k+CZKoPLY1PbTFlYxWjOyml3wH/fCyP4h5jo/2Vv5YwUML3kmKl9RtI+MhO
-	 ELYsImRPtZ8XFYtybmFS/Rf25Rg/W52w8MILkGw6DQSRCK8bCVFYnzjePQkMvjLiNH
-	 RcPhxaqQhxuLc+a8GBRzk+MpKSZZpw5GrqGmzYPI=
-Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40VKfVgL008187
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 31 Jan 2024 14:41:31 -0600
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 31
- Jan 2024 14:41:31 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 31 Jan 2024 14:41:31 -0600
-Received: from [128.247.81.105] (judy-hp.dhcp.ti.com [128.247.81.105])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40VKfV0l099440;
-	Wed, 31 Jan 2024 14:41:31 -0600
-Message-ID: <989bcf17-114a-4f6c-84b9-1ff443cb01dc@ti.com>
-Date: Wed, 31 Jan 2024 14:41:31 -0600
+	s=arc-20240116; t=1706733741; c=relaxed/simple;
+	bh=iCd/z3ZhJiwbvZDbjGrTq6Xj86/HS7Uqec1TZyUbpnE=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=uefJ+hFZ7236WwtgQsdsxOLuye9KrNSGtafFhyIVyLXI+fOQdXcvCiupo5XAHKX0+/tQqcAt3GJp2SOfNbufJ0PI5OjVuK5Sxo+5vKBCM/wC10c5MT4+oZEBR+VImqUfi6nvxzVZbtvFnNJTfBA7WTcP6mJs6W8OtYj+IyJPyGA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=ARBz+MSp; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1706733735;
+	bh=4rdtf4LuoZzh7J5jcGE4PvRQ08J1Kn0j1es+qeP3Of4=;
+	h=Date:From:To:Cc:Subject:From;
+	b=ARBz+MSp5QPT0RVndSxMgeU2dfJxNe60FDNIwoySbxY4Manme7xiSRRr481PblJOJ
+	 mn5yrv91BlDfUNsWk9vQtvNBQOe5S4Ht1tBCcFsGsLgVkPtzgM3uI/uLAskcOuO8WC
+	 /qOQUdT23ShdbnkG8AqDccZsxYJLminfZ1H/S5yOatd60sWC6jc3dCc7PgM7fhz0er
+	 wwMgx1lMvXZSmf3XZNjTAlhivUd/2ugUXYcJYssT3gb6QEldbNB9V/B1MZJcM+BCeV
+	 GWNPRSNoj5LSLnhjQOomtFzpOTm5CY4GY1Q1Klpb1KHAVwMiBvL707lDYEkioFHIks
+	 uit9wDzCkU+aw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TQDVX75lPz4x1v;
+	Thu,  1 Feb 2024 07:42:12 +1100 (AEDT)
+Date: Thu, 1 Feb 2024 07:41:33 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>
+Cc: "Borislav Petkov (AMD)" <bp@alien8.de>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the tip tree
+Message-ID: <20240201074102.00726258@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 00/13] Add tuning algorithm for delay chain
-Content-Language: en-US
-To: "Raghavendra, Vignesh" <vigneshr@ti.com>,
-        Ulf Hansson
-	<ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>
-CC: Adrian Hunter <adrian.hunter@intel.com>, <linux-mmc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Nishanth Menon <nm@ti.com>,
-        Andrew Davis
-	<afd@ti.com>, Udit Kumar <u-kumar1@ti.com>,
-        Roger Quadros
-	<rogerq@kernel.org>, <devicetree@vger.kernel.org>,
-        Randolph Sapp <rs@ti.com>
-References: <20240131003714.2779593-1-jm@ti.com>
- <5e03e867-b45f-482b-b734-7949e28fc97e@ti.com>
-From: Judith Mendez <jm@ti.com>
-In-Reply-To: <5e03e867-b45f-482b-b734-7949e28fc97e@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: multipart/signed; boundary="Sig_/dktiJloPzo_9TMacUSWcm3n";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On 1/31/24 7:35 AM, Raghavendra, Vignesh wrote:
-> Hi,
-> 
-> On 1/31/2024 6:07 AM, Judith Mendez wrote:
->> This patch series introduces a new tuning algorithm for
->> mmc. The new algorithm should be used when delay chain is
->> enabled. The ITAPDLY is selected from the largest passing
->> window and the buffer is not viewed as a circular buffer.
->> The new tuning algorithm is implemented as per the paper
->> published here [0] and has been tested on the following
->> platforms: AM62x SK, AM62A SK, AM62p SK, AM64x SK, and AM64x
->> EVM.
->>
->> The series also includes a few fixes in the sdhci_am654
->> driver on OTAPDLYEN/ITAPDLYEN and ITAPDELSEL. There are
->> also device tree node fixes for missing mmc nodes,
->> modifying DLL properties, and fixes for OTAP/ITAP delay
->> values.
->>
->> MMC0/MMC2 nodes are introduced for AM62ax in this series.
->>
->> This series is sent as a RFC mostly to get some feedback
->> and/or comments on the new tuning algorithm implementation.
->>
->> [0] https://www.ti.com/lit/an/spract9/spract9.pdf
->>
-> 
-> 
->> Judith Mendez (11):
->>    drivers: mmc: host: sdhci_am654: Add tuning algorithm for delay chain
->>    drivers: mmc: host: sdhci_am654: Write ITAPDLY for DDR52 timing
->>    drivers: mmc: host: sdhci_am654: Add missing OTAP/ITAP enable
->>    drivers: mmc: host: sdhci_am654: Add ITAPDLYSEL in
->>      sdhci_j721e_4bit_set_clock
->>    drivers: mmc: host: sdhci_am654: Fix ITAPDLY for HS400 timing
-> 
-> These patches needs to have Fixes: tag as they are bug fixes IMO.
+--Sig_/dktiJloPzo_9TMacUSWcm3n
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Understood, will add.
+Hi all,
 
-> 
->>    arm64: dts: ti: k3-am62a-main: Add sdhci2 instance
->>    arm64: dts: ti: k3-am64-main: Update ITAP/OTAP values for MMC
->>    arm64: dts: ti: k3-am62-main: Update ITAP/OTAP values for MMC
->>    arm64: dts: ti: k3-am62p: Add missing properties for MMC
->>    arm64: dts: ti: k3-am6*: Remove DLL properties for soft phys
->>    arm64: dts: ti: k3-am6*: Reorganize MMC properties
->>
->> Nitin Yadav (2):
->>    arm64: dts: ti: k3-am62a-main: Add sdhci0 instance
->>    arm64: dts: ti: k3-am62a7-sk: Enable eMMC support
->>
-> 
-> Can the driver changes be merged independent of DT changes? Or are they
-> meant to go together? Latter would be problematic as it creates cross
-> tree dependencies.
+Commits
 
-The driver changes can be merged independently.
+  b564b0111a3f ("x86/fred: Invoke FRED initialization code to enable FRED")
+  43ca697baecf ("x86/fred: Add FRED initialization functions")
+  ae46f3978ae4 ("x86/syscall: Split IDT syscall setup code into idt_syscall=
+_init()")
+  cb5429aaa0c5 ("KVM: VMX: Call fred_entry_from_kvm() for IRQ/NMI handling")
+  d8fbd0496286 ("x86/entry: Add fred_entry_from_kvm() for VMX to handle IRQ=
+/NMI")
+  8c968f4df73c ("x86/entry/calling: Allow PUSH_AND_CLEAR_REGS being used be=
+yond actual entry code")
+  ed63bc7d4953 ("x86/fred: Fixup fault on ERETU by jumping to fred_entrypoi=
+nt_user")
+  531ff17a705a ("x86/fred: Let ret_from_fork_asm() jmp to asm_fred_exit_use=
+r when FRED is enabled")
+  db7c787d8ba2 ("x86/traps: Add sysvec_install() to install a system interr=
+upt handler")
+  5dd56c94ca2f ("x86/fred: Add a machine check entry stub for FRED")
+  3e91abaa5673 ("x86/fred: Add a NMI entry stub for FRED")
+  4af12f6a393c ("x86/fred: Add a debug fault entry stub for FRED")
+  2ad2917c6f50 ("x86/idtentry: Incorporate definitions/declarations of the =
+FRED entries")
+  9f6870bafc18 ("x86/fred: Make exc_page_fault() work for FRED")
+  f102fe126d28 ("x86/fred: Allow single-step trap and NMI when starting a n=
+ew task")
+  d0fb796dc347 ("x86/fred: No ESPFIX needed when FRED is enabled")
+  5710910a6c94 ("x86/fred: Disallow the swapgs instruction when FRED is ena=
+bled")
+  f393835cbab6 ("x86/fred: Update MSR_IA32_FRED_RSP0 during task switch")
+  fcd06abf6de2 ("x86/fred: Reserve space for the FRED stack frame")
+  c413db75cb7d ("x86/fred: Add a new header file for FRED definitions")
+  c125443456e9 ("x86/ptrace: Add FRED additional information to the pt_regs=
+ structure")
+  ed262541af19 ("x86/ptrace: Cleanup the definition of the pt_regs structur=
+e")
+  0b2e6c1c724f ("x86/cpu: Add MSR numbers for FRED configuration")
+  95d34efac1a0 ("x86/cpu: Add X86_CR4_FRED macro")
+  379ae086a73c ("x86/objtool: Teach objtool about ERET[US]")
+  567f7205dd7a ("x86/opcode: Add ERET[US] instructions to the x86 opcode ma=
+p")
 
-> 
->>   arch/arm64/boot/dts/ti/k3-am62-main.dtsi      |  57 +++--
->>   .../arm64/boot/dts/ti/k3-am625-beagleplay.dts |   5 -
->>   arch/arm64/boot/dts/ti/k3-am62a-main.dtsi     |  45 +++-
->>   arch/arm64/boot/dts/ti/k3-am62a7-sk.dts       |  27 ++-
->>   arch/arm64/boot/dts/ti/k3-am62p-main.dtsi     |  44 +++-
->>   arch/arm64/boot/dts/ti/k3-am62p5-sk.dts       |   7 +-
->>   .../arm64/boot/dts/ti/k3-am62x-sk-common.dtsi |   4 +-
->>   arch/arm64/boot/dts/ti/k3-am64-main.dtsi      |  17 +-
->>   arch/arm64/boot/dts/ti/k3-am642-evm.dts       |   4 +-
->>   arch/arm64/boot/dts/ti/k3-am642-sk.dts        |   2 -
->>   drivers/mmc/host/sdhci_am654.c                | 215 ++++++++++++++----
->>   11 files changed, 321 insertions(+), 106 deletions(-)
->>
+are missing a Signed-off-by from their committer.
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/dktiJloPzo_9TMacUSWcm3n
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmW6sH0ACgkQAVBC80lX
+0GwOzwf/ZlD0dCYGex2yyQcDWd8K3JmimV7jZBIKLFZW1h7DLaCuqJoEQY1eOrzT
+26eFaHFCM/Ied3NXdV08l/e2X+JcxOXNqIvzE4gG8b+JTwIX8BC6ydsRZQSY/S1O
+Q4IHixG1n69+hIkHLO9vw1k/hUuxJdo0JZ32b+MNguXBi/i8ysrAqpH+N2Wm/eVE
+r4C3EOA/4fp4LBr0jMlDP1uxIuPwEY6L8mRFFjI8aTErdPyEKK3f2PZZnh8EV+iM
+fGYUP7Do9SzAvD79zB3bEoun8lkjD7quig+w2CB4hWiPkUG4SNYn9S4B+wAPZhsM
+gHdPYH9IRZ76sVxgNwXH5CkTN2uT4w==
+=g9ed
+-----END PGP SIGNATURE-----
+
+--Sig_/dktiJloPzo_9TMacUSWcm3n--
 
