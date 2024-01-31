@@ -1,159 +1,113 @@
-Return-Path: <linux-kernel+bounces-47088-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47089-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57BF88448F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:33:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D9208448F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:33:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1DA528F7DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:33:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA6911F23111
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:33:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7052539840;
-	Wed, 31 Jan 2024 20:32:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F42A38FAA;
+	Wed, 31 Jan 2024 20:32:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="es8y/4Zb"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sDreQZTx"
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D40C938FAA;
-	Wed, 31 Jan 2024 20:31:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4DD638FB5
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 20:32:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706733119; cv=none; b=D+nAcmahELnq9IkAcpIAg9Ked2i1ddO57D3TP+fG6Sy4AFaIHTQL8YYoXw+0kiuhnhSETVU2rn79bP5o0CzQB78oA6qYWiwOUWOmNYPDDSHtkYKQLVtFzLabGJyC3AWAhLMHslCXcKFskR+AkZyyNycGEZwzlZDbsqDn5/MX1Gc=
+	t=1706733144; cv=none; b=T4XGaiqZoOG6wQUX1S8jTpAUblWCzivn8XRTFnaxXFsjvP0XZa07bN/hCp4lONU3EcuOowKxA/GEtp4+yXDaafC2bXmp6w8NahKHzykmN6yTTQeDDuyzlp8B2lOU3TnrGcKMKlIWLlt960ZNlRy9+gJ3grKBFrKm6I1Idz5UKOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706733119; c=relaxed/simple;
-	bh=eJXZkWPbAUx+kD2mMYWA6mmXmbvNs/dUZLBtXnq18C8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZriZP1me5d1Iazpc0SHF10L4W2RzgoRPi0/RwVSwq6bHmCMagiCWSIs3jkKUmov2xsKL0EOj1WA9frVScPeOEeeeOX7Z6MERYeeCdujZ6wHam7cPvByGGYanBT7H34CoW39KqBBuY74vi3Wmp6TM26KCnl6Z7jOE/BYTRDtu+C4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=es8y/4Zb; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706733118; x=1738269118;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=eJXZkWPbAUx+kD2mMYWA6mmXmbvNs/dUZLBtXnq18C8=;
-  b=es8y/4Zbja4s0Av+qYVyy72e0iBjpbTpZrzXCezazUqONfuvhIDt2rwN
-   qzIJr3iGtCPapgNQKF0w9tHZy+c9V6cTEWTkbtFjriH5MSPzz7lSaQUKq
-   G9h/FDfBADO8UZli+RzmvHcmxHFBLP4B0UVM7MOA5AFUx7Oq1i67FwQ6F
-   EqNpC7cCcrN+2E1jhVXFyiEQkkQCGC5mm7+Ptdhx2B8eu/Bk3oiH+XNcu
-   8Z14Saf4lMofS4GL9cgRZ9FdZo7Z+Cu76j/KuxkhDdNIGJh+BZGbLNFJ3
-   knXrEkuSLrmTq8vrvPKsMRkdQfenFM71Bm59qMRVHRX+Pe0wbiNNrAHM9
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="25182905"
-X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
-   d="scan'208";a="25182905"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 12:31:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
-   d="scan'208";a="30639813"
-Received: from dspeerx-mobl.amr.corp.intel.com (HELO [10.212.131.185]) ([10.212.131.185])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 12:31:57 -0800
-Message-ID: <ca0f2db8-e353-4f52-aaa1-35042e52ad91@intel.com>
-Date: Wed, 31 Jan 2024 12:31:55 -0800
+	s=arc-20240116; t=1706733144; c=relaxed/simple;
+	bh=fkN7ecc9GY/Pf9d7J3+mRkDDaENf+g183+3swFSdqKA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZblzkrQFrWaHKkyCYjovmBN5DigODfnwrjFA3QCXhPHBgGCYrOCO3n7NtmHGmQoykZKM/vr9kBhY7SDn5NN7L80TMzrsaroFfTWpCkqOGtk/54r1GnWH+dW2g9Kz+yRzWf3sLI2W/x1Y9BCR3HjuYSRkP3++zlrndtUHJrf8hj4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=sDreQZTx; arc=none smtp.client-ip=209.85.219.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dc22ade26d8so155351276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 12:32:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706733142; x=1707337942; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fkN7ecc9GY/Pf9d7J3+mRkDDaENf+g183+3swFSdqKA=;
+        b=sDreQZTxi/spdYdhEQaxc3ATm7VIKNQPhAH3jjAJDlDJZwQDGsKYbq+rQkelsFrBE4
+         tsmW4z0WilEKBwKTCOxDjaMeuSNRJQNfKAeBqd8HMtMw2BUXlrkNg7L6DfwaBSO+GVc6
+         IuCnHlW1rzhhV+Gjdt25XYS6hfWffTRLEDXPayc6YxsacWftYl3UAK4f9ZcmuGUtOzvN
+         6anmhG/vigQXnqgksXcXi/yh6yzq53wlfKog1bEqmaRnoGLNmKyOMO6KRvVMyceXLiXn
+         DDUHp7AcLdE0rZXCXBAnk8gsInTr6EddWA7gZuszBxVxvOoPQivuvvue1oxS6R1zrdmW
+         7PCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706733142; x=1707337942;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fkN7ecc9GY/Pf9d7J3+mRkDDaENf+g183+3swFSdqKA=;
+        b=qVaCI96o/1lMD6ehiQBy3fA4KGgMhXJxfHq2QGFoMqSxVxyVSaK6W+bNBUzOlZCsBX
+         iGbEfTmta8wNALNU7k//AOREOWvSpyfa6sNmiMXr/2I4aqt/NjW/2aJ54GaV+hfIwqTq
+         dcBYlfoX1egQ9ZovMPPje3f+Q/QWYBhClgO8/kkZfsNwqPcXguaj35kAEVFIQ8tmjr58
+         pb5LAxnK9ckXq2BISn6XmgsXOmMMUC/6IA/VonxWL1wMGu0xzHOLnBGJ7PpUHcD7P7Ms
+         Z56xb6JJAePjWwT1MiJgGskpbMmyChcn7CAyDrHFRq7K4hRRTATEpPwAUadNSEMUcu2k
+         tV+Q==
+X-Gm-Message-State: AOJu0YwvDxRdQ1hNE6HasivSCTIpDTgWkO92kfhqcZYo4vupG99MTXMw
+	8DXMLJEV5MhOjgcqWk734zxdxsaSd98j2Us3mFYlTYNXEKLq+lb1ImN5oofhHicQQlihmEFvAzJ
+	0yX6+B2JA+GPdfzWGgkLgVR/ANym828jUbPsCvw==
+X-Google-Smtp-Source: AGHT+IGGI2ZD5H88nBThWHOarCHkRy2VWKzhGBkqFvDGrPRtMKPDTD5nV7330lk/t+h5p/a9FJAWEx9XMNVshU0FoxI=
+X-Received: by 2002:a5b:8c1:0:b0:dc6:cf93:c67d with SMTP id
+ w1-20020a5b08c1000000b00dc6cf93c67dmr1376439ybq.39.1706733141960; Wed, 31 Jan
+ 2024 12:32:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] x86: rust: Disable entry padding with Rust
-Content-Language: en-US
-To: Matthew Maurer <mmaurer@google.com>, Thomas Gleixner
- <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, Miguel Ojeda <ojeda@kernel.org>,
- Alex Gaynor <alex.gaynor@gmail.com>,
- Wedson Almeida Filho <wedsonaf@gmail.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>, Boqun Feng <boqun.feng@gmail.com>,
- Gary Guo <gary@garyguo.net>, =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?=
- <bjorn3_gh@protonmail.com>, Benno Lossin <benno.lossin@proton.me>,
- Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl
- <aliceryhl@google.com>, linux-kernel@vger.kernel.org,
- rust-for-linux@vger.kernel.org
-References: <20231215194828.2611213-1-mmaurer@google.com>
-From: Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <20231215194828.2611213-1-mmaurer@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240130124828.14678-1-brgl@bgdev.pl>
+In-Reply-To: <20240130124828.14678-1-brgl@bgdev.pl>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 31 Jan 2024 21:32:10 +0100
+Message-ID: <CACRpkdZrKGHiaQc5NVq5ceV=++SE3j7xEfwD9FBWRz0GCFpMCw@mail.gmail.com>
+Subject: Re: [PATCH 00/22] gpio: rework locking and object life-time control
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, "Paul E . McKenney" <paulmck@kernel.org>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Wolfram Sang <wsa@the-dreams.de>, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 12/15/23 11:39, Matthew Maurer wrote:
-> +config HAVE_ENTRY_PADDING
-> +	def_bool CC_HAS_ENTRY_PADDING && !RUST
+On Tue, Jan 30, 2024 at 1:48=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
 
-My only worry with this is that we need HAVE_ENTRY_PADDING for:
+> We do NOT serialize all API callbacks. This means that provider callbacks
+> may be called simultaneously and GPIO drivers need to provide their own
+> locking if needed. This is on purpose. First: we only support exclusive
+> GPIO usage[1] so there's no risk of two drivers getting in each other's
+> way over the same GPIO. Second: with this series, we ensure enough
+> consistency to limit the chance of drivers or user-space users crashing
+> the kernel. With additional improvements in handling the flags field in
+> GPIO descriptors there's very little to gain, while bitbanging drivers
+> may care about the increased performance of going lockless.
 
-> config HAVE_CALL_THUNKS
->         def_bool y
->         depends on CC_HAS_ENTRY_PADDING && RETHUNK && OBJTOOL
-..
-> config CALL_DEPTH_TRACKING
->         bool "Mitigate RSB underflow with call depth tracking"
->         depends on CPU_SUP_INTEL && HAVE_CALL_THUNKS
+OK I read this before but didn't understand it, now I understand it.
 
-so if they turn on RUST, they'll end up turning off CALL_DEPTH_TRACKING.
- I'm wondering if it might be better to do this instead (temporarily of
-course):
+The series:
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-config RUST
-        bool "Rust support"
-        depends on HAVE_RUST
-        depends on RUST_IS_AVAILABLE
-        depends on !MODVERSIONS
-        depends on !GCC_PLUGINS
-        depends on !RANDSTRUCT
-        depends on !DEBUG_INFO_BTF || PAHOLE_HAS_LANG_EXCLUDE
-+	depends on !CALL_THUNKS
+I think you should merge it all soon so we get some time to shake
+it out in linux-next, hopefully any remaining bugs and cleanups
+can be done in-tree.
 
-That way, someone who is using CALL_DEPTH_TRACKING doesn't accidentally
-lose it by turning on RUST.  To turn on RUST, they'd first need to go
-turn off the things that are selecting CALL_THUNKS.
+Excellent work, by the way.
+
+Yours,
+Linus Walleij
 
