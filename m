@@ -1,51 +1,52 @@
-Return-Path: <linux-kernel+bounces-47071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47070-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 579E98448CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:27:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8941B8448CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:27:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0B042882E6
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DEAB4B27352
 	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:26:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E1CA13D504;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E10013D4FD;
 	Wed, 31 Jan 2024 20:24:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M3sn+vi6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OuwgKaRI"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 874433FB2C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 873DB3FB10;
 	Wed, 31 Jan 2024 20:24:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706732649; cv=none; b=LSlXARwDDCIBkhm/fQUzCWin4SumC3T6zNEhTryyzeNXR/XmmaWgz6F8aoaMOeTrrCKWGf0D0LfvNBtKPKa+oeD7a+3y2XhIEqTdWS/PS1zx9kA6bxIaXgr2WuufWfkLyhJ78PeF+rkP9r+ydlq/nN9JUtV/LrOnRnZ/zUX7pKE=
+	t=1706732649; cv=none; b=IQmyLNfK9s9rhVpHtAGXds34McCkaZZPm+KENdXXKQLQMToDeLdupaeq+unKBuskKmPNDeZUx9w5LxIeG4p89htXxFRePWWix41l0vOsgRl7LRRPdpkMBhxTVDMpGcG+v1K44px5wKs7BBuyAwUP6zTQane3/kTpYYXs1tczJB4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706732649; c=relaxed/simple;
-	bh=FA1F9SC1pBO6t7e2nw2RaFdLgUedeL9JkTxRX+R5a1k=;
+	bh=qvu+Ox0zu6pevZi9vcwFq2laTuQ829Sreeg9+Gf9HMA=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=IA8gcTj8m/20YHsW6z42z3di2PTlvjSDAFp63WRWZfGypkG0iATPdspnuJFriGE66o6gA02XT6UZ5qyoniEMAbscHkrfvzcALsAkmdeUA5+bDQt2tS5NHitj9tNWRiLR/kVrk7f3lRUZa3qGQuOfKjB+YpsLxoqGdZbVS9KeUN0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M3sn+vi6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id EB7B1C433B2;
-	Wed, 31 Jan 2024 20:24:08 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=ha4CUTaAZ9GRhvTUOGYHn50lLJ0SL1CzkQxkyEr4GUYhdObWtpIGS8AKYKzQei2HM5oFHWcZbh+feRwT6ddaekj7EFJjtBmAO4R1x0Fome5NXwfdomW9tUxNu5xkB17a6vr/5IkG4VvkWpQYCAH6ae2gTaVUqXwepAk/W6gQBIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OuwgKaRI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 0167CC43609;
+	Wed, 31 Jan 2024 20:24:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1706732649;
-	bh=FA1F9SC1pBO6t7e2nw2RaFdLgUedeL9JkTxRX+R5a1k=;
+	bh=qvu+Ox0zu6pevZi9vcwFq2laTuQ829Sreeg9+Gf9HMA=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=M3sn+vi6Cu1BqqPG4lWEehKMEuMstzwT45trKG0phzxD+5JsFIKqi8OkMmlDTL2+F
-	 AlzQJUSUyetwBHWF4VtgFllYGxJCp6EPCJZ2XyjUTcZxiC2etr842ulVk4l3Ei/vmp
-	 nkg6L+eVT+xNK8uVB7F4vwzVRTPwPOga8Xrn6l1KsJb4P9a67xhCwt1lLjbdWz3/8t
-	 ZgKR6tTGj7kWigoktA5X3lOqh8bdbJJVgB6FmCPtRiZjmgePKU8J3cBnf3fZR+DFlJ
-	 UC0WycYvc5y4eY5W6VAvnmvGfDVJFUKfB2wgPaYuD/AmQpG/of6maTf6Q7SIW6ONSA
-	 v00MsMB5HIvdw==
+	b=OuwgKaRINXpUT2P3BU1WdF1vAyAXW3peXAdlYywNwt14Min7HHn7HD+6DU52/R/Z+
+	 S/46KIJhqMw0JQsMvCD/rAVXWkthWfTH7thRZDYiG1tZwwITgxXRjmGUWYJKpN87og
+	 R6linx8xN+ucJpMVLwgW1eWRb5AAZ4JIM5y8KnK0KNS+o0nt7JEewgL0tzAVUnXqLb
+	 wU823bsaRnkJ3utxA0se8DmZ2RrdEcUJxcBisNyDL3fRPs3Y8gEFCoIpYnB4109SeV
+	 JqItdzw8Rq4kdq8m2RczMbzW3Zjlj4boiKzmnFhf68w7YS7+nK2mq2SXQfUtDViM3h
+	 4q5o4Cke4OxOw==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7B9DC48290;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1D52C47258;
 	Wed, 31 Jan 2024 20:24:08 +0000 (UTC)
 From: Valentin Obst via B4 Relay <devnull+kernel.valentinobst.de@kernel.org>
-Date: Wed, 31 Jan 2024 21:23:27 +0100
-Subject: [PATCH v3 05/12] rust: str: use `NUL` instead of 0 in doc comments
+Date: Wed, 31 Jan 2024 21:23:28 +0100
+Subject: [PATCH v3 06/12] rust: str: move SAFETY comment in front of unsafe
+ block
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,8 +54,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240131-doc-fixes-v3-v3-5-0c8af94ed7de@valentinobst.de>
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240131-doc-fixes-v3-v3-6-0c8af94ed7de@valentinobst.de>
 References: <20240131-doc-fixes-v3-v3-0-0c8af94ed7de@valentinobst.de>
 In-Reply-To: <20240131-doc-fixes-v3-v3-0-0c8af94ed7de@valentinobst.de>
 To: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
@@ -68,11 +69,11 @@ Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
  Valentin Obst <kernel@valentinobst.de>, Trevor Gross <tmgross@umich.edu>, 
  Martin Rodriguez Reboredo <yakoyoku@gmail.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1706732646; l=1199;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1706732646; l=1018;
  i=kernel@valentinobst.de; s=20240131; h=from:subject:message-id;
- bh=t90awkZOfJrNEj9Nqg9r3N76iP/cmOjmkwvkrtyw/9I=;
- b=hqfaaXwqKw/qal+VSCs0YjOz+bA68/qcnK/d1pbkLbyCibjtbc31Gxbrt1UfSfIgjGoTLjxY6
- rJEeLkBTy2EDgEhqxS22yuDkLgnRAuGmCvQBc6KePEKQf5KT1v9gKbu
+ bh=DDoG48Qq56LKmbADR58N8ly1qfgI3wpt9bk2atcwP2I=;
+ b=MZe2Hxv9roGYl7lqeSTsKZTqoSJKgkFsgca/PD3aFOr4ulKBTBblhv38PbvagOpZGWXWbWtyj
+ YNvZipM8WUGDw3pFzMQXX3OxChgETuOQVPLM3td+l4AGy5t/ZaHB/O5
 X-Developer-Key: i=kernel@valentinobst.de; a=ed25519;
  pk=3s7U8y0mqkaiurgHSQQTYWOo2tw5HgzCg5vnJVfw37Y=
 X-Endpoint-Received:
@@ -82,37 +83,32 @@ Reply-To: <kernel@valentinobst.de>
 
 From: Valentin Obst <kernel@valentinobst.de>
 
-Throughout the module, bytes with the value zero are referred to as
-`NUL` bytes. Adapt the only two outliers.
+SAFETY comments should immediately precede the unsafe block they
+justify. Move assignment to `bar` past comment as it is safe.
 
 Signed-off-by: Valentin Obst <kernel@valentinobst.de>
 Reviewed-by: Trevor Gross <tmgross@umich.edu>
 Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
 Reviewed-by: Alice Ryhl <aliceryhl@google.com>
 ---
- rust/kernel/str.rs | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ rust/kernel/str.rs | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/rust/kernel/str.rs b/rust/kernel/str.rs
-index 0a8569594fc3..843ffeec9b3e 100644
+index 843ffeec9b3e..fec5c4314758 100644
 --- a/rust/kernel/str.rs
 +++ b/rust/kernel/str.rs
-@@ -149,13 +149,13 @@ pub const fn as_char_ptr(&self) -> *const core::ffi::c_char {
-         self.0.as_ptr() as _
-     }
- 
--    /// Convert the string to a byte slice without the trailing 0 byte.
-+    /// Convert the string to a byte slice without the trailing `NUL` byte.
+@@ -191,9 +191,9 @@ pub fn to_str(&self) -> Result<&str, core::str::Utf8Error> {
+     /// ```
+     /// # use kernel::c_str;
+     /// # use kernel::str::CStr;
++    /// let bar = c_str!("ツ");
+     /// // SAFETY: String literals are guaranteed to be valid UTF-8
+     /// // by the Rust compiler.
+-    /// let bar = c_str!("ツ");
+     /// assert_eq!(unsafe { bar.as_str_unchecked() }, "ツ");
+     /// ```
      #[inline]
-     pub fn as_bytes(&self) -> &[u8] {
-         &self.0[..self.len()]
-     }
- 
--    /// Convert the string to a byte slice containing the trailing 0 byte.
-+    /// Convert the string to a byte slice containing the trailing `NUL` byte.
-     #[inline]
-     pub const fn as_bytes_with_nul(&self) -> &[u8] {
-         &self.0
 
 -- 
 2.43.0
