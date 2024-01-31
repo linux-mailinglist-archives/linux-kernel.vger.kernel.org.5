@@ -1,139 +1,79 @@
-Return-Path: <linux-kernel+bounces-46887-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46888-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4B268445D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:17:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB5C78445D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:17:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F5B7289645
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:17:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A50D1F27AB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:17:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61C9B12CDA7;
-	Wed, 31 Jan 2024 17:17:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0674A12DD90;
+	Wed, 31 Jan 2024 17:17:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=apertussolutions.com header.i=dpsmith@apertussolutions.com header.b="EuBXF3xn"
-Received: from sender4-of-o50.zoho.com (sender4-of-o50.zoho.com [136.143.188.50])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Rsl8t/33"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD60812C554;
-	Wed, 31 Jan 2024 17:17:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=136.143.188.50
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706721435; cv=fail; b=GlPs/VGJfMKaNZK/4sLY+FSVXt0vO2L/fc0U8XgOjLuv67oTouNXiW/HYcaZw4j9rb6sIjVJJKdvkwNNqf4WsrwMww8Y3+b9Z9Tpzz/AA+NJ81sSH7AF2C3SgPa1NhM7HWj0WpIpK0mSxIpRFzsmZHO+J/jRsiSe//hJB915SmM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706721435; c=relaxed/simple;
-	bh=XXcpNZ2rcDI3vVQ8/Eszkap951MkG/aGpB/S+UJ2e7Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CwS4RrcRggTlvrAYPhQHJusnTvR3rYPkdyKEwAss056BmQJed9jPo+evUDhXWDexfYO8zWeNY0nZr+8Y8PxywNejbwB4lmG6YNJwE9iGBeD/n2sNUs+ENPmf2cSX3xJlYY+jnu29dMZtdNWmNk9s2NY/MTUPdNAltIRrhzPIciU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=apertussolutions.com; spf=pass smtp.mailfrom=apertussolutions.com; dkim=pass (1024-bit key) header.d=apertussolutions.com header.i=dpsmith@apertussolutions.com header.b=EuBXF3xn; arc=fail smtp.client-ip=136.143.188.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=apertussolutions.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=apertussolutions.com
-Delivered-To: dpsmith@apertussolutions.com
-ARC-Seal: i=1; a=rsa-sha256; t=1706721425; cv=none; 
-	d=zohomail.com; s=zohoarc; 
-	b=BrzFsShetAr//Au0/VgUiqgtdGUiEYUh6tSSxK6EQ+wwPblT419KlvABnM+gn9hEC9tAs/r8EZlT0gBujaDU6WtfUcAJRNT+1dbAgdJ8yT5IaGkZZ90lioAeq2dn/A3/lg5Xjl/ERnjNnhleWpMWgolD2l/bZ3flB2QPJCGHwhQ=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1706721425; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:MIME-Version:Message-ID:To:To:Message-Id:Reply-To:Subject; 
-	bh=d8FvsybUVvAeqHKTrmR5FtLlH3g40qorWd0hTMXdq/Y=; 
-	b=SHkfsgAt5iF2lQ8ZBn2r4BOJotInCRCOHndatwQmRUBJpW2HgB2wIRowM90ZSfjJQFN746d6MmSyERboNU+rTN/iyIO416zqF7hyUTlKk0wk/Sz8MM3gqybNE8dtTVcFHZyUXBUFrVRKOhRvVG6jvyqPaKZU3XOLxVFP5rmGg+A=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	dkim=pass  header.i=apertussolutions.com;
-	spf=pass  smtp.mailfrom=dpsmith@apertussolutions.com;
-	dmarc=pass header.from=<dpsmith@apertussolutions.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1706721425;
-	s=zoho; d=apertussolutions.com; i=dpsmith@apertussolutions.com;
-	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-Id:Message-Id:MIME-Version:Content-Transfer-Encoding:Reply-To;
-	bh=d8FvsybUVvAeqHKTrmR5FtLlH3g40qorWd0hTMXdq/Y=;
-	b=EuBXF3xnV0wo6LNqC3nSYFgVtFWAnE2iKsAtGyJLC8dHVWO1LFhSSZmQTXECrlj8
-	agm28wXqMmRN3VG4kWX3G4Dm2KLS1iBRUwZYshbtJGdAgs5EeZaQiDVGiLOXTfqmgnJ
-	V33fyPInCWBy9qTHM/0iSuJleBvnKfIiiZxNw82A=
-Received: from sisyou.hme. (static-72-81-132-2.bltmmd.fios.verizon.net [72.81.132.2]) by mx.zohomail.com
-	with SMTPS id 1706721424032954.853713826795; Wed, 31 Jan 2024 09:17:04 -0800 (PST)
-From: "Daniel P. Smith" <dpsmith@apertussolutions.com>
-To: Jason Gunthorpe <jgg@ziepe.ca>,
-	Jarkko Sakkinen <jarkko@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
-	Lino Sanfilippo <l.sanfilippo@kunbus.com>,
-	linux-integrity@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: "Daniel P. Smith" <dpsmith@apertussolutions.com>,
-	Ross Philipson <ross.philipson@oracle.com>,
-	Kanth Ghatraju <kanth.ghatraju@oracle.com>,
-	Peter Huewe <peterhuewe@gmx.de>
-Subject: 
-Date: Wed, 31 Jan 2024 12:16:50 -0500
-Message-Id: <20240131171651.15796-1-dpsmith@apertussolutions.com>
-X-Mailer: git-send-email 2.30.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 382BE374D4;
+	Wed, 31 Jan 2024 17:17:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706721436; cv=none; b=mbjcVjll6+ouA0Iop1vmjeQyW8sTz4x76JsiNNXn0eXMKy3tSsl9Phzgo3BEnQX2iQXxI8Y/R3uUnwnG9+AirL+a2EX0dxvNi1PACX05K7tN8yRn7VPxJMrSfnej+K0VhOfMnBmoOEYvB28YrXhOWc5Kqfc1BUTPe8q/8PWN9So=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706721436; c=relaxed/simple;
+	bh=U5JVlzMHnikLTbflOiwB0cOegF5Lvb4lezm32PuIfRg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UkXPKAxaAj/Qhvk4meP8/9HoK/cKqs91B5/A7eOkkX349ILhv7Y9ATOzW1AupARu03mjZ7IiE/J9XjwABlSpo/YMxZFuf6MaFYKKtsqem+s5VOS86J/eEGx0x9osh5yLHvdqInY9id7Uf/c80aK+F3wxh/P6Te7XgYant9Wkdgc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Rsl8t/33; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=w1jT7gCr/nu7sGcbwL+LF2kX9U7qRsSCTeyoHJy/WoQ=; b=Rsl8t/339Yi08Mvz6SuF7kZN9I
+	CnN3y5DZzKI3qBcG10yO78L9AswhfcfGda6buppIVmKYQ9rLKArcacUl6PzWQKPv+4Dp3W3XbHTPE
+	uR3N0EolP0wZTTYSNI7cBEp+leg0S4wWEK+goRXqzwEqpGjAmDIJZjf/xSYhM/M6zgIEsneIh3U8u
+	+pt0ncx9X6NMNHS9RFoUOhBzFwp2TK9GLbQT2+GNezMOfKRSEjDKbr5ek0Dc6zikgjUsYdddqp8Sd
+	+MR3RJ7gAhCxPKgDb/DR6F/DjccFH/pDiX2BjiZS0ns77g3HyhidMuWY+DeEGolOioj7UEUcIcNvC
+	m4xIsg3A==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rVED1-00000004nCR-20Ex;
+	Wed, 31 Jan 2024 17:17:11 +0000
+Date: Wed, 31 Jan 2024 09:17:11 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Dan Williams <dan.j.williams@intel.com>, Arnd Bergmann <arnd@arndb.de>,
+	Dave Chinner <david@fromorbit.com>, linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>, linux-mm@kvack.org,
+	linux-arch@vger.kernel.org, Vishal Verma <vishal.l.verma@intel.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Russell King <linux@armlinux.org.uk>, linux-cxl@vger.kernel.org,
+	nvdimm@lists.linux.dev, linux-xfs@vger.kernel.org,
+	dm-devel@lists.linux.dev
+Subject: Re: [RFC PATCH v3 3/4] Introduce cpu_dcache_is_aliasing() across all
+ architectures
+Message-ID: <ZbqAl3gerwe2o6jy@infradead.org>
+References: <20240131162533.247710-1-mathieu.desnoyers@efficios.com>
+ <20240131162533.247710-4-mathieu.desnoyers@efficios.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240131162533.247710-4-mathieu.desnoyers@efficios.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-Date: Wed, 31 Jan 2024 11:43:16 -0500
-Subject: [PATCH v2 0/3] tpm: make locality handling resilient
-
-When the kernel is started by a loader that leaves a locality other than
-Locality0 open, for example Intel TXT SINIT ACM leaves Locality2 open, this
-triggers a failure condition in the initialization of the TPM driver. The
-result being that despite calls to request/relinquish locality, the locality
-that was open at startup is never open/closed. The impact for an Intel TXT
-platform is that after SMX mode is exited, access to the Locality2 register
-space is blocked, and the TPM is locked in Locality 2 rendering the TPM
-unusable.
-
-The ability to trigger this failure condition was introduced in commit
-933bfc5ad213, which introduced a locality counter to control when locality
-requests were actually sent to the TPM. The commit introduces a series of
-missing or incorrect protections in place for incrementing and decrementing the
-counter. The protection around incrementing the counter was protected with an
-incorrect check. The check was incorrect in two ways, 1.) it assumed that zero
-was the only successful value that would be returned by
-__tpm_tis_request_locality() and 2.) was evaluated outside the if block under
-which __tpm_tis_request_locality() is called. The effect of (1) is that
-__tpm_tis_request_locality() in fact returns the locality number that was
-requested, e.g. 1-4, and therefore the protection check would fail and the
-counter does not get incremented. The effect of (2) is a combination with the
-ret variable being initialized to 0 and the counter not being 0. The result is
-that __tpm_tis_request_locality() does not get called, but the counter is still
-incremented.
-
-Another effect seen is an indirect result of commit 933bfc5ad213 and is due to
-locality being tracked in two different locations. The first is at the TIS
-layer in struct tpm_tis_data and at the chip layer in struct tpm_chip. The
-failures experienced by commit 933bfc5ad213 causes the locality value in these
-two locations to fall out of sync with the value in tpm_tis_data reflecting
-Locality0 and struct tpm_chip having a value of -1, no locality open.
-
-This series seeks to address these conditions by introducing a protection
-against underflowing the locality counter. The closing of all localities at the
-beginning of initialization to begin with the TPM in the state expected by the
-sequencing codified in the initialization. Lastly to adjust the return error
-codes from __tpm_tis_request_locality() and tpm_tis_request_locality() to
-ensure they are consistent and that the locality counter is only incremented
-for a successful call to __tpm_tis_request_locality().
-
-Changes in v2:
-- split into three patches
-- adjust code comments per review
-- dropped incorrect return value change for tpm_request_locality in tpm-chip.c
-- additional -1 replacement in __tpm_tis_relinquish_locality
-- changed -EIO to -EBUSY, which is more appropriate, in tpm_tis_relinquish_locality
-
-Daniel P. Smith (3):
-  tpm: protect against locality counter underflow
-  tpm: ensure tpm is in known state at startup
-  tpm: make locality request return value consistent
-
- drivers/char/tpm/tpm_tis_core.c | 25 +++++++++++++++++++------
- include/linux/tpm.h             |  6 ++++++
- 2 files changed, 25 insertions(+), 6 deletions(-)
-
--- 
-2.30.2
+So this is the third iteration and you still keep only sending patch
+3 to the list.  How is anyone supposed to review it if you don't send
+them all the pieces?
 
 
