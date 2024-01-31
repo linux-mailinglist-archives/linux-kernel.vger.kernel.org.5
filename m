@@ -1,246 +1,191 @@
-Return-Path: <linux-kernel+bounces-46478-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 764DA84404B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:17:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D9F3844052
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:18:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C8652904B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:17:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C1B7F1C262CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:18:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 591827BAFF;
-	Wed, 31 Jan 2024 13:16:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 634A07BAF3;
+	Wed, 31 Jan 2024 13:17:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WHyyDLsa"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ot2XDO5I"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD2A47AE47;
-	Wed, 31 Jan 2024 13:16:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E588C7AE5C
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 13:17:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706707015; cv=none; b=pfsGkQPUGcMXiuV9ARUpuHuDMExpuRPZgW34fKbgMRE9vLymuvPvhHbnmZT9Wda6EL+qphNZijQywJiuUBRVc/0k+PSrPfgmpcdXWsmCMj2cEx+/YC9qvitZmUkSXnHsiafYcTCNDCqHYOhbxBeSTyF67LjLhOUz0vFOucLDjqA=
+	t=1706707045; cv=none; b=kh1sEuct6l4LKmb33OpKVXG21mtxa8MqdK4bfRaukFztKTnox985E2J3WrBxSU7Sz1WSrd6tbeODAs3MQUM2G1t2GArSbEoTfP8IoRcILwwS3dE6WGrggoBIYk2s+As3gszM1S2QYq9g4zjm7YuM7TorPMWghFzC84KtaEjyZGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706707015; c=relaxed/simple;
-	bh=AW4f6dw+zidICyXZgjwIu41kdHjOtjxCRAic489hQXo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lj6VOXbMNSGluWoTvD/2jvYgJV4ZSPvW8xhyishzP60Lc8kyr9n4F4XNIn7m/tidkUlaNxC8wCE1GS0TwnNjCnp4PJRoN3q24UEzZcjJ10wKlVHrwDzvz/axhvyr8ta9FYipsRq6T2LNFgQTXA/q6V078WePVKUL6Jr7/6kE7C0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WHyyDLsa; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d928a8dee8so5110715ad.1;
-        Wed, 31 Jan 2024 05:16:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706707013; x=1707311813; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=MD6YCJseT7Z8Ach4Jqdsb6hrlt+6cO4c5ma7tx+4HwE=;
-        b=WHyyDLsaGGUPPeaarqTlHUq9ElfRO5j8V4cRsSlpioR6AR2WPByIJEXQ/LGFFqf84a
-         dCe+/EQuSPHQIQw20MQwRRWwSidnl7+9rQAzi0DnbtrFL3mPVCnq1hy8TxaknaCl1kvH
-         qjyDcNHzrDIV3WeLyH5JBuN7o8eMLzJTi5exkUPAH59w39bgwxkNp8+ZbKVTnscieFNo
-         wU/aMRT8sC9glh0elo3+N5Xxm37bwEGzN8PhMgVRmeQn8Z15JzIee763HBRewiwYtbqY
-         6GS0QamqWKokRKcb2Ar9FrIkr1bDPp0+h5RKi3RVkpI4U9g4MyOFByxu9kY6bPOXLaKq
-         sDPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706707013; x=1707311813;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MD6YCJseT7Z8Ach4Jqdsb6hrlt+6cO4c5ma7tx+4HwE=;
-        b=ZR+43PUGVdNpj8J0y/QNIZ/Ul2rp8x38MQY/TxQF/z/lUQvk4TxsXPuXf0CXYSlsrK
-         iZSQSvmcXu8uvOSgnWY1i8M/cB+l74Qd8jQOgqJ65wEcdokEmO5XbGE1VHldB6PvsH6i
-         lAs2sA6zOyOQrYRnYiFI82FFrQKcEib4QAarBIpkLHIfoKzmpYTyZvxWMHfS36idjRRV
-         nlNH9y2UHpNck7NE3wNvgtlLbYdg1dUG8BJApUX2+clOkpRfyNYKw24YWJT8L8vpoQVW
-         AFOmsGyqGBJ8NirehWOMmVGLzkmQeKnpGFmFslTn0e81k0Lk4GRTZAayS19UKEWNxbDB
-         2yDA==
-X-Gm-Message-State: AOJu0Yzd9rzat2zHAVky+fMRAxxx4j4wUArdE5JGAWN7sN72tZCGfq7/
-	X4oddZiKiA9DCC3Aw/mNnyhIzUVNw07TxTTTyyjl0gk8YB6skQMy
-X-Google-Smtp-Source: AGHT+IH94B9t+SXxYqXc1gbnAmIbR/323RWPyZTqnDV6fuxYFFCORSLA6qKwxUnFVZ8L6JAiGwE15A==
-X-Received: by 2002:a17:90b:188d:b0:28f:fa9d:ebdf with SMTP id mn13-20020a17090b188d00b0028ffa9debdfmr4518600pjb.3.1706707012810;
-        Wed, 31 Jan 2024 05:16:52 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r8-20020a170902be0800b001d7405022ecsm9009768pls.159.2024.01.31.05.16.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Jan 2024 05:16:52 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <4ea02224-e9fa-4ee9-9210-bc7a7ae9e86b@roeck-us.net>
-Date: Wed, 31 Jan 2024 05:16:50 -0800
+	s=arc-20240116; t=1706707045; c=relaxed/simple;
+	bh=vcKD5as0/agScWGjpQcJGFm+oQZmpJjE2XYTKul8TNo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MJQ8lj99mQxmO/rkJoXHmy6P2E5rx+LuJbGu/R8gKLHbZXoAd1cXWz08C+B2iaTMuhqFntfEoCHc0BEYf48ycOLg6GlB5jMQ8KTWU8sMY3j47oDgav1GmNKo8CTj80k6GKGmuRcip22ujgaplRwtIAaRzEYM2Yh9Ahs9Rt2VSZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ot2XDO5I; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706707042;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=//z4Y/BgNHdCR9hM9Ii+VZgxSjTBvGsBMSlKT9iydbU=;
+	b=Ot2XDO5IuPetsekNuj2TSQqXzBCbf2BpNj7N2qKTXN36eogcpYhlwrv0l/Wg26EyWe8eZC
+	Tw6MTiHF9H1xDCodfgL4msbkuPwu/N77CMxSIVlqleBa4kueCN15VgxFSOl1GTvp8LUeJx
+	igUFBvzHTnQ3jP3jKlOXh8dXo3ZDsL8=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-512-99WzZMLDNzuiVzbZ1JrgMA-1; Wed, 31 Jan 2024 08:17:18 -0500
+X-MC-Unique: 99WzZMLDNzuiVzbZ1JrgMA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4A22C835381;
+	Wed, 31 Jan 2024 13:17:17 +0000 (UTC)
+Received: from p1.luc.cera.cz (unknown [10.45.225.38])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 3FCF7400DF3E;
+	Wed, 31 Jan 2024 13:17:15 +0000 (UTC)
+From: Ivan Vecera <ivecera@redhat.com>
+To: netdev@vger.kernel.org
+Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+	Mitch Williams <mitch.a.williams@intel.com>,
+	Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>,
+	Mateusz Palczewski <mateusz.palczewski@intel.com>,
+	Simon Horman <horms@kernel.org>,
+	intel-wired-lan@lists.osuosl.org (moderated list:INTEL ETHERNET DRIVERS),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net] i40e: Do not allow untrusted VF to remove administratively set MAC
+Date: Wed, 31 Jan 2024 14:17:14 +0100
+Message-ID: <20240131131714.23497-1-ivecera@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 04/11] watchdog: rzg2l_wdt: Check return status of
- pm_runtime_put()
-Content-Language: en-US
-To: claudiu beznea <claudiu.beznea@tuxon.dev>,
- Biju Das <biju.das.jz@bp.renesas.com>,
- "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>,
- "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
- "conor+dt@kernel.org" <conor+dt@kernel.org>,
- "geert+renesas@glider.be" <geert+renesas@glider.be>,
- "magnus.damm@gmail.com" <magnus.damm@gmail.com>,
- "mturquette@baylibre.com" <mturquette@baylibre.com>,
- "sboyd@kernel.org" <sboyd@kernel.org>,
- "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>
-Cc: "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
- "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
- Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20240131102017.1841495-1-claudiu.beznea.uj@bp.renesas.com>
- <20240131102017.1841495-5-claudiu.beznea.uj@bp.renesas.com>
- <TYCPR01MB11269AD7463C9C7C0A09A43A9867C2@TYCPR01MB11269.jpnprd01.prod.outlook.com>
- <ddc0b42c-bf88-4c0d-b938-8bd7ff7b329a@tuxon.dev>
- <TYCPR01MB11269BFC2DB457049A2B8C0C8867C2@TYCPR01MB11269.jpnprd01.prod.outlook.com>
- <12f458b1-f963-43f4-afcf-715abf635e54@tuxon.dev>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <12f458b1-f963-43f4-afcf-715abf635e54@tuxon.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-On 1/31/24 03:00, claudiu beznea wrote:
-> 
-> 
-> On 31.01.2024 12:41, Biju Das wrote:
->> Hi Claudiu,
->>
->>> -----Original Message-----
->>> From: claudiu beznea <claudiu.beznea@tuxon.dev>
->>> Sent: Wednesday, January 31, 2024 10:36 AM
->>> Subject: Re: [PATCH v2 04/11] watchdog: rzg2l_wdt: Check return status of
->>> pm_runtime_put()
->>>
->>> Hi, Biju,
->>>
->>> On 31.01.2024 12:32, Biju Das wrote:
->>>> Hi Claudiu,
->>>>
->>>> Thanks for the feedback.
->>>>
->>>>> -----Original Message-----
->>>>> From: Claudiu <claudiu.beznea@tuxon.dev>
->>>>> Sent: Wednesday, January 31, 2024 10:20 AM
->>>>> Subject: [PATCH v2 04/11] watchdog: rzg2l_wdt: Check return status of
->>>>> pm_runtime_put()
->>>>>
->>>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>>>>
->>>>> pm_runtime_put() may return an error code. Check its return status.
->>>>>
->>>>> Along with it the rzg2l_wdt_set_timeout() function was updated to
->>>>> propagate the result of rzg2l_wdt_stop() to its caller.
->>>>>
->>>>> Fixes: 2cbc5cd0b55f ("watchdog: Add Watchdog Timer driver for
->>>>> RZ/G2L")
->>>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>>>> ---
->>>>>
->>>>> Changes in v2:
->>>>> - propagate the return code of rzg2l_wdt_stop() to it's callers
->>>>>
->>>>>   drivers/watchdog/rzg2l_wdt.c | 11 +++++++++--
->>>>>   1 file changed, 9 insertions(+), 2 deletions(-)
->>>>>
->>>>> diff --git a/drivers/watchdog/rzg2l_wdt.c
->>>>> b/drivers/watchdog/rzg2l_wdt.c index d87d4f50180c..7bce093316c4
->>>>> 100644
->>>>> --- a/drivers/watchdog/rzg2l_wdt.c
->>>>> +++ b/drivers/watchdog/rzg2l_wdt.c
->>>>> @@ -144,9 +144,13 @@ static int rzg2l_wdt_start(struct
->>>>> watchdog_device
->>>>> *wdev)  static int rzg2l_wdt_stop(struct watchdog_device *wdev)  {
->>>>>   	struct rzg2l_wdt_priv *priv = watchdog_get_drvdata(wdev);
->>>>> +	int ret;
->>>>>
->>>>>   	rzg2l_wdt_reset(priv);
->>>>> -	pm_runtime_put(wdev->parent);
->>>>> +
->>>>> +	ret = pm_runtime_put(wdev->parent);
->>>>> +	if (ret < 0)
->>>>> +		return ret;
->>>>
->>>> Do we need to check the return code? So far we didn't hit this
->>> condition.
->>>> If you are planning to do it, then just
->>>>
->>>> return pm_runtime_put(wdev->parent);
->>>
->>> pm_runtime_put() may return 1 if the device is suspended (which is not
->>> considered error) as explained here:
->>
->> Oops, I missed that discussion. Out of curiosity,
->> What watchdog framework/consumer is going to do with a
->> Non-error return value of 1?
-> 
-> Looking at this:
-> https://elixir.bootlin.com/linux/latest/source/drivers/watchdog/watchdog_dev.c#L809
-> 
-> it seems that the positive values are not considered errors thus, indeed,
-> we may return directly:
-> 
-> return pm_runtime_put();
-> 
-> Guenter,
-> 
-> With this (and previous discussion from [1]), are you OK to change it like:
-> 
-> return pm_runtime_put();
-> 
+Currently when PF administratively sets VF's MAC address and the VF
+is put down (VF tries to delete all MACs) then the MAC is removed
+from MAC filters and primary VF MAC is zeroed.
 
-Instead of looking at the source, I would kindly ask you to look at the API.
+Do not allow untrusted VF to remove primary MAC when it was set
+administratively by PF.
 
-Guenter
+Reproducer:
+1) Create VF
+2) Set VF interface up
+3) Administratively set the VF's MAC
+4) Put VF interface down
+
+[root@host ~]# echo 1 > /sys/class/net/enp2s0f0/device/sriov_numvfs
+[root@host ~]# ip link set enp2s0f0v0 up
+[root@host ~]# ip link set enp2s0f0 vf 0 mac fe:6c:b5:da:c7:7d
+[root@host ~]# ip link show enp2s0f0
+23: enp2s0f0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP mode DEFAULT group default qlen 1000
+    link/ether 3c:ec:ef:b7:dd:04 brd ff:ff:ff:ff:ff:ff
+    vf 0     link/ether fe:6c:b5:da:c7:7d brd ff:ff:ff:ff:ff:ff, spoof checking on, link-state auto, trust off
+[root@host ~]# ip link set enp2s0f0v0 down
+[root@host ~]# ip link show enp2s0f0
+23: enp2s0f0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP mode DEFAULT group default qlen 1000
+    link/ether 3c:ec:ef:b7:dd:04 brd ff:ff:ff:ff:ff:ff
+    vf 0     link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff, spoof checking on, link-state auto, trust off
+
+Fixes: 700bbf6c1f9e ("i40e: allow VF to remove any MAC filter")
+Fixes: ceb29474bbbc ("i40e: Add support for VF to specify its primary MAC address")
+Signed-off-by: Ivan Vecera <ivecera@redhat.com>
+---
+ .../ethernet/intel/i40e/i40e_virtchnl_pf.c    | 38 ++++++++++++++++---
+ 1 file changed, 33 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
+index 908cdbd3ec5d..b34c71770887 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
+@@ -2848,6 +2848,24 @@ static int i40e_vc_get_stats_msg(struct i40e_vf *vf, u8 *msg)
+ 				      (u8 *)&stats, sizeof(stats));
+ }
+ 
++/**
++ * i40e_can_vf_change_mac
++ * @vf: pointer to the VF info
++ *
++ * Return true if the VF is allowed to change its MAC filters, false otherwise
++ */
++static bool i40e_can_vf_change_mac(struct i40e_vf *vf)
++{
++	/* If the VF MAC address has been set administratively (via the
++	 * ndo_set_vf_mac command), then deny permission to the VF to
++	 * add/delete unicast MAC addresses, unless the VF is trusted
++	 */
++	if (vf->pf_set_mac && !vf->trusted)
++		return false;
++
++	return true;
++}
++
+ #define I40E_MAX_MACVLAN_PER_HW 3072
+ #define I40E_MAX_MACVLAN_PER_PF(num_ports) (I40E_MAX_MACVLAN_PER_HW /	\
+ 	(num_ports))
+@@ -2907,8 +2925,8 @@ static inline int i40e_check_vf_permission(struct i40e_vf *vf,
+ 		 * The VF may request to set the MAC address filter already
+ 		 * assigned to it so do not return an error in that case.
+ 		 */
+-		if (!test_bit(I40E_VIRTCHNL_VF_CAP_PRIVILEGE, &vf->vf_caps) &&
+-		    !is_multicast_ether_addr(addr) && vf->pf_set_mac &&
++		if (!i40e_can_vf_change_mac(vf) &&
++		    !is_multicast_ether_addr(addr) &&
+ 		    !ether_addr_equal(addr, vf->default_lan_addr.addr)) {
+ 			dev_err(&pf->pdev->dev,
+ 				"VF attempting to override administratively set MAC address, bring down and up the VF interface to resume normal operation\n");
+@@ -3114,19 +3132,29 @@ static int i40e_vc_del_mac_addr_msg(struct i40e_vf *vf, u8 *msg)
+ 			ret = -EINVAL;
+ 			goto error_param;
+ 		}
+-		if (ether_addr_equal(al->list[i].addr, vf->default_lan_addr.addr))
+-			was_unimac_deleted = true;
+ 	}
+ 	vsi = pf->vsi[vf->lan_vsi_idx];
+ 
+ 	spin_lock_bh(&vsi->mac_filter_hash_lock);
+ 	/* delete addresses from the list */
+-	for (i = 0; i < al->num_elements; i++)
++	for (i = 0; i < al->num_elements; i++) {
++		const u8 *addr = al->list[i].addr;
++
++		/* Allow to delete VF primary MAC only if it was not set
++		 * administratively by PF or if VF is trusted.
++		 */
++		if (ether_addr_equal(addr, vf->default_lan_addr.addr) &&
++		    i40e_can_vf_change_mac(vf))
++			was_unimac_deleted = true;
++		else
++			continue;
++
+ 		if (i40e_del_mac_filter(vsi, al->list[i].addr)) {
+ 			ret = -EINVAL;
+ 			spin_unlock_bh(&vsi->mac_filter_hash_lock);
+ 			goto error_param;
+ 		}
++	}
+ 
+ 	spin_unlock_bh(&vsi->mac_filter_hash_lock);
+ 
+-- 
+2.39.3
 
 
