@@ -1,95 +1,145 @@
-Return-Path: <linux-kernel+bounces-46579-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46577-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0832E84418D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:14:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A64E084418B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:13:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B8AD1F247C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:14:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 406941F27B23
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:13:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3243082899;
-	Wed, 31 Jan 2024 14:13:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="c57hcCXE"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A1721272D4;
+	Wed, 31 Jan 2024 14:12:22 +0000 (UTC)
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D163983CA0
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 14:13:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10E0C86AE7
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 14:12:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706710406; cv=none; b=czhv8Ca/EnXDrGTAMpZp+o0ulyFWto+plGkxyE5T80J6oLsxOzBIUJ9rK9wK0oarUt/MwuQKRCjQMI6fQ/yZ3ODx9EcAfgxkopmBKUESX2d3ZkuGsETmJUd0M6cdbogJU4CGOmAx3vbdSjbIRQz9lp4jad6Fnj9vC+WPS1nBerk=
+	t=1706710342; cv=none; b=d6ulGvCTykfzOc6b4GLJmJ6mf1iTE3/UgfmAHKim5leewqlbdImqAYJ3Vc28VjHpQ6biHkVsfN10sWV091i1M+DKHgjpmW7qGa9lut3OK8RxG1Njj+8KN+gLyATLylsxefRZiaCxTQ3G7Ax7wGAcpaArpsLoJ8TkvjILIb83R8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706710406; c=relaxed/simple;
-	bh=SSgcJTAtCezKBIlSDqex7c15iUz3dD6SPXbEzwWDyYs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HrJGLwXMtZmGkhT/ld1Ja4ClMZRiIniYxdXh4IwHzuwYsWZuJwSWxm/DhwQSR4CQTdlAFlQGi5RknSdOCID8jeDCEPj3pG3hJJ+8MYBZfu7yX/d1BPRYrSrpwuDgUmrSIeCarQz15040acalCSfx0MQClRBL+j38s4jmCkzTXHA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=c57hcCXE; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706710404;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=E6N7rRVRfH9o+RQBIxOXu8QZ0PlRxq4vDv7nz6/O5wk=;
-	b=c57hcCXEZQLTWc4Eub9DyRpgILQ2zQXQVqsNLke3PktV9te48NgcWDVw6rPQO8sw691UQY
-	qBgKn1s1yKCdnb4TI+kKrAqbCHJkQDrfOKifGsoLyNXnOVH6IacB+MMpdJBuO+cne8QV8x
-	xFNvsOn8dAHjWyor01rH+TkWxQ9nmQ0=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-394-7TeHyjMQNrOVJm7QSFuhZA-1; Wed, 31 Jan 2024 09:13:22 -0500
-X-MC-Unique: 7TeHyjMQNrOVJm7QSFuhZA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6848185A59A;
-	Wed, 31 Jan 2024 14:13:21 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.249])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 2C5313C2E;
-	Wed, 31 Jan 2024 14:13:19 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Wed, 31 Jan 2024 15:12:06 +0100 (CET)
-Date: Wed, 31 Jan 2024 15:12:04 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
-	Tycho Andersen <tycho@tycho.pizza>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/1] pidfd: implement PIDFD_THREAD flag for
- pidfd_open()
-Message-ID: <20240131141204.GA24130@redhat.com>
-References: <20240131132541.GA23632@redhat.com>
+	s=arc-20240116; t=1706710342; c=relaxed/simple;
+	bh=16KAkXy3O8anr0U/IgZO6dgl7BzzPB7GSUzHpQoIHfE=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=VfsU73/qGsNxVYhaR6wgdgqq8c5Y1QDexWUoBCeLBSsXI7xy0jwFcWdazVbk+uBdvU7XkSwe1gadMKsj0PRn7TuGY7pdr1xSn5Ic/Jd8VwS4dz5W74l33qd2btZQ5xyKIv9rc7yTarCHD1T4j+Gx/qVY3jCJLc+N9vuQKmlbnuI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from fsav411.sakura.ne.jp (fsav411.sakura.ne.jp [133.242.250.110])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 40VECFRa029772;
+	Wed, 31 Jan 2024 23:12:15 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav411.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav411.sakura.ne.jp);
+ Wed, 31 Jan 2024 23:12:15 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav411.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 40VECFl2029767
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Wed, 31 Jan 2024 23:12:15 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <79d5d6ae-3ee2-49db-86db-c2c493c55b01@I-love.SAKURA.ne.jp>
+Date: Wed, 31 Jan 2024 23:12:16 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240131132541.GA23632@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: [PATCH] profiling: Remove create_prof_cpu_mask().
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Before I forget this...
+create_prof_cpu_mask() is no longer used after commit 1f44a225777e ("s390:
+convert interrupt handling to use generic hardirq").
 
-After this patch we can easily add another feature, pidfd_poll()
-can add, say, POLLHUP to poll_flags if the pid is "dead".
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+---
+ include/linux/profile.h |  5 -----
+ kernel/profile.c        | 43 -----------------------------------------
+ 2 files changed, 48 deletions(-)
 
-So the user can do
-
-	poll(pidfd, { .revents = POLLHUP });
-
-and it will block until release_task() is called and this pid is
-no longer in use (pid_task() == NULL).
-
-Do you think this can be useful?
-
-Oleg.
+diff --git a/include/linux/profile.h b/include/linux/profile.h
+index 11db1ec516e2..04ae5ebcb637 100644
+--- a/include/linux/profile.h
++++ b/include/linux/profile.h
+@@ -18,13 +18,8 @@ struct proc_dir_entry;
+ struct notifier_block;
+ 
+ #if defined(CONFIG_PROFILING) && defined(CONFIG_PROC_FS)
+-void create_prof_cpu_mask(void);
+ int create_proc_profile(void);
+ #else
+-static inline void create_prof_cpu_mask(void)
+-{
+-}
+-
+ static inline int create_proc_profile(void)
+ {
+ 	return 0;
+diff --git a/kernel/profile.c b/kernel/profile.c
+index 7575747e2ac6..1a6c1cf98485 100644
+--- a/kernel/profile.c
++++ b/kernel/profile.c
+@@ -342,49 +342,6 @@ void profile_tick(int type)
+ #include <linux/seq_file.h>
+ #include <linux/uaccess.h>
+ 
+-static int prof_cpu_mask_proc_show(struct seq_file *m, void *v)
+-{
+-	seq_printf(m, "%*pb\n", cpumask_pr_args(prof_cpu_mask));
+-	return 0;
+-}
+-
+-static int prof_cpu_mask_proc_open(struct inode *inode, struct file *file)
+-{
+-	return single_open(file, prof_cpu_mask_proc_show, NULL);
+-}
+-
+-static ssize_t prof_cpu_mask_proc_write(struct file *file,
+-	const char __user *buffer, size_t count, loff_t *pos)
+-{
+-	cpumask_var_t new_value;
+-	int err;
+-
+-	if (!zalloc_cpumask_var(&new_value, GFP_KERNEL))
+-		return -ENOMEM;
+-
+-	err = cpumask_parse_user(buffer, count, new_value);
+-	if (!err) {
+-		cpumask_copy(prof_cpu_mask, new_value);
+-		err = count;
+-	}
+-	free_cpumask_var(new_value);
+-	return err;
+-}
+-
+-static const struct proc_ops prof_cpu_mask_proc_ops = {
+-	.proc_open	= prof_cpu_mask_proc_open,
+-	.proc_read	= seq_read,
+-	.proc_lseek	= seq_lseek,
+-	.proc_release	= single_release,
+-	.proc_write	= prof_cpu_mask_proc_write,
+-};
+-
+-void create_prof_cpu_mask(void)
+-{
+-	/* create /proc/irq/prof_cpu_mask */
+-	proc_create("irq/prof_cpu_mask", 0600, NULL, &prof_cpu_mask_proc_ops);
+-}
+-
+ /*
+  * This function accesses profiling information. The returned data is
+  * binary: the sampling step and the actual contents of the profile
+-- 
+2.18.4
 
 
