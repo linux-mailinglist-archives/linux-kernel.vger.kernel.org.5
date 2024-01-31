@@ -1,124 +1,104 @@
-Return-Path: <linux-kernel+bounces-47046-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47047-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10DEC84486F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:09:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 945C1844871
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:09:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 444901C23790
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:09:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41680288BF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:09:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C2DC3FB17;
-	Wed, 31 Jan 2024 20:09:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DE9D3F8EA;
+	Wed, 31 Jan 2024 20:09:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kmQOhVug"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bK1cfyt6"
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 371493EA76;
-	Wed, 31 Jan 2024 20:09:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 532FE3F8C0
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 20:09:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706731758; cv=none; b=cW5gcQPunCrm2NEeDTZO7YPjCw1ugqhT0Bq+9uxR09Keqns+T/k4gzkWIT3iDjrak4vEEl2AFA66pwM5CIOxppdfK06NfxhIWfmxFS6g05ABKkCEvQw0PXEJmARiS9ccMwOooRer54NAWhFGNfncYpXeR26Gk5fSF8DdvksnjqY=
+	t=1706731777; cv=none; b=JlUzYY0CMcgcmw2+DH9W/fX4ZKT3yt8LVBwPMcgu8gsXfP86kqegT+MpqxaaBRWmAqV8EpWAmtHGisM+gwWUb7nTC5DuUjZBmtvSkIIEj5H7t1OuPOkZLOIKvxX9A94Z2lDlEIthGrLSxqVD1BvwBVKAAiGV9P4nPhA4h6rF9Vw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706731758; c=relaxed/simple;
-	bh=iwCzJJpR5ei5UHsd7esL/VrKFPOdfTAP5MDzAArWRNA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tpBaXTIyTyxvvp/d3RGaanWEJBUY2DkuCopjFLm7CjJQMEWaXbvW2L/66+dW7DrRwmPf/A9NusJdXItkc23tc/yrxRQ79v6CJblKc4Y1XcIU0eHfUUgPvOtSwV4kQgTy6OzTsgD1DCkKED915Hz4IRUE0itewuLYdSo5H/hn0hc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kmQOhVug; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C893C433F1;
-	Wed, 31 Jan 2024 20:09:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706731757;
-	bh=iwCzJJpR5ei5UHsd7esL/VrKFPOdfTAP5MDzAArWRNA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kmQOhVugMUw9TR2k2kay4pVZfPaf1Ocn7V9d3OZzHBriRaUvREKZHclk0j1oYrXVC
-	 kQABLihhuPnqItT2NLn4b/a4CopARHyt9EqyuCicY3fDuPfxq9cGp9x4sl3uHOv938
-	 bRC3QkQPd/cWfuyURMQI8+y3jjaNrFtd98qQeAuaxFpN9Esp8p5eqBg+12AiEy1CeN
-	 F3RQYz2va/J6vxfgNag6ahMJWnO020EQxLnlq+FSsdr31U8xMgECghO+qTc7Tn96uP
-	 71zVGHsavZGcXFBKdvVWREogJjtyF1S0nnP7mJg0bySkbJDpH+lEUup/SjPLjivfsY
-	 H51I2JRNMd67g==
-Date: Wed, 31 Jan 2024 14:09:15 -0600
-From: Rob Herring <robh@kernel.org>
-To: Michal Simek <michal.simek@amd.com>
-Cc: michal.simek@xilinx.com, linux-kernel@vger.kernel.org,
-	Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
-	git@xilinx.com, Moritz Fischer <mdf@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>, monstr@monstr.eu,
-	Xu Yilun <yilun.xu@intel.com>,
-	"open list:FPGA MANAGER FRAMEWORK" <linux-fpga@vger.kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v4] dt-bindings: fpga: Convert fpga-region binding to yaml
-Message-ID: <170673175226.2219463.1221634595095812617.robh@kernel.org>
-References: <37b107d86b39ef4bc9c482b57b27de8b92c3fa43.1706530726.git.michal.simek@amd.com>
+	s=arc-20240116; t=1706731777; c=relaxed/simple;
+	bh=JLs3ujfSuCNHk+r9kdTZgZWtpODoYZr4k8z7pON1yvs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EebbpQZ9w3VoBB+Pq+zgX8bYPidehuGU4aAlbQyWP0ZbhLO3Tn1oUwu4ASpYxhHWWzrU5taAI4IUzaEsf2BlKVioDR2MXfDWBQpifQ9flIIuigJrKdY/pqzCQt3WaWnVqOQr3mR9MKewHZdN7Eu2HkAV95kZ349Ne6yq7l9tXuY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bK1cfyt6; arc=none smtp.client-ip=209.85.128.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-604055e48a3so1748637b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 12:09:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706731775; x=1707336575; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JLs3ujfSuCNHk+r9kdTZgZWtpODoYZr4k8z7pON1yvs=;
+        b=bK1cfyt6tYlf+j0o+Y7hyr2YFD+Hh5ghGyUg/DFZVQNalDf45++avXVLDg1MvaFLwZ
+         xYNuJfEF3uaI6TypnVMudQREDL565kIgHR030mem2aXkNAMYVi+6nOPMKL0cd4WV+Yxn
+         X7hOjjdqmz5ISGznMdOlcKrobnQQkPv8ca4MCK8OkbzHOMaQX2pzkzb9A2z1AX3hcW37
+         0QbOrpW230E8IUFSIDjsUaLjly3eNNvdXem6bFuuX34IMtRZ2sJo+zVP0jk6d0rkMhZD
+         0LZdel/bJMwLTmYL2OyKYH5Ol0YDxJshYLTivMUklEueI7HLiH2se51yWzRNpRrWEjpX
+         yM5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706731775; x=1707336575;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JLs3ujfSuCNHk+r9kdTZgZWtpODoYZr4k8z7pON1yvs=;
+        b=oPhtINa7+qFIUU0yY04G3jPOLYn4idQwMUsfDluGX5btN0PQR9xQfd/Qe2eOK6ejCJ
+         5tvgSITB06MQbhhISvzPnqAy6mHyrqajXRxwl5dRpFd8ftitP73VbTdUUS+yLpVo6vGY
+         QbV1agOWPu7bxpxF0/8zg0/ENc3+stxbfGvHXp6SawvKQI4jcsmEiBfqRm6JQVGVqkxD
+         ZxkIKvD+QIXiFkAg1ABfWXrNpb6PupjF9iFucDe37ub/LnJxasWSAO48Tv2XQt4V/sDl
+         dRfy/deoIPP5F/7quIF3In60OB1TbEanA36GDuCV7cnKr/h1nE4pJld/9C0eetR+3Kby
+         syug==
+X-Gm-Message-State: AOJu0Yx8gj9mFLP5xldh2obCYHI14n6Xs17QeugiBVdvUR9HCITqUm20
+	JiRXR7gDN2fG123fxhTvNxWwvZ/aF8mFpR5cckKutQ7qL6ELhuO/IPUPFGNI5xIdYyecVspRZYX
+	37dWr+mR5jR09E4OpG6bOe8kfaC7Ip881oUAIyg==
+X-Google-Smtp-Source: AGHT+IHWnRWPZWUvckvTX2Kui2FJv6wnHuN+ojzYWuMk02uVMcMflWeT2nzXAw/o466JxX0lyAaCJOmenvbPvIVF1/0=
+X-Received: by 2002:a0d:c286:0:b0:5f7:5054:19da with SMTP id
+ e128-20020a0dc286000000b005f7505419damr2622544ywd.46.1706731775231; Wed, 31
+ Jan 2024 12:09:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <37b107d86b39ef4bc9c482b57b27de8b92c3fa43.1706530726.git.michal.simek@amd.com>
+References: <20240130124828.14678-1-brgl@bgdev.pl> <20240130124828.14678-14-brgl@bgdev.pl>
+In-Reply-To: <20240130124828.14678-14-brgl@bgdev.pl>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 31 Jan 2024 21:09:24 +0100
+Message-ID: <CACRpkdas5k-MEdfOOuq3g-wACO=U1YKm4b3Qab6-QAHPG408BA@mail.gmail.com>
+Subject: Re: [PATCH 13/22] gpio: sysfs: pass the GPIO device - not chip - to
+ sysfs callbacks
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, "Paul E . McKenney" <paulmck@kernel.org>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Wolfram Sang <wsa@the-dreams.de>, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Jan 30, 2024 at 1:48=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
 
-On Mon, 29 Jan 2024 13:18:53 +0100, Michal Simek wrote:
-> Convert the generic fpga region DT binding to json-schema.
-> There are some differences compare to txt version.
-> 1. DT overlay can't be described in example that's why directly include
-> information from overlay to node which was referenced. It is visible in
-> example with /* DT Overlay contains: &... */
-> 
-> 2. All example have been rewritten to be simpler and describe only full
-> reconfiguration and partial reconfiguration with one bridge.
-> Completely drop the case where fpga region can inside partial
-> reconfiguration region which is already described in description
-> 
-> 3. Fixed some typos in descriptions compare to txt version but most of it
-> is just c&p from txt file.
-> 
-> Signed-off-by: Michal Simek <michal.simek@amd.com>
-> ---
-> 
-> Changes in v4:
-> - permit only object type as additionalProperties
-> - describe also optional reg/ranges properties and remove required
->   #address/size-cells properties
-> 
-> Changes in v3:
-> - drop fpga bridge and mgr descriptions in example
-> - use additionalProperties: true
-> - use fixed-factor-clock instead
-> - fixed matching pattern
-> 
-> Changes in v2:
-> - Fix typo in subject
-> - Fix comment in bridge example
-> - Change license back to gpl-2.0 only
-> - Do not define firware-name type and add maxItems 1
-> - Make fpga-bridge phandle-array
-> - Drop ranges property because of missing reg property of fpga-region
-> - Also describe case with fixed clock node and axi bus
-> - Fix fpga-region names in example
-> 
-> Please let me know if there is a way to describe overlays to dt root to be
-> able to reference fpga region back.
-> 
-> fpga-region without MMIO access is also permitted that's why there is no
-> need to describe reg/ranges and #.*cells properties for these cases.
-> 
-> ---
->  .../devicetree/bindings/fpga/fpga-region.txt  | 479 ------------------
->  .../devicetree/bindings/fpga/fpga-region.yaml | 358 +++++++++++++
->  2 files changed, 358 insertions(+), 479 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/fpga/fpga-region.txt
->  create mode 100644 Documentation/devicetree/bindings/fpga/fpga-region.yaml
-> 
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> We're working towards protecting the chip pointer in struct gpio_device
+> with SRCU. In order to use it in sysfs callbacks we must pass the pointer
+> to the GPIO device that wraps the chip instead of the address of the
+> chip itself as the user data.
+>
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Applied, thanks!
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
+Yours,
+Linus Walleij
 
