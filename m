@@ -1,87 +1,51 @@
-Return-Path: <linux-kernel+bounces-46384-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46385-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19AF5843ED6
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:52:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81019843ED9
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:53:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B84751F2FCA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:52:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDF7C1F2FD35
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:53:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BE0077F2C;
-	Wed, 31 Jan 2024 11:52:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cLPqnYep"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA81476040;
-	Wed, 31 Jan 2024 11:52:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12C0978681;
+	Wed, 31 Jan 2024 11:53:13 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0B8E69E08;
+	Wed, 31 Jan 2024 11:53:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706701937; cv=none; b=GTlWqDTNe3XTcUfnskhdLIrBNdSIIMABa975En7xvFapSRx4A9a7gQh5nxFL4/Lj0X3yQlW80Php+TmQ2JrgFpy8vIXsoAHRMcf8ncHZe8xJh2mW2mKtrwL9F5lclYP4NII53QwVGdlsmzxa5GBirNMZD4EtA1kstcmDQ/bGxYY=
+	t=1706701991; cv=none; b=l7hh7d9NKbJYiRrQgiShXF2LgMyzJ8aZmaHwFRFyuhI45obrWmbNwYrasCnh2s8UisXJGcmsDkdeBnyI25tbMbZdx2AIC2Q+BSeqtGAOSS+zMgchn3n8f5zvS02NNuXrTxJ+t+HVFgBLXKU+f/dhh3zDmkGFh98PQYQM+XLUJSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706701937; c=relaxed/simple;
-	bh=pysEqJSi12OgIxziInUigUCVr98LVwHAqnVaGuYDmmo=;
+	s=arc-20240116; t=1706701991; c=relaxed/simple;
+	bh=9VM+eyWUkqOvsQE3IzsAiMOfeUXSINHE8tEah9vrrxs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a8yU4w0dkwguYN1DPYRews/4uDwvz7TEq+EBeDlpA7YUgdoi+XsUPa/EsY6sdm9p2lWrbl1P7N8pWKHa66Ule9VhZsv3zYZV2FAK3zGurxH2r3GMfKq7/lpFRv1oTzmmspoToQidj6mNA63ObC4LdLZ4HymMao6dqXgw63v8l3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cLPqnYep; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5102a877d50so5735365e87.0;
-        Wed, 31 Jan 2024 03:52:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706701934; x=1707306734; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=SDlah67sh5gJ9ynKDz3ysjr2o7CYUk88hIiX0azAyyc=;
-        b=cLPqnYep/jVY5WhVhBjgRJDbFZuFGyoLkPhP2RlaLMlyHLQKcwxVAU2OvLzT61xobD
-         BggAs2CeXMw+NgiEL2C1ozuROSrjQeTo4O3HyeGqDdJnbMxebusc/bOtkY6zL+aZBQPv
-         3+NXzCIVNuOOC3hAzNey00Y3Vpt9N6yYNJVaOBl7047c80eqaMgfioR7n0bulWF0Q0a5
-         N6PeSzJYW+cW61JlY2XzxBZCfKAHLUW3pqzBpt8US4TqvR5TKpZkESBVuNbJLYeLx2wH
-         z9YAWT0TEb3HQA7U3OMUjZRv6ASviG4ir+rM20jbyqrOnTiRURgXzOKRlHvUY9i34SNf
-         s4nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706701934; x=1707306734;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SDlah67sh5gJ9ynKDz3ysjr2o7CYUk88hIiX0azAyyc=;
-        b=grla9Ot6qFDmkZKDYLF8G37+8ZuFgQV+ON62Qaf/okJx51KMuQZVDfsObHlDiSA/Dl
-         WDiMzYWHMGC8dgq6dFU78fgdwsoxLXd3+VBuahyApS7qaWEoCKdgWVPvXnf/FfHlkiKc
-         vqOIerF2M4ym+fh8YjM+xacGgeYRmFA+ac+cN642/+taDwcvRW+5gG5a+yI12slLb2Fx
-         AQpqrD8IJxHYeZX//h3xQZsKLGYIPjcs0RWf+V04VbH4Om4TfSUxA8qGtOzPEunh3bK9
-         FcYEFLdoTQHX8FqvlXq8K4qROtsN+hXqYI5FUdyxlQYb0z5U/7foIn8ltqvcgpCPh+YF
-         uQLA==
-X-Gm-Message-State: AOJu0YxOpeLvFU6CS5tBJ0Cunpq4japTqA8ZPxKVCiDFKglu31hS3LzR
-	t+2dqIwRTb7Ml8p8sFJOJR2GbnOZWFi+hUckReMofBfYqzJ7zFCN
-X-Google-Smtp-Source: AGHT+IGT/GhBNY8zNxq8qrY/QrJrCfHAKHa2GeBrruLDDuJpKfIDSnvo8RECdhAB5l3rhzcE/mHJag==
-X-Received: by 2002:a05:6512:1095:b0:50e:a9c0:70a6 with SMTP id j21-20020a056512109500b0050ea9c070a6mr1132993lfg.43.1706701933731;
-        Wed, 31 Jan 2024 03:52:13 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXgxSyJMXOvbCIDB0wzyLHpsYcK4/T9b5Q6W/hyvfAmUa/6cSdxDzdOolPJg5uzFBHRg4i9xC44AzQHm/Qspd2E7peB3o2PhnSnP6vZ776CrE6rJIyj7OmI2t9rAyfGN0BFUAhHXEXj6ujBvSGfMnlwfQOfOnL87du0FxciZU2T3FpJ4TQ74pXT32kWocurP4eH4jBPvr7xzkHzpy4blqOq4wrGKphewAf5X7mxq7P9OtjY9HEXjD027KFbvTWop6vvMwYGFd0nUxqEubJs7EV/P6lQj8WEukj5IDv+2H3TeN3QiDVbTBg7h1kKd7BM0LzYz66Mdg5u6HBIbyYMZIZ5wOlHx8g4vZkseq1faX49F1Zan54fI3sg1J6Tbgz86A==
-Received: from debian ([93.184.186.109])
-        by smtp.gmail.com with ESMTPSA id d15-20020adfa34f000000b0033ae9f1fb82sm8946992wrb.48.2024.01.31.03.52.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 03:52:13 -0800 (PST)
-Date: Wed, 31 Jan 2024 12:52:11 +0100
-From: Dimitri Fedrau <dima.fedrau@gmail.com>
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jean Delvare <jdelvare@suse.com>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Stefan Eichenberger <eichest@gmail.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH v5 net-next 08/13] net: phy: marvell-88q2xxx: add support
- for temperature sensor
-Message-ID: <20240131115211.GA111590@debian>
-References: <20240122212848.3645785-1-dima.fedrau@gmail.com>
- <20240122212848.3645785-9-dima.fedrau@gmail.com>
- <Zbi+5ymzbL9sckdi@shell.armlinux.org.uk>
+	 Content-Type:Content-Disposition:In-Reply-To; b=CqSV2qarcHYvl5FeexPE7r9YrCSIFTnWY0PPZU7vRRXQYDs5OuImr9h9IzuAylI656l2efDz+MzkhQvs7QK64rRrmy+LZHsjrMYcBQC6s8cKYdYbuCOejuGDeyB3+StZd2iD6xAXmTsPHsEBLgc2htYp4kae8l43JKYEWaT4rDw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 91335DA7;
+	Wed, 31 Jan 2024 03:53:52 -0800 (PST)
+Received: from bogus (unknown [10.57.78.35])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B7BDB3F738;
+	Wed, 31 Jan 2024 03:53:07 -0800 (PST)
+Date: Wed, 31 Jan 2024 11:53:04 +0000
+From: Sudeep Holla <sudeep.holla@arm.com>
+To: Ulf Hansson <ulf.hansson@linaro.org>
+Cc: Cristian Marussi <cristian.marussi@arm.com>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pmdomain: arm: Fix NULL dereference on scmi_perf_domain
+ removal
+Message-ID: <20240131115304.35hmjgq2xbmzw2v4@bogus>
+References: <20240125191756.868860-1-cristian.marussi@arm.com>
+ <CAPDyKFpqZf15DFWa8K6RRzSTX70chEVTV8zRgnJ3VStSq_d9UQ@mail.gmail.com>
+ <ZblW5rt4UtK6KMJD@pluto>
+ <CAPDyKFo_Hg1-hN4Mw0UZSMX2iHRpyKyzyd+Gh5xWn-+2x3Jskg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,76 +54,137 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zbi+5ymzbL9sckdi@shell.armlinux.org.uk>
+In-Reply-To: <CAPDyKFo_Hg1-hN4Mw0UZSMX2iHRpyKyzyd+Gh5xWn-+2x3Jskg@mail.gmail.com>
 
-Am Tue, Jan 30, 2024 at 09:18:31AM +0000 schrieb Russell King (Oracle):
-> On Mon, Jan 22, 2024 at 10:28:41PM +0100, Dimitri Fedrau wrote:
+On Wed, Jan 31, 2024 at 12:35:56PM +0100, Ulf Hansson wrote:
+> On Tue, 30 Jan 2024 at 21:07, Cristian Marussi <cristian.marussi@arm.com> wrote:
+> >
+> > On Tue, Jan 30, 2024 at 02:09:20PM +0100, Ulf Hansson wrote:
+> > > On Thu, 25 Jan 2024 at 20:18, Cristian Marussi <cristian.marussi@arm.com> wrote:
+> > > >
+> > > > On unloading of the scmi_perf_domain module got the below splat, when in
+> > > > the DT provided to the system under test the '#power-domain-cells' property
+> > > > was missing.
+> > > > Indeed, this particular setup causes the probe to bail out early without
+> > > > giving any error, so that, then, the removal code is run on unload, but
+> > > > without all the expected initialized structures in place.
+> > > >
+> > > > Add a check and bail out early on remove too.
+> > >
+> > > Thanks for spotting this!
+> > >
+> > > >
+> > > > Unable to handle kernel NULL pointer dereference at virtual address 0000000000000008
+> > > > Mem abort info:
+> > > >    ESR = 0x0000000096000004
+> > > >    EC = 0x25: DABT (current EL), IL = 32 bits
+> > > >    SET = 0, FnV = 0
+> > > >    EA = 0, S1PTW = 0
+> > > >    FSC = 0x04: level 0 translation fault
+> > > >  Data abort info:
+> > > >    ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
+> > > >    CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+> > > >    GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+> > > >  user pgtable: 4k pages, 48-bit VAs, pgdp=00000001076e5000
+> > > >  [0000000000000008] pgd=0000000000000000, p4d=0000000000000000
+> > > >  Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
+> > > >  Modules linked in: scmi_perf_domain(-) scmi_module scmi_core
+> > > >  CPU: 0 PID: 231 Comm: rmmod Not tainted 6.7.0-00084-gb4b1f27d3b83-dirty #15
+> > > >  Hardware name: linux,dummy-virt (DT)
+> > > >  pstate: 61400005 (nZCv daif +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
+> > > >  pc : scmi_perf_domain_remove+0x28/0x70 [scmi_perf_domain]
+> > > >  lr : scmi_perf_domain_remove+0x28/0x70 [scmi_perf_domain]
+> > > >  sp : ffff80008393bc10
+> > > >  x29: ffff80008393bc10 x28: ffff0000875a8000 x27: 0000000000000000
+> > > >  x26: 0000000000000000 x25: 0000000000000000 x24: 0000000000000000
+> > > >  x23: ffff00008030c090 x22: ffff00008032d490 x21: ffff80007b287050
+> > > >  x20: 0000000000000000 x19: ffff00008032d410 x18: 0000000000000000
+> > > >  x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
+> > > >  x14: 8ba0696d05013a2f x13: 0000000000000000 x12: 0000000000000002
+> > > >  x11: 0101010101010101 x10: ffff00008510cff8 x9 : ffff800080a6797c
+> > > >  x8 : 0101010101010101 x7 : 7f7f7f7f7f7f7f7f x6 : fefefeff6364626d
+> > > >  x5 : 8080808000000000 x4 : 0000000000000020 x3 : 00000000553a3dc1
+> > > >  x2 : ffff0000875a8000 x1 : ffff0000875a8000 x0 : ffff800082ffa048
+> > > >  Call trace:
+> > > >   scmi_perf_domain_remove+0x28/0x70 [scmi_perf_domain]
+> > > >   scmi_dev_remove+0x28/0x40 [scmi_core]
+> > > >   device_remove+0x54/0x90
+> > > >   device_release_driver_internal+0x1dc/0x240
+> > > >   driver_detach+0x58/0xa8
+> > > >   bus_remove_driver+0x78/0x108
+> > > >   driver_unregister+0x38/0x70
+> > > >   scmi_driver_unregister+0x28/0x180 [scmi_core]
+> > > >   scmi_perf_domain_driver_exit+0x18/0xb78 [scmi_perf_domain]
+> > > >   __arm64_sys_delete_module+0x1a8/0x2c0
+> > > >   invoke_syscall+0x50/0x128
+> > > >   el0_svc_common.constprop.0+0x48/0xf0
+> > > >   do_el0_svc+0x24/0x38
+> > > >   el0_svc+0x34/0xb8
+> > > >   el0t_64_sync_handler+0x100/0x130
+> > > >   el0t_64_sync+0x190/0x198
+> > > >  Code: a90153f3 f9403c14 f9414800 955f8a05 (b9400a80)
+> > > >  ---[ end trace 0000000000000000 ]---
+> > > >
+> > > > Cc: Sudeep Holla <sudeep.holla@arm.com>
+> > > > Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> > > > Fixes: 2af23ceb8624 ("pmdomain: arm: Add the SCMI performance domain")
+> > > > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> > > > ---
+> > > > I suppose the probe does NOT bail out with an error because this DT config has
+> > > > to be supported, right ?
+> > >
+> > > Actually, no. It's a mistake by me, the probe should bail out with an
+> > > error code.
+> > >
+> >
+> > Ok. I suppose any old platform like JUNO that missed this will have to
+> > update their DT to use the new scmi_perf_domain...well it should have
+> > anyway really, it is just that now it is silently failing.
 > 
-> 	int tmp;
+> I don't think it's failing. The old binding for SCMI perf (using
+> clock-cells) is still supported the way they were before, which is
+> only for cpufreq.
 > 
-> > +	switch (attr) {
-> > +	case hwmon_temp_input:
-> > +		ret = phy_read_mmd(phydev, MDIO_MMD_PCS,
-> > +				   MDIO_MMD_PCS_MV_TEMP_SENSOR3);
-> > +		if (ret < 0)
-> > +			return ret;
-> > +
-> > +		*val = ((ret & MDIO_MMD_PCS_MV_TEMP_SENSOR3_MASK) - 75) * 1000;
+> But, yes you are right, both the DT and the consumer driver would need
+> to be updated to support SCMI perf.
 > 
-> 		tmp = FIELD_GET(MDIO_MMD_PCS_MV_TEMP_SENSOR3_MASK, ret);
-> 		*val = (tmp - 75) * 1000;
-> 
-> > +		return 0;
-> > +	case hwmon_temp_max:
-> > +		ret = phy_read_mmd(phydev, MDIO_MMD_PCS,
-> > +				   MDIO_MMD_PCS_MV_TEMP_SENSOR3);
-> > +		if (ret < 0)
-> > +			return ret;
-> > +
-> > +		*val = (((ret & MDIO_MMD_PCS_MV_TEMP_SENSOR3_INT_THRESH_MASK) >>
-> > +			MDIO_MMD_PCS_MV_TEMP_SENSOR3_INT_THRESH_SHIFT) - 75) *
-> > +			1000;
-> 
-> 		tmp = FIELD_GET(MDIO_MMD_PCS_MV_TEMP_SENSOR3_INT_THRESH_MASK,
-> 				ret);
-> 		*val = (tmp - 75) * 1000;
-> 
-> > +		return 0;
-> > +	case hwmon_temp_alarm:
-> > +		ret = phy_read_mmd(phydev, MDIO_MMD_PCS,
-> > +				   MDIO_MMD_PCS_MV_TEMP_SENSOR1);
-> > +		if (ret < 0)
-> > +			return ret;
-> > +
-> > +		*val = !!(ret & MDIO_MMD_PCS_MV_TEMP_SENSOR1_RAW_INT);
-> > +		return 0;
-> > +	default:
-> > +		return -EOPNOTSUPP;
-> > +	}
-> > +}
-> > +
-> > +static int mv88q2xxx_hwmon_write(struct device *dev,
-> > +				 enum hwmon_sensor_types type, u32 attr,
-> > +				 int channel, long val)
-> > +{
-> > +	struct phy_device *phydev = dev_get_drvdata(dev);
-> > +
-> > +	switch (attr) {
-> > +	case hwmon_temp_max:
-> > +		if (val < -75000 || val > 180000)
-> > +			return -EINVAL;
-> > +
-> > +		val = ((val / 1000) + 75) <<
-> > +		       MDIO_MMD_PCS_MV_TEMP_SENSOR3_INT_THRESH_SHIFT;
-> 
-> 		val = (val / 1000) + 75;
-> 		val = FIELD_PREP(MDIO_MMD_PCS_MV_TEMP_SENSOR3_INT_THRESH_MASK,
-> 				 val);
-> 
-> ... and therefore no need for the _SHIFT constants.
+
+Not sure if you want to flag an error on platforms that doesn't use this.
+IMO probe succeeding doing nothing seems right. Won't returning the error
+from probe gets flagged as error during boot or module loading though
+it is harmless on the platform since it doesn't use it.
+
+> In fact, there is also one additional similar problem in probe, when
+> the number of perf-domains are zero. In that case, we should also
+> return an error code, rather than returning 0.
 >
-Will fix it.
-> -- 
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+> >
+> > > In fact, there is also one additional similar problem in probe, when
+> > > the number of perf-domains are zero. In that case, we should also
+> > > return an error code, rather than returning 0.
+> > >
+> > > Would you mind updating the patch to cover both problems - or if you
+> > > are too busy, just let me know and I can help out.
+> >
+> > No problem, I can do it next week, but regarding the zero domain case,
+> > I remember I used to do the same on regulator/voltage driver and bail out
+> > when no domains were found, but we were asked by some customer to support
+> > instead the very useless and funny case of zero domains for some of their
+> > testing setup scenarios .. i.e. allowing the driver to load with zero domains
+> > (and do nothing) and then unload cleanly avoiding harms while unloading ...)
+> >
+> > Thoughts about this ? Can fix as you prefer .
+> 
+> In my opinion, there is no point having a module/driver loaded to do
+> nothing. I would prefer to just return an error code.
+> 
+
+IIRC we had this in one of the driver but there was a request to keep it
+this way as it is useful in SCMI f/w bringup/testing. Not all info/features
+need to be ready. That said I am fine if pmdomain prefers to flag 0 domains
+as error.
+
+-- 
+Regards,
+Sudeep
 
