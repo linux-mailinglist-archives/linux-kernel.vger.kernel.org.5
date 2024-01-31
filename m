@@ -1,167 +1,189 @@
-Return-Path: <linux-kernel+bounces-46742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D09F844372
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:54:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EF3D844377
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:55:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9085E1C231EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:54:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B35461C2457F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:55:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C963412A14C;
-	Wed, 31 Jan 2024 15:54:09 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B90C280BEF
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 15:54:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7144212A154;
+	Wed, 31 Jan 2024 15:54:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="br+vz2sV"
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24CC3129A8D;
+	Wed, 31 Jan 2024 15:54:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706716449; cv=none; b=myF0FjcC89X5cK5E1AQlYd9v/kVDTB26undNUiR3X6M/ViwUuuUzUiHcIWdzhew+YuDbJyLudlrCVTs0cSLb3ntTI/jhxjr0zp2++di+2hAntg66iTrWhlW8lu8yQ8Ss3XDZPs3IWCUTe9zIyZfjlI0obYNeqmz+0hIkm/Ks76Q=
+	t=1706716490; cv=none; b=EgPkYDtFnVM8ZOTgVcYswp57VH5MtTu0+5IccnVHaey1z9g7byeNCxgISJjTfZFdW6LmeAE8I/cwg1Z89AOblM/TK9T6f+fxWpMTjf9gCV2uwa/4NqxYWsD9dXpjX7L2aM20e+0QT95musLposTvRq5sSGygc0pbQCcrWkxwgbg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706716449; c=relaxed/simple;
-	bh=mldqjE1Pc7pvM56+X+UXfoNDx5BOel/dXPvqQok+9yg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oQMdbxJMNY8ruv2GNWgAIJU4r7FRruzGxeFkTcw6VfD7E9pbUfQP/uBSPcCXHmXTAFsSN+5GEpk0OeHC23dFkoMh5ND9gR76RPm8n3eKyQL1AS6ey4Tgs1IjapWc5633Gbk4WrrBS80iNMcdilKgxXxozeYqT3JYXHD/+Wa5IjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 71801DA7;
-	Wed, 31 Jan 2024 07:54:49 -0800 (PST)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2DEAA3F762;
-	Wed, 31 Jan 2024 07:54:05 -0800 (PST)
-Message-ID: <4c9f50d2-05f9-4a37-ac50-dcd98e40e87f@arm.com>
-Date: Wed, 31 Jan 2024 15:54:03 +0000
+	s=arc-20240116; t=1706716490; c=relaxed/simple;
+	bh=962G4SeZS6ybqHxFrU26+VODCD2iTSXY5jIdT5VAmx0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SGZyG04ipwDyqYCb2EKcka/R67b1yB2J5Um2HVMike/g0DB6/STUGJtjhauyN88UBicWRu9/E8TpDiBeYPWD+4zThEynd1WQdNGwYeZJ9WjpvRL6uqKOxOnbBxEVyhsXuH5roYfQYJEx0dPiGBnUY3Ra+PbE4V04hZ85yHp3FQ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=br+vz2sV; arc=none smtp.client-ip=209.85.219.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dc6b5d0e015so1155436276.1;
+        Wed, 31 Jan 2024 07:54:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706716488; x=1707321288; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Sp+45kIh37HWYYNwuHvpyq1RNM06jOtAV4lYBAKJAiQ=;
+        b=br+vz2sV3+EOmEV7kP4zfuON4sDb2xMWnP9TglLvKNbtKZYXG7lOpQiUv9Hmzm8MGr
+         wau6v6SUt5jfTCzbzUQkrWERvSnWWsn8G2uZorc1uC4a+mpKDHufKuuW94ff+3LLOyAh
+         DSedETYwVxuGfZlXWBH9lXGyg9cE574oqrh5b2bIozuzgJjp5dHbgNHlqGVAxd5yHHb0
+         os2SYyVBYbz1ED3sR5QSwqACG0GSilPJTHCgPQBmmL2lYIdso4pvEEVylhL9vv13r0bv
+         4UvBRs7KHO9G6k9hM3xHxdbTrBUXIl7Xh6XfhFeF0mvttMiuy1rt72I1BVjLJBqYxBv5
+         NKJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706716488; x=1707321288;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Sp+45kIh37HWYYNwuHvpyq1RNM06jOtAV4lYBAKJAiQ=;
+        b=RnqAlLpy9rjqyZrg2o4eqv9tYhuUqMR1YU7ipCK0ClEwv7fb/7UK306J5LpnMdQ4nk
+         PHQHMYhRbitxR+6aW1iirC9BRjAL1S9xP2fDjZiw/B1lTkpjvViRRUXCIqmEicgDbeRC
+         gV+0ZWIPnGg76Kb3agryiiiN98KaLG0e3G3BOawdMy6asVQ1zyDpAe6yCpHQDbRhX1uM
+         DR0SfmPgRpQqnkBKLtI7qfXg609wuAyMMwOUt7CsuKRlisO21LfRtAQMJyXgD7gcJMGB
+         2uRtmYxZl3gt1gLl/4Go5fY12qu1xTfzx7hdZrtTpgmpngSn7mRerBRA4rVFpMsaMqyu
+         t7wA==
+X-Gm-Message-State: AOJu0YxDRfyAP/J0ZasteZp0k/aVUXk8lyqDPelvUmxwargdFHgp/HK9
+	8YJEioGglySmfwAYXHAdTqrxqv6MwW7Zs7Cro/aTv/lsQghgc88bD+KxfB2Qdvxcx9Ah6gy7dB7
+	Wj0x0BZ00MJzwTvnvIwOq7cPe+wg=
+X-Google-Smtp-Source: AGHT+IFdGdK0zvmMkDmOQrQbRw5dX+IZi8Nc46PV6odF8loYa7iZfaTmImmWVuhsxnN4JyycwD/NBnrVZDen5oDkTog=
+X-Received: by 2002:a25:c546:0:b0:dc2:3562:d234 with SMTP id
+ v67-20020a25c546000000b00dc23562d234mr2003329ybe.12.1706716488054; Wed, 31
+ Jan 2024 07:54:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/3] swiotlb: Fix allocation alignment requirement when
- searching slots
-Content-Language: en-GB
-To: Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
-Cc: kernel-team@android.com, iommu@lists.linux.dev,
- Christoph Hellwig <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>,
- Petr Tesarik <petr.tesarik1@huawei-partners.com>,
- Dexuan Cui <decui@microsoft.com>
-References: <20240131122543.14791-1-will@kernel.org>
- <20240131122543.14791-2-will@kernel.org>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20240131122543.14791-2-will@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240130214620.3155380-1-stefanb@linux.ibm.com>
+ <20240130214620.3155380-5-stefanb@linux.ibm.com> <38230b4c-54ae-45ed-a6fb-34e63501e5b1@linux.ibm.com>
+ <CAOQ4uxiYARZBSgzb4_W-RKvB1XLSF3GUBqeLw2kH+eVeZ_8ARQ@mail.gmail.com> <c018b014-9ba8-4395-86dc-b61346ab20a8@linux.ibm.com>
+In-Reply-To: <c018b014-9ba8-4395-86dc-b61346ab20a8@linux.ibm.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Wed, 31 Jan 2024 17:54:37 +0200
+Message-ID: <CAOQ4uxi6Te8izWpXROthknRaXrVA9jho5nbc+mkuQDrcTLY44Q@mail.gmail.com>
+Subject: Re: [PATCH 4/5] evm: Use the real inode's metadata to calculate
+ metadata hash
+To: Stefan Berger <stefanb@linux.ibm.com>
+Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com, 
+	roberto.sassu@huawei.com, miklos@szeredi.hu
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 31/01/2024 12:25 pm, Will Deacon wrote:
-> Commit bbb73a103fbb ("swiotlb: fix a braino in the alignment check fix"),
-> which was a fix for commit 0eee5ae10256 ("swiotlb: fix slot alignment
-> checks"), causes a functional regression with vsock in a virtual machine
-> using bouncing via a restricted DMA SWIOTLB pool.
-> 
-> When virtio allocates the virtqueues for the vsock device using
-> dma_alloc_coherent(), the SWIOTLB search fails to take into account the
-> 8KiB buffer size and returns page-unaligned allocations if 'area->index'
-> was left unaligned by a previous allocation from the buffer:
+On Wed, Jan 31, 2024 at 4:40=E2=80=AFPM Stefan Berger <stefanb@linux.ibm.co=
+m> wrote:
+>
+>
+>
+> On 1/31/24 08:16, Amir Goldstein wrote:
+> > On Wed, Jan 31, 2024 at 4:11=E2=80=AFAM Stefan Berger <stefanb@linux.ib=
+m.com> wrote:
+> >>
+> >>
+> >>
+> >> On 1/30/24 16:46, Stefan Berger wrote:
+> >>> Changes to the file attribute (mode bits, uid, gid) on the lower laye=
+r
+> >>> are not take into account when d_backing_inode() is used when a file =
+is
+> >>> accessed on the overlay layer and this file has not yet been copied u=
+p.
+> >>> This is because d_backing_inode() does not return the real inode of t=
+he
+> >>> lower layer but instead returns the backing inode which holds old fil=
+e
+> >>> attributes. When the old file attributes are used for calculating the
+> >>> metadata hash then the expected hash is calculated and the file then
+> >>> mistakenly passes signature verification. Therefore, use d_real_inode=
+()
+> >>> which returns the inode of the lower layer for as long as the file ha=
+s
+> >>> not been copied up and returns the upper layer's inode otherwise.
+> >>>
+> >>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> >>> ---
+> >>>    security/integrity/evm/evm_crypto.c | 2 +-
+> >>>    1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity=
+/evm/evm_crypto.c
+> >>> index b1ffd4cc0b44..2e48fe54e899 100644
+> >>> --- a/security/integrity/evm/evm_crypto.c
+> >>> +++ b/security/integrity/evm/evm_crypto.c
+> >>> @@ -223,7 +223,7 @@ static int evm_calc_hmac_or_hash(struct dentry *d=
+entry,
+> >>>                                 size_t req_xattr_value_len,
+> >>>                                 uint8_t type, struct evm_digest *data=
+)
+> >>>    {
+> >>> -     struct inode *inode =3D d_backing_inode(dentry);
+> >>> +     struct inode *inode =3D d_real_inode(dentry);
+> >>>        struct xattr_list *xattr;
+> >>>        struct shash_desc *desc;
+> >>>        size_t xattr_size =3D 0;
+> >>
+> >> We need this patch when NOT activating CONFIG_OVERLAY_FS_METACOPY but
+> >> when setting CONFIG_OVERLAY_FS_METACOPY=3Dy it has to be reverted...  =
+I am
+> >> not sure what the solution is.
+> >
+> > I think d_real_inode() does not work correctly for all its current user=
+s for
+> > a metacopy file.
+> >
+> > I think the solution is to change d_real_inode() to return the data ino=
+de
+> > and add another helper to get the metadata inode if needed.
+> > I will post some patches for it.
+>
+> I thought that we may have to go through vfs_getattr() but even better
+> if we don't because we don't have the file *file anywhere 'near'.
+>
+> >
+> > However, I must say that I do not know if evm_calc_hmac_or_hash()
+> > needs the lower data inode, the upper metadata inode or both.
+>
+> What it needs are data structures with mode bits, uid, and gid that stat
+> in userspace would show.
+>
+>
 
-Hmm, but isn't this fundamentally swiotlb_alloc()'s fault for assuming 
-it's going to get a page-aligned address back despite asking for 0 
-alignment in the first place? I'm not sure SWIOTLB has ever promised 
-implicit size-alignment, so it feels somewhat misplaced to be messing 
-with the algorithm before fixing the obvious issue in the caller :/
+With or without metacopy enabled, an overlay inode st_uid st_gid st_mode
+are always taken from the upper most inode which is what d_real_inode()
+currently returns, so I do not understand what the problem is.
 
-Cheers,
-Robin.
+> >
+> > The last time you tried to fix ovl+IMA, I asked for documentation
+> > of what data/metadata is protected with EVM and how are those
+> > protections supposed to work across overlayfs copy up, when the
+> > data and metadata are often split between 2 and myabe event 3
+> > differnt inode.
+>
+> I always compare against what userspace sees with stat and that's what
+> the EVM should also work with so it ends up in reasonable matching
+> result in terms of hash calculation and then access permission/rejection.
+>
 
->   # Final address in brackets is the SWIOTLB address returned to the caller
->   | virtio-pci 0000:00:07.0: orig_addr 0x0 alloc_size 0x2000, iotlb_align_mask 0x800 stride 0x2: got slot 1645-1649/7168 (0x98326800)
->   | virtio-pci 0000:00:07.0: orig_addr 0x0 alloc_size 0x2000, iotlb_align_mask 0x800 stride 0x2: got slot 1649-1653/7168 (0x98328800)
->   | virtio-pci 0000:00:07.0: orig_addr 0x0 alloc_size 0x2000, iotlb_align_mask 0x800 stride 0x2: got slot 1653-1657/7168 (0x9832a800)
-> 
-> This ends in tears (typically buffer corruption and/or a hang) because
-> swiotlb_alloc() blindly returns a pointer to the 'struct page'
-> corresponding to the allocation and therefore the first half of the page
-> ends up being allocated twice.
-> 
-> Fix the problem by treating the allocation alignment separately to any
-> additional alignment requirements from the device, using the maximum
-> of the two as the stride to search the buffer slots.
-> 
-> Fixes: bbb73a103fbb ("swiotlb: fix a braino in the alignment check fix")
-> Fixes: 0eee5ae10256 ("swiotlb: fix slot alignment checks")
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Cc: Petr Tesarik <petr.tesarik1@huawei-partners.com>
-> Cc: Dexuan Cui <decui@microsoft.com>
-> Signed-off-by: Will Deacon <will@kernel.org>
-> ---
->   kernel/dma/swiotlb.c | 29 +++++++++++++++--------------
->   1 file changed, 15 insertions(+), 14 deletions(-)
-> 
-> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> index b079a9a8e087..56cc08b1fbd6 100644
-> --- a/kernel/dma/swiotlb.c
-> +++ b/kernel/dma/swiotlb.c
-> @@ -982,7 +982,7 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
->   		phys_to_dma_unencrypted(dev, pool->start) & boundary_mask;
->   	unsigned long max_slots = get_max_slots(boundary_mask);
->   	unsigned int iotlb_align_mask =
-> -		dma_get_min_align_mask(dev) | alloc_align_mask;
-> +		dma_get_min_align_mask(dev) & ~(IO_TLB_SIZE - 1);
->   	unsigned int nslots = nr_slots(alloc_size), stride;
->   	unsigned int offset = swiotlb_align_offset(dev, orig_addr);
->   	unsigned int index, slots_checked, count = 0, i;
-> @@ -993,19 +993,18 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
->   	BUG_ON(!nslots);
->   	BUG_ON(area_index >= pool->nareas);
->   
-> +	/*
-> +	 * For mappings with an alignment requirement don't bother looping to
-> +	 * unaligned slots once we found an aligned one.
-> +	 */
-> +	stride = get_max_slots(max(alloc_align_mask, iotlb_align_mask));
-> +
->   	/*
->   	 * For allocations of PAGE_SIZE or larger only look for page aligned
->   	 * allocations.
->   	 */
->   	if (alloc_size >= PAGE_SIZE)
-> -		iotlb_align_mask |= ~PAGE_MASK;
-> -	iotlb_align_mask &= ~(IO_TLB_SIZE - 1);
-> -
-> -	/*
-> -	 * For mappings with an alignment requirement don't bother looping to
-> -	 * unaligned slots once we found an aligned one.
-> -	 */
-> -	stride = (iotlb_align_mask >> IO_TLB_SHIFT) + 1;
-> +		stride = max(stride, PAGE_SHIFT - IO_TLB_SHIFT + 1);
->   
->   	spin_lock_irqsave(&area->lock, flags);
->   	if (unlikely(nslots > pool->area_nslabs - area->used))
-> @@ -1015,14 +1014,16 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
->   	index = area->index;
->   
->   	for (slots_checked = 0; slots_checked < pool->area_nslabs; ) {
-> -		slot_index = slot_base + index;
-> +		phys_addr_t tlb_addr;
->   
-> -		if (orig_addr &&
-> -		    (slot_addr(tbl_dma_addr, slot_index) &
-> -		     iotlb_align_mask) != (orig_addr & iotlb_align_mask)) {
-> +		slot_index = slot_base + index;
-> +		tlb_addr = slot_addr(tbl_dma_addr, slot_index);
-> +
-> +		if ((tlb_addr & alloc_align_mask) ||
-> +		    (orig_addr && (tlb_addr & iotlb_align_mask) !=
-> +				  (orig_addr & iotlb_align_mask))) {
->   			index = wrap_area_index(pool, index + 1);
->   			slots_checked++;
-> -			continue;
->   		}
->   
->   		if (!iommu_is_span_boundary(slot_index, nslots,
+I will need a lot more analysis information to be able to help you.
+Exactly which setup, exactly which test, exactly which inode/dentry/file
+objects are used and how they are accessed when things go wrong.
+
+Thanks,
+Amir.
 
