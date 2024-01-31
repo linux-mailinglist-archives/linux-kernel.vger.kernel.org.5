@@ -1,71 +1,80 @@
-Return-Path: <linux-kernel+bounces-46218-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46186-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47862843C61
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:25:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 541A2843BF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:15:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5CD221C29B91
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:24:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 790AF1C26979
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:15:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84D1269DFD;
-	Wed, 31 Jan 2024 10:20:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9802669D0D;
+	Wed, 31 Jan 2024 10:14:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="OM3Mmp4q"
-Received: from out203-205-221-221.mail.qq.com (out203-205-221-221.mail.qq.com [203.205.221.221])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="HFqf9+F9"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7148980C06
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 10:20:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.221
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3247657DD;
+	Wed, 31 Jan 2024 10:14:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706696455; cv=none; b=LkJzla1cWdFMqK0RYr4p92R9UIQ7OEnPwweB7CbI21Cd82X9vSgr6FHxgMszdtef9LUoa82W5rxQw7HR0lVZe7WQO2FtkSZ3HIJwk1ScNThc2TNbSvg2Zqo+cH6I4R0aCZU5uqtThlF8/E7404C+o5kUEZj6sYSTLW8OP8E31Kw=
+	t=1706696098; cv=none; b=aBhgl2amiUFEWaHQehYUHVNWvXyteC5CrUkzP9iJbmpcoUT9kmU9E254WAXy2bxXoF3hjEVu/OER6rZvIf6DIKVfcJDe8Kpd+nPFCFQ5a2ol6JPHh6Y8U66pbeB45oJ4iA7b9ATJm68LKTHUtWEg7cvgy/pU3r+3Qs+etqD/+6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706696455; c=relaxed/simple;
-	bh=dcDG1086DpTi4ooba1zaKixLkEQvdDondlu1tu/Lsks=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=k8uan/VA6jZUuJ2LlbOI2g8BYx/t7h01NRKd2E4oVFQE6icF24WNTBTdigR0dts9Cms4Kwo5pmz5pcJWw+kFNeo5B/DwAYcSyc2kf0V4ou65FL68TW+qN9Er3hnLFMwTjMqxnlQEdz+SVgTlj4SgnDBJyNTHOaODPaODHeuGcPo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=OM3Mmp4q; arc=none smtp.client-ip=203.205.221.221
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1706696146; bh=X0X8hqsNAwweBfd2Kcw3OnbFJfIAgX8kvyTzKulQO2I=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=OM3Mmp4q+ajKEjA1w1b8aRfjsjuFdNkRowuLxqOMX7Dtcz6+KOqw5jqFjKdV/5lTe
-	 cg0X9qnAyjGCUv2MzsUPj+JwH8ZBBAdlV/wbEJw2zv5R23jgACUIeQMsJsnzUpOuC4
-	 MNknQGhmczW+Tnh9hGMZXl3ZK4Gg+UnGdcA27DmA=
-Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
-	by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
-	id 39C3D00A; Wed, 31 Jan 2024 18:14:28 +0800
-X-QQ-mid: xmsmtpt1706696068t8uk0czcx
-Message-ID: <tencent_F29790365A4AF8744577D967B83C95361E09@qq.com>
-X-QQ-XMAILINFO: NwU6Bou9okj/dh8YUMWycYF6naj22IUnLzQSCPyswlVw2MsjAkyi7Z6RzaiD+E
-	 23mpGewUZn+lu1DE0DMSzB+bTXZxY5+OJFEUi1VBVMJwhIHEFwExAqWEJ/c7EzhZbCM+8KnI8L7j
-	 XUWjcfuERUMovYvP4htY1087U1zo2ysQKNzpVTMCUSBb+K2FAh7bQnRSpHQEir2tb8YlaCuPK7ax
-	 zgptBs933hv+IfMGJ3lP//i5fOqopXci43JRTFQItaI+zF7rUAYZVRq/6M0KGTDlKdGg81cHST5J
-	 d1O7unN0RzRil8BRVIRpiq3fU+ptY869oU0LyCFW8rgqaGp9ZVrTZkYKxT2GuKM5JiKjXBt7UX6R
-	 WqQhiGZywYpdnEN/aEUEDYm2m/8/AGA870dDEdDKmtCEw1SIgWOJNmzweHWhJuKMFJjKqRZj1PN/
-	 R7nwaIwQVS+nVBPOLY5UXGF5DWkKa8PPTzh3nSBjl/Lz6pEk5vTfjbBBR1Qo/A+Zn+CovbVLxKs7
-	 RvP64iPs6bqr3aw7qs7hemMr2kFueXBNl4vPK2Y0XdO1V6CTmRXrOpG9rri81KyCtb8c+tmMk7I6
-	 RfnqbjQGLtZzrtbJKE0KDKr2zrsC3Tjy63Iuh7766BxV4VhSG56VhgwyEeHWyjIh0fIH4C+FzICU
-	 F4S7ASdE2/TLiObGKQB+rHFMs7HMYNugl9sMTVd1qQi5PHMssjHg0HG07SxESflREzH8AmvJ3en4
-	 kyIxnU0X4OLN+bNNw1OF0onAmmR7vXcer2xYeM0fj2mnBVvKU6VNRaZge6Uzm4OEOUwoW5gPTSt+
-	 aLFOuPaHW4AuplXiY7tDzD7uSEckUS2jfuh08Y3/lpiJP90Zo7RiZL2dytnVpNQs9grrEqy09YCn
-	 Z+KJcGkA0lsSkyQZuit9vgjImQBMOGRwB6Nhr74O3SgA1mHE75MRmWQ0M1mi8ir0RJ3GjSY9zmXb
-	 KEbYyh/TEN1Du+jA11ICNWwQncEbDL/RrBwWosUulT7k8C7011tnQqvG8lLRF+
-X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+2373f6be3e6de4f92562@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [block?] [trace?] INFO: task hung in blk_trace_remove (2)
-Date: Wed, 31 Jan 2024 18:14:29 +0800
-X-OQ-MSGID: <20240131101428.1112235-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <0000000000002b1fc7060fca3adf@google.com>
-References: <0000000000002b1fc7060fca3adf@google.com>
+	s=arc-20240116; t=1706696098; c=relaxed/simple;
+	bh=b/GOL9zNV3mBZgbVA/hrJx5X+eL8qO8R3xgQko1NDuM=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Zg0Vm7UfdXnAT1lwNpKaQesGlDSBRSQpw50vv7wRfZmLuRK6m2GkfCEXmaiotp7Af3eaLaJcExICchvKf2HHz1EvGlIUK6mhm7WvORLR5vuWbhGzoudqQE+3dGPwiUH5PDMlFeYHWqYT8HH/4swqe4WSHiOfEAGXTLf+OG5BKqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=HFqf9+F9; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40VAEj7c055743;
+	Wed, 31 Jan 2024 04:14:45 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706696085;
+	bh=WbfLvT3kFZSrbmnYEVEAt8P7Y9YgAdQ7hhEX+xYFdMs=;
+	h=From:To:CC:Subject:Date;
+	b=HFqf9+F9GVkERESXJKXO2Er9NfzDFxq81359lHFqEIjN+Tm/h8nEOP9lJ5055np3p
+	 X+taUoUiLfxvqju+oEu+MdbqstQygDCVnLRhU8VzA4yuOSrga8K+/xeaFVJ+HUWRwN
+	 rtuLZtluTyHLfhC3JfmLlO0sdoZT3a+suPK5xo/c=
+Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40VAEjii075176
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 31 Jan 2024 04:14:45 -0600
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 31
+ Jan 2024 04:14:44 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 31 Jan 2024 04:14:44 -0600
+Received: from localhost (chintan-thinkstation-p360-tower.dhcp.ti.com [172.24.227.220])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40VAEiBr110197;
+	Wed, 31 Jan 2024 04:14:44 -0600
+From: Chintan Vankar <c-vankar@ti.com>
+To: Andrew Davis <afd@ti.com>, Peter Rosin <peda@axentia.se>,
+        Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, Tero
+ Kristo <kristo@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>, Nishanth
+ Menon <nm@ti.com>
+CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
+        <s-vadapalli@ti.com>, <r-gunasekaran@ti.com>, <danishanwar@ti.com>,
+        Chintan Vankar
+	<c-vankar@ti.com>
+Subject: [PATCH v4 0/6] Add CPSW2G and CPSW9G nodes for J784S4
+Date: Wed, 31 Jan 2024 15:44:35 +0530
+Message-ID: <20240131101441.1362409-1-c-vankar@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,25 +82,58 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-please test task hung in blk_trace_remove
+This series adds device-tree nodes for CPSW2G and CPSW9G instance
+of the CPSW Ethernet Switch on TI's J784S4 SoC. Additionally,
+two device-tree overlays are also added:
+1. QSGMII mode with the CPSW9G instance via the ENET EXPANSION 1
+   connector.
+2. USXGMII mode with MAC Ports 1 and 2 of the CPSW9G instance via
+   ENET EXPANSION 1 and 2 connectors, configured in fixed-link
+   mode of operation at 5Gbps link speed.
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+Similar to Andrew Davis patch at:
+https://lore.kernel.org/r/20231117222930.228688-5-afd@ti.com/ for J721E,
+similar changes are also required for J784S4 to remove dependency on the
+parent node being a syscon node.
 
-diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index d5d94510afd3..eede951d198a 100644
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -381,8 +381,10 @@ static void blk_trace_cleanup(struct request_queue *q, struct blk_trace *bt)
- {
- 	blk_trace_stop(bt);
- 	synchronize_rcu();
-+	mutex_unlock(&q->debugfs_mutex);
- 	blk_trace_free(q, bt);
- 	put_probe_ref();
-+	mutex_lock(&q->debugfs_mutex);
- }
- 
- static int __blk_trace_remove(struct request_queue *q)
+This series combines the v1 series at:
+https://lore.kernel.org/r/20230522092201.127598-1-s-vadapalli@ti.com/
+and the patch for Main CPSW2G node that is present in [PATCH v6 2/5] at:
+https://lore.kernel.org/r/20230721132029.123881-1-j-choudhary@ti.com/
+but dropped in it's next version at:
+https://lore.kernel.org/r/20231019054022.175163-1-j-choudhary@ti.com/
+
+Link to v3: https://lore.kernel.org/r/20240125100501.4137977-1-c-vankar@ti.com/
+
+Changes from v3 to v4:
+1. Add alias for MCU CPSW2G node.
+2. Add alias for Main CPSW2G node.
+3. Add "ti,mac-only" property for CPSW9G node.
+
+Chintan Vankar (2):
+  arm64: dts: ti: k3-j784s4-main: Fix mux-reg-masks in serdes_ln_ctrl
+  arm64: dts: ti: k3-j784s4: Add alias to MCU CPSW2G
+
+Siddharth Vadapalli (4):
+  arm64: dts: ti: k3-j784s4-main: Add CPSW2G and CPSW9G nodes
+  arm64: dts: ti: k3-j784s4: Add Main CPSW2G node
+  arm64: dts: ti: k3-j784s4: Add overlay to enable QSGMII mode with
+    CPSW9G
+  arm64: dts: ti: k3-j784s4: Add overlay for dual port USXGMII mode
+
+ arch/arm64/boot/dts/ti/Makefile               |  11 +-
+ .../ti/k3-j784s4-evm-quad-port-eth-exp1.dtso  | 147 +++++++++++++
+ .../ti/k3-j784s4-evm-usxgmii-exp1-exp2.dtso   |  81 +++++++
+ arch/arm64/boot/dts/ti/k3-j784s4-evm.dts      |  50 +++++
+ arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi    | 198 +++++++++++++++++-
+ 5 files changed, 480 insertions(+), 7 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/ti/k3-j784s4-evm-quad-port-eth-exp1.dtso
+ create mode 100644 arch/arm64/boot/dts/ti/k3-j784s4-evm-usxgmii-exp1-exp2.dtso
+
+-- 
+2.34.1
 
 
