@@ -1,132 +1,230 @@
-Return-Path: <linux-kernel+bounces-46004-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46002-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BD8D843920
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:32:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2580184391B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:32:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D5AA1C28FD9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:32:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 861A71F27FDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:32:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EA7760ECB;
-	Wed, 31 Jan 2024 08:32:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BE193FB30;
+	Wed, 31 Jan 2024 08:32:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="e7I8vR8t"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VJ9j0a/T"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD131605BC;
-	Wed, 31 Jan 2024 08:32:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87E61168A3
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 08:32:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706689936; cv=none; b=VBxs4obNH1V4NTLywM2H/E5jNXxfM4KAWQZUeoFI38XLPebDyQzgEL6AsrkgK8r/OxTWdcTCAUWy8UcXsbjgN7agQuvwRxjX2w+TZh8Xckong1t1SWaQGjzWZPzNINN2NWWT1XA2QBb4M9S5QqljNqxkk1x+D73791jBjpE7m1o=
+	t=1706689930; cv=none; b=n4tEJXU4mAoR+mUmgSCIvoJxE1GZNya7zqz2n8uDDzludz2uSePyHpnN5H3aamMao3KoWbu5yTDbrW6/SADNEo9Us53iVYImUx3y25Lce916kS2+VjQ2WINQMW8x77pgm7dMgzXqazHfmqc8Arey2oEiaoWBB+eAi5d4amNt4Ds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706689936; c=relaxed/simple;
-	bh=e7dvQjwqFRwb3yH8ZkmC8GnrowrIE8yR8j2TvVp4rFM=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kR8OWMT4qF3VD7ZGPo2GgcWqCIJ9splr5X5SK1t6yqunCEAdbJr8FFBMuLWp4tp/e87MN1Kr+JvEXP5EIEN0K63IodF2251lAlULBXuzM5gIpivhnoTpgDn+fP0ZudNR5dTPTxpVoNq+T7FGO+DMH5z0dQovW0uXY/13oQbxZUA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=e7I8vR8t; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40V8W2jK036364;
-	Wed, 31 Jan 2024 02:32:02 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706689922;
-	bh=e7dvQjwqFRwb3yH8ZkmC8GnrowrIE8yR8j2TvVp4rFM=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=e7I8vR8tNMj2NlPyfWEmx5YjCKhsswF1rWeZp6MyXAba4LyPRFjYoYmCieRKXPDQD
-	 VY4C3ak8xkhVTLuTX4Qy2nE/Mdcp3QI9X80Lztv1ye0W3um0+gLG6s0qyIHQZS67el
-	 LL74yOaxiwlTeR/eziyXHMklyJH7FwZQFkbeSO9E=
-Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40V8W2Ke000454
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 31 Jan 2024 02:32:02 -0600
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 31
- Jan 2024 02:32:02 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 31 Jan 2024 02:32:02 -0600
-Received: from localhost (jluthra.dhcp.ti.com [172.24.227.217])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40V8W1xM096019;
-	Wed, 31 Jan 2024 02:32:02 -0600
-Date: Wed, 31 Jan 2024 14:02:01 +0530
-From: Jai Luthra <j-luthra@ti.com>
-To: Vaishnav Achath <vaishnav.a@ti.com>
-CC: <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <kernel@pengutronix.de>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <u-kumar1@ti.com>, <j-choudhary@ti.com>
-Subject: Re: [PATCH 3/9] arm64: dts: ti: k3-am68-sk-base-board: Enable camera
- peripherals
-Message-ID: <k57wzv77bhxuzowbmksxndjjle34almtdcub73dldgro3oowwh@veomcdtt4dkw>
-References: <20240129132742.1189783-1-vaishnav.a@ti.com>
- <20240129132742.1189783-4-vaishnav.a@ti.com>
+	s=arc-20240116; t=1706689930; c=relaxed/simple;
+	bh=uW2qWG9f4i8dbiyjx/KoeHEpStHxMUg4GXRKzOVY26Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jwqZwVOJ4cfCa7JdNQxIZ0b7z5s/qII9PGqOsi0smlzuduiHNdaIEneq3TqFewRkMRzng0ATsKGlUQ5TinpRB96GxMgYXXOAEdbqKLBdk1URzVwtho0dpLdlMdaDDO8zwflUnOVVzdz/WdmyQQV5cJ7IOcoAfZkZt7iI1o0XlPs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VJ9j0a/T; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a29c4bbb2f4so522870266b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 00:32:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706689926; x=1707294726; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hKqI+ex6kcefYsSc13l7kLpM/i1M6RfFSyL6Vm7tWxU=;
+        b=VJ9j0a/T1xNiD/kIBapBtVnHZynt7aIdqnkyYNKllPxkuGQF7FXV1YuH/ACmBPOk+A
+         mpuDVAdpIirDfX6UXlw6N7mXHdxJBKmZAIhHsGQhkX4BS/lyULzn+xvaqSvK5nOXAcFd
+         SnMhesdWlt+J8RTBVAl5BIboUXKyUJGRTXQYlgT9M6klJ4taGr+BhxFwpRZWWhgb2BQE
+         CQ+U4RuvkASa62z02hTGLuBN3+k3PkTRCC/X6So2DrxM+1IV8aGr6b2HWfyblha6iOn6
+         2UZLFFmU+PDBfdvj/ZM/SHpIf47L/DOdL4zYylqCVEDJv+vpLuC3XWw7zp29FS29bK//
+         9Eww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706689926; x=1707294726;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hKqI+ex6kcefYsSc13l7kLpM/i1M6RfFSyL6Vm7tWxU=;
+        b=tQKLeUIzsJZsZZcNxcxlgq5Bc76eodxW8NsQdZ/IGMx0QyeUTB00P8zCl/lTubRDkJ
+         ImYzHvdN2ZNNkowaksuxrMzkVtPvWHDPfcKfyYoPZUccqxhHLMtuefME/GooIaiJ3HZc
+         g+2Dlq67jv8f8Sve91TyKAu/ZQ994Ia5V7m7+zSZzHVae8mZGsdRe/wvEaMJCF8vMglv
+         sB04kwPjxj02DxwfrLSjLS4zksPlFDZpa75rTt2cLBzVqbSI8/PvKZlSZzDMjqUHXuXq
+         648dNgyARaLJWLWGEhtpA/+KTTG2Yo6qSTo0e/SfrV6aTV7uz9mdwJ+Ppe7qict1Nigd
+         +lFQ==
+X-Gm-Message-State: AOJu0YxdmKn0msBipuGE+CamiZIhMd1izSSrt7f2TBFUP+6DzKDuTIHT
+	2owJFyOnk4wDvclzkqC3/ulVKLNs58h0hrHuXQCwkT8lFosKAwHtlgUyBhJvnVI=
+X-Google-Smtp-Source: AGHT+IFwIdjNb2fXwv4JhM+chfZh206ZDHeUAv0mOI3XqXYqDj0+8KPriicjL4LSfixqTqt/TAeN5w==
+X-Received: by 2002:a17:906:28cd:b0:a36:600d:8911 with SMTP id p13-20020a17090628cd00b00a36600d8911mr565720ejd.10.1706689925683;
+        Wed, 31 Jan 2024 00:32:05 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWvEnQ0I6KVpTKGVxXiAJkhJ/m9JcbKiiwVjBDe1jMuIJXVkIwsySjB4CyuZO4OYj8dgVUdqG9guadmgpDAE4ojOrvss3JdC8jNPjs5CpaZFMyRScDyy8JKnWoOy/vk53AjTpO6VBY2xI0ETiWnhdJTxmmLJGeVM65Luia3uZ7PdrTAz62D2SWcdnbQYNY7WPO4I1M8aKf/vG7T9MvhAYHkmb/NDw8oraI5wclzIZ0CJayvcfmS4G15ZTwJvUqbz5i/o4tEbJep8Uo41jSiYXCDNCi+Pvwg+io+fr5c9Lyi3nuUAmos7rxiNeluTJ97gdrjvLjko0JV0BoK1sWWtedYDDGdnIv40beE
+Received: from [192.168.1.20] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id vb1-20020a170907d04100b00a34c07816e3sm5919866ejc.73.2024.01.31.00.32.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Jan 2024 00:32:04 -0800 (PST)
+Message-ID: <52f1e76e-0953-4625-94ae-2208600f5729@linaro.org>
+Date: Wed, 31 Jan 2024 09:32:02 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="6jcnme2yix7qaffo"
-Content-Disposition: inline
-In-Reply-To: <20240129132742.1189783-4-vaishnav.a@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] dt-bindings: pinctrl: cy8x95x0: Minor fix & update
+Content-Language: en-US
+To: Naresh Solanki <naresh.solanki@9elements.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Patrick Rudolph <patrick.rudolph@9elements.com>
+Cc: mazziesaccount@gmail.com, linux-gpio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240130125602.568719-1-naresh.solanki@9elements.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240130125602.568719-1-naresh.solanki@9elements.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
---6jcnme2yix7qaffo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 30/01/2024 13:56, Naresh Solanki wrote:
+> Update maxItems to 60 for gpio-reserved-ranges to allow multiple gpio
 
-Hi Vaishnav,
+Subject: everything can be a fix and everything is update. Write
+something useful.
 
-Thanks for the patch.
-
-On Jan 29, 2024 at 18:57:36 +0530, Vaishnav Achath wrote:
-> CSI cameras are controlled using I2C. On AM68 Starter Kit, this is routed
-> to I2C-1, so enable the instance and the TCA9543 I2C switch on the bus.
->=20
-
-Can you Link: to the public schematics of the board here? (And on other=20
-patches as well)
-
-> Signed-off-by: Vaishnav Achath <vaishnav.a@ti.com>
+> reserved ranges.
+> Add input-enable property to allow configuring a pin as input.
+> Update example & fix alignment.
+> 
+> Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
 > ---
-> [...]
->=20
+>  .../bindings/pinctrl/cypress,cy8c95x0.yaml    | 38 ++++++++++++++-----
+>  1 file changed, 28 insertions(+), 10 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/pinctrl/cypress,cy8c95x0.yaml b/Documentation/devicetree/bindings/pinctrl/cypress,cy8c95x0.yaml
+> index 7f30ec2f1e54..90dda5d3cc55 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/cypress,cy8c95x0.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/cypress,cy8c95x0.yaml
+> @@ -45,7 +45,8 @@ properties:
+>      maxItems: 1
+>  
+>    gpio-reserved-ranges:
+> -    maxItems: 1
+> +    minItems: 1
+> +    maxItems: 60
+>  
+>    vdd-supply:
+>      description:
+> @@ -85,6 +86,8 @@ patternProperties:
+>  
+>        bias-disable: true
+>  
+> +      input-enable: true
+> +
+>        output-high: true
+>  
+>        output-low: true
+> @@ -125,14 +128,29 @@ examples:
+>        #size-cells = <0>;
+>  
+>        pinctrl@20 {
+> -        compatible = "cypress,cy8c9520";
+> -        reg = <0x20>;
+> -        gpio-controller;
+> -        #gpio-cells = <2>;
+> -        #interrupt-cells = <2>;
+> -        interrupts = <GIC_SPI 94 IRQ_TYPE_LEVEL_HIGH>;
+> -        interrupt-controller;
+> -        vdd-supply = <&p3v3>;
+> -        gpio-reserved-ranges = <5 1>;
+> +          compatible = "cypress,cy8c9520";
 
---=20
-Thanks,
-Jai
+I don't understand why you change from correct indentation to mixed one
+(2 and 4 spaces). It does not make sense.
 
-GPG Fingerprint: 4DE0 D818 E5D5 75E8 D45A AFC5 43DE 91F9 249A 7145
 
---6jcnme2yix7qaffo
-Content-Type: application/pgp-signature; name="signature.asc"
+> +          reg = <0x20>;
+> +          gpio-controller;
+> +          #gpio-cells = <2>;
+> +          #interrupt-cells = <2>;
+> +          interrupts = <GIC_SPI 94 IRQ_TYPE_LEVEL_HIGH>;
+> +          interrupt-controller;
+> +          vdd-supply = <&p3v3>;
+> +          gpio-reserved-ranges = <1 2>, <6 1>, <10 1>, <15 1>;
+> +
+> +          pinctrl-0 = <&U62160_pins>, <&U62160_ipins>;
+> +          pinctrl-names = "default";
 
------BEGIN PGP SIGNATURE-----
+Missing blank line.
 
-iQIzBAABCAAdFiEETeDYGOXVdejUWq/FQ96R+SSacUUFAmW6BYAACgkQQ96R+SSa
-cUViUBAAy4nPtECzBOXadDK9PDCN02T/vdGHWloQreIB5H3eKBWQED2XtZmQEDEZ
-bj2RhR15w1ss9NmLZOGF0/qA0GsqtRzf4awH9yAGwvDIgTEwSxD0Ykk/bqo86sH0
-qszEJDJ2vQisQ2rCMMdp9U/sVXMCYYRYzmxt6FxX7sacy85pwHmEiTfcc6FMF8U0
-alUubQ2+clKnvZXOdgbZKZsdAQg2fwatFe5xH+1ePg5NKagVBcRdy6pKdNt/3uio
-W0TbXm4SZD3QagBNNNhktet/sfNChgPHasbQCmkobG6NmVMsayB78LK0RbOqKTlT
-pEgb2MNKQ/LKP0IRyQR/aA1ipGDfRNeD4CeT3IJmVvJc8jdBVDuS5TxO50e+e0Fh
-95M155nauH6NBV8dIz6y3T0n/IdL+y2+VGHbxe5kYfU3qUysvKANw+ymGHvNr1J0
-xQYX/Ru4LnpsUKxJ9XatL5Ofag2lE3yVaGxSus70n4kIld0bPJ3gPv410OXJq5uV
-P67eJb5pWBkd+RAZtTZ9T9EEyzqiUsa/ygDIC73CH2SRYLELe/zFzblmW/H2PefX
-/y1C/h8NN4npwyWWRjKKDXgBLSg47ZrWq6mPbTBSYfc/01xfbqUXvnl+LfUiR800
-tlnGcVNybEwUiCP/aa8ekOW5b8Bl8hQyoTYb5TS5q0TM4OuVRi0=
-=vwtF
------END PGP SIGNATURE-----
+> +          U62160_pins: cfg-pins {
+> +              pins = "gp03", "gp16", "gp20", "gp50", "gp51";
+> +              function = "gpio";
+> +              input-enable;
+> +              bias-pull-up;
+> +          };
 
---6jcnme2yix7qaffo--
+Missing blank line.
+
+
+> +          U62160_ipins: icfg-pins {
+> +              pins = "gp04", "gp17", "gp21", "gp52", "gp53";
+> +              function = "gpio";
+> +              input-enable;
+> +              bias-pull-up;
+> +          };
+>        };
+>      };
+
+Best regards,
+Krzysztof
+
 
