@@ -1,153 +1,118 @@
-Return-Path: <linux-kernel+bounces-46476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2EFD844045
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:16:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4F9184404C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:17:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 97C0C1F26FF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:16:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2AA311F270E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:17:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8507C7BAEC;
-	Wed, 31 Jan 2024 13:16:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CE9C7BB03;
+	Wed, 31 Jan 2024 13:16:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OVEQGekf"
-Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="JZmxo1ii"
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DB1D7866D;
-	Wed, 31 Jan 2024 13:16:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E2B879938
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 13:16:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706706987; cv=none; b=XRQFMK9/4bWMaY9Oy79HghU2/XjsVdJ+087askYJQIa02oYEjR6yKqH86KKngvu4XEVquI5CJnQN1OpawlZy9PSC7KVVSh4FZu9Eu2it7MZ52rQ/t84msoN0K6o7jQeYrG3u1E97qfW5epPxmQzdjZ7wnODgNxKG2UkxuN1JgqY=
+	t=1706707014; cv=none; b=GRBtkMrwgFh6cP3sY2zTIyWjYrUdqZb/qqhn8L3B4v9O9shSSsTrzzHfYr/sch+lRo0CjGN1eq1d1EPzOdRW0HTag85a99USxUfPFJLGE12B+GazaytAMyeOoWy8kcG4607Rc0oB9lFtX+JVEKaNMsZ6GEi8MNPqDWX+dnaAkp4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706706987; c=relaxed/simple;
-	bh=jbMaNkr1bTYPXRhgukPeSj3N79rSuP6MAAxEWCK1YVM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Is8o/9lviSwbzqtfgG4dnEhS1kCjilXqRxQcGrBlaN0GCko4KCYcvYjDAzh3R5tgZiwJjJDAMflln85ExHvkCTqY8RvNBGGunhkZ2TAhOl7SljCp7Acid0f8+7auAqJanPqBDOG6WWW0uVKfDmkt3tRcXL4Es5384Ukuq8LdHeE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OVEQGekf; arc=none smtp.client-ip=209.85.219.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-6818aa07d81so34218806d6.0;
-        Wed, 31 Jan 2024 05:16:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706706985; x=1707311785; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5VH5uYYk0MxykRHzUiex1lRzuDUS57P3V7ajJDCHXAY=;
-        b=OVEQGekfW7/MJyOEPRuv2/wPWAzHKFX0hVRfXqfdWDeF6Zgf1vLIKWYTLWtCDVspBS
-         msjhaAagh4j8ZRmc991tbrgjeIjVLwaflv4OBGWZCWMhTCN2EyMOKxXfn41sbh02nR4W
-         CxGvBCrpRi73M6tHx+2b7/2SLngUZMXgXPxttZLYSYxul5U9C8Ar/f+7JpmGjuUoTTvb
-         ERkMj+aoL0YFqJQfhnQ6aozW2MQn8prtAL1fy1Zz1l/5pDLpFwQWDOmAvA/yk0OflT2V
-         g6JrblnYPJAux2wR9CJrAx/AKOMDp5/FCmvjYV6NijUz/DAX7TWl9Jgo7uMXcM1dFIgz
-         SRww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706706985; x=1707311785;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5VH5uYYk0MxykRHzUiex1lRzuDUS57P3V7ajJDCHXAY=;
-        b=KyHcs7kKDzlG/Rak2/2+XekY/GrBwjTz/yBjmvZc/eyA/mQMFGM29OTwdAlNFnoZd6
-         OPLnFSGCUawRLVy/r+cBdksq+Irlo7EdHlAvz9mUdApxNPGOk426ZTEa2zWqBLPeuMlC
-         hLzoMHavp+CrrhEHjgHlF7igbXQCD1xZ4TT69e4jXmqHzuNCMrVacCIWfwEuL/vrNZ/s
-         snx6wgOe6Nrm1ofOjDklHGE8+jIahzOuRxhhb0LXkJ3Z3qv/zCuj4w7Wl/3Z1ST/LyaA
-         K4wjIYpfeRVnPMyPwTB8jaDtkossgdYio3qHSv1g+2gEAGNIHiFv/+G63OdUUX9PYRa5
-         Vvpw==
-X-Gm-Message-State: AOJu0YxBT7TtNGKLwDmwuu68jXY22+arbnhC/5xBrKELVs8bqJ79jgkG
-	69boJ5uXWgLubBPjakZ4FGmcdNuOrAT+ViKxrq5SxuBibqpo0UpwrhmzJHAkeCmP06LjC0/q6OJ
-	F8Nrj29o4L8IQAbHXPYF6zJaXIWXv8GnSOSg=
-X-Google-Smtp-Source: AGHT+IH0ikF6yoZwytwWB7RZWy0RSBrrB+eLztoCMsKSE9pSBTVUmsNiaZ3Q0DiJ/Pf8yrIq+7n4meL7OwNYLVbhNf0=
-X-Received: by 2002:ad4:5ce9:0:b0:686:7256:c9f4 with SMTP id
- iv9-20020ad45ce9000000b006867256c9f4mr1663225qvb.9.1706706985131; Wed, 31 Jan
- 2024 05:16:25 -0800 (PST)
+	s=arc-20240116; t=1706707014; c=relaxed/simple;
+	bh=U3vvmNEiNsFCDG9xGZjWzjdbxLLxBPphbAH/1T+fgBc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BUpBPU7TVKtGGs4uTj3zXdBq5HSkJ0D6Y4I19a96VhAQ7uTeQCV0WTR+DRhrtmSqX/7pDQj9EZjAj+AjvaHTu2u8pAofVkSwo2OJQqgYHOLv4qA6OyFAXjdigvs2dp58Q4+vTV6uf4FBHvSi8BEizEZ6z86NKzf2CMzKi0WghhQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=JZmxo1ii; arc=none smtp.client-ip=115.124.30.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1706707003; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=R4BfaarR7H+2VERwphKn+Lf333CX+5PuQuJGhvUGjOc=;
+	b=JZmxo1ii5jxqtCbBIC4cv78oIDn8OzE79ujXrULStacHpRb/+4iVsEi9FQIDulahxlqz8qKHec96myzMbBFDazAtoAf4W7jPQxFzTzOtyQ9AZM2woD/zBBKdTI5ASQ/+PafRhcUBWWn3OYMJbUMoCeVr+2cs+9OceEoOKIuqTfo=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R711e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0W.jsM4d_1706707001;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W.jsM4d_1706707001)
+          by smtp.aliyun-inc.com;
+          Wed, 31 Jan 2024 21:16:42 +0800
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+To: akpm@linux-foundation.org
+Cc: mgorman@techsingularity.net,
+	vbabka@suse.cz,
+	baolin.wang@linux.alibaba.com,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] mm: compaction: update the cc->nr_migratepages when allocating or freeing the freepages
+Date: Wed, 31 Jan 2024 21:16:26 +0800
+Message-Id: <994af744828efe3c060128445204a56ab41e3ebb.1706706820.git.baolin.wang@linux.alibaba.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130214620.3155380-1-stefanb@linux.ibm.com>
- <20240130214620.3155380-5-stefanb@linux.ibm.com> <38230b4c-54ae-45ed-a6fb-34e63501e5b1@linux.ibm.com>
-In-Reply-To: <38230b4c-54ae-45ed-a6fb-34e63501e5b1@linux.ibm.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 31 Jan 2024 15:16:13 +0200
-Message-ID: <CAOQ4uxiYARZBSgzb4_W-RKvB1XLSF3GUBqeLw2kH+eVeZ_8ARQ@mail.gmail.com>
-Subject: Re: [PATCH 4/5] evm: Use the real inode's metadata to calculate
- metadata hash
-To: Stefan Berger <stefanb@linux.ibm.com>
-Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com, 
-	roberto.sassu@huawei.com, miklos@szeredi.hu
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 31, 2024 at 4:11=E2=80=AFAM Stefan Berger <stefanb@linux.ibm.co=
-m> wrote:
->
->
->
-> On 1/30/24 16:46, Stefan Berger wrote:
-> > Changes to the file attribute (mode bits, uid, gid) on the lower layer
-> > are not take into account when d_backing_inode() is used when a file is
-> > accessed on the overlay layer and this file has not yet been copied up.
-> > This is because d_backing_inode() does not return the real inode of the
-> > lower layer but instead returns the backing inode which holds old file
-> > attributes. When the old file attributes are used for calculating the
-> > metadata hash then the expected hash is calculated and the file then
-> > mistakenly passes signature verification. Therefore, use d_real_inode()
-> > which returns the inode of the lower layer for as long as the file has
-> > not been copied up and returns the upper layer's inode otherwise.
-> >
-> > Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> > ---
-> >   security/integrity/evm/evm_crypto.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity/e=
-vm/evm_crypto.c
-> > index b1ffd4cc0b44..2e48fe54e899 100644
-> > --- a/security/integrity/evm/evm_crypto.c
-> > +++ b/security/integrity/evm/evm_crypto.c
-> > @@ -223,7 +223,7 @@ static int evm_calc_hmac_or_hash(struct dentry *den=
-try,
-> >                                size_t req_xattr_value_len,
-> >                                uint8_t type, struct evm_digest *data)
-> >   {
-> > -     struct inode *inode =3D d_backing_inode(dentry);
-> > +     struct inode *inode =3D d_real_inode(dentry);
-> >       struct xattr_list *xattr;
-> >       struct shash_desc *desc;
-> >       size_t xattr_size =3D 0;
->
-> We need this patch when NOT activating CONFIG_OVERLAY_FS_METACOPY but
-> when setting CONFIG_OVERLAY_FS_METACOPY=3Dy it has to be reverted...  I a=
-m
-> not sure what the solution is.
+Currently we will use 'cc->nr_freepages >= cc->nr_migratepages' comparison
+to ensure that enough freepages are isolated in isolate_freepages(), however
+it just decreases the cc->nr_freepages without updating cc->nr_migratepages
+in compaction_alloc(), which will waste more CPU cycles and cause too many
+freepages to be isolated.
 
-I think d_real_inode() does not work correctly for all its current users fo=
-r
-a metacopy file.
+So we should also update the cc->nr_migratepages when allocating or freeing
+the freepages to avoid isolating excess freepages. And I can see fewer free
+pages are scanned and isolated when running thpcompact on my Arm64 server:
+                                       k6.7         k6.7_patched
+Ops Compaction pages isolated      120692036.00   118160797.00
+Ops Compaction migrate scanned     131210329.00   154093268.00
+Ops Compaction free scanned       1090587971.00  1080632536.00
+Ops Compact scan efficiency               12.03          14.26
 
-I think the solution is to change d_real_inode() to return the data inode
-and add another helper to get the metadata inode if needed.
-I will post some patches for it.
+Moreover, I did not see an obvious latency improvements, this is likely because
+isolating freepages is not the bottleneck in the thpcompact test case.
+                              k6.7                  k6.7_patched
+Amean     fault-both-1      1089.76 (   0.00%)     1080.16 *   0.88%*
+Amean     fault-both-3      1616.48 (   0.00%)     1636.65 *  -1.25%*
+Amean     fault-both-5      2266.66 (   0.00%)     2219.20 *   2.09%*
+Amean     fault-both-7      2909.84 (   0.00%)     2801.90 *   3.71%*
+Amean     fault-both-12     4861.26 (   0.00%)     4733.25 *   2.63%*
+Amean     fault-both-18     7351.11 (   0.00%)     6950.51 *   5.45%*
+Amean     fault-both-24     9059.30 (   0.00%)     9159.99 *  -1.11%*
+Amean     fault-both-30    10685.68 (   0.00%)    11399.02 *  -6.68%*
 
-However, I must say that I do not know if evm_calc_hmac_or_hash()
-needs the lower data inode, the upper metadata inode or both.
+Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+---
+Changes from v1:
+ - Rebased on the latest mm-unstable branch.
+---
+ mm/compaction.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-The last time you tried to fix ovl+IMA, I asked for documentation
-of what data/metadata is protected with EVM and how are those
-protections supposed to work across overlayfs copy up, when the
-data and metadata are often split between 2 and myabe event 3
-differnt inode.
+diff --git a/mm/compaction.c b/mm/compaction.c
+index 055687e6bd17..363c3e49fe80 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -1882,6 +1882,7 @@ static struct folio *compaction_alloc(struct folio *src, unsigned long data)
+ 	if (order)
+ 		prep_compound_page(&dst->page, order);
+ 	cc->nr_freepages -= 1 << order;
++	cc->nr_migratepages -= 1 << order;
+ 	return page_rmappable_folio(&dst->page);
+ }
+ 
+@@ -1904,6 +1905,7 @@ static void compaction_free(struct folio *dst, unsigned long data)
+ 	list_add(&dst->lru, &cc->freepages[order].pages);
+ 	cc->freepages[order].nr_pages++;
+ 	cc->nr_freepages += 1 << order;
++	cc->nr_migratepages += 1 << order;
+ }
+ 
+ /* possible outcome of isolate_migratepages */
+-- 
+2.39.3
 
-From the current patch set, I still don't understand what is the expected
-behavior before and after copy up of data/metadata-only.
-
-Thanks,
-Amir.
 
