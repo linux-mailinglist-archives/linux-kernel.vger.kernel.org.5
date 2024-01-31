@@ -1,228 +1,130 @@
-Return-Path: <linux-kernel+bounces-45756-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45757-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D67C8435DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:10:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 703C88435E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:10:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1128C1F26816
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 05:10:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BECF282BBF
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 05:10:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAD833D998;
-	Wed, 31 Jan 2024 05:08:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 575D13E499;
+	Wed, 31 Jan 2024 05:08:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="SKWMr+Xd"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="r1P7AIJI"
+Received: from omta036.useast.a.cloudfilter.net (omta036.useast.a.cloudfilter.net [44.202.169.35])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F215F3D550;
-	Wed, 31 Jan 2024 05:08:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 307073E496
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 05:08:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706677715; cv=none; b=EyV/0dV+4ieRsFZQ11FDBL/j/s7bOUUZV5B4NTfwQazXKBpS1x35vr2rFrssdxqf80nA9cNwtbqtTe66/GHMRv1urxSyvdqdhM+l7jb58UpWck3jzVUcStI4yJ5mCn7JuRaU8dr5gFyZ/MVWeDOLbbnnqAXdijojAYZj4S2w2/I=
+	t=1706677728; cv=none; b=aayqy6As6GA4GCwwbOx16tOBap8YTojMMZmX2f3PNic93AyzN22RYvvkXSmQAwMJtunc96H55JZFfWkpU5VgDI17rEo8hnAMzbHMSAhv5KOKlrlcg6bVHblTkIRdU9Uu7Z5VRB2KhItbxDE+MWPzUv7zQkClb3gqkwJlw15OCzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706677715; c=relaxed/simple;
-	bh=5/9E+Z069VkLNNPVB+X8W2U3aiFKX0DUW4JQ+SZcIMU=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=fqd4fC2Eow9dvKrhE/eU3b3cClGrAcwB1tvtkdgF9ZUW44nGX/6om63frqCgRIgzHXIH+SqIFZIB/erJESNDBFSdxxZrQ7GJB3BJg2YB57xuPBvPsC7Lz2hXzOb5sXsDLT1w7yKn9kO6DykLdXSQIUJCYNZ3krfZNfJY4VVQ1uk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=SKWMr+Xd; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	s=arc-20240116; t=1706677728; c=relaxed/simple;
+	bh=xlVDI89mtI52l3zzcIoMCJsnh1RwAgEG5xXnohHifd8=;
+	h=Subject:To:Cc:References:In-Reply-To:From:Message-ID:Date:
+	 MIME-Version:Content-Type; b=OGLhezeal4Zt5XdOCuxGTV08uCTkhG7JgAPYx1x4zELeFYek6UmhPtcsJ6FKTQRHQ3VS4yDKEA6WbY3q4dzP7eAwA1iBEGS+Y0O7jAgudfbKOjra4QpILeR3UBCe5U6AP3MSXJtgPWwc5FU3CyBzshhc9QWaZBL0d4XGbc9nr5k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net; spf=pass smtp.mailfrom=w6rz.net; dkim=pass (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b=r1P7AIJI; arc=none smtp.client-ip=44.202.169.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
+Received: from eig-obgw-6010a.ext.cloudfilter.net ([10.0.30.248])
+	by cmsmtp with ESMTPS
+	id UtLCrKwQR8uLRV2pzrkyV7; Wed, 31 Jan 2024 05:08:39 +0000
+Received: from box5620.bluehost.com ([162.241.219.59])
+	by cmsmtp with ESMTPS
+	id V2pyrhyk7fPByV2pyrKfET; Wed, 31 Jan 2024 05:08:38 +0000
+X-Authority-Analysis: v=2.4 cv=T+af8tGQ c=1 sm=1 tr=0 ts=65b9d5d6
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=IkcTkHD0fZMA:10 a=dEuoMetlWLkA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
+ a=HaFmDPmJAAAA:8 a=fgkVngnsqUz9it14FVEA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=RuA7V1Oi0UgNsRmBDWdWdoNNiAoNLAqu1nIXFx2hl+4=; b=r1P7AIJIA97RqC7as2xjyf+CRr
+	1O+2exuiBaYT3dn5WZHIkQeWzJ4lZ56c2AXIv2Z6xUvopL1ATjCbZaAqJDgsqR/33v55/1a/btiNA
+	Hy+VwiAbPzd4ipt0WWhLDU+ixSeehuyRfMo+MMzroOi5U931mysHZef5/1eUeqTJiRYYIpBpgS29U
+	PmknaE/EnV+F05NBfKoH5KVdwj8jDT+mYiM9PXYKaQ0aV2NSdVus+YC2v54T1AfSVeLNrTuWPU1bB
+	ZNJwenkyDhEZLBmVIwOJnjm6CV5eBGzErjdlXb+jyeiCVZSvOKrwaP1GdSnlBsKOc/kXujgrO9RWn
+	Z0efiDbA==;
+Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:37676 helo=[10.0.1.47])
+	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <re@w6rz.net>)
+	id 1rV2pv-003Tdm-0U;
+	Tue, 30 Jan 2024 22:08:35 -0700
+Subject: Re: [PATCH 6.1 000/186] 6.1.76-rc2 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
+ rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+References: <20240130183318.454044155@linuxfoundation.org>
+In-Reply-To: <20240130183318.454044155@linuxfoundation.org>
+From: Ron Economos <re@w6rz.net>
+Message-ID: <57f991b5-df2f-8aa3-99df-de84eafd3153@w6rz.net>
+Date: Tue, 30 Jan 2024 21:08:32 -0800
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1706677712;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dFaxIwxEmyt5THRnWn7HLhXsgUMlYlkFF7eFCp1ek/g=;
-	b=SKWMr+XdnjWACiQxgwrji/XGE94Cz/zzma1cpB55I+LTJxedRtmOA+jwXHJ+TwC6+SpCUd
-	AG7OqABrcNjdgO+YJVv2uYELGMiusfhmtBUGDjKYSg1CrvI7ZRaIKuYs2yO1v9cpz4ZQBj
-	T4Yqzyd9rWhi0OjfO3EZ4qMDrihrwR0tMnoE5xCrbxwAd036rhL1/z8CNvM7b7BLv7u8AE
-	3t1HaYp3VqF0k3YN8E6LUJQ2D7KbfMzCXmHBeERn8zlUfH3jxY8F4pls06dYiCLKTAguZt
-	GvVGfd+n5n6nJzmh38meWvSvzXAqHxRlhdXJ9zxxHfoP2y5kMoO/BgS2LqQ8Ng==
-Date: Wed, 31 Jan 2024 06:08:31 +0100
-From: Dragan Simic <dsimic@manjaro.org>
-To: Alexey Charkov <alchark@gmail.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Heiko Stuebner <heiko@sntech.de>, Daniel Lezcano
- <daniel.lezcano@linaro.org>, Viresh Kumar <viresh.kumar@linaro.org>,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] arm64: dts: rockchip: Add further granularity in
- RK3588 CPU OPPs
-In-Reply-To: <20240130-rk-dts-additions-v2-4-c6222c4c78df@gmail.com>
-References: <20240130-rk-dts-additions-v2-0-c6222c4c78df@gmail.com>
- <20240130-rk-dts-additions-v2-4-c6222c4c78df@gmail.com>
-Message-ID: <400e19a3f7b2de674a1db457b675233f@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 98.207.139.8
+X-Source-L: No
+X-Exim-ID: 1rV2pv-003Tdm-0U
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:37676
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 4
+X-Org: HG=bhshared;ORG=bluehost;
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfJ+DH/aVQwaEyL1jUArZCUTE08Ql0S5aqYwowbKJ7OUFlo71KhsxxCaKb24DpkSpk68gGubpnvc1R84Oy8mCOZwH1OPLH065pcUuNh8fdSGRHC1XfGo8
+ Ackqsq1fmAvK0z6TY0mcDHawaZqcDqOIhxzdXQAVGeAZLRWnvQo0CGNjqUB5UTC+ym1mWp4f9KYyBvB1DnuP4DnyRsZiRYlzuVQ=
 
-Hello Alexey,
+On 1/30/24 10:47 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.76 release.
+> There are 186 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 01 Feb 2024 18:32:32 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.76-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-On 2024-01-30 19:21, Alexey Charkov wrote:
-> This introduces additional OPPs that share the same voltage as
-> another OPP already present in the .dtsi but with lower frequency.
-> 
-> The idea is to try and limit system throughput more gradually upon
-> reaching the throttling condition for workloads that are close to
-> sustainable power already, thus avoiding needless performance loss.
-> 
-> My limited synthetic benchmarking [1] showed around 3.8% performance
-> benefit when these are in place, other things equal (not meant to
-> be comprehensive though).
+Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
 
-I'm fine with this two-patch approach, so this important new feature
-can be merged quicker, hopefully in the current merge window.  We can
-add more OPPs later, after the additional testing is performed, of
-course if all checks out as expected.
+Tested-by: Ron Economos <re@w6rz.net>
 
-> [1] 
-> https://lore.kernel.org/linux-rockchip/CABjd4YxqarUCbZ-a2XLe3TWJ-qjphGkyq=wDnctnEhdoSdPPpw@mail.gmail.com/T/#me92aa0ee25e6eeb1d1501ce85f5af4e58b3b13c5
-> 
-> Signed-off-by: Alexey Charkov <alchark@gmail.com>
-> ---
->  arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 87 
-> +++++++++++++++++++++++++++++++
->  1 file changed, 87 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-> b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-> index af8b932a04c1..506676985a7e 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-> @@ -360,6 +360,21 @@ cluster0_opp_table: opp-table-cluster0 {
->  		compatible = "operating-points-v2";
->  		opp-shared;
-> 
-> +		opp-408000000 {
-> +			opp-hz = /bits/ 64 <408000000>;
-> +			opp-microvolt = <675000 675000 950000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-600000000 {
-> +			opp-hz = /bits/ 64 <600000000>;
-> +			opp-microvolt = <675000 675000 950000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-816000000 {
-> +			opp-hz = /bits/ 64 <816000000>;
-> +			opp-microvolt = <675000 675000 950000>;
-> +			clock-latency-ns = <40000>;
-> +		};
->  		opp-1008000000 {
->  			opp-hz = /bits/ 64 <1008000000>;
->  			opp-microvolt = <675000 675000 950000>;
-> @@ -392,6 +407,27 @@ cluster1_opp_table: opp-table-cluster1 {
->  		compatible = "operating-points-v2";
->  		opp-shared;
-> 
-> +		opp-408000000 {
-> +			opp-hz = /bits/ 64 <408000000>;
-> +			opp-microvolt = <675000 675000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +			opp-suspend;
-> +		};
-> +		opp-600000000 {
-> +			opp-hz = /bits/ 64 <600000000>;
-> +			opp-microvolt = <675000 675000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-816000000 {
-> +			opp-hz = /bits/ 64 <816000000>;
-> +			opp-microvolt = <675000 675000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-1008000000 {
-> +			opp-hz = /bits/ 64 <1008000000>;
-> +			opp-microvolt = <675000 675000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
->  		opp-1200000000 {
->  			opp-hz = /bits/ 64 <1200000000>;
->  			opp-microvolt = <675000 675000 1000000>;
-> @@ -422,6 +458,21 @@ opp-2208000000 {
->  			opp-microvolt = <987500 987500 1000000>;
->  			clock-latency-ns = <40000>;
->  		};
-> +		opp-2256000000 {
-> +			opp-hz = /bits/ 64 <2256000000>;
-> +			opp-microvolt = <1000000 1000000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-2304000000 {
-> +			opp-hz = /bits/ 64 <2304000000>;
-> +			opp-microvolt = <1000000 1000000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-2352000000 {
-> +			opp-hz = /bits/ 64 <2352000000>;
-> +			opp-microvolt = <1000000 1000000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
->  		opp-2400000000 {
->  			opp-hz = /bits/ 64 <2400000000>;
->  			opp-microvolt = <1000000 1000000 1000000>;
-> @@ -433,6 +484,27 @@ cluster2_opp_table: opp-table-cluster2 {
->  		compatible = "operating-points-v2";
->  		opp-shared;
-> 
-> +		opp-408000000 {
-> +			opp-hz = /bits/ 64 <408000000>;
-> +			opp-microvolt = <675000 675000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +			opp-suspend;
-> +		};
-> +		opp-600000000 {
-> +			opp-hz = /bits/ 64 <600000000>;
-> +			opp-microvolt = <675000 675000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-816000000 {
-> +			opp-hz = /bits/ 64 <816000000>;
-> +			opp-microvolt = <675000 675000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-1008000000 {
-> +			opp-hz = /bits/ 64 <1008000000>;
-> +			opp-microvolt = <675000 675000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
->  		opp-1200000000 {
->  			opp-hz = /bits/ 64 <1200000000>;
->  			opp-microvolt = <675000 675000 1000000>;
-> @@ -463,6 +535,21 @@ opp-2208000000 {
->  			opp-microvolt = <987500 987500 1000000>;
->  			clock-latency-ns = <40000>;
->  		};
-> +		opp-2256000000 {
-> +			opp-hz = /bits/ 64 <2256000000>;
-> +			opp-microvolt = <1000000 1000000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-2304000000 {
-> +			opp-hz = /bits/ 64 <2304000000>;
-> +			opp-microvolt = <1000000 1000000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-2352000000 {
-> +			opp-hz = /bits/ 64 <2352000000>;
-> +			opp-microvolt = <1000000 1000000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
->  		opp-2400000000 {
->  			opp-hz = /bits/ 64 <2400000000>;
->  			opp-microvolt = <1000000 1000000 1000000>;
 
