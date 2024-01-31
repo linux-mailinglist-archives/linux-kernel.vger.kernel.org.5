@@ -1,127 +1,231 @@
-Return-Path: <linux-kernel+bounces-46964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46966-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 022D7844706
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:22:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3806684470D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:23:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1BA2288CB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:22:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D3E21C21739
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:23:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82F78130E35;
-	Wed, 31 Jan 2024 18:22:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17EC812FF7C;
+	Wed, 31 Jan 2024 18:23:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gRQp8upK"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WRCR0Nvr"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A48B012CDB8
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 18:22:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E0F412DD88
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 18:23:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706725360; cv=none; b=hePOvgBm03+0eAwK4HxUjC/wYIkO0GFdYF6gptttKMTj2ezPoHT95uYvzpDMbs28GCSVpNfdJZ/5qzz6Wgg/RXKMXYPI+C70VgBiH6lmAj5/M1feZ431DhuwMHcbag61/CN07ElnHeJk9SqQ81bWvp9ZnmnrdukgRWvX/xAoGqo=
+	t=1706725428; cv=none; b=eXF4QBurO198wvEGOZ/PZtXXRN0TF/+x5SKBPxDCGbhS35oPP9l+Xdv65aQGbalKG1N9T97XbhHzebDXB3J67JHriE7YKCvICTNqeZMEh4xRJ+VHQcQ9ywCuJwxLqZe9WqI0XkKWJzbWfxiQRbkc3RMNidPxiaSfxe8KPa+NaeI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706725360; c=relaxed/simple;
-	bh=z16ACY49/1e7bOj0OReF7J/eAVkgaJxbfAVjTzxIMlg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fjf3yXDIVGj4XpibtBEQNAU5yXEY3y+8QxCHh1Wu9DSWtKS8Ja9DAf1T56tExkm5c8ZaItTuW2qgZcqp4njTqrv3rrF9GviDnE/KPtcUMmpHpERCtxJ+HWsyEnDHS0DWBSlYhgPfGEtzvXgXL2r8f7d3LKx0VNH26f/LUYHWnhM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gRQp8upK; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40e800461baso1026615e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 10:22:38 -0800 (PST)
+	s=arc-20240116; t=1706725428; c=relaxed/simple;
+	bh=4HCr47Vl9ejjJTGVqxYRuHlMCbACMsJs01W7MS7B4yE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=o4VG2X9dfSGvVX5GrXJkGKt7K2E1FJviPrKVVJt6BvUyIfT0NFwYzwkR2P9CHcd6w4GM/hgfWBrnwPYlrglooOE9NzeqkAWirOXzUzN1s4LifFotArVwrHrZOEdH/9p/5dNNjmYbWaDr/A0+JeibkdLyG0yDumRya34jSuGjCS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WRCR0Nvr; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-55f5d62d024so430a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 10:23:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706725357; x=1707330157; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gHKzDZd1mqTqqV0mGTc0u8ONZh6m7/ntJ7FejoiVhh0=;
-        b=gRQp8upKrzdbHPzFknA2xC4HI9oTtNLKbM/lKq4jht0nc5h7S0hGRzZkQzkg9YYDzJ
-         mifkC1vfwvAraF3+07bXaLreNqablDAvQb0eR9VDBUpH+9eOebcD69dW9Qm2J9l09tZk
-         q1It7ij8l8w67bxmzP8UL85Sk+V+pmMX59x0e0qxb7VWlfRN5CnkqKHmn8lCeFS9UCB5
-         GY3W4ZKzKdhVthVNowO1M8ezKQWuDLgda+dI5CeLrQI/23bWUq5ow6M4b7vANiVWeQWC
-         Jo1mXXCz1krUvdThzNREB0/QrjYQOrQ2qSbX74UZ8erSgtjVuiPpa/eDpv77y6VgZYF6
-         HIdg==
+        d=google.com; s=20230601; t=1706725424; x=1707330224; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=viHzef10mQ/Ow5P/nhdwkaiORLJDs/5vxR6NgT9S6MQ=;
+        b=WRCR0Nvr4E4SFem8QNCrcx00+V9bOor0i69r/PruSbY0rt2Nt80CVas+q5pc77uUPX
+         ttGuKn6VbgR4iLUpDR5DbZJmHHR+9myJ+WMvIbDZnFk7GRJzbLV5dXrzzjX9pHBMaabr
+         gykprDCMHpxFsHpv9md5ca2IVvaDwrmwmj63zKN1HkhF2TD4L+GA9h91uTenlraQUku7
+         57MLY1IgvfEJLoucdqlxA/M1fNqYPuZLc2CPg02yOFVlIS00sbO+J9f+3GbFBMf382td
+         3g0io/0WkhwESio+oqPjBJkWDhSDhXXmv25DFzM+pnK6sJefXxbQ/lR8LPlm4ZssCo3A
+         9tpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706725357; x=1707330157;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gHKzDZd1mqTqqV0mGTc0u8ONZh6m7/ntJ7FejoiVhh0=;
-        b=kwAbhdGx4skCRpMLGbBQfXJEeeDYUG0voiq/WQIAb8/jO7COTtHFZwO+GrfgmEFBml
-         uuhiDA5rMf/e0uydUKX7pVc8RHeELAbzl3q13eBrrUZiHL3FmmvORwv5Gxi/JTCD89Sw
-         98oyyYHyr4FZ0UBDzdRbYfNq4NrZPelD/n+vWXt4ztw6FB4pU3v6KX52Z6Jv2CUeVh92
-         0OT6lT46csdhJ8S0tO8o7/9iCg+BALV1Yc5PuHJhRz+7wqtD9aHBcy50APsbf5Q8Ybky
-         Eh8sN4wmcAwT3PsxbIrOWSddRZ0gZmLNVCA1JzHms7WxOKZD3ziEgFubigLVkiGWha4G
-         HOqQ==
-X-Gm-Message-State: AOJu0Ywe6FQ1Zn6yVxVKK+AVAON/+qR7Jbmid8JLXnUG65JxNNeZ5rKJ
-	Jw+2bhvWw64T+hA5/GYNn64Jca+e+m9/F/lRLbIg9oq0RBinDZUf2Xb3pJNz6x4=
-X-Google-Smtp-Source: AGHT+IHlqZn5apC0OcSNN2Acf7t6Aaryh00SY4kbBmWqx0XsIPRgDEaqwCciuHNYKlmHRmoA8cxoSQ==
-X-Received: by 2002:a05:600c:138e:b0:40e:fbdd:238a with SMTP id u14-20020a05600c138e00b0040efbdd238amr2123576wmf.37.1706725356765;
-        Wed, 31 Jan 2024 10:22:36 -0800 (PST)
-Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
-        by smtp.googlemail.com with ESMTPSA id n36-20020a05600c3ba400b0040ed1d6ce7csm2265786wms.46.2024.01.31.10.22.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Jan 2024 10:22:36 -0800 (PST)
-Message-ID: <4e8c1025-fcea-45fc-bec4-5b377b7064ac@linaro.org>
-Date: Wed, 31 Jan 2024 19:22:35 +0100
+        d=1e100.net; s=20230601; t=1706725424; x=1707330224;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=viHzef10mQ/Ow5P/nhdwkaiORLJDs/5vxR6NgT9S6MQ=;
+        b=LMOe808SdyfBvtWyf1MPy09cUEwpyVURUBXXYi0ICH2iPOnc5meeCVhc9Rv2UVH9Ly
+         YeAAsyNskl2h9wKOZ53nBJR8ezsL5sVO08vBefvIfiKlu94vM0aKbhpubsyeS7ooW8pU
+         WaQgc14YJ0mRqWkp5Pve4hkw2TLL3dtN0Nvl7iPqa0QiJpZ+S92GTnsdHYtbM/aARSMf
+         /21Te7tC8EkmSlh57z7D4w4HhyA75GdNCkTLEM/Y01kkVqGxwSmtZ7+RGRkNC6yR5Ego
+         kN12VZPcAskGupbHTLWOQAor0Hx31zZZSApP4coZ8+IPZ5viobfMI7KoKCg8EiLFFiNS
+         jRdQ==
+X-Gm-Message-State: AOJu0YwMYN2JSPO6tpN+jDsEnxkQWGrI1nPrarDskDd5sa9Y/8PNurQi
+	3G/ydzKyj0dTp8/EgW21odUPRrZWhRMph6TGpgzvbkMYLZkSWjfqXsfVKSFQe3fVDtiokyMeMsP
+	kwSyC3lZqBQ5vPidTowVKWQB8AufNgNZ9IIJE
+X-Google-Smtp-Source: AGHT+IEZOW3QqAu7mnXOmcMRt5GjQ873Ib0bNlhUhCJVB0evLECVTZoQsY7Qlsm6r+daSN6IqJif/WFzAH/AHADonQ8=
+X-Received: by 2002:a50:9998:0:b0:55f:9918:dadd with SMTP id
+ m24-20020a509998000000b0055f9918daddmr19957edb.2.1706725423409; Wed, 31 Jan
+ 2024 10:23:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] dt-bindings: timer: renesas,tmu: Document input
- capture interrupt
-Content-Language: en-US
-To: =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
- Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, devicetree@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, linux-sh@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <8cb38b5236213a467c6c0073f97ccc4bfd5a39ff.1706717378.git.geert+renesas@glider.be>
- <20240131180013.GE2544372@ragnatech.se>
-From: Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <20240131180013.GE2544372@ragnatech.se>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240127004321.1902477-1-davidai@google.com> <20240127004321.1902477-2-davidai@google.com>
+ <20240131170608.GA1441369-robh@kernel.org>
+In-Reply-To: <20240131170608.GA1441369-robh@kernel.org>
+From: Saravana Kannan <saravanak@google.com>
+Date: Wed, 31 Jan 2024 10:23:03 -0800
+Message-ID: <CAGETcx8S0oS67oMZsPKk6_MGAtygoHEf_LN1gbcNDEBqRJ4PPg@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] dt-bindings: cpufreq: add virtual cpufreq device
+To: Rob Herring <robh@kernel.org>
+Cc: David Dai <davidai@google.com>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Viresh Kumar <viresh.kumar@linaro.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Sudeep Holla <sudeep.holla@arm.com>, Quentin Perret <qperret@google.com>, 
+	Masami Hiramatsu <mhiramat@google.com>, Will Deacon <will@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Vincent Guittot <vincent.guittot@linaro.org>, 
+	Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, Pavan Kondeti <quic_pkondeti@quicinc.com>, 
+	Gupta Pankaj <pankaj.gupta@amd.com>, Mel Gorman <mgorman@suse.de>, kernel-team@android.com, 
+	linux-pm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 31/01/2024 19:00, Niklas Söderlund wrote:
-> Hi Geert,
-> 
-> Thanks for your work.
-> 
-> On 2024-01-31 17:11:45 +0100, Geert Uytterhoeven wrote:
->> Some Timer Unit (TMU) instances with 3 channels support a fourth
->> interrupt: an input capture interrupt for the third channel.
->>
->> While at it, document the meaning of the four interrupts, and add
->> "interrupt-names" for clarity.
->>
->> Update the example to match reality.
->>
->> Inspired by a patch by Yoshinori Sato for SH.
->>
->> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> 
-> Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-> 
+On Wed, Jan 31, 2024 at 9:06=E2=80=AFAM Rob Herring <robh@kernel.org> wrote=
+:
+>
+> On Fri, Jan 26, 2024 at 04:43:15PM -0800, David Dai wrote:
+> > Adding bindings to represent a virtual cpufreq device.
+> >
+> > Virtual machines may expose MMIO regions for a virtual cpufreq device
+> > for guests to read frequency information or to request frequency
+> > selection. The virtual cpufreq device has an individual controller for
+> > each frequency domain. Performance points for a given domain can be
+> > normalized across all domains for ease of allowing for virtual machines
+> > to migrate between hosts.
+> >
+> > Co-developed-by: Saravana Kannan <saravanak@google.com>
+> > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > Signed-off-by: David Dai <davidai@google.com>
+> > ---
+> >  .../cpufreq/qemu,cpufreq-virtual.yaml         | 110 ++++++++++++++++++
+>
+> > +    const: qemu,virtual-cpufreq
+>
+> Well, the filename almost matches the compatible.
+>
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +    description:
+> > +      Address and size of region containing frequency controls for eac=
+h of the
+> > +      frequency domains. Regions for each frequency domain is placed
+> > +      contiguously and contain registers for controlling DVFS(Dynamic =
+Frequency
+> > +      and Voltage) characteristics. The size of the region is proporti=
+onal to
+> > +      total number of frequency domains. This device also needs the CP=
+Us to
+> > +      list their OPPs using operating-points-v2 tables. The OPP tables=
+ for the
+> > +      CPUs should use normalized "frequency" values where the OPP with=
+ the
+> > +      highest performance among all the vCPUs is listed as 1024 KHz. T=
+he rest
+> > +      of the frequencies of all the vCPUs should be normalized based o=
+n their
+> > +      performance relative to that 1024 KHz OPP. This makes it much ea=
+sier to
+> > +      migrate the VM across systems which might have different physica=
+l CPU
+> > +      OPPs.
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    // This example shows a two CPU configuration with a frequency dom=
+ain
+> > +    // for each CPU showing normalized performance points.
+> > +    cpus {
+> > +      #address-cells =3D <1>;
+> > +      #size-cells =3D <0>;
+> > +
+> > +      cpu@0 {
+> > +        compatible =3D "arm,armv8";
+> > +        device_type =3D "cpu";
+> > +        reg =3D <0x0>;
+> > +        operating-points-v2 =3D <&opp_table0>;
+> > +      };
+> > +
+> > +      cpu@1 {
+> > +        compatible =3D "arm,armv8";
+> > +        device_type =3D "cpu";
+> > +        reg =3D <0x0>;
+> > +        operating-points-v2 =3D <&opp_table1>;
+> > +      };
+> > +    };
+> > +
+> > +    opp_table0: opp-table-0 {
+> > +      compatible =3D "operating-points-v2";
+> > +
+> > +      opp64000 { opp-hz =3D /bits/ 64 <64000>; };
+>
+> opp-64000 is the preferred form.
+>
+> > +      opp128000 { opp-hz =3D /bits/ 64 <128000>; };
+> > +      opp192000 { opp-hz =3D /bits/ 64 <192000>; };
+> > +      opp256000 { opp-hz =3D /bits/ 64 <256000>; };
+> > +      opp320000 { opp-hz =3D /bits/ 64 <320000>; };
+> > +      opp384000 { opp-hz =3D /bits/ 64 <384000>; };
+> > +      opp425000 { opp-hz =3D /bits/ 64 <425000>; };
+> > +    };
+> > +
+> > +    opp_table1: opp-table-1 {
+> > +      compatible =3D "operating-points-v2";
+> > +
+> > +      opp64000 { opp-hz =3D /bits/ 64 <64000>; };
+> > +      opp128000 { opp-hz =3D /bits/ 64 <128000>; };
+> > +      opp192000 { opp-hz =3D /bits/ 64 <192000>; };
+> > +      opp256000 { opp-hz =3D /bits/ 64 <256000>; };
+> > +      opp320000 { opp-hz =3D /bits/ 64 <320000>; };
+> > +      opp384000 { opp-hz =3D /bits/ 64 <384000>; };
+> > +      opp448000 { opp-hz =3D /bits/ 64 <448000>; };
+> > +      opp512000 { opp-hz =3D /bits/ 64 <512000>; };
+> > +      opp576000 { opp-hz =3D /bits/ 64 <576000>; };
+> > +      opp640000 { opp-hz =3D /bits/ 64 <640000>; };
+> > +      opp704000 { opp-hz =3D /bits/ 64 <704000>; };
+> > +      opp768000 { opp-hz =3D /bits/ 64 <768000>; };
+> > +      opp832000 { opp-hz =3D /bits/ 64 <832000>; };
+> > +      opp896000 { opp-hz =3D /bits/ 64 <896000>; };
+> > +      opp960000 { opp-hz =3D /bits/ 64 <960000>; };
+> > +      opp1024000 { opp-hz =3D /bits/ 64 <1024000>; };
+> > +
+> > +    };
+>
+> I don't recall your prior versions having an OPP table. Maybe it was
+> incomplete. You are designing the "h/w" interface. Why don't you make it
+> discoverable or implicit (fixed for the h/w)?
 
-Applied, thanks
+We also need the OPP tables to indicate which CPUs are part of the
+same cluster, etc. Don't want to invent a new "protocol" and just use
+existing DT bindings.
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+> Do you really need it if the frequency is normalized?
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Yeah, we can have little and big CPUs and want to emulate different
+performance levels. So while the Fmax on big is 1024, we still want to
+be able to say little is 425. So we definitely need frequency tables.
 
+> Also, we have "opp-level" for opaque values that aren't Hz.
+
+Still want to keep it Hz to be compatible with arch_freq_scale and
+when virtualized CPU perf counters are available.
+
+-Saravana
 
