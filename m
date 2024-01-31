@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-47346-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47347-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E543B844CBD
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:28:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09306844CBE
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:28:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7744928DEC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:28:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BCFF1C24E8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:28:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4D07482F3;
-	Wed, 31 Jan 2024 23:11:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 467ED4879D;
+	Wed, 31 Jan 2024 23:11:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rii2qKbA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pu2BMKfx"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2AC9482E2
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 23:11:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D80F4878D
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 23:11:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706742691; cv=none; b=VIjJIdyZt4uiU1kljg9FBeAkgeuSlHP3LNvXba12K8rYxQn8BOuWP44ClBm58erspK7bB6FhfUMsdPASDc8niy6tHIFuYoBTLeZg96wtKQL8vndu9hhryKLku3RZiIeEcbE/Gf47ypxKpG0SQNCUmGJUg6AKy53iXQK6G4iPp14=
+	t=1706742693; cv=none; b=sdK11/339JHagYebTadWOENMVet56zmPBJE6+4GEm5BiwiLfgd7+3QMkEwc0uQkMeYvlVnho86uXdAZc+1sA+q5Z/q/XXZIJBA2LUJ/vzIcpxSIxXGAcBFcY48C7jQq0qFPjatENIe1OdZdB/ZCYY6e67D8eZ4iUatK+A72X2Ak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706742691; c=relaxed/simple;
-	bh=wo077DcopptE4PXrUnE2wvN1oXs9MI9u90VSK05yiuA=;
+	s=arc-20240116; t=1706742693; c=relaxed/simple;
+	bh=bdfS8bPbTsmzbdiim69fTRLC6qHuhmCc45TsOfVHL2w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uTCIa7Zkpqlu84+PYmDjJMih0mAxFMcfw7E6EQe7zNZHnqFD9LWbxbzwipqmT9LXA9Q7D6YCvw1I1JYYy4HyrVtNfGirrKeip8M0Z0+V6IMej0sL3jf1tVd6gmb8t/arTbWYkEMrYpeaDIUa2UY8rZZ5iA5JZs0Kyyu3mAmxe40=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rii2qKbA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8E15C433F1;
-	Wed, 31 Jan 2024 23:11:28 +0000 (UTC)
+	 MIME-Version; b=Vet5CWtG7LGZadHLiSuC7jdQx3VpphMH+kSFGa/dfyrLBl2Px3oqWPWHCkfkBBNvvwV0QFbAN09HYKsu+amU7YNLFIUQSpP38axkWqhLE2zXM/mFdWtGjDrx7q8BXsCu1hlHDroX/UmIJkchuduvmPYC/+YuK6JGENMcq9hnYeA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Pu2BMKfx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37A22C433C7;
+	Wed, 31 Jan 2024 23:11:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706742690;
-	bh=wo077DcopptE4PXrUnE2wvN1oXs9MI9u90VSK05yiuA=;
+	s=k20201202; t=1706742693;
+	bh=bdfS8bPbTsmzbdiim69fTRLC6qHuhmCc45TsOfVHL2w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Rii2qKbAxLpzyE1Gk6YhTQxo7MFmtFY9qpdUNiBxws/Bha2Gx933vVZzdTZbuMOlo
-	 yOLZnxrcuEC2aaniYWxvl2zhg+F7C9AGnMKYb6sOGU1/Rql2m9NSscRbjVi/JIoOhq
-	 peGT9zaXKuDUu5yuqBilBrL/nQVfMZPvVlCqytA2h7G8moZdVuKmfdn3xrfeOrTBW3
-	 J3PtmJgtDTPwJnp1DI7vY/3L828wjKncB8Sn/BrqYQCaMJ/9/j0qB+7Tyifmsb8lhL
-	 GZvV9llaO9FTEs8id/l2ce0XVMc9g+znXetHgEJmnfVQSz7h5gniZho+wuVUeRSrXp
-	 hGMEqhSeybjLQ==
+	b=Pu2BMKfxpDonJh96TUh4I4OS27tDicdRWAeUYtR89pMgcIYaqvcf33MmyCmIuECpE
+	 z5F7ZOFxbLEqTQD9oibni2BhUXXUGcyVRw7GxBc/nq15gVXeHpcTCShV3VHDCmuRtl
+	 xog5UJ54vaweu4GcjxieY4FB0WAttRG/rZQ8mIlZu0NLGqvdnII2KWgBSWrU68h20v
+	 tUq3UNMeul79lwRvFtl2cC9v1gYQjjsL7Tfee/Zu5FJT+iV4Z2IqfHty/UJ76oKjI+
+	 JilVAiHp2sMGWEFPwrFIwsgapuxVwOTAsoYrmUbDtPTCHrCN6tAkgvdbJGYg1hS7wV
+	 26sr/sDAvRe3Q==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
-Cc: Peng Liu <liupeng17@lenovo.com>,
+Cc: Frederic Weisbecker <frederic@kernel.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Ingo Molnar <mingo@kernel.org>,
 	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH 02/15] tick/nohz: Remove duplicate between lowres and highres handlers
-Date: Thu,  1 Feb 2024 00:11:07 +0100
-Message-ID: <20240131231120.12006-3-frederic@kernel.org>
+	Peng Liu <liupeng17@lenovo.com>,
+	Joel Fernandes <joel@joelfernandes.org>
+Subject: [PATCH 03/15] tick: Remove useless oneshot ifdeffery
+Date: Thu,  1 Feb 2024 00:11:08 +0100
+Message-ID: <20240131231120.12006-4-frederic@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240131231120.12006-1-frederic@kernel.org>
 References: <20240131231120.12006-1-frederic@kernel.org>
@@ -62,154 +62,61 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Peng Liu <liupeng17@lenovo.com>
+tick-sched.c is only built when CONFIG_TICK_ONESHOT=y, which is selected
+only if CONFIG_NO_HZ_COMMON=y or CONFIG_HIGH_RES_TIMERS=y. Therefore
+the related ifdeferry in this file is needless and can be removed.
 
-tick_nohz_lowres_handler() does the same work as
-tick_nohz_highres_handler() plus the clockevent device reprogramming, so
-make the former reuse the latter and rename it accordingly.
-
-Signed-off-by: Peng Liu <liupeng17@lenovo.com>
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/time/tick-sched.c | 96 +++++++++++++++-------------------------
- 1 file changed, 36 insertions(+), 60 deletions(-)
+ kernel/time/tick-sched.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
 diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index 639ee689e7cc..cc19c4ff5a25 100644
+index cc19c4ff5a25..e674269692ab 100644
 --- a/kernel/time/tick-sched.c
 +++ b/kernel/time/tick-sched.c
-@@ -255,6 +255,40 @@ static void tick_sched_handle(struct tick_sched *ts, struct pt_regs *regs)
- 	update_process_times(user_mode(regs));
- 	profile_tick(CPU_PROFILING);
+@@ -43,7 +43,6 @@ struct tick_sched *tick_get_tick_sched(int cpu)
+ 	return &per_cpu(tick_cpu_sched, cpu);
  }
-+
-+/*
-+ * We rearm the timer until we get disabled by the idle code.
-+ * Called with interrupts disabled.
-+ */
-+static enum hrtimer_restart tick_nohz_handler(struct hrtimer *timer)
-+{
-+	struct tick_sched *ts =	container_of(timer, struct tick_sched, sched_timer);
-+	struct pt_regs *regs = get_irq_regs();
-+	ktime_t now = ktime_get();
-+
-+	tick_sched_do_timer(ts, now);
-+
-+	/*
-+	 * Do not call when we are not in IRQ context and have
-+	 * no valid 'regs' pointer
-+	 */
-+	if (regs)
-+		tick_sched_handle(ts, regs);
-+	else
-+		ts->next_tick = 0;
-+
-+	/*
-+	 * In dynticks mode, tick reprogram is deferred:
-+	 * - to the idle task if in dynticks-idle
-+	 * - to IRQ exit if in full-dynticks.
-+	 */
-+	if (unlikely(ts->tick_stopped))
-+		return HRTIMER_NORESTART;
-+
-+	hrtimer_forward(timer, now, TICK_NSEC);
-+
-+	return HRTIMER_RESTART;
-+}
- #endif
+ 
+-#if defined(CONFIG_NO_HZ_COMMON) || defined(CONFIG_HIGH_RES_TIMERS)
+ /*
+  * The time when the last jiffy update happened. Write access must hold
+  * jiffies_lock and jiffies_seq. tick_nohz_next_event() needs to get a
+@@ -289,7 +288,6 @@ static enum hrtimer_restart tick_nohz_handler(struct hrtimer *timer)
+ 
+ 	return HRTIMER_RESTART;
+ }
+-#endif
  
  #ifdef CONFIG_NO_HZ_FULL
-@@ -1391,31 +1425,15 @@ void tick_nohz_idle_exit(void)
-  * at the clockevent level. hrtimer can't be used instead, because its
-  * infrastructure actually relies on the tick itself as a backend in
-  * low-resolution mode (see hrtimer_run_queues()).
-- *
-- * This low-resolution handler still makes use of some hrtimer APIs meanwhile
-- * for convenience with expiration calculation and forwarding.
-  */
- static void tick_nohz_lowres_handler(struct clock_event_device *dev)
- {
- 	struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
--	struct pt_regs *regs = get_irq_regs();
--	ktime_t now = ktime_get();
- 
- 	dev->next_event = KTIME_MAX;
- 
--	tick_sched_do_timer(ts, now);
--	tick_sched_handle(ts, regs);
--
--	/*
--	 * In dynticks mode, tick reprogram is deferred:
--	 * - to the idle task if in dynticks-idle
--	 * - to IRQ exit if in full-dynticks.
--	 */
--	if (likely(!ts->tick_stopped)) {
--		hrtimer_forward(&ts->sched_timer, now, TICK_NSEC);
-+	if (likely(tick_nohz_handler(&ts->sched_timer) == HRTIMER_RESTART))
- 		tick_program_event(hrtimer_get_expires(&ts->sched_timer), 1);
--	}
--
+ cpumask_var_t tick_nohz_full_mask;
+@@ -635,7 +633,7 @@ void __init tick_nohz_init(void)
+ 	pr_info("NO_HZ: Full dynticks CPUs: %*pbl.\n",
+ 		cpumask_pr_args(tick_nohz_full_mask));
  }
+-#endif
++#endif /* #ifdef CONFIG_NO_HZ_FULL */
  
- static inline void tick_nohz_activate(struct tick_sched *ts, int mode)
-@@ -1484,48 +1502,6 @@ void tick_irq_enter(void)
+ /*
+  * NOHZ - aka dynamic tick functionality
+@@ -1502,7 +1500,6 @@ void tick_irq_enter(void)
  	tick_nohz_irq_enter();
  }
  
--/*
-- * High resolution timer specific code
-- */
--#ifdef CONFIG_HIGH_RES_TIMERS
--/*
-- * We rearm the timer until we get disabled by the idle code.
-- * Called with interrupts disabled.
-- */
--static enum hrtimer_restart tick_nohz_highres_handler(struct hrtimer *timer)
--{
--	struct tick_sched *ts =
--		container_of(timer, struct tick_sched, sched_timer);
--	struct pt_regs *regs = get_irq_regs();
--	ktime_t now = ktime_get();
--
--	tick_sched_do_timer(ts, now);
--
--	/*
--	 * Do not call when we are not in IRQ context and have
--	 * no valid 'regs' pointer
--	 */
--	if (regs)
--		tick_sched_handle(ts, regs);
--	else
--		ts->next_tick = 0;
--
--	/*
--	 * In dynticks mode, tick reprogram is deferred:
--	 * - to the idle task if in dynticks-idle
--	 * - to IRQ exit if in full-dynticks.
--	 */
--	if (unlikely(ts->tick_stopped))
--		return HRTIMER_NORESTART;
--
--	hrtimer_forward(timer, now, TICK_NSEC);
--
--	return HRTIMER_RESTART;
--}
--#else
--#define tick_nohz_highres_handler NULL
--#endif /* CONFIG_HIGH_RES_TIMERS */
--
- #if defined CONFIG_NO_HZ_COMMON || defined CONFIG_HIGH_RES_TIMERS
+-#if defined CONFIG_NO_HZ_COMMON || defined CONFIG_HIGH_RES_TIMERS
  static int sched_skew_tick;
  
-@@ -1549,7 +1525,7 @@ void tick_setup_sched_timer(int mode)
- 	hrtimer_init(&ts->sched_timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS_HARD);
+ static int __init skew_tick(char *str)
+@@ -1567,7 +1564,6 @@ void tick_cancel_sched_timer(int cpu)
+ 	ts->idle_calls = idle_calls;
+ 	ts->idle_sleeps = idle_sleeps;
+ }
+-#endif /* CONFIG_NO_HZ_COMMON || CONFIG_HIGH_RES_TIMERS */
  
- 	if (IS_ENABLED(CONFIG_HIGH_RES_TIMERS) && mode == NOHZ_MODE_HIGHRES)
--		ts->sched_timer.function = tick_nohz_highres_handler;
-+		ts->sched_timer.function = tick_nohz_handler;
- 
- 	/* Get the next period (per-CPU) */
- 	hrtimer_set_expires(&ts->sched_timer, tick_init_jiffy_update());
+ /*
+  * Async notification about clocksource changes
 -- 
 2.43.0
 
