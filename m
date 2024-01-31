@@ -1,219 +1,290 @@
-Return-Path: <linux-kernel+bounces-46096-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46097-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62B1E843A56
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:09:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E255F843A48
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:08:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DFF73B28805
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:07:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99C01292A34
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:08:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E54479DD4;
-	Wed, 31 Jan 2024 09:02:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 512567B3D1;
+	Wed, 31 Jan 2024 09:02:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UiGBrf8b"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="0YhYvzCx"
+Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 259CC79DB4;
-	Wed, 31 Jan 2024 09:02:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AFB27AE78
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:02:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706691753; cv=none; b=F7qf68oC+UKcNs5BeOBmkUCz8RuGfMBMaSiYhZWDSh+7dQTz6reCAEnyjyYLHXLS8MD8dQZDAyCNPIChLQKcHLfCKserrz/CZM92iz8Y/ybNZvTKS04Rd86X81VxOqUwzhyO3i9/ni1tQUbQimKyem9ISoSPDIkiK9g/m1mUCjQ=
+	t=1706691775; cv=none; b=WHMoSYSpZql5xYosyIyoAeJT6O4m94Ep3OlIMIGkrXkw/1czom2MUSS0TrWkfJ1a3Jt6+8Gm5UdbAysU+Hn3gmX0IMAF/cYGP6ywwtoOhpewrKE4DloQNrOHaaWWIPv65XjxT9x6JR+dbSTj5YAv4hHviYDbGFcm3CtTcB0oyZc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706691753; c=relaxed/simple;
-	bh=NJRd4XDA5lDVXNSXsbiVsUP4P+c7qrvLCJJwrQTLTL4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KuF/MKJAUOMpp5aXTfVNKBUvIJejfAADVmnDv80UGSBMzv2MNzzvZCQr9t3qRALaJsbtHtltRz3DjcbLbwlJLCV8+5n2jF3AoMEFI7VxlJoygRV1nTbNRNoHIZ+bWRV+OVJOTz4NvKroRNyn/Z6KgOP7hviLS+CLxW63W9xvydY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UiGBrf8b; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706691750; x=1738227750;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=NJRd4XDA5lDVXNSXsbiVsUP4P+c7qrvLCJJwrQTLTL4=;
-  b=UiGBrf8bLl75hXdEih2UAvdWv5Zf+72afShdZvTNCpqstmeq0+8kqE5l
-   VEv65371tYjoyudBc8oaKT4gkLU1WwP2F4bLa4Yc/bRPzmYQWj+gtfYSn
-   TVVAI3E48QaOdPG4uoecNuLWqrnipJR5NDUuiPSiJ22A2S5/NO/4y/XmZ
-   lpsivF7c5GzQR6QItGv+gurDQEoq4e/MSV3fzN4QRTjgR5xGlemKHKlYN
-   wxMFbJiG0O/+bEAMW35W3cTZogKGMkCmjKjfgh7MJDGk+tGKYUT7N8CwC
-   U18wbfM9qrTR9WW67kdXjfM7aIdEaHJAojOfpYy4wag7sbei/2U4bIwE4
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="10177145"
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="10177145"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 01:02:29 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="30169253"
-Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
-  by orviesa002.jf.intel.com with ESMTP; 31 Jan 2024 01:02:25 -0800
-Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rV6U5-0001MC-0U;
-	Wed, 31 Jan 2024 09:02:19 +0000
-Date: Wed, 31 Jan 2024 17:01:55 +0800
-From: kernel test robot <lkp@intel.com>
-To: Mario Limonciello <mario.limonciello@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Harry Wentland <harry.wentland@amd.com>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Hans de Goede <hdegoede@redhat.com>
-Cc: Paul Gazzillo <paul@pgazz.com>,
-	Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-	oe-kbuild-all@lists.linux.dev,
-	"open list:ACPI" <linux-acpi@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	"open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-	Melissa Wen <mwen@igalia.com>,
-	Mark Pearson <mpearson-lenovo@squebb.ca>,
-	Mario Limonciello <mario.limonciello@amd.com>
-Subject: Re: [PATCH v2 2/4] drm: Add drm_get_acpi_edid() helper
-Message-ID: <202401311634.FE5CBVwe-lkp@intel.com>
-References: <20240130192608.11666-3-mario.limonciello@amd.com>
+	s=arc-20240116; t=1706691775; c=relaxed/simple;
+	bh=4ube494DxN77EoNRTkC5bj/EFomeKNhiGAdr5fHNlZU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CTmurbaLnZhQ58YaXpC4IR7lagkZYuw+I3+WZgxH8DsliQ38Wmwcxfx19dMjsi3dJSoeZcJa/CGelaq8TcTQdqLqIHGITaWh7Y/cmzxuB3+WAhqcuNyaG8NJbIMfJ6QjJmq+m1IKJnfcCxxLczsdRcYhJQaMxeU2WAWs5AIXJFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=0YhYvzCx; arc=none smtp.client-ip=209.85.217.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-vs1-f44.google.com with SMTP id ada2fe7eead31-46b1419ad06so395570137.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 01:02:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1706691772; x=1707296572; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WHIn5iEEeJ3rw/RfxswFaDoxGXKGctXGF45XOL5dY2I=;
+        b=0YhYvzCxYAnZGH1eqQz4qiNWSZlL2gW7qKhOKpDohLlwsr6+quAg5ELxjHsQ4V2JOG
+         AT0k17poXYzb9/fhZs8t1rCmg0vmDb0CiTDj9zVpGZdLC/leBy3Lvm69HmJCWibYic1B
+         IQVCZLQxvDv19u7chU4gwADJBgRLP3FdxjdpuAKOoOzRfV8altkjc//RJluxdDmeMbg4
+         OKZw0+TidVtx64GOsdOjDFcRIqBwBlj8mRlrmyY3E134/OUht6pssbGiKO08mvXkiiOu
+         molLZ9gAaR4HfMynE7TQvwWP6IaJszrO5rZa71VjwlvpBk1ZNxsAZvOAEJUiy28IDxyI
+         zE4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706691772; x=1707296572;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WHIn5iEEeJ3rw/RfxswFaDoxGXKGctXGF45XOL5dY2I=;
+        b=M5IaqozZWioZeVGLgw3jLurThI3D3Wij/PWIC5ykM//rBG+sNxlwoMyn1s6zBH8pJe
+         n3GQtVOKzaELkaD2BJTMyP6TIXERBCdYns6LdRNn89uLxYYG44TQvG5yfVGs7+KxqBBj
+         FTXhHFsN/xwD8wPVVoIvq6HbltSH02nRC83xwjzsJkQpPCP7V8qksoFkLnYlZ+N8Mofn
+         4hhe7SxnHV6liY232CGYFi/gvrPheza8xQ4kzdncysQ9YlkjiO4gEMMLaLFl1FHcqh1F
+         s7PswdQGQzJPaJIXZwlyZGG3yQYLcEAjetJvmohPCxM7A1Xx+VZk4hppBuCyUz8eCYEx
+         M2qQ==
+X-Gm-Message-State: AOJu0YxAdvlFFAPMP1hfQ+n5KLekR37HT1WS9ItRK+0S8E1JiKrTJiVr
+	9oaXxGJ/v8QHWByLzVKGue/aU6E6DXAk7JeVUuKsqTELo0hzJejwkyOPNO1XsyteLaWd580QTMb
+	oxqOeO7LRcvNfEEOj/v/Z6dp71vBxA38jDVjGdB3zxrDNCF1M
+X-Google-Smtp-Source: AGHT+IHwfAAjqdqROm25j35JKJFRD2vF9Pt57pirLSUCe4FZ2jlrKokE/urkjVy/LFDj01VwH0GsmB66CaZJuy1zsg0=
+X-Received: by 2002:a05:6102:3b91:b0:46b:6936:bdcf with SMTP id
+ z17-20020a0561023b9100b0046b6936bdcfmr1780735vsu.28.1706691772117; Wed, 31
+ Jan 2024 01:02:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240130192608.11666-3-mario.limonciello@amd.com>
+References: <20240130124828.14678-21-brgl@bgdev.pl> <202401311050.YNdm98Hv-lkp@intel.com>
+In-Reply-To: <202401311050.YNdm98Hv-lkp@intel.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Wed, 31 Jan 2024 10:02:40 +0100
+Message-ID: <CAMRc=Me0y-P4zTu_nCPpdF8hX_7rqri1AG1zCU6sO9tbJXbneQ@mail.gmail.com>
+Subject: Re: [PATCH 20/22] gpio: protect the pointer to gpio_chip in
+ gpio_device with SRCU
+To: "Paul E . McKenney" <paulmck@kernel.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Kent Gibson <warthog618@gmail.com>, 
+	Alex Elder <elder@linaro.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	Wolfram Sang <wsa-dev@sang-engineering.com>, oe-kbuild-all@lists.linux.dev, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Mario,
+On Wed, Jan 31, 2024 at 3:21=E2=80=AFAM kernel test robot <lkp@intel.com> w=
+rote:
+>
+> Hi Bartosz,
+>
+> kernel test robot noticed the following build warnings:
+>
+> [auto build test WARNING on brgl/gpio/for-next]
+> [also build test WARNING on linus/master v6.8-rc2 next-20240130]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+>
+> url:    https://github.com/intel-lab-lkp/linux/commits/Bartosz-Golaszewsk=
+i/gpio-protect-the-list-of-GPIO-devices-with-SRCU/20240130-205537
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git gp=
+io/for-next
+> patch link:    https://lore.kernel.org/r/20240130124828.14678-21-brgl%40b=
+gdev.pl
+> patch subject: [PATCH 20/22] gpio: protect the pointer to gpio_chip in gp=
+io_device with SRCU
+> config: x86_64-randconfig-122-20240131 (https://download.01.org/0day-ci/a=
+rchive/20240131/202401311050.YNdm98Hv-lkp@intel.com/config)
+> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
+ve/20240131/202401311050.YNdm98Hv-lkp@intel.com/reproduce)
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
+ion of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202401311050.YNdm98Hv-lkp=
+@intel.com/
+>
+> sparse warnings: (new ones prefixed by >>)
+> >> drivers/gpio/gpiolib.c:444:22: sparse: sparse: incompatible types in c=
+omparison expression (different address spaces):
+>    drivers/gpio/gpiolib.c:444:22: sparse:    struct gpio_chip [noderef] _=
+_rcu *
+>    drivers/gpio/gpiolib.c:444:22: sparse:    struct gpio_chip *
+>    drivers/gpio/gpiolib.c:1103:9: sparse: sparse: incompatible types in c=
+omparison expression (different address spaces):
+>    drivers/gpio/gpiolib.c:1103:9: sparse:    struct gpio_chip [noderef] _=
+_rcu *
+>    drivers/gpio/gpiolib.c:1103:9: sparse:    struct gpio_chip *
+>    drivers/gpio/gpiolib.c:1182:22: sparse: sparse: incompatible types in =
+comparison expression (different address spaces):
+>    drivers/gpio/gpiolib.c:1182:22: sparse:    struct gpio_chip [noderef] =
+__rcu *
+>    drivers/gpio/gpiolib.c:1182:22: sparse:    struct gpio_chip *
+>    drivers/gpio/gpiolib.c:2970:14: sparse: sparse: incompatible types in =
+comparison expression (different address spaces):
+>    drivers/gpio/gpiolib.c:2970:14: sparse:    struct gpio_chip [noderef] =
+__rcu *
+>    drivers/gpio/gpiolib.c:2970:14: sparse:    struct gpio_chip *
+>    drivers/gpio/gpiolib.c:3004:22: sparse: sparse: incompatible types in =
+comparison expression (different address spaces):
+>    drivers/gpio/gpiolib.c:3004:22: sparse:    struct gpio_chip [noderef] =
+__rcu *
+>    drivers/gpio/gpiolib.c:3004:22: sparse:    struct gpio_chip *
+>    drivers/gpio/gpiolib.c:3585:14: sparse: sparse: incompatible types in =
+comparison expression (different address spaces):
+>    drivers/gpio/gpiolib.c:3585:14: sparse:    struct gpio_chip [noderef] =
+__rcu *
+>    drivers/gpio/gpiolib.c:3585:14: sparse:    struct gpio_chip *
+>    drivers/gpio/gpiolib.c:4772:14: sparse: sparse: incompatible types in =
+comparison expression (different address spaces):
+>    drivers/gpio/gpiolib.c:4772:14: sparse:    struct gpio_chip [noderef] =
+__rcu *
+>    drivers/gpio/gpiolib.c:4772:14: sparse:    struct gpio_chip *
+>    drivers/gpio/gpiolib.c:4846:14: sparse: sparse: incompatible types in =
+comparison expression (different address spaces):
+>    drivers/gpio/gpiolib.c:4846:14: sparse:    struct gpio_chip [noderef] =
+__rcu *
+>    drivers/gpio/gpiolib.c:4846:14: sparse:    struct gpio_chip *
+>    drivers/gpio/gpiolib.c: note: in included file:
+> >> drivers/gpio/gpiolib.h:202:1: sparse: sparse: incompatible types in co=
+mparison expression (different address spaces):
+>    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip [noderef] __=
+rcu *
+>    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip *
+> >> drivers/gpio/gpiolib.h:202:1: sparse: sparse: incompatible types in co=
+mparison expression (different address spaces):
+>    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip [noderef] __=
+rcu *
+>    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip *
+> >> drivers/gpio/gpiolib.h:202:1: sparse: sparse: incompatible types in co=
+mparison expression (different address spaces):
+>    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip [noderef] __=
+rcu *
+>    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip *
+> >> drivers/gpio/gpiolib.h:202:1: sparse: sparse: incompatible types in co=
+mparison expression (different address spaces):
+>    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip [noderef] __=
+rcu *
+>    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip *
+> >> drivers/gpio/gpiolib.h:202:1: sparse: sparse: incompatible types in co=
+mparison expression (different address spaces):
+>    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip [noderef] __=
+rcu *
+>    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip *
+> >> drivers/gpio/gpiolib.h:202:1: sparse: sparse: incompatible types in co=
+mparison expression (different address spaces):
+>    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip [noderef] __=
+rcu *
+>    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip *
+> >> drivers/gpio/gpiolib.h:202:1: sparse: sparse: incompatible types in co=
+mparison expression (different address spaces):
+>    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip [noderef] __=
+rcu *
+>    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip *
+> >> drivers/gpio/gpiolib.h:202:1: sparse: sparse: incompatible types in co=
+mparison expression (different address spaces):
+>    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip [noderef] __=
+rcu *
+>    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip *
+> >> drivers/gpio/gpiolib.h:202:1: sparse: sparse: incompatible types in co=
+mparison expression (different address spaces):
+>    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip [noderef] __=
+rcu *
+>    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip *
+> >> drivers/gpio/gpiolib.h:202:1: sparse: sparse: incompatible types in co=
+mparison expression (different address spaces):
+>    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip [noderef] __=
+rcu *
+>    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip *
+> >> drivers/gpio/gpiolib.h:202:1: sparse: sparse: incompatible types in co=
+mparison expression (different address spaces):
+>    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip [noderef] __=
+rcu *
+>    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip *
+> >> drivers/gpio/gpiolib.h:202:1: sparse: sparse: incompatible types in co=
+mparison expression (different address spaces):
+>    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip [noderef] __=
+rcu *
+>    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip *
+> >> drivers/gpio/gpiolib.h:202:1: sparse: sparse: incompatible types in co=
+mparison expression (different address spaces):
+>    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip [noderef] __=
+rcu *
+>    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip *
+> >> drivers/gpio/gpiolib.h:202:1: sparse: sparse: incompatible types in co=
+mparison expression (different address spaces):
+>    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip [noderef] __=
+rcu *
+>    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip *
+>
+> vim +444 drivers/gpio/gpiolib.c
+>
+>    422
+>    423  /*
+>    424   * Convert a GPIO name to its descriptor
+>    425   * Note that there is no guarantee that GPIO names are globally u=
+nique!
+>    426   * Hence this function will return, if it exists, a reference to =
+the first GPIO
+>    427   * line found that matches the given name.
+>    428   */
+>    429  static struct gpio_desc *gpio_name_to_desc(const char * const nam=
+e)
+>    430  {
+>    431          struct gpio_device *gdev;
+>    432          struct gpio_desc *desc;
+>    433          struct gpio_chip *gc;
+>    434
+>    435          if (!name)
+>    436                  return NULL;
+>    437
+>    438          guard(srcu)(&gpio_devices_srcu);
+>    439
+>    440          list_for_each_entry_srcu(gdev, &gpio_devices, list,
+>    441                                   srcu_read_lock_held(&gpio_device=
+s_srcu)) {
+>    442                  guard(srcu)(&gdev->srcu);
+>    443
+>  > 444                  gc =3D rcu_dereference(gdev->chip);
+>    445                  if (!gc)
+>    446                          continue;
+>    447
+>    448                  for_each_gpio_desc(gc, desc) {
+>    449                          if (desc->name && !strcmp(desc->name, nam=
+e))
+>    450                                  return desc;
+>    451                  }
+>    452          }
+>    453
+>    454          return NULL;
+>    455  }
+>    456
+>
+> --
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
 
-kernel test robot noticed the following build warnings:
+Paul,
 
-[auto build test WARNING on rafael-pm/linux-next]
-[also build test WARNING on rafael-pm/acpi-bus linus/master v6.8-rc2 next-20240131]
-[cannot apply to drm-misc/drm-misc-next rafael-pm/devprop]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Should I care about these warnings? They seem to be emitted for a lot
+of RCU code already upstream. I'm not even sure how I'd go about
+addressing them honestly.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Mario-Limonciello/ACPI-video-Handle-fetching-EDID-that-is-longer-than-256-bytes/20240131-032909
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
-patch link:    https://lore.kernel.org/r/20240130192608.11666-3-mario.limonciello%40amd.com
-patch subject: [PATCH v2 2/4] drm: Add drm_get_acpi_edid() helper
-config: x86_64-kismet-CONFIG_ACPI_PLATFORM_PROFILE-CONFIG_HP_WMI-0-0 (https://download.01.org/0day-ci/archive/20240131/202401311634.FE5CBVwe-lkp@intel.com/config)
-reproduce: (https://download.01.org/0day-ci/archive/20240131/202401311634.FE5CBVwe-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401311634.FE5CBVwe-lkp@intel.com/
-
-kismet warnings: (new ones prefixed by >>)
->> kismet: WARNING: unmet direct dependencies detected for ACPI_PLATFORM_PROFILE when selected by HP_WMI
-   .config:101:warning: symbol value 'n' invalid for RADIO_RTRACK2_PORT
-   .config:223:warning: symbol value 'n' invalid for AIC79XX_CMDS_PER_DEVICE
-   .config:240:warning: symbol value 'n' invalid for SATA_MOBILE_LPM_POLICY
-   .config:310:warning: symbol value 'n' invalid for DRM_I915_TIMESLICE_DURATION
-   .config:321:warning: symbol value 'n' invalid for PANEL_LCD_PIN_SDA
-   .config:345:warning: symbol value 'n' invalid for PSTORE_BLK_MAX_REASON
-   .config:457:warning: symbol value 'n' invalid for KFENCE_SAMPLE_INTERVAL
-   .config:633:warning: symbol value 'n' invalid for CRYPTO_DEV_QCE_SW_MAX_LEN
-   .config:651:warning: symbol value 'n' invalid for DRM_XE_JOB_TIMEOUT_MIN
-   .config:674:warning: symbol value 'n' invalid for FB_GBE_MEM
-   .config:739:warning: symbol value 'n' invalid for PANEL_LCD_CHARSET
-   .config:836:warning: symbol value 'n' invalid for SND_AC97_POWER_SAVE_DEFAULT
-   .config:851:warning: symbol value 'n' invalid for MAGIC_SYSRQ_DEFAULT_ENABLE
-   .config:871:warning: symbol value 'n' invalid for DRM_I915_MAX_REQUEST_BUSYWAIT
-   .config:900:warning: symbol value 'n' invalid for SND_AT73C213_TARGET_BITRATE
-   .config:951:warning: symbol value 'n' invalid for DRM_XE_PREEMPT_TIMEOUT_MIN
-   .config:961:warning: symbol value 'n' invalid for NET_EMATCH_STACK
-   .config:962:warning: symbol value 'n' invalid for VMCP_CMA_SIZE
-   .config:1002:warning: symbol value 'n' invalid for SQUASHFS_FRAGMENT_CACHE_SIZE
-   .config:1113:warning: symbol value 'n' invalid for FB_OMAP2_NUM_FBS
-   .config:1237:warning: symbol value 'n' invalid for MTDRAM_ERASE_SIZE
-   .config:1253:warning: symbol value 'n' invalid for CFAG12864B_RATE
-   .config:1290:warning: symbol value 'n' invalid for SERIAL_UARTLITE_NR_UARTS
-   .config:1468:warning: symbol value 'n' invalid for LEGACY_PTY_COUNT
-   .config:1528:warning: symbol value 'n' invalid for RAPIDIO_DISC_TIMEOUT
-   .config:1568:warning: symbol value 'n' invalid for FAT_DEFAULT_CODEPAGE
-   .config:1608:warning: symbol value 'n' invalid for WATCHDOG_OPEN_TIMEOUT
-   .config:1615:warning: symbol value 'n' invalid for AIC7XXX_RESET_DELAY_MS
-   .config:1638:warning: symbol value 'n' invalid for KCOV_IRQ_AREA_SIZE
-   .config:1850:warning: symbol value 'n' invalid for IBM_EMAC_POLL_WEIGHT
-   .config:1903:warning: symbol value 'n' invalid for DRM_I915_STOP_TIMEOUT
-   .config:2189:warning: symbol value 'n' invalid for SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST_NUM
-   .config:2246:warning: symbol value 'n' invalid for SND_HDA_PREALLOC_SIZE
-   .config:2358:warning: symbol value 'n' invalid for DRM_XE_TIMESLICE_MAX
-   .config:2452:warning: symbol value 'n' invalid for PANEL_LCD_BWIDTH
-   .config:2554:warning: symbol value 'n' invalid for PSTORE_BLK_CONSOLE_SIZE
-   .config:2701:warning: symbol value 'n' invalid for PANEL_PARPORT
-   .config:2763:warning: symbol value 'n' invalid for BOOKE_WDT_DEFAULT_TIMEOUT
-   .config:2798:warning: symbol value 'n' invalid for NOUVEAU_DEBUG_DEFAULT
-   .config:2996:warning: symbol value 'n' invalid for KCSAN_REPORT_ONCE_IN_MS
-   .config:3107:warning: symbol value 'n' invalid for KCSAN_UDELAY_INTERRUPT
-   .config:3132:warning: symbol value 'n' invalid for PANEL_LCD_PIN_BL
-   .config:3152:warning: symbol value 'n' invalid for DEBUG_OBJECTS_ENABLE_DEFAULT
-   .config:3159:warning: symbol value 'n' invalid for INITRAMFS_ROOT_GID
-   .config:3236:warning: symbol value 'n' invalid for PANEL_LCD_PIN_E
-   .config:3278:warning: symbol value 'n' invalid for ATM_FORE200E_TX_RETRY
-   .config:3321:warning: symbol value 'n' invalid for FB_OMAP2_DSS_MIN_FCK_PER_PCK
-   .config:3414:warning: symbol value 'n' invalid for STACK_MAX_DEFAULT_SIZE_MB
-   .config:3437:warning: symbol value 'n' invalid for KCSAN_UDELAY_TASK
-   .config:3468:warning: symbol value 'n' invalid for BLK_DEV_LOOP_MIN_COUNT
-   .config:3692:warning: symbol value 'n' invalid for MMC_BLOCK_MINORS
-   .config:3695:warning: symbol value 'n' invalid for INET_TABLE_PERTURB_ORDER
-   .config:3696:warning: symbol value 'n' invalid for CMA_SIZE_MBYTES
-   .config:3739:warning: symbol value 'n' invalid for SCSI_NCR53C8XX_SYNC
-   .config:3773:warning: symbol value 'n' invalid for SERIAL_MCF_BAUDRATE
-   .config:3870:warning: symbol value 'n' invalid for DE2104X_DSL
-   .config:3887:warning: symbol value 'n' invalid for BLK_DEV_RAM_COUNT
-   .config:3963:warning: symbol value 'n' invalid for AIC7XXX_DEBUG_MASK
-   .config:4102:warning: symbol value 'n' invalid for IP_VS_SH_TAB_BITS
-   .config:4257:warning: symbol value 'n' invalid for USBIP_VHCI_HC_PORTS
-   .config:4296:warning: symbol value 'n' invalid for AIC79XX_RESET_DELAY_MS
-   .config:4599:warning: symbol value 'n' invalid for RIONET_RX_SIZE
-   .config:4610:warning: symbol value 'n' invalid for RADIO_TYPHOON_PORT
-   .config:4730:warning: symbol value 'n' invalid for SERIAL_TXX9_NR_UARTS
-   .config:4819:warning: symbol value 'n' invalid for MTRR_SANITIZER_SPARE_REG_NR_DEFAULT
-   .config:4918:warning: symbol value 'n' invalid for IBM_EMAC_TXB
-   .config:5343:warning: symbol value 'n' invalid for CRYPTO_DEV_FSL_CAAM_INTC_TIME_THLD
-   .config:5415:warning: symbol value 'n' invalid for DRM_I915_FENCE_TIMEOUT
-   .config:5437:warning: symbol value 'n' invalid for TTY_PRINTK_LEVEL
-   .config:5601:warning: symbol value 'n' invalid for MIPS_EJTAG_FDC_KGDB_CHAN
-   .config:5609:warning: symbol value 'n' invalid for PPC_EARLY_DEBUG_EHV_BC_HANDLE
-   .config:5700:warning: symbol value 'n' invalid for KDB_DEFAULT_ENABLE
-   .config:5718:warning: symbol value 'n' invalid for SERIAL_ALTERA_UART_MAXPORTS
-   .config:5871:warning: symbol value 'n' invalid for FTRACE_RECORD_RECURSION_SIZE
-   .config:5992:warning: symbol value 'n' invalid for PANEL_LCD_HWIDTH
-   .config:6028:warning: symbol value 'n' invalid for LOCKDEP_CHAINS_BITS
-   .config:6121:warning: symbol value 'n' invalid for DRM_I915_HEARTBEAT_INTERVAL
-   .config:6130:warning: symbol value 'n' invalid for KCSAN_SKIP_WATCH
-   .config:6140:warning: symbol value 'n' invalid for EFI_MAX_FAKE_MEM
-   .config:6156:warning: symbol value 'n' invalid for PSTORE_BLK_KMSG_SIZE
-   .config:6336:warning: symbol value 'n' invalid for KVM_MAX_NR_VCPUS
-   .config:6443:warning: symbol value 'n' invalid for SERIAL_SH_SCI_NR_UARTS
-   .config:6483:warning: symbol value 'n' invalid for IP_VS_MH_TAB_INDEX
-   .config:6485:warning: symbol value 'n' invalid for ARCH_MMAP_RND_COMPAT_BITS
-   .config:6661:warning: symbol value 'n' invalid for RADIO_TRUST_PORT
-   .config:6684:warning: symbol value 'n' invalid for X86_AMD_PSTATE_DEFAULT_MODE
-   .config:6771:warning: symbol value 'n' invalid for ZSMALLOC_CHAIN_SIZE
-   .config:6867:warning: symbol value 'n' invalid for PANEL_LCD_PIN_RW
-   .config:6978:warning: symbol value 'n' invalid for SCSI_NCR53C8XX_MAX_TAGS
-   .config:7002:warning: symbol value 'n' invalid for SCSI_SYM53C8XX_DMA_ADDRESSING_MODE
-   .config:7041:warning: symbol value 'n' invalid for SERIAL_ALTERA_UART_BAUDRATE
-   .config:7080:warning: symbol value 'n' invalid for CMA_SIZE_PERCENTAGE
-   .config:7091:warning: symbol value 'n' invalid for LOCKDEP_BITS
-   .config:7236:warning: symbol value 'n' invalid for DRM_XE_TIMESLICE_MIN
-   .config:7398:warning: symbol value 'n' invalid for SND_MAX_CARDS
-   .config:7400:warning: symbol value 'n' invalid for IBM_EMAC_RXB
-   .config:7745:warning: symbol value 'n' invalid for SERIAL_ARC_NR_PORTS
-   .config:7808:warning: symbol value 'n' invalid for PANEL_LCD
-   .config:7916:warning: symbol value 'n' invalid for DRM_XE_PREEMPT_TIMEOUT_MAX
-   .config:7917:warning: symbol value 'n' invalid for SCSI_MPT3SAS_MAX_SGE
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Bart
 
