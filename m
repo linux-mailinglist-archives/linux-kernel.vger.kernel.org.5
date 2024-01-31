@@ -1,269 +1,171 @@
-Return-Path: <linux-kernel+bounces-46446-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46447-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48D33843FCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:57:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F74E843FCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:59:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE5EC1F2C798
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:57:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C4B3B21E18
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:58:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECEE97AE65;
-	Wed, 31 Jan 2024 12:57:43 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F49379957;
+	Wed, 31 Jan 2024 12:58:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="KjoKJFKr"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 682F15A7A1;
-	Wed, 31 Jan 2024 12:57:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0614579DD9
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 12:58:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706705863; cv=none; b=dCSKNJbr7QuTO+qVKwObT5WnRKJm8LOkQW1P2pUIgMyvYo08KSGi/NygtpPzFRHzMvU1Y8rLFD0IIV1Gaf39Z+K4rbKiX1Pw6yOYtgo0mhg4uDo2kpjDSfQCe7Om84fCJ1cwulInMJrg/SQVfGQtc6cawTY1kQHxTDDEF5UErMo=
+	t=1706705918; cv=none; b=p62kVCYHDmmaz5Qw5i3XgCiGQ3skOBOoYdOvQxkpJ9EJLmR2BlFIhuj74qGUYuhEz9EPJiq0k0oMB6Y+DUAhzpY8/qiSIfaKKn1NQNG1vllkJMUeATSYCleSDPPzutzPVZXGiO7XVt2Tr9frK3nBAyZ+vcL2vgCfHRQkTkdozl8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706705863; c=relaxed/simple;
-	bh=adrEc5ycfvBXd5A/G1QblPRi/8rVFlhF8UA3Djg+zTo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CnxC7swThpGC1q38hYyKoZdUXJbabLoU5Q8dCijvgGqwbfXiexqCoTewcymVREO5HylsouDXpi4+RZw/I3ND/8vzN1ikL7lPSjAUm+LqCcVXradtsMj+o6UQSp16vF9SIolu5DYBmx3P2uvmeN4ZfcnlgGzst6Tfuz3pBBN0Dhs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10AA6C433F1;
-	Wed, 31 Jan 2024 12:57:41 +0000 (UTC)
-Date: Wed, 31 Jan 2024 07:57:40 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>, Masami Hiramatsu
- <mhiramat@kernel.org>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/6] eventfs: get rid of dentry pointers without
- refcounts
-Message-ID: <20240131075740.660e7634@rorschach.local.home>
-In-Reply-To: <CAHk-=whSse54d+X361K2Uw6jO2SvrO-U0LHLBTLnqHaA+406Fw@mail.gmail.com>
-References: <20240130190355.11486-1-torvalds@linux-foundation.org>
-	<20240130190355.11486-5-torvalds@linux-foundation.org>
-	<20240131000956.3dbc0fc0@gandalf.local.home>
-	<CAHk-=wjH+k47je4YbP=D+KOiNYp8cJh8C_gZFzSOa8HPDm=AQw@mail.gmail.com>
-	<20240131003317.7a63e799@gandalf.local.home>
-	<CAHk-=wg69FE2826EokkCbSKHZvCG-cM5t=9SMFLcfpNu8Yvwqw@mail.gmail.com>
-	<CAHk-=whSse54d+X361K2Uw6jO2SvrO-U0LHLBTLnqHaA+406Fw@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706705918; c=relaxed/simple;
+	bh=Lb0a59hiN3odqPkQB6CkgCJ9VO+sdiG559p7/FCWAnI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=j0sl04+SKprjY1iA3zyWY04q0uj5tHc+d7xI7CQwflh2WYJRzAF+MPjAcKxDWIC96Ex7Y/Z6xew8k0KyVNT92g1s56GVSficvvpXRdt06sUTOoqqxRbcVRwMpHAeoS+NPlPykC+DY2yaK01OfzS5sLy4TSdpw78CUA/5dXOWkCA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=KjoKJFKr; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5101f2dfdadso8676137e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 04:58:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1706705913; x=1707310713; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=g7ky/3M7B61YCAGNE0WXFX5+lOGZrN7occ3cCWK7ac0=;
+        b=KjoKJFKr69S2f2RfBp6qn7wF9WxpoERhV5mDOTGR6KheC01ru5Nn8QPvTaFhjFTtZq
+         j2mYPnshVlpqgMzflYfBEhZOQR5L1+hduhwyIwZyGN4OuU1hU90r/eLj6RmBkOqOxb/O
+         BYQVduntS3Lz1rfNeYMvwJD9RcIStw+oAgnpXoTMWxBizFsAzjYZBUCyflf7jzn3Fc/H
+         oa1/LNzdk8YXKKLD8hOkJJFpDzPCJwH8fgDtsUDSCRku/FfOArT2LZxwLGF9dcbRX3PP
+         daguTAsQWo/0Bjtexl5wIMKIy+2bpTlutIvYXtGeLoi+tvbw6Wdh+romuakDlZRBDURt
+         D1mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706705913; x=1707310713;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=g7ky/3M7B61YCAGNE0WXFX5+lOGZrN7occ3cCWK7ac0=;
+        b=HPMWJJnCWFze3rWX6B7vom9kYIboseSXvclXnzE+PZfr4DwvJDZSLOlGz0BNcymHIN
+         JQJ1H/DLPb00GMy2UscuCxEIQ88sNm3YtKPMYHn3Lk8gZvPo1ij6758eR8Xy1o6p4Uh+
+         SveIwxxFzhTYi1EtNquFRAB5DCHK9Pclu2u3VIi+WvE5dep0a47nVWLlTDJo/d4dkRCu
+         I4Y0yBXswZeyf/BZWrXpXnS9lglVLWBscQD/2VtQ/hwHlkdhQlm10vh3ZMukv5C1wkjI
+         8kt3sefRU2qpMpj+3/Pp2+e0r8C/+DRaKYg4/xGnSVc5kDx0zvD7bwuKXLtCZJHYs+Vt
+         HuUw==
+X-Gm-Message-State: AOJu0Yzi13dJNTYf36gSx2G4GhOKKQlt5E2WDZBPxKeLwUzoRg52tF9/
+	HlrdGJx5fPdsgYMGlimVxVmmZAxFnko4mJ083VlJLxkDfFA+ZkdBSbLix6h2R2k=
+X-Google-Smtp-Source: AGHT+IE12TytICRdsL2F3gNVkV6eKllHYKHvuShfvBQQdBABSqGov6rYd2Qc6dcxo5JCUzXwAptJzA==
+X-Received: by 2002:a05:6512:344e:b0:511:2988:cf93 with SMTP id j14-20020a056512344e00b005112988cf93mr388733lfr.54.1706705913005;
+        Wed, 31 Jan 2024 04:58:33 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWB/0NZYSc+xrEkVzOogX/cM/IKKcg5EJTC6B2y9F48G5yRtsyfETvhOLVWvWV0Ew2K+08tvh36yYqHe+RT8HSPxUVhQsimG7cJcNpMGMcvBbzB+kL+gZH/SS3MJEBgwaAv3ECfWjMO9wnFCnL9H/E527oxJiRgGozE1GsgxCDOoeXdhG/oIw7qcMdPymV22P26BKiCps8HsQhixsI9mglEySod4PCumklL6cfR3ZrR5jufzPgdORpTz9usdPpnwJUBSY8eDAE493bvf5NbV63BWB2Tif+sSnJS/Sw0MAVVPIvhY5b4Ar2Fl5MCexEUySgE36todwO6cqxtz4Oi9hcgQjVYP8TfUzFkNfvvEKcnWKppIXgy/KnfuohWgzn/M/L8Rpg49ZNwIkmdPW+byAUywP8jy38dxcxjBkt24TkddNLJz3E0+yhRREgBQI2NmZSG3e5HFua1OMmNyZeTXkgasaNrL/mtlkDelRpipd5nDmPwY15yI1+Hvera4u21ewnqjq28uixNF6KLPZ1pDvmGNiUtJ+leOlc73Zolm0SFMY9Ewo8R1peycNLwQ964o2XUSivhMPk3AD9QV+xzQGA4UkgW03vQDXdRHYwyKZ8Cks7XG4CosUUGmzLQLSjJdYMferXoU4vY2ypR2JQWEYZ0pJWixfCYwrOz59Q+MIaA0/Dfs3GgCU+rzt/wbZ89I97sHMALt/1625k=
+Received: from ?IPV6:2a10:bac0:b000:7588:aea0:a2ac:ddc1:371f? ([2a10:bac0:b000:7588:aea0:a2ac:ddc1:371f])
+        by smtp.gmail.com with ESMTPSA id bv16-20020a170906b1d000b00a35e3202d81sm2705223ejb.122.2024.01.31.04.58.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Jan 2024 04:58:32 -0800 (PST)
+Message-ID: <5d91fc11-0b3b-40f0-872d-abdbb4038f76@suse.com>
+Date: Wed, 31 Jan 2024 14:58:30 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCHv6 00/16] x86/tdx: Add kexec support
+Content-Language: en-US
+To: Baoquan He <bhe@redhat.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>,
+ "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+ Elena Reshetova <elena.reshetova@intel.com>,
+ Jun Nakajima <jun.nakajima@intel.com>,
+ Rick Edgecombe <rick.p.edgecombe@intel.com>,
+ Tom Lendacky <thomas.lendacky@amd.com>, "Kalra, Ashish"
+ <ashish.kalra@amd.com>, Sean Christopherson <seanjc@google.com>,
+ "Huang, Kai" <kai.huang@intel.com>, kexec@lists.infradead.org,
+ linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240124125557.493675-1-kirill.shutemov@linux.intel.com>
+ <3f44458f-2b4a-4464-a3df-cb791298dafc@redhat.com>
+ <efe20a00-9a7c-4c03-8fcc-fce265cdbf0e@suse.com>
+ <ZbpBbAkPxQZ6gHoE@MiWiFi-R3L-srv>
+From: Nikolay Borisov <nik.borisov@suse.com>
+In-Reply-To: <ZbpBbAkPxQZ6gHoE@MiWiFi-R3L-srv>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, 30 Jan 2024 22:20:24 -0800
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-> On Tue, 30 Jan 2024 at 21:57, Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > Ugh.  
-> 
-> Oh, and double-ugh on that tracefs_syscall_mkdir/rmdir(). I hate how
-> it does that "unlock and re-lock inode" thing.
 
-I'd figured you'd like that one.
+On 31.01.24 г. 14:47 ч., Baoquan He wrote:
+> On 01/31/24 at 09:31am, Nikolay Borisov wrote:
+>>
+>>
+>> On 30.01.24 г. 15:43 ч., Paolo Bonzini wrote:
+>>> On 1/24/24 13:55, Kirill A. Shutemov wrote:
+>>>> The patchset adds bits and pieces to get kexec (and crashkernel) work on
+>>>> TDX guest.
+>>>>
+>>>> The last patch implements CPU offlining according to the approved ACPI
+>>>> spec change poposal[1]. It unlocks kexec with all CPUs visible in
+>>>> the target
+>>>> kernel. It requires BIOS-side enabling. If it missing we fallback to
+>>>> booting
+>>>> 2nd kernel with single CPU.
+>>>>
+>>>> Please review. I would be glad for any feedback.
+>>>
+>>> Hi Kirill,
+>>>
+>>> I have a very basic question: is there a reason why this series does not
+>>> revert commit cb8eb06d50fc, "x86/virt/tdx: Disable TDX host support when
+>>> kexec is enabled"?
+>>
+>> While on the topic, Paolo do you think it's  better to have a runtime
+>> disable of kexec rather than at compile time:
+>>
+>> [RFC PATCH] x86/virt/tdx: Disable KEXEC in the presence of TDX
+>>
+>> 20240118160118.1899299-1-nik.borisov@suse.com
+> 
+> Runtime disabling kexec looks better than at cmpile time, esp for
+> distros. While from above patch, making using of kexec_load_disabled to
+> achive the runtime disabling may not be so good. Because we have a front
+> door to enable it through:
+> 
+> /proc/sys/kernel/kexec_load_disabled
 
-> 
-> It's a disease, and no, it's not an acceptable response to "lockdep
-> shows there's a locking problem".
-> 
-> The comment says "It is up to the individual mkdir routine to handle
-> races" but that's *completely* bogus and shows a fundamental
-> misunderstanding of locking.
-> 
-> Dropping the lock in the middle of a locked section does NOT affect
-> just the section that you dropped the lock around.
-> 
-> It affects the *caller*, who took the lock in the first place, and who
-> may well assume that the lock protects things for the whole duration
-> of the lock.
-> 
-> And so dropping the lock in the middle of an operation is a bad BAD
-> *BAD* thing to do.
-> 
-> Honestly, I had only been looking at the eventfs_inode.c lookup code.
-> But now that I started looking at mkdir/rmdir, I'm seeing the same
-> signs of horrible mistakes there too.
-> 
-> And yes, it might be a real problem. For example, for the rmdir case,
-> the actual lock was taken by 'vfs_rmdir()', and it does *not* protect
-> only the ->rmdir() call itself.
-> 
-> It also, for example, is supposed to make the ->rmdir be atomic wrt things like
-> 
->         dentry->d_inode->i_flags |= S_DEAD;
-> 
-> and
-> 
->         dont_mount(dentry);
->         detach_mounts(dentry);
-> 
-> but now because the inode lock was dropped in the middle, for all we
-> know a "mkdir()" could come in on the same name, and make a mockery of
-> the whole inode locking.
-> 
-> The inode lock on that directory that is getting removed is also what
-> is supposed to make it impossible to add new files to the directory
-> while the rmdir is going on.
-> 
-> Again, dropping the lock violates those kinds of guarantees.
-> 
-> "git blame" actually fingers Al for that "unlock and relock", but
-> that's because Al did a search-and-replace on
-> "mutex_[un]lock(&inode->i_mutex)" and replaced it with
-> "inode_[un]lock(inode)" back in 2016.
-> 
-> The real culprit is you, and that sh*t-show goes back to commit
-> 277ba04461c2 ("tracing: Add interface to allow multiple trace
-> buffers").
-> 
-> Christ. Now I guess I need to start looking if there is anything else
-> horrid lurking in that mkdir/rmdir path.
-> 
-> I doubt the inode locking problem ends up mattering in this situation.
-> Mostly since this is only tracefs, and normal users shouldn't be able
-> to access these things anyway. And I think (hope?) that you only
-> accept mkdir/rmdir in specific places.
+AFAIU it can't be enabled via this sysctl because the handler for it 
+expects only 1 to be written to it:
 
-Yes, this was very deliberate. It was for a very "special" feature, and
-thus very limited.
+      2                 .proc_handler   = proc_dointvec_minmax, 
+
+      1                 .extra1         = SYSCTL_ONE, 
+
+   994                  .extra2         = SYSCTL_ONE,
 
 > 
-> But this really is another case of "This code smells *fundamentally* wrong".
+> If there's a flag or status to check if TDX host is enabled, and does
+> the checking in kexec_load_permitted(), that could be better. Anyway, I
+> saw Huang, Kai has posted the tdx host support patchset.
 > 
-> Adding Al, in the hopes that he will take a look at this too.
-
-This is something I asked Al about when I wrote it. This isn't a normal
-rmdir. I remember telling Al what this was doing. Basically, it's just
-a way to tell the tracing infrastructure to create a new instance. It
-doesn't actually create a normal directory. It's similar to the
-kprobe_events interface, where writing to a file would create
-directories and files. Ideally I wanted a mkdir interface as it felt
-more realistic, and I was ready to have another "echo foo > make_instance"
-if this didn't work. But after talking with Al, I felt that it could
-work. The main issue is that mkdir doesn't just make a directory, it
-creates the entire tree (like what is done in /sys/fs/cgroup). If this
-was more like kernfs instead of debugfs, I may not have had this
-problem. That was another time I tried to understand how krenfs worked.
-
-This is the reason all the opens in the tracing code has:
-
-        struct trace_array *tr = inode->i_private;
-        int ret;
-
-        ret = tracing_check_open_get_tr(tr);
-	if (ret)
-		return ret;
-
-
-In kernel/trace/trace.c:
-
-LIST_HEAD(ftrace_trace_arrays);
-
-int trace_array_get(struct trace_array *this_tr)
-{
-        struct trace_array *tr;
-        int ret = -ENODEV;
-        
-        mutex_lock(&trace_types_lock);
-        list_for_each_entry(tr, &ftrace_trace_arrays, list) {
-                if (tr == this_tr) {
-                        tr->ref++;
-                        ret = 0;
-                        break;
-                }
-        }
-        mutex_unlock(&trace_types_lock);
-                
-        return ret;
-}       
-
-static void __trace_array_put(struct trace_array *this_tr)
-{
-        WARN_ON(!this_tr->ref);
-        this_tr->ref--;       
-}
-
-void trace_array_put(struct trace_array *this_tr)
-{
-        if (!this_tr)
-                return;
-
-        mutex_lock(&trace_types_lock);
-        __trace_array_put(this_tr);
-        mutex_unlock(&trace_types_lock);
-}
-
-int tracing_check_open_get_tr(struct trace_array *tr)
-{
-        int ret;
-
-        ret = security_locked_down(LOCKDOWN_TRACEFS);
-        if (ret)
-                return ret;
-
-        if (tracing_disabled)
-                return -ENODEV;
-
-        if (tr && trace_array_get(tr) < 0)
-                return -ENODEV;
-
-        return 0;
-}
-
-The rmdir code that tracefs calls is also in kernel/trace/trace.c:
-
-static int instance_rmdir(const char *name)
-{
-        struct trace_array *tr;
-        int ret;
-
-        mutex_lock(&event_mutex);
-        mutex_lock(&trace_types_lock);
-
-        ret = -ENODEV;
-        tr = trace_array_find(name);
-        if (tr)
-                ret = __remove_instance(tr);
-
-        mutex_unlock(&trace_types_lock);
-        mutex_unlock(&event_mutex);
-
-        return ret;
-}
-
-The mkdir creates a new trace_array (tr) and rmdir destroys it. If
-there's any reference on a trace array the rmdir fails. On every open,
-a check is made to see if the trace array that was added to the inode
-still exists, and if it does, it ups its ref count to prevent a rmdir
-from happening.
-
-It's a very limited mkdir and rmdir. I remember Al asking me questions
-about what it can and can't do, and me telling him to make sure the
-lock release wasn't going to cause problems.
-
-I wrote several fuzzers on this code that perform mkdir and rmdir on the
-instances while other tasks are trying to access them (reading and
-writing). In the beginning, it found a few bugs. But I was finally able
-to get my fuzzers to work non-stop for over a month and that's when I
-felt that this is fine.
-
-I was always weary of this code because of the locking situation. The
-kernel selftests has a stress test on this code too.
-
-  tools/testing/selftests/ftrace/test.d/instances/instance-event.tc
-  tools/testing/selftests/ftrace/test.d/instances/instance.tc
-
-Which is run as part of the selftest suite, which is run by most people
-testing the kernel, including KernelCI.
-
-I haven't had a problem with this code in years, and unless we find a
-real bug that needs to be fixed, I'm afraid to touch it.
-
--- Steve
+>>
+>> I'm trying to get traction for this patch.
+>>
+>>
+>>>
+>>> Thanks,
+>>>
+>>> Paolo
+>>>
+>>>
+>>
+> 
 
