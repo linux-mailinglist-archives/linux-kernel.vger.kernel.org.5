@@ -1,258 +1,346 @@
-Return-Path: <linux-kernel+bounces-46168-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46169-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D82B843B83
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:55:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92FDA843B86
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:56:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0532285C42
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:55:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1EFDE1F25E9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:56:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 564256773D;
-	Wed, 31 Jan 2024 09:55:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76E456996A;
+	Wed, 31 Jan 2024 09:56:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b="C72om1JJ";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b="fFUl5Gz6"
-Received: from smtpout37.security-mail.net (smtpout37.security-mail.net [85.31.212.37])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JOtesOJ8"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 749F36994D
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:55:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=85.31.212.37
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706694907; cv=fail; b=XHqwiy2L3aqAPNLfScN793RzWey91osOqr3bLeUR/K5VQorBugJqzFijRvDHctHX58Zan/s0ZLt//G42B+9VDxW3IODTLEjwFVmI/GfjJka1xr8G+iPIdoW5/hjCEjH8v6fJ57QlIqEIcWN5qw25ytJed3DdYVqmCmEGVviHMaQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706694907; c=relaxed/simple;
-	bh=n3uXrrzzWaWWDlrViIwRreUQvbzXibng4An8pHcosoE=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=uRmgBIF21rPJP5Q2Fl70eEsxX+UWzWe2loenfY8habRNqn46fnU1H6xdlAU+anknrnsxQskDkswBxBFh7vbCAFgDwTXOic5yzB3eZ9fMAMjRXIEhGAjmu/uI89nDIP7k4BtaPRhQuCMJthrHFfj2FRTTgKkUgV0WmTUGBnp9Vvc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kalrayinc.com; spf=pass smtp.mailfrom=kalrayinc.com; dkim=pass (1024-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b=C72om1JJ; dkim=fail (2048-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b=fFUl5Gz6 reason="signature verification failed"; arc=fail smtp.client-ip=85.31.212.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kalrayinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kalrayinc.com
-Received: from localhost (localhost [127.0.0.1])
-	by fx301.security-mail.net (Postfix) with ESMTP id 088DC9ED0B0
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 10:53:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kalrayinc.com;
-	s=sec-sig-email; t=1706694785;
-	bh=n3uXrrzzWaWWDlrViIwRreUQvbzXibng4An8pHcosoE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=C72om1JJ0NN5DvK7v0pUWOsunocLJmcc7UM8seT9u4GIoQWSzxO+MR8pjYsCwCROV
-	 u97CVsfXLB7OECKEA8IxwAnidmViN7S/4XM7DbFN+rsAIYZavvwssqscQNYoo95U1/
-	 C2RVy2fWYt/kCSjZMRQ4uTj5AtUjTcqWEDJqvf4k=
-Received: from fx301 (localhost [127.0.0.1]) by fx301.security-mail.net
- (Postfix) with ESMTP id AA63C9ECF32; Wed, 31 Jan 2024 10:53:04 +0100 (CET)
-Received: from FRA01-MR2-obe.outbound.protection.outlook.com
- (mail-mr2fra01on0100.outbound.protection.outlook.com [104.47.25.100]) by
- fx301.security-mail.net (Postfix) with ESMTPS id F29C99ECD8E; Wed, 31 Jan
- 2024 10:53:03 +0100 (CET)
-Received: from MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:13::5)
- by MR1P264MB1908.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:12::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.24; Wed, 31 Jan
- 2024 09:53:02 +0000
-Received: from MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM
- ([fe80::1300:32a9:2172:a2a]) by MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM
- ([fe80::1300:32a9:2172:a2a%7]) with mapi id 15.20.7249.024; Wed, 31 Jan 2024
- 09:53:02 +0000
-X-Virus-Scanned: E-securemail
-Secumail-id: <13599.65ba187f.f1ba6.0>
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U79dQDTEBjwqiCFZ78Vyc7MfRTY4cumqMgNo+TfllVxy4Tn9JENnZ6a17EWfHHIaaVQfQ1f22nQ+ORyf2i8yiD+Z8G8ES7O4zSt6tAP0yahA98PAnsRvS1isWRdBDnb2c/aiZtJBntuEhW4c2dM2miWZxr3uEzSzP0ci2wDj3dfxjConL6/dvy35vUG5ADDG+yy8OImcO3TQ9JmbtaCRpXodT2ylofnGbkaeaufWDL0CXjXLJR4OPLiOpWvLoJ4XfqvDJ/5f7H/dys/FNNEaA7DbFJUbJb+swJMpIjg6ZYQdsnWUEs2iAuiUPZ1uDx3Jt8eIo/4lRptpXqNLDv63JQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microsoft.com; s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+qYdWYzfUcnoQWYfh/DWYXPiPJlj2xh/vdvzaU9qDf4=;
- b=GmYxeP44j6y7MnL9fxcFfU/o2Z3xHhB/013FQOrvTsbjPobzqWsbpZmsK3ijnnQxf0eI5qTO8HqBj5HljJQacmdVFaUDY41wbXC0yRxJQqd1AfGeI6jehNFmZ210A+m1S/GwypUV/FhVJyY1b8yYSWuZMWb+6N0HXZMOVeHFMiBjV4t5wOOcuyc4kBzuUzH8EShddyNZZ/0tAUl1SwwNlN7pPSu1O+r3I/XtdYwl8O7IFW4tMrn/lqE8p8aahFKpdK1keBrwZfCOltj/AdkizVu2d0vZ6q1T86kiIZdrgKcKxtRJWx6Rn2sm3Qrv1aw6zB/X8NErwYrnq63UbcCUmw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kalrayinc.com; dmarc=pass action=none
- header.from=kalrayinc.com; dkim=pass header.d=kalrayinc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kalrayinc.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+qYdWYzfUcnoQWYfh/DWYXPiPJlj2xh/vdvzaU9qDf4=;
- b=fFUl5Gz6NCqbTByjbL0OUFRPg8nxlADMd+5CjiILMQqJQNvWf57nZfkaW9YOUAuauigTpI6/XiXlPf3VFxQ3KoYuxl+ZA83EJxKCUcURiRE4+i140WWofOsZDqfus4AtNAtnZ8XustfnVaGEjgL0DBzCDZ/4qTpdjw8PnAvvl8luztV3XUQeCZMQYHHDsYrjMVwdzVy8i9GpmjXIoq8BffQy8zpns1HxfbN5VD9gycb5rTSeKa06jCOPXe+6SIFOAigzD2TQi8X2kYS3K3QwSbj82NGnh3t354g08ZwRMlKuIpcalyAAcX0PxqWNkiqe2fOtUOeOZXnDcsvelYVBMQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=kalrayinc.com;
-Message-ID: <269edff0-d989-4ac8-b0c3-bce31283806b@kalrayinc.com>
-Date: Wed, 31 Jan 2024 10:52:57 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 31/31] kvx: Add IPI driver
-Content-Language: en-us, fr
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Yann Sionneau
- <ysionneau@kalray.eu>, Arnd Bergmann <arnd@arndb.de>, Jonathan Corbet
- <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier
- <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Will Deacon <will@kernel.org>, Peter
- Zijlstra <peterz@infradead.org>, Boqun Feng <boqun.feng@gmail.com>, Mark
- Rutland <mark.rutland@arm.com>, Eric Biederman <ebiederm@xmission.com>, Kees
- Cook <keescook@chromium.org>, Oleg Nesterov <oleg@redhat.com>, Ingo Molnar
- <mingo@redhat.com>, Waiman Long <longman@redhat.com>, "Aneesh Kumar K.V"
- <aneesh.kumar@linux.ibm.com>, Andrew Morton <akpm@linux-foundation.org>,
- Nick Piggin <npiggin@gmail.com>, Paul Moore <paul@paul-moore.com>, Eric
- Paris <eparis@redhat.com>, Christian Brauner <brauner@kernel.org>, Paul
- Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, Jules Maselbas <jmaselbas@kalray.eu>,
- Guillaume Thouvenin <gthouvenin@kalray.eu>, Clement Leger
- <clement@clement-leger.fr>, Vincent Chardon
- <vincent.chardon@elsys-design.com>, Marc =?utf-8?b?UG91bGhpw6hz?=
- <dkm@kataplop.net>, Julian Vetter <jvetter@kalray.eu>, Samuel Jones
- <sjones@kalray.eu>, Ashley Lesdalons <alesdalons@kalray.eu>, Thomas Costis
- <tcostis@kalray.eu>, Marius Gligor <mgligor@kalray.eu>, Jonathan Borne
- <jborne@kalray.eu>, Julien Villette <jvillette@kalray.eu>, Luc Michel
- <lmichel@kalray.eu>, Louis Morhet <lmorhet@kalray.eu>, Julien Hascoet
- <jhascoet@kalray.eu>, Jean-Christophe Pince <jcpince@gmail.com>, Guillaume
- Missonnier <gmissonnier@kalray.eu>, Alex Michon <amichon@kalray.eu>, Huacai
- Chen <chenhuacai@kernel.org>, WANG Xuerui <git@xen0n.name>, Shaokun Zhang
- <zhangshaokun@hisilicon.com>, John Garry <john.garry@huawei.com>, Guangbin
- Huang <huangguangbin2@huawei.com>, Bharat Bhushan <bbhushan2@marvell.com>,
- Bibo Mao <maobibo@loongson.cn>, Atish Patra <atishp@atishpatra.org>, "Jason
- A. Donenfeld" <Jason@zx2c4.com>, Qi Liu <liuqi115@huawei.com>, Jiaxun Yang
- <jiaxun.yang@flygoat.com>, Catalin Marinas <catalin.marinas@arm.com>, Mark
- Brown <broonie@kernel.org>, Janosch Frank <frankja@linux.ibm.com>, Alexey
- Dobriyan <adobriyan@gmail.com>, Julian Vetter <jvetter@kalrayinc.com>,
- jmaselbas@zdiv.net
-Cc: Benjamin Mugnier <mugnier.benjamin@gmail.com>,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, linux-mm@kvack.org, linux-arch@vger.kernel.org,
- linux-audit@redhat.com, linux-riscv@lists.infradead.org, bpf@vger.kernel.org
-References: <20230120141002.2442-1-ysionneau@kalray.eu>
- <20230120141002.2442-32-ysionneau@kalray.eu>
- <995eb624-3efe-10fc-a6ed-883d52d591bb@linaro.org>
-From: Yann Sionneau <ysionneau@kalrayinc.com>
-In-Reply-To: <995eb624-3efe-10fc-a6ed-883d52d591bb@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PA7P264CA0309.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:102:395::10) To MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:501:13::5)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EEF369946;
+	Wed, 31 Jan 2024 09:56:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706694978; cv=none; b=U7vduSRucWHhCZ7KF5HpGsZjUnXB1TGLjl0traz45PJbtGJ/IS1OiUl95hVkirRcFoTHB94XnOCa4n0eusyaP7B38SUxPVBtgS+7YZN142OLdo6gWbXhS2HVev5A84n3PKUtdh4wa/l84Pb2TRuSZ1GJiQT/RbrRLAw/r9Glj4A=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706694978; c=relaxed/simple;
+	bh=fK6iq4rUq+DD9xk9G5tnkNwycPJfH/ldT14R1RzQc3Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oD8+kHt0w7OIZL3xgS8o7bVRqFYkJw89hZgb54SrqmoBs436Gn4wZL/0FS5rJmWYhj/VkxI4yPaqhibS+bj86LxYF/Tg9Z2X5cYbKEumCxbnUBEjAWu0WAZME5Ln+nwepb1Yc5BJqNhLI2fXhynHpDT495tKk2RILeGBk7pacbs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JOtesOJ8; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a26ed1e05c7so620610766b.2;
+        Wed, 31 Jan 2024 01:56:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706694974; x=1707299774; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zEadS9UxY93S+yF9FZGOCXcaSPkNTNxK4D1IAVD6N6k=;
+        b=JOtesOJ808gX9YpB+S6L5ViAI0DAEv+MzY6TWNIYQQdHQkEyEsRbK7Krjrb3zNgpYr
+         Rf+GbvfDFrsalkKXlSFJ0gYHmqwkperxY8yPLjRS+q8FKfIS0GKnZBVfpeiT8ffIwP/V
+         NjloSfUku6SsMhojeccvXbvLaEW7J7NRWcKCRf9naArxulyOB4xWqaL/gFCWdSEvx7rX
+         YwzbFeO9tVkjgVd1jRvsG+PO4FqScJJmTIJngLkyMtwlzSFlCgFwUzpVBbHbTHJp543m
+         6YYhs6MdakgIg23cR07CHXSbQT5g2b62BbSxCThTR3yOGiFJhuPWSJxruc6StknH7eHo
+         s3hA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706694974; x=1707299774;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zEadS9UxY93S+yF9FZGOCXcaSPkNTNxK4D1IAVD6N6k=;
+        b=Ml8D8ZceT8knm93OJH8h7W1wx/3G1oT6OuyiVB1J0r7fcGZoH7PB90tCe1oE+8NXbm
+         47RpULzAAtzcF09np4HskhVpPPl2isJvV7nOFyzIPVKsVzBTriMcOBEQ8fA6KWtyj+1U
+         bLPwQb7Ci6SIf7GeWx8ZiPEOj49s5qZWBK/NnJPbbRHjpN/Dl+m7gAWCStXy4JkouAyl
+         SMt/NhvOqBNvjWQN7hpjCdHzszEW5wosXFRsi4HXGBCM74olfGXjOwFfgiaat6wUFBI0
+         HgjxIcBuW91lcwYYVXE5W6pC1qFjv6wTSv91Q2bkc7nmJMiAO8de6sUtpi1QNxQ+kwc0
+         d6gw==
+X-Gm-Message-State: AOJu0YwMyNZRku1BtGqMRzXUepeUsWgE0OPhVReQ2lvtC8n5SrnzwxdQ
+	LhqyvuneU5RDSXsdCWBVUHFNEHNRg+gx9qDEvT/iv8cH1HG0ywcfJKmVg5YcozdJ8/7CFOgDau1
+	Zad3MIb9DecQNK6vldF9fpFwq1Ao=
+X-Google-Smtp-Source: AGHT+IH4DyH0g1ej/nBlEHJ+mPR+KHehaqfvp4PLg2KVCzp3KPZ9erh9Kgz4XrTxHRarieng8jtQWjzFh74lTtCusQM=
+X-Received: by 2002:a17:906:fc26:b0:a35:3152:c46b with SMTP id
+ ov38-20020a170906fc2600b00a353152c46bmr708719ejb.60.1706694974324; Wed, 31
+ Jan 2024 01:56:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MR1P264MB1890:EE_|MR1P264MB1908:EE_
-X-MS-Office365-Filtering-Correlation-Id: e310339f-977f-4e5d-50dd-08dc22426a1c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zY3OBspCqhZ7BPk4QYArZqQWGq1NNy94C0x7+KA8xUJotEwy8iPZFmmTgy+K44yfZnfUhZJoImM0Vw6dMkKKZqYnxhF1QoSD7Ar819xSS7+6nOZPrBsmcbRha+o6bzxYeNYTHrmS4NP9/TEr/nL+pRGdd6zQbT1no8poVJMm/2TjuA5P0FQUt7/GopTuXvpjrrEzMHVe2MUd7fP+0WuQllXQo40mkBelxX4TCxPizSErnzf1vp3WSTdbt1nrE7oDPVecCeedB3YiW52tp/tgv9Q3XXRxdA6qFsc09nWi8iAMh6ILBum15fJGbjZgkMFozEtNvW3BqvNfwi5QwjIkRvHwUV3fT4LHkliBF8sbq+UA7j81JCxLt8+MeV+nlPPQdxcxx5ag18ihurvjD+9gUYx0TxW/HFXzPtimg74CYstI/GjO4NWASeyz3p7QF0TPdosIAZYTppirMoMJAZh7op96+nSvfHVpDyZArr9UcgEudEDGpirTtNggeDEpOT159S7IghNg0qjouSIp4VkND1aFsOagoLspd4bai9vljLgC+BsBuiDbEhm5W0fhmsPEYPJzJQ1vjrG+ECgD4rRdJfaKQLQo7fdAM6ivXKaBNgXNoCaQ3Fs5tgsXTG6b6uU0OYfUqUlgzo7WuB7eDhk5PJ6d0ATJ4njtD1TpxWGj7Kmy2CdaJwXUDymGbpZ3uj79
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(39850400004)(366004)(396003)(376002)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(921011)(31686004)(2616005)(41300700001)(1191002)(966005)(316002)(66476007)(66556008)(36756003)(6512007)(478600001)(53546011)(6506007)(83380400001)(6486002)(6666004)(38100700002)(66946007)(31696002)(8936002)(5660300002)(7366002)(7406005)(7416002)(2906002)(110136005)(86362001)(4326008)(8676002)(21314003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: aPFlMx0h7/7NT0uP9FPvxJkJqKZTWGf2n8FZTBmMWdvmHPxy5lQwIYMLwNIa59JNDZabgLkcLIJ0EEOhocDk4nyF2NUCpqnlaCO/4sOXxyZRUpacuL0PL8xW5tbpXM9MSWHgbeQLe+ktpaL1mJAH9cmzrALd5bPBucagM2MXjSD9mbzXsMzRvCoSjqwDQAXWqydUCeUUhzOymSjMueo5aNqXZTvfDJiLqImF5ckxDTwQ9xrMznQ2XTTNgmQ/PhK+q6R8pT/+9ZtmHLqy5ffIVF1d6zvIAAaqKiSPWk834ihFHcLti+gmYY8VhXYlHOzsnfYeVivsjFRd8usmZ81jueL6Tm5fihc7whq8BdP+XtkUh7Xqk3QDvhgZlJUh/Yf2jiY34xyePrUnej/qTKYriz2hNLEiiYvxLcB3gBUj+EgHujcvBlK2HZF0g351pcEH2h/Pbe4mkb6ZTxlaGrrY+NgDu/F0h1jKoxCxGLt/ToCuF9QE0MXx4H/gRZReDqG6KobpTafoy6Kf37fumohI0KkLgqXc8RU7Sf5+FBxBoPuWRBHjy6cD0923dkpkv7TsTFw1gfFWek/WKI0OG+2j3LXvDMwSWEHa9wTIq5ZAaO14gF4DqqslgbAkDXSSDAp5avdZ8pOL4TBwr/9IOFG+pqxRpmjpviILylFY8jiOjIcUSVlEd664qBKmC1wRW4YD/TsTxlVJcY4Fqlozg9yJe0d+dUDXfWFgZle0OZSZAYC9gXJlmHXKL3B5nDx3CNFQHuflXd4hoDZvVNpJNCnBYxg2vAGXpE88cNEV2NhxBIUQl+dtakEYUjym7+eXSbTMl364AXnMUcy1jUFSHRz6JtDq+9wJ8gDyb0xMsai0ICXB0JoitDjBE7+RNw/ifKqmiIle6lw7YriVAM9a33wS4eNZHBDohPVy8FT1oOgIXLA6lG5LP1g57COeRmvvcopF
- c9DrDlSRGLr8B0/SbWvXyCj06yXj2KSucyXo7/ty+8AwREbNb1kQwF1n9Mxkin5BN9v7nWeqV78yQD5k6IL8y5AGMeQRzjDyXd1RlkBFcMwxl988h0dxWIl7iQbWdm7i+GnZ/44cacozvPD6yRt6D/o76k5dcpKefJYIWTkSq5/aSDR/MN4bS/TyVzuItYXjRmeotIiIQZuaZwXTDc97WojT869ftUCYfrJ7IT9R0xdYIemw5pAE4RN6eRA9GYaGU677L5F9RuDAn4kOIToq+gVzAUB11eaEMn2BOjHCmV3g9Le9UwfQiwVn1B4IyK7SvUwZUx7GOvVy+B5DBsAV00PPjUOssnoXD4dgTNpJlqzvbBXjNaPb82WIpGgOEpCFzGvOIhTHqumH+S2dvV9zbX1R/IJ7+7ns0h8JYOWOg+gNBwczmx6aIw9KvHNjTo37oWqMhSMETtL0hdJdZFlb5/he5rpa+UuqSmq59tPzqha/5iHKtwkUGNFG0AhB0gOpgx1BgQO5GMvcGUleS6jtpC/WOUF2S1NmLyf5j8G54l3uT1MPFsv7bUn/NzqPeHNppMvi6yuAGVtajuVZ2gXR4YzS6ZwDfXgkEIu2fdYUHklTwrY32dKetWwMjQ61zvGRkMeM2N7hzrHhR1KLhddCXyAm3A80T0gEmGGUwwMnTAJlkZNdGKSByVi3iX5SyZqa
-X-OriginatorOrg: kalrayinc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e310339f-977f-4e5d-50dd-08dc22426a1c
-X-MS-Exchange-CrossTenant-AuthSource: MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jan 2024 09:53:02.5194
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8931925d-7620-4a64-b7fe-20afd86363d3
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bqkoUnkmcthhkHleNpTEnFGg/mK1DRUeyozhbzc6IDZz5aj47WtMkzx4Cn9cge6BEaQDBueQDfVJJJLXoyaiGQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MR1P264MB1908
-X-ALTERMIMEV2_out: done
+References: <20240130-rk-dts-additions-v2-0-c6222c4c78df@gmail.com>
+ <20240130-rk-dts-additions-v2-1-c6222c4c78df@gmail.com> <0702542c8d7dc4139ba5da690fd98e67@manjaro.org>
+In-Reply-To: <0702542c8d7dc4139ba5da690fd98e67@manjaro.org>
+From: Alexey Charkov <alchark@gmail.com>
+Date: Wed, 31 Jan 2024 13:56:02 +0400
+Message-ID: <CABjd4Ywx4-3BN7tF=Lv6LNTry_+j=jjM_v7SdzLaWHbuePip3g@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] arm64: dts: rockchip: enable built-in thermal
+ monitoring on rk3588
+To: Dragan Simic <dsimic@manjaro.org>
+Cc: Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Heiko Stuebner <heiko@sntech.de>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
+	Viresh Kumar <viresh.kumar@linaro.org>, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello Krzysztof,
-
-On 22/01/2023 12:54, Krzysztof Kozlowski wrote:
-> On 20/01/2023 15:10, Yann Sionneau wrote:
->> +
->> +int __init kvx_ipi_ctrl_probe(irqreturn_t (*ipi_irq_handler)(int, void *))
->> +{
->> +	struct device_node *np;
->> +	int ret;
->> +	unsigned int ipi_irq;
->> +	void __iomem *ipi_base;
->> +
->> +	np = of_find_compatible_node(NULL, NULL, "kalray,kvx-ipi-ctrl");
-> Nope, big no.
+On Wed, Jan 31, 2024 at 9:05=E2=80=AFAM Dragan Simic <dsimic@manjaro.org> w=
+rote:
 >
-> Drivers go to drivers, not to arch code. Use proper driver infrastructure.
-Thank you for your review.
+> Hello Alexey,
+>
+> Some small nitpicks below, please have a look.
+>
+> On 2024-01-30 19:21, Alexey Charkov wrote:
+> > Include thermal zones information in device tree for rk3588 variants
+>
+> Please use "RK3588" instead of "rk3588", both here and in the
+> patch subject.  Looks much better.
 
-It raises questions on our side about how to handle this change.
+Noted, thanks!
 
-First let me describe the hardware:
+> > Signed-off-by: Alexey Charkov <alchark@gmail.com>
+> > ---
+> >  arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 162
+> > ++++++++++++++++++++++++++++++
+> >  1 file changed, 162 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> > b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> > index 36b1b7acfe6a..696cb72d75d0 100644
+> > --- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> > +++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> > @@ -10,6 +10,7 @@
+> >  #include <dt-bindings/reset/rockchip,rk3588-cru.h>
+> >  #include <dt-bindings/phy/phy.h>
+> >  #include <dt-bindings/ata/ahci.h>
+> > +#include <dt-bindings/thermal/thermal.h>
+> >
+> >  / {
+> >       compatible =3D "rockchip,rk3588";
+> > @@ -2228,6 +2229,167 @@ tsadc: tsadc@fec00000 {
+> >               status =3D "disabled";
+> >       };
+> >
+> > +     thermal_zones: thermal-zones {
+> > +             /* sensor near the center of the whole chip */
+>
+> It would be good to replace "whole chip" with "SoC".  Simpler and
+> IIRC closer to the official description of the sensor.
 
-The coolidge ipi controller device handles IPI communication between cpus
-inside a cluster.
+The TRM only says "near chip center" (sic) :)
 
-Each cpu has 8 of its dedicated irq lines (24 to 31) hard-wired to the ipi.
-The ipi controller has 8 sets of 2 registers:
-- a 17-bit "interrupt" register
-- a 17-bit "mask" register
+> > +             package_thermal: package-thermal {
+> > +                     polling-delay-passive =3D <0>;
+> > +                     polling-delay =3D <0>;
+> > +                     thermal-sensors =3D <&tsadc 0>;
+> > +
+> > +                     trips {
+> > +                             package_crit: package-crit {
+> > +                                     temperature =3D <115000>;
+> > +                                     hysteresis =3D <0>;
+> > +                                     type =3D "critical";
+> > +                             };
+> > +                     };
+> > +             };
+> > +
+> > +             /* sensor between A76 cores 0 and 1 */
+> > +             bigcore0_thermal: bigcore0-thermal {
+> > +                     polling-delay-passive =3D <100>;
+> > +                     polling-delay =3D <0>;
+> > +                     thermal-sensors =3D <&tsadc 1>;
+> > +
+> > +                     trips {
+>
+> Please add the following comment here, to make it clear what's
+> the purpose of this thermal trip when the IPA thermal governor
+> is used (more similar comments below):
+>
+>                                  /* IPA threshold */
 
-Each couple of register is dedicated to 1 of the 8 irqlines.
-Each of the 17 bits of interrupt/mask register
-identifies a cpu (cores 0 to 15 + secure_core).
-Writing bit i in interrupt register sends an irq to cpu i, according to the mask
-in mask register.
-Writing in interrupt/mask register couple N targets irq line N of the core.
+Not so sure about this one: shouldn't the device tree be
+implementation agnostic, and just describe the hardware and its
+expectations? Sounds like references to a particular thermal governor
+would be out of scope.
 
-- Ipi generates an interrupt to the cpu when message is ready.
-- Messages are delivered via Axi.
-- Ipi does not have any interrupt input lines.
+Best regards,
+Alexey
 
-
-  +---------------+   irq       axi_w
-  |         |  i  |<--/--- ipi <------
-  | CPU     |  n  |  x8
-  |  core0  |  t  |
-  |         |  c  |  irq          irq         msi
-  |         |  t  |<--/--- apic <----- mbox <-------
-  |         |  l  |  x4
-  +---------------+
-  with intctl = core-irq controller
-    
-
-We analyzed how other Linux ports are handling this situation (IPI) and here are several possible solutions:
-
-1/ put everything in smp.c like what longarch is doing.
-  * Except that IPI in longarch seems to involve writing to a special purpose CPU register and not doing a memory mapped write like kvx.
-
-2/ write a device driver in drivers/xxx/ with the content from ipi.c
-  * the probe would just ioremap the reg from DT and register the irq using request_percpu_irq()
-  * it would export a function "kvx_ipi_send()" that would directly be called by smp.c
-  * Question : where would this driver be placed in drivers/ ? drivers/irqchip/ ? Even if this is not per-se an interrupt-controller driver?
-
-3/ write a "dummy" interrupt-controller driver in drivers/irqchip/:
-  * it would create a dummy irq_domain, ioremap the reg, request per_cpu irq
-  * declare a struct irq_chip with only ipi_send_mask() callback declared so that generic IPI code in kernel/irq/ipi.c (__ipi_send_single()) would work.
-  * This would make use of the generic IPI code like what mips and risc-v are doing.
-
-4/ consider our "ipi device" as a mailbox and write a mailbox driver in drivers/mailbox/
-
-5/ consider it as an msi-controller since it transforms an AXI write into IRQ. The solution would look a bit like 3/
-
-6/ consider the ipi as "part of the core_intc" and add the content of ipi.c in drivers/irqchip/irq-kvx-core-intc.c
-
-7/ Do like OpenRISC and CSKY:
-  * declare a function pointer in smp.c (see smp_cross_call() from OpenRISC https://elixir.bootlin.com/linux/latest/source/arch/openrisc/kernel/smp.c#L28)
-  * declare a "setter" function in smp.c (see set_send_ipi() from OpenRISC https://elixir.bootlin.com/linux/latest/source/arch/openrisc/kernel/smp.c#L202)
-  * write a driver in drivers/irqchip/ which ends up calling the setter function (see irq-ompic.c: https://elixir.bootlin.com/linux/latest/source/drivers/irqchip/irq-ompic.c#L191)
-
-
-I would tend to exclude solution 1/ because it does not fit exactly our arch (core reg vs AXI write), or we would have to do an ioremap() from inside smp.c, is this acceptable?
-I would exclude 3/ because it feels a bit dirty to hack a dummy interrupt-controller... our IPI is not an interrupt-controller, there are no input irqs. It's more like a device generating an IRQ.
-4/ and 5/ feel a bit over-engineered.
-6/ I guess this would work since irqchips are initialized early from init_IRQ(), but it does not reflect very much our hardware since each CPU has one core_intc but the IPI is global to each cluster and is accessed over AXI.
-
-Having considered all of this, I would tend to end up with solution 7/ but it honestly does not feel much cleaner than our current proposition. The function pointer dance feels a bit hackish.
-
-What would you prefer?
-
-Regards,
-
--- 
-Yann
-
-
-
-
-
+> > +                             bigcore0_alert0: bigcore0-alert0 {
+> > +                                     temperature =3D <75000>;
+> > +                                     hysteresis =3D <2000>;
+> > +                                     type =3D "passive";
+> > +                             };
+>
+> Please add the following comment here:
+>
+>                                  /* IPA target */
+>
+> > +                             bigcore0_alert1: bigcore0-alert1 {
+> > +                                     temperature =3D <85000>;
+> > +                                     hysteresis =3D <2000>;
+> > +                                     type =3D "passive";
+> > +                             };
+> > +                             bigcore0_crit: bigcore0-crit {
+> > +                                     temperature =3D <115000>;
+> > +                                     hysteresis =3D <0>;
+> > +                                     type =3D "critical";
+> > +                             };
+> > +                     };
+> > +                     cooling-maps {
+> > +                             map0 {
+> > +                                     trip =3D <&bigcore0_alert1>;
+> > +                                     cooling-device =3D
+> > +                                             <&cpu_b0 THERMAL_NO_LIMIT=
+ THERMAL_NO_LIMIT>,
+> > +                                             <&cpu_b1 THERMAL_NO_LIMIT=
+ THERMAL_NO_LIMIT>;
+> > +                             };
+> > +                     };
+> > +             };
+> > +
+> > +             /* sensor between A76 cores 2 and 3 */
+> > +             bigcore2_thermal: bigcore2-thermal {
+> > +                     polling-delay-passive =3D <100>;
+> > +                     polling-delay =3D <0>;
+> > +                     thermal-sensors =3D <&tsadc 2>;
+> > +
+> > +                     trips {
+>
+> Please add the following comment here:
+>
+>                                  /* IPA threshold */
+>
+> > +                             bigcore2_alert0: bigcore2-alert0 {
+> > +                                     temperature =3D <75000>;
+> > +                                     hysteresis =3D <2000>;
+> > +                                     type =3D "passive";
+> > +                             };
+>
+> Please add the following comment here:
+>
+>                                  /* IPA target */
+>
+> > +                             bigcore2_alert1: bigcore2-alert1 {
+> > +                                     temperature =3D <85000>;
+> > +                                     hysteresis =3D <2000>;
+> > +                                     type =3D "passive";
+> > +                             };
+> > +                             bigcore2_crit: bigcore2-crit {
+> > +                                     temperature =3D <115000>;
+> > +                                     hysteresis =3D <0>;
+> > +                                     type =3D "critical";
+> > +                             };
+> > +                     };
+> > +                     cooling-maps {
+> > +                             map0 {
+> > +                                     trip =3D <&bigcore2_alert1>;
+> > +                                     cooling-device =3D
+> > +                                             <&cpu_b2 THERMAL_NO_LIMIT=
+ THERMAL_NO_LIMIT>,
+> > +                                             <&cpu_b3 THERMAL_NO_LIMIT=
+ THERMAL_NO_LIMIT>;
+> > +                             };
+> > +                     };
+> > +             };
+> > +
+> > +             /* sensor between the four A55 cores */
+> > +             little_core_thermal: littlecore-thermal {
+> > +                     polling-delay-passive =3D <100>;
+> > +                     polling-delay =3D <0>;
+> > +                     thermal-sensors =3D <&tsadc 3>;
+> > +
+> > +                     trips {
+>
+> Please add the following comment here:
+>
+>                                  /* IPA threshold */
+>
+> > +                             littlecore_alert0: littlecore-alert0 {
+> > +                                     temperature =3D <75000>;
+> > +                                     hysteresis =3D <2000>;
+> > +                                     type =3D "passive";
+> > +                             };
+>
+> Please add the following comment here:
+>
+>                                  /* IPA target */
+>
+> > +                             littlecore_alert1: littlecore-alert1 {
+> > +                                     temperature =3D <85000>;
+> > +                                     hysteresis =3D <2000>;
+> > +                                     type =3D "passive";
+> > +                             };
+> > +                             littlecore_crit: littlecore-crit {
+> > +                                     temperature =3D <115000>;
+> > +                                     hysteresis =3D <0>;
+> > +                                     type =3D "critical";
+> > +                             };
+> > +                     };
+> > +                     cooling-maps {
+> > +                             map0 {
+> > +                                     trip =3D <&littlecore_alert1>;
+> > +                                     cooling-device =3D
+> > +                                             <&cpu_l0 THERMAL_NO_LIMIT=
+ THERMAL_NO_LIMIT>,
+> > +                                             <&cpu_l1 THERMAL_NO_LIMIT=
+ THERMAL_NO_LIMIT>,
+> > +                                             <&cpu_l2 THERMAL_NO_LIMIT=
+ THERMAL_NO_LIMIT>,
+> > +                                             <&cpu_l3 THERMAL_NO_LIMIT=
+ THERMAL_NO_LIMIT>;
+> > +                             };
+> > +                     };
+> > +             };
+> > +
+> > +             /* sensor near the PD_CENTER power domain */
+> > +             center_thermal: center-thermal {
+> > +                     polling-delay-passive =3D <0>;
+> > +                     polling-delay =3D <0>;
+> > +                     thermal-sensors =3D <&tsadc 4>;
+> > +
+> > +                     trips {
+> > +                             center_crit: center-crit {
+> > +                                     temperature =3D <115000>;
+> > +                                     hysteresis =3D <0>;
+> > +                                     type =3D "critical";
+> > +                             };
+> > +                     };
+> > +             };
+> > +
+> > +             gpu_thermal: gpu-thermal {
+> > +                     polling-delay-passive =3D <0>;
+> > +                     polling-delay =3D <0>;
+> > +                     thermal-sensors =3D <&tsadc 5>;
+> > +
+> > +                     trips {
+> > +                             gpu_crit: gpu-crit {
+> > +                                     temperature =3D <115000>;
+> > +                                     hysteresis =3D <0>;
+> > +                                     type =3D "critical";
+> > +                             };
+> > +                     };
+> > +             };
+> > +
+> > +             npu_thermal: npu-thermal {
+> > +                     polling-delay-passive =3D <0>;
+> > +                     polling-delay =3D <0>;
+> > +                     thermal-sensors =3D <&tsadc 6>;
+> > +
+> > +                     trips {
+> > +                             npu_crit: npu-crit {
+> > +                                     temperature =3D <115000>;
+> > +                                     hysteresis =3D <0>;
+> > +                                     type =3D "critical";
+> > +                             };
+> > +                     };
+> > +             };
+> > +     };
+> > +
+> >       saradc: adc@fec10000 {
+> >               compatible =3D "rockchip,rk3588-saradc";
+> >               reg =3D <0x0 0xfec10000 0x0 0x10000>;
 
