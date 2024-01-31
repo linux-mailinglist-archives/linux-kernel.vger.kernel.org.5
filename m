@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-47347-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09306844CBE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:28:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BCFE4844CBF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:28:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BCFF1C24E8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:28:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFCD51C24FC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:28:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 467ED4879D;
-	Wed, 31 Jan 2024 23:11:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10BD648CD4;
+	Wed, 31 Jan 2024 23:11:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pu2BMKfx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="emkGsz4c"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D80F4878D
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 23:11:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56B4F487A9
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 23:11:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706742693; cv=none; b=sdK11/339JHagYebTadWOENMVet56zmPBJE6+4GEm5BiwiLfgd7+3QMkEwc0uQkMeYvlVnho86uXdAZc+1sA+q5Z/q/XXZIJBA2LUJ/vzIcpxSIxXGAcBFcY48C7jQq0qFPjatENIe1OdZdB/ZCYY6e67D8eZ4iUatK+A72X2Ak=
+	t=1706742695; cv=none; b=ffi+HrVdbmCMru86eQd8f276za6yDx0BD2lypv+nLg1YIClk69EWjcBiHtwd0JixDOm5ykE6yZXwUFxaE+yPr+2eglFMOXLt1F+v2gHdfKLRoVfLB5at+ZIwnDmA+OBZX6JyfvUIIMvkRUEp7D/M+EYCOaFVtksc0aej4bH7nz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706742693; c=relaxed/simple;
-	bh=bdfS8bPbTsmzbdiim69fTRLC6qHuhmCc45TsOfVHL2w=;
+	s=arc-20240116; t=1706742695; c=relaxed/simple;
+	bh=0QAgU9z275M0DklHxMY3gX1axsMyYua5aTjHQfiW1kI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Vet5CWtG7LGZadHLiSuC7jdQx3VpphMH+kSFGa/dfyrLBl2Px3oqWPWHCkfkBBNvvwV0QFbAN09HYKsu+amU7YNLFIUQSpP38axkWqhLE2zXM/mFdWtGjDrx7q8BXsCu1hlHDroX/UmIJkchuduvmPYC/+YuK6JGENMcq9hnYeA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Pu2BMKfx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37A22C433C7;
-	Wed, 31 Jan 2024 23:11:31 +0000 (UTC)
+	 MIME-Version; b=iRlyYsVHsghiRMUWslDEaSbceb6+wuVOXtlrP2oAiRAVIAvDIqIT1zbeM7tcdgAlTj2q7f3wiK9m5aCQWrfCibf4VHcpQG7x5I6qFKpYvObj9ZLWWPunnxP6iZhC5UWQWO4LLO60yRun33/7+yTYeN4znzaEyifbsfCmkZrhk64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=emkGsz4c; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F5B4C43394;
+	Wed, 31 Jan 2024 23:11:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706742693;
-	bh=bdfS8bPbTsmzbdiim69fTRLC6qHuhmCc45TsOfVHL2w=;
+	s=k20201202; t=1706742695;
+	bh=0QAgU9z275M0DklHxMY3gX1axsMyYua5aTjHQfiW1kI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Pu2BMKfxpDonJh96TUh4I4OS27tDicdRWAeUYtR89pMgcIYaqvcf33MmyCmIuECpE
-	 z5F7ZOFxbLEqTQD9oibni2BhUXXUGcyVRw7GxBc/nq15gVXeHpcTCShV3VHDCmuRtl
-	 xog5UJ54vaweu4GcjxieY4FB0WAttRG/rZQ8mIlZu0NLGqvdnII2KWgBSWrU68h20v
-	 tUq3UNMeul79lwRvFtl2cC9v1gYQjjsL7Tfee/Zu5FJT+iV4Z2IqfHty/UJ76oKjI+
-	 JilVAiHp2sMGWEFPwrFIwsgapuxVwOTAsoYrmUbDtPTCHrCN6tAkgvdbJGYg1hS7wV
-	 26sr/sDAvRe3Q==
+	b=emkGsz4cAKUCPe1skkiVLn6N0ywXEcObelKHbU1OOLULFuhWypqSivcxbNE71Txjy
+	 EMiFBzhgpRbyZSaoIJqYeeqNsQoOhcDTl89g73U/8mOp4kZLwjcN4LSkl4uNusKobz
+	 VZ1hgpX48OInX72j0QopSWdKEDvXs3jBLtymp1HY4PW2CDd3v7cCgi1Nm6SS5qZGky
+	 Fb72rCdRaN7XMIaFg5eJjPwL8VSh6e30eGVXyYDtXO9Yt7oc2+GmXBzosdpnW7ysMK
+	 jtAcWHj4VyHd9WTRlofzB+MxxY0yQVNn9TKhnwTh4mOo7u6qdlJT5C7INv2HB76R7C
+	 fKmE1+4arkEJw==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
@@ -48,9 +48,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	Anna-Maria Behnsen <anna-maria@linutronix.de>,
 	Peng Liu <liupeng17@lenovo.com>,
 	Joel Fernandes <joel@joelfernandes.org>
-Subject: [PATCH 03/15] tick: Remove useless oneshot ifdeffery
-Date: Thu,  1 Feb 2024 00:11:08 +0100
-Message-ID: <20240131231120.12006-4-frederic@kernel.org>
+Subject: [PATCH 04/15] tick: Use IS_ENABLED() whenever possible
+Date: Thu,  1 Feb 2024 00:11:09 +0100
+Message-ID: <20240131231120.12006-5-frederic@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240131231120.12006-1-frederic@kernel.org>
 References: <20240131231120.12006-1-frederic@kernel.org>
@@ -62,61 +62,102 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-tick-sched.c is only built when CONFIG_TICK_ONESHOT=y, which is selected
-only if CONFIG_NO_HZ_COMMON=y or CONFIG_HIGH_RES_TIMERS=y. Therefore
-the related ifdeferry in this file is needless and can be removed.
+Avoid ifdeferry if it can be converted to IS_ENABLED() whenever possible
 
 Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/time/tick-sched.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ kernel/time/tick-common.c |  4 +---
+ kernel/time/tick-sched.c  | 14 +++++---------
+ 2 files changed, 6 insertions(+), 12 deletions(-)
 
+diff --git a/kernel/time/tick-common.c b/kernel/time/tick-common.c
+index e9138cd7a0f5..0084e1ae2583 100644
+--- a/kernel/time/tick-common.c
++++ b/kernel/time/tick-common.c
+@@ -111,15 +111,13 @@ void tick_handle_periodic(struct clock_event_device *dev)
+ 
+ 	tick_periodic(cpu);
+ 
+-#if defined(CONFIG_HIGH_RES_TIMERS) || defined(CONFIG_NO_HZ_COMMON)
+ 	/*
+ 	 * The cpu might have transitioned to HIGHRES or NOHZ mode via
+ 	 * update_process_times() -> run_local_timers() ->
+ 	 * hrtimer_run_queues().
+ 	 */
+-	if (dev->event_handler != tick_handle_periodic)
++	if (IS_ENABLED(CONFIG_TICK_ONESHOT) && dev->event_handler != tick_handle_periodic)
+ 		return;
+-#endif
+ 
+ 	if (!clockevent_state_oneshot(dev))
+ 		return;
 diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index cc19c4ff5a25..e674269692ab 100644
+index e674269692ab..c4bf796a3285 100644
 --- a/kernel/time/tick-sched.c
 +++ b/kernel/time/tick-sched.c
-@@ -43,7 +43,6 @@ struct tick_sched *tick_get_tick_sched(int cpu)
- 	return &per_cpu(tick_cpu_sched, cpu);
- }
+@@ -186,7 +186,6 @@ static void tick_sched_do_timer(struct tick_sched *ts, ktime_t now)
+ {
+ 	int cpu = smp_processor_id();
  
--#if defined(CONFIG_NO_HZ_COMMON) || defined(CONFIG_HIGH_RES_TIMERS)
- /*
-  * The time when the last jiffy update happened. Write access must hold
-  * jiffies_lock and jiffies_seq. tick_nohz_next_event() needs to get a
-@@ -289,7 +288,6 @@ static enum hrtimer_restart tick_nohz_handler(struct hrtimer *timer)
- 
- 	return HRTIMER_RESTART;
- }
--#endif
- 
+-#ifdef CONFIG_NO_HZ_COMMON
+ 	/*
+ 	 * Check if the do_timer duty was dropped. We don't care about
+ 	 * concurrency: This happens only when the CPU in charge went
+@@ -197,13 +196,13 @@ static void tick_sched_do_timer(struct tick_sched *ts, ktime_t now)
+ 	 * If nohz_full is enabled, this should not happen because the
+ 	 * 'tick_do_timer_cpu' CPU never relinquishes.
+ 	 */
+-	if (unlikely(tick_do_timer_cpu == TICK_DO_TIMER_NONE)) {
++	if (IS_ENABLED(CONFIG_NO_HZ_COMMON) &&
++	    unlikely(tick_do_timer_cpu == TICK_DO_TIMER_NONE)) {
  #ifdef CONFIG_NO_HZ_FULL
- cpumask_var_t tick_nohz_full_mask;
-@@ -635,7 +633,7 @@ void __init tick_nohz_init(void)
- 	pr_info("NO_HZ: Full dynticks CPUs: %*pbl.\n",
- 		cpumask_pr_args(tick_nohz_full_mask));
- }
+ 		WARN_ON_ONCE(tick_nohz_full_running);
+ #endif
+ 		tick_do_timer_cpu = cpu;
+ 	}
 -#endif
-+#endif /* #ifdef CONFIG_NO_HZ_FULL */
  
- /*
-  * NOHZ - aka dynamic tick functionality
-@@ -1502,7 +1500,6 @@ void tick_irq_enter(void)
- 	tick_nohz_irq_enter();
+ 	/* Check if jiffies need an update */
+ 	if (tick_do_timer_cpu == cpu)
+@@ -230,7 +229,6 @@ static void tick_sched_do_timer(struct tick_sched *ts, ktime_t now)
+ 
+ static void tick_sched_handle(struct tick_sched *ts, struct pt_regs *regs)
+ {
+-#ifdef CONFIG_NO_HZ_COMMON
+ 	/*
+ 	 * When we are idle and the tick is stopped, we have to touch
+ 	 * the watchdog as we might not schedule for a really long
+@@ -239,7 +237,7 @@ static void tick_sched_handle(struct tick_sched *ts, struct pt_regs *regs)
+ 	 * idle" jiffy stamp so the idle accounting adjustment we do
+ 	 * when we go busy again does not account too many ticks.
+ 	 */
+-	if (ts->tick_stopped) {
++	if (IS_ENABLED(CONFIG_NO_HZ_COMMON) && ts->tick_stopped) {
+ 		touch_softlockup_watchdog_sched();
+ 		if (is_idle_task(current))
+ 			ts->idle_jiffies++;
+@@ -250,7 +248,7 @@ static void tick_sched_handle(struct tick_sched *ts, struct pt_regs *regs)
+ 		 */
+ 		ts->next_tick = 0;
+ 	}
+-#endif
++
+ 	update_process_times(user_mode(regs));
+ 	profile_tick(CPU_PROFILING);
  }
+@@ -1549,10 +1547,8 @@ void tick_cancel_sched_timer(int cpu)
+ 	ktime_t idle_sleeptime, iowait_sleeptime;
+ 	unsigned long idle_calls, idle_sleeps;
  
--#if defined CONFIG_NO_HZ_COMMON || defined CONFIG_HIGH_RES_TIMERS
- static int sched_skew_tick;
+-# ifdef CONFIG_HIGH_RES_TIMERS
+-	if (ts->sched_timer.base)
++	if (IS_ENABLED(CONFIG_HIGH_RES_TIMERS) && ts->sched_timer.base)
+ 		hrtimer_cancel(&ts->sched_timer);
+-# endif
  
- static int __init skew_tick(char *str)
-@@ -1567,7 +1564,6 @@ void tick_cancel_sched_timer(int cpu)
- 	ts->idle_calls = idle_calls;
- 	ts->idle_sleeps = idle_sleeps;
- }
--#endif /* CONFIG_NO_HZ_COMMON || CONFIG_HIGH_RES_TIMERS */
- 
- /*
-  * Async notification about clocksource changes
+ 	idle_sleeptime = ts->idle_sleeptime;
+ 	iowait_sleeptime = ts->iowait_sleeptime;
 -- 
 2.43.0
 
