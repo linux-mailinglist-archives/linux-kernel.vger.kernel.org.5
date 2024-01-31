@@ -1,205 +1,152 @@
-Return-Path: <linux-kernel+bounces-46858-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46859-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E2B584457F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:03:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BEB10844582
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:04:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82A421C20ADA
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:03:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E36A71C218F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:04:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C88112BF32;
-	Wed, 31 Jan 2024 17:03:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ldJ1QjP1"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C030C12BF32;
+	Wed, 31 Jan 2024 17:04:12 +0000 (UTC)
+Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2066.outbound.protection.partner.outlook.cn [139.219.17.66])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83E9E12BE99
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 17:03:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706720617; cv=none; b=izhpTmbSi6cTgV9MRFK826Vry5dzBPHXyl1G1toXhitp4vJFW2c1HoSroDh1C7sX0wYAEcjIOYpg7Y1A5i0C+OIKONL18qUUpqMcYDWlHFMDkMYS9FOGuo3glnlGyYfobtm4vrF2MIJB/loxBr1BXjkicOQJxk2xz+hPi78B8Dw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706720617; c=relaxed/simple;
-	bh=k5z0kfJjUREZSnHpb78Vy9aJZkf3Vm8DS3NBWI2dg0w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VGQwnPsCO+O57/5Wqb7wJRyohSJeh/LPhPjIb5bz34H2er8FKHzums0EHJXGvXD/L7U1raDYSfqxvMtfMxtwUX9W4e4t//fGTYSOW5mUPz2yh0E04IyiBd9z0Ns+UBjzgxOFQAKPaT4eKt4zm9ODFLkPQS0DicqqAPmyUrZnvPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ldJ1QjP1; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55f5d62d024so9684a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:03:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706720613; x=1707325413; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+kAbr9rMOfiWUKrFn+5xYnZ12BoeCWRWCVm9Fg2uVqA=;
-        b=ldJ1QjP1yTzbHtU5dtR0ToVudvrCaQ7QuR3L+Cyzpob6YmJloNWG+XWXlXScIOeDR9
-         X0jAHM0kytorTHaQL9YAp6N/TIXHKChQCbVLzU1/HEfDtf1wCQtmmxW+T68mK9bCHxaz
-         dHnPOo/3TYz0HK7pGutipSOm/UUj5WEBbZ+ZrrnieZkgd4mF+a6cU6JHl3ZKoPyFS0t7
-         QTJ5KysYRh4cNf4U3YCxRualaAdD7h/0cgE+NL7yZz5Glv8FHXNrwzTpgAj9KiLsHlyA
-         W+z1jGWJcQayE0uuk026EXt3huVBQWnsaJpxqpk0Y5d7xYe6D+bJCRdkoCuJe+Cx5RBH
-         Mn1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706720613; x=1707325413;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+kAbr9rMOfiWUKrFn+5xYnZ12BoeCWRWCVm9Fg2uVqA=;
-        b=LgUE27dgYyv0Ht0F9KhIScTHSfjWGyiAwVvGOZMInLhwlTO8yZAMdJlBMeRViJAcSO
-         EGNcMKWngutWeZ/UzV117ze6X9WvWM5HbZ0Z54ZbuhudhoY2CVkeetPxsvwZAjMYFzFw
-         8gkEa/KtiC47G4rfFg3sJABNO8t3L68JA9F0a4XJIAvEkPhHmVJ3RABXX0FCdOuNCBAF
-         IpucN7W2vkgDa8iYdtIrwi/fElPFhcj1KdjzINcLX17OlCKJ1WT/F2TJEbdAU45JA6mS
-         0Z7sryn6zey7cEdNK/sGN8cUywy4Rn6bWwGak1JZ2MvbGCAjdLnWreV4nooFHEz94PR/
-         R1Dg==
-X-Gm-Message-State: AOJu0Yz4lUa0phbXdTiOknZ3I33T+xqao0fRko0fMj7lyqmoZ4yB28vk
-	ljTD8gYsgBuJQrrC/TsCCrccJapIYGgeDBBA7JF7TqgDgM5ouBqfhu9yt90fakmLdzJ/QnJNuJ3
-	yIyd8INOP7s3sFnORcTllLzZRUcVXjp3BKOmv5w2MpM5u2TyV7A==
-X-Google-Smtp-Source: AGHT+IHLDFLqxUssM4sVwOZhBThb0eaK4xFarqS8UV9j+FGhRco2Uu28uMQ6+ppgu/6efVn+znERBFOVcJiQeioB7fc=
-X-Received: by 2002:a05:6402:288a:b0:55d:2dda:f331 with SMTP id
- eg10-20020a056402288a00b0055d2ddaf331mr435965edb.7.1706720613353; Wed, 31 Jan
- 2024 09:03:33 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58B1F6FC6
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 17:04:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.66
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706720652; cv=fail; b=F0nMBZDsoHO+bdMiKXc5Wbg+d2q0ndsz0ECKUV7kKkHguUclQIy2f5jQ3myipRfetwoBCUFop70mcwgGVrajUW/NTSWkUF7Q0CBB0HknrDbb53O86NxMB7JXgj+1U4ex2johsgEVtIV8Q9EWa2T1LZEb3/1AQEIP+MfDZ+HYP/4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706720652; c=relaxed/simple;
+	bh=78KXdCFu8JZ8rwbFCI44dR0x79tDdCE9CCEiuqcDnPk=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=MNmecEsUX25Wj6keRlyr1KcOdM1R2meMXBPuNxk0jJlH7Vkon416Z6qiaXIkHc0cV9HJveDbf3Y41foVvB7sIRCmVFFo5mj7qO+GiNsbfVIoLg3cs71uHNp6bottbhjhKrzLe5TY3VeZC0OEqeN/zyiS90AnIS6kE1dl5FP52aY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=R9vKtLHuIwk2g5UIe6v/ObTYT4zhKPmeqVjEt6gviJtv1OHUTD3m3DGQ3G7TWoYC+4FyJKAzWx2Wr9qSecMOY5clPZZZv0DImyCFFwi8vgePQfu++K4We7ZbwZSsUQf2rRlvn0QKdZevdI9S1l4u3x9ojj++PC/PXSVH7hLb/KksXHVfCuAybWUHXyHPwkXUOZ3DmnFMZXqn0ba5IB6SMx/24abLAF1chxQ5oJs0yFI954ewTWGeKwJVknTooIpgd2WyQMtFwrkG4/kDve4+NcqBqKtBm36f60BP9vgWbdTjbL6wcdlEC4c50wMtrb/6esCxLkIy1ygXIjFsdyJ55w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mhk/vSsujS97XOJdi5tV0xrz4lI7P3rabe1TQbMbaSo=;
+ b=EDaD7K1kkSZWiDCaguElpuAItFao7P0ioPxNCD2710GTBle7iIRYL4oRKgXNTswCWSligsEU5awa0sNjnD1M62btjwa/+h13/PQlJK8h0toWIxvDcvLcWH49Xs5NIQ27n5mU9Ozmm8QWuk0BbDW7VCBKeTfUkaDjsYx0NVZTbS9cj3Ay++uTMaUp1AqCgIOkDQh5eOcBFqKMsFY/mmPMsd2rWy/hzeHYSoxewy7SEnyOoJYI2S6jlDJANyo7WDDHwA9bu8gpsKkMRv40V725HuAlnGf8ARO5s4Xf4PZrV4skVaqvdpMFo5ZJVfgpdxhc/8ygcgdX6SV3G/kTg+UzZw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Received: from ZQZPR01MB0979.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c550:f::12) by ZQZPR01MB1107.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c550:f::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.19; Wed, 31 Jan
+ 2024 16:48:00 +0000
+Received: from ZQZPR01MB0979.CHNPR01.prod.partner.outlook.cn
+ ([fe80::ca86:dfe4:6667:5205]) by
+ ZQZPR01MB0979.CHNPR01.prod.partner.outlook.cn ([fe80::ca86:dfe4:6667:5205%4])
+ with mapi id 15.20.7249.017; Wed, 31 Jan 2024 16:48:00 +0000
+From: Leyfoon Tan <leyfoon.tan@starfivetech.com>
+To: "surenb@google.com" <surenb@google.com>, "akpm@linux-foundation.org"
+	<akpm@linux-foundation.org>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Compilation time increase with this commit when enabling DEBUG_INFO
+Thread-Topic: Compilation time increase with this commit when enabling
+ DEBUG_INFO
+Thread-Index: AdpUZTKIBFwlG1IkTK20oxH2uhL93Q==
+Date: Wed, 31 Jan 2024 16:48:00 +0000
+Message-ID:
+ <ZQZPR01MB097928D272E733B32A81049F8A7CA@ZQZPR01MB0979.CHNPR01.prod.partner.outlook.cn>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: ZQZPR01MB0979:EE_|ZQZPR01MB1107:EE_
+x-ms-office365-filtering-correlation-id: efbdd3fa-9db3-40b6-57e7-08dc227c6286
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ 9uf5Xdob7N6edF5LWPZPCYOnzQ8A7rs878ote0eeBxX2TNpIQ/skbzGiVRan3dryisHYnvaIY0MnZwgQJgiI2+saPs9QDFISSae1djDNOk7KphkJi9IPvi14kYu9UU4VEl7ln7en6zbVwQK0LDnW7KxWzdtdZc2CykyozrfCjLUEAd0P43ie1JfbNjXU9vd91TcwWo5HwvUM3zgxyiZDWME0lJGNTjS37XFTUwv1A77Qah3JVbVixR6jyVsmTPdwkD+ZUstrHCAdYlpxe8LOrekAc4DHEdlmjkRHd1cdkVDtbQ8rwRteV7Byc7fRfCZzTvpyAHmfVN8xbb7Ip3DN7zHbgDri9Kd0CNlfkoOtjDn1akRf5HT3qfIXi9fkplzilU20ufZLH0QoQbo9qrle6G4pkXyJpKTFjuUgBHPsEnT1CjQ0flHvntXuRBanOvQ5HguvB8eGMzx5bnxct2W5XOOW6IhgWYVEPiCwOaVy/ukfQUn00L9YQg87M724S/8wgAgWj11d7EwomPTsodgCHfcQr+ZLyk7hnkeW6uLWAtGBCFVQS8QmXXYLUrAdsOsE
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:ZQZPR01MB0979.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(136003)(39830400003)(396003)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(41300700001)(41320700001)(66946007)(44832011)(4326008)(8936002)(2906002)(8676002)(4744005)(33656002)(5660300002)(110136005)(86362001)(76116006)(40180700001)(66476007)(66446008)(64756008)(38070700009)(508600001)(66556008)(40160700002)(38100700002)(122000001)(55236004)(7696005)(9686003)(966005)(71200400001)(83380400001)(26005)(55016003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?lpaSTKwTGxfw7akF2TJM2hWTcZ/tysMGyp0KK0TaN7Z1NDpgL/XR3XftBT3w?=
+ =?us-ascii?Q?jQxz3QsgkhP5lLcaMEOK7dVg/EUf8/JK/8C2jduQQanwhvhlUHlYrwIkW1VG?=
+ =?us-ascii?Q?zv6mjStZlMUss67VKYkO4njAlnhOJH1XP3wE7Mn15IxQPp+l0SchcXLDsB59?=
+ =?us-ascii?Q?9JTWH9f4O8hc/yofbyVZI7u6LguR9nAByl2Iel3/daJk4qOVmA+VwhhiGolt?=
+ =?us-ascii?Q?qJ0qQCLjBotOndP68IlRw2ONOi2QoZnzmxCpN6IQYneh1v3+zVPG5bMrUQC/?=
+ =?us-ascii?Q?y3Pk/gNMGtDJ5pfZRWphk0LHyTSuVhhNfC+l3NdfMINJzmlfXIWhXq4oE94T?=
+ =?us-ascii?Q?ddY12fbFfKH3mbivszr7T/voBNQY8/RKF86xjXGvQBRwUGaw7AFdyfZ5Awp3?=
+ =?us-ascii?Q?6wm7rrWQKfLxUJgpI+8nZOSXqaLzoH+qKuyxvIjxCbjFKXOXVOgrkjTyfk7q?=
+ =?us-ascii?Q?PVVg8mM2S7SL2rxbiBcSzrFvi/zSWwPOPAHA4PPjQxXOKcakylcM35ydPZIY?=
+ =?us-ascii?Q?4sh3PVURdfLbtsw49jXQT0S06H4t5HfLfgs8FkN52A+mZaWwgD225Z2Bjglv?=
+ =?us-ascii?Q?jzJPVaKOmRa7C+CzGXO/jivxWpKI/kRqWDeso8ZNYjq12XxKRRqqbirQy+8b?=
+ =?us-ascii?Q?fHHGCni2g/9xbUmkNxtnF1YGxRYP8wMCNCz74XauktS/Upmp/63IYBeK0xel?=
+ =?us-ascii?Q?9byv7R+v5X1jIQAFcpcW7HQktSDOXlHAa0HY2+CjYuIs158PbBKIat4zn6DE?=
+ =?us-ascii?Q?o+5X/NGTkEu/lQHvXeU0W4ddpn3wq6qfWMu6d6XAen2Mj6NIfrQxGzlgeopr?=
+ =?us-ascii?Q?tSasq8afB0LSzr4XTjA/u/efzMGucvn1CnMNuGftkMRirA1iKfcbU8KUAHUb?=
+ =?us-ascii?Q?k2XQq/lhAaTJm1v0Y0Gx62ASWgOLbrFymTY4htRjjGB3mFww6+i+DbmbIlC4?=
+ =?us-ascii?Q?d6+ISg5BVGSIkgVgrwKmEXdXkR7H7wXSo7XjdpiwJDTqIf1AtX5033CT8kXB?=
+ =?us-ascii?Q?jVhNj7CzcO2KoiRAyWvsMDNR9bw8eZBW7N5yP14S6HKEglL9U6+4S5fywpZt?=
+ =?us-ascii?Q?dB+CORb44BMt94GOjtNwE4TFnhKFbc9Sq78G80OCNRlM4/Vb6lgQrr3Cc4ts?=
+ =?us-ascii?Q?i9UXeIlNHAOPe1JbnJlSSRL98GE7UWstdnFTVGMH/BTSraj6TQHr/E0Ibywk?=
+ =?us-ascii?Q?/j3lcRaDhiZrEc5rnb1vOmZ7crZ26n82k3PyJHzShvoP21Ec4RTy2I8twuuX?=
+ =?us-ascii?Q?JLoZOwGd1Rkn0Gv8i+mJ4MZu/2+4s3dEJlleaokcvEgakqjd/2z6nc3p5acA?=
+ =?us-ascii?Q?fYzB1MBVWQIQqJe1cmnSU2Jwc8wVx5bMw7GhgJNYbauswvmOLX/0qnh1McX9?=
+ =?us-ascii?Q?wglPhNjxuK/vcyRNOTbCL6hj3urH8UDA93X2lNA+KdsgJKbKJ3OKu0tbljnH?=
+ =?us-ascii?Q?nGPXzzrTmvKdKG5ZtWTsEO1BGuRR+OCrlg42o+ICimQpmlTtT/lv6yDh6zVc?=
+ =?us-ascii?Q?Hl2wiGCfJ/NKGvE/9e/QVU61xuV97hpsUKTcgdtNOJkP/ep8PZcovpuX16nn?=
+ =?us-ascii?Q?Lf5+NRXwu3o8TrV8yiH0tDXv8/RhVzkHujDNaHW8EpBIqDEpA5YHHVbexaT7?=
+ =?us-ascii?Q?6A=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131150332.1326523-1-quic_kriskura@quicinc.com>
-In-Reply-To: <20240131150332.1326523-1-quic_kriskura@quicinc.com>
-From: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
-Date: Wed, 31 Jan 2024 09:03:17 -0800
-Message-ID: <CANP3RGeHXmEcDN=-h1uGBzu_Ur2UcmiEuFDXAEr0Z2ptXnHq=Q@mail.gmail.com>
-Subject: Re: [PATCH v2] usb: gadget: ncm: Avoid dropping datagrams of properly
- parsed NTBs
-To: Krishna Kurapati <quic_kriskura@quicinc.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Hardik Gajjar <hgajjar@de.adit-jv.com>, 
-	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	quic_ppratap@quicinc.com, quic_wcheng@quicinc.com, quic_jackp@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: ZQZPR01MB0979.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-Network-Message-Id: efbdd3fa-9db3-40b6-57e7-08dc227c6286
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Jan 2024 16:48:00.3900
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: sL+kjhUUgGtNb/8iFRqnGRT23Nz4OQdZjm2V/xsOCwsnGP+wr7bAtvvTEOEvQj534rXVi/MOpMsLivDCf93k37k+DUGPBMVl43AciUII+tc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: ZQZPR01MB1107
 
-On Wed, Jan 31, 2024 at 7:03=E2=80=AFAM Krishna Kurapati
-<quic_kriskura@quicinc.com> wrote:
->
-> It is observed sometimes when tethering is used over NCM with Windows 11
-> as host, at some instances, the gadget_giveback has one byte appended at
-> the end of a proper NTB. When the NTB is parsed, unwrap call looks for
-> any leftover bytes in SKB provided by u_ether and if there are any pendin=
-g
-> bytes, it treats them as a separate NTB and parses it. But in case the
-> second NTB (as per unwrap call) is faulty/corrupt, all the datagrams that
-> were parsed properly in the first NTB and saved in rx_list are dropped.
->
-> Adding a few custom traces showed the following:
->
-> [002] d..1  7828.532866: dwc3_gadget_giveback: ep1out:
-> req 000000003868811a length 1025/16384 zsI =3D=3D> 0
-> [002] d..1  7828.532867: ncm_unwrap_ntb: K: ncm_unwrap_ntb toprocess: 102=
-5
-> [002] d..1  7828.532867: ncm_unwrap_ntb: K: ncm_unwrap_ntb nth: 175199934=
-2
-> [002] d..1  7828.532868: ncm_unwrap_ntb: K: ncm_unwrap_ntb seq: 0xce67
-> [002] d..1  7828.532868: ncm_unwrap_ntb: K: ncm_unwrap_ntb blk_len: 0x400
-> [002] d..1  7828.532868: ncm_unwrap_ntb: K: ncm_unwrap_ntb ndp_len: 0x10
-> [002] d..1  7828.532869: ncm_unwrap_ntb: K: Parsed NTB with 1 frames
->
-> In this case, the giveback is of 1025 bytes and block length is 1024.
-> The rest 1 byte (which is 0x00) won't be parsed resulting in drop of
-> all datagrams in rx_list.
->
-> Same is case with packets of size 2048:
-> [002] d..1  7828.557948: dwc3_gadget_giveback: ep1out:
-> req 0000000011dfd96e length 2049/16384 zsI =3D=3D> 0
-> [002] d..1  7828.557949: ncm_unwrap_ntb: K: ncm_unwrap_ntb nth: 175199934=
-2
-> [002] d..1  7828.557950: ncm_unwrap_ntb: K: ncm_unwrap_ntb blk_len: 0x800
->
-> Lecroy shows one byte coming in extra confirming that the byte is coming
-> in from PC:
->
-> Transfer 2959 - Bytes Transferred(1025)  Timestamp((18.524 843 590)
-> - Transaction 8391 - Data(1025 bytes) Timestamp(18.524 843 590)
-> --- Packet 4063861
->       Data(1024 bytes)
->       Duration(2.117us) Idle(14.700ns) Timestamp(18.524 843 590)
-> --- Packet 4063863
->       Data(1 byte)
->       Duration(66.160ns) Time(282.000ns) Timestamp(18.524 845 722)
->
-> According to Windows driver, no ZLP is needed if wBlockLength is non-zero=
-,
-> because the non-zero wBlockLength has already told the function side the
-> size of transfer to be expected. However, there are in-market NCM devices
-> that rely on ZLP as long as the wBlockLength is multiple of wMaxPacketSiz=
-e.
-> To deal with such devices, it pads an extra 0 at end so the transfer is n=
-o
-> longer multiple of wMaxPacketSize.
->
-> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
-> ---
->  drivers/usb/gadget/function/f_ncm.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/usb/gadget/function/f_ncm.c b/drivers/usb/gadget/fun=
-ction/f_ncm.c
-> index ca5d5f564998..8c314dc98952 100644
-> --- a/drivers/usb/gadget/function/f_ncm.c
-> +++ b/drivers/usb/gadget/function/f_ncm.c
-> @@ -1338,11 +1338,17 @@ static int ncm_unwrap_ntb(struct gether *port,
->              "Parsed NTB with %d frames\n", dgram_counter);
->
->         to_process -=3D block_len;
-> -       if (to_process !=3D 0) {
-> +
-> +       if (to_process =3D=3D 1 &&
-> +           (block_len % 512 =3D=3D 0) &&
-> +           (*(unsigned char *)(ntb_ptr + block_len) =3D=3D 0x00)) {
 
-I'm unconvinced this (block_len % 512) works right...
-imagine you have 2 ntbs back to back (for example 400 + 624) that
-together add up to 1024,
-and then a padding null byte.
-I think block_len will be 624 then and not 1024.
+After the commit "fork: lock VMAs of the parent process when forking" in [1=
+], the compilation time increases from ~2 minutes to 8.5 minutes when enabl=
+ing CONFIG_DEBUG_INFO* (CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT/CONFIG_DE=
+BUG_INFO_DWARF4/CONFIG_DEBUG_INFO_DWARF5).
+Looking at the commit changes, not sure why it causes the increase in compi=
+lation time. Any ideas?
 
-perhaps this actually needs to be:
-  (ntp_ptr + block_len - skb->data) % 512 =3D=3D 0
+From:
 
-The point is that AFAICT the multiple of 512/1024 that matters is in
-the size of the USB transfer,
-not the NTB block size itself.
+# time make -j
+real    1m51.522s
+user    59m55.836s
+sys     5m29.177s
 
-> +               goto done;
-> +       } else if (to_process > 0) {
->                 ntb_ptr =3D (unsigned char *)(ntb_ptr + block_len);
+Increase to:
 
-note that ntb_ptr moves forward by block_len here,
-so it's *not* always the start of the packet, so block_len is not
-necessarily the actual on the wire size.
+# time make -j
+real    8m31.967s
+user    69m24.410s
+sys     5m54.588s
 
->                 goto parse_ntb;
->         }
->
-> +done:
->         dev_consume_skb_any(skb);
->
->         return 0;
-> --
-> 2.34.1
->
+Note, compile time above with ARCH=3Driscv, defconfig + CONFIG_DEBUG_INFO_D=
+WARF4.
 
-But it would perhaps be worth confirming in the MS driver source what
-exactly they're doing...
-(maybe they never even generate multiple ntbs per usb segment...)
-
-You may also want to mention in the commit message that 512 comes from
-USB2 block size, and also works for USB3 block size of 1024.
-
---
-Maciej =C5=BBenczykowski, Kernel Networking Developer @ Google
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/com=
+mit/?id=3D2b4f3b4987b56365b981f44a7e843efa5b6619b9
 
