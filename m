@@ -1,149 +1,134 @@
-Return-Path: <linux-kernel+bounces-45575-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45577-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3858843298
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 02:13:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0258584329E
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 02:14:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A53A1F2738E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 01:13:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC50F1F27383
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 01:14:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 448E64C92;
-	Wed, 31 Jan 2024 01:13:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0185F1FB3;
+	Wed, 31 Jan 2024 01:13:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="w9IQLSNZ"
-Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XBZSLHjU"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 203F54C8E
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 01:13:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B55E4C6D;
+	Wed, 31 Jan 2024 01:13:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706663584; cv=none; b=c0NvG+ZqvCFP0piWYpANH0MaBNOOzmnNd7baWb3PhU29bV+dKXwwXEh2GncR7Enqmtd0sChjwj8L60uqPjhkS1K8U+tT3GbzXFnDf7d+5n7S9CFEGyx3OuXr/tJeJHVr3KB6ZCFQxrjLizHOiTVZjQ3W9ESs0GgFdOhQ/12LHI0=
+	t=1706663633; cv=none; b=iVkf6NiI1qdhV1jyTypLl75tkgc3vyji0ngzAkmkDv+TFTCq3NnwSdtxBMrm5vLTxeEorJijhM9qT2r0H3ZIqbVhRhVvrH9Pjbx7qfGmxrdw/oR4vGson9dVFkbtozHcQyk56hT/qTt+Ga3B9mP6oiiGAUhhdWhToM/sbgLxs/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706663584; c=relaxed/simple;
-	bh=WnaiMYjG3HYrBPVosKeochjRi58QHb85b9Uafy87v5A=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=XwQGKRk8sjpE1P6np5WqkLqmgf5IxU4kIUkQ1m/erTPQrd0/EWB9SPYhH6KYidX2KihHyPlrmK8F8hj+z9mKnZzAsHG94IQtezegteoeDPLArv3weDAUAaUjw9YMEHC1A2Xv4JKlbXStwRHb07UUFvdeKYeBbX1ZIgi5eUslv2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=w9IQLSNZ; arc=none smtp.client-ip=209.85.215.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5cfd6ba1c11so3187836a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 17:13:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706663582; x=1707268382; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/GoosJvXV4tQVgQnoX094ue9LgaeDV/puMZ+zgV5v8A=;
-        b=w9IQLSNZ4uiLohicHi+6G4ZMJRs0oUrtBRqKLSOvirKyQrWa1O/qJwki5kVmpdZUx3
-         IpKJ4/Q6lzxOqvq+nzIOc64XbTDVm5OnVcguzGFi4NlitC2y4KwWXcGKJZHfHjeWTbpc
-         Nqc5QsHw1b4PeF0Jqt2N5f0pgo9UHiHsbXI6wiwqGaevp5KffFT1lNyFTEchXuLFnmwy
-         8aeYQITF4QJdmpaKl8yABpwEesen6QirhP2R5sWTUkaY7VuuYZpwS4VR8k2F/w6BascW
-         TIj9TXanfw+TjmKBdug0CmE/Jm2wfYbveeQ59wYGdBLLdJZWqwhMyrLj+atS2x+AgBwu
-         5s7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706663582; x=1707268382;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/GoosJvXV4tQVgQnoX094ue9LgaeDV/puMZ+zgV5v8A=;
-        b=o/189c0hHz+JvQXufLYm2j4Pn+B6NKLBSj2dbwMfc84c2VW1Iuimnmmo9jSXfLqd8Y
-         yx0MH890DGoMzKiuMujQIrhn+2JYNSUzNgZ0B0HI/IgG6QKAqWYCQGhZ+BwjYYWfvUQJ
-         SK/IY3r8pgy9bzE0EWARP0hE7Igc2DPvljs6ibiM4ZKwnCEimQqzWKTV8z/qEm4c9mvy
-         5bMQ9U3Ix1s0277wy4Lf2RilH7gJWSJM33UlQBFgwJ0zwmv7ULntkuVe85HdKiyEYJHT
-         /4qDE5ghXMBiP/LU8ful8DMpngJPDouJiwRdVcCdQRJBJVzjGAzn9i7m3TwLBzT7jWr8
-         RF1g==
-X-Gm-Message-State: AOJu0YzTnBiQ0R8ZeGjbBOK/c3yyIIddWRf4of+xdsuf8RgQ7+05Oj12
-	/JRwPwgOr6BqvxNbdbtDJ8FyD3NbArUCiJ/df+Y1j6GLWMw6hcRQO21OqrFU4twmsQ2PK1dyKfX
-	6sQ==
-X-Google-Smtp-Source: AGHT+IHXA4t0uhZ7tzthJIqQkUlU7edO5hP5ya6T+NaNmVk8RFxp+26SnKPKNqGEdvTVdg4s3sxwKV4qvvQ=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:d212:b0:1d9:1e1:76ca with SMTP id
- t18-20020a170902d21200b001d901e176camr715ply.10.1706663582547; Tue, 30 Jan
- 2024 17:13:02 -0800 (PST)
-Date: Tue, 30 Jan 2024 17:13:00 -0800
-In-Reply-To: <20231016115028.996656-9-michael.roth@amd.com>
+	s=arc-20240116; t=1706663633; c=relaxed/simple;
+	bh=Bcw6YbTIDhbyyqhqVI8IXl8r2xanXbR9oEPkMrg3UDw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XTVaNOuD+rQOC4oxP3SMgewLsQ0Yx+pgz5k5mSI9uFCSdUsMMuRtQWgAOOeY7IakDlhwm/+o39Gq2m+yvstJPGQnzLKdlv2wqB0IOEJNct/M1RBv0TWWYJSZ3ZvK5mHh3YY7FFlzpWOtqaZxpaPtFjcFZoMcmKWVLUF1FmToPFc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XBZSLHjU; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706663631; x=1738199631;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Bcw6YbTIDhbyyqhqVI8IXl8r2xanXbR9oEPkMrg3UDw=;
+  b=XBZSLHjUidtGkELBNWmZXs4ckGT4flr74xou7iA841u7ugqD2Vei03iD
+   ZQfRo1Ltb4PoU3nRbIpcTi3TVN5nuSHDLPo8kIcTNLb4HH26JuRWyPnf2
+   gLS9XrT6KHizLD7petF0uDTUCqiiCBu31fBlWZMCARM704+k+omUsQ/r7
+   EnAZDCMsa5FBPzoMqVafjJj1GaNMCA2f8I8VICK67NlInIc1e/E8bHMzs
+   MehaItsHG/kre8gjxMDjujpwncsYrVEBusgP3BWHMZnDofkKSys7FDtx1
+   Nuil8EZLO0LcxF+aKSyKBL6u1NWL5l3l2UopCx7whH/oqIE5fRpRxVx1X
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="3296516"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="3296516"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 17:13:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="3974464"
+Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
+  by orviesa004.jf.intel.com with ESMTP; 30 Jan 2024 17:13:44 -0800
+Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rUzAb-00010E-1P;
+	Wed, 31 Jan 2024 01:13:41 +0000
+Date: Wed, 31 Jan 2024 09:13:20 +0800
+From: kernel test robot <lkp@intel.com>
+To: David Dai <davidai@google.com>, "Rafael J. Wysocki" <rafael@kernel.org>,
+	Viresh Kumar <viresh.kumar@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Saravana Kannan <saravanak@google.com>
+Cc: oe-kbuild-all@lists.linux.dev, Quentin Perret <qperret@google.com>,
+	Masami Hiramatsu <mhiramat@google.com>,
+	Will Deacon <will@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Marc Zyngier <maz@kernel.org>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Pavan Kondeti <quic_pkondeti@quicinc.com>,
+	Gupta Pankaj <pankaj.gupta@amd.com>, Mel Gorman <mgorman@suse.de>,
+	kernel-team@android.com, linux-pm@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/2] cpufreq: add virtual-cpufreq driver
+Message-ID: <202401310804.bWt7Vf6o-lkp@intel.com>
+References: <20240127004321.1902477-3-davidai@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231016115028.996656-1-michael.roth@amd.com> <20231016115028.996656-9-michael.roth@amd.com>
-Message-ID: <ZbmenP05fo8hZU8N@google.com>
-Subject: Re: [PATCH RFC gmem v1 8/8] KVM: x86: Determine shared/private faults
- based on vm_type
-From: Sean Christopherson <seanjc@google.com>
-To: Michael Roth <michael.roth@amd.com>
-Cc: kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org, 
-	linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, pbonzini@redhat.com, isaku.yamahata@intel.com, 
-	ackerleytng@google.com, vbabka@suse.cz, ashish.kalra@amd.com, 
-	nikunj.dadhania@amd.com, jroedel@suse.de, pankaj.gupta@amd.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240127004321.1902477-3-davidai@google.com>
 
-On Mon, Oct 16, 2023, Michael Roth wrote:
-> For KVM_X86_SNP_VM, only the PFERR_GUEST_ENC_MASK flag is needed to
-> determine with an #NPF is due to a private/shared access by the guest.
-> Implement that handling here. Also add handling needed to deal with
-> SNP guests which in some cases will make MMIO accesses with the
-> encryption bit.
+Hi David,
 
-..
+kernel test robot noticed the following build errors:
 
-> @@ -4356,12 +4357,19 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
->  			return RET_PF_EMULATE;
->  	}
->  
-> -	if (fault->is_private != kvm_mem_is_private(vcpu->kvm, fault->gfn)) {
-> +	/*
-> +	 * In some cases SNP guests will make MMIO accesses with the encryption
-> +	 * bit set. Handle these via the normal MMIO fault path.
-> +	 */
-> +	if (!slot && private_fault && kvm_is_vm_type(vcpu->kvm, KVM_X86_SNP_VM))
-> +		private_fault = false;
+[auto build test ERROR on rafael-pm/linux-next]
+[also build test ERROR on robh/for-next linus/master rafael-pm/acpi-bus v6.8-rc2 next-20240130]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Why?  This is inarguably a guest bug.
+url:    https://github.com/intel-lab-lkp/linux/commits/David-Dai/dt-bindings-cpufreq-add-virtual-cpufreq-device/20240127-084645
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
+patch link:    https://lore.kernel.org/r/20240127004321.1902477-3-davidai%40google.com
+patch subject: [PATCH v5 2/2] cpufreq: add virtual-cpufreq driver
+config: x86_64-randconfig-121-20240130 (https://download.01.org/0day-ci/archive/20240131/202401310804.bWt7Vf6o-lkp@intel.com/config)
+compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240131/202401310804.bWt7Vf6o-lkp@intel.com/reproduce)
 
-> +	if (private_fault != kvm_mem_is_private(vcpu->kvm, fault->gfn)) {
->  		kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
->  		return -EFAULT;
->  	}
->  
-> -	if (fault->is_private)
-> +	if (private_fault)
->  		return kvm_faultin_pfn_private(vcpu, fault);
->  
->  	async = false;
-> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-> index 759c8b718201..e5b973051ad9 100644
-> --- a/arch/x86/kvm/mmu/mmu_internal.h
-> +++ b/arch/x86/kvm/mmu/mmu_internal.h
-> @@ -251,6 +251,24 @@ struct kvm_page_fault {
->  
->  int kvm_tdp_page_fault(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault);
->  
-> +static bool kvm_mmu_fault_is_private(struct kvm *kvm, gpa_t gpa, u64 err)
-> +{
-> +	bool private_fault = false;
-> +
-> +	if (kvm_is_vm_type(kvm, KVM_X86_SNP_VM)) {
-> +		private_fault = !!(err & PFERR_GUEST_ENC_MASK);
-> +	} else if (kvm_is_vm_type(kvm, KVM_X86_SW_PROTECTED_VM)) {
-> +		/*
-> +		 * This handling is for gmem self-tests and guests that treat
-> +		 * userspace as the authority on whether a fault should be
-> +		 * private or not.
-> +		 */
-> +		private_fault = kvm_mem_is_private(kvm, gpa >> PAGE_SHIFT);
-> +	}
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401310804.bWt7Vf6o-lkp@intel.com/
 
-This can be more simply:
+All errors (new ones prefixed by >>):
 
-	if (kvm_is_vm_type(kvm, KVM_X86_SNP_VM))
-		return !!(err & PFERR_GUEST_ENC_MASK);
+>> ld.lld: error: undefined symbol: topology_set_scale_freq_source
+   >>> referenced by virtual-cpufreq.c:115 (drivers/cpufreq/virtual-cpufreq.c:115)
+   >>>               drivers/cpufreq/virtual-cpufreq.o:(virt_cpufreq_cpu_init) in archive vmlinux.a
+--
+>> ld.lld: error: undefined symbol: topology_clear_scale_freq_source
+   >>> referenced by virtual-cpufreq.c:128 (drivers/cpufreq/virtual-cpufreq.c:128)
+   >>>               drivers/cpufreq/virtual-cpufreq.o:(virt_cpufreq_cpu_exit) in archive vmlinux.a
+--
+>> ld.lld: error: undefined symbol: arch_freq_scale
+   >>> referenced by virtual-cpufreq.c:38 (drivers/cpufreq/virtual-cpufreq.c:38)
+   >>>               drivers/cpufreq/virtual-cpufreq.o:(virt_scale_freq_tick) in archive vmlinux.a
 
-	if (kvm_is_vm_type(kvm, KVM_X86_SW_PROTECTED_VM))
-		return kvm_mem_is_private(kvm, gpa >> PAGE_SHIFT);
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
