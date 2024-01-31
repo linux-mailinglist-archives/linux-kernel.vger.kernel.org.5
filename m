@@ -1,133 +1,105 @@
-Return-Path: <linux-kernel+bounces-45555-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BC98843258
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 01:59:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4B4F84325A
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 01:59:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C73AB21699
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 00:59:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03D111C24747
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 00:59:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2389D20EE;
-	Wed, 31 Jan 2024 00:59:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69F721FA1;
+	Wed, 31 Jan 2024 00:59:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=iwanders.net header.i=@iwanders.net header.b="Jo8YtHRH"
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TUqpHVWg"
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C577E7FA
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 00:59:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DA2B17F8
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 00:59:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706662745; cv=none; b=cwyM7m4MbhGDOZkLqWG4McRbPlfM6Mcjc90YO01JHB5YHEyry7HNvdLUsozPY4lTt4/MWz8jr0m196+Yvil1TNOBpogz3Pjg9tuVbKTfvbnOSRyCjnGXIAiSPxVI13nI7VpYJn9Ju6c5imjhlye36GQ67SWXXRrlQXkxxkYhkBY=
+	t=1706662771; cv=none; b=QBiBUCJOHs8w/W0Cef5HOLIfvM3g2lIHrZrZ3J/XM7DK6UNxOPdFvdYgg8mY9zgdkBGevuGnqjGi90j+rPIz51kNTaSVpIy1nmqRNCdYfMM6rymlqQhEcnlwNEIKZSelwgJpKerrnGSctmSOkyu13TC49HgATcKj9EroSiHdJc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706662745; c=relaxed/simple;
-	bh=NyWQpZvyfXiQ1pPODvzBA3Cchx9hEFuF35X+qnan0xU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=GRPp5YxWRIFrbWnWoUoi+ZbqzjtHb+JfexXCEyC3Jp+c/xBavVdE/hJbYlfqttr5YRaVkcIPN+KaJzorz/oPHMJbWrBI06uXVHuKpiPHBUWNTGrUZ3VlRKFjw9TWsHuiNAcTUxyLhncareIRDVvVZ6bz4xM/HNYbeeUg6n8MTRs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iwanders.net; spf=pass smtp.mailfrom=iwanders.net; dkim=pass (1024-bit key) header.d=iwanders.net header.i=@iwanders.net header.b=Jo8YtHRH; arc=none smtp.client-ip=209.85.222.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iwanders.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iwanders.net
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-78538f94d00so11450085a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 16:59:03 -0800 (PST)
+	s=arc-20240116; t=1706662771; c=relaxed/simple;
+	bh=k3UJtZ2zdXlpKfmUISRN9bJoOsCVfPi9X4p4h+DW8jo=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=MhxL7kOYhP2e5yidITi487FRk2ULsM2BppPJ2CTvPeo347u2rhbE59PkbEUME94lhqTSK7qOZHO9G1SsnjcSjqBISwlk23DfL2Jf4FRjLZwsbEsvlNqmxEnZwfJl4Y4YREeozN8GOS1+XY/xXzl6k2ekJXVNYQa3cfD0G9Z+5/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TUqpHVWg; arc=none smtp.client-ip=209.85.215.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5cf35636346so2666208a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 16:59:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=iwanders.net; s=google; t=1706662742; x=1707267542; darn=vger.kernel.org;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=BGbVVWmzCS/qQW3OOIkbvYCslK4QZ0cY8oAxDb26lic=;
-        b=Jo8YtHRHhNxNI4pom7MaF6nQYJcgjwqwyjhylKjLvNnweaQSVdK8U5eIrvCq7CIpXD
-         zvVwrkNAgRfrkZmcPFrFioxwGh74LHm/skF388PFcX4MKVJ5VAsKHuiMY7qiCP4N44N5
-         wN4AfrwXLQaWo2fEzB6azimVTO0TP0kUtAWxo=
+        d=google.com; s=20230601; t=1706662769; x=1707267569; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DRYWEyJ8nP7GDr/8zEO30BzEfVkSVrMjTBb0exa158c=;
+        b=TUqpHVWgZDMCfkQNVrWqEWS9UJmGmbbZQWNHl4en59He7sV8+0osELWQ5eKAPZYu5L
+         b7W+Qh4E1s4KEIZWeNNTNRbua2MHX6JQzAXnF6YID9zJcJvfdwJgX8y8cXZSSisP7Ab4
+         FSl122Gp2TE78/j2carXDkwd66VKUpOgw2h3te5q41ZnIv/B0xE13z6GqS835FH4PZxU
+         NVmAbizP3zmnBavun9vPYx+DsUXZKdw73CemLqRtWznpAA542RemNvNxOesMsowkgirn
+         ldKDTS69TTk4nIpXkqdQJRfmK2MyMRLcfy3rj6JKdUsv9hYoaXzJEdZNt02D80d0KXei
+         bewQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706662742; x=1707267542;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BGbVVWmzCS/qQW3OOIkbvYCslK4QZ0cY8oAxDb26lic=;
-        b=mjdpdw/n+QiuAt5bMX9XiELbGLGStG6akw/SReuIp+xC4pOPeHSuFrojI75b64yf6x
-         AwMa51fp5nBpWAZTFI/eEi3qW6i5rHIB2FKBs0riSA1x853CpuBNoEHlgDooCLbPCFDh
-         2K9LGGyFfwUUwIWR5PD5lXGOiVzz889116G54NbhytbmKPLkjA5O9aEqo/AtEG/vUH/W
-         NPsQaWspLFR5xsGWa2vBU0QTPuNMTjEoEeW+V8CFH7c2Rhn74dje+ZWH/d5PhpaI9Koo
-         YEHcYksivWZkaFhyPafr0rXDJHWOY5F0rmR4FcJQFxDGWC3AnJExULRfKjN0jU6R7ilv
-         //uA==
-X-Gm-Message-State: AOJu0Yyl5zOAAPGusns5Zf9OiBJAb+Ew/pFSJaW9EXvJES/U4ga7XwY+
-	nflMTnJilwI2n/SXjBncHRPDln9H2jNALvotMMzXqXDk5zB4dKtHrZZ3o4g7yBU=
-X-Google-Smtp-Source: AGHT+IFTwSrfJqR+7Jmkta8hOZECRvc6kWaFJAi00qGGfQmJ5ZyhKGPk8OaRHjxJ5EoI5ngLZw9LYg==
-X-Received: by 2002:a05:6214:20c1:b0:68c:5e0d:6a23 with SMTP id 1-20020a05621420c100b0068c5e0d6a23mr237795qve.34.1706662742669;
-        Tue, 30 Jan 2024 16:59:02 -0800 (PST)
-Received: from eagle.lan (24-246-30-234.cable.teksavvy.com. [24.246.30.234])
-        by smtp.gmail.com with ESMTPSA id ld27-20020a056214419b00b006869e0eed00sm4969090qvb.26.2024.01.30.16.59.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 16:59:02 -0800 (PST)
-From: Ivor Wanders <ivor@iwanders.net>
-To: Jean Delvare <jdelvare@suse.com>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Maximilian Luz <luzmaximilian@gmail.com>,
-	Ivor Wanders <ivor@iwanders.net>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Mark Gross <markgross@kernel.org>
-Cc: linux-hwmon@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	platform-driver-x86@vger.kernel.org
-Subject: [PATCH v5 2/2] platform/surface: aggregator_registry: add entry for fan speed
-Date: Tue, 30 Jan 2024 19:58:56 -0500
-Message-Id: <20240131005856.10180-3-ivor@iwanders.net>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240131005856.10180-1-ivor@iwanders.net>
-References: <20240131005856.10180-1-ivor@iwanders.net>
+        d=1e100.net; s=20230601; t=1706662769; x=1707267569;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DRYWEyJ8nP7GDr/8zEO30BzEfVkSVrMjTBb0exa158c=;
+        b=rFLKC84oFxb+CTmhAmNNs/rHyhQtTMehUaBhV+skXi4Kv47SO1fOyawQYdqw/g8wKu
+         EvY+DpOUPuevqn0k8OsgaBmMHZHJ+/42F7oEAxLXCffjYUf784oOOJqIeQ7HlLRSr+Z2
+         OPQLDHplFXmDqSYDS2pDCSmdowPTF5eMEHsyCP7bEP/Uwo+bDwjaYpBCJvybY550+rEH
+         8W7oEccycSj71o2UNEBmw5FExgFndCZqELZQDBX4vZ2FhV2pgI2OVVe/73gksG5BFS0D
+         CpGzOPBHIWFXIrrnn7MPTAzkj95IwQ/BQlSDRbM41Nqpw1TCkHeq4mGyi6KyJ+jJudxc
+         szkw==
+X-Gm-Message-State: AOJu0YxWcxa58TH8+noUYOEUhSboZsvlKZVXXJdpkTTff8kPrJYGx8pm
+	ZJAf4tIgwkBXhDRlc1IsXXuUFfKvcMCVhs/3V5U3CnZiMqFDKhb/kip6dEPshUBlz9CYvWRi2xX
+	ShA==
+X-Google-Smtp-Source: AGHT+IFEI3SoLvPTNxPIT/3ZKANZjSVRIrD9gcH2Sle4VroShAJW+tvxcqtoldxoSebPtI3krvwO+r+o2e8=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a02:48f:b0:5db:d9b6:2d52 with SMTP id
+ bw15-20020a056a02048f00b005dbd9b62d52mr3335pgb.5.1706662769550; Tue, 30 Jan
+ 2024 16:59:29 -0800 (PST)
+Date: Tue, 30 Jan 2024 16:59:15 -0800
+In-Reply-To: <20240110004239.491290-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+Mime-Version: 1.0
+References: <20240110004239.491290-1-seanjc@google.com>
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+Message-ID: <170629112001.3098038.14027986117394347629.b4-ty@google.com>
+Subject: Re: [PATCH] KVM: Harden against unpaired kvm_mmu_notifier_invalidate_range_end()
+ calls
+From: Sean Christopherson <seanjc@google.com>
+To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
 
-Add an entry for the fan speed function.
-Add this new entry to the Surface Pro 9 group.
+On Tue, 09 Jan 2024 16:42:39 -0800, Sean Christopherson wrote:
+> When handling the end of an mmu_notifier invalidation, WARN if
+> mn_active_invalidate_count is already 0 do not decrement it further, i.e.
+> avoid causing mn_active_invalidate_count to underflow/wrap.  In the worst
+> case scenario, effectively corrupting mn_active_invalidate_count could
+> cause kvm_swap_active_memslots() to hang indefinitely.
+> 
+> end() calls are *supposed* to be paired with start(), i.e. underflow can
+> only happen if there is a bug elsewhere in the kernel, but due to lack of
+> lockdep assertions in the mmu_notifier helpers, it's all too easy for a
+> bug to go unnoticed for some time, e.g. see the recently introduced
+> PAGEMAP_SCAN ioctl().
+> 
+> [...]
 
-Signed-off-by: Ivor Wanders <ivor@iwanders.net>
-Link: https://github.com/linux-surface/kernel/pull/144
-Reviewed-by: Maximilian Luz <luzmaximilian@gmail.com>
----
-Changes in v5:
-  - No changes in this patch.
-Changes in v4:
-  - No changes in this patch.
-Changes in v3:
-  - No changes in this patch.
-Changes in v2:
-  - No changes in this patch.
----
- drivers/platform/surface/surface_aggregator_registry.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Applied to kvm-x86 generic, thanks!
 
-diff --git a/drivers/platform/surface/surface_aggregator_registry.c b/drivers/platform/surface/surface_aggregator_registry.c
-index aeb3feae4..035d6b410 100644
---- a/drivers/platform/surface/surface_aggregator_registry.c
-+++ b/drivers/platform/surface/surface_aggregator_registry.c
-@@ -74,6 +74,12 @@ static const struct software_node ssam_node_tmp_pprof = {
- 	.parent = &ssam_node_root,
- };
- 
-+/* Fan speed function. */
-+static const struct software_node ssam_node_fan_speed = {
-+	.name = "ssam:01:05:01:01:01",
-+	.parent = &ssam_node_root,
-+};
-+
- /* Tablet-mode switch via KIP subsystem. */
- static const struct software_node ssam_node_kip_tablet_switch = {
- 	.name = "ssam:01:0e:01:00:01",
-@@ -305,6 +311,7 @@ static const struct software_node *ssam_node_group_sp9[] = {
- 	&ssam_node_bat_ac,
- 	&ssam_node_bat_main,
- 	&ssam_node_tmp_pprof,
-+	&ssam_node_fan_speed,
- 	&ssam_node_pos_tablet_switch,
- 	&ssam_node_hid_kip_keyboard,
- 	&ssam_node_hid_kip_penstash,
--- 
-2.17.1
+[1/1] KVM: Harden against unpaired kvm_mmu_notifier_invalidate_range_end() calls
+      https://github.com/kvm-x86/linux/commit/d489ec956583
 
+--
+https://github.com/kvm-x86/linux/tree/next
 
