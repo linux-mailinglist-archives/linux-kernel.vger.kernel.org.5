@@ -1,107 +1,103 @@
-Return-Path: <linux-kernel+bounces-46340-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46341-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5EEB843E3A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:24:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35E9D843E40
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:25:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5529C1F283F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:24:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E847F1F28248
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:25:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9034F74E04;
-	Wed, 31 Jan 2024 11:23:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="hoEfERqh"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09DFB6D1C3;
-	Wed, 31 Jan 2024 11:23:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0553974E24;
+	Wed, 31 Jan 2024 11:25:16 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F2B067A16;
+	Wed, 31 Jan 2024 11:25:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706700235; cv=none; b=hOtDdQ+1OXkc7tULcHtveqZsAcTgeNWTU4HOALZVjSWnJnYmzlDTb3w4hFycpOa4segDTzpRcOOZ+w07Brs5t3JHmca81X+UJThRdUuEzN/gpY8y07y5cMyHYfEMbwgbyOxAjo6PlJ3KJVqHvxPyk0rk8wfp9DiPJx2BitqPbuQ=
+	t=1706700315; cv=none; b=DTnn6mis1Zg5B9zsEi3SZ1wsKTn5E0Z4/eolcqht96qESl7n8al1ADd6dBHWTp+z+uEA33bngBRot4Jf0X+QiAA0F28BnryGaDlGPhLgo7Qs8uNpnGToXtGNPAvCsb5gN9WWEVudEmifTF7xfQyQXDG6EJt7J9WbKuksZJ8jjDo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706700235; c=relaxed/simple;
-	bh=5P2zxSLURVbZ7HV4GWIOUHTQn5EE9g7rJ053+yGyBdI=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=CZlh5IIX/hdn1441+F/Ei7USsAX59MNRnnNwhAe+ObsmCkr4cZLeSRNwu1lHBBVadmyKkH4wa/PpqCKjPdCCrJETiqpErksFdxjyiu003sIwNvRRPpJZ4TRXr4d+PZtJ4jMdryzHUGlXsRw8LrT+yqmBe0nhrKPpGfGDLHqEGiQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=hoEfERqh; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40VBNkai084617;
-	Wed, 31 Jan 2024 05:23:46 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706700226;
-	bh=QHkI07X0GJZUyie1k7oMk2KLJoEEG+8fx6H0YqKqWqI=;
-	h=From:To:CC:Subject:Date;
-	b=hoEfERqhykt3Lls/Zt5JVcFdMdmwA14AHjntS+IAi4BtrT0o1+iNLG+5x+yDn7zjt
-	 hI4CquO0gvbOc4LcsdI/9QY83oHsdgVlNQEjLDXZHeQiLBED5nlh/y6U19DFex6bfr
-	 mhUOvof5aaHYTJTr6cvKt0mnyW0AIMLF3AuXkyCo=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40VBNkT9075512
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 31 Jan 2024 05:23:46 -0600
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 31
- Jan 2024 05:23:46 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 31 Jan 2024 05:23:46 -0600
-Received: from uda0492258.dhcp.ti.com (uda0492258.dhcp.ti.com [172.24.227.9])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40VBNh0F066660;
-	Wed, 31 Jan 2024 05:23:43 -0600
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
-To: <lee@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <afd@ti.com>, <srk@ti.com>,
-        <s-vadapalli@ti.com>
-Subject: [PATCH] dt-bindings: mfd: syscon: Add ti,k3-pcie-ctrl compatible
-Date: Wed, 31 Jan 2024 16:53:42 +0530
-Message-ID: <20240131112342.1300893-1-s-vadapalli@ti.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706700315; c=relaxed/simple;
+	bh=wzS1Y1fbKl5youA8h5qmv/jE996pLnUuHtJcrrtwbRM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HVWibhaiQXfAtdlMQUQalRAkAilOabDTEP3HaC4Iv9/n8vXcfKIM3IgUYuR4Zg9gQ8nWzBdmCsGvZXHFAqsh56r9LWjl6Y2BKkjgeHt6ZjOGDuJiJQt3jBTft93T8oABPzTuqiB8ZgJ1PwKUDnARcYk9KX5rml3Wirg8W6nE8Wk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 42C65DA7;
+	Wed, 31 Jan 2024 03:25:56 -0800 (PST)
+Received: from bogus (unknown [10.57.78.35])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 123C53F762;
+	Wed, 31 Jan 2024 03:25:09 -0800 (PST)
+Date: Wed, 31 Jan 2024 11:25:07 +0000
+From: Sudeep Holla <sudeep.holla@arm.com>
+To: Sibi Sankar <quic_sibis@quicinc.com>
+Cc: cristian.marussi@arm.com, rafael@kernel.org, viresh.kumar@linaro.org,
+	Sudeep Holla <sudeep.holla@arm.com>, morten.rasmussen@arm.com,
+	dietmar.eggemann@arm.com, lukasz.luba@arm.com, sboyd@kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, quic_mdtipton@quicinc.com,
+	linux-arm-msm@vger.kernel.org, nm@ti.com
+Subject: Re: [PATCH 2/3] firmware: arm_scmi: Add support for marking certain
+ frequencies as boost
+Message-ID: <20240131112507.fu355wnolbsoiqxn@bogus>
+References: <20240117110443.2060704-1-quic_sibis@quicinc.com>
+ <20240117110443.2060704-3-quic_sibis@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240117110443.2060704-3-quic_sibis@quicinc.com>
 
-The PCIE_CTRL registers within the CTRL_MMR space of TI's K3 SoCs are
-used to configure the link speed, lane count and mode of operation of
-the respective PCIe instance. Add compatible for allowing the PCIe
-driver to obtain a regmap for the PCIE_CTRL register within the System
-Controller device-tree node in order to configure the PCIe instance
-accordingly.
+On Wed, Jan 17, 2024 at 04:34:42PM +0530, Sibi Sankar wrote:
+> All opps above the sustained level/frequency are treated as boost, so mark
+> them accordingly.
+> 
+> Suggested-by: Sudeep Holla <sudeep.holla@arm.com>
+> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+> ---
+>  drivers/firmware/arm_scmi/perf.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/firmware/arm_scmi/perf.c b/drivers/firmware/arm_scmi/perf.c
+> index e286f04ee6e3..d3fb8c804b3d 100644
+> --- a/drivers/firmware/arm_scmi/perf.c
+> +++ b/drivers/firmware/arm_scmi/perf.c
+> @@ -811,7 +811,7 @@ static int scmi_dvfs_device_opps_add(const struct scmi_protocol_handle *ph,
+>  				     struct device *dev, u32 domain)
+>  {
+>  	int idx, ret;
+> -	unsigned long freq;
+> +	unsigned long freq, sustained_freq;
+>  	struct dev_pm_opp_data data = {};
+>  	struct perf_dom_info *dom;
+>  
+> @@ -819,12 +819,21 @@ static int scmi_dvfs_device_opps_add(const struct scmi_protocol_handle *ph,
+>  	if (IS_ERR(dom))
+>  		return PTR_ERR(dom);
+>  
+> +	if (!dom->level_indexing_mode)
+> +		sustained_freq = dom->sustained_perf_level * dom->mult_factor;
+> +	else
+> +		sustained_freq = dom->sustained_freq_khz * dom->mult_factor;
+> +
 
-Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
----
+Can't we just use dom->sustained_freq_khz * 1000UL in both the cases ?
 
-This patch is based on linux-next tagged next-20240131.
+Other than that this series looks good to me but it would be good to
+explain how you would use this. Since it is enabled by default, do you
+plan to disable boost at time and when ? If it is for thermal reasons,
+why your other series handling thermal and limits notification from the
+firmware not sufficient.
 
- Documentation/devicetree/bindings/mfd/syscon.yaml | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/Documentation/devicetree/bindings/mfd/syscon.yaml b/Documentation/devicetree/bindings/mfd/syscon.yaml
-index 084b5c2a2a3c..da571a24e21f 100644
---- a/Documentation/devicetree/bindings/mfd/syscon.yaml
-+++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
-@@ -73,6 +73,7 @@ properties:
-               - rockchip,rv1126-qos
-               - starfive,jh7100-sysmain
-               - ti,am654-dss-oldi-io-ctrl
-+              - ti,k3-pcie-ctrl
- 
-           - const: syscon
- 
 -- 
-2.34.1
-
+Regards,
+Sudeep
 
