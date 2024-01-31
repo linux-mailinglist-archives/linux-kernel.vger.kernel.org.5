@@ -1,592 +1,297 @@
-Return-Path: <linux-kernel+bounces-45611-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32024843300
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 02:50:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7575E843305
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 02:50:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5732E1C25A6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 01:50:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C87E4B247AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 01:50:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47E4B4C7D;
-	Wed, 31 Jan 2024 01:50:02 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF04B1C2D;
+	Wed, 31 Jan 2024 01:50:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="XAoAkMzb"
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4608D4C89;
-	Wed, 31 Jan 2024 01:50:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 104B4538A
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 01:50:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706665801; cv=none; b=qSZFdJgDS+7Lr39AbUocqVoe9sC0d6MZ1zHGLexVQnj4the2Dlwa295hwtP4pg1BhjGCtl8NUxPES5Tadq0j2WktqF2KdAsDarth+LWVN/VOkIuPx0M0+ULT4HJQIeU+pfNwyNasIwWisyV4zRRUT89mxaMhH+h+7fJu6L5CVxQ=
+	t=1706665826; cv=none; b=A/6IdnJ0WWX3t7LK0HilfD+I7uQ+jQ0OcsRJTfaaA0XdHiQYmtjz+nrK8vvUmQzhAjdK+rRENrllWKZHpCt5xp2ilVB/3X/T77ya3yhxRK4lWkNdNjxvbgxpAxURopygKlp3Q1vZuVuDVsW0Oocv/8IL7WVlOSr7H1KQRSfOugc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706665801; c=relaxed/simple;
-	bh=OpuqTwwrI+GIn2hZZz15WNOLt8Hz69lBwVL6JEzGIVw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=l8gf4sovyziEY9+PNf+ksmTqvyhf/4XkQHvl1OuJYjLGDxCSKfceql0TF0EMNLzCUKQ9FgT7PRXl8UFEMJeX6snQ6R8NsEhaE2cdDtoTuyuFXq8yn7ujj7RJK9n06Mp2yoBm618Ihgr6SstseDrjkJximNbYQVCYPUDDXtjThsA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CEC3C433F1;
-	Wed, 31 Jan 2024 01:50:00 +0000 (UTC)
-Date: Tue, 30 Jan 2024 20:50:12 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Al Viro
- <viro@ZenIV.linux.org.uk>, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: [PATCH v2 (3/6)] tracefs: dentry lookup crapectomy
-Message-ID: <20240130205012.4d501778@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706665826; c=relaxed/simple;
+	bh=FBDLfiXa6eGY20crZ+KFLNMI2nVjlflolmYfDdvvqRs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Jm/eY8/kAQSVRhxhtMXip2isy0vW7z5SNoSgedbB3m2ZZD7JsE+M2bwktNDQcSfxti8TR3A2BMwcdvpZPlo6HntED3pSxz0xx4msIQUkXbHYC7XPa6hvmh10XuuApna7TuMyTv8HFFoq6jPe9MMw//aohub4retflwcmE5fMk80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=XAoAkMzb; arc=none smtp.client-ip=115.124.30.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1706665821; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=Gypkhh0e3i5pcKat3m6nz81xdN6y/lW5xtHUauKeWvc=;
+	b=XAoAkMzb5TjZRgI/vAY2WSWuGb3rBMFMhZoG96FV7fmAu5Vt/fvAd4GCGcEeW5X3yKHfWB9AU096feLChYnUPBDn8CHG7sHnBpnkpbFOyLtuEGIU5tQ8gGnpOQhjJRspudkiOImhqf8C284m9RIZvhfVF40ifj3nzWjRsSMOoqE=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R531e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=liusong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W.haG19_1706665819;
+Received: from 30.178.80.124(mailfrom:liusong@linux.alibaba.com fp:SMTPD_---0W.haG19_1706665819)
+          by smtp.aliyun-inc.com;
+          Wed, 31 Jan 2024 09:50:20 +0800
+Message-ID: <ad353e3e-4f9d-42a0-834f-39cfc128453f@linux.alibaba.com>
+Date: Wed, 31 Jan 2024 09:50:19 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCHv2 2/2] watchdog/softlockup: report the most frequent
+ interrupts
+To: Bitao Hu <yaoma@linux.alibaba.com>, dianders@chromium.org,
+ akpm@linux-foundation.org, pmladek@suse.com, lecopzer.chen@mediatek.com,
+ kernelfans@gmail.com
+Cc: linux-kernel@vger.kernel.org
+References: <20240130074744.45759-1-yaoma@linux.alibaba.com>
+ <20240130074744.45759-3-yaoma@linux.alibaba.com>
+From: Liu Song <liusong@linux.alibaba.com>
+In-Reply-To: <20240130074744.45759-3-yaoma@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
 
-The dentry lookup for eventfs files was very broken, and had lots of
-signs of the old situation where the filesystem names were all created
-statically in the dentry tree, rather than being looked up dynamically
-based on the eventfs data structures.
-
-You could see it in the naming - how it claimed to "create" dentries
-rather than just look up the dentries that were given it.
-
-You could see it in various nonsensical and very incorrect operations,
-like using "simple_lookup()" on the dentries that were passed in, which
-only results in those dentries becoming negative dentries.  Which meant
-that any other lookup would possibly return ENOENT if it saw that
-negative dentry before the data rwas then later filled in.
-
-You could see it in the immesnse amount of nonsensical code that didn't
-actually just do lookups.
-
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
-Changes since v1: https://lore.kernel.org/linux-trace-kernel/20240130190355.11486-3-torvalds@linux-foundation.org
-
-- Fixed the lookup case of not found dentry, to return an error.
-  This was added in a later patch when it should have been in this one.
-  This still had the d_add(dentry, NULL) in lookup.
-
-- Removed the calls to eventfs_{start,end,failed}_creating() (Al Viro)
-
- fs/tracefs/event_inode.c | 285 ++++++++-------------------------------
- fs/tracefs/inode.c       |  69 ----------
- fs/tracefs/internal.h    |   3 -
- 3 files changed, 58 insertions(+), 299 deletions(-)
-
-diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index e9819d719d2a..4878f4d578be 100644
---- a/fs/tracefs/event_inode.c
-+++ b/fs/tracefs/event_inode.c
-@@ -230,7 +230,6 @@ static struct eventfs_inode *eventfs_find_events(struct dentry *dentry)
- {
- 	struct eventfs_inode *ei;
- 
--	mutex_lock(&eventfs_mutex);
- 	do {
- 		// The parent is stable because we do not do renames
- 		dentry = dentry->d_parent;
-@@ -247,7 +246,6 @@ static struct eventfs_inode *eventfs_find_events(struct dentry *dentry)
- 		}
- 		// Walk upwards until you find the events inode
- 	} while (!ei->is_events);
--	mutex_unlock(&eventfs_mutex);
- 
- 	update_top_events_attr(ei, dentry->d_sb);
- 
-@@ -280,11 +278,10 @@ static void update_inode_attr(struct dentry *dentry, struct inode *inode,
- }
- 
- /**
-- * create_file - create a file in the tracefs filesystem
-- * @name: the name of the file to create.
-+ * lookup_file - look up a file in the tracefs filesystem
-+ * @dentry: the dentry to look up
-  * @mode: the permission that the file should have.
-  * @attr: saved attributes changed by user
-- * @parent: parent dentry for this file.
-  * @data: something that the caller will want to get to later on.
-  * @fop: struct file_operations that should be used for this file.
-  *
-@@ -292,13 +289,13 @@ static void update_inode_attr(struct dentry *dentry, struct inode *inode,
-  * directory. The inode.i_private pointer will point to @data in the open()
-  * call.
-  */
--static struct dentry *create_file(const char *name, umode_t mode,
-+static struct dentry *lookup_file(struct dentry *dentry,
-+				  umode_t mode,
- 				  struct eventfs_attr *attr,
--				  struct dentry *parent, void *data,
-+				  void *data,
- 				  const struct file_operations *fop)
- {
- 	struct tracefs_inode *ti;
--	struct dentry *dentry;
- 	struct inode *inode;
- 
- 	if (!(mode & S_IFMT))
-@@ -307,15 +304,9 @@ static struct dentry *create_file(const char *name, umode_t mode,
- 	if (WARN_ON_ONCE(!S_ISREG(mode)))
- 		return NULL;
- 
--	WARN_ON_ONCE(!parent);
--	dentry = eventfs_start_creating(name, parent);
--
--	if (IS_ERR(dentry))
--		return dentry;
--
- 	inode = tracefs_get_inode(dentry->d_sb);
- 	if (unlikely(!inode))
--		return eventfs_failed_creating(dentry);
-+		return ERR_PTR(-ENOMEM);
- 
- 	/* If the user updated the directory's attributes, use them */
- 	update_inode_attr(dentry, inode, attr, mode);
-@@ -329,32 +320,29 @@ static struct dentry *create_file(const char *name, umode_t mode,
- 
- 	ti = get_tracefs(inode);
- 	ti->flags |= TRACEFS_EVENT_INODE;
--	d_instantiate(dentry, inode);
-+
-+	d_add(dentry, inode);
- 	fsnotify_create(dentry->d_parent->d_inode, dentry);
--	return eventfs_end_creating(dentry);
-+	return dentry;
- };
- 
- /**
-- * create_dir - create a dir in the tracefs filesystem
-+ * lookup_dir_entry - look up a dir in the tracefs filesystem
-+ * @dentry: the directory to look up
-  * @ei: the eventfs_inode that represents the directory to create
-- * @parent: parent dentry for this file.
-  *
-- * This function will create a dentry for a directory represented by
-+ * This function will look up a dentry for a directory represented by
-  * a eventfs_inode.
-  */
--static struct dentry *create_dir(struct eventfs_inode *ei, struct dentry *parent)
-+static struct dentry *lookup_dir_entry(struct dentry *dentry,
-+	struct eventfs_inode *pei, struct eventfs_inode *ei)
- {
- 	struct tracefs_inode *ti;
--	struct dentry *dentry;
- 	struct inode *inode;
- 
--	dentry = eventfs_start_creating(ei->name, parent);
--	if (IS_ERR(dentry))
--		return dentry;
--
- 	inode = tracefs_get_inode(dentry->d_sb);
- 	if (unlikely(!inode))
--		return eventfs_failed_creating(dentry);
-+		return ERR_PTR(-ENOMEM);
- 
- 	/* If the user updated the directory's attributes, use them */
- 	update_inode_attr(dentry, inode, &ei->attr,
-@@ -371,11 +359,14 @@ static struct dentry *create_dir(struct eventfs_inode *ei, struct dentry *parent
- 	/* Only directories have ti->private set to an ei, not files */
- 	ti->private = ei;
- 
-+	dentry->d_fsdata = ei;
-+        ei->dentry = dentry;	// Remove me!
-+
- 	inc_nlink(inode);
--	d_instantiate(dentry, inode);
-+	d_add(dentry, inode);
- 	inc_nlink(dentry->d_parent->d_inode);
- 	fsnotify_mkdir(dentry->d_parent->d_inode, dentry);
--	return eventfs_end_creating(dentry);
-+	return dentry;
- }
- 
- static void free_ei(struct eventfs_inode *ei)
-@@ -425,7 +416,7 @@ void eventfs_set_ei_status_free(struct tracefs_inode *ti, struct dentry *dentry)
- }
- 
- /**
-- * create_file_dentry - create a dentry for a file of an eventfs_inode
-+ * lookup_file_dentry - create a dentry for a file of an eventfs_inode
-  * @ei: the eventfs_inode that the file will be created under
-  * @idx: the index into the d_children[] of the @ei
-  * @parent: The parent dentry of the created file.
-@@ -438,157 +429,21 @@ void eventfs_set_ei_status_free(struct tracefs_inode *ti, struct dentry *dentry)
-  * address located at @e_dentry.
-  */
- static struct dentry *
--create_file_dentry(struct eventfs_inode *ei, int idx,
--		   struct dentry *parent, const char *name, umode_t mode, void *data,
-+lookup_file_dentry(struct dentry *dentry,
-+		   struct eventfs_inode *ei, int idx,
-+		   umode_t mode, void *data,
- 		   const struct file_operations *fops)
- {
- 	struct eventfs_attr *attr = NULL;
- 	struct dentry **e_dentry = &ei->d_children[idx];
--	struct dentry *dentry;
--
--	WARN_ON_ONCE(!inode_is_locked(parent->d_inode));
- 
--	mutex_lock(&eventfs_mutex);
--	if (ei->is_freed) {
--		mutex_unlock(&eventfs_mutex);
--		return NULL;
--	}
--	/* If the e_dentry already has a dentry, use it */
--	if (*e_dentry) {
--		dget(*e_dentry);
--		mutex_unlock(&eventfs_mutex);
--		return *e_dentry;
--	}
--
--	/* ei->entry_attrs are protected by SRCU */
- 	if (ei->entry_attrs)
- 		attr = &ei->entry_attrs[idx];
- 
--	mutex_unlock(&eventfs_mutex);
--
--	dentry = create_file(name, mode, attr, parent, data, fops);
--
--	mutex_lock(&eventfs_mutex);
--
--	if (IS_ERR_OR_NULL(dentry)) {
--		/*
--		 * When the mutex was released, something else could have
--		 * created the dentry for this e_dentry. In which case
--		 * use that one.
--		 *
--		 * If ei->is_freed is set, the e_dentry is currently on its
--		 * way to being freed, don't return it. If e_dentry is NULL
--		 * it means it was already freed.
--		 */
--		if (ei->is_freed) {
--			dentry = NULL;
--		} else {
--			dentry = *e_dentry;
--			dget(dentry);
--		}
--		mutex_unlock(&eventfs_mutex);
--		return dentry;
--	}
--
--	if (!*e_dentry && !ei->is_freed) {
--		*e_dentry = dentry;
--		dentry->d_fsdata = ei;
--	} else {
--		/*
--		 * Should never happen unless we get here due to being freed.
--		 * Otherwise it means two dentries exist with the same name.
--		 */
--		WARN_ON_ONCE(!ei->is_freed);
--		dentry = NULL;
--	}
--	mutex_unlock(&eventfs_mutex);
--
--	return dentry;
--}
--
--/**
-- * eventfs_post_create_dir - post create dir routine
-- * @ei: eventfs_inode of recently created dir
-- *
-- * Map the meta-data of files within an eventfs dir to their parent dentry
-- */
--static void eventfs_post_create_dir(struct eventfs_inode *ei)
--{
--	struct eventfs_inode *ei_child;
--
--	lockdep_assert_held(&eventfs_mutex);
--
--	/* srcu lock already held */
--	/* fill parent-child relation */
--	list_for_each_entry_srcu(ei_child, &ei->children, list,
--				 srcu_read_lock_held(&eventfs_srcu)) {
--		ei_child->d_parent = ei->dentry;
--	}
--}
--
--/**
-- * create_dir_dentry - Create a directory dentry for the eventfs_inode
-- * @pei: The eventfs_inode parent of ei.
-- * @ei: The eventfs_inode to create the directory for
-- * @parent: The dentry of the parent of this directory
-- *
-- * This creates and attaches a directory dentry to the eventfs_inode @ei.
-- */
--static struct dentry *
--create_dir_dentry(struct eventfs_inode *pei, struct eventfs_inode *ei,
--		  struct dentry *parent)
--{
--	struct dentry *dentry = NULL;
--
--	WARN_ON_ONCE(!inode_is_locked(parent->d_inode));
--
--	mutex_lock(&eventfs_mutex);
--	if (pei->is_freed || ei->is_freed) {
--		mutex_unlock(&eventfs_mutex);
--		return NULL;
--	}
--	if (ei->dentry) {
--		/* If the eventfs_inode already has a dentry, use it */
--		dentry = ei->dentry;
--		dget(dentry);
--		mutex_unlock(&eventfs_mutex);
--		return dentry;
--	}
--	mutex_unlock(&eventfs_mutex);
-+	dentry->d_fsdata = ei;		// NOTE: ei of _parent_
-+	lookup_file(dentry, mode, attr, data, fops);
- 
--	dentry = create_dir(ei, parent);
--
--	mutex_lock(&eventfs_mutex);
--
--	if (IS_ERR_OR_NULL(dentry) && !ei->is_freed) {
--		/*
--		 * When the mutex was released, something else could have
--		 * created the dentry for this e_dentry. In which case
--		 * use that one.
--		 *
--		 * If ei->is_freed is set, the e_dentry is currently on its
--		 * way to being freed.
--		 */
--		dentry = ei->dentry;
--		if (dentry)
--			dget(dentry);
--		mutex_unlock(&eventfs_mutex);
--		return dentry;
--	}
--
--	if (!ei->dentry && !ei->is_freed) {
--		ei->dentry = dentry;
--		eventfs_post_create_dir(ei);
--		dentry->d_fsdata = ei;
--	} else {
--		/*
--		 * Should never happen unless we get here due to being freed.
--		 * Otherwise it means two dentries exist with the same name.
--		 */
--		WARN_ON_ONCE(!ei->is_freed);
--		dentry = NULL;
--	}
--	mutex_unlock(&eventfs_mutex);
-+	*e_dentry = dentry;	// Remove me
- 
- 	return dentry;
- }
-@@ -607,79 +462,55 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
- 					  struct dentry *dentry,
- 					  unsigned int flags)
- {
--	const struct file_operations *fops;
--	const struct eventfs_entry *entry;
- 	struct eventfs_inode *ei_child;
- 	struct tracefs_inode *ti;
- 	struct eventfs_inode *ei;
--	struct dentry *ei_dentry = NULL;
--	struct dentry *ret = NULL;
--	struct dentry *d;
- 	const char *name = dentry->d_name.name;
--	umode_t mode;
--	void *data;
--	int idx;
--	int i;
--	int r;
-+	struct dentry *result = NULL;
- 
- 	ti = get_tracefs(dir);
- 	if (!(ti->flags & TRACEFS_EVENT_INODE))
--		return NULL;
--
--	/* Grab srcu to prevent the ei from going away */
--	idx = srcu_read_lock(&eventfs_srcu);
-+		return ERR_PTR(-EIO);
- 
--	/*
--	 * Grab the eventfs_mutex to consistent value from ti->private.
--	 * This s
--	 */
- 	mutex_lock(&eventfs_mutex);
--	ei = READ_ONCE(ti->private);
--	if (ei && !ei->is_freed)
--		ei_dentry = READ_ONCE(ei->dentry);
--	mutex_unlock(&eventfs_mutex);
--
--	if (!ei || !ei_dentry)
--		goto out;
- 
--	data = ei->data;
-+	ei = ti->private;
-+	if (!ei || ei->is_freed)
-+		goto enoent;
- 
--	list_for_each_entry_srcu(ei_child, &ei->children, list,
--				 srcu_read_lock_held(&eventfs_srcu)) {
-+	list_for_each_entry(ei_child, &ei->children, list) {
- 		if (strcmp(ei_child->name, name) != 0)
- 			continue;
--		ret = simple_lookup(dir, dentry, flags);
--		if (IS_ERR(ret))
--			goto out;
--		d = create_dir_dentry(ei, ei_child, ei_dentry);
--		dput(d);
-+		if (ei_child->is_freed)
-+			goto enoent;
-+		lookup_dir_entry(dentry, ei, ei_child);
- 		goto out;
- 	}
- 
--	for (i = 0; i < ei->nr_entries; i++) {
--		entry = &ei->entries[i];
--		if (strcmp(name, entry->name) == 0) {
--			void *cdata = data;
--			mutex_lock(&eventfs_mutex);
--			/* If ei->is_freed, then the event itself may be too */
--			if (!ei->is_freed)
--				r = entry->callback(name, &mode, &cdata, &fops);
--			else
--				r = -1;
--			mutex_unlock(&eventfs_mutex);
--			if (r <= 0)
--				continue;
--			ret = simple_lookup(dir, dentry, flags);
--			if (IS_ERR(ret))
--				goto out;
--			d = create_file_dentry(ei, i, ei_dentry, name, mode, cdata, fops);
--			dput(d);
--			break;
--		}
-+	for (int i = 0; i < ei->nr_entries; i++) {
-+		void *data;
-+		umode_t mode;
-+		const struct file_operations *fops;
-+		const struct eventfs_entry *entry = &ei->entries[i];
-+
-+		if (strcmp(name, entry->name) != 0)
-+			continue;
-+
-+		data = ei->data;
-+		if (entry->callback(name, &mode, &data, &fops) <= 0)
-+			goto enoent;
-+
-+		lookup_file_dentry(dentry, ei, i, mode, data, fops);
-+		goto out;
- 	}
-+
-+ enoent:
-+	/* Don't cache negative lookups, just return an error */
-+	result = ERR_PTR(-ENOENT);
-+
-  out:
--	srcu_read_unlock(&eventfs_srcu, idx);
--	return ret;
-+	mutex_unlock(&eventfs_mutex);
-+	return result;
- }
- 
- /*
-diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
-index f7cde61ff2fc..0d71dcea741a 100644
---- a/fs/tracefs/inode.c
-+++ b/fs/tracefs/inode.c
-@@ -495,75 +495,6 @@ struct dentry *tracefs_end_creating(struct dentry *dentry)
- 	return dentry;
- }
- 
--/**
-- * eventfs_start_creating - start the process of creating a dentry
-- * @name: Name of the file created for the dentry
-- * @parent: The parent dentry where this dentry will be created
-- *
-- * This is a simple helper function for the dynamically created eventfs
-- * files. When the directory of the eventfs files are accessed, their
-- * dentries are created on the fly. This function is used to start that
-- * process.
-- */
--struct dentry *eventfs_start_creating(const char *name, struct dentry *parent)
--{
--	struct dentry *dentry;
--	int error;
--
--	/* Must always have a parent. */
--	if (WARN_ON_ONCE(!parent))
--		return ERR_PTR(-EINVAL);
--
--	error = simple_pin_fs(&trace_fs_type, &tracefs_mount,
--			      &tracefs_mount_count);
--	if (error)
--		return ERR_PTR(error);
--
--	if (unlikely(IS_DEADDIR(parent->d_inode)))
--		dentry = ERR_PTR(-ENOENT);
--	else
--		dentry = lookup_one_len(name, parent, strlen(name));
--
--	if (!IS_ERR(dentry) && dentry->d_inode) {
--		dput(dentry);
--		dentry = ERR_PTR(-EEXIST);
--	}
--
--	if (IS_ERR(dentry))
--		simple_release_fs(&tracefs_mount, &tracefs_mount_count);
--
--	return dentry;
--}
--
--/**
-- * eventfs_failed_creating - clean up a failed eventfs dentry creation
-- * @dentry: The dentry to clean up
-- *
-- * If after calling eventfs_start_creating(), a failure is detected, the
-- * resources created by eventfs_start_creating() needs to be cleaned up. In
-- * that case, this function should be called to perform that clean up.
-- */
--struct dentry *eventfs_failed_creating(struct dentry *dentry)
--{
--	dput(dentry);
--	simple_release_fs(&tracefs_mount, &tracefs_mount_count);
--	return NULL;
--}
--
--/**
-- * eventfs_end_creating - Finish the process of creating a eventfs dentry
-- * @dentry: The dentry that has successfully been created.
-- *
-- * This function is currently just a place holder to match
-- * eventfs_start_creating(). In case any synchronization needs to be added,
-- * this function will be used to implement that without having to modify
-- * the callers of eventfs_start_creating().
-- */
--struct dentry *eventfs_end_creating(struct dentry *dentry)
--{
--	return dentry;
--}
--
- /* Find the inode that this will use for default */
- static struct inode *instance_inode(struct dentry *parent, struct inode *inode)
- {
-diff --git a/fs/tracefs/internal.h b/fs/tracefs/internal.h
-index 91c2bf0b91d9..143cfbfdbc5f 100644
---- a/fs/tracefs/internal.h
-+++ b/fs/tracefs/internal.h
-@@ -79,9 +79,6 @@ struct dentry *tracefs_start_creating(const char *name, struct dentry *parent);
- struct dentry *tracefs_end_creating(struct dentry *dentry);
- struct dentry *tracefs_failed_creating(struct dentry *dentry);
- struct inode *tracefs_get_inode(struct super_block *sb);
--struct dentry *eventfs_start_creating(const char *name, struct dentry *parent);
--struct dentry *eventfs_failed_creating(struct dentry *dentry);
--struct dentry *eventfs_end_creating(struct dentry *dentry);
- void eventfs_set_ei_status_free(struct tracefs_inode *ti, struct dentry *dentry);
- 
- #endif /* _TRACEFS_INTERNAL_H */
--- 
-2.43.0
-
+在 2024/1/30 15:47, Bitao Hu 写道:
+> When the watchdog determines that the current soft lockup is due
+> to an interrupt storm based on CPU utilization, reporting the
+> most frequent interrupts could be good enough for further
+> troubleshooting.
+>
+> Below is an example of interrupt storm. The call tree does not
+> provide useful information, but we can analyze which interrupt
+> caused the soft lockup by comparing the counts of interrupts.
+>
+> [ 2987.488075] watchdog: BUG: soft lockup - CPU#9 stuck for 23s! [kworker/9:1:214]
+> [ 2987.488607] CPU#9 Utilization every 4s during lockup:
+> [ 2987.488941]  #1:   0% system,          0% softirq,   100% hardirq,     0% idle
+> [ 2987.489357]  #2:   0% system,          0% softirq,   100% hardirq,     0% idle
+> [ 2987.489771]  #3:   0% system,          0% softirq,   100% hardirq,     0% idle
+> [ 2987.490186]  #4:   0% system,          0% softirq,   100% hardirq,     0% idle
+> [ 2987.490601]  #5:   0% system,          0% softirq,   100% hardirq,     0% idle
+> [ 2987.491034] CPU#9 Detect HardIRQ Time exceeds 50%. Most frequent HardIRQs:
+> [ 2987.491493]  #1: 330985      irq#7(IPI)
+> [ 2987.491743]  #2: 5000        irq#10(arch_timer)
+> [ 2987.492039]  #3: 9           irq#91(nvme0q2)
+> [ 2987.492318]  #4: 3           irq#118(virtio1-output.12)
+> ...
+> [ 2987.492728] Call trace:
+> [ 2987.492729]  __do_softirq+0xa8/0x364
+>
+> Signed-off-by: Bitao Hu <yaoma@linux.alibaba.com>
+> ---
+>   kernel/watchdog.c | 150 ++++++++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 150 insertions(+)
+>
+> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+> index 0efe9604c3c2..38fb18e17d71 100644
+> --- a/kernel/watchdog.c
+> +++ b/kernel/watchdog.c
+> @@ -25,6 +25,9 @@
+>   #include <linux/stop_machine.h>
+>   #include <linux/kernel_stat.h>
+>   #include <linux/math64.h>
+> +#include <linux/irq.h>
+> +#include <linux/bitops.h>
+> +#include <linux/irqdesc.h>
+>   
+>   #include <asm/irq_regs.h>
+>   #include <linux/kvm_para.h>
+> @@ -431,11 +434,15 @@ void touch_softlockup_watchdog_sync(void)
+>   	__this_cpu_write(watchdog_report_ts, SOFTLOCKUP_DELAY_REPORT);
+>   }
+>   
+> +static void set_potential_softlockup(unsigned long now, unsigned long touch_ts);
+> +
+>   static int is_softlockup(unsigned long touch_ts,
+>   			 unsigned long period_ts,
+>   			 unsigned long now)
+>   {
+>   	if ((watchdog_enabled & WATCHDOG_SOFTOCKUP_ENABLED) && watchdog_thresh) {
+> +		/* Softlockup may occur in the current period */
+> +		set_potential_softlockup(now, period_ts);
+>   		/* Warn about unreasonable delays. */
+>   		if (time_after(now, period_ts + get_softlockup_thresh()))
+>   			return now - touch_ts;
+> @@ -457,6 +464,8 @@ static enum cpu_usage_stat idx_to_stat[NUM_STATS_PER_GROUP] = {
+>   	CPUTIME_SYSTEM, CPUTIME_SOFTIRQ, CPUTIME_IRQ, CPUTIME_IDLE
+>   };
+>   
+> +static void print_hardirq_counts(void);
+> +
+>   static void update_cpustat(void)
+>   {
+>   	u8 i;
+> @@ -504,10 +513,150 @@ static void print_cpustat(void)
+>   			utilization[i][STATS_SYSTEM], utilization[i][STATS_SOFTIRQ],
+>   			utilization[i][STATS_HARDIRQ], utilization[i][STATS_IDLE]);
+>   	}
+> +	print_hardirq_counts();
+> +}
+> +
+> +#define HARDIRQ_PERCENT_THRESH		50
+> +#define NUM_HARDIRQ_REPORT		5
+> +static DECLARE_BITMAP(softlockup_hardirq_cpus, CONFIG_NR_CPUS);
+> +static DEFINE_PER_CPU(u32 *, hardirq_counts);
+> +
+> +static void find_counts_top(u32 *irq_counts, int *irq, u32 perirq_counts, int perirq_id, int range)
+> +{
+> +	unsigned int i, j;
+> +
+> +	for (i = 0; i < range; i++) {
+> +		if (perirq_counts > irq_counts[i]) {
+> +			for (j = range - 1; j > i; j--) {
+> +				irq_counts[j] = irq_counts[j - 1];
+> +				irq[j] = irq[j - 1];
+> +			}
+> +			irq_counts[j] = perirq_counts;
+> +			irq[j] = perirq_id;
+> +			break;
+> +		}
+> +	}
+> +}
+> +
+> +/*
+> + * If the proportion of time spent handling irq exceeds HARDIRQ_PERCENT_THRESH%
+> + * during sample_period, then it is necessary to record the counts of each irq.
+> + */
+> +static inline bool need_record_irq_counts(int type)
+> +{
+> +	int tail = this_cpu_read(cpustat_tail);
+> +	u8 utilization;
+> +
+> +	if (--tail == -1)
+> +		tail = 4;
+> +	utilization = this_cpu_read(cpustat_utilization[tail][type]);
+> +	return utilization > HARDIRQ_PERCENT_THRESH;
+>   }
+> +
+> +/*
+> + * Mark softlockup as potentially caused by hardirq
+> + */
+> +static void set_potential_softlockup_hardirq(void)
+> +{
+> +	u32 i;
+> +	u32 *counts = __this_cpu_read(hardirq_counts);
+> +	int cpu = smp_processor_id();
+> +	struct irq_desc *desc;
+> +
+> +	if (!need_record_irq_counts(STATS_HARDIRQ))
+> +		return;
+> +
+> +	if (!test_bit(cpu, softlockup_hardirq_cpus)) {
+> +		counts = kmalloc_array(nr_irqs, sizeof(u32), GFP_ATOMIC);
+> +		if (!counts)
+> +			return;
+> +		for_each_irq_desc(i, desc) {
+> +			if (!desc)
+> +				continue;
+> +			counts[i] = desc->kstat_irqs ?
+> +				*this_cpu_ptr(desc->kstat_irqs) : 0;
+> +		}
+> +		__this_cpu_write(hardirq_counts, counts);
+> +		set_bit(cpu, softlockup_hardirq_cpus);
+> +	}
+> +}
+> +
+> +static void clear_potential_softlockup_hardirq(void)
+> +{
+> +	u32 *counts = __this_cpu_read(hardirq_counts);
+> +	int cpu = smp_processor_id();
+> +
+> +	if (test_bit(cpu, softlockup_hardirq_cpus)) {
+> +		kfree(counts);
+> +		counts = NULL;
+> +		__this_cpu_write(hardirq_counts, counts);
+> +		clear_bit(cpu, softlockup_hardirq_cpus);
+> +	}
+> +}
+> +
+> +/*
+> + * Mark that softlockup may occur
+> + */
+> +static void set_potential_softlockup(unsigned long now, unsigned long period_ts)
+> +{
+> +	if (time_after_eq(now, period_ts + get_softlockup_thresh() / 5))
+> +		set_potential_softlockup_hardirq();
+> +}
+> +
+> +static void clear_potential_softlockup(void)
+> +{
+> +	clear_potential_softlockup_hardirq();
+> +}
+> +
+> +static void print_hardirq_counts(void)
+> +{
+> +	u32 i;
+> +	struct irq_desc *desc;
+> +	u32 counts_diff;
+> +	u32 *counts = __this_cpu_read(hardirq_counts);
+> +	int cpu = smp_processor_id();
+> +	u32 hardirq_counts_top[NUM_HARDIRQ_REPORT] = {0, 0, 0, 0, 0};
+> +	int hardirq_top[NUM_HARDIRQ_REPORT] = {-1, -1, -1, -1, -1};
+"hardirq_counts_top" and "hardirq_top" seem like two members of a struct,
+working together to record the most suspicious irq, so wouldn't using a 
+struct make it clearer?
+> +
+> +	if (test_bit(cpu, softlockup_hardirq_cpus)) {
+> +		/* Find the top NUM_HARDIRQ_REPORT most frequent interrupts */
+> +		for_each_irq_desc(i, desc) {
+> +			if (!desc)
+> +				continue;
+> +			counts_diff = desc->kstat_irqs ?
+> +				*this_cpu_ptr(desc->kstat_irqs) - counts[i] : 0;
+> +			find_counts_top(hardirq_counts_top, hardirq_top,
+> +					counts_diff, i, NUM_HARDIRQ_REPORT);
+> +		}
+> +		/*
+> +		 * We do not want the "watchdog: " prefix on every line,
+> +		 * hence we use "printk" instead of "pr_crit".
+> +		 */
+> +		printk(KERN_CRIT "CPU#%d Detect HardIRQ Time exceeds %d%%. Most frequent HardIRQs:\n",
+> +			smp_processor_id(), HARDIRQ_PERCENT_THRESH);
+> +		for (i = 0; i < NUM_HARDIRQ_REPORT; i++) {
+> +			if (hardirq_top[i] == -1)
+> +				break;
+> +			desc = irq_to_desc(hardirq_top[i]);
+> +			if (desc && desc->action)
+> +				printk(KERN_CRIT "\t#%u: %-10u\tirq#%d(%s)\n",
+> +					i+1, hardirq_counts_top[i],
+> +					hardirq_top[i], desc->action->name);
+> +			else
+> +				printk(KERN_CRIT "\t#%u: %-10u\tirq#%d\n",
+> +					i+1, hardirq_counts_top[i],
+> +					hardirq_top[i]);
+> +		}
+> +		if (!need_record_irq_counts(STATS_HARDIRQ))
+> +			clear_potential_softlockup_hardirq();
+> +	}
+> +}
+> +
+>   #else
+>   static inline void update_cpustat(void) { }
+>   static inline void print_cpustat(void) { }
+> +static inline void set_potential_softlockup(unsigned long now, unsigned long period_ts) { }
+> +static inline void clear_potential_softlockup(void) { }
+>   #endif
+>   
+>   /* watchdog detector functions */
+> @@ -525,6 +674,7 @@ static DEFINE_PER_CPU(struct cpu_stop_work, softlockup_stop_work);
+>   static int softlockup_fn(void *data)
+>   {
+>   	update_touch_ts();
+> +	clear_potential_softlockup();
+>   	complete(this_cpu_ptr(&softlockup_completion));
+>   
+>   	return 0;
 
