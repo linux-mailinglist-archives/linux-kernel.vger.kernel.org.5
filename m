@@ -1,366 +1,185 @@
-Return-Path: <linux-kernel+bounces-47267-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47268-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB879844B25
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:39:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48789844B29
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:39:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6393D2925D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:39:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8A001F2B6DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:39:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D8C13CF48;
-	Wed, 31 Jan 2024 22:37:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 812D53A8ED;
+	Wed, 31 Jan 2024 22:38:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aBhqhn4j"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fPIp5Ubf"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C94043B29A
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 22:37:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 159933A1CB
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 22:38:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706740656; cv=none; b=KOhDYl/Bzk0qurce9PwMd7q0QvO6zVp4tdWXcdGOtDj5D5nLuTYd/xgdYLb8SwGFWpE89KBLQt6fAbj6ym7h6DcxpSMxdlhfTFNbWFIzkL/2j18L7lsl34qQ6P3OpHCLM3ho6yiU2i/tjdruZNdMb3WxbSXstqhCQWOaHL+yLWk=
+	t=1706740724; cv=none; b=h9IwbZxi0qaDOPxmmoybloxNFTWaPjM81Xy7EppJVuEYKOhBLL2kAFVCIjMFyEyA33uAEUOML4anYy/vthynMFRyOijcLJZYcEtkgylPm3Yi0qYn9Mm8MLRlXDDBOnoIuqN3IUD5Q77JDNZwzr93ZACcZQgwJj60WgeegaWi07M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706740656; c=relaxed/simple;
-	bh=WvEjD8jcit9p/EBjrR1N6NawFgsZhp6NvZZ3ZQiGnQs=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=f6ROl58LQJbZP/kBK3jgvGkmSJC8STrp9W9+wKntJHtQvqyK9qSznHQnZhA6jrN3iXnvdabf9GtYfSa9JfeO/v6NuvwrD3EJcxoqunXBaQ6wgDjSl6WTZCXGUeQMQcCtyrTk8sacX1hhk1KjhWcAIIA7qnAx5blX9P88IBcjtpc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aBhqhn4j; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-51124e08565so448130e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 14:37:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706740652; x=1707345452; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=okzddJtDl2wZ92vdZoXz+eQZ4Yo4IwWgeQb2Nkz5V54=;
-        b=aBhqhn4jpqKVsL42Zp9armYhYRFNPAKOL2ufm6CGUzf9KNynM7FSlLgUudv2Bmch5/
-         ArugxE8+TRa05dVM6JoKuDq83PYn/RPJNFDLdbR+XqVqJ/TXvsW89+tGpkw4Mlobwj+A
-         uL6+WXcl8wn1hVZTEDRezstVFFttL0AmCOfXItDGvOuBgpIH/jzKphwan99TnMqa+03p
-         ugng4cv1CNCY+ze9NLrxPIFGMYtsxD4Mg1QnnJookpddW2HMZyJABn0+Eda/x9dzgxzG
-         0R2oQpC3S1kBdc13KPEE8sKZ61oiL1kfVXf4tkSlk3ZMNEr9QVNZtxEq4GfVS1uwppc/
-         saWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706740652; x=1707345452;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=okzddJtDl2wZ92vdZoXz+eQZ4Yo4IwWgeQb2Nkz5V54=;
-        b=JklKR9csx1glPjZAi3moQvN2JBMvU1M7i+MBpolPqPCaAyC723/bt39lrTFDCiet30
-         ewThfO036wEUyHDa/7EMkFOyK6opuKwgGYOo5HgPHaaMA/p73Ek9g3o1KazR2/TzYVlW
-         MW/hT7moNmK6c2SZf2InHEvE8dB+71zMS/+QpuVl5Z+oWdqWNq/glezXFY82xNGuF02J
-         F313wjV50MCBfzG5JMT3DxZti7i2bnse+gvfA7yJlgO2GL5qVb7GKAxobUmBXYUzfMeQ
-         tXeQzQNYoK/PzmpZfXYLhKQJCIWBcNhdiG8HQsDDUcxp1TR8/G6fJmJ+c9nuOQSJLkEG
-         zoiQ==
-X-Gm-Message-State: AOJu0YxcdiNfWYrMIk3400lCBC4CijYWctsCtTKVXOuSTT6pgd34ObO1
-	zjfO48yEByVcYLn5GCAjvKFt1sAsyySJXreEYZDowPL1HHoGgNl0pvYtyfFkQlc=
-X-Google-Smtp-Source: AGHT+IGH+EAgSWIqZG+M7RJ7mnt9a9Op044NAH4HNCWte2NJHhvM0dhLGwPCcBNJqTdJxc5Kkuqs9w==
-X-Received: by 2002:a05:6512:4db:b0:511:211b:43e0 with SMTP id w27-20020a05651204db00b00511211b43e0mr607338lfq.67.1706740651893;
-        Wed, 31 Jan 2024 14:37:31 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVmMjpi/JZHvgCPf0wWOUcgxhE44ZJ1CcrefxPHn3urkFqe8PyCMR2Ap73e1z7vbcWYclVFMIwn6t/jRE0miJi/wOngtnIiuy17U+6HTtTIPJyiDTB3FrdpEfhTCCZ8MSyL0M0+KO5ZLfo02uzSy6kyxqouDICtztL4lQtL+eSvLKZVUDYwjq9QJ/ni8VJEfSJTBgwG3DPoZSipr2zFbie9GXaNMHvou8x1aGcpIjr+hVt6nZRisYSM37W0CvNQd5y11I84WJAVglqnbFttCIyTHCWaxI36Pd3CFqsrJJRTOW63Hxy6cf4AA6VOSCK3eA/dC68tGvDVKbE1KKAzRzsylgHnVxQD/6i4d75wIwhWb/AaqLbLnqh2wf2WbEL2OBGXQDBTujPoGLRWTQhow214dH9W6M1qngNCQRjFjUSG8zOryilrr2nYqStsjEFxr6ZpDw7uUAln9Tmbig==
-Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id v25-20020a05651203b900b0051023149df3sm1976021lfp.248.2024.01.31.14.37.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 14:37:31 -0800 (PST)
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 31 Jan 2024 23:37:25 +0100
-Subject: [PATCH 6/6] wifi: cw1200: Convert to GPIO descriptors
+	s=arc-20240116; t=1706740724; c=relaxed/simple;
+	bh=0ownxDdR6itc76czu9AnVA9VuquUBxUT1Bl8SDFwWqg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dCMoL0llvhB4rB4CA6sywsr6m0f8zt+ceKyn+ivVPIKEtqZr3hZ37qT3tcfI5fHylypzr43PXOXTu5GgIGEVJZmS9Y3t4oLq0Sz127a6edCm7Kk5HK6X5oaFi0gCnZOLQBpvQ/4kiGS33Gm2PkSc7ERfFSoXYwiibKyP8rl7etM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fPIp5Ubf; arc=none smtp.client-ip=134.134.136.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706740723; x=1738276723;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=0ownxDdR6itc76czu9AnVA9VuquUBxUT1Bl8SDFwWqg=;
+  b=fPIp5UbfGeItuikkyXxw4qpw72OF2LsbpNT+NesniMB184Ze+GNp00NJ
+   J10mPmO0yjViEpFLDdR4bjuCPK5yyjTFwza/ToFRB1DpJtHTvtiBoLPaR
+   m7ps38Q4o2Z8gEJQUK1QizeHKeLUQD5AOMXQCtofvdKi2SjeGNu1OdMuj
+   sSNhHv3ALN733CzuZ8JHMjfuBt6u+7aiWRMwHOGlZmU3xXNxCt7fBe5e0
+   0DO0LVL1oI/4ySxOnEq6bg+HNy7eHpKr47YMr2/WwxJaMPBeF+S2cLhtm
+   zWds+fcQcdDxzIfiv0d1dtvIiARx9TlaXGNcyD4SNJJvaK8TEOo4MbVvo
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="407462368"
+X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
+   d="scan'208";a="407462368"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 14:38:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
+   d="scan'208";a="4229963"
+Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
+  by fmviesa004.fm.intel.com with ESMTP; 31 Jan 2024 14:38:32 -0800
+Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rVJDy-00026U-0W;
+	Wed, 31 Jan 2024 22:38:30 +0000
+Date: Thu, 1 Feb 2024 06:37:49 +0800
+From: kernel test robot <lkp@intel.com>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Kees Cook <keescook@chromium.org>
+Cc: oe-kbuild-all@lists.linux.dev,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/5] mm: ptdump: Have ptdump_check_wx() return bool
+Message-ID: <202402010618.9izDkpGF-lkp@intel.com>
+References: <7943149fe955458cb7b57cd483bf41a3aad94684.1706610398.git.christophe.leroy@csgroup.eu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240131-descriptors-wireless-v1-6-e1c7c5d68746@linaro.org>
-References: <20240131-descriptors-wireless-v1-0-e1c7c5d68746@linaro.org>
-In-Reply-To: <20240131-descriptors-wireless-v1-0-e1c7c5d68746@linaro.org>
-To: =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>, 
- Kalle Valo <kvalo@kernel.org>, Arend van Spriel <aspriel@gmail.com>, 
- Franky Lin <franky.lin@broadcom.com>, 
- Hante Meuleman <hante.meuleman@broadcom.com>, 
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
- Arnd Bergmann <arnd@arndb.de>, Lee Jones <lee@kernel.org>, 
- Brian Norris <briannorris@chromium.org>, 
- Srinivasan Raju <srini.raju@purelifi.com>
-Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, 
- brcm80211-dev-list.pdl@broadcom.com, 
- Linus Walleij <linus.walleij@linaro.org>
-X-Mailer: b4 0.12.4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7943149fe955458cb7b57cd483bf41a3aad94684.1706610398.git.christophe.leroy@csgroup.eu>
 
-The CW1200 uses two GPIOs to control the powerup and reset
-pins, get these from GPIO descriptors instead of being passed
-as platform data from boardfiles.
+Hi Christophe,
 
-The RESET line will need to be marked as active low as we will
-let gpiolib handle the polarity inversion.
+kernel test robot noticed the following build warnings:
 
-The SDIO case is a bit special since the "card" need to be
-powered up before it gets detected on the SDIO bus and
-properly probed. Fix this by using board-specific GPIOs
-assigned to device "NULL".
+[auto build test WARNING on akpm-mm/mm-everything]
 
-There are currently no in-tree users.
+url:    https://github.com/intel-lab-lkp/linux/commits/Christophe-Leroy/arm-ptdump-Rename-CONFIG_DEBUG_WX-to-CONFIG_ARM_DEBUG_WX/20240130-183913
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/7943149fe955458cb7b57cd483bf41a3aad94684.1706610398.git.christophe.leroy%40csgroup.eu
+patch subject: [PATCH v2 4/5] mm: ptdump: Have ptdump_check_wx() return bool
+config: i386-randconfig-141-20240131 (https://download.01.org/0day-ci/archive/20240201/202402010618.9izDkpGF-lkp@intel.com/config)
+compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240201/202402010618.9izDkpGF-lkp@intel.com/reproduce)
 
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
- drivers/net/wireless/st/cw1200/cw1200_sdio.c | 42 +++++++++-------
- drivers/net/wireless/st/cw1200/cw1200_spi.c  | 71 ++++++++++++++++------------
- include/linux/platform_data/net-cw1200.h     |  4 --
- 3 files changed, 65 insertions(+), 52 deletions(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402010618.9izDkpGF-lkp@intel.com/
 
-diff --git a/drivers/net/wireless/st/cw1200/cw1200_sdio.c b/drivers/net/wireless/st/cw1200/cw1200_sdio.c
-index 4c30b5772ce0..00c4731d8f8e 100644
---- a/drivers/net/wireless/st/cw1200/cw1200_sdio.c
-+++ b/drivers/net/wireless/st/cw1200/cw1200_sdio.c
-@@ -8,7 +8,7 @@
- 
- #include <linux/module.h>
- #include <linux/interrupt.h>
--#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/delay.h>
- #include <linux/mmc/host.h>
- #include <linux/mmc/sdio_func.h>
-@@ -178,12 +178,15 @@ static int cw1200_sdio_irq_unsubscribe(struct hwbus_priv *self)
- 	return ret;
- }
- 
-+/* Like the rest of the driver, this only supports one device per system */
-+static struct gpio_desc *cw1200_reset;
-+static struct gpio_desc *cw1200_powerup;
-+
- static int cw1200_sdio_off(const struct cw1200_platform_data_sdio *pdata)
- {
--	if (pdata->reset) {
--		gpio_set_value(pdata->reset, 0);
-+	if (cw1200_reset) {
-+		gpiod_set_value(cw1200_reset, 0);
- 		msleep(30); /* Min is 2 * CLK32K cycles */
--		gpio_free(pdata->reset);
- 	}
- 
- 	if (pdata->power_ctrl)
-@@ -196,16 +199,21 @@ static int cw1200_sdio_off(const struct cw1200_platform_data_sdio *pdata)
- 
- static int cw1200_sdio_on(const struct cw1200_platform_data_sdio *pdata)
- {
--	/* Ensure I/Os are pulled low */
--	if (pdata->reset) {
--		gpio_request(pdata->reset, "cw1200_wlan_reset");
--		gpio_direction_output(pdata->reset, 0);
-+	/* Ensure I/Os are pulled low (reset is active low) */
-+	cw1200_reset = devm_gpiod_get_optional(NULL, "reset", GPIOD_OUT_HIGH);
-+	if (IS_ERR(cw1200_reset)) {
-+		pr_err("could not get CW1200 SDIO reset GPIO\n");
-+		return PTR_ERR(cw1200_reset);
- 	}
--	if (pdata->powerup) {
--		gpio_request(pdata->powerup, "cw1200_wlan_powerup");
--		gpio_direction_output(pdata->powerup, 0);
-+	gpiod_set_consumer_name(cw1200_reset, "cw1200_wlan_reset");
-+	cw1200_powerup = devm_gpiod_get_optional(NULL, "powerup", GPIOD_OUT_LOW);
-+	if (IS_ERR(cw1200_powerup)) {
-+		pr_err("could not get CW1200 SDIO powerup GPIO\n");
-+		return PTR_ERR(cw1200_powerup);
- 	}
--	if (pdata->reset || pdata->powerup)
-+	gpiod_set_consumer_name(cw1200_powerup, "cw1200_wlan_powerup");
-+
-+	if (cw1200_reset || cw1200_powerup)
- 		msleep(10); /* Settle time? */
- 
- 	/* Enable 3v3 and 1v8 to hardware */
-@@ -226,13 +234,13 @@ static int cw1200_sdio_on(const struct cw1200_platform_data_sdio *pdata)
- 	}
- 
- 	/* Enable POWERUP signal */
--	if (pdata->powerup) {
--		gpio_set_value(pdata->powerup, 1);
-+	if (cw1200_powerup) {
-+		gpiod_set_value(cw1200_powerup, 1);
- 		msleep(250); /* or more..? */
- 	}
--	/* Enable RSTn signal */
--	if (pdata->reset) {
--		gpio_set_value(pdata->reset, 1);
-+	/* Deassert RSTn signal, note active low */
-+	if (cw1200_reset) {
-+		gpiod_set_value(cw1200_reset, 0);
- 		msleep(50); /* Or more..? */
- 	}
- 	return 0;
-diff --git a/drivers/net/wireless/st/cw1200/cw1200_spi.c b/drivers/net/wireless/st/cw1200/cw1200_spi.c
-index c82c0688b549..9df7f46588b4 100644
---- a/drivers/net/wireless/st/cw1200/cw1200_spi.c
-+++ b/drivers/net/wireless/st/cw1200/cw1200_spi.c
-@@ -11,7 +11,7 @@
-  */
- 
- #include <linux/module.h>
--#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/delay.h>
- #include <linux/spinlock.h>
- #include <linux/interrupt.h>
-@@ -38,6 +38,8 @@ struct hwbus_priv {
- 	const struct cw1200_platform_data_spi *pdata;
- 	spinlock_t		lock; /* Serialize all bus operations */
- 	wait_queue_head_t       wq;
-+	struct gpio_desc	*reset;
-+	struct gpio_desc	*powerup;
- 	int claimed;
- };
- 
-@@ -275,12 +277,12 @@ static void cw1200_spi_irq_unsubscribe(struct hwbus_priv *self)
- 	free_irq(self->func->irq, self);
- }
- 
--static int cw1200_spi_off(const struct cw1200_platform_data_spi *pdata)
-+static int cw1200_spi_off(struct hwbus_priv *self, const struct cw1200_platform_data_spi *pdata)
- {
--	if (pdata->reset) {
--		gpio_set_value(pdata->reset, 0);
-+	if (self->reset) {
-+		/* Assert RESET, note active low */
-+		gpiod_set_value(self->reset, 1);
- 		msleep(30); /* Min is 2 * CLK32K cycles */
--		gpio_free(pdata->reset);
- 	}
- 
- 	if (pdata->power_ctrl)
-@@ -291,18 +293,12 @@ static int cw1200_spi_off(const struct cw1200_platform_data_spi *pdata)
- 	return 0;
- }
- 
--static int cw1200_spi_on(const struct cw1200_platform_data_spi *pdata)
-+static int cw1200_spi_on(struct hwbus_priv *self, const struct cw1200_platform_data_spi *pdata)
- {
- 	/* Ensure I/Os are pulled low */
--	if (pdata->reset) {
--		gpio_request(pdata->reset, "cw1200_wlan_reset");
--		gpio_direction_output(pdata->reset, 0);
--	}
--	if (pdata->powerup) {
--		gpio_request(pdata->powerup, "cw1200_wlan_powerup");
--		gpio_direction_output(pdata->powerup, 0);
--	}
--	if (pdata->reset || pdata->powerup)
-+	gpiod_direction_output(self->reset, 1); /* Active low */
-+	gpiod_direction_output(self->powerup, 0);
-+	if (self->reset || self->powerup)
- 		msleep(10); /* Settle time? */
- 
- 	/* Enable 3v3 and 1v8 to hardware */
-@@ -323,13 +319,13 @@ static int cw1200_spi_on(const struct cw1200_platform_data_spi *pdata)
- 	}
- 
- 	/* Enable POWERUP signal */
--	if (pdata->powerup) {
--		gpio_set_value(pdata->powerup, 1);
-+	if (self->powerup) {
-+		gpiod_set_value(self->powerup, 1);
- 		msleep(250); /* or more..? */
- 	}
--	/* Enable RSTn signal */
--	if (pdata->reset) {
--		gpio_set_value(pdata->reset, 1);
-+	/* Assert RSTn signal, note active low */
-+	if (self->reset) {
-+		gpiod_set_value(self->reset, 0);
- 		msleep(50); /* Or more..? */
- 	}
- 	return 0;
-@@ -381,20 +377,33 @@ static int cw1200_spi_probe(struct spi_device *func)
- 		spi_get_chipselect(func, 0), func->mode, func->bits_per_word,
- 		func->max_speed_hz);
- 
--	if (cw1200_spi_on(plat_data)) {
-+	self = devm_kzalloc(&func->dev, sizeof(*self), GFP_KERNEL);
-+	if (!self) {
-+		pr_err("Can't allocate SPI hwbus_priv.");
-+		return -ENOMEM;
-+	}
-+
-+	/* Request reset asserted */
-+	self->reset = devm_gpiod_get_optional(&func->dev, "reset", GPIOD_OUT_HIGH);
-+	if (IS_ERR(self->reset))
-+		return dev_err_probe(&func->dev, PTR_ERR(self->reset),
-+				     "could not get reset GPIO\n");
-+	gpiod_set_consumer_name(self->reset, "cw1200_wlan_reset");
-+
-+	self->powerup = devm_gpiod_get_optional(&func->dev, "powerup", GPIOD_OUT_LOW);
-+	if (IS_ERR(self->powerup))
-+		return dev_err_probe(&func->dev, PTR_ERR(self->powerup),
-+				     "could not get powerup GPIO\n");
-+	gpiod_set_consumer_name(self->reset, "cw1200_wlan_powerup");
-+
-+	if (cw1200_spi_on(self, plat_data)) {
- 		pr_err("spi_on() failed!\n");
--		return -1;
-+		return -ENODEV;
- 	}
- 
- 	if (spi_setup(func)) {
- 		pr_err("spi_setup() failed!\n");
--		return -1;
--	}
--
--	self = devm_kzalloc(&func->dev, sizeof(*self), GFP_KERNEL);
--	if (!self) {
--		pr_err("Can't allocate SPI hwbus_priv.");
--		return -ENOMEM;
-+		return -ENODEV;
- 	}
- 
- 	self->pdata = plat_data;
-@@ -416,7 +425,7 @@ static int cw1200_spi_probe(struct spi_device *func)
- 
- 	if (status) {
- 		cw1200_spi_irq_unsubscribe(self);
--		cw1200_spi_off(plat_data);
-+		cw1200_spi_off(self, plat_data);
- 	}
- 
- 	return status;
-@@ -434,7 +443,7 @@ static void cw1200_spi_disconnect(struct spi_device *func)
- 			self->core = NULL;
- 		}
- 	}
--	cw1200_spi_off(dev_get_platdata(&func->dev));
-+	cw1200_spi_off(self, dev_get_platdata(&func->dev));
- }
- 
- static int __maybe_unused cw1200_spi_suspend(struct device *dev)
-diff --git a/include/linux/platform_data/net-cw1200.h b/include/linux/platform_data/net-cw1200.h
-index c510734405bb..89d0ec6f7d46 100644
---- a/include/linux/platform_data/net-cw1200.h
-+++ b/include/linux/platform_data/net-cw1200.h
-@@ -14,8 +14,6 @@ struct cw1200_platform_data_spi {
- 
- 	/* All others are optional */
- 	bool have_5ghz;
--	int reset;                     /* GPIO to RSTn signal (0 disables) */
--	int powerup;                   /* GPIO to POWERUP signal (0 disables) */
- 	int (*power_ctrl)(const struct cw1200_platform_data_spi *pdata,
- 			  bool enable); /* Control 3v3 / 1v8 supply */
- 	int (*clk_ctrl)(const struct cw1200_platform_data_spi *pdata,
-@@ -30,8 +28,6 @@ struct cw1200_platform_data_sdio {
- 	/* All others are optional */
- 	bool have_5ghz;
- 	bool no_nptb;       /* SDIO hardware does not support non-power-of-2-blocksizes */
--	int reset;          /* GPIO to RSTn signal (0 disables) */
--	int powerup;        /* GPIO to POWERUP signal (0 disables) */
- 	int irq;            /* IRQ line or 0 to use SDIO IRQ */
- 	int (*power_ctrl)(const struct cw1200_platform_data_sdio *pdata,
- 			  bool enable); /* Control 3v3 / 1v8 supply */
+All warnings (new ones prefixed by >>):
+
+   arch/x86/mm/dump_pagetables.c:365:6: error: cannot combine with previous 'type-name' declaration specifier
+     365 | bool void ptdump_walk_pgd_level_core(struct seq_file *m,
+         |      ^
+>> arch/x86/mm/dump_pagetables.c:365:11: warning: no previous prototype for function 'ptdump_walk_pgd_level_core' [-Wmissing-prototypes]
+     365 | bool void ptdump_walk_pgd_level_core(struct seq_file *m,
+         |           ^
+   arch/x86/mm/dump_pagetables.c:365:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+     365 | bool void ptdump_walk_pgd_level_core(struct seq_file *m,
+         | ^
+         | static 
+   1 warning and 1 error generated.
+
+
+vim +/ptdump_walk_pgd_level_core +365 arch/x86/mm/dump_pagetables.c
+
+   364	
+ > 365	bool void ptdump_walk_pgd_level_core(struct seq_file *m,
+   366					       struct mm_struct *mm, pgd_t *pgd,
+   367					       bool checkwx, bool dmesg)
+   368	{
+   369		const struct ptdump_range ptdump_ranges[] = {
+   370	#ifdef CONFIG_X86_64
+   371		{0, PTRS_PER_PGD * PGD_LEVEL_MULT / 2},
+   372		{GUARD_HOLE_END_ADDR, ~0UL},
+   373	#else
+   374		{0, ~0UL},
+   375	#endif
+   376		{0, 0}
+   377	};
+   378	
+   379		struct pg_state st = {
+   380			.ptdump = {
+   381				.note_page	= note_page,
+   382				.effective_prot = effective_prot,
+   383				.range		= ptdump_ranges
+   384			},
+   385			.level = -1,
+   386			.to_dmesg	= dmesg,
+   387			.check_wx	= checkwx,
+   388			.seq		= m
+   389		};
+   390	
+   391		ptdump_walk_pgd(&st.ptdump, mm, pgd);
+   392	
+   393		if (!checkwx)
+   394			return true;
+   395		if (st.wx_pages) {
+   396			pr_info("x86/mm: Checked W+X mappings: FAILED, %lu W+X pages found.\n",
+   397				st.wx_pages);
+   398	
+   399			return false;
+   400		} else {
+   401			pr_info("x86/mm: Checked W+X mappings: passed, no W+X pages found.\n");
+   402	
+   403			return true;
+   404		}
+   405	}
+   406	
 
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
