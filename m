@@ -1,59 +1,60 @@
-Return-Path: <linux-kernel+bounces-47161-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47162-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49D74844A02
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:28:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C56D844A05
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:28:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDE681F21CEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:28:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 730221F24E1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:28:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65F173A1C4;
-	Wed, 31 Jan 2024 21:27:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 102E23986C;
+	Wed, 31 Jan 2024 21:27:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="GZm9pt2z"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="B1tOnkNg"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E931139AD5;
-	Wed, 31 Jan 2024 21:27:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB97239859;
+	Wed, 31 Jan 2024 21:27:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706736431; cv=none; b=IyLvipW1a6wbmxfZaUWhTwXscEasTIb4AEl5f/oTILJEU4J5CSULGK4FFlQVI/63yQ0FEP7rAgjoSC8GlK0VWo8zjDhwjNIcpoBeOdOoZ26GeOa/ewExVpwKDeWGKSHo33X52ZFxZFV3p0SsLyf0sYoB+4vnUVtEN5McYH67QOM=
+	t=1706736442; cv=none; b=BK2T+drZ/YssrJGQP9KOxrCvnCQei5taA9qdsqG5jeKE6+xroMS0h8FYP0hIfOOXek48lRi9oC7hycGbunTqfXOtG7kw7fQBLyXasf+bteGAQpMvKPUycopVSbjFYi/GtLn9PSTcICNrwcqS4bhI0oLsMwfCz2w6rLHhoed69xY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706736431; c=relaxed/simple;
-	bh=Zt1G8AZNItAAIfTTJxEAMYILTLrfahkLOO1UxAxM6hE=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=lIJaglX/xxV0stgAiPoxelodkyhHJJyF+55MKCIQex0WD6ZQ03sUJHrHX0IBnX/QgS7L9B+fJ4pUKu8hkaSkoAyI4O0oCALollmpoL7OKDQcR/0WWRuEb2kgyKvCSqM7QMQidcgPu38mpyePigWnXmWz//Iw9kLeSXfdDzRFxK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=GZm9pt2z; arc=none smtp.client-ip=198.47.23.248
+	s=arc-20240116; t=1706736442; c=relaxed/simple;
+	bh=4UZvqj+jhQZfdAZz5p5AwA7e6ez97Ilgo+T1DbybycE=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=r3cXVPjhcNb53oa1Uv0G+mVl6w1OwTal9ECv/az+zIL9An4OQlmpGLFs/QCzlrXeZi1neiDCWEvBSPR+MxrY99oUqRa8/MH/L5FpbTSdQtoxWenSrv5NId5VfSYpRzU942X2uGi0myUiQbRC0btQVL3Mhguc/K+Fe+eoNsgely8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=B1tOnkNg; arc=none smtp.client-ip=198.47.19.141
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40VLQfb2128548;
-	Wed, 31 Jan 2024 15:26:41 -0600
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40VLQx8P119705;
+	Wed, 31 Jan 2024 15:26:59 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706736401;
-	bh=emvhLlu/Lf9BG1U3YSbdeyD0o8sfDbBQciiGQFlSHoU=;
-	h=From:To:CC:Subject:Date;
-	b=GZm9pt2z+antuuEx734zaHeR7F7O+PBAaJg3+Qp1OC3VDBunxV6DMWcyWvsBffsz6
-	 MOIjziywPQHBdbJvKzBMFunahSepyXCZHjtJnDN0NTwzTU/SNr7jLRG56/VrsdcOBE
-	 8BLU7eC9Dq8Bg4CdF8WbihC8b3dmLlv46sRq2/gs=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40VLQfZ7020257
+	s=ti-com-17Q1; t=1706736419;
+	bh=wdG//Xd6xd9OLxbOdH6iKiAlTR9/FDqTxdm2k9x4EvE=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References;
+	b=B1tOnkNg0oZzW2nZkUUoXW8fn2uqwi2vum5KqGt7oRXCfG3mZCs6xKCCl+Pk78OtP
+	 JFpXYTMiQJgbNhJkU1sm2tgI8AZfzAcv2QAsbkUVPEK2IXoFdIKveYiQH6rD/Xt7dj
+	 7W8hy9uVAnZ/QMivd0XNo4/9P58zj7UoKY84kiIA=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40VLQxUV023324
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 31 Jan 2024 15:26:41 -0600
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+	Wed, 31 Jan 2024 15:26:59 -0600
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 31
- Jan 2024 15:26:41 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ Jan 2024 15:26:58 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 31 Jan 2024 15:26:41 -0600
+ Frontend Transport; Wed, 31 Jan 2024 15:26:58 -0600
 Received: from udba0500997.dhcp.ti.com (udba0500997.dhcp.ti.com [128.247.81.249])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40VLQfKP028966;
-	Wed, 31 Jan 2024 15:26:41 -0600
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40VLQfKQ028966;
+	Wed, 31 Jan 2024 15:26:58 -0600
 From: Brandon Brnich <b-brnich@ti.com>
 To: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
         Tero
@@ -79,10 +80,12 @@ To: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
         <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, Darren Etheridge <detheridge@ti.com>
 CC: Brandon Brnich <b-brnich@ti.com>
-Subject: [PATCH v3 0/6] Add Support for Wave5 on TI Devices
-Date: Wed, 31 Jan 2024 15:26:19 -0600
-Message-ID: <20240131212625.1862775-1-b-brnich@ti.com>
+Subject: [PATCH v3 1/6] arm64: dts: ti: k3-j784s4: Add Wave5 Video Encoder/Decoder Node
+Date: Wed, 31 Jan 2024 15:26:20 -0600
+Message-ID: <20240131212625.1862775-2-b-brnich@ti.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240131212625.1862775-1-b-brnich@ti.com>
+References: <20240131212625.1862775-1-b-brnich@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -93,54 +96,78 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-This series is responsible for adding support for Wave5 driver[0]
-across numerous TI K3 platforms.
+This patch adds support for the Wave521cl on the J784S4-evm.
 
-[0]: https://lore.kernel.org/all/ae6d2ad3-0b2a-462a-a9eb-9ce01e7a7f5e@xs4all.nl/
+Signed-off-by: Brandon Brnich <b-brnich@ti.com>
+---
+ arch/arm64/boot/dts/ti/k3-j784s4-evm.dts   |  8 ++++++++
+ arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 20 ++++++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-j784s4.dtsi      |  2 ++
+ 3 files changed, 30 insertions(+)
 
-Changes since v2:
-=================
-
-* Remove reference to k3 as requested
-* Rebase on v6.8-rc2 where new bindings are present
-* Remove am62a dts entry until hrtimer[1] patch gets merged
-
-[1]: https://patchwork.kernel.org/project/linux-media/patch/20240125130833.1953617-1-devarsht@ti.com/
-
-Changes since v1:
-=================
-
-* Remove sram parameters
-  - sram-size property not included in bindings. Without this, size
-  will default to 0 so no point in specifying until binding is added.
-* Remove global CMA pools for each platform
-  - This is something that has been added in TI backport of driver
-  and does not yet have reliable support in upstream version.
-  - Removing for now with intention to add back once 48-bit
-  addressing is supported in upstream Wave5 driver.
-
-Brandon Brnich (5):
-  arm64: dts: ti: k3-j784s4: Add Wave5 Video Encoder/Decoder Node
-  arm64: dts: ti: k3-am69-sk: Enable Wave5 Video Encoder/Decoder
-  arm64: dts: ti: k3-am68-sk: Enable Wave5 Video Encoder/Decoder
-  arm64: dts: ti: k3-am62p: Add Wave5 Video Encoder/Decoder Node
-  arm64: defconfig: Enable Wave5 Video Encoder/Decoder
-
-Darren Etheridge (1):
-  arm64: dts: ti: k3-j721s2-main: Add Wave5 Video Encoder/Decoder Node
-
- arch/arm64/boot/dts/ti/k3-am62p-main.dtsi     | 10 ++++++++++
- arch/arm64/boot/dts/ti/k3-am62p5-sk.dts       |  4 ++++
- .../boot/dts/ti/k3-am68-sk-base-board.dts     |  4 ++++
- arch/arm64/boot/dts/ti/k3-am69-sk.dts         |  8 ++++++++
- .../dts/ti/k3-j721s2-common-proc-board.dts    |  4 ++++
- arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi    | 10 ++++++++++
- arch/arm64/boot/dts/ti/k3-j784s4-evm.dts      |  8 ++++++++
- arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi    | 20 +++++++++++++++++++
- arch/arm64/boot/dts/ti/k3-j784s4.dtsi         |  2 ++
- arch/arm64/configs/defconfig                  |  1 +
- 10 files changed, 71 insertions(+)
-
+diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+index f34b92acc56d..7d37c11b4df4 100644
+--- a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
++++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+@@ -784,6 +784,14 @@ &main_gpio0 {
+ 	status = "okay";
+ };
+ 
++&vpu0 {
++	status = "okay";
++};
++
++&vpu1 {
++	status = "okay";
++};
++
+ &mcu_cpsw {
+ 	status = "okay";
+ 	pinctrl-names = "default";
+diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+index f2b720ed1e4f..8b2623ac8160 100644
+--- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+@@ -662,6 +662,26 @@ main_i2c6: i2c@2060000 {
+ 		status = "disabled";
+ 	};
+ 
++	vpu0: video-codec@4210000 {
++		compatible = "ti,j721s2-wave521c", "cnm,wave521c";
++		reg = <0x00 0x4210000 0x00 0x10000>;
++		interrupts = <GIC_SPI 182 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&k3_clks 241 2>;
++		clock-names = "vcodec";
++		power-domains = <&k3_pds 241 TI_SCI_PD_EXCLUSIVE>;
++		status = "disabled";
++	};
++
++	vpu1: video-codec@4220000 {
++		compatible = "ti,j721s2-wave521c", "cnm,wave521c";
++		reg = <0x00 0x4220000 0x00 0x10000>;
++		interrupts = <GIC_SPI 183 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&k3_clks 242 2>;
++		clock-names = "vcodec";
++		power-domains = <&k3_pds 242 TI_SCI_PD_EXCLUSIVE>;
++		status = "disabled";
++	};
++
+ 	main_sdhci0: mmc@4f80000 {
+ 		compatible = "ti,j721e-sdhci-8bit";
+ 		reg = <0x00 0x04f80000 0x00 0x1000>,
+diff --git a/arch/arm64/boot/dts/ti/k3-j784s4.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4.dtsi
+index 4398c3a463e1..93bb0cba1b48 100644
+--- a/arch/arm64/boot/dts/ti/k3-j784s4.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j784s4.dtsi
+@@ -247,6 +247,8 @@ cbass_main: bus@100000 {
+ 			 <0x00 0x30000000 0x00 0x30000000 0x00 0x0c400000>, /* MAIN NAVSS */
+ 			 <0x41 0x00000000 0x41 0x00000000 0x01 0x00000000>, /* PCIe1 DAT1 */
+ 			 <0x4e 0x20000000 0x4e 0x20000000 0x00 0x00080000>, /* GPU */
++			 <0x00 0x04210000 0x00 0x04210000 0x00 0x00010000>, /* VPU0 */
++			 <0x00 0x04220000 0x00 0x04220000 0x00 0x00010000>, /* VPU1 */
+ 
+ 			 /* MCUSS_WKUP Range */
+ 			 <0x00 0x28380000 0x00 0x28380000 0x00 0x03880000>,
 -- 
 2.34.1
 
