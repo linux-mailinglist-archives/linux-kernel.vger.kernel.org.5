@@ -1,254 +1,236 @@
-Return-Path: <linux-kernel+bounces-46434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B717D843F98
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:45:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55384843F9A
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:46:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41E1E1F27991
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:45:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BEB5A1F28789
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:46:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D2E779DA6;
-	Wed, 31 Jan 2024 12:45:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D3C08F78;
+	Wed, 31 Jan 2024 12:46:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="FgMX/PEu"
-Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com [209.85.221.177])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="RtmyCQWp";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FOw4IlKV";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="RtmyCQWp";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FOw4IlKV"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B09C279DB8
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 12:45:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 571E87690E;
+	Wed, 31 Jan 2024 12:46:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706705119; cv=none; b=EUglfaZeIHbjgpau2iAyJgQ5WcrhXlO/vp7oIT09QIgiojSXCoF1YGQuJN2aqq1D2GnklF3AO8YHo/C/7HivEhD+G76sWd2GNWXZfxzONiWjiSo+ynFbWPOWyqXqIgOcpkNzwAAaa9gGWUr4SLOucxGE4Nu3sBG9JttD7op8pjs=
+	t=1706705201; cv=none; b=JISTD/yyjc4dItxFUJb5bGvaaaR9kJUP6qtvaGLWIPn5ijJ7iURzHMgHtHet0IGEZJY/IQoLldELI7Tr8zXBtqzOqFIozF7YGZTz4BAxxFToe+CUq9kY95lO4PNBJXsBkuAx/ghW6po1E/1nb4zGc5cy67kDZ5ysMufFZrGYw/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706705119; c=relaxed/simple;
-	bh=JvT2NdKQLE8kMFn2um/s/5WgbQE44fj55jbDbzRrnJc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=F40DnH599JP8N6FsfgGKhDkfMtGe1of0CeuJs0T/8+plIiVq9ZN+Cu2KVD/qH/o44V9ISu7iSg2sBkzDuv/PVjp3gxbOEnJPs7a5Mrj+egNCSmFXk9yIDe06ivPfP76uiANbSgX20X30/kLfrMUJq/QsNjEv/TLVKyDYD7d2L1c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=FgMX/PEu; arc=none smtp.client-ip=209.85.221.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-vk1-f177.google.com with SMTP id 71dfb90a1353d-4bdb534410dso1511378e0c.0
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 04:45:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1706705115; x=1707309915; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hu6tOfa/GVf6jT5tQI9SLjYoktX1wEq4XKI7Jrqqb3s=;
-        b=FgMX/PEu07lpABw9/AAyBfxPzaMHAK5Ph0QBYj/2Nz7UcegJq/pA68tacnM+VkIsv5
-         T3XgIuzF0psXlK9hrohnOnL4W5VyZkOO2Gt3Lx/6raZJKhzhdX5HsrZkq4W4KuxuBMj6
-         x2dgK9VRSL0dWUgGt57UUecoIO++MnaZeuFpqgfM1l7j0wWGQhgqwaBLsy4RlJsgusef
-         XLRUoILRFjNKhYlTtHEBxhb1zs5s0Uu33i9GQgzPANXjpdyAOdDpSmA1n8ZyMVHNfuEn
-         m0Uhgs0Fcp0c5CwYkNAgH3IzKUC9l4Rpf9F0n8450taHkjOP/Dc4IgRTOYR6OB7UBMxL
-         rRBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706705115; x=1707309915;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hu6tOfa/GVf6jT5tQI9SLjYoktX1wEq4XKI7Jrqqb3s=;
-        b=H8mmt/QkHPg6LAWQsDPDgGNCJE5bfFmbY9DlDv9gpKCE9phdp/9jFBYV87avLxjFtz
-         /UrXKtaR8XjLqTgjO4AhrHn+HE1sAgNOBrt1YC+NiCAFmcqrWhyR2BCVHx/Vg8YXPjCG
-         qtRHH9ldqKPCD12z9/Idj5jaT4zD0GyYPBAPAuuTy2q+pKWhJwQtCEOjzMRLUWtZ/wvE
-         hMHaLeze2+jLsj1JOw+B1LAn7dI/SUjcxASwxxcRIe3l6ESNFQFjKCOozhRs3ZmN3lUV
-         6lxOeiuX6RAJA2YrNOIvOBDMcO+exEqM2oiUMDOjzzDu+0xR3d5llKSR7r3Z74H7Du1n
-         8qCg==
-X-Gm-Message-State: AOJu0YwtFaepSZhYgIxOko3ELRQxFnajoQ7jq820X4xGixPfyMFzs8WD
-	t8l2dcDdqSKvQoY6BEWfQ1ugGoplvu8bjNsqmaXnQNLpv//01wunKBYBxd9xjtPxdjwHVa2oOkr
-	tlZ/uctdyBvR9Mak1OMWuwmHapyzvzglZgguXDw==
-X-Google-Smtp-Source: AGHT+IG6H2GDneLVN9Y4F4b4s26bWJxMKpqJGxfvgsRm8MGQL/kxHxGknZicmEbhAgTs4bg8lICcpqp5d+BTm/L3R6A=
-X-Received: by 2002:a05:6122:448b:b0:4b6:cc19:42dc with SMTP id
- cz11-20020a056122448b00b004b6cc1942dcmr1342614vkb.11.1706705115490; Wed, 31
- Jan 2024 04:45:15 -0800 (PST)
+	s=arc-20240116; t=1706705201; c=relaxed/simple;
+	bh=1IPPGnuyc8eiE2l9ctUhcE32IyTYiQr4s6ZSFeTvVZ4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LX5ieKZ7algtxmKScDyljj/zSrNNScr74vkeG7y/ryJjuSJffQFEk7ImDj5HEoVFrspi6xM5AY2KY4wmOrQ2MkuCHjDhil6owm995NMpmaCM//j7WcvpjTu/XlSt+9cMYkTvgDFaUoT3f6387jdpzEVM5A5t8RTHghQ1exxpfk4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=RtmyCQWp; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FOw4IlKV; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=RtmyCQWp; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FOw4IlKV; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 5D87A21FFC;
+	Wed, 31 Jan 2024 12:46:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706705197; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3C7Lak3dvLjIVuOE+go6tRBC1cR0+Mdscg1hy5G174w=;
+	b=RtmyCQWpVjM8W1QpZiEEzuRCEfuohSi3aZZ2p7m4uXeazw0zN+nAI4so3b2elcXBtWoQ0X
+	W3hPoRFVo+IYLYa6cwPT8A+Q0l3GBkxWm6f9Tqm8Fa9J65frE67PLrmodHYx1vfzb81X4r
+	Ut9SH4dQ0SE5Zd21lQHbmG+Cirsv57E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706705197;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3C7Lak3dvLjIVuOE+go6tRBC1cR0+Mdscg1hy5G174w=;
+	b=FOw4IlKVV3k3fUSgNYjR8ql71edpTTWRLN5sIoHEtR9SHEH4wer03oTKb1+6TL3iSyDlqn
+	Z0X0BkXx62r6mcCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706705197; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3C7Lak3dvLjIVuOE+go6tRBC1cR0+Mdscg1hy5G174w=;
+	b=RtmyCQWpVjM8W1QpZiEEzuRCEfuohSi3aZZ2p7m4uXeazw0zN+nAI4so3b2elcXBtWoQ0X
+	W3hPoRFVo+IYLYa6cwPT8A+Q0l3GBkxWm6f9Tqm8Fa9J65frE67PLrmodHYx1vfzb81X4r
+	Ut9SH4dQ0SE5Zd21lQHbmG+Cirsv57E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706705197;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3C7Lak3dvLjIVuOE+go6tRBC1cR0+Mdscg1hy5G174w=;
+	b=FOw4IlKVV3k3fUSgNYjR8ql71edpTTWRLN5sIoHEtR9SHEH4wer03oTKb1+6TL3iSyDlqn
+	Z0X0BkXx62r6mcCQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 4B4BC132FA;
+	Wed, 31 Jan 2024 12:46:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id i29YEi1BumXtVQAAn2gu4w
+	(envelope-from <jack@suse.cz>); Wed, 31 Jan 2024 12:46:37 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id C289AA0809; Wed, 31 Jan 2024 13:46:36 +0100 (CET)
+Date: Wed, 31 Jan 2024 13:46:36 +0100
+From: Jan Kara <jack@suse.cz>
+To: Baokun Li <libaokun1@huawei.com>
+Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+	jack@suse.cz, ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
+	yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com,
+	stable@kernel.org, Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Subject: Re: [PATCH] ext4: correct best extent lstart adjustment logic
+Message-ID: <20240131124636.gmxaiex6yqrhvxcj@quack3>
+References: <20240122123332.555370-1-libaokun1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130124828.14678-2-brgl@bgdev.pl> <202401311746.be3dlVTg-lkp@intel.com>
-In-Reply-To: <202401311746.be3dlVTg-lkp@intel.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Wed, 31 Jan 2024 13:45:04 +0100
-Message-ID: <CAMRc=MdRJ_mNM-NteVnBCB=xMwrkSQb+b7SZOWVx0yp7dMqqiw@mail.gmail.com>
-Subject: Re: [PATCH 01/22] gpio: protect the list of GPIO devices with SRCU
-To: kernel test robot <lkp@intel.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Kent Gibson <warthog618@gmail.com>, 
-	Alex Elder <elder@linaro.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
-	"Paul E . McKenney" <paulmck@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
-	Wolfram Sang <wsa-dev@sang-engineering.com>, oe-kbuild-all@lists.linux.dev, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240122123332.555370-1-libaokun1@huawei.com>
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=RtmyCQWp;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=FOw4IlKV
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.37 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 BAYES_HAM(-3.00)[100.00%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 NEURAL_HAM_SHORT(-0.06)[-0.324];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[12];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,huawei.com,kernel.org,linux.ibm.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: -2.37
+X-Rspamd-Queue-Id: 5D87A21FFC
+X-Spam-Flag: NO
 
-On Wed, Jan 31, 2024 at 10:37=E2=80=AFAM kernel test robot <lkp@intel.com> =
-wrote:
->
-> Hi Bartosz,
->
-> kernel test robot noticed the following build warnings:
->
-> [auto build test WARNING on brgl/gpio/for-next]
-> [also build test WARNING on linus/master v6.8-rc2 next-20240131]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
->
-> url:    https://github.com/intel-lab-lkp/linux/commits/Bartosz-Golaszewsk=
-i/gpio-protect-the-list-of-GPIO-devices-with-SRCU/20240130-205537
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git gp=
-io/for-next
-> patch link:    https://lore.kernel.org/r/20240130124828.14678-2-brgl%40bg=
-dev.pl
-> patch subject: [PATCH 01/22] gpio: protect the list of GPIO devices with =
-SRCU
-> config: i386-randconfig-141-20240131 (https://download.01.org/0day-ci/arc=
-hive/20240131/202401311746.be3dlVTg-lkp@intel.com/config)
-> compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009=
-708b4367171ccdbf4b5905cb6a803753fe18)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
-ion of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202401311746.be3dlVTg-lkp=
-@intel.com/
->
-> New smatch warnings:
-> drivers/gpio/gpiolib.c:4167 gpiod_find_and_request() error: uninitialized=
- symbol 'ret'.
-> drivers/gpio/gpiolib.c:4181 gpiod_find_and_request() error: uninitialized=
- symbol 'desc'.
->
-> Old smatch warnings:
-> drivers/gpio/gpiolib.c:4184 gpiod_find_and_request() error: uninitialized=
- symbol 'desc'.
->
-> vim +/ret +4167 drivers/gpio/gpiolib.c
->
-> 0eadd36d9123745 Dmitry Torokhov     2022-09-03  4128
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4129  static struct gpio_=
-desc *gpiod_find_and_request(struct device *consumer,
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4130                     =
-                       struct fwnode_handle *fwnode,
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4131                     =
-                       const char *con_id,
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4132                     =
-                       unsigned int idx,
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4133                     =
-                       enum gpiod_flags flags,
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4134                     =
-                       const char *label,
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4135                     =
-                       bool platform_lookup_allowed)
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4136  {
-> ba2dc1cb5491712 Hans de Goede       2022-12-29  4137    unsigned long loo=
-kupflags =3D GPIO_LOOKUP_FLAGS_DEFAULT;
-> c122f461ccac0e7 Andy Shevchenko     2023-03-09  4138    struct gpio_desc =
-*desc;
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4139    int ret;
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4140
-> 1fe5210a1bfba00 Bartosz Golaszewski 2024-01-30  4141    scoped_guard(srcu=
-, &gpio_devices_srcu) {
-> 1fe5210a1bfba00 Bartosz Golaszewski 2024-01-30  4142            desc =3D =
-gpiod_find_by_fwnode(fwnode, consumer, con_id, idx,
-> 1fe5210a1bfba00 Bartosz Golaszewski 2024-01-30  4143                     =
-                   &flags, &lookupflags);
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4144            if (gpiod=
-_not_found(desc) && platform_lookup_allowed) {
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4145                    /=
-*
-> 1fe5210a1bfba00 Bartosz Golaszewski 2024-01-30  4146                     =
-* Either we are not using DT or ACPI, or their lookup
-> 1fe5210a1bfba00 Bartosz Golaszewski 2024-01-30  4147                     =
-* did not return a result. In that case, use platform
-> 1fe5210a1bfba00 Bartosz Golaszewski 2024-01-30  4148                     =
-* lookup as a fallback.
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4149                     =
-*/
-> 1fe5210a1bfba00 Bartosz Golaszewski 2024-01-30  4150                    d=
-ev_dbg(consumer,
-> 1fe5210a1bfba00 Bartosz Golaszewski 2024-01-30  4151                     =
-       "using lookup tables for GPIO lookup\n");
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4152                    d=
-esc =3D gpiod_find(consumer, con_id, idx, &lookupflags);
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4153            }
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4154
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4155            if (IS_ER=
-R(desc)) {
-> 1fe5210a1bfba00 Bartosz Golaszewski 2024-01-30  4156                    d=
-ev_dbg(consumer, "No GPIO consumer %s found\n",
-> 1fe5210a1bfba00 Bartosz Golaszewski 2024-01-30  4157                     =
-       con_id);
-> 0eadd36d9123745 Dmitry Torokhov     2022-09-03  4158                    r=
-eturn desc;
-> 0eadd36d9123745 Dmitry Torokhov     2022-09-03  4159            }
-> 0eadd36d9123745 Dmitry Torokhov     2022-09-03  4160
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4161            /*
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4162             * If a c=
-onnection label was passed use that, else attempt to use
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4163             * the de=
-vice name as label
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4164             */
-> 0eadd36d9123745 Dmitry Torokhov     2022-09-03  4165            ret =3D g=
-piod_request(desc, label);
-> 1fe5210a1bfba00 Bartosz Golaszewski 2024-01-30  4166    }
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11 @4167    if (ret) {
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4168            if (!(ret=
- =3D=3D -EBUSY && flags & GPIOD_FLAGS_BIT_NONEXCLUSIVE))
-> 0eadd36d9123745 Dmitry Torokhov     2022-09-03  4169                    r=
-eturn ERR_PTR(ret);
-> 0eadd36d9123745 Dmitry Torokhov     2022-09-03  4170
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4171            /*
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4172             * This h=
-appens when there are several consumers for
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4173             * the sa=
-me GPIO line: we just return here without
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4174             * furthe=
-r initialization. It is a bit of a hack.
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4175             * This i=
-s necessary to support fixed regulators.
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4176             *
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4177             * FIXME:=
- Make this more sane and safe.
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4178             */
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4179            dev_info(=
-consumer,
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4180                     =
-"nonexclusive access to GPIO for %s\n", con_id);
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11 @4181            return de=
-sc;
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4182    }
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4183
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4184    ret =3D gpiod_con=
-figure_flags(desc, con_id, lookupflags, flags);
-> 0eadd36d9123745 Dmitry Torokhov     2022-09-03  4185    if (ret < 0) {
-> 8eb1f71e7acca4f Dmitry Torokhov     2022-11-11  4186            dev_dbg(c=
-onsumer, "setup of GPIO %s failed\n", con_id);
-> 0eadd36d9123745 Dmitry Torokhov     2022-09-03  4187            gpiod_put=
-(desc);
-> 0eadd36d9123745 Dmitry Torokhov     2022-09-03  4188            return ER=
-R_PTR(ret);
-> 0eadd36d9123745 Dmitry Torokhov     2022-09-03  4189    }
-> 0eadd36d9123745 Dmitry Torokhov     2022-09-03  4190
-> 9ce4ed5b4db1363 Bartosz Golaszewski 2023-08-21  4191    gpiod_line_state_=
-notify(desc, GPIOLINE_CHANGED_REQUESTED);
-> 0eadd36d9123745 Dmitry Torokhov     2022-09-03  4192
-> 0eadd36d9123745 Dmitry Torokhov     2022-09-03  4193    return desc;
-> 0eadd36d9123745 Dmitry Torokhov     2022-09-03  4194  }
-> 0eadd36d9123745 Dmitry Torokhov     2022-09-03  4195
->
-> --
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
+[Added Ojaswin to CC as an author of the discussed patch]
 
-This is a false-positive coming from the fact the scoped_guard() is
-implemented as a for loop. I will initialize the variables anyway to
-make smatch happy.
+On Mon 22-01-24 20:33:32, Baokun Li wrote:
+> When yangerkun review commit 93cdf49f6eca ("ext4: Fix best extent lstart
+> adjustment logic in ext4_mb_new_inode_pa()"), it was found that the best
+> extent did not completely cover the original request after adjusting the
+> best extent lstart in ext4_mb_new_inode_pa() as follows:
+> 
+>   original request: 2/10(8)
+>   normalized request: 0/64(64)
+>   best extent: 0/9(9)
+> 
+> When we check if best ex can be kept at start of goal, ac_o_ex.fe_logical
+> is 2 less than the adjusted best extent logical end 9, so we think the
+> adjustment is done. But obviously 0/9(9) doesn't cover 2/10(8), so we
+> should determine here if the original request logical end is less than or
+> equal to the adjusted best extent logical end.
 
-Bart
+I'm sorry for a bit delayed reply. Why do you think it is a problem if the
+resulting extent doesn't cover the full original range? We must always
+cover the first block of the original extent so that the allocation makes
+forward progress. But otherwise we choose to align to the start / end of
+the goal range to reduce fragmentation even if we don't cover the whole
+requested range - the rest of the range will be covered by the next
+allocation. Also there is a problem with trying to cover the whole original
+range described in [1]. Essentially the goal range does not need to cover
+the whole original range and if we try to align the allocated range to
+cover the whole original range, it may result in exceeding the goal range
+and thus overlapping preallocations and triggering asserts in the prealloc
+code.
+
+So if we decided we want to handle the case you describe in a better way,
+we'd need something making sure we don't exceed the goal range.
+
+								Honza
+
+[1] https://lore.kernel.org/all/Y+UzQJRIJEiAr4Z4@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com/
+
+> 
+> Moreover, the best extent len is not modified during the adjustment
+> process, and it is already checked by the previous assertion, so replace
+> the check for fe_len with a check for the best extent logical end.
+> 
+> Cc: stable@kernel.org
+> Fixes: 93cdf49f6eca ("ext4: Fix best extent lstart adjustment logic in ext4_mb_new_inode_pa()")
+> Signed-off-by: yangerkun <yangerkun@huawei.com>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> ---
+>  fs/ext4/mballoc.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index f44f668e407f..fa5977fe8d72 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -5146,6 +5146,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
+>  			.fe_len = ac->ac_orig_goal_len,
+>  		};
+>  		loff_t orig_goal_end = extent_logical_end(sbi, &ex);
+> +		loff_t o_ex_end = extent_logical_end(sbi, &ac->ac_o_ex);
+>  
+>  		/* we can't allocate as much as normalizer wants.
+>  		 * so, found space must get proper lstart
+> @@ -5161,7 +5162,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
+>  		 * 1. Check if best ex can be kept at end of goal (before
+>  		 *    cr_best_avail trimmed it) and still cover original start
+>  		 * 2. Else, check if best ex can be kept at start of goal and
+> -		 *    still cover original start
+> +		 *    still cover original end
+>  		 * 3. Else, keep the best ex at start of original request.
+>  		 */
+>  		ex.fe_len = ac->ac_b_ex.fe_len;
+> @@ -5171,7 +5172,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
+>  			goto adjust_bex;
+>  
+>  		ex.fe_logical = ac->ac_g_ex.fe_logical;
+> -		if (ac->ac_o_ex.fe_logical < extent_logical_end(sbi, &ex))
+> +		if (o_ex_end <= extent_logical_end(sbi, &ex))
+>  			goto adjust_bex;
+>  
+>  		ex.fe_logical = ac->ac_o_ex.fe_logical;
+> @@ -5179,7 +5180,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
+>  		ac->ac_b_ex.fe_logical = ex.fe_logical;
+>  
+>  		BUG_ON(ac->ac_o_ex.fe_logical < ac->ac_b_ex.fe_logical);
+> -		BUG_ON(ac->ac_o_ex.fe_len > ac->ac_b_ex.fe_len);
+> +		BUG_ON(o_ex_end > extent_logical_end(sbi, &ex));
+>  		BUG_ON(extent_logical_end(sbi, &ex) > orig_goal_end);
+>  	}
+>  
+> -- 
+> 2.31.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
