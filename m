@@ -1,164 +1,134 @@
-Return-Path: <linux-kernel+bounces-46703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46704-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B41A68442F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:23:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63CA18442F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:24:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D86221C20894
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:23:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 037E81F23837
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:24:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FEDD84A5C;
-	Wed, 31 Jan 2024 15:23:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B2DC86AC5;
+	Wed, 31 Jan 2024 15:24:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="it3uq7he"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RDsw4kK2"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB22379DA6
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 15:23:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B52480C11
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 15:23:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706714602; cv=none; b=KJ4Arevs/cD5kx5u6b7gEf603D21HiNAyubE6xxfJsH2XWMio5RP5tpRp2wecfO6rHFCF80r+7O4b7YKHX0UEBGMeRHKMZqyIT1whTr0Tltz5cMhd09SpC+JnPhjfVwrgnR5xR2hrrvhQ3ET2pgYKPzPnkIgnR5lKfe/0pSWz0E=
+	t=1706714640; cv=none; b=m7lJ+QoswkwqkHwsWB8tToDxn2OEChfJRxQIYZz7Pof5ftrDJ9U2+ShupAIjEPqwFL4n5rhL1VOr6NxVY9Z3GChgrSR7BFkahRCJ9tWTiC43GlecSjK7sOggEXS8TocHnB9iHKJ/fhSa9eFhSrr9BNMlJGLAvOI3klBrhVHwUAk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706714602; c=relaxed/simple;
-	bh=H1nccFNfdn42C2r0zvD84VGqHMzr9HcNHYAhnkNRzNM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QNF3cPjGNDmBofua7de8oTG9dG8qXyTiWJLQSfCyDi6KIlghrq91lGYFRcyDRWsNrdJL+ascXDP7XvLRfQvQ9vkVUpfmAf2cZwnnCHIfV+RovWB1Mk+0E0Z8Mm3lQNXubv+k1PyzEfmnykaOdehX9+nLRyoVW71AX3UVvlDjqtM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=it3uq7he; arc=none smtp.client-ip=170.10.129.124
+	s=arc-20240116; t=1706714640; c=relaxed/simple;
+	bh=nPSaMyCuayy/I+QR1Qo4ECI40Tw9VjSdBcgrujLtNpk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Wr1J9vmATv8gLAS+b0L6kzGGd/n3trURfMyfJzYgFuosMMujlSfT2U+VljuPtbVQBDY2oLbNv0Wz35Cmzs824mfiv6ou+Jx7pyjG3LjRjvoJ+3Afv5BtOiu3FNqSRFl38yH/YFnw81PAuh7G5B3LJafyEkmTdeLjs/aPRkA1LSU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RDsw4kK2; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706714599;
+	s=mimecast20190719; t=1706714638;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=29Eq0yPO86qsr/P0Ue4qqB+L9VNDTQrnB7xU1LyYquc=;
-	b=it3uq7heDZsdbh7/axHK14JqYT0xJZMCu0rYEhIDEHemt7ajdSNRwEUrIm9YJsvKbxOtHw
-	O9H3i88uncxcgQRkP3rqWZLwypbsPAUPQ0SX/piO5U85vMAqJ0fYjUPDrgYpzzLmKnItPS
-	SNeNQ6/dGDa9ECvr1meHZh+HkU7rJBU=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ShXEhsnOf4Qa8k8iTBTenpYOXlavsQuWnbVyMIJ1hzA=;
+	b=RDsw4kK2gHDkvRchbESRRC60cPHjZZqqw3zrjfW6bgNbNwlMhylHEg2cSHUBCHGVuVD6+I
+	gRGd7nHLdAWHuFmboN+9PyqQ/UAEZLDkZvg2OaoKdnnKV4pGs3W/sNev38HPptHfRXCdY6
+	oU/Rn7UW17wm+uul0JiSCFUduxJ7XmQ=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-659-0x6j2cdWOxWuw5HQa1DrIg-1; Wed, 31 Jan 2024 10:23:18 -0500
-X-MC-Unique: 0x6j2cdWOxWuw5HQa1DrIg-1
-Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-295d4a5bf59so977747a91.0
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 07:23:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706714597; x=1707319397;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=29Eq0yPO86qsr/P0Ue4qqB+L9VNDTQrnB7xU1LyYquc=;
-        b=ml3RGDF675VTTwfRcn2nVUef0qygF0xoN4wf7fvbqLfxAiahYUu54YhVm3FjsjlyUa
-         oEsD2a76J/RLE9kg3v7w6wDGzS5slaI3AUAUZ+A+ggBrgZzoAUE+zQ/Bua8v/sTU2asc
-         VCjpheB09mv2xoRe7x0Ak79IvjFrljIptSyao+N4M2DlWuw+nVMu3tY4kPRkf9tMbplU
-         iD4vYrMGzVGQPKe79O18vMaswv7mBRCc5UUtbJzNErhYa/8iA2mtGdmASqDyQfWMsFZf
-         p7bWD/qWt3NPXfO9/KJGOI8hl//YuXiYRrBEeSoGQIoK7T6eabXwwc8uj0lM99SnXoS9
-         zBBQ==
-X-Gm-Message-State: AOJu0YzJrkduHhxYuk5ExGh3u10xpaqo4UXG2t22V2CV5nTHKoO8TDD6
-	r1WibhsjPdmbgcWG21ddHPfoPX0U6ANYGRVQC56AqhnX1YjFK7lhJTjZPzZWLtwpspgB3FQC2MY
-	ujhYhZUBOTMLvoFLps9pAuM1iVArDFsXTprq8rM7t6bCsO+xGqGBNMVu6oEBq3g==
-X-Received: by 2002:a17:90b:60a:b0:295:5273:e0d7 with SMTP id gb10-20020a17090b060a00b002955273e0d7mr2092991pjb.17.1706714596868;
-        Wed, 31 Jan 2024 07:23:16 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE1d14mOp2dYcIcv2NIy+pZfb6uuRqZRmRGKRU4Pj7ZVKdnmwIJ4nQJLDdK1uvdMvDZFKtorw==
-X-Received: by 2002:a17:90b:60a:b0:295:5273:e0d7 with SMTP id gb10-20020a17090b060a00b002955273e0d7mr2092964pjb.17.1706714596524;
-        Wed, 31 Jan 2024 07:23:16 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXewRb4Xq/i5Lx4akq9sVHlBffsHbVhFYaMq8orAupSUQPOtTwNPGyNelHZxa+jJQiEf7dNwcKA+5e5b9qIO9bmwfo8rDcFMlj842W9Pdul3U4dfo6vNZLEOOJJgdqnj+B3SUX2QkZKBrpzCYuADsi5Vcjc7eoy4VsIriYgNVfmsBnI3dKxWfka3gnb5cQLRiwBbmBkbCuFBTgqbCG7hxeHYWy8dFxg8rZt94z3HTsQ50WLZHsEk0k/MYU0tsgMdZkBl0V+uYVemLXNAWR3apCUTAMcyTdp6HZj31k5lZQ5aBEgCv7SSSJeTrA/zQkITxwf5d0gI0DPYe7BN6PW9Xs3hrCBqTkpPGOzKO20ISJMzElmQnzqZqYMPag3UxthSBsnRWyb7Q==
-Received: from kernel-devel.local ([240d:1a:c0d:9f00:245e:16ff:fe87:c960])
-        by smtp.gmail.com with ESMTPSA id gx18-20020a17090b125200b0029487e5dbc6sm1614142pjb.31.2024.01.31.07.23.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 07:23:16 -0800 (PST)
-From: Shigeru Yoshida <syoshida@redhat.com>
-To: jmaloy@redhat.com,
-	ying.xue@windriver.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: netdev@vger.kernel.org,
-	tipc-discussion@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org,
-	Shigeru Yoshida <syoshida@redhat.com>,
-	syzbot+5142b87a9abc510e14fa@syzkaller.appspotmail.com
-Subject: [PATCH net] tipc: Check the bearer type before calling tipc_udp_nl_bearer_add()
-Date: Thu,  1 Feb 2024 00:23:09 +0900
-Message-ID: <20240131152310.4089541-1-syoshida@redhat.com>
-X-Mailer: git-send-email 2.41.0
+ us-mta-153-DXhB-mCfPv-1sXMqsS7BtQ-1; Wed, 31 Jan 2024 10:23:55 -0500
+X-MC-Unique: DXhB-mCfPv-1sXMqsS7BtQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4853F185A784;
+	Wed, 31 Jan 2024 15:23:54 +0000 (UTC)
+Received: from localhost (unknown [10.72.116.15])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 32C088B;
+	Wed, 31 Jan 2024 15:23:53 +0000 (UTC)
+Date: Wed, 31 Jan 2024 23:23:50 +0800
+From: Baoquan He <bhe@redhat.com>
+To: "Huang, Kai" <kai.huang@intel.com>,
+	Nikolay Borisov <nik.borisov@suse.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"x86@kernel.org" <x86@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	"Hunter, Adrian" <adrian.hunter@intel.com>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	"Reshetova, Elena" <elena.reshetova@intel.com>,
+	"Nakajima, Jun" <jun.nakajima@intel.com>,
+	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	"Kalra, Ashish" <ashish.kalra@amd.com>,
+	Sean Christopherson <seanjc@google.com>,
+	"kexec@lists.infradead.org" <kexec@lists.infradead.org>,
+	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCHv6 00/16] x86/tdx: Add kexec support
+Message-ID: <ZbpmBulaR7eft/CE@MiWiFi-R3L-srv>
+References: <20240124125557.493675-1-kirill.shutemov@linux.intel.com>
+ <3f44458f-2b4a-4464-a3df-cb791298dafc@redhat.com>
+ <efe20a00-9a7c-4c03-8fcc-fce265cdbf0e@suse.com>
+ <ZbpBbAkPxQZ6gHoE@MiWiFi-R3L-srv>
+ <5d91fc11-0b3b-40f0-872d-abdbb4038f76@suse.com>
+ <BL1PR11MB5978633DF36A69F8020818E1F77C2@BL1PR11MB5978.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BL1PR11MB5978633DF36A69F8020818E1F77C2@BL1PR11MB5978.namprd11.prod.outlook.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-syzbot reported the following general protection fault [1]:
+On 01/31/24 at 01:07pm, Huang, Kai wrote:
+> > > Runtime disabling kexec looks better than at cmpile time, esp for
+> > > distros. While from above patch, making using of kexec_load_disabled
+> > > to achive the runtime disabling may not be so good. Because we have a
+> > > front door to enable it through:
+> > >
+> > > /proc/sys/kernel/kexec_load_disabled
+> > 
+> > AFAIU it can't be enabled via this sysctl because the handler for it expects
+> > only 1 to be written to it:
+> > 
+> >       2                 .proc_handler   = proc_dointvec_minmax,
+> > 
+> >       1                 .extra1         = SYSCTL_ONE,
+> > 
+> >    994                  .extra2         = SYSCTL_ONE,
+> > 
+> 
+> This is also my understanding.  
+> 
+> The documentation also says once it is turned to disable we cannot turn back again:
+> 
+> kexec_load_disable
+> ===================
+> 
+> A toggle indicating if the syscalls ``kexec_load`` and
+> ``kexec_file_load`` have been disabled.
+> This value defaults to 0 (false: ``kexec_*load`` enabled), but can be
+> set to 1 (true: ``kexec_*load`` disabled).
+> Once true, kexec can no longer be used, and the toggle cannot be set
+> back to false.
 
-general protection fault, probably for non-canonical address 0xdffffc0000000010: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000080-0x0000000000000087]
-..
-RIP: 0010:tipc_udp_is_known_peer+0x9c/0x250 net/tipc/udp_media.c:291
-..
-Call Trace:
- <TASK>
- tipc_udp_nl_bearer_add+0x212/0x2f0 net/tipc/udp_media.c:646
- tipc_nl_bearer_add+0x21e/0x360 net/tipc/bearer.c:1089
- genl_family_rcv_msg_doit+0x1fc/0x2e0 net/netlink/genetlink.c:972
- genl_family_rcv_msg net/netlink/genetlink.c:1052 [inline]
- genl_rcv_msg+0x561/0x800 net/netlink/genetlink.c:1067
- netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2544
- genl_rcv+0x28/0x40 net/netlink/genetlink.c:1076
- netlink_unicast_kernel net/netlink/af_netlink.c:1341 [inline]
- netlink_unicast+0x53b/0x810 net/netlink/af_netlink.c:1367
- netlink_sendmsg+0x8b7/0xd70 net/netlink/af_netlink.c:1909
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg+0xd5/0x180 net/socket.c:745
- ____sys_sendmsg+0x6ac/0x940 net/socket.c:2584
- ___sys_sendmsg+0x135/0x1d0 net/socket.c:2638
- __sys_sendmsg+0x117/0x1e0 net/socket.c:2667
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+you are quite right, I have never noticed this, thanks.
 
-The cause of this issue is that when tipc_nl_bearer_add() is called with
-the TIPC_NLA_BEARER_UDP_OPTS attribute, tipc_udp_nl_bearer_add() is called
-even if the bearer is not UDP.
-
-tipc_udp_is_known_peer() called by tipc_udp_nl_bearer_add() assumes that
-the media_ptr field of the tipc_bearer has an udp_bearer type object, so
-the function goes crazy for non-UDP bearers.
-
-This patch fixes the issue by checking the bearer type before calling
-tipc_udp_nl_bearer_add() in tipc_nl_bearer_add().
-
-Fixes: ef20cd4dd163 ("tipc: introduce UDP replicast")
-Reported-and-tested-by: syzbot+5142b87a9abc510e14fa@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=5142b87a9abc510e14fa [1]
-Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
----
- net/tipc/bearer.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/net/tipc/bearer.c b/net/tipc/bearer.c
-index 2cde375477e3..878415c43527 100644
---- a/net/tipc/bearer.c
-+++ b/net/tipc/bearer.c
-@@ -1086,6 +1086,12 @@ int tipc_nl_bearer_add(struct sk_buff *skb, struct genl_info *info)
- 
- #ifdef CONFIG_TIPC_MEDIA_UDP
- 	if (attrs[TIPC_NLA_BEARER_UDP_OPTS]) {
-+		if (b->media->type_id != TIPC_MEDIA_TYPE_UDP) {
-+			rtnl_unlock();
-+			NL_SET_ERR_MSG(info->extack, "UDP option is unsupported");
-+			return -EINVAL;
-+		}
-+
- 		err = tipc_udp_nl_bearer_add(b,
- 					     attrs[TIPC_NLA_BEARER_UDP_OPTS]);
- 		if (err) {
--- 
-2.41.0
+Then then mentioned patch looks good to me.
 
 
