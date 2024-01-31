@@ -1,125 +1,105 @@
-Return-Path: <linux-kernel+bounces-46732-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40A3684434E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:43:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9508C844358
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:47:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFB8C28B9EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:43:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C80661C24455
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:47:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44E0A129A97;
-	Wed, 31 Jan 2024 15:43:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D566212A169;
+	Wed, 31 Jan 2024 15:47:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nZUKm2bO"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="H9SVQJ3k";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="uMlUuZq/"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 218AF80C07
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 15:43:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 828431292FA;
+	Wed, 31 Jan 2024 15:47:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706715813; cv=none; b=Mped+qu/7mevDuXDpmzzCsBbXezV7ppxs2Whjke8Meo7mt4o2c4HQ9pqcetefrr0xzNhasBw6YRR9wQeeI2CT1ATF3D2UsG4gfxZBWGYK4DJvpHrDYFJr2WjoOk3JOTa/I7GfJuHLApTNKkLdQ/uu3u8Rlcs0Qn8SW2QFei53bk=
+	t=1706716060; cv=none; b=mBhHP7ZNR5IatxETtGnOD9o7IZWLstIpUp6A9RMzf6o1kRhYg6533YeeJFU79pt92q9PgAiXRZH37Xg+FRbf+pNghFil9GYPYOW2Y4ZI/XGRvWnRyv6bnxkn8MyRDaURyVk+qoGwrSqpfvEFDctItQOz2EpSmBeKDusH8gEZzL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706715813; c=relaxed/simple;
-	bh=vhbrZMHFjelXGRFhJ+BjMGubacmhxkKYeRxhEF4X3Wg=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=DFPzsvZsDOeYVq/Q7iR/MhiVORXJZnnauFTk2U8f7TYi/9xxIuHr/nUHTlQj8AgCjRM3oyX3YUH8r5AQQMgqGHWugpHbqYHQfPh+QYI7LsUC5yPc/GL2IvjGt894huYAtCzGxV0UYXvu8szatZNZZYgSx8g4sZdrvS8+RpygUGA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=nZUKm2bO; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60404484c23so23311037b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 07:43:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706715811; x=1707320611; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rXirN1TSqSLWWOLHNkxUHkuNKeZ8QnnuiK8GRbGZ3WI=;
-        b=nZUKm2bOv4Y/oKKlz7W08nhMwawd3ALiBhncqSJXQONTBJWACJvQOsl8sUaJ/mnTxK
-         Pw6SemBuJSNhNzBfJTU/H6PqjnVinmKWmqeTgLKQsz9XkdA+MuGjyv81WMZIIBCmwt7i
-         /kAex6UlC3z7Wk7N08RX+WQlQfA6L4AbHADXbAQCiNX1mMnzJG6LJQ3lD1rzdSh6Jexk
-         7M9pu4Q7B0Yz1OqoKlngXKTvFNjCRr63x2l3wNcqkj9tngcK1XaIbWuyMRWfGlfWDa+9
-         8kNaj66Q2T8ZR5OaWbvC7IS5AzS1wi5my9Uj/k0O+oOkAco0FOGkTiNcNJs5CULgqvoc
-         TYJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706715811; x=1707320611;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rXirN1TSqSLWWOLHNkxUHkuNKeZ8QnnuiK8GRbGZ3WI=;
-        b=jVGtUWP15rCNrzoRf2+8So/xjSjR+WfxbimeA2OFizufL9tBhOlAXp6xj09e4Y2CiP
-         u6LTxe1hL7YfE7mlDMTwTa2HnKVC8M8pb3Z9U0j5qGGplrs1LL5GH9h/qjtXHnFDd4HX
-         5bU3hA4WPVdUY0kJ72LIiybgG5sJAdVn/dp9LEmjgyuJvpDm31ka9jIuIdIh65rvNqiT
-         9Kr5bDxVeT1wAb5AldRtetERY4Ph1knB3On64ManW4noHkXTzRuMSDVVnZ03/3p2GywM
-         ijrrSUwOkncqfGEvmKilJVuVQbXH3tmVfQECjfNLGVMTw8+k9jRMiAOnmt5rBtm1h7yg
-         aOIA==
-X-Gm-Message-State: AOJu0YyFJrsTl/8RFKEPWH7lo0lmlNwb02T+7VZcn2b65mvGHBw75AoR
-	gZjJQHbUQegYRRlwZKj4ZwV/r/V7NdkJlNZme8flEprXrAaIDnH11jJKO7R+cpFV9GgKebQunLy
-	OLQ==
-X-Google-Smtp-Source: AGHT+IGa5eXROO4MrCt68oQY1jH9FGoPqrFbSytbtF+B4n2ewFSTJB3rHFDw5pL2slDaY8z/2D4CFC8loNk=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:4cd5:0:b0:604:9ba:9a03 with SMTP id
- z204-20020a814cd5000000b0060409ba9a03mr394475ywa.2.1706715811197; Wed, 31 Jan
- 2024 07:43:31 -0800 (PST)
-Date: Wed, 31 Jan 2024 07:43:29 -0800
-In-Reply-To: <20240123221220.3911317-1-mizhang@google.com>
+	s=arc-20240116; t=1706716060; c=relaxed/simple;
+	bh=dPqaiX5PAWnQlOQ8Jiutu8bSeKEr3U2pTg/+HqQA8Ak=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=O6iptg37gIBvci8kk5Rq9Bg4tykHSaqQ8DbLGeP9ras1RCQHb0xHwdlRphTv8F1t/KtO5tySYe8VPNPKa/KIDPDI0rmj/KttC8/eXOHtkugPkVemJbhgc6IKWzwkxX/gB/72O0T8JJ7vskJGV4r8Hyk1CGrAm7sz5N+98kv/aIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=H9SVQJ3k; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=uMlUuZq/; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1706716056;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tgMsdbxCaBeot/1FIP0WAPLTrTPmjNYgZHCMmQQu8dA=;
+	b=H9SVQJ3kZBcTos2bLSoPIrvvuZKMApea5Qu9HHZYgNM8BNQfA/OHFJ+WjVXo9vY7aDRTYj
+	ADHdyOKvce0Yx57ElMxY8VKqQeBrB6bnGXVcCpphzLJ/FAxc3tG8ylCm3Mfmi7ES3VJNgc
+	5INdOZHUh6oDVntoImpbiMFZj0rr9FigBfKXo+yy499BbD7YTOHzSGSullWchOTiHzaAaF
+	xqtwBg4aOuV84BADA55KqidMBwO1u0n8G0zIEXQYRWuYIwFbwbUrc8aYvIVAkzifI8qQzg
+	SQE7/RUsoOi63G/shU8/5VmgYyTiG17bDxAPMZoZjyDiiGljPu5dtVIlgnfHxA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1706716056;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tgMsdbxCaBeot/1FIP0WAPLTrTPmjNYgZHCMmQQu8dA=;
+	b=uMlUuZq/EpH/uEvkdR/5kovyAEmTtSfIOBdtlMc+HOaYYqnXFmQEhRRc2BfnSYhyfHHkXS
+	XtjXjlW9DmUwSGBQ==
+To: Luis Chamberlain <mcgrof@kernel.org>, Yoann Congal
+ <yoann.congal@smile.fr>, Josh Triplett <josh@joshtriplett.org>, Petr
+ Mladek <pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>, Sergey
+ Senozhatsky <senozhatsky@chromium.org>
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org,
+ linux-serial@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kbuild@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, Willem de
+ Bruijn <willemdebruijn.kernel@gmail.com>, Matthew Wilcox
+ <willy@infradead.org>, Peter Zijlstra <peterz@infradead.org>, Darren Hart
+ <dvhart@infradead.org>, Davidlohr Bueso <dave@stgolabs.net>, =?utf-8?Q?An?=
+ =?utf-8?Q?dr=C3=A9?= Almeida
+ <andrealmeid@igalia.com>, Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH v2] printk: Remove redundant CONFIG_BASE_SMALL
+In-Reply-To: <ZbfLl6PR_qxxreeX@bombadil.infradead.org>
+References: <20240127220026.1722399-1-yoann.congal@smile.fr>
+ <ZbfLl6PR_qxxreeX@bombadil.infradead.org>
+Date: Wed, 31 Jan 2024 16:53:32 +0106
+Message-ID: <871q9xzeqz.fsf@jogness.linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240123221220.3911317-1-mizhang@google.com>
-Message-ID: <ZbpqoU49k44xR4zB@google.com>
-Subject: Re: [PATCH] KVM: x86/pmu: Fix type length error when reading pmu->fixed_ctr_ctrl
-From: Sean Christopherson <seanjc@google.com>
-To: Mingwei Zhang <mizhang@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain
 
-On Tue, Jan 23, 2024, Mingwei Zhang wrote:
-> Fix type length error since pmu->fixed_ctr_ctrl is u64 but the local
-> variable old_fixed_ctr_ctrl is u8. Truncating the value leads to
-> information loss at runtime. This leads to incorrect value in old_ctrl
-> retrieved from each field of old_fixed_ctr_ctrl and causes incorrect code
-> execution within the for loop of reprogram_fixed_counters(). So fix this
-> type to u64.
+On 2024-01-29, Luis Chamberlain <mcgrof@kernel.org> wrote:
+> You should mention the one case which this patch fixes is:
+>
+>> CONFIG_BASE_SMALL was used that way in init/Kconfig:
+>>   config LOG_CPU_MAX_BUF_SHIFT
+>>   	default 12 if !BASE_SMALL
+>>   	default 0 if BASE_SMALL
+>
+> You should then mention this has been using 12 for a long time now
+> for BASE_SMALL, and so this patch is a functional fix for those
+> who used BASE_SMALL and wanted a smaller printk buffer contribtion per
+> cpu. The contribution was only per CPU, and since BASE_SMALL systems
+> likely don't have many CPUs the impact of this was relatively small,
+> 4 KiB per CPU.  This patch fixes that back down to 0 KiB per CPU.
 
-But what is the actual fallout from this?  Stating that the bug causes incorrect
-code execution isn't helpful, that's akin to saying water is wet.
+For printk this will mean that BASE_SMALL systems were probably
+previously allocating/using the dynamic ringbuffer and now they will
+just continue to use the static ringbuffer. Which is fine and saves
+memory (as it should).
 
-If I'm following the code correctly, the only fallout is that KVM may unnecessarily
-mark a fixed PMC as in use and reprogram it.  I.e. the bug can result in (minor?)
-performance issues, but it won't cause functional problems.
-
-Understanding what actually goes wrong matters, because I'm trying to determine
-whether or not this needs to be fixed in 6.8 and backported to stable trees.  If
-the bug is relatively benign, then this is fodder for 6.9.
-
-> Fixes: 76d287b2342e ("KVM: x86/pmu: Drop "u8 ctrl, int idx" for reprogram_fixed_counter()")
-> Signed-off-by: Mingwei Zhang <mizhang@google.com>
-> ---
->  arch/x86/kvm/vmx/pmu_intel.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
-> index a6216c874729..315c7c2ba89b 100644
-> --- a/arch/x86/kvm/vmx/pmu_intel.c
-> +++ b/arch/x86/kvm/vmx/pmu_intel.c
-> @@ -71,7 +71,7 @@ static int fixed_pmc_events[] = {
->  static void reprogram_fixed_counters(struct kvm_pmu *pmu, u64 data)
->  {
->  	struct kvm_pmc *pmc;
-> -	u8 old_fixed_ctr_ctrl = pmu->fixed_ctr_ctrl;
-> +	u64 old_fixed_ctr_ctrl = pmu->fixed_ctr_ctrl;
->  	int i;
->  
->  	pmu->fixed_ctr_ctrl = data;
-> 
-> base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
-> -- 
-> 2.43.0.429.g432eaa2c6b-goog
-> 
+Reviewed-by: John Ogness <john.ogness@linutronix.de>
 
