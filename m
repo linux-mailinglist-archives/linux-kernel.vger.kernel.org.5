@@ -1,147 +1,175 @@
-Return-Path: <linux-kernel+bounces-46522-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09D4F8440E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:42:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93C888440DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:42:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B97672840B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:42:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E78A1F2AF4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:42:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC1697F498;
-	Wed, 31 Jan 2024 13:42:19 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74ABD80C0B;
+	Wed, 31 Jan 2024 13:41:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tJd8t3xf"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72576762CD
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 13:42:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BACBC80BF3
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 13:41:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706708539; cv=none; b=ZDuBFqlQ57+it5I59XIghNAYBxzTtp4WLh7bnSOfuPADJePxZtE4umyBk58LWd8iiSU/Q5KD8H+4pAmUx02k63rz5+nDRn7W4whkHkLj5qsx+taQx627cj4wJquoZ/HSEWykfo2aRfxEfYwcN9O7q6RT8ZD+jEpB4KmBFbLAEI8=
+	t=1706708510; cv=none; b=YkRBIT34G5ldg2AnW4Lc+nrl7gP2DX3/RJHau0US0ayEa0MlfYl9sksmI8GX42+Qlpy94HRfzgOQR4jUITTuLZtOhvio88M00DicmtccvE/1UKYPDj/Z+PDJf9n3ZI/vYuSrr3mVUA3NJH++azFPQpvkYpsamcGt86HeHrUBwNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706708539; c=relaxed/simple;
-	bh=8FInsLgoFCZG8DOXI+LB/CtHOBA/FQrXnVs/H9H+9L0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=EshjbVcOF9wVdikWuOdTKHPFqV4MuTv9VSGwHXkL57nyRVOtzfJfP9rY8F7/x3fLrzBwpM/cAMVOenGuuE5OkbaGnGH0vbRvmLXCjXihwQb9JBAIlq5s1lAEcx3odnm6BKAWtiIo/tmg5V1c29QnrqUAsC9vTYGs2mmYV+1mr84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rVAqb-0003wn-BI; Wed, 31 Jan 2024 14:41:49 +0100
-Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rVAqY-003e3x-Ln; Wed, 31 Jan 2024 14:41:46 +0100
-Received: from pza by lupine with local (Exim 4.96)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rVAqT-0008vC-1l;
-	Wed, 31 Jan 2024 14:41:41 +0100
-Message-ID: <8dd1fe2d040db3e79ef94a5b2c70c51108e56c39.camel@pengutronix.de>
-Subject: Re: [PATCH v8 2/3] pwm: Add Allwinner's D1/T113-S3/R329 SoCs PWM
- support
-From: Philipp Zabel <p.zabel@pengutronix.de>
-To: Aleksandr Shubin <privatesub2@gmail.com>, linux-kernel@vger.kernel.org
-Cc: Brandon Cheo Fusi <fusibrandon13@gmail.com>, Uwe
- =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, Rob
- Herring <robh+dt@kernel.org>,  Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Chen-Yu Tsai <wens@csie.org>,  Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>, Paul Walmsley
- <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
- <aou@eecs.berkeley.edu>, Cristian Ciocaltea
- <cristian.ciocaltea@collabora.com>,  John Watts <contact@jookia.org>, Marc
- Kleine-Budde <mkl@pengutronix.de>, Maksim Kiselev <bigunclemax@gmail.com>,
- linux-pwm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, 
- linux-riscv@lists.infradead.org
-Date: Wed, 31 Jan 2024 14:41:41 +0100
-In-Reply-To: <20240131125920.2879433-3-privatesub2@gmail.com>
-References: <20240131125920.2879433-1-privatesub2@gmail.com>
-	 <20240131125920.2879433-3-privatesub2@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+	s=arc-20240116; t=1706708510; c=relaxed/simple;
+	bh=HZTj4yWFwk0INaHzIUjw3r4bOMlYrEK4vwr04nVhelc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jztoAC9Iuq9VM7f6/EUqxQWd1RYTxrSgfND17sISckxLylDbNdxF7H7yJ4i0+qkLFKqu8XX0jckMple1CPfDkZEouJamK6Hl5uQpU9e34RQTeUdfZLAwyjb9HGNjtscf06mNr0UwM8WneoSghfBzAmyYrErHaLvGTE199s/Ahic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tJd8t3xf; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a34c5ca2537so598890766b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 05:41:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706708507; x=1707313307; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=R7r/S+7HI4bJ/LMU+6d34sWaFnJmP1sDFklUsVyMiB0=;
+        b=tJd8t3xfR1ScTOBVV2Mh1v1HNhV8gz3RHkYnf7om/YspdYbY1Mam4G55/7/9V8Fgup
+         RcXtepfCmwx6jP5Hor5YTfZLA0TktUIJIA/13qrwkCaXcFAESOf4216icWboMXgKiFVZ
+         IytfbCLBZD5hnQ9Ry2mUGzOVdOG1HIW/gLFjSltJYriKLtLn/dCn0XZAXIxUTLvN8T1h
+         52yJs3B3GqqFK/znGcvVKHnp35/9vOi7FefhAp/WverpxZdJWO/6HiARbejJKusgDpIB
+         pAk6oM/xwNLweTgciISmgN/Q2ySZ4EquSe5EAoPsLW8nm1jEq1QA/j51dGWPcz78fna+
+         1G8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706708507; x=1707313307;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=R7r/S+7HI4bJ/LMU+6d34sWaFnJmP1sDFklUsVyMiB0=;
+        b=PTH0BCw5Oj6AUbPbH0CcomTnZyOPFVSF+oeg9n0ER+HMBYIJ062NESdo+koirf0QCM
+         V/FRx5RxZ/lWKSDOqgCoOaWjCn4DwkMVyQDHHhQTkFeFwBTEopa/zumlSQRUk5bP6kPH
+         NezAcM2y1Jyyl5yT4AmSfI64dxRciDEt/NhirJN8Q7kEx+v3pOTpzHd19TPHn7ehnUPV
+         7MUUV3ARoZnWujqcAqHnVeLmRbQF0JOW5aTSlal7ZOsFXDPtKe2YLnQIbjYuTFe8UkB8
+         jUyOPWHZulebZGC+o/4eSPc3rmzzxatBrU6i5526QvJWa+KYEoEIiFp1tlkSlAxwKf0G
+         Y0xQ==
+X-Gm-Message-State: AOJu0YxK+9m608DP81JRlBax6oLQQVeY9FOFpxyvlsBYGaJpJ6CDEVwp
+	b6U4vPltAuskbq4pv/PR9Elw+bxWRUCMqLnK31s66Qs/N5EAt49uwyFYpBnwLpQr9wVm1BhewvI
+	Q
+X-Google-Smtp-Source: AGHT+IEN6sr6ONciRGA87EDj/sBEdE2pm/itTlGhq6ISBW12r+v+uTyZ1Oq1QC1Co4jybo0pfJMXAA==
+X-Received: by 2002:a17:906:faec:b0:a2c:3596:b0c1 with SMTP id lu44-20020a170906faec00b00a2c3596b0c1mr1249735ejb.75.1706708506903;
+        Wed, 31 Jan 2024 05:41:46 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCU5Tg0nFqgGtu8bxPgdyVUCTAT30Zc8YLmclEkIzcUXn5+8YvfoOnAKGb4So/6yFA99gNTSVh1p2ufIeS6YkD0oXk7yo7NUh6pXvFjvpZ/ApDjXdlMyFsH9Zrspx+v9u+95ABjAUFAS2vxNbMoab8XIHCdqTbToHZFoIO8rfJdvWJvgyqQ1IvNojBUtxR08nT0VDlavy9x6706FFo3srrqweJ9Ux71Z3RCLBQgIGwmippbrHrXLKSISrp06xP9gusZP+K4DzjRQ9SVP9nI+DsQQhy/zIR4z94DBKpJFM9TYJToAQlXxq2JNp6tYcmdasb76hTM6wuqDoltQs6wLpMEQw5uKpHI2xfGKsviEwPczM91otCziuvcYydMRMfjQOK8drkj0TgmCXdkn21k4p7jJVguSuPOq2NI=
+Received: from [192.168.1.20] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id m1-20020a1709062b8100b00a363e8be473sm1373771ejg.143.2024.01.31.05.41.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Jan 2024 05:41:46 -0800 (PST)
+Message-ID: <37af5a30-0e47-41f9-8d9f-f09a38d05fa5@linaro.org>
+Date: Wed, 31 Jan 2024 14:41:44 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 00/13] Add tuning algorithm for delay chain
+Content-Language: en-US
+To: "Raghavendra, Vignesh" <vigneshr@ti.com>, Judith Mendez <jm@ti.com>,
+ Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Adrian Hunter <adrian.hunter@intel.com>, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Nishanth Menon <nm@ti.com>,
+ Andrew Davis <afd@ti.com>, Udit Kumar <u-kumar1@ti.com>,
+ Roger Quadros <rogerq@kernel.org>, devicetree@vger.kernel.org,
+ Randolph Sapp <rs@ti.com>
+References: <20240131003714.2779593-1-jm@ti.com>
+ <5e03e867-b45f-482b-b734-7949e28fc97e@ti.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <5e03e867-b45f-482b-b734-7949e28fc97e@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mi, 2024-01-31 at 15:59 +0300, Aleksandr Shubin wrote:
-> Allwinner's D1, T113-S3 and R329 SoCs have a quite different PWM
-> controllers with ones supported by pwm-sun4i driver.
->=20
-> This patch adds a PWM controller driver for Allwinner's D1,
-> T113-S3 and R329 SoCs. The main difference between these SoCs
-> is the number of channels defined by the DT property.
->=20
-> Co-developed-by: Brandon Cheo Fusi <fusibrandon13@gmail.com>
-> Signed-off-by: Brandon Cheo Fusi <fusibrandon13@gmail.com>
-> Signed-off-by: Aleksandr Shubin <privatesub2@gmail.com>
-> ---
->  drivers/pwm/Kconfig      |  10 ++
->  drivers/pwm/Makefile     |   1 +
->  drivers/pwm/pwm-sun20i.c | 380 +++++++++++++++++++++++++++++++++++++++
->  3 files changed, 391 insertions(+)
->  create mode 100644 drivers/pwm/pwm-sun20i.c
->=20
-[...]
-> diff --git a/drivers/pwm/pwm-sun20i.c b/drivers/pwm/pwm-sun20i.c
-> new file mode 100644
-> index 000000000000..19bf3f495155
-> --- /dev/null
-> +++ b/drivers/pwm/pwm-sun20i.c
-> @@ -0,0 +1,380 @@
-[...]
-> +static int sun20i_pwm_probe(struct platform_device *pdev)
-> +{
-[...]
-> +	sun20i_chip->rst =3D devm_reset_control_get_exclusive(&pdev->dev, NULL)=
-;
-> +	if (IS_ERR(sun20i_chip->rst))
-> +		return dev_err_probe(&pdev->dev, PTR_ERR(sun20i_chip->rst),
-> +				     "failed to get bus reset\n");
-> +
-> +	ret =3D of_property_read_u32(pdev->dev.of_node, "allwinner,pwm-channels=
-",
-> +				   &sun20i_chip->chip.npwm);
-> +	if (ret)
-> +		sun20i_chip->chip.npwm =3D 8;
-> +
-> +	if (sun20i_chip->chip.npwm > 16)
-> +		sun20i_chip->chip.npwm =3D 16;
-> +
-> +	/* Deassert reset */
-> +	ret =3D reset_control_deassert(sun20i_chip->rst);
-> +	if (ret)
-> +		return dev_err_probe(&pdev->dev, ret, "failed to deassert reset\n");
+On 31/01/2024 14:35, Raghavendra, Vignesh wrote:
+>> Judith Mendez (11):
+>>   drivers: mmc: host: sdhci_am654: Add tuning algorithm for delay chain
+>>   drivers: mmc: host: sdhci_am654: Write ITAPDLY for DDR52 timing
+>>   drivers: mmc: host: sdhci_am654: Add missing OTAP/ITAP enable
+>>   drivers: mmc: host: sdhci_am654: Add ITAPDLYSEL in
+>>     sdhci_j721e_4bit_set_clock
+>>   drivers: mmc: host: sdhci_am654: Fix ITAPDLY for HS400 timing
+> 
+> These patches needs to have Fixes: tag as they are bug fixes IMO.
+> 
+>>   arm64: dts: ti: k3-am62a-main: Add sdhci2 instance
+>>   arm64: dts: ti: k3-am64-main: Update ITAP/OTAP values for MMC
+>>   arm64: dts: ti: k3-am62-main: Update ITAP/OTAP values for MMC
+>>   arm64: dts: ti: k3-am62p: Add missing properties for MMC
+>>   arm64: dts: ti: k3-am6*: Remove DLL properties for soft phys
+>>   arm64: dts: ti: k3-am6*: Reorganize MMC properties
+>>
+>> Nitin Yadav (2):
+>>   arm64: dts: ti: k3-am62a-main: Add sdhci0 instance
+>>   arm64: dts: ti: k3-am62a7-sk: Enable eMMC support
+>>
+> 
+> Can the driver changes be merged independent of DT changes? Or are they
+> meant to go together? Latter would be problematic as it creates cross
+> tree dependencies.
 
-Consider using devm_add_action_or_reset() to automatically assert the
-reset control again on error or driver unbind ...
+DTS cannot depend on driver changes, because that would mean hardware
+description is not really hardware but OS. So the answer to your
+question must be "yes, can be merged independently".
 
-> +
-> +	sun20i_chip->chip.dev =3D &pdev->dev;
-> +	sun20i_chip->chip.ops =3D &sun20i_pwm_ops;
-> +
-> +	mutex_init(&sun20i_chip->mutex);
-> +
-> +	ret =3D pwmchip_add(&sun20i_chip->chip);
+Best regards,
+Krzysztof
 
-.. and devm_pwmchip_add() here. Together, this would allow to drop
-sun20i_pwm_remove().
-
-
-regards
-Philipp
 
