@@ -1,76 +1,55 @@
-Return-Path: <linux-kernel+bounces-47002-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47003-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DE2C8447C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:08:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D63468447CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:10:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 284FB1F237FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:08:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 145621C235A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:10:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56CED36AF9;
-	Wed, 31 Jan 2024 19:07:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD8D338F8F;
+	Wed, 31 Jan 2024 19:10:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lB2qbcdc"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WZN8QliN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 855E22134F;
-	Wed, 31 Jan 2024 19:07:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 210233715E;
+	Wed, 31 Jan 2024 19:10:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706728074; cv=none; b=dNA2JtKB8jR3OuBtYsACTOaHZY/2mGvmZE4C+fLTJs04Ui48m4UdYw4Y0b3GgHFp/2mFyLQzAZwoT52yObLU0e365AUUmH7I06XxNX3gC7FLhfEhOTgvhgllpHXc8yDkXJyH65gm/WllFDyykH4kFuEYidNxirnrvR0eogbrBIk=
+	t=1706728214; cv=none; b=TvlH+fsSQDcg08Hb/fUDjcLMN0AxEN7UeB8MZnuXXv1GGzTm7IbSJzyTnFGvxfTZAiB9d51Ntvzdo0utEq6YIgxMvAob4hgSWUuxAUzkEgat1EUIo3PVDV7povMB8o3oU6R88B6ERaXgfoPExeEymA/TjIbLbPspxt8b10bzzZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706728074; c=relaxed/simple;
-	bh=I5iZ2/I8gzIg+8tRfuEXRpjnuxIQ5+cTB3h6UO2d6VQ=;
+	s=arc-20240116; t=1706728214; c=relaxed/simple;
+	bh=YuGBlaaDD6uC/KXsWtFTjEBqEGYGFxartz53V+KSBQU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=btOWits9msV0dpIg4NPTeqCEfYE9jn1uasyQdQNwZKPrTL7oAnNQvZkjGeZ1+Rtks/rNUnSWceEoxR8UNJ6Spbqu82Aczw7rLL/ZaT8HYBqgByYK36dK6EGuTmxYC+Fe1Lgy7Wlue4y4AdbjBZulGElKwRu2zPPImrs6NEXv5ms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lB2qbcdc; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706728073; x=1738264073;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=I5iZ2/I8gzIg+8tRfuEXRpjnuxIQ5+cTB3h6UO2d6VQ=;
-  b=lB2qbcdcfIHgqNPNoGW/8PFsUyijQxAGHX4o7lOvSvYXyLLebLptdeij
-   2hF2qGfJFnDKrI5P0pwmodqVyRPeCexLiyZALrfkZTS5BBkKIup9xkz0y
-   vU5acM46/0HvmYJC5pWDefBjbQ56HGQFh5swmzDtesvijco4z2+uOJjrL
-   Cd05lYAP0ufV0JGz4AcWhTnRRWFoAty+ib9GkXp8Ro8EQrCe3qfj1tr1w
-   GGZyfg/DWvRdYkfzRmkoDt9D18Tnaarq1r1nGlvD/Il5EarwEDeAGlMXU
-   bDcpFfFuBPm6vxgOY1WAo2eSO9btkmt48zRil9ys59s9d77SzvNs6JBQ/
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="17081541"
-X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
-   d="scan'208";a="17081541"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 11:07:52 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="878873430"
-X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
-   d="scan'208";a="878873430"
-Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 31 Jan 2024 11:07:48 -0800
-Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rVFw1-0001vE-35;
-	Wed, 31 Jan 2024 19:07:45 +0000
-Date: Thu, 1 Feb 2024 03:06:55 +0800
-From: kernel test robot <lkp@intel.com>
-To: Stefan Berger <stefanb@linux.ibm.com>, linux-integrity@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	linux-unionfs@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-	zohar@linux.ibm.com, roberto.sassu@huawei.com, amir73il@gmail.com,
-	miklos@szeredi.hu, Stefan Berger <stefanb@linux.ibm.com>
-Subject: Re: [PATCH 1/5] security: allow finer granularity in permitting
- copy-up of security xattrs
-Message-ID: <202402010225.BXp3LrvU-lkp@intel.com>
-References: <20240130214620.3155380-2-stefanb@linux.ibm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=aOfo0pcl0fbKhtoCRdH8e+HZCURH6LMIz/VwJkm5myrVnI2sT+shwNYO0JIL7EhvRzcA8u5FtMEjd1CHchtc52lr7zvteooki0qjKpqbvv9MI1VkQbqTafRb/XsEq1EewXRoBLECkSEi6Wllwb4Y5tDT02vyjx6vwbHc1yFcj28=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WZN8QliN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE521C433F1;
+	Wed, 31 Jan 2024 19:10:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706728213;
+	bh=YuGBlaaDD6uC/KXsWtFTjEBqEGYGFxartz53V+KSBQU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WZN8QliNA2knu33YvywVNAsuKerSk0V11V6U2pfWg1KSPUQq0x3NY8psX+IU6uQw2
+	 7uHgK95gmRPhnEgKK1DymD2ss8Su/LxCV98VMotPQz8LtS1/VjIthbdFRbuqShAH3z
+	 ZeoiXhxlmeB8NU4KKrCqmeUO5kO+cCe476SZ6Ux29lc9M9Nzx7ob1/q3bzVfoh3X5F
+	 Bt5smSIC7nCg13w+SRXqRa7MxZoTUwTlOIDuNSSz7n9cB6IKWlTRw/oPcjVw1n6MuF
+	 MxHR6UMVHG1JP273RiNj/Gvoyo1fH76JluEr+4e2WsBufIaUdYC4Qv1Rhu2HwMsE5O
+	 grkcvAk+7yk2A==
+Date: Wed, 31 Jan 2024 12:10:11 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: zhenwei pi <pizhenwei@bytedance.com>
+Cc: arei.gonglei@huawei.com, mst@redhat.com, jasowang@redhat.com,
+	herbert@gondor.apana.org.au, xuanzhuo@linux.alibaba.com,
+	virtualization@lists.linux.dev, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org, davem@davemloft.net
+Subject: Re: [PATCH] crypto: virtio/akcipher - Fix stack overflow on memcpy
+Message-ID: <20240131191011.GA679548@dev-arch.thelio-3990X>
+References: <20240130112740.882183-1-pizhenwei@bytedance.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,93 +58,60 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240130214620.3155380-2-stefanb@linux.ibm.com>
+In-Reply-To: <20240130112740.882183-1-pizhenwei@bytedance.com>
 
-Hi Stefan,
+On Tue, Jan 30, 2024 at 07:27:40PM +0800, zhenwei pi wrote:
+> sizeof(struct virtio_crypto_akcipher_session_para) is less than
+> sizeof(struct virtio_crypto_op_ctrl_req::u), copying more bytes from
+> stack variable leads stack overflow. Clang reports this issue by
+> commands:
+> make -j CC=clang-14 mrproper >/dev/null 2>&1
+> make -j O=/tmp/crypto-build CC=clang-14 allmodconfig >/dev/null 2>&1
+> make -j O=/tmp/crypto-build W=1 CC=clang-14 drivers/crypto/virtio/
+>   virtio_crypto_akcipher_algs.o
+> 
+> Fixes: 59ca6c93387d ("virtio-crypto: implement RSA algorithm")
+> Link: https://lore.kernel.org/all/0a194a79-e3a3-45e7-be98-83abd3e1cb7e@roeck-us.net/
+> Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
 
-kernel test robot noticed the following build errors:
+I can confirm this resolves the warning for me as well.
 
-[auto build test ERROR on zohar-integrity/next-integrity]
-[also build test ERROR on pcmoore-selinux/next linus/master v6.8-rc2 next-20240131]
-[cannot apply to mszeredi-vfs/overlayfs-next mszeredi-vfs/next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Tested-by: Nathan Chancellor <nathan@kernel.org> # build
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Stefan-Berger/security-allow-finer-granularity-in-permitting-copy-up-of-security-xattrs/20240131-054854
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git next-integrity
-patch link:    https://lore.kernel.org/r/20240130214620.3155380-2-stefanb%40linux.ibm.com
-patch subject: [PATCH 1/5] security: allow finer granularity in permitting copy-up of security xattrs
-config: x86_64-defconfig (https://download.01.org/0day-ci/archive/20240201/202402010225.BXp3LrvU-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240201/202402010225.BXp3LrvU-lkp@intel.com/reproduce)
+I suspect Guenter should have a formal Reported-by tag. Should this be
+CC'd for stable@ as well?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402010225.BXp3LrvU-lkp@intel.com/
+Cheers,
+Nathan
 
-All errors (new ones prefixed by >>):
-
-   security/security.c: In function 'security_inode_copy_up_xattr':
->> security/security.c:2627:40: error: passing argument 1 of 'evm_inode_copy_up_xattr' from incompatible pointer type [-Werror=incompatible-pointer-types]
-    2627 |         return evm_inode_copy_up_xattr(src, name);
-         |                                        ^~~
-         |                                        |
-         |                                        struct dentry *
-   In file included from security/security.c:24:
-   include/linux/evm.h:121:56: note: expected 'const char *' but argument is of type 'struct dentry *'
-     121 | static inline int  evm_inode_copy_up_xattr(const char *name)
-         |                                            ~~~~~~~~~~~~^~~~
->> security/security.c:2627:16: error: too many arguments to function 'evm_inode_copy_up_xattr'
-    2627 |         return evm_inode_copy_up_xattr(src, name);
-         |                ^~~~~~~~~~~~~~~~~~~~~~~
-   In file included from security/security.c:24:
-   include/linux/evm.h:121:20: note: declared here
-     121 | static inline int  evm_inode_copy_up_xattr(const char *name)
-         |                    ^~~~~~~~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
-
-
-vim +/evm_inode_copy_up_xattr +2627 security/security.c
-
-  2596	
-  2597	/**
-  2598	 * security_inode_copy_up_xattr() - Filter xattrs in an overlayfs copy-up op
-  2599	 * @src: union dentry of copy-up file
-  2600	 * @name: xattr name
-  2601	 *
-  2602	 * Filter the xattrs being copied up when a unioned file is copied up from a
-  2603	 * lower layer to the union/overlay layer.   The caller is responsible for
-  2604	 * reading and writing the xattrs, this hook is merely a filter.
-  2605	 *
-  2606	 * Return: Returns 0 to accept the xattr, 1 to discard the xattr, -EOPNOTSUPP
-  2607	 *         if the security module does not know about attribute, or a negative
-  2608	 *         error code to abort the copy up.
-  2609	 */
-  2610	int security_inode_copy_up_xattr(struct dentry *src, const char *name)
-  2611	{
-  2612		struct security_hook_list *hp;
-  2613		int rc;
-  2614	
-  2615		/*
-  2616		 * The implementation can return 0 (accept the xattr), 1 (discard the
-  2617		 * xattr), -EOPNOTSUPP if it does not know anything about the xattr or
-  2618		 * any other error code in case of an error.
-  2619		 */
-  2620		hlist_for_each_entry(hp,
-  2621				     &security_hook_heads.inode_copy_up_xattr, list) {
-  2622			rc = hp->hook.inode_copy_up_xattr(src, name);
-  2623			if (rc != LSM_RET_DEFAULT(inode_copy_up_xattr))
-  2624				return rc;
-  2625		}
-  2626	
-> 2627		return evm_inode_copy_up_xattr(src, name);
-  2628	}
-  2629	EXPORT_SYMBOL(security_inode_copy_up_xattr);
-  2630	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> ---
+>  drivers/crypto/virtio/virtio_crypto_akcipher_algs.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/crypto/virtio/virtio_crypto_akcipher_algs.c b/drivers/crypto/virtio/virtio_crypto_akcipher_algs.c
+> index 2621ff8a9376..de53eddf6796 100644
+> --- a/drivers/crypto/virtio/virtio_crypto_akcipher_algs.c
+> +++ b/drivers/crypto/virtio/virtio_crypto_akcipher_algs.c
+> @@ -104,7 +104,8 @@ static void virtio_crypto_dataq_akcipher_callback(struct virtio_crypto_request *
+>  }
+>  
+>  static int virtio_crypto_alg_akcipher_init_session(struct virtio_crypto_akcipher_ctx *ctx,
+> -		struct virtio_crypto_ctrl_header *header, void *para,
+> +		struct virtio_crypto_ctrl_header *header,
+> +		struct virtio_crypto_akcipher_session_para *para,
+>  		const uint8_t *key, unsigned int keylen)
+>  {
+>  	struct scatterlist outhdr_sg, key_sg, inhdr_sg, *sgs[3];
+> @@ -128,7 +129,7 @@ static int virtio_crypto_alg_akcipher_init_session(struct virtio_crypto_akcipher
+>  
+>  	ctrl = &vc_ctrl_req->ctrl;
+>  	memcpy(&ctrl->header, header, sizeof(ctrl->header));
+> -	memcpy(&ctrl->u, para, sizeof(ctrl->u));
+> +	memcpy(&ctrl->u.akcipher_create_session.para, para, sizeof(*para));
+>  	input = &vc_ctrl_req->input;
+>  	input->status = cpu_to_le32(VIRTIO_CRYPTO_ERR);
+>  
+> -- 
+> 2.34.1
+> 
 
