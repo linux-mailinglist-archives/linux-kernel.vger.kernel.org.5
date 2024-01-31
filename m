@@ -1,301 +1,237 @@
-Return-Path: <linux-kernel+bounces-46892-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46894-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D067A8445E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:19:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C0208445E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:19:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4641A1F2B3F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:19:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80C0B1C24896
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:19:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C3CC12DDBD;
-	Wed, 31 Jan 2024 17:18:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B271812F582;
+	Wed, 31 Jan 2024 17:18:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="LcmtWHym"
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Zp5BTwBv"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B2AF12C553
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 17:17:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2A2712C553
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 17:18:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706721479; cv=none; b=mCbKWDzeGhVsS9THsK9bnftiZw0G1EzdkAhFVZ17xkWLBUHcDwvdySSRfvcyDvmz+au4n/Fl8mcJIt1ODT9t91Ok9j5CloG5OaL/UXDnoPI1sntBSphYJYMpAR+zmENcSN6FDALQu6RTbjDvVxZjwYgtmdwNcAHkipR7WwlGfps=
+	t=1706721530; cv=none; b=NnkwmpLHhlKZcpIuMffHvI2H1BgsLmThRXAS348SCoi1MxPbV1AkYXh1qofdzkfbYwVicmgWL3wdNBT/jW2Zi0v7IVy8QKinHa+SExLFck24Q33nrhqJgxFaRODGcltS1+M0f0wHZFCh4aS92m839Ztmm2BIETKuPnsJHWojaE0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706721479; c=relaxed/simple;
-	bh=9nkrtbjByfNv1T6sAC22Fmx80l4zZlQsOYlq646IIRE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=e4Oo31D7/uP8QE9W8mL/9ZLNAr/VDeXqQcQ1eR8GSigOFjKEsOoDsflrgoyiz5rXZyVUetFubU0vdmA42GS2D2gdlVHM4T0/I2a974CKHchNIJLjGUnyWhZ77ke8OFvT0vqM1gHVzop92URto0AiQoAjpSdc2bDk2zN93p2WTyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=LcmtWHym; arc=none smtp.client-ip=115.124.30.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1706721468; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=4dRcMznKsMkWtxs3KkZc5kx2bNGWIJtSaincuWHLRCY=;
-	b=LcmtWHymEvwR6EUSIQ7KJqCtOlMgefesEkqHeRKeZQacTzUwgwelZ4TdD+1j0VTT41V4e9fE1oM2wRoKwIW1dO/ssWWXZQXgC5O2xjfrbbG4GdICY9QB+95I3qQIjhVFTir8HsImxfCqQXoRHXY2TXTHp1oCXkgwycO0UT1ufSk=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W.kJfVI_1706721466;
-Received: from localhost.localdomain(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W.kJfVI_1706721466)
-          by smtp.aliyun-inc.com;
-          Thu, 01 Feb 2024 01:17:48 +0800
-From: Bitao Hu <yaoma@linux.alibaba.com>
-To: dianders@chromium.org,
-	akpm@linux-foundation.org,
-	pmladek@suse.com,
-	kernelfans@gmail.com,
-	liusong@linux.alibaba.com
-Cc: linux-kernel@vger.kernel.org,
-	yaoma@linux.alibaba.com
-Subject: [PATCHv3 2/2] watchdog/softlockup: report the most frequent interrupts
-Date: Thu,  1 Feb 2024 01:17:38 +0800
-Message-Id: <20240131171738.35496-3-yaoma@linux.alibaba.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
-In-Reply-To: <20240131171738.35496-1-yaoma@linux.alibaba.com>
-References: <20240131171738.35496-1-yaoma@linux.alibaba.com>
+	s=arc-20240116; t=1706721530; c=relaxed/simple;
+	bh=EUatuG24str+B+qoqT7fZBnQVgvmuUlT/BAN3+vvE0E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ky6mud5HS59Vo8MTc4pnLHzO0ku7IanXV3uOlbBgTIlYND2ml8+XAicqfqU5hGeaLMMnQn/aqVYmHw1SznVNzu/9oPEgRKy533iqko8OCVBn4mdjzMsgxhviVw/UFyHAGfb6ucFyQaIHiBjPnYLe/euhbNwzhcYSxI0JxN/5xfs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Zp5BTwBv; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-55f85a2a43fso13107a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:18:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706721527; x=1707326327; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Y3mGoL3zDkzMLFYV1uUnwg42JaoVUwZ52/NIbjZh/FM=;
+        b=Zp5BTwBvsrD766Afla41NsTjXdJrX6X2uNHTiL7X/FbKOkYYjAXbxfkxnwyA0R594R
+         RLsnI0OVebQKMmhjG26jFoRLo0umThCXSW2CXXMSk3FgcFhDqebZcCPot5Dx4ZYwTsuK
+         nM6C6sqoQ6mzQMKEbCpaTXXFbyy+rwaic3BcoXbDvGEC7zVYES1LZwe2OldzrYvHTWJX
+         shR2aDXAyWo9gVAeEY02DCgbr6v8S4dHWZrJdvZ8XeqIwpDTinyj3c+H9Y5tTkpPkQDK
+         yRrDBLHmjqhq1UIk7Qd2MFG6vE7f7zC3idHOaqant17VTYy3ON1eTcsAr1aHn8nfjhNb
+         1IeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706721527; x=1707326327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Y3mGoL3zDkzMLFYV1uUnwg42JaoVUwZ52/NIbjZh/FM=;
+        b=S/B+B2CeQsO7ZaD1QeAr0zRJk+FbrTF+YONh/KWZlKJnGBY3mKHtOQHhlvML3YSht4
+         lSyqgUO4JyuDM4HPZtkp28QuDuezNHKBMIwRvJr9WOwxOP2WQ426sELD5RTlQFEGhooy
+         vGuf7czBZGwz7Fdb7TKA3bbltRV7jH44705tu1K28wZ68S5aHfdi03XbOgVEyMpMu2uK
+         5JJE40VUt2gEVh/BGJyaX7rHnsaC+fE9JJUZx/d50OTahsHQYgArS9DrkQlk2dcE7s+c
+         aqRLKnpC9tmT4c4uYvOn0HEwd0qzJHqmhwYEBok9ZG1jx0RrsoVQ+inMMmxx2D4+348a
+         YoWg==
+X-Gm-Message-State: AOJu0Yw3ebe6S1ULAfTO4QDM6NuuHUdGAdofcqxx1begzDAIgiBtXsAi
+	kgREKaVgNAtrHdZ78yiukkhLAD/H5zFkvNGq8a9s/TLMTpNq8p73gvg7sWHPnu4P7oqR8W7OHbD
+	04eTrq0Z9n9DywoB2TRqfPhBBLVCPSu9gmf7A
+X-Google-Smtp-Source: AGHT+IE3dsyGqpf9PRrRcVat+owS5CMutKYfaFAUt1MAXTE8r60robbHPrVWf8XnLeeR+lXWkJfwCP09BjviYaqcHaQ=
+X-Received: by 2002:a05:6402:312f:b0:55d:2163:7ed1 with SMTP id
+ dd15-20020a056402312f00b0055d21637ed1mr453402edb.1.1706721526917; Wed, 31 Jan
+ 2024 09:18:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240131150332.1326523-1-quic_kriskura@quicinc.com>
+ <CANP3RGeHXmEcDN=-h1uGBzu_Ur2UcmiEuFDXAEr0Z2ptXnHq=Q@mail.gmail.com> <CANP3RGeQ0-2vg0OeOHCuUzgeRRH4JyPw511Eoyy=HA-M9YAX2A@mail.gmail.com>
+In-Reply-To: <CANP3RGeQ0-2vg0OeOHCuUzgeRRH4JyPw511Eoyy=HA-M9YAX2A@mail.gmail.com>
+From: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+Date: Wed, 31 Jan 2024 09:18:35 -0800
+Message-ID: <CANP3RGebjQhjCMVg5h936kp2mcCFcRvwzwi+84vxzFeUnmQwCQ@mail.gmail.com>
+Subject: Re: [PATCH v2] usb: gadget: ncm: Avoid dropping datagrams of properly
+ parsed NTBs
+To: Krishna Kurapati <quic_kriskura@quicinc.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Hardik Gajjar <hgajjar@de.adit-jv.com>, 
+	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	quic_ppratap@quicinc.com, quic_wcheng@quicinc.com, quic_jackp@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-When the watchdog determines that the current soft lockup is due
-to an interrupt storm based on CPU utilization, reporting the
-most frequent interrupts could be good enough for further
-troubleshooting.
+On Wed, Jan 31, 2024 at 9:14=E2=80=AFAM Maciej =C5=BBenczykowski <maze@goog=
+le.com> wrote:
+>
+> On Wed, Jan 31, 2024 at 9:03=E2=80=AFAM Maciej =C5=BBenczykowski <maze@go=
+ogle.com> wrote:
+> >
+> > On Wed, Jan 31, 2024 at 7:03=E2=80=AFAM Krishna Kurapati
+> > <quic_kriskura@quicinc.com> wrote:
+> > >
+> > > It is observed sometimes when tethering is used over NCM with Windows=
+ 11
+> > > as host, at some instances, the gadget_giveback has one byte appended=
+ at
+> > > the end of a proper NTB. When the NTB is parsed, unwrap call looks fo=
+r
+> > > any leftover bytes in SKB provided by u_ether and if there are any pe=
+nding
+> > > bytes, it treats them as a separate NTB and parses it. But in case th=
+e
+> > > second NTB (as per unwrap call) is faulty/corrupt, all the datagrams =
+that
+> > > were parsed properly in the first NTB and saved in rx_list are droppe=
+d.
+> > >
+> > > Adding a few custom traces showed the following:
+> > >
+> > > [002] d..1  7828.532866: dwc3_gadget_giveback: ep1out:
+> > > req 000000003868811a length 1025/16384 zsI =3D=3D> 0
+> > > [002] d..1  7828.532867: ncm_unwrap_ntb: K: ncm_unwrap_ntb toprocess:=
+ 1025
+> > > [002] d..1  7828.532867: ncm_unwrap_ntb: K: ncm_unwrap_ntb nth: 17519=
+99342
+> > > [002] d..1  7828.532868: ncm_unwrap_ntb: K: ncm_unwrap_ntb seq: 0xce6=
+7
+> > > [002] d..1  7828.532868: ncm_unwrap_ntb: K: ncm_unwrap_ntb blk_len: 0=
+x400
+> > > [002] d..1  7828.532868: ncm_unwrap_ntb: K: ncm_unwrap_ntb ndp_len: 0=
+x10
+> > > [002] d..1  7828.532869: ncm_unwrap_ntb: K: Parsed NTB with 1 frames
+> > >
+> > > In this case, the giveback is of 1025 bytes and block length is 1024.
+> > > The rest 1 byte (which is 0x00) won't be parsed resulting in drop of
+> > > all datagrams in rx_list.
+> > >
+> > > Same is case with packets of size 2048:
+> > > [002] d..1  7828.557948: dwc3_gadget_giveback: ep1out:
+> > > req 0000000011dfd96e length 2049/16384 zsI =3D=3D> 0
+> > > [002] d..1  7828.557949: ncm_unwrap_ntb: K: ncm_unwrap_ntb nth: 17519=
+99342
+> > > [002] d..1  7828.557950: ncm_unwrap_ntb: K: ncm_unwrap_ntb blk_len: 0=
+x800
+> > >
+> > > Lecroy shows one byte coming in extra confirming that the byte is com=
+ing
+> > > in from PC:
+> > >
+> > > Transfer 2959 - Bytes Transferred(1025)  Timestamp((18.524 843 590)
+> > > - Transaction 8391 - Data(1025 bytes) Timestamp(18.524 843 590)
+> > > --- Packet 4063861
+> > >       Data(1024 bytes)
+> > >       Duration(2.117us) Idle(14.700ns) Timestamp(18.524 843 590)
+> > > --- Packet 4063863
+> > >       Data(1 byte)
+> > >       Duration(66.160ns) Time(282.000ns) Timestamp(18.524 845 722)
+> > >
+> > > According to Windows driver, no ZLP is needed if wBlockLength is non-=
+zero,
+> > > because the non-zero wBlockLength has already told the function side =
+the
+> > > size of transfer to be expected. However, there are in-market NCM dev=
+ices
+> > > that rely on ZLP as long as the wBlockLength is multiple of wMaxPacke=
+tSize.
+> > > To deal with such devices, it pads an extra 0 at end so the transfer =
+is no
+> > > longer multiple of wMaxPacketSize.
+> > >
+> > > Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+> > > ---
+> > >  drivers/usb/gadget/function/f_ncm.c | 8 +++++++-
+> > >  1 file changed, 7 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/usb/gadget/function/f_ncm.c b/drivers/usb/gadget=
+/function/f_ncm.c
+> > > index ca5d5f564998..8c314dc98952 100644
+> > > --- a/drivers/usb/gadget/function/f_ncm.c
+> > > +++ b/drivers/usb/gadget/function/f_ncm.c
+> > > @@ -1338,11 +1338,17 @@ static int ncm_unwrap_ntb(struct gether *port=
+,
+> > >              "Parsed NTB with %d frames\n", dgram_counter);
+> > >
+> > >         to_process -=3D block_len;
+> > > -       if (to_process !=3D 0) {
+> > > +
+> > > +       if (to_process =3D=3D 1 &&
+> > > +           (block_len % 512 =3D=3D 0) &&
+> > > +           (*(unsigned char *)(ntb_ptr + block_len) =3D=3D 0x00)) {
+> >
+> > I'm unconvinced this (block_len % 512) works right...
+> > imagine you have 2 ntbs back to back (for example 400 + 624) that
+> > together add up to 1024,
+> > and then a padding null byte.
+> > I think block_len will be 624 then and not 1024.
+> >
+> > perhaps this actually needs to be:
+> >   (ntp_ptr + block_len - skb->data) % 512 =3D=3D 0
+> >
+> > The point is that AFAICT the multiple of 512/1024 that matters is in
+> > the size of the USB transfer,
+> > not the NTB block size itself.
+> >
+> > > +               goto done;
+> > > +       } else if (to_process > 0) {
+> > >                 ntb_ptr =3D (unsigned char *)(ntb_ptr + block_len);
+> >
+> > note that ntb_ptr moves forward by block_len here,
+> > so it's *not* always the start of the packet, so block_len is not
+> > necessarily the actual on the wire size.
+> >
+> > >                 goto parse_ntb;
+> > >         }
+> > >
+> > > +done:
+> > >         dev_consume_skb_any(skb);
+> > >
+> > >         return 0;
+> > > --
+> > > 2.34.1
+> > >
+> >
+> > But it would perhaps be worth confirming in the MS driver source what
+> > exactly they're doing...
+> > (maybe they never even generate multiple ntbs per usb segment...)
+> >
+> > You may also want to mention in the commit message that 512 comes from
+> > USB2 block size, and also works for USB3 block size of 1024.
+>
+> Also since this is a fix, it should probably have a Fixes tag
+> (possibly on some original sha1 that added the driver, since I think
+> it's always been broken) or at least a commit title that more clearly
+> flags it as a 'fix' or cc stable...
+>
+> (something like 'usb: gadget: ncm: fix rare win11 packet discard')
+>
+> We definitely want this to hit LTS...
 
-Below is an example of interrupt storm. The call tree does not
-provide useful information, but we can analyze which interrupt
-caused the soft lockup by comparing the counts of interrupts.
-
-[ 2987.488075] watchdog: BUG: soft lockup - CPU#9 stuck for 23s! [kworker/9:1:214]
-[ 2987.488607] CPU#9 Utilization every 4s during lockup:
-[ 2987.488941]  #1:   0% system,          0% softirq,   100% hardirq,     0% idle
-[ 2987.489357]  #2:   0% system,          0% softirq,   100% hardirq,     0% idle
-[ 2987.489771]  #3:   0% system,          0% softirq,   100% hardirq,     0% idle
-[ 2987.490186]  #4:   0% system,          0% softirq,   100% hardirq,     0% idle
-[ 2987.490601]  #5:   0% system,          0% softirq,   100% hardirq,     0% idle
-[ 2987.491034] CPU#9 Detect HardIRQ Time exceeds 50%. Most frequent HardIRQs:
-[ 2987.491493]  #1: 330985      irq#7(IPI)
-[ 2987.491743]  #2: 5000        irq#10(arch_timer)
-[ 2987.492039]  #3: 9           irq#91(nvme0q2)
-[ 2987.492318]  #4: 3           irq#118(virtio1-output.12)
-..
-[ 2987.492728] Call trace:
-[ 2987.492729]  __do_softirq+0xa8/0x364
-
-Signed-off-by: Bitao Hu <yaoma@linux.alibaba.com>
----
- kernel/watchdog.c | 156 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 156 insertions(+)
-
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index 046507be4eb5..c4c25f25eae7 100644
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -25,6 +25,9 @@
- #include <linux/stop_machine.h>
- #include <linux/kernel_stat.h>
- #include <linux/math64.h>
-+#include <linux/irq.h>
-+#include <linux/bitops.h>
-+#include <linux/irqdesc.h>
- 
- #include <asm/irq_regs.h>
- #include <linux/kvm_para.h>
-@@ -431,11 +434,15 @@ void touch_softlockup_watchdog_sync(void)
- 	__this_cpu_write(watchdog_report_ts, SOFTLOCKUP_DELAY_REPORT);
- }
- 
-+static void set_potential_softlockup(unsigned long now, unsigned long touch_ts);
-+
- static int is_softlockup(unsigned long touch_ts,
- 			 unsigned long period_ts,
- 			 unsigned long now)
- {
- 	if ((watchdog_enabled & WATCHDOG_SOFTOCKUP_ENABLED) && watchdog_thresh) {
-+		/* Softlockup may occur in the current period */
-+		set_potential_softlockup(now, period_ts);
- 		/* Warn about unreasonable delays. */
- 		if (time_after(now, period_ts + get_softlockup_thresh()))
- 			return now - touch_ts;
-@@ -462,6 +469,8 @@ static DEFINE_PER_CPU(u16, cpustat_old[NUM_STATS_PER_GROUP]);
- static DEFINE_PER_CPU(u8, cpustat_utilization[NUM_STATS_GROUPS][NUM_STATS_PER_GROUP]);
- static DEFINE_PER_CPU(u8, cpustat_tail);
- 
-+static void print_hardirq_counts(void);
-+
- /*
-  * We don't need nanosecond resolution. A granularity of 16ms is
-  * sufficient for our precision, allowing us to use u16 to store
-@@ -516,10 +525,156 @@ static void print_cpustat(void)
- 			__this_cpu_read(cpustat_utilization[i][STATS_HARDIRQ]),
- 			__this_cpu_read(cpustat_utilization[i][STATS_IDLE]));
- 	}
-+	print_hardirq_counts();
-+}
-+
-+#define HARDIRQ_PERCENT_THRESH		50
-+#define NUM_HARDIRQ_REPORT		5
-+static DECLARE_BITMAP(softlockup_hardirq_cpus, CONFIG_NR_CPUS);
-+static DEFINE_PER_CPU(u32 *, hardirq_counts);
-+
-+struct irq_counts {
-+	int irq;
-+	u32 counts;
-+};
-+
-+static void find_counts_top(struct irq_counts *irq_counts, int irq, u32 counts, int range)
-+{
-+	unsigned int i, j;
-+
-+	for (i = 0; i < range; i++) {
-+		if (counts > irq_counts[i].counts) {
-+			for (j = range - 1; j > i; j--) {
-+				irq_counts[j].counts = irq_counts[j - 1].counts;
-+				irq_counts[j].irq = irq_counts[j - 1].irq;
-+			}
-+			irq_counts[j].counts = counts;
-+			irq_counts[j].irq = irq;
-+			break;
-+		}
-+	}
-+}
-+
-+/*
-+ * If the proportion of time spent handling irq exceeds HARDIRQ_PERCENT_THRESH%
-+ * during sample_period, then it is necessary to record the counts of each irq.
-+ */
-+static inline bool need_record_irq_counts(int type)
-+{
-+	int tail = __this_cpu_read(cpustat_tail);
-+	u8 utilization;
-+
-+	if (--tail == -1)
-+		tail = 4;
-+	utilization = __this_cpu_read(cpustat_utilization[tail][type]);
-+	return utilization > HARDIRQ_PERCENT_THRESH;
-+}
-+
-+/*
-+ * Mark softlockup as potentially caused by hardirq
-+ */
-+static void set_potential_softlockup_hardirq(void)
-+{
-+	u32 i;
-+	u32 *counts = __this_cpu_read(hardirq_counts);
-+	int cpu = smp_processor_id();
-+	struct irq_desc *desc;
-+
-+	if (!need_record_irq_counts(STATS_HARDIRQ))
-+		return;
-+
-+	if (!test_bit(cpu, softlockup_hardirq_cpus)) {
-+		counts = kmalloc_array(nr_irqs, sizeof(u32), GFP_ATOMIC);
-+		if (!counts)
-+			return;
-+		for_each_irq_desc(i, desc) {
-+			if (!desc)
-+				continue;
-+			counts[i] = desc->kstat_irqs ?
-+				*this_cpu_ptr(desc->kstat_irqs) : 0;
-+		}
-+		__this_cpu_write(hardirq_counts, counts);
-+		set_bit(cpu, softlockup_hardirq_cpus);
-+	}
-+}
-+
-+static void clear_potential_softlockup_hardirq(void)
-+{
-+	u32 *counts = __this_cpu_read(hardirq_counts);
-+	int cpu = smp_processor_id();
-+
-+	if (test_bit(cpu, softlockup_hardirq_cpus)) {
-+		kfree(counts);
-+		counts = NULL;
-+		__this_cpu_write(hardirq_counts, counts);
-+		clear_bit(cpu, softlockup_hardirq_cpus);
-+	}
- }
-+
-+/*
-+ * Mark that softlockup may occur
-+ */
-+static void set_potential_softlockup(unsigned long now, unsigned long period_ts)
-+{
-+	if (time_after_eq(now, period_ts + get_softlockup_thresh() / 5))
-+		set_potential_softlockup_hardirq();
-+}
-+
-+static void clear_potential_softlockup(void)
-+{
-+	clear_potential_softlockup_hardirq();
-+}
-+
-+static void print_hardirq_counts(void)
-+{
-+	u32 i;
-+	struct irq_desc *desc;
-+	u32 counts_diff;
-+	u32 *counts = __this_cpu_read(hardirq_counts);
-+	int cpu = smp_processor_id();
-+	struct irq_counts hardirq_counts_top[NUM_HARDIRQ_REPORT] = {
-+		{-1, 0}, {-1, 0}, {-1, 0}, {-1, 0},
-+	};
-+
-+	if (test_bit(cpu, softlockup_hardirq_cpus)) {
-+		/* Find the top NUM_HARDIRQ_REPORT most frequent interrupts */
-+		for_each_irq_desc(i, desc) {
-+			if (!desc)
-+				continue;
-+			counts_diff = desc->kstat_irqs ?
-+				*this_cpu_ptr(desc->kstat_irqs) - counts[i] : 0;
-+			find_counts_top(hardirq_counts_top, i, counts_diff,
-+					NUM_HARDIRQ_REPORT);
-+		}
-+		/*
-+		 * We do not want the "watchdog: " prefix on every line,
-+		 * hence we use "printk" instead of "pr_crit".
-+		 */
-+		printk(KERN_CRIT "CPU#%d Detect HardIRQ Time exceeds %d%%. Most frequent HardIRQs:\n",
-+			smp_processor_id(), HARDIRQ_PERCENT_THRESH);
-+		for (i = 0; i < NUM_HARDIRQ_REPORT; i++) {
-+			if (hardirq_counts_top[i].irq == -1)
-+				break;
-+			desc = irq_to_desc(hardirq_counts_top[i].irq);
-+			if (desc && desc->action)
-+				printk(KERN_CRIT "\t#%u: %-10u\tirq#%d(%s)\n",
-+					i+1, hardirq_counts_top[i].counts,
-+					hardirq_counts_top[i].irq, desc->action->name);
-+			else
-+				printk(KERN_CRIT "\t#%u: %-10u\tirq#%d\n",
-+					i+1, hardirq_counts_top[i].counts,
-+					hardirq_counts_top[i].irq);
-+		}
-+		if (!need_record_irq_counts(STATS_HARDIRQ))
-+			clear_potential_softlockup_hardirq();
-+	}
-+}
-+
- #else
- static inline void update_cpustat(void) { }
- static inline void print_cpustat(void) { }
-+static inline void set_potential_softlockup(unsigned long now, unsigned long period_ts) { }
-+static inline void clear_potential_softlockup(void) { }
- #endif
- 
- /* watchdog detector functions */
-@@ -537,6 +692,7 @@ static DEFINE_PER_CPU(struct cpu_stop_work, softlockup_stop_work);
- static int softlockup_fn(void *data)
- {
- 	update_touch_ts();
-+	clear_potential_softlockup();
- 	complete(this_cpu_ptr(&softlockup_completion));
- 
- 	return 0;
--- 
-2.37.1 (Apple Git-137.1)
-
+One more thing: the 'goto done' and 'done' label are not needed -
+that's already the natural code flow...
+So the 'goto' could just be replaced with a comment or perhaps with
+--to_process.
 
