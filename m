@@ -1,154 +1,165 @@
-Return-Path: <linux-kernel+bounces-46880-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46882-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66CD58445B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:12:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D925D8445BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:14:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1B832834DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:12:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E9A41F22A37
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:14:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B944D12DD98;
-	Wed, 31 Jan 2024 17:11:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 602B712C553;
+	Wed, 31 Jan 2024 17:13:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NYWABy0O"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="C/sNkXvR"
+Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FE3612CD9F
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 17:11:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 279F112BF0E
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 17:13:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706721085; cv=none; b=cv/jOWyyZOoqSSHiXixLf5g7S3sr6fBWYve1xGA0oTk7k74duBqmRblIguu6CwjPfBoLjaqtdgUoRUrth/jM0p32aLUq0p6ElJ/w2oIUIPWKV/j9G964lDGo6aARsNCR6te50TMaXmjC4+/BI7J5x0P2THe/WiOg/aMTy5nLR44=
+	t=1706721232; cv=none; b=lVfFTlvs/0tyQOrSuJ+WFkl8rV3HNFG2Vu4Bid0ua2QJkmoRbOPTCAAYXXTlph+0AO3qkSK9qBelPaEH4v/DV4H1eqCb4NSpaVajJdtH6sr3fvyAFeOab0kuBDsIRSZ+2F0rZNzjrQEPgttXsVmjlVv769zYC5QomP5apHt6VIU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706721085; c=relaxed/simple;
-	bh=e44RotrW8vQBhj36BDJsxzSVMjvWbhsLD9S0bYrpWkU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tKofKFLOg6t64336Cpzn5q/IXJq0tTSp+40dy+QQLkW4xvERi3/AQuCCzUmE3KHNiK8dtRR8n22s4XMeeLAbRa/1f/sbz8fGbbvexxf3i8WQQAuEOHGj9wVlImFEMfwFu40x93G95mVbhxHW6azQyeaGDacySz4Jq3EENgmwbxU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NYWABy0O; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706721084; x=1738257084;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=e44RotrW8vQBhj36BDJsxzSVMjvWbhsLD9S0bYrpWkU=;
-  b=NYWABy0Ou4E4Oa+ud+6XFoKGFlOKnTWZPah8dLVkCKPZIafrDa1TgM5c
-   35yPni0HE4YnV0VEDWNAlvfzDV27tI035lFohIZOzYAJ+74DgUfXNbosE
-   WogsgrWFt43cXK7mQbP0ImCcC61o6eFLcpIgA/pGnbalB/FNDdsnN237A
-   iRza5BFUyMJtyGe9JlJWsuIoQWAcK2gG7gxJEc5FLD8GNgY/R5uXej8fb
-   npzxIrU4hGL7ga0kmXb5AOjGxgb+4KrQZHR7iQej2/2K5JMTWahr9F+eN
-   iREvI9DOBiR9uIZrG6jV0BlaY6ZFe0RC8INXSL8Jwpv6FkwN8Yc5u/e32
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="3529237"
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="3529237"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 09:11:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="4158513"
-Received: from dspeerx-mobl.amr.corp.intel.com (HELO [10.212.131.185]) ([10.212.131.185])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 09:11:21 -0800
-Message-ID: <ccc94ede-4934-407f-883a-cd47079d2318@intel.com>
-Date: Wed, 31 Jan 2024 09:11:20 -0800
+	s=arc-20240116; t=1706721232; c=relaxed/simple;
+	bh=nwZYaGiDC0dt4XMiU2uVseTseF4erfN8KXvD37w3q2g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LzmW++tBuFJw1q5K/0TMCPsKVQG+OKTzYY0cQMdhMZw3udZWihwSI8phNrNpxOrMwvk5zx7Nx5CKxk8E9hpNa5oIfHPoLgjLTY7wo4/60c0ZMsc4kW35K4e2LvAfw+Dmaqqu4+fYKCLhMcdBslyGNTEE4u+2wuo/V+3M7pQH5ls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=C/sNkXvR; arc=none smtp.client-ip=209.85.219.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-68c4300518bso21356d6.3
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:13:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706721230; x=1707326030; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8IJlALPOP0m94SbFgDUPXzZQCU+Ot6RdR1/m5iPTGnU=;
+        b=C/sNkXvR9LbaDAKrqweFi/Np6TF+HAKYCw/PC/UknGa7yedzHAm67GtNU/wzs1gZMz
+         xtDj3dIgkpr5G7GvgP3wIu2lPCsYbfQmc09vIwcy7PCz+v1tIKHoyj4t44UqF9Taz9iU
+         jET8s03VV3czPn/pWm2T5TLoGl3aqAujbbde7tDdlzBGEiFPwOLRZU13NDcszPj9stn0
+         F/OjXEhgD78vyq860zepwMlX0kk+a7Re7qWCwb42G1oWlRYUP9KHGftMTuxo3JrQqrbG
+         j4NYGKpnM/FAWXkXxpq4+PxR024MqZyBQF2ypeEtc1isL9z/aJP0QVK1CEjIgjCDJcvQ
+         2Eug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706721230; x=1707326030;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8IJlALPOP0m94SbFgDUPXzZQCU+Ot6RdR1/m5iPTGnU=;
+        b=D24fhCdJz2aObn3UtSCOb9/ZQbTusj3wSIcdde+321/iEuHUHK8LwYxWzNh1DckqSM
+         /0L+S0cwenNFzPy74ESlLhnaHi0ynuAW8l2y18kXW5TWoYVTp4CH6QJVSuiYhZ6dRTZt
+         W0sJuU38MeV/RZh5FkIHWPCkSKHCMVu8QRJBVAANfrgTJqgcL5aupGIO7782UDpSKFvb
+         irrtCwr8xLecGcCVHbjr5px+4bBMHZg8MjT00Eh8S1Snn4sz+r9bcvX7c2YTSFdBog3s
+         fxRCA5LOd8Rik5EN6MnLDCakkdadUwaQPTlU7Q1SGLkpTrRkYmAgK3p5RBpnoaCAQsyk
+         tWYw==
+X-Gm-Message-State: AOJu0YyvoaSslZJfs9XxHQkqaavne4N3rz2uU9BSQhDlNeNxd+9vhrHZ
+	Vm1xsJ60wydkCYM/XVVaoDBDaO+tsNVkqwkISXp/I4bd+itbCy0Xo5uFQoqxEH4ODd+fnGYybtv
+	WuhJmttaE9tStAxibIWYP4n7r85uN8v5uXrWs
+X-Google-Smtp-Source: AGHT+IGeL+lnDarNegE01H/3A8DwfzXHmFLBjWvwqbfeIkhfoVvb3X9wjzl1nkLPqvdpUhEabGteBvw88WkwVVRQcpU=
+X-Received: by 2002:a05:6214:f6a:b0:68c:45d2:354a with SMTP id
+ iy10-20020a0562140f6a00b0068c45d2354amr2529358qvb.18.1706721229715; Wed, 31
+ Jan 2024 09:13:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] x86/virt/tdx: Advertise the
- CC_ATTR_HOST_MEM_INCOHERENT for TDX host
-Content-Language: en-US
-To: "Huang, Kai" <kai.huang@intel.com>, linux-kernel@vger.kernel.org
-Cc: x86@kernel.org, kirill.shutemov@linux.intel.com, tglx@linutronix.de,
- bp@alien8.de, mingo@redhat.com, hpa@zytor.com, luto@kernel.org,
- peterz@infradead.org, thomas.lendacky@amd.com, chao.gao@intel.com,
- bhe@redhat.com, nik.borisov@suse.com, pbonzini@redhat.com
-References: <cover.1706698706.git.kai.huang@intel.com>
- <ebbc67eb2c6052dd56fda31cd22bb830d3d290ef.1706698706.git.kai.huang@intel.com>
-From: Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <ebbc67eb2c6052dd56fda31cd22bb830d3d290ef.1706698706.git.kai.huang@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240123221220.3911317-1-mizhang@google.com> <ZbpqoU49k44xR4zB@google.com>
+ <368248d0-d379-23c8-dedf-af7e1e8d23c7@oracle.com>
+In-Reply-To: <368248d0-d379-23c8-dedf-af7e1e8d23c7@oracle.com>
+From: Mingwei Zhang <mizhang@google.com>
+Date: Wed, 31 Jan 2024 09:13:13 -0800
+Message-ID: <CAL715WJDesggP0S0M0SWX2QaFfjBNdqD1j1tDU10Qxk6h7O0pA@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86/pmu: Fix type length error when reading pmu->fixed_ctr_ctrl
+To: Dongli Zhang <dongli.zhang@oracle.com>
+Cc: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	"H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 1/31/24 03:31, Huang, Kai wrote:
-> From: Kai Huang <kai.huang@intel.com>
-> 
-> On the TDX capable platform, during kexec() the old kernel needs to
-> flush dirty cachelines of all TDX private memory otherwise they may
-> silently corrupt the new kernel's memory.
-> 
-> Advertise the new introduced CC_ATTR_HOST_MEM_INCOHERENT attribute for
-> TDX host platform so the cache will be flushed during kexec().
+On Wed, Jan 31, 2024 at 9:02=E2=80=AFAM Dongli Zhang <dongli.zhang@oracle.c=
+om> wrote:
+>
+>
+>
+> On 1/31/24 07:43, Sean Christopherson wrote:
+> > On Tue, Jan 23, 2024, Mingwei Zhang wrote:
+> >> Fix type length error since pmu->fixed_ctr_ctrl is u64 but the local
+> >> variable old_fixed_ctr_ctrl is u8. Truncating the value leads to
+> >> information loss at runtime. This leads to incorrect value in old_ctrl
+> >> retrieved from each field of old_fixed_ctr_ctrl and causes incorrect c=
+ode
+> >> execution within the for loop of reprogram_fixed_counters(). So fix th=
+is
+> >> type to u64.
+> >
+> > But what is the actual fallout from this?  Stating that the bug causes =
+incorrect
+> > code execution isn't helpful, that's akin to saying water is wet.
+> >
+> > If I'm following the code correctly, the only fallout is that KVM may u=
+nnecessarily
+> > mark a fixed PMC as in use and reprogram it.  I.e. the bug can result i=
+n (minor?)
+> > performance issues, but it won't cause functional problems.
+>
+> My this issue cause "Uhhuh. NMI received for unknown reason XX on CPU XX.=
+" at VM side?
+>
+> The PMC is still active while the VM side handle_pmi_common() is not goin=
+g to handle it?
 
-So, you're setting a new bit, CC_ATTR_HOST_MEM_INCOHERENT.  The way I
-like to deal with these is to go back and look at the definition of
-CC_ATTR_HOST_MEM_INCOHERENT and see whether the changelog here convinces
-me that CC_ATTR_HOST_MEM_INCOHERENT is being set appropriately.  Bonus
-points if this changelog uses the same nomenclature as the comment
-describing CC_ATTR_HOST_MEM_INCOHERENT.
+hmm, so the new value is '0', but the old value is non-zero, KVM is
+supposed to zero out (stop) the fix counter), but it skips it. This
+leads to the counter continuously increasing until it overflows, but
+guest PMU thought it had disabled it. That's why you got this warning?
 
-How well does this match the comment above CC_ATTR_HOST_MEM_INCOHERENT?
+I did not see this warning on my side, but it seems possible.
 
-> Note theoretically cache flush is only needed when TDX module is
-> initialized, but the module initialization is done at runtime so just
-> advertise the CC attribute when the platform has TDX enabled.
-
-I find this really hard to parse.  Here's a rewrite, as usual:
-
-	A TDX-host-capable system might not actually have any incoherent
-	memory.  This can occur if a TDX module was never initialized or
-	if the caches have been flushed since the last time TDX was
-	used.  Ignore that case.  Eliminate the need for any locking and
-	assume that any TDX-host-capable system might have incoherent
-	memory by always setting CC_ATTR_HOST_MEM_INCOHERENT.
+Thanks.
+-Mingwei
+>
+> Thank you very much!
+>
+> Dongli Zhang
+>
+> >
+> > Understanding what actually goes wrong matters, because I'm trying to d=
+etermine
+> > whether or not this needs to be fixed in 6.8 and backported to stable t=
+rees.  If
+> > the bug is relatively benign, then this is fodder for 6.9.
+> >
+> >> Fixes: 76d287b2342e ("KVM: x86/pmu: Drop "u8 ctrl, int idx" for reprog=
+ram_fixed_counter()")
+> >> Signed-off-by: Mingwei Zhang <mizhang@google.com>
+> >> ---
+> >>  arch/x86/kvm/vmx/pmu_intel.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel=
+c
+> >> index a6216c874729..315c7c2ba89b 100644
+> >> --- a/arch/x86/kvm/vmx/pmu_intel.c
+> >> +++ b/arch/x86/kvm/vmx/pmu_intel.c
+> >> @@ -71,7 +71,7 @@ static int fixed_pmc_events[] =3D {
+> >>  static void reprogram_fixed_counters(struct kvm_pmu *pmu, u64 data)
+> >>  {
+> >>      struct kvm_pmc *pmc;
+> >> -    u8 old_fixed_ctr_ctrl =3D pmu->fixed_ctr_ctrl;
+> >> +    u64 old_fixed_ctr_ctrl =3D pmu->fixed_ctr_ctrl;
+> >>      int i;
+> >>
+> >>      pmu->fixed_ctr_ctrl =3D data;
+> >>
+> >> base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+> >> --
+> >> 2.43.0.429.g432eaa2c6b-goog
+> >>
+> >
 
