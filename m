@@ -1,137 +1,284 @@
-Return-Path: <linux-kernel+bounces-46337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46338-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D590F843E2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:19:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D579843E2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:20:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97FC2298074
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:19:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C61F1F245AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:20:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 377B26F067;
-	Wed, 31 Jan 2024 11:19:34 +0000 (UTC)
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B939C73168;
+	Wed, 31 Jan 2024 11:20:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="SOgTEynS";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="qyQZgPsB"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88E4469DFD;
-	Wed, 31 Jan 2024 11:19:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F34E22619
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 11:20:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706699973; cv=none; b=T4m6keq6lpkBvqwEikQMCXfUmnvLV5wn121D5EqTZN+n3dn2npylkfKKo2lb8c3kQp+XDVUXf9aQWaQ10t2/tF62t7rpf37ODbUEf3MmdjQMruuhVZesMnI0qUpwQsV9QQ4OgShnO5qIrmCQnh3i0WHnkGvCrRZNvNNqkdDRvF0=
+	t=1706700010; cv=none; b=gnoIELECFHaUuDBReVS/1lB7boN9s9ov4xu8mosIkEiPPHBNinWmRKzmzZM1Qv9em/3VrIr/bDTOuVVgr7OVOX0XMGW3kTrOQODBhCOtY/YPs3qp2odnRDVK+CYWGYSzgtS6iROSAg7ruiirnlbytFrFaquWFseV3FqW59/ocIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706699973; c=relaxed/simple;
-	bh=KD5gA39H2F6P8qf58mKxdp3HwRTzgPQmb5ZfXerPl/A=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=HLgnoF5jCc5+6mzXR4Xs0yuzRtYJ56kR80RrJaWIKosNJIbg7UXGUR2nXNPxZyghmH0pwzTQw0cPcLDHo0yUGK+g9hucGaVmjCP+TkcmOdD9FdZ7NMkjKrAzk15Xcb1C1oJyO6Eg+ZF5s4shPJI8heI5SMNLyvmUC667ZJjxIfI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; arc=none smtp.client-ip=130.133.4.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=physik.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.97)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1rV8cm-000000047SY-0sFL; Wed, 31 Jan 2024 12:19:24 +0100
-Received: from p57bd970d.dip0.t-ipconnect.de ([87.189.151.13] helo=[192.168.178.20])
-          by inpost2.zedat.fu-berlin.de (Exim 4.97)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1rV8cl-00000003f7B-44AB; Wed, 31 Jan 2024 12:19:24 +0100
-Message-ID: <fe057f57aba0f8a9040d4700d27f5bd478032925.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH] sh: Fix build with CONFIG_UBSAN=y
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Kees Cook <keescook@chromium.org>, Yoshinori Sato
-	 <ysato@users.sourceforge.jp>
-Cc: kernel test robot <lkp@intel.com>, Rich Felker <dalias@libc.org>, 
- Masahiro Yamada <masahiroy@kernel.org>, Nicolas Schier <n.schier@avm.de>,
- linux-sh@vger.kernel.org,  linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
-Date: Wed, 31 Jan 2024 12:19:22 +0100
-In-Reply-To: <494586ed5a0871cf7cfd005f513577952306a0bc.camel@physik.fu-berlin.de>
-References: <20240130232717.work.088-kees@kernel.org>
-	 <494586ed5a0871cf7cfd005f513577952306a0bc.camel@physik.fu-berlin.de>
-Autocrypt: addr=glaubitz@physik.fu-berlin.de; prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	s=arc-20240116; t=1706700010; c=relaxed/simple;
+	bh=ioCqrCUfMsxYPFaY+75fTEdC4w/2y5OEqCj2wF6cQ/c=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=V2PLqMWavL1bJ3xV9vsWUkpeWJS6Y4HhzixGa7nj6G6FSmi88YbQlkczRDEZPlOT9lsMxfg9AXgKW0Dfynj/pQNCCuy1yv3gC3EH3efINDce4EDLgihV+P4xJHLltoucklIjbp86XM3WA6kKAcBpA4Rduv8Pz9MbUEqQbHQ8kiQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=SOgTEynS; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=qyQZgPsB; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Anna-Maria Behnsen <anna-maria@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1706700001;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9xaG8XueDfj75NVpSyHdbdda0x15af3Vr65vEcef6qc=;
+	b=SOgTEynSh4igUqyCpOPmXPWBlgmaxNZu6rAzUA3emwXT6s68Zc7RQe/XDd9gPWJ73kJtTf
+	LzQJS55efWqIDyYY/YCyMBt707EikSkyNZmXwxqPsQnpmPJndcLaAZcOlb8izv83m8vP4o
+	pGkSEa5CVJelyFMSsdfOiUI7WefGYOYhmCgAihNxvdkzHN5YlsPyApmThlYbglIU29UA+k
+	BHw7S5C6KbrNqPQQrtN25xwnKV+7V1lO4yMlxiE8ZFcBB4i//GrUZJIvekhIbmM12l9vmA
+	hFHirBJP9JJc+L71YZ5hRkebyAw4HksTisV2gXw3u4jH9didpTSw5B3kMsxXxg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1706700001;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9xaG8XueDfj75NVpSyHdbdda0x15af3Vr65vEcef6qc=;
+	b=qyQZgPsBVNbGBDiIkH97LPltfiX2MynFoWNkBFCZe/i2C91/KxIyj7CK0ryTPYsDeNtN5H
+	p1BdJwa97A6jrcDQ==
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+ John Stultz <jstultz@google.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Eric Dumazet <edumazet@google.com>, "Rafael J . Wysocki"
+ <rafael.j.wysocki@intel.com>, Arjan van de Ven <arjan@infradead.org>,
+ "Paul E . McKenney" <paulmck@kernel.org>, Rik van Riel <riel@surriel.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Sebastian Siewior
+ <bigeasy@linutronix.de>, Giovanni Gherdovich <ggherdovich@suse.cz>, Lukasz
+ Luba <lukasz.luba@arm.com>, "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+ Srinivas Pandruvada <srinivas.pandruvada@intel.com>, K Prateek Nayak
+ <kprateek.nayak@amd.com>
+Subject: Re: [PATCH v10 18/20] timers: Implement the hierarchical pull model
+In-Reply-To: <Zblma8NNZOftJ5fb@pavilion.home>
+References: <Zbb5m0hRHgk59-8z@pavilion.home> <87v87a9033.fsf@somnus>
+ <Zblma8NNZOftJ5fb@pavilion.home>
+Date: Wed, 31 Jan 2024 12:19:59 +0100
+Message-ID: <87r0hxbvhc.fsf@somnus>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-ZEDAT-Hint: PO
+Content-Type: text/plain
 
-Hi Kees,
+Frederic Weisbecker <frederic@kernel.org> writes:
 
-On Wed, 2024-01-31 at 12:03 +0100, John Paul Adrian Glaubitz wrote:
-> Hi Kees,
->=20
-> On Tue, 2024-01-30 at 15:27 -0800, Kees Cook wrote:
-> > The early boot stub for sh had UBSan instrumentation present where it i=
-s
-> > not supported. Disable it for this part of the build.
-> >=20
-> >   sh4-linux-ld: arch/sh/boot/compressed/misc.o: in function `zlib_infla=
-te_table':
-> >   misc.c:(.text+0x670): undefined reference to `__ubsan_handle_shift_ou=
-t_of_bounds'
-> >=20
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Closes: https://lore.kernel.org/oe-kbuild-all/202401310416.s8HLiLnC-lkp=
-@intel.com/
-> > Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-> > Cc: Rich Felker <dalias@libc.org>
-> > Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-> > Cc: Masahiro Yamada <masahiroy@kernel.org>
-> > Cc: Nicolas Schier <n.schier@avm.de>
-> > Cc: linux-sh@vger.kernel.org
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >  arch/sh/boot/compressed/Makefile | 1 +
-> >  1 file changed, 1 insertion(+)
-> >=20
-> > diff --git a/arch/sh/boot/compressed/Makefile b/arch/sh/boot/compressed=
-/Makefile
-> > index b5e29f99c02c..6c6c791a1d06 100644
-> > --- a/arch/sh/boot/compressed/Makefile
-> > +++ b/arch/sh/boot/compressed/Makefile
-> > @@ -12,6 +12,7 @@ targets :=3D vmlinux vmlinux.bin vmlinux.bin.gz vmlin=
-ux.bin.bz2 \
-> >             vmlinux.bin.lzma vmlinux.bin.xz vmlinux.bin.lzo $(OBJECTS)
-> > =20
-> >  GCOV_PROFILE :=3D n
-> > +UBSAN_SANITIZE :=3D n
-> > =20
-> >  #
-> >  # IMAGE_OFFSET is the load offset of the compression loader
->=20
-> Thanks for the patch. I'm looking into this now and will provide the revi=
-ew later.
+[...]
 
-I tried to reproduce the error using your tree and the branch devel/overflo=
-w/ubsan-only
-minus the above patch and using the provided config but I'm unable to repro=
-duce the
-error above.
+>
+> But you know what, let's make it more simple. CPU down hotplug is not a
+> fast path and it doesn't deserve so many optimizations. Just remove ->wakeup_recalc
+> entirely and if the offlining CPU detects it's the last active CPU in the
+> hierarchy, just queue an empty work to the first online CPU. It will briefly
+> force that CPU out of idle and trigger an activate. Then either the CPU
+> periodically checks remote timers or it will go back idle and notice.
+>
 
-Am I missing anything?
+I'll have a look at it and give it a try! Thanks!
 
-Thanks,
-Adrian
-
---=20
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+> Something like this (untested):
+>
+> diff --git a/kernel/time/timer_migration.c b/kernel/time/timer_migration.c
+> index de1905b0bae7..0f15215ef257 100644
+> --- a/kernel/time/timer_migration.c
+> +++ b/kernel/time/timer_migration.c
+> @@ -548,7 +548,6 @@ static void __tmigr_cpu_activate(struct tmigr_cpu *tmc)
+>  
+>  	tmc->cpuevt.ignore = true;
+>  	WRITE_ONCE(tmc->wakeup, KTIME_MAX);
+> -	tmc->wakeup_recalc = false;
+>  
+>  	walk_groups(&tmigr_active_up, &data, tmc);
+>  }
+> @@ -1041,41 +1040,11 @@ int tmigr_requires_handle_remote(void)
+>  	}
+>  
+>  	/*
+> -	 * If the CPU is idle, check whether the recalculation of @tmc->wakeup
+> -	 * is required. @tmc->wakeup_recalc is set, when the last active CPU
+> -	 * went offline. The last active CPU delegated the handling of the timer
+> -	 * migration hierarchy to another (this) CPU by updating this flag and
+> -	 * sending a reschedule.
+> -	 *
+> -	 * Racy lockless check is valid:
+> -	 * - @tmc->wakeup_recalc is set by the remote CPU before it issues
+> -	 *   reschedule IPI.
+> -	 * - As interrupts are disabled here this CPU will either observe
+> -	 *   @tmc->wakeup_recalc set before the reschedule IPI can be handled or
+> -	 *   it will observe it when this function is called again on return
+> -	 *   from handling the reschedule IPI.
+> -	 */
+> -	if (tmc->wakeup_recalc) {
+> -		__walk_groups(&tmigr_requires_handle_remote_up, &data, tmc);
+> -
+> -		if (data.firstexp != KTIME_MAX)
+> -			ret = 1;
+> -
+> -		raw_spin_lock(&tmc->lock);
+> -		WRITE_ONCE(tmc->wakeup, data.firstexp);
+> -		tmc->wakeup_recalc = false;
+> -		raw_spin_unlock(&tmc->lock);
+> -
+> -		return ret;
+> -	}
+> -
+> -	/*
+> -	 * When the CPU is idle and @tmc->wakeup is reliable as
+> -	 * @tmc->wakeup_recalc is not set, compare it with @data.now. The lock
+> -	 * is required on 32bit architectures to read the variable consistently
+> -	 * with a concurrent writer. On 64bit the lock is not required because
+> -	 * the read operation is not split and so it is always consistent.
+> -
+> +	 * When the CPU is idle and @tmc->wakeup is reliable, compare it with
+> +	 * @data.now. The lock is required on 32bit architectures to read the
+> +	 * variable consistently with a concurrent writer. On 64bit the lock
+> +	 * is not required because the read operation is not split and so it is
+> +	 * always consistent.
+>  	 */
+>  	if (IS_ENABLED(CONFIG_64BIT)) {
+>  		if (data.now >= READ_ONCE(tmc->wakeup))
+> @@ -1119,21 +1088,7 @@ u64 tmigr_cpu_new_timer(u64 nextexp)
+>  		    tmc->cpuevt.ignore) {
+>  			ret = tmigr_new_timer(tmc, nextexp);
+>  		}
+> -	} else if (tmc->wakeup_recalc) {
+> -		struct tmigr_remote_data data;
+> -
+> -		data.now = KTIME_MAX;
+> -		data.childmask = tmc->childmask;
+> -		data.firstexp = KTIME_MAX;
+> -		data.tmc_active = false;
+> -		data.check = false;
+> -
+> -		__walk_groups(&tmigr_requires_handle_remote_up, &data, tmc);
+> -
+> -		ret = data.firstexp;
+>  	}
+> -	tmc->wakeup_recalc = false;
+> -
+>  	/*
+>  	 * Make sure the reevaluation of timers in idle path will not miss an
+>  	 * event.
+> @@ -1212,36 +1167,7 @@ static bool tmigr_inactive_up(struct tmigr_group *group,
+>  	 *   hierarchy) and
+>  	 * - there is a pending event in the hierarchy
+>  	 */
+> -	if (data->firstexp != KTIME_MAX) {
+> -		WARN_ON_ONCE(group->parent);
+> -		/*
+> -		 * Top level path: If this CPU is about going offline and was
+> -		 * the last active CPU, wake up some random other CPU so it will
+> -		 * take over the migrator duty and program its timer
+> -		 * properly. Ideally wake the CPU with the closest expiry time,
+> -		 * but that's overkill to figure out.
+> -		 *
+> -		 * Set wakeup_recalc of remote CPU, to make sure the complete
+> -		 * idle hierarchy with enqueued timers is reevaluated.
+> -		 */
+> -		if (!(this_cpu_ptr(&tmigr_cpu)->online)) {
+> -			struct tmigr_cpu *tmc = this_cpu_ptr(&tmigr_cpu);
+> -			unsigned int cpu = smp_processor_id();
+> -			struct tmigr_cpu *tmc_resched;
+> -
+> -			cpu = cpumask_any_but(cpu_online_mask, cpu);
+> -			tmc_resched = per_cpu_ptr(&tmigr_cpu, cpu);
+> -
+> -			raw_spin_unlock(&tmc->lock);
+> -
+> -			raw_spin_lock(&tmc_resched->lock);
+> -			tmc_resched->wakeup_recalc = true;
+> -			raw_spin_unlock(&tmc_resched->lock);
+> -
+> -			raw_spin_lock(&tmc->lock);
+> -			smp_send_reschedule(cpu);
+> -		}
+> -	}
+> +	WARN_ON_ONCE(data->firstexp != KTIME_MAX && group->parent);
+>  
+>  	return walk_done;
+>  }
+> @@ -1579,9 +1505,20 @@ static int tmigr_cpu_online(unsigned int cpu)
+>  	return 0;
+>  }
+>  
+> +long tmigr_trigger_active(void *unused)
+> +{
+> +	struct tmigr_cpu *tmc = this_cpu_ptr(&tmigr_cpu);
+> +
+> +	WARN_ON_ONCE(!tmc->online || tmc->idle);
+> +
+> +	return 0;
+> +}
+> +
+>  static int tmigr_cpu_offline(unsigned int cpu)
+>  {
+>  	struct tmigr_cpu *tmc = this_cpu_ptr(&tmigr_cpu);
+> +	int migrator;
+> +	u64 firstexp;
+>  
+>  	raw_spin_lock_irq(&tmc->lock);
+>  	tmc->online = false;
+> @@ -1591,9 +1528,14 @@ static int tmigr_cpu_offline(unsigned int cpu)
+>  	 * CPU has to handle the local events on his own, when on the way to
+>  	 * offline; Therefore nextevt value is set to KTIME_MAX
+>  	 */
+> -	__tmigr_cpu_deactivate(tmc, KTIME_MAX);
+> +	firstexp = __tmigr_cpu_deactivate(tmc, KTIME_MAX);
+>  	raw_spin_unlock_irq(&tmc->lock);
+>  
+> +	if (firstexp != KTIME_MAX) {
+> +		migrator = cpumask_any_but(cpu_online_mask, cpu);
+> +		work_on_cpu(migrator, tmigr_trigger_active, NULL);
+> +	}
+> +
+>  	return 0;
+>  }
+>  
+> diff --git a/kernel/time/timer_migration.h b/kernel/time/timer_migration.h
+> index c32947cf429b..c556d5824792 100644
+> --- a/kernel/time/timer_migration.h
+> +++ b/kernel/time/timer_migration.h
+> @@ -78,18 +78,12 @@ struct tmigr_group {
+>   * @idle:		Indicates whether the CPU is idle in the timer migration
+>   *			hierarchy
+>   * @remote:		Is set when timers of the CPU are expired remotely
+> - * @wakeup_recalc:	Indicates, whether a recalculation of the @wakeup value
+> - *			is required. @wakeup_recalc is only used by this CPU
+> - *			when it is marked idle in the timer migration
+> - *			hierarchy. It is set by a remote CPU which was the last
+> - *			active CPU and is on the way to idle.
+>   * @tmgroup:		Pointer to the parent group
+>   * @childmask:		childmask of tmigr_cpu in the parent group
+>   * @wakeup:		Stores the first timer when the timer migration
+>   *			hierarchy is completely idle and remote expiry was done;
+>   *			is returned to timer code in the idle path and is only
+> - *			used in idle path; it is only valid, when @wakeup_recalc
+> - *			is not set.
+> + *			used in idle path.
+>   * @cpuevt:		CPU event which could be enqueued into the parent group
+>   */
+>  struct tmigr_cpu {
+> @@ -97,7 +91,6 @@ struct tmigr_cpu {
+>  	bool			online;
+>  	bool			idle;
+>  	bool			remote;
+> -	bool			wakeup_recalc;
+>  	struct tmigr_group	*tmgroup;
+>  	u8			childmask;
+>  	u64			wakeup;
 
