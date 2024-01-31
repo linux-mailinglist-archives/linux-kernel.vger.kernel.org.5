@@ -1,189 +1,178 @@
-Return-Path: <linux-kernel+bounces-46743-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EF3D844377
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:55:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F06E84437B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:56:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B35461C2457F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:55:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15C001F23558
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:56:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7144212A154;
-	Wed, 31 Jan 2024 15:54:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A42B112A15E;
+	Wed, 31 Jan 2024 15:56:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="br+vz2sV"
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="mc6aTbnS"
+Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02on2064.outbound.protection.outlook.com [40.107.249.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24CC3129A8D;
-	Wed, 31 Jan 2024 15:54:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706716490; cv=none; b=EgPkYDtFnVM8ZOTgVcYswp57VH5MtTu0+5IccnVHaey1z9g7byeNCxgISJjTfZFdW6LmeAE8I/cwg1Z89AOblM/TK9T6f+fxWpMTjf9gCV2uwa/4NqxYWsD9dXpjX7L2aM20e+0QT95musLposTvRq5sSGygc0pbQCcrWkxwgbg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706716490; c=relaxed/simple;
-	bh=962G4SeZS6ybqHxFrU26+VODCD2iTSXY5jIdT5VAmx0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SGZyG04ipwDyqYCb2EKcka/R67b1yB2J5Um2HVMike/g0DB6/STUGJtjhauyN88UBicWRu9/E8TpDiBeYPWD+4zThEynd1WQdNGwYeZJ9WjpvRL6uqKOxOnbBxEVyhsXuH5roYfQYJEx0dPiGBnUY3Ra+PbE4V04hZ85yHp3FQ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=br+vz2sV; arc=none smtp.client-ip=209.85.219.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dc6b5d0e015so1155436276.1;
-        Wed, 31 Jan 2024 07:54:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706716488; x=1707321288; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Sp+45kIh37HWYYNwuHvpyq1RNM06jOtAV4lYBAKJAiQ=;
-        b=br+vz2sV3+EOmEV7kP4zfuON4sDb2xMWnP9TglLvKNbtKZYXG7lOpQiUv9Hmzm8MGr
-         wau6v6SUt5jfTCzbzUQkrWERvSnWWsn8G2uZorc1uC4a+mpKDHufKuuW94ff+3LLOyAh
-         DSedETYwVxuGfZlXWBH9lXGyg9cE574oqrh5b2bIozuzgJjp5dHbgNHlqGVAxd5yHHb0
-         os2SYyVBYbz1ED3sR5QSwqACG0GSilPJTHCgPQBmmL2lYIdso4pvEEVylhL9vv13r0bv
-         4UvBRs7KHO9G6k9hM3xHxdbTrBUXIl7Xh6XfhFeF0mvttMiuy1rt72I1BVjLJBqYxBv5
-         NKJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706716488; x=1707321288;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Sp+45kIh37HWYYNwuHvpyq1RNM06jOtAV4lYBAKJAiQ=;
-        b=RnqAlLpy9rjqyZrg2o4eqv9tYhuUqMR1YU7ipCK0ClEwv7fb/7UK306J5LpnMdQ4nk
-         PHQHMYhRbitxR+6aW1iirC9BRjAL1S9xP2fDjZiw/B1lTkpjvViRRUXCIqmEicgDbeRC
-         gV+0ZWIPnGg76Kb3agryiiiN98KaLG0e3G3BOawdMy6asVQ1zyDpAe6yCpHQDbRhX1uM
-         DR0SfmPgRpQqnkBKLtI7qfXg609wuAyMMwOUt7CsuKRlisO21LfRtAQMJyXgD7gcJMGB
-         2uRtmYxZl3gt1gLl/4Go5fY12qu1xTfzx7hdZrtTpgmpngSn7mRerBRA4rVFpMsaMqyu
-         t7wA==
-X-Gm-Message-State: AOJu0YxDRfyAP/J0ZasteZp0k/aVUXk8lyqDPelvUmxwargdFHgp/HK9
-	8YJEioGglySmfwAYXHAdTqrxqv6MwW7Zs7Cro/aTv/lsQghgc88bD+KxfB2Qdvxcx9Ah6gy7dB7
-	Wj0x0BZ00MJzwTvnvIwOq7cPe+wg=
-X-Google-Smtp-Source: AGHT+IFdGdK0zvmMkDmOQrQbRw5dX+IZi8Nc46PV6odF8loYa7iZfaTmImmWVuhsxnN4JyycwD/NBnrVZDen5oDkTog=
-X-Received: by 2002:a25:c546:0:b0:dc2:3562:d234 with SMTP id
- v67-20020a25c546000000b00dc23562d234mr2003329ybe.12.1706716488054; Wed, 31
- Jan 2024 07:54:48 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B55A380BEF;
+	Wed, 31 Jan 2024 15:56:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.249.64
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706716573; cv=fail; b=R6fSu/Px58+YNp7Wque800HIZ4UIGCDjTpwZl5K3y/B/zqI9jZ+dj3FnFU+flRNtJqBHefdb3eG5v2VkwvObWJvXVsOxnbQRet46ZJgAvWA3VdSXsCUK6x/wOx5ERhS0/57bEPqTer2ItGGp3UpkPIdaWhtrfGUCCmYsC7FEzSk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706716573; c=relaxed/simple;
+	bh=1Pjp0U274HP7OUSEEbrhBv+0gckythleXzbkj1ArHOs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=QlCB0q1MOctyI5HR+OmixzaS+4KNXI7+xBHSUXs5dgGbbkFKNj0B1GAsSuBDqsxxFCu8rZX5IeTW3HYL+3jO96NkAveTKmD3BZYs1RxB1kNZ4uZm1QpDZmqX/6fM9B6cW1rOvkq8JYaQ5A+gf/gAch9+sM+eVK1sESJftLJ8TYU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=mc6aTbnS; arc=fail smtp.client-ip=40.107.249.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CfyIh6F8XFONqM/1OjfiLZJKOBORJEXjczTjzSowDakoWPUYEGzFvYqJ3j9f/NvoI5eQ0/ntIuSrHV4GX1xPgVpGfuYvMmgBhJJ9Glg37KXAQOZ48lfu6ZvYGSAOiFY6EapLm0oEQNjnswHERFHTFKHcsxSFs+05TEVxPIXay7owOLVxMN6exaRViUtx2iD1jXRkEHIHO5Dcbb2mCN+L0zodrbZOZECuCrtS6ajY9c3V9gHrzJh/bpG5O2cG6ejOw0Pagp1gMjL9LrvBWa/46SGju4wBeWJv7ZKvFNZdvxaZvZZG9Y6cDuDcVt93TrhdXOdVMxcat7/H19T4794iKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=J8gkpSHpzPOLieP0JooUUedzoYAkEP7V1sPYhqAU0xA=;
+ b=QJ7475/nnrM8HKML44zay4JWNbOF+8kjM0zyKHUf4WCL1FzGAeQkSf8aSy722Vj3/jimUJWu0czf87/dYq7OxqrsGXenu6xj1eYKghpaS0x+9+iA/rTA8dz9uhjUgA38lozg5HBDNc4Hs1w+T/HF/hs6QbV9lkJukZXG1ZKDh5pcK6bsndmKcD4HlPbg7sIBWDxt/wxy3kzzD84qS1tZROhtDXWzk7sFX+RSW/FmPllfnSTG1pO+ovnuxMPbNiU48n7koVYctPvIb6RLyohe0fExQINrBrxbhcn9eyRkzN53I7sMG8rlTaLYgjcLJcS+/cQjgzjzCwzeDnNCsb9PSg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J8gkpSHpzPOLieP0JooUUedzoYAkEP7V1sPYhqAU0xA=;
+ b=mc6aTbnSotpTYUfcshQTWr3mKjPWKPvV9UuyrazorJIJzjhnmD7ta+4MpSkrl6mVT6UcEHl5SwbwllH3jZ/N4eEkrXaoisOEkXP4Y2aYhNWcoZA01DKRcKk1snABevITBUgDME6EuEvcSyVFY9mCmMWof9v+hmwOwQFTLThwrhI=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by VE1PR04MB7262.eurprd04.prod.outlook.com (2603:10a6:800:1ab::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.24; Wed, 31 Jan
+ 2024 15:56:08 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::c8b4:5648:8948:e85c]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::c8b4:5648:8948:e85c%3]) with mapi id 15.20.7228.029; Wed, 31 Jan 2024
+ 15:56:08 +0000
+Date: Wed, 31 Jan 2024 10:56:01 -0500
+From: Frank Li <Frank.li@nxp.com>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, imx@lists.linux.dev,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+	Serge Semin <fancer.lancer@gmail.com>
+Subject: Re: [PATCH 2/6] PCI: dwc: Change arguments of
+ dw_pcie_prog_outbound_atu()
+Message-ID: <Zbptka6O7T1tdTuZ@lizhi-Precision-Tower-5810>
+References: <20240130-pme_msg-v1-2-d52b0add5c7c@nxp.com>
+ <20240131154115.GA587326@bhelgaas>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240131154115.GA587326@bhelgaas>
+X-ClientProxiedBy: SJ0PR05CA0166.namprd05.prod.outlook.com
+ (2603:10b6:a03:339::21) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130214620.3155380-1-stefanb@linux.ibm.com>
- <20240130214620.3155380-5-stefanb@linux.ibm.com> <38230b4c-54ae-45ed-a6fb-34e63501e5b1@linux.ibm.com>
- <CAOQ4uxiYARZBSgzb4_W-RKvB1XLSF3GUBqeLw2kH+eVeZ_8ARQ@mail.gmail.com> <c018b014-9ba8-4395-86dc-b61346ab20a8@linux.ibm.com>
-In-Reply-To: <c018b014-9ba8-4395-86dc-b61346ab20a8@linux.ibm.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 31 Jan 2024 17:54:37 +0200
-Message-ID: <CAOQ4uxi6Te8izWpXROthknRaXrVA9jho5nbc+mkuQDrcTLY44Q@mail.gmail.com>
-Subject: Re: [PATCH 4/5] evm: Use the real inode's metadata to calculate
- metadata hash
-To: Stefan Berger <stefanb@linux.ibm.com>
-Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com, 
-	roberto.sassu@huawei.com, miklos@szeredi.hu
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|VE1PR04MB7262:EE_
+X-MS-Office365-Filtering-Correlation-Id: 626f9811-7dc8-40bf-3aad-08dc227523a9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	LJvbLZ9W5zP5/V65Xy80wESjA7hO5UKiod3CdURlnxm2EMroczj/cCM8VNLvAu8FMwCLn8AIH9gtkq/uipv81AoNXMHcLP2C3BOYNdi5yjnoruduVR7BboeN0IZD6H125iuNzcpDsmqReVus/2XcCe7pqJ3RRc6Lz91nCS4uH58IzsQiusS46CWUGbxrA+Zcn+ziuEmWxaq63xqy9GN/1UM7P2OUvdugkwiCwBQKN+uvbXydjk7XyYeH6eRZF4RMMJZYG2TcMLIDVZbEFHg5g138ONhZHGtOuVHn8JB59HzfWQLg4dQVpi6GwF7qKCmAljlPtbLPXhVkf7pqoVXIPQK9vXhMtHVUW5g7HbtBuOSEJmY1rhJXJZKX8udmqhAujDGS93FOS16SZfdcf34AcOuqZx5zGrfHomkjVjYui10s0Z1PxUiQsW74aTIFMmkg3sEFFUC2YcmNmJIHSHkLlvIj+3jqyppriRCsNLXYVT71pdaEbVBgG9wIX7SIdVVJF1RLsDR7ttlip0LZQd54Yb0OKYu+c7W4ChouIqU6IReC9UYhOLDhYRj6R7PNcEovOkQamxVwQQ9kvWBD7YfklNbgrz92Eh8AqyTOkv6F+2TlyfzriQzCAKI4AnIvphp6
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(39860400002)(136003)(346002)(366004)(376002)(230922051799003)(186009)(1800799012)(451199024)(64100799003)(41300700001)(66946007)(5660300002)(8676002)(4326008)(8936002)(2906002)(7416002)(86362001)(66556008)(316002)(38350700005)(83380400001)(54906003)(6916009)(38100700002)(66476007)(6506007)(9686003)(6512007)(478600001)(6486002)(52116002)(6666004)(26005)(33716001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?4oO1Tx9K7ty192MYZsOtiLU9oVCffK9t5OBr8DYWDS8UEc33XKvN/xp61I21?=
+ =?us-ascii?Q?bN0ZtXKX3aEfYjrC88Qw2XTrugxD+PI4Xv43YohDEKILuDirqt45L6LDmpwl?=
+ =?us-ascii?Q?seY0bFuBD7ihakT/X3H7Q0mCLewE3liB75Ok7JrkNCUYx4b0rvXXnQhBlBq+?=
+ =?us-ascii?Q?3ff+vOz7BSBS+mkjL9zTEU+jU/mJhndSzt3tzBxWPbQ2mM9JgKhgSgkHb5AA?=
+ =?us-ascii?Q?nlrYjlIcUk+gsKcw7EBG5OENRZuMb9D0XYM5UWrQn6CNaqh7HLUsAu4rJqzL?=
+ =?us-ascii?Q?vfcmUJQN0NyFWL/i10ar4Qg0EKSd0/eoSdPgKIJLXLy8z8Fee/EjlzAnnGkd?=
+ =?us-ascii?Q?Eo5OLTTICPZSa0sA+96BT/UArWB6ZI1m+wyDBdvLWH3lCjcJlLqh1VwXYZoF?=
+ =?us-ascii?Q?vRztqXd5ulqb0OKnmt5VuzAnEzD3xusteSfgy/sRt1By/27w8PGdEPb+Szxx?=
+ =?us-ascii?Q?qWEdEAx1nj6nO2E+i5YHp1XO3322oJt1Ubf7VIjcbYBa/OnaeqoZNY6777RB?=
+ =?us-ascii?Q?8AnWsRqUiBAhNJp7eUbPJmxe18UuFD3yWMM5ICqWLyIVtu+pf4u67p9BHYkI?=
+ =?us-ascii?Q?zjtuEWl0ucDMiTxDE0raY5OloFtwe1iiL8omrNhxFLfM8vi+m61Qwmc5gvIR?=
+ =?us-ascii?Q?nckJblhHO7ZFXOIKsj19Eajocqlka/78k6CVahPNrOlDkJSw0JjypQVJQh4x?=
+ =?us-ascii?Q?1hvlIKBbcZZoAsXkUaXeG6xU2qfdmhRVkTKTQCt1WJVhAei+x21OYOkk4nao?=
+ =?us-ascii?Q?QqYF5FkI/2WjXsmt38yd9VW6odrLa/0169PjzHhgGSojTon8aENikDflLuF/?=
+ =?us-ascii?Q?TozQ95Nb2Cx202bOb7+vpTZZX93EsMK7Hnuvx5wcU0Jf40i7UiAumqKGq5xA?=
+ =?us-ascii?Q?dzAJaB43JWVAMm6v9r+FdQfZSG4gKnDuFUCz89BIHUqZ5xbW0QxrxzBJkMYs?=
+ =?us-ascii?Q?9E/GNOg2DnEbkvxBW9SSRU4TEx8+bFELQFWwLMup0UOTX7m0S8SxR/RASpzv?=
+ =?us-ascii?Q?T0wMUm3FBn0fNIbU4EcJ3jHfJpSz9s0TGOEoebGAHGx8xFmugv2xUJ9SXkIA?=
+ =?us-ascii?Q?cm9fMNQoDQeC0zlkHHqqNp1phAVkGNJVaGEiuB4NYS8ATn1t8sp+MHLg/nKm?=
+ =?us-ascii?Q?stBazi6OUIBTN7mK0XLEGGxYgNagFJuyUQzLdqarI0xa6o2BnJP+FZRDmwKt?=
+ =?us-ascii?Q?Uz64ogZNtkxAcyhQDE3Jk4FlYYPOgKOsO/CbPOg5YWfpNAe+D6yLtsSCJY7z?=
+ =?us-ascii?Q?7d8+CO7ND8gcuaKk5Wb7i4XLkZjWYGl3aEsU7ShPaq5BtiDBhu0RTjWpXvj5?=
+ =?us-ascii?Q?D08QaibiYrD+5oOx/ci2PZC53qDgK+U+8O3QkctwqEuakuqKiAESAOxKY4q9?=
+ =?us-ascii?Q?L65Y0FHNARMi6cfAnyy8vL/krNs8mr3WELBwebPLMJ1v7RsHpukl3BMKnsKH?=
+ =?us-ascii?Q?lM4/WE1MT6WnDBNkgE9wjjJ0CJgQSI+RYb5IjQwgURbapVhp6nqvxB0n5dRt?=
+ =?us-ascii?Q?iMVbICisCENL8joecSDyAOlET7/jtlhHg1PScqAFBCzJfPV5qP0lH0ybVWj2?=
+ =?us-ascii?Q?blxwk/F0trA0h8uP5K7ywrF2G/Dkhf9Wbg5FxyTR?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 626f9811-7dc8-40bf-3aad-08dc227523a9
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jan 2024 15:56:08.5886
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rcEOabnoJu1nLBgG/z+Gb/ii7v+wSkZBzgpxeDbcqtZg1/YdYdtwLLtsTolr0UrCmpy8C8PgP+51qiTNVopqXQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7262
 
-On Wed, Jan 31, 2024 at 4:40=E2=80=AFPM Stefan Berger <stefanb@linux.ibm.co=
-m> wrote:
->
->
->
-> On 1/31/24 08:16, Amir Goldstein wrote:
-> > On Wed, Jan 31, 2024 at 4:11=E2=80=AFAM Stefan Berger <stefanb@linux.ib=
-m.com> wrote:
-> >>
-> >>
-> >>
-> >> On 1/30/24 16:46, Stefan Berger wrote:
-> >>> Changes to the file attribute (mode bits, uid, gid) on the lower laye=
-r
-> >>> are not take into account when d_backing_inode() is used when a file =
-is
-> >>> accessed on the overlay layer and this file has not yet been copied u=
-p.
-> >>> This is because d_backing_inode() does not return the real inode of t=
-he
-> >>> lower layer but instead returns the backing inode which holds old fil=
-e
-> >>> attributes. When the old file attributes are used for calculating the
-> >>> metadata hash then the expected hash is calculated and the file then
-> >>> mistakenly passes signature verification. Therefore, use d_real_inode=
-()
-> >>> which returns the inode of the lower layer for as long as the file ha=
-s
-> >>> not been copied up and returns the upper layer's inode otherwise.
-> >>>
-> >>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> >>> ---
-> >>>    security/integrity/evm/evm_crypto.c | 2 +-
-> >>>    1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity=
-/evm/evm_crypto.c
-> >>> index b1ffd4cc0b44..2e48fe54e899 100644
-> >>> --- a/security/integrity/evm/evm_crypto.c
-> >>> +++ b/security/integrity/evm/evm_crypto.c
-> >>> @@ -223,7 +223,7 @@ static int evm_calc_hmac_or_hash(struct dentry *d=
-entry,
-> >>>                                 size_t req_xattr_value_len,
-> >>>                                 uint8_t type, struct evm_digest *data=
-)
-> >>>    {
-> >>> -     struct inode *inode =3D d_backing_inode(dentry);
-> >>> +     struct inode *inode =3D d_real_inode(dentry);
-> >>>        struct xattr_list *xattr;
-> >>>        struct shash_desc *desc;
-> >>>        size_t xattr_size =3D 0;
-> >>
-> >> We need this patch when NOT activating CONFIG_OVERLAY_FS_METACOPY but
-> >> when setting CONFIG_OVERLAY_FS_METACOPY=3Dy it has to be reverted...  =
-I am
-> >> not sure what the solution is.
-> >
-> > I think d_real_inode() does not work correctly for all its current user=
-s for
-> > a metacopy file.
-> >
-> > I think the solution is to change d_real_inode() to return the data ino=
-de
-> > and add another helper to get the metadata inode if needed.
-> > I will post some patches for it.
->
-> I thought that we may have to go through vfs_getattr() but even better
-> if we don't because we don't have the file *file anywhere 'near'.
->
-> >
-> > However, I must say that I do not know if evm_calc_hmac_or_hash()
-> > needs the lower data inode, the upper metadata inode or both.
->
-> What it needs are data structures with mode bits, uid, and gid that stat
-> in userspace would show.
->
->
+On Wed, Jan 31, 2024 at 09:41:15AM -0600, Bjorn Helgaas wrote:
+> Nit: could the subject line be more specific than "change arguments"?
+> E.g., something about collecting dw_pcie_prog_outbound_atu() arguments
+> in a struct?  If you know that's the fundamental change, it's a lot
+> easier to read the commit log and the patch because you know the goal.
 
-With or without metacopy enabled, an overlay inode st_uid st_gid st_mode
-are always taken from the upper most inode which is what d_real_inode()
-currently returns, so I do not understand what the problem is.
+How about 
+"Consolidate arguments of dw_pcie_prog_outbound_atu() into a structure"
 
-> >
-> > The last time you tried to fix ovl+IMA, I asked for documentation
-> > of what data/metadata is protected with EVM and how are those
-> > protections supposed to work across overlayfs copy up, when the
-> > data and metadata are often split between 2 and myabe event 3
-> > differnt inode.
->
-> I always compare against what userspace sees with stat and that's what
-> the EVM should also work with so it ends up in reasonable matching
-> result in terms of hash calculation and then access permission/rejection.
->
+Frank
 
-I will need a lot more analysis information to be able to help you.
-Exactly which setup, exactly which test, exactly which inode/dentry/file
-objects are used and how they are accessed when things go wrong.
-
-Thanks,
-Amir.
+> 
+> On Tue, Jan 30, 2024 at 07:45:27PM -0500, Frank Li wrote:
+> > From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+> > 
+> > This is a preparation before adding the Msg-type outbound iATU
+> > mapping. The respective update will require two more arguments added
+> > to __dw_pcie_prog_outbound_atu(). That will make the already
+> > complicated function prototype even more hard to comprehend accepting
+> > _eight_ arguments. In order to prevent that and keep the code
+> > more-or-less readable all the outbound iATU-related arguments are
+> > moved to the new config-structure: struct dw_pcie_ob_atu_cfg pointer
+> > to which shall be passed to dw_pcie_prog_outbound_atu(). The structure
+> > is supposed to be locally defined and populated with the outbound iATU
+> > settings implied by the caller context.
+> > 
+> > As a result of the denoted change there is no longer need in having
+> > the two distinctive methods for the Host and End-point outbound iATU
+> > setups since the corresponding code can directly call the
+> > dw_pcie_prog_outbound_atu() method with the config-structure
+> > populated. Thus dw_pcie_prog_ep_outbound_atu() is dropped.
+> > 
+> > Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+> > Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+> > Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > ...
 
