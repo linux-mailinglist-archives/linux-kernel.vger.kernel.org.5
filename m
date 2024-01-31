@@ -1,37 +1,60 @@
-Return-Path: <linux-kernel+bounces-46879-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46880-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E55BD8445B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:12:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66CD58445B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:12:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F64F28252E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:12:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1B832834DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:12:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 757CC12CD97;
-	Wed, 31 Jan 2024 17:10:57 +0000 (UTC)
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B944D12DD98;
+	Wed, 31 Jan 2024 17:11:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NYWABy0O"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72B4E12C539
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 17:10:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FE3612CD9F
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 17:11:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706721057; cv=none; b=sDgv7QxklcuvXXEnQ/yVkCx1d3tGtv9aRjWw2IoVwQ+gNHVLk10HSbX3RC9W3Tt8yJ6SL917CcpsQy7lx568ruhNO1AchEZS0LcZtwuCCNHPx/hXn+6HYosXwowJtupa6OwDc4fZ1CRtU2fUOZxZ82zJJLC9AYciXIbawXPiEXo=
+	t=1706721085; cv=none; b=cv/jOWyyZOoqSSHiXixLf5g7S3sr6fBWYve1xGA0oTk7k74duBqmRblIguu6CwjPfBoLjaqtdgUoRUrth/jM0p32aLUq0p6ElJ/w2oIUIPWKV/j9G964lDGo6aARsNCR6te50TMaXmjC4+/BI7J5x0P2THe/WiOg/aMTy5nLR44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706721057; c=relaxed/simple;
-	bh=vyqxsmT1sYLs8Lhco7xrp08oqpIsWPXEzBlZX7H94oY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=F0+wLLi3FwyFoHzxCQ+aAuqkMW2zjDIyf6Fk8xEcdK3sOYLVNIaBrUFeVQximX7/3Xtvc1rla0VVL8+4qj9hdp0OlbNp2nyp140fN9gnxY9VNv7nmGPihTEpDSwybIFIGqC2NeDOqfBKCqjnFn6C6BMAT0hC/n/x8ng8SUsnW3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 739B2240006;
-	Wed, 31 Jan 2024 17:10:48 +0000 (UTC)
-Message-ID: <139cdbd6-73d9-4452-94ce-825689b7c0c8@ghiti.fr>
-Date: Wed, 31 Jan 2024 18:10:48 +0100
+	s=arc-20240116; t=1706721085; c=relaxed/simple;
+	bh=e44RotrW8vQBhj36BDJsxzSVMjvWbhsLD9S0bYrpWkU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tKofKFLOg6t64336Cpzn5q/IXJq0tTSp+40dy+QQLkW4xvERi3/AQuCCzUmE3KHNiK8dtRR8n22s4XMeeLAbRa/1f/sbz8fGbbvexxf3i8WQQAuEOHGj9wVlImFEMfwFu40x93G95mVbhxHW6azQyeaGDacySz4Jq3EENgmwbxU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NYWABy0O; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706721084; x=1738257084;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=e44RotrW8vQBhj36BDJsxzSVMjvWbhsLD9S0bYrpWkU=;
+  b=NYWABy0Ou4E4Oa+ud+6XFoKGFlOKnTWZPah8dLVkCKPZIafrDa1TgM5c
+   35yPni0HE4YnV0VEDWNAlvfzDV27tI035lFohIZOzYAJ+74DgUfXNbosE
+   WogsgrWFt43cXK7mQbP0ImCcC61o6eFLcpIgA/pGnbalB/FNDdsnN237A
+   iRza5BFUyMJtyGe9JlJWsuIoQWAcK2gG7gxJEc5FLD8GNgY/R5uXej8fb
+   npzxIrU4hGL7ga0kmXb5AOjGxgb+4KrQZHR7iQej2/2K5JMTWahr9F+eN
+   iREvI9DOBiR9uIZrG6jV0BlaY6ZFe0RC8INXSL8Jwpv6FkwN8Yc5u/e32
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="3529237"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="3529237"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 09:11:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="4158513"
+Received: from dspeerx-mobl.amr.corp.intel.com (HELO [10.212.131.185]) ([10.212.131.185])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 09:11:21 -0800
+Message-ID: <ccc94ede-4934-407f-883a-cd47079d2318@intel.com>
+Date: Wed, 31 Jan 2024 09:11:20 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -39,161 +62,93 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] riscv: add CALLER_ADDRx support
+Subject: Re: [PATCH 2/4] x86/virt/tdx: Advertise the
+ CC_ATTR_HOST_MEM_INCOHERENT for TDX host
 Content-Language: en-US
-To: Zong Li <zong.li@sifive.com>, palmer@dabbelt.com,
- paul.walmsley@sifive.com, aou@eecs.berkeley.edu,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231205085959.32177-1-zong.li@sifive.com>
-From: Alexandre Ghiti <alex@ghiti.fr>
-In-Reply-To: <20231205085959.32177-1-zong.li@sifive.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: "Huang, Kai" <kai.huang@intel.com>, linux-kernel@vger.kernel.org
+Cc: x86@kernel.org, kirill.shutemov@linux.intel.com, tglx@linutronix.de,
+ bp@alien8.de, mingo@redhat.com, hpa@zytor.com, luto@kernel.org,
+ peterz@infradead.org, thomas.lendacky@amd.com, chao.gao@intel.com,
+ bhe@redhat.com, nik.borisov@suse.com, pbonzini@redhat.com
+References: <cover.1706698706.git.kai.huang@intel.com>
+ <ebbc67eb2c6052dd56fda31cd22bb830d3d290ef.1706698706.git.kai.huang@intel.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
+ oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
+ 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
+ ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
+ VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
+ iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
+ c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
+ pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
+ ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
+ QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzUVEYXZpZCBDaHJp
+ c3RvcGhlciBIYW5zZW4gKEludGVsIFdvcmsgQWRkcmVzcykgPGRhdmUuaGFuc2VuQGludGVs
+ LmNvbT7CwXgEEwECACIFAlQ+9J0CGwMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAAoJEGg1
+ lTBwyZKwLZUP/0dnbhDc229u2u6WtK1s1cSd9WsflGXGagkR6liJ4um3XCfYWDHvIdkHYC1t
+ MNcVHFBwmQkawxsYvgO8kXT3SaFZe4ISfB4K4CL2qp4JO+nJdlFUbZI7cz/Td9z8nHjMcWYF
+ IQuTsWOLs/LBMTs+ANumibtw6UkiGVD3dfHJAOPNApjVr+M0P/lVmTeP8w0uVcd2syiaU5jB
+ aht9CYATn+ytFGWZnBEEQFnqcibIaOrmoBLu2b3fKJEd8Jp7NHDSIdrvrMjYynmc6sZKUqH2
+ I1qOevaa8jUg7wlLJAWGfIqnu85kkqrVOkbNbk4TPub7VOqA6qG5GCNEIv6ZY7HLYd/vAkVY
+ E8Plzq/NwLAuOWxvGrOl7OPuwVeR4hBDfcrNb990MFPpjGgACzAZyjdmYoMu8j3/MAEW4P0z
+ F5+EYJAOZ+z212y1pchNNauehORXgjrNKsZwxwKpPY9qb84E3O9KYpwfATsqOoQ6tTgr+1BR
+ CCwP712H+E9U5HJ0iibN/CDZFVPL1bRerHziuwuQuvE0qWg0+0SChFe9oq0KAwEkVs6ZDMB2
+ P16MieEEQ6StQRlvy2YBv80L1TMl3T90Bo1UUn6ARXEpcbFE0/aORH/jEXcRteb+vuik5UGY
+ 5TsyLYdPur3TXm7XDBdmmyQVJjnJKYK9AQxj95KlXLVO38lczsFNBFRjzmoBEACyAxbvUEhd
+ GDGNg0JhDdezyTdN8C9BFsdxyTLnSH31NRiyp1QtuxvcqGZjb2trDVuCbIzRrgMZLVgo3upr
+ MIOx1CXEgmn23Zhh0EpdVHM8IKx9Z7V0r+rrpRWFE8/wQZngKYVi49PGoZj50ZEifEJ5qn/H
+ Nsp2+Y+bTUjDdgWMATg9DiFMyv8fvoqgNsNyrrZTnSgoLzdxr89FGHZCoSoAK8gfgFHuO54B
+ lI8QOfPDG9WDPJ66HCodjTlBEr/Cwq6GruxS5i2Y33YVqxvFvDa1tUtl+iJ2SWKS9kCai2DR
+ 3BwVONJEYSDQaven/EHMlY1q8Vln3lGPsS11vSUK3QcNJjmrgYxH5KsVsf6PNRj9mp8Z1kIG
+ qjRx08+nnyStWC0gZH6NrYyS9rpqH3j+hA2WcI7De51L4Rv9pFwzp161mvtc6eC/GxaiUGuH
+ BNAVP0PY0fqvIC68p3rLIAW3f97uv4ce2RSQ7LbsPsimOeCo/5vgS6YQsj83E+AipPr09Caj
+ 0hloj+hFoqiticNpmsxdWKoOsV0PftcQvBCCYuhKbZV9s5hjt9qn8CE86A5g5KqDf83Fxqm/
+ vXKgHNFHE5zgXGZnrmaf6resQzbvJHO0Fb0CcIohzrpPaL3YepcLDoCCgElGMGQjdCcSQ+Ci
+ FCRl0Bvyj1YZUql+ZkptgGjikQARAQABwsFfBBgBAgAJBQJUY85qAhsMAAoJEGg1lTBwyZKw
+ l4IQAIKHs/9po4spZDFyfDjunimEhVHqlUt7ggR1Hsl/tkvTSze8pI1P6dGp2XW6AnH1iayn
+ yRcoyT0ZJ+Zmm4xAH1zqKjWplzqdb/dO28qk0bPso8+1oPO8oDhLm1+tY+cOvufXkBTm+whm
+ +AyNTjaCRt6aSMnA/QHVGSJ8grrTJCoACVNhnXg/R0g90g8iV8Q+IBZyDkG0tBThaDdw1B2l
+ asInUTeb9EiVfL/Zjdg5VWiF9LL7iS+9hTeVdR09vThQ/DhVbCNxVk+DtyBHsjOKifrVsYep
+ WpRGBIAu3bK8eXtyvrw1igWTNs2wazJ71+0z2jMzbclKAyRHKU9JdN6Hkkgr2nPb561yjcB8
+ sIq1pFXKyO+nKy6SZYxOvHxCcjk2fkw6UmPU6/j/nQlj2lfOAgNVKuDLothIxzi8pndB8Jju
+ KktE5HJqUUMXePkAYIxEQ0mMc8Po7tuXdejgPMwgP7x65xtfEqI0RuzbUioFltsp1jUaRwQZ
+ MTsCeQDdjpgHsj+P2ZDeEKCbma4m6Ez/YWs4+zDm1X8uZDkZcfQlD9NldbKDJEXLIjYWo1PH
+ hYepSffIWPyvBMBTW2W5FRjJ4vLRrJSUoEfJuPQ3vW9Y73foyo/qFoURHO48AinGPZ7PC7TF
+ vUaNOTjKedrqHkaOcqB185ahG2had0xnFsDPlx5y
+In-Reply-To: <ebbc67eb2c6052dd56fda31cd22bb830d3d290ef.1706698706.git.kai.huang@intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-GND-Sasl: alex@ghiti.fr
 
-On 05/12/2023 09:59, Zong Li wrote:
-> CALLER_ADDRx returns caller's address at specified level, they are used
-> for several tracers. These macros eventually use
-> __builtin_return_address(n) to get the caller's address if arch doesn't
-> define their own implementation.
->
-> In RISC-V, __builtin_return_address(n) only works when n == 0, we need
-> to walk the stack frame to get the caller's address at specified level.
+On 1/31/24 03:31, Huang, Kai wrote:
+> From: Kai Huang <kai.huang@intel.com>
+> 
+> On the TDX capable platform, during kexec() the old kernel needs to
+> flush dirty cachelines of all TDX private memory otherwise they may
+> silently corrupt the new kernel's memory.
+> 
+> Advertise the new introduced CC_ATTR_HOST_MEM_INCOHERENT attribute for
+> TDX host platform so the cache will be flushed during kexec().
 
+So, you're setting a new bit, CC_ATTR_HOST_MEM_INCOHERENT.  The way I
+like to deal with these is to go back and look at the definition of
+CC_ATTR_HOST_MEM_INCOHERENT and see whether the changelog here convinces
+me that CC_ATTR_HOST_MEM_INCOHERENT is being set appropriately.  Bonus
+points if this changelog uses the same nomenclature as the comment
+describing CC_ATTR_HOST_MEM_INCOHERENT.
 
-Is that a bug in gcc or something expected for riscv in general?
+How well does this match the comment above CC_ATTR_HOST_MEM_INCOHERENT?
 
+> Note theoretically cache flush is only needed when TDX module is
+> initialized, but the module initialization is done at runtime so just
+> advertise the CC attribute when the platform has TDX enabled.
 
->
-> data.level started from 'level + 3' due to the call flow of getting
-> caller's address in RISC-V implementation. If we don't have additional
-> three iteration, the level is corresponding to follows:
->
-> callsite -> return_address -> arch_stack_walk -> walk_stackframe
-> |           |                 |                  |
-> level 3     level 2           level 1            level 0
->
-> Signed-off-by: Zong Li <zong.li@sifive.com>
-> ---
->   arch/riscv/include/asm/ftrace.h    |  5 ++++
->   arch/riscv/kernel/Makefile         |  2 ++
->   arch/riscv/kernel/return_address.c | 48 ++++++++++++++++++++++++++++++
->   3 files changed, 55 insertions(+)
->   create mode 100644 arch/riscv/kernel/return_address.c
->
-> diff --git a/arch/riscv/include/asm/ftrace.h b/arch/riscv/include/asm/ftrace.h
-> index 2b2f5df7ef2c..42777f91a9c5 100644
-> --- a/arch/riscv/include/asm/ftrace.h
-> +++ b/arch/riscv/include/asm/ftrace.h
-> @@ -25,6 +25,11 @@
->   
->   #define ARCH_SUPPORTS_FTRACE_OPS 1
->   #ifndef __ASSEMBLY__
-> +
-> +extern void *return_address(unsigned int level);
-> +
-> +#define ftrace_return_address(n) return_address(n)
-> +
->   void MCOUNT_NAME(void);
->   static inline unsigned long ftrace_call_adjust(unsigned long addr)
->   {
-> diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-> index fee22a3d1b53..40d054939ae2 100644
-> --- a/arch/riscv/kernel/Makefile
-> +++ b/arch/riscv/kernel/Makefile
-> @@ -7,6 +7,7 @@ ifdef CONFIG_FTRACE
->   CFLAGS_REMOVE_ftrace.o	= $(CC_FLAGS_FTRACE)
->   CFLAGS_REMOVE_patch.o	= $(CC_FLAGS_FTRACE)
->   CFLAGS_REMOVE_sbi.o	= $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_return_address.o	= $(CC_FLAGS_FTRACE)
->   endif
->   CFLAGS_syscall_table.o	+= $(call cc-option,-Wno-override-init,)
->   CFLAGS_compat_syscall_table.o += $(call cc-option,-Wno-override-init,)
-> @@ -46,6 +47,7 @@ obj-y	+= irq.o
->   obj-y	+= process.o
->   obj-y	+= ptrace.o
->   obj-y	+= reset.o
-> +obj-y	+= return_address.o
->   obj-y	+= setup.o
->   obj-y	+= signal.o
->   obj-y	+= syscall_table.o
-> diff --git a/arch/riscv/kernel/return_address.c b/arch/riscv/kernel/return_address.c
-> new file mode 100644
-> index 000000000000..c2008d4aa6e5
-> --- /dev/null
-> +++ b/arch/riscv/kernel/return_address.c
-> @@ -0,0 +1,48 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * This code come from arch/arm64/kernel/return_address.c
-> + *
-> + * Copyright (C) 2023 SiFive.
-> + */
-> +
-> +#include <linux/export.h>
-> +#include <linux/kprobes.h>
-> +#include <linux/stacktrace.h>
-> +
-> +struct return_address_data {
-> +	unsigned int level;
-> +	void *addr;
-> +};
-> +
-> +static bool save_return_addr(void *d, unsigned long pc)
-> +{
-> +	struct return_address_data *data = d;
-> +
-> +	if (!data->level) {
-> +		data->addr = (void *)pc;
-> +		return false;
-> +	}
-> +
-> +	--data->level;
-> +
-> +	return true;
-> +}
-> +NOKPROBE_SYMBOL(save_return_addr);
-> +
-> +void *return_address(unsigned int level)
+I find this really hard to parse.  Here's a rewrite, as usual:
 
-
-Maybe return_address() should be noinline to make sure it's not inlined 
-as it would break the "+ 3"? Not sure it's necessary though.
-
-
-> +{
-> +	struct return_address_data data;
-> +
-> +	data.level = level + 3;
-> +	data.addr = NULL;
-> +
-> +	arch_stack_walk(save_return_addr, &data, current, NULL);
-> +
-> +	if (!data.level)
-> +		return data.addr;
-> +	else
-> +		return NULL;
-> +
-> +}
-> +EXPORT_SYMBOL_GPL(return_address);
-> +NOKPROBE_SYMBOL(return_address);
-
-
-And I see that with this patch, ftrace_return_address() is now defined 
-whether CONFIG_FRAME_POINTER is set or not, is that correct?
-
-This looks like a fix to me so that should go into -fixes with a Fixes 
-tag (but we'll have to make sure that the "+ 3" is correct on all 
-backports...):
-
-Fixes: 10626c32e382 ("riscv/ftrace: Add basic support")
-
-And you can finally add for your v2 (or not if you don't respin):
-
-Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-
-Thanks and sorry for the delay!
-
-Alex
-
+	A TDX-host-capable system might not actually have any incoherent
+	memory.  This can occur if a TDX module was never initialized or
+	if the caches have been flushed since the last time TDX was
+	used.  Ignore that case.  Eliminate the need for any locking and
+	assume that any TDX-host-capable system might have incoherent
+	memory by always setting CC_ATTR_HOST_MEM_INCOHERENT.
 
