@@ -1,124 +1,175 @@
-Return-Path: <linux-kernel+bounces-47193-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47192-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03522844A59
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:47:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3912E844A56
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:46:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9618A1F21ED1
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:47:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D2EA1C27458
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:46:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F44739FD4;
-	Wed, 31 Jan 2024 21:46:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC4DA39AE8;
+	Wed, 31 Jan 2024 21:46:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="S416ex4f"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="oqvT33QL"
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2063.outbound.protection.outlook.com [40.107.101.63])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 019B439FD6
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 21:46:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706737617; cv=none; b=FrpiEs50hDiLL/AHxd84Cd4b+NBl/Dn/lqNrqCpPEMlMzqmFSCsf0LO2BkPdedIgBjyut4ubsd5GucArIRMMbQbRAVYqLSYyY2Y5hZsAa6rrkuUVPb0JXKNweIDk1YCx4DFLIzyNaFgB+G6gLLk7bY6Avot6zDl/5mPN1aHSHnY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706737617; c=relaxed/simple;
-	bh=eFnmC1lbVYN4j4VfW6XU+vAA3X/Ct0usmb10imNRazA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BUdc62Y9zswyTKx6dtrjyzJ4j4wpw75th6+r1WRHySyfWZDwEarkaLFFwY5O0AaJZ7omRxm04J8ivxhHjhtZ/A22eAgofZhutwUQdo+a4kW7nsd3UFIZ+dmORY/aBG1IQ3/KFyYQzzc0cuVmKDzZAAmtLMkyaqTOm5MLySa0q90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=S416ex4f; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706737614;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xA0WL8OAWu59QlhnSKj+NZw09nFzDmIW6P1Gg1TTP9c=;
-	b=S416ex4fb5qw5rce7Vae9b4cR7ULIzCkubFYFxwOmLTrtMJ0emEJanIxQBFGGDMFVF4gTs
-	0DA9od0s2sTR12nWo/AzQ6GItqjJ5WsDBlC4D7G9V61IwlRt57DsdXoxmX73m/Lan5rPpl
-	fT9lf16U0JTxDl6Z+pbxmuVheteSyA0=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-453-DVto7OoNMKmIExCCkT1VfA-1; Wed, 31 Jan 2024 16:46:53 -0500
-X-MC-Unique: DVto7OoNMKmIExCCkT1VfA-1
-Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2d06d8cf7fcso2747091fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 13:46:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706737612; x=1707342412;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xA0WL8OAWu59QlhnSKj+NZw09nFzDmIW6P1Gg1TTP9c=;
-        b=hWKGnzjXMZnXXegLsFNqlSknx2aLsGsT2FSKbPTS2dTUnwWAtUFOr53XSwsyABX7ZW
-         jrFqXE/EIoMc84e7KoADWB0WVZ5lTwHUqrEw/adwGxChpUiCbKPGvePYz73/UbCaPNqc
-         6VpwSWbWA0u2kunHO6xkd2HnZsVqgfhgaJ7r4sXnelxFEN9FdC4H1itFU9V9PqalBfoJ
-         6bdd5ZgB0M+9hf5Lfaz+eTztQjD+1sMhyBzRF6OGWR1AkXuCnxbgnjyGYwPcYsd4ay4L
-         Y2LRTWzZtzQ4yRGn1LQzX7JcFHNhAYTSOYa7NwLvP8Zp1HuC8Y2R/sgpiYuOlLZNQ4JD
-         jeNw==
-X-Gm-Message-State: AOJu0YzSs9bSZ0Mk0Vt9xXWLj4A2vz2fXN6iY6vpxvgJI9XWphgm1T/J
-	9F+GNddNsei10aYRe+znKU2Xb3g3h53rOpLObN0svby0TqFWQ3+1TMUiPV694Ud96QeoMVKGdPT
-	RRKXrdTPLooWHuvLhBOId4N21w5W2dMXhUBWDfvccDMkj4f5P21bMMYK6gWi5uj+uZnZWqpPATw
-	4w7I4I1SDiC5pnV/p4bi0kRS4ra9gCATA7Gogm
-X-Received: by 2002:a2e:9ec3:0:b0:2cf:1288:910 with SMTP id h3-20020a2e9ec3000000b002cf12880910mr1956863ljk.14.1706737611873;
-        Wed, 31 Jan 2024 13:46:51 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE23fLdVgxCbf16DcIFLnyMiHBcJtbPkDANivp0IhWFO/5OXRw56/KeQCVp5xbX9m/eGo6azpw0AIqz+PJ+MPs=
-X-Received: by 2002:a2e:9ec3:0:b0:2cf:1288:910 with SMTP id
- h3-20020a2e9ec3000000b002cf12880910mr1956854ljk.14.1706737611595; Wed, 31 Jan
- 2024 13:46:51 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B9A439ACC;
+	Wed, 31 Jan 2024 21:46:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.63
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706737610; cv=fail; b=CRtZimDX4njUYCGkcdNScewdNCmDjXhody+EdKnY1IHoPxdgGfPTnURrDyfzBCmU6g45k0zMCgDveKBHmGkfZ/Xglil4Xij0klLK75QGOVxU/OYYFcsZoJxyZA++NMTS2eRL4phzyQvYRyNBZO2QAhNuvoK3n5Bcjt9Y8GED+f0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706737610; c=relaxed/simple;
+	bh=N/iRPTiz5X32IgvurAolXbe+PozFPg2KCKi/IhW4wb8=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=ETe0QHdFOqHJoj2MYHDlMj5qTZBZZmLFQIAjpUehsx4lP859gPOsRlp+7zH0uO2oPLWgZXy0wx87anGgugMWia2w9R1LmD+MjUJ6mVnXbXbRWO9iePZvtW5pUD4sgrUaCgRN/zS+rVMfFVxjmgOLOFEZnX6J89A9POShIIQ/heU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=oqvT33QL; arc=fail smtp.client-ip=40.107.101.63
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hshemR8MHR1xYKwkdSGgr4f1CSFGR7terIGVFpQxE+rQbo3hE8bXXN5IVKfIwhMtlOoLy1Qv6llxlNZVhRVX76o/LdZrpac6g4m+ezOHxFq1p3Hpf1zlVBtiD+F+QiTwfhiE6pEjEBdF1KbhntbYEbNhehBrOjEhbDE5ldFik7dTzY45uDqPfYFgcBwyAzdKSr2HGiz0nKqATFoc5hPdAPX2k/PCgKZDST3t80JWinnsGyS8I659XuFasrA/Rd8maQ0fNTFgJRjsyVF2ph+MhuBjyAGoNh3KBrXBOm0Eb8nupuZZT/3evDWoqHL6oQisIYEwRZJndxdoiBAjS6tIdA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3wyTv1EojV5ythkcq+L8D39ab0rR7xd2CgZ7OwY+v+c=;
+ b=MP+W11OGayPMBL24QQL0v9AfDPvXkQFFy+t7gaVeiVJvAEoN0f1h9zkxkiPsJZBW1CBFn3EBZ3AHiRq2sCScrLpLfdMs5wpA+cL6P2hKPyc8fD2QAcg/gEa9fFIH/ddDlFg3AkzkBv3rzGv9YrFvXghtys2cADjkDdrURJrrrc9at/gAIJFsIjCwHffdDBMKEdZPD2k4Wgusm7yK2qIqZ/i1EGD73M8TNmF6ae+qWsfcbDBTxFvX4ohD3JI5xkt6PQkGdcGX4P1TcxQ2n4zLJGm5wMXHCewedCZe8sUSxBZbLAXr2kaQ6wF6bHNjW3W9uann6fa3152sWcdb1isB4Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3wyTv1EojV5ythkcq+L8D39ab0rR7xd2CgZ7OwY+v+c=;
+ b=oqvT33QLTnoDlDM3Et2Cz7BmjsXi/RCx6kxpDPmUQxKSGh2GuuGGsnVi7y6R3Ph4ztjQU0LEql7vzZGOxRYp4jxD/UNK6ENooTaKVBMNISTQ4UPpYH3JBAcY7hZ5Pn+oPiMyioLTMJF3xXStcaL7yWGA9UM+izy56nhb+MqFI1o=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by IA1PR12MB8538.namprd12.prod.outlook.com (2603:10b6:208:455::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.22; Wed, 31 Jan
+ 2024 21:46:46 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::c30:614f:1cbd:3c64]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::c30:614f:1cbd:3c64%4]) with mapi id 15.20.7249.024; Wed, 31 Jan 2024
+ 21:46:46 +0000
+Message-ID: <a7d69dc6-a4b3-4d30-a666-66328e10fb89@amd.com>
+Date: Wed, 31 Jan 2024 15:46:45 -0600
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/6] cpufreq:amd-pstate: fix the nominal freq value set
+Content-Language: en-US
+To: Perry Yuan <perry.yuan@amd.com>, rafael.j.wysocki@intel.com,
+ viresh.kumar@linaro.org, Ray.Huang@amd.com, gautham.shenoy@amd.com,
+ Borislav.Petkov@amd.com
+Cc: Alexander.Deucher@amd.com, Xinmei.Huang@amd.com, Xiaojian.Du@amd.com,
+ Li.Meng@amd.com, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1706690577.git.perry.yuan@amd.com>
+ <0c7a38077a19e5055926947ea6ed64bfb7686345.1706690577.git.perry.yuan@amd.com>
+From: Mario Limonciello <mario.limonciello@amd.com>
+In-Reply-To: <0c7a38077a19e5055926947ea6ed64bfb7686345.1706690577.git.perry.yuan@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA1P222CA0071.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:806:2c1::18) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131191732.3247996-1-cleech@redhat.com> <20240131191732.3247996-3-cleech@redhat.com>
- <2024013125-unraveled-definite-7fc6@gregkh>
-In-Reply-To: <2024013125-unraveled-definite-7fc6@gregkh>
-From: Chris Leech <cleech@redhat.com>
-Date: Wed, 31 Jan 2024 13:46:40 -0800
-Message-ID: <CAPnfmX+ZXraFC1+2Lu+WdgdUud4ALEcFAcsRQotVjfsGFsqUvw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] cnic,bnx2,bnx2x: use UIO_MEM_DMA_COHERENT
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Nilesh Javali <njavali@marvell.com>, Christoph Hellwig <hch@lst.de>, 
-	John Meneghini <jmeneghi@redhat.com>, Lee Duncan <lduncan@suse.com>, 
-	Mike Christie <michael.christie@oracle.com>, Hannes Reinecke <hare@kernel.org>, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org, 
-	GR-QLogic-Storage-Upstream@marvell.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|IA1PR12MB8538:EE_
+X-MS-Office365-Filtering-Correlation-Id: 73149032-f602-4ab5-086b-08dc22a61f2f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	M26Fr6VBM0XIpbvm1tD8YkT5P9VLMTsqBQxraKiANxAwXwRGr2ggY93P/6X2QwwkG0Bc0vEbK6MUqha+RuELIrOoGTw3GMuuZ7TuXnLICWpORrO0/i/htU4uGnXe/YQ+CJpmJiq+yx79/NGAYczsgf9r0TOheoq3i4+51DF5p5MLwL95Pvg030/IBcrU5eBnVGZCTAXm6da0m9KlDmzPxqe9yNJf2BHphWSR+wUOSOJxvCrNgYHfYQP51gZWvRVt0OJDVkPNHXNmEWx4GDwDqo0ZMZQu8SsGKuq0JUWzN0EJuGFjP43di5csDi/xQMbuZMWJP2XkFFz1heZFRmInl5QKfFUTVhWcjrBF0EbIktQNyfGAtLw1F0V1DMf6uiiXcJ0UZ4oAaP0FFMq4UQ+1LoQ3+APtuJMu0FRQntA18Z1D0T21jLiZpD5HUiwQuBWQfxGa0As2hTrT2k8bj3sgz6OgPlP5osobXgISzRf/3MfHsL/mA4JGJAhBCCc17NktvnyC7dS8IRrYfdmpsL2ADPFvxODf4+HulE9CM5Kl3Rrj8/0hxRdAge0EZDTPgRTU6YblNWifZL2yudJ26yoYhLjM+P3RAjiZ4ehY3ggN5TocJW9Y2RkTIZlA9RODaeFg3JTq9rIAwkzRmaGihr/CGA==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(396003)(376002)(136003)(366004)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(31686004)(83380400001)(41300700001)(86362001)(31696002)(36756003)(26005)(2616005)(38100700002)(6512007)(6486002)(53546011)(316002)(2906002)(6506007)(478600001)(6636002)(66476007)(66946007)(66556008)(4326008)(44832011)(8676002)(5660300002)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?Q3ErM3UvUHRDTUJpTWwxVTZ5aXkwbGR5RnRWeE5YZnVCVS85MUZUVTRhNnlU?=
+ =?utf-8?B?YWFCR0ljRjYvNDFrNktnSlV1RExSZWRzcFJYbElMTTdydzVNZ2J5MytNS29O?=
+ =?utf-8?B?YTNhYVdBT3ljRmlhdzUyMUxHSmxsdGNlTG9MdTlrNFJ0OE5pQVMwZFdBcGdU?=
+ =?utf-8?B?YjFoYTlOWmEwTTRzNG1HOERKOEM0d0VCTDBxd0YvdkNyV28zRWN5NVBSSjBs?=
+ =?utf-8?B?SDBqczNTc2R4dmtyY0gxcStJLzd4RjRQb1N0b3d5dWI5M1RmVGYzbzA1Nmdt?=
+ =?utf-8?B?aGwvc1UwT2RIYUgrcURRTnBSa2dCdGJZQ2FWSW1CenhQVGdPcmJCZGMvTTNl?=
+ =?utf-8?B?dVMrNDUrZ0dTZVB2S2d2aHZod3JUL3BNcm1ZRThRbmJwbGdQdVovNzJQVEJS?=
+ =?utf-8?B?cElkaGxGTlJIUVRmTHJ3LzRqYjFvM3VmdExXNUxoanhscEhTUDZ4SC8zSUtq?=
+ =?utf-8?B?V05naXVaRXJuWkoySU9YUTJBUnNZNGY3c3Y0K09IbzVEMk1adm9UM2U2dSt0?=
+ =?utf-8?B?eVNzMWJYZkJIREZhcm83K1Y5UDFUV2RlNlhZWjk0d1FnSFh1WmhRdlpKc2ZY?=
+ =?utf-8?B?NytPRHNtN09xb0w5Y2o0VUdITTJwcnJDa24wbGJJTmQrdmJBRGVpNGNtN3BM?=
+ =?utf-8?B?K1RacVVYL2tQV3lxZWc3RHQyN3h5dWxZaVBxNUEveTJGNXA0d09EclZRSE5o?=
+ =?utf-8?B?Q2gzV05iWnRTNk9JYUx3S1MrMmtROGNLc3RodlQ4eWppTGp4Rk5YUG42S3pw?=
+ =?utf-8?B?eFNtNDZ5NDBEQjcwRXJnY0tMSVRrUjRyZFFQQW1ueERja0VIeGl3UE1CcGFS?=
+ =?utf-8?B?R3FPMGdXVzNzcXJsa1R0Zm1lRW5UWWd0TEVtLzRtcnZsbFJjOTdJZlZUNU9u?=
+ =?utf-8?B?Y3RBVjZjSlhTMGFaRFBCT2M1NHVCVUQxdWRWbk0rUDFrVlNTL3hsSzhJK1pH?=
+ =?utf-8?B?V1AwcjFqYXJvM2cyWk9MYktmY3RzZUptQkszcDJvazdLYW4rU3RYK3NITThy?=
+ =?utf-8?B?dlJaMUZMOWZ3cWVlYlo5VjFBaHNVSW84R0xDbnJLUVdxYUY5TEZZU09aeXFt?=
+ =?utf-8?B?QnE1QkpqMVJ5M1Bta3ZTQzVUUjFxckJlQ1ovYmtvVkorSnRTWTY1UElEKzNM?=
+ =?utf-8?B?eXNSbEYxS2F6WGxJZXBtSWRIdW4rNHUvdkJUQkpDZE1GQWZicEJ6WVRUNWFk?=
+ =?utf-8?B?d0daNmhZVEcrSEJKaHhCcXV6bmV3RmhaY1doZFkrWTJtMEd3MDJtd0s0cXJE?=
+ =?utf-8?B?RmpYa0ZlSEI3ejYzUGJYd1JmU0Z6dU9EM1czcHNsMGU2c3Y4bUM4eFp1V1B0?=
+ =?utf-8?B?a0VuWHNyREY3TlZ0SDl3MXhLaVFlcFZqKzIvOVAvekE3cm5FY0NKVU1zODFK?=
+ =?utf-8?B?SU5UUUNQR1JhNkhkVGpZSlFvVE5WNmJLYTZGNklLUEJTOXVLRUUxekZvWEIv?=
+ =?utf-8?B?blFucnpTaytMNmkranpXWnR5RFl0dmRReEpITlZHcDBBcWpDL0lZV25CUDI4?=
+ =?utf-8?B?RlRGME5xOCtVRmNMSCtKMEJieHVldGZFN0VaanZ6UHlqUEp6bDFkY0tKbFlj?=
+ =?utf-8?B?MG9jcEtiVFBVUUlXYVlIR1l4M1h1N1BLQURJZkJ5TEJEMnB5a0RLN1gwMFdE?=
+ =?utf-8?B?U1lNTHFNYTY1MU1acnpYNkg0MHpyeGZZaU9mNXdxdUM1UGJhY3FVNHRlbDFK?=
+ =?utf-8?B?aDVkRWR3Ukg3SGs5TENVemJ3bzRDVWR5RmphWGdRVUp0YW9oUE9VYWh3SjJP?=
+ =?utf-8?B?bnRUdVowSURUNTNNb0duSTJYZzNXbUowbHlrSUhXbzl6N3pmN0MzdjlZTWRS?=
+ =?utf-8?B?c2NBcHRvVVNGWjRQWWZORTFiYy84cDhyN3FjVWZoOEJFNVBpNytKSW14ZFBP?=
+ =?utf-8?B?MTg3djQrOGVMWHVKejVQWTdJLzFYQ1JDZFFzczJEMms0WHNwS3UvQlA4QVR2?=
+ =?utf-8?B?ZnVVOFVjKzN4QXUrK2RYQmtsM055OVNqLzNZei9aMFA5OHBITVIzY3NERjZ6?=
+ =?utf-8?B?S0NocVdlYzZQSFdoM09LdVY5OEhYckhPUDlxRk82bXQxcW5QSjlMYk9la3JI?=
+ =?utf-8?B?bWk1SXhmbkJSNjB3TFhiNWl5M29UbmZJbTJLRGRmQ3JwUnowdGVGYkdzUnJX?=
+ =?utf-8?Q?eUTiICfQJCP3WY+ERPOEkOgxI?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 73149032-f602-4ab5-086b-08dc22a61f2f
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jan 2024 21:46:46.4074
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YSMcn5XhPnJdas+bZmr8uJYduOsSXLWo6Dn6KI02re/CjRuKRul4VtxE5bQ4wZErUdlOvHv6tJoME/jUd4VYqA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8538
 
-On Wed, Jan 31, 2024 at 1:30=E2=80=AFPM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Jan 31, 2024 at 11:17:32AM -0800, Chris Leech wrote:
-> > Use the UIO_MEM_DMA_COHERENT type to properly handle mmap for
-> > dma_alloc_coherent buffers.
-> >
-> > The cnic l2_ring and l2_buf mmaps have caused page refcount issues as
-> > the dma_alloc_coherent no longer provide __GFP_COMP allocation as per
-> > commit "dma-mapping: reject __GFP_COMP in dma_alloc_attrs".
-> >
-> > Fix this by having the uio device use dma_mmap_coherent.
-> >
-> > The bnx2 and bnx2x status block allocations are also dma_alloc_coherent=
-,
-> > and should use dma_mmap_coherent. They don't allocate multiple pages,
-> > but this interface does not work correctly with an iommu enabled unless
-> > dma_mmap_coherent is used.
-> >
-> > Fixes: bb73955c0b1d ("cnic: don't pass bogus GFP_ flags to dma_alloc_co=
-herent")
->
-> This is really the commit that broke things?  By adding this, are you
-> expecting anyone to backport this change to older kernels?
+On 1/31/2024 02:50, Perry Yuan wrote:
+> Address an untested error where the nominal_freq was returned in KHz
+> instead of the correct MHz units, this oversight led to a wrong
+> nominal_freq set and resued, it will cause the max frequency of core to
+s/resued/reused/
+> be initialized with a wrong frequency value.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: ec437d71db7 ("cpufreq: amd-pstate: Introduce a new AMD P-State driver to support future processors")
+> Signed-off-by: Perry Yuan <perry.yuan@amd.com>
+One minor change above.
 
-That's certainly where things stopped working altogether, iommu issues
-go back further.
-
-- Chris
+Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
+> ---
+>   drivers/cpufreq/amd-pstate.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
+> index 2f8656f75a1d..9291a22bd3cc 100644
+> --- a/drivers/cpufreq/amd-pstate.c
+> +++ b/drivers/cpufreq/amd-pstate.c
+> @@ -625,8 +625,7 @@ static int amd_get_nominal_freq(struct amd_cpudata *cpudata)
+>   	if (ret)
+>   		return ret;
+>   
+> -	/* Switch to khz */
+> -	return cppc_perf.nominal_freq * 1000;
+> +	return cppc_perf.nominal_freq;
+>   }
+>   
+>   static int amd_get_lowest_nonlinear_freq(struct amd_cpudata *cpudata)
 
 
