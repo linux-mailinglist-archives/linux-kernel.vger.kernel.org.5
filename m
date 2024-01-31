@@ -1,337 +1,264 @@
-Return-Path: <linux-kernel+bounces-46756-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46758-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B12B08443A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:05:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91EC38443A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:06:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 372661F26682
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:05:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6F261C25659
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:06:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9533912A15E;
-	Wed, 31 Jan 2024 16:05:16 +0000 (UTC)
-Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EE5012A169;
+	Wed, 31 Jan 2024 16:06:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="PlVuM9Bk"
+Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25D4D12A15C
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 16:05:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D90784A2D
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 16:06:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706717115; cv=none; b=b6ZspaU1NFbAmyLVCbBgr+XODtyc6fmpVu7EEN/YGiXPibczWWpkd3rfg85MNSZPUv89r3eIT8ytEhOHHfWmJb1x/Jt2qWQbOa8RK03tTQpDQ/4fuQsAZd9hhIFH9jfXxqPxk82RF612ETBVMBFQoRvLrIryNmZKcZEgafCkk0E=
+	t=1706717210; cv=none; b=f9GFC0a7JOFJ4RqcNAdzM5wZpkXLxokLCJ+oc3w3XU+Ma+TwqGXyWPWI02Va+aIYd2OajcYDBeEwX99U7y3lTLGPKBkGRd+GW2eqdxPFrzlCcclOXb1zX3kpPFqA/81l9jKDPR4P8eHF+fGxYrElyDlABb/TikgrsoXdi9sgNqQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706717115; c=relaxed/simple;
-	bh=7mKW+OHj3yGbTswJBa10dhFZoNBsPYh0fy7RTmxx1eE=;
+	s=arc-20240116; t=1706717210; c=relaxed/simple;
+	bh=9XerCSIrO3MZAQg9oUAxkEq/vXCPX3FtEmSyOwTW9LA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jxaK+CkxMYR87UVA9qFEpZ+kH974Jcu3y0j0DTd9W37cOzubHKP53rL21kghFk2wHIb0zJdiP2a1rfLp37uYD/hFaMY9K+ftz5rLXTCYjilPkVLzt1bYNoEHIzc5MlZG433qcN4/SE3Kj/ynULBxWWtGRConRK2Jm90zkkYfASA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-59a24bf7cadso1087311eaf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 08:05:13 -0800 (PST)
+	 To:Cc:Content-Type; b=lxDWbw5u46mYpFD2RaW8+d9waPMwlLga6xYFXAYQmM+1M7tM9aWBYhkH+g93VAye6OBcCLhSJFTYkG5mEMvhjYozJkxOgbGmcojcdE7Q0cEBJaS6fLROKzQxkHD+KttddDw9xMWMerUnXnJwCXoqTltFguCUQhYIzgmFmRYZqLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=PlVuM9Bk; arc=none smtp.client-ip=209.85.166.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-7c00ce1e005so66599639f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 08:06:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1706717208; x=1707322008; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/mOJLbseLPsvIbhLzLVD0YPyGdIC7j3P6ckn0xZuSAs=;
+        b=PlVuM9BkHNgtvU+guqSm+4RFsZ/1pk5szYcqu5isIxlxjoHUhms4yywxNAKTkxalNO
+         mX7WBVC3MlEV5dQ3BQZvzK7Bqdsq0zXHAGzVIqKTliQfcoCIH9yIU1avrBb+Ff9UTd2s
+         5uWhO+QDF8BnSD+euIq06rdbzlDdqLnvPLFG9CDTDeckep4v4EcDQG10LQZ2SeaCyIdR
+         L7SOB7VNFZ82xHVjp40L5KGSr1Osi3DCzGnvhnjtrjiFDrRql9chnlpSwFZ0WDSYbPIb
+         udxuUr1O05CMntr37JI7bdtSqRMnD2OfSXvRGV1HgGSYbT1DrpOPqclUbh7VMaBHjkd4
+         QwvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706717113; x=1707321913;
+        d=1e100.net; s=20230601; t=1706717208; x=1707322008;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=g7OaZiinwbzng/0HgaGMCW4qacoR+2u1bX4wvl4xbCg=;
-        b=c5mceaPespC/ex59vMBoXPCyaaPEPwgRcMJYagldjI0ACrEpUXx9sv3MdwEKjZ24Ve
-         ZLds1WoyjB9+/Ro0sgO9z8DNyoMnd3yFR4rbMfg3n7jbznd4Gy9/xLRpg/l809pm8FQ8
-         n3lbFu36rEmyy0hAvDf6RjtiYdE0pfe9R/4nQjlQq078ESBBzX34ESkiG0eYlZfOS4br
-         kk6H7x14J3pO1FkiFnzXQTrj/m+8tNL6qdBXANZwBvJwM4N3BHdW1mHPDmx4YGIpP0ZV
-         t0veeUL5pSbyilI1TmrEvQyjRx9KwRufAZUsN+Pwo6GJSGoRccOUf1l+2gKcOFeDatqI
-         /Svg==
-X-Forwarded-Encrypted: i=0; AJvYcCUZJwOcO0m8epfebZCwKe/6v2del94SkQMJ8KHQkNKenqXxHiAcCqUYrTBdfdhw8SM29l1aqfIW3m8N6fXAEFBs4BNu3rUcO0EfaD48
-X-Gm-Message-State: AOJu0Yx8XWmmBdB7skHWuq2yycr1uGdznSgx02C11Qa/iD5ueUGoA2N9
-	zcI7plBUcn6FeX0rGBov1tcJ5q+gT2SUaOtiuVHNvNv1WR8v9MCKH6HVY5F2Jq6Mv0MJM9gS5jj
-	8Bix6BEd29bKmyFK1u7HaBDx5ft0=
-X-Google-Smtp-Source: AGHT+IErDYoefTwYsWl+oj3VgNhS6W7vgBMPp2AVhj8HRfc7hSQ3tU4b0G/pFN4T2E3Muyl+8CItGNPZg1LtdmK/YTc=
-X-Received: by 2002:a05:6820:1c96:b0:59a:bf5:a0da with SMTP id
- ct22-20020a0568201c9600b0059a0bf5a0damr51991oob.0.1706717112759; Wed, 31 Jan
- 2024 08:05:12 -0800 (PST)
+        bh=/mOJLbseLPsvIbhLzLVD0YPyGdIC7j3P6ckn0xZuSAs=;
+        b=SmhYT9vrJkWvS6auD66KvFKyvPBVLSyg7v5H7Afysw/DWOjxUgZ56wTEfOXu4+1PBt
+         jw+zA6m/AHhmpzObKpjOmtDs5M6XmFt/sE/TvzG+QNu87j6xcPYFJofDSS2ws6vvZMKE
+         T+N6wsRnvt/oGvMyQ3GlXLyRYgbzlNVEfINsukWxEFmyiFRiCGNeSV9tfHO1O4pIGceg
+         I5mw/O9ieuGHU5tfHdg7dZwWnhU+BuTIh6ZUT221Wzf240anp//Oa6OTzZgVKcKmDf1C
+         2Gg6HEX+Rfa+wAtLBuP8facXYe28uw9kMSEyAUd7iowj5MBhPvAU3046j0iMGhSQ87aM
+         vKuw==
+X-Gm-Message-State: AOJu0Yx2LxVsSeH5oaOKU3yqXpkBOPTPORNUGVSF6LI9+psoLeodat5W
+	tOQWvkuz00KtMU1+f7Vtwsnvy9ghdKDPm66lktUtNKtt4eh+7jQerp9NOI0SFFJAM8gbbdunDRe
+	gIpjp6jKAQLfv0pAkfWczC+w+EvGw6xgMikdMbg==
+X-Google-Smtp-Source: AGHT+IEl1wgTaicH/lywZEqksedrylK3qXk0XQIBiRAjl1TMWqSsoPkVo2//eTIJ77dWGhid47jFcTSpFMPuBuGRM80=
+X-Received: by 2002:a6b:6513:0:b0:7c0:2579:1a2f with SMTP id
+ z19-20020a6b6513000000b007c025791a2fmr1495741iob.11.1706717207711; Wed, 31
+ Jan 2024 08:06:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240123-fix-device-links-overlays-v1-1-9e4f6acaab6c@analog.com>
- <dcb1b6dbc2172dd66bfdcc0c8135e0d98f1c22dd.camel@gmail.com>
- <CAJZ5v0gAK9CChRPSx7Lu=BrGQo22q4swpvvN3__wFw68NfqKPA@mail.gmail.com>
- <25d3cfd74b26eb6a4aa07f1da93ccf4815b0b1c6.camel@gmail.com>
- <CAJZ5v0hX4Yv7UVng=O4tZyb_O7D2EcymdEDdSUrVDPk6h51VjA@mail.gmail.com>
- <8682d7f7ee1a60902b1f3e5529a4adbaf4846aa0.camel@gmail.com>
- <CAJZ5v0hW60++hhKG=yBE7+rB9qt2m+tO_WAf=YFhNU2-y3VHFw@mail.gmail.com> <9a4b4dd60c35dd4e00b97e19fced0e79a86f6eef.camel@gmail.com>
-In-Reply-To: <9a4b4dd60c35dd4e00b97e19fced0e79a86f6eef.camel@gmail.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 31 Jan 2024 17:05:01 +0100
-Message-ID: <CAJZ5v0hbGF6u5D8iyiziWMceph124wnC6KOH+V9Y2xqQgkZu5g@mail.gmail.com>
-Subject: Re: [PATCH RESEND RFC] driver: core: don't queue device links removal
- for dt overlays
-To: =?UTF-8?B?TnVubyBTw6E=?= <noname.nuno@gmail.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, nuno.sa@analog.com, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Frank Rowand <frowand.list@gmail.com>, 
-	Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, 
-	Saravana Kannan <saravanak@google.com>
+References: <20231205085959.32177-1-zong.li@sifive.com> <CANXhq0r6A48q+ehayaURLO6snDEjzVJO6Ti+1we-57i0ORT9yg@mail.gmail.com>
+ <CANXhq0qqv3MBEt8zsWBT+gkdyt1PD4ZjDSrznEotdFM7M7K+yQ@mail.gmail.com>
+ <CANXhq0qNA5JO1xZLbuL6ig1Ddws0m2azMwCyqLFgN3B0VZmvEw@mail.gmail.com>
+ <CANXhq0o-MaEQY3m+0CNWK2Jv_pxqsjhhSJWtVR396wgKUzcbQw@mail.gmail.com> <25e2faa5-908c-4391-87db-8540d1f0e904@ghiti.fr>
+In-Reply-To: <25e2faa5-908c-4391-87db-8540d1f0e904@ghiti.fr>
+From: Zong Li <zong.li@sifive.com>
+Date: Thu, 1 Feb 2024 00:06:37 +0800
+Message-ID: <CANXhq0qt8R2+zFx5pPiassNjb2JtGcFb5RRcdK+15PxhuSS1Ng@mail.gmail.com>
+Subject: Re: [PATCH] riscv: add CALLER_ADDRx support
+To: Alexandre Ghiti <alex@ghiti.fr>
+Cc: palmer@dabbelt.com, Palmer Dabbelt <palmer@rivosinc.com>, paul.walmsley@sifive.com, 
+	aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 31, 2024 at 4:46=E2=80=AFPM Nuno S=C3=A1 <noname.nuno@gmail.com=
-> wrote:
+On Wed, Jan 31, 2024 at 10:46=E2=80=AFPM Alexandre Ghiti <alex@ghiti.fr> wr=
+ote:
 >
-> On Wed, 2024-01-31 at 16:10 +0100, Rafael J. Wysocki wrote:
-> > On Wed, Jan 31, 2024 at 3:52=E2=80=AFPM Nuno S=C3=A1 <noname.nuno@gmail=
-com> wrote:
-> > >
-> > > On Wed, 2024-01-31 at 15:28 +0100, Rafael J. Wysocki wrote:
-> > > > On Wed, Jan 31, 2024 at 3:18=E2=80=AFPM Nuno S=C3=A1 <noname.nuno@g=
-mail.com> wrote:
-> > > > >
-> > > > > On Wed, 2024-01-31 at 14:30 +0100, Rafael J. Wysocki wrote:
-> > > > > > On Wed, Jan 31, 2024 at 1:20=E2=80=AFPM Nuno S=C3=A1 <noname.nu=
-no@gmail.com> wrote:
-> > > > > > >
-> > > > > > > On Tue, 2024-01-23 at 16:40 +0100, Nuno Sa via B4 Relay wrote=
-:
-> > > > > > > > From: Nuno Sa <nuno.sa@analog.com>
-> > > > > > > >
-> > > > > > > > For device links, releasing the supplier/consumer devices
-> > > > > > > > references
-> > > > > > > > happens asynchronously in device_link_release_fn(). Hence, =
-the
-> > > > > > > > possible
-> > > > > > > > release of an of_node is also asynchronous. If these nodes =
-were
-> > > > > > > > added
-> > > > > > > > through overlays we have a problem because this does not re=
-spect
-> > > > > > > > the
-> > > > > > > > devicetree overlays assumptions that when a changeset is
-> > > > > > > > being removed in __of_changeset_entry_destroy(), it must ho=
-ld the
-> > > > > > > > last
-> > > > > > > > reference to that node. Due to the async nature of device l=
-inks
-> > > > > > > > that
-> > > > > > > > cannot be guaranteed.
-> > > > > > > >
-> > > > > > > > Given the above, in case one of the link consumer/supplier =
-is part
-> > > > > > > > of
-> > > > > > > > an overlay node we call directly device_link_release_fn() i=
-nstead
-> > > > > > > > of
-> > > > > > > > queueing it. Yes, it might take some significant time for
-> > > > > > > > device_link_release_fn() to complete because of synchronize=
-_srcu()
-> > > > > > > > but
-> > > > > > > > we would need to, anyways, wait for all OF references to be
-> > > > > > > > released
-> > > > > > > > if
-> > > > > > > > we want to respect overlays assumptions.
-> > > > > > > >
-> > > > > > > > Signed-off-by: Nuno Sa <nuno.sa@analog.com>
-> > > > > > > > ---
-> > > > > > > > This RFC is a follow up of a previous one that I sent to th=
-e
-> > > > > > > > devicetree
-> > > > > > > > folks [1]. It got rejected because it was not really fixing=
- the
-> > > > > > > > root
-> > > > > > > > cause of the issue (which I do agree). Please see the link =
-where I
-> > > > > > > > fully explain what the issue is.
-> > > > > > > >
-> > > > > > > > I did also some git blaming and did saw that commit
-> > > > > > > > 80dd33cf72d1 ("drivers: base: Fix device link removal") int=
-roduced
-> > > > > > > > queue_work() as we could be releasing the last device refer=
-ence
-> > > > > > > > and
-> > > > > > > > hence
-> > > > > > > > sleeping which is against SRCU callback requirements. Howev=
-er,
-> > > > > > > > that
-> > > > > > > > same
-> > > > > > > > commit is now making use of synchronize_srcu() which may ta=
-ke
-> > > > > > > > significant time (and I think that's the reason for the wor=
-k
-> > > > > > > > item?).
-> > > > > > > >
-> > > > > > > > However, given the dt overlays requirements, I'm not seeing=
- any
-> > > > > > > > reason to not be able to run device_link_release_fn()
-> > > > > > > > synchronously if
-> > > > > > > > we
-> > > > > > > > detect an OVERLAY node is being released. I mean, even if w=
-e come
-> > > > > > > > up
-> > > > > > > > (and I did some experiments in this regard) with some async
-> > > > > > > > mechanism
-> > > > > > > > to
-> > > > > > > > release the OF nodes refcounts, we still need a synchroniza=
-tion
-> > > > > > > > point
-> > > > > > > > somewhere.
-> > > > > > > >
-> > > > > > > > Anyways, I would like to have some feedback on how acceptab=
-le
-> > > > > > > > would
-> > > > > > > > this
-> > > > > > > > be or what else could I do so we can have a "clean" dt over=
-lay
-> > > > > > > > removal.
-> > > > > > > >
-> > > > > > > > I'm also including dt folks so they can give some comments =
-on the
-> > > > > > > > new
-> > > > > > > > device_node_overlay_removal() function. My goal is to try t=
-o
-> > > > > > > > detect
-> > > > > > > > when
-> > > > > > > > an
-> > > > > > > > overlay is being removed (maybe we could even have an expli=
-cit
-> > > > > > > > flag
-> > > > > > > > for
-> > > > > > > > it?) and only directly call device_link_release_fn() in tha=
-t case.
-> > > > > > > >
-> > > > > > > > [1]:
-> > > > > > > > https://lore.kernel.org/linux-devicetree/20230511151047.177=
-9841-1-nuno.sa@analog.com/
-> > > > > > > > ---
-> > > > > > > >  drivers/base/core.c | 25 ++++++++++++++++++++++++-
-> > > > > > > >  1 file changed, 24 insertions(+), 1 deletion(-)
-> > > > > > > >
-> > > > > > > > diff --git a/drivers/base/core.c b/drivers/base/core.c
-> > > > > > > > index 14d46af40f9a..31ea001f6142 100644
-> > > > > > > > --- a/drivers/base/core.c
-> > > > > > > > +++ b/drivers/base/core.c
-> > > > > > > > @@ -497,6 +497,18 @@ static struct attribute *devlink_attrs=
-[] =3D {
-> > > > > > > >  };
-> > > > > > > >  ATTRIBUTE_GROUPS(devlink);
-> > > > > > > >
-> > > > > > > > +static bool device_node_overlay_removal(struct device *dev=
+> Hi Zong,
+>
+> On 31/01/2024 15:24, Zong Li wrote:
+> > On Thu, Jan 18, 2024 at 8:50=E2=80=AFAM Zong Li <zong.li@sifive.com> wr=
+ote:
+> >> On Wed, Jan 10, 2024 at 11:33=E2=80=AFAM Zong Li <zong.li@sifive.com> =
+wrote:
+> >>> On Fri, Dec 29, 2023 at 2:34=E2=80=AFPM Zong Li <zong.li@sifive.com> =
+wrote:
+> >>>> On Tue, Dec 5, 2023 at 5:00=E2=80=AFPM Zong Li <zong.li@sifive.com> =
+wrote:
+> >>>>> CALLER_ADDRx returns caller's address at specified level, they are =
+used
+> >>>>> for several tracers. These macros eventually use
+> >>>>> __builtin_return_address(n) to get the caller's address if arch doe=
+sn't
+> >>>>> define their own implementation.
+> >>>>>
+> >>>>> In RISC-V, __builtin_return_address(n) only works when n =3D=3D 0, =
+we need
+> >>>>> to walk the stack frame to get the caller's address at specified le=
+vel.
+> >>>>>
+> >>>>> data.level started from 'level + 3' due to the call flow of getting
+> >>>>> caller's address in RISC-V implementation. If we don't have additio=
+nal
+> >>>>> three iteration, the level is corresponding to follows:
+> >>>>>
+> >>>>> callsite -> return_address -> arch_stack_walk -> walk_stackframe
+> >>>>> |           |                 |                  |
+> >>>>> level 3     level 2           level 1            level 0
+> >>>>>
+> >>>>> Signed-off-by: Zong Li <zong.li@sifive.com>
+> >>>>> ---
+> >>>>>   arch/riscv/include/asm/ftrace.h    |  5 ++++
+> >>>>>   arch/riscv/kernel/Makefile         |  2 ++
+> >>>>>   arch/riscv/kernel/return_address.c | 48 +++++++++++++++++++++++++=
++++++
+> >>>>>   3 files changed, 55 insertions(+)
+> >>>>>   create mode 100644 arch/riscv/kernel/return_address.c
+> >>>>>
+> >>>>> diff --git a/arch/riscv/include/asm/ftrace.h b/arch/riscv/include/a=
+sm/ftrace.h
+> >>>>> index 2b2f5df7ef2c..42777f91a9c5 100644
+> >>>>> --- a/arch/riscv/include/asm/ftrace.h
+> >>>>> +++ b/arch/riscv/include/asm/ftrace.h
+> >>>>> @@ -25,6 +25,11 @@
+> >>>>>
+> >>>>>   #define ARCH_SUPPORTS_FTRACE_OPS 1
+> >>>>>   #ifndef __ASSEMBLY__
+> >>>>> +
+> >>>>> +extern void *return_address(unsigned int level);
+> >>>>> +
+> >>>>> +#define ftrace_return_address(n) return_address(n)
+> >>>>> +
+> >>>>>   void MCOUNT_NAME(void);
+> >>>>>   static inline unsigned long ftrace_call_adjust(unsigned long addr=
 )
-> > > > > > > > +{
-> > > > > > > > +     if (!dev_of_node(dev))
-> > > > > > > > +             return false;
-> > > > > > > > +     if (!of_node_check_flag(dev->of_node, OF_DETACHED))
-> > > > > > > > +             return false;
-> > > > > > > > +     if (!of_node_check_flag(dev->of_node, OF_OVERLAY))
-> > > > > > > > +             return false;
-> > > > > > > > +
-> > > > > > > > +     return true;
-> > > > > > > > +}
-> > > > > > > > +
-> > > > > > > >  static void device_link_release_fn(struct work_struct *wor=
-k)
-> > > > > > > >  {
-> > > > > > > >       struct device_link *link =3D container_of(work, struc=
-t
-> > > > > > > > device_link,
-> > > > > > > > rm_work);
-> > > > > > > > @@ -532,8 +544,19 @@ static void devlink_dev_release(struct=
- device
-> > > > > > > > *dev)
-> > > > > > > >        * synchronization in device_link_release_fn() and if=
- the
-> > > > > > > > consumer
-> > > > > > > > or
-> > > > > > > >        * supplier devices get deleted when it runs, so put =
-it into
-> > > > > > > > the
-> > > > > > > > "long"
-> > > > > > > >        * workqueue.
-> > > > > > > > +      *
-> > > > > > > > +      * However, if any of the supplier, consumer nodes is=
- being
-> > > > > > > > removed
-> > > > > > > > +      * through overlay removal, the expectation in
-> > > > > > > > +      * __of_changeset_entry_destroy() is for the node 'kr=
-ef' to
-> > > > > > > > be 1
-> > > > > > > > which
-> > > > > > > > +      * cannot be guaranteed with the async nature of
-> > > > > > > > +      * device_link_release_fn(). Hence, do it synchronous=
-ly for
-> > > > > > > > the
-> > > > > > > > overlay
-> > > > > > > > +      * case.
-> > > > > > > >        */
-> > > > > > > > -     queue_work(system_long_wq, &link->rm_work);
-> > > > > > > > +     if (device_node_overlay_removal(link->consumer) ||
-> > > > > > > > +         device_node_overlay_removal(link->supplier))
-> > > > > > > > +             device_link_release_fn(&link->rm_work);
-> > > > > > > > +     else
-> > > > > > > > +             queue_work(system_long_wq, &link->rm_work);
-> > > > > > > >  }
-> > > > > > > >
-> > > > > > > >  static struct class devlink_class =3D {
-> > > > > > > >
-> > > > > > > > ---
-> >
-> > [cut]
-> >
-> > > > No, IMV devlink_dev_release() needs to be called via
-> > > > device_link_put_kref(), but it may run device_link_release_fn()
-> > > > directly if the link is marked in a special way or something like
-> > > > this.
-> > >
-> > > Sorry, I'm not totally getting this. I'm directly calling
-> > > device_link_release_fn() from  devlink_dev_release(). We should only =
-get
-> > > into
-> > > devlink_dev_release() after all the references are dropped right (bei=
-ng it
-> > > the
-> > > release callback for the link class)?
-> >
-> > OK, I got confused somehow, sorry.
-> >
-> > It should work.
-> >
-> > I kind of don't like adding OF-specific code to the driver core, but
-> > if this is fine with Greg, it can be done.  It should depend on
->
-> Not perfect but I'm not seeing any other way. We need to somehow see if t=
-he node
-> is part of an OVERLAY and AFAIK, the only way is looking at the node flag=
-s. I'll
-> wait on Greg's feedback.
->
-> > CONFIG_OF_OVERLAY, though.
->
-> I guess that should be already indirectly implied. I mean if CONFIG_OF_OV=
-ERLAY
-> is not set, I guess there's not way for
-> of_node_check_flag(dev->of_node, OF_OVERLAY)) return true. But yeah, I ca=
-n bail
-> out right away if IS_ENABLED(CONFIG_OF_OVERLAY) is not set.
->
-> > I would like a comment to be added to device_link_release_fn() to
-> > explain why the overlay case needs synchronous execution in there.
->
-> I do have the following comment before checking device_node_overlay_remov=
-al():
+> >>>>>   {
+> >>>>> diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefil=
+e
+> >>>>> index fee22a3d1b53..40d054939ae2 100644
+> >>>>> --- a/arch/riscv/kernel/Makefile
+> >>>>> +++ b/arch/riscv/kernel/Makefile
+> >>>>> @@ -7,6 +7,7 @@ ifdef CONFIG_FTRACE
+> >>>>>   CFLAGS_REMOVE_ftrace.o =3D $(CC_FLAGS_FTRACE)
+> >>>>>   CFLAGS_REMOVE_patch.o  =3D $(CC_FLAGS_FTRACE)
+> >>>>>   CFLAGS_REMOVE_sbi.o    =3D $(CC_FLAGS_FTRACE)
+> >>>>> +CFLAGS_REMOVE_return_address.o =3D $(CC_FLAGS_FTRACE)
+> >>>>>   endif
+> >>>>>   CFLAGS_syscall_table.o +=3D $(call cc-option,-Wno-override-init,)
+> >>>>>   CFLAGS_compat_syscall_table.o +=3D $(call cc-option,-Wno-override=
+-init,)
+> >>>>> @@ -46,6 +47,7 @@ obj-y +=3D irq.o
+> >>>>>   obj-y  +=3D process.o
+> >>>>>   obj-y  +=3D ptrace.o
+> >>>>>   obj-y  +=3D reset.o
+> >>>>> +obj-y  +=3D return_address.o
+> >>>>>   obj-y  +=3D setup.o
+> >>>>>   obj-y  +=3D signal.o
+> >>>>>   obj-y  +=3D syscall_table.o
+> >>>>> diff --git a/arch/riscv/kernel/return_address.c b/arch/riscv/kernel=
+/return_address.c
+> >>>>> new file mode 100644
+> >>>>> index 000000000000..c2008d4aa6e5
+> >>>>> --- /dev/null
+> >>>>> +++ b/arch/riscv/kernel/return_address.c
+> >>>>> @@ -0,0 +1,48 @@
+> >>>>> +// SPDX-License-Identifier: GPL-2.0-only
+> >>>>> +/*
+> >>>>> + * This code come from arch/arm64/kernel/return_address.c
+> >>>>> + *
+> >>>>> + * Copyright (C) 2023 SiFive.
+> >>>>> + */
+> >>>>> +
+> >>>>> +#include <linux/export.h>
+> >>>>> +#include <linux/kprobes.h>
+> >>>>> +#include <linux/stacktrace.h>
+> >>>>> +
+> >>>>> +struct return_address_data {
+> >>>>> +       unsigned int level;
+> >>>>> +       void *addr;
+> >>>>> +};
+> >>>>> +
+> >>>>> +static bool save_return_addr(void *d, unsigned long pc)
+> >>>>> +{
+> >>>>> +       struct return_address_data *data =3D d;
+> >>>>> +
+> >>>>> +       if (!data->level) {
+> >>>>> +               data->addr =3D (void *)pc;
+> >>>>> +               return false;
+> >>>>> +       }
+> >>>>> +
+> >>>>> +       --data->level;
+> >>>>> +
+> >>>>> +       return true;
+> >>>>> +}
+> >>>>> +NOKPROBE_SYMBOL(save_return_addr);
+> >>>>> +
+> >>>>> +void *return_address(unsigned int level)
+> >>>>> +{
+> >>>>> +       struct return_address_data data;
+> >>>>> +
+> >>>>> +       data.level =3D level + 3;
+> >>>>> +       data.addr =3D NULL;
+> >>>>> +
+> >>>>> +       arch_stack_walk(save_return_addr, &data, current, NULL);
+> >>>>> +
+> >>>>> +       if (!data.level)
+> >>>>> +               return data.addr;
+> >>>>> +       else
+> >>>>> +               return NULL;
+> >>>>> +
+> >>>>> +}
+> >>>>> +EXPORT_SYMBOL_GPL(return_address);
+> >>>>> +NOKPROBE_SYMBOL(return_address);
+> >>>>> --
+> >>>>> 2.17.1
+> >>>>>
+> >>>> Hi Palmer and all,
+> >>>> I was wondering whether this patch is good for everyone? Thanks
+> >>> Hi Palmer,
+> >>> Is there any chance to include this patch in 6.8-rc1? Thanks
+> >> Hi Palmer,
+> >> I'm not sure if this patch is a feature or bug fix, would you consider
+> >> it for 6.8-rcX? Thanks
+> > Hi Palmer,
+> > Sorry for pinging you again. I'm not sure if you saw this patch. The
+> > irqsoff and wakeup tracer will use CALLER_ADDR1 and CALLER_ADDR2 to
+> > obtain the caller's return address, but we are currently encountering
+> > an issue in the RISC-V port where the wrong caller is identified. I
+> > guess you can easily reproduce the situation using ftrace. Could you
+> > share your thoughts on this when you have the time to take a look?
+> > Thanks
 >
 >
-> "* However, if any of the supplier, consumer nodes is being removed
->  * through overlay removal, the expectation in
->  * __of_changeset_entry_destroy() is for the node 'kref' to be 1 which
->  * cannot be guaranteed with the async nature of
->  * device_link_release_fn(). Hence, do it synchronously for the overlay
->  * case."
+> I'm not Palmer but I'll take a look at your patch today :)
 >
-> I can elaborate more if you prefer...
 
-No, that should suffice IMV, thanks.
+Hi Alexandre,
 
-Now that I think of it there is one more possibility: A dedicated
-workqueue can be used for running device_link_release_fn() and the DT
-overlay code can flush it after the device link deletion.
+I appreciate your assistance in reviewing this patch, Thanks a lot. :)
+
+> Thanks,
+>
+> Alex
+>
+>
+> >
+> > _______________________________________________
+> > linux-riscv mailing list
+> > linux-riscv@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-riscv
 
