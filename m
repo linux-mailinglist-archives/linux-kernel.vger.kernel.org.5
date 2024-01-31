@@ -1,88 +1,126 @@
-Return-Path: <linux-kernel+bounces-46081-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46082-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BD86843A04
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:02:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92A77843A0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:03:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BD781F23213
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:02:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D008287F01
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:03:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 036FA83CA7;
-	Wed, 31 Jan 2024 08:52:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBCE884A24;
+	Wed, 31 Jan 2024 08:52:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="3aD75dZ1"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hb21Wz4m"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEDA866B22;
-	Wed, 31 Jan 2024 08:51:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44B5083CC7;
+	Wed, 31 Jan 2024 08:52:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706691121; cv=none; b=Ocf1C6vzkzeIwjFXJ7TQj+d5zUBgaS87tAhn6pMAcjXiYocAK6v8GTBKqI3kCNGQLEs21GsqzjEzYjFuqoJuiSUEj89QXQZ2Gb2Ggdf8fSngDgpIJEds7vI0ceJviXcdbMrpuGdiDI36N7utBxDpIKcm27MsKUEyZ1pGlkAMw48=
+	t=1706691136; cv=none; b=cpEz0BfzsqAwK4h5IE0mo9R1JpO/Ve2XfYtTkMXsrR4+pGaFDZoi/5XLoFilmjgs4DxjW2ljWa0m+RDof0ZFEzt/fmF2tmcV97TVjysGac2fY0HplGjVAI5mXtmuhEumGwQlHw87BJRSpXipwFAnFuibQOxj3ICldr5A9I2G9Kg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706691121; c=relaxed/simple;
-	bh=sZRwtejcYMIEZgWQriqWtikVuHIHGna18OXu9zMGt+k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qHq+X0wxbIB1Hi/doPTKVSn3GWLFyxW3l2ndTr58GHHjPs2FWwdZt39GZXpyb+ZvhKEo3kbE/KyK2DtJuuqXjFo0rtIsXb2EYkHsJZlVfOccEVcWGnBXr0rzrmeL9YQAc1VQUV2LOuF6KTaQ9W5CiNOmQmcBVKkauNAmY153B3Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=3aD75dZ1; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706691118;
-	bh=sZRwtejcYMIEZgWQriqWtikVuHIHGna18OXu9zMGt+k=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=3aD75dZ1Tiz5t1wu15DjuxTcrDEFzNgyEpc7lpUD8aCqiQwIvigJTOFhFw8KnFzam
-	 jH6JzJRt5ABEL7xbqk//fwUUtshQ+zAhCCvZU/YMh8SMjDqiVOKDedUAOADcBsxshN
-	 lypYtjGTwQ8Fe9pDstbXQAoCPscw5syRcayrOs9O7ZowI5lVoCYwlJk6BTsX+VDzab
-	 nMr1wpznNFp1HgmyAlcFZfxVh8RDbcuou2LwtB5gid7kxX+5nnZp3AVCp3zQ484gUz
-	 iQxu44XhsQWs+UR9GAnWtB11zPJmkVjPZTREq9PaxaX0crUZsqzfjVacWOK7sF9/xy
-	 Wbf3d/Y9tvYIw==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 6B6FE378203B;
-	Wed, 31 Jan 2024 08:51:57 +0000 (UTC)
-Message-ID: <3561b91a-9e02-47c8-ba70-2b7f082b5ab4@collabora.com>
-Date: Wed, 31 Jan 2024 09:51:56 +0100
+	s=arc-20240116; t=1706691136; c=relaxed/simple;
+	bh=clMrHZU2GF53Tpacy8wD/x0nw0/Nk2XPk7uDScTtH9A=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=JFg+WvpQRvJ82gveWaSOzXRUKgWdUJVCIHm61ukfsE9L/AWwjD7At/crrNfkDkh0qfCI9ha0wokkSc/r8LC8S1OmSf+eHAu0a+vm9854ttwOA8TUcrpz6xGPJkNv8AKz/3HTpFTETCUJwjidajA9sXhLjT5ixaai3GA5sUJEBX4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hb21Wz4m; arc=none smtp.client-ip=134.134.136.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706691134; x=1738227134;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=clMrHZU2GF53Tpacy8wD/x0nw0/Nk2XPk7uDScTtH9A=;
+  b=hb21Wz4mPMjKa3RSd5H2jS9/Kfuodsp7O9LDXEyfSNhjPhqGnCpEeqy4
+   a9b4faeL3z6uAceBMMfQ7r2mmxzqwAOo+cnXy8DQ2uIYr8YoNKGPP996y
+   l6QVUtYrJmr4IoESTJBd/KrtMYd/AmhQKKhXt8fk+NHJYNMyJZd9dmgFj
+   ArutH2c+GpZOskFiF0/SsMsbhtABstgwX/gNtd6EBC5t65svI+ITF1BU9
+   jbhmkaPGUjl8BFO2PyhyYqfX3NnzUmtiN79Uwtm8v1jKAv1WCGgFdckkl
+   KJfTbFi8d+RtV/H8sVq3zn4ucGLnqzBtQiHbGuGQJO8+9eZg/WmiSs75B
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="467779456"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="467779456"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 00:52:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="858742290"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="858742290"
+Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.54.38.190])
+  by fmsmga004.fm.intel.com with ESMTP; 31 Jan 2024 00:52:11 -0800
+Received: by tassilo.localdomain (Postfix, from userid 1000)
+	id DA7793051D4; Wed, 31 Jan 2024 00:52:11 -0800 (PST)
+From: Andi Kleen <ak@linux.intel.com>
+To: Elizabeth Figura <zfigura@codeweavers.com>
+Cc: Arnd Bergmann <arnd@arndb.de>,  Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>,  Jonathan Corbet <corbet@lwn.net>,  Shuah
+ Khan <shuah@kernel.org>,  linux-kernel@vger.kernel.org,
+  linux-api@vger.kernel.org,  wine-devel@winehq.org,  =?utf-8?Q?Andr=C3=A9?=
+ Almeida
+ <andrealmeid@igalia.com>,  Wolfram Sang <wsa@kernel.org>,  Arkadiusz Hiler
+ <ahiler@codeweavers.com>,  Peter Zijlstra <peterz@infradead.org>,  Andy
+ Lutomirski <luto@kernel.org>,  linux-doc@vger.kernel.org,
+  linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH v2 19/29] selftests: ntsync: Add some tests for
+ NTSYNC_IOC_WAIT_ANY.
+In-Reply-To: <20240131021356.10322-20-zfigura@codeweavers.com> (Elizabeth
+	Figura's message of "Tue, 30 Jan 2024 20:13:46 -0600")
+References: <20240131021356.10322-1-zfigura@codeweavers.com>
+	<20240131021356.10322-20-zfigura@codeweavers.com>
+Date: Wed, 31 Jan 2024 00:52:11 -0800
+Message-ID: <878r45khqc.fsf@linux.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] pinctrl: mediatek: Drop bogus slew rate register
- range for MT8186
-Content-Language: en-US
-To: Chen-Yu Tsai <wenst@chromium.org>, Sean Wang <sean.wang@kernel.org>,
- Linus Walleij <linus.walleij@linaro.org>,
- Matthias Brugger <matthias.bgg@gmail.com>
-Cc: linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240131071910.3950450-1-wenst@chromium.org>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20240131071910.3950450-1-wenst@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-Il 31/01/24 08:19, Chen-Yu Tsai ha scritto:
-> The MT8186 does not support configuring pin slew rate. This is evident
-> from both the datasheet, and the fact that the driver points the slew
-> rate register range at the GPIO direction register range.
-> 
-> Drop the bogus setting.
-> 
-> Fixes: 8b483bda1e46 ("pinctrl: add pinctrl driver on mt8186")
-> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+Elizabeth Figura <zfigura@codeweavers.com> writes:
 
-Argh :-)
+> +TEST(test_wait_any)
+> +{
+> +	struct ntsync_mutex_args mutex_args = {0};
+> +	struct ntsync_wait_args wait_args = {0};
+> +	struct ntsync_sem_args sem_args = {0};
+> +	__u32 owner, index, count;
+> +	struct timespec timeout;
+> +	int objs[2], fd, ret;
+> +
+> +	clock_gettime(CLOCK_MONOTONIC, &timeout);
+> +
+> +	fd = open("/dev/ntsync", O_CLOEXEC | O_RDONLY);
+> +	ASSERT_LE(0, fd);
+> +
+> +	sem_args.count = 2;
+> +	sem_args.max = 3;
+> +	sem_args.sem = 0xdeadbeef;
+> +	ret = ioctl(fd, NTSYNC_IOC_CREATE_SEM, &sem_args);
+> +	EXPECT_EQ(0, ret);
+> +	EXPECT_NE(0xdeadbeef, sem_args.sem);
+> +
+> +	mutex_args.owner = 0;
+> +	mutex_args.count = 0;
+> +	mutex_args.mutex = 0xdeadbeef;
+> +	ret = ioctl(fd, NTSYNC_IOC_CREATE_MUTEX, &mutex_args);
+> +	EXPECT_EQ(0, ret);
+> +	EXPECT_NE(0xdeadbeef, mutex_args.mutex);
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+It seems your tests are missing test cases for exceeding any limits,
+especially overflow/underflow cases. Since these are the most likely
+for any security problems it would be good to have extra coverage here.
+The fuzzers will hopefully hit it too.
 
+Also some stress testing with multiple threads would be useful.
+
+-Andi
 
 
