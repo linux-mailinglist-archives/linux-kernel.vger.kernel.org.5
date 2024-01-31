@@ -1,136 +1,103 @@
-Return-Path: <linux-kernel+bounces-46498-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46497-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74AEC844093
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:29:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 083AB8440A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:32:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F735291F46
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:29:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0D7CB303A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:28:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A95DA7D414;
-	Wed, 31 Jan 2024 13:28:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8FFE7BB16;
+	Wed, 31 Jan 2024 13:28:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KFxo4WeY"
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nhfw2EJv"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 819527BAE5;
-	Wed, 31 Jan 2024 13:28:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 928B67BAE5;
+	Wed, 31 Jan 2024 13:28:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706707728; cv=none; b=OkQE91SKXwfsRjys6nqcm3ac3bf/nFa+gD2G9dXipvQAhDJBfMFxKHO/gpdZ15LBb/nG/do64oQl/+t99FqI7hdgYiEZXi72unRT0LZWnGOANVKOlb9UjlqspLUqbRBLJd3VYiirAJ8PEQGyAWCn7qF0ZeuKJW9IkbDkViMz+jo=
+	t=1706707721; cv=none; b=DrT/OFYDSMl/hPWi8anPQ1gXSpGnBkODd5F4qBqsQrvTRTftZVHeOD0Qbplj5c8YnqGwmd8SMNVJR+/sxzEdjTfky7Cxh2t48wDA/awVJ5hCIOIMDkGSOXNRClECCAYRi2D3Mry/J1lVwXV3nsI9u8zif+1Q4MPMk8BIrHZyDgE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706707728; c=relaxed/simple;
-	bh=lIBxN2xK0RgqTSCJuiuPNWVTJjAnTDXK2hhfs4E2yZs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rflESknE1uzXpEtMAr1/q/OF6OEDBoPp3MEai9EA6B+PUdwBL3AGjq1MKKUignHXpRk+VkJv431ZfUXlWetOF/lDbkviq8P+5OixbI6hlWA9xsZT9SbjiBQv/Z8y355K64q6VY+iDj5Y74apm+IhIdv0C6v4ZFTb14Vqojy6cfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KFxo4WeY; arc=none smtp.client-ip=209.85.219.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1706707721; c=relaxed/simple;
+	bh=hkrpHEcQf+TZiFzNMNM4XgtUiZ4+ysmYORrH/bHSRIc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=D5c1VHejNBrMOOyK3256QfbRmvjpuYiEQ1ES9Ksm21ssqBoYV2+alPzgEpTfo1MPMY5DVUvd6GYWTC0D7c953p3idNijNVfwoR98RZkJEkv2j7sVDtQ9r019D4hGNjNG/i4oVl2reFAKcKNrtKRvoDE1hkoQugEbmbhw56qyCbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Nhfw2EJv; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dc23bf7e5aaso5662021276.0;
-        Wed, 31 Jan 2024 05:28:46 -0800 (PST)
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d7858a469aso30272985ad.2;
+        Wed, 31 Jan 2024 05:28:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706707725; x=1707312525; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CInWjVijKdpWX/OivLCS5uDZMBdRZrMOuy0NJJ7JN4A=;
-        b=KFxo4WeYaGCLdceXsC8bKj6kQa2k5fNOZDX8MN11i6OAEOlnAG1EHMlFysz1cnFGB8
-         E1CPVDd9u7yYtp52LFujb3+owCEY2n67dswnHtxFmSG7iM0Lb9w6h+X4QvYDQUqPpCRq
-         qlFc1aACoYiP6qdUet0XdeCVZIqfOg7/fzNmKAnFe2GHqxMQXAi1HvJ1mlZqUGp5ZWWF
-         vmQDrgxUfMkTUCcLf8nUuKk8h+Qq1vHLx2IWQvad4gklH0Ldx3OcPrqT9/LZrIvG8o5z
-         2i4gV+YuRH+V1SANIMPMCCro+oUqWMqMKbejy8iFsmj2mXfpSqg10w10gdBUySaFlqQD
-         NSGg==
+        d=gmail.com; s=20230601; t=1706707719; x=1707312519; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Vw4Pa1aSCj4JJ6Af9YRWdhnPQg5k2t6xiKlvAoQnHXc=;
+        b=Nhfw2EJvW05NzTTwLpZdk81mJXNRT0VOBTt8O5uGmrO1VkGEZL0E1rSZ+jsvG7lgey
+         1Ril6qU/R1YI99JxWxNokjR4niLBxkWS4dlLgkR40fLWOs6mvJo+UId8VElFCA0qXSAk
+         Ckbfl6QM0PlyJmIvZsJcS12m4C/3KPtQeiGryMly+Vnsv/+Nm8ZKtvevBUljbddMx3L4
+         B47Y4zIR43iWVDvHQ/XIfmJ/DjWfxyMCzHvIC9B3pwQEq0vJz36BrjrGymqRwsfPTJDF
+         5NvNidNVHpupxiQ7u/rOlfJxOYLHcok4t+2+TcZciQxFW2tfgCjJf3TtAG7Fjs5qqbt1
+         eZ2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706707725; x=1707312525;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1706707719; x=1707312519;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CInWjVijKdpWX/OivLCS5uDZMBdRZrMOuy0NJJ7JN4A=;
-        b=N7Our5MU74tOZ3C46A5hCW2MLJYmT4cP+tBrJPnMkkMOCnyOGnFmSwt34gshD8Z2/Z
-         ZEj8OWoNURnsK1SSdU/cVlKAqBghr3X9A6VYChfyb7a8BKf1XS6DGZH7Zhz5Vjovc93A
-         lU8LbmiJl6yJXElk+g3II42WBJB+Be1KBcQx9oYkNO0xmbsw//EenZIfZU/p6jaLZAgu
-         quQmH+xvPOMtGk5i+rm5lfmpFzN6ArulM4NiOVPvtv0cXygDSY4mXtxsaVb0sBpwnEK7
-         h394qXtVTgnDWPhl4QY0E+o8TeuYM2PXnb4Fa3jT4rS2z1PbHrOV1Tmt4cIHKqZsoWna
-         feQA==
-X-Gm-Message-State: AOJu0YyUPtA7v30P+FRBEGYE5korAZ7szcXHwgHftI/dX0BDVezirwRf
-	wyheHZqjxaWOBitJ7QxZeT5QOH5+p05ZGZC5WVfGCC7yNLLVzhNxz2sAXOQKrmllnk99iSxsZe4
-	WXnQf+vVBHN8F/CiZb3900E0rP9g=
-X-Google-Smtp-Source: AGHT+IHQ5iuyQY5XSK3G4YxpBh6+91uMY5iuz65wfOW2zqJxshNOPHiQuRLcLSvsDOY1vRbVwWod7Zc2dI96wgK4kwQ=
-X-Received: by 2002:a25:dccc:0:b0:dc6:b7c4:3bb0 with SMTP id
- y195-20020a25dccc000000b00dc6b7c43bb0mr1352249ybe.27.1706707725398; Wed, 31
- Jan 2024 05:28:45 -0800 (PST)
+        bh=Vw4Pa1aSCj4JJ6Af9YRWdhnPQg5k2t6xiKlvAoQnHXc=;
+        b=Z+RF0Mgzgn9xepuOZ+6klu6yGY+FZ3p9i+3r4GPC0fF46sKmAE5waCcfUqUty3zULg
+         ya03Q0xAib9k4n5aIIK8e7UihhnOef+KFg2v82a3kSggTQ3gDeJ6drq+j0SQGf12tIKb
+         rGBYsDrneYG/3o8yCvuHEsX/nsngJVsf5ZA8bUzsj3tPLqBLlgeUozbDOptG2vYlbfGX
+         dKKodm9f+TJ1PLlhUXAtYG0LZU31LKzdjJ36P4Tww1mNEfcydSCoIkuZ5E+i01wGVo6D
+         WpkGQUQhVwSq12yhze+G5M+U3BfTgOE8f2X50NkaQ4ZIxX0Z8fS18zBOqHFamrSk8k+C
+         gvFA==
+X-Gm-Message-State: AOJu0YxJUQXh9HG7boAS94uTHLe5S/vzO0mm6whG+5ILBxeXXkWTT6wJ
+	L5/bc20kvCnMdYJGNyW1yXFjgwhYQQghKUpjv+DVAtnyVqmYnxeQigf7UHgL
+X-Google-Smtp-Source: AGHT+IFlrwme4G//lNWpf2xme2mKYSFYILl4zuerc80suaE7vm0GxpIJ3PpPpLLoWyhNW7uO/7SsHQ==
+X-Received: by 2002:a17:902:ecc1:b0:1d8:da36:d084 with SMTP id a1-20020a170902ecc100b001d8da36d084mr2137989plh.66.1706707718797;
+        Wed, 31 Jan 2024 05:28:38 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id w7-20020a1709029a8700b001d755acec64sm9049951plp.189.2024.01.31.05.28.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Jan 2024 05:28:38 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Wed, 31 Jan 2024 05:28:37 -0800
+From: Guenter Roeck <linux@roeck-us.net>
+To: Stefan Gloor <code@stefan-gloor.ch>
+Cc: jdelvare@suse.com, corbet@lwn.net, linux-hwmon@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/1] hwmon: (sht3x) read out sensor serial number
+Message-ID: <6513564d-6cdb-4442-8142-ca5763b5b351@roeck-us.net>
+References: <20240131111512.25321-1-code@stefan-gloor.ch>
+ <20240131111512.25321-2-code@stefan-gloor.ch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130214620.3155380-1-stefanb@linux.ibm.com> <20240130214620.3155380-3-stefanb@linux.ibm.com>
-In-Reply-To: <20240130214620.3155380-3-stefanb@linux.ibm.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 31 Jan 2024 15:28:34 +0200
-Message-ID: <CAOQ4uxhVmdWf+jwKg0bPcFf0VRRqpYg9m7yDavCk4cJ4fDg2zA@mail.gmail.com>
-Subject: Re: [PATCH 2/5] evm: Implement per signature type decision in security_inode_copy_up_xattr
-To: Stefan Berger <stefanb@linux.ibm.com>
-Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com, 
-	roberto.sassu@huawei.com, miklos@szeredi.hu, 
-	Christian Brauner <brauner@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240131111512.25321-2-code@stefan-gloor.ch>
 
-On Tue, Jan 30, 2024 at 11:46=E2=80=AFPM Stefan Berger <stefanb@linux.ibm.c=
-om> wrote:
->
-> To support portable and immutable signatures on otherwise unsupported
-> filesystems, determine the EVM signature type by the content of a file's
-> xattr. If the file has the appropriate signature then allow it to be
-> copied up. All other signature types are discarded as before.
->
-> Portable and immutable EVM signatures can be copied up by stacked file-
-> system since the metadata their signature covers does not include file-
-> system-specific data such as a file's inode number, generation, and UUID.
->
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> ---
->  security/integrity/evm/evm_main.c | 27 ++++++++++++++++++++++++---
->  1 file changed, 24 insertions(+), 3 deletions(-)
->
-> diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/e=
-vm_main.c
-> index 2555aa4501ae..22a5e26860ea 100644
-> --- a/security/integrity/evm/evm_main.c
-> +++ b/security/integrity/evm/evm_main.c
-> @@ -898,9 +898,30 @@ void evm_inode_post_setattr(struct dentry *dentry, i=
-nt ia_valid)
->
->  int evm_inode_copy_up_xattr(struct dentry *src, const char *name)
->  {
-> -       if (strcmp(name, XATTR_NAME_EVM) =3D=3D 0)
-> -               return 1; /* Discard */
-> -       return -EOPNOTSUPP;
-> +       struct evm_ima_xattr_data *xattr_data =3D NULL;
-> +       int rc;
-> +
-> +       if (strcmp(name, XATTR_NAME_EVM) !=3D 0)
-> +               return -EOPNOTSUPP;
-> +
-> +       /* first need to know the sig type */
-> +       rc =3D vfs_getxattr_alloc(&nop_mnt_idmap, src, XATTR_NAME_EVM,
-> +                               (char **)&xattr_data, 0, GFP_NOFS);
+On Wed, Jan 31, 2024 at 12:15:12PM +0100, Stefan Gloor wrote:
+> The temperature/humidity sensors of the STS3x/SHT3x family are
+> calibrated and factory-programmed with a unique serial number.
+> For some sensors, this serial number can be used to obtain a calibration
+> certificate via an API provided by the manufacturer (Sensirion).
+> Expose the serial number via debugfs.
+> 
+> Tested with: 2x STS31, 1x STS32, 1x SHT31
+> 
+> Signed-off-by: Stefan Gloor <code@stefan-gloor.ch>
 
-
-See my suggestion for post-getxattr hook:
-security_inode_copy_up_xattr(name, value, size)
-to avoid using nop_mnt_idmap here.
-
-Unless it is fine to use nop_mnt_idmap in this context? not sure.
+Applied.
 
 Thanks,
-Amir.
+Guenter
 
