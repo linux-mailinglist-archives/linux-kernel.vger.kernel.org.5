@@ -1,124 +1,196 @@
-Return-Path: <linux-kernel+bounces-47394-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47395-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD59F844D5F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:51:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8995844D69
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:53:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 821C41F242E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:51:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E8691F244AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:53:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BE7A3A8F6;
-	Wed, 31 Jan 2024 23:51:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D07DC3B197;
+	Wed, 31 Jan 2024 23:53:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pq9J7l2R"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GcFM99Ol"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 925603A8C6;
-	Wed, 31 Jan 2024 23:51:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E47163B187;
+	Wed, 31 Jan 2024 23:53:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706745110; cv=none; b=kwiVYVhF2AqxUEnM8Ccyt4UglsYAmHm03/qpRs5TpeYG86FMA3pT7VI6JE/5SJFs+UyjJ/rEZqnGTFoKRFx+4rlwIb4m5uHMJnEFhgHkKSJMAXwG5+RVWUPZKSPX7RSylTkiPBiwaRR5WEHWs7oE0rrqVE6Bw5fSipfIScZR++E=
+	t=1706745216; cv=none; b=bqKVOdtAcpOLXH8a+nTxglMVIO08K7Ae31j6rUtrxxf03WGTnq6tQoOohKITmIEVr55sDaMPUhocrZAo9wDYtYdiWBLpazGBIn/QIdv64uaZVCMS+9xpp31blvE5HpZQkfiOtW9LW7bDtnrZiij1mqA8+zvwDfGr+5ZGPTRti3U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706745110; c=relaxed/simple;
-	bh=bEXE9iCcPsAyP4fz4RssHiTnyheZ4ZI2rqh4iftmVgo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ovAWbCuueG8aAuR61x9ugybxoA27x+Fw2ykkMKGJJbG2hudnRKGuYH6ur77lpKgNS5JyOqf2rHVijseJDZ6jXlcusJbnFZ1ZzNNlFWz/2lceYa3lF2VeEuUG8uv4x6UAkD+x3L3ofXPVNVcQ075c7EUJFjZKk5FJTnL0MgPAbE0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Pq9J7l2R; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2106EC433F1;
-	Wed, 31 Jan 2024 23:51:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706745110;
-	bh=bEXE9iCcPsAyP4fz4RssHiTnyheZ4ZI2rqh4iftmVgo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Pq9J7l2Ra6F4wkK6mHCN6mfAMSgCZKw1SvtPrQcPGZ7SY/FSOB/hGJwO2nlrlYJUI
-	 zLZwlTLPSpxXPIOa+IBhSgxW+W1pTISGjrlRZLxqTUsO+6+C7zLLtbY90mMJisimS3
-	 kWckl4YNWUBlbLqOCrWRSg+7/8R6+lefyXNREAdEubVoFsDR1OYgAvnOcAJLio3d8D
-	 2wpPwC4CevJnMJVYwlTBahP9AN0TLV4ood4N6XgdrulDEBooz1uTBNivsWoKhNC1/h
-	 fBZlkoT5NkvQyvvrxx6ZnJ35rtdMXxpfdS3KUyVQ2CljN1JlkKuXdEiFAXCi8jYm2B
-	 CgK5OiSe0kzBw==
-Date: Wed, 31 Jan 2024 17:51:48 -0600
-From: Rob Herring <robh@kernel.org>
-To: David Lechner <dlechner@baylibre.com>
-Cc: Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
-	Frank Rowand <frowand.list@gmail.com>, linux-kernel@vger.kernel.org,
-	Julia Lawall <Julia.Lawall@inria.fr>,
-	Nicolas Palix <nicolas.palix@imag.fr>,
-	Sumera Priyadarsini <sylphrenadin@gmail.com>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: Re: [RFC PATCH 2/5] of: Introduce for_each_child_of_node_scoped() to
- automate of_node_put() handling
-Message-ID: <20240131235148.GA2743404-robh@kernel.org>
-References: <20240128160542.178315-1-jic23@kernel.org>
- <20240128160542.178315-3-jic23@kernel.org>
- <CAMknhBEL3cv4L0A-W=_1EcDmD3Cj8apheDcpnqjyJjKBZuPYew@mail.gmail.com>
+	s=arc-20240116; t=1706745216; c=relaxed/simple;
+	bh=He45rS3/X09I0lLu/frI9lfYU+Wtb0SyCW45+MrWfsM=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=bW+Q5sPVe2ijYayrACDCC+PWGKWElOdUrJFicgntH1QYw2Gq+IG7iCvgjU3RoSeGlzESJUu7ZlqzMaX6JbKkocVw88pGpckjmW0qr80CqftNs38TuXhlcQRnrtMSe+Y7OC/mwd5/1Brz1n9jp7lPHYQ42ZxpC+nQojy7DgDMV90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GcFM99Ol; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706745214; x=1738281214;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=He45rS3/X09I0lLu/frI9lfYU+Wtb0SyCW45+MrWfsM=;
+  b=GcFM99OlwGBQauar3QVVV4HPkSD5JZIvM/hy9xpKp88mXd6gK/xDWlGD
+   gia2zG3P5ZvBdllSVLqlspaDb0ZgpEwcKxrbwpQIck7NP94BPgE+bzNyN
+   YdzcfaXlPVeWpyJbQVJHvYq+UOeLo3bhajuKu1kIsZ2j0+q63CwviQDyM
+   rdongsRz07hhqku2ABgfJ8f+EqJS4LAOWHtvOrkiirRTUHxxttHTi/O/6
+   hjDw4GSXHEdFJC2gXc0HQ8c7qOubgaKGGquRYQ9i4BP7QIgPAJGBET6/x
+   M6DRL7apRMMWPPumIEOx+UvKefaf0a5sfrk0khE8v04kWnfcJGXcpUju/
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="2697424"
+X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
+   d="scan'208";a="2697424"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 15:53:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
+   d="scan'208";a="4209873"
+Received: from sj-4150-psse-sw-opae-dev2.sj.intel.com ([10.233.115.162])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 15:53:24 -0800
+Date: Wed, 31 Jan 2024 15:53:23 -0800 (PST)
+From: matthew.gerlach@linux.intel.com
+X-X-Sender: mgerlach@sj-4150-psse-sw-opae-dev2
+To: Xu Yilun <yilun.xu@linux.intel.com>
+cc: hao.wu@intel.com, trix@redhat.com, mdf@kernel.org, yilun.xu@intel.com, 
+    linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fpga: dfl: afu: update initialization of port_hdr
+ driver
+In-Reply-To: <ZbnTwcomGXOGs9SG@yilunxu-OptiPlex-7050>
+Message-ID: <alpine.DEB.2.22.394.2401311433120.112016@sj-4150-psse-sw-opae-dev2>
+References: <20240122172433.537525-1-matthew.gerlach@linux.intel.com> <Za8ibeJc82Xkbpct@yilunxu-OptiPlex-7050> <alpine.DEB.2.22.394.2401241106550.77559@sj-4150-psse-sw-opae-dev2> <ZbjC501oRClByual@yilunxu-OptiPlex-7050> <alpine.DEB.2.22.394.2401300825020.112016@sj-4150-psse-sw-opae-dev2>
+ <ZbnTwcomGXOGs9SG@yilunxu-OptiPlex-7050>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMknhBEL3cv4L0A-W=_1EcDmD3Cj8apheDcpnqjyJjKBZuPYew@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 
-On Sun, Jan 28, 2024 at 03:11:01PM -0600, David Lechner wrote:
-> On Sun, Jan 28, 2024 at 10:06 AM Jonathan Cameron <jic23@kernel.org> wrote:
-> >
-> > From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> >
-> > To avoid issues with out of order cleanup, or ambiguity about when the
-> > auto freed data is first instantiated, do it within the for loop definition.
-> >
-> > The disadvantage is that the struct device_node *child variable creation
-> > is not immediately obvious where this is used.
-> > However, in many cases, if there is another definition of
-> > struct device_node *child; the compiler / static analysers will notify us
-> > that it is unused, or uninitialized.
-> >
-> > Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > ---
-> >  include/linux/of.h | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> >
-> > diff --git a/include/linux/of.h b/include/linux/of.h
-> > index 50e882ee91da..f822226eac6d 100644
-> > --- a/include/linux/of.h
-> > +++ b/include/linux/of.h
-> > @@ -1434,6 +1434,12 @@ static inline int of_property_read_s32(const struct device_node *np,
-> >         for (child = of_get_next_available_child(parent, NULL); child != NULL; \
-> >              child = of_get_next_available_child(parent, child))
-> >
-> > +#define for_each_child_of_node_scoped(parent, child) \
-> > +       for (struct device_node *child __free(device_node) =            \
-> > +            of_get_next_child(parent, NULL);                           \
-> > +            child != NULL;                                             \
-> > +            child = of_get_next_available_child(parent, child))
-> 
-> Doesn't this need to match the initializer (of_get_next_child)?
-> Otherwise it seems like the first node could be a disabled node but no
-> other disabled nodes would be included in the iteration.
-> 
-> It seems like we would want two macros, one for each variation,
-> analogous to for_each_child_of_node() and
-> for_each_available_child_of_node().
 
-Yes, but really I'd like these the other way around. 'available' should 
-be the default as disabled should really be the same as a node not 
-present except for a few cases where it is not.
 
-I bring it up only because if we're changing things then it is a 
-convenient time to change this. That's really a side issue to sorting 
-out how this new way should work.
+On Wed, 31 Jan 2024, Xu Yilun wrote:
 
-Rob
+> On Tue, Jan 30, 2024 at 09:13:56AM -0800, matthew.gerlach@linux.intel.com wrote:
+>>
+>>
+>> On Tue, 30 Jan 2024, Xu Yilun wrote:
+>>
+>>> On Wed, Jan 24, 2024 at 11:40:05AM -0800, matthew.gerlach@linux.intel.com wrote:
+>>>>
+>>>>
+>>>> On Tue, 23 Jan 2024, Xu Yilun wrote:
+>>>>
+>>>>> On Mon, Jan 22, 2024 at 09:24:33AM -0800, Matthew Gerlach wrote:
+>>>>>> Revision 2 of the Device Feature List (DFL) Port feature has
+>>>>>> slightly different requirements than revision 1. Revision 2
+>>>>>> does not need the port to reset at driver startup. In fact,
+>>>>>
+>>>>> Please help illustrate what's the difference between Revision 1 & 2, and
+>>>>> why revision 2 needs not.
+>>>>
+>>>> I will update the commit message to clarify the differences between revision
+>>>> 1 and 2.
+>>>>
+>>>>>
+>>>>>> performing a port reset during driver initialization can cause
+>>>>>> driver race conditions when the port is connected to a different
+>>>>>
+>>>>> Please reorganize this part, in this description there seems be a
+>>>>> software racing bug and the patch is a workaround. But the fact is port
+>>>>> reset shouldn't been done for a new HW.
+>>>>
+>>>> Reorganizing the commit message a bit will help to clarify why port reset
+>>>> should not be performed during driver initialization with revision 2 of the
+>>>> hardware.
+>>>>
+>>>>>
+>>>>> BTW: Is there a way to tell whether the port is connected to a different
+>>>>> PF? Any guarantee that revision 3, 4 ... would need a port reset or not?
+>>>>
+>>>> The use of revision 2 of the port_hdr IP block indicates that the port can
+>>>> be connected multiple PFs, but there is nothing explicitly stating which PFs
+>>>
+>>> Sorry, I mean any specific indicator other than enumerate the revision
+>>> number? As you said below, checking revision number may not make further
+>>> things right, then you need to amend code each time.
+>>
+>> Using a revision number to indicate the level of functionality for a
+>> particular IP block seems to be a widely used approach. What other indicator
+>
+> If you still want to make the existing driver work, some capability indication
+> would have more compatibility. That's more reasonable approach. Or you
+> need to change existing behavior for each new revision, that's not
+> actually widely used.
+
+I understand some capability indication would be better for compatibility 
+implementation. A revision number change is not as explicit or precise as 
+capability lists.
+
+>
+>> of functionality level did you have in mind?
+>
+> I'm not trying to make the design. You tell me.
+
+One could use parameter blocks introduced in version 1 of the Device 
+Feature Header (DFH), or capability registers could be added the IP block.
+In this particular case it seems the least impact to upstreamed software is
+to keep the DFH and the register map unchanged, except for an incremented
+revision number field.
+
+>
+> If finally no indicator could be used, we have to use revision number. That's
+> OK but make SW work harder, so I'm asking if anything could be done to
+> avoid that.
+
+In this case, I don't think anything else can be done without bigger 
+impacts to the SW.
+
+>
+>>
+>> The revision number of an IP block would change when new functionality is
+>> added to an IP block or the behavior of the IP block changes. It would be
+>> expected that SW might need to change in order to use the new functionality
+>> or to handle the change in behavior of the IP block. Ideally the new
+>> revision of an IP block would be compatible with existing SW, but that
+>> cannot be guaranteed.
+>
+> People make the IP block, and be compatible should be the concern if it
+> want upstream support.
+
+Agreed, and making sure some capability mechanism exists when an IP is 
+created would be a great start.
+
+Thanks,
+Matthew
+
+>
+> Thanks,
+> Yilun
+>
+>>
+>> Thanks,
+>> Matthew
+>>
+>>>
+>>> Thanks,
+>>> Yilun
+>>>
+>>>> the port is connected to.
+>>>>
+>>>> It is hard to predict the requirements and implementation of a future
+>>>> revision of an IP block. If a requirement of a future revision is to work
+>>>> with existing software, then the future revision would not require a port
+>>>> reset at driver initialization.
+>>>>
+>>>
+>
+>
 
