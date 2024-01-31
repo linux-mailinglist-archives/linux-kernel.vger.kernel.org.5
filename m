@@ -1,150 +1,190 @@
-Return-Path: <linux-kernel+bounces-46379-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46380-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD6D0843EBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:49:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C86A1843EC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:49:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 833DC28774D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:49:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E6B0B2A03F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:49:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B4927867E;
-	Wed, 31 Jan 2024 11:49:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="c3ZpuaVm";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="g729DEvY"
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E9EA762CD;
-	Wed, 31 Jan 2024 11:49:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68C78768F4;
+	Wed, 31 Jan 2024 11:49:34 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 624B8762DC;
+	Wed, 31 Jan 2024 11:49:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706701743; cv=none; b=GYEcqHOGqcxQMmmAcNSUOSErICIsONQtPXJL5ODKKokd32rCxaaVi3mGIALWy1AcLpK6dnqMpqN01672HyKro6YAf7G6eQNzgyPxXC1P0IzwtEa2EL/5akAhquGQru1//gzqk9fuIhtbQdGdSMqCk0zawiyQlSJ6IOZQ1UbCdDA=
+	t=1706701773; cv=none; b=ttrs5gUKe6cHaP5/P39pUdUgH2RA45IqX9dVyzDuyC13FqP13vjZrPO/az981TeD6ewe2GXEEq+DuDNMR97Q4aReO/Xr1Ma4qdQA1D602fs+1LTY2t824gr9fpsXTDF5kmwK0g9RVVK2Qari417OrLNOyY9XWBPZYbNIM+gXfi8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706701743; c=relaxed/simple;
-	bh=TRuURq3q59U4DW7sJNnHZgy5fStIIlr8tOaoqxV0LV0=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=HlSK8NAAvrO8wyNzlohHGNtYVVdn3tIJmh3dbkuJMMDnHEgQ+fHT6GEDj8JSvLkevcZhfKX+ME/MzS0yKO6n+EG3gj4T3EHhbN9jNsT4Z/fF3/ONa4IrEej5dgDxiqBt02S4OOlsL2WT4A7Cp1pkmRII5fOe1jvElND1I461yrQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=c3ZpuaVm; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=g729DEvY; arc=none smtp.client-ip=66.111.4.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.nyi.internal (Postfix) with ESMTP id 12BB15C0159;
-	Wed, 31 Jan 2024 06:49:00 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 31 Jan 2024 06:49:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1706701740; x=1706788140; bh=jT9sL1YmAi
-	hadqrUHigLsBRY9XsxrsPNsnYd6WguPNA=; b=c3ZpuaVmDri3q/zgzFGGbYmnlr
-	v5KtWlex5deya16dz2doLnWM2HemO/U/HByq33bviMR/T9HI0G4pZbgv4fujo9oD
-	4QK93CVIvQkIYCM8siJl8h9UENtfj2T1ztvpKQM9P6dWEW5DR5bkX+vQnUsf8tqT
-	0hNDIzLs6ENHxC/iAcdfHFMVWJCISYq5FVd+w6pLyPpqSTdLmQqlaiy5EqwSpLJ5
-	gNPLoYMEn10BUTsE94g26AlDSc2/488D23UFbD2R0/6gFfPYw9jPh7iZQMJjmQ+/
-	apB3+jOj6eIns2ECguBdY41z7tomKGgvuiWfN8rYTr4XqPCk6zLXwhYppZ3w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1706701740; x=1706788140; bh=jT9sL1YmAihadqrUHigLsBRY9Xsx
-	rsPNsnYd6WguPNA=; b=g729DEvYgTEUVfuUErlIPFGRGtDR83GKuPIeKNPF5qqn
-	uxdYFRuuSWq5zUBAu1MrgjdwaWnyLJ9PdmIyPfNtH5IW66LqliMwHzqIIXlDGrm0
-	Uya8VqEUYCW/lzuZU7AD4ecc8R896HXsmgWjAKdJGq0X2J6TCf31hka+6Y6YXWn8
-	MFJ82gEIkX3+5d7zGmCg9HtytLi6n3WSXSrlXmey5sF4m/S51mVDHvETHyBsv2Nk
-	41VDjckeTDlfGbJGSzxMphJ79B091QKB5nkLzz0A/TvXhKLIglD+l/2i9ajq8zOd
-	XQ3PSA/Udf7DrrGQSiXZbNrTxpo7lMwZvEKqt3679Q==
-X-ME-Sender: <xms:qzO6ZfM2_SFlM_qzag13_ifNoa3-UhBdDDAGjZVeLRrkm2GR7OHZNw>
-    <xme:qzO6ZZ_TKKLvGaYfkC55jwQgM53vTFn51AFdxcT1qUpTfMlsipg8NuHu5Oh44SIda
-    qEipBu8DXdUpITruyY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtledgfedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:qzO6ZeRMd6nErXTpUgamGeftjqhas_qBP8Tp8EZ21Owe4ius29S0gQ>
-    <xmx:qzO6ZTsB9DWZQvEYMAIxSne630UngHy3z0jMrVSz5yUGmJ3iuNDhCQ>
-    <xmx:qzO6ZXdMp7o7XjskIemSSB24ax5p4pytl6Jklotu9jqYsMRNDmkXfg>
-    <xmx:rDO6Zb7mx2aAd5no5SShJqenqMT50SpLR8gInAzlkBlCzQtUcgjOuA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 270C7B6008D; Wed, 31 Jan 2024 06:48:59 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
+	s=arc-20240116; t=1706701773; c=relaxed/simple;
+	bh=kPGAT+VjhwpGiz/PhiDeYTLyEcw/DmxhiOP0SJU7hzc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NhPCcHrVrliqxSkYhE3LzS44JSIkxP6+G1Df8oL/2XyQ6N2mCioZOOXPNAi5NkZIzKlrUCJjnT3Fa09A1GZtWI1PrOPFM8EWIxGXDf90v2v6SBwJnqhNHSVmso8UmHBg+XKjE/YZrKF/T1JidCnmpf20ho45Z+G8nMobWtFsWcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2681F11FB;
+	Wed, 31 Jan 2024 03:50:14 -0800 (PST)
+Received: from [10.57.79.60] (unknown [10.57.79.60])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E085D3F738;
+	Wed, 31 Jan 2024 03:49:26 -0800 (PST)
+Message-ID: <714d0930-2202-48b6-9728-d248f820325e@arm.com>
+Date: Wed, 31 Jan 2024 11:49:25 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <5e55b5c0-6c8d-45b4-ac04-cf694bcb08d3@app.fastmail.com>
-In-Reply-To: <20240131055159.2506-1-yan.y.zhao@intel.com>
-References: <20240131055159.2506-1-yan.y.zhao@intel.com>
-Date: Wed, 31 Jan 2024 12:48:38 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Yan Zhao" <yan.y.zhao@intel.com>,
- "Linus Walleij" <linus.walleij@linaro.org>, guoren <guoren@kernel.org>,
- "Brian Cain" <bcain@quicinc.com>, "Jonas Bonn" <jonas@southpole.se>,
- "Stefan Kristiansson" <stefan.kristiansson@saunalahti.fi>,
- "Stafford Horne" <shorne@gmail.com>
-Cc: Linux-Arch <linux-arch@vger.kernel.org>, linux-kernel@vger.kernel.org,
- "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
- linux-hexagon@vger.kernel.org,
- "linux-openrisc@vger.kernel.org" <linux-openrisc@vger.kernel.org>
-Subject: Re: [PATCH 0/4] apply page shift to PFN instead of VA in pfn_to_virt
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 00/15] mm/memory: optimize fork() with PTE-mapped THP
+To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Dinh Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
+ Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, "David S. Miller"
+ <davem@davemloft.net>, linux-arm-kernel@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, sparclinux@vger.kernel.org
+References: <20240129124649.189745-1-david@redhat.com>
+ <a335a9d2-9b8f-4eb8-ba22-23a223b59b06@arm.com>
+ <a1a0e9b3-dae2-418f-bd63-50e65f471728@redhat.com>
+ <57eb82c7-4816-42a2-b5ab-cc221e289b21@arm.com>
+ <e6eaba5b-f290-4d1f-990b-a47d89f56ee4@redhat.com>
+Content-Language: en-GB
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <e6eaba5b-f290-4d1f-990b-a47d89f56ee4@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 31, 2024, at 06:51, Yan Zhao wrote:
-> This is a tiny fix to pfn_to_virt() for some platforms.
->
-> The original implementaion of pfn_to_virt() takes PFN instead of PA as the
-> input to macro __va, with PAGE_SHIFT applying to the converted VA, which
-> is not right under most conditions, especially when there's an offset in
-> __va.
->
->
-> Yan Zhao (4):
->   asm-generic/page.h: apply page shift to PFN instead of VA in
->     pfn_to_virt
->   csky: apply page shift to PFN instead of VA in pfn_to_virt
->   Hexagon: apply page shift to PFN instead of VA in pfn_to_virt
->   openrisc: apply page shift to PFN instead of VA in pfn_to_virt
+On 31/01/2024 11:28, David Hildenbrand wrote:
+> On 31.01.24 12:16, Ryan Roberts wrote:
+>> On 31/01/2024 11:06, David Hildenbrand wrote:
+>>> On 31.01.24 11:43, Ryan Roberts wrote:
+>>>> On 29/01/2024 12:46, David Hildenbrand wrote:
+>>>>> Now that the rmap overhaul[1] is upstream that provides a clean interface
+>>>>> for rmap batching, let's implement PTE batching during fork when processing
+>>>>> PTE-mapped THPs.
+>>>>>
+>>>>> This series is partially based on Ryan's previous work[2] to implement
+>>>>> cont-pte support on arm64, but its a complete rewrite based on [1] to
+>>>>> optimize all architectures independent of any such PTE bits, and to
+>>>>> use the new rmap batching functions that simplify the code and prepare
+>>>>> for further rmap accounting changes.
+>>>>>
+>>>>> We collect consecutive PTEs that map consecutive pages of the same large
+>>>>> folio, making sure that the other PTE bits are compatible, and (a) adjust
+>>>>> the refcount only once per batch, (b) call rmap handling functions only
+>>>>> once per batch and (c) perform batch PTE setting/updates.
+>>>>>
+>>>>> While this series should be beneficial for adding cont-pte support on
+>>>>> ARM64[2], it's one of the requirements for maintaining a total mapcount[3]
+>>>>> for large folios with minimal added overhead and further changes[4] that
+>>>>> build up on top of the total mapcount.
+>>>>>
+>>>>> Independent of all that, this series results in a speedup during fork with
+>>>>> PTE-mapped THP, which is the default with THPs that are smaller than a PMD
+>>>>> (for example, 16KiB to 1024KiB mTHPs for anonymous memory[5]).
+>>>>>
+>>>>> On an Intel Xeon Silver 4210R CPU, fork'ing with 1GiB of PTE-mapped folios
+>>>>> of the same size (stddev < 1%) results in the following runtimes
+>>>>> for fork() (shorter is better):
+>>>>>
+>>>>> Folio Size | v6.8-rc1 |      New | Change
+>>>>> ------------------------------------------
+>>>>>         4KiB | 0.014328 | 0.014035 |   - 2%
+>>>>>        16KiB | 0.014263 | 0.01196  |   -16%
+>>>>>        32KiB | 0.014334 | 0.01094  |   -24%
+>>>>>        64KiB | 0.014046 | 0.010444 |   -26%
+>>>>>       128KiB | 0.014011 | 0.010063 |   -28%
+>>>>>       256KiB | 0.013993 | 0.009938 |   -29%
+>>>>>       512KiB | 0.013983 | 0.00985  |   -30%
+>>>>>      1024KiB | 0.013986 | 0.00982  |   -30%
+>>>>>      2048KiB | 0.014305 | 0.010076 |   -30%
+>>>>
+>>>> Just a heads up that I'm seeing some strange results on Apple M2. Fork for
+>>>> order-0 is seemingly costing ~17% more. I'm using GCC 13.2 and was pretty
+>>>> sure I
+>>>> didn't see this problem with version 1; although that was on a different
+>>>> baseline and I've thrown the numbers away so will rerun and try to debug this.
 
-Nice catch, this is clearly a correct fix, and I can take
-the series through the asm-generic tree if we want to take
-this approach.
+Numbers for v1 of the series, both on top of 6.8-rc1 and rebased to the same
+mm-unstable base as v3 of the series (first 2 rows are from what I just posted
+for context):
 
-I made a couple of interesting observations looking at this patch
-though:
+| kernel             |   mean_rel |   std_rel |
+|:-------------------|-----------:|----------:|
+| mm-unstabe (base)  |       0.0% |      1.1% |
+| mm-unstable + v3   |      16.7% |      0.8% |
+| mm-unstable + v1   |      -2.5% |      1.7% |
+| v6.8-rc1 + v1      |      -6.6% |      1.1% |
 
-- this function is only used in architecture specific code on
-  m68k, riscv and s390, though a couple of other architectures
-  have the same definition.
+So all looks good with v1. And seems to suggest mm-unstable has regressed by ~4%
+vs v6.8-rc1. Is this really a useful benchmark? Does the raw performance of
+fork() syscall really matter? Evidence suggests its moving all over the place -
+breath on the code and it changes - not a great place to be when using the test
+for gating purposes!
 
-- There is another function that does the same thing called
-  pfn_to_kaddr(), which is defined on arm, arm64, csky,
-  loongarch, mips, nios2, powerpc, s390, sh, sparc and x86,
-  as well as yet another pfn_va() on parisc.
+Still with the old tests - I'll move to the new ones now.
 
-- the asm-generic/page.h file used to be included by h8300, c6x
-  and blackfin, all of which are now gone. It has no users left
-  and can just as well get removed, unless we find a new use
-  for it.
 
-Since it looks like the four broken functions you fix
-don't have a single caller, maybe it would be better to
-just remove them all?
+>>>>
+>>>
+>>> So far, on my x86 tests (Intel, AMD EPYC), I was not able to observe this.
+>>> fork() for order-0 was consistently effectively unchanged. Do you observe that
+>>> on other ARM systems as well?
+>>
+>> Nope; running the exact same kernel binary and user space on Altra, I see
+>> sensible numbers;
+>>
+>> fork order-0: -1.3%
+>> fork order-9: -7.6%
+>> dontneed order-0: -0.5%
+>> dontneed order-9: 0.1%
+>> munmap order-0: 0.0%
+>> munmap order-9: -67.9%
+>>
+>> So I guess some pipelining issue that causes the M2 to stall more?
+> 
+> With one effective added folio_test_large(), it could only be a code layout
+> problem? Or the compiler does something stupid, but you say that you run the
+> exact same kernel binary, so that doesn't make sense.
 
-How exactly did you notice the function being wrong,
-did you try to add a user somewhere, or just read through
-the code?
+Yup, same binary. We know this code is very sensitive - 1 cycle makes a big
+difference. So could easily be code layout, branch prediction, etc...
 
-    Arnd
+> 
+> I'm also surprised about the dontneed vs. munmap numbers.
+
+You mean the ones for Altra that I posted? (I didn't post any for M2). The altra
+numbers look ok to me; dontneed has no change, and munmap has no change for
+order-0 and is massively improved for order-9.
+
+ Doesn't make any sense
+> (again, there was this VMA merging problem but it would still allow for batching
+> within a single VMA that spans exactly one large folio).
+> 
+> What are you using as baseline? Really just mm-unstable vs. mm-unstable+patches?
+
+yes. except for "v6.8-rc1 + v1" above.
+
+> 
+> Let's see if the new test changes the numbers you measure.
+> 
+
 
