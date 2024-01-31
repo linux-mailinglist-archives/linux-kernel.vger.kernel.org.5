@@ -1,76 +1,100 @@
-Return-Path: <linux-kernel+bounces-45549-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45550-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FEE4843244
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 01:48:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8743F843246
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 01:51:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F01582894BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 00:48:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16E7EB24BFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 00:51:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1920EEBF;
-	Wed, 31 Jan 2024 00:48:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81DA4A34;
+	Wed, 31 Jan 2024 00:51:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="QtIThWPs"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="eF+ntEbU"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A0A67EB;
-	Wed, 31 Jan 2024 00:48:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50BBF360
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 00:51:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706662093; cv=none; b=fH6gRsPX4TBYMU8abqanjVOr810EQx5yfSTCftpW0Vw+Yz4JyF4mz1DjqQ201UcGOi2bS98titaieRZmrORmFjyma1AayuAQtNwrpI+Ai2xSsnu8N2AYEXbN1WmG2/lBOvCR7UR2Og0njl+pegWrGGyv3Et9infI4O7qsn+sT0o=
+	t=1706662299; cv=none; b=RqtmFrKgNCaaSsFIq9EQe2f8ctwGQqPHfMWrBJt+++sDgILpXgIXg0yuvLZefU8Z0ySdbbctROipvaCgN70guTb2EpwoXJX1xtOQ3wIeydYlV1BLkTkX5fUrB86CcPGV+t/yYhSENi9R5hwrk6S5xC3UKcYL/f1v6XyAvwXeMlE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706662093; c=relaxed/simple;
-	bh=Y3ORv9uSKc/gzYNp8iwBsCBjJYn7exhDa5OECXnAf9I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eFldBzmO1CB5o5OEhZjl7726GjkhgubuBnFjJwtu8jltFGT/4mFXMn9HKm4SmK0TivyO1Oq1mM62f1OwN8fmVbT/TPWUFQcaFH0lk02G5al86hwOcrKtToEFLniZ45xYc9BQfUo5KCO8va/QUYBLtl3ZEsOEbi0iNr1gV9xx1sI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=QtIThWPs; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=GAADshofue1d9TTWA5jeSnqjUKHbX9U7EdljKoDoQEY=; b=QtIThWPs/nfJCH7Fl6lPpn7OVQ
-	NvrhaD+J0eGAIeSX6nNE8ImsPYy1ThiY9k3V21ylbqCKerlpn6qjXV9AAOcAHd7qyGKfgd2VWB6QB
-	51ET5JJk2Par201K1IIjaLugjU6i72/ujVLBL1wNLeJ2dQYSSyxhJkDLyRWu0vAS0nyqR3YU0y04L
-	MyADV2U6XV+N33crvBsxjzhSuR14s/n+WjyN7BU/zUnBikaQ4v9HNyTClO0ARG/01dxi64s3gEn6w
-	tyQ0nUhsIsdQ0xvS8h9iKweapatejslEpjKjdJF2BqgJF40HlTAR0vSJduK8MgzJIQkf3OLA+1kJm
-	4iIaO/WA==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rUylp-001l8u-1R;
-	Wed, 31 Jan 2024 00:48:05 +0000
-Date: Wed, 31 Jan 2024 00:48:05 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/6] eventfs: get rid of dentry pointers without refcounts
-Message-ID: <20240131004805.GO2087318@ZenIV>
-References: <20240130190355.11486-1-torvalds@linux-foundation.org>
- <20240130190355.11486-5-torvalds@linux-foundation.org>
+	s=arc-20240116; t=1706662299; c=relaxed/simple;
+	bh=h56iDYCY78b26JFQdhAEDEK0j/cfW7bNE2Mq5KdMyvs=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=KolBAELogOiggfDDgiI+KM0Z7mp0T7buhQXTvSVrniebJUeg5ySAz5PwP/jzjXWOAYIEMKOfpdFdDO3bK0WKP+0VB9MDDpnEM58F6VwUYeG2AsLihQ36bgqUro+s5o8PXI7xw9UGL8ZprdA0ADRyEHvhldhbHYUKv3LDQNZVjrQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=eF+ntEbU; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60405c0c9b0so10818657b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 16:51:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706662297; x=1707267097; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8PiTL2HcEpuubGvI5q0XemeJ60ITPrCqFkZKuXecBwA=;
+        b=eF+ntEbU6RGl355iGb6S3gD4F7OIL4pmN7533IOx4p31qMNl5nypnAXskdVbGyqReV
+         1BrIn54nx6YjCzJwRF3BNq+BEbcpzMHkKEYf5oPsmYIFRaiJmwoSH5CYAHjwzz67j58y
+         KfWdXfhfsRRJZxsTJ8ZUkZfgCJXVGymrv0GjzgMiep7AL1SYsP+/eX3li6gG8RzgiLRR
+         OdlWaEz1PrKS6owgTh9I7IkL7GaNwdMpSLUsYYAjIJxi2ZQs32nDva8vYSNWwpAntfG6
+         gZDV+2NjVdUag+rIHqjeMxaecBLj2GBmf1ds+8YnrBIHXc1i51Eq3Iq496YXoxcEE8+C
+         GONQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706662297; x=1707267097;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8PiTL2HcEpuubGvI5q0XemeJ60ITPrCqFkZKuXecBwA=;
+        b=HH+c7xRaBTdrcYBz+qp7+mHyBW/dgTHAo88H3LHb1QrKwGCh24VIduDgFXSpg+Ci4+
+         cTz84kIK7q7QH+OWJbf4NZx51vc/ExBmtZDq7hZJ04OIntzJpuGCxSCsrKI7Y/oZQTOV
+         05ndIQsIemR6zTiurS324D07fVitqE23RQrwj4oTKXtovpRVFFnboSTRzAR9TPRRtcNz
+         gV8+PPS1l8CaTU7hDNige85iYB+Gl9fwmadVadO3V9fiwmPLZpu28/mCe2o/ERqtgglb
+         H0NYihJyevTjbAqak6WFshQl8cPkWlp+dgSDXZzFj2GV26PHNBukXkL1+9/cI9ksiaZp
+         Udug==
+X-Gm-Message-State: AOJu0YyRD8GxHZBg1bjejKTOR6l8g3CsA7d9HtUY638Qfsu/qDpeIZ0T
+	Tcy1F/02LkvvPEDdAo7j4TROURrQ/wrC+uz/jirWrYqULzHbe2FNuTfeZWZda2u9I4w44xfhTjz
+	9CQ==
+X-Google-Smtp-Source: AGHT+IHG+mR512nv1h56aKdPh5HMR7r1mFAr+oZY0klhTXoojvu4P6tkCzyWHsXtwGDD6eIKR2/1nj4sky8=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:2608:b0:dc6:6da5:1a23 with SMTP id
+ dw8-20020a056902260800b00dc66da51a23mr58971ybb.4.1706662297300; Tue, 30 Jan
+ 2024 16:51:37 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date: Tue, 30 Jan 2024 16:51:30 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240130190355.11486-5-torvalds@linux-foundation.org>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+Message-ID: <20240131005130.3855907-1-seanjc@google.com>
+Subject: [ANNOUNCE] PUCK Agenda - 2024.01.31 - Finalizing internal guest_memfd
+ APIs for SNP/TDX
+From: Sean Christopherson <seanjc@google.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Michael Roth <michael.roth@amd.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Isaku Yamahata <isaku.yamahata@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Jan 30, 2024 at 11:03:54AM -0800, Linus Torvalds wrote:
+Tomorrow's PUCK topic is finalizing KVM's internal guest_memfd APIs for SNP
+and TDX.
 
->  	inode = tracefs_get_inode(dentry->d_sb);
->  	if (unlikely(!inode))
-> -		return eventfs_failed_creating(dentry);
-> +		return ERR_PTR(-ENOMEM);
+https://lore.kernel.org/all/20240105091237.24577-1-yan.y.zhao@intel.com
 
-That belongs in the lookup crapectomy patch - bisect hazard from stray dput().
-Same for similar chunks below.
+Time:     6am PDT
+Video:    https://meet.google.com/vdb-aeqo-knk
+Phone:    https://tel.meet/vdb-aeqo-knk?pin=3003112178656
+
+Calendar: https://calendar.google.com/calendar/u/0?cid=Y182MWE1YjFmNjQ0NzM5YmY1YmVkN2U1ZWE1ZmMzNjY5Y2UzMmEyNTQ0YzVkYjFjN2M4OTE3MDJjYTUwOTBjN2Q1QGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20
+Drive:    https://drive.google.com/drive/folders/1aTqCrvTsQI9T4qLhhLs_l986SngGlhPH?resourcekey=0-FDy0ykM3RerZedI8R-zj4A&usp=drive_link
+
+Future Schedule:
+February 7th  - Canceled (Sean offline)
+February 14th - Available
+February 21st - Available
+February 28th - Available
 
