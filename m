@@ -1,235 +1,183 @@
-Return-Path: <linux-kernel+bounces-46140-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46141-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09FD2843B23
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:30:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82C36843B27
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:31:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2ED061C28568
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:30:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39FFC290211
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:31:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5420C67E64;
-	Wed, 31 Jan 2024 09:30:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9AC269956;
+	Wed, 31 Jan 2024 09:30:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J1pFQoza"
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TTsz9d5D"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2280A67A1F
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:30:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B0A769952
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:30:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706693426; cv=none; b=dDtz3WtczTbJyjoY0Le/K4z2Y699GoUfb2OSJbBm4dvK2E1AOfMs9DJQ7rGFVh7Ww2jyljs7PpjLGQBEhl6/EoQT9gGcAKSCZl+NkPYb5vPNBStXotjOGqriDhguKQFtmW7mXCToCKamILcKDPDVz7gZw4fvDKjSgEu+EZzLMqE=
+	t=1706693430; cv=none; b=JO09OyXrydX6zMjklqr5Mzb5qT/0VeRmpYX047FQvNgGDu//7VQ5s8IaUdcnB2TSb0wDLCVnt24CP7mM319WWUDtOj9Ou+3TexfP3EtTxU5lealGnsMY/53mh8sMdQambouZE6uA99m5sM0VmhnLwkA/i+obN2jUFyCDsHsmzOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706693426; c=relaxed/simple;
-	bh=TVJL02G0kimP27mlX3sjX/UsIEhPEDElPeP+WCA5DWE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MgSlddLsvgOzoQOzpQfFTGglyjZvd0OCJHmICLqUTnY1h7F626PJJg8GhnWqwuoY2g/PIEaAX9+5QhwP6mq6Mh1veAg3nfsAEGtZTLHIc8LSR4S7X3vfJsH0lqbt/Y6F+MsaZGH/JqvVXRIrGyrLJ1D7mcYLeFFwRN5f1TQ1c3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J1pFQoza; arc=none smtp.client-ip=209.85.219.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dc261316b0dso4229530276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 01:30:23 -0800 (PST)
+	s=arc-20240116; t=1706693430; c=relaxed/simple;
+	bh=bmWztwT189Wa+/DkcC1wRGU1L587x8rOhwGOBzjiDSE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=W8UsjsJpC+D3dld6Q1UAI4FKz+GDFpBUqXuybckr64MpWYgkdTWPrmMwpM1HA6fNPdBNfg39vAAj5sAAjpOeAidu3EpXv9EkdImck6rJ5t9EKuXoLbM+fP7SlzEHfJgZNv4x1Muyq+RG430+Cj/d5l+ccDFldOt6o6KfVmyg7RI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TTsz9d5D; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a3651c87ebbso151559966b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 01:30:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706693423; x=1707298223; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n1hVXwdyUh5O4q5jCGS4m9GkNrPafUP16G5xoPdeqV0=;
-        b=J1pFQozaAr6L+UELeK4QmpdAyag6ZVBS/ULmcVXi6w0jbYu2cn7ED1iaJbMJRcaGov
-         MbzkMjLrJwfPxknixpxCp7zox/FWcipl6JGwWY+2ARWUgK/NkTsH8+7dGplL5Mfcc31x
-         E1Yo+ojdZPrKSNnSoLjbFjqKHV0ft87ncDPJthqGQsU5Q6XtM3iHjA19naBKpRCPVmb9
-         /ImIJnzcasOaDBVvMm2iuM1O+Z/xI6GjGcKanvgz8s+JJyyWLOYKx9vVZWO+Tck06mFD
-         2FqYHlW7gPMKrlWUECEPusTLFGE1LS5LQSyBYQwXhUd89gWuV3XZLyfzZW1xu/8uqrwr
-         XGLA==
+        d=linaro.org; s=google; t=1706693427; x=1707298227; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ICDsKAS7ESjBHyOA4kXHBONHifKEPJQGSK8cycVBuy8=;
+        b=TTsz9d5DhZ2WCWzadUMzylvH+Q7QTGkE/do5OxhTMqvvKsWljwmkxM4AqW2uXoRgVu
+         QSW5t6G7w6zgV/ypOHecuiJEUgxV0NY9rLlWpBMjLS9vYeKZMwEKJSX9GM+xqaZ+oL40
+         FaL956sMXRQSMw4ToJlm0CwVWXBqJkqFa4mXGSygBcjeWrtSKZ+N05mfi96Q6gQSETKW
+         yHQPV24eGQ0MzjL4xOLf4cpczMUNevBx/frDbWzi3ocoiABKRSBivQ19t1CoCHSjolBh
+         yNKsTtSdp2RR3tTDW4mRZHOO/sssomtJvl4FVSg49KlCmfsmP+kAQdhrk1OBLLIi3x35
+         zXxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706693423; x=1707298223;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=n1hVXwdyUh5O4q5jCGS4m9GkNrPafUP16G5xoPdeqV0=;
-        b=TDfXR4FHccIP+243gzO9izuOkd7qDy8LMYrnvflZDFp9k9UCt6D83GHTq5hd0TGxuu
-         yjJZVcClcx/LMMQavjIiCsCX2CoxdhsLQX0HnwtukvwEi+g2dvdkgZTFMqQQyaMk3uYa
-         bwW+GP2eO9Wm49fisJ8Z14AgkWFWs3QmsC1Mpv5ymmdS34OlF5QyUQfWi2nQrbJ4bvj9
-         v2mX9h8OjJYWYdTemD6VbCx9pcp9fy5ZG03EBcuOy4nRU6EdAMzcV7stqULKjJAxWU5e
-         Yejgtgi8P06zA3f7HVV2yR4lIZ9OS9lP2a8GbusXPaTWkTbVlWYJtOjxGIc/vwgecjU7
-         8h2Q==
-X-Gm-Message-State: AOJu0YzU3PGs5oQ4EeBXkbhIfbJEmQQNeKrDVu2gYSUOYEynvlCQ6pBi
-	Jg+nSBbIHbWl/mjUuKJb5aZtYfV23w0cgreaYRR+OVCnOcGWMKd+sJ3dNQjH9bqHtCtTKZ/P9Ix
-	3oMszv6S2RToqoe72Do3NYT6teVk=
-X-Google-Smtp-Source: AGHT+IGh2bSmh+uIzdUeEPJ0o5bZ1WTxUmBY9WeH8Yyf8ltmNtPPrRirIzXstNlEqmjWLu9W4uzjyOnWnzzyimD7/9Q=
-X-Received: by 2002:a25:ce90:0:b0:dc2:271e:51ec with SMTP id
- x138-20020a25ce90000000b00dc2271e51ecmr1071886ybe.11.1706693422887; Wed, 31
- Jan 2024 01:30:22 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706693427; x=1707298227;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ICDsKAS7ESjBHyOA4kXHBONHifKEPJQGSK8cycVBuy8=;
+        b=l2RepNfGMJGewf9D2rhSxvqBObtuIftILqntqQLV/CuPpyzvGRZlhnPJp6qHNjpLCo
+         M1On839L8b3hiKEl0bCJDZG7XQAnB1103ipYdxKBd5aCnaVNUXtz2wW8DGbOHG5UbFtJ
+         wJaw7oAfBEJDzrtlEfqsgjfahFZ16CvY/puHpffI7pL1II5MFW9AO00hlFwuFnyCKFLD
+         8s0HVKtqvYUSafD8UAt9TmoNIEp5PW3S+pcTcg7PDqCoV96vQDDfo32F+CAc6+o3jfC2
+         WjWYzH9kaE/0QaPARQk7dZzu5cAMxs/U64wtJV2Ex2tfzE0PDknbOymqdrqTuuoErMg9
+         qQUA==
+X-Gm-Message-State: AOJu0YxkfnSRSL/bjE4jwpdJErt2+5Y/KVHSxfrZBlPWAI81ebBvxqRf
+	GwQQrY76h2yvxz8Nxptkc+jCQrJ2K9hcUr6M5gpF9x2K+V+oIoxKuT1by5p9kqM=
+X-Google-Smtp-Source: AGHT+IGrVcvMI9FoMp3oRRPiCyaZkNJi+u88q8/q2mfDVcBMnWJf/RHpPtrRjkpcY5Fwi1LSRj5hsw==
+X-Received: by 2002:a17:906:e2cd:b0:a36:47fa:4b8c with SMTP id gr13-20020a170906e2cd00b00a3647fa4b8cmr772150ejb.9.1706693427367;
+        Wed, 31 Jan 2024 01:30:27 -0800 (PST)
+Received: from linaro.org ([79.115.23.25])
+        by smtp.gmail.com with ESMTPSA id hd11-20020a170907968b00b00a31906f280asm5985711ejc.193.2024.01.31.01.30.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Jan 2024 01:30:26 -0800 (PST)
+Date: Wed, 31 Jan 2024 11:30:25 +0200
+From: Abel Vesa <abel.vesa@linaro.org>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Sibi Sankar <quic_sibis@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Mathieu Poirier <mathieu.poirier@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Sibi Sankar <quic_sibis@quicinc.com>
+Subject: Re: [PATCH 3/3] remoteproc: qcom_q6v5_pas: Unload lite firmware on
+ ADSP
+Message-ID: <ZboTMVx7SN1BBoaz@linaro.org>
+References: <20240129-x1e80100-remoteproc-v1-0-15d21ef58a4b@linaro.org>
+ <20240129-x1e80100-remoteproc-v1-3-15d21ef58a4b@linaro.org>
+ <CAA8EJporoBQQtrRWL5SS4qwpmu0rF6UMpaZXQ5t-qdvoW53XOA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240129054551.57728-1-ioworker0@gmail.com>
-In-Reply-To: <20240129054551.57728-1-ioworker0@gmail.com>
-From: Lance Yang <ioworker0@gmail.com>
-Date: Wed, 31 Jan 2024 17:30:11 +0800
-Message-ID: <CAK1f24keWtJNVv37r2vNsqnmMLRMvF-F76WR5RD_Y-BbAgEaYQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm/khugepaged: bypassing unnecessary scans with
- MMF_DISABLE_THP check
-To: akpm@linux-foundation.org
-Cc: mhocko@suse.com, zokeefe@google.com, david@redhat.com, 
-	songmuchun@bytedance.com, shy828301@gmail.com, peterx@redhat.com, 
-	minchan@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA8EJporoBQQtrRWL5SS4qwpmu0rF6UMpaZXQ5t-qdvoW53XOA@mail.gmail.com>
 
-Updating the change log.
+On 24-01-29 17:17:28, Dmitry Baryshkov wrote:
+> On Mon, 29 Jan 2024 at 15:35, Abel Vesa <abel.vesa@linaro.org> wrote:
+> >
+> > From: Sibi Sankar <quic_sibis@quicinc.com>
+> >
+> > The UEFI loads a lite variant of the ADSP firmware to support charging
+> > use cases. The kernel needs to unload and reload it with the firmware
+> > that has full feature support for audio. This patch arbitarily shutsdown
+> > the lite firmware before loading the full firmware.
+> >
+> > Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+> > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> > ---
+> >  drivers/remoteproc/qcom_q6v5_pas.c | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> >
+> > diff --git a/drivers/remoteproc/qcom_q6v5_pas.c b/drivers/remoteproc/qcom_q6v5_pas.c
+> > index 083d71f80e5c..4f6940368eb4 100644
+> > --- a/drivers/remoteproc/qcom_q6v5_pas.c
+> > +++ b/drivers/remoteproc/qcom_q6v5_pas.c
+> > @@ -39,6 +39,7 @@ struct adsp_data {
+> >         const char *dtb_firmware_name;
+> >         int pas_id;
+> >         int dtb_pas_id;
+> > +       int lite_pas_id;
+> >         unsigned int minidump_id;
+> >         bool auto_boot;
+> >         bool decrypt_shutdown;
+> > @@ -72,6 +73,7 @@ struct qcom_adsp {
+> >         const char *dtb_firmware_name;
+> >         int pas_id;
+> >         int dtb_pas_id;
+> > +       int lite_pas_id;
+> >         unsigned int minidump_id;
+> >         int crash_reason_smem;
+> >         bool decrypt_shutdown;
+> > @@ -210,6 +212,10 @@ static int adsp_load(struct rproc *rproc, const struct firmware *fw)
+> >         /* Store firmware handle to be used in adsp_start() */
+> >         adsp->firmware = fw;
+> >
+> > +       /* WIP: Shutdown the ADSP if it's running a lite version of the firmware*/
+> 
+> Why is it still marked as WIP?
 
-khugepaged scans the entire address space in the
-background for each given mm, looking for
-opportunities to merge sequences of basic pages
-into huge pages. However, when an mm is inserted
-to the mm_slots list, and the MMF_DISABLE_THP
-flag is set later, this scanning process becomes
-unnecessary for that mm and can be skipped to
-avoid redundant operations, especially in scenarios
-with a large address space.
+AFAIU, there was more to be done here w.r.t. preloaded lite version
+firmware.
 
-This commit introduces a check before each scanning
-process to test the MMF_DISABLE_THP flag for the
-given mm; if the flag is set, the scanning process is
-bypassed, thereby improving the efficiency of khugepaged.
+Later, was agreed that that is not case.
 
-This optimization is not a correctness issue but rather an
-enhancement to save expensive checks on each VMA
-when userspace cannot prctl itself before spawning
-into the new process.
+So maybe I just need to drop the comment.
 
-On some servers within our company, we deploy a
-daemon responsible for monitoring and updating local
-applications. Some applications prefer not to use THP,
-so the daemon calls prctl to disable THP before fork/exec.
-Conversely, for other applications, the daemon calls prctl
-to enable THP before fork/exec.
+Sibi, can you confirm?
 
-Ideally, the daemon should invoke prctl after the fork,
-but its current implementation follows the described
-approach. In the Go standard library, there is no direct
-encapsulation of the fork system call; instead, fork and
-execve are combined into one through syscall.ForkExec.
-
-Thanks,
-Lance
-
-On Mon, Jan 29, 2024 at 1:46=E2=80=AFPM Lance Yang <ioworker0@gmail.com> wr=
-ote:
->
-> khugepaged scans the entire address space in the
-> background for each given mm, looking for
-> opportunities to merge sequences of basic pages
-> into huge pages. However, when an mm is inserted
-> to the mm_slots list, and the MMF_DISABLE_THP flag
-> is set later, this scanning process becomes
-> unnecessary for that mm and can be skipped to avoid
-> redundant operations, especially in scenarios with
-> a large address space.
->
-> This commit introduces a check before each scanning
-> process to test the MMF_DISABLE_THP flag for the
-> given mm; if the flag is set, the scanning process
-> is bypassed, thereby improving the efficiency of
-> khugepaged.
->
-> Signed-off-by: Lance Yang <ioworker0@gmail.com>
-> ---
->  mm/khugepaged.c | 18 ++++++++++++------
->  1 file changed, 12 insertions(+), 6 deletions(-)
->
-> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-> index 2b219acb528e..d6a700834edc 100644
-> --- a/mm/khugepaged.c
-> +++ b/mm/khugepaged.c
-> @@ -410,6 +410,12 @@ static inline int hpage_collapse_test_exit(struct mm=
-_struct *mm)
->         return atomic_read(&mm->mm_users) =3D=3D 0;
->  }
->
-> +static inline int hpage_collapse_test_exit_or_disable(struct mm_struct *=
-mm)
-> +{
-> +       return hpage_collapse_test_exit(mm) ||
-> +              test_bit(MMF_DISABLE_THP, &mm->flags);
-> +}
-> +
->  void __khugepaged_enter(struct mm_struct *mm)
->  {
->         struct khugepaged_mm_slot *mm_slot;
-> @@ -1422,7 +1428,7 @@ static void collect_mm_slot(struct khugepaged_mm_sl=
-ot *mm_slot)
->
->         lockdep_assert_held(&khugepaged_mm_lock);
->
-> -       if (hpage_collapse_test_exit(mm)) {
-> +       if (hpage_collapse_test_exit_or_disable(mm)) {
->                 /* free mm_slot */
->                 hash_del(&slot->hash);
->                 list_del(&slot->mm_node);
-> @@ -2360,7 +2366,7 @@ static unsigned int khugepaged_scan_mm_slot(unsigne=
-d int pages, int *result,
->                 goto breakouterloop_mmap_lock;
->
->         progress++;
-> -       if (unlikely(hpage_collapse_test_exit(mm)))
-> +       if (unlikely(hpage_collapse_test_exit_or_disable(mm)))
->                 goto breakouterloop;
->
->         vma_iter_init(&vmi, mm, khugepaged_scan.address);
-> @@ -2368,7 +2374,7 @@ static unsigned int khugepaged_scan_mm_slot(unsigne=
-d int pages, int *result,
->                 unsigned long hstart, hend;
->
->                 cond_resched();
-> -               if (unlikely(hpage_collapse_test_exit(mm))) {
-> +               if (unlikely(hpage_collapse_test_exit_or_disable(mm))) {
->                         progress++;
->                         break;
->                 }
-> @@ -2390,7 +2396,7 @@ static unsigned int khugepaged_scan_mm_slot(unsigne=
-d int pages, int *result,
->                         bool mmap_locked =3D true;
->
->                         cond_resched();
-> -                       if (unlikely(hpage_collapse_test_exit(mm)))
-> +                       if (unlikely(hpage_collapse_test_exit_or_disable(=
-mm)))
->                                 goto breakouterloop;
->
->                         VM_BUG_ON(khugepaged_scan.address < hstart ||
-> @@ -2408,7 +2414,7 @@ static unsigned int khugepaged_scan_mm_slot(unsigne=
-d int pages, int *result,
->                                 fput(file);
->                                 if (*result =3D=3D SCAN_PTE_MAPPED_HUGEPA=
-GE) {
->                                         mmap_read_lock(mm);
-> -                                       if (hpage_collapse_test_exit(mm))
-> +                                       if (hpage_collapse_test_exit_or_d=
-isable(mm))
->                                                 goto breakouterloop;
->                                         *result =3D collapse_pte_mapped_t=
-hp(mm,
->                                                 khugepaged_scan.address, =
-false);
-> @@ -2450,7 +2456,7 @@ static unsigned int khugepaged_scan_mm_slot(unsigne=
-d int pages, int *result,
->          * Release the current mm_slot if this mm is about to die, or
->          * if we scanned all vmas of this mm.
->          */
-> -       if (hpage_collapse_test_exit(mm) || !vma) {
-> +       if (hpage_collapse_test_exit_or_disable(mm) || !vma) {
->                 /*
->                  * Make sure that if mm_users is reaching zero while
->                  * khugepaged runs here, khugepaged_exit will find
-> --
-> 2.33.1
->
+> 
+> > +       if (adsp->lite_pas_id)
+> > +               ret = qcom_scm_pas_shutdown(adsp->lite_pas_id);
+> > +
+> >         if (adsp->dtb_pas_id) {
+> >                 ret = request_firmware(&adsp->dtb_firmware, adsp->dtb_firmware_name, adsp->dev);
+> >                 if (ret) {
+> > @@ -693,6 +699,7 @@ static int adsp_probe(struct platform_device *pdev)
+> >         adsp->rproc = rproc;
+> >         adsp->minidump_id = desc->minidump_id;
+> >         adsp->pas_id = desc->pas_id;
+> > +       adsp->lite_pas_id = desc->lite_pas_id;
+> >         adsp->info_name = desc->sysmon_name;
+> >         adsp->decrypt_shutdown = desc->decrypt_shutdown;
+> >         adsp->region_assign_idx = desc->region_assign_idx;
+> > @@ -990,6 +997,7 @@ static const struct adsp_data x1e80100_adsp_resource = {
+> >         .dtb_firmware_name = "adsp_dtb.mdt",
+> >         .pas_id = 1,
+> >         .dtb_pas_id = 0x24,
+> > +       .lite_pas_id = 0x1f,
+> >         .minidump_id = 5,
+> >         .auto_boot = true,
+> >         .proxy_pd_names = (char*[]){
+> >
+> > --
+> > 2.34.1
+> >
+> >
+> 
+> 
+> -- 
+> With best wishes
+> Dmitry
 
