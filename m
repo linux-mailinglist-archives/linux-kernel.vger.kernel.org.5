@@ -1,126 +1,189 @@
-Return-Path: <linux-kernel+bounces-46728-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46729-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A9F3844341
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:42:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C2839844344
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:42:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8879B28308
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:41:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6CCF7B280BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:42:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4944C12A143;
-	Wed, 31 Jan 2024 15:41:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 697DB12A169;
+	Wed, 31 Jan 2024 15:41:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FRtAQL4P"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Sy6Ckxc3"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CF921292DB;
-	Wed, 31 Jan 2024 15:41:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E735E1292F7;
+	Wed, 31 Jan 2024 15:41:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706715693; cv=none; b=BhdvEvTEHEdeL8qX2R9WSE6jBXGw39Bj/ARznhkK3t7S4GofSC1K1zy2JlMadE6APwxHkCLztwGBQ1pxmlg4eDcLHag8K5M55PKSMV4gCSkmNq1Gfq+TIFE9Usg5Ax7mXvKmp0oy34PI0meh0+9rW3aKa240F53B6Q2kI2XalTU=
+	t=1706715716; cv=none; b=Q+1so5HNoreT+Z31DMb4U/2wzp6LBv6PJDdF8R0bbXpoKj5DdngdmP7Nr8TS6LDeMXMv6byqVAMusv3lQsg8zykCD23Ha6Melum7ZQS0lTLUSVlSfI+4L3YnZeZ4eJ1hG5HGV0eeHyw3RFPG8luG45s0Xr68gST61WI6iPUpVo4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706715693; c=relaxed/simple;
-	bh=3qc1rD4OFMv152sahNdXzftZFYLPE8J6IdJzNl7A+Ds=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=diKQ/VDm9521SCHqRkRqA6GHQJyu/2hcRpcYrkEW9gYdItby9eHFPedSvsqzn57PL5ESH32F3tIBfHCswj+6pKN7UI+sL90T0/XzXGd0OhI3BiOFztC973Xsorr3j22qtbqnH5IpYtdmDFhxyERBtxe90mlLKQcYkqDrd4a+zbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FRtAQL4P; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3173C433F1;
-	Wed, 31 Jan 2024 15:41:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706715693;
-	bh=3qc1rD4OFMv152sahNdXzftZFYLPE8J6IdJzNl7A+Ds=;
-	h=Date:From:To:List-Id:Cc:Subject:References:In-Reply-To:From;
-	b=FRtAQL4P2fhakKD2lJx59bZVG04GXx7y4JYKjGa+TfPz19YHtsNCYxdYxO2R/4cia
-	 htqqKdIcuJ4VgdOENNbO4VDzCy3QNTuAAgSNWR0F56Qf4gIDusNFeUDRn1wQCCSsc/
-	 tKrMQf3JkJYbv1lPvfRD3ECUcjr+aFr3RMdznjYszREWAJ3N31k/FJ+q3Iclhu9Qw8
-	 aFltwZXEhhgSEBRWhGF1kC4N/rsqr28rXjRUsrCQ7Ohw+gONEC5Xk/GuskxqXocWUs
-	 Gv83hNk5WwjGn0HXBvlbWsY+IJm5mWX3HntsBE07tD75eZTAmvtjDuWqvZe8Wj9MG1
-	 rYiJHBtzdJtYw==
-Date: Wed, 31 Jan 2024 09:41:30 -0600
-From: Rob Herring <robh@kernel.org>
-To: Oreoluwa Babatunde <quic_obabatun@quicinc.com>
-Cc: catalin.marinas@arm.com, will@kernel.org, frowand.list@gmail.com,
-	vgupta@kernel.org, arnd@arndb.de, olof@lixom.net, soc@kernel.org,
-	guoren@kernel.org, monstr@monstr.eu, palmer@dabbelt.com,
-	aou@eecs.berkeley.edu, dinguyen@kernel.org, chenhuacai@kernel.org,
-	tsbogend@alpha.franken.de, jonas@southpole.se,
-	stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
-	mpe@ellerman.id.au, ysato@users.sourceforge.jp, dalias@libc.org,
-	glaubitz@physik.fu-berlin.de, richard@nod.at,
-	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
-	chris@zankel.net, jcmvbkbc@gmail.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	kernel@quicinc.com
-Subject: Re: [PATCH 14/46] sh: reserved_mem: Implement the new processing
- order for reserved memory
-Message-ID: <20240131154130.GA1336725-robh@kernel.org>
-References: <20240126235425.12233-1-quic_obabatun@quicinc.com>
- <20240126235425.12233-15-quic_obabatun@quicinc.com>
+	s=arc-20240116; t=1706715716; c=relaxed/simple;
+	bh=OY3bW4RyJYoIakBZivR/Y+Ua+hVYu3TyxVNFADq89ww=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=eSt7tTtUOHPfisA4cR2Psmx649msOdyNdA5dg5unMkC/G+2kbzEmWSCgL/rFpvAvXWHQWIJBA28xF48+VZEBzNkW3SVm6tjsXG5tjjmbrwAEAX2VAXZTRJgJjY/jQVtgmYTvSVZFVByTuhkQJy3oVTI1RovZSAvcfSVMDyFubaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Sy6Ckxc3; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40VFfcR2026580;
+	Wed, 31 Jan 2024 09:41:38 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706715698;
+	bh=YUPIxfbN7igG1w5ev0dRIuOh5fGnBd1xonZKD3T8aDs=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=Sy6Ckxc34RFdHK5+QpbrbJp5WWtZj17uqYsykjZxOu8XPlLyPCN/hRUn/d0Zb72tm
+	 zW9mAsdAN6FT8H0/WRn1JEzLquvSbq37Qsf2f2hHFipbrVddOZ8jHF2nYOcpX2IrbT
+	 gOH6s0eDjZeikBIIf5543Krx1U6pWitYNUyUF78s=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40VFfcJA011814
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 31 Jan 2024 09:41:38 -0600
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 31
+ Jan 2024 09:41:38 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 31 Jan 2024 09:41:38 -0600
+Received: from [10.249.42.149] ([10.249.42.149])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40VFfbLF069991;
+	Wed, 31 Jan 2024 09:41:37 -0600
+Message-ID: <96e48198-6027-4f94-9a36-1c21560fdfc1@ti.com>
+Date: Wed, 31 Jan 2024 09:41:37 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240126235425.12233-15-quic_obabatun@quicinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 4/6] arm64: dts: ti: k3-j784s4: Add Main CPSW2G node
+Content-Language: en-US
+To: Chintan Vankar <c-vankar@ti.com>, Peter Rosin <peda@axentia.se>,
+        Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, Tero
+ Kristo <kristo@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>, Nishanth
+ Menon <nm@ti.com>
+CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
+        <s-vadapalli@ti.com>, <r-gunasekaran@ti.com>, <danishanwar@ti.com>,
+        Jayesh Choudhary
+	<j-choudhary@ti.com>
+References: <20240131101441.1362409-1-c-vankar@ti.com>
+ <20240131101441.1362409-5-c-vankar@ti.com>
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <20240131101441.1362409-5-c-vankar@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Fri, Jan 26, 2024 at 03:53:53PM -0800, Oreoluwa Babatunde wrote:
-> Call early_fdt_scan_reserved_mem() in place of
-> early_init_fdt_scan_reserved_mem() to carry out the first stage of the
-> reserved memory processing only.
+On 1/31/24 4:14 AM, Chintan Vankar wrote:
+> From: Siddharth Vadapalli <s-vadapalli@ti.com>
 > 
-> The early_fdt_scan_reserved_mem() function is used to scan through the
-> DT and mark all the reserved memory regions as reserved or nomap as
-> needed, as well as allocate the memory required by the
-> dynamically-placed
-> reserved memory regions.
+> Add the device-tree nodes for the Main CPSW2G instance and enable it.
 > 
-> The second stage of the reserved memory processing is done by
-> fdt_init_reserved_mem(). This function is used to store the information
-> of the statically-placed reserved memory nodes in the reserved_mem
-> array as well as call the region specific initialization function on all
-> the stored reserved memory regions.
+> Add alias for the Main CPSW2G port to enable Linux to fetch MAC Address
+> for the port directly from U-Boot.
 > 
-> The call to fdt_init_reserved_mem() is placed right after
-> early_fdt_scan_reserved_mem() because memblock allocated memory should
-> already be writable at this point.
-> 
-> Signed-off-by: Oreoluwa Babatunde <quic_obabatun@quicinc.com>
+> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+> Signed-off-by: Chintan Vankar <c-vankar@ti.com>
 > ---
->  arch/sh/boards/of-generic.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>   arch/arm64/boot/dts/ti/k3-j784s4-evm.dts | 49 ++++++++++++++++++++++++
+>   1 file changed, 49 insertions(+)
 > 
-> diff --git a/arch/sh/boards/of-generic.c b/arch/sh/boards/of-generic.c
-> index f7f3e618e85b..7bec409f077c 100644
-> --- a/arch/sh/boards/of-generic.c
-> +++ b/arch/sh/boards/of-generic.c
-> @@ -8,6 +8,7 @@
->  #include <linux/of.h>
->  #include <linux/of_clk.h>
->  #include <linux/of_fdt.h>
-> +#include <linux/of_reserved_mem.h>
->  #include <linux/clocksource.h>
->  #include <linux/irqchip.h>
->  #include <asm/machvec.h>
-> @@ -110,7 +111,8 @@ static int noopi(void)
->  static void __init sh_of_mem_reserve(void)
->  {
->  	early_init_fdt_reserve_self();
-> -	early_init_fdt_scan_reserved_mem();
-> +	early_fdt_scan_reserved_mem();
-> +	fdt_init_reserved_mem();
+> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+> index b74f7d3025de..be028c246c67 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+> @@ -28,6 +28,7 @@ aliases {
+>   		i2c0 = &wkup_i2c0;
+>   		i2c3 = &main_i2c0;
+>   		ethernet0 = &mcu_cpsw_port1;
+> +		ethernet1 = &main_cpsw1_port1;
+>   	};
+>   
+>   	memory@80000000 {
+> @@ -280,6 +281,30 @@ &wkup_gpio0 {
+>   
+>   &main_pmx0 {
+>   	bootph-all;
+> +	main_cpsw2g_default_pins: main-cpsw2g-default-pins {
+> +		pinctrl-single,pins = <
+> +			J784S4_IOPAD(0x0b8, PIN_INPUT, 6) /* (AC34) MCASP1_ACLKX.RGMII1_RD0 */
+> +			J784S4_IOPAD(0x0a0, PIN_INPUT, 6) /* (AD34) MCASP0_AXR12.RGMII1_RD1 */
+> +			J784S4_IOPAD(0x0a4, PIN_INPUT, 6) /* (AJ36) MCASP0_AXR13.RGMII1_RD2 */
+> +			J784S4_IOPAD(0x0a8, PIN_INPUT, 6) /* (AF34) MCASP0_AXR14.RGMII1_RD3 */
+> +			J784S4_IOPAD(0x0b0, PIN_INPUT, 6) /* (AL33) MCASP1_AXR3.RGMII1_RXC */
+> +			J784S4_IOPAD(0x0ac, PIN_INPUT, 6) /* (AE34) MCASP0_AXR15.RGMII1_RX_CTL */
+> +			J784S4_IOPAD(0x08c, PIN_INPUT, 6) /* (AE35) MCASP0_AXR7.RGMII1_TD0 */
+> +			J784S4_IOPAD(0x090, PIN_INPUT, 6) /* (AC35) MCASP0_AXR8.RGMII1_TD1 */
+> +			J784S4_IOPAD(0x094, PIN_INPUT, 6) /* (AG35) MCASP0_AXR9.RGMII1_TD2 */
+> +			J784S4_IOPAD(0x098, PIN_INPUT, 6) /* (AH36) MCASP0_AXR10.RGMII1_TD3 */
+> +			J784S4_IOPAD(0x0b4, PIN_INPUT, 6) /* (AL34) MCASP1_AXR4.RGMII1_TXC */
+> +			J784S4_IOPAD(0x09c, PIN_INPUT, 6) /* (AF35) MCASP0_AXR11.RGMII1_TX_CTL */
+> +		>;
+> +	};
+> +
+> +	main_cpsw2g_mdio_default_pins: main-cpsw2g-mdio-default-pins {
+> +		pinctrl-single,pins = <
+> +			J784S4_IOPAD(0x0c0, PIN_INPUT, 6) /* (AD38) MCASP1_AXR0.MDIO0_MDC */
+> +			J784S4_IOPAD(0x0bc, PIN_INPUT, 6) /* (AD33) MCASP1_AFSX.MDIO0_MDIO */
+> +		>;
+> +	};
+> +	
+>   	main_uart8_pins_default: main-uart8-default-pins {
+>   		bootph-all;
+>   		pinctrl-single,pins = <
+> @@ -809,6 +834,30 @@ &mcu_cpsw_port1 {
+>   	phy-handle = <&mcu_phy0>;
+>   };
+>   
+> +&main_cpsw1 {
+> +	status = "okay";
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&main_cpsw2g_default_pins>;
+> +};
+> +
+> +&main_cpsw1_mdio {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&main_cpsw2g_mdio_default_pins>;
 
-Looking at the sh code, there's an existing problem with the order of
-init. This is called from paging_init() and is done after unflattening
-and copying the DT. That means the kernel could freely allocate memory
-for the DT in a reserved region.
+If we need this pinmux info, why wasn't this node disabled? You disabled
+the main_cpsw0_mdio instance, but not this one. Disable this by default
+in the patch before this, then status = "okay" it here.
 
-Rob
+Andrew
+
+> +
+> +	main_cpsw1_phy0: ethernet-phy@0 {
+> +		reg = <0>;
+> +		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
+> +		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
+> +		ti,min-output-impedance;
+> +	};
+> +};
+> +
+> +&main_cpsw1_port1 {
+> +	status = "okay";
+> +	phy-mode = "rgmii-rxid";
+> +	phy-handle = <&main_cpsw1_phy0>;
+> +};
+> +
+>   &mailbox0_cluster0 {
+>   	status = "okay";
+>   	interrupts = <436>;
 
