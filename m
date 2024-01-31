@@ -1,105 +1,98 @@
-Return-Path: <linux-kernel+bounces-45975-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45976-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D514484388E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:10:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BBC7843893
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:13:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40366B2321B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:10:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E70C1C23203
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:13:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83CFC57318;
-	Wed, 31 Jan 2024 08:10:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA9EE57339;
+	Wed, 31 Jan 2024 08:13:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HNJiCUHw"
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BCP17sop"
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4944058108
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 08:10:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A91C857318
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 08:13:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706688644; cv=none; b=bX3nycBJrE4WW4JRbsTiS1H+u5iQkwCWseFB6rbzwiSZlX8hqeXfYZDY98iuiYNSzSLBtqJL8dtLFM/xeY25M+/78j6jI7+DBAVhQnTcINrzdsjG57PDbuRaUkDS3zOinNqhv6U4arx8yfPUDrR6pWAwohAyDadZ2gLjxbTenJY=
+	t=1706688782; cv=none; b=gYPhGbn7RkU+AQIgdCilE+d8akl03LBuUwi8N9gH0Bij5sXOPD1WyVp9l0Zy2nhbwFjHKC2JHVt7P1o9/EIhGaEDHKtuauRJ+XfYiu3O34iWQS/E1lb4rssBQws8vikvZI0bqlH/QIYukzZmHsEjGQic8DOu0eh7HiO/2WJlB+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706688644; c=relaxed/simple;
-	bh=z9OD1UiKot9xBEp4pQEuFNoRwTpzFrjRRiTMq/H5FH8=;
+	s=arc-20240116; t=1706688782; c=relaxed/simple;
+	bh=+KixwNmf6DvpKIQRSBV/2LlYNkbWX43zmPDpGkU2JMM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UBko12o7xySZ8nhhJppY4EV03vqjZaoVrcoqFkyryJOC4Tcu4rCaItTCofr8YUzqS/r0LoyY6lAFBDQowG7RYwLIysVsDH5aLU5c9nXkR+L6VebxHXHm9A1y6/LHKFrZX/g8R+ON71eB4FE3hL0Ds9+5kfaEWYTrkdb7tyqMTtY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HNJiCUHw; arc=none smtp.client-ip=209.85.219.174
+	 To:Cc:Content-Type; b=XbgxddXgvfvU/hQpG08rai/HSlF8zGGHEL4c+ztaWFyduXiQhCr8Ta77BjFb+Ysj6LOnzVS7CxObSQFVgIF9Er0IxpDOpJHbxsSnzMsZczq5P9l1WdVCgtEBYGwEtMy2BM2S53kvQbc4Uv9ET7qODrxLp96rDyEt7uyFpn2H0zA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BCP17sop; arc=none smtp.client-ip=209.85.128.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dc24f395c84so542277276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 00:10:43 -0800 (PST)
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-604058c081eso7353387b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 00:13:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706688642; x=1707293442; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1706688779; x=1707293579; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=z9OD1UiKot9xBEp4pQEuFNoRwTpzFrjRRiTMq/H5FH8=;
-        b=HNJiCUHwlrM2PdILPi6phbO/S7pKIR2Ki3WwBv8AcsldZApf3xrRVUQM4KDwfkfcc4
-         p9KigDXyJGEitAELY+Z+yWAb+yqAg3DnuKKGx8DqKTYYs6heZVRhR+6MGPfddL/Xzcq8
-         +fUF2pJPuFmeLHDblDmbXVaf42QuBRv+LRV9wVdDIqA46GS5Jnnvd4/1s8ihmMFjtFg3
-         nDOHdwx7M9acWPqGro9+VY5pbTu1hpK7q/d00Jn7Bg8ESYOgNqDr5tYygDTbpUzUiNKU
-         KCnPhFuROMI0MFG7I9xmyX5KBkLijIf0hF/X2w/mh/MD0oQILBiOJu+MubUeq9Sj+oAB
-         Iuzw==
+        bh=+KixwNmf6DvpKIQRSBV/2LlYNkbWX43zmPDpGkU2JMM=;
+        b=BCP17sophzgFlS/UQErPzQWYPBYChk8PfkSDmlLdvu4Enf9Z5jtBVitVRrQVUiPXyG
+         nri2CJBpgroJY4bWjzv0E+XaiobyQjEV9zY3sunCcxXpbVe9r2U+YZQ4Sa3DA5bhZbb8
+         27nC9CuwnOUk7nKpq4PgPFPbtbYaiRVYdusV+sGAY9kz5S5kJtQJmKak58s5HHVWXBCH
+         BpByR/7ym+h+a034a4DKi07zIFMQEgvRfjz3lc67ek7Wd29GCBBZD+8/m+0VhfQ93hv2
+         UrFaqEO9RFKaNXShN8kPT4PABkh81IFSzu2S+pydVAhjeyf5dgTECw/O+gZ0Votw1xlf
+         +lZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706688642; x=1707293442;
+        d=1e100.net; s=20230601; t=1706688779; x=1707293579;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=z9OD1UiKot9xBEp4pQEuFNoRwTpzFrjRRiTMq/H5FH8=;
-        b=bRaGF1Vl2Wb2qnjnLdhT6mw5Cga6HpjFncIFNAGk2XwGUQSDtixSvGn0lxQRpjvLUC
-         fYj6MUKHadm7tOo6FbtMcLxn1RMLPrV1BtpKXopb3q7SMHcC7BlxIIIbkC9cyH6iL/hu
-         LDi6OfRlzVOvNRQSxIocWUeePzXOMhgPuhsQKbBSst4xqSp2Z6F5jnL79H4OnJRp1KJg
-         2odp53+uVgGM8g+CYJipD2mP2TZP55Zl5I8blsJugf+Lzo6JGhLEEAcT2xSY1cZ75NlX
-         qakixz30Qd5Iq2x85QibIloYVH83NawtnAGVKR3VwrKCJ8Qr8AfqbzBoxK2NSa227Nod
-         gW/w==
-X-Gm-Message-State: AOJu0YzHbNscD6eSi/lia4e/6yA3+eKxcCQoJCj29WSdANrgnnAQFfnE
-	VIlp3h2hQp0pXZ7Krux1V9T2PpS5FC2l23astbCfopVzzaEBAdgaQ0930vX3Ns+xy8Acl5fPHg2
-	HPaPINpiWiByVDOFYJpO39LWcIC6L1IUF3y268Q==
-X-Google-Smtp-Source: AGHT+IF7/97h8A2ABSW+ZKivSqrc+3VaVDxhilyJhD8FjHKMHd8T3fIFoykLSG2kAQuVNIsrK+oFINo0NP7MfrmxMWg=
-X-Received: by 2002:a25:bb4d:0:b0:dc6:c252:75fe with SMTP id
- b13-20020a25bb4d000000b00dc6c25275femr281957ybk.10.1706688642247; Wed, 31 Jan
- 2024 00:10:42 -0800 (PST)
+        bh=+KixwNmf6DvpKIQRSBV/2LlYNkbWX43zmPDpGkU2JMM=;
+        b=kQQgqLW2CJ+23ihfo9Xz9OPVLuOd2Sf7D2VWdwlEoIYrULcCtWYq1jgnNUQu5qbFpR
+         rhVNrOmw/MO9mt6NMapxdGFz7UfJkhn8kHjhd5ud/B/Y+aYoqG41utJHogSj8ECD7LBk
+         zJSCOjbw3dV0g/59aKKXx68vMBQ12JtybEGLin2jIvDRP9lJMVvzo1HtIrPpnPAYqzhs
+         pET7Wq3kiyrRAoJzr6CaOc28VYEOBllt8yvz8U6/iedoRjn7f/QT9MSJ8yWJeICnB4Hd
+         fD9OiQMNZNXWLwrorXRdHDZGwCmjJDnR90fmE6oWxnVzMgYMEY4TLK6om6fC/5ucHUeg
+         cbCA==
+X-Gm-Message-State: AOJu0YweMRmP7tjiOgRKmqqxQzd4HYy80OkmjJJgf29rzZRXJ9cmgIRO
+	IoZxdqCC+0QVxV90F6r8EklZgkl08FvgJtAtql0BRgn+Oy4uMY/LDLiS1Uc2/9DdJ+OTOJQieBc
+	2ZPihDyb7wGu8GDWRYjQQ4Y7impu173hONuXdfkSM5DBevgoP
+X-Google-Smtp-Source: AGHT+IE1ePnyf9R2/vj/wqdWOc+ilDJEN6SZ67TiGNb8iq0ONNteXFR3L4EraGMr1U1PHXQpSPpMayKcMhP/snK+3Ts=
+X-Received: by 2002:a81:608b:0:b0:5ee:6ad3:b0b1 with SMTP id
+ u133-20020a81608b000000b005ee6ad3b0b1mr787906ywb.4.1706688779694; Wed, 31 Jan
+ 2024 00:12:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124190106.1540585-1-robh@kernel.org>
-In-Reply-To: <20240124190106.1540585-1-robh@kernel.org>
+References: <20240124161725.79582-1-brgl@bgdev.pl>
+In-Reply-To: <20240124161725.79582-1-brgl@bgdev.pl>
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 31 Jan 2024 09:10:31 +0100
-Message-ID: <CACRpkdZq4dYwJNvo1CncaHGsDeU5qQhms2SN8WGsTRwBB-Bhmw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: Unify "input-debounce" schema
-To: Rob Herring <robh@kernel.org>
-Cc: Charles Keepax <ckeepax@opensource.cirrus.com>, 
-	Richard Fitzgerald <rf@opensource.cirrus.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Avi Fishman <avifishman70@gmail.com>, Tomer Maimon <tmaimon77@gmail.com>, 
-	Tali Perry <tali.perry1@gmail.com>, Patrick Venture <venture@google.com>, 
-	Nancy Yuen <yuenn@google.com>, Benjamin Fair <benjaminfair@google.com>, 
-	=?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>, 
-	patches@opensource.cirrus.com, alsa-devel@alsa-project.org, 
-	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
+Date: Wed, 31 Jan 2024 09:12:48 +0100
+Message-ID: <CACRpkdZByCdn4qqbETd-HxcmV6p5A02UDM9yQPqWATHdrzKExg@mail.gmail.com>
+Subject: Re: [PATCH] gpio: cdev: remove leftover function pointer typedefs
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 24, 2024 at 8:01=E2=80=AFPM Rob Herring <robh@kernel.org> wrote=
-:
+On Wed, Jan 24, 2024 at 5:17=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
 
-> nuvoton,npcm845-pinctrl defines the common "input-debounce" property as
-> an array rather than an scalar. Update the common definition to expand
-> it to an uint32-array, and update all the users of the property with
-> array constraints.
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 >
-> Signed-off-by: Rob Herring <robh@kernel.org>
+> The locking wrappers were replaces with lock guards. These typedefs are
+> no longer needed.
+>
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Patches applied, thanks for fixing this!
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
 Yours,
 Linus Walleij
