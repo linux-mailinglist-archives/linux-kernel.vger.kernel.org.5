@@ -1,76 +1,119 @@
-Return-Path: <linux-kernel+bounces-46723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8088E84432D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:35:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC345844332
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:37:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D3CE1F2B1E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:35:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 654A2285246
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:37:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AF4512AAC5;
-	Wed, 31 Jan 2024 15:34:38 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A36EE128386;
+	Wed, 31 Jan 2024 15:37:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="NHzKKBBt"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEE071292FA
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 15:34:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BFCA86ADE;
+	Wed, 31 Jan 2024 15:37:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706715278; cv=none; b=LtYVkr3/NoSBfCktjvxkMfGORySH+TWz1rhRoL6iI4aqJdfNvt9OmvXZ2MBcNhVZeyF8peBPtbgjOlhT54OFL5kXk2rVfacxI0KEAmVLPuV49Xo1/B1rB7bfg3QvlsfCr806M5D+k9s33tKjmwBjHTxo5GQvIjZURMUn2alKBRM=
+	t=1706715432; cv=none; b=nAAp3kS06Eq8v2Mqt+ifrNf6kcmDl8VQ/uLbf+l8HipZ5HI4jU3UM4fzFDigDhzmqxojWkn8fXc+fdRTEfI82hps8o9J8n3kefeagcPnT0LpGVO3sarMjy2XxMplBh+HOJZjU3Q20EBlBDSTCeB7EgaR7VaXsxqlD8So/hlYSUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706715278; c=relaxed/simple;
-	bh=n21JzV+YFkVlt0DBtGzYqoliU3KbKSGwCRR4GvCcf5o=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=l1zjoIWKVJBkVmcVx3MxLZrogW9g2fpgkKJWVqXfmDcPHYD+ccZmZ7EZPbZQQCpbVD471zyBv0lJnl26jr4gpjkW1HQHiWVDcJ6DeqS7CA8iGU5v1rYgCJ1OC2My1NUNsEaNahUco0FENncXYnrbTVmwfjsAqBOZzIOcsDJ1B5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-35fc6976630so35710055ab.0
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 07:34:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706715276; x=1707320076;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=n21JzV+YFkVlt0DBtGzYqoliU3KbKSGwCRR4GvCcf5o=;
-        b=GrBUqGpy1n6neIHieT0Q8ruREMR1k69hHd5kGUYKMIGDAmqL6JkiYHls7dMPBFnU9P
-         4lWYG4EwgwtY6CCw0D3uBzaLccItMq1vLu4ZiXxdv4SOa6+hk10CagFU17L+0RffUb77
-         JcZ7db5+EagkkE0Y5DsJCtOH2X3WXv2ztEbvvah0a/YQU0/6b/EkEe+qljRCK6KwzNAv
-         pdCWMpgjKudCBLFdrxB5ClB5mk64crl6JcItddztMKTcYk4gtUWVOZbrQyufS9YscMl2
-         7j00/1iCr3tXzXrKMjNS7J5UMyowESckGhzZck/0QOVCDhhq5DJz3nwLpMDMDBhwuMip
-         amcg==
-X-Gm-Message-State: AOJu0YzljcRUrH6DESy0ttDoOuTqOjSJqWgBsV7ZLjLiNgNfcn4ZS09q
-	Lh9G2aepcgPVYUwgxuFxZvWQW38ZbitTEAvyWG7G8z/3nyKj+dtUkGR4yRMLNVcZKA8+w3OkpXF
-	4uzBCUSf6TXu9p9Z+3CK0CvEBuycIbMaTlK+8HegvLXgw+OSvWZPT+Yk8Bw==
-X-Google-Smtp-Source: AGHT+IEuKUpwc2OxY1AwdK5JAfSDMaDK1Aay4cHHX2aY1Chd71OqzjGAgxdMsf2tqNQudoWUW60+AjsGpYoLuJ9/Sy5VfEeQjUf9
+	s=arc-20240116; t=1706715432; c=relaxed/simple;
+	bh=5WnSnvdqsETBg2FJDl31iWb7+HObfg9zGGDHy+zSa8Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=PbeH6Widvkrc2WkUri1k7XsHMU+wPZYrsBpGFY+Qt83Q17Bm+/tyyENHE1WmUW8HEsiU1PWyVOsKoV2brW1dXJ9E/dbh4wlO1D3JSCD2BUxpTheSfEYhk/h5VLFaVcB7tET+s/kqcgtjn+gT6migjhw8vWTwdPawmynYYo967pY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=NHzKKBBt; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40VFafF4080577;
+	Wed, 31 Jan 2024 09:36:41 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706715401;
+	bh=FazfW96VSkGHVGCSpQtOTGWyHKfn1458NWxApCq/AlM=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=NHzKKBBtuSsrbBzK9gxataXiNXUZbYDZT2mD1hxHBSvAPVqZHkmwWMZ5ICioidIH5
+	 d7RUEB57nKriSmaniiUDOLQwygM6iJ34UWc+kCC7ssxY9YOZrKzmO5Fb2+ma/29BFe
+	 Pmnq7F/pvmM22oZBcrWtpe0sTj0keVxr14iPpzdU=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40VFafEv047720
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 31 Jan 2024 09:36:41 -0600
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 31
+ Jan 2024 09:36:41 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 31 Jan 2024 09:36:41 -0600
+Received: from [10.249.42.149] ([10.249.42.149])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40VFae1D018943;
+	Wed, 31 Jan 2024 09:36:40 -0600
+Message-ID: <469a7f15-0539-48e9-993c-5b9c638917e0@ti.com>
+Date: Wed, 31 Jan 2024 09:36:40 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:20c7:b0:363:8336:b21d with SMTP id
- 7-20020a056e0220c700b003638336b21dmr181118ilq.4.1706715275907; Wed, 31 Jan
- 2024 07:34:35 -0800 (PST)
-Date: Wed, 31 Jan 2024 07:34:35 -0800
-In-Reply-To: <000000000000fae03b05df551046@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c0fb7806103f9dbd@google.com>
-Subject: Re: [syzbot] Re: Test [syzbot] possible deadlock in rds_wake_sk_sleep
-From: syzbot <syzbot+dcd73ff9291e6d34b3ab@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 2/6] arm64: dts: ti: k3-j784s4: Add alias to MCU CPSW2G
+To: Chintan Vankar <c-vankar@ti.com>, Peter Rosin <peda@axentia.se>,
+        Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, Tero
+ Kristo <kristo@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>, Nishanth
+ Menon <nm@ti.com>
+CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
+        <s-vadapalli@ti.com>, <r-gunasekaran@ti.com>, <danishanwar@ti.com>
+References: <20240131101441.1362409-1-c-vankar@ti.com>
+ <20240131101441.1362409-3-c-vankar@ti.com>
+Content-Language: en-US
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <20240131101441.1362409-3-c-vankar@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com.
+On 1/31/24 4:14 AM, Chintan Vankar wrote:
+> Add alias for the MCU CPSW2G port to enable Linux to fetch MAC Address
+> for the port directly from U-Boot.
 
-***
+Could you explain *how* this alias allows Linux to fetch a MAC
+address from U-Boot? Sounds like we are doing something hacky here..
 
-Subject: Re: Test [syzbot] possible deadlock in rds_wake_sk_sleep
-Author: allison.henderson@oracle.com
+Why can't Linux fetch the MAC from efuses the same way U-Boot does,
+what happens if I don't use U-Boot to boot?
 
-#syz test: https://github.com/allisonhenderson/rds_work syzbug_f9db6ff27b9bfdcfeca
+Andrew
+
+> ---
+>   arch/arm64/boot/dts/ti/k3-j784s4-evm.dts | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+> index f34b92acc56d..b74f7d3025de 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+> @@ -27,6 +27,7 @@ aliases {
+>   		mmc1 = &main_sdhci1;
+>   		i2c0 = &wkup_i2c0;
+>   		i2c3 = &main_i2c0;
+> +		ethernet0 = &mcu_cpsw_port1;
+>   	};
+>   
+>   	memory@80000000 {
 
