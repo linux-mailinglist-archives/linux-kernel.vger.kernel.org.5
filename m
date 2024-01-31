@@ -1,229 +1,201 @@
-Return-Path: <linux-kernel+bounces-46301-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3B1B843DA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:04:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 91011843DA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:04:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E863A1C26618
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:04:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B54061C20D66
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:04:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3E9576902;
-	Wed, 31 Jan 2024 11:02:29 +0000 (UTC)
-Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9704874E3F;
+	Wed, 31 Jan 2024 11:00:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="QXzZLcWd"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF6EA6EB66;
-	Wed, 31 Jan 2024 11:02:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF7D778B6D
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 11:00:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706698949; cv=none; b=h5qGujd2l9uDxXfi0VVfvsZ6GfNRe18EHQ+bvedG2SqRXPRropQmAen+ywMJAhdPiM8/QIEzA/TtF+0gkD4Ipy3d8ACAol/sg77WY6lEdPbYA4bZcugBqTIJXODCIp8s3zjF7SYU+I19F1Kv6XtUFS+ywQuHF/fsAZ+7t00FjdI=
+	t=1706698852; cv=none; b=G+WaW0tYkzZjCSyTTTF6lXUYTi35e//sIVB1n+dDQLFJmjdOhoMTRZ9mGXqTN3lm9FAqcrbPAceRQ3+Wgjcq7+YopcHK1n/mtrBs4uWC2ZRWJ7TyMXmn/nyFLUVYYqaVaQNTem+JcJoB9LL6TaxynG0wlriRnyTE0p/QtbDglyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706698949; c=relaxed/simple;
-	bh=GwdHJedowxMYfa/OQlb6Jxhq7XuL1egOIohA03EK7FY=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=bvBhENWNsaiFRxdVXMuQv4B6gvwo6MuNxwG0pgGvrHtmC8GY1o5hHCULx55jnJ4ePHx5wlVMDwnHx8beEgBymcSe0FHvoNcTvuSxkfbS+HqhzjpDnrrlD8oRy442lz9sEaVl53SDutKLsrRQaAWcpLswxXKYom1SknHBWMKSTc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
-Received: from dlp.unisoc.com ([10.29.3.86])
-	by SHSQR01.spreadtrum.com with ESMTP id 40VAxH5X019223;
-	Wed, 31 Jan 2024 18:59:17 +0800 (+08)
-	(envelope-from zhaoyang.huang@unisoc.com)
-Received: from SHDLP.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
-	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4TPzP76bvWz2Shwd6;
-	Wed, 31 Jan 2024 18:51:39 +0800 (CST)
-Received: from bj03382pcu01.spreadtrum.com (10.0.73.40) by
- BJMBX01.spreadtrum.com (10.0.64.7) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Wed, 31 Jan 2024 18:59:14 +0800
-From: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
-To: Andrew Morton <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>,
-        Matthew Wilcox <willy@infradead.org>, Yu Zhao <yuzhao@google.com>,
-        Damien Le
- Moal <dlemoal@kernel.org>,
-        Niklas Cassel <niklas.cassel@wdc.com>,
-        "Martin K .
- Petersen" <martin.petersen@oracle.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Linus
- Walleij <linus.walleij@linaro.org>, <linux-mm@kvack.org>,
-        <linux-block@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Zhaoyang Huang <huangzhaoyang@gmail.com>, <steve.kang@unisoc.com>
-Subject: [PATCHv6 1/1] block: introduce content activity based ioprio
-Date: Wed, 31 Jan 2024 18:59:12 +0800
-Message-ID: <20240131105912.3849767-1-zhaoyang.huang@unisoc.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1706698852; c=relaxed/simple;
+	bh=bjERe05qxKVXjsl2QjzfDZ40aFgJZWBvqEXz0Ce7Uvw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=auKlrVs8uUHLf8hL8q6SiixzriDPLSjVvsZY7Sk6LSze0919Ff7uf7bTeQewx56PVKHV8YE9OFcfxy3PfqcfgFneHv9rlQqEHcyJAxio1XqL4YVkEz44tOaTvxfhKMIPGJdvxibvjrs0jaOgWsXvLP44NTzAKC9mHOZ09Na7qfE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=QXzZLcWd; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55ef0465507so4318926a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 03:00:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1706698848; x=1707303648; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Mki8kF5fnSqy+UjXOYRPoBciPZHH1BRCPEDqp3n5GHw=;
+        b=QXzZLcWd9ttIZWAoUbDAzsIi+Or1Eipr2MPGZSim+7i1c2+YV5XiH2NT5DaLkyYjJ7
+         mJNM8ttJjikFFWl0DJhN3FvtW8Do/g0ZoHfihkm6AtbCRVxYtYF5Lk3Syz4QYS4j9X6I
+         oVWXpDcfHfvgzcTo2CqWNsqqd4rvhw7h69YekOhI/qlLsbdMXZHsD435GS2Gly/UGq83
+         hLZP/hD0Doyi3uGZfzpSf0PBHbYs209M2KPVhKB4hQuMqcq21DnGKvpm5PeyN2jHd6BQ
+         wM8eMuoXw/FZsnj0228u89X4mhYX44Xgy1qRt4U2//zMJ9XtiJqD1ObMUrTZ+6TJg2EA
+         rsWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706698848; x=1707303648;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Mki8kF5fnSqy+UjXOYRPoBciPZHH1BRCPEDqp3n5GHw=;
+        b=gHE5jxdP11oMbCWZQyPc/G1u/Sw7i6X7+EDVHeY//WF47KlScQEGOsBxHm1dJKMk+2
+         RBfc0o0g1J9bXtqzsz+Ykh7D9TEZb+i9YyxvximZbPt4actfjUuVBWeLv+zKCIWOyAI7
+         SYVXUSeMxHr0uRaRZMremImCED9wGApIfgFdRMEOm2xzeYBZ1U/s8JYQRVAfKwL01hA5
+         3okzAmLPdz5fWTi6Bbi9bzCt5XCDAa709CiTxTFxi5hhdyEhZu+ouIMEvDl5qH/LGA1Z
+         uKNGmvRsgCJaTgX+r4VhGcyk/nVaVPTaGeMthgYhW6jjUd3dkKcYcw0O3/1gTpdRx7Xa
+         jEsg==
+X-Gm-Message-State: AOJu0YwCFn91TetBdmJlvRdv09omK0ntUpZRgz3pr/hpC8qGqQye7rlt
+	WNHr0jslLyHV2G1cHqWvEvDZ2frFUphcQSqWIqZAXuSgbEoKI3YIwQrmFE/33LI=
+X-Google-Smtp-Source: AGHT+IFRmT6v/6cXerO0/OAFdOhHJKFoh0MGqboAstAfrDj2BBcmb2IdzuSb4l+6XFc08T74J189bg==
+X-Received: by 2002:a17:907:78da:b0:a36:884b:ed4f with SMTP id kv26-20020a17090778da00b00a36884bed4fmr450864ejc.38.1706698847830;
+        Wed, 31 Jan 2024 03:00:47 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUv0jasSwb28HvHk79dUcCuLs48AUMAASuaJc0iiHkYbeIm9abGOnY+ZEwZC5dZlgkghomJDm/5b3lkYzZAQYBMFihSPVLIot0Wb81P31VF6RLpjvlgCBPvfbyo8emBw75JIyphRCIsFkgt9eUYzL0jIZjo9/QA8nPbllBonC0b8CDECzAEnmnHgPDd1RErKLSJm0Ukz5y10kKD26/pRem3otZTukaDXoj00d99zBF5VK3Vya4RtrBwtbNoLbOeMrQzLwgeecNtYQcTcTrIQGYThd+ydczx92MmJ/XpkXag98f5tPu6Z6fjkyQqqZYRlXWPRdpZkBA/dFF9QeWoTJv73vWxTr/63B763ADEZg9HytkcwljpmGCvKhfRRzs6V5EKQ2mnKMFKzo6CDGiV+wGMnerleAhI8Z/Om4efyrZRLuhTi8OdS0OMyjStcpVrbMvAs3b5j0IaMNop7fv5c47zfRFlfG7rzls845ZnehRqElMfoxRQEHG7iJkmZC22kZ9eCQpTiinXN0CMDeQ16kbtojgTbOybJjawzscCCDRG8cQi6ZQ51yDvEPHcmK8RWsTQ3czcoCsrLEOoBZUsvAvpLTOs7WqrJ8pOPxduxA==
+Received: from [192.168.50.4] ([82.78.167.87])
+        by smtp.gmail.com with ESMTPSA id vb1-20020a170907d04100b00a34c07816e3sm6043255ejc.73.2024.01.31.03.00.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Jan 2024 03:00:47 -0800 (PST)
+Message-ID: <12f458b1-f963-43f4-afcf-715abf635e54@tuxon.dev>
+Date: Wed, 31 Jan 2024 13:00:45 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- BJMBX01.spreadtrum.com (10.0.64.7)
-X-MAIL:SHSQR01.spreadtrum.com 40VAxH5X019223
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 04/11] watchdog: rzg2l_wdt: Check return status of
+ pm_runtime_put()
+Content-Language: en-US
+To: Biju Das <biju.das.jz@bp.renesas.com>,
+ "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
+ "linux@roeck-us.net" <linux@roeck-us.net>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+ "conor+dt@kernel.org" <conor+dt@kernel.org>,
+ "geert+renesas@glider.be" <geert+renesas@glider.be>,
+ "magnus.damm@gmail.com" <magnus.damm@gmail.com>,
+ "mturquette@baylibre.com" <mturquette@baylibre.com>,
+ "sboyd@kernel.org" <sboyd@kernel.org>,
+ "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>
+Cc: "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
+ "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240131102017.1841495-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240131102017.1841495-5-claudiu.beznea.uj@bp.renesas.com>
+ <TYCPR01MB11269AD7463C9C7C0A09A43A9867C2@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+ <ddc0b42c-bf88-4c0d-b938-8bd7ff7b329a@tuxon.dev>
+ <TYCPR01MB11269BFC2DB457049A2B8C0C8867C2@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <TYCPR01MB11269BFC2DB457049A2B8C0C8867C2@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 
-Currently, request's ioprio are set via task's schedule priority(when no
-blkcg configured), which has high priority tasks possess the privilege on
-both of CPU and IO scheduling.
-This commit works as a hint of original policy by promoting the request ioprio
-based on the page/folio's activity. The original idea comes from LRU_GEN
-which provides more precised folio activity than before. This commit try
-to adjust the request's ioprio when certain part of its folios are hot,
-which indicate that this request carry important contents and need be
-scheduled ealier.
 
-This commit just provide the mechanism(a subsitution maro) which need to
-be replaced by each fs for the file page's bio while keep others use the
-legacy one.
+On 31.01.2024 12:41, Biju Das wrote:
+> Hi Claudiu,
+> 
+>> -----Original Message-----
+>> From: claudiu beznea <claudiu.beznea@tuxon.dev>
+>> Sent: Wednesday, January 31, 2024 10:36 AM
+>> Subject: Re: [PATCH v2 04/11] watchdog: rzg2l_wdt: Check return status of
+>> pm_runtime_put()
+>>
+>> Hi, Biju,
+>>
+>> On 31.01.2024 12:32, Biju Das wrote:
+>>> Hi Claudiu,
+>>>
+>>> Thanks for the feedback.
+>>>
+>>>> -----Original Message-----
+>>>> From: Claudiu <claudiu.beznea@tuxon.dev>
+>>>> Sent: Wednesday, January 31, 2024 10:20 AM
+>>>> Subject: [PATCH v2 04/11] watchdog: rzg2l_wdt: Check return status of
+>>>> pm_runtime_put()
+>>>>
+>>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>>
+>>>> pm_runtime_put() may return an error code. Check its return status.
+>>>>
+>>>> Along with it the rzg2l_wdt_set_timeout() function was updated to
+>>>> propagate the result of rzg2l_wdt_stop() to its caller.
+>>>>
+>>>> Fixes: 2cbc5cd0b55f ("watchdog: Add Watchdog Timer driver for
+>>>> RZ/G2L")
+>>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>> ---
+>>>>
+>>>> Changes in v2:
+>>>> - propagate the return code of rzg2l_wdt_stop() to it's callers
+>>>>
+>>>>  drivers/watchdog/rzg2l_wdt.c | 11 +++++++++--
+>>>>  1 file changed, 9 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/drivers/watchdog/rzg2l_wdt.c
+>>>> b/drivers/watchdog/rzg2l_wdt.c index d87d4f50180c..7bce093316c4
+>>>> 100644
+>>>> --- a/drivers/watchdog/rzg2l_wdt.c
+>>>> +++ b/drivers/watchdog/rzg2l_wdt.c
+>>>> @@ -144,9 +144,13 @@ static int rzg2l_wdt_start(struct
+>>>> watchdog_device
+>>>> *wdev)  static int rzg2l_wdt_stop(struct watchdog_device *wdev)  {
+>>>>  	struct rzg2l_wdt_priv *priv = watchdog_get_drvdata(wdev);
+>>>> +	int ret;
+>>>>
+>>>>  	rzg2l_wdt_reset(priv);
+>>>> -	pm_runtime_put(wdev->parent);
+>>>> +
+>>>> +	ret = pm_runtime_put(wdev->parent);
+>>>> +	if (ret < 0)
+>>>> +		return ret;
+>>>
+>>> Do we need to check the return code? So far we didn't hit this
+>> condition.
+>>> If you are planning to do it, then just
+>>>
+>>> return pm_runtime_put(wdev->parent);
+>>
+>> pm_runtime_put() may return 1 if the device is suspended (which is not
+>> considered error) as explained here:
+> 
+> Oops, I missed that discussion. Out of curiosity,
+> What watchdog framework/consumer is going to do with a 
+> Non-error return value of 1?
 
-This commit is verified on a v6.6 6GB RAM android14 system via 4 test cases
-by changing the bio_add_page/folio API in erofs, ext4 and f2fs in
-another commit.
+Looking at this:
+https://elixir.bootlin.com/linux/latest/source/drivers/watchdog/watchdog_dev.c#L809
 
-Case 1:
-script[a] which get significant improved fault time as expected[b]
-where dd's cost also shrink from 55s to 40s.
-(1). fault_latency.bin is an ebpf based test tool which measure all task's
-   iowait latency during page fault when scheduled out/in.
-(2). costmem generate page fault by mmaping a file and access the VA.
-(3). dd generate concurrent vfs io.
+it seems that the positive values are not considered errors thus, indeed,
+we may return directly:
 
-[a]
-/fault_latency.bin 1 5 > /data/dd_costmem &
-costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
-costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
-costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
-costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
-dd if=/dev/block/sda of=/data/ddtest bs=1024 count=2048000 &
-dd if=/dev/block/sda of=/data/ddtest1 bs=1024 count=2048000 &
-dd if=/dev/block/sda of=/data/ddtest2 bs=1024 count=2048000 &
-dd if=/dev/block/sda of=/data/ddtest3 bs=1024 count=2048000
-[b]
-                       mainline		commit
-io wait                836us            156us
+return pm_runtime_put();
 
-Case 2:
-fio -filename=/dev/block/by-name/userdata -rw=randread -direct=0 -bs=4k -size=2000M -numjobs=8 -group_reporting -name=mytest
-mainline: 513MiB/s
-READ: bw=531MiB/s (557MB/s), 531MiB/s-531MiB/s (557MB/s-557MB/s), io=15.6GiB (16.8GB), run=30137-30137msec
-READ: bw=543MiB/s (569MB/s), 543MiB/s-543MiB/s (569MB/s-569MB/s), io=15.6GiB (16.8GB), run=29469-29469msec
-READ: bw=474MiB/s (497MB/s), 474MiB/s-474MiB/s (497MB/s-497MB/s), io=15.6GiB (16.8GB), run=33724-33724msec
-READ: bw=535MiB/s (561MB/s), 535MiB/s-535MiB/s (561MB/s-561MB/s), io=15.6GiB (16.8GB), run=29928-29928msec
-READ: bw=523MiB/s (548MB/s), 523MiB/s-523MiB/s (548MB/s-548MB/s), io=15.6GiB (16.8GB), run=30617-30617msec
-READ: bw=492MiB/s (516MB/s), 492MiB/s-492MiB/s (516MB/s-516MB/s), io=15.6GiB (16.8GB), run=32518-32518msec
-READ: bw=533MiB/s (559MB/s), 533MiB/s-533MiB/s (559MB/s-559MB/s), io=15.6GiB (16.8GB), run=29993-29993msec
-READ: bw=524MiB/s (550MB/s), 524MiB/s-524MiB/s (550MB/s-550MB/s), io=15.6GiB (16.8GB), run=30526-30526msec
-READ: bw=529MiB/s (554MB/s), 529MiB/s-529MiB/s (554MB/s-554MB/s), io=15.6GiB (16.8GB), run=30269-30269msec
-READ: bw=449MiB/s (471MB/s), 449MiB/s-449MiB/s (471MB/s-471MB/s), io=15.6GiB (16.8GB), run=35629-35629msec
+Guenter,
 
-commit: 633MiB/s
-READ: bw=668MiB/s (700MB/s), 668MiB/s-668MiB/s (700MB/s-700MB/s), io=15.6GiB (16.8GB), run=23952-23952msec
-READ: bw=589MiB/s (618MB/s), 589MiB/s-589MiB/s (618MB/s-618MB/s), io=15.6GiB (16.8GB), run=27164-27164msec
-READ: bw=638MiB/s (669MB/s), 638MiB/s-638MiB/s (669MB/s-669MB/s), io=15.6GiB (16.8GB), run=25071-25071msec
-READ: bw=714MiB/s (749MB/s), 714MiB/s-714MiB/s (749MB/s-749MB/s), io=15.6GiB (16.8GB), run=22409-22409msec
-READ: bw=600MiB/s (629MB/s), 600MiB/s-600MiB/s (629MB/s-629MB/s), io=15.6GiB (16.8GB), run=26669-26669msec
-READ: bw=592MiB/s (621MB/s), 592MiB/s-592MiB/s (621MB/s-621MB/s), io=15.6GiB (16.8GB), run=27036-27036msec
-READ: bw=691MiB/s (725MB/s), 691MiB/s-691MiB/s (725MB/s-725MB/s), io=15.6GiB (16.8GB), run=23150-23150msec
-READ: bw=569MiB/s (596MB/s), 569MiB/s-569MiB/s (596MB/s-596MB/s), io=15.6GiB (16.8GB), run=28142-28142msec
-READ: bw=563MiB/s (590MB/s), 563MiB/s-563MiB/s (590MB/s-590MB/s), io=15.6GiB (16.8GB), run=28429-28429msec
-READ: bw=712MiB/s (746MB/s), 712MiB/s-712MiB/s (746MB/s-746MB/s), io=15.6GiB (16.8GB), run=22478-22478msec
+With this (and previous discussion from [1]), are you OK to change it like:
 
-Case 3:
-This commit is also verified by the case of launching camera APP which is
-usually considered as heavy working load on both of memory and IO, which
-shows 12%-24% improvement.
+return pm_runtime_put();
 
-		ttl = 0		ttl = 50	ttl = 100
-mainline        2267ms		2420ms		2316ms
-commit          1992ms          1806ms          1998ms
+Thank you,
+Claudiu Beznea
 
-case 4:
-androbench has no improvment as well as regression in RD/WR test item
-while make a 3% improvement in sqlite items.
-
-Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
----
-change of v2: calculate page's activity via helper function
-change of v3: solve layer violation by move API into mm
-change of v4: keep block clean by removing the page related API
-change of v5: introduce the macros of bio_add_folio/page for read dir.
-change of v6: replace the macro of bio_add_xxx by submit_bio which
-		iterating the bio_vec before launching bio to block layer
----
----
- include/linux/act_ioprio.h | 35 +++++++++++++++++++++++++++++++++++
- mm/Kconfig                 |  8 ++++++++
- 2 files changed, 43 insertions(+)
- create mode 100644 include/linux/act_ioprio.h
-
-diff --git a/include/linux/act_ioprio.h b/include/linux/act_ioprio.h
-new file mode 100644
-index 000000000000..797304acdabc
---- /dev/null
-+++ b/include/linux/act_ioprio.h
-@@ -0,0 +1,35 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+#ifndef _ACT_IOPRIO_H
-+#define _ACT_IOPRIO_H
-+
-+#ifdef CONFIG_CONTENT_ACT_BASED_IOPRIO
-+#include <linux/bio.h>
-+
-+static __maybe_unused
-+void act_submit_bio(struct bio *bio)
-+{
-+	struct bio_vec bv;
-+	struct bvec_iter iter;
-+	struct page *page;
-+	int class, level, hint;
-+	int activity = 0;
-+	int cnt = 0;
-+
-+	class = IOPRIO_PRIO_CLASS(bio->bi_ioprio);
-+	level = IOPRIO_PRIO_LEVEL(bio->bi_ioprio);
-+	hint = IOPRIO_PRIO_HINT(bio->bi_ioprio);
-+	bio_for_each_bvec(bv, bio, iter) {
-+		page = bv.bv_page;
-+		activity += PageWorkingset(page) ? 1 : 0;
-+		cnt++;
-+	}
-+	if (activity >= cnt / 2)
-+		class = IOPRIO_CLASS_RT;
-+	else if (activity >= cnt / 4)
-+		class = max(IOPRIO_PRIO_CLASS(get_current_ioprio()), IOPRIO_CLASS_BE);
-+	bio->bi_ioprio = IOPRIO_PRIO_VALUE_HINT(class, level, hint);
-+	submit_bio(bio);
-+}
-+#define submit_bio(bio) act_submit_bio(bio)
-+#endif
-+#endif
-diff --git a/mm/Kconfig b/mm/Kconfig
-index 264a2df5ecf5..e0e5a5a44ded 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -1240,6 +1240,14 @@ config LRU_GEN_STATS
- 	  from evicted generations for debugging purpose.
- 
- 	  This option has a per-memcg and per-node memory overhead.
-+
-+config CONTENT_ACT_BASED_IOPRIO
-+	bool "Enable content activity based ioprio"
-+	depends on LRU_GEN
-+	default n
-+	help
-+	  This item enable the feature of adjust bio's priority by
-+	  calculating its content's activity.
- # }
- 
- config ARCH_SUPPORTS_PER_VMA_LOCK
--- 
-2.25.1
-
+> 
+> Cheers,
+> Biju
 
