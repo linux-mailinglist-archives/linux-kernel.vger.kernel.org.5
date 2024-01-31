@@ -1,106 +1,165 @@
-Return-Path: <linux-kernel+bounces-47371-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47372-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EC24844CED
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:36:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91AF8844CEE
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:36:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2004A2844F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:36:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2376228353F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:36:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02A8A140792;
-	Wed, 31 Jan 2024 23:23:41 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54E9F3FE4F;
+	Wed, 31 Jan 2024 23:24:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l1DPav01"
+Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D03614076C;
-	Wed, 31 Jan 2024 23:23:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2759C3A8FC
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 23:24:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706743420; cv=none; b=l5NOPHrGJb5GSUm6V/ssPMxboh4dDBNuBzSzFoxg6x3s4OKYmT9nAfUueeLlZOhKGfq9JO5vSukMwD8cMHmZTVJoetcDCuzejup4phs7ZiSrygUpXa/scbkwfvNejH+UN+np4aCau4/3enAcb2mYrORl1Rt43NqsMt6QvEPXR9s=
+	t=1706743473; cv=none; b=jX3wOJxdJyB0XbRLaKvYfVO9Tir+wRSlndxEE6WSdjD4skWRuyVNJOLxncoC9+ck+752rc5PgwhetKUHQPVk+aIkcORFZkgXTLo/qTNrwXw/FIJx7shu1aa/YKFTFYq/oZP6biyc5b+XMi1Lcxpf551+55p8EB8cjBa3DXEKdRk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706743420; c=relaxed/simple;
-	bh=3xWEQWDeUUBk62LEoweFcda4fCmmQIdemLYVAtcazM0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gl9wQxpm9Aop3a7QI6OTrqbmRfJHGXgoA11qwPiYvF9IXzD/mmhXMUFzjB8EQpgHNOlRiI95E/YPZKt7I8LPPViAUY0HkXwxDQ6FVuvXHDMQue53N0CWEMdwviLzu/Ei+3fcmCYe87qh2cNVgZe8/bfxmT+w0PerHVDxfEKDEv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80634C433F1;
-	Wed, 31 Jan 2024 23:23:39 +0000 (UTC)
-Date: Wed, 31 Jan 2024 18:23:54 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/6] eventfs: clean up dentry ops and add revalidate
- function
-Message-ID: <20240131182354.6815a2fa@gandalf.local.home>
-In-Reply-To: <20240201080715.80fadd15f38396c95bf39a00@kernel.org>
-References: <20240130190355.11486-1-torvalds@linux-foundation.org>
-	<20240130190355.11486-6-torvalds@linux-foundation.org>
-	<20240131130039.241c8978@gandalf.local.home>
-	<20240201080715.80fadd15f38396c95bf39a00@kernel.org>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706743473; c=relaxed/simple;
+	bh=0dUTagYMP3ifGj+3mqf45+Pb/VzGMHLkAj8F2m+W17I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=eNiZtO73K5WvbF73GKSo0qrqYR/+W3ThDcGviIEy63/xfSMRBHNqH3p+Oul0WTFW05iMTmSA0pxoNFDXVwXUCfN3XIXM49o8dxH0ZSYdKn87Z2d0rdDAhZNGaaP2avDgXUBD+UJbEKardO6+l6c8qYbvDdf9TeAI5HqerySdKvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l1DPav01; arc=none smtp.client-ip=209.85.166.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-7baa8097064so15726439f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 15:24:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706743471; x=1707348271; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BdhkAvN2zMAgv21EXTQPE0zKw/2sDB8RKNrBCMHc8lw=;
+        b=l1DPav017H0ytwBGYoPvw/E4AMeyDBBmcWCIGrbvaQ3B4BXMxYXoaYDCABMVmdTK8A
+         eZXV+HjKGyE+FMDsLhniXKCkqptR16uk8L3VliEdluXPVmGYMcvKoF/zRQOQa75TUmKc
+         fiBKoQPsxWfH9IEeKEURTJEP11591cFe4qjuEw9rioxoqcDHPAHAqPmtgR+zvfa5IEAg
+         CIWRu1mL0RuJQJO10l1oxT344UOoR4o5cwx4QVD1skUDGiJ5kmTej7iEtNSPof0koGVF
+         LYVQm6rvt+Zy+2ylUPHpLwOB0QFjqRescmNYerlBu/Lvkxvb5hxAPlM5+LkfgYwZuQwh
+         vSwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706743471; x=1707348271;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BdhkAvN2zMAgv21EXTQPE0zKw/2sDB8RKNrBCMHc8lw=;
+        b=Ji4S0epf7IQEPC6OzU0oHPmpha8JxIaZRdYNrswH3+yh+nO73meOA592ANJKfs+L6S
+         K8j74g/YphtrMk9RbLGdZj6zv8IcH+hkcXs0X1RgdzQmGIg7uRLcAuZjTOvZT6xWsm+2
+         BYTXQ8edqOY6TjK+2T6syu2uQYVYIcORyJkZNpSJuDvny12z7RgA30MXFz/cyvI2SlgF
+         raEiK9fTUhuhZYPOXkAZI+0OpRFJxntCQK3uz+ZhLiZD+N0uHVk/e9qUg+YFSrfxRYkp
+         2j2qlOAc2KmhMnUrwD279FpR3BRArAMf3oCop1cBmBRZMVrtXYaQB4R3DT5kgv05rRUB
+         h8IA==
+X-Gm-Message-State: AOJu0Ywe0VkZOASzQbtA0o12nygTc7bZEs2+3GmLwFz9mwqU5F17MW+Y
+	F0LNjbrVSPp9VXmbtKvjSgvsUgLRAsq/6j/ea+qKGy7K7D0AHIfNMKQA5e8YzxU2dJl5OIPggSQ
+	9NrW4p7R1aD+3SaclcbQ0UIQxmOA=
+X-Google-Smtp-Source: AGHT+IEisZ+S3+7LJdEokZUvIL8kCenOSv/6NynWpo43lqclmLC30dpPbegWsTeBAi3g1eSYFwiHJ/0OSKDChuiBN0A=
+X-Received: by 2002:a6b:f218:0:b0:7bf:ec4f:3c3d with SMTP id
+ q24-20020a6bf218000000b007bfec4f3c3dmr3450799ioh.14.1706743471151; Wed, 31
+ Jan 2024 15:24:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240130014208.565554-1-hannes@cmpxchg.org> <20240130014208.565554-17-hannes@cmpxchg.org>
+In-Reply-To: <20240130014208.565554-17-hannes@cmpxchg.org>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Wed, 31 Jan 2024 15:24:20 -0800
+Message-ID: <CAKEwX=O80fOpFVoB-uxrxY2yk3JTW4iJyv6o2HqNs0K6yqBV2w@mail.gmail.com>
+Subject: Re: [PATCH 16/20] mm: zswap: function ordering: move entry section
+ out of tree section
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Yosry Ahmed <yosryahmed@google.com>, 
+	Chengming Zhou <zhouchengming@bytedance.com>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 1 Feb 2024 08:07:15 +0900
-Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+On Mon, Jan 29, 2024 at 5:42=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
+> wrote:
+>
+> The higher-level entry operations modify the tree, so move the entry
+> API after the tree section.
+>
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-> > Then tracefs could be nicely converted over to kernfs, and eventfs would be
-> > its own entity.  
-> 
-> If so, maybe we can just make symlinks to the 'id' and 'format' from events
-> under tracefs? :)
+Reviewed-by: Nhat Pham <nphamcs@gmail.com>
 
-I don't think that will save anything. The files currently do not allocate
-any memory. If we make symlinks, we need to allocate a path, to them. I
-think that would be rather difficult to do. Not to mention, that could
-cause a lot of breakage. What do you do if the other filesystem isn't
-mounted?
-
-I could possibly make a light way handle to pass back to the callbacks.
-
-struct trace_event_light {
-	unsigned long			flags
-	struct trace_event_call		*event_call;
-};
-
-struct trace_event_file {
-	struct trace_event_light	call;
-	[..]
-	// Remove he flags and event_call and have it above
-};
-
-if the callback data has:
-
- callback(..., void **data)
- {
-	struct trace_event_light *call = *data;
-	struct trace_event_file *file;
-
-	If (strcmp(name, "id") == 0 || strcmp(name, "format") == 0) {
-		*data = call->event_call;
-		return 1;
-	}
-
-	/* Return if this is just a light data entry */
-	if (!(data->flags & TRACE_EVENT_FULL))
-		return 0;
-
-	file = container_of(data, struct trace_event_file, call);
-
-	// continue processing the full data
-}
-
-This way the lonely eventfs could still share a lot of the code.
-
--- Steve
+> ---
+>  mm/zswap.c | 42 +++++++++++++++++++++---------------------
+>  1 file changed, 21 insertions(+), 21 deletions(-)
+>
+> diff --git a/mm/zswap.c b/mm/zswap.c
+> index 756d4d575efe..80adc2f7d1a2 100644
+> --- a/mm/zswap.c
+> +++ b/mm/zswap.c
+> @@ -848,27 +848,6 @@ void zswap_memcg_offline_cleanup(struct mem_cgroup *=
+memcg)
+>         spin_unlock(&zswap_pools_lock);
+>  }
+>
+> -/*********************************
+> -* zswap entry functions
+> -**********************************/
+> -static struct kmem_cache *zswap_entry_cache;
+> -
+> -static struct zswap_entry *zswap_entry_cache_alloc(gfp_t gfp, int nid)
+> -{
+> -       struct zswap_entry *entry;
+> -       entry =3D kmem_cache_alloc_node(zswap_entry_cache, gfp, nid);
+> -       if (!entry)
+> -               return NULL;
+> -       entry->refcount =3D 1;
+> -       RB_CLEAR_NODE(&entry->rbnode);
+> -       return entry;
+> -}
+> -
+> -static void zswap_entry_cache_free(struct zswap_entry *entry)
+> -{
+> -       kmem_cache_free(zswap_entry_cache, entry);
+> -}
+> -
+>  /*********************************
+>  * rbtree functions
+>  **********************************/
+> @@ -930,6 +909,27 @@ static bool zswap_rb_erase(struct rb_root *root, str=
+uct zswap_entry *entry)
+>         return false;
+>  }
+>
+> +/*********************************
+> +* zswap entry functions
+> +**********************************/
+> +static struct kmem_cache *zswap_entry_cache;
+> +
+> +static struct zswap_entry *zswap_entry_cache_alloc(gfp_t gfp, int nid)
+> +{
+> +       struct zswap_entry *entry;
+> +       entry =3D kmem_cache_alloc_node(zswap_entry_cache, gfp, nid);
+> +       if (!entry)
+> +               return NULL;
+> +       entry->refcount =3D 1;
+> +       RB_CLEAR_NODE(&entry->rbnode);
+> +       return entry;
+> +}
+> +
+> +static void zswap_entry_cache_free(struct zswap_entry *entry)
+> +{
+> +       kmem_cache_free(zswap_entry_cache, entry);
+> +}
+> +
+>  static struct zpool *zswap_find_zpool(struct zswap_entry *entry)
+>  {
+>         int i =3D 0;
+> --
+> 2.43.0
+>
 
