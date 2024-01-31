@@ -1,153 +1,193 @@
-Return-Path: <linux-kernel+bounces-45854-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45855-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 118AB843716
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:06:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B0C7684371B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:08:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC996289EC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:06:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68080286374
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:08:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A81583DB91;
-	Wed, 31 Jan 2024 07:06:31 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54FFD3E495;
+	Wed, 31 Jan 2024 07:07:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aR8uiQIa"
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A3D436AF6;
-	Wed, 31 Jan 2024 07:06:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF4003E46D
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 07:07:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706684791; cv=none; b=UvaQ5vbUzfI4xUEpdRVJJt3D+RrHjVLJVlfGChrFD0WB03+/R+lt0313Qdfr+Xx8cse9/4+WoTRP6bLu5nzf0CsE8gsjOAzULTeO/cYKnHEGqlf1TzSDCvLaE4anplk0egu8lP0y+RNhbxpicz0Tt9iBwMVd1PTA2j5yXJMt1s8=
+	t=1706684873; cv=none; b=o3eTUR2PiBY6kF3mVmnBccGou8tbgH/Y05/D8RFAmumZ36weNMqKQWmTN0j4XsnMQnLFGJukLXLLDf8WiV8d1evnAm3o71JEBV+ni4GezdhXr2k4bUDSb77sq2B5/kXYDsOLrb6/m/6kh4S0HPI31Q9NufnDmLGuaHUHzzYgo7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706684791; c=relaxed/simple;
-	bh=ePrxLsyof1iG0a5hvUPsWfvv7x996zr4hJPGZ3OD2mw=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=qsG3XzG/adEuoF/DN3A28slbZK9HKndAni/xeieoOjgG5b27iCfSd99iY603DFJ7Xl8gccbF0lZRnZsG/P+4t/WIhUjv5Jrf3SPP6utZtSByVchx1UKlhS1jGokq1HC1dhSLCR6DBo77P3W5XLDELr0jbe9dNo7q0pPckmO53Ws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TPtP83yKmz4f3kFd;
-	Wed, 31 Jan 2024 15:06:20 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id B2CB31A027B;
-	Wed, 31 Jan 2024 15:06:24 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgCXaBFu8bllDM0ZCg--.16829S3;
-	Wed, 31 Jan 2024 15:06:24 +0800 (CST)
-Subject: Re: [PATCH v4 00/14] dm-raid: fix v6.7 regressions
-To: Yu Kuai <yukuai1@huaweicloud.com>, Xiao Ni <xni@redhat.com>
-Cc: mpatocka@redhat.com, heinzm@redhat.com, agk@redhat.com,
- snitzer@kernel.org, dm-devel@lists.linux.dev, song@kernel.org,
- jbrassow@f14.redhat.com, neilb@suse.de, shli@fb.com, akpm@osdl.org,
- linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
- yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20240130021843.3608859-1-yukuai1@huaweicloud.com>
- <CALTww29QO5kzmN6Vd+jT=-8W5F52tJjHKSgrfUc1Z1ZAeRKHHA@mail.gmail.com>
- <78016a94-737a-af4d-446b-c9fbef967895@huaweicloud.com>
- <CALTww29UKCJcvJB2BvGTbCcpvD4Y-J+Bg1WgE0nOijLNMv=RGg@mail.gmail.com>
- <6f8ca5f8-c958-8769-1433-a19c4067b074@huaweicloud.com>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <08300170-aa41-79d1-09b4-a5c9f006007c@huaweicloud.com>
-Date: Wed, 31 Jan 2024 15:06:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	s=arc-20240116; t=1706684873; c=relaxed/simple;
+	bh=8oILixSlZ5urTs1vGCrQlsyLD+Svdi6zXRxdXJ11eVo=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=EecfQXFvKI8bitD3eC2iXmy4AtW4TJqRUKXxc3uxADsNpyA/6disTVIPgKNXwkfUlXwAAzXwOqV2wzWceihE9qF1J+faK/1qJgI8h4krzuA7t5pn7nhpra+tO6HuvJ96B6ihUsVfs2FDoaLnvH9mU/eueCsujv9flr2OnGfBW+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aR8uiQIa; arc=none smtp.client-ip=209.85.215.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5d835c7956bso2814876a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 23:07:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706684870; x=1707289670; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dOSkO6Y4FYd8fxupP96Kte1aY7D/V2g1zrYc1jxvyPQ=;
+        b=aR8uiQIanIUMGZJPN5Sv1LcknTsmogTFKFsBH0RxXhFlPMLfMEu2PTuKwuc66hAAdd
+         y0WFp+kwoZkRTzZrEBN5u4tLNugTB3lxDxM93SsqGahJ/NjYJgh64z3ULGCPRbrus8LD
+         zONGvlwTM4O7jcltoiZ7mg0gw9XG/7VrAk4fgShW3b2zv2tqo/qaTkrc5kNh+RjivHin
+         dX2Y27qzDnOjo+GZ3jhYsaJxkV2TzIzzaQBy0LYGPmulSjrgZbwsTmFKzBCzEdlhZZrK
+         frdNu/gxKS65ra3QN42XUk+b1rQaPIzdMti0QJW8GVtVxLz7vgdv1Atu1byYN7hlIYgl
+         yIZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706684870; x=1707289670;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dOSkO6Y4FYd8fxupP96Kte1aY7D/V2g1zrYc1jxvyPQ=;
+        b=Vw1HvIqkLcFU2Lal/X5tCgwYNZ9LPUevjXI8oTLigYsnOKXXpEd+nfi5Ha1Je0Q/HI
+         /iBCqyNejODoB2JaSchPK4ySlNlhRGlDmDHZqE0teSr5KFBB5ulj6LwqCOt6cirVn5RQ
+         1HRvWimYq6aHjNNVs+dOqo5753+oO2fRcBQVZyfNtWdOazdArsmTLJgsEJiTSEV1ifC0
+         TjqNOkZxGhP7dvVqhBKAbP2xRZglbeOZ5FSyvzJH1SrW9zvmHjs4hXdmWakiviJVl6lQ
+         MdDoWCsH1i2/lung1tY8neUcmpG7NE071ltn+Fr5exLW6Q4/r0GPdGPyNvTsBP2lXKRG
+         R8sw==
+X-Gm-Message-State: AOJu0YxaChnBVwCxv5the6KakQ0J4zgppsqe0zea6jGlBwUVDg0M1PAV
+	EANMsuAFse9Oo21dIUYkHmwRWTsLWqhaU6l0cGJo6btv9arRlV6iHsrPBx/NUw==
+X-Google-Smtp-Source: AGHT+IGq4Dd3fKbHGpJ491lSOAvBvsjx9O1WWxRttsPouRtdA4cN3NaV7/uiBsxKoB69XgDHDdyI+w==
+X-Received: by 2002:a05:6a20:9e91:b0:19c:a7c0:acd8 with SMTP id mq17-20020a056a209e9100b0019ca7c0acd8mr719947pzb.0.1706684870039;
+        Tue, 30 Jan 2024 23:07:50 -0800 (PST)
+Received: from [127.0.1.1] ([103.28.246.26])
+        by smtp.gmail.com with ESMTPSA id lp17-20020a056a003d5100b006ddd182bf1csm9087956pfb.46.2024.01.30.23.07.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jan 2024 23:07:49 -0800 (PST)
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v3 00/17] Fix Qcom UFS PHY clocks
+Date: Wed, 31 Jan 2024 12:37:23 +0530
+Message-Id: <20240131-ufs-phy-clock-v3-0-58a49d2f4605@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <6f8ca5f8-c958-8769-1433-a19c4067b074@huaweicloud.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgCXaBFu8bllDM0ZCg--.16829S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7KFy8GFW5uF4DKry3Cr4fuFg_yoW8XF4xpF
-	Z3J3W3trWDKa10qwsFq348Xa4Fvr1xuw10vw15Gr4UCrZYqrySqr4Iqr409r1UtrWku3WD
-	ua18Jry3Zr1fWw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9214x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
-	3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYx
-	BIdaVFxhVjvjDU0xZFpf9x0JUQvtAUUUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAKvxuWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyjHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDQ2ND3dK0Yt2CjErd5Jz85Gxdc0tjyyRLI1OLJONkJaCegqLUtMwKsHn
+ RsbW1AADUe1pfAAAA
+To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>, 
+ Kishon Vijay Abraham I <kishon@kernel.org>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-clk@vger.kernel.org, quic_cang@quicinc.com, 
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
+ Conor Dooley <conor.dooley@microchip.com>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3384;
+ i=manivannan.sadhasivam@linaro.org; h=from:subject:message-id;
+ bh=8oILixSlZ5urTs1vGCrQlsyLD+Svdi6zXRxdXJ11eVo=;
+ b=owEBbQGS/pANAwAKAVWfEeb+kc71AcsmYgBlufG2op3Brs8QxQHR4Lma+anPdMoGprBMDMvoU
+ 04otxHtgv+JATMEAAEKAB0WIQRnpUMqgUjL2KRYJ5dVnxHm/pHO9QUCZbnxtgAKCRBVnxHm/pHO
+ 9WobB/9NZYXT3tglVcat/alW1W2NsBvVeeQMIiTQSkS56WqIl4UHrc0WDixCWSWuq90DVYkkzQj
+ DQR93pb3ofsHf4bPUZZv5CGNDYGZCKpMh/5OM+tGYjOElbgJKujYEIJjw50vJRw+7ZDXPKEV4be
+ sFNBIU2jj44uXi7+XSbMAvTUX9Ho3lZ2OT4jV4lQMe0cHuUiZbidlw/QOQdhHrtO9tCuZtUlCov
+ ZrxHspD4SpPtxp9deLDoG0fBe/cl8tIAIu2EYe0rxn6Mkg4HrbpK/dFVIHH3SB8XnuOGqrZuAyg
+ MjZsL5Jw2TXxRS+wnDHx6CxtVTT7I95xGozCN6KUdmV+7jlP
+X-Developer-Key: i=manivannan.sadhasivam@linaro.org; a=openpgp;
+ fpr=C668AEC3C3188E4C611465E7488550E901166008
 
 Hi,
 
-在 2024/01/31 10:52, Yu Kuai 写道:
-> Hi,
-> 
-> 在 2024/01/31 9:28, Xiao Ni 写道:
->> On Wed, Jan 31, 2024 at 9:25 AM Yu Kuai <yukuai1@huaweicloud.com> wrote:
->>>
->>> Hi, Xiao Ni!
->>>
->>> 在 2024/01/31 8:29, Xiao Ni 写道:
->>>> In my environment, the lvm2 regression test has passed. There are only
->>>> three failed cases which also fail in kernel 6.6.
->>>>
->>>> ###       failed: [ndev-vanilla] shell/lvresize-fs-crypt.sh
->>>> ###       failed: [ndev-vanilla] shell/pvck-dump.sh
->>>> ###       failed: [ndev-vanilla] shell/select-report.sh
->>>> ### 426 tests: 346 passed, 70 skipped, 0 timed out, 7 warned, 3 failed
->>>>     in 89:26.073
->>>
->>> Thanks for the test, this is greate news.
->>>
->>> Kuai
->>>
->>
->> Hi Kuai
->>
->> Have you run mdadm regression tests based on this patch set?
+This series fixes the clocks supplied to QMP PHY IPs in the Qcom SoCs. All
+of the Qcom SoCs except MSM8996 require 3 clocks for QMP UFS:
 
-BTW, I just make sure there are no new failed tests, however, there
-looks like some tests are broken. For example:
+* ref - 19.2MHz reference clock from RPM/RPMh
+* ref_aux - Auxiliary reference clock from GCC
+* qref - QREF clock from GCC or TCSR (TCSR since SM8550)
 
-04update-metadata:
+MSM8996 only requires 'ref' and 'qref' clocks.
 
-++ /root/mdadm/mdadm --quiet -CR --assume-clean -e 0.90 /dev/md0 --level 
-linear -n 4 -c 64 /dev/loop0 /dev/loop1 /dev/loop2 /dev/loop3 --auto=yes
-++ rv=1
-++ case $* in
-++ cat /var/tmp/stderr
-mdadm: RUN_ARRAY failed: Invalid argument
+Hence, this series fixes the binding, DT and GCC driver to reflect the
+actual clock topology.
 
-04r1update:
+Note that the clock topology is not based on any downstream dts sources (even
+they are not accurate). But rather based on information from Qcom internal
+documentation and brain dump from Can Guo.
 
-++ /root/mdadm/mdadm --quiet -A /dev/md0 -U resync /dev/loop0 /dev/loop1
-++ rv=1
-++ case $* in
-++ cat /var/tmp/stderr
-mdadm: --update=resync not understood for 1.x metadata
+Testing
+=======
 
-Thanks,
-Kuai
+Tested on Qualcomm RB5 development board based on SM8250 SoC. I don't
+expect this series to break other SoCs too.
 
-> 
-> Of course, I'm runing in my VM with loop devices.
-> 
-> Thanks,
-> Kuai
-> 
->>
->> Regards
->> Xiao
->>
->> .
->>
-> 
-> .
-> 
+- Mani
+
+Changes in v3:
+
+* Added a patch for SM8650
+* Collected review tags
+* Rebased on top of next/20231123
+
+Changes in v2:
+
+* Reworded the commit message of patch 1 to justify ABI breakage
+* Collected review tags
+
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+Manivannan Sadhasivam (17):
+      dt-bindings: phy: qmp-ufs: Fix PHY clocks
+      phy: qcom-qmp-ufs: Switch to devm_clk_bulk_get_all() API
+      dt-bindings: clock: qcom: Add missing UFS QREF clocks
+      clk: qcom: gcc-sc8180x: Add missing UFS QREF clocks
+      arm64: dts: qcom: msm8996: Fix UFS PHY clocks
+      arm64: dts: qcom: msm8998: Fix UFS PHY clocks
+      arm64: dts: qcom: sdm845: Fix UFS PHY clocks
+      arm64: dts: qcom: sm6115: Fix UFS PHY clocks
+      arm64: dts: qcom: sm6125: Fix UFS PHY clocks
+      arm64: dts: qcom: sm6350: Fix UFS PHY clocks
+      arm64: dts: qcom: sm8150: Fix UFS PHY clocks
+      arm64: dts: qcom: sm8250: Fix UFS PHY clocks
+      arm64: dts: qcom: sc8180x: Fix UFS PHY clocks
+      arm64: dts: qcom: sc8280xp: Fix UFS PHY clocks
+      arm64: dts: qcom: sm8350: Fix UFS PHY clocks
+      arm64: dts: qcom: sm8550: Fix UFS PHY clocks
+      arm64: dts: qcom: sm8650: Fix UFS PHY clocks
+
+ .../bindings/phy/qcom,sc8280xp-qmp-ufs-phy.yaml    | 48 ++++++++---------
+ arch/arm64/boot/dts/qcom/msm8996.dtsi              |  4 +-
+ arch/arm64/boot/dts/qcom/msm8998.dtsi              | 12 ++---
+ arch/arm64/boot/dts/qcom/sc8180x.dtsi              |  6 ++-
+ arch/arm64/boot/dts/qcom/sc8280xp.dtsi             | 18 ++++---
+ arch/arm64/boot/dts/qcom/sdm845.dtsi               |  8 +--
+ arch/arm64/boot/dts/qcom/sm6115.dtsi               |  8 ++-
+ arch/arm64/boot/dts/qcom/sm6125.dtsi               |  8 +--
+ arch/arm64/boot/dts/qcom/sm6350.dtsi               |  8 +--
+ arch/arm64/boot/dts/qcom/sm8150.dtsi               |  8 +--
+ arch/arm64/boot/dts/qcom/sm8250.dtsi               |  8 +--
+ arch/arm64/boot/dts/qcom/sm8350.dtsi               |  8 +--
+ arch/arm64/boot/dts/qcom/sm8550.dtsi               |  9 ++--
+ arch/arm64/boot/dts/qcom/sm8650.dtsi               |  8 +--
+ drivers/clk/qcom/gcc-sc8180x.c                     | 28 ++++++++++
+ drivers/phy/qualcomm/phy-qcom-qmp-ufs.c            | 63 +++-------------------
+ include/dt-bindings/clock/qcom,gcc-sc8180x.h       |  2 +
+ 17 files changed, 129 insertions(+), 125 deletions(-)
+---
+base-commit: 06f658aadff0e483ee4f807b0b46c9e5cba62bfa
+change-id: 20240131-ufs-phy-clock-7939b9258b3c
+
+Best regards,
+-- 
+Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
 
