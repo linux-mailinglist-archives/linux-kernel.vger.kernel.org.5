@@ -1,39 +1,54 @@
-Return-Path: <linux-kernel+bounces-46429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BACDE843F8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:38:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06E52843F83
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:37:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D579B2568E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:37:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B75612839FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:37:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B4DD7AE5A;
-	Wed, 31 Jan 2024 12:37:27 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93DFD76C7B;
-	Wed, 31 Jan 2024 12:37:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBFDD79DB6;
+	Wed, 31 Jan 2024 12:37:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="41d6lcDs"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B28878681
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 12:37:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706704646; cv=none; b=OKgPaUaEobdRuixQUoK8OX7Y8W2aFIeWewBG9BSpG/zRMeKBpUQPNO9zomZMsFrcjvcVawjNA9ABq85wlghV8MqSqPiyOSv/qxJV79b2BN8j6o5UPrrNvtqmVuM5TK5numJzYAEUs34ytwEldTeVn1Mj8jNVddCmJRag4SELQ4I=
+	t=1706704639; cv=none; b=VGRP9DeXr6QbirQJ4awu+5L5x8tim6G7AhEDFO9TUhQZu2oslGQa96t/+/ZKjXflfXMw2FS+EeJgLDzd08bjy8N87OpF0/vuQ7TDOr6DaKU8cIRXacfkD7WCI8ioddaLJ6k94CLBj/uZe7l+Kf4U4oHcM0aBodE2SDTOmKcC4Pk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706704646; c=relaxed/simple;
-	bh=eRaAZjaP9jf6t16QUPO2IcGvixvhkeF9xfBBEu3mTOw=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=ZI73eTXa84wcWYPqL7j+frNKvTPDCeUEs/zAwMm7nV67qs9tq4GyGKzU6GnqXOYVa0rSuuwyhxEvFDlGDqlOY6ghZOP+UzHlnUZoq3VDYEECJXr0JOxh+nCNc/Yvn4wAgACfBxBI7LZ01Bl/hU3MZRB00TiHS+pcbh1C13emTbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 70DA8DA7;
-	Wed, 31 Jan 2024 04:38:07 -0800 (PST)
-Received: from [10.57.79.60] (unknown [10.57.79.60])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CAA383F738;
-	Wed, 31 Jan 2024 04:37:11 -0800 (PST)
-Message-ID: <dcaa20c4-bd1f-4f15-bb0a-3a790808937d@arm.com>
-Date: Wed, 31 Jan 2024 12:37:10 +0000
+	s=arc-20240116; t=1706704639; c=relaxed/simple;
+	bh=Ve4gakTdVS97IwqTqcMnjzvWFWX6F6kTDN1mDs18iWk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gBqwjgXexSnn8JKxRqKDnNCREpUl5nlrtWQslGYYrnYUbP4kTZnFj74ebEH2rElIwIX2C7ET2jLUHtyWBINnECbgfYTGRYMI3Yg/85m2Jpij51RgfV2e59kjLpiyfQkP6kDDBsuOpA1FlUxuO7MW2Ez4/2587ZnJgTPxL98yuMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=41d6lcDs; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1706704635;
+	bh=Ve4gakTdVS97IwqTqcMnjzvWFWX6F6kTDN1mDs18iWk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=41d6lcDsQ90ipamoTz3UtZcsw2iXlPy7t1JTzpmTLR9qEbkF37yICg6gufCEmP0xi
+	 WikrqZ5S9PupmXPsKWNrWuwr2aMpfDF4Y5cy5uQhRf0fBEAaBbetM4/ChJaJNQ4T+c
+	 5LnyycU1ikRrIP4h9TjQXLse8mkj35nDJorXGj47AR//KMgBFNOVWJgkBqcG033AnQ
+	 26XmZh/XWEklOHVyRvibqt4MB36P9DxGhsgfcdpXqn1x3UqKWKXDaWUuy/Oljwtcmi
+	 LvTmnmT2eqU2su1/k/KGbdmAaHNxHCsjOhhX5fh7AFIJUShIbrSH3R/UBn7xFO0oef
+	 l5gafT5LSpoxw==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 65D1D378203B;
+	Wed, 31 Jan 2024 12:37:14 +0000 (UTC)
+Message-ID: <6020133f-53ee-4bbe-856f-7b7b0957081f@collabora.com>
+Date: Wed, 31 Jan 2024 13:37:13 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,173 +56,83 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 00/15] mm/memory: optimize fork() with PTE-mapped THP
-From: Ryan Roberts <ryan.roberts@arm.com>
-To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Dinh Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
- Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>, "David S. Miller"
- <davem@davemloft.net>, linux-arm-kernel@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, sparclinux@vger.kernel.org
-References: <20240129124649.189745-1-david@redhat.com>
- <a335a9d2-9b8f-4eb8-ba22-23a223b59b06@arm.com>
- <a1a0e9b3-dae2-418f-bd63-50e65f471728@redhat.com>
- <57eb82c7-4816-42a2-b5ab-cc221e289b21@arm.com>
- <e6eaba5b-f290-4d1f-990b-a47d89f56ee4@redhat.com>
- <714d0930-2202-48b6-9728-d248f820325e@arm.com>
-Content-Language: en-GB
-In-Reply-To: <714d0930-2202-48b6-9728-d248f820325e@arm.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [v3 2/3] ASoC: mediatek: mt8186: correct the HDMI widgets
+Content-Language: en-US
+To: =?UTF-8?B?SmlheGluIFl1ICjkv57lrrbpkasp?= <Jiaxin.Yu@mediatek.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+ "wenst@chromium.org" <wenst@chromium.org>,
+ "ajye_huang@compal.corp-partner.google.com"
+ <ajye_huang@compal.corp-partner.google.com>,
+ =?UTF-8?B?Q2h1bnh1IExpICjmnY7mmKXml60p?= <Chunxu.Li@mediatek.com>,
+ =?UTF-8?B?QWxsZW4tS0ggQ2hlbmcgKOeoi+WGoOWLsik=?=
+ <Allen-KH.Cheng@mediatek.com>, "broonie@kernel.org" <broonie@kernel.org>,
+ "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>,
+ "andrzej.hajda@intel.com" <andrzej.hajda@intel.com>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ Project_Global_Chrome_Upstream_Group
+ <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+ "robert.foss@linaro.org" <robert.foss@linaro.org>,
+ "Laurent.pinchart@ideasonboard.com" <Laurent.pinchart@ideasonboard.com>,
+ "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "nfraprado@collabora.com" <nfraprado@collabora.com>
+References: <20230730180803.22570-1-jiaxin.yu@mediatek.com>
+ <20230730180803.22570-3-jiaxin.yu@mediatek.com>
+ <25e6ab45-ecad-4bc3-bf4d-983243c939ad@sirena.org.uk>
+ <c6ae8630d06138b6d0156c19323afebf0718f522.camel@mediatek.com>
+ <089fe457-1c61-4b7b-ad37-a67e7f46cb56@sirena.org.uk>
+ <6aa6947865795fc534b61f5b8a80b3c42fd5a0cd.camel@mediatek.com>
+ <9c90185c-9cd4-4a08-9925-be5d460af54d@sirena.org.uk>
+ <11f4cfd2-f6a2-45cb-923a-95760a1b9883@collabora.com>
+ <aeef45d131e3e0131b57958253c85cd50a378f63.camel@mediatek.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <aeef45d131e3e0131b57958253c85cd50a378f63.camel@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 31/01/2024 11:49, Ryan Roberts wrote:
-> On 31/01/2024 11:28, David Hildenbrand wrote:
->> On 31.01.24 12:16, Ryan Roberts wrote:
->>> On 31/01/2024 11:06, David Hildenbrand wrote:
->>>> On 31.01.24 11:43, Ryan Roberts wrote:
->>>>> On 29/01/2024 12:46, David Hildenbrand wrote:
->>>>>> Now that the rmap overhaul[1] is upstream that provides a clean interface
->>>>>> for rmap batching, let's implement PTE batching during fork when processing
->>>>>> PTE-mapped THPs.
->>>>>>
->>>>>> This series is partially based on Ryan's previous work[2] to implement
->>>>>> cont-pte support on arm64, but its a complete rewrite based on [1] to
->>>>>> optimize all architectures independent of any such PTE bits, and to
->>>>>> use the new rmap batching functions that simplify the code and prepare
->>>>>> for further rmap accounting changes.
->>>>>>
->>>>>> We collect consecutive PTEs that map consecutive pages of the same large
->>>>>> folio, making sure that the other PTE bits are compatible, and (a) adjust
->>>>>> the refcount only once per batch, (b) call rmap handling functions only
->>>>>> once per batch and (c) perform batch PTE setting/updates.
->>>>>>
->>>>>> While this series should be beneficial for adding cont-pte support on
->>>>>> ARM64[2], it's one of the requirements for maintaining a total mapcount[3]
->>>>>> for large folios with minimal added overhead and further changes[4] that
->>>>>> build up on top of the total mapcount.
->>>>>>
->>>>>> Independent of all that, this series results in a speedup during fork with
->>>>>> PTE-mapped THP, which is the default with THPs that are smaller than a PMD
->>>>>> (for example, 16KiB to 1024KiB mTHPs for anonymous memory[5]).
->>>>>>
->>>>>> On an Intel Xeon Silver 4210R CPU, fork'ing with 1GiB of PTE-mapped folios
->>>>>> of the same size (stddev < 1%) results in the following runtimes
->>>>>> for fork() (shorter is better):
->>>>>>
->>>>>> Folio Size | v6.8-rc1 |      New | Change
->>>>>> ------------------------------------------
->>>>>>         4KiB | 0.014328 | 0.014035 |   - 2%
->>>>>>        16KiB | 0.014263 | 0.01196  |   -16%
->>>>>>        32KiB | 0.014334 | 0.01094  |   -24%
->>>>>>        64KiB | 0.014046 | 0.010444 |   -26%
->>>>>>       128KiB | 0.014011 | 0.010063 |   -28%
->>>>>>       256KiB | 0.013993 | 0.009938 |   -29%
->>>>>>       512KiB | 0.013983 | 0.00985  |   -30%
->>>>>>      1024KiB | 0.013986 | 0.00982  |   -30%
->>>>>>      2048KiB | 0.014305 | 0.010076 |   -30%
->>>>>
->>>>> Just a heads up that I'm seeing some strange results on Apple M2. Fork for
->>>>> order-0 is seemingly costing ~17% more. I'm using GCC 13.2 and was pretty
->>>>> sure I
->>>>> didn't see this problem with version 1; although that was on a different
->>>>> baseline and I've thrown the numbers away so will rerun and try to debug this.
-> 
-> Numbers for v1 of the series, both on top of 6.8-rc1 and rebased to the same
-> mm-unstable base as v3 of the series (first 2 rows are from what I just posted
-> for context):
-> 
-> | kernel             |   mean_rel |   std_rel |
-> |:-------------------|-----------:|----------:|
-> | mm-unstabe (base)  |       0.0% |      1.1% |
-> | mm-unstable + v3   |      16.7% |      0.8% |
-> | mm-unstable + v1   |      -2.5% |      1.7% |
-> | v6.8-rc1 + v1      |      -6.6% |      1.1% |
-> 
-> So all looks good with v1. And seems to suggest mm-unstable has regressed by ~4%
-> vs v6.8-rc1. Is this really a useful benchmark? Does the raw performance of
-> fork() syscall really matter? Evidence suggests its moving all over the place -
-> breath on the code and it changes - not a great place to be when using the test
-> for gating purposes!
-> 
-> Still with the old tests - I'll move to the new ones now.
-> 
-> 
->>>>>
->>>>
->>>> So far, on my x86 tests (Intel, AMD EPYC), I was not able to observe this.
->>>> fork() for order-0 was consistently effectively unchanged. Do you observe that
->>>> on other ARM systems as well?
+Il 31/01/24 13:25, Jiaxin Yu (俞家鑫) ha scritto:
+> On Wed, 2024-01-31 at 12:42 +0100, AngeloGioacchino Del Regno wrote:
+>> Il 03/08/23 21:33, Mark Brown ha scritto:
+>>> On Thu, Aug 03, 2023 at 07:20:15AM +0000, Jiaxin Yu (俞家鑫) wrote:
 >>>
->>> Nope; running the exact same kernel binary and user space on Altra, I see
->>> sensible numbers;
+>>>> I agree with you, in fact the speaker is indeed doing this way.
+>>>> But
+>>>> about the hdmi that on the board, I did not find a defination
+>>>> link
+>>>> snd_soc_dapm_hdmi, so I use snd_soc_dapm_line to replace. The
+>>>> purpose
+>>>> is to control it link speaker. Or what do you suggest I should
+>>>> do?
 >>>
->>> fork order-0: -1.3%
->>> fork order-9: -7.6%
->>> dontneed order-0: -0.5%
->>> dontneed order-9: 0.1%
->>> munmap order-0: 0.0%
->>> munmap order-9: -67.9%
->>>
->>> So I guess some pipelining issue that causes the M2 to stall more?
+>>> I think the sensible thing here is to define a DIGITAL_OUTPUT()
+>>> which
+>>> can be used for HDMI, S/PDIF and anything else that comes up and
+>>> isn't
+>>> clearly wrong like reusing one of the analog descriptions is.
 >>
->> With one effective added folio_test_large(), it could only be a code layout
->> problem? Or the compiler does something stupid, but you say that you run the
->> exact same kernel binary, so that doesn't make sense.
-> 
-> Yup, same binary. We know this code is very sensitive - 1 cycle makes a big
-> difference. So could easily be code layout, branch prediction, etc...
-> 
+>> Hello Jiaxin,
 >>
->> I'm also surprised about the dontneed vs. munmap numbers.
-> 
-> You mean the ones for Altra that I posted? (I didn't post any for M2). The altra
-> numbers look ok to me; dontneed has no change, and munmap has no change for
-> order-0 and is massively improved for order-9.
-> 
->  Doesn't make any sense
->> (again, there was this VMA merging problem but it would still allow for batching
->> within a single VMA that spans exactly one large folio).
+>> the MT8186 Corsola Chromebooks are broken upstream without this
+>> series.
 >>
->> What are you using as baseline? Really just mm-unstable vs. mm-unstable+patches?
-> 
-> yes. except for "v6.8-rc1 + v1" above.
-> 
+>> Are you still interested in upstreaming this one?
 >>
->> Let's see if the new test changes the numbers you measure.
+>> Thanks,
+>> Angelo
+> 
+> Hello Angelo,
+> 
+> No, I'm still interesting in upstream this series. It's just that I
+> have less time recently. I'm considering revisiting this issue next
+> mouth. Do you have any suggestions for this?
+> 
 
-Nope: looks the same. I've taken my test harness out of the picture and done
-everything manually from the ground up, with the old tests and the new. Headline
-is that I see similar numbers from both.
+Nothing on top of Mark's suggestions.
 
-Some details:
- - I'm running for 10 seconds then averaging the output
- - test is bimodal; first run (of 10 seconds) after boot is a bit faster on
-   average (up to 10%) than the rest; I could guess this is due to the memory
-   being allocated more contiguously the first few times through, so struct
-   pages have better locality, but that's a guess.
- - test is 5-10% slower when output is printed to terminal vs when redirected to
-   file. I've always effectively been redirecting. Not sure if this overhead
-   could start to dominate the regression and that's why you don't see it?
+Angelo
 
-I'm inclined to run this test for the last N kernel releases and if the number
-moves around significantly, conclude that these tests don't really matter.
-Otherwise its an exercise in randomly refactoring code until it works well, but
-that's just overfitting to the compiler and hw. What do you think?
-
-Thanks,
-Ryan
 
 
