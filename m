@@ -1,173 +1,177 @@
-Return-Path: <linux-kernel+bounces-46572-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D166844180
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:12:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CF1A844184
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:12:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C81AF1F284B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:12:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF0031C25AE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:12:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EE0E82896;
-	Wed, 31 Jan 2024 14:12:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28ECF83CD2;
+	Wed, 31 Jan 2024 14:12:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="MVZOtlij"
-Received: from mail-vk1-f179.google.com (mail-vk1-f179.google.com [209.85.221.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="FAY3h8k0"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE50A80C1F
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 14:12:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96A2369D2E;
+	Wed, 31 Jan 2024 14:12:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706710329; cv=none; b=Z/5EVs/LfurDdVkY6AWMWuh1wbFwb2fGomuwbloHko9qeVxriPWLf5aqLE2w+x7mMmcb7D52+eivPQZap49vEZ7elkFDTIqIzmlJkxJTc7K0+lEWiJY8rUSID7DdZo/9Gp2jSleVIkAb2RgjGHESqh13dtDmLHenhzFbjbVtGfo=
+	t=1706710331; cv=none; b=EBkrbzkE6v1U6Br/9OnFTIHowfa4uysM+k0kAxZktDFGrSCTNeqqDAZ2RwvMRquF71GeU9m47nQN6kit3U6c6KiFiK7HX0s2njDdXEBJsiUi5FRu7yYMyDOXl94eDgDBEGV7YSokGBKcx8XRg1+lsCScJ6PBgWC5Pxwv6XwE3WQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706710329; c=relaxed/simple;
-	bh=fy67XFG440oNqKNoOyKdiRXwM4wMoj/X9XerGknRkFM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kRXIRXSQr78qin2WXfIYfmfX80UNG5oRlkrwEL73gmDqEym/MeL364/EVi+icMGGrwhH0ZZCVYwCPVm4M95EWkJak8c4dVeTsd5BjSI4LuVViq6drF1RAmgxf7qovoN8SFN6FtjsVLrp+lbNgotYJJmqwQNsd7y+kwrJcNNpvnM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=MVZOtlij; arc=none smtp.client-ip=209.85.221.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-vk1-f179.google.com with SMTP id 71dfb90a1353d-4bd87fd64c1so1588845e0c.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 06:12:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1706710326; x=1707315126; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fy67XFG440oNqKNoOyKdiRXwM4wMoj/X9XerGknRkFM=;
-        b=MVZOtlij2AZ22kc1XCTZWLZ/d/0js7zssLKOlA24s8zen5q3lGG7G5q7IdSPnwtZSB
-         XUZj40mPwU6jNopWsW6w6H49sdsHuUMDhmgR74IkMUgNSv7HYBV9ZVEQ3OF35T9RerlZ
-         CdOy9l5esYmHNqAZWPqoK15kiImPVwzRHteH44iKwyUdF7S2mQkJCxnqEh/OFOBAiu9t
-         yiwqfwhZevpBRKmfbvqa7OX3jVZlBR3DsS18BrHg/xAxVxkHhDskboDF8iOnjECQP/hQ
-         xq/Pfaer6gknZplfImXP1Oxn31CWrSAfEy+iOFa6nQzzkCyqbZC40KN8BqmU7Un3lN9Q
-         uHBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706710326; x=1707315126;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fy67XFG440oNqKNoOyKdiRXwM4wMoj/X9XerGknRkFM=;
-        b=CSp/juj0pZW5aoLv/gzOeW/xDRy9UxnqyRMzDh2VuK5zuJ2ImzYWhdifsCQgnIiD7a
-         riIERTHYuOVEOi0EuvKq76H1txSS1a4hAL3TXaBIgpUxuTeyz8/UA9J7MlxzfJhf4NTD
-         mQ0rBWM0XMikzJ4OUA1pARD+jitAcGvmSGPNea9UHvQmmyQ+LvX8LFfQQqGU07sTqOwL
-         O5VeE/VPDIX9psw7+hxLN2EYVlBMxtlVYdk9PyGdKWn32h/sINvoLJYrawBfF5a+HYmt
-         ioP3hC86EqqY57HyAMaL8xe0giEN23jCnNc73no6sJE2xXBrmEXB5Hx4K4cd6zid+Ait
-         CIvA==
-X-Gm-Message-State: AOJu0YzUStJoDCgTQSGYeyD8FvtWKdNHB3RNNMqonxEq2qI9pRCYlLAA
-	TI4mzmj41Drhd2ExWe/zSW1eXMD7Vuz7dA+yCmVmoYzB/XKxsMOF0Vq341jpDuJ6k+lL3XJzeud
-	OEr7dYs+NC1wPhg6MGt/3YwgatH+TvbxzsCPr3w==
-X-Google-Smtp-Source: AGHT+IHw+5LJCo4zP77ngTsk1zmxdOx6fkUQPNqVAurEYXrfnmeT5FR7RaZ6Ra6HK3KzPd2ohkdgXC4v/gfXwwIUBNk=
-X-Received: by 2002:a05:6122:179c:b0:4bd:5328:b20f with SMTP id
- o28-20020a056122179c00b004bd5328b20fmr1596779vkf.14.1706710326488; Wed, 31
- Jan 2024 06:12:06 -0800 (PST)
+	s=arc-20240116; t=1706710331; c=relaxed/simple;
+	bh=3iLE4rVJrMyfM3wT4pUt7KCcd4ppHG0ZABLiFEYx8Xc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Fvb1cOTPb4heY1+U8aYMnHdcvGkjjCG8CUuChmJ9zT+tvEzAggyriushR7CRsPiHlmlzWPgVx2TdALUU420nkRLb/2jYeue6d6EXkOg/AJdeb/9U46na6e/kdBGECNZMZh3PqFWX/OwTUu/BMQv5l0RwrKYXi5wU1SW9geGotqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=FAY3h8k0; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 77FDAE0010;
+	Wed, 31 Jan 2024 14:12:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1706710326;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xEJwhhhiUkiqifE85SQVhymwrbn9JblUFZ4ZPQEqrRo=;
+	b=FAY3h8k0j3+Td7xzuhQPvetqvjyAEkoaywZhQE/8g3OGOCYnr/IITu2oph+8Htx2ElelrC
+	8SrMB9UA1IfUsv97bPR/9RuBNWGblkdpVC2b11gmfyHXc+gmp8TYk6jCivmASAgSQ4m+An
+	vth0UhH60edrkucBHMDiTtTJzimBq/0c4VcL2cDWAmCCQnzmMvYlDrqvuGX8N+X0Qciagd
+	EY4F+LD6nFpqLbZzvPG+ELiaiymQluvKTA3nS9X9CctTLUnFrmiV4YfYXpGKYLh/41Ouj+
+	PyNXYAx+j/gseE5NDkbSx/jh/lNc0VNGMS9oGZ6RtqTovt3ev31CdWLJKpbGow==
+From: Kamel Bouhara <kamel.bouhara@bootlin.com>
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Henrik Rydberg <rydberg@bitmath.org>,
+	linux-input@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	Marco Felsch <m.felsch@pengutronix.de>,
+	Jeff LaBundy <jeff@labundy.com>
+Cc: catalin.popescu@leica-geosystems.com,
+	mark.satterthwaite@touchnetix.com,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	bsp-development.geo@leica-geosystems.com,
+	Kamel Bouhara <kamel.bouhara@bootlin.com>
+Subject: [PATCH v7 2/3] dt-bindings: input: Add TouchNetix axiom touchscreen
+Date: Wed, 31 Jan 2024 15:11:56 +0100
+Message-ID: <20240131141158.3350344-3-kamel.bouhara@bootlin.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240131141158.3350344-1-kamel.bouhara@bootlin.com>
+References: <20240131141158.3350344-1-kamel.bouhara@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240129115216.96479-1-krzysztof.kozlowski@linaro.org>
- <20240129115216.96479-5-krzysztof.kozlowski@linaro.org> <CACRpkdYf4HUaV-Pjr81WjLbzy9zdAnyFWs9gPayPC6-3OjHQwA@mail.gmail.com>
- <CAMRc=Mc1SGLeUOWmKg=fvCdM+RR6FSu2QkFuR17s7L99eRMGug@mail.gmail.com>
- <CACRpkdbaxqTzwL9L02vCpMMdBYsubNP1VkNuJ8mXB_=4E3Kjaw@mail.gmail.com> <5ef64082-0b44-4bb2-bd4c-654c96f4a9bb@linaro.org>
-In-Reply-To: <5ef64082-0b44-4bb2-bd4c-654c96f4a9bb@linaro.org>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Wed, 31 Jan 2024 15:11:55 +0100
-Message-ID: <CAMRc=MfNNdJzbxsihNd94LhqzhZiL2H2-z=grEFoNmOxpua5JA@mail.gmail.com>
-Subject: Re: [PATCH v6 4/6] reset: Instantiate reset GPIO controller for
- shared reset-gpios
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Banajit Goswami <bgoswami@quicinc.com>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Viresh Kumar <viresh.kumar@linaro.org>, Frank Rowand <frowand.list@gmail.com>, 
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, 
-	linux-arm-msm@vger.kernel.org, linux-sound@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-pm@vger.kernel.org, Chris Packham <chris.packham@alliedtelesis.co.nz>, 
-	Sean Anderson <sean.anderson@seco.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: kamel.bouhara@bootlin.com
 
-On Wed, Jan 31, 2024 at 2:32=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 31/01/2024 14:17, Linus Walleij wrote:
-> > On Wed, Jan 31, 2024 at 10:37=E2=80=AFAM Bartosz Golaszewski <brgl@bgde=
-v.pl> wrote:
-> >
-> >> [Me]
-> >>> reset -> virtual "gpio" -> many physical gpios[0..n]
-> >>
-> >> This is a different problem: it supports many users enabling the same
-> >> GPIO (in Krzysztof's patch it's one but could be more if needed) but -
-> >> unlike the broken NONEXCLUSIVE GPIOs in GPIOLIB - it counts the number
-> >> of users and doesn't disable the GPIO for as long as there's at least
-> >> one.
-> >
-> > I don't know if the NONEXCLUSIVE stuff is broken, if you mean reference
-> > counting isn't working on them, then that is by design because they wer=
-e
-> > invented for regulators and such use cases that do their own reference
-> > counting. It's also used for hacks where people need to look up a desc =
-in
-> > a second spot, (perhaps we can fix those better).
-> >
-> > As I say in commit b0ce7b29bfcd090ddba476f45a75ec0a797b048a
-> > "This solution with a special flag is not entirely elegant and should i=
-deally
-> > be replaced by something more careful as this makes it possible for
-> > several consumers to enable/disable the same GPIO line to the left
-> > and right without any consistency."
-> >
-> > I think for regulators (which is the vast majority using it) it isn't b=
-roken
-> > because the regulator reference counting is working.
-> >
-> > So if we solve that problem for reset, we probably should put it in
-> > drivers/gpio/* somewhere so we can reuse the same solution for
-> > regulators and get rid of NONEXCLUSIVE altogether I think?
-> >
-> > The NONEXCLUSIVE stuff was prompted by converting regulators to
-> > gpio descriptors, so it was for the greater good one can say. Or the
-> > lesser evil :( my judgement can be questioned here.
->
-> I discussed the non-exclusive GPIOs with Bartosz quite a lot, who was
-> Cced since beginning of this patchset, because that was my first
-> approach, which was rejected:
->
-> https://lore.kernel.org/all/b7aeda24-d638-45b7-8e30-80d287f498f8@sirena.o=
-rg.uk/
->
-> The non-exclusive GPIO was made explicitly for regulators, so it is
-> working fine there, but it is broken everywhere else, where the drivers
-> do not handle it in sane way as regulator core does.
->
-> To make it working, either GPIO should be enable-count-aware, to which
-> Bartosz was opposing with talks with me, or the subsystem should mimic
+Add the TouchNetix axiom I2C touchscreen device tree bindings
+documentation.
 
-For the record: I'm not 100% opposed to the enable-count-awarness of
-GPIOs but don't want it to be the standard. I'm open for introducing a
-wrapper built around the core, low-level GPIO API but I've just
-dropped a big patchset addressing the access control and serialization
-issues for the GPIO consumer API and I would rather work towards
-making it at least more-or-less correct in the first place before we
-start overcomplicating it again.
+Signed-off-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
+---
+ .../input/touchscreen/touchnetix,ax54a.yaml   | 62 +++++++++++++++++++
+ MAINTAINERS                                   |  6 ++
+ 2 files changed, 68 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/touchnetix,ax54a.yaml
 
-Bartosz
+diff --git a/Documentation/devicetree/bindings/input/touchscreen/touchnetix,ax54a.yaml b/Documentation/devicetree/bindings/input/touchscreen/touchnetix,ax54a.yaml
+new file mode 100644
+index 000000000000..66229a4d6f15
+--- /dev/null
++++ b/Documentation/devicetree/bindings/input/touchscreen/touchnetix,ax54a.yaml
+@@ -0,0 +1,62 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/input/touchscreen/touchnetix,ax54a.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: TouchNetix Axiom series touchscreen controller
++
++maintainers:
++  - Kamel Bouhara <kamel.bouhara@bootlin.com>
++
++allOf:
++  - $ref: /schemas/input/touchscreen/touchscreen.yaml#
++  - $ref: /schemas/input/input.yaml#
++
++properties:
++  compatible:
++    const: touchnetix,ax54a
++
++  reg:
++    const: 0x66
++
++  interrupts:
++    maxItems: 1
++
++  reset-gpios:
++    maxItems: 1
++
++  vdda-supply:
++    description: Analog power supply regulator on VDDA pin
++
++  vddi-supply:
++    description: I/O power supply regulator on VDDI pin
++
++required:
++  - compatible
++  - reg
++  - vdda-supply
++  - vddi-supply
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      touchscreen@66 {
++        compatible = "touchnetix,ax54a";
++        reg = <0x66>;
++        interrupt-parent = <&gpio2>;
++        interrupts = <2 IRQ_TYPE_EDGE_FALLING>;
++        reset-gpios = <&gpio1 1 GPIO_ACTIVE_HIGH>;
++        vdda-supply = <&vdda_reg>;
++        vddi-supply = <&vddi_reg>;
++        poll-interval = <20>;
++      };
++    };
++...
+diff --git a/MAINTAINERS b/MAINTAINERS
+index c4828ab15f1a..4b3ed2f22b89 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -22257,6 +22257,12 @@ L:	platform-driver-x86@vger.kernel.org
+ S:	Maintained
+ F:	drivers/platform/x86/toshiba-wmi.c
+ 
++TOUCHNETIX AXIOM I2C TOUCHSCREEN DRIVER
++M:	Kamel Bouhara <kamel.bouhara@bootlin.com>
++L:	linux-input@vger.kernel.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/input/touchscreen/touchnetix,ax54a.yaml
++
+ TPM DEVICE DRIVER
+ M:	Peter Huewe <peterhuewe@gmx.de>
+ M:	Jarkko Sakkinen <jarkko@kernel.org>
+-- 
+2.25.1
 
-> regulators approach. In some way, my patchset is the second way here -
-> reset framework subsystem being aware of shared GPIO and handles the
-> enable-count, even though it is not using non-exclusive flag.
->
-> Best regards,
-> Krzysztof
->
 
