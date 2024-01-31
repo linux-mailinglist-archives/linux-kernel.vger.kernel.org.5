@@ -1,199 +1,146 @@
-Return-Path: <linux-kernel+bounces-47094-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47093-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA8A5844908
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2741844909
 	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:40:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8B601C21A0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:40:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5FF931F24B39
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:40:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99482383AD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F3AD383A5;
 	Wed, 31 Jan 2024 20:40:31 +0000 (UTC)
-Received: from wind.enjellic.com (wind.enjellic.com [76.10.64.91])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C41B20DE0
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gRx4agvr"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C8CD24A18
 	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 20:40:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=76.10.64.91
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706733631; cv=none; b=E+fDmyWJGfrlNdS1XjiqmVFJH4At+RzH+0dBzzrk/hGQLdTphkaUVQm+X+wTvxSiiJusfwi3z3mj7rnencrjUL6WCKK0hAVzUmJ/G1tQYJlnuU1hXa4g0YYEchp01wp/doIzLctwdw3U8dmR8jzNsQp/4juIPj5PNWAxTKctnRo=
+	t=1706733630; cv=none; b=rZXX48PIoa0Zg88xVUv+MpP/VOMEPjkRgeVk1NujTq0Z2rcYmdqhskQVzb0Lx3OZ2Q8MjAi+TZIK0DRZYw4fOCIhxlP3bcG2XJ1IUwXOxiIP4578/ptefUK95m08qCQ129oBEb1m7MH6t+wLLuAq7pOBZFCjoCzUZauaY2ss7S4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706733631; c=relaxed/simple;
-	bh=fLIPQCnNQ5E/r9b+KCaDi39a1lB6LxyGJhCI6rNLasw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Mime-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dleUzlb4s57H9cx9xB/OwIlViQ2/S+96PGIYXrvpdG+LFNaIQfzcvRXyyj9/Bxk+Qz1Te1BeRGoDKgtggX4+EHkSm53Qq+jyFWrQXfx+F3u5O68yUq53WrEXdJ3qZDOWjuI8R2tfdS5j1m5wcYjGM+E3T4R+wftnb0DNX3Tbx+I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enjellic.com; spf=pass smtp.mailfrom=wind.enjellic.com; arc=none smtp.client-ip=76.10.64.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enjellic.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wind.enjellic.com
-Received: from wind.enjellic.com (localhost [127.0.0.1])
-	by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 40VKZWY1012224;
-	Wed, 31 Jan 2024 14:35:32 -0600
-Received: (from greg@localhost)
-	by wind.enjellic.com (8.15.2/8.15.2/Submit) id 40VKZWYw012223;
-	Wed, 31 Jan 2024 14:35:32 -0600
-Date: Wed, 31 Jan 2024 14:35:32 -0600
-From: "Dr. Greg" <greg@enjellic.com>
-To: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc: "Reshetova, Elena" <elena.reshetova@intel.com>,
-        "Daniel P. Berrang??" <berrange@redhat.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Nakajima, Jun" <jun.nakajima@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Kalra, Ashish" <ashish.kalra@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] x86/random: Issue a warning if RDRAND or RDSEED fails
-Message-ID: <20240131203531.GA12035@wind.enjellic.com>
-Reply-To: "Dr. Greg" <greg@enjellic.com>
-References: <20240130083007.1876787-1-kirill.shutemov@linux.intel.com> <20240130083007.1876787-2-kirill.shutemov@linux.intel.com> <CAHmME9qsfOdOEHHw_MOBmt6YAtncbbqP9LPK2dRjuOp1CrHzRA@mail.gmail.com> <DM8PR11MB57507611D651E6D7CBC2A2F3E77D2@DM8PR11MB5750.namprd11.prod.outlook.com> <88a72370-e300-4bbc-8077-acd1cc831fe7@intel.com> <CAHmME9oSQbd3V8+qR0e9oPb7ppO=E7GrCW-a2RN8QNdY_ARbSQ@mail.gmail.com> <Zbk6h0ogqeInLa_1@redhat.com> <DM8PR11MB575052B985CA97B29A443F9AE77C2@DM8PR11MB5750.namprd11.prod.outlook.com> <CAHmME9ps6W5snQrYeNVMFgfhMKFKciky=-UxxGFbAx_RrxSHoA@mail.gmail.com>
+	s=arc-20240116; t=1706733630; c=relaxed/simple;
+	bh=DJVBdAvIZoYsFk/PD+9roTQkIgqJvDOJ/jGdKfrSxys=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AV5vod1hSUlnWD/INuz6P1ctpeSdz1PsGGUQ7muKWWVv3jxB8UXwg+xRk0k0q4W8Xu5qeM5X2JsN+O4TDhpYgiJ+1iAtIGmjcKvNddqqmaqyyE9P8vz4r54LE7R7LZ7Bebs1d/MpNkYczLeKe6MNV3M1v36euge9GLyxy9Vb6P0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gRx4agvr; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d5ce88b51cso42915ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 12:40:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706733628; x=1707338428; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=kU4YgSiD3upkHqtgFDQ2Dx1llBcFINJR/fxen+WKHRM=;
+        b=gRx4agvrfTNdJAC4DVMVluI0QGJ5IOJQw1Vjgb6/2QmK0CURuZ9kF9t9hQG9HkFFX+
+         OpbERC99SnwRLu62Y9IQ7gTqx6AwIFHpPur0ze7MB+Q8ePoNhoJXlCZfyehfL0FD2aAc
+         nGgWV/C/T8L/IPuNT5J+uElvw/oNuE7uyvE/imYxy0V6zWe24soEaedNMRhUSBwxCxnV
+         CGlPvLin8Dg3pUqGF12Dye9miGNFonDafntkFVNJbYpNcagl4gFfWGbCSQCASOS666uf
+         eAyXSfoJEEqMwf7ufMH4D898myj1MOrecHZ/rGbbIeuiFhOxGgLwwQdMu1bMgjeLLwzw
+         WoDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706733628; x=1707338428;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kU4YgSiD3upkHqtgFDQ2Dx1llBcFINJR/fxen+WKHRM=;
+        b=ihsVtW41Xx6lhLejBGEmzRmct2M19xdU7zQV6Mh5CE6EcrDVzLNe6l8oj8MIje+XPa
+         GLcHxZNLFL7uMMmn6U/E88uKdPABQZ1+KZ9cu/+/oAvgf9/GODYl5YBKCSg0PjdpKfCm
+         TzI+k74cM7QLy9gOUoCTPnm3J2Frj6UjsYyVz9L1LkCKFCKwnE0ICx9D3DaGpaPRe2+x
+         03Vzb72tDjgrX6gck4F5EsreYfkIf6EWsFaLd+2CzS3x9Qdy/tBZrtshAc96H83aqId/
+         P61reebKWc7Y/ha+Rz+XfmrMiTh9rG9K8zsIat1GL52K5S1XkjyxgD6sF5bikP6arvmF
+         X3fA==
+X-Gm-Message-State: AOJu0YxKDawGlkgQ/9YgV+6LHwZ7KZETdRXLy430nw5GFY5hAjFlt8p9
+	sUAiMA69r7b43r9aEUrp4zXkBcNeamniDcktx/DXktiK9vThE1Zj0pGimaQslA==
+X-Google-Smtp-Source: AGHT+IE8JDW6cmjtkcuqkNWtjhotrYww4lpIUfSL247EMiN6Fpdc5IY02gFACJ8x+SufzSA45BnJNQ==
+X-Received: by 2002:a17:902:c643:b0:1d8:ffbe:82d0 with SMTP id s3-20020a170902c64300b001d8ffbe82d0mr61161pls.12.1706733628126;
+        Wed, 31 Jan 2024 12:40:28 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVLs69w31bi/Uo8ob8CB6NrDyhxo1gpXRC+kzNsnUNj3U0KghkgIJ8JohP8D0UINvEpLtb2UUDkOlN+oZDw8AoANCYfKImzfwRHb+efaRpcjTlr9k1zPb39F1HGpbhHNc94RvBQyMTCGj8jSZUO9f2zxl4LWE27458pCt+YtSYxnJefFqj8O/rV66iJJeEAlA3x8c0vn0z/nv1/JsMZGG7ksE1CKrQslrrqK1uwdbBxSkFnOcrCPDOuYLesYB0qFK97bRilvCT1Th/xabF6neww068PU1KIIlQxt+U9S4627Qq9ERrgWp1dcqp525jpIRQj4bHUwsl6O1yPOS4bprnuOYogamT+gSG0lAyEF+LwckxjRMn/syx85/IxAklFHXdSRg1kY01P3lfL90eP5p0kFOXGpkdhqyEPW4R8fOO+q72+5t3ewQn+gjGFUHPXxwZFqeIfrtzNx0XEE29PZa5kja0Z264=
+Received: from google.com (69.8.247.35.bc.googleusercontent.com. [35.247.8.69])
+        by smtp.gmail.com with ESMTPSA id x30-20020a056a00189e00b006dcba485ef6sm10217220pfh.111.2024.01.31.12.40.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Jan 2024 12:40:27 -0800 (PST)
+Date: Wed, 31 Jan 2024 12:40:24 -0800
+From: William McVicker <willmcvicker@google.com>
+To: =?iso-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
+Cc: peter.griffin@linaro.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	linux-kernel@vger.kernel.org, kernel-team@android.com,
+	tudor.ambarus@linaro.org, semen.protsenko@linaro.org,
+	alim.akhtar@samsung.com, linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: exynos: gs101: add stable i2c aliases for
+ gs101-oriole
+Message-ID: <ZbqwOKSsGWB9QREM@google.com>
+References: <20240130233700.2287442-1-andre.draszik@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAHmME9ps6W5snQrYeNVMFgfhMKFKciky=-UxxGFbAx_RrxSHoA@mail.gmail.com>
-User-Agent: Mutt/1.4i
-X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Wed, 31 Jan 2024 14:35:33 -0600 (CST)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240130233700.2287442-1-andre.draszik@linaro.org>
 
-On Wed, Jan 31, 2024 at 02:06:13PM +0100, Jason A. Donenfeld wrote:
+Hi Andre,
 
-Hi again to everyone, beautiful day here in North Dakota.
-
-> On Wed, Jan 31, 2024 at 9:17???AM Reshetova, Elena
-> <elena.reshetova@intel.com> wrote:
-> > This matches both my understanding (I do have cryptography background
-> > and understanding how cryptographic RNGs work)
-> > and official public docs that Intel published on this matter.
-> > Given that the physical entropy source is limited anyhow, and by giving
-> > enough pressure on the whole construction you should be able to
-> > make RDRAND fail because if the intermediate AES-CBC MAC extractor/
-> > conditioner is not getting its min entropy input rate, it wont
-> > produce a proper seed for AES CTR DRBG.
-> > Of course exact details/numbers can wary between different generations of
-> > Intel DRNG implementation, and the platforms where it is running on,
-> > so be careful to sticking to concrete numbers.
-
-> Alright, so RDRAND is not reliable. The question for us now is: do
-> we want RDRAND unreliability to translate to another form of
-> unreliability elsewhere, e.g. DoS/infiniteloop/latency/WARN_ON()? Or
-> would it be better to declare the hardware simply broken and ask
-> Intel to fix it? (I don't know the answer to that question.)
-
-I think it would demonstrate a lack of appropriate engineering
-diligence on the part of our community to declare RDRAND 'busted' at
-this point.
-
-While it appeares to be trivially easy to force RDSEED into depletion,
-there does not seem to be a suggestion, at least in the open
-literature, that this directly or easily translates into stalling
-output from RDRAND in any type of relevant adversarial fashion.
-
-If this were the case, given what CVE's seem to be worth on a resume,
-someone would have rented a cloud machine and come up with a POC
-against RDRAND in a multi-tenant environment and then promptly put up
-a web-site called 'Random Starve' or something equally ominous.
-
-This is no doubt secondary to the 1022x amplication factor inherent in
-the 'Bull Mountain' architecture.
-
-I'm a bit surprised that no one from the Intel side of this
-conversation didn't pitch this over the wall as soon as this
-conversation came up, but I would suggest that everyone concerned
-about this issue give the following a thorough read:
-
-https://www.intel.com/content/www/us/en/developer/articles/guide/intel-digital-random-number-generator-drng-software-implementation-guide.html
-
-Relevant highlights:
-
-- As I suggested in my earlier e-mail, random number generation is a
-  socket based resource, hence an adversarial domain limited to only
-  the cores on a common socket.
-
-- There is a maximum randomness throughput rate of 800 MB/s over all
-  cores sharing common random number infrastructure.  Single thread
-  throughput rates of 70-200 MB/s are demonstratable.
-
-- A failure of RDRAND over 10 re-tries is 'astronomically' small, with
-  no definition of astronomical provided, one would assume really
-  small, given they are using the word astronomical.
-
-> > That said, I have taken an AR to follow up internally on what can be done
-> > to improve our situation with RDRAND/RDSEED.
-
-I think I can save you some time Elena.
-
-> Specifying this is an interesting question. What exactly might our
-> requirements be for a "non-broken" RDRAND? It seems like we have two
-> basic ones:
+On 01/30/2024, André Draszik wrote:
+> Now that we have more than i2c interface, add aliases to ensure
+> deterministic bus number assignment.
 > 
-> - One VMX (or host) context can't DoS another one.
-> - Ring 3 can't DoS ring 0.
+> So as to keep compatibility with existing Pixel userspace builds, use
+> the same bus numbers for hsi2c_8 and hsi2c_12 as the downstream
+> drivers with the intention to eventually add all the earlier busses as
+> well.
 > 
-> I don't know whether that'd be implemented with context-tied rate
-> limiting or more state or what. But I think, short of just making
-> RDRAND never fail, that's basically what's needed.
+> Suggested-by: Will McVicker <willmcvicker@google.com>
+> Signed-off-by: André Draszik <andre.draszik@linaro.org>
 
-I think we probably have that, for all intents and purposes, given
-that we embrace the following methodogy:
+Tested-by: Will McVicker <willmcvicker@google.com>
 
-- Use RDRAND exclusively.
+> 
+> ---
+> Note, this patch should only be applied after series
+> "[PATCH v3 0/7] gs101 oriole: peripheral block 1 (peric1) and i2c12 support"
+> https://lore.kernel.org/all/20240129174703.1175426-1-andre.draszik@linaro.org/
+> ---
+>  arch/arm64/boot/dts/exynos/google/gs101-oriole.dts | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts b/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
+> index 6ccade2c8cb4..23314ed78c96 100644
+> --- a/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
+> +++ b/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
+> @@ -18,6 +18,8 @@ / {
+>  	compatible = "google,gs101-oriole", "google,gs101";
+>  
+>  	aliases {
+> +		i2c7 = &hsi2c_8;
+> +		i2c8 = &hsi2c_12;
+>  		serial0 = &serial_0;
+>  	};
+>  
+> -- 
+> 2.43.0.429.g432eaa2c6b-goog
+> 
 
-- Be willing to take 10 swings at the plate.
+I verified this works on my device:
 
-- Given the somewhat demanding requirements for TDX/COCO, fail and
-  either deadlock or panic after 10 swings since that would seem to
-  suggest the hardware is broken, ie. RMA time.
+  # ls -l /sys/bus/i2c/devices/
+  total 0
+  <snip> 7-0050 -> ../../../devices/platform/soc@0/109700c0.usi/10970000.i2c/i2c-7/7-0050
+  <snip> i2c-7 -> ../../../devices/platform/soc@0/109700c0.usi/10970000.i2c/i2c-7
+  <snip> i2c-8 -> ../../../devices/platform/soc@0/10d500c0.usi/10d50000.i2c/i2c-8
 
-Either deadlock or panic would be appropriate.  The objective in the
-COCO environment is to get the person who clicked on the 'Enable Azure
-Confidential' checkbox, or its equivalent, on their cloud dashboard,
-to call the HelpDesk and ask them why their confidential application
-won't come up.
 
-After the user confirms to the HelpDesk that their computer is plugged
-in, the problem will get fixed.  Either the broken hardware will be
-identified and idled out or the mighty sword of vengeance will be
-summoned down on whoever has all of the other cores on the socket
-pegged.
-
-Final thoughts:
-
-- RDSEED is probably a poor thing to be using.
-
-- There may be a reasonable argument that RDSEED shouldn't have been
-  exposed above ring 0, but that ship has sailed.  Brownie points
-  moving forward for an RDsomething that is ring 0 and has guaranteed
-  access to some amount of functionally reasonable entropy.
-
-- Intel and AMD are already doing a lot of 'special' stuff with their
-  COCO hardware in order to defy the long standing adage of: 'You
-  can't have security without physical security'.  Access to per core thermal
-  noise, as I suggested, is probably a big lift but clever engineers can
-  probably cook up some type of fairness doctrine for randomness in
-  TDX or SEV_SNP, given the particular importance of instruction based
-  randomness in COCO.
-
-- Perfection is the enemy of good.
-
-> Jason
-
-Have a good day.
-
-As always,
-Dr. Greg
-
-The Quixote Project - Flailing at the Travails of Cybersecurity
-              https://github.com/Quixote-Project
+Thanks,
+Will
 
