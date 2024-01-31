@@ -1,183 +1,155 @@
-Return-Path: <linux-kernel+bounces-46141-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46142-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82C36843B27
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:31:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7341B843B2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:32:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39FFC290211
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:31:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F384285103
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:32:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9AC269956;
-	Wed, 31 Jan 2024 09:30:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 590BD6773B;
+	Wed, 31 Jan 2024 09:32:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TTsz9d5D"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="bCKN3iUc"
+Received: from out162-62-57-210.mail.qq.com (out162-62-57-210.mail.qq.com [162.62.57.210])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B0A769952
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:30:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B6DD62A09
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:32:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.210
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706693430; cv=none; b=JO09OyXrydX6zMjklqr5Mzb5qT/0VeRmpYX047FQvNgGDu//7VQ5s8IaUdcnB2TSb0wDLCVnt24CP7mM319WWUDtOj9Ou+3TexfP3EtTxU5lealGnsMY/53mh8sMdQambouZE6uA99m5sM0VmhnLwkA/i+obN2jUFyCDsHsmzOY=
+	t=1706693536; cv=none; b=IxPdgPOhUVkL3FGAnyx6lDeX3vstA8A+TW0nGUf228V5tT5p+vWNmJwVyRuq1KBSD7C2nTnYD12Yicf4IYq4NbjgRWLvNxdVZ0Mgpjb7RhNn0iRwUuj+1VbaXlLVWNdot9HTH0yu/Ite6bu8UU9ocelOJgH2uOmB/K/0LrdBGSk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706693430; c=relaxed/simple;
-	bh=bmWztwT189Wa+/DkcC1wRGU1L587x8rOhwGOBzjiDSE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W8UsjsJpC+D3dld6Q1UAI4FKz+GDFpBUqXuybckr64MpWYgkdTWPrmMwpM1HA6fNPdBNfg39vAAj5sAAjpOeAidu3EpXv9EkdImck6rJ5t9EKuXoLbM+fP7SlzEHfJgZNv4x1Muyq+RG430+Cj/d5l+ccDFldOt6o6KfVmyg7RI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TTsz9d5D; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a3651c87ebbso151559966b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 01:30:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706693427; x=1707298227; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ICDsKAS7ESjBHyOA4kXHBONHifKEPJQGSK8cycVBuy8=;
-        b=TTsz9d5DhZ2WCWzadUMzylvH+Q7QTGkE/do5OxhTMqvvKsWljwmkxM4AqW2uXoRgVu
-         QSW5t6G7w6zgV/ypOHecuiJEUgxV0NY9rLlWpBMjLS9vYeKZMwEKJSX9GM+xqaZ+oL40
-         FaL956sMXRQSMw4ToJlm0CwVWXBqJkqFa4mXGSygBcjeWrtSKZ+N05mfi96Q6gQSETKW
-         yHQPV24eGQ0MzjL4xOLf4cpczMUNevBx/frDbWzi3ocoiABKRSBivQ19t1CoCHSjolBh
-         yNKsTtSdp2RR3tTDW4mRZHOO/sssomtJvl4FVSg49KlCmfsmP+kAQdhrk1OBLLIi3x35
-         zXxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706693427; x=1707298227;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ICDsKAS7ESjBHyOA4kXHBONHifKEPJQGSK8cycVBuy8=;
-        b=l2RepNfGMJGewf9D2rhSxvqBObtuIftILqntqQLV/CuPpyzvGRZlhnPJp6qHNjpLCo
-         M1On839L8b3hiKEl0bCJDZG7XQAnB1103ipYdxKBd5aCnaVNUXtz2wW8DGbOHG5UbFtJ
-         wJaw7oAfBEJDzrtlEfqsgjfahFZ16CvY/puHpffI7pL1II5MFW9AO00hlFwuFnyCKFLD
-         8s0HVKtqvYUSafD8UAt9TmoNIEp5PW3S+pcTcg7PDqCoV96vQDDfo32F+CAc6+o3jfC2
-         WjWYzH9kaE/0QaPARQk7dZzu5cAMxs/U64wtJV2Ex2tfzE0PDknbOymqdrqTuuoErMg9
-         qQUA==
-X-Gm-Message-State: AOJu0YxkfnSRSL/bjE4jwpdJErt2+5Y/KVHSxfrZBlPWAI81ebBvxqRf
-	GwQQrY76h2yvxz8Nxptkc+jCQrJ2K9hcUr6M5gpF9x2K+V+oIoxKuT1by5p9kqM=
-X-Google-Smtp-Source: AGHT+IGrVcvMI9FoMp3oRRPiCyaZkNJi+u88q8/q2mfDVcBMnWJf/RHpPtrRjkpcY5Fwi1LSRj5hsw==
-X-Received: by 2002:a17:906:e2cd:b0:a36:47fa:4b8c with SMTP id gr13-20020a170906e2cd00b00a3647fa4b8cmr772150ejb.9.1706693427367;
-        Wed, 31 Jan 2024 01:30:27 -0800 (PST)
-Received: from linaro.org ([79.115.23.25])
-        by smtp.gmail.com with ESMTPSA id hd11-20020a170907968b00b00a31906f280asm5985711ejc.193.2024.01.31.01.30.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 01:30:26 -0800 (PST)
-Date: Wed, 31 Jan 2024 11:30:25 +0200
-From: Abel Vesa <abel.vesa@linaro.org>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Sibi Sankar <quic_sibis@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Sibi Sankar <quic_sibis@quicinc.com>
-Subject: Re: [PATCH 3/3] remoteproc: qcom_q6v5_pas: Unload lite firmware on
- ADSP
-Message-ID: <ZboTMVx7SN1BBoaz@linaro.org>
-References: <20240129-x1e80100-remoteproc-v1-0-15d21ef58a4b@linaro.org>
- <20240129-x1e80100-remoteproc-v1-3-15d21ef58a4b@linaro.org>
- <CAA8EJporoBQQtrRWL5SS4qwpmu0rF6UMpaZXQ5t-qdvoW53XOA@mail.gmail.com>
+	s=arc-20240116; t=1706693536; c=relaxed/simple;
+	bh=P9oCSEVSvI3I8NxFBzCwMHgI6aG8o8ztxBa28NA+uno=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=cWkr9mhSrl9x6yUkUzUIharc7yMn34hXcFdmfA8UcTaXse5a9F/IvG2/FAkDprFxiqxSXA7mE6CSeCyZ9zyvgUB9ab7yP4KLSh3L/jbGKQchZoLjyLvxLc+xEbnENtHzYdWfTKeGF2las/QD5PREtQ1dfiLRNGEzd70BDGQq8bE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=bCKN3iUc; arc=none smtp.client-ip=162.62.57.210
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1706693529; bh=p0o02FUi1b8JvQdnhRH4R4WteCSwKGmKcl/ZjRkdDd0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=bCKN3iUc0M4UuISkCWGn4Rl7kmnYN8kmzTxcGelY53uRD+jEf9XMK08voztaf9Ntb
+	 X6+DmAu06sbBt9pRJEdQKQ7Gc925Vfni5PYCKxTncnc6gMbLcgKjSIq/fBids3HmSM
+	 9T5MBT2bCzFvKtmjVa2z3xxGVe5QJ6j3uOYMV2Pc=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
+	id 80782EF6; Wed, 31 Jan 2024 17:32:07 +0800
+X-QQ-mid: xmsmtpt1706693527t6wlriikx
+Message-ID: <tencent_EBBB1833609E1E1BFE4B201B0B259BBA3308@qq.com>
+X-QQ-XMAILINFO: NvH2zBBgt3uT6SfvEicVD2J9iSjPvrJYFDl2xkNUQwaRGrqXUCvTtCMoqcGgsx
+	 mj4f7F/Zco19qE3vDz18Gf08yTVQRhsT0oQE/86n4VhUx3tGznaTBn39lY+a6y9rG2/qKm+/0BIS
+	 6MJ+k/TqbLmWm48eQJP84m5Y5vG38L9cJeasz9+uzHKqpQrkuQmAL3dgHe/8IuXYR5N50414LIq9
+	 /ouuVfpwGaxTtgGmXJrLqE2rHg7l5MdftCQa1buqT2rqlx5VRD5Psux/yAP9u5ubVzoaA706HeHW
+	 62kUXumbosLQgF3r6UoPcbHv4Z/HuxDM6WW1fw1HMKKq9gWyj6XsWpVsv3WcpKjPxF/lqxNWh3zl
+	 Q3X7VLktqUAWVX/cmLW1u3e5BJZ9wWkwEaG7hBscVb9MgG20dIj3ETuITO0+SWcPGs1kpAbFckzX
+	 Q/h4vtJQlMHF4gDsL3rB/RKA9HFRM3bCJLzUDVhfNzV9/a8HA6PuSOfruwhpaQEeQhT2iyCyx+Cz
+	 E01zDvjrjWfyMtYi7iQ0/ZSPI9bIRzgxZxGhhRGDi7KcwlNIolBv8QOUtAQj53xAxPnYo1N4u6Vo
+	 /6xnkQhilPDNPyJUgZHskHOEtCSFuMJm1lQe2MVxKCkArwAAqMeKq1qCdUHQERMQssY32B30DdI6
+	 EA9fPVxoc5XS3r1/7Esk+aQYNquUaBNUFjZJ2/huzUwHgqgvx0p2p3CiJO82ryqNnZuqzzi4yi3t
+	 oDv6yCdKh7OgvgivrGxxhiz/c4Hh1CDuz2XPDQHz+HXHSug7kF+pT0gTtdrOBwCK6+N+l60JUOF6
+	 HgMPbUdUvuzdZMBrGL7QRAoSKAM5HbSwx3kmCsbWwcC3SjuDL8ZL4rpCpGYy+27xARII8NhtG/QZ
+	 RXZi+H856Z7fO6QchZgGJLJ8QOdsKNwAbuHBptpcOLmWsDjCyWnToydQQa0vAdqj/dSFOKupE1Nb
+	 iARnPXUa1+ulLL3NI8cw==
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+2373f6be3e6de4f92562@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [block?] [trace?] INFO: task hung in blk_trace_remove (2)
+Date: Wed, 31 Jan 2024 17:32:08 +0800
+X-OQ-MSGID: <20240131093207.1041375-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <0000000000002b1fc7060fca3adf@google.com>
+References: <0000000000002b1fc7060fca3adf@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA8EJporoBQQtrRWL5SS4qwpmu0rF6UMpaZXQ5t-qdvoW53XOA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On 24-01-29 17:17:28, Dmitry Baryshkov wrote:
-> On Mon, 29 Jan 2024 at 15:35, Abel Vesa <abel.vesa@linaro.org> wrote:
-> >
-> > From: Sibi Sankar <quic_sibis@quicinc.com>
-> >
-> > The UEFI loads a lite variant of the ADSP firmware to support charging
-> > use cases. The kernel needs to unload and reload it with the firmware
-> > that has full feature support for audio. This patch arbitarily shutsdown
-> > the lite firmware before loading the full firmware.
-> >
-> > Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
-> > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> > ---
-> >  drivers/remoteproc/qcom_q6v5_pas.c | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> >
-> > diff --git a/drivers/remoteproc/qcom_q6v5_pas.c b/drivers/remoteproc/qcom_q6v5_pas.c
-> > index 083d71f80e5c..4f6940368eb4 100644
-> > --- a/drivers/remoteproc/qcom_q6v5_pas.c
-> > +++ b/drivers/remoteproc/qcom_q6v5_pas.c
-> > @@ -39,6 +39,7 @@ struct adsp_data {
-> >         const char *dtb_firmware_name;
-> >         int pas_id;
-> >         int dtb_pas_id;
-> > +       int lite_pas_id;
-> >         unsigned int minidump_id;
-> >         bool auto_boot;
-> >         bool decrypt_shutdown;
-> > @@ -72,6 +73,7 @@ struct qcom_adsp {
-> >         const char *dtb_firmware_name;
-> >         int pas_id;
-> >         int dtb_pas_id;
-> > +       int lite_pas_id;
-> >         unsigned int minidump_id;
-> >         int crash_reason_smem;
-> >         bool decrypt_shutdown;
-> > @@ -210,6 +212,10 @@ static int adsp_load(struct rproc *rproc, const struct firmware *fw)
-> >         /* Store firmware handle to be used in adsp_start() */
-> >         adsp->firmware = fw;
-> >
-> > +       /* WIP: Shutdown the ADSP if it's running a lite version of the firmware*/
-> 
-> Why is it still marked as WIP?
+please test task hung in blk_trace_remove
 
-AFAIU, there was more to be done here w.r.t. preloaded lite version
-firmware.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
-Later, was agreed that that is not case.
+diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
+index d5d94510afd3..1af3c8aa78a3 100644
+--- a/kernel/trace/blktrace.c
++++ b/kernel/trace/blktrace.c
+@@ -311,7 +311,7 @@ static void __blk_add_trace(struct blk_trace *bt, sector_t sector, int bytes,
+ 	local_irq_restore(flags);
+ }
+ 
+-static void blk_trace_free(struct request_queue *q, struct blk_trace *bt)
++static void blk_trace_free_top(struct request_queue *q, struct blk_trace *bt)
+ {
+ 	relay_close(bt->rchan);
+ 
+@@ -325,11 +325,21 @@ static void blk_trace_free(struct request_queue *q, struct blk_trace *bt)
+ 	} else {
+ 		debugfs_remove(bt->dir);
+ 	}
++}
++
++static void blk_trace_free_bt(struct blk_trace *bt)
++{
+ 	free_percpu(bt->sequence);
+ 	free_percpu(bt->msg_data);
+ 	kfree(bt);
+ }
+ 
++static void blk_trace_free(struct request_queue *q, struct blk_trace *bt)
++{
++	blk_trace_free_top(q, bt);
++	blk_trace_free_bt(bt);
++}
++
+ static void get_probe_ref(void)
+ {
+ 	mutex_lock(&blk_probe_mutex);
+@@ -377,12 +387,23 @@ static int blk_trace_stop(struct blk_trace *bt)
+ 	return 0;
+ }
+ 
++static void blk_trace_rcu_free(struct rcu_head *rcu)
++{
++	struct blk_trace *bt;
++
++	bt = container_of(rcu, struct blk_trace, rcu);
++	if (bt)
++		blk_trace_free_bt(bt);
++}
++
+ static void blk_trace_cleanup(struct request_queue *q, struct blk_trace *bt)
+ {
+ 	blk_trace_stop(bt);
+-	synchronize_rcu();
+-	blk_trace_free(q, bt);
++	blk_trace_free_top(q, bt);
+ 	put_probe_ref();
++	mutex_unlock(&q->debugfs_mutex);
++	call_rcu(&bt->rcu, blk_trace_rcu_free);
++	mutex_lock(&q->debugfs_mutex);
+ }
+ 
+ static int __blk_trace_remove(struct request_queue *q)
+diff --git a/include/linux/blktrace_api.h b/include/linux/blktrace_api.h
+index 122c62e561fc..5f927328b7e6 100644
+--- a/include/linux/blktrace_api.h
++++ b/include/linux/blktrace_api.h
+@@ -26,6 +26,7 @@ struct blk_trace {
+ 	struct dentry *dir;
+ 	struct list_head running_list;
+ 	atomic_t dropped;
++	struct rcu_head rcu;
+ };
+ 
+ extern int blk_trace_ioctl(struct block_device *, unsigned, char __user *);
 
-So maybe I just need to drop the comment.
-
-Sibi, can you confirm?
-
-> 
-> > +       if (adsp->lite_pas_id)
-> > +               ret = qcom_scm_pas_shutdown(adsp->lite_pas_id);
-> > +
-> >         if (adsp->dtb_pas_id) {
-> >                 ret = request_firmware(&adsp->dtb_firmware, adsp->dtb_firmware_name, adsp->dev);
-> >                 if (ret) {
-> > @@ -693,6 +699,7 @@ static int adsp_probe(struct platform_device *pdev)
-> >         adsp->rproc = rproc;
-> >         adsp->minidump_id = desc->minidump_id;
-> >         adsp->pas_id = desc->pas_id;
-> > +       adsp->lite_pas_id = desc->lite_pas_id;
-> >         adsp->info_name = desc->sysmon_name;
-> >         adsp->decrypt_shutdown = desc->decrypt_shutdown;
-> >         adsp->region_assign_idx = desc->region_assign_idx;
-> > @@ -990,6 +997,7 @@ static const struct adsp_data x1e80100_adsp_resource = {
-> >         .dtb_firmware_name = "adsp_dtb.mdt",
-> >         .pas_id = 1,
-> >         .dtb_pas_id = 0x24,
-> > +       .lite_pas_id = 0x1f,
-> >         .minidump_id = 5,
-> >         .auto_boot = true,
-> >         .proxy_pd_names = (char*[]){
-> >
-> > --
-> > 2.34.1
-> >
-> >
-> 
-> 
-> -- 
-> With best wishes
-> Dmitry
 
