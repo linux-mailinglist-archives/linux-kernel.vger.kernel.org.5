@@ -1,75 +1,83 @@
-Return-Path: <linux-kernel+bounces-45796-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45797-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94B10843650
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:55:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5345F843653
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:57:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AD0228361F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 05:55:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDFDC1F2819D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 05:57:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 381313DBB8;
-	Wed, 31 Jan 2024 05:54:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B78E13DBBF;
+	Wed, 31 Jan 2024 05:57:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="NMsuTCO8"
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gm7KvZNk"
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53C3D3DB97
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 05:53:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B04C3DB8C;
+	Wed, 31 Jan 2024 05:57:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706680439; cv=none; b=bgqUo6av8R5KkObcTf1B+49dMkbSaElLX4tQA38jNSOeVv8NQCrju+OdSmRutOrGfhGmc23mY0JbIYn8c6hCRW8BiXBx/G/jidGCyj9qMb3kA8rsG2aCnDI8s5VwWDZl+7XT/UW6bchudpDQFJ2yEMXUMOIkYtQqLiePxB1eMok=
+	t=1706680653; cv=none; b=u6gs9g/cGGgwIkv8Rm1t9e/uT4Ad3vF1ID79U8S5CO7ydWUBjs7+OVYPPVDDJS3MkcCZRHonMqhhwqqtjrXRAkP29LXcGamf86lWsYlpG7WPHSSSH/3vXx8hoLLoy/i/JMUeh0uOCe0nag1R0lolEBhkqZzVFBOXMy8xrg79gFU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706680439; c=relaxed/simple;
-	bh=PPdE3DCvnZiG0bdg8iqUEfYeo4GDdFBvSrnY6OyKuc8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=illRS9YW6DVwc8yR8VxE3Fci+8bVl97Hhk5/fMEN0eNYX3/+7Uv3K58ufzAi7zTGnwWvRxvHDnMxTRfsZIH8eEo2tfFvyQ0O3WrGwZxRP3H3XPVIgf0PBP4rLYHBTC3yFRuMOsXNtHZ29NEqHzzrj2gi6XGLAgkOf4xWVO9Dm/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=NMsuTCO8; arc=none smtp.client-ip=209.85.167.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3be5973913bso1198181b6e.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 21:53:56 -0800 (PST)
+	s=arc-20240116; t=1706680653; c=relaxed/simple;
+	bh=yExbTaxNujpw4MVvw6DMvGP2n9jHMUjfnafp46vGVVI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=sRPSwU2TcO03mdOvYmvTo3PBa2aHGTGFLS3ETsLhh2akeCkTMJ+CnnkYOJYZpxAM9zA4IGxEUNeO82t/FYBWi0LNwtWtNfzMvnEWUf7ffmPsZga7ohoVdnlx4VawBqRV3r2eCLUd6rM1L3/kbll8b+ETEMLu65mxILijjwvkWv8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gm7KvZNk; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6de0ba30994so400853b3a.1;
+        Tue, 30 Jan 2024 21:57:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706680435; x=1707285235; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706680651; x=1707285451; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=tjonwnQ4Kkp0hlfAVU98vKu6Nb7/9d5YGb1ApRAN5a8=;
-        b=NMsuTCO8EtErCANA8SzuPqoItFuhb+bybmC0fk0K57Zw0PBZTBB9db1LgFDz4rmkVO
-         ds/j4grWxWZek+jVQ2suEJeptMjd5MJA9X3I+a/wCPVM2k7+9UBRwzeBpujlWbYRI2Xr
-         geKDTVD4zzNKq/4t9ZlC3mL/tYhoGBvguTMzM=
+        bh=DwfM1rJCcQryVjF8O0WNubhcGyoUuP04qt8oaDsGtxo=;
+        b=Gm7KvZNkpb2JQY+2Wx8+IdWD97aI0tLgCglD24Q0xq0xiGpOiQblALbjqhvUyRyNNw
+         +sVprWLFNr3kvZxs268dOP+7N2gCiHQmkBVhiu0wE/RmwIXeF6hTzPqW3pPZ7Gy8dXgz
+         8RVkiDluP4v4N/O/yfXhF8PVa8j5WCo1S4r19ks+/MlqEO1KE9VTSIMFYlp97keV8qls
+         hrcitQXb+MNMxkolLCH4gpidPJ/K0AH4fwcGcJuz8CYIlor/PGix+xVCbL+k/8Ec3h2f
+         sHemtFfYO+Np2Cwl8qgURgb0BM4R3udNyDTMtaXKYKabnn65mymufpaHHIjg7LfIGGKo
+         sELg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706680435; x=1707285235;
+        d=1e100.net; s=20230601; t=1706680651; x=1707285451;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=tjonwnQ4Kkp0hlfAVU98vKu6Nb7/9d5YGb1ApRAN5a8=;
-        b=HhmCrAdoaVq3P7PKPpLxzC0qnZ5TWHN0JX6Do41eujV1iZxSl21HEXPYLyicRan1Ix
-         5KECAIEFDV7TxB+IxtIZVM6pkLh8Z/yFrGL150a/JugogPuGVyEF0fejDb+ZugLzh+Ir
-         3vqgtKqWRBX8K+c7vsht82fuc1iDU6IBGW6Q/E/UNwizZhi9feu0iWyA9YvwUckRdygp
-         tqabuBGvQe7pMIVVvVs37HH9tk4qygJCkfN+cFzZkl6SSDaGx5r8fTyHFjkhgmx1uiXB
-         xGldx6HqKX2N+6EhANab1FzoRaewhySviDXQ2jHIaPOkKudzUJmw2SiCut9d/8bY5/7n
-         Ptvg==
-X-Gm-Message-State: AOJu0Yzfy1uQ7Tzldwaj8S1VAMixVxItg68OhsV2+ZTPRNHOr5iOxKWu
-	BE1Ve16PdBT+BI+NgJxFvLrHJ0JwqfvxROngz9Xvn6e8G/OdWEPFeo0aTOnpaw==
-X-Google-Smtp-Source: AGHT+IEF1C4QOuTiJ7v2HQi8nJWh2OEI1K0aKxwaYbd7H9eAtVhiKYUUQkbojB7Ll1us3OKvHsAC1Q==
-X-Received: by 2002:a05:6808:1289:b0:3bd:cacd:332d with SMTP id a9-20020a056808128900b003bdcacd332dmr922025oiw.40.1706680435247;
-        Tue, 30 Jan 2024 21:53:55 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXQfpblXybk1dAHjHe/xpMXJ7FQELNtajY/VAipRIhK9hCXwJ06aSb8h76iv3mgyW7fSLqBn//L/nzB/ZlHUcOW+fMUlYqSOnCElaOXn6ld4wYNSr1R8if96rmRdFVVSRtAUbEObxgNod+zglY65y6FZ2Rx4XXCbzbeO7dcf8og7tH2Ys/Z
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id x18-20020a056a00271200b006dd887e37f0sm8920617pfv.210.2024.01.30.21.53.54
+        bh=DwfM1rJCcQryVjF8O0WNubhcGyoUuP04qt8oaDsGtxo=;
+        b=MuRkhPFI8c+QnQxVKTSJamW5UXYxyF556FZ9thc6YYSG2N927fGEZkOs1tRZEYuX8+
+         Fzi/FNBxoCHbjNYMDbatPP2uDyErrJ4h4eLgu+DcI3ZmlaZzHQ1oeUFqKy7BC869/zXZ
+         U8TwPZoywaJeZzvXHPfmnsczogxtZ7od5ZIzElyRE3GnWYlU7qj4ruNRRVvr8FcCDd+2
+         S97gM8UqVXbZTaHaZTnKE7nCPUeLmzvSahksWJwH7b1W1wLwd0kPxgNsddF6XoO+v6Zc
+         +DiPj1G3XXQu4JyD1qADIxMgvB7jkB/WIL2xJrFoebtAgbYkWSLV70r0nFO8BZnbW6Pk
+         Y4bA==
+X-Gm-Message-State: AOJu0Ywkr9N2ahXZj+VPMjzGcbkTHkmkdCBeGcL0EvTFp51U+G970zMl
+	NDN9zdRFzhnBjgWibLkWOUyg11nC15pv/Yf5me9+5weqtGyOcgj5
+X-Google-Smtp-Source: AGHT+IGyY4WvXEhqhD6fYTqwlagg2XzApmRAkpxMfsTtKj47HL+X08KbKcSgirmJSNLfug0CcR+9PA==
+X-Received: by 2002:a05:6a00:981:b0:6d9:a074:659f with SMTP id u1-20020a056a00098100b006d9a074659fmr4506003pfg.13.1706680651313;
+        Tue, 30 Jan 2024 21:57:31 -0800 (PST)
+Received: from charles-System-Product-Name.dhcpserver.bu9bmc.local (1-34-21-66.hinet-ip.hinet.net. [1.34.21.66])
+        by smtp.gmail.com with ESMTPSA id r20-20020aa78b94000000b006ddddc7701fsm8904385pfd.4.2024.01.30.21.57.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 21:53:54 -0800 (PST)
-From: Kees Cook <keescook@chromium.org>
-To: Andy Shevchenko <andy@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>,
-	Justin Stitt <justinstitt@google.com>,
-	linux-hardening@vger.kernel.org,
+        Tue, 30 Jan 2024 21:57:31 -0800 (PST)
+From: Charles Hsu <ythsu0511@gmail.com>
+To: jdelvare@suse.com,
+	linux@roeck-us.net,
+	corbet@lwn.net,
+	Delphine_CC_Chiu@Wiwynn.com,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	linux-hwmon@vger.kernel.org,
+	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] string: Allow 2-argument strscpy()
-Date: Tue, 30 Jan 2024 21:53:49 -0800
-Message-Id: <20240131055340.work.279-kees@kernel.org>
+Cc: Charles Hsu <ythsu0511@gmail.com>
+Subject: [PATCH v3 1/2] hwmon: Add driver for MPS MPQ8785 Synchronous Step-Down Converter
+Date: Wed, 31 Jan 2024 13:55:25 +0800
+Message-Id: <20240131055526.2700452-1-ythsu0511@gmail.com>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -77,162 +85,275 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5419; i=keescook@chromium.org;
- h=from:subject:message-id; bh=PPdE3DCvnZiG0bdg8iqUEfYeo4GDdFBvSrnY6OyKuc8=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlueBtuN91rHXKUbh4l/HsZ5vDVbyRzx8eSqHY+
- SxmyFjzh6uJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZbngbQAKCRCJcvTf3G3A
- JurKD/0a35JlRO0OL0c3Rfnf9p1z3fXM2DKD/ZRqBLuwUELJ5VVZrOtGBYFnCiI7rOvyXQuRqgV
- WsnNZFKVslGT077eXpGoX/j3sOufEd7oOxrBRq6331cWPShOdkGjSa2P/EOskqVZLAPRPpkH4FC
- 70lz9ZqasamorG7F8ycNJPMQvSK9RVcivyOmg9UDt78w77N97f9YiPsA+5G9eUXfSTeJ0Y/7EhZ
- zuBB0chZoUPV3+d3CAIZd975ESbF+Q9ENrb0ed38dGKPeFf5dFfzmwW1nMXElob/GBtdPACTwy/
- /ViZcYaYAZzMi+ptPO/LK74AQpT/p4l2ULyI8AGOpr6GgJgZQ4b6TdKxGmD5HkZ7vB18uGCt4y7
- oFNICPDqQ8vVnd+MJY5Mi811h+CdTcJ2LdtJMugk2vHKHigsFN21Q/T69x5Os39S1jPvf05CeXP
- K24OsEBB9p4WrZ8a5uESjOgP6Rjrl4wN1yoFGrZkZoHT6UBPv5HVU/tyG9C2DKg8rEwRH2zszsJ
- BFHDCJwm0soki2jEbnncgLWQtqhmU5mVjA/r8Y21M0D1u3LeNMi4Y1lQjuHWs51jAxX/25YgE80
- GwFzgoKfb7tOmsCjZ+Gx6spw70vrdOqYRGyiURknzuEiUU3gTNc5TvJuYEO4f9rZoNhsSOMvOlt
- mTHr1ff LPoiOn4g==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 
-Using sizeof(dst) for the "size" argument in strscpy() is the
-overwhelmingly common case. Instead of requiring this everywhere, allow a
-2-argument version to be used that will use the sizeof() internally. There
-are other functions in the kernel with optional arguments[1], so this
-isn't unprecedented, and improves readability. Update and relocate the
-kern-doc for strscpy() too.
+Add support for mpq8785 device from Monolithic Power Systems, Inc.
+(MPS) vendor. This is synchronous step-down controller.
 
-This could additionally let us save a few hundred lines of code:
- 1177 files changed, 2455 insertions(+), 3026 deletions(-)
-with a treewide cleanup using Coccinelle:
+Signed-off-by: Charles Hsu <ythsu0511@gmail.com>
 
-@needless_arg@
-expression DST, SRC;
-@@
-
-        strscpy(DST, SRC
--, sizeof(DST)
-        )
-
-Link: https://elixir.bootlin.com/linux/v6.7/source/include/linux/pci.h#L1517 [1]
-Reviewed-by: Justin Stitt <justinstitt@google.com>
-Cc: Andy Shevchenko <andy@kernel.org>
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
-rfc: 
-v1:
- - update kern-doc (justin, andy)
- - include __must_be_array() for sanity check 
+Change in v1:
+    Initial patchset.
+Change in v2:
+    1.Add pmbus support status registers.
+    2.Add mpq8785 in trivial-devices.yaml.
+    3.Remove format[PSC_VOLTAGE_OUT].
+    4.Fix MODULE_DESCRIPTION.
+Change in v3:
+    1.Identify vout_mode.
+    2.Separate dt-binding.
 ---
- include/linux/fortify-string.h | 22 ++-------------------
- include/linux/string.h         | 36 +++++++++++++++++++++++++++++++++-
- lib/string.c                   |  4 ++--
- 3 files changed, 39 insertions(+), 23 deletions(-)
+ Documentation/hwmon/index.rst   |  1 +
+ Documentation/hwmon/mpq8785.rst | 94 +++++++++++++++++++++++++++++++++
+ drivers/hwmon/pmbus/Kconfig     |  9 ++++
+ drivers/hwmon/pmbus/Makefile    |  1 +
+ drivers/hwmon/pmbus/mpq8785.c   | 91 +++++++++++++++++++++++++++++++
+ 5 files changed, 196 insertions(+)
+ create mode 100644 Documentation/hwmon/mpq8785.rst
+ create mode 100644 drivers/hwmon/pmbus/mpq8785.c
 
-diff --git a/include/linux/fortify-string.h b/include/linux/fortify-string.h
-index 89a6888f2f9e..06b3aaa63724 100644
---- a/include/linux/fortify-string.h
-+++ b/include/linux/fortify-string.h
-@@ -215,26 +215,8 @@ __kernel_size_t __fortify_strlen(const char * const POS p)
- }
+diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
+index c7ed1f73ac06..085ad6ca9b05 100644
+--- a/Documentation/hwmon/index.rst
++++ b/Documentation/hwmon/index.rst
+@@ -163,6 +163,7 @@ Hardware Monitoring Kernel Drivers
+    mp2975
+    mp5023
+    mp5990
++   mpq8785
+    nct6683
+    nct6775
+    nct7802
+diff --git a/Documentation/hwmon/mpq8785.rst b/Documentation/hwmon/mpq8785.rst
+new file mode 100644
+index 000000000000..bf8176b87086
+--- /dev/null
++++ b/Documentation/hwmon/mpq8785.rst
+@@ -0,0 +1,94 @@
++.. SPDX-License-Identifier: GPL-2.0-only
++
++Kernel driver mpq8785
++=======================
++
++Supported chips:
++
++  * MPS MPQ8785
++
++    Prefix: 'mpq8785'
++
++Author: Charles Hsu <ythsu0511@gmail.com>
++
++Description
++-----------
++
++The MPQ8785 is a fully integrated, PMBus-compatible, high-frequency, synchronous
++buck converter. The MPQ8785 offers a very compact solution that achieves up to
++40A output current per phase, with excellent load and line regulation over a
++wide input supply range. The MPQ8785 operates at high efficiency over a wide
++output current load range.
++
++The PMBus interface provides converter configurations and key parameters
++monitoring.
++
++The MPQ8785 adopts MPS's proprietary multi-phase digital constant-on-time (MCOT)
++control, which provides fast transient response and eases loop stabilization.
++The MCOT scheme also allows multiple MPQ8785 devices to be connected in parallel
++with excellent current sharing and phase interleaving for high-current
++applications.
++
++Fully integrated protection features include over-current protection (OCP),
++over-voltage protection (OVP), under-voltage protection (UVP), and
++over-temperature protection (OTP).
++
++The MPQ8785 requires a minimal number of readily available, standard external
++components, and is available in a TLGA (5mmx6mm) package.
++
++Device compliant with:
++
++- PMBus rev 1.3 interface.
++
++The driver exports the following attributes via the 'sysfs' files
++for input voltage:
++
++**in1_input**
++
++**in1_label**
++
++**in1_max**
++
++**in1_max_alarm**
++
++**in1_min**
++
++**in1_min_alarm**
++
++**in1_crit**
++
++**in1_crit_alarm**
++
++The driver provides the following attributes for output voltage:
++
++**in2_input**
++
++**in2_label**
++
++**in2_alarm**
++
++The driver provides the following attributes for output current:
++
++**curr1_input**
++
++**curr1_label**
++
++**curr1_max**
++
++**curr1_max_alarm**
++
++**curr1_crit**
++
++**curr1_crit_alarm**
++
++The driver provides the following attributes for temperature:
++
++**temp1_input**
++
++**temp1_max**
++
++**temp1_max_alarm**
++
++**temp1_crit**
++
++**temp1_crit_alarm**
+diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
+index 294808f5240a..557ae0c414b0 100644
+--- a/drivers/hwmon/pmbus/Kconfig
++++ b/drivers/hwmon/pmbus/Kconfig
+@@ -377,6 +377,15 @@ config SENSORS_MPQ7932
+ 	  This driver can also be built as a module. If so, the module will
+ 	  be called mpq7932.
  
- /* Defined after fortified strnlen() to reuse it. */
--extern ssize_t __real_strscpy(char *, const char *, size_t) __RENAME(strscpy);
--/**
-- * strscpy - Copy a C-string into a sized buffer
-- *
-- * @p: Where to copy the string to
-- * @q: Where to copy the string from
-- * @size: Size of destination buffer
-- *
-- * Copy the source string @q, or as much of it as fits, into the destination
-- * @p buffer. The behavior is undefined if the string buffers overlap. The
-- * destination @p buffer is always NUL terminated, unless it's zero-sized.
-- *
-- * Preferred to strncpy() since it always returns a valid string, and
-- * doesn't unnecessarily force the tail of the destination buffer to be
-- * zero padded. If padding is desired please use strscpy_pad().
-- *
-- * Returns the number of characters copied in @p (not including the
-- * trailing %NUL) or -E2BIG if @size is 0 or the copy of @q was truncated.
-- */
--__FORTIFY_INLINE ssize_t strscpy(char * const POS p, const char * const POS q, size_t size)
-+extern ssize_t __real_strscpy(char *, const char *, size_t) __RENAME(sized_strscpy);
-+__FORTIFY_INLINE ssize_t sized_strscpy(char * const POS p, const char * const POS q, size_t size)
- {
- 	/* Use string size rather than possible enclosing struct size. */
- 	const size_t p_size = __member_size(p);
-diff --git a/include/linux/string.h b/include/linux/string.h
-index ab148d8dbfc1..c16430c7c043 100644
---- a/include/linux/string.h
-+++ b/include/linux/string.h
-@@ -67,9 +67,43 @@ extern char * strcpy(char *,const char *);
- extern char * strncpy(char *,const char *, __kernel_size_t);
- #endif
- #ifndef __HAVE_ARCH_STRSCPY
--ssize_t strscpy(char *, const char *, size_t);
-+ssize_t sized_strscpy(char *, const char *, size_t);
- #endif
- 
++config SENSORS_MPQ8785
++	tristate "MPS MPQ8785"
++	help
++	  If you say yes here you get hardware monitoring functionality support
++	  for power management IC MPS MPQ8785.
++
++	  This driver can also be built as a module. If so, the module will
++	  be called mpq8785.
++
+ config SENSORS_PIM4328
+ 	tristate "Flex PIM4328 and compatibles"
+ 	help
+diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
+index cf8a76744545..f14ecf03ad77 100644
+--- a/drivers/hwmon/pmbus/Makefile
++++ b/drivers/hwmon/pmbus/Makefile
+@@ -39,6 +39,7 @@ obj-$(CONFIG_SENSORS_MP2975)	+= mp2975.o
+ obj-$(CONFIG_SENSORS_MP5023)	+= mp5023.o
+ obj-$(CONFIG_SENSORS_MP5990)	+= mp5990.o
+ obj-$(CONFIG_SENSORS_MPQ7932)	+= mpq7932.o
++obj-$(CONFIG_SENSORS_MPQ8785)	+= mpq8785.o
+ obj-$(CONFIG_SENSORS_PLI1209BC)	+= pli1209bc.o
+ obj-$(CONFIG_SENSORS_PM6764TR)	+= pm6764tr.o
+ obj-$(CONFIG_SENSORS_PXE1610)	+= pxe1610.o
+diff --git a/drivers/hwmon/pmbus/mpq8785.c b/drivers/hwmon/pmbus/mpq8785.c
+new file mode 100644
+index 000000000000..b5bfc5d8a96b
+--- /dev/null
++++ b/drivers/hwmon/pmbus/mpq8785.c
+@@ -0,0 +1,91 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * The 2 argument style can only be used when dst is an array with a
-+ * known size.
++ * Driver for MPS MPQ8785 Step-Down Converter
 + */
-+#define __strscpy0(dst, src, ...)	\
-+	sized_strscpy(dst, src, sizeof(dst) + __must_be_array(dst))
 +
-+#define __strscpy1(dst, src, size)	sized_strscpy(dst, src, size)
++#include <linux/i2c.h>
++#include <linux/module.h>
++#include <linux/of_device.h>
++#include "pmbus.h"
 +
-+/**
-+ * strscpy - Copy a C-string into a sized buffer
-+ * @dst: Where to copy the string to
-+ * @src: Where to copy the string from
-+ * @...: Size of destination buffer (optional)
-+ *
-+ * Copy the source string @src, or as much of it as fits, into the
-+ * destination @dst buffer. The behavior is undefined if the string
-+ * buffers overlap. The destination @dst buffer is always NUL terminated,
-+ * unless it's zero-sized.
-+ *
-+ * The size argument @... is only required when @dst is not an array, or
-+ * when the copy needs to be smaller than sizeof(@dst).
-+ *
-+ * Preferred to strncpy() since it always returns a valid string, and
-+ * doesn't unnecessarily force the tail of the destination buffer to be
-+ * zero padded. If padding is desired please use strscpy_pad().
-+ *
-+ * Returns the number of characters copied in @dst (not including the
-+ * trailing %NUL) or -E2BIG if @size is 0 or the copy from @src was
-+ * truncated.
-+ */
-+#define strscpy(dst, src, ...)	\
-+	CONCATENATE(__strscpy, COUNT_ARGS(__VA_ARGS__))(dst, src, __VA_ARGS__)
++static int mpq8785_identify(struct i2c_client *client,
++			    struct pmbus_driver_info *info)
++{
++	int vout_mode;
 +
- /* Wraps calls to strscpy()/memset(), no arch specific code required */
- ssize_t strscpy_pad(char *dest, const char *src, size_t count);
- 
-diff --git a/lib/string.c b/lib/string.c
-index 6891d15ce991..2869895a1180 100644
---- a/lib/string.c
-+++ b/lib/string.c
-@@ -104,7 +104,7 @@ EXPORT_SYMBOL(strncpy);
- #endif
- 
- #ifndef __HAVE_ARCH_STRSCPY
--ssize_t strscpy(char *dest, const char *src, size_t count)
-+ssize_t sized_strscpy(char *dest, const char *src, size_t count)
- {
- 	const struct word_at_a_time constants = WORD_AT_A_TIME_CONSTANTS;
- 	size_t max = count;
-@@ -170,7 +170,7 @@ ssize_t strscpy(char *dest, const char *src, size_t count)
- 
- 	return -E2BIG;
- }
--EXPORT_SYMBOL(strscpy);
-+EXPORT_SYMBOL(sized_strscpy);
- #endif
- 
- /**
++	vout_mode = pmbus_read_byte_data(client, 0, PMBUS_VOUT_MODE);
++	if (vout_mode >= 0 && vout_mode != 0xff) {
++		switch (vout_mode >> 5) {
++		case 0:
++			info->format[PSC_VOLTAGE_OUT] = linear;
++			break;
++		case 1:
++		case 2:
++			/* Direct mode or VID mode: Vout_Actual = READ_VOUT*LSB,
++			   LSB = 1.5625 mV/LSB */
++			info->format[PSC_VOLTAGE_OUT] = direct,
++			info->m[PSC_VOLTAGE_OUT] = 64;
++			info->b[PSC_VOLTAGE_OUT] = 0;
++			info->R[PSC_VOLTAGE_OUT] = 1;
++			break;
++		default:
++			return -ENODEV;
++		}
++	}
++
++	return 0;
++};
++
++static struct pmbus_driver_info mpq8785_info = {
++	.pages = 1,
++	.format[PSC_VOLTAGE_IN] = direct,
++	.format[PSC_CURRENT_OUT] = direct,
++	.format[PSC_TEMPERATURE] = direct,
++	.m[PSC_VOLTAGE_IN] = 4,
++	.b[PSC_VOLTAGE_IN] = 0,
++	.R[PSC_VOLTAGE_IN] = 1,
++	.m[PSC_CURRENT_OUT] = 16,
++	.b[PSC_CURRENT_OUT] = 0,
++	.R[PSC_CURRENT_OUT] = 0,
++	.m[PSC_TEMPERATURE] = 1,
++	.b[PSC_TEMPERATURE] = 0,
++	.R[PSC_TEMPERATURE] = 0,
++	.func[0] =
++		PMBUS_HAVE_VIN | PMBUS_HAVE_STATUS_INPUT |
++		PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT |
++		PMBUS_HAVE_IOUT | PMBUS_HAVE_STATUS_IOUT |
++		PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
++	.identify = mpq8785_identify,
++};
++
++static int mpq8785_probe(struct i2c_client *client)
++{
++	return pmbus_do_probe(client, &mpq8785_info);
++};
++
++static const struct i2c_device_id mpq8785_id[] = {
++	{ "mpq8785", 0 },
++	{ },
++};
++MODULE_DEVICE_TABLE(i2c, mpq8785_id);
++
++static const struct of_device_id __maybe_unused mpq8785_of_match[] = {
++	{ .compatible = "mps,mpq8785" },
++	{}
++};
++MODULE_DEVICE_TABLE(of, mpq8785_of_match);
++
++static struct i2c_driver mpq8785_driver = {
++	.driver = {
++		   .name = "mpq8785",
++		   .of_match_table = of_match_ptr(mpq8785_of_match),
++	},
++	.probe_new = mpq8785_probe,
++	.id_table = mpq8785_id,
++};
++
++module_i2c_driver(mpq8785_driver);
++
++MODULE_AUTHOR("Charles Hsu <ythsu0511@gmail.com>");
++MODULE_DESCRIPTION("PMBus driver for MPS MPQ8785");
++MODULE_LICENSE("GPL");
 -- 
 2.34.1
 
