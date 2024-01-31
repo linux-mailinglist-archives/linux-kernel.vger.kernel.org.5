@@ -1,119 +1,150 @@
-Return-Path: <linux-kernel+bounces-45747-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45748-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF6648434E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 05:43:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 218968434E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 05:53:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 56E8C1F25F6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 04:43:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B63E21F26220
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 04:53:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C6D11805F;
-	Wed, 31 Jan 2024 04:42:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3F6B3D0B6;
+	Wed, 31 Jan 2024 04:53:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IBomMRlf"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ytyFD4cH"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BCD917BD1
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 04:42:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82C763D0A9;
+	Wed, 31 Jan 2024 04:53:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706676177; cv=none; b=SaFufLCWzMgtGhvkd9oWInRKEI9f43OWPQ1Y2dfkMlTzzEm/5ZUFd4gFYLydGSfZ68etIM0J7SC64JFl1c4aVgYkIhKVVa2148QWmkWHOdRyVNruppwA84msVHzfIpd9/uOBkrYHJbAyUY8k7QN47NHHL87uARdQKiyhN3EUMhg=
+	t=1706676802; cv=none; b=UgZUdg/hhAypd96Kxg12zWLQ8lLj834WcJAN5goKscJ+efymTYokoo7St8yfPnQEiFYb/Y4cFrDrcrVeeTQeUYkK06mCahvjmQH+zGIFFBYkC7VZTpFlQR7QZ3dApJe89up+epHMhdIVIbNvpnkqJ9ctaTBUnpKs93v+P58xkIU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706676177; c=relaxed/simple;
-	bh=wj/RHLEcO+Eso75EMA5XDjcUsbQTGg2WZ36dJdkuttE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N2c6bvJl/9H900u9InEt3BlOgQaOmOpAU27IXblQqo96SypsuuuQlGQeRuRL56v0dn7jxCKTKa668dqrxzA+dkQ8v9ypIziY+MSo+eB39M47mRIZReugl2RIb/yx/oURlO2/99ZfcQHSM6ZDno/qnq/SKDX5jobuxmaZS4/apmA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IBomMRlf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C3CCC433F1;
-	Wed, 31 Jan 2024 04:42:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706676177;
-	bh=wj/RHLEcO+Eso75EMA5XDjcUsbQTGg2WZ36dJdkuttE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IBomMRlfRzJuDCtTlwEOL8klHygV+naNXVlOivvS+PfUz83i+EK5ljh1VRKBMZyOD
-	 d9Pp6k8cNEswifLc7EPFrk1Be3iqEseGwfrt8C5LmLAGbZz1GvLEvE8iBE0C/vsFGZ
-	 nR0P/SAyMcannwWTJknmkSsX1laB1kD5SBe7eAMYuhc3K84ZrC2CHiUYulhAtR1I7d
-	 MKP33AAvVUnbIsJMKy32kk95Uii+B3D3IndHzt06JMAJcbH4S29EUXEF24h9dRtqdx
-	 qWuRaPgv6Duo76rkcCca6RpS3mfcHS2eBMmJKiH9urWqfAYZ80gT6ssPV86NoWPybu
-	 lt3ZCH1ODunHw==
-Date: Tue, 30 Jan 2024 21:42:54 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Tejun Heo <tj@kernel.org>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	linux-kernel@vger.kernel.org, Naohiro.Aota@wdc.com,
-	kernel-team@meta.com
-Subject: Re: [PATCH v4 09/10] workqueue: Implement system-wide nr_active
- enforcement for unbound workqueues
-Message-ID: <20240131044254.GA802495@dev-arch.thelio-3990X>
-References: <20240125170628.2017784-10-tj@kernel.org>
- <CAJhGHyAuoGNmaaDa0p+wiJMprXYVYnVV75PS4+kPy-fsPJVH8w@mail.gmail.com>
- <ZbfrEx9nnkr0FnZE@slm.duckdns.org>
- <CGME20240130223021eucas1p1172b060d53847b8b77f6455d6257528e@eucas1p1.samsung.com>
- <91eacde0-df99-4d5c-a980-91046f66e612@samsung.com>
- <ZbnGbC8YM0rcI8Jm@slm.duckdns.org>
- <20240131041205.GA3517117@dev-arch.thelio-3990X>
- <ZbnIzqmClhAvPxKC@slm.duckdns.org>
- <20240131042031.GA3946229@dev-arch.thelio-3990X>
- <ZbnLk7pZbcODRNER@slm.duckdns.org>
+	s=arc-20240116; t=1706676802; c=relaxed/simple;
+	bh=83vEIVIiRUom9n5l9Wa09T44oRPDaNBb4ZBKRZ8M/Uo=;
+	h=Message-ID:Date:MIME-Version:CC:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=Km06Z5vT/DvJDOcI13npCqUKbR+QR/ysOR9uUtVd+sqogqRic4A/eM8KEMAsYcKNaO+ZUszBOhv0oBIw09Vn1VnWwkr3Ydw421DT/C0BEM+wKhWXrUyurhJL6SuMqUXStX/iDfenPeOen2n3745SUsVgHpwQXo4pG032G82skwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=ytyFD4cH; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40V4r8ei052324;
+	Tue, 30 Jan 2024 22:53:08 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706676788;
+	bh=S5CDXwnWVi9SBaQus4QzH3o1wmOSFFe3GN7qWSYETTg=;
+	h=Date:CC:Subject:To:References:From:In-Reply-To;
+	b=ytyFD4cHnN/gIXHJ+XP9Z0uz3p4rcCbvfDVdmFkD905njMdm5O8KEjwAoYzOnLA+Z
+	 bVVY0YKexnmSATZPtuNn1YdUvPD64yNqxc1dKxQr3dYW9n7hlz0t4ByYCMvivoF9Tu
+	 72HmunUFlWgZSiIc0t6Cb8JNqzt+EMOly/AUmQhE=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40V4r8xN039522
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 30 Jan 2024 22:53:08 -0600
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 30
+ Jan 2024 22:53:07 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 30 Jan 2024 22:53:07 -0600
+Received: from [172.24.227.9] (uda0492258.dhcp.ti.com [172.24.227.9])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40V4r4uJ057488;
+	Tue, 30 Jan 2024 22:53:05 -0600
+Message-ID: <126d520e-bd00-467b-b5dc-3423cc405410@ti.com>
+Date: Wed, 31 Jan 2024 10:23:03 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZbnLk7pZbcODRNER@slm.duckdns.org>
+User-Agent: Mozilla Thunderbird
+CC: <bhelgaas@google.com>, <lpieralisi@kernel.org>, <kw@linux.com>,
+        <robh@kernel.org>, <vigneshr@ti.com>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <srk@ti.com>, <s-vadapalli@ti.com>
+Subject: Re: [PATCH] PCI: j721e: Extend j721e_pcie_ctrl_init() for non syscon
+ nodes
+Content-Language: en-US
+To: Andrew Davis <afd@ti.com>
+References: <20240129104958.1139787-1-s-vadapalli@ti.com>
+ <077682de-7789-4f1f-8dcc-aa47f4fb2dff@ti.com>
+ <792c972b-052e-4e24-a85f-9415fe02aa01@ti.com>
+ <2a373360-9bf2-411c-a9aa-0a7451b9ba38@ti.com>
+From: Siddharth Vadapalli <s-vadapalli@ti.com>
+In-Reply-To: <2a373360-9bf2-411c-a9aa-0a7451b9ba38@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Tue, Jan 30, 2024 at 06:24:51PM -1000, Tejun Heo wrote:
-> On Tue, Jan 30, 2024 at 09:20:31PM -0700, Nathan Chancellor wrote:
-> > On Tue, Jan 30, 2024 at 06:13:02PM -1000, Tejun Heo wrote:
-> > > On Tue, Jan 30, 2024 at 09:12:05PM -0700, Nathan Chancellor wrote:
-> > > > Hi Tejun,
-> > > > 
-> > > > On Tue, Jan 30, 2024 at 06:02:52PM -1000, Tejun Heo wrote:
-> > > > > Hello,
-> > > > > 
-> > > > > Thanks for the report. Can you please test whether the following patch fixes
-> > > > > the problem?
-> > > > 
-> > > > I just tested this change on top of 5797b1c18919 but it does not appear
-> > > > to resolve the issue for any of the three configurations that I tested.
-> > > 
-> > > Bummer. Can you map the faulting address to the source line?
-> > 
-> > Sure, here is the arm64 stacktrace run through
-> > scripts/decode_stacktrace.sh, the line numbers correspond to your tree
-> > at 5797b1c18919.
+
+
+On 30/01/24 20:30, Andrew Davis wrote:
+> On 1/29/24 10:50 PM, Siddharth Vadapalli wrote:
+>> Hello Andrew,
+>>
+>> On 29/01/24 20:49, Andrew Davis wrote:
+>>> On 1/29/24 4:49 AM, Siddharth Vadapalli wrote:
+>>
+>> ...
+>>
+>>>>        int ret;
+>>>>    -    syscon = syscon_regmap_lookup_by_phandle(node, "ti,syscon-pcie-ctrl");
+>>>> +    scm_conf = of_parse_phandle(node, "ti,syscon-pcie-ctrl", 0);
+>>>> +    if (!scm_conf) {
+>>>> +        dev_err(dev, "unable to get System Controller node\n");
+>>>> +        return -ENODEV;
+>>>> +    }
+>>>> +
+>>>> +    syscon = device_node_to_regmap(scm_conf);
+>>>
+>>> Turning the entire "simple-bus" region into a regmap using this
+>>> function is just as broken as having it as a "syscon". The core
+>>> problem we are solving by getting rid of the blanket syscon nodes
+>>> is that it causes multiple mappings of the same register. This
+>>> can cause issues with regmap caching, read–modify–write, etc..
+>>>
+>>> What you want to do is add a subnode to the simple-bus, have that
+>>> encapsulate just the registers used for PCIe, and have the PCIe
+>>> node point to that. Then this patch isn't needed.
+>>>
+>>> For an example, see how it's done for DSS[0].
+>>
+>> Thank you for reviewing the patch. I will implement it similar to what's done
+>> for DSS as you pointed out. However, what about the existing SoCs which make use
+>> of the "ti,syscon-pcie-ctrl" property? Do you suggest that I add another
+>> device-tree property for pointing to the PCIE_CTRL register within the CTRL_MMR
+>> region, or do you suggest that I reuse the existing "ti,syscon-pcie-ctrl"
+>> property differently in the SoCs like J784S4 where the scm_conf node is a
+>> "simple-bus"?
+>>
+>> The "ti,syscon-pcie-ctrl" property as defined in the device-tree bindings has
+>> two elements with the first being the phandle to the scm_conf node and the
+>> second being the offset of the PCIE_CTRL register. The newer implementation you
+>> are suggesting will either require a new property which accepts only one element
+>> namely the phandle to the node within scm_conf corresponding to the PCIE_CTRL
+>> register. Will adding a new property be acceptable?
+>>
 > 
-> Ah, I see. How about the following?
+> Why would you need a new property? If there is no offset to the PCIE_CTRL register
+> in the new syscon space then just set the offset = 0x0, easy.
+
+Seems like a Hack to me considering that the offset will always be zero for
+non-syscon parent nodes (which will be the convention going forward), implying
+that the offset might as well be dropped and just the phandle is sufficient. For
+now I shall implement it as you suggested. Maybe once the syscon nodes in
+existing SoCs are also converted to simple-bus, then the property can be
+redefined to just be the phandle to "pcie_ctrl" register.
+
 > 
-> Thanks.
+> Andrew
 
-That works for three easy to test configurations that were broken,
-thanks!
-
-Tested-by: Nathan Chancellor <nathan@kernel.org>
-
-> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-> index 9221a4c57ae1..31c1373505d8 100644
-> --- a/kernel/workqueue.c
-> +++ b/kernel/workqueue.c
-> @@ -1510,7 +1510,7 @@ static void wq_update_node_max_active(struct workqueue_struct *wq, int off_cpu)
->  
->  	lockdep_assert_held(&wq->mutex);
->  
-> -	if (!cpumask_test_cpu(off_cpu, effective))
-> +	if (off_cpu >= 0 && !cpumask_test_cpu(off_cpu, effective))
->  		off_cpu = -1;
->  
->  	total_cpus = cpumask_weight_and(effective, cpu_online_mask);
-> 
-> -- 
-> tejun
+-- 
+Regards,
+Siddharth.
 
