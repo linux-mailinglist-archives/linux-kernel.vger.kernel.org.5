@@ -1,133 +1,222 @@
-Return-Path: <linux-kernel+bounces-45579-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45580-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1828C8432A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 02:15:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43CCC8432A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 02:19:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8F2128763C
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 01:15:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6910E1C2504B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 01:19:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8111D2916;
-	Wed, 31 Jan 2024 01:15:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F9B1EDD;
+	Wed, 31 Jan 2024 01:19:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ed5glmhA"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="vpfqMJWs"
+Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6327C1C20;
-	Wed, 31 Jan 2024 01:15:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6ABB7FA
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 01:19:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706663742; cv=none; b=dF3uU8IBHHqqqyKf11+UEIrAlikNk+RlTQZDxOfvbLk+DdkhAql9cAfFDfand1auh+tcsbYYNYPQl9we6kaUG61r99E4m0yOtguP7WEO6gA8iD8d5ZOYNZBq9g5Nbtf9+XdtfHtHmv77v4jHRHFBhuyx4usfdD6ScRqg/rzLjQM=
+	t=1706663983; cv=none; b=Oo7F86Bs4jBHj1DpS6I+ORPIqB7bwzrCS5JjxDGwi9eY4NH3z2glNPAOaDEYNHGS2uLrIlRSBVWfwejR3FdzsCaFvNjgYo31f4i0BMGkmz/kIZ9Q68Ukdgak8W9PLMvIlSzVBGp1kfKwFrP8aIwT7KIS0bcyDMQdhF76H7eWMhc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706663742; c=relaxed/simple;
-	bh=/pTzJOK51v+5SYhIFOmecoVuKff4pmOxFD7hGsAarAo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=U2WZQygybQBAOrJYz00MtvGf415LE5G/4YcvgpbNyvqhyK96jFtct0kQHsbm7ohB88sRQGceqt3+BY69g21NEedbhlb8TjBqsaDiDmIDgyNdkLjXXj0crDNmumzTtPT+L/r3EDTb/OCe0cZsvMUfbxDNTNO6MSOwxpqpxSSNeM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ed5glmhA; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d7858a469aso26581045ad.2;
-        Tue, 30 Jan 2024 17:15:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706663740; x=1707268540; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=TMI3cnWrauJ0sVrAPWjosebBGINiaEuvqhQTmdIHpwU=;
-        b=ed5glmhAauN1DdTP9WSelwo27ZmJ3DFMPnWR+X86+VV8YkHOSNjVNSR11ovk2TMCGy
-         GirQdV64Ytk5hE5+8lv09bxszn1qWPS4HJc8krbYVXOYlbPjE0krswZB39bbQ9PiiXMi
-         27hObmpnQVaLYtOEwFuKWDaW3u+rR5WwBNHsS0Qus879Pbc+9yDOyrPOgj0cnAo3keZJ
-         34XR4usdxYewBYMqGyX3QPj3bJWcAktwErWy2E2qXGIldcc4rBKfErAERP0xa4JGmT2k
-         64ZUVlrgmCCJJabMPd5QXWlES8kz95hvsoNF42crApIARaaiIijdGcfd0QOMPeHQGZrH
-         6PQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706663740; x=1707268540;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TMI3cnWrauJ0sVrAPWjosebBGINiaEuvqhQTmdIHpwU=;
-        b=asmnSjoaV1fJm1zmIk9/vGFH+dkp6YhV3XC3Zje8v8V0nanLaVW5MIGdRviZ+YHE2O
-         mr1MpIRVy4qz+1LSyyLgafhZUYgAsPuXLsD9oYCGDFlMVAPz7S8zbpxusfpJK8Etdvih
-         UpFcbAS1mwioXkrzArJwkaDeRPEiDanda01sLpUewszloHcVVl6xp5DHIWK92cP5ylAd
-         iHdq1J73XnwtEiCPwuc9SnKgPyA53dIJq/kqIuECxo11VDMJWXWRspkfbbLjS8IXE1No
-         MtWLw8o1GlUkQkN76sVuSvG/p8Cqm2NewJ36d2yzYOTbRzhCIixbqbDlwTwF9mH5OgSc
-         apSg==
-X-Gm-Message-State: AOJu0YwlWu5iRn9TAao73sogSNyiwv0OBinY91MBv8YPcKVxvVGmCKiz
-	tbnxyNM83MMz8RyVolvdSACkqun8aeE4Uc3nnYHyLdbZbCI3t/44
-X-Google-Smtp-Source: AGHT+IG8UGKG/Zt1rkUy45qpAPEJlPjYqNZszRCvj1fmkMfo62fVTpD1GY8zqyGU1X8ERHaQ08XHGA==
-X-Received: by 2002:a17:902:e805:b0:1d8:d01b:571e with SMTP id u5-20020a170902e80500b001d8d01b571emr246288plg.33.1706663740422;
-        Tue, 30 Jan 2024 17:15:40 -0800 (PST)
-Received: from localhost ([2601:1c0:5000:d5c:ae1c:de46:682a:206])
-        by smtp.gmail.com with ESMTPSA id t18-20020a170902d29200b001d8d6ec2d7fsm4866303plc.61.2024.01.30.17.15.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 17:15:39 -0800 (PST)
-From: Rob Clark <robdclark@gmail.com>
-To: dri-devel@lists.freedesktop.org
-Cc: linux-arm-msm@vger.kernel.org,
-	freedreno@lists.freedesktop.org,
-	Rob Clark <robdclark@chromium.org>,
-	Rob Clark <robdclark@gmail.com>,
-	Abhinav Kumar <quic_abhinavk@quicinc.com>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Sean Paul <sean@poorly.run>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Dmitry Osipenko <dmitry.osipenko@collabora.com>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] drm/msm/gem: Fix double resv lock aquire
-Date: Tue, 30 Jan 2024 17:15:37 -0800
-Message-ID: <20240131011537.31049-1-robdclark@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1706663983; c=relaxed/simple;
+	bh=wXpIbBYsw5piRhsl6RgdldRPIgSDaSHdiHt8JrNeyDQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gpm4gtnPtkUKXGS9gksPfJkghFcJuIsY2gMl7/KL7ckEUU/S1AlfuIWLsNCV8rWoCGAEL58993NICbTEj9sgfp8WjK81zN3t+k+1GhET4Cj7h4lSVRB7I76h5ceYi6pCfSFzSXQD5VIgd6tO5OwUPUZFVTkaKzUla8twanN5gJc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=vpfqMJWs; arc=none smtp.client-ip=115.124.30.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1706663977; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=QNcnZ4YTCX16sFr0xVxV0BBzhklTzrouZKUQMVBhs6A=;
+	b=vpfqMJWsCq61e9ix34Qd8yuhvnJULeWM4vqeXinIxT7tPBIv92uHrDUiUu9BXidLE0X4aDjmdNQgc+4EZ00nm9XitLbCMIASFM5kZZI6QTKx3CfPMr+FmhP1Ey/sj7sDkfJDAurRF9K73lLweLEhpvQxYSbfptP893HbA3leqeM=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=liusong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W.hOH5._1706663975;
+Received: from 30.178.80.124(mailfrom:liusong@linux.alibaba.com fp:SMTPD_---0W.hOH5._1706663975)
+          by smtp.aliyun-inc.com;
+          Wed, 31 Jan 2024 09:19:36 +0800
+Message-ID: <f6525b03-0864-4bd3-b083-3532f0042745@linux.alibaba.com>
+Date: Wed, 31 Jan 2024 09:19:35 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCHv2 1/2] watchdog/softlockup: low-overhead detection of
+ interrupt storm
+To: Bitao Hu <yaoma@linux.alibaba.com>, dianders@chromium.org,
+ akpm@linux-foundation.org, pmladek@suse.com, lecopzer.chen@mediatek.com,
+ kernelfans@gmail.com
+Cc: linux-kernel@vger.kernel.org
+References: <20240130074744.45759-1-yaoma@linux.alibaba.com>
+ <20240130074744.45759-2-yaoma@linux.alibaba.com>
+From: Liu Song <liusong@linux.alibaba.com>
+In-Reply-To: <20240130074744.45759-2-yaoma@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-From: Rob Clark <robdclark@chromium.org>
 
-Since commit 56e5abba8c3e ("dma-buf: Add unlocked variant of vmapping
-functions"), the resv lock is already held in the prime vmap path, so
-don't try to grab it again.
+在 2024/1/30 15:47, Bitao Hu 写道:
+> The following softlockup is caused by interrupt storm, but it cannot be
+> identified from the call tree. Because the call tree is just a snapshot
+> and doesn't fully capture the behavior of the CPU during the soft lockup.
+>    watchdog: BUG: soft lockup - CPU#28 stuck for 23s! [fio:83921]
+>    ...
+>    Call trace:
+>      __do_softirq+0xa0/0x37c
+>      __irq_exit_rcu+0x108/0x140
+>      irq_exit+0x14/0x20
+>      __handle_domain_irq+0x84/0xe0
+>      gic_handle_irq+0x80/0x108
+>      el0_irq_naked+0x50/0x58
+>
+> Therefore，I think it is necessary to report CPU utilization during the
+> softlockup_thresh period (report once every sample_period, for a total
+> of 5 reportings), like this:
+>    watchdog: BUG: soft lockup - CPU#28 stuck for 23s! [fio:83921]
+>    CPU#28 Utilization every 4s during lockup:
+>      #1: 0% system, 0% softirq, 100% hardirq, 0% idle
+>      #2: 0% system, 0% softirq, 100% hardirq, 0% idle
+>      #3: 0% system, 0% softirq, 100% hardirq, 0% idle
+>      #4: 0% system, 0% softirq, 100% hardirq, 0% idle
+>      #5: 0% system, 0% softirq, 100% hardirq, 0% idle
+>    ...
+>
+> This would be helpful in determining whether an interrupt storm has
+> occurred or in identifying the cause of the softlockup. The criteria for
+> determination are as follows:
+>    a. If the hardirq utilization is high, then interrupt storm should be
+>    considered and the root cause cannot be determined from the call tree.
+>    b. If the softirq utilization is high, then we could analyze the call
+>    tree but it may cannot reflect the root cause.
+>    c. If the system utilization is high, then we could analyze the root
+>    cause from the call tree.
+>
+> Signed-off-by: Bitao Hu <yaoma@linux.alibaba.com>
+> ---
+>   kernel/watchdog.c | 72 +++++++++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 72 insertions(+)
+>
+> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+> index 81a8862295d6..0efe9604c3c2 100644
+> --- a/kernel/watchdog.c
+> +++ b/kernel/watchdog.c
+> @@ -23,6 +23,8 @@
+>   #include <linux/sched/debug.h>
+>   #include <linux/sched/isolation.h>
+>   #include <linux/stop_machine.h>
+> +#include <linux/kernel_stat.h>
+> +#include <linux/math64.h>
+>   
+>   #include <asm/irq_regs.h>
+>   #include <linux/kvm_para.h>
+> @@ -441,6 +443,73 @@ static int is_softlockup(unsigned long touch_ts,
+>   	return 0;
+>   }
+>   
+> +#ifdef CONFIG_IRQ_TIME_ACCOUNTING
+> +#define NUM_STATS_GROUPS	5
+> +#define STATS_SYSTEM		0
+> +#define STATS_SOFTIRQ		1
+> +#define STATS_HARDIRQ		2
+> +#define STATS_IDLE		3
+> +#define NUM_STATS_PER_GROUP	4
+This is a set of related numbers; wouldn't it be better to use an enum?
+> +static DEFINE_PER_CPU(u16, cpustat_old[NUM_STATS_PER_GROUP]);
+> +static DEFINE_PER_CPU(u8, cpustat_utilization[NUM_STATS_GROUPS][NUM_STATS_PER_GROUP]);
+> +static DEFINE_PER_CPU(u8, cpustat_tail);
+> +static enum cpu_usage_stat idx_to_stat[NUM_STATS_PER_GROUP] = {
+> +	CPUTIME_SYSTEM, CPUTIME_SOFTIRQ, CPUTIME_IRQ, CPUTIME_IDLE
+> +};
+To be honest, I'm not particularly fond of the name 'idx_to_stat' as the 
+concept of an
+index is already implied by the nature of an array, so adding 'idx' is 
+redundant.
+I suggest shortening the name.
 
-v2: This applies to vunmap path as well
+> +
+> +static void update_cpustat(void)
+> +{
+> +	u8 i;
+> +	u16 *old = this_cpu_ptr(cpustat_old);
+> +	u8 (*utilization)[NUM_STATS_PER_GROUP] = this_cpu_ptr(cpustat_utilization);
+> +	u8 tail = this_cpu_read(cpustat_tail);
+> +	struct kernel_cpustat kcpustat;
+> +	u64 *cpustat = kcpustat.cpustat;
+> +	u16 sample_period_ms = sample_period >> 24LL; /* 2^24ns ~= 16.8ms */
 
-Fixes: 56e5abba8c3e ("dma-buf: Add unlocked variant of vmapping functions")
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- drivers/gpu/drm/msm/msm_gem_prime.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+There are two instances where right shift operations are used; it is 
+suggested to employ a helper macro for a more comfortable look.
 
-diff --git a/drivers/gpu/drm/msm/msm_gem_prime.c b/drivers/gpu/drm/msm/msm_gem_prime.c
-index 5f68e31a3e4e..0915f3b68752 100644
---- a/drivers/gpu/drm/msm/msm_gem_prime.c
-+++ b/drivers/gpu/drm/msm/msm_gem_prime.c
-@@ -26,7 +26,7 @@ int msm_gem_prime_vmap(struct drm_gem_object *obj, struct iosys_map *map)
- {
- 	void *vaddr;
- 
--	vaddr = msm_gem_get_vaddr(obj);
-+	vaddr = msm_gem_get_vaddr_locked(obj);
- 	if (IS_ERR(vaddr))
- 		return PTR_ERR(vaddr);
- 	iosys_map_set_vaddr(map, vaddr);
-@@ -36,7 +36,7 @@ int msm_gem_prime_vmap(struct drm_gem_object *obj, struct iosys_map *map)
- 
- void msm_gem_prime_vunmap(struct drm_gem_object *obj, struct iosys_map *map)
- {
--	msm_gem_put_vaddr(obj);
-+	msm_gem_put_vaddr_locked(obj);
- }
- 
- struct drm_gem_object *msm_gem_prime_import_sg_table(struct drm_device *dev,
--- 
-2.43.0
 
+> +
+> +	kcpustat_cpu_fetch(&kcpustat, smp_processor_id());
+> +	for (i = STATS_SYSTEM; i < NUM_STATS_PER_GROUP; i++) {
+> +		/*
+> +		 * We don't need nanosecond resolution. A granularity of 16ms is
+> +		 * sufficient for our precision, allowing us to use u16 to store
+> +		 * cpustats, which will roll over roughly every ~1000 seconds.
+> +		 * 2^24 ~= 16 * 10^6
+> +		 */
+> +		cpustat[idx_to_stat[i]] = lower_16_bits(cpustat[idx_to_stat[i]] >> 24LL);
+> +		utilization[tail][i] = 100 * (u16)(cpustat[idx_to_stat[i]] - old[i])
+> +					/ sample_period_ms;
+> +		old[i] = cpustat[idx_to_stat[i]];
+> +	}
+> +	this_cpu_write(cpustat_tail, (tail + 1) % NUM_STATS_GROUPS);
+> +}
+> +
+> +static void print_cpustat(void)
+> +{
+> +	u8 i, j;
+> +	u8 (*utilization)[NUM_STATS_PER_GROUP] = this_cpu_ptr(cpustat_utilization);
+> +	u8 tail = this_cpu_read(cpustat_tail);
+> +	u64 sample_period_second = sample_period;
+> +
+> +	do_div(sample_period_second, NSEC_PER_SEC);
+> +	/*
+> +	 * We do not want the "watchdog: " prefix on every line,
+> +	 * hence we use "printk" instead of "pr_crit".
+> +	 */
+> +	printk(KERN_CRIT "CPU#%d Utilization every %llus during lockup:\n",
+> +		smp_processor_id(), sample_period_second);
+> +	for (j = STATS_SYSTEM, i = tail; j < NUM_STATS_GROUPS;
+> +		j++, i = (i + 1) % NUM_STATS_GROUPS) {
+> +		printk(KERN_CRIT "\t#%d: %3u%% system,\t%3u%% softirq,\t"
+> +			"%3u%% hardirq,\t%3u%% idle\n", j+1,
+> +			utilization[i][STATS_SYSTEM], utilization[i][STATS_SOFTIRQ],
+> +			utilization[i][STATS_HARDIRQ], utilization[i][STATS_IDLE]);
+> +	}
+> +}
+> +#else
+> +static inline void update_cpustat(void) { }
+> +static inline void print_cpustat(void) { }
+> +#endif
+> +
+>   /* watchdog detector functions */
+>   static DEFINE_PER_CPU(struct completion, softlockup_completion);
+>   static DEFINE_PER_CPU(struct cpu_stop_work, softlockup_stop_work);
+> @@ -504,6 +573,8 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
+>   	 */
+>   	period_ts = READ_ONCE(*this_cpu_ptr(&watchdog_report_ts));
+>   
+> +	update_cpustat();
+> +
+>   	/* Reset the interval when touched by known problematic code. */
+>   	if (period_ts == SOFTLOCKUP_DELAY_REPORT) {
+>   		if (unlikely(__this_cpu_read(softlockup_touch_sync))) {
+> @@ -539,6 +610,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
+>   		pr_emerg("BUG: soft lockup - CPU#%d stuck for %us! [%s:%d]\n",
+>   			smp_processor_id(), duration,
+>   			current->comm, task_pid_nr(current));
+> +		print_cpustat();
+>   		print_modules();
+>   		print_irqtrace_events(current);
+>   		if (regs)
 
