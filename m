@@ -1,46 +1,79 @@
-Return-Path: <linux-kernel+bounces-46310-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86826843DC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:08:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86694843DCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:08:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EEB5C1F2B988
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:08:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA4271C2A4CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:08:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 770B66A030;
-	Wed, 31 Jan 2024 11:06:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96A7078681;
+	Wed, 31 Jan 2024 11:07:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="aNUqu+5x"
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CtC/33LC"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F36369DED
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 11:06:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 914DC6DD18
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 11:07:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706699181; cv=none; b=N2Jr1ZbElWIAZkKwpAHre6sG6vtFj4k8JkwPkc5jIrkYmbLFJSGqS8t6DbYsPu3Fj55tedkyHmJasz+E3DW4DwLQCtdDDVrNBH/gyQbE0qCRDKy5UI8wbX+HO12LVm66RqU+eoW2lPBxQ2aBOPgcvQuw8S0ZVCf07kciBTRmffE=
+	t=1706699227; cv=none; b=FrrbsQzL3vUlLiQ6loHeTATBslNM986QD1hUgmXUQImvio1p5aNpqb1dHNBgdv1OnFVedf9MroDqKtClh/N1w0RhJh6ulCJ9wFbO3nDwalYj4Q40MI8w1Vn+OH7P06W4ol8Y9s8HkCKY6WLNdy7dyDF+1dAKPBIHxY0CnQIjUT0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706699181; c=relaxed/simple;
-	bh=fPiyArmTKkYNXHeG7Eyo/mNrdvMXpwd7bk1SUBxXaHk=;
+	s=arc-20240116; t=1706699227; c=relaxed/simple;
+	bh=y1aOz6OUiR7wW0QMb1injJoBMWIH2KVJ2c55hImj2Lg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XAII7qZ5mukD7hcUrb5eXZ+BoxQfIgAIJeaC+1C1/d/JM3ClLq6s5+iWfTsin1G1Em7mwfsLSf3LelLmT/5OruUhG1ypPNN+K6Ze+PM98LCViVtVP1zzK5fhpmxv7YYp9fD9Ppr3gh4oJcNmg3uR+l/Opu3D6PZ1jv/T06mJvTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=aNUqu+5x; arc=none smtp.client-ip=115.124.30.97
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1706699170; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=bERsmjJlZkBhEyNdZe8lJXPZFO71xd8HzILhH6dqpgM=;
-	b=aNUqu+5xLpBhtS9hRrsRTIG3EMJ4pITWET38ODufMzkdkznc/W4J/p1C3B2EPJMRC4hu3xl2L1TjQp5UhJ2+Yo0877f9sjZmG1IzeiGA0OGpw6a5XaWuV31l5NJCARXgML2yE5MqP8n4lVszqI0+mVR6OSCkzzjYfhPjwIU2bS4=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0W.jNws5_1706699168;
-Received: from 30.178.67.117(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W.jNws5_1706699168)
-          by smtp.aliyun-inc.com;
-          Wed, 31 Jan 2024 19:06:09 +0800
-Message-ID: <42d0e3f4-39e0-4404-87d9-7df89f8b8c0c@linux.alibaba.com>
-Date: Wed, 31 Jan 2024 19:06:07 +0800
+	 In-Reply-To:Content-Type; b=K9mtl7sZxRMYSiJ9Dxms1zBdeVk57msVfnkezKtzpkdeMHBDA3hH3//KuwRd77pltYPOVVbeNq/Sz6MTG54taAGkrdStvywM4QGj9vVZsLeWGJ8YHJb4HShBmU4+xPB9vw5/ZznaDHbTLDaOP5hr8DucPCz9V7A82Sqz7pNwDQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CtC/33LC; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706699224;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=EPrRA4G16rNph0HwrpyFZd0WmfVM9XjFuWwPmxCMxPs=;
+	b=CtC/33LCoqJBJwl7TsH4fmL12fP25ZzjySKiXds81roVhXV8dXQCqJkUyg2hwYs5cm24Jt
+	3HUN3npN61lVsPIdV/ACwP+fy2AL9otjEpmMovVg3r3sPuJ9+oyhgU+9QbBio6igXhmV/G
+	OlzyrWmpch7cFIDZPPEI41nFgc3kslg=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-586-iKJAv2gDMXiSqHLPOq6wjA-1; Wed, 31 Jan 2024 06:07:02 -0500
+X-MC-Unique: iKJAv2gDMXiSqHLPOq6wjA-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-33afc40d5b3so705424f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 03:07:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706699221; x=1707304021;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EPrRA4G16rNph0HwrpyFZd0WmfVM9XjFuWwPmxCMxPs=;
+        b=i0rsRsiAuMyP0fJ1ePgblbUpqrlxVf+p9N9glsb0i2bmRq74I9Jz7d2aQoRob5x7w9
+         LoApRSvRWrV26lCAY8kmoMXQS/1oy8Aoz4S1AO3q3bbSsn6l0u1RYZVdJw2fvBQaaDet
+         HmEUTw4ASgaka4h1EbVoNSbqE7Kq08z3Xq9V8S3LozlSHkQNnfj4U/SHsa3XYbXpDBn4
+         fHJSuDaCprZpv0ufOhda66/RIfM7oLRkbkw+Zk6XnWczvm51OPt7kTRYffY9b5Tro3lR
+         ZvKjRdA3sCNzetovRHPiJEZSO+K4OAdJQaRIHXvqcyTDnJI7DE0On2UQeT4ajfnVn9j5
+         MdHw==
+X-Gm-Message-State: AOJu0YzFNAlHA/pqDqFrdmKkuwf/GkH4IneaMmUwOvHiJ5WB/HiW53t5
+	aGj32Jw70VM7y2HAHllbZt+KmU4k5AQjnulDRtKwOxk5vMYr6ZvMY1ivhqcehW/6bdWp9wVcXEf
+	TlzrilIXOMLYm0aKmelwQ78ivuWPMF+UQBapPulNB6y8n2XLHeUDgbn6A8bpLMQ==
+X-Received: by 2002:adf:cd0b:0:b0:336:6377:6e3d with SMTP id w11-20020adfcd0b000000b0033663776e3dmr731868wrm.66.1706699221608;
+        Wed, 31 Jan 2024 03:07:01 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFA/lbkXBUTF2Q1hwLU6vcNIzd8zfJwdZPFVoQqQvBcWoL3J9lF0IZkIJXh4wwNAzmG9wj1/Q==
+X-Received: by 2002:adf:cd0b:0:b0:336:6377:6e3d with SMTP id w11-20020adfcd0b000000b0033663776e3dmr731857wrm.66.1706699221183;
+        Wed, 31 Jan 2024 03:07:01 -0800 (PST)
+Received: from [10.32.64.237] (nat-pool-muc-t.redhat.com. [149.14.88.26])
+        by smtp.gmail.com with ESMTPSA id fo4-20020a056000290400b0033af3294417sm6643931wrb.21.2024.01.31.03.06.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Jan 2024 03:07:00 -0800 (PST)
+Message-ID: <a1a0e9b3-dae2-418f-bd63-50e65f471728@redhat.com>
+Date: Wed, 31 Jan 2024 12:06:59 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -48,186 +81,173 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCHv2 1/2] watchdog/softlockup: low-overhead detection of
- interrupt storm
+Subject: Re: [PATCH v3 00/15] mm/memory: optimize fork() with PTE-mapped THP
 Content-Language: en-US
-To: Liu Song <liusong@linux.alibaba.com>, dianders@chromium.org,
- akpm@linux-foundation.org, pmladek@suse.com, kernelfans@gmail.com
-Cc: linux-kernel@vger.kernel.org
-References: <20240130074744.45759-1-yaoma@linux.alibaba.com>
- <20240130074744.45759-2-yaoma@linux.alibaba.com>
- <f6525b03-0864-4bd3-b083-3532f0042745@linux.alibaba.com>
-From: Bitao Hu <yaoma@linux.alibaba.com>
-In-Reply-To: <f6525b03-0864-4bd3-b083-3532f0042745@linux.alibaba.com>
+To: Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Dinh Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
+ Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, "David S. Miller"
+ <davem@davemloft.net>, linux-arm-kernel@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, sparclinux@vger.kernel.org
+References: <20240129124649.189745-1-david@redhat.com>
+ <a335a9d2-9b8f-4eb8-ba22-23a223b59b06@arm.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <a335a9d2-9b8f-4eb8-ba22-23a223b59b06@arm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+
+On 31.01.24 11:43, Ryan Roberts wrote:
+> On 29/01/2024 12:46, David Hildenbrand wrote:
+>> Now that the rmap overhaul[1] is upstream that provides a clean interface
+>> for rmap batching, let's implement PTE batching during fork when processing
+>> PTE-mapped THPs.
+>>
+>> This series is partially based on Ryan's previous work[2] to implement
+>> cont-pte support on arm64, but its a complete rewrite based on [1] to
+>> optimize all architectures independent of any such PTE bits, and to
+>> use the new rmap batching functions that simplify the code and prepare
+>> for further rmap accounting changes.
+>>
+>> We collect consecutive PTEs that map consecutive pages of the same large
+>> folio, making sure that the other PTE bits are compatible, and (a) adjust
+>> the refcount only once per batch, (b) call rmap handling functions only
+>> once per batch and (c) perform batch PTE setting/updates.
+>>
+>> While this series should be beneficial for adding cont-pte support on
+>> ARM64[2], it's one of the requirements for maintaining a total mapcount[3]
+>> for large folios with minimal added overhead and further changes[4] that
+>> build up on top of the total mapcount.
+>>
+>> Independent of all that, this series results in a speedup during fork with
+>> PTE-mapped THP, which is the default with THPs that are smaller than a PMD
+>> (for example, 16KiB to 1024KiB mTHPs for anonymous memory[5]).
+>>
+>> On an Intel Xeon Silver 4210R CPU, fork'ing with 1GiB of PTE-mapped folios
+>> of the same size (stddev < 1%) results in the following runtimes
+>> for fork() (shorter is better):
+>>
+>> Folio Size | v6.8-rc1 |      New | Change
+>> ------------------------------------------
+>>        4KiB | 0.014328 | 0.014035 |   - 2%
+>>       16KiB | 0.014263 | 0.01196  |   -16%
+>>       32KiB | 0.014334 | 0.01094  |   -24%
+>>       64KiB | 0.014046 | 0.010444 |   -26%
+>>      128KiB | 0.014011 | 0.010063 |   -28%
+>>      256KiB | 0.013993 | 0.009938 |   -29%
+>>      512KiB | 0.013983 | 0.00985  |   -30%
+>>     1024KiB | 0.013986 | 0.00982  |   -30%
+>>     2048KiB | 0.014305 | 0.010076 |   -30%
+> 
+> Just a heads up that I'm seeing some strange results on Apple M2. Fork for
+> order-0 is seemingly costing ~17% more. I'm using GCC 13.2 and was pretty sure I
+> didn't see this problem with version 1; although that was on a different
+> baseline and I've thrown the numbers away so will rerun and try to debug this.
+> 
+
+So far, on my x86 tests (Intel, AMD EPYC), I was not able to observe 
+this. fork() for order-0 was consistently effectively unchanged. Do you 
+observe that on other ARM systems as well?
 
 
+> | kernel      |   mean_rel |   std_rel |
+> |:------------|-----------:|----------:|
+> | mm-unstable |       0.0% |      1.1% |
+> | patch 1     |      -2.3% |      1.3% |
+> | patch 10    |      -2.9% |      2.7% |
+> | patch 11    |      13.5% |      0.5% |
+> | patch 12    |      15.2% |      1.2% |
+> | patch 13    |      18.2% |      0.7% |
+> | patch 14    |      20.5% |      1.0% |
+> | patch 15    |      17.1% |      1.6% |
+> | patch 15    |      16.7% |      0.8% |
+> 
+> fork for order-9 is looking good (-20%), and for the zap series, munmap is
+> looking good, but dontneed is looking poor for both order-0 and 9. But one thing
+> at a time... let's concentrate on fork order-0 first.
 
-On 2024/1/31 09:19, Liu Song wrote:
+munmap and dontneed end up calling the exact same call paths. So a big 
+performance difference is rather surprising and might indicate something 
+else.
+
+(I think I told you that I was running in some kind of VMA merging 
+problem where one would suddenly get with my benchmark 1 VMA per page. 
+The new benchmark below works around that, but I am not sure if that was 
+fixed in the meantime)
+
+VMA merging can of course explain a big difference in fork and munmap 
+vs. dontneed times, especially when comparing different code base where 
+that VMA merging behavior was different.
+
 > 
-> 在 2024/1/30 15:47, Bitao Hu 写道:
->> The following softlockup is caused by interrupt storm, but it cannot be
->> identified from the call tree. Because the call tree is just a snapshot
->> and doesn't fully capture the behavior of the CPU during the soft lockup.
->>    watchdog: BUG: soft lockup - CPU#28 stuck for 23s! [fio:83921]
->>    ...
->>    Call trace:
->>      __do_softirq+0xa0/0x37c
->>      __irq_exit_rcu+0x108/0x140
->>      irq_exit+0x14/0x20
->>      __handle_domain_irq+0x84/0xe0
->>      gic_handle_irq+0x80/0x108
->>      el0_irq_naked+0x50/0x58
->>
->> Therefore，I think it is necessary to report CPU utilization during the
->> softlockup_thresh period (report once every sample_period, for a total
->> of 5 reportings), like this:
->>    watchdog: BUG: soft lockup - CPU#28 stuck for 23s! [fio:83921]
->>    CPU#28 Utilization every 4s during lockup:
->>      #1: 0% system, 0% softirq, 100% hardirq, 0% idle
->>      #2: 0% system, 0% softirq, 100% hardirq, 0% idle
->>      #3: 0% system, 0% softirq, 100% hardirq, 0% idle
->>      #4: 0% system, 0% softirq, 100% hardirq, 0% idle
->>      #5: 0% system, 0% softirq, 100% hardirq, 0% idle
->>    ...
->>
->> This would be helpful in determining whether an interrupt storm has
->> occurred or in identifying the cause of the softlockup. The criteria for
->> determination are as follows:
->>    a. If the hardirq utilization is high, then interrupt storm should be
->>    considered and the root cause cannot be determined from the call tree.
->>    b. If the softirq utilization is high, then we could analyze the call
->>    tree but it may cannot reflect the root cause.
->>    c. If the system utilization is high, then we could analyze the root
->>    cause from the call tree.
->>
->> Signed-off-by: Bitao Hu <yaoma@linux.alibaba.com>
->> ---
->>   kernel/watchdog.c | 72 +++++++++++++++++++++++++++++++++++++++++++++++
->>   1 file changed, 72 insertions(+)
->>
->> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
->> index 81a8862295d6..0efe9604c3c2 100644
->> --- a/kernel/watchdog.c
->> +++ b/kernel/watchdog.c
->> @@ -23,6 +23,8 @@
->>   #include <linux/sched/debug.h>
->>   #include <linux/sched/isolation.h>
->>   #include <linux/stop_machine.h>
->> +#include <linux/kernel_stat.h>
->> +#include <linux/math64.h>
->>   #include <asm/irq_regs.h>
->>   #include <linux/kvm_para.h>
->> @@ -441,6 +443,73 @@ static int is_softlockup(unsigned long touch_ts,
->>       return 0;
->>   }
->> +#ifdef CONFIG_IRQ_TIME_ACCOUNTING
->> +#define NUM_STATS_GROUPS    5
->> +#define STATS_SYSTEM        0
->> +#define STATS_SOFTIRQ        1
->> +#define STATS_HARDIRQ        2
->> +#define STATS_IDLE        3
->> +#define NUM_STATS_PER_GROUP    4
-> This is a set of related numbers; wouldn't it be better to use an enum?
-Agree.
->> +static DEFINE_PER_CPU(u16, cpustat_old[NUM_STATS_PER_GROUP]);
->> +static DEFINE_PER_CPU(u8, 
->> cpustat_utilization[NUM_STATS_GROUPS][NUM_STATS_PER_GROUP]);
->> +static DEFINE_PER_CPU(u8, cpustat_tail);
->> +static enum cpu_usage_stat idx_to_stat[NUM_STATS_PER_GROUP] = {
->> +    CPUTIME_SYSTEM, CPUTIME_SOFTIRQ, CPUTIME_IRQ, CPUTIME_IDLE
->> +};
-> To be honest, I'm not particularly fond of the name 'idx_to_stat' as the 
-> concept of an
-> index is already implied by the nature of an array, so adding 'idx' is 
-> redundant.
-> I suggest shortening the name.
-OK, the name 'stats' is clear enough here.
-> 
->> +
->> +static void update_cpustat(void)
->> +{
->> +    u8 i;
->> +    u16 *old = this_cpu_ptr(cpustat_old);
->> +    u8 (*utilization)[NUM_STATS_PER_GROUP] = 
->> this_cpu_ptr(cpustat_utilization);
->> +    u8 tail = this_cpu_read(cpustat_tail);
->> +    struct kernel_cpustat kcpustat;
->> +    u64 *cpustat = kcpustat.cpustat;
->> +    u16 sample_period_ms = sample_period >> 24LL; /* 2^24ns ~= 16.8ms */
-> 
-> There are two instances where right shift operations are used; it is 
-> suggested to employ a helper macro for a more comfortable look.
-OK.
-> 
-> 
->> +
->> +    kcpustat_cpu_fetch(&kcpustat, smp_processor_id());
->> +    for (i = STATS_SYSTEM; i < NUM_STATS_PER_GROUP; i++) {
->> +        /*
->> +         * We don't need nanosecond resolution. A granularity of 16ms is
->> +         * sufficient for our precision, allowing us to use u16 to store
->> +         * cpustats, which will roll over roughly every ~1000 seconds.
->> +         * 2^24 ~= 16 * 10^6
->> +         */
->> +        cpustat[idx_to_stat[i]] = 
->> lower_16_bits(cpustat[idx_to_stat[i]] >> 24LL);
->> +        utilization[tail][i] = 100 * (u16)(cpustat[idx_to_stat[i]] - 
->> old[i])
->> +                    / sample_period_ms;
->> +        old[i] = cpustat[idx_to_stat[i]];
->> +    }
->> +    this_cpu_write(cpustat_tail, (tail + 1) % NUM_STATS_GROUPS);
->> +}
->> +
->> +static void print_cpustat(void)
->> +{
->> +    u8 i, j;
->> +    u8 (*utilization)[NUM_STATS_PER_GROUP] = 
->> this_cpu_ptr(cpustat_utilization);
->> +    u8 tail = this_cpu_read(cpustat_tail);
->> +    u64 sample_period_second = sample_period;
->> +
->> +    do_div(sample_period_second, NSEC_PER_SEC);
->> +    /*
->> +     * We do not want the "watchdog: " prefix on every line,
->> +     * hence we use "printk" instead of "pr_crit".
->> +     */
->> +    printk(KERN_CRIT "CPU#%d Utilization every %llus during lockup:\n",
->> +        smp_processor_id(), sample_period_second);
->> +    for (j = STATS_SYSTEM, i = tail; j < NUM_STATS_GROUPS;
->> +        j++, i = (i + 1) % NUM_STATS_GROUPS) {
->> +        printk(KERN_CRIT "\t#%d: %3u%% system,\t%3u%% softirq,\t"
->> +            "%3u%% hardirq,\t%3u%% idle\n", j+1,
->> +            utilization[i][STATS_SYSTEM], utilization[i][STATS_SOFTIRQ],
->> +            utilization[i][STATS_HARDIRQ], utilization[i][STATS_IDLE]);
->> +    }
->> +}
->> +#else
->> +static inline void update_cpustat(void) { }
->> +static inline void print_cpustat(void) { }
->> +#endif
->> +
->>   /* watchdog detector functions */
->>   static DEFINE_PER_CPU(struct completion, softlockup_completion);
->>   static DEFINE_PER_CPU(struct cpu_stop_work, softlockup_stop_work);
->> @@ -504,6 +573,8 @@ static enum hrtimer_restart 
->> watchdog_timer_fn(struct hrtimer *hrtimer)
->>        */
->>       period_ts = READ_ONCE(*this_cpu_ptr(&watchdog_report_ts));
->> +    update_cpustat();
->> +
->>       /* Reset the interval when touched by known problematic code. */
->>       if (period_ts == SOFTLOCKUP_DELAY_REPORT) {
->>           if (unlikely(__this_cpu_read(softlockup_touch_sync))) {
->> @@ -539,6 +610,7 @@ static enum hrtimer_restart 
->> watchdog_timer_fn(struct hrtimer *hrtimer)
->>           pr_emerg("BUG: soft lockup - CPU#%d stuck for %us! [%s:%d]\n",
->>               smp_processor_id(), duration,
->>               current->comm, task_pid_nr(current));
->> +        print_cpustat();
->>           print_modules();
->>           print_irqtrace_events(current);
->>           if (regs)
+> Note that I'm still using the "old" benchmark code. Could you resend me the link
+> to the new code? Although I don't think there should be any effect for order-0
+> anyway, if I understood your changes correctly?
+
+This is the combined one (small and large PTEs):
+
+https://gitlab.com/davidhildenbrand/scratchspace/-/raw/main/pte-mapped-folio-benchmarks.c?inline=false
+
+-- 
+Cheers,
+
+David / dhildenb
+
 
