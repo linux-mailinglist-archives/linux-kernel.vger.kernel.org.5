@@ -1,149 +1,309 @@
-Return-Path: <linux-kernel+bounces-46551-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46553-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C7B784413E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:04:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 813C0844143
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:05:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08A2E1F2D771
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:04:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EAA661F2DFC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:05:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2736280C11;
-	Wed, 31 Jan 2024 14:03:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89C6A82863;
+	Wed, 31 Jan 2024 14:05:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="WLhYD4V/";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="WLhYD4V/"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="hVRTdRod"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70D7956B9D;
-	Wed, 31 Jan 2024 14:03:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA3FD7F48F;
+	Wed, 31 Jan 2024 14:05:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706709835; cv=none; b=KqnzXkBtc3Q43GTitseB39PWa172hE4w13j6sikBANWgrCUeAXjNSoZH9Q3RtKX+hImiXPisqnPeVSgGqnKfKDNOKLB0ik5nMcIbb21Dx7Tne0uWZwklqMsru/jX5UA29qk4Y1GrDnBY3D9IDtWxG0uo0bZC8g0USShOGJZZzZ8=
+	t=1706709923; cv=none; b=AgbG7nQ91giiyj7zVRkf6FTD7FfKdk5qgKB7+cf+jX8IeU0sg+df2/lXe0eT5LjFJ4tO8K0W37VFi5MseAsDBLD+qH2YZatBqyfx0/walNBU2RqZiZ1keoscvoe3wEkkpJX2Uiwf3UA9ByNUQvMj5rtoc49vmwaqXXXJoP1yKWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706709835; c=relaxed/simple;
-	bh=yK5tDuzjN62NKpY1IUEhVf1AyPpCBKY++LbxRsHYWaQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rJmhGH16zyr2Pzj47wm/QsITtiIBca4LC2cejiipW1OLciE7ZbBu4wV1rPTjSEAJnuUetoPdFtB2YL8j0X7FeTc4BeiZVIlJBgCmvohhnac7z6Dj4X2N7NAHyiZdANr7ThviBhrDpibv2W07p0+bsxy/98JO/QUbqJ5v3uzDgyU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=WLhYD4V/; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=WLhYD4V/; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	s=arc-20240116; t=1706709923; c=relaxed/simple;
+	bh=C1jyyNN3WoASzPdbjbyMPpmrKLB566vijGdtqZFTW+0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dalnMkLyLLqbYw7lMfobP1sswPtPsXeYy6hEup2fo4LI+0rcyWK5TrcVxz1epI7ICpbgRgph0LMOQUc1oRr8m6KwT/p84ZXqwZK32PMPSi6+XedQb0M2dbrsAeSKhKki4ovSpo9DWR6sXqeYfWNETBx4PbQcl8IgiAKz4G7datw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=hVRTdRod; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1706709916;
+	bh=C1jyyNN3WoASzPdbjbyMPpmrKLB566vijGdtqZFTW+0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=hVRTdRodufiiXRyUTw9piPgw/oM92aLsJkDJGNDDTsunq7gJopZrnj+e3uqM09Ifw
+	 k0w0zc9ThSlxrYjasOBccPbbcGyeFCFKGuOcVC5KieK9Sp4aGF33D6MfyXTLlTrZyb
+	 dhTHrGWeb4FM7XQNVxruHPijt+Fkg/nEm98o5ebb8XFF8Qt/cXkO4XSlC3ndGxv0S2
+	 oqaGai6ttvc6I60U/yqwE/TZ0j0LPMR46ap6XGlfAdWeChx84aXANCMFs6mYsw70DT
+	 FjeAPcOuZmZ8KNZfI5GISi+BwMX4fEXehcftq/U7JIgfeAVesXIjXx8CTEtZ+dnC9a
+	 BsGRGSxhSpIMg==
+Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E1AE41FB8A;
-	Wed, 31 Jan 2024 14:03:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706709827; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=m2cxDnakp497+YroEa+q5vx8Sh99BmyBojVBJFGfpzs=;
-	b=WLhYD4V/x/UZrHhY+6rCUJyqgymCrrsKeuLtGDQJmSHaoC3k23j7X0NG3vOMfDtXnIsMtY
-	jZ5h10f3ZWcsECbVFDV7u/QcfFFmgBDZc+aS1k+0Rtk506F6YwOW9pHPE/hJ/vKoBvOmPc
-	ryDw7jWI4W009OBH2S6hA4+jm0itigA=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706709827; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=m2cxDnakp497+YroEa+q5vx8Sh99BmyBojVBJFGfpzs=;
-	b=WLhYD4V/x/UZrHhY+6rCUJyqgymCrrsKeuLtGDQJmSHaoC3k23j7X0NG3vOMfDtXnIsMtY
-	jZ5h10f3ZWcsECbVFDV7u/QcfFFmgBDZc+aS1k+0Rtk506F6YwOW9pHPE/hJ/vKoBvOmPc
-	ryDw7jWI4W009OBH2S6hA4+jm0itigA=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BDC6F1347F;
-	Wed, 31 Jan 2024 14:03:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id mJp5LENTumVaDwAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Wed, 31 Jan 2024 14:03:47 +0000
-Date: Wed, 31 Jan 2024 15:03:47 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: David Hildenbrand <david@redhat.com>
-Cc: Yin Fengwei <fengwei.yin@intel.com>, linux-kernel@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>, linux-mm@kvack.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Ryan Roberts <ryan.roberts@arm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	"Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-	Nick Piggin <npiggin@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
-	linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	linux-s390@vger.kernel.org, "Huang, Ying" <ying.huang@intel.com>
-Subject: Re: [PATCH v1 0/9] mm/memory: optimize unmap/zap with PTE-mapped THP
-Message-ID: <ZbpTQ80ebCUnAXW0@tiehlicka>
-References: <20240129143221.263763-1-david@redhat.com>
- <4ef64fd1-f605-4ddf-82e6-74b5e2c43892@intel.com>
- <ee94b8ca-9723-44c0-aa17-75c9678015c6@redhat.com>
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8243E3781FCF;
+	Wed, 31 Jan 2024 14:05:14 +0000 (UTC)
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Shuah Khan <shuah@kernel.org>
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+	kernel@collabora.com,
+	linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 01/12] selftests/mm: map_fixed_noreplace: conform test to TAP format output
+Date: Wed, 31 Jan 2024 19:05:11 +0500
+Message-ID: <20240131140528.320252-1-usama.anjum@collabora.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ee94b8ca-9723-44c0-aa17-75c9678015c6@redhat.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [0.40 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 R_RATELIMIT(0.00)[to_ip_from(RLmz57jmx331iqhbrcj9q94ym8)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWELVE(0.00)[26];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[intel.com,vger.kernel.org,linux-foundation.org,kvack.org,infradead.org,arm.com,kernel.org,linux.ibm.com,gmail.com,ellerman.id.au,csgroup.eu,arndb.de,lists.ozlabs.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[28.90%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: 0.40
+Content-Transfer-Encoding: 8bit
 
-On Wed 31-01-24 11:16:01, David Hildenbrand wrote:
-[...]
-> This 10000 pages limit was introduced in 53a59fc67f97 ("mm: limit mmu_gather
-> batching to fix soft lockups on !CONFIG_PREEMPT") where we wanted to handle
-> soft-lockups.
+Conform the layout, informational and status messages to TAP. No
+functional change is intended other than the layout of output messages.
+While at it, convert commenting style from // to /**/.
 
-AFAIR at the time of this patch this was mostly just to put some cap on
-the number of batches to collect and free at once. If there is a lot of
-free memory and a large process exiting this could grow really high. Now
-that those pages^Wfolios can represent larger memory chunks it could
-mean more physical memory being freed but from which might make the
-operation take longer but still far from soft lockup triggering.
+Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+---
+ .../selftests/mm/map_fixed_noreplace.c        | 96 ++++++-------------
+ 1 file changed, 31 insertions(+), 65 deletions(-)
 
-Now latency might suck on !PREEMPT kernels with too many pages to
-free in a single batch but I guess this is somehow expected for this
-preemption model. The soft lockup has to be avoided because this can
-panic the machine in some configurations.
-
+diff --git a/tools/testing/selftests/mm/map_fixed_noreplace.c b/tools/testing/selftests/mm/map_fixed_noreplace.c
+index 598159f3df1f2..b74813fdc9514 100644
+--- a/tools/testing/selftests/mm/map_fixed_noreplace.c
++++ b/tools/testing/selftests/mm/map_fixed_noreplace.c
+@@ -12,6 +12,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <unistd.h>
++#include "../kselftest.h"
+ 
+ static void dump_maps(void)
+ {
+@@ -28,15 +29,12 @@ static unsigned long find_base_addr(unsigned long size)
+ 
+ 	flags = MAP_PRIVATE | MAP_ANONYMOUS;
+ 	addr = mmap(NULL, size, PROT_NONE, flags, -1, 0);
+-	if (addr == MAP_FAILED) {
+-		printf("Error: couldn't map the space we need for the test\n");
+-		return 0;
+-	}
++	if (addr == MAP_FAILED)
++		ksft_exit_fail_msg("Error: couldn't map the space we need for the test\n");
++
++	if (munmap(addr, size) != 0)
++		ksft_exit_fail_msg("Error: munmap failed\n");
+ 
+-	if (munmap(addr, size) != 0) {
+-		printf("Error: couldn't map the space we need for the test\n");
+-		return 0;
+-	}
+ 	return (unsigned long)addr;
+ }
+ 
+@@ -46,51 +44,39 @@ int main(void)
+ 	unsigned long flags, addr, size, page_size;
+ 	char *p;
+ 
++	ksft_print_header();
++	ksft_set_plan(9);
++
+ 	page_size = sysconf(_SC_PAGE_SIZE);
+ 
+-	//let's find a base addr that is free before we start the tests
++	/* let's find a base addr that is free before we start the tests */
+ 	size = 5 * page_size;
+ 	base_addr = find_base_addr(size);
+-	if (!base_addr) {
+-		printf("Error: couldn't map the space we need for the test\n");
+-		return 1;
+-	}
+ 
+ 	flags = MAP_PRIVATE | MAP_ANONYMOUS | MAP_FIXED_NOREPLACE;
+ 
+-	// Check we can map all the areas we need below
+-	errno = 0;
++	/* Check we can map all the areas we need below */
+ 	addr = base_addr;
+ 	size = 5 * page_size;
+ 	p = mmap((void *)addr, size, PROT_NONE, flags, -1, 0);
+-
+-	printf("mmap() @ 0x%lx-0x%lx p=%p result=%m\n", addr, addr + size, p);
+-
+ 	if (p == MAP_FAILED) {
+ 		dump_maps();
+-		printf("Error: couldn't map the space we need for the test\n");
+-		return 1;
++		ksft_exit_fail_msg("Error: couldn't map the space we need for the test\n");
+ 	}
+-
+-	errno = 0;
+ 	if (munmap((void *)addr, 5 * page_size) != 0) {
+ 		dump_maps();
+-		printf("Error: munmap failed!?\n");
+-		return 1;
++		ksft_exit_fail_msg("Error: munmap failed!?\n");
+ 	}
+-	printf("unmap() successful\n");
++	ksft_test_result_pass("mmap() @ 0x%lx-0x%lx p=%p result=%m\n", addr, addr + size, p);
+ 
+-	errno = 0;
+ 	addr = base_addr + page_size;
+ 	size = 3 * page_size;
+ 	p = mmap((void *)addr, size, PROT_NONE, flags, -1, 0);
+-	printf("mmap() @ 0x%lx-0x%lx p=%p result=%m\n", addr, addr + size, p);
+-
+ 	if (p == MAP_FAILED) {
+ 		dump_maps();
+-		printf("Error: first mmap() failed unexpectedly\n");
+-		return 1;
++		ksft_exit_fail_msg("Error: first mmap() failed unexpectedly\n");
+ 	}
++	ksft_test_result_pass("mmap() @ 0x%lx-0x%lx p=%p result=%m\n", addr, addr + size, p);
+ 
+ 	/*
+ 	 * Exact same mapping again:
+@@ -100,17 +86,14 @@ int main(void)
+ 	 *     +3 | mapped | new
+ 	 *     +4 |  free  | new
+ 	 */
+-	errno = 0;
+ 	addr = base_addr;
+ 	size = 5 * page_size;
+ 	p = mmap((void *)addr, size, PROT_NONE, flags, -1, 0);
+-	printf("mmap() @ 0x%lx-0x%lx p=%p result=%m\n", addr, addr + size, p);
+-
+ 	if (p != MAP_FAILED) {
+ 		dump_maps();
+-		printf("Error:1: mmap() succeeded when it shouldn't have\n");
+-		return 1;
++		ksft_exit_fail_msg("Error:1: mmap() succeeded when it shouldn't have\n");
+ 	}
++	ksft_test_result_pass("mmap() @ 0x%lx-0x%lx p=%p result=%m\n", addr, addr + size, p);
+ 
+ 	/*
+ 	 * Second mapping contained within first:
+@@ -121,17 +104,14 @@ int main(void)
+ 	 *     +3 | mapped |
+ 	 *     +4 |  free  |
+ 	 */
+-	errno = 0;
+ 	addr = base_addr + (2 * page_size);
+ 	size = page_size;
+ 	p = mmap((void *)addr, size, PROT_NONE, flags, -1, 0);
+-	printf("mmap() @ 0x%lx-0x%lx p=%p result=%m\n", addr, addr + size, p);
+-
+ 	if (p != MAP_FAILED) {
+ 		dump_maps();
+-		printf("Error:2: mmap() succeeded when it shouldn't have\n");
+-		return 1;
++		ksft_exit_fail_msg("Error:2: mmap() succeeded when it shouldn't have\n");
+ 	}
++	ksft_test_result_pass("mmap() @ 0x%lx-0x%lx p=%p result=%m\n", addr, addr + size, p);
+ 
+ 	/*
+ 	 * Overlap end of existing mapping:
+@@ -141,17 +121,14 @@ int main(void)
+ 	 *     +3 | mapped | new
+ 	 *     +4 |  free  | new
+ 	 */
+-	errno = 0;
+ 	addr = base_addr + (3 * page_size);
+ 	size = 2 * page_size;
+ 	p = mmap((void *)addr, size, PROT_NONE, flags, -1, 0);
+-	printf("mmap() @ 0x%lx-0x%lx p=%p result=%m\n", addr, addr + size, p);
+-
+ 	if (p != MAP_FAILED) {
+ 		dump_maps();
+-		printf("Error:3: mmap() succeeded when it shouldn't have\n");
+-		return 1;
++		ksft_exit_fail_msg("Error:3: mmap() succeeded when it shouldn't have\n");
+ 	}
++	ksft_test_result_pass("mmap() @ 0x%lx-0x%lx p=%p result=%m\n", addr, addr + size, p);
+ 
+ 	/*
+ 	 * Overlap start of existing mapping:
+@@ -161,17 +138,14 @@ int main(void)
+ 	 *     +3 | mapped |
+ 	 *     +4 |  free  |
+ 	 */
+-	errno = 0;
+ 	addr = base_addr;
+ 	size = 2 * page_size;
+ 	p = mmap((void *)addr, size, PROT_NONE, flags, -1, 0);
+-	printf("mmap() @ 0x%lx-0x%lx p=%p result=%m\n", addr, addr + size, p);
+-
+ 	if (p != MAP_FAILED) {
+ 		dump_maps();
+-		printf("Error:4: mmap() succeeded when it shouldn't have\n");
+-		return 1;
++		ksft_exit_fail_msg("Error:4: mmap() succeeded when it shouldn't have\n");
+ 	}
++	ksft_test_result_pass("mmap() @ 0x%lx-0x%lx p=%p result=%m\n", addr, addr + size, p);
+ 
+ 	/*
+ 	 * Adjacent to start of existing mapping:
+@@ -181,17 +155,14 @@ int main(void)
+ 	 *     +3 | mapped |
+ 	 *     +4 |  free  |
+ 	 */
+-	errno = 0;
+ 	addr = base_addr;
+ 	size = page_size;
+ 	p = mmap((void *)addr, size, PROT_NONE, flags, -1, 0);
+-	printf("mmap() @ 0x%lx-0x%lx p=%p result=%m\n", addr, addr + size, p);
+-
+ 	if (p == MAP_FAILED) {
+ 		dump_maps();
+-		printf("Error:5: mmap() failed when it shouldn't have\n");
+-		return 1;
++		ksft_exit_fail_msg("Error:5: mmap() failed when it shouldn't have\n");
+ 	}
++	ksft_test_result_pass("mmap() @ 0x%lx-0x%lx p=%p result=%m\n", addr, addr + size, p);
+ 
+ 	/*
+ 	 * Adjacent to end of existing mapping:
+@@ -201,27 +172,22 @@ int main(void)
+ 	 *     +3 | mapped |
+ 	 *     +4 |  free  |  new
+ 	 */
+-	errno = 0;
+ 	addr = base_addr + (4 * page_size);
+ 	size = page_size;
+ 	p = mmap((void *)addr, size, PROT_NONE, flags, -1, 0);
+-	printf("mmap() @ 0x%lx-0x%lx p=%p result=%m\n", addr, addr + size, p);
+-
+ 	if (p == MAP_FAILED) {
+ 		dump_maps();
+-		printf("Error:6: mmap() failed when it shouldn't have\n");
+-		return 1;
++		ksft_exit_fail_msg("Error:6: mmap() failed when it shouldn't have\n");
+ 	}
++	ksft_test_result_pass("mmap() @ 0x%lx-0x%lx p=%p result=%m\n", addr, addr + size, p);
+ 
+ 	addr = base_addr;
+ 	size = 5 * page_size;
+ 	if (munmap((void *)addr, size) != 0) {
+ 		dump_maps();
+-		printf("Error: munmap failed!?\n");
+-		return 1;
++		ksft_exit_fail_msg("Error: munmap failed!?\n");
+ 	}
+-	printf("unmap() successful\n");
++	ksft_test_result_pass("Base Address unmap() successful\n");
+ 
+-	printf("OK\n");
+-	return 0;
++	ksft_finished();
+ }
 -- 
-Michal Hocko
-SUSE Labs
+2.42.0
+
 
