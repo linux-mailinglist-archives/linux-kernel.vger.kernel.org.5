@@ -1,218 +1,244 @@
-Return-Path: <linux-kernel+bounces-45510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AC838431A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 01:04:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 860AA8431AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 01:07:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F1CC1C224C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 00:04:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DAAFBB21877
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 00:07:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A43CF28EF;
-	Wed, 31 Jan 2024 00:04:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48462384;
+	Wed, 31 Jan 2024 00:07:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Yat1z3uc"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WDMKUIkl"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BCA91C32
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 00:04:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.15
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706659480; cv=fail; b=Et5EMbjSAw2ZZ8ocXSANovRAcNSpq1jU0p+g1pqhGfPL46LABTVpDIdTbdK+F/pZowLb2TPIAutwSznF/zBJyZgedPAP9R0yzGIAlAmWwu8uBnMOv5O2m8seGrUXna7Nza+sHAEwbrU9MQhpMpGnyR7gMVcQAY08oRElrVMBwWw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706659480; c=relaxed/simple;
-	bh=Wrr4BS/8MdWVg8o4H0yHat0U6Ian5NHQC0sScOhUpLA=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=XHdQYiUxSe1RuAMaXfPJrUEcssjPCMoLZKp/Wbn7ZhZm6jrX/0zjJEb6g4/JZxBzvMG4HFT2Q52PDWowf+6UYn7xJyUzdwSJLg5MPbVPUSK+52UDQUq3iP6Ta3anNpCYu8dAio/XQ2Iw+7hBFvWyeFjFWuetqF5FGGSSIXTousM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Yat1z3uc; arc=fail smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706659479; x=1738195479;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=Wrr4BS/8MdWVg8o4H0yHat0U6Ian5NHQC0sScOhUpLA=;
-  b=Yat1z3ucqwNoavv5PGmYfh5KLE+4kJ3/d95BmsQrqIOV/M6F7N5X/pvU
-   Heesjnh62UfkLRJPh4dV+8xzjbV8tiNk440P4HDlVn3971WHr3xfYWA9V
-   YVn1YY+Smyzo3KjGpda8jeas1eY3m2VCMNzHgYUA//jbf19MwJLo4eVbR
-   2I1jiisYmTFNwoOziGaf/iARWvnhKidh004cN8qv6kXsCeE02qeW7LNoR
-   asHSSxZlW6/DFEqR6DwEmMAr7h1N/n76/7aD0ySSpG+LH6H/Rcpxhz865
-   4VRiBs3mLMU7fE1eUaBqCxmRI1HxwBzpdsOY4DKB25JAXgpLPKpDYu88i
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="3294729"
-X-IronPort-AV: E=Sophos;i="6.05,230,1701158400"; 
-   d="scan'208";a="3294729"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 16:04:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="907673013"
-X-IronPort-AV: E=Sophos;i="6.05,230,1701158400"; 
-   d="scan'208";a="907673013"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 30 Jan 2024 16:04:36 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 30 Jan 2024 16:04:35 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 30 Jan 2024 16:04:35 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 30 Jan 2024 16:04:34 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gEsLOMyiEXYhZhoUP3PsRc5ba/V8PNXPxcA0JkIofBLIJJp1xY+6MjYTnfVWAiNm9JGm/hgt9S0DB0Ti0zqK2WlDbtFXgyx2baSDRLZJxOxfPbuZHxmbfHHaL0HIjECVqvCjeLML7nRUsL6UVC2YFomKyBQ1x2kY00ifsdpYEYBryguij5gdRqzDt1G8cB9iaoFQfyqE/eM6m4wRCKEeypCSt+eRjyBGEKMlYlm1TRXw619flGtIeZIki1GTIaDMai3CC0+ZkdSN5CeWT8oAu4+n0I3rIO+INqZzAASWl+7uoTkEcYInhvJPcpkweeMw9P1GQ6XpZWaPMlpJid+bSg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=p+/0tr+CF3AVj+53XQLjoyiiYMpPjX5TaRdxAYKEbMg=;
- b=ODUFWbE8OJKdeHPL8qVeHJGAUubVF2QduG6I8TphkVCW7v8ig2kdkPYoDgZkCgxeqR2Z12qeXVIMpSl3gWDBED2scBJpwPu1XKd3YlwjdZLLwper3eZFhc2jRpcZ33p6GnjiyIPnXc8qEAyvLzsajE1TL0jL1qo8CyyMZHZXgIBvzDDlm/DG97VpgquVVJJeVDFss1dCn6KRF7yk3Tli1Qc2lC9bODSQsMD+yrJ6vcxBwzieRy29bHc7pIPABloc2EKUWwtcWjaD4hz3alC0DzCiCFZmw4tloevxExjBhDbFBq4K4hvEuNPbpf+w5QsfJkCDAHX3xJETJwOhTuQvMg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
- by SA1PR11MB6614.namprd11.prod.outlook.com (2603:10b6:806:255::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.31; Wed, 31 Jan
- 2024 00:04:33 +0000
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::9f17:e1f3:d6f0:3d59]) by SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::9f17:e1f3:d6f0:3d59%4]) with mapi id 15.20.7228.035; Wed, 31 Jan 2024
- 00:04:33 +0000
-Date: Tue, 30 Jan 2024 16:04:29 -0800
-From: Ira Weiny <ira.weiny@intel.com>
-To: Dan Williams <dan.j.williams@intel.com>, Ira Weiny <ira.weiny@intel.com>,
-	"Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>,
-	<linux-kernel@vger.kernel.org>
-CC: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>, "Peter
- Zijlstra" <peterz@infradead.org>, Dan Williams <dan.j.williams@intel.com>,
-	"Ira Weiny" <ira.weiny@intel.com>
-Subject: Re: [RFC PATCH v2] cleanup: Add cond_guard() to conditional guards
-Message-ID: <65b98e8d4f405_2f26102943c@iweiny-mobl.notmuch>
-References: <20240130164059.25130-1-fabio.maria.de.francesco@linux.intel.com>
- <65b92b91a41a8_5cc6f29484@dwillia2-mobl3.amr.corp.intel.com.notmuch>
- <65b9434712b57_2d455e294a8@iweiny-mobl.notmuch>
- <65b948987e865_5cc6f294df@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <65b948987e865_5cc6f294df@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-X-ClientProxiedBy: BYAPR08CA0050.namprd08.prod.outlook.com
- (2603:10b6:a03:117::27) To SA1PR11MB6733.namprd11.prod.outlook.com
- (2603:10b6:806:25c::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40B4F360;
+	Wed, 31 Jan 2024 00:07:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706659633; cv=none; b=Xb7RUq+TKO0EXid9YkwQdR6HL2coXuKOESuYwMHEGd6LPD7bv+jcvaYuwvtb/DbO9BAtmR05EIXIb/7tmqs2Ph6U7XmlYDowmw77QGcAJ4ozUuvBUh1WgZ3R7tp+TJEW5QKs9BjiXeXm5E0jm0S2oljIH5K7TT/60b4pKE3hTfg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706659633; c=relaxed/simple;
+	bh=4IQeU0aHdZ9OyJPsxqDoj0X2DZjWXfdHf5qWMKXFsBo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GEAFPoF2Angba35fqbCTCidMYuwv+llRaEMA3oxwMTOaX9KxQhH8F6C5VL5zsZHuBtM8F95ZuhmnDHus+DIyXLViae5k3yEjFRI13tRLGgqfJtxpIyPB+yVGWZmZJl/+FlPYri7L9AjPyG970Eex9EjfmbE5xdJl8wwpC/EyxrY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WDMKUIkl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67E6CC433C7;
+	Wed, 31 Jan 2024 00:07:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706659632;
+	bh=4IQeU0aHdZ9OyJPsxqDoj0X2DZjWXfdHf5qWMKXFsBo=;
+	h=Date:From:To:List-Id:Cc:Subject:References:In-Reply-To:From;
+	b=WDMKUIklvJcm6EcsZNKAPY/tr3zImhMVxuK+6CQzXx3/bqkePR8l3BDVDP05wgtfd
+	 z8mNxq0EX9GgXIKa2en2de4C47Jl93ypnNnPJ2jL++MIrU05hBGDyWv7CFgOblKvSz
+	 Hzo5RMVvFMnisIj9crEhIxJjUGLQBoeFMID/wXovHe38dXqecSLRKKnWZNQ3UM6ggp
+	 PwgoZxxh3NF8D08IYo9SPpvoWmN9SbsoCuTe1Ag9FO2iPadbzNzRRLbw+uCrM0ULrX
+	 5JOCzJO5UhFvn6RNC0O6HcwaHNqn/0Tkfu7Xo8KTSA2xWaof7iuOx0RV7OG08cP5/C
+	 V1L92SX9fU73Q==
+Date: Tue, 30 Jan 2024 18:07:10 -0600
+From: Rob Herring <robh@kernel.org>
+To: Oreoluwa Babatunde <quic_obabatun@quicinc.com>
+Cc: catalin.marinas@arm.com, will@kernel.org, frowand.list@gmail.com,
+	vgupta@kernel.org, arnd@arndb.de, olof@lixom.net, soc@kernel.org,
+	guoren@kernel.org, monstr@monstr.eu, palmer@dabbelt.com,
+	aou@eecs.berkeley.edu, dinguyen@kernel.org, chenhuacai@kernel.org,
+	tsbogend@alpha.franken.de, jonas@southpole.se,
+	stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
+	mpe@ellerman.id.au, ysato@users.sourceforge.jp, dalias@libc.org,
+	glaubitz@physik.fu-berlin.de, richard@nod.at,
+	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
+	chris@zankel.net, jcmvbkbc@gmail.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	kernel@quicinc.com
+Subject: Re: [PATCH 00/46] Dynamic allocation of reserved_mem array.
+Message-ID: <20240131000710.GA2581425-robh@kernel.org>
+References: <20240126235425.12233-1-quic_obabatun@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|SA1PR11MB6614:EE_
-X-MS-Office365-Filtering-Correlation-Id: 96329e5c-2fd4-4500-0b4b-08dc21f03422
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: y8jd9Gua56GPGU+wIuYNXAP+ow0REfpI654EJCeHqjoAXUIlsLgTx7X1d0vZgILLPYpjCls344scg/oBN2xfcu7wevGFpBQnZnOIgfD/AjPmBZCCmfY1yY7gysgI6q9Gb0pxWk9ubsEKiZoLVSAnjDWgjMT3qSaC/tqO3u1XChR5rSA4bUbDBdfF/kWE8zJoovrKu9jeFadHFp23VFdL4ox2BETumQok3CKJGZ86gqtlUzvrt1ZOm3QiKFdPGajSFnFUrf82XaJYziN5SuM619tcflu86aaWmeI7PyhuBAzyzgOiv5c6W/NnuYA3/hEexce+X07myZe2hdjmFQEIFtPMiqfM+Pg8jmbTNmWQGDbdQaSjw3tgl1n88xvs+lIYGg9Ftv47E1lKTxYqZ+mblIkY3xT0NpSvp6kgbsUZrz3U3hKQTqDqaZ59ClHnW7sg4QxiE4XEofevr+RLh03+cu2tGUYfKfVG7GwwlEzXRUT92oMC1VJ87vaVmTjIWW2SbGLGLRQTwxm9m5heDyMtyDdvCLhFBdQvruGFkrnTR3FlcpjN2GIr7/VUt6bM++MD
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(136003)(346002)(39860400002)(376002)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(6506007)(6666004)(83380400001)(26005)(86362001)(82960400001)(9686003)(2906002)(44832011)(5660300002)(8676002)(6512007)(66476007)(38100700002)(8936002)(41300700001)(66946007)(110136005)(478600001)(4326008)(6486002)(54906003)(66556008)(316002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?iweVt5j9RQ/0zkj9hICMAM+VK6WslYJcUwWCA4849nls7IdaZlqFTzaVNT4N?=
- =?us-ascii?Q?0Sk4HE8TJ1g3Cz1s3CWoNF9nlGvLuW7IRoMikw8f/+1tzx+nFhOV8L3SP+2t?=
- =?us-ascii?Q?Z8T1P3Iez9BaNg5tgc8kRbegqeAfDWVL9bpz7amtcS1zHPvNso7MYFU0qgb7?=
- =?us-ascii?Q?lpIjrnW33HQs7E4rmS243WqDCOPQr68/3WrU1qaYqlX0NF48MAlAVdjCjtyE?=
- =?us-ascii?Q?1NGliFqVwBOALqHys4Au8mNKPy0/0yHKtA6mXS36c1AHhdINFpAo1D0aeRbz?=
- =?us-ascii?Q?Pbrcvr5E/FMV+RzEuov4KLaVfpZd5Ug3K4IZLPN+0fbUsGqcBLfL7ze2RBjR?=
- =?us-ascii?Q?G5r2R9M5TLyu3DWWdClJMfPn1YVDq2J/8kxePNvrUABwIQo3yV+ykD4+KcuU?=
- =?us-ascii?Q?WuQFmvJJRtdO9u2SvrEvvL+JYzlGtBznvzUqLsRYBs04Tm3Kj3bD7RazY1Lv?=
- =?us-ascii?Q?365OxaBBKvvsd/4AIt9K2LWcVhCL0ffGD2r3ADgGxntH03yp5a+0VULAdXbj?=
- =?us-ascii?Q?ZR+EoQhiWpIk0THnFg/ue0kmbqT23PM1Eh4K4R8Gv38I0wez6HsE+AS+n4B3?=
- =?us-ascii?Q?vNvITbwPK5cZIORhA60/iGqrB2UdZkPAUARYLpHz14jjOKlJRF5dSsefUG2T?=
- =?us-ascii?Q?BlrYbctlQ3klc8B6kuOhqPSMWS/mlY+wewsvbqAfwNzMMXx6E1f4bl5pO6Ts?=
- =?us-ascii?Q?WVZZOVaxIHRBd4eBaJSFh33HTzDivyWTYnEHgtBj53MhSIBn1hG0ucahbxCK?=
- =?us-ascii?Q?gRgJSQeFwL7A6dT5IHU7B+ebz9RySkR7YTT5T8Wto2TblO7XxcyQHKQ9PqGs?=
- =?us-ascii?Q?iQv9ZThh2nYrPUBSWNt339QBNluXZlmI0ogK5H9Qz7AsOLHnkM/SCV/3D7MC?=
- =?us-ascii?Q?YbZUXcKWEpX+m3DFW5z8MJ+SGMt06L/b7u/6JDgRKnEJq63vgY14bz6NbMz1?=
- =?us-ascii?Q?3Rl0ztoK3zq0Isb0Qv8rQWgYNa7lIrH6sC2EqjJhfaxUlmFw7ooL3BPnv/ZC?=
- =?us-ascii?Q?bocoN65hz+OaIAtEAE9OdwbichhDkRDo2yDNc+y+dkGcOqAE/PHLQpgoGUZP?=
- =?us-ascii?Q?fd02AxVBYXM9oQaVQKqOjfgYtiaNNmwWfwO9fxQBd9KpQymVpq9C37pLt0SS?=
- =?us-ascii?Q?GKFb5pHoXG/Rc9rYll4aj+9SDPdswmjfr6KUmn1cBM5cshT2xnaQ0AVk2Oov?=
- =?us-ascii?Q?9D6FwKpd/dhFva38Xka8XYyOXkoeb6yhWEhwq6Cqqun/jQZRiaUTsvXeYkSN?=
- =?us-ascii?Q?x2Q8bBTAGh/3Fv4HmVs1lzDkTeic0RlgOSBghH0KL6WGxYJ9s5AnHKPxumY+?=
- =?us-ascii?Q?4CXWDe/05shf5b9z5JJp18TwcS1VLDq1rJH/XI+x8EV1j9NGXBG0pU+of7r+?=
- =?us-ascii?Q?Vpk5fsjRIkUBB2v/cE70xiJ0QiaHG+EWnqTU+RhRO3PVfgv2CaIivSRk3GcW?=
- =?us-ascii?Q?UY00YR3pQhdDLf/VUvGQG5PF3D2GJDwWf45SXzQxegTZZGG4cpU6rHeVzkBs?=
- =?us-ascii?Q?zxh5VMbT54jzQ+NbCOFodosVp8WnsuFNshB1J/VKsEabXCxxAoAH2mfUgE8H?=
- =?us-ascii?Q?BUWhUp8wyum8Ija2Z0C0PBG0iRwSfVNaR34mhOy6?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 96329e5c-2fd4-4500-0b4b-08dc21f03422
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jan 2024 00:04:33.2184
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OkSt/FD8dUsLOqRKyeYPKwXigmfxu8VULFySPe6HsC7WFVq/KzOz/9bBylBmQm5Fjp+SRTpgIhLkqTOik1HzQQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB6614
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240126235425.12233-1-quic_obabatun@quicinc.com>
 
-Dan Williams wrote:
-> Ira Weiny wrote:
-> > Dan Williams wrote:
-> > > Fabio M. De Francesco wrote:
-> > > > Add cond_guard() to conditional guards.
-> > > > 
-> > > > cond_guard() is used for the _interruptible(), _killable(), and _try
-> > > > versions of locks. It expects a block where the failure can be handled
-> > > > (e.g., calling printk() and returning -EINTR in case of failure).
-> > > > 
-> > > > As the other guards, it avoids to open code the release of the lock
-> > > > after a goto to an 'out' label.
-> > > > 
-> > > > This remains an RFC because Dan suggested a slightly different syntax:
-> > > > 
-> > > > 	if (cond_guard(...))
-> > > > 		return -EINTR;
-> > > > 
-> > > > But the scoped_cond_guard() macro omits the if statement:
-> > > > 
-> > > >     	scoped_cond_guard (...) {
-> > > >     	}
-> > > > 
-> > > > Thus define cond_guard() similarly to scoped_cond_guard() but with a block
-> > > > to handle the failure case:
-> > > > 
-> > > > 	cond_guard(...)
-> > > > 		return -EINTR;
-> > > 
-> > > That's too subtle for me, because of the mistakes that can be made with
-> > > brackets how about a syntax like:
-> > > 
-> > >  	cond_guard(..., return -EINTR, ...)
-> > > 
-> > > ...to make it clear what happens if the lock acquisition fails without
-> > > having to remember there is a hidden incomplete "if ()" statement in
-> > > that macro? More below...
-> > 
-> > I sympathize with the hidden "if" being confusing but there is already
-> > precedent in the current *_guard macros.  So I'd like to know if Peter has
-> > an opinion.
+On Fri, Jan 26, 2024 at 03:53:39PM -0800, Oreoluwa Babatunde wrote:
+> The reserved_mem array is used to store data for the different
+> reserved memory regions defined in the DT of a device.  The array
+> stores information such as region name, node, start-address, and size
+> of the reserved memory regions.
 > 
-> What are you asking specifically? The current scoped_cond_guard()
-> already properly encapsulates the "if ()" and takes an "_fail" so why
-> wouldn't cond_guard() also safely encpsulate an "if ()" and take an
-> "_fail" statement argument?
+> The array is currently statically allocated with a size of
+> MAX_RESERVED_REGIONS(64). This means that any system that specifies a
+> number of reserved memory regions greater than MAX_RESERVED_REGIONS(64)
+> will not have enough space to store the information for all the regions.
+> 
+> Therefore, this series extends the use of the static array for
+> reserved_mem, and introduces a dynamically allocated array using
+> memblock_alloc() based on the number of reserved memory regions
+> specified in the DT.
+> 
+> Some architectures such as arm64 require the page tables to be setup
+> before memblock allocated memory is writable.  Therefore, the dynamic
+> allocation of the reserved_mem array will need to be done after the
+> page tables have been setup on these architectures. In most cases that
+> will be after paging_init().
+> 
+> Reserved memory regions can be divided into 2 groups.
+> i) Statically-placed reserved memory regions
+> i.e. regions defined in the DT using the @reg property.
+> ii) Dynamically-placed reserved memory regions.
+> i.e. regions specified in the DT using the @alloc_ranges
+>     and @size properties.
+> 
+> It is possible to call memblock_reserve() and memblock_mark_nomap() on
+> the statically-placed reserved memory regions and not need to save them
+> to the reserved_mem array until memory is allocated for it using
+> memblock, which will be after the page tables have been setup.
+> For the dynamically-placed reserved memory regions, it is not possible
+> to wait to store its information because the starting address is
+> allocated only at run time, and hence they need to be stored somewhere
+> after they are allocated.
+> Waiting until after the page tables have been setup to allocate memory
+> for the dynamically-placed regions is also not an option because the
+> allocations will come from memory that have already been added to the
+> page tables, which is not good for memory that is supposed to be
+> reserved and/or marked as nomap.
+> 
+> Therefore, this series splits up the processing of the reserved memory
+> regions into two stages, of which the first stage is carried out by
+> early_init_fdt_scan_reserved_mem() and the second is carried out by
+> fdt_init_reserved_mem().
+> 
+> The early_init_fdt_scan_reserved_mem(), which is called before the page
+> tables are setup is used to:
+> 1. Call memblock_reserve() and memblock_mark_nomap() on all the
+>    statically-placed reserved memory regions as needed.
+> 2. Allocate memory from memblock for the dynamically-placed reserved
+>    memory regions and store them in the static array for reserved_mem.
+>    memblock_reserve() and memblock_mark_nomap() are also called as
+>    needed on all the memory allocated for the dynamically-placed
+>    regions.
+> 3. Count the total number of reserved memory regions found in the DT.
+> 
+> fdt_init_reserved_mem(), which should be called after the page tables
+> have been setup, is used to carry out the following:
+> 1. Allocate memory for the reserved_mem array based on the number of
+>    reserved memory regions counted as mentioned above.
+> 2. Copy all the information for the dynamically-placed reserved memory
+>    regions from the static array into the new allocated memory for the
+>    reserved_mem array.
+> 3. Add the information for the statically-placed reserved memory into
+>    reserved_mem array.
+> 4. Run the region specific init functions for each of the reserve memory
+>    regions saved in the reserved_mem array.
 
-Maybe I misunderstood you.  I thought you were advocating that the 'if'
-would not be encapsulated.  And I was wondering if Peter had an opinion.
+I don't see the need for fdt_init_reserved_mem() to be explicitly called 
+by arch code. I said this already, but that can be done at the same time 
+as unflattening the DT. The same conditions are needed for both: we need 
+to be able to allocate memory from memblock.
 
-But if you are agreeing with the direction of this patch regarding the if
-then ignore me.
+To put it another way, if fdt_init_reserved_mem() can be called "early", 
+then unflattening could be moved earlier as well. Though I don't think 
+we should optimize that. I'd rather see all arches call the DT functions 
+at the same stages.
 
-Ira
+> Once the above steps have been completed and the init process is done
+> running, the original statically allocated reserved_mem array of size
+> MAX_RESERVED_REGIONS(64) will be automatically freed back to buddy
+> because it is no longer needed. This is done by marking the array as an
+> "__initdata" object in Patch 0018.
+> 
+> Note:
+> 
+> - Per Architecture, this series is effectively only 10 patches. The
+>   code for each architecture is split up into separate patches to
+>   allow each architecture to be tested independently of changes from
+>   other architectures. Should this series be accepted, this should
+>   allow for each arcitecture change to be picked up independently as
+>   well.
+
+Only if patches 1 and 2 are accepted in one cycle and the arch ones in 
+the next cycle. No need for that though, I can take the whole thing 
+(when it's ready).
+
+
+> 
+>   Patch 0001: Splits up the processing of the reserved memory regions
+>   between early_init_fdt_scan_reserved_mem and fdt_init_reserved_mem.
+> 
+>   Patch 0002: Introduces a copy of early_init_fdt_scan_reserved_mem()
+>   which is used to separate it from fdt_init_reserved_mem() so that the
+>   two functions can be called independently of each other.
+> 
+>   Patch 0003 - Patch 0016: Duplicated change for each architecture to
+>   call early_init_fdt_scan_reserved_mem() and fdt_init_reserved_mem()
+>   at their appropriate locations. Here fdt_init_reserved_mem() is called
+>   either before of after the page tables have been setup depending on
+>   the architecture requirements.
+> 
+>   Patch 0017: Deletes the early_init_fdt_scan_reserved_mem() function
+>   since all architectures are now using the copy introduced in
+>   Patch 0002.
+> 
+>   Patch 0018: Dynamically allocate memory for the reserved_mem array
+>   based on the total number of reserved memory regions specified in the
+>   DT.
+> 
+>   Patch 0019 - Patch 0029: Duplicated change for each architecture to
+>   move the fdt_init_reserved_mem() function call to below the
+>   unflatten_devicetree() function call. This is so that the unflatten
+>   devicetree APIs can be used to process the reserved memory regions.
+> 
+>   Patch 0030: Make code changes to start using the unflatten devicetree
+>   APIs to access the reserved memory regions defined in the DT.
+> 
+>   Patch 0031: Rename fdt_* functions as dt_* to refelct that the
+>   flattened devicetree (fdt) APIs have been replaced with the unflatten
+>   devicetree APIs.
+> 
+>   Patch 0032 - Patch 0045: Duplicated change for each architecture to
+>   switch from the use of fdt_init_reserved_mem() to
+>   dt_init_reserved_mem(), which is the same function but the later uses
+>   the unflatten devicetree APIs.
+> 
+>   Patch 0046: Delete the fdt_init_reserved_mem() function as all
+>   architectures have switched to using dt_init_reserved_mem() which was
+>   introduced in Patch 0031.
+> 
+> - The limitation to this approach is that there is still a limit of
+>   64 for dynamically-placed reserved memory regions. But from my current
+>   analysis, these types of reserved memory regions are generally less
+>   in number when compared to the statically-placed reserved memory
+>   regions.
+> 
+> - I have looked through all architectures and placed the call to
+>   memblock_alloc() for the reserved_mem array at points where I
+>   believe memblock allocated memory are available to be written to.
+>   I currently only have access to an arm64 device and this is where I am
+>   testing the functionality of this series. Hence, I will need help from
+>   architecture maintainers to test this series on other architectures to
+>   ensure that the code is functioning properly on there.
+> 
+> Previous patch revisions:
+> 1. [RFC V1 Patchset]:
+> https://lore.kernel.org/all/20231019184825.9712-1-quic_obabatun@quicinc.com/
+> 
+> 2. [RFC V2 Patchset]:
+> https://lore.kernel.org/all/20231204041339.9902-1-quic_obabatun@quicinc.com/
+> - Extend changes to all other relevant architectures.
+> - Add code to use unflatten devicetree APIs to process the reserved
+>   memory regions.
+
+Dropping RFC does not make this v1. RFC is a state of the patches not a 
+version.
+
+Rob
 
