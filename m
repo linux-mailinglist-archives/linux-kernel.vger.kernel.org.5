@@ -1,92 +1,97 @@
-Return-Path: <linux-kernel+bounces-45675-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAC988433DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 03:28:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B14D8433E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 03:28:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD3D91C27F9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 02:28:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 168B328BFE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 02:28:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCF13611E;
-	Wed, 31 Jan 2024 02:27:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B121110793;
+	Wed, 31 Jan 2024 02:28:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b="KmrtVPFu";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="qEo06QOB"
-Received: from fhigh6-smtp.messagingengine.com (fhigh6-smtp.messagingengine.com [103.168.172.157])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="D45KeAKf"
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D41545667
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 02:27:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E9161079B
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 02:28:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706668076; cv=none; b=SWFTjB0crgMtqYuzBeQA6fDJwJADIaPuhIZSF4ZEDstaRVVE2nCsaKZHLKrSC4McIZOOP03O07ATJ95YRb93x8Qy5zUG0Y57cfUlL0N2/8vCBCdD/9X2TT0KwYxmbdwTeWqouapWRSEN0LKoKYlzQH5YOV2DefCDUk18EhUVNwA=
+	t=1706668084; cv=none; b=Q0jpBbOMCk0LOcWWmuCZPdDK82KhE83aNH+9tqBZK5wPtGD38jfP+5ZG832nPrmEGVDkgUTgdiCaAawzjH4BcuCG7v5hUJLF1WD5FyqpZ0CBje7e4z5mFkRcLRfa7/xj4ktY6osPAxQClBR2e2+82Yf+EnAPH0xeHvibN8E10tg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706668076; c=relaxed/simple;
-	bh=rqfGQ33rW27oNnjc+6yHT9BLkWlpUqBhPyW9ihVyVxo=;
+	s=arc-20240116; t=1706668084; c=relaxed/simple;
+	bh=vL9ewJGQjbVzXzeBAWLNtgJlQ6U/GTAb08cdclhSXDM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dsiTS75UY7SJ4mrqh4ID7EHDWfhwvbHNcQUfyT3NISDgSNzjgc6WAeVHE828bQYAZc6lZpEX4kKy2N5DzW4zw5cmVhF3RRYzj7gNUI3A5KMKrxJ7K5h4Km97touc5oIadFWOarN3GN/gjDY7m2kubUgLf0gTUjYVIOcQ8hYdXoE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza; spf=pass smtp.mailfrom=tycho.pizza; dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b=KmrtVPFu; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=qEo06QOB; arc=none smtp.client-ip=103.168.172.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tycho.pizza
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id B791F1140081;
-	Tue, 30 Jan 2024 21:27:53 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Tue, 30 Jan 2024 21:27:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
-	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1706668073; x=1706754473; bh=81kLSaihQo
-	tDKU9jTT77jkJOpqh/hq1cds+S6k0OFNQ=; b=KmrtVPFuwVEqAqfu3rXHveGwlY
-	ZacOwX1OcM6Lw3aVjasasUEWkg5TNmTtUyKFDza4OFWEpNnDvhcJhrrziYoJUwas
-	nsSP1sbnWnTURAScWutMo31wZag92CqDEzK7uv1OTOoLdpti+3IaCXX4kPite2iZ
-	ViURvNYcrdx39TExAooxnpL+tIHtjvhFKLVsXYb/6ooJOswwW03XNzFb3dg2n7ne
-	gWyH0UZ2elzc7Cpj5CExe/C1lKXxgqxd5WzDrwxK3bxqFYHeKEM4BnoCiyd3IM6W
-	uJcCBsakxAiOcsZRhvbvolHaup0IDQ3JuYDWP3873pRpdzJfQTSkS4KpmUcg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1706668073; x=1706754473; bh=81kLSaihQotDKU9jTT77jkJOpqh/
-	hq1cds+S6k0OFNQ=; b=qEo06QOBd6c1YsTJXtVNPYdwNj+d8avFV8Bgmx5OTgfM
-	v6gF/Gb2F32HdkXfLUmRK/qGbMdJyLfKxx/v/Sr5UUchD9lOfY5t5+7hDL1z+FiG
-	UkxZI+PMSTeX8Q0z3IAWgzd7DGheFNwss4Yfmm6Jrne3z8ue5KeRjP+Cl/K641HH
-	MYwJf83rrjpkt76qbtSLGtYqx+GFEKXRvpCX0Qf3V/UehSXXvaV1atykSqGoHNG/
-	SpP+Xd03x8+eCBbF00rqB3VO0xLEtHNJmwdS6ziZdInKYjkoTeRlLOX994ZqCU9A
-	Kj3w5tYj1EYHliiIgR3rzK7+lVV3+kMfzJOKs24ueA==
-X-ME-Sender: <xms:KbC5ZRJD_DG-xzXOPM6sNJn-6N439XCDj3HQMWQrAppr--fr0svU_A>
-    <xme:KbC5ZdLWOKXJrAQHd1-W8LUO5QLaz0EbbdIlZuWs-qqaEEruG6cTEJK5KxyNGh87A
-    oJrRvvluMuy8g3_hck>
-X-ME-Received: <xmr:KbC5ZZt7LIdAcVsfXOzHGDdryFNuadVcYrwnhSF9uq9LFJFjhvZYZNE2Rmc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtkedggeeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfihtghh
-    ohcutehnuggvrhhsvghnuceothihtghhohesthihtghhohdrphhiiiiirgeqnecuggftrf
-    grthhtvghrnhepueettdetgfejfeffheffffekjeeuveeifeduleegjedutdefffetkeel
-    hfelleetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epthihtghhohesthihtghhohdrphhiiiiirg
-X-ME-Proxy: <xmx:KbC5ZSZPxSY7Gh-dv7RtfZ5NMuwtGv-EujFK27zS67sUQyYZ4AnxGg>
-    <xmx:KbC5ZYabau5VdYa8HMZGzVwOQXvHTUt04bi_I6xNsGesZ0mn2GS-hw>
-    <xmx:KbC5ZWA4jV9mp5VDp7elsxHU4TX39vLfS4mD5L26RepIfQBqIkR1kA>
-    <xmx:KbC5ZfUH3M10VChsiS2Ep-SmHV7nTP5I8c_PfxDmoZr7_Z7Xqdv0QA>
-Feedback-ID: i21f147d5:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 30 Jan 2024 21:27:52 -0500 (EST)
-Date: Tue, 30 Jan 2024 19:27:50 -0700
-From: Tycho Andersen <tycho@tycho.pizza>
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Christian Brauner <brauner@kernel.org>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] pidfd: implement PIDFD_THREAD flag for pidfd_open()
-Message-ID: <ZbmwJiIS4ei64u6R@tycho.pizza>
-References: <20240130112638.GA29773@redhat.com>
- <20240130113409.GA29849@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Rpk1n9doEj4xovzPYmp+nzKSEuc9wUlSKKqdmFUUfk9thsXDyfZ/hzPVvDZKn9XbhW1NkZ4eDRjxlvVBoEaDdudI4nLOlwwSuvKX3ducQMJIywVAk8B/tpHGOIe5kXuoTe3ZCOZac1IWcIQML1Y0mOMsrMyF8z9DC0ma1KDdPiE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=D45KeAKf; arc=none smtp.client-ip=209.85.215.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5ce6b5e3c4eso2677344a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 18:28:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1706668082; x=1707272882; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9rFuCfrepBWXS1XxHQhjTqPjsgtcav0dkeDXr+bSzRE=;
+        b=D45KeAKfrJ98hS6d6uV3k+WVmM4ZVpQNftMQ8UcepF49jvwH1RWcNkrkF70O4dYahv
+         tiHKD1xXz15tDg/a3/hFJHqZg6fupSdF77ozGdAgg7jyw+4CnnaIwAwhnoKFcJD5lV8s
+         9WYG8Z19Df/P+wgLRJ9f7W9xn5w9GX8A3/UvM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706668082; x=1707272882;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9rFuCfrepBWXS1XxHQhjTqPjsgtcav0dkeDXr+bSzRE=;
+        b=oG+eVeq+UFOFawt/bMw8OdjUEfurtWpuwb1uix2qzmK3Lj6dQD3ExKcA9HWa1CY5bs
+         ZaLPJKvgSOPmHbuall/scrZk31uvVP4heyiJnWkt8kWRzZiZkf7YbqpJVv2MtdgToYTH
+         BwnEp+DUwE6bYh4qtA1chkz28x5YlE+vHz/voW6wdYSx/Atzv6KeWHSKq9xFmDmiN90d
+         hIjzbEms0bzZvw6uJ/EO3abDzxTV2tPcysbUIdEtfTR8+gOSfiV0oIG9OVWcDJpDi1sK
+         V7FZP+K6W1RjEZnbb2Xi216VcSwhly4apn8KygfCRLA33wF8OOeaxh1+XlQrfviiw3vB
+         3oCw==
+X-Gm-Message-State: AOJu0YzEGwDrd3Vapa5fT8ksGJr+pqLr2V2pZg5qWdku6RJXZyNpck+D
+	6/ojwjE5MmHOixz/YQSWIsuBmLegy0L9MS5OU+8YjacPoZQhVFesb4fmrDy/C8Y=
+X-Google-Smtp-Source: AGHT+IGjQbidItS+7RU7cPhy+bkQeiwZ/jpP5J+ABb5ADzdlxfdt0avRjFcD6UpscTVrmQlDW7WNQA==
+X-Received: by 2002:a05:6a21:9206:b0:19c:7e70:d32d with SMTP id tl6-20020a056a21920600b0019c7e70d32dmr376162pzb.0.1706668081759;
+        Tue, 30 Jan 2024 18:28:01 -0800 (PST)
+Received: from fastly.com (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
+        by smtp.gmail.com with ESMTPSA id h10-20020a056a00218a00b006dde3053cdasm8574075pfi.133.2024.01.30.18.27.59
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 30 Jan 2024 18:28:01 -0800 (PST)
+Date: Tue, 30 Jan 2024 18:27:57 -0800
+From: Joe Damato <jdamato@fastly.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	chuck.lever@oracle.com, jlayton@kernel.org,
+	linux-api@vger.kernel.org, brauner@kernel.org, edumazet@google.com,
+	davem@davemloft.net, alexander.duyck@gmail.com,
+	sridhar.samudrala@intel.com, kuba@kernel.org,
+	willemdebruijn.kernel@gmail.com, weiwan@google.com,
+	David.Laight@aculab.com, arnd@arndb.de,
+	Jonathan Corbet <corbet@lwn.net>,
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nathan Lynch <nathanl@linux.ibm.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Maik Broemme <mbroemme@libmpq.org>,
+	Steve French <stfrench@microsoft.com>,
+	Julien Panis <jpanis@baylibre.com>,
+	Jiri Slaby <jirislaby@kernel.org>, Thomas Huth <thuth@redhat.com>,
+	Andrew Waterman <waterman@eecs.berkeley.edu>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+	"open list:FILESYSTEMS (VFS and infrastructure)" <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH net-next v4 3/3] eventpoll: Add epoll ioctl for
+ epoll_params
+Message-ID: <20240131022756.GA4837@fastly.com>
+References: <20240131014738.469858-1-jdamato@fastly.com>
+ <20240131014738.469858-4-jdamato@fastly.com>
+ <2024013001-prison-strum-899d@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -95,30 +100,23 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240130113409.GA29849@redhat.com>
+In-Reply-To: <2024013001-prison-strum-899d@gregkh>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 
-On Tue, Jan 30, 2024 at 12:34:09PM +0100, Oleg Nesterov wrote:
-> Damn. Self-NACK.
+On Tue, Jan 30, 2024 at 06:08:36PM -0800, Greg Kroah-Hartman wrote:
+> On Wed, Jan 31, 2024 at 01:47:33AM +0000, Joe Damato wrote:
+> > +struct epoll_params {
+> > +	__aligned_u64 busy_poll_usecs;
+> > +	__u16 busy_poll_budget;
+> > +
+> > +	/* pad the struct to a multiple of 64bits for alignment on all arches */
+> > +	__u8 __pad[6];
 > 
-> I forgot (we all ;) about mt-exec, and there are 2 problems.
-> 
-> 1. The "if (!thread_group_leader(tsk))" block in de_thread() needs
->    do_notify_pidfd() too, the execing non-leader thread looses its
->    old pid, pidfd_poll(PIDFD_THREAD, pid-of-execing-sub-thread)
->    should succeed. Must be fixed, I think.
+> You HAVE to check this padding to be sure it is all 0, otherwise it can
+> never be used in the future for anything.
 
-I think the `test_non_tgl_exec` from my tests exercises the scenario
-you're describing, and it works.
+Is there some preferred mechanism for this in the kernel that I should be
+using or is this as simple as adding a for loop to check each u8 == 0 ?
 
-> 2. pidfd_poll(PIDFD_THREAD, pid-of-group-leader) should not succeed
->    when its sub-thread execs, the execing thread inherits the leader's
->    pid. Perhaps pidfd_task_exited() can check sig->group_exec_task,
-
-I didn't have an explicit test for this, but I hacked one up, and
-pidfd_poll(PIDFD_THREAD, pid-of-group-leader) doesn't return after
-exec.
-
-I think it's ok? But I must be missing something.
-
-Tycho
+Thanks.
 
