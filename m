@@ -1,120 +1,107 @@
-Return-Path: <linux-kernel+bounces-47189-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47191-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CBBD844A50
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:45:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74954844A53
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:46:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F3A71C25BD8
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:45:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 126A81F28494
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:46:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3292539AFC;
-	Wed, 31 Jan 2024 21:45:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1121639FC6;
+	Wed, 31 Jan 2024 21:45:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PTGyIgiq"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b="iYPqex+0"
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA74239AE8
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 21:45:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B32A39AD5
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 21:45:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706737509; cv=none; b=r6sy7wGm3SHaZdEGn+ssKkEd3n26G5NLb4mCVJJsmQa99kt4zpgqhm5DrXl6n5j+XoTFzr/LsUrW2smxMxMtcbjqi7X+u/Mv7Br7Y3uRs3hGNM07EWsTe60H3Tjo+u8Dk6Lbl96/zYBB6+MnRbrfMoyycvAaelf9wnpxOvEEJOg=
+	t=1706737544; cv=none; b=BHSHO1tzFGyqM36UBw7GadkKlZ73fHZmtLgyR3MU1gRF868jGOtjgCbcewwd5O0h+XQxogElErV9TOIHXlsdAon1+s93c1ApQojhoedzLVXa3ODJGgOdeuQIKduhd+1qq10a+RPegLRy5fjJs8unZYP7Qa94zCbzUafXzweDk4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706737509; c=relaxed/simple;
-	bh=RNO5W0OP+zOfgTSimLFGWc0A4ecEarSa4TiMbXZZvIs=;
+	s=arc-20240116; t=1706737544; c=relaxed/simple;
+	bh=MqYdbGGmYJ/TG7dOij6KwrLaPnSRe6KEms8E935jiYo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qVbqn9xWaQdxLmDZegw+T8TBsn7dGqxNxT4ft0JhiOPokLeKnYO8iwxVs3GO3Ve1dGRuhwzEZqHmOrdSWGDcWNU/QC3OsyQvxDAwMzCCtjjEWkRBmaGxHTRfbjVJiqXo+ANDYKz5TGg2hnP7CIagwnQzZHHBgQFUrl9SujjzKVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PTGyIgiq; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706737506;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7dbCchYRiPga9CCVNutbEbzEx6jSnpAXwCYBNUJ7928=;
-	b=PTGyIgiqfzGHIXHjD7mq8aock1j2dMZxNW/68eI7/i5jlbf78lDm1toZygFzd7dwzavgRn
-	5nDCPRHQCFIto+MB51PP+B5cfi0JyrwnmfdwgYOhNX3i5xnjA6f0bMLSORFIceM7JnHsKl
-	EOPKBhYQ3qu6vixrBSwjKD4AkqJcg4Q=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-192-DVs2aktzOIOW9Noo_NFuoQ-1; Wed, 31 Jan 2024 16:45:03 -0500
-X-MC-Unique: DVs2aktzOIOW9Noo_NFuoQ-1
-Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2cf30de8dd8so2367321fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 13:45:03 -0800 (PST)
+	 To:Cc:Content-Type; b=nJqDriJi9Y5ewTYp+iymE2tsVG5LOTq1zeIf5jnxUls1Jn1Wnx5xAVJSPZOHYUerE4tK5wEU0GuRZh0c3C28a33IYKkCLhEUnpwovQVzJ8tukiXbn0BTl4RpB+agoF28jds6TWCbYi6YsiLaWFqaEdLh5d3D0nuuGHBQXvW/xcY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu; spf=pass smtp.mailfrom=umich.edu; dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b=iYPqex+0; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=umich.edu
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-60412866c36so2688027b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 13:45:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=umich.edu; s=google-2016-06-03; t=1706737540; x=1707342340; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MqYdbGGmYJ/TG7dOij6KwrLaPnSRe6KEms8E935jiYo=;
+        b=iYPqex+0UmZL3uWxVTtKyRzFL3qe/uVJkNiyBCzPa4N+U5kt3J1WYOUXQAMxw7LuKy
+         2xBc7yhO5XNmlUYglCYL3EsPSrichqEqCfJVofVt73eR0lTggZRSvKj1MI6qrXaWlQAw
+         /oOtTSiHxiuXkK1KkOSwIDKHEWePCEZZ3eIxeDx5XRlnSwMqEJ83/ubDCs1iHSmRh6ic
+         w5X5aQu0u/WTV55j6LyqjNxN7qSIg5h0DqzVVke90ZEAe8yhicijv4ylOJMszOAOWXBk
+         79RJSzmZlQsjvI8AYk5LO6aule9WkB+fJ2kMm3zlaJyL1PPMHSxDceqmpvOZolruijqI
+         lpDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706737501; x=1707342301;
+        d=1e100.net; s=20230601; t=1706737540; x=1707342340;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7dbCchYRiPga9CCVNutbEbzEx6jSnpAXwCYBNUJ7928=;
-        b=TIPwaFjfL2vyQfUZQNnRa2o/fg88kmLQAhDlhgbK/HVRCwrS4zplmItDSPSEwpJQWz
-         kDqAMyJ1kZ4NKNcGoErn1xxNntxPKnAzZHAoP/4/9P9YwaU17tm2HG995sQp5oEajyrl
-         oqrlSn6ABf55wfEDNztX1U1ejj7r5OfWixhbQnRdpAorpPNx9UHCGHfc0jstPrVdF5xi
-         ITjvHP1AyLUlMlVtYX9IVrbQK1c2GxES0QmWN/6HDnGiUMn1b4Wx35PVs52VmWYzmQx0
-         aBsAbRYaJ3pAC/9ZDgtKlGcTfEFNC2ixKJ5CuG7NxBueowG0aQubA2g6kWTUNJsq+s9h
-         y6vw==
-X-Gm-Message-State: AOJu0YzXyc1ncTl+lvGQOTMjCZc8J284FhAn3IUsJv+MbUk4rn0J4iZB
-	a3Dnr6LZr/yV+Hi7hJSUstmf8ZK0r+uXlZw6vp+TfZfCr5WbWzTe4DX6me32T6H9+fBXSnnG7MN
-	TN7gNjdoxtQLvZw2gjf9nyRrNBkfywvJD7NrIONDlZVU2byKRQkwWbwHQfYPNg/fmHa7LFG/Fja
-	Mq3xMRO/kM9iuIzc1jEXybPWGJfwQOHrzjgkCZyfgPmQcv3II=
-X-Received: by 2002:a2e:8553:0:b0:2cf:3324:cedd with SMTP id u19-20020a2e8553000000b002cf3324ceddmr2282113ljj.24.1706737501757;
-        Wed, 31 Jan 2024 13:45:01 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF4WSR9c2pT9GcR96S25SGMyV9IZm76XurE8FEjz5Uxf6I4GCo5Gdvvm8H5SrOpe9xqbYz5TXh0mtvDtkpATcA=
-X-Received: by 2002:a2e:8553:0:b0:2cf:3324:cedd with SMTP id
- u19-20020a2e8553000000b002cf3324ceddmr2282099ljj.24.1706737501453; Wed, 31
- Jan 2024 13:45:01 -0800 (PST)
+        bh=MqYdbGGmYJ/TG7dOij6KwrLaPnSRe6KEms8E935jiYo=;
+        b=SS10krStNqMBPe2UFTH01FtkfXLkSpQUyCB5g9G+4H8orWlLSuEgdgHC4mT+/5EkU3
+         bQ9LbteY9IXcZdc+y7d3s4YaRmogzlSx1Q43ZrpOMoEDzTcMxDw4O/zwSVCekyB2G7Fi
+         nDfoGJM7DEH0mjeUrfYgUwPIdvaE7tnWcfKOse1nGkqwdFD01ZHNWKQOfEyXErzpIlqo
+         v+aLstxxUEVyUqilVVjQzHzI6bXqPqh8TW7NgDcmUMYcYOqwVkqQXOoVlv20OAfwlzxE
+         6nwfeUc2KOPiwFz9A/c4jBLllrWs6ue9MOf4b8Op+MKUcDnYE0inFE2+eaulQ3KV8vJ2
+         bHKA==
+X-Gm-Message-State: AOJu0Yz+Q5pSr9j8YuKgCDBsOI3FwJ6YV2M5tXf/BF7pSJ6aBEHUjZZq
+	rFZ6Kinz2BJspNJSPhfCZ2t9bKp9RlkH9wXyA8rUp+d0NTzZ5761UkSyM7OHDwGelqwqZJu6YaF
+	9kwTWgfQrGM/Ez92X7VGRT9m+tVpTaE0Z0F6/aw==
+X-Google-Smtp-Source: AGHT+IEeSoqGaEV2K7YR4U1cMnEbUZUOwrtGLVPajPIxKhYWweVq83gKpZgUuwZuna/wBZDMlGALXxu1jlOIUlw6pFw=
+X-Received: by 2002:a05:690c:711:b0:5ff:9319:840e with SMTP id
+ bs17-20020a05690c071100b005ff9319840emr2868836ywb.31.1706737540509; Wed, 31
+ Jan 2024 13:45:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131191732.3247996-1-cleech@redhat.com> <20240131191732.3247996-2-cleech@redhat.com>
- <2024013110-greasily-juvenile-73fc@gregkh>
-In-Reply-To: <2024013110-greasily-juvenile-73fc@gregkh>
-From: Chris Leech <cleech@redhat.com>
-Date: Wed, 31 Jan 2024 13:44:50 -0800
-Message-ID: <CAPnfmX+c_TECfVgbAgphFgkCOr-=tKEvHmcxPg_vSY-qJRqaQQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] uio: introduce UIO_MEM_DMA_COHERENT type
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Nilesh Javali <njavali@marvell.com>, Christoph Hellwig <hch@lst.de>, 
-	John Meneghini <jmeneghi@redhat.com>, Lee Duncan <lduncan@suse.com>, 
-	Mike Christie <michael.christie@oracle.com>, Hannes Reinecke <hare@kernel.org>, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org, 
-	GR-QLogic-Storage-Upstream@marvell.com
+References: <20240129145837.1419880-1-aliceryhl@google.com>
+In-Reply-To: <20240129145837.1419880-1-aliceryhl@google.com>
+From: Trevor Gross <tmgross@umich.edu>
+Date: Wed, 31 Jan 2024 16:45:29 -0500
+Message-ID: <CALNs47vihohNCzDuB8d0G1Y3EF1HUipMrL186DtrMRu41Rrr0A@mail.gmail.com>
+Subject: Re: [PATCH v1] rust: add reexports for macros
+To: Alice Ryhl <aliceryhl@google.com>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, 
+	Gary Guo <gary@garyguo.net>, =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, rust-for-linux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 31, 2024 at 1:29=E2=80=AFPM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Mon, Jan 29, 2024 at 9:58=E2=80=AFAM Alice Ryhl <aliceryhl@google.com> w=
+rote:
 >
-> On Wed, Jan 31, 2024 at 11:17:31AM -0800, Chris Leech wrote:
-> > Add a UIO memtype specifically for sharing dma_alloc_coherent
-> > memory with userspace, backed by dma_mmap_coherent.
-> >
-> > This is mainly for the bnx2/bnx2x/bnx2i "cnic" interface, although ther=
-e
-> > are a few other uio drivers which map dma_alloc_coherent memory and
-> > could be converted to use dma_mmap_coherent as well.
+> Currently, all macros are reexported with #[macro_export] only, which
+> means that to access `new_work!` from the workqueue, you need to import
+> it from the path `kernel::new_work` instead of importing it from the
+> workqueue module like all other items in the workqueue. By adding
+> reexports of the macros, it becomes possible to import the macros from
+> the correct modules.
 >
-> What other drivers could use this?  Patches doing the conversion would
-> be welcome, otherwise, again, I am very loath to take this
-> one-off-change for just a single driver that shouldn't be doing this in
-> the first place :)
+> It's still possible to import the macros from the root, but I don't
+> think we can do anything about that.
+>
+> There is no functional change. This is merely a code cleanliness
+> improvement.
+>
+> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+> ---
 
-uio_pruss and uio_dmem_genirq both appear to mmap dma_alloc_coherent
-memory as UIO_MEM_PHYS.  It might not be an issue on that platforms
-where those are used, but I'd be happy to include untested patches to
-convert them for better adherence to the DMA APIs.
-
-(sorry for the double send on this Greg, missed the reply-all)
-
-- Chris
-
+Reviewed-by: Trevor Gross <tmgross@umich.edu>
 
