@@ -1,143 +1,144 @@
-Return-Path: <linux-kernel+bounces-46014-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46015-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F048E84393D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:40:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A00184393F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:40:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABB1C289A48
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:40:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9D1F289AB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:40:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B5785FB85;
-	Wed, 31 Jan 2024 08:40:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17BB95EE7E;
+	Wed, 31 Jan 2024 08:40:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="BGJuhUjL"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="l3L0xY+0"
+Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBC9860885;
-	Wed, 31 Jan 2024 08:40:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D34F855C2D
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 08:40:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706690432; cv=none; b=IGumEelsAh0omMVrr/yaf2sf6AekVNZdTRJBO8Gd0msF/uYyZzS6uV3LunRsm6+1nDWWJmnHfewNwzciyPzHdSvDI1f6eoZZmUj9SPATIv5VXqDzINUCdyafSHEhNpRZWypuZoZS1qGybe1yo7cZusDuDxqSUASSI5GMDrpaJ0w=
+	t=1706690451; cv=none; b=GiMbv5/2kmVvRAxK1p/CxjB5elaixS1IMDFEd8dDuYV6XQeDaOqLRIGrpAlfaJ1uRkL25DCP77t5An2XcnxMIHQIv43JkgKaNr3H301qNPpbJO9Ue7ekSC8mUIXDIsijKkE5JBOlDApogSGgklOLDm+GHTPL2l5/9p4/y+FiPY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706690432; c=relaxed/simple;
-	bh=vRFrum47agDuMfsKxoMe79Z/7FuOXXiGEk93cyE0i14=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Dkn1R5EPf71KBgxy0uRa2gktQ9vVSRn1KvUtTm8UUwx/sKygvl7falSXOFe8vVeXoMIFKVVXplo1Jy9w2MUul25XZ92F4ffXLZMt3P3DLakzbR0iZUcMVJNtV8TdfevrBmiJhmwIJJeKqdx8CMc/w5H43mkme95VxxPvmmgbe08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=BGJuhUjL; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40V76vUO012185;
-	Wed, 31 Jan 2024 08:40:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=pGxUNSGAM2+sHX8XNYpFr+J6CxjXMvpl6ND2fcKYOqU=; b=BG
-	JuhUjLbNDMY1mdkJ4GIQ6NY3bwCCtyR05Pot9ENWRNTmWSCVXYVU/V7vHtqH198u
-	V9CtaXWG+kIwR/8WD7l1W+CnclimSzQdBuZmhNp0QOhgEPT0KnxUvygoN/XCPc3A
-	cZ5nx8fEZ84tDGnh/iO3xcZn8HuPpwnyi+m6IREciYEQzPxqTyo1UQmQoA+eWee3
-	rA40siBHRVXQdgI7KtHHNBCoqsqjvY67j3eulQwB2cr4wyC5Cn3j/8T4+QJ+HcYe
-	frFLV6q4eIVbBEqsxNM3M863Mlv2IEN7N+y+JUX347iHJlp5ge91l/dSa880x6xY
-	AWfsFW4NW38FsO8KGv/A==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vy6gmhqwn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 31 Jan 2024 08:40:26 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40V8eP4A028110
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 31 Jan 2024 08:40:25 GMT
-Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 31 Jan
- 2024 00:40:20 -0800
-Message-ID: <cf2ea585-0fb1-443a-a467-60f8b5d28174@quicinc.com>
-Date: Wed, 31 Jan 2024 16:40:17 +0800
+	s=arc-20240116; t=1706690451; c=relaxed/simple;
+	bh=0N7Vv617AZpS/lhgQ1jLWXz9N9LwcNRliNpAe3N+rPI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=If+iMHPGnWX74msgUFJVzeKANWHD8C0nROlNZkF0Oj2+lBCjQdd4LxprpKlEj7jofXmVwVra+8tbDC2OsRbb2BAJvw7AntpKmYy9p+0qWMybS6v/FjK5DOQlW8eM54uzlBbjkvEEjkZqO7v16foK4+d0bBGk053zYeu4yA8B1/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=l3L0xY+0; arc=none smtp.client-ip=209.85.167.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3bba50cd318so3986983b6e.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 00:40:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706690449; x=1707295249; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TxqUCZUmsP7DgZniUm0/38xJfKfkBwtdPc5aQ25lcnU=;
+        b=l3L0xY+0IqBB9tw5snD2MssywSjV7o6XAIzK8Vc+4zN+VZdAkGMXUuf2sF7TIFGGaM
+         BfTcgcX4fR9vPmnIcU6BxcsFzw9mdI3v5FqxBiNgk6TzlTxDW13UPYUhyqCYROMbqVoL
+         dw6xD41PjObUIQq2ygdfjPrWvuyxzYuXlWrcM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706690449; x=1707295249;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TxqUCZUmsP7DgZniUm0/38xJfKfkBwtdPc5aQ25lcnU=;
+        b=Lvf6cxGqUyae4oFDVWt6iAMAIq1/Srr9pfl4aQ8AtteEZ4OfRvEeEpHBcVu601D+UN
+         8fH+ppW/H2sIBiSBNxQ7i8ItukHJi9B/J3/vaaLddj/W9GxlOt9ctP07Pzz1l8Cg4Z5p
+         fLW8aK0gYv+UIWbHWIrM863Ry/NUJtUII89eWq9w99DLiCNz0FeqfuFzEyp/4ZUf6BVW
+         /MfLyx1wswF748qJNqLvrdcAX/sZkHZMljuTbH8TK0C1Mn4kE2eZBsV18PCG08IE3KLM
+         YOPWBVg8n9tc1hvo/ojalSkSFw3KXf7YjWtwh3qnalKoU0ao311QOxlRi1ID1b8kZWrU
+         464A==
+X-Gm-Message-State: AOJu0YyjRtB+7tai+CeVSEwqa3csNl8oXhRvh8TNGvs82ZBTqPFRAKOU
+	jwceW1q8i4fKXnZi+pxxRIi2xhPoOEmNuo1o5QHJDaLmeZqSFxO4uOLoKmgp3Q==
+X-Google-Smtp-Source: AGHT+IH8zjEWpqXVJCV30f8ffZPJow/hwX+WfjPUWbBYzdz2Cck6xeNQQO9eY44+yWg7fTKY2uKYoA==
+X-Received: by 2002:a05:6808:bd4:b0:3be:453d:7654 with SMTP id o20-20020a0568080bd400b003be453d7654mr1106395oik.48.1706690448802;
+        Wed, 31 Jan 2024 00:40:48 -0800 (PST)
+Received: from wenstp920.tpe.corp.google.com ([2401:fa00:1:10:74d3:dadd:270b:194a])
+        by smtp.gmail.com with ESMTPSA id k1-20020aa788c1000000b006de3ffa19f4sm3343454pff.0.2024.01.31.00.40.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Jan 2024 00:40:48 -0800 (PST)
+From: Chen-Yu Tsai <wenst@chromium.org>
+To: Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: Chen-Yu Tsai <wenst@chromium.org>,
+	devicetree@vger.kernel.org,
+	linux-mediatek@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Subject: [PATCH] arm64: dts: mediatek: mt8183-pico6: Fix wake-on-X event node names
+Date: Wed, 31 Jan 2024 16:40:41 +0800
+Message-ID: <20240131084043.3970576-1-wenst@chromium.org>
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] dt-bindings: pinctrl: qcom: consolidate functions
- to match with driver
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <linus.walleij@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@quicinc.com>
-References: <20240129092512.23602-1-quic_tengfan@quicinc.com>
- <20240129092512.23602-3-quic_tengfan@quicinc.com>
- <aa870f52-d956-4c3e-82a4-980a32f5f698@linaro.org>
- <8a3866ee-d70b-419c-bde4-7bf55415402e@quicinc.com>
- <6fb7286c-8669-4f99-9bb7-3ef8dfa229c2@linaro.org>
-From: Tengfei Fan <quic_tengfan@quicinc.com>
-In-Reply-To: <6fb7286c-8669-4f99-9bb7-3ef8dfa229c2@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: bRJvpjjzF5DuQ24DXdfFyiZTryIr9is3
-X-Proofpoint-ORIG-GUID: bRJvpjjzF5DuQ24DXdfFyiZTryIr9is3
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-31_03,2024-01-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
- suspectscore=0 impostorscore=0 phishscore=0 mlxscore=0 malwarescore=0
- clxscore=1015 adultscore=0 lowpriorityscore=0 priorityscore=1501
- mlxlogscore=851 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401190000 definitions=main-2401310065
+Content-Transfer-Encoding: 8bit
 
+The wake-on-bt and wake-on-wlan nodes don't have a button- or event-
+prefix that the gpio-keys binding requires.
 
+Fix up the node names to satisfy the binding. While at it, also fix up
+the GPIO overriding structure for the wake-on-wlan node. Instead of
+referencing the gpio-keys node and then open coding the node, add a
+label for the event node, and use that to reference and override the
+GPIO settings.
 
-On 1/31/2024 4:34 PM, Krzysztof Kozlowski wrote:
-> On 31/01/2024 09:24, Tengfei Fan wrote:
->>
->>
->> On 1/29/2024 7:24 PM, Krzysztof Kozlowski wrote:
->>> On 29/01/2024 10:25, Tengfei Fan wrote:
->>>> Consolidate functions to match with SM4450 pinctrl driver, because
->>>> consolidate functions are being used in SM4450 pinctrl driver.
->>>
->>> It's very difficult to see what changed from the diff, so please explain
->>> brieflyl changes here.
->>>
->>> What is that "consolidate functions" that you use in the driver?
->>>
->>> Best regards,
->>> Krzysztof
->>>
->>
->> please help to comfirm that the following description as commit message
->> whether it covers your concerns:
->>
->> Pin alternative functions are consolidated(like: atest_char, phase_flag,
->> qdss_gpio etc.) in SM4450 pinctrl driver while they are still split in
->> DeviceTree binding file. SM4450 pinctrl function is broken if current
->> binding doc is followed. Update SM4450 pinctrl DeviceTree binding doc to
->> align with driver.
-> 
-> Please list the functions which are being removed and added. I usually
-> do not expect such commit msg, but this is an exception: diff is tricky
-> to parse.
-> 
-> Best regards,
-> Krzysztof
-> 
+Fixes: 055ef10ccdd4 ("arm64: dts: mt8183: Add jacuzzi pico/pico6 board")
+Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+---
+ .../boot/dts/mediatek/mt8183-kukui-jacuzzi-pico6.dts      | 8 +++-----
+ arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi            | 2 +-
+ 2 files changed, 4 insertions(+), 6 deletions(-)
 
-yes, I understand your concerns. I will list all the functions that need 
-to be updated.
-
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-pico6.dts b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-pico6.dts
+index 6a7ae616512d..0d5a11c93c68 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-pico6.dts
++++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-pico6.dts
+@@ -17,7 +17,7 @@ bt_wakeup: bt-wakeup {
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&bt_pins_wakeup>;
+ 
+-		wobt {
++		event-wobt {
+ 			label = "Wake on BT";
+ 			gpios = <&pio 42 GPIO_ACTIVE_HIGH>;
+ 			linux,code = <KEY_WAKEUP>;
+@@ -47,10 +47,8 @@ trackpad@2c {
+ 	};
+ };
+ 
+-&wifi_wakeup {
+-	wowlan {
+-		gpios = <&pio 113 GPIO_ACTIVE_LOW>;
+-	};
++&wifi_wakeup_event {
++	gpios = <&pio 113 GPIO_ACTIVE_LOW>;
+ };
+ 
+ &wifi_pwrseq {
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+index a241bb70cd76..89932984889d 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+@@ -142,7 +142,7 @@ wifi_wakeup: wifi-wakeup {
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&wifi_pins_wakeup>;
+ 
+-		button-wowlan {
++		wifi_wakeup_event: event-wowlan {
+ 			label = "Wake on WiFi";
+ 			gpios = <&pio 113 GPIO_ACTIVE_HIGH>;
+ 			linux,code = <KEY_WAKEUP>;
 -- 
-Thx and BRs,
-Tengfei Fan
+2.43.0.429.g432eaa2c6b-goog
+
 
