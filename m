@@ -1,117 +1,149 @@
-Return-Path: <linux-kernel+bounces-47062-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47066-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 630098448C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:23:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC7D18448C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:25:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 951EE1C23246
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:23:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 438B0B21935
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:25:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABFEA3FB2C;
-	Wed, 31 Jan 2024 20:23:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1871B12BF3B;
+	Wed, 31 Jan 2024 20:24:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="utAqutq1"
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XCqS+aDt"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 619043FB06
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 20:23:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A0C9405FE;
+	Wed, 31 Jan 2024 20:24:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706732611; cv=none; b=HS0v2/+/Ktc/iwrStDQur39qvHSkiVFhl+Ox6oUeHiXXW90opYn40ttlJu0gtkg7c5KupUv9sVbOZ0spQYySTpvaFizS8+ZZql90voRQ7RrOyuFg6BA8IjF288+UAkJaXMp+9+yCughSmNjQssnt4XB4qVz0ogpdaKsbHC0lVTM=
+	t=1706732649; cv=none; b=MYpycJVKgDCeHUXWgsyBLmixXRYq5NGaeutDIbxD/7SYF6cwXzki9A21rVcS5sSREaYqay2MT768E6gTGYN99QOQ3y4qUqSCeTcjK6kzSeVbt8+dZ3qWB+8+uol4kFyZpczfF9lQaMTSrgXQuzc19+QV9qUIHF/LJ3vrGsuccbU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706732611; c=relaxed/simple;
-	bh=SEc9m+e3CNgOiYfioXrsW3eDnkw9q57N3o4XcChDGG4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lAaHTC9oTZduGog0O1xPmm2/IPMF4TFYO/MEhuEhj277E23XxMbJ8TN8eDRvMl6IVSathJIYyWFo+4DZlVj2Uk8gv6WFaTx2PZ0dlDROXz3aaMpjKf2ora5rGmOxHCgTvqDAmCTeUXZVyaey5cXGSMWo/RVxmxgeCxatsf7tUP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=utAqutq1; arc=none smtp.client-ip=209.85.128.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-6029b5946f5so10215847b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 12:23:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706732608; x=1707337408; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SEc9m+e3CNgOiYfioXrsW3eDnkw9q57N3o4XcChDGG4=;
-        b=utAqutq16Jx/5Dseg1BALD+KUC4JyfW3xDL2gOahiEIJdxUArBEwjsdJBO2L+d7/yJ
-         7J0S0NC/LlgnQgkkiHTPv3Q/WZxdtKKAqLXj2lWUi4vpjCcMGzvoviecHLXpix7K1N0d
-         1rUhcgN7crkq8qtBneZG55b1qpsrVSqHdfsbBnKrKJvFsuLR6EEQgL7nBQU6yDR+mY/n
-         UBd05ygOrkYXumiDXka7CopUzjlmVnMnE+LSHbh9V1yDmGD4sjZMXf29ISpIbqGRdhtB
-         GlFQbCQ+W9iV5O9qjQDbQ+rm0YoUBM03IPQp8uvQnigRsdvbbLhgwVGvQE91b8/zdxrf
-         BpTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706732608; x=1707337408;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SEc9m+e3CNgOiYfioXrsW3eDnkw9q57N3o4XcChDGG4=;
-        b=X+dNW6m9BiK6JxgiPnl8LorxgGMnNav5z2OoTbM+pa0ZnMlNri0IBka1KvtGipRwTa
-         Ff1X9PoLmG4TnzKubY7/qrrTVVi10DlaIndwbEO3qjB/4WQnPgKsRLor68TwQbIISA+G
-         EFxFUz9PU/egwNeS0tsdfN+GMJhUzPIRA84G0M79xkTuKeP3dIjRHw4jaHnlM1UJpJID
-         AJ+6RPyHGPwnzwPGQpbAlShNs2iq2+EhzIZ19yUKnb+wnE9SwycfU04Y8Kz1g7mwA/ya
-         /xXMOR41XUJ023Ewq1WuAkfJHdJyxWlPN8P6dy9uqvri3nTSntCXVhQJu1g0sTLX+e6V
-         wk9g==
-X-Gm-Message-State: AOJu0YyAZGom2gilYzSB7UsHnxLbcx6r40V5pgPiu87vDSUffVbCrNKL
-	2s89Tfa4VP/I0mRdkTygr7KHK179ZXaPu7KJq5mHoS+9bb76CEpq0iYNPR5+kZyox9K1+XFnlz2
-	cWBmCLtvMjq7pk99Ab4JRS55QXtZsb8tUwImPWQ==
-X-Google-Smtp-Source: AGHT+IGpcvN5GMQZlhwTk//mv9UmQh0VRdjb90ri3lGR+8BZIzuGOGjXfggbx2Wm6eOgueit2MKW/muw6bwnOhAZNOs=
-X-Received: by 2002:a81:a010:0:b0:602:9fc4:bc82 with SMTP id
- x16-20020a81a010000000b006029fc4bc82mr1561453ywg.23.1706732608362; Wed, 31
- Jan 2024 12:23:28 -0800 (PST)
+	s=arc-20240116; t=1706732649; c=relaxed/simple;
+	bh=hC2mjadfbWNTXdCp+iDgEDDn3h44Sq3ssmfR5EiK618=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=R6lhGhK4bzsfwyllXccs1qbn8pYoCBdESbX6zSOPmjcvqs6bRZh2yx9fmoS+bpG1jBbEn0JYN3AFw/i83XbsXw2eBXFCJfG10KLWTW19XwwXj34NrUGJBXKedQJultddQQb6BNVGHGNprVB1+VAqLnUq2x/NgztXETMLVgF+P8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XCqS+aDt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B9AAAC433C7;
+	Wed, 31 Jan 2024 20:24:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706732648;
+	bh=hC2mjadfbWNTXdCp+iDgEDDn3h44Sq3ssmfR5EiK618=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=XCqS+aDtQuBGKjuV/srdOQZuQEJ6K4UzArIZT0PG85r1yQsIcNAWrCWhxuGGDRr76
+	 YpzUoJYJWTVZcptysvv2a8u2b0lTwm2A9P4GcGUUYI9gAm2/rnfcB5nihDlAwYlVmG
+	 TGEP77pcPURgXOC7timEt2za55776xhb3T+l1TzqV2aDS7NePrlOZTlu9gpRIYB2js
+	 XnlldDsADjJFjEOjCN0zBW8fhrjbnCk5K6GMQFKBomKgPk14C3bbnFNQXvHWAcP5J4
+	 3WOlDJ7/45ttdshamUh0OUKh/Hf7T3pJYFn0jOVTnvGwj7N23YRYHI5LLLFU9huUrC
+	 WsnLug2St2SHw==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F93CC47258;
+	Wed, 31 Jan 2024 20:24:08 +0000 (UTC)
+From: Valentin Obst via B4 Relay <devnull+kernel.valentinobst.de@kernel.org>
+Subject: [PATCH v3 00/12] rust: kernel: documentation improvements
+Date: Wed, 31 Jan 2024 21:23:22 +0100
+Message-Id: <20240131-doc-fixes-v3-v3-0-0c8af94ed7de@valentinobst.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130124828.14678-1-brgl@bgdev.pl> <20240130124828.14678-21-brgl@bgdev.pl>
-In-Reply-To: <20240130124828.14678-21-brgl@bgdev.pl>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 31 Jan 2024 21:23:17 +0100
-Message-ID: <CACRpkdaBPWOd-MwQvkWCJaua6sbPTBxeK7TV+79SvvGkzCW_4Q@mail.gmail.com>
-Subject: Re: [PATCH 20/22] gpio: protect the pointer to gpio_chip in
- gpio_device with SRCU
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, "Paul E . McKenney" <paulmck@kernel.org>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Wolfram Sang <wsa@the-dreams.de>, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIADqsumUC/03MQQ7CIBCF4as0s3YaBqoQV97DuEAYLLGCgYaYN
+ L27xJXLLy//26ByiVzhPGxQuMUac+pQhwHcbNODMfpukEJOghShzw5D/HDFptAYG07OONJaQ0/
+ ehX9bL6637lDyC9e5sP07kYqOgkiO1GUmJHxySbxcml04rTHle11Hz7DvXxnpvLOfAAAA
+To: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+ Wedson Almeida Filho <wedsonaf@gmail.com>, 
+ Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+ =?utf-8?q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+ Benno Lossin <benno.lossin@proton.me>, 
+ Andreas Hindborg <a.hindborg@samsung.com>, 
+ Alice Ryhl <aliceryhl@google.com>
+Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Valentin Obst <kernel@valentinobst.de>, Trevor Gross <tmgross@umich.edu>, 
+ Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1706732646; l=2912;
+ i=kernel@valentinobst.de; s=20240131; h=from:subject:message-id;
+ bh=hC2mjadfbWNTXdCp+iDgEDDn3h44Sq3ssmfR5EiK618=;
+ b=pjeD6O87EU/R9JZ4wGfJiVtnCZ1taFiqeJwfEpkF7kfmfd7ldXLcsHwS+yxW0OzOBqb0CRUY3
+ mXewAIRUDKsD1RkswDY54GjOAJ64IUno5EstWR3bxBzni/XpHqXMVzm
+X-Developer-Key: i=kernel@valentinobst.de; a=ed25519;
+ pk=3s7U8y0mqkaiurgHSQQTYWOo2tw5HgzCg5vnJVfw37Y=
+X-Endpoint-Received:
+ by B4 Relay for kernel@valentinobst.de/20240131 with auth_id=124
+X-Original-From: Valentin Obst <kernel@valentinobst.de>
+Reply-To: <kernel@valentinobst.de>
 
-On Tue, Jan 30, 2024 at 1:48=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
- wrote:
+This patch set aims to make small improvements to the documentation of
+the kernel crate. It engages in a few different activities:
+- fixing trivial typos (commit #1),
+- updating code examples to better reflect an idiomatic coding style
+  (commits #2,6),
+- increasing the consistency within the crate's documentation as a whole
+  (commits #3,5,7,8,9,11,12),
+- adding more intra-doc links as well as srctree-relative links to C
+  header files (commits #4,10).
 
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> Ensure we cannot crash if the GPIO device gets unregistered (and the
-> chip pointer set to NULL) during any of the API calls.
->
-> To that end: wait for all users of gdev->chip to exit their read-only
-> SRCU critical sections in gpiochip_remove().
->
-> For brevity: add a guard class which can be instantiated at the top of
-> every function requiring read-only access to the chip pointer and use it
-> in all API calls taking a GPIO descriptor as argument. In places where
-> we only deal with the GPIO device - use regular guard() helpers and
-> rcu_dereference() for chip access. Do the same in API calls taking a
-> const pointer to gpio_desc.
->
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+---
+Changes in v3:
+- Adjusted word wrapping in "rust: locked_by: shorten doclink preview"
+  to make use of the gained space.
+- Rebased with `rust-next`.
+- Link to v2: https://lore.kernel.org/lkml/20240123150112.124084-1-kernel@valentinobst.de/
+Changes in v2:
+- Drop commit "rust: kernel: add doclinks with html tags" in response to
+  review.
+- Fix another list item alignment issue pointed out during review of v1.
+  Was added to commit "rust: kernel: fix multiple typos in
+  documentation".
+- Commit "rust: error: move unsafe block into function call" is now
+  "rust: error: improve unsafe code in example" and also rewords the
+  SAFETY comment of the code example.
+  - Did not add 'Reviewed-By' tags offered in v1 tags due to changes.
+- Link to v1: https://lore.kernel.org/lkml/20240116160141.165951-1-kernel@valentinobst.de/
 
-The way I read it after this the gpio character device is well protected
-against the struct gpio_chip going away, good work!
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+---
+Valentin Obst (12):
+      rust: kernel: fix multiple typos in documentation
+      rust: error: improve unsafe code in example
+      rust: ioctl: end top-level module docs with full stop
+      rust: kernel: add srctree-relative doclinks
+      rust: str: use `NUL` instead of 0 in doc comments
+      rust: str: move SAFETY comment in front of unsafe block
+      rust: kernel: unify spelling of refcount in docs
+      rust: kernel: mark code fragments in docs with backticks
+      rust: kernel: add blank lines in front of code blocks
+      rust: kernel: add doclinks
+      rust: kernel: remove unneeded doclink targets
+      rust: locked_by: shorten doclink preview
 
-I would perhaps slot in some documentation around
-struct gpio_chip_guard explaining how this works and why it is needed.
+ rust/kernel/allocator.rs          |  2 +-
+ rust/kernel/error.rs              | 10 ++----
+ rust/kernel/init.rs               | 16 +++++-----
+ rust/kernel/ioctl.rs              |  6 ++--
+ rust/kernel/lib.rs                |  2 +-
+ rust/kernel/str.rs                |  8 ++---
+ rust/kernel/sync/arc.rs           | 14 ++++-----
+ rust/kernel/sync/condvar.rs       |  2 ++
+ rust/kernel/sync/lock.rs          | 15 ++++++---
+ rust/kernel/sync/lock/spinlock.rs |  2 +-
+ rust/kernel/sync/locked_by.rs     |  7 +++--
+ rust/kernel/task.rs               |  6 ++--
+ rust/kernel/types.rs              |  3 ++
+ rust/kernel/workqueue.rs          | 64 +++++++++++++++++++--------------------
+ 14 files changed, 84 insertions(+), 73 deletions(-)
+---
+base-commit: f090f0d0eea9666a96702b29bc9a64cbabee85c5
+change-id: 20240131-doc-fixes-v3-88af6c8c1777
 
-Yours,
-Linus Walleij
+Best regards,
+-- 
+Valentin Obst <kernel@valentinobst.de>
+
 
