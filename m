@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-45523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45532-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 877478431FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 01:37:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EA9584321F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 01:40:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 263D21F26578
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 00:37:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE6522890EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 00:40:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E03DB1370;
-	Wed, 31 Jan 2024 00:37:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 564941B268;
+	Wed, 31 Jan 2024 00:37:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="W6UwvpBD"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="W8eqpP1v"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CF35367;
-	Wed, 31 Jan 2024 00:37:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F03736D;
+	Wed, 31 Jan 2024 00:37:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706661442; cv=none; b=EICZcNDLhe8u4QoFT+IUskIVLpJYGGrEl7O3d9TDVi991OHPYMILgzEXvvMiPz2RhUsyDKcl6fvkXixFOcCo2DT/Pv9YFJEIiYBB+IO1mm5ITCekclk+7uTzqBnVskRaivM7e8N+plv2M0Y93d1azg1SKedYaVa048wnpcwRyh8=
+	t=1706661446; cv=none; b=Xxt9Wqb0QM3nzssrREZ/eQKrUR/B9fkBZga5L18694H1W1FLN87+kzje49s245LpHh1nz5b1HLFalaE5bGf9Vl2/FpfgbRTgf3vKu+AvZEyRtrQXCEztaGovo1lci5IqHbOdgRG7jHVAP5PZik6+IyAPBp26E/lRn0WSR7M6pAA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706661442; c=relaxed/simple;
-	bh=Yde+/v/+AnUplfQUwrwsE7yIYWSZYjR61zlCFeX+dks=;
+	s=arc-20240116; t=1706661446; c=relaxed/simple;
+	bh=fbGnNeYHC8zY3a1uoZmwZ/hqQ7K+FI4IQ3ndJ0elgpg=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=s5tyKGujdtc1/7wCRyRkIqz7O+43bYxHlPgV4etTp17O+IQjsG1wtrn/6AM+GeB3ZU939H2Ayv45y38NDaxeXXeubS4LX5emf6BZZ5wz9giKyY4ZKYEIbdv8+Ctvk3URamnpnnSiDnd/Ht/TqILrjy81EKT/V/cdZPOGSURGbXg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=W6UwvpBD; arc=none smtp.client-ip=198.47.19.141
+	 MIME-Version:Content-Type; b=V6SnuMKPPEnPLcP89HSXstvHv/j+D185yVR6UyoOCYKOKeLXwo/Q4q3if40rwV0UifyeoZPuGu2dFjkae7avgsNj0uEFmVL96Hb+MEGwqxQLbJoLzLf5k9nz1CMGsFScxC43r5iNhAr4beQL/70nWucWDo3UgvMELeOgUIlVOu0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=W8eqpP1v; arc=none smtp.client-ip=198.47.23.249
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40V0bFhi038158;
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40V0bFsk121331;
 	Tue, 30 Jan 2024 18:37:15 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
 	s=ti-com-17Q1; t=1706661435;
-	bh=RHyTtzIAoeUMLOJFOBHlD1R5jRaYgsYXm6fuzcPyioU=;
+	bh=xxI57RFhA7r8bRyDm0k+ooGHxeLdKBscUR5KUmBLBy4=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=W6UwvpBDROaTTwQ3dE2R9wx30n4qWHX/EUnYgs4ftSdmTgC/60KaI6veo3Q9UV/5I
-	 pkRQO+Pw2w4LCp0KPvwGw37NoQr2mdV/+Pg1whUh4etDdvZlADIzEOsFRhzS3rxi12
-	 a0l27FeozYKkxMsTkiG+Pu0VyNl8Mrjp/+oFf4WA=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40V0bFHI007806
+	b=W8eqpP1vqt/01If1kWf0TL6/kyi7kEcCm9cy1B0g+mzGSfa65kdreCDC5qrPEjsWI
+	 rR9/8aO10PMpbxzNWDq676WA2QiEZ+gm/WuWY8hPqZiFxDFVO7g0TNUUz+iWO577HX
+	 bX2Wivjx9NqFssYid3pAnTIh+v01MxZa2xZY7DEc=
+Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40V0bFRU045571
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
 	Tue, 30 Jan 2024 18:37:15 -0600
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 30
  Jan 2024 18:37:15 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
  Frontend Transport; Tue, 30 Jan 2024 18:37:15 -0600
 Received: from judy-hp.dhcp.ti.com (judy-hp.dhcp.ti.com [128.247.81.105])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40V0bEwC026520;
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40V0bEwD026520;
 	Tue, 30 Jan 2024 18:37:15 -0600
 From: Judith Mendez <jm@ti.com>
 To: Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh+dt@kernel.org>,
@@ -67,9 +67,9 @@ CC: Adrian Hunter <adrian.hunter@intel.com>, <linux-mmc@vger.kernel.org>,
         Udit Kumar
 	<u-kumar1@ti.com>, Roger Quadros <rogerq@kernel.org>,
         <devicetree@vger.kernel.org>, Randolph Sapp <rs@ti.com>
-Subject: [RFC PATCH 05/13] drivers: mmc: host: sdhci_am654: Fix ITAPDLY for HS400 timing
-Date: Tue, 30 Jan 2024 18:37:06 -0600
-Message-ID: <20240131003714.2779593-6-jm@ti.com>
+Subject: [RFC PATCH 06/13] arm64: dts: ti: k3-am62a-main: Add sdhci0 instance
+Date: Tue, 30 Jan 2024 18:37:07 -0600
+Message-ID: <20240131003714.2779593-7-jm@ti.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240131003714.2779593-1-jm@ti.com>
 References: <20240131003714.2779593-1-jm@ti.com>
@@ -83,65 +83,48 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-While STRB is currently used for DATA and CRC responses, the CMD
-responses from the device to the host still require ITAPDLY for
-HS400 timing.
+From: Nitin Yadav <n-yadav@ti.com>
 
-Currently what is stored for HS400 is the ITAPDLY from High Speed
-mode which is incorrect. The ITAPDLY for HS400 speed mode should
-be the same as ITAPDLY as HS200 timing after tuning is executed.
-Add the functionality to save ITAPDLY from HS200 tuning and save
-as HS400 ITAPDLY.
+Add sdhci0 DT node in k3-am62a-main for eMMC support. Add otap/itap
+values according to the datasheet[0], Refer to Table 7-79.
+
+[0] https://www.ti.com/lit/ds/symlink/am62a3.pdf
 
 Signed-off-by: Judith Mendez <jm@ti.com>
+Signed-off-by: Nitin Yadav <n-yadav@ti.com>
 ---
- drivers/mmc/host/sdhci_am654.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ arch/arm64/boot/dts/ti/k3-am62a-main.dtsi | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am654.c
-index 61f95aad3f80..0f0178936a6d 100644
---- a/drivers/mmc/host/sdhci_am654.c
-+++ b/drivers/mmc/host/sdhci_am654.c
-@@ -151,6 +151,7 @@ struct sdhci_am654_data {
- 	u32 flags;
- 	u32 quirks;
- 	bool dll_enable;
-+	bool hs200_tunning;
+diff --git a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
+index f0b8c9ab1459..523dee78123a 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
+@@ -536,6 +536,24 @@ main_gpio1: gpio@601000 {
+ 		status = "disabled";
+ 	};
  
- #define SDHCI_AM654_QUIRK_FORCE_CDTEST BIT(0)
- };
-@@ -252,6 +253,10 @@ static void sdhci_am654_setup_dll(struct sdhci_host *host, unsigned int clock,
- 		return;
- 	}
- 
-+	/* HS400 ITAPDLY should be the same as HS200 ITAPDLY*/
-+	if (timing == MMC_TIMING_MMC_HS400)
-+		sdhci_am654->itap_del_sel[timing] = sdhci_am654->itap_del_sel[timing - 1];
++	sdhci0: mmc@fa10000 {
++		compatible = "ti,am62-sdhci";
++		reg = <0x00 0xfa10000 0x00 0x260>, <0x00 0xfa18000 0x00 0x134>;
++		interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
++		power-domains = <&k3_pds 57 TI_SCI_PD_EXCLUSIVE>;
++		clocks = <&k3_clks 57 5>, <&k3_clks 57 6>;
++		clock-names = "clk_ahb", "clk_xin";
++		assigned-clocks = <&k3_clks 57 6>;
++		assigned-clock-parents = <&k3_clks 57 8>;
++		bus-width = <8>;
++		mmc-hs200-1_8v;
++		ti,clkbuf-sel = <0x7>;
++		ti,otap-del-sel-legacy = <0x0>;
++		ti,otap-del-sel-mmc-hs = <0x0>;
++		ti,otap-del-sel-hs200 = <0x6>;
++		status = "disabled";
++	};
 +
- 	sdhci_am654_write_itapdly(sdhci_am654, sdhci_am654->itap_del_sel[timing],
- 				  sdhci_am654->itap_del_ena[timing]);
- }
-@@ -311,6 +316,9 @@ static void sdhci_am654_set_clock(struct sdhci_host *host, unsigned int clock)
- 
- 	regmap_update_bits(sdhci_am654->base, PHY_CTRL5, CLKBUFSEL_MASK,
- 			   sdhci_am654->clkbuf_sel);
-+
-+	if (timing == MMC_TIMING_MMC_HS200 && sdhci_am654->dll_enable)
-+		sdhci_am654->hs200_tunning = true;
- }
- 
- static void sdhci_j721e_4bit_set_clock(struct sdhci_host *host,
-@@ -543,6 +551,10 @@ static int sdhci_am654_platform_execute_tuning(struct sdhci_host *host,
- 
- 	sdhci_am654_write_itapdly(sdhci_am654, itap, 1);
- 
-+	/* Save ITAPDLY for HS200 */
-+	if (sdhci_am654->hs200_tunning)
-+		sdhci_am654->itap_del_sel[MMC_TIMING_MMC_HS200] = itap;
-+
- 	return 0;
- }
- 
+ 	sdhci1: mmc@fa00000 {
+ 		compatible = "ti,am62-sdhci";
+ 		reg = <0x00 0xfa00000 0x00 0x260>, <0x00 0xfa08000 0x00 0x134>;
 -- 
 2.34.1
 
