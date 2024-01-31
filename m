@@ -1,264 +1,153 @@
-Return-Path: <linux-kernel+bounces-46758-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46759-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91EC38443A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:06:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A6AF8443AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:07:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6F261C25659
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:06:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB13928EB9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:07:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EE5012A169;
-	Wed, 31 Jan 2024 16:06:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4078C12AAE1;
+	Wed, 31 Jan 2024 16:07:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="PlVuM9Bk"
-Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g0YXe+W7"
+Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D90784A2D
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 16:06:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 051B367C51;
+	Wed, 31 Jan 2024 16:07:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706717210; cv=none; b=f9GFC0a7JOFJ4RqcNAdzM5wZpkXLxokLCJ+oc3w3XU+Ma+TwqGXyWPWI02Va+aIYd2OajcYDBeEwX99U7y3lTLGPKBkGRd+GW2eqdxPFrzlCcclOXb1zX3kpPFqA/81l9jKDPR4P8eHF+fGxYrElyDlABb/TikgrsoXdi9sgNqQ=
+	t=1706717224; cv=none; b=cMxpHw82AVqW9ZVjMDChvdLMHWelWjvB5Tq6XHoWvPsiuXzcPLzn96o/qb04KbNLsXiKytoJtCGWi1WBj2mOKiY+eKSo5gBodwEhbbpHUQR9yg9bNcZEywLwFYJXVnvui0PG6578uimIkCoF3j+FRhdm/48Y9CtHQbgNQs/LCTU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706717210; c=relaxed/simple;
-	bh=9XerCSIrO3MZAQg9oUAxkEq/vXCPX3FtEmSyOwTW9LA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lxDWbw5u46mYpFD2RaW8+d9waPMwlLga6xYFXAYQmM+1M7tM9aWBYhkH+g93VAye6OBcCLhSJFTYkG5mEMvhjYozJkxOgbGmcojcdE7Q0cEBJaS6fLROKzQxkHD+KttddDw9xMWMerUnXnJwCXoqTltFguCUQhYIzgmFmRYZqLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=PlVuM9Bk; arc=none smtp.client-ip=209.85.166.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-7c00ce1e005so66599639f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 08:06:48 -0800 (PST)
+	s=arc-20240116; t=1706717224; c=relaxed/simple;
+	bh=YgWP6jiKaSN4OrAHXGMRjg7oRS1uufNMAcNybJf4yrg=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=Hd/FxcSup71o8yPpfgUCm30yx+SoAdvpjlrROis63HSvCDIrFTRyMVPQr9EGt5oGor+c3qC9JffNuh/jxVOkOaL/0C/2OwXUEeOl9A5OF2+oWZ3RoHRGg9Kgv9df9tS6TXA9LDUD75eEorxDLN4HQvVekx9KPputUIpVJyeY3L0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g0YXe+W7; arc=none smtp.client-ip=209.85.219.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-68c44100327so23597016d6.2;
+        Wed, 31 Jan 2024 08:07:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1706717208; x=1707322008; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/mOJLbseLPsvIbhLzLVD0YPyGdIC7j3P6ckn0xZuSAs=;
-        b=PlVuM9BkHNgtvU+guqSm+4RFsZ/1pk5szYcqu5isIxlxjoHUhms4yywxNAKTkxalNO
-         mX7WBVC3MlEV5dQ3BQZvzK7Bqdsq0zXHAGzVIqKTliQfcoCIH9yIU1avrBb+Ff9UTd2s
-         5uWhO+QDF8BnSD+euIq06rdbzlDdqLnvPLFG9CDTDeckep4v4EcDQG10LQZ2SeaCyIdR
-         L7SOB7VNFZ82xHVjp40L5KGSr1Osi3DCzGnvhnjtrjiFDrRql9chnlpSwFZ0WDSYbPIb
-         udxuUr1O05CMntr37JI7bdtSqRMnD2OfSXvRGV1HgGSYbT1DrpOPqclUbh7VMaBHjkd4
-         QwvA==
+        d=gmail.com; s=20230601; t=1706717222; x=1707322022; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:references
+         :in-reply-to:user-agent:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=F7dx0TBYoOHj5aKbGigZsrAJsJysNxXysSt64kCOnrc=;
+        b=g0YXe+W7icrbLvPfgzDl3pCAeQqfTOicgLvyJNVBSrb2RRpNZWTH9ruA7o5iq/4J+D
+         zb7zlbAg3AL3wnqegXO2TgEfT4TsTWW1RyfNH/HgXOt9vFVhboJpL8LY3rEmbbOiD7tP
+         JccQ4HbmLG6Vjj/9M/AIaL6xBwyvh539C1RlmYfgqr1TZgvTnvg68/5gGTcemXKTT6Q2
+         waDvMSqufib8TAIDPyr7AEoJ7bTLvbb8Strypo4njTFSFViWtfC4lQEVh61hDfkRNrRY
+         CUiB9yshqUkdGQcCY5UjUJsqVdzDg4LexdZJwPc6yJK8hwAZJlQq3tbuVIu4SgQfagdO
+         z03Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706717208; x=1707322008;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/mOJLbseLPsvIbhLzLVD0YPyGdIC7j3P6ckn0xZuSAs=;
-        b=SmhYT9vrJkWvS6auD66KvFKyvPBVLSyg7v5H7Afysw/DWOjxUgZ56wTEfOXu4+1PBt
-         jw+zA6m/AHhmpzObKpjOmtDs5M6XmFt/sE/TvzG+QNu87j6xcPYFJofDSS2ws6vvZMKE
-         T+N6wsRnvt/oGvMyQ3GlXLyRYgbzlNVEfINsukWxEFmyiFRiCGNeSV9tfHO1O4pIGceg
-         I5mw/O9ieuGHU5tfHdg7dZwWnhU+BuTIh6ZUT221Wzf240anp//Oa6OTzZgVKcKmDf1C
-         2Gg6HEX+Rfa+wAtLBuP8facXYe28uw9kMSEyAUd7iowj5MBhPvAU3046j0iMGhSQ87aM
-         vKuw==
-X-Gm-Message-State: AOJu0Yx2LxVsSeH5oaOKU3yqXpkBOPTPORNUGVSF6LI9+psoLeodat5W
-	tOQWvkuz00KtMU1+f7Vtwsnvy9ghdKDPm66lktUtNKtt4eh+7jQerp9NOI0SFFJAM8gbbdunDRe
-	gIpjp6jKAQLfv0pAkfWczC+w+EvGw6xgMikdMbg==
-X-Google-Smtp-Source: AGHT+IEl1wgTaicH/lywZEqksedrylK3qXk0XQIBiRAjl1TMWqSsoPkVo2//eTIJ77dWGhid47jFcTSpFMPuBuGRM80=
-X-Received: by 2002:a6b:6513:0:b0:7c0:2579:1a2f with SMTP id
- z19-20020a6b6513000000b007c025791a2fmr1495741iob.11.1706717207711; Wed, 31
- Jan 2024 08:06:47 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706717222; x=1707322022;
+        h=content-transfer-encoding:mime-version:message-id:references
+         :in-reply-to:user-agent:subject:cc:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=F7dx0TBYoOHj5aKbGigZsrAJsJysNxXysSt64kCOnrc=;
+        b=CQYsIPa1l/iLRBrKpR7ccfEO1y0VL+tROlnzYvxyBMY1/NjSKO94NFOfGDp9moXxfK
+         VbUOnTnTjMdzN9GEM01JM8RZYbZsBbWsh0+Hx6Sz50WHHMDoaGIcdMHrQa2/UoDA4XJ8
+         IVJ8bUKjXp1iyQh4F6R5eKFYb6y3EnZLx2HxTTdg0pvG2Eaq+n/3NA8EnrDYbM8NVFJO
+         puBIwXe11d1jsFuil3TlYjg5SQzS9DJdm3qvgaVhf4aLSb92runMTVoJHOOW9d7lziL3
+         JINMvwCpUF5oSQK+v6m1xkgAbks3jkM3NnYv6/qmUBtUKxn40e6ZYPUOJSF3T6o6ol/I
+         AyZg==
+X-Gm-Message-State: AOJu0Yy4/D1memK6gXOfXe3YSQyHi9e9HuA+ogncHC3k5N2UhHlkMxod
+	e7OB1Hzk8GQn1TXauQqo1CVf8DXionBrprdmigh7YG/Ftt2nU2xC
+X-Google-Smtp-Source: AGHT+IGepzXb9AgVM0GY1YzmPFbsL+PbZrLq/OgUIrBrn35PREEnC4beHJu+zrj89AREBd3eeJx0lg==
+X-Received: by 2002:a05:6214:1d28:b0:68c:5cd9:8d85 with SMTP id f8-20020a0562141d2800b0068c5cd98d85mr2123780qvd.63.1706717221676;
+        Wed, 31 Jan 2024 08:07:01 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCX8+he5ws8xDLFEKfW2VlE+JvkFSd0M8JDbr0aQpwSMTmbo74egzY2xhREViRPEOO7QZOhgW2CkTKKLF3Nvss57GKZWfL1UQZ7EyYryuR38zHLJXA38cV9QHtxkpNDHovaLU8MAw1NE26yuQ3K/aTrVb4MCOa93RSJHWEZsPphul05kXIqZrOEYHWI5KpsyZeiisQKDERTZRA1FUZ5C5v3bTWRbeUJk3Np3Utu+IScEFuoLUq68PunZ/tHAZ1Ov2wG2Tpj432zH78Xi+p7ca4mOxWlXINzzGq7EH9GJ1R2ppOPpKL73+okFC3HXcfrAogyulF+ORjZNrcF1Kk944SiD2Xh1zXzbYEL49NifiDoSfvxFiLE3IVNtTITIqRGOSqmz8U/KWUFCwr0=
+Received: from [127.0.0.1] ([46.211.116.2])
+        by smtp.gmail.com with ESMTPSA id om7-20020a0562143d8700b0068692ea038esm1026721qvb.91.2024.01.31.08.07.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Jan 2024 08:07:01 -0800 (PST)
+Date: Wed, 31 Jan 2024 18:06:58 +0200
+From: Svyatoslav <clamor95@gmail.com>
+To: Conor Dooley <conor@kernel.org>
+CC: Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>, Kees Cook <keescook@chromium.org>,
+ Maxim Schwalm <maxim.schwalm@gmail.com>, devicetree@vger.kernel.org,
+ linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org
+Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v1_1/4=5D_dt-bindings=3A_vendor-p?= =?US-ASCII?Q?refixes=3A_add_LG_Electronics=2C_Inc=2E_prefix?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20240131-tractor-roundish-f6f90b5bd640@spud>
+References: <20240131105153.8070-1-clamor95@gmail.com> <20240131105153.8070-2-clamor95@gmail.com> <20240131-elderly-passover-341b89f65189@spud> <656FDD69-D7B1-4910-B848-108CB985AAAC@gmail.com> <20240131-tractor-roundish-f6f90b5bd640@spud>
+Message-ID: <BCBF1994-C5AE-4D2B-B645-C3C67BE19000@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231205085959.32177-1-zong.li@sifive.com> <CANXhq0r6A48q+ehayaURLO6snDEjzVJO6Ti+1we-57i0ORT9yg@mail.gmail.com>
- <CANXhq0qqv3MBEt8zsWBT+gkdyt1PD4ZjDSrznEotdFM7M7K+yQ@mail.gmail.com>
- <CANXhq0qNA5JO1xZLbuL6ig1Ddws0m2azMwCyqLFgN3B0VZmvEw@mail.gmail.com>
- <CANXhq0o-MaEQY3m+0CNWK2Jv_pxqsjhhSJWtVR396wgKUzcbQw@mail.gmail.com> <25e2faa5-908c-4391-87db-8540d1f0e904@ghiti.fr>
-In-Reply-To: <25e2faa5-908c-4391-87db-8540d1f0e904@ghiti.fr>
-From: Zong Li <zong.li@sifive.com>
-Date: Thu, 1 Feb 2024 00:06:37 +0800
-Message-ID: <CANXhq0qt8R2+zFx5pPiassNjb2JtGcFb5RRcdK+15PxhuSS1Ng@mail.gmail.com>
-Subject: Re: [PATCH] riscv: add CALLER_ADDRx support
-To: Alexandre Ghiti <alex@ghiti.fr>
-Cc: palmer@dabbelt.com, Palmer Dabbelt <palmer@rivosinc.com>, paul.walmsley@sifive.com, 
-	aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 31, 2024 at 10:46=E2=80=AFPM Alexandre Ghiti <alex@ghiti.fr> wr=
-ote:
+
+
+31 =D1=81=D1=96=D1=87=D0=BD=D1=8F 2024=E2=80=AF=D1=80=2E 18:02:31 GMT+02:0=
+0, Conor Dooley <conor@kernel=2Eorg> =D0=BD=D0=B0=D0=BF=D0=B8=D1=81=D0=B0=
+=D0=B2(-=D0=BB=D0=B0):
+>On Wed, Jan 31, 2024 at 05:30:58PM +0200, Svyatoslav wrote:
+>>=20
+>>=20
+>> 31 =D1=81=D1=96=D1=87=D0=BD=D1=8F 2024=E2=80=AF=D1=80=2E 17:28:49 GMT+0=
+2:00, Conor Dooley <conor@kernel=2Eorg> =D0=BD=D0=B0=D0=BF=D0=B8=D1=81=D0=
+=B0=D0=B2(-=D0=BB=D0=B0):
+>> >On Wed, Jan 31, 2024 at 12:51:50PM +0200, Svyatoslav Ryhel wrote:
+>> >> Add missing LG Electronics, Inc=2E prefix used by some older devices=
+=2E
+>> >
+>> >Is it? You're only adding these devices now as far as I can see=2E
+>> >
+>>=20
+>> Hammerhead (LG Nexus 5)
 >
-> Hi Zong,
+>I have absolutely no idea what this means=2E Please link me the in-tree
+>devicetree of the user (or the patchset adding it)=2E
 >
-> On 31/01/2024 15:24, Zong Li wrote:
-> > On Thu, Jan 18, 2024 at 8:50=E2=80=AFAM Zong Li <zong.li@sifive.com> wr=
-ote:
-> >> On Wed, Jan 10, 2024 at 11:33=E2=80=AFAM Zong Li <zong.li@sifive.com> =
-wrote:
-> >>> On Fri, Dec 29, 2023 at 2:34=E2=80=AFPM Zong Li <zong.li@sifive.com> =
-wrote:
-> >>>> On Tue, Dec 5, 2023 at 5:00=E2=80=AFPM Zong Li <zong.li@sifive.com> =
-wrote:
-> >>>>> CALLER_ADDRx returns caller's address at specified level, they are =
-used
-> >>>>> for several tracers. These macros eventually use
-> >>>>> __builtin_return_address(n) to get the caller's address if arch doe=
-sn't
-> >>>>> define their own implementation.
-> >>>>>
-> >>>>> In RISC-V, __builtin_return_address(n) only works when n =3D=3D 0, =
-we need
-> >>>>> to walk the stack frame to get the caller's address at specified le=
-vel.
-> >>>>>
-> >>>>> data.level started from 'level + 3' due to the call flow of getting
-> >>>>> caller's address in RISC-V implementation. If we don't have additio=
-nal
-> >>>>> three iteration, the level is corresponding to follows:
-> >>>>>
-> >>>>> callsite -> return_address -> arch_stack_walk -> walk_stackframe
-> >>>>> |           |                 |                  |
-> >>>>> level 3     level 2           level 1            level 0
-> >>>>>
-> >>>>> Signed-off-by: Zong Li <zong.li@sifive.com>
-> >>>>> ---
-> >>>>>   arch/riscv/include/asm/ftrace.h    |  5 ++++
-> >>>>>   arch/riscv/kernel/Makefile         |  2 ++
-> >>>>>   arch/riscv/kernel/return_address.c | 48 +++++++++++++++++++++++++=
-+++++
-> >>>>>   3 files changed, 55 insertions(+)
-> >>>>>   create mode 100644 arch/riscv/kernel/return_address.c
-> >>>>>
-> >>>>> diff --git a/arch/riscv/include/asm/ftrace.h b/arch/riscv/include/a=
-sm/ftrace.h
-> >>>>> index 2b2f5df7ef2c..42777f91a9c5 100644
-> >>>>> --- a/arch/riscv/include/asm/ftrace.h
-> >>>>> +++ b/arch/riscv/include/asm/ftrace.h
-> >>>>> @@ -25,6 +25,11 @@
-> >>>>>
-> >>>>>   #define ARCH_SUPPORTS_FTRACE_OPS 1
-> >>>>>   #ifndef __ASSEMBLY__
-> >>>>> +
-> >>>>> +extern void *return_address(unsigned int level);
-> >>>>> +
-> >>>>> +#define ftrace_return_address(n) return_address(n)
-> >>>>> +
-> >>>>>   void MCOUNT_NAME(void);
-> >>>>>   static inline unsigned long ftrace_call_adjust(unsigned long addr=
-)
-> >>>>>   {
-> >>>>> diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefil=
-e
-> >>>>> index fee22a3d1b53..40d054939ae2 100644
-> >>>>> --- a/arch/riscv/kernel/Makefile
-> >>>>> +++ b/arch/riscv/kernel/Makefile
-> >>>>> @@ -7,6 +7,7 @@ ifdef CONFIG_FTRACE
-> >>>>>   CFLAGS_REMOVE_ftrace.o =3D $(CC_FLAGS_FTRACE)
-> >>>>>   CFLAGS_REMOVE_patch.o  =3D $(CC_FLAGS_FTRACE)
-> >>>>>   CFLAGS_REMOVE_sbi.o    =3D $(CC_FLAGS_FTRACE)
-> >>>>> +CFLAGS_REMOVE_return_address.o =3D $(CC_FLAGS_FTRACE)
-> >>>>>   endif
-> >>>>>   CFLAGS_syscall_table.o +=3D $(call cc-option,-Wno-override-init,)
-> >>>>>   CFLAGS_compat_syscall_table.o +=3D $(call cc-option,-Wno-override=
--init,)
-> >>>>> @@ -46,6 +47,7 @@ obj-y +=3D irq.o
-> >>>>>   obj-y  +=3D process.o
-> >>>>>   obj-y  +=3D ptrace.o
-> >>>>>   obj-y  +=3D reset.o
-> >>>>> +obj-y  +=3D return_address.o
-> >>>>>   obj-y  +=3D setup.o
-> >>>>>   obj-y  +=3D signal.o
-> >>>>>   obj-y  +=3D syscall_table.o
-> >>>>> diff --git a/arch/riscv/kernel/return_address.c b/arch/riscv/kernel=
-/return_address.c
-> >>>>> new file mode 100644
-> >>>>> index 000000000000..c2008d4aa6e5
-> >>>>> --- /dev/null
-> >>>>> +++ b/arch/riscv/kernel/return_address.c
-> >>>>> @@ -0,0 +1,48 @@
-> >>>>> +// SPDX-License-Identifier: GPL-2.0-only
-> >>>>> +/*
-> >>>>> + * This code come from arch/arm64/kernel/return_address.c
-> >>>>> + *
-> >>>>> + * Copyright (C) 2023 SiFive.
-> >>>>> + */
-> >>>>> +
-> >>>>> +#include <linux/export.h>
-> >>>>> +#include <linux/kprobes.h>
-> >>>>> +#include <linux/stacktrace.h>
-> >>>>> +
-> >>>>> +struct return_address_data {
-> >>>>> +       unsigned int level;
-> >>>>> +       void *addr;
-> >>>>> +};
-> >>>>> +
-> >>>>> +static bool save_return_addr(void *d, unsigned long pc)
-> >>>>> +{
-> >>>>> +       struct return_address_data *data =3D d;
-> >>>>> +
-> >>>>> +       if (!data->level) {
-> >>>>> +               data->addr =3D (void *)pc;
-> >>>>> +               return false;
-> >>>>> +       }
-> >>>>> +
-> >>>>> +       --data->level;
-> >>>>> +
-> >>>>> +       return true;
-> >>>>> +}
-> >>>>> +NOKPROBE_SYMBOL(save_return_addr);
-> >>>>> +
-> >>>>> +void *return_address(unsigned int level)
-> >>>>> +{
-> >>>>> +       struct return_address_data data;
-> >>>>> +
-> >>>>> +       data.level =3D level + 3;
-> >>>>> +       data.addr =3D NULL;
-> >>>>> +
-> >>>>> +       arch_stack_walk(save_return_addr, &data, current, NULL);
-> >>>>> +
-> >>>>> +       if (!data.level)
-> >>>>> +               return data.addr;
-> >>>>> +       else
-> >>>>> +               return NULL;
-> >>>>> +
-> >>>>> +}
-> >>>>> +EXPORT_SYMBOL_GPL(return_address);
-> >>>>> +NOKPROBE_SYMBOL(return_address);
-> >>>>> --
-> >>>>> 2.17.1
-> >>>>>
-> >>>> Hi Palmer and all,
-> >>>> I was wondering whether this patch is good for everyone? Thanks
-> >>> Hi Palmer,
-> >>> Is there any chance to include this patch in 6.8-rc1? Thanks
-> >> Hi Palmer,
-> >> I'm not sure if this patch is a feature or bug fix, would you consider
-> >> it for 6.8-rcX? Thanks
-> > Hi Palmer,
-> > Sorry for pinging you again. I'm not sure if you saw this patch. The
-> > irqsoff and wakeup tracer will use CALLER_ADDR1 and CALLER_ADDR2 to
-> > obtain the caller's return address, but we are currently encountering
-> > an issue in the RISC-V port where the wrong caller is identified. I
-> > guess you can easily reproduce the situation using ftrace. Could you
-> > share your thoughts on this when you have the time to take a look?
-> > Thanks
->
->
-> I'm not Palmer but I'll take a look at your patch today :)
+>Thanks,
+>Conor
 >
 
-Hi Alexandre,
+Sure, here you go
+<https://git=2Ekernel=2Eorg/pub/scm/linux/kernel/git/stable/linux=2Egit/tr=
+ee/arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead=2Edts?h=3Dlinux-6=
+=2E4=2Ey#n11>
 
-I appreciate your assistance in reviewing this patch, Thanks a lot. :)
+So devices I have sent are not the first=2E
 
-> Thanks,
->
-> Alex
->
->
-> >
-> > _______________________________________________
-> > linux-riscv mailing list
-> > linux-riscv@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-riscv
+>>=20
+>> >>=20
+>> >> Signed-off-by: Svyatoslav Ryhel <clamor95@gmail=2Ecom>
+>> >> ---
+>> >>  Documentation/devicetree/bindings/vendor-prefixes=2Eyaml | 2 ++
+>> >>  1 file changed, 2 insertions(+)
+>> >>=20
+>> >> diff --git a/Documentation/devicetree/bindings/vendor-prefixes=2Eyam=
+l b/Documentation/devicetree/bindings/vendor-prefixes=2Eyaml
+>> >> index 309b94c328c8=2E=2Eb94ac977acb5 100644
+>> >> --- a/Documentation/devicetree/bindings/vendor-prefixes=2Eyaml
+>> >> +++ b/Documentation/devicetree/bindings/vendor-prefixes=2Eyaml
+>> >> @@ -767,6 +767,8 @@ patternProperties:
+>> >>      description: LG Corporation
+>> >>    "^lgphilips,=2E*":
+>> >>      description: LG Display
+>> >> +  "^lge,=2E*":
+>> >> +    description: LG Electronics, Inc=2E
+>> >>    "^libretech,=2E*":
+>> >>      description: Shenzhen Libre Technology Co=2E, Ltd
+>> >>    "^licheepi,=2E*":
+>> >> --=20
+>> >> 2=2E40=2E1
+>> >>=20
 
