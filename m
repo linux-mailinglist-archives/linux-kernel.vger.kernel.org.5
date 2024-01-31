@@ -1,188 +1,99 @@
-Return-Path: <linux-kernel+bounces-45661-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45680-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D3198433B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 03:24:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D42518433F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 03:32:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2429F28DB93
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 02:24:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B0901F2840A
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 02:32:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E8825684;
-	Wed, 31 Jan 2024 02:18:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F22A0DF70;
+	Wed, 31 Jan 2024 02:31:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IxoCk8df"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="G498xFUh"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B7DF5663;
-	Wed, 31 Jan 2024 02:18:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22EB0611E;
+	Wed, 31 Jan 2024 02:31:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706667515; cv=none; b=GmXQArflnEx4sCPYM4W4Jv/awF1tnrxzt1c4mQ+IKE2k0+H3mkIkn4nhPPfqn6hVvqUGJ21LKoBhQG4ljsIKnaTfiHfAHGNeeSoCAguvOdXJkLmgMWdEjhU+YAQldIPiBNBZe7v3GxDaDy+k2axm8umUcQlntNfaanuUSbMNBtU=
+	t=1706668319; cv=none; b=QDXCR0/QLS30S6LnTSmJFKSsvGhuV3GYMvXM4oBNIH5358DuCihFztml21Z00ku+KeYuk9XL5Dhqh1d5UvI1vNhvmgeEWwR2w9a3QtPFanQ53S4qNqRyhU/rlI4Ptp/D3VUOoeAfYxeHEIEyKC2cTWRdxYuc2056S8prQqR9eWA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706667515; c=relaxed/simple;
-	bh=plKPxBQ2jsb/v68hxkyJ/JuBYB+4x5Jxb3q+0BdUhZ0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=sFgaWkB9qFut1GeG4TaimPYNAJ8Akt/DWYMFsOOS7ejIUvhxraC4/2eR5rdbO7ttF10EPd2EHjJJssl7c7M49LYjM9Jdm7aeLe5OaFwmHUWIuM2io0/yJe+357G0Y0bYNI85AppjBBfjfJFNcUSweFH47FqxXLnRcYZCTcotF9o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IxoCk8df; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706667512; x=1738203512;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=plKPxBQ2jsb/v68hxkyJ/JuBYB+4x5Jxb3q+0BdUhZ0=;
-  b=IxoCk8dfjaUHbY6ZnFfSCYDdFc0d4dxs2Gh46gmLng4d0bCzhbVO5FCO
-   o3itjV5JeM59VRqrytXZyZdkE6Nj/K31EjfL0WfQFT38xnDBAhzoS6Qwq
-   zZCIrbW0xMYbgZXb6pMm7KZEXgtDsCXC9xlapwMKbpl934tEv8rUHv8nc
-   l1HH7xP27krysxEh1MwrtWhC+SQNyiZ17JQnmVLkXZZrSuPZgMOvGi1xc
-   7rwK7lLUIEPIlR3fiyEb8MsxSidP9WNeEeFsHmkhTPAQEbjBMcjfFNUjy
-   HjYEqlHAcCEoaaWqdIUg7nJ8LJ9xoQ7Vp/ZRlY8JN7UC9FC0Tu0sfWFjP
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="24938941"
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="24938941"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 18:18:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="907714690"
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="907714690"
-Received: from haibo-optiplex-7090.sh.intel.com ([10.239.159.132])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 18:18:23 -0800
-From: Haibo Xu <haibo1.xu@intel.com>
-To: 
-Cc: xiaobo55x@gmail.com,
-	ajones@ventanamicro.com,
-	sunilvl@ventanamicro.com,
-	Haibo Xu <haibo1.xu@intel.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
+	s=arc-20240116; t=1706668319; c=relaxed/simple;
+	bh=djoFTXuxmksb/FdNwJVAeN6Af9a5fltCn/3BeXgcsxI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=c5BthIHpkmx1waXuo7iBVHZqrW5eiiND3k5qmCt5N5I/UZtW7yojRXqB+si0Xp+yhjMNr4x1QZlG/Pdv3q7YlIEjVptKQnje28+2lUKHez2XleGsWEYj439WewojECMtNQHTtpY2gZZjHuhC9RyrO2EDXSQ3hF8RtPKlGfTFKvo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=G498xFUh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64AD7C433F1;
+	Wed, 31 Jan 2024 02:31:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1706668318;
+	bh=djoFTXuxmksb/FdNwJVAeN6Af9a5fltCn/3BeXgcsxI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=G498xFUh+N8EeVWIa6bF34OWQdzTtoP+Y4iTIG/ugVxJ5uRGI9Tmy3N9VJSM0Eb03
+	 5Yi+to2iuPepzWGviH7Iqk4RuWLmZly0mVQaWVZOlJdGGPewlO3dlIcgBEL/humtWU
+	 hFGp7QORHSFyEwPOnZWL3Ul1ps3uXD/izeJQlAa8=
+Date: Tue, 30 Jan 2024 18:31:58 -0800
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Joe Damato <jdamato@fastly.com>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	chuck.lever@oracle.com, jlayton@kernel.org,
+	linux-api@vger.kernel.org, brauner@kernel.org, edumazet@google.com,
+	davem@davemloft.net, alexander.duyck@gmail.com,
+	sridhar.samudrala@intel.com, kuba@kernel.org,
+	willemdebruijn.kernel@gmail.com, weiwan@google.com,
+	David.Laight@aculab.com, arnd@arndb.de,
+	Jonathan Corbet <corbet@lwn.net>,
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nathan Lynch <nathanl@linux.ibm.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Maik Broemme <mbroemme@libmpq.org>,
+	Steve French <stfrench@microsoft.com>,
+	Julien Panis <jpanis@baylibre.com>,
+	Jiri Slaby <jirislaby@kernel.org>, Thomas Huth <thuth@redhat.com>,
+	Andrew Waterman <waterman@eecs.berkeley.edu>,
 	Albert Ou <aou@eecs.berkeley.edu>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>,
-	Robert Moore <robert.moore@intel.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Guo Ren <guoren@kernel.org>,
-	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
-	Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Greentime Hu <greentime.hu@sifive.com>,
-	Anup Patel <apatel@ventanamicro.com>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Jisheng Zhang <jszhang@kernel.org>,
-	=?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
-	Baoquan He <bhe@redhat.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Chen Jiahao <chenjiahao16@huawei.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	James Morse <james.morse@arm.com>,
-	Evan Green <evan@rivosinc.com>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	Yang Li <yang.lee@linux.alibaba.com>,
-	Tony Luck <tony.luck@intel.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Yuntao Wang <ytcoode@gmail.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Alison Schofield <alison.schofield@intel.com>,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev
-Subject: [PATCH 0/4] Add ACPI NUMA support for RISC-V
-Date: Wed, 31 Jan 2024 10:31:57 +0800
-Message-Id: <cover.1706603678.git.haibo1.xu@intel.com>
-X-Mailer: git-send-email 2.34.1
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+	"open list:FILESYSTEMS (VFS and infrastructure)" <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH net-next v4 3/3] eventpoll: Add epoll ioctl for
+ epoll_params
+Message-ID: <2024013045-manifesto-each-cbdc@gregkh>
+References: <20240131014738.469858-1-jdamato@fastly.com>
+ <20240131014738.469858-4-jdamato@fastly.com>
+ <2024013001-prison-strum-899d@gregkh>
+ <20240131022756.GA4837@fastly.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240131022756.GA4837@fastly.com>
 
-This patch series enable RISC-V ACPI NUMA support which was based on
-the recently approved ACPI ECR[1].
+On Tue, Jan 30, 2024 at 06:27:57PM -0800, Joe Damato wrote:
+> On Tue, Jan 30, 2024 at 06:08:36PM -0800, Greg Kroah-Hartman wrote:
+> > On Wed, Jan 31, 2024 at 01:47:33AM +0000, Joe Damato wrote:
+> > > +struct epoll_params {
+> > > +	__aligned_u64 busy_poll_usecs;
+> > > +	__u16 busy_poll_budget;
+> > > +
+> > > +	/* pad the struct to a multiple of 64bits for alignment on all arches */
+> > > +	__u8 __pad[6];
+> > 
+> > You HAVE to check this padding to be sure it is all 0, otherwise it can
+> > never be used in the future for anything.
+> 
+> Is there some preferred mechanism for this in the kernel that I should be
+> using or is this as simple as adding a for loop to check each u8 == 0 ?
 
-Patch 1/4 is generated from the acpica PR[2] and should be merged through
-the acpica project. Due to this dependency, other 3 patches can only be
-merged after the corresponding ACPICA patch was pulled into linux.
-
-Patch 2/4 add the common SRAT RINTC affinity structure handler.
-Patch 3/4 add RISC-V specific acpi_numa.c file to parse NUMA information
-from SRAT and SLIT ACPI tables.
-Patch 4/4 add corresponding ACPI_NUMA config for RISC-V Kconfig. 
-
-Based-on: https://github.com/linux-riscv/linux-riscv/tree/for-next
-
-[1] https://mantis.uefi.org/mantis/view.php?id=2433
-[2] https://github.com/acpica/acpica/pull/926
-
-Testing:
-Since the ACPI AIA/PLIC support patch set is still under upstream review,
-hence it is tested using the poll based HVC SBI console and RAM disk.
-1) Build latest Qemu with the following patch backported
-   https://lore.kernel.org/all/20240129094200.3581037-1-haibo1.xu@intel.com/
-   https://github.com/vlsunil/qemu/commit/42bd4eeefd5d4410a68f02d54fee406d8a1269b0
-
-2) Build latest EDK-II
-   https://github.com/tianocore/edk2/blob/master/OvmfPkg/RiscVVirt/README.md
-
-3) Build Linux with the following configs enabled
-   CONFIG_RISCV_SBI_V01=y
-   CONFIG_SERIAL_EARLYCON_RISCV_SBI=y
-   CONFIG_HVC_RISCV_SBI=y
-
-4) Build buildroot rootfs.cpio
-
-5) Launch the Qemu machine
-   qemu-system-riscv64 -nographic \
-   -machine virt,pflash0=pflash0,pflash1=pflash1 -smp 4 -m 8G \
-   -blockdev node-name=pflash0,driver=file,read-only=on,filename=RISCV_VIRT_CODE.fd \
-   -blockdev node-name=pflash1,driver=file,filename=RISCV_VIRT_VARS.fd \
-   -object memory-backend-ram,size=4G,id=m0 \
-   -object memory-backend-ram,size=4G,id=m1 \
-   -numa node,memdev=m0,cpus=0-1,nodeid=0 \
-   -numa node,memdev=m1,cpus=2-3,nodeid=1 \
-   -numa dist,src=0,dst=1,val=30 \
-   -kernel linux/arch/riscv/boot/Image \
-   -initrd buildroot/output/images/rootfs.cpio \
-   -append "root=/dev/ram ro console=hvc0 earlycon=sbi"
-
-[    0.000000] ACPI: SRAT: Node 0 PXM 0 [mem 0x80000000-0x17fffffff]
-[    0.000000] ACPI: SRAT: Node 1 PXM 1 [mem 0x180000000-0x27fffffff]
-[    0.000000] NUMA: NODE_DATA [mem 0x17fe3bc40-0x17fe3cfff]
-[    0.000000] NUMA: NODE_DATA [mem 0x27fff4c40-0x27fff5fff]
-..
-[    0.000000] ACPI: NUMA: SRAT: PXM 0 -> HARTID 0x0 -> Node 0
-[    0.000000] ACPI: NUMA: SRAT: PXM 0 -> HARTID 0x1 -> Node 0
-[    0.000000] ACPI: NUMA: SRAT: PXM 1 -> HARTID 0x2 -> Node 1
-[    0.000000] ACPI: NUMA: SRAT: PXM 1 -> HARTID 0x3 -> Node 1
-
-Haibo Xu (4):
-  ACPICA: SRAT: Add RISC-V RINTC affinity structure
-  ACPI: NUMA: Add handler for SRAT RINTC affinity structure
-  ACPI: RISCV: Add NUMA support based on SRAT and SLIT
-  ACPI: RISCV: Enable ACPI based NUMA
-
- arch/riscv/Kconfig            |   1 +
- arch/riscv/include/asm/acpi.h |  15 +++-
- arch/riscv/kernel/Makefile    |   1 +
- arch/riscv/kernel/acpi.c      |   5 --
- arch/riscv/kernel/acpi_numa.c | 133 ++++++++++++++++++++++++++++++++++
- arch/riscv/kernel/setup.c     |   4 +-
- arch/riscv/kernel/smpboot.c   |   2 -
- drivers/acpi/numa/Kconfig     |   2 +-
- drivers/acpi/numa/srat.c      |  35 ++++++++-
- include/acpi/actbl3.h         |  18 ++++-
- include/linux/acpi.h          |   7 ++
- 11 files changed, 209 insertions(+), 14 deletions(-)
- create mode 100644 arch/riscv/kernel/acpi_numa.c
-
--- 
-2.34.1
+It's as simple as a loop :)
 
 
