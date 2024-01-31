@@ -1,125 +1,134 @@
-Return-Path: <linux-kernel+bounces-45982-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 545FC8438A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:19:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 36B968438AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:20:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E10228366E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:19:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6B97283893
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:20:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 408E258AA0;
-	Wed, 31 Jan 2024 08:19:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60D0058138;
+	Wed, 31 Jan 2024 08:20:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="MY5w9jDZ"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="BF39uFbj";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="+szjX1SI"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E13CF50A63;
-	Wed, 31 Jan 2024 08:18:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43A415810E;
+	Wed, 31 Jan 2024 08:20:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706689140; cv=none; b=XI9fLwcmVvdwM78zl1L7xYLJrgQP4mnSrgiv2QwHLdhcokepUKoJ9277JksETSErMBC+gjg4Uk1a+iTB5bccttppADOcogmVEaSsBcFniDYhYg84ktNYHXe0yMLGUraqJ+8x0548A0vwAscAq6ActElQYXYheMjsTyzVX1D6M74=
+	t=1706689227; cv=none; b=LsYB01II6iGBpIVx23tRdjcnFWsWtr+Ys4Kb/WJpV3xt9yJ4koDiBwD34VzNzqhIy7U6sAbCbaudC/oPBayrmSJW7cGCuUs0GHoavvl4zdBkj/QBWRGhofmzIzzR0mr64XlfUr3NZXRX2vmoyosK8sqzMztYeXBbWhBhHAFkycg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706689140; c=relaxed/simple;
-	bh=o5Lnmq0fWk5Eep/W7qO74NwPNkRIeb4zvL2icNl8iGM=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=NwwCoY+dfyTNTBxEdK4/xTFf0YaV/1eLCcVRjEA14x9SgpkRbWRAOAMPb7mVG77+bVNN7xIBnTixvQfjKjGUnRtuH2cuCvz+EqrXZtIjmv17Torb1t16gGJjbyJKCYkCUT0+IUyje/ro8Fg4oAVym2iTkdzz4/WJDM3x2FKKIAU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=MY5w9jDZ; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40V8IiSa022478;
-	Wed, 31 Jan 2024 02:18:44 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706689124;
-	bh=PYxfOXCNJnIon29E/e3F7R/L3Qp6QTCyA8kV/xxD3H4=;
-	h=From:Date:Subject:To:CC;
-	b=MY5w9jDZzcL7xbSozgVqygZO0WyZjOmAy/lV+IwOyar0HsOQYwKlzpuy+P1pOSy4d
-	 6yIh5qozj0aHvdQhL+uQtkx/BnI20h/KqXqPZ2Qm+26HZy8Ibd9lVPZRQJRNQgwOVC
-	 zgWqWXryuuc7wMiFE4javsBo0hJD/KLHA11e7xFc=
-Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40V8Iiqi081849
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 31 Jan 2024 02:18:44 -0600
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 31
- Jan 2024 02:18:44 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 31 Jan 2024 02:18:44 -0600
-Received: from [127.0.1.1] (uda0497581.dhcp.ti.com [10.24.68.185])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40V8Iew4078299;
-	Wed, 31 Jan 2024 02:18:40 -0600
-From: Manorit Chawdhry <m-chawdhry@ti.com>
-Date: Wed, 31 Jan 2024 13:48:39 +0530
-Subject: [PATCH] arm64: dts: ti: k3-j721s2: Fix power domain for VTM node
+	s=arc-20240116; t=1706689227; c=relaxed/simple;
+	bh=RW9cv7toZnF6LEuYZzxkXycyW8t3NCYo9rT737UUGSk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=qeAa1f8X2ENvqnQ2DmC6QKpa17SuZpvojwVH4FT1yyhl2YU/JWDmG9JrUN7WhJoDRxnIZz48L02CU+TTaVymWxbC/RzBb7yhraoDxn4BRD4WaUysZyflQlVveC2oecrJJ/mIjPC8QT3hkzr2SdWJ5I3hVkaUFc+qmaJntQd144M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=BF39uFbj; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=+szjX1SI; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Nam Cao <namcao@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1706689224;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=w8HpHV0x1fENAzE/fQpwHsbHa7p7cxsO49CTT+C0rLw=;
+	b=BF39uFbjNsmkux2PvO6mYxHtzNyyH1IobjCeqy+pT88EE4kYmF/uj2F6wNtsfNvuDXme94
+	MFOoi2nFs/dZsB0b8H4+arNJ9qWwirkF2xZGxPgkgih5NhkgLQ5BFgzsES4xsVrvXGP7jI
+	zWDM3gu9LaTJbpAR4Y+EA9IEEoPQJa7KPiUP0pRiGdD/+kEGRh4SNjdkt7Vonj58BFxYYH
+	WcVrZbUuBOmtQMb6dDWq1eOd269vzAvxi/VDp2Q0aPwcCZdDhrLyBP6Jyga8H2gRN+5O5x
+	A88RBpmMtRjd3LFB/nnD0NhcPKtnUFKq0k7zOXnuFtvXW50HUCqCUQz/cH+I+A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1706689224;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=w8HpHV0x1fENAzE/fQpwHsbHa7p7cxsO49CTT+C0rLw=;
+	b=+szjX1SI5t1MyKsWanFvac6dZS4L+0EVLC1N3HAKrYGepum1PrI36nKXIG5xYU90olsKy3
+	gGtmx59GsHAqH0Ag==
+To: Thomas Gleixner <tglx@linutronix.de>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Marc Zyngier <maz@kernel.org>,
+	Guo Ren <guoren@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org
+Cc: Nam Cao <namcao@linutronix.de>,
+	stable@vger.kernel.org
+Subject: [PATCH v2] irqchip/sifive-plic: enable interrupt if needed before EOI
+Date: Wed, 31 Jan 2024 09:19:33 +0100
+Message-Id: <20240131081933.144512-1-namcao@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240131-b4-upstream-j721s2-fix-vtm-devid-v1-1-94c927bb9595@ti.com>
-X-B4-Tracking: v=1; b=H4sIAF4CumUC/x2N0QrCMAxFf2XkeYE2rm7uV8SH2kbNYHM0cwhl/
- 27w8cA991RQLsIKY1Oh8C4q78XAtw2kV1yejJKNgRx1ztMJ7x1+Vt0KxxmnnrwSPuSL+zZjNj/
- jcOYQ0hDDJUWwm7WwDf6J6+04fvzxPQJyAAAA
-To: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero
- Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>, Bryan Brattlof <bb@ti.com>,
-        Keerthy <j-keerthy@ti.com>
-CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Udit Kumar <u-kumar1@ti.com>,
-        Manorit
- Chawdhry <m-chawdhry@ti.com>
-X-Mailer: b4 0.13-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1706689120; l=1138;
- i=m-chawdhry@ti.com; s=20231127; h=from:subject:message-id;
- bh=o5Lnmq0fWk5Eep/W7qO74NwPNkRIeb4zvL2icNl8iGM=;
- b=060yeBkDeRGOZ+KRb8BTBV5kbQoeSFGiimDCaeh0vtJAiRWD+FPMXcmY80ald9ATbkGR2L7n/
- 6uuJX/EFFs6DFJ4AObY/smgi/5+JLB4vpnH7+xV7dQCe+DSTbQMUVZQ
-X-Developer-Key: i=m-chawdhry@ti.com; a=ed25519;
- pk=fsr6Tm39TvsTgfyfFQLk+nnqIz2sBA1PthfqqfiiYSs=
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: quoted-printable
 
-Fix the power domain device ID for wkup_vtm0 node.
+RISC-V PLIC cannot "end-of-interrupt" (EOI) disabled interrupts, as
+explained in the description of Interrupt Completion in the PLIC spec:
 
-Link: https://software-dl.ti.com/tisci/esd/latest/5_soc_doc/j721s2/devices.html
-Fixes: d148e3fe52c8 ("arm64: dts: ti: j721s2: Add VTM node")
-Signed-off-by: Manorit Chawdhry <m-chawdhry@ti.com>
+"The PLIC signals it has completed executing an interrupt handler by
+writing the interrupt ID it received from the claim to the claim/complete
+register. The PLIC does not check whether the completion ID is the same
+as the last claim ID for that target. If the completion ID does not match
+an interrupt source that *is currently enabled* for the target, the
+completion is silently ignored."
+
+Commit 69ea463021be ("irqchip/sifive-plic: Fixup EOI failed when masked")
+ensured that EOI is successful by enabling interrupt first, before EOI.
+
+Commit a1706a1c5062 ("irqchip/sifive-plic: Separate the enable and mask
+operations") removed the interrupt enabling code from the previous
+commit, because it assumes that interrupt should already be enabled at the
+point of EOI. However, this is incorrect: there is a window after a hart
+claiming an interrupt and before irq_desc->lock getting acquired,
+interrupt can be disabled during this window. Thus, EOI can be invoked
+while the interrupt is disabled, effectively nullify this EOI. This
+results in the interrupt never gets asserted again, and the device who
+uses this interrupt appears frozen.
+
+Make sure that interrupt is really enabled before EOI.
+
+Fixes: a1706a1c5062 ("irqchip/sifive-plic: Separate the enable and mask ope=
+rations")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Nam Cao <namcao@linutronix.de>
 ---
- arch/arm64/boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v2:
+  - add unlikely() for optimization
+  - re-word commit message to make it clearer
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi
-index 80aa33c58a45..a47cb557dd95 100644
---- a/arch/arm64/boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi
-@@ -663,7 +663,7 @@ wkup_vtm0: temperature-sensor@42040000 {
- 		compatible = "ti,j7200-vtm";
- 		reg = <0x00 0x42040000 0x0 0x350>,
- 		      <0x00 0x42050000 0x0 0x350>;
--		power-domains = <&k3_pds 154 TI_SCI_PD_SHARED>;
-+		power-domains = <&k3_pds 180 TI_SCI_PD_SHARED>;
- 		#thermal-sensor-cells = <1>;
- 	};
- 
+ drivers/irqchip/irq-sifive-plic.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
----
-base-commit: 774551425799cb5bbac94e1768fd69eec4f78dd4
-change-id: 20240123-b4-upstream-j721s2-fix-vtm-devid-86e55c8a59ca
-
-Best regards,
--- 
-Manorit Chawdhry <m-chawdhry@ti.com>
+diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive=
+-plic.c
+index e1484905b7bd..0a233e9d9607 100644
+--- a/drivers/irqchip/irq-sifive-plic.c
++++ b/drivers/irqchip/irq-sifive-plic.c
+@@ -148,7 +148,13 @@ static void plic_irq_eoi(struct irq_data *d)
+ {
+ 	struct plic_handler *handler =3D this_cpu_ptr(&plic_handlers);
+=20
+-	writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
++	if (unlikely(irqd_irq_disabled(d))) {
++		plic_toggle(handler, d->hwirq, 1);
++		writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
++		plic_toggle(handler, d->hwirq, 0);
++	} else {
++		writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
++	}
+ }
+=20
+ #ifdef CONFIG_SMP
+--=20
+2.39.2
 
 
