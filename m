@@ -1,152 +1,102 @@
-Return-Path: <linux-kernel+bounces-46128-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46126-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC428843B13
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:28:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79787843AF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:21:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1CC19B2F0C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:22:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2EE891F2B2AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:21:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 811596774E;
-	Wed, 31 Jan 2024 09:22:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 669AB60DCC;
+	Wed, 31 Jan 2024 09:20:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Wohi/Frx"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="GBo51MQk"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 000A260885;
-	Wed, 31 Jan 2024 09:22:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 265F651004;
+	Wed, 31 Jan 2024 09:20:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706692928; cv=none; b=J8UJQ5KBv7R7jCcenqwVp4qz+5O1XFaVcfJap4fz6IhcQI5zaQNECnfagKWT/O+8HJYjskkyJLiWA8+zMc8M0nVveTzJmz7tdBhVqaDR+3v0+IcTj5MrZANH7JGMK3cY3246j4ZZyjJZGRPDhdfFRbCgEVBZqEBPC9cfy+snBYE=
+	t=1706692854; cv=none; b=SK16ozQLOO7teyuZ3Z00lTyPLw9uFFu4MOvcsA84D+wfbiGSISr7Xka8TICGLS21Mk7eZqZCUbPhrXMJr8E8K3zfSalLpWtMPViYdPkM2/6gFVtFIex4dt+J32xQm18qt4K3mBzpdFRON2Ts/HVjRTVrEkCbX13kHkVWtHyhZ1U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706692928; c=relaxed/simple;
-	bh=CIUpGUXPv7s5EVwneVuhL8R9G3KLULjDTGG/TKf9KI0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=C9bZLv4lchSpi5+CYuxQyK7QyqMP3rgimvDaz+cNzAdEM2NpuhRPiqzax3/H24hfWVwEs2/y5j+qzHpgBTcpHXdtn97038XWgNAQco8R5rCiDLD8fH1W3ZQEfKcEXK+sH5v9n4GLyiJQy/sCv2xZl3bEKXdzswxBKa3at8uTfUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Wohi/Frx; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706692927; x=1738228927;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=CIUpGUXPv7s5EVwneVuhL8R9G3KLULjDTGG/TKf9KI0=;
-  b=Wohi/FrxDs8Yw8IVCJP877C7l70mB6IXxfzpTxQsRRncNWkrsxzmckIO
-   7hucbdRJQ72RB5VUtwJpNV+LbLL5jG9qZHTR0QfUi+sG0prPe5HPLCqlS
-   cgCSa998yKOmK9ofOdrrMSCj1x9NmrtdhXYGAtK0DXiGXwzE3o7ZR/cNm
-   UqkZlfWrzaUdno3VdwOejzNtCjUYWH2yLs4OBgPqatu09Y7CVBKiPpHVF
-   Hp0GRlGh49HrNQDxwMtmcrjQJ/rxuSka88NLXrgwub1bnEpEs6dXzvOpl
-   6Lx5tiBAbMiS/JGprmhHDUHa++nfXxdIVo3zypXJ1iKUPO9MRo8TeQmqc
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="2480966"
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="2480966"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 01:21:54 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="738034755"
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="738034755"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 01:21:47 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Gregory Price <gregory.price@memverge.com>
-Cc: Gregory Price <gourry.memverge@gmail.com>,  <linux-mm@kvack.org>,
-  <linux-kernel@vger.kernel.org>,  <linux-doc@vger.kernel.org>,
-  <linux-fsdevel@vger.kernel.org>,  <linux-api@vger.kernel.org>,
-  <corbet@lwn.net>,  <akpm@linux-foundation.org>,  <honggyu.kim@sk.com>,
-  <rakie.kim@sk.com>,  <hyeongtak.ji@sk.com>,  <mhocko@kernel.org>,
-  <vtavarespetr@micron.com>,  <jgroves@micron.com>,
-  <ravis.opensrc@micron.com>,  <sthanneeru@micron.com>,
-  <emirakhur@micron.com>,  <Hasan.Maruf@amd.com>,
-  <seungjun.ha@samsung.com>,  <hannes@cmpxchg.org>,
-  <dan.j.williams@intel.com>,  Srinivasulu Thanneeru
- <sthanneeru.opensrc@micron.com>
-Subject: Re: [PATCH v4 3/3] mm/mempolicy: introduce MPOL_WEIGHTED_INTERLEAVE
- for weighted interleaving
-In-Reply-To: <Zbn6FG3346jhrQga@memverge.com> (Gregory Price's message of "Wed,
-	31 Jan 2024 02:43:16 -0500")
-References: <20240130182046.74278-1-gregory.price@memverge.com>
-	<20240130182046.74278-4-gregory.price@memverge.com>
-	<877cjqgfzz.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<Zbn6FG3346jhrQga@memverge.com>
-Date: Wed, 31 Jan 2024 17:19:51 +0800
-Message-ID: <87y1c5g8qw.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1706692854; c=relaxed/simple;
+	bh=jIsmj/fajb8fLMrkt4vd3Va8zdtqD37LgPLYgc7tpSc=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=kcYcw2uBIinIblCLnmzZvclUf+QlU6gt7WraWuCGXYgwSPAB4gQkf6q5VGsKNcCiYAMaPN46twKcVESZXS/QDvMXxqwg0tjzw4GQA+LhlEAXTP74EDLL/JoBLqHxA+XP4fCCzH00ax4HJw+bT6eeYaoEKDHYK2MFoQ0tPZpmHag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=GBo51MQk; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40V9KlHk050591;
+	Wed, 31 Jan 2024 03:20:47 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706692847;
+	bh=NdJG3JLfxJTk4/tJ2ziGMOaQE3dDkvwsm8Xe6fCQ6ZA=;
+	h=From:To:CC:Subject:Date;
+	b=GBo51MQk7VchxZ4VOqMiL/7K307iXcQVKAXY2kBwtC00PuGaVZ7e1e18BylcRd4QL
+	 hmm9g2kWyhELxqv2W4iVmTB/lDe9+q58Gnrl9g/ih7FUTnYbRtc0aHaWFodhazuCp+
+	 V7h+DpJMV2dkzcY+xZ9DCeI5B71uHFoL0s1CChZc=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40V9KlJt015283
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 31 Jan 2024 03:20:47 -0600
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 31
+ Jan 2024 03:20:47 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 31 Jan 2024 03:20:47 -0600
+Received: from uda0500640.dal.design.ti.com (uda0500640.dhcp.ti.com [172.24.227.88])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40V9KhAq037487;
+	Wed, 31 Jan 2024 03:20:44 -0600
+From: Ravi Gunasekaran <r-gunasekaran@ti.com>
+To: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <brgl@bgdev.pl>
+CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, <nm@ti.com>,
+        <vigneshr@ti.com>, <r-gunasekaran@ti.com>, <srk@ti.com>
+Subject: [PATCH] dt-bindings: arm: ti: Update maintainers list
+Date: Wed, 31 Jan 2024 14:50:43 +0530
+Message-ID: <20240131092043.28829-1-r-gunasekaran@ti.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Gregory Price <gregory.price@memverge.com> writes:
+Update the list with current maintainer of TI's davinci
+platforms.
 
-> On Wed, Jan 31, 2024 at 02:43:12PM +0800, Huang, Ying wrote:
->> Gregory Price <gourry.memverge@gmail.com> writes:
->> >  
->> > +static unsigned int weighted_interleave_nodes(struct mempolicy *policy)
->> > +{
->> > +	unsigned int node = current->il_prev;
->> > +
->> > +	if (!current->il_weight || !node_isset(node, policy->nodes)) {
->> > +		node = next_node_in(node, policy->nodes);
->> > +		/* can only happen if nodemask is being rebound */
->> > +		if (node == MAX_NUMNODES)
->> > +			return node;
->> 
->> I feel a little unsafe to read policy->nodes at same time of writing in
->> rebound.  Is it better to use a seqlock to guarantee its consistency?
->> It's unnecessary to be a part of this series though.
->> 
->
-> I think this is handled already? It is definitely an explicit race
-> condition that is documented elsewhere:
->
-> /*
->  * mpol_rebind_policy - Migrate a policy to a different set of nodes
->  *
->  * Per-vma policies are protected by mmap_lock. Allocations using per-task
->  * policies are protected by task->mems_allowed_seq to prevent a premature
->  * OOM/allocation failure due to parallel nodemask modification.
->  */
+Signed-off-by: Ravi Gunasekaran <r-gunasekaran@ti.com>
+Acked-by: Bartosz Golaszewski <brgl@bgdev.pl>
+---
+Added Acked-by after discussing with Bartosz over mail.
 
-Thanks for pointing this out!
+ Documentation/devicetree/bindings/arm/ti/ti,davinci.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-If we use task->mems_allowed_seq reader side in
-weighted_interleave_nodes() we can guarantee the consistency of
-policy->nodes.  That may be not deserved, because it's not a big deal to
-allocate 1 page in a wrong node.
+diff --git a/Documentation/devicetree/bindings/arm/ti/ti,davinci.yaml b/Documentation/devicetree/bindings/arm/ti/ti,davinci.yaml
+index 1656d1a4476f..1b64458fcadd 100644
+--- a/Documentation/devicetree/bindings/arm/ti/ti,davinci.yaml
++++ b/Documentation/devicetree/bindings/arm/ti/ti,davinci.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: Texas Instruments DaVinci Platforms
+ 
+ maintainers:
+-  - Sekhar Nori <nsekhar@ti.com>
++  - Bartosz Golaszewski <brgl@bgdev.pl>
+ 
+ description:
+   DA850/OMAP-L138/AM18x based boards
+-- 
+2.17.1
 
-It makes more sense to do that in
-alloc_pages_bulk_array_weighted_interleave(), because a lot of pages may
-be allocated there.
-
-> example from slub:
->
-> do {
-> 	cpuset_mems_cookie = read_mems_allowed_begin();
-> 	zonelist = node_zonelist(mempolicy_slab_node(), pc->flags);
-> 	...
-> } while (read_mems_allowed_retry(cpuset_mems_cookie));
->
-> quick perusal through other allocators, show similar checks.
->
-> page_alloc.c  -  check_retry_cpusetset()
-> filemap.c     -  filemap_alloc_folio()
->
-> If we ever want mempolicy to be swappable from outside the current task
-> context, this will have to change most likely - but that's another
-> feature for another day.
->
-
---
-Best Regards,
-Huang, Ying
 
