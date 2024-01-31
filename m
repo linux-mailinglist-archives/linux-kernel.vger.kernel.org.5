@@ -1,59 +1,60 @@
-Return-Path: <linux-kernel+bounces-46317-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46318-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC9E6843DD9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:10:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78AA2843DDF
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:10:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 579001F22426
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:10:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D2451C2AABA
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:10:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70D8078669;
-	Wed, 31 Jan 2024 11:09:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E68436EB6E;
+	Wed, 31 Jan 2024 11:09:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="m+AMCIyO"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="dzIzFsWf"
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E56E69E01;
-	Wed, 31 Jan 2024 11:09:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACB0978681;
+	Wed, 31 Jan 2024 11:09:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706699363; cv=none; b=igN4tt/Rbc7hNTbxYYcMKyLKsOkorJmB2/ldqtoZ7XUBr50RqkNETJGSq4eqvrmjC+E/MpWDOakNzH304Pqm/RN9XDZZXSuF3IEw3FolIhttjAhnEntCz4Y2zvzUpvYCMZgc3+lunhUuh6CKUkz+PvT09wNw7XgL/eZdxhl1g3c=
+	t=1706699371; cv=none; b=TrAnFw/GfYLMOB3C+x/fkB0mFx7O4gmWSYy7fgUISuXB/aHoyEDIgVRJ9Z0zSC7DmLXGXX9GqmI9MU6WuEi8qzfKRSQflz2HlWd3XTeMIYJxzXbbX6a45Y57X97p8MZmjnhxaMTuMoPBATL9utgO5ivf/Fp0wAWezMxBWrI7Dqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706699363; c=relaxed/simple;
-	bh=H905wCqIWJUsyRGzBSYpaX0GfJ3CrhQMXdLI/pNFYMo=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=e1medPxHJfdNf5qM0HK9oIriBOL5Y04gzo0Hm9ulUpmxqg7mKNVvPq3r7vNNNx6bsBR6Vg/WLMJABbY9z8EynMDwB+eCmfAVG3BMSyJ2k9OWjB2lR3q+yqB7z9qCT0HHhQqYySj6EOFhpZ66xhijyS0plWRcfJKLB+yD8TEhY+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=m+AMCIyO; arc=none smtp.client-ip=205.220.168.131
+	s=arc-20240116; t=1706699371; c=relaxed/simple;
+	bh=bW9yBz0oyR3w0RlViIUq4vhgeR4ugr+YwXZ3aG+gPu0=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=sYGv9AlPW1ZWWkZvH2gwIX9L06dGBaAW+6BaTov9Zxgt98tWeDpAc8Cb/xhHKytDBOdoggxEg4IAli89YOdW61xXqVmcmHMGBE1E9/4OUKI7oHLj71n1UoXAoVTjjRglfm0W8dPLAy0GPiKPswaF8EcEkClEIAjhiD3T+Vb5+oU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=dzIzFsWf; arc=none smtp.client-ip=205.220.168.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40V77IVt009454;
-	Wed, 31 Jan 2024 11:09:00 GMT
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40VAvaOQ005262;
+	Wed, 31 Jan 2024 11:09:09 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=qcppdkim1; bh=gF/M0cQ
-	p/Po1gWJguFknxVmvecw9rwR313j3e4N2Jkg=; b=m+AMCIyO4OkKcvN0VpEPNsU
-	V1wiMCZbuTvPJHmGfBn90N3vv2X3Gtq6ABdGRGHpCsbJVP/jnK0Fg1g4XknLqkvd
-	x3+ZG58z8wvuipQUd5nC59iqSVaFOU9U66bg43csrsCqvEdUYYmxcTlBv7EhgL5H
-	sIIJCSSh0FndfjcsqjvqQGnHiFlfY3VDWwMP7941K3Q15Xs3HpBtStsA4sNiEdwd
-	tnrC/4JM+pAH0PGAXxaf9LEfPcdMi2VKXSH70QiXKqi4BbJA9u4xBhV2Tj9xtQja
-	k383moYLuGIeVqqI3nKyxfXHuz/9+KogAgLqzL2srAdEkJgN03ZLgNYh8yyXheg=
-	=
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vyb0csgnv-1
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	qcppdkim1; bh=2GpWOaEgIE3YdqJG72nWm6qdSaD5DSuDXkli/E5CAcs=; b=dz
+	IzFsWfAZP47hQ4Ve9jSI6LQL6OTjszBlfqO5NrMtZYO6PKmsF6UFP2pyrGu2KugF
+	mgpHlxUTekj3gez5uSB8NV61+SpcItptedul5aMLCMb+RQOT7Qxlo8irfe3IaJ/J
+	dbwm7hyRxbtYSFy+XCmvCnofsGgHhXe21LsPn921ZSyQF4cygsQKHlH05hNfG85j
+	FwkSvIESe7iZE7LtCag/dDrkNwcn+bHWv2lwsXF4ur2orcpLNEYBT6AmPMR9F2+8
+	txyV/VdxoVytIGVQiRE4Yv88Xd8DEjaL/LQusqFlpPR/Un4uutPsRaJU9FttZLyF
+	eODSw+ZDOck60bZyZe0A==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vym2m84c6-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 31 Jan 2024 11:08:59 +0000 (GMT)
+	Wed, 31 Jan 2024 11:09:09 +0000 (GMT)
 Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40VB8wwk006363
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40VB98Vt028080
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 31 Jan 2024 11:08:58 GMT
+	Wed, 31 Jan 2024 11:09:08 GMT
 Received: from hu-mojha-hyd.qualcomm.com (10.80.80.8) by
  nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 31 Jan 2024 03:08:48 -0800
+ 15.2.1118.40; Wed, 31 Jan 2024 03:08:58 -0800
 From: Mukesh Ojha <quic_mojha@quicinc.com>
 To: <corbet@lwn.net>, <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
         <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
@@ -67,11 +68,14 @@ CC: <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>,
         <linux-samsung-soc@vger.kernel.org>, <kernel@quicinc.com>,
-        <quic_mojha@quicinc.com>
-Subject: [PATCH v8 00/10] Add Qualcomm APSS Minidump driver related support
-Date: Wed, 31 Jan 2024 16:38:27 +0530
-Message-ID: <20240131110837.14218-1-quic_mojha@quicinc.com>
+        <quic_mojha@quicinc.com>, Bagas Sanjaya
+	<bagasdotme@gmail.com>
+Subject: [PATCH v8 01/10] docs: qcom: Add qualcomm minidump guide
+Date: Wed, 31 Jan 2024 16:38:28 +0530
+Message-ID: <20240131110837.14218-2-quic_mojha@quicinc.com>
 X-Mailer: git-send-email 2.43.0.254.ga26002b62827
+In-Reply-To: <20240131110837.14218-1-quic_mojha@quicinc.com>
+References: <20240131110837.14218-1-quic_mojha@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,217 +88,365 @@ X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nasanex01c.na.qualcomm.com (10.45.79.139)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: -97ZvIopG6uQLw9plTQtOsQLB2xVb9yh
-X-Proofpoint-ORIG-GUID: -97ZvIopG6uQLw9plTQtOsQLB2xVb9yh
+X-Proofpoint-GUID: bOOo696mxN3urrVTfd5nABN5jT3WKvqf
+X-Proofpoint-ORIG-GUID: bOOo696mxN3urrVTfd5nABN5jT3WKvqf
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-01-31_06,2024-01-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 adultscore=0
- phishscore=0 suspectscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999
- mlxscore=0 priorityscore=1501 impostorscore=0 lowpriorityscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401190000 definitions=main-2401310084
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=999
+ malwarescore=0 clxscore=1015 adultscore=0 mlxscore=0 priorityscore=1501
+ suspectscore=0 lowpriorityscore=0 phishscore=0 impostorscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2401190000
+ definitions=main-2401310085
 
-Abstract and PDF here:
-https://lpc.events/event/17/contributions/1468/
+Add the qualcomm minidump guide for the users which tries to cover
+the dependency, API use and the way to test and collect minidump
+on Qualcomm supported SoCs.
 
-Video:
-https://www.youtube.com/watch?v=3vL3gtAu84s
-
-Patch 1 deals in detail documentation on minidump.
-Patch 2-4 refactors minidump existing layout and separate it from remoteproc files.
-Patch 6 is the Qualcomm APSS minidump driver.
-Patch 7-10 Enable support to reserve dynamic ramoops and the support to
-  register ramoops region with minidump.
-
-Detail about Minidump is discussed in documentation patch (1/10) and also briefly
-discussed after below changelog.
-
-Changes in v8:
- - Addressed documentation comment made by Randy Dunlap.
- - Rebased on linux-next tag next-20240130
-
-Changes in v7:
- - Addressed comment made by [Pavan.K] to use generic notifiers.
- - Addresses comment made on Dynamic ramoops about error handling.
- - Significant change minidump documentation suggested by [Bryan O'Donoghue]
- - Added Reviewed by from [Bagas]
- - Renamed ramoops notifiers.
-
-Changes in v6: https://lore.kernel.org/lkml/1700864395-1479-1-git-send-email-quic_mojha@quicinc.com/
- - Accumalated the feedback received on v5 and rebase v5 versions in v6.
- - Removed the exported function as there is no current users of them.
- - Applied [Pavan.K] suggestion on caller/callee placement of dynamic ramoops reserve memory.
- - Addressed [krzysztof] comment on sizeof() and to have qcom_apss_md_table_exit().
- - Addressed [Bagas.S] comment on minidump doc.
- - Tried to implement [Kees] suggestion in slight different way with callback registration
-   with ramoops instead of pstore core.
-
-Change in rebase v5: https://lore.kernel.org/lkml/1694429639-21484-1-git-send-email-quic_mojha@quicinc.com/
- - Rebased it on latest tag available on linux-next
- - Added missed Poovendhan sign-off on 15/17 and tested-by tag from
-   Kathiravan. Thanks to him for testing and reminding me of missing sign-off.
-
-Changes in v5: https://lore.kernel.org/lkml/1694290578-17733-1-git-send-email-quic_mojha@quicinc.com/
- - On suggestion from Pavan.k, to have single function call for minidump collection
-   from remoteproc driver, separated the logic to have separate minidump file called
-   qcom_rproc_minidump.c and also renamed the function from qcom_minidump() to
-   qcom_rproc_minidump(); however, dropped his suggestion about rework on lazy deletion
-   during region unregister in this series, will pursue it in next series.
-
- - To simplify the minidump driver, removed the complication for frontend and different
-   backend from Greg suggestion, will pursue this once main driver gets mainlined.
-
- - Move the dynamic ramoops region allocation from Device tree approach to command line
-   approch with the introduction command line parsing and memblock reservation during
-   early boot up; Not added documentation about it yet, will add if it gets positive
-   response.
-
- - Exporting linux banner from kernel to make minidump build also as module, however,
-   minidump is a debug module and should be kernel built to get most debug information
-   from kernel.
-
- - Tried to address comments given on dload patch series.
-
-Changes in v4: https://lore.kernel.org/lkml/1687955688-20809-1-git-send-email-quic_mojha@quicinc.com/
- - Redesigned the driver and divided the driver into front end and backend (smem) so
-   that any new backend can be attached easily to avoid code duplication.
- - Patch reordering as per the driver and subsystem to easier review of the code.
- - Removed minidump specific code from remoteproc to minidump smem based driver.
- - Enabled the all the driver as modules.
- - Address comments made on documentation and yaml and Device tree file [Krzysztof/Konrad]
- - Address comments made qcom_pstore_minidump driver and given its Device tree
-   same set of properties as ramoops. [Luca/Kees]
- - Added patch for MAINTAINER file.
- - Include defconfig change as one patch as per [Krzysztof] suggestion.
- - Tried to remove the redundant file scope variables from the module as per [Krzysztof] suggestion.
- - Addressed comments made on dload mode patch v6 version
-   https://lore.kernel.org/lkml/1680076012-10785-1-git-send-email-quic_mojha@quicinc.com/
-
-Changes in v3: https://lore.kernel.org/lkml/1683133352-10046-1-git-send-email-quic_mojha@quicinc.com/
- - Addressed most of the comments by Srini on v2 and refactored the minidump driver.
-    - Added platform device support
-    - Unregister region support.
- - Added update region for clients.
- - Added pending region support.
- - Modified the documentation guide accordingly.
- - Added qcom_pstore_ramdump client driver which happen to add ramoops platform
-   device and also registers ramoops region with minidump.
- - Added download mode patch series with this minidump series.
-    https://lore.kernel.org/lkml/1680076012-10785-1-git-send-email-quic_mojha@quicinc.com/
-
-Changes in v2: https://lore.kernel.org/lkml/1679491817-2498-1-git-send-email-quic_mojha@quicinc.com/
- - Addressed review comment made by [quic_tsoni/bmasney] to add documentation.
- - Addressed comments made by [srinivas.kandagatla]
- - Dropped pstore 6/6 from the last series, till i get conclusion to get pstore
-   region in minidump.
- - Fixed issue reported by kernel test robot.
-
-Changes in v1: https://lore.kernel.org/lkml/1676978713-7394-1-git-send-email-quic_mojha@quicinc.com/
-
-Minidump is a best effort mechanism to collect useful and predefined data
-for first level of debugging on end user devices running on Qualcomm SoCs.
-It is built on the premise that System on Chip (SoC) or subsystem part of
-SoC crashes, due to a range of hardware and software bugs.
-
-Qualcomm devices in engineering mode provides a mechanism for generating
-full system ramdumps for post mortem debugging. But in some cases it's
-however not feasible to capture the entire content of RAM. The minidump
-mechanism provides the means for selecting which snippets should be
-included in the ramdump.
-
-The core of SMEM based minidump feature is part of Qualcomm's boot
-firmware code. It initializes shared memory (SMEM), which is a part of
-DDR and allocates a small section of SMEM to minidump table i.e also
-called global table of content (G-ToC). Each subsystem (APSS, ADSP, ...)
-has their own table of segments to be included in the minidump and all
-get their reference from G-ToC. Each segment/region has some details
-like name, physical address and it's size etc. and it could be anywhere
-scattered in the DDR.
-
-Existing upstream Qualcomm remoteproc driver[1] already supports SMEM
-based minidump feature for remoteproc instances like ADSP, MODEM, ...
-where predefined selective segments of subsystem region can be dumped
-as part of coredump collection which generates smaller size artifacts
-compared to complete coredump of subsystem on crash.
-
-[1]
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/remoteproc/qcom_common.c#n142
-
-In addition to managing and querying the APSS minidump description,
-the Linux driver maintains a ELF header in a segment. This segment
-gets updated with section/program header whenever a new entry gets
-registered.
-
-Support for Minidump enablement on Qualcomm SoCs is pursued separately and
-can be done via below series of changes. For testing, these patches can be
-applied
-
-https://lore.kernel.org/lkml/1704727654-13999-1-git-send-email-quic_mojha@quicinc.com/
-
-https://lore.kernel.org/lkml/20240109153200.12848-12-quic_mojha@quicinc.com/
-https://lore.kernel.org/lkml/20240109153200.12848-13-quic_mojha@quicinc.com/
-
-Testing of these patches has been done on sm8450 target after enabling kernel
-config like CONFIG_PSTORE_RAM/CONFIG_PSTORE_CONSOLE and once the device boots
-up. Below command can be executed from sysfs to enable minidump in the firmware.
-
- echo mini > /sys/module/qcom_scm/parameters/download_mode
-
-Try crashing it via devmem2 0xf11c000(this is known command to create xpu violation
-and put the device crash dump mode) on command prompt.
-
-Default storage type is set to via USB, so Minidump would be downloaded with the
-help of x86_64 machine (running PCAT tool) attached to Qualcomm product which has
-backed Minidump boot firmware support.
-
-After that we will see a bunch of predefined registered region as binary blobs files
-starts with md_* downloaded on the x86 machine at configured/default location in PCAT
-tool from the product, more about this can be found in qualcomm minidump guide
-patch.
-
-Mukesh Ojha (10):
-  docs: qcom: Add qualcomm minidump guide
-  soc: qcom: Add qcom_rproc_minidump module
-  remoteproc: qcom_q6v5_pas: Use qcom_rproc_minidump()
-  remoteproc: qcom: Remove minidump related data from qcom_common.c
-  init: export linux_banner data variable
-  soc: qcom: Add Qualcomm APSS minidump kernel driver
-  MAINTAINERS: Add entry for minidump related files
-  pstore/ram: Add dynamic ramoops region support through commandline
-  pstore/ram: Add ramoops information notifier support
-  soc: qcom: register ramoops region with APSS minidump
-
+Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
+Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
+---
  Documentation/admin-guide/index.rst         |   1 +
- Documentation/admin-guide/qcom_minidump.rst | 318 +++++++++
- Documentation/admin-guide/ramoops.rst       |  23 +-
- MAINTAINERS                                 |  10 +
- drivers/remoteproc/Kconfig                  |   1 +
- drivers/remoteproc/qcom_common.c            | 160 -----
- drivers/remoteproc/qcom_q6v5_pas.c          |   3 +-
- drivers/soc/qcom/Kconfig                    |  23 +
- drivers/soc/qcom/Makefile                   |   2 +
- drivers/soc/qcom/qcom_minidump.c            | 690 ++++++++++++++++++++
- drivers/soc/qcom/qcom_minidump_internal.h   |  74 +++
- drivers/soc/qcom/qcom_rproc_minidump.c      | 111 ++++
- drivers/soc/qcom/smem.c                     |  20 +
- fs/pstore/Kconfig                           |  15 +
- fs/pstore/ram.c                             | 180 ++++-
- include/linux/init.h                        |   3 +
- include/linux/pstore_ram.h                  |  20 +
- include/linux/soc/qcom/smem.h               |   2 +
- include/soc/qcom/qcom_minidump.h            |  41 ++
- init/main.c                                 |   3 +
- init/version-timestamp.c                    |   3 +
- 21 files changed, 1538 insertions(+), 165 deletions(-)
+ Documentation/admin-guide/qcom_minidump.rst | 318 ++++++++++++++++++++
+ 2 files changed, 319 insertions(+)
  create mode 100644 Documentation/admin-guide/qcom_minidump.rst
- create mode 100644 drivers/soc/qcom/qcom_minidump.c
- create mode 100644 drivers/soc/qcom/qcom_minidump_internal.h
- create mode 100644 drivers/soc/qcom/qcom_rproc_minidump.c
- create mode 100644 include/soc/qcom/qcom_minidump.h
 
-
-base-commit: 41d66f96d0f15a0a2ad6fa2208f6bac1a66cbd52
+diff --git a/Documentation/admin-guide/index.rst b/Documentation/admin-guide/index.rst
+index fb40a1f6f79e..edab05fc4653 100644
+--- a/Documentation/admin-guide/index.rst
++++ b/Documentation/admin-guide/index.rst
+@@ -121,6 +121,7 @@ configure specific aspects of kernel behavior to your liking.
+    pm/index
+    pmf
+    pnp
++   qcom_minidump
+    rapidio
+    ras
+    rtc
+diff --git a/Documentation/admin-guide/qcom_minidump.rst b/Documentation/admin-guide/qcom_minidump.rst
+new file mode 100644
+index 000000000000..2a057612422b
+--- /dev/null
++++ b/Documentation/admin-guide/qcom_minidump.rst
+@@ -0,0 +1,318 @@
++Qualcomm Minidump Feature
++=========================
++
++Introduction
++------------
++
++Minidump is a best effort mechanism to collect useful and predefined
++data for post-mortem debugging on a Qualcomm System on chip(SoCs).
++
++Minidump is built on the premise that a hardware or software component
++on the SoC has encountered an unexpected fault. This means that data
++collected by Minidump can not be assumed to be correct or Minidump
++collection itself could fail.
++
++Qualcomm SoCs in engineering mode provides mechanism for generating
++complete RAM dump for both kernel/non-kernel crashes for postmortem
++debugging however, on a end user product taking complete RAM dump at
++the time of failure has substantial storage requirement as well as it
++is time consuming to transfer them electronically. To encounter this
++problem, Minidump was introduced in Qualcomm boot firmware that provides
++a way to collect selected region in the final RAM dump which is less
++in size compared to complete RAM dump.
++
++Qualcomm SoCs contains Application Processor SubSystem(APSS) and its
++co-processor like Audio Digital Signal Process(ADSP), Compute DSP(CDSP),
++MODEM running their operating system or firmware can register their
++selected region in their respective table called SubSystem table of
++content (SS-ToC) and the addresses of these tables is further maintained
++in a separate table called Global Table of Content (G-ToC) inside separate
++region maintaied inside RAM called Shared memory(SMEM). More about shared
++memory can be found inside ``driver/soc/qcom/smem.c`` under doc section
++and it is briefly discussed in later section.
++
++It is to note that SubSystems, Remote processors and co-processors have
++same meaning in this document and been used interchangeably.
++
++High level design
++-----------------
++::
++
++   +-----------------------------------------------+
++   |   RAM                       +-------------+   |
++   |                             |      SS0-ToC|   |
++   | +----------------+     +----------------+ |   |
++   | |Shared memory   |     |         SS1-ToC| |   |
++   | |(SMEM)          |     |                | |   |
++   | |                | +-->|--------+       | |   |
++   | |G-ToC           | |   | SS-ToC  \      | |   |
++   | |+-------------+ | |   | +-----------+  | |   |
++   | ||-------------| | |   | |-----------|  | |   |
++   | || SS0-ToC     | | | +-|<|SS1 region1|  | |   |
++   | ||-------------| | | | | |-----------|  | |   |
++   | || SS1-ToC     |-|>+ | | |SS1 region2|  | |   |
++   | ||-------------| |   | | |-----------|  | |   |
++   | || SS2-ToC     | |   | | |  ...      |  | |   |
++   | ||-------------| |   | | |-----------|  | |   |
++   | ||  ...        | |   |-|<|SS1 regionN|  | |   |
++   | ||-------------| |   | | |-----------|  | |   |
++   | || SSn-ToC     | |   | | +-----------+  | |   |
++   | |+-------------+ |   | |                | |   |
++   | |                |   | |----------------| |   |
++   | |                |   +>|  regionN       | |   |
++   | |                |   | |----------------| |   |
++   | +----------------+   | |                | |   |
++   |                      | |----------------| |   |
++   |                      +>|  region1       | |   |
++   |                        |----------------| |   |
++   |                        |                | |   |
++   |                        |----------------|-+   |
++   |                        |  region5       |     |
++   |                        |----------------|     |
++   |                        |                |     |
++   |  Region information    +----------------+     |
++   | +---------------+                             |
++   | |region name    |                             |
++   | |---------------|                             |
++   | |region address |                             |
++   | |---------------|                             |
++   | |region size    |                             |
++   | +---------------+                             |
++   +-----------------------------------------------+
++
++G-ToC: Global table of contents
++SSX-ToC: SubSystem X table of contents
++         X is an integer in the range of 0 to 10
++         Older boot firmware has kept this limit to 10
++         however, in newer firmware this number is expected to change
++
++SSX-MSn: SubSystem memory segments numbered from 0 to n
++         For APSS, n is limited to 200 from older boot firmware
++
++         Older boot firmware statically allocates 300 as total number of
++         supported region across all SubSystem in Minidump table out of
++         which, APSS limit is kept to 201. In future, this limitation
++	 from boot firmware might get removed by allocating the region
++	 dynamically. APSS Minidump kernel driver keeping this limit to
++	 201 to be compatible with older boot firmware.
++
++SMEM is a section of RAM reserved by boot firmware and is the backbone of
++Minidump functionality to work. It is also a medium of inter processor
++communication and a way where boot firmware can prepare something for
++upcoming operating system usage.
++
++Qualcomm SoCs boot firmware must reserve an area of RAM as SMEM prior to
++handling over control to the run-time operating system. It creates SMEM
++partition for Minidump with ``SBL_MINIDUMP_SMEM_ID`` and creates an array
++of pointers called Global table of content (G-ToC) at the start of this
++partition. Each index of this array is uniquely assigned to each SubSystem
++like for APSS it is 0 while for ADSP, CDSP, MODEM it is 5, 7 and 3 respectively.
++points to their table of segments called SS-ToC to be included in the Minidump.
++
++From the diagram above, Global Table of Contents (G-ToC) enumerates a fixed
++size number of SubSystem Table of Contents (SS-ToC) structures. Each
++SS-ToC contains a list of SubSystem Memory Segments which are named
++according to the containing SS-ToC hence, SSX-MSn where "X" denotes the
++SubSystem index of the containing SSX-ToC and "n" denotes an individual
++Memory segment within the SubSystem. Hence, SS0-MS0 belongs to SS0-ToC
++whereas SS1-MS0 belongs to SS1-ToC. Segment structure contains name,
++base address, size of a Segment to be dumped.
++
++The Application Processor SubSystem (APSS) runs the Linux kernel and is
++therefore not responsible for assembling Minidump data. One of the other
++system agents in the SoC will be responsible for capturing the Minidump
++data during system reset. Typically one of the SoC Digital Signal
++Processors (DSP) will be used for this purpose. During reset, the DSP will
++walk the G-ToC, SSX-ToCs and SSX-MSns either., dump the regions as binary
++blob into storage or pushed outside to the attached host machine via USB
++(more described in Dump collection section below).
++
++Qualcomm Remote Processor Minidump support
++------------------------------------------
++
++Linux Kernel support recovery and coredump collection on remote processor
++failure through remoteproc framework and in this document, remote processors
++meant for ADSP, CDSP, MODEM etc. Qualcomm remoteproc driver has support for
++collecting Minidump for remote processors as well where each remote processor
++has their unique statically assigned descriptor in the G-ToC which is
++represented via ``minidump_id`` in ``driver/remoteproc/qcom_q6v5_pas.c``
++and it helps getting further information about valid registered region from
++firmware and later collecting via remoteproc coredump framework.
++
++Qualcomm APSS Minidump kernel driver concept
++--------------------------------------------
++
++Qualcomm APSS Minidump kernel driver adds the capability to add Linux
++region to be dumped as part of Minidump collection. Shared memory
++driver creates platform device for Minidump driver and on Minidump
++driver probe it gets the G-ToC address (``struct minidump_global_toc``)
++by querying Minidump SMEM ID ``SBL_MINIDUMP_SMEM_ID`` as one of parameter
++to ``qcom_smem_get`` function. Further, driver uses APSS Minidump unique
++descriptor or index i.e., 0 to get APSS SubSystem ToC and fills up the
++fields of ``struct minidump_subsystem`` and allocates memory for Segment
++array of structure ``struct minidump_region`` of size compatible with
++boot firmware (default size is 201). This really means that total 201
++APSS regions can be registered for APSS alone and the Minidump kernel
++driver provides ``qcom_minidump_region_register`` and
++``qcom_minidump_region_unregister`` function to register and unregister
++APSS minidump region. Example usage explained in later section.
++
++To simplify post-mortem debugging, APSS driver registers the first region
++as an ELF header that gets updated each time a new region gets registered.
++and rest 200 region can be used by other APSS Minidump driver client.
++
++The solution supports extracting the Minidump produced either over USB
++or stored to an attached storage device, if not configured default mode
++is USB more described in Dump collection section.
++
++How a kernel client driver can register region with minidump
++------------------------------------------------------------
++
++A client driver can use ``qcom_minidump_region_register`` API's to register
++and ``qcom_minidump_region_unregister`` to unregister their region from
++minidump driver.
++
++A client needs to fill their region by filling ``qcom_minidump_region``
++structure object which consists of the region name, region's virtual
++and physical address and its size.
++
++ .. code-block:: c
++
++  #include <soc/qcom/qcom_minidump.h>
++  [...]
++
++
++  [... inside a function ...]
++  struct qcom_minidump_region region;
++
++  [...]
++
++  client_mem_region = kzalloc(region_size, GFP_KERNEL);
++  if (!client_mem_region)
++	return -ENOMEM;
++
++  [... Just write a pattern ...]
++  memset(client_mem_region, 0xAB, region_size);
++
++  [... Fill up the region object ...]
++  strlcpy(region.name, "REGION_A", sizeof(region.name));
++  region.virt_addr = client_mem_region;
++  region.phys_addr = virt_to_phys(client_mem_region);
++  region.size = region_size;
++
++  ret = qcom_minidump_region_register(&region);
++  if (ret < 0) {
++	pr_err("failed to add region in minidump: err: %d\n", ret);
++	return ret;
++  }
++
++  [...]
++
++
++Testing
++-------
++
++Existing Qualcomm SoCs already supports collecting complete RAM dump (also
++called full dump) can be configured by writing appropriate value to Qualcomm's
++top control and status register (tcsr) in ``driver/firmware/qcom_scm.c``.
++Complete RAM dump on system failure is where entire RAM snapshot is pushed out
++to Host computer attached to SoC via USB similar to one of the way will be
++used for Minidump described later in Dump collection section. Complete RAM
++dump entirely get controlled from Qualcomm boot firmware and is not related
++to Minidump or SMEM except the fact that same register is used to configure
++one of the mode.
++
++SCM device Tree bindings required to support download mode
++For example (sm8450) ::
++
++	/ {
++
++	[...]
++
++		firmware {
++			scm: scm {
++				compatible = "qcom,scm-sm8450", "qcom,scm";
++				[... tcsr register ... ]
++				qcom,dload-mode = <&tcsr 0x13000>;
++
++				[...]
++			};
++		};
++
++	[...]
++
++		soc: soc@0 {
++
++			[...]
++
++			tcsr: syscon@1fc0000 {
++				compatible = "qcom,sm8450-tcsr", "syscon";
++				reg = <0x0 0x1fc0000 0x0 0x30000>;
++			};
++
++			[...]
++		};
++	[...]
++
++	};
++
++A kernel command line parameter is provided to facilitate selection of
++dump mode also called download mode. Boot firmware configures download
++mode to be full dump even before Linux boots up however, one need to pass
++``qcom_scm.download_mode="mini"`` to switch the default download mode
++to Minidump. Similarly ``"full"`` need to be passed to set the download
++mode to full dump and passing ``"full,mini"`` will set the download mode
++where both Minidump along with fulldump will be collected on system failure
++however, this mode will only work if dump need to collected via USB more
++about this described in Dump collection section.
++
++Writing to sysfs node can also be used to set the mode to minidump::
++
++	echo "mini" > /sys/module/qcom_scm/parameter/download_mode
++
++Once the download mode is set, any kind of crash will make the device collect
++respective dump as per the set download mode.
++
++Dump collection
++---------------
++::
++
++	+-----------+
++	|           |
++	|           |         +------+
++	|           |         |      |
++	|           |         +--+---+ Product(Qualcomm SoC)
++	+-----------+             |
++	|+++++++++++|<------------+
++	|+++++++++++|    usb cable
++	+-----------+
++            x86_64 PC
++
++The solution supports a product running with Qualcomm SoC (where minidump)
++is supported from the firmware) connected to x86_64 host PC running PCAT
++tool. It supports downloading the minidump produced from product to the
++host PC over USB or to save the minidump to the product attached storage
++device(UFS/eMMC/SD Card) into minidump dedicated partition.
++
++By default, dumps are downloaded via USB to the attached x86_64 PC running
++PCAT (Qualcomm tool) software. Upon download, we will see a set of binary
++blobs starting with name ``md_*`` in PCAT configured directory in x86_64
++machine, so for above example from the client it will be ``md_REGION_A.BIN``.
++This binary blob depends on region content to determine whether it needs
++external parser support to get the content of the region, so for simple
++plain ASCII text we don't need any parsing and the content can be seen
++just opening the binary file.
++
++To collect the dump to attached storage type, one needs to write appropriate
++value to IMEM register, in that case dumps are collected in rawdump
++partition on the product device itself.
++
++One needs to read the entire rawdump partition and pull out content to
++save it onto the attached x86_64 machine over USB. Later, this rawdump
++can be passed to another tool (``dexter.exe`` [Qualcomm tool]) which
++converts this into the similar binary blobs which we have got it when
++download type was set to USB, i.e. a set of registered regions as blobs
++and their name starts with ``md_*``.
++
++Replacing the ``dexter.exe`` with some open source tool can be added as future
++scope of this document.
 -- 
 2.43.0.254.ga26002b62827
 
