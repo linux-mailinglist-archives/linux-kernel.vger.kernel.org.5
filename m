@@ -1,79 +1,100 @@
-Return-Path: <linux-kernel+bounces-46888-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46890-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB5C78445D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:17:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DCF98445DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:18:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A50D1F27AB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:17:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 502DF1C24390
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:18:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0674A12DD90;
-	Wed, 31 Jan 2024 17:17:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04B5812CDAD;
+	Wed, 31 Jan 2024 17:17:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Rsl8t/33"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Jp7Fvhl8"
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 382BE374D4;
-	Wed, 31 Jan 2024 17:17:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CDEC12BE8F
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 17:17:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706721436; cv=none; b=mbjcVjll6+ouA0Iop1vmjeQyW8sTz4x76JsiNNXn0eXMKy3tSsl9Phzgo3BEnQX2iQXxI8Y/R3uUnwnG9+AirL+a2EX0dxvNi1PACX05K7tN8yRn7VPxJMrSfnej+K0VhOfMnBmoOEYvB28YrXhOWc5Kqfc1BUTPe8q/8PWN9So=
+	t=1706721476; cv=none; b=Gobmz4dphQLi5DNSG+cKQR2yeGLV8Z+9zOm0JFnC1aW5zz07M9XctEY+kI6K+N1U/3wqUXxG46p5SSd6DP4cpdpeld/Qha1uWo0jEhmjhXEFI2NEbvGAZnWFyrx5uQ8stibySA6Vu91uJ2vwFERKRZXwK8fa6qcwy7KbqJGWRuQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706721436; c=relaxed/simple;
-	bh=U5JVlzMHnikLTbflOiwB0cOegF5Lvb4lezm32PuIfRg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UkXPKAxaAj/Qhvk4meP8/9HoK/cKqs91B5/A7eOkkX349ILhv7Y9ATOzW1AupARu03mjZ7IiE/J9XjwABlSpo/YMxZFuf6MaFYKKtsqem+s5VOS86J/eEGx0x9osh5yLHvdqInY9id7Uf/c80aK+F3wxh/P6Te7XgYant9Wkdgc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Rsl8t/33; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=w1jT7gCr/nu7sGcbwL+LF2kX9U7qRsSCTeyoHJy/WoQ=; b=Rsl8t/339Yi08Mvz6SuF7kZN9I
-	CnN3y5DZzKI3qBcG10yO78L9AswhfcfGda6buppIVmKYQ9rLKArcacUl6PzWQKPv+4Dp3W3XbHTPE
-	uR3N0EolP0wZTTYSNI7cBEp+leg0S4wWEK+goRXqzwEqpGjAmDIJZjf/xSYhM/M6zgIEsneIh3U8u
-	+pt0ncx9X6NMNHS9RFoUOhBzFwp2TK9GLbQT2+GNezMOfKRSEjDKbr5ek0Dc6zikgjUsYdddqp8Sd
-	+MR3RJ7gAhCxPKgDb/DR6F/DjccFH/pDiX2BjiZS0ns77g3HyhidMuWY+DeEGolOioj7UEUcIcNvC
-	m4xIsg3A==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVED1-00000004nCR-20Ex;
-	Wed, 31 Jan 2024 17:17:11 +0000
-Date: Wed, 31 Jan 2024 09:17:11 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Dan Williams <dan.j.williams@intel.com>, Arnd Bergmann <arnd@arndb.de>,
-	Dave Chinner <david@fromorbit.com>, linux-kernel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>, linux-mm@kvack.org,
-	linux-arch@vger.kernel.org, Vishal Verma <vishal.l.verma@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Russell King <linux@armlinux.org.uk>, linux-cxl@vger.kernel.org,
-	nvdimm@lists.linux.dev, linux-xfs@vger.kernel.org,
-	dm-devel@lists.linux.dev
-Subject: Re: [RFC PATCH v3 3/4] Introduce cpu_dcache_is_aliasing() across all
- architectures
-Message-ID: <ZbqAl3gerwe2o6jy@infradead.org>
-References: <20240131162533.247710-1-mathieu.desnoyers@efficios.com>
- <20240131162533.247710-4-mathieu.desnoyers@efficios.com>
+	s=arc-20240116; t=1706721476; c=relaxed/simple;
+	bh=xDWbSj+lWcUFeXVwKmzyveEoDYPjena42XWOP2OB/2g=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=qZ3uB4tV565+mETQDIw1lBIdDJyGOh4DqZHNf/78dw6PWNMb2x8bsuhP/OsIBBDWwtTtLVgLomuTBVZ1KvQxVg2jJyCUbI4GjC7rfbxN7K+BBKhWB6wGg4mM/qfj8k96bpf6Hf0OjOgfnpm29mYuUaLVSdb0zS6wouLyGtvukrQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Jp7Fvhl8; arc=none smtp.client-ip=115.124.30.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1706721464; h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
+	bh=iJAyliH1jmGlDN9SYN3BWB7VVtP7e8HnSMJHDLoyYew=;
+	b=Jp7Fvhl8epCn3qowKBxyy2pb6/iE1dlwhVda7ue0qmQydlI6JqS8EWWEu7x7Ou1jak+4tLuhK6wPuoOhntJK/D9PQOOv7YFLIqDuXL8bkW5BXMB5lEUvDMBOqg668Q64wzGZ4gzxDwy4EGyDsMnaUODNe/zHEJzk87tF1j/FPGc=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R811e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W.kJfU8_1706721462;
+Received: from localhost.localdomain(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W.kJfU8_1706721462)
+          by smtp.aliyun-inc.com;
+          Thu, 01 Feb 2024 01:17:43 +0800
+From: Bitao Hu <yaoma@linux.alibaba.com>
+To: dianders@chromium.org,
+	akpm@linux-foundation.org,
+	pmladek@suse.com,
+	kernelfans@gmail.com,
+	liusong@linux.alibaba.com
+Cc: linux-kernel@vger.kernel.org,
+	yaoma@linux.alibaba.com
+Subject: [PATCHv3 0/2] *** Detect interrupt storm in softlockup ***
+Date: Thu,  1 Feb 2024 01:17:36 +0800
+Message-Id: <20240131171738.35496-1-yaoma@linux.alibaba.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240131162533.247710-4-mathieu.desnoyers@efficios.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-So this is the third iteration and you still keep only sending patch
-3 to the list.  How is anyone supposed to review it if you don't send
-them all the pieces?
+Hi, guys.
+I have implemented a low-overhead method for detecting interrupt storm
+in softlockup. Please review it, all comments are welcome.
+
+Changes from v2 to v3:
+
+- From Liu Song, using enum instead of macro for cpu_stats, shortening
+the name 'idx_to_stat' to 'stats', adding 'get_16bit_precesion' instead
+of using right shift operations, and using 'struct irq_counts'.
+
+- From kernel robot test, using '__this_cpu_read' and '__this_cpu_write'
+instead of accessing to an per-cpu array directly, in order to avoid
+this warning.
+'sparse: incorrect type in initializer (different modifiers)'
+
+Changes from v1 to v2:
+
+- From Douglas, optimize the memory of cpustats. With the maximum number
+of CPUs, that's now this.
+2 * 8192 * 4 + 1 * 8192 * 5 * 4 + 1 * 8192 = 237,568 bytes.
+
+- From Liu Song, refactor the code format and add necessary comments.
+
+- From Douglas, use interrupt counts instead of interrupt time to
+determine the cause of softlockup.
+
+- Remove the cmdline parameter added in PATCHv1.
+
+Bitao Hu (2):
+  watchdog/softlockup: low-overhead detection of interrupt storm
+  watchdog/softlockup: report the most frequent interrupts
+
+ kernel/watchdog.c | 240 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 240 insertions(+)
+
+-- 
+2.37.1 (Apple Git-137.1)
 
 
