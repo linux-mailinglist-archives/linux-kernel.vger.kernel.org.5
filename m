@@ -1,39 +1,74 @@
-Return-Path: <linux-kernel+bounces-46479-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46478-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA7D5844055
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:18:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 764DA84404B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:17:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F32BB2F065
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:17:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C8652904B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:17:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 862DB7E571;
-	Wed, 31 Jan 2024 13:16:59 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D3777BB00;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 591827BAFF;
 	Wed, 31 Jan 2024 13:16:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WHyyDLsa"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD2A47AE47;
+	Wed, 31 Jan 2024 13:16:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706707018; cv=none; b=FBDQJMU1ZiBlEjQQ0jxa6lJNwuBCETQzf8cEv9zDfAXXQBwAqMWY0emWS86UguniM9mSZLIw/iP/j+O3sKCvkmYY0prJ8jYYCXKRhyMWLX3IPDVIfVKsjkGWlG4hUmQjnxwROTMeU/FFGP1pnOlus3MeWZfAQZrhBxBHZISivd8=
+	t=1706707015; cv=none; b=pfsGkQPUGcMXiuV9ARUpuHuDMExpuRPZgW34fKbgMRE9vLymuvPvhHbnmZT9Wda6EL+qphNZijQywJiuUBRVc/0k+PSrPfgmpcdXWsmCMj2cEx+/YC9qvitZmUkSXnHsiafYcTCNDCqHYOhbxBeSTyF67LjLhOUz0vFOucLDjqA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706707018; c=relaxed/simple;
-	bh=OSZvUwKVsTpKN2T9iMyEpAVo3m3ZQaf/ssUmtJoZVQI=;
+	s=arc-20240116; t=1706707015; c=relaxed/simple;
+	bh=AW4f6dw+zidICyXZgjwIu41kdHjOtjxCRAic489hQXo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RIhvrUKZddD11BEVwmIiMTq75ScGPxXXuGicjsYfewwJzDYvE+IN4gf8VyjdQQZ92P8fHo6TpL4KN9Nkf3WErCBux1v3wpGep+c/dOu8CsAcVRgEzEKeAL3KAbr9OQH/ui7wATWz+ix3ZI3vUKlB79IB49PkWTJbe62IhSj4tUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EC38DDA7;
-	Wed, 31 Jan 2024 05:17:38 -0800 (PST)
-Received: from [10.57.79.60] (unknown [10.57.79.60])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 599E13F738;
-	Wed, 31 Jan 2024 05:16:50 -0800 (PST)
-Message-ID: <de975655-8f8f-40dc-b281-75c40dd1e2c1@arm.com>
-Date: Wed, 31 Jan 2024 13:16:48 +0000
+	 In-Reply-To:Content-Type; b=lj6VOXbMNSGluWoTvD/2jvYgJV4ZSPvW8xhyishzP60Lc8kyr9n4F4XNIn7m/tidkUlaNxC8wCE1GS0TwnNjCnp4PJRoN3q24UEzZcjJ10wKlVHrwDzvz/axhvyr8ta9FYipsRq6T2LNFgQTXA/q6V078WePVKUL6Jr7/6kE7C0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WHyyDLsa; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d928a8dee8so5110715ad.1;
+        Wed, 31 Jan 2024 05:16:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706707013; x=1707311813; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=MD6YCJseT7Z8Ach4Jqdsb6hrlt+6cO4c5ma7tx+4HwE=;
+        b=WHyyDLsaGGUPPeaarqTlHUq9ElfRO5j8V4cRsSlpioR6AR2WPByIJEXQ/LGFFqf84a
+         dCe+/EQuSPHQIQw20MQwRRWwSidnl7+9rQAzi0DnbtrFL3mPVCnq1hy8TxaknaCl1kvH
+         qjyDcNHzrDIV3WeLyH5JBuN7o8eMLzJTi5exkUPAH59w39bgwxkNp8+ZbKVTnscieFNo
+         wU/aMRT8sC9glh0elo3+N5Xxm37bwEGzN8PhMgVRmeQn8Z15JzIee763HBRewiwYtbqY
+         6GS0QamqWKokRKcb2Ar9FrIkr1bDPp0+h5RKi3RVkpI4U9g4MyOFByxu9kY6bPOXLaKq
+         sDPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706707013; x=1707311813;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MD6YCJseT7Z8Ach4Jqdsb6hrlt+6cO4c5ma7tx+4HwE=;
+        b=ZR+43PUGVdNpj8J0y/QNIZ/Ul2rp8x38MQY/TxQF/z/lUQvk4TxsXPuXf0CXYSlsrK
+         iZSQSvmcXu8uvOSgnWY1i8M/cB+l74Qd8jQOgqJ65wEcdokEmO5XbGE1VHldB6PvsH6i
+         lAs2sA6zOyOQrYRnYiFI82FFrQKcEib4QAarBIpkLHIfoKzmpYTyZvxWMHfS36idjRRV
+         nlNH9y2UHpNck7NE3wNvgtlLbYdg1dUG8BJApUX2+clOkpRfyNYKw24YWJT8L8vpoQVW
+         AFOmsGyqGBJ8NirehWOMmVGLzkmQeKnpGFmFslTn0e81k0Lk4GRTZAayS19UKEWNxbDB
+         2yDA==
+X-Gm-Message-State: AOJu0Yzd9rzat2zHAVky+fMRAxxx4j4wUArdE5JGAWN7sN72tZCGfq7/
+	X4oddZiKiA9DCC3Aw/mNnyhIzUVNw07TxTTTyyjl0gk8YB6skQMy
+X-Google-Smtp-Source: AGHT+IH94B9t+SXxYqXc1gbnAmIbR/323RWPyZTqnDV6fuxYFFCORSLA6qKwxUnFVZ8L6JAiGwE15A==
+X-Received: by 2002:a17:90b:188d:b0:28f:fa9d:ebdf with SMTP id mn13-20020a17090b188d00b0028ffa9debdfmr4518600pjb.3.1706707012810;
+        Wed, 31 Jan 2024 05:16:52 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id r8-20020a170902be0800b001d7405022ecsm9009768pls.159.2024.01.31.05.16.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Jan 2024 05:16:52 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <4ea02224-e9fa-4ee9-9210-bc7a7ae9e86b@roeck-us.net>
+Date: Wed, 31 Jan 2024 05:16:50 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,244 +76,171 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 00/15] mm/memory: optimize fork() with PTE-mapped THP
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Dinh Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
- Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>, "David S. Miller"
- <davem@davemloft.net>, linux-arm-kernel@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, sparclinux@vger.kernel.org
-References: <20240129124649.189745-1-david@redhat.com>
- <a335a9d2-9b8f-4eb8-ba22-23a223b59b06@arm.com>
- <a1a0e9b3-dae2-418f-bd63-50e65f471728@redhat.com>
- <57eb82c7-4816-42a2-b5ab-cc221e289b21@arm.com>
- <e6eaba5b-f290-4d1f-990b-a47d89f56ee4@redhat.com>
- <714d0930-2202-48b6-9728-d248f820325e@arm.com>
- <dcaa20c4-bd1f-4f15-bb0a-3a790808937d@arm.com>
- <30718fc8-15cf-41e4-922c-5cdbf00a0840@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <30718fc8-15cf-41e4-922c-5cdbf00a0840@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 04/11] watchdog: rzg2l_wdt: Check return status of
+ pm_runtime_put()
+Content-Language: en-US
+To: claudiu beznea <claudiu.beznea@tuxon.dev>,
+ Biju Das <biju.das.jz@bp.renesas.com>,
+ "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+ "conor+dt@kernel.org" <conor+dt@kernel.org>,
+ "geert+renesas@glider.be" <geert+renesas@glider.be>,
+ "magnus.damm@gmail.com" <magnus.damm@gmail.com>,
+ "mturquette@baylibre.com" <mturquette@baylibre.com>,
+ "sboyd@kernel.org" <sboyd@kernel.org>,
+ "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>
+Cc: "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
+ "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240131102017.1841495-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240131102017.1841495-5-claudiu.beznea.uj@bp.renesas.com>
+ <TYCPR01MB11269AD7463C9C7C0A09A43A9867C2@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+ <ddc0b42c-bf88-4c0d-b938-8bd7ff7b329a@tuxon.dev>
+ <TYCPR01MB11269BFC2DB457049A2B8C0C8867C2@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+ <12f458b1-f963-43f4-afcf-715abf635e54@tuxon.dev>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <12f458b1-f963-43f4-afcf-715abf635e54@tuxon.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 31/01/2024 12:56, David Hildenbrand wrote:
-> On 31.01.24 13:37, Ryan Roberts wrote:
->> On 31/01/2024 11:49, Ryan Roberts wrote:
->>> On 31/01/2024 11:28, David Hildenbrand wrote:
->>>> On 31.01.24 12:16, Ryan Roberts wrote:
->>>>> On 31/01/2024 11:06, David Hildenbrand wrote:
->>>>>> On 31.01.24 11:43, Ryan Roberts wrote:
->>>>>>> On 29/01/2024 12:46, David Hildenbrand wrote:
->>>>>>>> Now that the rmap overhaul[1] is upstream that provides a clean interface
->>>>>>>> for rmap batching, let's implement PTE batching during fork when processing
->>>>>>>> PTE-mapped THPs.
->>>>>>>>
->>>>>>>> This series is partially based on Ryan's previous work[2] to implement
->>>>>>>> cont-pte support on arm64, but its a complete rewrite based on [1] to
->>>>>>>> optimize all architectures independent of any such PTE bits, and to
->>>>>>>> use the new rmap batching functions that simplify the code and prepare
->>>>>>>> for further rmap accounting changes.
->>>>>>>>
->>>>>>>> We collect consecutive PTEs that map consecutive pages of the same large
->>>>>>>> folio, making sure that the other PTE bits are compatible, and (a) adjust
->>>>>>>> the refcount only once per batch, (b) call rmap handling functions only
->>>>>>>> once per batch and (c) perform batch PTE setting/updates.
->>>>>>>>
->>>>>>>> While this series should be beneficial for adding cont-pte support on
->>>>>>>> ARM64[2], it's one of the requirements for maintaining a total mapcount[3]
->>>>>>>> for large folios with minimal added overhead and further changes[4] that
->>>>>>>> build up on top of the total mapcount.
->>>>>>>>
->>>>>>>> Independent of all that, this series results in a speedup during fork with
->>>>>>>> PTE-mapped THP, which is the default with THPs that are smaller than a PMD
->>>>>>>> (for example, 16KiB to 1024KiB mTHPs for anonymous memory[5]).
->>>>>>>>
->>>>>>>> On an Intel Xeon Silver 4210R CPU, fork'ing with 1GiB of PTE-mapped folios
->>>>>>>> of the same size (stddev < 1%) results in the following runtimes
->>>>>>>> for fork() (shorter is better):
->>>>>>>>
->>>>>>>> Folio Size | v6.8-rc1 |      New | Change
->>>>>>>> ------------------------------------------
->>>>>>>>          4KiB | 0.014328 | 0.014035 |   - 2%
->>>>>>>>         16KiB | 0.014263 | 0.01196  |   -16%
->>>>>>>>         32KiB | 0.014334 | 0.01094  |   -24%
->>>>>>>>         64KiB | 0.014046 | 0.010444 |   -26%
->>>>>>>>        128KiB | 0.014011 | 0.010063 |   -28%
->>>>>>>>        256KiB | 0.013993 | 0.009938 |   -29%
->>>>>>>>        512KiB | 0.013983 | 0.00985  |   -30%
->>>>>>>>       1024KiB | 0.013986 | 0.00982  |   -30%
->>>>>>>>       2048KiB | 0.014305 | 0.010076 |   -30%
->>>>>>>
->>>>>>> Just a heads up that I'm seeing some strange results on Apple M2. Fork for
->>>>>>> order-0 is seemingly costing ~17% more. I'm using GCC 13.2 and was pretty
->>>>>>> sure I
->>>>>>> didn't see this problem with version 1; although that was on a different
->>>>>>> baseline and I've thrown the numbers away so will rerun and try to debug
->>>>>>> this.
->>>
->>> Numbers for v1 of the series, both on top of 6.8-rc1 and rebased to the same
->>> mm-unstable base as v3 of the series (first 2 rows are from what I just posted
->>> for context):
->>>
->>> | kernel             |   mean_rel |   std_rel |
->>> |:-------------------|-----------:|----------:|
->>> | mm-unstabe (base)  |       0.0% |      1.1% |
->>> | mm-unstable + v3   |      16.7% |      0.8% |
->>> | mm-unstable + v1   |      -2.5% |      1.7% |
->>> | v6.8-rc1 + v1      |      -6.6% |      1.1% |
->>>
->>> So all looks good with v1. And seems to suggest mm-unstable has regressed by ~4%
->>> vs v6.8-rc1. Is this really a useful benchmark? Does the raw performance of
->>> fork() syscall really matter? Evidence suggests its moving all over the place -
->>> breath on the code and it changes - not a great place to be when using the test
->>> for gating purposes!
->>>
->>> Still with the old tests - I'll move to the new ones now.
->>>
->>>
->>>>>>>
->>>>>>
->>>>>> So far, on my x86 tests (Intel, AMD EPYC), I was not able to observe this.
->>>>>> fork() for order-0 was consistently effectively unchanged. Do you observe
->>>>>> that
->>>>>> on other ARM systems as well?
->>>>>
->>>>> Nope; running the exact same kernel binary and user space on Altra, I see
->>>>> sensible numbers;
->>>>>
->>>>> fork order-0: -1.3%
->>>>> fork order-9: -7.6%
->>>>> dontneed order-0: -0.5%
->>>>> dontneed order-9: 0.1%
->>>>> munmap order-0: 0.0%
->>>>> munmap order-9: -67.9%
->>>>>
->>>>> So I guess some pipelining issue that causes the M2 to stall more?
->>>>
->>>> With one effective added folio_test_large(), it could only be a code layout
->>>> problem? Or the compiler does something stupid, but you say that you run the
->>>> exact same kernel binary, so that doesn't make sense.
->>>
->>> Yup, same binary. We know this code is very sensitive - 1 cycle makes a big
->>> difference. So could easily be code layout, branch prediction, etc...
->>>
->>>>
->>>> I'm also surprised about the dontneed vs. munmap numbers.
->>>
->>> You mean the ones for Altra that I posted? (I didn't post any for M2). The altra
->>> numbers look ok to me; dontneed has no change, and munmap has no change for
->>> order-0 and is massively improved for order-9.
->>>
->>>   Doesn't make any sense
->>>> (again, there was this VMA merging problem but it would still allow for
->>>> batching
->>>> within a single VMA that spans exactly one large folio).
->>>>
->>>> What are you using as baseline? Really just mm-unstable vs.
->>>> mm-unstable+patches?
->>>
->>> yes. except for "v6.8-rc1 + v1" above.
->>>
->>>>
->>>> Let's see if the new test changes the numbers you measure.
+On 1/31/24 03:00, claudiu beznea wrote:
+> 
+> 
+> On 31.01.2024 12:41, Biju Das wrote:
+>> Hi Claudiu,
 >>
->> Nope: looks the same. I've taken my test harness out of the picture and done
->> everything manually from the ground up, with the old tests and the new. Headline
->> is that I see similar numbers from both.
-> 
-> I took me a while to get really reproducible numbers on Intel. Most importantly:
-> * Set a fixed CPU frequency, disabling any boost and avoiding any
->   thermal throttling.
-> * Pin the test to CPUs and set a nice level.
-
-I'm already pinning the test to cpu 0. But for M2, at least, I'm running in a VM
-on top of macos, and I don't have a mechanism to pin the QEMU threads to the
-physical CPUs. Anyway, I don't think these are problems because for a given
-kernel build I can accurately repro numbers.
-
-> 
-> Another thing is, to avoid systems where you can have NUMA effects within a
-> single socket. Otherwise, memory access latency is just random and depends on
-> what the buddy enjoys giving you.
-
-Yep; same. M2 is 1 NUMA node. On Altra, I'm disabling the second NUMA node to
-remove those effects.
-
-> 
-> But you seem to get the same +17 even after reboots, so that indicates that the
-> CPU is not happy about the code for some reason. And the weird thing is, that
-> nothing significantly changed for order-0 folios between v1 and v3 that could
-> explain any of this.
-> 
-> I'm not worried about 5% or so, nobody cares. But it would be good to have at
-> least an explanation why only that system shows +17%.
-
-Yep understood.
-
-> 
+>>> -----Original Message-----
+>>> From: claudiu beznea <claudiu.beznea@tuxon.dev>
+>>> Sent: Wednesday, January 31, 2024 10:36 AM
+>>> Subject: Re: [PATCH v2 04/11] watchdog: rzg2l_wdt: Check return status of
+>>> pm_runtime_put()
+>>>
+>>> Hi, Biju,
+>>>
+>>> On 31.01.2024 12:32, Biju Das wrote:
+>>>> Hi Claudiu,
+>>>>
+>>>> Thanks for the feedback.
+>>>>
+>>>>> -----Original Message-----
+>>>>> From: Claudiu <claudiu.beznea@tuxon.dev>
+>>>>> Sent: Wednesday, January 31, 2024 10:20 AM
+>>>>> Subject: [PATCH v2 04/11] watchdog: rzg2l_wdt: Check return status of
+>>>>> pm_runtime_put()
+>>>>>
+>>>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>>>
+>>>>> pm_runtime_put() may return an error code. Check its return status.
+>>>>>
+>>>>> Along with it the rzg2l_wdt_set_timeout() function was updated to
+>>>>> propagate the result of rzg2l_wdt_stop() to its caller.
+>>>>>
+>>>>> Fixes: 2cbc5cd0b55f ("watchdog: Add Watchdog Timer driver for
+>>>>> RZ/G2L")
+>>>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>>> ---
+>>>>>
+>>>>> Changes in v2:
+>>>>> - propagate the return code of rzg2l_wdt_stop() to it's callers
+>>>>>
+>>>>>   drivers/watchdog/rzg2l_wdt.c | 11 +++++++++--
+>>>>>   1 file changed, 9 insertions(+), 2 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/watchdog/rzg2l_wdt.c
+>>>>> b/drivers/watchdog/rzg2l_wdt.c index d87d4f50180c..7bce093316c4
+>>>>> 100644
+>>>>> --- a/drivers/watchdog/rzg2l_wdt.c
+>>>>> +++ b/drivers/watchdog/rzg2l_wdt.c
+>>>>> @@ -144,9 +144,13 @@ static int rzg2l_wdt_start(struct
+>>>>> watchdog_device
+>>>>> *wdev)  static int rzg2l_wdt_stop(struct watchdog_device *wdev)  {
+>>>>>   	struct rzg2l_wdt_priv *priv = watchdog_get_drvdata(wdev);
+>>>>> +	int ret;
+>>>>>
+>>>>>   	rzg2l_wdt_reset(priv);
+>>>>> -	pm_runtime_put(wdev->parent);
+>>>>> +
+>>>>> +	ret = pm_runtime_put(wdev->parent);
+>>>>> +	if (ret < 0)
+>>>>> +		return ret;
+>>>>
+>>>> Do we need to check the return code? So far we didn't hit this
+>>> condition.
+>>>> If you are planning to do it, then just
+>>>>
+>>>> return pm_runtime_put(wdev->parent);
+>>>
+>>> pm_runtime_put() may return 1 if the device is suspended (which is not
+>>> considered error) as explained here:
 >>
->> Some details:
->>   - I'm running for 10 seconds then averaging the output
+>> Oops, I missed that discussion. Out of curiosity,
+>> What watchdog framework/consumer is going to do with a
+>> Non-error return value of 1?
 > 
-> Same here.
+> Looking at this:
+> https://elixir.bootlin.com/linux/latest/source/drivers/watchdog/watchdog_dev.c#L809
 > 
->>   - test is bimodal; first run (of 10 seconds) after boot is a bit faster on
->>     average (up to 10%) than the rest; I could guess this is due to the memory
->>     being allocated more contiguously the first few times through, so struct
->>     pages have better locality, but that's a guess.
+> it seems that the positive values are not considered errors thus, indeed,
+> we may return directly:
 > 
-> I think it also has to do with the PCP lists, and the high-pcp auto tuning (I
-> played with disabling that). Running on a freshly booted system gave me
-> reproducible results.
+> return pm_runtime_put();
 > 
-> But yes: I was observing something similar on AMD EPYC, where you get
-> consecutive pages from the buddy, but once you allocate from the PCP it might no
-> longer be consecutive.
+> Guenter,
 > 
->>   - test is 5-10% slower when output is printed to terminal vs when redirected to
->>     file. I've always effectively been redirecting. Not sure if this overhead
->>     could start to dominate the regression and that's why you don't see it?
+> With this (and previous discussion from [1]), are you OK to change it like:
 > 
-> That's weird, because we don't print while measuring? Anyhow, 5/10% variance on
-> some system is not the end of the world.
+> return pm_runtime_put();
+> 
 
-I imagine its cache effects? More work to do to print the output could be
-evicting some code that's in the benchmark path?
+Instead of looking at the source, I would kindly ask you to look at the API.
 
-> 
->>
->> I'm inclined to run this test for the last N kernel releases and if the number
->> moves around significantly, conclude that these tests don't really matter.
->> Otherwise its an exercise in randomly refactoring code until it works well, but
->> that's just overfitting to the compiler and hw. What do you think?
-> 
-> Personally, I wouldn't lose sleep if you see weird, unexplainable behavior on
-> some system (not even architecture!). Trying to optimize for that would indeed
-> be random refactorings.
-> 
-> But I would not be so fast to say that "these tests don't really matter" and
-> then go wild and degrade them as much as you want. There are use cases that care
-> about fork performance especially with order-0 pages -- such as Redis.
-
-Indeed. But also remember that my fork baseline time is ~2.5ms, and I think you
-said yours was 14ms :)
-
-I'll continue to mess around with it until the end of the day. But I'm not
-making any headway, then I'll change tack; I'll just measure the performance of
-my contpte changes using your fork/zap stuff as the baseline and post based on that.
+Guenter
 
 
