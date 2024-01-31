@@ -1,147 +1,112 @@
-Return-Path: <linux-kernel+bounces-45813-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E29FD84368D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:21:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA514843695
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:23:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A76B828A925
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:21:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8190B26148
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:23:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A29E3E49D;
-	Wed, 31 Jan 2024 06:21:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KaWI4yUS"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFC873E47A;
+	Wed, 31 Jan 2024 06:22:57 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F29293E481;
-	Wed, 31 Jan 2024 06:21:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1B283E477;
+	Wed, 31 Jan 2024 06:22:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706682088; cv=none; b=BGpJvapJOsmOSiMIDgaRi9iWliyO7ds8RNFmTLPScnnX7mAOgpMT7JBHOGuB8iih+RHtl1hAHvRdGBGaQ4IS8xGyYwbmq5OTwNsNZXYPngWMeNiJ2XxgMTV0OLOt+5PFwLJUrUp6Ku5qtH2q4jVTtvpw6f/s3E4GU6JX/72DaOM=
+	t=1706682177; cv=none; b=lQlW6CCKWzcLs6x5cpojbJfH72QxF8RO2pH9oGxBragN2P6tbycZQchjWtrbTnmrqsuTg0i1QfdHbdnUcju1MyeXbHpxVDddnyxJDQMioewMDh5KGYG3/Fi1xzUV+DEQjiU2WU6FGY7f4HQdI+huPbKjcnXWnJnzKAWIFurEsDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706682088; c=relaxed/simple;
-	bh=BFal/c7OdPWIXpcKKVgoT+h8Uly3mTIFcWBHU8qcqPc=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=SUSH3/W80CbpfPLwgPPUfGbTLiVjYifl2RwT4B2dAoJ0H6mClaWxz02FVfllVCVzWuHj3ChIIQRH3iivM3VTIInwDSRMw9nOoBQafv7X9EGT3tfw2ElisPWRLQ+WwqjQHZHQYK8JHYPFKxRY4xZzMqiygKlAtPMbPFbMa/OfZNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KaWI4yUS; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706682087; x=1738218087;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=BFal/c7OdPWIXpcKKVgoT+h8Uly3mTIFcWBHU8qcqPc=;
-  b=KaWI4yUS7aDiFgNzqm2DN3a0d+v0lNWDZSsQ3+qrRR09/EArXmZMCuyL
-   O+NSpok14vmV5hFNaijh8A4+ITzVbKrdeF8pS7YTi5WP+3QRo6XPxpTwv
-   lZSiyUCNH3w1zXVunAfmKPWyI5RuFw1k+MkNlzxr/spUoGD/uSdTApX50
-   C3C65IXDjj5ezhMKxXfN8UwBb3AxgPUlDnxD45b76jBTJTN+knH0zGNjc
-   XXfH4Do49iBrLOqsfbQViK6mkrprCa0ysWqdyACpWPKV/O22y6RYaNQ1Q
-   IXtYo2wIriXzZCUQq55yOO79fo8AM0WMwSZDwphgWEEXdb/rbDVV/BUvH
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="3347747"
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="3347747"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 22:21:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="36759621"
-Received: from wwang17-mobl.ccr.corp.intel.com (HELO [10.249.175.9]) ([10.249.175.9])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 22:21:22 -0800
-Message-ID: <6a48f023-2701-4f2f-8077-14fe348794dd@linux.intel.com>
-Date: Wed, 31 Jan 2024 14:21:20 +0800
+	s=arc-20240116; t=1706682177; c=relaxed/simple;
+	bh=BNG1PYjlKq0dn1rf9742m7PS1TbxWNZTEf/7YFKPEmM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lvksGN7pkWvBIfsWQ6m7DXNYDrdRm7CzLz7MTGo8AqgpIkRymPDvIEHO37dI8m+XIZFVVEvSKTj0G2nEzYeNHIzO49bmC0t44+l2/vAYHXW2+HpToITh8M6aDCrDxT1wVErZXCL0d3Qk0j3QdKinwQQulXF7BL6hkNHBRb97aKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 8668ff10992f427390129c709937f690-20240131
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:f7b5f210-4503-4c84-acc9-7e554c948385,IP:10,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:-5
+X-CID-INFO: VERSION:1.1.35,REQID:f7b5f210-4503-4c84-acc9-7e554c948385,IP:10,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:-5
+X-CID-META: VersionHash:5d391d7,CLOUDID:f94058fe-c16b-4159-a099-3b9d0558e447,B
+	ulkID:2401311422466YU4ZA4Z,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
+	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
+	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 8668ff10992f427390129c709937f690-20240131
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
+	(envelope-from <chentao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 1747670609; Wed, 31 Jan 2024 14:22:43 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+	by mail.kylinos.cn (NSMail) with SMTP id 66CF8E000EB9;
+	Wed, 31 Jan 2024 14:22:43 +0800 (CST)
+X-ns-mid: postfix-65B9E733-157518213
+Received: from kernel.. (unknown [172.20.15.254])
+	by mail.kylinos.cn (NSMail) with ESMTPA id CF8CEE000EB9;
+	Wed, 31 Jan 2024 14:22:41 +0800 (CST)
+From: Kunwu Chan <chentao@kylinos.cn>
+To: chuck.lever@oracle.com,
+	jlayton@kernel.org,
+	neilb@suse.de,
+	kolga@netapp.com,
+	Dai.Ngo@oracle.com,
+	tom@talpey.com
+Cc: linux-nfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Kunwu Chan <chentao@kylinos.cn>
+Subject: [PATCH] nfsd: Simplify the allocation of slab caches in nfsd4_init_pnfs
+Date: Wed, 31 Jan 2024 14:22:27 +0800
+Message-Id: <20240131062227.130725-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, "Tian, Kevin" <kevin.tian@intel.com>,
- "Liu, Yi L" <yi.l.liu@intel.com>, "bhelgaas@google.com"
- <bhelgaas@google.com>, "robin.murphy@arm.com" <robin.murphy@arm.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "will@kernel.org" <will@kernel.org>, "lukas@wunner.de" <lukas@wunner.de>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
-Subject: Re: [PATCH v12 5/5] iommu/vt-d: improve ITE fault handling if target
- device isn't present
-To: Jason Gunthorpe <jgg@ziepe.ca>, Ethan Zhao <haifeng.zhao@linux.intel.com>
-References: <20240129034924.817005-1-haifeng.zhao@linux.intel.com>
- <20240129034924.817005-6-haifeng.zhao@linux.intel.com>
- <BN9PR11MB52761CC3E5F08D4B7BAD7F918C7E2@BN9PR11MB5276.namprd11.prod.outlook.com>
- <7adec292-9d38-41ab-a982-bd840b24f3ab@intel.com>
- <0aee453c-e98f-4b72-8107-31d4731abcdb@linux.intel.com>
- <BN9PR11MB5276D3372267CE9246170FA78C7D2@BN9PR11MB5276.namprd11.prod.outlook.com>
- <500c4582-ec05-4a9e-9b68-d2ae19aed49b@linux.intel.com>
- <20240130162958.GF50608@ziepe.ca>
-Content-Language: en-US
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20240130162958.GF50608@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
-On 2024/1/31 0:29, Jason Gunthorpe wrote:
-> On Tue, Jan 30, 2024 at 04:15:33PM +0800, Ethan Zhao wrote:
->> Some tricky situations:
->>
->> 1. The ATS invalidation request is issued from driver driver, while it is
->> in handling, device is removed. this momment, the device instance still
->> exists in the bus list. yes, if searching it by BDF, could get it.
->>
->> 2. The ATS invalidation request is issued from iommu_bus_notifier()
->> for surprise removal reason, as shown in above calltrace, device was
->> already removed from bus list. if searching it by BDF, return NULL.
->>
->> 3. The ATS invlidation request is issued from iommu_bus_notifier()
->> for safe removal, when is in handling, device is removed or link
->> is down. also as #2, device was already removed from bus list.
->> if searching it by BDF. got NULL.
->> ...
->>
->> so, searching device by BDF, only works for the ATS invalidation
->> request is from device driver.
-> In the good path, where the hot removal is expected and this is about
-> coordinating, the IOMMU driver should do an orderly shutdown of the
-> ATS mechanism:
-> 
->   1 Write to PCI config space to disable the ATS
->   2 Make the IOMMU respond to ATS requests with UR and set it to BLOCKED
->   3 Issue a flush of the ATC
->   4 Wait for all outstanding ATC flushes to complete
-> 
-> If it is a bad/surprise path where the device is already gone then:
-> 
->   1 should automatically not do anything, possibly timing out
->   2 must succeed
->   3 should time out
->   4 should "complete" in that the ATC flushes are all timed out
-> 
-> IMHO all you need to do is not crash/lockup while processing the ATC
-> timeouts. If this is a surprise path then the ATC timeout might
-> already happened before the iommu driver remove notifier event happens.
-> 
-> If the driver needs to translate from the IOMMU device table index
-> into a struct device it is probably best to do that inside the driver.
-> 
-> eg ARM maintains a rbtree in the iommu dev data. (see
-> arm_smmu_insert_master)
+commit 0a31bd5f2bbb ("KMEM_CACHE(): simplify slab cache creation")
+introduces a new macro.
+Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
+to simplify the creation of SLAB caches.
 
-An rbtree for IOMMU device data for the VT-d driver would be beneficial.
-It also benefits other paths of fault handling, such as the I/O page
-fault handling path, where it currently still relies on the PCI
-subsystem to convert a RID value into a pci_device structure.
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+---
+ fs/nfsd/nfs4layouts.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Given that such an rbtree would be helpful for multiple individual
-drivers that handle PCI devices, it seems valuable to implement it in
-the core?
+diff --git a/fs/nfsd/nfs4layouts.c b/fs/nfsd/nfs4layouts.c
+index 5e8096bc5eaa..4116695e6aa3 100644
+--- a/fs/nfsd/nfs4layouts.c
++++ b/fs/nfsd/nfs4layouts.c
+@@ -756,13 +756,11 @@ nfsd4_init_pnfs(void)
+ 	for (i =3D 0; i < DEVID_HASH_SIZE; i++)
+ 		INIT_LIST_HEAD(&nfsd_devid_hash[i]);
+=20
+-	nfs4_layout_cache =3D kmem_cache_create("nfs4_layout",
+-			sizeof(struct nfs4_layout), 0, 0, NULL);
++	nfs4_layout_cache =3D KMEM_CACHE(nfs4_layout, 0);
+ 	if (!nfs4_layout_cache)
+ 		return -ENOMEM;
+=20
+-	nfs4_layout_stateid_cache =3D kmem_cache_create("nfs4_layout_stateid",
+-			sizeof(struct nfs4_layout_stateid), 0, 0, NULL);
++	nfs4_layout_stateid_cache =3D KMEM_CACHE(nfs4_layout_stateid, 0);
+ 	if (!nfs4_layout_stateid_cache) {
+ 		kmem_cache_destroy(nfs4_layout_cache);
+ 		return -ENOMEM;
+--=20
+2.39.2
 
-Best regards,
-baolu
 
