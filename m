@@ -1,116 +1,149 @@
-Return-Path: <linux-kernel+bounces-46550-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46551-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98F0B84413A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:01:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C7B784413E
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:04:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 291AC1F2C765
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:01:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08A2E1F2D771
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:04:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 276E281AB6;
-	Wed, 31 Jan 2024 14:01:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2736280C11;
+	Wed, 31 Jan 2024 14:03:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="cJ5/ZaFs"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="WLhYD4V/";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="WLhYD4V/"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D477F80BF5
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 14:01:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70D7956B9D;
+	Wed, 31 Jan 2024 14:03:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706709675; cv=none; b=ezX3/5TVOG0e8Y3ah54nQPlnlGefEg4xcvR9VRRLnpx2C01s3pmeMwNdig2fw5JuORGQh8y6y4e/IBlAshErEO+uv1N1JOzU68lB7Wj454oU4yRKMx3rVayBQyG+d44+3lo81ZHkzVm7ge3osMAGPz8S2rIi0GGYPQGJgb7G388=
+	t=1706709835; cv=none; b=KqnzXkBtc3Q43GTitseB39PWa172hE4w13j6sikBANWgrCUeAXjNSoZH9Q3RtKX+hImiXPisqnPeVSgGqnKfKDNOKLB0ik5nMcIbb21Dx7Tne0uWZwklqMsru/jX5UA29qk4Y1GrDnBY3D9IDtWxG0uo0bZC8g0USShOGJZZzZ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706709675; c=relaxed/simple;
-	bh=VKftZjYTPFttrAWy4mQSvI4tODip6EMij2iomGHSEiA=;
+	s=arc-20240116; t=1706709835; c=relaxed/simple;
+	bh=yK5tDuzjN62NKpY1IUEhVf1AyPpCBKY++LbxRsHYWaQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pQUq/BAwdreFd8e227XeHf3XU2ExijPXpcd053HNL5/EJKEqhvxRfb9U98r4svZWl2ocE49Rl1aNl4HQSp3E7dVvHJDJ7+ZVXM52Olh2n+0SjvHSd8wWuELs44dCQQ8ph/TENKBI0YiAhfwFgE1ZFw+/jH04mwOqAmpuz7d/ANA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=cJ5/ZaFs; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 78C7440E00C5;
-	Wed, 31 Jan 2024 14:01:11 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 7-49zGRkOdZG; Wed, 31 Jan 2024 14:01:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1706709668; bh=s1sCZOaViMd/RO2i16hNLSl0mKH2iujGzYJ4LY2cvoM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cJ5/ZaFsbMWoYYcHishCz3dIIdEdYYVKBTfA8et8o/ldP2dtie5NWD0J4C0hr1viM
-	 x6rZvYgUejuftFvp5w5jxwfl8ZydabTzVU8l2JsRrsi0cNS53JhXSoClIpDC+W0Rdk
-	 RJWjDhxzSkOCm3melsW8S5SksY2CCOGVjC7A465xuiCYvU7k7Y/5KTSGaMtW7IL5n4
-	 /dJQT7H2o2K2lm0pGgq64nmdu+o88PkeWb9QTGxhUdWEM3n/xlXfA2TiNAqL8vfnAE
-	 yaQ2rsriZQDIia57V970O1VgJ8zrZ3rdJSYJYFnmgxvKY7xHZujVwmYpeLAknnZtNo
-	 7v6pljTk9tEVsZtaTb3XKXVP2ygW2mzoykW6PDcbAbJFTH6lKuhOvq5+8n7hG1CC0p
-	 DdyZgJwpIxpY/kEtKwZc0gTMd3d4LoJNsbLuY7If0paKzjNUlH5QEHA/Y0TJIBnCsR
-	 2SXXHBKMHPg2peo48EFoE//y50vzT7mbxPz09k/YFsI4nSfKgRbGSu8TnfDPPlVQ9M
-	 LVkBUcSJJKaRHM/mkYSm9w25gspQIEqLmo4JSI4psMgfLy15yriKtFBUT+PsdRU5MY
-	 ZJDydytR0vFmpiA5Y6wQuIWZaMgW3RxMVzxVl7RDf+rCOXsJ60fWXygyZaODBrYlaB
-	 QEfPNJnuAVQvKDT7pMD3aqd8=
-Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
+	 Content-Type:Content-Disposition:In-Reply-To; b=rJmhGH16zyr2Pzj47wm/QsITtiIBca4LC2cejiipW1OLciE7ZbBu4wV1rPTjSEAJnuUetoPdFtB2YL8j0X7FeTc4BeiZVIlJBgCmvohhnac7z6Dj4X2N7NAHyiZdANr7ThviBhrDpibv2W07p0+bsxy/98JO/QUbqJ5v3uzDgyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=WLhYD4V/; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=WLhYD4V/; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B373B40E00B2;
-	Wed, 31 Jan 2024 14:00:43 +0000 (UTC)
-Date: Wed, 31 Jan 2024 15:00:37 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Kevin Loughlin <kevinloughlin@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Pankaj Gupta <pankaj.gupta@amd.com>,
-	Hou Wenlong <houwenlong.hwl@antgroup.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Dionna Glaze <dionnaglaze@google.com>,
-	Brijesh Singh <brijesh.singh@amd.com>,
-	Michael Roth <michael.roth@amd.com>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-	linux-coco@lists.linux.dev, Ashish Kalra <ashish.kalra@amd.com>,
-	Andi Kleen <ak@linux.intel.com>, Adam Dunlap <acdunlap@google.com>,
-	Peter Gonda <pgonda@google.com>, Jacob Xu <jacobhxu@google.com>,
-	Sidharth Telang <sidtelang@google.com>
-Subject: Re: [PATCH v3 0/2] x86: enforce and cleanup RIP-relative accesses in
- early boot code
-Message-ID: <20240131140037.GDZbpShX2b0elXlqDA@fat_crate.local>
-References: <20240121182040.GBZa1geI5NxWSslvt0@fat_crate.local>
- <20240130220845.1978329-1-kevinloughlin@google.com>
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E1AE41FB8A;
+	Wed, 31 Jan 2024 14:03:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706709827; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=m2cxDnakp497+YroEa+q5vx8Sh99BmyBojVBJFGfpzs=;
+	b=WLhYD4V/x/UZrHhY+6rCUJyqgymCrrsKeuLtGDQJmSHaoC3k23j7X0NG3vOMfDtXnIsMtY
+	jZ5h10f3ZWcsECbVFDV7u/QcfFFmgBDZc+aS1k+0Rtk506F6YwOW9pHPE/hJ/vKoBvOmPc
+	ryDw7jWI4W009OBH2S6hA4+jm0itigA=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706709827; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=m2cxDnakp497+YroEa+q5vx8Sh99BmyBojVBJFGfpzs=;
+	b=WLhYD4V/x/UZrHhY+6rCUJyqgymCrrsKeuLtGDQJmSHaoC3k23j7X0NG3vOMfDtXnIsMtY
+	jZ5h10f3ZWcsECbVFDV7u/QcfFFmgBDZc+aS1k+0Rtk506F6YwOW9pHPE/hJ/vKoBvOmPc
+	ryDw7jWI4W009OBH2S6hA4+jm0itigA=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BDC6F1347F;
+	Wed, 31 Jan 2024 14:03:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id mJp5LENTumVaDwAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Wed, 31 Jan 2024 14:03:47 +0000
+Date: Wed, 31 Jan 2024 15:03:47 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: David Hildenbrand <david@redhat.com>
+Cc: Yin Fengwei <fengwei.yin@intel.com>, linux-kernel@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>, linux-mm@kvack.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	"Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+	Nick Piggin <npiggin@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
+	linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-s390@vger.kernel.org, "Huang, Ying" <ying.huang@intel.com>
+Subject: Re: [PATCH v1 0/9] mm/memory: optimize unmap/zap with PTE-mapped THP
+Message-ID: <ZbpTQ80ebCUnAXW0@tiehlicka>
+References: <20240129143221.263763-1-david@redhat.com>
+ <4ef64fd1-f605-4ddf-82e6-74b5e2c43892@intel.com>
+ <ee94b8ca-9723-44c0-aa17-75c9678015c6@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240130220845.1978329-1-kevinloughlin@google.com>
+In-Reply-To: <ee94b8ca-9723-44c0-aa17-75c9678015c6@redhat.com>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [0.40 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 R_RATELIMIT(0.00)[to_ip_from(RLmz57jmx331iqhbrcj9q94ym8)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWELVE(0.00)[26];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[intel.com,vger.kernel.org,linux-foundation.org,kvack.org,infradead.org,arm.com,kernel.org,linux.ibm.com,gmail.com,ellerman.id.au,csgroup.eu,arndb.de,lists.ozlabs.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.00)[28.90%]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: 0.40
 
-On Tue, Jan 30, 2024 at 10:08:43PM +0000, Kevin Loughlin wrote:
-> Instead, this patchset continues the approach of fixing the immediate
-> problem of SEV-SNP boots crashing when built by clang, providing a
-> backport-friendly set of changes needed to successfully boot SEV-SNP
-> hosts and guests.
+On Wed 31-01-24 11:16:01, David Hildenbrand wrote:
+[...]
+> This 10000 pages limit was introduced in 53a59fc67f97 ("mm: limit mmu_gather
+> batching to fix soft lockups on !CONFIG_PREEMPT") where we wanted to handle
+> soft-lockups.
 
-What use cases are those exactly? How do I reproduce them here?
+AFAIR at the time of this patch this was mostly just to put some cap on
+the number of batches to collect and free at once. If there is a lot of
+free memory and a large process exiting this could grow really high. Now
+that those pages^Wfolios can represent larger memory chunks it could
+mean more physical memory being freed but from which might make the
+operation take longer but still far from soft lockup triggering.
 
-SNP is not upstream yet and the SEV* code has been out there for a while
-now without a single such report so this must be something new happening
-due to <raisins>...?
-
-Thx.
+Now latency might suck on !PREEMPT kernels with too many pages to
+free in a single batch but I guess this is somehow expected for this
+preemption model. The soft lockup has to be avoided because this can
+panic the machine in some configurations.
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Michal Hocko
+SUSE Labs
 
