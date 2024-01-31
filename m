@@ -1,106 +1,118 @@
-Return-Path: <linux-kernel+bounces-45849-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB1E9843706
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:55:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DE2D843705
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:55:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87CBC286F66
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:55:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C176A1C20E61
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:55:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47C5054F90;
-	Wed, 31 Jan 2024 06:55:03 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4862050A66;
+	Wed, 31 Jan 2024 06:55:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="f3GwvPrU"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A749B4F1E0;
-	Wed, 31 Jan 2024 06:54:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFF7B4F608;
+	Wed, 31 Jan 2024 06:54:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.115
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706684102; cv=none; b=c/HshnHD6FMXutDXZhu/JQjb1ygtYiq+dQpFJOjyCn2D7oxH+851kdFhG+s443HfVE5zGf9pzKfb6+GG/5uXmuSN0i/BsyPGEiDp6SytuH6n1QTPX6Qyd1opKirOWWwRxjRLUnJK1x3ZCIaXPIy73K/GQTIi97qcgLEnZEH5izc=
+	t=1706684100; cv=none; b=L+7KyZCDrwj+Ge9A+8qnpOdUD2yK1Wu2O9p0toRQLOB2wTrnLayJXeYcW5PyU57dd1KCsUb0yHdUrX7Ffs0bfBq7HSgp+SfbTtcWvAHo8rKfQkGgeGPRnzmY2qAQxTO2hOEEcF/nVLKEcgjk0PbNO54KJpNpg8s13Qe6xNULzl4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706684102; c=relaxed/simple;
-	bh=yCeBxkcgFf4y305eEtZ2unXBrL3xPzCq8j6YfxsJYak=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OoEgrKCgfR9vZfQxOib4ZBq5SD5f5WEK+Pa8wjMgak9+OXE18tFltIkBiE+dmCEL9cIaiF3qTrtNn9f/sKM+JBjU4P/lhb2DqtmMy3Md1frjmP7HaJd75zvCIlM9PONwFOYjlispR2ZjxpDkg3vdf2f9g/7uVZ7C9yRcJeNQ4AE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 552679d6f4c14b7fb735038d8981ffcc-20240131
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:4b17965d-1a49-4592-af41-e0553309ad2b,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:-5
-X-CID-INFO: VERSION:1.1.35,REQID:4b17965d-1a49-4592-af41-e0553309ad2b,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:-5
-X-CID-META: VersionHash:5d391d7,CLOUDID:cb7f7383-8d4f-477b-89d2-1e3bdbef96d1,B
-	ulkID:240131145452XYK90MR1,BulkQuantity:0,Recheck:0,SF:24|17|19|44|66|38|1
-	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
-	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
-X-UUID: 552679d6f4c14b7fb735038d8981ffcc-20240131
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 2100326787; Wed, 31 Jan 2024 14:54:50 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id A3780E000EB9;
-	Wed, 31 Jan 2024 14:54:50 +0800 (CST)
-X-ns-mid: postfix-65B9EEBA-466033342
-Received: from kernel.. (unknown [172.20.15.254])
-	by mail.kylinos.cn (NSMail) with ESMTPA id 1E337E000EB9;
-	Wed, 31 Jan 2024 14:54:50 +0800 (CST)
-From: Kunwu Chan <chentao@kylinos.cn>
-To: clm@fb.com,
-	josef@toxicpanda.com,
-	dsterba@suse.com
-Cc: linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH] btrfs: Simplify the allocation of slab caches in ordered_data_init
-Date: Wed, 31 Jan 2024 14:54:48 +0800
-Message-Id: <20240131065448.133845-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1706684100; c=relaxed/simple;
+	bh=LYkyIfkAfWvMactjAyROuDyPF2pvc83xQkc4eG04G1w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HZFAnTZvNsfnIsJPsi6Cvc48wyw9HMR9+EHMyreDeG77FdCR5J18mE0E+K7vHdqqB/guCpH3F/j/jd6ivQzzZk9rUU+oNtIfWytOf4dQTAlssawRHdpYRPw+GYHm4ntrNWymTJ6G4aRsp1RezxX3y275xTTadYqLXrzQLfrsRTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=f3GwvPrU; arc=none smtp.client-ip=192.55.52.115
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706684098; x=1738220098;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=LYkyIfkAfWvMactjAyROuDyPF2pvc83xQkc4eG04G1w=;
+  b=f3GwvPrUWBVuwvD12AN5XwKID0K6fOMPURkB7pKrguicyipi39VvhDan
+   HnTM23cZBqxjfgmzweHLPyEWSD0WSL30tel/LdAxef8s48Q55LZEaiHxF
+   v57UCIxjgPcPn4lf8z2k4aS3o9Uq8GKVCQcz6tBFnFEt5NZfCIoIq0qFe
+   lhGtZcCQZ5OdKHHf8NhRFireacW5yxDRrpz9vw9UwaE+WBecC4YaVVO9f
+   WVJa0Mky/UPGXxkY5ET7ITOrTHTcECA/C364rksruojwFYRDntfemWZTJ
+   CkDtrUxhotkD0kJa5zXWy+bt3qY7lQsC96ZoBhzxYghndjxpXk24oUi+p
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="403130818"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="403130818"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 22:54:57 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="911692836"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="911692836"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 22:54:55 -0800
+Date: Wed, 31 Jan 2024 08:54:52 +0200
+From: Raag Jadav <raag.jadav@intel.com>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	jarkko.nikula@linux.intel.com, mika.westerberg@linux.intel.com,
+	lakshmi.sowjanya.d@intel.com, linux-pwm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 3/3] pwm: dwc: use to_pci_dev() helper
+Message-ID: <Zbnum_TLEGGlHWbp@black.fi.intel.com>
+References: <20240122030238.29437-1-raag.jadav@intel.com>
+ <20240122030238.29437-4-raag.jadav@intel.com>
+ <ZbZo2A3qU9RIz568@smile.fi.intel.com>
+ <q5mde3tak2mpqnkphue7vdez33l4bh2urjqryljzzpvz556yjw@2gmnudzle3my>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <q5mde3tak2mpqnkphue7vdez33l4bh2urjqryljzzpvz556yjw@2gmnudzle3my>
 
-Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
-to simplify the creation of SLAB caches.
+On Sun, Jan 28, 2024 at 05:55:00PM +0100, Uwe Kleine-König wrote:
+> Hello,
+> 
+> On Sun, Jan 28, 2024 at 04:46:48PM +0200, Andy Shevchenko wrote:
+> > On Mon, Jan 22, 2024 at 08:32:38AM +0530, Raag Jadav wrote:
+> > > Use to_pci_dev() helper to get pci device reference.
+> > 
+> > PCI
+> > 
+> > ...
+> > 
+> > >  static int dwc_pwm_suspend(struct device *dev)
+> > >  {
+> > > -	struct pci_dev *pdev = container_of(dev, struct pci_dev, dev);
+> > > +	struct pci_dev *pdev = to_pci_dev(dev);
+> > >  	struct dwc_pwm *dwc = pci_get_drvdata(pdev);
+> > >  	int i;
+> > >  
+> > > @@ -120,7 +120,7 @@ static int dwc_pwm_suspend(struct device *dev)
+> > >  
+> > >  static int dwc_pwm_resume(struct device *dev)
+> > >  {
+> > > -	struct pci_dev *pdev = container_of(dev, struct pci_dev, dev);
+> > > +	struct pci_dev *pdev = to_pci_dev(dev);
+> > >  	struct dwc_pwm *dwc = pci_get_drvdata(pdev);
+> > >  	int i;
+> > 
+> > I don't see how pdev is being used. That said, why dev_get_drvdata() is not
+> > suffice?
+> 
+> I would even consider using dev_get_drvdata() a nice cleanup given that
+> pci_get_drvdata() works because dwc_pwm_alloc() called dev_set_drvdata()
+> (and not pci_set_drvdata()).
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
- fs/btrfs/ordered-data.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+Makes sense. Will update in v2.
 
-diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index 59850dc17b22..f65d681f4c65 100644
---- a/fs/btrfs/ordered-data.c
-+++ b/fs/btrfs/ordered-data.c
-@@ -1236,10 +1236,7 @@ struct btrfs_ordered_extent *btrfs_split_ordered_e=
-xtent(
-=20
- int __init ordered_data_init(void)
- {
--	btrfs_ordered_extent_cache =3D kmem_cache_create("btrfs_ordered_extent"=
-,
--				     sizeof(struct btrfs_ordered_extent), 0,
--				     SLAB_MEM_SPREAD,
--				     NULL);
-+	btrfs_ordered_extent_cache =3D KMEM_CACHE(btrfs_ordered_extent, SLAB_ME=
-M_SPREAD);
- 	if (!btrfs_ordered_extent_cache)
- 		return -ENOMEM;
-=20
---=20
-2.39.2
-
+Raag
 
