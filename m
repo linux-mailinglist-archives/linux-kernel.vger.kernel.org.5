@@ -1,143 +1,146 @@
-Return-Path: <linux-kernel+bounces-46407-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46408-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C1BB843F42
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:14:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 014BC843F45
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:16:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D9A31F21418
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:14:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86F8CB24E02
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:15:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 243067995B;
-	Wed, 31 Jan 2024 12:14:47 +0000 (UTC)
-Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAD5078689;
+	Wed, 31 Jan 2024 12:15:50 +0000 (UTC)
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE4F978676
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 12:14:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9B9F78669;
+	Wed, 31 Jan 2024 12:15:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706703282; cv=none; b=aCUb3oPvy4Yku5po3Znpb93ilDhq6s9pj3bwGMrg2G5/V4XlboJCq5UlGUkYBYonaOtFRGY+MRaeTq/zmgpg3sBL0lnmFdLtSFSMZwD8nOHh5kTon3BY//3La0HyPg07/0ot8uizTBvDAskmiF6OjxcTg386Tw3Kl9zugzduTqE=
+	t=1706703350; cv=none; b=Zw4CodwtEf3IrSeBVw76fsJjITxBscpXEeeE1pbfLVzmpZx+bH18dHuX5N+vpwLs60tRovOnZ0gsKy2W/r5WpzjgQ7fscYFcPcRobdA3wsrcYizichVnOVvzqBkrN95iLgbXgBO2f9rYE9NOSoSgvkxSGXVdDylrgsS+1zzXghI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706703282; c=relaxed/simple;
-	bh=Q0wV+TnItOkEHfIiIhxUFssbDbFUQK4VKdx1sKcggrI=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=cq1KQty6iK0cmY9e6arFPTlpGafWMR2uUkgVjz+XUkZgB05EEM4WQa+Nt/yzKaJZ55gRMvJNCnU9LKY7rEFXZ7kb0sJp9gFJ/QGwnrHz66hWlUdUGeQP4BrSrbTXcK9WprLPHrh2VivrPoMema46blEWDUOwUaamxRlB8wK6ias=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
-Received: from dlp.unisoc.com ([10.29.3.86])
-	by SHSQR01.spreadtrum.com with ESMTP id 40VCE6du013504;
-	Wed, 31 Jan 2024 20:14:06 +0800 (+08)
-	(envelope-from zhaoyang.huang@unisoc.com)
-Received: from SHDLP.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
-	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4TQ13T1Q8Jz2SjW7v;
-	Wed, 31 Jan 2024 20:06:29 +0800 (CST)
-Received: from bj03382pcu01.spreadtrum.com (10.0.73.40) by
- BJMBX01.spreadtrum.com (10.0.64.7) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Wed, 31 Jan 2024 20:14:04 +0800
-From: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
-To: Damien Le Moal <dlemoal@kernel.org>,
-        Niklas Cassel
-	<niklas.cassel@wdc.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Hannes Reinecke <hare@suse.de>, <linux-kernel@vger.kernel.org>,
-        Zhaoyang
- Huang <huangzhaoyang@gmail.com>, <steve.kang@unisoc.com>
-Subject: [PATCH 1/1] block: print warning when invalid domain set to ioprio
-Date: Wed, 31 Jan 2024 20:14:01 +0800
-Message-ID: <20240131121401.3898735-1-zhaoyang.huang@unisoc.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1706703350; c=relaxed/simple;
+	bh=SCHvPf3JLIZ9T+a9jN4lmw6RHsyl9KyxaDHaABOqbQc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jNQ0EN+q5CwsFX5hSHyJYLxNRO7N7HK02UlzvL8bbQ3+wYHDWbVJjpzl/x0b61SgyTXMTPS+bnWGL94mEcOYpm4koWhbQvdMiahpZBTBooYN+vdFBhIzRDPAIrzxnwLo7E/qjbJHv+eqzfGPIPYHARXNw15nMOc+01RMpZpg0Jw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40ee9e21f89so44453755e9.0;
+        Wed, 31 Jan 2024 04:15:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706703347; x=1707308147;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=x5QFTfLTaaaGrayqRozxrGYixRwFTqwWEY912YrsFIc=;
+        b=MCRCYateA+0UZKhfVGr9f5GvsVXdrNhHZfUbh2tlFErdbrQ6HRvun5kQXmNv6fN9kX
+         kXyQ0gmcx4e9DXFaU8Q7gEsyjZ1QajEwzJ4pFT92UBMMZB3Uox06efNXbQ8Q1nsuMunQ
+         IiEu7lD7iT3RVAkpjDTwZt3YaXVrmriPmN/z+I9G4fLSNcK2EfV9ogrnzgoyMD5shmCr
+         syOC3rzf6EG1mKPpty+jivdsu7jdRKtsrXoSj4IfVIYBriqv3Mkm0pBxqbHbuQhFvoNg
+         SwqonLihxETCp7T6mTyYXTHw+egv2ls7tJ+tx+r+f2e7txRYE2E0U7y715d3dRwngRtH
+         UI0A==
+X-Gm-Message-State: AOJu0YxhiIp+PuEK8rWAWKd1m7jckXQFbM98DytPWI9kGzea0urWnK8r
+	VVxUNY72HJkWptKrkvSJcq0JVVlBs40xdF1ruJTWCRVUl32tTkK2
+X-Google-Smtp-Source: AGHT+IG2Cg6c+Hd8QOpiF9pcsGT4UzDUclCsGnV6czpSw3yP+Nwvl1W9VwySHo45kJpDZLAjK24LKg==
+X-Received: by 2002:a5d:69ce:0:b0:33a:ed5a:5a14 with SMTP id s14-20020a5d69ce000000b0033aed5a5a14mr958145wrw.22.1706703346724;
+        Wed, 31 Jan 2024 04:15:46 -0800 (PST)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id k7-20020a5d6e87000000b0033addeabd6fsm12647036wrz.18.2024.01.31.04.15.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Jan 2024 04:15:46 -0800 (PST)
+Message-ID: <80b84147-e27d-4110-843f-700e738b50ad@kernel.org>
+Date: Wed, 31 Jan 2024 13:15:45 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
- BJMBX01.spreadtrum.com (10.0.64.7)
-X-MAIL:SHSQR01.spreadtrum.com 40VCE6du013504
+User-Agent: Mozilla Thunderbird
+Subject: Re: mxs-auart broken in v6.2 and onwards
+Content-Language: en-US
+To: Emil Kronborg <emil.kronborg@protonmail.com>
+Cc: linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <miwgbnvy3hjpnricubg76ytpn7xoceehwahupy25bubbduu23s@om2lptpa26xw>
+ <040064c5-c285-4e02-b545-47c5085f0068@kernel.org>
+ <djtgk274iojly23xjb6kgx7ucgv6a4d23ix4vvr2cfskrkeb2r@uykelfkgrcg7>
+From: Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <djtgk274iojly23xjb6kgx7ucgv6a4d23ix4vvr2cfskrkeb2r@uykelfkgrcg7>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+On 30. 01. 24, 19:57, Emil Kronborg wrote:
+> Hi,
+> 
+> On Tue, Jan 30, 2024 at 10:38 +0100, Jiri Slaby wrote:
+>> Hm, the tx stop handling is weird throughout mxs. What about the
+>> attached patch?
+> 
+> It seems to fix the issue, but I do not see any way to fix this just for
+> mxs-auart.c without also changing serial_core.h, and thus affecting a
+> bunch of other drivers.
 
-Since few caller check IOPRIO_PRIO_VALUE's return value and bio_set_prio
-is a open macro to set bio->ioprio directly.It is confused for the developer
-who run across kernel panic[1] but can find nothing in previous kernel log.
-Add a pr_err here to dump the information.
+Hi, the fix I sent to you does not affect any other driver. (Even when 
+it touches serial_core.h.)
 
-[1]
-Here is the kernel panic I run across which caused by a out of bounds check
-introduced by CONFIG_FOTIFY_SOURCE.
+> Would reverting the changes from 2d141e683e9a
+> ("tty: serial: use uart_port_tx() helper") for just mxs-auart.c be okay?
 
-[exception_serialno]:
-[exception_kernel_version]:
-[exception_reboot_reason]: kernel_crash
-[exception_panic_reason]: UBSAN: array index out of bounds: Fatal exception
-[exception_time]: 1970-01-01_08-00-23
-[exception_file_info]: not-bugon
-[exception_task_id]: 409
-[exception_task_family]: [f2fs_ckpt-254:4, 409][kthreadd, 2]
-[exception_pc_symbol]: [<ffffffc080736974>] dd_request_merge+0x100/0x110
-[exception_stack_info]: [<ffffffc07a27e274>] get_exception_stack_info+0x124/0x2d8 [sysdump]gc
-[<ffffffc07a27e670>] prepare_exception_info+0x158/0x1d4 [sysdump]gc
-[<ffffffc07a280128>] sysdump_panic_event+0x5d8/0x748 [sysdump]gc
-[<ffffffc08016a508>] notifier_call_chain+0x98/0x17cgc
-[<ffffffc08016a9b4>] atomic_notifier_call_chain+0x44/0x68gc
-[<ffffffc0810f0eb4>] panic+0x194/0x37cgc
-[<ffffffc0800a638c>] die+0x300/0x310gc
-[<ffffffc0800a77e8>] ubsan_handler+0x34/0x4cgc
-[<ffffffc0800960a8>] brk_handler+0x9c/0x11cgc
-[<ffffffc0800bf998>] do_debug_exception+0xb0/0x140gc
-[<ffffffc0810f8bf0>] el1_dbg+0x58/0x74gc
-[<ffffffc0810f89f4>] el1h_64_sync_handler+0x3c/0x90gc
-[<ffffffc080091298>] el1h_64_sync+0x68/0x6cgc
-[<ffffffc080736974>] dd_request_merge+0x100/0x110gc   //out of bound
-here caused by the value of class transferred from ioprio
-[<ffffffc080707f28>] elv_merge+0x248/0x270gc
-[<ffffffc0807146e8>] blk_mq_sched_try_merge+0x4c/0x20cgc
-[<ffffffc080736824>] dd_bio_merge+0x64/0xb4gc
-[<ffffffc080723e3c>] blk_mq_sched_bio_merge+0x68/0x144gc
-[<ffffffc08071b944>] blk_mq_submit_bio+0x2e8/0x6c0gc
-[<ffffffc08070dd3c>] __submit_bio+0xbc/0x1b0gc
-[<ffffffc08070c440>] submit_bio_noacct_nocheck+0xe4/0x2f0gc
-[<ffffffc08070c8e4>] submit_bio_noacct+0x298/0x3d8gc
-[<ffffffc08070caf8>] submit_bio+0xd4/0xf0gc
-[<ffffffc080642644>] f2fs_submit_write_bio+0xcc/0x49cgc
-[<ffffffc0806442d4>] __submit_merged_bio+0x48/0x13cgc
-[<ffffffc080641de4>] __submit_merged_write_cond+0x18c/0x1f8gc
-[<ffffffc080641c4c>] f2fs_submit_merged_write+0x2c/0x38
-[<ffffffc080655724>] f2fs_sync_node_pages+0x6e0/0x740gc
-[<ffffffc08063946c>] f2fs_write_checkpoint+0x4c0/0x97cgc
-[<ffffffc08063b37c>] __checkpoint_and_complete_reqs+0x88/0x248gc
-[<ffffffc08063ad70>] issue_checkpoint_thread+0x94/0xf4gc
-[<ffffffc080167c20>] kthread+0x110/0x1b8gc
+Nope.
 
-Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
----
- include/uapi/linux/ioprio.h | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+> If so, I can do that, test it again, and send a patch.
 
-diff --git a/include/uapi/linux/ioprio.h b/include/uapi/linux/ioprio.h
-index bee2bdb0eedb..73c420a0df72 100644
---- a/include/uapi/linux/ioprio.h
-+++ b/include/uapi/linux/ioprio.h
-@@ -112,8 +112,11 @@ static __always_inline __u16 ioprio_value(int prioclass, int priolevel,
- {
- 	if (IOPRIO_BAD_VALUE(prioclass, IOPRIO_NR_CLASSES) ||
- 	    IOPRIO_BAD_VALUE(priolevel, IOPRIO_NR_LEVELS) ||
--	    IOPRIO_BAD_VALUE(priohint, IOPRIO_NR_HINTS))
-+	    IOPRIO_BAD_VALUE(priohint, IOPRIO_NR_HINTS)) {
-+		pr_err("%s: get a invalid domain in class %d, level %d, hint %d\n",
-+			__func__, prioclass, priolevel, priohint);
- 		return IOPRIO_CLASS_INVALID << IOPRIO_CLASS_SHIFT;
-+	}
- 
- 	return (prioclass << IOPRIO_CLASS_SHIFT) |
- 		(priohint << IOPRIO_HINT_SHIFT) | priolevel;
+I've sent proper patches to fix the issue. If you can retest, please add 
+your Tested-by line in there.
+
+thanks,
 -- 
-2.25.1
+js
+suse labs
 
 
