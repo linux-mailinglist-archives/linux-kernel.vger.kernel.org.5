@@ -1,91 +1,133 @@
-Return-Path: <linux-kernel+bounces-46457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46458-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD988843FE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:04:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D681844008
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:05:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6834A28D8D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:04:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8AD6B29975
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:05:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FB317AE7D;
-	Wed, 31 Jan 2024 13:04:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAE3C7B3D1;
+	Wed, 31 Jan 2024 13:04:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="STuuWiXg"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="t7ROWugx"
+Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9F9A79DD0
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 13:04:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7598D7B3CB
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 13:04:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706706260; cv=none; b=pPN1oPDf+yMET5DtsmUwuSFNWunItLTS8dEIZl5LZ0eWrUY0Qj97k2eytgbeV8gaS5u0CIiLN7SG3jbVNZKUlZ/yhSlMpgCzboA8L5l+E+nnKBRDNj3MwzXFpGDrJGOnnpgMdnmGgTfnWQBm+7u9S/CQ0q+yV2w3tAq3Y7RJO2s=
+	t=1706706299; cv=none; b=XKzUcTiJZr45lfJJIQzcG6BIQERfkwENdLyMY16L3/AtOLolKbULitlg7vHY67/OzsOM7AhOMZ/ElcIdhtxwSd1tlEtL3dEFH6AU8x1afQpkkbLxC8B8e5moE0PdX9hoBkYJz7qGtN9xR+guxCJL/sJOKfMGfOBrpx+her7LudU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706706260; c=relaxed/simple;
-	bh=Bhwmz/F21q1kBgFydqSZjzH43cF3Nb4bvQpSB4Ggiro=;
+	s=arc-20240116; t=1706706299; c=relaxed/simple;
+	bh=DoTM2f6VGFsINx+G19Tv5Dll84Au+XUo51wOu8X7VJE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=he+T4pNwJT2tcueh1Udf4yS5vNGUU5NxEuQXaSCqABUARjTTY7nb2sd+j8ZgV3JvvCLXWh7KIvmVix9KXCIhsdfOFmqsJl3Ue+/V6el9m68HuWGEROuaK6UaV5+FCqBPQPlc8MOCF8k4FaXxvPOiStq/tBFXmG6SbLYrg2Qzixc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=STuuWiXg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D858AC433C7;
-	Wed, 31 Jan 2024 13:04:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706706260;
-	bh=Bhwmz/F21q1kBgFydqSZjzH43cF3Nb4bvQpSB4Ggiro=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=STuuWiXgFm0uKtFdbRCBs+QU3MEpoDCLVg2onooJaU5lUhwSQybtFHgqe0UZL3/Ru
-	 qJ5lvtKnK84snuTKY+NqdwmJVQahSkVjeqnKeuNudX0Y5RfPbuZg1AhAMddXEUSi+J
-	 khxQlZmkDEQQIULsANidjoL9MBOK0+rDXqdW2+zqh7vwib4NVWmjKEZUjDPLAS+U9e
-	 +H6oZb5omK9mRe+gp/llSquQ3+h90Z1N7p+CA2hDmE5qJbb7N69S+zZDwQo/bLbwAx
-	 8x5xaRC1b9l71P8ohg4jP3V78uOVtzAvQHxED5/0fRVu2QZVbQgVIt4bvJRiYQk/KZ
-	 KX2XBZ+3fcU3Q==
-Date: Wed, 31 Jan 2024 18:34:15 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-	Dan Williams <dan.j.williams@intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Sanyog Kale <sanyog.r.kale@intel.com>
-Subject: Re: [PATCH 0/7] Soundwire: clean up sysfs group creation
-Message-ID: <ZbpFTyW9UCZdCs_v@matsya>
-References: <2024013025-spoiling-exact-ad20@gregkh>
+	 Content-Type:Content-Disposition:In-Reply-To; b=sKxFsjYYJoo+0QpPE/oOGG7EQXkSvcKrFSjDRSt5SMqQsIbBVMn8Yv9BgukHCj1b5WJUSpmqXPStsVJJHAMNltmafB99pCIJueI3AwQxwNt7j9S1eLHvGdKQthnoJzJ6WkF5FO7aMUT5wKTQStVvghlwCxvMz0vh9nzL+Bo1UoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=t7ROWugx; arc=none smtp.client-ip=209.85.222.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-7853fcc314bso9477185a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 05:04:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706706296; x=1707311096; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=UKUcd5D+1JPbwtYljd5Shz+Q2IVEZGi4e7Ge9AkNoXo=;
+        b=t7ROWugxbL4AuuEqERS8NNuCvU/L5UIjQq0KaHbCT2l3JsIa98JpjsC5UO+WvH0hT2
+         vDDpLfLM1ph27lmdUk5WegUmMdotkx8XGxunRRJoNrOMogbRGUGyQ+mZRc3M0atBU/p2
+         h3exKt1hsmKhl7f6Jk6pJcMYmhK+gOdiA+5nGQenDON522fRpobqup4SNdB8uM3d0qvt
+         LDpn5XsTHtASmrqqzTYCXOiCUyVmyUmfNvrhOMKZcBBqRBQLuadXJU58hD1N8Jv9biI7
+         CL257nBX6Xgwnag8Y5zc7DETcdNeIIQOMde+EQhsTMz695tjUV2dWJcnyigsVfv/J0eH
+         bIog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706706296; x=1707311096;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UKUcd5D+1JPbwtYljd5Shz+Q2IVEZGi4e7Ge9AkNoXo=;
+        b=Q1AyPkrYtchq36yRRV0t9q+lT9FVHLKpIDutLGiuXrgFBgh0I4gzOSRxfFEjOFXSra
+         RgWUFBNVDbo5NSDEt4k4cu0POpnTJ8AhZjb2P6aYpD2moJs0TX/fRYT3CHXEeBh2ctU6
+         smYCDj2RsQSthRCOw3GYme0frr+fGgIv0cl2HISastyNYwnnJP8iEVWCJQ1qc9YwRKDz
+         UP0psiQ4D/YAi0EOCpu/G5HKqVe6QBI2k3p+ZTQ60jCdIizQ6yFD4a0QVus7Q7H9HmgE
+         I1G+ohJsp/KVcsVS5WzFOm66AxUYcoIFwlqDxl8Sh9AxCSYEqCXM3l53B+7sdTCDJLg1
+         SViQ==
+X-Gm-Message-State: AOJu0Yz9hbJCM94EKREfPn5ZpLA59lf5BaZWrRfdsSbPE20E8M/Lnzem
+	uKH5U/+GTl5tA5HHSY4bbMcb60z/9jR4+8X6JtOZAPfOUAHKws9u7P2wNgdKsQ==
+X-Google-Smtp-Source: AGHT+IG97UTdVjdz1JnrDlOVjZrOHB3xPrp1BJA+YTPV8AlFQ5iotfZVZqv8MP3IW+unn/4j8W+iLw==
+X-Received: by 2002:a05:6214:2025:b0:68c:5a4d:35ac with SMTP id 5-20020a056214202500b0068c5a4d35acmr1976438qvf.1.1706706296263;
+        Wed, 31 Jan 2024 05:04:56 -0800 (PST)
+Received: from thinkpad ([117.248.7.45])
+        by smtp.gmail.com with ESMTPSA id ma9-20020a0562145b0900b0068193a74edesm1081585qvb.52.2024.01.31.05.04.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Jan 2024 05:04:55 -0800 (PST)
+Date: Wed, 31 Jan 2024 18:34:50 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+Subject: Re: [PATCH] MAINTAINERS: Step down as PCI ENDPOINT maintainer
+Message-ID: <20240131130450.GA5273@thinkpad>
+References: <20240129165933.33428-1-lpieralisi@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2024013025-spoiling-exact-ad20@gregkh>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240129165933.33428-1-lpieralisi@kernel.org>
 
-On 30-01-24, 10:46, Greg Kroah-Hartman wrote:
-> Note, this is a redone version of a very old series I wrote back in
-> 2022:
-> 	https://lore.kernel.org/r/20220824135951.3604059-1-gregkh@linuxfoundation.org
-> but everyone has forgotten about it now, and I've reworked it, so I'm
-> considering it a "new" version, and not v2.
+On Mon, Jan 29, 2024 at 05:59:33PM +0100, Lorenzo Pieralisi wrote:
+> The PCI endpoint subsystem is evolving at a rate I
+> cannot keep up with, therefore I am standing down as
+> a maintainer handing over to Manivannan (currently
+> reviewer for this code) and Krzysztof who are doing
+> an excellent job on the matter - they don't need my
+> help any longer.
 > 
-> Here's a series that adds the functionality to the driver core to hide
-> entire attribute groups, in a much saner way than we have attempted in
-> the past (i.e. dynamically figuring it out.)  Many thanks to Dan for
-> this patch.  I'll also be taking this into my driver-core branch and
-> creating a stable tag for anyone else to pull from to get it into their
-> trees, as I think it will want to be in many for this development cycle.
+> Signed-off-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
+
+Acked-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+Thanks, Lorenzo for your help so far! I'm delighted to step up to maintain this
+evolving subsystem.
+
+- Mani
+
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Cc: Krzysztof Wilczyński <kw@linux.com>
+> ---
+>  MAINTAINERS | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> After the driver core change, there's cleanups to the soundwire core for
-> how the attribute groups are created, to remove the "manual" creation of
-> them, and allow the driver core to create them correctly, as needed,
-> when needed, which makes things much smaller for the soundwire code to
-> manage.
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 8d1052fa6a69..a40cfcd1c65e 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -16856,9 +16856,8 @@ F:	Documentation/devicetree/bindings/pci/xilinx-versal-cpm.yaml
+>  F:	drivers/pci/controller/pcie-xilinx-cpm.c
+>  
+>  PCI ENDPOINT SUBSYSTEM
+> -M:	Lorenzo Pieralisi <lpieralisi@kernel.org>
+> +M:	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+>  M:	Krzysztof Wilczyński <kw@linux.com>
+> -R:	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+>  R:	Kishon Vijay Abraham I <kishon@kernel.org>
+>  L:	linux-pci@vger.kernel.org
+>  S:	Supported
+> -- 
+> 2.34.1
+> 
 
-The series lgtm, having the core handle these would be good. I will wait
-couple of days for people to test this and give a t-b and apply.
-I hope it is okay if patch1 goes thru sdw tree?
-
-BR
 -- 
-~Vinod
+மணிவண்ணன் சதாசிவம்
 
