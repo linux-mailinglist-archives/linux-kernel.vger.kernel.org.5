@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-45662-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45663-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BE348433B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 03:24:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C28638433BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 03:24:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC98A28E030
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 02:24:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26A51B257E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 02:24:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58DCFD262;
-	Wed, 31 Jan 2024 02:18:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96959FBE1;
+	Wed, 31 Jan 2024 02:19:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="c+JT9BFr"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Bky9jtv1"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF1961FA1;
-	Wed, 31 Jan 2024 02:18:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6599CFBE7;
+	Wed, 31 Jan 2024 02:19:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706667532; cv=none; b=FDrFZTP2x6dK2Q+kBPterafeKpwfHi69yGY9OjMfZiDGou+MTT2wxBWyfq0qhds+btdEEumnWMbe+G6Zb7qef1F/korVn8pz1PtEDG3/m6L079gFOPBwA9eOlXD2sWVBC+j/QyPf+8QRVOd1O7FArVXl5NP9Nl4XMyh1fJR3h0g=
+	t=1706667549; cv=none; b=hwjS6dHOXHwz2ntDDT9TKsFj6Dy99mqzd3uT+QFW/LO54jRONuYyLVMuYAnmj4W4eQgVXpE0mPYdzVbdc50fy6T4So7hhsLd4Kol5tqIZhYg1PAxbW4vxb2yfxLvt0zWPNVaJ6JQLEdfUnMwgkPDeLuAw3EWc/TzbfP67EIiBPw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706667532; c=relaxed/simple;
-	bh=vVb6RIIvOt4enB6/MzuWcA6dkAPHXShQ2Vxb7to1nk8=;
+	s=arc-20240116; t=1706667549; c=relaxed/simple;
+	bh=EazMTTYX9oeR/uhQC7ENeexop7S60anC75kEcPjLk3Y=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Fpq5EE1+7gF2tglGVmgST1Zl+/rEUXH8B9TPiseQKZ6TGAaBB19MGuoNfBKTN9/z+QwPyoeQ0d4VmquZHXegsq6nY4EZ6t1WhhGUlKDnCCdX0XIodE28/Q4Jziyg1CbKifwT6lDMsc/RT1ejsHjyTjSlHvU02w3X5ZNJAxq6bm8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=c+JT9BFr; arc=none smtp.client-ip=192.198.163.7
+	 MIME-Version; b=QRlHFImZmwG4Mz3li7x4FxYVz0PLReapV15ZazSPnIaKRoDn33httJ7f9rwiVRYT8JdR1Prr4WBqou00qc2UVj8oW7IKXt0V7IbjzXs2jM6gNwmLgUHmSd65ZeM2qDRc60Q+bXAkv0ena5H3kxbThI1ckHle5SV/V620uBfxpG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Bky9jtv1; arc=none smtp.client-ip=192.198.163.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706667530; x=1738203530;
+  t=1706667547; x=1738203547;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=vVb6RIIvOt4enB6/MzuWcA6dkAPHXShQ2Vxb7to1nk8=;
-  b=c+JT9BFrlYhYTn4TBb/f5zXZo1yTFyR3qoIN6jw7BatTkPRW/VrnDze6
-   RkgGTTiFlgRFqmGjQEDbdjRwQcPX8+SDDY7ynKSavq0pjyCiy9UvORqoE
-   AWnMnlxeOeOKreQ+xUYd/j3CYupCET5kiJ5Fsbpm1sT+lv8ocL2iNUAc2
-   Fcw4DrGALZwT+0qx7gV2NQ/q02E50eqYhxvBSy6NMUbH5TcyLT2syjrvg
-   9XQfmB7BTRmZBipZlBqfan4b6aZ7aevCxrPFE00HYrB+Wf13kyL7+m1yf
-   TZTpYNd2nyv8Q1GvF6PlOxtCy7zCiw9hpiIseeJfH/uApcyV0xsumx/Ik
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="24939042"
+  bh=EazMTTYX9oeR/uhQC7ENeexop7S60anC75kEcPjLk3Y=;
+  b=Bky9jtv1AmGnEyLuST7iUPm66tWCHVgLTmBmJ/2GNDFZNRdmDWmk4Mz7
+   Tm0tF6d4Ud8gS0k+mjha5BeRWmMPLMi4RsvgN7arXDcia0PfUo4dAvFq8
+   e9uNu/jUlFYVRDsyMIOz0Uh8hAJ0gOxpj9OcJbFHQOsMVEhMGFDTa+bm8
+   CjWU/82fsxz80z/VvOvlJpcSf9zcQvCJoTLgE4qhogq8jGGyQnbyl+Rx5
+   wBR959dZwA5DgbM2cZDW+xSf5zGn3fa98HthE+k/MIk6kp/+VPSa4xWD7
+   nWIFSZPtvJCxX0jmTwSQOIMksi/0NHwhjJxx69/k2AtVqjl3FBQafxuwZ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="24939137"
 X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="24939042"
+   d="scan'208";a="24939137"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 18:18:49 -0800
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 18:19:06 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="907714702"
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="907714731"
 X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="907714702"
+   d="scan'208";a="907714731"
 Received: from haibo-optiplex-7090.sh.intel.com ([10.239.159.132])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 18:18:41 -0800
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 18:18:59 -0800
 From: Haibo Xu <haibo1.xu@intel.com>
 To: 
 Cc: xiaobo55x@gmail.com,
@@ -71,29 +71,28 @@ Cc: xiaobo55x@gmail.com,
 	Anup Patel <apatel@ventanamicro.com>,
 	Alexandre Ghiti <alexghiti@rivosinc.com>,
 	Greentime Hu <greentime.hu@sifive.com>,
+	Baoquan He <bhe@redhat.com>,
 	Jisheng Zhang <jszhang@kernel.org>,
 	Sami Tolvanen <samitolvanen@google.com>,
 	=?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
-	Baoquan He <bhe@redhat.com>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Chen Jiahao <chenjiahao16@huawei.com>,
 	Arnd Bergmann <arnd@arndb.de>,
+	Chen Jiahao <chenjiahao16@huawei.com>,
 	James Morse <james.morse@arm.com>,
 	Evan Green <evan@rivosinc.com>,
 	Samuel Holland <samuel.holland@sifive.com>,
-	Marc Zyngier <maz@kernel.org>,
-	Tony Luck <tony.luck@intel.com>,
 	Ard Biesheuvel <ardb@kernel.org>,
+	Tony Luck <tony.luck@intel.com>,
 	Yuntao Wang <ytcoode@gmail.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
 	Alison Schofield <alison.schofield@intel.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
 	linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	linux-acpi@vger.kernel.org,
 	acpica-devel@lists.linux.dev
-Subject: [PATCH 1/4] ACPICA: SRAT: Add RISC-V RINTC affinity structure
-Date: Wed, 31 Jan 2024 10:31:58 +0800
-Message-Id: <6473e0bb42524e4f29112290a92539d1a800eb69.1706603678.git.haibo1.xu@intel.com>
+Subject: [PATCH 2/4] ACPI: NUMA: Add handler for SRAT RINTC affinity structure
+Date: Wed, 31 Jan 2024 10:31:59 +0800
+Message-Id: <a1e20de53156f50385c7609507982f08866e859b.1706603678.git.haibo1.xu@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1706603678.git.haibo1.xu@intel.com>
 References: <cover.1706603678.git.haibo1.xu@intel.com>
@@ -105,54 +104,93 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-ACPICA commit 93caddbf2f620769052c59ec471f018281dc3a24
+Add RINTC affinity structure handler during parsing SRAT table.
+The ARCH specific implementation will be added in next patch.
 
-Add definition of RISC-V Interrupt Controller(RINTC)
-affinity structure which was approved by UEFI forum
-and will be part of next ACPI spec version(6.6).
-
-Link: https://github.com/acpica/acpica/commit/93caddbf
 Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
 ---
- include/acpi/actbl3.h | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+ drivers/acpi/numa/srat.c | 32 +++++++++++++++++++++++++++++++-
+ include/linux/acpi.h     |  3 +++
+ 2 files changed, 34 insertions(+), 1 deletion(-)
 
-diff --git a/include/acpi/actbl3.h b/include/acpi/actbl3.h
-index c080d579a546..5202e3fc9b41 100644
---- a/include/acpi/actbl3.h
-+++ b/include/acpi/actbl3.h
-@@ -192,7 +192,8 @@ enum acpi_srat_type {
- 	ACPI_SRAT_TYPE_GIC_ITS_AFFINITY = 4,	/* ACPI 6.2 */
- 	ACPI_SRAT_TYPE_GENERIC_AFFINITY = 5,	/* ACPI 6.3 */
- 	ACPI_SRAT_TYPE_GENERIC_PORT_AFFINITY = 6,	/* ACPI 6.4 */
--	ACPI_SRAT_TYPE_RESERVED = 7	/* 7 and greater are reserved */
-+	ACPI_SRAT_TYPE_RINTC_AFFINITY = 7,	/* ACPI 6.6 */
-+	ACPI_SRAT_TYPE_RESERVED = 8	/* 8 and greater are reserved */
- };
+diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
+index 0214518fc582..503abcf6125d 100644
+--- a/drivers/acpi/numa/srat.c
++++ b/drivers/acpi/numa/srat.c
+@@ -165,6 +165,19 @@ acpi_table_print_srat_entry(struct acpi_subtable_header *header)
+ 		}
+ 	}
+ 	break;
++
++	case ACPI_SRAT_TYPE_RINTC_AFFINITY:
++		{
++			struct acpi_srat_rintc_affinity *p =
++			    (struct acpi_srat_rintc_affinity *)header;
++			pr_debug("SRAT Processor (acpi id[0x%04x]) in proximity domain %d %s\n",
++				 p->acpi_processor_uid,
++				 p->proximity_domain,
++				 (p->flags & ACPI_SRAT_RINTC_ENABLED) ?
++				 "enabled" : "disabled");
++		}
++		break;
++
+ 	default:
+ 		pr_warn("Found unsupported SRAT entry (type = 0x%x)\n",
+ 			header->type);
+@@ -448,6 +461,21 @@ acpi_parse_gi_affinity(union acpi_subtable_headers *header,
+ }
+ #endif /* defined(CONFIG_X86) || defined (CONFIG_ARM64) */
  
- /*
-@@ -296,6 +297,21 @@ struct acpi_srat_generic_affinity {
- #define ACPI_SRAT_GENERIC_AFFINITY_ENABLED     (1)	/* 00: Use affinity structure */
- #define ACPI_SRAT_ARCHITECTURAL_TRANSACTIONS   (1<<1)	/* ACPI 6.4 */
++static int __init
++acpi_parse_rintc_affinity(union acpi_subtable_headers *header,
++			 const unsigned long end)
++{
++	struct acpi_srat_rintc_affinity *rintc_affinity;
++
++	rintc_affinity = (struct acpi_srat_rintc_affinity *)header;
++	acpi_table_print_srat_entry(&header->common);
++
++	/* let architecture-dependent part to do it */
++	acpi_numa_rintc_affinity_init(rintc_affinity);
++
++	return 0;
++}
++
+ static int __initdata parsed_numa_memblks;
  
-+/* 7: RINTC Affinity (ACPI 6.6) */
+ static int __init
+@@ -501,7 +529,7 @@ int __init acpi_numa_init(void)
+ 
+ 	/* SRAT: System Resource Affinity Table */
+ 	if (!acpi_table_parse(ACPI_SIG_SRAT, acpi_parse_srat)) {
+-		struct acpi_subtable_proc srat_proc[4];
++		struct acpi_subtable_proc srat_proc[5];
+ 
+ 		memset(srat_proc, 0, sizeof(srat_proc));
+ 		srat_proc[0].id = ACPI_SRAT_TYPE_CPU_AFFINITY;
+@@ -512,6 +540,8 @@ int __init acpi_numa_init(void)
+ 		srat_proc[2].handler = acpi_parse_gicc_affinity;
+ 		srat_proc[3].id = ACPI_SRAT_TYPE_GENERIC_AFFINITY;
+ 		srat_proc[3].handler = acpi_parse_gi_affinity;
++		srat_proc[4].id = ACPI_SRAT_TYPE_RINTC_AFFINITY;
++		srat_proc[4].handler = acpi_parse_rintc_affinity;
+ 
+ 		acpi_table_parse_entries_array(ACPI_SIG_SRAT,
+ 					sizeof(struct acpi_table_srat),
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index b7165e52b3c6..a65273db55c6 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -269,6 +269,9 @@ acpi_numa_gicc_affinity_init(struct acpi_srat_gicc_affinity *pa) { }
+ 
+ int acpi_numa_memory_affinity_init (struct acpi_srat_mem_affinity *ma);
+ 
++static inline void
++acpi_numa_rintc_affinity_init(struct acpi_srat_rintc_affinity *pa) { }
 +
-+struct acpi_srat_rintc_affinity {
-+	struct acpi_subtable_header header;
-+	u16 reserved;           /* Reserved, must be zero */
-+	u32 proximity_domain;
-+	u32 acpi_processor_uid;
-+	u32 flags;
-+	u32 clock_domain;
-+};
-+
-+/* Flags for struct acpi_srat_rintc_affinity */
-+
-+#define ACPI_SRAT_RINTC_ENABLED     (1)	/* 00: Use affinity structure */
-+
- /*******************************************************************************
-  *
-  * STAO - Status Override Table (_STA override) - ACPI 6.0
+ #ifndef PHYS_CPUID_INVALID
+ typedef u32 phys_cpuid_t;
+ #define PHYS_CPUID_INVALID (phys_cpuid_t)(-1)
 -- 
 2.34.1
 
