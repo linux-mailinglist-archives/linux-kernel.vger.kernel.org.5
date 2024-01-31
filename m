@@ -1,115 +1,117 @@
-Return-Path: <linux-kernel+bounces-47099-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47100-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFE5B844920
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:45:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF8A3844922
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:47:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 894E02906E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:45:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A0AD28255F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:47:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 931C838382;
-	Wed, 31 Jan 2024 20:44:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5612C383A4;
+	Wed, 31 Jan 2024 20:47:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VO2ox0YB"
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="fOo7CxMr"
+Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BF8524A18
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 20:44:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04A7038382
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 20:47:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706733895; cv=none; b=WuS6m8VqcjG+PUTk0gNfjlo+i1uk25HR8uml8pI3eB1L//0rhHICrevJ5ZipMAni9RcYeyqy8vaWOYtGin01sCz/CWAelHKEfRrZ5+Ic1jP/INat1ogrTGT8+OPHmlDIfoQUBUN8mWCQJpNkHy0JkdRk6tsq3j6mENQwjRuybj0=
+	t=1706734036; cv=none; b=PPB1zjY20bT1JL/a6mxEoDk25BopTl37H5F73NTUPqtdRz1gJM3nZg21AwufD4cdo5IFfSniEcRmEZEsKioVzamL93+MsEBhiPjw5QFlrjCO4mQg+IqrNdWdsJQe6G7eE/i2xSWtpnY/ReDmFKmdqJm7DvgqDcp5M13GXj5/hdU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706733895; c=relaxed/simple;
-	bh=+Aepf8sdCd8G//RlCha5XYDrJRIchvN1hEFdOszOu6g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=R1Tms+g6pi3bLPNcMTn26JY8UcrD6Vz2aMXSAG+T25gjaF6AHSwgkipIAasY1TGsKZCXNHCQ0PjST7z3GJEh2LykaQOQaGJlRwzgtEZ7VqW0hUsWfWUkR8PxDiQgHRiuS4/XPFikvZRa6TR8zwLqRM0teNyQljdjIT9Wxzb28lo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VO2ox0YB; arc=none smtp.client-ip=209.85.128.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-6040fe8ba39so2395377b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 12:44:54 -0800 (PST)
+	s=arc-20240116; t=1706734036; c=relaxed/simple;
+	bh=U5ubKWb5lmNwnTSRf1K63zeIXxhV8he9NKglHhX61pM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=l9aU59IgE92Wo4MxIIbb80eHzynUAdCPi8L9lVvhKY/jO6rN9CfEwixibBL8hDmMJ1IHvS0o3DJK/JA6VkOvwYw4sVZucHKTlQ3xtBdHA+17O4UI9TYrR+ZB6XViIYrgjJBygIFOct+7gRgMMzcDuJtuciHlPopAXllgvqL7x4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=fOo7CxMr; arc=none smtp.client-ip=209.85.222.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-7853a9eb5daso12049585a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 12:47:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706733893; x=1707338693; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+Aepf8sdCd8G//RlCha5XYDrJRIchvN1hEFdOszOu6g=;
-        b=VO2ox0YBjiSG31RTVbeDI2z1IFZxNfm318i+xgL9o0l6lV1eQuIHpPdz7DgUERgFkq
-         JesaQHiT+pdJ00vk7VIA9ZYSn7Ddetwo5NCyYLT4Oc3dTpAM4wnBHW2CnR4lBQmbeqc/
-         Pp7G4hh1vNQSdUpAT0CpGcW09XxpiyqDwWZHkWXXh9mNCqkjfpOybDmPGqaLIv8qggiD
-         k8g22wwpuCPKkqgA61s9zFOzazpMAIUG5JImyfkl34cfbt0foudlH+sOLcS74K9hTgau
-         riDWmSyla8hspJQr6jB6S/rSpfvN/CxX7f0exXsHdlD4PcttPowt4MwhZOZ9Gz0Av2Rj
-         xk0w==
+        d=chromium.org; s=google; t=1706734034; x=1707338834; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IHehOClwdwyT5hm1jstGhrGJBzJcQJ/fIMBxPcZfJIQ=;
+        b=fOo7CxMr/3JbUbtfD/pGNfD65MJccHRHs5f277Kn0jnzxOUwRySgopxS7FprHfq559
+         DiImO2y5Pb+6qCmTWfFXF+Z3mnuIBsOk09ZKTsOmkaNSdNVBD9mM9kdqcaUaDaZEOcFY
+         G1NE4br91CXm+FT7CaHyR/4MfRjnEvFdMMhfQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706733893; x=1707338693;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+Aepf8sdCd8G//RlCha5XYDrJRIchvN1hEFdOszOu6g=;
-        b=i+ZO6i/gxgOADhnNO7Yix63aVvFHTD3qfJ3C2+vNY+QKFFGSD9f8I/EgTgu74+qZxP
-         YzFJBMxuTEBG0RzoEPHxuAvhWOaQL6gYX/UQl/U4wV+A0BijWlQudOEozJhSOI47CoRS
-         k9pdGrJx2JzWOLIIylJulBycGQWU1KaOEIIMiUzY69LEX2rAf8r9l74asMuAbw/zvPYL
-         byoAyQ6RAK9sPG9mZ5KyAXsnQsgTpUTVXDYt/RQebdqIhSNeqNKrLVPe0XV39OAFknd/
-         sgwA/Vl1PWHc1YCs/fuz7VBW6PieVXB1bM6DO+L77wjoCKTWuggC1dDacfKcBl006GKB
-         ElWw==
-X-Gm-Message-State: AOJu0YyRA36Cw8OM+jgb6Oabt9zT+UP3P5s8cZXnFdQW/Qu3GS3X2suV
-	Ru04zPBVj661L/433yEmjUHeJkeGQGS8w7b+GM5WLTGNLnUGRu/VqSJCPKbSgSD1BNYJPMzaXeQ
-	X/H2PGs/xVYUfvCQl07IOsMY1kWX2L1RYmPdn3A==
-X-Google-Smtp-Source: AGHT+IHS/WgJih0pA4PCi6jtXXi0NvvqNNRcB0nvYJUMQTqgkNEy0vEgAEVs0YIeJ1unhWTazFjP4rw+Sm0vCsAVTlU=
-X-Received: by 2002:a81:4950:0:b0:603:fd67:a5aa with SMTP id
- w77-20020a814950000000b00603fd67a5aamr1871650ywa.19.1706733893289; Wed, 31
- Jan 2024 12:44:53 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706734034; x=1707338834;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IHehOClwdwyT5hm1jstGhrGJBzJcQJ/fIMBxPcZfJIQ=;
+        b=lGS1RLZriQSTdhG2PaJ5q8gcVdVDahP9IqLrayzxv02qDJg3pIQthXGEgSyj9qMjde
+         npli+nWwo9x5b4OFSN638g/CaY3iJGExUvFhgED65NefE10zA9dLhyimJ2YVeiq33Rht
+         8rY0aBhWyyarGW6kluwUsGGW/eG6amzXB3hvYj76n8i1pXa5ID8o1ZzPQMVqKgpc1N3w
+         FleV38FI0jPTvVMd/mr2HaoD75/fDxF27CRgKKrg+FrRcwJxHgUkSB9pJLp9fQytGYNb
+         R6/NTvg5pR6GcVJWo3Z4whXqkWdgoMMX5z+PqY1Z1ZObAlzF4ojutExENixQGUDCrflj
+         vBhw==
+X-Gm-Message-State: AOJu0YxG6Viw6T74l6sX3TegT/Ez31S9NQ4PDDaHVKR0UDJ/Wp3mPhST
+	DIpX3IEhV5+e6cGaU7uDBnCQSwTDGU/bdG9euoUkM1qB7F2AHNsOZjIICMpSLQ==
+X-Google-Smtp-Source: AGHT+IGFl+yQTcSkjdkSZkj7+XvZs9cGGUHj14aKkZC+jmz3gUMJNsJYBd6YGetGBZWQKYm6fSYcbg==
+X-Received: by 2002:a05:6214:d02:b0:686:2ff1:8de2 with SMTP id 2-20020a0562140d0200b006862ff18de2mr3086741qvh.41.1706734033777;
+        Wed, 31 Jan 2024 12:47:13 -0800 (PST)
+Received: from pazz.c.googlers.com.com (240.157.150.34.bc.googleusercontent.com. [34.150.157.240])
+        by smtp.gmail.com with ESMTPSA id ow11-20020a0562143f8b00b0068c67a3647dsm1410352qvb.76.2024.01.31.12.47.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Jan 2024 12:47:13 -0800 (PST)
+From: Paz Zcharya <pazz@chromium.org>
+To: =?UTF-8?q?Jouni=20H=C3=B6gander?= <jouni.hogander@intel.com>,
+	Jani Nikula <jani.nikula@intel.com>,
+	Luca Coelho <luciano.coelho@intel.com>
+Cc: Subrata Banik <subratabanik@google.com>,
+	Manasi Navare <navaremanasi@chromium.org>,
+	Drew Davenport <ddavenport@chromium.org>,
+	Sean Paul <seanpaul@chromium.org>,
+	Marcin Wojtas <mwojtas@chromium.org>,
+	khaled.almahallawy@intel.com,
+	intel-gfx@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	Paz Zcharya <pazz@chromium.org>
+Subject: [PATCH] drm/i915/display: Include debugfs.h in intel_display_debugfs_params.c
+Date: Wed, 31 Jan 2024 20:46:54 +0000
+Message-ID: <20240131204658.795278-1-pazz@chromium.org>
+X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131-mbly-clk-v4-0-bcd00510d6a0@bootlin.com>
-In-Reply-To: <20240131-mbly-clk-v4-0-bcd00510d6a0@bootlin.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 31 Jan 2024 21:44:42 +0100
-Message-ID: <CACRpkdb+aWL-NU36dF6urL3T9gUROQX=9-L7aUC=+GM8x+bArA@mail.gmail.com>
-Subject: Re: [PATCH v4 00/18] Add support for Mobileye EyeQ5 system controller
-To: =?UTF-8?B?VGjDqW8gTGVicnVu?= <theo.lebrun@bootlin.com>
-Cc: Gregory CLEMENT <gregory.clement@bootlin.com>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, 
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, linux-mips@vger.kernel.org, 
-	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>, linux-gpio@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Theo,
+Commit 8015bee0bfec ("drm/i915/display: Add framework to add parameters
+specific to display") added the file intel_display_debugfs_params.c,
+which calls the functions "debugfs_create_{bool, ulong, str}" -- all of
+which are defined in <linux/debugfs.h>. The missing inclusion of this
+header file is breaking the ChromeOS build -- add an explicit include
+to fix that.
 
-thanks for your patches!
+Signed-off-by: Paz Zcharya <pazz@chromium.org>
+---
+ drivers/gpu/drm/i915/display/intel_display_debugfs_params.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-A *new* MIPS platform, not every day I see this!
+diff --git a/drivers/gpu/drm/i915/display/intel_display_debugfs_params.c b/drivers/gpu/drm/i915/display/intel_display_debugfs_params.c
+index b7e68eb62452..f35718748555 100644
+--- a/drivers/gpu/drm/i915/display/intel_display_debugfs_params.c
++++ b/drivers/gpu/drm/i915/display/intel_display_debugfs_params.c
+@@ -3,6 +3,7 @@
+  * Copyright © 2023 Intel Corporation
+  */
+ 
++#include <linux/debugfs.h>
+ #include <linux/kernel.h>
+ 
+ #include <drm/drm_drv.h>
+-- 
+2.43.0.594.gd9cf4e227d-goog
 
-On Wed, Jan 31, 2024 at 5:27=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@bootl=
-in.com> wrote:
-
-> Pin control is about controlling bias, drive strength and muxing. The
-> latter allows two functions per pin; the first function is always GPIO
-> while the second one is pin-dependent. There exists two banks, each
-> handled in a separate driver instance. Each pin maps to one pin group.
-> That makes pin & group indexes the same, simplifying logic.
-
-Can the three pin control patches be merged separately? (It looks like.)
-
-That would make my job easier when we ge there.
-
-I will try to look closer at each patch!
-
-Yours,
-Linus Walleij
 
