@@ -1,160 +1,132 @@
-Return-Path: <linux-kernel+bounces-46893-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46895-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EC6C8445E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:19:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7315E8445ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:20:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 319142925E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:19:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 032D3292EDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:20:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD85E12CDAD;
-	Wed, 31 Jan 2024 17:18:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AC8012DDAA;
+	Wed, 31 Jan 2024 17:19:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="T6eti3Jo";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="tbHH6htc";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="T6eti3Jo";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="tbHH6htc"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NGMAA2FH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5145A1EF12;
-	Wed, 31 Jan 2024 17:18:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93B8312FF60;
+	Wed, 31 Jan 2024 17:19:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706721530; cv=none; b=K0NawIozxj4/Eh/Q2mso2pbo0lndjtavKUP/e34Q4ZoUirQxWUUM6oTXu2PrbPMNgE0xKnx0sNQ7TyK0PnYGFd6skxn5Jr4FRXgnIygz1aai2jTtQOGOT/jqqlGyo0cdN1p5OYwQa28ILNd+aK8kxk9cCKdoYUGVwO6xnZd1xhQ=
+	t=1706721540; cv=none; b=ZsjUD0DPXIeXLIEo7OXBjAsoQwN1Jr7iZNMRPZ+X739b3wVToYLT4pSfepvjMbrGuuu8GJD9j2QcWFfs8BVt7OtPOPx++FBtHc5eQBwgN0LZJS6wVySrLfmCqd0SrsyChUdYP4ItYhTVLiKjvxtkrjeqZt47NrHtuxojDq1fr2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706721530; c=relaxed/simple;
-	bh=IIUrR5YxqrFodLFFKzfNxQbgIV0lT446TBY2XEfvZHQ=;
+	s=arc-20240116; t=1706721540; c=relaxed/simple;
+	bh=FZOebloMPKqD9PhoGIK6a0A3JsQT79DFjzcP89ICJNQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cCUb1V1r6Tfqu0/iW2IjEympeelhZxytQZ3EUr1AAklhakBiM/hq1bzmyZk1LFCdn6RhX7lpsHLdFMUTP8FmJoc4ygUeom/5dF4b5WRFXtdq+tL1DGY/WkJn4CGLvVBCYpsKyi4wUFUGexHediXywbD/fovkt6FXEkv/HMnLM90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=T6eti3Jo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=tbHH6htc; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=T6eti3Jo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=tbHH6htc; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 6B2BE22004;
-	Wed, 31 Jan 2024 17:18:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706721525; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pX2DnOrLwWKLYumNK3TzC8Reh/LhxYlUXHdH/lnaQVY=;
-	b=T6eti3JomHWyQK2w1ouQcH9N4rpG3PELNj74ZN4VaqatpzG0OGvDMrbfaCGpulVE9HVvK5
-	6V/stfT1hSlW3BChIjK1gikbVn5HYP9MKe2/UutxHWafVFnPZflIK4VqdaGX8SGo19ABer
-	d9IsW/MUWk3AJRNXq/DGzvGtKYGIKPI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706721525;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pX2DnOrLwWKLYumNK3TzC8Reh/LhxYlUXHdH/lnaQVY=;
-	b=tbHH6htc44POBCV+ShlckMgx2UO6ThqfIflJtvq/Rt1bmAUh4Z30usoPGlC0MGwUa088KV
-	OQBUbijpEzcaSgDw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706721525; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pX2DnOrLwWKLYumNK3TzC8Reh/LhxYlUXHdH/lnaQVY=;
-	b=T6eti3JomHWyQK2w1ouQcH9N4rpG3PELNj74ZN4VaqatpzG0OGvDMrbfaCGpulVE9HVvK5
-	6V/stfT1hSlW3BChIjK1gikbVn5HYP9MKe2/UutxHWafVFnPZflIK4VqdaGX8SGo19ABer
-	d9IsW/MUWk3AJRNXq/DGzvGtKYGIKPI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706721525;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pX2DnOrLwWKLYumNK3TzC8Reh/LhxYlUXHdH/lnaQVY=;
-	b=tbHH6htc44POBCV+ShlckMgx2UO6ThqfIflJtvq/Rt1bmAUh4Z30usoPGlC0MGwUa088KV
-	OQBUbijpEzcaSgDw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 604E3132FA;
-	Wed, 31 Jan 2024 17:18:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id pDt2F/WAumXQFwAAn2gu4w
-	(envelope-from <jack@suse.cz>); Wed, 31 Jan 2024 17:18:45 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 0ED1DA0809; Wed, 31 Jan 2024 18:18:45 +0100 (CET)
-Date: Wed, 31 Jan 2024 18:18:45 +0100
-From: Jan Kara <jack@suse.cz>
-To: syzbot <syzbot+4654552e088ed458b10d@syzkaller.appspotmail.com>
-Cc: axboe@kernel.dk, brauner@kernel.org, jack@suse.cz,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [reiserfs?] BUG: unable to handle kernel NULL pointer
- dereference in reiserfs_find_entry
-Message-ID: <20240131171845.okzidcm6gylcy4gw@quack3>
-References: <00000000000073b6d905eb48de3f@google.com>
- <000000000000e3d3f9061040b2ff@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=VhNsT9Qq0FgF+L4y+9S0ukyTH4g1pzszBxZmzIVeAsVJJ7MGIpvumq8eSNv7E5JULI2JKlpF+p0xqXrUiV8WXuoUOYJXDca6rIETOMTdI+VvxYcw+zQUkf7XjPP/4z4m+XMy499Ky8fpXvZu53c85ANTp3lj2CW5bnYaaPzwAZo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NGMAA2FH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4069C433F1;
+	Wed, 31 Jan 2024 17:18:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706721540;
+	bh=FZOebloMPKqD9PhoGIK6a0A3JsQT79DFjzcP89ICJNQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NGMAA2FHjpQXtjuRk8e6xfv27+wW8njNB9eQvHRFQTszAk0cT2WDLNXgnxquGFFPF
+	 mWHZsfg4wjo4lS1ad/eQh5ojmxWaNQhmH7cbkdx4+BAgQoZUFR+rPl/duLCuqMdTjB
+	 X+F/mP7XMadWhazWO/i6vK7MPN3yDQ1iqtNKvJhx/d20xUsysnV8L2siK0YF8NqXuo
+	 F2r/4T2Q4u96BUEfCwzgWadibeL385a3viilOZgRZ1pW7kvjpLnoT2zqqtapMEenuT
+	 HHaGzl3suBG81YAwMNjFSWIiq8DJx6faEMnk1iTZoPgWiLUe/I/Eq0GZratMSAfmyr
+	 noAuwTT8SagJQ==
+Date: Wed, 31 Jan 2024 11:18:57 -0600
+From: Rob Herring <robh@kernel.org>
+To: Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Cc: Conor Dooley <conor@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: mmp-dma: convert to YAML
+Message-ID: <20240131171857.GA1531631-robh@kernel.org>
+References: <20240127-pxa-dma-yaml-v1-1-573bafe86454@skole.hr>
+ <20240128-feminine-sulfite-8891c60ec123@spud>
+ <2924724.e9J7NaK4W3@radijator>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <000000000000e3d3f9061040b2ff@google.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-0.10 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=162cf2103e4a7453];
-	 TAGGED_RCPT(0.00)[4654552e088ed458b10d];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,syzkaller.appspot.com:url,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 SUBJECT_HAS_QUESTION(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -0.10
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2924724.e9J7NaK4W3@radijator>
 
-On Wed 31-01-24 08:52:05, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
+On Sun, Jan 28, 2024 at 07:01:36PM +0100, Duje Mihanović wrote:
+> On Sunday, January 28, 2024 6:28:03 PM CET Conor Dooley wrote:
+> > On Sat, Jan 27, 2024 at 05:53:45PM +0100, Duje Mihanović wrote:
+> > > +allOf:
+> > > +  - $ref: dma-controller.yaml#
+> > > +  - if:
+> > > +      properties:
+> > > +        compatible:
+> > > +          contains:
+> > > +            enum:
+> > > +              - marvell,adma-1.0
+> > > +              - marvell,pxa910-squ
+> > > +    then:
+> > > +      properties:
+> > > +        asram:
+> > > +          description:
+> > > +            phandle to the SRAM pool
+> > > +          minItems: 1
+> > > +          maxItems: 1
+> > > +        iram:
+> > 
+> > > +          maxItems:
+> > These properties are not mentioned in the text binding, nor commit
+> > message. Where did they come from?
 > 
-> commit 6f861765464f43a71462d52026fbddfc858239a5
-> Author: Jan Kara <jack@suse.cz>
-> Date:   Wed Nov 1 17:43:10 2023 +0000
+> Both of them can be found in arch/arm/boot/dts/marvell/mmp2.dtsi. There is one 
+> major difference between the two: iram is not mentioned at all by the mmp_tdma 
+> driver (on the other hand, asram is not only used but also required for a 
+> successful probe), but I left it here as it's still found in the MMP2 dtsi. On 
+> second thought it should probably be dropped both here and in the dtsi.
 > 
->     fs: Block writes to mounted block devices
+> > That said, for properties that are only usable on some platforms, please
+> > define them at the top level and conditionally permit/constrain them.
 > 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17e6fb5be80000
-> start commit:   51f269a6ecc7 Merge tag 'probes-fixes-6.4-rc4' of git://git..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=162cf2103e4a7453
-> dashboard link: https://syzkaller.appspot.com/bug?extid=4654552e088ed458b10d
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1177c895280000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17f4b2a5280000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
+> Could you please point me to how to do so if this if/then does not do it 
+> properly?
 
-Makes sense:
- 
-#syz fix: fs: Block writes to mounted block devices
+Negate the if and then:
 
-									Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+then:
+  properties:
+    asram: false
+
+There are lots of examples in the tree.
+
+> 
+> > > +unevaluatedProperties: false
+> > > +
+> > > +examples:
+> > > +  # Peripheral controller
+> > > +  - |
+> > > +    pdma0: dma-controller@d4000000 {
+> > 
+> > The label is not needed here or below.
+> > In fact, I'd probably delete the second example as it shows nothing that
+> > the first one does not.
+> 
+> I'd rather add the asram property in the second node (adding onto the above 
+> comment, I now see that it shouldn't have even passed dt_binding_check because 
+> of the missing asram, but it did).
+
+It passed because 'required' is what checks for property presence and 
+nowhere is asram required. It is missing a type definition which should 
+have warned, but may not since it is under an 'if'.
+
+Rob
 
