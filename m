@@ -1,160 +1,123 @@
-Return-Path: <linux-kernel+bounces-47034-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47033-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47B5F844847
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:51:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0B9E844845
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:51:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C30B1C228E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:51:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60068B26509
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:51:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29E643EA96;
-	Wed, 31 Jan 2024 19:51:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="T/dFGNq0"
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D8563EA8A;
+	Wed, 31 Jan 2024 19:51:02 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C10C93EA76
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 19:51:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A39913EA7B;
+	Wed, 31 Jan 2024 19:51:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706730688; cv=none; b=FT5saKFaRwXjxQoSfTaThBhrARp4xE5GGyjlVL/87qOC0NeZR6viG6qQ3/f4ZNZZZ07rUM56NDpsfJrMcJSJ/P1XC0bi79qSgBjtflQpJEuWeVJ164qIspNZOAjToVSs/EFpar4Az9vZ5SxyNTibQcTmpjFBjoeVkqB2oE5HiZw=
+	t=1706730661; cv=none; b=u4z7zznMkwqDGKSky+EyicaRO0kEaXKZitMoT6SDuB02O4Ba/jya7x/LRZWS6o2ZEW+L7rU4Uhlfv2FntIiKy+E8Qw4rVeIgL2xpmBVjsw/Ugy3qUTAK61fYZd7zNZJDEHvpULrjscOWVbpTPk8AgnTVJ+LUWmkVXFm7aRR6anI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706730688; c=relaxed/simple;
-	bh=8ZnEORlLbsizKlPFacpTEd7KUr01nxGRz1weMm3NKU4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=D8I9F7keTSFL25oSCN6tBqr//1KI2bYrEpbcgtxvXs6GFdRXCdGjjg9nReGFJ/q9Pg+kYiVVPr3lOc8p3jyMIZ2eCSGhCevknsed/vb8KFEJDvmSsWqlsbPPgBXE+CymWnUIfWzMjW4Rh5PAaVQ/UpHyZ4Zj/hcjV8tdW5dVCp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=T/dFGNq0; arc=none smtp.client-ip=209.85.128.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-6040e7ebf33so1086017b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 11:51:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706730686; x=1707335486; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OZWFUz0qVhfYcOd6k65WaS5iTo9NPz5WXjPmrZMzV94=;
-        b=T/dFGNq0WcdpJ8au0TejcD/HB7cCpK/wY7Hh9ihq3CYW/CeF/VEzqE0hnh82x/775/
-         ve/FgS+ZFl5lqOSDbsJ9xHiAy8SjOF08IbmH4kML/Fi/9b972bjVhj3Ir9P78jlRlqwB
-         LqFXt8gBcH24MLVofYOhHWQuM9GnkYJCXkiPEvlm7dfTz5PEunlEZxR+e9MKczcIgvzI
-         pigD8UXOES3mkzgR69IuikmtiL14yAkMa814mPQgJX2PqP4mIRu3C8POd1oVBLTtA40M
-         nDQSPMHczkEF/ZYP2X5dJBmHxLpyOZ1DmbutK5EImqdEPOXGH8lETAwqLeVQgqH05Ixm
-         rR3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706730686; x=1707335486;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OZWFUz0qVhfYcOd6k65WaS5iTo9NPz5WXjPmrZMzV94=;
-        b=b5fu/PJt+/X3/zhnj+wlOlGy21XQ0whyH3KcQHlUHRxK5j8POGNuFtuZUq11TllIbi
-         EwiTKxEepPsw4xuQatAv0tsYn5h6ZCNR/eNnHgF8+V4YxcK7NpHr4QSdUwFz8sJhHGc/
-         4jVa8JfiPhOfpfmUZmyQQ/+IQKyx8ypOmYD+ZFi82YhQuZH9ixmdJfHVInC5GToaAcCr
-         eVcZ7+kgApGVYgUXlDAovVf4aU57lPpPE+qaDElGMliHE8o/UAivQC1RjrLUqPZT1kF7
-         pkLnTBB/FKv1PIpuQOEiDOZYTs1BForGkXQd8gXthU7rcCoP64Q4zncSD/VFA85RM+cI
-         07ng==
-X-Gm-Message-State: AOJu0YyZKDWycedC4OMJEJSS9aqtr09bFO5O5VhC1hKXZbZumJzvHVFY
-	9XBv1VRtmODO60CGU1RmhFdlSqoxwyNFDBoBi5Xe7gC13vW/ayZJ1HrmTgRO/i6h02JLTfdlWF+
-	Q9+FsAtEEwKnjgtx4QqECMdU1/9i4IUkZ372erg==
-X-Google-Smtp-Source: AGHT+IGs/NmCuCnWWnRTFZmUjiYjl0D9360SAO7l1FGiKCPViEqEv3tl91ectKTgOG2KW8co04hic15sCAz9DuoRn/A=
-X-Received: by 2002:a81:a0c3:0:b0:604:fd3:e656 with SMTP id
- x186-20020a81a0c3000000b006040fd3e656mr1407309ywg.19.1706730685631; Wed, 31
- Jan 2024 11:51:25 -0800 (PST)
+	s=arc-20240116; t=1706730661; c=relaxed/simple;
+	bh=WkxLzqe7R8IsUNodKo0seAmQQD7yja62YP4YaBbLLec=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=MgaxMt8ICsQU4S19oJlRU3VRp7cHaTJ94trVZEfzrNyNCDYsviwr7iiZgrS47mVyyZnKGMzSnEVEmgS7EgWd9vFODGsSSO4aUoO4Kae3GUDCU4o907mwHjuNtrSkNOswnZTDSIGPZDfe3WkDY/163r+YiqaZBD3h5dQPBuT8+pE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 752AEC433F1;
+	Wed, 31 Jan 2024 19:51:00 +0000 (UTC)
+Date: Wed, 31 Jan 2024 14:51:14 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: [PATCH] eventfs: Restructure eventfs_inode structure to be more
+ condensed
+Message-ID: <20240131145114.525936cc@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130124828.14678-1-brgl@bgdev.pl> <20240130124828.14678-10-brgl@bgdev.pl>
-In-Reply-To: <20240130124828.14678-10-brgl@bgdev.pl>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 31 Jan 2024 20:51:14 +0100
-Message-ID: <CACRpkdY8v2x6VzRnEV6baa4_XLGLm0BOe6Nj6wzjujHxqEDHVA@mail.gmail.com>
-Subject: Re: [PATCH 09/22] gpio: remove gpio_lock
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, "Paul E . McKenney" <paulmck@kernel.org>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Wolfram Sang <wsa@the-dreams.de>, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jan 30, 2024 at 1:48=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
- wrote:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> The "multi-function" gpio_lock is pretty much useless with how it's used
-> in GPIOLIB currently. Because many GPIO API calls can be called from all
-> contexts but may also call into sleeping driver callbacks, there are
-> many places with utterly broken workarounds like yielding the lock to
-> call a possibly sleeping function and then re-acquiring it again without
-> taking into account that the protected state may have changed.
->
-> It was also used to protect several unrelated things: like individual
-> descriptors AND the GPIO device list. We now serialize access to these
-> two with SRCU and so can finally remove the spinlock.
->
-> There is of course the question of consistency of lockless access to
-> GPIO descriptors. Because we only support exclusive access to GPIOs
-> (officially anyway, I'm looking at you broken
-> GPIOD_FLAGS_BIT_NONEXCLUSIVE bit...) and the API contract with providers
-> does not guarantee serialization, it's enough to ensure we cannot
-> accidentally dereference an invalid pointer and that the state we present
-> to both users and providers remains consistent. To achieve that: read the
-> flags field atomically except for a few special cases. Read their current
-> value before executing callback code and use this value for any subsequen=
-t
-> logic. Modifying the flags depends on the particular use-case and can
-> differ. For instance: when requesting a GPIO, we need to set the
-> REQUESTED bit immediately so that the next user trying to request the
-> same line sees -EBUSY.
->
-> While at it: the allocations that used GFP_ATOMIC until this point can
-> now switch to GFP_KERNEL.
->
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Some of the eventfs_inode structure has holes in it. Rework the structure
+to be a bit more condensed, and also remove the no longer used llist
+field.
 
-Neat!
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Link: https://lore.kernel.org/linux-trace-kernel/CAHk-=wgh0otaSyV0MNrQpwFDTjT3=TWV94Wit2eUuPdh2KdyVg@mail.gmail.com/
 
-(I'm sorry about NONEXCLUSIVE, let's see what we can do about it...)
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ fs/tracefs/internal.h | 27 ++++++++++++---------------
+ 1 file changed, 12 insertions(+), 15 deletions(-)
 
-> @@ -578,6 +577,9 @@ int gpiod_export(struct gpio_desc *desc, bool directi=
-on_may_change)
->                 return -EINVAL;
->         }
->
-> +       if (!test_and_set_bit(FLAG_EXPORT, &desc->flags))
-> +               return -EPERM;
+diff --git a/fs/tracefs/internal.h b/fs/tracefs/internal.h
+index 1886f1826cd8..beb3dcd0e434 100644
+--- a/fs/tracefs/internal.h
++++ b/fs/tracefs/internal.h
+@@ -32,40 +32,37 @@ struct eventfs_attr {
+ /*
+  * struct eventfs_inode - hold the properties of the eventfs directories.
+  * @list:	link list into the parent directory
++ * @rcu:	Union with @list for freeing
++ * @children:	link list into the child eventfs_inode
+  * @entries:	the array of entries representing the files in the directory
+  * @name:	the name of the directory to create
+- * @children:	link list into the child eventfs_inode
+  * @events_dir: the dentry of the events directory
+  * @entry_attrs: Saved mode and ownership of the @d_children
+- * @attr:	Saved mode and ownership of eventfs_inode itself
+  * @data:	The private data to pass to the callbacks
++ * @attr:	Saved mode and ownership of eventfs_inode itself
+  * @is_freed:	Flag set if the eventfs is on its way to be freed
+  *                Note if is_freed is set, then dentry is corrupted.
++ * @is_events:	Flag set for only the top level "events" directory
+  * @nr_entries: The number of items in @entries
++ * @ino:	The saved inode number
+  */
+ struct eventfs_inode {
+-	struct kref			kref;
+-	struct list_head		list;
++	union {
++		struct list_head	list;
++		struct rcu_head		rcu;
++	};
++	struct list_head		children;
+ 	const struct eventfs_entry	*entries;
+ 	const char			*name;
+-	struct list_head		children;
+ 	struct dentry			*events_dir;
+ 	struct eventfs_attr		*entry_attrs;
+-	struct eventfs_attr		attr;
+ 	void				*data;
++	struct eventfs_attr		attr;
++	struct kref			kref;
+ 	unsigned int			is_freed:1;
+ 	unsigned int			is_events:1;
+ 	unsigned int			nr_entries:30;
+ 	unsigned int			ino;
+-	/*
+-	 * Union - used for deletion
+-	 * @llist:	for calling dput() if needed after RCU
+-	 * @rcu:	eventfs_inode to delete in RCU
+-	 */
+-	union {
+-		struct llist_node	llist;
+-		struct rcu_head		rcu;
+-	};
+ };
+ 
+ static inline struct tracefs_inode *get_tracefs(const struct inode *inode)
+-- 
+2.43.0
 
-This exit early split off from the big if() below (which is good) is
-a new thing right? Maybe mention this in the commit message?
-
-> -/* gpio_lock prevents conflicts during gpio_desc[] table updates.
-> - * While any GPIO is requested, its gpio_chip is not removable;
-> - * each GPIO's "requested" flag serves as a lock and refcount.
-> - */
-> -DEFINE_SPINLOCK(gpio_lock);
-
-GOOD RIDDANCE.
-
-> -               /* FIXME: make this GFP_KERNEL once the spinlock is out. =
-*/
-> -               new =3D kstrdup_const(label, GFP_ATOMIC);
-> +               new =3D kstrdup_const(label, GFP_KERNEL);
-
-And all of this is neat as well.
-
-Someone might complain about splitting that in a separate patch,
-but not me because I don't care so much about such processy
-things. (The patchset is already split enough as it is.)
-
-Yours,
-Linus Walleij
 
