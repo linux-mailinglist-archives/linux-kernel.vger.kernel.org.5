@@ -1,70 +1,77 @@
-Return-Path: <linux-kernel+bounces-46223-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46224-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D364843C6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:26:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A55D8843C72
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:26:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 212151C24E4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:26:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E87A1F2E558
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:26:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9462D80C1A;
-	Wed, 31 Jan 2024 10:22:06 +0000 (UTC)
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6725269D2E;
+	Wed, 31 Jan 2024 10:22:16 +0000 (UTC)
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 401E0762C3;
-	Wed, 31 Jan 2024 10:22:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56B556EB62;
+	Wed, 31 Jan 2024 10:22:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706696526; cv=none; b=nYeQcZi+vsp3qc2t6eDzxTOYux0h6+TAK2hJMQ1yppEBLhbwZdhD9r5fCiPfAwEqa8voKimplD08x0b7ox5K+nz+O4FKDBm+TOzKBZEA5fNaoCzvqRH+bJR95+3VERRWJ4rxonhcP+quSXWUmka+9wYx8dXmutphG5Ga6kmxHdY=
+	t=1706696535; cv=none; b=b4rknrPFr78QvXuxwb0mTd+9Gy33SrgKfiTdHanr1gH/y2GFonwf9swladjkn6NPnVMSUxw+p0ZLLpazV6PMiJIt4a7ic8beG4YVAjwxqtGiAmBPCOVa0rwiMlLA0DXnm7MLkb0Wn89Rv/UOkQYoK6Y0hFVHfjoemV+2Nr37pvo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706696526; c=relaxed/simple;
-	bh=Ew3jG/iqdLrRFnqrV7+TDchfiZaOrt/C9SUF3rcAj1Y=;
+	s=arc-20240116; t=1706696535; c=relaxed/simple;
+	bh=T1vsAmepTlqmawkNvJrOj+ngTvUlcvT0/0Ypb6ts8PA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=fg3bbykBx2fh/D4qSplcnH2sSKzhgngg2KfUMrJD72vxrsF6pkJKnr4pr6BE8WQ0juqW07YEtaklH9RjZDjnDFVbDLQTEyD/YjdFZfsXFjR9NvYZiDpgw9sZ7IkFQtccGwwWdi9mB95hLF53qTi60UNh3lAMVeimw81p+ckh6+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.171
+	 MIME-Version; b=Bw2bKlDd+9RqjD+DPnMXAUDpau+YVUp7+0mM7lo1YoGaLDhMw9fxRk+S3MP6Jdll7yUKfCcGyxan8HBtIEkYLbhP3epQPeEv8EhnSQUV7gjY1VnsHUWRNS5aQM/KdmkVFW+va4nLDZppUBiJlymL+y273Neow2NK20bFELTRH4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d057b6df2aso23783821fa.3;
-        Wed, 31 Jan 2024 02:22:03 -0800 (PST)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a359446b57dso425265766b.3;
+        Wed, 31 Jan 2024 02:22:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706696522; x=1707301322;
+        d=1e100.net; s=20230601; t=1706696531; x=1707301331;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dzz8XfgMT6sJFwrMg84o7ZbqmGEnX1hEApi1gdyPgqI=;
-        b=wodxfXvSsuJaaSUn52h9Seoq7I27FCy2E7UGvol8YViRSk++EXKay/ooOCaM/mhgaS
-         yrOij6nkOjAk3UM4rAkzTw7qPW8uV0/X4qbCsLTQgP3vKY3c+SG82XV+T15ZXYkWr+bs
-         0Z2xAnLi7OmTrJwI6X6NOqkjVf1KuDm7LR7mT+wPD6t2asKrmupuBZmjUvgNMQiv6I92
-         Egnhvjuzl29oDd4y5Lc1UdLHoC7+r7nGtapd25egWgVOeD0PWmA/LPmq9RWz4AeYcyfE
-         5BtEhA7sW9xNlJ2dEyX2kr4U+DVi2qlpoCzhfci6Glq3sQsq/m2SJ34MmsC3oN8EzXJA
-         kKCQ==
-X-Gm-Message-State: AOJu0YzPgGpSA3Gi4Yoo54xSJ9JxdBa4ZOW901pI55/YJn7mvFgXqi//
-	74+ho3e3iHjHKSo/0b6tIA6FuHUcBrXtYAOrLrK2iwOSZNjheJ3J
-X-Google-Smtp-Source: AGHT+IGLJnPF79NwqQqwRXGgWQ/zUEECK2Qh/BDgCMJ5mHWScDQYsl5t7RNpOfZ7+OI03tArUNLnRA==
-X-Received: by 2002:a2e:be28:0:b0:2d0:5a6c:7095 with SMTP id z40-20020a2ebe28000000b002d05a6c7095mr1006031ljq.35.1706696521851;
-        Wed, 31 Jan 2024 02:22:01 -0800 (PST)
-Received: from localhost (fwdproxy-cln-002.fbsv.net. [2a03:2880:31ff:2::face:b00c])
-        by smtp.gmail.com with ESMTPSA id q11-20020a5085cb000000b0055d15d938e6sm5596917edh.11.2024.01.31.02.22.01
+        bh=fdY7+JhQ+hEDO4gjPKK5Z2FJcbw7XGSXZ8KUIzLV2Pw=;
+        b=moMw+PkUA9P8D22yJHKkcZR157CnEXQXlNw0dOthYDAwHVVex7mrWsVGufQVj7b2wj
+         kW33hnLbWmEnR0GHEu938PjzonqANB22Atcg5AT5De3vkdli5ZPw4as6jsfpAiJOGR/0
+         wOlT4glFAWs7toRJjBAZfafHiI21CLCVX/TM/0PBtReUNzj4s83W3Px44zIRZGQWuzU+
+         1b2V0zow9JIPq+jYKnQT6TDaLSOIjQJhxA6HyxRxLq6R1FfRUtAlSAC+xwm80axQD/LM
+         x8J8ysdOkFweswAswsxqNV+RlatIwOPXzcXvaErYLS9LVAYwTGMTtczcbSiB0bDa4soi
+         llUw==
+X-Gm-Message-State: AOJu0YzJmQgeWNwaP2eK+lVuL303vmI8FkOik71Q1CI5kmgMYtJ8p2+v
+	XE6IG5hEexHIZ+13FwjCy/DAtpBJfUUIb1Crw/eKY+01KtWuYp6o
+X-Google-Smtp-Source: AGHT+IEQKJENK97MPR0LlYN14bI5xPkRNPVXgLjUseHtmxwuu1p5RN0krfthk9iSA5ToIrKsPtPgyg==
+X-Received: by 2002:a17:906:c7ce:b0:a31:818d:4927 with SMTP id dc14-20020a170906c7ce00b00a31818d4927mr798956ejb.42.1706696531364;
+        Wed, 31 Jan 2024 02:22:11 -0800 (PST)
+Received: from localhost (fwdproxy-cln-010.fbsv.net. [2a03:2880:31ff:a::face:b00c])
+        by smtp.gmail.com with ESMTPSA id ub14-20020a170907c80e00b00a3109a492d4sm5970435ejc.20.2024.01.31.02.22.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 02:22:01 -0800 (PST)
+        Wed, 31 Jan 2024 02:22:11 -0800 (PST)
 From: Breno Leitao <leitao@debian.org>
 To: davem@davemloft.net,
 	edumazet@google.com,
 	kuba@kernel.org,
 	pabeni@redhat.com,
-	Florian Fainelli <f.fainelli@gmail.com>
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Andrew Morton <akpm@linux-foundation.org>
 Cc: netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
+	Randy Dunlap <rdunlap@infradead.org>,
 	Bjorn Helgaas <bhelgaas@google.com>,
 	Jonathan Corbet <corbet@lwn.net>,
-	Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH net v2 1/2] net: sysfs: Fix /sys/class/net/<iface> path
-Date: Wed, 31 Jan 2024 02:21:49 -0800
-Message-Id: <20240131102150.728960-2-leitao@debian.org>
+	Johannes Berg <johannes.berg@intel.com>,
+	Simon Horman <horms@kernel.org>,
+	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+	linux-trace-kernel@vger.kernel.org (open list:TRACING)
+Subject: [PATCH net v2 2/2] net: dqs: add NIC stall detector based on BQL
+Date: Wed, 31 Jan 2024 02:21:50 -0800
+Message-Id: <20240131102150.728960-3-leitao@debian.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240131102150.728960-1-leitao@debian.org>
 References: <20240131102150.728960-1-leitao@debian.org>
@@ -76,118 +83,389 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The documentation is pointing to the wrong path for the interface.
-Documentation is pointing to /sys/class/<iface>, instead of
-/sys/class/net/<iface>.
+From: Jakub Kicinski <kuba@kernel.org>
 
-Fix it by adding the `net/` directory before the interface.
+softnet_data->time_squeeze is sometimes used as a proxy for
+host overload or indication of scheduling problems. In practice
+this statistic is very noisy and has hard to grasp units -
+e.g. is 10 squeezes a second to be expected, or high?
 
-Fixes: 1a02ef76acfa ("net: sysfs: add documentation entries for /sys/class/<iface>/queues")
+Delaying network (NAPI) processing leads to drops on NIC queues
+but also RTT bloat, impacting pacing and CA decisions.
+Stalls are a little hard to detect on the Rx side, because
+there may simply have not been any packets received in given
+period of time. Packet timestamps help a little bit, but
+again we don't know if packets are stale because we're
+not keeping up or because someone (*cough* cgroups)
+disabled IRQs for a long time.
+
+We can, however, use Tx as a proxy for Rx stalls. Most drivers
+use combined Rx+Tx NAPIs so if Tx gets starved so will Rx.
+On the Tx side we know exactly when packets get queued,
+and completed, so there is no uncertainty.
+
+This patch adds stall checks to BQL. Why BQL? Because
+it's a convenient place to add such checks, already
+called by most drivers, and it has copious free space
+in its structures (this patch adds no extra cache
+references or dirtying to the fast path).
+
+The algorithm takes one parameter - max delay AKA stall
+threshold and increments a counter whenever NAPI got delayed
+for at least that amount of time. It also records the length
+of the longest stall.
+
+To be precise every time NAPI has not polled for at least
+stall thrs we check if there were any Tx packets queued
+between last NAPI run and now - stall_thrs/2.
+
+Unlike the classic Tx watchdog this mechanism does not
+ignore stalls caused by Tx being disabled, or loss of link.
+I don't think the check is worth the complexity, and
+stall is a stall, whether due to host overload, flow
+control, link down... doesn't matter much to the application.
+
+We have been running this detector in production at Meta
+for 2 years, with the threshold of 8ms. It's the lowest
+value where false positives become rare. There's still
+a constant stream of reported stalls (especially without
+the ksoftirqd deferral patches reverted), those who like
+their stall metrics to be 0 may prefer higher value.
+
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- .../ABI/testing/sysfs-class-net-queues        | 22 +++++++++----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ .../ABI/testing/sysfs-class-net-queues        | 23 +++++++
+ include/linux/dynamic_queue_limits.h          | 35 +++++++++++
+ include/trace/events/napi.h                   | 33 ++++++++++
+ lib/dynamic_queue_limits.c                    | 58 +++++++++++++++++
+ net/core/net-sysfs.c                          | 62 +++++++++++++++++++
+ 5 files changed, 211 insertions(+)
 
 diff --git a/Documentation/ABI/testing/sysfs-class-net-queues b/Documentation/ABI/testing/sysfs-class-net-queues
-index 906ff3ca928a..5bff64d256c2 100644
+index 5bff64d256c2..45bab9b6e3ae 100644
 --- a/Documentation/ABI/testing/sysfs-class-net-queues
 +++ b/Documentation/ABI/testing/sysfs-class-net-queues
-@@ -1,4 +1,4 @@
--What:		/sys/class/<iface>/queues/rx-<queue>/rps_cpus
-+What:		/sys/class/net/<iface>/queues/rx-<queue>/rps_cpus
- Date:		March 2010
- KernelVersion:	2.6.35
- Contact:	netdev@vger.kernel.org
-@@ -8,7 +8,7 @@ Description:
- 		network device queue. Possible values depend on the number
- 		of available CPU(s) in the system.
+@@ -96,3 +96,26 @@ Description:
+ 		Indicates the absolute minimum limit of bytes allowed to be
+ 		queued on this network device transmit queue. Default value is
+ 		0.
++
++What:		/sys/class/net/<iface>/queues/tx-<queue>/byte_queue_limits/stall_thrs
++Date:		Jan 2024
++KernelVersion:	6.9
++Contact:	netdev@vger.kernel.org
++Description:
++		Tx completion stall detection threshold. Kernel will guarantee
++		to detect all stalls longer than this threshold but may also
++		detect stalls longer than half of the threshold.
++
++What:		/sys/class/net/<iface>/queues/tx-<queue>/byte_queue_limits/stall_cnt
++Date:		Jan 2024
++KernelVersion:	6.9
++Contact:	netdev@vger.kernel.org
++Description:
++		Number of detected Tx completion stalls.
++
++What:		/sys/class/net/<iface>/queues/tx-<queue>/byte_queue_limits/stall_max
++Date:		Jan 2024
++KernelVersion:	6.9
++Contact:	netdev@vger.kernel.org
++Description:
++		Longest detected Tx completion stall. Write 0 to clear.
+diff --git a/include/linux/dynamic_queue_limits.h b/include/linux/dynamic_queue_limits.h
+index 407c2f281b64..288e98fe85f0 100644
+--- a/include/linux/dynamic_queue_limits.h
++++ b/include/linux/dynamic_queue_limits.h
+@@ -38,14 +38,21 @@
  
--What:		/sys/class/<iface>/queues/rx-<queue>/rps_flow_cnt
-+What:		/sys/class/net/<iface>/queues/rx-<queue>/rps_flow_cnt
- Date:		April 2010
- KernelVersion:	2.6.35
- Contact:	netdev@vger.kernel.org
-@@ -16,7 +16,7 @@ Description:
- 		Number of Receive Packet Steering flows being currently
- 		processed by this particular network device receive queue.
+ #ifdef __KERNEL__
  
--What:		/sys/class/<iface>/queues/tx-<queue>/tx_timeout
-+What:		/sys/class/net/<iface>/queues/tx-<queue>/tx_timeout
- Date:		November 2011
- KernelVersion:	3.3
- Contact:	netdev@vger.kernel.org
-@@ -24,7 +24,7 @@ Description:
- 		Indicates the number of transmit timeout events seen by this
- 		network interface transmit queue.
++#include <linux/bitops.h>
+ #include <asm/bug.h>
  
--What:		/sys/class/<iface>/queues/tx-<queue>/tx_maxrate
-+What:		/sys/class/net/<iface>/queues/tx-<queue>/tx_maxrate
- Date:		March 2015
- KernelVersion:	4.1
- Contact:	netdev@vger.kernel.org
-@@ -32,7 +32,7 @@ Description:
- 		A Mbps max-rate set for the queue, a value of zero means disabled,
- 		default is disabled.
++#define DQL_HIST_LEN		4
++#define DQL_HIST_ENT(dql, idx)	((dql)->history[(idx) % DQL_HIST_LEN])
++
+ struct dql {
+ 	/* Fields accessed in enqueue path (dql_queued) */
+ 	unsigned int	num_queued;		/* Total ever queued */
+ 	unsigned int	adj_limit;		/* limit + num_completed */
+ 	unsigned int	last_obj_cnt;		/* Count at last queuing */
  
--What:		/sys/class/<iface>/queues/tx-<queue>/xps_cpus
-+What:		/sys/class/net/<iface>/queues/tx-<queue>/xps_cpus
- Date:		November 2010
- KernelVersion:	2.6.38
- Contact:	netdev@vger.kernel.org
-@@ -42,7 +42,7 @@ Description:
- 		network device transmit queue. Possible values depend on the
- 		number of available CPU(s) in the system.
++	unsigned long	history_head;
++	unsigned long	history[DQL_HIST_LEN];
++
+ 	/* Fields accessed only by completion path (dql_completed) */
  
--What:		/sys/class/<iface>/queues/tx-<queue>/xps_rxqs
-+What:		/sys/class/net/<iface>/queues/tx-<queue>/xps_rxqs
- Date:		June 2018
- KernelVersion:	4.18.0
- Contact:	netdev@vger.kernel.org
-@@ -53,7 +53,7 @@ Description:
- 		number of available receive queue(s) in the network device.
- 		Default is disabled.
+ 	unsigned int	limit ____cacheline_aligned_in_smp; /* Current limit */
+@@ -62,6 +69,11 @@ struct dql {
+ 	unsigned int	max_limit;		/* Max limit */
+ 	unsigned int	min_limit;		/* Minimum limit */
+ 	unsigned int	slack_hold_time;	/* Time to measure slack */
++
++	unsigned char	stall_thrs;
++	unsigned char	stall_max;
++	unsigned long	last_reap;
++	unsigned long	stall_cnt;
+ };
  
--What:		/sys/class/<iface>/queues/tx-<queue>/byte_queue_limits/hold_time
-+What:		/sys/class/net/<iface>/queues/tx-<queue>/byte_queue_limits/hold_time
- Date:		November 2011
- KernelVersion:	3.3
- Contact:	netdev@vger.kernel.org
-@@ -62,7 +62,7 @@ Description:
- 		of this particular network device transmit queue.
- 		Default value is 1000.
+ /* Set some static maximums */
+@@ -74,6 +86,8 @@ struct dql {
+  */
+ static inline void dql_queued(struct dql *dql, unsigned int count)
+ {
++	unsigned long map, now, now_hi, i;
++
+ 	BUG_ON(count > DQL_MAX_OBJECT);
  
--What:		/sys/class/<iface>/queues/tx-<queue>/byte_queue_limits/inflight
-+What:		/sys/class/net/<iface>/queues/tx-<queue>/byte_queue_limits/inflight
- Date:		November 2011
- KernelVersion:	3.3
- Contact:	netdev@vger.kernel.org
-@@ -70,7 +70,7 @@ Description:
- 		Indicates the number of bytes (objects) in flight on this
- 		network device transmit queue.
+ 	dql->last_obj_cnt = count;
+@@ -86,6 +100,27 @@ static inline void dql_queued(struct dql *dql, unsigned int count)
+ 	barrier();
  
--What:		/sys/class/<iface>/queues/tx-<queue>/byte_queue_limits/limit
-+What:		/sys/class/net/<iface>/queues/tx-<queue>/byte_queue_limits/limit
- Date:		November 2011
- KernelVersion:	3.3
- Contact:	netdev@vger.kernel.org
-@@ -79,7 +79,7 @@ Description:
- 		on this network device transmit queue. This value is clamped
- 		to be within the bounds defined by limit_max and limit_min.
+ 	dql->num_queued += count;
++
++	now = jiffies;
++	now_hi = now / BITS_PER_LONG;
++	if (unlikely(now_hi != dql->history_head)) {
++		/* About to reuse slots, clear them */
++		for (i = 0; i < DQL_HIST_LEN; i++) {
++			/* Multiplication masks high bits */
++			if (now_hi * BITS_PER_LONG ==
++			    (dql->history_head + i) * BITS_PER_LONG)
++				break;
++			DQL_HIST_ENT(dql, dql->history_head + i + 1) = 0;
++		}
++		/* pairs with smp_rmb() in dql_check_stall() */
++		smp_wmb();
++		WRITE_ONCE(dql->history_head, now_hi);
++	}
++
++	/* __set_bit() does not guarantee WRITE_ONCE() semantics */
++	map = DQL_HIST_ENT(dql, now_hi);
++	if (!(map & BIT_MASK(now)))
++		WRITE_ONCE(DQL_HIST_ENT(dql, now_hi), map | BIT_MASK(now));
+ }
  
--What:		/sys/class/<iface>/queues/tx-<queue>/byte_queue_limits/limit_max
-+What:		/sys/class/net/<iface>/queues/tx-<queue>/byte_queue_limits/limit_max
- Date:		November 2011
- KernelVersion:	3.3
- Contact:	netdev@vger.kernel.org
-@@ -88,7 +88,7 @@ Description:
- 		queued on this network device transmit queue. See
- 		include/linux/dynamic_queue_limits.h for the default value.
+ /* Returns how many objects can be queued, < 0 indicates over limit. */
+diff --git a/include/trace/events/napi.h b/include/trace/events/napi.h
+index 6678cf8b235b..272112ddaaa8 100644
+--- a/include/trace/events/napi.h
++++ b/include/trace/events/napi.h
+@@ -36,6 +36,39 @@ TRACE_EVENT(napi_poll,
+ 		  __entry->work, __entry->budget)
+ );
  
--What:		/sys/class/<iface>/queues/tx-<queue>/byte_queue_limits/limit_min
-+What:		/sys/class/net/<iface>/queues/tx-<queue>/byte_queue_limits/limit_min
- Date:		November 2011
- KernelVersion:	3.3
- Contact:	netdev@vger.kernel.org
++TRACE_EVENT(dql_stall_detected,
++
++	TP_PROTO(unsigned int thrs, unsigned int len,
++		 unsigned long last_reap, unsigned long hist_head,
++		 unsigned long now, unsigned long *hist),
++
++	TP_ARGS(thrs, len, last_reap, hist_head, now, hist),
++
++	TP_STRUCT__entry(
++		__field(	unsigned int,		thrs)
++		__field(	unsigned int,		len)
++		__field(	unsigned long,		last_reap)
++		__field(	unsigned long,		hist_head)
++		__field(	unsigned long,		now)
++		__array(	unsigned long,		hist, 4)
++	),
++
++	TP_fast_assign(
++		__entry->thrs = thrs;
++		__entry->len = len;
++		__entry->last_reap = last_reap;
++		__entry->hist_head = hist_head * BITS_PER_LONG;
++		__entry->now = now;
++		memcpy(__entry->hist, hist, sizeof(entry->hist));
++	),
++
++	TP_printk("thrs %u  len %u  last_reap %lu  hist_head %lu  now %lu  hist %016lx %016lx %016lx %016lx",
++		  __entry->thrs, __entry->len,
++		  __entry->last_reap, __entry->hist_head, __entry->now,
++		  __entry->hist[0], __entry->hist[1],
++		  __entry->hist[2], __entry->hist[3])
++);
++
+ #undef NO_DEV
+ 
+ #endif /* _TRACE_NAPI_H */
+diff --git a/lib/dynamic_queue_limits.c b/lib/dynamic_queue_limits.c
+index fde0aa244148..162d30ae542c 100644
+--- a/lib/dynamic_queue_limits.c
++++ b/lib/dynamic_queue_limits.c
+@@ -10,10 +10,61 @@
+ #include <linux/dynamic_queue_limits.h>
+ #include <linux/compiler.h>
+ #include <linux/export.h>
++#include <trace/events/napi.h>
+ 
+ #define POSDIFF(A, B) ((int)((A) - (B)) > 0 ? (A) - (B) : 0)
+ #define AFTER_EQ(A, B) ((int)((A) - (B)) >= 0)
+ 
++static void dql_check_stall(struct dql *dql)
++{
++	unsigned long stall_thrs, now;
++
++	/* If we detect a stall see if anything was queued */
++	stall_thrs = READ_ONCE(dql->stall_thrs);
++	if (!stall_thrs)
++		return;
++
++	now = jiffies;
++	if (time_after_eq(now, dql->last_reap + stall_thrs)) {
++		unsigned long hist_head, t, start, end;
++
++		/* We are trying to detect a period of at least @stall_thrs
++		 * jiffies without any Tx completions, but during first half
++		 * of which some Tx was posted.
++		 */
++dqs_again:
++		hist_head = READ_ONCE(dql->history_head);
++		/* pairs with smp_wmb() in dql_queued() */
++		smp_rmb();
++		/* oldest sample since last reap */
++		start = (hist_head - DQL_HIST_LEN + 1) * BITS_PER_LONG;
++		if (time_before(start, dql->last_reap + 1))
++			start = dql->last_reap + 1;
++		/* newest sample we should have already seen a completion for */
++		end = hist_head * BITS_PER_LONG + (BITS_PER_LONG - 1);
++		if (time_before(now, end + stall_thrs / 2))
++			end = now - stall_thrs / 2;
++
++		for (t = start; time_before_eq(t, end); t++)
++			if (test_bit(t % (DQL_HIST_LEN * BITS_PER_LONG),
++				     dql->history))
++				break;
++		if (!time_before_eq(t, end))
++			goto no_stall;
++		if (hist_head != READ_ONCE(dql->history_head))
++			goto dqs_again;
++
++		dql->stall_cnt++;
++		dql->stall_max = max_t(unsigned int, dql->stall_max, now - t);
++
++		trace_dql_stall_detected(dql->stall_thrs, now - t,
++					 dql->last_reap, dql->history_head,
++					 now, dql->history);
++	}
++no_stall:
++	dql->last_reap = now;
++}
++
+ /* Records completed count and recalculates the queue limit */
+ void dql_completed(struct dql *dql, unsigned int count)
+ {
+@@ -110,6 +161,8 @@ void dql_completed(struct dql *dql, unsigned int count)
+ 	dql->prev_last_obj_cnt = dql->last_obj_cnt;
+ 	dql->num_completed = completed;
+ 	dql->prev_num_queued = num_queued;
++
++	dql_check_stall(dql);
+ }
+ EXPORT_SYMBOL(dql_completed);
+ 
+@@ -125,6 +178,10 @@ void dql_reset(struct dql *dql)
+ 	dql->prev_ovlimit = 0;
+ 	dql->lowest_slack = UINT_MAX;
+ 	dql->slack_start_time = jiffies;
++
++	dql->last_reap = jiffies;
++	dql->history_head = jiffies / BITS_PER_LONG;
++	memset(dql->history, 0, sizeof(dql->history));
+ }
+ EXPORT_SYMBOL(dql_reset);
+ 
+@@ -133,6 +190,7 @@ void dql_init(struct dql *dql, unsigned int hold_time)
+ 	dql->max_limit = DQL_MAX_LIMIT;
+ 	dql->min_limit = 0;
+ 	dql->slack_hold_time = hold_time;
++	dql->stall_thrs = 0;
+ 	dql_reset(dql);
+ }
+ EXPORT_SYMBOL(dql_init);
+diff --git a/net/core/net-sysfs.c b/net/core/net-sysfs.c
+index a09d507c5b03..94a622b0bb55 100644
+--- a/net/core/net-sysfs.c
++++ b/net/core/net-sysfs.c
+@@ -1409,6 +1409,65 @@ static struct netdev_queue_attribute bql_hold_time_attribute __ro_after_init
+ 	= __ATTR(hold_time, 0644,
+ 		 bql_show_hold_time, bql_set_hold_time);
+ 
++static ssize_t bql_show_stall_thrs(struct netdev_queue *queue, char *buf)
++{
++	struct dql *dql = &queue->dql;
++
++	return sprintf(buf, "%u\n", jiffies_to_msecs(dql->stall_thrs));
++}
++
++static ssize_t bql_set_stall_thrs(struct netdev_queue *queue,
++				  const char *buf, size_t len)
++{
++	struct dql *dql = &queue->dql;
++	unsigned int value;
++	int err;
++
++	err = kstrtouint(buf, 10, &value);
++	if (err < 0)
++		return err;
++
++	value = msecs_to_jiffies(value);
++	if (value && (value < 4 || value > 4 / 2 * BITS_PER_LONG))
++		return -ERANGE;
++
++	if (!dql->stall_thrs && value)
++		dql->last_reap = jiffies;
++	/* Force last_reap to be live */
++	smp_wmb();
++	dql->stall_thrs = value;
++
++	return len;
++}
++
++static struct netdev_queue_attribute bql_stall_thrs_attribute __ro_after_init =
++	__ATTR(stall_thrs, 0644, bql_show_stall_thrs, bql_set_stall_thrs);
++
++static ssize_t bql_show_stall_max(struct netdev_queue *queue, char *buf)
++{
++	return sprintf(buf, "%u\n", READ_ONCE(queue->dql.stall_max));
++}
++
++static ssize_t bql_set_stall_max(struct netdev_queue *queue,
++				 const char *buf, size_t len)
++{
++	WRITE_ONCE(queue->dql.stall_max, 0);
++	return len;
++}
++
++static struct netdev_queue_attribute bql_stall_max_attribute __ro_after_init =
++	__ATTR(stall_max, 0644, bql_show_stall_max, bql_set_stall_max);
++
++static ssize_t bql_show_stall_cnt(struct netdev_queue *queue, char *buf)
++{
++	struct dql *dql = &queue->dql;
++
++	return sprintf(buf, "%lu\n", dql->stall_cnt);
++}
++
++static struct netdev_queue_attribute bql_stall_cnt_attribute __ro_after_init =
++	__ATTR(stall_cnt, 0444, bql_show_stall_cnt, NULL);
++
+ static ssize_t bql_show_inflight(struct netdev_queue *queue,
+ 				 char *buf)
+ {
+@@ -1447,6 +1506,9 @@ static struct attribute *dql_attrs[] __ro_after_init = {
+ 	&bql_limit_min_attribute.attr,
+ 	&bql_hold_time_attribute.attr,
+ 	&bql_inflight_attribute.attr,
++	&bql_stall_thrs_attribute.attr,
++	&bql_stall_cnt_attribute.attr,
++	&bql_stall_max_attribute.attr,
+ 	NULL
+ };
+ 
 -- 
 2.34.1
 
