@@ -1,174 +1,137 @@
-Return-Path: <linux-kernel+bounces-46336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65B54843E2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:19:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D590F843E2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:19:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B42D290062
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:19:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97FC2298074
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:19:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F149B69DFD;
-	Wed, 31 Jan 2024 11:18:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PJmBHfiC";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="LbMqUVa4";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PJmBHfiC";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="LbMqUVa4"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 377B26F067;
+	Wed, 31 Jan 2024 11:19:34 +0000 (UTC)
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57F4922619;
-	Wed, 31 Jan 2024 11:18:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88E4469DFD;
+	Wed, 31 Jan 2024 11:19:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706699932; cv=none; b=qCA6CWG9p89KeluRBZLPEc4WF2lJ0gWN4bfnNU/KJsDJYXbVPwuvG3cxMpeYPgPmKiJmhXSkOUwQ94tRvIcJm59KhsUXRtmi1kEwde+K/4Us1OsuVVMlL1WF5KgZopfKIoL6qMUvUaPuAgqD4PtOaqgdabHmb9hQE9UXO/8ORks=
+	t=1706699973; cv=none; b=T4m6keq6lpkBvqwEikQMCXfUmnvLV5wn121D5EqTZN+n3dn2npylkfKKo2lb8c3kQp+XDVUXf9aQWaQ10t2/tF62t7rpf37ODbUEf3MmdjQMruuhVZesMnI0qUpwQsV9QQ4OgShnO5qIrmCQnh3i0WHnkGvCrRZNvNNqkdDRvF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706699932; c=relaxed/simple;
-	bh=z9HbznpTxs+hCXQiVU7KW8JJixJG05vmA2WmM1tQPp8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HhbULiljWGGnpanlqZQT/9iJTTa9KvVzHOcZLwqHmmDn1005EjV3ccgvOA/cjVjmy4AxUrWoK+I6mZivcNJRp2C6f4FMWsgctgf84rgMl1FDzmOPohFp845AV7Uj9WYpZuKln1oe9qkmdTN8HZnbgFeWiJ/6q6QPCJwksYBIl+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PJmBHfiC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=LbMqUVa4; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PJmBHfiC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=LbMqUVa4; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4FAF3220D8;
-	Wed, 31 Jan 2024 11:18:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706699928; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T+ZO5rd8ho25EDHOwsCAfpvNPINlx/FEPMDsaLbJtlU=;
-	b=PJmBHfiC7xG2mBNl4fVz4ZMxB408aQXuHiTFFzo0JyNZATQI7feB3jddU5o8vkHOioI7Be
-	DPBsV3WwCITrcpCLQDj8V9fDRtnhQq40hex2mdBPhKJn8fXJ9bQ4MVVNlAMmnMkZGZAoBp
-	vdroEjYzJnXDsfFx392A6jPJ8HDYsZI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706699928;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T+ZO5rd8ho25EDHOwsCAfpvNPINlx/FEPMDsaLbJtlU=;
-	b=LbMqUVa4p4c3thd9uNPo8J21zMTzrTGzjegRDDs2Q9ihllp+fpVcClz5Zp+DQADRZHSJ3u
-	/Agzat4MaI626NAw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706699928; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T+ZO5rd8ho25EDHOwsCAfpvNPINlx/FEPMDsaLbJtlU=;
-	b=PJmBHfiC7xG2mBNl4fVz4ZMxB408aQXuHiTFFzo0JyNZATQI7feB3jddU5o8vkHOioI7Be
-	DPBsV3WwCITrcpCLQDj8V9fDRtnhQq40hex2mdBPhKJn8fXJ9bQ4MVVNlAMmnMkZGZAoBp
-	vdroEjYzJnXDsfFx392A6jPJ8HDYsZI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706699928;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T+ZO5rd8ho25EDHOwsCAfpvNPINlx/FEPMDsaLbJtlU=;
-	b=LbMqUVa4p4c3thd9uNPo8J21zMTzrTGzjegRDDs2Q9ihllp+fpVcClz5Zp+DQADRZHSJ3u
-	/Agzat4MaI626NAw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 41134132FA;
-	Wed, 31 Jan 2024 11:18:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id JyzUD5gsumXGQAAAn2gu4w
-	(envelope-from <jack@suse.cz>); Wed, 31 Jan 2024 11:18:48 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id A8398A0809; Wed, 31 Jan 2024 12:18:47 +0100 (CET)
-Date: Wed, 31 Jan 2024 12:18:47 +0100
-From: Jan Kara <jack@suse.cz>
-To: Kunwu Chan <chentao@kylinos.cn>
-Cc: miklos@szeredi.hu, amir73il@gmail.com, viro@zeniv.linux.org.uk,
-	brauner@kernel.org, jack@suse.cz, linux-fsdevel@vger.kernel.org,
-	linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs: Use KMEM_CACHE instead of kmem_cache_create
-Message-ID: <20240131111847.ujdhhab6wdebo6fn@quack3>
-References: <20240131070941.135178-1-chentao@kylinos.cn>
+	s=arc-20240116; t=1706699973; c=relaxed/simple;
+	bh=KD5gA39H2F6P8qf58mKxdp3HwRTzgPQmb5ZfXerPl/A=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=HLgnoF5jCc5+6mzXR4Xs0yuzRtYJ56kR80RrJaWIKosNJIbg7UXGUR2nXNPxZyghmH0pwzTQw0cPcLDHo0yUGK+g9hucGaVmjCP+TkcmOdD9FdZ7NMkjKrAzk15Xcb1C1oJyO6Eg+ZF5s4shPJI8heI5SMNLyvmUC667ZJjxIfI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; arc=none smtp.client-ip=130.133.4.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=physik.fu-berlin.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.97)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1rV8cm-000000047SY-0sFL; Wed, 31 Jan 2024 12:19:24 +0100
+Received: from p57bd970d.dip0.t-ipconnect.de ([87.189.151.13] helo=[192.168.178.20])
+          by inpost2.zedat.fu-berlin.de (Exim 4.97)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1rV8cl-00000003f7B-44AB; Wed, 31 Jan 2024 12:19:24 +0100
+Message-ID: <fe057f57aba0f8a9040d4700d27f5bd478032925.camel@physik.fu-berlin.de>
+Subject: Re: [PATCH] sh: Fix build with CONFIG_UBSAN=y
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To: Kees Cook <keescook@chromium.org>, Yoshinori Sato
+	 <ysato@users.sourceforge.jp>
+Cc: kernel test robot <lkp@intel.com>, Rich Felker <dalias@libc.org>, 
+ Masahiro Yamada <masahiroy@kernel.org>, Nicolas Schier <n.schier@avm.de>,
+ linux-sh@vger.kernel.org,  linux-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org
+Date: Wed, 31 Jan 2024 12:19:22 +0100
+In-Reply-To: <494586ed5a0871cf7cfd005f513577952306a0bc.camel@physik.fu-berlin.de>
+References: <20240130232717.work.088-kees@kernel.org>
+	 <494586ed5a0871cf7cfd005f513577952306a0bc.camel@physik.fu-berlin.de>
+Autocrypt: addr=glaubitz@physik.fu-berlin.de; prefer-encrypt=mutual;
+ keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240131070941.135178-1-chentao@kylinos.cn>
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=PJmBHfiC;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=LbMqUVa4
-X-Spamd-Result: default: False [-2.78 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[szeredi.hu,gmail.com,zeniv.linux.org.uk,kernel.org,suse.cz,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-2.97)[99.86%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 4FAF3220D8
-X-Spam-Level: 
-X-Spam-Score: -2.78
-X-Spam-Flag: NO
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-ZEDAT-Hint: PO
 
-On Wed 31-01-24 15:09:41, Kunwu Chan wrote:
-> commit 0a31bd5f2bbb ("KMEM_CACHE(): simplify slab cache creation")
-> introduces a new macro.
-> Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
-> to simplify the creation of SLAB caches.
-> 
-> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+Hi Kees,
 
-Looks good. Feel free to add:
+On Wed, 2024-01-31 at 12:03 +0100, John Paul Adrian Glaubitz wrote:
+> Hi Kees,
+>=20
+> On Tue, 2024-01-30 at 15:27 -0800, Kees Cook wrote:
+> > The early boot stub for sh had UBSan instrumentation present where it i=
+s
+> > not supported. Disable it for this part of the build.
+> >=20
+> >   sh4-linux-ld: arch/sh/boot/compressed/misc.o: in function `zlib_infla=
+te_table':
+> >   misc.c:(.text+0x670): undefined reference to `__ubsan_handle_shift_ou=
+t_of_bounds'
+> >=20
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Closes: https://lore.kernel.org/oe-kbuild-all/202401310416.s8HLiLnC-lkp=
+@intel.com/
+> > Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+> > Cc: Rich Felker <dalias@libc.org>
+> > Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+> > Cc: Masahiro Yamada <masahiroy@kernel.org>
+> > Cc: Nicolas Schier <n.schier@avm.de>
+> > Cc: linux-sh@vger.kernel.org
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  arch/sh/boot/compressed/Makefile | 1 +
+> >  1 file changed, 1 insertion(+)
+> >=20
+> > diff --git a/arch/sh/boot/compressed/Makefile b/arch/sh/boot/compressed=
+/Makefile
+> > index b5e29f99c02c..6c6c791a1d06 100644
+> > --- a/arch/sh/boot/compressed/Makefile
+> > +++ b/arch/sh/boot/compressed/Makefile
+> > @@ -12,6 +12,7 @@ targets :=3D vmlinux vmlinux.bin vmlinux.bin.gz vmlin=
+ux.bin.bz2 \
+> >             vmlinux.bin.lzma vmlinux.bin.xz vmlinux.bin.lzo $(OBJECTS)
+> > =20
+> >  GCOV_PROFILE :=3D n
+> > +UBSAN_SANITIZE :=3D n
+> > =20
+> >  #
+> >  # IMAGE_OFFSET is the load offset of the compression loader
+>=20
+> Thanks for the patch. I'm looking into this now and will provide the revi=
+ew later.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+I tried to reproduce the error using your tree and the branch devel/overflo=
+w/ubsan-only
+minus the above patch and using the provided config but I'm unable to repro=
+duce the
+error above.
 
-								Honza
+Am I missing anything?
 
-> ---
->  fs/backing-file.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/fs/backing-file.c b/fs/backing-file.c
-> index a681f38d84d8..740185198db3 100644
-> --- a/fs/backing-file.c
-> +++ b/fs/backing-file.c
-> @@ -325,9 +325,7 @@ EXPORT_SYMBOL_GPL(backing_file_mmap);
->  
->  static int __init backing_aio_init(void)
->  {
-> -	backing_aio_cachep = kmem_cache_create("backing_aio",
-> -					       sizeof(struct backing_aio),
-> -					       0, SLAB_HWCACHE_ALIGN, NULL);
-> +	backing_aio_cachep = KMEM_CACHE(backing_aio, SLAB_HWCACHE_ALIGN);
->  	if (!backing_aio_cachep)
->  		return -ENOMEM;
->  
-> -- 
-> 2.39.2
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thanks,
+Adrian
+
+--=20
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
