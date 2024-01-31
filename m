@@ -1,118 +1,119 @@
-Return-Path: <linux-kernel+bounces-45780-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45782-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E13D84362B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:43:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E323843630
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:47:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 47A231F2720D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 05:43:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7D77B25754
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 05:47:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6977F3D99B;
-	Wed, 31 Jan 2024 05:43:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C3803D994;
+	Wed, 31 Jan 2024 05:47:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IYe3npgp"
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="AvKBCnHY"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E22C3D97D
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 05:43:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACECDF9FA
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 05:47:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706679825; cv=none; b=uhL9nb5ZsQnyx+oMYmBiedO0AEZNVySEbRYJE8kygrSKFVWHyFz7janqrYNvpKf2nfsby7okC1bNwGF5gB5z/T0tGr8ljmk94iG7/bTYiIeDtWqtOtYN5NeUqtWrVxUyRnsbaLIiTKF7WmU04iF5s17Ccu+iL5xh84R+VUJSEWo=
+	t=1706680044; cv=none; b=g5BAcjy/UqHvzh/vG5Kj3t+BDLilW6Ju3+Ir7EAXIj/s4U98oS9JaXK2ny7dEej1vjHiTjRG2t6o9oaiKRR40Eo9VOePLAMt4Rw8x6RrYKufZBNtu5e3clmgnAfW2yxVoah+1KQ2EnYg3wszwzpoeLi7vNLKov6eREDBUEOrgUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706679825; c=relaxed/simple;
-	bh=Tcb7EvZ7CF8K0fkMJwChWAO7kgbOJfPWxzgUv0R1F0U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KURNdzsjZr1CQdZI+oEsxxWyTtromiSCJ5XXmTcEIpLtnPWhIUM060q5xDJFLQt61u08LbKUCpyrs8Wlu08+BFjPtZAj6maGL6VZNKpzMLNgH2Ou5S4pLGsrnUQpytjrMqcy1EaohQV3gxAyvbbGpTQ+7Z17T34BASqevAROr8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IYe3npgp; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-339289fead2so3628883f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 21:43:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706679822; x=1707284622; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Z6paO3eoxO/TfvLc58kRuFFfKLKXd3dLqXEc7Va4H4A=;
-        b=IYe3npgpVgXmB6ksEA+VPYQQ7l5eKvI18zL+FAC+c6CMpYpjF9VG42EB5k5g/E1TGI
-         fu/AfqNyCG8nmTRGyWlzqmWFPrfZOypZQMvQSRtv1+F0pBAqNUWee8ZdmasM93IG1q2o
-         Dx4/GzS74bdizvfyug/QWgwr2veSGekOo8PexFs45zBDA5wKW7as69e983JWsPu4Fd7+
-         C0jfHo95RNmye42w5nby8qsHKopYF8PJ+W0ciUlXiHR/H6PSTzTg/WEUREcvg4whsE6I
-         KPstOnY71Npe6ZtpAn1/QL2+nMj5aRcBrOpX40k5m0L2CbrXZy2nw/VgAB4xE5pVYMOO
-         D9lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706679822; x=1707284622;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z6paO3eoxO/TfvLc58kRuFFfKLKXd3dLqXEc7Va4H4A=;
-        b=tUvF3foZKhAMTDedIOUL5ORE5IDCnyCfEIzFgahxR7a9PYR2ZNx7+ZYsR66CFx9VX4
-         i/dRNG9HFhcot+MRvaivfsNK8edNY8KHa/Xq8rSVNXcF5chixxSMLQSA5F92s1zkr945
-         KS9/IXzYUhDFLCszhVbtQK8dGhhiMcjog1Ey23lkkmcLn1dXUR+kBSJqs8zQ7sNCPo6v
-         QZb31luMD5A6ZI+EWDSLvKFtV2KA74//26cGTU4RKclU009eh+s8XLN8OCUssFTBm1Rv
-         cqRy3BZ9M0JxzKBiHE6TW1jBwfr8kyeOKYMBIcjKGIwJILB1dkvogHzzB+HlbnP1/eFf
-         pRWQ==
-X-Gm-Message-State: AOJu0YwZ3cHfPNgW/W7alg65edQugUk5RQZ+UiwtOx8jJxdveEZP+74N
-	VpECm/G+GziZUeW4so/pcTlTdiGYK/mOVr2fhrFpjkIC7o9mGNSSX9dlCcFHhS4=
-X-Google-Smtp-Source: AGHT+IE3FuFxpDZMN/qaH8Qvlb1Bni7EQMvftW5X6bNwAjF2dsc8Ac7zFpnPHnALypt/FgdcBNQOsA==
-X-Received: by 2002:a5d:5348:0:b0:33a:ea38:6453 with SMTP id t8-20020a5d5348000000b0033aea386453mr410173wrv.45.1706679822271;
-        Tue, 30 Jan 2024 21:43:42 -0800 (PST)
-Received: from localhost ([102.140.226.10])
-        by smtp.gmail.com with ESMTPSA id eo9-20020a056000428900b0033ae9e7f6b6sm8191928wrb.111.2024.01.30.21.43.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 21:43:41 -0800 (PST)
-Date: Wed, 31 Jan 2024 08:43:37 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Markus Elfring <Markus.Elfring@web.de>
-Cc: linux-fpga@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Moritz Fischer <mdf@kernel.org>, Tom Rix <trix@redhat.com>,
-	Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: Re: fpga: dfl: fme: Return directly after a failed devm_kasprintf()
- call in fme_perf_pmu_register()
-Message-ID: <5a3a1c80-47ae-45c7-86ca-8aa40566551b@moroto.mountain>
-References: <d94376b6-12e8-45bb-a9be-4887bb316d35@web.de>
- <b7e2e9d1-5e3e-44b2-a4b7-327d334b776d@moroto.mountain>
- <e760bd1b-30bf-489f-b745-128d05397feb@web.de>
+	s=arc-20240116; t=1706680044; c=relaxed/simple;
+	bh=cAMtA7F+b0u14xld0PJ45zy3KKRoP29cHeo3ob1zSZw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=kOvS9pvUkZiKI9cV6i2tBjDvnwZYCcQnqBIWwn9wxxB8ApCTcpGckyTZVt6yGO6WDvVdZaUui0PbIOnPdoQlIU3H/DcudIsNnZ42CjQjUYVn59cWHG3onQyoO+V8FVRKdLkq38da/+49hJBlqCHNAEJS5QDzvfSBCYSAFvY1Yu8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=AvKBCnHY; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40V4j1rx004745;
+	Wed, 31 Jan 2024 05:47:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=iH+66EVVnAKr8sJnfftBirH31lcIWWz93E7oMTVQpLw=; b=Av
+	KBCnHYvjMieAFXnI4Fjmb0xCSY8l88W3CjpwwWyo2gTJvgp91731OfSf9iHvWwLK
+	+nCJ72BLFp8Oor1uvsfllU9h3Ycy5XACqTuofAToBZ7dMYAwqOiYi9I8kuyi47DF
+	oWlpb7p0wDWH5zswMlYFJ6yoXFzXBIj8XkxHYLTO5M570hde3FykJqWx4iLnd1c0
+	vPKjz/Vux4F2+75ebWrlWfot4vL6Z2I/ouQYUuPKlDkQe9gpQ5dV5MACS7MTHL3L
+	3w718cL0xv4m76zPG/TC5Kh/OmGZowR2u14GTeb/3LwyN+r1C6XZZ144FzyXRg/N
+	hPXywrsg7kTJFijHQ15w==
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vyb0crkqu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 31 Jan 2024 05:47:04 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40V5l3Dd004166
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 31 Jan 2024 05:47:03 GMT
+Received: from [10.110.3.44] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 30 Jan
+ 2024 21:47:02 -0800
+Message-ID: <5e9041b7-0e84-6906-32d3-815c29e03233@quicinc.com>
+Date: Tue, 30 Jan 2024 21:47:02 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e760bd1b-30bf-489f-b745-128d05397feb@web.de>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] mailmap: switch email address for John Moon
+Content-Language: en-US
+To: John Moon <john@jmoon.dev>, Andrew Morton <akpm@linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC: Elliot Berman <quic_eberman@quicinc.com>
+References: <20240131034311.46706-1-john@jmoon.dev>
+From: Trilok Soni <quic_tsoni@quicinc.com>
+In-Reply-To: <20240131034311.46706-1-john@jmoon.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: WeeKOC_-0iqLStT7W-vVy-z4VflJ625B
+X-Proofpoint-ORIG-GUID: WeeKOC_-0iqLStT7W-vVy-z4VflJ625B
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-31_02,2024-01-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 adultscore=0
+ phishscore=0 suspectscore=0 bulkscore=0 malwarescore=0 mlxlogscore=749
+ mlxscore=0 priorityscore=1501 impostorscore=0 lowpriorityscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401190000 definitions=main-2401310042
 
-On Tue, Jan 30, 2024 at 06:09:14PM +0100, Markus Elfring wrote:
-> >> Thus return directly after a failed devm_kasprintf() call.
-> >>
-> >> Fixes: 724142f8c42a7 ("fpga: dfl: fme: add performance reporting support")
-> >
-> > This basically doesn't affect runtime because perf_pmu_register() checks
-> > for NULL so no need for a Fixes tag.
+On 1/30/2024 7:43 PM, John Moon wrote:
+> Add current email address as QUIC email is no longer active.
 > 
-> I suggest to clarify this view a bit more also according to statements
-> like the following.
+> Signed-off-by: John Moon <john@jmoon.dev>
+> ---
+>  .mailmap | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> 1. https://elixir.bootlin.com/linux/v6.8-rc2/source/kernel/events/core.c#L11532
->    perf_pmu_register:
->    …
-> 	pmu->name = name;
->    …
+> diff --git a/.mailmap b/.mailmap
+> index 04998f7bda81..8ae00bd3708a 100644
+> --- a/.mailmap
+> +++ b/.mailmap
+> @@ -289,6 +289,7 @@ Johan Hovold <johan@kernel.org> <johan@hovoldconsulting.com>
+>  John Crispin <john@phrozen.org> <blogic@openwrt.org>
+>  John Fastabend <john.fastabend@gmail.com> <john.r.fastabend@intel.com>
+>  John Keeping <john@keeping.me.uk> <john@metanate.com>
+> +John Moon <john@jmoon.dev> <quic_johmoo@quicinc.com>
+>  John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+>  John Stultz <johnstul@us.ibm.com>
+>  <jon.toppins+linux@gmail.com> <jtoppins@cumulusnetworks.com>
 
-The check is right before that on line 11527.
+Thank you John. Looks good to me. 
 
-https://elixir.bootlin.com/linux/v6.8-rc2/source/kernel/events/core.c#L11527
-
-regards,
-dan carpenter
+-- 
+---Trilok Soni
 
 
