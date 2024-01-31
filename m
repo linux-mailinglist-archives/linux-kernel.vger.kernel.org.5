@@ -1,110 +1,159 @@
-Return-Path: <linux-kernel+bounces-46397-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46398-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ED5E843F1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:04:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D600D843F1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:05:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E863D1F30EE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:04:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91895292A06
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:05:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E86A078692;
-	Wed, 31 Jan 2024 12:04:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96D987867E;
+	Wed, 31 Jan 2024 12:05:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="gpwVmNbX"
-Received: from out203-205-221-205.mail.qq.com (out203-205-221-205.mail.qq.com [203.205.221.205])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hQeIH0ar"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A2F67866C;
-	Wed, 31 Jan 2024 12:04:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.205
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36646768FA;
+	Wed, 31 Jan 2024 12:05:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706702675; cv=none; b=JIzOX3o3nCHpjoLz3iKxi+JjQMiBT+nqBOUgFOk0HyP1GrDYtm8SsITkjClxIqp6uCQ1/6Lht2U0Kf7lBT42jIy+ubp9u/Sbw9w4lVMpLbD81dzGfN7djhsiztZ3znQw1si1bBQXEhiQtlAPfy48Ve8N0zdL1Kr24FpnlS5awEw=
+	t=1706702708; cv=none; b=cbXyy9W8/UJkpUugCDcABSeDA7qIJd9MjO6t3n7qPzmkdq/+F4X2YpU+bZ64qSJK7tYotw0j2bL+plwWmxV2zcf4bCXbyrKGTvXJnxux0Few4B37Lx4Ubh3PEcFTrnpRFPHU+mxZHd75tA8qCdK0w1EXzECjZXPpPPpATBfXcPY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706702675; c=relaxed/simple;
-	bh=F+KoyRFtfnsgTzITPD6Uvzz6cJDqE0m6fF2NfXjS3LQ=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=u39f1ODfm94IvorN4Uq4vQ9PUgW2fCDwIcHp9XrOkyVDqGTkBRsUTlaOqNsRc3SW/m3wZamR0yTz2wfOL3mlvTUIFRvCRifpAwnz4UZDF1wMIo9t++cb6J1zrwojoy+j/paBrQ5pmwHQ5NqpDRf8G5Ze4mqVL3iRbsKeqm/HjtU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=gpwVmNbX; arc=none smtp.client-ip=203.205.221.205
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1706702669; bh=OcZp1rMol08Z2WnpIQmEJuPhzfQf6La7Ry56I2aCSsM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=gpwVmNbXAfM4HjLrVX8m0DwgrXVHwxM1nuqcFibTpkSFKbMMwGlHoYCrKkE/+jvSn
-	 ln7ROO//5hE+V/MnBzbemmx3MnkH4qqvNsXL5QAUeXtOCENFHRnJ11mrtQpGcaPf9T
-	 Cgacs6g7BLoSDldyPbpUeVICnlTULcYCDq+5hflQ=
-Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
-	by newxmesmtplogicsvrsza7-0.qq.com (NewEsmtp) with SMTP
-	id 11AB34D7; Wed, 31 Jan 2024 20:04:26 +0800
-X-QQ-mid: xmsmtpt1706702666trpq83rx5
-Message-ID: <tencent_7F29369E974036964A3E742F778567CC3C09@qq.com>
-X-QQ-XMAILINFO: OLnGMPzD2sDV+bM4O4JxdQZTGtdlH6EIv/Y5bpK8lXUeNSaV2P4W7A21k+tGbI
-	 D0jyWTusET0jyeMDp7cTfzxJYtNw1itwcDjWUkA9cwwuVJV/bguC4oyCbPTOK+lYM8ye5Dj8vv29
-	 aOitfrB3wHibIKHCTOD/MMOHfNmJNq5nIXGi0/BMGKG/9itEWu61AFaRFm8b49Vnc7RCin7rPbE0
-	 UXyjVoHSLMGIfpaHcn4H76GYPxGvM0yDphIkhJK1j+iOytFU9L/RDZx35ZS3HE9DEoUonWUDlZHi
-	 AIt5TdCRdNft9MSJ3/1QV4dpTjs2hQxqBTYTb6keYJDMWnTsh94mPqLfkd/0XwLGL4k5eCxY+uXy
-	 S3urh/tbk6bg3kW5BPY30kVFLo+Arfn5ntNqyQMCJfP/V7coJkjPsbdV2ExrwApaXTgfVbmbzGTe
-	 xMb4ZIWH2lb14UO07bkI4LjDq31NeMfxAGFck/F9HCx4QguPY0lbWZ3iCIBHgq3LS+cnKbaJdmrH
-	 XyVIvas5fJEa937Kt/jexRVHb3+2fWkaA7jTODK40+BdCxwJZdfljDgzIpqtOhK95rIqMLkfLbsE
-	 vYH/vmb6RvP4UZ0zqXr4zZtzuD0+vM1kso+eW4MlZHgRc2Hm/BPli4+fnfCO+BId8uQyb5WnOPJG
-	 1XgHgqpjQWFRTlhHi1Pf/zBR9pRy+lXgE53/gdYD/BQxD8+QgAIRQG7cBih+8l0mSAd4YkJaR/O7
-	 NFNcdJlInV+vmI5Db7+dxJYjdeLpTBEmX1gNk25yFI58KE1Z3GYKlVOVu6GYFbfflpcTfDTl9pwr
-	 gwakJY7xSvCvivCWNiLwlUK0vrLQN3QQfJzr9fJKcYgdNtC6LBBdZ7icRbA3CKDQRA6znu9Dd82M
-	 3PVfUXwpNO+UeLvB1UpzMZAL0jZ3cjk43u6A+89xem9QkjrVTajx5XJEX3eIiHhn4xRu/xTLkK2D
-	 xD8CM7D3qMqAjsXIQqwQ==
-X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+cdee56dbcdf0096ef605@syzkaller.appspotmail.com
-Cc: adilger.kernel@dilger.ca,
-	chandan.babu@oracle.com,
-	jack@suse.com,
-	linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	tytso@mit.edu
-Subject: [PATCH] jbd2: user-memory-access in jbd2__journal_start
-Date: Wed, 31 Jan 2024 20:04:27 +0800
-X-OQ-MSGID: <20240131120426.1278044-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <000000000000d6e06d06102ae80b@google.com>
-References: <000000000000d6e06d06102ae80b@google.com>
+	s=arc-20240116; t=1706702708; c=relaxed/simple;
+	bh=C4+J0LK2uGlnop8N8+yJQ1nCoUA+KOAPfCeSlARfKYU=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=Tq1pWmB0msIhR+Y6Rdz200JY+QeTzabtA/Su5R97imUkNsA6nKepbR7B5M8SE21X97tzjFdhYv8LTB7UG3YWARiahYloOw49KeMJnJEtggBT8QCYBjMcbantp7AgJz4q8aAsfcSJyvVCQYpSFs9GDLxqqv0WHHWh+erOjsFnkrs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hQeIH0ar; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706702707; x=1738238707;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=C4+J0LK2uGlnop8N8+yJQ1nCoUA+KOAPfCeSlARfKYU=;
+  b=hQeIH0arMlLFVtsHsLx6Ucc9MDMfnXm3etK2rSlN0Afh6si4iyt6zkAa
+   SFDkrvSWoz539x5SSjGv4ciXzCLvJ76kNUPOFZ2U7RsNs1dMYRG9SZ601
+   bKf7K+A+/zAO2PZkb2hiulELLttQKR1BBxk21SaVvQcTuapOJuosxSa2I
+   YUzK6YgWZ+m7kMexxpHmNTSLlCgWXBZtJlo93R3IYozywk2eG20kZQr+u
+   OnIKrPxdppBWAo12Ulov+zUQ4YlOIFrcMzGIF/+DEHMbHiSWQMTcLuKkN
+   LP3XPUA35foO9cva2oW5XDFcziY8Aqdc6t9DDXkZ4O9Hu7vsL6QihYCCB
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="10965154"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="10965154"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 04:05:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="738074974"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="738074974"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.35.167])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 04:05:01 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Wed, 31 Jan 2024 14:04:57 +0200 (EET)
+To: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+cc: Reinette Chatre <reinette.chatre@intel.com>, fenghua.yu@intel.com, 
+    shuah@kernel.org, LKML <linux-kernel@vger.kernel.org>, 
+    linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v3 2/5] selftests/resctrl: Add helpers for the non-contiguous
+ test
+In-Reply-To: <tck7kcpjdch3a3qkkwusft5zwptlhtmicx53zjcqk3x42w5p55@pf6vrmnh7deo>
+Message-ID: <6259e494-bab3-0aeb-0bf6-e4e384f8f0b0@linux.intel.com>
+References: <cover.1706180726.git.maciej.wieczor-retman@intel.com> <85b1efc3ddd698b3ac81aa72a6dc987ee17da3e2.1706180726.git.maciej.wieczor-retman@intel.com> <ea9b0e06-c07e-eb4b-9e7d-ed20419b677d@linux.intel.com> <611fd2b6-d9ec-42f0-9711-b1398fc02842@intel.com>
+ <tck7kcpjdch3a3qkkwusft5zwptlhtmicx53zjcqk3x42w5p55@pf6vrmnh7deo>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="8323328-1725428063-1706702697=:1077"
 
-Before reusing the handle, it is necessary to confirm that the transaction is 
-ready.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Reported-and-tested-by: syzbot+cdee56dbcdf0096ef605@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
----
- fs/jbd2/transaction.c | 3 +++
- 1 file changed, 3 insertions(+)
+--8323328-1725428063-1706702697=:1077
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-index cb0b8d6fc0c6..702312cd5392 100644
---- a/fs/jbd2/transaction.c
-+++ b/fs/jbd2/transaction.c
-@@ -493,6 +493,9 @@ handle_t *jbd2__journal_start(journal_t *journal, int nblocks, int rsv_blocks,
- 		return ERR_PTR(-EROFS);
- 
- 	if (handle) {
-+		if (handle->saved_alloc_context & ~PF_MEMALLOC_NOFS)
-+			return ERR_PTR(-EBUSY);
-+
- 		J_ASSERT(handle->h_transaction->t_journal == journal);
- 		handle->h_ref++;
- 		return handle;
--- 
-2.43.0
+On Wed, 31 Jan 2024, Maciej Wieczor-Retman wrote:
+> On 2024-01-26 at 10:58:04 -0800, Reinette Chatre wrote:
+> >On 1/25/2024 4:14 AM, Ilpo J=E4rvinen wrote:
+> >> On Thu, 25 Jan 2024, Maciej Wieczor-Retman wrote:
+> >
+> >>> +=09fp =3D fopen(file_path, "r");
+> >>> +=09if (!fp) {
+> >>> +=09=09snprintf(reason, sizeof(reason), "Error in opening %s file\n",=
+ filename);
+> >>> +=09=09ksft_perror(reason);
+> >>=20
+> >> Was this the conclusion of the kstf_perror() discussion with Reinette?=
+ I=20
+> >> expected a bit different outcome when I stopped following it...
+> >>=20
+> >> In any case, it would be nice though if ksft_perror() (or some kselfte=
+st.h=20
+> >> function yet to be added with a different name) would accept full prin=
+tf=20
+> >> interface and just add the errno string into the end of the string so =
+one=20
+> >> would not need to build constructs like this at all.
+> >>=20
+> >> It will require a bit of macro trickery into kselftest.h. I don't know=
+ how=20
+> >> it should handle the case where somebody just passes a char pointer to=
+ it,=20
+> >> not a string literal, but I guess it would just throw an error while=
+=20
+> >> compiling if somebody tries to do that as the macro string literal=20
+> >> concatenation could not build useful/compilable token.
+> >>=20
+> >> It would make these prints informative enough to become actually usefu=
+l=20
+> >> without needed to resort to preparing the string in advance which seem=
+s
+> >> to be required almost every single case with the current interface.
+> >
+> >I think this can be accomplished with a new:
+> >=09void  ksft_vprint_msg(const char *msg, va_list args)
+> >
+> >... but ksft_perror() does conform to perror() and I expect that having =
+one
+> >support variable number of arguments while the other does to cause confu=
+sion.
+> >
+> >To support variable number of arguments with errno I'd propose just to u=
+se
+> >ksft_print_msg() with strerror(errno), errno as the arguments (or even %=
+m
+> >that that errno handling within ksft_print_msg() aims to support). This =
+does
+> >indeed seem to be the custom in other tests.
+>=20
+> Does something like this look okay?
+>=20
+> =09fp =3D fopen(file_path, "r");
+> =09if (!fp) {
+> =09=09ksft_print_msg("Error in opening %s\n: %m\n", file_path);
+> =09=09return -1;
+> =09}
+>=20
+> The '%m' seems to work fine but doesn't print errno's number code. Do you=
+ want
+> me to add errno after '%m' so it is the same as ksft_perror()? I looked t=
+hrough
+> some other tests where '%m' is used, and only few ones add errno with '%d=
+'.
 
+I think %m is enough.
+
+--=20
+ i.
+
+--8323328-1725428063-1706702697=:1077--
 
