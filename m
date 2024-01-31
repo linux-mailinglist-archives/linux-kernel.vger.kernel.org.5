@@ -1,71 +1,73 @@
-Return-Path: <linux-kernel+bounces-45943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45944-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11FAE843830
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:45:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5705B843834
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:46:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E0611F26469
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:45:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DB2B285C0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:46:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2208355C10;
-	Wed, 31 Jan 2024 07:45:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B70FA55C2D;
+	Wed, 31 Jan 2024 07:45:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="WX9DdyDc"
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jJplRV2g"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B598B5577C
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 07:45:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EDEB5812E
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 07:45:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706687130; cv=none; b=GzU9eBoR6lRZVSs3ng1a6fkkk6AoWV9cD5Dv1gsHkEeIbsE2OWUKWDx3L9fEhodNSbr3Rg2M5IFKCi3ouEzZhTfvK43+vz9z7gYW99Qwi6JTq2PTSldVmpT2rAJgR+NAShyiiOs7EWaQlO/yntswck4Zg86y2BECI21CkuUSc80=
+	t=1706687156; cv=none; b=nNx065p1WtSHWFHV14cYWYa+znqr9VTMJVnmtIUjg0z/sOornFf8kzVKKH/WleW8RWMcEvH28eG092s77oIkQ2lenCV/KqboA/NCPv35gflbQbokrjoUy09zqbWWuxlluFQiYOhmRH5tGKkjF+R9T0WGQg69odVqnDwNbGMs/hs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706687130; c=relaxed/simple;
-	bh=r72jR+ohmF08fx34PK4uPYzGYiSjmalKc4/TBzaO2l8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:In-Reply-To:
-	 Content-Type:References; b=mNWPqfIIYngJ6ghKKpR42gZZyWZxt7UyLBAYDIiEHR89osqiUMzlbD5dvlBtQNOmouWV9lPr1pGL8n6bwjcDPJLXn71e3uuU5W9OnWQsbTq/UXsKQL53hN24sxRuJ7Zx02uwHN4U/dys8Mo9aINlcLQGpeRhz9DIWjIBZnblrPw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=WX9DdyDc; arc=none smtp.client-ip=210.118.77.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240131074525euoutp02254734cb023cc31708c4b23630b354a9~vXuX3Avm40742707427euoutp02F
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 07:45:25 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240131074525euoutp02254734cb023cc31708c4b23630b354a9~vXuX3Avm40742707427euoutp02F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1706687125;
-	bh=S9pCICTqN1F3e5Nuf2qjgG414cF5+i5Fu3bz/IKz3go=;
-	h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-	b=WX9DdyDcZMMTxij5BdbUmH/lpU/+BLavOHz4fOTYB82DLs5HifomcgEjDb/Frp/rD
-	 VS1g9uAaNVdKOHAbjX2YcT0fPfoxQ693D1Vld9S0v0Xf0KPgYHlH45TzHL/2D/VY0u
-	 Bs/FgPKFUgiaRooNLyZgPs8tpfMeJ+q/BljP4dQk=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-	20240131074525eucas1p1373c4835c0aa3050e8315f874b9ca546~vXuXj6Cgo2760927609eucas1p1C;
-	Wed, 31 Jan 2024 07:45:25 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-	eusmges3new.samsung.com (EUCPMTA) with SMTP id F6.44.09552.59AF9B56; Wed, 31
-	Jan 2024 07:45:25 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-	20240131074524eucas1p135ce025e8d4ebec1c957b21f124a45ae~vXuW_KfON1875218752eucas1p1g;
-	Wed, 31 Jan 2024 07:45:24 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-	eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20240131074524eusmtrp2d04cb51eeb6703dcfc4aa71a004d5475~vXuW8Rbn62737027370eusmtrp2R;
-	Wed, 31 Jan 2024 07:45:24 +0000 (GMT)
-X-AuditID: cbfec7f5-853ff70000002550-a4-65b9fa9515fd
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-	eusmgms1.samsung.com (EUCPMTA) with SMTP id CF.4A.09146.49AF9B56; Wed, 31
-	Jan 2024 07:45:24 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20240131074524eusmtip1694ad0b825fc3a72818d1342d54a0df0~vXuWeP_tN2658426584eusmtip1X;
-	Wed, 31 Jan 2024 07:45:24 +0000 (GMT)
-Message-ID: <41f8fab0-f88e-43a5-aa36-d071027c4e0c@samsung.com>
-Date: Wed, 31 Jan 2024 08:45:23 +0100
+	s=arc-20240116; t=1706687156; c=relaxed/simple;
+	bh=oXO0S8EkQBuqNAP1QcV7YXuCyhbIOsW0r8fEkR0rwqs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HrmlDCoDTTv6VBNzUq7tySVnHlw2R+7ZLsHKZvJJ90XqGqb1DqEDjVPlmh7s5+WgX+zJFPM3KckpQBeXce7/9H+MVBx0my1YDGdnns6X2RKPsWLf9ynLNsUCxrPHB0mo/fIuqWYC6cCMZllaaHI4R8vFd4Kwhhp6lUBYcAJuysk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jJplRV2g; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a26f73732c5so599936366b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 23:45:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706687153; x=1707291953; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GlX3/XcJ4q7qlkl7qz5VNzVWUimap3oMgXG/HE+rFCQ=;
+        b=jJplRV2gzWQUlCVBCV3VhqDp6jasH7lQr8AdmrTe3R+NZMeXF/tGJMHjUa0mhjGc6N
+         oIS05w3QoAYvR/RM15KhwniMyE2jmbJcQL2GooMURKrEnoLcDgCSGVdc4ms/RCY1HNxO
+         LfUWTlg3kkF/35Bk9hSXgsFddAv9wqXl035671spssWckpLH90t2WGKR3oalNd5nYxBd
+         mrtsi5o18RJLx5h9I0Tpj20ijtlXLJuK8oWr8p7bHJ9zgRfc3AWPHsTkqOqTEgbqeaEz
+         ZwptHzL5o21kl0PBHT4YttcMYIJDSLSV/RHFlEOwanFNUZxp+EFODLawrXdLYIF5yq9Z
+         bXpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706687153; x=1707291953;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GlX3/XcJ4q7qlkl7qz5VNzVWUimap3oMgXG/HE+rFCQ=;
+        b=rHidmJoZZgK7WAviR2yzCzHlxD8F5pyw1n5x7JrBQ8taOL0X9eB54V9EBjAGOISzQT
+         xEm+ZR0G5J4gGCdvJTmlURi8BYOq2Q4k1p+QPP0MWTj8ZaS66Lx2k0Jz6u/HJKEmN3ev
+         6E3JZvQrq4obDv488fFk7JGP3ZtuFzyFIdaaFMLGt2y54vQis6e04I9xQwFixEgCGUqZ
+         flPEfMojjNyCMoIo23oLCBR+lEGKO1oqnBm/MVAEBneDKYgZWTUwrnT/6ixC2nqpQVAc
+         D7I6ALNdDlmzUzvegoTl7nfpf8JJFGdM7d8+cbx2gpY/Jj/QvhVzHJl3lxa36fn1/1AG
+         PAuQ==
+X-Gm-Message-State: AOJu0YwpCdgi7xIwt3loPBOWYIHt8nTCYN6GeYcdQlmdlt0cW5zXvx26
+	bQUFc24x1DF1KcxWOASP1jsn+/EUDprCyFDhKv3baTLSCnw8UyXeIF3W10P1mYU=
+X-Google-Smtp-Source: AGHT+IFdt9UmrYZi1LDJaUZN6v4OsBwX0Wx45/vHyal7niLOuagGLOWO4SXaO/A1B2GY2WReWwPAPA==
+X-Received: by 2002:a17:906:234e:b0:a36:2dc:1903 with SMTP id m14-20020a170906234e00b00a3602dc1903mr494495eja.68.1706687153351;
+        Tue, 30 Jan 2024 23:45:53 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWsega7ZdA6a/BqxICUW4OxzCdFaE0moY3j8YVcxaOlRVZhqUSqLh3uwJ6d030OhbTppkjffadP3AiTtuXNpXPQTpMDPeh3ZnETrX72AyaWeCVL7sAltxVTJSVcbT1z88FjbLt96vM13+kwvUInZavDGXLBFJPFWLRtyURoI+Y13a0Lf3fLV8n+gfpK1RURRhYyHiWtMx8Eci4LAkGHBbUO/LwKX0sg4Ec2Yac3anBtBAbSoPV8LmWTTChxGTGXg5GjU9Y5IBCvTXgH4pH2FqGaYkX3Fto49XCVALQiymP6VvKKyMz1a5vdgdzyZNHbGkpz8SAab/PvxOHUVxUyYn3/V/8x6LUO2Um+d9RZwVvGvixxNGWPCKw2HBItGqNA3NUqvEyrAGhT3gjYHzdvtPsjVWaGFl3GfBH7ns+Tztks2OJ0skbQxqag6lKVZqtssAsRYPyx8aAYNrmwZv+mmj49zs98zv7Iin8=
+Received: from [192.168.1.20] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id d11-20020a170907272b00b00a360fe9a7b0sm1738640ejl.23.2024.01.30.23.45.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jan 2024 23:45:52 -0800 (PST)
+Message-ID: <b48fa0bd-18e1-4268-9e7a-8199f5d180e8@linaro.org>
+Date: Wed, 31 Jan 2024 08:45:49 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,131 +75,91 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 09/10] workqueue: Implement system-wide nr_active
- enforcement for unbound workqueues
+Subject: Re: [PATCH net-next 2/3] dt-bindings: net: cdns,macb: Add
+ wol-arp-packet property
 Content-Language: en-US
-To: Tejun Heo <tj@kernel.org>, Nathan Chancellor <nathan@kernel.org>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>, linux-kernel@vger.kernel.org,
-	Naohiro.Aota@wdc.com, kernel-team@meta.com
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-In-Reply-To: <ZbnULGnVOtA5Zdl9@slm.duckdns.org>
+To: Vineeth Karumanchi <vineeth.karumanchi@amd.com>,
+ Andrew Lunn <andrew@lunn.ch>
+Cc: nicolas.ferre@microchip.com, claudiu.beznea@tuxon.dev,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, linux@armlinux.org.uk, netdev@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, git@amd.com
+References: <20240130104845.3995341-1-vineeth.karumanchi@amd.com>
+ <20240130104845.3995341-3-vineeth.karumanchi@amd.com>
+ <824aad4d-6b05-4641-b75d-ceaa08b0a4e8@lunn.ch>
+ <09ce2e81-01cc-431f-8acb-076a54e5a7e6@amd.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <09ce2e81-01cc-431f-8acb-076a54e5a7e6@amd.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA01SWUwTURT1zUyn02rrWECuqGDqkri1IkQbVzQu9YO4G6JGrfYFUArYyqLR
-	BHEBUbColVpJKiasajXFVArBpSoNimirEK0Y+cACGjQKBIGIUgeUv3POPTfn3JfHkBIjL4iJ
-	jT+EtfGqOCktpGw1vS/nGvrseF5lN6Mw3KoiFPddN2nF68p8WpHrLOcpMko/0Yq+4qcoglba
-	TR/4SmvZGVpZ70pVdlqDlRkPzxIbeNuFS9Q4LjYZa+XL9ghj8t1GlPheknquf1caMo/NQgIG
-	2HBwny/gZyEhI2FLELSZa2mOdCH40vyY4EgnggpHLjW80vqjgMcNihE8d/waIt8RNDbkkj6X
-	iF0GOQNVyIcpdvqgqZfi9HFQe6XlLw5gQ+Cjx8j3YT9WAwa7nufDJBsInhYz4cP+7Coo1BcN
-	6cnwpPzr312aDYWsjizahwWsHAprfiHOEwL3OvJJXyFgXzFg7G8mudqroLq0YOgEP/jsvMvn
-	8CT4bTcT3EIGgmv9H4eIHkFaqwdxrsXQVN83GMcMRsyE25VyTl4BF2++4PlkYMXwtmMcV0IM
-	F2x5JCeLIPO0hHPPAJPT8i/20Ss3qUdS04hnMY043zTiHNP/3GuIKkOBOEmnica6sHicItOp
-	NLqk+GjZvgSNFQ1+nucDzu4KVPL5u8yBCAY5EDCk1F9UGmzHEpFadfgI1ibs1ibFYZ0DTWQo
-	aaBoujoES9ho1SF8AONErB2eEowgKI2whH9wPXIWuTPLQz85wi7HXNISc9zWphM3Fpu3Hj7Y
-	/iRiW3K759vPgGJRKfkjqnD0ysigRZOn2K54uvYGtK/WJPacjMpT1+V5Tp+j6HslsXG7ZAua
-	AzL9Pe37r1s2Y7VrIMcPLaViIgVKq3d2vamhOeJqhVzLbpSJcYKdkHtH7VjvnZowc+ra6jvH
-	xMZ3NcFvRMLg0cfT76ROPNqxqWHWtDMv546pFu01UFtKHE3X65awsmdnDaZTQbfGey/OG2OV
-	7WuaP5DetiZKmqLOntH2rMjy4JuKtfXu9OZF1jGNlgmNVV38st+u7Pqedb1T9PuLZ7dscoaJ
-	b9QuTxEs7LQdkVK6GFXoLFKrU/0BP3u8NKsDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrFIsWRmVeSWpSXmKPExsVy+t/xu7pTfu1MNdj3W95i6trdTBb7Lq5h
-	s7i8aw6bxcTjm1kt2lc+ZbP4tfwoowObx85Zd9k9Nq3qZPM4d7HC4/MmOY/2A91MAaxRejZF
-	+aUlqQoZ+cUltkrRhhZGeoaWFnpGJpZ6hsbmsVZGpkr6djYpqTmZZalF+nYJehlzLs1gLLgt
-	VNHzO66BcT5/FyMnh4SAicTzTwtZuxi5OIQEljJKbN/cxQyRkJE4Oa2BFcIWlvhzrYsNoug9
-	o8TXBbtZQBK8AnYSff92M4LYLAKqEqcP/YSKC0qcnPkEzBYVkJe4f2sGO4gtLJArMXXnBLCh
-	zALiEreezGcCsUUEXCSWTlgGFS+TaJm6kAli2SoWib8Hd4MVsQkYSnS9BbmCk4NTQF9i6bG/
-	jBANZhJdW7ugbHmJ7W/nME9gFJqF5I5ZSPbNQtIyC0nLAkaWVYwiqaXFuem5xYZ6xYm5xaV5
-	6XrJ+bmbGIGRtu3Yz807GOe9+qh3iJGJg/EQowQHs5II70q5nalCvCmJlVWpRfnxRaU5qcWH
-	GE2BgTGRWUo0OR8Y63kl8YZmBqaGJmaWBqaWZsZK4ryeBR2JQgLpiSWp2ampBalFMH1MHJxS
-	DUz+3ROfZqq4MjxsvxOjkrNfUqP9ZmWW8t7cjd8KpB5H2oh3aVo8nGjxYu2vYxHTimbos2y5
-	v6nUUknG58O0fb/XnvExW3ElXuN+H8+Dr/pdL246exfLp0TcmdhxbPWTz9xG2fypNS6Zydyv
-	Dk83sF9UJTfP/dFX73VfEoNvrA5/fPuiLcsirs4pC7T3JOfN+HmnbcWU/k/mL0SP/nu52O3g
-	gQp/WQ+lO5s7XG7yCxiyPN/1OY3p9Y3VzUplW2QXTE037w5SYbOQC3COtmw4X9ZWvXGX1Pnz
-	C69rrOPWZJrEb1Oy4uFs7W1XggJVXP+uWxm6OerksRv614wdZsaeEJvgs7GrI/m+7mdViVjr
-	iceUWIozEg21mIuKEwF18FmxPQMAAA==
-X-CMS-MailID: 20240131074524eucas1p135ce025e8d4ebec1c957b21f124a45ae
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20240130223021eucas1p1172b060d53847b8b77f6455d6257528e
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240130223021eucas1p1172b060d53847b8b77f6455d6257528e
-References: <CAJhGHyAuoGNmaaDa0p+wiJMprXYVYnVV75PS4+kPy-fsPJVH8w@mail.gmail.com>
-	<ZbfrEx9nnkr0FnZE@slm.duckdns.org>
-	<CGME20240130223021eucas1p1172b060d53847b8b77f6455d6257528e@eucas1p1.samsung.com>
-	<91eacde0-df99-4d5c-a980-91046f66e612@samsung.com>
-	<ZbnGbC8YM0rcI8Jm@slm.duckdns.org>
-	<20240131041205.GA3517117@dev-arch.thelio-3990X>
-	<ZbnIzqmClhAvPxKC@slm.duckdns.org>
-	<20240131042031.GA3946229@dev-arch.thelio-3990X>
-	<ZbnLk7pZbcODRNER@slm.duckdns.org>
-	<20240131044254.GA802495@dev-arch.thelio-3990X>
-	<ZbnULGnVOtA5Zdl9@slm.duckdns.org>
 
-On 31.01.2024 06:01, Tejun Heo wrote:
-> From: Tejun Heo <tj@kernel.org>
-> Date: Tue, 30 Jan 2024 18:55:55 -1000
-> Subject: [PATCH] workqueue: Don't call cpumask_test_cpu() with -1 CPU in
->   wq_update_node_max_active()
->
-> For wq_update_node_max_active(), @off_cpu of -1 indicates that no CPU is
-> going down. The function was incorrectly calling cpumask_test_cpu() with -1
-> CPU leading to oopses like the following on some archs:
->
->    Unable to handle kernel paging request at virtual address ffff0002100296e0
->    ..
->    pc : wq_update_node_max_active+0x50/0x1fc
->    lr : wq_update_node_max_active+0x1f0/0x1fc
->    ...
->    Call trace:
->      wq_update_node_max_active+0x50/0x1fc
->      apply_wqattrs_commit+0xf0/0x114
->      apply_workqueue_attrs_locked+0x58/0xa0
->      alloc_workqueue+0x5ac/0x774
->      workqueue_init_early+0x460/0x540
->      start_kernel+0x258/0x684
->      __primary_switched+0xb8/0xc0
->    Code: 9100a273 35000d01 53067f00 d0016dc1 (f8607a60)
->    ---[ end trace 0000000000000000 ]---
->    Kernel panic - not syncing: Attempted to kill the idle task!
->    ---[ end Kernel panic - not syncing: Attempted to kill the idle task! ]---
->
-> Fix it.
->
-> Signed-off-by: Tejun Heo <tj@kernel.org>
-> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Reported-by: Nathan Chancellor <nathan@kernel.org>
-> Tested-by: Nathan Chancellor <nathan@kernel.org>
-> Link: http://lkml.kernel.org/r/91eacde0-df99-4d5c-a980-91046f66e612@samsung.com
-> Fixes: 5797b1c18919 ("workqueue: Implement system-wide nr_active enforcement for unbound workqueues")
+On 31/01/2024 08:39, Vineeth Karumanchi wrote:
+> Hi Andrew,
+> 
+> 
+> On 31/01/24 6:56 am, Andrew Lunn wrote:
+>> On Tue, Jan 30, 2024 at 04:18:44PM +0530, Vineeth Karumanchi wrote:
+>>> "wol-arp-packet" property enables WOL with ARP packet.
+>>> It is an extension to "magic-packet for WOL.
+>>
+>> It not clear why this is needed. Is this not a standard feature of the
+>> IP? Is there no hardware bit indicating the capability?
+>>
+> 
+> WOL via both ARP and Magic packet is supported by the IP version on ZU+ 
+> and Versal. However, user can choose which type of packet to recognize 
+> as a WOL event - magic packet or ARP. The existing DT binding already 
+> describes one entry for wol via magic packet. Hence, adding a new packet 
+> type using the same methodology.
 
+And why would this be board-level configuration? This looks like OS policy.
 
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-
-
-> ---
-> Applied to wq/for-6.9.
->
-> Thanks.
->
->   kernel/workqueue.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-> index 9221a4c57ae1..31c1373505d8 100644
-> --- a/kernel/workqueue.c
-> +++ b/kernel/workqueue.c
-> @@ -1510,7 +1510,7 @@ static void wq_update_node_max_active(struct workqueue_struct *wq, int off_cpu)
->   
->   	lockdep_assert_held(&wq->mutex);
->   
-> -	if (!cpumask_test_cpu(off_cpu, effective))
-> +	if (off_cpu >= 0 && !cpumask_test_cpu(off_cpu, effective))
->   		off_cpu = -1;
->   
->   	total_cpus = cpumask_weight_and(effective, cpu_online_mask);
-
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+Best regards,
+Krzysztof
 
 
