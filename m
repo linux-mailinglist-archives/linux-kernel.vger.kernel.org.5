@@ -1,346 +1,382 @@
-Return-Path: <linux-kernel+bounces-46299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBE2E843DA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:04:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FFEE843E66
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:31:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 471FD1F28B6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:04:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA08E1F2BAFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:31:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E954F745C8;
-	Wed, 31 Jan 2024 11:00:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y20puwzL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A89A74E2F;
+	Wed, 31 Jan 2024 11:31:31 +0000 (UTC)
+Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2098.outbound.protection.partner.outlook.cn [139.219.17.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A77FF6A353;
-	Wed, 31 Jan 2024 11:00:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706698837; cv=none; b=aB1bkCAiVbwMakVR9domLZYh5kI6UhibCq0K6xk7H8UvrahWQPw41G9+yTNfArO25N+UtMwt2B3Tvi/QzqXnAQLM8wiG0NmQn30UkY9cg4c+/STmtsizFt8OEAygovpX6Ehpnz+bkiFWFMks34Qa89WD/2DrxqgIwRRGJC42nPI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706698837; c=relaxed/simple;
-	bh=M4FtRNaJRGX1hU6IbURFv7FbIXOuZSMJpHIp14hyZwk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SBeypV0jF7ZJyAjVcpY9YuoV379AqVcJuPp1EZUv93vGJwkJfSBrMILu7c7JMNMk7C2EkHurhBVQn5VcUh2yzaZPl3BYqXvA0LwPQvg/oW9GRQZm6SRZzzabE6JoYzJmdIN4LGrTyADSchthrE72IZCgk5rVmy5+vSFu9W9BXKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y20puwzL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DCF5C433F1;
-	Wed, 31 Jan 2024 11:00:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706698837;
-	bh=M4FtRNaJRGX1hU6IbURFv7FbIXOuZSMJpHIp14hyZwk=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=Y20puwzLdo/kirgWBFWjcmKYOlA/ZF4xNYVnC83MgAugYyoVJspVVkLreGJKZ3X4R
-	 0Y/BgCdGgtgtqjP3LksfVvY2tdD80blY9kS23yS2QCwO0KXg0aZl+Qk6Z8h4ead78R
-	 W7zU6hHIy7Tqq9NxR04pmdF5jWoXA96723OWR3ux3bAUDh3SITHVlmV/8ubepVm75s
-	 xmw5nE6l36S3o+Pmyfl/mVVAUHM4kcoQSnGZMrB6KC76OIZxH/dLFTZ5a5kPlCb3CL
-	 TkvEy3Qb3BCkxw011+VwoytVmb31DEsWpbT0oCm27YFWSIB+ORJ4Qfwnme4JlIpWvT
-	 /2TbbbZCKFgtg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id AB1D2CE04B6; Wed, 31 Jan 2024 03:00:36 -0800 (PST)
-Date: Wed, 31 Jan 2024 03:00:36 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: brgl@bgdev.pl
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Wolfram Sang <wsa-dev@sang-engineering.com>,
-	oe-kbuild-all@lists.linux.dev, linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH 20/22] gpio: protect the pointer to gpio_chip in
- gpio_device with SRCU
-Message-ID: <d0636911-e15e-40fd-ac8f-200127fe433d@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240130124828.14678-21-brgl@bgdev.pl>
- <202401311050.YNdm98Hv-lkp@intel.com>
- <CAMRc=Me0y-P4zTu_nCPpdF8hX_7rqri1AG1zCU6sO9tbJXbneQ@mail.gmail.com>
- <fa273f23-320a-465d-a403-523424d98e3d@paulmck-laptop>
- <CAMRc=MdoG1Ku-hbBWt7Jc+d4=ANfshPWwW3C_G-e2GdyggqG1w@mail.gmail.com>
- <26942a3c-efc9-4344-9fac-c5feea06639c@paulmck-laptop>
- <CAMRc=MdYbGH8Q0Wk_40RV=_HN86oYg146bz-TeYp1KKwSoEhGw@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14628745E7;
+	Wed, 31 Jan 2024 11:31:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.98
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706700690; cv=fail; b=KyJzvqhyVG9QH2my1SGLXSXJ6lyX8Ne9YGKdWTxwtAApBk8rDnmJAakZSu3N0sBdnuGBbTXxDU0qvK0YJQVIAfzu6CKOvZ/QmY5fSxDjwWdm7/V1mkSit4++3EF45qYC/M6Eu6OIP+uMAh/loa54ciXMjtWSMVwy6sLsX2zPSRg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706700690; c=relaxed/simple;
+	bh=sb6EjKZzk2QNg59nSPG3rvF99Fa5UrgrXfbq+TIHQRg=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=sghhKXU/ll88PHKGLEBzHNwGwxHbSsNu/wSlFyqfYX/9Yp8QD61bUA1VZASoWJPNMcNclVQ7+u/rcCm8cljpUioJuBjQIVBvD25kBD7Ic/R3YJpE7+gJJShzz8VFaMU2+nDxVpPxewkJEuckLFO9UcufOexycK6czJYzOH9l2LY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YYBpWQPfzE0yvqRwFV433yjjQ1newCHVxxC9r1n3cR1mvLRhnyXIm03UGLN5k64wCAQsQYbMDqh5vitgyIMWZQmSpyD9Ig1L/CfNz8L0fxISbRzJfS7iTH63OJ/6QxiEm8QZ0i3MNoJ3jr16xPpcq9WMrLblukZO5uR7+qDJvxfDiXjsQCTyryhGUobbYCL2c0h/kvZmnYjRbmt2JM7QfsePU/p7imexUPmKs5e6R+TJ+NQZWSXCPBzwjPRRNvRu0F8Zfb7lllLfnQMiL19y79wGLeenoRhkuBDNUyHXidLU+NFThJW+ETH1BAdjSeKOGJHZEsbD6Q3sb/7+EfDjHw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sb6EjKZzk2QNg59nSPG3rvF99Fa5UrgrXfbq+TIHQRg=;
+ b=D410mGDregF8keNjq3hHU+4RBPqCAAv2b/OrpVR6rWuW4sosVs67ppRAEVmgW5OnNLcknjPE6YzrCvTpnWIIKfjQFMg/UmLPcu2YSt0iErXSZllXK/tJEs7hQ1nk0dXcq/JH6CH4W0z/6+6Lr7PVBcka8M7boK4XugHoCf95wVo5WYDoOmLFP9gaa9xBW4P9UL6aXB7pdUST1QHj63ACrkqtn0jERQqPG/5CvIl4DSGFKYNRtAmpZnNlAJM+GKYWshoto2Fe1ZrlPAOHMTFXsdwglfZUEkYFTAi/slJNZg++FI1SRhENcVVr+VNi+HgV0vN7ZvK+XL+NaycDqTALiw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Received: from NTZPR01MB1050.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510:1::6) by NTZPR01MB0987.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510:1::9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.19; Wed, 31 Jan
+ 2024 08:57:21 +0000
+Received: from NTZPR01MB1050.CHNPR01.prod.partner.outlook.cn
+ ([fe80::9664:1b1f:5888:9fe0]) by
+ NTZPR01MB1050.CHNPR01.prod.partner.outlook.cn ([fe80::9664:1b1f:5888:9fe0%5])
+ with mapi id 15.20.7228.026; Wed, 31 Jan 2024 08:57:21 +0000
+From: Keith Zhao <keith.zhao@starfivetech.com>
+To: Maxime Ripard <mripard@kernel.org>, Keith Zhao
+	<keith.zhao@starfivetech.com>
+CC: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+	"tzimmermann@suse.de" <tzimmermann@suse.de>, "airlied@gmail.com"
+	<airlied@gmail.com>, "krzysztof.kozlowski+dt@linaro.org"
+	<krzysztof.kozlowski+dt@linaro.org>, William Qiu
+	<william.qiu@starfivetech.com>, Xingyu Wu <xingyu.wu@starfivetech.com>,
+	"paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+	"aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>, "palmer@dabbelt.com"
+	<palmer@dabbelt.com>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+	Shengyang Chen <shengyang.chen@starfivetech.com>, Jack Zhu
+	<jack.zhu@starfivetech.com>, Changhuang Liang
+	<changhuang.liang@starfivetech.com>, "maarten.lankhorst@linux.intel.com"
+	<maarten.lankhorst@linux.intel.com>
+Subject: =?gb2312?B?u9i4tDogW3YzIDQvNl0gZHJtL3ZzOiBBZGQgS01TIGNydGMmcGxhbmU=?=
+Thread-Topic: [v3 4/6] drm/vs: Add KMS crtc&plane
+Thread-Index: AQHaJq4PJ8YUPtioe0eCWixmHdQfP7CbcJQAgFiIS9A=
+Date: Wed, 31 Jan 2024 08:57:21 +0000
+Message-ID:
+ <NTZPR01MB1050AC99C38D2136D0354F3DEE7CA@NTZPR01MB1050.CHNPR01.prod.partner.outlook.cn>
+References: <20231204123315.28456-1-keith.zhao@starfivetech.com>
+ <20231204123315.28456-5-keith.zhao@starfivetech.com>
+ <o4ica2jg2rqfx6znir6j7mkoojoqzejjuqvlwcnehanw5mvop6@a3t6vi7c55tz>
+In-Reply-To: <o4ica2jg2rqfx6znir6j7mkoojoqzejjuqvlwcnehanw5mvop6@a3t6vi7c55tz>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: NTZPR01MB1050:EE_|NTZPR01MB0987:EE_
+x-ms-office365-filtering-correlation-id: ad224974-a23e-4da9-8261-08dc223aa2d5
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ Z7uDhsP7yP2YKVUKwope6pRza/RN6l7hJ5+nVHhdrXcgYuYJdeePz6QxftcRLt4IDT6e6jmi0/tvABM0siebuCHRgj0O2GjwEBUHAcyKfjK/eyzpZjwV97epd76DdMNZOCKll8stfbKxPvxcv8YWUCOruxHXzejO4K8ICFHSG8PZtpcCp/f7l8KDlHPFa9d8d70va5a4Cc/+OGVaRnFBJQSHuxvinE3duMNS7lKJVsa6RJ+4saEfasYO1iy3/eWvs3HYCcQN+Uz0SA64up1HFGAs3PoBdnrN1XotA+P3xbm+ObWofkVqEknWPmlU2yVkSNShkkMkAf3TdjpkqElDEqzQ7pRsB3TM0Yhxe2mFDzGJ7hmh6Vpn+p9wLvhPD7SLFGHLxXnIlhwRiM8ryiUcd7mXRzbx1dTX3V/KBwZ21IDEO2oaaQH4ct/kxVjhs6zXCnNB7J/LtSSvxfL/+P8sUiiP9cRuoBtenlirQRkUYWTsLCX7Gc2PENUc8KVFD3fX4ebpW3Ndg7SYkiMI2ZmtkdDrOQ9/glgVZdqkrCzoLPqaVWYMrfNtMHwh7NE71atxxYqB7YfCfM+oWAs/+lKRJg==
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:NTZPR01MB1050.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(39830400003)(136003)(346002)(366004)(396003)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(41320700001)(54906003)(8936002)(5660300002)(66446008)(66476007)(2906002)(4326008)(66946007)(33656002)(30864003)(7416002)(86362001)(44832011)(66556008)(110136005)(76116006)(38070700009)(40180700001)(38100700002)(224303003)(64756008)(40160700002)(7696005)(122000001)(9686003)(71200400001)(83380400001)(508600001)(26005)(41300700001)(55016003)(100166002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?gb2312?B?bHVLRSttdExSSG9sRFZ2dUdpUVR2TnRUdkoyeDlITXJtZ2JXODJSL3g1U21Y?=
+ =?gb2312?B?ZU42VHpXTFdWWHFQeCtTNmVNRW1OdERYYktVYzhXbmozdXNiMkV4OWdrSk5R?=
+ =?gb2312?B?dmx4dUIyM2RCV2ozYmpOdEhrTjc2Y2tZVkdpUzFkVno5ZThlT1kvMTBUWWMz?=
+ =?gb2312?B?OGVtckl4MHVMeUs3Y3JDOVk0bjIzMjdCUk9lMzFBaSsyK1JOeXlQVm9MczIz?=
+ =?gb2312?B?VUpEY0FkSTZxUk5kMTBmMmdOUVUrZm9mYnVqN3ZjeEpWaG1ZNEpaUE5vUFlS?=
+ =?gb2312?B?dWkrQjJHOGpERU9rUnk1aWlRemY5Smt5RG1GTXpZQzhDRm5IOVFtSFJMWnFh?=
+ =?gb2312?B?WmNlb3FGbUQyeHluTXlzTVVVRDIzVmgwY0sxOStNY2xBVThzRU1oU3lzWUdx?=
+ =?gb2312?B?eHBUTzhKTUNiaTE5TzdpZDJRZjdCekNyZjl4TENDRTFEZUg0K0IzSHBMZVg3?=
+ =?gb2312?B?YzJsRHJ6a1grWGY1MTRkQnVmaUlKZ044NG95NUdscTJGc1lGQnFQN2N1YUJI?=
+ =?gb2312?B?SDh4Ymhvc2M5V21PZnQzcnBsaVNmaWN3T3prQUlBVE5yL0Mrd0dxeEgzS2kr?=
+ =?gb2312?B?U3dVSEpxWndQcHA5N1JFVXZvTmw1S29sV1N4dzhYelh1Lzcrb1FaSnNhRW90?=
+ =?gb2312?B?ZGsrbUNQOXY0MlVuaEVaa0ptZ2d2djRoR2x5anBnOG1TOFdBYXFJaHViQ1lZ?=
+ =?gb2312?B?Um9jUW1nYWhwV1JrUW94Qko0dmkva29xTzVNT1BoeCtsWi8vc3FVZEtnZmtj?=
+ =?gb2312?B?NHZTSW9JNlF0a2E3bFFSRW52RnVIQUhOVUR4UlREV3JjalYxYkF2OWhrbzB0?=
+ =?gb2312?B?RjQ0b0YvUDlZWklsdHpyQjQyNk5kZ1pPd1crY3RtS3UramNxZUljMmhTTEYx?=
+ =?gb2312?B?a0crNU1lanVUWHk4b0prODdmc2VFMVNhYWRNM2duUHhBT2FpS0pwdWJZVXZZ?=
+ =?gb2312?B?U1U3aFR4cFJ0eStiSjZSV1ZUQk1PS3duRXA5OFpHTXZReis4UGp4OWx6NGxo?=
+ =?gb2312?B?ZEdlUWR4WVNPK1BRWWx0dVhIK1dyUGs2RktVaEtYYk9sN2VXS2RqK1VuWkVR?=
+ =?gb2312?B?a1liQjdDdWM1aHNTaXQ2MWRqNlJReHRZd1d5dk1CYmx2OXVZTE1lZ003NmY0?=
+ =?gb2312?B?N0xTM3l5UEZnNkg4QTU4UnJGK1F1aXN4QWxBS05LSTR2NUd5cXlLb05xOTJ3?=
+ =?gb2312?B?UDJ5VDF1UnRqbzVzbHN3bzdMNldnMXV0dFNjVGYweFRJOU9xU3ZiMU9pNUF2?=
+ =?gb2312?B?Vk5sOHBvcGFrWU45czZmWWhlRnVLcEwzTTZjRE5TNkRDZ2dld2hId2o1UWJ0?=
+ =?gb2312?B?TXQ5QW9LRGUxUy9ISE5jd0d1TFhITG02bnUzdlQrcE4wbXJuOXkxMmhxb0xI?=
+ =?gb2312?B?UGx1VzlwZHBaT0JTNHpUdVc5QS9PeVhoc1hjSVVibGVueXlFMDNoUkp4b0c0?=
+ =?gb2312?B?aTNvcE5MdWloL1QxUjQ4QytKZUtTVTZ1OEpJcmp6UzQvR1pHdS80dDlCN29a?=
+ =?gb2312?B?QUw2NmtPemdBcEdTRHE5ckdXMEcrRWhqS1RsSUo4NVZNeUI1QkNBQnJxT3lC?=
+ =?gb2312?B?ZTg5K1htOW8wd013d0h2ancwL0pMNmY2RVV6NEpCL2t6SmltbFRiMEkxL1dW?=
+ =?gb2312?B?SGVXQ1NqSXgyamNIT1JaWU43NktEVFcySEVKVFFrZnlHQlZHTTVGdWd3dng4?=
+ =?gb2312?B?TENqZk4rbGcvcW95RG8vb1JnTnBiM2VMYWk4R2R6NjRUZVo3djh3dmN0TEpU?=
+ =?gb2312?B?aW85bE11QVlJMlh4Z29jTkdQamIzTGgva0cyNEF1S3RsazAvZnk2TW9Oa3lZ?=
+ =?gb2312?B?czZuNmRaYVlKWnM0bW5DQm5YMk1yZWswNk9mbEc2WmNOcHZVVXhvRThsYkdx?=
+ =?gb2312?B?aWZaTkxwbGo1TkhRMzZqQUZTWG9tbHRuKzFYSXNkK0Jzd1pSYnBqTmV2dGQ1?=
+ =?gb2312?B?UTVnb2tlRXZjMVJraldJcTUvbC95WlNlRHg5MktnNHdvakJob0IyMHVpSGJX?=
+ =?gb2312?B?RGNHTzMyeGRZeTA0MkJmZ2Z0UllPbFBrUk5ZRVFCRXgvUmlNVUU3SWxpM3ps?=
+ =?gb2312?B?VkRmQmhYMUx6TE44NnhUTm1TVEZpSEo3YkJZM1pROHlYTWsrWnY5QUtwMmt0?=
+ =?gb2312?B?TUZrVC85V2h1NERHZTVLYkw3U1l6aVRlbHRnOGNRZDBjUjFjOThtZmxxZHhZ?=
+ =?gb2312?B?RlE9PQ==?=
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=MdYbGH8Q0Wk_40RV=_HN86oYg146bz-TeYp1KKwSoEhGw@mail.gmail.com>
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: NTZPR01MB1050.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-Network-Message-Id: ad224974-a23e-4da9-8261-08dc223aa2d5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Jan 2024 08:57:21.4520
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Y5BP0f4hKidISy4wxAryeyx4DQnSt0o7cBQVijDz521LHIsA7wNXHvA2HoUZ3K4+phDqhY/pl+RfeudG2EUrA4Lq/FwaJcy4sQWbaLb7+Nc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: NTZPR01MB0987
 
-On Wed, Jan 31, 2024 at 02:17:30AM -0800, brgl@bgdev.pl wrote:
-> On Wed, 31 Jan 2024 10:42:20 +0100, "Paul E. McKenney"
-> <paulmck@kernel.org> said:
-> > On Wed, Jan 31, 2024 at 10:28:19AM +0100, Bartosz Golaszewski wrote:
-> >> On Wed, Jan 31, 2024 at 10:24 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >> >
-> >> > On Wed, Jan 31, 2024 at 10:02:40AM +0100, Bartosz Golaszewski wrote:
-> >> > > On Wed, Jan 31, 2024 at 3:21 AM kernel test robot <lkp@intel.com> wrote:
-> >> > > >
-> >> > > > Hi Bartosz,
-> >> > > >
-> >> > > > kernel test robot noticed the following build warnings:
-> >> > > >
-> >> > > > [auto build test WARNING on brgl/gpio/for-next]
-> >> > > > [also build test WARNING on linus/master v6.8-rc2 next-20240130]
-> >> > > > [If your patch is applied to the wrong git tree, kindly drop us a note.
-> >> > > > And when submitting patch, we suggest to use '--base' as documented in
-> >> > > > https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> >> > > >
-> >> > > > url:    https://github.com/intel-lab-lkp/linux/commits/Bartosz-Golaszewski/gpio-protect-the-list-of-GPIO-devices-with-SRCU/20240130-205537
-> >> > > > base:   https://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git gpio/for-next
-> >> > > > patch link:    https://lore.kernel.org/r/20240130124828.14678-21-brgl%40bgdev.pl
-> >> > > > patch subject: [PATCH 20/22] gpio: protect the pointer to gpio_chip in gpio_device with SRCU
-> >> > > > config: x86_64-randconfig-122-20240131 (https://download.01.org/0day-ci/archive/20240131/202401311050.YNdm98Hv-lkp@intel.com/config)
-> >> > > > compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> >> > > > reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240131/202401311050.YNdm98Hv-lkp@intel.com/reproduce)
-> >> > > >
-> >> > > > If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> >> > > > the same patch/commit), kindly add following tags
-> >> > > > | Reported-by: kernel test robot <lkp@intel.com>
-> >> > > > | Closes: https://lore.kernel.org/oe-kbuild-all/202401311050.YNdm98Hv-lkp@intel.com/
-> >> > > >
-> >> > > > sparse warnings: (new ones prefixed by >>)
-> >> > > > >> drivers/gpio/gpiolib.c:444:22: sparse: sparse: incompatible types in comparison expression (different address spaces):
-> >> > > >    drivers/gpio/gpiolib.c:444:22: sparse:    struct gpio_chip [noderef] __rcu *
-> >> > > >    drivers/gpio/gpiolib.c:444:22: sparse:    struct gpio_chip *
-> >> > > >    drivers/gpio/gpiolib.c:1103:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-> >> > > >    drivers/gpio/gpiolib.c:1103:9: sparse:    struct gpio_chip [noderef] __rcu *
-> >> > > >    drivers/gpio/gpiolib.c:1103:9: sparse:    struct gpio_chip *
-> >> > > >    drivers/gpio/gpiolib.c:1182:22: sparse: sparse: incompatible types in comparison expression (different address spaces):
-> >> > > >    drivers/gpio/gpiolib.c:1182:22: sparse:    struct gpio_chip [noderef] __rcu *
-> >> > > >    drivers/gpio/gpiolib.c:1182:22: sparse:    struct gpio_chip *
-> >> > > >    drivers/gpio/gpiolib.c:2970:14: sparse: sparse: incompatible types in comparison expression (different address spaces):
-> >> > > >    drivers/gpio/gpiolib.c:2970:14: sparse:    struct gpio_chip [noderef] __rcu *
-> >> > > >    drivers/gpio/gpiolib.c:2970:14: sparse:    struct gpio_chip *
-> >> > > >    drivers/gpio/gpiolib.c:3004:22: sparse: sparse: incompatible types in comparison expression (different address spaces):
-> >> > > >    drivers/gpio/gpiolib.c:3004:22: sparse:    struct gpio_chip [noderef] __rcu *
-> >> > > >    drivers/gpio/gpiolib.c:3004:22: sparse:    struct gpio_chip *
-> >> > > >    drivers/gpio/gpiolib.c:3585:14: sparse: sparse: incompatible types in comparison expression (different address spaces):
-> >> > > >    drivers/gpio/gpiolib.c:3585:14: sparse:    struct gpio_chip [noderef] __rcu *
-> >> > > >    drivers/gpio/gpiolib.c:3585:14: sparse:    struct gpio_chip *
-> >> > > >    drivers/gpio/gpiolib.c:4772:14: sparse: sparse: incompatible types in comparison expression (different address spaces):
-> >> > > >    drivers/gpio/gpiolib.c:4772:14: sparse:    struct gpio_chip [noderef] __rcu *
-> >> > > >    drivers/gpio/gpiolib.c:4772:14: sparse:    struct gpio_chip *
-> >> > > >    drivers/gpio/gpiolib.c:4846:14: sparse: sparse: incompatible types in comparison expression (different address spaces):
-> >> > > >    drivers/gpio/gpiolib.c:4846:14: sparse:    struct gpio_chip [noderef] __rcu *
-> >> > > >    drivers/gpio/gpiolib.c:4846:14: sparse:    struct gpio_chip *
-> >> > > >    drivers/gpio/gpiolib.c: note: in included file:
-> >> > > > >> drivers/gpio/gpiolib.h:202:1: sparse: sparse: incompatible types in comparison expression (different address spaces):
-> >> > > >    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip [noderef] __rcu *
-> >> > > >    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip *
-> >> > > > >> drivers/gpio/gpiolib.h:202:1: sparse: sparse: incompatible types in comparison expression (different address spaces):
-> >> > > >    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip [noderef] __rcu *
-> >> > > >    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip *
-> >> > > > >> drivers/gpio/gpiolib.h:202:1: sparse: sparse: incompatible types in comparison expression (different address spaces):
-> >> > > >    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip [noderef] __rcu *
-> >> > > >    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip *
-> >> > > > >> drivers/gpio/gpiolib.h:202:1: sparse: sparse: incompatible types in comparison expression (different address spaces):
-> >> > > >    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip [noderef] __rcu *
-> >> > > >    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip *
-> >> > > > >> drivers/gpio/gpiolib.h:202:1: sparse: sparse: incompatible types in comparison expression (different address spaces):
-> >> > > >    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip [noderef] __rcu *
-> >> > > >    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip *
-> >> > > > >> drivers/gpio/gpiolib.h:202:1: sparse: sparse: incompatible types in comparison expression (different address spaces):
-> >> > > >    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip [noderef] __rcu *
-> >> > > >    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip *
-> >> > > > >> drivers/gpio/gpiolib.h:202:1: sparse: sparse: incompatible types in comparison expression (different address spaces):
-> >> > > >    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip [noderef] __rcu *
-> >> > > >    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip *
-> >> > > > >> drivers/gpio/gpiolib.h:202:1: sparse: sparse: incompatible types in comparison expression (different address spaces):
-> >> > > >    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip [noderef] __rcu *
-> >> > > >    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip *
-> >> > > > >> drivers/gpio/gpiolib.h:202:1: sparse: sparse: incompatible types in comparison expression (different address spaces):
-> >> > > >    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip [noderef] __rcu *
-> >> > > >    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip *
-> >> > > > >> drivers/gpio/gpiolib.h:202:1: sparse: sparse: incompatible types in comparison expression (different address spaces):
-> >> > > >    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip [noderef] __rcu *
-> >> > > >    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip *
-> >> > > > >> drivers/gpio/gpiolib.h:202:1: sparse: sparse: incompatible types in comparison expression (different address spaces):
-> >> > > >    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip [noderef] __rcu *
-> >> > > >    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip *
-> >> > > > >> drivers/gpio/gpiolib.h:202:1: sparse: sparse: incompatible types in comparison expression (different address spaces):
-> >> > > >    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip [noderef] __rcu *
-> >> > > >    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip *
-> >> > > > >> drivers/gpio/gpiolib.h:202:1: sparse: sparse: incompatible types in comparison expression (different address spaces):
-> >> > > >    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip [noderef] __rcu *
-> >> > > >    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip *
-> >> > > > >> drivers/gpio/gpiolib.h:202:1: sparse: sparse: incompatible types in comparison expression (different address spaces):
-> >> > > >    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip [noderef] __rcu *
-> >> > > >    drivers/gpio/gpiolib.h:202:1: sparse:    struct gpio_chip *
-> >> > > >
-> >> > > > vim +444 drivers/gpio/gpiolib.c
-> >> > > >
-> >> > > >    422
-> >> > > >    423  /*
-> >> > > >    424   * Convert a GPIO name to its descriptor
-> >> > > >    425   * Note that there is no guarantee that GPIO names are globally unique!
-> >> > > >    426   * Hence this function will return, if it exists, a reference to the first GPIO
-> >> > > >    427   * line found that matches the given name.
-> >> > > >    428   */
-> >> > > >    429  static struct gpio_desc *gpio_name_to_desc(const char * const name)
-> >> > > >    430  {
-> >> > > >    431          struct gpio_device *gdev;
-> >> > > >    432          struct gpio_desc *desc;
-> >> > > >    433          struct gpio_chip *gc;
-> >> > > >    434
-> >> > > >    435          if (!name)
-> >> > > >    436                  return NULL;
-> >> > > >    437
-> >> > > >    438          guard(srcu)(&gpio_devices_srcu);
-> >> > > >    439
-> >> > > >    440          list_for_each_entry_srcu(gdev, &gpio_devices, list,
-> >> > > >    441                                   srcu_read_lock_held(&gpio_devices_srcu)) {
-> >> > > >    442                  guard(srcu)(&gdev->srcu);
-> >> > > >    443
-> >> > > >  > 444                  gc = rcu_dereference(gdev->chip);
-> >> > > >    445                  if (!gc)
-> >> > > >    446                          continue;
-> >> > > >    447
-> >> > > >    448                  for_each_gpio_desc(gc, desc) {
-> >> > > >    449                          if (desc->name && !strcmp(desc->name, name))
-> >> > > >    450                                  return desc;
-> >> > > >    451                  }
-> >> > > >    452          }
-> >> > > >    453
-> >> > > >    454          return NULL;
-> >> > > >    455  }
-> >> > > >    456
-> >> > > >
-> >> > > > --
-> >> > > > 0-DAY CI Kernel Test Service
-> >> > > > https://github.com/intel/lkp-tests/wiki
-> >> > >
-> >> > > Paul,
-> >> > >
-> >> > > Should I care about these warnings? They seem to be emitted for a lot
-> >> > > of RCU code already upstream. I'm not even sure how I'd go about
-> >> > > addressing them honestly.
-> >> >
-> >> > This is maintainer's choice.
-> >> >
-> >> > The fix would be to apply __rcu to the definition of ->chip.  The benefit
-> >> > is that it finds bugs where rcu-protected pointers are used without RCU
-> >> > primitives and vice versa.
-> >>
-> >> Ah, good point. I marked the other RCU-protected fields like
-> >> descriptor label but forgot this one.
-> >>
-> >> It also seems like I need to use __rcu for all function arguments
-> >> taking an RCU-protected pointer as argument?
-> >
-> > Not if that argument gets its value from rcu_dereference(), which is
-> > the usual pattern.
-> >
-> > And if you are passing an RCU-protected pointer to a function *before*
-> > passing it through rcu_dereference(), I would have some questions for you.
-> >
-> > Or are you instead passing a pointer to an RCU-protected pointer as an
-> > argument to your functions?
-> 
-> No, I'm not. Thanks for making it clear. With the following changes to the
-> series, the warnings are now gone:
-> 
-> diff --git a/drivers/gpio/gpiolib-sysfs.c b/drivers/gpio/gpiolib-sysfs.c
-> index 6a421309319e..15349f92d0ec 100644
-> --- a/drivers/gpio/gpiolib-sysfs.c
-> +++ b/drivers/gpio/gpiolib-sysfs.c
-> @@ -762,7 +762,7 @@ EXPORT_SYMBOL_GPL(gpiod_unexport);
-> 
->  int gpiochip_sysfs_register(struct gpio_device *gdev)
->  {
-> -	struct gpio_chip *chip = gdev->chip;
-> +	struct gpio_chip *chip;
-
-This is protected by an update-side lock, correct?
-
->  	struct device *parent;
->  	struct device *dev;
-> 
-> @@ -775,6 +775,12 @@ int gpiochip_sysfs_register(struct gpio_device *gdev)
->  	if (!class_is_registered(&gpio_class))
->  		return 0;
-> 
-> +	guard(srcu)(&gdev->srcu);
-> +
-> +	chip = rcu_dereference(gdev->chip);
-
-If so, you rely on that lock's protection by replacing the above
-two lines of code with something like this:
-
-	chip = rcu_dereference_protected(gdev->chip,
-					 lockdep_is_held(&my_lock));
-
-> +	if (!chip)
-> +		return -ENODEV;
-> +
->  	/*
->  	 * For sysfs backward compatibility we need to preserve this
->  	 * preferred parenting to the gpio_chip parent field, if set.
-> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> index 7ecdd8cc39c5..ea0675514891 100644
-> --- a/drivers/gpio/gpiolib.c
-> +++ b/drivers/gpio/gpiolib.c
-> @@ -221,7 +221,7 @@ struct gpio_chip *gpiod_to_chip(const struct
-> gpio_desc *desc)
->  {
->  	if (!desc)
->  		return NULL;
-> -	return desc->gdev->chip;
-> +	return rcu_dereference(desc->gdev->chip);
->  }
->  EXPORT_SYMBOL_GPL(gpiod_to_chip);
-> 
-> @@ -291,7 +291,7 @@ EXPORT_SYMBOL(gpio_device_get_label);
->   */
->  struct gpio_chip *gpio_device_get_chip(struct gpio_device *gdev)
->  {
-> -	return gdev->chip;
-> +	return rcu_dereference(gdev->chip);
->  }
->  EXPORT_SYMBOL_GPL(gpio_device_get_chip);
-> 
-> @@ -742,7 +742,7 @@ static int gpiochip_setup_dev(struct gpio_device *gdev)
->  		goto err_remove_device;
-> 
->  	dev_dbg(&gdev->dev, "registered GPIOs %d to %d on %s\n", gdev->base,
-> -		gdev->base + gdev->ngpio - 1, gdev->chip->label ? : "generic");
-> +		gdev->base + gdev->ngpio - 1, gdev->label);
-
-I don't know enough to comment here, but the rest of the look good to me.
-
->  	return 0;
-> 
-> @@ -866,7 +866,7 @@ int gpiochip_add_data_with_key(struct gpio_chip
-> *gc, void *data,
->  		return -ENOMEM;
->  	gdev->dev.bus = &gpio_bus_type;
->  	gdev->dev.parent = gc->parent;
-> -	WRITE_ONCE(gdev->chip, gc);
-> +	rcu_assign_pointer(gdev->chip, gc);
-> 
->  	gc->gpiodev = gdev;
->  	gpiochip_set_data(gc, data);
-> diff --git a/drivers/gpio/gpiolib.h b/drivers/gpio/gpiolib.h
-> index c76acb8f95c6..07443d26cbca 100644
-> --- a/drivers/gpio/gpiolib.h
-> +++ b/drivers/gpio/gpiolib.h
-> @@ -59,7 +59,7 @@ struct gpio_device {
->  	int			id;
->  	struct device		*mockdev;
->  	struct module		*owner;
-> -	struct gpio_chip	*chip;
-> +	struct gpio_chip __rcu	*chip;
->  	struct gpio_desc	*descs;
->  	int			base;
->  	u16			ngpio;
-> 
-> Bartosz
+DQoNCj4gLS0tLS3Tyrz+1K28/i0tLS0tDQo+ILeivP7IyzogTWF4aW1lIFJpcGFyZCA8bXJpcGFy
+ZEBrZXJuZWwub3JnPg0KPiC3osvNyrG85DogMjAyM8TqMTLUwjbI1SAxNjo1Ng0KPiDK1bz+yMs6
+IEtlaXRoIFpoYW8gPGtlaXRoLnpoYW9Ac3RhcmZpdmV0ZWNoLmNvbT4NCj4gs63LzTogZGV2aWNl
+dHJlZUB2Z2VyLmtlcm5lbC5vcmc7IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmc7DQo+
+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LXJpc2N2QGxpc3RzLmluZnJhZGVh
+ZC5vcmc7DQo+IHR6aW1tZXJtYW5uQHN1c2UuZGU7IGFpcmxpZWRAZ21haWwuY29tOyBrcnp5c3p0
+b2Yua296bG93c2tpK2R0QGxpbmFyby5vcmc7DQo+IFdpbGxpYW0gUWl1IDx3aWxsaWFtLnFpdUBz
+dGFyZml2ZXRlY2guY29tPjsgWGluZ3l1IFd1DQo+IDx4aW5neXUud3VAc3RhcmZpdmV0ZWNoLmNv
+bT47IHBhdWwud2FsbXNsZXlAc2lmaXZlLmNvbTsNCj4gYW91QGVlY3MuYmVya2VsZXkuZWR1OyBw
+YWxtZXJAZGFiYmVsdC5jb207IHAuemFiZWxAcGVuZ3V0cm9uaXguZGU7DQo+IFNoZW5neWFuZyBD
+aGVuIDxzaGVuZ3lhbmcuY2hlbkBzdGFyZml2ZXRlY2guY29tPjsgSmFjayBaaHUNCj4gPGphY2su
+emh1QHN0YXJmaXZldGVjaC5jb20+OyBDaGFuZ2h1YW5nIExpYW5nDQo+IDxjaGFuZ2h1YW5nLmxp
+YW5nQHN0YXJmaXZldGVjaC5jb20+OyBtYWFydGVuLmxhbmtob3JzdEBsaW51eC5pbnRlbC5jb207
+DQo+IHN1aWppbmdmZW5nQGxvb25nc29uLmNuDQo+INb3zOI6IFJlOiBbdjMgNC82XSBkcm0vdnM6
+IEFkZCBLTVMgY3J0YyZwbGFuZQ0KPiANCj4gT24gTW9uLCBEZWMgMDQsIDIwMjMgYXQgMDg6MzM6
+MTNQTSArMDgwMCwgS2VpdGggWmhhbyB3cm90ZToNCj4gPiArc3RhdGljIGNvbnN0IHN0cnVjdCB2
+c19wbGFuZV9pbmZvIGRjX2h3X3BsYW5lc19yZXYwW1BMQU5FX05VTV0gPSB7DQo+ID4gKwl7DQo+
+ID4gKwkJLm5hbWUJCQk9ICJQcmltYXJ5IiwNCj4gPiArCQkuaWQJCQk9IFBSSU1BUllfUExBTkVf
+MCwNCj4gPiArCQkudHlwZQkJCT0gRFJNX1BMQU5FX1RZUEVfUFJJTUFSWSwNCj4gPiArCQkubnVt
+X2Zvcm1hdHMJCT0gQVJSQVlfU0laRShwcmltYXJ5X292ZXJsYXlfZm9ybWF0MCksDQo+ID4gKwkJ
+LmZvcm1hdHMJCT0gcHJpbWFyeV9vdmVybGF5X2Zvcm1hdDAsDQo+ID4gKwkJLm51bV9tb2RpZmll
+cnMJCT0gQVJSQVlfU0laRShmb3JtYXRfbW9kaWZpZXIwKSwNCj4gPiArCQkubW9kaWZpZXJzCQk9
+IGZvcm1hdF9tb2RpZmllcjAsDQo+ID4gKwkJLm1pbl93aWR0aAkJPSAwLA0KPiA+ICsJCS5taW5f
+aGVpZ2h0CQk9IDAsDQo+ID4gKwkJLm1heF93aWR0aAkJPSA0MDk2LA0KPiA+ICsJCS5tYXhfaGVp
+Z2h0CQk9IDQwOTYsDQo+ID4gKwkJLnJvdGF0aW9uCQk9IERSTV9NT0RFX1JPVEFURV8wIHwNCj4g
+PiArCQkJCQkgIERSTV9NT0RFX1JPVEFURV85MCB8DQo+ID4gKwkJCQkJICBEUk1fTU9ERV9ST1RB
+VEVfMTgwIHwNCj4gPiArCQkJCQkgIERSTV9NT0RFX1JPVEFURV8yNzAgfA0KPiA+ICsJCQkJCSAg
+RFJNX01PREVfUkVGTEVDVF9YIHwNCj4gPiArCQkJCQkgIERSTV9NT0RFX1JFRkxFQ1RfWSwNCj4g
+PiArCQkuYmxlbmRfbW9kZQkJPSBCSVQoRFJNX01PREVfQkxFTkRfUElYRUxfTk9ORSkgfA0KPiA+
+ICsJCQkJCSAgQklUKERSTV9NT0RFX0JMRU5EX1BSRU1VTFRJKSB8DQo+ID4gKwkJCQkJICBCSVQo
+RFJNX01PREVfQkxFTkRfQ09WRVJBR0UpLA0KPiA+ICsJCS5jb2xvcl9lbmNvZGluZwkJPSBCSVQo
+RFJNX0NPTE9SX1lDQkNSX0JUNzA5KSB8DQo+ID4gKwkJCQkJICBCSVQoRFJNX0NPTE9SX1lDQkNS
+X0JUMjAyMCksDQo+ID4gKwkJLmRlZ2FtbWFfc2l6ZQkJPSBERUdBTU1BX1NJWkUsDQo+ID4gKwkJ
+Lm1pbl9zY2FsZQkJPSBGUkFDXzE2XzE2KDEsIDMpLA0KPiA+ICsJCS5tYXhfc2NhbGUJCT0gRlJB
+Q18xNl8xNigxMCwgMSksDQo+ID4gKwkJLnpwb3MJCQk9IDAsDQo+ID4gKwkJLndhdGVybWFyawkJ
+PSB0cnVlLA0KPiA+ICsJCS5jb2xvcl9tZ210CQk9IHRydWUsDQo+ID4gKwkJLnJvaQkJCT0gdHJ1
+ZSwNCj4gPiArCX0sDQo+ID4gKwl7DQo+ID4gKwkJLm5hbWUJCQk9ICJPdmVybGF5IiwNCj4gPiAr
+CQkuaWQJCQk9IE9WRVJMQVlfUExBTkVfMCwNCj4gPiArCQkudHlwZQkJCT0gRFJNX1BMQU5FX1RZ
+UEVfT1ZFUkxBWSwNCj4gPiArCQkubnVtX2Zvcm1hdHMJCT0gQVJSQVlfU0laRShwcmltYXJ5X292
+ZXJsYXlfZm9ybWF0MCksDQo+ID4gKwkJLmZvcm1hdHMJCT0gcHJpbWFyeV9vdmVybGF5X2Zvcm1h
+dDAsDQo+ID4gKwkJLm51bV9tb2RpZmllcnMJCT0gQVJSQVlfU0laRShmb3JtYXRfbW9kaWZpZXIw
+KSwNCj4gPiArCQkubW9kaWZpZXJzCQk9IGZvcm1hdF9tb2RpZmllcjAsDQo+ID4gKwkJLm1pbl93
+aWR0aAkJPSAwLA0KPiA+ICsJCS5taW5faGVpZ2h0CQk9IDAsDQo+ID4gKwkJLm1heF93aWR0aAkJ
+PSA0MDk2LA0KPiA+ICsJCS5tYXhfaGVpZ2h0CQk9IDQwOTYsDQo+ID4gKwkJLnJvdGF0aW9uCQk9
+IERSTV9NT0RFX1JPVEFURV8wIHwNCj4gPiArCQkJCQkgIERSTV9NT0RFX1JPVEFURV85MCB8DQo+
+ID4gKwkJCQkJICBEUk1fTU9ERV9ST1RBVEVfMTgwIHwNCj4gPiArCQkJCQkgIERSTV9NT0RFX1JP
+VEFURV8yNzAgfA0KPiA+ICsJCQkJCSAgRFJNX01PREVfUkVGTEVDVF9YIHwNCj4gPiArCQkJCQkg
+IERSTV9NT0RFX1JFRkxFQ1RfWSwNCj4gPiArCQkuYmxlbmRfbW9kZQkJPSBCSVQoRFJNX01PREVf
+QkxFTkRfUElYRUxfTk9ORSkgfA0KPiA+ICsJCQkJCSAgQklUKERSTV9NT0RFX0JMRU5EX1BSRU1V
+TFRJKSB8DQo+ID4gKwkJCQkJICBCSVQoRFJNX01PREVfQkxFTkRfQ09WRVJBR0UpLA0KPiA+ICsJ
+CS5jb2xvcl9lbmNvZGluZwkJPSBCSVQoRFJNX0NPTE9SX1lDQkNSX0JUNzA5KSB8DQo+ID4gKwkJ
+CQkJICBCSVQoRFJNX0NPTE9SX1lDQkNSX0JUMjAyMCksDQo+ID4gKwkJLmRlZ2FtbWFfc2l6ZQkJ
+PSBERUdBTU1BX1NJWkUsDQo+ID4gKwkJLm1pbl9zY2FsZQkJPSBGUkFDXzE2XzE2KDEsIDMpLA0K
+PiA+ICsJCS5tYXhfc2NhbGUJCT0gRlJBQ18xNl8xNigxMCwgMSksDQo+ID4gKwkJLnpwb3MJCQk9
+IDEsDQo+ID4gKwkJLndhdGVybWFyawkJPSB0cnVlLA0KPiA+ICsJCS5jb2xvcl9tZ210CQk9IHRy
+dWUsDQo+ID4gKwkJLnJvaQkJCT0gdHJ1ZSwNCj4gPiArCX0sDQo+ID4gKwl7DQo+ID4gKwkJLm5h
+bWUJCQk9ICJPdmVybGF5XzEiLA0KPiA+ICsJCS5pZAkJCT0gT1ZFUkxBWV9QTEFORV8xLA0KPiA+
+ICsJCS50eXBlCQkJPSBEUk1fUExBTkVfVFlQRV9PVkVSTEFZLA0KPiA+ICsJCS5udW1fZm9ybWF0
+cwkJPSBBUlJBWV9TSVpFKHByaW1hcnlfb3ZlcmxheV9mb3JtYXQwKSwNCj4gPiArCQkuZm9ybWF0
+cwkJPSBwcmltYXJ5X292ZXJsYXlfZm9ybWF0MCwNCj4gPiArCQkubnVtX21vZGlmaWVycwkJPSBB
+UlJBWV9TSVpFKHNlY29uZGFyeV9mb3JtYXRfbW9kaWZpZXJzKSwNCj4gPiArCQkubW9kaWZpZXJz
+CQk9IHNlY29uZGFyeV9mb3JtYXRfbW9kaWZpZXJzLA0KPiA+ICsJCS5taW5fd2lkdGgJCT0gMCwN
+Cj4gPiArCQkubWluX2hlaWdodAkJPSAwLA0KPiA+ICsJCS5tYXhfd2lkdGgJCT0gNDA5NiwNCj4g
+PiArCQkubWF4X2hlaWdodAkJPSA0MDk2LA0KPiA+ICsJCS5yb3RhdGlvbgkJPSAwLA0KPiA+ICsJ
+CS5ibGVuZF9tb2RlCQk9IEJJVChEUk1fTU9ERV9CTEVORF9QSVhFTF9OT05FKSB8DQo+ID4gKwkJ
+CQkJICBCSVQoRFJNX01PREVfQkxFTkRfUFJFTVVMVEkpIHwNCj4gPiArCQkJCQkgIEJJVChEUk1f
+TU9ERV9CTEVORF9DT1ZFUkFHRSksDQo+ID4gKwkJLmNvbG9yX2VuY29kaW5nCQk9IEJJVChEUk1f
+Q09MT1JfWUNCQ1JfQlQ3MDkpIHwNCj4gPiArCQkJCQkgIEJJVChEUk1fQ09MT1JfWUNCQ1JfQlQy
+MDIwKSwNCj4gPiArCQkuZGVnYW1tYV9zaXplCQk9IERFR0FNTUFfU0laRSwNCj4gPiArCQkubWlu
+X3NjYWxlCQk9IERSTV9QTEFORV9OT19TQ0FMSU5HLA0KPiA+ICsJCS5tYXhfc2NhbGUJCT0gRFJN
+X1BMQU5FX05PX1NDQUxJTkcsDQo+ID4gKwkJLnpwb3MJCQk9IDIsDQo+ID4gKwkJLndhdGVybWFy
+awkJPSB0cnVlLA0KPiA+ICsJCS5jb2xvcl9tZ210CQk9IHRydWUsDQo+ID4gKwkJLnJvaQkJCT0g
+dHJ1ZSwNCj4gPiArCX0sDQo+ID4gKwl7DQo+ID4gKwkJLm5hbWUJCQk9ICJQcmltYXJ5XzEiLA0K
+PiA+ICsJCS5pZAkJCT0gUFJJTUFSWV9QTEFORV8xLA0KPiA+ICsJCS50eXBlCQkJPSBEUk1fUExB
+TkVfVFlQRV9QUklNQVJZLA0KPiA+ICsJCS5udW1fZm9ybWF0cwkJPSBBUlJBWV9TSVpFKHByaW1h
+cnlfb3ZlcmxheV9mb3JtYXQwKSwNCj4gPiArCQkuZm9ybWF0cwkJPSBwcmltYXJ5X292ZXJsYXlf
+Zm9ybWF0MCwNCj4gPiArCQkubnVtX21vZGlmaWVycwkJPSBBUlJBWV9TSVpFKGZvcm1hdF9tb2Rp
+ZmllcjApLA0KPiA+ICsJCS5tb2RpZmllcnMJCT0gZm9ybWF0X21vZGlmaWVyMCwNCj4gPiArCQku
+bWluX3dpZHRoCQk9IDAsDQo+ID4gKwkJLm1pbl9oZWlnaHQJCT0gMCwNCj4gPiArCQkubWF4X3dp
+ZHRoCQk9IDQwOTYsDQo+ID4gKwkJLm1heF9oZWlnaHQJCT0gNDA5NiwNCj4gPiArCQkucm90YXRp
+b24JCT0gRFJNX01PREVfUk9UQVRFXzAgfA0KPiA+ICsJCQkJCSAgRFJNX01PREVfUk9UQVRFXzkw
+IHwNCj4gPiArCQkJCQkgIERSTV9NT0RFX1JPVEFURV8xODAgfA0KPiA+ICsJCQkJCSAgRFJNX01P
+REVfUk9UQVRFXzI3MCB8DQo+ID4gKwkJCQkJICBEUk1fTU9ERV9SRUZMRUNUX1ggfA0KPiA+ICsJ
+CQkJCSAgRFJNX01PREVfUkVGTEVDVF9ZLA0KPiA+ICsJCS5ibGVuZF9tb2RlCQk9IEJJVChEUk1f
+TU9ERV9CTEVORF9QSVhFTF9OT05FKSB8DQo+ID4gKwkJCQkJICBCSVQoRFJNX01PREVfQkxFTkRf
+UFJFTVVMVEkpIHwNCj4gPiArCQkJCQkgIEJJVChEUk1fTU9ERV9CTEVORF9DT1ZFUkFHRSksDQo+
+ID4gKwkJLmNvbG9yX2VuY29kaW5nCQk9IEJJVChEUk1fQ09MT1JfWUNCQ1JfQlQ3MDkpIHwNCj4g
+PiArCQkJCQkgIEJJVChEUk1fQ09MT1JfWUNCQ1JfQlQyMDIwKSwNCj4gPiArCQkuZGVnYW1tYV9z
+aXplCQk9IERFR0FNTUFfU0laRSwNCj4gPiArCQkubWluX3NjYWxlCQk9IEZSQUNfMTZfMTYoMSwg
+MyksDQo+ID4gKwkJLm1heF9zY2FsZQkJPSBGUkFDXzE2XzE2KDEwLCAxKSwNCj4gPiArCQkuenBv
+cwkJCT0gMywNCj4gPiArCQkud2F0ZXJtYXJrCQk9IHRydWUsDQo+ID4gKwkJLmNvbG9yX21nbXQJ
+CT0gdHJ1ZSwNCj4gPiArCQkucm9pCQkJPSB0cnVlLA0KPiA+ICsJfSwNCj4gPiArCXsNCj4gPiAr
+CQkubmFtZQkJCT0gIk92ZXJsYXlfMiIsDQo+ID4gKwkJLmlkCQkJPSBPVkVSTEFZX1BMQU5FXzIs
+DQo+ID4gKwkJLnR5cGUJCQk9IERSTV9QTEFORV9UWVBFX09WRVJMQVksDQo+ID4gKwkJLm51bV9m
+b3JtYXRzCQk9IEFSUkFZX1NJWkUocHJpbWFyeV9vdmVybGF5X2Zvcm1hdDApLA0KPiA+ICsJCS5m
+b3JtYXRzCQk9IHByaW1hcnlfb3ZlcmxheV9mb3JtYXQwLA0KPiA+ICsJCS5udW1fbW9kaWZpZXJz
+CQk9IEFSUkFZX1NJWkUoZm9ybWF0X21vZGlmaWVyMCksDQo+ID4gKwkJLm1vZGlmaWVycwkJPSBm
+b3JtYXRfbW9kaWZpZXIwLA0KPiA+ICsJCS5taW5fd2lkdGgJCT0gMCwNCj4gPiArCQkubWluX2hl
+aWdodAkJPSAwLA0KPiA+ICsJCS5tYXhfd2lkdGgJCT0gNDA5NiwNCj4gPiArCQkubWF4X2hlaWdo
+dAkJPSA0MDk2LA0KPiA+ICsJCS5yb3RhdGlvbgkJPSBEUk1fTU9ERV9ST1RBVEVfMCB8DQo+ID4g
+KwkJCQkJICBEUk1fTU9ERV9ST1RBVEVfOTAgfA0KPiA+ICsJCQkJCSAgRFJNX01PREVfUk9UQVRF
+XzE4MCB8DQo+ID4gKwkJCQkJICBEUk1fTU9ERV9ST1RBVEVfMjcwIHwNCj4gPiArCQkJCQkgIERS
+TV9NT0RFX1JFRkxFQ1RfWCB8DQo+ID4gKwkJCQkJICBEUk1fTU9ERV9SRUZMRUNUX1ksDQo+ID4g
+KwkJLmJsZW5kX21vZGUJCT0gQklUKERSTV9NT0RFX0JMRU5EX1BJWEVMX05PTkUpIHwNCj4gPiAr
+CQkJCQkgIEJJVChEUk1fTU9ERV9CTEVORF9QUkVNVUxUSSkgfA0KPiA+ICsJCQkJCSAgQklUKERS
+TV9NT0RFX0JMRU5EX0NPVkVSQUdFKSwNCj4gPiArCQkuY29sb3JfZW5jb2RpbmcJCT0gQklUKERS
+TV9DT0xPUl9ZQ0JDUl9CVDcwOSkgfA0KPiA+ICsJCQkJCSAgQklUKERSTV9DT0xPUl9ZQ0JDUl9C
+VDIwMjApLA0KPiA+ICsJCS5kZWdhbW1hX3NpemUJCT0gREVHQU1NQV9TSVpFLA0KPiA+ICsJCS5t
+aW5fc2NhbGUJCT0gRlJBQ18xNl8xNigxLCAzKSwNCj4gPiArCQkubWF4X3NjYWxlCQk9IEZSQUNf
+MTZfMTYoMTAsIDEpLA0KPiA+ICsJCS56cG9zCQkJPSA0LA0KPiA+ICsJCS53YXRlcm1hcmsJCT0g
+dHJ1ZSwNCj4gPiArCQkuY29sb3JfbWdtdAkJPSB0cnVlLA0KPiA+ICsJCS5yb2kJCQk9IHRydWUs
+DQo+ID4gKwl9LA0KPiA+ICsJew0KPiA+ICsJCS5uYW1lCQkJPSAiT3ZlcmxheV8zIiwNCj4gPiAr
+CQkuaWQJCQk9IE9WRVJMQVlfUExBTkVfMywNCj4gPiArCQkudHlwZQkJCT0gRFJNX1BMQU5FX1RZ
+UEVfT1ZFUkxBWSwNCj4gPiArCQkubnVtX2Zvcm1hdHMJCT0gQVJSQVlfU0laRShwcmltYXJ5X292
+ZXJsYXlfZm9ybWF0MCksDQo+ID4gKwkJLmZvcm1hdHMJCT0gcHJpbWFyeV9vdmVybGF5X2Zvcm1h
+dDAsDQo+ID4gKwkJLm51bV9tb2RpZmllcnMJCT0gQVJSQVlfU0laRShzZWNvbmRhcnlfZm9ybWF0
+X21vZGlmaWVycyksDQo+ID4gKwkJLm1vZGlmaWVycwkJPSBzZWNvbmRhcnlfZm9ybWF0X21vZGlm
+aWVycywNCj4gPiArCQkubWluX3dpZHRoCQk9IDAsDQo+ID4gKwkJLm1pbl9oZWlnaHQJCT0gMCwN
+Cj4gPiArCQkubWF4X3dpZHRoCQk9IDQwOTYsDQo+ID4gKwkJLm1heF9oZWlnaHQJCT0gNDA5NiwN
+Cj4gPiArCQkucm90YXRpb24JCT0gMCwNCj4gPiArCQkuYmxlbmRfbW9kZQkJPSBCSVQoRFJNX01P
+REVfQkxFTkRfUElYRUxfTk9ORSkgfA0KPiA+ICsJCQkJCSAgQklUKERSTV9NT0RFX0JMRU5EX1BS
+RU1VTFRJKSB8DQo+ID4gKwkJCQkJICBCSVQoRFJNX01PREVfQkxFTkRfQ09WRVJBR0UpLA0KPiA+
+ICsJCS5jb2xvcl9lbmNvZGluZwkJPSBCSVQoRFJNX0NPTE9SX1lDQkNSX0JUNzA5KSB8DQo+ID4g
+KwkJCQkJICBCSVQoRFJNX0NPTE9SX1lDQkNSX0JUMjAyMCksDQo+ID4gKwkJLmRlZ2FtbWFfc2l6
+ZQkJPSBERUdBTU1BX1NJWkUsDQo+ID4gKwkJLm1pbl9zY2FsZQkJPSBEUk1fUExBTkVfTk9fU0NB
+TElORywNCj4gPiArCQkubWF4X3NjYWxlCQk9IERSTV9QTEFORV9OT19TQ0FMSU5HLA0KPiA+ICsJ
+CS56cG9zCQkJPSA1LA0KPiA+ICsJCS53YXRlcm1hcmsJCT0gdHJ1ZSwNCj4gPiArCQkuY29sb3Jf
+bWdtdAkJPSB0cnVlLA0KPiA+ICsJCS5yb2kJCQk9IHRydWUsDQo+ID4gKwl9LA0KPiA+ICsJew0K
+PiA+ICsJCS5uYW1lCQkJPSAiQ3Vyc29yIiwNCj4gPiArCQkuaWQJCQk9IENVUlNPUl9QTEFORV8w
+LA0KPiA+ICsJCS50eXBlCQkJPSBEUk1fUExBTkVfVFlQRV9DVVJTT1IsDQo+ID4gKwkJLm51bV9m
+b3JtYXRzCQk9IEFSUkFZX1NJWkUoY3Vyc29yX2Zvcm1hdHMpLA0KPiA+ICsJCS5mb3JtYXRzCQk9
+IGN1cnNvcl9mb3JtYXRzLA0KPiA+ICsJCS5udW1fbW9kaWZpZXJzCQk9IDAsDQo+ID4gKwkJLm1v
+ZGlmaWVycwkJPSBOVUxMLA0KPiA+ICsJCS5taW5fd2lkdGgJCT0gMzIsDQo+ID4gKwkJLm1pbl9o
+ZWlnaHQJCT0gMzIsDQo+ID4gKwkJLm1heF93aWR0aAkJPSA2NCwNCj4gPiArCQkubWF4X2hlaWdo
+dAkJPSA2NCwNCj4gPiArCQkucm90YXRpb24JCT0gMCwNCj4gPiArCQkuZGVnYW1tYV9zaXplCQk9
+IDAsDQo+ID4gKwkJLm1pbl9zY2FsZQkJPSBEUk1fUExBTkVfTk9fU0NBTElORywNCj4gPiArCQku
+bWF4X3NjYWxlCQk9IERSTV9QTEFORV9OT19TQ0FMSU5HLA0KPiA+ICsJCS56cG9zCQkJPSAyNTUs
+DQo+ID4gKwkJLndhdGVybWFyawkJPSBmYWxzZSwNCj4gPiArCQkuY29sb3JfbWdtdAkJPSBmYWxz
+ZSwNCj4gPiArCQkucm9pCQkJPSBmYWxzZSwNCj4gPiArCX0sDQo+ID4gKwl7DQo+ID4gKwkJLm5h
+bWUJCQk9ICJDdXJzb3JfMSIsDQo+ID4gKwkJLmlkCQkJPSBDVVJTT1JfUExBTkVfMSwNCj4gPiAr
+CQkudHlwZQkJCT0gRFJNX1BMQU5FX1RZUEVfQ1VSU09SLA0KPiA+ICsJCS5udW1fZm9ybWF0cwkJ
+PSBBUlJBWV9TSVpFKGN1cnNvcl9mb3JtYXRzKSwNCj4gPiArCQkuZm9ybWF0cwkJPSBjdXJzb3Jf
+Zm9ybWF0cywNCj4gPiArCQkubnVtX21vZGlmaWVycwkJPSAwLA0KPiA+ICsJCS5tb2RpZmllcnMJ
+CT0gTlVMTCwNCj4gPiArCQkubWluX3dpZHRoCQk9IDMyLA0KPiA+ICsJCS5taW5faGVpZ2h0CQk9
+IDMyLA0KPiA+ICsJCS5tYXhfd2lkdGgJCT0gNjQsDQo+ID4gKwkJLm1heF9oZWlnaHQJCT0gNjQs
+DQo+ID4gKwkJLnJvdGF0aW9uCQk9IDAsDQo+ID4gKwkJLmRlZ2FtbWFfc2l6ZQkJPSAwLA0KPiA+
+ICsJCS5taW5fc2NhbGUJCT0gRFJNX1BMQU5FX05PX1NDQUxJTkcsDQo+ID4gKwkJLm1heF9zY2Fs
+ZQkJPSBEUk1fUExBTkVfTk9fU0NBTElORywNCj4gPiArCQkuenBvcwkJCT0gMjU1LA0KPiA+ICsJ
+CS53YXRlcm1hcmsJCT0gZmFsc2UsDQo+ID4gKwkJLmNvbG9yX21nbXQJCT0gZmFsc2UsDQo+ID4g
+KwkJLnJvaQkJCT0gZmFsc2UsDQo+ID4gKwl9LA0KPiA+ICt9Ow0KPiA+ICsNCj4gPiArc3RhdGlj
+IGNvbnN0IHN0cnVjdCB2c19kY19pbmZvIGRjODIwMF9pbmZvID0gew0KPiA+ICsJLm5hbWUJCQk9
+ICJEQzgyMDAiLA0KPiA+ICsJLnBhbmVsX251bQkJPSAyLA0KPiA+ICsJLnBsYW5lX251bQkJPSA4
+LA0KPiA+ICsJLnBsYW5lcwkJCT0gZGNfaHdfcGxhbmVzX3JldjAsDQo+ID4gKwkubGF5ZXJfbnVt
+CQk9IDYsDQo+ID4gKwkubWF4X2JwYwkJPSAxMCwNCj4gPiArCS5jb2xvcl9mb3JtYXRzCQk9IERS
+TV9DT0xPUl9GT1JNQVRfUkdCNDQ0IHwNCj4gPiArCQkJCSAgRFJNX0NPTE9SX0ZPUk1BVF9ZQ0JD
+UjQ0NCB8DQo+ID4gKwkJCQkgIERSTV9DT0xPUl9GT1JNQVRfWUNCQ1I0MjIgfA0KPiA+ICsJCQkJ
+ICBEUk1fQ09MT1JfRk9STUFUX1lDQkNSNDIwLA0KPiA+ICsJLmdhbW1hX3NpemUJCT0gR0FNTUFf
+RVhfU0laRSwNCj4gPiArCS5nYW1tYV9iaXRzCQk9IDEyLA0KPiA+ICsJLnBpdGNoX2FsaWdubWVu
+dAk9IDEyOCwNCj4gPiArCS5waXBlX3N5bmMJCT0gZmFsc2UsDQo+ID4gKwkuYmFja2dyb3VuZAkJ
+PSB0cnVlLA0KPiA+ICsJLnBhbmVsX3N5bmMJCT0gdHJ1ZSwNCj4gPiArCS5jYXBfZGVjCQk9IHRy
+dWUsDQo+ID4gK307DQo+IA0KPiBJIHJlYWxseSB0aGluayB0aGF0IGVudGlyZSB0aGluZyBpcyB0
+byB3b3JrYXJvdW5kIGEgc3Vib3B0aW1hbCBkZXZpY2UgdHJlZSBiaW5kaW5nLg0KPiBZb3Ugc2hv
+dWxkIGhhdmUgdHdvIENSVENzIGluIHRoZSBkZXZpY2UgdHJlZSwgeW91J2xsIHByb2JlIHR3aWNl
+LCBhbmQgeW91IHdvbid0DQo+IGdldCB0byBkbyB0aGF0IHdob2xlIGRhbmNlLg0KPiANCkhpIE1h
+eGltZToNCkkgdHJpZWQgdG8gbW9kaWZ5IGl0IGFjY29yZGluZyB0byB0aGlzIGlkZWEgRm91bmQg
+aXQgdG9vIGRpZmZpY3VsdCBJbiB0ZXJtcyBvZiBoYXJkd2FyZSwgDQp0aGUgdHdvIGNydGMgZGVz
+aWducyBhcmUgdG9vIGNsb3NlIHRvIHNlcGFyYXRlLCBhbmQgdGhleSBhcmUgZXZlbiBkZXNpZ25l
+ZCBpbnRvIHRoZSBzYW1lIHJlZyB3aXRoIGRpZmZlcmVudCBiaXRzIHJlcHJlc2VudGluZyBjcnRj
+MCBhbmQgY3J0YzEuDQpJdCBzZWVtcyBub3QgZWFzeSB0byBkZXNjcmliZWQgdGhlIDIgY3RyYyBo
+YXJkd2FyZSBieSAyIGRldmljZSBub2Rlcw0KDQpUaGUgaWRlYSBpcyB0byBhdm9pZCBhIHdob2xl
+IGRhbmNlDQpJIGRvbid0IGtub3cgaWYgSSB1bmRlcnN0YW5kIGNvcnJlY3RseSBhYm91dCB3aG9s
+ZSBkYW5jZS4NCklzIGl0IG1lYW5zIEkgY3JlYXRlIDIgY3RyYyBhbmQgOCBwbGFuZSBpbiB0aGUg
+ZGNfYmluZD8NCg0KVGhhbmtzDQpLZWl0aA0KPiANCj4gPiArc3RydWN0IGRjX2h3X3BsYW5lX3Jl
+ZyB7DQo+ID4gKwl1MzIgeV9hZGRyZXNzOw0KPiA+ICsJdTMyIHVfYWRkcmVzczsNCj4gPiArCXUz
+MiB2X2FkZHJlc3M7DQo+ID4gKwl1MzIgeV9zdHJpZGU7DQo+ID4gKwl1MzIgdV9zdHJpZGU7DQo+
+ID4gKwl1MzIgdl9zdHJpZGU7DQo+ID4gKwl1MzIgc2l6ZTsNCj4gPiArCXUzMiB0b3BfbGVmdDsN
+Cj4gPiArCXUzMiBib3R0b21fcmlnaHQ7DQo+ID4gKwl1MzIgc2NhbGVfZmFjdG9yX3g7DQo+ID4g
+Kwl1MzIgc2NhbGVfZmFjdG9yX3k7DQo+ID4gKwl1MzIgaF9maWx0ZXJfY29lZl9pbmRleDsNCj4g
+PiArCXUzMiBoX2ZpbHRlcl9jb2VmX2RhdGE7DQo+ID4gKwl1MzIgdl9maWx0ZXJfY29lZl9pbmRl
+eDsNCj4gPiArCXUzMiB2X2ZpbHRlcl9jb2VmX2RhdGE7DQo+ID4gKwl1MzIgaW5pdF9vZmZzZXQ7
+DQo+ID4gKwl1MzIgY29sb3Jfa2V5Ow0KPiA+ICsJdTMyIGNvbG9yX2tleV9oaWdoOw0KPiA+ICsJ
+dTMyIGNsZWFyX3ZhbHVlOw0KPiA+ICsJdTMyIGNvbG9yX3RhYmxlX2luZGV4Ow0KPiA+ICsJdTMy
+IGNvbG9yX3RhYmxlX2RhdGE7DQo+ID4gKwl1MzIgc2NhbGVfY29uZmlnOw0KPiA+ICsJdTMyIHdh
+dGVyX21hcms7DQo+ID4gKwl1MzIgZGVnYW1tYV9pbmRleDsNCj4gPiArCXUzMiBkZWdhbW1hX2Rh
+dGE7DQo+ID4gKwl1MzIgZGVnYW1tYV9leF9kYXRhOw0KPiA+ICsJdTMyIHNyY19nbG9iYWxfY29s
+b3I7DQo+ID4gKwl1MzIgZHN0X2dsb2JhbF9jb2xvcjsNCj4gPiArCXUzMiBibGVuZF9jb25maWc7
+DQo+ID4gKwl1MzIgcm9pX29yaWdpbjsNCj4gPiArCXUzMiByb2lfc2l6ZTsNCj4gPiArCXUzMiB5
+dXZfdG9fcmdiX2NvZWYwOw0KPiA+ICsJdTMyIHl1dl90b19yZ2JfY29lZjE7DQo+ID4gKwl1MzIg
+eXV2X3RvX3JnYl9jb2VmMjsNCj4gPiArCXUzMiB5dXZfdG9fcmdiX2NvZWYzOw0KPiA+ICsJdTMy
+IHl1dl90b19yZ2JfY29lZjQ7DQo+ID4gKwl1MzIgeXV2X3RvX3JnYl9jb2VmZDA7DQo+ID4gKwl1
+MzIgeXV2X3RvX3JnYl9jb2VmZDE7DQo+ID4gKwl1MzIgeXV2X3RvX3JnYl9jb2VmZDI7DQo+ID4g
+Kwl1MzIgeV9jbGFtcF9ib3VuZDsNCj4gPiArCXUzMiB1dl9jbGFtcF9ib3VuZDsNCj4gPiArCXUz
+MiByZ2JfdG9fcmdiX2NvZWYwOw0KPiA+ICsJdTMyIHJnYl90b19yZ2JfY29lZjE7DQo+ID4gKwl1
+MzIgcmdiX3RvX3JnYl9jb2VmMjsNCj4gPiArCXUzMiByZ2JfdG9fcmdiX2NvZWYzOw0KPiA+ICsJ
+dTMyIHJnYl90b19yZ2JfY29lZjQ7DQo+ID4gK307DQo+IA0KPiBUaGF0J3MgeW91ciBwbGFuZSBz
+dGF0ZS4NCj4gDQo+ID4gK3N0cnVjdCBkY19od19mYiB7DQo+ID4gKwl1MzIgeV9hZGRyZXNzOw0K
+PiA+ICsJdTMyIHVfYWRkcmVzczsNCj4gPiArCXUzMiB2X2FkZHJlc3M7DQo+ID4gKwl1MzIgY2xl
+YXJfdmFsdWU7DQo+ID4gKwl1MzIgd2F0ZXJfbWFyazsNCj4gPiArCXUxNiB5X3N0cmlkZTsNCj4g
+PiArCXUxNiB1X3N0cmlkZTsNCj4gPiArCXUxNiB2X3N0cmlkZTsNCj4gPiArCXUxNiB3aWR0aDsN
+Cj4gPiArCXUxNiBoZWlnaHQ7DQo+ID4gKwl1OAlmb3JtYXQ7DQo+ID4gKwl1OAl0aWxlX21vZGU7
+DQo+ID4gKwl1OAlyb3RhdGlvbjsNCj4gPiArCXU4CXl1dl9jb2xvcl9zcGFjZTsNCj4gPiArCXU4
+CXN3aXp6bGU7DQo+ID4gKwl1OAl1dl9zd2l6emxlOw0KPiA+ICsJdTgJenBvczsNCj4gPiArCXU4
+CWRpc3BsYXlfaWQ7DQo+ID4gKwlib29sCWNsZWFyX2VuYWJsZTsNCj4gPiArCWJvb2wJZGVjX2Vu
+YWJsZTsNCj4gPiArCWJvb2wJZW5hYmxlOw0KPiA+ICsJYm9vbAlkaXJ0eTsNCj4gPiArfTsNCj4g
+DQo+IFlvdXIgZnJhbWVidWZmZXINCj4gDQo+ID4gK3N0cnVjdCBkY19od19zY2FsZSB7DQo+ID4g
+Kwl1MzIgc2NhbGVfZmFjdG9yX3g7DQo+ID4gKwl1MzIgc2NhbGVfZmFjdG9yX3k7DQo+ID4gKwli
+b29sCWVuYWJsZTsNCj4gPiArCWJvb2wJZGlydHk7DQo+ID4gK307DQo+ID4gKw0KPiA+ICtzdHJ1
+Y3QgZGNfaHdfcG9zaXRpb24gew0KPiA+ICsJdTE2IHN0YXJ0X3g7DQo+ID4gKwl1MTYgc3RhcnRf
+eTsNCj4gPiArCXUxNiBlbmRfeDsNCj4gPiArCXUxNiBlbmRfeTsNCj4gPiArCWJvb2wJZGlydHk7
+DQo+ID4gK307DQo+ID4gKw0KPiA+ICtzdHJ1Y3QgZGNfaHdfYmxlbmQgew0KPiA+ICsJdTgJYWxw
+aGE7DQo+ID4gKwl1OAlibGVuZF9tb2RlOw0KPiA+ICsJYm9vbAlkaXJ0eTsNCj4gPiArfTsNCj4g
+PiArDQo+ID4gK3N0cnVjdCBkY19od19jb2xvcmtleSB7DQo+ID4gKwl1MzIgY29sb3JrZXk7DQo+
+ID4gKwl1MzIgY29sb3JrZXlfaGlnaDsNCj4gPiArCXU4CXRyYW5zcGFyZW5jeTsNCj4gPiArCWJv
+b2wgZGlydHk7DQo+ID4gK307DQo+IA0KPiBZb3VyIENSVEMgc3RhdGUuDQo+IA0KPiA+ICtzdHJ1
+Y3QgZGNfaHdfcm9pIHsNCj4gPiArCXUxNiB4Ow0KPiA+ICsJdTE2IHk7DQo+ID4gKwl1MTYgd2lk
+dGg7DQo+ID4gKwl1MTYgaGVpZ2h0Ow0KPiA+ICsJYm9vbCBlbmFibGU7DQo+ID4gKwlib29sIGRp
+cnR5Ow0KPiA+ICt9Ow0KPiA+ICsNCj4gPiArc3RydWN0IGRjX2h3X2N1cnNvciB7DQo+ID4gKwl1
+MzIgYWRkcmVzczsNCj4gPiArCXUxNiB4Ow0KPiA+ICsJdTE2IHk7DQo+ID4gKwl1MTYgaG90X3g7
+DQo+ID4gKwl1MTYgaG90X3k7DQo+ID4gKwl1OAlzaXplOw0KPiA+ICsJdTgJZGlzcGxheV9pZDsN
+Cj4gPiArCWJvb2wJZW5hYmxlOw0KPiA+ICsJYm9vbAlkaXJ0eTsNCj4gPiArfTsNCj4gPiArDQo+
+ID4gK3N0cnVjdCBkY19od19kaXNwbGF5IHsNCj4gPiArCXUzMiBidXNfZm9ybWF0Ow0KPiA+ICsJ
+dTE2IGhfYWN0aXZlOw0KPiA+ICsJdTE2IGhfdG90YWw7DQo+ID4gKwl1MTYgaF9zeW5jX3N0YXJ0
+Ow0KPiA+ICsJdTE2IGhfc3luY19lbmQ7DQo+ID4gKwl1MTYgdl9hY3RpdmU7DQo+ID4gKwl1MTYg
+dl90b3RhbDsNCj4gPiArCXUxNiB2X3N5bmNfc3RhcnQ7DQo+ID4gKwl1MTYgdl9zeW5jX2VuZDsN
+Cj4gPiArCXU4CWlkOw0KPiA+ICsJYm9vbAloX3N5bmNfcG9sYXJpdHk7DQo+ID4gKwlib29sCXZf
+c3luY19wb2xhcml0eTsNCj4gPiArCWJvb2wJZW5hYmxlOw0KPiA+ICt9Ow0KPiANCj4gWW91ciBk
+aXNwbGF5IG1vZGUuDQo+IA0KPiBSZWFsbHksIHlvdSBoYXZlIHRoZSBodWdlIG1ham9yaXR5IG9m
+IHRob3NlIGluZm9ybWF0aW9ucyBhbHJlYWR5IGF2YWlsYWJsZSwNCj4gdGhlcmUncyBubyBuZWVk
+IHRvIGR1cGxpY2F0ZSBpdC4gQW5kIGNoYW5jZXMgYXJlIHlvdSdsbCBjcmVhdGUgYnVncyBpbiB0
+aGUNCj4gcHJvY2Vzcy4NCj4gTWF4aW1lDQo=
 
