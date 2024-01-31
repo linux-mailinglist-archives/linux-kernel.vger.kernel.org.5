@@ -1,585 +1,410 @@
-Return-Path: <linux-kernel+bounces-46994-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA9B48447A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:57:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B56E844783
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:52:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18B711F22929
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:57:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B760AB24C99
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:52:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FE8B3EA96;
-	Wed, 31 Jan 2024 18:55:01 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DFCB3717C;
+	Wed, 31 Jan 2024 18:52:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="r3UjfOrz"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2F2A3FE23;
-	Wed, 31 Jan 2024 18:54:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 361EC3613E
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 18:52:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706727298; cv=none; b=geS+iBYe2YKKFpOS8Npk1KDEaGpvfmPDabQl6L/6C0hxlJ1pUA49rLpnS/vymtC7uksbtx8rFOrt51RuncmNb3BL6XD6j+Z/QUxo9/lBjNaw4vtJ5WDLU8DMJzuxEsoqrHzamYyK9oTQLr2MvRoNiGAwAQJlkvqF7VxmwHUArs0=
+	t=1706727148; cv=none; b=C/24JvZDd29a16KLmClwfxnengdKLpHf9PDQK/KUkVyaVFR6t+p8C9kj+XsKr/xpntG5h1BZUUzg8tX6Xc6buTaEjJwu+ru60PTSH1a3OrMCjujQnuZQDrUJMTnAdWfpsYFj4QBjxKQlkkiEbhxX3s1rDBnX7PLPHDDuE5QhWXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706727298; c=relaxed/simple;
-	bh=b6EnHVWY5z0zH/Z7gqswLCroF+3CnlRaFbq66GvEVjs=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=g5sHxGgvs8Vkub/juyjeJN/ZmaOe5b6Sud9tEWevPSer/qsA1SPpoknnU6bclOcKasDC3MAL5rSEB69PRuW/0h7hkbgsBaCO6DITX19YAr1B/wZFGkhOHBMHe0GJ+DgJasasLFWZmh9hnijweO6Cn07ScrBGRyYqk1x9y3QtHLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61B39C32786;
-	Wed, 31 Jan 2024 18:54:58 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.97)
-	(envelope-from <rostedt@goodmis.org>)
-	id 1rVFjt-000000055Sn-1mGl;
-	Wed, 31 Jan 2024 13:55:13 -0500
-Message-ID: <20240131185513.280463000@goodmis.org>
-User-Agent: quilt/0.67
-Date: Wed, 31 Jan 2024 13:49:25 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Christian Brauner <brauner@kernel.org>,
- Al Viro <viro@ZenIV.linux.org.uk>,
- Ajay Kaher <ajay.kaher@broadcom.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- stable@vger.kernel.org
-Subject: [PATCH v2 7/7] eventfs: Get rid of dentry pointers without refcounts
-References: <20240131184918.945345370@goodmis.org>
+	s=arc-20240116; t=1706727148; c=relaxed/simple;
+	bh=lcS4vmnme2UaHVAVN/gC82S1196l0v1ChJzJLg47R8o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=I5hrAxXP0nfvQUFLSJxcvR0Zlmzx7/cqq6tsgnT3HZfZpfeANdHvIk4fN8TYoTc9bm4O350xptaGo+olwDkmJrVf41HOV4NtfTsdWI0rWYY4Uf08L6Cvi0yeqBvkxGOjCe4cC9Y1fT+K17gSOztmbQVlk37gCgqOJ7mwqbIOUuk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=r3UjfOrz; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6de2f8d6fb9so36666b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 10:52:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706727144; x=1707331944; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=25r5gOm14IJEMHyveKwAf4p2gsLmehhu/N00VeJ591Y=;
+        b=r3UjfOrzgoEIPqusACFINohei7g4Jx/hxS4k2o0eDAdTa79QPvm6nbArxXja8LSXe8
+         fp/kyGaZJtFLGkXgHVhsurhuAAf9K6OcAMCq7DI/+jtvVRleksSLeLuxR2Sw+trKvNWp
+         HSiO/nl9T49fAV4HMSbRX2gs6APTalku+sknXqPx3KA6TQzrLRv9owEjFZVeo++w0xOL
+         hnsBb8C6DC0djfPukVC8gKviF9oSSYxZC2g+gHBuxuf9SeECiNzXfR24A0beDcRCU2cq
+         9fQ+YR+Yxfx91amdfykmmHpI8DPi5gG0cXsQ4+bNpz3lwY3Nfwvlv22E6hPqk0aU1jyF
+         VFWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706727144; x=1707331944;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=25r5gOm14IJEMHyveKwAf4p2gsLmehhu/N00VeJ591Y=;
+        b=fxmPWcmxHE23jO3tW6k1s4KTRt1BSNUK0TIPpPgUtsmZL6SDX4c3UIJkfKz01cHNCY
+         dv7QyhLfv4tnmIZQkIiqbiYx7hOsLtrw2nCa2M8mVuTw2kIC8LAcHUw3nuURFuLYyiFW
+         fignx6J8kaiS0E28PE3i53VCX5YOv9z5mV3OOhIth6X0i8o6X9k9TWdcjYbRCz25beef
+         OSdtKSUGaT7e21unWLngVrrGR5yptXyy1Vk5+MjTUrmnU6W4fdfFCDnJL7G/GX+4cI7D
+         a9mLgqMf2bVTJCyvcz7XlSTbmt13Qp9+RoIcJNLWx1XEhdOnrL/qWWa7Eosiry5oMeTW
+         pTyw==
+X-Gm-Message-State: AOJu0Yw7SwGYQ03j21VS8lG9NiRupydEBGa+OZZ41+SJbke8QPHBBEsX
+	fS15CLuDTkuD6tiH0ddBebB/YtqufPwOSwjooBPliry7nqbK0vAhdpyQhAAOxp8=
+X-Google-Smtp-Source: AGHT+IFt7HhwIpxyhcBUyO5WrVAx3ZZVqZxLhljiEsHbdkGMIfzL6iqPgPDoivsMk5MeYNfBz4nY2A==
+X-Received: by 2002:a05:6a00:1acf:b0:6df:dfd5:1b1e with SMTP id f15-20020a056a001acf00b006dfdfd51b1emr1625498pfv.7.1706727144422;
+        Wed, 31 Jan 2024 10:52:24 -0800 (PST)
+Received: from p14s ([2604:3d09:148c:c800:130d:9bb4:89ef:ab9e])
+        by smtp.gmail.com with ESMTPSA id b185-20020a6334c2000000b0059d6f5196fasm10722471pga.78.2024.01.31.10.52.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Jan 2024 10:52:24 -0800 (PST)
+Date: Wed, 31 Jan 2024 11:52:21 -0700
+From: Mathieu Poirier <mathieu.poirier@linaro.org>
+To: Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Jens Wiklander <jens.wiklander@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	op-tee@lists.trustedfirmware.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 4/4] remoteproc: stm32: Add support of an OP-TEE TA to
+ load the firmware
+Message-ID: <ZbqW5YfDmEWG4G1X@p14s>
+References: <20240118100433.3984196-1-arnaud.pouliquen@foss.st.com>
+ <20240118100433.3984196-5-arnaud.pouliquen@foss.st.com>
+ <ZbPnsJm67G10+HQ3@p14s>
+ <7ec6c9e8-9267-4e7c-81a4-abcdb2ab4239@foss.st.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7ec6c9e8-9267-4e7c-81a4-abcdb2ab4239@foss.st.com>
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+On Tue, Jan 30, 2024 at 10:13:48AM +0100, Arnaud POULIQUEN wrote:
+> 
+> 
+> On 1/26/24 18:11, Mathieu Poirier wrote:
+> > On Thu, Jan 18, 2024 at 11:04:33AM +0100, Arnaud Pouliquen wrote:
+> >> The new TEE remoteproc device is used to manage remote firmware in a
+> >> secure, trusted context. The 'st,stm32mp1-m4-tee' compatibility is
+> >> introduced to delegate the loading of the firmware to the trusted
+> >> execution context. In such cases, the firmware should be signed and
+> >> adhere to the image format defined by the TEE.
+> >>
+> >> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> >> ---
+> >> V1 to V2 update:
+> >> - remove the select "TEE_REMOTEPROC" in STM32_RPROC config as detected by
+> >>   the kernel test robot:
+> >>      WARNING: unmet direct dependencies detected for TEE_REMOTEPROC
+> >>      Depends on [n]: REMOTEPROC [=y] && OPTEE [=n]
+> >>      Selected by [y]:
+> >>      - STM32_RPROC [=y] && (ARCH_STM32 || COMPILE_TEST [=y]) && REMOTEPROC [=y]
+> >> - Fix initialized trproc variable in  stm32_rproc_probe
+> >> ---
+> >>  drivers/remoteproc/stm32_rproc.c | 149 +++++++++++++++++++++++++++++--
+> >>  1 file changed, 144 insertions(+), 5 deletions(-)
+> >>
+> >> diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+> >> index fcc0001e2657..cf6a21bac945 100644
+> >> --- a/drivers/remoteproc/stm32_rproc.c
+> >> +++ b/drivers/remoteproc/stm32_rproc.c
+> >> @@ -20,6 +20,7 @@
+> >>  #include <linux/remoteproc.h>
+> >>  #include <linux/reset.h>
+> >>  #include <linux/slab.h>
+> >> +#include <linux/tee_remoteproc.h>
+> >>  #include <linux/workqueue.h>
+> >>  
+> >>  #include "remoteproc_internal.h"
+> >> @@ -49,6 +50,9 @@
+> >>  #define M4_STATE_STANDBY	4
+> >>  #define M4_STATE_CRASH		5
+> >>  
+> >> +/* Remote processor unique identifier aligned with the Trusted Execution Environment definitions */
+> >> +#define STM32_MP1_M4_PROC_ID    0
+> >> +
+> >>  struct stm32_syscon {
+> >>  	struct regmap *map;
+> >>  	u32 reg;
+> >> @@ -90,6 +94,8 @@ struct stm32_rproc {
+> >>  	struct stm32_mbox mb[MBOX_NB_MBX];
+> >>  	struct workqueue_struct *workqueue;
+> >>  	bool hold_boot_smc;
+> >> +	bool fw_loaded;
+> >> +	struct tee_rproc *trproc;
+> >>  	void __iomem *rsc_va;
+> >>  };
+> >>  
+> >> @@ -257,6 +263,91 @@ static int stm32_rproc_release(struct rproc *rproc)
+> >>  	return err;
+> >>  }
+> >>  
+> >> +static int stm32_rproc_tee_elf_sanity_check(struct rproc *rproc,
+> >> +					    const struct firmware *fw)
+> >> +{
+> >> +	struct stm32_rproc *ddata = rproc->priv;
+> >> +	unsigned int ret = 0;
+> >> +
+> >> +	if (rproc->state == RPROC_DETACHED)
+> >> +		return 0;
+> >> +
+> >> +	ret = tee_rproc_load_fw(ddata->trproc, fw);
+> >> +	if (!ret)
+> >> +		ddata->fw_loaded = true;
+> >> +
+> >> +	return ret;
+> >> +}
+> >> +
+> >> +static int stm32_rproc_tee_elf_load(struct rproc *rproc,
+> >> +				    const struct firmware *fw)
+> >> +{
+> >> +	struct stm32_rproc *ddata = rproc->priv;
+> >> +	unsigned int ret;
+> >> +
+> >> +	/*
+> >> +	 * This function can be called by remote proc for recovery
+> >> +	 * without the sanity check. In this case we need to load the firmware
+> >> +	 * else nothing done here as the firmware has been preloaded for the
+> >> +	 * sanity check to be able to parse it for the resource table.
+> >> +	 */
+> > 
+> > This comment is very confusing - please consider refactoring.  
+> > 
+> >> +	if (ddata->fw_loaded)
+> >> +		return 0;
+> >> +
+> > 
+> > I'm not sure about keeping a flag to indicate the status of the loaded firmware.
+> > It is not done for the non-secure method, I don't see why it would be needed for
+> > the secure one.
+> > 
+> 
+> The difference is on the sanity check.
+> - in rproc_elf_sanity_check we  parse the elf file to verify that it is
+> valid.
+> - in stm32_rproc_tee_elf_sanity_check we have to do the same, that means to
+> authenticate it. the authentication is done during the load.
+> 
+> So this flag is used to avoid to reload it twice time.
+> refactoring the comment should help to understand this flag
+> 
+> 
+> An alternative would be to bypass the sanity check. But this lead to same
+> limitation.
+> Before loading the firmware in remoteproc_core, we call rproc_parse_fw() that is
+> used to get the resource table address. To get it from tee we need to
+> authenticate the firmware so load it...
+>
 
-The eventfs inode had pointers to dentries (and child dentries) without
-actually holding a refcount on said pointer.  That is fundamentally
-broken, and while eventfs tried to then maintain coherence with dentries
-going away by hooking into the '.d_iput' callback, that doesn't actually
-work since it's not ordered wrt lookups.
+I spent a long time thinking about this patchset.  Looking at the code as it
+is now, request_firmware() in rproc_boot() is called even when the TEE is
+responsible for loading the firmware.  There should be some conditional code
+that calls either request_firmware() or tee_rproc_load_fw().  The latter should
+also be renamed to tee_rproc_request_firmware() to avoid confusion.
 
-There were two reasonms why eventfs tried to keep a pointer to a dentry:
+I touched on that before but please rename rproc_tee_get_rsc_table() to
+rproc_tee_elf_load_rsc_table().  I also suggest to introduce a new function,
+rproc_tee_get_loaded_rsc_table() that would be called from
+rproc_tee_elf_load_rsc_table().  That way we don't need trproc->rsc_va.  
 
- - the creation of a 'events' directory would actually have a stable
-   dentry pointer that it created with tracefs_start_creating().
+I also think tee_rproc should be renamed to "rproc_tee_interface" and folded
+under struct rproc.  
 
-   And it needed that dentry when tearing it all down again in
-   eventfs_remove_events_dir().
+With the above most of the problems with the current implementation should
+naturally go away.
 
-   This use is actually ok, because the special top-level events
-   directory dentries are actually stable, not just a temporary cache of
-   the eventfs data structures.
+Thanks,
+Mathieu
 
- - the 'eventfs_inode' (aka ei) needs to stay around as long as there
-   are dentries that refer to it.
-
-   It then used these dentry pointers as a replacement for doing
-   reference counting: it would try to make sure that there was only
-   ever one dentry associated with an event_inode, and keep a child
-   dentry array around to see which dentries might still refer to the
-   parent ei.
-
-This gets rid of the invalid dentry pointer use, and renames the one
-valid case to a different name to make it clear that it's not just any
-random dentry.
-
-The magic child dentry array that is kind of a "reverse reference list"
-is simply replaced by having child dentries take a ref to the ei.  As
-does the directory dentries.  That makes the broken use case go away.
-
-Link: https://lore.kernel.org/linux-trace-kernel/202401291043.e62e89dc-oliver.sang@intel.com/
-
-Cc: stable@vger.kernel.org
-Fixes: c1504e510238 ("eventfs: Implement eventfs dir creation functions")
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
-Changes since v1: https://lore.kernel.org/linux-trace-kernel/20240130190355.11486-5-torvalds@linux-foundation.org
-
-- Put back the kstrdup_const()
-
-- use kfree_rcu(ei, rcu);
-
-- Replace simple_recursive_removal() with d_invalidate().
-
- fs/tracefs/event_inode.c | 247 ++++++++++++---------------------------
- fs/tracefs/internal.h    |   7 +-
- 2 files changed, 77 insertions(+), 177 deletions(-)
-
-diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index 0213a3375d53..31cbe38739fa 100644
---- a/fs/tracefs/event_inode.c
-+++ b/fs/tracefs/event_inode.c
-@@ -62,6 +62,35 @@ enum {
- 
- #define EVENTFS_MODE_MASK	(EVENTFS_SAVE_MODE - 1)
- 
-+/*
-+ * eventfs_inode reference count management.
-+ *
-+ * NOTE! We count only references from dentries, in the
-+ * form 'dentry->d_fsdata'. There are also references from
-+ * directory inodes ('ti->private'), but the dentry reference
-+ * count is always a superset of the inode reference count.
-+ */
-+static void release_ei(struct kref *ref)
-+{
-+	struct eventfs_inode *ei = container_of(ref, struct eventfs_inode, kref);
-+	kfree(ei->entry_attrs);
-+	kfree_const(ei->name);
-+	kfree_rcu(ei, rcu);
-+}
-+
-+static inline void put_ei(struct eventfs_inode *ei)
-+{
-+	if (ei)
-+		kref_put(&ei->kref, release_ei);
-+}
-+
-+static inline struct eventfs_inode *get_ei(struct eventfs_inode *ei)
-+{
-+	if (ei)
-+		kref_get(&ei->kref);
-+	return ei;
-+}
-+
- static struct dentry *eventfs_root_lookup(struct inode *dir,
- 					  struct dentry *dentry,
- 					  unsigned int flags);
-@@ -289,7 +318,8 @@ static void update_inode_attr(struct dentry *dentry, struct inode *inode,
-  * directory. The inode.i_private pointer will point to @data in the open()
-  * call.
-  */
--static struct dentry *lookup_file(struct dentry *dentry,
-+static struct dentry *lookup_file(struct eventfs_inode *parent_ei,
-+				  struct dentry *dentry,
- 				  umode_t mode,
- 				  struct eventfs_attr *attr,
- 				  void *data,
-@@ -302,7 +332,7 @@ static struct dentry *lookup_file(struct dentry *dentry,
- 		mode |= S_IFREG;
- 
- 	if (WARN_ON_ONCE(!S_ISREG(mode)))
--		return NULL;
-+		return ERR_PTR(-EIO);
- 
- 	inode = tracefs_get_inode(dentry->d_sb);
- 	if (unlikely(!inode))
-@@ -321,9 +351,12 @@ static struct dentry *lookup_file(struct dentry *dentry,
- 	ti = get_tracefs(inode);
- 	ti->flags |= TRACEFS_EVENT_INODE;
- 
-+	// Files have their parent's ei as their fsdata
-+	dentry->d_fsdata = get_ei(parent_ei);
-+
- 	d_add(dentry, inode);
- 	fsnotify_create(dentry->d_parent->d_inode, dentry);
--	return dentry;
-+	return NULL;
- };
- 
- /**
-@@ -359,22 +392,29 @@ static struct dentry *lookup_dir_entry(struct dentry *dentry,
- 	/* Only directories have ti->private set to an ei, not files */
- 	ti->private = ei;
- 
--	dentry->d_fsdata = ei;
--        ei->dentry = dentry;	// Remove me!
-+	dentry->d_fsdata = get_ei(ei);
- 
- 	inc_nlink(inode);
- 	d_add(dentry, inode);
- 	inc_nlink(dentry->d_parent->d_inode);
- 	fsnotify_mkdir(dentry->d_parent->d_inode, dentry);
--	return dentry;
-+	return NULL;
- }
- 
--static void free_ei(struct eventfs_inode *ei)
-+static inline struct eventfs_inode *alloc_ei(const char *name)
- {
--	kfree_const(ei->name);
--	kfree(ei->d_children);
--	kfree(ei->entry_attrs);
--	kfree(ei);
-+	struct eventfs_inode *ei = kzalloc(sizeof(*ei), GFP_KERNEL);
-+
-+	if (!ei)
-+		return NULL;
-+
-+	ei->name = kstrdup_const(name, GFP_KERNEL);
-+	if (!ei->name) {
-+		kfree(ei);
-+		return NULL;
-+	}
-+	kref_init(&ei->kref);
-+	return ei;
- }
- 
- /**
-@@ -385,39 +425,13 @@ static void free_ei(struct eventfs_inode *ei)
-  */
- void eventfs_d_release(struct dentry *dentry)
- {
--	struct eventfs_inode *ei;
--	int i;
--
--	mutex_lock(&eventfs_mutex);
--
--	ei = dentry->d_fsdata;
--	if (!ei)
--		goto out;
--
--	/* This could belong to one of the files of the ei */
--	if (ei->dentry != dentry) {
--		for (i = 0; i < ei->nr_entries; i++) {
--			if (ei->d_children[i] == dentry)
--				break;
--		}
--		if (WARN_ON_ONCE(i == ei->nr_entries))
--			goto out;
--		ei->d_children[i] = NULL;
--	} else if (ei->is_freed) {
--		free_ei(ei);
--	} else {
--		ei->dentry = NULL;
--	}
--
--	dentry->d_fsdata = NULL;
-- out:
--	mutex_unlock(&eventfs_mutex);
-+	put_ei(dentry->d_fsdata);
- }
- 
- /**
-  * lookup_file_dentry - create a dentry for a file of an eventfs_inode
-  * @ei: the eventfs_inode that the file will be created under
-- * @idx: the index into the d_children[] of the @ei
-+ * @idx: the index into the entry_attrs[] of the @ei
-  * @parent: The parent dentry of the created file.
-  * @name: The name of the file to create
-  * @mode: The mode of the file.
-@@ -434,17 +448,11 @@ lookup_file_dentry(struct dentry *dentry,
- 		   const struct file_operations *fops)
- {
- 	struct eventfs_attr *attr = NULL;
--	struct dentry **e_dentry = &ei->d_children[idx];
- 
- 	if (ei->entry_attrs)
- 		attr = &ei->entry_attrs[idx];
- 
--	dentry->d_fsdata = ei;		// NOTE: ei of _parent_
--	lookup_file(dentry, mode, attr, data, fops);
--
--	*e_dentry = dentry;	// Remove me
--
--	return dentry;
-+	return lookup_file(ei, dentry, mode, attr, data, fops);
- }
- 
- /**
-@@ -465,7 +473,7 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
- 	struct tracefs_inode *ti;
- 	struct eventfs_inode *ei;
- 	const char *name = dentry->d_name.name;
--	struct dentry *result = NULL;
-+	struct dentry *result;
- 
- 	ti = get_tracefs(dir);
- 	if (!(ti->flags & TRACEFS_EVENT_INODE))
-@@ -482,7 +490,7 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
- 			continue;
- 		if (ei_child->is_freed)
- 			goto enoent;
--		lookup_dir_entry(dentry, ei, ei_child);
-+		result = lookup_dir_entry(dentry, ei, ei_child);
- 		goto out;
- 	}
- 
-@@ -499,7 +507,7 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
- 		if (entry->callback(name, &mode, &data, &fops) <= 0)
- 			goto enoent;
- 
--		lookup_file_dentry(dentry, ei, i, mode, data, fops);
-+		result = lookup_file_dentry(dentry, ei, i, mode, data, fops);
- 		goto out;
- 	}
- 
-@@ -659,25 +667,10 @@ struct eventfs_inode *eventfs_create_dir(const char *name, struct eventfs_inode
- 	if (!parent)
- 		return ERR_PTR(-EINVAL);
- 
--	ei = kzalloc(sizeof(*ei), GFP_KERNEL);
-+	ei = alloc_ei(name);
- 	if (!ei)
- 		return ERR_PTR(-ENOMEM);
- 
--	ei->name = kstrdup_const(name, GFP_KERNEL);
--	if (!ei->name) {
--		kfree(ei);
--		return ERR_PTR(-ENOMEM);
--	}
--
--	if (size) {
--		ei->d_children = kcalloc(size, sizeof(*ei->d_children), GFP_KERNEL);
--		if (!ei->d_children) {
--			kfree_const(ei->name);
--			kfree(ei);
--			return ERR_PTR(-ENOMEM);
--		}
--	}
--
- 	ei->entries = entries;
- 	ei->nr_entries = size;
- 	ei->data = data;
-@@ -691,7 +684,7 @@ struct eventfs_inode *eventfs_create_dir(const char *name, struct eventfs_inode
- 
- 	/* Was the parent freed? */
- 	if (list_empty(&ei->list)) {
--		free_ei(ei);
-+		put_ei(ei);
- 		ei = NULL;
- 	}
- 	return ei;
-@@ -726,28 +719,20 @@ struct eventfs_inode *eventfs_create_events_dir(const char *name, struct dentry
- 	if (IS_ERR(dentry))
- 		return ERR_CAST(dentry);
- 
--	ei = kzalloc(sizeof(*ei), GFP_KERNEL);
-+	ei = alloc_ei(name);
- 	if (!ei)
--		goto fail_ei;
-+		goto fail;
- 
- 	inode = tracefs_get_inode(dentry->d_sb);
- 	if (unlikely(!inode))
- 		goto fail;
- 
--	if (size) {
--		ei->d_children = kcalloc(size, sizeof(*ei->d_children), GFP_KERNEL);
--		if (!ei->d_children)
--			goto fail;
--	}
--
--	ei->dentry = dentry;
-+	// Note: we have a ref to the dentry from tracefs_start_creating()
-+	ei->events_dir = dentry;
- 	ei->entries = entries;
- 	ei->nr_entries = size;
- 	ei->is_events = 1;
- 	ei->data = data;
--	ei->name = kstrdup_const(name, GFP_KERNEL);
--	if (!ei->name)
--		goto fail;
- 
- 	/* Save the ownership of this directory */
- 	uid = d_inode(dentry->d_parent)->i_uid;
-@@ -778,7 +763,7 @@ struct eventfs_inode *eventfs_create_events_dir(const char *name, struct dentry
- 	inode->i_op = &eventfs_root_dir_inode_operations;
- 	inode->i_fop = &eventfs_file_operations;
- 
--	dentry->d_fsdata = ei;
-+	dentry->d_fsdata = get_ei(ei);
- 
- 	/* directory inodes start off with i_nlink == 2 (for "." entry) */
- 	inc_nlink(inode);
-@@ -790,72 +775,11 @@ struct eventfs_inode *eventfs_create_events_dir(const char *name, struct dentry
- 	return ei;
- 
-  fail:
--	kfree(ei->d_children);
--	kfree(ei);
-- fail_ei:
-+	put_ei(ei);
- 	tracefs_failed_creating(dentry);
- 	return ERR_PTR(-ENOMEM);
- }
- 
--static LLIST_HEAD(free_list);
--
--static void eventfs_workfn(struct work_struct *work)
--{
--        struct eventfs_inode *ei, *tmp;
--        struct llist_node *llnode;
--
--	llnode = llist_del_all(&free_list);
--        llist_for_each_entry_safe(ei, tmp, llnode, llist) {
--		/* This dput() matches the dget() from unhook_dentry() */
--		for (int i = 0; i < ei->nr_entries; i++) {
--			if (ei->d_children[i])
--				dput(ei->d_children[i]);
--		}
--		/* This should only get here if it had a dentry */
--		if (!WARN_ON_ONCE(!ei->dentry))
--			dput(ei->dentry);
--        }
--}
--
--static DECLARE_WORK(eventfs_work, eventfs_workfn);
--
--static void free_rcu_ei(struct rcu_head *head)
--{
--	struct eventfs_inode *ei = container_of(head, struct eventfs_inode, rcu);
--
--	if (ei->dentry) {
--		/* Do not free the ei until all references of dentry are gone */
--		if (llist_add(&ei->llist, &free_list))
--			queue_work(system_unbound_wq, &eventfs_work);
--		return;
--	}
--
--	/* If the ei doesn't have a dentry, neither should its children */
--	for (int i = 0; i < ei->nr_entries; i++) {
--		WARN_ON_ONCE(ei->d_children[i]);
--	}
--
--	free_ei(ei);
--}
--
--static void unhook_dentry(struct dentry *dentry)
--{
--	if (!dentry)
--		return;
--	/*
--	 * Need to add a reference to the dentry that is expected by
--	 * simple_recursive_removal(), which will include a dput().
--	 */
--	dget(dentry);
--
--	/*
--	 * Also add a reference for the dput() in eventfs_workfn().
--	 * That is required as that dput() will free the ei after
--	 * the SRCU grace period is over.
--	 */
--	dget(dentry);
--}
--
- /**
-  * eventfs_remove_rec - remove eventfs dir or file from list
-  * @ei: eventfs_inode to be removed.
-@@ -868,8 +792,6 @@ static void eventfs_remove_rec(struct eventfs_inode *ei, int level)
- {
- 	struct eventfs_inode *ei_child;
- 
--	if (!ei)
--		return;
- 	/*
- 	 * Check recursion depth. It should never be greater than 3:
- 	 * 0 - events/
-@@ -881,28 +803,12 @@ static void eventfs_remove_rec(struct eventfs_inode *ei, int level)
- 		return;
- 
- 	/* search for nested folders or files */
--	list_for_each_entry_srcu(ei_child, &ei->children, list,
--				 lockdep_is_held(&eventfs_mutex)) {
--		/* Children only have dentry if parent does */
--		WARN_ON_ONCE(ei_child->dentry && !ei->dentry);
-+	list_for_each_entry(ei_child, &ei->children, list)
- 		eventfs_remove_rec(ei_child, level + 1);
--	}
--
- 
- 	ei->is_freed = 1;
--
--	for (int i = 0; i < ei->nr_entries; i++) {
--		if (ei->d_children[i]) {
--			/* Children only have dentry if parent does */
--			WARN_ON_ONCE(!ei->dentry);
--			unhook_dentry(ei->d_children[i]);
--		}
--	}
--
--	unhook_dentry(ei->dentry);
--
--	list_del_rcu(&ei->list);
--	call_srcu(&eventfs_srcu, &ei->rcu, free_rcu_ei);
-+	list_del(&ei->list);
-+	put_ei(ei);
- }
- 
- /**
-@@ -913,22 +819,12 @@ static void eventfs_remove_rec(struct eventfs_inode *ei, int level)
-  */
- void eventfs_remove_dir(struct eventfs_inode *ei)
- {
--	struct dentry *dentry;
--
- 	if (!ei)
- 		return;
- 
- 	mutex_lock(&eventfs_mutex);
--	dentry = ei->dentry;
- 	eventfs_remove_rec(ei, 0);
- 	mutex_unlock(&eventfs_mutex);
--
--	/*
--	 * If any of the ei children has a dentry, then the ei itself
--	 * must have a dentry.
--	 */
--	if (dentry)
--		simple_recursive_removal(dentry, NULL);
- }
- 
- /**
-@@ -941,7 +837,11 @@ void eventfs_remove_events_dir(struct eventfs_inode *ei)
- {
- 	struct dentry *dentry;
- 
--	dentry = ei->dentry;
-+	dentry = ei->events_dir;
-+	if (!dentry)
-+		return;
-+
-+	ei->events_dir = NULL;
- 	eventfs_remove_dir(ei);
- 
- 	/*
-@@ -951,5 +851,6 @@ void eventfs_remove_events_dir(struct eventfs_inode *ei)
- 	 * sticks around while the other ei->dentry are created
- 	 * and destroyed dynamically.
- 	 */
-+	d_invalidate(dentry);
- 	dput(dentry);
- }
-diff --git a/fs/tracefs/internal.h b/fs/tracefs/internal.h
-index 4b50a0668055..1886f1826cd8 100644
---- a/fs/tracefs/internal.h
-+++ b/fs/tracefs/internal.h
-@@ -35,8 +35,7 @@ struct eventfs_attr {
-  * @entries:	the array of entries representing the files in the directory
-  * @name:	the name of the directory to create
-  * @children:	link list into the child eventfs_inode
-- * @dentry:     the dentry of the directory
-- * @d_children: The array of dentries to represent the files when created
-+ * @events_dir: the dentry of the events directory
-  * @entry_attrs: Saved mode and ownership of the @d_children
-  * @attr:	Saved mode and ownership of eventfs_inode itself
-  * @data:	The private data to pass to the callbacks
-@@ -45,12 +44,12 @@ struct eventfs_attr {
-  * @nr_entries: The number of items in @entries
-  */
- struct eventfs_inode {
-+	struct kref			kref;
- 	struct list_head		list;
- 	const struct eventfs_entry	*entries;
- 	const char			*name;
- 	struct list_head		children;
--	struct dentry			*dentry; /* Check is_freed to access */
--	struct dentry			**d_children;
-+	struct dentry			*events_dir;
- 	struct eventfs_attr		*entry_attrs;
- 	struct eventfs_attr		attr;
- 	void				*data;
--- 
-2.43.0
-
-
+> 
+> >> +	ret = tee_rproc_load_fw(ddata->trproc, fw);
+> >> +	if (ret)
+> >> +		return ret;
+> >> +	ddata->fw_loaded = true;
+> >> +
+> >> +	/* Update the resource table parameters. */
+> >> +	if (rproc_tee_get_rsc_table(ddata->trproc)) {
+> >> +		/* No resource table: reset the related fields. */
+> >> +		rproc->cached_table = NULL;
+> >> +		rproc->table_ptr = NULL;
+> >> +		rproc->table_sz = 0;
+> >> +	}
+> >> +
+> >> +	return 0;
+> >> +}
+> >> +
+> >> +static struct resource_table *
+> >> +stm32_rproc_tee_elf_find_loaded_rsc_table(struct rproc *rproc,
+> >> +					  const struct firmware *fw)
+> >> +{
+> >> +	struct stm32_rproc *ddata = rproc->priv;
+> >> +
+> >> +	return tee_rproc_get_loaded_rsc_table(ddata->trproc);
+> >> +}
+> >> +
+> >> +static int stm32_rproc_tee_start(struct rproc *rproc)
+> >> +{
+> >> +	struct stm32_rproc *ddata = rproc->priv;
+> >> +
+> >> +	return tee_rproc_start(ddata->trproc);
+> >> +}
+> >> +
+> >> +static int stm32_rproc_tee_attach(struct rproc *rproc)
+> >> +{
+> >> +	/* Nothing to do, remote proc already started by the secured context. */
+> >> +	return 0;
+> >> +}
+> >> +
+> >> +static int stm32_rproc_tee_stop(struct rproc *rproc)
+> >> +{
+> >> +	struct stm32_rproc *ddata = rproc->priv;
+> >> +	int err;
+> >> +
+> >> +	stm32_rproc_request_shutdown(rproc);
+> >> +
+> >> +	err = tee_rproc_stop(ddata->trproc);
+> >> +	if (err)
+> >> +		return err;
+> >> +
+> >> +	ddata->fw_loaded = false;
+> >> +
+> >> +	return stm32_rproc_release(rproc);
+> >> +}
+> >> +
+> >>  static int stm32_rproc_prepare(struct rproc *rproc)
+> >>  {
+> >>  	struct device *dev = rproc->dev.parent;
+> >> @@ -319,7 +410,14 @@ static int stm32_rproc_prepare(struct rproc *rproc)
+> >>  
+> >>  static int stm32_rproc_parse_fw(struct rproc *rproc, const struct firmware *fw)
+> >>  {
+> >> -	if (rproc_elf_load_rsc_table(rproc, fw))
+> >> +	struct stm32_rproc *ddata = rproc->priv;
+> >> +	int ret;
+> >> +
+> >> +	if (ddata->trproc)
+> >> +		ret = rproc_tee_get_rsc_table(ddata->trproc);
+> >> +	else
+> >> +		ret = rproc_elf_load_rsc_table(rproc, fw);
+> >> +	if (ret)
+> >>  		dev_warn(&rproc->dev, "no resource table found for this firmware\n");
+> >>  
+> >>  	return 0;
+> >> @@ -693,8 +791,22 @@ static const struct rproc_ops st_rproc_ops = {
+> >>  	.get_boot_addr	= rproc_elf_get_boot_addr,
+> >>  };
+> >>  
+> >> +static const struct rproc_ops st_rproc_tee_ops = {
+> >> +	.prepare	= stm32_rproc_prepare,
+> >> +	.start		= stm32_rproc_tee_start,
+> >> +	.stop		= stm32_rproc_tee_stop,
+> >> +	.attach		= stm32_rproc_tee_attach,
+> >> +	.kick		= stm32_rproc_kick,
+> >> +	.parse_fw	= stm32_rproc_parse_fw,
+> >> +	.find_loaded_rsc_table = stm32_rproc_tee_elf_find_loaded_rsc_table,
+> >> +	.get_loaded_rsc_table = stm32_rproc_get_loaded_rsc_table,
+> >> +	.sanity_check	= stm32_rproc_tee_elf_sanity_check,
+> >> +	.load		= stm32_rproc_tee_elf_load,
+> >> +};
+> >> +
+> >>  static const struct of_device_id stm32_rproc_match[] = {
+> >> -	{ .compatible = "st,stm32mp1-m4" },
+> >> +	{.compatible = "st,stm32mp1-m4",},
+> >> +	{.compatible = "st,stm32mp1-m4-tee",},
+> >>  	{},
+> >>  };
+> >>  MODULE_DEVICE_TABLE(of, stm32_rproc_match);
+> >> @@ -853,6 +965,7 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+> >>  	struct device *dev = &pdev->dev;
+> >>  	struct stm32_rproc *ddata;
+> >>  	struct device_node *np = dev->of_node;
+> >> +	struct tee_rproc *trproc = NULL;
+> >>  	struct rproc *rproc;
+> >>  	unsigned int state;
+> >>  	int ret;
+> >> @@ -861,11 +974,31 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+> >>  	if (ret)
+> >>  		return ret;
+> >>  
+> >> -	rproc = rproc_alloc(dev, np->name, &st_rproc_ops, NULL, sizeof(*ddata));
+> >> -	if (!rproc)
+> >> -		return -ENOMEM;
+> >> +	if (of_device_is_compatible(np, "st,stm32mp1-m4-tee")) {
+> >> +		trproc = tee_rproc_register(dev, STM32_MP1_M4_PROC_ID);
+> >> +		if (IS_ERR(trproc)) {
+> >> +			dev_err_probe(dev, PTR_ERR(trproc),
+> >> +				      "signed firmware not supported by TEE\n");
+> >> +			return PTR_ERR(trproc);
+> >> +		}
+> >> +		/*
+> >> +		 * Delegate the firmware management to the secure context.
+> >> +		 * The firmware loaded has to be signed.
+> >> +		 */
+> >> +		dev_info(dev, "Support of signed firmware only\n");
+> > 
+> > Not sure what this adds.  Please remove.
+> 
+> This is used to inform the user that only a signed firmware can be loaded, not
+> an ELF file.
+> I have a patch in my pipe to provide the supported format in the debugfs. In a
+> first step, I can suppress this message and we can revisit the issue when I push
+> the debugfs proposal.
+> 
+> Thanks,
+> Arnaud
+> 
+> > 
+> >> +	}
+> >> +	rproc = rproc_alloc(dev, np->name,
+> >> +			    trproc ? &st_rproc_tee_ops : &st_rproc_ops,
+> >> +			    NULL, sizeof(*ddata));
+> >> +	if (!rproc) {
+> >> +		ret = -ENOMEM;
+> >> +		goto free_tee;
+> >> +	}
+> >>  
+> >>  	ddata = rproc->priv;
+> >> +	ddata->trproc = trproc;
+> >> +	if (trproc)
+> >> +		trproc->rproc = rproc;
+> >>  
+> >>  	rproc_coredump_set_elf_info(rproc, ELFCLASS32, EM_NONE);
+> >>  
+> >> @@ -916,6 +1049,10 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+> >>  		device_init_wakeup(dev, false);
+> >>  	}
+> >>  	rproc_free(rproc);
+> >> +free_tee:
+> >> +	if (trproc)
+> >> +		tee_rproc_unregister(trproc);
+> >> +
+> >>  	return ret;
+> >>  }
+> >>  
+> >> @@ -937,6 +1074,8 @@ static void stm32_rproc_remove(struct platform_device *pdev)
+> >>  		device_init_wakeup(dev, false);
+> >>  	}
+> >>  	rproc_free(rproc);
+> >> +	if (ddata->trproc)
+> >> +		tee_rproc_unregister(ddata->trproc);
+> >>  }
+> >>  
+> >>  static int stm32_rproc_suspend(struct device *dev)
+> >> -- 
+> >> 2.25.1
+> >>
 
