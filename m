@@ -1,245 +1,165 @@
-Return-Path: <linux-kernel+bounces-46538-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 938AF844114
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:53:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49DA084411A
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:55:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A31D28FD6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:53:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B353B1F2DE6C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:55:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CEA580C08;
-	Wed, 31 Jan 2024 13:53:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B5AA80C03;
+	Wed, 31 Jan 2024 13:55:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="V6VBIkFJ"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BmcX4Yg+"
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32BFC80BF3
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 13:53:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2C597F491
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 13:55:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706709230; cv=none; b=mY6ENtehTMQKOEGnlbq3kEhGJrWAqwBqAIa8idJBZAPJ5e1Mmms5HCb3cF3Tc8snagcPfWEgncSxnz5ZWoGFHD867iqNp9XGkaZkbaPI+3V2Gr5mgRpRI93Szcl5Jmrlc1it6ltLwmIt/OvzOSc+BouVw/JbTbRyYEVTYqxWUOY=
+	t=1706709344; cv=none; b=VSmmZzZtJnsA0h54+kggy7qJDPbHnvyqUSO0nlm4MHbX2lQZcdK6HQHHVwZcHsykyKb+Fj8qMjcHcIuE2czMBioJs3kB9T7HlnZZ49I6DoIaTs74NmwWKmz7hV2fP1CLreKSx4RvtcqEtzRmwCfk0C3/6N5m4Bv6/ddXZrumecM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706709230; c=relaxed/simple;
-	bh=1fsKiWzD4eBtpYRLLRU5ypafXrjCVp3jRWjh9i+qbLk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bKhZCD39yL/vqVVNbneOx/WY5gVMjuYyo5zDq/ffGwmilGgbQXgVwmdpSK0dV2lrbcL6qwiQtqUiqV4QFzGXTLmwW4S8xDIHxYDUqymLxj+mPqzqkYygWN8YRN7je4c0NNqopN3C3Tug4S6UvAp6TqktDho6TF68Oj5CajmH3ag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=V6VBIkFJ; arc=none smtp.client-ip=209.85.208.43
+	s=arc-20240116; t=1706709344; c=relaxed/simple;
+	bh=lP/iCDT0hUnPesKrb7hWD3dW8NEUrJgALKt9dBmUD4c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=De6R/T9vDU5YUCQFPaZymwvytM+3nysLLOANLszq5oTEo+STk+1JZeabBDKYLYTbXhJpNmWpNHbwzXake7IAbG+ts5XZPUAyDyMpdWjEFu1doXut3VktI4xPiGxJZvF+XXN3+FX7JAdibvaO0eDUb5cy96wFzp5v2DuTiXK/AhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BmcX4Yg+; arc=none smtp.client-ip=209.85.215.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55a9008c185so1725265a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 05:53:47 -0800 (PST)
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5cfd95130c6so3112151a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 05:55:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706709226; x=1707314026; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ahOd0DsEgD/5LLUjuJjav5ZXUjQod+q+9a1w7vEMGKU=;
-        b=V6VBIkFJ7jSyDUASutomTagEWexNPrxNMyF1x9NJIK0K7Ch5C2QaiEUtNHyTwbda8v
-         9aEKPBVSUI4cVyc1T21TQyyByTJz39/mWMqank3uR7J6qhFTL9G6fefuU6TRZiiygFPx
-         1DeqtmzE2CDu5wr84FT/fpUmsMLfI+8ZyHMc0CjCKWfUynmfUnn82QHwc7wDi3QpyIXp
-         /c1OHhXt9JOA3yBqqxSsQtmLiriVsG0fY5rGEjzXp9Z/TVC3/wf8ikvtPXdfC58Q6HZx
-         0mOEkyr5PVHyy6aMlwKB5DU0CIyWi0AoXVPuPc6lPac3mC7NN7zscHubIyakdubQUuLd
-         rAaQ==
+        d=linaro.org; s=google; t=1706709342; x=1707314142; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=lP/iCDT0hUnPesKrb7hWD3dW8NEUrJgALKt9dBmUD4c=;
+        b=BmcX4Yg+C7DnGCekgTcpfKgtpNaYG3sMswR5oyrzm3Yej5sFUxLENwbqQ2QQceDZC8
+         KohnmWwvBr4jPzl8WOUyfoa5V2th3hf8YEoocKXLILmIw+UfHozjm3NEZ8ZCYfW/mQXI
+         2/u2HbOURlIgTjgd8+rNAa63aVDMF9eraA0J7kvoXXpBVJi4H6sNhp6rtk6vM2oxuups
+         vXHsnA38hDBVupLTcNjfgpRj8FwOZj8j958bSf9d2MNvEDOiG2zazmlaqc9kET4D+8/t
+         FDyepQ/jGaBEoxNrPLFoe36++u1x3rLqZ7/Gd6IgynYPv5rE1sjNlBpNmDgRym1WMGt6
+         fEZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706709226; x=1707314026;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ahOd0DsEgD/5LLUjuJjav5ZXUjQod+q+9a1w7vEMGKU=;
-        b=r6GFz7jnGwSIBMtLHq3gK3gxdvbDs+0uZyCTZck91Dk9lR2x0pxMYhbRiVS2nJhW8D
-         bO78fggjyMv50i53gg7nzuJala4Lr+V8n5X0pzpTP5eZM189PndrtKKlYz1usU5rZ/Ea
-         eyMn9lxDhwiIGwbxUbKxf5ShTyx1W6rJwme4re1GOdUNa6Unu4PeBZRNYFUGnFxbqq6S
-         CtKAGadkzDJwrsAictHSfq9j+8oSxgPNeS0e7VYP6njEzaXKJDLjXeh4wnXTlJinmEWG
-         sVgD0oPpRVsjziDGb6vTV42fg5R94hOW6CGT6y24Doktgh8ButMCx2u2ut2Nq/jBXNuD
-         Yqug==
-X-Gm-Message-State: AOJu0YzZROu8yci0Bt/NkCiR/od8noY5xPZJNE8fqJ+Ea543r6714RZI
-	fUPA/J8HDkbIbx/fPvnDof/S2FQAIMKjrrV4miH78iZ9pqCbz2W1Xtk5FR9lRBA=
-X-Google-Smtp-Source: AGHT+IF/HhYD9uEpTmG0foPvY+xCTXKvk5obu0HsU61MTSjfgdbYBqyNsdDIta+ap8fzjTNneV6ulw==
-X-Received: by 2002:a05:6402:26ce:b0:55f:992a:6214 with SMTP id x14-20020a05640226ce00b0055f992a6214mr544647edd.4.1706709226169;
-        Wed, 31 Jan 2024 05:53:46 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWUqIoHU49HCTb1rUovxV2gzF0kNXugLnZJeOYtS/NemWRrh0sE6nRlMpUq+1mJOwWQ4reR3QOaR4C3hI6SS4Kh4wZKVlDJ6uoiKBDU6GaEZZwuVqTSlfqoRX1FVckX34fLfeEqodIdgfqNacwxzO+JYfyzbocr4Tf59DtEwj01giG3YFJYFmtUtcG6AP90iDOC5tTEc867KA+4Emd3CN1m+cq3Dcnp1bMhe39oHkOf2V0jc4Bm3Bv6PK49WOdh4e/icTK6ccAzVCAvXM8v/flwcNq8frmo+e6JZeNhUY6YN1hwSWBx+UtwP0rMZbbaqwrgKeKmjD2tJSVyvIRoB22IZqQSA0oS+sFhSdh38PdbvFu5BAMPHZv/GJMNZp30c6wZ1ADFFk8hz9MQ3y+PNePEmHaVS9CRINxdCNihRo6E4sgFvNybrmAmsC9H269+TZOeVrhCndoEuH72nqlo1ERZTy5ElrRbIMG8cczjx3VcSNQBRpAh1bFq1MgJiK5+nY1mN/UQhps5E330KFEiv7gJSnXi/jK8jB8We7h/tnrp/0t23yaFt41Svs574zOCgtjvdO0u52EcTzEez9PatHNpm5lOxC8qYzIzcVI0R91u1nCmwKpYslmUYln4R7MnjewahTR+IYHmByVBXx0FTdOFqHCMcWcrlN39J5yYs1np2PrPxYyI3DIW1gi3OCDgZNdD5rVHlFc75iXOjasBH7eahPDFLcVx0p6BqqJ2mLLk4NTcoZIP85Zu5wI7g8IBiqrZJcWYGgNwTRryHRWokBw5XBe1BnY+ib53YyThWi+SlQrwBSm9ItKEaslSYUzPrVjWnl0hURKIOdO4Q1NPXPTGQdvnNoeFf6lkeqho5K0m8d5bIh8SAM9gkGTnBDlRsusQAZ8M5GG+Da2YhJoKqVc8P0u+gvHUcFdFxRqRfZjFVyBvK4UT6BKw+xELIa0Q+7Tc6t
- togPTrIj/XhTaCr9NEbPyyavGfIsDRv+PD
-Received: from pop-os.localdomain (81-231-61-187-no276.tbcn.telia.com. [81.231.61.187])
-        by smtp.gmail.com with ESMTPSA id ec37-20020a0564020d6500b0055f8adf1d6esm465420edb.47.2024.01.31.05.53.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 05:53:45 -0800 (PST)
-Date: Wed, 31 Jan 2024 14:53:43 +0100
-From: Joakim Bech <joakim.bech@linaro.org>
-To: Yong Wu <yong.wu@mediatek.com>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>, christian.koenig@amd.com,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-	Brian Starkey <Brian.Starkey@arm.com>,
-	John Stultz <jstultz@google.com>, tjmercier@google.com,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linaro-mm-sig@lists.linaro.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	Robin Murphy <robin.murphy@arm.com>,
-	Vijayanand Jitta <quic_vjitta@quicinc.com>,
-	Jeffrey Kardatzke <jkardatzke@google.com>,
-	Pavel Machek <pavel@ucw.cz>, Simon Ser <contact@emersion.fr>,
-	Pekka Paalanen <ppaalanen@gmail.com>, jianjiao.zeng@mediatek.com,
-	kuohong.wang@mediatek.com, youlin.pei@mediatek.com
-Subject: Re: [PATCH v4 3/7] dma-buf: heaps: restricted_heap: Add private heap
- ops
-Message-ID: <20240131135343.rj6xlch6zcev2v47@pop-os.localdomain>
-References: <20240112092014.23999-1-yong.wu@mediatek.com>
- <20240112092014.23999-4-yong.wu@mediatek.com>
+        d=1e100.net; s=20230601; t=1706709342; x=1707314142;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lP/iCDT0hUnPesKrb7hWD3dW8NEUrJgALKt9dBmUD4c=;
+        b=Cxro5qqZH1DhvfW3J7knIgNV8oUU2DnxJkqN0iAYH0tKDcfd6Xke2B4qDULb2olu1R
+         Og2fJ9Tj4Hgp63gbSe2gT88FU0maFNkSOpitXBb2sBavoC4gNhTfaEjDRMx5nD2jN3s9
+         3IFmVMqVSvz8dZ3CcHeR0zSzOFs64Oba1jARyt8nqt933yuwFTJn748dEZ6qVyFwTkVW
+         tEicKttiH3QXu21XqSb2H6C4rasMaw0KXzxDwUv6ZAaOdg1o5ia9c9WXBwtAwWuE0+JX
+         6uomDj1rb2kzjWA1owsbDbuhrWW1HYuvqKoAo3iRauzMCwOX+QQiPOsFvcJkXpt8YHz/
+         +rCQ==
+X-Gm-Message-State: AOJu0YwEquwNGfcE6bGrn9XxqCtRAkko3mFjru/wafRg/a7+Erip1VeY
+	dJnmA1ffdiChl3BHl57lkjiVBuXi2kxQi/s1ArI4W8FlUFZAtNRXmgBKECZjI0UnDWuNcvRjGfG
+	WpNgdZZOmrdvzXD9/OVRCdxbeWv4gJRVNN1oe3akV2aNvdSpDGuw=
+X-Google-Smtp-Source: AGHT+IFHMc9NoAOmBIbFCuBZRsmIAQEKzd9i4Nh5py0aHA68IqRt2eTTIhkUs5M0S/JguzNWdnTnmmTWl60YIdJhujE=
+X-Received: by 2002:a17:90b:e8a:b0:293:f625:1b0b with SMTP id
+ fv10-20020a17090b0e8a00b00293f6251b0bmr1531667pjb.5.1706709342129; Wed, 31
+ Jan 2024 05:55:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240112092014.23999-4-yong.wu@mediatek.com>
+References: <20240105222014.1025040-1-qyousef@layalina.io> <20240105222014.1025040-2-qyousef@layalina.io>
+ <CAKfTPtBYcVWxYOhWZjzcQUB1ebUBA-B30hvToqGBq6JnfRUZNg@mail.gmail.com>
+ <20240124222959.ikwnbxkcjaxuiqp2@airbuntu> <CAKfTPtDxqcrf0kaBQG_zpFx-DEZTMKfyxBu_bzCuZ_UZhJwOnA@mail.gmail.com>
+ <20240126014602.wdcro3ajffpna4fp@airbuntu> <CAKfTPtDqABnPDmt0COqyRpYSuj_WWwLrqL+Tbfa8J8b5u5eQtQ@mail.gmail.com>
+ <20240128235005.txztdbdq2obyi4n6@airbuntu> <CAKfTPtC0=MH7bCypeY1QFxt=pFbPxY9YLuuS8_dhkF31nR6ZWQ@mail.gmail.com>
+ <20240130235727.wj3texzo4lpbba6b@airbuntu>
+In-Reply-To: <20240130235727.wj3texzo4lpbba6b@airbuntu>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Wed, 31 Jan 2024 14:55:31 +0100
+Message-ID: <CAKfTPtCAETf3F-dkMimqt6VC9TWHseiQyywyuq6BQqxVMWxXRw@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] sched/fair: Check a task has a fitting cpu when
+ updating misfit
+To: Qais Yousef <qyousef@layalina.io>
+Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, linux-kernel@vger.kernel.org, 
+	Pierre Gondois <Pierre.Gondois@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Jan 12, 2024 at 05:20:10PM +0800, Yong Wu wrote:
-> Add "struct restricted_heap_ops". For the restricted memory, totally there
-> are two steps:
-> a) memory_alloc: Allocate the buffer in kernel;
-> b) memory_restrict: Restrict/Protect/Secure that buffer.
-> The memory_alloc is mandatory while memory_restrict is optinal since it may
+On Wed, 31 Jan 2024 at 00:57, Qais Yousef <qyousef@layalina.io> wrote:
 >
-s/optinal/optional/
-
-> be part of memory_alloc.
-> 
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> ---
->  drivers/dma-buf/heaps/restricted_heap.c | 41 ++++++++++++++++++++++++-
->  drivers/dma-buf/heaps/restricted_heap.h | 12 ++++++++
->  2 files changed, 52 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/dma-buf/heaps/restricted_heap.c b/drivers/dma-buf/heaps/restricted_heap.c
-> index fd7c82abd42e..8c266a0f6192 100644
-> --- a/drivers/dma-buf/heaps/restricted_heap.c
-> +++ b/drivers/dma-buf/heaps/restricted_heap.c
-> @@ -12,10 +12,44 @@
->  
->  #include "restricted_heap.h"
->  
-> +static int
-> +restricted_heap_memory_allocate(struct restricted_heap *heap, struct restricted_buffer *buf)
-> +{
-> +	const struct restricted_heap_ops *ops = heap->ops;
-> +	int ret;
-> +
-> +	ret = ops->memory_alloc(heap, buf);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (ops->memory_restrict) {
-> +		ret = ops->memory_restrict(heap, buf);
-> +		if (ret)
-> +			goto memory_free;
-> +	}
-> +	return 0;
-> +
-> +memory_free:
-> +	ops->memory_free(heap, buf);
-> +	return ret;
-> +}
-> +
-> +static void
-> +restricted_heap_memory_free(struct restricted_heap *heap, struct restricted_buffer *buf)
-> +{
-> +	const struct restricted_heap_ops *ops = heap->ops;
-> +
-> +	if (ops->memory_unrestrict)
-> +		ops->memory_unrestrict(heap, buf);
-> +
-> +	ops->memory_free(heap, buf);
-> +}
-> +
->  static struct dma_buf *
->  restricted_heap_allocate(struct dma_heap *heap, unsigned long size,
->  			 unsigned long fd_flags, unsigned long heap_flags)
->  {
-> +	struct restricted_heap *restricted_heap = dma_heap_get_drvdata(heap);
->  	struct restricted_buffer *restricted_buf;
->  	DEFINE_DMA_BUF_EXPORT_INFO(exp_info);
->  	struct dma_buf *dmabuf;
-> @@ -28,6 +62,9 @@ restricted_heap_allocate(struct dma_heap *heap, unsigned long size,
->  	restricted_buf->size = ALIGN(size, PAGE_SIZE);
->  	restricted_buf->heap = heap;
->  
-> +	ret = restricted_heap_memory_allocate(restricted_heap, restricted_buf);
+> On 01/30/24 10:41, Vincent Guittot wrote:
+> > On Mon, 29 Jan 2024 at 00:50, Qais Yousef <qyousef@layalina.io> wrote:
+> > >
+> > > On 01/26/24 15:08, Vincent Guittot wrote:
+> > >
+> > > > > TBH I had a bit of confirmation bias that this is a problem based on the fix
+> > > > > (0ae78eec8aa6) that we had in the past. So on verification I looked at
+> > > > > balance_interval and this reproducer which is a not the same as the original
+> > > > > one and it might be exposing another problem and I didn't think twice about it.
+> > > >
+> > > > I checked the behavior more deeply and I confirm that I don't see
+> > > > improvement for the use case described above. I would say that it's
+> > > > even worse as I can see some runs where the task stays on little
+> > > > whereas a big core has been added in the affinity. Having in mind that
+> > > > my system is pretty idle which means that there is almost no other
+> > > > reason to trigger an ilb than the misfit task, the change in
+> > > > check_misfit_status() is probably the reason for never kicking an ilb
+> > > > for such case
+> > >
+> > > It seems I reproduced another problem while trying to reproduce the original
+> > > issue, eh.
+> > >
+> > > I did dig more and from what I see the issue is that the rd->overload is not
+> > > being set correctly. Which I believe what causes the delays (see attached
+> > > picture how rd.overloaded is 0 with some spikes). Only when CPU7
+> > > newidle_balance() coincided with rd->overload being 1 that the migration
+> > > happens. With the below hack I can see that rd->overload is 1 all the time
+> >
+> > But here you rely on another activity happening in CPU7 whereas the
 >
-Can we guarantee that "restricted_heap" here isn't NULL (i.e., heap->priv). If
-not perhaps we should consider adding a check for NULL in the
-restricted_heap_memory_allocate() function?
-
-> +	if (ret)
-> +		goto err_free_buf;
->  	exp_info.exp_name = dma_heap_get_name(heap);
->  	exp_info.size = restricted_buf->size;
->  	exp_info.flags = fd_flags;
-> @@ -36,11 +73,13 @@ restricted_heap_allocate(struct dma_heap *heap, unsigned long size,
->  	dmabuf = dma_buf_export(&exp_info);
->  	if (IS_ERR(dmabuf)) {
->  		ret = PTR_ERR(dmabuf);
-> -		goto err_free_buf;
-> +		goto err_free_restricted_mem;
->  	}
->  
->  	return dmabuf;
->  
-> +err_free_restricted_mem:
-> +	restricted_heap_memory_free(restricted_heap, restricted_buf);
->  err_free_buf:
->  	kfree(restricted_buf);
->  	return ERR_PTR(ret);
-> diff --git a/drivers/dma-buf/heaps/restricted_heap.h b/drivers/dma-buf/heaps/restricted_heap.h
-> index 443028f6ba3b..ddeaf9805708 100644
-> --- a/drivers/dma-buf/heaps/restricted_heap.h
-> +++ b/drivers/dma-buf/heaps/restricted_heap.h
-> @@ -15,6 +15,18 @@ struct restricted_buffer {
->  
->  struct restricted_heap {
->  	const char		*name;
-> +
-> +	const struct restricted_heap_ops *ops;
-> +};
-> +
-> +struct restricted_heap_ops {
+> I don't want to rely on that. I think this is a problem too. And this is what
+> ends up happening from what I see, sometimes at least.
 >
-This have the same name as used for the dma_heap_ops in the file
-restricted_heap.c, this might be a little bit confusing, or?
-
-> +	int	(*heap_init)(struct restricted_heap *heap);
-> +
-> +	int	(*memory_alloc)(struct restricted_heap *heap, struct restricted_buffer *buf);
-> +	void	(*memory_free)(struct restricted_heap *heap, struct restricted_buffer *buf);
-> +
-> +	int	(*memory_restrict)(struct restricted_heap *heap, struct restricted_buffer *buf);
-> +	void	(*memory_unrestrict)(struct restricted_heap *heap, struct restricted_buffer *buf);
+> When is it expected for newidle_balance to pull anyway? I agree we shouldn't
+> rely on it to randomly happen, but if it happens sooner, it should pull, no?
 >
-Is the prefix "memory_" superfluous here in these ops?
+> > misfit should trigger by itself the load balance and not expect
+> > another task waking up then sleeping on cpu7 to trigger a newidle
+> > balance. We want a normal idle load balance not a newidle_balance
+>
+> I think there's a terminology problems. I thought you mean newidle_balnce() by
+> ilb. It seems you're referring to load_balance() called from
+> rebalance_domains() when tick happens at idle?
 
-Also related to a comment on the prior patch. The name here is "heap" for
-restricted_heap, but below you use rstrd_heap. It's the same struct, so I would
-advise to use the same name to avoid confusion when reading the code. As
-mentioned before, I think the name "rheap" would be a good choice.
+newidle_balance is different from idle load balance. newidle_balance
+happens when the cpu becomes idle whereas busy and idle load balance
+happen at tick.
 
->  };
->  
->  int restricted_heap_add(struct restricted_heap *rstrd_heap);
-> -- 
-> 2.25.1
-> 
+>
+> I thought this is not kicking. But I just double checked in my traces and I was
+> getting confused because I was looking at where run_rebalance_domains() would
+> happen, for example, on CPU2 but the balance would actually be for CPU7.
 
--- 
-// Regards
-Joakim
+An idle load balance happens either on the target CPU if its tick is
+not stopped or we kick one idle CPU to run the idle load balance on
+behalf of all idle CPUs. This is the latter case that doesn't happen
+anymore with your patch and the change in check_misfit_status.
+
+>
+> No clue why it fails to pull.. I can see actually we call load_balance() twice
+> for some (not all) entries to rebalance_domains(). So we don't always operate
+> on the two domains. But that's not necessarily a problem.
+
+We have 3 different reasons for kicking an idle load balance :
+- to do an actual balance of tasks
+- to update stats ie blocked load
+- to update nohz.next_balance
+
+You are interested by the 1st one but it's most probably for the 2
+last reasons that this happen
+
+>
+> I think it's a good opportunity to add some tracepoints to help break this path
+> down. If you have suggestions of things to record that'd be helpful.
 
