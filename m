@@ -1,139 +1,112 @@
-Return-Path: <linux-kernel+bounces-47398-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5611C844D74
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:56:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BE51844D76
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:56:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 891681C26EF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:56:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74BB51C25F10
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:56:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAB8B3BB43;
-	Wed, 31 Jan 2024 23:55:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BED3F3B293;
+	Wed, 31 Jan 2024 23:56:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mnke1NOh"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZtBJ847A"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AFD83A8F6;
-	Wed, 31 Jan 2024 23:55:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A3783A8EF
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 23:56:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706745345; cv=none; b=IlUq0fDFnuHLVYnOFZmRB15ZXDo1AZxLj/essAH+p5SVsxeEXvGaXF1jdxMU78G0b6KdI9yFbD7CAt3d4uw8a9v6nF08RPzSpX4xXghmLEPIpRgZMheZ0WOASgCN/sYuEtI3+O28Qt64DY+Rut4jsfOT7Z4q1cuoifW3yuv4J6A=
+	t=1706745374; cv=none; b=s0aRhu41WWD2ZLyGnEcFeK+2J5lrEQgI27n/flB8g01/OADOuJLudzeNWAAOI++A/0N9JzOKcgnBz4r6gk/A/9D1IDNicKGywfXTQWkHkuZT2oUaVUBduLPGG80ZgmcyCGur2XKkLh6VFfVXHhWsOxlLlUsl8g/Wvyq3G+OQSIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706745345; c=relaxed/simple;
-	bh=jma4+rPiaW9wR5JtA9Pe7XnHL1MEBLBpNR+7EBnaMkc=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=p1Uxl2GTTqOMWUGd9NZPlzacND8Km++AhbzEfeGepnRG/XurG38+IvrXoYLc/+WwmPu1I4nAk0kNqa02pzFZqUesp8kqRgXyftuXB0dsQqY6bmVzBD0qI8xbK4rvGVD1v3ufjxfE+8/s8cnb1v3ZVFLHlDyFJAjoK0jR5zp9pCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mnke1NOh; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706745343; x=1738281343;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=jma4+rPiaW9wR5JtA9Pe7XnHL1MEBLBpNR+7EBnaMkc=;
-  b=mnke1NOhGib7ujA2s5vK+Y9AHT+gda7p55vJ3uVINXpGBBiwWQBildx+
-   O3fDZrI1qEoaK0JiJKM1iMqDvfC0ZICWEOvPS9RNIHGwvrnt3Xt5HIVYf
-   Qqp8DVyPMZQNOwTBVNs5lBX6QMOa+uto0WwT70MpwbZMukzcmZ0iCFxBk
-   SOsBxueJAqs/Wx04boSvQ5bjR+B/ciZcSBncY/VJoTcc8AFYhRLNqKyBq
-   h4FBrljyS/Az0ZiNbSwYzeL4LLGCrZC4clUeRqJDjUvzSC0srR67igXtJ
-   z2fkmNUpEzweEsdXEoN9KQWP8hWB+u3lbUuTjlw7adRXfUVawMOgb96J+
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="3597926"
-X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
-   d="scan'208";a="3597926"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 15:55:42 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="822752099"
-X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
-   d="scan'208";a="822752099"
-Received: from iweiny-desk3.amr.corp.intel.com (HELO localhost) ([10.213.174.197])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 15:55:41 -0800
-From: Ira Weiny <ira.weiny@intel.com>
-Date: Wed, 31 Jan 2024 15:55:39 -0800
-Subject: [PATCH 2/2] cxl/trace: Remove unnecessary memcpy's
+	s=arc-20240116; t=1706745374; c=relaxed/simple;
+	bh=KskMSvoey6KMBFSjef9AcR9PGosR1vFfg/lPVD0dxa4=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=kWJ+ftsLopM5NAgNBY5fEO7OtbjK3iAZWtREVZvW1lSbqzH5XZSQK56KLvje01mdO5i2oL5gXhYhzTXGDziUa6VE0yawyFHa1bxxVHHBRe1AKEJ7dq0trMJHNNpZ8loYK96m/7x0KxfIKye/siZYjogAAQdE7CS055W0/sH4x+I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ZtBJ847A; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6ceade361so576446276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 15:56:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706745371; x=1707350171; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=K8FMEPE2YDBac9DHbaO7Tj79lmJ6nt9ZY1wWZ4fnjeI=;
+        b=ZtBJ847A4ZeheQYv3IMXOYHZFVfgkFqjss4OZ0BTyaIOjDaKQBhBYnXRHoRdQE1JX3
+         1SZBQ+Z3T78WEJaWaY6qytK6DGzSXQbT64E2OvSvApkRG4EuRJz4NwQZUogkhbcCxgF3
+         eHIoLYH7Qx8YDyLJFrFdVCzj0BNZEiuOu7uQdX0hXuyoN/XvUOl4QJ3hcMMo1TDz/xNf
+         HG88cEsZeNYiizSv9nebxFhhcVCf4kXzSddloUw/vQbLArMym+4XmmJOJRS/TarEMzjH
+         znVOLZT/eC6JmgE2IxJ0vUXf2MKRkzF8U4s5Bp1udIdf9pWvlUcyLlRK/OCpvQf0TOPC
+         bNZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706745371; x=1707350171;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=K8FMEPE2YDBac9DHbaO7Tj79lmJ6nt9ZY1wWZ4fnjeI=;
+        b=qz5uU302rPcZSmpGEZPt1ez3eKWT8z5rJqD2az8BOj9/Mla99xW7PDwrSud2K9TZlO
+         QDu4VE4OO5KFNQo66k7zAiirx/VI5lzknX3llALa+cMVowTptWJ8S3YPGe8dSnrW7PDx
+         UIwy+NqF/sNf4uR/BObrWKkSR5zJt8Lq/jiS2Os9/o1bl5vqiP+0Lh5xm/1plZ8ck02/
+         QyQ0FBjXWiV1imlFGvzzlWk6cBu7kYfLFSX7Kdh8rJEK/Ad8W4ESyKv1+jwHjcLiXta8
+         TyQYSsb7XoACTyqto6lOZuJCmJZabQ1IIfzgvchgdWAXKjJTqKmMqbzu4PfirnZtC/ul
+         T13w==
+X-Gm-Message-State: AOJu0YwhqUZ3Qb/mfImrT8VcIw8HY1BErNcCezrVj3Sd+8iX9HpxuKji
+	vtFpMjbpxnwTt/vEhocgKvmUJF/kb47VPJGt6Ml8D5lWE8GEmiUPonGu4DEcWHVT88UkcyXvJ9f
+	2ZQ==
+X-Google-Smtp-Source: AGHT+IFFiAX1/lqO1KSPikiJTS9h4iInXdK4HQtcltl/d705JE/F82GhE0Mt+ASh+YHZgaMX63qYVo3J6xk=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:1c5:0:b0:dc6:d2c8:6e50 with SMTP id
+ 188-20020a2501c5000000b00dc6d2c86e50mr281905ybb.7.1706745371641; Wed, 31 Jan
+ 2024 15:56:11 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date: Wed, 31 Jan 2024 15:56:05 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240131-cxl-cper-fixups-v1-2-335c85b1d77b@intel.com>
-References: <20240131-cxl-cper-fixups-v1-0-335c85b1d77b@intel.com>
-In-Reply-To: <20240131-cxl-cper-fixups-v1-0-335c85b1d77b@intel.com>
-To: Dan Williams <dan.j.williams@intel.com>, 
- Jonathan Cameron <jonathan.cameron@huawei.com>
-Cc: Davidlohr Bueso <dave@stgolabs.net>, Dave Jiang <dave.jiang@intel.com>, 
- Alison Schofield <alison.schofield@intel.com>, 
- Vishal Verma <vishal.l.verma@intel.com>, linux-acpi@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org, 
- linux-cxl@vger.kernel.org, Ira Weiny <ira.weiny@intel.com>, 
- Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-X-Mailer: b4 0.13-dev-2d940
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1706745338; l=1726;
- i=ira.weiny@intel.com; s=20221222; h=from:subject:message-id;
- bh=jma4+rPiaW9wR5JtA9Pe7XnHL1MEBLBpNR+7EBnaMkc=;
- b=W6LLI0gVTXZoBGCHgHOW/XO2pYFZyyUiJ7Jqk4FL5Lai23kFFacC+HMr2Cf6RVfHYidxhJzuU
- qIdQ06cb+J5CWj2nkNte691OWsalY4SBIzewirtxsKEQsfZRK99xRC1
-X-Developer-Key: i=ira.weiny@intel.com; a=ed25519;
- pk=brwqReAJklzu/xZ9FpSsMPSQ/qkSalbg6scP3w809Ec=
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+Message-ID: <20240131235609.4161407-1-seanjc@google.com>
+Subject: [PATCH v4 0/4] Add support for allowing zero SEV ASIDs
+From: Sean Christopherson <seanjc@google.com>
+To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Ashish Kalra <ashish.kalra@amd.com>, Tom Lendacky <thomas.lendacky@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 
-CPER events don't have UUIDs.  Therefore UUIDs were removed from the
-records passed to trace events and replaced with hard coded values.
+Play nice with systems where SEV and SEV-ES are enabled, but all ASIDs
+have been carved out for SEV-eS, i.e. where actually running SEV guests
+is impossible.
 
-As pointed out by Jonathan, the new defines for the UUIDs present a more
-efficient way to assign UUID in trace records.[1]
+v4:
+ - Convert all ASID usage to unsigned integers.
+ - Clean up sev_asid_new() so that it doesn't needlessly overload its
+   return value.
+ - Split out the -EBUSY=>-EINVAL change to a separate patch.
 
-Replace memcpy's with the use of static data.
+v3: https://lore.kernel.org/all/20240104190520.62510-1-Ashish.Kalra@amd.com
 
-[1] https://lore.kernel.org/all/20240108132325.00000e9c@Huawei.com/
+Ashish Kalra (1):
+  KVM: SVM: Add support for allowing zero SEV ASIDs
 
-Suggested-by: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
----
- drivers/cxl/core/trace.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Sean Christopherson (3):
+  KVM: SVM: Set sev->asid in sev_asid_new() instead of overloading the
+    return
+  KVM: SVM: Use unsigned integers when dealing with ASIDs
+  KVM: SVM: Return -EINVAL instead of -EBUSY on attempt to re-init
+    SEV/SEV-ES
 
-diff --git a/drivers/cxl/core/trace.h b/drivers/cxl/core/trace.h
-index 89445435303a..bdf117a33744 100644
---- a/drivers/cxl/core/trace.h
-+++ b/drivers/cxl/core/trace.h
-@@ -338,7 +338,7 @@ TRACE_EVENT(cxl_general_media,
- 
- 	TP_fast_assign(
- 		CXL_EVT_TP_fast_assign(cxlmd, log, rec->hdr);
--		memcpy(&__entry->hdr_uuid, &CXL_EVENT_GEN_MEDIA_UUID, sizeof(uuid_t));
-+		__entry->hdr_uuid = CXL_EVENT_GEN_MEDIA_UUID;
- 
- 		/* General Media */
- 		__entry->dpa = le64_to_cpu(rec->phys_addr);
-@@ -425,7 +425,7 @@ TRACE_EVENT(cxl_dram,
- 
- 	TP_fast_assign(
- 		CXL_EVT_TP_fast_assign(cxlmd, log, rec->hdr);
--		memcpy(&__entry->hdr_uuid, &CXL_EVENT_DRAM_UUID, sizeof(uuid_t));
-+		__entry->hdr_uuid = CXL_EVENT_DRAM_UUID;
- 
- 		/* DRAM */
- 		__entry->dpa = le64_to_cpu(rec->phys_addr);
-@@ -573,7 +573,7 @@ TRACE_EVENT(cxl_memory_module,
- 
- 	TP_fast_assign(
- 		CXL_EVT_TP_fast_assign(cxlmd, log, rec->hdr);
--		memcpy(&__entry->hdr_uuid, &CXL_EVENT_MEM_MODULE_UUID, sizeof(uuid_t));
-+		__entry->hdr_uuid = CXL_EVENT_MEM_MODULE_UUID;
- 
- 		/* Memory Module Event */
- 		__entry->event_type = rec->event_type;
+ arch/x86/kvm/svm/sev.c | 58 +++++++++++++++++++++++++-----------------
+ arch/x86/kvm/trace.h   | 10 ++++----
+ 2 files changed, 39 insertions(+), 29 deletions(-)
 
+
+base-commit: 41bccc98fb7931d63d03f326a746ac4d429c1dd3
 -- 
-2.43.0
+2.43.0.429.g432eaa2c6b-goog
 
 
