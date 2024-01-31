@@ -1,88 +1,92 @@
-Return-Path: <linux-kernel+bounces-46049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46032-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF6618439BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:52:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 48AA184398F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:47:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B201B28F99
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:52:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2546B27454
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:47:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A25AB128388;
-	Wed, 31 Jan 2024 08:42:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35AA579DAE;
+	Wed, 31 Jan 2024 08:42:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b="MpZEh1/E"
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2063.outbound.protection.outlook.com [40.107.255.63])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="eSqED3ta"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B50A21272BB;
-	Wed, 31 Jan 2024 08:42:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.255.63
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706690575; cv=fail; b=hvFYoeI0aHVneLq/gbkUJIeDeu2WjDblSZVUZ0gZKHbQjVdblwbVLewqBcRVxPu1XnrGxCFma4Ce+Fr29VRYapz+5duEpLN/6Q/R2rqVz82H8qV9t4niIVYvy880mHaNX0lGUudBeNDfPrDeaY8qSelBi5YEkmDZxm8wGZczWvY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706690575; c=relaxed/simple;
-	bh=LbXFfDWLKoQqpbwqVrnkJqB+oR8szOqYLY2bEKR171E=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8563768FA
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 08:42:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706690525; cv=none; b=M7d/L3J6/o/7ISED/xOjvkO2luAtizemcbRvYy4819hLubDEWO63uES+jqjTv1CSURNlDAn/mFDIpEDCHgEVQaoL+8DurHw2Al9fQIMoQDboFQbUrFWnAqDhQ/kObzMHpgaFuSjDBoV1Xc95Wry9nmHZLnAYzGa+vGT7wui6V98=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706690525; c=relaxed/simple;
+	bh=/BMX0x/G9bxJjbupfpU/dtjHS5xnYYvUXfe51rH81nI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=r6LQR1B8Na8RUhFfm2CLSX7hraR0a0XAs79PPgXgX+xbpfu034aHI9cbeaCvsQKZy7/z4pHZfCsbS3dmkwmf299YRmbs4c3n5Q+33WaMwyjbwo+6e+ypTbWoHfDToR4oecqnGJylEKRuQDq9p6hbrHYf3HFXueneYhgaVBh+XMQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com; spf=pass smtp.mailfrom=wiwynn.com; dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b=MpZEh1/E; arc=fail smtp.client-ip=40.107.255.63
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wiwynn.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WYbpnJLI+mkV8/fJNzpPs6LHlNX92hLRATdPG+dpZ3yYMoZYisJ5bEKINz5Mdt+0G9vdlWLp5FzdiIbtZdsmqseTQ84OKyDcr6CVAPqfEVNTT7kxz0MeeTNjKKvxzWjJj+ET+YNZ7NZqT8qNqgYZAh1mL12Q0u0JcDyRtBfSp6nwPYlVyvt+bB9ntHBmzOEnX0yuqp69SuzLdHKV7gr0QhdTAorZMkRE6En8Px92nV+l44JsXIjYtwhU8wp7Gxsk+hVh7MAZcOMr1sw/po2oJezO4SL1OUnFegaIYUgD7dlVG2UVPjSebcUfHaOUY73+oCC4Nt0DYPBjP87gQ9Dbpw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=A7TGzZaT4IGiRau+OMtguKj9VNC7x7C8nzhapjKeiOk=;
- b=X15OxKohVdn+Nik2ipzE3hlIxxRR6HXpiMci1j01XGKnGVYuRY5q5WSsaxyB0KKw0ujXreBLtjMJZx7tN/o4iouHinBLUwJE6UYXk+10Z7gSeupgjb6nZoHW1pMpdhfUgTG1wVqjED5OJqXlCqE6XbW89WULR+AgWjAkm5OCn535wkiVFLSz/4wPgi0PzTj5C1GT7Vi3wD3YeqCUGJeJPILjaIe/7PeGof0uLWo1/hoCdqkiBzrhfDqf0WVxTKiuDxRrbLIJasZkFLqnH6NRzZfcrA86Xt0VL2y2J6p5HIdc4fengYGIymZVlM0o3+64DfiZtJnM2hyShEgumDvEoQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
- 211.20.1.79) smtp.rcpttodomain=stwcx.xyz smtp.mailfrom=wiwynn.com; dmarc=fail
- (p=quarantine sp=quarantine pct=100) action=quarantine
- header.from=wiwynn.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A7TGzZaT4IGiRau+OMtguKj9VNC7x7C8nzhapjKeiOk=;
- b=MpZEh1/EsvpyzpFO0l2lLaIolF/eIR6MnLzY8obEN3M1H3Azo7PHWQfQuHqhnpxhuX+vsn7rrhKhGNKWIbVqWbgf3FlZL7NNXFmes0OBhCXvtfD7IhpXg4aiRMAsbOt8FRObucS36LerCvuruvz3zGTfEjGBRiqjAb1t8ZRAh4ETYOIsCS8YafKomQcNu4ePjJv4zSGymxVCNgtHiG9oQf63ucu8z5jcpttO54nEsUjrdKdhw0iJxt73o7Ak68MyBeVoKHgVULe/f53DIIbNBdmzkOHp6AyDKonUn5kDsICgNYi41bqDjvP7G3PV40EiIrMhspbhZdMzylUXIhZyCA==
-Received: from SG2P153CA0030.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c7::17) by
- KL1PR04MB7435.apcprd04.prod.outlook.com (2603:1096:820:f4::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7228.34; Wed, 31 Jan 2024 08:42:49 +0000
-Received: from HK2PEPF00006FB2.apcprd02.prod.outlook.com
- (2603:1096:4:c7:cafe::6f) by SG2P153CA0030.outlook.office365.com
- (2603:1096:4:c7::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.8 via Frontend
- Transport; Wed, 31 Jan 2024 08:42:49 +0000
-X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
- smtp.mailfrom=wiwynn.com; dkim=none (message not signed)
- header.d=none;dmarc=fail action=quarantine header.from=wiwynn.com;
-Received-SPF: Fail (protection.outlook.com: domain of wiwynn.com does not
- designate 211.20.1.79 as permitted sender) receiver=protection.outlook.com;
- client-ip=211.20.1.79; helo=localhost.localdomain;
-Received: from localhost.localdomain (211.20.1.79) by
- HK2PEPF00006FB2.mail.protection.outlook.com (10.167.8.8) with Microsoft SMTP
- Server id 15.20.7228.16 via Frontend Transport; Wed, 31 Jan 2024 08:42:48
- +0000
-From: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
-To: patrick@stwcx.xyz,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Joel Stanley <joel@jms.id.au>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>
-Cc: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v5 17/21] ARM: dts: aspeed: yosemite4: Revise mx31790 fan tach config
-Date: Wed, 31 Jan 2024 16:41:28 +0800
-Message-Id: <20240131084134.328307-18-Delphine_CC_Chiu@wiwynn.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240131084134.328307-1-Delphine_CC_Chiu@wiwynn.com>
-References: <20240131084134.328307-1-Delphine_CC_Chiu@wiwynn.com>
+	 MIME-Version; b=rfTcq+BUKpkj9yxoa5F0PnYfo5wvlQBWsDwvpGZsu7SwhsEweJS7ksmXFaCskLRPH6yJ/iWeyq/wFXLlfbNCxbWwRiH4CFXY5c97vItK+5nqj1hjy5naMoq00gjTjlJebfBGvCSRZYQSccxnsAfeU4rh5w8GPg+n+SxXUXjWQ4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=eSqED3ta; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-55f2b0c5ae9so2788507a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 00:42:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1706690521; x=1707295321; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yHLjzks9Tom/l8TYALcWPAs3A8Rh44UPVwxAZBkCSa4=;
+        b=eSqED3ta/qRiamOCL/TLnLipHg9Z10wFkl8ama7sgAkrRQMan5Pz8pm8wRxUuEdYFF
+         puxriH13WkHiMoUtfkzZZe2KkIgL/JW9l1sLN4ftXdHhdham9lRhsoFoQl/wOeD2LiBN
+         8KKRXhXrxqoO2ncHOYjxqb4FSKOVXni5prUktAn97sEjkekrRpSavEoySwKsgZdvxbYu
+         niDDImlAgBfTTZGgAHS+IyMutAgDPvUaE61vU/tMmpBghYlyc4AQNqmTQztY/z9fCdQv
+         q6p0curhvtj+AWAKWKOA91R5XStjgbBgqzB70CyJyU9DuUn++0XvvxmkLUbRKDoQhCm3
+         vkHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706690521; x=1707295321;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yHLjzks9Tom/l8TYALcWPAs3A8Rh44UPVwxAZBkCSa4=;
+        b=MK2GevaODaIbuOySms9t27OhP0PQtKef846iBC9R84stLMmFLCiYn8oH1+0E8nDGUw
+         IYtHvmZffezime+t++bfmyu0cwlJCfMpJq/ibgPLX4YoU8UIJSnRNSjUvkz1+lRljK3j
+         IZSnu58g5aHyJQygluOeMyQS755Dwvedya6mneQdgwcQDnqVnG9C/TqmfU4kAiKsZ1ja
+         4Nb23I51ABWZCydsWSMf0syAD2JaMmnj90WP+fTZevOAW7C4hr+FxYfjSc4p+51CosFE
+         DygjSk0XTIcK1RQMV46/42LCuuhVpEbVxWjTQ50MRK8zEZaSxDymELlgVFAt0V2PTf7y
+         oWfg==
+X-Gm-Message-State: AOJu0YxTicXXmJOR+nBfnaixPcbssTeIKM2BKCvqfKhvt54laaEaZBgT
+	wUR6snGOw6djkAWeFHH/5ksJOwHnwVpQEEe9eAqFnq1ynK1/EfGGMEasksKoJRU=
+X-Google-Smtp-Source: AGHT+IH7MVKtCh910v/vagl15wE63ppiKdvQ13gV3Gx6m2Z9oNLNc/iGIHulI8TVJy/3HvqwCdFLAw==
+X-Received: by 2002:aa7:ca47:0:b0:55e:e9f3:4f7f with SMTP id j7-20020aa7ca47000000b0055ee9f34f7fmr633451edt.9.1706690521065;
+        Wed, 31 Jan 2024 00:42:01 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWEqOO0JVT3DNYj7IKD4YRbtpXvrwJCG2b4edkq52HydSFFRxV7Ng6U6xMATXJ6aNp2dAu4bAMZ+6klPV014fzrh4XOGsjeEDXUVhBewECEZHWT4XEENKxgIek4iEVBD0TMe8WIk+2PZVsjJX/ZKL1yQiDekgRT6Dc2wQqjwiwMywZcz8OMNgu+5tt6ooSSRblgT3JFkiRnZs5h/FOpDKj2sIwv+WQ+6MjCLspkBhUrdDMZCN1ZTcPTt3YO/+M4hpi0AoW/JxOWKc3cHmTi17E0l9JiFKQqLEGtCnvCqpO9eskZ31wZQFEH1BaZ8vcWqGMhRfnI5JA/46wacFJTpf0g1TKQnBfzX4qG/ivcedEizuaAu42QfH/52Ww9lEoMDd/bW+FUGsIISiPX16gMDSy77cmocKlzKdOUKWdFG7aapqvqDvU=
+Received: from claudiu-X670E-Pro-RS.. ([82.78.167.87])
+        by smtp.gmail.com with ESMTPSA id cq16-20020a056402221000b0055f02661ae2sm2863630edb.78.2024.01.31.00.41.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Jan 2024 00:42:00 -0800 (PST)
+From: Claudiu <claudiu.beznea@tuxon.dev>
+X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
+To: s.shtylyov@omp.ru,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	richardcochran@gmail.com,
+	p.zabel@pengutronix.de,
+	geert+renesas@glider.be
+Cc: netdev@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	claudiu.beznea@tuxon.dev,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Subject: [PATCH net-next v5 11/15] net: ravb: Move DBAT configuration to the driver's ndo_open API
+Date: Wed, 31 Jan 2024 10:41:29 +0200
+Message-Id: <20240131084133.1671440-12-claudiu.beznea.uj@bp.renesas.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240131084133.1671440-1-claudiu.beznea.uj@bp.renesas.com>
+References: <20240131084133.1671440-1-claudiu.beznea.uj@bp.renesas.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,122 +94,56 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: HK2PEPF00006FB2:EE_|KL1PR04MB7435:EE_
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: ffb33155-2ff2-4f13-ca72-08dc22389ae1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	cZBovZBhA1NzE65fwUz8xfjs1+ydZH7g2PAsmZBiF72Xajz2VnskPkia8AvCQTKtbJX+EHlur/LFgDYVMVAtBNI7Gq+4oepM5vl7+eW4HHlLgdEggsKgCPFCzF/oR4eJjCqKt0WuxyW9UgJSQNCRWrBc4ZNgaQTPpeLJ/sH9NBskDPH4a68c+VuZNVtsMZan4rIYMEX/Ghe0gHcflkui0917sdi1jUt2osqYr1gr3c+hmjLJfzSPKWZEfv2T9RPn99UTlXqOqMbMXksFZ1HoRHU6jEWNzp7nlXSjaoT6FPfNo1AXTF6CA9LLMNqIEUtX93ngLgEPiHvcpjhToKN5Ed+5ZTskPmyXTjdxyf4KHHWetaJ9GGJ0SQEswUqReejQ2rfExpXLkX78deE6n8lILJXU4+pqnLBIp3Wwx9ATKIGAGuNsbipBI44UhLsWEHWbYNGbR5Z9DYP0LAzNStks3gPnrw/X2tqElksmi9wqh2nTXcuqnXe9KOZ2fdyEyRTYJm0QGqrHfLrGhwELbC39l7sVkzXnOWWbguIfzslFkvw+982s5MkDVBKq4eUPatCxODottE8MJTCs7kzSsjZNpeJsoUZX6OmOAj08aBXGGF2KiPtvzN5tKhge/xAOGsExzXA99Gn9xC+CtsZaW7dFhEyEe402LXvf4eTuoT6ouQyKDp7UU3tNyyQ4UiPuOAWv8AQeFjaYqFrON/aQNHnT3Q==
-X-Forefront-Antispam-Report:
-	CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(6069001)(4636009)(39860400002)(396003)(136003)(346002)(376002)(230922051799003)(64100799003)(82310400011)(186009)(451199024)(1800799012)(46966006)(36840700001)(70206006)(36860700001)(47076005)(36756003)(83380400001)(356005)(82740400003)(478600001)(86362001)(81166007)(41300700001)(70586007)(8676002)(6486002)(110136005)(36736006)(26005)(316002)(7416002)(2616005)(6666004)(6512007)(5660300002)(1076003)(6506007)(336012)(956004)(8936002)(4326008)(2906002)(40480700001)(9316004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: wiwynn.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jan 2024 08:42:48.0988
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ffb33155-2ff2-4f13-ca72-08dc22389ae1
-X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
-X-MS-Exchange-CrossTenant-AuthSource:
-	HK2PEPF00006FB2.apcprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR04MB7435
 
-Revise fan tach config for max31790 driver change
+From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+DBAT setup was done in the driver's probe API. As some IP variants switch
+to reset mode (and thus registers content is lost) when setting clocks
+(due to module standby functionality) to be able to implement runtime PM
+move the DBAT configuration in the driver's ndo_open API.
+
+This commit prepares the code for the addition of runtime PM.
+
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 ---
- .../aspeed/aspeed-bmc-facebook-yosemite4.dts  | 48 +++++++++++++++++--
- 1 file changed, 44 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-index bce739f2a081..7c7c9e85bb92 100644
---- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-+++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-@@ -1095,8 +1095,18 @@ adc@1f {
+Changes in v5:
+- none
+
+Changes in v4:
+- none
+
+Changes in v3:
+- collected tags
+
+Changes in v2:
+- none; this patch is new
+
+ drivers/net/ethernet/renesas/ravb_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+index e5805e0d8e13..318ab27635bb 100644
+--- a/drivers/net/ethernet/renesas/ravb_main.c
++++ b/drivers/net/ethernet/renesas/ravb_main.c
+@@ -1865,6 +1865,7 @@ static int ravb_open(struct net_device *ndev)
+ 		napi_enable(&priv->napi[RAVB_NC]);
  
- 			pwm@20{
- 				compatible = "maxim,max31790";
--				pwm-as-tach = <4 5>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
- 				reg = <0x20>;
-+				channel@4 {
-+					reg = <4>;
-+					sensor-type = "TACH";
-+				};
-+
-+				channel@5 {
-+					reg = <5>;
-+					sensor-type = "TACH";
-+				};
- 			};
+ 	ravb_set_delay_mode(ndev);
++	ravb_write(ndev, priv->desc_bat_dma, DBAT);
  
- 			gpio@22{
-@@ -1108,8 +1118,18 @@ gpio@22{
+ 	/* Device init */
+ 	error = ravb_dmac_init(ndev);
+@@ -2808,7 +2809,6 @@ static int ravb_probe(struct platform_device *pdev)
+ 	}
+ 	for (q = RAVB_BE; q < DBAT_ENTRY_NUM; q++)
+ 		priv->desc_bat[q].die_dt = DT_EOS;
+-	ravb_write(ndev, priv->desc_bat_dma, DBAT);
  
- 			pwm@2f{
- 				compatible = "maxim,max31790";
--				pwm-as-tach = <4 5>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
- 				reg = <0x2f>;
-+				channel@4 {
-+					reg = <4>;
-+					sensor-type = "TACH";
-+				};
-+
-+				channel@5 {
-+					reg = <5>;
-+					sensor-type = "TACH";
-+				};
- 			};
- 
- 			adc@33 {
-@@ -1145,8 +1165,18 @@ adc@1f {
- 
- 			pwm@20{
- 				compatible = "maxim,max31790";
--				pwm-as-tach = <4 5>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
- 				reg = <0x20>;
-+				channel@4 {
-+					reg = <4>;
-+					sensor-type = "TACH";
-+				};
-+
-+				channel@5 {
-+					reg = <5>;
-+					sensor-type = "TACH";
-+				};
- 			};
- 
- 			gpio@22{
-@@ -1158,8 +1188,18 @@ gpio@22{
- 
- 			pwm@2f{
- 				compatible = "maxim,max31790";
--				pwm-as-tach = <4 5>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
- 				reg = <0x2f>;
-+				channel@4 {
-+					reg = <4>;
-+					sensor-type = "TACH";
-+				};
-+
-+				channel@5 {
-+					reg = <5>;
-+					sensor-type = "TACH";
-+				};
- 			};
- 
- 			adc@33 {
+ 	/* Initialise HW timestamp list */
+ 	INIT_LIST_HEAD(&priv->ts_skb_list);
 -- 
-2.25.1
+2.39.2
 
 
