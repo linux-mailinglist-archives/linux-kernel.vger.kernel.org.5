@@ -1,96 +1,112 @@
-Return-Path: <linux-kernel+bounces-47386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8BA9844D28
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:42:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D1C7844D2B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:43:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 994231F2233A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:42:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FB651C214C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:43:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 507233A264;
-	Wed, 31 Jan 2024 23:37:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E98C3B798;
+	Wed, 31 Jan 2024 23:38:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YPdDSW85"
-Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QATPpItI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36EC31E48B
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 23:37:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9AD53B785
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 23:38:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706744271; cv=none; b=RHZ8e1HMLl6ZOvAnnYYeG0v6mzMVyFk6ufUfCvmAn/bMc//jTXU2ih8nxw3nWWdraiTyJ7PI6mXTCEO32+/eMDyCDozcmUSQj8O1vicFV+N7kkJACTW69HIgqRGzlJbAD48ld2ZTv1eMgeLCJPKN0Ri7AO6G0aVGfXCUKBNORp8=
+	t=1706744295; cv=none; b=bgsin4Bmiax0EhKdmpe3feDrKQKsGya96qJiEdqoLGtASRDDOTvwD0sNKve0J1xb60NZjew1hCNCJI9aAoqWqfs2tigNDeHSURoYWePcB2W270YtX8tOTtZzdfgu9FW8seAhhex+F7rMwDemeF/vfR3TtyYFaVQl3ee03KGZZ44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706744271; c=relaxed/simple;
-	bh=8L4jEua2PKYDRUm8Nwkw1/0a+FDetF9qtz2GcaOTMnw=;
+	s=arc-20240116; t=1706744295; c=relaxed/simple;
+	bh=6WEOBZD8BEPfYQSuPkRb9qFLZYglJJhBpRxM4e7iLD0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lkX0gxgE6xlEQDH73bInZt+ztW3jE8TRqx/FGyO89plTDdEuS9vwdvTXjpejvy3rp+Gtaj7A8gbO8uxlp34zNHpVYfsj6kyr6nsQ0F2Dc49/T5WHszTb93QiFT+ctKMprkT6YBzduKRpAhGdJCv4NELln5MgNyfFhFxN2mTmSDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YPdDSW85; arc=none smtp.client-ip=209.85.166.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-7bff28b2937so13917439f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 15:37:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706744269; x=1707349069; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8L4jEua2PKYDRUm8Nwkw1/0a+FDetF9qtz2GcaOTMnw=;
-        b=YPdDSW85NsXCHrenOIOw26EK8nsuJaJT763w8t+E/syMgcTb97F8eRI9J2LYsCyb/L
-         UhKUi4pWksRpm2KuegCrCr8C/ZmvbvXdTE0TwNhQNnnpJRbESQiXFeHHX6tf/RsgNZDZ
-         6GG9uKn0JHimJrLRJbupykw9Dgi4JGdOD4fLmaz5GMhQk/U+qChcBAUztJZ9Mqt4HFJd
-         PkCCXleLREcPvB2Er1EgrvmPGhz49CxTazJAlg1NBxIX13hZB2O92JeVwUKn1sLPJtTx
-         MKKRBoug2PMKvp6B/qZTR5xjy/sfhWKwUAJnRTsJYwT0dLcq+xXgxnL/RA8YW7NieThe
-         hxoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706744269; x=1707349069;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8L4jEua2PKYDRUm8Nwkw1/0a+FDetF9qtz2GcaOTMnw=;
-        b=msEMvmsY7Jo0xkTozDCmfa4931ap5tlJe4jGb3mxhu3ZCs3hjPnHS9is5ndGCcy79h
-         OjNelbM0SNFqmifRy5sRTU8l/RGymtEw9OpttJqkOr8zmPJZ80zuVQqozQu/M4x54pgF
-         CIcnRYEI/vixdjObAAIp+znx7EO+DOAFrqhjPF5m1I3hJtlPzwGfllOmIwj3jaHyeO7p
-         tqoIh0gOTv2Y30ZvfUApjjE7bLZJNg+jbd/Z0QbEVL/GxlkU5f8Zpps+rqx7PSe/C/Xz
-         //Ig6BnpKNwRJLZVtBnTMHOoKMWCPxZzZYSMuW8Hg9HXArmtrU8qpIZHIeS4l5QpKLVb
-         JFag==
-X-Gm-Message-State: AOJu0YxEAnNPQi9RSX02yj5InCUDVKnVX4iTSO5TfOtYOn8QZ2WjFJ88
-	seRSjzftrsAcqHmCFegiSYZDxfiDvVP72nZS1ha/IpTkw0UHDrVLQZrJKK8ArwEAAZUtECro3o7
-	gZYoQROHk3fHepMXCh3DFPgSfvJQ=
-X-Google-Smtp-Source: AGHT+IHWsZVmF3unvlCo18YQ6UwRfBNPRWU7C79GqqBOmTYFJjJhvLB47VXGpmDrUjGTvFrQiIWRPcYx4X/lGX97cww=
-X-Received: by 2002:a5e:8304:0:b0:7bf:b56c:ac25 with SMTP id
- x4-20020a5e8304000000b007bfb56cac25mr572354iom.0.1706744269379; Wed, 31 Jan
- 2024 15:37:49 -0800 (PST)
+	 To:Cc:Content-Type; b=Yys7OUGh1wUFHOz6nDumLYDHJh7NJ7ZLLruHyFh+aafJZXp87G1XT3uQCdhY1D0EJqNGQsiO1uuVrod1vZG8RM5KCqugTPCRatoamR697ODaTmSkayJyEkGJ0vwZARVEWDHr4fhrzjCV+18gB6U0Ws41GAQ+hZH1N/Jyw2AnZOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QATPpItI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CB10C433C7
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 23:38:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706744295;
+	bh=6WEOBZD8BEPfYQSuPkRb9qFLZYglJJhBpRxM4e7iLD0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=QATPpItIWBSTebzG8b5hlHSthvcoig7hoxvezVOI8IdMJeR98lIGKaIUoZiF7F6JN
+	 2OrvhTRfEwP1Dd88fWA2rHp/vtTR3jS3aYT9aJU802ew7sYNXn9SIHyPx6heHH60eP
+	 K84d8lEXsniPWcGef6rIKtWRpcGZ/vjApURVNAYgKKG388MunSJYXc29g478lCjMYZ
+	 FezMa+jisWrrbBOgd10K/jGnplcXTk2+BOKruPCtDsB88mVT0Jev+QKGBcUin4WIjE
+	 BL7aAsJE4U8HgGlaJAlBCLW80I2pyHKphrfdukPrmZ9DmczomOruO7wXTw2lRWZ1yV
+	 9wIRoOmqQxG+Q==
+Received: by mail-il1-f175.google.com with SMTP id e9e14a558f8ab-363793e88abso1579685ab.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 15:38:15 -0800 (PST)
+X-Gm-Message-State: AOJu0YwP0ldOQ05N08HuRW7PVyqCwy6zLgFW7MsoZ1485juAN2RLJuMj
+	aLk9LgSC3hU7nAwGZIQiyGSz0bU1EQajRliuo54qludKy4lmUdMZgnrwoLT10rBdvTuupjCPYT1
+	LSPW07ju93WzkX3FrsyOvZOWUiQxNePey4Ixg
+X-Google-Smtp-Source: AGHT+IHkW8gERceSlDMAZa1yGDxWtMSq/h8BOCgzZX46kKgBoVsQnlZ0Y7oJTnRREO5qNS/fauhJ1BuHWuaubhHNZD8=
+X-Received: by 2002:a92:d190:0:b0:363:9665:1a64 with SMTP id
+ z16-20020a92d190000000b0036396651a64mr841907ilz.10.1706744294562; Wed, 31 Jan
+ 2024 15:38:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130014208.565554-1-hannes@cmpxchg.org> <20240130014208.565554-21-hannes@cmpxchg.org>
-In-Reply-To: <20240130014208.565554-21-hannes@cmpxchg.org>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Wed, 31 Jan 2024 15:37:38 -0800
-Message-ID: <CAKEwX=OfipHCDai192TABTeDu6qsR3AZBNU0GFv+D7tmx9qSuw@mail.gmail.com>
-Subject: Re: [PATCH 20/20] mm: zswap: function ordering: shrink_memcg_cb
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Yosry Ahmed <yosryahmed@google.com>, 
-	Chengming Zhou <zhouchengming@bytedance.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
+References: <20240129175423.1987-1-ryncsn@gmail.com> <20240129175423.1987-7-ryncsn@gmail.com>
+ <87bk92gqpx.fsf_-_@yhuang6-desk2.ccr.corp.intel.com>
+In-Reply-To: <87bk92gqpx.fsf_-_@yhuang6-desk2.ccr.corp.intel.com>
+From: Chris Li <chrisl@kernel.org>
+Date: Wed, 31 Jan 2024 15:38:02 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuPq-yQ-0Ka4BmqFZDwbiHNdb5MZyXVK4zxBWSgRZvNfrw@mail.gmail.com>
+Message-ID: <CAF8kJuPq-yQ-0Ka4BmqFZDwbiHNdb5MZyXVK4zxBWSgRZvNfrw@mail.gmail.com>
+Subject: Re: Whether is the race for SWP_SYNCHRONOUS_IO possible? (was Re:
+ [PATCH v3 6/7] mm/swap, shmem: use unified swapin helper for shmem)
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: Minchan Kim <minchan@kernel.org>, Kairui Song <ryncsn@gmail.com>, linux-mm@kvack.org, 
+	Kairui Song <kasong@tencent.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Hugh Dickins <hughd@google.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Matthew Wilcox <willy@infradead.org>, Michal Hocko <mhocko@suse.com>, 
+	Yosry Ahmed <yosryahmed@google.com>, David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org, 
+	Yu Zhao <yuzhao@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 29, 2024 at 5:42=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
+On Tue, Jan 30, 2024 at 6:53=E2=80=AFPM Huang, Ying <ying.huang@intel.com> =
+wrote:
 >
-> shrink_memcg_cb() is called by the shrinker and is based on
-> zswap_writeback_entry(). Move it in between. Save one fwd decl.
+> Hi, Minchan,
 >
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> When I review the patchset from Kairui, I checked the code to skip swap
+> cache in do_swap_page() for swap device with SWP_SYNCHRONOUS_IO.  Is the
+> following race possible?  Where a page is swapped out to a swap device
+> with SWP_SYNCHRONOUS_IO and the swap count is 1.  Then 2 threads of the
+> process runs on CPU0 and CPU1 as below.  CPU0 is running do_swap_page().
+>
+> CPU0                            CPU1
+> ----                            ----
+> swap_cache_get_folio()
+> check sync io and swap count
+> alloc folio
+> swap_readpage()
+> folio_lock_or_retry()
+>                                 swap in the swap entry
+>                                 write page
+>                                 swap out to same swap entry
+> pte_offset_map_lock()
+> check pte_same()
+> swap_free()   <-- new content lost!
+> set_pte_at()  <-- stale page!
+> folio_unlock()
+> pte_unmap_unlock()
 
-Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+Yes, that path looks possible but hard to hit due to the requirement
+of swap in and swap out in a short window.
+I have the similar question on the previous zswap rb tree to xarray
+discussion regarding deleting an entry where the entry might change
+due to swap in then swap out.
 
-Nice! I just went through all the patches. LGTM.
+Chris
 
