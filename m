@@ -1,119 +1,90 @@
-Return-Path: <linux-kernel+bounces-47000-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46999-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F16408447BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:03:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DD86B8447BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:03:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACD6E286CB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:03:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98E4528505B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:03:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B9C03717C;
-	Wed, 31 Jan 2024 19:03:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD3E1374CF;
+	Wed, 31 Jan 2024 19:03:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YaB8JCQk"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wg35BRhC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCDE63613E;
-	Wed, 31 Jan 2024 19:03:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EE3838DD1;
+	Wed, 31 Jan 2024 19:03:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706727827; cv=none; b=H6GJISbsnI/QybB0R8jze0QrlEqJXyum78dVPgEFHZGOVORuqNPjVive3PEYCt8j8jfC6PA6TRZiIVuBUAj5zryipReLDjXnTxjoymfFffjkGVtpLhFTKUKbbLJmoO1rov46nfDaFjvSPuzUqpQkUqzaZNELX0yS8JYfU+98vqg=
+	t=1706727794; cv=none; b=cXTGD8bwQarfpJ48J6Am0VBWKn5rXp3aWzPJhFMhQfwdXzLP15WWIBulRAeFtbKfZNoEg13Su2U+Z9DivL8m38MrtOzTdMcb34GkAP6fQCb0s8mlYhHD3yI0Jotz6Pjzn0jQHy0+YgX0NimMQewY/yDLW4boSPfMUn5peQyl6HY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706727827; c=relaxed/simple;
-	bh=UXmrc4wHW1CYloxZDq3S33BFNdKy0XymGy38w6L2Lpk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gDVqclDyVtaowCWBEUewQz+cw0z1PaKgE3SR+lmME9etpG/TtaBZS4uCI6jk97J+Ua2IasxD9F0Hc44jvTqfyl5ftEcuATit3LqXIJAgSlE2MkE3RT07Wq48sPDPt51icccu6lqqEDJ1XrHVlY8rk/u3OWJGKQv6KNP3Jg7vl2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YaB8JCQk; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d057b6df2aso2321061fa.3;
-        Wed, 31 Jan 2024 11:03:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706727824; x=1707332624; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=uCHcg1JGhJ1uDn0/KCMDkISefHyEiFXm2OiWCo3MPgk=;
-        b=YaB8JCQkbrytj6fAYLEnEcgzz7LT/WlZF5qrgL288Ef3iRNlh1F44h1x1WGQdGZBuc
-         sCQ4fCjlN1KCaYZppcYIQ2LD6YrC60OYAcUC2/rn9oJTAVJAxbOys/ab9/mAYSPE0phl
-         Ew3+IpP/YTfhyuIfFjJLcRcxeLpkCKMXiH/F8rae2VtdrJ45HKlpIhbDIohxoVfGibNr
-         S4kcyLzulFYZlxMiiStMq6m/z5TQHar4xH+WNOu3nGJmnH1kTt0Z0S7qi0SlBi/uQeiw
-         nPiU6ok9Ks1sxXShH/S9XKWhZ05ncGWkAtPNnMCfVaLbl/qUsPZHBWQCVb7EM9s9ziaK
-         FOxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706727824; x=1707332624;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uCHcg1JGhJ1uDn0/KCMDkISefHyEiFXm2OiWCo3MPgk=;
-        b=nGO7RAmw6/WVgZGd3+YgweBMFCdPhEOMtymcx6VGsnhL8BqWtiFarcBozl168QSt2i
-         iJcEC1sBfZNgsOjYw67Tf2u5fIOZWV0eC5QjYXkFYmHfKDYXyXrOwJD6XfDHxlq5mLZV
-         HwN/YP83CKWcDx6zh4B05bODQux4EFyPnH61UO1HeygYWf9zDuGUrSaEIKtZ2wyfUt7r
-         oVwiM+dvOAlVM2Pv1XfVfXeW/WSNbgIhfkL9YmfwMvQvlcxDD1lBKbKF9Cqxtj9VgBNA
-         YOTUKnaH4RLSK1DkNisFT7EnVrwSBOJZYMNCGRb5oQ4lncoVlkvL66OqyFhGvCvL7/bv
-         rAlg==
-X-Gm-Message-State: AOJu0YwxwnEckRe9Xuuz1nEBKcINveMMrlg5gzO5sGvVffRqEvnnj2ap
-	8cjSbfMolKIVGN6Np17UgW+5dHOSN8PK7XezXYa84CNoB18O8yde
-X-Google-Smtp-Source: AGHT+IFxO0UJx1CWcR7R0seQ2GoGKXK2HU6HjdCH7+nqBD0RdIAd7Gm8gdPifuWXAJwepiEiI/HaSA==
-X-Received: by 2002:a2e:6817:0:b0:2cf:159e:d401 with SMTP id c23-20020a2e6817000000b002cf159ed401mr1766472lja.36.1706727823354;
-        Wed, 31 Jan 2024 11:03:43 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWkQyUqdEVyHuJ139U8yx76A/GLneo5P9W85xtd5CCIfd3DqSQ4Ikxmunm44Hp49LxHm3OsbPTFNoJgxVNoDByQyAyVDphTVCfjV49UQSAwks61TGDzBZDE4pTcFZScDLFoZas2EMzzx0D3b2NLVJpd8XZW4DvQaGHXL74N1TvBFqKV18ef
-Received: from localhost.localdomain ([77.222.24.25])
-        by smtp.gmail.com with ESMTPSA id n2-20020a2e86c2000000b002d06a953a37sm323870ljj.138.2024.01.31.11.03.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 11:03:42 -0800 (PST)
-From: Andrew Kanner <andrew.kanner@gmail.com>
-To: mcgrof@kernel.org
-Cc: linux-modules@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	hch@lst.de,
-	mchehab@kernel.org,
-	Andrew Kanner <andrew.kanner@gmail.com>
-Subject: [PATCH v1] module.h: define __symbol_get_gpl() as a regular __symbol_get()
-Date: Wed, 31 Jan 2024 22:02:52 +0300
-Message-Id: <20240131190251.4668-1-andrew.kanner@gmail.com>
-X-Mailer: git-send-email 2.39.3
+	s=arc-20240116; t=1706727794; c=relaxed/simple;
+	bh=WKMU0Z5OzqnsIcqS/IBWHJPpY6kqQUrZAznF1ycmrqk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=k2GuzWx6RAeGXFqs13duMkiDAEhziwuBPUxBkjXgzTPVI16cWgDMT8Rot80cUCRTPtN8n6PzhML9SaXzXpoDLCfIOkns94KYbT3QkVbVA5r76uRQmq+X+969WEigH9kv3pXIzWjFwddTDO9Y6TahXJYKPpEqQ0orG0Bm+SL5hsg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wg35BRhC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AECCC433F1;
+	Wed, 31 Jan 2024 19:03:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706727793;
+	bh=WKMU0Z5OzqnsIcqS/IBWHJPpY6kqQUrZAznF1ycmrqk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Wg35BRhCQKJAef7IJr58v5VouJ5fEQSpFeg4mDoveVwkeWvNalXAMTQiK+2cSv6IO
+	 Qz3OuwZp/aqjiNlk+b4ALWGUbqHmCo5Ui9k2k0vmF1iWwg54UFpjH6a1HZfBMaFxMb
+	 Tu/1VGO4laZZQlC/FyWPg/P+DMUbxNsT2hy5AZk5YNXW7Zipi9RedPaFaM8DigJtm/
+	 PxWDS+ogkmuodtD/AuaSXRvC3fOr5rmhgmtMa5suI/rG/4ZKYNJtSyMcQAYw4eyhNQ
+	 WtcDYHVD5Wdgj1bRHXeOPzTc8GEDnBtj80oLCt+d1+vsr6HM5qb4eF2OlyG34OatLl
+	 ohBcSWM1EMDjw==
+Date: Wed, 31 Jan 2024 13:03:11 -0600
+From: Rob Herring <robh@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Alim Akhtar <alim.akhtar@samsung.com>, Rob Herring <robh+dt@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Andy Gross <andy.gross@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	Bart Van Assche <bvanassche@acm.org>,
+	Avri Altman <avri.altman@wdc.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	linux-scsi@vger.kernel.org, Andy Gross <agross@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: Re: [PATCH 1/3] dt-bindings: ufs: qcom: Make reset properties as
+ required
+Message-ID: <170672779030.2119109.999859641415132765.robh@kernel.org>
+References: <20240129-ufs-core-reset-fix-v1-0-7ac628aa735f@linaro.org>
+ <20240129-ufs-core-reset-fix-v1-1-7ac628aa735f@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240129-ufs-core-reset-fix-v1-1-7ac628aa735f@linaro.org>
 
-Prototype for __symbol_get_gpl() was introduced in the initial git
-commit 1da177e4c3f4 ("Linux-2.6.12-rc2"), but was not used after that.
 
-In commit 9011e49d54dc ("modules: only allow symbol_get of
-EXPORT_SYMBOL_GPL modules") Christoph Hellwig switched __symbol_get()
-to process GPL symbols only, most likely this is what
-__symbol_get_gpl() was designed to do.
+On Mon, 29 Jan 2024 13:22:04 +0530, Manivannan Sadhasivam wrote:
+> Apart from the legacy UFS controllers that were not supported in upstream,
+> rest of the controllers do require reset property to reset the UFS host
+> controller. So mark them as required.
+> 
+> Even though this is an ABI break, the bindings should reflect the
+> capabilities of the hardware.
+> 
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/ufs/qcom,ufs.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-We might either define __symbol_get_gpl() as __symbol_get() or remove
-it completely as suggested by Mauro Carvalho Chehab.
-
-Link: https://lore.kernel.org/lkml/5f001015990a76c0da35a4c3cf08e457ec353ab2.1652113087.git.mchehab@kernel.org/
-Signed-off-by: Andrew Kanner <andrew.kanner@gmail.com>
----
- include/linux/module.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/module.h b/include/linux/module.h
-index 96bc462872c0..8a660c81ac3d 100644
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -299,7 +299,7 @@ struct notifier_block;
- extern int modules_disabled; /* for sysctl */
- /* Get/put a kernel symbol (calls must be symmetric) */
- void *__symbol_get(const char *symbol);
--void *__symbol_get_gpl(const char *symbol);
-+#define __symbol_get_gpl(x) (__symbol_get(x))
- #define symbol_get(x) ((typeof(&x))(__symbol_get(__stringify(x))))
- 
- /* modules using other modules: kdb wants to see this. */
--- 
-2.39.3
+Acked-by: Rob Herring <robh@kernel.org>
 
 
