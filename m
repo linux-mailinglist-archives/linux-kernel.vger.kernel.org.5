@@ -1,498 +1,289 @@
-Return-Path: <linux-kernel+bounces-45660-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45629-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BB958433B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 03:23:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1664F843335
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 03:14:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 342D328CE02
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 02:23:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1760289C7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 02:14:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C8F33D57A;
-	Wed, 31 Jan 2024 02:16:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 660D7538A;
+	Wed, 31 Jan 2024 02:14:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b="cefOX4HX"
-Received: from mail.codeweavers.com (mail.codeweavers.com [4.36.192.163])
+	dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b="CtzJDLwQ"
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2065.outbound.protection.outlook.com [40.107.117.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AEC118AFB;
-	Wed, 31 Jan 2024 02:16:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=4.36.192.163
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706667370; cv=none; b=SpySqll+Nz9DBRKJdS8W/U5Bz7oDUe7wLMESK8hg60Il9d5FjdpqGBtpqKgqo/nIuXc0s1kCvAqSMVzsYCdLi1/pQJsy3yG8yNe2TosJnWgmTbhPuzufWTUOZ8zQXQG0Xmjfxh4ioPs7Ll95hWDkiVJESQd7va+OtRPcpN8M3Go=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706667370; c=relaxed/simple;
-	bh=2IVyPvDYPyVF69rC7SvAChwUNS5jjHRV3pawNxVTgo4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IPJm4hh2Sl7qu0VtLUxmR9OEFZcgMYnVdNeVuoZpC0gpdGVnUvKHpGY7o4U7HMYzE3WTOBmG9CzvV6uUw2JKDQLit5I0kkrrF9v7l+flOZwqz0obbietnyCvvhGOcvaimmGmQ0T1iEjLoMN1Q3vxt9tdywHoQ0tHfljcc8/gj5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com; spf=pass smtp.mailfrom=codeweavers.com; dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b=cefOX4HX; arc=none smtp.client-ip=4.36.192.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeweavers.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=codeweavers.com; s=s1; h=Message-ID:Date:Subject:Cc:To:From:Sender;
-	bh=K80ihujOREZkYym2AtMLKgCoT77UvCmld0M4kXW2kiw=; b=cefOX4HXahFzG8KCR8tlvhcz0C
-	IHpIVfbwBmsLcq+Ljiv7hX1ZL/D2UAQfForRH5yZGia4t+NHjT4OJm3zVoq2r7Re+3v0r70KO4pHW
-	RLKkbuwDkubp9NWiwEdWuMMe8ATd3QZBIOawNP0WNJA9KA7jK58ET6cwpgNy7UUQX7+vE7h5fadOP
-	ZnuCHMxHoZ87kCZ2sUQ+n1TIdk81RvXNCtAlj+ZJUK318cJVO1TqE85JGxjvQ+JpitNqoMtzLS4gx
-	ruG2faguZ08E3bc/6JU9nIS8XGwwg6cPTRqcWx0TLF5ZVKn4EvH/3my4ZaPNy+YBa7m7/6FWrpQBJ
-	lk4qh22g==;
-Received: from cw137ip160.mn.codeweavers.com ([10.69.137.160] helo=camazotz.mn.codeweavers.com)
-	by mail.codeweavers.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <zfigura@codeweavers.com>)
-	id 1rV08t-0038Kv-04;
-	Tue, 30 Jan 2024 20:15:59 -0600
-From: Elizabeth Figura <zfigura@codeweavers.com>
-To: Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <shuah@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	linux-api@vger.kernel.org,
-	wine-devel@winehq.org,
-	=?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>,
-	Wolfram Sang <wsa@kernel.org>,
-	Arkadiusz Hiler <ahiler@codeweavers.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Andy Lutomirski <luto@kernel.org>,
-	linux-doc@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Elizabeth Figura <zfigura@codeweavers.com>
-Subject: [RFC PATCH v2 29/29] docs: ntsync: Add documentation for the ntsync uAPI.
-Date: Tue, 30 Jan 2024 20:13:56 -0600
-Message-ID: <20240131021356.10322-30-zfigura@codeweavers.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240131021356.10322-1-zfigura@codeweavers.com>
-References: <20240131021356.10322-1-zfigura@codeweavers.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56B3E522A
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 02:14:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.117.65
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706667276; cv=fail; b=lygafxLm+0dhtDCsOPFao4+C/bso/N4SJ7PR4bvX4c1JHsxypaCKALDzaTO/spkYaMuMAJMWuqAV/7+hxUWriUCMS7n1Q9tzqI5mTMaFYozcDn55SVhy74pEh2FqwcvnokpUCEXSx6WRmClTfElh4ZuWo35Jjsl2Mf5Q10lPj/s=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706667276; c=relaxed/simple;
+	bh=kNBahNwC4y6uSc4B6gDNPhe/hsZ1m0FsM9Fz0gXBd5g=;
+	h=Message-ID:Date:From:Subject:To:Cc:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=EGnYiuN4+0DxW1GDE0/ZbGM+Mh3UPSasNsBcC79b5T/BSKwZ0qtSs0430U5T39HDI7njyW4bGHecaapjToRcyTd24eCkKnbD0pitYzRzUTyTUG/8AhOAvpYttih++Ag0W9UkFOsNatF7bWR/4IfiUVsOvyVA+4Mytv7Iz80+YkY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com; spf=pass smtp.mailfrom=oppo.com; dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b=CtzJDLwQ; arc=fail smtp.client-ip=40.107.117.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oppo.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HmbQzIRad22gBo7sb+VskR2/hca3WGvLzFpoxY1AFIrgR0f6yeUNiDGCqTtoQGz2vOV9/RrN1K8eJmDKx4OzR0sXNXSKTa07e5FBuHCYQtELXmzj7nxunH8TRqUtIfbX51ALSREihAVGYGlLEjcdY7U6nO+nHNKqUf3DYrEEfo2g203XkYELanL0KnIVohiz8HTmhpvnNJnL+ybthg5P+DN966FdUZrzH/1Ty9PxPADC9k1ZlN+5Jayfv9OwBBIXZmGISNu10LLNxwr3djDKf2knLHeS3NM/myljh2aE547bwWDRpO+FNubdAlcIz41ObXSu8lST4fpWWNai3AV/PQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=okNLaNGXePTVJbp77CNYVaCk87E46KUhrp+gJGH4DV8=;
+ b=YHVEURb4QOOukePw1bVE0Boz78A6ZUGdLUKJXdbK3VUwSMT724/DrUEmROrv6LOStnDw2J8XuwJVbmagPDISmCDEwznMn4jWC+NbRmbBaQoqEIpDaEG8qtdBwb1qkpnJ4eNJaR6koJDliF0pNcEI5WXHw0cBH4OpHjivCmq97F1J/UtHv+vAqgPPeUfTMra5QBU8KC5RlD4ZODL8iNfCv5aQQAVnzfYbWhSaULhBZ/HEFUVdgBOjGrkSvFyupIJpQaKcT3jW5ZJKswkhAW4mxa047EtAUZD92Y3mTbpOnzdUJ3V1WkYc/TKYL+q3YoAZwAlFxGUItnHMHCVkltUHMw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
+ dkim=pass header.d=oppo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=okNLaNGXePTVJbp77CNYVaCk87E46KUhrp+gJGH4DV8=;
+ b=CtzJDLwQMUSmflkzlmB2sE7nmOnDT3LjoQvM47fXIJuUhVyDP3kKdWX8Y78HoDC4w21EQzLXAfh/X62CLqePzqxuG/ePsU0ATTAOSxGIMUkJ3qIsZbax12AivG97K/vsufsh7XmR7p+5R7Espp3cJ61ro6a1eeqXa1lg5CHadCY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oppo.com;
+Received: from PSAPR02MB4727.apcprd02.prod.outlook.com (2603:1096:301:90::7)
+ by TYZPR02MB7906.apcprd02.prod.outlook.com (2603:1096:405:af::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.23; Wed, 31 Jan
+ 2024 02:14:30 +0000
+Received: from PSAPR02MB4727.apcprd02.prod.outlook.com
+ ([fe80::a815:49db:df99:5461]) by PSAPR02MB4727.apcprd02.prod.outlook.com
+ ([fe80::a815:49db:df99:5461%5]) with mapi id 15.20.7249.023; Wed, 31 Jan 2024
+ 02:14:29 +0000
+Message-ID: <3a4e1892-c68f-45cc-ba61-ca7d675e95c8@oppo.com>
+Date: Wed, 31 Jan 2024 10:14:25 +0800
+User-Agent: Mozilla Thunderbird
+From: Yongpeng Yang <yangyongpeng1@oppo.com>
+Subject: Re: [f2fs-dev] [PATCH] f2fs-tools: allocate logs after conventional
+ area for HM zoned devices
+To: Daeho Jeong <daeho43@gmail.com>, Chao Yu <chao@kernel.org>
+Cc: Daeho Jeong <daehojeong@google.com>, kernel-team@android.com,
+ linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
+References: <20240117230032.2312067-1-daeho43@gmail.com>
+ <df9645d9-1e9a-4bd2-88bb-26425cf45811@kernel.org>
+ <CACOAw_yjEuGSvo_qyoA13U0HwOr3gOzGtNf2Twhes01SNSGQeg@mail.gmail.com>
+ <b18c286a-cc72-439c-b373-98e0d6504618@kernel.org>
+ <CACOAw_yqrtEhq4wtJbs7CVn260h7iZyC7koCWH1iMyeQo5140g@mail.gmail.com>
+ <e879da72-4c4f-4aed-8081-784f2de5c887@kernel.org>
+ <CACOAw_xDDoOQEHOAXkG+8PF8yD0MtUAW4J04tYcPCh3VMp7FGQ@mail.gmail.com>
+ <20fdbfaf-aaa3-466e-8797-1927bf0bc804@oppo.com>
+ <CACOAw_zKTPD5epxD2RsvarDJJUxz8LEhFvkWJex19XtY9hxa0w@mail.gmail.com>
+Content-Language: en-US
+In-Reply-To: <CACOAw_zKTPD5epxD2RsvarDJJUxz8LEhFvkWJex19XtY9hxa0w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SG3P274CA0007.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::19)
+ To PSAPR02MB4727.apcprd02.prod.outlook.com (2603:1096:301:90::7)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PSAPR02MB4727:EE_|TYZPR02MB7906:EE_
+X-MS-Office365-Filtering-Correlation-Id: e5f9d963-af9e-4727-62f6-08dc22025b02
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	qVVMVRiH9gnuWl8qSKaAB1AO8mmgAtwjKq3T0cwS9VI2PbuUFmmXHGpUoYecxXVdqOufS2v7or3LO55PgfmH1kXWwEPeQsTarleXWGmDXTV3Sc1ye6ybKQJ+cFDlaX4R7k76m6upQDyzY6LsfrHd7/PjghLwLNbcKTLQi8F8Hjsufz5ubgduZ8lODzlJnhA28SevvAmIV4uUDALCK+dxjAVMrCLawlMQdALOfS0hD4c3jjAbubr4sDdGrKGPQEuoqsT+fd6ScVMtFlH8OdE6Dte1Yqj3NcHXw4abScj62TZbleOYqR6HBp66L9DAF7ZNDYqqivL3KhQxwaU+9BIeCiAlS2DC7U6T/4z2+InNBlOTiBx+T847OreCsYnziqK/YiEkJ2o64K9azX4Z4S+k/ZSc66zbkOMjcbCyyezZmiSUfZaByN3PcSB9xq44DyMpfMjW52J4pPC2EkJ9p0d3Jx3x//o45NIz1f4jm1FTG+wN1T85keqkkWmbzbvvP6u+qG1JJ1RT+Ey34ZlNop367yHqzrG8XteE0B8vc4UsAMDcE7tip9vPXCn6Sj05hB3MOtdmHpefvbGpHlWcFp+cTrip1+OZ+IzlutmOJvErCWdQzzUROl9gsEbJn5ixSrUmOJvcscgkde66Yd57hFQtEw==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PSAPR02MB4727.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(136003)(366004)(396003)(39860400002)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(31686004)(83380400001)(41300700001)(86362001)(31696002)(36756003)(38100700002)(2616005)(26005)(6506007)(6512007)(66476007)(6486002)(2906002)(6666004)(66946007)(110136005)(53546011)(316002)(66556008)(8936002)(5660300002)(4326008)(8676002)(478600001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?TWtoZDdTNlovWDl5NHUwYUMyR2F4VnJ0a29rVVBXd0ZBSGNCWGpKaEg3ZlNu?=
+ =?utf-8?B?NGo3bWkvcUJvektzd01uVW5YZ2RhWXdDS3N6dS9ucEhmUVBlSHpWQmJIZi94?=
+ =?utf-8?B?VWxCcXc4cCt3TlU1NWZFMUd1TEJJOTEvdlVXbDdzRUEzc0ZYS1RqR3F2UktD?=
+ =?utf-8?B?cUgxSlZNZVVJa2xSRlN2RjhlQU1ic3dZMmVqajZQR2wwazVBU2Vwbm1RNDZa?=
+ =?utf-8?B?Y2RqaWcweUl2bklOTXJlUUxGUXZKazZrWHBHVkNQdmxmSitXZzZKMDhabFQ3?=
+ =?utf-8?B?S1ZDM2R5V1IxVTlvTXBzc1hoRE1sVzh3K2NUZVZFUTAyaG1aNkN0RC96WFVr?=
+ =?utf-8?B?QzNYa005NHhZcEVDYWg5cVRPUzVldkJOZUxUZ2JSZUlmZ21BOEpYRlJndmRj?=
+ =?utf-8?B?ZWw1dVBHTlAvNnBYQjBYQzM5SGk5S24wbHFUTVhsOHZ5dlNEWlZmNjVjck56?=
+ =?utf-8?B?VkxsYzluSjdQenlITmNad2RBZm5hcWJPaUR0VkJySTBZTXR3V2V4R1JwVEMr?=
+ =?utf-8?B?Q1EyeWZkTVB6ZExzWmJwc1pFTmR5ZlI0eHdHRm5vOTBvUG5Ndy9lRUhrVnJj?=
+ =?utf-8?B?cmxTMkdIT0s2WHdpMWlKS1ZmRXhmeWwzcEt1ZXhBMkU2OTBjYXI5Zk4weGpm?=
+ =?utf-8?B?U1lBdUhHampxL0IvU1dZMmcwQzNPSDVGS1UrRHJ1WDVYZUpUYXdQLzNnQ0Fa?=
+ =?utf-8?B?MTVBanp2Unh3MW54aXNPZ2VlMTJ3U3VBTWJWOCt5Vk1TNFl5eVhJQ1VrTnhj?=
+ =?utf-8?B?MTYrMksydzduT1VaaWJrcmljWW9UaWNERE9LY3pCZjFSc0pCZXFvZlNMcW5m?=
+ =?utf-8?B?N2lFTzVHYzZxcXRjclVuV0RJRHBCaHh4VTgwVEpOWFRjZkJsVENWcEN6QWNL?=
+ =?utf-8?B?b1BVMHdkbXJISnNIMmpTc2szRUZWYnJvbkZrUDRiVjRUWUdLSEphVWplSjlv?=
+ =?utf-8?B?L0pjeXJYMCtCSFkwOVRydE1uTGRaaXgzY0RKd3Jsd2hSbWN3cU1vK0lacDFh?=
+ =?utf-8?B?UE4ycElvM1lZMC9oUFl1WUdkRHJjWGJTa1BVNGk0RWdLNkZwQzh6c1RZb2Uw?=
+ =?utf-8?B?ZHhBb0IvSXVESEpoY2pteVNFZktVYXdmbGRlSjhiaGVoTjZlSjlDNlhLMFJO?=
+ =?utf-8?B?T3dFbjB0emNxT2FGdzZBQnlCYUdPaUdLQnRLazJ0dkwxWmhyYnA5NnFOYW8x?=
+ =?utf-8?B?QkVjcVVYV3FHNEVPSUxOUXliVThJVkpIVTRtWDgzeis0NHM0YkxnL2lqWkk5?=
+ =?utf-8?B?MTgvK3JLaldFcXNzK0tJMjJwNHkyTUZ2a3ZMUzlzOWJha1VIR0h3QkF2c3RY?=
+ =?utf-8?B?MG9pWVY1VGZ3aVprU01qRUk3MkJmL0xieWRYNnNSTjg1bDhQSG5uMUhOU09M?=
+ =?utf-8?B?bWRjV2RHR1Z4ejVSa3JLd0pJckpvY0tOWVdOTWkraEMzcEdDTmF5RmxmTytu?=
+ =?utf-8?B?ZFZqOUZPL1pNMDUzTTcxR0JwOGI0WUMvS21yelZtVGZIUU82YUxuS0FxRGFS?=
+ =?utf-8?B?cEJyeWxxTFBnS0RianFjVjgyRnJkZHgxMHJobzdhT25WUWd0RzlmbUFQVU9L?=
+ =?utf-8?B?QU11Z1ZkcjhFUW1oc1JLc1RqQ3NWTTdZVmNkZC83aDBXM2cvMkl4c3VqbnVq?=
+ =?utf-8?B?VHFrQ3piMWx4a2Z1ZzVJT05TcDNyOEdXQXNXWFN0RFJXS21TN0wwem1ndTQ5?=
+ =?utf-8?B?NUZCS1BoZnBNK0lIQ3ppZmUxZ2t4OUJhMk02VzV6SEY5OG9jc1RTK0FDQlhF?=
+ =?utf-8?B?SjZqUm5aeUp5dnY5NnZsWnZrKzBFTlZIbjBTNlFrYVhndUxhd1JqdWVhUC9j?=
+ =?utf-8?B?UjlLeEZQbUx1RjNUZldXanpQOGFVU3VGYjFNUGlqc2xyYWx5YldicElpeGFn?=
+ =?utf-8?B?M1lFYlo2L2pKVWtHdEM2M3JTWlg2TkRRUTdoZjNRczRZYW5yUlZzQ0JuU1Jp?=
+ =?utf-8?B?bWplbFVqbXRLdVVCeXR5N1k0UXBodU5rTE5DYm5qd0lsTDAyeVZSbmZTNUhC?=
+ =?utf-8?B?ZDhmQjVuVGxOREpjUTBFcGRjaTkvc01MeDJxOFdvTURTMmt6RmF4a1c1V0ZQ?=
+ =?utf-8?B?cUxaNjNLV3pjTkVhalVtdXdEaHUxb0Y0VmNwRkJTNWd6MmVFZWtLYmEzQ0Ra?=
+ =?utf-8?B?a1lzMzZldU1zUXI4M3RzQkNTV3dlb0JSZlRvWWRLellGUVBCM0RxWWRRNGYv?=
+ =?utf-8?B?aWc9PQ==?=
+X-OriginatorOrg: oppo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e5f9d963-af9e-4727-62f6-08dc22025b02
+X-MS-Exchange-CrossTenant-AuthSource: PSAPR02MB4727.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jan 2024 02:14:29.3955
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: i3uDmTYBM4Zx1BWIBC1btkpJ4rTkJU26poIKElelGqZmeF+v6hIHpRMI2pJ0r7+900QjuHc+7eM5qeq6S5xAgw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR02MB7906
 
-Add an overall explanation of the driver architecture, and complete and precise
-specification for its intended behaviour.
-
-Signed-off-by: Elizabeth Figura <zfigura@codeweavers.com>
----
- Documentation/userspace-api/index.rst  |   1 +
- Documentation/userspace-api/ntsync.rst | 390 +++++++++++++++++++++++++
- 2 files changed, 391 insertions(+)
- create mode 100644 Documentation/userspace-api/ntsync.rst
-
-diff --git a/Documentation/userspace-api/index.rst b/Documentation/userspace-api/index.rst
-index 09f61bd2ac2e..f5a72ed27def 100644
---- a/Documentation/userspace-api/index.rst
-+++ b/Documentation/userspace-api/index.rst
-@@ -34,6 +34,7 @@ place where this information is gathered.
-    tee
-    isapnp
-    dcdbas
-+   ntsync
- 
- .. only::  subproject and html
- 
-diff --git a/Documentation/userspace-api/ntsync.rst b/Documentation/userspace-api/ntsync.rst
-new file mode 100644
-index 000000000000..bda9401f6747
---- /dev/null
-+++ b/Documentation/userspace-api/ntsync.rst
-@@ -0,0 +1,390 @@
-+===================================
-+NT synchronization primitive driver
-+===================================
-+
-+This page documents the user-space API for the ntsync driver.
-+
-+ntsync is a support driver for emulation of NT synchronization
-+primitives by user-space NT emulators. It exists because implementation
-+in user-space, using existing tools, cannot match Windows performance
-+while offering accurate semantics. It is implemented entirely in
-+software, and does not drive any hardware device.
-+
-+This interface is meant as a compatibility tool only, and should not
-+be used for general synchronization. Instead use generic, versatile
-+interfaces such as futex(2) and poll(2).
-+
-+Synchronization primitives
-+==========================
-+
-+The ntsync driver exposes three types of synchronization primitives:
-+semaphores, mutexes, and events.
-+
-+A semaphore holds a single volatile 32-bit counter, and a static 32-bit
-+integer denoting the maximum value. It is considered signaled when the
-+counter is nonzero. The counter is decremented by one when a wait is
-+satisfied. Both the initial and maximum count are established when the
-+semaphore is created.
-+
-+A mutex holds a volatile 32-bit recursion count, and a volatile 32-bit
-+identifier denoting its owner. A mutex is considered signaled when its
-+owner is zero (indicating that it is not owned). The recursion count is
-+incremented when a wait is satisfied, and ownership is set to the given
-+identifier.
-+
-+A mutex also holds an internal flag denoting whether its previous owner
-+has died; such a mutex is said to be abandoned. Owner death is not
-+tracked automatically based on thread death, but rather must be
-+communicated using ``NTSYNC_IOC_MUTEX_KILL``. An abandoned mutex is
-+inherently considered unowned.
-+
-+Except for the "unowned" semantics of zero, the actual value of the
-+owner identifier is not interpreted by the ntsync driver at all. The
-+intended use is to store a thread identifier; however, the ntsync
-+driver does not actually validate that a calling thread provides
-+consistent or unique identifiers.
-+
-+An event holds a volatile boolean state denoting whether it is signaled
-+or not. There are two types of events, auto-reset and manual-reset. An
-+auto-reset event is designaled when a wait is satisfied; a manual-reset
-+event is not. The event type is specified when the event is created.
-+
-+Unless specified otherwise, all operations on an object are atomic and
-+totally ordered with respect to other operations on the same object.
-+
-+Objects are represented by files. When all file descriptors to an
-+object are closed, that object is deleted.
-+
-+Char device
-+===========
-+
-+The ntsync driver creates a single char device /dev/ntsync. Each file
-+description opened on the device represents a unique instance intended
-+to back an individual NT virtual machine. Objects created by one ntsync
-+instance may only be used with other objects created by the same
-+instance.
-+
-+ioctl reference
-+===============
-+
-+All operations on the device are done through ioctls. There are four
-+structures used in ioctl calls::
-+
-+   struct ntsync_sem_args {
-+   	__u32 sem;
-+   	__u32 count;
-+   	__u32 max;
-+   };
-+
-+   struct ntsync_mutex_args {
-+   	__u32 mutex;
-+   	__u32 owner;
-+   	__u32 count;
-+   };
-+
-+   struct ntsync_event_args {
-+   	__u32 event;
-+   	__u32 signaled;
-+   	__u32 manual;
-+   };
-+
-+   struct ntsync_wait_args {
-+   	__u64 timeout;
-+   	__u64 objs;
-+   	__u32 count;
-+   	__u32 owner;
-+   	__u32 index;
-+   	__u32 alert;
-+   };
-+
-+Depending on the ioctl, members of the structure may be used as input,
-+output, or not at all. All ioctls return 0 on success.
-+
-+The ioctls on the device file are as follows:
-+
-+.. c:macro:: NTSYNC_IOC_CREATE_SEM
-+
-+  Create a semaphore object. Takes a pointer to struct
-+  :c:type:`ntsync_sem_args`, which is used as follows:
-+
-+  .. list-table::
-+
-+     * - ``sem``
-+       - On output, contains a file descriptor to the created semaphore.
-+     * - ``count``
-+       - Initial count of the semaphore.
-+     * - ``max``
-+       - Maximum count of the semaphore.
-+
-+  Fails with ``EINVAL`` if ``count`` is greater than ``max``.
-+
-+.. c:macro:: NTSYNC_IOC_CREATE_MUTEX
-+
-+  Create a mutex object. Takes a pointer to struct
-+  :c:type:`ntsync_mutex_args`, which is used as follows:
-+
-+  .. list-table::
-+
-+     * - ``mutex``
-+       - On output, contains a file descriptor to the created mutex.
-+     * - ``count``
-+       - Initial recursion count of the mutex.
-+     * - ``owner``
-+       - Initial owner of the mutex.
-+
-+  If ``owner`` is nonzero and ``count`` is zero, or if ``owner`` is
-+  zero and ``count`` is nonzero, the function fails with ``EINVAL``.
-+
-+.. c:macro:: NTSYNC_IOC_CREATE_EVENT
-+
-+  Create an event object. Takes a pointer to struct
-+  :c:type:`ntsync_event_args`, which is used as follows:
-+
-+  .. list-table::
-+
-+     * - ``event``
-+       - On output, contains a file descriptor to the created event.
-+     * - ``signaled``
-+       - If nonzero, the event is initially signaled, otherwise
-+         nonsignaled.
-+     * - ``manual``
-+       - If nonzero, the event is a manual-reset event, otherwise
-+         auto-reset.
-+
-+The ioctls on the individual objects are as follows:
-+
-+.. c:macro:: NTSYNC_IOC_SEM_POST
-+
-+  Post to a semaphore object. Takes a pointer to a 32-bit integer,
-+  which on input holds the count to be added to the semaphore, and on
-+  output contains its previous count.
-+
-+  If adding to the semaphore's current count would raise the latter
-+  past the semaphore's maximum count, the ioctl fails with
-+  ``EOVERFLOW`` and the semaphore is not affected. If raising the
-+  semaphore's count causes it to become signaled, eligible threads
-+  waiting on this semaphore will be woken and the semaphore's count
-+  decremented appropriately.
-+
-+.. c:macro:: NTSYNC_IOC_MUTEX_UNLOCK
-+
-+  Release a mutex object. Takes a pointer to struct
-+  :c:type:`ntsync_mutex_args`, which is used as follows:
-+
-+  .. list-table::
-+
-+     * - ``mutex``
-+       - Ignored.
-+     * - ``owner``
-+       - Specifies the owner trying to release this mutex.
-+     * - ``count``
-+       - On output, contains the previous recursion count.
-+
-+  If ``owner`` is zero, the ioctl fails with ``EINVAL``. If ``owner``
-+  is not the current owner of the mutex, the ioctl fails with
-+  ``EPERM``.
-+
-+  The mutex's count will be decremented by one. If decrementing the
-+  mutex's count causes it to become zero, the mutex is marked as
-+  unowned and signaled, and eligible threads waiting on it will be
-+  woken as appropriate.
-+
-+.. c:macro:: NTSYNC_IOC_SET_EVENT
-+
-+  Signal an event object. Takes a pointer to a 32-bit integer, which on
-+  output contains the previous state of the event.
-+
-+  Eligible threads will be woken, and auto-reset events will be
-+  designaled appropriately.
-+
-+.. c:macro:: NTSYNC_IOC_RESET_EVENT
-+
-+  Designal an event object. Takes a pointer to a 32-bit integer, which
-+  on output contains the previous state of the event.
-+
-+.. c:macro:: NTSYNC_IOC_PULSE_EVENT
-+
-+  Wake threads waiting on an event object while leaving it in an
-+  unsignaled state. Takes a pointer to a 32-bit integer, which on
-+  output contains the previous state of the event.
-+
-+  A pulse operation can be thought of as a set followed by a reset,
-+  performed as a single atomic operation. If two threads are waiting on
-+  an auto-reset event which is pulsed, only one will be woken. If two
-+  threads are waiting a manual-reset event which is pulsed, both will
-+  be woken. However, in both cases, the event will be unsignaled
-+  afterwards, and a simultaneous read operation will always report the
-+  event as unsignaled.
-+
-+.. c:macro:: NTSYNC_IOC_READ_SEM
-+
-+  Read the current state of a semaphore object. Takes a pointer to
-+  struct :c:type:`ntsync_sem_args`, which is used as follows:
-+
-+  .. list-table::
-+
-+     * - ``sem``
-+       - Ignored.
-+     * - ``count``
-+       - On output, contains the current count of the semaphore.
-+     * - ``max``
-+       - On output, contains the maximum count of the semaphore.
-+
-+.. c:macro:: NTSYNC_IOC_READ_MUTEX
-+
-+  Read the current state of a mutex object. Takes a pointer to struct
-+  :c:type:`ntsync_mutex_args`, which is used as follows:
-+
-+  .. list-table::
-+
-+     * - ``mutex``
-+       - Ignored.
-+     * - ``owner``
-+       - On output, contains the current owner of the mutex, or zero
-+         if the mutex is not currently owned.
-+     * - ``count``
-+       - On output, contains the current recursion count of the mutex.
-+
-+  If the mutex is marked as abandoned, the function fails with
-+  ``EOWNERDEAD``. In this case, ``count`` and ``owner`` are set to
-+  zero.
-+
-+.. c:macro:: NTSYNC_IOC_READ_EVENT
-+
-+  Read the current state of an event object. Takes a pointer to struct
-+  :c:type:`ntsync_event_args`, which is used as follows:
-+
-+  .. list-table::
-+
-+     * - ``event``
-+       - Ignored.
-+     * - ``signaled``
-+       - On output, contains the current state of the event.
-+     * - ``manual``
-+       - On output, contains 1 if the event is a manual-reset event,
-+         and 0 otherwise.
-+
-+.. c:macro:: NTSYNC_IOC_KILL_OWNER
-+
-+  Mark a mutex as unowned and abandoned if it is owned by the given
-+  owner. Takes an input-only pointer to a 32-bit integer denoting the
-+  owner. If the owner is zero, the ioctl fails with ``EINVAL``. If the
-+  owner does not own the mutex, the function fails with ``EPERM``.
-+
-+  Eligible threads waiting on the mutex will be woken as appropriate
-+  (and such waits will fail with ``EOWNERDEAD``, as described below).
-+
-+.. c:macro:: NTSYNC_IOC_WAIT_ANY
-+
-+  Poll on any of a list of objects, atomically acquiring at most one.
-+  Takes a pointer to struct :c:type:`ntsync_wait_args`, which is
-+  used as follows:
-+
-+  .. list-table::
-+
-+     * - ``timeout``
-+       - Absolute timeout in nanoseconds, measured against the
-+         MONOTONIC clock. If the timeout is equal to or earlier than
-+         the current time, the function returns immediately without
-+         sleeping. If ``timeout`` is U64_MAX, the function will sleep
-+         until an object is signaled, and will not fail with
-+         ``ETIMEDOUT``.
-+     * - ``objs``
-+       - Pointer to an array of ``count`` file descriptors
-+         (specified as an integer so that the structure has the same
-+         size regardless of architecture). If any object is
-+         invalid, the function fails with ``EINVAL``.
-+     * - ``count``
-+       - Number of objects specified in the ``objs`` array.
-+         If greater than ``NTSYNC_MAX_WAIT_COUNT``, the function fails
-+         with ``EINVAL``.
-+     * - ``owner``
-+       - Mutex owner identifier. If any object in ``objs`` is a mutex,
-+         the ioctl will attempt to acquire that mutex on behalf of
-+         ``owner``. If ``owner`` is zero, the ioctl fails with
-+         ``EINVAL``.
-+     * - ``index``
-+       - On success, contains the index (into ``objs``) of the object
-+         which was signaled. If ``alert`` was signaled instead,
-+         this contains ``count``.
-+     * - ``alert``
-+       - Optional event object file descriptor. If nonzero, this
-+         specifies an "alert" event object which, if signaled, will
-+         terminate the wait. If nonzero, the identifier must point to a
-+         valid event.
-+
-+  This function attempts to acquire one of the given objects. If unable
-+  to do so, it sleeps until an object becomes signaled, subsequently
-+  acquiring it, or the timeout expires. In the latter case the ioctl
-+  fails with ``ETIMEDOUT``. The function only acquires one object, even
-+  if multiple objects are signaled.
-+
-+  A semaphore is considered to be signaled if its count is nonzero, and
-+  is acquired by decrementing its count by one. A mutex is considered
-+  to be signaled if it is unowned or if its owner matches the ``owner``
-+  argument, and is acquired by incrementing its recursion count by one
-+  and setting its owner to the ``owner`` argument. An auto-reset event
-+  is acquired by designaling it; a manual-reset event is not affected
-+  by acquisition.
-+
-+  Acquisition is atomic and totally ordered with respect to other
-+  operations on the same object. If two wait operations (with different
-+  ``owner`` identifiers) are queued on the same mutex, only one is
-+  signaled. If two wait operations are queued on the same semaphore,
-+  and a value of one is posted to it, only one is signaled. The order
-+  in which threads are signaled is not specified.
-+
-+  If an abandoned mutex is acquired, the ioctl fails with
-+  ``EOWNERDEAD``. Although this is a failure return, the function may
-+  otherwise be considered successful. The mutex is marked as owned by
-+  the given owner (with a recursion count of 1) and as no longer
-+  abandoned, and ``index`` is still set to the index of the mutex.
-+
-+  The ``alert`` argument is an "extra" event which can terminate the
-+  wait, independently of all other objects. If members of ``objs`` and
-+  ``alert`` are both simultaneously signaled, a member of ``objs`` will
-+  always be given priority and acquired first.
-+
-+  It is valid to pass the same object more than once, including by
-+  passing the same event in the ``objs`` array and in ``alert``. If a
-+  wakeup occurs due to that object being signaled, ``index`` is set to
-+  the lowest index corresponding to that object.
-+
-+  The function may fail with ``EINTR`` if a signal is received.
-+
-+.. c:macro:: NTSYNC_IOC_WAIT_ALL
-+
-+  Poll on a list of objects, atomically acquiring all of them. Takes a
-+  pointer to struct :c:type:`ntsync_wait_args`, which is used
-+  identically to ``NTSYNC_IOC_WAIT_ANY``, except that ``index`` is
-+  always filled with zero on success if not woken via alert.
-+
-+  This function attempts to simultaneously acquire all of the given
-+  objects. If unable to do so, it sleeps until all objects become
-+  simultaneously signaled, subsequently acquiring them, or the timeout
-+  expires. In the latter case the ioctl fails with ``ETIMEDOUT`` and no
-+  objects are modified.
-+
-+  Objects may become signaled and subsequently designaled (through
-+  acquisition by other threads) while this thread is sleeping. Only
-+  once all objects are simultaneously signaled does the ioctl acquire
-+  them and return. The entire acquisition is atomic and totally ordered
-+  with respect to other operations on any of the given objects.
-+
-+  If an abandoned mutex is acquired, the ioctl fails with
-+  ``EOWNERDEAD``. Similarly to ``NTSYNC_IOC_WAIT_ANY``, all objects are
-+  nevertheless marked as acquired. Note that if multiple mutex objects
-+  are specified, there is no way to know which were marked as
-+  abandoned.
-+
-+  As with "any" waits, the ``alert`` argument is an "extra" event which
-+  can terminate the wait. Critically, however, an "all" wait will
-+  succeed if all members in ``objs`` are signaled, *or* if ``alert`` is
-+  signaled. In the latter case ``index`` will be set to ``count``. As
-+  with "any" waits, if both conditions are filled, the former takes
-+  priority, and objects in ``objs`` will be acquired.
-+
-+  Unlike ``NTSYNC_IOC_WAIT_ANY``, it is not valid to pass the same
-+  object more than once, nor is it valid to pass the same object in
-+  ``objs`` and in ``alert``. If this is attempted, the function fails
-+  with ``EINVAL``.
--- 
-2.43.0
-
+On 1/31/2024 2:00 AM, Daeho Jeong wrote:
+> On Mon, Jan 29, 2024 at 6:17 PM Yongpeng Yang <yangyongpeng1@oppo.com> wrote:
+>>
+>> cur_seg[CURSEG_COLD_DATA] will exceed end boundary of main area when:
+>> device[1]: zone device size = [2 MB ~ 10MB]
+>>
+>> So, if there are not enough seq zones for six cursegs, we should still
+>> assign 0 to c.cur_seg[CURSEG_HOT_NODE] or reserve several conv zones for
+>> cursegs.
+> 
+> To tackle that case, how about this?
+> 
+>          } else if (c.zoned_mode) {
+>                  c.cur_seg[CURSEG_HOT_NODE] = 0;
+>                  if (c.zoned_model == F2FS_ZONED_HM) {
+>                          uint32_t conv_zones =
+>                                  c.devices[0].total_segments / c.segs_per_zone
+>                                  - total_meta_zones;
+> 
+>                          if (total_zones - conv_zones >= avail_zones)
+>                                  c.cur_seg[CURSEG_HOT_NODE] =
+>                                          (c.devices[1].start_blkaddr -
+>                                           get_sb(main_blkaddr)) / c.blks_per_seg;
+>                  }
+>
+It seems fine, thanks.
+>>
+>> On 1/29/2024 11:47 PM, Daeho Jeong wrote:
+>>> On Sun, Jan 28, 2024 at 5:27 PM Chao Yu <chao@kernel.org> wrote:
+>>>>
+>>>> On 2024/1/27 2:17, Daeho Jeong wrote:
+>>>>> On Thu, Jan 25, 2024 at 5:27 PM Chao Yu <chao@kernel.org> wrote:
+>>>>>>
+>>>>>> On 2024/1/26 0:25, Daeho Jeong wrote:
+>>>>>>> On Wed, Jan 24, 2024 at 7:34 PM Chao Yu <chao@kernel.org> wrote:
+>>>>>>>>
+>>>>>>>> +Cc Yongpeng Yang
+>>>>>>>>
+>>>>>>>> Daeho,
+>>>>>>>>
+>>>>>>>> Yongpeng reports a potential issue: if c.devices[0].total_segments is
+>>>>>>>> larger than segments of mainarea, c.cur_seg[CURSEG_HOT_NODE] will exceed
+>>>>>>>> end boundary of mainarea. Could you please check that? though it's a corner
+>>>>>>>> case.
+>>>>>>>
+>>>>>>> Can you elaborate more?
+>>>>>>
+>>>>>> Since c.cur_seg[CURSEG_HOT_NODE] is an offset started from main_blkaddr.
+>>>>>
+>>>>> Oh, Got it.
+>>>>> Then, how about this?
+>>>>>
+>>>>>             c.cur_seg[CURSEG_HOT_NODE] = c.zoned_model == F2FS_ZONED_HM ?
+>>>>>                             (c.devices[1].start_blkaddr -
+>>>>> get_sb(main_blkaddr)) / c.blks_per_seg : 0;
+>>>>
+>>>> Better, but log header should align to start blkaddr of zone?
+>>>
+>>> It's already aligned here.
+>>>
+>>>           if (c.zoned_mode && c.ndevs > 1)
+>>>                   zone_align_start_offset +=
+>>>                           (c.devices[0].total_sectors * c.sector_size) %
+>>> zone_size_bytes;
+>>>
+>>> ...
+>>>
+>>>           for (i = 0; i < c.ndevs; i++) {
+>>>                   if (i == 0) {
+>>>                           c.devices[i].total_segments =
+>>>                                   (c.devices[i].total_sectors *
+>>>                                   c.sector_size - zone_align_start_offset) /
+>>>                                   segment_size_bytes;
+>>>                           c.devices[i].start_blkaddr = 0;
+>>>                           c.devices[i].end_blkaddr = c.devices[i].total_segments *
+>>>                                                   c.blks_per_seg - 1 +
+>>>                                                   sb->segment0_blkaddr;
+>>>                   } else {
+>>>                           c.devices[i].total_segments =
+>>>                                   c.devices[i].total_sectors /
+>>>                                   (c.sectors_per_blk * c.blks_per_seg);
+>>>                           c.devices[i].start_blkaddr =
+>>>                                           c.devices[i - 1].end_blkaddr + 1;
+>>>
+>>> ...
+>>>
+>>>           total_meta_zones = ZONE_ALIGN(total_meta_segments *
+>>>                                                   c.blks_per_seg);
+>>>
+>>>           set_sb(main_blkaddr, get_sb(segment0_blkaddr) + total_meta_zones *
+>>>                                   c.segs_per_zone * c.blks_per_seg);
+>>>
+>>>>
+>>>> Thanks,
+>>>>
+>>>>>
+>>>>>> If c.cur_seg[CURSEG_HOT_NODE] was assigned w/ c.devices[0].total_segments,
+>>>>>> and c.devices[0].total_segments is larger than segments of mainare,
+>>>>>> c.cur_seg[CURSEG_HOT_NODE] will exceed the end boundary of mainarea.
+>>>>>>
+>>>>>>            c.cur_seg[CURSEG_HOT_NODE] = c.zoned_model == F2FS_ZONED_HM ?
+>>>>>>                            c.devices[0].total_segments : 0;
+>>>>>>
+>>>>>>> In the case of F2FS_ZONED_HM, we have the devices[1].
+>>>>>>> Do you mean the case we format the filesystem intentionally smaller
+>>>>>>> than what devices have?
+>>>>>>
+>>>>>> I mean blew case:
+>>>>>> device[0]: conventional device size = 10240 MB
+>>>>>> device[1]: zone device size = 2 MB
+>>>>>>
+>>>>>> Thanks,
+>>>>>>
+>>>>>>>
+>>>>>>>>
+>>>>>>>> On 2024/1/18 7:00, Daeho Jeong wrote:
+>>>>>>>>> From: Daeho Jeong <daehojeong@google.com>
+>>>>>>>>>
+>>>>>>>>> Make to allocate logs after conventional area for HM zoned devices to
+>>>>>>>>> spare them for file pinning support.
+>>>>>>>>>
+>>>>>>>>> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+>>>>>>>>> ---
+>>>>>>>>>       mkfs/f2fs_format.c | 3 ++-
+>>>>>>>>>       1 file changed, 2 insertions(+), 1 deletion(-)
+>>>>>>>>>
+>>>>>>>>> diff --git a/mkfs/f2fs_format.c b/mkfs/f2fs_format.c
+>>>>>>>>> index f2840c8..91a7f4b 100644
+>>>>>>>>> --- a/mkfs/f2fs_format.c
+>>>>>>>>> +++ b/mkfs/f2fs_format.c
+>>>>>>>>> @@ -557,7 +557,8 @@ static int f2fs_prepare_super_block(void)
+>>>>>>>>>                   c.cur_seg[CURSEG_COLD_DATA] = 0;
+>>>>>>>>>                   c.cur_seg[CURSEG_WARM_DATA] = next_zone(CURSEG_COLD_DATA);
+>>>>>>>>>           } else if (c.zoned_mode) {
+>>>>>>>>> -             c.cur_seg[CURSEG_HOT_NODE] = 0;
+>>>>>>>>> +             c.cur_seg[CURSEG_HOT_NODE] = c.zoned_model == F2FS_ZONED_HM ?
+>>>>>>>>> +                     c.devices[0].total_segments : 0;
+>>>>>>>>>                   c.cur_seg[CURSEG_WARM_NODE] = next_zone(CURSEG_HOT_NODE);
+>>>>>>>>>                   c.cur_seg[CURSEG_COLD_NODE] = next_zone(CURSEG_WARM_NODE);
+>>>>>>>>>                   c.cur_seg[CURSEG_HOT_DATA] = next_zone(CURSEG_COLD_NODE);
 
