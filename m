@@ -1,159 +1,76 @@
-Return-Path: <linux-kernel+bounces-45731-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45732-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6862B8434BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 05:09:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0FDC8434BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 05:11:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92B59288344
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 04:09:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5F01B2183B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 04:11:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 063A317554;
-	Wed, 31 Jan 2024 04:09:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=faucet.nz header.i=@faucet.nz header.b="Tca/RNfa"
-Received: from smtp.forwardemail.net (smtp.forwardemail.net [149.28.215.223])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1EDE168A3;
+	Wed, 31 Jan 2024 04:11:05 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DAD516426
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 04:09:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=149.28.215.223
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BF4812E52
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 04:11:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706674160; cv=none; b=YjYkiVtULN4hOvWhLBVijo5n1dYzc9qviqNBO10oPMSI9KfdaYuQdjTSs6dUnYa5WzsbzmA6ewrXbcu65nPxCepCC/Y+2p9R0RXfs51KzPaQMY/ZHuLt17fnSEph0r2Iw1FL1Xoqf8QTQ8sK4mK6MYd1AgeKOsg5J6KGiDaKKc4=
+	t=1706674265; cv=none; b=HPDS4qXNLORzbJ/tx58oqiOa3DcrwPIkGAFLBF0c5SJ3zmQrrCBZWytYSVUu15NhD2NSHq6DcsLLMIrpHJEkowBshuxq6TY1eyBPEQyduQp39r4emtsyn2Ur2eYpHF5MadbbYnNuJ6CAV267hQ8lxIzZeRFxdtYINigp481iXy4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706674160; c=relaxed/simple;
-	bh=pnxDDAKEBMo7lWFcc3J2ntyngcKsl4r03QwlqkuSvNQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TIC7+Rq6N6VxZay8eA91tEvWFWkyuWEpm5iQA507TxYUgPnA3+lnpl1UqxZj93I3f7Rcy84kl/MfY5xfMpDcgFgWFYIZmaLQXoCUSEWV6RxAbKqLqAiOisUR1QdpgefEZJRnXWy2eXNzlF1Pm1KbQNaDcxURyGM5quhFetYBLBw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=faucet.nz; spf=pass smtp.mailfrom=fe-bounces.faucet.nz; dkim=pass (1024-bit key) header.d=faucet.nz header.i=@faucet.nz header.b=Tca/RNfa; arc=none smtp.client-ip=149.28.215.223
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=faucet.nz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fe-bounces.faucet.nz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=faucet.nz;
- h=Content-Transfer-Encoding: MIME-Version: Message-Id: Date: Subject: Cc:
- To: From; q=dns/txt; s=fe-4ed8c67516; t=1706674143;
- bh=WelYVPflxMfIUF+8iQKKCRWtrOjz1iaIT0Kh8otsC8U=;
- b=Tca/RNfafOnsPZrJDhemomfilOp7ml97MkuVeqcs7Ol3RboyaaW6ppfYCN+XTz62wbG/8hLoM
- CwiSDuNbMsxvNKPkHO1RyJ4t4F/IC7JMHVxsEWmnSAhmKdZbG9UoLULV0FZpjqef4VRp/csUtXl
- hSU/whXiviNJZ84Gn7q82JQ=
-From: Brad Cowie <brad@faucet.nz>
-To: netdev@vger.kernel.org
-Cc: pshelar@ovn.org, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, shuah@kernel.org, dev@openvswitch.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, Brad Cowie
- <brad@faucet.nz>, Aaron Conole <aconole@redhat.com>
-Subject: [PATCH net-next] selftests: openvswitch: Test ICMP related matches work with SNAT
-Date: Wed, 31 Jan 2024 17:08:22 +1300
-Message-Id: <20240131040822.835867-1-brad@faucet.nz>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706674265; c=relaxed/simple;
+	bh=r0nHrEY6XqozmITj4st0S/Lf9rZUC2BsabsbUeeklQ8=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=f9cfdeJD270+wn4FUwpZ5hgIIvZvhFI1Qf0jsZpxk1A+yN+thMujnc0YkszOrdqTC4QsJMU4LrwpHWjFFtFyQnpx9nn5Cw+6BZ2qjsFXcuvNRRhxJbWvisx79duv2Ktn+k/veI/2JSO52x7vCh51qOUO+h2ixMSbGhCh38PMqGQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7bbb3de4dcbso525240039f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 20:11:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706674263; x=1707279063;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=r0nHrEY6XqozmITj4st0S/Lf9rZUC2BsabsbUeeklQ8=;
+        b=a7pwTegpJkrRZ+AIECBj/YUOyCFAKMpNLj6TwvyTKpYzrLVqgF5cFPVExV/fYMHkjF
+         m/gzQM7Vw+7XEeKm5/oDn6P5+gRoVTN+qpE0HBIA56aXAQG5X57jwSi5LrH+7/E/nYYe
+         cs37qQM4NL0MIZEHgOUHWA7/B3gT9z41UESmgo6vll+O7TuvKo6/F01JZs8Jkm2zdxts
+         1RlOvLv51z/+KzuBxYOR0q/JrhxQ9Nle865xqyFJwNRa56SaEcaCKtUiZmzayotxSRcX
+         nbgJxCs6DZ7m0QtETjaH9Od+09vTouarEwOMOkMGUt9b6Bxzu0P/RKEv4e+28YxlOiL1
+         F5Xw==
+X-Gm-Message-State: AOJu0Yzoo/GtZSWnwzem/bxP1xjwNRgJp4wtm4lgAIk5/BPTGNVwHi3G
+	I7K3v+edBO1NJBDaeu5OTNxTuUa4/4LavVPFoBRaREAKf5HPHt7UAdbkp008GOFXWp3dT/qrukh
+	w1/d9wmlPznpueWebjk86gTWgdpw95oE0nYNANds8WrdPpi4zdGJUjMpVGA==
+X-Google-Smtp-Source: AGHT+IGCf98HEJMCzJNmcCzCwrBeDA2QqCYe4645LOoDG196phDDVoF3wQOzI+JcJS0Cgl1LKAn6S5eM7QWavtkLousKOdESka/7
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Report-Abuse-To: abuse@forwardemail.net
-X-Report-Abuse: abuse@forwardemail.net
-X-Complaints-To: abuse@forwardemail.net
-X-ForwardEmail-Version: 0.4.40
-X-ForwardEmail-Sender: rfc822; brad@faucet.nz, smtp.forwardemail.net,
- 149.28.215.223
-X-ForwardEmail-ID: 65b9c7de887f9e7cfa92c933
+X-Received: by 2002:a92:c245:0:b0:361:a33f:36a4 with SMTP id
+ k5-20020a92c245000000b00361a33f36a4mr50454ilo.2.1706674263260; Tue, 30 Jan
+ 2024 20:11:03 -0800 (PST)
+Date: Tue, 30 Jan 2024 20:11:03 -0800
+In-Reply-To: <0000000000005315c105f1652480@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000035876106103611b8@google.com>
+Subject: Re: [syzbot] Re: [syzbot] [rds?] possible deadlock in rds_message_put
+From: syzbot <syzbot+f9db6ff27b9bfdcfeca0@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Add a test case for regression in openvswitch nat that was fixed by
-commit e6345d2824a3 ("netfilter: nf_nat: fix action not being set for
-all ct states").
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com.
 
-Link: https://lore.kernel.org/netdev/20231221224311.130319-1-brad@faucet.nz/
-Link: https://mail.openvswitch.org/pipermail/ovs-dev/2024-January/410476.html
-Suggested-by: Aaron Conole <aconole@redhat.com>
-Signed-off-by: Brad Cowie <brad@faucet.nz>
----
- .../selftests/net/openvswitch/openvswitch.sh  | 62 +++++++++++++++++++
- 1 file changed, 62 insertions(+)
+***
 
-diff --git a/tools/testing/selftests/net/openvswitch/openvswitch.sh b/tools/testing/selftests/net/openvswitch/openvswitch.sh
-index f8499d4c87f3..87b80bee6df4 100755
---- a/tools/testing/selftests/net/openvswitch/openvswitch.sh
-+++ b/tools/testing/selftests/net/openvswitch/openvswitch.sh
-@@ -17,6 +17,7 @@ tests="
- 	ct_connect_v4				ip4-ct-xon: Basic ipv4 tcp connection using ct
- 	connect_v4				ip4-xon: Basic ipv4 ping between two NS
- 	nat_connect_v4				ip4-nat-xon: Basic ipv4 tcp connection via NAT
-+	nat_related_v4				ip4-nat-related: ICMP related matches work with SNAT
- 	netlink_checks				ovsnl: validate netlink attrs and settings
- 	upcall_interfaces			ovs: test the upcall interfaces
- 	drop_reason				drop: test drop reasons are emitted"
-@@ -473,6 +474,67 @@ test_nat_connect_v4 () {
- 	return 0
- }
- 
-+# nat_related_v4 test
-+#  - client->server ip packets go via SNAT
-+#  - client solicits ICMP destination unreachable packet from server
-+#  - undo NAT for ICMP reply and test dst ip has been updated
-+test_nat_related_v4 () {
-+	which nc >/dev/null 2>/dev/null || return $ksft_skip
-+
-+	sbx_add "test_nat_related_v4" || return $?
-+
-+	ovs_add_dp "test_nat_related_v4" natrelated4 || return 1
-+	info "create namespaces"
-+	for ns in client server; do
-+		ovs_add_netns_and_veths "test_nat_related_v4" "natrelated4" "$ns" \
-+			"${ns:0:1}0" "${ns:0:1}1" || return 1
-+	done
-+
-+	ip netns exec client ip addr add 172.31.110.10/24 dev c1
-+	ip netns exec client ip link set c1 up
-+	ip netns exec server ip addr add 172.31.110.20/24 dev s1
-+	ip netns exec server ip link set s1 up
-+
-+	ip netns exec server ip route add 192.168.0.20/32 via 172.31.110.10
-+
-+	# Allow ARP
-+	ovs_add_flow "test_nat_related_v4" natrelated4 \
-+		"in_port(1),eth(),eth_type(0x0806),arp()" "2" || return 1
-+	ovs_add_flow "test_nat_related_v4" natrelated4 \
-+		"in_port(2),eth(),eth_type(0x0806),arp()" "1" || return 1
-+
-+	# Allow IP traffic from client->server, rewrite source IP with SNAT to 192.168.0.20
-+	ovs_add_flow "test_nat_related_v4" natrelated4 \
-+		"ct_state(-trk),in_port(1),eth(),eth_type(0x0800),ipv4(dst=172.31.110.20)" \
-+		"ct(commit,nat(src=192.168.0.20)),recirc(0x1)" || return 1
-+	ovs_add_flow "test_nat_related_v4" natrelated4 \
-+		"recirc_id(0x1),ct_state(+trk-inv),in_port(1),eth(),eth_type(0x0800),ipv4()" \
-+		"2" || return 1
-+
-+	# Allow related ICMP responses back from server and undo NAT to restore original IP
-+	# Drop any ICMP related packets where dst ip hasn't been restored back to original IP
-+	ovs_add_flow "test_nat_related_v4" natrelated4 \
-+		"ct_state(-trk),in_port(2),eth(),eth_type(0x0800),ipv4()" \
-+		"ct(commit,nat),recirc(0x2)" || return 1
-+	ovs_add_flow "test_nat_related_v4" natrelated4 \
-+		"recirc_id(0x2),ct_state(+rel+trk),in_port(2),eth(),eth_type(0x0800),ipv4(src=172.31.110.20,dst=172.31.110.10,proto=1),icmp()" \
-+		"1" || return 1
-+	ovs_add_flow "test_nat_related_v4" natrelated4 \
-+		"recirc_id(0x2),ct_state(+rel+trk),in_port(2),eth(),eth_type(0x0800),ipv4(dst=192.168.0.20,proto=1),icmp()" \
-+		"drop" || return 1
-+
-+	# Solicit destination unreachable response from server
-+	ovs_sbx "test_nat_related_v4" ip netns exec client \
-+		bash -c "echo a | nc -u -w 1 172.31.110.20 10000"
-+
-+	# Check to make sure no packets matched the drop rule with incorrect dst ip
-+	python3 "$ovs_base/ovs-dpctl.py" dump-flows natrelated4 \
-+		| grep "drop" | grep "packets:0" >/dev/null || return 1
-+
-+	info "done..."
-+	return 0
-+}
-+
- # netlink_validation
- # - Create a dp
- # - check no warning with "old version" simulation
--- 
-2.34.1
+Subject: Re: [syzbot] [rds?] possible deadlock in rds_message_put
+Author: allison.henderson@oracle.com
 
+#syz test: https://github.com/allisonhenderson/rds_work syzbug_f9db6ff27b9bfdcfeca
 
