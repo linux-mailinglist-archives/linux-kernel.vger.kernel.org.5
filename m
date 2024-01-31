@@ -1,143 +1,143 @@
-Return-Path: <linux-kernel+bounces-47006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30EEB8447D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:15:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB0808447DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:17:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C03FDB21414
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:15:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B07D1F2441D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:17:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3302038F8F;
-	Wed, 31 Jan 2024 19:15:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A81CB38FA1;
+	Wed, 31 Jan 2024 19:17:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HxzceZis"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="b7eiom/A"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 679AC2135A
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 19:15:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16E273717F;
+	Wed, 31 Jan 2024 19:17:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706728528; cv=none; b=J1+KGR0TOwTm3tRbUNX//l4/ZNSpnkrIhNI3Oy7uzEM7W/YnV5wlg9Y75yI8PlJXsygIYj8No6+wxTyUcd5tlPefAHsSdu7Luxm+/aD2p5JGw6pNnMtlmWOIRpphV5sz5YUzpk3dtW5YyT8avnSNgk5t1k71Xd7U40fFCpxSIDY=
+	t=1706728645; cv=none; b=UpTMnx/Rf+gJ0b/CDLunRAgfedHLL6J5hLefY6QTkzysTVenhMARtGEVtlC+ZU5fu0wWoTQH/d5vnA2pjoJnOSZXHE0Tth8ty4MZLQnM4lt9HQuw7uQLDvB80NjRE7oBZplHOGib0dtvLonD6bT5dVe5/D5xBhZ1mYh8qSA0pdk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706728528; c=relaxed/simple;
-	bh=cwnbPQp+9uko8EtVbCazjAPHmnkyAF3rNBLcULYxO2E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XOKyC54LvZoj1moUfdFSGbA2qMlEDVGrEcoPRZ0Msqexk8uaRuWreMz7+BfHwcvkoc+L2O8q5/FAMxagAu5v3bYJj9+tTAlNBz4abeovt66z80mhD+lBee0DIjAdbLscjRDwD8e2jHMKPg+u3cT4ZX7DHzHOQN5mKiQw65VpdAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HxzceZis; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706728525;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Pe8VXI62FgPJM3Gsr0bzFElOUfGdcBzcX4YjVIdn94A=;
-	b=HxzceZisReIU4aQ6tOOoAAhN8Gs8xXsA5o9c6v/pnyQiO2vD4ex6LnMt4SmHO3whRFav8w
-	fMukRTvU22fLWbT1LtfpWnLlKIMfTqDMD8GYkX68l6YmiMPmLegA7rxz8a9WelHn121J4w
-	Dph+SmLQzrKsALoysF8l+uM5FyDcQKU=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-608-A2tbhQTfNmC9lE8aMdSxOw-1; Wed, 31 Jan 2024 14:15:23 -0500
-X-MC-Unique: A2tbhQTfNmC9lE8aMdSxOw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3377F87B2A2;
-	Wed, 31 Jan 2024 19:15:23 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.249])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 54ECDC1ED63;
-	Wed, 31 Jan 2024 19:15:21 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Wed, 31 Jan 2024 20:14:08 +0100 (CET)
-Date: Wed, 31 Jan 2024 20:14:06 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Andy Lutomirski <luto@amacapital.net>
-Cc: Tycho Andersen <tycho@tycho.pizza>,
-	Christian Brauner <brauner@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-	Tycho Andersen <tandersen@netflix.com>,
-	"Eric W. Biederman" <ebiederm@xmission.com>
-Subject: Re: [RFC PATCH] pidfd: implement PIDFD_THREAD flag for pidfd_open()
-Message-ID: <20240131191405.GF2609@redhat.com>
-References: <20240127105410.GA13787@redhat.com>
- <ZbUngjQMg+YUBAME@tycho.pizza>
- <20240127163117.GB13787@redhat.com>
- <ZbU7d0dpTY08JgIl@tycho.pizza>
- <20240127193127.GC13787@redhat.com>
- <ZbVrRgIvudX242ZU@tycho.pizza>
- <20240127210634.GE13787@redhat.com>
- <20240129112313.GA11635@redhat.com>
- <CALCETrUFDkt+K9zG8mczxzAFy9t-6Mx5Cz-Sx+it6a4nt+O0pg@mail.gmail.com>
- <20240131184829.GE2609@redhat.com>
+	s=arc-20240116; t=1706728645; c=relaxed/simple;
+	bh=JIYnjpqR8UE/3gFI59D74DalCVAjAiNmvFR2SLeQRgU=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Vtn0sKyd5/rT4iTs5O6zLQF77SJNN2FxZn5Tn26OwRvwPt8n1OQTK+lVigobQ7aRTT9gH9RISxu32iXD/T4RBdVFNknVtVhT9y6wXCH0Ltvp+OvThoYILjeydcTlJeWBUkbbKzbDb2btZVYxSYurKAqfDmuvzIeLhKT638rAAFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=b7eiom/A; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40VJHIX5087175;
+	Wed, 31 Jan 2024 13:17:18 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706728638;
+	bh=8FMoGz4wqJaPTnr7/dWM6UByHmBhMsNnlIBuI4F/lVQ=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=b7eiom/ADq6UrIieMkMCMEpIBr9PPCuh1H2bk+SMA2jyIOEL9Tk1VWF2OsntqpnmW
+	 80AUV1ZGKE8xB8rjDpTntRCjJ0aeQZtW3Q+FlsyV4dlxR13x//0VtrxpaNAtSc613e
+	 KxvXxRSUyM90uVfmeET0OtN9xzmb2MtZCVdcoh5A=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40VJHIoO020675
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 31 Jan 2024 13:17:18 -0600
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 31
+ Jan 2024 13:17:18 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 31 Jan 2024 13:17:17 -0600
+Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40VJHHFd067635;
+	Wed, 31 Jan 2024 13:17:17 -0600
+Date: Wed, 31 Jan 2024 13:17:17 -0600
+From: Nishanth Menon <nm@ti.com>
+To: Judith Mendez <jm@ti.com>
+CC: Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>, <linux-mmc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Vignesh
+ Raghavendra <vigneshr@ti.com>,
+        Andrew Davis <afd@ti.com>, Udit Kumar
+	<u-kumar1@ti.com>,
+        Roger Quadros <rogerq@kernel.org>, <devicetree@vger.kernel.org>,
+        Randolph Sapp <rs@ti.com>
+Subject: Re: [RFC PATCH 06/13] arm64: dts: ti: k3-am62a-main: Add sdhci0
+ instance
+Message-ID: <20240131191717.igbfpfchen7gmpam@headstand>
+References: <20240131003714.2779593-1-jm@ti.com>
+ <20240131003714.2779593-7-jm@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20240131184829.GE2609@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+In-Reply-To: <20240131003714.2779593-7-jm@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Forgot to mention...
+On 18:37-20240130, Judith Mendez wrote:
+> From: Nitin Yadav <n-yadav@ti.com>
+> 
+> Add sdhci0 DT node in k3-am62a-main for eMMC support. Add otap/itap
+> values according to the datasheet[0], Refer to Table 7-79.
+> 
+> [0] https://www.ti.com/lit/ds/symlink/am62a3.pdf
+> 
+> Signed-off-by: Judith Mendez <jm@ti.com>
+> Signed-off-by: Nitin Yadav <n-yadav@ti.com>
+> ---
 
-And I agree that pidfd_send_signal(flags => PGID/SID) can make
-some sense too.
+Side note: will appreciate if the dt patches come via the SoC dt tree
+for TI K3 and not via mmc tree.
 
-But this a) doesn't depend on PIDFD_THREAD, and b) needs another
-patch/discussion.
+>  arch/arm64/boot/dts/ti/k3-am62a-main.dtsi | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
+> index f0b8c9ab1459..523dee78123a 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
+> @@ -536,6 +536,24 @@ main_gpio1: gpio@601000 {
+>  		status = "disabled";
+>  	};
+>  
+> +	sdhci0: mmc@fa10000 {
+> +		compatible = "ti,am62-sdhci";
+> +		reg = <0x00 0xfa10000 0x00 0x260>, <0x00 0xfa18000 0x00 0x134>;
+> +		interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
+> +		power-domains = <&k3_pds 57 TI_SCI_PD_EXCLUSIVE>;
+> +		clocks = <&k3_clks 57 5>, <&k3_clks 57 6>;
+> +		clock-names = "clk_ahb", "clk_xin";
+> +		assigned-clocks = <&k3_clks 57 6>;
+> +		assigned-clock-parents = <&k3_clks 57 8>;
+> +		bus-width = <8>;
+> +		mmc-hs200-1_8v;
+> +		ti,clkbuf-sel = <0x7>;
+> +		ti,otap-del-sel-legacy = <0x0>;
+> +		ti,otap-del-sel-mmc-hs = <0x0>;
+> +		ti,otap-del-sel-hs200 = <0x6>;
+> +		status = "disabled";
+> +	};
+> +
+>  	sdhci1: mmc@fa00000 {
+>  		compatible = "ti,am62-sdhci";
+>  		reg = <0x00 0xfa00000 0x00 0x260>, <0x00 0xfa08000 0x00 0x134>;
+> -- 
+> 2.34.1
+> 
 
-But again, I am not sure I understood you correctly.
-
-On 01/31, Oleg Nesterov wrote:
->
-> On 01/31, Andy Lutomirski wrote:
-> >
-> > Right now, pidfd_send_signal() sends signals to processes, like so:
-> >
-> >  * The syscall currently only signals via PIDTYPE_PID which covers
-> >  * kill(<positive-pid>, <signal>. It does not signal threads or process
-> >  * groups.
-> >
-> > This patch adds PIDFD_THREAD which, potentially confusingly, doesn't
-> > change this (AFAICS).
->
-> Yes,
->
-> > So at least that should be documented loudly
-> > and clearly, IMO.
->
-> Please note
->
-> 	/* TODO: respect PIDFD_THREAD */
->
-> this patch adds into pidfd_send_signal().
->
-> See also this part of discussion
->
-> 	> > +	/* TODO: respect PIDFD_THREAD */
-> 	>
-> 	> So I've been thinking about this at the end of last week. Do we need to
-> 	> give userspace a way to send a thread-group wide signal even when a
-> 	> PIDFD_THREAD pidfd is passed? Or should we just not worry about this
-> 	> right now and wait until someone needs this?
->
-> 	I don't know. I am fine either way, but I think this needs a separate
-> 	patch and another discussion in any case. Anyway should be trivial,
-> 	pidfd_send_signal() has the "flags" argument.
->
-> with Christian in https://lore.kernel.org/all/20240130112126.GA26108@redhat.com/
->
-> Or did I misunderstand you?
->
-> Oleg.
-
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
