@@ -1,81 +1,68 @@
-Return-Path: <linux-kernel+bounces-46353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 456DD843E6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:33:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A252C843E6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:34:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3D13290D63
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:33:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A52BB1C225EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:34:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84A7B78B55;
-	Wed, 31 Jan 2024 11:32:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD63074E24;
+	Wed, 31 Jan 2024 11:34:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ETeO7YRz"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="XhT2sK5+"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EE3B76902
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 11:32:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B38861E522
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 11:34:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706700741; cv=none; b=TtsQjdfIubtsmYAILRimN0Dfgi34DNi5f+rivM9q7rRF3hot25ECJ9qBYhA9/2SIUJJQZO1Kk9251OIyXV25NGFe2OucNMx7D5J+eIzIyhlX+/opTfMAe1U7QYttxkVmQvXcPthEF89azNiYOBQWKvvXctzeYwDjGD1w8nQ0J9M=
+	t=1706700884; cv=none; b=PZQ+JksFFJdzZQQ7Xj8jQ56kcfleJAt2kzSQEVheG8LsNNI8EifhDBsBDwN4QwIzWzTpzCV+NWRmGPJXMMDNDOY6mGwLFxMZZg1LIS7bjGEvhUjtmYRNnWcjiw9C+VOXJ/MeC5eJWImsMnNF7+/ye90Zbd/ozExDk2mM4YoGI7I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706700741; c=relaxed/simple;
-	bh=Y7qo1m5CDGT1VKthMffqdzzDPZQ45nJRPtbVqpGFfiU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Yf2f9Wv6AbGjugFHjuDf8VAmsFNXhtyyMe6LM3o3YQUW+kxBZ0ERXgq/P86cNPcC6H3HguT+4QzCyAfQOH44ODLfsXww/RToq0tc+M6mYcZQOGMjjWbxK3IAEOqRasyikKxKOmVT11VYHCTY0vDojgGZtA7OAnS+akJb4fy48tk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ETeO7YRz; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706700740; x=1738236740;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Y7qo1m5CDGT1VKthMffqdzzDPZQ45nJRPtbVqpGFfiU=;
-  b=ETeO7YRzyWU3h12lRwbnHiqrZtYOgLLlcqxEHz401eMZdw6yWvaevA1o
-   eP+D7ZrdQ8BNP2xgK4IfBuAanydvDnka+HpeXvJUWctI5mLUsTjHTwHsE
-   KdrfHzsXs3GHtTOgN4yj6xPHF/TfipvXdC8w/AzgOxCtupgiwBjHGKHAv
-   UV/7t1yAzspfGSXqrTMWQrRCBhHmoiPZm0/uqYricYcoU6eAsDAyogUSE
-   FNCKGunB2SFYz6+s/RWFG82U8cyQNtkjDCIz1mwZI2cP1twDd23wiRqy5
-   4/wRPPOvvxcgvE8o8ekBlFGrc7Atd4/TfJPxf1vkkszaOC3IJc0o/d4tT
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="3414270"
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="3414270"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 03:32:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="878764820"
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="878764820"
-Received: from server.sh.intel.com ([10.239.53.117])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 03:32:16 -0800
-From: "Huang, Kai" <kai.huang@intel.com>
-To: linux-kernel@vger.kernel.org
-Cc: x86@kernel.org,
-	dave.hansen@intel.com,
-	kirill.shutemov@linux.intel.com,
-	tglx@linutronix.de,
-	bp@alien8.de,
-	mingo@redhat.com,
-	hpa@zytor.com,
-	luto@kernel.org,
-	peterz@infradead.org,
-	thomas.lendacky@amd.com,
-	chao.gao@intel.com,
-	bhe@redhat.com,
-	nik.borisov@suse.com,
-	pbonzini@redhat.com
-Subject: [PATCH 4/4] x86/virt/tdx: Remove the !KEXEC_CORE dependency
-Date: Wed, 31 Jan 2024 11:31:56 +0000
-Message-Id: <b571f5db35d42bbd90bf46251bd6da9665614b87.1706698706.git.kai.huang@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1706698706.git.kai.huang@intel.com>
-References: <cover.1706698706.git.kai.huang@intel.com>
+	s=arc-20240116; t=1706700884; c=relaxed/simple;
+	bh=szOUEWIekbHFv2ysEIzLFfxkSV4iQ7hF2ZVTmP3Cfbg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SXTQ6BqGvY19Hs+9I1uaAPcC/m5caSIp9EXZqk/djbnuBJRk2QuuiJekKrqmlARyVHQhFvF9939YG2nNxz2vX3mlbbBERP8THAm5zW8HEBK815K94wJsdjMvaLrbeB25cLV0XRqH+5Q7oAJg0lD5lFDk5qJwQ8Q/NHFUHy/fXiE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=XhT2sK5+; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1706700880;
+	bh=szOUEWIekbHFv2ysEIzLFfxkSV4iQ7hF2ZVTmP3Cfbg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=XhT2sK5+x7A6MrmX55bmRBBSKIslbgDwWP/R1kW8wOSsaJTXkuqh8LmHuxDI7GM/u
+	 lX7+F4OYh/12DCdtK3bIR7Dv+uZvzB4s4+BkzH/iIAJhDuh8eWbZUG6sH3kNypCpj+
+	 ZqsHuxvDaSXs38XVyd4nmBeOPneYYOt/TCR992V6WHcMyH6J2fOEqWqMbWL3Wxto3p
+	 86CiZUAN5b/B2kd4T9lo1y5W1GTEEiX6gdwgU25aSg6jmGUs2sWPBtK237YrZV9U2R
+	 GuSacIFWXaRvXdH/f6P+hOkzviXzEZ9zFizoiHsJTvOB69CD6YMlCF6YqlGT8Ralc8
+	 egc+3GS5Tf8Vw==
+Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 0C8A13780C22;
+	Wed, 31 Jan 2024 11:34:39 +0000 (UTC)
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+To: chunkuang.hu@kernel.org
+Cc: fshao@chromium.org,
+	p.zabel@pengutronix.de,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com,
+	dri-devel@lists.freedesktop.org,
+	linux-mediatek@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	kernel@collabora.com
+Subject: [PATCH v3 0/7] MediaTek DRM - DSI driver cleanups
+Date: Wed, 31 Jan 2024 12:34:27 +0100
+Message-ID: <20240131113434.241929-1-angelogioacchino.delregno@collabora.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,28 +71,35 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Kai Huang <kai.huang@intel.com>
+Changes in v3:
+ - Rebased over next-20240131
+ - Added bitfield.h inclusion in patch 3
+ - Added three more cleanup commits to the mix to simplify
+   the probe function and remove gotos.
 
-Now TDX host can work with kexec().  Remove the !KEXEC_CORE dependency.
+Changes in v2:
+ - Rebased over next-20231213
 
-Signed-off-by: Kai Huang <kai.huang@intel.com>
----
- arch/x86/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+This series performs some cleanups for mtk_dsi, enhancing human
+readability, using kernel provided macros where possible and
+also reducing code size.
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index ac3b32149a77..5225f8f3eade 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -1973,7 +1973,6 @@ config INTEL_TDX_HOST
- 	depends on X86_X2APIC
- 	select ARCH_KEEP_MEMBLOCK
- 	depends on CONTIG_ALLOC
--	depends on !KEXEC_CORE
- 	depends on X86_MCE
- 	select ARCH_HAS_CC_PLATFORM
- 	help
+Tested on MT8173 and MT8192 Chromebooks (using a DSI<->DP bridge)
+and on MT6795 Sony Xperia M5 (DSI video mode panel).
+
+AngeloGioacchino Del Regno (7):
+  drm/mediatek: dsi: Use GENMASK() for register mask definitions
+  drm/mediatek: dsi: Cleanup functions mtk_dsi_ps_control{_vact}()
+  drm/mediatek: dsi: Use bitfield macros where useful
+  drm/mediatek: dsi: Replace open-coded instance of HZ_PER_MHZ
+  drm/mediatek: dsi: Register DSI host after acquiring clocks and PHY
+  drm/mediatek: dsi: Simplify with dev_err_probe and remove gotos
+  drm/mediatek: dsi: Compress of_device_id entries and add sentinel
+
+ drivers/gpu/drm/mediatek/mtk_dsi.c | 284 ++++++++++++-----------------
+ 1 file changed, 117 insertions(+), 167 deletions(-)
+
 -- 
-2.34.1
+2.43.0
 
 
