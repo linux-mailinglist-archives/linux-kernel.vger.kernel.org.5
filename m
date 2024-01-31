@@ -1,123 +1,160 @@
-Return-Path: <linux-kernel+bounces-45919-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45920-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D13A8437D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:27:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B80F8437D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:27:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EE641C267CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:27:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEF681C26206
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:27:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7F1A56B8C;
-	Wed, 31 Jan 2024 07:22:05 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0963056479;
+	Wed, 31 Jan 2024 07:22:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RK7HR50b"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A03656479;
-	Wed, 31 Jan 2024 07:22:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C24014F608;
+	Wed, 31 Jan 2024 07:22:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706685725; cv=none; b=AItS0LPlBLO3jOcMNXhV+3Wa1qPxBiZTBoiMM6cimyHvEQ8e+v0BUr8xBaey1vgNFXHDF0+pK1PWujGmQLbWHYyoPQasU5bTVV9wM4qw1T+o5vYoaCj4qBwhdliDXFLkje95LSH840Krd77hJxs2WkrBjOPhSmHgYijgSDwAE4o=
+	t=1706685766; cv=none; b=aRBGSLBg7kPDhw7VbmsnjJgDWwUHSOcwt9S2s1J+xSOV1wRJgo/6joDcvUBh7JfvZWTHtRAEtPb38ZWfQvtgCTfujRADwCY1aM+gs2pdnhjUP/fBEp/deHY54NJQtMxDBJyZOM8TnwJ1mFNfliN2QHG+fd5XT7yKLbOPC68IeR0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706685725; c=relaxed/simple;
-	bh=VSPOIQIi1SFSb7BcOqd2hNNK1gD3mDXV74OKv3NfOM4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Y4PH8T7zZZW/eVZpmaN/fu2cQE4ZO2cUvotkHqCCzDe3RVY7zOrH3/qk99Go9I1RQnmuIZaoEMBG5m0hTCqYlYuXuCwd5bnzUi1Cj7c4lnvKXpZhSpMxY6EI0dJmnhmEpp+SMbs2NY7iYnTDJ4AUGr7KZTFMucysv0JlvaiQCqE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC2FEC433F1;
-	Wed, 31 Jan 2024 07:22:01 +0000 (UTC)
-From: Huacai Chen <chenhuacai@loongson.cn>
-To: gregkh@linuxfoundation.org,
-	Huacai Chen <chenhuacai@kernel.org>
-Cc: loongarch@lists.linux.dev,
-	stable@vger.kernel.org,
-	Xuefeng Li <lixuefeng@loongson.cn>,
-	Guo Ren <guoren@kernel.org>,
-	Xuerui Wang <kernel@xen0n.name>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	linux-kernel@vger.kernel.org,
-	loongson-kernel@lists.loongnix.cn,
-	Huacai Chen <chenhuacai@loongson.cn>
-Subject: [PATCH 6.1.y and 6.6.y] LoongArch/smp: Call rcutree_report_cpu_starting() at tlb_init()
-Date: Wed, 31 Jan 2024 15:21:51 +0800
-Message-Id: <20240131072151.1023985-1-chenhuacai@loongson.cn>
-X-Mailer: git-send-email 2.39.3
+	s=arc-20240116; t=1706685766; c=relaxed/simple;
+	bh=UUE+/VJXlKc4HQKfxBesRIPvkbX3DupU4onjGeqAeHI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=E+fv9/W3Msj41GYDaANDgU7XmuE2MWlMqClcHi+Bk3n4k9EPsx6jptzOSRWktdGBRoEjS5tlsPFZ/O+mkgTxRnJj7QpXx323fYGsaDSDSl58Qs+fmx/uf31b7CGHPbk5s36/QEZ3QDpluhxmmuyh2JZLKHNJOWILFB2Xo6vWy3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RK7HR50b; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706685765; x=1738221765;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=UUE+/VJXlKc4HQKfxBesRIPvkbX3DupU4onjGeqAeHI=;
+  b=RK7HR50bOjXsY4ogRtK6+RkHNMoHs36zAC+hV9zeuM4p9a7NkXccwvZ1
+   X/KpSXKiVvAOcCxDoSiGdzeCUPIZp3biDYJynfxAbLPqUhho0Sipt1Pup
+   0+vMXL97L4L/RpsfuZS9KLPumiRhqu1gA9hKDL6JkCGTLVBxe75GJC5a1
+   sv2c6mLn4xD81Opngm9n+gnh01NqgNhkHiA/5ph0M8Y7+2MPI6ZyZIMFF
+   DAiYwHO3PLXGd58Ca7m882XvjOrqOB2KdPOCBkYtOge6APKusDGWFhBBV
+   mWfLupZIclrEVt8PSrMh4z2/vhuc1b7LhqLilgkU8NEubaWEAPjRUCu4+
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="3359615"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="3359615"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 23:22:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="788484430"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="788484430"
+Received: from yy-desk-7060.sh.intel.com (HELO localhost) ([10.239.159.76])
+  by orsmga002.jf.intel.com with ESMTP; 30 Jan 2024 23:22:39 -0800
+Date: Wed, 31 Jan 2024 15:22:39 +0800
+From: Yuan Yao <yuan.yao@linux.intel.com>
+To: isaku.yamahata@intel.com
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+	erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: Re: [PATCH v18 013/121] KVM: TDX: Add TDX "architectural" error codes
+Message-ID: <20240131072239.wirjxijv7kumy3g4@yy-desk-7060>
+References: <cover.1705965634.git.isaku.yamahata@intel.com>
+ <212f22ed28e43c016607e3c420d7d98910878007.1705965634.git.isaku.yamahata@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <212f22ed28e43c016607e3c420d7d98910878007.1705965634.git.isaku.yamahata@intel.com>
+User-Agent: NeoMutt/20171215
 
-Machines which have more than 8 nodes fail to boot SMP after commit
-a2ccf46333d7b2cf96 ("LoongArch/smp: Call rcutree_report_cpu_starting()
-earlier"). Because such machines use tlb-based per-cpu base address
-rather than dmw-based per-cpu base address, resulting per-cpu variables
-can only be accessed after tlb_init(). But rcutree_report_cpu_starting()
-is now called before tlb_init() and accesses per-cpu variables indeed.
+On Mon, Jan 22, 2024 at 03:52:49PM -0800, isaku.yamahata@intel.com wrote:
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
+>
+> Add error codes for the TDX SEAMCALLs both for TDX VMM side for TDH
+> SEAMCALL and TDX guest side for TDG.VP.VMCALL.  KVM issues the TDX
+> SEAMCALLs and checks its error code.  KVM handles hypercall from the TDX
+> guest and may return an error.  So error code for the TDX guest is also
+> needed.
+>
+> TDX SEAMCALL uses bits 31:0 to return more information, so these error
+> codes will only exactly match RAX[63:32].  Error codes for TDG.VP.VMCALL is
+> defined by TDX Guest-Host-Communication interface spec.
+>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>  arch/x86/kvm/vmx/tdx_errno.h | 43 ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 43 insertions(+)
+>  create mode 100644 arch/x86/kvm/vmx/tdx_errno.h
+>
+> diff --git a/arch/x86/kvm/vmx/tdx_errno.h b/arch/x86/kvm/vmx/tdx_errno.h
+> new file mode 100644
+> index 000000000000..7f96696b8e7c
+> --- /dev/null
+> +++ b/arch/x86/kvm/vmx/tdx_errno.h
+> @@ -0,0 +1,43 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/* architectural status code for SEAMCALL */
+> +
+> +#ifndef __KVM_X86_TDX_ERRNO_H
+> +#define __KVM_X86_TDX_ERRNO_H
+> +
+> +#define TDX_SEAMCALL_STATUS_MASK		0xFFFFFFFF00000000ULL
+> +
+> +/*
+> + * TDX SEAMCALL Status Codes (returned in RAX)
+> + */
+> +#define TDX_NON_RECOVERABLE_VCPU		0x4000000100000000ULL
+> +#define TDX_INTERRUPTED_RESUMABLE		0x8000000300000000ULL
+> +#define TDX_OPERAND_INVALID			0xC000010000000000ULL
+> +#define TDX_OPERAND_BUSY			0x8000020000000000ULL
+> +#define TDX_PREVIOUS_TLB_EPOCH_BUSY		0x8000020100000000ULL
+> +#define TDX_VCPU_NOT_ASSOCIATED			0x8000070200000000ULL
+> +#define TDX_KEY_GENERATION_FAILED		0x8000080000000000ULL
+> +#define TDX_KEY_STATE_INCORRECT			0xC000081100000000ULL
+> +#define TDX_KEY_CONFIGURED			0x0000081500000000ULL
+> +#define TDX_NO_HKID_READY_TO_WBCACHE		0x0000082100000000ULL
+> +#define TDX_FLUSHVP_NOT_DONE			0x8000082400000000ULL
+> +#define TDX_EPT_WALK_FAILED			0xC0000B0000000000ULL
+> +#define TDX_EPT_ENTRY_NOT_FREE			0xC0000B0200000000ULL
 
-Since the original patch want to avoid the lockdep warning caused by
-page allocation in tlb_init(), we can move rcutree_report_cpu_starting()
-to tlb_init() where after tlb exception configuration but before page
-allocation.
+Looks these 2 TDX_EPT_xx are not used, so can remove them.
 
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
----
- arch/loongarch/kernel/smp.c |  1 -
- arch/loongarch/mm/tlb.c     | 16 ++++++++++------
- 2 files changed, 10 insertions(+), 7 deletions(-)
+Reviewed-by: Yuan Yao <yuan.yao@intel.com>
 
-diff --git a/arch/loongarch/kernel/smp.c b/arch/loongarch/kernel/smp.c
-index 3f3cdc7ffe7a..4b4ba3f9335d 100644
---- a/arch/loongarch/kernel/smp.c
-+++ b/arch/loongarch/kernel/smp.c
-@@ -506,7 +506,6 @@ asmlinkage void start_secondary(void)
- 	sync_counter();
- 	cpu = raw_smp_processor_id();
- 	set_my_cpu_offset(per_cpu_offset(cpu));
--	rcu_cpu_starting(cpu);
- 
- 	cpu_probe();
- 	constant_clockevent_init();
-diff --git a/arch/loongarch/mm/tlb.c b/arch/loongarch/mm/tlb.c
-index 2c51d755fbbc..e71150dd7f4b 100644
---- a/arch/loongarch/mm/tlb.c
-+++ b/arch/loongarch/mm/tlb.c
-@@ -284,12 +284,16 @@ static void setup_tlb_handler(int cpu)
- 		set_handler(EXCCODE_TLBNR * VECSIZE, handle_tlb_protect, VECSIZE);
- 		set_handler(EXCCODE_TLBNX * VECSIZE, handle_tlb_protect, VECSIZE);
- 		set_handler(EXCCODE_TLBPE * VECSIZE, handle_tlb_protect, VECSIZE);
--	}
-+	} else {
-+		int vec_sz __maybe_unused;
-+		void *addr __maybe_unused;
-+		struct page *page __maybe_unused;
-+
-+		/* Avoid lockdep warning */
-+		rcu_cpu_starting(cpu);
-+
- #ifdef CONFIG_NUMA
--	else {
--		void *addr;
--		struct page *page;
--		const int vec_sz = sizeof(exception_handlers);
-+		vec_sz = sizeof(exception_handlers);
- 
- 		if (pcpu_handlers[cpu])
- 			return;
-@@ -305,8 +309,8 @@ static void setup_tlb_handler(int cpu)
- 		csr_write64(pcpu_handlers[cpu], LOONGARCH_CSR_EENTRY);
- 		csr_write64(pcpu_handlers[cpu], LOONGARCH_CSR_MERRENTRY);
- 		csr_write64(pcpu_handlers[cpu] + 80*VECSIZE, LOONGARCH_CSR_TLBRENTRY);
--	}
- #endif
-+	}
- }
- 
- void tlb_init(int cpu)
--- 
-2.39.3
-
+> +#define TDX_EPT_ENTRY_STATE_INCORRECT		0xC0000B0D00000000ULL
+> +
+> +/*
+> + * TDG.VP.VMCALL Status Codes (returned in R10)
+> + */
+> +#define TDG_VP_VMCALL_SUCCESS			0x0000000000000000ULL
+> +#define TDG_VP_VMCALL_RETRY			0x0000000000000001ULL
+> +#define TDG_VP_VMCALL_INVALID_OPERAND		0x8000000000000000ULL
+> +#define TDG_VP_VMCALL_TDREPORT_FAILED		0x8000000000000001ULL
+> +
+> +/*
+> + * TDX module operand ID, appears in 31:0 part of error code as
+> + * detail information
+> + */
+> +#define TDX_OPERAND_ID_RCX			0x01
+> +#define TDX_OPERAND_ID_SEPT			0x92
+> +#define TDX_OPERAND_ID_TD_EPOCH			0xa9
+> +
+> +#endif /* __KVM_X86_TDX_ERRNO_H */
+> --
+> 2.25.1
+>
+>
 
