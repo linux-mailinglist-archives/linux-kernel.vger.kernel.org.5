@@ -1,107 +1,171 @@
-Return-Path: <linux-kernel+bounces-45838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45802-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52BD78436D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:31:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F377843663
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:02:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B07372824D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:31:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38EFD1C21D2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:02:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B7451D6A6;
-	Wed, 31 Jan 2024 06:31:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61E383E494;
+	Wed, 31 Jan 2024 06:02:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mmQFZQ15"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="yZ1L6ecC"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00817125CA;
-	Wed, 31 Jan 2024 06:31:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 981FA3EA83
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 06:02:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706682673; cv=none; b=V5A9XemPKHnblvKiTT5NRg04pZzadydrR+eS1ZrgV/g1k2nSb9HgqusiQ4aCfpdZz5rJq08LfUCwm6ie35ggmqRzhLD+Kkr/T/F8UIejbk3vVPKdP8zyHwM8Es+7Cf+3en2HfhLw7WUnaz3Y379bN6oBX37RQ4ApLfHySTUzCmQ=
+	t=1706680951; cv=none; b=HBHIOoxBuo9Sdr2+d5qgvEtsKSS/rzfk74FH60uYf3wYl7ykoMp2oiJu0XB0abqmaweF2lPhWuBv9Eyp96Hg5Rdntzb9bET1DaNp065T97aLKm9voxMiYifp7PLsXzv+MrYCEGYl7uHko7aLKXipXd/KpAosf0d0+fwYFNluS3Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706682673; c=relaxed/simple;
-	bh=rWpNYhvi5Y7XEDqsmQ7YOXj2NszqHIpA2qBYV+5aizE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=bKrVVEJyzBzJv0e43ll4wN6rRozrJ3EgFMgZKX3odYvE/SR/lOlHEElX0OjKCpDAjFKjB9Ml7RwJ7vpxXQrINfmsyAFZbWqyNoBZmAWsGxY7O3SBZnmdSFybPTXBREofAVBZSKsej1fdyvQefYB0TdOKEI2rpj4TySGSXAy0CoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mmQFZQ15; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706682673; x=1738218673;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=rWpNYhvi5Y7XEDqsmQ7YOXj2NszqHIpA2qBYV+5aizE=;
-  b=mmQFZQ15dYt8NhEMlVcdhRYa0u3xnfkQLqMib7qbOgJtDIz2y/RIPt4+
-   2WA5JJfD2219ZbFDdU5ORcag9Gfva0fQwvivmjqn6hFvBrBCDXAFf6AmV
-   2jsNQvP5dHNdlT7ZZauPcuoZaeb+k/meHXAaD6Gs7ACSpSFDNY3Dt0yBQ
-   h7mC+/202asF2pdIQNypTg7L0gro0TeX+dvXvNNDPu48JsrEus7ww1+u1
-   nluYSQDSjSnl8HwCaGE3E5O6KxSCcYP6ZLuzycMQ73TWwwHJeDBuRzq+L
-   rFX1fvXX/9Ooxji1GxQmKOy0myy1ycKTkYaNmDCMrRCc7gxJcJG+5mMiO
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="10145767"
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="10145767"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 22:31:11 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="907779612"
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="907779612"
-Received: from yzhao56-desk.sh.intel.com ([10.239.159.62])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 22:31:07 -0800
-From: Yan Zhao <yan.y.zhao@intel.com>
-To: arnd@arndb.de,
-	linus.walleij@linaro.org,
-	guoren@kernel.org,
-	bcain@quicinc.com,
-	jonas@southpole.se,
-	stefan.kristiansson@saunalahti.fi,
-	shorne@gmail.com
-Cc: linux-arch@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org,
-	linux-openrisc@vger.kernel.org,
-	Yan Zhao <yan.y.zhao@intel.com>
-Subject: [PATCH 4/4] openrisc: apply page shift to PFN instead of VA in pfn_to_virt
-Date: Wed, 31 Jan 2024 14:01:42 +0800
-Message-Id: <20240131060142.2823-1-yan.y.zhao@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240131055159.2506-1-yan.y.zhao@intel.com>
-References: <20240131055159.2506-1-yan.y.zhao@intel.com>
+	s=arc-20240116; t=1706680951; c=relaxed/simple;
+	bh=S6iqY0O7bWkNnxXJ5MbqGTCSCZS6LNZcocjvfJVeznc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WV4+jM6g5c/Hc0ltABJy+/d5WtmImkNKz3NBpKSGCyoxVZC5z41/ZqRioSCmJYmTFeXSKgejvdE0y47U/Ko9+BKPpTFtVb9bOazFB49HXx+H+WEIfDf4TcqqLTXElTHS4o9Ey1cmaH27mo+OUjskp3yq4FC9bfbRhr9AWh5TzhE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=yZ1L6ecC; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6de0ba30994so403178b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 22:02:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1706680949; x=1707285749; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7nVt2N2T/88QwCj9vDpwCSukp2aFRSspOwEn5na4qf0=;
+        b=yZ1L6ecCUUONG4bsc6gQvxkyWEIx86v9ub2Z5lEFvMNlYAm/TYsXR+v2xtprwKasht
+         OwMj1laWfYKFRZWotbBiIGM87RAmQN/uoosw7sgX20Jp6aQJh3A0c8sYCtAJ/pV46MyG
+         J9OHxV3o3C4aZurnOXtqPFSkyi73oh9fBkLhJCj0xwMg38KoCEUhkF4Or9cqVmf+OqAq
+         8m09Ziy/kDVJ57O+bL9fyfidqAvrsEllyyqzn4O4P+7AtaeMx7xh+9axRlalBZZQpy8d
+         5ItNfpbocRrHDu39iij8LGt50WSyzCjEtCZd26IHJAtoXk791nSI8c2+PK0GeQJSfiAK
+         KJGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706680949; x=1707285749;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7nVt2N2T/88QwCj9vDpwCSukp2aFRSspOwEn5na4qf0=;
+        b=SVjSfWQuR4EyTbos5EmLRD+7BH4K/X4H/BadnpBJriMFUNzWg8FNCrFD9wGAJtdrrw
+         /CzrmeHVD8aZaWxlYdwYehWaK3JWdTR2RjSteFayoJnQFbcDH+yCiDMfu+crxowbZhjP
+         BRegsyQX6ojy+xES/gpTHUIgiKKWuBWQC+JPVXZG3gKk6i1CnBbz/lgJ3oViLHCJKij7
+         GW7e1yiZwwx99ZHJmbk0kkZ70zum8OoVN+8PrdeALcsbKEYb7DYJHXr9C8cNI+cDGcvG
+         yoIVnMwQiaaOcWWEw4emlGBXnA0CWBsd2HX/THsh4u9LZoooh4RqAeQIYsHDEmoSh/4j
+         S+mw==
+X-Gm-Message-State: AOJu0YwoSTW2siWjEm2TN7nHJM0UlLHOah3yF5F8EeMujrhQXCLyvwTo
+	ZizIzklQhngMnQGJbqkbnOaFh8biJXUm226PypjS1e+Vd8q/DB6nZroYjTxxplQ=
+X-Google-Smtp-Source: AGHT+IF83oLZBbfL/1pDsa5srWK3SXBJBiWlPPeb6q8CD6Rlv6AkRdfMv41fs5CW1HIELf7DGdNSpA==
+X-Received: by 2002:a62:ce86:0:b0:6db:c583:1ac6 with SMTP id y128-20020a62ce86000000b006dbc5831ac6mr709518pfg.9.1706680948838;
+        Tue, 30 Jan 2024 22:02:28 -0800 (PST)
+Received: from dread.disaster.area (pa49-181-38-249.pa.nsw.optusnet.com.au. [49.181.38.249])
+        by smtp.gmail.com with ESMTPSA id e17-20020a656491000000b005d67862799asm4574140pgv.44.2024.01.30.22.02.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jan 2024 22:02:28 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1rV3g1-0002Xn-15;
+	Wed, 31 Jan 2024 17:02:25 +1100
+Date: Wed, 31 Jan 2024 17:02:25 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Theodore Ts'o <tytso@mit.edu>,
+	syzbot <syzbot+cdee56dbcdf0096ef605@syzkaller.appspotmail.com>,
+	adilger.kernel@dilger.ca, chandan.babu@oracle.com, jack@suse.com,
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: current->journal_info got nested! (was Re: [syzbot] [xfs?]
+ [ext4?] general protection fault in jbd2__journal_start)
+Message-ID: <Zbnicfk+JHIlG2WC@dread.disaster.area>
+References: <000000000000e98460060fd59831@google.com>
+ <000000000000d6e06d06102ae80b@google.com>
+ <ZbmILkfdGks57J4a@dread.disaster.area>
+ <20240131045822.GA2356784@mit.edu>
+ <ZbnYitvLz7sWi727@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZbnYitvLz7sWi727@casper.infradead.org>
 
-Apply the page shift to PFN to get physical address for final VA.
-The macro __va should take physical address instead of PFN as input.
+On Wed, Jan 31, 2024 at 05:20:10AM +0000, Matthew Wilcox wrote:
+> On Tue, Jan 30, 2024 at 11:58:22PM -0500, Theodore Ts'o wrote:
+> > Hmm, could XFS pre-fault target memory buffer for the bulkstat output
+> > before starting its transaction?  Alternatively, ext4 could do a save
+> > of current->journal_info before starting to process the page fault,
+> > and restore it when it is done.  Both of these seem a bit hacky, and
+> > the question is indeed, are there other avenues that might cause the
+> > transaction context nesting, such that a more general solution is
+> > called for?
+> 
+> I'd suggest that saving off current->journal_info is risky because
+> it might cover a real problem where you've taken a pagefault inside
+> a transaction (eg ext4 faulting while in the middle of a transaction on
+> the same filesystem that contains the faulting file).
 
-Fixes: 232ba1630c66 ("openrisc: Make pfn accessors statics inlines")
-Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
----
- arch/openrisc/include/asm/page.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Depends. Look at it from the POV of XFS:
 
-diff --git a/arch/openrisc/include/asm/page.h b/arch/openrisc/include/asm/page.h
-index 44fc1fd56717..55c66f6cb1bd 100644
---- a/arch/openrisc/include/asm/page.h
-+++ b/arch/openrisc/include/asm/page.h
-@@ -79,7 +79,7 @@ static inline unsigned long virt_to_pfn(const void *kaddr)
- 
- static inline void * pfn_to_virt(unsigned long pfn)
- {
--	return (void *)((unsigned long)__va(pfn) << PAGE_SHIFT);
-+	return __va(pfn << PAGE_SHIFT);
- }
- 
- #define virt_to_page(addr) \
+1. we can identify current->journal_info as belonging to XFS because
+of the TRAN magic number in the first 32 bits of the structure.
+
+2. the struct xfs_trans has a pointer to the xfs_mount which points
+to the VFS superblock, which means we can identify exactly which
+filesystem instance the transaction belongs to.
+
+3. We can determine if the transaction has a journal reservation
+from the log ticket the transaction holds.
+
+From these three things, we can identify if we are about to recurse
+into the same filesystem, and if so, determine if it is safe to run
+new transactions from within that context.
+
+> Seems to me that we shouldn't be writing to userspace while in the
+> middle of a transaction.  We could even assert that in copy_to_user()?
+
+On further thinking I don't think the problem is taking page faults
+within a filesystem transaction context is the problem here. We're
+using the transaction context for automated garbage collection so we
+never have to care about leaking object references in the code, not
+because we are running a modification and holding a journal
+reservation. It's the journals reservations that cannot be allowed
+to nest in XFS, not the transactions themselves.
+
+IOWs, the real problem is that multiple filesystems use the same
+task field for their own individual purposes, and that then leads
+these sorts of recursion problems when a task jumps from one
+filesystem context to another and the task field is then
+mis-interpretted.
+
+I've had a look at the XFS usage of current->journal_info, and I
+think we can just remove it.
+
+It's used for warning that we are running a writepages operations
+from within transaction context (which should never happen from XFS
+nor memory reclaim). it's also used in the ->destroy_inode path to
+determine if we are running in a context where we cannot block on
+filesystem locks or transaction reservations. 
+
+The former we can remove with no loss, the latter we can simply
+check PF_MEMALLOC_NOFS as that is set by transaction contexts.
+
+IOWs, I think that, in general, page faults in user buffers are fine
+in empty XFS transaction contexts as long as we aren't using some
+structure that some other filesystem might then to process the
+page fault....
+
+This may not be true for other filesystems, but I don't think we
+can really say "page faults in any filesystem transaction are unsafe
+and should be banned"....
+
+-Dave.
 -- 
-2.17.1
-
+Dave Chinner
+david@fromorbit.com
 
