@@ -1,300 +1,316 @@
-Return-Path: <linux-kernel+bounces-46325-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46315-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D873843E00
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:12:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A17D8843DD1
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:09:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2FF81C22513
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:12:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56245293DD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:09:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AB3A7D3EE;
-	Wed, 31 Jan 2024 11:10:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 684B56E2A0;
+	Wed, 31 Jan 2024 11:08:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="l4B7jdgS"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="YaP5S3Lk"
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B7467BB1A;
-	Wed, 31 Jan 2024 11:10:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E34D6EB4A
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 11:08:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706699428; cv=none; b=p/aHO3/fH3hZobc3DWJRtYF+Y0kPTpfs81MazpSBJ3xeLJFOQVmlAHF4T0cJ1hSelGrAEj9nKnbKmRBPDsY6SKWSYp4x5vWCIrb9YiXc2Lry7qLr8Nh8ZpLvi2s2LBTNBVEfXUZSa8thsEToSm52mmkN3ZovZPgi7pRfdmK1Rzw=
+	t=1706699323; cv=none; b=BNxU9h/UT06cuP3sI7SvEGJwRuGiSgEmQBNLowh0b+B3kx3634Jr2zZa9Wk4NZJuiRkr2UTMdFijQvW/kIGp+nBxCc9ZB2Exx8RlekbmIDZ+4fQR0HTDbnyouRfkVy6TbCtuxr0TVNb4229Qo3XSWxOQ7OO/cqRVruJK2QN4W0Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706699428; c=relaxed/simple;
-	bh=2aMh3wOVlqpU6igYMIpqzplWbecfTNjZwrEdrt9ImGI=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rd6pxEkWDnX/nQegWYWB18TlifgMaFkzbBSn9g8e1unD5QkfkggALOqZc1JlITGuezVQYtmAYD9f5KPZbOJbeQPLzKzHymONFbYBTHfeFawZPz5QLdxnXnJsSIls0ZrGS0oKxEs2eYtK/hhiX1/WcUm5K/RLSi84F1tVagTq0aQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=l4B7jdgS; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40VAqrvi007444;
-	Wed, 31 Jan 2024 11:10:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=eu4+fj6D3iVrbZw4NhJ6j+Qbrx8bAr3vCJR8zRmV4mQ=; b=l4
-	B7jdgSAkuijaaKRNlOS7YDOhSpTxT/v3DDSh7MGPs8+gfHI1kohtWwPMPzqcypTZ
-	uSN8IFay+37ZPV4rHzz02FtU1j5Qicl5inXAF1FEOqXIvGxxKjXtqXhLjIJ5TGZF
-	xEepTxzCHYyzbAN+HLyhg7dZAE2EPaOdH6er1dwfXu24/87VqFyS+MlwUbQajsNc
-	2HBmE0uO9r9vKsCg4dXMBD5MoLiuBZyEffrTPrcWVg1PLTHp1csz8Vgjxdd8D8Mb
-	jQ08bqw5OoCLsWOXsf0QIQkAVQHcoLK1zw94n6BeyPCJkYjk1ElYKAH0vWBujqjq
-	jg7UQhdSTIP0kSOCFLSw==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vyb0csgrk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 31 Jan 2024 11:10:05 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40VBA4Su019587
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 31 Jan 2024 11:10:04 GMT
-Received: from hu-mojha-hyd.qualcomm.com (10.80.80.8) by
- nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 31 Jan 2024 03:09:55 -0800
-From: Mukesh Ojha <quic_mojha@quicinc.com>
-To: <corbet@lwn.net>, <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <keescook@chromium.org>, <tony.luck@intel.com>,
-        <gpiccoli@igalia.com>, <mathieu.poirier@linaro.org>, <vigneshr@ti.com>,
-        <nm@ti.com>, <matthias.bgg@gmail.com>, <kgene@kernel.org>,
-        <alim.akhtar@samsung.com>, <bmasney@redhat.com>
-CC: <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-hardening@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>, <kernel@quicinc.com>,
-        <quic_mojha@quicinc.com>
-Subject: [PATCH v8 09/10] pstore/ram: Add ramoops information notifier support
-Date: Wed, 31 Jan 2024 16:38:36 +0530
-Message-ID: <20240131110837.14218-10-quic_mojha@quicinc.com>
-X-Mailer: git-send-email 2.43.0.254.ga26002b62827
-In-Reply-To: <20240131110837.14218-1-quic_mojha@quicinc.com>
-References: <20240131110837.14218-1-quic_mojha@quicinc.com>
+	s=arc-20240116; t=1706699323; c=relaxed/simple;
+	bh=HY58CsLPzA1lVXcWNzUEh1Thv5YQ2zaWtkVZl330PLE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dAimET/9gptKn0A79jIvItbzGiUY2t3wdMuWBz5pEvG+K78QveUzeEmllfm8trS0BXL9iNp8I75V/Tb3YDEUcxT11WNfBlzniNj3XbpP40HZ4nh0ll/3MZe+wfuwf8vVGuGWdcFoxbkAWBkcbLBBIuytoXVZAlzkocckm9yrRQk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=YaP5S3Lk; arc=none smtp.client-ip=115.124.30.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1706699318; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=BtDpBlYrJT19LLzhatnciKlO7Bh7yEt22vXAZTHidUc=;
+	b=YaP5S3LkYjY87l8CaimLEua3xQlOWmg0Kr7xasXQZnEfbQ3co7a7ipguUXEHIMj5DolB3HIoOlNBsoJ2nGXl4vJx8P95Oe9vHNghglDXilH2/iJ/JK7v1rlOD6d+oqSuTwEn4EIsho5LRXRSEgQinZS449v9mP5yl2htpVC19K0=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0W.jNxow_1706699316;
+Received: from 30.178.67.117(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W.jNxow_1706699316)
+          by smtp.aliyun-inc.com;
+          Wed, 31 Jan 2024 19:08:37 +0800
+Message-ID: <b5d88f82-6048-4ca9-becb-3e2c68acbaaf@linux.alibaba.com>
+Date: Wed, 31 Jan 2024 19:08:36 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCHv2 2/2] watchdog/softlockup: report the most frequent
+ interrupts
+Content-Language: en-US
+To: Liu Song <liusong@linux.alibaba.com>, dianders@chromium.org,
+ akpm@linux-foundation.org, pmladek@suse.com, lecopzer.chen@mediatek.com,
+ kernelfans@gmail.com
+Cc: linux-kernel@vger.kernel.org, yaoma@linux.alibaba.com
+References: <20240130074744.45759-1-yaoma@linux.alibaba.com>
+ <20240130074744.45759-3-yaoma@linux.alibaba.com>
+ <ad353e3e-4f9d-42a0-834f-39cfc128453f@linux.alibaba.com>
+From: Bitao Hu <yaoma@linux.alibaba.com>
+In-Reply-To: <ad353e3e-4f9d-42a0-834f-39cfc128453f@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 3fMz-JiJ9WgO2rLSLiL_IJ8WvLdp5K0s
-X-Proofpoint-ORIG-GUID: 3fMz-JiJ9WgO2rLSLiL_IJ8WvLdp5K0s
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-31_06,2024-01-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
- phishscore=0 suspectscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999
- mlxscore=0 priorityscore=1501 impostorscore=0 lowpriorityscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401190000 definitions=main-2401310084
 
-Client like minidump is interested in knowing ramoops
-individual zone addresses and their size so that it
-could register them with its table.
 
-Let's introduce a info notifier in ramoops which
-gets called when ramoops driver probes successfully
-and it passes the ramoops region information to the
-passed callback by the client and If the call for
-ramoops ready register comes after ramoops probe
-than call the callback directly.
 
-Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
----
- fs/pstore/ram.c            | 114 +++++++++++++++++++++++++++++++++++++
- include/linux/pstore_ram.h |  15 +++++
- 2 files changed, 129 insertions(+)
-
-diff --git a/fs/pstore/ram.c b/fs/pstore/ram.c
-index 1faf0835700b..bd94c11e43ff 100644
---- a/fs/pstore/ram.c
-+++ b/fs/pstore/ram.c
-@@ -22,6 +22,8 @@
- #include <linux/of_address.h>
- #include <linux/memblock.h>
- #include <linux/mm.h>
-+#include <linux/mutex.h>
-+#include <linux/notifier.h>
- 
- #include "internal.h"
- #include "ram_internal.h"
-@@ -101,6 +103,19 @@ struct ramoops_context {
- 	unsigned int ftrace_read_cnt;
- 	unsigned int pmsg_read_cnt;
- 	struct pstore_info pstore;
-+	struct blocking_notifier_head ramoops_notifiers;
-+	bool ramoops_ready;
-+	/*
-+	 * Lock to serialize access to ramoops_ready and to not
-+	 * miss any ongoing notifier registration while ramoops
-+	 * probe is in progress.
-+	 */
-+	struct mutex lock;
-+};
-+
-+struct ramoops_backend {
-+	struct	notifier_block nb;
-+	int	(*fn)(const char *name, int id, void *vaddr, phys_addr_t paddr, size_t size);
- };
- 
- static struct platform_device *dummy;
-@@ -501,6 +516,8 @@ static struct ramoops_context oops_cxt = {
- 		.write_user	= ramoops_pstore_write_user,
- 		.erase	= ramoops_pstore_erase,
- 	},
-+	.ramoops_notifiers = BLOCKING_NOTIFIER_INIT(oops_cxt.ramoops_notifiers),
-+	.lock   = __MUTEX_INITIALIZER(oops_cxt.lock),
- };
- 
- static void ramoops_free_przs(struct ramoops_context *cxt)
-@@ -666,6 +683,98 @@ static int ramoops_init_prz(const char *name,
- 	return 0;
- }
- 
-+static int __ramoops_info_notifier(struct ramoops_context *cxt, int (*fn)(const char *,
-+				   int, void *, phys_addr_t, size_t))
-+{
-+	struct persistent_ram_zone *prz;
-+	int ret;
-+	int i;
-+
-+	for (i = 0; i < cxt->max_dump_cnt; i++) {
-+		prz = cxt->dprzs[i];
-+		ret = fn("dmesg", i, prz->vaddr, prz->paddr, prz->size);
-+		if (ret < 0)
-+			goto err;
-+	}
-+
-+	if (cxt->console_size) {
-+		prz = cxt->cprz;
-+		ret = fn("console", 0, prz->vaddr, prz->paddr, prz->size);
-+		if (ret < 0)
-+			goto err;
-+	}
-+
-+	for (i = 0; i < cxt->max_ftrace_cnt; i++) {
-+		prz = cxt->fprzs[i];
-+		ret = fn("ftrace", i, prz->vaddr, prz->paddr, prz->size);
-+		if (ret < 0)
-+			goto err;
-+	}
-+
-+	if (cxt->pmsg_size) {
-+		prz = cxt->mprz;
-+		ret = fn("pmsg", 0, prz->vaddr, prz->paddr, prz->size);
-+		if (ret < 0)
-+			goto err;
-+	}
-+
-+err:
-+	return ret;
-+}
-+
-+static int ramoops_info_notifier(struct notifier_block *nb, unsigned long event,
-+				 void *data)
-+{
-+	struct ramoops_backend *b_info = container_of(nb, struct ramoops_backend, nb);
-+	struct ramoops_context *cxt = data;
-+
-+	return __ramoops_info_notifier(cxt, b_info->fn);
-+}
-+
-+void *register_ramoops_info_notifier(int (*fn)(const char *, int,
-+				     void *, phys_addr_t, size_t))
-+{
-+	struct ramoops_context *cxt = &oops_cxt;
-+	struct ramoops_backend *b_info;
-+
-+	mutex_lock(&cxt->lock);
-+	/*
-+	 * There is no need to register callback if ramoops probe
-+	 * is already done instead, call the callback directly
-+	 */
-+	if (cxt->ramoops_ready) {
-+		mutex_unlock(&cxt->lock);
-+		__ramoops_info_notifier(cxt, fn);
-+		return NULL;
-+	}
-+
-+	b_info = kzalloc(sizeof(*b_info), GFP_KERNEL);
-+	if (!b_info) {
-+		b_info = ERR_PTR(-ENOMEM);
-+		goto out;
-+	}
-+
-+	b_info->fn = fn;
-+	b_info->nb.notifier_call = ramoops_info_notifier;
-+	blocking_notifier_chain_register(&cxt->ramoops_notifiers, &b_info->nb);
-+
-+out:
-+	mutex_unlock(&cxt->lock);
-+	return b_info;
-+}
-+EXPORT_SYMBOL_GPL(register_ramoops_info_notifier);
-+
-+void unregister_ramoops_info_notifier(void *b_info)
-+{
-+	struct ramoops_context *cxt = &oops_cxt;
-+	struct ramoops_backend *tmp = b_info;
-+
-+	mutex_lock(&cxt->lock);
-+	blocking_notifier_chain_unregister(&cxt->ramoops_notifiers, &tmp->nb);
-+	mutex_unlock(&cxt->lock);
-+}
-+EXPORT_SYMBOL_GPL(unregister_ramoops_info_notifier);
-+
- /* Read a u32 from a dt property and make sure it's safe for an int. */
- static int ramoops_parse_dt_u32(struct platform_device *pdev,
- 				const char *propname,
-@@ -915,6 +1024,11 @@ static int ramoops_probe(struct platform_device *pdev)
- 	ramoops_pmsg_size = pdata->pmsg_size;
- 	ramoops_ftrace_size = pdata->ftrace_size;
- 
-+	mutex_lock(&cxt->lock);
-+	cxt->ramoops_ready = true;
-+	mutex_unlock(&cxt->lock);
-+	blocking_notifier_call_chain(&cxt->ramoops_notifiers, 0, cxt);
-+
- 	pr_info("using 0x%lx@0x%llx, ecc: %d\n",
- 		cxt->size, (unsigned long long)cxt->phys_addr,
- 		cxt->ecc_info.ecc_size);
-diff --git a/include/linux/pstore_ram.h b/include/linux/pstore_ram.h
-index 1efff7a38333..7e27cfc09243 100644
---- a/include/linux/pstore_ram.h
-+++ b/include/linux/pstore_ram.h
-@@ -39,6 +39,21 @@ struct ramoops_platform_data {
- 	struct persistent_ram_ecc_info ecc_info;
- };
- 
-+#if IS_ENABLED(CONFIG_PSTORE_RAM)
-+void *register_ramoops_info_notifier(int (*fn)(const char *name, int id,
-+				     void *vaddr, phys_addr_t paddr,
-+				     size_t size));
-+void unregister_ramoops_info_notifier(void *nb_cookie);
-+#else
-+static inline void *register_ramoops_info_notifier(int (*fn)(const char *name, int id,
-+						   void *vaddr, phys_addr_t paddr,
-+						   size_t size))
-+{
-+	return NULL;
-+}
-+static inline void unregister_ramoops_info_notifier(void *nb_cookie) { }
-+#endif
-+
- #ifdef CONFIG_PSTORE_DYNAMIC_RAMOOPS
- void __init setup_dynamic_ramoops(void);
- #else
--- 
-2.43.0.254.ga26002b62827
-
+On 2024/1/31 09:50, Liu Song wrote:
+> 
+> 在 2024/1/30 15:47, Bitao Hu 写道:
+>> When the watchdog determines that the current soft lockup is due
+>> to an interrupt storm based on CPU utilization, reporting the
+>> most frequent interrupts could be good enough for further
+>> troubleshooting.
+>>
+>> Below is an example of interrupt storm. The call tree does not
+>> provide useful information, but we can analyze which interrupt
+>> caused the soft lockup by comparing the counts of interrupts.
+>>
+>> [ 2987.488075] watchdog: BUG: soft lockup - CPU#9 stuck for 23s! 
+>> [kworker/9:1:214]
+>> [ 2987.488607] CPU#9 Utilization every 4s during lockup:
+>> [ 2987.488941]  #1:   0% system,          0% softirq,   100% 
+>> hardirq,     0% idle
+>> [ 2987.489357]  #2:   0% system,          0% softirq,   100% 
+>> hardirq,     0% idle
+>> [ 2987.489771]  #3:   0% system,          0% softirq,   100% 
+>> hardirq,     0% idle
+>> [ 2987.490186]  #4:   0% system,          0% softirq,   100% 
+>> hardirq,     0% idle
+>> [ 2987.490601]  #5:   0% system,          0% softirq,   100% 
+>> hardirq,     0% idle
+>> [ 2987.491034] CPU#9 Detect HardIRQ Time exceeds 50%. Most frequent 
+>> HardIRQs:
+>> [ 2987.491493]  #1: 330985      irq#7(IPI)
+>> [ 2987.491743]  #2: 5000        irq#10(arch_timer)
+>> [ 2987.492039]  #3: 9           irq#91(nvme0q2)
+>> [ 2987.492318]  #4: 3           irq#118(virtio1-output.12)
+>> ...
+>> [ 2987.492728] Call trace:
+>> [ 2987.492729]  __do_softirq+0xa8/0x364
+>>
+>> Signed-off-by: Bitao Hu <yaoma@linux.alibaba.com>
+>> ---
+>>   kernel/watchdog.c | 150 ++++++++++++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 150 insertions(+)
+>>
+>> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+>> index 0efe9604c3c2..38fb18e17d71 100644
+>> --- a/kernel/watchdog.c
+>> +++ b/kernel/watchdog.c
+>> @@ -25,6 +25,9 @@
+>>   #include <linux/stop_machine.h>
+>>   #include <linux/kernel_stat.h>
+>>   #include <linux/math64.h>
+>> +#include <linux/irq.h>
+>> +#include <linux/bitops.h>
+>> +#include <linux/irqdesc.h>
+>>   #include <asm/irq_regs.h>
+>>   #include <linux/kvm_para.h>
+>> @@ -431,11 +434,15 @@ void touch_softlockup_watchdog_sync(void)
+>>       __this_cpu_write(watchdog_report_ts, SOFTLOCKUP_DELAY_REPORT);
+>>   }
+>> +static void set_potential_softlockup(unsigned long now, unsigned long 
+>> touch_ts);
+>> +
+>>   static int is_softlockup(unsigned long touch_ts,
+>>                unsigned long period_ts,
+>>                unsigned long now)
+>>   {
+>>       if ((watchdog_enabled & WATCHDOG_SOFTOCKUP_ENABLED) && 
+>> watchdog_thresh) {
+>> +        /* Softlockup may occur in the current period */
+>> +        set_potential_softlockup(now, period_ts);
+>>           /* Warn about unreasonable delays. */
+>>           if (time_after(now, period_ts + get_softlockup_thresh()))
+>>               return now - touch_ts;
+>> @@ -457,6 +464,8 @@ static enum cpu_usage_stat 
+>> idx_to_stat[NUM_STATS_PER_GROUP] = {
+>>       CPUTIME_SYSTEM, CPUTIME_SOFTIRQ, CPUTIME_IRQ, CPUTIME_IDLE
+>>   };
+>> +static void print_hardirq_counts(void);
+>> +
+>>   static void update_cpustat(void)
+>>   {
+>>       u8 i;
+>> @@ -504,10 +513,150 @@ static void print_cpustat(void)
+>>               utilization[i][STATS_SYSTEM], 
+>> utilization[i][STATS_SOFTIRQ],
+>>               utilization[i][STATS_HARDIRQ], utilization[i][STATS_IDLE]);
+>>       }
+>> +    print_hardirq_counts();
+>> +}
+>> +
+>> +#define HARDIRQ_PERCENT_THRESH        50
+>> +#define NUM_HARDIRQ_REPORT        5
+>> +static DECLARE_BITMAP(softlockup_hardirq_cpus, CONFIG_NR_CPUS);
+>> +static DEFINE_PER_CPU(u32 *, hardirq_counts);
+>> +
+>> +static void find_counts_top(u32 *irq_counts, int *irq, u32 
+>> perirq_counts, int perirq_id, int range)
+>> +{
+>> +    unsigned int i, j;
+>> +
+>> +    for (i = 0; i < range; i++) {
+>> +        if (perirq_counts > irq_counts[i]) {
+>> +            for (j = range - 1; j > i; j--) {
+>> +                irq_counts[j] = irq_counts[j - 1];
+>> +                irq[j] = irq[j - 1];
+>> +            }
+>> +            irq_counts[j] = perirq_counts;
+>> +            irq[j] = perirq_id;
+>> +            break;
+>> +        }
+>> +    }
+>> +}
+>> +
+>> +/*
+>> + * If the proportion of time spent handling irq exceeds 
+>> HARDIRQ_PERCENT_THRESH%
+>> + * during sample_period, then it is necessary to record the counts of 
+>> each irq.
+>> + */
+>> +static inline bool need_record_irq_counts(int type)
+>> +{
+>> +    int tail = this_cpu_read(cpustat_tail);
+>> +    u8 utilization;
+>> +
+>> +    if (--tail == -1)
+>> +        tail = 4;
+>> +    utilization = this_cpu_read(cpustat_utilization[tail][type]);
+>> +    return utilization > HARDIRQ_PERCENT_THRESH;
+>>   }
+>> +
+>> +/*
+>> + * Mark softlockup as potentially caused by hardirq
+>> + */
+>> +static void set_potential_softlockup_hardirq(void)
+>> +{
+>> +    u32 i;
+>> +    u32 *counts = __this_cpu_read(hardirq_counts);
+>> +    int cpu = smp_processor_id();
+>> +    struct irq_desc *desc;
+>> +
+>> +    if (!need_record_irq_counts(STATS_HARDIRQ))
+>> +        return;
+>> +
+>> +    if (!test_bit(cpu, softlockup_hardirq_cpus)) {
+>> +        counts = kmalloc_array(nr_irqs, sizeof(u32), GFP_ATOMIC);
+>> +        if (!counts)
+>> +            return;
+>> +        for_each_irq_desc(i, desc) {
+>> +            if (!desc)
+>> +                continue;
+>> +            counts[i] = desc->kstat_irqs ?
+>> +                *this_cpu_ptr(desc->kstat_irqs) : 0;
+>> +        }
+>> +        __this_cpu_write(hardirq_counts, counts);
+>> +        set_bit(cpu, softlockup_hardirq_cpus);
+>> +    }
+>> +}
+>> +
+>> +static void clear_potential_softlockup_hardirq(void)
+>> +{
+>> +    u32 *counts = __this_cpu_read(hardirq_counts);
+>> +    int cpu = smp_processor_id();
+>> +
+>> +    if (test_bit(cpu, softlockup_hardirq_cpus)) {
+>> +        kfree(counts);
+>> +        counts = NULL;
+>> +        __this_cpu_write(hardirq_counts, counts);
+>> +        clear_bit(cpu, softlockup_hardirq_cpus);
+>> +    }
+>> +}
+>> +
+>> +/*
+>> + * Mark that softlockup may occur
+>> + */
+>> +static void set_potential_softlockup(unsigned long now, unsigned long 
+>> period_ts)
+>> +{
+>> +    if (time_after_eq(now, period_ts + get_softlockup_thresh() / 5))
+>> +        set_potential_softlockup_hardirq();
+>> +}
+>> +
+>> +static void clear_potential_softlockup(void)
+>> +{
+>> +    clear_potential_softlockup_hardirq();
+>> +}
+>> +
+>> +static void print_hardirq_counts(void)
+>> +{
+>> +    u32 i;
+>> +    struct irq_desc *desc;
+>> +    u32 counts_diff;
+>> +    u32 *counts = __this_cpu_read(hardirq_counts);
+>> +    int cpu = smp_processor_id();
+>> +    u32 hardirq_counts_top[NUM_HARDIRQ_REPORT] = {0, 0, 0, 0, 0};
+>> +    int hardirq_top[NUM_HARDIRQ_REPORT] = {-1, -1, -1, -1, -1};
+> "hardirq_counts_top" and "hardirq_top" seem like two members of a struct,
+> working together to record the most suspicious irq, so wouldn't using a 
+> struct make it clearer?
+OK, I will define a struct.
+>> +
+>> +    if (test_bit(cpu, softlockup_hardirq_cpus)) {
+>> +        /* Find the top NUM_HARDIRQ_REPORT most frequent interrupts */
+>> +        for_each_irq_desc(i, desc) {
+>> +            if (!desc)
+>> +                continue;
+>> +            counts_diff = desc->kstat_irqs ?
+>> +                *this_cpu_ptr(desc->kstat_irqs) - counts[i] : 0;
+>> +            find_counts_top(hardirq_counts_top, hardirq_top,
+>> +                    counts_diff, i, NUM_HARDIRQ_REPORT);
+>> +        }
+>> +        /*
+>> +         * We do not want the "watchdog: " prefix on every line,
+>> +         * hence we use "printk" instead of "pr_crit".
+>> +         */
+>> +        printk(KERN_CRIT "CPU#%d Detect HardIRQ Time exceeds %d%%. 
+>> Most frequent HardIRQs:\n",
+>> +            smp_processor_id(), HARDIRQ_PERCENT_THRESH);
+>> +        for (i = 0; i < NUM_HARDIRQ_REPORT; i++) {
+>> +            if (hardirq_top[i] == -1)
+>> +                break;
+>> +            desc = irq_to_desc(hardirq_top[i]);
+>> +            if (desc && desc->action)
+>> +                printk(KERN_CRIT "\t#%u: %-10u\tirq#%d(%s)\n",
+>> +                    i+1, hardirq_counts_top[i],
+>> +                    hardirq_top[i], desc->action->name);
+>> +            else
+>> +                printk(KERN_CRIT "\t#%u: %-10u\tirq#%d\n",
+>> +                    i+1, hardirq_counts_top[i],
+>> +                    hardirq_top[i]);
+>> +        }
+>> +        if (!need_record_irq_counts(STATS_HARDIRQ))
+>> +            clear_potential_softlockup_hardirq();
+>> +    }
+>> +}
+>> +
+>>   #else
+>>   static inline void update_cpustat(void) { }
+>>   static inline void print_cpustat(void) { }
+>> +static inline void set_potential_softlockup(unsigned long now, 
+>> unsigned long period_ts) { }
+>> +static inline void clear_potential_softlockup(void) { }
+>>   #endif
+>>   /* watchdog detector functions */
+>> @@ -525,6 +674,7 @@ static DEFINE_PER_CPU(struct cpu_stop_work, 
+>> softlockup_stop_work);
+>>   static int softlockup_fn(void *data)
+>>   {
+>>       update_touch_ts();
+>> +    clear_potential_softlockup();
+>>       complete(this_cpu_ptr(&softlockup_completion));
+>>       return 0;
 
