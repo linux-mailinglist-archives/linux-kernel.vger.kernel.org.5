@@ -1,125 +1,118 @@
-Return-Path: <linux-kernel+bounces-45845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45846-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73F7C8436FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:53:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0713E843701
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:54:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 061AF286B06
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:53:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 39DE71C26237
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:54:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB94C53E25;
-	Wed, 31 Jan 2024 06:53:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tDX0evQ8"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F00B15102A
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 06:53:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C4F04174A;
+	Wed, 31 Jan 2024 06:54:10 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F27AA55C16;
+	Wed, 31 Jan 2024 06:54:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706684024; cv=none; b=Sv+aFLCoJgPyRRI0ACC1zdD906h5r4vZVZZ3XBeVkFhkNgujB114NyaBxBiyNKbkGYBC54FmKRCViZ4diN6o429fefjt8fOxUv5r7SUMsA81PZBlbkJiuM6wAGrP4SJwED3CrnWHU/TNMIChZhq1SS+P6/9Gs/TVcz+CO1pBWkc=
+	t=1706684049; cv=none; b=Tzi/JYdUl4ByHEyOE6a+Bz9Fz3XmmwgRKIXBH8rXDiJ4RWkRRmy5phRg4pKSrkJqSNgeyCmuKMXlWdBjbnnoKaAytodKo/odTa9oQt1wpbgKOXcyEXq6FsPPnUKJm2xU7xTZvuGRJv/SB3x8JKoTQbn8Hf+WpYZ1sJBmyZiAnn4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706684024; c=relaxed/simple;
-	bh=/V9Rglm98djqCs8KSL/PzgVQzNmWOOniqe3fv5n82uk=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=dZI9xzpAAiligrCxxWoIiU7DQDmdtXvf3d5uOs1Iq7Pbbo8gpVXbdzATXByWVXS4GDfu4vDwHMdB867w19Q9gp95lAK34YjhgaSKjcvCMU/iNE+Y+k+RVm98nLcNOPimcHvDuQNfPGKLyol1Vs9EndRW4bv9Ac6kwoiyStOX7HI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--maskray.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tDX0evQ8; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--maskray.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6bad01539so723308276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 22:53:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706684021; x=1707288821; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=8dMZ3OwOckg/8nEeQlzzg6EqDAiFIDc7gYYU0A2bM1c=;
-        b=tDX0evQ83kB053vtN120fkPeVd6r4wClFnCakaCvMmxq/4Ld3v1MPKauEkC5o8DfYj
-         v4DdRSCDpYm08rvxneWApirhgCH00yH+9HWkSPa+KwKx1Dr6MCmnppYO+oI+GUvyU3DB
-         bY2y4TppWbIw+HJhjRLiF2ILxBmcm8Zzj3Z8H60no4yLXQ/NwUXEFAIUij1yhjFYSB3o
-         i17DSrWVwR6fzTQhB82VFn8hf9ycpCjEiFwkhwHIJYpQ3G853ewWm4HcXRndYQ4nkq52
-         7BRy7gDEXy8naGL7wakzxsrsg5T+yGuXY68hliBQined/Fq/sFek31VyTvvEV/h07NZK
-         FZhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706684021; x=1707288821;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8dMZ3OwOckg/8nEeQlzzg6EqDAiFIDc7gYYU0A2bM1c=;
-        b=gtuk5GhUV2e4iWZxsR42vqGGFrpcWUo96XLJLACFePw/c/V5yhtpMyQStyrjfRfRAG
-         GKCajVkXd49/+2T3hp5yuR8pJjvcS53rvus39D73ckooddiXD6Xpl7vZhCzbQfBQwy0o
-         x3XYXoDsKrgv1zw21lblwzfZq0Zm2SwpGj/g2+4w45S25yYCJIRH9qJu/rb34/KaGwLp
-         2rIzXtCQC9ZNHGeH0eIp3z2wGmXpzovur+uAAzjyjSO2CKqfFXu3qQw+GJDUMdgl6DB9
-         ap1BbwwVuUehMSAjGuehbDkNID/vFQJ3Y5Di8f8umwsaPkJ9KoxhmOUtKCy3ii15B1lo
-         RqXg==
-X-Gm-Message-State: AOJu0Yy/N/mMGBiAA0lyZnKwR7q5E/D6wJDrnjefeGV7fifRKJONtU3g
-	gQ4DEcQcm+eSC0/+ddbKPmV2Bx2IGqS/6TYXDWaw6zVK/6Ant6/eBcIwyEz3lbQzUkBzvfaaCDY
-	tgpgMYQ==
-X-Google-Smtp-Source: AGHT+IHYBZ61Hkmf065FzDbmISs1w+H1s+kPtfBvIanyUT0Z/nhLrWER1j7n3G0iOTAUij8aXk2uZrIboMe4
-X-Received: from maskray.svl.corp.google.com ([2620:15c:2d3:205:bc85:d604:bdab:a3ed])
- (user=maskray job=sendgmr) by 2002:a05:6902:1188:b0:dbe:30cd:8fcb with SMTP
- id m8-20020a056902118800b00dbe30cd8fcbmr35684ybu.0.1706684020985; Tue, 30 Jan
- 2024 22:53:40 -0800 (PST)
-Date: Tue, 30 Jan 2024 22:53:22 -0800
+	s=arc-20240116; t=1706684049; c=relaxed/simple;
+	bh=Zdw5BUWFSFm+QflhlaaAobfZNFzFMokg/6LaDvxnxVI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DEMQ1dT+Q3XnuRm+klkE1WzonKDXYMbB3PRnwMfxjwjhofBphcu2O2/WQW3bpLjg88kkrXSNY7pUZ+ccCH94Nb7P60dJU1kbJC1Bc8uuwDasPBfTLwgrxKznfrsuwg4ZdwawaYc1QsW0jZY7dRu1bhv8aEqEpwkiPHKHqzlkn2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C3D5ADA7;
+	Tue, 30 Jan 2024 22:54:50 -0800 (PST)
+Received: from [10.163.41.195] (unknown [10.163.41.195])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EE9C73F5A1;
+	Tue, 30 Jan 2024 22:53:53 -0800 (PST)
+Message-ID: <7612b843-cd31-4917-87c0-c26802c5bef2@arm.com>
+Date: Wed, 31 Jan 2024 12:23:51 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Message-ID: <20240131065322.1126831-1-maskray@google.com>
-Subject: [PATCH] arm64: jump_label: use constraint "S" instead of "i"
-From: Fangrui Song <maskray@google.com>
-To: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	linux-arm-kernel@lists.infradead.org
-Cc: Jisheng Zhang <jszhang@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, llvm@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, Fangrui Song <maskray@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v3 11/35] mm: Allow an arch to hook into folio
+ allocation when VMA is known
+Content-Language: en-US
+To: Alexandru Elisei <alexandru.elisei@arm.com>
+Cc: catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
+ maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
+ yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
+ mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+ vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
+ bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+ vschneid@redhat.com, mhiramat@kernel.org, rppt@kernel.org, hughd@google.com,
+ pcc@google.com, steven.price@arm.com, vincenzo.frascino@arm.com,
+ david@redhat.com, eugenis@google.com, kcc@google.com, hyesoo.yu@samsung.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+ linux-arch@vger.kernel.org, linux-mm@kvack.org,
+ linux-trace-kernel@vger.kernel.org
+References: <20240125164256.4147-1-alexandru.elisei@arm.com>
+ <20240125164256.4147-12-alexandru.elisei@arm.com>
+ <1e03aec4-705a-41b6-b258-0b8944d9dc0c@arm.com> <Zbje4T5tZ5k707Wg@raptor>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <Zbje4T5tZ5k707Wg@raptor>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-The constraint "i" seems to be copied from x86 (and with a redundant
-modifier "c"). It works with -fno-PIE but not with -fPIE/-fPIC in GCC's
-aarch64 port.
 
-The constraint "S", which denotes a symbol reference (e.g. function,
-global variable) or label reference, is more appropriate, and has been
-available in GCC since 2012 and in Clang since 7.0.
 
-Signed-off-by: Fangrui Song <maskray@google.com>
-Link: https://maskray.me/blog/2024-01-30-raw-symbol-names-in-inline-assembly
----
- arch/arm64/include/asm/jump_label.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+On 1/30/24 17:04, Alexandru Elisei wrote:
+> Hi,
+> 
+> On Tue, Jan 30, 2024 at 03:25:20PM +0530, Anshuman Khandual wrote:
+>>
+>> On 1/25/24 22:12, Alexandru Elisei wrote:
+>>> arm64 uses VM_HIGH_ARCH_0 and VM_HIGH_ARCH_1 for enabling MTE for a VMA.
+>>> When VM_HIGH_ARCH_0, which arm64 renames to VM_MTE, is set for a VMA, and
+>>> the gfp flag __GFP_ZERO is present, the __GFP_ZEROTAGS gfp flag also gets
+>>> set in vma_alloc_zeroed_movable_folio().
+>>>
+>>> Expand this to be more generic by adding an arch hook that modifes the gfp
+>>> flags for an allocation when the VMA is known.
+>>>
+>>> Note that __GFP_ZEROTAGS is ignored by the page allocator unless __GFP_ZERO
+>>> is also set; from that point of view, the current behaviour is unchanged,
+>>> even though the arm64 flag is set in more places.  When arm64 will have
+>>> support to reuse the tag storage for data allocation, the uses of the
+>>> __GFP_ZEROTAGS flag will be expanded to instruct the page allocator to try
+>>> to reserve the corresponding tag storage for the pages being allocated.
+>> Right but how will pushing __GFP_ZEROTAGS addition into gfp_t flags further
+>> down via a new arch call back i.e arch_calc_vma_gfp() while still maintaining
+>> (vma->vm_flags & VM_MTE) conditionality improve the current scenario. Because
+> I'm afraid I don't follow you.
 
-diff --git a/arch/arm64/include/asm/jump_label.h b/arch/arm64/include/asm/jump_label.h
-index 48ddc0f45d22..31862b3bb33d 100644
---- a/arch/arm64/include/asm/jump_label.h
-+++ b/arch/arm64/include/asm/jump_label.h
-@@ -23,9 +23,9 @@ static __always_inline bool arch_static_branch(struct static_key * const key,
- 		 "	.pushsection	__jump_table, \"aw\"	\n\t"
- 		 "	.align		3			\n\t"
- 		 "	.long		1b - ., %l[l_yes] - .	\n\t"
--		 "	.quad		%c0 - .			\n\t"
-+		 "	.quad		%0 - .			\n\t"
- 		 "	.popsection				\n\t"
--		 :  :  "i"(&((char *)key)[branch]) :  : l_yes);
-+		 :  :  "S"(&((char *)key)[branch]) :  : l_yes);
- 
- 	return false;
- l_yes:
-@@ -40,9 +40,9 @@ static __always_inline bool arch_static_branch_jump(struct static_key * const ke
- 		 "	.pushsection	__jump_table, \"aw\"	\n\t"
- 		 "	.align		3			\n\t"
- 		 "	.long		1b - ., %l[l_yes] - .	\n\t"
--		 "	.quad		%c0 - .			\n\t"
-+		 "	.quad		%0 - .			\n\t"
- 		 "	.popsection				\n\t"
--		 :  :  "i"(&((char *)key)[branch]) :  : l_yes);
-+		 :  :  "S"(&((char *)key)[branch]) :  : l_yes);
- 
- 	return false;
- l_yes:
--- 
-2.43.0.429.g432eaa2c6b-goog
+I was just asking whether the overall scope of __GFP_ZEROTAGS flag is being
+increased to cover more core MM paths through this patch. I think you have
+already answered that below.
 
+> 
+>> the page allocator could have still analyzed alloc flags for __GFP_ZEROTAGS
+>> for any additional stuff.
+>>
+>> OR this just adds some new core MM paths to get __GFP_ZEROTAGS which was not
+>> the case earlier via this call back.
+> Before this patch: vma_alloc_zeroed_movable_folio() sets __GFP_ZEROTAGS.
+> After this patch: vma_alloc_folio() sets __GFP_ZEROTAGS.
+
+Understood.
+
+> 
+> This patch is about adding __GFP_ZEROTAGS for more callers.
+
+Right, I guess that is the real motivation for this patch. But just wondering
+does this cover all possible anon fault paths for converting given vma_flag's
+VM_MTE flag into page alloc flag __GFP_ZEROTAGS ? Aren't there any other file
+besides (mm/shmem.c) which needs to be changed to include arch_calc_vma_gfp() ?
 
