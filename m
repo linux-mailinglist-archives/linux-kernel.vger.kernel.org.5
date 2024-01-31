@@ -1,156 +1,112 @@
-Return-Path: <linux-kernel+bounces-46566-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46569-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1E1E844160
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:09:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E915844167
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:09:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9699928B8C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:09:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 813A01C220B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:09:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC54A83CB5;
-	Wed, 31 Jan 2024 14:08:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E111E80C17;
+	Wed, 31 Jan 2024 14:09:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iYQ1foks"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="L6G1T/Sp"
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29A6983CB7;
-	Wed, 31 Jan 2024 14:08:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 662D179DA0
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 14:08:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706710084; cv=none; b=CKKEvXcFQ1MyEcOdk5IEiC9ipnmqxA2e35iy2DwSnyVaxJKzMiX7Y7KxWLFTOGnlfa1u0mGkQR/zGp668kDnkUdy/PIZRPsu3+pbAOu2Zk1O2AnDjXYASUU/QavJAPg5KMVxSLT3jC2nU8PWyUGZiyID1nxg1JvU3K8IStUb8HA=
+	t=1706710140; cv=none; b=E9VwOmzhpH7O8aUKouFHvnz8JzmQJ4thEAyg2EAoBqlk//od6CN2alfUifr2gJY6/KqAZceXetUlsj+od6CE0kbQCdJtQbMkWElWD9b2XY8C21eTU1KZODXpQCk6euh4JB3n2f+6b9D6QPx0gw8mTsZKUQTuog86x06Tc/hQCoQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706710084; c=relaxed/simple;
-	bh=5nR7Ertacn9PuZp1Bn/nWb7jPB+VBrlLCjXLDoq7d5k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iL+/gKFNu/tf2/gzRRuF3oqe5nX9sldUGyvIv1r2zy1EBP0wjxfqDwDkgRncpZav8HqrQsvRACiCxkUQMVvHdgbUeCTkNaxU19hkWw4580/B1hMeEwvHvETKFxxv6c13TZ+5isaLf5rqj8Wj5/DAbCFfxGl6rXLWzHAOqH45Joc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iYQ1foks; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8BBCC43601;
-	Wed, 31 Jan 2024 14:08:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706710083;
-	bh=5nR7Ertacn9PuZp1Bn/nWb7jPB+VBrlLCjXLDoq7d5k=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=iYQ1foksziyUWYW8tRQV+ff4NIPx+pD2QLp+msKwoB4/FOncHJiUe52cbJxGW58pZ
-	 68GXvryC227ayGT6fc5gJ4pwcggz7j1B53SnHc6AQZsw9aDT87svSQDKuqN7GcIPhm
-	 LwFIsszth8jeuDwoCP0AelpQi4yrHXtQMLGpxdx9H38b9rya03pygUvtOM23wpCK7R
-	 lACMem1wB+vEOK2igAPErOGXMTlIhdSGettMAy/TI7DUn9VyKqwPegQ0n/kG6nEOGM
-	 XL+L4/SmUjBFxNeUMyjvhUCBo6kGUD6NuXgan/80gs6rRn1oK67xRQ328YnLIKfqcB
-	 z1BXYU07RZS8g==
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51124e31f72so916725e87.0;
-        Wed, 31 Jan 2024 06:08:03 -0800 (PST)
-X-Gm-Message-State: AOJu0Yw08C8o0f8Gx88lRA7ALlR7OjWEiNfp2rPi2YuZMzwxf/x2m8DK
-	ikemLoB6XJsZyInLEamhydVEiurIyoiefiWlqdZ3DJiInXvevEWBBNnjL1D3anTLpqphvILNYCk
-	rCTB0h2xjpBM20R2fI/eChrFUtF8=
-X-Google-Smtp-Source: AGHT+IEWOX5OhqEdfMQM4e2B9NE+FH+r8iCudVcs4e/r9DjBBtoSKBUY5Wgyaf1OXbZRbRm3omEFOmJJTybR5NzVdxo=
-X-Received: by 2002:a19:8c4e:0:b0:511:18e4:89bb with SMTP id
- i14-20020a198c4e000000b0051118e489bbmr1384753lfj.39.1706710081908; Wed, 31
- Jan 2024 06:08:01 -0800 (PST)
+	s=arc-20240116; t=1706710140; c=relaxed/simple;
+	bh=hJTI6Oqt+tvrDrRCKdy4Fv4/v/exHoBoefP7wGq2GPs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ptil/yM9ux/AZluxnVidSVVOHLRNBI4iXkhYKo/AGiyjIBYfYXrPGYTeFHWxBW/u+Ih9T6oqymdZRpauGl53By0qAwoCWnrDR4Q/QkYCWa+iYXu7y4Iau+WUVXArhyxy5+Kw/VLMVbsLLfsR10FfrhAR8nnm6hL+lt2T9JsNcY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=L6G1T/Sp; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-116-252.bstnma.fios.verizon.net [173.48.116.252])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 40VE7u72016816
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 31 Jan 2024 09:07:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1706710083; bh=3jBxU9JGxDt+piXZr4pBKK0kAm/pYnikufO2RLtXeAM=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=L6G1T/SpkbuN99nevYXm2O9FspvsdZWzSBUmHtyziTUUOC8ZGozpeC4J+UE2j7blo
+	 GKhQx+DpJEKT2lE2S9NiUt8tckt8Za5Mj7AHUP2Jn8z5xAaE8cV9ga3i7+hGqbfw2p
+	 LUJ0ug7Fi3yFZkM3DcNsdivyLraGFNVLeKgLhLblAxffEux+yb2lZZyqLPKjQv46rq
+	 MzyxXf0jneqVNrHe5HYEMIS+MsZfchuD4GE6iO8BDdJ4ye7wwuQvU6m155FAUsXax1
+	 ut4S6IvT+kHVmrmSi3ejB9cJYwgE5bNXzhlRVE1kwBetkZ231gQMVkmxmZHJGVH7lL
+	 4jgq6EMGBKmSg==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id C5F0D15C0667; Wed, 31 Jan 2024 09:07:56 -0500 (EST)
+Date: Wed, 31 Jan 2024 09:07:56 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc: "Reshetova, Elena" <elena.reshetova@intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Kalra, Ashish" <ashish.kalra@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] x86/random: Retry on RDSEED failure
+Message-ID: <20240131140756.GB2356784@mit.edu>
+References: <20240130083007.1876787-1-kirill.shutemov@linux.intel.com>
+ <CAHmME9pOt=uEmuBzBpgUHw9DqAD2FZTZ3v53AOZbQ3Cd2p97xQ@mail.gmail.com>
+ <DM8PR11MB5750E38A8B2BCE66AF7F9812E77D2@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <CAHmME9qMO7=RDR60bKJvpDTRokcKed_i0+7BbFD53_7o2OJ6-g@mail.gmail.com>
+ <CAHmME9rum4uwSNFd_GkD9p_+vN4DBxA=feZX7k9RvugFZsZNJg@mail.gmail.com>
+ <DM8PR11MB5750797D0B9B8EB32740F55DE77D2@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <CAHmME9oC=GE-7QS2m9FA5cs_ss+tQgB9Pj3tKnTtMMFpQmUshg@mail.gmail.com>
+ <DM8PR11MB5750B861F7A105886AA5FCE4E77C2@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <CAHmME9oJvbZgT4yT9Vydc2ZQVSo3Ea65G5aVK7gFxphkV00BnQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240129180502.4069817-21-ardb+git@google.com>
- <20240129180502.4069817-24-ardb+git@google.com> <20240131134431.GJZbpOvz3Ibhg4VhCl@fat_crate.local>
- <CAMj1kXF7T4morB+Z3BDy-UaeHoeU6fHtnaa-7HJY_NR3RVC5sg@mail.gmail.com>
-In-Reply-To: <CAMj1kXF7T4morB+Z3BDy-UaeHoeU6fHtnaa-7HJY_NR3RVC5sg@mail.gmail.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Wed, 31 Jan 2024 15:07:50 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXGk1QivyoK4H5CVp7p-tfYoQSTuethpkm8bWBcTO_UMGw@mail.gmail.com>
-Message-ID: <CAMj1kXGk1QivyoK4H5CVp7p-tfYoQSTuethpkm8bWBcTO_UMGw@mail.gmail.com>
-Subject: Re: [PATCH v3 03/19] x86/startup_64: Drop long return to initial_code pointer
-To: Borislav Petkov <bp@alien8.de>
-Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org, 
-	Kevin Loughlin <kevinloughlin@google.com>, Tom Lendacky <thomas.lendacky@amd.com>, 
-	Dionna Glaze <dionnaglaze@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>, linux-arch@vger.kernel.org, 
-	llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHmME9oJvbZgT4yT9Vydc2ZQVSo3Ea65G5aVK7gFxphkV00BnQ@mail.gmail.com>
 
-On Wed, 31 Jan 2024 at 14:57, Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Wed, 31 Jan 2024 at 14:45, Borislav Petkov <bp@alien8.de> wrote:
-> >
-> > On Mon, Jan 29, 2024 at 07:05:06PM +0100, Ard Biesheuvel wrote:
-> > > From: Ard Biesheuvel <ardb@kernel.org>
-> > >
-> > > Since commit 866b556efa12 ("x86/head/64: Install startup GDT"), the
-> > > primary startup sequence sets the code segment register (CS) to __KERNEL_CS
-> > > before calling into the startup code shared between primary and
-> > > secondary boot.
-> > >
-> > > This means a simple indirect call is sufficient here.
-> > >
-> > > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> > > ---
-> > >  arch/x86/kernel/head_64.S | 35 ++------------------
-> > >  1 file changed, 3 insertions(+), 32 deletions(-)
-> > >
-> > > diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-> > > index d4918d03efb4..4017a49d7b76 100644
-> > > --- a/arch/x86/kernel/head_64.S
-> > > +++ b/arch/x86/kernel/head_64.S
-> > > @@ -428,39 +428,10 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
-> > >       movq    %r15, %rdi
-> > >
-> > >  .Ljump_to_C_code:
-> > > -     /*
-> > > -      * Jump to run C code and to be on a real kernel address.
-> > > -      * Since we are running on identity-mapped space we have to jump
-> > > -      * to the full 64bit address, this is only possible as indirect
-> > > -      * jump.  In addition we need to ensure %cs is set so we make this
-> > > -      * a far return.
-> > > -      *
-> > > -      * Note: do not change to far jump indirect with 64bit offset.
-> > > -      *
-> > > -      * AMD does not support far jump indirect with 64bit offset.
-> > > -      * AMD64 Architecture Programmer's Manual, Volume 3: states only
-> > > -      *      JMP FAR mem16:16 FF /5 Far jump indirect,
-> > > -      *              with the target specified by a far pointer in memory.
-> > > -      *      JMP FAR mem16:32 FF /5 Far jump indirect,
-> > > -      *              with the target specified by a far pointer in memory.
-> > > -      *
-> > > -      * Intel64 does support 64bit offset.
-> > > -      * Software Developer Manual Vol 2: states:
-> > > -      *      FF /5 JMP m16:16 Jump far, absolute indirect,
-> > > -      *              address given in m16:16
-> > > -      *      FF /5 JMP m16:32 Jump far, absolute indirect,
-> > > -      *              address given in m16:32.
-> > > -      *      REX.W + FF /5 JMP m16:64 Jump far, absolute indirect,
-> > > -      *              address given in m16:64.
-> > > -      */
-> > > -     pushq   $.Lafter_lret   # put return address on stack for unwinder
-> > >       xorl    %ebp, %ebp      # clear frame pointer
-> > > -     movq    initial_code(%rip), %rax
-> > > -     pushq   $__KERNEL_CS    # set correct cs
-> > > -     pushq   %rax            # target address in negative space
-> > > -     lretq
-> > > -.Lafter_lret:
-> > > -     ANNOTATE_NOENDBR
-> > > +     ANNOTATE_RETPOLINE_SAFE
-> > > +     callq   *initial_code(%rip)
-> > > +     int3
-> > >  SYM_CODE_END(secondary_startup_64)
-> > >
-> > >  #include "verify_cpu.S"
-> >
-> > objtool doesn't like it yet:
-> >
-> > vmlinux.o: warning: objtool: verify_cpu+0x0: stack state mismatch: cfa1=4+8 cfa2=-1+0
-> >
-> > Once we've solved this, I'll take this one even now - very nice cleanup!
-> >
->
-> s/int3/RET seems to do the trick.
->
+What about simply treating boot-time initialization of the /dev/random
+state as special.  That is, on x86, if the hardware promises that
+RDSEED or RDRAND is available, we use them to initialization our RNG
+state at boot.  On bare metal, there can't be anyone else trying to
+exhaust the on-chip RNG's entropy supply, so if RDSEED or RDRAND
+aren't working available --- panic, since the hardware is clearly
+busted.
 
-or ud2, even better,
+On a guest OS, if confidential compute is enabled, and if RDSEED and
+RDRAND don't work after N retries, and we know CC is enabled, panic,
+since the kernel can't provide the promised security gaurantees, and
+the CC developers and users are cordially invited to sharpen their
+pitchforks and to send their tender regards to the Intel RNG
+engineers.
+
+For non-confidential compute guests, the question is what is the
+appropriate reaction if another VM, possibly belonging to a different
+user/customer, is carrying out a RDRAND DOS attack.  I'd argue that in
+these cases, if the guest VM is using virtio-random, then the host's
+/dev/random should be able to cover for cases of Intel RNG exhaustion,
+and allowing other customer to be able to prevent other user's VM's
+from being able to boot is the the greater evil, so we shouldn't treat
+boot-time RDRAND/RDSEED failures as panic-worthy.
+
+						- Ted
 
