@@ -1,176 +1,172 @@
-Return-Path: <linux-kernel+bounces-47271-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47272-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43F64844B32
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:44:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6F81844B35
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:46:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01CF11F27F11
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:44:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C76628DA88
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:46:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13BF83A294;
-	Wed, 31 Jan 2024 22:44:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27871210FE;
+	Wed, 31 Jan 2024 22:45:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lkdCyod1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KSr1X6kH"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 405C83A1D3;
-	Wed, 31 Jan 2024 22:44:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC5C53A1CB
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 22:45:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706741047; cv=none; b=s5jFTLatFxxkqYPK4J9PNjKsE+0J60mIJOtMA/w4c/Ax1Si58WmJWf5FQLmBuRZ1RsrwlS4UIpNRX/npyopDArRcghGFn8vSXSsC/v3g3tLj/GN2u5pU5CtDbW62pULb2iz1RTd/InCya1e6E/bWVvgGbpAPg977CdVtqGZdVcY=
+	t=1706741152; cv=none; b=a7JyDMvPrL2CBWMH0a/qI0cGLhmd+ImtUlS/EXzdAShFQKCU6P2pk+D3Rc7QtPskqmkD+oWE6NV7IMC6b9AsGv9PIffl/mD/pZBRqYLVDYjtNe6Z4VgRAW4PPWLHixHxPjWWzbTdbyOC9bVeZ+hI7CCLa74xI+pc0oMxH8g161k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706741047; c=relaxed/simple;
-	bh=CDDV5nzO303GZ5Eq1xlfWVsb0CkQf/w57BtEmOpSHdY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PFsw+DTlrOgbEg0a+bEhCTh5RNEQGL0C986LVpL1qhG5PHVoppE2wU6w1T64YOwTFfspGSb5U5M5mY4xZdIKb5pOXSsExkhHKVfrYlvoyD0IIyUhLkuuzhgsZhKdqyAUfutkx/b3dM2xzcqOldZ5PiSaDpRECY/XoWuiQcXDU5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lkdCyod1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 476C7C433F1;
-	Wed, 31 Jan 2024 22:44:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706741046;
-	bh=CDDV5nzO303GZ5Eq1xlfWVsb0CkQf/w57BtEmOpSHdY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lkdCyod12UwkHMoZFnHdOixtATV3t5zPDh5xlxIgMXeux28RVHIflE5+YqXj/rg+h
-	 MMgsZA980RvF08seJZcLXNuJDf3Sek48tzM2qPuScpzmMv+5KWwK5LaXa57vRXIroP
-	 wyfksOn4zDYGvT/bO4mMJUmfFI0XjKZAwkQdiuQ6dvj/9PtTG8j34GiNb9t2Bxepdv
-	 Dq16Yt9VjalKAbOOobu357jmzicxGfgdpxnDcZb7z7fCvemOQGxVVD0V9usZ44HsxB
-	 kYhjW6q6igVmUbbckNxIiKrgL6ArF+SdSkloWNyFtDLABN1z9L5WiujB+r95aEk8QB
-	 pb3uKEe7KdK4Q==
-Date: Wed, 31 Jan 2024 23:43:59 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: Daniel Drake <drake@endlessos.org>,
-	Vitalii Solomonov <solomonov.v@gmail.com>
-Cc: Jian-Hong Pan <jhp@endlessos.org>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	David Box <david.e.box@linux.intel.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Nirmal Patel <nirmal.patel@linux.intel.com>,
-	Jonathan Derrick <jonathan.derrick@linux.dev>,
-	linux-ide@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux@endlessos.org
-Subject: Re: [PATCH 1/2] ata: ahci: Add force LPM policy quirk for ASUS
- B1400CEAE
-Message-ID: <ZbrNLxHL03R66PxQ@x1-carbon>
-References: <20240130095933.14158-1-jhp@endlessos.org>
- <20240130101335.GU2543524@black.fi.intel.com>
- <CAPpJ_ef4KuZzBaMupH-iW0ricyY_9toa7A4rB2vyeaFu7ROiDA@mail.gmail.com>
- <Zbonprq/1SircQon@x1-carbon>
- <CAD8Lp47SH+xcCbZ9qdRwrk2KOHNoHUE5AMieVHoSMbVsMrdiNg@mail.gmail.com>
+	s=arc-20240116; t=1706741152; c=relaxed/simple;
+	bh=AmunZczr7Dfx6/pExPG2SuXfqHdgyF1ugeSr+E7O7go=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=msFn28N8oDMVuYaRN2qT5ANqtCqPiZfgUds0eFIreVYclAsm9WoEfsFJY38u6ROKPgyHhgj/r52x11MLo/TTKZlbChRYW7veOaRDyI2RXoj60wMBf51yiKQiSS0ruUtx4GwDEkEhSzEwca52ElIqVxoafVZlyVfJn/0CYy0AV58=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KSr1X6kH; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60416f4cba4so6104067b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 14:45:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706741149; x=1707345949; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=LFZR+caDlnxynR006W8r06MBUXUFwhkI/G9N83P84WQ=;
+        b=KSr1X6kHrIQ/BP+R5ebibWU22EhUPy/ug/0p0W6MqElajxbHo4ZiHrf4lbyyjsEVCS
+         uunvycOKsQT0UgHurNj7+18jQSIGYNFvdZ43I22f6RkSQVh49hapm+BXRuZgvHtwCIJ1
+         MHNJ5aXXC+9TExrXY90ZrfutlDh2NX0pSLsHWVzlzP5dBJbHTASNfBlFQXDbahpKTtjl
+         5YsSH6pw6ognzRKgx+95eLf8kdT/By3FPdIpAOAv2UyOQAsz8+hvN83LIFvHiaKREac2
+         PG3rlZjovqUuO9sJA11kjpNRqCXRmwjKy9bbBHurWZFiY2GrQT9B2B3h/QgovSFlvmPL
+         PTOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706741149; x=1707345949;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LFZR+caDlnxynR006W8r06MBUXUFwhkI/G9N83P84WQ=;
+        b=EKbYIRanTNOT9xcRpmpukESspwCEebQUD7FtLNszgv710RSJqn88B79I+EKDIfgk2g
+         +5vOl1hAgX2PX8fUbt+tBBYNu8Nrp/o1OncyGhp+TLHSbGTA7vK3Vsjba9ky5TP7T6dD
+         kkdLipT0P28emdchXYj9PAjUWKfPKYWROKdu9rSsXOJZDuedfMAYRDZX5zydr2N+10wO
+         +5FTmtHIoKprB4Hbh+z206Dsg4kZTIayaKselTrCEXDq/UXBEpHSIKhzBtUIBWsAFp+r
+         649gqKEgK/iUJZjQCl5F23cg8PzsUy8j8/dpW4WN6It1hNcFt4tFiEoYofVR3rUhiXAO
+         XrVw==
+X-Gm-Message-State: AOJu0YwmiMDKJjDb3SQr9nIr7KHZNs/LcmqhoKrzeIGR8zO9nAspQvIt
+	Kjvja28YpPhMQgX9HtX6G5iQ9Vqag97AVPZmEA7LUUxUhli/xSoHKCxG3ibkZ0y9OSAx4UlU5gx
+	PCw==
+X-Google-Smtp-Source: AGHT+IHbj+iyys3ihZ/6xbW07HHtto50GCqd6T2uQS3vYWtVgZ/I/uUSlscC69aVq4ekwAFGEgKUUC6N6OE=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:11c3:b0:dc2:398d:a671 with SMTP id
+ n3-20020a05690211c300b00dc2398da671mr827981ybu.10.1706741148737; Wed, 31 Jan
+ 2024 14:45:48 -0800 (PST)
+Date: Wed, 31 Jan 2024 14:45:46 -0800
+In-Reply-To: <20231102155111.28821-2-guang.zeng@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD8Lp47SH+xcCbZ9qdRwrk2KOHNoHUE5AMieVHoSMbVsMrdiNg@mail.gmail.com>
+Mime-Version: 1.0
+References: <20231102155111.28821-1-guang.zeng@intel.com> <20231102155111.28821-2-guang.zeng@intel.com>
+Message-ID: <ZbrNmoSiufn4RM9K@google.com>
+Subject: Re: [RFC PATCH v1 1/8] KVM: selftests: x86: Fix bug in addr_arch_gva2gpa()
+From: Sean Christopherson <seanjc@google.com>
+To: Zeng Guang <guang.zeng@intel.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>, 
+	Oliver Upton <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>, 
+	Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu <yuzenghui@huawei.com>, 
+	Anup Patel <anup@brainfault.org>, Atish Patra <atishp@atishpatra.org>, 
+	David Hildenbrand <david@redhat.com>, kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	kvmarm@lists.linux.dev, kvm-riscv@lists.infradead.org, 
+	linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
 
-On Wed, Jan 31, 2024 at 07:08:12AM -0400, Daniel Drake wrote:
-> On Wed, Jan 31, 2024 at 6:57 AM Niklas Cassel <cassel@kernel.org> wrote:
-> > Unfortunately, we don't have any of these laptops that has a Tiger Lake
-> > AHCI controller (with a disappearing drive), so until someone who does
-> > debugs this, I think we are stuck at status quo.
+On Thu, Nov 02, 2023, Zeng Guang wrote:
+> Fix the approach to get page map from gva to gpa.
 > 
-> I've asked for volunteers to help test things on those original bug
-> reports (and may have one already) and would appreciate any suggested
-> debugging approaches from those more experienced with SATA/AHCI. What
-> would be your first few suggested debugging steps?
+> If gva maps a 4-KByte page, current implementation of addr_arch_gva2gpa()
+> will obtain wrong page size and cannot derive correct offset from the guest
+> virtual address.
 > 
-> Non-LPM boot:
-> ata1: SATA max UDMA/133 abar m2048@0x50202000 port 0x50202100 irq 145
-> ata2: SATA max UDMA/133 abar m2048@0x50202000 port 0x50202180 irq 145
-> ata2: SATA link down (SStatus 0 SControl 300)
-> ata1: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+> Meanwhile using HUGEPAGE_MASK(x) to calculate the offset within page
+> (1G/2M/4K) mistakenly incorporates the upper part of 64-bit canonical
+> linear address. That will work out improper guest physical address if
+> translating guest virtual address in supervisor-mode address space.
+
+The "Meanwhile ..." is a huge clue that this should be two separate patches.
+
+> Signed-off-by: Zeng Guang <guang.zeng@intel.com>
+> ---
+>  tools/testing/selftests/kvm/lib/x86_64/processor.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> LPM failed boot:
-> ata1: SATA max UDMA/133 abar m2048@0x50202000 port 0x50202100 irq 145
-> ata2: SATA max UDMA/133 abar m2048@0x50202000 port 0x50202180 irq 145
-> ata1: SATA link down (SStatus 4 SControl 300)
-> ata2: SATA link down (SStatus 4 SControl 300)
-> 
-> note SStatus=4 on both ports  (means "PHY in offline mode"?)
+> diff --git a/tools/testing/selftests/kvm/lib/x86_64/processor.c b/tools/testing/selftests/kvm/lib/x86_64/processor.c
+> index d8288374078e..9f4b8c47edce 100644
+> --- a/tools/testing/selftests/kvm/lib/x86_64/processor.c
+> +++ b/tools/testing/selftests/kvm/lib/x86_64/processor.c
+> @@ -293,6 +293,7 @@ uint64_t *__vm_get_page_table_entry(struct kvm_vm *vm, uint64_t vaddr,
+>  	if (vm_is_target_pte(pde, level, PG_LEVEL_2M))
+>  		return pde;
+>  
+> +	*level = PG_LEVEL_4K;
+>  	return virt_get_pte(vm, pde, vaddr, PG_LEVEL_4K);
+>  }
+>  
+> @@ -496,7 +497,7 @@ vm_paddr_t addr_arch_gva2gpa(struct kvm_vm *vm, vm_vaddr_t gva)
+>  	 * No need for a hugepage mask on the PTE, x86-64 requires the "unused"
+>  	 * address bits to be zero.
+>  	 */
+> -	return PTE_GET_PA(*pte) | (gva & ~HUGEPAGE_MASK(level));
+> +	return PTE_GET_PA(*pte) | (gva & (HUGEPAGE_SIZE(level) - 1));
 
-Hello Daniel, Vitalii,
+I think I would prefer to "fix" HUGEPAGE_MASK() and drop its incorporation of
+PHYSICAL_PAGE_MASK.  Regardless of anyone's personal views on whether or not
+PAGE_MASK and HUGEPAGE_MASK should only cover physical address bits, (a) the
+_one_ usage of HUGEPAGE_MASK is broken and (b) diverging from the kernel for
+something like is a terrible idea, and the kernel does:
 
-The attachments that you uploaded to bugzilla:
-https://bugzilla.kernel.org/show_bug.cgi?id=217114
-namely dmesg_VMD_off and dmesg_VMD_on:
+	#define PAGE_MASK		(~(PAGE_SIZE-1))
+	#define HPAGE_MASK		(~(HPAGE_SIZE - 1))
+	#define KVM_HPAGE_MASK(x)	(~(KVM_HPAGE_SIZE(x) - 1))
 
-dmesg_VMD_off:[    1.020080] ahci 0000:00:17.0: AHCI 0001.0301 32 slots 1 ports 6 Gbps 0x1 impl SATA mode
-dmesg_VMD_off:[    1.020095] ahci 0000:00:17.0: flags: 64bit ncq sntf pm clo only pio slum part deso sadm sds 
-dmesg_VMD_off:[    1.020645] ata1: SATA max UDMA/133 abar m2048@0x80902000 port 0x80902100 irq 123 lpm-pol 0
-dmesg_VMD_off:[    1.330090] ata1: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+Luckily, there are barely any users in x86, so I think the entirety of the
+conversion is this?
 
+diff --git a/tools/testing/selftests/kvm/include/x86_64/processor.h b/tools/testing/selftests/kvm/include/x86_64/processor.h
+index 0f4792083d01..ef895038c87f 100644
+--- a/tools/testing/selftests/kvm/include/x86_64/processor.h
++++ b/tools/testing/selftests/kvm/include/x86_64/processor.h
+@@ -352,11 +352,12 @@ static inline unsigned int x86_model(unsigned int eax)
+ 
+ #define PAGE_SHIFT             12
+ #define PAGE_SIZE              (1ULL << PAGE_SHIFT)
+-#define PAGE_MASK              (~(PAGE_SIZE-1) & PHYSICAL_PAGE_MASK)
++#define PAGE_MASK              (~(PAGE_SIZE-1))
++kvm_static_assert((PHYSICAL_PAGE_MASK & PAGE_MASK) == PHYSICAL_PAGE_MASK);
+ 
+ #define HUGEPAGE_SHIFT(x)      (PAGE_SHIFT + (((x) - 1) * 9))
+ #define HUGEPAGE_SIZE(x)       (1UL << HUGEPAGE_SHIFT(x))
+-#define HUGEPAGE_MASK(x)       (~(HUGEPAGE_SIZE(x) - 1) & PHYSICAL_PAGE_MASK)
++#define HUGEPAGE_MASK(x)       (~(HUGEPAGE_SIZE(x) - 1))
+ 
+ #define PTE_GET_PA(pte)                ((pte) & PHYSICAL_PAGE_MASK)
+ #define PTE_GET_PFN(pte)        (PTE_GET_PA(pte) >> PAGE_SHIFT)
+diff --git a/tools/testing/selftests/kvm/x86_64/hyperv_tlb_flush.c b/tools/testing/selftests/kvm/x86_64/hyperv_tlb_flush.c
+index 05b56095cf76..cc5730322072 100644
+--- a/tools/testing/selftests/kvm/x86_64/hyperv_tlb_flush.c
++++ b/tools/testing/selftests/kvm/x86_64/hyperv_tlb_flush.c
+@@ -623,7 +623,7 @@ int main(int argc, char *argv[])
+        for (i = 0; i < NTEST_PAGES; i++) {
+                pte = vm_get_page_table_entry(vm, data->test_pages + i * PAGE_SIZE);
+                gpa = addr_hva2gpa(vm, pte);
+-               __virt_pg_map(vm, gva + PAGE_SIZE * i, gpa & PAGE_MASK, PG_LEVEL_4K);
++               __virt_pg_map(vm, gva + PAGE_SIZE * i, gpa & PHYSICAL_PAGE_MASK, PG_LEVEL_4K);
+                data->test_pages_pte[i] = gva + (gpa & ~PAGE_MASK);
+        }
+ 
 
-dmesg_VMD_on:[    0.973901] ahci 10000:e0:17.0: AHCI 0001.0301 32 slots 1 ports 6 Gbps 0x1 impl SATA mode
-dmesg_VMD_on:[    0.973904] ahci 10000:e0:17.0: flags: 64bit ncq sntf pm clo only pio slum part deso sadm sds 
-dmesg_VMD_on:[    0.974094] ata1: SATA max UDMA/133 abar m2048@0x82102000 port 0x82102100 irq 142 lpm-pol 0
-dmesg_VMD_on:[    1.287221] ata1: SATA link down (SStatus 4 SControl 300)
-
-
-I assume that both of these logs are from the same kernel binary.
-Does this kernel binary have the Tiger Lake LPM enablement patch included?
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/patch/?id=104ff59af73aba524e57ae0fef70121643ff270e
-
-If so, since with Intel VMD turned off we can detect the SATA drive,
-but with Intel VMD turned on we do not, which strongly suggests that
-the problem is related to Intel VMD.
-
-
-
-In libata we perform a reset of the port at boot, see:
-libata-sata.c:sata_link_hardreset()
-after writing to SControl, we call
-libata-core.c:ata_wait_ready() that will poll for the port being ready
-by calling the check_ready callback.
-For AHCI, this callback funcion is set to:
-libahci.c:ahci_check_ready().
-
-A reset should take the device out of deep power state and should be
-sufficient to establish a connection (and that also seems to be the
-case when not using Intel VMD).
-
-However, if you want to debug, I would start by adding prints to
-libata-sata.c:sata_link_hardreset()
-libata-core.c:ata_wait_ready()
-libahci.c:ahci_check_ready().
-
-
-
-Vitalii,
-
-I noticed that the prints says "lpm-pol 0"
-Do you have:
-CONFIG_SATA_MOBILE_LPM_POLICY set to 0?
-
-CONFIG_SATA_MOBILE_LPM_POLICY=0
-means do not touch any settings set by firmware.
-
-This means that this code:
-https://github.com/torvalds/linux/blob/v6.8-rc2/drivers/ata/libata-eh.c#L3572-L3579
-https://github.com/torvalds/linux/blob/v6.8-rc2/drivers/ata/libata-eh.c#L3067-L3072
-
-will not call ata_eh_set_lpm(), which means that ahci_set_lpm() will not
-be called, which means that sata_link_scr_lpm() will not be called.
-
-While this shouldn't make a difference, and I didn't check the code
-to see where "SATA link up" is printed, but possibly, when using VMD,
-perhaps it is so quick to put the device to a deeper power state after
-a reset, and with policy == 0, we will never send a ATA_LPM_WAKE_ONLY
-that sets PxCMD.ICC to the active state (brings the device out of sleep).
-
-Could you please try to set:
-CONFIG_SATA_MOBILE_LPM_POLICY=3
-and enable VMD again, and see if that makes you able to detect the SATA
-drive even with VMD enabled.
-
-
-Kind regards,
-Niklas
 
