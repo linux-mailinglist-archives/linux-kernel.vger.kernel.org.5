@@ -1,118 +1,131 @@
-Return-Path: <linux-kernel+bounces-46056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46057-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA0B58439CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:54:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 265818439D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:55:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07E9EB27169
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:54:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D220B1F2C2A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:55:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 356CE69975;
-	Wed, 31 Jan 2024 08:46:11 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B29269D24;
+	Wed, 31 Jan 2024 08:46:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iqYyOtWz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09A3C69968;
-	Wed, 31 Jan 2024 08:46:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F388605DD;
+	Wed, 31 Jan 2024 08:46:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706690770; cv=none; b=udLkXsKhcRsuw1ngQIaX9ufaqOz5vSc1JAosGAo/3R32VxXvbj6/PdD2+obQ4f2BOg/wY4W8hG9AG8EUBp/PR19lePrOWDIBKKhTmG62QMNGjINXq0tFKQLiB7sk3X4pPL09KFHu1mrkkw6QtUm5agaAXBEUPRp6WRAmFPjyiw4=
+	t=1706690818; cv=none; b=Jpmj7Rs8fzpzve2n2GCw+Ea52tp+bdFTi3lBrrwCu/fWd9a4t6MvmcqIRkilsH2fpmaIYv+hi9cvCG/Am/d5a2fLQtPrihZr3Hu3qn3JBIzqSin3v9gFs0B7+qAveUmk4IuR+GORs3GNHRmr6xyxxGDHSUcwqcDOHhnntxR4UMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706690770; c=relaxed/simple;
-	bh=C9y3ndyXZaoRbRNXMuMZ3OsYWUjmAu76jF09AJo+whE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YUHv2FL7qHPFTzrT5o0hA2UKVValyUZDXQA1sypjR6fc3iQR7FU6YDlVGIfMoGXw5Zj9vI5nBgO7eSo2h9iGhikHO0eHVG3/e2hGnFc7/s0b59H2G1MEL17AxvR/K7SCEKL3j94AMNDBcTTG+Tm38c5N8zlhEAl3nwLlJ8B57mk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: cae85ecc1fd4424483f295ce66f8324a-20240131
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:95ae698e-1567-481c-90aa-ee649a018903,IP:20,
-	URL:0,TC:0,Content:0,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
-	ION:release,TS:30
-X-CID-INFO: VERSION:1.1.35,REQID:95ae698e-1567-481c-90aa-ee649a018903,IP:20,UR
-	L:0,TC:0,Content:0,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:30
-X-CID-META: VersionHash:5d391d7,CLOUDID:baf7f47f-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:2401311645553AHGQ76V,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
-	02,TC:nil,Content:0,EDM:5,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL
-	:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: cae85ecc1fd4424483f295ce66f8324a-20240131
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 1902976999; Wed, 31 Jan 2024 16:45:52 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id 1775FE000EB9;
-	Wed, 31 Jan 2024 16:45:52 +0800 (CST)
-X-ns-mid: postfix-65BA08BF-893949752
-Received: from kernel.. (unknown [172.20.15.254])
-	by mail.kylinos.cn (NSMail) with ESMTPA id 4AA0BE000EB9;
-	Wed, 31 Jan 2024 16:45:51 +0800 (CST)
-From: Kunwu Chan <chentao@kylinos.cn>
-To: marcelo.leitner@gmail.com,
-	lucien.xin@gmail.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: linux-sctp@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH net-next] sctp: Simplify the allocation of slab caches
-Date: Wed, 31 Jan 2024 16:45:49 +0800
-Message-Id: <20240131084549.142595-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1706690818; c=relaxed/simple;
+	bh=4BkvKFgglVdCeGCFuHgP4W0v2mzK44qTzIo31u8u7+c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dEpazUu1yI0zqMeFwphBwb+mNsdxaSphcSEL3JQCNs2lcD6Bx/GMxIh3JPTd6fmwmBlWPfjG8/W5ms3MTQ/zP+/PDZMb3pDBZdd9WTOQ4jXtqmm0tlM2pvHmzrTLQZk/aMYo8GdB3hwXG0Nlx5peLgIOZIY4Tjt/Bw28B9MYEYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iqYyOtWz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 632E0C433C7;
+	Wed, 31 Jan 2024 08:46:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706690817;
+	bh=4BkvKFgglVdCeGCFuHgP4W0v2mzK44qTzIo31u8u7+c=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=iqYyOtWzgUP5d3v0ololIBtkDRw9WWO09sd7gzCIIZgBxAVy9xat/jVBxOlXH+Ota
+	 YllfHjS+fywz95pELreHMdcRlqvYFz4jsazUgYcpK+JUOomn95jfjK2JzWKm6LhjNF
+	 Sw3frW+HAnotWiExQZFAHpvynylQmuOMLTnCWCw/JEPkwWco4Lk/KNihcL57pCHTwi
+	 yQv9czAHewVkFrRyByVCT4EgG8MlFLQF8x664CKTKg2PXEClUz0pSurPWpB9YnUqui
+	 nPxYK89diN8aDA5sgV5J6Anwow34s92tz/Dz6OAyi0s0exKKSK5qWNNnYx3HU1Fm55
+	 kJu35LRJzFDoQ==
+Date: Wed, 31 Jan 2024 14:16:45 +0530
+From: Manivannan Sadhasivam <mani@kernel.org>
+To: Viresh Kumar <viresh.kumar@linaro.org>
+Cc: Manivannan Sadhasivam <mani@kernel.org>,
+	Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Brian Masney <bmasney@redhat.com>,
+	Georgi Djakov <djakov@kernel.org>, linux-arm-msm@vger.kernel.org,
+	vireshk@kernel.org, quic_vbadigan@quicinc.com,
+	quic_skananth@quicinc.com, quic_nitegupt@quicinc.com,
+	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 5/6] arm64: dts: qcom: sm8450: Add opp table support
+ to PCIe
+Message-ID: <20240131084645.GA3481@thinkpad>
+References: <20240112-opp_support-v6-0-77bbf7d0cc37@quicinc.com>
+ <20240112-opp_support-v6-5-77bbf7d0cc37@quicinc.com>
+ <20240129160420.GA27739@thinkpad>
+ <20240130061111.eeo2fzaltpbh35sj@vireshk-i7>
+ <20240130071449.GG32821@thinkpad>
+ <20240130083619.lqbj47fl7aa5j3k5@vireshk-i7>
+ <20240130094804.GD83288@thinkpad>
+ <20240130095508.zgufudflizrpxqhy@vireshk-i7>
+ <20240130131625.GA2554@thinkpad>
+ <20240131052335.6nqpmccgr64voque@vireshk-i7>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240131052335.6nqpmccgr64voque@vireshk-i7>
 
-commit 0a31bd5f2bbb ("KMEM_CACHE(): simplify slab cache creation")
-introduces a new macro.
-Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
-to simplify the creation of SLAB caches.
+On Wed, Jan 31, 2024 at 10:53:35AM +0530, Viresh Kumar wrote:
+> On 30-01-24, 18:46, Manivannan Sadhasivam wrote:
+> > Agree. But what I'm saying is, right now there is no DT property in the
+> > interconnect consumer nodes to specificy the bw requirements. This is all
+> > hardcoded in the respective ICC consumer drivers.
+> 
+> I thought there are a lot of users already in there..
+> 
+> $ git grep -i opp.*bps arch/arm64/boot/dts/ | wc -l
+> 864
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
- net/sctp/protocol.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+Most of the hits are from CPU nodes... For some reasons, peripheral drivers are
+sticking to hardcoded values.
 
-diff --git a/net/sctp/protocol.c b/net/sctp/protocol.c
-index 94c6dd53cd62..e849f368ed91 100644
---- a/net/sctp/protocol.c
-+++ b/net/sctp/protocol.c
-@@ -1495,17 +1495,11 @@ static __init int sctp_init(void)
-=20
- 	/* Allocate bind_bucket and chunk caches. */
- 	status =3D -ENOBUFS;
--	sctp_bucket_cachep =3D kmem_cache_create("sctp_bind_bucket",
--					       sizeof(struct sctp_bind_bucket),
--					       0, SLAB_HWCACHE_ALIGN,
--					       NULL);
-+	sctp_bucket_cachep =3D KMEM_CACHE(sctp_bind_bucket, SLAB_HWCACHE_ALIGN)=
-;
- 	if (!sctp_bucket_cachep)
- 		goto out;
-=20
--	sctp_chunk_cachep =3D kmem_cache_create("sctp_chunk",
--					       sizeof(struct sctp_chunk),
--					       0, SLAB_HWCACHE_ALIGN,
--					       NULL);
-+	sctp_chunk_cachep =3D KMEM_CACHE(sctp_chunk, SLAB_HWCACHE_ALIGN);
- 	if (!sctp_chunk_cachep)
- 		goto err_chunk_cachep;
-=20
---=20
-2.39.2
+> 
+> > But when we use OPP to control bw, the bw requirements come from DT. This is
+> > what I see as a difference. Because, only nodes making use of OPP will specify
+> > bw in DT and other nodes making use of just ICC will not.
+> > 
+> > Maybe I'm worrying too much about these details... But it looks like
+> > inconsistency to me.
+> 
+> Right. So is there inconsistency right now ? Yes, there is.
+> 
+> The important question we need to answer is where do we want to see
+> all these drivers (specially new ones) in the future. What's the right
+> thing to do eventually ? Hardcode stuff ? Or Move it to DT ?
+> 
+> The answer is DT for me, so the code can be generic enough to be
+> reused. This is just one step in the right direction I guess.
+> Eventually the drivers must get simplified, which they are I guess.
+> 
 
+I completely agree that hardcoding the bw values is not the right thing, but was
+worried about the inconsistency. But anyway, I hope either ICC will also move
+towards DT for bw or we will convert all the drivers to use OPP in the future.
+
+Thanks for the discussion so far! It clarified.
+
+- Mani
+
+-- 
+மணிவண்ணன் சதாசிவம்
 
