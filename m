@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-46017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46019-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99B80843946
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:42:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAF4284394C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:42:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14CAAB26EC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:42:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF2921C22359
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:42:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11DC161693;
-	Wed, 31 Jan 2024 08:41:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69A1C5FEF8;
+	Wed, 31 Jan 2024 08:41:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="rdTH2LtM"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="a08gYhQR"
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 163D5605DC
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 08:41:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86BD460B9A
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 08:41:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706690510; cv=none; b=t9jnL2XKcKycrWvLbc+DwcnS5LWT5Yuxh01XR51FUJCySrlYC4QVYd8SRm+wIwhsE6f6cYLdLXc3AypV2kgyBBauy/z3IvuUsKP4pA+Bk0T2xqnFlI6xNhU635jvH+o96Fm8mHGBUwwi1cv2fhZTRes+BWhpfSSOkVeJyVumjXk=
+	t=1706690511; cv=none; b=BvjnylJTzPXQPpAtwqgcpqlYSNmKnGd5lGLN4WQSMbo5UxSD287E+mjMiAX09oYTH/VmTf40kMO3gbh2wRpyrs9k8ZAhr+iHQuPgbR8rBfXwKQWhJbbJbpjSAmxGnJZg2gs2i2rbYxcvnwnDLrGLhtB4JDIrQCEAhR7BHvMJqwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706690510; c=relaxed/simple;
-	bh=iKRXLwTfrqU+PVgGgOqGO2T4SSk0VbOyJ7O4Lzl4WVE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=T7wuu3CT50uUF1gnkLA8Vbs3ARf5k54/2DY/SAKWGO59hzXiZIJtWZzvoRBexby8ubwvqb8Zkl8C6HsTAQ9iBAdMR8QJ4imiXKKsmive5P6+8tAogy/Gktd6bcLN9tX7OE3pB1QdmGqokNlXqaVEXEjcYR3MHNHiUXbirk8CzvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=rdTH2LtM; arc=none smtp.client-ip=209.85.208.47
+	s=arc-20240116; t=1706690511; c=relaxed/simple;
+	bh=aaKf7z2xB1MNtfZ9vMqWh+Wx2jdR1MK9CRLol2unMF0=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=jX+CkPrM9rWzTv6ejjMPjopOp4hREWt7ZWP/Q0IkBZPIfK9hhmi2w7UykZdZlyJoBNl6FGOnvnYVsTVIwq/6GT0k8MrJrvfu6sD5BmY+1Yxfab7Y4EK59i04U4vXyXfiHISiZwTu0in1g29E7IWffuJ+HgJvpLcsWbMf+4dmo0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=a08gYhQR; arc=none smtp.client-ip=209.85.208.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-55783b7b47aso5950230a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 00:41:47 -0800 (PST)
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d0600551ebso14518321fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 00:41:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1706690506; x=1707295306; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1524TzWJOECLHteJDyR9DLp3V3fisC4TKq1DpxaWyKw=;
-        b=rdTH2LtMovlTU2OPE+C9AK1NLSirmXe40R34WpQX+Q5KfhqNXzjpuzq8OzNVPvoFuw
-         dPvevXOxNav9DuSBdc5SufA/gx3FZEtnZRiJIXBoB49T6xCY1YsuMMo1S/zG4YKRqvcS
-         u1vi71Rj9Rb0faAIze08l0RTZqYpJ0zVSWNH7CiGtl80WREwcfcmOZx81sbIC/6Vw+Vg
-         rnqR6X0sC++FHrbokyOOO/Ot7n9hYjCdARj5FJoTW5tBO7iHQ0UVqiUivOcImphzInjN
-         F04ieIOxs8ksl/Oap3+CeecvSA1NHCJKSbDrGBGnrflUShyTghiClMt7XSmno4/wBJ49
-         O40A==
+        d=tuxon.dev; s=google; t=1706690507; x=1707295307; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3nopmGlOYDibDD0J+/Hxx33H1qRqX0KJvglV4HoOWvw=;
+        b=a08gYhQRlIgi/qUl044Zw3FcKBfxoHa6kVj6bphuS2MGkJ4DFPrA5WtlJW0b815jEj
+         yNNwGWK+aydDHlUSOEA8m+rdv6R4Oz6nsAN3qLyrmcuSC5iyXvsO5Bjnslq2X/seI2WU
+         GwiXz6rhsdd/VBbthhLOmqaREsCqZ3HmEg6YXiGJJfMglgpFD9VLfr2nHWuXgnCCbvSS
+         kFncaSuNC9qQkBv6Clwqe7Vu3zjY3ID2FaJwvTikntRep5lxVzyQwFswkupI23g8Oju8
+         o/K1p0ggZ3lgm/V29aZAfL0x0BhSKpgod51d/4lh32ECWTTCpX5kO/KIcRuodHs+NDXC
+         3SvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706690506; x=1707295306;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1524TzWJOECLHteJDyR9DLp3V3fisC4TKq1DpxaWyKw=;
-        b=maZtAYIZq1xeOwpQkobDkJDPclmyMAHOdrCb3Z/JK315aoMcKOf/mWzlSzqj3KzGE7
-         zvgKvddK/YDKXqlEfiZ5UUA4bxQl9WeyREAklpEFB9VkmoEbgvmxUH+7NRnW59JvcZs7
-         sfaiXbY5jB+WkWoXlYlwSCj4x3qsIGnElpzEpHCAgubTpCZN7sxOWVnaNUxhqIo0Uez7
-         jfoa0/67/1lVcnL4mp4+jb4LbHOPYbsV6clOPN5MMAmFGSza05npg+lMfWwPLwzq3/GO
-         w3WYfWTQbzi/71oqXpx+f5YFaEnlRAC8FCyRW9GGUpXYFZjM9eHIxJl8rTyn4B1y8gnH
-         G3WA==
-X-Gm-Message-State: AOJu0YzU+YM7zlu54dYgDMRo8cwBNNqSFM5biLrfAXGSr1t73gSdKc4i
-	VaaePpmvNiR68MAlOxHyTeYt+8LzfWzhpqp39Exd3Qo7ssywVY5gKC+2rYASlRY=
-X-Google-Smtp-Source: AGHT+IEGqc5y9PC/J6J9ErYD3JK8SaZx7UhdE7wuVBjIuEL5mo3X27baMFsbr922gsCpNlpqEnJZow==
-X-Received: by 2002:a05:6402:1c04:b0:55f:86a0:99ba with SMTP id ck4-20020a0564021c0400b0055f86a099bamr626662edb.28.1706690505971;
-        Wed, 31 Jan 2024 00:41:45 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVl5Q/Ei2bvcvv8xNVcQim5Dj02Pl4QjnlUYe+y66df6tf56svSKkWCWd1P/sjdv0gI4LyPVsSopEmlbd13tygZ/mvkuo68KQPQ+8j8kBSDCMF5cUiKMTvYirtlGF0m64iw6+0IGSVGX69xRzlxVO0Be7DrcFDUza9Re4l0fPxIVNgaklWDkagRF+QHIITCEMnuG1eAIhz1ujTNKIrl4ELdFNlN9rTl9asvyXFRxdb/42bD+SjhDyyM7AqP0PVcYaoiQ0c8oTG2o33pVGjiei3JOswrMw8fm8V7pLLefyw63AG29R2I8JAFBfwCcSzzS8OswTrq3h5Hol+JfTB0AeKftpAipGef9/JBUsmSmwPb3YusdXJvaQ7GD8qpgf2l5kAhQnkR51D4g6TA/m6RvAT6y3ZRIk3yzvzhTnqJJkFdBLejai8=
+        d=1e100.net; s=20230601; t=1706690507; x=1707295307;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3nopmGlOYDibDD0J+/Hxx33H1qRqX0KJvglV4HoOWvw=;
+        b=Jz8jbqlKEJ7S1Ij3qhd3VQ0kXbOeWWrU5djKy3ME+TLo1iaH7US0H2WshEwtffuEau
+         aX3dvD0oLCbjQVaqcn8DXx86mjkhvPlwTDv2R/aMUkD3DEJ//E0z9TFezdv6umS+uYX5
+         r3NSfSZkL5Azr4AtwaR5M6nsC5uPQlH5mj4JEI9vYI8dIRqlS7xhXFmRgIFlb+QFGflK
+         LRz3IdySdyeP+U1FjN5t06Wt1zN7pmgrT5HagKvtkJkn7mJBEA51Y5Ou2T5efKnjYF2Y
+         bAO9z4HXx4w2Ih74ZkglhtRik7lx5VwM3A98lzwVqcml34zNyjKICFMF2imenHOc7gzZ
+         P8vA==
+X-Gm-Message-State: AOJu0YwxwKATBcKbSgMQkzGwE6PEuWkMHeUN/2Cqcfr009dTKEZJXLtw
+	H1mJe/K4bbjb7LWlBQlo00GM6/w+nqFtitwYvGRK5p3aacxCDsGCSg2TF00SHTs=
+X-Google-Smtp-Source: AGHT+IEEAYF9I0Wd8hE2FKGQaz5+GpmWeBgNzUkbk825w4QlQTz0p1tW17uQk+d/geaJtlQ+4a4B5w==
+X-Received: by 2002:a05:651c:1a0f:b0:2cf:1ae2:dca with SMTP id by15-20020a05651c1a0f00b002cf1ae20dcamr799228ljb.16.1706690507376;
+        Wed, 31 Jan 2024 00:41:47 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVINZIQxSHU9/Pkq2gP08HOZi6sVlBy3aTiloaO6v4iewhrYb8NolbjvUFEnGcamkz60RVZQPaEpoCm25S2D3KtobY34/cC3J+5c2db68rdUesbukQ2PDk/yl+19cu49aAWhdPT214NeskIYewypZ4LhXQJHSxXq/0vNHL1pT7M9w85CYUbtVv36onuBy3h8fkBead3dgATf9weN0/9QrT37J4bi0WVVHFhY181GC00R0hhJDmS1u8wnX4mayOpbUrqzg3YginFPuCoOMzv0NMbTvYngQhtbm7KZv9ugPwHOQiC0L9OGfBkPk4agQmKusxS84Sr3ZowH7+8mR5yFucpvC3n4nnMtTKIUrPlsL3WH/Y3yIO381AzrqQ8JInMxQEBqVBW4De67HXsmJ4ghB7SRsN8LTvZ1DZiv1fJyEpxO6/t3zY=
 Received: from claudiu-X670E-Pro-RS.. ([82.78.167.87])
-        by smtp.gmail.com with ESMTPSA id cq16-20020a056402221000b0055f02661ae2sm2863630edb.78.2024.01.31.00.41.44
+        by smtp.gmail.com with ESMTPSA id cq16-20020a056402221000b0055f02661ae2sm2863630edb.78.2024.01.31.00.41.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 00:41:45 -0800 (PST)
+        Wed, 31 Jan 2024 00:41:47 -0800 (PST)
 From: Claudiu <claudiu.beznea@tuxon.dev>
 X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
 To: s.shtylyov@omp.ru,
@@ -79,10 +81,12 @@ Cc: netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	claudiu.beznea@tuxon.dev,
 	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH net-next v5 00/15] net: ravb: Prepare for suspend to RAM and runtime PM support (part 1)
-Date: Wed, 31 Jan 2024 10:41:18 +0200
-Message-Id: <20240131084133.1671440-1-claudiu.beznea.uj@bp.renesas.com>
+Subject: [PATCH net-next v5 01/15] net: ravb: Let IP-specific receive function to interrogate descriptors
+Date: Wed, 31 Jan 2024 10:41:19 +0200
+Message-Id: <20240131084133.1671440-2-claudiu.beznea.uj@bp.renesas.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240131084133.1671440-1-claudiu.beznea.uj@bp.renesas.com>
+References: <20240131084133.1671440-1-claudiu.beznea.uj@bp.renesas.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -93,104 +97,66 @@ Content-Transfer-Encoding: 8bit
 
 From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Hi,
+ravb_poll() initial code used to interrogate the first descriptor of the
+RX queue in case gPTP is false to determine if ravb_rx() should be called.
+This is done for non-gPTP IPs. For gPTP IPs the driver PTP-specific
+information was used to determine if receive function should be called. As
+every IP has its own receive function that interrogates the RX descriptors
+list in the same way the ravb_poll() was doing there is no need to double
+check this in ravb_poll(). Removing the code from ravb_poll() leads to a
+cleaner code.
 
-This series prepares ravb driver for runtime PM support and adjust the
-already existing suspend to RAM code to work for RZ/G3S (R9A08G045) SoC.
-
-As there are IP versions that switch to module standby when disabling
-the clocks, and because of module standby IP switches to reset and
-the register content is lost, to be able to have runtime PM supported
-for all IP variants, the configuration operations were moved all to
-ravb_open()/ravb_close() letting the ravb_probe() and ravb_remove()
-to deal with resource parsing and allocation/free.
-
-The ethtool and IOCTL APIs that could have been run asyncronously
-were adapted to return if the interface is down. As explained in
-each individual commits description, this should be harmless.
-
-Along with it, the series contains preparatory cleanups.
-
-The series has been tested on the boards with the following device trees:
-- r8a7742-iwg21d-q7.dts
-- r8a774a1-hihope-rzg2m-ex.dts 
-- r9a07g043u11-smarc-rzg2ul.dts
-- r9a07g054l2-smarc-rzv2l.dts
-- r9a07g044l2-smarc-rzg2l.dts
-
-Thank you,
-Claudiu Beznea
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+---
 
 Changes in v5:
-- collected tags
-- fixed typos in patches description
-- improved description for patch 07/15
-- collected tags
+- none
 
 Changes in v4:
-- changed cover letter title and keep on 15 patches in series to cope
-  with requirement at [1]
-- add dependency on RESET_CONTROLLER in patch "net: ravb: Make reset
-  controller support mandatory"
-- use pm_runtime_active() in patch "net: ravb: Move the IRQs get and
-  request in the probe function"
-- set config more before reading the mac address in patch "net: ravb: Set
-  config mode in ndo_open and reset mode in ndo_close"
-- collected tags
-  
-[1] https://www.kernel.org/doc/html/v6.6/process/maintainer-netdev.html#tl-dr
-
+ - none
+ 
 Changes in v3:
-- collected tags
-- addressed review comments
-- squashed patch 17/21 ("net: ravb: Keep clock request operations grouped
-  together") from v2 in patch 07/19 ("net: ravb: Move reference clock
-  enable/disable on runtime PM APIs") from v3
-- check for ndev->flags & IFF_UP in patch 17/19 and 18/19 instead of
-  checking netif_running()
-- dropped patch 19/21 ("net: ravb: Do not set promiscuous mode if the
-  interface is down") as the changes there are not necessary as
-  ndev->flags & IFF_UP is already checked at the beginning of
-  __dev_set_rx_mode()
-- remove code from ravb_open() introduced by patch 20/21
-  ("net: ravb: Do not apply RX CSUM settings to hardware if the interface
-  is down") from v2 as this is not necessary; driver already takes
-  care of this in ravb_emac_init_rcar()
+- collected Sergey's tag
 
 Changes in v2:
-- rework the driver (mainly, ravb_open() contains now only resource
-  allocation and parsing leaving the settings to ravb_open(); ravb_remove()
-  has been adapted accordingly) to be able to use runtime PM for all
-  IP variants; due to this number of patches increased
-- adjust previous series to review comments
-- collected tags
-- populated driver's own runtime PM ops with enable/disable of reference
-  clock
+- addressed review comments and keep stale code out of this patch
 
-Claudiu Beznea (15):
-  net: ravb: Let IP-specific receive function to interrogate descriptors
-  net: ravb: Rely on PM domain to enable gptp_clk
-  net: ravb: Make reset controller support mandatory
-  net: ravb: Switch to SYSTEM_SLEEP_PM_OPS()/RUNTIME_PM_OPS() and
-    pm_ptr()
-  net: ravb: Use tabs instead of spaces
-  net: ravb: Assert/de-assert reset on suspend/resume
-  net: ravb: Move reference clock enable/disable on runtime PM APIs
-  net: ravb: Move the IRQs getting/requesting in the probe() method
-  net: ravb: Split GTI computation and set operations
-  net: ravb: Move delay mode set in the driver's ndo_open API
-  net: ravb: Move DBAT configuration to the driver's ndo_open API
-  net: ravb: Move PTP initialization in the driver's ndo_open API for
-    ccc_gac platorms
-  net: ravb: Set config mode in ndo_open and reset mode in ndo_close
-  net: ravb: Simplify ravb_suspend()
-  net: ravb: Simplify ravb_resume()
+ drivers/net/ethernet/renesas/ravb_main.c | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
- drivers/net/ethernet/renesas/Kconfig     |   1 +
- drivers/net/ethernet/renesas/ravb.h      |   6 +-
- drivers/net/ethernet/renesas/ravb_main.c | 738 +++++++++++------------
- 3 files changed, 352 insertions(+), 393 deletions(-)
-
+diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+index 0e3731f50fc2..d371c4bed634 100644
+--- a/drivers/net/ethernet/renesas/ravb_main.c
++++ b/drivers/net/ethernet/renesas/ravb_main.c
+@@ -1288,25 +1288,16 @@ static int ravb_poll(struct napi_struct *napi, int budget)
+ 	struct net_device *ndev = napi->dev;
+ 	struct ravb_private *priv = netdev_priv(ndev);
+ 	const struct ravb_hw_info *info = priv->info;
+-	bool gptp = info->gptp || info->ccc_gac;
+-	struct ravb_rx_desc *desc;
+ 	unsigned long flags;
+ 	int q = napi - priv->napi;
+ 	int mask = BIT(q);
+ 	int quota = budget;
+-	unsigned int entry;
+ 
+-	if (!gptp) {
+-		entry = priv->cur_rx[q] % priv->num_rx_ring[q];
+-		desc = &priv->gbeth_rx_ring[entry];
+-	}
+ 	/* Processing RX Descriptor Ring */
+ 	/* Clear RX interrupt */
+ 	ravb_write(ndev, ~(mask | RIS0_RESERVED), RIS0);
+-	if (gptp || desc->die_dt != DT_FEMPTY) {
+-		if (ravb_rx(ndev, &quota, q))
+-			goto out;
+-	}
++	if (ravb_rx(ndev, &quota, q))
++		goto out;
+ 
+ 	/* Processing TX Descriptor Ring */
+ 	spin_lock_irqsave(&priv->lock, flags);
 -- 
 2.39.2
 
