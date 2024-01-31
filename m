@@ -1,100 +1,110 @@
-Return-Path: <linux-kernel+bounces-45561-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45562-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9F0F843269
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 02:01:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 342B184326B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 02:01:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66457289B63
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 01:01:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDB8E1F22666
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 01:01:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C83E7EF0F;
-	Wed, 31 Jan 2024 01:00:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7C7C139B;
+	Wed, 31 Jan 2024 01:00:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cdUAI+zP"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UV5kZgwq"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51D5826AE4
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 01:00:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D299139E
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 01:00:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706662829; cv=none; b=lMEOW840Fo7litx0IYmeM1JcF2W4PXPtgazpOWmie5MXaK4Vj+d4LZoIBxEkGZmibpfbkbou+jBXAYUPwWKD+m1zyIxxZl+Fo0NLFUfEx2XazUQ6d0gmH/Fcl8lyq/3DE1Ujv/AIlKOXZ83HZuxAbdgh4X1aLrVfm017mVzJ2kY=
+	t=1706662846; cv=none; b=WFkmnG6Y+yzthNTFZP0GLpZz3QYWJXtGs64jOhNLS1fCjV8LEzGRlZD82Mm/2gcPGhcisnQpgPq5mqk3n3TJtqn/ao5W7HUr8nKmZqlPjSSH1vi+boW6xOzCdFhRhWATnIUQ5ufTS/NZMkbcbQ9Kta55137zfhYtySFYW5xpvXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706662829; c=relaxed/simple;
-	bh=M2m2EaZ+9NFvyeLuSQwqejAbGxKoskBFusmjz1XzU/w=;
+	s=arc-20240116; t=1706662846; c=relaxed/simple;
+	bh=8m5C1gxxrH7lFcMvyPtH0gAVFVKsHtRapWc9S9fULhs=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=miOtLZ9njZZOqCTihZh/fzIdkJ8YGk8Eqs4t2tg7jyCQ383aHvL6D2ehaXddnfBTBsL71SZMm7aeOqirVEM2cI9OxxMC7+sYCup6jF1+AvTVjaXvwWswZX6ck175fmAiaQMIyBW4UtRGyc1zo1s5Z2jvovkHNy813A54ASBrZG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cdUAI+zP; arc=none smtp.client-ip=209.85.219.201
+	 To:Cc:Content-Type; b=YMApLuhtHieEfcxRFIfPwj4cC93UGupXZWRFg6Qf9iN1BFEt8u+4Cv/Wfa7rQ89r9aa2Hkt3dHgQROD3gWme7y0wT6Jv8P0WMqnkyceIZel8M1OE7KGxT0O/8Z58qOuV5/vwFzm64t0m+yLA0ZPS/9F1VZ0tAOIHxZgAuOrG3Fk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UV5kZgwq; arc=none smtp.client-ip=209.85.128.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6b269b172so514994276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 17:00:28 -0800 (PST)
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60402c8d651so8848107b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 17:00:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706662827; x=1707267627; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1706662843; x=1707267643; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LbsDkXJuyzJxRYJgMytBqEAoItpNg8kmvZ5iaWrBezY=;
-        b=cdUAI+zPb9Vy2pksG8Qd7wBbeMQGmz00sek8U+XqsaxK+F0zOA++i6UDhKsVYbXIzp
-         WZzuPTxl+5DMrad7UFAa2aIRIip5Ce/bvbceahgrdwY9w/dt/tBRDJ0yHBNUJ0pFeXOZ
-         HcrSkVrJNnccpPsJEz7bFrrsu1kXCR6ZqKoNqjZzRoqof+hhj48h6USC3hA3oXIqg1Sh
-         WTEfVp8Pzt4AjBceAyIeoF5rUtRNAXWKjKX+Qvc+dsctcW/84zlswJsZXSXtS4mhtEJ7
-         IUHkNdwAV6FqIoCPEad/wqxbhgalEQ59ijxA2auoiykB+2KjI4F7BNLjGwHd2k6vQhkO
-         Hz4g==
+        bh=z/6EISmcdKMqUmU1fWbqozYT/7mLbV7Sl1T8e65+Jmc=;
+        b=UV5kZgwq1sp8eLPXdWu4KK3eB/35IJg7ilZRmE8c4lZdvAoyW+dhuO8yRwJF1opLA+
+         rbJHzNdTLRBpZTCPsUEf4CJxTQHKmtA/2tf/NqyHzOrg0wIMFMHlImzwoEejAxE+euyz
+         8/Q48Ty6zjF4IZYz2ceabqxt61Vgmi9+R4nteIUnC2ahmumxDvNFlbXoaUpUjyEODGio
+         UiNEVYKhxgnzV6cNd4CmGy9KdP/fy66DTUEtfKGEmi00bcw3FA4ZiVsD2USV6VU5AEgu
+         ba7gS2QjTDi0ZVVVndPrtfzNj8j26f8A3R//qXpPPE2QZllqNu1CSUHHuIuDj7R/c5Nb
+         uEZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706662827; x=1707267627;
+        d=1e100.net; s=20230601; t=1706662843; x=1707267643;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LbsDkXJuyzJxRYJgMytBqEAoItpNg8kmvZ5iaWrBezY=;
-        b=JridWjGVErPNry4XFF1xIp5+kY3IumsbKtXj9eQHBNKu3Jt8WvU4p5XzPBR6QpxKV7
-         fwqiqHqwyggFcDYFLdbNv55knGVb4UK4GQBL3cqFdA8q/e93RST7j8rLAWH0AdB+C88E
-         li0+Mnna1vQWaU5n4W0MxSDDDIT5fPGri/yGDRS/aMthXh9sVljEUUDFx/4bzUfTH9lL
-         B7IJKNThaPhu1xBw3cMJ19t0eWdtv0FGcY/Ivia12mWgq9ruwLZsuqZPKwTD0gDj8C4Y
-         vPJMZhP7Lh95EPFJRLG+ecwe+5agZrOxmtxM09gIVxxqSSIGiV9ttSamPhw0jMIILhn9
-         CPoA==
-X-Gm-Message-State: AOJu0YwzUjwr1cGWR/ZqNUFb7Djk0sqcHJd/G7FA2IWHV14yPJqirK0J
-	/XP1LFPGRj1H184wpXrgFu266WpfNNdSx2gv7mMt9kIxMTiBjmr7toBX7eqvD7Aq4f4UwR2kYlb
-	C4A==
-X-Google-Smtp-Source: AGHT+IEcJONh5VDgZXwOu8LR7Hpe3rHFqJT8zDReRvglswNuSMXYt8ETOvJ36uwnDabQ6VhXABO8k1kOICo=
+        bh=z/6EISmcdKMqUmU1fWbqozYT/7mLbV7Sl1T8e65+Jmc=;
+        b=fzYOE9C3YmF+vA3Mk8Lzf9WsG6ple2E1mclUwRTjxE/TUAxf/81JSpq75hDZxpc3hS
+         HoAVWaCWzAltaict0bx4P7lv9CcpqEwDtYuL/jFr+cA4sg0szsPe6O8ivHYtpEUIh1CW
+         QgQwhk4yYN3BLCU/QWNN2msNzQvDRnDa1HOxnU2brtxmkCSLZfYEK+B8gTe0fz/ocXPe
+         kiRmt60RXwMCHYhpYL9p2h5EnDv5dybypFe81vu5ujK+uIkjLjXlT+88Go69uEQ0UuYD
+         ju3/KGesCHVf8pRTNjBVQ1mecqMLqvVpVv/MODYUe4XYJb7sPqj+8jaWvzZ2pZ9DwGgd
+         H62w==
+X-Gm-Message-State: AOJu0Yy2dHluZUUkxQd8Oo8FKp5rq07o3GYls40088dPUaTwnP2sjxAN
+	uPVuCCsi6v8YjjfI6CRnMuswHhTTrGZG64cdusoeDWhN2rQ2zE9hc+wMSydPdLBMRnrd8Mjp6Cl
+	M5A==
+X-Google-Smtp-Source: AGHT+IGjHRUOeuyhuy2WoSF7k/k88PYslFLei9Ndx7E/Y0VZPxQqbfcq/jybTgUDEEUnYaPCelSqWeic5ds=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:dc2:b0:dbf:62da:11ba with SMTP id
- de2-20020a0569020dc200b00dbf62da11bamr565339ybb.5.1706662827411; Tue, 30 Jan
- 2024 17:00:27 -0800 (PST)
-Date: Tue, 30 Jan 2024 16:59:25 -0800
-In-Reply-To: <20231129224042.530798-1-seanjc@google.com>
+ (user=seanjc job=sendgmr) by 2002:a81:7996:0:b0:5ff:80cb:23c7 with SMTP id
+ u144-20020a817996000000b005ff80cb23c7mr430ywc.1.1706662843535; Tue, 30 Jan
+ 2024 17:00:43 -0800 (PST)
+Date: Tue, 30 Jan 2024 16:59:27 -0800
+In-Reply-To: <20240109141121.1619463-1-vkuznets@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20231129224042.530798-1-seanjc@google.com>
+References: <20240109141121.1619463-1-vkuznets@redhat.com>
 X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-Message-ID: <170629076246.3095338.13348438934778239969.b4-ty@google.com>
-Subject: Re: [PATCH] KVM: selftests: Reword the NX hugepage test's skip
- message to be more helpful
+Message-ID: <170666266778.3861845.16453599042139259499.b4-ty@google.com>
+Subject: Re: [PATCH 0/5] KVM: selftests: Fix clocksource requirements in tests
 From: Sean Christopherson <seanjc@google.com>
-To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org, 
+	Paolo Bonzini <pbonzini@redhat.com>, Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc: linux-kernel@vger.kernel.org, Oliver Upton <oliver.upton@linux.dev>
 Content-Type: text/plain; charset="utf-8"
 
-On Wed, 29 Nov 2023 14:40:41 -0800, Sean Christopherson wrote:
-> Rework the NX hugepage test's skip message regarding the magic token to
-> provide all of the necessary magic, and to very explicitly recommended
-> using the wrapper shell script.
+On Tue, 09 Jan 2024 15:11:16 +0100, Vitaly Kuznetsov wrote:
+> It was discovered that 'hyperv_clock' fails miserably when the system is
+> using an unsupported (by KVM) clocksource, e.g. 'kvm-clock'. The root cause
+> of the failure is that 'hyperv_clock' doesn't actually check which clocksource
+> is currently in use. Other tests (kvm_clock_test, vmx_nested_tsc_scaling_test)
+> have the required check but each test does it on its own.
 > 
-> Opportunistically remove an overzealous newline; splitting the
-> recommendation message across two lines of ~45 characters makes it much
-> harder to read than running out a single line to 98 characters.
+> Generalize clocksource checking infrastructure, make all three clocksource
+> dependent tests run with 'tsc' and 'hyperv_clocksource_tsc_page', and skip
+> gracefully when run in an unsupported configuration.
 > 
 > [...]
 
 Applied to kvm-x86 selftests, thanks!
 
-[1/1] KVM: selftests: Reword the NX hugepage test's skip message to be more helpful
-      https://github.com/kvm-x86/linux/commit/02add85a9eef
+[1/5] KVM: selftests: Generalize check_clocksource() from kvm_clock_test
+      https://github.com/kvm-x86/linux/commit/449d0d6ccf55
+[2/5] KVM: selftests: Use generic sys_clocksource_is_tsc() in vmx_nested_tsc_scaling_test
+      https://github.com/kvm-x86/linux/commit/a79036441a68
+[3/5] KVM: selftests: Run clocksource dependent tests with hyperv_clocksource_tsc_page too
+      https://github.com/kvm-x86/linux/commit/436e6e541cb2
+[4/5] KVM: selftests: Make hyperv_clock require TSC based system clocksource
+      https://github.com/kvm-x86/linux/commit/14fce852a14b
+[5/5] KVM: x86: Make gtod_is_based_on_tsc() return 'bool'
+      https://github.com/kvm-x86/linux/commit/57cc53712934
 
 --
 https://github.com/kvm-x86/linux/tree/next
