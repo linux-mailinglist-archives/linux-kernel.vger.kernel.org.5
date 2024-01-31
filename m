@@ -1,94 +1,85 @@
-Return-Path: <linux-kernel+bounces-46054-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46055-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 813328439C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:54:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53BDC8439CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:54:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0746AB23FE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:54:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 107C6284392
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:54:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F8F012BF0D;
-	Wed, 31 Jan 2024 08:43:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1BC66994F;
+	Wed, 31 Jan 2024 08:44:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ohMMVoOb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qHl11occ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C831B12BF02
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 08:43:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 026AB651B6
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 08:44:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706690600; cv=none; b=ELV9eRj2UyDoA5bcOl4455llCPetZ8ZiyxQdTlGvAQLtAE7R7ITt3lcISuBncU6JLqHpWd1NT5F8al76msuCE3GTvwlFtq2nf7sDMxNgmJIVStY7+eHPs1t4KnvtUf0qu1UHzxK3N8boc2CkHbtT7ZsdAUdTAeshbgdeQIIqTMQ=
+	t=1706690645; cv=none; b=bp7O6OIgFsdecJRmtFfS7s4cfcmRCC7uPv5OuuGDxU57qZl2fQfUum1IdezwZlXpMn+Ojq1xlfi2q9PmfU/SSfMnyrQFQNWXq6/X+lO6bgHVDrXlKjQJ75iNM3TTJt7HD+4WWCUKjKnEv34OlOlgjnS2vllzw9SCvwryzgzbzmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706690600; c=relaxed/simple;
-	bh=WJRAb5Q0qQXjV7SaWuZDaXL1s0bEk9w7Ko1XKjSZ4zY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jGNKD/KqxSVIc5MlESI8lE125rCmNeEwRxx5DeAhkqxmb7ENGywygcbjatVg1ac8tAmjIX4Mwh70lWKD12aeqiBoN5bhYANKnMq+PJAF5cs+UVMyqmqIk7vC171TbJQKFqKwiU9qjwpc/ny3/Lr2fEcxJvvXAw+yY2MzccLOSKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ohMMVoOb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4351C433F1;
-	Wed, 31 Jan 2024 08:43:16 +0000 (UTC)
+	s=arc-20240116; t=1706690645; c=relaxed/simple;
+	bh=d31luWYsuQdq6x9sI290GYoxyL+owfx4MYBc1lDFsLM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=SDG9Erq6uzvMmStZB3xnYCmKcNP6Au4hmoTRt3Ydaw0B/wcfuLzZTjUzpyQ/vxqXTmqXMQy8UyO6vQPmTx/LG/gbuh7dL3rCFlKLCD0h30RZo3Und35sPeJsUeS2zzfO1OTrJq+BzUNGk8U/uqNsxWfcaUIksgZEMUU83FHsaMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qHl11occ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB37EC433F1;
+	Wed, 31 Jan 2024 08:44:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706690600;
-	bh=WJRAb5Q0qQXjV7SaWuZDaXL1s0bEk9w7Ko1XKjSZ4zY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ohMMVoObrAoUopRKLHd1DPwQaDRpZVNxDLVfBtIdTXFfvdyIyV4LN3GQ15t44s9As
-	 Ds08gmn31cX+Hnm96xNsNgv1XX9jXLZTEFsx0G1kYhUwN3fgyEI5j2uqbQeNTDmEpI
-	 I4B2yXNVQwqzxXsz909sid27LUSGqTnU7XA7/nqI5DwxwLKHgl8i/Bu+fRPdbm7YE3
-	 T9ZX2zcL7KlKzU0fJWbbsDKWMV9UkyWAVcDenzkSanN4H1CQtss5pB+4hhzsri8z42
-	 Js3MYyFnkWMgIDp9njQqfJqompl/m76OFGa6+WFdLCGBHBbirGSU5LyVuZkqC4e7XL
-	 SP0LCBz90yvRQ==
-Date: Wed, 31 Jan 2024 08:43:13 +0000
-From: Lee Jones <lee@kernel.org>
-To: Manikandan Muralidharan <manikandan.m@microchip.com>
-Cc: sam@ravnborg.org, bbrezillon@kernel.org, airlied@gmail.com,
-	daniel@ffwll.ch, nicolas.ferre@microchip.com,
-	alexandre.belloni@bootlin.com, claudiu.beznea@tuxon.dev,
-	dri-devel@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Hari.PrasathGE@microchip.com,
-	Balamanikandan.Gunasundar@microchip.com,
-	Durai.ManickamKR@microchip.com, Nayabbasha.Sayed@microchip.com,
-	Dharma.B@microchip.com, Varshini.Rajendran@microchip.com,
-	Balakrishnan.S@microchip.com
-Subject: Re: [PATCH RESEND v7 3/7] drm: atmel-hlcdc: Define SAM9X7 SoC XLCDC
- specific registers
-Message-ID: <20240131084313.GC8551@google.com>
-References: <20240129092319.199365-1-manikandan.m@microchip.com>
- <20240129092319.199365-4-manikandan.m@microchip.com>
+	s=k20201202; t=1706690644;
+	bh=d31luWYsuQdq6x9sI290GYoxyL+owfx4MYBc1lDFsLM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=qHl11occenh/ZVYFwfCIjM+3JZ6q3MPpatzFQmlli0t11Gb9OgpJphqVURbu5U2VJ
+	 OIZZUaRuKh0/OiZvZWf8MouxKYQ49Vmv+Tgfe73F7WYtJu8+W19NiMuwY7ejedOnLA
+	 xdloSbMLj7qhEskyFXprMaD7k+lchonf+FGcrlc0p0nTl0bGB4dYXA711e3xS/gTRb
+	 tNOFPmL4yfdehh2Rkogvd0PpBE94/hPzGA1DAQo7Jjw7UCQrRVUa3ZJxFIHj5o3K/g
+	 NG2XQqxdUJyG0TLmmkgyIqnL7cyATNsEwya/gLRrTjSyS+yaQGJVuA6qOjWWwa8uNO
+	 gobBRtnRTVpKg==
+Message-ID: <b954441a-5dff-46b5-910a-2396d0be2d69@kernel.org>
+Date: Wed, 31 Jan 2024 09:44:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240129092319.199365-4-manikandan.m@microchip.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] soc: mediatek: mtk-socinfo: Fixes and cleanup
+Content-Language: en-US
+To: Chen-Yu Tsai <wenst@chromium.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org,
+ William-tw Lin <william-tw.lin@mediatek.com>
+References: <20240130095656.3712469-1-wenst@chromium.org>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@kernel.org>
+In-Reply-To: <20240130095656.3712469-1-wenst@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, 29 Jan 2024, Manikandan Muralidharan wrote:
+On Tue, 30 Jan 2024 17:56:50 +0800, Chen-Yu Tsai wrote:
+ > The new mtk-socinfo driver has a double put of the nvmem device used to
+ > read the socinfo data. While fixing it, I rewrote the read function to
+ > make better use of the device node and device relationship.
+ >
+ > Patch 1 rewrites the cell read function in the mtk-socinfo so that no
+ > resource leaks happen, and device lookup is more efficient.
+ >
+ > [...]
 
-> From: Durai Manickam KR <durai.manickamkr@microchip.com>
-> 
-> The register address of the XLCDC IP used in SAM9X7 SoC family
-> are different from the previous HLCDC. Defining those address
-> space with valid macros.
-> 
-> Signed-off-by: Durai Manickam KR <durai.manickamkr@microchip.com>
-> [manikandan.m@microchip.com: Remove unused macro definitions]
-> Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
-> ---
->  drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.h | 42 ++++++++++++++++++++
+Applied to v6.8-next/soc, thanks!
 
->  include/linux/mfd/atmel-hlcdc.h              | 10 +++++
+[1/3] soc: mediatek: mtk-socinfo: Clean up NVMEM cell read
+       commit: 82e5d7d793e8aef1275dae266427cf048a7459d6
+[2/3] soc: mediatek: mtk-socinfo: Add extra entry for MT8183
+       commit: 54d21dea6a6c117f3cab4caa1f9c3ffafb515dd6
 
-Acked-by: Lee Jones <lee@kernel.org>
-
->  2 files changed, 52 insertions(+)
-
--- 
-Lee Jones [李琼斯]
+Cheers,
+Angelo
 
