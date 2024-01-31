@@ -1,323 +1,167 @@
-Return-Path: <linux-kernel+bounces-46306-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46307-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C3CA843DB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:06:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A640C843DBF
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:07:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22BFB2905C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:06:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB4111C26BF3
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:07:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 116B27AE73;
-	Wed, 31 Jan 2024 11:04:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C7417BB0E;
+	Wed, 31 Jan 2024 11:04:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="FGRwB0lv"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="joG4RRyh"
+Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com [209.85.221.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F261C78B5C;
-	Wed, 31 Jan 2024 11:04:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1AAC7BAF1
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 11:04:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706699061; cv=none; b=MLiPFfEgyqPzBmWyVk10GL9UcRGfjG680Cr+M7bMUHdOpfJ8idXwlXnCem4kSwVHw089Q4ggU3uJzDCd/nrR3Xm0rFBQvEKC3wwgaxKL/S+xr+DUMdAepd2lDdFu5x5pGUmkWTXZZvou43vBNKYP4192MCtg9mGHoX6XSxSrluM=
+	t=1706699068; cv=none; b=NC47hVELQD0Aku45l4Akep/UtLlj76sxKWce9/w5awOucDEZC7mGTtvhpGodrKxf4ZZfo91tybvipF3fak93qWfQb9mXVzNomHxISK6htBDVpx9sFt1wKPIK4RRiiL1HSbO91z84JHU+u9ag/AIAe3QG8UDO/qrOsJ6K7c47UwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706699061; c=relaxed/simple;
-	bh=wSip1yf2sThtkxpc/Uy83x9lV5x9SGpMZA+SwM+ALvk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=eXYlgHQ05E0xgvH6ld+LWEBIrikPWz/wOPBGwSZEsL7/Z43RsgIh1+6DJ3QDW5pZ56d9y4oavTbBlLfJLW5qXWS1NkIh4EmmiedGjHcnguGYXFPC+FmwvE5usYuBdgx6/7172KXIhyA1JF+xmBNtixEmjwkDjRwKo3q8G1cg0vo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=FGRwB0lv; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40VB463n078880;
-	Wed, 31 Jan 2024 05:04:06 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706699046;
-	bh=lDIQ7uEjHw7GX1dVc031y75qt3LbzwhiqpW2NVN8w90=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=FGRwB0lvyiLPQWTwcWtBUyGsixehujwkGf63yqPlyLsQb7hvMRtzl07s/hBlVHEy4
-	 ESh5pQLRO5g7kjMf5EKtSlkmGoDXcWZe5/+NbpBLp7ZzFDguQz8oYqlGQMULCR1jFj
-	 UU7BRPtVOekGhks+k03wSVdLtDkLup94ZzdlaXhI=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40VB465S057262
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 31 Jan 2024 05:04:06 -0600
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 31
- Jan 2024 05:04:06 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 31 Jan 2024 05:04:06 -0600
-Received: from [172.24.227.94] (uda0132425.dhcp.ti.com [172.24.227.94])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40VB42s5043314;
-	Wed, 31 Jan 2024 05:04:02 -0600
-Message-ID: <d58f1501-ea64-4964-ac32-a3604178dc6f@ti.com>
-Date: Wed, 31 Jan 2024 16:34:01 +0530
+	s=arc-20240116; t=1706699068; c=relaxed/simple;
+	bh=o/Kom3bZBaVWt7LhWRqqnq1GfgqDQALX9EwXOIxB6jo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gWcgcQyGUJwEXs+Dok4WB7EVUNOFVF9aVz8viXLRuwEitCR2uXVEVve5obkXcs8stJcHbBowGfQ4UEmpquG2/p1TK7CqsR6UlgocHJS3WQGzrKYePcvz+Ur5gIVDb04t3S9p2hJguRkwusZG53Xc+Jt+fry94wZIgnDF7tAm/bI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=joG4RRyh; arc=none smtp.client-ip=209.85.221.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-vk1-f173.google.com with SMTP id 71dfb90a1353d-4bd7614325eso513134e0c.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 03:04:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1706699065; x=1707303865; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=o2HD72KRJ6aj0nhRWc+R0OuPJi8YzqJpg5vATYXzxug=;
+        b=joG4RRyhkYtmVlHszov1Xox8vEMUQb8ETUKWjt6HhpjDFqP2olRzg4/hRz8ptLbAqE
+         69eBi3g1/Mub7xPrWsIYHluCI+nkVKTjauRW/UT5YjGl3njyqN/fxeVvm0B5vUPGjGLJ
+         2SD+uu7O3Rb8hX2N+f0WaOhfE0HNR6+9VwGbMfioRNe9JdjDxsL9cT/nW1TQz6W0qggD
+         eJBmVMDat/iQ4SkLtPLjxAXqkZ6rt4YiGWSOhjSw8IlCtaxnV0eWbPXFYefZsqyJrJ1P
+         PhBhfNdhdx5CWzdHAonQu7h/q3dw8IIQqwgZKT0+BnG3oxa37hunJ6QiJCwKah5Yua7R
+         TLtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706699065; x=1707303865;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=o2HD72KRJ6aj0nhRWc+R0OuPJi8YzqJpg5vATYXzxug=;
+        b=GGzbW3eQItokXsmjKeIrH361tc60jWdMeCLws/HgPZUKDgX7QmkH+smWWIsRE8ASaX
+         ZuAyQidqiYpchtJkI94cOQVwkC72DYoUJCvv1S6tqZAkh/Ymib1P0QyCqeFw4wA8ETRJ
+         uHTgiMmM8oWbYMyPpsKGZmqZbOU4NsrfhtLKerDPOIL2tFpYr6tSMwhiBWKjq/pSQya9
+         b06XjOxkjjQJ6jE0XBNXGIoxE5eKZ5xJWBPx5/73ZQtb3HfoaySME3Voed2hsLETG90O
+         mUP1AGJ8n/GRB6yOkFsn9HVzcp+CKyySmATpUl7h7IZ07tUtvW6jS2ppoE693nxfFLba
+         asKA==
+X-Gm-Message-State: AOJu0YxpTYdF6QgMEUlkYxuauLhzSAoouSi0Aoo0aI3GMAeGZNTvx1S5
+	QUg+xQNmt3A4DhNcSptLiHQUw2YIgfLLdK2O56vx9GZSonhC3Swl11OEhZ7Q/LlrqB1Vz5GxW14
+	F445Gw5CnXpb2jy7LCCVSxe9qqdP4JEJVS5bX1w==
+X-Google-Smtp-Source: AGHT+IEy0t8aQ/0foP3lUPEuTTrCzJxzcZdG9B4tfmtYi+GsJo9plBZulGoXIEHFkjck4RlX43MJn/wu1f8FAMUSvqI=
+X-Received: by 2002:a05:6122:4d1c:b0:4b7:2382:b4 with SMTP id
+ fi28-20020a0561224d1c00b004b7238200b4mr2151457vkb.6.1706699065586; Wed, 31
+ Jan 2024 03:04:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 01/13] drivers: mmc: host: sdhci_am654: Add tuning
- algorithm for delay chain
-Content-Language: en-US
-To: Judith Mendez <jm@ti.com>, Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob
- Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC: Adrian Hunter <adrian.hunter@intel.com>, <linux-mmc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Nishanth Menon <nm@ti.com>,
-        Andrew Davis
-	<afd@ti.com>, Udit Kumar <u-kumar1@ti.com>,
-        Roger Quadros
-	<rogerq@kernel.org>, <devicetree@vger.kernel.org>,
-        Randolph Sapp <rs@ti.com>
-References: <20240131003714.2779593-1-jm@ti.com>
- <20240131003714.2779593-2-jm@ti.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-In-Reply-To: <20240131003714.2779593-2-jm@ti.com>
+References: <20240117160748.37682-1-brgl@bgdev.pl> <20240117160748.37682-5-brgl@bgdev.pl>
+ <2024011707-alibi-pregnancy-a64b@gregkh> <CAMRc=Mef7wxRccnfQ=EDLckpb1YN4DNLoC=AYL8v1LLJ=uFH2Q@mail.gmail.com>
+ <2024011836-wok-treadmill-c517@gregkh> <d2he3ufg6m46zos4swww4t3peyq55blxhirsx37ou37rwqxmz2@5khumvic62je>
+In-Reply-To: <d2he3ufg6m46zos4swww4t3peyq55blxhirsx37ou37rwqxmz2@5khumvic62je>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Wed, 31 Jan 2024 12:04:14 +0100
+Message-ID: <CAMRc=MeXJjpJhDjyn_P-SGo4rDnEuT9kGN5jAbRcuM_c7_aDzQ@mail.gmail.com>
+Subject: Re: Re: [PATCH 4/9] PCI: create platform devices for child OF nodes
+ of the port node
+To: Bjorn Andersson <andersson@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Kalle Valo <kvalo@kernel.org>, 
+	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Heiko Stuebner <heiko@sntech.de>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Chris Morgan <macromorgan@hotmail.com>, 
+	Linus Walleij <linus.walleij@linaro.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	Arnd Bergmann <arnd@arndb.de>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	=?UTF-8?B?TsOtY29sYXMgRiAuIFIgLiBBIC4gUHJhZG8=?= <nfraprado@collabora.com>, 
+	Marek Szyprowski <m.szyprowski@samsung.com>, Peng Fan <peng.fan@nxp.com>, 
+	Robert Richter <rrichter@amd.com>, Dan Williams <dan.j.williams@intel.com>, 
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Terry Bowman <terry.bowman@amd.com>, 
+	Lukas Wunner <lukas@wunner.de>, Huacai Chen <chenhuacai@kernel.org>, Alex Elder <elder@linaro.org>, 
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>, Abel Vesa <abel.vesa@linaro.org>, 
+	linux-wireless@vger.kernel.org, netdev@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-pci@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: quoted-printable
 
-Hi Judith,
+On Tue, Jan 30, 2024 at 10:54=E2=80=AFPM Bjorn Andersson <andersson@kernel.=
+org> wrote:
+>
+> On Thu, Jan 18, 2024 at 12:15:27PM +0100, Greg Kroah-Hartman wrote:
+> > On Thu, Jan 18, 2024 at 11:58:50AM +0100, Bartosz Golaszewski wrote:
+> > > On Wed, Jan 17, 2024 at 5:45=E2=80=AFPM Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
+> > > >
+> > > > On Wed, Jan 17, 2024 at 05:07:43PM +0100, Bartosz Golaszewski wrote=
+:
+> > > > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > > > >
+> > > > > In order to introduce PCI power-sequencing, we need to create pla=
+tform
+> > > > > devices for child nodes of the port node.
+> > > >
+> > > > Ick, why a platform device?  What is the parent of this device, a P=
+CI
+> > > > device?  If so, then this can't be a platform device, as that's not=
+ what
+> > > > it is, it's something else so make it a device of that type,.
+> > > >
+> > >
+> > > Greg,
+> > >
+> > > This is literally what we agreed on at LPC. In fact: during one of th=
+e
+> > > hall track discussions I said that you typically NAK any attempts at
+> > > using the platform bus for "fake" devices but you responded that this
+> > > is what the USB on-board HUB does and while it's not pretty, this is
+> > > what we need to do.
+> >
+> > Ah, you need to remind me of these things, this changelog was pretty
+> > sparse :)
+> >
+>
+> I believe I missed this part of the discussion, why does this need to be
+> a platform_device? What does the platform_bus bring that can't be
+> provided by some other bus?
+>
 
-On 31/01/24 06:07, Judith Mendez wrote:
-> Currently the sdhci_am654 driver only supports one tuning
-> algorithm which should be used only when DLL is enabled. The
-> ITAPDLY is selected from the largest passing window and the
-> buffer is viewed as a circular buffer.
-> 
-> The new algorithm should be used when the delay chain
-> is enabled. The ITAPDLY is selected from the largest passing
-> window and the buffer is not viewed as a circular buffer.
-> 
-> This implementation is based off of the following paper: [1].
-> 
-> Also add support for multiple failing windows.
-> 
-> [1] https://www.ti.com/lit/an/spract9/spract9.pdf
-> 
-> Signed-off-by: Judith Mendez <jm@ti.com>
-> ---
+Does it need to be a platform_device? No, of course not. Does it make
+sense for it to be one? Yes, for two reasons:
 
+1. The ATH11K WLAN module is represented on the device tree like a
+platform device, we know it's always there and it consumes regulators
+from another platform device. The fact it uses PCIe doesn't change the
+fact that it is logically a platform device.
+2. The platform bus already provides us with the entire infrastructure
+that we'd now need to duplicate (possibly adding bugs) in order to
+introduce a "power sequencing bus".
 
-$subject prefix should be
+Bart
 
- mmc: sdhci_am654:
+> (I'm not questioning the need for having a bus, creating devices, and
+> matching/binding them to a set of drivers)
+>
+> Regards,
+> Bjorn
+>
 
-See git log --oneline drivers/mmc/host/sdhci_am654.c for precedence.
-
->  drivers/mmc/host/sdhci_am654.c | 128 +++++++++++++++++++++++++++------
->  1 file changed, 108 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am654.c
-> index d659c59422e1..59d205511312 100644
-> --- a/drivers/mmc/host/sdhci_am654.c
-> +++ b/drivers/mmc/host/sdhci_am654.c
-> @@ -149,10 +149,17 @@ struct sdhci_am654_data {
->  	int strb_sel;
->  	u32 flags;
->  	u32 quirks;
-> +	bool dll_enable;
->  
->  #define SDHCI_AM654_QUIRK_FORCE_CDTEST BIT(0)
->  };
->  
-> +struct window {
-> +	u8 start;
-> +	u8 end;
-> +	u8 length;
-> +};
-> +
->  struct sdhci_am654_driver_data {
->  	const struct sdhci_pltfm_data *pdata;
->  	u32 flags;
-> @@ -290,10 +297,13 @@ static void sdhci_am654_set_clock(struct sdhci_host *host, unsigned int clock)
->  
->  	regmap_update_bits(sdhci_am654->base, PHY_CTRL4, mask, val);
->  
-> -	if (timing > MMC_TIMING_UHS_SDR25 && clock >= CLOCK_TOO_SLOW_HZ)
-> +	if (timing > MMC_TIMING_UHS_SDR25 && clock >= CLOCK_TOO_SLOW_HZ) {
->  		sdhci_am654_setup_dll(host, clock);
-> -	else
-> +		sdhci_am654->dll_enable = true;
-> +	} else {
->  		sdhci_am654_setup_delay_chain(sdhci_am654, timing);
-> +		sdhci_am654->dll_enable = false;
-> +	}
->  
->  	regmap_update_bits(sdhci_am654->base, PHY_CTRL5, CLKBUFSEL_MASK,
->  			   sdhci_am654->clkbuf_sel);
-> @@ -408,39 +418,117 @@ static u32 sdhci_am654_cqhci_irq(struct sdhci_host *host, u32 intmask)
->  	return 0;
->  }
->  
-> -#define ITAP_MAX	32
-> +#define ITAPDLY_LENGTH 32
-> +#define ITAPDLY_LAST_INDEX 31
-> +static u32 calculate_itap(struct sdhci_host *host, struct window *fail_window,
-> +			  u8 num_fails, bool circular_buffer)
-
-
-s/calculate_itap/sdhci_am654_calculate_itap/ to keep function naming
-consistent within the file
-
-> +{
-> +	struct device *dev = mmc_dev(host->mmc);
-> +	struct window pass_window, first_fail, last_fail;
-> +	u8 itap = 0, start_fail = 0, end_fail = 0, pass_length = 0;
-> +	int prev_end_fail = -1;
-> +
-> +	memset(&pass_window, 0, sizeof(pass_window));
-> +	memset(&first_fail, 0, sizeof(first_fail));
-> +	memset(&last_fail, 0, sizeof(last_fail));
-> +
-> +	if (!num_fails) {
-> +		return ITAPDLY_LAST_INDEX >> 1;
-> +	} else if (fail_window->length == ITAPDLY_LENGTH) {
-> +		dev_warn(dev, "No passing ITAPDLY, return 0\n");
-
-Drop return 0 in dev_warn()
-
-> +		return 0;
-
-Should this be an error?
-
-> +	} else {
-> +		for (int i = 0; i < num_fails; i++) {
-
-
-please avoid inline declaration to align with rest of the file.
-
-> +			start_fail = fail_window[i].start;
-> +			end_fail = fail_window[i].end;
-> +
-> +			if (i == 0) {
-> +				first_fail.start = start_fail;
-> +				first_fail.end = end_fail;
-> +				first_fail.length = fail_window[0].length;
-> +			}
-> +
-> +			if (i == num_fails - 1) {
-> +				last_fail.start = start_fail;
-> +				last_fail.end = end_fail;
-> +				last_fail.length = fail_window[i].length;
-> +			}
-> +
-> +			pass_length = start_fail - (prev_end_fail + 1);
-> +			if (pass_length > pass_window.length) {
-> +				pass_window.start = prev_end_fail + 1;
-> +				pass_window.length = pass_length;
-> +			}
-> +			prev_end_fail = end_fail;
-> +		}
-> +
-> +		if (!circular_buffer) {
-> +			if (ITAPDLY_LAST_INDEX - end_fail > pass_window.length) {
-> +				pass_window.start = end_fail + 1;
-> +				pass_window.length = ITAPDLY_LAST_INDEX - end_fail;
-> +			}
-> +		} else {
-> +			pass_length = ITAPDLY_LAST_INDEX - end_fail + first_fail.start;
-> +			if (pass_length > pass_window.length) {
-> +				pass_window.start = last_fail.end + 1;
-> +				pass_window.length = pass_length;
-> +			}
-> +		}
-> +	}
-> +
-> +	if (!circular_buffer)
-> +		itap = pass_window.start + (pass_window.length >> 1);
-> +	else
-> +		itap = (pass_window.start + (pass_window.length >> 1)) % ITAPDLY_LENGTH;
-> +
-> +	if (itap < 0 || itap > ITAPDLY_LAST_INDEX)
-> +		itap = 0;
-> +
-> +	return itap;
-> +}
-> +
->  static int sdhci_am654_platform_execute_tuning(struct sdhci_host *host,
->  					       u32 opcode)
->  {
->  	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
->  	struct sdhci_am654_data *sdhci_am654 = sdhci_pltfm_priv(pltfm_host);
-> -	int cur_val, prev_val = 1, fail_len = 0, pass_window = 0, pass_len;
-> -	u32 itap;
-> +	struct window fail_window[ITAPDLY_LENGTH];
-> +	u8 prev_pass = 1;
-> +	u8 fail_index = 0;
-> +	u8 curr_pass, itap, i;
-> +
-> +	for (i = 0; i < ITAPDLY_LENGTH; i++)
-> +		memset(&fail_window[i], 0, sizeof(fail_window[0]));
-
-Don't need for() loop, just memset entire array at once. Something like:
-
-memset(fail_window, 0, sizeof(fail_window[0]) * ITAPDLY_LENGTH);
-
->  
->  	/* Enable ITAPDLY */
->  	regmap_update_bits(sdhci_am654->base, PHY_CTRL4, ITAPDLYENA_MASK,
->  			   1 << ITAPDLYENA_SHIFT);
->  
-> -	for (itap = 0; itap < ITAP_MAX; itap++) {
-> +	for (itap = 0; itap < ITAPDLY_LENGTH; itap++) {
->  		sdhci_am654_write_itapdly(sdhci_am654, itap);
->  
-> -		cur_val = !mmc_send_tuning(host->mmc, opcode, NULL);
-> -		if (cur_val && !prev_val)
-> -			pass_window = itap;
-> +		curr_pass = !mmc_send_tuning(host->mmc, opcode, NULL);
->  
-> -		if (!cur_val)
-> -			fail_len++;
-> +		if (!curr_pass && prev_pass)
-> +			fail_window[fail_index].start = itap;
->  
-> -		prev_val = cur_val;
-> +		if (!curr_pass) {
-> +			fail_window[fail_index].end = itap;
-> +			fail_window[fail_index].length++;
-> +		}
-> +
-> +		if (curr_pass && !prev_pass)
-> +			fail_index++;
-> +
-> +		prev_pass = curr_pass;
->  	}
-> -	/*
-> -	 * Having determined the length of the failing window and start of
-> -	 * the passing window calculate the length of the passing window and
-> -	 * set the final value halfway through it considering the range as a
-> -	 * circular buffer
-> -	 */
-> -	pass_len = ITAP_MAX - fail_len;
-> -	itap = (pass_window + (pass_len >> 1)) % ITAP_MAX;
-> +
-> +	if (fail_window[fail_index].length != 0)
-> +        fail_index++;
-
-These is some tab vs space mangling here.
-
-> +
-> +	itap = calculate_itap(host, &fail_window[0], fail_index,
-> +			      (sdhci_am654->dll_enable ? true : false));
-> +
->  	sdhci_am654_write_itapdly(sdhci_am654, itap);
->  
->  	return 0;
-
--- 
-Regards
-Vignesh
+[snip]
 
