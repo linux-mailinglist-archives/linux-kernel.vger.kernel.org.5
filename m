@@ -1,139 +1,102 @@
-Return-Path: <linux-kernel+bounces-46914-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46915-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B97A1844650
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:39:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4CEC844653
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:39:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F25441C248F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:39:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 45C7DB238A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:39:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E1E512DD98;
-	Wed, 31 Jan 2024 17:39:13 +0000 (UTC)
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90FD67EF1B;
-	Wed, 31 Jan 2024 17:39:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=163.172.96.212
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0740912DD9A;
+	Wed, 31 Jan 2024 17:39:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jlJJHXig"
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A879512DD8C
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 17:39:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706722752; cv=none; b=oYWkR3GWW5eHW8XBBlkw3d78MJkA+E9xkNLFfKqurwyk0i+6Hh007O8lTBkLjk5sdlUjBo0nBwgkpnHBFIhqDPO+1Q1qT/DApKR2bbLWgfQnHmA6IqTIoF+SNwKcNTwgHJSPJOmaNSvZ73cHVrPR7x6u74l/kumLJu8di315PqA=
+	t=1706722783; cv=none; b=WOqrjZ4UDMHiMQ70EfrkpnsK3Af/sQxfVy93JozAufr+HeduHqNx+k1QVtgYmFARPZ17Ztjm57frXCT/zI4SmHQprHNXbUBpTXupk7eTgFkFUpLiE7RgrNjR2GaIunuW31O8dy1XBoXZGgRPLT8hx/71+VgyLL2y/3RKlQ6fJho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706722752; c=relaxed/simple;
-	bh=OFT2TTaNZFqkCFZHSRumoIucbTcCxvOYc+uwdG7w6iw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rXCqwqy03XygWOsAMOkpedm6L2ORAUo/+6SnjvD+o8NuOFgNxNY+X7vNepyaT6nN2Fe2MCfZL9lzCCrTHC4ZcGx4TdrQMpWJRVRAzYos5ZwOywLFD+x340wlX1wB/wPr2m1GZIKPCTNeDACqLFoUEneTnqrbMWvcfZ7AP8Y7UQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=1wt.eu; spf=pass smtp.mailfrom=1wt.eu; arc=none smtp.client-ip=163.172.96.212
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=1wt.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=1wt.eu
-Received: (from willy@localhost)
-	by mail.home.local (8.17.1/8.17.1/Submit) id 40VHcwJh013476;
-	Wed, 31 Jan 2024 18:38:58 +0100
-Date: Wed, 31 Jan 2024 18:38:58 +0100
-From: Willy Tarreau <w@1wt.eu>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH/RFC] lib: add CPU MHz benchmark test
-Message-ID: <ZbqFsroYDjSoYEps@1wt.eu>
-References: <a2396ae072d6f9e009b5de558efe166b844a1397.1706718625.git.geert+renesas@glider.be>
+	s=arc-20240116; t=1706722783; c=relaxed/simple;
+	bh=Wmr6FwUgKE8e2RtVUlgvM+N2G0P0c9ELvtsRNvj36p8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ff8cA7WQqkXlxm+BNl9o0aKHb2MwtdJVVzbB5JHwlxDnw8GIUAp2qKGzwsRXZN8AiJ/p67EBhxqeEerDgA1oANu08jnYAcL6iCNJ67qlDqieDfDqx1cQiQW0wNR1G4G4UCM/xXby5OwDK7R+VV0uRQ9wa1lPbedljdd7IeUNoPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jlJJHXig; arc=none smtp.client-ip=209.85.128.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-6040d33380cso71487b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:39:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706722780; x=1707327580; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Wmr6FwUgKE8e2RtVUlgvM+N2G0P0c9ELvtsRNvj36p8=;
+        b=jlJJHXigVIcPFK7gTRT8HMuvAeP55PvCoSx0RKQLr8BAFVxhwtTFBl3EsXDXJFzasl
+         yV1ZCc+WU2XU+YJrKnnvJmFaoXw0q65WAaVeCFyo8uORpX/98UveRSRV4FkP6UY9+wq8
+         7C0eOLc+eMI6v89o01764spa6Vm8QOs9SkTgyT9T+EW1WelhtdgJdaR3S1RolpxQTYdO
+         5i2d03qdzqdRXngsyRrLyKo3hZ7HWhtwcy0dlJO2KQYOiZ3ma3glMik1MFPZIJ6ssHDP
+         Sr/1mv98H9Za0FCEWomYBb25tZXBf1KA87KQaqrBOgb3oRtuubxdSg6WUTTB8LsP5YBU
+         rSyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706722780; x=1707327580;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Wmr6FwUgKE8e2RtVUlgvM+N2G0P0c9ELvtsRNvj36p8=;
+        b=OUBMzjPN55WwyFgXRe3gayTm/qg5rS/3m0bf/bxUgubXEsYdwovAegyLMVqyMXSonS
+         j3x2E49TOumULn5K+0+bQswJLi/36mRmLnLsRU+uBo3SfuAlkxb4v3rUgnHiZOzn9jED
+         w7pCWzcI7IHDZVJ/1R65qdmg0CjPQrlQpzl7fPZRIy7s812Rivto3ixfF1ME3O3GwoHj
+         ggjXe1FJP0gJjYztat2khLcibsfYEludTT1aWrjqVveh7BMG8X4VB8ggzEQsUjXUP5iq
+         kkNaZKg84+QCOBNxBHPwPX3Y5SHTVv4P+S0rEvN0JdMg3RHcucjwCQo33sBFc9t3b2eF
+         gE1Q==
+X-Gm-Message-State: AOJu0YyWKLq+RNP71guSh3YJaFfXMPUJZ3XiWIThZTYOhcc5Nkp6GQA3
+	wIBTCOIG7jvsq0aMGFHglYkOV137gj51ij4PsPiltsrw5fPHKJ1CiKQoT+sUocOC6HQELmV4ZkU
+	auanXNzZRSa4NYYzhNb+JeIhy9AAEzVermldO0Q==
+X-Google-Smtp-Source: AGHT+IHe6uZTnZBFqy29JxxD8jZ18K9pm4CFaqrzg9KcFhM7UsJcIsDHdUFfaVm5bEAJs/0FTd3gLJSWuL2GLPeEcmc=
+X-Received: by 2002:a81:4318:0:b0:5f7:992:b018 with SMTP id
+ q24-20020a814318000000b005f70992b018mr2190237ywa.5.1706722780568; Wed, 31 Jan
+ 2024 09:39:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a2396ae072d6f9e009b5de558efe166b844a1397.1706718625.git.geert+renesas@glider.be>
+References: <20240130124828.14678-1-brgl@bgdev.pl> <20240130124828.14678-4-brgl@bgdev.pl>
+In-Reply-To: <20240130124828.14678-4-brgl@bgdev.pl>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 31 Jan 2024 18:39:29 +0100
+Message-ID: <CACRpkdY_9=2Uqo9=ZEDrn+RFGdPkq73ZRYLVCbh6BLMzU9LZ_A@mail.gmail.com>
+Subject: Re: [PATCH 03/22] gpio: remove unused logging helpers
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, "Paul E . McKenney" <paulmck@kernel.org>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Wolfram Sang <wsa@the-dreams.de>, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Geert,
+On Tue, Jan 30, 2024 at 1:48=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
 
-On Wed, Jan 31, 2024 at 05:46:48PM +0100, Geert Uytterhoeven wrote:
-> When working on SoC bring-up, (a full) userspace may not be available,
-> making it hard to benchmark the CPU performance of the system under
-> development.  Still, one may want to have a rough idea of the (relative)
-> performance of one or more CPU cores, especially when working on e.g.
-> the clock driver that controls the CPU core clock(s).
-> 
-> Hence add the CPU MHz benchmark test[1], which estimates the clock
-> frequency of the CPU core it is running on, and make it available as a
-> Linux kernel test module.
-> 
-> When built-in, this benchmark can be run without any userspace present.
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> The general rule of the kernel is to not provide symbols that have no
+> users upstream. Let's remove logging helpers that are not used anywhere.
+>
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-That's a great idea, I never thought about turning it into a module!
+Seems unrelated to the rest of the patches but OK.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-> Parallel runs (run on multiple CPU cores) are supported, just kick the
-> "run" file multiple times.
-
-Hmmm does it mean it will run on the CPU that writes this "run" ?
-Because this could allow one to start tests using e.g.:
-
-    taskset -c $CPU tee /sys/.../run <<< y
-
-But we could also wonder if it wouldn't be easier to either send "y"
-to /sys/.../cpu0/run or may just send the CPU number to "run" instead
-of "y". In my experience with this tool, you most always want to easily
-control the CPU number because SoCs these days are not symmetrical at
-all.
-
-> This has been tested on the folowing CPU cores:
->   - ARM: Cortex A7, A9, and A15,
->   - ARM64: Cortex A53, A55, A57, and A76,
->   - m68k: MC68040,
->   - MIPS: TX4927,
->   - RISC-V: AndesTech AX45, Kendryte K210, SiFive U54 and U74, VexRiscV.
->   - SuperH: SH7751R.
-> The reported figures are usually within 1-2% of the actual CPU clock
-> rate.
-
-Nice!
-
-> Known issues:
->   - The reported value is off on the following systems:
->       - RBTX4927: 120 MHz (should be 200 MHz, userspace mhz is OK)
-> 	  user: count=76500 us50=19990 us250=96885 diff=76895 cpu_MHz=198.973
-> 	  kernel:     43663      19943       93024                    119
-> 	  msleep(1000) does sleep 1s, and ktime_get() advances accordingly
->       - RZ/Five: 1971 MHz (should be 1000 MHz, userspace mhz not tested)
-> 	  kernel:    679625      20001       88962                   1971
-> 	  msleep(1000) does sleep 1s, and ktime_get() advances accordingly
->       - VexRiscV: 12 MHz (should be 64 MHz, userspace mhz not tested)
->     I assume this is due to different optimization flags.
->     I haven't compared the generated code yet.
-
-That's strange. I only ever managed to get off results at -O0, but at
--O1/-Og/-Os/-O2/-O3/-Ofast I've always got consistent results on all
-the machines I've tested. Especially seeing results higher than the
-real value is troubling. One possibility would be that one some archs
-there's not enough registers and the compiler needs to use a variable
-in the stack, but that could only explain the lower perf, not the higher
-one. But indeed, it could be interesting to have a look at the code to
-understand why it's doing that. If we figure that there's an inherent
-limitation on some rare archs, in the worst case we could place a
-warning there.
-
->   - On fast systems with a large clock granularity (e.g. ARAnyM running
->     Linux/m68k), the measured durations for the short and long loops may
->     be identical, causing division-by-zero exceptions.
->     The same happens with the userspace version, cfr.
->     https://github.com/wtarreau/mhz/issues/5.
-
-I've responded there and we definitely need to address this, thanks!
-
-Another point is that it would be nice if there was a way to present
-the result in a form that a script can retrieve from the directory,
-maybe the last measurement or something like this. I know that scripts
-are commonly used to check for a machine's correct behavior, and I try
-to encourage users to verify that it's working well, so anything we can
-do that makes it easier to use would be welcome.
-
-But overall, I like it! You've got my ack.
-
-Hmmm I don't know if this is intended, the SPDX tag says MIT but the
-MODULE_LICENSE at the top says MIT/GPL. I can't say I care that much but
-I preferred to report it in case it's an accident ;-)
-
-Thanks!
-Willy
+Yours,
+Linus Walleij
 
