@@ -1,495 +1,333 @@
-Return-Path: <linux-kernel+bounces-45977-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45978-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B7BA843895
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:13:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 22E72843898
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:15:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E529B2890AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:13:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CEDBC28B30E
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:15:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D455E5C5E5;
-	Wed, 31 Jan 2024 08:13:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 969AA5812E;
+	Wed, 31 Jan 2024 08:15:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="G1BYV+Zt"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="P6ZzvZX2"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73DE75A0E3;
-	Wed, 31 Jan 2024 08:13:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A897556B9D;
+	Wed, 31 Jan 2024 08:15:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706688788; cv=none; b=hoXSfb7Rx3uC7J6DqIfVUAQhSpQjFqSwywe4cmy0xiNOurnoFq/zWx35fTih9VcMcPMo/5XvUhJR5Wwh0kcvsmc3Wt7fOsiG1IUECj3a1Q9xb+icg+20chLldzrzxttME7TzNr0OQvfmfCaGlUDXjwiJs8P7UQe1AMoN79t8XQc=
+	t=1706688921; cv=none; b=IuPrxD0AU/5XL92P7r6lXXvjmq/knu2Xg8hFBr/IbTUIhrLKuiMicgkneUQlAf7l7Ufi2OZNwWN9l80Ir1l40CPCzQHdgJGT7RT4pAuVo+IY63HPpkVTnC2wTHL8UhJAAMAnymzb3XJDigU1RoyxkOa9yIFmS/GcyJ/4DdQL+2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706688788; c=relaxed/simple;
-	bh=tewRqCHY3TQiNR5KP/dtj/Pv4hLeYhLDRO6JNQyt/Es=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qKhaP38b3ZIp7TR+lC8PGfDKu/aqnp1Zq3/9u8OoBA2STxgE9ofnEOgn0KGWbiFh4M0ARcbYrGSQ/x0PbLWKSbDG1YJO+EvsSf43ePui2w5aJX2JFF4XxvtldVIjGQbNv+zmT+xouJA0jXBiIZ/w2BbC7PT5Cd0VmbJW+65rjeY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=G1BYV+Zt; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706688786; x=1738224786;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=tewRqCHY3TQiNR5KP/dtj/Pv4hLeYhLDRO6JNQyt/Es=;
-  b=G1BYV+ZtWPDJD15V/hJ6L1CgdSNn8bEO9EqUTlvAtdC/77NzsFN/yD78
-   AHoJAg7kRf7PKvxHEGrgWFBpP9KJVltnQT+wAEiGLTaH+ilykF9sVNPlA
-   n98FIoHKeUFw0zMgYRnvQniKBW5t272k72Iyj33PvKj8dwWQv7DwTeewY
-   c4GuzyajcViSMWQkAuDxOh0hTyALE5LeU8H+O9j0KtuFbnHMQPuUHzv7W
-   Gp4qKpzW/jUAMIhEWJMr5TLPXlD+yRVV+t7XgGwCENMWhkMNScccrH/I5
-   obxwyvfy1OFQx27r08ly7zmOZRT04ITo1yXRlxeEFu23Wo5XblxAlRoOQ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="10911010"
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="10911010"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 00:13:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="3963444"
-Received: from yy-desk-7060.sh.intel.com (HELO localhost) ([10.239.159.76])
-  by orviesa005.jf.intel.com with ESMTP; 31 Jan 2024 00:13:00 -0800
-Date: Wed, 31 Jan 2024 16:12:59 +0800
-From: Yuan Yao <yuan.yao@linux.intel.com>
-To: isaku.yamahata@intel.com
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-	erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	Sean Christopherson <sean.j.christopherson@intel.com>,
-	Binbin Wu <binbin.wu@linux.intel.com>
-Subject: Re: [PATCH v18 014/121] KVM: TDX: Add C wrapper functions for
- SEAMCALLs to the TDX module
-Message-ID: <20240131081259.mlzh2iuigvf5vw43@yy-desk-7060>
-References: <cover.1705965634.git.isaku.yamahata@intel.com>
- <15ecf723535623fd99b6f9e5101b545b2f6e98be.1705965634.git.isaku.yamahata@intel.com>
+	s=arc-20240116; t=1706688921; c=relaxed/simple;
+	bh=ZwXCAypbWpJ16zfgXnqxYOVNzdmHod17fiG2AIEKSLU=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R2qJnKWuLc+oLNPdhW+A/o0uwRPayZK7XbCEkKtqQJ/UBRt5oG5qoXMJ12UUdk4bNjlT5PQpiM8JyObAxcIFS1QLZWG8RpWPf8B9KHgRzVf+opWektT+YRcRsVReWVspvKNCJASma7cJp742zBeKYG/UoqmHctIGZgWD7CJW3s0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=P6ZzvZX2; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40V8F5ia029721;
+	Wed, 31 Jan 2024 02:15:05 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706688905;
+	bh=YOxLq4DGaC/kOjGNfrU29iE+g/adcPLEUPnE71mtKgY=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=P6ZzvZX2Td5BaMtCvGpau9AN9sdoyGstoA1yGgq6o+9WyP89FF/WtoSiVMZB308j3
+	 58keXJRi/1bdsrO93oOpEpuRsEYdv1jmvuNcxi5z4obb+PIEgLNZUtVAwlhTOopwEB
+	 pnjoL2MBfh0D3QBWRxxZJsZaY85hMIhjJBSaZ84s=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40V8F5DF114355
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 31 Jan 2024 02:15:05 -0600
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 31
+ Jan 2024 02:15:05 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 31 Jan 2024 02:15:05 -0600
+Received: from localhost (jluthra.dhcp.ti.com [172.24.227.217])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40V8F4Qn116040;
+	Wed, 31 Jan 2024 02:15:05 -0600
+Date: Wed, 31 Jan 2024 13:45:04 +0530
+From: Jai Luthra <j-luthra@ti.com>
+To: Vaishnav Achath <vaishnav.a@ti.com>
+CC: <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <kernel@pengutronix.de>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <u-kumar1@ti.com>, <j-choudhary@ti.com>
+Subject: Re: [PATCH 9/9] arm64: dts: ti: k3-am69-sk: Add overlay for IMX219
+Message-ID: <jzzoifrpcchpvvyy3k5xkcxveuopqdpkakv2ppv35wowvkc3uf@zlfel5wytyji>
+References: <20240129132742.1189783-1-vaishnav.a@ti.com>
+ <20240129132742.1189783-10-vaishnav.a@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="xtfhpn3v2rxxqkvx"
+Content-Disposition: inline
+In-Reply-To: <20240129132742.1189783-10-vaishnav.a@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+
+--xtfhpn3v2rxxqkvx
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <15ecf723535623fd99b6f9e5101b545b2f6e98be.1705965634.git.isaku.yamahata@intel.com>
-User-Agent: NeoMutt/20171215
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 22, 2024 at 03:52:50PM -0800, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
->
-> A VMM interacts with the TDX module using a new instruction (SEAMCALL).
-> For instance, a TDX VMM does not have full access to the VM control
-> structure corresponding to VMX VMCS.  Instead, a VMM induces the TDX module
-> to act on behalf via SEAMCALLs.
->
-> Export __seamcall and define C wrapper functions for SEAMCALLs for
-  ^^^^^^^^^^^^^^^^^
+Hi Vaishnav,
 
-It's not exported by this patch.
+Thanks for the patch.
 
-Others LGTM.
+On Jan 29, 2024 at 18:57:42 +0530, Vaishnav Achath wrote:
+> RPi v2 Camera (IMX219) is an 8MP camera that can be used with SK-AM69
+> through the 22-pin CSI-RX connector.
+>=20
+> Same overlay can be used across AM68 SK, TDA4VM SK boards that have a
+> 15/22-pin FFC connector. Also enable build testing and symbols for
+> all the three platforms.
 
-Reviewed-by: Yuan Yao <yuan.yao@intel.com>
+In that case, the overlay should be named something generic following=20
+how it is done for SK-AM62* family of boards.
 
-> readability.
->
-> Some SEAMCALL APIs donate host pages to TDX module or guest TD, and the
-> donated pages are encrypted.  Those require the VMM to flush the cache
-> lines to avoid cache line alias.
->
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
->
+IMO, it would also make more sense to have separate overlays for CSI0=20
+and CSI1 ports, unless there are no usecases to plug-in different=20
+sensors on the board.
+
+Even if that is done later, at least this overlay should be named in a=20
+way to make it clear it enables 2x IMX219 on both CSI-RX ports, to avoid=20
+confusion.
+
+So, something like k3-<jacinto?>-sk-csi2-dual-imx219.dtso
+
+This will leave room for a CSI1 only overlay to be called=20
+k3-<>-sk-csi2-1-<sensor>.dtso
+
+>=20
+> Signed-off-by: Vaishnav Achath <vaishnav.a@ti.com>
 > ---
-> Changes
-> v18:
-> - removed stub functions for __seamcall{,_ret}()
-> - Added Reviewed-by Binbin
-> - Make tdx_seamcall() use struct tdx_module_args instead of taking
->   each inputs.
->
-> v15 -> v16:
-> - use struct tdx_module_args instead of struct tdx_module_output
-> - Add tdh_mem_sept_rd() for SEPT_VE_DISABLE=1.
-> ---
->  arch/x86/kvm/vmx/tdx_ops.h | 360 +++++++++++++++++++++++++++++++++++++
->  1 file changed, 360 insertions(+)
->  create mode 100644 arch/x86/kvm/vmx/tdx_ops.h
->
-> diff --git a/arch/x86/kvm/vmx/tdx_ops.h b/arch/x86/kvm/vmx/tdx_ops.h
+>  arch/arm64/boot/dts/ti/Makefile               |   6 +
+>  .../boot/dts/ti/k3-am69-sk-csi2-imx219.dtso   | 124 ++++++++++++++++++
+>  2 files changed, 130 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/ti/k3-am69-sk-csi2-imx219.dtso
+>=20
+> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Mak=
+efile
+> index 52c1dc910308..9fc8d68f7d26 100644
+> --- a/arch/arm64/boot/dts/ti/Makefile
+> +++ b/arch/arm64/boot/dts/ti/Makefile
+> @@ -80,6 +80,7 @@ dtb-$(CONFIG_ARCH_K3) +=3D k3-j721s2-evm-pcie1-ep.dtbo
+> =20
+>  # Boards with J784s4 SoC
+>  dtb-$(CONFIG_ARCH_K3) +=3D k3-am69-sk.dtb
+> +dtb-$(CONFIG_ARCH_K3) +=3D k3-am69-sk-csi2-imx219.dtbo
+>  dtb-$(CONFIG_ARCH_K3) +=3D k3-j784s4-evm.dtb
+> =20
+>  # Build time test only, enabled by CONFIG_OF_ALL_DTBS
+> @@ -105,6 +106,8 @@ k3-am642-tqma64xxl-mbax4xxl-sdcard-dtbs :=3D \
+>  	k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-sdcard.dtbo
+>  k3-am642-tqma64xxl-mbax4xxl-wlan-dtbs :=3D \
+>  	k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-wlan.dtbo
+> +k3-am69-sk-csi2-imx219-dtbs :=3D k3-am69-sk.dtb \
+> +	k3-am69-sk-csi2-imx219.dtbo
+
+Andrew already pointed out that the base dtb should be added in the dtb-=20
++=3D entry at the end of this section.
+
+Along with that, I think the overlay should be build-tested for each=20
+base DTB (AM68, TDA4VM) it is applicable on. Same is already done for=20
+the shared IMX219/OV5640 overlays between SK-AM62 and SK-AM62A.
+
+>  k3-j721e-evm-pcie0-ep-dtbs :=3D k3-j721e-common-proc-board.dtb \
+>  	k3-j721e-evm-pcie0-ep.dtbo
+>  k3-j721s2-evm-pcie1-ep-dtbs :=3D k3-j721s2-common-proc-board.dtb \
+> @@ -130,5 +133,8 @@ DTC_FLAGS_k3-am62-lp-sk +=3D -@
+>  DTC_FLAGS_k3-am62a7-sk +=3D -@
+>  DTC_FLAGS_k3-am642-tqma64xxl-mbax4xxl +=3D -@
+>  DTC_FLAGS_k3-am6548-iot2050-advanced-m2 +=3D -@
+> +DTC_FLAGS_k3-am68-sk-base-board +=3D -@
+> +DTC_FLAGS_k3-am69-sk +=3D -@
+>  DTC_FLAGS_k3-j721e-common-proc-board +=3D -@
+>  DTC_FLAGS_k3-j721s2-common-proc-board +=3D -@
+> +DTC_FLAGS_k3-j721e-sk +=3D -@
+> diff --git a/arch/arm64/boot/dts/ti/k3-am69-sk-csi2-imx219.dtso b/arch/ar=
+m64/boot/dts/ti/k3-am69-sk-csi2-imx219.dtso
 > new file mode 100644
-> index 000000000000..0e26cf22240e
+> index 000000000000..4cd1d8d5004a
 > --- /dev/null
-> +++ b/arch/x86/kvm/vmx/tdx_ops.h
-> @@ -0,0 +1,360 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/* constants/data definitions for TDX SEAMCALLs */
+> +++ b/arch/arm64/boot/dts/ti/k3-am69-sk-csi2-imx219.dtso
+> @@ -0,0 +1,124 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/**
+> + * DT Overlay for RPi Camera V2.1 (Sony IMX219) interfaced with CSI2 on =
+AM68-SK board.
+
+Overlay name says AM69 but comment says AM68 here.
+
+> + * https://datasheets.raspberrypi.org/camera/camera-v2-schematic.pdf
+> + *
+> + * Copyright (C) 2023 Texas Instruments Incorporated - https://www.ti.co=
+m/
+
+s/2023/2024
+
+> + */
 > +
-> +#ifndef __KVM_X86_TDX_OPS_H
-> +#define __KVM_X86_TDX_OPS_H
+> +/dts-v1/;
+> +/plugin/;
 > +
-> +#include <linux/compiler.h>
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include "k3-pinctrl.h"
 > +
-> +#include <asm/cacheflush.h>
-> +#include <asm/asm.h>
-> +#include <asm/kvm_host.h>
-> +
-> +#include "tdx_errno.h"
-> +#include "tdx_arch.h"
-> +#include "x86.h"
-> +
-> +static inline u64 tdx_seamcall(u64 op, struct tdx_module_args *in,
-> +			       struct tdx_module_args *out)
-> +{
-> +	u64 ret;
-> +
-> +	if (out) {
-> +		*out = *in;
-> +		ret = __seamcall_ret(op, out);
-> +	} else
-> +		ret = __seamcall(op, in);
-> +
-> +	if (unlikely(ret == TDX_SEAMCALL_UD)) {
-> +		/*
-> +		 * SEAMCALLs fail with TDX_SEAMCALL_UD returned when VMX is off.
-> +		 * This can happen when the host gets rebooted or live
-> +		 * updated. In this case, the instruction execution is ignored
-> +		 * as KVM is shut down, so the error code is suppressed. Other
-> +		 * than this, the error is unexpected and the execution can't
-> +		 * continue as the TDX features reply on VMX to be on.
-> +		 */
-> +		kvm_spurious_fault();
-> +		return 0;
-> +	}
-> +	return ret;
-> +}
-> +
-> +static inline u64 tdh_mng_addcx(hpa_t tdr, hpa_t addr)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = addr,
-> +		.rdx = tdr,
+> +&{/} {
+> +	clk_imx219_fixed: imx219-xclk {
+> +		compatible =3D "fixed-clock";
+> +		#clock-cells =3D <0>;
+> +		clock-frequency =3D <24000000>;
 > +	};
+> +};
 > +
-> +	clflush_cache_range(__va(addr), PAGE_SIZE);
-> +	return tdx_seamcall(TDH_MNG_ADDCX, &in, NULL);
-> +}
+> +&csi_mux {
+> +	idle-state =3D <1>;
+> +};
 > +
-> +static inline u64 tdh_mem_page_add(hpa_t tdr, gpa_t gpa, hpa_t hpa, hpa_t source,
-> +				   struct tdx_module_args *out)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = gpa,
-> +		.rdx = tdr,
-> +		.r8 = hpa,
-> +		.r9 = source,
+> +/* CAM0 I2C */
+> +&cam0_i2c {
+> +	#address-cells =3D <1>;
+> +	#size-cells =3D <0>;
+> +	imx219_0: imx219_0@10 {
+> +		compatible =3D "sony,imx219";
+> +		reg =3D <0x10>;
+> +
+> +		clocks =3D <&clk_imx219_fixed>;
+> +		clock-names =3D "xclk";
+> +
+> +		port {
+> +			csi2_cam0: endpoint {
+> +				remote-endpoint =3D <&csi2rx0_in_sensor>;
+> +				link-frequencies =3D /bits/ 64 <456000000>;
+> +				clock-lanes =3D <0>;
+> +				data-lanes =3D <1 2>;
+> +			};
+> +		};
 > +	};
+> +};
 > +
-> +	clflush_cache_range(__va(hpa), PAGE_SIZE);
-> +	return tdx_seamcall(TDH_MEM_PAGE_ADD, &in, out);
-> +}
+> +/* CAM1 I2C */
+> +&cam1_i2c {
+> +	#address-cells =3D <1>;
+> +	#size-cells =3D <0>;
+> +	imx219_1: imx219_1@10 {
+> +		compatible =3D "sony,imx219";
+> +		reg =3D <0x10>;
 > +
-> +static inline u64 tdh_mem_sept_add(hpa_t tdr, gpa_t gpa, int level, hpa_t page,
-> +				   struct tdx_module_args *out)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = gpa | level,
-> +		.rdx = tdr,
-> +		.r8 = page,
+> +		clocks =3D <&clk_imx219_fixed>;
+> +		clock-names =3D "xclk";
+> +
+> +		port {
+> +			csi2_cam1: endpoint {
+> +				remote-endpoint =3D <&csi2rx1_in_sensor>;
+> +				link-frequencies =3D /bits/ 64 <456000000>;
+> +				clock-lanes =3D <0>;
+> +				data-lanes =3D <1 2>;
+> +			};
+> +		};
 > +	};
+> +};
 > +
-> +	clflush_cache_range(__va(page), PAGE_SIZE);
-> +	return tdx_seamcall(TDH_MEM_SEPT_ADD, &in, out);
-> +}
 > +
-> +static inline u64 tdh_mem_sept_rd(hpa_t tdr, gpa_t gpa, int level,
-> +				  struct tdx_module_args *out)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = gpa | level,
-> +		.rdx = tdr,
+> +&cdns_csi2rx0 {
+> +	ports {
+> +		#address-cells =3D <1>;
+> +		#size-cells =3D <0>;
+> +
+> +		csi0_port0: port@0 {
+> +			reg =3D <0>;
+> +			status =3D "okay";
+> +
+> +			csi2rx0_in_sensor: endpoint {
+> +				remote-endpoint =3D <&csi2_cam0>;
+> +				bus-type =3D <4>; /* CSI2 DPHY. */
+> +				clock-lanes =3D <0>;
+> +				data-lanes =3D <1 2>;
+> +			};
+> +		};
 > +	};
+> +};
 > +
-> +	return tdx_seamcall(TDH_MEM_SEPT_RD, &in, out);
-> +}
+> +&dphy0 {
+> +	status =3D "okay";
+> +};
 > +
-> +static inline u64 tdh_mem_sept_remove(hpa_t tdr, gpa_t gpa, int level,
-> +				      struct tdx_module_args *out)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = gpa | level,
-> +		.rdx = tdr,
+> +&ti_csi2rx0 {
+> +	status =3D "okay";
+> +};
+> +
+> +&cdns_csi2rx1 {
+> +	ports {
+> +		#address-cells =3D <1>;
+> +		#size-cells =3D <0>;
+> +
+> +		csi1_port0: port@0 {
+> +			reg =3D <0>;
+> +			status =3D "okay";
+> +
+> +			csi2rx1_in_sensor: endpoint {
+> +				remote-endpoint =3D <&csi2_cam1>;
+> +				bus-type =3D <4>; /* CSI2 DPHY. */
+> +				clock-lanes =3D <0>;
+> +				data-lanes =3D <1 2>;
+> +			};
+> +		};
 > +	};
+> +};
 > +
-> +	return tdx_seamcall(TDH_MEM_SEPT_REMOVE, &in, out);
-> +}
+> +&dphy1 {
+> +	status =3D "okay";
+> +};
 > +
-> +static inline u64 tdh_vp_addcx(hpa_t tdvpr, hpa_t addr)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = addr,
-> +		.rdx = tdvpr,
-> +	};
-> +
-> +	clflush_cache_range(__va(addr), PAGE_SIZE);
-> +	return tdx_seamcall(TDH_VP_ADDCX, &in, NULL);
-> +}
-> +
-> +static inline u64 tdh_mem_page_relocate(hpa_t tdr, gpa_t gpa, hpa_t hpa,
-> +					struct tdx_module_args *out)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = gpa,
-> +		.rdx = tdr,
-> +		.r8 = hpa,
-> +	};
-> +
-> +	clflush_cache_range(__va(hpa), PAGE_SIZE);
-> +	return tdx_seamcall(TDH_MEM_PAGE_RELOCATE, &in, out);
-> +}
-> +
-> +static inline u64 tdh_mem_page_aug(hpa_t tdr, gpa_t gpa, hpa_t hpa,
-> +				   struct tdx_module_args *out)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = gpa,
-> +		.rdx = tdr,
-> +		.r8 = hpa,
-> +	};
-> +
-> +	clflush_cache_range(__va(hpa), PAGE_SIZE);
-> +	return tdx_seamcall(TDH_MEM_PAGE_AUG, &in, out);
-> +}
-> +
-> +static inline u64 tdh_mem_range_block(hpa_t tdr, gpa_t gpa, int level,
-> +				      struct tdx_module_args *out)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = gpa | level,
-> +		.rdx = tdr,
-> +	};
-> +
-> +	return tdx_seamcall(TDH_MEM_RANGE_BLOCK, &in, out);
-> +}
-> +
-> +static inline u64 tdh_mng_key_config(hpa_t tdr)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = tdr,
-> +	};
-> +
-> +	return tdx_seamcall(TDH_MNG_KEY_CONFIG, &in, NULL);
-> +}
-> +
-> +static inline u64 tdh_mng_create(hpa_t tdr, int hkid)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = tdr,
-> +		.rdx = hkid,
-> +	};
-> +
-> +	clflush_cache_range(__va(tdr), PAGE_SIZE);
-> +	return tdx_seamcall(TDH_MNG_CREATE, &in, NULL);
-> +}
-> +
-> +static inline u64 tdh_vp_create(hpa_t tdr, hpa_t tdvpr)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = tdvpr,
-> +		.rdx = tdr,
-> +	};
-> +
-> +	clflush_cache_range(__va(tdvpr), PAGE_SIZE);
-> +	return tdx_seamcall(TDH_VP_CREATE, &in, NULL);
-> +}
-> +
-> +static inline u64 tdh_mng_rd(hpa_t tdr, u64 field, struct tdx_module_args *out)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = tdr,
-> +		.rdx = field,
-> +	};
-> +
-> +	return tdx_seamcall(TDH_MNG_RD, &in, out);
-> +}
-> +
-> +static inline u64 tdh_mr_extend(hpa_t tdr, gpa_t gpa,
-> +				struct tdx_module_args *out)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = gpa,
-> +		.rdx = tdr,
-> +	};
-> +
-> +	return tdx_seamcall(TDH_MR_EXTEND, &in, out);
-> +}
-> +
-> +static inline u64 tdh_mr_finalize(hpa_t tdr)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = tdr,
-> +	};
-> +
-> +	return tdx_seamcall(TDH_MR_FINALIZE, &in, NULL);
-> +}
-> +
-> +static inline u64 tdh_vp_flush(hpa_t tdvpr)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = tdvpr,
-> +	};
-> +
-> +	return tdx_seamcall(TDH_VP_FLUSH, &in, NULL);
-> +}
-> +
-> +static inline u64 tdh_mng_vpflushdone(hpa_t tdr)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = tdr,
-> +	};
-> +
-> +	return tdx_seamcall(TDH_MNG_VPFLUSHDONE, &in, NULL);
-> +}
-> +
-> +static inline u64 tdh_mng_key_freeid(hpa_t tdr)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = tdr,
-> +	};
-> +
-> +	return tdx_seamcall(TDH_MNG_KEY_FREEID, &in, NULL);
-> +}
-> +
-> +static inline u64 tdh_mng_init(hpa_t tdr, hpa_t td_params,
-> +			       struct tdx_module_args *out)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = tdr,
-> +		.rdx = td_params,
-> +	};
-> +
-> +	return tdx_seamcall(TDH_MNG_INIT, &in, out);
-> +}
-> +
-> +static inline u64 tdh_vp_init(hpa_t tdvpr, u64 rcx)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = tdvpr,
-> +		.rdx = rcx,
-> +	};
-> +
-> +	return tdx_seamcall(TDH_VP_INIT, &in, NULL);
-> +}
-> +
-> +static inline u64 tdh_vp_rd(hpa_t tdvpr, u64 field,
-> +			    struct tdx_module_args *out)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = tdvpr,
-> +		.rdx = field,
-> +	};
-> +
-> +	return tdx_seamcall(TDH_VP_RD, &in, out);
-> +}
-> +
-> +static inline u64 tdh_mng_key_reclaimid(hpa_t tdr)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = tdr,
-> +	};
-> +
-> +	return tdx_seamcall(TDH_MNG_KEY_RECLAIMID, &in, NULL);
-> +}
-> +
-> +static inline u64 tdh_phymem_page_reclaim(hpa_t page,
-> +					  struct tdx_module_args *out)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = page,
-> +	};
-> +
-> +	return tdx_seamcall(TDH_PHYMEM_PAGE_RECLAIM, &in, out);
-> +}
-> +
-> +static inline u64 tdh_mem_page_remove(hpa_t tdr, gpa_t gpa, int level,
-> +				      struct tdx_module_args *out)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = gpa | level,
-> +		.rdx = tdr,
-> +	};
-> +
-> +	return tdx_seamcall(TDH_MEM_PAGE_REMOVE, &in, out);
-> +}
-> +
-> +static inline u64 tdh_sys_lp_shutdown(void)
-> +{
-> +	struct tdx_module_args in = {
-> +	};
-> +
-> +	return tdx_seamcall(TDH_SYS_LP_SHUTDOWN, &in, NULL);
-> +}
-> +
-> +static inline u64 tdh_mem_track(hpa_t tdr)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = tdr,
-> +	};
-> +
-> +	return tdx_seamcall(TDH_MEM_TRACK, &in, NULL);
-> +}
-> +
-> +static inline u64 tdh_mem_range_unblock(hpa_t tdr, gpa_t gpa, int level,
-> +					struct tdx_module_args *out)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = gpa | level,
-> +		.rdx = tdr,
-> +	};
-> +
-> +	return tdx_seamcall(TDH_MEM_RANGE_UNBLOCK, &in, out);
-> +}
-> +
-> +static inline u64 tdh_phymem_cache_wb(bool resume)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = resume ? 1 : 0,
-> +	};
-> +
-> +	return tdx_seamcall(TDH_PHYMEM_CACHE_WB, &in, NULL);
-> +}
-> +
-> +static inline u64 tdh_phymem_page_wbinvd(hpa_t page)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = page,
-> +	};
-> +
-> +	return tdx_seamcall(TDH_PHYMEM_PAGE_WBINVD, &in, NULL);
-> +}
-> +
-> +static inline u64 tdh_vp_wr(hpa_t tdvpr, u64 field, u64 val, u64 mask,
-> +			    struct tdx_module_args *out)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = tdvpr,
-> +		.rdx = field,
-> +		.r8 = val,
-> +		.r9 = mask,
-> +	};
-> +
-> +	return tdx_seamcall(TDH_VP_WR, &in, out);
-> +}
-> +
-> +#endif /* __KVM_X86_TDX_OPS_H */
-> --
-> 2.25.1
->
->
+> +&ti_csi2rx1 {
+> +	status =3D "okay";
+> +};
+> \ No newline at end of file
+> --=20
+> 2.34.1
+>=20
+
+--=20
+Thanks,
+Jai
+
+GPG Fingerprint: 4DE0 D818 E5D5 75E8 D45A AFC5 43DE 91F9 249A 7145
+
+--xtfhpn3v2rxxqkvx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEETeDYGOXVdejUWq/FQ96R+SSacUUFAmW6AYUACgkQQ96R+SSa
+cUW28A//bbayRJY5NtumRy9KPyrPu9J03qMiXPiSNCI6qiLkbU+5y117Y1bGtCwc
+ISdqfhbEkSjv+kEaKRaUK4HnCzYqRN77IzpPvRFyIxXM+sOlXFqrvphP9ODWXcIM
+afitu6OSk0+RSLBP3gJxMqkNdlRioyH0jAmcrGYSMOgvID2IFfnpozmRs9YFjtLA
+CxKyfU0dRFB1o5FEDWdVLUgrFi963NhKpifcnFl85jYtx7dT0E93LyqAi15wTTel
+P4dnVUQD+AviwARHQA2Z3X0hDsG3QE42e66dDKevqSn7QTiJL3aYtg9TuRGp4mWx
+h/cPcrQmSJk190b55bX4Fk71P7fvdDo8ktXgME3AUTZa/y+8TnpxTtYgaMhFX+Wg
+2dcZZfv7WwJRlF/OWu0cTNk19yE6JIxkdWQjVNr5YXruUlwWIH64VaiDD6GyWvoN
+vSl5M6PbfKXI0ZPUSzs8huEIuCW2SV1gRVxElYPbSYkivc6h8UKH0ZBP5dFy6W5o
+pcZac5Vm7l212Umr6hRuCQEIMXBEjOpx+Lb4mDON2a/L8SY+c1uLRtGLxHB1qDBd
+61Yu/eTNPpo+b7iaGzzVlaPGcrwinHgDjYU/Mfw+EqZ85yC56vYXO9IEl7Av+mOc
+JxpM20wrD4fSEfpVXPvfZb9DvNSDCiVJkV9tZbfiGx80BPkbpYA=
+=Av5G
+-----END PGP SIGNATURE-----
+
+--xtfhpn3v2rxxqkvx--
 
