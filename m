@@ -1,171 +1,153 @@
-Return-Path: <linux-kernel+bounces-45802-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45803-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F377843663
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:02:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 161BC843664
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:03:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38EFD1C21D2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:02:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6809288534
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:03:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61E383E494;
-	Wed, 31 Jan 2024 06:02:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A8D63EA91;
+	Wed, 31 Jan 2024 06:02:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="yZ1L6ecC"
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="m6lBlcBT"
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 981FA3EA83
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 06:02:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB1B63EA8C
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 06:02:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706680951; cv=none; b=HBHIOoxBuo9Sdr2+d5qgvEtsKSS/rzfk74FH60uYf3wYl7ykoMp2oiJu0XB0abqmaweF2lPhWuBv9Eyp96Hg5Rdntzb9bET1DaNp065T97aLKm9voxMiYifp7PLsXzv+MrYCEGYl7uHko7aLKXipXd/KpAosf0d0+fwYFNluS3Q=
+	t=1706680957; cv=none; b=C/i3tYL6GZv2fUBh4Jb045/+iHwmwf9KSRg25UvtmMOuI+yTUAQXyWpQ2KSyxHoKcg70i1fQMZFkVgqSXlkKncZwNRMFymxJcxBUP7HPFAvQnLIZEK2MeJL1jQwGUBL1wWzj+6aZzmPvt5L14DJ3cmeNc/n+FFUkg3oy8ffC7bs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706680951; c=relaxed/simple;
-	bh=S6iqY0O7bWkNnxXJ5MbqGTCSCZS6LNZcocjvfJVeznc=;
+	s=arc-20240116; t=1706680957; c=relaxed/simple;
+	bh=lKwlwJBXHA24Mb8B6jxhjFA4T95beAgylJJGBuM9BFs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WV4+jM6g5c/Hc0ltABJy+/d5WtmImkNKz3NBpKSGCyoxVZC5z41/ZqRioSCmJYmTFeXSKgejvdE0y47U/Ko9+BKPpTFtVb9bOazFB49HXx+H+WEIfDf4TcqqLTXElTHS4o9Ey1cmaH27mo+OUjskp3yq4FC9bfbRhr9AWh5TzhE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=yZ1L6ecC; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6de0ba30994so403178b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 22:02:29 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=nK5y4NmAA4B6Zb8bEJT7PnBmyXwiXLOno4eO7N+1QCze19J3iLWmKVVkStMUrEfWwNLpqWJepNeKQlSBGR7hOuG401QB1eyhji2u1Eac2yaFXd9ugAXCBEJiN4glPDdUj4joLo49w6v1+zPSOT4oRUp+RBDNzXinEVt2PQm7Lso=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=m6lBlcBT; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5ceb3fe708eso2954502a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 22:02:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1706680949; x=1707285749; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7nVt2N2T/88QwCj9vDpwCSukp2aFRSspOwEn5na4qf0=;
-        b=yZ1L6ecCUUONG4bsc6gQvxkyWEIx86v9ub2Z5lEFvMNlYAm/TYsXR+v2xtprwKasht
-         OwMj1laWfYKFRZWotbBiIGM87RAmQN/uoosw7sgX20Jp6aQJh3A0c8sYCtAJ/pV46MyG
-         J9OHxV3o3C4aZurnOXtqPFSkyi73oh9fBkLhJCj0xwMg38KoCEUhkF4Or9cqVmf+OqAq
-         8m09Ziy/kDVJ57O+bL9fyfidqAvrsEllyyqzn4O4P+7AtaeMx7xh+9axRlalBZZQpy8d
-         5ItNfpbocRrHDu39iij8LGt50WSyzCjEtCZd26IHJAtoXk791nSI8c2+PK0GeQJSfiAK
-         KJGA==
+        d=chromium.org; s=google; t=1706680955; x=1707285755; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=tNwTaEMyBe8WlJMtub0WYIoY7SynAzeHiccTsbFvqBI=;
+        b=m6lBlcBTTOFfNEOPT2ZHmm95lOGxnBCBxcFMpb2ObixNyikK1DnLUrX8b8V3mspxIB
+         MAX2xzO5bgDKbpOqv6mIQGI5U7952HzrKk38skP2/OG4XuJrHpJTmoirpIeAkJlIJfeO
+         I7/i3Jdx6+kLIuBHeLUjlJ4VoppD+zQVPRn/0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706680949; x=1707285749;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7nVt2N2T/88QwCj9vDpwCSukp2aFRSspOwEn5na4qf0=;
-        b=SVjSfWQuR4EyTbos5EmLRD+7BH4K/X4H/BadnpBJriMFUNzWg8FNCrFD9wGAJtdrrw
-         /CzrmeHVD8aZaWxlYdwYehWaK3JWdTR2RjSteFayoJnQFbcDH+yCiDMfu+crxowbZhjP
-         BRegsyQX6ojy+xES/gpTHUIgiKKWuBWQC+JPVXZG3gKk6i1CnBbz/lgJ3oViLHCJKij7
-         GW7e1yiZwwx99ZHJmbk0kkZ70zum8OoVN+8PrdeALcsbKEYb7DYJHXr9C8cNI+cDGcvG
-         yoIVnMwQiaaOcWWEw4emlGBXnA0CWBsd2HX/THsh4u9LZoooh4RqAeQIYsHDEmoSh/4j
-         S+mw==
-X-Gm-Message-State: AOJu0YwoSTW2siWjEm2TN7nHJM0UlLHOah3yF5F8EeMujrhQXCLyvwTo
-	ZizIzklQhngMnQGJbqkbnOaFh8biJXUm226PypjS1e+Vd8q/DB6nZroYjTxxplQ=
-X-Google-Smtp-Source: AGHT+IF83oLZBbfL/1pDsa5srWK3SXBJBiWlPPeb6q8CD6Rlv6AkRdfMv41fs5CW1HIELf7DGdNSpA==
-X-Received: by 2002:a62:ce86:0:b0:6db:c583:1ac6 with SMTP id y128-20020a62ce86000000b006dbc5831ac6mr709518pfg.9.1706680948838;
-        Tue, 30 Jan 2024 22:02:28 -0800 (PST)
-Received: from dread.disaster.area (pa49-181-38-249.pa.nsw.optusnet.com.au. [49.181.38.249])
-        by smtp.gmail.com with ESMTPSA id e17-20020a656491000000b005d67862799asm4574140pgv.44.2024.01.30.22.02.28
+        d=1e100.net; s=20230601; t=1706680955; x=1707285755;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tNwTaEMyBe8WlJMtub0WYIoY7SynAzeHiccTsbFvqBI=;
+        b=oiegY93Ozwe7Ep3zvG1ibXzD3z9gGe0CtzrvazfFJMVB4I149CWf+HcVAY8Vpu5Eiy
+         CZqtvNzPIfHTXnlCNuf5t+CMD8ynnsdBYYYvpjIfaXoI17M/Goy5Kgbjnf9/FHmiwzHC
+         cPoywW65OP/c/Gr9OBrJkKHkGrTcvQWMO2UOR6x6xaTw2vfsO079Cso2V6DeyeikLfgC
+         Yt61WYHsLgQ5YlxFWbMch1l4jfMFDa/QgR08eorCdYqw1UGbQnc09/f8t2vtkmPtBcrD
+         WkpSiy3s7fP4v9hlruHmV55Yn5tY07ZnX69LLXt4BTQgRWPH5x81IbfzYRTaJI+4s4oa
+         G7TA==
+X-Gm-Message-State: AOJu0YzdrOfYGkM0UhYUJ5yyd0GUMm4gsxz42RCnHuBSKhQGYBRjpJ9i
+	9/Vc97oqRVcl0AuST+zRSbUauX9zV03d+TK1Cs85h51gTrtQjDeDC9CAJw50Pw==
+X-Google-Smtp-Source: AGHT+IF7JBcrDdNgOyeSTq+d2O7R9BPejyoaAnWp01PnHjSbScjucfcUz3CQSfqu0zak8BxD4jvWMw==
+X-Received: by 2002:a17:903:124b:b0:1d8:cbcf:2150 with SMTP id u11-20020a170903124b00b001d8cbcf2150mr697047plh.81.1706680955032;
+        Tue, 30 Jan 2024 22:02:35 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVNb5Uos7W7Cej8vwaR1UGfU1m+Z4K4N7N5pI88MGgC1xAC5xjdxcmV8EsqKMw6wAqllWe4suy+E0nCSe1SERAvVeOjV96PhtDsNn+Pa3mCeElAEO4mCZgG8PtmbZVRciq2zPcdKKAmxvYoqbi6H4XylG2setwZ0uKuyMpP+Av8
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id q6-20020a17090a2e0600b00295d781cb1bsm498706pjd.12.2024.01.30.22.02.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 22:02:28 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1rV3g1-0002Xn-15;
-	Wed, 31 Jan 2024 17:02:25 +1100
-Date: Wed, 31 Jan 2024 17:02:25 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Theodore Ts'o <tytso@mit.edu>,
-	syzbot <syzbot+cdee56dbcdf0096ef605@syzkaller.appspotmail.com>,
-	adilger.kernel@dilger.ca, chandan.babu@oracle.com, jack@suse.com,
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: current->journal_info got nested! (was Re: [syzbot] [xfs?]
- [ext4?] general protection fault in jbd2__journal_start)
-Message-ID: <Zbnicfk+JHIlG2WC@dread.disaster.area>
-References: <000000000000e98460060fd59831@google.com>
- <000000000000d6e06d06102ae80b@google.com>
- <ZbmILkfdGks57J4a@dread.disaster.area>
- <20240131045822.GA2356784@mit.edu>
- <ZbnYitvLz7sWi727@casper.infradead.org>
+        Tue, 30 Jan 2024 22:02:34 -0800 (PST)
+Date: Tue, 30 Jan 2024 22:02:33 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	Marco Elver <elver@google.com>, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: Add UBSAN section
+Message-ID: <202401302201.E6D71CF@keescook>
+References: <20240130234634.work.003-kees@kernel.org>
+ <CA+fCnZeDWQsd8xJdDhZbZBuyUaS6_WkFgZo5B4Pfjtkom_w1QQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZbnYitvLz7sWi727@casper.infradead.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+fCnZeDWQsd8xJdDhZbZBuyUaS6_WkFgZo5B4Pfjtkom_w1QQ@mail.gmail.com>
 
-On Wed, Jan 31, 2024 at 05:20:10AM +0000, Matthew Wilcox wrote:
-> On Tue, Jan 30, 2024 at 11:58:22PM -0500, Theodore Ts'o wrote:
-> > Hmm, could XFS pre-fault target memory buffer for the bulkstat output
-> > before starting its transaction?  Alternatively, ext4 could do a save
-> > of current->journal_info before starting to process the page fault,
-> > and restore it when it is done.  Both of these seem a bit hacky, and
-> > the question is indeed, are there other avenues that might cause the
-> > transaction context nesting, such that a more general solution is
-> > called for?
+On Wed, Jan 31, 2024 at 02:41:16AM +0100, Andrey Konovalov wrote:
+> On Wed, Jan 31, 2024 at 12:46 AM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > The kernel hardening efforts have continued to depend more and more
+> > heavily on UBSAN, so make an actual MAINTAINERS entry for it.
+> >
+> > Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+> > Cc: Marco Elver <elver@google.com>
+> > Cc: Andrey Konovalov <andreyknvl@gmail.com>
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> > Hi! I figured since I've been carrying UBSAN changes more and more lately,
+> > I would just make an actual entry in MAINTAINERS. Are you all interested
+> > in being listed as reviewers? Or would you want to be M: instead?
+> > ---
+> >  MAINTAINERS | 16 ++++++++++++++++
+> >  1 file changed, 16 insertions(+)
+> >
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 8d1052fa6a69..19b8802b2f12 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -22471,6 +22471,22 @@ F:     Documentation/block/ublk.rst
+> >  F:     drivers/block/ublk_drv.c
+> >  F:     include/uapi/linux/ublk_cmd.h
+> >
+> > +UBSAN
+> > +M:     Kees Cook <keescook@chromium.org>
+> > +R:     Andrey Ryabinin <ryabinin.a.a@gmail.com>
+> > +R:     Marco Elver <elver@google.com>
+> > +R:     Andrey Konovalov <andreyknvl@gmail.com>
+> > +L:     linux-hardening@vger.kernel.org
+> > +S:     Supported
+> > +T:     git git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git for-next/hardening
+> > +F:     Documentation/dev-tools/ubsan.rst
+> > +F:     include/linux/ubsan.h
+> > +F:     lib/Kconfig.ubsan
+> > +F:     lib/test_ubsan.c
+> > +F:     lib/ubsan.c
+> > +F:     scripts/Makefile.ubsan
+> > +K:     \bARCH_HAS_UBSAN\b
+> > +
+> >  UCLINUX (M68KNOMMU AND COLDFIRE)
+> >  M:     Greg Ungerer <gerg@linux-m68k.org>
+> >  L:     linux-m68k@lists.linux-m68k.org
+> > --
+> > 2.34.1
+> >
 > 
-> I'd suggest that saving off current->journal_info is risky because
-> it might cover a real problem where you've taken a pagefault inside
-> a transaction (eg ext4 faulting while in the middle of a transaction on
-> the same filesystem that contains the faulting file).
+> Hi Kees,
+> 
+> Perhaps, it also makes sense to add the kasan-dev@googlegroups.com
+> list. It's used for all other Sanitizers.
 
-Depends. Look at it from the POV of XFS:
+Okay, sure, I can add that. If it gets too noisy, we can always remove
+it. :)
 
-1. we can identify current->journal_info as belonging to XFS because
-of the TRAN magic number in the first 32 bits of the structure.
+> 
+> Otherwise, looks good to me:
+> 
+> Acked-by: Andrey Konovalov <andreyknvl@gmail.com>
 
-2. the struct xfs_trans has a pointer to the xfs_mount which points
-to the VFS superblock, which means we can identify exactly which
-filesystem instance the transaction belongs to.
+Thanks!
 
-3. We can determine if the transaction has a journal reservation
-from the log ticket the transaction holds.
-
-From these three things, we can identify if we are about to recurse
-into the same filesystem, and if so, determine if it is safe to run
-new transactions from within that context.
-
-> Seems to me that we shouldn't be writing to userspace while in the
-> middle of a transaction.  We could even assert that in copy_to_user()?
-
-On further thinking I don't think the problem is taking page faults
-within a filesystem transaction context is the problem here. We're
-using the transaction context for automated garbage collection so we
-never have to care about leaking object references in the code, not
-because we are running a modification and holding a journal
-reservation. It's the journals reservations that cannot be allowed
-to nest in XFS, not the transactions themselves.
-
-IOWs, the real problem is that multiple filesystems use the same
-task field for their own individual purposes, and that then leads
-these sorts of recursion problems when a task jumps from one
-filesystem context to another and the task field is then
-mis-interpretted.
-
-I've had a look at the XFS usage of current->journal_info, and I
-think we can just remove it.
-
-It's used for warning that we are running a writepages operations
-from within transaction context (which should never happen from XFS
-nor memory reclaim). it's also used in the ->destroy_inode path to
-determine if we are running in a context where we cannot block on
-filesystem locks or transaction reservations. 
-
-The former we can remove with no loss, the latter we can simply
-check PF_MEMALLOC_NOFS as that is set by transaction contexts.
-
-IOWs, I think that, in general, page faults in user buffers are fine
-in empty XFS transaction contexts as long as we aren't using some
-structure that some other filesystem might then to process the
-page fault....
-
-This may not be true for other filesystems, but I don't think we
-can really say "page faults in any filesystem transaction are unsafe
-and should be banned"....
-
--Dave.
 -- 
-Dave Chinner
-david@fromorbit.com
+Kees Cook
 
