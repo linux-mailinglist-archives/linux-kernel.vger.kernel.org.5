@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-47246-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47245-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C981F844AF8
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B3DF844AF7
 	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:22:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 084251C22720
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:22:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5ED4D1C21DDB
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:22:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7AD13CF41;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7A5A3CF40;
 	Wed, 31 Jan 2024 22:20:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="CnRVxiW1"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="tb5eTch3"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0AFE39FFA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4A6A39FF4;
 	Wed, 31 Jan 2024 22:20:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706739610; cv=none; b=TWajLdGOM8SXwHJx+sbF+v41UHsrbc2842eAw+fMs3xOvqeoP6TaaMoTA3y33nkZ3AS3Ab5khwPPqsJ27VV0PTziOi9FwNeSOO//jNdNjac1ODNio21WVddc4HWg/roCB6nb+qK5VhWpmkzXbMsq8tBAV53vWHbvRdLrfig3mvQ=
+	t=1706739610; cv=none; b=dgU5kbulNOpzmHv7TuoCTq7K8h3B3K6VFuDVwO1quIx9ckSrY8SAivTV3T+As4gAsJq7Dcd6Bzo9eBMT95JcXprrh2mc9xZjRzQRJgK0Dcmm6QpJCM14NpWocglZOI6NSyxUOdMgD/eLONB9EBcQc5fGcuJC2xVZ0kod4W3BmGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706739610; c=relaxed/simple;
-	bh=MfsdpvyjIkm3Ayj5tycpY7OlS3Ktzu09lZy/e/4xQSk=;
+	bh=F/FnECU63FRq2A383Tk+QpslYnY6qNtU63SkL8HeUd8=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Vf0jjz/EIJgq+/++UeYthX+G7aV1NsCHulmsFjHUPHiCnH8cE4VP+NjOEc2dGe9noY5xcPWx2kJlXghLrcHr/OGFdv27/a515djA+qlJSNJILiZNPXuA8nzunDLRECub8K6orvzT10he9qa6RA6F6UY0L0JsTcb5+pEpxi0WNeY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=CnRVxiW1; arc=none smtp.client-ip=198.47.19.142
+	 MIME-Version:Content-Type; b=XU4Yg+e8tUUzvhH7mj1VAYWYfGTbtj+ENaXKapWyzyh5K4HwAdGXaviV929zJwGoPKUmUiiImGVwEdszEQMuKqGcUGz2Kxc/4cCZOMETIDDydpRgwG+itrW4Is1m/Qps/4UnNYCedAmnv2LP8h1NvFZsoQvFU6YZadzXXp39DbQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=tb5eTch3; arc=none smtp.client-ip=198.47.23.248
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
 Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40VMK3fO009462;
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40VMK3Bg010424;
 	Wed, 31 Jan 2024 16:20:03 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
 	s=ti-com-17Q1; t=1706739603;
-	bh=zj5Poq1SiBWcRYBOWTA5UoHJNRwmeAY0U+bUiO41nd0=;
+	bh=bJezzvZCS+PMZW3omJ3JmDnR/p5mY4rG5hJQxDz2DY8=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=CnRVxiW1IrcYoksjU4H7Jx9OMpVOoYMO2j5onAX2xMNnnsWsBmCS14P6lztHNGgh3
-	 HdKj39+5A+iiVa069Ef5XN+uzGyNaavd/1cdjgAjK7kTorw4NYMM+lNXjD5xxHkecZ
-	 3jsZnX8Ma+N/QPF/bAY5KRp9m4TwKzE94td/5uxc=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40VMK3DT100617
+	b=tb5eTch3dL02rBTSysLAjCjAfCpsgddGgxNUTKWCAQhU+CUw70UGtShWlnYviSXfF
+	 gtp7K5muoQAORlFyZJtV6EmY81fTT5IwawYyQCqLXQkngaFZ4DFbrytxbk/40HdIF1
+	 eqY78hbe5eiijznPO0JdHtQUm8BwXKzX/A6Zd3zY=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40VMK33U100619
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
 	Wed, 31 Jan 2024 16:20:03 -0600
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 31
- Jan 2024 16:20:02 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ Jan 2024 16:20:03 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
  Frontend Transport; Wed, 31 Jan 2024 16:20:02 -0600
 Received: from lelvsmtp5.itg.ti.com ([10.249.42.149])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40VMJwx8102504;
-	Wed, 31 Jan 2024 16:20:01 -0600
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40VMJwx9102504;
+	Wed, 31 Jan 2024 16:20:02 -0600
 From: Andrew Davis <afd@ti.com>
 To: Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
         Santosh
@@ -71,9 +71,9 @@ CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
         Andrew Davis
 	<afd@ti.com>
-Subject: [PATCH 06/12] arm64: dts: ti: k3-am62a: Add reboot-controller node
-Date: Wed, 31 Jan 2024 16:19:51 -0600
-Message-ID: <20240131221957.213717-7-afd@ti.com>
+Subject: [PATCH 07/12] arm64: dts: ti: k3-am62p: Add reboot-controller node
+Date: Wed, 31 Jan 2024 16:19:52 -0600
+Message-ID: <20240131221957.213717-8-afd@ti.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240131221957.213717-1-afd@ti.com>
 References: <20240131221957.213717-1-afd@ti.com>
@@ -93,24 +93,25 @@ node to system-controller.
 
 Signed-off-by: Andrew Davis <afd@ti.com>
 ---
- arch/arm64/boot/dts/ti/k3-am62a-main.dtsi | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/arm64/boot/dts/ti/k3-am62p-main.dtsi | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-index f0b8c9ab14593..222505edc15bb 100644
---- a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-@@ -215,6 +215,10 @@ k3_reset: reset-controller {
- 			compatible = "ti,sci-reset";
+diff --git a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
+index 4c51bae06b57e..7a10ed7a41a23 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
+@@ -185,6 +185,11 @@ k3_reset: reset-controller {
  			#reset-cells = <2>;
+ 			bootph-all;
  		};
 +
 +		k3_reboot: reboot-controller {
 +			compatible = "ti,sci-reboot";
++			bootph-all;
 +		};
  	};
  
- 	secure_proxy_sa3: mailbox@43600000 {
+ 	crypto: crypto@40900000 {
 -- 
 2.39.2
 
