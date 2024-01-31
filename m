@@ -1,85 +1,119 @@
-Return-Path: <linux-kernel+bounces-46431-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46432-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23054843F8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:40:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 211C5843F90
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:43:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D400328356E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:40:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1EA7286985
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:42:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26B8C79DB6;
-	Wed, 31 Jan 2024 12:40:09 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E44C79DD9;
+	Wed, 31 Jan 2024 12:42:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bW6NwkLY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5151A79DA3
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 12:40:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DB2F6996D;
+	Wed, 31 Jan 2024 12:42:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706704808; cv=none; b=hcRJRX+UtTbfr1kw/MS5SUpMZvvVXMqOsn4883W67V5JZBxozDJUan5iF/3tjSx/twQIC/JMfZCTRSbQ3KEwU+b8dHmj9NC0tUUlQfLz5DbPZsJ0jlN5HBvBv+0v/pjRW8C9YN1jTaVdbHiaeaYecioYUpyQ+8Zgb7yD7OMjy2E=
+	t=1706704971; cv=none; b=gJGOXs3iJIWCjDE8kJmd4xQIklqS4mRFB7d7KqAhsEeD7X2At6tPrn6Tz5/NtUV7eh+15oHtx5pkGH+ETyKBaWYwQm/vEVeY/PLJZcPEVdEYjDcVXkmKid903+8V6qFREko02idOAkMSC+LDg0kpWEEP/efKd23npaxpSVoGG5I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706704808; c=relaxed/simple;
-	bh=cza3oR9CMwBgTSGiRNGHlnNFJ3XePvp0UL/KhPntGow=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=Drrdrqsogb6jtiMEq7xWr1MWfTp9WTeqMXiv2plozwH8EQwRfrfolsDagCfQc3I+GBE+xp/yQ+hENiuiDuU0DOIViRi5HPfcaNWnq4I4EMckJSnMEm8/WicgsSFrTMc7UFCGusMn7gmSHsN2TNQHII8uRYgSylz8Gbcsvp5Ivlg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7bf48e0f513so402424939f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 04:40:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706704806; x=1707309606;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BZpev8tZuvYra4GXPqvMYom1CH6GH5aiScB+H5mfbM8=;
-        b=e3+gz9AAC4ExovhPmvGYnbin/pisa2y20ydjFuPNbTzikd2LKBVqlxihP5R+BtVLKY
-         R1lM4YBnuIZxPlEskh0X0KV/4maGZZoFTe3QgURSAv6DKBMhju2U61M+GedLA1cS8ML4
-         LcOyyte3Tx4FCUazE22H9GzGbTeEwxncUtDgmZqty3/UFMdzEg/jH5MKETIytvq3pCwk
-         MBZTIIyZsi19PF5fDFkCTDQBR8jEkNasvOiKKeQd9w2LortFUFYUbIBmiTZkGfnkt3iX
-         U6OUjtPmTLF+RpYeEG3F2IeDyp+OGdFa+hbRVlqD5RvKB3kIYRe+hlBRJK6kOB0x4w6W
-         HFjg==
-X-Gm-Message-State: AOJu0YwP3zimoQw+mwky0wvd3S3cpDM21KrzncDAdg9jJAPnTaL/EmSD
-	T4VhWVYUVFTQnxBHFPl6onoKS3MT5s0DMIpXpOmoPMRrJBtWwdOqUmHeRfBRxxvgvBqhfMZROcT
-	dSJw9Q1whvnlHG7JouSCIhocs2nIX8KuLun5+AGBPZ+1g8Xd2RKGLIAk=
-X-Google-Smtp-Source: AGHT+IEYEwLEAYrC/gsFUDYlvKO7t5LieezDOY4HJOFj/BKwDooO5WoUVWdA6o1oFygRKuZ0YqP8RVwh8NmA5vRwmCu3ilL1Mwgv
+	s=arc-20240116; t=1706704971; c=relaxed/simple;
+	bh=Yw9YLwE4bTgmSbMQeZgcW6uRr61ZVfbeWomDVZwmev0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t9piL4JvjSjVzmqkG418SU15d4g6SJxCL1riNGJTMhvX4RhSATLloNwnQUXSJXndBTk7ho082QXnecq/UF2LPAbIeBfs+74eYCLSYuzMTdQy4cDYMGUcztvFLkA9jOVcuGmKKLai+tECp0103mQhjgy8N5DjH2B3DOGrtB2HAZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bW6NwkLY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78D5CC433F1;
+	Wed, 31 Jan 2024 12:42:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706704970;
+	bh=Yw9YLwE4bTgmSbMQeZgcW6uRr61ZVfbeWomDVZwmev0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bW6NwkLYIZVPoqAEgmAAIaX4MvEwsrfESf4cUa8gbQVRRoUv//rm3aLqDWsLTB2+d
+	 t7Vr1SdcH6k0t3lRmZeiZRdKUYD9ezvB60/oxNIS3AfOM+KIR+iipt+a2qcnQUVJn1
+	 io+sUvevYuXd27Qu0emYKLY9xsFYN0GbcvJtORv4d5rEOPxJOTgRgcpuV8uHFuyzFb
+	 EAY0p8gze6FTHwEPmviexWdd1BQCAzTMY1CNgaFzRJ78dA86D8ISpuhyDg/3DlRnvE
+	 7+vAwB0vtu1sxpb9urfALNUco4NL5R+G9rmYySrsycJQYOchM98xqqOU1Thbii6fHC
+	 zG+w8sL2h612g==
+Date: Wed, 31 Jan 2024 12:42:45 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
+Cc: Naresh Kamboju <naresh.kamboju@linaro.org>,
+	Linux ARM <linux-arm-kernel@lists.infradead.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	lkft-triage@lists.linaro.org, linux-stable <stable@vger.kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Marc Zyngier <maz@kernel.org>
+Subject: Re: selftests: ftrace: Internal error: Oops: sve_save_state
+Message-ID: <1b3064d0-d41d-414a-85ad-5202a089ad5e@sirena.org.uk>
+References: <CA+G9fYtEGe_DhY2Ms7+L7NKsLYUomGsgqpdBj+QwDLeSg=JhGg@mail.gmail.com>
+ <ad5b7442-385d-41db-9202-a36414460610@sirena.org.uk>
+ <CA+G9fYsbwWpDVR9KJXx8UO5MXsYT81uAJbLLNDnLianr8jmXUA@mail.gmail.com>
+ <63e92a6a-9cb7-4272-b524-ccaf997aceb3@sirena.org.uk>
+ <CAEUSe7_9tE5K7NpsmaG_v_bTJaMGhVVSDRhMn1QYnr2z4vSg8w@mail.gmail.com>
+ <b1b8cbdd-6d6c-4656-b17a-4d2dfb555f8a@sirena.org.uk>
+ <787d3fb1-7aad-4e92-8a22-360b92f46c68@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a02:cf9b:0:b0:470:a920:8406 with SMTP id
- w27-20020a02cf9b000000b00470a9208406mr7420jar.3.1706704805851; Wed, 31 Jan
- 2024 04:40:05 -0800 (PST)
-Date: Wed, 31 Jan 2024 04:40:05 -0800
-In-Reply-To: <tencent_9DB87AFA6C9C2D756D849410E9FEEC26CF0A@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b078ab06103d2d11@google.com>
-Subject: Re: [syzbot] [block?] [trace?] INFO: task hung in blk_trace_remove (2)
-From: syzbot <syzbot+2373f6be3e6de4f92562@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="LcSh5X4TdHiaSEzi"
+Content-Disposition: inline
+In-Reply-To: <787d3fb1-7aad-4e92-8a22-360b92f46c68@linaro.org>
+X-Cookie: I will never lie to you.
 
-Hello,
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+--LcSh5X4TdHiaSEzi
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reported-and-tested-by: syzbot+2373f6be3e6de4f92562@syzkaller.appspotmail.com
+On Tue, Jan 30, 2024 at 06:15:11PM -0600, Daniel D=EDaz wrote:
 
-Tested on:
+> > That's an assert that we shouldn't take a SVE trap when SVE is
+> > alreadly enabled for the thread.  The backtrace Naresh originally
+> > supplied was a NULL pointer dereference attempting to save SVE state
 
-commit:         1bbb19b6 Merge tag 'erofs-for-6.8-rc3-fixes' of git://..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=13adc87be80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b168fa511db3ca08
-dashboard link: https://syzkaller.appspot.com/bug?extid=2373f6be3e6de4f92562
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=145135fde80000
+=2E..
 
-Note: testing is done by a robot and is best-effort only.
+> > given.  Can you double check exactly how similar the various issues you
+> > are seeing are please?
+
+> I'm not sure of how similar the test cases are, but I'm inclined to
+> think its occurrence is not related specifically to ftrace or one test
+> case. It looks like these appear on FVP and Qemu-arm64, on several LTS
+
+That question is not about the test that is running, that question is
+about the error that the kernel reports.  There were two different but
+potentially related kernel errors in the reports that you and Naresh
+sent, I'm asking how similar the other cases actually are - is it more
+instances of these two issues, are there possibly other issues?
+
+--LcSh5X4TdHiaSEzi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmW6QEQACgkQJNaLcl1U
+h9D88wf8Cb366GwwKV1HpvWfjvF6pI3NDFA3D1AMxUuPrRD6QTrKVnsJOCyz2pdX
+WKAuINE8bLazLTUL+F7UhHH0wZj2DcwLeH8Zu93OAfM824aVAAUqVKQxigL01VnX
+q4FAip2FZUwQLGPnViIeT5RA8wne4RHvcUrxIjHSeQvPCiK2NgMHynQl4h6MsDIe
+1lIn3OUDXW+GSt7gcndvGkoAxayb0tLMrPcr3+nwEDj8OhMog/H3YQ6TygLSZg50
+5Ayq3GHGsA7A+3wABc1zmA+aaapDCoM2Hj4gbEQrpGEA2YaSud8FGG7OQ4Zv5zzn
+hHa1zWevvdrzvtejMvX096LcjSTlWA==
+=JsX4
+-----END PGP SIGNATURE-----
+
+--LcSh5X4TdHiaSEzi--
 
