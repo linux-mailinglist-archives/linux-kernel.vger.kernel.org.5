@@ -1,117 +1,111 @@
-Return-Path: <linux-kernel+bounces-47100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF8A3844922
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:47:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6937844927
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:51:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A0AD28255F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:47:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 053FE1C21F10
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:51:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5612C383A4;
-	Wed, 31 Jan 2024 20:47:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBD8838DD2;
+	Wed, 31 Jan 2024 20:51:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="fOo7CxMr"
-Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="XtKDfsAJ"
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04A7038382
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 20:47:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EC8031A61;
+	Wed, 31 Jan 2024 20:51:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706734036; cv=none; b=PPB1zjY20bT1JL/a6mxEoDk25BopTl37H5F73NTUPqtdRz1gJM3nZg21AwufD4cdo5IFfSniEcRmEZEsKioVzamL93+MsEBhiPjw5QFlrjCO4mQg+IqrNdWdsJQe6G7eE/i2xSWtpnY/ReDmFKmdqJm7DvgqDcp5M13GXj5/hdU=
+	t=1706734308; cv=none; b=jcqbGf5iHempM6tv05m9O3HoUUZ21sb8ZV1FwznWE4R0/c1gJuecNURMSNwCQzessPXS2peAdJn61u6IRO5z0wtjMax6BA2bYszQMouoNY1B++ow6FC0R5suvero537XklBqatb/Ph0NsNjL4ZqodWXmAcBeHXssbWSZ9vrWjwk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706734036; c=relaxed/simple;
-	bh=U5ubKWb5lmNwnTSRf1K63zeIXxhV8he9NKglHhX61pM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=l9aU59IgE92Wo4MxIIbb80eHzynUAdCPi8L9lVvhKY/jO6rN9CfEwixibBL8hDmMJ1IHvS0o3DJK/JA6VkOvwYw4sVZucHKTlQ3xtBdHA+17O4UI9TYrR+ZB6XViIYrgjJBygIFOct+7gRgMMzcDuJtuciHlPopAXllgvqL7x4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=fOo7CxMr; arc=none smtp.client-ip=209.85.222.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-7853a9eb5daso12049585a.2
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 12:47:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706734034; x=1707338834; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IHehOClwdwyT5hm1jstGhrGJBzJcQJ/fIMBxPcZfJIQ=;
-        b=fOo7CxMr/3JbUbtfD/pGNfD65MJccHRHs5f277Kn0jnzxOUwRySgopxS7FprHfq559
-         DiImO2y5Pb+6qCmTWfFXF+Z3mnuIBsOk09ZKTsOmkaNSdNVBD9mM9kdqcaUaDaZEOcFY
-         G1NE4br91CXm+FT7CaHyR/4MfRjnEvFdMMhfQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706734034; x=1707338834;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IHehOClwdwyT5hm1jstGhrGJBzJcQJ/fIMBxPcZfJIQ=;
-        b=lGS1RLZriQSTdhG2PaJ5q8gcVdVDahP9IqLrayzxv02qDJg3pIQthXGEgSyj9qMjde
-         npli+nWwo9x5b4OFSN638g/CaY3iJGExUvFhgED65NefE10zA9dLhyimJ2YVeiq33Rht
-         8rY0aBhWyyarGW6kluwUsGGW/eG6amzXB3hvYj76n8i1pXa5ID8o1ZzPQMVqKgpc1N3w
-         FleV38FI0jPTvVMd/mr2HaoD75/fDxF27CRgKKrg+FrRcwJxHgUkSB9pJLp9fQytGYNb
-         R6/NTvg5pR6GcVJWo3Z4whXqkWdgoMMX5z+PqY1Z1ZObAlzF4ojutExENixQGUDCrflj
-         vBhw==
-X-Gm-Message-State: AOJu0YxG6Viw6T74l6sX3TegT/Ez31S9NQ4PDDaHVKR0UDJ/Wp3mPhST
-	DIpX3IEhV5+e6cGaU7uDBnCQSwTDGU/bdG9euoUkM1qB7F2AHNsOZjIICMpSLQ==
-X-Google-Smtp-Source: AGHT+IGFl+yQTcSkjdkSZkj7+XvZs9cGGUHj14aKkZC+jmz3gUMJNsJYBd6YGetGBZWQKYm6fSYcbg==
-X-Received: by 2002:a05:6214:d02:b0:686:2ff1:8de2 with SMTP id 2-20020a0562140d0200b006862ff18de2mr3086741qvh.41.1706734033777;
-        Wed, 31 Jan 2024 12:47:13 -0800 (PST)
-Received: from pazz.c.googlers.com.com (240.157.150.34.bc.googleusercontent.com. [34.150.157.240])
-        by smtp.gmail.com with ESMTPSA id ow11-20020a0562143f8b00b0068c67a3647dsm1410352qvb.76.2024.01.31.12.47.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 12:47:13 -0800 (PST)
-From: Paz Zcharya <pazz@chromium.org>
-To: =?UTF-8?q?Jouni=20H=C3=B6gander?= <jouni.hogander@intel.com>,
-	Jani Nikula <jani.nikula@intel.com>,
-	Luca Coelho <luciano.coelho@intel.com>
-Cc: Subrata Banik <subratabanik@google.com>,
-	Manasi Navare <navaremanasi@chromium.org>,
-	Drew Davenport <ddavenport@chromium.org>,
-	Sean Paul <seanpaul@chromium.org>,
-	Marcin Wojtas <mwojtas@chromium.org>,
-	khaled.almahallawy@intel.com,
-	intel-gfx@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	Paz Zcharya <pazz@chromium.org>
-Subject: [PATCH] drm/i915/display: Include debugfs.h in intel_display_debugfs_params.c
-Date: Wed, 31 Jan 2024 20:46:54 +0000
-Message-ID: <20240131204658.795278-1-pazz@chromium.org>
-X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
+	s=arc-20240116; t=1706734308; c=relaxed/simple;
+	bh=vybbYYq9hxEE/rnqs38OpgiASw61KAQjmuklQgJTdi4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=jfkFxSOnWzmZtfUTV2SdQ4bbrCBnzROYZYal+M9knMC09Gz15RfISnelwBoklW2+zacgoNeTX4Z1TN7daZTUjFlujU+B96k4+1KG3hyZGR4UI6czA7JIvK91FOIFCvs2mB16XYgozq9spYNwkudCb6xqNoLckA6CcaxZklD4RFc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=XtKDfsAJ; arc=none smtp.client-ip=45.79.88.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 3C92247A94
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+	t=1706734303; bh=8074FH1QslNr+keTLp0xQItj4SG0X91J96NvtdBhqvs=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=XtKDfsAJjEO4xLQz8MDxx5apYR7PQdBYvZPl1xN7hNAPvrciKLwN8XM8IRQ5a6j8B
+	 ZyGPuTViZj0wLUeCJoflQTen8at7cZNKLlBy6/bbiVEvXrsUTRLN5ZpbLsjDTgAILS
+	 GIE1CrP4Xd/fT2N9tv6RXZh4H210n+qpBzbOZHZ6CuJB8y/BDdJsyN6uQxofzQow4r
+	 ZCxE9hVyZitmqzfyNgGngA1KuNfAG5b9b6hCyjASEjGJQYcwtQSOr2+bjWBnuXdry5
+	 58wh4c8E6sAQQofeFSENZHWDv7NfgAcLQHq03KjQDQ6BxhtlRHMgGpBORXzGpKCf7x
+	 Sc3nVD8auGIjA==
+Received: from localhost (unknown [IPv6:2601:280:5e00:7e19::646])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by ms.lwn.net (Postfix) with ESMTPSA id 3C92247A94;
+	Wed, 31 Jan 2024 20:51:43 +0000 (UTC)
+From: Jonathan Corbet <corbet@lwn.net>
+To: Jeff Xu <jeffxu@chromium.org>
+Cc: akpm@linux-foundation.org, keescook@chromium.org, jannh@google.com,
+ sroettger@google.com, willy@infradead.org, gregkh@linuxfoundation.org,
+ torvalds@linux-foundation.org, usama.anjum@collabora.com,
+ rdunlap@infradead.org, jeffxu@google.com, jorgelo@chromium.org,
+ groeck@chromium.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+ pedro.falcato@gmail.com, dave.hansen@intel.com,
+ linux-hardening@vger.kernel.org, deraadt@openbsd.org
+Subject: Re: [PATCH v7 0/4] Introduce mseal()
+In-Reply-To: <CABi2SkV4Q9CY+vb+t_+7RN_EtFB+FUi4ObHaZWo_+KMt7u4yDA@mail.gmail.com>
+References: <20240122152905.2220849-1-jeffxu@chromium.org>
+ <87a5ong41h.fsf@meer.lwn.net>
+ <CABi2SkV4Q9CY+vb+t_+7RN_EtFB+FUi4ObHaZWo_+KMt7u4yDA@mail.gmail.com>
+Date: Wed, 31 Jan 2024 13:51:42 -0700
+Message-ID: <87le854469.fsf@meer.lwn.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Commit 8015bee0bfec ("drm/i915/display: Add framework to add parameters
-specific to display") added the file intel_display_debugfs_params.c,
-which calls the functions "debugfs_create_{bool, ulong, str}" -- all of
-which are defined in <linux/debugfs.h>. The missing inclusion of this
-header file is breaking the ChromeOS build -- add an explicit include
-to fix that.
+Jeff Xu <jeffxu@chromium.org> writes:
 
-Signed-off-by: Paz Zcharya <pazz@chromium.org>
----
- drivers/gpu/drm/i915/display/intel_display_debugfs_params.c | 1 +
- 1 file changed, 1 insertion(+)
+> On Mon, Jan 29, 2024 at 2:37=E2=80=AFPM Jonathan Corbet <corbet@lwn.net> =
+wrote:
+>>
+>> jeffxu@chromium.org writes:
+>>
+>> > Although the initial version of this patch series is targeting the
+>> > Chrome browser as its first user, it became evident during upstream
+>> > discussions that we would also want to ensure that the patch set
+>> > eventually is a complete solution for memory sealing and compatible
+>> > with other use cases. The specific scenario currently in mind is
+>> > glibc's use case of loading and sealing ELF executables. To this end,
+>> > Stephen is working on a change to glibc to add sealing support to the
+>> > dynamic linker, which will seal all non-writable segments at startup.
+>> > Once this work is completed, all applications will be able to
+>> > automatically benefit from these new protections.
+>>
+>> Is this work posted somewhere?  Having a second - and more generally
+>> useful - user for this API would do a lot to show that the design is, in
+>> fact, right and useful beyond the Chrome browser.
+>>
+> Stephen conducted a PoC last year, it will be published once it is comple=
+te.
+> We're super excited about introducing this as a general safety measure
+> for all of Linux!
 
-diff --git a/drivers/gpu/drm/i915/display/intel_display_debugfs_params.c b/drivers/gpu/drm/i915/display/intel_display_debugfs_params.c
-index b7e68eb62452..f35718748555 100644
---- a/drivers/gpu/drm/i915/display/intel_display_debugfs_params.c
-+++ b/drivers/gpu/drm/i915/display/intel_display_debugfs_params.c
-@@ -3,6 +3,7 @@
-  * Copyright © 2023 Intel Corporation
-  */
- 
-+#include <linux/debugfs.h>
- #include <linux/kernel.h>
- 
- #include <drm/drm_drv.h>
--- 
-2.43.0.594.gd9cf4e227d-goog
+We're excited too, something like mseal() seems like a good thing to
+have.  My point, though, is that it would be good to see this second
+(and more general) user of the API *before* merging it.  As others have
+noted, once mseal() is in a released kernel, it will be difficult to
+change if adjustments turn out to be necessary.
 
+Thanks,
+
+jon
 
