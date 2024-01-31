@@ -1,179 +1,298 @@
-Return-Path: <linux-kernel+bounces-46184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 574AE843BEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:13:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE2A8843C13
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:19:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C56B21F27033
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:13:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F1B61C26763
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:19:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2DD869975;
-	Wed, 31 Jan 2024 10:12:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFE8469979;
+	Wed, 31 Jan 2024 10:19:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="qwWv9Yky"
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2085.outbound.protection.outlook.com [40.107.7.85])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FqozsgSb"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDA966996D;
-	Wed, 31 Jan 2024 10:12:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.7.85
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706695975; cv=fail; b=A8TIbtyvRcG+Bkrn9sPFELIaNn+PT2ZvAq3r4wNYlDzouMXCSXQwY7l3kj6jorA0GDcGIZscrdaAj6ECf2QEUHcLGdY++uBazxpS6ONegT0khKerxANSn3BpUGubTXEmamfg4sExdhSb/MdvWmL96giPZEKgdOyDimILVFFnAx0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706695975; c=relaxed/simple;
-	bh=aKI+GPaYPnim6o4b9fV+M9Eqseb/Hh6g7UzOuOVGXb8=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=UjB7xCQ5cuxfIgWQ7NKQzNObaT1zt+3Ri5yq4TIfoLe/PVwNaoOkDWsanug9tpdkGLPigzdL+7zsCtpFwP8Ad3h/yPJ8zXvExrSj5LJoayqrdVbSz4Ezb9zo35byFIHhMvh+7VXhJ5c5A9srDWz65vpeAm2f9ZTbwGUld/qGLX8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=qwWv9Yky; arc=fail smtp.client-ip=40.107.7.85
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EN6uaGlDkeXS8BEkTybReoU8V7XoAYQMa12vcOz2DDPLzWiWy5jWmJ+h7v5agU6mo5EyjXvsDX6x9j5HPq/jH88Ie6L+sbVzmvscQ/NGeN8uBDVl+iVrq7iE/anuL5hS9ZOqGpWKJpVl13GY1NidL4pD62TSKDfetRlPjDrr0J702VbfCYiArxQH3UMcySQQ2Wg/JbMilM7vmU1fM6UbACe5BLfeWt0Xq2b2iHxJtBgWaZjOv3bBFxTqslQurZCz7rzIVqvhx1m8moEWVNf+TxpF/rHkbv6vM+6IKlhfX2IB6ulIEeqaYE4noCkQxViDxwvMJeXdHfPVTcKpWnXFfw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rsAO9iZkaru9xO9cSmxDKk7XXiCZ/r+YpwTf6kwlgOw=;
- b=bJWLCbjFz8kma2g2FNW0QyWQYoIGFSoMvZLscCibR7Y+Zcf087dzS2S0+Q1UZe5Ok19aPMNVOHRJL2nfsxT/bo1E2JOaRB1+24cN0W9mY8dv20HtRV9vb0vXL+W3H4vGgdCm2ZuWUvcN2PiG95NpU1Hf7O62s4Hwml8PcXXf3JXaobz2TP2yteXNWsbKzn3pxHNUikdpKXUvLY0MMuxpWF52lX51CFIG4OUKnuNL0Xk8A7EZwzinxHhgUbJkoPVV+BlZQJ4V3FwSUfXh4fHQNv/28Uq5RyknwAh8THYHhj0kKhKf9r0w1ws+HYooGdmimVYYLuL0VK2dwDXHVVYe3g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rsAO9iZkaru9xO9cSmxDKk7XXiCZ/r+YpwTf6kwlgOw=;
- b=qwWv9YkyZlSutfWA/C3AxuBo3rDVQdn4C68ADWr7V49h2Tx+rmUZ3NDP4WH9aHGw7Ik//X4nei0EJAsHUdZQsvlHCMfouyTrfPagXm6Wu/B6KvFhgakvoapKYZhEf9yvQbZRLPXefisxRTRTyNzN3k8c53NxW6RKIdPB9OMWpq8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from DB7PR04MB5003.eurprd04.prod.outlook.com (2603:10a6:10:1a::19)
- by DB8PR04MB7002.eurprd04.prod.outlook.com (2603:10a6:10:119::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.34; Wed, 31 Jan
- 2024 10:12:50 +0000
-Received: from DB7PR04MB5003.eurprd04.prod.outlook.com
- ([fe80::6bca:3978:83bb:8a8a]) by DB7PR04MB5003.eurprd04.prod.outlook.com
- ([fe80::6bca:3978:83bb:8a8a%7]) with mapi id 15.20.7228.026; Wed, 31 Jan 2024
- 10:12:50 +0000
-From: carlos.song@nxp.com
-To: broonie@kernel.org,
-	shawnguo@kernel.org,
-	s.hauer@pengutronix.de,
-	kernel@pengutronix.de,
-	linux-imx@nxp.com,
-	benjamin@bigler.one,
-	stefanmoring@gmail.com
-Cc: linux-spi@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] spi: imx: fix the burst length at DMA mode and CPU mode
-Date: Wed, 31 Jan 2024 18:19:16 +0800
-Message-Id: <20240131101916.437398-1-carlos.song@nxp.com>
-X-Mailer: git-send-email 2.34.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: AM0PR10CA0040.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:20b:150::20) To DB7PR04MB5003.eurprd04.prod.outlook.com
- (2603:10a6:10:1a::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90E2069D00;
+	Wed, 31 Jan 2024 10:19:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.115
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706696389; cv=none; b=JWPruKJ/3DFhsuCnU3K2lALbB3Iu8/8uW4ZBGKL4WgCpb5+uaSvO7DUweBbNS18GwW2ThyDk5ybbEWqWPSpgosLfcEU6zk6hdyyz7ZKy2xkiR2ulCuFmr7OEu4y0PlWOjN1eBuoi2dp/5D5BrVEs2foHMJNh61bLShhsm1HKd4M=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706696389; c=relaxed/simple;
+	bh=3oWq+GNr3tgQsR407ZFMHVQBed2EHuNUvnJY/ULjyhs=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=ksjpzokbowfiX0FhqIpjwMDDlzIGPoedYtaaotndWKqu4DibS7EnlqPNSH72gJlF9ix3l3AXfyHOpzyPx1knF7aHdVrahh6XiD/SIUjtSW1YA6GAnVX38ecIndTOIAC6H96tuPpQbDtruxedLKLfSClrVI8VARE5TcAPw5RwtQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FqozsgSb; arc=none smtp.client-ip=192.55.52.115
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706696387; x=1738232387;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=3oWq+GNr3tgQsR407ZFMHVQBed2EHuNUvnJY/ULjyhs=;
+  b=FqozsgSbeknXEXWREdLHU62q7SFih6QKc4fBthSgglAH1u2gOrKvCgDW
+   /cdGtzNqQV0a2qsKhyGdBXdJYCIpoTLskoUdRz7nwKTDGKWS6Iw4tams7
+   JaLPLrr08oK+1qVlhJWCLaX0ukWktJYU33M9zaz2fHFZDjtulgol4UUsc
+   LzUxkXUVUZAdTqjesA7I6A8ryDQHlaEDmepA0HY7l/53YjO1RaGChhKqB
+   8jc8K6fKRTTL8zlaZmsa0Fj3OtGCLfKWBsOJzpaZ9fz/3VPdpu7Jgdgwv
+   IJc4aZHPrnvrTSAag4QNzeSLt6wVu0fE32l05hUoPo6IIiqo7J7YqVECh
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="403182529"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="403182529"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 02:19:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="822519740"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="822519740"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.35.167])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 02:19:43 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Wed, 31 Jan 2024 12:19:38 +0200 (EET)
+To: Shravan Kumar Ramani <shravankr@nvidia.com>
+cc: Hans de Goede <hdegoede@redhat.com>, Vadim Pasternak <vadimp@nvidia.com>, 
+    David Thompson <davthompson@nvidia.com>, 
+    platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 1/2] platform/mellanox: mlxbf-pmc: Add support for
+ 64-bit counters and cycle count
+In-Reply-To: <4fab3112d17a4bd2edbee66a8e77695943cbaf5a.1706607635.git.shravankr@nvidia.com>
+Message-ID: <a28597c7-782a-69a3-90c5-13ef46c8ced1@linux.intel.com>
+References: <cover.1706607635.git.shravankr@nvidia.com> <4fab3112d17a4bd2edbee66a8e77695943cbaf5a.1706607635.git.shravankr@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB7PR04MB5003:EE_|DB8PR04MB7002:EE_
-X-MS-Office365-Filtering-Correlation-Id: b11994db-ae39-4cba-7be5-08dc22452e31
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	yI/DPdInpD4P2MBeMmelp0uHxuPXX91YnWx+hTbOALSPp4jfyR4arU05WKnfCYowxIA03PnPRQdhijtkCOTr8E5ONH9o6XJPanOr3kM7WymkGiUZkXcx6XsB4Wt0lx9Bw0GeuGyqqPiN8VPbcxIj/VZmIkQybSHhJSM7gXg1FqtHNi879vRNtncJ7fzuE42U7GpQJthDBTtFzSxgJ5saIERssniqQmOABhDkS7+yB5xBNacTrRcyJE7+5cuHi/07mlJLjax5wbeXvGrczTnuTvBWyk+UWvrCFu01zwmv8Uxf587LA2V4Nm4JN7p838uHoksLETdBS4kcuaZ9N2TLu9KdIk216cL3IgRdNB64kgYIiw24YhwH6MODLw2JTgncsx0S+2225DdJXdKC6nt2uzJmPMes7NFrkGA6sxYLsN4M3PYURo2mi/ufdBs01cHFRhtV0nUT1MXzfFDkaGbPGVeXKUJz+W8YtUe2yLh2p0PbdlObd0yDqg81ReGaGto0Y8GOrB4LGem+PXQv4FSvXkR0F1Pb2e0mXVR2gMebwe6SZDi0HhhU/se901yibrxc/g9MTBTHI5ghcIL+rnKVbe4POzNGa/lTffuZbP8davinmMcUhTgJJu2M49lYjwE3
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR04MB5003.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(346002)(366004)(396003)(136003)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(6486002)(86362001)(478600001)(38350700005)(36756003)(26005)(66946007)(316002)(66476007)(66556008)(1076003)(83380400001)(6506007)(52116002)(38100700002)(41300700001)(2616005)(6512007)(9686003)(6666004)(4326008)(8936002)(8676002)(5660300002)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?Di6kHF4bqUCiSd6y3/NSWuOF7yYYa3WIScYm84FGIfPlgKbK7/vYzUH0Kob9?=
- =?us-ascii?Q?+lzA3Ytgsi68uiCwVcJBS7qiGxH3ezu9TovbSJaMTivzWtEyS0InOXpmHdK/?=
- =?us-ascii?Q?4/I2NYArZXgDb4Igb3NrebgW2aXJepDOReItu0i4lw7Zc/RX+RSQ/M/NEjSP?=
- =?us-ascii?Q?qHPbTtIV/GjXijNcIz+YHPjYBffnG7nILCvbH2LVaVv/+mU4GIjIqnlO6D11?=
- =?us-ascii?Q?OcNh3zrv2P7nKY0+kN7u0OhQq/mJXEe0aleBO/hhHfcYa459bAgayWYVODBt?=
- =?us-ascii?Q?CpATa20Henf7FppJ/lTTdMMf+tIw0Qx5AVlb5YDNYUCQoLWjCg0CMWV/06OI?=
- =?us-ascii?Q?KiggokJwY+E2JkucAuTZFoh/wp7R+/5Wroz24TY/ZbnPb87bRHiRhD16ZzGy?=
- =?us-ascii?Q?IyTgmToMyMTRb82G6qN0whoLlEwSSmHEUzZz5YuyZmenhtPiy5BIbFkF/jTd?=
- =?us-ascii?Q?RnYPAUenlhs6+yQrgMRo/dIKoobHHt2ZOuRpKb+gjgTnazx4X3GqK3+QOYy/?=
- =?us-ascii?Q?6dqX79p5jnLb6++kdAln9PUZ0nj+Ta7OuxFLh4lt4bMObBxfc5A6SKpiwOEp?=
- =?us-ascii?Q?grgZLdJbpJuUwiGeyWDo994XsYDzVbArGfY0Hf0VZv/gjRPxKTvO1dPl2XNb?=
- =?us-ascii?Q?+4WrBEjMIopl8oexG0iRQ3eF2eNpmMj9o4wgw0ezvucwexu4XKn8n0spBTcX?=
- =?us-ascii?Q?tvz7OC7cDL4PM4yh6pVVeHFdDKsjuq2BKL+CsMwHcLJXseQs5DFi2ZQa/V0C?=
- =?us-ascii?Q?jqBPIi4TlEmkJWmZPXzZ9bSMYfimI5jmhjvKGn8aNgHtlTVTmtvitxS7tBVn?=
- =?us-ascii?Q?6otOEUpmRbal0Wrzq0il3JuEjOpNMAVbS3mDuyzkDDY0FsI35Ny7JEsJKjXv?=
- =?us-ascii?Q?b+KogeV+POBXMznZAVYn1Cxx+v/7Zmxzfm2V4MucIYQr7cSi4LSJJUwFpRLm?=
- =?us-ascii?Q?ByR1xhuXk/x/iVHHhzUcc3fmhp85aRtW0IPTQVbPB8nqnxqvxLwoDmQn1ghL?=
- =?us-ascii?Q?4yCb4a5QWup7OscIUmTSduJc4HlUtogvk3ynbXPBhhQHuom2qKd5APnBMgMh?=
- =?us-ascii?Q?3mPAaGEfOeyqO0oDad2QCoXimFtE+AWXAqWb9JmzqnqGhzVzeacKYuryEUm5?=
- =?us-ascii?Q?xkhGE47cij06JqvmfgP29+iBZwxg66/9nH+HaqTNDQBy15gdg5XvTqkG5Tgi?=
- =?us-ascii?Q?taQxEl4PGhxX3FeE5g56hxPabPern1vvG5kENk1Ak996nEGxYQyDZJPN3Oz8?=
- =?us-ascii?Q?Q3QuNAyEMtOnMRNS2iaq0jmrPMOQlZLGjpuBbGtzpj8x6PcgLhGStpZJQtDi?=
- =?us-ascii?Q?RkrvFcSHI9xuvTHw+XZeKwB6j29PwNOkDZYnvKHw3UcV5526RMoA9aS1WevG?=
- =?us-ascii?Q?Adadit/czkuyCJZScBMe1Q08K0W2uVt1Qmfo25teGPKuTU/Z+NkUT8E4g0Bm?=
- =?us-ascii?Q?zQQEG0qZe6iy4CAyNkR0QYRsNuVcCuf6jj7WttDLsy/DADGPwTe2yeq1DBwJ?=
- =?us-ascii?Q?UYhMlcH5z9vzXRAzBE0f9ahJ6YB5v89w3gL7tHB/kskPoBcB8UuhyaQiEE8O?=
- =?us-ascii?Q?celvuPrOujv3J0AWWbc/My+iV4LsW4Dl+7Obd9/e?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b11994db-ae39-4cba-7be5-08dc22452e31
-X-MS-Exchange-CrossTenant-AuthSource: DB7PR04MB5003.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jan 2024 10:12:50.6071
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9/jnxB2FsdpPsepSh1e/4QeZ3ok9SoPEoHNQEpiyWXnph9qS82usc2/5YZ0dNPzm/pX6PkadUM7VeO42BYk+tQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB7002
+Content-Type: text/plain; charset=US-ASCII
 
-From: Carlos Song <carlos.song@nxp.com>
+On Tue, 30 Jan 2024, Shravan Kumar Ramani wrote:
 
-For DMA mode, the bus width of the DMA is equal to the size of data
-word, so burst length should be configured as bits per word.
+> Add support for programming any counter to monitor the cycle count.
+> Since counting of cycles using 32-bit ocunters would result in frequent
+> wraparounds, add the ability to combine 2 adjacent 32-bit counters to
+> form 1 64-bit counter.
+> Both these features are supported by BlueField-3 PMC hardware, hence
+> the required bit-fields are exposed by the driver via sysfs to allow
+> the user to configure as needed.
+> 
+> Signed-off-by: Shravan Kumar Ramani <shravankr@nvidia.com>
+> Reviewed-by: David Thompson <davthompson@nvidia.com>
+> Reviewed-by: Vadim Pasternak <vadimp@nvidia.com>
+> ---
+>  drivers/platform/mellanox/mlxbf-pmc.c | 132 ++++++++++++++++++++++++++
+>  1 file changed, 132 insertions(+)
+> 
+> diff --git a/drivers/platform/mellanox/mlxbf-pmc.c b/drivers/platform/mellanox/mlxbf-pmc.c
+> index b1995ac268d7..906dfa96f783 100644
+> --- a/drivers/platform/mellanox/mlxbf-pmc.c
+> +++ b/drivers/platform/mellanox/mlxbf-pmc.c
+> @@ -88,6 +88,8 @@
+>  #define MLXBF_PMC_CRSPACE_PERFMON_CTL(n) (n * MLXBF_PMC_CRSPACE_PERFMON_REG0_SZ)
+>  #define MLXBF_PMC_CRSPACE_PERFMON_EN BIT(30)
+>  #define MLXBF_PMC_CRSPACE_PERFMON_CLR BIT(28)
+> +#define MLXBF_PMC_CRSPACE_PERFMON_UOC GENMASK(15, 0)
+> +#define MLXBF_PMC_CRSPACE_PERFMON_COUNT_CLOCK(n) (MLXBF_PMC_CRSPACE_PERFMON_CTL(n) + 0x4)
+>  #define MLXBF_PMC_CRSPACE_PERFMON_VAL0(n) (MLXBF_PMC_CRSPACE_PERFMON_CTL(n) + 0xc)
+>  
+>  /**
+> @@ -114,6 +116,8 @@ struct mlxbf_pmc_attribute {
+>   * @attr_event: Attributes for "event" sysfs files
+>   * @attr_event_list: Attributes for "event_list" sysfs files
+>   * @attr_enable: Attributes for "enable" sysfs files
+> + * @attr_use_odd_counter: Attributes for "use_odd_counter" sysfs files
+> + * @attr_count_clock: Attributes for "count_clock" sysfs files
+>   * @block_attr: All attributes needed for the block
+>   * @block_attr_grp: Attribute group for the block
+>   */
+> @@ -126,6 +130,8 @@ struct mlxbf_pmc_block_info {
+>  	struct mlxbf_pmc_attribute *attr_event;
+>  	struct mlxbf_pmc_attribute attr_event_list;
+>  	struct mlxbf_pmc_attribute attr_enable;
+> +	struct mlxbf_pmc_attribute attr_use_odd_counter;
+> +	struct mlxbf_pmc_attribute attr_count_clock;
+>  	struct attribute *block_attr[MLXBF_PMC_MAX_ATTRS];
+>  	struct attribute_group block_attr_grp;
+>  };
+> @@ -1759,6 +1765,101 @@ static ssize_t mlxbf_pmc_enable_store(struct device *dev,
+>  	return count;
+>  }
+>  
+> +/* Show function for "use_odd_counter" sysfs files - only for crspace */
+> +static ssize_t mlxbf_pmc_use_odd_counter_show(struct device *dev,
+> +					      struct device_attribute *attr, char *buf)
+> +{
+> +	struct mlxbf_pmc_attribute *attr_use_odd_counter = container_of(
+> +		attr, struct mlxbf_pmc_attribute, dev_attr);
+> +	int blk_num, value;
+> +	uint32_t reg;
+> +
+> +	blk_num = attr_use_odd_counter->nr;
+> +
+> +	if (mlxbf_pmc_readl(pmc->block[blk_num].mmio_base +
+> +			MLXBF_PMC_CRSPACE_PERFMON_CTL(pmc->block[blk_num].counters),
+> +			&reg))
+> +		return -EINVAL;
+> +
+> +	value = FIELD_GET(MLXBF_PMC_CRSPACE_PERFMON_UOC, reg);
 
-For CPU mode, because of the spi transfer len is in byte, so burst
-length should be configured as bits per byte * spi_imx->count.
+Is this a signed field? If not, don't use int for value and change the %d 
+-> %u too.
 
-Signed-off-by: Carlos Song <carlos.song@nxp.com>
-Reviewed-by: Clark Wang <xiaoning.wang@nxp.com>
-Fixes: e9b220aeacf1 ("spi: spi-imx: correctly configure burst length when using dma")
-Fixes: 5f66db08cbd3 ("spi: imx: Take in account bits per word instead of assuming 8-bits")
----
-Changes for V2:
-- Removed BITS_PER_BYTE defination
----
- drivers/spi/spi-imx.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+> +
+> +	return sysfs_emit(buf, "%d\n", value);
+> +}
+> +
+> +/* Store function for "use_odd_counter" sysfs files - only for crspace */
+> +static ssize_t mlxbf_pmc_use_odd_counter_store(struct device *dev,
+> +					       struct device_attribute *attr,
+> +					       const char *buf, size_t count)
+> +{
+> +	struct mlxbf_pmc_attribute *attr_use_odd_counter = container_of(
+> +		attr, struct mlxbf_pmc_attribute, dev_attr);
+> +	uint32_t uoc, reg;
 
-diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
-index 546cdce525fc..0436e7a161ef 100644
---- a/drivers/spi/spi-imx.c
-+++ b/drivers/spi/spi-imx.c
-@@ -660,15 +660,14 @@ static int mx51_ecspi_prepare_transfer(struct spi_imx_data *spi_imx,
- 			<< MX51_ECSPI_CTRL_BL_OFFSET;
- 	else {
- 		if (spi_imx->usedma) {
--			ctrl |= (spi_imx->bits_per_word *
--				spi_imx_bytes_per_word(spi_imx->bits_per_word) - 1)
-+			ctrl |= (spi_imx->bits_per_word - 1)
- 				<< MX51_ECSPI_CTRL_BL_OFFSET;
- 		} else {
- 			if (spi_imx->count >= MX51_ECSPI_CTRL_MAX_BURST)
--				ctrl |= (MX51_ECSPI_CTRL_MAX_BURST - 1)
-+				ctrl |= (MX51_ECSPI_CTRL_MAX_BURST * BITS_PER_BYTE - 1)
- 						<< MX51_ECSPI_CTRL_BL_OFFSET;
- 			else
--				ctrl |= (spi_imx->count * spi_imx->bits_per_word - 1)
-+				ctrl |= (spi_imx->count * BITS_PER_BYTE - 1)
- 						<< MX51_ECSPI_CTRL_BL_OFFSET;
- 		}
- 	}
+uint32_t is not to be used as in-kernel type, use u32 in kernel.
+
+> +	int err, blk_num;
+> +
+> +	blk_num = attr_use_odd_counter->nr;
+> +
+> +	err = kstrtoint(buf, 0, &uoc);
+
+Hmm, uoc is unsigned but you use signed variant, kstrtouint() also 
+available for you so better to use that.
+
+> +	if (err < 0)
+> +		return err;
+> +
+> +	err = mlxbf_pmc_readl(pmc->block[blk_num].mmio_base +
+> +		MLXBF_PMC_CRSPACE_PERFMON_CTL(pmc->block[blk_num].counters),
+> +		&reg);
+> +	if (err)
+> +		return -EINVAL;
+> +
+> +	reg &= ~MLXBF_PMC_CRSPACE_PERFMON_UOC;
+> +	reg |= FIELD_PREP(MLXBF_PMC_CRSPACE_PERFMON_UOC, uoc);
+> +
+> +	mlxbf_pmc_write(pmc->block[blk_num].mmio_base +
+> +		MLXBF_PMC_CRSPACE_PERFMON_CTL(pmc->block[blk_num].counters),
+> +		MLXBF_PMC_WRITE_REG_32, reg);
+> +
+> +	return count;
+> +}
+> +
+> +/* Show function for "count_clock" sysfs files - only for crspace */
+> +static ssize_t mlxbf_pmc_count_clock_show(struct device *dev,
+> +					  struct device_attribute *attr, char *buf)
+> +{
+> +	struct mlxbf_pmc_attribute *attr_count_clock = container_of(
+> +		attr, struct mlxbf_pmc_attribute, dev_attr);
+> +	uint32_t reg;
+
+u32
+
+> +	int blk_num;
+> +
+> +	blk_num = attr_count_clock->nr;
+> +
+> +	if (mlxbf_pmc_readl(pmc->block[blk_num].mmio_base +
+> +			MLXBF_PMC_CRSPACE_PERFMON_COUNT_CLOCK(pmc->block[blk_num].counters),
+> +			&reg))
+> +		return -EINVAL;
+> +
+> +	return sysfs_emit(buf, "%d\n", reg);
+
+Use %u when printing unsigned values.
+
+> +}
+> +
+> +/* Store function for "count_clock" sysfs files - only for crspace */
+> +static ssize_t mlxbf_pmc_count_clock_store(struct device *dev,
+> +					   struct device_attribute *attr,
+> +					   const char *buf, size_t count)
+> +{
+> +	struct mlxbf_pmc_attribute *attr_count_clock = container_of(
+> +		attr, struct mlxbf_pmc_attribute, dev_attr);
+> +	int err, blk_num;
+> +	uint32_t reg;
+
+u32
+
+> +
+> +	blk_num = attr_count_clock->nr;
+> +
+> +	err = kstrtoint(buf, 0, &reg);
+
+kstrtouint()
+
+> +	if (err < 0)
+> +		return err;
+> +
+> +	mlxbf_pmc_write(pmc->block[blk_num].mmio_base +
+> +		MLXBF_PMC_CRSPACE_PERFMON_COUNT_CLOCK(pmc->block[blk_num].counters),
+> +		MLXBF_PMC_WRITE_REG_32, reg);
+> +
+> +	return count;
+> +}
+> +
+>  /* Populate attributes for blocks with counters to monitor performance */
+>  static int mlxbf_pmc_init_perftype_counter(struct device *dev, int blk_num)
+>  {
+> @@ -1792,6 +1893,37 @@ static int mlxbf_pmc_init_perftype_counter(struct device *dev, int blk_num)
+>  		attr = NULL;
+>  	}
+>  
+> +	if (pmc->block[blk_num].type == MLXBF_PMC_TYPE_CRSPACE) {
+> +		/*
+> +		 * Couple adjacent odd and even 32-bit counters to form 64-bit counters
+> +		 * using "use_odd_counter" sysfs which has one bit per even counter.
+> +		 */
+> +		attr = &pmc->block[blk_num].attr_use_odd_counter;
+> +		attr->dev_attr.attr.mode = 0644;
+> +		attr->dev_attr.show = mlxbf_pmc_use_odd_counter_show;
+> +		attr->dev_attr.store = mlxbf_pmc_use_odd_counter_store;
+> +		attr->nr = blk_num;
+> +		attr->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
+> +							  "use_odd_counter");
+
+Why you need alloc for a constant string?
+
+> +		if (!attr->dev_attr.attr.name)
+> +			return -ENOMEM;
+> +		pmc->block[blk_num].block_attr[++i] = &attr->dev_attr.attr;
+> +		attr = NULL;
+> +
+> +		/* Program crspace counters to count clock cycles using "count_clock" sysfs */
+> +		attr = &pmc->block[blk_num].attr_count_clock;
+> +		attr->dev_attr.attr.mode = 0644;
+> +		attr->dev_attr.show = mlxbf_pmc_count_clock_show;
+> +		attr->dev_attr.store = mlxbf_pmc_count_clock_store;
+> +		attr->nr = blk_num;
+> +		attr->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
+> +							  "count_clock");
+
+Why alloc?
+
+> +		if (!attr->dev_attr.attr.name)
+> +			return -ENOMEM;
+> +		pmc->block[blk_num].block_attr[++i] = &attr->dev_attr.attr;
+> +		attr = NULL;
+> +	}
+> +
+>  	pmc->block[blk_num].attr_counter = devm_kcalloc(
+>  		dev, pmc->block[blk_num].counters,
+>  		sizeof(struct mlxbf_pmc_attribute), GFP_KERNEL);
+> 
+
 -- 
-2.34.1
+ i.
 
 
