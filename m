@@ -1,198 +1,317 @@
-Return-Path: <linux-kernel+bounces-46364-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46363-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2018B843E7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:37:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A57C5843E98
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:39:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7829294CA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:37:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 73FDEB2F8B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:37:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BA2778695;
-	Wed, 31 Jan 2024 11:36:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9B626D1BA;
+	Wed, 31 Jan 2024 11:36:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TPybSp19"
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Ckom5FKj"
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FF2378681
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 11:36:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA65E69E08
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 11:36:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706700995; cv=none; b=Di6AVK/8K7jWNgnL8Qnd90rQzVX46n+H5WwggaJNvD7/lQB2m/BQ3zBxNd/Gyws6LLecpepwWhXSQtLue15PWsCvgCTy35ihhBXluff1Wd0nbhRtkMrGN5ClUUcCoEZ/yN0apUDjbR062NoNyR/ctZzToo5mnYdnh5P3hWUvWmw=
+	t=1706700978; cv=none; b=b0Qt2gHjxqSnpxaRzeHUUQnkhC3s92FZ35MljUmGwv4N6YAKiosgahO/G5Wj+bwkNvq3TtxN2viTAglhDzJfwLLcCAcXVcUa7u1GLxLnK8JNqfQQWht2siH4r2VOOfotsmMm1ZmDGunH0aCZVaop0DMiaz7JnasZlHvEIRTk7PM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706700995; c=relaxed/simple;
-	bh=8bBrqoGXUoXunxWrBBVukpNZlsie+GruwlpfN6BU+rs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=n0bf6ExqWQHgFEeJR4MJ3dD/BIpYb1LPBU3UC500hh8XkJ9l5NJikaOk/0q5DMMOKh/DuqE+DrICtX3diOLkNtY1MpdBmy0BV440tpKzut6EggZ+emE15y2M7laqIsbNl4d/Zmpl3OVYvmFpru1K42YuS9jziuAdjJD7SP8nM58=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TPybSp19; arc=none smtp.client-ip=209.85.128.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-604123a7499so2566357b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 03:36:33 -0800 (PST)
+	s=arc-20240116; t=1706700978; c=relaxed/simple;
+	bh=m5bL0KC8TvCh2kJXM6YwLLKVOxfwdwnlcnUSqi+6FaE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bneIuupMe6Mrz7l0ruYSPjKhPD5rHGYQlRY2Mh5veRyvvgt3xoUdcefil5ojArm37TbXqpiM8DAb1A6zw4AvTKMk9mZ7eW0o+rxdA3mrOeDGrVOnheqdjZYmCZ6M24CXKIFszvu9o6yl7wPvxbMbUZavRohcZP/TDZzIZPDAdyQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Ckom5FKj; arc=none smtp.client-ip=209.85.208.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d0600551ebso16378931fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 03:36:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706700992; x=1707305792; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=U5IhwNM7tfTpvKqa7glJYOtcilNz1jCteQqILZezCLE=;
-        b=TPybSp19AALC454pk7nKCXzcyahAYl5eMiwZhfTRJ6WqT6fdG7BhlMHTHPw1yX9KKv
-         u7wnBRkMg28aCn5rsiQs34mOCyv3jqlu5qoYjTG/plcBovefqtEScXjA0FOXTRLtR7NZ
-         tZPe2/7kJDpW3qmeD5MY2s6P5AOTfZfHMzWet3wR/uzktF1UcdVqI4sElCOuH4/QRf9y
-         cHbAnDps+ywRaWpxCSFfcV0EyHbCs8W3lpgc28+GwHqxaj5QGyjYPN5VRFvOrrqAV5Go
-         57PjpmNvMiAxysJsskNfa8/Tl7mWNm872WgRbymlZ6dPCUTHjUdmNOAwaDioARLA0ApR
-         AotQ==
+        d=suse.com; s=google; t=1706700974; x=1707305774; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7XdbiS1c20Gn5X+4te6mRJw+r6hSLX/Dkvt91s0vGVc=;
+        b=Ckom5FKje76yMgszKSEyIWfyH+AzOBpedDAK4chEho6+7DsW/1gZbbk071QYTGgbu7
+         UsI7TlYksnxSnPV4Mno5gI/qH5zcXGSR4jPtsbVhjDhJvNJibRsz8vteLAvipcKr3Sj2
+         XA7L9VhHaJhDqqUpfx7uBCpLYUU6de0Ok819Zl2VYZoIBK9cBJ/4KpqVrxG2vh4DKSgQ
+         ta7fBj5nrc1k/f66ISZ4MjB8qExIAIXqX9OjHU+EYfodrc7X3vr4jNlLvIoTbJdXwT93
+         oUoxhFRi2y3DxgB/YGaM3HOE6hqhsTuxcAy0hughFsE+P4AtLG+gOW6upPYAygnxsCuU
+         jlAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706700992; x=1707305792;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=U5IhwNM7tfTpvKqa7glJYOtcilNz1jCteQqILZezCLE=;
-        b=bufkJ8qmXwAc/ksZAXfUJCFfp+L8GJFVD4UWxU8Hr4qK5YMmVJqroRsShRDR/np3FY
-         aYSiOmsMbikbGr8atT/YGVYU7x7ULcubBgydxU1kbVoHsVCMqCV20Pem24M+BcFS32Sj
-         0Y81IiydOmk8SS+pO6YQ/eq3IntcoKv3N71N8fMKEssX20vGzNsIppXVttFZnnxJN1C8
-         WKEERI6ds/J+vWzGbLd2kY5/AOGviOhWYZUpD16QGjGCFivqh/AT62Gs2ypcoT2hhXqZ
-         nmFwHQ+OY+wj4ntoWAwKLg2MN1LPlJwgfv21f+FBi4Hy0QEo1/h1fEpPKQ5PO9JmL5wC
-         WBEA==
-X-Gm-Message-State: AOJu0YwC9JbIQZVlUMNMYYTfRnyDSMEAzX55Pc5IkTSYVt7yhHXdY5dt
-	hI4PJu8AD6mdh9cibZOTkUEqcvMevYVkO4k/KMgBEh0FNIXKRC7w6F8Nkz3SsdXupENoTyZ+OGF
-	DjdHu0Pq4q3LhheI6SDyfMHPvDXw6ovRJdLWKVA==
-X-Google-Smtp-Source: AGHT+IFmIqeqgLzkIR9AOm0VrXhQ5wQxHfTj4frB8NKDDK1Ia01TNcVRwOvlCVx8Y5q/JVm0GQTe9FiP2HxXj9jwlh0=
-X-Received: by 2002:a0d:d4ca:0:b0:603:ea88:6db1 with SMTP id
- w193-20020a0dd4ca000000b00603ea886db1mr1055807ywd.51.1706700992425; Wed, 31
- Jan 2024 03:36:32 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706700974; x=1707305774;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7XdbiS1c20Gn5X+4te6mRJw+r6hSLX/Dkvt91s0vGVc=;
+        b=AnwRDFsiwAhVBcU5fCVBi4XsBunICZjCsCJ27CvWXVWfVrObcldjqpAcok/esKMUcA
+         vdOzcqeg1HlpAd+Jxvv3ooD/lsu1XyfBINCUZbshixRtHNdK3AgBdmzL/L9/uOF3H4XD
+         qrwUNSDzOXMlATh+yLYvIeaen0PKHVOtH4qwJV0CAZYuEG2X1CYotm86jONrtsG7bvon
+         X/vR32MjQw3i1LT64rzHZauYuVv4XFJOvd/ttJzVC+fkhff9KG8KodJ2KJL4BCWVv+X1
+         WvdM3kcZ2AM+dh2Pqhpv4hq4Gv/jGgPgohVXGxyGIMBHFr/KhGx8p1xTwbkGsl/jPjBH
+         ecLA==
+X-Gm-Message-State: AOJu0YyU5NA0fN+f15U1uGlXYU0lbek/ZrKEbpX1WaUOw3pr3YRVjy3y
+	1QkbHP5H1TlF/ljmOdeHmlBq3eDi+DZf3BKP/jitC2GSgHvsIhDvloZUdWUqHFdwteKNCAekR5t
+	z
+X-Google-Smtp-Source: AGHT+IH/WuG7yzwS5SM82xascfsBmEMFb/0n03U5SJThE8yXefUFPdkaWdA7woBUopvFZdYvDC2OUg==
+X-Received: by 2002:a2e:9b8b:0:b0:2cf:657e:7767 with SMTP id z11-20020a2e9b8b000000b002cf657e7767mr848888lji.50.1706700973695;
+        Wed, 31 Jan 2024 03:36:13 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXTZl2/hImrhAup/BdwwOFVVJvNl1Dnekl4ZBumR1tZjTdVcZAdYEU9roxhxlLFkQVYAgQx57lcQz92vDIjRQIngQgCBUy/i4919TeApfYRQGl5mMT6Opbv6O94e9Z9IA1vRAAr4vSWLBMNh3pOf9mC1KS/oRg=
+Received: from alley ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id di11-20020a056402318b00b0055ef0105f2fsm3504453edb.80.2024.01.31.03.36.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Jan 2024 03:36:13 -0800 (PST)
+Date: Wed, 31 Jan 2024 12:36:11 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk v3 09/14] printk: Wait for all reserved records
+ with pr_flush()
+Message-ID: <ZbowlkOVWiSgCxNX@alley>
+References: <20231214214201.499426-1-john.ogness@linutronix.de>
+ <20231214214201.499426-10-john.ogness@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240125191756.868860-1-cristian.marussi@arm.com>
- <CAPDyKFpqZf15DFWa8K6RRzSTX70chEVTV8zRgnJ3VStSq_d9UQ@mail.gmail.com> <ZblW5rt4UtK6KMJD@pluto>
-In-Reply-To: <ZblW5rt4UtK6KMJD@pluto>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Wed, 31 Jan 2024 12:35:56 +0100
-Message-ID: <CAPDyKFo_Hg1-hN4Mw0UZSMX2iHRpyKyzyd+Gh5xWn-+2x3Jskg@mail.gmail.com>
-Subject: Re: [PATCH] pmdomain: arm: Fix NULL dereference on scmi_perf_domain removal
-To: Cristian Marussi <cristian.marussi@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231214214201.499426-10-john.ogness@linutronix.de>
 
-On Tue, 30 Jan 2024 at 21:07, Cristian Marussi <cristian.marussi@arm.com> wrote:
->
-> On Tue, Jan 30, 2024 at 02:09:20PM +0100, Ulf Hansson wrote:
-> > On Thu, 25 Jan 2024 at 20:18, Cristian Marussi <cristian.marussi@arm.com> wrote:
-> > >
-> > > On unloading of the scmi_perf_domain module got the below splat, when in
-> > > the DT provided to the system under test the '#power-domain-cells' property
-> > > was missing.
-> > > Indeed, this particular setup causes the probe to bail out early without
-> > > giving any error, so that, then, the removal code is run on unload, but
-> > > without all the expected initialized structures in place.
-> > >
-> > > Add a check and bail out early on remove too.
-> >
-> > Thanks for spotting this!
-> >
-> > >
-> > > Unable to handle kernel NULL pointer dereference at virtual address 0000000000000008
-> > > Mem abort info:
-> > >    ESR = 0x0000000096000004
-> > >    EC = 0x25: DABT (current EL), IL = 32 bits
-> > >    SET = 0, FnV = 0
-> > >    EA = 0, S1PTW = 0
-> > >    FSC = 0x04: level 0 translation fault
-> > >  Data abort info:
-> > >    ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
-> > >    CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-> > >    GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-> > >  user pgtable: 4k pages, 48-bit VAs, pgdp=00000001076e5000
-> > >  [0000000000000008] pgd=0000000000000000, p4d=0000000000000000
-> > >  Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
-> > >  Modules linked in: scmi_perf_domain(-) scmi_module scmi_core
-> > >  CPU: 0 PID: 231 Comm: rmmod Not tainted 6.7.0-00084-gb4b1f27d3b83-dirty #15
-> > >  Hardware name: linux,dummy-virt (DT)
-> > >  pstate: 61400005 (nZCv daif +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
-> > >  pc : scmi_perf_domain_remove+0x28/0x70 [scmi_perf_domain]
-> > >  lr : scmi_perf_domain_remove+0x28/0x70 [scmi_perf_domain]
-> > >  sp : ffff80008393bc10
-> > >  x29: ffff80008393bc10 x28: ffff0000875a8000 x27: 0000000000000000
-> > >  x26: 0000000000000000 x25: 0000000000000000 x24: 0000000000000000
-> > >  x23: ffff00008030c090 x22: ffff00008032d490 x21: ffff80007b287050
-> > >  x20: 0000000000000000 x19: ffff00008032d410 x18: 0000000000000000
-> > >  x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
-> > >  x14: 8ba0696d05013a2f x13: 0000000000000000 x12: 0000000000000002
-> > >  x11: 0101010101010101 x10: ffff00008510cff8 x9 : ffff800080a6797c
-> > >  x8 : 0101010101010101 x7 : 7f7f7f7f7f7f7f7f x6 : fefefeff6364626d
-> > >  x5 : 8080808000000000 x4 : 0000000000000020 x3 : 00000000553a3dc1
-> > >  x2 : ffff0000875a8000 x1 : ffff0000875a8000 x0 : ffff800082ffa048
-> > >  Call trace:
-> > >   scmi_perf_domain_remove+0x28/0x70 [scmi_perf_domain]
-> > >   scmi_dev_remove+0x28/0x40 [scmi_core]
-> > >   device_remove+0x54/0x90
-> > >   device_release_driver_internal+0x1dc/0x240
-> > >   driver_detach+0x58/0xa8
-> > >   bus_remove_driver+0x78/0x108
-> > >   driver_unregister+0x38/0x70
-> > >   scmi_driver_unregister+0x28/0x180 [scmi_core]
-> > >   scmi_perf_domain_driver_exit+0x18/0xb78 [scmi_perf_domain]
-> > >   __arm64_sys_delete_module+0x1a8/0x2c0
-> > >   invoke_syscall+0x50/0x128
-> > >   el0_svc_common.constprop.0+0x48/0xf0
-> > >   do_el0_svc+0x24/0x38
-> > >   el0_svc+0x34/0xb8
-> > >   el0t_64_sync_handler+0x100/0x130
-> > >   el0t_64_sync+0x190/0x198
-> > >  Code: a90153f3 f9403c14 f9414800 955f8a05 (b9400a80)
-> > >  ---[ end trace 0000000000000000 ]---
-> > >
-> > > Cc: Sudeep Holla <sudeep.holla@arm.com>
-> > > Cc: Ulf Hansson <ulf.hansson@linaro.org>
-> > > Fixes: 2af23ceb8624 ("pmdomain: arm: Add the SCMI performance domain")
-> > > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> > > ---
-> > > I suppose the probe does NOT bail out with an error because this DT config has
-> > > to be supported, right ?
-> >
-> > Actually, no. It's a mistake by me, the probe should bail out with an
-> > error code.
-> >
->
-> Ok. I suppose any old platform like JUNO that missed this will have to
-> update their DT to use the new scmi_perf_domain...well it should have
-> anyway really, it is just that now it is silently failing.
+On Thu 2023-12-14 22:47:56, John Ogness wrote:
+> Currently pr_flush() will only wait for records that were
+> available to readers at the time of the call (using
+> prb_next_seq()). But there may be more records (non-finalized)
+> that have following finalized records. pr_flush() should wait
+> for these to print as well. Particularly because any trailing
+> finalized records may be the messages that the calling context
+> wants to ensure are printed.
+> 
+> Add a new ringbuffer function prb_next_reserve_seq() to return
+> the sequence number following the most recently reserved record.
+> This guarantees that pr_flush() will wait until all current
+> printk() messages (completed or in progress) have been printed.
+> 
+> --- a/kernel/printk/printk_ringbuffer.c
+> +++ b/kernel/printk/printk_ringbuffer.c
+> @@ -1986,6 +1986,119 @@ u64 prb_first_seq(struct printk_ringbuffer *rb)
+>  	return seq;
+>  }
+>  
+> +/**
+> + * prb_next_reserve_seq() - Get the sequence number after the most recently
+> + *                  reserved record.
+> + *
+> + * @rb:  The ringbuffer to get the sequence number from.
+> + *
+> + * This is the public function available to readers to see what sequence
+> + * number will be assigned to the next reserved record.
+> + *
+> + * Note that depending on the situation, this value can be equal to or
+> + * higher than the sequence number returned by prb_next_seq().
+> + *
+> + * Context: Any context.
+> + * Return: The sequence number that will be assigned to the next record
+> + *         reserved.
+> + */
+> +u64 prb_next_reserve_seq(struct printk_ringbuffer *rb)
+> +{
+> +	struct prb_desc_ring *desc_ring = &rb->desc_ring;
+> +	unsigned long last_finalized_id;
+> +	atomic_long_t *state_var;
+> +	u64 last_finalized_seq;
+> +	unsigned long head_id;
+> +	struct prb_desc desc;
+> +	unsigned long diff;
+> +	struct prb_desc *d;
+> +	int err;
+> +
+> +	/*
+> +	 * It may not be possible to read a sequence number for @head_id.
+> +	 * So the ID of @last_finailzed_seq is used to calculate what the
+> +	 * sequence number of @head_id will be.
+> +	 */
+> +
+> +try_again:
+> +	last_finalized_seq = desc_last_finalized_seq(rb);
+> +
+> +	/*
+> +	 * @head_id is loaded after @last_finalized_seq to ensure that it is
+> +	 * at or beyond @last_finalized_seq.
+> +	 *
+> +	 * Memory barrier involvement:
+> +	 *
+> +	 * If desc_last_finalized_seq:A reads from
+> +	 * desc_update_last_finalized:A, then
+> +	 * prb_next_reserve_seq:A reads from desc_reserve:D.
+> +	 *
+> +	 * Relies on:
+> +	 *
+> +	 * RELEASE from desc_reserve:D to desc_update_last_finalized:A
+> +	 *    matching
+> +	 * ACQUIRE from desc_last_finalized_seq:A to prb_next_reserve_seq:A
+> +	 *
+> +	 * Note: desc_reserve:D and desc_update_last_finalized:A can be
+> +	 *       different CPUs. However, the desc_update_last_finalized:A CPU
+> +	 *       (which performs the release) must have previously seen
+> +	 *       desc_read:C, which implies desc_reserve:D can be seen.
 
-I don't think it's failing. The old binding for SCMI perf (using
-clock-cells) is still supported the way they were before, which is
-only for cpufreq.
+Huh, it must have been a huge effort to pull all the pieces together.
+It took me long time to check and understand it. And it looks right
+to me.
 
-But, yes you are right, both the DT and the consumer driver would need
-to be updated to support SCMI perf.
+The most tricky part is desc_reserve:D. It is a supper complicated
+barrier which guarantees many things. But I think that there are
+many more write barriers before the allocated descriptor reaches
+finalized state. So that it should be easier to prove the correctness
+here by other easier barriers.
 
->
-> > In fact, there is also one additional similar problem in probe, when
-> > the number of perf-domains are zero. In that case, we should also
-> > return an error code, rather than returning 0.
-> >
-> > Would you mind updating the patch to cover both problems - or if you
-> > are too busy, just let me know and I can help out.
->
-> No problem, I can do it next week, but regarding the zero domain case,
-> I remember I used to do the same on regulator/voltage driver and bail out
-> when no domains were found, but we were asked by some customer to support
-> instead the very useless and funny case of zero domains for some of their
-> testing setup scenarios .. i.e. allowing the driver to load with zero domains
-> (and do nothing) and then unload cleanly avoiding harms while unloading ...)
->
-> Thoughts about this ? Can fix as you prefer .
+To make it clear. I am all for keeping the above precise description
+as is. I just think about adding one more human friendly note which
+might help future generations to understand the correctness an easier way.
+Something like:
 
-In my opinion, there is no point having a module/driver loaded to do
-nothing. I would prefer to just return an error code.
+	* Note: The above description might be hard to follow because
+	*	desc_reserve:D is a multi-purpose barrier. But this is
+	*	just the first barrier which makes sure that @head_id
+	*	is updated before the reserved descriptor gets finalized
+	*	and updates @last_finalized_seq.
+	*
+	*	There are more release barriers in between, especially,
+	*	desc_reserve:F and desc_update_last_finalized:A. Also these make
+	*	sure that the desc_last_finalized_seq:A acquire barrier allows
+	*	to read @head_id related to @last_finalized_seq or newer.
 
-Thanks for fixing this!
+In fact, the desc_update_last_finalized:A release and
+desc_last_finalized_seq:A acquire barriers are enough to prove
+that we read here @head_id related to @last_finalized_seq or newer.
 
-Kind regards
-Uffe
+Or maybe it is exactly what you described and my "human friendly"
+description is too naive. I am still not completely familiar
+with the "Memory barrier involvement:" and "Relies on:"
+format.
+
+> +	 */
+> +	head_id = atomic_long_read(&desc_ring->head_id); /* LMM(prb_next_reserve_seq:A) */
+> +
+> +	d = to_desc(desc_ring, last_finalized_seq);
+> +	state_var = &d->state_var;
+> +
+> +	/* Extract the ID, used to specify the descriptor to read. */
+> +	last_finalized_id = DESC_ID(atomic_long_read(state_var));
+> +
+> +	/* Ensure @last_finalized_id is correct. */
+> +	err = desc_read_finalized_seq(desc_ring, last_finalized_id, last_finalized_seq, &desc);
+> +
+> +	if (err == -EINVAL) {
+> +		if (last_finalized_seq == 0) {
+> +			/*
+> +			 * @last_finalized_seq still contains its initial
+> +			 * value. Probably no record has been finalized yet.
+> +			 * This means the ringbuffer is not yet full and the
+> +			 * @head_id value can be used directly (subtracting
+> +			 * off the id value corresponding to seq=0).
+> +			 */
+> +
+> +			/*
+> +			 * Because of hack#2 of the bootstrapping phase, the
+> +			 * @head_id initial value must be handled separately.
+> +			 */
+> +			if (head_id == DESC0_ID(desc_ring->count_bits))
+> +				return 0;
+> +
+> +			/*
+> +			 * The @head_id is initialized such that the first
+> +			 * increment will yield the first record (seq=0).
+> +			 * Therefore use the initial value +1 as the base to
+> +			 * subtract from @head_id.
+> +			 */
+> +			last_finalized_id = DESC0_ID(desc_ring->count_bits) + 1;
+
+It took me long time to understand the above code and comments. I
+wonder if the following looks easier even for you:
+
+	if (err == -EINVAL) {
+		if (last_finalized_seq == 0) {
+			/*
+			 * No record has been finalized or even	reserved yet.
+			 *
+			 * The @head_id is initialized such that the first
+			 * increment will yield the first record (seq=0).
+			 * Handle it separately to avoid a negative @diff below.
+			 */
+			if (head_id == DESC0_ID(desc_ring->count_bits))
+				return 0;
+
+			/* One or more descriptors are already reserved. Use
+			 * the descriptor ID of the first one (@seq=0) for
+			 * the @diff below.
+			 */
+			last_finalized_id = DESC0_ID(desc_ring->count_bits) + 1;
+
+
+> +		} else {
+> +			/* Record must have been overwritten. Try again. */
+> +			goto try_again;
+> +		}
+> +	}
+> +
+> +	/*
+> +	 * @diff is the number of records beyond the last record available
+> +	 * to readers.
+> +	 */
+
+This is kind of obvious from the code. Also it is not true when the
+first record has not been finalized yet. The following might
+be more useful:
+
+	/* Diff of known descriptor IDs to compure releted sequence nubmers. */
+
+> +	diff = head_id - last_finalized_id;
+> +
+> +	/*
+> +	 * @head_id points to the most recently reserved record, but this
+> +	 * function returns the sequence number that will be assigned to the
+> +	 * next (not yet reserved) record. Thus +1 is needed.
+> +	 */
+> +	return (last_finalized_seq + diff + 1);
+> +}
+> +
+>  /*
+>   * Non-blocking read of a record.
+>   *
+
+BTW: It came to my mind whether the logic might be more straightforward
+     if we store desc_ring->next_finalized_seq instead of @last_finalized_seq.
+
+     Even the initial value vould be valid. Also the value is
+     used only in prb_next_reserve_seq() and prb_next_seq() where
+     we need to start with this value anyway.
+
+     Note that prb_next_seq() actually does not need to try _prb_read_valid()
+     for @last_finalized_seq. It should always be valid unless
+     the record has been already overwritten. In which case,
+     there should be a newer readable record.
+
+     Well, it is just an idea. I am not completely sure that it
+     would make the logic easier to follow. The current code is perfectly fine.
+
+
+The patch is correct. Feel free to add:
+
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+
+Well, it would be nice to update the comments if you liked the proposals.
+
+Best Regards,
+Petr
 
