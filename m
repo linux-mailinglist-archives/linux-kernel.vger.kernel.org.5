@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-47066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC7D18448C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:25:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0746E8448C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:25:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 438B0B21935
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:25:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AB391F276E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:25:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1871B12BF3B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64F66133998;
 	Wed, 31 Jan 2024 20:24:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XCqS+aDt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E9cafvoJ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A0C9405FE;
-	Wed, 31 Jan 2024 20:24:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A05F405FB;
+	Wed, 31 Jan 2024 20:24:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706732649; cv=none; b=MYpycJVKgDCeHUXWgsyBLmixXRYq5NGaeutDIbxD/7SYF6cwXzki9A21rVcS5sSREaYqay2MT768E6gTGYN99QOQ3y4qUqSCeTcjK6kzSeVbt8+dZ3qWB+8+uol4kFyZpczfF9lQaMTSrgXQuzc19+QV9qUIHF/LJ3vrGsuccbU=
+	t=1706732649; cv=none; b=ew3iRqkGfJ/yQciF6lCbBmKhcVpTflfXFBrk/HBOs1gREH1DyR76QFu+nv9iAsK6c4XQZ59Fe+jqWAr3JIop9fvlA+njTMHB2qTqhK+2R1pz4dVkyvRjFQOsu9fdQuzkfIw+R0xNcFH7Ob/uypaQLNWEtSxk8r+dr6eb5EOwI00=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706732649; c=relaxed/simple;
-	bh=hC2mjadfbWNTXdCp+iDgEDDn3h44Sq3ssmfR5EiK618=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=R6lhGhK4bzsfwyllXccs1qbn8pYoCBdESbX6zSOPmjcvqs6bRZh2yx9fmoS+bpG1jBbEn0JYN3AFw/i83XbsXw2eBXFCJfG10KLWTW19XwwXj34NrUGJBXKedQJultddQQb6BNVGHGNprVB1+VAqLnUq2x/NgztXETMLVgF+P8E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XCqS+aDt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B9AAAC433C7;
+	bh=PvtMQBD1nzrPCWrpIxzcWBmhKwGTdsFy2wiCmXx5kmc=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=lPwc6WusXyv2p/I5jOlNKUqh0HSAhOZdhpYvLGfwU166XUKRPfl+KAjZTx2CWJfVwwaMTzRv2zY+nYC01LzCMxvFPwh3DLhKiTV6aY421MFKkycR7qeTHvBykvWIwpc2s/xdOvi/lsNsg1u26lsfPJvNGxmcF/iPZttjOf0wEaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E9cafvoJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C9CA3C433F1;
 	Wed, 31 Jan 2024 20:24:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1706732648;
-	bh=hC2mjadfbWNTXdCp+iDgEDDn3h44Sq3ssmfR5EiK618=;
-	h=From:Subject:Date:To:Cc:Reply-To:From;
-	b=XCqS+aDtQuBGKjuV/srdOQZuQEJ6K4UzArIZT0PG85r1yQsIcNAWrCWhxuGGDRr76
-	 YpzUoJYJWTVZcptysvv2a8u2b0lTwm2A9P4GcGUUYI9gAm2/rnfcB5nihDlAwYlVmG
-	 TGEP77pcPURgXOC7timEt2za55776xhb3T+l1TzqV2aDS7NePrlOZTlu9gpRIYB2js
-	 XnlldDsADjJFjEOjCN0zBW8fhrjbnCk5K6GMQFKBomKgPk14C3bbnFNQXvHWAcP5J4
-	 3WOlDJ7/45ttdshamUh0OUKh/Hf7T3pJYFn0jOVTnvGwj7N23YRYHI5LLLFU9huUrC
-	 WsnLug2St2SHw==
+	bh=PvtMQBD1nzrPCWrpIxzcWBmhKwGTdsFy2wiCmXx5kmc=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=E9cafvoJF0JXHvi2eNyiaSY200M0Sp2uhQ6moobZxgZIjUMiRkrIpMn3EklDCBkVz
+	 /oIxVpNmHtkN6tJN+Fyi/EHsog/L84nodmF0iSPKHv/e2ckJjdwqRkLBw00wufN0GD
+	 Q64tgfMLD0PWebgApJ+Tcc1dLRQryrSrcgKG3i+IRQJdffhZUclT6Bcp3VKNCKX77A
+	 w2XJAIwOZDbToOWpoy6rlJecx9n+wdrwqFals+z+L/Uv6iQs54QBE9gh1woRoaKBVp
+	 rSWVrVqy0JsCtNG29HZplN+l38g9Wg3awXle6MhT3GRtECKbZ8IeHpV9q9lE60/wBf
+	 OyYgS9ihbswQw==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F93CC47258;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD84DC48285;
 	Wed, 31 Jan 2024 20:24:08 +0000 (UTC)
 From: Valentin Obst via B4 Relay <devnull+kernel.valentinobst.de@kernel.org>
-Subject: [PATCH v3 00/12] rust: kernel: documentation improvements
-Date: Wed, 31 Jan 2024 21:23:22 +0100
-Message-Id: <20240131-doc-fixes-v3-v3-0-0c8af94ed7de@valentinobst.de>
+Date: Wed, 31 Jan 2024 21:23:23 +0100
+Subject: [PATCH v3 01/12] rust: kernel: fix multiple typos in documentation
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,9 +54,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIADqsumUC/03MQQ7CIBCF4as0s3YaBqoQV97DuEAYLLGCgYaYN
- L27xJXLLy//26ByiVzhPGxQuMUac+pQhwHcbNODMfpukEJOghShzw5D/HDFptAYG07OONJaQ0/
- ehX9bL6637lDyC9e5sP07kYqOgkiO1GUmJHxySbxcml04rTHle11Hz7DvXxnpvLOfAAAA
+Message-Id: <20240131-doc-fixes-v3-v3-1-0c8af94ed7de@valentinobst.de>
+References: <20240131-doc-fixes-v3-v3-0-0c8af94ed7de@valentinobst.de>
+In-Reply-To: <20240131-doc-fixes-v3-v3-0-0c8af94ed7de@valentinobst.de>
 To: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
  Wedson Almeida Filho <wedsonaf@gmail.com>, 
  Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
@@ -68,11 +68,11 @@ Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
  Valentin Obst <kernel@valentinobst.de>, Trevor Gross <tmgross@umich.edu>, 
  Martin Rodriguez Reboredo <yakoyoku@gmail.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1706732646; l=2912;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1706732646; l=9277;
  i=kernel@valentinobst.de; s=20240131; h=from:subject:message-id;
- bh=hC2mjadfbWNTXdCp+iDgEDDn3h44Sq3ssmfR5EiK618=;
- b=pjeD6O87EU/R9JZ4wGfJiVtnCZ1taFiqeJwfEpkF7kfmfd7ldXLcsHwS+yxW0OzOBqb0CRUY3
- mXewAIRUDKsD1RkswDY54GjOAJ64IUno5EstWR3bxBzni/XpHqXMVzm
+ bh=jWhzEv3VcHW57738U5ZKKHmNbKt/A7SeH+hRAr2L2Bk=;
+ b=QY87KrykNPYCphGyXkSBtlMng+/CCeRX5yyJaO90ypoGHxmiwefLYtHxVSaqdkgiFiTZD+q++
+ /2luZABdQmlD6bDQWk6mh/755foHs+alRCJwsiaKZLzatLel2fdGOeH
 X-Developer-Key: i=kernel@valentinobst.de; a=ed25519;
  pk=3s7U8y0mqkaiurgHSQQTYWOo2tw5HgzCg5vnJVfw37Y=
 X-Endpoint-Received:
@@ -80,70 +80,211 @@ X-Endpoint-Received:
 X-Original-From: Valentin Obst <kernel@valentinobst.de>
 Reply-To: <kernel@valentinobst.de>
 
-This patch set aims to make small improvements to the documentation of
-the kernel crate. It engages in a few different activities:
-- fixing trivial typos (commit #1),
-- updating code examples to better reflect an idiomatic coding style
-  (commits #2,6),
-- increasing the consistency within the crate's documentation as a whole
-  (commits #3,5,7,8,9,11,12),
-- adding more intra-doc links as well as srctree-relative links to C
-  header files (commits #4,10).
+From: Valentin Obst <kernel@valentinobst.de>
 
+Fixes multiple trivial typos in documentation and comments of the
+kernel crate.
+
+allocator:
+- Fix a trivial list item alignment issue in the last SAFETY comment of
+  `krealloc_aligned`.
+
+init:
+- Replace 'type' with 'trait' in the doc comments of the `PinInit` and
+  `Init` traits.
+- Add colons before starting lists.
+- Add spaces between the type and equal sign to respect the code
+  formatting rules in example code.
+- End a sentence with a full stop instead of a colon.
+
+ioctl:
+- Replace 'an' with 'a' where appropriate.
+
+str:
+- Replace 'Return' with 'Returns' in the doc comment of `bytes_written`
+  as the text describes what the function does.
+
+sync/lock:
+- Fix a trivial list item alignment issue in the Safety section of the
+  `Backend` trait's description.
+
+sync/lock/spinlock:
+- The code in this module operates on spinlocks, not mutexes. Thus,
+  replace 'mutex' with 'spinlock' in the SAFETY comment of `unlock`.
+
+workqueue:
+- Replace "wont" with "won't" in the doc comment of `__enqueue`.
+
+Signed-off-by: Valentin Obst <kernel@valentinobst.de>
+Reviewed-by: Trevor Gross <tmgross@umich.edu>
+Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+Reviewed-by: Alice Ryhl <aliceryhl@google.com>
 ---
-Changes in v3:
-- Adjusted word wrapping in "rust: locked_by: shorten doclink preview"
-  to make use of the gained space.
-- Rebased with `rust-next`.
-- Link to v2: https://lore.kernel.org/lkml/20240123150112.124084-1-kernel@valentinobst.de/
-Changes in v2:
-- Drop commit "rust: kernel: add doclinks with html tags" in response to
-  review.
-- Fix another list item alignment issue pointed out during review of v1.
-  Was added to commit "rust: kernel: fix multiple typos in
-  documentation".
-- Commit "rust: error: move unsafe block into function call" is now
-  "rust: error: improve unsafe code in example" and also rewords the
-  SAFETY comment of the code example.
-  - Did not add 'Reviewed-By' tags offered in v1 tags due to changes.
-- Link to v1: https://lore.kernel.org/lkml/20240116160141.165951-1-kernel@valentinobst.de/
-
----
-Valentin Obst (12):
-      rust: kernel: fix multiple typos in documentation
-      rust: error: improve unsafe code in example
-      rust: ioctl: end top-level module docs with full stop
-      rust: kernel: add srctree-relative doclinks
-      rust: str: use `NUL` instead of 0 in doc comments
-      rust: str: move SAFETY comment in front of unsafe block
-      rust: kernel: unify spelling of refcount in docs
-      rust: kernel: mark code fragments in docs with backticks
-      rust: kernel: add blank lines in front of code blocks
-      rust: kernel: add doclinks
-      rust: kernel: remove unneeded doclink targets
-      rust: locked_by: shorten doclink preview
-
  rust/kernel/allocator.rs          |  2 +-
- rust/kernel/error.rs              | 10 ++----
- rust/kernel/init.rs               | 16 +++++-----
- rust/kernel/ioctl.rs              |  6 ++--
- rust/kernel/lib.rs                |  2 +-
- rust/kernel/str.rs                |  8 ++---
- rust/kernel/sync/arc.rs           | 14 ++++-----
- rust/kernel/sync/condvar.rs       |  2 ++
- rust/kernel/sync/lock.rs          | 15 ++++++---
+ rust/kernel/init.rs               | 16 ++++++++--------
+ rust/kernel/ioctl.rs              |  4 ++--
+ rust/kernel/str.rs                |  2 +-
+ rust/kernel/sync/lock.rs          |  4 ++--
  rust/kernel/sync/lock/spinlock.rs |  2 +-
- rust/kernel/sync/locked_by.rs     |  7 +++--
- rust/kernel/task.rs               |  6 ++--
- rust/kernel/types.rs              |  3 ++
- rust/kernel/workqueue.rs          | 64 +++++++++++++++++++--------------------
- 14 files changed, 84 insertions(+), 73 deletions(-)
----
-base-commit: f090f0d0eea9666a96702b29bc9a64cbabee85c5
-change-id: 20240131-doc-fixes-v3-88af6c8c1777
+ rust/kernel/workqueue.rs          |  2 +-
+ 7 files changed, 16 insertions(+), 16 deletions(-)
 
-Best regards,
+diff --git a/rust/kernel/allocator.rs b/rust/kernel/allocator.rs
+index 4b057e837358..01ad139e19bc 100644
+--- a/rust/kernel/allocator.rs
++++ b/rust/kernel/allocator.rs
+@@ -35,7 +35,7 @@ unsafe fn krealloc_aligned(ptr: *mut u8, new_layout: Layout, flags: bindings::gf
+     // - `ptr` is either null or a pointer returned from a previous `k{re}alloc()` by the
+     //   function safety requirement.
+     // - `size` is greater than 0 since it's either a `layout.size()` (which cannot be zero
+-    //    according to the function safety requirement) or a result from `next_power_of_two()`.
++    //   according to the function safety requirement) or a result from `next_power_of_two()`.
+     unsafe { bindings::krealloc(ptr as *const core::ffi::c_void, size, flags) as *mut u8 }
+ }
+ 
+diff --git a/rust/kernel/init.rs b/rust/kernel/init.rs
+index 65be9ae57b80..16a99984622c 100644
+--- a/rust/kernel/init.rs
++++ b/rust/kernel/init.rs
+@@ -751,10 +751,10 @@ macro_rules! try_init {
+ ///
+ /// # Safety
+ ///
+-/// When implementing this type you will need to take great care. Also there are probably very few
++/// When implementing this trait you will need to take great care. Also there are probably very few
+ /// cases where a manual implementation is necessary. Use [`pin_init_from_closure`] where possible.
+ ///
+-/// The [`PinInit::__pinned_init`] function
++/// The [`PinInit::__pinned_init`] function:
+ /// - returns `Ok(())` if it initialized every field of `slot`,
+ /// - returns `Err(err)` if it encountered an error and then cleaned `slot`, this means:
+ ///     - `slot` can be deallocated without UB occurring,
+@@ -861,10 +861,10 @@ unsafe fn __pinned_init(self, slot: *mut T) -> Result<(), E> {
+ ///
+ /// # Safety
+ ///
+-/// When implementing this type you will need to take great care. Also there are probably very few
++/// When implementing this trait you will need to take great care. Also there are probably very few
+ /// cases where a manual implementation is necessary. Use [`init_from_closure`] where possible.
+ ///
+-/// The [`Init::__init`] function
++/// The [`Init::__init`] function:
+ /// - returns `Ok(())` if it initialized every field of `slot`,
+ /// - returns `Err(err)` if it encountered an error and then cleaned `slot`, this means:
+ ///     - `slot` can be deallocated without UB occurring,
+@@ -1013,7 +1013,7 @@ pub fn uninit<T, E>() -> impl Init<MaybeUninit<T>, E> {
+ ///
+ /// ```rust
+ /// use kernel::{error::Error, init::init_array_from_fn};
+-/// let array: Box<[usize; 1_000]>= Box::init::<Error>(init_array_from_fn(|i| i)).unwrap();
++/// let array: Box<[usize; 1_000]> = Box::init::<Error>(init_array_from_fn(|i| i)).unwrap();
+ /// assert_eq!(array.len(), 1_000);
+ /// ```
+ pub fn init_array_from_fn<I, const N: usize, T, E>(
+@@ -1027,7 +1027,7 @@ pub fn init_array_from_fn<I, const N: usize, T, E>(
+         // Counts the number of initialized elements and when dropped drops that many elements from
+         // `slot`.
+         let mut init_count = ScopeGuard::new_with_data(0, |i| {
+-            // We now free every element that has been initialized before:
++            // We now free every element that has been initialized before.
+             // SAFETY: The loop initialized exactly the values from 0..i and since we
+             // return `Err` below, the caller will consider the memory at `slot` as
+             // uninitialized.
+@@ -1056,7 +1056,7 @@ pub fn init_array_from_fn<I, const N: usize, T, E>(
+ ///
+ /// ```rust
+ /// use kernel::{sync::{Arc, Mutex}, init::pin_init_array_from_fn, new_mutex};
+-/// let array: Arc<[Mutex<usize>; 1_000]>=
++/// let array: Arc<[Mutex<usize>; 1_000]> =
+ ///     Arc::pin_init(pin_init_array_from_fn(|i| new_mutex!(i))).unwrap();
+ /// assert_eq!(array.len(), 1_000);
+ /// ```
+@@ -1071,7 +1071,7 @@ pub fn pin_init_array_from_fn<I, const N: usize, T, E>(
+         // Counts the number of initialized elements and when dropped drops that many elements from
+         // `slot`.
+         let mut init_count = ScopeGuard::new_with_data(0, |i| {
+-            // We now free every element that has been initialized before:
++            // We now free every element that has been initialized before.
+             // SAFETY: The loop initialized exactly the values from 0..i and since we
+             // return `Err` below, the caller will consider the memory at `slot` as
+             // uninitialized.
+diff --git a/rust/kernel/ioctl.rs b/rust/kernel/ioctl.rs
+index f1d42ab69972..59050e5f5a5a 100644
+--- a/rust/kernel/ioctl.rs
++++ b/rust/kernel/ioctl.rs
+@@ -28,13 +28,13 @@ pub const fn _IO(ty: u32, nr: u32) -> u32 {
+     _IOC(uapi::_IOC_NONE, ty, nr, 0)
+ }
+ 
+-/// Build an ioctl number for an read-only ioctl.
++/// Build an ioctl number for a read-only ioctl.
+ #[inline(always)]
+ pub const fn _IOR<T>(ty: u32, nr: u32) -> u32 {
+     _IOC(uapi::_IOC_READ, ty, nr, core::mem::size_of::<T>())
+ }
+ 
+-/// Build an ioctl number for an write-only ioctl.
++/// Build an ioctl number for a write-only ioctl.
+ #[inline(always)]
+ pub const fn _IOW<T>(ty: u32, nr: u32) -> u32 {
+     _IOC(uapi::_IOC_WRITE, ty, nr, core::mem::size_of::<T>())
+diff --git a/rust/kernel/str.rs b/rust/kernel/str.rs
+index 7d848b83add4..0a8569594fc3 100644
+--- a/rust/kernel/str.rs
++++ b/rust/kernel/str.rs
+@@ -449,7 +449,7 @@ pub(crate) fn pos(&self) -> *mut u8 {
+         self.pos as _
+     }
+ 
+-    /// Return the number of bytes written to the formatter.
++    /// Returns the number of bytes written to the formatter.
+     pub(crate) fn bytes_written(&self) -> usize {
+         self.pos - self.beg
+     }
+diff --git a/rust/kernel/sync/lock.rs b/rust/kernel/sync/lock.rs
+index 149a5259d431..072b8ef2a0fa 100644
+--- a/rust/kernel/sync/lock.rs
++++ b/rust/kernel/sync/lock.rs
+@@ -21,9 +21,9 @@
+ /// # Safety
+ ///
+ /// - Implementers must ensure that only one thread/CPU may access the protected data once the lock
+-/// is owned, that is, between calls to `lock` and `unlock`.
++///   is owned, that is, between calls to `lock` and `unlock`.
+ /// - Implementers must also ensure that `relock` uses the same locking method as the original
+-/// lock operation.
++///   lock operation.
+ pub unsafe trait Backend {
+     /// The state required by the lock.
+     type State;
+diff --git a/rust/kernel/sync/lock/spinlock.rs b/rust/kernel/sync/lock/spinlock.rs
+index 068535ce1b29..e5e0bf621988 100644
+--- a/rust/kernel/sync/lock/spinlock.rs
++++ b/rust/kernel/sync/lock/spinlock.rs
+@@ -112,7 +112,7 @@ unsafe fn lock(ptr: *mut Self::State) -> Self::GuardState {
+ 
+     unsafe fn unlock(ptr: *mut Self::State, _guard_state: &Self::GuardState) {
+         // SAFETY: The safety requirements of this function ensure that `ptr` is valid and that the
+-        // caller is the owner of the mutex.
++        // caller is the owner of the spinlock.
+         unsafe { bindings::spin_unlock(ptr) }
+     }
+ }
+diff --git a/rust/kernel/workqueue.rs b/rust/kernel/workqueue.rs
+index 498397877376..8775c34d12a5 100644
+--- a/rust/kernel/workqueue.rs
++++ b/rust/kernel/workqueue.rs
+@@ -253,7 +253,7 @@ fn run(mut this: Pin<Box<Self>>) {
+ /// actual value of the id is not important as long as you use different ids for different fields
+ /// of the same struct. (Fields of different structs need not use different ids.)
+ ///
+-/// Note that the id is used only to select the right method to call during compilation. It wont be
++/// Note that the id is used only to select the right method to call during compilation. It won't be
+ /// part of the final executable.
+ ///
+ /// # Safety
+
 -- 
-Valentin Obst <kernel@valentinobst.de>
+2.43.0
 
 
