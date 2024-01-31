@@ -1,184 +1,107 @@
-Return-Path: <linux-kernel+bounces-45801-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45838-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5858984365F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:01:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 52BD78436D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:31:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6158285FF1
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:01:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B07372824D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:31:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D11173E477;
-	Wed, 31 Jan 2024 06:01:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B7451D6A6;
+	Wed, 31 Jan 2024 06:31:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ab/IJojY"
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mmQFZQ15"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3180C3E46B;
-	Wed, 31 Jan 2024 06:01:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00817125CA;
+	Wed, 31 Jan 2024 06:31:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706680881; cv=none; b=TQUZbywfKUMGvLDNGf0rG9jhCEYRVHZMK3Uwc2X5yEQiwtmP9d/JgewoqZDMne+G7uyUes0AEnGdCCWj8q4dxiuuD6jDNU1OYWMHsaEUC2vejKd5oqptG1uOMX4dTscSpI0MD4uATY1YBdHet/2JqbMEzM81uYTCvmSbFZ+Gg3Q=
+	t=1706682673; cv=none; b=V5A9XemPKHnblvKiTT5NRg04pZzadydrR+eS1ZrgV/g1k2nSb9HgqusiQ4aCfpdZz5rJq08LfUCwm6ie35ggmqRzhLD+Kkr/T/F8UIejbk3vVPKdP8zyHwM8Es+7Cf+3en2HfhLw7WUnaz3Y379bN6oBX37RQ4ApLfHySTUzCmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706680881; c=relaxed/simple;
-	bh=NEnY0eMPOlLKjUxvivCMOJQhrAWo3oDLZhH5bmOUHQM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EC0Iksil/he+y3wncGt2qJD595Vhgy3G5Fi8cFZdNGu/6WRE+3FEviVyE6pUYGFCRw3+9BBH+mJq/9Fjs0bqi13eRiidQT8BWrBL6AQ0f27mNFUPYgOAe96SGupzkNI5axPlXPUKOj1Tyj9Z2niqyOWdRYmAeXmEhZlw7bMbYdI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ab/IJojY; arc=none smtp.client-ip=209.85.210.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6e1352dd653so1458291a34.2;
-        Tue, 30 Jan 2024 22:01:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706680878; x=1707285678; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=3d59pSZFrotxa5OB09tA6yrFpKxzayWubKgHGCJEqP0=;
-        b=Ab/IJojYXqC8NzrXPOsQctVPYUVhQEWDKdZ9w44HC43qmGKsaYa9dwJ4ikDC4fNHbX
-         v1+qgQ8ek3JBnecP+80Bz3hzSTLeo3xQotchgkewr0GvJTFzpt5RL7nk2zg1yNPoq3Wu
-         Ot5rjVWcIL/LaVRP1YJQ+qhiGYEtLwEGJmHGVzo718U1tElxjFR94QBAZYBblk1fJyVA
-         +iHu7lPLU3WkpelycEVpwRzWHoRNNjqsYpGwAqFcHlXMMb7zw9vUZkljiGOx3xiOO636
-         pV2tbGTfblOrsCZMRT2YABAkZJ8KQcnFqp56itOp9TBNCbzcsIaulQGaArzvxS4bEr6a
-         JNpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706680878; x=1707285678;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3d59pSZFrotxa5OB09tA6yrFpKxzayWubKgHGCJEqP0=;
-        b=rQoZfFN9uEr7L/oLPkit5aqOvd/ZGG3WK5qubUl+46gxMUsiTGHx21NagUvJGuxysL
-         LP5aWo0JmE55VM/DatfJKA8knT3l4lXKzU31Zx9efb2QeGp7oAgEXas7SJ5vMI+XGLTu
-         HVVLeB8MlK3TkgvOGij9JEJpnY6x1xVKCgTnNX3POo5wJz5EREcuk1SgNzxgrMkDPKeX
-         Y6/B37Q/GwyoYtYstdi6IHMEtGZcR98MtlER17eKP3sKrsNaX0rtHqSfed68EoUYvQVE
-         FOHI/KR9c1wi3rx5nj0tTttGrF7u2c8B1yKmujwBmm7QTtkH9EIPMRRV6Y35W67xIRlj
-         AoEw==
-X-Gm-Message-State: AOJu0Yxx8pqCE9YV5hoSuQ1/OxOcyPkCj7M6VL6vR83HctDC6MsoWt2/
-	5HFWA/VsyFg293osqqYgkPUmuB7JPxLIOyakpbzdzV9ndRfY8tzt
-X-Google-Smtp-Source: AGHT+IFen+FDfjlBIeidg23Urvr88JScP5kLZW1IYd4CA5oBP1lCslXPTD2pKl7tL3WrbAEkIMOXQA==
-X-Received: by 2002:a05:6358:60cc:b0:178:6d3d:4cc1 with SMTP id i12-20020a05635860cc00b001786d3d4cc1mr543296rwi.24.1706680878039;
-        Tue, 30 Jan 2024 22:01:18 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id n26-20020aa78a5a000000b006ddc87c1780sm8916401pfa.63.2024.01.30.22.01.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Jan 2024 22:01:17 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <1a996038-bcc7-4c0f-8f27-ca36a2eb9d3d@roeck-us.net>
-Date: Tue, 30 Jan 2024 22:01:15 -0800
+	s=arc-20240116; t=1706682673; c=relaxed/simple;
+	bh=rWpNYhvi5Y7XEDqsmQ7YOXj2NszqHIpA2qBYV+5aizE=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=bKrVVEJyzBzJv0e43ll4wN6rRozrJ3EgFMgZKX3odYvE/SR/lOlHEElX0OjKCpDAjFKjB9Ml7RwJ7vpxXQrINfmsyAFZbWqyNoBZmAWsGxY7O3SBZnmdSFybPTXBREofAVBZSKsej1fdyvQefYB0TdOKEI2rpj4TySGSXAy0CoA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mmQFZQ15; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706682673; x=1738218673;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references;
+  bh=rWpNYhvi5Y7XEDqsmQ7YOXj2NszqHIpA2qBYV+5aizE=;
+  b=mmQFZQ15dYt8NhEMlVcdhRYa0u3xnfkQLqMib7qbOgJtDIz2y/RIPt4+
+   2WA5JJfD2219ZbFDdU5ORcag9Gfva0fQwvivmjqn6hFvBrBCDXAFf6AmV
+   2jsNQvP5dHNdlT7ZZauPcuoZaeb+k/meHXAaD6Gs7ACSpSFDNY3Dt0yBQ
+   h7mC+/202asF2pdIQNypTg7L0gro0TeX+dvXvNNDPu48JsrEus7ww1+u1
+   nluYSQDSjSnl8HwCaGE3E5O6KxSCcYP6ZLuzycMQ73TWwwHJeDBuRzq+L
+   rFX1fvXX/9Ooxji1GxQmKOy0myy1ycKTkYaNmDCMrRCc7gxJcJG+5mMiO
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="10145767"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="10145767"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 22:31:11 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="907779612"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="907779612"
+Received: from yzhao56-desk.sh.intel.com ([10.239.159.62])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 22:31:07 -0800
+From: Yan Zhao <yan.y.zhao@intel.com>
+To: arnd@arndb.de,
+	linus.walleij@linaro.org,
+	guoren@kernel.org,
+	bcain@quicinc.com,
+	jonas@southpole.se,
+	stefan.kristiansson@saunalahti.fi,
+	shorne@gmail.com
+Cc: linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
+	linux-openrisc@vger.kernel.org,
+	Yan Zhao <yan.y.zhao@intel.com>
+Subject: [PATCH 4/4] openrisc: apply page shift to PFN instead of VA in pfn_to_virt
+Date: Wed, 31 Jan 2024 14:01:42 +0800
+Message-Id: <20240131060142.2823-1-yan.y.zhao@intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20240131055159.2506-1-yan.y.zhao@intel.com>
+References: <20240131055159.2506-1-yan.y.zhao@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] watchdog: qcom: Start the watchdog in probe
-Content-Language: en-US
-To: Pavankumar Kondeti <quic_pkondeti@quicinc.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Wim Van Sebroeck <wim@linux-watchdog.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-watchdog@vger.kernel.org,
- linux-kernel@vger.kernel.org, Mukesh Ojha <quic_mojha@quicinc.com>
-References: <20240131-qcom-wdt-start-probe-v1-1-bee0a86e2bba@quicinc.com>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20240131-qcom-wdt-start-probe-v1-1-bee0a86e2bba@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-On 1/30/24 20:15, Pavankumar Kondeti wrote:
-> When CONFIG_WATCHDOG_HANDLE_BOOT_ENABLED is enabled, kernel can pet the
-> watchdog until user space takes over. Make use of this feature and
-> start the watchdog in probe.
-> 
-> Signed-off-by: Pavankumar Kondeti <quic_pkondeti@quicinc.com>
-> ---
->   drivers/watchdog/qcom-wdt.c | 6 +++++-
->   1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/watchdog/qcom-wdt.c b/drivers/watchdog/qcom-wdt.c
-> index 9e790f0c2096..4fb5dbf5faee 100644
-> --- a/drivers/watchdog/qcom-wdt.c
-> +++ b/drivers/watchdog/qcom-wdt.c
-> @@ -276,12 +276,16 @@ static int qcom_wdt_probe(struct platform_device *pdev)
->   	watchdog_init_timeout(&wdt->wdd, 0, dev);
->   
->   	/*
-> +	 * Kernel can pet the watchdog until user space takes over.
-> +	 * Start the watchdog here to make use of this feature.
-> +	 
+Apply the page shift to PFN to get physical address for final VA.
+The macro __va should take physical address instead of PFN as input.
 
-No, that is not what CONFIG_WATCHDOG_HANDLE_BOOT_ENABLED is about.
-Please see its description.
+Fixes: 232ba1630c66 ("openrisc: Make pfn accessors statics inlines")
+Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
+---
+ arch/openrisc/include/asm/page.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-NACK.
-
-Guenter
-
->   	 * If WDT is already running, call WDT start which
->   	 * will stop the WDT, set timeouts as bootloader
->   	 * might use different ones and set running bit
->   	 * to inform the WDT subsystem to ping the WDT
-
->   	 */
-> -	if (qcom_wdt_is_running(&wdt->wdd)) {
-> +	if (IS_ENABLED(CONFIG_WATCHDOG_HANDLE_BOOT_ENABLED) ||
-> +	    qcom_wdt_is_running(&wdt->wdd)) {
->   		qcom_wdt_start(&wdt->wdd);
->   		set_bit(WDOG_HW_RUNNING, &wdt->wdd.status);
->   	}
-> 
-> ---
-> base-commit: 41bccc98fb7931d63d03f326a746ac4d429c1dd3
-> change-id: 20240131-qcom-wdt-start-probe-b8e0560aef7d
-> 
-> Best regards,
+diff --git a/arch/openrisc/include/asm/page.h b/arch/openrisc/include/asm/page.h
+index 44fc1fd56717..55c66f6cb1bd 100644
+--- a/arch/openrisc/include/asm/page.h
++++ b/arch/openrisc/include/asm/page.h
+@@ -79,7 +79,7 @@ static inline unsigned long virt_to_pfn(const void *kaddr)
+ 
+ static inline void * pfn_to_virt(unsigned long pfn)
+ {
+-	return (void *)((unsigned long)__va(pfn) << PAGE_SHIFT);
++	return __va(pfn << PAGE_SHIFT);
+ }
+ 
+ #define virt_to_page(addr) \
+-- 
+2.17.1
 
 
