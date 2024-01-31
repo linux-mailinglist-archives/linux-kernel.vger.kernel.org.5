@@ -1,81 +1,62 @@
-Return-Path: <linux-kernel+bounces-46734-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46725-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A9E2844352
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:46:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48964844337
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:38:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE4761F221FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:46:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4DE0B297B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:38:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AADD112A148;
-	Wed, 31 Jan 2024 15:46:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1825D1292FA;
+	Wed, 31 Jan 2024 15:37:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YxZxh5pV"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QRxtWjsQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60961128388
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 15:46:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D9B06EB6E;
+	Wed, 31 Jan 2024 15:37:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706716004; cv=none; b=MVJJN4Fy9s48xXeBoLfx2wp/MWZZ5Mp4AhunNCQgA4v/5E+JGswn+Ob3J7sLrfriKR+i6r1JGPf9bz89Vv9PaHMz9NgQQ7uXSfo5gL6Psb9SvRVOPkS3OW9mxnPQHLgAsm1c1ib4EJekd9rrrjINFgN7WVUAY7SF6aL8zwh7P8k=
+	t=1706715471; cv=none; b=NwrX/Jy4M6QcHJUFF0eZBTjTrAlsxGoW0HedOn4/PztX9m/jax40HhZxVhP+3j7CjhkxnqPiyCvWq4or4tFjsJ+GWc04XAC2ZW29rwpAPyWFBFYC+u3JBXdR+OCS4A7np6mBEpM29K3zSR1c/MaNZpBNsTGX3dwmCdBdQTfMTRA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706716004; c=relaxed/simple;
-	bh=TIYEjhEm+Q9THJNQ+RQRVyVZX4DEQNHZSWYzF0LI+Ak=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CuwXNRgMW7bf0DtXDPqD18+COXPH+Bu2qiRfmuUCMcZeKUCAHWsD1mJzyLw9OByhuBKVaoBz4wDSDIhhbNIrTN9s+s35FXRNkrsM5pIpbb9sPC7St+0qejCNixQ0QmL7Tcyx7Yx7MTmo7eE0HK7Bn/02eqDgySvW3wreuYRhyWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YxZxh5pV; arc=none smtp.client-ip=134.134.136.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706716003; x=1738252003;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=TIYEjhEm+Q9THJNQ+RQRVyVZX4DEQNHZSWYzF0LI+Ak=;
-  b=YxZxh5pVPqosFLAAD7MphbDqPojQeWmV3P0TSZGqGs+JLwJ9C0b549mD
-   AJoAnXY2kGm7L+7YptHQSvbF/LB3VNkaNTtlfOrrKnnuaVScJGE4zKiRu
-   70TliT2+w6BpfoUaPGZx+VXZ58G3av602SwdJLmu3hk1r4n+Fs/7RnfFY
-   NgiE6ifIjvvG70exoRxq0eET+Vc037Lkladx6gTHJVKP5ofegXYNzG/6b
-   yoGjYptSRowVK99byy5J575tygDCcAnjmugiWQZsP2Q0qJNeuBFCA3Uxe
-   JoWqAPtq5OhDr3Ci5NcdK/xtkX9zDNkEnmOB19GjqCjRX322uqNhX3Gtj
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="394068820"
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="394068820"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 07:46:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="822605488"
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="822605488"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga001.jf.intel.com with ESMTP; 31 Jan 2024 07:46:31 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id 07C7B772; Wed, 31 Jan 2024 17:36:46 +0200 (EET)
-Date: Wed, 31 Jan 2024 17:36:46 +0200
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Kevin Loughlin <kevinloughlin@google.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, Nick Desaulniers <ndesaulniers@google.com>, 
-	Justin Stitt <justinstitt@google.com>, Pankaj Gupta <pankaj.gupta@amd.com>, 
-	Hou Wenlong <houwenlong.hwl@antgroup.com>, Ard Biesheuvel <ardb@kernel.org>, 
-	Dionna Glaze <dionnaglaze@google.com>, Brijesh Singh <brijesh.singh@amd.com>, 
-	Michael Roth <michael.roth@amd.com>, linux-kernel@vger.kernel.org, llvm@lists.linux.dev, 
-	linux-coco@lists.linux.dev, Ashish Kalra <ashish.kalra@amd.com>, 
-	Andi Kleen <ak@linux.intel.com>, Adam Dunlap <acdunlap@google.com>, 
-	Peter Gonda <pgonda@google.com>, Jacob Xu <jacobhxu@google.com>, 
-	Sidharth Telang <sidtelang@google.com>
-Subject: Re: [PATCH v3 2/2] x86/head64: Replace pointer fixups with
- RIP_RELATIVE_ADDR()
-Message-ID: <yie3eza6ak7eqlsvb2fjj6t7k43qtupscmv6cvu2eoqv5ikaoz@h5drniall723>
-References: <20240121182040.GBZa1geI5NxWSslvt0@fat_crate.local>
- <20240130220845.1978329-3-kevinloughlin@google.com>
- <733302e0-e8c2-458e-a4b2-dfd10e065036@amd.com>
+	s=arc-20240116; t=1706715471; c=relaxed/simple;
+	bh=NLu5RhQDHjuoWdQ7ATBAXWr7+B9giVQ1tClFHkObJS0=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=LnehuG5u2ODZPEcbN5Cjf0R8qCaeM8qD8C0vHlaQCMnWOqvICwo4zLmLppH0uj5x1oa+T5lj/ON97Ks4gxLZK7cFTRTZREYok9ij+BGkcG0Xi5wMimunOdBlL9VTiNZnZ1kjAVFHcSjiyH9x5G06ly9MSe1T5T+3Ym+YuZOLbDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QRxtWjsQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88C4CC43390;
+	Wed, 31 Jan 2024 15:37:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706715470;
+	bh=NLu5RhQDHjuoWdQ7ATBAXWr7+B9giVQ1tClFHkObJS0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=QRxtWjsQrKxV8wn5tiT+hyR8fxLyWD56t7JdxX0F25qs+QkwbsbymnPS2kODrM8K5
+	 WSbdltD1Uif8EYPgP30Jjni+6Q2o2NqrGKVusaatjPdUKkP7xTp8OoEjWNclp3yrHZ
+	 d3gCwHPJ2YLqrdqnoSpF7xj+jG/jhTbxW+HHsUP+f/rwBFXHIUnAoU9Y+Pd7o/ili/
+	 JFGJ6aquyLJqn0G+hKtF5puvFv3G+yxsGedrslEyMpmUiC4DJA870gZZ9X5zLJP5ce
+	 jEu894erBsFm4lpoQCci0m0O7CXt1DVx+qkDuyGHiF4L/QCEaB925IhgLkgDKAHUuN
+	 ikQZD5arf86cw==
+Date: Wed, 31 Jan 2024 09:37:48 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, imx@lists.linux.dev,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+	Serge Semin <fancer.lancer@gmail.com>
+Subject: Re: [PATCH 1/6] PCI: Add INTx Mechanism Messages macros
+Message-ID: <20240131153748.GA586693@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,18 +65,81 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <733302e0-e8c2-458e-a4b2-dfd10e065036@amd.com>
+In-Reply-To: <20240130-pme_msg-v1-1-d52b0add5c7c@nxp.com>
 
-On Wed, Jan 31, 2024 at 09:30:10AM -0600, Tom Lendacky wrote:
-> On 1/30/24 16:08, Kevin Loughlin wrote:
-> > Now that we have RIP_RELATIVE_ADDR(), we can replace the "fixup_*()"
-> > family of functions in head64.c with the new macro for cleaner code.
+On Tue, Jan 30, 2024 at 07:45:26PM -0500, Frank Li wrote:
+> From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 > 
-> If this series is purely for backporting, this specific patch isn't needed,
-> right? Since this all works today with clang?
+> Add "Message Routing" and "INTx Mechanism Messages" macros to enable
+> a PCIe driver to send messages for INTx Interrupt Signaling.
+> 
+> The "Message Routing" is from Table 2-17, and the "INTx Mechanism
+> Messages" is from Table 2-18 on the PCI Express Base Specification,
+> Rev. 4.0 Version 1.0.
 
-That's true. However, temporary things often end up becoming permanent :/
+Please cite a newer spec revision, e.g., PCIe r6.0 or r6.1.
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Also, please cite section numbers instead of table numbers because the
+table numbers are hard to find (you can't navigate to them from
+"Contents") and they change a lot between spec revisions.  "INTx
+Mechanism Messages" is Table 2-21 in r6.0, but it's in sec 2.2.8.1 in
+both r4.0 and r6.0.
+
+> Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+> Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+
+With these updates:
+
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+
+> ---
+>  drivers/pci/pci.h | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index 2336a8d1edab2..fe42f5d10b010 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -22,6 +22,24 @@
+>   */
+>  #define PCIE_PME_TO_L2_TIMEOUT_US	10000
+>  
+> +/* Message Routing (r[2:0]) */
+
+Add citation to the comment: "PCIe r6.0, sec 2.2.8"
+
+> +#define PCI_MSG_TYPE_R_RC	0
+
+I think I would prefix all these with "PCIE" instead of "PCI", since
+they are specific to PCIe and we already use "PCIE" for some of the
+PCIe-specific timeouts.
+
+> +#define PCI_MSG_TYPE_R_ADDR	1
+> +#define PCI_MSG_TYPE_R_ID	2
+> +#define PCI_MSG_TYPE_R_BC	3
+> +#define PCI_MSG_TYPE_R_LOCAL	4
+> +#define PCI_MSG_TYPE_R_GATHER	5
+> +
+> +/* INTx Mechanism Messages */
+
+Add "PCIe r6.0, sec 2.2.8.1"
+
+> +#define PCI_MSG_CODE_ASSERT_INTA	0x20
+> +#define PCI_MSG_CODE_ASSERT_INTB	0x21
+> +#define PCI_MSG_CODE_ASSERT_INTC	0x22
+> +#define PCI_MSG_CODE_ASSERT_INTD	0x23
+> +#define PCI_MSG_CODE_DEASSERT_INTA	0x24
+> +#define PCI_MSG_CODE_DEASSERT_INTB	0x25
+> +#define PCI_MSG_CODE_DEASSERT_INTC	0x26
+> +#define PCI_MSG_CODE_DEASSERT_INTD	0x27
+> +
+>  extern const unsigned char pcie_link_speed[];
+>  extern bool pci_early_dump;
+>  
+> 
+> -- 
+> 2.34.1
+> 
 
