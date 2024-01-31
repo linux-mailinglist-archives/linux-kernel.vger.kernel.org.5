@@ -1,71 +1,55 @@
-Return-Path: <linux-kernel+bounces-47111-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47112-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF60C84497B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:09:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6316084497D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:12:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 83FCD1F29CD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:09:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 176D01F28545
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:12:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 410C3208C1;
-	Wed, 31 Jan 2024 21:09:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB38639846;
+	Wed, 31 Jan 2024 21:12:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k+UBbeYy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lx/fv15E"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7682638DE4;
-	Wed, 31 Jan 2024 21:09:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0581C37708;
+	Wed, 31 Jan 2024 21:12:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706735386; cv=none; b=t6XNK0XOWZGII+lUZgt7kQUpNxr/Vi+zB4dwcKociyiGzbT2BFCPh1HdoJtoz4eZKEOeHDwNmoRwCz1Jw5XI6ADX4+9p70wDoywnQ03rAMCFs2FBma5BVeyff1Kn2QUcydPgbdzx3vLgOGoJGSotGwaDGRVMc7PwErqoI3lWQbI=
+	t=1706735550; cv=none; b=lFIe7176yD/CrtDpoSFdyBtCqzyH3u2WTgcHAkYy+Q05jZIpELSMFSqo9LSjuwVkDzvbWHf26eV3vJvWOcE5BVRjuMYh8cafI3akrOs+j6BPnsVHeqH0/BPzu8FDc3dwXwY4wzPQjGXKmy8atuqqFiQXO0q6SWZYqWBt7s5DvOA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706735386; c=relaxed/simple;
-	bh=7bVKxwIoaeqCS0+5AkL8/ahDS4KgCUDPD8Zj2gZaMa4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=FRBJHJi2IJlWT/pYH6zsXe4ApkqtgGPYu+N4noHLf+fua5NHpJv8SSNx28bkKm1XeophnJPNiQhOexaaSl0cqyg9WMgu3myUUpjiLsNzl2SU/gtFHW1o7AGPuACMKum3+bMzg7RDSDy2FGVvtOnUyvBskhsoLjGNnvoaOoMJUP8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k+UBbeYy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C33A8C433F1;
-	Wed, 31 Jan 2024 21:09:45 +0000 (UTC)
+	s=arc-20240116; t=1706735550; c=relaxed/simple;
+	bh=TMAJw5trvrHSoQXuua0D6gjbFFkghENqCVXMflEDAhU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mdyyV4CJHN5PDa30xhey8MW9QD4IYdL24mTj7PAbyrwmv7SkpIhYlDgskvw8oC3pEBWXziZ6S8TtbXKwZ2fVc4mOmPn+J4yl3K1LWrLdUeoWgkXh5/t8k1Y3urvSC/RNp7/yvHFH8sQ3bTw0PmPbH2UaJH+zR49GpJ9REPupnHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lx/fv15E; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59E0DC433C7;
+	Wed, 31 Jan 2024 21:12:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706735386;
-	bh=7bVKxwIoaeqCS0+5AkL8/ahDS4KgCUDPD8Zj2gZaMa4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=k+UBbeYyHR6ZTwLYivg54Ff5rluVBj9+W52TMTxMWv/37OJmHdLH8E0a3etwswaNe
-	 QBzJEApL416/pZKTTY5O7WK3aabKPkVIFJpfnHG4F+AtpIskS9lRo4MBFdzxAQFpVf
-	 qHGelaGAq/uEGGiR7kP7S6In6IichuUBevuOA86fu3ZarPyYhV5nHRKRsDs9LT1j80
-	 Peg0cBwOnDz7/fR+rSx4qCb1A9neoAFbbaQ6e5Ou2ZfojnMsWB5th1OoxPlbiDM1E4
-	 M15ObeoyW0z7wnwWo0ppwen/sgbGdvUQ8HzCQezH83al+Fbn+D8VNUw7eof4vlM4Az
-	 IxoHjjAJYunqQ==
-Date: Wed, 31 Jan 2024 15:09:44 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Philipp Stanner <pstanner@redhat.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Arnd Bergmann <arnd@arndb.de>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Randy Dunlap <rdunlap@infradead.org>, NeilBrown <neilb@suse.de>,
-	John Sanpe <sanpeqf@gmail.com>,
-	Kent Overstreet <kent.overstreet@gmail.com>,
-	Niklas Schnelle <schnelle@linux.ibm.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Uladzislau Koshchanka <koshchanka@gmail.com>,
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-	David Gow <davidgow@google.com>, Kees Cook <keescook@chromium.org>,
-	Rae Moar <rmoar@google.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	"wuqiang.matt" <wuqiang.matt@bytedance.com>,
-	Yury Norov <yury.norov@gmail.com>, Jason Baron <jbaron@akamai.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Marco Elver <elver@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Ben Dooks <ben.dooks@codethink.co.uk>, dakr@redhat.com,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-arch@vger.kernel.org, stable@vger.kernel.org,
-	Arnd Bergmann <arnd@kernel.org>
-Subject: Re: [PATCH v6 1/4] lib/pci_iomap.c: fix cleanup bug in pci_iounmap()
-Message-ID: <20240131210944.GA599710@bhelgaas>
+	s=k20201202; t=1706735549;
+	bh=TMAJw5trvrHSoQXuua0D6gjbFFkghENqCVXMflEDAhU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lx/fv15EkNLoOVO7ba8/snGcJDux7+jNGgg1dU+axDvhrPNbIU5HvIQHv+hhExX8G
+	 8n02I3gIWcE1FP+BHUE/LnYHPQO6bPf3mgBgaB0KAsJh+cJ5UUdsXjPtHX3oNCR18G
+	 HUy+xE7QqpNPo5ZJ4oVYSWw8SS2BNRrRJk4ww50yrH6VPdVw7+I5JQrtQirLB+DiCp
+	 sXzGoF4skLPcCxycdTDqdHvnBKjMKkQ5wKK0Ft9HLtiCrA3uc9kzv/Cmy33JWkMEeP
+	 42LSppvDylTLBNhVdtvGGynKy8pAb3MVS+wTRynV/KXreTTwW1hTm++FyqRpLTq1un
+	 dKRywggBfQl1w==
+Date: Wed, 31 Jan 2024 15:12:27 -0600
+From: Rob Herring <robh@kernel.org>
+To: Dawei Li <dawei.li@shingroup.cn>
+Cc: frowand.list@gmail.com, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, set_pte_at@outlook.com
+Subject: Re: [PATCH 2/2] of: Implment cache update operation on device node
+ attach
+Message-ID: <20240131211227.GA2303754-robh@kernel.org>
+References: <20240130105236.3097126-1-dawei.li@shingroup.cn>
+ <20240130105236.3097126-3-dawei.li@shingroup.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,24 +58,62 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240131090023.12331-2-pstanner@redhat.com>
+In-Reply-To: <20240130105236.3097126-3-dawei.li@shingroup.cn>
 
-On Wed, Jan 31, 2024 at 10:00:20AM +0100, Philipp Stanner wrote:
-> The #ifdef for the ioport-ranges accidentally also guards iounmap(),
-> potentially compiling an empty function. This would cause the mapping to
-> be leaked.
+On Tue, Jan 30, 2024 at 06:52:36PM +0800, Dawei Li wrote:
+> Use implemented __of_phandle_update_cache to update phandle cache on
+> device node attachment.
 > 
-> Move the guard so that iounmap() will always be part of the function.
+> While at it, make explicit assertion on locking dependency for
+> __of_phandle_cache_inv_entry.
 
-I tweaked the subject and commit log to be more explicit about what
-the bug is.  Let me know if I got it wrong:
+'While at it' is a red flag for should be a separate commit.
 
-  pci_iounmap(): Fix MMIO mapping leak
-
-  The #ifdef ARCH_HAS_GENERIC_IOPORT_MAP accidentally also guards iounmap(),
-  which means MMIO mappings are leaked.
-
-  Move the guard so we call iounmap() for MMIO mappings.
-
-Bjorn
+> 
+> Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
+> ---
+>  drivers/of/base.c    | 6 ++++--
+>  drivers/of/dynamic.c | 2 ++
+>  2 files changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/of/base.c b/drivers/of/base.c
+> index 8b7da27835eb..44e542b566e1 100644
+> --- a/drivers/of/base.c
+> +++ b/drivers/of/base.c
+> @@ -153,6 +153,8 @@ void __of_phandle_cache_inv_entry(phandle handle)
+>  	u32 handle_hash;
+>  	struct device_node *np;
+>  
+> +	lockdep_assert_held(&devtree_lock);
+> +
+>  	if (!handle)
+>  		return;
+>  
+> @@ -195,8 +197,8 @@ void __init of_core_init(void)
+>  	}
+>  	for_each_of_allnodes(np) {
+>  		__of_attach_node_sysfs(np);
+> -		if (np->phandle && !phandle_cache[of_phandle_cache_hash(np->phandle)])
+> -			phandle_cache[of_phandle_cache_hash(np->phandle)] = np;
+> +
+> +		__of_phandle_update_cache(np, false);
+>  	}
+>  	mutex_unlock(&of_mutex);
+>  
+> diff --git a/drivers/of/dynamic.c b/drivers/of/dynamic.c
+> index 3bf27052832f..a68bf58f2c24 100644
+> --- a/drivers/of/dynamic.c
+> +++ b/drivers/of/dynamic.c
+> @@ -219,6 +219,8 @@ static void __of_attach_node(struct device_node *np)
+>  			np->phandle = 0;
+>  	}
+>  
+> +	__of_phandle_update_cache(np, true);
+> +
+>  	np->child = NULL;
+>  	np->sibling = np->parent->child;
+>  	np->parent->child = np;
+> -- 
+> 2.27.0
+> 
 
