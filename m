@@ -1,150 +1,197 @@
-Return-Path: <linux-kernel+bounces-46900-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46899-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 776F6844606
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:23:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD67F844604
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:23:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15FE31F2D1E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:23:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D12501C24F4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:23:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0F9E12DDA5;
-	Wed, 31 Jan 2024 17:23:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5017612CDBF;
+	Wed, 31 Jan 2024 17:23:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="pXwk3K/7"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GdAm8kY9"
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34BF912CDBE
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 17:23:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDA0512BF33;
+	Wed, 31 Jan 2024 17:23:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706721801; cv=none; b=LZaHjMkHcCArsevBBCyLpp0z3d7eC5NYL2ouuEkJO4QknxAfBjp4OBSmi5Y9bFbD0Ug7aSFa1gKt5BNQkdD3woYre8ow0D9fRj5CqdNE02WdTLHUNgOn2c7Xi6zcCcjNhn1IEkBDrfwcHGyObqBwKfZRl/46wBz9ToXkanwivh8=
+	t=1706721798; cv=none; b=aH09npHOz75V07Jz8NBqUYH1IfwQVb5q2FUWWJlKWvFRq4nh2MGDG/dTsPNHNTK/AeDQ6kIh5kn3YNC8XqTg+fkiyA+3FiSBCq/wvrdOuJX4mmTY8R5fXD2ybSP5EWDg7ka0wHmcP9hzjipTRm2bKmv8L8BaTxmgjIS4X0vb4DU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706721801; c=relaxed/simple;
-	bh=jg4i/dyF43h8qgH5FZhzIx6dU5C7yA20jsPgJAwXzcg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=dtqrrsuiwArLaeWJXfaZQ619x/YYheFGeIZOe5YYrnX6Lr9UbX/W9Wi0RcGj2mJibAAgJ60WTwaUleY8e6bpqhZ7S4kSGpQk4NunVR1iO0Y6iadC0MhcaegCCxhXElK6grjOhwXNSkUp0a/LHPJuQZ1Y9DNjgFOBfTMSaC0aF8E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=pXwk3K/7; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40VEA2lf021787;
-	Wed, 31 Jan 2024 17:23:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=OAK6AJ+Qp5umUhoDZecQwsbHlqutIZ1GzP5+lXa9h+8=; b=pX
-	wk3K/7qdkxnMF0dgBx3g08nAzWAcBNcLPPckhZPQIxbJfzsN99bSgU0HeD0A4yrA
-	PRpTOtEVORw1YiVy5UzcAcK1Sc5331fGpfeRYFKvgFTIkMJwCRGVITjiUO5L9PjS
-	HBndsFf+wyfKgZlg9hkwpmOBUHnajEOvEVv5OwkHWJk4pGevh5n7cPge4HdzHvsZ
-	csnQisNWF4OcCmhJOhtrcFLs9ifgxbW7iWKD86m7TSkPz0vN7dFDAKSng4b+/+a6
-	n/9mrzGXj7PuA4+N5SM3OmOBT+srCQmI03+IqQLToJn6XMihC3LUJUc9Vlzd1Bz7
-	VuhNenunQT8XyEQCgrZQ==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vyjas1844-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 31 Jan 2024 17:23:07 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40VHN79f022329
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 31 Jan 2024 17:23:07 GMT
-Received: from [10.216.17.229] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 31 Jan
- 2024 09:23:03 -0800
-Message-ID: <f085796d-df7e-03c9-a2b5-56cd6897a347@quicinc.com>
-Date: Wed, 31 Jan 2024 22:52:59 +0530
+	s=arc-20240116; t=1706721798; c=relaxed/simple;
+	bh=UD8alDMIQlpaZZWNT9SXOnDno797CsiHPwOuAnLgCOA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CuCnT8qSNyJTWh7dy39ijogeiHvR6yjQADfVQI6G7w2/MEr5ecc4iLC01fMkkpXclW75wvNC1ewFEmOVpztMe1FlvCvGrkAy5lI9zr1OsHsfXFa08q2DVLE4tqqBRSywmZBXfAUoS1lxiA1EFKM2hJ/t/sT8nh6gnl6pfL6S4As=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GdAm8kY9; arc=none smtp.client-ip=209.85.219.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-68c444f9272so89546d6.3;
+        Wed, 31 Jan 2024 09:23:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706721796; x=1707326596; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qKF9b5jRXHNEzHTqMQ0qJvRi4sqUsnU773XWw1XdDnk=;
+        b=GdAm8kY9sfDSmXI5SVGhDGvIsXFUw/6x8pOP7sX8aaECvdNuA2ywqvP5TKCk0O53vc
+         mSdn4qWxGqURcJ0wKcBWpqEsX/TSGsjUaB2U8riyG4uh7+TNzoVrSs4qt/636NcZgaIq
+         631hUNGCCO//PPQ+MW7wYeewqd7WfD4n8FKWAN2pQIH+1T27m29uPt5Pqpt9t7A9Ftug
+         bBPMez0+bnu74OVetxEiNsUnd98iJ3+Y+AVQYr3FLuli2J7ndB+zCQy1ASNocz25dvdR
+         jL4phcCYxBVm+zDS5kyUn5uQlR41L0uPTSDe8SBh/M9TWwAoi56NlPlWx6S3HtObDAm6
+         T1Vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706721796; x=1707326596;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qKF9b5jRXHNEzHTqMQ0qJvRi4sqUsnU773XWw1XdDnk=;
+        b=NSY0dRtniAQoUSELePEJlqQv41P3V/TafrqqmSj053dYad1bO2cLV7ssCCPqfNfNCv
+         eTdC6KArYr6zhvLcEnwEpH4rjtuRyn3hMn2J6E++COL8NHKbUf+lATQb1bGGQCgb/jZl
+         XFE7EkLZajhhf9voY4xA9ce6Q8jjEffOFZcY33PkMmxc8HDamCTggj7DIqGmEjo8Xl92
+         qGm3CZUWAiXtiVyMtTx94pWzi18P7uWhvi8P85ljkQioKXhx1jtYwpjNGXJTrYhY+STy
+         NVn93S/LoDnll5ofZfVfPi019kndvvvGX+bQ0cgqMTGgUoLCRy4Oy3CUvpvyzOL5v6M1
+         SgyQ==
+X-Gm-Message-State: AOJu0YyjafEttIis0nO6rTA7oBJVHV4vobLIhvaIdhNBuKDvEMHY/Yof
+	59hCf2BkkXcXdAwHkJIPOVPZrI2hoC3+02fOGH4K02xUX3PANXirJhtfjUyE1X/xbetYkB/iEjk
+	HMkvwZA2slgQXzVjiDnxWWAbWwFc=
+X-Google-Smtp-Source: AGHT+IFGzRvLypDQQEjuxmXgUE4sevR6zn+YkmLLpDLWOlGJnlhYKNxFYU5S4KD85zT0SYNvZrIll0zEBmKhE/kfAOU=
+X-Received: by 2002:a05:6214:21ec:b0:685:5dc8:ec9b with SMTP id
+ p12-20020a05621421ec00b006855dc8ec9bmr2114438qvj.25.1706721795889; Wed, 31
+ Jan 2024 09:23:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/2] devcoredump: Remove devcoredump device if failing
- device is gone
-Content-Language: en-US
-To: Johannes Berg <johannes@sipsolutions.net>,
-        Rodrigo Vivi
-	<rodrigo.vivi@intel.com>, <linux-kernel@vger.kernel.org>
-CC: Jose Souza <jose.souza@intel.com>,
-        Maarten Lankhorst
-	<maarten.lankhorst@linux.intel.com>,
-        Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-References: <20240126151121.1076079-1-rodrigo.vivi@intel.com>
- <d57dc34fa8b0e25cec014b8001dcd0527d1c1013.camel@sipsolutions.net>
-From: Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <d57dc34fa8b0e25cec014b8001dcd0527d1c1013.camel@sipsolutions.net>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: BjxZvj4JEA9y5WyZm35AnLFiE098fKpy
-X-Proofpoint-ORIG-GUID: BjxZvj4JEA9y5WyZm35AnLFiE098fKpy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-31_10,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- priorityscore=1501 lowpriorityscore=0 phishscore=0 mlxscore=0
- mlxlogscore=464 suspectscore=0 adultscore=0 bulkscore=0 impostorscore=0
- clxscore=1011 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401190000 definitions=main-2401310134
+References: <20240130214620.3155380-1-stefanb@linux.ibm.com>
+ <20240130214620.3155380-5-stefanb@linux.ibm.com> <38230b4c-54ae-45ed-a6fb-34e63501e5b1@linux.ibm.com>
+ <CAOQ4uxiYARZBSgzb4_W-RKvB1XLSF3GUBqeLw2kH+eVeZ_8ARQ@mail.gmail.com>
+ <c018b014-9ba8-4395-86dc-b61346ab20a8@linux.ibm.com> <CAOQ4uxi6Te8izWpXROthknRaXrVA9jho5nbc+mkuQDrcTLY44Q@mail.gmail.com>
+In-Reply-To: <CAOQ4uxi6Te8izWpXROthknRaXrVA9jho5nbc+mkuQDrcTLY44Q@mail.gmail.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Wed, 31 Jan 2024 19:23:03 +0200
+Message-ID: <CAOQ4uxigdNeE+2nfr4VxS9piQf5hez=ryT0a-jzW+tW0BT-zuw@mail.gmail.com>
+Subject: Re: [PATCH 4/5] evm: Use the real inode's metadata to calculate
+ metadata hash
+To: Stefan Berger <stefanb@linux.ibm.com>
+Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com, 
+	roberto.sassu@huawei.com, miklos@szeredi.hu
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Jan 31, 2024 at 5:54=E2=80=AFPM Amir Goldstein <amir73il@gmail.com>=
+ wrote:
+>
+> On Wed, Jan 31, 2024 at 4:40=E2=80=AFPM Stefan Berger <stefanb@linux.ibm.=
+com> wrote:
+> >
+> >
+> >
+> > On 1/31/24 08:16, Amir Goldstein wrote:
+> > > On Wed, Jan 31, 2024 at 4:11=E2=80=AFAM Stefan Berger <stefanb@linux.=
+ibm.com> wrote:
+> > >>
+> > >>
+> > >>
+> > >> On 1/30/24 16:46, Stefan Berger wrote:
+> > >>> Changes to the file attribute (mode bits, uid, gid) on the lower la=
+yer
+> > >>> are not take into account when d_backing_inode() is used when a fil=
+e is
+> > >>> accessed on the overlay layer and this file has not yet been copied=
+ up.
+> > >>> This is because d_backing_inode() does not return the real inode of=
+ the
+> > >>> lower layer but instead returns the backing inode which holds old f=
+ile
+> > >>> attributes. When the old file attributes are used for calculating t=
+he
+> > >>> metadata hash then the expected hash is calculated and the file the=
+n
+> > >>> mistakenly passes signature verification. Therefore, use d_real_ino=
+de()
+> > >>> which returns the inode of the lower layer for as long as the file =
+has
+> > >>> not been copied up and returns the upper layer's inode otherwise.
+> > >>>
+> > >>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> > >>> ---
+> > >>>    security/integrity/evm/evm_crypto.c | 2 +-
+> > >>>    1 file changed, 1 insertion(+), 1 deletion(-)
+> > >>>
+> > >>> diff --git a/security/integrity/evm/evm_crypto.c b/security/integri=
+ty/evm/evm_crypto.c
+> > >>> index b1ffd4cc0b44..2e48fe54e899 100644
+> > >>> --- a/security/integrity/evm/evm_crypto.c
+> > >>> +++ b/security/integrity/evm/evm_crypto.c
+> > >>> @@ -223,7 +223,7 @@ static int evm_calc_hmac_or_hash(struct dentry =
+*dentry,
+> > >>>                                 size_t req_xattr_value_len,
+> > >>>                                 uint8_t type, struct evm_digest *da=
+ta)
+> > >>>    {
+> > >>> -     struct inode *inode =3D d_backing_inode(dentry);
+> > >>> +     struct inode *inode =3D d_real_inode(dentry);
+> > >>>        struct xattr_list *xattr;
+> > >>>        struct shash_desc *desc;
+> > >>>        size_t xattr_size =3D 0;
+> > >>
+> > >> We need this patch when NOT activating CONFIG_OVERLAY_FS_METACOPY bu=
+t
+> > >> when setting CONFIG_OVERLAY_FS_METACOPY=3Dy it has to be reverted...=
+  I am
+> > >> not sure what the solution is.
+> > >
+> > > I think d_real_inode() does not work correctly for all its current us=
+ers for
+> > > a metacopy file.
+> > >
+> > > I think the solution is to change d_real_inode() to return the data i=
+node
+> > > and add another helper to get the metadata inode if needed.
+> > > I will post some patches for it.
+> >
+> > I thought that we may have to go through vfs_getattr() but even better
+> > if we don't because we don't have the file *file anywhere 'near'.
+> >
+> > >
+> > > However, I must say that I do not know if evm_calc_hmac_or_hash()
+> > > needs the lower data inode, the upper metadata inode or both.
+> >
+> > What it needs are data structures with mode bits, uid, and gid that sta=
+t
+> > in userspace would show.
+> >
+> >
+>
+> With or without metacopy enabled, an overlay inode st_uid st_gid st_mode
+> are always taken from the upper most inode which is what d_real_inode()
+> currently returns, so I do not understand what the problem is.
+>
 
+No, I was wrong. It is the other way around.
+d_real_inode() always returns the real data inode and you need the
+upper most real inode.
 
-On 1/29/2024 11:18 PM, Johannes Berg wrote:
-> On Fri, 2024-01-26 at 10:11 -0500, Rodrigo Vivi wrote:
->> Make dev_coredumpm a real device managed helper, that not only
->> frees the device after a scheduled delay (DEVCD_TIMEOUT), but
->> also when the failing/crashed device is gone.
->>
->> The module remove for the drivers using devcoredump are currently
->> broken if attempted between the crash and the DEVCD_TIMEOUT, since
->> the symbolic sysfs link won't be deleted.
-> 
-> Hmm, is it a problem to remove a whole dev when it still has some link
-> here? Maybe we could just make the link be managed/auto-removed?
-> 
-> Probably regardless of that you should change the comment in
-> devcd_dev_release() since it's no longer a concern?
-> 
->> On top of that, for PCI devices, the unbind of the device will
->> call the pci .remove void function, that cannot fail. At that
->> time, our device is pretty much gone, but the read and free
->> functions are alive trough the devcoredump device and they
->                        ^ through, I guess
-> 
->> can get some NULL dereferences or use after free.
-> 
-> Not sure I understand this part, how's this related to PCI's .remove?
-> 
->> So, if the failing-device is gone let's also request for the
->> devcoredump-device removal using the same mod_delayed_work
->> as when writing anything through data. The flush cannot be
->> used since it is synchronous and the devcd would be surely
->> gone right before the mutex_unlock on the next line.
-> 
-> Can we just decouple it instead and remove the symlink? Which is kind of
-> what the comment in devcd_dev_release() says but at the time I wasn't
-> aware of all the devm mechanics etc.
+You can try this:
 
-Are we going to do this ?
+ -     struct inode *inode =3D d_backing_inode(dentry);
++     struct inode *inode =3D d_inode(d_real(dentry, false));
 
--Mukesh
+With the changes in:
 
-> 
-> I'm thinking this might be annoying in certain recovery cases, e.g.
-> iwlwifi uses this but may sometimes unbind/rebind itself to recover from
-> certain errors, and that'd make the FW dumps disappear.
-> 
-> johannes
-> 
+https://github.com/amir73il/linux/commits/overlayfs-devel/
+
+Not thoroughly tested...
+
+Thanks,
+Amir.
 
