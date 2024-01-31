@@ -1,218 +1,293 @@
-Return-Path: <linux-kernel+bounces-45921-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45922-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1F818437DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:28:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 99FEC8437E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:28:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58506289A14
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:28:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5245C28BCDB
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:28:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34CA25DF1C;
-	Wed, 31 Jan 2024 07:23:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 730A95102A;
+	Wed, 31 Jan 2024 07:27:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="GTYhFukk"
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2058.outbound.protection.outlook.com [40.107.101.58])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wx40emW4"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 387CF5DF17;
-	Wed, 31 Jan 2024 07:23:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.58
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706685807; cv=fail; b=u8kY6vmziaYxedOHiOWX5s9/kpcS6h7/gDl4AEsMc5qXWvAdbRvrPFPxnALIRHwT84yZ1kx+8liHYdovuFgJfLpzAYt5llZpudSbj3bqOmmR4pBcZzbv0ZRpKXKixhcUvgIcovrsQDfTZ7wkC2C1Fb5zyijwm3627thg1Y7o8ak=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706685807; c=relaxed/simple;
-	bh=ePZYUxhjQwXMSrxI23vOjcoO9konj5cWE98gTj8GB64=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=o5USl7nCNCWBBjgCxRqEmWQ0s/9+QCswyHsDh0lQCzI0rmaUc90BefPR+F2NP4+D4YWIbmT/gBqZrL9TYyao1DIwtQ26nzuVwc/cuXo5Hno50G2BQxzAbB9UbAqhzCpV2T0odwf3dgpGiHmtLUqZbUXD17weva+OROXVnocpXyY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=GTYhFukk; arc=fail smtp.client-ip=40.107.101.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FivzFalnSgJFvddjgu+5SCVXmyYaOxZqtkxFVzsm7XpBu7As2gzPvxplPPXkOQIZoLmtrhN6TIjXwi4SoBqxwqENTL7K99eR0DzUUPTjotgdVVJ2QcrvXC7dNYRtSs9zBHuNnb8/39vtVstROA5Lx9ySSpF/fAPWVmH5rpP2pdHO9o3NpEzn/pB5qWzENLMd+gGIJ4xGZ5soEPqHe7gNP3wCv8uCd95CoJiukGBgbZtuNpHKTkmMxEAcDdalPjOeRyecjXQShvfab4JyE9Z8Qs7DlJjVKjZ1azJ/LC1DwKWW/LQRidRq2dCKwewerS4Jt37Iyw/zzhVIeSlSCR+adw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=j/HGS/ySax6AXEje74So19UMHCH2y6cgVR6IK/9Mxao=;
- b=oOhfaIt3RpuiwugdTxm/gqmEqLf+8fnGXt36HzgWEK6RwC7Ui0MUWzwyObphpdY8KnH5fFBOqj3nJpKcXV1vvlYRWU8PwdAcwscGqn/N4K6VLpvocLf05qgcinyOh7d+JtDBkRnok+ZMdIEC+3Ml8a0D5hOTpZkaDpGf6WismsX6+gdFDHwpSjxagaOpgz2fNBDppjZG0fKK0GpcsgU4YW0dIWbveQsAq3D6B3vHAlH9ldzeMhzQ2yOx3N4P9Qe8wHu8VuyTdUN1EUOmxswEOfe2vT9/dYRswaaAVwMtwNu2HyFEyP74jEmYACUsrpVrTdxvdBlp2sRn5Mq5my5aGA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=j/HGS/ySax6AXEje74So19UMHCH2y6cgVR6IK/9Mxao=;
- b=GTYhFukkPu9LOPNrArkqIgV6t77irfl5tkKTWzGRBLKL18DnKLABo1MH4JoSQVB/Hm8v5ISwdydqw7yqRLCqppcADW40yR9uiM9TDIey/FY8sMymcM7Dgx8KkUUROodbjXDZGZ6daF3+jyrKpUWxDKPb/U2xCKNs3iNLGrofTa4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BL1PR12MB5946.namprd12.prod.outlook.com (2603:10b6:208:399::8)
- by SJ1PR12MB6097.namprd12.prod.outlook.com (2603:10b6:a03:488::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.24; Wed, 31 Jan
- 2024 07:23:21 +0000
-Received: from BL1PR12MB5946.namprd12.prod.outlook.com
- ([fe80::1602:61fd:faf5:d6e2]) by BL1PR12MB5946.namprd12.prod.outlook.com
- ([fe80::1602:61fd:faf5:d6e2%5]) with mapi id 15.20.7228.029; Wed, 31 Jan 2024
- 07:23:20 +0000
-Message-ID: <279fc3e5-8470-4c46-ae42-7d345555a209@amd.com>
-Date: Wed, 31 Jan 2024 12:53:11 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 2/3] dt-bindings: net: cdns,macb: Add
- wol-arp-packet property
-Content-Language: en-GB
-To: Conor Dooley <conor@kernel.org>
-Cc: nicolas.ferre@microchip.com, claudiu.beznea@tuxon.dev,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, linux@armlinux.org.uk, netdev@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, git@amd.com
-References: <20240130104845.3995341-1-vineeth.karumanchi@amd.com>
- <20240130104845.3995341-3-vineeth.karumanchi@amd.com>
- <20240130-smartness-relish-d7f13adcb18d@spud>
-From: Vineeth Karumanchi <vineeth.karumanchi@amd.com>
-In-Reply-To: <20240130-smartness-relish-d7f13adcb18d@spud>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PN2PR01CA0208.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:e9::16) To BL1PR12MB5946.namprd12.prod.outlook.com
- (2603:10b6:208:399::8)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3502A63129
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 07:27:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706686036; cv=none; b=arw+AwRqPS/Pxhd3aOjaLOKngY+vMuwbQzoRb4A3pJx5Pr8YYHNipHKAj7hJh/alje9PLv6fnyVbYyA56EWTb5Fl0Kov0H6P6ASmqW3d4A74KKUAsSbkZHVqZuB9EjBlF1Wc+0eKXpJGfic3roLsGQW5E39PQM7+OMD5985WEUk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706686036; c=relaxed/simple;
+	bh=4r2VDZfFGwt2TTeImZzea4pC30mwij73r5f8doCrvkQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iLCmMmYMCCf4IY8/CWFPeJ3OTJLENq/X4DoH32k6+5jgSSZBicqPEkEu0taUh7uNRru6w3d99llYajugQp+fvWQBuTHsHn4UZpFLNEOJAgOxzvZXpEY475L3OGHiAlXXrFMA2UfuuDXVdcpG0aoe4NPk7u4UXO8Ctj1J5sGwW+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=wx40emW4; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a366ad7ad45so47730566b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 23:27:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706686032; x=1707290832; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pm3kKI1Sjq8pVVBtzibCw9/o9Mb+bK9ayp3QQ82I1U8=;
+        b=wx40emW4vi4tqU/IL29PK+86/gmoDKa9DtRfWouuOZDYrsK4qTa9OW6Ob4qj5ydQYx
+         YjIET8lIVwLAJvlKVsYw2scLwi0g8+aPw0hJFhh7zVhSFDITLg2ehlNWLWdYj08rk03e
+         CFxrYqG/ojG/Adxg2/YLHbEHJ2Q6/FcrumxevF/LYBedMadQ5Y6hIbOT3mxl7NSf0QHS
+         KGTXnAQWp157Tw8Jf6sUp8CRRP2UPh2UuesCKp3uDKDVlDoxIdCzataxjDJOP5fsiXjJ
+         P49vJKsO2y/Ld2Y9lBd55mWZSqGFURHwf4F2PebPok5h9PoB2ukayDnrnREV7ApL80uK
+         1m4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706686032; x=1707290832;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pm3kKI1Sjq8pVVBtzibCw9/o9Mb+bK9ayp3QQ82I1U8=;
+        b=pyiMqeL32cBsD25ApxoKw3BKlHKpg6bB1xN7kx2NzywwhixZxBXd0xuSBzgxYBFOnZ
+         aECkOgqn1PQ0SYlFZuq5TM6oCNFl9b3/1mBPWtoxtWO0K8GOZgZ/bsKttAStoSR+PuRp
+         xhLmqatfiX3Rpj0h4hRjq3S0Oo7uCqWsdh6QQiT3LDQQVcUGeeXixZvTq4QzO/8FV6rm
+         hNg4nPlcHR9h6pRaDsMh71gnegT5HCM7KthxCKzezsisIk2nWvGeyEVij3Mk4KxoKoXS
+         sWDzhapunja9gJ55LiPqNarN6EqKvHjDqEUySl8e//MuqHDe0QgsDSVD8TqovrplVab9
+         7zSw==
+X-Gm-Message-State: AOJu0YxKkNld0LvRNFOqWB57aiW07qQ6FGWV8gGBfB27zlQrVBuUN2g/
+	ADp3us3yn5aSokEm8olv2iwFPDTQsNF7uj/n4aOeK8x7Fa94kZpMWh8WVrNebQ60hI2idKdloCZ
+	F
+X-Google-Smtp-Source: AGHT+IGSELlGwD4uzQI2Obj7qkrsxkWcraACyjqhqU1mMJRiBIIw4eJXerIK15q8EYD705R2qH4I3g==
+X-Received: by 2002:a17:906:d88:b0:a35:46d8:53ce with SMTP id m8-20020a1709060d8800b00a3546d853cemr513492eji.18.1706686032324;
+        Tue, 30 Jan 2024 23:27:12 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWIlXK0nQwSTdsliIRtBAJpdPGANTG3I2zYOH821Bh+E8njShjnP/O1jltbcAnzEBY8BZULQnhOIf2wD5U43mSSHGDl+glDsxKGQM8ZZWUGqcbWoWrZEKyXIHxjULLCQL32KyouYvPkHfZ6g1ZQU5FUSdQO+XTquDqKHvcfQMSOFrgmShYKphyN73NmzV2H8j+UrkMopHgQ5ok0iqj4y/fcWlSLW5kRJmfcGZkzyaxm0lOZiLO57BxQyXukMLxhtdsxQtiUmWIJM6E8OZmCG/r3cM2CBUEG/n2NEOobSqDzGHipISnF0+8IRagjpsOUAar7putgvlYuLhExP54OyImjXvPnc9Yq5SPYxJrW1fnKAYWQy/kTpJKdhwK2bYexp/kSB5aee8KbEX/sMF56J9P5PtBecbLJgsWAFZSGcYoKY4U=
+Received: from [192.168.1.20] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id un9-20020a170907cb8900b00a3682ad6354sm143169ejc.41.2024.01.30.23.27.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jan 2024 23:27:11 -0800 (PST)
+Message-ID: <b25ad717-8dc7-47ba-89c7-48ac5ea2ff95@linaro.org>
+Date: Wed, 31 Jan 2024 08:27:10 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5946:EE_|SJ1PR12MB6097:EE_
-X-MS-Office365-Filtering-Correlation-Id: b617cdf8-8d16-465e-ba69-08dc222d8089
-X-LD-Processed: 3dd8961f-e488-4e60-8e11-a82d994e183d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	Cnf/s3AFizDQyS5O2U8MdpDjblpZTjuE2eWpw+Z93vt0I0NdzOqXtANFRFjsUdSEgVCbzNLrbE0zuCQlt/qxc19YwtIt/1LCceyfQXruTygnql80GE83D5d9ZNbTRs0tqY2mruNK01ZMPf2ATB3ZbLcxyHrv3630YcDPIxhE9d/UJRnbf5VTH+jLq8s32Q/CUXK+FxMuvgYSWRtpkm0TBHCiKVdnlyFjrpIOtKfELaaxqrzhDBeFQ+SIu6ayQNSwBCYKcyKJz1dwjnPTix3uTbSoxBjKDjN4iHIo4dORtmfChLle+7xvR7KWkMMYDjGQhNo3khOgaBkEyuko+q1ibRHWqezHV8WZhsCtv1B+L5d/jfSJif5V2B002MuXmNbd9zyIncvBwvDkE+t7DxPb6nzy7gXSffIeSpvn9WuYFnzTuMaWDE0ongthXFwRCdE6Bth5Rzgasio/QrU70oEpNxGbYZG9+wwEk6/tqlC7Wfzcx94VWp5jwlR5YphKt47ROSalIR5aR1lDaUzKav+B49WDLOdnKTb3zI0j35YLSgXbVWeY0nNolupvM/jhVpFxxqGCrC89arA81aAuDq9pF3BAQ+Z/iDlVJx5P9CyPA3eKcHP0fefd6JcMGxXedTjKe7sIuytBvbxSGNzcADwDhw==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5946.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(136003)(346002)(366004)(376002)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(41300700001)(66946007)(4326008)(8676002)(8936002)(44832011)(2906002)(7416002)(5660300002)(31696002)(86362001)(66556008)(66476007)(316002)(36756003)(6916009)(38100700002)(53546011)(6506007)(6512007)(478600001)(6486002)(6666004)(83380400001)(26005)(2616005)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?TXdqekNPSFNYbUlQZlNXM3ZnQzI1U2NxSkRJcHh0MjU1M1E2ZWowUHphWkJa?=
- =?utf-8?B?bHhHU3JWVHF3MG9sZ2o3TjJYdHVvdGI2OXhqY29GQnUzZ1VncU56SjhYOEpP?=
- =?utf-8?B?clIvY0FWSXh1WEJRYnU1cmtRSHM2czI2Q3AzOEZmTkJHbXd5SjFDOG5ja3k3?=
- =?utf-8?B?VnVhMlVDVkZXOEtnNFRxM3MrdTJXb3BvMUFYSkZTSWlZRmRSSUhaL2hWbmph?=
- =?utf-8?B?dnlraEMxRHdrVE1SZGRFQnhMYm9Mb0hySm1ZMjN6WldGWmJ0T2ZkMDM2T2Rv?=
- =?utf-8?B?MzBVLzNpSFZGaWtRbjBqOVE3ZDdxTHBZeTZDMkIzSFpEeHdrdFlhY1F6Um9N?=
- =?utf-8?B?Q0tON2N5a1pBMzByRVpFWEtmMVBreE5FVDgwT2dwZHp3TXhBTFo1b3BORGov?=
- =?utf-8?B?b0MrQ2hWNytBcHBIdnB2SVBEM09mZktIbE1URU0zNVhRVUI5RVZpejkxeits?=
- =?utf-8?B?VTRBRndyNHVNWEJKbUZZS1N1MTNJL0R3QlNNWDJsVWh1QktZM2xoUldlamZO?=
- =?utf-8?B?V1A2YWl5WEs0UjVJSVdOeUJIS0Y4TEtaQ0tWZEQ1WVVEOThFVVhoNGsrckl3?=
- =?utf-8?B?MU1ER2ZUNXZKS250cFdka2N5Qkx5QjNmejQ2K1l1bzVJQzJJL0tVekpVZm9h?=
- =?utf-8?B?MlBOcXNHZW15b1JqWk1IamJWaWplM1Vkb1lybW1GWjBIdFBoNWJaSDdtQnN3?=
- =?utf-8?B?OVJvMTVxYlVkd1ZMVWFHQ3NZR3RhbFprZE9QbldJVTlMSlQyditoTWh0UldX?=
- =?utf-8?B?eElFU3BXZlhQSmtOcDJkY0NnRjVaSUdURmMzcGU4bGpvNG94NFJYanY2c3F5?=
- =?utf-8?B?YUwycTJNMWVrbWhRVWdEaWN2OEY3WXlwN0p3MzQveFErMTREa1N2Z05BR0lh?=
- =?utf-8?B?NTFNMFAzSkFuYXdsNlVhVVN4NmdHNFJMRnhzUTJWQ2pPUS8yUW1MbDZEZXJz?=
- =?utf-8?B?Q3ZoRkM1cFc4bnhiOEZ3dEF4clArWUt3Y1RTaWpUK3RCeVMrdElWaXM4dFZk?=
- =?utf-8?B?TjZ6cHNPbWxFNm1RYVdXWUR5YURQbGxMTVh3ZXR4ZzJXckFFL2l4MHRXMWEv?=
- =?utf-8?B?OFVDSlQ4NERsUXgzdG9lRHJOaWJLTmxVRzBkeWoweFhDd0MzVDV3UVMyWGdh?=
- =?utf-8?B?UGlnaUxPQk5PaUZJRjFwVEQ0SFRwbEF2WHdIa1NjWmVERXpieURtYkIrU2JN?=
- =?utf-8?B?UUZaOW1ZeGd2Yk1sam5mK0k0Sm8xeGpNbkFKcVRQQlF6d09BZ1Q2em1KNjJr?=
- =?utf-8?B?TnIxNGo1cjhNWXpUK0ZOWkJPdHhqQ1M5NXFqMENOVm9VQVVWTmd6Y2ZQbSs1?=
- =?utf-8?B?dHJzeGJCMkxmaE1kdGwwbG9vOTZvNVR2T3RIdWU2Rk9hUUhLY1FadGhYTExq?=
- =?utf-8?B?c0hOTzVlN0RLcUVzbDk1cFVUK3d3SStjak01SFNMT2JDOUJRTUw0RGdVOGdq?=
- =?utf-8?B?ZzhhT1F1QWZrYndzRFhLelJEV0Z0VUI5UXp6M2ZuYmhiWHFRMWZrV1Z6akFD?=
- =?utf-8?B?M0h2TWk3QXhPdDRXTkhVR0IwSFFoa2xUa21aRW9veUQ2MlljemNFRSs3c3c1?=
- =?utf-8?B?TnFMMUxoR05iN1JPUFFLemFKMk1TZ0VLQmxzZm4vS2RuK0tveFYrMklUUzJF?=
- =?utf-8?B?TnkvNkduK0xvaUtWbjJkcUpYYWx5WUF0RksrbUcrdUw2OStueVNFVHJWRVgw?=
- =?utf-8?B?RzJ3TDJxT3gwTTRKUzhpbGVIYUdsRVNRaExpbUp2WGFUOHlIcFdOTE9BU0RH?=
- =?utf-8?B?SkhDdlNWTWF3NlE3bzBValNjVy9BSXAwUTZNNkhkeDBOOGZXc1BoSlhFcVlP?=
- =?utf-8?B?NytwWkpFMUpmcU1XeVo0VUhJbVpiTE4rVkZYRG1KeG5OVmE2UTd2dzQwYnZ0?=
- =?utf-8?B?Z2pub3UzTFVBcmFadHRtR0EybHRNVDlUREJIc1E4TWpEbzVIdXdJOW41M1dp?=
- =?utf-8?B?d1BFcnowdVhKVEtseXAyVXdsK2FMbkc4cXpTclFDN2hKMzN4WVpEOGdYNDhR?=
- =?utf-8?B?Z2FINS9pWDdSbTNsL294UHdPTnc2Z2F5RWVraFArcEdTbTJtOTdtZ3p4NWtQ?=
- =?utf-8?B?TDJzMms0aE5la2U0Mm5qV3JmaG1WRFZUSnhLTXRPVVVqZ2duUDNTNkxnZGZo?=
- =?utf-8?Q?llRkcnx9+ouc3Z/EG4oinOR5l?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b617cdf8-8d16-465e-ba69-08dc222d8089
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5946.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jan 2024 07:23:20.7874
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YOmSF5dRah2ol3x2Pl0ZvyTh8lKQHfLb7hqnXWRHHecpkJviA/kpHbTiWs+viFG/
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6097
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] perf/hx_arm_ni: Support uncore ARM NI-700 PMU
+Content-Language: en-US
+To: =?UTF-8?B?WWFuZyBKaWFsb25nIOadqOS9s+m+mQ==?= <jialong.yang@shingroup.cn>,
+ Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: shenghui.qu@shingroup.cn, ke.zhao@shingroup.cn, zhijie.ren@shingroup.cn,
+ Rob Herring <robh@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240130081745.13750-1-jialong.yang@shingroup.cn>
+ <40fe84af-1208-4aa4-b97a-368787a2c443@linaro.org>
+ <279DAED08550A69A+3d025259-f011-4312-946d-6f7564a12898@shingroup.cn>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <279DAED08550A69A+3d025259-f011-4312-946d-6f7564a12898@shingroup.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Conor,
-
-On 30/01/24 11:00 pm, Conor Dooley wrote:
-> On Tue, Jan 30, 2024 at 04:18:44PM +0530, Vineeth Karumanchi wrote:
->> "wol-arp-packet" property enables WOL with ARP packet.
->> It is an extension to "magic-packet for WOL.
+On 31/01/2024 03:57, Yang Jialong 杨佳龙 wrote:
 > 
-> If it is an extension to "magic-packet" why does it not depend on
-> "magic-packet"? Are there systems that would only support the magic arp
-> packet but a regular magic packet?
 > 
+> 在 2024/1/30 16:43, Krzysztof Kozlowski 写道:
+>> On 30/01/2024 09:17, JiaLong.Yang wrote:
+>>> This code is based on uncore PMUs arm_smmuv3_pmu and arm-cmn.
+>>> One ni-700 can have many clock domains. Each of them has only one PMU.
+>>> Here one PMU corresponds to one 'struct ni_pmu' instance.
+>>> PMU name will be ni_pmu_N_M, which N means different NI-700s and M means
+>>> different PMU in one NI-700. If only one NI-700 found in NI-700, name will
+>>> be ni_pmu_N.
+>>> Node interface event name will be xxni_N_eventname, such as asni_0_rdreq_any.
+>>> There are many kinds of type of nodes in one clock domain. Also means that
+>>> there are many kinds of that in one PMU. So we distinguish them by xxni string.
+>>> Besides, maybe there are many nodes have same type. So we have number N in
+>>> event name.
+>>> By ni_pmu_0_0/asni_0_rdreq_any/, we can pinpoint accurate bus traffic.
+>>> Example1: perf stat -a -e ni_pmu_0_0/asni_0_rdreq_any/,ni_pmu_0_0/cycles/
+>>> EXample2: perf stat -a -e ni_pmu_0_0/asni,id=0,event=0x0/
+>>>
+>>> Signed-off-by: JiaLong.Yang <jialong.yang@shingroup.cn>
+>>> ---
+>>> If I should send Doc*/bindings/perf/*.yaml seperately?
+>>
+>> Checkpatch tells you that, doesn't it?
+> OK. I will send it seperately.
+>>
+>> Please run scripts/checkpatch.pl and fix reported warnings. Some
+>> warnings can be ignored, but the code here looks like it needs a fix.
+>> Feel free to get in touch if the warning is not clear.
+> OK.
+>>
+>>>
+>>>   .../bindings/perf/hx,c2000-arm-ni.yaml        |   58 +
+>>>   .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
+>>>   MAINTAINERS                                   |    6 +
+>>>   drivers/perf/Kconfig                          |   10 +
+>>>   drivers/perf/Makefile                         |    1 +
+>>>   drivers/perf/hx_arm_ni.c                      | 1308 +++++++++++++++++
+>>>   6 files changed, 1385 insertions(+)
+>>>   create mode 100644 Documentation/devicetree/bindings/perf/hx,c2000-arm-ni.yaml
+>>>   create mode 100644 drivers/perf/hx_arm_ni.c
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/perf/hx,c2000-arm-ni.yaml b/Documentation/devicetree/bindings/perf/hx,c2000-arm-ni.yaml
+>>> new file mode 100644
+>>> index 000000000000..1b145ecbfa83
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/perf/hx,c2000-arm-ni.yaml
+>>> @@ -0,0 +1,58 @@
+>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>> +%YAML 1.2
+>>> +---
+>>> +$id: http://devicetree.org/schemas/perf/hx,c2000-arm-ni.yaml#
+>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>> +
+>>> +title: HX-C2000 NI (Network-on_chip Interconnect) Performance Monitors
+>>> +
+>>> +maintainers:
+>>> +  - Jialong Yang <jialong.yang@shingroup.cn>
+>>> +
+>>> +properties:
+>>> +  compatible:
+>>> +    enum:
+>>> +      - hx,c2000-arm-ni
+>>> +
+>>> +  reg:
+>>> +    items:
+>>> +      - description: Physical address of the base (PERIPHBASE) and
+>>> +          size of the whole NI configuration address space.
+>>> +
+>>> +  interrupts:
+>>> +    minItems: 1
+>>
+>> Why?
+> According to hw, one PMU has one interrupt line. So one NI maybe has 
+> more than one. But actually it depends on hw implementation.
+> And in C code, I will return error when there is no interrupt.
 
-The IP version on ZU+ and Versal supports the below combinations for WOL 
-event:
+Different HW implementation would have different compatible, which is
+not the case here. Your binding says there is only one implementation,
+so how the same implementation can have different number of interrupts?
 
-1. Magic packet (Wake-on magic packet only)
-2. ARP (Wake-on ARP packet only)
-3. Magic packet or ARP (Wake-on magic or ARP packets)
-
-The existing DT binding already has one entry for
-wol via magic packet. We are adding ARP packet support to the existing 
-implementation.
-
-I will change the commit message in v2.
+No, that does not look right.
 
 >>
->> Signed-off-by: Vineeth Karumanchi <vineeth.karumanchi@amd.com>
->> ---
->> 7c4a1d0cfdc1 net: macb: make magic-packet property generic
->> which added magic-property support and wol-arp-packet addition
->> is similar extension.
->> ---
->>   Documentation/devicetree/bindings/net/cdns,macb.yaml | 5 +++++
->>   1 file changed, 5 insertions(+)
+>>> +    items:
+>>> +      - description: Overflow interrupt for clock domain 0
+>>> +      - description: Overflow interrupt for clock domain 1
+>>> +      - description: Overflow interrupt for clock domain 2
+>>> +    description: Generally, one interrupt line for one PMU. But this also
+>>> +      support one interrupt line for a NI if merged.
+>>> +
+>>> +required:
+>>> +  - compatible
+>>> +  - reg
+>>> +  - interrupts
+>>> +
+>>> +if:
+>>> +  properties:
+>>> +    compatible:
+>>> +      contains:
+>>> +        const: hx,c2000-arm-ni
 >>
->> diff --git a/Documentation/devicetree/bindings/net/cdns,macb.yaml b/Documentation/devicetree/bindings/net/cdns,macb.yaml
->> index bf8894a0257e..4bea177e85bc 100644
->> --- a/Documentation/devicetree/bindings/net/cdns,macb.yaml
->> +++ b/Documentation/devicetree/bindings/net/cdns,macb.yaml
->> @@ -144,6 +144,11 @@ patternProperties:
->>           description:
->>             Indicates that the hardware supports waking up via magic packet.
->>   
->> +      wol-arp-packet:
+>> Drop entire if. What is the point of it?
+> This attribute is used to identify different NI in my company's product.
+> But even if I don't give this attribute, nothing will be wrong in code.
+
+What is the attribute? I don't understand.
+
+> However if I do that, I will couldn't know the relation between sysfs 
+> file and hardware NI.
+
+sysfs does not matter for the bindings.
+
 > 
-> Bikeshedding perhaps, but why not call it "magic-arp-packet" if it has
-> the same function as the other property here?
-> 
+> I will drop it. It will be as a normal way to identify NIs manually.
+> If there is only one NI and not give pccs-id, no thing wrong will happen.
 
-Magic packet and ARP packets are two different wol events.
-IP supports configuring in the above-mentioned ways.
-Hence, I think it would be good to not mix with magic packet.
+Your if just does not make sense. It's no-op.
 
-Please let me know your suggestions/comments.
-
-Thanks,
-Vineeth 🙏
-
-> Thanks,
-> Conor.
-> 
->> +        type: boolean
->> +        description:
->> +          Indicates that the hardware supports waking up via ARP packet.
->> +
->>       unevaluatedProperties: false
->>   
->>   required:
->> -- 
->> 2.34.1
 >>
+>>> +then:
+>>> +  required:
+>>> +    - pccs-id
+
+No, move it to required properties.
+
+..
+
+>>> +static int ni_pmu_probe(struct platform_device *pdev)
+>>> +{
+>>> +	int ret, cd_num, idx, irq_num, irq_idx;
+>>> +	void __iomem *periphbase;
+>>> +	struct global_ni *ni;
+>>> +	struct device *dev = &pdev->dev;
+>>> +	char *name;
+>>> +	static int id;
+>>> +	struct ni_pmu *ni_pmu;
+>>> +
+>>> +	BUILD_BUG_ON(sizeof(long) == 4);
+>>
+>> I am sorry, but what?
+> I only want to ensure 64 bit environment. Maybe there are many other way.
+> I will ensure that in Kconfig.
+
+Kconfig, but then NAK. Your code must be buildable everywhere. This is
+not 1990-ties.
+
+
+Best regards,
+Krzysztof
+
 
