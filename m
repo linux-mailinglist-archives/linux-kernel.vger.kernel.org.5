@@ -1,98 +1,100 @@
-Return-Path: <linux-kernel+bounces-46133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58078843B0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:27:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91899843B11
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:27:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E571286392
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:27:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D50728A04E
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:27:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A33D5664B1;
-	Wed, 31 Jan 2024 09:27:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8880C67E86;
+	Wed, 31 Jan 2024 09:27:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="T+igxPIZ"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uycmpNzn"
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 350E669940
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:27:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4006B67A1A
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:27:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706693239; cv=none; b=BbKQpw01VDpo3wo07fJ5WZShsdEybMztPobRf/lUCi4pHqA8Q5QAMOQ5gLjxZiESu+6An8hnAqeVtPaOvIM7q4d5e7lg5J7+oxMlmbnTQXMghxgyBmO0/jbJZLppz0DB1z0o15fO6JkNMyWH65JXYAhqZXaAVsWl6Y6cPadlgNw=
+	t=1706693248; cv=none; b=AzC2aowqiKSpREjecIhJtcaTZkhYI9nbmgqQoKZgKBHRI7ofVNyIn5057wTC0FwkmOVxYrdNlbtTwkPra7mpWCQHkQDxmARxETEQVIL90+79IB9o3Y438DnNDvBIC12VXm2arRH1FH7yUfH+odH4OYGHpQUlbAox4j7Ae97BU4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706693239; c=relaxed/simple;
-	bh=Y8OInFyezrqdukb/GwASp6AxHMdhZSdbYSe2C0Yjdp4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BNlsdOjD2aJfeHtu0j3sNHqJdSm0+CeC8UzZkVRpqEWo7VIII3Er8r8Mp95HHVuC/eD2oHhAs7jYXI6j5M52eYe2VID6TbyfqgbhJrVX8NyB8+WZmlzKR6vjbJZn3wfxhnCG9x2kU3JPULCQdctCpF50i0QyvyBeQpQlcOsUy1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=T+igxPIZ; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40fb3e278adso3920365e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 01:27:16 -0800 (PST)
+	s=arc-20240116; t=1706693248; c=relaxed/simple;
+	bh=APPt4cZOWHp9Y5aLfOX9xR+zR3jzLxc+ja46scvsMIA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MkFWuH9rERZ9pTLfOl1vAfD+sRlg7oIFKfAYXEXxDfGfxzpS4Wlk+BsGq4pNmNBtiO2S6P3sOs8pQOfl8/RlZZbUCejdUj5vvTtjVM1Q58EXCtslcsrAp5wgc5wmnMSmagzutOz47tVqmXwNvrPoboUk7HYGMJVyrpEmAb/kPQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uycmpNzn; arc=none smtp.client-ip=209.85.128.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-60412866c36so1018367b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 01:27:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1706693235; x=1707298035; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y8OInFyezrqdukb/GwASp6AxHMdhZSdbYSe2C0Yjdp4=;
-        b=T+igxPIZCS+2/RSlqXuMACcm/EWkQnd56pzdIEKrrx/su2bTu8YVLHcFcb27DE662G
-         jbxjMfoPJBe79SUkG0NzOaTgibUPI8q0Pq/R7fBV9ki0t5tUrO2czGrdfxv1X8J3n7Iq
-         X2an1NzrQi7Dve/VBQ6GNQTccNyIRW/PJOnRGVmllj419AlZyR5JJutQUmeSVywx8tsW
-         pm/I40AX7PexAJsHyOHIWd8StZ2kWl0YP6LQOBXZ2ppiihjFesyvGacYyXURVS8tQwqT
-         zpcEZI/O6MCZkQPKFciWIqaD0eDu38pC5BFe0ED7LUc1HaLvHFXDhiMYgxLWeAOlrYOZ
-         h3Ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706693235; x=1707298035;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1706693246; x=1707298046; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Y8OInFyezrqdukb/GwASp6AxHMdhZSdbYSe2C0Yjdp4=;
-        b=gNHhrAWbWKJ9WzI2KbgtyFIiL7fGwbdJe2AbO3Qj++sLitIGnqhTmdNoz6EboKL1i+
-         Pey3SpZInvbegru09YjVO8YhaWJqxV+QBT6sk6BEZUFk8IsQQAttgm1//OnvXCKgMeQ4
-         X1dwExuOBjd8hwcvZixs5db44V2JmgPTORTDEOAFQr2li/fqgStcP8F1OhVpL0eiIplh
-         HohKosipDIms0oU1HS1pAPbQJzA+jkC+sPDiGcCzm/efXMrPvWgzPMysO+naz6w9jsH5
-         JjsviMuhuqGgIfYoGX9E8HkXnTYvONb/pyVHi38LWE06Z3Fyxf3dt5gqLihOHqwjT1Nd
-         3gAw==
-X-Gm-Message-State: AOJu0Yxx0aj6UbZJoV6onHCQs//LQXfbmlGAVZZn7REd+Nl+0zppl69d
-	EheLo4oEWKRelZPQKG0e0eiqpOYNyj9/lb0zoEWJXbmm//qWjarkFQfigUHSaEM=
-X-Google-Smtp-Source: AGHT+IFEk3sXmo/8nD37OajxhjHLoj3FvLxRBfdiUIX11PVK7l6akHuoOCda1RllApfdmRYPKnPpQA==
-X-Received: by 2002:a05:600c:3b96:b0:40e:b17d:2f56 with SMTP id n22-20020a05600c3b9600b0040eb17d2f56mr726511wms.23.1706693235314;
-        Wed, 31 Jan 2024 01:27:15 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCU3tVoRf/Ilhag6NTF8xmvYPAjW7Ho+rPuOSGXzo2RiQEFRuGtN0xOmS+da8+LcJrxmdn5MKjeVtUW+ZnS+VLMbG3ZfPhW3u3Vu5L0BY0XM0aFTV7d0ySdY8fJ9TLTBlUpUmpPBCHhZOGL2Fc9eJuHE0ZolsRPLsT7e3HYJRzsgTBbUhpo1wUoKHLSgOqabOybMBJ6UVHYoquBpUlz0XBX3p4u0ZTPhgHGY9+1jO+DyTvn6KXFbv+W6yLabqTmTXTu9VoUcA2+6492GlezZpHV3yPQNwYqR1GvQWH5eL0bE75HEA6k5WtrE+bSB9R2XkIq2
-Received: from localhost ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id bh23-20020a05600c3d1700b0040d5a9d6b68sm1018522wmb.6.2024.01.31.01.27.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 01:27:14 -0800 (PST)
-Date: Wed, 31 Jan 2024 10:27:12 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: Kunwu Chan <chentao@kylinos.cn>
-Cc: roopa@nvidia.com, razor@blackwall.org, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	bridge@lists.linux.dev, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] net: bridge: Use KMEM_CACHE instead of
- kmem_cache_create
-Message-ID: <ZboScAVsNwqwiLIg@nanopsycho>
-References: <20240130092536.73623-1-chentao@kylinos.cn>
+        bh=APPt4cZOWHp9Y5aLfOX9xR+zR3jzLxc+ja46scvsMIA=;
+        b=uycmpNznwNANfNR7j+Jluv0aWbpp+HyPj6OxDUGOqLA485zik22yREAY3eqPcuv+/g
+         KT2X+JI+MneGBnbV36oF9n/wHyAtwx3W9rBisB08YGc2vaN5h0vTCjlHJbduYym5rYCv
+         wEhCgpK1q2aaYCyD9S6uDk8tx3YDhOX7mh9klj1X2LUn8E8WuxYqXqDJ+ascM4/wQ9yN
+         zmtiXccyNKV6O8beCSYDdPhf8XHeAaSHsfcD/Hh3dqZZJ8noDObbR6/P1M3pNw0tAmxw
+         70OSQNO8NZAeZS6vCfJfntj7gja6hrir1rXG8sR/Q20EdUr17IHIH0CsiaCcI8ddky8F
+         yljA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706693246; x=1707298046;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=APPt4cZOWHp9Y5aLfOX9xR+zR3jzLxc+ja46scvsMIA=;
+        b=hXOm/gosHwPsXVTjpfAVxDbW7qmSPhfaR7+WPJmaIxKSbx/TBBG2Nx+ed7P/5WksOu
+         rUPHGe0AzcRqv1oMpFjFbfZSl31Dk1Eh3v/3AyXthW9tFbhd4gTOraiksWIjNvHMiGAF
+         M5N5dsaCGUJuk2qrClu7wcZ3uuwAcIRjRLWm2pEXV1OdcHI9li9yM3ei5LO/YvMd46to
+         N5/kaPFIX2G/yQJVrV/CkyjfIyS29+JgN+SYWx+rFjZCmvP+IOD1VlFTQXyFEk99w54s
+         bmnl6Dm4Ty+vScs13gqsp6HlJGlYnpwxmJ5i73FYcPw0QYoPM6AaFJI6y7rvGM2nyrGp
+         +seA==
+X-Gm-Message-State: AOJu0Yw9YwV/Vuwj6R+wDtzAN/lnhePUpOpByJczHAFbT3vRdqNuJUgB
+	glVqXrt9aWFIYKzzi47xiELqzBOIP5N40mLo8X80mcrtkeWj8ZA9cUjAnVmu7YooUih8K7/NPi7
+	nASI3bdpa2KjzsVkgtp8u7xJqpYbeTK262mS22A==
+X-Google-Smtp-Source: AGHT+IFwfB+XrMm9vx8s1WntuQFjb6GV4ib5qrAhefKc2Um6vqKn5XC9kjvOepHk5CusYf5ABhGj8I6RUX+zGhFG4zg=
+X-Received: by 2002:a0d:e60a:0:b0:5ef:f83d:ab23 with SMTP id
+ p10-20020a0de60a000000b005eff83dab23mr967120ywe.5.1706693246182; Wed, 31 Jan
+ 2024 01:27:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240130092536.73623-1-chentao@kylinos.cn>
+References: <20240130073710.10110-1-arturas.moskvinas@gmail.com>
+In-Reply-To: <20240130073710.10110-1-arturas.moskvinas@gmail.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 31 Jan 2024 10:27:15 +0100
+Message-ID: <CACRpkdaxn6d2BuvKpBF3+9PWxZ2Ur-sdFoxvYRx7cwk-dJeKLA@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: mcp23s08: Check only GPIOs which have interrupts enabled
+To: Arturas Moskvinas <arturas.moskvinas@gmail.com>, Biju Das <biju.das.jz@bp.renesas.com>, 
+	Andreas Kaessens <akaessens@gmail.com>, Thomas Preston <thomas.preston@codethink.co.uk>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Phil Reid <preid@electromag.com.au>
+Cc: u.kleine-koenig@pengutronix.de, radim.pavlik@tbs-biometrics.com, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Tue, Jan 30, 2024 at 10:25:36AM CET, chentao@kylinos.cn wrote:
->commit 0a31bd5f2bbb ("KMEM_CACHE(): simplify slab cache creation")
->introduces a new macro.
->Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
->to simplify the creation of SLAB caches.
+On Tue, Jan 30, 2024 at 8:37=E2=80=AFAM Arturas Moskvinas
+<arturas.moskvinas@gmail.com> wrote:
+
+> GPINTEN register contains information about GPIOs with enabled
+> interrupts no need to check other GPIOs for changes.
 >
->Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+> Signed-off-by: Arturas Moskvinas <arturas.moskvinas@gmail.com>
 
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+This driver has a lot of users, so adding some reviewers.
+https://lore.kernel.org/linux-gpio/20240130073710.10110-1-arturas.moskvinas=
+@gmail.com/
+
+Yours,
+Linus Walleij
 
