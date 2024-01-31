@@ -1,143 +1,129 @@
-Return-Path: <linux-kernel+bounces-47260-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47261-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CC7C844B18
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:37:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1AA7844B1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:37:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FFC71C22730
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:37:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DB500B276FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:37:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 985FB3A8C0;
-	Wed, 31 Jan 2024 22:37:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D5F23A8D0;
+	Wed, 31 Jan 2024 22:37:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Pp/t1pJe"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AjBzFK95"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47041364CA
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 22:36:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14EE33A1CB
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 22:37:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706740622; cv=none; b=J8GbPQGN61liMp1kx327kOadPeytiqRrsfx0qncldyGLoJmxUxa+Re9M23SaVb9XLb/VsIaoRYt7AnFZdgkqrjkPgd9j3J+TdrI6hyLn77x/vt2vtmj+5PaXnDK/b5k9fqHlF6j9saAz31fXmP7yVcEnK4U/fag3V6elyyolbgc=
+	t=1706740648; cv=none; b=nWgY0j8U/CppLvpxRfRv4f3Dgja2EivoGxT/IrsoxllYijkqF/0WKtzcdtFrdrFAKD8BEFjE+dwCfL2PQ98PukKPTwYozg1azUbejp6VuFrlvRQdTWM8g229d2DS7P3tOiIZLEdSx9A35Yspsc/TyuCFAgofBtyidZ6onXqrGx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706740622; c=relaxed/simple;
-	bh=Iu+8D8k16qGF05cFe22hv0MQBwz9+bj5LdTjBKDOWeo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UtzY5puZ7EBZr7T1ArG8uGgZz9OdGBCTGHLpS9FZOfkbIrfUSrfGCJNpbJfQEa0JFNywhiSELyARdbz34rnzL3cslALVgEw0FiWs+ArIAsBmsJNWCnH5XfF3hZmWbm9ZWdCw9s+uziv3RTdGnFJOigIuYCGggLYOjyHiTdXOLkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Pp/t1pJe; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706740618;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pCoZH7HUiSU0yflw5IfG5DX6qgN8kXKIe4+R5MH+S1U=;
-	b=Pp/t1pJe9FkBKxQawWmrE41nXMZG3iXS7rjSYNsC9ZgSdN0u/YJqSKUhL3fnYTkdC+JGNZ
-	qJVQbNgVw/ug+VUxAJBPhPSCeNO50GZBNuyQlT1/7Czh0rvBX5v8kdcJwoyZJ6NHKExWM/
-	qyFX6oaPLHJFewzKlyYMZI7NBR9VpZ4=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-399-f7E-uu7uNH2xx4uEmEJB5Q-1; Wed, 31 Jan 2024 17:36:56 -0500
-X-MC-Unique: f7E-uu7uNH2xx4uEmEJB5Q-1
-Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-5110bf1635eso176139e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 14:36:56 -0800 (PST)
+	s=arc-20240116; t=1706740648; c=relaxed/simple;
+	bh=GHCslkMbeb8cqNbZMhNeG8BDz/DVNH+7BbzW3dVkGy0=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=GZKOiqSZNy8m3xw2TWJL77NqO7P5VLV1U5xj+BnzZgw9malp4NqHzjsJtUOZYxaB23iRenIjviRzE8srTEd00KHVpunh7g2T3+pGWqAnEH042C2FAHDvbNhYKtzqsWrCHaDY5yzrrAy6tUuzFJAwWyZap3H4boEf2KMyMtZgPEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AjBzFK95; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-5111ef545bfso427061e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 14:37:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706740645; x=1707345445; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Gjqkz5/4fOYK8UlYJhkvBOZbQ3T8J2UbD1rT1LvGIH8=;
+        b=AjBzFK95eec1gfYn08jWdljI+JYfhAJpoIkTiIMPnB3UwhvjSNUHTHEZoSbBK4VbU4
+         hUz47OrysaFBDxFwE+Ep9aLd53gALGmNDMqeHXyoVxnRMDoRdL3lOiav10k1wJBehvXU
+         8jcUvQdESVRBn5nECP074IazmyNJNFUNxxoUp3g1XGPQOnmQyIE3SPrqMbbQuA0dPll3
+         g+aGbtPjaHivChS7PXPImqy6NhF00JB2ZVBhIniGwDIk4WeHvmc3LytGzzi1igwDNrga
+         dtTlM54RRr4+zo6YH1LFpWZT13TW93bB1Uo+vbLT6JNPny0PreTBuKRKXvBZ0Xv8ioaA
+         oEFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706740615; x=1707345415;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pCoZH7HUiSU0yflw5IfG5DX6qgN8kXKIe4+R5MH+S1U=;
-        b=RnLyBLeZtH6l8dkrScxgg5Zz3hYqR2VmiEcDo+qErgamnJZd23vwsJGmNPkSRkqvEJ
-         juc8+sepSHYmvCWKjLgObNmfpPC5K0azJiN6dUo/fs0dRKoVL4gwORvCBqceNWiWU5NR
-         7B/KJNjXcKv78Ksvhk6o99e7/nvBDm0Sy0g2N4FuJVxOXxBeuViuLzl7gxFQNrSjwtV1
-         0N5xxvrS3t1k5iJdF1vagQk8+dj2NXe0uNSPpywn/Sbq8LF+Hm1eVtU5/0Qj9pDUdwrK
-         KsV1OqgkReFJiZvfHg3g4lIz7vvgTleKBJmiJyDf+ElIKSzvgNHeqFQtR00bVgq62krt
-         TG8A==
-X-Gm-Message-State: AOJu0YzWdoYZnKcLhpYMBnSmqDiZTwT/J5fwF+VWdQy8zCPymwSwRVmF
-	uggbAtnWCF95XyDFZKRAgPC9s/0A5Hm9Y2VuNNdkUWmWm6gCWvU6+SBQLphmylImJScFa8sqvcy
-	HSke1Wa+j17AiIdKu2X8vv1ezL1HVGMzHfwDp9/nT42qbWMS46Q7HDTZPe0/XGg==
-X-Received: by 2002:a19:4f42:0:b0:510:11f4:6741 with SMTP id a2-20020a194f42000000b0051011f46741mr368281lfk.17.1706740615138;
-        Wed, 31 Jan 2024 14:36:55 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFdYe2Nb5HfdKCFeTwFRTgm6BrtfqRQRuKBw02G2lHJDzsRV/wKxyLsFBX60j2fd+FOCZ/FZQ==
-X-Received: by 2002:a19:4f42:0:b0:510:11f4:6741 with SMTP id a2-20020a194f42000000b0051011f46741mr368273lfk.17.1706740614525;
-        Wed, 31 Jan 2024 14:36:54 -0800 (PST)
-Received: from redhat.com ([2a02:14f:177:15f2:27d8:8291:1cb6:8df6])
-        by smtp.gmail.com with ESMTPSA id fx20-20020a170906b75400b00a34b15c5cedsm6703708ejb.170.2024.01.31.14.36.49
+        d=1e100.net; s=20230601; t=1706740645; x=1707345445;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Gjqkz5/4fOYK8UlYJhkvBOZbQ3T8J2UbD1rT1LvGIH8=;
+        b=hYUKH2mX4YQMMoW+cvFi6NTMslz3AfoP9p74JB8Io+v62R6LV09I6kNhCPd5VzaIh6
+         cHamJV6buNtmgiHI/XVIpJHv6ixRA8N2ixtylcj2b+/im2+l3mKZ04THf6fAcMos5cSX
+         F/MftEXQyDV4KMv77RXbkjpBKDKh35fQ6thWDaEpfsENGkOmgHF1iKy4Qnu68U+aiSns
+         yaB4P5Z98uukMLXHvMOu2Zwm/kHyD89Rk2ghq2a389uOszj1js+iVHtkKVVrhBVETVb/
+         seVgBmqD2m7Q4CGlWbLG89/bSk4Y+8j7Dn4j2XcvtQIxm+PjPV4uxs/u3Mdz1x73DtD/
+         2UYw==
+X-Gm-Message-State: AOJu0YySV7zSZ7WBpFXRZlHLA6HT7bqC8+xGgBI7VzrLvaNjTy0Luu7K
+	jpU9GhBycFzF5aq5qJ34px+sYdHbTSHeTIahObpr3iAjilJCvvJXYgPYfBBRGMQ=
+X-Google-Smtp-Source: AGHT+IEMIuI5hvAZEuoBTltAZ0X1MJbZczlIpQv+KBqzvjJT96h4zzxFmvPW1XHVD1WAjd36PDy46w==
+X-Received: by 2002:a05:6512:3b81:b0:50e:7b9c:3ed5 with SMTP id g1-20020a0565123b8100b0050e7b9c3ed5mr724096lfv.50.1706740644933;
+        Wed, 31 Jan 2024 14:37:24 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVzuwlnfDtJNqGCVUREN76vukNns1U1VXlZ0fzehBTrVJu+DHgyhn0h23Etnk6UySO0+66Kv9XbvRT9WC8hrH2TfQWzOfwogz6GZwb/g3264TBFzxCCW8QN6xU/QP7caG2fe8dRqCVpX6kYqj3DpDiFf3krg+fugNquXA/LEcFTSzzrhWl0YQZuOfHfdZTag6Ewh86qRqaV1hDFiYZ5rrhL4x1VMO68vCjCnrvpBg3RMSHsrVQPp/MKqGlRpqAJKQvk5tFgBMG8wOrkdl2Jt6ObkO5lgZSCRHH76QD7GoNbil1cA/71/hFP3gD0nluZWKBmGJbTcqFiutP1grQQOPvrcYdEEL4YSPZcVoquzI8b6AczcWYJOnrg9Q0zxgt2hdqQGP7u1+v0TCIs4flHvjdGFkcrQOc1AoHrGtEPj/FL60hhVpGx3j4jFAOa0qSor6joQO3mMrXzYGN7jA==
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id v25-20020a05651203b900b0051023149df3sm1976021lfp.248.2024.01.31.14.37.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 14:36:53 -0800 (PST)
-Date: Wed, 31 Jan 2024 17:36:45 -0500
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: zhenwei pi <pizhenwei@bytedance.com>
-Cc: arei.gonglei@huawei.com, jasowang@redhat.com,
-	herbert@gondor.apana.org.au, xuanzhuo@linux.alibaba.com,
-	virtualization@lists.linux.dev, nathan@kernel.org,
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-	davem@davemloft.net
-Subject: Re: [PATCH] crypto: virtio/akcipher - Fix stack overflow on memcpy
-Message-ID: <20240131173615-mutt-send-email-mst@kernel.org>
-References: <20240130112740.882183-1-pizhenwei@bytedance.com>
+        Wed, 31 Jan 2024 14:37:24 -0800 (PST)
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 0/6] Convert some wireless drivers to use GPIO descriptors
+Date: Wed, 31 Jan 2024 23:37:19 +0100
+Message-Id: <20240131-descriptors-wireless-v1-0-e1c7c5d68746@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240130112740.882183-1-pizhenwei@bytedance.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAJ/LumUC/x3M3QpAQBBA4VfRXNti2cKryMX+DKa0NCPU5t1tL
+ r+LcxIIMqHAUCRgvEhojxl1WYBfbVxQUcgGXem2qrVWAcUzHefOom5i3FBEuS7Y3gRvXWMgpwf
+ jTM+/Haf3/QD/zjAJZgAAAA==
+To: =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>, 
+ Kalle Valo <kvalo@kernel.org>, Arend van Spriel <aspriel@gmail.com>, 
+ Franky Lin <franky.lin@broadcom.com>, 
+ Hante Meuleman <hante.meuleman@broadcom.com>, 
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+ Arnd Bergmann <arnd@arndb.de>, Lee Jones <lee@kernel.org>, 
+ Brian Norris <briannorris@chromium.org>, 
+ Srinivasan Raju <srini.raju@purelifi.com>
+Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ brcm80211-dev-list.pdl@broadcom.com, 
+ Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.4
 
-On Tue, Jan 30, 2024 at 07:27:40PM +0800, zhenwei pi wrote:
-> sizeof(struct virtio_crypto_akcipher_session_para) is less than
-> sizeof(struct virtio_crypto_op_ctrl_req::u), copying more bytes from
-> stack variable leads stack overflow. Clang reports this issue by
-> commands:
-> make -j CC=clang-14 mrproper >/dev/null 2>&1
-> make -j O=/tmp/crypto-build CC=clang-14 allmodconfig >/dev/null 2>&1
-> make -j O=/tmp/crypto-build W=1 CC=clang-14 drivers/crypto/virtio/
->   virtio_crypto_akcipher_algs.o
-> 
-> Fixes: 59ca6c93387d ("virtio-crypto: implement RSA algorithm")
-> Link: https://lore.kernel.org/all/0a194a79-e3a3-45e7-be98-83abd3e1cb7e@roeck-us.net/
-> Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
+This converts some Wireless network drivers to use GPIO descriptors,
+and some just have unused header inclusions.
 
-Cc: stable@vger.kernel.org
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
+The Intersil PL54 driver is intentionally untouched because Arnd
+is cleaning it up fully.
 
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+Linus Walleij (6):
+      wifi: ath9k: Obtain system GPIOS from descriptors
+      wifi: ti: wlcore: sdio: Drop unused include
+      brcm80211: brcmsmac: Drop legacy header
+      wifi: mwifiex: Drop unused headers
+      wifi: plfxlc: Drop unused include
+      wifi: cw1200: Convert to GPIO descriptors
 
+ drivers/net/wireless/ath/ath9k/hw.c                | 29 ++++-----
+ drivers/net/wireless/ath/ath9k/hw.h                |  3 +-
+ .../net/wireless/broadcom/brcm80211/brcmsmac/led.c |  1 -
+ drivers/net/wireless/marvell/mwifiex/main.h        |  2 -
+ drivers/net/wireless/purelifi/plfxlc/mac.c         |  1 -
+ drivers/net/wireless/st/cw1200/cw1200_sdio.c       | 42 +++++++------
+ drivers/net/wireless/st/cw1200/cw1200_spi.c        | 71 ++++++++++++----------
+ drivers/net/wireless/ti/wlcore/sdio.c              |  1 -
+ include/linux/platform_data/net-cw1200.h           |  4 --
+ 9 files changed, 82 insertions(+), 72 deletions(-)
+---
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+change-id: 20240122-descriptors-wireless-b8da95dcab35
 
-> ---
->  drivers/crypto/virtio/virtio_crypto_akcipher_algs.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/crypto/virtio/virtio_crypto_akcipher_algs.c b/drivers/crypto/virtio/virtio_crypto_akcipher_algs.c
-> index 2621ff8a9376..de53eddf6796 100644
-> --- a/drivers/crypto/virtio/virtio_crypto_akcipher_algs.c
-> +++ b/drivers/crypto/virtio/virtio_crypto_akcipher_algs.c
-> @@ -104,7 +104,8 @@ static void virtio_crypto_dataq_akcipher_callback(struct virtio_crypto_request *
->  }
->  
->  static int virtio_crypto_alg_akcipher_init_session(struct virtio_crypto_akcipher_ctx *ctx,
-> -		struct virtio_crypto_ctrl_header *header, void *para,
-> +		struct virtio_crypto_ctrl_header *header,
-> +		struct virtio_crypto_akcipher_session_para *para,
->  		const uint8_t *key, unsigned int keylen)
->  {
->  	struct scatterlist outhdr_sg, key_sg, inhdr_sg, *sgs[3];
-> @@ -128,7 +129,7 @@ static int virtio_crypto_alg_akcipher_init_session(struct virtio_crypto_akcipher
->  
->  	ctrl = &vc_ctrl_req->ctrl;
->  	memcpy(&ctrl->header, header, sizeof(ctrl->header));
-> -	memcpy(&ctrl->u, para, sizeof(ctrl->u));
-> +	memcpy(&ctrl->u.akcipher_create_session.para, para, sizeof(*para));
->  	input = &vc_ctrl_req->input;
->  	input->status = cpu_to_le32(VIRTIO_CRYPTO_ERR);
->  
-> -- 
-> 2.34.1
+Best regards,
+-- 
+Linus Walleij <linus.walleij@linaro.org>
 
 
