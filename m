@@ -1,134 +1,124 @@
-Return-Path: <linux-kernel+bounces-46763-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46765-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 573E58443CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:11:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A9348443D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:12:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 899EC1C21DD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:11:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B22EA285E3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:12:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2373A12AAFC;
-	Wed, 31 Jan 2024 16:10:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BB6412AAE1;
+	Wed, 31 Jan 2024 16:12:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NxkfYglX"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bkdUg28i"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 543C812BE8F;
-	Wed, 31 Jan 2024 16:10:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B33D12AAC0
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 16:12:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706717442; cv=none; b=Hx2I3tgEJRMufa6njlUZcbS9QIrRfMRyXkcA0+WDualUiU3jlR3Rw5r5jWpxiWz2RZvmILt0wYkW48AyMIjhF1mYh7Ncf02Ezt8VTw7TMFBFUzyRNUaYbmNmRLTnsYUtQxq9cl/Gl046VeljTEog+asqXEV67iCaKVD8h8/KRIU=
+	t=1706717537; cv=none; b=MYOJ04cqSNx+qnkzGVxgYZpV5253Qpg8pvDK+/1c3qzicS9zvK0h9EY0kYuHAZRM0Zd6THCWQJnAw8fl4/pMr52lQpeBG9SNW+T2Y2IlHYIYnyDV1mTNSV0fh2DVzBc2O11991k/UFzFYXbDO5b24TRUUGFP9Ts9gyA8Y8yx9EQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706717442; c=relaxed/simple;
-	bh=hwmB+C/u/by+wrZ26oOJ2Ax1b/vEvnFtb7tDhr+WVQs=;
+	s=arc-20240116; t=1706717537; c=relaxed/simple;
+	bh=S1qTKH+/x2gUmwDwbwoq2bbAx6ywfZvkV7z45JdkYAI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bGpZPFcyYf1IqjAMHJeJ4Vq5V/okYLYciRe8uc7ejIxtjQ9CONlPq5b3RrGM4aUf2mksNZ6R9wGBK4g5Hwxvnr08FaSeHkyFnpdYURqR45j/PgHkIN56TXNGBW89KMT2LeTUSpi9kBbuhRstADX2rAwtK5YA7I5NDZD/NGYVP8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NxkfYglX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56196C43399;
-	Wed, 31 Jan 2024 16:10:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706717441;
-	bh=hwmB+C/u/by+wrZ26oOJ2Ax1b/vEvnFtb7tDhr+WVQs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NxkfYglXwQLizeqK+ZLtRxhktWMZu9Hg2cZMRNwxV4MIBcpQr69apiNbJmt1qBkv3
-	 iuxbzov2L0+anI1U4WGNp1XChsDh6KVt8Yc/VnQXUduuIagmwuaLjyvJeWf/lV6vNC
-	 xlk/v3hyJ9D8/0TzAQLPSbCm8FW+B1ZygM1gtidZxYtRONu/cKgX0ikE0RCZo8Q9xj
-	 bL93Oo1JYqUwNGUTwy1aoBONgyVuivcRNDoddOYCWICSB57x1pZ5/V6+i8SRbQ4QD4
-	 jucz5CfjY3QUwLGtNA293v150PPQ/JT/bRy7Y/BggqHLnOV+rRpUi9beHxJB+WuMoT
-	 4E7seT4G8sngQ==
-Date: Wed, 31 Jan 2024 16:10:37 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Svyatoslav <clamor95@gmail.com>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Kees Cook <keescook@chromium.org>,
-	Maxim Schwalm <maxim.schwalm@gmail.com>, devicetree@vger.kernel.org,
-	linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v1 1/4] dt-bindings: vendor-prefixes: add LG Electronics,
- Inc. prefix
-Message-ID: <20240131-undercoat-rewash-1770ce13b556@spud>
-References: <20240131105153.8070-1-clamor95@gmail.com>
- <20240131105153.8070-2-clamor95@gmail.com>
- <20240131-elderly-passover-341b89f65189@spud>
- <656FDD69-D7B1-4910-B848-108CB985AAAC@gmail.com>
- <20240131-tractor-roundish-f6f90b5bd640@spud>
- <BCBF1994-C5AE-4D2B-B645-C3C67BE19000@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=LhauwpTPPCVe3ft+49iH/s/HgNMNw7N8YMSgXPreb7ajIEFZJrNsoocQK1akr8zbOb+DdseRJ16FqjHS1AghQatrXI/3naT5az1j21wB4+9T3jQYf3yymFrFi+Y6fhNCHvVq/Eoc04WDIbynYl7uCoRO4UuNbtKI8wA0PHon0Ng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bkdUg28i; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706717535;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/GWpU8/PPvh6a0jaZSWCVPOPeuCzSthvQH0dRHb6u3M=;
+	b=bkdUg28iIqSjIzn3711LHI3k1tt9EH3NLtYj65Ccj+caydXDOlRgvVhWL2fKDtxiQFOfPB
+	p0BsdcY9uWbyT4wF+36kX3J7l8QNmFydsPDTpr9WI+jSrNVXIjlKhIT79TNCQuCn6b22Z0
+	Xd3QHheg5Ya0lXou0fsbI2bFl89o3dA=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-1-sl97ymzFM4S9JRgbCSB_qA-1; Wed, 31 Jan 2024 11:12:10 -0500
+X-MC-Unique: sl97ymzFM4S9JRgbCSB_qA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E1EE7185A783;
+	Wed, 31 Jan 2024 16:12:09 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.249])
+	by smtp.corp.redhat.com (Postfix) with SMTP id A4CC73C2E;
+	Wed, 31 Jan 2024 16:12:08 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Wed, 31 Jan 2024 17:10:55 +0100 (CET)
+Date: Wed, 31 Jan 2024 17:10:53 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
+	Tycho Andersen <tycho@tycho.pizza>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/1] pidfd: implement PIDFD_THREAD flag for
+ pidfd_open()
+Message-ID: <20240131161053.GC2609@redhat.com>
+References: <20240131132541.GA23632@redhat.com>
+ <20240131141204.GA24130@redhat.com>
+ <20240131-engel-entern-9b5c96659948@brauner>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="G4dIpqmRG0duvBE0"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <BCBF1994-C5AE-4D2B-B645-C3C67BE19000@gmail.com>
+In-Reply-To: <20240131-engel-entern-9b5c96659948@brauner>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-
---G4dIpqmRG0duvBE0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Jan 31, 2024 at 06:06:58PM +0200, Svyatoslav wrote:
->=20
->=20
-> 31 =D1=81=D1=96=D1=87=D0=BD=D1=8F 2024=E2=80=AF=D1=80. 18:02:31 GMT+02:00=
-, Conor Dooley <conor@kernel.org> =D0=BD=D0=B0=D0=BF=D0=B8=D1=81=D0=B0=D0=
-=B2(-=D0=BB=D0=B0):
-> >On Wed, Jan 31, 2024 at 05:30:58PM +0200, Svyatoslav wrote:
-> >>=20
-> >>=20
-> >> 31 =D1=81=D1=96=D1=87=D0=BD=D1=8F 2024=E2=80=AF=D1=80. 17:28:49 GMT+02=
-:00, Conor Dooley <conor@kernel.org> =D0=BD=D0=B0=D0=BF=D0=B8=D1=81=D0=B0=
-=D0=B2(-=D0=BB=D0=B0):
-> >> >On Wed, Jan 31, 2024 at 12:51:50PM +0200, Svyatoslav Ryhel wrote:
-> >> >> Add missing LG Electronics, Inc. prefix used by some older devices.
-> >> >
-> >> >Is it? You're only adding these devices now as far as I can see.
-> >> >
-> >>=20
-> >> Hammerhead (LG Nexus 5)
+On 01/31, Christian Brauner wrote:
+>
+> On Wed, Jan 31, 2024 at 03:12:04PM +0100, Oleg Nesterov wrote:
 > >
-> >I have absolutely no idea what this means. Please link me the in-tree
-> >devicetree of the user (or the patchset adding it).
+> > After this patch we can easily add another feature, pidfd_poll()
+> > can add, say, POLLHUP to poll_flags if the pid is "dead".
 > >
-> >Thanks,
-> >Conor
+> > So the user can do
 > >
->=20
-> Sure, here you go
-> <https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/ar=
-ch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts?h=3Dlinux-6.4.y#n11>
->=20
-> So devices I have sent are not the first.
+> > 	poll(pidfd, { .revents = POLLHUP });
+> >
+> > and it will block until release_task() is called and this pid is
+> > no longer in use (pid_task() == NULL).
+> >
+> > Do you think this can be useful?
+>
+> Yeah, I think this is something that people would find useful. IIUC, it
+> would essentially allow them to do things like wait until a task has
+> been waited upon
 
-Thanks.
+Exactly.
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+OK. I'll try to make the (hopefully simple) patch on top of this one
+on Friday, if Tycho agrees with V3. Will be busy tomorrow.
 
-Cheers,
-Conor.
+> * systemd completely relying on pidfds to manage services to guard
+>   against any pid races.
+> * Extended dbus to allow authentication via pidfds.
+> * Extended policy kit to enable secure authentication of processes via pidfds.
+> * Language support for pidfds: Go, Rust etc.
+> * An endless number of tools that added support for them.
+> * glibc support for pidfd apis.
+>
+> There's a bunch more. That literally obliterated whole bug classes.
 
+Thanks for this info!
 
---G4dIpqmRG0duvBE0
-Content-Type: application/pgp-signature; name="signature.asc"
+Not that I ever thouhgt that pidfd is "useless", not at all, but as I said
+(and as a Perl progammer ;) I simply do not know what people actually do with
+pidfds ;)
 
------BEGIN PGP SIGNATURE-----
+Oleg.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbpw/AAKCRB4tDGHoIJi
-0kuxAP9L5NyTrY0gnYlNY5TKeYQVjvpJcrsKdkdNiyFCpnjlgQD/cIOPTZUVf3Ns
-BJYUPoowiN6VqIj9snqVCmoG8Ph2nQE=
-=SEyq
------END PGP SIGNATURE-----
-
---G4dIpqmRG0duvBE0--
 
