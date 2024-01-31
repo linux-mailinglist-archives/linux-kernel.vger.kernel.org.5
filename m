@@ -1,79 +1,86 @@
-Return-Path: <linux-kernel+bounces-47259-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47260-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51709844B10
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CC7C844B18
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:37:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 849C91C22C01
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:29:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FFC71C22730
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:37:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C12239FE3;
-	Wed, 31 Jan 2024 22:29:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 985FB3A8C0;
+	Wed, 31 Jan 2024 22:37:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AgyHmitG"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Pp/t1pJe"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5185438FA4;
-	Wed, 31 Jan 2024 22:29:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47041364CA
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 22:36:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706740142; cv=none; b=tQ7ScVbfcSk5/lbiidVZuj+ubAdvclJHpfOGI9bKdfUKZq9nNdFdjvawRS03h7evzxe0BFZWw0nUoKPp6Km/X+cbqToMhqKzvIWWNHrYoSxjJr+lJ9NHv32Ku03PHdLhYUCPZF3wkQlwoKhIQTxTCzhSEfYo/uOdytPNmCfdGD8=
+	t=1706740622; cv=none; b=J8GbPQGN61liMp1kx327kOadPeytiqRrsfx0qncldyGLoJmxUxa+Re9M23SaVb9XLb/VsIaoRYt7AnFZdgkqrjkPgd9j3J+TdrI6hyLn77x/vt2vtmj+5PaXnDK/b5k9fqHlF6j9saAz31fXmP7yVcEnK4U/fag3V6elyyolbgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706740142; c=relaxed/simple;
-	bh=o8QhU6PXRn0FWV9WeF8MomXhKC9ONFhUtRlfDlW3ndw=;
+	s=arc-20240116; t=1706740622; c=relaxed/simple;
+	bh=Iu+8D8k16qGF05cFe22hv0MQBwz9+bj5LdTjBKDOWeo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oXY6V8BZIqAgiO1iJZ0VzGPbhW+pX+NPNWoFnR8STHUfmceonRcL1lLfJqgGf8GibPV65JM0IvKrVr3sa5FlgqAagHOYpYrq2/sf2lshagbAPARjbq0bXva9XSdG8b15EQYNwTn+6f23t56QaM4qE6TvpY8+XZrNgbIgq5qJT7U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AgyHmitG; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d51ba18e1bso2841775ad.0;
-        Wed, 31 Jan 2024 14:29:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706740140; x=1707344940; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Jmur6T5mZGQKYVYzLYzXWlcErNmYge/Ids/pkRMTDgA=;
-        b=AgyHmitGoHIWYeSu3Wtz5t2asudi97ikAffXb1nYQkGHB5yMEs2GofC/Ufjy4d+3zC
-         w0TxdcUb/Y1wMZf8cz+ZBKQHNx28uxIBSgaoLGjQxzZVLS6nTcT1y679QfwAEWo+CX8x
-         CqGviYR0vqtafCjt32Zmbx82jmmGTCWzpg7KUJR7iQuPVo3Hvrp2LI6C+gD0x0elPO5K
-         8JcCHnDbIsr+ZN9+SvpzMZGHNURves69VnY+cjPDRRHSdU7OcWEpZiM45ThtvCDzY83K
-         Kl8b8cS2i5W7d4UPielMfi+shUwzqDhkvAvKhScmDQ8sjiclJpFEi6NrVDn4qfjFphls
-         SQRw==
+	 Content-Type:Content-Disposition:In-Reply-To; b=UtzY5puZ7EBZr7T1ArG8uGgZz9OdGBCTGHLpS9FZOfkbIrfUSrfGCJNpbJfQEa0JFNywhiSELyARdbz34rnzL3cslALVgEw0FiWs+ArIAsBmsJNWCnH5XfF3hZmWbm9ZWdCw9s+uziv3RTdGnFJOigIuYCGggLYOjyHiTdXOLkw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Pp/t1pJe; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706740618;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pCoZH7HUiSU0yflw5IfG5DX6qgN8kXKIe4+R5MH+S1U=;
+	b=Pp/t1pJe9FkBKxQawWmrE41nXMZG3iXS7rjSYNsC9ZgSdN0u/YJqSKUhL3fnYTkdC+JGNZ
+	qJVQbNgVw/ug+VUxAJBPhPSCeNO50GZBNuyQlT1/7Czh0rvBX5v8kdcJwoyZJ6NHKExWM/
+	qyFX6oaPLHJFewzKlyYMZI7NBR9VpZ4=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-399-f7E-uu7uNH2xx4uEmEJB5Q-1; Wed, 31 Jan 2024 17:36:56 -0500
+X-MC-Unique: f7E-uu7uNH2xx4uEmEJB5Q-1
+Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-5110bf1635eso176139e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 14:36:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706740140; x=1707344940;
+        d=1e100.net; s=20230601; t=1706740615; x=1707345415;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Jmur6T5mZGQKYVYzLYzXWlcErNmYge/Ids/pkRMTDgA=;
-        b=q8xmFW5rfwmiN/8I4OcCH5q7c0SFPNM/WkjoU1AlIR7ywTXoA24cue1yxXZ628g2i7
-         9jfwVXoEdWbbYbLqHK8mfDWHvXlHc8lTqWl4rWomRpinq6UQQsnocryybWWJH1doj1ED
-         I6aE5Sz6b4su19P0PcAeQ1Vhlv4jjRT2IRDoO3gB6EsemPgykLsAz1D8XOtcJwLKVys2
-         1JtNThvQK4sH/dAD8aKaYgc0WBUzW+Oo0GGqXpRGmMBia90uXRghc5iNwl2OIsnqZdLj
-         72vlxtMnnv/6f9gy1/KlQatqiGoQRay3Kmh0YrjDisH4gU0EkmxBaQxBEunZz15Ab1gK
-         Dpcw==
-X-Gm-Message-State: AOJu0Yw1f/klc8Jng6s309pnqCrCZJrGlE+/lWhYo+1g4DQjwxrIHv9/
-	Fs/kzeOZSWojXkMXCds3fh48ouD5TozA8cKTSwEY5UMHoJcO9Ugvc3VASHynXA0=
-X-Google-Smtp-Source: AGHT+IGRg3QCi53M1+UV+9txsOxdw45LyisS9f36UwLm82dt7LgNfF3wdDc7nd4RGzmS1Omucc+aWg==
-X-Received: by 2002:a17:903:41c4:b0:1d9:3b54:d857 with SMTP id u4-20020a17090341c400b001d93b54d857mr2671478ple.23.1706740140432;
-        Wed, 31 Jan 2024 14:29:00 -0800 (PST)
-Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
-        by smtp.gmail.com with ESMTPSA id kt14-20020a170903088e00b001d90306bdcfsm4020079plb.65.2024.01.31.14.28.59
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pCoZH7HUiSU0yflw5IfG5DX6qgN8kXKIe4+R5MH+S1U=;
+        b=RnLyBLeZtH6l8dkrScxgg5Zz3hYqR2VmiEcDo+qErgamnJZd23vwsJGmNPkSRkqvEJ
+         juc8+sepSHYmvCWKjLgObNmfpPC5K0azJiN6dUo/fs0dRKoVL4gwORvCBqceNWiWU5NR
+         7B/KJNjXcKv78Ksvhk6o99e7/nvBDm0Sy0g2N4FuJVxOXxBeuViuLzl7gxFQNrSjwtV1
+         0N5xxvrS3t1k5iJdF1vagQk8+dj2NXe0uNSPpywn/Sbq8LF+Hm1eVtU5/0Qj9pDUdwrK
+         KsV1OqgkReFJiZvfHg3g4lIz7vvgTleKBJmiJyDf+ElIKSzvgNHeqFQtR00bVgq62krt
+         TG8A==
+X-Gm-Message-State: AOJu0YzWdoYZnKcLhpYMBnSmqDiZTwT/J5fwF+VWdQy8zCPymwSwRVmF
+	uggbAtnWCF95XyDFZKRAgPC9s/0A5Hm9Y2VuNNdkUWmWm6gCWvU6+SBQLphmylImJScFa8sqvcy
+	HSke1Wa+j17AiIdKu2X8vv1ezL1HVGMzHfwDp9/nT42qbWMS46Q7HDTZPe0/XGg==
+X-Received: by 2002:a19:4f42:0:b0:510:11f4:6741 with SMTP id a2-20020a194f42000000b0051011f46741mr368281lfk.17.1706740615138;
+        Wed, 31 Jan 2024 14:36:55 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFdYe2Nb5HfdKCFeTwFRTgm6BrtfqRQRuKBw02G2lHJDzsRV/wKxyLsFBX60j2fd+FOCZ/FZQ==
+X-Received: by 2002:a19:4f42:0:b0:510:11f4:6741 with SMTP id a2-20020a194f42000000b0051011f46741mr368273lfk.17.1706740614525;
+        Wed, 31 Jan 2024 14:36:54 -0800 (PST)
+Received: from redhat.com ([2a02:14f:177:15f2:27d8:8291:1cb6:8df6])
+        by smtp.gmail.com with ESMTPSA id fx20-20020a170906b75400b00a34b15c5cedsm6703708ejb.170.2024.01.31.14.36.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 14:29:00 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Wed, 31 Jan 2024 12:28:59 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Helge Deller <deller@kernel.org>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-parisc@vger.kernel.org
-Subject: Re: [PATCH][RFC] workqueue: Fix kernel panic on CPU hot-unplug
-Message-ID: <ZbrJq3X63hIMkbl2@slm.duckdns.org>
-References: <ZbqfMR_mVLaSCj4Q@carbonx1>
+        Wed, 31 Jan 2024 14:36:53 -0800 (PST)
+Date: Wed, 31 Jan 2024 17:36:45 -0500
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: zhenwei pi <pizhenwei@bytedance.com>
+Cc: arei.gonglei@huawei.com, jasowang@redhat.com,
+	herbert@gondor.apana.org.au, xuanzhuo@linux.alibaba.com,
+	virtualization@lists.linux.dev, nathan@kernel.org,
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+	davem@davemloft.net
+Subject: Re: [PATCH] crypto: virtio/akcipher - Fix stack overflow on memcpy
+Message-ID: <20240131173615-mutt-send-email-mst@kernel.org>
+References: <20240130112740.882183-1-pizhenwei@bytedance.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,56 +89,55 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZbqfMR_mVLaSCj4Q@carbonx1>
+In-Reply-To: <20240130112740.882183-1-pizhenwei@bytedance.com>
 
-Hello,
+On Tue, Jan 30, 2024 at 07:27:40PM +0800, zhenwei pi wrote:
+> sizeof(struct virtio_crypto_akcipher_session_para) is less than
+> sizeof(struct virtio_crypto_op_ctrl_req::u), copying more bytes from
+> stack variable leads stack overflow. Clang reports this issue by
+> commands:
+> make -j CC=clang-14 mrproper >/dev/null 2>&1
+> make -j O=/tmp/crypto-build CC=clang-14 allmodconfig >/dev/null 2>&1
+> make -j O=/tmp/crypto-build W=1 CC=clang-14 drivers/crypto/virtio/
+>   virtio_crypto_akcipher_algs.o
+> 
+> Fixes: 59ca6c93387d ("virtio-crypto: implement RSA algorithm")
+> Link: https://lore.kernel.org/all/0a194a79-e3a3-45e7-be98-83abd3e1cb7e@roeck-us.net/
+> Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
 
-On Wed, Jan 31, 2024 at 08:27:45PM +0100, Helge Deller wrote:
-> When hot-unplugging a 32-bit CPU on the parisc platform with
-> "chcpu -d 1", I get the following kernel panic. Adding a check
-> for !pwq prevents the panic.
-> 
->  Kernel Fault: Code=26 (Data memory access rights trap) at addr 00000000
->  CPU: 1 PID: 21 Comm: cpuhp/1 Not tainted 6.8.0-rc1-32bit+ #1291
->  Hardware name: 9000/778/B160L
->  
->  IASQ: 00000000 00000000 IAOQ: 10446db4 10446db8
->   IIR: 0f80109c    ISR: 00000000  IOR: 00000000
->   CPU:        1   CR30: 11dd1710 CR31: 00000000
->   IAOQ[0]: wq_update_pod+0x98/0x14c
->   IAOQ[1]: wq_update_pod+0x9c/0x14c
->   RP(r2): wq_update_pod+0x80/0x14c
->  Backtrace:
->   [<10448744>] workqueue_offline_cpu+0x1d4/0x1dc
->   [<10429db4>] cpuhp_invoke_callback+0xf8/0x200
->   [<1042a1d0>] cpuhp_thread_fun+0xb8/0x164
->   [<10452970>] smpboot_thread_fn+0x284/0x288
->   [<1044d8f4>] kthread+0x12c/0x13c
->   [<1040201c>] ret_from_kernel_thread+0x1c/0x24
->  Kernel panic - not syncing: Kernel Fault
-> 
-> Signed-off-by: Helge Deller <deller@gmx.de>
-> 
+Cc: stable@vger.kernel.org
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
+
+
+
 > ---
+>  drivers/crypto/virtio/virtio_crypto_akcipher_algs.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-> index 76e60faed892..dfeee7b7322c 100644
-> --- a/kernel/workqueue.c
-> +++ b/kernel/workqueue.c
-> @@ -4521,6 +4521,8 @@ static void wq_update_pod(struct workqueue_struct *wq, int cpu,
->  	wq_calc_pod_cpumask(target_attrs, cpu, off_cpu);
->  	pwq = rcu_dereference_protected(*per_cpu_ptr(wq->cpu_pwq, cpu),
->  					lockdep_is_held(&wq_pool_mutex));
-> +	if (!pwq)
-> +		return;
+> diff --git a/drivers/crypto/virtio/virtio_crypto_akcipher_algs.c b/drivers/crypto/virtio/virtio_crypto_akcipher_algs.c
+> index 2621ff8a9376..de53eddf6796 100644
+> --- a/drivers/crypto/virtio/virtio_crypto_akcipher_algs.c
+> +++ b/drivers/crypto/virtio/virtio_crypto_akcipher_algs.c
+> @@ -104,7 +104,8 @@ static void virtio_crypto_dataq_akcipher_callback(struct virtio_crypto_request *
+>  }
+>  
+>  static int virtio_crypto_alg_akcipher_init_session(struct virtio_crypto_akcipher_ctx *ctx,
+> -		struct virtio_crypto_ctrl_header *header, void *para,
+> +		struct virtio_crypto_ctrl_header *header,
+> +		struct virtio_crypto_akcipher_session_para *para,
+>  		const uint8_t *key, unsigned int keylen)
+>  {
+>  	struct scatterlist outhdr_sg, key_sg, inhdr_sg, *sgs[3];
+> @@ -128,7 +129,7 @@ static int virtio_crypto_alg_akcipher_init_session(struct virtio_crypto_akcipher
+>  
+>  	ctrl = &vc_ctrl_req->ctrl;
+>  	memcpy(&ctrl->header, header, sizeof(ctrl->header));
+> -	memcpy(&ctrl->u, para, sizeof(ctrl->u));
+> +	memcpy(&ctrl->u.akcipher_create_session.para, para, sizeof(*para));
+>  	input = &vc_ctrl_req->input;
+>  	input->status = cpu_to_le32(VIRTIO_CRYPTO_ERR);
+>  
+> -- 
+> 2.34.1
 
-Hmm... I have a hard time imagining a scenario where some CPUs don't have
-pwq installed on wq->cpu_pwq. Can you please run `drgn
-tools/workqueue/wq_dump.py` before triggering the hotplug event and paste
-the output along with full dmesg?
-
-Thanks.
-
--- 
-tejun
 
