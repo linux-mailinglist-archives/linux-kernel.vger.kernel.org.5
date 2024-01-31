@@ -1,121 +1,156 @@
-Return-Path: <linux-kernel+bounces-46873-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46874-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4CE58445AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:10:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D347D84460C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:25:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A70BC1C220B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:10:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33DE1B32FCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:10:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 343A212CD8E;
-	Wed, 31 Jan 2024 17:08:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0B0812C548;
+	Wed, 31 Jan 2024 17:08:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="mlmFQn8e"
-Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pV8hxO/w"
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17A2C12BE9D
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 17:08:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6072F12F587
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 17:08:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706720889; cv=none; b=hYJ7bBwjJl47NbAnRvnoDhT5FfNTqkDkzygUlpYfL81RNEBJaovb5xwV366ocVf7BZP9UodYWLvyLdXK/H/vXxm2Ig06yQGt8AFMQzktNVt9UrIAn1KtLdYEc3o87XRWN1O4e1y5fmEEtZGWhw+kb85KGqlecqV6o+4f3Gum9T8=
+	t=1706720905; cv=none; b=ikwPIWA48g6UTSXwHPfTeaEJ0qsxTz1Ei2v+pLKyQ7XlYufaRu8bEQZJxaPWOTkdbXNd3Zf0fbDmnaUoHhjRjXT8X74FbUSBl2V/ZDYXMKEkCL84GXRB5hekjbF98ydS0ENeGFy9zcnZPeJf6jRfPr4BAhge8zQdvye/OONGCUY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706720889; c=relaxed/simple;
-	bh=FrKnpE9BAaffQIFRBM9a3DlzX2WfYlcOBOsYnXbceHQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AIWZCgr6V1lLYPDDEnTtnEOPJomDifEQakFdd5QQnrnNVpgLHvQUFRD/CmgKk8pipimGP72Nj0pKTDxtvvCOTEZdJCVUbhG3Bfyci7/n47VeqPWwPeN4PWcNHw9nMlsha5YtY5ojc8/U/FLO2q13uE11TcdXmraxJ1cGWbCiwmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=mlmFQn8e; arc=none smtp.client-ip=209.85.167.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3bd4e6a7cb0so3672116b6e.3
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:08:05 -0800 (PST)
+	s=arc-20240116; t=1706720905; c=relaxed/simple;
+	bh=xWgs8Rf8bDvnFcezIW6H9X4WJso9YVQGPPPhsScYyFk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nOU/+AO8UA2/KsdxxLFstF1yYTkc3VXqyezi47dwP26owhJGLnrVB4kf4M9AQil9oB//tND0+lK6Q0ddIoxqU0GSIgbv3aNqEhBcwvzaDGDXyT887QsErQ5r6Xecg/nn+X51SEzBRiiTFjUgjLdYviWiTdgkP6KCa4vepyiXtks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pV8hxO/w; arc=none smtp.client-ip=209.85.128.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-5ffdf06e009so54375817b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:08:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1706720885; x=1707325685; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=YsWJv1YW4mhJWkcBD7g/IeRgffr84y0Zx7w3aumJlrI=;
-        b=mlmFQn8eKwqYWwHOgfHyqQNGsF6Nb0DZpcUZhUhtMq19vxxP/mq0n58F7FfjWeMPat
-         ItAMbadSprSDNi9IHfuhNwXfMbqWS7LwNgK1VcYcmeCthOkHuiGenlql+Nlr8/Kv65rD
-         bkGc+KmexC05zM5S72iBTsG4h2JLOBmA6B5awZmS/UZT3leEqipKMqg3v5PyVssoDQ5E
-         Ynrkz2vOg7eSTUQSg/GfvXvy5rD2sRhs8UTaNCuVOXqAExKZDTowFjsoMQRE3tqtN/Y1
-         Keimx4PQVtQp0HOMJvRy7ah/2pbQflXpn5u2Qs4lY1VfsFIigcDE1UcljflsS4A3TUG7
-         ydeg==
+        d=linaro.org; s=google; t=1706720901; x=1707325701; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=v+9ppG/cDRjOPXvM/ttUkSSqu1lpu+kmdsbUzCZE3i8=;
+        b=pV8hxO/wXC8Y3+L7stJGPUMdzsR/3XGhdJ+luzLDfBi8WKSdGjO+QR83K85Y6gfWWE
+         gDVl8TZ5D4QPnWNd9zLZzMWSQYL3aghmN4Y1ANLKFZpHTVoh1pVJuU79b80cZam9IT3g
+         SmcWtbHPZZ3lfj9yUlgl7cChm8KkNeOXChPPRowlGoDGl68A85Eux5lzsJLOS9Qcnoct
+         5o+CmmAcqzXDnmPwGjHZcCv/1bc6IY4Lwa3XQWV14/qpVqeVCSPqkBnp0iSXm9JCYG9M
+         iwWPwHxkFhv0Wd/uIMG6X3xvE6RCf3CYZGbekv4Klb6v9XAR9RGhun0V/yJoNLzS4ORR
+         JQqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706720885; x=1707325685;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1706720901; x=1707325701;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=YsWJv1YW4mhJWkcBD7g/IeRgffr84y0Zx7w3aumJlrI=;
-        b=exLZ8l20axu2Z+aNIRj9pkA26TIKkiMJBvsAvgaD0wF7bY7dek9R59jW72PmDzwYrB
-         izwQKpjnvuvLp8lFodTtawR3Bxfyzjk7cL4tSU8VGJtxdnfvg2n0wO6HHKqnMZB8OtzD
-         t9dKFqKJBuolo15E3mX0+d96oxvnrUtlhTn+2XUUtWKWWYN9m28rYTLL1KRoykCHBRL+
-         8Bt4wg8zovBmroe7YxpH9JohcQPr708vefCUFY5VSToeXVyfXbY+o+UuLqEW6la+SkNn
-         6LSbGDiN8Rek70gWOolFLmAdefGW6QSp0XMI8kuzZKpzY8B9uDo+1HSXh6xuV5RICl2G
-         rUjA==
-X-Gm-Message-State: AOJu0YxyMPGiiG2VxhO5jw8IakAgarbAN4C3E+aBhnUH6bN5O52gaAnH
-	oJMQUqTc7INaqrshI1USzYw9UsPMoUsQqcXf0aRhtF9+Nnr0NAPS3fajkJafzqA=
-X-Google-Smtp-Source: AGHT+IGO/uoytyRUA2AE8MRtQvDYVfhku+fm9eKfM/V9XqUw6q09uZAef4wU1qdeWNORPLtUfnbkSQ==
-X-Received: by 2002:a05:6808:4442:b0:3be:a35b:d08b with SMTP id ep2-20020a056808444200b003bea35bd08bmr2038341oib.53.1706720884989;
-        Wed, 31 Jan 2024 09:08:04 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCW5pQosX2B3ZPYTxR+xO4xKBgsz9ApnJjaj6SfMCNG8d3wh8LzQSWGpkENbrD5cPpQHIiZQOH7n1FiKuq+zwEKJraNfVwo+hzL3Zsu+jP0tY4tkCl/0UhTZD4tnPywnMDHJ8HIw+pkP
-Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
-        by smtp.gmail.com with ESMTPSA id fa21-20020a0568082a5500b003bed47158basm48965oib.57.2024.01.31.09.08.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 09:08:04 -0800 (PST)
-From: David Lechner <dlechner@baylibre.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: David Lechner <dlechner@baylibre.com>,
-	linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] spi: reorder spi_message struct member doc comments
-Date: Wed, 31 Jan 2024 11:07:27 -0600
-Message-ID: <20240131170732.1665105-1-dlechner@baylibre.com>
-X-Mailer: git-send-email 2.43.0
+        bh=v+9ppG/cDRjOPXvM/ttUkSSqu1lpu+kmdsbUzCZE3i8=;
+        b=GiNNRvJtwTB4/UzeZK2VVfUXk7xTjRVUHi8qwdzjbS03vVsghlnshGCyRy/VAd2OQy
+         nk4RbIhR8wdlRyDxGeOsvBH7+ERs4OiEA1aPswLPKyFHUbss8S4vmxmYQ8uZqhgk9hbx
+         kxWDcucEMWscgbbjmw19V7hY+SDszA+dLNHm9Q5dwrjTCYTC/N/D5Gkt5O17i8tARIp+
+         7z/KYVRLZu5XqrHcZ6ADShtmeRfbm0TOaO+gJ2uRsGbAxE7oqLcw+kQUGpJPS5inXa3R
+         p39cUglWqF26YmgqOXM+raInHSRV1qlmGbW/rjm81q1/x6w6OWGmcVRf/FALsrAYboXl
+         Yy2g==
+X-Gm-Message-State: AOJu0Yy9ubaW5eKO784P4bIbODFrtvS2JKgrzIpaY/2Z2OWVHNXVuiH5
+	T4C8J2Nhyc1RDYcVDdpGPdowQZP3h6889MjMdEeWII+TCqLmY8FnYxOHwIrbWbR/0FrdIh0XnwL
+	5trfavuDbojT/6gTTI79clXZwyrZbJgO670yor0qlCWABl/Td6R4=
+X-Google-Smtp-Source: AGHT+IEjAoxuGHt0dRHpkQSUr2ocD7zocOhX1KcS7P9exXx9WLr9h/lmNgtDKQ10CwpzLbWx6M0j/D680+qaAJX+4Kk=
+X-Received: by 2002:a81:bc0b:0:b0:604:b8d:379d with SMTP id
+ a11-20020a81bc0b000000b006040b8d379dmr1929231ywi.49.1706720901173; Wed, 31
+ Jan 2024 09:08:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240129-x1e80100-display-v1-0-0d9eb8254df0@linaro.org>
+ <20240129-x1e80100-display-v1-4-0d9eb8254df0@linaro.org> <CAA8EJpq1RSi4H6m6UQcyxEr=hip=ypKz9DhHziNKvDjUHsES8Q@mail.gmail.com>
+ <Zbp9jPF2FspZEk6q@linaro.org>
+In-Reply-To: <Zbp9jPF2FspZEk6q@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Wed, 31 Jan 2024 19:08:09 +0200
+Message-ID: <CAA8EJpqpk_W3kDtQ2=eCQ5gY0PgTcejfjifOApC-tUwAd6S4BA@mail.gmail.com>
+Subject: Re: [PATCH 4/5] drm/msm/dp: Try looking for link-frequencies into the
+ port@0's endpoint first
+To: Abel Vesa <abel.vesa@linaro.org>
+Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, linux-arm-msm@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-The members of `struct spi_message` were reordered in commit
-ae2ade4ba581 ("spi: Reorder fields in 'struct spi_message'")
-but the documentation comments were not updated to match.
+On Wed, 31 Jan 2024 at 19:04, Abel Vesa <abel.vesa@linaro.org> wrote:
+>
+> On 24-01-29 17:08:29, Dmitry Baryshkov wrote:
+> > On Mon, 29 Jan 2024 at 15:19, Abel Vesa <abel.vesa@linaro.org> wrote:
+> > >
+> > > From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+> > >
+> > > On platforms where the endpoint used is on port@0, looking for port@1
+> > > instead results in just ignoring the max link-frequencies altogether.
+> > > Look at port@0 first, then, if not found, look for port@1.
+> >
+> > NAK. Platforms do not "use port@0". It is for the connection between
+> > DPU and DP, while the link-frequencies property is for the link
+> > between DP controller and the actual display.
+>
+> I messed up. This patch is not needed, plus the author is wrong.
+>
+> Will drop in the next version.
+>
+> Sorry about that.
 
-This commit updates the comments to match the new order.
+No problem, don't worry.
 
-Signed-off-by: David Lechner <dlechner@baylibre.com>
----
- include/linux/spi/spi.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> >
+> > >
+> > > Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+> > > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> > > ---
+> > >  drivers/gpu/drm/msm/dp/dp_parser.c | 6 +++++-
+> > >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/gpu/drm/msm/dp/dp_parser.c b/drivers/gpu/drm/msm/dp/dp_parser.c
+> > > index 7032dcc8842b..eec5b8b83f4b 100644
+> > > --- a/drivers/gpu/drm/msm/dp/dp_parser.c
+> > > +++ b/drivers/gpu/drm/msm/dp/dp_parser.c
+> > > @@ -97,7 +97,11 @@ static u32 dp_parser_link_frequencies(struct device_node *of_node)
+> > >         u64 frequency = 0;
+> > >         int cnt;
+> > >
+> > > -       endpoint = of_graph_get_endpoint_by_regs(of_node, 1, 0); /* port@1 */
+> > > +       endpoint = of_graph_get_endpoint_by_regs(of_node, 0, 0); /* port@0 */
+> > > +
+> > > +       if (!endpoint)
+> > > +               endpoint = of_graph_get_endpoint_by_regs(of_node, 1, 0); /* port@1 */
+> > > +
+> > >         if (!endpoint)
+> > >                 return 0;
+> > >
+> > >
+> > > --
+> > > 2.34.1
+> > >
+> >
+> >
+> > --
+> > With best wishes
+> > Dmitry
 
-diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index 979cde8263df..61636b3209fb 100644
---- a/include/linux/spi/spi.h
-+++ b/include/linux/spi/spi.h
-@@ -1113,16 +1113,16 @@ struct spi_transfer {
-  * @spi: SPI device to which the transaction is queued
-  * @is_dma_mapped: if true, the caller provided both DMA and CPU virtual
-  *	addresses for each transfer buffer
-+ * @prepared: spi_prepare_message was called for the this message
-+ * @status: zero for success, else negative errno
-  * @complete: called to report transaction completions
-  * @context: the argument to complete() when it's called
-  * @frame_length: the total number of bytes in the message
-  * @actual_length: the total number of bytes that were transferred in all
-  *	successful segments
-- * @status: zero for success, else negative errno
-  * @queue: for use by whichever driver currently owns the message
-  * @state: for use by whichever driver currently owns the message
-  * @resources: for resource management when the SPI message is processed
-- * @prepared: spi_prepare_message was called for the this message
-  *
-  * A @spi_message is used to execute an atomic sequence of data transfers,
-  * each represented by a struct spi_transfer.  The sequence is "atomic"
+
+
 -- 
-2.43.0
-
+With best wishes
+Dmitry
 
