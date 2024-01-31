@@ -1,383 +1,358 @@
-Return-Path: <linux-kernel+bounces-45842-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45847-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F04D8436F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:52:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DA31843703
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:54:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D36001F23D13
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:52:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71FC51C262AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:54:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BFB34F608;
-	Wed, 31 Jan 2024 06:52:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D08F15102E;
+	Wed, 31 Jan 2024 06:54:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BF76NY+A"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KtZ0BqXl"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A9A34D58A;
-	Wed, 31 Jan 2024 06:51:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBAFE5024D
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 06:54:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706683922; cv=none; b=DQlRiKdjtN/E8jf4uZgsbu1tX5SIYNHtpSDgiHYQCNVW/9QRKe+BydiJUdDrSaqnT90kxktCPC73iBlnBCxlDvP/q1bo/gFxgvjzOvKoNjE6RGnWi72goi9MyYFZlOc9wLlWUy47tmnhMx83ab/NuWSgx2qOWD6KEf2XqucyH+A=
+	t=1706684055; cv=none; b=LXB8H7OJEyBbHR8YqY63bnG0TRJi0+51lRzDt4MLgldtyKd1zdOv1EGjFHYmT70f+H9C4KzCuy6mgSA1eP8/RDsVXhkEjfivoU17NRlCk7knGLRBY6uwfiaH1oQyGGVbsxQww6lMhNDFVqi8dX2YSawnivheHs3bMj31pQiOrqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706683922; c=relaxed/simple;
-	bh=jYOK061yQaam6MuVq1z6MkgHiDNW9juXyxajrIs+TEk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G6/HPlWSL8R7UqhntYma+PSacvgfwzQM/dScb3t49+1HC4WcManZ/gW0FMPt9Le4kxScLGvMexGbHcYgUc2sZGHhtPVX9wejF0pRzKgasepn+h04SnJ9PHUurAM27AGcNfFk27RlY5olVpgevPTpZgFlEYKl9ByADf0hHNQp41k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BF76NY+A; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1706684055; c=relaxed/simple;
+	bh=/F/ertmwsCGvy8CX6KW93prCcPXDnU1V09z8hHjJkU0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=fCsXFw/0YoKp2z9NWcDqzwkL1FmgTPqssTjv8PnSiqPy9t9SjZ6AO68z0NUrkWb0bxEddXbwVozil+5hvYXDXbJQiscnF6u8+TjYprG7p4xJwe9fux7cpsW3qaeA06lS61A41jYnWoArixp9BaBrNVl35iB7qk6ng03ZlDstbg0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KtZ0BqXl; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706683920; x=1738219920;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=jYOK061yQaam6MuVq1z6MkgHiDNW9juXyxajrIs+TEk=;
-  b=BF76NY+A2k9Jgd6QPt+a3AUY1KbdIVL0YTeOUUFA7Enq7rw2906qoJ0A
-   Ikijsz/Vu1k3QVtbVYoYU1Ni8ugUYsxFDhqPDqZb/Pgxs5aW8Fh8Tncs5
-   JOiGyZNV45mHEGmfugYhjWOVIP2n6s5Ga8WV2UEaek1JXr9vCgWnscBok
-   CEbeiUVDDD8GRiSEUsUNWEWBnXNBxb3+AkQyrzjxng4zZvTk05/KgZZ1O
-   NA8jDzoTNu1G3kBHvtp6q6mQDH6MMC5RTn7RIqBfLGKnDA/DH6NfYE6Ao
-   xH/pKvk8yyJ63ctjx0xgr6ORM+pCMUrTTu0eUlbYJjEmf/W+pZGExv+8a
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="24989828"
+  t=1706684054; x=1738220054;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=/F/ertmwsCGvy8CX6KW93prCcPXDnU1V09z8hHjJkU0=;
+  b=KtZ0BqXl/AGHr7lyoxDr/a+LzLccUQvDwgVMbZFfmjqbyo2/fvvLBfgZ
+   9iypPGAdxgIfnita7UnkhsX/mQAitaZqkY5YU1Fv/lklCqp+TxLeOqIaD
+   AQ1pjKZFXKta72CxwxCgaBOUNVFRND9QJJe2Gp0l82mZv8JnGLcffsKAW
+   OJKVP7f8RhW3qupeDBQLw346sI1J2aK9q2jEiR85P1h2gWaaX49JQOPG3
+   ti6T0jv2Bjl1auSuW3yGTmzZQDkLQ9SJTdfuUSwaBFkU7613XvjY5Wos+
+   YY1I9y22lYLENNkwiRAnuWWZy2MtcrvyurWg6FAf6lRDjmGWBE6JcYLcO
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="3353179"
 X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="24989828"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 22:52:00 -0800
+   d="scan'208";a="3353179"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 22:54:13 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="3939104"
-Received: from yy-desk-7060.sh.intel.com (HELO localhost) ([10.239.159.76])
-  by fmviesa005.fm.intel.com with ESMTP; 30 Jan 2024 22:51:56 -0800
-Date: Wed, 31 Jan 2024 14:51:55 +0800
-From: Yuan Yao <yuan.yao@linux.intel.com>
-To: isaku.yamahata@intel.com
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-	erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: Re: [PATCH v18 012/121] KVM: TDX: Define TDX architectural
- definitions
-Message-ID: <20240131065155.vebd4q3x6avw7g3q@yy-desk-7060>
-References: <cover.1705965634.git.isaku.yamahata@intel.com>
- <958dfa60e2570a38b4c4e997be2a72b294e6d91b.1705965634.git.isaku.yamahata@intel.com>
+   d="scan'208";a="30391993"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 22:54:11 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: "Yasunori Gotou (Fujitsu)" <y-goto@fujitsu.com>
+Cc: "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>,  Andrew Morton
+ <akpm@linux-foundation.org>,  Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>,  "rafael@kernel.org" <rafael@kernel.org>,
+  "linux-mm@kvack.org" <linux-mm@kvack.org>,
+  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFC 1/4] drivers/base/node: Add demotion_nodes sys
+ infterface
+In-Reply-To: <TYWPR01MB100828CBEE3E032C191C6D08E907C2@TYWPR01MB10082.jpnprd01.prod.outlook.com>
+	(Yasunori Gotou's message of "Wed, 31 Jan 2024 06:23:12 +0000")
+References: <20231102025648.1285477-1-lizhijian@fujitsu.com>
+	<20231102025648.1285477-2-lizhijian@fujitsu.com>
+	<878r7g3ktj.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<d1d5add8-8f4a-4578-8bf0-2cbe79b09989@fujitsu.com>
+	<87fryegv9c.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<TYWPR01MB100828CBEE3E032C191C6D08E907C2@TYWPR01MB10082.jpnprd01.prod.outlook.com>
+Date: Wed, 31 Jan 2024 14:52:15 +0800
+Message-ID: <8734uegfkw.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <958dfa60e2570a38b4c4e997be2a72b294e6d91b.1705965634.git.isaku.yamahata@intel.com>
-User-Agent: NeoMutt/20171215
+Content-Type: text/plain; charset=ascii
 
-On Mon, Jan 22, 2024 at 03:52:48PM -0800, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
->
-> Define architectural definitions for KVM to issue the TDX SEAMCALLs.
->
-> Structures and values that are architecturally defined in the TDX module
-> specifications the chapter of ABI Reference.
->
-> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+"Yasunori Gotou (Fujitsu)" <y-goto@fujitsu.com> writes:
 
-Reviewed-by: Yuan Yao <yuan.yao@intel.com>
+> Hello,
+>
+>> Li Zhijian <lizhijian@fujitsu.com> writes:
+>> 
+>> > Hi Ying
+>> >
+>> > I need to pick up this thread/patch again.
+>> >
+>> >> We have /sys/devices/virtual/memory_tiering/memory_tier*/nodelist
+>> >> already.  A node in a higher tier can demote to any node in the lower
+>> >> tiers.  What's more need to be displayed in nodeX/demotion_nodes?
+>> >>
+>> >
+>> > Yes, it's believed that
+>> > /sys/devices/virtual/memory_tiering/memory_tierN/nodelist
+>> > are intended to show nodes in memory_tierN. But IMHO, it's not enough,
+>> > especially for the preferred demotion node(s).
+>> >
+>> > Currently, when a demotion occurs, it will prioritize selecting a node
+>> > from the preferred nodes as the destination node for the demotion. If
+>> > the preferred nodes does not meet the requirements, it will try from
+>> > all the lower memory tier nodes until it finds a suitable demotion
+>> > destination node or ultimately fails.
+>> >
+>> > However, currently it only lists the nodes of each tier. If the
+>> > administrators want to know all the possible demotion destinations for
+>> > a given node, they need to calculate it themselves:
+>> > Step 1, find the memory tier where the given node is located Step 2,
+>> > list all nodes under all its lower tiers
+>> >
+>> > It will be even more difficult to know the preferred nodes which
+>> > depend on more factors, distance etc. For the following example, we
+>> > may have 6 nodes splitting into three memory tiers.
+>> >
+>> > For emulated hmat numa topology example:
+>> >> $ numactl -H
+>> >> available: 6 nodes (0-5)
+>> >> node 0 cpus: 0
+>> >> node 0 size: 1974 MB
+>> >> node 0 free: 1767 MB
+>> >> node 1 cpus: 1
+>> >> node 1 size: 1694 MB
+>> >> node 1 free: 1454 MB
+>> >> node 2 cpus:
+>> >> node 2 size: 896 MB
+>> >> node 2 free: 896 MB
+>> >> node 3 cpus:
+>> >> node 3 size: 896 MB
+>> >> node 3 free: 896 MB
+>> >> node 4 cpus:
+>> >> node 4 size: 896 MB
+>> >> node 4 free: 896 MB
+>> >> node 5 cpus:
+>> >> node 5 size: 896 MB
+>> >> node 5 free: 896 MB
+>> >> node distances:
+>> >> node   0   1   2   3   4   5
+>> >> 0:  10  31  21  41  21  41
+>> >> 1:  31  10  41  21  41  21
+>> >> 2:  21  41  10  51  21  51
+>> >> 3:  31  21  51  10  51  21
+>> >> 4:  21  41  21  51  10  51
+>> >> 5:  31  21  51  21  51  10
+>> >> $ cat memory_tier4/nodelist
+>> >> 0-1
+>> >> $ cat memory_tier12/nodelist
+>> >> 2,5
+>> >> $ cat memory_tier54/nodelist
+>> >> 3-4
+>> >
+>> > For above topology, memory-tier will build the demotion path for each
+>> > node like this:
+>> > node[0].preferred = 2
+>> > node[0].demotion_targets = 2-5
+>> > node[1].preferred = 5
+>> > node[1].demotion_targets = 2-5
+>> > node[2].preferred = 4
+>> > node[2].demotion_targets = 3-4
+>> > node[3].preferred = <empty>
+>> > node[3].demotion_targets = <empty>
+>> > node[4].preferred = <empty>
+>> > node[4].demotion_targets = <empty>
+>> > node[5].preferred = 3
+>> > node[5].demotion_targets = 3-4
+>> >
+>> > But this demotion path is not explicitly known to administrator. And
+>> > with the feedback from our customers, they also think it is helpful to
+>> > know demotion path built by kernel to understand the demotion
+>> > behaviors.
+>> >
+>> > So i think we should have 2 new interfaces for each node:
+>> >
+>> > /sys/devices/system/node/nodeN/demotion_allowed_nodes
+>> > /sys/devices/system/node/nodeN/demotion_preferred_nodes
+>> >
+>> > I value your opinion, and I'd like to know what you think about...
+>> 
+>> Per my understanding, we will not expose everything inside kernel to user
+>> space.  For page placement in a tiered memory system, demotion is just a part
+>> of the story.  For example, if the DRAM of a system becomes full, new page
+>> allocation will fall back to the CXL memory.  Have we exposed the default page
+>> allocation fallback order to user space?
+>
+> In extreme terms, users want to analyze all the memory behaviors of memory management
+> while executing their workload, and want to trace ALL of them if possible.
+> Of course, it is impossible due to the heavy load, then users want to have other ways as
+> a compromise. Our request, the demotion target information, is just one of them.
+>
+> In my impression, users worry about the impact of the CXL memory device on their workload, 
+> and want to have a way to understand the impact.
+> If they know there is no information to remove their anxious, they may avoid to buy CXL memory.
+>
+> In addition, our support team also needs to have clues to solve users' performance problems. 
+> Even if new page allocation will fall back to the CXL memory, we need to explain why it would
+> happen as accountability.
 
-> ---
-> v18:
-> - Add metadata field id
-> ---
->  arch/x86/kvm/vmx/tdx_arch.h | 269 ++++++++++++++++++++++++++++++++++++
->  1 file changed, 269 insertions(+)
->  create mode 100644 arch/x86/kvm/vmx/tdx_arch.h
+I guess
+
+/proc/<PID>/numa_maps
+/sys/fs/cgroup/<CGNAME>/memory.numa_stat
+
+may help to understand system behavior.
+
+--
+Best Regards,
+Huang, Ying
+
+>> 
+>> All in all, in my opinion, we only expose as little as possible to user space
+>> because we need to maintain the ABI for ever.
 >
-> diff --git a/arch/x86/kvm/vmx/tdx_arch.h b/arch/x86/kvm/vmx/tdx_arch.h
-> new file mode 100644
-> index 000000000000..569d59c55229
-> --- /dev/null
-> +++ b/arch/x86/kvm/vmx/tdx_arch.h
-> @@ -0,0 +1,269 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/* architectural constants/data definitions for TDX SEAMCALLs */
-> +
-> +#ifndef __KVM_X86_TDX_ARCH_H
-> +#define __KVM_X86_TDX_ARCH_H
-> +
-> +#include <linux/types.h>
-> +
-> +/*
-> + * TDX SEAMCALL API function leaves
-> + */
-> +#define TDH_VP_ENTER			0
-> +#define TDH_MNG_ADDCX			1
-> +#define TDH_MEM_PAGE_ADD		2
-> +#define TDH_MEM_SEPT_ADD		3
-> +#define TDH_VP_ADDCX			4
-> +#define TDH_MEM_PAGE_RELOCATE		5
-> +#define TDH_MEM_PAGE_AUG		6
-> +#define TDH_MEM_RANGE_BLOCK		7
-> +#define TDH_MNG_KEY_CONFIG		8
-> +#define TDH_MNG_CREATE			9
-> +#define TDH_VP_CREATE			10
-> +#define TDH_MNG_RD			11
-> +#define TDH_MR_EXTEND			16
-> +#define TDH_MR_FINALIZE			17
-> +#define TDH_VP_FLUSH			18
-> +#define TDH_MNG_VPFLUSHDONE		19
-> +#define TDH_MNG_KEY_FREEID		20
-> +#define TDH_MNG_INIT			21
-> +#define TDH_VP_INIT			22
-> +#define TDH_MEM_SEPT_RD			25
-> +#define TDH_VP_RD			26
-> +#define TDH_MNG_KEY_RECLAIMID		27
-> +#define TDH_PHYMEM_PAGE_RECLAIM		28
-> +#define TDH_MEM_PAGE_REMOVE		29
-> +#define TDH_MEM_SEPT_REMOVE		30
-> +#define TDH_SYS_RD			34
-> +#define TDH_MEM_TRACK			38
-> +#define TDH_MEM_RANGE_UNBLOCK		39
-> +#define TDH_PHYMEM_CACHE_WB		40
-> +#define TDH_PHYMEM_PAGE_WBINVD		41
-> +#define TDH_VP_WR			43
-> +#define TDH_SYS_LP_SHUTDOWN		44
-> +
-> +#define TDG_VP_VMCALL_GET_TD_VM_CALL_INFO		0x10000
-> +#define TDG_VP_VMCALL_MAP_GPA				0x10001
-> +#define TDG_VP_VMCALL_GET_QUOTE				0x10002
-> +#define TDG_VP_VMCALL_REPORT_FATAL_ERROR		0x10003
-> +#define TDG_VP_VMCALL_SETUP_EVENT_NOTIFY_INTERRUPT	0x10004
-> +
-> +/* TDX control structure (TDR/TDCS/TDVPS) field access codes */
-> +#define TDX_NON_ARCH			BIT_ULL(63)
-> +#define TDX_CLASS_SHIFT			56
-> +#define TDX_FIELD_MASK			GENMASK_ULL(31, 0)
-> +
-> +#define __BUILD_TDX_FIELD(non_arch, class, field)	\
-> +	(((non_arch) ? TDX_NON_ARCH : 0) |		\
-> +	 ((u64)(class) << TDX_CLASS_SHIFT) |		\
-> +	 ((u64)(field) & TDX_FIELD_MASK))
-> +
-> +#define BUILD_TDX_FIELD(class, field)			\
-> +	__BUILD_TDX_FIELD(false, (class), (field))
-> +
-> +#define BUILD_TDX_FIELD_NON_ARCH(class, field)		\
-> +	__BUILD_TDX_FIELD(true, (class), (field))
-> +
-> +
-> +/* Class code for TD */
-> +#define TD_CLASS_EXECUTION_CONTROLS	17ULL
-> +
-> +/* Class code for TDVPS */
-> +#define TDVPS_CLASS_VMCS		0ULL
-> +#define TDVPS_CLASS_GUEST_GPR		16ULL
-> +#define TDVPS_CLASS_OTHER_GUEST		17ULL
-> +#define TDVPS_CLASS_MANAGEMENT		32ULL
-> +
-> +enum tdx_tdcs_execution_control {
-> +	TD_TDCS_EXEC_TSC_OFFSET = 10,
-> +};
-> +
-> +/* @field is any of enum tdx_tdcs_execution_control */
-> +#define TDCS_EXEC(field)		BUILD_TDX_FIELD(TD_CLASS_EXECUTION_CONTROLS, (field))
-> +
-> +/* @field is the VMCS field encoding */
-> +#define TDVPS_VMCS(field)		BUILD_TDX_FIELD(TDVPS_CLASS_VMCS, (field))
-> +
-> +enum tdx_vcpu_guest_other_state {
-> +	TD_VCPU_STATE_DETAILS_NON_ARCH = 0x100,
-> +};
-> +
-> +union tdx_vcpu_state_details {
-> +	struct {
-> +		u64 vmxip	: 1;
-> +		u64 reserved	: 63;
-> +	};
-> +	u64 full;
-> +};
-> +
-> +/* @field is any of enum tdx_guest_other_state */
-> +#define TDVPS_STATE(field)		BUILD_TDX_FIELD(TDVPS_CLASS_OTHER_GUEST, (field))
-> +#define TDVPS_STATE_NON_ARCH(field)	BUILD_TDX_FIELD_NON_ARCH(TDVPS_CLASS_OTHER_GUEST, (field))
-> +
-> +/* Management class fields */
-> +enum tdx_vcpu_guest_management {
-> +	TD_VCPU_PEND_NMI = 11,
-> +};
-> +
-> +/* @field is any of enum tdx_vcpu_guest_management */
-> +#define TDVPS_MANAGEMENT(field)		BUILD_TDX_FIELD(TDVPS_CLASS_MANAGEMENT, (field))
-> +
-> +#define TDX_EXTENDMR_CHUNKSIZE		256
-> +
-> +struct tdx_cpuid_value {
-> +	u32 eax;
-> +	u32 ebx;
-> +	u32 ecx;
-> +	u32 edx;
-> +} __packed;
-> +
-> +#define TDX_TD_ATTRIBUTE_DEBUG		BIT_ULL(0)
-> +#define TDX_TD_ATTR_SEPT_VE_DISABLE	BIT_ULL(28)
-> +#define TDX_TD_ATTRIBUTE_PKS		BIT_ULL(30)
-> +#define TDX_TD_ATTRIBUTE_KL		BIT_ULL(31)
-> +#define TDX_TD_ATTRIBUTE_PERFMON	BIT_ULL(63)
-> +
-> +/*
-> + * TD_PARAMS is provided as an input to TDH_MNG_INIT, the size of which is 1024B.
-> + */
-> +#define TDX_MAX_VCPUS	(~(u16)0)
-> +
-> +struct td_params {
-> +	u64 attributes;
-> +	u64 xfam;
-> +	u16 max_vcpus;
-> +	u8 reserved0[6];
-> +
-> +	u64 eptp_controls;
-> +	u64 exec_controls;
-> +	u16 tsc_frequency;
-> +	u8  reserved1[38];
-> +
-> +	u64 mrconfigid[6];
-> +	u64 mrowner[6];
-> +	u64 mrownerconfig[6];
-> +	u64 reserved2[4];
-> +
-> +	union {
-> +		DECLARE_FLEX_ARRAY(struct tdx_cpuid_value, cpuid_values);
-> +		u8 reserved3[768];
-> +	};
-> +} __packed __aligned(1024);
-> +
-> +/*
-> + * Guest uses MAX_PA for GPAW when set.
-> + * 0: GPA.SHARED bit is GPA[47]
-> + * 1: GPA.SHARED bit is GPA[51]
-> + */
-> +#define TDX_EXEC_CONTROL_MAX_GPAW      BIT_ULL(0)
-> +
-> +/*
-> + * TDH.VP.ENTER, TDG.VP.VMCALL preserves RBP
-> + * 0: RBP can be used for TDG.VP.VMCALL input. RBP is clobbered.
-> + * 1: RBP can't be used for TDG.VP.VMCALL input. RBP is preserved.
-> + */
-> +#define TDX_CONTROL_FLAG_NO_RBP_MOD	BIT_ULL(1)
-> +
-> +
-> +/*
-> + * TDX requires the frequency to be defined in units of 25MHz, which is the
-> + * frequency of the core crystal clock on TDX-capable platforms, i.e. the TDX
-> + * module can only program frequencies that are multiples of 25MHz.  The
-> + * frequency must be between 100mhz and 10ghz (inclusive).
-> + */
-> +#define TDX_TSC_KHZ_TO_25MHZ(tsc_in_khz)	((tsc_in_khz) / (25 * 1000))
-> +#define TDX_TSC_25MHZ_TO_KHZ(tsc_in_25mhz)	((tsc_in_25mhz) * (25 * 1000))
-> +#define TDX_MIN_TSC_FREQUENCY_KHZ		(100 * 1000)
-> +#define TDX_MAX_TSC_FREQUENCY_KHZ		(10 * 1000 * 1000)
-> +
-> +union tdx_sept_entry {
-> +	struct {
-> +		u64 r		:  1;
-> +		u64 w		:  1;
-> +		u64 x		:  1;
-> +		u64 mt		:  3;
-> +		u64 ipat	:  1;
-> +		u64 leaf	:  1;
-> +		u64 a		:  1;
-> +		u64 d		:  1;
-> +		u64 xu		:  1;
-> +		u64 ignored0	:  1;
-> +		u64 pfn		: 40;
-> +		u64 reserved	:  5;
-> +		u64 vgp		:  1;
-> +		u64 pwa		:  1;
-> +		u64 ignored1	:  1;
-> +		u64 sss		:  1;
-> +		u64 spp		:  1;
-> +		u64 ignored2	:  1;
-> +		u64 sve		:  1;
-> +	};
-> +	u64 raw;
-> +};
-> +
-> +enum tdx_sept_entry_state {
-> +	TDX_SEPT_FREE = 0,
-> +	TDX_SEPT_BLOCKED = 1,
-> +	TDX_SEPT_PENDING = 2,
-> +	TDX_SEPT_PENDING_BLOCKED = 3,
-> +	TDX_SEPT_PRESENT = 4,
-> +};
-> +
-> +union tdx_sept_level_state {
-> +	struct {
-> +		u64 level	:  3;
-> +		u64 reserved0	:  5;
-> +		u64 state	:  8;
-> +		u64 reserved1	: 48;
-> +	};
-> +	u64 raw;
-> +};
-> +
-> +/*
-> + * Global scope metadata field ID.
-> + * See Table "Global Scope Metadata", TDX module 1.5 ABI spec.
-> + */
-> +#define MD_FIELD_ID_SYS_ATTRIBUTES		0x0A00000200000000ULL
-> +#define MD_FIELD_ID_FEATURES0			0x0A00000300000008ULL
-> +#define MD_FIELD_ID_ATTRS_FIXED0		0x1900000300000000ULL
-> +#define MD_FIELD_ID_ATTRS_FIXED1		0x1900000300000001ULL
-> +#define MD_FIELD_ID_XFAM_FIXED0			0x1900000300000002ULL
-> +#define MD_FIELD_ID_XFAM_FIXED1			0x1900000300000003ULL
-> +
-> +#define MD_FIELD_ID_TDCS_BASE_SIZE		0x9800000100000100ULL
-> +#define MD_FIELD_ID_TDVPS_BASE_SIZE		0x9800000100000200ULL
-> +
-> +#define MD_FIELD_ID_NUM_CPUID_CONFIG		0x9900000100000004ULL
-> +#define MD_FIELD_ID_CPUID_CONFIG_LEAVES		0x9900000300000400ULL
-> +#define MD_FIELD_ID_CPUID_CONFIG_VALUES		0x9900000300000500ULL
-> +
-> +#define TDX_MAX_NR_CPUID_CONFIGS       37
-> +
-> +#define TDX_MD_ELEMENT_SIZE_8BITS      0
-> +#define TDX_MD_ELEMENT_SIZE_16BITS     1
-> +#define TDX_MD_ELEMENT_SIZE_32BITS     2
-> +#define TDX_MD_ELEMENT_SIZE_64BITS     3
-> +
-> +union tdx_md_field_id {
-> +	struct {
-> +		u64 field                       : 24;
-> +		u64 reserved0                   : 8;
-> +		u64 element_size_code           : 2;
-> +		u64 last_element_in_field       : 4;
-> +		u64 reserved1                   : 3;
-> +		u64 inc_size                    : 1;
-> +		u64 write_mask_valid            : 1;
-> +		u64 context                     : 3;
-> +		u64 reserved2                   : 1;
-> +		u64 class                       : 6;
-> +		u64 reserved3                   : 1;
-> +		u64 non_arch                    : 1;
-> +	};
-> +	u64 raw;
-> +};
-> +
-> +#define TDX_MD_ELEMENT_SIZE_CODE(_field_id)			\
-> +	({ union tdx_md_field_id _fid = { .raw = (_field_id)};  \
-> +		_fid.element_size_code; })
-> +
-> +#endif /* __KVM_X86_TDX_ARCH_H */
-> --
-> 2.25.1
+> I can understand there is a compatibility problem by our propose, and kernel may
+> change its logic in future. This is a tug-of-war situation between kernel developers
+> and users or support engineers. I suppose It often occurs in many place...
 >
+> Hmm... I hope there is a new idea to solve this situation even if our proposal is rejected..
+> Anyone?
 >
+> Thanks,
+> ----
+> Yasunori Goto
+>
+>> 
+>> --
+>> Best Regards,
+>> Huang, Ying
+>> 
+>> >
+>> > On 02/11/2023 11:17, Huang, Ying wrote:
+>> >> Li Zhijian <lizhijian@fujitsu.com> writes:
+>> >>
+>> >>> It shows the demotion target nodes of a node. Export this
+>> >>> information to user directly.
+>> >>>
+>> >>> Below is an example where node0 node1 are DRAM, node3 is a PMEM
+>> node.
+>> >>> - Before PMEM is online, no demotion_nodes for node0 and node1.
+>> >>> $ cat /sys/devices/system/node/node0/demotion_nodes
+>> >>>   <show nothing>
+>> >>> - After node3 is online as kmem
+>> >>> $ daxctl reconfigure-device --mode=system-ram --no-online dax0.0 &&
+>> >>> daxctl online-memory dax0.0 [
+>> >>>    {
+>> >>>      "chardev":"dax0.0",
+>> >>>      "size":1054867456,
+>> >>>      "target_node":3,
+>> >>>      "align":2097152,
+>> >>>      "mode":"system-ram",
+>> >>>      "online_memblocks":0,
+>> >>>      "total_memblocks":7
+>> >>>    }
+>> >>> ]
+>> >>> $ cat /sys/devices/system/node/node0/demotion_nodes
+>> >>> 3
+>> >>> $ cat /sys/devices/system/node/node1/demotion_nodes
+>> >>> 3
+>> >>> $ cat /sys/devices/system/node/node3/demotion_nodes
+>> >>>   <show nothing>
+>> >> We have /sys/devices/virtual/memory_tiering/memory_tier*/nodelist
+>> >> already.  A node in a higher tier can demote to any node in the lower
+>> >> tiers.  What's more need to be displayed in nodeX/demotion_nodes?
+>> >> --
+>> >> Best Regards,
+>> >> Huang, Ying
+>> >>
+>> >>> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+>> >>> ---
+>> >>>   drivers/base/node.c          | 13 +++++++++++++
+>> >>>   include/linux/memory-tiers.h |  6 ++++++
+>> >>>   mm/memory-tiers.c            |  8 ++++++++
+>> >>>   3 files changed, 27 insertions(+)
+>> >>>
+>> >>> diff --git a/drivers/base/node.c b/drivers/base/node.c index
+>> >>> 493d533f8375..27e8502548a7 100644
+>> >>> --- a/drivers/base/node.c
+>> >>> +++ b/drivers/base/node.c
+>> >>> @@ -7,6 +7,7 @@
+>> >>>   #include <linux/init.h>
+>> >>>   #include <linux/mm.h>
+>> >>>   #include <linux/memory.h>
+>> >>> +#include <linux/memory-tiers.h>
+>> >>>   #include <linux/vmstat.h>
+>> >>>   #include <linux/notifier.h>
+>> >>>   #include <linux/node.h>
+>> >>> @@ -569,11 +570,23 @@ static ssize_t node_read_distance(struct device
+>> *dev,
+>> >>>   }
+>> >>>   static DEVICE_ATTR(distance, 0444, node_read_distance, NULL);
+>> >>>   +static ssize_t demotion_nodes_show(struct device *dev,
+>> >>> +			     struct device_attribute *attr, char *buf) {
+>> >>> +	int ret;
+>> >>> +	nodemask_t nmask = next_demotion_nodes(dev->id);
+>> >>> +
+>> >>> +	ret = sysfs_emit(buf, "%*pbl\n", nodemask_pr_args(&nmask));
+>> >>> +	return ret;
+>> >>> +}
+>> >>> +static DEVICE_ATTR_RO(demotion_nodes);
+>> >>> +
+>> >>>   static struct attribute *node_dev_attrs[] = {
+>> >>>   	&dev_attr_meminfo.attr,
+>> >>>   	&dev_attr_numastat.attr,
+>> >>>   	&dev_attr_distance.attr,
+>> >>>   	&dev_attr_vmstat.attr,
+>> >>> +	&dev_attr_demotion_nodes.attr,
+>> >>>   	NULL
+>> >>>   };
+>> >>>   diff --git a/include/linux/memory-tiers.h
+>> >>> b/include/linux/memory-tiers.h index 437441cdf78f..8eb04923f965
+>> >>> 100644
+>> >>> --- a/include/linux/memory-tiers.h
+>> >>> +++ b/include/linux/memory-tiers.h
+>> >>> @@ -38,6 +38,7 @@ void init_node_memory_type(int node, struct
+>> memory_dev_type *default_type);
+>> >>>   void clear_node_memory_type(int node, struct memory_dev_type
+>> *memtype);
+>> >>>   #ifdef CONFIG_MIGRATION
+>> >>>   int next_demotion_node(int node);
+>> >>> +nodemask_t next_demotion_nodes(int node);
+>> >>>   void node_get_allowed_targets(pg_data_t *pgdat, nodemask_t
+>> *targets);
+>> >>>   bool node_is_toptier(int node);
+>> >>>   #else
+>> >>> @@ -46,6 +47,11 @@ static inline int next_demotion_node(int node)
+>> >>>   	return NUMA_NO_NODE;
+>> >>>   }
+>> >>>   +static inline next_demotion_nodes next_demotion_nodes(int node)
+>> >>> +{
+>> >>> +	return NODE_MASK_NONE;
+>> >>> +}
+>> >>> +
+>> >>>   static inline void node_get_allowed_targets(pg_data_t *pgdat,
+>> nodemask_t *targets)
+>> >>>   {
+>> >>>   	*targets = NODE_MASK_NONE;
+>> >>> diff --git a/mm/memory-tiers.c b/mm/memory-tiers.c index
+>> >>> 37a4f59d9585..90047f37d98a 100644
+>> >>> --- a/mm/memory-tiers.c
+>> >>> +++ b/mm/memory-tiers.c
+>> >>> @@ -282,6 +282,14 @@ void node_get_allowed_targets(pg_data_t *pgdat,
+>> nodemask_t *targets)
+>> >>>   	rcu_read_unlock();
+>> >>>   }
+>> >>>   +nodemask_t next_demotion_nodes(int node)
+>> >>> +{
+>> >>> +	if (!node_demotion)
+>> >>> +		return NODE_MASK_NONE;
+>> >>> +
+>> >>> +	return node_demotion[node].preferred; }
+>> >>> +
+>> >>>   /**
+>> >>>    * next_demotion_node() - Get the next node in the demotion path
+>> >>>    * @node: The starting node to lookup the next node
 
