@@ -1,65 +1,64 @@
-Return-Path: <linux-kernel+bounces-46108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B08B843A72
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:11:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44C4F843A76
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:12:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 300A61C2858F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:11:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C68591F2AD6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:12:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D70256773B;
-	Wed, 31 Jan 2024 09:09:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1607367E90;
+	Wed, 31 Jan 2024 09:09:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="1FwP3b2L"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2059.outbound.protection.outlook.com [40.107.220.59])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="BQrIVFNT"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2052.outbound.protection.outlook.com [40.107.220.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F16136340C;
-	Wed, 31 Jan 2024 09:09:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.59
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5593967E86;
+	Wed, 31 Jan 2024 09:09:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.52
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706692172; cv=fail; b=q469oPY5cqfrjUhrlfDpP7lQ72YT9TFjseZIFoqQnApYnRhN4DfcinIDpRNM8YUsuxThlV7lNp53baTheC3wWDcFU51ghcZ1zlnpvvdz7yGCrdnWJfPsRf4tm4ZLlE1INJnD4SKu5Pn6IturjCD5/kttpI0eqgnwOMZdDLNaeZk=
+	t=1706692181; cv=fail; b=CQPbSqhe9a8BoS6rnvtH5wKae+fIMCh0uRsrYZmqzk/wATLWIPI5zlf9uMeJrD5LAaMhOfY+5Nn7iJlEQ4YmNtC24342hYB5wSFgmvcqOgMXGN8J4qghlFXRdgZyzGVSNUVbDZ+5cr45D+ucJUBNPL0A91DD2+KEgnrV4Jd1gMc=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706692172; c=relaxed/simple;
-	bh=TRqFEaL4lrynw/YHaxphhMkz0JhpOTUNpu9Wgmk/vCg=;
+	s=arc-20240116; t=1706692181; c=relaxed/simple;
+	bh=BHJL1m30V1eH5iCR7w2BTeHXcHXgIy8xzPZlMTIl0dY=;
 	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=j+kxtzEWl843s1ejCwmMMG4mQ5w7aZBGXSWe3Fnxvc+QExKiEE1iu8byQEVug2HB3w9hH8wFzqGCJKaQV0QoRtOocM7bF4DBN738pZbIv52UOBsyyAW92jodQSoAuWa7P70zcH7xKGb9wqZsgOey8XjbzL8zTMfgc/qpe1tjUno=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=1FwP3b2L; arc=fail smtp.client-ip=40.107.220.59
+	 Content-Type:MIME-Version; b=CUjF8z6Dj+Q7VvMzWd+PR5KsDaQQGFZkODC5mSqFdTOwv+ISfeWrWQF2fASRGm50KgUx3YAMkWiaNzGFYIhTIkKRiciCn7QJtbbPqD67GagKKCoBuah5Fuv/FXEDQ1aOQ5Vwd/g29Va3xYEE/quok4wQzgpDcazdUSTN9w7km78=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=BQrIVFNT; arc=fail smtp.client-ip=40.107.220.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SkLbZZNq/PeSva9+yM0EQe7ych5zOIJO85cYlXqXA4sxYYtms5U78kJWbNZBnUlbycOKlERoHHgNViobJ+lf2vHDqSw+68o4a3OR5+vKxPAC2lm7ABtkiYVLI9Wd3RqVL5iFn+OqvIa1kpb6xiziSAP1kqxBT1kMf7dfKlzmQu+Oz2eF/wobai07dmMNGhLgu3Uet9xP4OUpzupbPUVru7D7BDu5brlj2d4g1WkC64JZ+0uv8OoTt46IvCoBCNRi2oHCP/oWM63c1HpEUbxdzCfV7EV7E3YbXtpCxMC8oedD+eW7WKsAhgLpaBvDoWSWY2TuwEj6WurXb/38KuzTkg==
+ b=bWohFj7FLunIDCKn1sdATblycZ2a083caMK1vOq38nJjLZd2keS0Kta/g8D3NvLbdsmGCAz9O5ygAbR8yNnpog2YeWQ4PPXU9mRy76/FJnXCRU+3NRygvAmRMMb1r6slp8CVCmAwhXwcNHnds8NQcVBpLKvjYKNHmBwYHkA/SEkxWwUGij1xmUEIF9Heq5NQvqd22PycQk5+sNBOUe0DI6rZq1tmgffqxtsh4tDSoZQq84GRhqzXTqW7AJ/f1/JoUXBem8bN+9OlKG+t8ugl/qPJLgRtlO9GAY3wb17+M2DKgejxNr2kR8xQ027osURIkOTykPTacTgqM82qbtljAA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=o0NwDkIoRj6fDBOYzQquQ9+afoYU/ONJ5jQKpx1eZgk=;
- b=iEQn8lG4Dzhck4BKwXWM5tW6yhLQXxi4OQDjeMny0nzJTdNf7drGA5mp1NH12wdlu32FyakFrW7A8Q6AASbaKQNjoHGx+VcWCVNFM9N+jfhHnwsyGARtl/4KHCAYlaTa+TD9qYodafhuX172MRW+ZG/0i/q3jb9rUsqWZCSrCjwf20a9Y9oOCqXYynfbI14jMLCuEo5Hc4nIQvz/XbbYGGxGXPoEHr3+UR65gVlhjBPpsHEsNUNmh+Y9ErIqDNEUvZgnOB98lThUHBj+aTBVLWxJon+wfU5977PB8AgwZZjydqIX4mQ7suTDf31B4GbE3LrnZIDmdoJA9yetZVV5eg==
+ bh=gjK9NyNyiJJrdaBj/JwIU6eFfY3W/h39LafxEmMwvkE=;
+ b=HjcB/olZx22ZB1Zw+mXws0ICWELqoSoVjCUUKK9XtEnl6fwknDRGdtyhkrD/J4nAlHuh3x+5xjLJkUTKij0cG5EFcmwKX3p4rml1DEixhPDauvMI3mKi/t+Y9bHtz7lOZGm2BbKNym+gUaQmIW+Yzu0yBmLMdWiB3Rp3BMD50EqeT8fEDS9RSlnRMWeIX2I5TZpFKqjBQtOCjGf1GnEhq/PEU3Qe8DXtfVl9UpukHbClJa5njUwCplbCRg8jP2x+qpch+xrBeF+eWzEblwYodH8oBL616Ldj1xw/XLgV4NW2UenuegGQvgQ8WbuopbgMsS7EmwWmaAZA/tI4TtGfWA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=o0NwDkIoRj6fDBOYzQquQ9+afoYU/ONJ5jQKpx1eZgk=;
- b=1FwP3b2LyYWAUohrtRTc7WTw7kGwQdo6S5I/zR5cgODPg6ZaPFBCXX4zEnNc5OC2cGR/Le2crXbUstCCOsoBQD71dXW1bDiep/T9WxZFmB3xVcmKUi88FBlNznP62VZhO5ztEnZJSwZsw/lBhxtHSLa+BXRF8YGo03eaO2uK+/E=
+ bh=gjK9NyNyiJJrdaBj/JwIU6eFfY3W/h39LafxEmMwvkE=;
+ b=BQrIVFNTh9rths4OkFxW/DzACUq6kIQGxz91fS7VUyq0KF2DJrq5K6uVa5zpWED52GNCBrTceW3eJk5tGdeYsTy54e9L6uzBmRTVsHg+xYUirnzsePm6Q74gSup1X2j+pNHqLVt0+MWTZUTNYwREEm5xFeChBprAROqwN3JbQ34=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=amd.com;
 Received: from CYXPR12MB9337.namprd12.prod.outlook.com (2603:10b6:930:d8::20)
  by CH3PR12MB8258.namprd12.prod.outlook.com (2603:10b6:610:128::18) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.34; Wed, 31 Jan
- 2024 09:09:29 +0000
+ 2024 09:09:37 +0000
 Received: from CYXPR12MB9337.namprd12.prod.outlook.com
  ([fe80::772d:da3d:154b:fa45]) by CYXPR12MB9337.namprd12.prod.outlook.com
  ([fe80::772d:da3d:154b:fa45%7]) with mapi id 15.20.7228.029; Wed, 31 Jan 2024
- 09:09:29 +0000
-Message-ID: <537eb07a-07e8-4af2-ad83-058e010f892c@amd.com>
-Date: Wed, 31 Jan 2024 10:09:14 +0100
+ 09:09:37 +0000
+Message-ID: <c0742517-868d-4dbc-b6e1-a5fddeceb6d9@amd.com>
+Date: Wed, 31 Jan 2024 10:09:24 +0100
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] dt-bindings: soc: xilinx: Add support for K26 rev2
- SOMs
+Subject: Re: [PATCH] dt-bindings: soc: xilinx: Add support for KV260 CC
 Content-Language: en-US
 To: linux-kernel@vger.kernel.org, monstr@monstr.eu, michal.simek@xilinx.com,
  git@xilinx.com
@@ -69,7 +68,7 @@ Cc: Conor Dooley <conor+dt@kernel.org>,
  "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
  <devicetree@vger.kernel.org>,
  "moderated list:ARM/ZYNQ ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>
-References: <90e1a393154c3d87e8ee7dc9eef07fc937c1eaf7.1706019397.git.michal.simek@amd.com>
+References: <14c184225cc4f0a61da5f8c98bc0767f8deba0df.1706019781.git.michal.simek@amd.com>
 From: Michal Simek <michal.simek@amd.com>
 Autocrypt: addr=michal.simek@amd.com; keydata=
  xsFNBFFuvDEBEAC9Amu3nk79+J+4xBOuM5XmDmljuukOc6mKB5bBYOa4SrWJZTjeGRf52VMc
@@ -115,11 +114,11 @@ Autocrypt: addr=michal.simek@amd.com; keydata=
  y7RkYPOpmElF2pwWI/SXKOgMUgigedGCl1QRUio7iifBmXHkRrTgNT0PWQmeGsWTmfRit2+i
  l2dpB2lxha72cQ6MTEmL65HaoeANhtfO1se2R9dej57g+urO9V2v/UglZG1wsyaP/vOrgs+3
  3i3l5DA=
-In-Reply-To: <90e1a393154c3d87e8ee7dc9eef07fc937c1eaf7.1706019397.git.michal.simek@amd.com>
+In-Reply-To: <14c184225cc4f0a61da5f8c98bc0767f8deba0df.1706019781.git.michal.simek@amd.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: VI1PR04CA0101.eurprd04.prod.outlook.com
- (2603:10a6:803:64::36) To CYXPR12MB9337.namprd12.prod.outlook.com
+X-ClientProxiedBy: VI1PR04CA0105.eurprd04.prod.outlook.com
+ (2603:10a6:803:64::40) To CYXPR12MB9337.namprd12.prod.outlook.com
  (2603:10b6:930:d8::20)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -129,161 +128,139 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: CYXPR12MB9337:EE_|CH3PR12MB8258:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9092b9aa-56f6-4668-cc65-08dc223c544e
+X-MS-Office365-Filtering-Correlation-Id: f72ebc39-aab9-4825-18b8-08dc223c5963
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	EjHp3i5LVcI8uQyh3b8F5dP6lUhKtkXzWw/AEciE38o3FPRciD3XbemHx72/ukyn0umVbutz/5wlV/bwYBbfQnjrsPxwUgGKWQRsrUq0eqByR9FQqc1FswScvTgE5r3spGItdkDl1DKVdeEjYFV7Rc4n7SI+l3daQZaizjm0wN5LuOD6faN6eVCdODL0DCVLW8KMLJWJkL1ky0K5dOWvy+tyK9LqdzbkcdYVu5PJQfPu4Y6fNDLQua/D9TRuawBrssXT1G8dA6UWJO5/rqfwKODgMa8m0dQ/X3nNoh8m+Xnp4DISmkUcCaPeomx+f+slTk2ZgoGuHofknQtsJupHkJaABJbAITHGDbgjmPh4pADItBHj4TSO/IUjc2dmrwpw6NMGQ1gAK0pYwXpaNQfWMjlDb+4oFXi/mc0KEYLP+lnXDlTXCh1s6a/MKQT5wNF0kBGD8Eh8Pk77s+hnBXUiZoLAvaPJyThfQbIcD/2uvLMS0ssE/k9P23C9WcV/GWi3Oy5SQ4FI1OV7PpUI14gWkR1JfnydHNtTgfgrR9fY3/0SF2CoNtneB8vxoWBDI5nqSDlF2i97K6SrrxnVfBi/DVaY8kY/8Cmo3qsvVOYrkKDvaEwK5FahSgLaON/H/DTNWkUPINc5VTqq+GGja1drbA==
+	ae6f5aGVBsrdOiZEXlT5+4KFtBGpMojemgRIizaJ6iY2ts9fzNzh7XnoPYvrZ4hNqgO9xT1tdGANKXi7LF3mVh/nuT/fw7IO5DdT8oTOPU2MQVxNEDUJFIftBOBtXERjoc6he71tG1peHxIdnA33g+hV6vYOihPnWgSQUlRzKSDygK6A8UP5gzPD4tahUBZdZ7nTfggTcoHParTdgfoXnuqwFbWhFQ4+PFdVIUsGVaAi6pNab7vDLj6AlMwr5oiXTE+jmC04h4sQ1n7d+3zo+0m4RETDP944CCYyEAaFLs81OzwaAFeYcA1dZtm1TkSq7/H/kGaUVIOaYDGWKbj+7XsHVgjuEmISe+h2KbZcBiHJpm1zR6kg0EW9FNIw4eI9Im2OmwtufdMQTKKGuPNj7b2owdmgdOdxBA8FaCTMvsWyi0ZnU+u+lVnTe5HmlWNqbGVa6NrPu78PDmu/kseGsinAh3VaGreEUFIAgIHgw5TE2XnVzH4fGPeAL476kL3B1F9dzEHfExzZMHxDC0wgvX6Evwhh4OddSIBYPPGwsWDENHx8EG4C7vBDm6IoTWdtXLx9odp9vX0Dteb+XPvUHa+voXhAy/GxdDoAZKwWGDhyT9B1UCwSsKVNgf95z/+yElxvgPp+Kh1u3yw+zGM7tQ==
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CYXPR12MB9337.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(136003)(39860400002)(376002)(396003)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(26005)(2616005)(41300700001)(31686004)(316002)(36756003)(6512007)(478600001)(53546011)(6506007)(83380400001)(6666004)(6486002)(38100700002)(54906003)(5660300002)(31696002)(86362001)(66476007)(66556008)(66946007)(4326008)(8676002)(8936002)(2906002)(44832011)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CYXPR12MB9337.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(136003)(39860400002)(376002)(396003)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(26005)(2616005)(41300700001)(31686004)(316002)(36756003)(6512007)(478600001)(53546011)(6506007)(966005)(83380400001)(6666004)(6486002)(38100700002)(54906003)(5660300002)(31696002)(86362001)(66476007)(66556008)(66946007)(4326008)(8676002)(8936002)(2906002)(44832011)(43740500002)(45980500001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Y3kydTRIOGF0ZmxTOG1WV05qaWpQMC90bXpldkN0RFozKyt5Vzh4SGUyd2c1?=
- =?utf-8?B?OFdEcmJPNUNvZUlEUGZjcFA0K2R4SllrNTJNM0RYalkzbW5aaG9QYTduOVY3?=
- =?utf-8?B?K0xTTkxaZlZXTFowZG5xRUlsYjEyRm5XazVSMmYwNTN5RGJMSDYya2dUc3Ev?=
- =?utf-8?B?L3draFdLdkNPbFc4emZacUhORFhsaXk3NDd2WjJmclJRTWpJYzlVTHBUM1V0?=
- =?utf-8?B?WnEwSnZVbGNBc0MrZGFvWEJsMm02d2MzYml2SXlIbktYU3hSSGZlU1hxSkxG?=
- =?utf-8?B?WXNRaWNQZnFtLzJhRER3azVGUWN3aHM3RFBnNVEwNnhhZS9qMFp0Z3I4R2dL?=
- =?utf-8?B?R1A5Ukxmemx0eE4xMExQM294bHlSR1ZxNGVqQXhCQkZXaDlZRUl5RmlpS1Yy?=
- =?utf-8?B?TEJTTks2QUFMR0JKL3crR3pNNEZXbk9PVGFIbGdQL3p1YXhaMk96RWswd2ZH?=
- =?utf-8?B?ZWVWRlpBUHc1WDFuQ3hndURFaXRkSFZoVGNBNmI0ZGd4bkFkcS9aNEdkVXV4?=
- =?utf-8?B?Vi80USsrVk1BQ3JHVDBlblQ3L2xsSXhZRGo2OFg4SUROc1V3aE90dmRGWUJN?=
- =?utf-8?B?L2UxUmVXSVN5THlseFlteFAvK1JpeVdTRU55OFFPd3g0akF5dVRpZWF6Nkxk?=
- =?utf-8?B?T0NTa2Y2eXcrMDRaY1NrNUVSVnFnOTZmc1lJMGt3Q3E0YjRxZlo2MmpzelVO?=
- =?utf-8?B?Ty9WS21jbkwzdndYalBhSXE1ekQ0VFJZcDlLOUVLZDlYM1czd1djd1F0V3hp?=
- =?utf-8?B?TmRvdDEyL2VSYzhxbkJ0SnJpcGRzVWEzZzgrZHVqK0xaZzQzMXdqVE1aaWZP?=
- =?utf-8?B?WmhzR3Rod1FHSFlWMGE2OXJMSllMQ0hET1E2MVNodmp3c0crU1F1RTJ5NFdI?=
- =?utf-8?B?QXFuMzA5WE9jYWw3L1hqd2FiRUNnQUw1ZmpNakI3ZXlPR3VaZmN4eUJBOS8v?=
- =?utf-8?B?UlphOUd5QWg4LzI3d0dHNVZiT0QwYjZBMXh6RnhyZTc3NjBqamJjTGNWbmpu?=
- =?utf-8?B?L2xud0ZKR3ZyM3R3SXhqQTB3dG1PZG9ZTUpYL3ZXQi9tOUNzU3VTUFgrdTds?=
- =?utf-8?B?NHA3UXVsWk9MRDJjQmFZbGYraGFZUmFxREZrZlpsS0VlTm5UUTJkaVdLYjBH?=
- =?utf-8?B?ZkdhbVN6eVhRbG5NVG9IbmRxdjNrWEJmVVowK3ROdkRMN3E3NmZZT1E5YTQy?=
- =?utf-8?B?cUZMdURoU09ZNit4TFZzbHhObGtZZ2tUek9UcXdsdldHQUpCcE1mS0gwQTkx?=
- =?utf-8?B?VkNqM0ExOVFSZnVSRlFsMG1hZ3lqUVNXVWRJcStiRXErUC9PN1J1TWJLdVFw?=
- =?utf-8?B?K3FRbFFJaGNpOFJJVkZtcGk0T0liNTRpTTdVYytDdFM5RDU2WnZOTFpVaDdJ?=
- =?utf-8?B?TkNVT1E5MlZYbDFNUGFpRUpycy9CSncrR0tNVWtlUThNd1lYTXlucC8yREkw?=
- =?utf-8?B?dGU5TEkrbFBXTE03V1pOVytKbHBoeTJzNW5xcWZRTTBTQ2pqOG9KSi9PR1pq?=
- =?utf-8?B?blQwRUF4MXpmUEVSWEVkS2FlYzFzN0tSUVlJbzBVWElyYmR5UlBmd2FmVDhI?=
- =?utf-8?B?c0MzUysyWDloYVpJU1R4RnhsOXRYS25WZCtYRWRDVndvckpBY2JvMXVYZk44?=
- =?utf-8?B?cXRsQytCUFU1N1plUTE4SkRNd1lvVkFQcDVKSWdFcHR4dER2TFVHS09zYUFj?=
- =?utf-8?B?SXNxVko1UThuTGc2OTlYd2V2Y3Ezb3ZiV2lxUWd6T3VWYWoxMHJvcittM0di?=
- =?utf-8?B?bit6K3pDTm9GZUd1SnNrdmltZUY3YzhOQXJUN2YybkxWYmFVWVFvcTAxUGRq?=
- =?utf-8?B?V0x2OHhIQVBoTlMzeTBvckFsWE9ZNS9tRzJzWTZ5SXJNNFN1NWcxQmpGUURM?=
- =?utf-8?B?bTBhWER5UWJyQXhIaTFETEZ2c0dkSmZCUlVWTzZDZUpjVG8zK3hSUGhuQzRX?=
- =?utf-8?B?Sm5zRVBmNE52eS9vbnV3YnlmbWxseFgreWk4ZTMwa0FkdFFOSjFoQS9udzJH?=
- =?utf-8?B?SW5jR3dOM3V0RkhjTE9reVd2Z0tBL0wvMWRwb3h5MnFRUHpyUyttSlh6MUg2?=
- =?utf-8?B?aTkxVVBNZXBpRDFCblFwbWlxbm5SR1RqK2hkYk95S0hzZmtKSFRubVJOOG10?=
- =?utf-8?Q?UxzAmN9BXDHmGrMPRpsJ2wiO4?=
+	=?utf-8?B?MUNhbmo3ekJGd0I2N3RJanZTa1krSXhCSFJCVHg5eGVJbTB3aXptMEtuYVh3?=
+ =?utf-8?B?TTFHNDEzM3VQUUh0dnhVYlg1dXNVTFRnQmJ0OGt0RmFUalI0SElIUUlhOGhj?=
+ =?utf-8?B?RmgzeWk2OUJiVm9pRGFKOEM3ZkN5UDNZd0tiUDBaSWIreEZDU2tLTDZIU3NZ?=
+ =?utf-8?B?WDc5YkNVcFM2RDBqcU9KTUVBc3VSUktGa1daZXVHYU8xQ1RTS05SbUw1dkJ1?=
+ =?utf-8?B?a1NGNGJXdzlWZGtNUmpmazFKbDRpWFAzQVdHSklmWmRpKzhERk10NUxmMjFv?=
+ =?utf-8?B?dnVwSW40VkFOd2JhZ1NiN1A4MGhXNnpLZWJ4NllINzZLT3VMU2hieGdpT0Zj?=
+ =?utf-8?B?WmlUWmhoZk1DZXhFRTdmdmR4THZjTzVFZU9aUWY5Z3Jpekp1cFY3UmtMbW82?=
+ =?utf-8?B?VkdwM3IrL2RPOS9hS3N0SGhvckVoL2JhNllwcUdDdUpMSHc3RGJJS3VNNGRs?=
+ =?utf-8?B?ZmhCYkxZancwT0toZkdQVWtlM2I3Sk9YUkpMVEdrNWhFOFl0ZjJsblo4UHRE?=
+ =?utf-8?B?bGNETUhHcUUyeFJZK2FvVW00Vk1LRDlXMExPZ29lU1RFTm9mN0JWT3lIMWFk?=
+ =?utf-8?B?ZmdsQ1BXRXJHNC9LN2lTTWx0a2VFY2hqUU00SXRXZzFZWE52SnJlMEl4L0o4?=
+ =?utf-8?B?UkR6elV2bjU5aEthRDB4eWQ3c05jSkNzdklIMlhIekEwWjRsQWdtS2FEb3NO?=
+ =?utf-8?B?b0xqdENOQkpCbGYwVXhackkxUUlUbUFManZUbTdBUHFsUVg1U0NwNXRia2tE?=
+ =?utf-8?B?RVdPK1o5c3c0N2lTbnV0cU1aaGtlNERWdnBCdHY4TnhLZWd0cHhCVnUvRjVv?=
+ =?utf-8?B?ampFVDUzeUlCL01HQnRFMXJzanlsc2xnYVUvSDRpR0YycTQwdC9SN2hKZkxv?=
+ =?utf-8?B?RUNIcWZ6b1hiTyt1TEo3TUJCTERieTNEdnF2SXFXaUlsdEs0VGt0TzBiMC9Z?=
+ =?utf-8?B?cTRSOWxrblBlR1JQVm9zeGRnVnFXUjlYa05iZHZva21GdGprZGY1UUlUcVZx?=
+ =?utf-8?B?ZjJ3TFlqWmYxVGY1aklrSDNKY3VoRnZOVE95SkNSNEZ2KzIreHFmdTZmSW9z?=
+ =?utf-8?B?djRLL085TXlMcEhINTZ3eUtWQ1h3T2tjOWxUNEZhSXNMRGJUS2QzZ1ZJd2Zh?=
+ =?utf-8?B?dzdkN3RiMXl1OHNHK28xY1k4WmRNKytGVWlrMjVOUXFXNk5CL0Jpd1VGdVRo?=
+ =?utf-8?B?ejh5TWFuenlGYkdFV3JlLzh5M0txWUNyZlFLdlNKL1lyMFB1V1I5VVR3YVZR?=
+ =?utf-8?B?OUNnWmNwcUJuWmg3RXlxOEZ6UWs5a3g0ODV5Q252OSt1R3Z1clZHd3l6Rnl0?=
+ =?utf-8?B?S1JoSkhISGJiR1hMVnlDZHd0RVVpZDRMellQSmlkTmdTNjQ5SDR2NW9Bbjc0?=
+ =?utf-8?B?TVQ1NFpxL3lpeWpOdkR3QXZQYUhpUHAwMjcxditPTVJ4bWxDSkZFdEJ3R3l6?=
+ =?utf-8?B?dkM3eWFOeHRUdExNN21rTDluelozeEw2cmtxNVR1b0hwN2VLUlErN1hqM3hp?=
+ =?utf-8?B?cDFkUGVOODJCMUVSL1kzZm55VFlUK0xaOUdNOTVveDFFcWtDMS9Xbk9pdGtn?=
+ =?utf-8?B?Y3JEUHlpaytjRlk4Mk1zckw0RFJmU3ZLVElFdTFxK0c0bng5ZnZwRng5Zjla?=
+ =?utf-8?B?SWtoaWpwYlpqU0FyQ09JWmpaNE1LZjg2UmFNL0xYMkVDQW5HM0h3TTVYTU1R?=
+ =?utf-8?B?Q0prRmFkZngrMWtveWJYc3RwcmlCTEVvcUVxaXBnOEZZZjBxVFh0Z0xtVWlw?=
+ =?utf-8?B?MTNEWmhxSFFreXBGY3NQUUFXYXV6RlZkREswUTRLKzdoSmNnM04zcW9Mb0tF?=
+ =?utf-8?B?K1k0bC9GajA2WXVBd1duTU84bm11NWhaU0dEcm96dXBDYTcwSGNGUlozTG5M?=
+ =?utf-8?B?RjJ5YVl3ZTV1bTQxNDBnNGhLa0EyMEhNUll1TVdxTWJickMzeVhhenVrdUMv?=
+ =?utf-8?B?UkxYZm4vZks3TVVHcWFOaWFLKy82QU54U3VGK3F0WGczQmE3VjhpaEF1TzJi?=
+ =?utf-8?B?aVlZYWd3WHJzczNjMmw2T2JZazR2eTQyYUwveHdRcHlkVjVOR3k4Nm1Oam92?=
+ =?utf-8?B?dExrUm4yR004UllhVFJmeXpTZk9sejZJcFNBN3lSWC9peFVOOHdRVlBNYkRW?=
+ =?utf-8?Q?XG8pRSF0YXC3+oCoDAwdlCKcN?=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9092b9aa-56f6-4668-cc65-08dc223c544e
+X-MS-Exchange-CrossTenant-Network-Message-Id: f72ebc39-aab9-4825-18b8-08dc223c5963
 X-MS-Exchange-CrossTenant-AuthSource: CYXPR12MB9337.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jan 2024 09:09:28.9966
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jan 2024 09:09:37.5059
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6LG6fv5KmJyMRxqKulBvirfgGksdBxIfMGMK/jl79GLIzdpyJZklOoGqu2eWo9Jt
+X-MS-Exchange-CrossTenant-UserPrincipalName: k1VP5mc3HlDOZhCT/miXICIiRyRJW8wXo8LMdxAXAc+0QB0dHFW16bZh2j1ita8r
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8258
 
 
 
-On 1/23/24 15:16, Michal Simek wrote:
-> Revision 2 is SW compatible with revision 1 but it is necessary to reflect
-> it in model and compatible properties which are parsed by user space.
-> Rev 2 has improved a power on boot reset and MIO34 shutdown glich
-> improvement done via an additional filter in the GreenPak chip.
+On 1/23/24 15:23, Michal Simek wrote:
+> When DT overlay is applied at run time compatible string or model AFAIK is
+> not updated. But when fdtoverlay tool is used it actually creates full
+> description for used SOM and carrier card(CC). That's why there is no
+> reason to use generic SOM name and its compatible strings because they are
+> not properly reflected in newly created DT.
+> Composing dt overlays together was introduced by commit 7a4c31ee877a
+> ("arm64: zynqmp: Add support for Xilinx Kria SOM board") and later renamed
+> by commit 45fe0dc4ea2e ("arm64: xilinx: Use zynqmp prefix for SOM dt
+> overlays").
+> DTB selection is done prior booting OS that's why there is no need to do
+> run time composition for SOM and CC combination. And user space can use
+> compatible string and all listed revisions to figured it out which SOM and
+> CC combinations OS is running at.
 > 
 > Signed-off-by: Michal Simek <michal.simek@amd.com>
 > ---
 > 
-> Changes in v3:
-> - use allOf contains structure to avoid random chars caused by
->    additionalItems: true
+> We are using U-Boot DTB reselection feature to identify SOM + CC
+> combination.
 > 
-> Changes in v2:
-> - Support older combinations
-> 
-> I want to support all versions we created:
-> All of them:
-> -rev2, -rev1, -revB, -revA, "xlnx,zynqmp-smk-k26", "xlnx,zynqmp"
-> 
-> rev1:
-> -rev1, -revB, -revA, "xlnx,zynqmp-smk-k26", "xlnx,zynqmp"
-> 
-> revB:
-> -revB, -revA, "xlnx,zynqmp-smk-k26", "xlnx,zynqmp"
-> 
-> revA:
-> -revA, "xlnx,zynqmp-smk-k26", "xlnx,zynqmp"
-> 
-> And also single one are permitted:
-> -revB, "xlnx,zynqmp-smk-k26", "xlnx,zynqmp"
-> -rev1, "xlnx,zynqmp-smk-k26", "xlnx,zynqmp"
-> -rev2, "xlnx,zynqmp-smk-k26", "xlnx,zynqmp"
-> 
-> I didn't find a way to pretty much all the time force that there must be
-> both "xlnx,zynqmp-smk-k26", "xlnx,zynqmp" that's why there is only
-> requested to have xlnx,zynqmp. If you find a way how to encode it please
-> let me know.
+> This patch depends on
+> https://lore.kernel.org/r/90e1a393154c3d87e8ee7dc9eef07fc937c1eaf7.1706019397.git.michal.simek@amd.com
 > 
 > ---
->   .../bindings/soc/xilinx/xilinx.yaml           | 36 +++++++++++++------
->   1 file changed, 26 insertions(+), 10 deletions(-)
+>   .../bindings/soc/xilinx/xilinx.yaml           | 34 +++++++++++++++++++
+>   1 file changed, 34 insertions(+)
 > 
 > diff --git a/Documentation/devicetree/bindings/soc/xilinx/xilinx.yaml b/Documentation/devicetree/bindings/soc/xilinx/xilinx.yaml
-> index d4c0fe1fe435..7c75dbb4f307 100644
+> index 7c75dbb4f307..131aba5ed9f4 100644
 > --- a/Documentation/devicetree/bindings/soc/xilinx/xilinx.yaml
 > +++ b/Documentation/devicetree/bindings/soc/xilinx/xilinx.yaml
-> @@ -117,20 +117,36 @@ properties:
->             - const: xlnx,zynqmp
+> @@ -148,6 +148,40 @@ properties:
+>             - contains:
+>                 const: xlnx,zynqmp-smk-k26
 >   
->         - description: Xilinx Kria SOMs
+> +      - description: Xilinx Kria SOM KV260 revA/Y/Z
 > +        minItems: 3
->           items:
-> -          - const: xlnx,zynqmp-sm-k26-rev1
-> -          - const: xlnx,zynqmp-sm-k26-revB
-> -          - const: xlnx,zynqmp-sm-k26-revA
-> -          - const: xlnx,zynqmp-sm-k26
-> -          - const: xlnx,zynqmp
+> +        items:
 > +          enum:
-> +            - xlnx,zynqmp-sm-k26-rev2
-> +            - xlnx,zynqmp-sm-k26-rev1
-> +            - xlnx,zynqmp-sm-k26-revB
-> +            - xlnx,zynqmp-sm-k26-revA
-> +            - xlnx,zynqmp-sm-k26
+> +            - xlnx,zynqmp-sk-kv260-revA
+> +            - xlnx,zynqmp-sk-kv260-revY
+> +            - xlnx,zynqmp-sk-kv260-revZ
+> +            - xlnx,zynqmp-sk-kv260
 > +            - xlnx,zynqmp
 > +        allOf:
 > +          - contains:
-> +              const: xlnx,zynqmp
+> +              const: xlnx,zynqmp-sk-kv260-revA
 > +          - contains:
-> +              const: xlnx,zynqmp-sm-k26
->   
->         - description: Xilinx Kria SOMs (starter)
+> +              const: xlnx,zynqmp-sk-kv260
+> +          - contains:
+> +              const: xlnx,zynqmp
+> +
+> +      - description: Xilinx Kria SOM KV260 rev2/1/B
 > +        minItems: 3
->           items:
-> -          - const: xlnx,zynqmp-smk-k26-rev1
-> -          - const: xlnx,zynqmp-smk-k26-revB
-> -          - const: xlnx,zynqmp-smk-k26-revA
-> -          - const: xlnx,zynqmp-smk-k26
-> -          - const: xlnx,zynqmp
+> +        items:
 > +          enum:
-> +            - xlnx,zynqmp-smk-k26-rev2
-> +            - xlnx,zynqmp-smk-k26-rev1
-> +            - xlnx,zynqmp-smk-k26-revB
-> +            - xlnx,zynqmp-smk-k26-revA
-> +            - xlnx,zynqmp-smk-k26
+> +            - xlnx,zynqmp-sk-kv260-rev2
+> +            - xlnx,zynqmp-sk-kv260-rev1
+> +            - xlnx,zynqmp-sk-kv260-revB
+> +            - xlnx,zynqmp-sk-kv260
 > +            - xlnx,zynqmp
 > +        allOf:
 > +          - contains:
-> +              const: xlnx,zynqmp
+> +              const: xlnx,zynqmp-sk-kv260-revB
 > +          - contains:
-> +              const: xlnx,zynqmp-smk-k26
->   
+> +              const: xlnx,zynqmp-sk-kv260
+> +          - contains:
+> +              const: xlnx,zynqmp
+> +
 >         - description: AMD MicroBlaze V (QEMU)
 >           items:
-
+>             - const: qemu,mbv
 
 Applied.
 M
