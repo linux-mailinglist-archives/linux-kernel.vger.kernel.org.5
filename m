@@ -1,119 +1,116 @@
-Return-Path: <linux-kernel+bounces-46549-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46550-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FBA5844137
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:00:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98F0B84413A
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:01:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4ACFF2878F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:00:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 291AC1F2C765
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:01:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D2CD8287D;
-	Wed, 31 Jan 2024 13:59:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 276E281AB6;
+	Wed, 31 Jan 2024 14:01:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r4QN5TZC"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="cJ5/ZaFs"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE20B8286E;
-	Wed, 31 Jan 2024 13:59:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D477F80BF5
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 14:01:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706709598; cv=none; b=W+QKsh2/EBlAdn/XNtUfzeMkL+RFACJ1JBJPmrz4vxbIYmCeeKP8HwiwU6zBAsrMdjuJfFJjFn76UVwX5zrGv9b3MPNVBs3wTDWSn6o+41icpnP5SQjry/Q1076cx4vVb39JRoR9BSNSy/UO5geomU5lf6yAOHbbOqcaWgDef8w=
+	t=1706709675; cv=none; b=ezX3/5TVOG0e8Y3ah54nQPlnlGefEg4xcvR9VRRLnpx2C01s3pmeMwNdig2fw5JuORGQh8y6y4e/IBlAshErEO+uv1N1JOzU68lB7Wj454oU4yRKMx3rVayBQyG+d44+3lo81ZHkzVm7ge3osMAGPz8S2rIi0GGYPQGJgb7G388=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706709598; c=relaxed/simple;
-	bh=cX2K5w9GWrdNEUyfrUG6IelYh8NLqv5j8lI66oywVPU=;
+	s=arc-20240116; t=1706709675; c=relaxed/simple;
+	bh=VKftZjYTPFttrAWy4mQSvI4tODip6EMij2iomGHSEiA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LQrLHWtd1ENuRaXwUUHLluwUMfTYI2CbMnWMczArTNmrcy8xszeHYh6Lg/s/F0cGqM1l7k40L/wXtvpvCCqZgq4/7n6I+egr4Mb9vZfdC6Tt4W6RfxDcm6x0H+W7n/AA1NGnL/xfDk1hw2rCllH5wTbrtCvb5hFCdZ7+Fx6Sj2I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r4QN5TZC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3262FC43142;
-	Wed, 31 Jan 2024 13:59:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706709597;
-	bh=cX2K5w9GWrdNEUyfrUG6IelYh8NLqv5j8lI66oywVPU=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=pQUq/BAwdreFd8e227XeHf3XU2ExijPXpcd053HNL5/EJKEqhvxRfb9U98r4svZWl2ocE49Rl1aNl4HQSp3E7dVvHJDJ7+ZVXM52Olh2n+0SjvHSd8wWuELs44dCQQ8ph/TENKBI0YiAhfwFgE1ZFw+/jH04mwOqAmpuz7d/ANA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=cJ5/ZaFs; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 78C7440E00C5;
+	Wed, 31 Jan 2024 14:01:11 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 7-49zGRkOdZG; Wed, 31 Jan 2024 14:01:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1706709668; bh=s1sCZOaViMd/RO2i16hNLSl0mKH2iujGzYJ4LY2cvoM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=r4QN5TZCtY7/sLO9kwHjCm1yV84yTjejctGfEctgi6U1G8d+B+ls+W+CURrrZMweO
-	 Xg3My6YVDAGTjBxtTIHoPpI8b0HPctgJgxXU0JvN7qnIOpZSKVWDtLmfZT9CAPjJ8w
-	 IuGiaX3U/9QbPXiXpDiHg1MEPxXne9lHEFvg27Iv0sv1SRydlUDYUH1fZ8OHrZk3g+
-	 nbr+GxJRgv9cJ9uosjPtuhNnPAy1fCXo4m1pmBZzQuS9TWL2yes3WVMQI/79OLEM++
-	 mROaw2KnRrEDPKuHV6XGdjVhUxAUaIaxjuxeAHk1UkWZ52NSWx8itb9pL/CFeXdUEP
-	 TuyrF7Y/oXPyA==
-Date: Wed, 31 Jan 2024 07:59:55 -0600
-From: Rob Herring <robh@kernel.org>
-To: Johan Jonker <jbx6244@gmail.com>
-Cc: hjc@rock-chips.com, heiko@sntech.de, andy.yan@rock-chips.com,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	airlied@gmail.com, daniel@ffwll.ch,
-	maarten.lankhorst@linux.intel.com, tzimmermann@suse.de,
-	mripard@kernel.org, markyao0591@gmail.com,
-	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/6] dt-bindings: display: rockchip,dw-hdmi: add
- power-domains property
-Message-ID: <20240131135955.GA966672-robh@kernel.org>
-References: <6626d288-ecf1-436b-b0a3-3417308a8633@gmail.com>
- <1ba8b40d-005a-4665-afd9-a4eacf3e3031@gmail.com>
+	b=cJ5/ZaFsbMWoYYcHishCz3dIIdEdYYVKBTfA8et8o/ldP2dtie5NWD0J4C0hr1viM
+	 x6rZvYgUejuftFvp5w5jxwfl8ZydabTzVU8l2JsRrsi0cNS53JhXSoClIpDC+W0Rdk
+	 RJWjDhxzSkOCm3melsW8S5SksY2CCOGVjC7A465xuiCYvU7k7Y/5KTSGaMtW7IL5n4
+	 /dJQT7H2o2K2lm0pGgq64nmdu+o88PkeWb9QTGxhUdWEM3n/xlXfA2TiNAqL8vfnAE
+	 yaQ2rsriZQDIia57V970O1VgJ8zrZ3rdJSYJYFnmgxvKY7xHZujVwmYpeLAknnZtNo
+	 7v6pljTk9tEVsZtaTb3XKXVP2ygW2mzoykW6PDcbAbJFTH6lKuhOvq5+8n7hG1CC0p
+	 DdyZgJwpIxpY/kEtKwZc0gTMd3d4LoJNsbLuY7If0paKzjNUlH5QEHA/Y0TJIBnCsR
+	 2SXXHBKMHPg2peo48EFoE//y50vzT7mbxPz09k/YFsI4nSfKgRbGSu8TnfDPPlVQ9M
+	 LVkBUcSJJKaRHM/mkYSm9w25gspQIEqLmo4JSI4psMgfLy15yriKtFBUT+PsdRU5MY
+	 ZJDydytR0vFmpiA5Y6wQuIWZaMgW3RxMVzxVl7RDf+rCOXsJ60fWXygyZaODBrYlaB
+	 QEfPNJnuAVQvKDT7pMD3aqd8=
+Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B373B40E00B2;
+	Wed, 31 Jan 2024 14:00:43 +0000 (UTC)
+Date: Wed, 31 Jan 2024 15:00:37 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Kevin Loughlin <kevinloughlin@google.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Pankaj Gupta <pankaj.gupta@amd.com>,
+	Hou Wenlong <houwenlong.hwl@antgroup.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Dionna Glaze <dionnaglaze@google.com>,
+	Brijesh Singh <brijesh.singh@amd.com>,
+	Michael Roth <michael.roth@amd.com>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+	linux-coco@lists.linux.dev, Ashish Kalra <ashish.kalra@amd.com>,
+	Andi Kleen <ak@linux.intel.com>, Adam Dunlap <acdunlap@google.com>,
+	Peter Gonda <pgonda@google.com>, Jacob Xu <jacobhxu@google.com>,
+	Sidharth Telang <sidtelang@google.com>
+Subject: Re: [PATCH v3 0/2] x86: enforce and cleanup RIP-relative accesses in
+ early boot code
+Message-ID: <20240131140037.GDZbpShX2b0elXlqDA@fat_crate.local>
+References: <20240121182040.GBZa1geI5NxWSslvt0@fat_crate.local>
+ <20240130220845.1978329-1-kevinloughlin@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1ba8b40d-005a-4665-afd9-a4eacf3e3031@gmail.com>
+In-Reply-To: <20240130220845.1978329-1-kevinloughlin@google.com>
 
-On Tue, Jan 30, 2024 at 03:57:23PM +0100, Johan Jonker wrote:
-> Most Rockchip hdmi nodes are part of a power domain.
-> Add a power-domains property. Fix example.
-> 
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-> ---
->  .../bindings/display/rockchip/rockchip,dw-hdmi.yaml   | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/display/rockchip/rockchip,dw-hdmi.yaml b/Documentation/devicetree/bindings/display/rockchip/rockchip,dw-hdmi.yaml
-> index cd0a42f35f24..6f421740b613 100644
-> --- a/Documentation/devicetree/bindings/display/rockchip/rockchip,dw-hdmi.yaml
-> +++ b/Documentation/devicetree/bindings/display/rockchip/rockchip,dw-hdmi.yaml
-> @@ -94,6 +94,9 @@ properties:
->        - const: default
->        - const: unwedge
-> 
-> +  power-domains:
-> +    maxItems: 1
-> +
->    ports:
->      $ref: /schemas/graph.yaml#/properties/ports
-> 
-> @@ -141,16 +144,18 @@ examples:
->      #include <dt-bindings/clock/rk3288-cru.h>
->      #include <dt-bindings/interrupt-controller/arm-gic.h>
->      #include <dt-bindings/interrupt-controller/irq.h>
-> +    #include <dt-bindings/power/rk3288-power.h>
-> 
->      hdmi: hdmi@ff980000 {
->          compatible = "rockchip,rk3288-dw-hdmi";
->          reg = <0xff980000 0x20000>;
-> -        reg-io-width = <4>;
+On Tue, Jan 30, 2024 at 10:08:43PM +0000, Kevin Loughlin wrote:
+> Instead, this patchset continues the approach of fixing the immediate
+> problem of SEV-SNP boots crashing when built by clang, providing a
+> backport-friendly set of changes needed to successfully boot SEV-SNP
+> hosts and guests.
 
-It makes more sense to keep reg-io-width together with reg.
+What use cases are those exactly? How do I reproduce them here?
 
-> -        ddc-i2c-bus = <&i2c5>;
-> -        rockchip,grf = <&grf>;
->          interrupts = <GIC_SPI 103 IRQ_TYPE_LEVEL_HIGH>;
->          clocks = <&cru  PCLK_HDMI_CTRL>, <&cru SCLK_HDMI_HDCP>;
->          clock-names = "iahb", "isfr";
-> +        ddc-i2c-bus = <&i2c5>;
-> +        power-domains = <&power RK3288_PD_VIO>;
-> +        reg-io-width = <4>;
-> +        rockchip,grf = <&grf>;
-> 
->          ports {
->              #address-cells = <1>;
-> --
-> 2.39.2
-> 
+SNP is not upstream yet and the SEV* code has been out there for a while
+now without a single such report so this must be something new happening
+due to <raisins>...?
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
