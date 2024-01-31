@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-47244-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09240844AEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:21:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B490844AEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:20:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B183F1F2BB9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:21:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DC981C2624A
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:20:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC4353AC14;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8097F3A8F1;
 	Wed, 31 Jan 2024 22:20:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="tjvEzXJd"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="qw6nWHDW"
 Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06F83383A4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C566239FCF;
 	Wed, 31 Jan 2024 22:20:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706739609; cv=none; b=el4IgLZlNUz2o3m2UNUSIDwFteyFlGe9B/0ZpeCTyEB9mBtCPB4d0z1uYYEdxPlEJHaDmB/ELw8IWbXx/OO8Zpx5C9Gve0/hFLSfLlith0JPMg6EMCtw8AsQxxvGUx9PyG/kSadLDeikfdNqRbXrrccka+R7zXzEjlWcP0yYQVE=
+	t=1706739609; cv=none; b=t9sJ/jXj4HT0CFSUjR9MKqCQjRP+ckTc3y0o/qxCCeujxbQc7BIIPhS50bBX+WlZBeIugVbaD3FyA1+VZPxqIkjNSlkNifCKrgqgk+8+MjEySmoSwE+ZU/VJ4xl/n/12Ck5Kfb8K1UBkebAIDZztLKkm/sl4sQyOrlOxwarOlyc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706739609; c=relaxed/simple;
-	bh=bTBSyAWO+uR3Dr01EJDzUVOpbsMhuSfmMb5DDrgVaWI=;
+	bh=8p20tpkDY0SV/epOAIXWXwmyehskxCoLyEVFGjzVQrg=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=os5kNUn2JVSyETplaKaUNpc3W8HhDFDyCKrAQQdRzd+/NPV8ux7kvs7NH4nEy9ZhCKN1FLym2jJ48e0cClbaaXQ0yqCJfE+OCTM0nNYzMQMAMu6qi5UrZN/G4XejVx/ZPtjRMQrLrWJotg/JTpmBx2quPnC/4W8D0vQ0lFeMVfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=tjvEzXJd; arc=none smtp.client-ip=198.47.23.248
+	 MIME-Version:Content-Type; b=etNm149MffJhYAMY2EGEB0PzE55QLULwqxuz1xbD0mQ0bptkdLgCXDyykJUyPnnoYBHbUQODRx5ph/zKSIm5sCSeaCUBPIVjBCjsHLy/XN7hmYjhAK2ZfxdQ7GnSnS6PZBCzSd5AO1vhR52BJ5D1+eNVDZpXJVd6RNyP731xGuI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=qw6nWHDW; arc=none smtp.client-ip=198.47.23.248
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40VMK0VA010373;
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40VMK0Or010378;
 	Wed, 31 Jan 2024 16:20:00 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
 	s=ti-com-17Q1; t=1706739600;
-	bh=eN3oPr+M4EypKKu046DK8GJ27aJRTrtTuWvBbhbnFeE=;
+	bh=MsGtrKLONpa1skHO9OSysJpEjYSFARrrS4U8i/PdCBY=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=tjvEzXJdiVDGJgIzny2vLrGdXFezokbLAiE3Vu/6kJCU5vwE1uNKPin+sid+0S6Rt
-	 jOHCdbEJKAjO5BwsMdaSw5IPr5F8/C20IKSrDX+0Vaa6dSxp7mG7nTIb3uW1bw07e3
-	 DIAL77wHFiU5aEXCdRXPNEHdvb5Cl92cUl0vtJmk=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40VMK0Wd080790
+	b=qw6nWHDWhShTd2W8O6rh42snINVun7uMDPOUugl2afvc6XJCueT8P8m5AR9Dvj+1E
+	 qf5FPvHwwyCSBa0qR4rF3UtFauCCfCR2kHgInxSU6N0C5iN/vN435j4pMUtmRq0HOl
+	 1ke6zcr8zNxLMdbztVr6dt/hl3jJ+rXo5IwaANCQ=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40VMK0qT021510
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
 	Wed, 31 Jan 2024 16:20:00 -0600
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 31
- Jan 2024 16:19:59 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ Jan 2024 16:20:00 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 31 Jan 2024 16:19:59 -0600
+ Frontend Transport; Wed, 31 Jan 2024 16:20:00 -0600
 Received: from lelvsmtp5.itg.ti.com ([10.249.42.149])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40VMJwx3102504;
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40VMJwx4102504;
 	Wed, 31 Jan 2024 16:19:59 -0600
 From: Andrew Davis <afd@ti.com>
 To: Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
@@ -71,9 +71,9 @@ CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
         Andrew Davis
 	<afd@ti.com>
-Subject: [PATCH 01/12] dt-bindings: power: reset: Document ti,sci-reboot compatible
-Date: Wed, 31 Jan 2024 16:19:46 -0600
-Message-ID: <20240131221957.213717-2-afd@ti.com>
+Subject: [PATCH 02/12] dt-bindings: arm: keystone: ti-sci: Add reboot-controller child node
+Date: Wed, 31 Jan 2024 16:19:47 -0600
+Message-ID: <20240131221957.213717-3-afd@ti.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240131221957.213717-1-afd@ti.com>
 References: <20240131221957.213717-1-afd@ti.com>
@@ -87,68 +87,38 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-This calls into the system firmware using TI-SCI to reboot the system.
-Used as a fallback when PSCI is unable or not available to reboot
-the system.
+The TI-SCI firmware supports rebooting the system in addition to the
+functions already listed here, document child node for the same.
 
 Signed-off-by: Andrew Davis <afd@ti.com>
 ---
- .../bindings/power/reset/ti,sci-reboot.yaml   | 33 +++++++++++++++++++
- MAINTAINERS                                   |  1 +
- 2 files changed, 34 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/power/reset/ti,sci-reboot.yaml
+ .../devicetree/bindings/arm/keystone/ti,sci.yaml          | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/power/reset/ti,sci-reboot.yaml b/Documentation/devicetree/bindings/power/reset/ti,sci-reboot.yaml
-new file mode 100644
-index 0000000000000..aa628be33d122
---- /dev/null
-+++ b/Documentation/devicetree/bindings/power/reset/ti,sci-reboot.yaml
-@@ -0,0 +1,33 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/power/reset/ti,sci-reboot.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml b/Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml
+index c24ad0968f3ef..e392175b33c74 100644
+--- a/Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml
++++ b/Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml
+@@ -83,6 +83,10 @@ properties:
+     type: object
+     $ref: /schemas/reset/ti,sci-reset.yaml#
+ 
++  reboot-controller:
++    type: object
++    $ref: /schemas/power/reset/ti,sci-reboot.yaml#
 +
-+title: TI-SCI reboot controller
+ required:
+   - compatible
+   - mbox-names
+@@ -126,4 +130,8 @@ examples:
+         compatible = "ti,sci-reset";
+         #reset-cells = <2>;
+       };
 +
-+maintainers:
-+  - Andrew Davis <afd@ti.com>
-+
-+description: |
-+  Some TI SoCs contain a system controller (like the Power Management Micro
-+  Controller (PMMC) on Keystone 66AK2G SoC) that are responsible for controlling
-+  the state of the various hardware modules present on the SoC. Communication
-+  between the host processor running an OS and the system controller happens
-+  through a protocol called TI System Control Interface (TI-SCI protocol).
-+
-+  This reboot controller node uses the TI SCI protocol to perform a device reboot.
-+
-+  Must be a child node of the associated TI-SCI system controller node.
-+
-+properties:
-+  compatible:
-+    const: ti,sci-reboot
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    k3_reboot: reboot-controller {
++      k3_reboot: reboot-controller {
 +        compatible = "ti,sci-reboot";
-+    };
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 8999497011a26..45983bb174fe4 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -21751,6 +21751,7 @@ F:	Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml
- F:	Documentation/devicetree/bindings/clock/ti,sci-clk.yaml
- F:	Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.yaml
- F:	Documentation/devicetree/bindings/interrupt-controller/ti,sci-intr.yaml
-+F:	Documentation/devicetree/bindings/power/reset/ti,sci-reboot.yaml
- F:	Documentation/devicetree/bindings/reset/ti,sci-reset.yaml
- F:	Documentation/devicetree/bindings/soc/ti/sci-pm-domain.yaml
- F:	drivers/clk/keystone/sci-clk.c
++      };
+     };
 -- 
 2.39.2
 
