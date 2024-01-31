@@ -1,277 +1,338 @@
-Return-Path: <linux-kernel+bounces-47035-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47036-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81C0984484C
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:52:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7263784484E
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:52:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38F8928D875
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:51:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5B2C1F28750
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:52:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D1C0364D5;
-	Wed, 31 Jan 2024 19:51:45 +0000 (UTC)
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FA233EA8A;
+	Wed, 31 Jan 2024 19:52:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Xnp4sD/d"
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D8903EA7B;
-	Wed, 31 Jan 2024 19:51:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66E5E3EA8F
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 19:52:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706730704; cv=none; b=dYJ1fJDWwy33sAb/PB8YWZHYm+X7tBpZ+GCSyybHObh6/URdyzIp3+z1E0qkTZuuiHxBqDcZrrxf1eQW7MeJO8y6mxdFxaL9exQXYl8pktZsjmrjCMuKC+UU13lYuchM7jObZ66qWUQLzuCQWOjUieZPM41tne71JXDV1s0+KJw=
+	t=1706730734; cv=none; b=qnRa0ypuXImZ4bAHcegpE0dvq/pyUKFQ8PeDpvajv37jL0HYNxg87KVNuJaqwGspiO/PHSnsiPbH3egyU7FB2ehA964RsVYz/lvdr5ip+p6r/4itbdNyjilSYzkasjF8csvWRg4NZFwZevdvS8l0jW/DYpSzJxmTtBUNVxBW7dY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706730704; c=relaxed/simple;
-	bh=M6wSqmB0Z4qDqXRKTry7u9uVyCw99+NA5tEi+4ltQBU=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=QRGU4hM5vn2UuOf06Q0xpWAf7BLZsGuMy7KObnWcY15bueDiz7IExhFcFKNDUOHOWGlcU1EM+BZwhTklm9RT+a4C6Cj8iMU+abOqNJa+z/fs5uvm/YaX9KeY1Wj6nsf1mFTfNkIOAoRfxvtvS3CQLGyX48FudRFt1ZP/ekOSZoE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.105] (31.173.81.146) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Wed, 31 Jan
- 2024 22:51:29 +0300
-Subject: Re: [PATCH net-next v5 08/15] net: ravb: Move the IRQs
- getting/requesting in the probe() method
-To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
-	<geert+renesas@glider.be>
-CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Claudiu Beznea
-	<claudiu.beznea.uj@bp.renesas.com>
-References: <20240131084133.1671440-1-claudiu.beznea.uj@bp.renesas.com>
- <20240131084133.1671440-9-claudiu.beznea.uj@bp.renesas.com>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <5536e607-e03b-f38e-2909-a6f6a126ff0d@omp.ru>
-Date: Wed, 31 Jan 2024 22:51:28 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	s=arc-20240116; t=1706730734; c=relaxed/simple;
+	bh=kMXVsHmCrdMsO9D8gv3CtNmsci/KRVrLn63b1tcj1sA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dHgBUXMmefWCOIVLQw4+QGOgbEeW3qeyDSZWLEMOzTe8CExt4vYB7WfLIc0L9iG0JUIPi3JS1xYSb3NqsnqBKiEcKnEMC6r+0Amo4Ro4hW7/GrPQofuBzZBRl8n/f3qYlywqEKrg7bYKqXOBJNK4lgC73lyGkdt2zb9b+knK9zM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Xnp4sD/d; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <b500bb70-aa3f-41d3-b058-2b634471ffef@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1706730729;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=akOvSbXR2wvdn9daqeiHHTgFY5TcRzdrSHM8Th4fxrA=;
+	b=Xnp4sD/dJXc+psf9cLYKz6M+w5WbF5FLfORiAqfLNOHP0RkozXlJITr6hOhFX+LjQBQik4
+	qspveh/rQCOj8BLQxa4zyu5Vsqc50VJkRc5TYI6DvT2adwc0sUFckpDrdLMFjHudwOQHvx
+	zb+ilSHgwu1p5kn59g0Lt6wfy3R4qsA=
+Date: Wed, 31 Jan 2024 11:52:00 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240131084133.1671440-9-claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="utf-8"
+Subject: Re: [PATCH] bpf: Separate bpf_local_storage_lookup() fast and slow
+ paths
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 01/31/2024 19:37:01
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 183090 [Jan 31 2024]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.81.146 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info:
-	d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;omp.ru:7.1.1
-X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.81.146
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 01/31/2024 19:42:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 1/31/2024 10:54:00 AM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+To: Marco Elver <elver@google.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20240131141858.1149719-1-elver@google.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20240131141858.1149719-1-elver@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-   I said the subject needs to be changed to "net: ravb: Move getting/requesting IRQs in
-the probe() method", not "net: ravb: Move IRQs getting/requesting in the probe() method".
-That's not very proper English, AFAIK! =)
-
-On 1/31/24 11:41 AM, Claudiu wrote:
-
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+On 1/31/24 6:18 AM, Marco Elver wrote:
+> To allow the compiler to inline the bpf_local_storage_lookup() fast-
+> path, factor it out by making bpf_local_storage_lookup() a static inline
+> function and move the slow-path to bpf_local_storage_lookup_slowpath().
 > 
-> The runtime PM implementation will disable clocks at the end of
-> ravb_probe(). As some IP variants switch to reset mode as a result of
-> setting module standby through clock disable APIs, to implement runtime PM
-> the resource parsing and requesting are moved in the probe function and IP
-> settings are moved in the open function. This is done because at the end of
-> the probe some IP variants will switch anyway to reset mode and the
-> registers content is lost. Also keeping only register settings operations
-> in the ravb_open()/ravb_close() functions will make them faster.
+> Base on results from './benchs/run_bench_local_storage.sh' this produces
+> improvements in throughput and latency in the majority of cases:
 > 
-> Commit moves IRQ requests to ravb_probe() to have all the IRQs ready when
-> the interface is open. As now IRQs getting/requesting are in a single place
+> | Hashmap Control
+> | ===============
+> | num keys: 10
+> |  hashmap (control) sequential get:
+> |                              <before>                | <after>
+> |   hits throughput:           13.895 ± 0.024 M ops/s  | 14.022 ± 0.095 M ops/s	(+0.9%)
+> |   hits latency:              71.968 ns/op            | 71.318 ns/op		(-0.9%)
+> |   important_hits throughput: 13.895 ± 0.024 M ops/s  | 14.022 ± 0.095 M ops/s	(+0.9%)
+> |
+> | num keys: 1000
+> |  hashmap (control) sequential get:
+> |                              <before>                | <after>
+> |   hits throughput:           11.793 ± 0.018 M ops/s  | 11.645 ± 0.370 M ops/s	(-1.3%)
+> |   hits latency:              84.794 ns/op            | 85.874 ns/op		(+1.3%)
+> |   important_hits throughput: 11.793 ± 0.018 M ops/s  | 11.645 ± 0.370 M ops/s	(-1.3%)
+> |
+> | num keys: 10000
+> |  hashmap (control) sequential get:
+> |                              <before>                | <after>
+> |   hits throughput:           7.113 ± 0.012 M ops/s   | 7.037 ± 0.051 M ops/s	(-1.1%)
+> |   hits latency:              140.581 ns/op           | 142.113 ns/op		(+1.1%)
+> |   important_hits throughput: 7.113 ± 0.012 M ops/s   | 7.037 ± 0.051 M ops/s	(-1.1%)
 
-   Again, "getting/requesting IRQs is done"...
+My understanding is the change in this patch should not affect the hashmap 
+control result, so the above +/- ~1% change could be mostly noise.
 
-> there is no need to keep intermediary data (like ravb_rx_irqs[] and
-> ravb_tx_irqs[] arrays or IRQs in struct ravb_private).
+> |
+> | num keys: 100000
+> |  hashmap (control) sequential get:
+> |                              <before>                | <after>
+> |   hits throughput:           4.793 ± 0.034 M ops/s   | 4.990 ± 0.025 M ops/s	(+4.1%)
+> |   hits latency:              208.623 ns/op           | 200.401 ns/op		(-3.9%)
+> |   important_hits throughput: 4.793 ± 0.034 M ops/s   | 4.990 ± 0.025 M ops/s	(+4.1%)
+> |
+> | num keys: 4194304
+> |  hashmap (control) sequential get:
+> |                              <before>                | <after>
+> |   hits throughput:           2.088 ± 0.008 M ops/s   | 2.962 ± 0.004 M ops/s	(+41.9%)
+> |   hits latency:              478.851 ns/op           | 337.648 ns/op		(-29.5%)
+> |   important_hits throughput: 2.088 ± 0.008 M ops/s   | 2.962 ± 0.004 M ops/s	(+41.9%)
+
+The last one has a big difference. Did you run it a couple of times without the 
+change and check if the result was consistent ?
+
+> |
+> | Local Storage
+> | =============
+> | num_maps: 1
+> |  local_storage cache sequential  get:
+> |                              <before>                | <after>
+> |   hits throughput:           32.598 ± 0.008 M ops/s  | 38.480 ± 0.054 M ops/s	(+18.0%)
+> |   hits latency:              30.676 ns/op            | 25.988 ns/op		(-15.3%)
+> |   important_hits throughput: 32.598 ± 0.008 M ops/s  | 38.480 ± 0.054 M ops/s	(+18.0%)
+> |  local_storage cache interleaved get:
+> |                              <before>                | <after>
+> |   hits throughput:           36.963 ± 0.045 M ops/s  | 43.847 ± 0.037 M ops/s	(+18.6%)
+> |   hits latency:              27.054 ns/op            | 22.807 ns/op		(-15.7%)
+> |   important_hits throughput: 36.963 ± 0.045 M ops/s  | 43.847 ± 0.037 M ops/s	(+18.6%)
+> |
+> | num_maps: 10
+> |  local_storage cache sequential  get:
+> |                              <before>                | <after>
+> |   hits throughput:           32.078 ± 0.004 M ops/s  | 37.813 ± 0.020 M ops/s	(+17.9%)
+> |   hits latency:              31.174 ns/op            | 26.446 ns/op		(-15.2%)
+> |   important_hits throughput: 3.208 ± 0.000 M ops/s   | 3.781 ± 0.002 M ops/s	(+17.9%)
+> |  local_storage cache interleaved get:
+> |                              <before>                | <after>
+> |   hits throughput:           34.564 ± 0.011 M ops/s  | 40.082 ± 0.037 M ops/s	(+16.0%)
+> |   hits latency:              28.932 ns/op            | 24.949 ns/op		(-13.8%)
+> |   important_hits throughput: 12.344 ± 0.004 M ops/s  | 14.315 ± 0.013 M ops/s	(+16.0%)
+> |
+> | num_maps: 16
+> |  local_storage cache sequential  get:
+> |                              <before>                | <after>
+> |   hits throughput:           32.493 ± 0.023 M ops/s  | 38.147 ± 0.029 M ops/s	(+17.4%)
+> |   hits latency:              30.776 ns/op            | 26.215 ns/op		(-14.8%)
+> |   important_hits throughput: 2.031 ± 0.001 M ops/s   | 2.384 ± 0.002 M ops/s	(+17.4%)
+> |  local_storage cache interleaved get:
+> |                              <before>                | <after>
+> |   hits throughput:           34.380 ± 0.521 M ops/s  | 41.605 ± 0.095 M ops/s	(+21.0%)
+> |   hits latency:              29.087 ns/op            | 24.035 ns/op		(-17.4%)
+> |   important_hits throughput: 10.939 ± 0.166 M ops/s  | 13.238 ± 0.030 M ops/s	(+21.0%)
+> |
+> | num_maps: 17
+> |  local_storage cache sequential  get:
+> |                              <before>                | <after>
+> |   hits throughput:           28.748 ± 0.028 M ops/s  | 32.248 ± 0.080 M ops/s	(+12.2%)
+> |   hits latency:              34.785 ns/op            | 31.009 ns/op		(-10.9%)
+> |   important_hits throughput: 1.693 ± 0.002 M ops/s   | 1.899 ± 0.005 M ops/s	(+12.2%)
+> |  local_storage cache interleaved get:
+> |                              <before>                | <after>
+> |   hits throughput:           31.313 ± 0.030 M ops/s  | 35.911 ± 0.020 M ops/s	(+14.7%)
+> |   hits latency:              31.936 ns/op            | 27.847 ns/op		(-12.8%)
+> |   important_hits throughput: 9.533 ± 0.009 M ops/s   | 10.933 ± 0.006 M ops/s	(+14.7%)
+> |
+> | num_maps: 24
+> |  local_storage cache sequential  get:
+> |                              <before>                | <after>
+> |   hits throughput:           18.475 ± 0.027 M ops/s  | 19.000 ± 0.006 M ops/s	(+2.8%)
+> |   hits latency:              54.127 ns/op            | 52.632 ns/op		(-2.8%)
+> |   important_hits throughput: 0.770 ± 0.001 M ops/s   | 0.792 ± 0.000 M ops/s	(+2.9%)
+> |  local_storage cache interleaved get:
+> |                              <before>                | <after>
+> |   hits throughput:           21.361 ± 0.028 M ops/s  | 22.388 ± 0.099 M ops/s	(+4.8%)
+> |   hits latency:              46.814 ns/op            | 44.667 ns/op		(-4.6%)
+> |   important_hits throughput: 6.009 ± 0.008 M ops/s   | 6.298 ± 0.028 M ops/s	(+4.8%)
+> |
+> | num_maps: 32
+> |  local_storage cache sequential  get:
+> |                              <before>                | <after>
+> |   hits throughput:           14.220 ± 0.006 M ops/s  | 14.168 ± 0.020 M ops/s	(-0.4%)
+> |   hits latency:              70.323 ns/op            | 70.580 ns/op		(+0.4%)
+> |   important_hits throughput: 0.445 ± 0.000 M ops/s   | 0.443 ± 0.001 M ops/s	(-0.4%)
+> |  local_storage cache interleaved get:
+> |                              <before>                | <after>
+> |   hits throughput:           17.250 ± 0.011 M ops/s  | 16.650 ± 0.021 M ops/s	(-3.5%)
+> |   hits latency:              57.971 ns/op            | 60.061 ns/op		(+3.6%)
+> |   important_hits throughput: 4.815 ± 0.003 M ops/s   | 4.647 ± 0.006 M ops/s	(-3.5%)
+> |
+> | num_maps: 100
+> |  local_storage cache sequential  get:
+> |                              <before>                | <after>
+> |   hits throughput:           5.212 ± 0.012 M ops/s   | 5.878 ± 0.004 M ops/s	(+12.8%)
+> |   hits latency:              191.877 ns/op           | 170.116 ns/op		(-11.3%)
+> |   important_hits throughput: 0.052 ± 0.000 M ops/s   | 0.059 ± 0.000 M ops/s	(+13.5%)
+> |  local_storage cache interleaved get:
+> |                              <before>                | <after>
+> |   hits throughput:           6.521 ± 0.053 M ops/s   | 7.086 ± 0.010 M ops/s	(+8.7%)
+> |   hits latency:              153.343 ns/op           | 141.116 ns/op		(-8.0%)
+> |   important_hits throughput: 1.703 ± 0.014 M ops/s   | 1.851 ± 0.003 M ops/s	(+8.7%)
+> |
+> | num_maps: 1000
+> |  local_storage cache sequential  get:
+> |                              <before>                | <after>
+> |   hits throughput:           0.357 ± 0.005 M ops/s   | 0.325 ± 0.005 M ops/s	(-9.0%)
+> |   hits latency:              2803.738 ns/op          | 3076.923 ns/op		(+9.7%)
+
+Is it understood why the slow down here? The same goes for the "num_maps: 32" 
+case above but not as bad as here.
+
+> |   important_hits throughput: 0.000 ± 0.000 M ops/s   | 0.000 ± 0.000 M ops/s
+
+The important_hits is very little in this case?
+
+> |  local_storage cache interleaved get:
+> |                              <before>                | <after>
+> |   hits throughput:           0.434 ± 0.007 M ops/s   | 0.447 ± 0.007 M ops/s	(+3.0%)
+> |   hits latency:              2306.539 ns/op          | 2237.687 ns/op		(-3.0%)
+> |   important_hits throughput: 0.109 ± 0.002 M ops/s   | 0.112 ± 0.002 M ops/s	(+2.8%)
 > 
-> In order to avoid accessing the IP registers while the IP is runtime
-> suspended (e.g. in the timeframe b/w the probe requests shared IRQs and
-> IP clocks are enabled) in the interrupt handlers were introduced
-
-   But can't we just request our IRQs after we call pm_runtime_resume_and_get()?
-We proaobly can... but then again, we call pm_runtime_put_sync() in the remove()
-method before the IRQs are freed...  So, it still seems OK that we're adding
-pm_runtime_active() calls to the IRQ handlers in this very patch, not when we'll
-start calling the RPM APIs in the ndo_{open|close}() methods, correct? :-)
-
-> pm_runtime_active() checks. The device runtime PM usage counter has been
-> incremented to avoid disabling the device's clocks while the check is in
-> progress (if any).
+> Signed-off-by: Marco Elver <elver@google.com>
+> ---
+>   include/linux/bpf_local_storage.h               | 17 ++++++++++++++++-
+>   kernel/bpf/bpf_local_storage.c                  | 14 ++++----------
+>   .../selftests/bpf/progs/cgrp_ls_recursion.c     |  2 +-
+>   .../selftests/bpf/progs/task_ls_recursion.c     |  2 +-
+>   4 files changed, 22 insertions(+), 13 deletions(-)
 > 
-> This is a preparatory change to add runtime PM support for all IP variants.
-> 
-> Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-[...]
-
-> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-> index e70c930840ce..f9297224e527 100644
-> --- a/drivers/net/ethernet/renesas/ravb_main.c
-> +++ b/drivers/net/ethernet/renesas/ravb_main.c
-[...]
-> @@ -1092,11 +1082,23 @@ static irqreturn_t ravb_emac_interrupt(int irq, void *dev_id)
->  {
->  	struct net_device *ndev = dev_id;
->  	struct ravb_private *priv = netdev_priv(ndev);
-> +	struct device *dev = &priv->pdev->dev;
-> +	irqreturn_t result = IRQ_HANDLED;
-> +
-> +	pm_runtime_get_noresume(dev);
-> +
-
-   Not sure we need en empty line here...
-
-> +	if (unlikely(!pm_runtime_active(dev))) {
-> +		result = IRQ_NONE;
-> +		goto out_rpm_put;
-> +	}
->  
->  	spin_lock(&priv->lock);
->  	ravb_emac_interrupt_unlocked(ndev);
->  	spin_unlock(&priv->lock);
-> -	return IRQ_HANDLED;
-> +
-> +out_rpm_put:
-> +	pm_runtime_put_noidle(dev);
-> +	return result;
->  }
->  
->  /* Error interrupt handler */
-> @@ -1176,9 +1178,15 @@ static irqreturn_t ravb_interrupt(int irq, void *dev_id)
->  	struct net_device *ndev = dev_id;
->  	struct ravb_private *priv = netdev_priv(ndev);
->  	const struct ravb_hw_info *info = priv->info;
-> +	struct device *dev = &priv->pdev->dev;
->  	irqreturn_t result = IRQ_NONE;
->  	u32 iss;
->  
-> +	pm_runtime_get_noresume(dev);
-> +
-
-   And here...
-
-> +	if (unlikely(!pm_runtime_active(dev)))
-> +		goto out_rpm_put;
-> +
->  	spin_lock(&priv->lock);
->  	/* Get interrupt status */
->  	iss = ravb_read(ndev, ISS);
-[...]
-> @@ -1230,9 +1241,15 @@ static irqreturn_t ravb_multi_interrupt(int irq, void *dev_id)
->  {
->  	struct net_device *ndev = dev_id;
->  	struct ravb_private *priv = netdev_priv(ndev);
-> +	struct device *dev = &priv->pdev->dev;
->  	irqreturn_t result = IRQ_NONE;
->  	u32 iss;
->  
-> +	pm_runtime_get_noresume(dev);
-> +
-
-   Here too...
-
-> +	if (unlikely(!pm_runtime_active(dev)))
-> +		goto out_rpm_put;
-> +
->  	spin_lock(&priv->lock);
->  	/* Get interrupt status */
->  	iss = ravb_read(ndev, ISS);
-[...]
-> @@ -1261,8 +1281,14 @@ static irqreturn_t ravb_dma_interrupt(int irq, void *dev_id, int q)
->  {
->  	struct net_device *ndev = dev_id;
->  	struct ravb_private *priv = netdev_priv(ndev);
-> +	struct device *dev = &priv->pdev->dev;
->  	irqreturn_t result = IRQ_NONE;
->  
-> +	pm_runtime_get_noresume(dev);
-> +
-
-   Here as well...
-
-> +	if (unlikely(!pm_runtime_active(dev)))
-> +		goto out_rpm_put;
-> +
->  	spin_lock(&priv->lock);
->  
->  	/* Network control/Best effort queue RX/TX */
-[...]
-> @@ -2616,6 +2548,90 @@ static void ravb_parse_delay_mode(struct device_node *np, struct net_device *nde
->  	}
->  }
->  
-> +static int ravb_setup_irq(struct ravb_private *priv, const char *irq_name,
-> +			  const char *ch, int *irq, irq_handler_t handler)
+> diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_storage.h
+> index 173ec7f43ed1..c8cecf7fff87 100644
+> --- a/include/linux/bpf_local_storage.h
+> +++ b/include/linux/bpf_local_storage.h
+> @@ -130,9 +130,24 @@ bpf_local_storage_map_alloc(union bpf_attr *attr,
+>   			    bool bpf_ma);
+>   
+>   struct bpf_local_storage_data *
+> +bpf_local_storage_lookup_slowpath(struct bpf_local_storage *local_storage,
+> +				  struct bpf_local_storage_map *smap,
+> +				  bool cacheit_lockit);
+> +static inline struct bpf_local_storage_data *
+>   bpf_local_storage_lookup(struct bpf_local_storage *local_storage,
+>   			 struct bpf_local_storage_map *smap,
+> -			 bool cacheit_lockit);
+> +			 bool cacheit_lockit)
 > +{
-> +	struct platform_device *pdev = priv->pdev;
-> +	struct net_device *ndev = priv->ndev;
-> +	struct device *dev = &pdev->dev;
-> +	const char *dev_name;
-> +	unsigned long flags;
-> +	int error;
+> +	struct bpf_local_storage_data *sdata;
 > +
-> +	if (irq_name) {
-> +		dev_name = devm_kasprintf(dev, GFP_KERNEL, "%s:%s", ndev->name, ch);
-> +		if (!dev_name)
-> +			return -ENOMEM;
+> +	/* Fast path (cache hit) */
+> +	sdata = rcu_dereference_check(local_storage->cache[smap->cache_idx],
+> +				      bpf_rcu_lock_held());
+> +	if (likely(sdata && rcu_access_pointer(sdata->smap) == smap))
+> +		return sdata;
 > +
-> +		*irq = platform_get_irq_byname(pdev, irq_name);
-> +		flags = 0;
-> +	} else {
-> +		dev_name = ndev->name;
-> +		*irq = platform_get_irq(pdev, 0);
-> +		flags = IRQF_SHARED;
-
-   Perhaps it's worth passing flags as a parameter here instead?
-
-> +	}
-> +	if (*irq < 0)
-> +		return *irq;
-> +
-> +	error = devm_request_irq(dev, *irq, handler, flags, dev_name, ndev);
-> +	if (error)
-> +		netdev_err(ndev, "cannot request IRQ %s\n", dev_name);
-> +
-> +	return error;
+> +	return bpf_local_storage_lookup_slowpath(local_storage, smap, cacheit_lockit);
 > +}
-[...]
+>   
+>   void bpf_local_storage_destroy(struct bpf_local_storage *local_storage);
+>   
+> diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
+> index 146824cc9689..2ef782a1bd6f 100644
+> --- a/kernel/bpf/bpf_local_storage.c
+> +++ b/kernel/bpf/bpf_local_storage.c
+> @@ -415,20 +415,14 @@ void bpf_selem_unlink(struct bpf_local_storage_elem *selem, bool reuse_now)
+>   }
+>   
+>   /* If cacheit_lockit is false, this lookup function is lockless */
+> -struct bpf_local_storage_data *
+> -bpf_local_storage_lookup(struct bpf_local_storage *local_storage,
+> -			 struct bpf_local_storage_map *smap,
+> -			 bool cacheit_lockit)
+> +noinline struct bpf_local_storage_data *
 
-MBR, Sergey
+Is noinline needed ?
+
+> +bpf_local_storage_lookup_slowpath(struct bpf_local_storage *local_storage,
+> +				  struct bpf_local_storage_map *smap,
+> +				  bool cacheit_lockit)
+>   {
+>   	struct bpf_local_storage_data *sdata;
+>   	struct bpf_local_storage_elem *selem;
+>   
+> -	/* Fast path (cache hit) */
+> -	sdata = rcu_dereference_check(local_storage->cache[smap->cache_idx],
+> -				      bpf_rcu_lock_held());
+> -	if (sdata && rcu_access_pointer(sdata->smap) == smap)
+> -		return sdata;
+> -
+>   	/* Slow path (cache miss) */
+>   	hlist_for_each_entry_rcu(selem, &local_storage->list, snode,
+>   				  rcu_read_lock_trace_held())
+> diff --git a/tools/testing/selftests/bpf/progs/cgrp_ls_recursion.c b/tools/testing/selftests/bpf/progs/cgrp_ls_recursion.c
+> index a043d8fefdac..9895087a9235 100644
+> --- a/tools/testing/selftests/bpf/progs/cgrp_ls_recursion.c
+> +++ b/tools/testing/selftests/bpf/progs/cgrp_ls_recursion.c
+> @@ -21,7 +21,7 @@ struct {
+>   	__type(value, long);
+>   } map_b SEC(".maps");
+>   
+> -SEC("fentry/bpf_local_storage_lookup")
+> +SEC("fentry/bpf_local_storage_lookup_slowpath")
+
+The selftest is trying to catch recursion. The change here cannot test the same 
+thing because the slowpath will never be hit in the test_progs.  I don't have a 
+better idea for now also.
+
+It has a conflict with the bpf-next tree also. Was the patch created against an 
+internal tree?
+
+-- 
+
+pw-bot: cr
+
+>   int BPF_PROG(on_lookup)
+>   {
+>   	struct task_struct *task = bpf_get_current_task_btf();
+> diff --git a/tools/testing/selftests/bpf/progs/task_ls_recursion.c b/tools/testing/selftests/bpf/progs/task_ls_recursion.c
+> index 4542dc683b44..d73b33a4c153 100644
+> --- a/tools/testing/selftests/bpf/progs/task_ls_recursion.c
+> +++ b/tools/testing/selftests/bpf/progs/task_ls_recursion.c
+> @@ -27,7 +27,7 @@ struct {
+>   	__type(value, long);
+>   } map_b SEC(".maps");
+>   
+> -SEC("fentry/bpf_local_storage_lookup")
+> +SEC("fentry/bpf_local_storage_lookup_slowpath")
+>   int BPF_PROG(on_lookup)
+>   {
+>   	struct task_struct *task = bpf_get_current_task_btf();
+
 
