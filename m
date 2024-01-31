@@ -1,92 +1,88 @@
-Return-Path: <linux-kernel+bounces-46022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46043-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C28F184396D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:43:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 988EE8439A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:50:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3820F1F23229
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:43:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCDFA1C26FD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:50:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9766869D21;
-	Wed, 31 Jan 2024 08:41:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C88A164CE1;
+	Wed, 31 Jan 2024 08:42:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="m0W6mpSA"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b="SQStcmzb"
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2064.outbound.protection.outlook.com [40.107.255.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34EF066B5F
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 08:41:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706690515; cv=none; b=PJxX6koJ8bTSBbZg1mv68pMyO7MMn1dXql2pGSpJLVqbBY2HclZQJtifk6Q/egeNqGGsbtfKwgGcu0FlX1z4vrXMTJMe38bCQDMqoW3zIm4B8BdqhIWBKZaXSaXSmiPi2U2zlFqelqwnprArOEJ1yEzGmN7CiRS8tSSO8YRI3Qs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706690515; c=relaxed/simple;
-	bh=dklOpKsyY20gACcIKy4CcTI5WliooZ2yY0L9WV+xUdM=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64C3B8289A;
+	Wed, 31 Jan 2024 08:42:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.255.64
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706690548; cv=fail; b=eqgYGQJy/Yjfv5twG8wVI92Y6HMBrhkVHYTaMMdGTl0gmtrZLw55ZvYx3g54laG7I+I/BObjNdWuzkHmaN+DH+E9dFzOdbN9xRgkSKvBwHU5hzfYyiT9q8cb8e6cL6XQytq7CXWWYgXrtkzgOZf7P5x7/MSaKfpASJfjTM5GbDs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706690548; c=relaxed/simple;
+	bh=2lMj6OPPM0/rhUjxZzelIgBRmQmAE3wzvanFBMW1Agg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=qqD4DeZmE0u6iECo8Kn0Q3cnLsjMABqXUd6PpfwoGjujZTqSKB+fQJZ6UMTYolZiH07vy50nWi0qltZXE3a35VQDjPu9oPa/TnEI+TzbEwcpSQ7DGnpFuljr2awg8T/vo1YSGaK2SpRPHAZoWdHTQU8yeInV7TpviBOE3YIOyQY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=m0W6mpSA; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-55eee4a042eso4196446a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 00:41:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1706690511; x=1707295311; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NJFy8U7M4bryV96Zq0jRThjn9Ebbq49lbecxpcNk9ss=;
-        b=m0W6mpSAbEY1ButKbtsIumfUuDxjn0xYXCZNY6+zbpuDLKLoEM/OSCCpYJSey0e4+t
-         SYSRYlKK15UcKLOM6/YBEsrj2rTSEiIOmHJcXJdAphJMNK0NFsD4YzTmZf5JJ9U/hU97
-         KiK0Ts6GHBnvQDDGdyExxVJ043zMcuT954tn6e7LT02Ik+b34wYKmix/rTV1E/0IQBsJ
-         i0lf8jX2JTfwHrBDFiWZ3VhST6j3nGGD4fonaUybymQKS/q7XDjCPLqL2LpXhyXo3f0A
-         PmOSy/v9ceQZ8JyfjSTZG5dqxKpuL2I4oyjxKXPFN/Ns0PzAh2PGFTzq+koyHUB/LTPj
-         eUCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706690511; x=1707295311;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NJFy8U7M4bryV96Zq0jRThjn9Ebbq49lbecxpcNk9ss=;
-        b=bbUMxrIx1V+mh7+XidTvtUOeRSaIUlvOd/+/iscfHS64MT/R2pdgjuYOFCbgJBeECs
-         9KMj++/qNt0ZHXPOxYRjrNM2Wgrh967Yy4iz88nsxSPVzVyE80ljLQ+RSWeAcMWRKLAJ
-         QwGliblQMhakDdxwRK3QovwYlAMSHy+hvrM2LeE7B14dF3ucR34N6asxKCbd27qJ1meK
-         YTTG+y64cdt2+74NZVEpKLojpuL3jjfKsHtsBBC6YDmWqSUuUyX0LyxVCynk8sRnGvtz
-         KZrp9ucOs4NEL4trQcXfbhln3NuIzonrjQ3qfvMlh3iWzTVnWd8XqL4pf/RPALrm4dNb
-         XtyA==
-X-Gm-Message-State: AOJu0YzB0+SHshtem3r6kFqZ+W7Y5BNms/fmSdK7M8EgC8eZluxZveIv
-	Z+UkJWsMULqx1kr/jNyR6v2ZaDZa903mgxrllHLhtTVzijU4fTQqWg4MYAw7Wmw=
-X-Google-Smtp-Source: AGHT+IHul4OILIaDxbopgzMq6EJx+ujTxObFmE8uaf6iDVoivEW5FCjWHMGKN9JeHQe0LoLwdJOkRg==
-X-Received: by 2002:aa7:d897:0:b0:55f:28cd:bb42 with SMTP id u23-20020aa7d897000000b0055f28cdbb42mr592294edq.10.1706690511422;
-        Wed, 31 Jan 2024 00:41:51 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCV8slgI9Hwzsyh94xWW4P4Yqr9iv4C0VIpCYRduKf57Dtl4RRbiTtpnkv2ZwxvT68F6trj1TctScQGC1SDmZO6no2g/DwBJ2h16HKx9o5OceLICxeOWdL98irFE+qSvM9yn49kozVT0Vcu/aYBtFjGuF1RE6TH1OUrsgh+RJ+6HRBlCzeQTvx0AOv8U62lFdyz6cxiFddW3NIZonD2nPUddsaTMbfvHIJgH4fEnLkv0v+UxJSc72bK7SfdvaR9ciMdq5K+ZNu4fiXZLQV1J1ikakBeTy3sC9c8M7UD4qskc0n3ixJRdXWLNbtwgVRH6lvUJESHfyulsO1X3KnAgOKsY2rYIk1GitSOLyyI2hInYPK4T4oMggNp/6uaMn/OaAcFbTvtS1eFQp62WRD979AjzRPzPudN3VhT1ndqz+dHuNuW3mD0=
-Received: from claudiu-X670E-Pro-RS.. ([82.78.167.87])
-        by smtp.gmail.com with ESMTPSA id cq16-20020a056402221000b0055f02661ae2sm2863630edb.78.2024.01.31.00.41.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 00:41:51 -0800 (PST)
-From: Claudiu <claudiu.beznea@tuxon.dev>
-X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
-To: s.shtylyov@omp.ru,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	richardcochran@gmail.com,
-	p.zabel@pengutronix.de,
-	geert+renesas@glider.be
-Cc: netdev@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	claudiu.beznea@tuxon.dev,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH net-next v5 04/15] net: ravb: Switch to SYSTEM_SLEEP_PM_OPS()/RUNTIME_PM_OPS() and pm_ptr()
-Date: Wed, 31 Jan 2024 10:41:22 +0200
-Message-Id: <20240131084133.1671440-5-claudiu.beznea.uj@bp.renesas.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240131084133.1671440-1-claudiu.beznea.uj@bp.renesas.com>
-References: <20240131084133.1671440-1-claudiu.beznea.uj@bp.renesas.com>
+	 MIME-Version:Content-Type; b=jmgNHNFD9AaMxpMKCnCErv1q7VPsQMBTQioyLiKheHNCFqP44Mf8lnbd8uMFCHxmMnpTUQLOjxwOcAIIFw2TullqOX/DyRM8ZU0UdpUJ1R0wcxaV6caXUz4yYmfZ6A27xDG7x0x0ESbkoTUyzLiTVH6/eHtdfDc7hfkAll9a2F4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com; spf=pass smtp.mailfrom=wiwynn.com; dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b=SQStcmzb; arc=fail smtp.client-ip=40.107.255.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wiwynn.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=l1euOJqk8r3xtCF4D2tPpkc4+SGcDLQIEAokyujqiEgvdvvTYgG2ifVJCObAQ2jdsYWMXkTVvfGZvNhurnoas8Z/scgiVcY2fnldmmi0egjU+WUwgG+lBt7HOkK/9BFFYo0MpJYlhlbM41r0ZPzYVi/FVcmVnKWpr+BqCph0Tg30iJYvdvoLbYTOtkqnhkciYhR56X8V+yVxDp7ihUFkcpWI8IPzRV7ifFRaRTBX7Lu10sNE9CqDfvqyIG6UrPAybGO5U8T2FSYDqrbI5jsYfyx9azBR0HKT8BJv2EePKqbRuHAjXZNI4T+RVlnBjJYEiGnGePiNB56oHOAcj2RkBw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=83qzPgFTx360SjxOmqFNjD3Rm3s/Cy16s152N2P3fZA=;
+ b=cCX9bMf4AHkX3bjCp/ZHWgvBdfe7O6iF258kzIHj35xskOnpO8nUOrmO9OJZCeifC0SrKIsw5uwgoELOohzw1NlJZ9Y02rk4vVkC5AnAmgu4/x+kEemO0y5pyB3RIUipdplPBI+4n1d8cypxl+WpQgjOzebMP60lh3+v/EG+fKxIS5BynKn3GVFX0ossy6ovhxR8DXkymSZh5PAisIXegoaUBvEWXx3sUdcSiVB/Xlhmjle3Uw5LdtHwKbRB5PirBDqxCkw4taFCzVVyuoKqCc/8lhjreZfnybowRogqoQIncNlI69Shzn8Z8yZhK/b8yc+x8ScuoTbAkn28V1q/eQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
+ 211.20.1.79) smtp.rcpttodomain=stwcx.xyz smtp.mailfrom=wiwynn.com; dmarc=fail
+ (p=quarantine sp=quarantine pct=100) action=quarantine
+ header.from=wiwynn.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=83qzPgFTx360SjxOmqFNjD3Rm3s/Cy16s152N2P3fZA=;
+ b=SQStcmzbdjBSW2jaX9VaudvuYxLh7V2UxnVzZuJPhHf7RniKlgeO+KQUORY919CFnZcPQMLrl8mEKOzOWu3AxY9ct9otdDRWzynVYDlsS/Mtuco+jTVouOv1kV381WVkOi+J/LPIyv33l/mM6eSWqv4pCL/hM9fZF/Ce87SQ0OOjAO69ziRSbtbDcIAwOyKYCbOuoogK3EQqr5zCtOJhwciKlsi1HupCEXa1UJTRnlobxXhGTyIV5lXC54N5/3knT7yWh8Vm1htAvEoKb8xOtZ0vzAipVWl9BJRgqDqHTmH6DdbImyA42oMTjK8zRM7YAMo1+XZ0FxZEHXC7QMMOCA==
+Received: from SG2P153CA0035.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c7::22) by
+ SEYPR04MB7689.apcprd04.prod.outlook.com (2603:1096:101:1e5::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7249.23; Wed, 31 Jan 2024 08:42:24 +0000
+Received: from HK2PEPF00006FB2.apcprd02.prod.outlook.com
+ (2603:1096:4:c7:cafe::a9) by SG2P153CA0035.outlook.office365.com
+ (2603:1096:4:c7::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.8 via Frontend
+ Transport; Wed, 31 Jan 2024 08:42:23 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
+ smtp.mailfrom=wiwynn.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=quarantine header.from=wiwynn.com;
+Received-SPF: Fail (protection.outlook.com: domain of wiwynn.com does not
+ designate 211.20.1.79 as permitted sender) receiver=protection.outlook.com;
+ client-ip=211.20.1.79; helo=localhost.localdomain;
+Received: from localhost.localdomain (211.20.1.79) by
+ HK2PEPF00006FB2.mail.protection.outlook.com (10.167.8.8) with Microsoft SMTP
+ Server id 15.20.7228.16 via Frontend Transport; Wed, 31 Jan 2024 08:42:22
+ +0000
+From: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+To: patrick@stwcx.xyz,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Joel Stanley <joel@jms.id.au>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>
+Cc: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-aspeed@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v5 11/21] ARM: dts: aspeed: yosemite4: Add eeprom for yosemite4 use
+Date: Wed, 31 Jan 2024 16:41:22 +0800
+Message-Id: <20240131084134.328307-12-Delphine_CC_Chiu@wiwynn.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240131084134.328307-1-Delphine_CC_Chiu@wiwynn.com>
+References: <20240131084134.328307-1-Delphine_CC_Chiu@wiwynn.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,87 +90,63 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: HK2PEPF00006FB2:EE_|SEYPR04MB7689:EE_
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 3db9b725-73e4-4a06-9b8e-08dc22388b69
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	fRCXhZP1K1qO+GcjXw3l2L4wXJHCLSvEhQ5NarOGAnFdTbbP6jz4QRGyeQDHv+MsB/oQeqyIvIn028xPvJCfOKjY3WXJhtoKqCMhkkDFHRm4G2msT1j1RFQAmlMFf1UBHCzEvLZMIEcRMFtDT5SjK82Bt0ZAoC+w+eG3bvXA050izdmgwsDQQADfad3fvV0dbIugOWxrNpmlVZEo8TYFqGjpNYxOG7f8wsr9eVBp/h/qDDZTsTau3We0CclvE9mYdZr+/PahVay9Kwyir41nMMPsGoE5WTfLWXkTHfBf01c0O/d54UVHSf1u10+Tw5JaRJovx/aG3O8Twe34WRL5qRAoSOONyq9us+uV1M2Z/gS6619s8EGSBAXgFzWI3J7uZwC7xAV94f2WRjeZgWHA4oh9AfY8KBJD/fJOsXALYVVjNw4+JJz078KeZW7yn/Ll6pkXuaC3EzXAnPdAp75hZxS4+aKhpD/zJqvsoQzi/sR8fcA2vJkpvGnviQY7XLJ++BtjFYp+Gt5BcV5qoPlTuKmUhaA0Xec1rmpdj/BXcBgQoZNiIrhhRPfUvMXk3IaZOXYaer6HW8xq2H1hDomVnLmW26+r3ndocGtSsjdc40u8xOXkWDgASLKY6P7Wv5v9FvF0Krvq61PlseKbMMEmWeFfg1KlyDZ4dDGl2iCLZDCPqkXZFqNlkWvkVmAgjZLWImqZc0BWz7uCB8A6CXLHog==
+X-Forefront-Antispam-Report:
+	CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(6069001)(4636009)(39860400002)(396003)(346002)(376002)(136003)(230922051799003)(1800799012)(64100799003)(451199024)(82310400011)(186009)(36840700001)(46966006)(81166007)(47076005)(356005)(40480700001)(82740400003)(83380400001)(36860700001)(336012)(6512007)(6506007)(70586007)(5660300002)(4744005)(2906002)(86362001)(36756003)(36736006)(316002)(8936002)(7416002)(8676002)(70206006)(110136005)(4326008)(26005)(956004)(41300700001)(9316004)(1076003)(478600001)(6486002)(2616005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: wiwynn.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jan 2024 08:42:22.0359
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3db9b725-73e4-4a06-9b8e-08dc22388b69
+X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
+X-MS-Exchange-CrossTenant-AuthSource:
+	HK2PEPF00006FB2.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR04MB7689
 
-From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Add eeprom for yosemite4 use
 
-SET_SYSTEM_SLEEP_PM_OPS() and SET_RUNTIME_PM_OPS() are deprecated now
-and require __maybe_unused protection against unused function warnings.
-The usage of pm_ptr() and SYSTEM_SLEEP_PM_OPS()/RUNTIME_PM_OPS() allows
-the compiler to see the functions, thus suppressing the warning. Thus
-drop the __maybe_unused markings.
-
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
 ---
+ arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-Changes in v5:
-- none
-
-Changes in v4:
-- none
-
-Changes in v3:
-- none
-
-Changes in v2:
-- collected tags
-
- drivers/net/ethernet/renesas/ravb_main.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-index fd431f1a0b98..7ced5db04f75 100644
---- a/drivers/net/ethernet/renesas/ravb_main.c
-+++ b/drivers/net/ethernet/renesas/ravb_main.c
-@@ -2971,7 +2971,7 @@ static int ravb_wol_restore(struct net_device *ndev)
- 	return disable_irq_wake(priv->emac_irq);
- }
+diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
+index e8d7eb7ff568..f00df378a371 100644
+--- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
++++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
+@@ -932,7 +932,7 @@ temperature-sensor@4b {
+ 	};
  
--static int __maybe_unused ravb_suspend(struct device *dev)
-+static int ravb_suspend(struct device *dev)
- {
- 	struct net_device *ndev = dev_get_drvdata(dev);
- 	struct ravb_private *priv = netdev_priv(ndev);
-@@ -2993,7 +2993,7 @@ static int __maybe_unused ravb_suspend(struct device *dev)
- 	return ret;
- }
+ 	eeprom@54 {
+-		compatible = "atmel,24c256";
++		compatible = "atmel,24c128";
+ 		reg = <0x54>;
+ 	};
  
--static int __maybe_unused ravb_resume(struct device *dev)
-+static int ravb_resume(struct device *dev)
- {
- 	struct net_device *ndev = dev_get_drvdata(dev);
- 	struct ravb_private *priv = netdev_priv(ndev);
-@@ -3052,7 +3052,7 @@ static int __maybe_unused ravb_resume(struct device *dev)
- 	return ret;
- }
+@@ -971,6 +971,11 @@ eeprom@50 {
+ 		reg = <0x50>;
+ 	};
  
--static int __maybe_unused ravb_runtime_nop(struct device *dev)
-+static int ravb_runtime_nop(struct device *dev)
- {
- 	/* Runtime PM callback shared between ->runtime_suspend()
- 	 * and ->runtime_resume(). Simply returns success.
-@@ -3065,8 +3065,8 @@ static int __maybe_unused ravb_runtime_nop(struct device *dev)
- }
- 
- static const struct dev_pm_ops ravb_dev_pm_ops = {
--	SET_SYSTEM_SLEEP_PM_OPS(ravb_suspend, ravb_resume)
--	SET_RUNTIME_PM_OPS(ravb_runtime_nop, ravb_runtime_nop, NULL)
-+	SYSTEM_SLEEP_PM_OPS(ravb_suspend, ravb_resume)
-+	RUNTIME_PM_OPS(ravb_runtime_nop, ravb_runtime_nop, NULL)
- };
- 
- static struct platform_driver ravb_driver = {
-@@ -3074,7 +3074,7 @@ static struct platform_driver ravb_driver = {
- 	.remove_new	= ravb_remove,
- 	.driver = {
- 		.name	= "ravb",
--		.pm	= &ravb_dev_pm_ops,
-+		.pm	= pm_ptr(&ravb_dev_pm_ops),
- 		.of_match_table = ravb_match_table,
- 	},
- };
++	eeprom@54 {
++		compatible = "atmel,24c64";
++		reg = <0x54>;
++	};
++
+ 	rtc@6f {
+ 		compatible = "nuvoton,nct3018y";
+ 		reg = <0x6f>;
 -- 
-2.39.2
+2.25.1
 
 
