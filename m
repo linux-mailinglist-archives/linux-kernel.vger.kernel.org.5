@@ -1,77 +1,136 @@
-Return-Path: <linux-kernel+bounces-46113-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46114-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FFF3843A8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:13:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A5D0843A95
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:14:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C03E028DC1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:13:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D6681C20AA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:14:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EE255FBAF;
-	Wed, 31 Jan 2024 09:12:18 +0000 (UTC)
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A6A969D39;
+	Wed, 31 Jan 2024 09:12:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="odasfKXG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C889460DCC;
-	Wed, 31 Jan 2024 09:12:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E52E6994D;
+	Wed, 31 Jan 2024 09:12:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706692338; cv=none; b=J30SHwc61Omdtn0qbOZ1QjWXBQBD9kSZ1hY0JsAiyvKai1vuy9AVCt/VV+8F2SGeP81fC4qTWE9kW8tP0BJGPT5mttLEFN1Gla1dvbsCCxRn2fC3BpsbFnKFw5MPmem+YeQPfTezakDLKz13APlIfNVQZp7gJMwp1SQm/YQTAL8=
+	t=1706692346; cv=none; b=GtoH7n9dVlYWspOQ2ioyPuqRHGi3oA/+mZOkeBvwXvhca/ujleKLTszCBhESqFvWqnbJUxsy6561fB3C/ZHwYrjle6bCw6Q2KDTB6NcSzATSLbZzayYbJMD+QS8WeDLBia91GmWXoEdz7Dt6nj7hh50sHgWNU5bLfhAdcjFBFho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706692338; c=relaxed/simple;
-	bh=D80N2vifwpdm81cX5xhckzyaCvMCtfIkuavJQlBm2YM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qaQlH3qghnhBNxQHM5NKzhwPyfO8oS6Nmppb+jlCJ0epUy7/wBZcyZkstHBxq+K5vaBNOv9ArPx1Sc+u81JSoFDZ0lhFd3p/afxNU79PiLlJn3smy7cmTNHFtukFtRS1Kkn4xKFp5tNKTdQ1QdFXN/SUPhpHjGLiYIW+eAmRuSQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
-Received: from i53875af6.versanet.de ([83.135.90.246] helo=diego.localnet)
-	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <heiko@sntech.de>)
-	id 1rV6dZ-000364-MD; Wed, 31 Jan 2024 10:12:05 +0100
-From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To: Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Alexey Charkov <alchark@gmail.com>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>,
- Dragan Simic <dsimic@manjaro.org>, Viresh Kumar <viresh.kumar@linaro.org>,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
- Alexey Charkov <alchark@gmail.com>
-Subject:
- Re: [PATCH v2 3/4] arm64: dts: rockchip: Add OPP data for CPU cores on RK3588
-Date: Wed, 31 Jan 2024 10:12:04 +0100
-Message-ID: <2168725.pYTLVKaXyH@diego>
-In-Reply-To: <20240130-rk-dts-additions-v2-3-c6222c4c78df@gmail.com>
-References:
- <20240130-rk-dts-additions-v2-0-c6222c4c78df@gmail.com>
- <20240130-rk-dts-additions-v2-3-c6222c4c78df@gmail.com>
+	s=arc-20240116; t=1706692346; c=relaxed/simple;
+	bh=zx+jBP2L20Ye5mfDOJ7pzJPOr2fj4xiBpmo5wgEoBg8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=j2dsW5Ife4gBicHAvgbRjUj+I26Rp/eNrfeCk0lmsQoLZ4nV0kf6p8JssckY4DpwW4ufWlyH15AbUfNkVnBb6JvWxFO6TV43oYntdllt6totwkU9oA6VF4KIkDb2xP7DGBr1At+gRABy4cobIpKZXOEtkUCdJm2KVhXxT3da6ag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=odasfKXG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 209C8C433F1;
+	Wed, 31 Jan 2024 09:12:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706692346;
+	bh=zx+jBP2L20Ye5mfDOJ7pzJPOr2fj4xiBpmo5wgEoBg8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=odasfKXGCEVWm+n+kzir6Xm6EZVzZRzDoL+45cD11BJ5v4Bcn1p9ww19eFIrT5sCV
+	 VBsY4m3GukB8tUBQ2/eJhpVI50um67vRRMyce5hvaFXHexmJjAzPl7FUt7GeCBcZfM
+	 uHaqAEKQ54yPf04XYNnACdN8SenbL6eoL7w814xY/I2g70IT2ZNuoSZpOcIF9yv5Px
+	 8CzPZv2l96IfL9chWZg+T1HFkIlzR/K6TRGVkETET5eRDvqjKOzaZ513oq9kMQFLw1
+	 x8ssT76wND+CIkvH39Nw1hKRD+ACm5jSCFs5rj2OHPE0t33nQk2K+Ln4z4TXKWRUiR
+	 WzxDq5/sEYASA==
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5100ed2b33dso8355198e87.0;
+        Wed, 31 Jan 2024 01:12:26 -0800 (PST)
+X-Gm-Message-State: AOJu0YwPVcYthH0zcaFFBNEhxAOVjfQlLslOXSCMnJ1sHh+9ggIgTSsa
+	5N4HjBLSn8gKrTB3S+lkkrxOo8dq90nH++9lan7HnPUXKZiQKvNNMsFZannFmk8h2n+qGTsdrY3
+	EEgDpjsA+6O4PDXs9uGFchyPN3V4=
+X-Google-Smtp-Source: AGHT+IGKJh4aTcDvm3ZTQdt05N8TV7ie7Jl38Yz55BFxqWqqzCELKVQ/rFcFhsPxqCN+qciTi1uZSp0ntuHJtUQxzNg=
+X-Received: by 2002:a05:6512:616:b0:510:a0b:52e3 with SMTP id
+ b22-20020a056512061600b005100a0b52e3mr809444lfe.68.1706692344331; Wed, 31 Jan
+ 2024 01:12:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20240129180502.4069817-21-ardb+git@google.com>
+ <20240129180502.4069817-23-ardb+git@google.com> <20240131083511.GIZboGP8jPIrUZA8DF@fat_crate.local>
+In-Reply-To: <20240131083511.GIZboGP8jPIrUZA8DF@fat_crate.local>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Wed, 31 Jan 2024 10:12:13 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXG9W0XeEVR4tXDDg0Ai9XPsZGrTJaSRYUqgTV-xtFxjdQ@mail.gmail.com>
+Message-ID: <CAMj1kXG9W0XeEVR4tXDDg0Ai9XPsZGrTJaSRYUqgTV-xtFxjdQ@mail.gmail.com>
+Subject: Re: [PATCH v3 02/19] x86/boot: Move mem_encrypt= parsing to the decompressor
+To: Borislav Petkov <bp@alien8.de>
+Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org, 
+	Kevin Loughlin <kevinloughlin@google.com>, Tom Lendacky <thomas.lendacky@amd.com>, 
+	Dionna Glaze <dionnaglaze@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
+	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>, linux-arch@vger.kernel.org, 
+	llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Am Dienstag, 30. Januar 2024, 19:21:15 CET schrieb Alexey Charkov:
-> By default the CPUs on RK3588 start up in a conservative performance
-> mode. Add frequency and voltage mappings to the device tree to enable
-> dynamic scaling via cpufreq
+On Wed, Jan 31, 2024 at 9:35=E2=80=AFAM Borislav Petkov <bp@alien8.de> wrot=
+e:
+>
+> On Mon, Jan 29, 2024 at 07:05:05PM +0100, Ard Biesheuvel wrote:
+> > +/*
+> > + * Set the memory encryption xloadflag based on the mem_encrypt=3D com=
+mand line
+> > + * parameter, if provided. If not, the consumer of the flag decides wh=
+at the
+> > + * default behavior should be.
+> > + */
+> > +static void set_mem_encrypt_flag(struct setup_header *hdr)
+>
+> parse_mem_encrypt
+>
 
-Please add a paragraph describing where the opp values comes from.
-Probably just the vendor kernel, which is fine, but I really like to
-document that these values have some sort of grounds ;-)
+OK
 
+> > +{
+> > +     hdr->xloadflags &=3D ~(XLF_MEM_ENCRYPTION | XLF_MEM_ENCRYPTION_EN=
+ABLED);
+> > +
+> > +     if (IS_ENABLED(CONFIG_ARCH_HAS_MEM_ENCRYPT)) {
+>
+> That's unconditionally enabled on x86:
+>
+>         select ARCH_HAS_MEM_ENCRYPT
+>
+> in x86/Kconfig.
+>
+> Which sounds like you need a single XLF_MEM_ENCRYPT and simplify this
+> more.
+>
 
-Thanks
-Heiko
+OK, but that only means I can drop the if().
 
+The reason we need two flags is because there is no default value to
+use when the command line param is absent.
 
+There is CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT but that one is AMD
+specific. There is CONFIG_X86_MEM_ENCRYPT which is shared between
+SME/SEV and TDX, which has no default setting.
 
+> > +             int on =3D cmdline_find_option_bool("mem_encrypt=3Don");
+> > +             int off =3D cmdline_find_option_bool("mem_encrypt=3Doff")=
+;
+> > +
+> > +             if (on || off)
+> > +                     hdr->xloadflags |=3D XLF_MEM_ENCRYPTION;
+> > +             if (on > off)
+> > +                     hdr->xloadflags |=3D XLF_MEM_ENCRYPTION_ENABLED;
+> > +     }
+> > +}
+>
+> Otherwise, I like the simplification.
+>
+
+Cheers.
 
