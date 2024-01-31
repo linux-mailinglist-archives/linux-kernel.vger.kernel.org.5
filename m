@@ -1,134 +1,122 @@
-Return-Path: <linux-kernel+bounces-46494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46510-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B30C4844089
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:27:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 048328440C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:39:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52D8E1F2C8E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:27:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5D86283DE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:38:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C0017D403;
-	Wed, 31 Jan 2024 13:27:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF4917F49A;
+	Wed, 31 Jan 2024 13:38:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QAr2T3qJ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N7wOeWfN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 963ED7BB03
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 13:27:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27AB97BB03;
+	Wed, 31 Jan 2024 13:38:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706707625; cv=none; b=mASPmnW8Iu4rl3DnjhgI7XR/jj29oXL3EP6TgoonuZ80rNAkZeb5N4dhGWw7XMZ4RtofypV8eqjq7YREOPFciOBJoY5rj8g/yBXADGYzdmzLEv/UTBTHWVMthRnTdpj1FhlHUGIyPLzmDk60qX6ZSZkvZ4kN6oscImws3qBS5Ow=
+	t=1706708333; cv=none; b=EDrqPhYEbI8vl+3VMhBTI5DazOW8LLBBkW5hBZZ6pCVxNsVbOtneNofC0vno5hVd87wnFYnlfycBk9HAWwp043K47FOq3ULLhuGlvt+9RvidHwDWP5DaJ4YpvhRAhdJvJuJsxcQ4AJJonVjRvm64upTbk+s5iOfKFRDgiAvzaP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706707625; c=relaxed/simple;
-	bh=x2alkTFdX9GtAAjAdf9d5pBfRjBGsbqEAc0JOC49oYY=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=F4HH/clEBRYJrUkOQXPWQytGFPkmXGmK7sG5NsaQ6ccd/1M2wzbyZJRXPk1gd/P5gs4lj6jOOB8COoYb6A1PwkX5rB1SUEiVQg87urcLUNMTZbkiaegS4VPxdk3VoGzhz94TPVAsLMU4PDdTLhtZVAaQbMRRk5vErmrx1oaUqtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QAr2T3qJ; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706707622;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=AEoHzKgqw9sGTXanl1cSpEXOm2keGIi49ypqIIavTQY=;
-	b=QAr2T3qJ4T+rqV6FPAgKZXl+sKCdxgVaDuq730gcnGxwv1rCTuF6gPZTlzrj09wTRIdqmz
-	qsOZwsDLZMfUEDsu1UEO74i8a35a2snAd5S3zDLE8V/DnWTduCXeNsQSrzkRyPjwMrO7C7
-	lcAz21UGL1SSCPfoAm995Hke8j+OpCw=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-466-ryf6m05BOHuqu6haSIRe3w-1; Wed, 31 Jan 2024 08:26:58 -0500
-X-MC-Unique: ryf6m05BOHuqu6haSIRe3w-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5EFE0101A526;
-	Wed, 31 Jan 2024 13:26:58 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.249])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 0D16140C122E;
-	Wed, 31 Jan 2024 13:26:56 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Wed, 31 Jan 2024 14:25:43 +0100 (CET)
-Date: Wed, 31 Jan 2024 14:25:41 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
-	Tycho Andersen <tycho@tycho.pizza>, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 0/1] pidfd: implement PIDFD_THREAD flag for pidfd_open()
-Message-ID: <20240131132541.GA23632@redhat.com>
+	s=arc-20240116; t=1706708333; c=relaxed/simple;
+	bh=CPLp+9AYzGX3pEeWi3wlU4ZtwP5lMB44GA9+1lDqg0Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NmUHIj3fRm2144wh5f1U8pQaNh7M4/c1nXhWbshMV8hygCTN7htY55JajIRjATpH2ynh8hdnYJe4GYZcLmLTweQi+5rvq1gl0zs37Jx5JH1w1Ll3Wjek/DI+VlLjOcYyUEkR+/Ve33KAd0k1TVfviyLPky38rVjfyMscAaGwM1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N7wOeWfN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94E8DC43390;
+	Wed, 31 Jan 2024 13:38:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706708332;
+	bh=CPLp+9AYzGX3pEeWi3wlU4ZtwP5lMB44GA9+1lDqg0Q=;
+	h=From:To:Cc:Subject:Date:From;
+	b=N7wOeWfNFJ1SeWiKk+cAW/43kh5X4RTcseKgUBBaK7HVu8FeyNgcglzNeEXM2iNbt
+	 /ER/FBSdTbD8zxzkp1m6hGF1ZbEtJSt7LAvN2RjY2ZHhsrsNdnZHICJU+dntMNj7Kt
+	 +bLM6GbahqHupXQ7NAX9OsINU4u47fu2bsiiphcj6GOc8UdGxxor1JYAuTz7gx6rcs
+	 FhgUs3L3O5eFGUyU/cWIHpOxgcVw+mLwH1L/2Aek4/sHOodoDgoCWjByU2tar/oc/z
+	 aRKNv5zBHnxLe7jwzcZLyvci/++PNsc4zB8TtQyQPxkFeSjQZOUqTewp7WxDy9MBBR
+	 MeDQYGadFcmHg==
+From: Jisheng Zhang <jszhang@kernel.org>
+To: Conor Dooley <conor@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Emil Renner Berthing <kernel@esmil.dk>
+Cc: linux-riscv@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/6] riscv: dts: starfive: add Milkv Mars board device tree
+Date: Wed, 31 Jan 2024 21:25:54 +0800
+Message-ID: <20240131132600.4067-1-jszhang@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+Content-Transfer-Encoding: 8bit
 
-Please see the interdiff below.
+The Milkv Mars is a development board based on the Starfive JH7110 SoC.
+The board features:
 
-Also, I updated the changelog to document that the behaviour of
-pidfd_poll(PIDFD_THREAD, pid-of-group-leader) is not well defined
-if a sub-thread execs.
+- JH7110 SoC
+- 1/2/4/8 GiB LPDDR4 DRAM
+- AXP15060 PMIC
+- 40 pin GPIO header
+- 3x USB 3.0 host port
+- 1x USB 2.0 host port
+- 1x M.2 E-Key
+- 1x eMMC slot
+- 1x MicroSD slot
+- 1x QSPI Flash
+- 1x 1Gbps Ethernet port
+- 1x HDMI port
+- 1x 2-lane DSI and 1x 4-lane DSI
+- 1x 2-lane CSI
 
-Do you agree with this semantics?
+patch1 adds 'cpus' label
+patch2 adds "milkv,mars" board dt-binding
+patch3 ~ patch4 adopt Krzysztof's suggestions to DT node names
+patch5 introduces a board common dtsi for visionfive2 and mars
+patch3 adds the mars board dts file describing the currently supported
+features:
+Namely PMIC, UART, I2C, GPIO, SD card, QSPI Flash, eMMC and Ethernet.
 
-Oleg.
----
+Since v2:
+ - add a common board file which can be used by vf2 and mars
 
-diff --git a/fs/exec.c b/fs/exec.c
-index 73e4045df271..0fd7e668c477 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -1143,7 +1143,11 @@ static int de_thread(struct task_struct *tsk)
- 
- 		BUG_ON(leader->exit_state != EXIT_ZOMBIE);
- 		leader->exit_state = EXIT_DEAD;
--
-+		/*
-+		 * leader and tsk exhanged their pids, the old pid dies,
-+		 * wake up the PIDFD_THREAD waiters.
-+		 */
-+		do_notify_pidfd(leader);
- 		/*
- 		 * We are going to release_task()->ptrace_unlink() silently,
- 		 * the tracer can sleep in do_wait(). EXIT_DEAD guarantees
-diff --git a/include/linux/pid.h b/include/linux/pid.h
-index e6a041cb8bac..8124d57752b9 100644
---- a/include/linux/pid.h
-+++ b/include/linux/pid.h
-@@ -70,10 +70,11 @@ extern const struct file_operations pidfd_fops;
- 
- struct file;
- 
--extern struct pid *pidfd_pid(const struct file *file);
-+struct pid *pidfd_pid(const struct file *file);
- struct pid *pidfd_get_pid(unsigned int fd, unsigned int *flags);
- struct task_struct *pidfd_get_task(int pidfd, unsigned int *flags);
- int pidfd_prepare(struct pid *pid, unsigned int flags, struct file **ret);
-+void do_notify_pidfd(struct task_struct *task);
- 
- static inline struct pid *get_pid(struct pid *pid)
- {
-diff --git a/kernel/signal.c b/kernel/signal.c
-index 5f48d2c4b409..9b40109f0c56 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -2019,7 +2019,7 @@ int send_sigqueue(struct sigqueue *q, struct pid *pid, enum pid_type type)
- 	return ret;
- }
- 
--static void do_notify_pidfd(struct task_struct *task)
-+void do_notify_pidfd(struct task_struct *task)
- {
- 	struct pid *pid;
- 
+Since v1:
+ - add two new patches which add "cpus" label and board dt-binding
+ - adopt Krzysztof's suggestions, thanks
+
+Jisheng Zhang (6):
+  riscv: dts: starfive: add 'cpus' label to jh7110 and jh7100 soc dtsi
+  dt-bindings: riscv: starfive: add Milkv Mars board
+  riscv: dts: starfive: visionfive 2: update sound and codec dt node
+    name
+  riscv: dts: starfive: visionfive 2: use cpus label for timebase freq
+  riscv: dts: starfive: introduce a common board dtsi for jh7110 based
+    boards
+  riscv: dts: starfive: add Milkv Mars board device tree
+
+ .../devicetree/bindings/riscv/starfive.yaml   |   1 +
+ arch/riscv/boot/dts/starfive/Makefile         |   1 +
+ arch/riscv/boot/dts/starfive/jh7100.dtsi      |   2 +-
+ .../boot/dts/starfive/jh7110-milkv-mars.dts   |  35 +
+ .../jh7110-starfive-visionfive-2.dtsi         | 600 +----------------
+ .../jh7110-visionfive2-mars-common.dtsi       | 617 ++++++++++++++++++
+ arch/riscv/boot/dts/starfive/jh7110.dtsi      |   2 +-
+ 7 files changed, 657 insertions(+), 601 deletions(-)
+ create mode 100644 arch/riscv/boot/dts/starfive/jh7110-milkv-mars.dts
+ create mode 100644 arch/riscv/boot/dts/starfive/jh7110-visionfive2-mars-common.dtsi
+
+-- 
+2.43.0
 
 
