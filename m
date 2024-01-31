@@ -1,90 +1,112 @@
-Return-Path: <linux-kernel+bounces-47278-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47279-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AC0C844B46
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:51:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44970844B4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:52:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DAC732939EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:51:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFE871F2136C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:52:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32FAF3A8D2;
-	Wed, 31 Jan 2024 22:50:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A84F83B187;
+	Wed, 31 Jan 2024 22:51:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="RdmcEkaY"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ac/pjXgl"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F25373BB3C;
-	Wed, 31 Jan 2024 22:50:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 132363AC08;
+	Wed, 31 Jan 2024 22:51:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706741450; cv=none; b=p6Ywzl5rocUDzqHeJcQWllek24w+vbOpZOUugnhr0V5U4eky3FrKMUDA24NWeDWIjyT340ye1f0kcbQryx1mrhgkPpbsYKU24p2KRIboG5tzFQlhnvBgKWck41JVt48rPFfpxffqBJP7fUSGprTG4KrWDY9ywi2Kj4zjEz+vnSg=
+	t=1706741491; cv=none; b=XWZhNShaNIM6acPD2EMov7sUShoXFoFbI9cTcPKPcAcyhqwjbAKUiletmEsK6WsM4MbCnF7ovQm6iTEURuk1X/y4dFW7M8a9u3n3DVshIfnMmDckqcUEIdbgenskXzd3LWdVRWL7UWcCozW4aYvfT7ZylZO3i0xZYsL4CXTGimU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706741450; c=relaxed/simple;
-	bh=s8mNCm3spg67wpzoELCl6Nl2C0dTe1E0eKsxrmW9+f0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ucXJQDLtAUTmggr7KDmoAR3Z2Q1CpL0kAurmeNUp2mWODeVhdw6J4h86jT6hI4yvSX28dGbH6VGxUAbKKDfXvlWshucoiF1tLYQrLUpSq9ITn5ZKjSj/Tdvm3Qw1GgrAxzaLntJIuBLcx8jbzqv5b4Y+tZlhP1/GKT/g7LgVH5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=RdmcEkaY; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706741447;
-	bh=s8mNCm3spg67wpzoELCl6Nl2C0dTe1E0eKsxrmW9+f0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RdmcEkaYotXJ+izkLIaZ7UPipr1jhoWVQF19AVVG4qphG+wRjYRsUwwf8nfxIAUxi
-	 srARlU/k7FfMPpX8jeyTtgxBqet+KH5TPtRsfqH3G9E7BtkmouwCgrcuIoDFGwzFm7
-	 RFtdZQLLMRnT+3YM58KZm/ktQySFFEBtn0KAVsxtmCk1J1K/cYo4Ti1zGr/qPNnRJY
-	 NdsPgCPYIEAjU6YqHu6anNUPymEGLq++KlDVJ7CK/u0ESyi/jqdw6MikPARxYhg6MF
-	 NTBY+0W0PvTvzn1REqTCg0Cy0M/IskwxZZjagPeCck76CcDCKhyXuXkOQxs2bSsvCb
-	 f5QKN9YercUdA==
-Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: nfraprado)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8F5A93781182;
-	Wed, 31 Jan 2024 22:50:45 +0000 (UTC)
-Date: Wed, 31 Jan 2024 17:50:43 -0500
-From: =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>
-To: Shuah Khan <shuah@kernel.org>, Sebastian Reichel <sre@kernel.org>
-Cc: kernel@collabora.com, linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-pm@vger.kernel.org,
-	Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: Re: [PATCH] selftests: Add test to verify power supply properties
-Message-ID: <fa11506b-0e00-4543-b5c2-598d1340ef28@notapiano>
-References: <20240131-power-supply-kselftest-v1-1-7ead5645c004@collabora.com>
+	s=arc-20240116; t=1706741491; c=relaxed/simple;
+	bh=Nhl2EaTUpODjHQutorpmjkWafAfvZJ01sjJAcSXGm64=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=m49vbH85FF5mDtG/K9+ftpPUW36UgD/PLnqUtbcbQe1CYojp6nh8tf3BvG1NCsNa7g8X76A5RQskdJdlLoW6Czj1dpS7qNaPbVVg/URXu5Of/DasLzKiQLhZqXeHXnFuKhslmPuGQs0Y2mpNwUlhKNG5Y4HkGLY14vUtK2KqQQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ac/pjXgl; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=sh+tfibFJrc5fXFRI7nnbRhkgKfoTUKszX9p6+Bo/nI=; b=ac/pjXgl+QMWEfv9zqf6oJE7h4
+	lVhGi3Msw4sjocZRLZn/wEkxynhYjuyoyQUdUxHTHyinI52OQ0IS1RMBEbm1iNNDRAfL0C+aPlXhx
+	zg3A1NznhWDs05/C6aob7CxHPiGoS0xuVsqYR3MM+q6e/W4gV6sXWI67RJ6F7zJ79gRo92nlHnB9a
+	nupx2WkLGdkucxCeyf6/wLOKgOo30hfMNv3yvPnS5hxgIgX8POz5+wnl24blGZwp3Ceeteh6nOt2+
+	7mL5b9X9Bcs4K2ytFMNZmHMOjak90zALEvw1/8I888QcHlG2qakGoTnyVjgMGrTLl+f1gevrGAysU
+	Nd6mrakw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rVJQW-00000005kZA-3md2;
+	Wed, 31 Jan 2024 22:51:28 +0000
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: willy@infradead.org,
+	akpm@linux-foundation.org
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	hare@suse.com,
+	p.raghav@samsung.com,
+	da.gomez@samsung.com,
+	djwong@kernel.org,
+	david@fromorbit.com,
+	mcgrof@kernel.org
+Subject: [PATCH v2 0/2] test_xarray: advanced API multi-index tests
+Date: Wed, 31 Jan 2024 14:51:23 -0800
+Message-ID: <20240131225125.1370598-1-mcgrof@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240131-power-supply-kselftest-v1-1-7ead5645c004@collabora.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-On Wed, Jan 31, 2024 at 05:48:01PM -0500, Nícolas F. R. A. Prado wrote:
-> Add a kselftest that verifies power supply properties from sysfs and
-> uevent. It checks whether they are present, readable and return valid
-> values.
-> 
-> This initial set of properties is not comprehensive, but rather the ones
-> that I was able to validate locally.
-> 
-> Co-developed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
-> ---
+This is a respin of the test_xarray multi-index tests [0] which use and
+demonstrate the advanced API which is used by the page cache. This should
+let folks more easily follow how we use multi-index to support for example
+a min order later in the page cache. It also lets us grow the selftests to
+mimic more of what we do in the page cache.
 
-Sorry, I just realized I forgot to add this to the notes, but this patch depends
-on the series
-selftests: ktap_helpers: Add some missing helpers
-https://lore.kernel.org/all/20240131-ktap-sh-helpers-extend-v1-0-98ffb468712c@collabora.com
+Changes since v1:
 
-Thanks,
-Nícolas
+  - Fixed RCU stall, the issue was the misssing RCU locks when fetching
+    an entry, so we now add test_get_entry() which mimics filemap_get_entry() 
+  - Provide a bit more comments
+  - Check for alignment on the index to the order on
+    check_xa_multi_store_adv_add()
+  - Use a helper check_xa_multi_store_adv_del_entry() to mimic what
+    we do in page_cache_delete()
+
+Changes since RFC:
+
+  - Moved out from tmpfs large folio patches [1] so to keep these patches
+    separate
+  - Update cmpxchg test to include another entry at 1 << order that
+    'keeps' the node around and order information.
+  - Update cmpxchg test to verify the entries and order in all tied
+    indexes.
+  - Drop previous Luis Chamberlain's review as changes are significant
+    from the RFC.
+
+[0] https://lkml.kernel.org/r/20231104005747.1389762-1-da.gomez@samsung.com
+[1] https://lore.kernel.org/all/20231028211518.3424020-1-da.gomez@samsung.com/
+
+Daniel Gomez (1):
+  XArray: add cmpxchg order test
+
+Luis Chamberlain (1):
+  test_xarray: add tests for advanced multi-index use
+
+ lib/test_xarray.c | 218 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 218 insertions(+)
+
+-- 
+2.43.0
+
 
