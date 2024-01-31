@@ -1,108 +1,78 @@
-Return-Path: <linux-kernel+bounces-46971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46970-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA59E84472E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:32:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FFC984472D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:32:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 778AD1F269EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:32:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BE9128B73B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:32:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 598B0210FD;
-	Wed, 31 Jan 2024 18:31:59 +0000 (UTC)
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51A401862D;
+	Wed, 31 Jan 2024 18:31:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hI3/K2IB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1B4BDF66;
-	Wed, 31 Jan 2024 18:31:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91B37CA7F;
+	Wed, 31 Jan 2024 18:31:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706725918; cv=none; b=Zman26N/yx/5ABfVMG01TC9JxIMSM+qXFBrDy1stPTt2G6GyVm4UdWYTRA2HbVrdq/uNUzAYuWK2Vv9rcQ5o1/FnTMTDUbJSiLcBsdxNZ+7u1xyEvrmmOjyeYnDOX4hCvzYD8TjW0fIKpfKo31fSo3gl+wKixqQaE+h+ZZO1nfk=
+	t=1706725917; cv=none; b=booNGGaLhaIFtuzP5XUbW173gjoGec9pnJvWuMks5JqCUlzSIn1zX7GS2G6IXLERZHvBlQDWmY2czfZmNsIFKwKpTjIyUiYfPi9crak7wKpZ/GSmDGH0rnOMGP+xCovTL9jTZbCaJgRtaSK3P6YUYxTsTdW41SUURLdz3ckNC88=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706725918; c=relaxed/simple;
-	bh=ZesQiPldqmTFy2+Rn2/fNwCEfJQ4Hd+LHzOFKswTR8s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=igCc+0aUfXBdKnxu/9Kjx+L4DSd7URUMgM0wQB0NpoirGrGBfLGtl+L6q8njGSbGWBhrLi1FDvBKP11ialkpRaPX6bAHt/LSnMw5ytpdU3dAyw+dbb1E6qBAxIAjaJop+dLHp4R6y3kDHimYm/4XBvfEsHci934CBca9FWKN/dY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de; spf=fail smtp.mailfrom=denx.de; arc=none smtp.client-ip=46.255.230.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=denx.de
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-	id 3158B1C007F; Wed, 31 Jan 2024 19:31:49 +0100 (CET)
-Date: Wed, 31 Jan 2024 19:31:48 +0100
-From: Pavel Machek <pavel@denx.de>
-To: "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
-Cc: Pavel Machek <pavel@denx.de>, LKML <linux-kernel@vger.kernel.org>,
-	linux-rt-users <linux-rt-users@vger.kernel.org>,
-	stable-rt <stable-rt@vger.kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Carsten Emde <C.Emde@osadl.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Daniel Wagner <daniel.wagner@suse.com>,
-	Tom Zanussi <tom.zanussi@linux.intel.com>,
-	Clark Williams <williams@redhat.com>,
-	Mark Gross <markgross@kernel.org>,
-	Jeff Brady <jeffreyjbrady@gmail.com>
-Subject: Re: [ANNOUNCE] 5.10.204-rt100
-Message-ID: <ZbqSFNtYwX6tLS8z@duo.ucw.cz>
-References: <ZYX0Y_lbe8hNUNnj@uudg.org>
- <ZblPl7XCGo648oeU@duo.ucw.cz>
- <ZbqG45ZeWgd01CGb@uudg.org>
+	s=arc-20240116; t=1706725917; c=relaxed/simple;
+	bh=5eXQYJ2QVcSsWUt1n52QPxc9VZNtEGN+35a7POQ9WeY=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=UVu555g7TbkCq3KI9sBTIouXeX9hBwMC0cmAK0V0XSH/uZ0bccVKlN5AwnMF4vvoxjXdwjt+VwZltMuAw9AC8blk722zH60BMnDlt6bWIH6xn26fLFTCcKR4GIr7QKUsBV43X0StyVWVs6oC7MM7OnEh/uhTZ7vhJ0ty5/Qtcxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hI3/K2IB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 68EECC433C7;
+	Wed, 31 Jan 2024 18:31:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706725917;
+	bh=5eXQYJ2QVcSsWUt1n52QPxc9VZNtEGN+35a7POQ9WeY=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=hI3/K2IBGvAKVgvokn/oaAJVEXL7bk2b3Tebw06cSxx2Djb8EvC/zpAgYdwzopNLY
+	 ESrHLX9l5WLWwNGPJFRUx1pNU00pq+KtHqgsE3bhINczKj05bC2eNmxPKZ2BdVZ3gg
+	 yuWqQ91IHyDsIyOpZOH2YcmnJMUm2sOnNG5AqbtHiiWIGiER5Z+qOWEwG9DoJS4aQN
+	 +DDnuavnpHsgsSkTINOIgrECHOF6Oz2ngp2SUw92vp1VtEvXA4jXIx/EehNnF4rgrw
+	 pbx9BLrWz/lT2VhF9mJT67RGSNA4XlGStFXvVnsOw+GDTzsnBhimgl2iQ+aAVN7S1L
+	 xWu1CgdwT2JtQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 533A8C4166F;
+	Wed, 31 Jan 2024 18:31:57 +0000 (UTC)
+Subject: Re: [GIT PULL] SCSI fixes for 6.8-rc2
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <c350958c01b9985e1f9bf9c041d1203eb8d82b19.camel@HansenPartnership.com>
+References: <c350958c01b9985e1f9bf9c041d1203eb8d82b19.camel@HansenPartnership.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <c350958c01b9985e1f9bf9c041d1203eb8d82b19.camel@HansenPartnership.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+X-PR-Tracked-Commit-Id: f4469f3858352ad1197434557150b1f7086762a0
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 6764c317b6bb91bd806ef79adf6d9c0e428b191e
+Message-Id: <170672591732.10826.9240785950043375034.pr-tracker-bot@kernel.org>
+Date: Wed, 31 Jan 2024 18:31:57 +0000
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, linux-scsi <linux-scsi@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0z02tRrIz48k5Uc6"
-Content-Disposition: inline
-In-Reply-To: <ZbqG45ZeWgd01CGb@uudg.org>
 
+The pull request you sent on Wed, 31 Jan 2024 09:12:03 -0500:
 
---0z02tRrIz48k5Uc6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
 
-Hi!
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/6764c317b6bb91bd806ef79adf6d9c0e428b191e
 
-> > We (as in cip project), are trying to do -cip-rt releases
-> > once a month. Are there any plans for 5.10-rt release any time soon?
-> > That would help us ;-).
->=20
-> I already pushed v5.10-rt-next (containing v5.10.209-rt101-rc1) to
-> kernel.org and kernelci should pick that up for comprehensive testing
-> within the next hour. As soon as the testing is done I will perform the
-> release dance.
->=20
-> My vacations started (abruptly) a few days before I planned and that lead
-> to some delays. People volunteered to run the builds if anything critical
-> popped up, but that was not the case.
->=20
-> Sorry for the inconvenience, I do hope a release tomorrow or Friday does
-> not disrupt your workflow too much.
+Thank you!
 
-No problem, thanks for the information, and looking forward to the
-release.
-
-Best regards,
-								Pavel
---=20
-DENX Software Engineering GmbH,        Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---0z02tRrIz48k5Uc6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZbqSFAAKCRAw5/Bqldv6
-8gBrAJ0Sls4mHTinUHvL4m3S3PbvApoUowCbB7GUN6Ms6IxtmkHZDoQmIjGXa3c=
-=v+X1
------END PGP SIGNATURE-----
-
---0z02tRrIz48k5Uc6--
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
