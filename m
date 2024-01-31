@@ -1,88 +1,62 @@
-Return-Path: <linux-kernel+bounces-46088-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46089-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B52E9843A25
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:05:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B0C8843A2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:05:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 407A81F2F7DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:05:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A73D11F2F814
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:05:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5FFF69E16;
-	Wed, 31 Jan 2024 08:58:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEBD56D1D4;
+	Wed, 31 Jan 2024 08:58:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b="Z61wUn+3"
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sjYAplxZ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F39BC5EE77
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 08:58:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB596657DD;
+	Wed, 31 Jan 2024 08:58:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706691503; cv=none; b=Rf42DKT5hcGu7dm2zSKJBA9hL/6B561egWxa1LJLjdNIa5tHFWw+VeozN5870mS+IkIf7AwgouaqBmlrKUAZs+H13PR4im3I3fg/5YH1Gir+fYU++jXnDHO322V3cFKdsS1dFnEg8Y56dI0ePS8PvU04iYAe91CFIlbkmxJP2/c=
+	t=1706691530; cv=none; b=sTn9LYaJfLLX4pBBTDQvt4ehMSMxODfO05EC6zbZVZaYOmvAf6zPo9zytOpW21XLw8nal790Z9sVigjH59QAHwnyShUu0+vWghODE4XjeJPz6gWnhIVgO77MmJNRpAw5Q6SZ0ZW3WoS3NYwOtI/nDZiXm5eqS75fYHTCDmc1dUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706691503; c=relaxed/simple;
-	bh=6Zrgzb21tE86MlKP9O+7L5tc50ZGgJImAGA+G2RxFKM=;
+	s=arc-20240116; t=1706691530; c=relaxed/simple;
+	bh=UqpO+ZTsRWdC3QcNmOmOQIsAqQNQt/nfOlLpfSk+jHU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WnB5fWw7lOjyEghY3tnkixpTvddiIah0bmP6WTOKut3sUwKHRCIUcLRohZfH9C4yPuy0bJG/4IJ8nJ/H65l33MnFikdC1RQuYTwQOwB5pJTjGcXXDa1P/JlzTrnTFw0fExGicjmKnZ+kiT3AsL4swH65wzrab3Y5tpxS9TEy5tg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com; spf=pass smtp.mailfrom=cloud.com; dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b=Z61wUn+3; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloud.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3394bec856fso366741f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 00:58:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1706691500; x=1707296300; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=qh9fV0VJ5xXDNHxQ7wqQ2X7g1MNe9pqa0fEzuyTcdc4=;
-        b=Z61wUn+3lfV7YeTkLJlRB1miGJj72yqa+VpPGV+brdxkWHQfA9gM+ENay7CQinN9qd
-         d4ziOx1muycnFRFrV9JAecDHvVivHRAOSP2k9QN60rldvnjmmioREgV1DkToc7vnUFXD
-         /ZT92g90ePpSNvzCsFvnPM2PdkurjRODrkvQw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706691500; x=1707296300;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qh9fV0VJ5xXDNHxQ7wqQ2X7g1MNe9pqa0fEzuyTcdc4=;
-        b=xTA1F6NiWGneCq+UnIljabyz7IjlCQxLpEH0lVksGFKPivIYyiDK6t/NqqWmWV76gq
-         oOcHA2pxPt40PZvWN73/83JUE8rwnVQldCvg24MNMxsimbVL78gqk/tLagNc+Z1li5nv
-         76ZXUqn1yHURflN1KdU4XFaUokofbeq1O6pLCCwhU8De33qEWlmsHLY/dDPUegIIw8o4
-         bzsbbCLYsD41hhxL/u5C7E6f1rHGYs+Pv3+gF5lsGa9jk6Tr06iECcNUWtY8UZ/Q0Pny
-         IDQ+gLJtnxRWkGopphPYitK1TGpDW08fDqz90uk93L/C9mjRuSkpEMFoT3MfZBzE5v6L
-         1Xhg==
-X-Gm-Message-State: AOJu0YxCZLCAwgtVYmncdq5jSaC20Aj3xT4MW7PaRbod4Vpn+5+YAZRe
-	+z7b9ANsBoKnFs3oZbbb+YZbrdPEgTgnRXJ1Vs2Zm00GF4AqV+8E/HKZq5MeqBg=
-X-Google-Smtp-Source: AGHT+IEoDFw3DguH17mowGdEzig1sXO01pO7xO+LXaUUAIS/5x+ESHIRsiCl4RQiIC4BMyQA8aoC/Q==
-X-Received: by 2002:adf:ea92:0:b0:33a:ded1:b01 with SMTP id s18-20020adfea92000000b0033aded10b01mr3594397wrm.28.1706691500269;
-        Wed, 31 Jan 2024 00:58:20 -0800 (PST)
-Received: from localhost ([213.195.118.74])
-        by smtp.gmail.com with ESMTPSA id d15-20020adfa34f000000b0033ae9f1fb82sm8527367wrb.48.2024.01.31.00.58.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 00:58:20 -0800 (PST)
-Date: Wed, 31 Jan 2024 09:58:19 +0100
-From: Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: "Chen, Jiqian" <Jiqian.Chen@amd.com>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, Juergen Gross <jgross@suse.com>,
-	Stefano Stabellini <sstabellini@kernel.org>,
-	Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	"xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-	"Hildebrand, Stewart" <Stewart.Hildebrand@amd.com>,
-	"Huang, Ray" <Ray.Huang@amd.com>,
-	"Ragiadakou, Xenia" <Xenia.Ragiadakou@amd.com>
-Subject: Re: [RFC KERNEL PATCH v4 3/3] PCI/sysfs: Add gsi sysfs for pci_dev
-Message-ID: <ZboLq6kZhwpUC_c3@macbook>
-References: <Zbi8WJPEUSMgjuVY@macbook>
- <20240130204403.GA562912@bhelgaas>
+	 Content-Type:Content-Disposition:In-Reply-To; b=hnlDxnHMe/5ofJLL7YmlUnXjgOudZ5OQhpJuSCk40cDFfLNX5mWf5vWM2qTpOqZ8b7wNkwAU3hh00wbGYhw83/9xOZoFhWAqw9s7SmlZSB12qFmihU2tLFBc53nsOjVE6+cpk14jzlYDfqfPBee+RlUtGzksczBmUJiT13Wmpfs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sjYAplxZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0084BC433C7;
+	Wed, 31 Jan 2024 08:58:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706691529;
+	bh=UqpO+ZTsRWdC3QcNmOmOQIsAqQNQt/nfOlLpfSk+jHU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sjYAplxZycro68aVGkGnlUXGB1CpvGk9JPfk7VmwOq/Y2DF4JGEdSYdHzYEgWYB4i
+	 jxBgPnIVQD2G6jRoXgQfY7k4zcu3iUxluP4XCCLsBqUCmPFbNVSOOUH7O9vL8JfbPe
+	 gd6sx91ioayc2L5qv0E+6oC5lAlMHiYJg7rfv0CEu/TY2hyX4HE9cmUfk3aTt9gL/l
+	 BnS4/yXPOvJQOqo1IvsBbJjoBHJh2cnOxuajl7dr7pwx50MDNV19ucyqi9P2sLM4oD
+	 6Jobsi4BfgxYq3sM2lv0wWYojAOGasxupa0R5XICEUNgvgrbV6EQhD/7LjMFvX0SMG
+	 AHAG3mRZX4JaA==
+Date: Wed, 31 Jan 2024 08:58:42 +0000
+From: Lee Jones <lee@kernel.org>
+To: Bjorn Andersson <andersson@kernel.org>
+Cc: Anjelique Melendez <quic_amelende@quicinc.com>, pavel@ucw.cz,
+	thierry.reding@gmail.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	agross@kernel.org, luca.weiss@fairphone.com,
+	konrad.dybcio@linaro.org, u.kleine-koenig@pengutronix.de,
+	quic_subbaram@quicinc.com, quic_gurus@quicinc.com,
+	linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v8 3/7] soc: qcom: add QCOM PBS driver
+Message-ID: <20240131085842.GF8551@google.com>
+References: <20231221185838.28440-1-quic_amelende@quicinc.com>
+ <20231221185838.28440-4-quic_amelende@quicinc.com>
+ <ut6jbawqqdgfyoxmt76hm67rbnv67x54eho3nae2dd2szbejfb@7joy57g4i3qt>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -92,93 +66,182 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240130204403.GA562912@bhelgaas>
+In-Reply-To: <ut6jbawqqdgfyoxmt76hm67rbnv67x54eho3nae2dd2szbejfb@7joy57g4i3qt>
 
-On Tue, Jan 30, 2024 at 02:44:03PM -0600, Bjorn Helgaas wrote:
-> On Tue, Jan 30, 2024 at 10:07:36AM +0100, Roger Pau Monné wrote:
-> > On Mon, Jan 29, 2024 at 04:01:13PM -0600, Bjorn Helgaas wrote:
-> > > On Thu, Jan 25, 2024 at 07:17:24AM +0000, Chen, Jiqian wrote:
-> > > > On 2024/1/24 00:02, Bjorn Helgaas wrote:
-> > > > > On Tue, Jan 23, 2024 at 10:13:52AM +0000, Chen, Jiqian wrote:
-> > > > >> On 2024/1/23 07:37, Bjorn Helgaas wrote:
-> > > > >>> On Fri, Jan 05, 2024 at 02:22:17PM +0800, Jiqian Chen wrote:
-> > > > >>>> There is a need for some scenarios to use gsi sysfs.
-> > > > >>>> For example, when xen passthrough a device to dumU, it will
-> > > > >>>> use gsi to map pirq, but currently userspace can't get gsi
-> > > > >>>> number.
-> > > > >>>> So, add gsi sysfs for that and for other potential scenarios.
-> > > > >> ...
-> > > > > 
-> > > > >>> I don't know enough about Xen to know why it needs the GSI in
-> > > > >>> userspace.  Is this passthrough brand new functionality that can't be
-> > > > >>> done today because we don't expose the GSI yet?
-> > > 
-> > > I assume this must be new functionality, i.e., this kind of
-> > > passthrough does not work today, right?
-> > > 
-> > > > >> has ACPI support and is responsible for detecting and controlling
-> > > > >> the hardware, also it performs privileged operations such as the
-> > > > >> creation of normal (unprivileged) domains DomUs. When we give to a
-> > > > >> DomU direct access to a device, we need also to route the physical
-> > > > >> interrupts to the DomU. In order to do so Xen needs to setup and map
-> > > > >> the interrupts appropriately.
-> > > > > 
-> > > > > What kernel interfaces are used for this setup and mapping?
-> > > >
-> > > > For passthrough devices, the setup and mapping of routing physical
-> > > > interrupts to DomU are done on Xen hypervisor side, hypervisor only
-> > > > need userspace to provide the GSI info, see Xen code:
-> > > > xc_physdev_map_pirq require GSI and then will call hypercall to pass
-> > > > GSI into hypervisor and then hypervisor will do the mapping and
-> > > > routing, kernel doesn't do the setup and mapping.
-> > > 
-> > > So we have to expose the GSI to userspace not because userspace itself
-> > > uses it, but so userspace can turn around and pass it back into the
-> > > kernel?
-> > 
-> > No, the point is to pass it back to Xen, which doesn't know the
-> > mapping between GSIs and PCI devices because it can't execute the ACPI
-> > AML resource methods that provide such information.
-> > 
-> > The (Linux) kernel is just a proxy that forwards the hypercalls from
-> > user-space tools into Xen.
+Intentional generic top-post reply.
+
+Please work quickly to resolve Bjorn's comments.
+
+I'm being hounded over a broken LEDs tree due to the missing headerfile.
+
+/end
+
+On Tue, 30 Jan 2024, Bjorn Andersson wrote:
+
+> On Thu, Dec 21, 2023 at 10:58:33AM -0800, Anjelique Melendez wrote:
+> > diff --git a/drivers/soc/qcom/qcom-pbs.c b/drivers/soc/qcom/qcom-pbs.c
+> [..]
+> > +static int qcom_pbs_wait_for_ack(struct pbs_dev *pbs, u8 bit_pos)
+> > +{
+> > +	int ret, retries = 2000, delay = 1100;
 > 
-> But I guess Xen knows how to interpret a GSI even though it doesn't
-> have access to AML?
-
-On x86 Xen does know how to map a GSI into an IO-APIC pin, in order
-configure the RTE as requested.
-
-> > > It seems like it would be better for userspace to pass an identifier
-> > > of the PCI device itself back into the hypervisor.  Then the interface
-> > > could be generic and potentially work even on non-ACPI systems where
-> > > the GSI concept doesn't apply.
-> > 
-> > We would still need a way to pass the GSI to PCI device relation to
-> > the hypervisor, and then cache such data in the hypervisor.
-> > 
-> > I don't think we have any preference of where such information should
-> > be exposed, but given GSIs are an ACPI concept not specific to Xen
-> > they should be exposed by a non-Xen specific interface.
+> retries and delay are not variable, please use defines instead.
 > 
-> AFAIK Linux doesn't expose GSIs directly to userspace yet.  The GSI
-> concept relies on ACPI MADT, _MAT, _PRT, etc.  A GSI is associated
-> with some device (PCI in this case) and some interrupt controller
-> entry.  I don't understand how a GSI value is useful without knowing
-> something about that framework in which GSIs exist.
+> > +	unsigned int val;
+> > +
+> > +	ret = regmap_read_poll_timeout(pbs->regmap,  pbs->base + PBS_CLIENT_SCRATCH2,
+> > +					val, val & BIT(bit_pos), delay, delay * retries);
+> > +
+> > +	if (ret < 0) {
+> > +		dev_err(pbs->dev, "Timeout for PBS ACK/NACK for bit %u\n", bit_pos);
+> > +		return -ETIMEDOUT;
+> > +	}
+> > +
+> > +	if (val == PBS_CLIENT_SCRATCH2_ERROR) {
+> > +		ret = regmap_write(pbs->regmap, pbs->base + PBS_CLIENT_SCRATCH2, 0);
+> > +		dev_err(pbs->dev, "NACK from PBS for bit %u\n", bit_pos);
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	dev_dbg(pbs->dev, "PBS sequence for bit %u executed!\n", bit_pos);
+> > +	return 0;
+> > +}
+> > +
+> > +/**
+> > + * qcom_pbs_trigger_event() - Trigger the PBS RAM sequence
+> > + * @pbs: Pointer to PBS device
+> > + * @bitmap: bitmap
+> > + *
+> > + * This function is used to trigger the PBS RAM sequence to be
+> > + * executed by the client driver.
+> > + *
+> > + * The PBS trigger sequence involves
+> > + * 1. setting the PBS sequence bit in PBS_CLIENT_SCRATCH1
+> > + * 2. Initiating the SW PBS trigger
+> > + * 3. Checking the equivalent bit in PBS_CLIENT_SCRATCH2 for the
+> > + *    completion of the sequence.
+> > + * 4. If PBS_CLIENT_SCRATCH2 == 0xFF, the PBS sequence failed to execute
+> > + *
+> > + * Returns: 0 on success, < 0 on failure
+> 
+> Return: without the 's' is the appropriate form here.
+> 
+> > + */
+> > +int qcom_pbs_trigger_event(struct pbs_dev *pbs, u8 bitmap)
+> > +{
+> > +	unsigned int val;
+> > +	u16 bit_pos;
+> > +	int ret;
+> > +
+> > +	if (!bitmap) {
+> > +		dev_err(pbs->dev, "Invalid bitmap passed by client\n");
+> 
+> No one is going to spot that hidden in the kernel log, and if someone
+> sees it it does not give an indication to which client it is that's
+> broken (if there are multiple clients...)
+> 
+> Instead do:
+> 
+> 	if (WARN_ON(!bitmap))
+> 		return -EINVAL;
+> 
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	if (IS_ERR_OR_NULL(pbs))
+> > +		return -EINVAL;
+> > +
+> > +	mutex_lock(&pbs->lock);
+> > +	ret = regmap_read(pbs->regmap, pbs->base + PBS_CLIENT_SCRATCH2, &val);
+> > +	if (ret < 0)
+> > +		goto out;
+> > +
+> > +	if (val == PBS_CLIENT_SCRATCH2_ERROR) {
+> > +		/* PBS error - clear SCRATCH2 register */
+> > +		ret = regmap_write(pbs->regmap, pbs->base + PBS_CLIENT_SCRATCH2, 0);
+> > +		if (ret < 0)
+> > +			goto out;
+> > +	}
+> > +
+> > +	for (bit_pos = 0; bit_pos < 8; bit_pos++) {
+> > +		if (!(bitmap & BIT(bit_pos)))
+> > +			continue;
+> > +
+> > +		/* Clear the PBS sequence bit position */
+> > +		ret = regmap_update_bits(pbs->regmap, pbs->base + PBS_CLIENT_SCRATCH2,
+> > +					BIT(bit_pos), 0);
+> > +		if (ret < 0)
+> > +			goto error;
+> > +
+> > +		/* Set the PBS sequence bit position */
+> > +		ret = regmap_update_bits(pbs->regmap, pbs->base + PBS_CLIENT_SCRATCH1,
+> > +					BIT(bit_pos), BIT(bit_pos));
+> > +		if (ret < 0)
+> > +			goto error;
+> > +
+> > +		/* Initiate the SW trigger */
+> > +		ret = regmap_update_bits(pbs->regmap, pbs->base + PBS_CLIENT_TRIG_CTL,
+> > +					PBS_CLIENT_SW_TRIG_BIT, PBS_CLIENT_SW_TRIG_BIT);
+> > +		if (ret < 0)
+> > +			goto error;
+> > +
+> > +		ret = qcom_pbs_wait_for_ack(pbs, bit_pos);
+> > +		if (ret < 0)
+> > +			goto error;
+> 
+> In the case that this fails, you're jumping to error, which clears all
+> of SCRATCH1, but you're leaving SCRATCH2 untouched.
+> 
+> > +
+> > +		/* Clear the PBS sequence bit position */
+> > +		ret = regmap_update_bits(pbs->regmap, pbs->base + PBS_CLIENT_SCRATCH1,
+> > +					BIT(bit_pos), 0);
+> > +		if (ret < 0)
+> > +			goto error;
+> 
+> Does it make sense to handle this error by jumping to error and trying
+> to clear it once more - while leaving SCRATCH2?
+> 
+> Perhaps you should just ignore the errors from clearing SCRATCH1 and
+> SCRATCH2? You where able to trigger the PBS and you got your ack...
+> 
+> > +
+> > +		/* Clear the PBS sequence bit position */
+> > +		ret = regmap_update_bits(pbs->regmap, pbs->base + PBS_CLIENT_SCRATCH2,
+> > +					BIT(bit_pos), 0);
+> > +		if (ret < 0)
+> > +			goto error;
+> > +	}
+> > +
+> > +error:
+> 
+> We're passing "error" in the successful case as well, please name this
+> "out_clear_scratch1" (or something) instead, to not confuse the reader.
+> 
+> > +	/* Clear all the requested bitmap */
+> > +	ret = regmap_update_bits(pbs->regmap, pbs->base + PBS_CLIENT_SCRATCH1, bitmap, 0);
+> > +
+> > +out:
+> > +	mutex_unlock(&pbs->lock);
+> > +
+> > +	return ret;
+> > +}
+> > +EXPORT_SYMBOL_GPL(qcom_pbs_trigger_event);
+> > +
+> > +/**
+> > + * get_pbs_client_device() - Get the PBS device used by client
+> > + * @dev: Client device
+> > + *
+> > + * This function is used to get the PBS device that is being
+> > + * used by the client.
+> > + *
+> > + * Returns: pbs_dev on success, ERR_PTR on failure
+> 
+> Return:
+> 
+> Regards,
+> Bjorn
 
-I wouldn't say it's strictly associated with PCI.  A GSI is a way for
-ACPI to have a single space that unifies all possible IO-APICs pins in
-the system in a flat way.  A GSI is useful in itself because there's
-a single GSI space for the whole host.
-
-> Obviously I know less than nothing about Xen, so I apologize for
-> asking all these stupid questions, but it just doesn't all make sense
-> to me yet.
-
-That's all fine, maybe there's a better path or way to expose this ACPI
-information.  Maybe introduce a per-device acpi directory and expose
-it there?  Or rename the entry to acpi_gsi?
-
-Thanks, Roger.
+-- 
+Lee Jones [李琼斯]
 
