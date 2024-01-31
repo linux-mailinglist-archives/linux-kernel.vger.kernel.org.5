@@ -1,80 +1,37 @@
-Return-Path: <linux-kernel+bounces-46624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46623-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0A8C844223
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:47:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69DA284421F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:46:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77A8628712A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:47:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E99CF1F2613C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:46:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A48F84A35;
-	Wed, 31 Jan 2024 14:46:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="HDsD/c4E"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 597BB1DDCE;
+	Wed, 31 Jan 2024 14:46:37 +0000 (UTC)
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77A4CFBF3;
-	Wed, 31 Jan 2024 14:46:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59F948287A
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 14:46:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706712412; cv=none; b=IXBJ5vD0ChcsRcvgChoss9X7CaWPQd6W0nN3fQdeYcNe7BvdhyA+sVb8iBGyAlOWzVosctqLUQe1CvY60A5OlsDc9PIE1xxpuzXsQaU4qlWy43fF8HMPh9SwvuqUPomeO83bI05fQGsLHMcasC5wG5k2ArDjTGlEHuewVOGQiys=
+	t=1706712396; cv=none; b=b5CoQxwAXgjY5kRz6CKz0yph2rrnXKQg5pgFFt4s6WNPbiINg7cedsiDvf/BmjQZsG4hF53Ax72lBky6X8AP59RqYe9AsgjDq0KxPagu/2PgABCexGNnGYKJSIzoOXrCGMsW66Hf7vRba0JnLlC4EqID6hZOKRazBp15e92BgUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706712412; c=relaxed/simple;
-	bh=dRezcYdYLhpFsKr2NdLaq3DYfeOJBWWpX2zQQ1DPQKo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=C5uNtQCDs8z8DXr3wxfaNeWbVTfAZ0IUZYAdSwYvpJuA/jHwNI4k9ovra0oJKR61TCDDrupAhMRa3X0DDlj17sYrY8gSiSteWhNOYSXGHmNJr8cJKhQjfV/pbRa8m+i5d2VUyocTjBFm4Fi5XFXqZrgZT0SHHdx0jm/MBp6kAOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=HDsD/c4E; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40VDeBQu019348;
-	Wed, 31 Jan 2024 14:46:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=wgccrFtt613FD3f0tbHr8qKSJoWVdVbUoodUYvH1tvw=;
- b=HDsD/c4EnXDTz0lvkSJZmWKwNRaZhHmrDOCW3j8Xm7ZxwtcWcJmfX04VtjrdV6+PM1zS
- +LWk2X5785a9z9vSaMXPrXUAp/qOYssysQHF+OecHwZfRJMlXOJ4O6u7V03X/BWAV20I
- 2fohYXbJVyGpLuPQqUiqct4xqhjFOT/girgL8KDoPk3a197Cwbuxwf1c9K9URuXDeude
- gbNDAOl0viHLCf7G6uL+oWk//dCqDKScTL1cYz1eX3sAJB24e5U1e/KS4bXTBJgPmj8a
- 0bqHfk+3cY9Kc7nPMxKHtBJwep3bNmVxaokOMNSMcjqGq87HdiMY44IfGgCX34aMhnq/ Ug== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vyq9jt2g0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 31 Jan 2024 14:46:32 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40VEU2ZE007411;
-	Wed, 31 Jan 2024 14:46:31 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vyq9jt2fq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 31 Jan 2024 14:46:31 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40VEZ9o0017723;
-	Wed, 31 Jan 2024 14:46:31 GMT
-Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vwchyx5e8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 31 Jan 2024 14:46:31 +0000
-Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
-	by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40VEkU6M57016680
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 31 Jan 2024 14:46:30 GMT
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 86B1458055;
-	Wed, 31 Jan 2024 14:46:30 +0000 (GMT)
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4BA215804E;
-	Wed, 31 Jan 2024 14:46:25 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-	by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 31 Jan 2024 14:46:25 +0000 (GMT)
-Message-ID: <c4dc6344-445c-44b8-b5ea-2eb8e2d051d1@linux.ibm.com>
-Date: Wed, 31 Jan 2024 09:46:24 -0500
+	s=arc-20240116; t=1706712396; c=relaxed/simple;
+	bh=xw/JEHipL3IdpaBrUlztJJRa6YI56n1PTV2RANvdiQI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=s7JHDi+cMEqJYfPFIHx+vxSz/rwZs/VBThaoF3TcAlVpqGRQn1xK2VmDleD3xRx84L9Ub/y5cy6z43F7uFaFZoLxfBCBuAmRg2w4BQor7vkqtwHEV6FL60GZSdCSAf+tkx1oZf4FVIeXdLhNv+7Ie9wzgtCp9zv980d1yvwmzyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 6CEA9E0003;
+	Wed, 31 Jan 2024 14:46:28 +0000 (UTC)
+Message-ID: <25e2faa5-908c-4391-87db-8540d1f0e904@ghiti.fr>
+Date: Wed, 31 Jan 2024 15:46:27 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,148 +39,174 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/5] ima: Reset EVM status upon detecting changes to
- overlay backing file
+Subject: Re: [PATCH] riscv: add CALLER_ADDRx support
 Content-Language: en-US
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        zohar@linux.ibm.com, roberto.sassu@huawei.com, miklos@szeredi.hu,
-        Christian Brauner <brauner@kernel.org>
-References: <20240130214620.3155380-1-stefanb@linux.ibm.com>
- <20240130214620.3155380-4-stefanb@linux.ibm.com>
- <CAOQ4uxjC=-GOFi3J4ctcNgdMfaerkae30OH9=TkKTWCf=TP95g@mail.gmail.com>
-From: Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <CAOQ4uxjC=-GOFi3J4ctcNgdMfaerkae30OH9=TkKTWCf=TP95g@mail.gmail.com>
+To: Zong Li <zong.li@sifive.com>, palmer@dabbelt.com,
+ Palmer Dabbelt <palmer@rivosinc.com>, paul.walmsley@sifive.com,
+ aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20231205085959.32177-1-zong.li@sifive.com>
+ <CANXhq0r6A48q+ehayaURLO6snDEjzVJO6Ti+1we-57i0ORT9yg@mail.gmail.com>
+ <CANXhq0qqv3MBEt8zsWBT+gkdyt1PD4ZjDSrznEotdFM7M7K+yQ@mail.gmail.com>
+ <CANXhq0qNA5JO1xZLbuL6ig1Ddws0m2azMwCyqLFgN3B0VZmvEw@mail.gmail.com>
+ <CANXhq0o-MaEQY3m+0CNWK2Jv_pxqsjhhSJWtVR396wgKUzcbQw@mail.gmail.com>
+From: Alexandre Ghiti <alex@ghiti.fr>
+In-Reply-To: <CANXhq0o-MaEQY3m+0CNWK2Jv_pxqsjhhSJWtVR396wgKUzcbQw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: NWIO3KIocDpIpKqDbuta9d1ypXNVnaIF
-X-Proofpoint-ORIG-GUID: ixlWU0_8sPCweEQ69zy3CM3YItVpUlUR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-31_08,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- clxscore=1015 spamscore=0 malwarescore=0 bulkscore=0 mlxscore=0
- priorityscore=1501 phishscore=0 adultscore=0 impostorscore=0
- suspectscore=0 mlxlogscore=835 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311290000 definitions=main-2401310113
+X-GND-Sasl: alex@ghiti.fr
+
+Hi Zong,
+
+On 31/01/2024 15:24, Zong Li wrote:
+> On Thu, Jan 18, 2024 at 8:50 AM Zong Li <zong.li@sifive.com> wrote:
+>> On Wed, Jan 10, 2024 at 11:33 AM Zong Li <zong.li@sifive.com> wrote:
+>>> On Fri, Dec 29, 2023 at 2:34 PM Zong Li <zong.li@sifive.com> wrote:
+>>>> On Tue, Dec 5, 2023 at 5:00 PM Zong Li <zong.li@sifive.com> wrote:
+>>>>> CALLER_ADDRx returns caller's address at specified level, they are used
+>>>>> for several tracers. These macros eventually use
+>>>>> __builtin_return_address(n) to get the caller's address if arch doesn't
+>>>>> define their own implementation.
+>>>>>
+>>>>> In RISC-V, __builtin_return_address(n) only works when n == 0, we need
+>>>>> to walk the stack frame to get the caller's address at specified level.
+>>>>>
+>>>>> data.level started from 'level + 3' due to the call flow of getting
+>>>>> caller's address in RISC-V implementation. If we don't have additional
+>>>>> three iteration, the level is corresponding to follows:
+>>>>>
+>>>>> callsite -> return_address -> arch_stack_walk -> walk_stackframe
+>>>>> |           |                 |                  |
+>>>>> level 3     level 2           level 1            level 0
+>>>>>
+>>>>> Signed-off-by: Zong Li <zong.li@sifive.com>
+>>>>> ---
+>>>>>   arch/riscv/include/asm/ftrace.h    |  5 ++++
+>>>>>   arch/riscv/kernel/Makefile         |  2 ++
+>>>>>   arch/riscv/kernel/return_address.c | 48 ++++++++++++++++++++++++++++++
+>>>>>   3 files changed, 55 insertions(+)
+>>>>>   create mode 100644 arch/riscv/kernel/return_address.c
+>>>>>
+>>>>> diff --git a/arch/riscv/include/asm/ftrace.h b/arch/riscv/include/asm/ftrace.h
+>>>>> index 2b2f5df7ef2c..42777f91a9c5 100644
+>>>>> --- a/arch/riscv/include/asm/ftrace.h
+>>>>> +++ b/arch/riscv/include/asm/ftrace.h
+>>>>> @@ -25,6 +25,11 @@
+>>>>>
+>>>>>   #define ARCH_SUPPORTS_FTRACE_OPS 1
+>>>>>   #ifndef __ASSEMBLY__
+>>>>> +
+>>>>> +extern void *return_address(unsigned int level);
+>>>>> +
+>>>>> +#define ftrace_return_address(n) return_address(n)
+>>>>> +
+>>>>>   void MCOUNT_NAME(void);
+>>>>>   static inline unsigned long ftrace_call_adjust(unsigned long addr)
+>>>>>   {
+>>>>> diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+>>>>> index fee22a3d1b53..40d054939ae2 100644
+>>>>> --- a/arch/riscv/kernel/Makefile
+>>>>> +++ b/arch/riscv/kernel/Makefile
+>>>>> @@ -7,6 +7,7 @@ ifdef CONFIG_FTRACE
+>>>>>   CFLAGS_REMOVE_ftrace.o = $(CC_FLAGS_FTRACE)
+>>>>>   CFLAGS_REMOVE_patch.o  = $(CC_FLAGS_FTRACE)
+>>>>>   CFLAGS_REMOVE_sbi.o    = $(CC_FLAGS_FTRACE)
+>>>>> +CFLAGS_REMOVE_return_address.o = $(CC_FLAGS_FTRACE)
+>>>>>   endif
+>>>>>   CFLAGS_syscall_table.o += $(call cc-option,-Wno-override-init,)
+>>>>>   CFLAGS_compat_syscall_table.o += $(call cc-option,-Wno-override-init,)
+>>>>> @@ -46,6 +47,7 @@ obj-y += irq.o
+>>>>>   obj-y  += process.o
+>>>>>   obj-y  += ptrace.o
+>>>>>   obj-y  += reset.o
+>>>>> +obj-y  += return_address.o
+>>>>>   obj-y  += setup.o
+>>>>>   obj-y  += signal.o
+>>>>>   obj-y  += syscall_table.o
+>>>>> diff --git a/arch/riscv/kernel/return_address.c b/arch/riscv/kernel/return_address.c
+>>>>> new file mode 100644
+>>>>> index 000000000000..c2008d4aa6e5
+>>>>> --- /dev/null
+>>>>> +++ b/arch/riscv/kernel/return_address.c
+>>>>> @@ -0,0 +1,48 @@
+>>>>> +// SPDX-License-Identifier: GPL-2.0-only
+>>>>> +/*
+>>>>> + * This code come from arch/arm64/kernel/return_address.c
+>>>>> + *
+>>>>> + * Copyright (C) 2023 SiFive.
+>>>>> + */
+>>>>> +
+>>>>> +#include <linux/export.h>
+>>>>> +#include <linux/kprobes.h>
+>>>>> +#include <linux/stacktrace.h>
+>>>>> +
+>>>>> +struct return_address_data {
+>>>>> +       unsigned int level;
+>>>>> +       void *addr;
+>>>>> +};
+>>>>> +
+>>>>> +static bool save_return_addr(void *d, unsigned long pc)
+>>>>> +{
+>>>>> +       struct return_address_data *data = d;
+>>>>> +
+>>>>> +       if (!data->level) {
+>>>>> +               data->addr = (void *)pc;
+>>>>> +               return false;
+>>>>> +       }
+>>>>> +
+>>>>> +       --data->level;
+>>>>> +
+>>>>> +       return true;
+>>>>> +}
+>>>>> +NOKPROBE_SYMBOL(save_return_addr);
+>>>>> +
+>>>>> +void *return_address(unsigned int level)
+>>>>> +{
+>>>>> +       struct return_address_data data;
+>>>>> +
+>>>>> +       data.level = level + 3;
+>>>>> +       data.addr = NULL;
+>>>>> +
+>>>>> +       arch_stack_walk(save_return_addr, &data, current, NULL);
+>>>>> +
+>>>>> +       if (!data.level)
+>>>>> +               return data.addr;
+>>>>> +       else
+>>>>> +               return NULL;
+>>>>> +
+>>>>> +}
+>>>>> +EXPORT_SYMBOL_GPL(return_address);
+>>>>> +NOKPROBE_SYMBOL(return_address);
+>>>>> --
+>>>>> 2.17.1
+>>>>>
+>>>> Hi Palmer and all,
+>>>> I was wondering whether this patch is good for everyone? Thanks
+>>> Hi Palmer,
+>>> Is there any chance to include this patch in 6.8-rc1? Thanks
+>> Hi Palmer,
+>> I'm not sure if this patch is a feature or bug fix, would you consider
+>> it for 6.8-rcX? Thanks
+> Hi Palmer,
+> Sorry for pinging you again. I'm not sure if you saw this patch. The
+> irqsoff and wakeup tracer will use CALLER_ADDR1 and CALLER_ADDR2 to
+> obtain the caller's return address, but we are currently encountering
+> an issue in the RISC-V port where the wrong caller is identified. I
+> guess you can easily reproduce the situation using ftrace. Could you
+> share your thoughts on this when you have the time to take a look?
+> Thanks
 
 
+I'm not Palmer but I'll take a look at your patch today :)
 
-On 1/31/24 08:56, Amir Goldstein wrote:
-> On Tue, Jan 30, 2024 at 11:46 PM Stefan Berger <stefanb@linux.ibm.com> wrote:
->>
->> To avoid caching effects to take effect reset the EVM status upon
->> detecting changes to the overlay backing files. This prevents a not-yet-
->> copied-up file on the overlay from executing if for example the
->> security.evm xattr on the file on the 'lower' layer has been removed.
->>
-> 
-> And what is expected to happen when file is executed after copy up?
+Thanks,
 
-The copy-up may be triggered by changing file content or file metadata.
-For EVM file metadata (file attributes and xattrs) are important and if 
-they change EVM would re-evaluate the file, meaning that it would 
-determine the file mode bits, uid, gid and xattrs and calculate a hash 
-over them and compare this hash against the signature in security.evm.
+Alex
 
-> Doesn't this change also protect the same threat after copy up?
 
- From what I remember from my testing is that file attribute or extended 
-attribute changes on an already copied-up file were already handled 
-correctly, meaning they caused the re-evaluation of the file as 
-described above.
-
-> 
->> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
->> ---
->>   include/linux/evm.h               | 8 ++++++++
->>   security/integrity/evm/evm_main.c | 7 +++++++
->>   security/integrity/ima/ima_main.c | 2 ++
->>   3 files changed, 17 insertions(+)
->>
->> diff --git a/include/linux/evm.h b/include/linux/evm.h
->> index d8c0343436b8..e7d6742eee9d 100644
->> --- a/include/linux/evm.h
->> +++ b/include/linux/evm.h
->> @@ -66,6 +66,8 @@ extern int evm_protected_xattr_if_enabled(const char *req_xattr_name);
->>   extern int evm_read_protected_xattrs(struct dentry *dentry, u8 *buffer,
->>                                       int buffer_size, char type,
->>                                       bool canonical_fmt);
->> +extern void evm_reset_cache_status(struct dentry *dentry,
->> +                                  struct integrity_iint_cache *iint);
->>   #ifdef CONFIG_FS_POSIX_ACL
->>   extern int posix_xattr_acl(const char *xattrname);
->>   #else
->> @@ -189,5 +191,11 @@ static inline int evm_read_protected_xattrs(struct dentry *dentry, u8 *buffer,
->>          return -EOPNOTSUPP;
->>   }
->>
->> +static inline void evm_reset_cache_status(struct dentry *dentry,
->> +                                         struct integrity_iint_cache *iint)
->> +{
->> +       return;
->> +}
->> +
->>   #endif /* CONFIG_EVM */
->>   #endif /* LINUX_EVM_H */
->> diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/evm_main.c
->> index 22a5e26860ea..e96d127b48a2 100644
->> --- a/security/integrity/evm/evm_main.c
->> +++ b/security/integrity/evm/evm_main.c
->> @@ -721,6 +721,13 @@ static void evm_reset_status(struct inode *inode)
->>                  iint->evm_status = INTEGRITY_UNKNOWN;
->>   }
->>
->> +void evm_reset_cache_status(struct dentry *dentry,
->> +                           struct integrity_iint_cache *iint)
->> +{
->> +       if (d_real_inode(dentry) != d_backing_inode(dentry))
->> +               iint->evm_status = INTEGRITY_UNKNOWN;
->> +}
->> +
->>   /**
->>    * evm_revalidate_status - report whether EVM status re-validation is necessary
->>    * @xattr_name: pointer to the affected extended attribute name
->> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
->> index cc1217ac2c6f..84bdc6e58329 100644
->> --- a/security/integrity/ima/ima_main.c
->> +++ b/security/integrity/ima/ima_main.c
->> @@ -26,6 +26,7 @@
->>   #include <linux/ima.h>
->>   #include <linux/fs.h>
->>   #include <linux/iversion.h>
->> +#include <linux/evm.h>
->>
->>   #include "ima.h"
->>
->> @@ -295,6 +296,7 @@ static int process_measurement(struct file *file, const struct cred *cred,
->>                      !inode_eq_iversion(backing_inode, iint->version)) {
->>                          iint->flags &= ~IMA_DONE_MASK;
->>                          iint->measured_pcrs = 0;
->> +                       evm_reset_cache_status(file_dentry(file), iint);
->>                  }
->>          }
-> 
-> Make sense.
-> Unrelated to your change, I now noticed something odd about Mimi's change:
-> 
->          backing_inode = d_real_inode(file_dentry(file));
-> 
-> I find the choice of variable name to be quite confusing, because ima/evm code
-> uses  d_backing_inode() all over the place and d_real_inode() !=
-> d_backing_inode().
-> 
-> First of all, there is never any reason to use d_backing_inode() and its name is
-> quite confusing in the first place, but it will be a big cleanup to
-> remove them all.
-> 
-> Suggest to rename the variable to real_inode, same as in
-> ima_collect_measurement()
-> to be consistent and reduce confusion factor, which is already high enough ;)
-> 
-> Thanks,
-> Amir.
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
