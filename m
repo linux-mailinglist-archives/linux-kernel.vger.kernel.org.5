@@ -1,165 +1,199 @@
-Return-Path: <linux-kernel+bounces-46540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46541-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49DA084411A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:55:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD9C884411E
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:56:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B353B1F2DE6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:55:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E3BF287EDA
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:56:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B5AA80C03;
-	Wed, 31 Jan 2024 13:55:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 775A280C0C;
+	Wed, 31 Jan 2024 13:56:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BmcX4Yg+"
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l0PWlv0R"
+Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2C597F491
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 13:55:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28F597BAFA;
+	Wed, 31 Jan 2024 13:56:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706709344; cv=none; b=VSmmZzZtJnsA0h54+kggy7qJDPbHnvyqUSO0nlm4MHbX2lQZcdK6HQHHVwZcHsykyKb+Fj8qMjcHcIuE2czMBioJs3kB9T7HlnZZ49I6DoIaTs74NmwWKmz7hV2fP1CLreKSx4RvtcqEtzRmwCfk0C3/6N5m4Bv6/ddXZrumecM=
+	t=1706709402; cv=none; b=M/rlZ4yC5UrdF/QoHIVdafW+HQ6U/0Wsol1X++pTeIYnMXOx1mKaTCC31IlF17qwFQFhv7sRwVVuSY6tpByOyojE0QncgkPC6TsjiPp4pSaGhXcQr9xxA+8Ic/CRzFwY42w9ofwPFt3KPW9dhN1IxV7xFQY9vQqkWHuvK3NrnsI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706709344; c=relaxed/simple;
-	bh=lP/iCDT0hUnPesKrb7hWD3dW8NEUrJgALKt9dBmUD4c=;
+	s=arc-20240116; t=1706709402; c=relaxed/simple;
+	bh=w5siA9sGMBf7veAhjHbaJt4PyHM/ZANL2abhaYEQEVY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=De6R/T9vDU5YUCQFPaZymwvytM+3nysLLOANLszq5oTEo+STk+1JZeabBDKYLYTbXhJpNmWpNHbwzXake7IAbG+ts5XZPUAyDyMpdWjEFu1doXut3VktI4xPiGxJZvF+XXN3+FX7JAdibvaO0eDUb5cy96wFzp5v2DuTiXK/AhM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BmcX4Yg+; arc=none smtp.client-ip=209.85.215.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5cfd95130c6so3112151a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 05:55:42 -0800 (PST)
+	 To:Cc:Content-Type; b=TepOLaVn5R6+tt+PBHUFUts5ylebO9R6VX/zlAqgcgtZPWwOF8GGs+cnWo9DSSx3icDEcHDxSjzdLQRoXR7LkIjc8FYRscmDxqxcM9mplL0sWG9QsTUOsxjwi6FZCIVwpHeNhpqAVZwGr40Ranp2/tgHfcuXmxhKcXCHOq8OB8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l0PWlv0R; arc=none smtp.client-ip=209.85.219.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-6818a9fe3d4so35191426d6.0;
+        Wed, 31 Jan 2024 05:56:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706709342; x=1707314142; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=lP/iCDT0hUnPesKrb7hWD3dW8NEUrJgALKt9dBmUD4c=;
-        b=BmcX4Yg+C7DnGCekgTcpfKgtpNaYG3sMswR5oyrzm3Yej5sFUxLENwbqQ2QQceDZC8
-         KohnmWwvBr4jPzl8WOUyfoa5V2th3hf8YEoocKXLILmIw+UfHozjm3NEZ8ZCYfW/mQXI
-         2/u2HbOURlIgTjgd8+rNAa63aVDMF9eraA0J7kvoXXpBVJi4H6sNhp6rtk6vM2oxuups
-         vXHsnA38hDBVupLTcNjfgpRj8FwOZj8j958bSf9d2MNvEDOiG2zazmlaqc9kET4D+8/t
-         FDyepQ/jGaBEoxNrPLFoe36++u1x3rLqZ7/Gd6IgynYPv5rE1sjNlBpNmDgRym1WMGt6
-         fEZA==
+        d=gmail.com; s=20230601; t=1706709400; x=1707314200; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NX69lf1UBcmeU7AcsTpm4saig8TXToBAcBQEpKY5iZs=;
+        b=l0PWlv0RNtCDN5TcM3W8vjigBXK7Ic9HljMaWKK11iPuVkechySvglxFgvmihPk0H2
+         8/FURKjxW21GTVl4CzccGYrPfCVUVBbngRmoUIqLPC4jLlK/D1G7Fys0dy6TJS+dRt7t
+         DGrYiyKDz6Pp5DiZ9q+LagiiIkWFppV6QHjZppPrscKK7eUqV7WIRx8+zD2xjIIGR0OJ
+         10/N57Y3oZRyPhhTkyHkTVpxHitajybxKkSNoc45ZISrYhQ7rX6I1hycDYvc9sPRhR9U
+         eNno9zDAPf6zkdS1dw0SqTCK84WDmLzrteEJ3rYX+QO+4vt+9OtAvY+51Rl4PdahvWGF
+         xLLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706709342; x=1707314142;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lP/iCDT0hUnPesKrb7hWD3dW8NEUrJgALKt9dBmUD4c=;
-        b=Cxro5qqZH1DhvfW3J7knIgNV8oUU2DnxJkqN0iAYH0tKDcfd6Xke2B4qDULb2olu1R
-         Og2fJ9Tj4Hgp63gbSe2gT88FU0maFNkSOpitXBb2sBavoC4gNhTfaEjDRMx5nD2jN3s9
-         3IFmVMqVSvz8dZ3CcHeR0zSzOFs64Oba1jARyt8nqt933yuwFTJn748dEZ6qVyFwTkVW
-         tEicKttiH3QXu21XqSb2H6C4rasMaw0KXzxDwUv6ZAaOdg1o5ia9c9WXBwtAwWuE0+JX
-         6uomDj1rb2kzjWA1owsbDbuhrWW1HYuvqKoAo3iRauzMCwOX+QQiPOsFvcJkXpt8YHz/
-         +rCQ==
-X-Gm-Message-State: AOJu0YwEquwNGfcE6bGrn9XxqCtRAkko3mFjru/wafRg/a7+Erip1VeY
-	dJnmA1ffdiChl3BHl57lkjiVBuXi2kxQi/s1ArI4W8FlUFZAtNRXmgBKECZjI0UnDWuNcvRjGfG
-	WpNgdZZOmrdvzXD9/OVRCdxbeWv4gJRVNN1oe3akV2aNvdSpDGuw=
-X-Google-Smtp-Source: AGHT+IFHMc9NoAOmBIbFCuBZRsmIAQEKzd9i4Nh5py0aHA68IqRt2eTTIhkUs5M0S/JguzNWdnTnmmTWl60YIdJhujE=
-X-Received: by 2002:a17:90b:e8a:b0:293:f625:1b0b with SMTP id
- fv10-20020a17090b0e8a00b00293f6251b0bmr1531667pjb.5.1706709342129; Wed, 31
- Jan 2024 05:55:42 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706709400; x=1707314200;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NX69lf1UBcmeU7AcsTpm4saig8TXToBAcBQEpKY5iZs=;
+        b=wLO0L3KvgzcMmF4Kmfwlb1WiaZ+Pp+z3q7RTPI20PGUAuKd9BK1i9jiYs29y/My90s
+         79StHl+9fESZ1iwNUHRkhmZTtMpoKwWDutwbAdj41hbzCl2/ABqXbtquOdwttIpi/OyP
+         joDdOOYDZBAzvngQb+pCPealzDDSQzwMY3YKsD/W4E+GS4UZO6zZJ5FeXoYZEpn5fbJP
+         aZISLUhieL1GzMerARSRf7m1HyxsPe81cD9hrkqJ7dSBDw+arRUwzD9XFb50Eeu2gvNq
+         WMOliEOVgtalg4qMv+WNWcrkJT9BPU93ZZ2QcabXW2p3t4sVkjIdFoAI0Kw5kBPa5MH5
+         YAnA==
+X-Gm-Message-State: AOJu0YwKYQ3gFJDmL0iqrhrm+g+hzI+w+NypFq3AQzcxCwiyqs5PyBaO
+	ILDBEz7eQGMUQMDGCj7SUWrmSvcR+UgwlBBDx1s+Um28WqNg3ECYVYOxjYEr9XG3hKHFoX1lrTc
+	RKAmqzoiJtCzNGSTzrE7UdKwMHGU=
+X-Google-Smtp-Source: AGHT+IHpUaL8efMK3QQWjl9InIeOROIpSFzCRENAnrd8HpKFGyCtceNv1gZ80ujkxT22g7FQqcAu2lYK+HDvYkScRc8=
+X-Received: by 2002:ad4:5bcf:0:b0:68c:6b70:ff4a with SMTP id
+ t15-20020ad45bcf000000b0068c6b70ff4amr1891251qvt.37.1706709399954; Wed, 31
+ Jan 2024 05:56:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240105222014.1025040-1-qyousef@layalina.io> <20240105222014.1025040-2-qyousef@layalina.io>
- <CAKfTPtBYcVWxYOhWZjzcQUB1ebUBA-B30hvToqGBq6JnfRUZNg@mail.gmail.com>
- <20240124222959.ikwnbxkcjaxuiqp2@airbuntu> <CAKfTPtDxqcrf0kaBQG_zpFx-DEZTMKfyxBu_bzCuZ_UZhJwOnA@mail.gmail.com>
- <20240126014602.wdcro3ajffpna4fp@airbuntu> <CAKfTPtDqABnPDmt0COqyRpYSuj_WWwLrqL+Tbfa8J8b5u5eQtQ@mail.gmail.com>
- <20240128235005.txztdbdq2obyi4n6@airbuntu> <CAKfTPtC0=MH7bCypeY1QFxt=pFbPxY9YLuuS8_dhkF31nR6ZWQ@mail.gmail.com>
- <20240130235727.wj3texzo4lpbba6b@airbuntu>
-In-Reply-To: <20240130235727.wj3texzo4lpbba6b@airbuntu>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Wed, 31 Jan 2024 14:55:31 +0100
-Message-ID: <CAKfTPtCAETf3F-dkMimqt6VC9TWHseiQyywyuq6BQqxVMWxXRw@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] sched/fair: Check a task has a fitting cpu when
- updating misfit
-To: Qais Yousef <qyousef@layalina.io>
-Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, linux-kernel@vger.kernel.org, 
-	Pierre Gondois <Pierre.Gondois@arm.com>
+References: <20240130214620.3155380-1-stefanb@linux.ibm.com> <20240130214620.3155380-4-stefanb@linux.ibm.com>
+In-Reply-To: <20240130214620.3155380-4-stefanb@linux.ibm.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Wed, 31 Jan 2024 15:56:28 +0200
+Message-ID: <CAOQ4uxjC=-GOFi3J4ctcNgdMfaerkae30OH9=TkKTWCf=TP95g@mail.gmail.com>
+Subject: Re: [PATCH 3/5] ima: Reset EVM status upon detecting changes to
+ overlay backing file
+To: Stefan Berger <stefanb@linux.ibm.com>
+Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com, 
+	roberto.sassu@huawei.com, miklos@szeredi.hu, 
+	Christian Brauner <brauner@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 31 Jan 2024 at 00:57, Qais Yousef <qyousef@layalina.io> wrote:
+On Tue, Jan 30, 2024 at 11:46=E2=80=AFPM Stefan Berger <stefanb@linux.ibm.c=
+om> wrote:
 >
-> On 01/30/24 10:41, Vincent Guittot wrote:
-> > On Mon, 29 Jan 2024 at 00:50, Qais Yousef <qyousef@layalina.io> wrote:
-> > >
-> > > On 01/26/24 15:08, Vincent Guittot wrote:
-> > >
-> > > > > TBH I had a bit of confirmation bias that this is a problem based on the fix
-> > > > > (0ae78eec8aa6) that we had in the past. So on verification I looked at
-> > > > > balance_interval and this reproducer which is a not the same as the original
-> > > > > one and it might be exposing another problem and I didn't think twice about it.
-> > > >
-> > > > I checked the behavior more deeply and I confirm that I don't see
-> > > > improvement for the use case described above. I would say that it's
-> > > > even worse as I can see some runs where the task stays on little
-> > > > whereas a big core has been added in the affinity. Having in mind that
-> > > > my system is pretty idle which means that there is almost no other
-> > > > reason to trigger an ilb than the misfit task, the change in
-> > > > check_misfit_status() is probably the reason for never kicking an ilb
-> > > > for such case
-> > >
-> > > It seems I reproduced another problem while trying to reproduce the original
-> > > issue, eh.
-> > >
-> > > I did dig more and from what I see the issue is that the rd->overload is not
-> > > being set correctly. Which I believe what causes the delays (see attached
-> > > picture how rd.overloaded is 0 with some spikes). Only when CPU7
-> > > newidle_balance() coincided with rd->overload being 1 that the migration
-> > > happens. With the below hack I can see that rd->overload is 1 all the time
-> >
-> > But here you rely on another activity happening in CPU7 whereas the
+> To avoid caching effects to take effect reset the EVM status upon
+> detecting changes to the overlay backing files. This prevents a not-yet-
+> copied-up file on the overlay from executing if for example the
+> security.evm xattr on the file on the 'lower' layer has been removed.
 >
-> I don't want to rely on that. I think this is a problem too. And this is what
-> ends up happening from what I see, sometimes at least.
->
-> When is it expected for newidle_balance to pull anyway? I agree we shouldn't
-> rely on it to randomly happen, but if it happens sooner, it should pull, no?
->
-> > misfit should trigger by itself the load balance and not expect
-> > another task waking up then sleeping on cpu7 to trigger a newidle
-> > balance. We want a normal idle load balance not a newidle_balance
->
-> I think there's a terminology problems. I thought you mean newidle_balnce() by
-> ilb. It seems you're referring to load_balance() called from
-> rebalance_domains() when tick happens at idle?
 
-newidle_balance is different from idle load balance. newidle_balance
-happens when the cpu becomes idle whereas busy and idle load balance
-happen at tick.
+And what is expected to happen when file is executed after copy up?
+Doesn't this change also protect the same threat after copy up?
 
+> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> ---
+>  include/linux/evm.h               | 8 ++++++++
+>  security/integrity/evm/evm_main.c | 7 +++++++
+>  security/integrity/ima/ima_main.c | 2 ++
+>  3 files changed, 17 insertions(+)
 >
-> I thought this is not kicking. But I just double checked in my traces and I was
-> getting confused because I was looking at where run_rebalance_domains() would
-> happen, for example, on CPU2 but the balance would actually be for CPU7.
-
-An idle load balance happens either on the target CPU if its tick is
-not stopped or we kick one idle CPU to run the idle load balance on
-behalf of all idle CPUs. This is the latter case that doesn't happen
-anymore with your patch and the change in check_misfit_status.
-
+> diff --git a/include/linux/evm.h b/include/linux/evm.h
+> index d8c0343436b8..e7d6742eee9d 100644
+> --- a/include/linux/evm.h
+> +++ b/include/linux/evm.h
+> @@ -66,6 +66,8 @@ extern int evm_protected_xattr_if_enabled(const char *r=
+eq_xattr_name);
+>  extern int evm_read_protected_xattrs(struct dentry *dentry, u8 *buffer,
+>                                      int buffer_size, char type,
+>                                      bool canonical_fmt);
+> +extern void evm_reset_cache_status(struct dentry *dentry,
+> +                                  struct integrity_iint_cache *iint);
+>  #ifdef CONFIG_FS_POSIX_ACL
+>  extern int posix_xattr_acl(const char *xattrname);
+>  #else
+> @@ -189,5 +191,11 @@ static inline int evm_read_protected_xattrs(struct d=
+entry *dentry, u8 *buffer,
+>         return -EOPNOTSUPP;
+>  }
 >
-> No clue why it fails to pull.. I can see actually we call load_balance() twice
-> for some (not all) entries to rebalance_domains(). So we don't always operate
-> on the two domains. But that's not necessarily a problem.
-
-We have 3 different reasons for kicking an idle load balance :
-- to do an actual balance of tasks
-- to update stats ie blocked load
-- to update nohz.next_balance
-
-You are interested by the 1st one but it's most probably for the 2
-last reasons that this happen
-
+> +static inline void evm_reset_cache_status(struct dentry *dentry,
+> +                                         struct integrity_iint_cache *ii=
+nt)
+> +{
+> +       return;
+> +}
+> +
+>  #endif /* CONFIG_EVM */
+>  #endif /* LINUX_EVM_H */
+> diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/e=
+vm_main.c
+> index 22a5e26860ea..e96d127b48a2 100644
+> --- a/security/integrity/evm/evm_main.c
+> +++ b/security/integrity/evm/evm_main.c
+> @@ -721,6 +721,13 @@ static void evm_reset_status(struct inode *inode)
+>                 iint->evm_status =3D INTEGRITY_UNKNOWN;
+>  }
 >
-> I think it's a good opportunity to add some tracepoints to help break this path
-> down. If you have suggestions of things to record that'd be helpful.
+> +void evm_reset_cache_status(struct dentry *dentry,
+> +                           struct integrity_iint_cache *iint)
+> +{
+> +       if (d_real_inode(dentry) !=3D d_backing_inode(dentry))
+> +               iint->evm_status =3D INTEGRITY_UNKNOWN;
+> +}
+> +
+>  /**
+>   * evm_revalidate_status - report whether EVM status re-validation is ne=
+cessary
+>   * @xattr_name: pointer to the affected extended attribute name
+> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/i=
+ma_main.c
+> index cc1217ac2c6f..84bdc6e58329 100644
+> --- a/security/integrity/ima/ima_main.c
+> +++ b/security/integrity/ima/ima_main.c
+> @@ -26,6 +26,7 @@
+>  #include <linux/ima.h>
+>  #include <linux/fs.h>
+>  #include <linux/iversion.h>
+> +#include <linux/evm.h>
+>
+>  #include "ima.h"
+>
+> @@ -295,6 +296,7 @@ static int process_measurement(struct file *file, con=
+st struct cred *cred,
+>                     !inode_eq_iversion(backing_inode, iint->version)) {
+>                         iint->flags &=3D ~IMA_DONE_MASK;
+>                         iint->measured_pcrs =3D 0;
+> +                       evm_reset_cache_status(file_dentry(file), iint);
+>                 }
+>         }
+
+Make sense.
+Unrelated to your change, I now noticed something odd about Mimi's change:
+
+        backing_inode =3D d_real_inode(file_dentry(file));
+
+I find the choice of variable name to be quite confusing, because ima/evm c=
+ode
+uses  d_backing_inode() all over the place and d_real_inode() !=3D
+d_backing_inode().
+
+First of all, there is never any reason to use d_backing_inode() and its na=
+me is
+quite confusing in the first place, but it will be a big cleanup to
+remove them all.
+
+Suggest to rename the variable to real_inode, same as in
+ima_collect_measurement()
+to be consistent and reduce confusion factor, which is already high enough =
+;)
+
+Thanks,
+Amir.
 
