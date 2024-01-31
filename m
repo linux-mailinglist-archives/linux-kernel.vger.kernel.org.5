@@ -1,88 +1,92 @@
-Return-Path: <linux-kernel+bounces-46047-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46028-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35F448439B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:52:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0174B843983
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:45:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B0C71C27A1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:52:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 850991F233A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:45:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0D6D84A4C;
-	Wed, 31 Jan 2024 08:42:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93FB0768EE;
+	Wed, 31 Jan 2024 08:42:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b="Z5fxiQsq"
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2088.outbound.protection.outlook.com [40.107.117.88])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="arSeRwQA"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7548F66B25;
-	Wed, 31 Jan 2024 08:42:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.117.88
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706690567; cv=fail; b=fnmVHNuWe1KRT2CA49ojcNEpsLjjHYTqfbJaWHyvXJZ93Z6GTKUCwvBsVeaI+lRx1BSWIYJYSqnC5x7kNBkKKcLxQIDUznL3Pyjax0LjLf+SgUSRgxLHF6FTdCpbefJxCjrxMuDpGwupwMYeIENi395yDE9A0W6on9hgVz5JVlU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706690567; c=relaxed/simple;
-	bh=pHREFFhwlOVJ+c1HJlEaq0Noh5MYW8giykiy57ShYiI=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85C666A000
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 08:41:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706690520; cv=none; b=f7cL8RNxxWF2pxwlJIpT/n9S55cnlv1Q1oep9quhzck+5R9b1Ur2BRMRbJrVm2j1Mhg4ooFdicT7SUZOUjNw5xaZlCOF/fqPZAiW7AUbEUYp6bM/iSKUI/KHyuZ0W86ebGATZYFOBlhzYQREHTkyZ4vxIHlRY3jQP26MkiP5+KA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706690520; c=relaxed/simple;
+	bh=QKsaxl/aFv8oOhCIua/6fEkDbbYuv+jcvdH2AyGnVVw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XE0uKuK2Nx3TnwwIqxDbLxMo4oeZ5el9juUw1uBKvpKrkEPDKJ/mB6ks7/eDItC2etMInZ78S6wTyVKLwRbQ1VHFlXk2xCCMwIXDYneXSsOc46g7WQMpO5JzWBExtuzSest5m4Yv41jHmjDo8x+1o2UdHcacWA5ODUW5uFXh1JQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com; spf=pass smtp.mailfrom=wiwynn.com; dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b=Z5fxiQsq; arc=fail smtp.client-ip=40.107.117.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wiwynn.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DBUbA8aJScJqW9M/MTRaNOcpeRFeZWJy80LTx2h0cAhH4r9Xhyl50otMbTq8p2Td4byzmX5vuo7SSn8wVUb98upoEalJEvW7me0Ubahgb4TYixUVzOoqMc9TOCfS0L4M6GhdO9dKHjLWF4zYFQTvl4m1H93IfQQVHj7W57X2dvtufuoxhzMCv93CGmATOkZJv/f1kRf+i7ja4BKX6ywh8SYUPgZvFtaTFvBuOIVpRlcSmXvPn0u++8Gg3SZVrEV2oJ5X3dbqeZ5DYAMZEskLGEJy6Hhk4o29QFMssXMvwA4l5fJWbA5mmULXzfFS+s5pM8UoOOGpXOyWGfZ0aK4YQQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LUNtvQ1Eth8qm1pnxm9kajQVaK4SrxDkTRzAWRlpwnI=;
- b=S4koOe94dmj0rBeXHsc7EKHkcy5Jbsl9HyabK+FJ7aPshr3/pjN9Abp82ZrGVuET60Gna3/aypAjak2bf2VNoW01ZtHOZdpQLDiHEJaQR/8BgEu89MGzfiva6/V78rFlQzTj4tn2tEtiLAYCUBrQCU8miUTus2ekKDU88Tighny0YrKIORsfHe5OWTjiu8WytJGgoHBErPgdoC5yadjEHSWD4RL5jlINHqX2UKXUHfRur8Tm/hyOxZiEv9D+dyqJwaWIz978nebxQ6KqvMmz5DTP/wdaQCr4yVq5mzQ8CnFQ0jJythcxGoBCaLyEOlq7MMah+Z25ebn3UX41zifC+A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
- 211.20.1.79) smtp.rcpttodomain=stwcx.xyz smtp.mailfrom=wiwynn.com; dmarc=fail
- (p=quarantine sp=quarantine pct=100) action=quarantine
- header.from=wiwynn.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LUNtvQ1Eth8qm1pnxm9kajQVaK4SrxDkTRzAWRlpwnI=;
- b=Z5fxiQsquainld2hX5JE4B5XUUlU8Ld7gPMcRH4o8kUmsDvIiUCCGVdSGcwSyq3g+8ok2P4QHktzwy7JZqgMUDgVmj6At3ceaS2zCfmxcfiPa/S2Wj6OGLRT6tW58uJK6fkjSir9Na7ErorK342YcpIDt+smqvYHSSK9+B7TW2RT/jcQerch7JsmLvgOpT0wqmDm7YA+a+7cMLeZ1joEs/ztim9pAWztd5G+pjk5VpTEV/BImPsP5G5y5UFoiRIBCPiLuDyR+MoqkQxQmjUWtAD4TOk+pYK1c3bU/kJ88heqImH2qY/QbyjVMQdJHCFtHTAVc3o2LviL/usgDn12dA==
-Received: from SG2P153CA0036.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c7::23) by
- KL1PR04MB6832.apcprd04.prod.outlook.com (2603:1096:820:d1::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7228.34; Wed, 31 Jan 2024 08:42:41 +0000
-Received: from HK2PEPF00006FB2.apcprd02.prod.outlook.com
- (2603:1096:4:c7:cafe::7) by SG2P153CA0036.outlook.office365.com
- (2603:1096:4:c7::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.9 via Frontend
- Transport; Wed, 31 Jan 2024 08:42:41 +0000
-X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
- smtp.mailfrom=wiwynn.com; dkim=none (message not signed)
- header.d=none;dmarc=fail action=quarantine header.from=wiwynn.com;
-Received-SPF: Fail (protection.outlook.com: domain of wiwynn.com does not
- designate 211.20.1.79 as permitted sender) receiver=protection.outlook.com;
- client-ip=211.20.1.79; helo=localhost.localdomain;
-Received: from localhost.localdomain (211.20.1.79) by
- HK2PEPF00006FB2.mail.protection.outlook.com (10.167.8.8) with Microsoft SMTP
- Server id 15.20.7228.16 via Frontend Transport; Wed, 31 Jan 2024 08:42:40
- +0000
-From: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
-To: patrick@stwcx.xyz,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Joel Stanley <joel@jms.id.au>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>
-Cc: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v5 15/21] ARM: dts: aspeed: yosemite4: Remove idle state setting for yosemite4 NIC connection
-Date: Wed, 31 Jan 2024 16:41:26 +0800
-Message-Id: <20240131084134.328307-16-Delphine_CC_Chiu@wiwynn.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240131084134.328307-1-Delphine_CC_Chiu@wiwynn.com>
-References: <20240131084134.328307-1-Delphine_CC_Chiu@wiwynn.com>
+	 MIME-Version; b=D/u5wZtxkrT/cRmtYgykn/Cg28Q2aaw3zJy+9woSOVBeJ8j7MRE4nedDWqGTNWmm+M/JonnppOdP+DsAn1GIAEPNUqdwyxSFT/V7e3cFpgNuJzxreSR8q9Ppf/QNEP+z42NXVjNDKrbDf0Q3zZ0AMuJvsW3SMMuk74zIf9TOce0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=arSeRwQA; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-55f279dca99so3454974a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 00:41:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1706690517; x=1707295317; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HT91HA0cf438KLXCFqahgOuGomP/5XEuDd167bXOWFI=;
+        b=arSeRwQAWDfFBao6dO3MQMv+W5rq13NSIQmlBemDnXlPzudSlNZs7V+fRVDjdJ6+v1
+         DSCXVDTyQogmTzmOxQyAYgANWbP5UZrRbI90BUqBJVmpnaycrv3l+hcP3i1cUxTuW21W
+         9LOAeIm4bdCNtakdPESr0w3OPNBGngsCrEHbwjO8qrD35qR6ZpsnWWLLNJjP6m+rUnTh
+         faIrygzc8UdCxsWzJE8bbzo8HzysLaLw+LO+BS5smgtEBl1GseQxFMGa9WAH+ZlF7Btb
+         /ejIe9AGG1ymzyJchx+To8/KMI56qoYcoFIABLtoZbqqx8DuXWGkz+H+6kLjxBAjEmTi
+         zwNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706690517; x=1707295317;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HT91HA0cf438KLXCFqahgOuGomP/5XEuDd167bXOWFI=;
+        b=wdRoAq10xrFhf2i66YowC0fbiUaxCREZbusFT0+61A7hleJnsqTUe2GEUYogs2nVG0
+         l3tL7XcPTkgGIdEFvxddwlT/qGR+vUXOLoi6zPsjBeuIMEXbYs7/tOzqfOg0Z/yQoa1j
+         /8PbJCWItWCSz7LaCRviei2O6/ng20g350NUYmI/krrTOhdjgUj3Ss/nfxBtDeMeqipi
+         GfJRCMgjpYAUbqeAsJRcMKRlTgC6F9YkecCVcXZowulSa17XmtZHEq8fYqpLeRJvZ1tm
+         rV2no6ix+lyR4pqnVjYvKO8WrezE776t46QdyOhLbsPCo01VYcRBf9fYZGpfDHlV4r9N
+         6ctA==
+X-Gm-Message-State: AOJu0Yyn+8y5te25RacNIcp/HUz8XFG2xkV2kxZneujMReWT9WnLl6CB
+	rRo/uNcB2IOjpQX6VSLG7N99b8FfmYLLBiQXANbq01LwYRIErOCBcbDqd8UghmU=
+X-Google-Smtp-Source: AGHT+IHz4jM9YV0tyExIajncKLJJwTdV5FdYPy0I/q8ACdh5o71eFuZDrmPXnfakfk+/XYwqtCi50A==
+X-Received: by 2002:a05:6402:3121:b0:55c:8ab7:9446 with SMTP id dd1-20020a056402312100b0055c8ab79446mr590513edb.7.1706690516842;
+        Wed, 31 Jan 2024 00:41:56 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXkU2P0IBC/c0C7IoW0UHDa8fy4NBnUCcmfSDfxp53q4gjMbOhNjOPm5LREng0pRRpFhgilPWF/A465L7k33gucPgATMG3I3TFqXrtTR0JYLCCvOA3zPcLjZv5vseqGTDlrg2RzO4Au0pmZE45w1xEkPuod0MHIIysjTeDjNVku05232cr9Mao6cnkXCUZaTpmCKC2h8JdhO9tiC+k5NF+iYycORtK3CBJ4vHAe0wVGMX4CVcv5c59O1UajY/2Dj+2W44uf2Fryar3+jUdbeVQbrBUCE2n2LGplyqx/wIC6hdoi9PCy8U6mYOBFw238d9Cs43v01jSqj+eKs8NZ+2w1PRunQclGlhnyvNHhj8BeKP9gfvZzULDsNi6KutAF3D+WXwvmvaAOXnmvb05lGDz+rIwyUmrYThGTPT51jX32dzgXYME=
+Received: from claudiu-X670E-Pro-RS.. ([82.78.167.87])
+        by smtp.gmail.com with ESMTPSA id cq16-20020a056402221000b0055f02661ae2sm2863630edb.78.2024.01.31.00.41.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Jan 2024 00:41:56 -0800 (PST)
+From: Claudiu <claudiu.beznea@tuxon.dev>
+X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
+To: s.shtylyov@omp.ru,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	richardcochran@gmail.com,
+	p.zabel@pengutronix.de,
+	geert+renesas@glider.be
+Cc: netdev@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	claudiu.beznea@tuxon.dev,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Subject: [PATCH net-next v5 08/15] net: ravb: Move the IRQs getting/requesting in the probe() method
+Date: Wed, 31 Jan 2024 10:41:26 +0200
+Message-Id: <20240131084133.1671440-9-claudiu.beznea.uj@bp.renesas.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240131084133.1671440-1-claudiu.beznea.uj@bp.renesas.com>
+References: <20240131084133.1671440-1-claudiu.beznea.uj@bp.renesas.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,50 +94,515 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: HK2PEPF00006FB2:EE_|KL1PR04MB6832:EE_
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: 7bacad78-94ee-4369-ea0a-08dc22389634
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	hMePLNBlZ8XKjHywBostY/W9D8NRPoCms9QXVtvlZLtD3Vk92Hi/CZV0VtGOLc+aVvwWV48OYkKU1xDDgP14EzwxmKHVhsP3IEBaofuTyjlU8o0D/wfv7+o8lDTEZz1KNsoig6qIXDXL3/+KBZctZOiPdV7ILGy0bNnkVjKd7RzskCXTdd4ZYzQdyRcEdqA8qZinX2BxZ1hU22Je/pa/qQEYRMSqhuXznUgMadjVF95l354ht4kfjaoS04PmvN0Ne24JDNAkpPc45ESBnb4Xp4EOv8SN5LUj+oAJAjaqyL6Q50Pn0bsDM8pj7+XEQ+G89HmYMiuusACKT4bYxWfEdX7Wa5WAnXk1jGdCeyoVsX3zDS8gpehddLTTawAUra/LTQQzQ9ATshQaHpkaNZmYRAcYsu56G8l+j6jOsTbW8vN8TxI/+E/+3gP9ntqLfmCOjaAUF6sSdaklLKMbForlDLMYd6CehHewXWfhMfpkjg++UOrA6iC1OjdiX43vSAuPVpMla4BSChEfxXXOBIhQvG85e0uC4VuI2fp7TU0iRnkpg8FFqwKb6/JWd5Zbjq+2KlN0hZks3Hh087tYsA3KhiC4ECuAgYxzdq0/pxXOi3mjRnvdUqea92fLiB2LncvxISA+gn2Vqy4SmPIHGLgZQnS72D/GzpM/4qbdvR9YP5dHNWnYSU5ijDvoH4CkUbateFw7zdKGEj2KcdgD3VedgQ==
-X-Forefront-Antispam-Report:
-	CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(6069001)(4636009)(346002)(376002)(136003)(396003)(39860400002)(230922051799003)(64100799003)(82310400011)(186009)(1800799012)(451199024)(36840700001)(46966006)(86362001)(26005)(2906002)(81166007)(9316004)(36756003)(41300700001)(4744005)(356005)(40480700001)(110136005)(336012)(70586007)(83380400001)(8936002)(36860700001)(8676002)(70206006)(316002)(6512007)(36736006)(6486002)(6506007)(47076005)(1076003)(478600001)(6666004)(2616005)(956004)(82740400003)(7416002)(5660300002)(4326008);DIR:OUT;SFP:1101;
-X-OriginatorOrg: wiwynn.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jan 2024 08:42:40.1924
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7bacad78-94ee-4369-ea0a-08dc22389634
-X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
-X-MS-Exchange-CrossTenant-AuthSource:
-	HK2PEPF00006FB2.apcprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR04MB6832
 
-Remove idle state setting for yosemite4 NIC connection
+From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+The runtime PM implementation will disable clocks at the end of
+ravb_probe(). As some IP variants switch to reset mode as a result of
+setting module standby through clock disable APIs, to implement runtime PM
+the resource parsing and requesting are moved in the probe function and IP
+settings are moved in the open function. This is done because at the end of
+the probe some IP variants will switch anyway to reset mode and the
+registers content is lost. Also keeping only register settings operations
+in the ravb_open()/ravb_close() functions will make them faster.
+
+Commit moves IRQ requests to ravb_probe() to have all the IRQs ready when
+the interface is open. As now IRQs getting/requesting are in a single place
+there is no need to keep intermediary data (like ravb_rx_irqs[] and
+ravb_tx_irqs[] arrays or IRQs in struct ravb_private).
+
+In order to avoid accessing the IP registers while the IP is runtime
+suspended (e.g. in the timeframe b/w the probe requests shared IRQs and
+IP clocks are enabled) in the interrupt handlers were introduced
+pm_runtime_active() checks. The device runtime PM usage counter has been
+incremented to avoid disabling the device's clocks while the check is in
+progress (if any).
+
+This is a preparatory change to add runtime PM support for all IP variants.
+
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 ---
- arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts | 1 -
- 1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-index f0e93c74003a..6d5710e5753c 100644
---- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-+++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-@@ -1227,7 +1227,6 @@ mctp@10 {
+Changes in v5:
+- fixed typos in patch description
+- collected tags
+
+Changes in v4:
+- use pm_runtime_active() in interrupt handlers
+- addressed review comments
+
+Changes in v3:
+- fixed typos in patch description
+- detailed patch description
+- reworked the code to have a single function doing IRQ get and
+  request
+
+Changes in v2:
+- none; this patch is new
+
+ drivers/net/ethernet/renesas/ravb.h      |   4 -
+ drivers/net/ethernet/renesas/ravb_main.c | 299 ++++++++++-------------
+ 2 files changed, 130 insertions(+), 173 deletions(-)
+
+diff --git a/drivers/net/ethernet/renesas/ravb.h b/drivers/net/ethernet/renesas/ravb.h
+index e0f8276cffed..e3506888cca6 100644
+--- a/drivers/net/ethernet/renesas/ravb.h
++++ b/drivers/net/ethernet/renesas/ravb.h
+@@ -1089,10 +1089,6 @@ struct ravb_private {
+ 	int msg_enable;
+ 	int speed;
+ 	int emac_irq;
+-	int erra_irq;
+-	int mgmta_irq;
+-	int rx_irqs[NUM_RX_QUEUE];
+-	int tx_irqs[NUM_TX_QUEUE];
  
- 	i2c-mux@72 {
- 		compatible = "nxp,pca9544";
--		i2c-mux-idle-disconnect;
- 		reg = <0x72>;
+ 	unsigned no_avb_link:1;
+ 	unsigned avb_link_active_low:1;
+diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+index e70c930840ce..f9297224e527 100644
+--- a/drivers/net/ethernet/renesas/ravb_main.c
++++ b/drivers/net/ethernet/renesas/ravb_main.c
+@@ -38,16 +38,6 @@
+ 		 NETIF_MSG_RX_ERR | \
+ 		 NETIF_MSG_TX_ERR)
  
- 		imux24: i2c@0 {
+-static const char *ravb_rx_irqs[NUM_RX_QUEUE] = {
+-	"ch0", /* RAVB_BE */
+-	"ch1", /* RAVB_NC */
+-};
+-
+-static const char *ravb_tx_irqs[NUM_TX_QUEUE] = {
+-	"ch18", /* RAVB_BE */
+-	"ch19", /* RAVB_NC */
+-};
+-
+ void ravb_modify(struct net_device *ndev, enum ravb_reg reg, u32 clear,
+ 		 u32 set)
+ {
+@@ -1092,11 +1082,23 @@ static irqreturn_t ravb_emac_interrupt(int irq, void *dev_id)
+ {
+ 	struct net_device *ndev = dev_id;
+ 	struct ravb_private *priv = netdev_priv(ndev);
++	struct device *dev = &priv->pdev->dev;
++	irqreturn_t result = IRQ_HANDLED;
++
++	pm_runtime_get_noresume(dev);
++
++	if (unlikely(!pm_runtime_active(dev))) {
++		result = IRQ_NONE;
++		goto out_rpm_put;
++	}
+ 
+ 	spin_lock(&priv->lock);
+ 	ravb_emac_interrupt_unlocked(ndev);
+ 	spin_unlock(&priv->lock);
+-	return IRQ_HANDLED;
++
++out_rpm_put:
++	pm_runtime_put_noidle(dev);
++	return result;
+ }
+ 
+ /* Error interrupt handler */
+@@ -1176,9 +1178,15 @@ static irqreturn_t ravb_interrupt(int irq, void *dev_id)
+ 	struct net_device *ndev = dev_id;
+ 	struct ravb_private *priv = netdev_priv(ndev);
+ 	const struct ravb_hw_info *info = priv->info;
++	struct device *dev = &priv->pdev->dev;
+ 	irqreturn_t result = IRQ_NONE;
+ 	u32 iss;
+ 
++	pm_runtime_get_noresume(dev);
++
++	if (unlikely(!pm_runtime_active(dev)))
++		goto out_rpm_put;
++
+ 	spin_lock(&priv->lock);
+ 	/* Get interrupt status */
+ 	iss = ravb_read(ndev, ISS);
+@@ -1222,6 +1230,9 @@ static irqreturn_t ravb_interrupt(int irq, void *dev_id)
+ 	}
+ 
+ 	spin_unlock(&priv->lock);
++
++out_rpm_put:
++	pm_runtime_put_noidle(dev);
+ 	return result;
+ }
+ 
+@@ -1230,9 +1241,15 @@ static irqreturn_t ravb_multi_interrupt(int irq, void *dev_id)
+ {
+ 	struct net_device *ndev = dev_id;
+ 	struct ravb_private *priv = netdev_priv(ndev);
++	struct device *dev = &priv->pdev->dev;
+ 	irqreturn_t result = IRQ_NONE;
+ 	u32 iss;
+ 
++	pm_runtime_get_noresume(dev);
++
++	if (unlikely(!pm_runtime_active(dev)))
++		goto out_rpm_put;
++
+ 	spin_lock(&priv->lock);
+ 	/* Get interrupt status */
+ 	iss = ravb_read(ndev, ISS);
+@@ -1254,6 +1271,9 @@ static irqreturn_t ravb_multi_interrupt(int irq, void *dev_id)
+ 	}
+ 
+ 	spin_unlock(&priv->lock);
++
++out_rpm_put:
++	pm_runtime_put_noidle(dev);
+ 	return result;
+ }
+ 
+@@ -1261,8 +1281,14 @@ static irqreturn_t ravb_dma_interrupt(int irq, void *dev_id, int q)
+ {
+ 	struct net_device *ndev = dev_id;
+ 	struct ravb_private *priv = netdev_priv(ndev);
++	struct device *dev = &priv->pdev->dev;
+ 	irqreturn_t result = IRQ_NONE;
+ 
++	pm_runtime_get_noresume(dev);
++
++	if (unlikely(!pm_runtime_active(dev)))
++		goto out_rpm_put;
++
+ 	spin_lock(&priv->lock);
+ 
+ 	/* Network control/Best effort queue RX/TX */
+@@ -1270,6 +1296,9 @@ static irqreturn_t ravb_dma_interrupt(int irq, void *dev_id, int q)
+ 		result = IRQ_HANDLED;
+ 
+ 	spin_unlock(&priv->lock);
++
++out_rpm_put:
++	pm_runtime_put_noidle(dev);
+ 	return result;
+ }
+ 
+@@ -1727,85 +1756,21 @@ static const struct ethtool_ops ravb_ethtool_ops = {
+ 	.set_wol		= ravb_set_wol,
+ };
+ 
+-static inline int ravb_hook_irq(unsigned int irq, irq_handler_t handler,
+-				struct net_device *ndev, struct device *dev,
+-				const char *ch)
+-{
+-	char *name;
+-	int error;
+-
+-	name = devm_kasprintf(dev, GFP_KERNEL, "%s:%s", ndev->name, ch);
+-	if (!name)
+-		return -ENOMEM;
+-	error = request_irq(irq, handler, 0, name, ndev);
+-	if (error)
+-		netdev_err(ndev, "cannot request IRQ %s\n", name);
+-
+-	return error;
+-}
+-
+ /* Network device open function for Ethernet AVB */
+ static int ravb_open(struct net_device *ndev)
+ {
+ 	struct ravb_private *priv = netdev_priv(ndev);
+ 	const struct ravb_hw_info *info = priv->info;
+-	struct platform_device *pdev = priv->pdev;
+-	struct device *dev = &pdev->dev;
+ 	int error;
+ 
+ 	napi_enable(&priv->napi[RAVB_BE]);
+ 	if (info->nc_queues)
+ 		napi_enable(&priv->napi[RAVB_NC]);
+ 
+-	if (!info->multi_irqs) {
+-		error = request_irq(ndev->irq, ravb_interrupt, IRQF_SHARED,
+-				    ndev->name, ndev);
+-		if (error) {
+-			netdev_err(ndev, "cannot request IRQ\n");
+-			goto out_napi_off;
+-		}
+-	} else {
+-		error = ravb_hook_irq(ndev->irq, ravb_multi_interrupt, ndev,
+-				      dev, "ch22:multi");
+-		if (error)
+-			goto out_napi_off;
+-		error = ravb_hook_irq(priv->emac_irq, ravb_emac_interrupt, ndev,
+-				      dev, "ch24:emac");
+-		if (error)
+-			goto out_free_irq;
+-		error = ravb_hook_irq(priv->rx_irqs[RAVB_BE], ravb_be_interrupt,
+-				      ndev, dev, "ch0:rx_be");
+-		if (error)
+-			goto out_free_irq_emac;
+-		error = ravb_hook_irq(priv->tx_irqs[RAVB_BE], ravb_be_interrupt,
+-				      ndev, dev, "ch18:tx_be");
+-		if (error)
+-			goto out_free_irq_be_rx;
+-		error = ravb_hook_irq(priv->rx_irqs[RAVB_NC], ravb_nc_interrupt,
+-				      ndev, dev, "ch1:rx_nc");
+-		if (error)
+-			goto out_free_irq_be_tx;
+-		error = ravb_hook_irq(priv->tx_irqs[RAVB_NC], ravb_nc_interrupt,
+-				      ndev, dev, "ch19:tx_nc");
+-		if (error)
+-			goto out_free_irq_nc_rx;
+-
+-		if (info->err_mgmt_irqs) {
+-			error = ravb_hook_irq(priv->erra_irq, ravb_multi_interrupt,
+-					      ndev, dev, "err_a");
+-			if (error)
+-				goto out_free_irq_nc_tx;
+-			error = ravb_hook_irq(priv->mgmta_irq, ravb_multi_interrupt,
+-					      ndev, dev, "mgmt_a");
+-			if (error)
+-				goto out_free_irq_erra;
+-		}
+-	}
+-
+ 	/* Device init */
+ 	error = ravb_dmac_init(ndev);
+ 	if (error)
+-		goto out_free_irq_mgmta;
++		goto out_napi_off;
+ 	ravb_emac_init(ndev);
+ 
+ 	/* Initialise PTP Clock driver */
+@@ -1826,26 +1791,6 @@ static int ravb_open(struct net_device *ndev)
+ 	if (info->gptp)
+ 		ravb_ptp_stop(ndev);
+ 	ravb_stop_dma(ndev);
+-out_free_irq_mgmta:
+-	if (!info->multi_irqs)
+-		goto out_free_irq;
+-	if (info->err_mgmt_irqs)
+-		free_irq(priv->mgmta_irq, ndev);
+-out_free_irq_erra:
+-	if (info->err_mgmt_irqs)
+-		free_irq(priv->erra_irq, ndev);
+-out_free_irq_nc_tx:
+-	free_irq(priv->tx_irqs[RAVB_NC], ndev);
+-out_free_irq_nc_rx:
+-	free_irq(priv->rx_irqs[RAVB_NC], ndev);
+-out_free_irq_be_tx:
+-	free_irq(priv->tx_irqs[RAVB_BE], ndev);
+-out_free_irq_be_rx:
+-	free_irq(priv->rx_irqs[RAVB_BE], ndev);
+-out_free_irq_emac:
+-	free_irq(priv->emac_irq, ndev);
+-out_free_irq:
+-	free_irq(ndev->irq, ndev);
+ out_napi_off:
+ 	if (info->nc_queues)
+ 		napi_disable(&priv->napi[RAVB_NC]);
+@@ -2180,19 +2125,6 @@ static int ravb_close(struct net_device *ndev)
+ 
+ 	cancel_work_sync(&priv->work);
+ 
+-	if (info->multi_irqs) {
+-		free_irq(priv->tx_irqs[RAVB_NC], ndev);
+-		free_irq(priv->rx_irqs[RAVB_NC], ndev);
+-		free_irq(priv->tx_irqs[RAVB_BE], ndev);
+-		free_irq(priv->rx_irqs[RAVB_BE], ndev);
+-		free_irq(priv->emac_irq, ndev);
+-		if (info->err_mgmt_irqs) {
+-			free_irq(priv->erra_irq, ndev);
+-			free_irq(priv->mgmta_irq, ndev);
+-		}
+-	}
+-	free_irq(ndev->irq, ndev);
+-
+ 	if (info->nc_queues)
+ 		napi_disable(&priv->napi[RAVB_NC]);
+ 	napi_disable(&priv->napi[RAVB_BE]);
+@@ -2616,6 +2548,90 @@ static void ravb_parse_delay_mode(struct device_node *np, struct net_device *nde
+ 	}
+ }
+ 
++static int ravb_setup_irq(struct ravb_private *priv, const char *irq_name,
++			  const char *ch, int *irq, irq_handler_t handler)
++{
++	struct platform_device *pdev = priv->pdev;
++	struct net_device *ndev = priv->ndev;
++	struct device *dev = &pdev->dev;
++	const char *dev_name;
++	unsigned long flags;
++	int error;
++
++	if (irq_name) {
++		dev_name = devm_kasprintf(dev, GFP_KERNEL, "%s:%s", ndev->name, ch);
++		if (!dev_name)
++			return -ENOMEM;
++
++		*irq = platform_get_irq_byname(pdev, irq_name);
++		flags = 0;
++	} else {
++		dev_name = ndev->name;
++		*irq = platform_get_irq(pdev, 0);
++		flags = IRQF_SHARED;
++	}
++	if (*irq < 0)
++		return *irq;
++
++	error = devm_request_irq(dev, *irq, handler, flags, dev_name, ndev);
++	if (error)
++		netdev_err(ndev, "cannot request IRQ %s\n", dev_name);
++
++	return error;
++}
++
++static int ravb_setup_irqs(struct ravb_private *priv)
++{
++	const struct ravb_hw_info *info = priv->info;
++	struct net_device *ndev = priv->ndev;
++	const char *irq_name, *emac_irq_name;
++	int error, irq;
++
++	if (!info->multi_irqs)
++		return ravb_setup_irq(priv, NULL, NULL, &ndev->irq, ravb_interrupt);
++
++	if (info->err_mgmt_irqs) {
++		irq_name = "dia";
++		emac_irq_name = "line3";
++	} else {
++		irq_name = "ch22";
++		emac_irq_name = "ch24";
++	}
++
++	error = ravb_setup_irq(priv, irq_name, "ch22:multi", &ndev->irq, ravb_multi_interrupt);
++	if (error)
++		return error;
++
++	error = ravb_setup_irq(priv, emac_irq_name, "ch24:emac", &priv->emac_irq,
++			       ravb_emac_interrupt);
++	if (error)
++		return error;
++
++	if (info->err_mgmt_irqs) {
++		error = ravb_setup_irq(priv, "err_a", "err_a", &irq, ravb_multi_interrupt);
++		if (error)
++			return error;
++
++		error = ravb_setup_irq(priv, "mgmt_a", "mgmt_a", &irq, ravb_multi_interrupt);
++		if (error)
++			return error;
++	}
++
++	error = ravb_setup_irq(priv, "ch0", "ch0:rx_be", &irq, ravb_be_interrupt);
++	if (error)
++		return error;
++
++	error = ravb_setup_irq(priv, "ch1", "ch1:rx_nc", &irq, ravb_nc_interrupt);
++	if (error)
++		return error;
++
++	error = ravb_setup_irq(priv, "ch18", "ch18:tx_be", &irq, ravb_be_interrupt);
++	if (error)
++		return error;
++
++	return ravb_setup_irq(priv, "ch19", "ch19:tx_nc", &irq, ravb_nc_interrupt);
++}
++
+ static void ravb_set_delay_mode(struct net_device *ndev)
+ {
+ 	struct ravb_private *priv = netdev_priv(ndev);
+@@ -2635,9 +2651,8 @@ static int ravb_probe(struct platform_device *pdev)
+ 	struct reset_control *rstc;
+ 	struct ravb_private *priv;
+ 	struct net_device *ndev;
+-	int error, irq, q;
+ 	struct resource *res;
+-	int i;
++	int error, q;
+ 
+ 	if (!np) {
+ 		dev_err(&pdev->dev,
+@@ -2664,20 +2679,6 @@ static int ravb_probe(struct platform_device *pdev)
+ 	if (error)
+ 		goto out_free_netdev;
+ 
+-	if (info->multi_irqs) {
+-		if (info->err_mgmt_irqs)
+-			irq = platform_get_irq_byname(pdev, "dia");
+-		else
+-			irq = platform_get_irq_byname(pdev, "ch22");
+-	} else {
+-		irq = platform_get_irq(pdev, 0);
+-	}
+-	if (irq < 0) {
+-		error = irq;
+-		goto out_reset_assert;
+-	}
+-	ndev->irq = irq;
+-
+ 	SET_NETDEV_DEV(ndev, &pdev->dev);
+ 
+ 	priv = netdev_priv(ndev);
+@@ -2692,6 +2693,10 @@ static int ravb_probe(struct platform_device *pdev)
+ 		priv->num_rx_ring[RAVB_NC] = NC_RX_RING_SIZE;
+ 	}
+ 
++	error = ravb_setup_irqs(priv);
++	if (error)
++		goto out_reset_assert;
++
+ 	priv->clk = devm_clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(priv->clk)) {
+ 		error = PTR_ERR(priv->clk);
+@@ -2739,50 +2744,6 @@ static int ravb_probe(struct platform_device *pdev)
+ 	priv->avb_link_active_low =
+ 		of_property_read_bool(np, "renesas,ether-link-active-low");
+ 
+-	if (info->multi_irqs) {
+-		if (info->err_mgmt_irqs)
+-			irq = platform_get_irq_byname(pdev, "line3");
+-		else
+-			irq = platform_get_irq_byname(pdev, "ch24");
+-		if (irq < 0) {
+-			error = irq;
+-			goto out_rpm_put;
+-		}
+-		priv->emac_irq = irq;
+-		for (i = 0; i < NUM_RX_QUEUE; i++) {
+-			irq = platform_get_irq_byname(pdev, ravb_rx_irqs[i]);
+-			if (irq < 0) {
+-				error = irq;
+-				goto out_rpm_put;
+-			}
+-			priv->rx_irqs[i] = irq;
+-		}
+-		for (i = 0; i < NUM_TX_QUEUE; i++) {
+-			irq = platform_get_irq_byname(pdev, ravb_tx_irqs[i]);
+-			if (irq < 0) {
+-				error = irq;
+-				goto out_rpm_put;
+-			}
+-			priv->tx_irqs[i] = irq;
+-		}
+-
+-		if (info->err_mgmt_irqs) {
+-			irq = platform_get_irq_byname(pdev, "err_a");
+-			if (irq < 0) {
+-				error = irq;
+-				goto out_rpm_put;
+-			}
+-			priv->erra_irq = irq;
+-
+-			irq = platform_get_irq_byname(pdev, "mgmt_a");
+-			if (irq < 0) {
+-				error = irq;
+-				goto out_rpm_put;
+-			}
+-			priv->mgmta_irq = irq;
+-		}
+-	}
+-
+ 	ndev->max_mtu = info->rx_max_buf_size - (ETH_HLEN + VLAN_HLEN + ETH_FCS_LEN);
+ 	ndev->min_mtu = ETH_MIN_MTU;
+ 
 -- 
-2.25.1
+2.39.2
 
 
