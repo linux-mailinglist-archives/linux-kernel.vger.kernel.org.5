@@ -1,34 +1,34 @@
-Return-Path: <linux-kernel+bounces-46904-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46906-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38FB6844618
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:26:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10E9E844623
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:28:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC1DA1F27884
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:26:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E7401F28A39
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:28:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FA8612DDB3;
-	Wed, 31 Jan 2024 17:26:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 917BF12CDBE;
+	Wed, 31 Jan 2024 17:28:32 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 096EA12DD92;
-	Wed, 31 Jan 2024 17:26:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EE7712CDA5;
+	Wed, 31 Jan 2024 17:28:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706721966; cv=none; b=QzZGYEdJqavkEkYGG0Bq2su81RinyaUr2vDCX+FUZBXmAjre02HlyyVpTX3IJ8s67b+lp1vrQwJI+vQ5/187VWnwB+IGpiU7G+TkHe+gadptBdAt4abh7RxnYjoFrDWBF63b3ChIR9mO7/mbM3X0TsWLl+ME++PsOIAEfQGhoDY=
+	t=1706722112; cv=none; b=XyZOdHVjjOlLkFNPrXXYdc//ICmmcERQLdK9UCVeDw4IFI8jRYkIweG1pUrAOw+ARys8a2v1EY3Of974NDJmCBBv8V3vi3e8TbCfIC0d7PKAgLA+3RGLCAJasa6+wZE2xY3Xu3u/mqzyFZUgYyKYz1mGO8IvaDFT0teOemzw2xk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706721966; c=relaxed/simple;
-	bh=Tv/OIdhU0ncVmP7nGCQx/bdXuPecUNW1V8ksBVTdZoU=;
+	s=arc-20240116; t=1706722112; c=relaxed/simple;
+	bh=pQQF/au8gH11VqcBaEi4I6TkVLn1yjmvYFcQmCHOP48=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=EyyxenD+Sk5MuPmIATCrVeU8zGQdOQZiFyCFRpDhYex0bm1cxWMZL+wZWB22PJ9SIhyhiSRDteXAivesHaTxMU2IKMoDe3Ot+c88SvzxtVSVBhXH0UjfbeuXdiBaIyZqHycl5nXgdirPmdtcbW5mJCdHHAe+EBjpPmktd7eesM4=
+	 MIME-Version:Content-Type; b=AMz9lg1E6KOSNpoG8/cHdaOzPHDbOZ9aq81cfOoHvIE7/bXOdKxu5ylzf1cy9N4NhKpWExgNP4PeBOav3mk3XvvokUhr2jg1/duKM1S8GXPumn7130iJ6t36o6VR7/zkiZtpPGGL9PpKfjEC6FrUUgxyPnKKMt4gvjoSRjXquQk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B1A4C433F1;
-	Wed, 31 Jan 2024 17:26:04 +0000 (UTC)
-Date: Wed, 31 Jan 2024 12:26:18 -0500
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D46CC433C7;
+	Wed, 31 Jan 2024 17:28:30 +0000 (UTC)
+Date: Wed, 31 Jan 2024 12:28:44 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Linus Torvalds <torvalds@linux-foundation.org>
 Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
@@ -39,8 +39,8 @@ Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
  <ajay.kaher@broadcom.com>, linux-trace-kernel@vger.kernel.org
 Subject: Re: [linus:master] [eventfs] 852e46e239:
  BUG:unable_to_handle_page_fault_for_address
-Message-ID: <20240131122618.7c533387@gandalf.local.home>
-In-Reply-To: <20240131105847.3e9afcb8@gandalf.local.home>
+Message-ID: <20240131122844.5683dfe0@gandalf.local.home>
+In-Reply-To: <20240131111358.5506645a@gandalf.local.home>
 References: <202401291043.e62e89dc-oliver.sang@intel.com>
 	<20240129152600.7587d1aa@gandalf.local.home>
 	<CAHk-=wghobf5qCqNUsafkQzNAZBJiS0=7CRjNXNChpoAvTbvUw@mail.gmail.com>
@@ -57,6 +57,7 @@ References: <202401291043.e62e89dc-oliver.sang@intel.com>
 	<20240130143734.31b9b3f1@gandalf.local.home>
 	<CAHk-=whMJgqu2v1_Uopg5NBschGFa_BK1Ct=s7ehwnzPpPi6nQ@mail.gmail.com>
 	<20240131105847.3e9afcb8@gandalf.local.home>
+	<20240131111358.5506645a@gandalf.local.home>
 X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -67,105 +68,42 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Wed, 31 Jan 2024 10:58:47 -0500
+On Wed, 31 Jan 2024 11:13:58 -0500
 Steven Rostedt <rostedt@goodmis.org> wrote:
 
-> BTW, I ran my full test suite on your patches with the below updates and it
-> all passed. Note, I did not run the "bisectable" portion of my test. That
-> is, the part that runs tests on each patch in the series. Because I know
-> that fails. I just ran the tests on the last applied patch.
+> On Wed, 31 Jan 2024 10:58:47 -0500
+> Steven Rostedt <rostedt@goodmis.org> wrote:
 > 
-> I can break up and clean up the patches so that they are bisectable, and if
-> that passes the bisectable portion of my tests, I can still send them to
-> you for 6.8. I think this does fix a lot of hidden bugs, and would like all
-> this to go back to 6.6 when the eventfs was first introduced.
+> > @@ -788,6 +717,7 @@ static void init_once(void *foo)
+> >  {
+> >  	struct tracefs_inode *ti = (struct tracefs_inode *) foo;
+> >  
+> > +	memset(ti, 0, sizeof(*ti));
+> >  	inode_init_once(&ti->vfs_inode);
+> >  }
+> >    
+> 
+> Note, that inode_init_once() also does a memset on the entire inode, so the
+> initial memset is redundant on the inode portion. But I didn't think it was
+> really worth the time to complicate the code by optimizing it. I guess if I
+> changed the structure to:
+> 
+>  struct tracefs_inode {
+> +	struct inode            vfs_inode;
+> 	unsigned long           flags;
+> 	void                    *private;
+> -	struct inode            vfs_inode;
+>  };
+> 
+> I could have it do:
+> 
+> 	memset_after(ti, 0, vfs_inode);
+> 
+> But this can be done as a separate clean up and doesn't need to be done now.
+> 
 
-So I swapped the order of patch 5 and patch 6, and it appears that patch 6
-works without 5 (with some massaging).
-
-Here's the new patch 6 without patch 5, and now patch 5 just finishes the
-rest of the changes.
-
-I'll post this series, pull it in through my normal work flow, and rerun
-the full test suite with the bisecting check as well.
+Hmm, since I need to run all the tests again, I think I'll change this
+patch to do the above.
 
 -- Steve
-
-diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index 0289ec787367..0213a3375d53 100644
---- a/fs/tracefs/event_inode.c
-+++ b/fs/tracefs/event_inode.c
-@@ -378,13 +378,12 @@ static void free_ei(struct eventfs_inode *ei)
- }
- 
- /**
-- * eventfs_set_ei_status_free - remove the dentry reference from an eventfs_inode
-- * @ti: the tracefs_inode of the dentry
-+ * eventfs_d_release - dentry is going away
-  * @dentry: dentry which has the reference to remove.
-  *
-  * Remove the association between a dentry from an eventfs_inode.
-  */
--void eventfs_set_ei_status_free(struct tracefs_inode *ti, struct dentry *dentry)
-+void eventfs_d_release(struct dentry *dentry)
- {
- 	struct eventfs_inode *ei;
- 	int i;
-diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
-index f403d32bd7cd..cf90ea86baf8 100644
---- a/fs/tracefs/inode.c
-+++ b/fs/tracefs/inode.c
-@@ -377,21 +377,30 @@ static const struct super_operations tracefs_super_operations = {
- 	.show_options	= tracefs_show_options,
- };
- 
--static void tracefs_dentry_iput(struct dentry *dentry, struct inode *inode)
-+/*
-+ * It would be cleaner if eventfs had its own dentry ops.
-+ *
-+ * Note that d_revalidate is called potentially under RCU,
-+ * so it can't take the eventfs mutex etc. It's fine - if
-+ * we open a file just as it's marked dead, things will
-+ * still work just fine, and just see the old stale case.
-+ */
-+static void tracefs_d_release(struct dentry *dentry)
- {
--	struct tracefs_inode *ti;
-+	if (dentry->d_fsdata)
-+		eventfs_d_release(dentry);
-+}
- 
--	if (!dentry || !inode)
--		return;
-+static int tracefs_d_revalidate(struct dentry *dentry, unsigned int flags)
-+{
-+	struct eventfs_inode *ei = dentry->d_fsdata;
- 
--	ti = get_tracefs(inode);
--	if (ti && ti->flags & TRACEFS_EVENT_INODE)
--		eventfs_set_ei_status_free(ti, dentry);
--	iput(inode);
-+	return !(ei && ei->is_freed);
- }
- 
- static const struct dentry_operations tracefs_dentry_operations = {
--	.d_iput = tracefs_dentry_iput,
-+	.d_revalidate = tracefs_d_revalidate,
-+	.d_release = tracefs_d_release,
- };
- 
- static int trace_fill_super(struct super_block *sb, void *data, int silent)
-diff --git a/fs/tracefs/internal.h b/fs/tracefs/internal.h
-index 9e64ca4829c7..687faba9807b 100644
---- a/fs/tracefs/internal.h
-+++ b/fs/tracefs/internal.h
-@@ -77,6 +77,7 @@ struct dentry *tracefs_start_creating(const char *name, struct dentry *parent);
- struct dentry *tracefs_end_creating(struct dentry *dentry);
- struct dentry *tracefs_failed_creating(struct dentry *dentry);
- struct inode *tracefs_get_inode(struct super_block *sb);
--void eventfs_set_ei_status_free(struct tracefs_inode *ti, struct dentry *dentry);
-+
-+void eventfs_d_release(struct dentry *dentry);
- 
- #endif /* _TRACEFS_INTERNAL_H */
 
