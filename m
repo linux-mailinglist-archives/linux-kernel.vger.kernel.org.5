@@ -1,119 +1,109 @@
-Return-Path: <linux-kernel+bounces-46669-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46670-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 812F784426D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:01:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AF6284426F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:01:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C44A296E99
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:01:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38F261F28A3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:01:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB8CA12CD88;
-	Wed, 31 Jan 2024 14:55:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11B4712CDAF;
+	Wed, 31 Jan 2024 14:55:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k4vpGyOr"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QrOWstsS"
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17BBC12C555;
-	Wed, 31 Jan 2024 14:55:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D72C18288F
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 14:55:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706712904; cv=none; b=MOBk7P5o73UY1vhuP3y3ASLA1z8ZKVl9/nRkX3HM5Zz2taqcVrPCEZwXDIK42resj1KyOVMdpiaSvQh41/01Jv3je61WbokWUhqKXZVAo62FUOVFmhBFqGOI9hGtvgA5lk/U1fSTF3C3OJKkWanaG6vnFohgsknjTor9FaYK2u4=
+	t=1706712920; cv=none; b=Gqr2u0TyAP8LgJwmfKckbzrRtbxNiL6HGCflU5gLhdFuz0Y3aEpInxx7rpy73UNb9qGNnNmzqX6+Unl8VtRbFgNGl0mzOpM4QGvJOuWp91joxCRy2zUMQ2qlpUGUdr7+KmMmv2Ed5ufSYNM+Z5Fl5CRbErN7b73T8bgTnL1eQl8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706712904; c=relaxed/simple;
-	bh=bib7u/kOOTdQtOzyN6AdTB575aRRs5nTwJnPxeh/thM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=soW9Dblp6X4VHc1W7A4GHnwj4RCQGMbN3DuAVOqmBmTZKC0pR5XthhsmHxQJ7SswY1x/FTRY2YGyP9WMns80f4/DQb06fIwWUAN1M5JCk0t3MVMC4rWtp6SoFCLscQjILvH6lCljerwja+lj+Vve+mZzjxNXPVlJea9xciDnQa4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k4vpGyOr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D68BC43399;
-	Wed, 31 Jan 2024 14:55:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706712903;
-	bh=bib7u/kOOTdQtOzyN6AdTB575aRRs5nTwJnPxeh/thM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=k4vpGyOrvwwkNiqBbAqWJAB4O9tE8+XHHPCOxLgv0rZ2/2pLKCTnWIMGiVIoQlE8T
-	 VhI2JHatS/i9/HbeFZz3NW2ZNCcnQBavHwBXX/HprWBXfqfUIV/7nizEAPGtDqxHqT
-	 Zx08FgWMoDFzYRbH95mgSN38yV9oV/8uG7xFTG3W3VQlFiqtQuDlsEM4BhdhiLoGQh
-	 5b6jCQ5ZfIrojcycshdI1tsjdN14hDjRhG92OZoSZosEmn8uQ28n9hjzcsFcBfEFUr
-	 YThd1omAUn66lkx9UhMxgxSdc1K5l+zYDz5DLTcQxrjiEbJ49ubky1sLBOadPzuynk
-	 fqMQvsYgCucEA==
-Date: Wed, 31 Jan 2024 08:55:01 -0600
-From: Rob Herring <robh@kernel.org>
-To: Mao Jinlong <quic_jinlmao@quicinc.com>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Mike Leach <mike.leach@linaro.org>,
-	James Clark <james.clark@arm.com>, Leo Yan <leo.yan@linaro.org>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>,
-	coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org,
-	Tingwei Zhang <quic_tingweiz@quicinc.com>,
-	Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-	Tao Zhang <quic_taozha@quicinc.com>
-Subject: Re: [PATCH v3 1/2] dt-bindings: arm: coresight: Remove pattern match
- of ETE node name
-Message-ID: <20240131145501.GA1254056-robh@kernel.org>
-References: <20240119092500.7154-1-quic_jinlmao@quicinc.com>
- <20240119092500.7154-2-quic_jinlmao@quicinc.com>
+	s=arc-20240116; t=1706712920; c=relaxed/simple;
+	bh=uvTHxh/nXl9P4aUCBRM/c+7M4xUmbtRtBKYSCX2dtWM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=E6m6viU6jf/QLy28RYZLP+HraMQeIgS42yaO5HqwqGJ+kTgRTMCL9bmJk3zepvoezjxjqDQLHEP5cvoKn6Tq6eirwqbzHGxJCkqLNmCbKOND9SbvX9uSXzoIjsVEzKFdRWODscAx3lMDxbz85StwD+5e9SNBCliMfklL7XrXrIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QrOWstsS; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-295b34cea31so1315906a91.3
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 06:55:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706712918; x=1707317718; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uvTHxh/nXl9P4aUCBRM/c+7M4xUmbtRtBKYSCX2dtWM=;
+        b=QrOWstsSQrdZoKHOqZBSU3l1Q2p2Rd4jM8+Es1LMbNPGkkuWy/xiDPLhrQgN/KmTUJ
+         iSXUtWT2USHtXUSyr9X87NrNiD6FRl2m680GEo+ln2E29iMmgENkzActGqXKEA4MGcs7
+         Pb3ypgKLCwfCuCwu+vcGU1K8pBOe6HK+bXezI/j1+khr1WeB7ou+PiGQa8oW5Bnfzwkn
+         lLmivP03w8yqRIz+8E6jAamArnvOZ5+qa1x0O29A8SZkfZwEgx8TmtgeVecBPx2gIIIc
+         XrVw+hWlX/tcf7Eyy3D0WpmiHHEqK/awBId+ZZAvwD53esaBMKPp9GiDRyxEBM83RiOm
+         Wzbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706712918; x=1707317718;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uvTHxh/nXl9P4aUCBRM/c+7M4xUmbtRtBKYSCX2dtWM=;
+        b=qDndYiekxVh9PtB5Ty6cvHK77bChmvR4CQnRz8679/fyN8OVhw4434xzsqsUU4njSM
+         vvVNsEAcJGGPoNSIv+x8QnBYoqmeZVWLp6wgEQaNbuN9Q4yfeajz6A9iut+9dhQkLVFi
+         Mc30v78e1WRG8UJm6J9ykTtakidOKq38ZEamfUetBo19bDFL3ykp+gywLmpL5sCdgzPS
+         lBQCLSyGhg8UlwiaQA99TcvETYOKv7C8AP91EtD72+jQJl10MQU2wVpC89+GHhQ2hPJ0
+         GdEiwGAjIvzHZ4dQn4Kedx1ulan8/KkMwkwu3YIHsjooRbEcYAVtD+mSjzQzlnf9Emol
+         FEIw==
+X-Gm-Message-State: AOJu0YyAMRkJLV7TYEY3pg1SMxiD8D5Zq2TBM9u3L/DOcNt4OFQPd5Wu
+	I/KjHiK5/5xtRdpyMwgvpkKSyDOAi3xfzkufztNXwXCZWxeRB7BirfSGnldqKjZ/bXzBAkxFNjZ
+	fJ5y0xwjA0ddir0Iy4F7o9lxnwBj2ZZYHzSPWxA==
+X-Google-Smtp-Source: AGHT+IEtURmFYpPr5n0qmkXA1oNesRmycvQ6OXB+xP3DOmVMhj7X6eCSiM7njnUh2JGL4NBG+Bxx5TrLUuyPqqSlRK4=
+X-Received: by 2002:a17:90b:382:b0:28f:f70b:a272 with SMTP id
+ ga2-20020a17090b038200b0028ff70ba272mr1970405pjb.21.1706712918181; Wed, 31
+ Jan 2024 06:55:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240119092500.7154-2-quic_jinlmao@quicinc.com>
+References: <20240117190545.596057-1-vincent.guittot@linaro.org> <CAK4VdL3Bg70ycz5vd4RfwNYa3KcYU8rdPX==i7znzQFw_EgTjA@mail.gmail.com>
+In-Reply-To: <CAK4VdL3Bg70ycz5vd4RfwNYa3KcYU8rdPX==i7znzQFw_EgTjA@mail.gmail.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Wed, 31 Jan 2024 15:55:06 +0100
+Message-ID: <CAKfTPtByDJxQEdBwYkpj1G=sgm8FOw4FS17yMbEbz=on95TP9g@mail.gmail.com>
+Subject: Re: [Resend PATCH] topology: Set capacity_freq_ref in all cases
+To: Erico Nunes <nunes.erico@gmail.com>
+Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
+	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, 
+	sudeep.holla@arm.com, gregkh@linuxfoundation.org, rafael@kernel.org, 
+	linux-kernel@vger.kernel.org, lukasz.luba@arm.com, ionela.voinescu@arm.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 19, 2024 at 01:24:57AM -0800, Mao Jinlong wrote:
-> Remove pattern match of ETE node name. Use ete as the name for ete nodes.
-> 
-> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
-> ---
->  .../bindings/arm/arm,embedded-trace-extension.yaml          | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/arm,embedded-trace-extension.yaml b/Documentation/devicetree/bindings/arm/arm,embedded-trace-extension.yaml
-> index f725e6940993..a10a570bd9bc 100644
-> --- a/Documentation/devicetree/bindings/arm/arm,embedded-trace-extension.yaml
-> +++ b/Documentation/devicetree/bindings/arm/arm,embedded-trace-extension.yaml
-> @@ -22,8 +22,6 @@ description: |
->    with any optional connection graph as per the coresight bindings.
->  
->  properties:
-> -  $nodename:
-> -    pattern: "^ete([0-9a-f]+)$"
+On Wed, 31 Jan 2024 at 14:56, Erico Nunes <nunes.erico@gmail.com> wrote:
+>
+> On Wed, Jan 17, 2024 at 8:06=E2=80=AFPM Vincent Guittot
+> <vincent.guittot@linaro.org> wrote:
+> >
+> > If "capacity-dmips-mhz" is not set, raw_capacity is null and we skip th=
+e
+> > normalization step which includes setting per_cpu capacity_freq_ref.
+> > Always register the notifier but skip the capacity normalization if
+> > raw_capacity is null.
+>
+> I bisected an issue of cpufreq no longer working on v6.8-rc on a TI
+> SK-AM62 board and it pointed me to b3edde44e5d4 ("cpufreq/schedutil:
+> Use a fixed reference frequency").
+> This commit does fix the issue but doesn't appear to be merged
+> anywhere yet. It would be good to have this fixed before 6.8 release.
 
-I prefer we keep something here. '^ete-' or '^ete-[0-9]+$'.
+Greg has queued the patch which should show up in the next release of
+the linux-next tree
 
->    compatible:
->      items:
->        - const: arm,embedded-trace-extension
-> @@ -55,13 +53,13 @@ examples:
->  
->  # An ETE node without legacy CoreSight connections
->    - |
-> -    ete0 {
-> +    ete {
->        compatible = "arm,embedded-trace-extension";
->        cpu = <&cpu_0>;
->      };
->  # An ETE node with legacy CoreSight connections
->    - |
-> -   ete1 {
-> +   ete {
->        compatible = "arm,embedded-trace-extension";
->        cpu = <&cpu_1>;
->  
-> -- 
-> 2.41.0
-> 
+>
+> Tested-by: Erico Nunes <nunes.erico@gmail.com>
 
