@@ -1,106 +1,166 @@
-Return-Path: <linux-kernel+bounces-45811-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45812-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF9A9843687
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:20:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E408843689
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:20:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27EFA1C269FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:20:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 608E51C2550C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:20:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C6B33E49B;
-	Wed, 31 Jan 2024 06:19:52 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15F533E494;
+	Wed, 31 Jan 2024 06:20:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="UQ7vj8Ur"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0D7A3D0A8;
-	Wed, 31 Jan 2024 06:19:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69F733E479
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 06:20:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706681991; cv=none; b=aEehZOQYykqSseToVkyG1iJ0FayY8HOOWc2ZuX8l8dIK4kxMS0ENQdfGft+o47ho7qANqWQzCsxLDAX95FUtSflaawCUj/Kb3JiAzsi2kN6EsZ12Q57Z3q+wpuhs+ESLPnOQg3ugWteIqoUF/w77mngA9WYiQOXKH9vBJb6SqpU=
+	t=1706682046; cv=none; b=MXh157R756aJA6uglJ7O+e+yZEbIHW4o+peADQ1sPg143JW2hkdLK475f45UY/D2TR45v/TWywJG9cs2JY2ILUfggntkBa4u9RY4CBO+9VUtm6HRU3PYGfVLs/J+4Q6K7kkUW9E7LPdSn6jbzYUUsCpDtRqt1rjoBsrXTfS9b8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706681991; c=relaxed/simple;
-	bh=u5O3/gNRSdF1Vka2tF/34OTpsuldLvuRZepGrl5h7k0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=SMd1/Ht+hwPMxiZzVQrytTKDNCCdD+anj/qi/Ds1xW4e3l7v/khJH85HxE1ueXqAzq2V0FYjkpG2QgRqaX4/ufGujJr9Wl5ehxhKWoJbBjQWa2TQJuZE+gXn/WP9zakGgSy9iI4/6Q2MYFtMwXI8rtXceGsQKzKQxvlwSP3gJ7I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 40ea3aee49ee4d33a1f27c107259acbd-20240131
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:c50e72fa-99b4-4905-8d10-937242d3f027,IP:20,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:5
-X-CID-INFO: VERSION:1.1.35,REQID:c50e72fa-99b4-4905-8d10-937242d3f027,IP:20,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:5
-X-CID-META: VersionHash:5d391d7,CLOUDID:b83cf37f-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:240131141931X8CLJG0B,BulkQuantity:0,Recheck:0,SF:38|24|17|19|44|66|1
-	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
-	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 40ea3aee49ee4d33a1f27c107259acbd-20240131
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 297476359; Wed, 31 Jan 2024 14:19:28 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id 3AAC9E000EB9;
-	Wed, 31 Jan 2024 14:19:27 +0800 (CST)
-X-ns-mid: postfix-65B9E66F-40888197
-Received: from kernel.. (unknown [172.20.15.254])
-	by mail.kylinos.cn (NSMail) with ESMTPA id 74415E000EB9;
-	Wed, 31 Jan 2024 14:19:25 +0800 (CST)
-From: Kunwu Chan <chentao@kylinos.cn>
-To: clm@fb.com,
-	josef@toxicpanda.com,
-	dsterba@suse.com
-Cc: linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH] btrfs: Simplify the allocation of slab caches in btrfs_delayed_inode_init
-Date: Wed, 31 Jan 2024 14:19:24 +0800
-Message-Id: <20240131061924.130083-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1706682046; c=relaxed/simple;
+	bh=+zWGDHOSR4R5OOmwVA7CGTmxtDB5Gw1dsrxc8qUmklk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kAuJpZYb/gCeQ6n9FSHCz1/42qdzuqQnbL7nmeB6Kkyq6ewYyJoJG6eBsP6F93eeZgmt2uFVIs76YN6nCfOrYgovDbJ8lYZ0eA96DVzKVOxOIkdf8InJmw0sUOolLSicmvkKzBbmz13fTouNVJgHNpVnKKPScc4Aj3xCbqEKt3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=UQ7vj8Ur; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-557dcb0f870so5185085a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 22:20:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1706682042; x=1707286842; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/QwJEx8MXhmC+sPURjCY02TNwn5uuUuexxSfNKMHGWI=;
+        b=UQ7vj8Ur8svCWcmt18FTO2KdP40TACm8O97D1qaXClLbKgif4NnSiRc77uXhgSg9Xr
+         Nn17Mc5s4Z8YPTBMkocZC+dVOyJYfTXjpBgcy85MWl4arrh1Lfr1H4ueZINU0Nu+VSGP
+         p/JuwPyhwKmylb/atiS9qntjnhlXvnF7XM2kw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706682042; x=1707286842;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/QwJEx8MXhmC+sPURjCY02TNwn5uuUuexxSfNKMHGWI=;
+        b=NHq4CAaz6Y/HDuizS1/sjxO4ui8OPyzWIezw1Bhg72QIjsjMPlMz5ryazZxH0HOIqx
+         nFV/qJejyyb9SjEWGxd6dulbM2Gjw6MzYpH2H1hja9RNw2wuPnAp0kdOXEzaZU+O5inL
+         QgbtrenaR6Gu69v72IQsXpUQ0YuLy5uGEgH1z3+7Wpx/j7NFmV+rMj1xwwHvZECXNHDh
+         bLTKzjxWb7LnwXX7SbS04IdUwUKEs08TOwNhQCPeVimoDjmUuwCOZohovoksHUR83vmE
+         mIHHWnOU7Mi817COydQAD2Gj15jQUIeEJu+uZz8nRi5GmkjVdNd2EYBJgWw42vTwH7BZ
+         xeVg==
+X-Gm-Message-State: AOJu0YwuORFiqMG1tqPW29ZpRbSZ7icYwpKQkMr65+gnkyOHL0q+yISo
+	eYus8NqomPJ0jqZuz45kga3PGXJXhQ3pXVUd6ylXBZY/4lrKEAOKRV9Bx4/p4FHHCEMvA8d5T3H
+	+ymWBLw==
+X-Google-Smtp-Source: AGHT+IFKBC0qmWxwi1TRzfQMWJtj/WzRvjk2xMWK1Lr/8h4rnWPZsaLyiHcS5kmVP30FhwhGDI1+5g==
+X-Received: by 2002:a17:906:f117:b0:a35:4ee9:7f12 with SMTP id gv23-20020a170906f11700b00a354ee97f12mr370029ejb.50.1706682042225;
+        Tue, 30 Jan 2024 22:20:42 -0800 (PST)
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com. [209.85.208.52])
+        by smtp.gmail.com with ESMTPSA id vu3-20020a170907a64300b00a360ba43173sm1717820ejc.99.2024.01.30.22.20.41
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jan 2024 22:20:41 -0800 (PST)
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-55c2cf644f3so4917543a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 22:20:41 -0800 (PST)
+X-Received: by 2002:a05:6402:2211:b0:55f:1728:3b33 with SMTP id
+ cq17-20020a056402221100b0055f17283b33mr291889edb.40.1706682041262; Tue, 30
+ Jan 2024 22:20:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+References: <20240130190355.11486-1-torvalds@linux-foundation.org>
+ <20240130190355.11486-5-torvalds@linux-foundation.org> <20240131000956.3dbc0fc0@gandalf.local.home>
+ <CAHk-=wjH+k47je4YbP=D+KOiNYp8cJh8C_gZFzSOa8HPDm=AQw@mail.gmail.com>
+ <20240131003317.7a63e799@gandalf.local.home> <CAHk-=wg69FE2826EokkCbSKHZvCG-cM5t=9SMFLcfpNu8Yvwqw@mail.gmail.com>
+In-Reply-To: <CAHk-=wg69FE2826EokkCbSKHZvCG-cM5t=9SMFLcfpNu8Yvwqw@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 30 Jan 2024 22:20:24 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whSse54d+X361K2Uw6jO2SvrO-U0LHLBTLnqHaA+406Fw@mail.gmail.com>
+Message-ID: <CAHk-=whSse54d+X361K2Uw6jO2SvrO-U0LHLBTLnqHaA+406Fw@mail.gmail.com>
+Subject: Re: [PATCH 5/6] eventfs: get rid of dentry pointers without refcounts
+To: Steven Rostedt <rostedt@goodmis.org>, Al Viro <viro@zeniv.linux.org.uk>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-commit 0a31bd5f2bbb ("KMEM_CACHE(): simplify slab cache creation")
-introduces a new macro.
-Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
-to simplify the creation of SLAB caches.
+On Tue, 30 Jan 2024 at 21:57, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> Ugh.
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
- fs/btrfs/delayed-inode.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+Oh, and double-ugh on that tracefs_syscall_mkdir/rmdir(). I hate how
+it does that "unlock and re-lock inode" thing.
 
-diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index 08102883f560..8c748c6cdf6d 100644
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -28,11 +28,7 @@ static struct kmem_cache *delayed_node_cache;
-=20
- int __init btrfs_delayed_inode_init(void)
- {
--	delayed_node_cache =3D kmem_cache_create("btrfs_delayed_node",
--					sizeof(struct btrfs_delayed_node),
--					0,
--					SLAB_MEM_SPREAD,
--					NULL);
-+	delayed_node_cache =3D KMEM_CACHE(btrfs_delayed_node, SLAB_MEM_SPREAD);
- 	if (!delayed_node_cache)
- 		return -ENOMEM;
- 	return 0;
---=20
-2.39.2
+It's a disease, and no, it's not an acceptable response to "lockdep
+shows there's a locking problem".
 
+The comment says "It is up to the individual mkdir routine to handle
+races" but that's *completely* bogus and shows a fundamental
+misunderstanding of locking.
+
+Dropping the lock in the middle of a locked section does NOT affect
+just the section that you dropped the lock around.
+
+It affects the *caller*, who took the lock in the first place, and who
+may well assume that the lock protects things for the whole duration
+of the lock.
+
+And so dropping the lock in the middle of an operation is a bad BAD
+*BAD* thing to do.
+
+Honestly, I had only been looking at the eventfs_inode.c lookup code.
+But now that I started looking at mkdir/rmdir, I'm seeing the same
+signs of horrible mistakes there too.
+
+And yes, it might be a real problem. For example, for the rmdir case,
+the actual lock was taken by 'vfs_rmdir()', and it does *not* protect
+only the ->rmdir() call itself.
+
+It also, for example, is supposed to make the ->rmdir be atomic wrt things like
+
+        dentry->d_inode->i_flags |= S_DEAD;
+
+and
+
+        dont_mount(dentry);
+        detach_mounts(dentry);
+
+but now because the inode lock was dropped in the middle, for all we
+know a "mkdir()" could come in on the same name, and make a mockery of
+the whole inode locking.
+
+The inode lock on that directory that is getting removed is also what
+is supposed to make it impossible to add new files to the directory
+while the rmdir is going on.
+
+Again, dropping the lock violates those kinds of guarantees.
+
+"git blame" actually fingers Al for that "unlock and relock", but
+that's because Al did a search-and-replace on
+"mutex_[un]lock(&inode->i_mutex)" and replaced it with
+"inode_[un]lock(inode)" back in 2016.
+
+The real culprit is you, and that sh*t-show goes back to commit
+277ba04461c2 ("tracing: Add interface to allow multiple trace
+buffers").
+
+Christ. Now I guess I need to start looking if there is anything else
+horrid lurking in that mkdir/rmdir path.
+
+I doubt the inode locking problem ends up mattering in this situation.
+Mostly since this is only tracefs, and normal users shouldn't be able
+to access these things anyway. And I think (hope?) that you only
+accept mkdir/rmdir in specific places.
+
+But this really is another case of "This code smells *fundamentally* wrong".
+
+Adding Al, in the hopes that he will take a look at this too.
+
+            Linus
 
