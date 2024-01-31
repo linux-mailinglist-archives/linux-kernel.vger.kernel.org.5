@@ -1,102 +1,95 @@
-Return-Path: <linux-kernel+bounces-46244-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46243-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95FDD843CEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:38:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E88A8843CEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:38:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD9281C27D67
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:38:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A406F290017
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:38:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D03486A012;
-	Wed, 31 Jan 2024 10:38:35 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4217069DED;
+	Wed, 31 Jan 2024 10:38:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fac5OTkB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FA7869DF0
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 10:38:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7939F69D0B;
+	Wed, 31 Jan 2024 10:38:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706697515; cv=none; b=d4PkPaafmoBarPLrJhrFVGPxtU3JliQcwNK33hEVO4HttRU89JAzLz1KFYym6B4BUk0ARuzR7M54TsYJnB6jUSPIJE2S0bEiClpmC6ra9/wQB+7RRt84h36PYvtJEsF8UrZ8ufF7QUufD6gPO5CCVgC2nfdXgNcx8P+hNzmuEwQ=
+	t=1706697507; cv=none; b=nwszzqrUdQpJMOj/Nh4mutYbdYykB4aN+oxC9yXHueO/JWbZdB5qiGJo0DHiC7l9oWbSlhhTHkZACPbxaJ75BIXpT1j2mhiz3y6EJmOFE4R5GFlGpcztAWwsNSHlf51wThuNye2nUk6lYN3HdRH4rxs+jUSOouO0W3rMkDUO9/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706697515; c=relaxed/simple;
-	bh=C8e1M8gT3q6KVm69a0LzgiD0s9uDpLb2DaneXAidFpc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Kh16SepFD9wItxB5xWIZRZc3UVQZAZ0RO3flyvHr2t1V2zKpVQFhy1n0S3RtRj0CO3+lFP7i4dOd+5bMirx3lRxcKNX6Du88q8rb7zNLK/ZPBv+1NDIRvKz6qZprY27W6bBI3ckt87fdNLk68KeBXOMxc08O6+NwYzGRKcBMULM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 2a6a44ca43044fe09b533fd14219fef0-20240131
-X-CID-O-RULE: Release_Ham
-X-CID-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:068b03ab-c210-451d-b607-1840b42a0c70,IP:25,
-	URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
-	ION:release,TS:5
-X-CID-INFO: VERSION:1.1.35,REQID:068b03ab-c210-451d-b607-1840b42a0c70,IP:25,UR
-	L:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:5
-X-CID-META: VersionHash:5d391d7,CLOUDID:1b145bfe-c16b-4159-a099-3b9d0558e447,B
-	ulkID:240131183822BFS38S30,BulkQuantity:0,Recheck:0,SF:66|24|17|19|44|102,
-	TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
-	,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 2a6a44ca43044fe09b533fd14219fef0-20240131
-X-User: gehao@kylinos.cn
-Received: from localhost.localdomain [(116.128.244.171)] by mailgw
-	(envelope-from <gehao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 520497664; Wed, 31 Jan 2024 18:38:20 +0800
-From: Hao Ge <gehao@kylinos.cn>
-To: akpm@linux-foundation.org
-Cc: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	gehao618@163.com,
-	Hao Ge <gehao@kylinos.cn>
-Subject: [PATCH] mm/vmscan: Change the type of file from int to bool
-Date: Wed, 31 Jan 2024 18:38:02 +0800
-Message-Id: <20240131103802.122920-1-gehao@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1706697507; c=relaxed/simple;
+	bh=G1xb+7GcuqoR3Hpne3zc8YgCg5SYmrqCTtVXVrZG2fU=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=GKVi2uzth66Y48lpOrs2HhSlpdmCLeGeO/E3piEg4NeH5SzPfDaywY6hCdTitxM7eHBjBFjyJnXm6n5k8wNVdrh8yLuKHI50QmIo3LJt2C+ne9yVCG8w46ISX28ybzloZuWBEgd8GhoL+O5dSbPzyi+USLPyspP5lMC0Pa1XXKE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fac5OTkB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 098B5C433F1;
+	Wed, 31 Jan 2024 10:38:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706697507;
+	bh=G1xb+7GcuqoR3Hpne3zc8YgCg5SYmrqCTtVXVrZG2fU=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=Fac5OTkBkRLA1DX3YIghuHVctzb5epHMKkDNS7/diRvKR/BH9srNwyhkx0/srNYGG
+	 9PxW0AupX9Wa5lwUZegOvAvz0y1h+cBbPBhwlbu2IwX+jJP8Z0tJd/OYvqmnKiPYHc
+	 t5/vCrZgAtB1guCN76Xw2MJrnkhUT55lUamWj8yu0kRBhYTA01ylcq8iRqBoj5n6ey
+	 M/sqzrRKCNXO45Dpv/aCKTjpNE3KALzNxY5Ec/LT2G4GiXX2gNOMHFkmltEYVLoJBb
+	 5YcUmaFEs+Ls3Z1X6UIsxeBx0VXk1cceWkYjUUsZ9UC/fy7vgLCBsVcrMESA/0liT5
+	 T+8wXiqUCuxWw==
+From: Benjamin Tissoires <bentiss@kernel.org>
+To: Jiri Kosina <jikos@kernel.org>, 
+ Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
+ Dan Carpenter <dan.carpenter@linaro.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
+ Benjamin Tissoires <bentiss@kernel.org>
+Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ bpf@vger.kernel.org, stable@vger.kernel.org
+In-Reply-To: <20240124-b4-hid-bpf-fixes-v2-0-052520b1e5e6@kernel.org>
+References: <20240124-b4-hid-bpf-fixes-v2-0-052520b1e5e6@kernel.org>
+Subject: Re: [PATCH v2 0/3] HID: bpf: couple of upstream fixes
+Message-Id: <170669750476.304575.17277174965193688582.b4-ty@kernel.org>
+Date: Wed, 31 Jan 2024 11:38:24 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.4
 
-Change the type of file from int to bool because is_file_lru return bool
+On Wed, 24 Jan 2024 12:26:56 +0100, Benjamin Tissoires wrote:
+> This is the v2 of this series of HID-BPF fixes.
+> I have forgotten to include a Fixes tag in the first patch
+> and got a review from Andrii on patch 2.
+> 
+> And this first patch made me realize that something was fishy
+> in the refcount of the hid devices. I was not crashing the system
+> even if I accessed the struct hid_device after hid_destroy_device()
+> was called, which was suspicious to say the least. So after some
+> debugging I found the culprit and realized that I had a pretty
+> nice memleak as soon as one HID-BPF program was attached to a HID
+> device.
+> 
+> [...]
 
-Signed-off-by: Hao Ge <gehao@kylinos.cn>
----
- mm/vmscan.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git (for-6.8/upstream-fixes), thanks!
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 2deae4232b83..69047bc9f5fe 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -2005,7 +2005,7 @@ static void shrink_active_list(unsigned long nr_to_scan,
- 	LIST_HEAD(l_inactive);
- 	unsigned nr_deactivate, nr_activate;
- 	unsigned nr_rotated = 0;
--	int file = is_file_lru(lru);
-+	bool file = is_file_lru(lru);
- 	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
- 
- 	lru_add_drain();
-@@ -2419,7 +2419,7 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
- 	denominator = ap + fp;
- out:
- 	for_each_evictable_lru(lru) {
--		int file = is_file_lru(lru);
-+		bool file = is_file_lru(lru);
- 		unsigned long lruvec_size;
- 		unsigned long low, min;
- 		unsigned long scan;
+[1/3] HID: bpf: remove double fdget()
+      https://git.kernel.org/hid/hid/c/7cdd2108903a
+[2/3] HID: bpf: actually free hdev memory after attaching a HID-BPF program
+      https://git.kernel.org/hid/hid/c/89be8aa5b0ec
+[3/3] HID: bpf: use __bpf_kfunc instead of noinline
+      https://git.kernel.org/hid/hid/c/764ad6b02777
+
+Cheers,
 -- 
-2.25.1
+Benjamin Tissoires <bentiss@kernel.org>
 
 
