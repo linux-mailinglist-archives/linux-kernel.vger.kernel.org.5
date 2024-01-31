@@ -1,123 +1,129 @@
-Return-Path: <linux-kernel+bounces-46957-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46958-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 144A28446E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:11:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAD738446E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:12:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C53AB28DAFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:11:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87B59283B6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:12:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82E181339B4;
-	Wed, 31 Jan 2024 18:10:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B59612FF91;
+	Wed, 31 Jan 2024 18:12:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="pko4Vmzm"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=amacapital-net.20230601.gappssmtp.com header.i=@amacapital-net.20230601.gappssmtp.com header.b="zxA9Jx+w"
+Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com [209.85.221.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BE3612FF7A;
-	Wed, 31 Jan 2024 18:10:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1538612CDB8
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 18:12:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706724611; cv=none; b=BZBlsWuRDpKc4dr6K46MsHYyzhAnBjKfEiJ+K6gU3BeTGY8HTLnf5hNiIaM+s/xPc9G4QhM2u2iuUt0y5AyeBAD52yL+bNmOHjoJQxeXyZGSxrVkopY6mEejt5cscsfVJ2WMJ6+NltRjqAbLkfDZUEO8HwcNQGC8GeCExPd9q/I=
+	t=1706724730; cv=none; b=QrdcxFaZcHOMDOZvd6+nOkRjdKbm97E4wMwwwP7140j6gCHNFVjrnp/72d7qd/t3Y449naocHpxBHaWksNvsu6CP864Xp/69jwLA1IOsYuUDk7vTJQQO+EGUiaXGYcPY/gxCGVtr/8883KzJQVWtgNX3DafDhT6ot1MTHcmOKhs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706724611; c=relaxed/simple;
-	bh=IgVxSdA6UejGJQUV3K09v14DNp71/yDWI/ktI4EBOp0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=tnEwjvB8/VKl0QV98oxBky8kgjPm63JalZUEk9+pRwObYtPtLRYc+GAfwl+4QgAclSij77xPVRF/lWoR0Oa13heik0VgJe+VqIFnKxttKr1ZTUVRgFaMsTNACHL5lfOXGJ1Oc86CkVMhIWxQLfQRxz3qSxVyL6WWpgjcNwt0FG0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=pko4Vmzm; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40VHmbK3002795;
-	Wed, 31 Jan 2024 18:10:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=fVqh++2apwc/aSahkYZMFZdFH2hOC+/mSzUKyfXrQJs=; b=pk
-	o4Vmzmsg2DCJis5iDzMbIw/AcphzCMFhj5OHajI0PnX8/jbEiOuodztsIeE/onyq
-	w4rqZEXWwQIFEgEcqkxdPsCiLBKJ46F7fzyyAkp4TNownJBaJ0s6vEDvxM6D9MvQ
-	PWOhGbkOT2+j3pxZkzJo3xJgcX/stVXwn5jO7A7RdZhArRufMslMaqs4w5OfRT9J
-	sJDfkunbPR6OxfX8yfjy+4P0nv2TStunF+ZoAOzx3ELkBX7FuSywnmgz2qJWRITP
-	XftmkDBXgLoyT6JJcGx+ASm4qQ3RvN5H5GKv7Qju3DxlKL49lgobJUnEuy7Mh1ul
-	gw2fTWDDl1WgfgDvi0KA==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vypaq0rx5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 31 Jan 2024 18:10:05 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40VIA5Nj019333
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 31 Jan 2024 18:10:05 GMT
-Received: from [10.216.50.212] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 31 Jan
- 2024 10:10:01 -0800
-Message-ID: <dd0025d2-fc1f-488e-8899-a94d321b492c@quicinc.com>
-Date: Wed, 31 Jan 2024 23:40:01 +0530
+	s=arc-20240116; t=1706724730; c=relaxed/simple;
+	bh=STgTLQoskTh+8DR2hD5JRM99Mcrb+r/d7oGmIrhDbR4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=onGOjwGKpamD7abiOIjDo4YFd6JvbIcvzGGkGYpzX3qEouEKKLy8UfoHkU+qj29qSq5m+mA5YAFCRLwS/tfVfsARxp11zD21vzt6I+eeBib3hL0ohg1qjJGMoQdfUYTx167ROpzu7VqlvQEJWNyoiRezRRbcXroZhcZ8EPkjh2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amacapital.net; spf=pass smtp.mailfrom=amacapital.net; dkim=pass (2048-bit key) header.d=amacapital-net.20230601.gappssmtp.com header.i=@amacapital-net.20230601.gappssmtp.com header.b=zxA9Jx+w; arc=none smtp.client-ip=209.85.221.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amacapital.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amacapital.net
+Received: by mail-vk1-f169.google.com with SMTP id 71dfb90a1353d-4bd80b41cbdso34009e0c.3
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 10:12:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20230601.gappssmtp.com; s=20230601; t=1706724727; x=1707329527; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GGA0Zqk+riY1KRG9vwSmf4Mk+lzwyAYBV9JiVffdUNU=;
+        b=zxA9Jx+wpq6y2kh29ntpvVAdBb2QU4pBsQOGILAlLsouUWTz9yIPv6Zwfa9fvAApBD
+         2mQm+H/KIwLWgzQ7qy69FcXVUbQvYMkqTzBhvRxI7LMszqkgMdF42tiISehaPC2jwdFH
+         xst+II4syImd1pUKhpXJUvwYSk3sQgMWKcm56MX8e8DEVt/ZV8Dday9oL7nXnHC004r1
+         0vpWb0At0+7/DUaFVUgBrUmTmLhGSG5BT+Q/S1z8oR/rF+j45Wm5/rHJiLBO3/0BFw8W
+         NXr4CWiUO1m0amm6KBcc2iCQvjK/3czBAWVpJKaQ9i3xU6nXS8CeD8+12/8iqcmbHwMV
+         RSOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706724727; x=1707329527;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GGA0Zqk+riY1KRG9vwSmf4Mk+lzwyAYBV9JiVffdUNU=;
+        b=FdcK0Ey3eJCPgcexRox9Q7HCVX2cpiGYuLHKOEAMmXwqoOsY5fZsqZxC0/Q4zQb6sE
+         83oDiCPjr7QJwFMVkiUfqlYGJWKk0i/GnHwqtdvZ8HoP7FAx1MCVlRXssLhFRhb1xm8G
+         BtoQwdspWjLZXCwXrCu4kdPYgpPauRQq0zGK2WwH50uOodkzlOcBtkNEvNrMx2IJ0iVT
+         YCBwXN1aBml/K0X0tietog19qebghR5l34tz2JUQ53HZ7inzOYEm1thBTNxP8905h4sv
+         MGFCyFkLvS7kGBUjgn4QQSelTPXiZOCDAB7hvF/bQ7zCDqn4r+3RLV2CD5fktlI7a4I5
+         O21g==
+X-Gm-Message-State: AOJu0Yz04miJQa9O+2tK2BAl3xxO96NhHOiJCxfdwqL1n13OGw+LqXTu
+	/9W8vP4hf80AquXtAqAzhstjvWv4m/zyh8K/hZF8LN3Tv2asQvgJI9dcUd+jFYoBGLarYgCrsdg
+	P//O3UGQxy7BZiVaj1/q47qBGzkRozoOjjYCM
+X-Google-Smtp-Source: AGHT+IFkr7a2wSPfcQxL+NcIOkwv4R5ssE/UGOW4KTbxhGE7PmX0HB6/IYgYxwhNh4IPK32iKi1cD80qdVW5ZLu3IZA=
+X-Received: by 2002:a05:6122:c99:b0:4bd:3b1d:38b8 with SMTP id
+ ba25-20020a0561220c9900b004bd3b1d38b8mr2470740vkb.1.1706724726988; Wed, 31
+ Jan 2024 10:12:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] usb: gadget: ncm: Avoid dropping datagrams of properly
- parsed NTBs
-Content-Language: en-US
-To: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
-CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hardik Gajjar
-	<hgajjar@de.adit-jv.com>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_ppratap@quicinc.com>,
-        <quic_wcheng@quicinc.com>, <quic_jackp@quicinc.com>
-References: <20240131150332.1326523-1-quic_kriskura@quicinc.com>
- <CANP3RGeHXmEcDN=-h1uGBzu_Ur2UcmiEuFDXAEr0Z2ptXnHq=Q@mail.gmail.com>
- <CANP3RGeQ0-2vg0OeOHCuUzgeRRH4JyPw511Eoyy=HA-M9YAX2A@mail.gmail.com>
- <CANP3RGebjQhjCMVg5h936kp2mcCFcRvwzwi+84vxzFeUnmQwCQ@mail.gmail.com>
-From: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <CANP3RGebjQhjCMVg5h936kp2mcCFcRvwzwi+84vxzFeUnmQwCQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: l8PP6uVYgcb0XiwqQzbDAxMkUSpWBWIc
-X-Proofpoint-GUID: l8PP6uVYgcb0XiwqQzbDAxMkUSpWBWIc
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-31_10,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=1 impostorscore=0 clxscore=1015
- lowpriorityscore=0 priorityscore=1501 mlxscore=1 suspectscore=0
- malwarescore=0 spamscore=1 mlxlogscore=218 phishscore=0 bulkscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401190000 definitions=main-2401310140
+References: <ZbArN3EYRfhrNs3o@tycho.pizza> <20240125140830.GA5513@redhat.com>
+ <ZbQpPknTTCyiyxrP@tycho.pizza> <20240127105410.GA13787@redhat.com>
+ <ZbUngjQMg+YUBAME@tycho.pizza> <20240127163117.GB13787@redhat.com>
+ <ZbU7d0dpTY08JgIl@tycho.pizza> <20240127193127.GC13787@redhat.com>
+ <ZbVrRgIvudX242ZU@tycho.pizza> <20240127210634.GE13787@redhat.com> <20240129112313.GA11635@redhat.com>
+In-Reply-To: <20240129112313.GA11635@redhat.com>
+From: Andy Lutomirski <luto@amacapital.net>
+Date: Wed, 31 Jan 2024 10:11:55 -0800
+Message-ID: <CALCETrUFDkt+K9zG8mczxzAFy9t-6Mx5Cz-Sx+it6a4nt+O0pg@mail.gmail.com>
+Subject: Re: [RFC PATCH] pidfd: implement PIDFD_THREAD flag for pidfd_open()
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Tycho Andersen <tycho@tycho.pizza>, Christian Brauner <brauner@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-api@vger.kernel.org, Tycho Andersen <tandersen@netflix.com>, 
+	"Eric W. Biederman" <ebiederm@xmission.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Jan 29, 2024 at 3:24=E2=80=AFAM Oleg Nesterov <oleg@redhat.com> wro=
+te:
+>
+> On 01/27, Oleg Nesterov wrote:
+> >
+> > I'll (hopefully) send v2 on top of
+> >
+> >       pidfd: cleanup the usage of __pidfd_prepare's flags
+> >       pidfd: don't do_notify_pidfd() if !thread_group_empty()
+> >
+> > on Monday
+>
+> Sorry, I don't have time to finish v2 today, I need to update the comment=
+s
+> and write the changelog.
+>
+> But the patch itself is ready, I am sending it for review.
+>
+> Tycho, Christian, any comments?
 
+Right now, pidfd_send_signal() sends signals to processes, like so:
 
-On 1/31/2024 10:48 PM, Maciej Żenczykowski wrote:
+ * The syscall currently only signals via PIDTYPE_PID which covers
+ * kill(<positive-pid>, <signal>. It does not signal threads or process
+ * groups.
 
->>
->> Also since this is a fix, it should probably have a Fixes tag
->> (possibly on some original sha1 that added the driver, since I think
->> it's always been broken) or at least a commit title that more clearly
->> flags it as a 'fix' or cc stable...
->>
->> (something like 'usb: gadget: ncm: fix rare win11 packet discard')
->>
->> We definitely want this to hit LTS...
-> 
-> One more thing: the 'goto done' and 'done' label are not needed -
-> that's already the natural code flow...
-> So the 'goto' could just be replaced with a comment or perhaps with
-> --to_process.
+This patch adds PIDFD_THREAD which, potentially confusingly, doesn't
+change this (AFAICS).  So at least that should be documented loudly
+and clearly, IMO.  But I actually just bumped in to this limitation in
+pidfd_send_signal(), like so:
 
-ACK. I thought getting out of the function was better than doing a NOP 
-calculation. Either ways is fine by me. Will make this change in v3.
+https://github.com/systemd/systemd/issues/31093
 
-Regards,
-Krishna,
+Specifically, systemd can't properly emulate Ctrl-C using pidfd_send_signal=
+().
+
+I don't know whether implementing the other signal types belongs as
+part of this patch, but they're at least thematically related.
+
+--Andy
 
