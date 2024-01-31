@@ -1,51 +1,52 @@
-Return-Path: <linux-kernel+bounces-46099-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3B48843A52
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:09:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BA5F843A55
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:09:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8F411C27B9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:09:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB62D1F2AEBE
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:09:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70A72634FA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DF5563504;
 	Wed, 31 Jan 2024 09:04:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uwOxeAPh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O8W6VO2D"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A55863FB30;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFBC15813B;
 	Wed, 31 Jan 2024 09:04:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706691887; cv=none; b=glgv01KjDz0pTT4nZB7fU4EIKklH9CcFFYMoVA/ITiYLhj1eczjgjbAlBd4x15aJi5+UCxV2CljPXuy8zDem2y3mrzYeAINVybH7DkPH9An6LrhbaVB9mfH9Kh4zISJ8S1Nd4ZeV/e3SA53P5TRxkJfQDE4mESEf3Q9CJ8oGhrA=
+	t=1706691887; cv=none; b=Ik/InyM8UxePWzF75XNsTX5YLH34asrF2zNLWxf+SqZBwHyyEknhsm4E8VCBcfs/kCA6nRR1CFy8tHx8u0ME8r2dmLDyM8nhhpu1JnHXrKoKmi8t4D4/e/FR53Dnd7mG6Q30ji5lWn/ZHQRmDiovfOlceBwhxZB1g1fzMDD7clQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706691887; c=relaxed/simple;
-	bh=ZbYXhjXWvoG2xDHKAPM5zoanyvcH1F57GIo4k0O2Kbo=;
+	bh=QlP98aSQSqBpclGKVx9/GrrG73fSHvaxlFUeCcBcyCM=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=HSRaseb33w+G6p2BKlxgGGpgEAj6LxP7l7x562OjuxoENTVToQpRYm7VgRC/TkcKtMdg9neCpYpJeuKrP7RuF6BsUqfKF08BN+wpEVM6Z3NuggqMaGY76NC2osioIOpZ0dYQFsXE/G5OvTuwoNI+4T8s41TQZJGcZkF2ZGE7bls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uwOxeAPh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 28AA1C433F1;
+	 In-Reply-To:To:Cc; b=kfFFrrvofbHKgTiHcwHMEi93YEPYX9jwL4A2g6238/RFWOr22K5eaYD5WTVyy4NW4rS9/VNWvQ/3Z5CPwpLuS6QDOuvf9IF/XA1fLLabw1gyd+AYC9m/XVGb9gAdzOU2p5jBjM+RQGHAKuU+u78k4qxXo+Nk1PnonneX9nZvetI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O8W6VO2D; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 36C93C43390;
 	Wed, 31 Jan 2024 09:04:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1706691887;
-	bh=ZbYXhjXWvoG2xDHKAPM5zoanyvcH1F57GIo4k0O2Kbo=;
+	bh=QlP98aSQSqBpclGKVx9/GrrG73fSHvaxlFUeCcBcyCM=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=uwOxeAPhkzEr97hEhwDUhB+el3jF0xxMUZixm9MFJbHKYtYnbBogtmk30Ghls2wd9
-	 y+U7MU/r9BML9IV8L0LpxGpMRq+pky3R5JKbk1DEohwnuzPeXwogVOMRGcALlZH5NM
-	 BHXlVcOAuFxqsd5GbIHTCsVM4zNFc5v7ukligRZpY7CHtXMon1R8t7OUeOCXJktMZq
-	 To4oG6TDmvsQsWsPTSlHNCJ/uIvLrNh1pkCN84w+jMmNraU7Wk0MEzsmF54Lnf3oB9
-	 T2Ej2baiuVx6HfYykYtq3D9JQelSB/8kiDO4tj1QiMWgXC6HbVH8mCo4itJVgqqDLG
-	 Oow+qMUahv06A==
+	b=O8W6VO2DtjQRTH84AM5vGi+Rkudj9MGURJ6TmVkEF+a175CpOq1jPESfQfOYZVbXK
+	 mZirgbsyqAvFtg56GSwrzJWChf4joEPSmT0VquvC7LbEIRBBSiPqmNadjQI3Rs8El3
+	 OqSid/oyMr3pnNC0jCKu68RHWDLv/XKt72/3FhPtv6OvaQ+qi1SxldMGlAsTpSzoOt
+	 kzEvfZLBSrAVZ3R1Sz3gEVSPi2N/SPaH9cnc6AaPOfiw/e4jtXdQD8T64dU5PQbmXb
+	 mqSM2W8U3NgD2tslfdELDA54CliEyLf00TF7E6hVTS6LpTClbKzTP6RPvI8j1XTIOI
+	 qnhFu+9sWCOYQ==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 171F9C47DDF;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20B96C48285;
 	Wed, 31 Jan 2024 09:04:47 +0000 (UTC)
 From: Rudraksha Gupta via B4 Relay <devnull+guptarud.gmail.com@kernel.org>
-Date: Wed, 31 Jan 2024 01:04:46 -0800
-Subject: [PATCH v2 1/2] ARM: dts: qcom: msm8960: Add gsbi3 node
+Date: Wed, 31 Jan 2024 01:04:47 -0800
+Subject: [PATCH v2 2/2] ARM: dts: qcom: msm8960: expressatt: Add mXT224S
+ touchscreen
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,7 +56,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Message-Id:
- <20240131-expressatt_mxt224s_touchscreen-v2-1-4463ae0414b5@gmail.com>
+ <20240131-expressatt_mxt224s_touchscreen-v2-2-4463ae0414b5@gmail.com>
 References:
  <20240131-expressatt_mxt224s_touchscreen-v2-0-4463ae0414b5@gmail.com>
 In-Reply-To:
@@ -67,11 +68,11 @@ To: Bjorn Andersson <andersson@kernel.org>,
 Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
  linux-kernel@vger.kernel.org, Rudraksha Gupta <guptarud@gmail.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1706691886; l=2107;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1706691886; l=1620;
  i=guptarud@gmail.com; s=20240120; h=from:subject:message-id;
- bh=G6XPs19Hk+i3uuDKqNqjvb4ePyJrYWEvOCZGE4iK36g=;
- b=01IhAm1m43JwSoG5qVDfjpK8EYKpRI+iitc0eh5r8bOoHY63CcTmbb+icdnyO8w6DpwEG2+9h
- MKJA/e9ZOBMC/McxNWDd0JY00M+xsKWcXn+e7C9iU3zQYOWdu2t+XwZ
+ bh=4Gi3ILnitkF34hh7B1r4k2VP7IMCG7Hjj/6AwpaU750=;
+ b=aToJeq7bdKkloeO+pbha6Cimk77XwMqWEyri7P45ecOMZaHTkdN4Cy1Gcpli+x+loyRp/LVf6
+ SNTmxUSdiqZDmTcl8lGZNOvhSgthxCwy1F5lkuFNrb/xQprQc/fsi0B
 X-Developer-Key: i=guptarud@gmail.com; a=ed25519;
  pk=RGmug3GRHS4XYTXDcT2VrlTGXlEF2gY4L9/swGIU1ko=
 X-Endpoint-Received:
@@ -81,79 +82,69 @@ Reply-To: <guptarud@gmail.com>
 
 From: Rudraksha Gupta <guptarud@gmail.com>
 
-Copy gsbi3 node from qcom-apq8064.dtsi and set appropriate properties
+Add mXT224S touchscreen
 
 Signed-off-by: Rudraksha Gupta <guptarud@gmail.com>
 ---
- arch/arm/boot/dts/qcom/qcom-msm8960-pins.dtsi | 21 ++++++++++++++++++++
- arch/arm/boot/dts/qcom/qcom-msm8960.dtsi      | 28 +++++++++++++++++++++++++++
- 2 files changed, 49 insertions(+)
+ .../dts/qcom/qcom-msm8960-samsung-expressatt.dts   | 31 +++++++++++++++++++++-
+ 1 file changed, 30 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/qcom/qcom-msm8960-pins.dtsi b/arch/arm/boot/dts/qcom/qcom-msm8960-pins.dtsi
-new file mode 100644
-index 000000000000..4fa982771288
---- /dev/null
-+++ b/arch/arm/boot/dts/qcom/qcom-msm8960-pins.dtsi
-@@ -0,0 +1,21 @@
-+// SPDX-License-Identifier: GPL-2.0-only
+diff --git a/arch/arm/boot/dts/qcom/qcom-msm8960-samsung-expressatt.dts b/arch/arm/boot/dts/qcom/qcom-msm8960-samsung-expressatt.dts
+index 47e0e26ad9f0..af6cc6393d74 100644
+--- a/arch/arm/boot/dts/qcom/qcom-msm8960-samsung-expressatt.dts
++++ b/arch/arm/boot/dts/qcom/qcom-msm8960-samsung-expressatt.dts
+@@ -85,6 +85,27 @@ &gsbi1_spi {
+ 	status = "okay";
+ };
+ 
++&gsbi3 {
++	qcom,mode = <GSBI_PROT_I2C>;
++	status = "okay";
++};
 +
-+&msmgpio {
-+	i2c3_default_state: i2c3-default-state {
-+		i2c3-pins {
-+			pins = "gpio16", "gpio17";
-+			function = "gsbi3";
-+			drive-strength = <8>;
-+			bias-disable;
-+		};
-+	};
++&gsbi3_i2c {
++	status = "okay";
 +
-+	i2c3_sleep_state: i2c3-sleep-state {
-+		i2c3-pins {
-+			pins = "gpio16", "gpio17";
-+			function = "gpio";
-+			drive-strength = <2>;
-+			bias-bus-hold;
-+		};
++	// Atmel mXT224S touchscreen
++	touchscreen@4a {
++		compatible = "atmel,maxtouch";
++		reg = <0x4a>;
++		interrupt-parent = <&msmgpio>;
++		interrupts = <11 IRQ_TYPE_EDGE_FALLING>;
++		vdda-supply = <&pm8921_lvs6>;
++		vdd-supply = <&pm8921_l17>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&touchscreen>;
 +	};
 +};
-diff --git a/arch/arm/boot/dts/qcom/qcom-msm8960.dtsi b/arch/arm/boot/dts/qcom/qcom-msm8960.dtsi
-index f420740e068e..93365298c5ae 100644
---- a/arch/arm/boot/dts/qcom/qcom-msm8960.dtsi
-+++ b/arch/arm/boot/dts/qcom/qcom-msm8960.dtsi
-@@ -359,5 +359,33 @@ usb_hs1_phy: phy {
- 				};
- 			};
- 		};
 +
-+		gsbi3: gsbi@16200000 {
-+			compatible = "qcom,gsbi-v1.0.0";
-+			reg = <0x16200000 0x100>;
-+			ranges;
-+			cell-index = <3>;
-+			clocks = <&gcc GSBI3_H_CLK>;
-+			clock-names = "iface";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			status = "disabled";
-+
-+			gsbi3_i2c: i2c@16280000 {
-+				compatible = "qcom,i2c-qup-v1.1.1";
-+				reg = <0x16280000 0x1000>;
-+				pinctrl-0 = <&i2c3_default_state>;
-+				pinctrl-1 = <&i2c3_sleep_state>;
-+				pinctrl-names = "default", "sleep";
-+				interrupts = <GIC_SPI 151 IRQ_TYPE_LEVEL_HIGH>;
-+				clocks = <&gcc GSBI3_QUP_CLK>,
-+					 <&gcc GSBI3_H_CLK>;
-+				clock-names = "core", "iface";
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				status = "disabled";
-+			};
-+		};
+ &msmgpio {
+ 	spi1_default: spi1-default-state {
+ 		mosi-pins {
+@@ -123,6 +144,14 @@ gpio_keys_pin_a: gpio-keys-active-state {
+ 		drive-strength = <8>;
+ 		bias-disable;
  	};
++
++	touchscreen: touchscreen-int-state {
++		pins = "gpio11";
++		function = "gpio";
++		output-enable;
++		bias-disable;
++		drive-strength = <2>;
++	};
  };
-+#include "qcom-msm8960-pins.dtsi"
+ 
+ &pm8921 {
+@@ -285,7 +314,7 @@ pm8921_l16: l16 {
+ 		};
+ 
+ 		pm8921_l17: l17 {
+-			regulator-min-microvolt = <1800000>;
++			regulator-min-microvolt = <3300000>;
+ 			regulator-max-microvolt = <3300000>;
+ 			bias-pull-down;
+ 		};
 
 -- 
 2.43.0
