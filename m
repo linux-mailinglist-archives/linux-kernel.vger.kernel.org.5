@@ -1,142 +1,85 @@
-Return-Path: <linux-kernel+bounces-46250-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0502843D04
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:42:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84341843D03
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:42:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B78028C480
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:42:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E0C51F326B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:42:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B09B69DEA;
-	Wed, 31 Jan 2024 10:42:16 +0000 (UTC)
-Received: from mx9.didiglobal.com (mx9.didiglobal.com [111.202.70.124])
-	by smtp.subspace.kernel.org (Postfix) with SMTP id 255F969E02
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 10:42:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=111.202.70.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B27869D28;
+	Wed, 31 Jan 2024 10:42:08 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3270569D07
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 10:42:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706697736; cv=none; b=QylJWF/Oj4k4dlcYxgVAE3J8Cq+K/fyIF6J/tlyj6dZZAjz2I3i52qC74n5bEqS2NeOaHuZ30anFkP9m2CiM7VaB/WRYecFVPNOhnjFlKaN/0K1g3tcngImM66RxTKllj0K6+gkTQ0lTDzUOdY4gI6uqyqjoQk9B/uu7IFmJvLg=
+	t=1706697727; cv=none; b=l/IzWWmw44n5K2+3S/YL55FpuodOvVLD85l5+rGlq8hLCVucnhLdAHH1dgEVwpqCSH8fXt7DzJQ/AEpR5SZN8us+9DB+KG2P25d6+eC3UOi17agCtsxOBc5ATJ8h7Mq9UhJyLR0Mtkuqhdj5y5aKGNB3aB6QfEZN4ga9Q6ZEKj4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706697736; c=relaxed/simple;
-	bh=nEgY3eaMkta1zmgIzkGZ9lrZP6bUGs2ipmNJx8u1B2E=;
-	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=uiD9qLWi3V6g99NUCKOSmI9jSkqwH4z2bhNQVninV4eaJs+Pk7Dn5PHxjz3E3YonKNEFeccTI03n0fv0SdDWfG4G9q0QFCp8MrZuOD4XkXgxrgKA++pm8NtUCCECkum70kWfS8kMvrXCxzXT+gXzNjbyeIn7qjyQOSDDhVe9z/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=didiglobal.com; spf=pass smtp.mailfrom=didiglobal.com; arc=none smtp.client-ip=111.202.70.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=didiglobal.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=didiglobal.com
-Received: from mail.didiglobal.com (unknown [10.79.65.12])
-	by mx9.didiglobal.com (MailData Gateway V2.8.8) with ESMTPS id D78DE183576DEC;
-	Wed, 31 Jan 2024 18:42:00 +0800 (CST)
-Received: from didi-ThinkCentre-M930t-N000 (10.79.64.101) by
- ZJY02-ACTMBX-02.didichuxing.com (10.79.65.12) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 31 Jan 2024 18:42:00 +0800
-Date: Wed, 31 Jan 2024 18:41:52 +0800
-X-MD-Sfrom: tiozhang@didiglobal.com
-X-MD-SrcIP: 10.79.65.12
-From: tiozhang <tiozhang@didiglobal.com>
-To: Thomas Gleixner <tglx@linutronix.de>
-CC: Jonathan Corbet <corbet@lwn.net>, "Steven Rostedt (Google)"
-	<rostedt@goodmis.org>, <linux-kernel@vger.kernel.org>,
-	<zyhtheonly@gmail.com>, <zyhtheonly@yeah.net>, <tiozhang@didiglobal.com>
-Subject: [PATCH] hrtimer: add cmdline parameter retry_threshold to config
- retry times in interrupt handler routine
-Message-ID: <20240131104152.GA19461@didi-ThinkCentre-M930t-N000>
-Mail-Followup-To: Thomas Gleixner <tglx@linutronix.de>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"Steven Rostedt (Google)" <rostedt@goodmis.org>,
-	linux-kernel@vger.kernel.org, zyhtheonly@gmail.com,
-	zyhtheonly@yeah.net
+	s=arc-20240116; t=1706697727; c=relaxed/simple;
+	bh=eayMnaDsNdevHI7EIvetwx02Ohz4VwMDQyUm5aeVlko=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=PPxRWVtphNqkB4HzhrDt4GvJNSj1x6dGEAFNqOV/ZduK+y8VgjK6gPbRCr+Axp1CSlI9ckZ5htWK5K7/y3prQ8eN5zRGJj4atcmwfJoIlfQO4o/TVAEuOWiSGfAdOnXgpTOJTLqoDq0vhDVV3yvXaS0Mfvzz4Yy86PZXxOfiC6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7bfeea77d25so36666439f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 02:42:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706697725; x=1707302525;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6zq36DHtfPWyBMcJu7aIWuZgaP48vHVKyxM8wnY802E=;
+        b=ixmqIaZ9P+jk7oY8x+WI6AR+fwktPD0JU17mFPj+FP3sXQ8ZkgIQMqzwpCqiWyoS1j
+         J5ts3Am0hYoLKvzumlzADS9k1MyytDGPGKuIJFYhvtDwTPvLTBrQXK/Yv4T4yOj2TSzz
+         VHevZoHU2eOqnUxlByNeVVw3BVWbN1KJmy8DqdJenpIYbIPa7cUhSzeiMcKqblcqWLS1
+         UPqe3BkhYENbA/I80u3O6vYuUlFf7tOMyvm9ZHjCDpULU4e1J/cMjYmXP4ux1tOERY2J
+         GP8Y36RWMyIQhJBY9aZmx49RpBpO0E1HoEtP/0wlxZOt04BHsqSybu+qz7YELYFKBg+6
+         QymQ==
+X-Gm-Message-State: AOJu0Yzh/b5/bLG4mLV38x2/9MGGWh4kyAW24MOKACWi36XyddCIKosf
+	gg6TNu1F6H0V77uL89IfwRiYMLnIZJo650l08XOh6c6Dx5YF+tWEHupmoo4InztjeITiLtyQa8n
+	FPpnvNo0F8ic1tY7Tz5PHdBiS3vQRzfdDcc3GHMkJQmj/hKQ05/MIr0Y=
+X-Google-Smtp-Source: AGHT+IGFSm0yzMIBYZnSH9YM7YTw/MXj06fxm98oZ/EuspyBnUhiMljwplvKsh/tUYmHsHreyltVlGLHhf+tjKMvtlAFmtRyzvUa
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: ZJY01-PUBMBX-01.didichuxing.com (10.79.64.32) To
- ZJY02-ACTMBX-02.didichuxing.com (10.79.65.12)
+X-Received: by 2002:a05:6638:2d90:b0:470:e01b:547d with SMTP id
+ gs16-20020a0566382d9000b00470e01b547dmr44706jab.0.1706697725281; Wed, 31 Jan
+ 2024 02:42:05 -0800 (PST)
+Date: Wed, 31 Jan 2024 02:42:05 -0800
+In-Reply-To: <tencent_E65689B9AEDBAEC48C92A7D306C0D2EE4606@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a78b0306103b875d@google.com>
+Subject: Re: [syzbot] [block?] [trace?] INFO: task hung in blk_trace_remove (2)
+From: syzbot <syzbot+2373f6be3e6de4f92562@syzkaller.appspotmail.com>
+To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Motivation of doing this is to give user a config option to reduce time
-cost in hrtimer irq when influenced by some time consuming hrtimer
-callbacks running in irq context.
-E.g, if we tune this parameter to 1, we dont retry anymore to prevent
-occasionally consecutive time consuming callbacks running in a single
-interrupt.
+Hello,
 
-Signed-off-by: tiozhang <tiozhang@didiglobal.com>
----
- Documentation/admin-guide/kernel-parameters.txt |  5 +++++
- kernel/time/hrtimer.c                           | 17 +++++++++++++++--
- 2 files changed, 20 insertions(+), 2 deletions(-)
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index a1457995fd41..29fcb1c43863 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -1737,6 +1737,11 @@
- 	hpet_mmap=	[X86, HPET_MMAP] Allow userspace to mmap HPET
- 			registers.  Default set by CONFIG_HPET_MMAP_DEFAULT.
- 
-+	hrtimer.retry_threshold=
-+			[KNL] Number of retry times when expired timer found
-+			in hrtimer interrupt handle routine. Default 3.
-+			Format: <int> (must be <= 3)
-+
- 	hugepages=	[HW] Number of HugeTLB pages to allocate at boot.
- 			If this follows hugepagesz (below), it specifies
- 			the number of pages of hugepagesz to be allocated.
-diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-index 238262e4aba7..d3c17aa6cc13 100644
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -144,6 +144,8 @@ static struct hrtimer_cpu_base migration_cpu_base = {
- 
- #define migration_base	migration_cpu_base.clock_base[0]
- 
-+static int retry_threshold = 3;
-+
- static inline bool is_migration_base(struct hrtimer_clock_base *base)
- {
- 	return base == &migration_base;
-@@ -1836,7 +1838,7 @@ void hrtimer_interrupt(struct clock_event_device *dev)
- 	 * - being scheduled away when running in a VM
- 	 *
- 	 * We need to prevent that we loop forever in the hrtimer
--	 * interrupt routine. We give it 3 attempts to avoid
-+	 * interrupt routine. We give it at most 3 attempts to avoid
- 	 * overreacting on some spurious event.
- 	 *
- 	 * Acquire base lock for updating the offsets and retrieving
-@@ -1845,7 +1847,7 @@ void hrtimer_interrupt(struct clock_event_device *dev)
- 	raw_spin_lock_irqsave(&cpu_base->lock, flags);
- 	now = hrtimer_update_base(cpu_base);
- 	cpu_base->nr_retries++;
--	if (++retries < 3)
-+	if (++retries < retry_threshold)
- 		goto retry;
- 	/*
- 	 * Give the system a chance to do something else than looping
-@@ -2398,3 +2400,14 @@ int __sched schedule_hrtimeout(ktime_t *expires,
- 	return schedule_hrtimeout_range(expires, 0, mode);
- }
- EXPORT_SYMBOL_GPL(schedule_hrtimeout);
-+
-+static int __init hrtimer_retry_threshold_setup(char *str)
-+{
-+	if (kstrtoint(str, 0, &retry_threshold) || retry_threshold > 3) {
-+		retry_threshold = 3;
-+		pr_warn("hrtimer.retry_threshold: bad given value, using default as 3\n");
-+	}
-+
-+	return 1;
-+}
-+__setup("hrtimer.retry_threshold=", hrtimer_retry_threshold_setup);
--- 
-2.17.1
+Reported-and-tested-by: syzbot+2373f6be3e6de4f92562@syzkaller.appspotmail.com
 
+Tested on:
+
+commit:         1bbb19b6 Merge tag 'erofs-for-6.8-rc3-fixes' of git://..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=1527cad3e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b168fa511db3ca08
+dashboard link: https://syzkaller.appspot.com/bug?extid=2373f6be3e6de4f92562
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1650be40180000
+
+Note: testing is done by a robot and is best-effort only.
 
