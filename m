@@ -1,125 +1,171 @@
-Return-Path: <linux-kernel+bounces-46679-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46680-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8158E844292
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:05:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06F54844294
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:05:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34C691F223E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:05:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0033294E38
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:05:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 544051292F7;
-	Wed, 31 Jan 2024 15:03:05 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C19B28288F;
-	Wed, 31 Jan 2024 15:03:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A486C12837F;
+	Wed, 31 Jan 2024 15:04:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="CZBXejZh"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE0F284A25;
+	Wed, 31 Jan 2024 15:04:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706713384; cv=none; b=eV11bIKGnAEHHcZdLAlPa23QaDMf0akECOgEkLG1idquX8BQmWDVrkT+u2cG9sgquvINyl6rGXmZq5r73mcYgj8KR45D7ztcayyxW5ZWsKeSg8zzfCP61B6+8v1wrWWcgQbvZscC1t6B3ylXne61Qu/ULHIXwCS9/gjnm1v4cQc=
+	t=1706713443; cv=none; b=n26tEciDBtBzukBmDT+fbrLNIaAfaSR/pvPJONDoIml2mbVWFEIDwQF3Jr1kDAO2pUuur8Z6l0De0pcd5ZK++R9mgBXQEqag7aTy/lb3xxJUnZhVSKLfmvCGgdnpn89FoWigWqdHLQ6AGExsOmTFp/awpO+Wde9+o4fdQSLGiMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706713384; c=relaxed/simple;
-	bh=kv8zjaYoSk9dJcDJ0wHeUe8lSIZbo2bgiPkiGFxD39g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IcUejHPwvuyag7NoR8nwcZ1HrLRrS4FVbt5RX/HYxkwhUta61gC9iQnK3tSKZTWHYxGVkYPJVPoWmDXDcetyZMWeDD4JaQA/QpNtRKSqSBDC8OhG8v+497J2MuG19o+IYDPymttEcOtMxDGVszlmJYDRUx+3kY7Brp7uhifNY2s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 50D6ADA7;
-	Wed, 31 Jan 2024 07:03:45 -0800 (PST)
-Received: from [10.57.79.60] (unknown [10.57.79.60])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4E47B3F762;
-	Wed, 31 Jan 2024 07:02:57 -0800 (PST)
-Message-ID: <a34eee7e-3970-4cdd-8c09-bca51132db50@arm.com>
-Date: Wed, 31 Jan 2024 15:02:56 +0000
+	s=arc-20240116; t=1706713443; c=relaxed/simple;
+	bh=HJdmb7h0QaZGP66qIXldp2YTcyPoeipLgIu7f7lQLcU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=NBuwrAl6UTQKawDiEUd+tXJfUnCr4twEr26zBIZIwb9PozzK4mBqA0lspTLAfsOfLB5/So09Kj+9MnFh944cYWFlHutyGMiG2wd6CmmtmqY28Ht+hlx/VZmnd1FA+JYRYpvzsRpv2kroO5PK/qyFa5OMeTN0/kNxZpFzyJi1zK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=CZBXejZh; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40V8GcpL030372;
+	Wed, 31 Jan 2024 15:03:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=YtxZvW3
+	hnfdJmx6lb0KykRZsA1aJx+W6kbJi++0M8JM=; b=CZBXejZhAuugqSVSipwawdf
+	UFp9GPbC849P/dOytU2wbEIAkmebaYWjKJwwBorp5nXTbmqrkcvp4/fJPx/KDuo5
+	dAtWBFCAgOyLtCJ7+L286WMD15mg0mkvb4ZfYaxP6U+bRuyejpgVPU4xcSTOlV5w
+	P7vG3/S/wL9dB7GmL2LPX3UD3f8MMauDPhJkRbXWuq0AumW1d3NqLJz/NzYhQnku
+	uFrTI3jRDHJDpjT+mbovHWrYeJfp0dU2ClCfPmYTR/PesIGbsnbcvei56E4pfmfv
+	QE6JlEKRd1fdEMH+Aec041XI7f5q8UFoAwcpIAbp39VuGibX/HdKT9srnR4ZQ8w=
+	=
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vygp7h9bx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 31 Jan 2024 15:03:52 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40VF3ptV008739
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 31 Jan 2024 15:03:51 GMT
+Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 31 Jan 2024 07:03:48 -0800
+From: Krishna Kurapati <quic_kriskura@quicinc.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
+        Hardik Gajjar
+	<hgajjar@de.adit-jv.com>
+CC: <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_ppratap@quicinc.com>, <quic_wcheng@quicinc.com>,
+        <quic_jackp@quicinc.com>, Krishna Kurapati <quic_kriskura@quicinc.com>
+Subject: [PATCH v2] usb: gadget: ncm: Avoid dropping datagrams of properly parsed NTBs
+Date: Wed, 31 Jan 2024 20:33:32 +0530
+Message-ID: <20240131150332.1326523-1-quic_kriskura@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 00/15] mm/memory: optimize fork() with PTE-mapped THP
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Dinh Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
- Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>, "David S. Miller"
- <davem@davemloft.net>, linux-arm-kernel@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, sparclinux@vger.kernel.org
-References: <20240129124649.189745-1-david@redhat.com>
- <a335a9d2-9b8f-4eb8-ba22-23a223b59b06@arm.com>
- <a1a0e9b3-dae2-418f-bd63-50e65f471728@redhat.com>
- <57eb82c7-4816-42a2-b5ab-cc221e289b21@arm.com>
- <e6eaba5b-f290-4d1f-990b-a47d89f56ee4@redhat.com>
- <714d0930-2202-48b6-9728-d248f820325e@arm.com>
- <dcaa20c4-bd1f-4f15-bb0a-3a790808937d@arm.com>
- <30718fc8-15cf-41e4-922c-5cdbf00a0840@redhat.com>
- <de975655-8f8f-40dc-b281-75c40dd1e2c1@arm.com>
- <c63870b0-690a-4051-b4f5-296cf3b73be2@redhat.com>
- <a0cdeb7c-dec8-4971-8b54-e6f65ea48ade@arm.com>
- <74333154-a99b-4bad-81f4-bee02ba05e91@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <74333154-a99b-4bad-81f4-bee02ba05e91@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: dMXBnbG4Yd2ijiJbA1SRxDJyYJ9Icngh
+X-Proofpoint-GUID: dMXBnbG4Yd2ijiJbA1SRxDJyYJ9Icngh
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-31_08,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ spamscore=0 mlxlogscore=590 lowpriorityscore=0 clxscore=1011 adultscore=0
+ mlxscore=0 suspectscore=0 impostorscore=0 bulkscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2401190000
+ definitions=main-2401310116
 
-On 31/01/2024 14:29, David Hildenbrand wrote:
->>> Note that regarding NUMA effects, I mean when some memory access within the same
->>> socket is faster/slower even with only a single node. On AMD EPYC that's
->>> possible, depending on which core you are running and on which memory controller
->>> the memory you want to access is located. If both are in different quadrants
->>> IIUC, the access latency will be different.
->>
->> I've configured the NUMA to only bring the RAM and CPUs for a single socket
->> online, so I shouldn't be seeing any of these effects. Anyway, I've been using
->> the Altra as a secondary because its so much slower than the M2. Let me move
->> over to it and see if everything looks more straightforward there.
-> 
-> Better use a system where people will actually run Linux production workloads
-> on, even if it is slower :)
-> 
-> [...]
-> 
->>>>
->>>> I'll continue to mess around with it until the end of the day. But I'm not
->>>> making any headway, then I'll change tack; I'll just measure the performance of
->>>> my contpte changes using your fork/zap stuff as the baseline and post based on
->>>> that.
->>>
->>> You should likely not focus on M2 results. Just pick a representative bare metal
->>> machine where you get consistent, explainable results.
->>>
->>> Nothing in the code is fine-tuned for a particular architecture so far, only
->>> order-0 handling is kept separate.
->>>
->>> BTW: I see the exact same speedups for dontneed that I see for munmap. For
->>> example, for order-9, it goes from 0.023412s -> 0.009785, so -58%. So I'm
->>> curious why you see a speedup for munmap but not for dontneed.
->>
->> Ugh... ok, coming up.
-> 
-> Hopefully you were just staring at the wrong numbers (e.g., only with fork
-> patches). Because both (munmap/pte-dontneed) are using the exact same code path.
-> 
+It is observed sometimes when tethering is used over NCM with Windows 11
+as host, at some instances, the gadget_giveback has one byte appended at
+the end of a proper NTB. When the NTB is parsed, unwrap call looks for
+any leftover bytes in SKB provided by u_ether and if there are any pending
+bytes, it treats them as a separate NTB and parses it. But in case the
+second NTB (as per unwrap call) is faulty/corrupt, all the datagrams that
+were parsed properly in the first NTB and saved in rx_list are dropped.
 
-Ahh... I'm doing pte-dontneed, which is the only option in your original
-benchmark - it does MADV_DONTNEED one page at a time. It looks like your new
-benchmark has an additional "dontneed" option that does it in one shot. Which
-option are you running? Assuming the latter, I think that explains it.
+Adding a few custom traces showed the following:
+
+[002] d..1  7828.532866: dwc3_gadget_giveback: ep1out:
+req 000000003868811a length 1025/16384 zsI ==> 0
+[002] d..1  7828.532867: ncm_unwrap_ntb: K: ncm_unwrap_ntb toprocess: 1025
+[002] d..1  7828.532867: ncm_unwrap_ntb: K: ncm_unwrap_ntb nth: 1751999342
+[002] d..1  7828.532868: ncm_unwrap_ntb: K: ncm_unwrap_ntb seq: 0xce67
+[002] d..1  7828.532868: ncm_unwrap_ntb: K: ncm_unwrap_ntb blk_len: 0x400
+[002] d..1  7828.532868: ncm_unwrap_ntb: K: ncm_unwrap_ntb ndp_len: 0x10
+[002] d..1  7828.532869: ncm_unwrap_ntb: K: Parsed NTB with 1 frames
+
+In this case, the giveback is of 1025 bytes and block length is 1024.
+The rest 1 byte (which is 0x00) won't be parsed resulting in drop of
+all datagrams in rx_list.
+
+Same is case with packets of size 2048:
+[002] d..1  7828.557948: dwc3_gadget_giveback: ep1out:
+req 0000000011dfd96e length 2049/16384 zsI ==> 0
+[002] d..1  7828.557949: ncm_unwrap_ntb: K: ncm_unwrap_ntb nth: 1751999342
+[002] d..1  7828.557950: ncm_unwrap_ntb: K: ncm_unwrap_ntb blk_len: 0x800
+
+Lecroy shows one byte coming in extra confirming that the byte is coming
+in from PC:
+
+Transfer 2959 - Bytes Transferred(1025)  Timestamp((18.524 843 590)
+- Transaction 8391 - Data(1025 bytes) Timestamp(18.524 843 590)
+--- Packet 4063861
+      Data(1024 bytes)
+      Duration(2.117us) Idle(14.700ns) Timestamp(18.524 843 590)
+--- Packet 4063863
+      Data(1 byte)
+      Duration(66.160ns) Time(282.000ns) Timestamp(18.524 845 722)
+
+According to Windows driver, no ZLP is needed if wBlockLength is non-zero,
+because the non-zero wBlockLength has already told the function side the
+size of transfer to be expected. However, there are in-market NCM devices
+that rely on ZLP as long as the wBlockLength is multiple of wMaxPacketSize.
+To deal with such devices, it pads an extra 0 at end so the transfer is no
+longer multiple of wMaxPacketSize.
+
+Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+---
+ drivers/usb/gadget/function/f_ncm.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/usb/gadget/function/f_ncm.c b/drivers/usb/gadget/function/f_ncm.c
+index ca5d5f564998..8c314dc98952 100644
+--- a/drivers/usb/gadget/function/f_ncm.c
++++ b/drivers/usb/gadget/function/f_ncm.c
+@@ -1338,11 +1338,17 @@ static int ncm_unwrap_ntb(struct gether *port,
+ 	     "Parsed NTB with %d frames\n", dgram_counter);
+ 
+ 	to_process -= block_len;
+-	if (to_process != 0) {
++
++	if (to_process == 1 &&
++	    (block_len % 512 == 0) &&
++	    (*(unsigned char *)(ntb_ptr + block_len) == 0x00)) {
++		goto done;
++	} else if (to_process > 0) {
+ 		ntb_ptr = (unsigned char *)(ntb_ptr + block_len);
+ 		goto parse_ntb;
+ 	}
+ 
++done:
+ 	dev_consume_skb_any(skb);
+ 
+ 	return 0;
+-- 
+2.34.1
+
 
