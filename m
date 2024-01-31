@@ -1,111 +1,103 @@
-Return-Path: <linux-kernel+bounces-47026-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47029-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3518384482D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:42:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF8DE844835
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:43:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB36C2824FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:42:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7466EB25087
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:43:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCC3837143;
-	Wed, 31 Jan 2024 19:42:04 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E82853EA9B;
+	Wed, 31 Jan 2024 19:43:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LIcyY7Z4"
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C9313B189;
-	Wed, 31 Jan 2024 19:42:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A509F3EA76
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 19:43:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706730124; cv=none; b=CKDNEWCPbTlXDsTJ4OtvtXoLCc5cbe5Y6nL5fb9NEAzrH9iuqnlFLlu/L+WduBsOLzpFvL6cFY1O5zSB+UlRS6szcs9zaNKNi/vpP+iLsuzgJ3PhmGjNp5mW/RDv+JUkmudYwbJm7SkcPf3L97/Vam5jZE5ZMgMq9R2uyTu5W+o=
+	t=1706730187; cv=none; b=BOwI9uE5YDSDqelogy6MO2aP5cA1uSRfWq7eLWG9jeaNTHW9WLtzMtYeJI7iKGTGs94B0n/PLu/y8KUbT6j+xa+UvGUaf7TDkoXevJ/RfXxt3havS057Y8d6BGn+eXs4U0g5Qd7TwPOVCxrN8Bk6Ns7KFYtvB9tqH4y7dbYYIEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706730124; c=relaxed/simple;
-	bh=m8vwoaQsBcdyqdU5wzhrn7icali5QipJmCUL6e3LtlI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=AgSmmo1X0nnuqNFSqPAi3M/hKaJKl7IXUIznifhU/4sIf7UCf2RTlLxAoH7FaxYO8VjtX+RXqbs7NMsTZ5wrM8OD3OXBOdyubnd9LKepAXAFHWybatEXZbIqjPLEKbRcE+rF7wFNZmxkhh8ln1DMoy/REPoVcAia/L6QjuxnQBk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C73CC433C7;
-	Wed, 31 Jan 2024 19:42:02 +0000 (UTC)
-Date: Wed, 31 Jan 2024 14:42:16 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
- lkp@intel.com, linux-kernel@vger.kernel.org, Masami Hiramatsu
- <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>, Christian Brauner
- <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, Ajay Kaher
- <ajay.kaher@broadcom.com>, linux-trace-kernel@vger.kernel.org
-Subject: Re: [linus:master] [eventfs] 852e46e239:
- BUG:unable_to_handle_page_fault_for_address
-Message-ID: <20240131144217.0130b517@gandalf.local.home>
-In-Reply-To: <CAHk-=wgh0otaSyV0MNrQpwFDTjT3=TWV94Wit2eUuPdh2KdyVg@mail.gmail.com>
-References: <202401291043.e62e89dc-oliver.sang@intel.com>
-	<CAHk-=wghobf5qCqNUsafkQzNAZBJiS0=7CRjNXNChpoAvTbvUw@mail.gmail.com>
-	<20240129172200.1725f01b@gandalf.local.home>
-	<CAHk-=wjV6+U1FQ8wzQ5ASmqGgby+GZ6wpdh0NrJgA43mc+TEwA@mail.gmail.com>
-	<CAHk-=wgOxTeTi02C=kOXsHzuD6XCrV0L1zk1XP9t+a4Wx--xvA@mail.gmail.com>
-	<20240129174950.5a17a86c@gandalf.local.home>
-	<CAHk-=wjbzw3=nwR5zGH9jqXgB8jj03wxWfdFDn=oAVCoymQQJg@mail.gmail.com>
-	<20240129193549.265f32c8@gandalf.local.home>
-	<CAHk-=whRxcmjvGNBKi9_x59cAedh8SO8wsNDNrEQbAQfM5A8CQ@mail.gmail.com>
-	<CAHk-=wh97AkwaOkXoBgf0z8EP88ePffLnTcmmQXcY+AhFaFrnA@mail.gmail.com>
-	<20240130132319.022817e8@gandalf.local.home>
-	<CAHk-=wiGb2aDbtq2+mYv6C=pYRKmo_iOu9feL9o52iRT8cuh6Q@mail.gmail.com>
-	<20240130143734.31b9b3f1@gandalf.local.home>
-	<CAHk-=whMJgqu2v1_Uopg5NBschGFa_BK1Ct=s7ehwnzPpPi6nQ@mail.gmail.com>
-	<20240131105847.3e9afcb8@gandalf.local.home>
-	<CAHk-=wgh0otaSyV0MNrQpwFDTjT3=TWV94Wit2eUuPdh2KdyVg@mail.gmail.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706730187; c=relaxed/simple;
+	bh=5LurfDzDMlU/+e4WHlA9quWo6BsFXeuGeJjyZPZVAOA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RMntKNtyaKPpJLd3aOgcACi9rkp6wt4AEiWb98hL49eCjQQC3euCC4WjafXUp1njbQW7QeVKcC8cPMxNa20hV0dK6RJpQh4HX9ei4UoJbLqGMau5h3CTGMS6M+iafbYixwcuuLqu2O5OwZLeEq9n8pxcTVwa0b2Qx73xyGJlij0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LIcyY7Z4; arc=none smtp.client-ip=209.85.128.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-60403c28ff6so1629107b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 11:43:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706730184; x=1707334984; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5LurfDzDMlU/+e4WHlA9quWo6BsFXeuGeJjyZPZVAOA=;
+        b=LIcyY7Z4JAonoXYcKTcEcdwcvTlh8lJffcT+NJs9VnuJiK8WaVRkDYji7C1SmHz1Dl
+         SJOgCGV3kZDTBHsCMLYBanv63QrXIK6tNsIy15Dbae8K0baedqcGRI4G8v/NLh7qtWKk
+         pN8vDLsRqC7lMjscShrbTTpUxVrdSpzjj7i0VxXsnIMzJ8vpHZ30J+uFlDv6blmMY70N
+         Dznc8f05/WvYZc7DrBRFCqi5aQzi/JnC4kdd32jWPEW2bj4dTrvVsVP0UiSoy4jI3VUz
+         RIuc88yiiYcT/VNI71y8OnavUl63P1PFPxKHty0wrbQtkyTsGFfUvYvKOgXH2bZ7vfxR
+         RmAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706730184; x=1707334984;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5LurfDzDMlU/+e4WHlA9quWo6BsFXeuGeJjyZPZVAOA=;
+        b=J3d6e28K2uBuf5q26VRnnc04BlzhnaVW4Q0C2cEBwy2wYVz5PdYuoe9A1oVscFLl5b
+         mXL4Sh1vInTfpdZzlG7TbNtRnW//KKMe5xBZQiKFpxoD/aLRFxVaIlyazflcQ7dX7r5O
+         u/eleslHQihYCZYumROnxhv4DeKoOWC0nf+BF4vy0cm19l/qSmnuQXStkHpy7WR7FDk1
+         WdbKxqSCs4jU2rBtWJOGVjCaUqOZDI7bNvO1JT7denaMbvu0CQoe9oBBsK96SFiT+jhi
+         xFusCx3UUWnhssOrxs5spKiK0X+P8N3VbUFap78yu4RuRzDQa6M/v9BBH73yRi7QgDMU
+         ZbRg==
+X-Gm-Message-State: AOJu0YzD/1HmwuJICne8KOLP/xCHYrPV63Fou9cUr2VHp+v4+M4LAsGQ
+	oA8UE5X2P3rc01Okm1bTBHbm5F2Lnrs19ZHXkUyKAAQmQy4dKHE2ykqMnRo38lUEb0ORiDiiWSj
+	zFiUV2tAERA2TJuuO5zuCX/WnsYIqQlFBsSgPtg==
+X-Google-Smtp-Source: AGHT+IFNchrTJN/laRoFT/serLUkj7SLPdu4ZsP2h1VQRwyjVfP96PoaTsrUDUW7Vv3PJ2nUnCiNh4c8poZyV3/bdYY=
+X-Received: by 2002:a81:9103:0:b0:5ff:4b02:73b9 with SMTP id
+ i3-20020a819103000000b005ff4b0273b9mr2679922ywg.21.1706730184634; Wed, 31 Jan
+ 2024 11:43:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240130124828.14678-1-brgl@bgdev.pl> <20240130124828.14678-9-brgl@bgdev.pl>
+In-Reply-To: <20240130124828.14678-9-brgl@bgdev.pl>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 31 Jan 2024 20:42:53 +0100
+Message-ID: <CACRpkdah4My-nArTpnhV3sovT9SaUZJjrMaXmm67MFfrhcW6qQ@mail.gmail.com>
+Subject: Re: [PATCH 08/22] gpio: sysfs: use gpio_device_find() to iterate over
+ existing devices
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, "Paul E . McKenney" <paulmck@kernel.org>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Wolfram Sang <wsa@the-dreams.de>, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 31 Jan 2024 11:35:18 -0800
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+On Tue, Jan 30, 2024 at 1:48=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
 
-> On Wed, 31 Jan 2024 at 07:58, Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > BTW, I ran my full test suite on your patches with the below updates and it
-> > all passed.  
-> 
-> Those patch updates all look sane to me.
-> 
-> > I can break up and clean up the patches so that they are bisectable, and if
-> > that passes the bisectable portion of my tests, I can still send them to
-> > you for 6.8.  
-> 
-> Ack. That series you posted looks fine. I didn't do any actual testing
-> or applying the patches, just looking at them.
-> 
-> The one thing I noticed is that the 'llist' removal still needs to be
-> done. The logical point is that "[PATCH v2 7/7]" where the
-> eventfs_workfn stuff is ripped out.
-> 
-> And the 'rcu' head should now be a union with something that is no
-> longer used after the last kref. The only thing that *is* used after
-> the last kref is the "is_freed" bit, so there's lots of choice. Using
-> the 'struct list_head listl' that is used for the child list would
-> seem to be the obvious choice, but it could be anything (including all
-> of the beginning of that eventfs_inode, but then you would need to
-> group that as another nested unnamed struct, so picking a "big enough"
-> entry like 'list' makes it syntactically simpler.
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> With the list of GPIO devices now protected with SRCU we can use
+> gpio_device_find() to traverse it from sysfs.
+>
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Yeah, that was what I was talking about in my cover letter with:
+This is beautiful. And you can make the list private too.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-  Note, there's more clean ups that can happen. One being cleaning up the
-  eventfs_inode structure. But that's not critical now and can be added
-  later.
-
-I just want to get the majority of the broken parts done. The clean up of
-the eventfs_inode is something that I'd add a separate patch. Not sure that
-falls in your "fixes" category for 6.8.
-
--- Steve
+Yours,
+Linus Walleij
 
