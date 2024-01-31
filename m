@@ -1,108 +1,75 @@
-Return-Path: <linux-kernel+bounces-47339-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47340-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82231844CAB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:26:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B7CB844CAF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:26:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 170481F223E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:26:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08B522A1E9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:26:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 752A539FD3;
-	Wed, 31 Jan 2024 23:07:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 484C33B794;
+	Wed, 31 Jan 2024 23:08:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fg2xm+pl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HHYtI09U"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B80C43A1DF;
-	Wed, 31 Jan 2024 23:07:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D3464655F;
+	Wed, 31 Jan 2024 23:08:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706742439; cv=none; b=oIZouqFg6om4PkazWvteYjip57WQfqCxfRF3nj+Rg3zOJsyiXTvpSgrZiY39SlHXc3nJr7OfG6n+rIPmavQrExTV+yq23gc97IRZ0s0Lz+lZsx2DXvM7CHJQd/FtdfiW963eDUnu1jio5kZSfRaqfVKcnrCOByPvn/gZWEJjHpo=
+	t=1706742488; cv=none; b=tKGgzxM6cRHUAmL9T/4fpJvicHr3XQaHYjFLUn/pjMVOzBVoKMnmarvcsJGOr54NCmXBX/Rr6yMTG/v23Gh8bD9fxOzFf9VZtjxFHpaB/CI6wiZLPH6CLx3htUE269kKgsAzNJbk7p4oBJcAkiWvY8q3Lf0ulL/vZkFnVhU9Ocs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706742439; c=relaxed/simple;
-	bh=Wggs9PE5/hrQg3P8oEkZJ8ajg/xH6BAOahmm/U0oUOo=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=k/XhOLipqfc1Z/bHo+jZKdmwD9jwtaHC8eWvgMld/lM9whYVhBznwYJVcGGH0F/F0D6Si0S2n6K1FYtJVg3fF2i9hmp//ZTc7H9cV1tF7gDeQsN7JTxWe7UuyBNp0WvW1Lb0bXVGGp2dgOA2kTrE4Po7SA/rtgp4sdFzKzZibI4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fg2xm+pl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99BE0C433F1;
-	Wed, 31 Jan 2024 23:07:17 +0000 (UTC)
+	s=arc-20240116; t=1706742488; c=relaxed/simple;
+	bh=146G6LfzA0wSxxyMWUaSwDQCMGOdwZna8K591J5YPx4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=K45Uy7HrtIIPhmgcVSqnuLscbgIHpVjUKL6AfYNnCyHkrNBaxSOJLI9ATg8JyhF7TJtSItgWLqb3wNqFf/2ZcTdrhgkyN30UhLbPr9VUxsXHqYc48U1nuhLpj7RvQcPogoRFQOrHKY68kDJQf6f2Q/mYHgOrb4q6QTw+2Sfs7c0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HHYtI09U; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB0C8C433C7;
+	Wed, 31 Jan 2024 23:08:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706742439;
-	bh=Wggs9PE5/hrQg3P8oEkZJ8ajg/xH6BAOahmm/U0oUOo=;
+	s=k20201202; t=1706742487;
+	bh=146G6LfzA0wSxxyMWUaSwDQCMGOdwZna8K591J5YPx4=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=fg2xm+pl+AZChWrhKCFxSfuF16PIGB9b2sztYsV/VK+gs6ut7QbZYZvqMW0wsbNMk
-	 OZ1dAaHlwUS3MIpzzOb7SczBccTUPdSVpSKC4vE1K3L8I7pkyEkLdSwJ6RQUCFqSlI
-	 zjdCc9PU95y8Ul4Korc5MsWnCy2NnOMcpw52JmBldkUMbpA7gqQRsdKZBhVmYggybV
-	 Jic2++Y3Mq5RcdiJZxFIjMTdgGtm4Nx8coxV/rkNlRJKLplcf6ksGalel8U/FoBg3c
-	 J6W97UYMmiZu+QUZSLsCmT6aQdeM7mMZba8YqC5Qy9I5BguQwmDfCL+Eni6/qRudcM
-	 d0VHAMNB7My2w==
-Date: Thu, 1 Feb 2024 08:07:15 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/6] eventfs: clean up dentry ops and add revalidate
- function
-Message-Id: <20240201080715.80fadd15f38396c95bf39a00@kernel.org>
-In-Reply-To: <20240131130039.241c8978@gandalf.local.home>
-References: <20240130190355.11486-1-torvalds@linux-foundation.org>
-	<20240130190355.11486-6-torvalds@linux-foundation.org>
-	<20240131130039.241c8978@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	b=HHYtI09UkBLzcady1Mkgr1r3aqnyQMIZ00yr7WRk3eeZxltyVQK3fzNVzwSb2BS8C
+	 JP7Ir9fTMasTjW7fl785B0TMYSjzV2M4cnxYf+EFBf/N3LdVW95/Ogao8sNK4fYkW5
+	 dLDjraLlo9mB3DHVEgJTC/TkHLwRZO+1/5mj+b28Zh1n0XrDHOcn9F+05sKq72n/cP
+	 TJn3wGEqL7tjnnbXIiXD7BiohQeBWzq8b49ycvc99tHr+Cz7MNo25oQH9cKD6G/tAz
+	 6SV+rsVi2s6BYv6ZXzjFepPrfi0SxNXsVYk4snSCQM5s/UWGzvgcQt3YWxX6f5X8gp
+	 K79DxyPLXMygA==
+Date: Wed, 31 Jan 2024 15:08:03 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
+ <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH RESEND] nfc: hci: Save a few bytes of memory when
+ registering a 'nfc_llc' engine
+Message-ID: <20240131150803.2fec5a5c@kernel.org>
+In-Reply-To: <6d2b8c390907dcac2e4dc6e71f1b2db2ef8abef1.1705744530.git.christophe.jaillet@wanadoo.fr>
+References: <6d2b8c390907dcac2e4dc6e71f1b2db2ef8abef1.1705744530.git.christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Wed, 31 Jan 2024 13:00:39 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> On Tue, 30 Jan 2024 11:03:55 -0800
-> Linus Torvalds <torvalds@linux-foundation.org> wrote:
+On Sat, 27 Jan 2024 10:58:29 +0100 Christophe JAILLET wrote:
+> nfc_llc_register() calls pass a string literal as the 'name' parameter.
 > 
-> > It would probably be cleaner to make eventfs its own filesystem, or at
-> > least set its own dentry ops when looking up eventfs files.  But as it
-> > is, only eventfs dentries use d_fsdata, so we don't really need to split
-> > these things up by use.
+> So kstrdup_const() can be used instead of kfree() to avoid a memory
+> allocation in such cases.
 > 
-> BTW, I have been thinking about making eventfs a completely separate file
-> system that could be mounted outside of tracefs. One that is readonly that
-> only contains the "id" and "format" files and nothing more.
-> 
-> Why? Because perf and powertop both use those files to know how to parse
-> the raw event formats. I don't think there's anything in there that
-> requires root privileges to read. They should not be exposing any internal
-> kernel information besides the event format layouts, and it would be nice
-> to have a /sys/kernel/events directory that only had that.
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-That's a good idea! So maybe we can allow perf to read it without root user.
-
-> 
-> Making eventfs a separate file system where, when added to tracefs, has the
-> control files for the specific trace_array, but for the /sys/kernel
-> directory, only cares about the trace format files.
-> 
-> Then tracefs could be nicely converted over to kernfs, and eventfs would be
-> its own entity.
-
-If so, maybe we can just make symlinks to the 'id' and 'format' from events
-under tracefs? :)
-
-Thank you,
-
-> 
-> -- Steve
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+There is a kfree() call in nfc_llc_exit() that looks suspiciously
+like it may also free the name.
 
