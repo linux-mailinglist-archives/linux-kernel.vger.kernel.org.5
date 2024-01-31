@@ -1,180 +1,117 @@
-Return-Path: <linux-kernel+bounces-47360-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47361-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD190844CD1
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:32:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FD67844CE2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:33:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 433B11F224A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:32:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2B6ACB37DB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:32:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46A783C48D;
-	Wed, 31 Jan 2024 23:14:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 609073CF7F;
+	Wed, 31 Jan 2024 23:19:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SVJAINkM"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="ZHql9ZHj"
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FA483A8D2
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 23:14:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E65853A8E9
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 23:19:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706742887; cv=none; b=FCYP7+ntJTjRSaeL/o0k+MLuMf+TrsLl3f1ShBD4rN981GplkkK8XlPzfo5iafuxv9OQAgefeHEq73Z7UhrI06c8wrKcSqcJ19KRugQ8ayKtbbvzoubXwAxls6raCZzTtKzWmqxbjfMv18sJ2x3pVU8ypAyTeMI+bZRK0L65yDA=
+	t=1706743164; cv=none; b=UleLBxZ3gQS/9GzYUy4VIN/Lc4++vUs3LgW5UMGXY+KT8ftrDPxcS9QicYHZGCiYSwyy2Qx5HLogoqbmXkyyTySbtMzrQFDVpmTiJzTTY3NaMFH4tADLv5tzlSV9mkAtmYabPn5VnlE3w90doomfUDzf5039dmioitrPbLIJRJI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706742887; c=relaxed/simple;
-	bh=YDcV1Cmi5bJEdHBzWK8e0YEggkl/TRz+YUAYBOkFfsw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WgcnlrTwu4paxv0mUJ+3xQVYpV/sDrvbUcLzJIj3fQT6ydwYmBf8AM2SJSgs5yFOFJF4HbZv1uOkz/Uqu2L8Jmz/RzT6schecM7rGVMmTDA6SpNdr/87DFoy38M+gLtd8kXW8BdLxbUJHXDSj67MOUy9wbmDECsHwPAoacuc9YU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SVJAINkM; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706742883; x=1738278883;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=YDcV1Cmi5bJEdHBzWK8e0YEggkl/TRz+YUAYBOkFfsw=;
-  b=SVJAINkM5r/Bo7vUy20bNl4vKX5YMQbd9G0moVQ/3T6Fd3g9FAMv1Ucz
-   GZrigkpa7Lc6IUtZHruPkTnzdt1ddtHfTeIzztEnL0gScYy8v0D+Qnkvo
-   ew3oribtw3BzH0MRCnIcGaoGB0aC5WV4WQQzSkyzKyNUEEcCsTL2R2IoD
-   GK7x6pKjcYfSP4C0WRjr2IUe3kPNuL9XsLUnOltZB06iipfFQ+mVWsOSX
-   E8ii+BIFuiZxGtSWd9hvV9FgspyKjGd7b+0pWAd3B6InzPxsUVAcYmboV
-   dpCkDB6MP6h63zO7IvzEvUzR9zwzZ375JWSZVs+TBa05uJU/x6xCLj6EI
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="3590384"
-X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
-   d="scan'208";a="3590384"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 15:14:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
-   d="scan'208";a="4236973"
-Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
-  by fmviesa003.fm.intel.com with ESMTP; 31 Jan 2024 15:14:33 -0800
-Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rVJmp-00029D-1S;
-	Wed, 31 Jan 2024 23:14:31 +0000
-Date: Thu, 1 Feb 2024 07:11:21 +0800
-From: kernel test robot <lkp@intel.com>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Kees Cook <keescook@chromium.org>
-Cc: oe-kbuild-all@lists.linux.dev,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Russell King <linux@armlinux.org.uk>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/5] mm: ptdump: Have ptdump_check_wx() return bool
-Message-ID: <202402010649.MtBnf3u8-lkp@intel.com>
-References: <7943149fe955458cb7b57cd483bf41a3aad94684.1706610398.git.christophe.leroy@csgroup.eu>
+	s=arc-20240116; t=1706743164; c=relaxed/simple;
+	bh=xblL+yrpEo1gb8xzx/6pV+ZF6z63Q7arn5+fxeove9Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cz/YXpu/G6THrx366Vppz+sw9zZQeBH5mJt8D6Ak4wd5s6IySHYpXgLEq3+U3rQ5UWxlwSDQ0V8jFzJp1G3WiKoGaAf7UlSwMLMHBaCofF1DmBV09tRat3ebW5dArlDoBd03DjEO284Z48lGCcnoPrBMb0YHPwF0hIY4NjdV+9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=ZHql9ZHj; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d040a62a76so4324971fa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 15:19:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1706743160; x=1707347960; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=LFVGRon0CDQR02O+c0btFX180m2QPPnDAgbj2eP6Q1I=;
+        b=ZHql9ZHjxDfoqbnok1QQK0K4BUaXQGCzWJ5AhhUZTTU3UX600/WlxgApbBeGoAu/S0
+         V9J+thBasYy53HScXr+OZCkhz0ZCP0z7NahvAmeTRIrJ9/HTaUqc02lxfoayVIJV2oAK
+         6ayLy95orZuzqFxC7r5JoP7y/PQJtMAjUUM4A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706743160; x=1707347960;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LFVGRon0CDQR02O+c0btFX180m2QPPnDAgbj2eP6Q1I=;
+        b=g8Q+Nbzx0AzBuBfZBzgzWxM9MymgVlDKywxMsQUBjgXT89jYTW1/KGw+hVi/9Nwjye
+         ucZSJ6nlFnMF7TQy24m1eJQY+dZ8lOX21vEPcuYX/0R8LPnEQ8/7vTwjOUWpyFjgVxna
+         e1kIo9YmDBQr32QjPcq3W4SLEU7yqqRyOv8IYoZJSpUE2GJMp53IlmqzqktWNvqnxKOy
+         mITijN3VVsXhuC3mdYAl1zv3LxJlKFChWCurPzpK7ZWAmNXWBcjQk8xNBbnTjEhHOtzZ
+         Cd5WLriZnXmlJAYn0+9I6pC5Cfq+yh5XNmGC6FK1G+TeOw7IWFfWaKeTXJDilsZSG4f1
+         IPLA==
+X-Gm-Message-State: AOJu0YyIKNZNZbs8sT+y8Fth+tc3j/W2tzq02Dsql5sUm6WA+VGXJgmN
+	RKmdItj/bM0r4ssfENqVzmMwWHGxwWELvenp7Rx0pyEoy7uIt04Kqh0nC03lIIduNx58sejocY6
+	tS+i63Q==
+X-Google-Smtp-Source: AGHT+IFY/m6bSLqLcIulF0+9nVnKdDbHosry8KQ45apUC0lum+W2ABmflZd+bZ2MNbrYcnv/44wpPA==
+X-Received: by 2002:a2e:8016:0:b0:2cf:14ce:e101 with SMTP id j22-20020a2e8016000000b002cf14cee101mr2122008ljg.34.1706743160734;
+        Wed, 31 Jan 2024 15:19:20 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWbvo8nxq68xrsAXhtVe8xO91s70eqc6n9REtPZzzGBLV4tJtV+6CQDcKtsS5Oj/y6y9MNZT12nUspCi6pAKjJ9HcjIYnQixQEwiXlX
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com. [209.85.208.45])
+        by smtp.gmail.com with ESMTPSA id k7-20020aa7c047000000b0055f3edfc3desm2062373edo.20.2024.01.31.15.19.18
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Jan 2024 15:19:18 -0800 (PST)
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-55f0367b15fso384884a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 15:19:18 -0800 (PST)
+X-Received: by 2002:a05:6402:895:b0:55f:aa1e:2a2e with SMTP id
+ e21-20020a056402089500b0055faa1e2a2emr474082edy.8.1706743158122; Wed, 31 Jan
+ 2024 15:19:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7943149fe955458cb7b57cd483bf41a3aad94684.1706610398.git.christophe.leroy@csgroup.eu>
+References: <20240130091300.2968534-1-tj@kernel.org> <20240130091300.2968534-9-tj@kernel.org>
+ <c2539f87-b4fe-ac7d-64d9-cbf8db929c7@redhat.com> <Zbq8cE3Y2ZL6dl8r@slm.duckdns.org>
+In-Reply-To: <Zbq8cE3Y2ZL6dl8r@slm.duckdns.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 31 Jan 2024 15:19:01 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjMz_1mb+WJsPhfp5VBNrM=o8f-x2=6UW2eK5n4DHff9g@mail.gmail.com>
+Message-ID: <CAHk-=wjMz_1mb+WJsPhfp5VBNrM=o8f-x2=6UW2eK5n4DHff9g@mail.gmail.com>
+Subject: Re: [PATCH 8/8] dm-verity: Convert from tasklet to BH workqueue
+To: Tejun Heo <tj@kernel.org>
+Cc: Mikulas Patocka <mpatocka@redhat.com>, linux-kernel@vger.kernel.org, 
+	dm-devel@lists.linux.dev, msnitzer@redhat.com, ignat@cloudflare.com, 
+	damien.lemoal@wdc.com, bob.liu@oracle.com, houtao1@huawei.com, 
+	peterz@infradead.org, mingo@kernel.org, netdev@vger.kernel.org, 
+	allen.lkml@gmail.com, kernel-team@meta.com, Alasdair Kergon <agk@redhat.com>, 
+	Mike Snitzer <snitzer@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Christophe,
+On Wed, 31 Jan 2024 at 13:32, Tejun Heo <tj@kernel.org> wrote:
+>
+> I don't know, so just did the dumb thing. If the caller always guarantees
+> that the work items are never queued at the same time, reusing is fine.
 
-kernel test robot noticed the following build warnings:
+So the reason I thought it would be a good cleanup to introduce that
+"atomic" workqueue thing (now "bh") was that this case literally has a
+switch between "use tasklets' or "use workqueues".
 
-[auto build test WARNING on akpm-mm/mm-everything]
+So it's not even about "reusing" the workqueue, it's literally a
+matter of making it always just use workqueues, and the switch then
+becomes just *which* workqueue to use - system or bh.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Christophe-Leroy/arm-ptdump-Rename-CONFIG_DEBUG_WX-to-CONFIG_ARM_DEBUG_WX/20240130-183913
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/7943149fe955458cb7b57cd483bf41a3aad94684.1706610398.git.christophe.leroy%40csgroup.eu
-patch subject: [PATCH v2 4/5] mm: ptdump: Have ptdump_check_wx() return bool
-config: x86_64-defconfig (https://download.01.org/0day-ci/archive/20240201/202402010649.MtBnf3u8-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240201/202402010649.MtBnf3u8-lkp@intel.com/reproduce)
+In fact, I suspect there is very little reason ever to *not* just use
+the bh one, and even the switch could be removed.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402010649.MtBnf3u8-lkp@intel.com/
+Because I think the only reason the "workqueue of tasklet" choice
+existed in the first place was that workqueues were the "proper" data
+structure, and the tasklet case was added later as a latency hack, and
+everybody knew that tasklets were deprecated.
 
-All warnings (new ones prefixed by >>):
-
-   arch/x86/mm/dump_pagetables.c:365:6: error: two or more data types in declaration specifiers
-     365 | bool void ptdump_walk_pgd_level_core(struct seq_file *m,
-         |      ^~~~
->> arch/x86/mm/dump_pagetables.c:365:11: warning: no previous prototype for 'ptdump_walk_pgd_level_core' [-Wmissing-prototypes]
-     365 | bool void ptdump_walk_pgd_level_core(struct seq_file *m,
-         |           ^~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +/ptdump_walk_pgd_level_core +365 arch/x86/mm/dump_pagetables.c
-
-   364	
- > 365	bool void ptdump_walk_pgd_level_core(struct seq_file *m,
-   366					       struct mm_struct *mm, pgd_t *pgd,
-   367					       bool checkwx, bool dmesg)
-   368	{
-   369		const struct ptdump_range ptdump_ranges[] = {
-   370	#ifdef CONFIG_X86_64
-   371		{0, PTRS_PER_PGD * PGD_LEVEL_MULT / 2},
-   372		{GUARD_HOLE_END_ADDR, ~0UL},
-   373	#else
-   374		{0, ~0UL},
-   375	#endif
-   376		{0, 0}
-   377	};
-   378	
-   379		struct pg_state st = {
-   380			.ptdump = {
-   381				.note_page	= note_page,
-   382				.effective_prot = effective_prot,
-   383				.range		= ptdump_ranges
-   384			},
-   385			.level = -1,
-   386			.to_dmesg	= dmesg,
-   387			.check_wx	= checkwx,
-   388			.seq		= m
-   389		};
-   390	
-   391		ptdump_walk_pgd(&st.ptdump, mm, pgd);
-   392	
-   393		if (!checkwx)
-   394			return true;
-   395		if (st.wx_pages) {
-   396			pr_info("x86/mm: Checked W+X mappings: FAILED, %lu W+X pages found.\n",
-   397				st.wx_pages);
-   398	
-   399			return false;
-   400		} else {
-   401			pr_info("x86/mm: Checked W+X mappings: passed, no W+X pages found.\n");
-   402	
-   403			return true;
-   404		}
-   405	}
-   406	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+             Linus
 
