@@ -1,146 +1,103 @@
-Return-Path: <linux-kernel+bounces-46714-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46715-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D801844311
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:31:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDC0F844312
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:31:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28EE128451D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:31:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24A891C21CB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:31:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC97D1292E9;
-	Wed, 31 Jan 2024 15:31:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1A53128397;
+	Wed, 31 Jan 2024 15:31:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="V2++4u9M"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="XfRaxlP/"
+Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B99369D22
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 15:31:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A43B869D22
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 15:31:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706715075; cv=none; b=Tuu87cpXfBg7PLMqwVjEny/K5F8HGPwy1CuOO3h6HdLyHEi8LIN5fq3xnXAD7zwbL51A7u1XLDjL7uYmom00/J5upsBmC5+0lzqaRp2bm57FOZ4ojGzAMLMrmvBY6+ZKtHYiec4kE5dU/kRai/ujb6Nm/VigCSxqWfOlw/1I1qI=
+	t=1706715103; cv=none; b=NEhHorJI870uObNJdiCqv0i4m37ub19SRhc6QtzV92x2ihnMMDvkr1ytT2XdNGnPByqcTKAx7dsMnC7GdUSooHPRK6/Bazsi67KzqlozuBdMBqlha8ARtAFTzAOWtdxMg00Dg9o9uz5RnWCgdjnpWooNB3S+hEHKbGlzXxG5Z5s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706715075; c=relaxed/simple;
-	bh=rsDIuaEyL9ScSxFrStOinF9JksJgZ+4nfsKs0xH6ChQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZmwJ0diEoZZUOIbLDXB5ctaT2/XwCB6AQ9d7yosKybn9IQbgPCimId10wsVaIX7IZDk/XI53et7bdxXeM0dRXxn5ACetsT6zTPQYCH5u8u/Bg9cNe7Zr80CFBPsAXV0aBwJZpcBzgX4BN4oAvyMjgW1YpDulervvKM54uvK7Zls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=V2++4u9M; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706715072;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ccG+sbCfrbWj1IcTlWOfUc62TgnGl2MOJkfCzt/+H+Y=;
-	b=V2++4u9MeGfRfFrDsuJbTDQp0Gon97ZcDb5k+lodJgHmhrRfwWT25Z0co4k2ULrt23/Vbd
-	2to/wIYPvR8JDF1AaNy4K9ARZsEncxKm3VNy/LhTGarBF0MhSbu/jEPGkgSMGTHknrbHtp
-	yp8T/ESQ3i0kc7vYb/8phqj2a6IFyhU=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-209-vG6ECsSBPqGO5-Sf-ktjIw-1; Wed,
- 31 Jan 2024 10:31:10 -0500
-X-MC-Unique: vG6ECsSBPqGO5-Sf-ktjIw-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0BEA93806071;
-	Wed, 31 Jan 2024 15:31:10 +0000 (UTC)
-Received: from [10.22.18.157] (unknown [10.22.18.157])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id B6844492BE4;
-	Wed, 31 Jan 2024 15:31:09 +0000 (UTC)
-Message-ID: <89927d84-279a-492e-83d3-6d3e20b722f7@redhat.com>
-Date: Wed, 31 Jan 2024 10:31:09 -0500
+	s=arc-20240116; t=1706715103; c=relaxed/simple;
+	bh=oL4W9D8uTGF08rS1s/ZYdHS1i0mWCq37SyhQwBq1J/M=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=pDlgDGkCb2tx4jAAySwKNPwFu1o7Zk0ES1p2ZbRK5ViSXMxWd2owkS0hmb91jbvfV7DS5Rysp6K1Z6D/ol0mzDZiEEcafid1jICcoB8bfJlZpiiOW9wQKVkR5NdQ9BriVLlQc3LDZCSbHklG1IKywKRVKgeNpPlv4aaHMDOMaMI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=XfRaxlP/; arc=none smtp.client-ip=209.85.210.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6de331e3de2so961861b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 07:31:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706715101; x=1707319901; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xLI/CdVyu9eHQa8UHfDtmUbiN6ljlyx0ki16JonNEL4=;
+        b=XfRaxlP/wEWHmRB8W4qh16naOXVxrnXbKK9v7R6GTvB3Xw5YP8A8K9HBrioKIaNPsW
+         Oh2KGtNCBJp7Wi+1ppueO66FuDd7NcrAI7r2kKkQGS5E3NzWoX6wz2Ss3Kf7NkucYL4s
+         TxfbemAIA7jIhwtzneXJudfw3jXy8NvfqhHeCqdE96ktNG2XcPSHN2WbWEZcy7qJMOg0
+         EQ9sE+bKVtw7eV9iZ1MdJo0RozdLFxkUCbJiPxvr6H1UIP2Y/E9b3AkT/xGCgRgNZK8H
+         UE6VMEEE3JYUpHu8RGr1zluteiM0sc8fISNEpZDUnH7l5hdVN8bxZ+2b1lzEWztvQ80q
+         eG0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706715101; x=1707319901;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xLI/CdVyu9eHQa8UHfDtmUbiN6ljlyx0ki16JonNEL4=;
+        b=IPWJ0acXMfYYuv/QmX+4h5ix3pRXCaWBjO7HGx25SZlG9xECOerOK1II7jl81iZMSW
+         fBhT2IKvKbPhzBAquuxiePhgQ9qMEGCw7OHF2rOHuCflZpxdnK+IprZo0Q0FptSCY91C
+         qbiEILvdre5XzqeGw34CeZgx/GfNp85zHaW/ZYJc71PcXS4Fw0iJsYjRu4TvN5J3Og0E
+         Bs3UxVYky643qud7zezfI83x0cGk3tP4/1g1y821ejWKT7XB1m1y8tlt9cEe6WvlIBQ3
+         6CQ/nYnoaDvRCJZMrCjyHJed9B2ql5HiBYW/Eb3L7zoZ/xNAgHtfwVcncVPraI1IXwgP
+         bQog==
+X-Gm-Message-State: AOJu0Yzl+JwFpxCDO/XnhequV2dz2YWlmH2Sp8432VZWSOrWh9LfBVEq
+	Hi/oz46fvs3h/fj7593g19Kx8xHEMjQkK5JU4se09YN8jEEOIetAIl4yZhkKKZYqrUB8ZqCZBCn
+	INQ==
+X-Google-Smtp-Source: AGHT+IGakOzZSxJMYgkN0htnKhLJoZV0JKpLbOKc2nO+hNe/P1Xdl9Oswur6+6pTCFd171+nGMSVDK6fWyg=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:cca:b0:6df:dd47:ff3d with SMTP id
+ b10-20020a056a000cca00b006dfdd47ff3dmr85585pfv.0.1706715100889; Wed, 31 Jan
+ 2024 07:31:40 -0800 (PST)
+Date: Wed, 31 Jan 2024 07:31:39 -0800
+In-Reply-To: <d24dc389-8e73-4a7a-9970-1022dcbfa39c@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 0/3] workqueue: Enable unbound cpumask update on
- ordered workqueues
-Content-Language: en-US
-To: Juri Lelli <juri.lelli@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
- linux-kernel@vger.kernel.org, Cestmir Kalina <ckalina@redhat.com>,
- Alex Gladkov <agladkov@redhat.com>
-References: <20240130183336.511948-1-longman@redhat.com>
- <ZbpElS5sQV_o9NG1@localhost.localdomain>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <ZbpElS5sQV_o9NG1@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+Mime-Version: 1.0
+References: <20240109230250.424295-1-seanjc@google.com> <20240109230250.424295-17-seanjc@google.com>
+ <5f51fda5-bc07-42ac-a723-d09d90136961@linux.intel.com> <ZaGxNsrf_pUHkFiY@google.com>
+ <cce0483f-539b-4be3-838d-af0ec91db8f0@linux.intel.com> <ZbmF9eM84cQhdvGf@google.com>
+ <d24dc389-8e73-4a7a-9970-1022dcbfa39c@linux.intel.com>
+Message-ID: <Zbpn284rPe3pMBwI@google.com>
+Subject: Re: [PATCH v10 16/29] KVM: selftests: Test Intel PMU architectural
+ events on gp counters
+From: Sean Christopherson <seanjc@google.com>
+To: Dapeng Mi <dapeng1.mi@linux.intel.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Kan Liang <kan.liang@linux.intel.com>, Jim Mattson <jmattson@google.com>, 
+	Jinrong Liang <cloudliang@tencent.com>, Aaron Lewis <aaronlewis@google.com>, 
+	Like Xu <likexu@tencent.com>
+Content-Type: text/plain; charset="us-ascii"
 
+On Wed, Jan 31, 2024, Dapeng Mi wrote:
+> BTW, I have a patch series to do the bug fixes and improvements for
+> kvm-unit-tests/pmu test. (some improvement ideas come from this patchset.)
+> 
+> https://lore.kernel.org/kvm/20240103031409.2504051-1-dapeng1.mi@linux.intel.com/
+> 
+> Could you please kindly review them? Thanks.
 
-On 1/31/24 08:01, Juri Lelli wrote:
-> Hi Waiman,
->
-> Thanks for working on this!
->
-> On 30/01/24 13:33, Waiman Long wrote:
->> Ordered workqueues does not currently follow changes made to the
->> global unbound cpumask because per-pool workqueue changes may break
->> the ordering guarantee. IOW, a work function in an ordered workqueue
->> may run on a cpuset isolated CPU.
->>
->> This series enables ordered workqueues to follow changes made to the
->> global unbound cpumask by temporaily saving the work items in an
->> internal queue until the old pwq has been properly flushed and to be
->> freed. At that point, those work items, if present, are queued back to
->> the new pwq to be executed.
-> I took it for a quick first spin (on top of wq/for-6.9) and this is what
-> I'm seeing.
->
-> Let's take edac-poller ordered wq, as the behavior seems to be the same
-> for the rest.
->
-> Initially we have (using wq_dump.py)
->
-> wq_unbound_cpumask=0xffffffff 000000ff
-> ...
-> pool[80] ref= 44 nice=  0 idle/workers=  2/  2 cpus=0xffffffff 000000ff pod_cpus=0xffffffff 000000ff
-> ...
-> edac-poller                      ordered    80 80 80 80 80 80 80 80 ...
-> ...
-> edac-poller                      0xffffffff 000000ff    345 0xffffffff 000000ff
->
-> after I
->
-> # echo 3 >/sys/devices/virtual/workqueue/cpumask
->
-> I get
->
-> wq_unbound_cpumask=00000003
-> ...
-> pool[86] ref= 44 nice=  0 idle/workers=  2/  2 cpus=00000003 pod_cpus=00000003
-> ...
-> edac-poller                      ordered    86 86 86 86 86 86 86 86 86 86 ...
-> ...
-> edac-poller                      0xffffffff 000000ff    345 0xffffffff 000000ff
->
-> So, IIUC, the pool and wq -> pool settings are updated correctly, but
-> the wq.unbound_cpus (and its associated rescure affinity) are left
-> untouched. Is this expected or are we maybe still missing an additional
-> step?
+Unfortunately, that's probably not going to happen anytime soon.  I am overloaded
+with KVM/kernel reviews as it is, so I don't expect to have cycles for KUT reviews
+in the near future.
 
-Isn't this what the 4th patch of your RFC workqueue patch series does?
-
-https://lore.kernel.org/lkml/20240116161929.232885-5-juri.lelli@redhat.com/
-
-The focus of this series is to make sure that we can update the pool 
-cpumask of ordered workqueue to follow changes in global unbound 
-workqueue cpumask. So I haven't touched anything related to rescuer at all.
-
-I will include your 4th patch in the next version of this series.
-
-Cheers,
-Longman
-
+And for PMU tests in particular, I really want to get selftests to the point where
+the PMU selftests are a superset of the PMU KUT tests so that we can drop the KUT
+versions.  In short, reviewing PMU KUT changes is very far down my todo list.
 
