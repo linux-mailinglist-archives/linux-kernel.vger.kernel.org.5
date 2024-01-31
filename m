@@ -1,85 +1,49 @@
-Return-Path: <linux-kernel+bounces-46454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46455-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9012E843FE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:01:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C80A843FE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:01:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 368421F22BC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:01:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F49B1C210B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:01:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D9567A715;
-	Wed, 31 Jan 2024 13:01:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bE50ISoq"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 971077BB00
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 13:01:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 562FF7B3E2;
+	Wed, 31 Jan 2024 13:01:27 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDD9A55C14
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 13:01:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706706083; cv=none; b=c+TE8MLkTy7c/zL2p9CJmBSDjtxSQXPHUx+8oVhhcVmStYaq6yhk56PIHXey/4hid/Ow3WXToYgT79nQpcmAXEPFlleG0xXh5wEK0AZxh0FaXz1ixMCfrSHvvWuxEXpYSOe2gDsHntEsfal9eYtsAnwZAGfP3T4iutGBLqPwjME=
+	t=1706706086; cv=none; b=QMVlk7SJh4z0JKBbDMnRcgkFO4FEEJM6fhqFJuxR2BSQ3ryamoi9GKLBQ5sAMILYni+kNyYqeRvm1V52ubY442cA0igyfY/W6TR+hwwQewtt169fKX9uMxNMH9+5nbx4Zu/97hzddmurn4QilbEQxFroJ1nwzZFC7zUk3rFy4ME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706706083; c=relaxed/simple;
-	bh=iuYZLMjnUbawOeR31xImNNYkq3C/7t4cRKUneiauhwQ=;
+	s=arc-20240116; t=1706706086; c=relaxed/simple;
+	bh=5CKTpaFjsTe6lonuoOUlHY2T/WH+/JtSRrKIXyTcYD4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WvZ8X/ky1w0CMslEfqE8EzHurEFnIBuSL4JCvBTijEWbW2ONh3gWvVz/0CXYau4XiPQ+cdOfJp/0iSNQ1IzwyaxN2s+gUT/B5dnPUAlcfPDKvMa3qC4+1aIWYVNjkUvo7h97t3Z1sjlCwKw29xVy4mWd9L6MtJi7s15d9AlXrRw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bE50ISoq; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706706075;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qn+iYS2LlFcVqPLusRdTgDr/wHRlQ/SFpOgOHT1uyag=;
-	b=bE50ISoqj0zymb0me/39Jhp5gXx0sMXMk1nGFGwF5j1Y8j4TJM4CxjTvNTJYUMUSR+VOlJ
-	M8LhAJEZ16EV/7madZ4EglSF0y3P04xYQuQLHSCD2KluOtgSQAEBnuTFoezSl8Gy84H69T
-	7lGJ5ArgOljWFo22aw5bBAi9eXUm5qY=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-264-cc3A9somNTiWN3t6zQReMQ-1; Wed, 31 Jan 2024 08:01:13 -0500
-X-MC-Unique: cc3A9somNTiWN3t6zQReMQ-1
-Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2d06d6974f4so2923911fa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 05:01:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706706072; x=1707310872;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qn+iYS2LlFcVqPLusRdTgDr/wHRlQ/SFpOgOHT1uyag=;
-        b=HODrv79+gHzxW+QZZNstIUp4MKarGx/iy848r9vydgIYzwzuJNltBFn3Do2FqgmIvj
-         NkFiXe7BDXMBDK5pc2QhEPXSAyxREKyI8bCd+bDXwOqeLmhEkMsrRhscEccAUNXUUaqM
-         Z5df8eWpjVTbt3rUbYZYIvqe/HHl2rV8OOFC/Wz8xUg/YQUsHhM3hm0p3BLuQCy5C7EH
-         O6YTgsh0fljF32W+96uvxWKff8tVTAw25kJJwjX5B2ToR5LClmqIFhUwfupfTfVE5STm
-         kOBAdOOm/aLYwDrlPsQHnjsjBbpgoo9t+g6TtXOhHp7a7vNxc5XiR/nv5yQJXSnKV5Kf
-         smSg==
-X-Gm-Message-State: AOJu0YxE47tYc6+cZdPMslA3PLaUSIV+E8V7aoZznwZRPJfxyzO7BYuS
-	5x4VAfdCaL1sDqktj3qr4vys10ieMn+3tzu7e/GyJwv34NisTO296XL0qA11ugBAaEXUtM9cd8n
-	8zAiZgImKZPZAPUduuAjKNZsMkptzroB2Dzcg4WwvEIJ4c4O9ItnYQw8k2KkuaQ==
-X-Received: by 2002:a2e:9e17:0:b0:2d0:41be:9eec with SMTP id e23-20020a2e9e17000000b002d041be9eecmr1035481ljk.6.1706706072141;
-        Wed, 31 Jan 2024 05:01:12 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHGd10SIDbQpNCUKVs442JD5KhAj1sVBAgs+wQitBw7307bQExUlPBMAPUZxnN2YGMnlXVZ5A==
-X-Received: by 2002:a2e:9e17:0:b0:2d0:41be:9eec with SMTP id e23-20020a2e9e17000000b002d041be9eecmr1035460ljk.6.1706706071751;
-        Wed, 31 Jan 2024 05:01:11 -0800 (PST)
-Received: from localhost.localdomain ([151.29.75.172])
-        by smtp.gmail.com with ESMTPSA id m12-20020a056000180c00b0033b08f52d46sm473547wrh.116.2024.01.31.05.01.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 05:01:11 -0800 (PST)
-Date: Wed, 31 Jan 2024 14:01:09 +0100
-From: Juri Lelli <juri.lelli@redhat.com>
-To: Waiman Long <longman@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
-	linux-kernel@vger.kernel.org, Cestmir Kalina <ckalina@redhat.com>,
-	Alex Gladkov <agladkov@redhat.com>
-Subject: Re: [RFC PATCH 0/3] workqueue: Enable unbound cpumask update on
- ordered workqueues
-Message-ID: <ZbpElS5sQV_o9NG1@localhost.localdomain>
-References: <20240130183336.511948-1-longman@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ABaiMIBiuEIOgrNkFcu4O3eSnwzcvWSXycGjzOf6kaLKlGLsXu2KyqIzVCmMrf/cqxyfnK94AdSKjtPQhV8wkwvVeZKcJ+p/mqIWyvf40F8gD+RhV51JAdrc1PSQnHm0Zd+LEd60M3zIT+lFWZCrddpXwrHGhpKjf5OQozn+WgE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A7774DA7;
+	Wed, 31 Jan 2024 05:02:06 -0800 (PST)
+Received: from e133380.arm.com (e133380.arm.com [10.1.197.58])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1469B3F738;
+	Wed, 31 Jan 2024 05:01:21 -0800 (PST)
+Date: Wed, 31 Jan 2024 13:01:16 +0000
+From: Dave Martin <Dave.Martin@arm.com>
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: Fangrui Song <maskray@google.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org,
+	Jisheng Zhang <jszhang@kernel.org>, llvm@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: jump_label: use constraint "S" instead of "i"
+Message-ID: <ZbpEnDK3U/O24ng0@e133380.arm.com>
+References: <20240131065322.1126831-1-maskray@google.com>
+ <CAMj1kXGzADFWa7RmXyjWpCnQ=9hhz6i-XkN4PS1CboZ-kFL8dQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,60 +52,92 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240130183336.511948-1-longman@redhat.com>
+In-Reply-To: <CAMj1kXGzADFWa7RmXyjWpCnQ=9hhz6i-XkN4PS1CboZ-kFL8dQ@mail.gmail.com>
 
-Hi Waiman,
-
-Thanks for working on this!
-
-On 30/01/24 13:33, Waiman Long wrote:
-> Ordered workqueues does not currently follow changes made to the
-> global unbound cpumask because per-pool workqueue changes may break
-> the ordering guarantee. IOW, a work function in an ordered workqueue
-> may run on a cpuset isolated CPU.
+On Wed, Jan 31, 2024 at 08:16:04AM +0100, Ard Biesheuvel wrote:
+> Hello Fangrui,
 > 
-> This series enables ordered workqueues to follow changes made to the
-> global unbound cpumask by temporaily saving the work items in an
-> internal queue until the old pwq has been properly flushed and to be
-> freed. At that point, those work items, if present, are queued back to
-> the new pwq to be executed.
+> On Wed, 31 Jan 2024 at 07:53, Fangrui Song <maskray@google.com> wrote:
+> >
+> > The constraint "i" seems to be copied from x86 (and with a redundant
+> > modifier "c"). It works with -fno-PIE but not with -fPIE/-fPIC in GCC's
+> > aarch64 port.
 
-I took it for a quick first spin (on top of wq/for-6.9) and this is what
-I'm seeing.
+(I'm not sure of the exact history, but the "c" may be inherited from
+arm, where an output modifier was needed to suppress the "#" that
+prefixes immediates in the traditional asm syntax.  This does not
+actually seem to be required for AArch64: rather while a # is allowed
+and still considered good style in handwritten asm code, the syntax
+doesn't require it, and the compiler doesn't emit it for "i" arguments,
+AFAICT.)
 
-Let's take edac-poller ordered wq, as the behavior seems to be the same
-for the rest.
+> > The constraint "S", which denotes a symbol reference (e.g. function,
+> > global variable) or label reference, is more appropriate, and has been
+> > available in GCC since 2012 and in Clang since 7.0.
+> >
+> > Signed-off-by: Fangrui Song <maskray@google.com>
+> > Link: https://maskray.me/blog/2024-01-30-raw-symbol-names-in-inline-assembly
+> > ---
+> >  arch/arm64/include/asm/jump_label.h | 8 ++++----
+> >  1 file changed, 4 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/arch/arm64/include/asm/jump_label.h b/arch/arm64/include/asm/jump_label.h
+> > index 48ddc0f45d22..31862b3bb33d 100644
+> > --- a/arch/arm64/include/asm/jump_label.h
+> > +++ b/arch/arm64/include/asm/jump_label.h
+> > @@ -23,9 +23,9 @@ static __always_inline bool arch_static_branch(struct static_key * const key,
+> >                  "      .pushsection    __jump_table, \"aw\"    \n\t"
+> >                  "      .align          3                       \n\t"
+> >                  "      .long           1b - ., %l[l_yes] - .   \n\t"
+> > -                "      .quad           %c0 - .                 \n\t"
+> > +                "      .quad           %0 - .                  \n\t"
+> >                  "      .popsection                             \n\t"
+> > -                :  :  "i"(&((char *)key)[branch]) :  : l_yes);
+> > +                :  :  "S"(&((char *)key)[branch]) :  : l_yes);
+> 
+> 'key' is not used as a raw symbol name. We should make this
+> 
+> "    .quad   %0 + %1 - ."
+> 
+> and
+> 
+> ::  "S"(key), "i"(branch) :: l_yes);
+>
+> if we want to really clean this up.
 
-Initially we have (using wq_dump.py)
+This hides more logic in the asm so it's arguably more cryptic
+(although the code is fairly cryptic to begin with -- I don't really
+see why the argument wasn't written as the equivalent
+(char *)key + branch...)
 
-wq_unbound_cpumask=0xffffffff 000000ff
-..
-pool[80] ref= 44 nice=  0 idle/workers=  2/  2 cpus=0xffffffff 000000ff pod_cpus=0xffffffff 000000ff
-..
-edac-poller                      ordered    80 80 80 80 80 80 80 80 ...
-..
-edac-poller                      0xffffffff 000000ff    345 0xffffffff 000000ff
+Anyway, I don't think the "i" versys "S" distinction makes any
+difference without -fpic or equivalent, so it is not really relevant
+for the kernel (except that "S" breaks compatibility with older
+compilers...)
 
-after I
 
-# echo 3 >/sys/devices/virtual/workqueue/cpumask
+I think the main advantage of "S" is that it stops you accidentally
+emitting undesirable relocations from asm code that is not written for
+the -fpic case.
 
-I get
+But just changing "i" to "S" is not sufficient to port asms to -fpic:
+the asms still need to be reviewed.
 
-wq_unbound_cpumask=00000003
-..
-pool[86] ref= 44 nice=  0 idle/workers=  2/  2 cpus=00000003 pod_cpus=00000003
-..
-edac-poller                      ordered    86 86 86 86 86 86 86 86 86 86 ...
-..
-edac-poller                      0xffffffff 000000ff    345 0xffffffff 000000ff
 
-So, IIUC, the pool and wq -> pool settings are updated correctly, but
-the wq.unbound_cpus (and its associated rescure affinity) are left
-untouched. Is this expected or are we maybe still missing an additional
-step?
+So unless the asm has been reviewed for position-independence, it may
+anyway be better to stick with "i" so that the compiler actually chokes
+if someone tries to build the code with -fpic.
 
-Best,
-Juri
+Since we are not trying to run arbitraily many running kernels in a
+common address space (and not likely to do that), I'm not sure that we
+would ever build the kernel with -fpic except for a few special-case
+bits like the EFI stub and vDSO... unless I've missed something?
 
+If there's another reason why "S" is advantageous though, I'm happy to
+be corrected.
+
+[...]
+
+Cheers
+---Dave
 
