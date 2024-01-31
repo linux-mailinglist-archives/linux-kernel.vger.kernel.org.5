@@ -1,174 +1,125 @@
-Return-Path: <linux-kernel+bounces-46730-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46732-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E357844346
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:42:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 40A3684434E
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:43:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A76A286A0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:42:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFB8C28B9EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:43:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66C8D12AAFA;
-	Wed, 31 Jan 2024 15:41:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44E0A129A97;
+	Wed, 31 Jan 2024 15:43:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="eAYRS6JE";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JEcCUXZl";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="eAYRS6JE";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JEcCUXZl"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nZUKm2bO"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8013D1292FA;
-	Wed, 31 Jan 2024 15:41:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 218AF80C07
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 15:43:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706715718; cv=none; b=pZju3J0nx0puZSIkBCggZbQJUm+109hAI0j9Jw6Yid3RiwshLOIhsmXrFxxNoZHHN8tKcFbXwnygkaQejmOpbnSH7wx5+lEiDn+zXYsxflruIoqMr1tUiR96K2eMVYVGno1Rl+YR0GwtJXmZVTrqBcse1UIF7D0FY1B/YFMwPWI=
+	t=1706715813; cv=none; b=Mped+qu/7mevDuXDpmzzCsBbXezV7ppxs2Whjke8Meo7mt4o2c4HQ9pqcetefrr0xzNhasBw6YRR9wQeeI2CT1ATF3D2UsG4gfxZBWGYK4DJvpHrDYFJr2WjoOk3JOTa/I7GfJuHLApTNKkLdQ/uu3u8Rlcs0Qn8SW2QFei53bk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706715718; c=relaxed/simple;
-	bh=k975rr5SOQJ0akKpIS6Xf8RVc6oORwcCOak8L3VOgN4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qEVhLmtMhFruNXNH2kXnf3NWNJQPKTLGMINfAbfdYQt1TWP5cZ7J6aBgdeFNftKB/pzlHzMzIsu5gAGgNlkhQHd3eYKFDRevlyWRanlrKP3MigFiaIF5kQ8EiHXuwbgNKp4w9ZRvXkDP8/dc9NJvYsqqtelR1y3Wkz6+6lQIDDY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=eAYRS6JE; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=JEcCUXZl; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=eAYRS6JE; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=JEcCUXZl; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 99A931F747;
-	Wed, 31 Jan 2024 15:41:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706715714; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DfCZX+hFUBlbWs8+8jojtXLtoVcojjb6ykWSphE2z1g=;
-	b=eAYRS6JERcuIGWvi6Ek08YG+lfpfdU+UAgjzoDk7TwEInNVsdBf4o7EZXbfN0Y0JfD3dBs
-	aobWKJqCIB0rO7brfn9fUSiZT/mn2cZ04fww5vWpgTp2gVtXvpjhASo+fdLTjVTrAEp7aI
-	8zP5d9B3ea8I12U+4GCjKO9R6SMA6zc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706715714;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DfCZX+hFUBlbWs8+8jojtXLtoVcojjb6ykWSphE2z1g=;
-	b=JEcCUXZltSMg4I4IO5xpTfXnvD8ZUTPWFRkM79oWnUGyAKuqqAs88AeT8qyKn9A19NT6zo
-	zDhz8aK3F+mAXmCA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706715714; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DfCZX+hFUBlbWs8+8jojtXLtoVcojjb6ykWSphE2z1g=;
-	b=eAYRS6JERcuIGWvi6Ek08YG+lfpfdU+UAgjzoDk7TwEInNVsdBf4o7EZXbfN0Y0JfD3dBs
-	aobWKJqCIB0rO7brfn9fUSiZT/mn2cZ04fww5vWpgTp2gVtXvpjhASo+fdLTjVTrAEp7aI
-	8zP5d9B3ea8I12U+4GCjKO9R6SMA6zc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706715714;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DfCZX+hFUBlbWs8+8jojtXLtoVcojjb6ykWSphE2z1g=;
-	b=JEcCUXZltSMg4I4IO5xpTfXnvD8ZUTPWFRkM79oWnUGyAKuqqAs88AeT8qyKn9A19NT6zo
-	zDhz8aK3F+mAXmCA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 7DCC2132FA;
-	Wed, 31 Jan 2024 15:41:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id cPeuHkJqumWyfwAAn2gu4w
-	(envelope-from <jack@suse.cz>); Wed, 31 Jan 2024 15:41:54 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 0ADF9A0809; Wed, 31 Jan 2024 16:41:54 +0100 (CET)
-Date: Wed, 31 Jan 2024 16:41:53 +0100
-From: Jan Kara <jack@suse.cz>
-To: Edward Adam Davis <eadavis@qq.com>
-Cc: syzbot+cdee56dbcdf0096ef605@syzkaller.appspotmail.com,
-	adilger.kernel@dilger.ca, chandan.babu@oracle.com, jack@suse.com,
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Subject: Re: [PATCH] jbd2: user-memory-access in jbd2__journal_start
-Message-ID: <20240131154153.domdzkkbqgpkplp2@quack3>
-References: <000000000000d6e06d06102ae80b@google.com>
- <tencent_7F29369E974036964A3E742F778567CC3C09@qq.com>
+	s=arc-20240116; t=1706715813; c=relaxed/simple;
+	bh=vhbrZMHFjelXGRFhJ+BjMGubacmhxkKYeRxhEF4X3Wg=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=DFPzsvZsDOeYVq/Q7iR/MhiVORXJZnnauFTk2U8f7TYi/9xxIuHr/nUHTlQj8AgCjRM3oyX3YUH8r5AQQMgqGHWugpHbqYHQfPh+QYI7LsUC5yPc/GL2IvjGt894huYAtCzGxV0UYXvu8szatZNZZYgSx8g4sZdrvS8+RpygUGA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=nZUKm2bO; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60404484c23so23311037b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 07:43:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706715811; x=1707320611; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rXirN1TSqSLWWOLHNkxUHkuNKeZ8QnnuiK8GRbGZ3WI=;
+        b=nZUKm2bOv4Y/oKKlz7W08nhMwawd3ALiBhncqSJXQONTBJWACJvQOsl8sUaJ/mnTxK
+         Pw6SemBuJSNhNzBfJTU/H6PqjnVinmKWmqeTgLKQsz9XkdA+MuGjyv81WMZIIBCmwt7i
+         /kAex6UlC3z7Wk7N08RX+WQlQfA6L4AbHADXbAQCiNX1mMnzJG6LJQ3lD1rzdSh6Jexk
+         7M9pu4Q7B0Yz1OqoKlngXKTvFNjCRr63x2l3wNcqkj9tngcK1XaIbWuyMRWfGlfWDa+9
+         8kNaj66Q2T8ZR5OaWbvC7IS5AzS1wi5my9Uj/k0O+oOkAco0FOGkTiNcNJs5CULgqvoc
+         TYJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706715811; x=1707320611;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rXirN1TSqSLWWOLHNkxUHkuNKeZ8QnnuiK8GRbGZ3WI=;
+        b=jVGtUWP15rCNrzoRf2+8So/xjSjR+WfxbimeA2OFizufL9tBhOlAXp6xj09e4Y2CiP
+         u6LTxe1hL7YfE7mlDMTwTa2HnKVC8M8pb3Z9U0j5qGGplrs1LL5GH9h/qjtXHnFDd4HX
+         5bU3hA4WPVdUY0kJ72LIiybgG5sJAdVn/dp9LEmjgyuJvpDm31ka9jIuIdIh65rvNqiT
+         9Kr5bDxVeT1wAb5AldRtetERY4Ph1knB3On64ManW4noHkXTzRuMSDVVnZ03/3p2GywM
+         ijrrSUwOkncqfGEvmKilJVuVQbXH3tmVfQECjfNLGVMTw8+k9jRMiAOnmt5rBtm1h7yg
+         aOIA==
+X-Gm-Message-State: AOJu0YyFJrsTl/8RFKEPWH7lo0lmlNwb02T+7VZcn2b65mvGHBw75AoR
+	gZjJQHbUQegYRRlwZKj4ZwV/r/V7NdkJlNZme8flEprXrAaIDnH11jJKO7R+cpFV9GgKebQunLy
+	OLQ==
+X-Google-Smtp-Source: AGHT+IGa5eXROO4MrCt68oQY1jH9FGoPqrFbSytbtF+B4n2ewFSTJB3rHFDw5pL2slDaY8z/2D4CFC8loNk=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:4cd5:0:b0:604:9ba:9a03 with SMTP id
+ z204-20020a814cd5000000b0060409ba9a03mr394475ywa.2.1706715811197; Wed, 31 Jan
+ 2024 07:43:31 -0800 (PST)
+Date: Wed, 31 Jan 2024 07:43:29 -0800
+In-Reply-To: <20240123221220.3911317-1-mizhang@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <tencent_7F29369E974036964A3E742F778567CC3C09@qq.com>
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=eAYRS6JE;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=JEcCUXZl
-X-Spamd-Result: default: False [1.69 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 FREEMAIL_TO(0.00)[qq.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[qq.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[cdee56dbcdf0096ef605];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: 1.69
-X-Rspamd-Queue-Id: 99A931F747
-X-Spam-Level: *
-X-Spam-Flag: NO
-X-Spamd-Bar: +
+Mime-Version: 1.0
+References: <20240123221220.3911317-1-mizhang@google.com>
+Message-ID: <ZbpqoU49k44xR4zB@google.com>
+Subject: Re: [PATCH] KVM: x86/pmu: Fix type length error when reading pmu->fixed_ctr_ctrl
+From: Sean Christopherson <seanjc@google.com>
+To: Mingwei Zhang <mizhang@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-On Wed 31-01-24 20:04:27, Edward Adam Davis wrote:
-> Before reusing the handle, it is necessary to confirm that the transaction is 
-> ready.
+On Tue, Jan 23, 2024, Mingwei Zhang wrote:
+> Fix type length error since pmu->fixed_ctr_ctrl is u64 but the local
+> variable old_fixed_ctr_ctrl is u8. Truncating the value leads to
+> information loss at runtime. This leads to incorrect value in old_ctrl
+> retrieved from each field of old_fixed_ctr_ctrl and causes incorrect code
+> execution within the for loop of reprogram_fixed_counters(). So fix this
+> type to u64.
+
+But what is the actual fallout from this?  Stating that the bug causes incorrect
+code execution isn't helpful, that's akin to saying water is wet.
+
+If I'm following the code correctly, the only fallout is that KVM may unnecessarily
+mark a fixed PMC as in use and reprogram it.  I.e. the bug can result in (minor?)
+performance issues, but it won't cause functional problems.
+
+Understanding what actually goes wrong matters, because I'm trying to determine
+whether or not this needs to be fixed in 6.8 and backported to stable trees.  If
+the bug is relatively benign, then this is fodder for 6.9.
+
+> Fixes: 76d287b2342e ("KVM: x86/pmu: Drop "u8 ctrl, int idx" for reprogram_fixed_counter()")
+> Signed-off-by: Mingwei Zhang <mizhang@google.com>
+> ---
+>  arch/x86/kvm/vmx/pmu_intel.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Reported-and-tested-by: syzbot+cdee56dbcdf0096ef605@syzkaller.appspotmail.com
-> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
-
-Sorry but no. Dave found a way to fix this particular problem in XFS and
-your patch would not really improve anything because we'd just crash
-when dereferencing handle->saved_alloc_context.
-
-								Honza
-
-
-> diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-> index cb0b8d6fc0c6..702312cd5392 100644
-> --- a/fs/jbd2/transaction.c
-> +++ b/fs/jbd2/transaction.c
-> @@ -493,6 +493,9 @@ handle_t *jbd2__journal_start(journal_t *journal, int nblocks, int rsv_blocks,
->  		return ERR_PTR(-EROFS);
+> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+> index a6216c874729..315c7c2ba89b 100644
+> --- a/arch/x86/kvm/vmx/pmu_intel.c
+> +++ b/arch/x86/kvm/vmx/pmu_intel.c
+> @@ -71,7 +71,7 @@ static int fixed_pmc_events[] = {
+>  static void reprogram_fixed_counters(struct kvm_pmu *pmu, u64 data)
+>  {
+>  	struct kvm_pmc *pmc;
+> -	u8 old_fixed_ctr_ctrl = pmu->fixed_ctr_ctrl;
+> +	u64 old_fixed_ctr_ctrl = pmu->fixed_ctr_ctrl;
+>  	int i;
 >  
->  	if (handle) {
-> +		if (handle->saved_alloc_context & ~PF_MEMALLOC_NOFS)
-> +			return ERR_PTR(-EBUSY);
-> +
->  		J_ASSERT(handle->h_transaction->t_journal == journal);
->  		handle->h_ref++;
->  		return handle;
-> -- 
-> 2.43.0
+>  	pmu->fixed_ctr_ctrl = data;
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+> -- 
+> 2.43.0.429.g432eaa2c6b-goog
+> 
 
